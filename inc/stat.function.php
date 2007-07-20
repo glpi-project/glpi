@@ -923,8 +923,8 @@ function showItemStats($target,$date1,$date2,$start){
 			if ($ci->getFromDB($data["device_type"],$data["computer"])){
 				//echo "<tr class='tab_bg_2$del'><td>".$ci->getLink()."</td><td>".$data["NB"]."</td></tr>";
 				echo displaySearchNewLine($output_type,$i%2);
-				echo displaySearchItem($output_type,$ci->getLink(),$item_num,$i-$start+1,$ci->getField('deleted'),"align='center'");
-				echo displaySearchItem($output_type,$data["NB"],$item_num,$i-$start+1,$ci->getField('deleted'),"align='center'");
+				echo displaySearchItem($output_type,$ci->getLink(),$item_num,$i-$start+1,"align='center'"." ".($ci->getField("deleted")?" class='deleted' ":""));
+				echo displaySearchItem($output_type,$data["NB"],$item_num,$i-$start+1,"align='center'"." ".($ci->getField("deleted")?" class='deleted' ":""));
 			}
 			$i++;
 		}

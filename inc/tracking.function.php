@@ -438,7 +438,7 @@ function showJobShort($data, $followups,$output_type=HTML_OUTPUT,$row_num=0) {
 		}
 
 
-		echo displaySearchItem($output_type,$first_col,$item_num,$row_num,0,$align);
+		echo displaySearchItem($output_type,$first_col,$item_num,$row_num,$align);
 
 		// Second column
 		$second_col="";	
@@ -464,10 +464,10 @@ function showJobShort($data, $followups,$output_type=HTML_OUTPUT,$row_num=0) {
 			$second_col.="</div>";
 		}
 
-		echo displaySearchItem($output_type,$second_col,$item_num,$row_num,0,$align." width=130");
+		echo displaySearchItem($output_type,$second_col,$item_num,$row_num,$align." width=130");
 
 		// Third Column
-		echo displaySearchItem($output_type,"<strong>".getPriorityName($data["priority"])."</strong>",$item_num,$row_num,0,"$align bgcolor='$bgcolor'");
+		echo displaySearchItem($output_type,"<strong>".getPriorityName($data["priority"])."</strong>",$item_num,$row_num,"$align bgcolor='$bgcolor'");
 
 		// Fourth Column
 		$fourth_col="";
@@ -492,7 +492,7 @@ function showJobShort($data, $followups,$output_type=HTML_OUTPUT,$row_num=0) {
 		if ($data["FK_group"])
 			$fourth_col.="<br>".$data["groupname"];
 
-		echo displaySearchItem($output_type,$fourth_col,$item_num,$row_num,0,$align);
+		echo displaySearchItem($output_type,$fourth_col,$item_num,$row_num,$align);
 
 		// Fifth column
 		$fifth_col="";
@@ -526,7 +526,7 @@ function showJobShort($data, $followups,$output_type=HTML_OUTPUT,$row_num=0) {
 				$fifth_col.="<strong>".getAssignName($data["assign_ent"],ENTERPRISE_TYPE)."</strong>";
 			}
 		}
-		echo displaySearchItem($output_type,$fifth_col,$item_num,$row_num,0,$align);
+		echo displaySearchItem($output_type,$fifth_col,$item_num,$row_num,$align);
 
 		$ci=new CommonItem();
 		$ci->getFromDB($data["device_type"],$data["computer"]);
@@ -544,10 +544,10 @@ function showJobShort($data, $followups,$output_type=HTML_OUTPUT,$row_num=0) {
 			$sixth_col.="</strong>";
 		} 
 
-		echo displaySearchItem($output_type,$sixth_col,$item_num,$row_num,$ci->getField("deleted"),$align);
+		echo displaySearchItem($output_type,$sixth_col,$item_num,$row_num,$align." ".($ci->getField("deleted")?" class='deleted' ":""));
 
 		// Seventh column
-		echo displaySearchItem($output_type,"<strong>".$data["catname"]."</strong>",$item_num,$row_num,0,$align);
+		echo displaySearchItem($output_type,"<strong>".$data["catname"]."</strong>",$item_num,$row_num,$align);
 
 		// Eigth column
 
@@ -562,7 +562,7 @@ function showJobShort($data, $followups,$output_type=HTML_OUTPUT,$row_num=0) {
 		}
 
 
-		echo displaySearchItem($output_type,$eigth_column,$item_num,$row_num,0,$align_desc."width='300'");
+		echo displaySearchItem($output_type,$eigth_column,$item_num,$row_num,$align_desc."width='300'");
 
 
 		// Nineth column
@@ -578,7 +578,7 @@ function showJobShort($data, $followups,$output_type=HTML_OUTPUT,$row_num=0) {
 		else
 			$nineth_column.="<a href=\"".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php?show=user&amp;ID=".$data["ID"]."\">".$LANG["joblist"][13]."</a>&nbsp;(".$job->numberOfFollowups(haveRight("show_full_ticket","1")).")";
 
-		echo displaySearchItem($output_type,$nineth_column,$item_num,$row_num,0,$align." width='40'");
+		echo displaySearchItem($output_type,$nineth_column,$item_num,$row_num,$align." width='40'");
 
 		// Finish Line
 		echo displaySearchEndLine($output_type);
