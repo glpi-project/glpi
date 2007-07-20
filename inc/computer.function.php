@@ -114,7 +114,7 @@ function showDeviceComputerForm($target,$ID,$withtemplate='') {
 	if (!empty($ID)){
 		//print devices.
 		if (!($CFG_GLPI["cache"]->start("device_".$ID."_".$_SESSION["glpilanguage"],"GLPI_".COMPUTER_TYPE))) {
-			echo "<div align='center'>";
+			echo "<div class='center'>";
 			echo "<form name='form_device_action' action=\"$target\" method=\"post\" >";
 			echo "<input type='hidden' name='ID' value='$ID'>";	
 			echo "<input type='hidden' name='device_action' value='$ID'>";			
@@ -169,7 +169,7 @@ function showConnections($target,$ID,$withtemplate='') {
 	
 		}
 		if (count($items)){
-			echo "&nbsp;<div align='center'><table class='tab_cadre_fixe'>";
+			echo "&nbsp;<div class='center'><table class='tab_cadre_fixe'>";
 	
 			echo "<tr><th colspan='".count($items)."'>".$LANG["connect"][0].":</th></tr>";
 	

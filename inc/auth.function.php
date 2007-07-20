@@ -218,7 +218,7 @@ function displayRightError() {
 				if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk")
 					helpHeader($LANG["login"][5], $_SERVER['PHP_SELF']);
 	}
-	echo "<div align='center'><br><br><img src=\"" . $CFG_GLPI["root_doc"] . "/pics/warning.png\" alt=\"warning\"><br><br>";
+	echo "<div class='center'><br><br><img src=\"" . $CFG_GLPI["root_doc"] . "/pics/warning.png\" alt=\"warning\"><br><br>";
 	echo "<strong>" . $LANG["login"][5] . "</strong></div>";
 	nullFooter();
 	exit ();

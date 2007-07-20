@@ -63,7 +63,7 @@ function showEnterpriseContact($instID) {
 	$i = 0;
 
 	echo "<form method='post' action=\"".$CFG_GLPI["root_doc"]."/front/contact.form.php\">";
-	echo "<br><br><div align='center'><table class='tab_cadre_fixe'>";
+	echo "<br><br><div class='center'><table class='tab_cadre_fixe'>";
 	echo "<tr><th colspan='6'>".$LANG["financial"][65].":</th></tr>";
 	echo "<tr><th>".$LANG["financial"][26]."</th>";
 	echo "<th>".$LANG["financial"][79]."</th>";

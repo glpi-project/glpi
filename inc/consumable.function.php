@@ -55,7 +55,7 @@ function showConsumableAdd($ID) {
 	if (!haveRight("consumable","w")) return false;
 
 	echo "<form method='post'  action=\"".$CFG_GLPI["root_doc"]."/front/consumable.edit.php\">";
-	echo "<div align='center'>&nbsp;<table class='tab_cadre_fixe'>";
+	echo "<div class='center'>&nbsp;<table class='tab_cadre_fixe'>";
 	echo "<tr><td align='center' class='tab_bg_2'><strong>";
 	echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/consumable.edit.php?add=add&amp;tID=$ID\">";
 	echo $LANG["consumables"][17];
@@ -104,7 +104,7 @@ function showConsumables ($tID,$show_old=0) {
 				if (!$show_old&&$canedit){
 					echo "<form method='post' action='".$CFG_GLPI["root_doc"]."/front/consumable.edit.php'>";
 				}
-				echo "<br><div align='center'><table cellpadding='2' class='tab_cadre_fixe'>";
+				echo "<br><div class='center'><table cellpadding='2' class='tab_cadre_fixe'>";
 				if ($show_old==0){
 					echo "<tr><th colspan='7'>";
 					echo $total;
@@ -140,7 +140,7 @@ function showConsumables ($tID,$show_old=0) {
 			} else {
 	
 				echo "<br>";
-				echo "<div align='center'><strong>".$LANG["consumables"][7]."</strong></div>";
+				echo "<div class='center'><strong>".$LANG["consumables"][7]."</strong></div>";
 				return;
 			}
 		}
@@ -397,7 +397,7 @@ function showConsumableSummary($target){
 	if (count($types)>0){
 
 		// Produce headline
-		echo "<div align='center'><table  class='tab_cadrehov'><tr>";
+		echo "<div class='center'><table  class='tab_cadrehov'><tr>";
 
 		// Type			
 		echo "<th>";;
@@ -445,7 +445,7 @@ function showConsumableSummary($target){
 		echo "</table></div>";
 
 	} else {
-		echo "<div align='center'><strong>".$LANG["consumables"][7]."</strong></div>";
+		echo "<div class='center'><strong>".$LANG["consumables"][7]."</strong></div>";
 	}
 
 }

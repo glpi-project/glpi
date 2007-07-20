@@ -95,7 +95,7 @@ class Config extends CommonDBTM {
 			// MAIN CONFIG
 			case 1 :
 
-				echo "<div align='center'><table class='tab_cadre_fixe'>";
+				echo "<div class='center'><table class='tab_cadre_fixe'>";
 				echo "<tr><th colspan='4'>" . $LANG["setup"][70] . "</th></tr>";
 			
 				$default_language = $CFG_GLPI["default_language"];
@@ -224,7 +224,7 @@ class Config extends CommonDBTM {
 				$cfg->getFromDB(1);
 		
 				// Needed for list_limit
-				echo "<div align='center'><table class='tab_cadre_fixe'>";
+				echo "<div class='center'><table class='tab_cadre_fixe'>";
 				echo "<tr><th colspan='4'>" . $LANG["setup"][119] . "</th></tr>";
 			
 				echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["setup"][108] . "</td><td> <input size='10' type=\"text\" name=\"num_of_events\" value=\"" . $CFG_GLPI["num_of_events"] . "\"></td>";
@@ -357,7 +357,7 @@ class Config extends CommonDBTM {
 			break;
 			// RESTRICTIONS CONFIG
 			case 3:
-				echo "<div align='center'><table class='tab_cadre_fixe'>";
+				echo "<div class='center'><table class='tab_cadre_fixe'>";
 								
 				echo "<tr><th colspan='4'>" . $LANG["setup"][270] . "</th></tr>";
 			
@@ -454,7 +454,7 @@ class Config extends CommonDBTM {
 		echo "</ul></div>";
 	
 		if ($_SESSION['glpi_mailconfig'] == 1) {
-			echo "<div align='center'><table class='tab_cadre_fixe'><tr><th colspan='2'>" . $LANG["setup"][201] . "</th></tr>";
+			echo "<div class='center'><table class='tab_cadre_fixe'><tr><th colspan='2'>" . $LANG["setup"][201] . "</th></tr>";
 	
 			echo "<tr class='tab_bg_2'><td >" . $LANG["setup"][202] . "</td><td>";
 			dropdownYesNo("mailing", $CFG_GLPI["mailing"]);
@@ -515,7 +515,7 @@ class Config extends CommonDBTM {
 			echo "</div>";
 			echo "</form>";
 			echo "<form action=\"$target\" method=\"post\">";
-			echo "<div align='center'><table class='tab_cadre_fixe'><tr><th colspan='2'>" . $LANG["setup"][229] . "</th></tr>";
+			echo "<div class='center'><table class='tab_cadre_fixe'><tr><th colspan='2'>" . $LANG["setup"][229] . "</th></tr>";
 			echo "<tr class='tab_bg_2'>";
 			echo "<td class='center'>";
 			echo "<input class=\"submit\" type=\"submit\" name=\"test_smtp_send\" value=\"" . $LANG["buttons"][2] . "\">";
@@ -545,7 +545,7 @@ class Config extends CommonDBTM {
 					"_" . $data["ID"]] = $LANG["common"][35] . " " . $data["name"];
 	
 				ksort($profiles);
-				echo "<div align='center'>";
+				echo "<div class='center'>";
 				echo "<input type='hidden' name='update_notifications' value='1'>";
 				// ADMIN
 				echo "<table class='tab_cadre_fixe'>";
@@ -595,7 +595,7 @@ class Config extends CommonDBTM {
 						"_" . $data["ID"]] = $LANG["common"][35] . " " . $data["name"];
 	
 					ksort($profiles);
-					echo "<div align='center'>";
+					echo "<div class='center'>";
 					echo "<input type='hidden' name='update_notifications' value='1'>";
 					// ADMIN
 					echo "<table class='tab_cadre_fixe'>";

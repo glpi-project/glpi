@@ -171,7 +171,7 @@ class CartridgeType extends CommonDBTM {
 
 		if ($ct_spotted){
 			$this->showOnglets($ID, $withtemplate,$_SESSION['glpi_onglet']);
-			echo "<form method='post' action=\"$target\"><div align='center'>\n";
+			echo "<form method='post' action=\"$target\"><div class='center'>\n";
 			if (empty($ID)){
 				echo "<input type='hidden' name='FK_entities' value='".$_SESSION["glpiactive_entity"]."'>";
 			}
@@ -236,7 +236,7 @@ class CartridgeType extends CommonDBTM {
 
 					echo "<tr>\n";
 					echo "<td class='tab_bg_2' valign='top' colspan='3'>\n";
-					echo "<div align='center'><input type='submit' name='add' value=\"".$LANG["buttons"][8]."\" class='submit'></div>";
+					echo "<div class='center'><input type='submit' name='add' value=\"".$LANG["buttons"][8]."\" class='submit'></div>";
 					echo "</td>";
 					echo "</tr>\n";
 				} else {
@@ -245,10 +245,10 @@ class CartridgeType extends CommonDBTM {
 					echo "<td class='tab_bg_2'></td>";
 					echo "<td class='tab_bg_2' valign='top'>";
 					echo "<input type='hidden' name='ID' value=\"$ID\">\n";
-					echo "<div align='center'><input type='submit' name='update' value=\"".$LANG["buttons"][7]."\" class='submit'></div>";
+					echo "<div class='center'><input type='submit' name='update' value=\"".$LANG["buttons"][7]."\" class='submit'></div>";
 					echo "</td>";
 					echo "<td class='tab_bg_2' valign='top'>\n";
-					echo "<div align='center'>";
+					echo "<div class='center'>";
 					if (!$this->fields["deleted"])
 						echo "<input type='submit' name='delete' value=\"".$LANG["buttons"][6]."\" class='submit'>";
 					else {
@@ -265,7 +265,7 @@ class CartridgeType extends CommonDBTM {
 
 		}
 		else {
-			echo "<div align='center'><strong>".$LANG["common"][54]."</strong></div>";
+			echo "<div class='center'><strong>".$LANG["common"][54]."</strong></div>";
 			return false;
 		}
 		return true;

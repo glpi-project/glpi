@@ -1065,7 +1065,7 @@ function checkNewVersionAvailable($auto=1){
 
 		$proxy_fp = fsockopen($CFG_GLPI["proxy_name"], $CFG_GLPI["proxy_port"], $errno, $errstr, 1);
 		if (!$proxy_fp)    {
-			if (!$auto) echo "<div align='center'>".$LANG["setup"][311]." ($errstr)</div>";
+			if (!$auto) echo "<div class='center'>".$LANG["setup"][311]." ($errstr)</div>";
 		} 
 
 		fputs($proxy_fp, "GET http://glpi-project.org/latest_version HTTP/1.0\r\nHost: ".$CFG_GLPI["proxy_name"]."\r\n");
@@ -1082,7 +1082,7 @@ function checkNewVersionAvailable($auto=1){
 
 	if (strlen(trim($latest_version)) == 0){
 		if (!$auto) {
-			echo "<div align='center'>".$LANG["setup"][304]." ($errstr)</div>";
+			echo "<div class='center'>".$LANG["setup"][304]." ($errstr)</div>";
 		} else {
 			return $LANG["setup"][304];
 		}
@@ -1114,14 +1114,14 @@ function checkNewVersionAvailable($auto=1){
 			$input["founded_new_version"]=$latest_version;
 			$config_object->update($input);
 			if (!$auto) {
-				echo "<div align='center'>".$LANG["setup"][301]." ".$latest_version."</div>";
-				echo "<div align='center'>".$LANG["setup"][302]."</div>";
+				echo "<div class='center'>".$LANG["setup"][301]." ".$latest_version."</div>";
+				echo "<div class='center'>".$LANG["setup"][302]."</div>";
 			} else {
 				return $LANG["setup"][301]." ".$latest_version;
 			}
 		}  else {
 			if (!$auto){
-				echo "<div align='center'>".$LANG["setup"][303]."</div>";
+				echo "<div class='center'>".$LANG["setup"][303]."</div>";
 			} else {
 				return $LANG["setup"][303];
 			}
