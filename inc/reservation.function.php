@@ -134,7 +134,7 @@ function printCalendrier($target,$ID=""){
 	}
 
 
-	echo "<div class='center'><table border='0'><tr><td>";
+	echo "<div class='center'><table><tr><td>";
 	echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/reservation.png\" alt='' title=''></td><td><strong><span class='icon_consol'>".$type." - ".$name."</span>";
 	echo "</strong></td></tr><tr><td colspan='2' align ='center'>$all</td></tr></table></div>";
 
@@ -154,9 +154,9 @@ function printCalendrier($target,$ID=""){
 	echo "<table cellpadding='20' ><tr><td><a href=\"".$target.$str_precedent."\"><img src=\"".$CFG_GLPI["root_doc"]."/pics/left.png\" alt='".$LANG["buttons"][12]."' title='".$LANG["buttons"][12]."'></a></td><td><strong>".
 		$LANG["calendarM"][$mois_courant-1]."&nbsp;".$annee_courante."</strong></td><td><a href=\"".$target.$str_suivant."\"><img src=\"".$CFG_GLPI["root_doc"]."/pics/right.png\" alt='".$LANG["buttons"][11]."' title='".$LANG["buttons"][11]."'></a></td></tr></table>";
 	// test
-	echo "<table width='90%'><tr><td valign='top'  width='100'>";
+	echo "<table width='90%'><tr><td class='top'  width='100px'>";
 
-	echo "<table><tr><td width='100' valign='top'>";
+	echo "<table><tr><td width='100px' class='top'>";
 
 	// today date
 	$today=getdate(time());
@@ -169,34 +169,34 @@ function printCalendrier($target,$ID=""){
 
 
 	echo "<div class='calendrier_mois'>";
-	echo "<div style='text-align:center'><strong>$annee_avant</strong></div>";
+	echo "<div class='center'><strong>$annee_avant</strong></div>";
 	for ($i=$mois_courant; $i < 13; $i++) {
-		echo "<div style='margin-left: 10px; padding: 2px; -moz-border-radius: 5px; margin-top: 2px; border: 1px solid #cccccc; background-color: #eeeeee;'><a href=\"".$target."?show=resa&amp;ID=$ID&amp;mois_courant=$i&amp;annee_courante=$annee_avant\">".
+		echo "<div class='calendrier_case2'><a href=\"".$target."?show=resa&amp;ID=$ID&amp;mois_courant=$i&amp;annee_courante=$annee_avant\">".
 			$LANG["calendarM"][$i-1]."</a></div>";
 	}
 
-	echo "<div style='text-align:center'><strong>$annee_courante</strong></div>";
+	echo "<div class='center'><strong>$annee_courante</strong></div>";
 	for ($i=1; $i < 13; $i++) {
 		if ($i == $mois_courant) {
-			echo "<div style='margin-left: 10px; padding: 2px; -moz-border-radius: 5px; margin-top: 2px; border: 1px solid #666666; background-color: white;'><strong>".
+			echo "<div class='calendrier_case1'><strong>".
 				$LANG["calendarM"][$i-1]."</strong></div>";
 		}
 		else {
-			echo "<div style='margin-left: 10px; padding: 2px; -moz-border-radius: 5px; margin-top: 2px; border: 1px solid #cccccc; background-color: #eeeeee;'><a href=\"".$target."?show=resa&amp;ID=$ID&amp;mois_courant=$i&amp;annee_courante=$annee_courante\">".
+			echo "<div class='calendrier_case2'><a href=\"".$target."?show=resa&amp;ID=$ID&amp;mois_courant=$i&amp;annee_courante=$annee_courante\">".
 				$LANG["calendarM"][$i-1]."</a></div>";
 		}
 	}
 
-	echo "<div style='text-align:center'><strong>$annee_apres</strong></div>";
+	echo "<div class='center'><strong>$annee_apres</strong></div>";
 	for ($i=1; $i < $mois_courant+1; $i++) {
-		echo "<div style='margin-left: 10px; padding: 2px; -moz-border-radius: 5px; margin-top: 2px; border: 1px solid #cccccc; background-color: #eeeeee;'><a href=\"".$target."?show=resa&amp;ID=$ID&amp;mois_courant=$i&amp;annee_courante=$annee_apres\">".
+		echo "<div class='calendrier_case2'><a href=\"".$target."?show=resa&amp;ID=$ID&amp;mois_courant=$i&amp;annee_courante=$annee_apres\">".
 			$LANG["calendarM"][$i-1]."</a></div>";
 	}
 	echo "</div>";
 
 	echo "</td></tr></table>";
 
-	echo "</td><td valign='top' width='100%'>";
+	echo "</td><td class='top' width='100%'>";
 
 
 
@@ -216,7 +216,7 @@ function printCalendrier($target,$ID=""){
 
 	// Insert blank cell before the first day of the month
 	for ($i=1;$i<$jour_debut_mois;$i++)
-		echo "<td style='background-color:#ffffff'>&nbsp;</td>";
+		echo "<td class='calendrier_case_white'>&nbsp;</td>";
 
 	// voici le remplissage proprement dit
 	if ($mois_courant<10&&strlen($mois_courant)==1) $mois_courant="0".$mois_courant;
@@ -225,12 +225,12 @@ function printCalendrier($target,$ID=""){
 		if ($i<10) $ii="0".$i;
 		else $ii=$i;
 
-		echo "<td  valign='top' height='100'>";
+		echo "<td  class='top' height='100px'>";
 
-		echo "<table align='center' ><tr><td align='center' ><span style='font-family: arial,helvetica,sans-serif; font-size: 14px; color: black'>".$i."</span></td></tr>";
+		echo "<table class='center' ><tr><td class='center' ><span class='calendrier_jour'>".$i."</span></td></tr>";
 
 		if (!empty($ID)){
-			echo "<tr><td class='center'><a href=\"".$target."?show=resa&amp;add_item[$ID]=$ID&amp;date=".$annee_courante."-".$mois_courant."-".$ii."\"><img style='color: blue; font-family: Arial, Sans, sans-serif; font-size: 10px;' src=\"".$CFG_GLPI["root_doc"]."/pics/addresa.png\" alt='".$LANG["reservation"][8]."' title='".$LANG["reservation"][8]."'></a></td></tr>";
+			echo "<tr><td class='center'><a href=\"".$target."?show=resa&amp;add_item[$ID]=$ID&amp;date=".$annee_courante."-".$mois_courant."-".$ii."\"><img  src=\"".$CFG_GLPI["root_doc"]."/pics/addresa.png\" alt='".$LANG["reservation"][8]."' title='".$LANG["reservation"][8]."'></a></td></tr>";
 		}
 		//if (($i-1+$jour_debut_mois)%7!=6&&($i-1+$jour_debut_mois)%7!=0){
 		echo "<tr><td>";
@@ -256,7 +256,7 @@ function printCalendrier($target,$ID=""){
 	// on recommence pour finir le tableau proprement pour les m�es raisons
 
 	if ($jour_fin_mois!=0)
-		for ($i=0;$i<7-$jour_fin_mois;$i++) 	echo "<td style='background-color:#ffffff'>&nbsp;</td>";
+		for ($i=0;$i<7-$jour_fin_mois;$i++) 	echo "<td class='calendrier_case_white'>&nbsp;</td>";
 
 	echo "</tr></table>";
 
