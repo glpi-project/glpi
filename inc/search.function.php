@@ -1063,15 +1063,15 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 						}
 						$tmpcheck="<input type='checkbox' name='item[".$data["ID"]."]' value='1' $sel>";
 					}
-					echo displaySearchItem($output_type,$tmpcheck,$item_num,$row_num,0,"width='10'");
+					echo displaySearchItem($output_type,$tmpcheck,$item_num,$row_num,"width='10'");
 				}
 
 				// Print first element - specific case for user 
-				echo displaySearchItem($output_type,giveItem($type,$SEARCH_OPTION[$type][1]["table"].".".$SEARCH_OPTION[$type][1]["field"],$data,0,$SEARCH_OPTION[$type][1]["linkfield"]),$item_num,$row_num);
+				echo displaySearchItem($output_type,giveItem($type,$SEARCH_OPTION[$type][1]["table"].".".$SEARCH_OPTION[$type][1]["field"],$data,0,$SEARCH_OPTION[$type][1]["linkfield"]),$item_num,$row_num,displayConfigItem($type,$SEARCH_OPTION[$type][1]["table"].".".$SEARCH_OPTION[$type][1]["field"]));
 
 				// Print other toview items
 				for ($j=1;$j<$toview_count;$j++){
-					echo displaySearchItem($output_type,giveItem($type,$SEARCH_OPTION[$type][$toview[$j]]["table"].".".$SEARCH_OPTION[$type][$toview[$j]]["field"],$data,$j,$SEARCH_OPTION[$type][$toview[$j]]["linkfield"]),$item_num,$row_num);
+					echo displaySearchItem($output_type,giveItem($type,$SEARCH_OPTION[$type][$toview[$j]]["table"].".".$SEARCH_OPTION[$type][$toview[$j]]["field"],$data,$j,$SEARCH_OPTION[$type][$toview[$j]]["linkfield"]),$item_num,$row_num,displayConfigItem($type,$SEARCH_OPTION[$type][$toview[$j]]["table"].".".$SEARCH_OPTION[$type][$toview[$j]]["field"]));
 
 				}
 
@@ -1117,15 +1117,15 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 				if ($type==RESERVATION_TYPE&&$output_type==HTML_OUTPUT){
 					if (haveRight("reservation_central","w")){
 						if ($data["ACTIVE"]){
-							echo displaySearchItem($output_type,"<a href=\"".$CFG_GLPI["root_doc"]."/front/reservation.php?ID=".$data["refID"]."&amp;active=0\"  title='".$LANG["buttons"][42]."'><img src=\"".$CFG_GLPI["root_doc"]."/pics/moins.png\" alt='' title=''></a>",$item_num,$row_num,0,"class='center'");
+							echo displaySearchItem($output_type,"<a href=\"".$CFG_GLPI["root_doc"]."/front/reservation.php?ID=".$data["refID"]."&amp;active=0\"  title='".$LANG["buttons"][42]."'><img src=\"".$CFG_GLPI["root_doc"]."/pics/moins.png\" alt='' title=''></a>",$item_num,$row_num,"class='center'");
 						} else {
-							echo displaySearchItem($output_type,"<a href=\"".$CFG_GLPI["root_doc"]."/front/reservation.php?ID=".$data["refID"]."&amp;active=1\"  title='".$LANG["buttons"][41]."'><img src=\"".$CFG_GLPI["root_doc"]."/pics/plus.png\" alt='' title=''></a>",$item_num,$row_num,0,"class='center'");
+							echo displaySearchItem($output_type,"<a href=\"".$CFG_GLPI["root_doc"]."/front/reservation.php?ID=".$data["refID"]."&amp;active=1\"  title='".$LANG["buttons"][41]."'><img src=\"".$CFG_GLPI["root_doc"]."/pics/plus.png\" alt='' title=''></a>",$item_num,$row_num,"class='center'");
 						}
 
-						echo displaySearchItem($output_type,"<a href=\"javascript:confirmAction('".addslashes($LANG["reservation"][38])."\\n".addslashes($LANG["reservation"][39])."','".$CFG_GLPI["root_doc"]."/front/reservation.php?ID=".$data["refID"]."&amp;delete=delete')\"  title='".$LANG["reservation"][6]."'><img src=\"".$CFG_GLPI["root_doc"]."/pics/delete.png\" alt='' title=''></a>",$item_num,$row_num,0,"class='center'");
+						echo displaySearchItem($output_type,"<a href=\"javascript:confirmAction('".addslashes($LANG["reservation"][38])."\\n".addslashes($LANG["reservation"][39])."','".$CFG_GLPI["root_doc"]."/front/reservation.php?ID=".$data["refID"]."&amp;delete=delete')\"  title='".$LANG["reservation"][6]."'><img src=\"".$CFG_GLPI["root_doc"]."/pics/delete.png\" alt='' title=''></a>",$item_num,$row_num,"class='center'");
 					}
 					if ($data["ACTIVE"]){
-						echo displaySearchItem($output_type,"<a href='".$target."?show=resa&amp;ID=".$data["refID"]."' title='".$LANG["reservation"][21]."'><img src=\"".$CFG_GLPI["root_doc"]."/pics/reservation-3.png\" alt='' title=''></a>",$item_num,$row_num,0,"class='center'");
+						echo displaySearchItem($output_type,"<a href='".$target."?show=resa&amp;ID=".$data["refID"]."' title='".$LANG["reservation"][21]."'><img src=\"".$CFG_GLPI["root_doc"]."/pics/reservation-3.png\" alt='' title=''></a>",$item_num,$row_num,"class='center'");
 					} else {
 						echo displaySearchItem($output_type,"&nbsp;",$item_num,$row_num);
 					}
@@ -1818,6 +1818,45 @@ function addWhere ($link,$nott,$type,$ID,$val,$meta=0){
 			}
 			
 			return $link." ($table.$field $SEARCH ".$ADD." ) ";
+			break;
+	}
+
+}
+
+
+/**
+ * Generic Function to display Items
+ *
+ *
+ *@param $field field to add
+ *@param $data array containing data results
+ *@param $num item num in the request
+ *@param $type device type
+ *@param $linkfield field used to link
+ *
+ *
+ *@return string to print
+ *
+ **/
+function displayConfigItem ($type,$field){
+
+	switch ($field){
+		case "glpi_ocs_link.last_update":
+		case "glpi_ocs_link.last_ocs_update":
+		case "glpi_computers.date_mod":
+		case "glpi_printers.date_mod":
+		case "glpi_networking.date_mod":
+		case "glpi_peripherals.date_mod":
+		case "glpi_phones.date_mod":
+		case "glpi_software.date_mod":
+		case "glpi_monitors.date_mod":
+		case "glpi_ocs_config.date_mod" :
+		case "glpi_users.last_login":
+		case "glpi_users.date_mod":	
+				return " class='center'";
+			break;
+		default:
+			return "";
 			break;
 	}
 

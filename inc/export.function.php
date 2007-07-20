@@ -104,7 +104,7 @@ function displaySearchHeaderItem($type,$value,&$num,$linkto="",$issort=0,$order=
  *@return string to display
  *
  **/
-function displaySearchItem($type,$value,&$num,$row,$deleted=0,$extraparam=''){
+function displaySearchItem($type,$value,&$num,$row,$extraparam=''){
 	$out="";
 	switch ($type){
 		case PDF_OUTPUT : //pdf
@@ -123,9 +123,7 @@ function displaySearchItem($type,$value,&$num,$row,$deleted=0,$extraparam=''){
             		$out="\"".csv_clean($value)."\";";
             		break;
 		default :
-			$class="";
-			if ($deleted) $class=" class='tab_bg_2_2' ";
-			$out="<td $class $extraparam>".$value."</td>\n";
+			$out="<td $extraparam>".$value."</td>\n";
 			break;
 	}
 	$num++;

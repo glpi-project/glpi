@@ -84,6 +84,8 @@ b{	font-weight: bold;}
 .blue {color:blue;}
 .green {color:green;}
 
+.deleted {background-color:#cf9b9b;}
+
 .separ {
 	clear: both;
 	visibility: hidden;
