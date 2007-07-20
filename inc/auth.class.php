@@ -372,7 +372,7 @@ class AuthMail extends CommonDBTM {
 				echo "<input type='hidden' name='ID' value='" . $ID . "'>";
 			}
 
-			echo "<div align='center'>";
+			echo "<div class='center'>";
 			echo "<p >" . $LANG["setup"][160] . "</p>";
 			echo "<table class='tab_cadre_fixe'>";
 			echo "<tr><th colspan='2'>" . $LANG["login"][3] . "</th></tr>";
@@ -399,7 +399,7 @@ class AuthMail extends CommonDBTM {
 		} else {
 			echo "<input type=\"hidden\" name=\"IMAP_Test\" value=\"1\" >";
 
-			echo "<div align='center'>&nbsp;<table class='tab_cadre_fixe'>";
+			echo "<div class='center'>&nbsp;<table class='tab_cadre_fixe'>";
 			echo "<tr><th colspan='2'>" . $LANG["setup"][162] . "</th></tr>";
 			echo "<tr class='tab_bg_2'><td class='center'><p class='red'>" . $LANG["setup"][165] . "</p><p>" . $LANG["setup"][166] . "</p></td></tr></table></div>";
 		}
@@ -445,7 +445,7 @@ class AuthLDAP extends CommonDBTM {
 				echo "<input type='hidden' name='ID' value='" . $ID . "'>";
 			}
 
-			echo "<div align='center'><p > " . $LANG["setup"][151] . "</p>";
+			echo "<div class='center'><p > " . $LANG["setup"][151] . "</p>";
 
 			echo "<table class='tab_cadre_fixe'>";
 			echo "<tr><th colspan='4'>" . $LANG["login"][2] . "</th></tr>";
@@ -536,7 +536,7 @@ class AuthLDAP extends CommonDBTM {
 
 		} else {
 			echo "<input type=\"hidden\" name=\"LDAP_Test\" value=\"1\" >";
-			echo "<div align='center'><table class='tab_cadre_fixe'>";
+			echo "<div class='center'><table class='tab_cadre_fixe'>";
 			echo "<tr><th colspan='2'>" . $LANG["setup"][152] . "</th></tr>";
 			echo "<tr class='tab_bg_2'><td class='center'><p class='red'>" . $LANG["setup"][157] . "</p><p>" . $LANG["setup"][158] . "</p></td></tr></table></div>";
 		}
