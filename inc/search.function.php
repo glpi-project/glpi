@@ -1458,6 +1458,8 @@ function addSelect ($type,$ID,$num,$meta=0,$meta_type=0){
 		case "glpi_ocs_config.name" :
 		case "glpi_entities.name" :
 		case "glpi_mailgate.name" :
+		case "state_types.name":
+		case "reservation_types.name":
 			return $table.$addtable.".".$field." AS ".$NAME."_$num, ".$table.$addtable.".ID AS ".$NAME."_".$num."_2, ";
 		break;
 
