@@ -54,7 +54,7 @@ function showCartridgesAdd($ID) {
 	if (!haveRight("cartridge","w")) return false;
 
 	echo "<form method='post'  action=\"".$CFG_GLPI["root_doc"]."/front/cartridge.edit.php\">";
-	echo "<div align='center'>&nbsp;<table class='tab_cadre_fixe' cellpadding='2'>";
+	echo "<div class='center'>&nbsp;<table class='tab_cadre_fixe' cellpadding='2'>";
 	echo "<tr><td align='center' class='tab_bg_2'><strong>";
 	echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/cartridge.edit.php?add=add&amp;tID=$ID\">";
 	echo $LANG["cartridges"][17];
@@ -97,7 +97,7 @@ function showCartridges ($tID,$show_old=0) {
 			$used=getUsedCartridgesNumber($tID);
 			$old=getOldCartridgesNumber($tID);
 
-			echo "<br><div align='center'><table cellpadding='2' class='tab_cadre_fixe'>";
+			echo "<br><div class='center'><table cellpadding='2' class='tab_cadre_fixe'>";
 			if ($show_old==0){
 				echo "<tr><th colspan='7'>";
 				echo $total;
@@ -123,7 +123,7 @@ function showCartridges ($tID,$show_old=0) {
 
 			echo "</tr>";
 		} else {
-			echo "<br><div align='center'><table border='0' width='50%' cellpadding='2'>";
+			echo "<br><div class='center'><table border='0' width='50%' cellpadding='2'>";
 			echo "<tr><th>".$LANG["cartridges"][7]."</th></tr>";
 			echo "</table></div>";
 		}
@@ -257,7 +257,7 @@ function showCompatiblePrinters($instID) {
 	$i = 0;
 
 	echo "<form method='post' action=\"".$CFG_GLPI["root_doc"]."/front/cartridge.form.php\">";
-	echo "<br><br><div align='center'><table class='tab_cadre_fixe'>";
+	echo "<br><br><div class='center'><table class='tab_cadre_fixe'>";
 	echo "<tr><th colspan='3'>".$LANG["cartridges"][32].":</th></tr>";
 	echo "<tr><th>".$LANG["common"][2]."</th><th>".$LANG["common"][22]."</th><th>&nbsp;</th></tr>";
 
@@ -313,7 +313,7 @@ function showCartridgeInstalled($instID,$old=0) {
 	$p->getFromDB($instID);
 	$pages=$p->fields['initial_pages'];
 
-	echo "<br><br><div align='center'><table class='tab_cadre_fixe'>";
+	echo "<br><br><div class='center'><table class='tab_cadre_fixe'>";
 	if ($old==0)
 		echo "<tr><th colspan='7'>".$LANG["cartridges"][33].":</th></tr>";
 	else echo "<tr><th colspan='8'>".$LANG["cartridges"][35].":</th></tr>";

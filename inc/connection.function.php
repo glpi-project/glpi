@@ -66,7 +66,7 @@ function showConnect($target,$ID,$type) {
 		if (!$computers) $nb=0;
 		else $nb=count($computers);
 
-		echo "<br><div align='center'><table width='50%' class='tab_cadre'><tr><th colspan='2'>";
+		echo "<br><div class='center'><table width='50%' class='tab_cadre'><tr><th colspan='2'>";
 		echo $LANG["connect"][0].": ".$nb;
 		echo "</th></tr>";
 
