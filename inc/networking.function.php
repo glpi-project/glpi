@@ -61,7 +61,7 @@ function showPorts ($device,$device_type,$withtemplate='') {
 					$colspan++;
 			}
 
-			echo "<div align='center'><table class='tab_cadrehov'>";
+			echo "<div class='center'><table class='tab_cadrehov'>";
 			echo "<tr>";
 			echo "<th colspan='$colspan'>";
 			echo $DB->numrows($result)." ";
@@ -121,7 +121,7 @@ function showPorts ($device,$device_type,$withtemplate='') {
 			echo "</div>\n\n";
 
 			if ($canedit&&$withtemplate!=2){
-				echo "<div align='center'>";
+				echo "<div class='center'>";
 				echo "<table width='80%'>";
 				echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markAllRows('networking_ports') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$device&amp;select=all'>".$LANG["buttons"][18]."</a></td>";
 
@@ -220,7 +220,7 @@ function showNetportForm($target,$ID,$ondevice,$devtype,$several) {
 
 	displayTitle("","","",array($REFERER=>$LANG["buttons"][13]));
 
-	echo "<br><div align='center'>";
+	echo "<br><div class='center'>";
 
 	echo "<form method='post' action=\"$target\">";
 
@@ -344,7 +344,7 @@ function showNetportForm($target,$ID,$ondevice,$devtype,$several) {
 	echo "</table></form></div>";	
 	// SHOW VLAN 
 	if ($ID){
-		echo "<div align='center'>";
+		echo "<div class='center'>";
 		echo "<form method='post' action=\"$target\">";
 		echo "<input type='hidden' name='referer' value='$REFERER'>";
 		echo "<input type='hidden' name='ID' value='$ID'>";
@@ -384,7 +384,7 @@ function showPortsAdd($ID,$devtype) {
 	$device_real_table_name = $LINK_ID_TABLE[$devtype];
 
 
-	echo "<div align='center'><table class='tab_cadre_fixe' cellpadding='2'>";
+	echo "<div class='center'><table class='tab_cadre_fixe' cellpadding='2'>";
 	echo "<tr>";
 	echo "<td align='center' class='tab_bg_2'  >";
 	echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/networking.port.php?on_device=$ID&amp;device_type=$devtype\"><strong>";
@@ -495,45 +495,45 @@ function makeConnector($sport,$dport) {
 	if (empty($ips)&&!empty($ipd)){
 		$ps->fields["ifaddr"]=$ipd;
 		$ps->updateInDB($updates);
-		echo "<div align='center'><strong>".$LANG["connect"][19]."</strong></div>";
+		echo "<div class='center'><strong>".$LANG["connect"][19]."</strong></div>";
 	}
 	else if (!empty($ips)&&empty($ipd)){
 		$pd->fields["ifaddr"]=$ips;		
 		$pd->updateInDB($updates);
-		echo "<div align='center'><strong>".$LANG["connect"][19]."</strong></div>";
+		echo "<div class='center'><strong>".$LANG["connect"][19]."</strong></div>";
 	}
 	else if ($ips!=$ipd){
-		echo "<div align='center'><strong>".$LANG["connect"][20]."</strong></div>";
+		echo "<div class='center'><strong>".$LANG["connect"][20]."</strong></div>";
 	}
 	// Update unknown MAC
 	$updates[0]="ifmac";
 	if (empty($macs)&&!empty($macd)){
 		$ps->fields["ifmac"]=$macd;
 		$ps->updateInDB($updates);
-		echo "<div align='center'><strong>".$LANG["connect"][21]."</strong></div>";
+		echo "<div class='center'><strong>".$LANG["connect"][21]."</strong></div>";
 	}
 	else if (!empty($macs)&&empty($macd)){
 		$pd->fields["ifmac"]=$macs;		
 		$pd->updateInDB($updates);
-		echo "<div align='center'><strong>".$LANG["connect"][21]."</strong></div>";
+		echo "<div class='center'><strong>".$LANG["connect"][21]."</strong></div>";
 	}
 	else if ($macs!=$macd){
-		echo "<div align='center'><strong>".$LANG["connect"][22]."</strong></div>";
+		echo "<div class='center'><strong>".$LANG["connect"][22]."</strong></div>";
 	}
 	// Update unknown netpoint
 	$updates[0]="netpoint";
 	if (empty($nps)&&!empty($npd)){
 		$ps->fields["netpoint"]=$npd;
 		$ps->updateInDB($updates);
-		echo "<div align='center'><strong>".$LANG["connect"][17]."</strong></div>";
+		echo "<div class='center'><strong>".$LANG["connect"][17]."</strong></div>";
 	}
 	else if (!empty($nps)&&empty($npd)){
 		$pd->fields["netpoint"]=$nps;		
 		$pd->updateInDB($updates);
-		echo "<div align='center'><strong>".$LANG["connect"][17]."</strong></div>";
+		echo "<div class='center'><strong>".$LANG["connect"][17]."</strong></div>";
 	}
 	else if ($nps!=$npd){
-		echo "<div align='center'><strong>".$LANG["connect"][18]."</strong></div>";
+		echo "<div class='center'><strong>".$LANG["connect"][18]."</strong></div>";
 	}
 
 	$query = "INSERT INTO glpi_networking_wire VALUES (NULL,$sport,$dport)";
@@ -542,7 +542,7 @@ function makeConnector($sport,$dport) {
 		$source->getFromDB($ps->fields['device_type'],$ps->fields['on_device']);
 		$dest=new CommonItem;
 		$dest->getFromDB($pd->fields['device_type'],$pd->fields['on_device']);
-		echo "<br><div align='center'><strong>".$LANG["networking"][44]." ".$source->getName()." - ".$ps->fields['logical_number']."  (".$ps->fields['ifaddr']." - ".$ps->fields['ifmac'].") ".$LANG["networking"][45]." ".$dest->getName()." - ".$pd->fields['logical_number']." (".$pd->fields['ifaddr']." - ".$pd->fields['ifmac'].") </strong></div>";
+		echo "<br><div class='center'><strong>".$LANG["networking"][44]." ".$source->getName()." - ".$ps->fields['logical_number']."  (".$ps->fields['ifaddr']." - ".$ps->fields['ifmac'].") ".$LANG["networking"][45]." ".$dest->getName()." - ".$pd->fields['logical_number']." (".$pd->fields['ifaddr']." - ".$pd->fields['ifmac'].") </strong></div>";
 		return true;
 	} else {
 		return false;

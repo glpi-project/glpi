@@ -460,7 +460,7 @@ function showDevicesList($device_type,$target) {
 		$result_limit = $result;
 		if ($numrows_limit>0) {
 			// Produce headline
-			echo "<div align='center'><table class='tab_cadre'><tr>";
+			echo "<div class='center'><table class='tab_cadre'><tr>";
 
 			// designation
 			echo "<th>";
@@ -487,7 +487,7 @@ function showDevicesList($device_type,$target) {
 			// Close Table
 			echo "</table></div>";
 		} else {
-			echo "<div align='center'><strong>".$LANG["devices"][18]."</strong></div>";
+			echo "<div class='center'><strong>".$LANG["devices"][18]."</strong></div>";
 		}
 	}
 }
@@ -539,7 +539,7 @@ function showDevicesForm ($target,$ID,$device_type) {
 
 		$table=getDeviceTable($device_type);
 	
-		echo "<div align='center'>";
+		echo "<div class='center'>";
 		echo "<a href='$REFERER'>".$LANG["buttons"][13]."</a>";
 		echo "<form method='post' name='form' action=\"$target\">";
 		echo "<input type='hidden' name='referer' value='$REFERER'>";
@@ -713,7 +713,7 @@ function showDevicesForm ($target,$ID,$device_type) {
 			echo "<input type='submit' name='update' value=\"".$LANG["buttons"][7]."\" class='submit'>";
 			echo "</td>";
 			echo "<td class='tab_bg_2' valign='top' align='center'>\n";
-			echo "<div align='center'>";
+			echo "<div class='center'>";
 			echo "<input type='submit' name='delete' value=\"".$LANG["buttons"][6]."\" class='submit'>";
 			echo "</div>";
 			echo "</td>";
@@ -727,7 +727,7 @@ function showDevicesForm ($target,$ID,$device_type) {
 		}
 		echo "</table></form></div>";
 	} else {
-		echo "<div align='center'><strong>".$LANG["common"][54]."</strong></div>";
+		echo "<div class='center'><strong>".$LANG["common"][54]."</strong></div>";
 		return false;
 	}	
 }

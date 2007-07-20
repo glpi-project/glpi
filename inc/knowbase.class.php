@@ -136,7 +136,7 @@ class kbitem extends CommonDBTM {
 		
 		
 			echo "<fieldset>";
-			echo "<legend>".$LANG["knowbase"][15]."</legend><div align='center'>";
+			echo "<legend>".$LANG["knowbase"][15]."</legend><div class='center'>";
 			echo "<textarea cols='80' rows='30' id='answer'  name='answer' >".$this->fields["answer"]."</textarea></div>"; 
 		
 			echo "</fieldset>";

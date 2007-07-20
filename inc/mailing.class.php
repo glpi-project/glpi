@@ -723,7 +723,7 @@ class MailingResa{
 
 
 				if(!$mmail->Send()){
-					echo "<div align='center'>There was a problem sending this mail !</div>";
+					echo "<div class='center'>There was a problem sending this mail !</div>";
 					return false;
 				}
 				$mmail->ClearAddresses(); 

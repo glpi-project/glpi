@@ -56,7 +56,7 @@ function searchFormKnowbase($target,$contains,$parentID=0,$faq=0){
 	
 	if ($CFG_GLPI["public_faq"] == 0&&!haveRight("knowbase","r")&&!haveRight("faq","r")) return false;
 	
-	echo "<div align='center'>";
+	echo "<div class='center'>";
 	echo "<table border='0'><tr><td>";
 	
 	
@@ -288,7 +288,7 @@ function showKbItemList($target,$field,$phrasetype,$contains,$sort,$order,$start
 			}
 
 		} else {
-			if ($parentID!=0) {echo "<div align='center'><strong>".$LANG["search"][15]."</strong></div>";}
+			if ($parentID!=0) {echo "<div class='center'><strong>".$LANG["search"][15]."</strong></div>";}
 		}
 	}
 
@@ -308,7 +308,7 @@ function showKbItemList($target,$field,$phrasetype,$contains,$sort,$order,$start
  **/
 function showKbViewGlobal($target,$faq=0){
 	
-	echo "<div align='center'>";
+	echo "<div class='center'>";
 	echo "<table width='950px'><tr><td align='center' valign='middle'>";
 			
 	showKbRecentPopular($target,"recent",$faq);

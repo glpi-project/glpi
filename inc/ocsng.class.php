@@ -136,7 +136,7 @@ function ocsFormConfig($target, $ID,$withtemplate='',$templateid='') {
 		echo "<form name='formconfig' action=\"$target\" method=\"post\">";
 		echo "<input type='hidden' name='ID' value='" . $ID . "'>";
 
-		echo "<div align='center'><table class='tab_cadre'>";
+		echo "<div class='center'><table class='tab_cadre'>";
 		
 		//This is a new template, name must me supplied
 		if($action == "add_template" || $action == "update_template") {
@@ -231,13 +231,13 @@ function ocsFormConfig($target, $ID,$withtemplate='',$templateid='') {
 
 		echo "</table></div>";
 
-		echo "<div align='center'>" . $LANG["ocsconfig"][15] . "</div>";
-		echo "<div align='center'>" . $LANG["ocsconfig"][14] . "</div>";
-		echo "<div align='center'>" . $LANG["ocsconfig"][13] . "</div>";
+		echo "<div class='center'>" . $LANG["ocsconfig"][15] . "</div>";
+		echo "<div class='center'>" . $LANG["ocsconfig"][14] . "</div>";
+		echo "<div class='center'>" . $LANG["ocsconfig"][13] . "</div>";
 
 		echo "<br />";
 
-		echo "<div align='center'><table class='tab_cadre'>";
+		echo "<div class='center'><table class='tab_cadre'>";
 		echo "<tr><th>" . $LANG["ocsconfig"][27] . "</th><th>" . $LANG["ocsconfig"][28] . "</th><th>" . $LANG["ocsconfig"][43] . "</th></tr>";
 		echo "<tr><td class='tab_bg_2' valign='top'><table width='100%' cellpadding='1' cellspacing='0' border='0'>";
 
@@ -363,7 +363,7 @@ function ocsFormConfig($target, $ID,$withtemplate='',$templateid='') {
 		echo "</table></td></tr>";
 		echo "</table></div>";
 
-		echo "<br><div align='center'><table class='tab_cadre'>";
+		echo "<br><div class='center'><table class='tab_cadre'>";
 		echo "<tr><th colspan='4'>" . $LANG["ocsconfig"][52] . "</th></tr>";
 		echo "<tr class='tab_bg_2'><td>" . $LANG["ocsconfig"][53] . " </td><td>";
 		dropdownYesNo("glpi_link_enabled", $this->fields["glpi_link_enabled"]);
@@ -436,7 +436,7 @@ function showForm($target, $ID,$withtemplate='',$templateid='') {
 			echo "<input type='hidden' name='withtemplate' value=2>";
 			echo "<input type='hidden' name='templateid' value='" . $templateid. "'>";
 		}
-		echo "<div align='center'><table class='tab_cadre'>";
+		echo "<div class='center'><table class='tab_cadre'>";
 		echo "<tr><th colspan='2'>" . $LANG["ocsconfig"][0] . "</th></tr>";
 		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["common"][16] . " </td><td> <input type=\"text\" name=\"name\" value=\"" . $this->fields["name"] . "\"></td></tr>";
 		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["ocsconfig"][2] . " </td><td> <input type=\"text\" name=\"ocs_db_host\" value=\"" . $this->fields["ocs_db_host"] . "\"></td></tr>";
@@ -445,7 +445,7 @@ function showForm($target, $ID,$withtemplate='',$templateid='') {
 		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["ocsconfig"][3] . " </td><td> <input type=\"password\" name=\"ocs_db_passwd\" value=\"" . $this->fields["ocs_db_passwd"] . "\"></td></tr>";
 		echo "</table></div>";
 
-		echo "<br><div align='center'><table border='0'>";
+		echo "<br><div class='center'><table border='0'>";
 		
 		if ($ID == -1 || $withtemplate == 2)
 			echo "<tr class='tab_bg_2'><td align='center' colspan=2><input type=\"submit\" name=\"add_server\" class=\"submit\" value=\"" . $LANG["buttons"][2] . "\" ></td></tr>";
@@ -459,7 +459,7 @@ function showForm($target, $ID,$withtemplate='',$templateid='') {
 		echo "</form>";
 
 
-		echo "<div align='center'>";
+		echo "<div class='center'>";
 
 		if ($ID != -1) {
 			if (!checkOCSconnection($ID)){

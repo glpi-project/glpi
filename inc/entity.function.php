@@ -55,7 +55,7 @@ function showEntityUser($target,$ID){
 	if ($entity->getFromDB($ID)||$ID==0){
 		if ($canedit){
 	
-			echo "<div align='center'>";
+			echo "<div class='center'>";
 			echo "<table  class='tab_cadre_fixe'>";
 			echo "<tr class='tab_bg_1'><th colspan='5'>".$LANG["setup"][603]."</tr><tr><td class='tab_bg_2' align='center'>";
 			echo "<input type='hidden' name='FK_entities' value='$ID'>";
@@ -76,7 +76,7 @@ function showEntityUser($target,$ID){
 	
 	
 	
-		echo "<div align='center'><table class='tab_cadrehov'><tr><th colspan='$headerspan'>".$LANG["Menu"][14]." (D=".$LANG["profiles"][29].", R=".$LANG["profiles"][28].")</th></tr>";
+		echo "<div class='center'><table class='tab_cadrehov'><tr><th colspan='$headerspan'>".$LANG["Menu"][14]." (D=".$LANG["profiles"][29].", R=".$LANG["profiles"][28].")</th></tr>";
 
 
 
@@ -147,7 +147,7 @@ function showEntityUser($target,$ID){
 		echo "</table></div>";
 	
 		if ($canedit){
-			echo "<div align='center'>";
+			echo "<div class='center'>";
 			echo "<table width='80%'>";
 			echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markAllRows('entityuser_form') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$ID&amp;select=all'>".$LANG["buttons"][18]."</a></td>";
 	

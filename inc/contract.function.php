@@ -138,7 +138,7 @@ function showDeviceContract($instID) {
 
 	echo "<form method='post' action=\"".$CFG_GLPI["root_doc"]."/front/contract.form.php\">";
 
-	echo "<br><br><div align='center'><table class='tab_cadre_fixe'>";
+	echo "<br><br><div class='center'><table class='tab_cadre_fixe'>";
 	echo "<tr><th colspan='3'>".$LANG["financial"][49].":</th></tr>";
 	echo "<tr><th>".$LANG["common"][17]."</th>";
 	echo "<th>".$LANG["common"][16]."</th>";
@@ -252,7 +252,7 @@ function showEnterpriseContract($instID) {
 	$i = 0;
 
 	echo "<form method='post' action=\"".$CFG_GLPI["root_doc"]."/front/contract.form.php\">";
-	echo "<br><br><div align='center'><table class='tab_cadre_fixe'>";
+	echo "<br><br><div class='center'><table class='tab_cadre_fixe'>";
 	echo "<tr><th colspan='5'>".$LANG["financial"][65].":</th></tr>";
 	echo "<tr><th>".$LANG["financial"][26]."</th>";
 	echo "<th>".$LANG["financial"][79]."</th>";
@@ -477,7 +477,7 @@ function showContractAssociated($device_type,$ID,$withtemplate=''){
 	$i = 0;
 
 	if ($withtemplate!=2) echo "<form method='post' action=\"".$CFG_GLPI["root_doc"]."/front/contract.form.php\">";
-	echo "<br><br><div align='center'><table class='tab_cadre_fixe'>";
+	echo "<br><br><div class='center'><table class='tab_cadre_fixe'>";
 	echo "<tr><th colspan='7'>".$LANG["financial"][66].":</th></tr>";
 	echo "<tr><th>".$LANG["common"][16]."</th>";
 	echo "<th>".$LANG["financial"][4]."</th>";
@@ -562,7 +562,7 @@ function showContractAssociatedEnterprise($ID){
 	$i = 0;
 
 	echo "<form method='post' action=\"".$CFG_GLPI["root_doc"]."/front/contract.form.php\">";
-	echo "<br><br><div align='center'><table class='tab_cadre_fixe'>";
+	echo "<br><br><div class='center'><table class='tab_cadre_fixe'>";
 	echo "<tr><th colspan='7'>".$LANG["financial"][66].":</th></tr>";
 	echo "<tr><th>".$LANG["common"][16]."</th>";
 	echo "<th>".$LANG["financial"][4]."</th>";

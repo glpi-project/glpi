@@ -70,7 +70,7 @@ class LdapCriteria extends CommonDBTM {
 		echo "<form name='entityaffectation_form' id='ldapcriterias_form' method='post' action=\"$target\">";
 
 		if ($canedit) {
-			echo "<div align='center'>";
+			echo "<div class='center'>";
 			echo "<table  class='tab_cadre_fixe'>";
 			echo "<tr class='tab_bg_1'><th colspan='5'>" .$LANG["ruleldap"][3] . "</tr><tr><td class='tab_bg_2' align='center'>";
 			echo "</td><td align='center' class='tab_bg_2'>";
@@ -88,7 +88,7 @@ class LdapCriteria extends CommonDBTM {
 		if (!count($parameters)){
 			echo "<center>".$LANG["ruleldap"][2]."</center>";
 		} else {
-			echo "<div align='center'><table class='tab_cadrehov'><tr><th colspan='3'>" . $LANG["common"][53]." ".$LANG["ruleldap"][1] . "</th></tr>";
+			echo "<div class='center'><table class='tab_cadrehov'><tr><th colspan='3'>" . $LANG["common"][53]." ".$LANG["ruleldap"][1] . "</th></tr>";
 			echo "<tr class='tab_bg_1'><td class='tab_bg_2' colspan='2'>" .  $LANG["common"][16]."</td><td class='tab_bg_2'>".$LANG["setup"][601] . "</td></tr>";
 
 			foreach ($parameters as $parameter) {
@@ -110,7 +110,7 @@ class LdapCriteria extends CommonDBTM {
 			echo "</table></div>";
 
 			if ($canedit) {
-				echo "<div align='center'>";
+				echo "<div class='center'>";
 				echo "<table  width='80%'>";
 				echo "<tr><td><img src=\"" . $CFG_GLPI["root_doc"] . "/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markAllRows('ldapcriterias_form') ) return false;\" href='" . $_SERVER['PHP_SELF'] . "?ID=$ID&amp;select=all'>" . $LANG["buttons"][18] . "</a></td>";
 	

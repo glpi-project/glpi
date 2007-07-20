@@ -63,7 +63,7 @@ function showLinkDevice($instID) {
 	$i = 0;
 
 	echo "<form method='post' action=\"".$CFG_GLPI["root_doc"]."/front/link.form.php\">";
-	echo "<br><br><div align='center'><table class='tab_cadre_fixe'>";
+	echo "<br><br><div class='center'><table class='tab_cadre_fixe'>";
 	echo "<tr><th colspan='2'>".$LANG["links"][4].":</th></tr>";
 	echo "<tr><th>".$LANG["common"][17]."</th>";
 	echo "<th>&nbsp;</th></tr>";
@@ -121,7 +121,7 @@ function showLinkOnDevice($type,$ID){
 
 	$ci=new CommonItem;
 	if ($DB->numrows($result)>0){
-		echo "<div align='center'><table class='tab_cadre'><tr><th>".$LANG["title"][33]."</th></tr>";
+		echo "<div class='center'><table class='tab_cadre'><tr><th>".$LANG["title"][33]."</th></tr>";
 
 		while ($data=$DB->fetch_assoc($result)){
 
@@ -224,7 +224,7 @@ function showLinkOnDevice($type,$ID){
 
 		}
 		echo "</table></div>";
-	} else echo "<div align='center'><strong>".$LANG["links"][7]."</strong></div>";
+	} else echo "<div class='center'><strong>".$LANG["links"][7]."</strong></div>";
 
 }
 
