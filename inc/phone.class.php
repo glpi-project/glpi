@@ -226,7 +226,7 @@ class Phone extends CommonDBTM {
 			}
 
 
-			echo "<div align='center'>";
+			echo "<div class='center'>";
 			echo "<form method='post' name=form action=\"$target\">";
 			if(strcmp($template,"newtemplate") === 0) {
 				echo "<input type=\"hidden\" name=\"is_template\" value=\"1\" />";
@@ -414,7 +414,7 @@ class Phone extends CommonDBTM {
 					echo "<input type='submit' name='update' value=\"".$LANG["buttons"][7]."\" class='submit'>";
 					echo "</td>";
 					echo "<td class='tab_bg_2' valign='top'>\n";
-					echo "<div align='center'>";
+					echo "<div class='center'>";
 					if (!$this->fields["deleted"])
 						echo "<input type='submit' name='delete' value=\"".$LANG["buttons"][6]."\" class='submit'>";
 					else {
@@ -431,7 +431,7 @@ class Phone extends CommonDBTM {
 			return true;	
 		}
 		else {
-			echo "<div align='center'><strong>".$LANG["common"][54]."</strong></div>";
+			echo "<div class='center'><strong>".$LANG["common"][54]."</strong></div>";
 			return false;
 		}
 

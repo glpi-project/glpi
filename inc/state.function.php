@@ -64,7 +64,7 @@ function showStateSummary($target){
 
 	if (count($states)){
 		// Produce headline
-		echo "<div align='center'><table  class='tab_cadrehov'><tr>";
+		echo "<div class='center'><table  class='tab_cadrehov'><tr>";
 	
 		// Type			
 		echo "<th>";
@@ -110,7 +110,7 @@ function showStateSummary($target){
 		echo "</table></div>";
 
 	}else {
-		echo "<div align='center'><strong>".$LANG["state"][7]."</strong></div>";
+		echo "<div class='center'><strong>".$LANG["state"][7]."</strong></div>";
 	}
 
 

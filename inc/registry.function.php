@@ -54,7 +54,7 @@ function showRegistry($device_type,$ID,$withtemplate=''){
 	if ($result = $DB->query($query)) {
 		if ($DB->numrows($result)!=0) { 
 			
-			echo "<br><br><div align='center'><table class='tab_cadre_fixe'>";
+			echo "<br><br><div class='center'><table class='tab_cadre_fixe'>";
 			echo "<tr>";
 			echo "<th colspan='4'>";
 			echo $DB->numrows($result)." ";
@@ -82,7 +82,7 @@ function showRegistry($device_type,$ID,$withtemplate=''){
 			echo "</div>\n\n";
 	
 		}
-		else echo "<div align='center'><strong>".$LANG["registry"][5]."</strong></div>";
+		else echo "<div class='center'><strong>".$LANG["registry"][5]."</strong></div>";
 	}
 	
 }

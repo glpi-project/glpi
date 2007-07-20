@@ -107,7 +107,7 @@ function printCalendrier($target,$ID=""){
 		$m=new ReservationItem;
 		$m->getfromDB($ID);
 		if (!$m->fields['active']){
-			echo "<div align='center'><strong>";
+			echo "<div class='center'><strong>";
 			echo $LANG["reservation"][2]."<br>";
 			displayBackLink();
 			echo "</strong></div>";
@@ -117,7 +117,7 @@ function printCalendrier($target,$ID=""){
 		$ci->getFromDB($m->fields["device_type"],$m->fields["id_device"]);
 		
 		if (!haveAccessToEntity($ci->getField('FK_entities'))){
-			echo "<div align='center'><strong>";
+			echo "<div class='center'><strong>";
 
 			echo $LANG["common"][54]."<br>";
 			displayBackLink();
@@ -134,7 +134,7 @@ function printCalendrier($target,$ID=""){
 	}
 
 
-	echo "<div align='center'><table border='0'><tr><td>";
+	echo "<div class='center'><table border='0'><tr><td>";
 	echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/reservation.png\" alt='' title=''></td><td><strong><span class='icon_consol'>".$type." - ".$name."</span>";
 	echo "</strong></td></tr><tr><td colspan='2' align ='center'>$all</td></tr></table></div>";
 
@@ -149,7 +149,7 @@ function printCalendrier($target,$ID=""){
 	if ($jour_debut_mois==0) $jour_debut_mois=7;
 	$jour_fin_mois=strftime("%w",mktime(0,0,0,$mois_courant,$nb_jour[$mois_courant-1],$annee_courante));
 
-	echo "<div align='center'>";
+	echo "<div class='center'>";
 
 	echo "<table cellpadding='20' ><tr><td><a href=\"".$target.$str_precedent."\"><img src=\"".$CFG_GLPI["root_doc"]."/pics/left.png\" alt='".$LANG["buttons"][12]."' title='".$LANG["buttons"][12]."'></a></td><td><strong>".
 		$LANG["calendarM"][$mois_courant-1]."&nbsp;".$annee_courante."</strong></td><td><a href=\"".$target.$str_suivant."\"><img src=\"".$CFG_GLPI["root_doc"]."/pics/right.png\" alt='".$LANG["buttons"][11]."' title='".$LANG["buttons"][11]."'></a></td></tr></table>";
@@ -292,7 +292,7 @@ function showAddReservationForm($target,$items,$date,$resaID=-1){
 	$begin_hour=date("H:i",$begin);
 	$end_hour=date("H:i",$end);
 
-	echo "<div align='center'><form method='post' name=form action=\"$target\">";
+	echo "<div class='center'><form method='post' name=form action=\"$target\">";
 
 	if ($resaID!=-1)
 		echo "<input type='hidden' name='ID' value='$resaID'>";
@@ -484,7 +484,7 @@ function printReservationItems($target){
 	if (count($_SESSION['glpiactiveentities'])>1){
 		$showentity=true;
 	}
-	echo "<div align='center'><form name='form' method='get' action='$target'><table class='tab_cadre' cellpadding='5'>";
+	echo "<div class='center'><form name='form' method='get' action='$target'><table class='tab_cadre' cellpadding='5'>";
 	echo "<tr><th colspan='".($showentity?"5":"4")."'>".$LANG["reservation"][1]."</th></tr>";
 
 	
@@ -535,7 +535,7 @@ function showReservationCommentForm($target,$ID){
 		$ci=new CommonItem();
 		$ci->getFromDB($r->fields["device_type"],$r->fields["id_device"]);
 
-		echo "<div align='center'><form method='post' name=form action=\"$target\">";
+		echo "<div class='center'><form method='post' name=form action=\"$target\">";
 		echo "<input type='hidden' name='ID' value='$ID'>";
 
 		echo "<table class='tab_cadre' cellpadding='2'>";
@@ -571,7 +571,7 @@ function showDeviceReservations($target,$type,$ID){
 
 	if (!haveRight("reservation_central","r")) return false;
 
-	echo "<div align='center'>";
+	echo "<div class='center'>";
 
 	showReservationForm($type,$ID);
 	echo "<br>";
@@ -662,7 +662,7 @@ function showUserReservations($target,$ID){
 
 	if (!haveRight("reservation_central","r")) return false;
 
-	echo "<div align='center'>";
+	echo "<div class='center'>";
 
 	$now=$_SESSION["glpi_currenttime"];
 

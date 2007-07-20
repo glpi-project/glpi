@@ -208,7 +208,7 @@ class SetupSearchDisplay extends CommonDBTM{
 
 		if (count($dp)){
 			asort($dp);
-			echo "<div align='center'><form method='post' action=\"$target\">";
+			echo "<div class='center'><form method='post' action=\"$target\">";
 			echo "<table class='tab_cadre' cellpadding='5'><tr><th colspan='2'>";
 			echo $LANG["setup"][251].": </th></tr><tr class='tab_bg_1'><td><select name='type'>";
 	
@@ -246,7 +246,7 @@ class SetupSearchDisplay extends CommonDBTM{
 		}
 		echo "</ul></div>";
 
-		echo "<div align='center'>";
+		echo "<div class='center'>";
 		// Defined items
 		$query="SELECT * from glpi_display WHERE type='$type' AND FK_users='$IDuser' order by rank";
 

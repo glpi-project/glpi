@@ -292,7 +292,7 @@ function showOldJobListForItem($username,$item_type,$item,$sort="",$order="") {
 
 	if ($number > 0)
 	{
-		echo "<div align='center'>&nbsp;<table class='tab_cadre_fixe'>";
+		echo "<div class='center'>&nbsp;<table class='tab_cadre_fixe'>";
 		echo "<tr><th colspan=9>".$number." ".$LANG["job"][18]."  ".$LANG["job"][17];
 		echo " ".$LANG["job"][16].":&nbsp;";
 		echo "<a href='".$CFG_GLPI["root_doc"]."/front/tracking.php?reset=reset_before&amp;status=all&amp;item=$item&amp;type=$item_type'>".$LANG["buttons"][23]."</a>";
@@ -311,7 +311,7 @@ function showOldJobListForItem($username,$item_type,$item,$sort="",$order="") {
 	} 
 	else
 	{
-		echo "<br><div align='center'>";
+		echo "<br><div class='center'>";
 		echo "<table class='tab_cadre_fixe'>";
 		echo "<tr><th>".$LANG["joblist"][22]."</th></tr>";
 		echo "</table>";
@@ -347,7 +347,7 @@ function showJobListForItem($username,$item_type,$item,$sort="",$order="") {
 
 	if ($number > 0)
 	{
-		echo "<div align='center'>&nbsp;<table class='tab_cadre_fixe'>";
+		echo "<div class='center'>&nbsp;<table class='tab_cadre_fixe'>";
 		echo "<tr><th colspan='9'>".$number." ".$LANG["job"][17]."";
 		if ($number > 1) { echo "s"; }
 		echo " ".$LANG["job"][16].":&nbsp;";
@@ -374,7 +374,7 @@ function showJobListForItem($username,$item_type,$item,$sort="",$order="") {
 	} 
 	else
 	{
-		echo "<br><div align='center'>";
+		echo "<br><div class='center'>";
 		echo "<table class='tab_cadre_fixe'>";
 		echo "<tr><th>".$LANG["joblist"][8]."</th></tr>";
 
@@ -675,13 +675,13 @@ function addFormTracking ($device_type=0,$ID=0,$author,$assign,$target,$error,$s
 	if (!haveRight("create_ticket","1")) return false;
 
 	if (!empty($error)) {
-		echo "<div align='center'><strong>$error</strong></div>";
+		echo "<div class='center'><strong>$error</strong></div>";
 	}
 
 	displayTitle("","","",array($REFERER=>$LANG["buttons"][13]));
 
 	echo "<br><form name='form_ticket' method='post' action='$target' enctype=\"multipart/form-data\">";
-	echo "<div align='center'>";
+	echo "<div class='center'>";
 	echo "<input type='hidden' name='FK_entities' value='".$_SESSION["glpiactive_entity"]."'>";
 	//	if ($device_type!=0){
 	echo "<input type='hidden' name='_referer' value='$REFERER'>";
@@ -1419,7 +1419,7 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$au
 
 			// Delete selected item
 			if (($candelete||$canupdate)&&$output_type==HTML_OUTPUT){
-				echo "<div align='center'>";
+				echo "<div class='center'>";
 				echo "<table width='80%'>";
 				echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markAllRows('massiveaction_form') ) return false;\" href='".$_SERVER['PHP_SELF']."?$parameters&amp;select=all&amp;start=$start'>".$LANG["buttons"][18]."</a></td>";
 
@@ -1437,7 +1437,7 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$au
 				printPager($start,$numrows,$target,$parameters);
 
 		} else {
-			echo "<div align='center'><strong>".$LANG["joblist"][8]."</strong></div>";
+			echo "<div class='center'><strong>".$LANG["joblist"][8]."</strong></div>";
 
 		}
 	}
@@ -1457,7 +1457,7 @@ function showFollowupsShort($ID) {
 
 	$out="";
 	if ($DB->numrows($result)>0) {
-		$out.="<div align='center'><table class='tab_cadre' width='100%' cellpadding='2'>\n";
+		$out.="<div class='center'><table class='tab_cadre' width='100%' cellpadding='2'>\n";
 		$out.="<tr><th>".$LANG["common"][27]."</th><th>".$LANG["job"][4]."</th><th>".$LANG["joblist"][6]."</th></tr>\n";
 
 		while ($data=$DB->fetch_array($result)) {
@@ -1530,7 +1530,7 @@ function showJobDetails ($target,$ID){
 
 		showTrackingOnglets($_SERVER['PHP_SELF']."?ID=".$ID);
 
-		//echo "<div align='center'>";
+		//echo "<div class='center'>";
 		echo "<form method='post' action='$target'  enctype=\"multipart/form-data\">\n";
 		echo "<table class='tab_cadre_fixe' cellpadding='5'>";
 		// First line
@@ -1912,7 +1912,7 @@ function showFollowupsSummary($tID){
 	$rand=mt_rand();
 
 
-	echo "<div align='center'>";
+	echo "<div class='center'>";
 	echo "<h3>".$LANG["job"][37]."</h3>";
 
 	if ($DB->numrows($result)==0){
@@ -2021,7 +2021,7 @@ function showAddFollowupForm($tID){
 		$target=$CFG_GLPI["root_doc"]."/front/helpdesk.public.php?show=user";
 	}
 	// Display Add Table
-	echo "<div align='center'>";
+	echo "<div class='center'>";
 	echo "<form name='followups' method='post' action=\"$target\">\n";
 	echo "<table class='tab_cadre_fixe'>";
 	echo "<tr><th colspan='2'>";
@@ -2127,7 +2127,7 @@ function showUpdateFollowupForm($ID){
 		$job=new Job();
 		$job->getFromDB($data["tracking"]);
 
-		echo "<div align='center'>";
+		echo "<div class='center'>";
 		echo "<table class='tab_cadre_fixe'>";
 		echo "<tr><th>";
 		echo $LANG["job"][39];

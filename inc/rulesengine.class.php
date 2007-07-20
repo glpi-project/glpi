@@ -94,7 +94,7 @@ class RuleCollection {
 		$canedit = haveRight($this->right, "w");
 		$this->getCollectionDatas(0,0);
 		echo "<form name='ruleactions_form' id='ruleactions_form' method='post' action=\"$target\">\n";
-		echo "<div align='center'>"; 
+		echo "<div class='center'>"; 
 		echo "<table class='tab_cadrehov'>";
 
 		echo "<tr><th colspan='5'><div style='position: relative'><span><strong>" . $this->getTitle() . "</strong></span>";
@@ -119,7 +119,7 @@ class RuleCollection {
 		echo "</table>";
 		echo "</div>";
 		if ($canedit&&$nb>0) {
-			echo "<div align='center'>";
+			echo "<div class='center'>";
 			echo "<table width='80%'>";
 			echo "<tr><td><img src=\"" . $CFG_GLPI["root_doc"] . "/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markAllRows('entityaffectation_form') ) return false;\" href='" . $_SERVER['PHP_SELF'] . "?select=all'>" . $LANG["buttons"][18] . "</a></td>";
 
@@ -328,7 +328,7 @@ class Rule extends CommonDBTM{
 			$this->showOnglets($ID, $new,$_SESSION['glpi_onglet'],"rule_type='".$this->rule_type."'");
 			echo "<form name='rule_form'  method='post' action=\"$target\">\n";
 
-			echo "<div align='center'>"; 
+			echo "<div class='center'>"; 
 			echo "<table class='tab_cadre_fixe'>";
 			echo "<tr><th colspan='4'>" . $this->getTitle() . "</th></tr>";
 			echo "<tr>";
@@ -452,7 +452,7 @@ class Rule extends CommonDBTM{
 		
 		echo "<form name='actionsform' id='actionsform' method='post' action=\"$target\">\n";
 				
-		echo "<div align='center'>"; 
+		echo "<div class='center'>"; 
 		echo "<table class='tab_cadrehov'>";
 		echo "<tr><th colspan='".($canedit?" 4 ":"3")."'>" . $LANG["rulesengine"][7] . "</th></tr>";
 		echo "<tr  class='tab_bg_2'>";
@@ -471,7 +471,7 @@ class Rule extends CommonDBTM{
 		echo "</table></div>";
 				
 		if ($canedit&&$nb>0) {
-			echo "<div align='center'>";
+			echo "<div class='center'>";
 			echo "<table  width='80%'>";
 			echo "<tr><td><img src=\"" . $CFG_GLPI["root_doc"] . "/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markAllRows('actionsform') ) return false;\" href='" . $_SERVER['PHP_SELF'] . "?select=all'>" . $LANG["buttons"][18] . "</a></td>";
 
@@ -489,7 +489,7 @@ class Rule extends CommonDBTM{
 	 */
 	function addActionForm() {
 		global $LANG,$CFG_GLPI;
-		echo "<div align='center'>";
+		echo "<div class='center'>";
 		echo "<table  class='tab_cadre_fixe'>";
 		echo "<tr class='tab_bg_1'><th colspan='4'>" . $LANG["rulesengine"][7] . ":</tr>";
 		echo "<tr  class='tab_bg_2' align='center'><td>";
@@ -517,7 +517,7 @@ class Rule extends CommonDBTM{
 	 */
 	function addCriteriaForm() {
 		global $LANG,$CFG_GLPI,$RULES_CRITERIAS;
-		echo "<div align='center'>";
+		echo "<div class='center'>";
 		echo "<table  class='tab_cadre_fixe'>";
 		echo "<tr class='tab_bg_1'><th colspan='4'>" . $LANG["rulesengine"][16] . ":</tr>";
 		echo "<tr class='tab_bg_2' align='center'><td>";
@@ -570,7 +570,7 @@ class Rule extends CommonDBTM{
 		}
 		
 		echo "<form name='criteriasform' id='criteriasform' method='post' action=\"$target\">\n";
-		echo "<div align='center'>"; 
+		echo "<div class='center'>"; 
 		echo "<table class='tab_cadrehov'>";
 		echo "<tr><th colspan='".($canedit?" 4 ":"3")."'>" . $LANG["rulesengine"][6] . "</th></tr>\n";
 		echo "<tr>";
@@ -588,7 +588,7 @@ class Rule extends CommonDBTM{
 		}
 		echo "</table></div>";
 		if ($canedit&&$maxsize>0) {
-			echo "<div align='center'>\n";
+			echo "<div class='center'>\n";
 			echo "<table width='80%'>\n";
 			echo "<tr><td><img src=\"" . $CFG_GLPI["root_doc"] . "/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markAllRows('criteriasform') ) return false;\" href='" . $_SERVER['PHP_SELF'] . "?ID=".$this->fields["ID"]."&amp;select=all'>" . $LANG["buttons"][18] . "</a></td>";
 
@@ -1132,7 +1132,7 @@ class RuleCriteria extends CommonDBTM {
 	{
 			global $LANG,$CFG_GLPI;
 			echo "<form name='entityaffectation_form' id='entityaffectation_form' method='post' action=\"$target\">\n";
-			echo "<div align='center'>"; 
+			echo "<div class='center'>"; 
 			echo "<table class='tab_cadre_fixe'>";
 			echo "<tr><th colspan='4'>" . $LANG["rulesengine"][6] . "</th></tr>";
 			echo "<tr>";

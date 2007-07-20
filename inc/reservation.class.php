@@ -207,7 +207,7 @@ class ReservationResa extends CommonDBTM {
 	function displayError($type,$ID,$target){
 		global $LANG;
 
-		echo "<br><div align='center'>";
+		echo "<br><div class='center'>";
 		switch ($type){
 			case "date":
 				echo $LANG["reservation"][19];

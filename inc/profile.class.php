@@ -114,7 +114,7 @@ class Profile extends CommonDBTM{
 
 
 		echo "<form name='form' method='post' action=\"$target\">";
-		echo "<div align='center'>";
+		echo "<div class='center'>";
 		echo "<table class='tab_cadre'><tr>";
 		echo "<th>".$LANG["common"][16].":</th>";
 		echo "<th><input type='text' name='name' value=\"".$this->fields["name"]."\" $onfocus></th>";
