@@ -466,7 +466,7 @@ function showDeleteConfirmForm($target, $table, $ID,$FK_entities) {
 		$query = "SELECT COUNT(*) AS cpt FROM `$table` WHERE `parentID` = '" . $ID . "'";
 		$result = $DB->query($query);
 		if ($DB->result($result, 0, "cpt") > 0) {
-			echo "<div class='center'><p style='color:red'>" . $LANG["setup"][74] . "</p></div>";
+			echo "<div class='center'><p class='red'>" . $LANG["setup"][74] . "</p></div>";
 			return;
 		}
 
@@ -474,7 +474,7 @@ function showDeleteConfirmForm($target, $table, $ID,$FK_entities) {
 			$query = "SELECT COUNT(*) AS cpt FROM `glpi_kbitems` WHERE `categoryID` = '" . $ID . "'";
 			$result = $DB->query($query);
 			if ($DB->result($result, 0, "cpt") > 0) {
-				echo "<div class='center'><p style='color:red'>" . $LANG["setup"][74] . "</p></div>";
+				echo "<div class='center'><p class='red'>" . $LANG["setup"][74] . "</p></div>";
 				return;
 			}
 		}
@@ -483,7 +483,7 @@ function showDeleteConfirmForm($target, $table, $ID,$FK_entities) {
 
 
 	echo "<div class='center'>";
-	echo "<p style='color:red'>" . $LANG["setup"][63] . "</p>";
+	echo "<p class='red'>" . $LANG["setup"][63] . "</p>";
 
 	if ($table!="glpi_entities"){
 		echo "<p>" . $LANG["setup"][64] . "</p>";
@@ -697,7 +697,7 @@ function showFormExtAuthList($target) {
 			if (function_exists('imap_open')) {
 				echo "<table class='tab_cadre_fixe' cellpadding='5'>";
 				echo "<tr><th colspan='2'>";
-				echo "<div style='position: relative'><span><strong>" . $LANG["login"][3] . "</strong></span>";
+				echo "<div class='relative'><span><strong>" . $LANG["login"][3] . "</strong></span>";
 				echo "<span style='  position:absolute; right:0; margin-right:5px; font-size:10px;'><a href=\"".$target."?next=extauth_mail\"><img src=\"".$CFG_GLPI["root_doc"]."/pics/plus.png\" alt='+' title='".$LANG["buttons"][8]."'></a></span>";
 
 				echo "</div></th></tr>";
@@ -726,7 +726,7 @@ function showFormExtAuthList($target) {
 				
 				echo "<table class='tab_cadre_fixe' cellpadding='5'>";
 				echo "<tr><th colspan='2'>";
-				echo "<div style='position: relative'><span><strong>" . $LANG["login"][2] . "</strong></span>";
+				echo "<div class='relative'><span><strong>" . $LANG["login"][2] . "</strong></span>";
 				echo "<span style='  position:absolute; right:0; margin-right:5px; font-size:10px;'><a href=\"".$target."?next=extauth_ldap\"><img src=\"".$CFG_GLPI["root_doc"]."/pics/plus.png\" alt='+' title='".$LANG["buttons"][8]."'></a></span>";
 
 				echo "</div></th></tr>";
