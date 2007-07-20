@@ -101,11 +101,12 @@ function commonHeader($title,$url,$sector="none",$item="none")
 	
 		// Start the page
 		echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">";
+		 // echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\"  \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">";
 		echo "\n<html><head><title>GLPI - ".$title."</title>";
 		echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8 \" >";
 		// Send extra expires header if configured
 		if ($CFG_GLPI["sendexpire"]) {
-			echo "<meta http-equiv=\"Expires\" content=\"Fri, Jun 12 1981 08:20:00 GMT\">\n";
+			echo "<meta http-equiv=\"Expires\" content=\"Fri, Jun 12 1981 08:20:00 GMT\" >\n";
 			echo "<meta http-equiv=\"Pragma\" content=\"no-cache\">\n";
 			echo "<meta http-equiv=\"Cache-Control\" content=\"no-cache\">\n";
 		}
@@ -724,7 +725,7 @@ function commonHeader($title,$url,$sector="none",$item="none")
 		echo "<li>";
 
 			// Display MENU ALL
-			echo "<div id='show_all_menu' onMouseOver=\"completecleandisplay('show_all_menu');\" onMouseOut=\"completecleanhide('show_all_menu');\">";
+			echo "<div id='show_all_menu' onmouseover=\"completecleandisplay('show_all_menu');\" onmouseout=\"completecleanhide('show_all_menu');\">";
 			$items_per_columns=15;
 			$i=-1;
 			echo "<table><tr><td valign='top'><table>";
@@ -1244,10 +1245,10 @@ function commonFooter() {
 	if (function_exists("memory_get_usage")){
 		echo memory_get_usage();
 	}
-	echo "</span>";
+	echo "</span></td>";
 
 	if (!empty($CFG_GLPI["founded_new_version"]))
-		echo "<td align='center' class='copyright'>".$LANG["setup"][301]." ".$CFG_GLPI["founded_new_version"]."<br>".$LANG["setup"][302]."</td>";
+		echo "<td class='copyright'>".$LANG["setup"][301]." ".$CFG_GLPI["founded_new_version"]."<br>".$LANG["setup"][302]."</td>";
 
 	echo "<td class='right'>";
 	echo "<a href=\"http://glpi-project.org/\">";
@@ -1262,20 +1263,20 @@ function commonFooter() {
 	if ($CFG_GLPI["debug"]==1){ // debug mode traduction
 
 		echo "<div id='debug-float'>";		
-		echo "<a href='#debug'>GLPI MODE TRANSLATION</a>";
+		echo "<a href='#see_debug'>GLPI MODE TRANSLATION</a>";
 		echo "</div>";
 	}
 
 	if ($CFG_GLPI["debug"]==2){ // mode debug 
 
 		echo "<div id='debug-float'>";		
-		echo "<a href='#debug'>GLPI MODE DEBUG</a>";
+		echo "<a href='#see_debug'>GLPI MODE DEBUG</a>";
 		echo "</div>";
 
 
 
 		echo "<div id='debug'>";
-		echo "<h1><a name='#debug'>GLPI MODE DEBUG</a></h1>";
+		echo "<h1><a id='see_debug' name='see_debug'>GLPI MODE DEBUG</a></h1>";
 		
 		if ($CFG_GLPI["debug_sql"]){	
 			echo "<h2>SQL REQUEST : ";
@@ -1475,7 +1476,7 @@ function printHelpDesk ($ID,$from_helpdesk) {
 	$max_size=round($max_size,1);
 
 	echo "<tr class='tab_bg_1'><td>".$LANG["document"][2]." (".$max_size." Mb max):	";
-	echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/aide.png\" class='pointer' alt=\"aide\"onClick=\"window.open('".$CFG_GLPI["root_doc"]."/front/typedoc.list.php','Help','scrollbars=1,resizable=1,width=1000,height=800')\">";
+	echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/aide.png\" class='pointer' alt=\"aide\" onclick=\"window.open('".$CFG_GLPI["root_doc"]."/front/typedoc.list.php','Help','scrollbars=1,resizable=1,width=1000,height=800')\">";
 	echo "</td>";
 	echo "<td><input type='file' name='filename' value=\"\" size='25'></td>";
 	echo "</tr>";
@@ -1646,7 +1647,7 @@ function showCalendarForm($form,$element,$value='',$withtemplate='',$with_time=0
 	if ($withtemplate!=2){
 		echo "&nbsp;<img id='button$rand' src='".$CFG_GLPI["root_doc"]."/pics/calendar.png' class='calendrier' alt='".$LANG["buttons"][15]."' title='".$LANG["buttons"][15]."'>";
 
-		echo "&nbsp;<img src='".$CFG_GLPI["root_doc"]."/pics/reset.png' class='calendrier' onClick=\"document.getElementById('data$rand').value='0000-00-00';document.getElementById('show$rand').value='".convDate("0000-00-00")."'\" alt='Reset' title='Reset'>";	
+		echo "&nbsp;<img src='".$CFG_GLPI["root_doc"]."/pics/reset.png' class='calendrier' onclick=\"document.getElementById('data$rand').value='0000-00-00';document.getElementById('show$rand').value='".convDate("0000-00-00")."'\" alt='Reset' title='Reset'>";	
 
 		echo "<script type='text/javascript'>";
 		echo "Calendar.setup(";
@@ -1912,11 +1913,11 @@ function showProfileSelecter($target){
 
 	if (isMultiEntitiesMode()){
 		echo "<li>";
-		echo "<a href='#' onClick=\"completecleandisplay('show_entities');\">";
+		echo "<a href='#' onclick=\"completecleandisplay('show_entities');\">";
 		echo $_SESSION["glpiactive_entity_name"];
 		echo "</a>";
 		
-		echo "<div id='show_entities' onMouseOver=\"completecleandisplay('show_entities');\" onMouseOut=\"completecleanhide('show_entities');\">";
+		echo "<div id='show_entities' onmouseover=\"completecleandisplay('show_entities');\" onmouseout=\"completecleanhide('show_entities');\">";
 		displayActiveEntities($target,$_SESSION['glpi_entities_tree'],"activeentity");
 		
 		echo "</div>";
