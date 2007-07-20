@@ -322,7 +322,7 @@ function printDeviceComputer($device,$quantity,$specif,$compID,$compDevID,$witht
 
 //Update an internal device specificity
 // $strict : update based on ID
-function update_device_specif($newValue,$compDevID,$strict=false) {
+function update_device_specif($newValue,$compDevID,$strict=false,$checkcoherence=false) {
 
 	// Check old value for history 
 	global $DB;
@@ -333,33 +333,43 @@ function update_device_specif($newValue,$compDevID,$strict=false) {
 			$data = addslashes_deep($DB->fetch_array($result));
 			cleanAllItemCache("device_".$data["FK_computers"],"GLPI_".COMPUTER_TYPE);
 
-			switch ($data["device_type"])
+			if ($checkcoherence)
 			{
-				case PROCESSOR_DEVICE :
-					//Calculate pourcent change of frequency
-					$pourcent =  ( $newValue / ($data["specificity"] / 100) ) - 100;
-					
-					//If new processor speed value is superior to the old one, and if the change is at least 5% change 
-					if ($data["specificity"] < $newValue && $pourcent > 4)
-						$condition = true;
-					else
-						$condition = false;
-					break;	
-				case GFX_DEVICE :
-					//If memory has changed and his new value is not 0
-					if ($data["specificity"] != $newValue && $newValue > 0)
-						$condition = true;
-					else
-						$condition = false;		
-					break;		 			
-				default :
-					if ($data["specificity"] != $newValue)
-						$condition = true;
-					else
-						$condition = false;		
-					break;		 			
+				switch ($data["device_type"])
+				{
+					case PROCESSOR_DEVICE :
+						//Calculate pourcent change of frequency
+						$pourcent =  ( $newValue / ($data["specificity"] / 100) ) - 100;
+						
+						//If new processor speed value is superior to the old one, and if the change is at least 5% change 
+						if ($data["specificity"] < $newValue && $pourcent > 4)
+							$condition = true;
+						else
+							$condition = false;
+						break;	
+					case GFX_DEVICE :
+						//If memory has changed and his new value is not 0
+						if ($data["specificity"] != $newValue && $newValue > 0)
+							$condition = true;
+						else
+							$condition = false;		
+						break;		 			
+					default :
+						if ($data["specificity"] != $newValue)
+							$condition = true;
+						else
+							$condition = false;		
+						break;		 			
+				}
 			}
-
+			else
+			{
+				if ($data["specificity"] != $newValue)
+					$condition = true;
+				else
+					$condition = false;		
+			}
+			
 			// Is it a real change ? 
 			if( $condition){
 				

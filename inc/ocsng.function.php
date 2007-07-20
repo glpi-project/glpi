@@ -1638,7 +1638,7 @@ function ocsUpdateDevices($device_type, $glpi_id, $ocs_id, $ocs_server_id, $cfg_
 								}
 							} else {
 								$id = array_search(RAM_DEVICE . '$$$$$' . $ram["designation"], $import_device);
-								update_device_specif($line2["CAPACITY"], $id, 1);
+								update_device_specif($line2["CAPACITY"], $id, 1,true);
 								unset ($import_device[$id]);
 							}
 						}
@@ -1680,7 +1680,7 @@ function ocsUpdateDevices($device_type, $glpi_id, $ocs_id, $ocs_server_id, $cfg_
 								}
 							} else {
 								$id = array_search(HDD_DEVICE . '$$$$$' . $dd["designation"], $import_device);
-								update_device_specif($line2["DISKSIZE"], $id, 1);
+								update_device_specif($line2["DISKSIZE"], $id, 1,true);
 								unset ($import_device[$id]);
 							}
 
@@ -1825,7 +1825,7 @@ function ocsUpdateDevices($device_type, $glpi_id, $ocs_id, $ocs_server_id, $cfg_
 							}
 						} else {
 							$id = array_search(PROCESSOR_DEVICE . '$$$$$' . $processor["designation"], $import_device);
-							update_device_specif($line["PROCESSORS"], $id, 1);
+							update_device_specif($line["PROCESSORS"], $id, 1,true);
 							unset ($import_device[$id]);
 						}
 					}
@@ -1868,7 +1868,7 @@ function ocsUpdateDevices($device_type, $glpi_id, $ocs_id, $ocs_server_id, $cfg_
 								}
 							} else {
 								$id = array_search(NETWORK_DEVICE . '$$$$$' . $network["designation"], $import_device);
-								update_device_specif($line2["MACADDR"], $id, 1);
+								update_device_specif($line2["MACADDR"], $id, 1,true);
 								unset ($import_device[$id]);
 							}
 						}
@@ -1970,7 +1970,7 @@ function ocsUpdateDevices($device_type, $glpi_id, $ocs_id, $ocs_server_id, $cfg_
 							}
 						} else {
 							$id = array_search(GFX_DEVICE . '$$$$$' . $video["designation"], $import_device);
-							update_device_specif($line2["MEMORY"], $id, 1);
+							update_device_specif($line2["MEMORY"], $id, 1,true);
 							unset ($import_device[$id]);
 						}
 					}
