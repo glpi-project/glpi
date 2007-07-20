@@ -97,7 +97,7 @@ class RuleCollection {
 		echo "<div class='center'>"; 
 		echo "<table class='tab_cadrehov'>";
 
-		echo "<tr><th colspan='5'><div style='position: relative'><span><strong>" . $this->getTitle() . "</strong></span>";
+		echo "<tr><th colspan='5'><div class='relative'><span><strong>" . $this->getTitle() . "</strong></span>";
 		if ($canedit){
 			echo "<span style='  position:absolute; right:0; margin-right:5px; font-size:10px;'><a href=\"".ereg_replace(".php",".form.php",$target)."\"><img src=\"".$CFG_GLPI["root_doc"]."/pics/plus.png\" alt='+' title='".$LANG["buttons"][8]."'></a></span>";
 		}
