@@ -333,8 +333,36 @@ function update_device_specif($newValue,$compDevID,$strict=false) {
 			$data = addslashes_deep($DB->fetch_array($result));
 			cleanAllItemCache("device_".$data["FK_computers"],"GLPI_".COMPUTER_TYPE);
 
-			// Is it a real change ?
-			if($data["specificity"]!=$newValue){
+			switch ($data["device_type"])
+			{
+				case PROCESSOR_DEVICE :
+					//Calculate pourcent change of frequency
+					$pourcent =  ( $newValue / ($data["specificity"] / 100) ) - 100;
+					
+					//If new processor speed value is superior to the old one, and if the change is at least 5% change 
+					if ($data["specificity"] < $newValue && $pourcent > 4)
+						$condition = true;
+					else
+						$condition = false;
+					break;	
+				case GFX_DEVICE :
+					//If memory has changed and his new value is not 0
+					if ($data["specificity"] != $newValue && $newValue > 0)
+						$condition = true;
+					else
+						$condition = false;		
+					break;		 			
+				default :
+					if ($data["specificity"] != $newValue)
+						$condition = true;
+					else
+						$condition = false;		
+					break;		 			
+			}
+
+			// Is it a real change ? 
+			if( $condition){
+				
 				// Update specificity 
 				$WHERE=" WHERE FK_device = '".$data["FK_device"]."' AND FK_computers = '".$data["FK_computers"]."' AND device_type = '".$data["device_type"]."'  AND specificity='".$data["specificity"]."'";
 				if ($strict) $WHERE=" WHERE ID='$compDevID'";
