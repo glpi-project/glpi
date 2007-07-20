@@ -113,10 +113,10 @@ function ocsShowNewComputer($ocs_server_id, $advanced, $check, $start, $tolinked
 		}
 
 		if ($tolinked && count($hardware)) {
-			echo "<div align='center'><strong>" . $LANG["ocsng"][22] . "</strong></div>";
+			echo "<div class='center'><strong>" . $LANG["ocsng"][22] . "</strong></div>";
 		}
 
-		echo "<div align='center'>";
+		echo "<div class='center'>";
 		if (($numrows = count($hardware)) > 0) {
 
 			$parameters = "check=$check";
@@ -222,7 +222,7 @@ function ocsShowNewComputer($ocs_server_id, $advanced, $check, $start, $tolinked
 		echo "</div>";
 
 	} else
-		echo "<div align='center'><strong>" . $LANG["ocsng"][9] . "</strong></div>";
+		echo "<div class='center'><strong>" . $LANG["ocsng"][9] . "</strong></div>";
 }
 
 /**
@@ -1292,7 +1292,7 @@ function ocsShowUpdateComputer($ocs_server_id, $check, $start) {
 			}
 		}
 
-		echo "<div align='center'>";
+		echo "<div class='center'>";
 		echo "<h2>" . $LANG["ocsng"][10] . "</h2>";
 
 		if (($numrows = count($already_linked)) > 0) {
@@ -1339,7 +1339,7 @@ function ocsShowUpdateComputer($ocs_server_id, $check, $start) {
 		echo "</div>";
 
 	} else
-		echo "<div align='center'><strong>" . $LANG["ocsng"][12] . "</strong></div>";
+		echo "<div class='center'><strong>" . $LANG["ocsng"][12] . "</strong></div>";
 }
 
 function mergeOcsArray($glpi_id, $tomerge, $field) {
@@ -1421,7 +1421,7 @@ function ocsEditLock($target, $ID) {
 	if ($DB->numrows($result) == 1) {
 		$data = $DB->fetch_assoc($result);
 		if (haveRight("sync_ocsng","w")){
-			echo "<div align='center'>";
+			echo "<div class='center'>";
 			echo "<form method='post' action=\"$target\">";
 			echo "<input type='hidden' name='ID' value='$ID'>";
 			echo "<table class='tab_cadre'><tr class='tab_bg_2'><td>";
@@ -1432,7 +1432,7 @@ function ocsEditLock($target, $ID) {
 			echo "</div>";
 		}
 
-		echo "<div align='center'>";
+		echo "<div class='center'>";
 		// Print lock fields for OCSNG
 
 		$lockable_fields = array (
@@ -1472,7 +1472,7 @@ function ocsEditLock($target, $ID) {
 		//Search locked monitors
 		$header = false;
 		echo "<br>";
-		echo "<div align='center'>";
+		echo "<div class='center'>";
 		$locked_monitor = importArrayFromDB($data["import_monitor"]);
 		foreach ($locked_monitor as $key => $val) {
 			if ($val != "_version_070_") {
@@ -1502,7 +1502,7 @@ function ocsEditLock($target, $ID) {
 		//Search locked printers
 		$header = false;
 		echo "<br>";
-		echo "<div align='center'>";
+		echo "<div class='center'>";
 		$locked_printer = importArrayFromDB($data["import_printers"]);
 		foreach ($locked_printer as $key => $val) {
 			$querySearchLockedPrinter = "SELECT end1 FROM glpi_connect_wire WHERE ID='$key'";
@@ -1530,7 +1530,7 @@ function ocsEditLock($target, $ID) {
 		//Search locked peripherals
 		$header = false;
 		echo "<br>";
-		echo "<div align='center'>";
+		echo "<div class='center'>";
 		$locked_printer = importArrayFromDB($data["import_peripheral"]);
 		foreach ($locked_printer as $key => $val) {
 			$querySearchLockedPeriph = "SELECT end1 FROM glpi_connect_wire WHERE ID='$key'";
@@ -3161,7 +3161,7 @@ function ocsChooseServer($target) {
 	$result = $DB->query($query);
 	if ($DB->numrows($result) > 1) {
 		echo "<form action=\"$target\" method=\"get\">";
-		echo "<div align='center'>";
+		echo "<div class='center'>";
 		echo "<table class='tab_cadre'>";
 		echo "<tr class='tab_bg_2'><th colspan='2'>" . $LANG["ocsng"][26] . "</th></tr>";
 		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["common"][16] . "</td><td class='center'>";
@@ -3179,7 +3179,7 @@ function ocsChooseServer($target) {
 		glpi_header($_SERVER['PHP_SELF'] . "?ocs_server_id=" . $ocs["ID"]);
 	} else{
 		echo "<form action=\"$target\" method=\"get\">";
-		echo "<div align='center'>";
+		echo "<div class='center'>";
 		echo "<table class='tab_cadre'>";
 		echo "<tr class='tab_bg_2'><th colspan='2'>" . $LANG["ocsng"][26] . "</th></tr>";
 		echo "<tr class='tab_bg_2'><td align='center' colspan=2>" . $LANG["ocsng"][27] . "</td></tr>";

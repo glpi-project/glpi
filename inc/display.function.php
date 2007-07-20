@@ -54,7 +54,7 @@ if (!defined('GLPI_ROOT')){
  * @return nothing
  **/
 function displayTitle($ref_pic_link="",$ref_pic_text="",$ref_title="",$ref_btts="") {
-        echo "<div align='center'><table border='0'><tr>";
+        echo "<div class='center'><table border='0'><tr>";
         if ($ref_pic_link!="")
                 echo "<td><img src=\"".$ref_pic_link."\" alt=\"".$ref_pic_text."\"
 title=\"".$ref_pic_text."\" ></td>"; 
@@ -811,7 +811,7 @@ function commonHeader($title,$url,$sector="none",$item="none")
 function displayMessageAfterRedirect(){
 	// Affichage du message apres redirection
 	if (isset($_SESSION["MESSAGE_AFTER_REDIRECT"])&&!empty($_SESSION["MESSAGE_AFTER_REDIRECT"])){
-		echo "<div align='center'><strong>".$_SESSION["MESSAGE_AFTER_REDIRECT"]."</strong></div>";
+		echo "<div class='center'><strong>".$_SESSION["MESSAGE_AFTER_REDIRECT"]."</strong></div>";
 		$_SESSION["MESSAGE_AFTER_REDIRECT"]="";
 		unset($_SESSION["MESSAGE_AFTER_REDIRECT"]);
 	} else $_SESSION["MESSAGE_AFTER_REDIRECT"]="";
@@ -1420,7 +1420,7 @@ function printHelpDesk ($ID,$from_helpdesk) {
 	echo "<input type='hidden' name='_from_helpdesk' value='$from_helpdesk'>";
 	echo "<input type='hidden' name='request_type' value='1'>";
 	echo "<input type='hidden' name='FK_entities' value='".$_SESSION["glpiactive_entity"]."'>";
-	echo "<div align='center'><table  class='tab_cadre'>";
+	echo "<div class='center'><table  class='tab_cadre'>";
 
 	echo "<tr><th colspan='2'>".$LANG["help"][1].":</th></tr>";
 	echo "<tr class='tab_bg_1'>";
@@ -1703,7 +1703,7 @@ function showNotesForm($target,$type,$id){
 
 
 	echo "<form name='form' method='post' action=\"".$target."\">";
-	echo "<div align='center'>";
+	echo "<div class='center'>";
 	echo "<table class='tab_cadre_fixe' >";
 	echo "<tr><th align='center' >";
 	echo $LANG["title"][37];
@@ -1730,7 +1730,7 @@ function glpi_flush(){
 function displayProgressBar($width,$percent){
 	global $LANG;
 	$percentwidth=floor($percent*$width/100);
-	echo str_pad("<div align='center'><table class='tab_cadre' width='$width'><tr><td width='$width' align='center'> ".$LANG["common"][47]."&nbsp;".$percent."%</td></tr><tr><td><table><tr><td bgcolor='red'  width='$percentwidth' height='20'>&nbsp;</td></tr></table></td></tr></table></div>\n",4096);
+	echo str_pad("<div class='center'><table class='tab_cadre' width='$width'><tr><td width='$width' align='center'> ".$LANG["common"][47]."&nbsp;".$percent."%</td></tr><tr><td><table><tr><td bgcolor='red'  width='$percentwidth' height='20'>&nbsp;</td></tr></table></td></tr></table></div>\n",4096);
 	glpi_flush();
 }
 
@@ -1834,7 +1834,7 @@ function showCentralGlobalView(){
 	if ($CFG_GLPI["jobs_at_login"]&&$showticket){
 		echo "<br>";
 
-		echo "<div align='center'><strong>";
+		echo "<div class='center'><strong>";
 		echo $LANG["central"][10];
 		echo "</strong></div>";
 

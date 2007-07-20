@@ -41,7 +41,7 @@ function showGroupDevice($ID){
 	global $DB,$CFG_GLPI, $LANG,$LINK_ID_TABLE,$INFOFORM_PAGES;
 
 	$ci=new CommonItem();
-	echo "<div align='center'><table class='tab_cadre'><tr><th>".$LANG["common"][17]."</th><th>".$LANG["common"][16]."</th></tr>";
+	echo "<div class='center'><table class='tab_cadre'><tr><th>".$LANG["common"][17]."</th><th>".$LANG["common"][16]."</th></tr>";
 	foreach ($CFG_GLPI["linkuser_type"] as $type){
 		$query="SELECT * from ".$LINK_ID_TABLE[$type]." WHERE FK_groups='$ID'";
 		$result=$DB->query($query);
@@ -79,7 +79,7 @@ function showGroupUser($target,$ID){
 	if ($group->getFromDB($ID)){
 		if ($canedit){
 	
-			echo "<div align='center'>";
+			echo "<div class='center'>";
 			echo "<table  class='tab_cadre_fixe'>";
 			echo "<tr class='tab_bg_1'><th colspan='2'>".$LANG["setup"][603]."</tr><tr><td class='tab_bg_2' align='center'>";
 			echo "<input type='hidden' name='FK_groups' value='$ID'>";
@@ -94,7 +94,7 @@ function showGroupUser($target,$ID){
 	
 	
 	
-		echo "<div align='center'><table class='tab_cadrehov'><tr><th colspan='$headerspan'>".$LANG["Menu"][14]."</th></tr>";
+		echo "<div class='center'><table class='tab_cadrehov'><tr><th colspan='$headerspan'>".$LANG["Menu"][14]."</th></tr>";
 		$query="SELECT glpi_users.*,glpi_users_groups.ID as linkID from glpi_users_groups LEFT JOIN glpi_users ON (glpi_users.ID = glpi_users_groups.FK_users) WHERE glpi_users_groups.FK_groups='$ID' ORDER BY glpi_users.name, glpi_users.realname, glpi_users.firstname";
 	
 		$result=$DB->query($query);
@@ -130,7 +130,7 @@ function showGroupUser($target,$ID){
 		echo "</table></div>";
 	
 		if ($canedit){
-			echo "<div align='center'>";
+			echo "<div class='center'>";
 			echo "<table width='80%'>";
 			echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markAllRows('groupuser_form') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$ID&amp;select=all'>".$LANG["buttons"][18]."</a></td>";
 	

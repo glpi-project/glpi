@@ -60,7 +60,7 @@ function showInfocomEnterprise($instID) {
 	$number = $DB->numrows($result);
 	$i = 0;
 
-	echo "<br><br><div align='center'><table class='tab_cadre'>";
+	echo "<br><br><div class='center'><table class='tab_cadre'>";
 	echo "<tr><th colspan='2'>".$LANG["financial"][26].":</th></tr>";
 	echo "<tr><th>".$LANG["common"][17]."</th>";
 	echo "<th>".$LANG["common"][16]."</th>";
@@ -109,7 +109,7 @@ function showAssociatedContact($instID) {
 	$i = 0;
 
 
-	echo "<br><div align='center'><table class='tab_cadre_fixe'>";
+	echo "<br><div class='center'><table class='tab_cadre_fixe'>";
 	echo "<tr><th colspan='8'>".$LANG["financial"][46].":</th></tr>";
 	echo "<tr><th>".$LANG["common"][16]."</th><th>".$LANG["financial"][29]."</th>";
 	echo "<th>".$LANG["financial"][29]." 2</th><th>".$LANG["common"][42]."</th><th>".$LANG["financial"][30]."</th>";

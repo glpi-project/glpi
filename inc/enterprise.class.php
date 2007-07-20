@@ -115,7 +115,7 @@ class Enterprise extends CommonDBTM {
 		}
 		if ($spotted){
 			$this->showOnglets($ID, $withtemplate,$_SESSION['glpi_onglet']);
-			echo "<form method='post' action=\"$target\"><div align='center'>";
+			echo "<form method='post' action=\"$target\"><div class='center'>";
 			if (empty($ID)){
 				echo "<input type='hidden' name='FK_entities' value='".$_SESSION["glpiactive_entity"]."'>";
 			}
@@ -202,7 +202,7 @@ class Enterprise extends CommonDBTM {
 
 					echo "<tr>";
 					echo "<td class='tab_bg_2' valign='top' colspan='4'>";
-					echo "<div align='center'><input type='submit' name='add' value=\"".$LANG["buttons"][8]."\" class='submit'></div>";
+					echo "<div class='center'><input type='submit' name='add' value=\"".$LANG["buttons"][8]."\" class='submit'></div>";
 					echo "</td>";
 					echo "</tr>";
 
@@ -212,14 +212,14 @@ class Enterprise extends CommonDBTM {
 					echo "<td class='tab_bg_2'></td>";
 					echo "<td class='tab_bg_2' valign='top'>";
 					echo "<input type='hidden' name='ID' value=\"$ID\">\n";
-					echo "<div align='center'><input type='submit' name='update' value=\"".$LANG["buttons"][7]."\" class='submit'></div>";
+					echo "<div class='center'><input type='submit' name='update' value=\"".$LANG["buttons"][7]."\" class='submit'></div>";
 					echo "</td>\n\n";
 					echo "<td class='tab_bg_2'>&nbsp;</td><td class='tab_bg_2' valign='top'>\n";
 					echo "<input type='hidden' name='ID' value=\"$ID\">\n";
 					if (!$this->fields["deleted"])
-						echo "<div align='center'><input type='submit' name='delete' value=\"".$LANG["buttons"][6]."\" class='submit'></div>";
+						echo "<div class='center'><input type='submit' name='delete' value=\"".$LANG["buttons"][6]."\" class='submit'></div>";
 					else {
-						echo "<div align='center'><input type='submit' name='restore' value=\"".$LANG["buttons"][21]."\" class='submit'>";
+						echo "<div class='center'><input type='submit' name='restore' value=\"".$LANG["buttons"][21]."\" class='submit'>";
 
 						echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='submit' name='purge' value=\"".$LANG["buttons"][22]."\" class='submit'></div>";
 					}
@@ -232,7 +232,7 @@ class Enterprise extends CommonDBTM {
 
 
 		} else {
-			echo "<div align='center'><strong>".$LANG["common"][54]."</strong></div>";
+			echo "<div class='center'><strong>".$LANG["common"][54]."</strong></div>";
 			return false;
 		}
 

@@ -122,7 +122,7 @@ function ldapChooseDirectory($target) {
 	}
 
 	echo "<form action=\"$target\" method=\"post\">";
-	echo "<div align='center'>";
+	echo "<div class='center'>";
 	echo "<p >" . $LANG["ldap"][5] . "</p>";
 	echo "<table class='tab_cadre'>";
 	echo "<tr class='tab_bg_2'><th colspan='2'>" . $LANG["ldap"][4] . "</th></tr>";
@@ -259,7 +259,7 @@ function showLdapUsers($target, $check, $start, $sync = 0,$filter='') {
 		if ($start > 0)
 			array_splice($ldap_users, 0, $start);
 
-		echo "<div align='center'>";
+		echo "<div class='center'>";
 		echo "<form method='post' name='ldap_form' action='" . $target . "'>";
 		echo "<a href='" . $target . "?check=all' onclick= \"if ( markAllRows('ldap_form') ) return false;\">" . $LANG["buttons"][18] . "</a>&nbsp;/&nbsp;<a href='" . $target . "?check=none' onclick= \"if ( unMarkAllRows('ldap_form') ) return false;\">" . $LANG["buttons"][19] . "</a>";
 		echo "<table class='tab_cadre'>";
@@ -300,7 +300,7 @@ function showLdapUsers($target, $check, $start, $sync = 0,$filter='') {
 		echo "</form></div>";
 		printPager($start, $numrows, $target, $parameters);
 	} else
-		echo "<div align='center'><strong>" . $LANG["ldap"][3] . "</strong></div>";
+		echo "<div class='center'><strong>" . $LANG["ldap"][3] . "</strong></div>";
 }
 
 //Test a connection to the ldap directory
@@ -341,7 +341,7 @@ function showSynchronizationForm($target, $ID) {
 			$result = $DB->query($sql);
 			if ($DB->numrows($result) > 0) {
 				//Look it the auth server still exists !
-					echo "<div align='center'>";
+					echo "<div class='center'>";
 					echo "<form method='post' action=\"$target\">";
 					echo "<table class='tab_cadre'><tr class='tab_bg_2'><td>";
 					echo "<input type='hidden' name='ID' value='" . $ID . "'>";
@@ -356,7 +356,7 @@ function showSynchronizationForm($target, $ID) {
 			}
 			break;	
 			case AUTH_DB_GLPI :
-				echo "<div align='center'>";
+				echo "<div class='center'>";
 				echo "<form method='post' action=\"$target\">";
 				formChangeAuthMethodToLDAP($ID);
 				echo "<br>";
@@ -364,7 +364,7 @@ function showSynchronizationForm($target, $ID) {
 				echo "</form></div>";
 			break;
 			case AUTH_MAIL :
-				echo "<div align='center'>";
+				echo "<div class='center'>";
 				echo "<form method='post' action=\"$target\">";
 				formChangeAuthMethodToDB($ID);
 				echo "<br>";
@@ -471,7 +471,7 @@ function displayLdapFilter($target)
 			$_SESSION["ldap_filter"]="(".$config_ldap->fields['ldap_login']."=*)";
 	}
 		
-	echo "<div align='center'>";
+	echo "<div class='center'>";
 	echo "<form method='post' action=\"$target\">";
 	echo "<table class='tab_cadre'>"; 
 	echo "<tr><th colspan='2'>" . $LANG["setup"][263] . "</th></tr>";

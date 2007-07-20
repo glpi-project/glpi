@@ -52,14 +52,14 @@ function showInfocomForm($target,$device_type,$dev_ID,$show_immo=1,$withtemplate
 		$option=" readonly ";
 
 	if (!ereg("infocoms-show",$_SERVER['PHP_SELF'])&&($device_type==SOFTWARE_TYPE||$device_type==CARTRIDGE_TYPE||$device_type==CONSUMABLE_TYPE)){
-		echo "<div align='center'>".$LANG["financial"][84]."</div>";
+		echo "<div class='center'>".$LANG["financial"][84]."</div>";
 	}
 
 	echo "<br>";
 	if ($ci->getFromDB($device_type,$dev_ID))
 	if (!$ic->getfromDBforDevice($device_type,$dev_ID)){
 		if (haveRight("contract_infocom","w")&&$withtemplate!=2){
-			echo "<div align='center'>";
+			echo "<div class='center'>";
 			echo "<strong><a href='$target?device_type=$device_type&amp;FK_device=$dev_ID&amp;add=add'>".$LANG["financial"][68]."</a></strong>";
 			echo "</div><br>";
 		}
@@ -67,7 +67,7 @@ function showInfocomForm($target,$device_type,$dev_ID,$show_immo=1,$withtemplate
 		if ($withtemplate!=2)
 			echo "<form name='form_ic' method='post' action=\"$target\">";
 
-		echo "<div align='center'>";
+		echo "<div class='center'>";
 		echo "<table class='tab_cadre".(!ereg("infocoms-show",$_SERVER['PHP_SELF'])?"_fixe":"")."'>";
 
 		echo "<tr><th colspan='4'>".$LANG["financial"][3]."</th></tr>";

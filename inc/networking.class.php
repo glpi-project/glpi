@@ -234,7 +234,7 @@ class Netdevice extends CommonDBTM {
 			}
 
 
-			echo "<div align='center'><form name='form' method='post' action=\"$target\">\n";
+			echo "<div class='center'><form name='form' method='post' action=\"$target\">\n";
 
 			if(strcmp($template,"newtemplate") === 0) {
 				echo "<input type=\"hidden\" name=\"is_template\" value=\"1\" />\n";
@@ -398,10 +398,10 @@ class Netdevice extends CommonDBTM {
 
 					echo "<td class='tab_bg_2' valign='top'>";
 					echo "<input type='hidden' name='ID' value=\"$ID\">\n";
-					echo "<div align='center'><input type='submit' name='update' value=\"".$LANG["buttons"][7]."\" class='submit'></div>";
+					echo "<div class='center'><input type='submit' name='update' value=\"".$LANG["buttons"][7]."\" class='submit'></div>";
 					echo "<td class='tab_bg_2' valign='top'>\n";
 
-					echo "<div align='center'>\n";
+					echo "<div class='center'>\n";
 					if (!$this->fields["deleted"])
 						echo "<input type='submit' name='delete' value=\"".$LANG["buttons"][6]."\" class='submit'>\n";
 					else {
@@ -420,7 +420,7 @@ class Netdevice extends CommonDBTM {
 			return true;
 		}
 		else {
-			echo "<div align='center'><strong>".$LANG["common"][54]."</strong></div>";
+			echo "<div class='center'><strong>".$LANG["common"][54]."</strong></div>";
 			return false;
 		}
 

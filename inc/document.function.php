@@ -195,7 +195,7 @@ function showDeviceDocument($instID,$search='') {
 	
 		echo "<form method='post' action=\"".$CFG_GLPI["root_doc"]."/front/document.form.php\">";
 	
-		echo "<br><br><div align='center'><table class='tab_cadre_fixe'>";
+		echo "<br><br><div class='center'><table class='tab_cadre_fixe'>";
 		echo "<tr><th colspan='3'>".$LANG["document"][19].":</th></tr>";
 		echo "<tr><th>".$LANG["common"][17]."</th>";
 		echo "<th>".$LANG["common"][16]."</th>";
@@ -299,7 +299,7 @@ function showDocumentAssociated($device_type,$ID,$withtemplate=''){
 	$i = 0;
 
 	if ($withtemplate!=2) echo "<form method='post' action=\"".$CFG_GLPI["root_doc"]."/front/document.form.php\" enctype=\"multipart/form-data\">";
-	echo "<br><br><div align='center'><table class='tab_cadre_fixe'>";
+	echo "<br><br><div class='center'><table class='tab_cadre_fixe'>";
 	echo "<tr><th colspan='6'>".$LANG["document"][21].":</th></tr>";
 	echo "<tr><th>".$LANG["common"][16]."</th>";
 	echo "<th width='100px'>".$LANG["document"][2]."</th>";

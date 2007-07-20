@@ -78,7 +78,7 @@ class Mailgate  extends CommonDBTM {
 
 		if ($spotted){
 
-			echo "<div align='center'><form method='post' name=form action=\"$target\">";
+			echo "<div class='center'><form method='post' name=form action=\"$target\">";
 
 			echo "<table class='tab_cadre' cellpadding='2'>";
 
@@ -120,7 +120,7 @@ class Mailgate  extends CommonDBTM {
 				if(empty($ID)){
 
 					echo "<td valign='top' colspan='2'>";
-					echo "<div align='center'><input type='submit' name='add' value=\"".$LANG["buttons"][8]."\" class='submit'></div>";
+					echo "<div class='center'><input type='submit' name='add' value=\"".$LANG["buttons"][8]."\" class='submit'></div>";
 					echo "</td>";
 					echo "</tr>";
 				} else {
@@ -130,7 +130,7 @@ class Mailgate  extends CommonDBTM {
 					echo "<input type='submit' name='update' value=\"".$LANG["buttons"][7]."\" class='submit'>";
 					echo "</td>";
 					echo "<td valign='top'>\n";
-					echo "<div align='center'>";
+					echo "<div class='center'>";
 					echo "<input type='submit' name='delete' value=\"".$LANG["buttons"][6]."\" class='submit'>";
 					echo "</div>";
 					echo "</td>";
@@ -147,7 +147,7 @@ class Mailgate  extends CommonDBTM {
 			return true;	
 		}
 		else {
-			echo "<div align='center'><strong>".$LANG["common"][54]."</strong></div>";
+			echo "<div class='center'><strong>".$LANG["common"][54]."</strong></div>";
 			return false;
 		}
 

@@ -102,7 +102,7 @@ class Group extends CommonDBTM{
 
 			$this->showOnglets($ID, $withtemplate,$_SESSION['glpi_onglet']);
 
-			echo "<form method='post' name=form action=\"$target\"><div align='center'>";
+			echo "<form method='post' name=form action=\"$target\"><div class='center'>";
 			if (empty($ID)){
 				echo "<input type='hidden' name='FK_entities' value='".$_SESSION["glpiactive_entity"]."'>";
 			}
@@ -173,7 +173,7 @@ class Group extends CommonDBTM{
 
 					echo "<tr>";
 					echo "<td class='tab_bg_2' valign='top' colspan='2'>";
-					echo "<div align='center'><input type='submit' name='add' value=\"".$LANG["buttons"][8]."\" class='submit'></div>";
+					echo "<div class='center'><input type='submit' name='add' value=\"".$LANG["buttons"][8]."\" class='submit'></div>";
 					echo "</td>";
 					echo "</tr>";
 
@@ -183,10 +183,10 @@ class Group extends CommonDBTM{
 					echo "<tr>";
 					echo "<td class='tab_bg_2' valign='top'>";
 					echo "<input type='hidden' name='ID' value=\"$ID\">\n";
-					echo "<div align='center'><input type='submit' name='update' value=\"".$LANG["buttons"][7]."\" class='submit' ></div>";
+					echo "<div class='center'><input type='submit' name='update' value=\"".$LANG["buttons"][7]."\" class='submit' ></div>";
 					echo "</td>\n\n";
 					echo "<td class='tab_bg_2' valign='top'>\n";
-					echo "<div align='center'><input type='submit' name='delete' value=\"".$LANG["buttons"][6]."\" class='submit'></div>";
+					echo "<div class='center'><input type='submit' name='delete' value=\"".$LANG["buttons"][6]."\" class='submit'></div>";
 
 					echo "</td>";
 					echo "</tr>";
@@ -195,7 +195,7 @@ class Group extends CommonDBTM{
 			echo "</table></div></form>";
 
 		} else {
-			echo "<div align='center'><strong>".$LANG["common"][54]."</strong></div>";
+			echo "<div class='center'><strong>".$LANG["common"][54]."</strong></div>";
 			return false;
 
 		}

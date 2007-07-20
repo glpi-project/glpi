@@ -153,7 +153,7 @@ function displaySearchError($type){
         	case CSV_OUTPUT : //csv
             		break;
 		default :
-			$out= "<div align='center'><strong>".$LANG["search"][15]."</strong></div>\n";
+			$out= "<div class='center'><strong>".$LANG["search"][15]."</strong></div>\n";
 			break;
 	}
 	return $out;
@@ -291,9 +291,9 @@ function displaySearchHeader($type,$rows,$cols,$fixed=0){
 			break;
 		default :
 			if ($fixed){
-				$out="<div align='center'><table border='0' class='tab_cadre_fixehov'>\n";
+				$out="<div class='center'><table border='0' class='tab_cadre_fixehov'>\n";
 			} else {
-				$out="<div align='center'><table border='0' class='tab_cadrehov'>\n";
+				$out="<div class='center'><table border='0' class='tab_cadrehov'>\n";
 			}
 			break;
 	}

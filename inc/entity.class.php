@@ -134,7 +134,7 @@ class Entity extends CommonDBTM{
 
 			$this->showOnglets($ID, $withtemplate,$_SESSION['glpi_onglet']);
 
-			echo "<form method='post' name=form action=\"$target\"><div align='center'>";
+			echo "<form method='post' name=form action=\"$target\"><div class='center'>";
 
 			echo "<table class='tab_cadre_fixe' cellpadding='2' >";
 			echo "<tr><th colspan='4'>";
@@ -215,7 +215,7 @@ class Entity extends CommonDBTM{
 			echo "</table></div></form>";
 
 		} else {
-			echo "<div align='center'><strong>".$LANG["common"][54]."</strong></div>";
+			echo "<div class='center'><strong>".$LANG["common"][54]."</strong></div>";
 			return false;
 
 		}
