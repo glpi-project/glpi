@@ -1247,8 +1247,7 @@ function update0681to07() {
 			) ENGINE=MyISAM ";
 		$DB->query($query) or die("0.7 add table glpi_dropdown_software_category" . $LANG["update"][90] . $DB->error());	
 	}
-	if (!FieldExists("glpi_config", "rule_softwarecategories")) {
-		
+	if (!FieldExists("glpi_profiles", "rule_softwarecategories")) {
 		$query = "ALTER TABLE `glpi_profiles` ADD COLUMN `rule_softwarecategories` char(1) default NULL AFTER `rule_ldap`";
 		$DB->query($query) or die("0.7 add rule_softwarecategories in glpi_profiles" . $LANG["update"][90] . $DB->error());
 		$query = "UPDATE `glpi_profiles` SET `rule_softwarecategories` = config";
