@@ -880,4 +880,15 @@ function closeDBConnections(){
 	}
 }
 
+// Check if the user have an email 
+function checkEmailForUser($ID){
+	global $DB;
+	$query="SELECT email FROM glpi_users WHERE ID='$ID'";
+	$result=$DB->query($query);
+	if ($DB->numrows($result)==1){
+		return isValidEmail($DB->result('email',0,0));
+	}
+	return false;
+}
+
 ?>

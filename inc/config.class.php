@@ -460,7 +460,11 @@ class Config extends CommonDBTM {
 			dropdownYesNo("mailing", $CFG_GLPI["mailing"]);
 			echo "</td></tr>";
 	
-			echo "<tr class='tab_bg_2'><td >" . $LANG["setup"][203] . "</td><td> <input type=\"text\" name=\"admin_email\" size='40' value=\"" . $CFG_GLPI["admin_email"] . "\"> </td></tr>";
+			echo "<tr class='tab_bg_2'><td >" . $LANG["setup"][203] . "</td><td> <input type=\"text\" name=\"admin_email\" size='40' value=\"" . $CFG_GLPI["admin_email"] . "\">";
+			if (!isValidEmail($CFG_GLPI["admin_email"])){
+				echo "<span class='red'>&nbsp;".$LANG["mailing"][110]."</span>";
+			}
+			echo " </td></tr>";
 	
 			echo "<tr class='tab_bg_2'><td >" . $LANG["setup"][204] . "</td><td><textarea   cols='60' rows='3'  name=\"mailing_signature\" >".$CFG_GLPI["mailing_signature"]."</textarea></td></tr>";
 	

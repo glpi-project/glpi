@@ -868,6 +868,7 @@ $LANG["mailing"][105]="Non attribué";
 $LANG["mailing"][107]="Pas de matériel concerné";
 $LANG["mailing"][108]="Pas d'auteur";
 $LANG["mailing"][109]="Pas de groupe";
+$LANG["mailing"][110]="Email invalide";
 
 
 $LANG["Menu"][0]="Ordinateurs";

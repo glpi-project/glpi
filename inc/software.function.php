@@ -675,37 +675,37 @@ function showSoftwareInstalled($instID,$withtemplate='') {
 	$cat = -1;
 	
 	if ($DB->numrows($result)){
-			while ($data=$DB->fetch_array($result)) {
-
-				if($data["category_id"] != $cat)
-					$cat = displayCategoryHeader($data,$cat);
+		while ($data=$DB->fetch_array($result)) {
+			if($data["category_id"] != $cat){
+				$cat = displayCategoryHeader($data,$cat);
+			}
 								
-				displaySoftsByCategory($data,$instID,$withtemplate);
-	}
+			displaySoftsByCategory($data,$instID,$withtemplate);
+		}
 	
-	echo "</td></tr></table></div></tr>";
-		
-	$q="SELECT count(*) FROM glpi_software WHERE deleted='0' AND is_template='0'";
-	$result = $DB->query($q);
-	$nb = $DB->result($result,0,0);
-
-	if((!empty($withtemplate) && $withtemplate == 2) || $nb==0||!haveRight("software","w")) {
-		echo "</table></div>";
-	} else {
-		
-		echo "<tr class='tab_bg_1'><td align='center' colspan='5'>";
-		echo "<form method='post' action=\"".$CFG_GLPI["root_doc"]."/front/software.licenses.php\">";
-
-		echo "<div class='software-instal'>";
-		echo "<input type='hidden' name='cID' value='$instID'>";
-		dropdownSoftwareToInstall("licenseID",$withtemplate,$FK_entities);
-		echo "<input type='submit' name='install' value=\"".$LANG["buttons"][4]."\" class='submit'>";
-		echo "</div>";
-		echo "</form>";
-		echo "</td></tr>";
-		echo "</table></div>";
+		echo "</td></tr></table></div></tr>";
+			
+		$q="SELECT count(*) FROM glpi_software WHERE deleted='0' AND is_template='0'";
+		$result = $DB->query($q);
+		$nb = $DB->result($result,0,0);
+	
+		if((!empty($withtemplate) && $withtemplate == 2) || $nb==0||!haveRight("software","w")) {
+			echo "</table></div>";
+		} else {
+			
+			echo "<tr class='tab_bg_1'><td align='center' colspan='5'>";
+			echo "<form method='post' action=\"".$CFG_GLPI["root_doc"]."/front/software.licenses.php\">";
+	
+			echo "<div class='software-instal'>";
+			echo "<input type='hidden' name='cID' value='$instID'>";
+			dropdownSoftwareToInstall("licenseID",$withtemplate,$FK_entities);
+			echo "<input type='submit' name='install' value=\"".$LANG["buttons"][4]."\" class='submit'>";
+			echo "</div>";
+			echo "</form>";
+			echo "</td></tr>";
+			echo "</table></div>";
+		}
 	}
-}
 }
 
 
