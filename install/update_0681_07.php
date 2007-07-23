@@ -1276,5 +1276,26 @@ function update0681to07() {
 		$query="ALTER TABLE `glpi_device_gfxcard` DROP `ram`";
 		$DB->query($query) or die("0.7 delete 'ram' field from glpi_device_gfxcard" . $LANG["update"][90] . $DB->error());
 	}
+
+	if (FieldExists("glpi_config", "list_limit")) {
+		//Update gfxcard memory management
+		$query = "ALTER TABLE `glpi_config` CHANGE `list_limit` `list_limit` INT NULL DEFAULT '20'";
+		$DB->query($query) or die("0.7 alter list_limit in config" . $LANG["update"][90] . $DB->error());
+	}
+	if (!FieldExists("glpi_config", "list_limit_max")) {
+		//Update gfxcard memory management
+		$query = "ALTER TABLE `glpi_config` ADD `list_limit_max` INT NOT NULL DEFAULT '50' AFTER `list_limit` ;";
+		$DB->query($query) or die("0.7 add list_limit_max in config" . $LANG["update"][90] . $DB->error());
+	}
+
+	if (!FieldExists("glpi_users", "list_limit")) {
+		//Update gfxcard memory management
+		$query = "ALTER TABLE `glpi_users` ADD `list_limit` INT NOT NULL DEFAULT '20' AFTER `language` ;";
+		$DB->query($query) or die("0.7 add list_limit_max in users" . $LANG["update"][90] . $DB->error());
+	}
+
+
+
+
 } // fin 0.7 #####################################################################################
 ?>

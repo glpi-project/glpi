@@ -123,7 +123,7 @@ function ocsShowNewComputer($ocs_server_id, $advanced, $check, $start, $tolinked
 			printPager($start, $numrows, $_SERVER['PHP_SELF'], $parameters);
 
 			// delete end 
-			array_splice($hardware, $start + $CFG_GLPI["list_limit"]);
+			array_splice($hardware, $start + $_SESSION["glpilist_limit"]);
 			// delete begin
 			if ($start > 0)
 				array_splice($hardware, 0, $start);
@@ -1325,7 +1325,7 @@ function ocsShowUpdateComputer($ocs_server_id, $check, $start) {
 			printPager($start, $numrows, $_SERVER['PHP_SELF'], $parameters);
 
 			// delete end 
-			array_splice($already_linked, $start + $CFG_GLPI["list_limit"]);
+			array_splice($already_linked, $start + $_SESSION["glpilist_limit"]);
 			// delete begin
 			if ($start > 0)
 				array_splice($already_linked, 0, $start);
@@ -2897,6 +2897,7 @@ function ocsImportLicense($software, $version, $serial = "global", $buy = "0", $
 				AND version='" . $version . "'
 				AND serial='" . $serial . "' 
 				AND buy='" . $buy . "'"; #TODO serial => type
+
 	$result = $DB->query($query);
 	if ($DB->numrows($result) > 0) {
 		$data = $DB->fetch_array($result);

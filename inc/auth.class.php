@@ -251,7 +251,7 @@ class Identification {
 			$_SESSION["glpisearchcount"] = array ();
 			$_SESSION["glpisearchcount2"] = array ();
 			$_SESSION["glpiroot"] = $CFG_GLPI["root_doc"];
-			$_SESSION["glpilist_limit"] = $CFG_GLPI["list_limit"];
+			$_SESSION["glpilist_limit"] = $this->user->fields['list_limit'];
 			$_SESSION["glpicrontimer"] = time();
 						
 			// glpiprofiles -> other available profile with link to the associated entities

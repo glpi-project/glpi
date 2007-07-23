@@ -124,7 +124,10 @@ class User extends CommonDBTM {
 		if (!isset($input["language"])){
 			$input["language"]=$CFG_GLPI["default_language"];
 		}
-		
+
+		if (!isset($input["list_limit"])){
+			$input["list_limit"]=$CFG_GLPI["list_limit"];
+		}		
 		// Add User, nasty hack until we get PHP4-array-functions
 		if (isset ($input["password"])) {
 			if (empty ($input["password"])) {
@@ -219,6 +222,9 @@ class User extends CommonDBTM {
 		}
 		if (isset ($_SESSION["glpiID"]) && isset ($input["tracking_order"]) && $_SESSION["glpiID"] == $input['ID']) {
 			$_SESSION["glpitracking_order"] = $input["tracking_order"];
+		}
+		if (isset ($_SESSION["glpiID"]) && isset ($input["list_limit"]) && $_SESSION["glpiID"] == $input['ID']) {
+			$_SESSION["glpilist_limit"] = $input["list_limit"];
 		}
 
 		// Security system execpt for login update
@@ -883,9 +889,13 @@ class User extends CommonDBTM {
 			if (haveRight("show_ticket", "1"))
 			{
 				echo "<tr class='tab_bg_1'><td class='center'>" . $LANG["setup"][40] . "</td><td>";
-				dropdownYesNo('tracking_order',$_SESSION["glpitracking_order"]);
+				dropdownInteger('tracking_order',$_SESSION["glpitracking_order"]);
 				echo "</td></tr>";
 			}
+
+			echo "<tr class='tab_bg_1'><td class='center'>" . $LANG["setup"][111] . "</td><td>";
+			dropdownInteger("list_limit", $this->fields["list_limit"],5,$CFG_GLPI['list_limit_max'],5);
+			echo "</td></tr>";
 			
 			echo "<tr>";
 			echo "<td class='tab_bg_2' valign='top' align='center' colspan='2'>";

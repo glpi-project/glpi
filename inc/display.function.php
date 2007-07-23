@@ -87,7 +87,6 @@ function commonHeader($title,$url,$sector="none",$item="none")
 	// Override list-limit if choosen
 	if (isset($_POST['list_limit'])) {
 		$_SESSION['glpilist_limit']=$_POST['list_limit'];
-		$CFG_GLPI["list_limit"]=$_POST['list_limit'];
 	}
 
 
@@ -836,7 +835,6 @@ function helpHeader($title,$url) {
 	// Override list-limit if choosen
 	if (isset($_POST['list_limit'])) {
 		$_SESSION['glpilist_limit']=$_POST['list_limit'];
-		$CFG_GLPI["list_limit"]=$_POST['list_limit'];
 	}
 
 	// Send extra expires header if configured
@@ -1081,7 +1079,6 @@ function nullHeader($title,$url) {
 	// Override list-limit if choosen
 	if (isset($_POST['list_limit'])) {
 		$_SESSION['glpilist_limit']=$_POST['list_limit'];
-		$CFG_GLPI["list_limit"]=$_POST['list_limit'];
 	}
 
 	// Send extra expires header if configured
@@ -1156,7 +1153,6 @@ function popHeader($title,$url)
 	// Override list-limit if choosen
 	if (isset($_POST['list_limit'])) {
 		$_SESSION['glpilist_limit']=$_POST['list_limit'];
-		$CFG_GLPI["list_limit"]=$_POST['list_limit'];
 	}
 
 
@@ -1512,25 +1508,25 @@ function printPager($start,$numrows,$target,$parameters,$item_type_output=0,$ite
 	global $CFG_GLPI, $LANG,$CFG_GLPI;
 
 	// Forward is the next step forward
-	$forward = $start+$CFG_GLPI["list_limit"];
+	$forward = $start+$_SESSION["glpilist_limit"];
 
 	// This is the end, my friend	
-	$end = $numrows-$CFG_GLPI["list_limit"];
+	$end = $numrows-$_SESSION["glpilist_limit"];
 
 	// Human readable count starts here
 	$current_start=$start+1;
 
 	// And the human is viewing from start to end
-	$current_end = $current_start+$CFG_GLPI["list_limit"]-1;
+	$current_end = $current_start+$_SESSION["glpilist_limit"]-1;
 	if ($current_end>$numrows) {
 		$current_end = $numrows;
 	}
 
 	// Backward browsing 
-	if ($current_start-$CFG_GLPI["list_limit"]<=0) {
+	if ($current_start-$_SESSION["glpilist_limit"]<=0) {
 		$back=0;
 	} else {
-		$back=$start-$CFG_GLPI["list_limit"];
+		$back=$start-$_SESSION["glpilist_limit"];
 	}
 
 	// Print it

@@ -126,7 +126,7 @@ function displayStats($type,$field,$date1,$date2,$start,$value,$value2=""){
 	if (is_array($value)){
 
 
-		$end_display=$start+$CFG_GLPI["list_limit"];
+		$end_display=$start+$_SESSION["glpilist_limit"];
 		$numrows=count($value);
 		if (isset($_GET['export_all'])) {
 			$start=0;
@@ -903,7 +903,7 @@ function showItemStats($target,$date1,$date2,$start){
 		if (isset($_GET['export_all']))
 			$i=0;
 
-		$end_display=$start+$CFG_GLPI["list_limit"];
+		$end_display=$start+$_SESSION["glpilist_limit"];
 		if (isset($_GET['export_all']))
 			$end_display=$numrows;
 		echo displaySearchHeader($output_type,$end_display-$start+1,2,1);
