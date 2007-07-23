@@ -265,7 +265,6 @@ class User extends CommonDBTM {
 	// SPECIFIC FUNCTIONS
 	function applyRightRules($input){
 		global $DB;
-		print_r($input);
 		if (isset($input["auth_method"])&&($input["auth_method"] == AUTH_LDAP || $input["auth_method"]== AUTH_MAIL))
 		if (isset ($input["ID"]) &&$input["ID"]>0&& isset ($input["_ldap_rules"]) && count($input["_ldap_rules"])) {
 
@@ -551,10 +550,11 @@ class User extends CommonDBTM {
 		// some defaults...
 		$this->fields['password'] = "";
 		$this->fields['password_md5'] = "";
-		if (ereg("@", $name))
+		if (ereg("@", $name)){
 			$this->fields['email'] = $name;
-		else
+		} else {
 			$this->fields['email'] = $name . "@" . $mail_method["imap_host"];
+		}
 
 		$this->fields['name'] = $name;
 
@@ -683,6 +683,9 @@ class User extends CommonDBTM {
 				echo "</td>";
 				echo "<td class='center'>" . $LANG["setup"][14] . ":</td><td>";
 				autocompletionTextField("email_form", "glpi_users", "email", $this->fields["email"], 30);
+				if (!isValidEmail($this->fields["email"])){
+					echo "<span class='red'>&nbsp;".$LANG["mailing"][110]."</span>";
+				}
 				echo "</td></tr>";
 
 				echo "<tr class='tab_bg_1'><td class='center'>" . $LANG["financial"][29] . ":</td><td>";
@@ -848,8 +851,12 @@ class User extends CommonDBTM {
 			echo "<tr class='tab_bg_1'><td class='center'>" . $LANG["setup"][14] . "</td><td>";
 			if (!$extauth || (isset ($auth_method['ldap_fields']) && empty ($auth_method['ldap_fields']["email"]))) {
 				autocompletionTextField("email_form", "glpi_users", "email", $this->fields["email"], 30);
-			} else
+				if (!isValidEmail($this->fields["email"])){
+					echo "<span class='red'>".$LANG["mailing"][110]."</span>";
+				}
+			} else {
 				echo $this->fields["email"];
+			}
 			echo "</td></tr>";
 
 			echo "<tr class='tab_bg_1'><td class='center'>" . $LANG["financial"][29] . "</td><td>";

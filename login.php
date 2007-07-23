@@ -223,10 +223,15 @@ if (isset ($_POST["noCAS"])){
 
 	// Redirect management
 	$REDIRECT = "";
-	if (isset ($_POST['redirect'])){
+	if (isset ($_POST['redirect'])&&strlen($_POST['redirect'])>0){
 		$REDIRECT = "?redirect=" .$_POST['redirect'];
+	} else {
+		// Check mail if mail followup is activated
+		if ($CFG_GLPI['mailing']&&!checkEmailForUser($_SESSION['glpiID'])){
+			$REDIRECT="?redirect=prefs_prefs";
+		}
 	}
-
+	//exit();
 	// Redirect to Command Central if not post-only
 	if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
 		glpi_header($CFG_GLPI['root_doc'] . "/front/helpdesk.public.php$REDIRECT");

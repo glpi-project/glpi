@@ -1179,6 +1179,9 @@ function manageRedirect($where){
 						case "tracking":
 							glpi_header($CFG_GLPI["root_doc"]."/front/helpdesk.public.php?show=user&ID=".$data[1]);
 						break;
+						case "prefs":
+							glpi_header($CFG_GLPI["root_doc"]."/front/user.form.my.php");
+						break;
 						default:
 							glpi_header($CFG_GLPI["root_doc"]."/front/helpdesk.public.php");
 						break;
@@ -1194,6 +1197,9 @@ function manageRedirect($where){
 							} else {
 								glpi_header($CFG_GLPI["root_doc"]."/front/central.php");
 							} 
+						break;
+						case "prefs":
+							glpi_header($CFG_GLPI["root_doc"]."/front/user.form.my.php");
 						break;
 						default : 
 							if (!empty($data[0])&&$data[1]>0){
