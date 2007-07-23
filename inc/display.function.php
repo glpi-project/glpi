@@ -170,6 +170,7 @@ function commonHeader($title,$url,$sector="none",$item="none")
 			$menu['inventory']['content']['computer']['links']['search']='/front/computer.php';
 			$menu['inventory']['content']['computer']['links']['add']='/front/setup.templates.php?type='.COMPUTER_TYPE.'&amp;add=1';
 			$menu['inventory']['content']['computer']['links']['template']='/front/setup.templates.php?type='.COMPUTER_TYPE.'&amp;add=0';
+			$menu['inventory']['content']['computer']['export_pdf']['template']='/front/setup.templates.php?type='.COMPUTER_TYPE.'&amp;add=0';
 			$showstate=true;
 		}
 		if (haveRight("monitor","r")){

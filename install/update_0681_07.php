@@ -1268,5 +1268,13 @@ function update0681to07() {
 		$query = "ALTER TABLE `glpi_ocs_config` ADD `import_software_comments` INT NOT NULL DEFAULT '0' AFTER `import_monitor_comments`";
 		$DB->query($query) or die("0.7 alter import_software_comments in glpi_ocs_config" . $LANG["update"][90] . $DB->error());
 	}
+	
+	//Update gfxcard memory management
+	$query = "UPDATE glpi_device_gfxcard SET specif_default=ram";
+	$DB->query($query) or die("0.7 glpi_device_gfxcard" . $LANG["update"][90] . $DB->error());
+
+	$query="ALTER TABLE `glpi_device_gfxcard` DROP `ram`";
+	$DB->query($query) or die("0.7 delete 'ram' field from glpi_device_gfxcard" . $LANG["update"][90] . $DB->error());
+
 } // fin 0.7 #####################################################################################
 ?>
