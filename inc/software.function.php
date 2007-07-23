@@ -683,29 +683,31 @@ function showSoftwareInstalled($instID,$withtemplate='') {
 			displaySoftsByCategory($data,$instID,$withtemplate);
 		}
 	
-		echo "</td></tr></table></div></tr>";
+		echo "</table></div></td></tr>";
 			
 		$q="SELECT count(*) FROM glpi_software WHERE deleted='0' AND is_template='0'";
 		$result = $DB->query($q);
 		$nb = $DB->result($result,0,0);
 	
-		if((!empty($withtemplate) && $withtemplate == 2) || $nb==0||!haveRight("software","w")) {
-			echo "</table></div>";
-		} else {
-			
-			echo "<tr class='tab_bg_1'><td align='center' colspan='5'>";
-			echo "<form method='post' action=\"".$CFG_GLPI["root_doc"]."/front/software.licenses.php\">";
-	
-			echo "<div class='software-instal'>";
-			echo "<input type='hidden' name='cID' value='$instID'>";
-			dropdownSoftwareToInstall("licenseID",$withtemplate,$FK_entities);
-			echo "<input type='submit' name='install' value=\"".$LANG["buttons"][4]."\" class='submit'>";
-			echo "</div>";
-			echo "</form>";
-			echo "</td></tr>";
-			echo "</table></div>";
-		}
 	}
+
+	if((!empty($withtemplate) && $withtemplate == 2) || !haveRight("software","w")) {
+		echo "</table></div>";
+	} else {
+			
+		echo "<tr class='tab_bg_1'><td align='center' colspan='5'>";
+		echo "<form method='post' action=\"".$CFG_GLPI["root_doc"]."/front/software.licenses.php\">";
+	
+		echo "<div class='software-instal'>";
+		echo "<input type='hidden' name='cID' value='$instID'>";
+		dropdownSoftwareToInstall("licenseID",$withtemplate,$FK_entities);
+		echo "<input type='submit' name='install' value=\"".$LANG["buttons"][4]."\" class='submit'>";
+		echo "</div>";
+		echo "</form>";
+		echo "</td></tr>";
+		echo "</table></div>";
+	}
+
 }
 
 
@@ -714,8 +716,10 @@ function displayCategoryHeader($data,$cat)
 	global $LANG,$CFG_GLPI;
 	$expirecss='';
 	
-	if ($cat != -1)
-		echo "</td></tr></table></div></tr>";
+	// Close old one
+	if ($cat != -1){
+		echo "</table></div></td></tr>";
+	}
 						
 	$cat = $data["category_id"];
 	$catname=$data["category"];
@@ -725,13 +729,14 @@ function displayCategoryHeader($data,$cat)
 
 	echo "	<tr class='tab_bg_2$expirecss'>";
 	echo "  	<td align='center' colspan='5'>"; 
-	echo "			<a href=\"javascript:showHideDiv('softcat$cat','imgcat$cat','".GLPI_ROOT."/pics/folder.png','".GLPI_ROOT."/pics/folder-open.png');\">";
-	echo "				<img name='imgcat$cat' src=\"".GLPI_ROOT."/pics/folder".(!$cat?'':"-open").".png\">&nbsp;<strong>".$catname."</strong>";
+	echo "			<a  href=\"javascript:showHideDiv('softcat$cat','imgcat$cat','".GLPI_ROOT."/pics/folder.png','".GLPI_ROOT."/pics/folder-open.png');\">";
+	echo "				<img alt='' name='imgcat$cat' src=\"".GLPI_ROOT."/pics/folder".(!$cat?'':"-open").".png\">&nbsp;<strong>".$catname."</strong>";
 	echo "			</a>"; 
 	echo "		</td>"; 
 	echo "	</tr>"; 
 	echo "<tr class='tab_bg_2$expirecss'>";
-	echo "		<td colspan='5'><div align='center' id='softcat$cat' ".(!$cat?"style=\"display:none;\"":'').">"; 
+	echo "		<td colspan='5'>
+			     <div align='center' id='softcat$cat' ".(!$cat?"style=\"display:none;\"":'').">"; 
 	echo"			<table class='tab_cadre_fixe'>";
 	echo "				<tr>"; 
 	echo "					<th>".$LANG["common"][16]."</th><th>".$LANG["software"][32]."</th><th>".$LANG["software"][28]."</th><th>".$LANG["software"][35]."</th><th>&nbsp;</th>"; 
@@ -788,7 +793,9 @@ function displaySoftsByCategory($data,$instID,$withtemplate)
 		echo "<td class='center'>".($data["buy"]?$LANG["choice"][1]:$LANG["choice"][0]);
 		echo "</td>";								
 	}
-	else echo "<td>&nbsp;</td><td>&nbsp;</td>";
+	else {
+		echo "<td>&nbsp;</td><td>&nbsp;</td>";
+	}
 	echo "<td align='center' class='tab_bg_2'>";
 	if(!empty($withtemplate) && $withtemplate == 2) {
 		//do nothing
