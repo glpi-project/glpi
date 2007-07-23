@@ -348,6 +348,7 @@ function logArray(){
 			"financial"=>$LANG["log"][54],
 			"login"=>$LANG["log"][55],
 			"setup"=>$LANG["log"][57],
+			"security"=>$LANG["log"][66],
 			"reservation"=>$LANG["log"][58],
 			"cron"=>$LANG["log"][59],
 			"document"=>$LANG["log"][56]);
@@ -600,7 +601,7 @@ function showEvents($target,$order,$sort,$start=0) {
 		echo "<tr class='tab_bg_2'>";
 		echo "<td>".(isset($logItemtype[$itemtype])?$logItemtype[$itemtype]:"&nbsp;").":</td><td class='center'><strong>"; 
 		displayItemLogID($itemtype,$item);	
-		echo "</strong></td><td>".convDateTime($date)."</td><td class='center'>".$logService[$service]."</td><td class='center'>$level</td><td>$message</td>";
+		echo "</strong></td><td>".convDateTime($date)."</td><td class='center'>".(isset($logService[$service])?$logService[$service]:$service)."</td><td class='center'>$level</td><td>$message</td>";
 		echo "</tr>";
 
 		$i++; 
