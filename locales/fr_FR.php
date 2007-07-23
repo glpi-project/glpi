@@ -230,6 +230,7 @@ $LANG["common"][54]="Elément introuvable";
 $LANG["common"][55]="Etes-vous certain de vouloir supprimer cet élement ?";
 $LANG["common"][56]="Central";
 $LANG["common"][57]="Titre";
+$LANG["common"][58]="Valeur maximale";
 
 
 $LANG["computers"][9]="OS";

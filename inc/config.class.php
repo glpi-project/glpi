@@ -227,9 +227,6 @@ class Config extends CommonDBTM {
 				echo "<div class='center'><table class='tab_cadre_fixe'>";
 				echo "<tr><th colspan='4'>" . $LANG["setup"][119] . "</th></tr>";
 			
-				echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["setup"][108] . "</td><td> <input size='10' type=\"text\" name=\"num_of_events\" value=\"" . $CFG_GLPI["num_of_events"] . "\"></td>";
-				echo "<td class='center'>" . $LANG["setup"][111] . "</td><td> <input size='10' type=\"text\" name=\"list_limit\" value=\"" . $cfg->fields["list_limit"] . "\"></td></tr>";
-			
 				echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["setup"][128] . " </td><td><select name=\"dateformat\">";
 				echo "<option value=\"0\"";
 				if ($CFG_GLPI["dateformat"] == 0) {
@@ -299,9 +296,20 @@ class Config extends CommonDBTM {
 				dropdownYesNo('flat_dropdowntree', $CFG_GLPI["flat_dropdowntree"]);
 				echo "</td>";
 			
-				echo "<td class='center'>&nbsp;</td><td>&nbsp;";
+				echo "<td class='center'>" . $LANG["setup"][108] . "</td><td><input size='10' type=\"text\" name=\"num_of_events\" value=\"" . $CFG_GLPI["num_of_events"] . "\">";
 				echo "</td></tr>";
 			
+				echo "<tr class='tab_bg_1'><td colspan='4' align='center'><strong>" . $LANG["setup"][111] . "</strong></td></tr>";
+
+				echo "<tr class='tab_bg_2'>";
+				echo "<td class='center'>" . $LANG["common"][44]."</td><td>";
+				dropdownInteger("list_limit",$cfg->fields["list_limit"],5,200,5);
+				
+				echo "</td><td class='center'>" . $LANG["common"][58] . "</td><td>";
+				dropdownInteger("list_limit",$cfg->fields["list_limit_max"],5,200,5);
+
+				echo "</td></tr>";
+
 				echo "<tr class='tab_bg_1'><td colspan='4' align='center'><strong>" . $LANG["title"][24] . "</strong></td></tr>";
 			
 				echo "<tr class='tab_bg_2'><td class='center'> " . $LANG["setup"][110] . " </td><td>";

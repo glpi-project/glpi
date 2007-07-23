@@ -219,8 +219,8 @@ function showKbItemList($target,$field,$phrasetype,$contains,$sort,$order,$start
 		$numrows =  $DB->numrows($result);
 
 		// Limit the result, if no limit applies, use prior result
-		if ($numrows > $CFG_GLPI["list_limit"]&&!isset($_GET['export_all'])) {
-			$query_limit = $query ." LIMIT $start,".$CFG_GLPI["list_limit"]." ";
+		if ($numrows > $_SESSION["glpilist_limit"]&&!isset($_GET['export_all'])) {
+			$query_limit = $query ." LIMIT $start,".$_SESSION["glpilist_limit"]." ";
 			$result_limit = $DB->query($query_limit);
 			$numrows_limit = $DB->numrows($result_limit);
 		} else {

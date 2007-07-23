@@ -528,7 +528,7 @@ function showEvents($target,$order,$sort,$start=0) {
 	// Query Database
 	$query = "SELECT * FROM glpi_event_log ORDER BY $sort $order";
 
-	$query_limit = "SELECT * FROM glpi_event_log ORDER BY $sort $order LIMIT $start,".$CFG_GLPI["list_limit"];
+	$query_limit = "SELECT * FROM glpi_event_log ORDER BY $sort $order LIMIT $start,".$_SESSION["glpilist_limit"];
 	// Get results
 	$result = $DB->query($query);
 

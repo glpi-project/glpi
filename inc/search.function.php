@@ -384,7 +384,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 	if (isset($CFG_GLPI["union_search_type"][$type])){
 		$itemtable=$CFG_GLPI["union_search_type"][$type];
 	}
-
+	$LIST_LIMIT=$_SESSION["glpilist_limit"];
 
 	// Set display type for export if define
 	$output_type=HTML_OUTPUT;
@@ -392,7 +392,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 		$output_type=$_GET["display_type"];
 		// Limit to 10 element
 		if ($_GET["display_type"]==GLOBAL_SEARCH){
-			$CFG_GLPI["list_limit"]=GLOBAL_SEARCH_DISPLAY_COUNT;
+			$LIST_LIMIT=GLOBAL_SEARCH_DISPLAY_COUNT;
 		}
 	}
 
@@ -809,7 +809,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 	$numrows=0;
 	//No search : count number of items using a simple count(ID) request and LIMIT search
 	if ($nosearch) {
-		$LIMIT= " LIMIT $start, ".$CFG_GLPI["list_limit"];
+		$LIMIT= " LIMIT $start, ".$LIST_LIMIT;
 		
 		$query_num="SELECT count($itemtable.ID) FROM ".$itemtable;
 
@@ -959,11 +959,11 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 			// Define begin and end var for loop
 			// Search case
 			$begin_display=$start;
-			$end_display=$start+$CFG_GLPI["list_limit"];
+			$end_display=$start+$LIST_LIMIT;
 			// No search Case
 			if ($nosearch){
 				$begin_display=0;
-				$end_display=min($numrows-$start,$CFG_GLPI["list_limit"]);
+				$end_display=min($numrows-$start,$LIST_LIMIT);
 			}
 			// Export All case
 			if (isset($_GET['export_all'])) {

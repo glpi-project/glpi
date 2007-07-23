@@ -182,7 +182,7 @@ function showCentralJobList($target,$start,$status="process") {
 		$title=$LANG["central"][9];
 	}
 
-	$lim_query = " LIMIT ".$start.",".$CFG_GLPI["list_limit"]."";	
+	$lim_query = " LIMIT ".$start.",".$_SESSION["glpilist_limit"]."";	
 
 	$result = $DB->query($query);
 	$numrows = $DB->numrows($result);
@@ -1371,9 +1371,10 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$au
 				$DB->data_seek($result,$i);
 			}
 
-			$end_display=$start+$CFG_GLPI["list_limit"];
-			if (isset($_GET['export_all']))
+			$end_display=$start+$_SESSION["glpilist_limit"];
+			if (isset($_GET['export_all'])){
 				$end_display=$numrows;
+			}
 			// Display List Header
 			echo displaySearchHeader($output_type,$end_display-$start+1,$nbcols);
 			
