@@ -1958,12 +1958,12 @@ function ocsUpdateDevices($device_type, $glpi_id, $ocs_id, $ocs_server_id, $cfg_
 						$line2 = clean_cross_side_scripting_deep(addslashes_deep($line2));
 						$video["designation"] = $line2["NAME"];
 						if (!in_array(GFX_DEVICE . '$$$$$' . $video["designation"], $import_device)) {
-							$video["ram"] = "";
+							$video["specif_default"] = "";
 							if (!empty ($line2["MEMORY"]))
-								$video["ram"] = $line2["MEMORY"];
+								$video["specif_default"] = $line2["MEMORY"];
 							$video_id = ocsAddDevice(GFX_DEVICE, $video);
 							if ($video_id) {
-								$devID = compdevice_add($glpi_id, GFX_DEVICE, $video_id, $video["ram"], $dohistory);
+								$devID = compdevice_add($glpi_id, GFX_DEVICE, $video_id, $video["specif_default"], $dohistory);
 								addToOcsArray($glpi_id, array (
 									$devID => GFX_DEVICE . '$$$$$' . $video["designation"]
 								), "import_device");

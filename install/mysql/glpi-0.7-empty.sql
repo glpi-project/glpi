@@ -519,7 +519,6 @@ DROP TABLE IF EXISTS `glpi_device_gfxcard`;
 CREATE TABLE `glpi_device_gfxcard` (
   `ID` int(11) NOT NULL auto_increment,
   `designation` varchar(255) collate utf8_unicode_ci default NULL,
-  `ram` varchar(255) collate utf8_unicode_ci default NULL,
   `interface` varchar(255) collate utf8_unicode_ci default 'PCI-X',
   `comment` text collate utf8_unicode_ci,
   `FK_glpi_enterprise` int(11) NOT NULL default '0',

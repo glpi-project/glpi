@@ -689,7 +689,7 @@ function showDevicesForm ($target,$ID,$device_type) {
 			break;
 			case "glpi_device_gfxcard" :
 				echo "<tr><td>".$LANG["device_gfxcard"][0].":</td><td>";
-			autocompletionTextField("ram",$table,"ram",$device->fields["ram"],20);
+			autocompletionTextField("specif_default",$table,"specif_default",$device->fields["specif_default"],20);
 			echo "</td></tr>";
 			echo "<tr><td>".$LANG["device_gfxcard"][2].":</td>";
 			echo "<td><select name='interface'>";
