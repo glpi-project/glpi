@@ -308,12 +308,16 @@ class User extends CommonDBTM {
 			foreach($entities as $entity)
 			{
 				if (count($rights)==0){
-					//If no profile is provided : get the profil by default
-					$sql_default_profile = "SELECT ID FROM glpi_profiles WHERE is_default=1";
-					$result = $DB->query($sql_default_profile);
-					if ($DB->numrows($result))
-                                        {
-						$rights[]=$DB->result($result,0,0);
+					//If no dynamix profile is provided : get the profil by default if not existing profile
+					$exist_profile = "SELECT ID FROM glpi_users_profiles WHERE FK_users='".$input["ID"]."'";
+					$result = $DB->query($exist_profile);
+					if ($DB->numrows($result)==0){
+						$sql_default_profile = "SELECT ID FROM glpi_profiles WHERE is_default=1";
+						$result = $DB->query($sql_default_profile);
+						if ($DB->numrows($result))
+						{
+							$rights[]=$DB->result($result,0,0);
+						}
 					}
 				}
 				
