@@ -606,12 +606,14 @@ function commonHeader($title,$url,$sector="none",$item="none")
 				echo "<ul class='ssmenu'>"; 
 				// list menu item 
 				foreach ($data['content'] as $key => $val) {
-					echo "<li><a href=\"".$CFG_GLPI["root_doc"].$val['page']."\"";
-					if (isset($data['shortcut'])&&!empty($data['shortcut'])){
-						echo " accesskey=\"".$val['shortcut']."\" ";
+					if (isset($val['page'])&&isset($val['title'])){
+						echo "<li><a href=\"".$CFG_GLPI["root_doc"].$val['page']."\"";
+						if (isset($data['shortcut'])&&!empty($data['shortcut'])){
+							echo " accesskey=\"".$val['shortcut']."\" ";
+						}
+							
+						echo ">".$val['title']."</a></li>\n";
 					}
-						
-					 echo ">".$val['title']."</a></li>\n";
 				}
 	
 				echo "</ul>";
