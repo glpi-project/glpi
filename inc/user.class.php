@@ -893,7 +893,7 @@ class User extends CommonDBTM {
 			if (haveRight("show_ticket", "1"))
 			{
 				echo "<tr class='tab_bg_1'><td class='center'>" . $LANG["setup"][40] . "</td><td>";
-				dropdownInteger('tracking_order',$_SESSION["glpitracking_order"]);
+				dropdownYesNo('tracking_order',$_SESSION["glpitracking_order"]);
 				echo "</td></tr>";
 			}
 
