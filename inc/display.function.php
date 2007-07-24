@@ -649,11 +649,13 @@ function commonHeader($title,$url,$sector="none",$item="none")
 				}
 			
 				foreach ($ssmenu as $key => $val) {
-					echo "<li><a href=\"".$CFG_GLPI["root_doc"].$val['page']."\" ";
-					if (isset($val['shortcut'])&&!empty($val['shortcut'])){
-						echo " accesskey=\"".$val['shortcut']."\"";
+					if (isset($val['page'])&&isset($val['title'])){
+						echo "<li><a href=\"".$CFG_GLPI["root_doc"].$val['page']."\" ";
+						if (isset($val['shortcut'])&&!empty($val['shortcut'])){
+							echo " accesskey=\"".$val['shortcut']."\"";
+						}
+						echo ">".$val['title']."</a></li>\n";
 					}
-					echo ">".$val['title']."</a></li>\n";
 				}
 			} else echo "<li>&nbsp;</li>";
 		} else echo "<li>&nbsp;</li>";
