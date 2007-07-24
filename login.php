@@ -227,9 +227,9 @@ if (isset ($_POST["noCAS"])){
 		$REDIRECT = "?redirect=" .$_POST['redirect'];
 	} else {
 		// Check mail if mail followup is activated
-		if ($CFG_GLPI['mailing']&&!checkEmailForUser($_SESSION['glpiID'])){
-			$REDIRECT="?redirect=prefs_prefs";
-		}
+//		if ($CFG_GLPI['mailing']&&!checkEmailForUser($_SESSION['glpiID'])){
+//			$REDIRECT="?redirect=prefs_prefs";
+//		}
 	}
 	//exit();
 	// Redirect to Command Central if not post-only
