@@ -886,7 +886,7 @@ function checkEmailForUser($ID){
 	$query="SELECT email FROM glpi_users WHERE ID='$ID'";
 	$result=$DB->query($query);
 	if ($DB->numrows($result)==1){
-		return isValidEmail($DB->result('email',0,0));
+		return isValidEmail($DB->result($result,0,0));
 	}
 	return false;
 }
