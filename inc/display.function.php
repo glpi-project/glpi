@@ -752,14 +752,15 @@ function commonHeader($title,$url,$sector="none",$item="none")
 							$i=0;
 							echo "</table></td><td valign='top'><table>";
 						}
-	
-						echo "<tr><td><a href=\"".$CFG_GLPI["root_doc"].$val['page']."\"";
-						if (isset($data['shortcut'])&&!empty($data['shortcut'])){
-							echo " accesskey=\"".$val['shortcut']."\" ";
+						if (isset($val['page'])&&isset($val['title'])){
+							echo "<tr><td><a href=\"".$CFG_GLPI["root_doc"].$val['page']."\"";
+							if (isset($data['shortcut'])&&!empty($data['shortcut'])){
+								echo " accesskey=\"".$val['shortcut']."\" ";
+							}
+								
+							echo ">".$val['title']."</a></td></tr>\n";
+							$i++;
 						}
-							
-						echo ">".$val['title']."</a></td></tr>\n";
-						$i++;
 					}			
 				}
 			}
