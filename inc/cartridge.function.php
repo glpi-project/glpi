@@ -548,7 +548,7 @@ function dropdownCompatibleCartridges($pID) {
 						AND glpi_cartridges.date_use IS NULL)
 		LEFT JOIN glpi_dropdown_locations ON (glpi_dropdown_locations.ID = glpi_cartridges_type.location)
 		WHERE  glpi_cartridges_assoc.FK_glpi_dropdown_model_printers = '".$p->fields["model"]."' 
-		AND glpi_cartridges_type.FK_entities='".$p->fields["model"]."' 
+		AND glpi_cartridges_type.FK_entities='".$p->fields["FK_entities"]."' 
 		GROUP BY glpi_cartridges_type.ID 
 		ORDER BY glpi_cartridges_type.name, glpi_cartridges_type.ref";
 	if ($result = $DB->query($query)){
