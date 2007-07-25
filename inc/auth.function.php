@@ -400,6 +400,9 @@ function loadLanguage() {
 
 	global $LANG, $CFG_GLPI;
 	$file = "";
+	if (!isset($_SESSION["glpilanguage"])){
+		$_SESSION["glpilanguage"]=$CFG_GLPI["default_language"];
+	}
 
 	if (empty ($_SESSION["glpilanguage"])) {
 		if (isset ($CFG_GLPI["languages"][$CFG_GLPI["default_language"]][1])) {
