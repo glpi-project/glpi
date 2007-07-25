@@ -660,10 +660,19 @@ class Rule extends CommonDBTM{
 	function getActions(){
 		global $RULES_ACTIONS;
 		if (isset($RULES_ACTIONS[$this->rule_type])){
-			return $RULES_ACTIONS[$this->rule_type];
+			return $this->filterActions($RULES_ACTIONS[$this->rule_type]);
 		} else {
 			return array();
 		}
+	}
+
+	/**
+	 * Filter actions if needed
+	*  @param $actions the actions array
+	 * @return the filtered actions array
+	 */
+	function filterActions($actions){
+		return $actions;
 	}
 
 	/**
