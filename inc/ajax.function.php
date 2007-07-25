@@ -119,7 +119,7 @@ function ajaxUpdateItemOnEvent($toobserve,$toupdate,$url,$parameters=array(),$ev
 	ajaxUpdateItemOnEventJsCode($toobserve,$toupdate,$url,$parameters,$events,$spinner);
 	echo "</script>\n";
 	if ($spinner){
-		echo "<div id='spinner_$toupdate' style=' position:absolute;  filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$CFG_GLPI["root_doc"]."/pics/wait.png\" title='Processing....' alt='Processing....' /></div>\n";
+		echo "<span id='spinner_$toupdate' style=' position:absolute;  filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$CFG_GLPI["root_doc"]."/pics/wait.png\" title='Processing....' alt='Processing....' /></span>\n";
 	}
 
 	
