@@ -350,11 +350,15 @@ function dropdownUsers($myname,$value,$right,$all=0,$display_comments=1,$entity_
 
 	// Display comments
 
-
+	$view_users=haveRight("user","r");
 	if ($display_comments) {
-		echo "<a id='comments_link_$myname$rand' href='".$user["link"]."'>";
+		if ($view_users){
+			echo "<a id='comments_link_$myname$rand' href='".$user["link"]."'>";
+		}
 		echo "<img alt='' src='".$CFG_GLPI["root_doc"]."/pics/aide.png' onmouseout=\"cleanhide('comments_$myname$rand')\" onmouseover=\"cleandisplay('comments_$myname$rand')\">";
-		echo "</a>";
+		if ($view_users){
+			echo "</a>";
+		}
 		echo "<span class='over_link' id='comments_$myname$rand'>".$user["comments"]."</span>";
 	}
 
