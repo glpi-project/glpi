@@ -107,7 +107,7 @@ class Netdevice extends CommonDBTM {
 				$ic->fields["FK_device"]=$newID;
 				unset ($ic->fields["ID"]);
 				if (isset($ic->fields["num_immo"])) {
-					$ic->fields["num_immo"] = autoName($ic->fields["num_immo"], "num_immo", 1, INFOCOM_TYPE);
+					$ic->fields["num_immo"] = autoName($ic->fields["num_immo"], "num_immo", 1, INFOCOM_TYPE ,$input['FK_entities']);
 				}
 				$ic->addToDB();
 			}
@@ -270,7 +270,7 @@ class Netdevice extends CommonDBTM {
 	
 				echo "<tr><td>".$LANG["common"][16]."*:	</td>\n";
 				echo "<td>";
-				$objectName = autoName($this->fields["name"], "name", ($template === "newcomp"), NETWORKING_TYPE);
+				$objectName = autoName($this->fields["name"], "name", ($template === "newcomp"), NETWORKING_TYPE,$this->fields["FK_entities"]);
 				autocompletionTextField("name","glpi_networking","name",$objectName,20,$this->fields["FK_entities"]);
 				echo "</td></tr>\n";
 	
@@ -338,7 +338,7 @@ class Netdevice extends CommonDBTM {
 				echo "</td></tr>\n";
 	
 				echo "<tr><td>".$LANG["common"][20]."*:</td><td>\n";
-				$objectName = autoName($this->fields["otherserial"], "otherserial", ($template === "newcomp"), NETWORKING_TYPE);
+				$objectName = autoName($this->fields["otherserial"], "otherserial", ($template === "newcomp"), NETWORKING_TYPE,$this->fields["FK_entities"]);
 				autocompletionTextField("otherserial","glpi_networking","otherserial",$objectName,20,$this->fields["FK_entities"]);
 				echo "</td></tr>\n";
 	

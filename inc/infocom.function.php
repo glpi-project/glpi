@@ -149,7 +149,7 @@ function showInfocomForm($target,$device_type,$dev_ID,$show_immo=1,$withtemplate
 		if ($show_immo==1){
 			echo "<tr class='tab_bg_1'><td>".$LANG["financial"][20]."*:		</td>";
 			echo "<td >";
-			$objectName = autoName($ic->fields["num_immo"], "num_immo", ($withtemplate==2), INFOCOM_TYPE);
+			$objectName = autoName($ic->fields["num_immo"], "num_immo", ($withtemplate==2), INFOCOM_TYPE,$ci->getField('FK_entities'));
 			autocompletionTextField("num_immo","glpi_infocoms","num_immo",$objectName,25,-1,$option); 
 
 			echo "</td>";

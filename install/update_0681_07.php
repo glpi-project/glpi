@@ -1294,6 +1294,10 @@ function update0681to07() {
 		$DB->query($query) or die("0.7 add list_limit_max in users" . $LANG["update"][90] . $DB->error());
 	}
 
+	if (!FieldExists("glpi_config", "autoname_entity")) {
+		$query = "ALTER TABLE `glpi_config` ADD `autoname_entity` smallint(6) NOT NULL default '1' ";
+		$DB->query($query) or die("0.7 add autoname_entity in glpi_config" . $LANG["update"][90] . $DB->error());
+	}
 
 
 

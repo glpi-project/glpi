@@ -815,8 +815,8 @@ function importArrayFromDB($DATA) {
 // @object     : objet concern�// @field      : nom de champ du gabarit contenant le format du code
 // @isTemplate : true si template new
 // @type       : type d'objet
-function autoName($objectName, $field, $isTemplate, $type){
-	global $LINK_ID_TABLE,$DB;
+function autoName($objectName, $field, $isTemplate, $type,$FK_entities=-1){
+	global $LINK_ID_TABLE,$DB,$CFG_GLPI;
 
 	//$objectName = isset($object->fields[$field]) ? $object->fields[$field] : '';
 
@@ -831,6 +831,7 @@ function autoName($objectName, $field, $isTemplate, $type){
 			$pos = strpos($autoNum, $mask) + 1;
 			$len = strlen($mask);
 			$like = str_replace('#', '_', $autoNum);
+
 			if ($global == 1){
 				$query = "";
 				$first = 1;
@@ -841,6 +842,9 @@ function autoName($objectName, $field, $isTemplate, $type){
 							WHERE $field LIKE '$like' 
 							AND deleted = '0' 
 							AND is_template = '0'";
+							if ($CFG_GLPI["autoname_entity"]&&$FK_entities>=0){
+								$query.=" AND FK_entities = '$FK_entities' ";
+							}
 						$first = 0;
 					}
 				}
@@ -851,9 +855,15 @@ function autoName($objectName, $field, $isTemplate, $type){
 				$query = "SELECT CAST(SUBSTRING($field, $pos, $len) AS unsigned) AS no 
 					FROM $table 
 					WHERE $field LIKE '$like' ";
-				if ($type != INFOCOM_TYPE)
+				if ($type != INFOCOM_TYPE){
 					$query .= " AND deleted = '0' AND is_template = '0'";
+					if ($CFG_GLPI["autoname_entity"]&&$FK_entities>=0){
+						$query.=" AND FK_entities = '$FK_entities' ";
+					}
+				}
+
 			}
+
 			$query = "SELECT MAX(Num.no) AS lastNo 
 				FROM (".$query.") AS Num";
 			$resultNo = $DB->query($query);
