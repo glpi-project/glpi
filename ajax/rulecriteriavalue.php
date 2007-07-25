@@ -34,7 +34,7 @@
 // ----------------------------------------------------------------------
 
 // Direct access to file
-if(ereg("rulecriteria.php",$_SERVER['PHP_SELF'])){
+if(ereg("rulecriteriavalue.php",$_SERVER['PHP_SELF'])){
 	define('GLPI_ROOT','..');
 	$AJAX_INCLUDE=1;
 	include (GLPI_ROOT."/inc/includes.php");
@@ -47,35 +47,49 @@ if (!defined('GLPI_ROOT')){
 }
 
 	include_once (GLPI_ROOT."/inc/rulesengine.function.php");
+
 	
 	checkLoginUser();
+	// Non define case
 	if (isset($_POST["rule_type"])){
 		$rule=getRuleClass($_POST["rule_type"]);
 		$criterias=$rule->getCriterias();
 		if (count($criterias)){
-
-			// First include -> first of the predefined array
-			if (!isset($_POST["criteria"])){
-				$_POST["criteria"]=key($criterias);
-			}
-			$type="";
+			$display=false;
+		
 			if (isset($criterias[$_POST["criteria"]]['type'])){
-				$type=$criterias[$_POST["criteria"]]['type'];
+				switch($criterias[$_POST["criteria"]]['type']){
+					case "dropdown":
+						if ($_POST['condition']==PATTERN_IS||$_POST['condition']==PATTERN_IS_NOT){
+							dropdownValue($criterias[$_POST["criteria"]]['table'],"pattern");
+							$display=true;
+						}
+						break;
+					case "dropdown_users":
+						if ($_POST['condition']==PATTERN_IS||$_POST['condition']==PATTERN_IS_NOT){
+							dropdownAllUsers("pattern");
+							$display=true;
+						}
+						break;
+					case "dropdown_request_type":
+						include_once (GLPI_ROOT."/inc/tracking.function.php");
+						if ($_POST['condition']==PATTERN_IS||$_POST['condition']==PATTERN_IS_NOT){
+							dropdownRequestType("pattern");
+							$display=true;
+						}
+						break;
+					case "dropdown_priority":
+						if ($_POST['condition']==PATTERN_IS||$_POST['condition']==PATTERN_IS_NOT){
+							dropdownPriority("pattern");
+							$display=true;
+						}
+						break;
+				}
 			}
-			$rand = dropdownRulesConditions($type,"condition");
-			echo "&nbsp;&nbsp;";
-
-			echo "<span id='condition_span'>\n";
-			echo "</span>\n";
-
-			$params=array('condition'=>'__VALUE__',
-					'criteria'=>$_POST["criteria"],
-					'rule_type'=>$_POST["rule_type"],
-			);
-			ajaxUpdateItemOnSelectEvent("dropdown_condition$rand","condition_span",$CFG_GLPI["root_doc"]."/ajax/rulecriteriavalue.php",$params,false);
-			ajaxUpdateItem("condition_span",$CFG_GLPI["root_doc"]."/ajax/rulecriteriavalue.php",$params,false,"dropdown_condition$rand");
+			if (!$display){
+				autocompletionTextField("pattern", "glpi_rules_criterias", "pattern", "", 30);
+			}
 		}
-
 	}
 
 	

@@ -143,16 +143,14 @@ function dropdownRulesConditions($type,$name,$value=''){
 
 	$elements[PATTERN_IS] = $LANG["rulesengine"][0];
 	$elements[PATTERN_IS_NOT] = $LANG["rulesengine"][1];
-	if ($type!="dropdown"){
-		$elements[PATTERN_CONTAIN] = $LANG["rulesengine"][2];
-		$elements[PATTERN_NOT_CONTAIN] = $LANG["rulesengine"][3];
-		$elements[PATTERN_BEGIN] = $LANG["rulesengine"][4];
-		$elements[PATTERN_END] = $LANG["rulesengine"][5];
-		$elements[REGEX_MATCH] = $LANG["rulesengine"][26];
-		$elements[REGEX_NOT_MATCH] = $LANG["rulesengine"][27];
-	}
+	$elements[PATTERN_CONTAIN] = $LANG["rulesengine"][2];
+	$elements[PATTERN_NOT_CONTAIN] = $LANG["rulesengine"][3];
+	$elements[PATTERN_BEGIN] = $LANG["rulesengine"][4];
+	$elements[PATTERN_END] = $LANG["rulesengine"][5];
+	$elements[REGEX_MATCH] = $LANG["rulesengine"][26];
+	$elements[REGEX_NOT_MATCH] = $LANG["rulesengine"][27];
 	
-	dropdownArrayValues($name,$elements,$value);
+	return dropdownArrayValues($name,$elements,$value);
 }
 
 /**
@@ -177,6 +175,41 @@ function getActionByID($ID)
 		case "assign" : 
 			return $LANG["rulesengine"][22];
 	}
+}
+
+function getRuleClass($type){
+	switch ($type){
+		case RULE_OCS_AFFECT_COMPUTER :
+			if (!class_exists('OcsAffectEntityRule')){
+				include_once(GLPI_ROOT."/inc/rulesengine.class.php");
+				include_once(GLPI_ROOT."/inc/rule.ocs.class.php");
+			}
+			return new OcsAffectEntityRule();
+		break;		
+		case RULE_AFFECT_RIGHTS :
+			if (!class_exists('RightAffectRule')){
+				include_once(GLPI_ROOT."/inc/rulesengine.class.php");
+				include_once(GLPI_ROOT."/inc/rule.right.class.php");
+			}
+			return new RightAffectRule();
+		break;
+		case RULE_TRACKING_AUTO_ACTION:
+			if (!class_exists('TrackingBusinessRule')){
+				include_once(GLPI_ROOT."/inc/rulesengine.class.php");
+				include_once(GLPI_ROOT."/inc/rule.tracking.class.php");
+			}
+			return new TrackingBusinessRule();
+		break;
+		case RULE_SOFTWARE_CATEGORY:
+			if (!class_exists('SoftwareCategoriesRule')){
+				include_once(GLPI_ROOT."/inc/rulesengine.class.php");
+				include_once(GLPI_ROOT."/inc/rule.softwarecategories.class.php");
+			}
+			return new SoftwareCategoriesRule();
+		break;
+	}
+
+
 }
 
 ?>
