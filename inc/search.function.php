@@ -474,7 +474,8 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 	array_push($already_link_tables,$itemtable);
 
 	// Add default join
-	$FROM.=addDefaultJoin($type,$itemtable,$already_link_tables);
+	$COMMONLEFTJOIN=addDefaultJoin($type,$itemtable,$already_link_tables);
+	$FROM.=$COMMONLEFTJOIN;
 
 
 	// Add all table for toview items
@@ -810,10 +811,17 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 	//No search : count number of items using a simple count(ID) request and LIMIT search
 	if ($nosearch) {
 		$LIMIT= " LIMIT $start, ".$LIST_LIMIT;
-		
-		$query_num="SELECT count($itemtable.ID) FROM ".$itemtable;
 
+		$query_num="SELECT count($itemtable.ID) FROM ".$itemtable.$COMMONLEFTJOIN;
+		
 		$first=true;
+
+		if (!empty($COMMONWHERE)){
+			$LINK= " AND " ;
+			if ($first) {$LINK=" WHERE ";$first=false;}
+			$query_num.= $LINK.$COMMONWHERE;
+		}
+
 		if (in_array($itemtable,$CFG_GLPI["deleted_tables"])){
 			$LINK= " AND " ;
 			if ($first) {$LINK=" WHERE ";$first=false;}
