@@ -405,7 +405,7 @@ function showJobShort($data, $followups,$output_type=HTML_OUTPUT,$row_num=0) {
 	$job->fields['ID'] = $data['ID'];
 	$candelete=haveRight("delete_ticket","1");
 	$canupdate=haveRight("update_ticket","1");
-	$viewusers=haveRight("user","r");
+//	$viewusers=haveRight("user","r");
 	$align="align='center'";
 	$align_desc="align='left'";
 	if ($followups) { 
@@ -472,21 +472,15 @@ function showJobShort($data, $followups,$output_type=HTML_OUTPUT,$row_num=0) {
 		// Fourth Column
 		$fourth_col="";
 		if ($data['author']){
-			if ($viewusers){
-				$userdata=getUserName($data['author'],2);
+			$userdata=getUserName($data['author'],2);
 	
-				$comments_display="";
-				$comments_display="<a href='".$userdata["link"]."'>";
-				$comments_display.="<img alt='' src='".$CFG_GLPI["root_doc"]."/pics/aide.png' onmouseout=\"cleanhide('comments_trackauthor".$data['ID']."')\" onmouseover=\"cleandisplay('comments_trackauthor".$data['ID']."')\">";
-				$comments_display.="</a>";
-				$comments_display.="<span class='over_link' id='comments_trackauthor".$data['ID']."'>".$userdata["comments"]."</span>";
+			$comments_display="";
+			$comments_display="<a href='".$userdata["link"]."'>";
+			$comments_display.="<img alt='' src='".$CFG_GLPI["root_doc"]."/pics/aide.png' onmouseout=\"cleanhide('comments_trackauthor".$data['ID']."')\" onmouseover=\"cleandisplay('comments_trackauthor".$data['ID']."')\">";
+			$comments_display.="</a>";
+			$comments_display.="<span class='over_link' id='comments_trackauthor".$data['ID']."'>".$userdata["comments"]."</span>";
 	
-				$fourth_col.="<strong>".$userdata['name']."&nbsp;".$comments_display."</strong>";
-				//formatUserName($data['authorID'],$data['authorname'],$data['authorrealname'],$data['authorfirstname'],1)
-			} else {
-				$fourth_col.="<strong>".getUserName($data['author'],0)."</strong>";
-				//formatUserName($data['authorID'],$data['authorname'],$data['authorrealname'],$data['authorfirstname'],0);
-			}
+			$fourth_col.="<strong>".$userdata['name']."&nbsp;".$comments_display."</strong>";
 		}
 
 		if ($data["FK_group"])
@@ -497,34 +491,22 @@ function showJobShort($data, $followups,$output_type=HTML_OUTPUT,$row_num=0) {
 		// Fifth column
 		$fifth_col="";
 		if ($data["assign"]>0){
-			if ($viewusers){
-				$userdata=getUserName($data['assign'],2);
+			$userdata=getUserName($data['assign'],2);
 
-				$comments_display="";
-				$comments_display="<a href='".$userdata["link"]."'>";
-				$comments_display.="<img alt='' src='".$CFG_GLPI["root_doc"]."/pics/aide.png' onmouseout=\"cleanhide('comments_trackassign".$data['ID']."')\" onmouseover=\"cleandisplay('comments_trackassign".$data['ID']."')\">";
-				$comments_display.="</a>";
-				$comments_display.="<span class='over_link' id='comments_trackassign".$data['ID']."'>".$userdata["comments"]."</span>";
+			$comments_display="";
+			$comments_display="<a href='".$userdata["link"]."'>";
+			$comments_display.="<img alt='' src='".$CFG_GLPI["root_doc"]."/pics/aide.png' onmouseout=\"cleanhide('comments_trackassign".$data['ID']."')\" onmouseover=\"cleandisplay('comments_trackassign".$data['ID']."')\">";
+			$comments_display.="</a>";
+			$comments_display.="<span class='over_link' id='comments_trackassign".$data['ID']."'>".$userdata["comments"]."</span>";
 	
-				$fifth_col="<strong>".$userdata['name']."&nbsp;".$comments_display."</strong>";
-
-				//$fifth_col.=getUserName($data['assign'],1);
-				//formatUserName($data['assignID'],$data['assignname'],$data['assignrealname'],$data['assignfirstname'],1);
-			} else{
-				$fifth_col.=getUserName($data['assign'],0);
-				//"<strong>".formatUserName($data['assignID'],$data['assignname'],$data['assignrealname'],$data['assignfirstname'],0)."</strong>";
-			}
+			$fifth_col="<strong>".$userdata['name']."&nbsp;".$comments_display."</strong>";
 		}
 
 		if ($data["assign_ent"]>0){
 			if (!empty($fifth_col)){
 				$fifth_col.="<br>";
 			}
-			if ($viewusers){
-				$fifth_col.=getAssignName($data["assign_ent"],ENTERPRISE_TYPE,1);
-			} else {
-				$fifth_col.="<strong>".getAssignName($data["assign_ent"],ENTERPRISE_TYPE)."</strong>";
-			}
+			$fifth_col.=getAssignName($data["assign_ent"],ENTERPRISE_TYPE,1);
 		}
 		echo displaySearchItem($output_type,$fifth_col,$item_num,$row_num,$align);
 
