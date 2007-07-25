@@ -1600,10 +1600,16 @@ function showJobDetails ($target,$ID){
 		echo "<tr><td class='left'>";
 		echo $LANG["common"][1].":</td><td>";
 		if ($canupdate){
-			echo $item->getType()." - ".$item->getLink(1)."<br>";
+			if (haveTypeRight($job->fields["device_type"],'r')){
+				echo $item->getType()." - ".$item->getLink(1);
+			} else {
+				echo $item->getType()." ".$item->getNameID();
+			}
 			dropdownTrackingAllDevices("device_type",0,1,$job->fields["FK_entities"]);
 		}
-		else echo $item->getType()." ".$item->getNameID();
+		else {
+			echo $item->getType()." ".$item->getNameID();
+		}
 
 		echo "</td></tr>";
 
@@ -1627,6 +1633,7 @@ function showJobDetails ($target,$ID){
 			echo getUserName($job->fields["assign"]);
 			echo "</td></tr>";
 		}
+
 		if (haveRight("assign_ticket","1")){
 			echo "<tr><td class='left'>";
 			echo $LANG["job"][28].":</td><td>";

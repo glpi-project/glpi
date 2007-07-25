@@ -933,6 +933,7 @@ function dropdownTrackingAllDevices($myname,$value,$admin=0,$entity_restrict=-1)
 		echo "<div id='tracking_all_devices'>";
 
 		if ($_SESSION["glpiactiveprofile"]["helpdesk_hardware"]&pow(2,HELPDESK_ALL_HARDWARE)){
+			// Display a message if view my hardware
 			if (!$admin&&$_SESSION["glpiactiveprofile"]["helpdesk_hardware"]&pow(2,HELPDESK_MY_HARDWARE)){
 				echo $LANG["tracking"][2].":<br>";
 			}
