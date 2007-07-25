@@ -660,7 +660,7 @@ function dropdownAllItems($myname,$value_type=0,$value=0,$entity_restrict=-1,$ty
 
 		if ($value>0){
 			echo "<script type='text/javascript' >\n";
-			echo "document.getElementById('item_type$rand').value='".$value_type."';";
+			echo "window.document.getElementById('item_type$rand').value='".$value_type."';";
 			echo "</script>\n";
 
 			$params["idtable"]=$value_type;

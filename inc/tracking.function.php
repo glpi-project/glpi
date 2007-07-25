@@ -1712,7 +1712,7 @@ function showJobDetails ($target,$ID){
 			$rand=mt_rand();
 			echo "<script type='text/javascript' >\n";
 			echo "function showName$rand(){\n";
-				echo "document.getElementById('name$rand').style.display='none';";
+				echo "window.document.getElementById('name$rand').style.display='none';";
 				$params=array('maxlength'=>250,
 					'size'=>80,
 					'name'=>'name',
@@ -1748,7 +1748,7 @@ function showJobDetails ($target,$ID){
 			echo "<script type='text/javascript' >\n";
 			echo "function showDesc$rand(){\n";
 
-				echo "document.getElementById('desc$rand').style.display='none';";
+				echo "window.document.getElementById('desc$rand').style.display='none';";
 				$params=array('rows'=>6,
 					'cols'=>60,
 					'name'=>'contents',
@@ -1862,7 +1862,7 @@ function showJobDetails ($target,$ID){
 		echo "<script type='text/javascript' >\n";
 		echo "function showPlan(){\n";
 
-			echo "document.getElementById('plan').style.display='none';";
+			echo "window.document.getElementById('plan').style.display='none';";
 			$params=array('form'=>'followups',
 				'state'=>1,
 				'author'=>$job->fields["assign"],
@@ -1873,7 +1873,7 @@ function showJobDetails ($target,$ID){
 		echo "};";
 		echo "function showAddFollowup(){\n";
 
-			echo "document.getElementById('viewfollowup').style.display='none';";
+			echo "window.document.getElementById('viewfollowup').style.display='none';";
 			$params=array('tID'=>$ID,
 			);
 			ajaxUpdateItemJsCode('viewfollowup',$CFG_GLPI["root_doc"]."/ajax/addfollowup.php",$params,false);
@@ -1938,7 +1938,7 @@ function showFollowupsSummary($tID){
 			echo "<script type='text/javascript' >\n";
 			echo "function viewEditFollowup".$data["ID"]."$rand(){\n";
 
-				//echo "document.getElementById('viewfollowup').style.display='none';";
+				//echo "window.document.getElementById('viewfollowup').style.display='none';";
 				$params=array('ID'=>$data["ID"],
 				);
 				ajaxUpdateItemJsCode("viewfollowup",$CFG_GLPI["root_doc"]."/ajax/viewfollowup.php",$params,false);
@@ -1967,7 +1967,7 @@ function showFollowupsSummary($tID){
 				echo "<script type='text/javascript' >\n";
 				echo "function showPlan".$data['ID']."(){\n";
 
-					echo "document.getElementById('plan').style.display='none';";
+					echo "window.document.getElementById('plan').style.display='none';";
 					$params=array('form'=>'followups',
 						'author'=>$data2["id_assign"],
 						'ID'=>$data2["ID"],

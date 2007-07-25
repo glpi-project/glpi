@@ -1648,7 +1648,7 @@ function showCalendarForm($form,$element,$value='',$withtemplate='',$with_time=0
 	if ($withtemplate!=2){
 		echo "&nbsp;<img id='button$rand' src='".$CFG_GLPI["root_doc"]."/pics/calendar.png' class='calendrier' alt='".$LANG["buttons"][15]."' title='".$LANG["buttons"][15]."'>";
 
-		echo "&nbsp;<img src='".$CFG_GLPI["root_doc"]."/pics/reset.png' class='calendrier' onclick=\"document.getElementById('data$rand').value='0000-00-00';document.getElementById('show$rand').value='".convDate("0000-00-00")."'\" alt='Reset' title='Reset'>";	
+		echo "&nbsp;<img src='".$CFG_GLPI["root_doc"]."/pics/reset.png' class='calendrier' onclick=\"window.document.getElementById('data$rand').value='0000-00-00';window.document.getElementById('show$rand').value='".convDate("0000-00-00")."'\" alt='Reset' title='Reset'>";	
 
 		echo "<script type='text/javascript'>";
 		echo "Calendar.setup(";
@@ -1669,14 +1669,14 @@ function showCalendarForm($form,$element,$value='',$withtemplate='',$with_time=0
 		echo "   new Form.Element.Observer('data$rand', 1, \n";
 		echo "      function(element, value) {\n";
 		if (!$CFG_GLPI["dateformat"]){
-			echo "document.getElementById('show$rand').value=value;";
+			echo "window.document.getElementById('show$rand').value=value;";
 		} else {
 			if ($with_time){
 				echo "var d=Date.parseDate(value,'%Y-%m-%d %H:%M');";
-				echo "document.getElementById('show$rand').value=d.print('%d-%m-%Y %H:%M');";
+				echo "window.document.getElementById('show$rand').value=d.print('%d-%m-%Y %H:%M');";
 			} else {
 				echo "var d=Date.parseDate(value,'%Y-%m-%d');";
-				echo "document.getElementById('show$rand').value=d.print('%d-%m-%Y');";
+				echo "window.document.getElementById('show$rand').value=d.print('%d-%m-%Y');";
 			}
 		}
 		echo "})\n";
