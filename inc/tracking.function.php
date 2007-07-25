@@ -1857,7 +1857,7 @@ function showJobDetails ($target,$ID){
 		echo "</table>";
 		echo "<input type='hidden' name='ID' value='$ID'>";
 		echo "</form>";
-		echo "</div>";
+//		echo "</div>";
 
 		echo "<script type='text/javascript' >\n";
 		echo "function showPlan(){\n";
