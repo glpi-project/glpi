@@ -80,7 +80,7 @@ if (isset($LINK_ID_TABLE[$_POST["idtable"]])){
 	if(isset($_POST['value'])&&$_POST['value']>0){
 		$params['searchText']=$CFG_GLPI["ajax_wildcard"];
 		echo "<script type='text/javascript' >\n";
-		echo "document.getElementById('search_$rand').value='".$CFG_GLPI["ajax_wildcard"]."';";
+		echo "window.document.getElementById('search_$rand').value='".$CFG_GLPI["ajax_wildcard"]."';";
 		echo "</script>\n";
 		ajaxUpdateItem("results_$rand",$CFG_GLPI["root_doc"]."/ajax/$link",$params);
 	}

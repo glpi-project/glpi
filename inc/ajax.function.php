@@ -72,7 +72,7 @@ function ajaxDropdown($use_ajax,$relativeurl,$params=array(),$default="&nbsp;",$
 
 function ajaxDisplaySearchTextForDropdown($id,$size=4){
 	global $CFG_GLPI;
-	echo "<input type='text' ondblclick=\"document.getElementById('search_$id').value='".$CFG_GLPI["ajax_wildcard"]."';\" id='search_$id' name='____data_$id' size='$size'>\n";
+	echo "<input type='text' ondblclick=\"window.document.getElementById('search_$id').value='".$CFG_GLPI["ajax_wildcard"]."';\" id='search_$id' name='____data_$id' size='$size'>\n";
 
 }
 

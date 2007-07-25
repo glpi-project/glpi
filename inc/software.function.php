@@ -282,7 +282,7 @@ function showLicenses ($sID,$show_computers=0) {
 					echo "<script type='text/javascript' >\n";
 					echo "function toggle$rand(){\n";
 					while ($data_inst=$DB->fetch_array($result_inst)){
-						echo " var lic=document.getElementById('license_".$data_inst["lID"]."');";
+						echo " var lic=window.document.getElementById('license_".$data_inst["lID"]."');";
 						echo " if (lic.checked) \n";
 						echo "      lic.checked = false;\n";
 						echo " else lic.checked = true;\n";

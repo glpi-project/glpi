@@ -104,11 +104,11 @@ if (haveRight("show_all_planning","1")){
 	echo "<script type='text/javascript' >\n";
 	echo "   new Form.Element.Observer('dropdown_uID".$rand_user."', 1, \n";
 	echo "      function(element, value) {\n";
-	echo "document.getElementById('radio_user').checked=true;";
+	echo "window.document.getElementById('radio_user').checked=true;";
 	echo "});\n";
 	echo "   new Form.Element.Observer('dropdown_gID".$rand_group."', 1, \n";
 	echo "      function(element, value) {\n";
-	echo "document.getElementById('radio_group').checked=true;";
+	echo "window.document.getElementById('radio_group').checked=true;";
 	echo "});\n";
 
 	echo "</script>\n";
