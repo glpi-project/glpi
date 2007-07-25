@@ -45,22 +45,7 @@ if (isset($_GET["ID"]))
 	$generic_rule->getFromDB($_GET["ID"]);
 	checkRight($generic_rule->right,"r");
 	
-	switch ($generic_rule->fields["rule_type"])
-	{
-		case RULE_OCS_AFFECT_COMPUTER :
-			$rule = new OcsAffectEntityRule();
-		break;		
-		case RULE_AFFECT_RIGHTS :
-			$rule = new RightAffectRule();
-		break;
-		case RULE_TRACKING_AUTO_ACTION:
-			$rule = new TrackingBusinessRule();
-		break;
-		case RULE_SOFTWARE_CATEGORY:
-			$rule = new SoftwareCategoriesRule();
-		break;
-	}
-	
+	$rule=getRuleClass($generic_rule->fields["rule_type"]);
 	include (GLPI_ROOT . "/front/rule.common.form.php");
 }
 ?>

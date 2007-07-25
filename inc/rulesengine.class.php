@@ -496,7 +496,7 @@ class Rule extends CommonDBTM{
 		echo $LANG["rulesengine"][30] . ":";
 		echo "</td><td>";
 		$val=$this->dropdownActions();
-		echo "</td><td>";
+		echo "</td><td align='left' width='500px'>";
 		
 		echo "<span id='action_span'>\n";
 		$_POST["rule_type"]=$this->rule_type;
@@ -524,7 +524,7 @@ class Rule extends CommonDBTM{
 		echo $LANG["rulesengine"][16] . ":";
 		echo "</td><td>";
 		$val=$this->dropdownCriterias();
-		echo "</td><td>";
+		echo "</td><td align='left' width='500px'>";
 		
 		echo "<span id='criteria_span'>\n";
 		$_POST["rule_type"]=$this->rule_type;
@@ -709,6 +709,7 @@ class Rule extends CommonDBTM{
 		}
 	}
 
+
 	/**
 	 * Get a action description by his ID
 	 * @param $ID the action's ID
@@ -723,7 +724,6 @@ class Rule extends CommonDBTM{
 			return "&nbsp;";
 		}
 	}
-	
 	/**
 	* Process the rule
 	* @param $input the input data used to check criterias
@@ -736,7 +736,6 @@ class Rule extends CommonDBTM{
 		if (count($this->criterias))	{
 			$input=$this->prepareInputDataForProcess($input,$params);
 			$results=array();
-			
 			foreach ($this->criterias as $criteria){
 
 				// Undefine criteria field : set to blank
@@ -745,16 +744,17 @@ class Rule extends CommonDBTM{
 				}
 				
 				//If the value is not an array
-				if (!is_array($input[$criteria->fields["criteria"]]))
-					$results[] = matchRules($input[$criteria->fields["criteria"]],$criteria->fields["condition"],$criteria->fields["pattern"]);
-				else
-				{
+				if (!is_array($input[$criteria->fields["criteria"]])){
+					$value=$this->getCriteriaValueToMatch($criteria->fields["criteria"],$criteria->fields["condition"],$input[$criteria->fields["criteria"]]);
+					$results[] = matchRules($value,$criteria->fields["condition"],$criteria->fields["pattern"]);
+				} else	{
 					//If the value if, in fact, an array of values
 					// Negative condition : Need to match all condition (never be)
 					if (in_array($criteria->fields["condition"],array(PATTERN_IS_NOT,PATTERN_NOT_CONTAIN,REGEX_NOT_MATCH))){
 						$res = true;
 						foreach($input[$criteria->fields["criteria"]] as $tmp){
-							$res &= matchRules($tmp,$criteria->fields["condition"],$criteria->fields["pattern"]);
+							$value=$this->getCriteriaValueToMatch($criteria->fields["criteria"],$criteria->fields["condition"],$tmp);
+							$res &= matchRules($value,$criteria->fields["condition"],$criteria->fields["pattern"]);
 						}
 	
 						$results[] = $res;	
@@ -762,8 +762,11 @@ class Rule extends CommonDBTM{
 					// Positive condition : Need to match one
 					 } else {
 						$res = false;
-						foreach($input[$criteria->fields["criteria"]] as $tmp)
-							$res |= matchRules($tmp,$criteria->fields["condition"],$criteria->fields["pattern"]);
+						foreach($input[$criteria->fields["criteria"]] as $tmp){
+							$value=$this->getCriteriaValueToMatch($criteria->fields["criteria"],$criteria->fields["condition"],$tmp);
+
+							$res |= matchRules($value,$criteria->fields["condition"],$criteria->fields["pattern"]);
+						}
 	
 						$results[] = $res;	
 					}
@@ -967,7 +970,7 @@ class Rule extends CommonDBTM{
 	function showMinimalCriteria($fields){
 		echo "<td>" . $this->getCriteriaName($fields["criteria"]) . "</td>";
 		echo "<td>" . getConditionByID($fields["condition"]) . "</td>";
-		echo "<td>" . $this->getCriteriaPatternValue($fields["criteria"],$fields["pattern"]) . "</td>";
+		echo "<td>" . $this->getCriteriaPatternDisplay($fields["criteria"],$fields["condition"],$fields["pattern"]) . "</td>";
 	}	
 	/**
 	 * Show the minimal infos for the action rule
@@ -983,36 +986,83 @@ class Rule extends CommonDBTM{
 	}	
 	
 	/**
- 	* Return a value associated with a pattern associated to a criteria
+ 	* Return a value associated with a pattern associated to a criteria to display it
  	* @param $ID the given criteria
+        * @param $condition condition used
  	* @param $pattern the pattern
  	*/
- 	function getCriteriaPatternValue($ID,$pattern)
+ 	function getCriteriaPatternDisplay($ID,$condition,$pattern)
 	{
 		$crit=$this->getCriteria($ID);
 		
-		if (!isset($crit['type'])){
+		if (isset($crit['type'])){
 			return $pattern;
 		} else {
 			
 			switch ($crit['type']){
 				case "dropdown":
-					return getDropdownName($crit["table"],$pattern);
+					if ($condition==PATTERN_IS||$condition==PATTERN_IS_NOT){
+						return getDropdownName($crit["table"],$pattern);
+					}
 					break;
 				case "dropdown_users":
-					return getUserName($pattern);
+					if ($condition==PATTERN_IS||$condition==PATTERN_IS_NOT){
+						return getUserName($pattern);
+					}
 					break;
 				case "dropdown_request_type":
-					return getRequestTypeName($pattern);
+					if ($condition==PATTERN_IS||v==PATTERN_IS_NOT){
+						return getRequestTypeName($pattern);
+					}
 					break;
 				case "dropdown_priority":
-					return getPriorityName($pattern);
+					if ($condition==PATTERN_IS||$condition==PATTERN_IS_NOT){
+						return getPriorityName($pattern);
+					} 
 					break;
-				default :
-					return $pattern;
+			}
+			return $pattern;
+		}
+	}
+
+	/**
+ 	* Return a value associated with a pattern associated to a criteria to compare it
+ 	* @param $ID the given criteria
+        * @param $condition condition used
+ 	* @param $initValue the pattern
+ 	*/
+ 	function getCriteriaValueToMatch($ID,$condition,$initValue)
+	{
+		$crit=$this->getCriteria($ID);
+		
+		if (empty($crit['type'])){
+			return $initValue;
+		} else {
+			
+			switch ($crit['type']){
+				case "dropdown":
+					if ($condition!=PATTERN_IS&&$condition!=PATTERN_IS_NOT){
+						return getDropdownName($crit["table"],$initValue);
+					}
+					break;
+				case "dropdown_users":
+					if ($condition!=PATTERN_IS&&$condition!=PATTERN_IS_NOT){
+						return getUserName($initValue);
+					}
+					break;
+				case "dropdown_request_type":
+					if ($condition!=PATTERN_IS&&$condition!=PATTERN_IS_NOT){
+						return getRequestTypeName($initValue);
+					}
+					break;
+				case "dropdown_priority":
+					if ($condition!=PATTERN_IS&&$condition!=PATTERN_IS_NOT){
+						return getPriorityName($initValue);
+					} 
 					break;
 			}
 		}
+		return $initValue;
 	}
 
 	/**
