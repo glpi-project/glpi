@@ -1254,7 +1254,9 @@ function dropdownMassiveAction($device_type,$deleted=0){
 	echo "<select name=\"massiveaction\" id='massiveaction'>";
 
 	echo "<option value=\"-1\" selected>-----</option>";
-	if (!in_array($device_type,array(MAILGATE_TYPE,OCSNG_TYPE,ENTITY_TYPE))){
+	if (!in_array($device_type,array(MAILGATE_TYPE,OCSNG_TYPE,ENTITY_TYPE))
+	&& ($device_type!=TRACKING_TYPE||haveRight('update_ticket',1)) ){
+		
 		echo "<option value=\"update\">".$LANG["buttons"][14]."</option>";
 	}
 
@@ -1263,9 +1265,9 @@ function dropdownMassiveAction($device_type,$deleted=0){
 		echo "<option value=\"restore\">".$LANG["buttons"][21]."</option>";
 	} else {
 		// No delete for entities and tracking of not have right
-		if (!($device_type==ENTITY_TYPE
-			||($device_type==TRACKING_TYPE&&!haveRight('delete_tracking',1))
-		)){
+		if ($device_type!=ENTITY_TYPE
+		&&($device_type!=TRACKING_TYPE||haveRight('delete_ticket',1))
+		){
 			echo "<option value=\"delete\">".$LANG["buttons"][6]."</option>";
 		}
 		if ($device_type==PHONE_TYPE || $device_type==PRINTER_TYPE
