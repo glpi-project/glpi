@@ -1262,7 +1262,10 @@ function dropdownMassiveAction($device_type,$deleted=0){
 		echo "<option value=\"purge\">".$LANG["buttons"][22]."</option>";
 		echo "<option value=\"restore\">".$LANG["buttons"][21]."</option>";
 	} else {
-		if ($device_type!=ENTITY_TYPE){
+		// No delete for entities and tracking of not have right
+		if (!($device_type==ENTITY_TYPE
+			||($device_type==TRACKING_TYPE&&!haveRight('delete_tracking',1))
+		)){
 			echo "<option value=\"delete\">".$LANG["buttons"][6]."</option>";
 		}
 		if ($device_type==PHONE_TYPE || $device_type==PRINTER_TYPE

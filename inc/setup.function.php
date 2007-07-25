@@ -353,26 +353,29 @@ function addDropdown($input) {
 
 				$query = "INSERT INTO " . $input["tablename"] . " (" . $add_entity_field . "name,parentID,completename,comments) VALUES (" . $add_entity_value . "'" . $input["value"] . "', '0','','" . $input["comments"] . "')";
 
-				if ($input['type'] != "first") {
+				if ($input['type'] != "first" && $input["value2"] != 0) {
+					$level_up=-1;
 					$query = "SELECT * FROM " . $input["tablename"] . " where ID='" . $input["value2"] . "'";
+					
 					$result = $DB->query($query);
+					
 					if ($DB->numrows($result) > 0) {
+						
 						$data = $DB->fetch_array($result);
 						$level_up = $data["parentID"];
 						if ($input["type"] == "under") {
 							$level_up = $data["ID"];
 						}
-						$query_twin="SELECT ID FROM " . $input["tablename"] . " WHERE $add_entity_field_twin name= '".$input["value"]."' AND parentID='$level_up'";
-
-						$query = "INSERT INTO " . $input["tablename"] . " (" . $add_entity_field . "name,parentID,completename,comments) VALUES (" . $add_entity_value . "'" . $input["value"] . "', '$level_up','','" . $input["comments"] . "')";
 					} 
+					$query_twin="SELECT ID FROM " . $input["tablename"] . " WHERE $add_entity_field_twin name= '".$input["value"]."' AND parentID='$level_up'";
+
+					$query = "INSERT INTO " . $input["tablename"] . " (" . $add_entity_field . "name,parentID,completename,comments) VALUES (" . $add_entity_value . "'" . $input["value"] . "', '$level_up','','" . $input["comments"] . "')";
 				}
 			} else {
 				$query = "INSERT INTO " . $input["tablename"] . " (" . $add_entity_field . "name,comments) VALUES (" . $add_entity_value . "'" . $input["value"] . "','" . $input["comments"] . "')";
 				$query_twin="SELECT ID FROM " . $input["tablename"] . " WHERE $add_entity_field_twin name= '".$input["value"]."' ";
 			}
 		}
-
 		// Check twin :
 		if ($result_twin = $DB->query($query_twin) ) {
 			if ($DB->numrows($result_twin) > 0){
