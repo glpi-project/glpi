@@ -105,7 +105,7 @@ class Peripheral  extends CommonDBTM  {
 				$ic->fields["FK_device"]=$newID;
 				unset ($ic->fields["ID"]);
 				if (isset($ic->fields["num_immo"])) {
-					$ic->fields["num_immo"] = autoName($ic->fields["num_immo"], "num_immo", 1, INFOCOM_TYPE);
+					$ic->fields["num_immo"] = autoName($ic->fields["num_immo"], "num_immo", 1, INFOCOM_TYPE,$input['FK_entities']);
 				}
 	
 				$ic->addToDB();
@@ -257,7 +257,7 @@ class Peripheral  extends CommonDBTM  {
 	
 				echo "<tr><td>".$LANG["common"][16]."*:	</td>";
 				echo "<td>";
-				$objectName = autoName($this->fields["name"], "name", ($template === "newcomp"), PERIPHERAL_TYPE);
+				$objectName = autoName($this->fields["name"], "name", ($template === "newcomp"), PERIPHERAL_TYPE,$this->fields["FK_entities"]);
 				autocompletionTextField("name","glpi_peripherals","name",$objectName,20,$this->fields["FK_entities"]);
 				echo "</td></tr>";
 	
@@ -320,7 +320,7 @@ class Peripheral  extends CommonDBTM  {
 				echo "</td></tr>";
 	
 				echo "<tr><td>".$LANG["common"][20]."*:</td><td>";
-				$objectName = autoName($this->fields["otherserial"], "otherserial", ($template === "newcomp"), PERIPHERAL_TYPE);
+				$objectName = autoName($this->fields["otherserial"], "otherserial", ($template === "newcomp"), PERIPHERAL_TYPE,$this->fields["FK_entities"]);
 				autocompletionTextField("otherserial","glpi_peripherals","otherserial",$objectName,20,$this->fields["FK_entities"]);
 	
 				echo "</td></tr>";

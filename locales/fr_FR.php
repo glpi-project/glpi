@@ -1513,6 +1513,8 @@ $LANG["setup"][350]="Liaison avec les matériels pour la création de tickets";
 $LANG["setup"][351]="Tous les matériels";
 $LANG["setup"][352]="Matériels associables avec un ticket";
 
+$LANG["setup"][360]="Champs automatiques par entité";
+
 $LANG["setup"][401]="Adresse Proxy";
 $LANG["setup"][402]="Port Proxy";
 $LANG["setup"][403]="Utilisateur Proxy";
