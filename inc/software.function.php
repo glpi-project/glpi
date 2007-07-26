@@ -683,7 +683,7 @@ function showSoftwareInstalled($instID,$withtemplate='') {
 			displaySoftsByCategory($data,$instID,$withtemplate);
 		}
 	
-		echo "</table></div></td></tr>\n";
+		echo "</table></div></td></tr>";
 			
 		$q="SELECT count(*) FROM glpi_software WHERE deleted='0' AND is_template='0'";
 		$result = $DB->query($q);
@@ -711,39 +711,36 @@ function showSoftwareInstalled($instID,$withtemplate='') {
 }
 
 
-function displayCategoryHeader($data,$prevcat)
+function displayCategoryHeader($data,$cat)
 {
 	global $LANG,$CFG_GLPI;
 	$expirecss='';
 	
 	// Close old one
-	if ($prevcat != -1){
-		echo "</table></div></td></tr>\n";
+	if ($cat != -1){
+		echo "</table></div></td></tr>";
 	}
-
+						
 	$cat = $data["category_id"];
 	$catname=$data["category"];
 	if (!$cat){
 		$catname=$LANG["rulesoftwarecategories"][4];
 	} 
 
-	if ($prevcat>0 || $cat>0) { // Category header only if categories used
 	echo "	<tr class='tab_bg_2$expirecss'>";
 	echo "  	<td align='center' colspan='5'>"; 
 	echo "			<a  href=\"javascript:showHideDiv('softcat$cat','imgcat$cat','".GLPI_ROOT."/pics/folder.png','".GLPI_ROOT."/pics/folder-open.png');\">";
 	echo "				<img alt='' name='imgcat$cat' src=\"".GLPI_ROOT."/pics/folder".(!$cat?'':"-open").".png\">&nbsp;<strong>".$catname."</strong>";
 	echo "			</a>"; 
 	echo "		</td>"; 
-	echo "	</tr>\n"; 
-	}
+	echo "	</tr>"; 
 	echo "<tr class='tab_bg_2$expirecss'>";
 	echo "		<td colspan='5'>
-			     <div align='center' id='softcat$cat' ".($prevcat>0 && !$cat?"style=\"display:none;\"":'').">"; 
+			     <div align='center' id='softcat$cat' ".(!$cat?"style=\"display:none;\"":'').">"; 
 	echo"			<table class='tab_cadre_fixe'>";
 	echo "				<tr>"; 
 	echo "					<th>".$LANG["common"][16]."</th><th>".$LANG["software"][32]."</th><th>".$LANG["software"][28]."</th><th>".$LANG["software"][35]."</th><th>&nbsp;</th>"; 
-	echo"				</tr>\n";
-
+	echo"				</tr>";
 	return $cat;
 }
 
@@ -807,7 +804,7 @@ function displaySoftsByCategory($data,$instID,$withtemplate)
 		echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/software.licenses.php?uninstall=uninstall&amp;ID=$ID&amp;cID=$instID\">";
 		echo "<strong>".$LANG["buttons"][5]."</strong></a>";
 	}
-	echo "</td></tr>\n";
+	echo "</td></tr>";
 }
 
 

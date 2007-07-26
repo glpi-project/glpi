@@ -228,8 +228,6 @@ class Config extends CommonDBTM {
 				break;
 			// DISPLAY CONFIG
 			case 2 :
-				$cfg = new Config();
-				$cfg->getFromDB(1);
 		
 				// Needed for list_limit
 				echo "<div class='center'><table class='tab_cadre_fixe'>";
@@ -311,10 +309,10 @@ class Config extends CommonDBTM {
 
 				echo "<tr class='tab_bg_2'>";
 				echo "<td class='center'>" . $LANG["common"][44]."</td><td>";
-				dropdownInteger("list_limit",$cfg->fields["list_limit"],5,200,5);
+				dropdownInteger("list_limit",$CFG_GLPI["list_limit"],5,200,5);
 				
 				echo "</td><td class='center'>" . $LANG["common"][58] . "</td><td>";
-				dropdownInteger("list_limit",$cfg->fields["list_limit_max"],5,200,5);
+				dropdownInteger("list_limit_max",$CFG_GLPI["list_limit_max"],5,200,5);
 
 				echo "</td></tr>";
 
