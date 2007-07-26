@@ -82,8 +82,8 @@ if (isset($_POST["priority"]) && empty($_POST["contents"]))
 elseif (isset($_POST["priority"]) && !empty($_POST["contents"]))
 {
 
-	if ($track->add($_POST)){
-		$error=$LANG["tracking"][9];
+	if ($newID=$track->add($_POST)){
+		$error=$LANG["tracking"][9]." (".$LANG["common"][2]." $newID)";
 		displayMessageAfterRedirect();
 		addFormTracking($device_type,$computer,$user,$assign,$_SERVER['PHP_SELF'],$error);
 	}
