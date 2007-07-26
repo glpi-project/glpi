@@ -668,7 +668,7 @@ function addFormTracking ($device_type=0,$ID=0,$author,$assign,$target,$error,$s
 	//	if ($device_type!=0){
 	echo "<input type='hidden' name='_referer' value='$REFERER'>";
 	//	}	
-	echo "<table class='tab_cadre'><tr><th><a href='$target'>".$LANG["buttons"][16]."</a></th><th colspan='3'>".$LANG["job"][13].": <br>";
+	echo "<table class='tab_cadre'><tr><th ><a href='$target'><img title=\"".$LANG["buttons"][16]."\" alt=\"".$LANG["buttons"][16]."\" src='".$CFG_GLPI["root_doc"]."/pics/reset.png' class='calendrier'></a></th><th colspan='3'>".$LANG["job"][13].": <br>";
 	if ($device_type!=0){
 		$m=new CommonItem;
 		$m->getfromDB($device_type,$ID);
