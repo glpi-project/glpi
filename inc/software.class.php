@@ -72,18 +72,10 @@ class Software extends CommonDBTM {
 	}
 
 	function pre_updateInDB($input, $updates) {
-		if (count($updates)) {
-			$this->fields["date_mod"] = $_SESSION["glpi_currenttime"];
-			$updates[] = "date_mod";
+		$this->fields["date_mod"] = $_SESSION["glpi_currenttime"];
+		$updates[] = "date_mod";
 			
-			//If software category have been modified by hand
-			if (isset($input["category"]))
-				$input["category_ruleid"] = -1;
-		}
-		return array (
-			$input,
-			$updates
-		);
+		return array ($input,$updates);
 	}
 
 	function prepareInputForUpdate($input) {
@@ -112,10 +104,11 @@ class Software extends CommonDBTM {
 		{
 			$softcatrule = new SoftwareCategoriesRuleCollection;
 			$result = $softcatrule->processAllRules(null,null,$input);
-			if (!empty($result) && isset($result["category"]))
+			if (!empty($result) && isset($result["category"])){
 				$input["category"]=$result["category"];
-			else
+			} else {
 				$input["category"]=0;
+			}
 		}
 				
 		return $input;

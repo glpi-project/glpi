@@ -76,10 +76,8 @@ class Phone extends CommonDBTM {
 
 
 	function pre_updateInDB($input,$updates) {
-		if (count($updates)){
-			$this->fields["date_mod"]=$_SESSION["glpi_currenttime"];
-			$updates[]="date_mod";
-		}
+		$this->fields["date_mod"]=$_SESSION["glpi_currenttime"];
+		$updates[]="date_mod";
 		return array($input,$updates);
 	}
 

@@ -506,7 +506,7 @@ function showForm($target, $ID,$withtemplate='',$templateid='') {
 	
 	function prepareInputForUpdate($input)
 	{
-			$input["date_mod"]=$_SESSION["glpi_currenttime"];
+		$input["date_mod"]=$_SESSION["glpi_currenttime"];
 		
 		if (isset($input["ocs_db_passwd"])){
 			$input["ocs_db_passwd"]=urlencode(stripslashes($input["ocs_db_passwd"]));
@@ -550,7 +550,7 @@ function showForm($target, $ID,$withtemplate='',$templateid='') {
 	{
 		$input["date_mod"]=$_SESSION["glpi_currenttime"];
 		
-				if (isset($input["ocs_db_passwd"])&&!empty($input["ocs_db_passwd"])){
+		if (isset($input["ocs_db_passwd"])&&!empty($input["ocs_db_passwd"])){
 			$input["ocs_db_passwd"]=urlencode(stripslashes($input["ocs_db_passwd"]));
 		} else {
 			unset($input["ocs_db_passwd"]);
