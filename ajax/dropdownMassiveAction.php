@@ -54,7 +54,6 @@ if (isset($_POST["action"])&&isset($_POST["type"])&&!empty($_POST["type"])){
 	switch($_POST["action"]){
 		case "add_followup":
 			showAddFollowupForm(-1);
-			echo "<input type=\"submit\" name=\"massiveaction\" class=\"submit\" value=\"".$LANG["buttons"][2]."\" >";
 		break;
 		case "compute_software_category":
 		case "force_ocsng_update":
