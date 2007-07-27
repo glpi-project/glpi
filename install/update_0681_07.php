@@ -1318,5 +1318,16 @@ function update0681to07() {
 		$DB->query($query) or die("0.7 update show_assign_ticket values in glpi_profiles" . $LANG["update"][90] . $DB->error());
 	}
 
+
+	if (!FieldExists("glpi_tracking", "assign_group")) {
+		$query = "ALTER TABLE `glpi_tracking` ADD `assign_group` INT NOT NULL DEFAULT '0' AFTER `assign_ent` ;";
+		$DB->query($query) or die("0.7 add assign_group in tracking" . $LANG["update"][90] . $DB->error());
+		$query = "ALTER TABLE `glpi_tracking` ADD INDEX ( `assign_group` ) ;";
+		$DB->query($query) or die("0.7 add index on assign_group in tracking" . $LANG["update"][90] . $DB->error());
+	}
+
+
+
+
 } // fin 0.7 #####################################################################################
 ?>
