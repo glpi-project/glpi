@@ -54,10 +54,12 @@ if (!isset($_GET["ID"])) $_GET["ID"]="";
 if (!isset($_GET["next"])) $_GET["next"]="";
 
 
-if (!isset ($_SESSION['glpi_authconfig']))
+if (!isset ($_SESSION['glpi_authconfig'])){
 	$_SESSION['glpi_authconfig'] = 1;
-if (isset ($_GET['onglet']))
+}
+if (isset ($_GET['onglet'])){
 	$_SESSION['glpi_authconfig'] = $_GET['onglet'];
+}
 
 
 //Update CAS configuration
@@ -72,13 +74,16 @@ elseif (isset ($_POST["update_mail"])) {
 }
 elseif (isset ($_POST["add_mail"])) {
 	//If no name has been given to this configuration, then go back to the page without adding
-	if ($_POST["name"] != "")
-		$config_mail->add($_POST);
+	if ($_POST["name"] != ""){
+		if ($newID=$config_mail->add($_POST)){
+			glpi_header($CFG_GLPI["root_doc"] . "/front/setup.auth.php?next=extauth_mail&ID=".$newID);
+		}
+	}
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 elseif (isset ($_POST["delete_mail"])) {
 	$config_mail->delete($_POST);
-	glpi_header($CFG_GLPI["root_doc"] . "/front/setup.auth.php?next=extauth_mail");
+	glpi_header($CFG_GLPI["root_doc"] . "/front/setup.auth.php?onglet=2");
 }
 
 //LDAP Server add/update/delete
@@ -88,38 +93,39 @@ elseif (isset ($_POST["update_ldap"])) {
 }
 elseif (isset ($_POST["add_ldap"])) {
 	//If no name has been given to this configuration, then go back to the page without adding
-	if ($_POST["name"] != "")
-		$config_ldap->add($_POST);
+	if ($_POST["name"] != ""){
+		if ($newID=$config_ldap->add($_POST)){
+			if (testLDAPConnection($newID)){
+				$_SESSION["MESSAGE_AFTER_REDIRECT"] =$LANG["login"][22];
+			} else{
+				$_SESSION["MESSAGE_AFTER_REDIRECT"] =$LANG["login"][23];	
+			}
+			glpi_header($CFG_GLPI["root_doc"] . "/front/setup.auth.php?next=extauth_ldap&ID=".$newID);
+		}
+	}
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 elseif (isset ($_POST["delete_ldap"])) {
 	$config_ldap->delete($_POST);
-	glpi_header($CFG_GLPI["root_doc"] . "/front/setup.auth.php?next=extauth_ldap");
+	glpi_header($CFG_GLPI["root_doc"] . "/front/setup.auth.php?onglet=1");
 }
 elseif (isset ($_POST["test_ldap"])) {
 	
-	//Testing ldap connection
-	commonHeader($LANG["title"][14], $_SERVER['PHP_SELF'],"config");
 	if (testLDAPConnection($_POST["ID"])){
-		$_SESSION["MESSAGE_AFTER_REDIRECT"] =$LANG["login"][22];
+		$_SESSION["MESSAGE_AFTER_REDIRECT"]=$LANG["login"][22];
 	} else{
-		$_SESSION["MESSAGE_AFTER_REDIRECT"] =$LANG["login"][23];	
+		$_SESSION["MESSAGE_AFTER_REDIRECT"]=$LANG["login"][23];	
 	}
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 elseif (isset ($_POST["test_mail"])) {
 	
-	//Testing ldap connection
-	commonHeader($LANG["title"][14], $_SERVER['PHP_SELF'],"admin");
-	if (test_auth_mail($_POST["imap_string"],$_POST["imap_login"],$_POST["imap_password"]))
-		$msg =$LANG["login"][22];
-	else
-		$msg =$LANG["login"][23];	
-	
-	//Display a message and a back link
-	echo "<div class='message'>".$msg."<br>";
-	displayBackLink();
-	echo "</div>";	
+	if (test_auth_mail($_POST["imap_string"],$_POST["imap_login"],$_POST["imap_password"])){
+		$_SESSION["MESSAGE_AFTER_REDIRECT"] =$LANG["login"][22];
+	} else {
+		$_SESSION["MESSAGE_AFTER_REDIRECT"] =$LANG["login"][23];	
+	}
+	glpi_header($_SERVER['HTTP_REFERER']);
 }
 
 commonHeader($LANG["title"][14], $_SERVER['PHP_SELF'],"config","extauth");
