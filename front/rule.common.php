@@ -42,26 +42,38 @@ if(!isset($_GET["ID"])) $_GET["ID"] = "";
 
 checkRight($rulecollection->right,"r");
 
-
 if (isset($_GET["action"])){
 	checkRight($rulecollection->right,"w");
-
 	$rulecollection->changeRuleOrder($_GET["ID"],$_GET["action"]);
 	glpi_header($_SERVER['HTTP_REFERER']);
-}elseif (isset($_POST["delete_rule"])){
+}elseif (isset($_POST["action"])){
 	checkRight($rulecollection->right,"w");	
-	if (count($_POST["item"]))
-		foreach ($_POST["item"] as $key => $val)
-		{
-			$rule->getRuleWithCriteriasAndActions($key,1,1);
-			$input["ID"]=$key;
-			$rule->delete($input);
-		}
-	
-	$rulecollection->changeRuleOrder(-1,"");
-		
-	logEvent(0, "rules", 4, "setup", $_SESSION["glpiname"]." ".$LANG["log"][22]);
-	glpi_header($_SERVER['HTTP_REFERER']);
+
+	// Use massive action system
+	switch ($_POST["action"]){
+		case "delete":
+			if (count($_POST["item"])){
+				foreach ($_POST["item"] as $key => $val)
+				{
+					$rule->getFromDB($key);
+					$input["ID"]=$key;
+					$rulecollection->deleteRuleOrder($rule->fields["ranking"]);
+					$rule->delete(array('ID'=>$key));
+				}
+				logEvent(0, "rules", 4, "setup", $_SESSION["glpiname"]." ".$LANG["log"][22]);
+				glpi_header($_SERVER['HTTP_REFERER']);
+			}
+		break;
+		case "move_rule":
+			if (count($_POST["item"])){
+				foreach ($_POST["item"] as $key => $val)
+				{
+					$rule->getFromDB($key);
+					$rulecollection->moveRule($key,$_POST['ranking'],$_POST['move_type']);
+				}
+			}
+		break;
+	}
 }
 
 commonHeader($LANG["title"][2],$_SERVER['PHP_SELF'],"admin","rule",$LANG["rulesengine"][17]);
