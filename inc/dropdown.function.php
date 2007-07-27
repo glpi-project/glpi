@@ -295,7 +295,7 @@ function dropdownNoValue($table,$myname,$value,$entity_restrict=-1) {
  *
  * @param $myname select name
  * @param $value default value
- * @param $right limit user who have specific right : interface -> central ; ID -> only current user ; all -> all users ; sinon specific right like show_ticket, create_ticket....
+ * @param $right limit user who have specific right : interface -> central ; ID -> only current user ; all -> all users ; sinon specific right like show_all_ticket, create_ticket....
  * @param $all Nobody or All display for none selected
  * @param $display_comments display comments near the dropdown
  * @param $entity_restrict Restrict to a defined entity
@@ -390,7 +390,7 @@ function dropdownAllUsers($myname,$value=0,$display_comments=1,$entity_restrict=
  *
 * @param $myname select name
  * @param $value default value
- * @param $right limit user who have specific right : interface -> central ; ID -> only current user ; all -> all users ; sinon specific right like show_ticket, create_ticket....
+ * @param $right limit user who have specific right : interface -> central ; ID -> only current user ; all -> all users ; sinon specific right like show_all_ticket, create_ticket....
  * @param $entity_restrict Restrict to a defined entity
  * @param $display_comments display comments near the dropdown
  * @return nothing (print out an HTML select box)

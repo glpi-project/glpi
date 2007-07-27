@@ -53,28 +53,35 @@ class Monitor extends CommonDBTM {
 		global $LANG,$CFG_GLPI;
 
 		$ong=array();
-		if (haveRight("computer","r"))
+		if (haveRight("computer","r")){
 			$ong[1]=$LANG["title"][26];
-		if (haveRight("contract_infocom","r"))
+		}
+		if (haveRight("contract_infocom","r")){
 			$ong[4]=$LANG["Menu"][26];
-		if (haveRight("document","r"))
+		}
+		if (haveRight("document","r")){
 			$ong[5]=$LANG["title"][25];
+		}
 
 		if(empty($withtemplate)){
-			if (haveRight("show_ticket","1"))
+			if (haveRight("show_all_ticket","1")){
 				$ong[6]=$LANG["title"][28];
-			if (haveRight("link","r"))
+			}
+			if (haveRight("link","r")){
 				$ong[7]=$LANG["title"][34];
-			if (haveRight("notes","r"))
+			}
+			if (haveRight("notes","r")){
 				$ong[10]=$LANG["title"][37];
-			if (haveRight("reservation_central","r"))
+			}
+			if (haveRight("reservation_central","r")){
 				$ong[11]=$LANG["title"][35];
+			}
 				
 			$ong[12]=$LANG["title"][38];
 
 		}	
 		return $ong;
-	}
+	}	
 
 	function pre_updateInDB($input,$updates) {
 		$this->fields["date_mod"]=$_SESSION["glpi_currenttime"];

@@ -67,12 +67,15 @@ class User extends CommonDBTM {
 		$ong[4]=$LANG["Menu"][36];
 
 		$ong[2] = $LANG["common"][1]; // materiel
-		if (haveRight("show_ticket", "1"))
+		if (haveRight("show_all_ticket", "1")){
 			$ong[3] = $LANG["title"][28]; // tickets
-		if (haveRight("reservation_central", "r"))
+		}
+		if (haveRight("reservation_central", "r")){
 			$ong[11] = $LANG["title"][35];
-		if (haveRight("user", "w"))
+		}
+		if (haveRight("user", "w")){
 			$ong[12] = $LANG["ldap"][12];
+		}
 
 		return $ong;
 	}
@@ -890,12 +893,9 @@ class User extends CommonDBTM {
 				echo $this->fields["mobile"];
 			echo "</td></tr>";
 
-			if (haveRight("show_ticket", "1"))
-			{
-				echo "<tr class='tab_bg_1'><td class='center'>" . $LANG["setup"][40] . "</td><td>";
-				dropdownYesNo('tracking_order',$_SESSION["glpitracking_order"]);
-				echo "</td></tr>";
-			}
+			echo "<tr class='tab_bg_1'><td class='center'>" . $LANG["setup"][40] . "</td><td>";
+			dropdownYesNo('tracking_order',$_SESSION["glpitracking_order"]);
+			echo "</td></tr>";
 
 			echo "<tr class='tab_bg_1'><td class='center'>" . $LANG["setup"][111] . "</td><td>";
 			dropdownInteger("list_limit", $this->fields["list_limit"],5,$CFG_GLPI['list_limit_max'],5);

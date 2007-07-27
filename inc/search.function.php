@@ -2412,7 +2412,7 @@ function giveItem ($type,$field,$data,$num,$linkfield=""){
 			return number_format($data["ITEM_$num"],$CFG_GLPI["decimal_number"],'.','');
 			break;
 		case "glpi_tracking.count":
-			if ($data["ITEM_$num"]>0&&haveRight("show_ticket","1")){
+			if ($data["ITEM_$num"]>0&&haveRight("show_all_ticket","1")){
 				$out= "<a href=\"".$CFG_GLPI["root_doc"]."/front/tracking.php?reset=reset_before&status=all&type=$type&item=".$data['ID']."\">";
 				$out.= $data["ITEM_$num"];
 				$out.="</a>";

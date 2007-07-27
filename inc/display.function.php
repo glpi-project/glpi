@@ -257,7 +257,7 @@ function commonHeader($title,$url,$sector="none",$item="none")
 //////// ASSISTANCE
 		$menu['maintain']['title']=$LANG["title"][24];
 
-		if (haveRight("observe_ticket","1")||haveRight("show_ticket","1")||haveRight("create_ticket","1")){
+		if (haveRight("observe_ticket","1")||haveRight("show_all_ticket","1")||haveRight("create_ticket","1")){
 			$menu['maintain']['default']='/front/tracking.php';
 
 			$menu['maintain']['content']['tracking']['title']=$LANG["Menu"][5];
@@ -1773,7 +1773,7 @@ function showCentralOnglets($target,$actif) {
 	global $LANG,$PLUGIN_HOOKS;
 	echo "<div id='barre_onglets'><ul id='onglet'>";
 	echo "<li ".($actif=="my"?"class='actif'":"")."><a href='$target?onglet=my'>".$LANG["central"][12]."</a></li>";
-	if (haveRight("show_ticket","1")||haveRight("logs","r")||haveRight("contract_infocom","r"))
+	if (haveRight("show_all_ticket","1")||haveRight("logs","r")||haveRight("contract_infocom","r"))
 		echo "<li ".($actif=="global"?"class='actif'":"")."><a href='$target?onglet=global'>".$LANG["central"][13]."</a></li>";
 	if (isset($PLUGIN_HOOKS['central_action'])&&count($PLUGIN_HOOKS['central_action'])){
 		echo "<li ".($actif=="plugins"?"class='actif'":"")."><a href='$target?onglet=plugins'>".$LANG["common"][29]."</a></li>";
@@ -1789,7 +1789,7 @@ function showCentralGlobalView(){
 
 	global $CFG_GLPI,$LANG;
 
-	$showticket=haveRight("show_ticket","1");
+	$showticket=haveRight("show_all_ticket","1");
 
 	
 	echo "<table  class='tab_cadre_central' ><tr>";
@@ -1847,7 +1847,7 @@ function showCentralGlobalView(){
 
 function showCentralMyView(){
 
-		$showticket=haveRight("show_ticket","1");
+		$showticket=haveRight("show_all_ticket","1");
 
 		
 		echo "<table class='tab_cadre_central' >";
