@@ -724,11 +724,12 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 	//// 7 - Manage GROUP BY
 	$GROUPBY="";
 	// Meta Search / Search All / Count tickets
-	if ($_SESSION["glpisearchcount2"][$type]>0||count($SEARCH_ALL)>0||in_array(60,$toview))	
-		$GROUPBY=" GROUP BY ID";
+	if ($_SESSION["glpisearchcount2"][$type]>0||count($SEARCH_ALL)>0||in_array(60,$toview)){
+		$GROUPBY=" GROUP BY $itemtable.ID";
+	}
 
 	// Specific case of group by : multiple links with the reference table
-	if (empty($GROUPBY))
+	if (empty($GROUPBY)){
 		foreach ($toview as $key2 => $val2){
 			if (empty($GROUPBY)&&(($val2=="all")
 						||($type==COMPUTER_TYPE&&ereg("glpi_device",$SEARCH_OPTION[$type][$val2]["table"]))
@@ -737,16 +738,14 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 						||($SEARCH_OPTION[$type][$val2]["table"]=="glpi_networking_ports")
 						||($SEARCH_OPTION[$type][$val2]["table"]=="glpi_dropdown_netpoint")
 						||($SEARCH_OPTION[$type][$val2]["table"]=="glpi_registry")
-						||($type==USER_TYPE&&($SEARCH_OPTION[$type][$val2]["table"]=="glpi_groups"
-								||$SEARCH_OPTION[$type][$val2]["table"]=="glpi_entities"
-								||$SEARCH_OPTION[$type][$val2]["table"]=="glpi_profiles"
-						))
+						||($type==USER_TYPE)
 						||($type==CONTACT_TYPE&&$SEARCH_OPTION[$type][$val2]["table"]=="glpi_enterprises")
 						||($type==ENTERPRISE_TYPE&&$SEARCH_OPTION[$type][$val2]["table"]=="glpi_contacts")
 					     )) 
 
-				$GROUPBY=" GROUP BY ID ";
+				$GROUPBY=" GROUP BY $itemtable.ID ";
 		}
+	}
 
 	// Specific search define in META_SPECIF_TABLE : only for computer search (not meta search)
 	if ($type==COMPUTER_TYPE){
@@ -812,7 +811,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 	if ($nosearch) {
 		$LIMIT= " LIMIT $start, ".$LIST_LIMIT;
 
-		$query_num="SELECT count($itemtable.ID) FROM ".$itemtable.$COMMONLEFTJOIN;
+		$query_num="SELECT count(DISTINCT $itemtable.ID) FROM ".$itemtable.$COMMONLEFTJOIN;
 		
 		$first=true;
 
@@ -837,6 +836,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 			if ($first) {$LINK=" WHERE ";$first=false;}
 			$query_num.=getEntitiesRestrictRequest($LINK,$itemtable);
 		}
+
 		// Union Search :
 		if (isset($CFG_GLPI["union_search_type"][$type])){
 			$tmpquery=$query_num;
@@ -1417,7 +1417,6 @@ function addDefaultSelect ($type){
 			return "";
 		break;
 	}
-
 }
 
 /**
