@@ -1299,7 +1299,24 @@ function update0681to07() {
 		$DB->query($query) or die("0.7 add autoname_entity in glpi_config" . $LANG["update"][90] . $DB->error());
 	}
 
+	if (!FieldExists("glpi_profiles", "rule_tracking")) {
+		$query = "ALTER TABLE `glpi_profiles` ADD COLUMN `rule_tracking` char(1) default NULL AFTER `config`";
+		$DB->query($query) or die("0.7 add rule_tracking in glpi_profiles" . $LANG["update"][90] . $DB->error());
+		$query = "UPDATE `glpi_profiles` SET `rule_tracking` = config";
+		$DB->query($query) or die("0.7 update rule_tracking values in glpi_profiles" . $LANG["update"][90] . $DB->error());
+	}
 
+	if (FieldExists("glpi_profiles", "show_ticket")) {
+		$query = "ALTER TABLE `glpi_profiles` CHANGE `show_ticket` `show_all_ticket` CHAR( 1 ) DEFAULT NULL ";
+		$DB->query($query) or die("0.7 rename show_ticket to show_all_ticket in glpi_profiles" . $LANG["update"][90] . $DB->error());
+	}
+
+	if (!FieldExists("glpi_profiles", "show_assign_ticket")) {
+		$query = "ALTER TABLE `glpi_profiles` ADD COLUMN `show_assign_ticket` char(1) default NULL AFTER `show_all_ticket`";
+		$DB->query($query) or die("0.7 add show_assign_ticket in glpi_profiles" . $LANG["update"][90] . $DB->error());
+		$query = "UPDATE `glpi_profiles` SET `show_assign_ticket` = show_all_ticket";
+		$DB->query($query) or die("0.7 update show_assign_ticket values in glpi_profiles" . $LANG["update"][90] . $DB->error());
+	}
 
 } // fin 0.7 #####################################################################################
 ?>

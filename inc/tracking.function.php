@@ -64,7 +64,7 @@ function showTrackingOnglets($target){
 		if ($_SESSION["glpiactiveprofile"]["interface"]=="central"){
 			echo "<li class='actif'><a href=\"".$CFG_GLPI["root_doc"]."/front/tracking.form.php?ID=$ID&amp;onglet=1\">".$LANG["job"][38]." $ID</a></li>";
 
-			if (haveRight("show_ticket","1")){
+			if (haveRight("show_all_ticket","1")){
 				displayPluginHeadings($target,TRACKING_TYPE,"","");
 			}
 
@@ -77,7 +77,7 @@ function showTrackingOnglets($target){
 
 
 			// Post-only could'nt see other item  but other user yes 
-			if (haveRight("show_ticket","1")){
+			if (haveRight("show_all_ticket","1")){
 				echo "<li class='invisible'>&nbsp;</li>";
 
 				$next=getNextItem("glpi_tracking",$ID);
@@ -168,7 +168,7 @@ function showCentralJobList($target,$start,$status="process") {
 
 	global $DB,$CFG_GLPI, $LANG;
 
-	if (!haveRight("show_ticket","1")) return false;
+	if (!haveRight("show_all_ticket","1")) return false;
 
 	if($status=="waiting"){ // on affiche les tickets en attente
 		$query = "SELECT ID FROM glpi_tracking WHERE assign = '".$_SESSION["glpiID"]."' AND status ='waiting' ".getEntitiesRestrictRequest("AND","glpi_tracking")." ORDER BY date ".getTrackingOrderPrefs($_SESSION["glpiID"]);
@@ -222,7 +222,7 @@ function showCentralJobCount(){
 
 	global $DB,$CFG_GLPI, $LANG;
 
-	if (!haveRight("show_ticket","1")) return false;	
+	if (!haveRight("show_all_ticket","1")) return false;	
 
 	$query="SELECT status, COUNT(*) AS COUNT FROM glpi_tracking ".getEntitiesRestrictRequest("WHERE","glpi_tracking")." GROUP BY status";
 
@@ -272,7 +272,7 @@ function showOldJobListForItem($username,$item_type,$item,$sort="",$order="") {
 
 	global $DB,$CFG_GLPI, $LANG;
 
-	if (!haveRight("show_ticket","1")) return false;
+	if (!haveRight("show_all_ticket","1")) return false;
 
 	if ($sort==""){
 		$sort="glpi_tracking.date";
@@ -326,7 +326,7 @@ function showJobListForItem($username,$item_type,$item,$sort="",$order="") {
 
 	global $DB,$CFG_GLPI, $LANG;
 
-	if (!haveRight("show_ticket","1")) return false;
+	if (!haveRight("show_all_ticket","1")) return false;
 
 	if ($sort==""){
 		$sort="glpi_tracking.date";
@@ -552,7 +552,7 @@ function showJobShort($data, $followups,$output_type=HTML_OUTPUT,$row_num=0) {
 		// Job Controls
 
 		if ($_SESSION["glpiactiveprofile"]["interface"]=="central"){
-			if (!haveRight("show_ticket","1")&&$data["author"]!=$_SESSION["glpiID"]&&$data["assign"]!=$_SESSION["glpiID"]&&(!haveRight("show_group_ticket",1)||!in_array($data["FK_group"],$_SESSION["glpigroups"]))) 
+			if (!haveRight("show_all_ticket","1")&&$data["author"]!=$_SESSION["glpiID"]&&$data["assign"]!=$_SESSION["glpiID"]&&(!haveRight("show_group_ticket",1)||!in_array($data["FK_group"],$_SESSION["glpigroups"]))) 
 				$nineth_column.="&nbsp;";
 			else 
 				$nineth_column.="<a href=\"".$CFG_GLPI["root_doc"]."/front/tracking.form.php?ID=".$data["ID"]."\"><strong>".$LANG["joblist"][13]."</strong></a>&nbsp;(".$job->numberOfFollowups().")";
@@ -886,7 +886,7 @@ function searchFormTracking($extended=0,$target,$start="",$status="new",$author=
 
 	global $CFG_GLPI,  $LANG;
 
-	if (!haveRight("show_ticket","1")) {
+	if (!haveRight("show_all_ticket","1")) {
 		if ($author==0&&$assign==0)
 			if (!haveRight("own_ticket","1"))
 				$author=$_SESSION["glpiID"];
@@ -1101,7 +1101,7 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$au
 
 	$candelete=haveRight("delete_ticket","1");
 	$canupdate=haveRight("update_ticket","1");
-	if (!haveRight("show_ticket","1")) {
+	if (!haveRight("show_all_ticket","1")) {
 		if ($author==0&&$assign==0)
 			if (!haveRight("own_ticket","1"))
 				$author=$_SESSION["glpiID"];
@@ -1494,7 +1494,7 @@ function showJobDetails ($target,$ID){
 
 	if ($job->getfromDB($ID)) {
 
-		if (!haveRight("show_ticket","1")
+		if (!haveRight("show_all_ticket","1")
 			&&$job->fields["author"]!=$_SESSION["glpiID"]
 			&&$job->fields["assign"]!=$_SESSION["glpiID"]
 			&&!($_SESSION["glpiactiveprofile"]["show_group_ticket"]&&in_array($job->fields["FK_group"],$_SESSION["glpigroups"])) ){

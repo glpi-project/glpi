@@ -1131,6 +1131,7 @@ $LANG["profiles"][28]="Récursif";
 $LANG["profiles"][29]="Dynamique";
 $LANG["profiles"][30]="Voir les informations OCSNG";
 $LANG["profiles"][31]="Synchronisation OCSNG manuellement";
+$LANG["profiles"][32]="Voir les tickets qui me sont assignés";
 
 $LANG["registry"][1]="Ruche";
 $LANG["registry"][2]="Chemin";

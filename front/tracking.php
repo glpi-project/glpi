@@ -70,14 +70,16 @@ if (!isset($_GET["group"])||isset($_GET['reset'])) $_GET["group"]=0;
 if (!isset($_GET["assign"])||isset($_GET['reset'])) $_GET["assign"]=0;
 if (!isset($_GET["assign_ent"])||isset($_GET['reset'])) $_GET["assign_ent"]=0;
 if (!isset($_GET["category"])||isset($_GET['reset'])) $_GET["category"]="";
+
 if (!isset($_GET["status"])||isset($_GET['reset'])) {
 	// Limited case
-	if (!haveRight("show_ticket","1")){
+	if (!haveRight("show_all_ticket","1")){
 		$_GET["status"]="all";
 	} else {
 		$_GET["status"]="notold";
 	}
 } 
+
 if (!isset($_GET["showfollowups"])||isset($_GET['reset'])) $_GET["showfollowups"]=0;
 if (!isset($_GET["item"])||isset($_GET['reset'])) $_GET["item"]=0;
 if (!isset($_GET["type"])||isset($_GET['reset'])) $_GET["type"]=0;
@@ -107,7 +109,7 @@ if ($_GET["enddate1"]!="0000-00-00"&&$_GET["enddate2"]!="0000-00-00"&&strcmp($_G
 	$_GET["enddate2"]=$tmp;
 }
 
-if (!haveRight("show_ticket","1")){
+if (!haveRight("show_all_ticket","1")){
 	searchSimpleFormTracking($_SERVER['PHP_SELF'],$_GET["status"],$_GET["group"]);
 	showTrackingList($_SERVER['PHP_SELF'],$_GET["start"],$_GET["sort"],$_GET["order"],$_GET["status"],$_SESSION["glpiID"],$_GET["group"]);
 } else {

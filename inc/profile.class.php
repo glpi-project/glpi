@@ -343,45 +343,54 @@ class Profile extends CommonDBTM{
 		echo "<td>".$LANG["profiles"][5].":</td><td>";
 		dropdownYesNo("create_ticket",$this->fields["create_ticket"]);
 		echo "</td>";
-		echo "<td>".$LANG["profiles"][14].":</td><td>";
-		dropdownYesNo("delete_ticket",$this->fields["delete_ticket"]);
+		echo "<td>".$LANG["profiles"][9].":</td><td>";
+		dropdownYesNo("observe_ticket",$this->fields["observe_ticket"]);
 		echo "</td>";
-		echo "<td>".$LANG["profiles"][6].":</td><td>";
-		dropdownYesNo("comment_ticket",$this->fields["comment_ticket"]);
+		echo "<td>".$LANG["profiles"][26]."</td><td>";
+		dropdownYesNo("show_group_ticket",$this->fields["show_group_ticket"]);
 		echo "</td></tr>";
 
+
 		echo "<tr class='tab_bg_2'>";
-		echo "<td>".$LANG["profiles"][15].":</td><td>";
-		dropdownYesNo("comment_all_ticket",$this->fields["comment_all_ticket"]);
+		echo "<td>".$LANG["profiles"][32].":</td><td>";
+		dropdownYesNo("show_assign_ticket",$this->fields["show_assign_ticket"]);
+		echo "</td>";
+		echo "<td>".$LANG["profiles"][7].":</td><td>";
+		dropdownYesNo("show_all_ticket",$this->fields["show_all_ticket"]);
 		echo "</td>";
 		echo "<td>".$LANG["profiles"][18].":</td><td>";
 		dropdownYesNo("update_ticket",$this->fields["update_ticket"]);
-		echo "</td>";
-		echo "<td>".$LANG["profiles"][16].":</td><td>";
-		dropdownYesNo("own_ticket",$this->fields["own_ticket"]);
 		echo "</td></tr>";
 
 		echo "<tr class='tab_bg_2'>";
-		echo "<td>".$LANG["profiles"][17].":</td><td>";
-		dropdownYesNo("steal_ticket",$this->fields["steal_ticket"]);
+		echo "<td>".$LANG["profiles"][6].":</td><td>";
+		dropdownYesNo("comment_ticket",$this->fields["comment_ticket"]);
 		echo "</td>";
-		echo "<td>".$LANG["profiles"][19].":</td><td>";
-		dropdownYesNo("assign_ticket",$this->fields["assign_ticket"]);
+		echo "<td>".$LANG["profiles"][15].":</td><td>";
+		dropdownYesNo("comment_all_ticket",$this->fields["comment_all_ticket"]);
 		echo "</td>";
-		echo "<td>".$LANG["profiles"][7].":</td><td>";
-		dropdownYesNo("show_ticket",$this->fields["show_ticket"]);
-		echo "</td></tr>";
+		echo "<td colspan='2'>&nbsp;</td></tr>";
 
 		echo "<tr class='tab_bg_2'>";
 		echo "<td>".$LANG["profiles"][8].":</td><td>";
 		dropdownYesNo("show_full_ticket",$this->fields["show_full_ticket"]);
 		echo "</td>";
-		echo "<td>".$LANG["profiles"][9].":</td><td>";
-		dropdownYesNo("observe_ticket",$this->fields["observe_ticket"]);
+		echo "<td>".$LANG["profiles"][14].":</td><td>";
+		dropdownYesNo("delete_ticket",$this->fields["delete_ticket"]);
 		echo "</td>";
-		echo "<td>".$LANG["stats"][19].":</td><td>";
-		dropdownYesNo("statistic",$this->fields["statistic"]);
+		echo "<td colspan='2'>&nbsp;</td></tr>";
+
+		echo "<tr class='tab_bg_2'>";
+		echo "<td>".$LANG["profiles"][16].":</td><td>";
+		dropdownYesNo("own_ticket",$this->fields["own_ticket"]);
+		echo "<td>".$LANG["profiles"][17].":</td><td>";
+		dropdownYesNo("steal_ticket",$this->fields["steal_ticket"]);
+		echo "</td>";
+		echo "<td>".$LANG["profiles"][19].":</td><td>";
+		dropdownYesNo("assign_ticket",$this->fields["assign_ticket"]);
 		echo "</td></tr>";
+
+
 
 		echo "<tr class='tab_bg_2'>";
 		echo "<td>".$LANG["profiles"][20].":</td><td>";
@@ -390,13 +399,11 @@ class Profile extends CommonDBTM{
 		echo "<td>".$LANG["profiles"][21].":</td><td>";
 		dropdownYesNo("show_all_planning",$this->fields["show_all_planning"]);
 		echo "</td>";
-
-		echo "<td>".$LANG["profiles"][26]."</td><td>";
-		dropdownYesNo("show_group_ticket",$this->fields["show_group_ticket"]);
+		echo "<td>".$LANG["stats"][19].":</td><td>";
+		dropdownYesNo("statistic",$this->fields["statistic"]);
 		echo "</td></tr>";
 
 		echo "<tr class='tab_bg_2'>";
-
 		echo "<td>".$LANG["profiles"][27]."</td><td>";
 		dropdownYesNo("show_group_hardware",$this->fields["show_group_hardware"]);
 		echo "</td>";
@@ -468,7 +475,7 @@ class Profile extends CommonDBTM{
 		echo "</tr>";
 
 		echo "<tr class='tab_bg_2'>";
-		echo "<td class='tab_bg_1'>".$LANG["Menu"][14].":</td><td>";
+		echo "<td>".$LANG["Menu"][14].":</td><td>";
 		dropdownNoneReadWrite("user",$this->fields["user"],1,1,1);
 		echo "</td>";
 		echo "<td>".$LANG["Menu"][36].":</td><td>";
