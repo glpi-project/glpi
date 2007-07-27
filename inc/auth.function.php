@@ -184,6 +184,9 @@ function haveTypeRight($type, $right) {
 		case MAILGATE_TYPE :
 			return haveRight("config",$right);
 			break;	
+		case RULE_TYPE :
+			return haveRight("rule_tracking",$right)||haveRight("rule_ocs",$right)||haveRight("rule_ldap",$right)||haveRight("rule_softwarecategories",$right);
+			break;	
 		default :
 			// Plugin case
 			if ($type>1000){

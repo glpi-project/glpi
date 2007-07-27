@@ -52,6 +52,14 @@ if (isset($_POST["action"])&&isset($_POST["type"])&&!empty($_POST["type"])){
 	echo "<input type='hidden' name='action' value='".$_POST["action"]."'>";
 	echo "<input type='hidden' name='device_type' value='".$_POST["type"]."'>";
 	switch($_POST["action"]){
+		case "move_rule":
+			echo "<select name='move_type'>";
+			echo "<option value='after' selected>".$LANG["buttons"][47]."</option>";
+			echo "<option value='before'>".$LANG["buttons"][46]."</option>";
+			echo "</select>&nbsp;";
+			echo dropdownRules($_POST['rule_type']);
+			echo "<input type=\"submit\" name=\"massiveaction\" class=\"submit\" value=\"".$LANG["buttons"][2]."\" >";
+		break;
 		case "add_followup":
 			showAddFollowupForm(-1);
 		break;

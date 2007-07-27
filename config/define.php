@@ -85,6 +85,7 @@
 	define("REGISTRY_TYPE",33);
 	define("PROFILE_TYPE",34);
 	define("MAILGATE_TYPE",35);
+	define("RULE_TYPE",36);
 
 	// GLPI MODE
 	define("NORMAL_MODE",0);

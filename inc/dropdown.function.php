@@ -1834,39 +1834,23 @@ function dropdownGMT($name,$value='')
 	echo "</select>";	
 }
 
-function dropdownRuleRanking($rule_type,$rank)
+function dropdownRules($rule_type)
 {
 	global $DB,$LANG;
 
 	$ranks = array();
 	
-	$sql = "SELECT ranking,name FROM glpi_rules_descriptions WHERE rule_type=".$rule_type." ORDER BY ranking ASC";
+	$sql = "SELECT ID,name FROM glpi_rules_descriptions WHERE rule_type=".$rule_type." ORDER BY ranking ASC";
 	$res = $DB->query($sql);
 	$numrankings = $DB->numrows($res);
 
 	//New rule -> get the next free ranking
-	if ($rank == -1)
-	{
-		$rank = $numrankings;
-		$ranks[$numrankings]=$numrankings." : ".$LANG["rulesengine"][34];
+	if ($DB->numrows($res)){
+		while ($data = $DB->fetch_array($res)){
+			$ranks[$data['ID']]=$data['name'];
+		} 
 	}
-	elseif ($numrankings > 0)
-	{	
-		$data = $DB->fetch_array($res);
-		$i=0;
-		do
-		{
-			$name = $data["name"];
-			if ($data["ranking"] != $rank)
-				$ranks[$i]=$i." (".$LANG["rulesengine"][36]." ".$name.")";
-			else
-				$ranks[$i]=$i." : ".$LANG["rulesengine"][35];
-			$i++;
-		}while ($data = $DB->fetch_array($res));
-	}
-	else
-		$rank = 0;
 
-	dropdownArrayValues("ranking",$ranks,$rank);
+	dropdownArrayValues("ranking",$ranks);
 }
 ?>
