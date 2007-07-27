@@ -373,7 +373,6 @@ class AuthMail extends CommonDBTM {
 			}
 
 			echo "<div class='center'>";
-			echo "<p >" . $LANG["setup"][160] . "</p>";
 			echo "<table class='tab_cadre_fixe'>";
 			echo "<tr><th colspan='2'>" . $LANG["login"][3] . "</th></tr>";
 			echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["common"][16] . "</td><td><input size='30' type=\"text\" name=\"name\" value=\"" . $this->fields["name"] . "\" ></td></tr>";
@@ -445,7 +444,7 @@ class AuthLDAP extends CommonDBTM {
 				echo "<input type='hidden' name='ID' value='" . $ID . "'>";
 			}
 
-			echo "<div class='center'><p > " . $LANG["setup"][151] . "</p>";
+			echo "<div class='center'>";
 
 			echo "<table class='tab_cadre_fixe'>";
 			echo "<tr><th colspan='4'>" . $LANG["login"][2] . "</th></tr>";

@@ -1040,9 +1040,6 @@ $LANG["ocsconfig"][55]="Chercher les machines GLPI ayant le statut";
 $LANG["ocsconfig"][56]="vide";
 $LANG["ocsconfig"][57]="égal";
 $LANG["ocsconfig"][58]="La liaison fusionne automatiquement une machine GLPI avec une d'OCS.<br>Cette option n'est prise en compte que par les scripts de synchronisation (pas manuellement).";
-$LANG["ocsconfig"][59]="égal";
-
-
 
 $LANG["pager"][1]="à";
 $LANG["pager"][2]="de";
@@ -1260,8 +1257,6 @@ $LANG["rulesengine"][28]="Règles métier pour le suivi";
 $LANG["rulesengine"][29]="Liste des règles";
 $LANG["rulesengine"][30]="Action"; 
 $LANG["rulesengine"][31]="Récupérer la valeur";
-$LANG["rulesengine"][32]="Après";
-$LANG["rulesengine"][33]="Premier";
 $LANG["rulesengine"][34]="Dernier";
 $LANG["rulesengine"][35]="Position actuelle";
 $LANG["rulesengine"][36]="Actuellement";
@@ -1397,7 +1392,6 @@ $LANG["setup"][148]="Pas pour les horaires";
 $LANG["setup"][149]="Nombre de décimales pour les montants";
 
 
-$LANG["setup"][151]="Si vous ne souhaitez pas utiliser LDAP comme source(s) de connexion, laissez les champs vides";
 $LANG["setup"][152]="LDAP configuration";
 $LANG["setup"][154]="Basedn";
 $LANG["setup"][155]="rootdn (pour les connexions non anonymes)";
@@ -1405,7 +1399,6 @@ $LANG["setup"][156]="Pass (pour les connexions non anonymes)";
 $LANG["setup"][157]="L'extension LDAP de votre parseur PHP n'est pas installée";
 $LANG["setup"][158]="Impossible d'utiliser LDAP comme source de connexion externe";
 $LANG["setup"][159]="Filtre de connexion";
-$LANG["setup"][160]="Si vous ne souhaitez pas utiliser IMAP/POP comme source(s) de connexion laissez les champs vides. Plus d'informations sur <a target='_blank' href='http://www.php.net/manual/fr/function.imap-open.php'>php.net</a>.";
 $LANG["setup"][162]="IMAP/POP configuration"; 
 $LANG["setup"][164]="Nom domaine IMAP/POP <br>(email de type login@domaine)";
 $LANG["setup"][165]="L'extension IMAP de votre parseur PHP n'est pas installée";
