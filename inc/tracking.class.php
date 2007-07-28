@@ -676,9 +676,6 @@ class Job extends CommonDBTM{
 			if (isset($this->hardwaredatas->obj->fields["tech_num"])&&$this->hardwaredatas->obj->fields["tech_num"]>0){
 					$tech=getUserName($this->hardwaredatas->obj->fields["tech_num"]);
 			}
-			if (isset($this->hardwaredatas->obj->fields["tech_num"])&&$this->hardwaredatas->obj->fields["tech_num"]>0){
-					$tech=getUserName($this->hardwaredatas->obj->fields["tech_num"]);
-			}
 			if (isset($this->hardwaredatas->obj->fields["contact"])){
 				$contact=$this->hardwaredatas->obj->fields["contact"];
 			}
@@ -708,8 +705,16 @@ class Job extends CommonDBTM{
 				$message.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>". $LANG["common"][10].":</span> ".$tech."<br>";
 			$message.= "<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$LANG["joblist"][0].":</span> ".getStatusName($this->fields["status"])."<br>";
 			$assign=getAssignName($this->fields["assign"],USER_TYPE);
-			if ($assign=="[Nobody]")
-				$assign=$LANG["mailing"][105];
+			$assign_group=getAssignName($this->fields["assign_group"],GROUP_TYPE);
+			if ($assign=="[Nobody]"){
+				if (!empty($assign_group)){
+					$assign=$assign_group;
+				} else {
+					$assign=$LANG["mailing"][105];
+				}
+			} else {
+				$assign.=" / ".$assign_group;
+			}
 			$message.= "<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$LANG["mailing"][8]."</span> ".$assign."<br>";
 			$message.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$LANG["joblist"][2].":</span> ".getPriorityName($this->fields["priority"])."<br>";
 			if ($this->fields["device_type"]!=SOFTWARE_TYPE&&!empty($contact))
