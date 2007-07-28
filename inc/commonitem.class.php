@@ -375,14 +375,8 @@ class CommonItem{
 		$ID="";
 		switch ($this->device_type){
 			case GENERAL_TYPE :
-				return $this->getName($with_comments);
-				break;
 			case LICENSE_TYPE : 
-				return $this->getName($with_comments);
-				break;						
 			case CARTRIDGE_ITEM_TYPE : 
-				return $this->getName($with_comments);
-				break;						
 			case CONSUMABLE_ITEM_TYPE : 
 				return $this->getName($with_comments);
 				break;						

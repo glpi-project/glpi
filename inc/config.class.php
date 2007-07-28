@@ -544,11 +544,12 @@ class Config extends CommonDBTM {
 	
 				$profiles[USER_MAILING_TYPE . "_" . ADMIN_MAILING] = $LANG["setup"][237];
 				$profiles[USER_MAILING_TYPE . "_" . TECH_MAILING] = $LANG["common"][10];
-				$profiles[USER_MAILING_TYPE . "_" . USER_MAILING] = $LANG["common"][34] . " " . $LANG["common"][1];
 				$profiles[USER_MAILING_TYPE . "_" . AUTHOR_MAILING] = $LANG["job"][4];
+				$profiles[USER_MAILING_TYPE . "_" . RECIPIENT_MAILING] = $LANG["job"][3];
+				$profiles[USER_MAILING_TYPE . "_" . USER_MAILING] = $LANG["common"][34] . " " . $LANG["common"][1];
 				$profiles[USER_MAILING_TYPE . "_" . ASSIGN_MAILING] = $LANG["setup"][239];
 				$profiles[USER_MAILING_TYPE . "_" . ASSIGN_ENT_MAILING] = $LANG["financial"][26];
-				$profiles[USER_MAILING_TYPE . "_" . RECIPIENT_MAILING] = $LANG["job"][3];
+				$profiles[USER_MAILING_TYPE . "_" . ASSIGN_GROUP_MAILING] = $LANG["setup"][248];
 	
 				$query = "SELECT ID, name FROM glpi_profiles order by name";
 				$result = $DB->query($query);
@@ -591,6 +592,7 @@ class Config extends CommonDBTM {
 				echo "<tr class='tab_bg_2'>";
 				unset ($profiles[USER_MAILING_TYPE . "_" . ASSIGN_MAILING]);
 				unset ($profiles[USER_MAILING_TYPE . "_" . ASSIGN_ENT_MAILING]);
+				unset ($profiles[USER_MAILING_TYPE . "_" . ASSIGN_GROUP_MAILING]);
 				unset ($profiles[USER_MAILING_TYPE . "_" . RECIPIENT_MAILING]);
 				showFormMailingType("resa", $profiles);
 				echo "</tr>";

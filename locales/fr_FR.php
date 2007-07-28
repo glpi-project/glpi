@@ -618,6 +618,7 @@ $LANG["job"][2]="par";
 $LANG["job"][3]="Receveur";
 $LANG["job"][4]="Demandeur";
 $LANG["job"][5]="Attribué à";
+$LANG["job"][6]="Technicien";
 $LANG["job"][7]="Suivi";
 $LANG["job"][11]="Décrivez le problème/action";
 $LANG["job"][12]="Pas de suivi pour ce ticket.";
@@ -1465,6 +1466,8 @@ $LANG["setup"][244]="Alertes sur les cartouches";
 $LANG["setup"][245]="Rappels";
 $LANG["setup"][246]="Alertes sur les contrats";
 $LANG["setup"][247]="Alertes sur les informations financières";
+$LANG["setup"][248]="Groupe chargé du ticket";
+
 
 $LANG["setup"][250]="Affichage recherche par défaut ";
 $LANG["setup"][251]="Sélectionnez une rubrique ";
@@ -1575,7 +1578,6 @@ $LANG["state"][11]="Synthèse";
 
 $LANG["stats"][0]="Sélectionnez les statistiques à visualiser";
 $LANG["stats"][1]="Globales";
-$LANG["stats"][2]="Technicien";
 $LANG["stats"][3]="Par Intitulés";
 $LANG["stats"][5]="Nombre total de tickets";
 $LANG["stats"][6]="Délai moyen de traitement du ticket";

@@ -104,6 +104,9 @@ function testMail(){
 					case ASSIGN_ENT_MAILING :
 						$name = $LANG["financial"][26];
 						break;
+					case ASSIGN_GROUP_MAILING :
+						$name = $LANG["setup"][248];
+						break;
 					default :
 						$name="&nbsp;";
 						break;

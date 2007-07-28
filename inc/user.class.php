@@ -92,10 +92,6 @@ class User extends CommonDBTM {
 
 		global $DB;
 
-		// Tracking items left?
-		$query3 = "UPDATE glpi_tracking SET assign = '' WHERE (assign = '$ID')";
-		$DB->query($query3);
-
 		$query = "DELETE from glpi_users_groups WHERE FK_users = '$ID'";
 		$DB->query($query);
 

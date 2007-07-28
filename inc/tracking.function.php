@@ -71,7 +71,10 @@ function showTrackingOnglets($target){
 			echo "<li class='invisible'>&nbsp;</li>";
 
 			// admin yes  
-			if (haveRight("comment_ticket","1")||haveRight("comment_all_ticket","1")||$job->fields["assign"]==$_SESSION["glpiID"]){
+			if (haveRight("comment_ticket","1")
+			||haveRight("comment_all_ticket","1")
+			||$job->fields["assign"]==$_SESSION["glpiID"]
+			||in_array($job->fields["assign_group"],$_SESSION['glpigroups'])){
 				echo "<li onClick=\"showAddFollowup(); Effect.Appear('viewfollowup');\" id='addfollowup'><a href='#'>".$LANG["job"][29]."</a></li>";
 			}
 
@@ -103,9 +106,6 @@ function showTrackingOnglets($target){
 	echo "</ul></div>";	 
 
 }
-
-
-
 
 
 function commonTrackingListHeader($output_type=HTML_OUTPUT,$target="",$parameters="",$sort="",$order=""){
@@ -168,16 +168,29 @@ function showCentralJobList($target,$start,$status="process") {
 
 	global $DB,$CFG_GLPI, $LANG;
 
-	if (!haveRight("show_all_ticket","1")) return false;
+	if (!haveRight("show_all_ticket","1")&&!haveRight("show_assign_ticket","1")) return false;
+
+	$search_assign="assign = '".$_SESSION["glpiID"]."'";
+	if (count($_SESSION['glpigroups'])){
+		$first=true;
+		$groups="";
+		foreach ($_SESSION['glpigroups'] as $val){
+			if (!$first) $groups.=",";
+			else $first=false;
+			$groups.=$val;
+		}
+		$search_assign.= " OR assign_group IN ($groups) ";
+	}
+
 
 	if($status=="waiting"){ // on affiche les tickets en attente
-		$query = "SELECT ID FROM glpi_tracking WHERE assign = '".$_SESSION["glpiID"]."' AND status ='waiting' ".getEntitiesRestrictRequest("AND","glpi_tracking")." ORDER BY date ".getTrackingOrderPrefs($_SESSION["glpiID"]);
+		$query = "SELECT ID FROM glpi_tracking WHERE ( $search_assign ) AND status ='waiting' ".getEntitiesRestrictRequest("AND","glpi_tracking")." ORDER BY date ".getTrackingOrderPrefs($_SESSION["glpiID"]);
 
 		$title=$LANG["central"][11];
 
 	}else{ // on affiche les tickets planifiés ou assignés à glpiID
 
-		$query = "SELECT ID FROM glpi_tracking WHERE (assign = '".$_SESSION["glpiID"]."') AND (status ='plan' OR status = 'assign') ".getEntitiesRestrictRequest("AND","glpi_tracking")." ORDER BY date ".getTrackingOrderPrefs($_SESSION["glpiID"]);
+		$query = "SELECT ID FROM glpi_tracking WHERE ( $search_assign ) AND (status ='plan' OR status = 'assign') ".getEntitiesRestrictRequest("AND","glpi_tracking")." ORDER BY date ".getTrackingOrderPrefs($_SESSION["glpiID"]);
 
 		$title=$LANG["central"][9];
 	}
@@ -196,7 +209,7 @@ function showCentralJobList($target,$start,$status="process") {
 	if ($number > 0) {
 		echo "<table class='tab_cadrehov'>";
 
-		echo "<tr><th colspan='5'><a href=\"".$CFG_GLPI["root_doc"]."/front/tracking.php?assign=".$_SESSION["glpiID"]."&amp;status=$status&amp;reset=reset_before\">".$title."</a></th></tr>";
+		echo "<tr><th colspan='5'><a href=\"".$CFG_GLPI["root_doc"]."/front/tracking.php?assign=mine&amp;status=$status&amp;reset=reset_before\">".$title."</a></th></tr>";
 		echo "<tr><th></th>";
 		echo "<th>".$LANG["job"][4]."</th>";
 		echo "<th>".$LANG["common"][1]."</th>";
@@ -502,6 +515,13 @@ function showJobShort($data, $followups,$output_type=HTML_OUTPUT,$row_num=0) {
 			$fifth_col="<strong>".$userdata['name']."&nbsp;".$comments_display."</strong>";
 		}
 
+		if ($data["assign_group"]>0){
+			if (!empty($fifth_col)){
+				$fifth_col.="<br>";
+			}
+			$fifth_col.=getAssignName($data["assign_group"],GROUP_TYPE,1);
+		}
+
 		if ($data["assign_ent"]>0){
 			if (!empty($fifth_col)){
 				$fifth_col.="<br>";
@@ -552,10 +572,16 @@ function showJobShort($data, $followups,$output_type=HTML_OUTPUT,$row_num=0) {
 		// Job Controls
 
 		if ($_SESSION["glpiactiveprofile"]["interface"]=="central"){
-			if (!haveRight("show_all_ticket","1")&&$data["author"]!=$_SESSION["glpiID"]&&$data["assign"]!=$_SESSION["glpiID"]&&(!haveRight("show_group_ticket",1)||!in_array($data["FK_group"],$_SESSION["glpigroups"]))) 
+			if (!haveRight("show_all_ticket","1")
+			&&$data["author"]!=$_SESSION["glpiID"]
+			&&$data["assign"]!=$_SESSION["glpiID"]
+			&&(!haveRight("show_group_ticket",1)||!in_array($data["FK_group"],$_SESSION["glpigroups"]))
+			&&(!haveRight("show_assign_ticket",1)||!in_array($data["assign_group"],$_SESSION["glpigroups"]))
+			) {
 				$nineth_column.="&nbsp;";
-			else 
+			} else {
 				$nineth_column.="<a href=\"".$CFG_GLPI["root_doc"]."/front/tracking.form.php?ID=".$data["ID"]."\"><strong>".$LANG["joblist"][13]."</strong></a>&nbsp;(".$job->numberOfFollowups().")";
+			}
 		}
 		else
 			$nineth_column.="<a href=\"".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php?show=user&amp;ID=".$data["ID"]."\">".$LANG["joblist"][13]."</a>&nbsp;(".$job->numberOfFollowups(haveRight("show_full_ticket","1")).")";
@@ -650,7 +676,7 @@ function showJobVeryShort($ID) {
 	}
 }
 
-function addFormTracking ($device_type=0,$ID=0,$author,$assign,$target,$error,$searchauthor='') {
+function addFormTracking ($device_type=0,$ID=0,$author,$assign,$assign_group,$target,$error,$searchauthor='') {
 	// Prints a nice form to add jobs
 
 	global $CFG_GLPI, $LANG,$CFG_GLPI,$REFERER,$DB;
@@ -749,17 +775,22 @@ function addFormTracking ($device_type=0,$ID=0,$author,$assign,$target,$error,$s
 	dropdownValue("glpi_dropdown_tracking_category","category",$category);
 	echo "</td></tr>";
 
+	if (haveRight("assign_ticket","1")||haveRight("steal_ticket","1")){
+		echo "<tr class='tab_bg_2' align='center'><td>".$LANG["buttons"][3].":</td>";
+		echo "<td colspan='3'>";
 
-	if (haveRight("assign_ticket","1")){
-		echo "<tr class='tab_bg_2' align='center'><td>".$LANG["buttons"][3].":</td>";
-		echo "<td colspan='3'>";
-		dropdownUsers("assign",$assign,"own_ticket",0,1,$_SESSION["glpiactive_entity"]);
+		if (haveRight("assign_ticket","1")){
+			echo $LANG['job'][6].": ";
+			dropdownUsers("assign",$assign,"own_ticket",0,1,$_SESSION["glpiactive_entity"]);
+			echo "<br>".$LANG["common"][35].": ";
+			dropdownValue("glpi_groups", "assign_group", $assign_group,1,$_SESSION["glpiactive_entity"]);
+
+		} else if (haveRight("steal_ticket","1")) {
+			echo $LANG['job'][6].": ";
+			dropdownUsers("assign",$assign,"ID",0,1,$_SESSION["glpiactive_entity"]);
+		}
 		echo "</td></tr>";
-	} else if (haveRight("steal_ticket","1")) {
-		echo "<tr class='tab_bg_2' align='center'><td>".$LANG["buttons"][3].":</td>";
-		echo "<td colspan='3'>";
-		dropdownUsers("assign",$assign,"ID",0,1,$_SESSION["glpiactive_entity"]);
-		echo "</td></tr>";
+
 	}
 
 
@@ -881,16 +912,21 @@ global $CFG_GLPI,  $LANG;
 
 }
 
-function searchFormTracking($extended=0,$target,$start="",$status="new",$author=0,$group=0,$assign=0,$assign_ent=0,$category=0,$priority=0,$request_type=0,$item=0,$type=0,$showfollowups="",$field2="",$contains2="",$field="",$contains="",$date1="",$date2="",$computers_search="",$enddate1="",$enddate2="") {
+function searchFormTracking($extended=0,$target,$start="",$status="new",$author=0,$group=0,$assign=0,$assign_ent=0,$assign_group=0,$category=0,$priority=0,$request_type=0,$item=0,$type=0,$showfollowups="",$field2="",$contains2="",$field="",$contains="",$date1="",$date2="",$computers_search="",$enddate1="",$enddate2="") {
 	// Print Search Form
 
 	global $CFG_GLPI,  $LANG;
 
 	if (!haveRight("show_all_ticket","1")) {
-		if ($author==0&&$assign==0)
-			if (!haveRight("own_ticket","1"))
+		
+		if (haveRight("show_assign_ticket","1")) {
+			$assign='mine';
+		} else if ($author==0&&$assign==0)
+			if (!haveRight("own_ticket","1")){
 				$author=$_SESSION["glpiID"];
-			else $assign=$_SESSION["glpiID"];
+			} else {
+				$assign=$_SESSION["glpiID"];
+			}
 	}
 
 	if ($extended==1){
@@ -951,13 +987,7 @@ function searchFormTracking($extended=0,$target,$start="",$status="new",$author=
 	echo "<option value='old' ".($status=="old"?"selected":"").">".$LANG["joblist"][25]."</option>";	
 	echo "<option value='all' ".($status=="all"?"selected":"").">".$LANG["joblist"][20]."</option>";
 	echo "</select></td>";
-	echo "<td  colspan='1' class='center'>".$LANG["job"][4].":<br>";
-	dropdownUsersTracking("author",$author,"author");
-	echo "</td>";
 
-	echo "<td  colspan='1' class='center'>".$LANG["common"][35].":<br>";
-	dropdownValue("glpi_groups","group",$group);
-	echo "</td>";
 
 	echo "<td colspan='1' class='center'>".$LANG["joblist"][2].":<br>";
 	dropdownPriority("priority",$priority,1);
@@ -965,6 +995,10 @@ function searchFormTracking($extended=0,$target,$start="",$status="new",$author=
 
 	echo "<td colspan='2' class='center'>".$LANG["common"][36].":<br>";
 	dropdownValue("glpi_dropdown_tracking_category","category",$category);
+	echo "</td>";
+
+	echo "<td colspan='2' class='center'>".$LANG["job"][44].":<br>";
+	dropdownRequestType("request_type",$request_type);
 	echo "</td>";
 
 	echo "</tr>";
@@ -975,18 +1009,30 @@ function searchFormTracking($extended=0,$target,$start="",$status="new",$author=
 	dropdownAllItems("item",$type,$item);
 	echo "</td></tr></table>";
 	echo "</td>";
-	echo "<td colspan='3' align='center'>".$LANG["job"][5].":<br>";
 
-	echo $LANG["job"][27].":&nbsp;";
-	dropdownUsers("assign",$assign,"own_ticket",1);
-	echo "<br>";
-	echo $LANG["job"][28].":&nbsp;";
-	dropdownValue("glpi_enterprises","assign_ent",$assign_ent);
+	echo "<td  colspan='2' class='center'>".$LANG["job"][4].":<br>";
+	dropdownUsersTracking("author",$author,"author");
+
+	echo "<br>".$LANG["common"][35].": ";
+	dropdownValue("glpi_groups","group",$group);
+	echo "</td>";
+
+
+	echo "<td colspan='2' align='center'>".$LANG["job"][5].":<br>";
+	if (strcmp($assign,"mine")==0){
+		echo formatUserName($_SESSION["glpiID"],$_SESSION["glpiname"],$_SESSION["glpirealname"],$_SESSION["glpifirstname"]);
+	} else {
+		dropdownUsers("assign",$assign,"own_ticket",1);
+		echo "<br>".$LANG["common"][35].": ";
+		dropdownValue("glpi_groups","assign_group",$assign_group);
+	
+		echo "<br>";
+		echo $LANG["job"][28].":&nbsp;";
+		dropdownValue("glpi_enterprises","assign_ent",$assign_ent);
+	}
 
 	echo "</td>";
-	echo "<td class='center'>".$LANG["job"][44].":<br>";
-	dropdownRequestType("request_type",$request_type);
-	echo "</td>";
+
 	echo "</tr>";
 
 	if ($extended){
@@ -1088,7 +1134,7 @@ function getCommonLeftJoinForTrackingSearch(){
 }
 
 
-function showTrackingList($target,$start="",$sort="",$order="",$status="new",$author=0,$group=0,$assign=0,$assign_ent=0,$category=0,$priority=0,$request_type=0,$item=0,$type=0,$showfollowups="",$field2="",$contains2="",$field="",$contains="",$date1="",$date2="",$computers_search="",$enddate1="",$enddate2="") {
+function showTrackingList($target,$start="",$sort="",$order="",$status="new",$author=0,$group=0,$assign=0,$assign_ent=0,$assign_group=0,$category=0,$priority=0,$request_type=0,$item=0,$type=0,$showfollowups="",$field2="",$contains2="",$field="",$contains="",$date1="",$date2="",$computers_search="",$enddate1="",$enddate2="") {
 	// Lists all Jobs, needs $show which can have keywords 
 	// (individual, unassigned) and $contains with search terms.
 	// If $item is given, only jobs for a particular machine
@@ -1101,11 +1147,16 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$au
 
 	$candelete=haveRight("delete_ticket","1");
 	$canupdate=haveRight("update_ticket","1");
+
 	if (!haveRight("show_all_ticket","1")) {
-		if ($author==0&&$assign==0)
-			if (!haveRight("own_ticket","1"))
+		if (haveRight("show_assign_ticket","1")) {
+			$assign='mine';
+		} else if ($author==0&&$assign==0)
+			if (!haveRight("own_ticket","1")){
 				$author=$_SESSION["glpiID"];
-			else $assign=$_SESSION["glpiID"];
+			} else {
+				$assign=$_SESSION["glpiID"];
+			}
 	}
 
 	// Reduce computer list
@@ -1199,8 +1250,25 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$au
 	if ($item!=0&&$type!=0)
 		$where.=" AND glpi_tracking.computer = '$item'";	
 
-	if ($assign_ent!=0) $where.=" AND glpi_tracking.assign_ent = '$assign_ent'";
-	if ($assign!=0) $where.=" AND glpi_tracking.assign = '$assign'";
+	if (strcmp($assign,"mine")==0){
+		$search_assign=" glpi_tracking.assign = '".$_SESSION["glpiID"]."' ";
+		if (count($_SESSION['glpigroups'])){
+			$first=true;
+			$groups="";
+			foreach ($_SESSION['glpigroups'] as $val){
+				if (!$first) $groups.=",";
+				else $first=false;
+				$groups.=$val;
+			}
+			$search_assign.= " OR glpi_tracking.assign_group IN ($groups) ";
+		}
+		$where.=" AND ($search_assign) ";
+
+	} else {
+		if ($assign_ent!=0) $where.=" AND glpi_tracking.assign_ent = '$assign_ent'";
+		if ($assign!=0) $where.=" AND glpi_tracking.assign = '$assign'";
+		if ($assign_group!=0) $where.=" AND glpi_tracking.assign_group = '$assign_group'";
+	}
 
 
 
@@ -1318,7 +1386,7 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$au
 
 
 			// Pager
-			$parameters2="field=$field&amp;contains=$contains&amp;date1=$date1&amp;date2=$date2&amp;only_computers=$computers_search&amp;field2=$field2&amp;contains2=$contains2&amp;assign=$assign&amp;assign_ent=$assign_ent&amp;author=$author&amp;group=$group&amp;start=$start&amp;status=$status&amp;category=$category&amp;priority=$priority&amp;type=$type&amp;showfollowups=$showfollowups&amp;enddate1=$enddate1&amp;enddate2=$enddate2&amp;item=$item&amp;request_type=$request_type";
+			$parameters2="field=$field&amp;contains=$contains&amp;date1=$date1&amp;date2=$date2&amp;only_computers=$computers_search&amp;field2=$field2&amp;contains2=$contains2&amp;assign=$assign&amp;assign_ent=$assign_ent&amp;assign_group=$assign_group&amp;author=$author&amp;group=$group&amp;start=$start&amp;status=$status&amp;category=$category&amp;priority=$priority&amp;type=$type&amp;showfollowups=$showfollowups&amp;enddate1=$enddate1&amp;enddate2=$enddate2&amp;item=$item&amp;request_type=$request_type";
 			
 			// Specific case of showing tracking of an item
 			if (isset($_GET["ID"])){
@@ -1385,10 +1453,14 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$au
 				}
 				if ($author!=0) $title.=" - ".$LANG["job"][4]." = ".getUserName($author);
 				if ($group>0) $title.=" - ".$LANG["common"][35]." = ".getDropdownName("glpi_groups",$group);
-				if ($assign!=0) $title.=" - ".$LANG["job"][27]." = ".getUserName($assign);
+				if ($assign!=0||$assign_ent!=0||$assign_group!=0){
+					$title.=" - ".$LANG["job"][5]." =";
+					if ($assign!=0) $title.=" ".$LANG["job"][6]." = ".getUserName($assign);
+					if ($assign_group!=0) $title.=" ".$LANG["common"][35]." = ".getDropdownName("glpi_groups",$assign_group);
+					if ($assign_ent!=0) $title.=" ".$LANG["job"][28]." = ".getDropdownName("glpi_enterprises",$assign_ent);
+				}
 				if ($request_type!=0) $title.=" - ".$LANG["job"][44]." = ".getRequestTypeName($request_type);
 				if ($category!=0) $title.=" - ".$LANG["common"][36]." = ".getDropdownName("glpi_dropdown_tracking_category",category);
-				if ($assign_ent!=0) $title.=" - ".$LANG["job"][27]." = ".getDropdownName("glpi_enterprises",$assign_ent);
 				if ($priority!=0) $title.=" - ".$LANG["joblist"][2]." = ".getPriorityName($priority);
 				if ($type!=0&&$item!=0){
 					$ci=new CommonItem();
@@ -1464,22 +1536,23 @@ function showFollowupsShort($ID) {
 function getAssignName($ID,$type,$link=0){
 	global $CFG_GLPI;
 
-	if ($type==USER_TYPE){
-		if ($ID==0) return "[Nobody]";
-		return getUserName($ID,$link);
-
-	} else if ($type==ENTERPRISE_TYPE){
-		$ent=new Enterprise();
-		if ($ent->getFromDB($ID)){
-			$before="";
-			$after="";
-			if ($link){
-				$before="<a href=\"".$CFG_GLPI["root_doc"]."/front/enterprise.form.php?ID=".$ID."\">";
-				$after="</a>";
-			}
-
-			return $before.$ent->fields["name"].$after;
-		} else return "";
+	switch ($type){
+		case USER_TYPE :
+			if ($ID==0) return "[Nobody]";
+			return getUserName($ID,$link);
+			break;
+		case ENTERPRISE_TYPE :
+		case GROUP_TYPE :
+			$ci=new CommonItem();
+			if ($ci->getFromDB($type,$ID)){
+				$before="";
+				$after="";
+				if ($link&&haveTypeRight($type,'r')){
+					$ci->getLink(1);
+				}
+				return $ci->getNameID();
+			} else return "";
+			break;
 	}
 
 }
@@ -1497,17 +1570,13 @@ function showJobDetails ($target,$ID){
 		if (!haveRight("show_all_ticket","1")
 			&&$job->fields["author"]!=$_SESSION["glpiID"]
 			&&$job->fields["assign"]!=$_SESSION["glpiID"]
-			&&!($_SESSION["glpiactiveprofile"]["show_group_ticket"]&&in_array($job->fields["FK_group"],$_SESSION["glpigroups"])) ){
+			&&!(haveRight("show_group_ticket",'1')&&in_array($job->fields["FK_group"],$_SESSION["glpigroups"]))
+			&&!(haveRight("show_assign_ticket",'1')&&in_array($job->fields["assign_group"],$_SESSION["glpigroups"]))
+		 ){
 			return false;
 		}
 
 		$canupdate_descr=$canupdate||($job->numberOfFollowups()==0&&$job->fields["author"]==$_SESSION["glpiID"]);
-		$author=new User();
-		$author->getFromDB($job->fields["author"]);
-		$assign=new User();
-		$assign->getFromDB($job->fields["assign"]);
-		$recipient=new User();
-		$recipient->getFromDB($job->fields["recipient"]);
 		$item=new CommonItem();
 		$item->getFromDB($job->fields["device_type"],$job->fields["computer"]);
 
@@ -1522,7 +1591,7 @@ function showJobDetails ($target,$ID){
 		if ($canupdate){
 			dropdownAllUsers("recipient",$job->fields["recipient"],1,$job->fields["FK_entities"]);
 		} else {
-			echo $recipient->getName();
+			getUserName($job->fields["recipient"],haveRight('user','r'));
 		}
 
 		if (count($_SESSION['glpiactiveentities'])>1){
@@ -1551,23 +1620,6 @@ function showJobDetails ($target,$ID){
 		}
 		echo "</td></tr>";
 
-		echo "<tr><td class='left'>";
-		echo $LANG["job"][4].":</td><td>";
-		if ($canupdate){
-			dropdownAllUsers("author",$job->fields["author"],1,$job->fields["FK_entities"]);
-		} else {
-			echo $author->getName();
-		}
-		echo "</td></tr>";
-
-		echo "<tr><td class='left'>";
-		echo $LANG["common"][35].":</td><td>";
-		if ($canupdate){
-			dropdownValue("glpi_groups","FK_group",$job->fields["FK_group"],1,$job->fields["FK_entities"]);
-		} else {
-			echo getDropdownName("glpi_groups",$job->fields["FK_group"]);
-		}
-		echo "</td></tr>";
 
 		echo "<tr><td class='left'>";
 		echo $LANG["joblist"][2].":</td><td>";
@@ -1582,6 +1634,28 @@ function showJobDetails ($target,$ID){
 			dropdownValue("glpi_dropdown_tracking_category","category",$job->fields["category"]);
 		else echo getDropdownName("glpi_dropdown_tracking_category",$job->fields["category"]);
 		echo "</td></tr>";
+
+		echo "<tr><td class='center' colspan='2'><strong>";
+		echo $LANG["job"][4].":</strong></td></tr>";
+
+		echo "<tr><td class='left'>";
+		echo $LANG["job"][6].":</td><td>";
+		if ($canupdate){
+			dropdownAllUsers("author",$job->fields["author"],1,$job->fields["FK_entities"]);
+		} else {
+			getUserName($job->fields["author"],haveRight('user','r'));
+		}
+		echo "</td></tr>";
+
+		echo "<tr><td class='left'>";
+		echo $LANG["common"][35].":</td><td>";
+		if ($canupdate){
+			dropdownValue("glpi_groups","FK_group",$job->fields["FK_group"],1,$job->fields["FK_entities"]);
+		} else {
+			echo getDropdownName("glpi_groups",$job->fields["FK_group"]);
+		}
+		echo "</td></tr>";
+
 
 		echo "</table></td>";
 
@@ -1614,37 +1688,44 @@ function showJobDetails ($target,$ID){
 		echo "</td></tr>";
 
 
-		echo "<tr><td class='left'>";
-		echo $LANG["job"][5].":</td><td>&nbsp;</td></tr>";
+		echo "<tr><td class='center' colspan='2'><strong>";
+		echo $LANG["job"][5].":</strong></td></tr>";
 
 		if (haveRight("assign_ticket","1")){
 			echo "<tr><td class='left'>";
-			echo $LANG["job"][27].":</td><td>";
+			echo $LANG["job"][6].":</td><td>";
 			dropdownUsers("assign",$job->fields["assign"],"own_ticket",0,1,$job->fields["FK_entities"]);
 			echo "</td></tr>";
 		} else if (haveRight("steal_ticket","1")) {
 			echo "<tr><td class='right'>";
-			echo $LANG["job"][27].":</td><td>";
+			echo $LANG["job"][6].":</td><td>";
 			dropdownUsers("assign",$job->fields["assign"],"ID",0,1,$job->fields["FK_entities"]);
 			echo "</td></tr>";
 		}else {
 			echo "<tr><td class='left'>";
-			echo $LANG["job"][27].":</td><td>";
+			echo $LANG["job"][6].":</td><td>";
 			echo getUserName($job->fields["assign"]);
 			echo "</td></tr>";
 		}
 
 		if (haveRight("assign_ticket","1")){
 			echo "<tr><td class='left'>";
+			echo $LANG["common"][35].":</td><td>";
+			dropdownValue("glpi_groups","assign_group",$job->fields["assign_group"],1,$job->fields["FK_entities"]);
+			echo "</td></tr>";
+			echo "<tr><td class='left'>";
 			echo $LANG["job"][28].":</td><td>";
 			dropdownValue("glpi_enterprises","assign_ent",$job->fields["assign_ent"],1,$job->fields["FK_entities"]);
 			echo "</td></tr>";
 		} else {
 			echo "<tr><td class='left'>";
+			echo $LANG["common"][35].":</td><td>";
+			echo getDropdownName("glpi_groups",$job->fields["assign_group"]);
+			echo "</td></tr>";
+			echo "<tr><td class='left'>";
 			echo $LANG["job"][28].":</td><td>";
 			echo getDropdownName("glpi_enterprises",$job->fields["assign_ent"]);
 			echo "</td></tr>";
-
 		}
 		echo "</table>";
 
@@ -2000,10 +2081,10 @@ function showAddFollowupForm($tID){
 		$job->getEmpty();
 	}
 
-	if (!haveRight("comment_ticket","1")&&!haveRight("comment_all_ticket","1")&&$job->fields["assign"]!=$_SESSION["glpiID"]) return false;
+	if (!haveRight("comment_ticket","1")&&!haveRight("comment_all_ticket","1")&&$job->fields["assign"]!=$_SESSION["glpiID"]&&!in_array($job->fields["assign_group"],$_SESSION["glpigroups"])) return false;
 
 
-	$commentall=(haveRight("comment_all_ticket","1")||$job->fields["assign"]==$_SESSION["glpiID"]);
+	$commentall=(haveRight("comment_all_ticket","1")||$job->fields["assign"]==$_SESSION["glpiID"]||in_array($job->fields["assign_group"],$_SESSION["glpigroups"]));
 
 	if ($_SESSION["glpiactiveprofile"]["interface"]=="central"){
 		$target=$CFG_GLPI["root_doc"]."/front/tracking.form.php";
