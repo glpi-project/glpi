@@ -82,13 +82,8 @@ include (GLPI_ROOT."/inc/includes.php");
 	// Greet the user
 
 	echo "<br><span class='icon_consol'>".$LANG["central"][0]." ";
-	if (empty($_SESSION["glpirealname"]))
-	echo $_SESSION["glpiname"];
-	else {
-		echo $_SESSION["glpirealname"];
-		if (!empty($_SESSION["glpifirstname"]))
-			echo " ".$_SESSION["glpifirstname"];	
-	}
+
+	echo formatUserName($_SESSION["glpiID"],$_SESSION["glpiname"],$_SESSION["glpirealname"],$_SESSION["glpifirstname"]);
 	echo ", ".$LANG["central"][1]."</span>";
 
 	echo "<br><br>";

@@ -1019,10 +1019,9 @@ class Rule extends CommonDBTM{
 	{
 		$crit=$this->getCriteria($ID);
 		
-		if (isset($crit['type'])){
+		if (!isset($crit['type'])){
 			return $pattern;
 		} else {
-			
 			switch ($crit['type']){
 				case "dropdown":
 					if ($condition==PATTERN_IS||$condition==PATTERN_IS_NOT){

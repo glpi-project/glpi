@@ -157,6 +157,7 @@
 	define("USER_MAILING",6);
 	define("RECIPIENT_MAILING",7);
 	define("ASSIGN_ENT_MAILING",8);
+	define("ASSIGN_GROUP_MAILING",9);
 
 
 	// EXPORT TYPE

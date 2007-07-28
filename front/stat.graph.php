@@ -135,6 +135,14 @@ switch($_GET["type"]){
 		$prev=getPreviousItem("glpi_groups",$_GET["ID"]);
 		$title=$LANG["common"][35].": ".getDropdownName("glpi_groups",$_GET["ID"]);
 		break;	
+	case "assign_group":
+		$val1=$_GET["ID"];
+		$val2="";
+	
+		$next=getNextItem("glpi_groups",$_GET["ID"]);
+		$prev=getPreviousItem("glpi_groups",$_GET["ID"]);
+		$title=$LANG["common"][35].": ".getDropdownName("glpi_groups",$_GET["ID"]);
+		break;	
 	case "priority":
 		$val1=$_GET["ID"];
 		$val2="";

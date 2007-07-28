@@ -135,15 +135,27 @@ $RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['category']['type']='dropdown';
 
 $RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['author']['table']='glpi_users';
 $RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['author']['field']='name';
-$RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['author']['name']=$LANG["job"][4];
+$RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['author']['name']=$LANG["job"][4]." - ".$LANG["setup"][57];
 $RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['author']['linkfield']='author';
 $RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['author']['type']='dropdown_users';
 
 $RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['FK_group']['table']='glpi_groups';
 $RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['FK_group']['field']='name';
-$RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['FK_group']['name']=$LANG["common"][35];
+$RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['FK_group']['name']=$LANG["job"][4]." - ".$LANG["common"][35];
 $RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['FK_group']['linkfield']='FK_group';
 $RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['FK_group']['type']='dropdown';
+
+$RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['assign']['table']='glpi_users';
+$RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['assign']['field']='name';
+$RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['assign']['name']=$LANG["job"][5]." - ".$LANG["job"][6];
+$RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['assign']['linkfield']='assign';
+$RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['assign']['type']='dropdown_users';
+
+$RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['assign_group']['table']='glpi_groups';
+$RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['assign_group']['field']='name';
+$RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['assign_group']['name']=$LANG["job"][5]." - ".$LANG["common"][35];
+$RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['assign_group']['linkfield']='assign_group';
+$RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['assign_group']['type']='dropdown';
 
 $RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['request_type']['table']='glpi_tracking';
 $RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['request_type']['field']='request_type';
@@ -165,15 +177,19 @@ $RULES_ACTIONS[RULE_TRACKING_AUTO_ACTION]['category']['name']=$LANG["common"][36
 $RULES_ACTIONS[RULE_TRACKING_AUTO_ACTION]['category']['type']='dropdown';
 $RULES_ACTIONS[RULE_TRACKING_AUTO_ACTION]['category']['table']='glpi_dropdown_tracking_category';
 
-$RULES_ACTIONS[RULE_TRACKING_AUTO_ACTION]['assign']['name']=$LANG["job"][5];
-$RULES_ACTIONS[RULE_TRACKING_AUTO_ACTION]['assign']['type']='dropdown_assign';
-
-$RULES_ACTIONS[RULE_TRACKING_AUTO_ACTION]['author']['name']=$LANG["job"][4];
+$RULES_ACTIONS[RULE_TRACKING_AUTO_ACTION]['author']['name']=$LANG["job"][4]." - ".$LANG["setup"][57];
 $RULES_ACTIONS[RULE_TRACKING_AUTO_ACTION]['author']['type']='dropdown_users';
 
-$RULES_ACTIONS[RULE_TRACKING_AUTO_ACTION]['FK_group']['name']=$LANG["common"][35];
+$RULES_ACTIONS[RULE_TRACKING_AUTO_ACTION]['FK_group']['name']=$LANG["job"][4]." - ".$LANG["common"][35];
 $RULES_ACTIONS[RULE_TRACKING_AUTO_ACTION]['FK_group']['type']='dropdown';
 $RULES_ACTIONS[RULE_TRACKING_AUTO_ACTION]['FK_group']['table']='glpi_groups';
+
+$RULES_ACTIONS[RULE_TRACKING_AUTO_ACTION]['assign']['name']=$LANG["job"][5]." - ".$LANG["job"][6];
+$RULES_ACTIONS[RULE_TRACKING_AUTO_ACTION]['assign']['type']='dropdown_assign';
+
+$RULES_ACTIONS[RULE_TRACKING_AUTO_ACTION]['assign_group']['table']='glpi_groups';
+$RULES_ACTIONS[RULE_TRACKING_AUTO_ACTION]['assign_group']['name']=$LANG["job"][5]." - ".$LANG["common"][35];
+$RULES_ACTIONS[RULE_TRACKING_AUTO_ACTION]['assign_group']['type']='dropdown';
 
 $RULES_ACTIONS[RULE_TRACKING_AUTO_ACTION]['priority']['name']=$LANG["joblist"][2];
 $RULES_ACTIONS[RULE_TRACKING_AUTO_ACTION]['priority']['type']='dropdown_priority';

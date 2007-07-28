@@ -68,9 +68,8 @@ if ($_POST["date1"]!=""&&$_POST["date2"]!=""&&strcmp($_POST["date2"],$_POST["dat
 if(!isset($_GET["start"])) $_GET["start"] = 0;
 
 
-$type=$_POST["type"];
-
 $items=array(
+	$LANG["job"][4]=> array(
 		"user"=>array(	
 			"title"=>$LANG["common"][37],
 			"field"=>"glpi_tracking.author"
@@ -83,6 +82,8 @@ $items=array(
 			"title"=>$LANG["common"][35],
 			"field"=>"glpi_tracking.FK_group"
 			),
+	),
+	$LANG["common"][32] => array(
 		"category"=>array(	
 			"title"=>$LANG["common"][36],
 			"field"=>"glpi_tracking.category"
@@ -95,33 +96,49 @@ $items=array(
 			"title"=>$LANG["job"][44],
 			"field"=>"glpi_tracking.request_type"
 			),
+	),
+	$LANG["job"][5] => array(
 		"technicien"=>array(	
-			"title"=>$LANG["stats"][2]." ".$LANG["stats"][48],
+			"title"=>$LANG["job"][6]." ".$LANG["stats"][48],
 			"field"=>"glpi_tracking.assign"
 			),
 		"technicien_followup"=>array(	
-				"title"=>$LANG["stats"][2]." ".$LANG["stats"][49],
+				"title"=>$LANG["job"][6]." ".$LANG["stats"][49],
 				"field"=>"glpi_followup.author"
 				),
+		"assign_group"=>array(	
+			"title"=>$LANG["common"][35],
+			"field"=>"glpi_tracking.assign_group"
+			),
 		"enterprise"=>array(	
 				"title"=>$LANG["financial"][26],
 				"field"=>"glpi_tracking.assign_ent"
 				),
-
+	)
 		);
+	$INSELECT="";
+	foreach ($items as $label => $tab){
+		$INSELECT.= "<optgroup label=\"$label\">";
+		foreach ($tab as $key => $val){
+			// Current field
+			if ($key==$_POST["type"]){
+				$field=$val["field"];
+				$title=$val["title"];
+			}
+			$INSELECT.= "<option value='$key' ".($key==$_POST["type"]?"selected":"").">".$val['title']."</option>";
+		}
+		$INSELECT.= "</optgroup>";
+	}
 
-		$field=$items[$type]["field"];
-
-		echo "<div align ='center'><p><b><span class='icon_consol'>".$items[$type]["title"]."</span></b></p></div>";
 
 
-		echo "<div align='center'><form method=\"post\" name=\"form\" action=\"stat.tracking.php\">";
-		echo "<table class='tab_cadre'><tr class='tab_bg_2'>";
-		echo "<td rowspan='2' align='center'>";
-		echo "<select name='type'>";
-foreach ($items as $key => $val)
-	echo "<option value='$key' ".($key==$type?"selected":"").">".$val["title"]."</option>";
-	echo "</select>";
+	echo "<div align ='center'><p><b><span class='icon_consol'>".$title."</span></b></p></div>";
+
+	echo "<div align='center'><form method=\"post\" name=\"form\" action=\"stat.tracking.php\">";
+	echo "<table class='tab_cadre'><tr class='tab_bg_2'>";
+	echo "<td rowspan='2' align='center'>";
+	echo "<select name='type'>";
+	echo $INSELECT;
 	echo "</td>";
 	echo "<td align='right'>";
 	echo $LANG["search"][8]." :</td><td>";
@@ -133,11 +150,11 @@ foreach ($items as $key => $val)
 	echo "</table></form></div>";
 
 
-	$val=getStatsItems($_POST["date1"],$_POST["date2"],$type);
-	$params=array("type"=>$type,"field"=>$field,"date1"=>$_POST["date1"],"date2"=>$_POST["date2"],"start"=>$_GET["start"]);
+	$val=getStatsItems($_POST["date1"],$_POST["date2"],$_POST["type"]);
+	$params=array("type"=>$_POST["type"],"field"=>$field,"date1"=>$_POST["date1"],"date2"=>$_POST["date2"],"start"=>$_GET["start"]);
 	printPager($_GET['start'],count($val),$_SERVER['PHP_SELF'],"date1=".$_POST["date1"]."&amp;date2=".$_POST["date2"]."&amp;type=".$_POST["type"],STAT_TYPE,$params);
 
-	displayStats($type,$field,$_POST["date1"],$_POST["date2"],$_GET['start'],$val);
+	displayStats($_POST["type"],$field,$_POST["date1"],$_POST["date2"],$_GET['start'],$val);
 
 	commonFooter();
 	?>

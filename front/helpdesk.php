@@ -46,6 +46,8 @@ if (!isset($_POST["user"])) $user=$_SESSION["glpiID"];
 else $user=$_POST["user"];
 if (!isset($_POST["assign"])) $assign=0;
 else $assign=$_POST["assign"];
+if (!isset($_POST["assign_group"])) $assign_group=0;
+else $assign_group=$_POST["assign_group"];
 
 if (isset($_POST["_my_items"])&&!empty($_POST["_my_items"])){
 	$splitter=split("_",$_POST["_my_items"]);
@@ -77,7 +79,7 @@ $track=new Job();
 if (isset($_POST["priority"]) && empty($_POST["contents"]))
 {
 	$error=$LANG["tracking"][8] ;
-	addFormTracking($device_type,$computer,$user,$assign,$_SERVER['PHP_SELF'],$error);
+	addFormTracking($device_type,$computer,$user,$assign,$assign_group,$_SERVER['PHP_SELF'],$error);
 }
 elseif (isset($_POST["priority"]) && !empty($_POST["contents"]))
 {
@@ -85,17 +87,17 @@ elseif (isset($_POST["priority"]) && !empty($_POST["contents"]))
 	if ($newID=$track->add($_POST)){
 		$error=$LANG["tracking"][9]." (".$LANG["common"][2]." $newID)";
 		displayMessageAfterRedirect();
-		addFormTracking($device_type,$computer,$user,$assign,$_SERVER['PHP_SELF'],$error);
+		addFormTracking($device_type,$computer,$user,$assign,$assign_group,$_SERVER['PHP_SELF'],$error);
 	}
 	else {
 		$error=$LANG["tracking"][10];
 		displayMessageAfterRedirect();
-		addFormTracking($device_type,$computer,$user,$assign,$_SERVER['PHP_SELF'],$error);
+		addFormTracking($device_type,$computer,$user,$assign,$assign_group,$_SERVER['PHP_SELF'],$error);
 	}
 } 
 else
 {
-	addFormTracking($device_type,$computer,$user,$assign,$_SERVER['PHP_SELF'],$error);
+	addFormTracking($device_type,$computer,$user,$assign,$assign_group,$_SERVER['PHP_SELF'],$error);
 }
 
 commonFooter();

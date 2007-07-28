@@ -55,7 +55,7 @@ if (isset($_POST['update'])){
 
 
 }else if (isset($_POST['add'])||isset($_POST['add_close'])) {
-	checkSeveralRightsOr(array("comment_ticket"=>"1","comment_all_ticket"=>"1"));
+	checkSeveralRightsOr(array("comment_ticket"=>"1","comment_all_ticket"=>"1","show_assign_ticket"=>"1"));
 	$newID=$fup->add($_POST);
 
 	logEvent($_POST["tracking"], "tracking", 4, "tracking", $_SESSION["glpiname"]." ".$LANG["log"][20]." $newID.");

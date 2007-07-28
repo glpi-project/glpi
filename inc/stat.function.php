@@ -72,7 +72,9 @@ function getStatsItems($date1,$date2,$type){
 		break;
 		case "group":
 			$val = getNbIntervGroup();
-
+		break;
+		case "assign_group":
+			$val = getNbIntervGroup();
 		break;
 
 		case "priority":
@@ -576,6 +578,9 @@ function constructEntryValues($type,$begin="",$end="",$param="",$value="",$value
 		break;
 		case "group":
 			$WHERE.=" AND glpi_tracking.FK_group='$value'";
+		break;
+		case "assign_group":
+			$WHERE.=" AND glpi_tracking.assign_group='$value'";
 		break;
 		case "priority":
 			$WHERE.=" AND glpi_tracking.priority='$value'";
