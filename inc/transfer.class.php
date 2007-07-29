@@ -54,18 +54,44 @@ class Transfer extends CommonDBTM{
 	function moveItems($items,$to,$options){
 		// $items=array(TYPE => array(id_items))
 		// $options=array()
+
+		$default_options=array(
+			'keep_tickets'=>0,
+			'keep_networklinks'=>0,
+			'keep_history'=>0,
+			'keep_history'=>0,
+			'keep_devices'=>0,
+			'keep_dc_monitor'=>0,
+			'clean_dc_monitor'=>0,
+			'keep_dc_phone'=>0,
+			'clean_dc_phone'=>0,
+			'keep_dc_peripheral'=>0,
+			'clean_dc_peripheral'=>0,
+			'keep_dc_printerr'=>0,
+			'clean_dc_printer'=>0,
+		);
+
 		
 		if ($this->to>0){
 			// Store to
 			$this->to=$to;
 			// Store options
 			$this->options=$options;
+			foreach ($default_options as $key => $val){
+				if (!isset($this->options[$key])){
+					$this->options[$key]=$val;
+				}
+			}
 			// Computer first
 			if (isset($items[COMPUTER_TYPE])&&count($items[COMPUTER_TYPE])){
 				foreach ($items[COMPUTER_TYPE] as $ID){
 					$this->transferItem(COMPUTER_TYPE,$ID);
 				}
 			}
+			// Inventory Items : MONITOR....
+
+			// Management Items
+
 		}
 
 	}
@@ -91,36 +117,109 @@ class Transfer extends CommonDBTM{
 				}
 				// History : keep / delete
 				$this->transferHistory($type,$ID);
-				
-				// Ticket : keep / delete
-				
-				// Document : keep / delete + clean unused / keep unused + duplicate file ?
-				// Contract : keep / delete + clean unused / keep unused
-				// Enterprise (depending of item link) / Contract - infocoms : keep / delete + clean unused / keep unused
-				// Contact / Enterprise : keep / delete + clean unused / keep unused
-				// Licence / Software :  keep / delete + clean unused / keep unused 
+				// Ticket : delete / keep and clean ref / keep and move
+				$this->transferTickets($type,$ID);
+
 				// Monitor Direct Connect : keep / delete + clean unused / keep unused 
 				// Peripheral Direct Connect : keep / delete + clean unused / keep unused 
 				// Phone Direct Connect : keep / delete + clean unused / keep unused 
 				// Printer Direct Connect : keep / delete + clean unused / keep unused 
-				// Computer Direct Connect : delete
+				if ($type==COMPUTER_TYPE){
+					$this->transferDirectConnection($type,$ID,MONITOR_TYPE);
+					$this->transferDirectConnection($type,$ID,PERIPHERAL_TYPE);
+					$this->transferDirectConnection($type,$ID,MONITOR_TYPE);
+					$this->transferDirectConnection($type,$ID,PRINTER_TYPE);
+				}
+				// Computer Direct Connect : delete link
+				if (in_array($type,
+					array(PRINTER_TYPE,MONITOR_TYPE,PERIPHERAL_TYPE,PHONE_TYPE)){
+					$this->deleteDirectConnection($type,$ID);
+				}
+
 				
+
+				
+				// Infocoms : keep / delete
+				// Licence / Software :  keep / delete + clean unused / keep unused 
+				// Document : keep / delete + clean unused / keep unused + duplicate file ?
+				// Contract : keep / delete + clean unused / keep unused
+				// Enterprise (depending of item link) / Contract - infocoms : keep / delete + clean unused / keep unused
+				// Contact / Enterprise : keep / delete + clean unused / keep unused
 				// Users ????
 
 				// Transfer Item
 				$ci->obj->update(array("ID"=>$ID,'FK_entities' => $this->to));
+				$this->already_transfer[COMPUTER_TYPE][$ID]=$ID;
 			}
 		}
 	}
+	function transferDirectConnection($type,$ID,$link_type){
+		global $DB;
+		// Default : delete
+		$keep=0;
+		$clean=0;
+		switch ($link_type){
+			case PRINTER_TYPE:
+				$keep=$this->options['keep_dc_printer'];
+				$clean=$this->options['clean_dc_printer'];
+				break;
+			case MONITOR_TYPE:
+				$keep=$this->options['keep_dc_monitor'];
+				$clean=$this->options['clean_dc_monitor'];
+				break;
+			case PERIPHERAL_TYPE:
+				$keep=$this->options['keep_dc_peripheral'];
+				$clean=$this->options['clean_dc_peripheral'];
+				break;
+			case PHONE_TYPE:
+				$keep=$this->options['keep_dc_phone'];
+				$clean=$this->options['clean_dc_phone'];
+				break;
+		}
+		// Get connections
+			// Foreach get item 
+				// If unique : 
+					//if keep -> add to transfer list else unlink 
+					//if clean -> delete
+				// If global : 
+					// copy if not already transfer + update link 
+					// if clean and not linked dc -> delete
+	}
+	function transferTickets($type,$ID){
+		global $DB;
 
+		$job= new Job();
+
+		$query = "SELECT ID FROM glpi_tracking WHERE (computer = '$ID' AND device_type = '$type')";
+		if ($result = $DB->query($query)) {
+			if ($DB->numrows($result)!=0) { 
+				switch ($this->options['keep_tickets']){
+					case 2: // Transfer
+						while ($data=$DB->fetch_row($result)) {
+							$job->update(array("ID"=>$data['ID'],'FK_entities' => $this->to));
+							$this->already_transfer[TRACKING_TYPE][$data['ID']]=$data['ID'];
+						}
+					break;
+					case 1: // Clean ref
+						while ($data=$DB->fetch_row($result)) {
+							$job->update(array("ID"=>$data['ID'],'device_type' => 0, 'computer'=>0));
+							$this->already_transfer[TRACKING_TYPE][$data['ID']]=$data['ID'];
+						}
+					break;
+					case 0:
+						while ($data=$DB->fetch_row($result)) {
+							$job->delete(array('ID'=>$data['ID']));
+						}
+					break;
+				}
+			}
+		}
+
+	}
 
 	function transferHistory($type,$ID){
 		global $DB;
 
-		if (!isset($this->options['keep_history'])){
-			// Default : delete
-			$this->options['keep_history']=0;
-		}
 		// If delete
 		if ($this->options['keep_history']==0){
 			$query = "DELETE FROM glpi_history WHERE ( device_type = '$type' AND FK_glpi_device = '$ID')";
@@ -131,10 +230,6 @@ class Transfer extends CommonDBTM{
 	function transferReservations($type,$ID){
 		global $DB;
 
-		if (!isset($this->options['keep_reservations'])){
-			// Default : delete
-			$this->options['keep_reservations']=0;
-		}
 		$ri=new ReservationItem();
 		// If delete
 		if ($this->options['keep_reservations']==0){
@@ -147,11 +242,6 @@ class Transfer extends CommonDBTM{
 	function transferDevices($type,$ID){
 		global $DB;
 
-		if (!isset($this->options['keep_devices'])){
-			// Default : delete
-			$this->options['keep_devices']=0;
-		}
-	
 		// If not keep
 		if ($this->options['keep_devices']==0){
 			$query = "DELETE FROM glpi_computer_device WHERE (FK_computers = '$ID')";
@@ -162,14 +252,10 @@ class Transfer extends CommonDBTM{
 	function transferNetworkLink($type,$ID){
 		global $DB;
 	
-		if (!isset($this->options['keep_networklinks'])){
-			// Default : delete
-			$this->options['keep_networklinks']=0;
-		}
 		$np=new Netport();
 		// If not keep or disconnect
 		if ($this->options['keep_networklinks']!=2){
-			$query = "SELECT ID FROM glpi_networking_ports WHERE (on_device = $ID AND device_type = $type)";
+			$query = "SELECT ID FROM glpi_networking_ports WHERE (on_device = '$ID' AND device_type = '$type')";
 			if ($result = $DB->query($query)) {
 				if ($DB->numrows($result)!=0) { 
 					// Delete netport
