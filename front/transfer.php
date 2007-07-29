@@ -45,13 +45,32 @@ $tranfer=new Transfer();
 // Network links : 0 : delete 1 : keep disconnect 2 : keep connect
 $options['keep_networklinks']=2;
 
+// Tickets : 0 : delete 1 : keep and clean ref 2 : keep and move
+$options['keep_tickets']=2;
+
 // Reservations : 0 : delete 1 : keep
 $options['keep_reservations']=1;
 
 // Devices : 0 : delete 1 : keep
 $options['keep_devices']=1;
 
-// Devices : 0 : delete 1 : keep
+// History : 0 : delete 1 : keep
 $options['keep_history']=1;
+
+// Monitor Direct Connect : keep_dc -> tranfer / clean_dc : delete if unused : 1 = delete, 2 = purge
+$options['keep_dc_monitor']=1;
+$options['clean_dc_monitor']=1;
+
+// Phone Direct Connect : keep_dc -> tranfer / clean_dc : delete if unused : 1 = delete, 2 = purge
+$options['keep_dc_phone']=1;
+$options['clean_dc_phone']=1;
+
+// Peripheral Direct Connect : keep_dc -> tranfer / clean_dc : delete if unused : 1 = delete, 2 = purge
+$options['keep_dc_peripheral']=1;
+$options['clean_dc_peripheral']=1;
+
+// Printer Direct Connect : keep_dc -> tranfer / clean_dc : delete if unused : 1 = delete, 2 = purge
+$options['keep_dc_printer']=1;
+$options['clean_dc_printer']=1;
 
 ?>

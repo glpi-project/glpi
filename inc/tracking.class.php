@@ -87,7 +87,7 @@ class Job extends CommonDBTM{
 				$querydel="DELETE FROM glpi_tracking_planning WHERE id_followup = '".$data['ID']."'";
 				$DB->query($querydel);				
 			}
-		$query1="delete from glpi_followups where tracking = '$ID'";
+		$query1="DELETE FROM glpi_followups WHERE tracking = '$ID'";
 		$DB->query($query1);
 
 	}
