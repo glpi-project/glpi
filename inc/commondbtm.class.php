@@ -82,21 +82,14 @@ class CommonDBTM {
 		// Make new database object and fill variables
 		global $DB,$CFG_GLPI;
 		if (empty($ID)&&$ID!=0) return false;
-//		if ($this->type<=0||!($data = $CFG_GLPI["cache"]->get("data_".$ID,"GLPI_".$this->table))) {
-			$query = "SELECT * FROM ".$this->table." WHERE (".$this->getIndexName()." = $ID)";
-			if ($result = $DB->query($query)) {
-				if ($DB->numrows($result)==1){
-					$data = $DB->fetch_assoc($result);
-//					if ($this->type>0&&count($data)){
-//						$CFG_GLPI["cache"]->save($data,"data_".$ID,"GLPI_".$this->table);
-//					}
-				} else return false;
-			} else {
-				return false;
-			}
-//		}
-		$this->fields = $data;
-		return true;
+		$query = "SELECT * FROM ".$this->table." WHERE (".$this->getIndexName()." = $ID)";
+		if ($result = $DB->query($query)) {
+			if ($DB->numrows($result)==1){
+				$this->fields = $DB->fetch_assoc($result);
+				return true;
+			} 
+		} 
+		return false;;
 
 	}
 	/**
@@ -252,6 +245,8 @@ class CommonDBTM {
 
 			$this->cleanDBonPurge($ID);
 
+			$this->cleanHistory($ID);
+
 			$this->cleanRelationData($ID);
 
 			$query = "DELETE from ".$this->table." WHERE ".$this->getIndexName()." = '$ID'";
@@ -271,6 +266,23 @@ class CommonDBTM {
 				$this->cleanCache($ID);
 				return true;
 			} else return false;
+		}
+	}
+
+	/**
+	 * Clean data in the tables which have linked the deleted item
+	 *
+	 *@param $ID ID of the item
+	 *
+	 *
+	 *@return nothing
+	 *
+	 **/
+	function cleanHistory($ID){
+		global $DB;
+		if ($this->dohistory){
+			$query = "DELETE FROM glpi_history WHERE ( device_type = '".$this->type."' AND FK_glpi_device = '$ID')";
+			$DB->query($query);
 		}
 	}
 

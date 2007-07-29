@@ -1326,7 +1326,17 @@ function update0681to07() {
 		$DB->query($query) or die("0.7 add index on assign_group in tracking" . $LANG["update"][90] . $DB->error());
 	}
 
-
+	// Clean history
+	$query = "SELECT DISTINCT device_type FROM glpi_history";
+	if ($result = $DB->query($query)){
+		if ($DB->numrows($result)>0){
+			while ($data = $DB->fetch_array($result)){
+				$query2=" DELETE FROM glpi_history WHERE glpi_history.device_type='".$data['device_type']."' AND
+					glpi_history.FK_glpi_device NOT IN (SELECT ID FROM ".$LINK_ID_TABLE[$data['device_type']].")";
+				$DB->query($query2);
+			}
+		}
+	}
 
 
 } // fin 0.7 #####################################################################################

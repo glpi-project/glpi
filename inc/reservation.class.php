@@ -49,6 +49,21 @@ class ReservationItem extends CommonDBTM {
 		$this->type=-1;
 	}
 
+	function getFromDBbyItem($type,$ID){
+		global $DB;
+
+		$query = "SELECT ID FROM glpi_reservation_item WHERE (device_type = '$type' AND id_device = '$ID')";
+		$result = $DB->query($query);
+		if ($result = $DB->query($query)) {
+			if ($DB->numrows($result)==1){
+				$this->fields = $DB->fetch_assoc($result);
+				return true;
+			}
+		}
+		return false;
+
+	}
+	
 	function cleanDBonPurge($ID) {
 
 		global $DB;
