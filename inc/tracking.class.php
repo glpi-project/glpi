@@ -107,6 +107,9 @@ class Job extends CommonDBTM{
 			if (isset($input["assign_ent"])){
 				unset($input["assign_ent"]);
 			}
+			if (isset($input["assign_group"])){
+				unset($input["assign_group"]);
+			}
 
 		}
 
@@ -117,6 +120,9 @@ class Job extends CommonDBTM{
 			}
 			if (isset($input["assign_ent"])){
 				$ret["assign_ent"]=$input["assign_ent"];
+			}
+			if (isset($input["assign_group"])){
+				$ret["assign_group"]=$input["assign_group"];
 			}
 			// Can only update contents if no followups already added
 			$ret["ID"]=$input["ID"];
@@ -172,6 +178,7 @@ class Job extends CommonDBTM{
 			$input["_old_assign_name"]=getAssignName($this->fields["assign"],USER_TYPE);
 			$input["_old_assign"]=$this->fields["assign"];
 			$input["_old_assign_ent_name"]=getAssignName($this->fields["assign_ent"],ENTERPRISE_TYPE);
+			$input["_old_assign_group_name"]=getAssignName($this->fields["assign_group"],GROUP_TYPE);
 			$input["_old_category"]=$this->fields["category"];
 			$input["_old_item"]=$this->fields["computer"];
 			$input["_old_item_type"]=$this->fields["device_type"];
@@ -190,12 +197,12 @@ class Job extends CommonDBTM{
 
 	function pre_updateInDB($input,$updates) {
 
-		if (((in_array("assign",$updates)&&$input["assign"]>0)||(in_array("assign_ent",$updates)&&$input["assign_ent"]>0))&&$this->fields["status"]=="new"){
+		if (((in_array("assign",$updates)&&$input["assign"]>0)||(in_array("assign_ent",$updates)&&$input["assign_ent"]>0)||(in_array("assign_group",$updates)&&$input["assign_group"]>0)|)&&$this->fields["status"]=="new"){
 			$updates[]="status";
 			$this->fields["status"]="assign";
 		}
 		if (isset($input["status"])){
-			if (isset($input["assign_ent"])&&$input["assign_ent"]==0&&
+			if (isset($input["assign_ent"])&&$input["assign_ent"]==0&&isset($input["assign_group"])&&$input["assign_group"]==0&&
 			isset($input["assign"])&&$input["assign"]==0&&$input["status"]=="assign"){
 				$updates[]="status";
 				$this->fields["status"]="new";
@@ -334,6 +341,11 @@ class Job extends CommonDBTM{
 				if (in_array("assign_ent",$updates)){
 					$new_assign_ent_name=getAssignName($this->fields["assign_ent"],ENTERPRISE_TYPE);
 					$change_followup_content.=$LANG["mailing"][12].": ".$input["_old_assign_ent_name"]." -> ".$new_assign_ent_name."\n";
+					$global_mail_change_count++;
+				}
+				if (in_array("assign_group",$updates)){
+					$new_assign_group_name=getAssignName($this->fields["assign_group"],GROUP_TYPE);
+					$change_followup_content.=$LANG["mailing"][12].": ".$input["_old_assign_group_name"]." -> ".$new_assign_group_name."\n";
 					$global_mail_change_count++;
 				}
 				if (in_array("cost_time",$updates)){
@@ -713,7 +725,9 @@ class Job extends CommonDBTM{
 					$assign=$LANG["mailing"][105];
 				}
 			} else {
-				$assign.=" / ".$assign_group;
+				if (!empty($assign_group)){
+					$assign.=" / ".$assign_group;
+				}
 			}
 			$message.= "<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$LANG["mailing"][8]."</span> ".$assign."<br>";
 			$message.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$LANG["joblist"][2].":</span> ".getPriorityName($this->fields["priority"])."<br>";
@@ -746,8 +760,19 @@ class Job extends CommonDBTM{
 				$message.= $LANG["common"][10].": ".$tech."\n";
 			$message.= $LANG["joblist"][0].": ".getStatusName($this->fields["status"])."\n";
 			$assign=getAssignName($this->fields["assign"],USER_TYPE);
-			if ($assign=="[Nobody]")
-				$assign=$LANG["mailing"][105];
+			$assign_group=getAssignName($this->fields["assign_group"],GROUP_TYPE);
+			if ($assign=="[Nobody]"){
+                                if (!empty($assign_group)){
+                                        $assign=$assign_group;
+                                } else {
+                                        $assign=$LANG["mailing"][105];
+                                }
+                        } else {
+				if (!empty($assign_group)){
+	                                $assign.=" / ".$assign_group;
+				}
+                        }
+
 			$message.= $LANG["mailing"][8]." ".$assign."\n";
 			$message.= $LANG["joblist"][2].": ".getPriorityName($this->fields["priority"])."\n";
 			if ($this->fields["device_type"]!=SOFTWARE_TYPE&&!empty($contact))
