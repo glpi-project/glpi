@@ -197,7 +197,7 @@ class Job extends CommonDBTM{
 
 	function pre_updateInDB($input,$updates) {
 
-		if (((in_array("assign",$updates)&&$input["assign"]>0)||(in_array("assign_ent",$updates)&&$input["assign_ent"]>0)||(in_array("assign_group",$updates)&&$input["assign_group"]>0)|)&&$this->fields["status"]=="new"){
+		if (((in_array("assign",$updates)&&$input["assign"]>0)||(in_array("assign_ent",$updates)&&$input["assign_ent"]>0)||(in_array("assign_group",$updates)&&$input["assign_group"]>0))&&$this->fields["status"]=="new"){
 			$updates[]="status";
 			$this->fields["status"]="assign";
 		}
