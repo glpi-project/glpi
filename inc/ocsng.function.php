@@ -231,7 +231,7 @@ function ocsShowNewComputer($ocs_server_id, $advanced, $check, $start, $tolinked
  * This make the database link between ocs and glpi databases
  *
  *@param $ocs_id integer : ocs item unique id.
- *param $glpi_computer_id integer : glpi computer id
+ *@param $glpi_computer_id integer : glpi computer id
  *@param $ocs_server_id integer : ocs server id
  *
  *@return integer : link id.
@@ -2888,7 +2888,7 @@ function ocsUpdateSoftware($glpi_id, $entity, $ocs_id, $ocs_server_id, $cfg_ocs,
  *@return integer : inserted license id.
  *
  **/
-function ocsImportLicense($software, $version, $serial = "global", $buy = "0", $oem = "0") {
+function ocsImportLicense($software, $version, $serial = "global", $buy = "0") {
 	global $DB, $LANGOcs;
 
 	$query = "SELECT ID 
@@ -2911,7 +2911,7 @@ function ocsImportLicense($software, $version, $serial = "global", $buy = "0", $
 		$input["serial"] = $serial;
 		$input["buy"] = $buy;
 		$input["version"] = $version;
-		$input["oem"] = $oem;
+		$input["oem"] = 0;
 		$input["_from_ocs"] = 1;
 		$isNewLicc = $licc->add($input);
 	}

@@ -98,7 +98,6 @@ function displaySearchHeaderItem($type,$value,&$num,$linkto="",$issort=0,$order=
  *@param $value value to display
  *@param $num column number
  *@param $row  row number
- *@param $deleted is it a deleted item ?
  *@param $extraparam extra parameters for display
  *
  *@return string to display

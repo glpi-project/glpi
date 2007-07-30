@@ -632,6 +632,7 @@ function haveAccessToEntity($ID) {
  * @param $separator : separator in the begin of the request
  * @param $table : table where apply the limit (if needed, multiple tables queries)
  * @param $field : field where apply the limit (id != FK_entities)
+ * @param $value : entity to restrict (if not set use $_SESSION['glpiactiveentities']). single item or array
  * @return String : the WHERE clause to restrict 
  */
 function getEntitiesRestrictRequest($separator = "AND", $table = "", $field = "",$value='') {
