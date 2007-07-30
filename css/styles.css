@@ -231,9 +231,10 @@ td { }
 	-moz-border-radius: 4px;
 	border: 1px solid #cccccc;
 	z-index:1;
-	text-align: center;
+	text-align: left;
 	font-size: 11px;
 	background-color: #ffffff;
+	
 }
 
 .tab_cadre_central{
@@ -263,7 +264,7 @@ td { }
 	-moz-border-radius: 4px;
 	border: 1px solid #cccccc;
 	z-index:1;
-	text-align: center;
+	text-align: left;
 	font-size: 11px;
 	width:950px;
 }
@@ -271,10 +272,11 @@ td { }
 .tab_cadrehov, .tab_cadrehov_pointer{
 	-moz-border-radius: 4px;
 	border: 1px solid #cccccc;
-	text-align: center;
+	text-align: left;
 	font-size: 11px;
 	width: 80%;
 	background-color: #ffffff;
+	
 }
 
 .tab_cadre th, .tab_cadre_fixe th, .tab_cadre_fixehov th, .tab_cadrehov th, .tab_cadrehov_pointer th , .tab_cadre_report th  {
@@ -286,7 +288,9 @@ td { }
 	border-bottom:1px solid #cccccc;
 }
 
-
+.tab_cadre td, .tab_cadre_fixe td, .tab_cadre_fixehov td, .tab_cadrehov td, .tab_cadrehov_pointer td , .tab_cadre_report td  {
+	padding-left: 5px;
+}
 
 .tab_cadrehov tr:hover, .tab_cadre_fixehov tr:hover {
 
