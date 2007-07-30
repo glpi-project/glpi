@@ -1837,11 +1837,8 @@ function addWhere ($link,$nott,$type,$ID,$val,$meta=0){
  * Generic Function to display Items
  *
  *
- *@param $field field to add
- *@param $data array containing data results
- *@param $num item num in the request
+ *@param $field field which have a specific display type
  *@param $type device type
- *@param $linkfield field used to link
  *
  *
  *@return string to print
