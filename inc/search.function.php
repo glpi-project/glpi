@@ -2031,11 +2031,11 @@ function giveItem ($type,$field,$data,$num,$linkfield=""){
 			return $out;
 		break;
 		case "glpi_mailgate.name" :
+			$out= "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[MAILGATE_TYPE]."?ID=".$data["ITEM_".$num."_2"]."\">";
 			$out.= $data["ITEM_$num"];
 			if ($CFG_GLPI["view_ID"]||empty($data["ITEM_$num"])) {
 				$out.= " (".$data["ITEM_".$num."_2"].")";
 			}
-			$out= "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[MAILGATE_TYPE]."?ID=".$data["ITEM_".$num."_2"]."\">";
 			$out.= "</a>";
 			return $out;
 		break;
