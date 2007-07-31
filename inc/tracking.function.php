@@ -171,15 +171,17 @@ function showCentralJobList($target,$start,$status="process") {
 	if (!haveRight("show_all_ticket","1")&&!haveRight("show_assign_ticket","1")) return false;
 
 	$search_assign="assign = '".$_SESSION["glpiID"]."'";
-	if (count($_SESSION['glpigroups'])){
-		$first=true;
-		$groups="";
-		foreach ($_SESSION['glpigroups'] as $val){
-			if (!$first) $groups.=",";
-			else $first=false;
-			$groups.=$val;
+	if (haveRight("show_group_ticket",1)){
+		if (count($_SESSION['glpigroups'])){
+			$first=true;
+			$groups="";
+			foreach ($_SESSION['glpigroups'] as $val){
+				if (!$first) $groups.=",";
+				else $first=false;
+				$groups.=$val;
+			}
+			$search_assign.= " OR assign_group IN ($groups) ";
 		}
-		$search_assign.= " OR assign_group IN ($groups) ";
 	}
 
 
@@ -1252,15 +1254,17 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$au
 
 	if (strcmp($assign,"mine")==0){
 		$search_assign=" glpi_tracking.assign = '".$_SESSION["glpiID"]."' ";
-		if (count($_SESSION['glpigroups'])){
-			$first=true;
-			$groups="";
-			foreach ($_SESSION['glpigroups'] as $val){
-				if (!$first) $groups.=",";
-				else $first=false;
-				$groups.=$val;
+		if (haveRight("show_group_ticket",1)){
+			if (count($_SESSION['glpigroups'])){
+				$first=true;
+				$groups="";
+				foreach ($_SESSION['glpigroups'] as $val){
+					if (!$first) $groups.=",";
+					else $first=false;
+					$groups.=$val;
+				}
+				$search_assign.= " OR glpi_tracking.assign_group IN ($groups) ";
 			}
-			$search_assign.= " OR glpi_tracking.assign_group IN ($groups) ";
 		}
 		$where.=" AND ($search_assign) ";
 
