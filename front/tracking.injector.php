@@ -124,7 +124,7 @@ elseif (isset($_POST["emailupdates"]) && $_POST["emailupdates"] && isset($_POST[
 		echo $LANG["help"][32]."<br>";
 		echo $LANG["help"][33];
 		echo "</b><br><br>";
-		echo "<a href=\"javascript:history.back()\">".$LANG["buttons"][13]."</a>";
+		displayBackLink();
 		echo "</div>";
 
 	} else if ($track->add($_POST))

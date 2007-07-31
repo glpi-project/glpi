@@ -85,7 +85,13 @@ elseif (isset($_POST["priority"]) && !empty($_POST["contents"]))
 {
 
 	if ($newID=$track->add($_POST)){
-		$error=$LANG["tracking"][9]." (".$LANG["common"][2]." $newID)";
+		$linkin='';
+		$linkout='';
+		if (haveRight('show_all_ticket','1')){
+			$linkin="<a href='tracking.form.php?ID=$newID'>";
+			$linkout='</a>';
+		}
+		$error=$LANG["tracking"][9]." (".$LANG["common"][2]." $linkin$newID$linkout)";
 		displayMessageAfterRedirect();
 		addFormTracking($device_type,$computer,$user,$assign,$assign_group,$_SERVER['PHP_SELF'],$error);
 	}
