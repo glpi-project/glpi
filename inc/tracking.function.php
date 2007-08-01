@@ -1029,7 +1029,7 @@ function searchFormTracking($extended=0,$target,$start="",$status="new",$author=
 		dropdownValue("glpi_groups","assign_group",$assign_group);
 	
 		echo "<br>";
-		echo $LANG["job"][28].":&nbsp;";
+		echo $LANG["financial"][26].":&nbsp;";
 		dropdownValue("glpi_enterprises","assign_ent",$assign_ent);
 	}
 
@@ -1461,7 +1461,7 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$au
 					$title.=" - ".$LANG["job"][5]." =";
 					if ($assign!=0) $title.=" ".$LANG["job"][6]." = ".getUserName($assign);
 					if ($assign_group!=0) $title.=" ".$LANG["common"][35]." = ".getDropdownName("glpi_groups",$assign_group);
-					if ($assign_ent!=0) $title.=" ".$LANG["job"][28]." = ".getDropdownName("glpi_enterprises",$assign_ent);
+					if ($assign_ent!=0) $title.=" ".$LANG["financial"][26]." = ".getDropdownName("glpi_enterprises",$assign_ent);
 				}
 				if ($request_type!=0) $title.=" - ".$LANG["job"][44]." = ".getRequestTypeName($request_type);
 				if ($category!=0) $title.=" - ".$LANG["common"][36]." = ".getDropdownName("glpi_dropdown_tracking_category",category);
@@ -1718,7 +1718,7 @@ function showJobDetails ($target,$ID){
 			dropdownValue("glpi_groups","assign_group",$job->fields["assign_group"],1,$job->fields["FK_entities"]);
 			echo "</td></tr>";
 			echo "<tr><td class='left'>";
-			echo $LANG["job"][28].":</td><td>";
+			echo $LANG["financial"][26].":</td><td>";
 			dropdownValue("glpi_enterprises","assign_ent",$job->fields["assign_ent"],1,$job->fields["FK_entities"]);
 			echo "</td></tr>";
 		} else {
@@ -1727,7 +1727,7 @@ function showJobDetails ($target,$ID){
 			echo getDropdownName("glpi_groups",$job->fields["assign_group"]);
 			echo "</td></tr>";
 			echo "<tr><td class='left'>";
-			echo $LANG["job"][28].":</td><td>";
+			echo $LANG["financial"][26].":</td><td>";
 			echo getDropdownName("glpi_enterprises",$job->fields["assign_ent"]);
 			echo "</td></tr>";
 		}
