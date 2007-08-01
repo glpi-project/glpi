@@ -884,7 +884,7 @@ function closeDBConnections(){
 	// Case of not init $DB object
 	if (method_exists($DB,"close")){
 		$DB->close();
-		if (isset($DBocs)){
+		if (isset($DBocs)&&method_exists($DBocs,"close")){
 			$DBocs->close();
 		}
 	}
