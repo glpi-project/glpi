@@ -76,7 +76,7 @@ if (isset($_GET["action"])){
 	}
 }
 
-commonHeader($LANG["title"][2],$_SERVER['PHP_SELF'],"admin","rule",$LANG["rulesengine"][17]);
+commonHeader($LANG["rulesengine"][17],$_SERVER['PHP_SELF'],"admin","rule",$rulecollection->rule_type);
 
 $rulecollection->showForm($_SERVER['PHP_SELF']);
 commonFooter();

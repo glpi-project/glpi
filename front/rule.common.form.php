@@ -49,7 +49,6 @@ $rulecriteria = new RuleCriteria();
 $ruleaction = new RuleAction();
 $rulecollection = new RuleCollection($rule->rule_type);
 
-commonHeader($LANG["title"][2],$_SERVER['PHP_SELF'],"admin","rules");
 if (isset($_POST["delete_criteria"]))
 {
 	checkRight($rule->right,"w");
@@ -107,6 +106,7 @@ elseif (isset($_POST["update_rule"]))
 	glpi_header($CFG_GLPI['root_doc']."/front/rule.php");
 }
 
+commonHeader($LANG["title"][2],$_SERVER['PHP_SELF'],"admin","rule",$rulecollection->rule_type);
 
 $rule->showForm($_SERVER['PHP_SELF'],$_GET["ID"]);
 if (!empty($_GET["ID"])&&$_GET["ID"] >0) {
