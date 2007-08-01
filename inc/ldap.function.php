@@ -145,7 +145,7 @@ function ldapChooseDirectory($target) {
 
 //Get the list of LDAP users to add/synchronize
 function getAllLdapUsers($id_auth, $sync = 0,$myfilter='') {
-	global $DB, $LANG;
+	global $DB, $LANG,$CFG_GLPI;
 
 	$config_ldap = new AuthLDAP();
 	$res = $config_ldap->getFromDB($id_auth);
@@ -170,28 +170,39 @@ function getAllLdapUsers($id_auth, $sync = 0,$myfilter='') {
 		else
 			$filter = $myfilter;
 				
-		if (!empty ($config_ldap->fields['ldap_condition']))
+		if (!empty ($config_ldap->fields['ldap_condition'])){
 			$filter = "(& $filter ".$config_ldap->fields['ldap_condition'].")";
-	
-		$sr = ldap_search($ds, $config_ldap->fields['ldap_basedn'],$filter , $attrs);
-		$info = ldap_get_entries($ds, $sr);
-		$user_infos = array();
-		
-		for ($ligne = 0; $ligne < $info["count"]; $ligne++)
-		{
-			//If ldap add
-			if (!$sync)
-			{
-				$ldap_users[$info[$ligne][$config_ldap->fields['ldap_login']][0]] = $info[$ligne][$config_ldap->fields['ldap_login']][0];
-				$user_infos[$info[$ligne][$config_ldap->fields['ldap_login']][0]]["timestamp"]=ldapStamp2UnixStamp($info[$ligne]['modifytimestamp'][0],$config_ldap->fields['timezone'],true);
-			}
-			else
-			{
-			//If ldap synchronisation
-				$ldap_users[$info[$ligne][$config_ldap->fields['ldap_login']][0]] = ldapStamp2UnixStamp($info[$ligne]['modifytimestamp'][0],$config_ldap->fields['timezone'],true);
-				$user_infos[$info[$ligne][$config_ldap->fields['ldap_login']][0]]["timestamp"]=ldapStamp2UnixStamp($info[$ligne]['modifytimestamp'][0],$config_ldap->fields['timezone'],true);
-			}
+		}
+		if ($CFG_GLPI["debug"]==DEBUG_MODE){
+			disableDebugMode();
 		}	
+		$sr = @ldap_search($ds, $config_ldap->fields['ldap_basedn'],$filter , $attrs);
+		if ($CFG_GLPI["debug"]==DEBUG_MODE){
+			enableDebugMode();
+		}	
+
+		if ($sr){
+			$info = ldap_get_entries($ds, $sr);
+			$user_infos = array();
+			
+			for ($ligne = 0; $ligne < $info["count"]; $ligne++)
+			{
+				//If ldap add
+				if (!$sync)
+				{
+					$ldap_users[$info[$ligne][$config_ldap->fields['ldap_login']][0]] = $info[$ligne][$config_ldap->fields['ldap_login']][0];
+					$user_infos[$info[$ligne][$config_ldap->fields['ldap_login']][0]]["timestamp"]=ldapStamp2UnixStamp($info[$ligne]['modifytimestamp'][0],$config_ldap->fields['timezone'],true);
+				}
+				else
+				{
+				//If ldap synchronisation
+					$ldap_users[$info[$ligne][$config_ldap->fields['ldap_login']][0]] = ldapStamp2UnixStamp($info[$ligne]['modifytimestamp'][0],$config_ldap->fields['timezone'],true);
+					$user_infos[$info[$ligne][$config_ldap->fields['ldap_login']][0]]["timestamp"]=ldapStamp2UnixStamp($info[$ligne]['modifytimestamp'][0],$config_ldap->fields['timezone'],true);
+				}
+			}	
+		} else {
+			return false;
+		}
 	} else {
 		return false;
 	}
@@ -239,68 +250,74 @@ function showLdapUsers($target, $check, $start, $sync = 0,$filter='') {
 	displayLdapFilter($target);
 	echo "<br>";	
 	$ldap_users = getAllLdapUsers($_SESSION["ldap_server"], $sync,$filter);
-	$numrows = sizeof($ldap_users);
 
-	if (!$sync) {
-		$action = "toimport";
-		$form_action = "import_ok";
-	} else {
-		$action = "tosync";
-		$form_action = "sync_ok";
-	}
-
-	if ($numrows > 0) {
-		$parameters = "check=$check";
-		printPager($start, $numrows, $target, $parameters);
-
-		// delete end 
-		array_splice($ldap_users, $start + $_SESSION["glpilist_limit"]);
-		// delete begin
-		if ($start > 0)
-			array_splice($ldap_users, 0, $start);
-
-		echo "<div class='center'>";
-		echo "<form method='post' name='ldap_form' action='" . $target . "'>";
-		echo "<a href='" . $target . "?check=all' onclick= \"if ( markAllRows('ldap_form') ) return false;\">" . $LANG["buttons"][18] . "</a>&nbsp;/&nbsp;<a href='" . $target . "?check=none' onclick= \"if ( unMarkAllRows('ldap_form') ) return false;\">" . $LANG["buttons"][19] . "</a>";
-		echo "<table class='tab_cadre'>";
-		echo "<tr><th>" . (!$sync?$LANG["buttons"][37]:$LANG["ldap"][15]) . "</th><th colspan='2'>" . $LANG["Menu"][14] . "</th><th>".$LANG["common"][26]." ".$LANG["ldap"][13]."</th><th>".$LANG["common"][26]." ".$LANG["ldap"][14]."</th></tr>";
-
-		foreach ($ldap_users as $userinfos) {
-			$user = $userinfos["user"];
-			if (isset($userinfos["timestamp"]))
-				$stamp = $userinfos["timestamp"];
-			else
-				$stamp='';
-			
-			if (isset($userinfos["date_mod"]))	
-				$date_mod = $userinfos["date_mod"];
-			else
-				$date_mod='';
-				
-			echo "<tr align='center' class='tab_bg_2'>";
-			//Need to use " instead of ' because it doesn't work with names with ' inside !
-			echo "<td><input type='checkbox' name=\"" . $action . "[" . $user . "]\" " . ($check == "all" ? "checked" : "") ."></td>";
-			echo "<td colspan='2'>" . $user . "</td>";
-			
-			if ($stamp != '')
-				echo "<td>" .convDateTime(date("Y-m-d H:i:s",$stamp)). "</td>";
-			else
-				echo "<td>&nbsp;</td>";
-			if ($date_mod != '')
-				echo "<td>" . convDateTime($date_mod) . "</td>";
-			else 
-				echo "<td>&nbsp;</td>";
-				
-			echo "</tr>";
+	if (is_array($ldap_users)){
+		$numrows = count($ldap_users);
+	
+		if (!$sync) {
+			$action = "toimport";
+			$form_action = "import_ok";
+		} else {
+			$action = "tosync";
+			$form_action = "sync_ok";
 		}
-		echo "<tr class='tab_bg_1'><td colspan='5' align='center'>";
-		echo "<input class='submit' type='submit' name='" . $form_action . "' value='" . (!$sync?$LANG["buttons"][37]:$LANG["ldap"][15]) . "'>";
-		echo "</td></tr>";
-		echo "</table>";
-		echo "</form></div>";
-		printPager($start, $numrows, $target, $parameters);
-	} else
+	
+		if ($numrows > 0) {
+			$parameters = "check=$check";
+			printPager($start, $numrows, $target, $parameters);
+	
+			// delete end 
+			array_splice($ldap_users, $start + $_SESSION["glpilist_limit"]);
+			// delete begin
+			if ($start > 0)
+				array_splice($ldap_users, 0, $start);
+	
+			echo "<div class='center'>";
+			echo "<form method='post' name='ldap_form' action='" . $target . "'>";
+			echo "<a href='" . $target . "?check=all' onclick= \"if ( markAllRows('ldap_form') ) return false;\">" . $LANG["buttons"][18] . "</a>&nbsp;/&nbsp;<a href='" . $target . "?check=none' onclick= \"if ( unMarkAllRows('ldap_form') ) return false;\">" . $LANG["buttons"][19] . "</a>";
+			echo "<table class='tab_cadre'>";
+			echo "<tr><th>" . (!$sync?$LANG["buttons"][37]:$LANG["ldap"][15]) . "</th><th colspan='2'>" . $LANG["Menu"][14] . "</th><th>".$LANG["common"][26]." ".$LANG["ldap"][13]."</th><th>".$LANG["common"][26]." ".$LANG["ldap"][14]."</th></tr>";
+	
+			foreach ($ldap_users as $userinfos) {
+				$user = $userinfos["user"];
+				if (isset($userinfos["timestamp"]))
+					$stamp = $userinfos["timestamp"];
+				else
+					$stamp='';
+				
+				if (isset($userinfos["date_mod"]))	
+					$date_mod = $userinfos["date_mod"];
+				else
+					$date_mod='';
+					
+				echo "<tr align='center' class='tab_bg_2'>";
+				//Need to use " instead of ' because it doesn't work with names with ' inside !
+				echo "<td><input type='checkbox' name=\"" . $action . "[" . $user . "]\" " . ($check == "all" ? "checked" : "") ."></td>";
+				echo "<td colspan='2'>" . $user . "</td>";
+				
+				if ($stamp != '')
+					echo "<td>" .convDateTime(date("Y-m-d H:i:s",$stamp)). "</td>";
+				else
+					echo "<td>&nbsp;</td>";
+				if ($date_mod != '')
+					echo "<td>" . convDateTime($date_mod) . "</td>";
+				else 
+					echo "<td>&nbsp;</td>";
+					
+				echo "</tr>";
+			}
+			echo "<tr class='tab_bg_1'><td colspan='5' align='center'>";
+			echo "<input class='submit' type='submit' name='" . $form_action . "' value='" . (!$sync?$LANG["buttons"][37]:$LANG["ldap"][15]) . "'>";
+			echo "</td></tr>";
+			echo "</table>";
+			echo "</form></div>";
+			printPager($start, $numrows, $target, $parameters);
+		} else {
+			echo "<div class='center'><strong>" . $LANG["ldap"][3] . "</strong></div>";
+		}
+	} else {
 		echo "<div class='center'><strong>" . $LANG["ldap"][3] . "</strong></div>";
+	}
 }
 
 //Test a connection to the ldap directory
