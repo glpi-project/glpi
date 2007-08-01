@@ -52,6 +52,14 @@ if (!defined('GLPI_ROOT')){
 	}
 
 
+	function enableDebugMode(){
+		set_error_handler("userErrorHandler",E_ALL);
+	}
+
+	function disableDebugMode(){
+		set_error_handler("userErrorHandler",0);
+	}
+
 	// Fonction spéciale de gestion des erreurs
 	function userErrorHandler($errno, $errmsg, $filename, $linenum, $vars){
 		global $CFG_GLPI;

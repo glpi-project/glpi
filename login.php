@@ -139,6 +139,7 @@ if (isset ($_POST["noCAS"])){
 			//so we test this connection first
 			switch ($identificat->user->fields["auth_method"]) {
 				case AUTH_LDAP :
+					error_reporting(0);
 					$identificat = try_ldap_auth($identificat, $_POST['login_name'], $_POST['login_password'],$identificat->user->fields["id_auth"]);
 					break;
 				case AUTH_MAIL :
@@ -152,6 +153,7 @@ if (isset ($_POST["noCAS"])){
 		//If the last good auth method is not valid anymore, we test all the methods !
 		//test all the ldap servers
 		if (!$identificat->auth_succeded){
+			error_reporting(0);
 			$identificat = try_ldap_auth($identificat,$_POST['login_name'],$_POST['login_password']);
 		}
 
@@ -191,7 +193,6 @@ if (isset ($_POST["noCAS"])){
 			}
 		}
 	}
-
 	// now we can continue with the process...
 	$identificat->initSession();
 
@@ -201,13 +202,14 @@ if (isset ($_POST["noCAS"])){
 		nullHeader("Login", $_SERVER['PHP_SELF']);
 		echo '<div align="center"><b>' . $identificat->getErr() . '</b><br><br>';
 		echo '<b><a href="' . $CFG_GLPI["root_doc"] . '/logout.php">' . $LANG["login"][1] . '</a></b></div>';
-		nullFooter();
 		if ($CFG_GLPI["debug"] == DEMO_MODE){
 			logevent(-1, "system", 1, "login", "failed login: " . $_POST['login_name']);
 		} else {
 			logevent(-1, "system", 1, "login", $LANG["log"][41] . ": " . $_POST['login_name']);
 		}
-			exit;
+		nullFooter();
+
+		exit();
 	}
 
 
@@ -231,7 +233,7 @@ if (isset ($_POST["noCAS"])){
 //			$REDIRECT="?redirect=prefs_prefs";
 //		}
 	}
-	//exit();
+
 	// Redirect to Command Central if not post-only
 	if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
 		glpi_header($CFG_GLPI['root_doc'] . "/front/helpdesk.public.php$REDIRECT");
