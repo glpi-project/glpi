@@ -77,7 +77,7 @@ title=\"".$ref_pic_text."\" ></td>";
  * @param $item item corresponding to the page displayed
  *
  **/
-function commonHeader($title,$url,$sector="none",$item="none")
+function commonHeader($title,$url,$sector="none",$item="none",$option="")
 {
 	// Print a nice HTML-head for every page
 
@@ -147,8 +147,7 @@ function commonHeader($title,$url,$sector="none",$item="none")
 	
 		// End of Head
 		echo "</head>\n";
-
-	if (!($CFG_GLPI["cache"]->start($sector.'_'.$item,"GLPI_HEADER_".$_SESSION["glpiID"]))) {
+	if (!($CFG_GLPI["cache"]->start($sector.'_'.$item.$option,"GLPI_HEADER_".$_SESSION["glpiID"]))) {
 		
 	// Body 
 		echo "<body>";
@@ -450,10 +449,29 @@ function commonHeader($title,$url,$sector="none",$item="none")
 			$menu['admin']['content']['entity']['links']['add']="/front/entity.tree.php";
 		}
 
-		if (haveRight("rule_ldap","r")||haveRight("rule_ocs","r")||haveRight("rule_tracking","r")){
+		if (haveRight("rule_ldap","r")||haveRight("rule_ocs","r")||haveRight("rule_tracking","r")||haveRight("rule_softwarecategories","r")){
 			$menu['admin']['content']['rule']['title']=$LANG["rulesengine"][17];
 			$menu['admin']['content']['rule']['shortcut']='r';
 			$menu['admin']['content']['rule']['page']='/front/rule.php';
+
+			switch($option){
+				 case RULE_OCS_AFFECT_COMPUTER :
+					$menu['admin']['content']['rule']['links']['search']='/front/rule.ocs.php';
+					$menu['admin']['content']['rule']['links']['add']='/front/rule.ocs.form.php';
+					break;
+				case RULE_AFFECT_RIGHTS :
+					$menu['admin']['content']['rule']['links']['search']='/front/rule.right.php';
+					$menu['admin']['content']['rule']['links']['add']='/front/rule.right.form.php';
+					break;
+				case RULE_TRACKING_AUTO_ACTION :
+					$menu['admin']['content']['rule']['links']['search']='/front/rule.tracking.php';
+					$menu['admin']['content']['rule']['links']['add']='/front/rule.tracking.form.php';
+					break;
+				case RULE_SOFTWARE_CATEGORY :
+					$menu['admin']['content']['rule']['links']['search']='/front/rule.softwarecategories.php';
+					$menu['admin']['content']['rule']['links']['add']='/front/rule.softwarecategories.form.php';
+					break;
+			}
 		}
 
 		if (haveRight("profile","r")){
