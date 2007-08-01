@@ -156,8 +156,8 @@ class Identification {
 		}
 		if ($ds) {
 			$dn = ldap_search_user_dn($ds, $basedn, $login_attr, $login, $condition);
-			if (@ ldap_bind($ds, $dn, $password)) {
-				@ ldap_unbind($ds);
+			if (@ldap_bind($ds, $dn, $password)) {
+				@ldap_unbind($ds);
 				//Hook to implement to restrict access by checking the ldap directory
 				if (doHookFunction("restrict_ldap_auth", $dn)) {
 					return $dn;
