@@ -105,7 +105,7 @@ else if (isset($_POST["addenterprise"])){
 	checkRight("contract_infocom","w");
 
 	addEnterpriseContract($_POST["conID"],$_POST["entID"]);
-	logEvent($_POST["ID"], "contracts", 4, "financial", $_SESSION["glpiname"]." ".$LANG["log"][34]);
+	logEvent($_POST["conID"], "contracts", 4, "financial", $_SESSION["glpiname"]." ".$LANG["log"][34]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($_GET["deleteenterprise"])){
