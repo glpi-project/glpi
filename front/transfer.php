@@ -33,13 +33,12 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-
 $NEEDED_ITEMS=array("transfer","user","tracking","reservation","document","computer","device","printer","networking","peripheral","monitor","software","infocom","phone","link","ocsng","consumable","cartridge","contract","enterprise","contact","group","profile","search","mailgate","typedoc","setup");
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-$items[]
+$items[COMPUTER_TYPE]=array();
 $tranfer=new Transfer();
 
 // Network links : 0 : delete 1 : keep disconnect 2 : keep connect
@@ -56,6 +55,9 @@ $options['keep_devices']=1;
 
 // History : 0 : delete 1 : keep
 $options['keep_history']=1;
+
+// Infocoms : 0 : delete 1 : keep
+$options['keep_infocoms']=1;
 
 // Monitor Direct Connect : keep_dc -> tranfer / clean_dc : delete if unused : 1 = delete, 2 = purge
 $options['keep_dc_monitor']=1;
