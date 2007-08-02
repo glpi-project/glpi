@@ -72,7 +72,9 @@ class ReservationItem extends CommonDBTM {
 		$result2 = $DB->query($query2);
 	}
 	function prepareInputForAdd($input) {
-		$input['active']=1;
+		if (!isset($input['active'])){
+			$input['active']=1;
+		}
 		return $input;
 	}
 }

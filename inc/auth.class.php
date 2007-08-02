@@ -156,13 +156,7 @@ class Identification {
 		}
 		if ($ds) {
 			$dn = ldap_search_user_dn($ds, $basedn, $login_attr, $login, $condition);
-			if ($CFG_GLPI["debug"]==DEBUG_MODE){
-				disableDebugMode();
-			}
 			if (@ldap_bind($ds, $dn, $password)) {
-				if ($CFG_GLPI["debug"]==DEBUG_MODE){
-					enableDebugMode();
-				}
 
 				@ldap_unbind($ds);
 				//Hook to implement to restrict access by checking the ldap directory
@@ -172,9 +166,6 @@ class Identification {
 					$this->err .= $LANG["login"][16] . "<br>\n";
 					return false;
 				}
-			}
-			if ($CFG_GLPI["debug"]==DEBUG_MODE){
-				enableDebugMode();
 			}
 
 			$this->err .= $LANG["login"][15] . "<br>\n";
