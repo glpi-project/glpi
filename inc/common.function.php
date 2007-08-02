@@ -51,15 +51,6 @@ if (!defined('GLPI_ROOT')){
 		error_log(convDateTime(date("Y-m-d H:i:s"))."\n".$text,3,GLPI_LOG_DIR."/".$name.".log");
 	}
 
-
-	function enableDebugMode(){
-		set_error_handler("userErrorHandler",E_ALL);
-	}
-
-	function disableDebugMode(){
-		set_error_handler("userErrorHandler",0);
-	}
-
 	// Fonction spéciale de gestion des erreurs
 	function userErrorHandler($errno, $errmsg, $filename, $linenum, $vars){
 		global $CFG_GLPI;
@@ -102,7 +93,8 @@ if (!defined('GLPI_ROOT')){
 		if ($CFG_GLPI["use_errorlog"]){
 			logInFile("php-errors",$err);
 		}
-		echo '<div style="position:fload-left; background-color:red; z-index:10000">PHP ERROR : ';
+
+		echo '<div style="position:fload-left; background-color:red; z-index:10000"><strong>PHP ERROR : </strong>';
 		echo $errmsg." in ".$filename." at line ".$linenum;
 		echo '</div>';
 	}

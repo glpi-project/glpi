@@ -173,13 +173,7 @@ function getAllLdapUsers($id_auth, $sync = 0,$myfilter='') {
 		if (!empty ($config_ldap->fields['ldap_condition'])){
 			$filter = "(& $filter ".$config_ldap->fields['ldap_condition'].")";
 		}
-		if ($CFG_GLPI["debug"]==DEBUG_MODE){
-			disableDebugMode();
-		}	
 		$sr = @ldap_search($ds, $config_ldap->fields['ldap_basedn'],$filter , $attrs);
-		if ($CFG_GLPI["debug"]==DEBUG_MODE){
-			enableDebugMode();
-		}	
 
 		if ($sr){
 			$info = ldap_get_entries($ds, $sr);
