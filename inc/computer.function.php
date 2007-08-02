@@ -162,6 +162,8 @@ function showConnections($target,$ID,$withtemplate='') {
 
 	$items=array(PRINTER_TYPE=>$LANG["computers"][39],MONITOR_TYPE=>$LANG["computers"][40],PERIPHERAL_TYPE=>$LANG["computers"][46],PHONE_TYPE=>$LANG["computers"][55]);
 	$comp=new Computer();
+	$canedit=haveTypeRight(COMPUTER_TYPE,"w");
+
 	if ($comp->getFromDB($ID)){
 
 		foreach ($items as $type => $title){
@@ -180,9 +182,7 @@ function showConnections($target,$ID,$withtemplate='') {
 	
 			echo "<tr class='tab_bg_1'>";
 	
-			foreach ($items as $type=>$title){
-				$canedit=haveTypeRight($type,"w");
-	
+			foreach ($items as $type=>$title){	
 				echo "<td class='center'>";
 				$query = "SELECT * from glpi_connect_wire WHERE end2='$ID' AND type='".$type."'";
 				if ($result=$DB->query($query)) {
@@ -226,7 +226,7 @@ function showConnections($target,$ID,$withtemplate='') {
 						}
 						echo "<br>";
 					}
-					if ($canedit)
+					if ($canedit){
 						if(empty($withtemplate) || $withtemplate != 2) {
 							echo "<form method='post' action=\"$target\">";
 							echo "<input type='hidden' name='connect' value='connect'>";
@@ -241,6 +241,7 @@ function showConnections($target,$ID,$withtemplate='') {
 							echo "<input type='submit' value=\"".$LANG["buttons"][9]."\" class='submit'>";
 							echo "</form>";
 						}
+					}
 				}
 				echo "</td>";
 			}
