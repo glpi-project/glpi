@@ -50,7 +50,7 @@ function matchRules($field, $condition, $pattern) {
 	//Perform comparison with fields in lower case
 	$field = strtolower($field);
 	$pattern = strtolower($pattern);
-	
+
 	switch ($condition) {
 		case PATTERN_IS :
 			if ($field == $pattern)
@@ -69,6 +69,9 @@ function matchRules($field, $condition, $pattern) {
 			else
 				return false;	
 		case PATTERN_BEGIN:
+			if (empty($pattern)){
+				return false;
+			}
 			$value = strpos($field,$pattern);
 			if (($value !== false) && $value == 0)
 				return true;
@@ -76,6 +79,10 @@ function matchRules($field, $condition, $pattern) {
 				return false;	
 			
 		case PATTERN_CONTAIN:
+			if (empty($pattern)){
+				return false;
+			}
+
 			$value = strpos($field,$pattern);
 			if (($value !== false) && $value >= 0)
 				return true;
@@ -83,6 +90,10 @@ function matchRules($field, $condition, $pattern) {
 				return false;	
 			
 		case PATTERN_NOT_CONTAIN:
+			if (empty($pattern)){
+				return false;
+			}
+
 			$value = strpos($field,$pattern);
 			if ($value === false)
 				return true;
