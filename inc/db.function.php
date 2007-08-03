@@ -901,4 +901,11 @@ function checkEmailForUser($ID){
 	return false;
 }
 
+function formatOutputWebLink($link){
+	if (!ereg("^https?",$link)){
+		return "http://".$link;
+	} 
+	return $link;
+}
+
 ?>
