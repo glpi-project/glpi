@@ -2224,8 +2224,9 @@ function giveItem ($type,$field,$data,$num,$linkfield=""){
 					$out.= $data["ITEM_$num"];
 					if ($CFG_GLPI["view_ID"]||empty($data["ITEM_$num"])) $out.= " (".$data["ID"].")";
 					$out.= "</a>";
-					if (!empty($data["ITEM_".$num."_2"]))
-						$out.= "<a href='".$data["ITEM_".$num."_2"]."' target='_blank'><img src='".$CFG_GLPI["root_doc"]."/pics/web.png' alt='website'></a>";
+					if (!empty($data["ITEM_".$num."_2"])){
+						$out.= "<a href='".formatOutputWebLink($data["ITEM_".$num."_2"])."' target='_blank'><img src='".$CFG_GLPI["root_doc"]."/pics/web.png' alt='website'></a>";
+					}
 				}
 			} else {
 				$type=ENTERPRISE_TYPE;
@@ -2236,8 +2237,9 @@ function giveItem ($type,$field,$data,$num,$linkfield=""){
 				if ($data["ITEM_".$num."_3"]>0&&($CFG_GLPI["view_ID"]||(empty($data["ITEM_$num"])))) $out.= " (".$data["ITEM_".$num."_3"].")";
 				if ($data["ITEM_".$num."_3"]>0)
 					$out.= "</a>";
-				if (!empty($data["ITEM_".$num."_2"]))
-					$out.= "<a href='".$data["ITEM_".$num."_2"]."' target='_blank'><img src='".$CFG_GLPI["root_doc"]."/pics/web.png' alt='website'></a>";
+				if (!empty($data["ITEM_".$num."_2"])){
+					$out.= "<a href='".formatOutputWebLink($data["ITEM_".$num."_2"])."' target='_blank'><img src='".$CFG_GLPI["root_doc"]."/pics/web.png' alt='website'></a>";
+				}
 			}
 			return $out;
 		break;	

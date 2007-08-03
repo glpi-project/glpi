@@ -179,10 +179,8 @@ function getEnterpriseLinks($value,$withname=0){
 		if ($withname==1) $ret.=$ent->fields["name"];
 
 		if (!empty($ent->fields['website'])){
-			if (!ereg("^https?",$ent->fields['website']))	$website="http://".$ent->fields['website'];
-			else $website=$ent->fields['website'];
 			$ret.= "&nbsp;&nbsp;";
-			$ret.= "<a href='$website' target='_blank'><img src='".$CFG_GLPI["root_doc"]."/pics/web.png' class='middle' alt='".$LANG["common"][4]."' title='".$LANG["common"][4]."' ></a>";
+			$ret.= "<a href='".formatOutputWebLink($ent->fields['website'])."' target='_blank'><img src='".$CFG_GLPI["root_doc"]."/pics/web.png' class='middle' alt='".$LANG["common"][4]."' title='".$LANG["common"][4]."' ></a>";
 		}
 		$ret.= "&nbsp;&nbsp;&nbsp;&nbsp;";
 		$ret.= "<a href='".$CFG_GLPI["root_doc"]."/front/enterprise.form.php?ID=".$ent->fields['ID']."'><img src='".$CFG_GLPI["root_doc"]."/pics/edit.png' class='middle' alt='".$LANG["buttons"][14]."' title='".$LANG["buttons"][14]."'></a>";
