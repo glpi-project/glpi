@@ -196,7 +196,6 @@ class CommonDBTM {
 				}
 			}
 			$query .= ")";
-
 			if ($result=$DB->query($query)) {
 				$this->fields["ID"]=$DB->insert_id();
 				cleanRelationCache($this->table);
