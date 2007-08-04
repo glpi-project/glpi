@@ -276,27 +276,32 @@ class Transfer extends CommonDBTM{
 		global $DB;
 
 		switch ($this->options['keep_history']){
-			case 0 :  // delete
-				if ($ID==$newID){ // Same item -> delete
+			// delete
+			case 0 :  
+				// Same item -> delete
+				if ($ID==$newID){ 
 					$query = "DELETE FROM glpi_history WHERE ( device_type = '$type' AND FK_glpi_device = '$ID')";
 					$result = $DB->query($query);
 				}
+				// Copy -> nothing to do
 				break;
-			case 1 :	// Keep history
+			// Keep history
+			case 1 :	
 			default : 
-				// Copy datas if not the same : delete history
+				// Copy -> Copy datas 
 				if ($ID!=$newID){
 					$query = "SELECT * FROM glpi_history WHERE (device_type = '$type' AND FK_glpi_device = '$ID')";
 					$result=$DB->query($query);
 					if ($result = $DB->query($query)) {
 						if ($DB->numrows($result)!=0) { 
 							while ($data=$DB->fetch_row($result)) {
-								$query = "INSERT INTO glpi_history (FK_glpi_device,device_type,device_internal_type,linked_action,user_name,date_mod,id_search_option,old_value,new_value)  VALUES ('$newID','$type','".$data['device_internal_type']."','".$data['linked_action']."','". addslashes($data['user_name'])."','".$data['date_mod']."','".$data['id_search_option']."','".$data['old_value']."','".$data['new_value']."');";
+								$query = "INSERT INTO glpi_history (FK_glpi_device,device_type,device_internal_type,linked_action,user_name,date_mod,id_search_option,old_value,new_value)  VALUES ('$newID','$type','".$data['device_internal_type']."','".$data['linked_action']."','". addslashes($data['user_name'])."','".$data['date_mod']."','".$data['id_search_option']."','".addslashes($data['old_value'])."','".addslashes($data['new_value'])."');";
 								$DB->query($query);
 							}
 						}
 					}
 				}
+				// Same item -> nothing to do
 				break;
 		}
 	}
@@ -307,20 +312,26 @@ class Transfer extends CommonDBTM{
 		$ic=new Infocom();
 		if ($ic->getFromDBforDevice($tyep,$ID)){
 			switch ($this->options['keep_infocoms']){
-				case 0 :  // delete
-					if ($ID==$newID){ // Same item -> delete
+				// delete
+				case 0 :  
+					// Same item -> delete
+					if ($ID==$newID){ 
 						$query = "DELETE FROM glpi_infocoms WHERE ( device_type = '$type' AND FK_device = '$ID')";
 						$result = $DB->query($query);
 					}
+					// Copy : nothing to do
 					break;
-				case 1 : // Keep
+				// Keep
+				case 1 : 
 				default : 
+					// Copy : copy infocoms
 					if ($ID!=$newID){
 						// Copy items
 						$ic->fields['FK_device']=$newID;
 						unset($ic->fields['ID']);
 						$ic->add();
 					}
+					// Same item : nothing to do
 					break;
 			}
 		}
@@ -334,20 +345,25 @@ class Transfer extends CommonDBTM{
 
 		if ($ri->getFromDBbyItem($type,$ID)){
 			switch ($this->options['keep_reservations']){
-				case 0 :  // delete
-					if ($ID==$newID){ // Same item -> delete
+				// delete
+				case 0 :  
+					// Same item -> delete
+					if ($ID==$newID){ 
 						$ri->delete(array('ID'=>$ri->fields['ID']));
 					}
+					// Copy : nothing to do
 					break;
-				case 1 : // Keep
+				// Keep
+				case 1 : 
 				default : 
-					// Not the same : set item as reservable
+					// Copy : set item as reservable
 					if ($ID!=$newID){
 						$input['device_type']=$type;
 						$input['id_device']=$newID;
 						$input['active']=$ri->fields['active'];
 						$ri->add($input);
 					}
+					// Same item -> nothing to do
 					break;
 			}
 		}
@@ -357,26 +373,31 @@ class Transfer extends CommonDBTM{
 		global $DB;
 
 		switch ($this->options['keep_devices']){
-			case 0 :  // delete
-				if ($ID==$newID){ // Same item -> delete
+			// delete devices
+			case 0 :  
+				// Same item -> delete
+				if ($ID==$newID){ 
 					$query = "DELETE FROM glpi_computer_device WHERE (FK_computers = '$ID')";
 					$result = $DB->query($query);
 				}
+				// Copy : nothing to do
 				break;
-			case 1 :	// Keep devices
+			// Keep devices
+			case 1 :	
 			default : 
-				// Copy datas if not the same 
+				// Copy : copy devices
 				if ($ID!=$newID){
 					$query = "SELECT * FROM glpi_computer_device WHERE (FK_computers = '$ID')";
 					$result=$DB->query($query);
 					if ($result = $DB->query($query)) {
 						if ($DB->numrows($result)!=0) { 
 							while ($data=$DB->fetch_row($result)) {
-								compdevice_add($newID,$data['device_type'],$data['FK_device'],$data['specificity'],0);
+								compdevice_add($newID,$data['device_type'],$data['FK_device'],addslashes($data['specificity']),0);
 							}
 						}
 					}
 				}
+				// Same item -> nothing to do
 				break;
 		}
 	}
@@ -385,26 +406,29 @@ class Transfer extends CommonDBTM{
 		global $DB;
 	
 		$np=new Netport();
-		// If not keep or disconnect
 
 		$query = "SELECT ID FROM glpi_networking_ports WHERE (on_device = '$ID' AND device_type = '$type')";
 		if ($result = $DB->query($query)) {
 			if ($DB->numrows($result)!=0) { 
 				switch ($this->options['keep_networklinks']){
-					case 0 : // Delete netport
+					// Delete netport
+					case 0 : 
 						// Not a copy -> delete
 						if ($ID==$newID){
 							while ($data=$DB->fetch_row($result)) {
 								$np->delete(array('ID'=>$data['ID']));
 							}
 						}
+						// Copy -> do nothing
 						break;
-					case 1 : // Disconnect
-						if ($ID==$newID){ // Not a copy -> disconnect
+					// Disconnect
+					case 1 : 
+						// Not a copy -> disconnect
+						if ($ID==$newID){ 
 							while ($data=$DB->fetch_row($result)) {
 								removeConnector($data['ID']);
 							}
-						} else { // Item copy -> copy netpoints
+						} else { // Copy -> copy netpoints
 							while ($data=$DB->fetch_row($result)) {
 								unset($data['ID']);
 								$data['on_device']=$newID;
@@ -412,9 +436,10 @@ class Transfer extends CommonDBTM{
 							}
 						}
 						break;
-					case 2 : // Keep network links / update links if needed
+					// Keep network links 
+					case 2 : 
 					default : 
-						// Copy datas if not the same 
+						// Copy -> Copy netpoints (do not keep links)
 						if ($ID!=$newID){
 							while ($data=$DB->fetch_row($result)) {
 								unset($data['ID']);
@@ -422,11 +447,12 @@ class Transfer extends CommonDBTM{
 								$np->add($data);
 							}
 						}
+						// Not a copy -> nothing to do
 						break;
 
 				}
 			}
 		}
-			}
+	}
 }
 ?>
