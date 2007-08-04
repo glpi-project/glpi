@@ -50,6 +50,7 @@ class Transfer extends CommonDBTM{
 	var $item_search=array();
 	var $options=array();
 	var $to=-1;
+	var $inittype=0;
 	function Transfer(){
 		$this->table="glpi_transfer";
 		$this->type=-1;
@@ -59,7 +60,9 @@ class Transfer extends CommonDBTM{
 	function moveItems($items,$to,$options){
 		// $items=array(TYPE => array(id_items))
 		// $options=array()
-
+		$this->to=$to;
+		$this->options=$options;
+		
 		$default_options=array(
 			'keep_tickets'=>0,
 			'keep_networklinks'=>0,
@@ -77,7 +80,6 @@ class Transfer extends CommonDBTM{
 		);
 		$ci=new CommonItem();
 
-		
 		if ($this->to>0){
 			// Store to
 			$this->to=$to;
@@ -88,10 +90,12 @@ class Transfer extends CommonDBTM{
 					$this->options[$key]=$val;
 				}
 			}
+			
 			// Simulate transfers To know which items need to be transfer
 			$this->simulateTransfer($items);
-
+			//printCleanArray($this->needtobe_transfer);
 			// Computer first
+			$this->inittype=COMPUTER_TYPE;
 			if (isset($items[COMPUTER_TYPE])&&count($items[COMPUTER_TYPE])){
 				foreach ($items[COMPUTER_TYPE] as $ID){
 					$this->transferItem(COMPUTER_TYPE,$ID,$ID);
@@ -114,7 +118,7 @@ class Transfer extends CommonDBTM{
 	*
 	**/
 	function simulateTransfer($items){
-
+		global $DB;
 		// Copy items to needtobe_transfer
 		foreach ($items as $key => $tab){
 			if (count($tab)){
@@ -127,20 +131,9 @@ class Transfer extends CommonDBTM{
 			}
 		}
 
-		$this->item_search[COMPUTER_TYPE]="";
 		// Computer first
-		if (isset($this->needtobe_transfer[COMPUTER_TYPE])&&count($this->needtobe_transfer[COMPUTER_TYPE])){
-			$first=true;
-			foreach ($this->needtobe_transfer[COMPUTER_TYPE] as $ID){
-				if ($first){
-					$first=false;
-				} else {
-					$this->item_search[COMPUTER_TYPE].=",";
-				}
-				$this->item_search[COMPUTER_TYPE].=",".$ID;
-			}
-			$this->item_search[COMPUTER_TYPE]="(".$this->item_search[COMPUTER_TYPE].")";
-		}
+		$this->item_search[COMPUTER_TYPE]=$this->createSearchConditionUsingArray($this->needtobe_transfer[COMPUTER_TYPE]);
+
 		// DIRECT CONNECTIONS
 		$DC_CONNECT=array();
 		if ($this->options['keep_dc_monitor']){
@@ -157,16 +150,17 @@ class Transfer extends CommonDBTM{
 		}
 		if (count($DC_CONNECT)&&!empty($this->item_search[COMPUTER_TYPE])){
 			foreach ($DC_CONNECT as $type){
-				if (!isset($this->needtobe_transfer[$type])){
-					$this->needtobe_transfer[$type]=array();
-				}
 				$query = "SELECT DISTINCT end1
 				FROM glpi_connect_wire 
 				WHERE type='".$type."' AND end2 IN ".$this->item_search[COMPUTER_TYPE];
 				if ($result = $DB->query($query)) {
-					if ($DB->numrows($result)!=0) { 
+					if ($DB->numrows($result)>0) { 
+						if (!isset($this->needtobe_transfer[$type])){
+							$this->needtobe_transfer[$type]=array();
+						}
+
 						while ($data=$DB->fetch_array($result)){
-							$this->needtobe_transfer[$type][$ID]=$ID;
+							$this->needtobe_transfer[$type][$data['end1']]=$data['end1'];
 						}
 					}
 				}
@@ -183,7 +177,22 @@ class Transfer extends CommonDBTM{
 		// Enterprise (depending of item link) / Contract - infocoms : keep / delete + clean unused / keep unused
 		// Contact / Enterprise : keep / delete + clean unused / keep unused
 	}
-
+	function createSearchConditionUsingArray($array){
+		$condition="";
+		if (is_array($array)&&count($array)){
+			$first=true;
+			foreach ($array as $ID){
+				if ($first){
+					$first=false;
+				} else {
+					$condition.=",";
+				}
+				$condition.=$ID;
+			}
+			$condition="(".$condition.")";
+		}
+		return $condition;
+	}
 
 	/**
 	* transfer an item to another item (may be the same) in the new entity
@@ -197,6 +206,7 @@ class Transfer extends CommonDBTM{
 	*
 	**/
 	function transferItem($type,$ID,$newID){
+		global $CFG_GLPI;
 		$cinew=new CommonItem();
 		// Is already transfer ?
 		if (!isset($this->already_transfer[$type][$ID])){
@@ -230,11 +240,11 @@ class Transfer extends CommonDBTM{
 				if ($type==COMPUTER_TYPE){
 					$this->transferDirectConnection($type,$ID,MONITOR_TYPE);
 					$this->transferDirectConnection($type,$ID,PERIPHERAL_TYPE);
-					$this->transferDirectConnection($type,$ID,MONITOR_TYPE);
+					$this->transferDirectConnection($type,$ID,PHONE_TYPE);
 					$this->transferDirectConnection($type,$ID,PRINTER_TYPE);
 				}
 				// Computer Direct Connect : delete link if it is the initial transfer item (no recursion)
-				if ($inittype==0&&in_array($type,
+				if ($this->inittype==$type&&in_array($type,
 					array(PRINTER_TYPE,MONITOR_TYPE,PERIPHERAL_TYPE,PHONE_TYPE))){
 					$this->deleteDirectConnection($type,$ID);
 				}
@@ -246,7 +256,7 @@ class Transfer extends CommonDBTM{
 				// Contract : keep / delete + clean unused / keep unused
 				if (in_array($type,
 					array(COMPUTER_TYPE,NETWORKING_TYPE,PRINTER_TYPE,MONITOR_TYPE,PERIPHERAL_TYPE,PHONE_TYPE,SOFTWARE_TYPE))) {
-					$this->transferContract($type,$ID,$newID);
+//					$this->transferContract($type,$ID,$newID);
 				}
 				// Enterprise (depending of item link) / Contract - infocoms : keep / delete + clean unused / keep unused
 	
@@ -260,7 +270,7 @@ class Transfer extends CommonDBTM{
 
 				// Transfer Item
 				$cinew->obj->update(array("ID"=>$newID,'FK_entities' => $this->to));
-				addToAlreadyTransfer($type,$ID,$newID);
+				$this->addToAlreadyTransfer($type,$ID,$newID);
 			}
 		}
 	}
@@ -305,7 +315,7 @@ class Transfer extends CommonDBTM{
 		if ($result = $DB->query($query)) {
 			if ($DB->numrows($result)!=0) { 
 				// Foreach get item 
-				while ($data=$DB->fetch_row($result)) {
+				while ($data=$DB->fetch_array($result)) {
 					$item_ID=$data['end1'];
 					if ($ci->getFromDB($link_type,$item_ID)) {
 						// If global :
@@ -404,14 +414,10 @@ class Transfer extends CommonDBTM{
 	function deleteDirectConnection($type,$ID){
 		global $DB;
 		// Delete Direct connection to computers for item type 
-		// Same item -> delete
-		if ($ID==$newID){
-			$query = "SELECT * 
-				FROM glpi_connect_wire 
-				WHERE end1 = '$ID' AND type = '".$type."'";
-			$result = $DB->query($query);
-		}
-		// Copy Item : nothing to do
+		$query = "SELECT * 
+			FROM glpi_connect_wire 
+			WHERE end1 = '$ID' AND type = '".$type."'";
+		$result = $DB->query($query);
 	}
 
 	function transferTickets($type,$ID,$newID){
@@ -427,7 +433,7 @@ class Transfer extends CommonDBTM{
 					// Transfer
 					case 2: 
 						// Same Item / Copy Item -> update entity
-						while ($data=$DB->fetch_row($result)) {
+						while ($data=$DB->fetch_array($result)) {
 							$job->update(array("ID"=>$data['ID'],'FK_entities' => $this->to,'computer'=>$newID));
 							$this->already_transfer[TRACKING_TYPE][$data['ID']]=$data['ID'];
 						}
@@ -435,7 +441,7 @@ class Transfer extends CommonDBTM{
 					// Clean ref : keep ticket but clean link
 					case 1: 
 						// Same Item / Copy Item : keep and clean ref
-						while ($data=$DB->fetch_row($result)) {
+						while ($data=$DB->fetch_array($result)) {
 							$job->update(array("ID"=>$data['ID'],'device_type' => 0, 'computer'=>0));
 							$this->already_transfer[TRACKING_TYPE][$data['ID']]=$data['ID'];
 						}
@@ -444,7 +450,7 @@ class Transfer extends CommonDBTM{
 					case 0:
 						// Same item -> delete
 						if ($ID==$newID){
-							while ($data=$DB->fetch_row($result)) {
+							while ($data=$DB->fetch_array($result)) {
 								$job->delete(array('ID'=>$data['ID']));
 							}
 						}
@@ -480,10 +486,12 @@ class Transfer extends CommonDBTM{
 					$result=$DB->query($query);
 					if ($result = $DB->query($query)) {
 						if ($DB->numrows($result)!=0) { 
-							while ($data=$DB->fetch_row($result)) {
+							while ($data=$DB->fetch_array($result)) {
+								$data = addslashes_deep($data);
 								$query = "INSERT INTO glpi_history
-								(FK_glpi_device,device_type,device_internal_type,linked_action,user_name,date_mod,id_search_option,old_value,new_value)  
-								VALUES ('$newID','$type','".$data['device_internal_type']."','".$data['linked_action']."','". addslashes($data['user_name'])."','".$data['date_mod']."','".$data['id_search_option']."','".addslashes($data['old_value'])."','".addslashes($data['new_value'])."');";
+								(FK_glpi_device, device_type, device_internal_type, linked_action, user_name, date_mod, id_search_option, old_value, new_value)  
+								VALUES
+								('$newID','$type','".$data['device_internal_type']."','".$data['linked_action']."','". $data['user_name']."', '".$data['date_mod']."', '".$data['id_search_option']."', '".$data['old_value']."', '".$data['new_value']."');";
 								$DB->query($query);
 							}
 						}
@@ -498,7 +506,7 @@ class Transfer extends CommonDBTM{
 		global $DB;
 
 		$ic=new Infocom();
-		if ($ic->getFromDBforDevice($tyep,$ID)){
+		if ($ic->getFromDBforDevice($type,$ID)){
 			switch ($this->options['keep_infocoms']){
 				// delete
 				case 0 :  
@@ -516,9 +524,10 @@ class Transfer extends CommonDBTM{
 					// Copy : copy infocoms
 					if ($ID!=$newID){
 						// Copy items
-						$ic->fields['FK_device']=$newID;
-						unset($ic->fields['ID']);
-						$ic->add();
+						$input=$ic->fields;
+						$input['FK_device']=$newID;
+						unset($input['ID']);
+						$ic->add($input);
 					}
 					// Same item : nothing to do
 					break;
@@ -593,7 +602,7 @@ class Transfer extends CommonDBTM{
 					case 0 : 
 						// Not a copy -> delete
 						if ($ID==$newID){
-							while ($data=$DB->fetch_row($result)) {
+							while ($data=$DB->fetch_array($result)) {
 								$np->delete(array('ID'=>$data['ID']));
 							}
 						}
@@ -603,11 +612,12 @@ class Transfer extends CommonDBTM{
 					case 1 : 
 						// Not a copy -> disconnect
 						if ($ID==$newID){ 
-							while ($data=$DB->fetch_row($result)) {
+							while ($data=$DB->fetch_array($result)) {
 								removeConnector($data['ID']);
 							}
 						} else { // Copy -> copy netpoints
-							while ($data=$DB->fetch_row($result)) {
+							while ($data=$DB->fetch_array($result)) {
+								$data = addslashes_deep($data);
 								unset($data['ID']);
 								$data['on_device']=$newID;
 								$np->add($data);
@@ -619,7 +629,7 @@ class Transfer extends CommonDBTM{
 					default : 
 						// Copy -> Copy netpoints (do not keep links)
 						if ($ID!=$newID){
-							while ($data=$DB->fetch_row($result)) {
+							while ($data=$DB->fetch_array($result)) {
 								unset($data['ID']);
 								$data['on_device']=$newID;
 								$np->add($data);
