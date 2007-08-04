@@ -38,8 +38,7 @@ $NEEDED_ITEMS=array("transfer","user","tracking","reservation","document","compu
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-$items[COMPUTER_TYPE]=array();
-$tranfer=new Transfer();
+$transfer=new Transfer();
 
 // Network links : 0 : delete 1 : keep disconnect 2 : keep connect
 $options['keep_networklinks']=2;
@@ -74,5 +73,12 @@ $options['clean_dc_peripheral']=1;
 // Printer Direct Connect : keep_dc -> tranfer / clean_dc : delete if unused : 1 = delete, 2 = purge
 $options['keep_dc_printer']=1;
 $options['clean_dc_printer']=1;
+
+$entity_id=6;
+
+$items[COMPUTER_TYPE]=array(1771);
+
+
+$transfer->moveItems($items,$entity_id,$options);
 
 ?>
