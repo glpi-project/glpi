@@ -1659,7 +1659,6 @@ function showCalendarForm($form,$element,$value='',$withtemplate='',$with_time=0
 		$dvalue=convDate($value);
 	}
 	
-	
 	echo "<input id='show$rand' type='text' name='____".$element."_show' readonly size='$size' value=\"".$dvalue."\">";
 	echo "<input id='data$rand' type='hidden' name='$element' size='$size' value=\"".$value."\">";
 

@@ -346,7 +346,7 @@ class Transfer extends CommonDBTM{
 					$need_clean_process=false;
 					// Foreach licenses
 					// if keep 
-					if ($keep&&$data['softID']>0&&$data['licID']>0&&$data['instID']>0){ 
+					if ($this->options['keep_softwares']&&$data['softID']>0&&$data['licID']>0&&$data['instID']>0){ 
 						$newlicID=-1;
 						// Already_transfer license
 						if (isset($this->already_transfer[LICENSE_TYPE][$data['licID']])){
@@ -392,6 +392,7 @@ class Transfer extends CommonDBTM{
 										unset($soft->fields['ID']);
 										$input=$soft->fields;
 										$input['FK_entities']=$this->to;
+										unset($soft->fields);
 										$newsoftID=$soft->add($input);
 										// 2 - transfer as copy
 										$this->transferItem(SOFTWARE_TYPE,$data['softID'],$newsoftID);
@@ -425,6 +426,7 @@ class Transfer extends CommonDBTM{
 										// Not found : copy license
 										unset($lic->fields['ID']);
 										$input=$lic->fields;
+										unset($lic->fields);
 										$input['sID']=$newsoftID;
 										$newlicID=$lic->add($input);
 									}
@@ -447,7 +449,7 @@ class Transfer extends CommonDBTM{
 						$need_clean_process=true;
 					}
 					// CLean process
-					if ($need_clean_process&&$clean){
+					if ($need_clean_process&&$this->options['clean_softwares']){
 						// TODO See OCS system to do this
 					}
 
@@ -551,6 +553,7 @@ class Transfer extends CommonDBTM{
 											unset($ci->obj->fields['ID']);
 											$input=$ci->obj->fields;
 											$input['FK_entities']=$this->to;
+											unset($ci->obj->fields);
 											$newID=$ci->obj->add($input);
 											// 2 - transfer as copy
 											$this->transferItem($link_type,$item_ID,$newID);
@@ -733,6 +736,7 @@ class Transfer extends CommonDBTM{
 						$input=$ic->fields;
 						$input['FK_device']=$newID;
 						unset($input['ID']);
+						unset($ic->fields);
 						$ic->add($input);
 					}
 					// Same item : nothing to do
@@ -765,6 +769,7 @@ class Transfer extends CommonDBTM{
 						$input['device_type']=$type;
 						$input['id_device']=$newID;
 						$input['active']=$ri->fields['active'];
+						unset($ri->fields);
 						$ri->add($input);
 					}
 					// Same item -> nothing to do
@@ -826,6 +831,7 @@ class Transfer extends CommonDBTM{
 								$data = addslashes_deep($data);
 								unset($data['ID']);
 								$data['on_device']=$newID;
+								unset($np->fields);
 								$np->add($data);
 							}
 						}
@@ -838,6 +844,7 @@ class Transfer extends CommonDBTM{
 							while ($data=$DB->fetch_array($result)) {
 								unset($data['ID']);
 								$data['on_device']=$newID;
+								unset($np->fields);
 								$np->add($data);
 							}
 						}
