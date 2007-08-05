@@ -277,17 +277,17 @@ class Transfer extends CommonDBTM{
 				$this->transferTickets($type,$ID,$newID);
 				// Infocoms : keep / delete
 				$this->transferInfocoms($type,$ID,$newID);
-	
-	
-				// Monitor Direct Connect : keep / delete + clean unused / keep unused 
-				// Peripheral Direct Connect : keep / delete + clean unused / keep unused 
-				// Phone Direct Connect : keep / delete + clean unused / keep unused 
-				// Printer Direct Connect : keep / delete + clean unused / keep unused 
+			
 				if ($type==COMPUTER_TYPE){
+					// Monitor Direct Connect : keep / delete + clean unused / keep unused 
 					$this->transferDirectConnection($type,$ID,MONITOR_TYPE);
+					// Peripheral Direct Connect : keep / delete + clean unused / keep unused 
 					$this->transferDirectConnection($type,$ID,PERIPHERAL_TYPE);
+					// Phone Direct Connect : keep / delete + clean unused / keep unused 
 					$this->transferDirectConnection($type,$ID,PHONE_TYPE);
+					// Printer Direct Connect : keep / delete + clean unused / keep unused 
 					$this->transferDirectConnection($type,$ID,PRINTER_TYPE);
+					// Licence / Software :  keep / delete + clean unused / keep unused 
 					$this->transferSoftwares($type,$ID);
 				}
 				// Computer Direct Connect : delete link if it is the initial transfer item (no recursion)
@@ -296,7 +296,6 @@ class Transfer extends CommonDBTM{
 					$this->deleteDirectConnection($type,$ID);
 				}
 	
-				// Licence / Software :  keep / delete + clean unused / keep unused 
 
 				// Document : keep / delete + clean unused / keep unused + duplicate file ?
 
