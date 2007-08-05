@@ -351,6 +351,8 @@ class Transfer extends CommonDBTM{
 
 				// Update Ocs links 
 
+				// Manage Location dropdown
+
 				// Transfer Item
 				$cinew->obj->update(array("ID"=>$newID,'FK_entities' => $this->to));
 				$this->addToAlreadyTransfer($type,$ID,$newID);
@@ -867,6 +869,7 @@ class Transfer extends CommonDBTM{
 					if ($ic->fields['FK_enterprise']>0){
 						$FK_enterprise=$this->transferSingleEnterprise($ic->fields['FK_enterprise']);
 					}
+					echo $ic->fields['FK_enterprise']."ppp".$FK_enterprise."<br>";
 					// Copy : copy infocoms
 					if ($ID!=$newID){
 						// Copy items
@@ -880,7 +883,7 @@ class Transfer extends CommonDBTM{
 						// Same Item : manage only enterprise move
 						// Update enterprise
 						if ($FK_enterprise>0 && $FK_enterprise!=$ic->fields['FK_enterprise']){
-							$ic->update(array('ID'=>$ic->fields['FK_enterprise'],'FK_enterprise'=>$FK_enterprise));
+							$ic->update(array('ID'=>$ic->fields['ID'],'FK_enterprise'=>$FK_enterprise));
 						}
 					}
 					break;
@@ -910,7 +913,7 @@ class Transfer extends CommonDBTM{
 						foreach ($this->INFOCOMS_TYPE as $type){
 							$query="SELECT count(*) AS CPT FROM glpi_infocoms
 								WHERE device_type='$type' AND FK_device NOT IN ".$this->item_search[$type];
-							if ($result = $DB->query($query)) {
+							if ($result_search = $DB->query($query)) {
 								$links_remaining+=$DB->result($result_search,0,'CPT');
 							}
 						}
@@ -941,7 +944,8 @@ class Transfer extends CommonDBTM{
 						$this->transferItem(ENTERPRISE_TYPE,$ID,$newID);
 					}
 					// Founded -> use to link : nothing to do
-				}				
+				}	
+				return $newID;	
 			}
 		} else {
 			return 0;
