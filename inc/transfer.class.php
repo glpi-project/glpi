@@ -159,7 +159,7 @@ class Transfer extends CommonDBTM{
 		if ($this->options['keep_dc_printer']){
 			$DC_CONNECT[]=PRINTER_TYPE;
 		}
-		if (count($DC_CONNECT))){
+		if (count($DC_CONNECT)){
 			foreach ($DC_CONNECT as $type){
 				$query = "SELECT DISTINCT end1
 				FROM glpi_connect_wire 
@@ -910,9 +910,8 @@ class Transfer extends CommonDBTM{
 						foreach ($this->INFOCOMS_TYPE as $type){
 							$query="SELECT count(*) AS CPT FROM glpi_infocoms
 								WHERE device_type='$type' AND FK_device NOT IN ".$this->item_search[$type];
-								if ($result = $DB->query($query)) {
-									$links_remaining+=$DB->result($result_search,0,'CPT');
-								}
+							if ($result = $DB->query($query)) {
+								$links_remaining+=$DB->result($result_search,0,'CPT');
 							}
 						}
 					}					
