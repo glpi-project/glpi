@@ -58,6 +58,14 @@ $options['keep_history']=1;
 // Infocoms : 0 : delete 1 : keep
 $options['keep_infocoms']=1;
 
+// Softwares : 0 : delete 1 : keep
+$options['keep_softwares']=1;
+$options['clean_softwares']=1;
+
+// Contracts : 0 : delete 1 : keep
+$options['keep_contracts']=1;
+$options['clean_contracts']=1;
+
 // Monitor Direct Connect : keep_dc -> tranfer / clean_dc : delete if unused : 1 = delete, 2 = purge
 $options['keep_dc_monitor']=1;
 $options['clean_dc_monitor']=1;
@@ -76,7 +84,7 @@ $options['clean_dc_printer']=1;
 
 $entity_id=6;
 
-$items[COMPUTER_TYPE]=array(1771);
+$items[COMPUTER_TYPE]=array(102);
 
 
 $transfer->moveItems($items,$entity_id,$options);
