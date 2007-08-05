@@ -869,7 +869,6 @@ class Transfer extends CommonDBTM{
 					if ($ic->fields['FK_enterprise']>0){
 						$FK_enterprise=$this->transferSingleEnterprise($ic->fields['FK_enterprise']);
 					}
-					echo $ic->fields['FK_enterprise']."ppp".$FK_enterprise."<br>";
 					// Copy : copy infocoms
 					if ($ID!=$newID){
 						// Copy items
