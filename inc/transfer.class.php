@@ -450,7 +450,29 @@ class Transfer extends CommonDBTM{
 					}
 					// CLean process
 					if ($need_clean_process&&$this->options['clean_softwares']){
-						// TODO See OCS system to do this
+						// Clean license
+						$query2 = "SELECT COUNT(*) 
+								FROM glpi_inst_software 
+								WHERE license = '" . $data['licID'] . "'";
+						$result2 = $DB->query($query2);
+						if ($DB->result($result2, 0, 0) == 0) {
+							$lic->delete(array (
+								"ID" => $data['licID']
+							));
+						}
+						// Clean software
+						$query2 = "SELECT COUNT(*) 
+								FROM glpi_licenses 
+								WHERE sID = '" . $data['softID'] . "'";
+						$result2 = $DB->query($query2);
+						if ($DB->result($result2, 0, 0) == 0) {
+							if ($this->options['clean_softwares']==1){ // delete
+								$soft->delete(array ("ID" => $data['softID']));
+							}
+							if ($this->options['clean_softwares']==2){ // purge
+								$soft->delete(array ("ID" => $data['softID']),1);
+							}
+						}
 					}
 
 				}
@@ -461,20 +483,98 @@ class Transfer extends CommonDBTM{
 	function transferContract($type,$ID,$newID){
 		global $DB;
 		$need_clean_process=false;
-		// if keep 
-			// is already transfer ?
-				// Yes
-				// No
-					// Can be transfer without copy ? = all linked items need to be transfer (so not copy)
-						// Yes : transfer 
-						// No : search contract
-							// found : use it
-							// not found : copy contract
-			// Update links 
-				// Same Item -> update links
-				// Copy Item -> copy links
 
-		// else unlink
+		// if keep 
+		if ($this->options['keep_contracts']){
+			$contract=new Contract();
+			// Get contracts for the item
+			$query="SELECT * FROM glpi_contract_device WHERE FK_device = '$ID' AND device_type = '$type'";
+			if ($result = $DB->query($query)) {
+				if ($DB->numrows($result)>0) { 
+					// Foreach get item 
+					while ($data=$DB->fetch_array($result)) {
+						$need_clean_process=false;
+						$item_ID=$data['FK_contract'];
+						$newcontractID=-1;
+						// is already transfer ?
+						if (isset($this->already_transfer[CONTRACT_TYPE][$item_ID])){
+							$newcontractID=$this->already_transfer[CONTRACT_TYPE][$item_ID];
+							if ($newcontractID!=$item_ID){
+								$need_clean_process=true;
+							}
+						} else {
+							// No
+							// Can be transfer without copy ? = all linked items need to be transfer (so not copy)
+							$canbetransfer=true;
+							$query="SELECT DISTINCT device_type FROM glpi_contract_device WHERE FK_contract=''";
+							
+							if ($result_type = $DB->query($query)) {
+								if ($DB->numrows($result_type)>0) {
+									while ($data_type=$DB->fetch_array($result_type)&&$canbetransfer) {
+										$dtype=$data_type['device_type'];
+										// No items to transfer -> exists links
+										if (empty($this->item_search[$dtype])){
+											$canbetransfer=false;
+										} else {
+											$query_search="SELECT count(*) AS CPT 
+													FROM glpi_contract_device 
+													WHERE FK_contract='$item_ID' AND device_type='$dtype' AND FK_device NOT IN ".$this->item_search[$dtype];
+											$result_search = $DB->query($query_search);
+											if ($DB->result($result_search,0,'CPT')>0){
+												$canbetransfer=false;
+											}
+										}
+									}
+								}
+							}
+							// Yes : transfer 
+							if ($canbetransfer){
+								$this->transferItem(CONTRACT_TYPE,$item_ID,$item_ID);
+								$newcontractID=$item_ID;
+							} else {
+								$need_clean_process=true;
+								$contract->getFromDB($item_ID);
+								// No : search contract
+								$query="SELECT * FROM glpi_contract WHERE FK_entities='".$this->to."' AND name='".addslashes($contract->fields['name'])."'";
+								if ($result_search=$DB->query($query)){
+									if ($DB->numrows($result_search)>0){
+										$newcontractID=$DB->result($result_search,0,'ID');
+									}
+								}
+								// found : use it
+								// not found : copy contract
+								if ($newcontractID<0){
+									// 1 - create new item
+									unset($contract->fields['ID']);
+									$input=$contract->fields;
+									$input['FK_entities']=$this->to;
+									unset($contract->fields);
+									$newcontractID=$contract->add($input);
+									// 2 - transfer as copy
+									$this->transferItem(CONTRACT_TYPE,$item_ID,$newcontractID);
+								}
+								$this->addToAlreadyTransfer(CONTRACT_TYPE,$item_ID,$newcontractID);
+							}
+						}
+						// Update links 
+						if ($ID==$newID){
+							if ($item_ID!=$newcontractID){
+								$query="UPDATE glpi_contract_device SET FK_contract = '$newcontractID' WHERE ID='".$data['ID']."'";
+								$DB->query($query);
+							}
+							// Same Item -> update links
+						} else {
+							// Copy Item -> copy links
+							$query="INSERT INTO glpi_contract_device (FK_contract,FK_device,device_type) VALUES ('$newcontractID','$newID','$type')";
+							$DB->query($query);
+						}
+					}
+				}
+			}
+		} else {// else unlink
+			$query="DELETE FROM glpi_contract_device WHERE FK_device = '$ID' AND device_type = '$type'";
+			$DB->query($query);
+		}
 
 		// If clean and unused -> 
 	}
@@ -525,7 +625,7 @@ class Transfer extends CommonDBTM{
 								if (isset($this->already_transfer[$link_type][$item_ID])){
 									$newID=$this->already_transfer[$link_type][$item_ID];
 									// Already transfer as a copy : need clean process
-									if ($this->already_transfer[$link_type][$item_ID]!=$item_ID){
+									if ($newID!=$item_ID){
 										$need_clean_process=true;
 									}
 								} else { // Not yet tranfer
