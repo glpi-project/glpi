@@ -84,7 +84,7 @@ $options['clean_dc_printer']=1;
 
 $entity_id=6;
 
-$items[COMPUTER_TYPE]=array(102);
+$items[COMPUTER_TYPE]=array(1006);
 
 
 $transfer->moveItems($items,$entity_id,$options);
