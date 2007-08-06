@@ -234,7 +234,6 @@ $LANG["common"][56]="Central";
 $LANG["common"][57]="Titre";
 $LANG["common"][58]="Valeur maximale";
 
-
 $LANG["computers"][9]="OS";
 $LANG["computers"][10]="OS Numéro de série";
 $LANG["computers"][11]="OS Product ID";
@@ -1265,6 +1264,7 @@ $LANG["ruleldap"][1]="des critères LDAP";
 $LANG["ruleldap"][2]="Aucun critère défini";
 $LANG["ruleldap"][3]="Ajout d'un critère LDAP";
 
+$LANG["rulesoftwarecategories"][3]="Logiciels catégorisés";
 $LANG["rulesoftwarecategories"][4]="Logiciels sans catégories";
 $LANG["rulesoftwarecategories"][5]="Catégorie de logiciels";
 
@@ -1564,6 +1564,13 @@ $LANG["software"][43]="Ajouter une licence à acheter";
 $LANG["software"][44]="Installation d'un logiciel";
 $LANG["software"][45]="Désinstallation d'un logiciel";
 $LANG["software"][46]="Visible dans le Helpdesk";
+
+
+$LANG["softwarecategories"][1]="Repliés";
+$LANG["softwarecategories"][2]="Dépliés";
+$LANG["softwarecategories"][3]="Logiciels n'appartenant pas à une catégore affichés ";
+$LANG["softwarecategories"][4]="Logiciels appartenant à une catégore affichés ";
+
 
 $LANG["state"][0]="Statut";
 $LANG["state"][6]="Type de matériel";
