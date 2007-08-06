@@ -1327,11 +1327,11 @@ function update0681to07() {
 	}
 
 	if (!FieldExists("glpi_config", "expand_soft_categorized")) {
-		$query = "ALTER TABLE `glpi_config` ADD `expand_soft_categorized` int(1) NOT NULL DEFAULT '0';";
+		$query = "ALTER TABLE `glpi_config` ADD `expand_soft_categorized` int(1) NOT NULL DEFAULT '1';";
 		$DB->query($query) or die("0.7 add expand_soft_categorized in glpi_config" . $LANG["update"][90] . $DB->error());
 	}
 	if (!FieldExists("glpi_config", "expand_soft_not_categorized")) {
-		$query = "ALTER TABLE `glpi_config` ADD `expand_soft_not_categorized` int(1) NOT NULL DEFAULT '0';";
+		$query = "ALTER TABLE `glpi_config` ADD `expand_soft_not_categorized` int(1) NOT NULL DEFAULT '1';";
 		$DB->query($query) or die("0.7 add expand_soft_not_categorized in glpi_config" . $LANG["update"][90] . $DB->error());
 	}
 

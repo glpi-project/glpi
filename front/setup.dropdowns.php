@@ -183,7 +183,7 @@ else {
 					),
 			
 			$LANG["reports"][55]=>array(
-			"glpi_dropdown_software_category"=>$LANG["rulesoftwarecategories"][5],
+			"glpi_dropdown_software_category"=>$LANG["softwarecategories"][5],
 			)
 			
 			); //end $opt

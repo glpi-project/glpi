@@ -725,7 +725,7 @@ function displayCategoryHeader($data,$cat)
 	$cat = $data["category_id"];
 	$catname=$data["category"];
 	if (!$cat){
-		$catname=$LANG["rulesoftwarecategories"][4];
+		$catname=$LANG["softwarecategories"][3];
 		$display = $CFG_GLPI["expand_soft_not_categorized"];
 	} 
 	else

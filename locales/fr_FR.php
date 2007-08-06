@@ -1264,10 +1264,6 @@ $LANG["ruleldap"][1]="des critères LDAP";
 $LANG["ruleldap"][2]="Aucun critère défini";
 $LANG["ruleldap"][3]="Ajout d'un critère LDAP";
 
-$LANG["rulesoftwarecategories"][3]="Logiciels catégorisés";
-$LANG["rulesoftwarecategories"][4]="Logiciels sans catégories";
-$LANG["rulesoftwarecategories"][5]="Catégorie de logiciels";
-
 $LANG["search"][0]="Recherche"; 
 $LANG["search"][2]="contient";
 $LANG["search"][4]="trié par";
@@ -1568,8 +1564,9 @@ $LANG["software"][46]="Visible dans le Helpdesk";
 
 $LANG["softwarecategories"][1]="Repliés";
 $LANG["softwarecategories"][2]="Dépliés";
-$LANG["softwarecategories"][3]="Logiciels n'appartenant pas à une catégore affichés ";
-$LANG["softwarecategories"][4]="Logiciels appartenant à une catégore affichés ";
+$LANG["softwarecategories"][3]="Logiciels non catégorisés";
+$LANG["softwarecategories"][4]="Logiciels catégorisés";
+$LANG["softwarecategories"][5]="Catégorie de logiciels";
 
 
 $LANG["state"][0]="Statut";
