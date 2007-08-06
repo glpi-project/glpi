@@ -670,7 +670,6 @@ function showSoftwareInstalled($instID,$withtemplate='') {
 
 	echo "<br><br><div class='center'><table class='tab_cadre_fixe'>";
 	echo "<tr><th colspan='5'>".$LANG["software"][17].":</th></tr>";
-	//echo "<tr><th>".$LANG["common"][16]."</th><th>".$LANG["software"][32]."</th><th>".$LANG["software"][28]."</th><th>".$LANG["software"][35]."</th><th>&nbsp;</th></tr>";
 	
 	$cat = -1;
 	
@@ -720,23 +719,29 @@ function displayCategoryHeader($data,$cat)
 	if ($cat != -1){
 		echo "</table></div></td></tr>";
 	}
+		
+	$display = "none";
 						
 	$cat = $data["category_id"];
 	$catname=$data["category"];
 	if (!$cat){
 		$catname=$LANG["rulesoftwarecategories"][4];
+		$display = $CFG_GLPI["expand_soft_not_categorized"];
 	} 
+	else
+		$display = $CFG_GLPI["expand_soft_categorized"];
+	
 
 	echo "	<tr class='tab_bg_2$expirecss'>";
 	echo "  	<td align='center' colspan='5'>"; 
 	echo "			<a  href=\"javascript:showHideDiv('softcat$cat','imgcat$cat','".GLPI_ROOT."/pics/folder.png','".GLPI_ROOT."/pics/folder-open.png');\">";
-	echo "				<img alt='' name='imgcat$cat' src=\"".GLPI_ROOT."/pics/folder".(!$cat?'':"-open").".png\">&nbsp;<strong>".$catname."</strong>";
+	echo "				<img alt='' name='imgcat$cat' src=\"".GLPI_ROOT."/pics/folder".(!$display?'':"-open").".png\">&nbsp;<strong>".$catname."</strong>";
 	echo "			</a>"; 
 	echo "		</td>"; 
 	echo "	</tr>"; 
 	echo "<tr class='tab_bg_2$expirecss'>";
 	echo "		<td colspan='5'>
-			     <div align='center' id='softcat$cat' ".(!$cat?"style=\"display:none;\"":'').">"; 
+			     <div align='center' id='softcat$cat' ".(!$display?"style=\"display:none;\"":'').">"; 
 	echo"			<table class='tab_cadre_fixe'>";
 	echo "				<tr>"; 
 	echo "					<th>".$LANG["common"][16]."</th><th>".$LANG["software"][32]."</th><th>".$LANG["software"][28]."</th><th>".$LANG["software"][35]."</th><th>&nbsp;</th>"; 

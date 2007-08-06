@@ -1326,6 +1326,15 @@ function update0681to07() {
 		$DB->query($query) or die("0.7 add index on assign_group in tracking" . $LANG["update"][90] . $DB->error());
 	}
 
+	if (!FieldExists("glpi_config", "expand_soft_categorized")) {
+		$query = "ALTER TABLE `glpi_config` ADD `expand_soft_categorized` int(1) NOT NULL DEFAULT '0';";
+		$DB->query($query) or die("0.7 add expand_soft_categorized in glpi_config" . $LANG["update"][90] . $DB->error());
+	}
+	if (!FieldExists("glpi_config", "expand_soft_not_categorized")) {
+		$query = "ALTER TABLE `glpi_config` ADD `expand_soft_not_categorized` int(1) NOT NULL DEFAULT '0';";
+		$DB->query($query) or die("0.7 add expand_soft_not_categorized in glpi_config" . $LANG["update"][90] . $DB->error());
+	}
+
 	// Clean history
 	$query = "SELECT DISTINCT device_type FROM glpi_history";
 	if ($result = $DB->query($query)){

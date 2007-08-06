@@ -352,6 +352,18 @@ class Config extends CommonDBTM {
 				dropdownInteger('ajax_limit_count', $CFG_GLPI["ajax_limit_count"], 0, 200);
 				echo "</td><td colspan='2'>&nbsp;</td></tr>";
 
+				echo "<tr class='tab_bg_1'><td colspan='4' align='center'><strong>" . $LANG["rulesoftwarecategories"][5] . "</strong></td></tr>";
+				echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["softwarecategories"][4]."</td><td>";
+				$expand[0]=$LANG["softwarecategories"][1];
+				$expand[1]=$LANG["softwarecategories"][2];
+				dropdownArrayValues("expand_soft_categorized",$expand,$CFG_GLPI["expand_soft_categorized"]);
+				
+				echo "</td><td class='center'>" . $LANG["softwarecategories"][3] . "</td><td>";
+				dropdownArrayValues("expand_soft_not_categorized",$expand,$CFG_GLPI["expand_soft_not_categorized"]);
+
+				echo "</td></tr>";
+
+
 				echo "<tr class='tab_bg_1'><td colspan='4' align='center'><strong>" . $LANG["setup"][406] . "</strong></td></tr>";
 
 				echo "<tr class='tab_bg_2'><td class='center'> " . $LANG["setup"][118] . " </td><td colspan='3' align='center'>";
@@ -359,11 +371,9 @@ class Config extends CommonDBTM {
 				echo $CFG_GLPI["text_login"];
 				echo "</textarea>";
 				echo "</td></tr>";
-
 				echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["setup"][407] . "</td><td> <input size='30' type=\"text\" name=\"helpdeskhelp_url\" value=\"" . $CFG_GLPI["helpdeskhelp_url"] . "\"></td>";
 				echo "<td class='center'>" . $LANG["setup"][408] . "</td><td> <input size='30' type=\"text\" name=\"centralhelp_url\" value=\"" . $CFG_GLPI["centralhelp_url"] . "\"></td></tr>";
 
-				
 				echo "<tr class='tab_bg_2'><td colspan='4' align='center'><input type=\"submit\" name=\"update\" class=\"submit\" value=\"" . $LANG["buttons"][2] . "\" ></td></tr>";
 				
 				echo "</table></div>";
