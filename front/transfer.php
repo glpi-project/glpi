@@ -58,6 +58,14 @@ $options['keep_history']=1;
 // Infocoms : 0 : delete 1 : keep
 $options['keep_infocoms']=1;
 
+// enterprises : 0 : delete 1 : keep
+$options['keep_enterprises']=1;
+$options['clean_enterprises']=1;
+
+// Contacts for enterprises : 0 : delete 1 : keep
+$options['keep_contacts']=1;
+$options['clean_contacts']=1;
+
 // Softwares : 0 : delete 1 : keep
 $options['keep_softwares']=1;
 $options['clean_softwares']=1;
@@ -82,9 +90,9 @@ $options['clean_dc_peripheral']=1;
 $options['keep_dc_printer']=1;
 $options['clean_dc_printer']=1;
 
-$entity_id=6;
+$entity_id=4;
 
-$items[COMPUTER_TYPE]=array(1006);
+$items[COMPUTER_TYPE]=array(3);
 
 
 $transfer->moveItems($items,$entity_id,$options);
