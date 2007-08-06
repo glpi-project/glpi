@@ -414,10 +414,15 @@ class Transfer extends CommonDBTM{
 
 				// Update Ocs links 
 
-				// Manage Location dropdown
 
 				// Transfer Item
-				$cinew->obj->update(array("ID"=>$newID,'FK_entities' => $this->to));
+				$input=array("ID"=>$newID,'FK_entities' => $this->to);
+				// Manage Location dropdown
+				if (isset($cinew->obj->fields['location'])){
+					$input['location']=$this->transferDropdownLocation($cinew->obj->fields['location']);
+				}
+
+				$cinew->obj->update($input);
 				$this->addToAlreadyTransfer($type,$ID,$newID);
 			}
 		}
@@ -428,7 +433,52 @@ class Transfer extends CommonDBTM{
 		}
 		$this->already_transfer[$type][$ID]=$newID;
 	}
+	function transferDropdownLocation($locID){
+		global $DB;
 
+		if (isset($this->already_transfer['location'][$locID])){
+			return $this->already_transfer['location'][$locID];
+		} else { // Not already transfer
+			// Search init item
+			$query="SELECT * FROM glpi_dropdown_locations WHERE ID='$locID'";
+			echo $query.'<br>';
+			if ($result=$DB->query($query)){
+				$data=$DB->fetch_array($result);
+				$data=addslashes_deep($data);
+				// Search if the location already exists in the destination entity
+					$query="SELECT ID FROM glpi_dropdown_locations WHERE FK_entities='".$this->to."' AND completename='".$data['completename']."'";	
+					echo $query.'<br>';
+					if ($result_search=$DB->query($query)){
+						// Found : -> use it
+						if ($DB->numrows($result_search)>0){
+							$newID=$DB->result($result_search,0,'ID');
+							$this->addToAlreadyTransfer('location',$locID,$newID);
+							return $newID;
+						}
+					}
+					// Not found : 
+					$input=array();
+					$input['tablename']='glpi_dropdown_locations';
+					$input['FK_entities']=$this->to;
+					$input['value']=$data['name'];
+					$input['comments']=$data['comments'];
+					$input['type']="under";
+					$input['value2']=0; // parentID
+					// if parentID>0 : transfer parent ID
+					if ($data['parentID']>0){
+						$input['value2']=$this->transferDropdownLocation($data['parentID']);
+					}
+					// add item
+					$newID=addDropdown($input);
+					$this->addToAlreadyTransfer('location',$locID,$newID);
+					return $newID;
+			} else { // Not found Set 0
+				return 0;
+			}
+			
+		}
+
+	}
 	function transferSoftwares($type,$ID){
 		global $DB;
 		// TODO Update OCS links
@@ -694,10 +744,7 @@ class Transfer extends CommonDBTM{
 			$query="DELETE FROM glpi_contract_device WHERE FK_device = '$ID' AND device_type = '$type'";
 			$DB->query($query);
 		}
-		// If clean and unused ->
-		if ($need_clean_process&&$this->options['clean_contracts']){
-			// TODO !!!
-		}
+
 	}
 	function transferDirectConnection($type,$ID,$link_type){
 		global $DB,$LINK_ID_TABLE;
