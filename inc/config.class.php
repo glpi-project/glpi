@@ -352,7 +352,7 @@ class Config extends CommonDBTM {
 				dropdownInteger('ajax_limit_count', $CFG_GLPI["ajax_limit_count"], 0, 200);
 				echo "</td><td colspan='2'>&nbsp;</td></tr>";
 
-				echo "<tr class='tab_bg_1'><td colspan='4' align='center'><strong>" . $LANG["rulesoftwarecategories"][5] . "</strong></td></tr>";
+				echo "<tr class='tab_bg_1'><td colspan='4' align='center'><strong>" . $LANG["softwarecategories"][5] . "</strong></td></tr>";
 				echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["softwarecategories"][4]."</td><td>";
 				$expand[0]=$LANG["softwarecategories"][1];
 				$expand[1]=$LANG["softwarecategories"][2];
