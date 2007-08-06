@@ -51,8 +51,9 @@ class Transfer extends CommonDBTM{
 	var $options=array();
 	var $to=-1;
 	var $inittype=0;
-	var $INFOCOMS_TYPE=array(COMPUTER_TYPE,NETWORKING_TYPE,PRINTER_TYPE,MONITOR_TYPE,PERIPHERAL_TYPE,PHONE_TYPE,SOFTWARE_TYPE);
-	var $CONTRACTS_TYPE=array(COMPUTER_TYPE,NETWORKING_TYPE,PRINTER_TYPE,MONITOR_TYPE,PERIPHERAL_TYPE,PHONE_TYPE,SOFTWARE_TYPE);
+	var $INFOCOMS_TYPES=array(COMPUTER_TYPE,NETWORKING_TYPE,PRINTER_TYPE,MONITOR_TYPE,PERIPHERAL_TYPE,PHONE_TYPE,SOFTWARE_TYPE);
+	var $CONTRACTS_TYPES=array(COMPUTER_TYPE,NETWORKING_TYPE,PRINTER_TYPE,MONITOR_TYPE,PERIPHERAL_TYPE,PHONE_TYPE,SOFTWARE_TYPE);
+	var $TICKETS_TYPES=array(COMPUTER_TYPE,NETWORKING_TYPE,PRINTER_TYPE,MONITOR_TYPE,PERIPHERAL_TYPE,PHONE_TYPE,SOFTWARE_TYPE);
 	function Transfer(){
 		$this->table="glpi_transfer";
 		$this->type=-1;
@@ -71,6 +72,7 @@ class Transfer extends CommonDBTM{
 			'keep_history'=>0,
 			'keep_history'=>0,
 			'keep_devices'=>0,
+
 			'keep_dc_monitor'=>0,
 			'clean_dc_monitor'=>0,
 			'keep_dc_phone'=>0,
@@ -79,6 +81,17 @@ class Transfer extends CommonDBTM{
 			'clean_dc_peripheral'=>0,
 			'keep_dc_printerr'=>0,
 			'clean_dc_printer'=>0,
+
+			'keep_enterprises'=>0,
+			'clean_enterprises'=>0,
+			'keep_contacts'=>0,
+			'clean_contacts'=>0,
+
+			'keep_contracts'=>0,
+			'clean_contracts'=>0,
+
+			'keep_softwares'=>0,
+			'clean_softwares'=>0,
 		);
 		$ci=new CommonItem();
 
@@ -123,7 +136,7 @@ class Transfer extends CommonDBTM{
 		global $DB;
 
 		// Init types :
-		$types=array(COMPUTER_TYPE,NETWORKING_TYPE,PRINTER_TYPE,MONITOR_TYPE,PERIPHERAL_TYPE,PHONE_TYPE,SOFTWARE_TYPE,CONTRACT_TYPE,ENTERPRISE_TYPE);
+		$types=array(COMPUTER_TYPE,NETWORKING_TYPE,PRINTER_TYPE,MONITOR_TYPE,PERIPHERAL_TYPE,PHONE_TYPE,SOFTWARE_TYPE,CONTRACT_TYPE,ENTERPRISE_TYPE,CONTACT_TYPE,TRACKING_TYPE);
 		foreach ($types as $t){
 			if (!isset($this->needtobe_transfer[$t])){
 					$this->needtobe_transfer[$t]=array();
@@ -197,17 +210,35 @@ class Transfer extends CommonDBTM{
 
 		$this->item_search[NETWORKING_TYPE]=$this->createSearchConditionUsingArray($this->needtobe_transfer[NETWORKING_TYPE]);
 
+		// Tickets
+		if ($this->options['keep_tickets']){
+			foreach ($this->TICKETS_TYPES as $type){
+				$query="SELECT DISTINCT ID FROM glpi_tracking
+				WHERE device_type='$type' AND computer IN ".$this->item_search[$type];
+				if ($result = $DB->query($query)) {
+					if ($DB->numrows($result)>0) { 
+						if (!isset($this->needtobe_transfer[TRACKING_TYPE])){
+							$this->needtobe_transfer[TRACKING_TYPE]=array();
+						}
+						while ($data=$DB->fetch_array($result)){
+							$this->needtobe_transfer[TRACKING_TYPE][$data['ID']]=$data['ID'];
+						}
+					}
+				}
+			}
+		}	
+		$this->item_search[TRACKING_TYPE]=$this->createSearchConditionUsingArray($this->needtobe_transfer[TRACKING_TYPE]);
+
 		// Contract : keep / delete + clean unused / keep unused
 		if ($this->options['keep_contracts']){
-			foreach ($this->CONTRACTS_TYPE as $type){
+			foreach ($this->CONTRACTS_TYPES as $type){
 				$query="SELECT FK_contract FROM glpi_contract_device
 				WHERE device_type='$type' AND   FK_device IN ".$this->item_search[$type];
 				if ($result = $DB->query($query)) {
 					if ($DB->numrows($result)>0) { 
 						if (!isset($this->needtobe_transfer[CONTRACT_TYPE])){
 							$this->needtobe_transfer[CONTRACT_TYPE]=array();
-						}
-
+ 						}
 						while ($data=$DB->fetch_array($result)){
 							$this->needtobe_transfer[CONTRACT_TYPE][$data['FK_contract']]=$data['FK_contract'];
 						}
@@ -217,40 +248,69 @@ class Transfer extends CommonDBTM{
 		}
 		$this->item_search[CONTRACT_TYPE]=$this->createSearchConditionUsingArray($this->needtobe_transfer[CONTRACT_TYPE]);
 		// Enterprise (depending of item link) / Contract - infocoms : keep / delete + clean unused / keep unused
-		// Enterprise Contract
-		$query="SELECT DISTINCT FK_enterprise FROM glpi_contract_enterprise WHERE FK_contract IN ".$this->item_search[CONTRACT_TYPE];
-		if ($result = $DB->query($query)) {
-			if ($DB->numrows($result)>0) { 
-				if (!isset($this->needtobe_transfer[ENTERPRISE_TYPE])){
-					$this->needtobe_transfer[ENTERPRISE_TYPE]=array();
-				}
 		
-				while ($data=$DB->fetch_array($result)){
-					$this->needtobe_transfer[ENTERPRISE_TYPE][$data['FK_enterprise']]=$data['FK_enterprise'];
+		if ($this->options['keep_enterprises']){
+			// Enterprise Contract
+			$query="SELECT DISTINCT FK_enterprise FROM glpi_contract_enterprise WHERE FK_contract IN ".$this->item_search[CONTRACT_TYPE];
+			if ($result = $DB->query($query)) {
+				if ($DB->numrows($result)>0) { 
+					if (!isset($this->needtobe_transfer[ENTERPRISE_TYPE])){
+						$this->needtobe_transfer[ENTERPRISE_TYPE]=array();
+					}
+					while ($data=$DB->fetch_array($result)){
+						$this->needtobe_transfer[ENTERPRISE_TYPE][$data['FK_enterprise']]=$data['FK_enterprise'];
+					}
 				}
 			}
-		}
-		// Enterprise infocoms
-		if ($this->options['keep_infocoms']){
-			foreach ($this->INFOCOMS_TYPE as $type){
-				$query="SELECT DISTINCT FK_enterprise FROM glpi_infocoms
-				WHERE device_type='$type' AND FK_device IN ".$this->item_search[$type];
-				if ($result = $DB->query($query)) {
-					if ($DB->numrows($result)>0) { 
-						if (!isset($this->needtobe_transfer[ENTERPRISE_TYPE])){
-							$this->needtobe_transfer[ENTERPRISE_TYPE]=array();
-						}
-	
-						while ($data=$DB->fetch_array($result)){
-							$this->needtobe_transfer[ENTERPRISE_TYPE][$data['FK_enterprise']]=$data['FK_enterprise'];
+			// Ticket Contract
+			$query="SELECT DISTINCT assign_ent FROM glpi_tracking WHERE assign_ent > 0 AND ID IN ".$this->item_search[TRACKING_TYPE];
+			if ($result = $DB->query($query)) {
+				if ($DB->numrows($result)>0) { 
+					if (!isset($this->needtobe_transfer[ENTERPRISE_TYPE])){
+						$this->needtobe_transfer[ENTERPRISE_TYPE]=array();
+					}
+					while ($data=$DB->fetch_array($result)){
+						$this->needtobe_transfer[ENTERPRISE_TYPE][$data['assign_ent']]=$data['assign_ent'];
+					}
+				}
+			}
+			// Enterprise infocoms
+			if ($this->options['keep_infocoms']){
+				foreach ($this->INFOCOMS_TYPES as $type){
+					$query="SELECT DISTINCT FK_enterprise FROM glpi_infocoms
+					WHERE FK_enterprise > 0 AND device_type='$type' AND FK_device IN ".$this->item_search[$type];
+					if ($result = $DB->query($query)) {
+						if ($DB->numrows($result)>0) { 
+							if (!isset($this->needtobe_transfer[ENTERPRISE_TYPE])){
+								$this->needtobe_transfer[ENTERPRISE_TYPE]=array();
+							}
+							while ($data=$DB->fetch_array($result)){
+								$this->needtobe_transfer[ENTERPRISE_TYPE][$data['FK_enterprise']]=$data['FK_enterprise'];
+							}
 						}
 					}
 				}
 			}
 		}
-		
-		// Document : keep / delete + clean unused / keep unused + duplicate file ?
+		$this->item_search[ENTERPRISE_TYPE]=$this->createSearchConditionUsingArray($this->needtobe_transfer[ENTERPRISE_TYPE]);
+
 		// Contact / Enterprise : keep / delete + clean unused / keep unused
+		if ($this->options['keep_contacts']){
+			// Enterprise Contact
+			$query="SELECT DISTINCT FK_contact FROM glpi_contact_enterprise WHERE FK_enterprise IN ".$this->item_search[ENTERPRISE_TYPE];
+			if ($result = $DB->query($query)) {
+				if ($DB->numrows($result)>0) { 
+					if (!isset($this->needtobe_transfer[CONTACT_TYPE])){
+						$this->needtobe_transfer[CONTACT_TYPE]=array();
+					}
+					while ($data=$DB->fetch_array($result)){
+						$this->needtobe_transfer[CONTACT_TYPE][$data['FK_contact']]=$data['FK_contact'];
+					}
+				}
+			}
+		}
+
+		// Document : keep / delete + clean unused / keep unused + duplicate file ?
 	}
 	function createSearchConditionUsingArray($array){
 		if (is_array($array)&&count($array)){
@@ -309,7 +369,7 @@ class Transfer extends CommonDBTM{
 				// Ticket : delete / keep and clean ref / keep and move
 				$this->transferTickets($type,$ID,$newID);
 				// Infocoms : keep / delete
-				if (in_array($type,$this->INFOCOMS_TYPE)) {
+				if (in_array($type,$this->INFOCOMS_TYPES)) {
 					$this->transferInfocoms($type,$ID,$newID);
 				}
 			
@@ -331,19 +391,22 @@ class Transfer extends CommonDBTM{
 					$this->deleteDirectConnection($type,$ID);
 				}
 	
-				// Enterprise (depending of item link) / Contract - infocoms : keep / delete + clean unused / keep unused
-				if ($type==CONTRACT_TYPE){
+				// Enterprise (depending of item link) / Tickets - Contract - infocoms : keep / delete + clean unused / keep unused
+//				if ($type==CONTRACT_TYPE){
 					//$this->transferContractEnterprises($ID);
-				}
+//				}
 
 				// Contract : keep / delete + clean unused / keep unused
-				if (in_array($type,$this->CONTRACTS_TYPE)) {
+				if (in_array($type,$this->CONTRACTS_TYPES)) {
 					$this->transferContract($type,$ID,$newID);
 				}
 
-				// Document : keep / delete + clean unused / keep unused + duplicate file ?
-	
 				// Contact / Enterprise : keep / delete + clean unused / keep unused
+				if ($type==ENTERPRISE_TYPE){
+					$this->transferEnterpriseContact($ID,$newID);
+				}
+
+				// Document : keep / delete + clean unused / keep unused + duplicate file ?
 	
 				// Users ????
 
@@ -489,21 +552,21 @@ class Transfer extends CommonDBTM{
 					// CLean process
 					if ($need_clean_process&&$this->options['clean_softwares']){
 						// Clean license
-						$query2 = "SELECT COUNT(*) 
+						$query2 = "SELECT COUNT(*) AS CPT
 								FROM glpi_inst_software 
 								WHERE license = '" . $data['licID'] . "'";
 						$result2 = $DB->query($query2);
-						if ($DB->result($result2, 0, 0) == 0) {
+						if ($DB->result($result2, 0, 'CPT') == 0) {
 							$lic->delete(array (
 								"ID" => $data['licID']
 							));
 						}
 						// Clean software
-						$query2 = "SELECT COUNT(*) 
+						$query2 = "SELECT COUNT(*) AS CPT
 								FROM glpi_licenses 
 								WHERE sID = '" . $data['softID'] . "'";
 						$result2 = $DB->query($query2);
-						if ($DB->result($result2, 0, 0) == 0) {
+						if ($DB->result($result2, 0, 'CPT') == 0) {
 							if ($this->options['clean_softwares']==1){ // delete
 								$soft->delete(array ("ID" => $data['softID']));
 							}
@@ -544,11 +607,12 @@ class Transfer extends CommonDBTM{
 							// No
 							// Can be transfer without copy ? = all linked items need to be transfer (so not copy)
 							$canbetransfer=true;
-							$query="SELECT DISTINCT device_type FROM glpi_contract_device WHERE FK_contract=''";
+							$query="SELECT DISTINCT device_type FROM glpi_contract_device WHERE FK_contract='$item_ID'";
 							
 							if ($result_type = $DB->query($query)) {
 								if ($DB->numrows($result_type)>0) {
-									while ($data_type=$DB->fetch_array($result_type)&&$canbetransfer) {
+									while ($data_type=$DB->fetch_array($result_type)) 
+									if ($canbetransfer) {
 										$dtype=$data_type['device_type'];
 										// No items to transfer -> exists links
 										$query_search="SELECT count(*) AS CPT 
@@ -569,7 +633,7 @@ class Transfer extends CommonDBTM{
 								$need_clean_process=true;
 								$contract->getFromDB($item_ID);
 								// No : search contract
-								$query="SELECT * FROM glpi_contract WHERE FK_entities='".$this->to."' AND name='".addslashes($contract->fields['name'])."'";
+								$query="SELECT * FROM glpi_contracts WHERE FK_entities='".$this->to."' AND name='".addslashes($contract->fields['name'])."'";
 								if ($result_search=$DB->query($query)){
 									if ($DB->numrows($result_search)>0){
 										$newcontractID=$DB->result($result_search,0,'ID');
@@ -599,8 +663,29 @@ class Transfer extends CommonDBTM{
 							// Same Item -> update links
 						} else {
 							// Copy Item -> copy links
-							$query="INSERT INTO glpi_contract_device (FK_contract,FK_device,device_type) VALUES ('$newcontractID','$newID','$type')";
-							$DB->query($query);
+							if ($item_ID!=$newcontractID){
+								$query="INSERT INTO glpi_contract_device (FK_contract,FK_device,device_type) VALUES ('$newcontractID','$newID','$type')";
+								$DB->query($query);
+							} else { // same contract for new item update link
+								$query="UPDATE glpi_contract_device SET FK_device = '$newID' WHERE ID='".$data['ID']."'";
+								$DB->query($query);
+							}
+						}
+						// If clean and unused -> 
+						if ($need_clean_process&&$this->options['clean_contracts']){
+							$query = "SELECT COUNT(*) AS CPT 
+								FROM glpi_contract_device 
+								WHERE FK_contract='$item_ID'";
+							if ($result_remaining=$DB->query($query)){
+								if ($DB->result($result_remaining,0,'CPT')==0){
+									if ($clean==1){
+										$contract->delete(array('ID'=>$item_ID));
+									} 
+									if ($clean==2) { // purge
+										$contract->delete(array('ID'=>$item_ID),1);
+									}
+								}
+							}
 						}
 					}
 				}
@@ -609,8 +694,10 @@ class Transfer extends CommonDBTM{
 			$query="DELETE FROM glpi_contract_device WHERE FK_device = '$ID' AND device_type = '$type'";
 			$DB->query($query);
 		}
-
-		// If clean and unused -> 
+		// If clean and unused ->
+		if ($need_clean_process&&$this->options['clean_contracts']){
+			// TODO !!!
+		}
 	}
 	function transferDirectConnection($type,$ID,$link_type){
 		global $DB,$LINK_ID_TABLE;
@@ -711,11 +798,11 @@ class Transfer extends CommonDBTM{
 							}
 							// If clean and not linked dc -> delete
 							if ($need_clean_process&&$clean){
-								$query = "SELECT * 
+								$query = "SELECT COUNT(*) AS CPT
 									FROM glpi_connect_wire 
 									WHERE end1='$item_ID' AND type='".$link_type."'";
 								if ($result_dc=$DB->query($query)){
-									if ($DB->numrows($result_dc)==0){
+									if ($DB->result($result_dc,0,'CPT')==0){
 										if ($clean==1){
 											$ci->obj->delete(array('ID'=>$item_ID));
 										} 
@@ -767,7 +854,7 @@ class Transfer extends CommonDBTM{
 		global $DB;
 		$job= new Job();
 
-		$query = "SELECT ID 
+		$query = "SELECT ID, assign_ent
 			FROM glpi_tracking 
 			WHERE computer = '$ID' AND device_type = '$type'";
 		if ($result = $DB->query($query)) {
@@ -777,7 +864,11 @@ class Transfer extends CommonDBTM{
 					case 2: 
 						// Same Item / Copy Item -> update entity
 						while ($data=$DB->fetch_array($result)) {
-							$job->update(array("ID"=>$data['ID'],'FK_entities' => $this->to,'computer'=>$newID));
+							$assign_ent=0;
+							if ($data['assign_ent']>0){
+								$assign_ent=$this->transferSingleEnterprise($data['assign_ent']);
+							}
+							$job->update(array("ID"=>$data['ID'],'FK_entities' => $this->to, 'computer'=>$newID, 'assign_ent'=>$assign_ent));
 							$this->addToAlreadyTransfer(TRACKING_TYPE,$data['ID'],$data['ID']);
 						}
 					break;
@@ -785,7 +876,12 @@ class Transfer extends CommonDBTM{
 					case 1: 
 						// Same Item / Copy Item : keep and clean ref
 						while ($data=$DB->fetch_array($result)) {
-							$job->update(array("ID"=>$data['ID'],'device_type' => 0, 'computer'=>0));
+							$assign_ent=0;
+							if ($data['assign_ent']>0){
+								$assign_ent=$this->transferSingleEnterprise($data['assign_ent']);
+							}
+
+							$job->update(array("ID"=>$data['ID'],'device_type' => 0, 'computer'=>0, 'assign_ent'=>$assign_ent));
 							$this->addToAlreadyTransfer(TRACKING_TYPE,$data['ID'],$data['ID']);
 						}
 					break;
@@ -802,7 +898,6 @@ class Transfer extends CommonDBTM{
 				}
 			}
 		}
-
 	}
 
 	function transferHistory($type,$ID,$newID){
@@ -891,8 +986,9 @@ class Transfer extends CommonDBTM{
 	}
 	function transferSingleEnterprise($ID){
 		global $DB;
+		// TODO clean system
 		$ent=new Enterprise();
-		if ($ent->getFromDB($ID)){
+		if ($this->options['keep_enterprises']&&$ent->getFromDB($ID)){
 			// Already transfer
 			if (isset($this->already_transfer[ENTERPRISE_TYPE][$ID])){
 				return $this->already_transfer[ENTERPRISE_TYPE][$ID];
@@ -909,7 +1005,7 @@ class Transfer extends CommonDBTM{
 				if ($links_remaining==0){
 					// Search for infocoms
 					if ($this->options['keep_infocoms']){
-						foreach ($this->INFOCOMS_TYPE as $type){
+						foreach ($this->INFOCOMS_TYPES as $type){
 							$query="SELECT count(*) AS CPT FROM glpi_infocoms
 								WHERE device_type='$type' AND FK_device NOT IN ".$this->item_search[$type];
 							if ($result_search = $DB->query($query)) {
@@ -924,7 +1020,7 @@ class Transfer extends CommonDBTM{
 					$newID=$ID;
 				} else { // else Transfer by Copy
 					// Is existing item in the destination entity ?
-					$query="SELECT * FROM glpi_enterprises WHERE AND FK_entities='".$this->to."' AND name='".addslashes($ent->fields['name'])."'";
+					$query="SELECT * FROM glpi_enterprises WHERE FK_entities='".$this->to."' AND name='".addslashes($ent->fields['name'])."'";
 					if ($result_search=$DB->query($query)){
 						if ($DB->numrows($result_search)>0){
 							$newID=$DB->result($result_search,0,'ID');
@@ -950,6 +1046,113 @@ class Transfer extends CommonDBTM{
 			return 0;
 		}
 	}
+
+	function transferEnterpriseContact($ID,$newID){
+		global $DB;
+		$need_clean_process=false;
+		// if keep 
+		if ($this->options['keep_contacts']){
+			$contact=new Contact();
+			// Get contracts for the item
+			$query="SELECT * FROM glpi_contact_enterprise WHERE FK_enterprise = '$ID'";
+			if ($result = $DB->query($query)) {
+				if ($DB->numrows($result)>0) { 
+					// Foreach get item 
+					while ($data=$DB->fetch_array($result)) {
+						$need_clean_process=false;
+						$item_ID=$data['FK_contact'];
+						$newcontactID=-1;
+						// is already transfer ?
+						if (isset($this->already_transfer[CONTACT_TYPE][$item_ID])){
+							$newcontactID=$this->already_transfer[CONTACT_TYPE][$item_ID];
+							if ($newcontactID!=$item_ID){
+								$need_clean_process=true;
+							}
+						} else {
+							// No
+							// Can be transfer without copy ? = all linked items need to be transfer (so not copy)
+							$canbetransfer=true;
+							// No items to transfer -> exists links
+							$query_search="SELECT count(*) AS CPT 
+									FROM glpi_contact_enterprise 
+									WHERE FK_contact='$item_ID' AND FK_enterprise NOT IN ".$this->item_search[ENTERPRISE_TYPE];
+							$result_search = $DB->query($query_search);
+							if ($DB->result($result_search,0,'CPT')>0){
+								$canbetransfer=false;
+							}
+							// Yes : transfer 
+							if ($canbetransfer){
+								$this->transferItem(CONTACT_TYPE,$item_ID,$item_ID);
+								$newcontactID=$item_ID;
+							} else {
+								$need_clean_process=true;
+								$contact->getFromDB($item_ID);
+								// No : search contract
+								$query="SELECT * FROM glpi_contacts WHERE FK_entities='".$this->to."' AND name='".addslashes($contact->fields['name'])."' AND firstname='".addslashes($contact->fields['firstname'])."'";
+								if ($result_search=$DB->query($query)){
+									if ($DB->numrows($result_search)>0){
+										$newcontactID=$DB->result($result_search,0,'ID');
+										$this->addToAlreadyTransfer(CONTACT_TYPE,$item_ID,$newcontactID);
+									}
+								}
+								// found : use it
+								// not found : copy contract
+								if ($newcontactID<0){
+									// 1 - create new item
+									unset($contact->fields['ID']);
+									$input=$contact->fields;
+									$input['FK_entities']=$this->to;
+									unset($contact->fields);
+									$newcontactID=$contact->add($input);
+									// 2 - transfer as copy
+									$this->transferItem(CONTACT_TYPE,$item_ID,$newcontactID);
+								}
+							}
+						}
+						// Update links 
+						if ($ID==$newID){
+							if ($item_ID!=$newcontactID){
+								$query="UPDATE glpi_contact_enterprise SET FK_contact = '$newcontactID' WHERE ID='".$data['ID']."'";
+								$DB->query($query);
+							}
+							// Same Item -> update links
+						} else {
+							// Copy Item -> copy links
+							if ($item_ID!=$newcontactID){
+								$query="INSERT INTO glpi_contact_enterprise (FK_contact,FK_enterprise) VALUES ('$newcontactID','$newID')";
+								$DB->query($query);
+							} else { // transfer contact but copy enterprise : update link
+								$query="UPDATE glpi_contact_enterprise SET FK_enterprise = '$newID' WHERE ID='".$data['ID']."'";
+								$DB->query($query);
+							}
+						}
+						// If clean and unused -> 
+						if ($need_clean_process&&$this->options['clean_contacts']){
+							$query = "SELECT COUNT(*) AS CPT
+								FROM glpi_contact_enterprise 
+								WHERE FK_contact='$item_ID'";
+							if ($result_remaining=$DB->query($query)){
+								if ($DB->result($result_remaining,0,'CPT')==0){
+									if ($clean==1){
+										$contact->delete(array('ID'=>$item_ID));
+									} 
+									if ($clean==2) { // purge
+										$contact->delete(array('ID'=>$item_ID),1);
+									}
+								}
+							}
+						}
+
+					}
+				}
+			}
+		} else {// else unlink
+			$query="DELETE FROM glpi_contact_enterprise WHERE FK_enterprise = '$ID'";
+			$DB->query($query);
+		}
+
+	}
+
 	function transferReservations($type,$ID,$newID){
 		global $DB;
 
