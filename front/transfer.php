@@ -96,5 +96,5 @@ $items[COMPUTER_TYPE]=array(3);
 
 
 $transfer->moveItems($items,$entity_id,$options);
-
+commonFooter();
 ?>
