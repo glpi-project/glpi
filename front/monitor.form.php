@@ -158,7 +158,7 @@ else
 					showConnect($_SERVER['PHP_SELF'],$_GET['ID'],MONITOR_TYPE);
 					showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",MONITOR_TYPE,$_GET["ID"]);
 					showContractAssociated(MONITOR_TYPE,$_GET["ID"]);			
-					showDocumentAssociated(COMPUTER_TYPE,$_GET["ID"]);	
+					showDocumentAssociated(MONITOR_TYPE,$_GET["ID"]);	
 					showJobListForItem($_SESSION["glpiname"],MONITOR_TYPE,$_GET["ID"],$_GET["sort"],$_GET["order"]);
 					showOldJobListForItem($_SESSION["glpiname"],MONITOR_TYPE,$_GET["ID"],$_GET["sort"],$_GET["order"]);	
 					showLinkOnDevice(MONITOR_TYPE,$_GET["ID"]);

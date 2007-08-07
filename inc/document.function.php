@@ -91,7 +91,7 @@ function uploadDocument($FILEDESC,$old_file=''){
 	// Is a file uploaded ?
 	if (count($FILEDESC)>0&&!empty($FILEDESC['name'])){
 		// Clean is name
-		$filename=cleanFilenameFocument($FILEDESC['name']);
+		$filename=cleanFilenameDocument($FILEDESC['name']);
 		$force=0;
 		// Is it a valid file ?
 		$dir=isValidDoc($filename);
@@ -419,7 +419,7 @@ function getDocumentLink($filename,$params=""){
 	return $out;
 }
 
-function cleanFilenameFocument($name){
+function cleanFilenameDocument($name){
 	return preg_replace("/[^a-zA-Z0-9\-_\.]/","_",$name);
 }
 
