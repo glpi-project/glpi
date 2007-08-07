@@ -83,46 +83,6 @@ function dropdownUserType($myname,$value="post-only"){
 
 }
 
-
-function useAuthMail(){
-	global $DB;	
-
-	//Get all the pop/imap servers
-	$sql = "SELECT count(*) FROM glpi_auth_mail";
-	$result = $DB->query($sql);
-	if ($DB->result($result,0,0) > 0) {
-		return true;
-	}
-	return false;
-}
-
-function useAuthLdap(){
-	global $DB;	
-
-	//Get all the ldap directories
-	$sql = "SELECT count(*) FROM glpi_auth_ldap";
-	$result = $DB->query($sql);
-	if ($DB->result($result,0,0) > 0) {
-		return true;
-	}
-	return false;
-}
-
-
-function useAuthExt(){
-	global $DB;	
-
-	//Get all the ldap directories
-	if (useAuthLdap()){
-		return true;
-	}
-
-	if (useAuthMail()){
-		return true;
-	}
-	return false;
-}
-
 function showDeviceUser($ID){
 	global $DB,$CFG_GLPI, $LANG, $LINK_ID_TABLE,$INFOFORM_PAGES;
 

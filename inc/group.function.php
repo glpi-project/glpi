@@ -164,16 +164,6 @@ function deleteUserGroup($ID){
 	$result = $DB->query($query);
 }
 
-function isLdapConfigured()
-{
-	global $DB;
-	$query="SELECT ldap_host from glpi_auth_ldap WHERE ldap_host IS NOT NULL;";
-	$result = $DB->query($query);
-	if ($DB->numrows($result) > 0)
-		return true;
-	else
-		return false;	
-}
 function searchGroupID($name,$FK_entities){
 	global $DB;
 	$query ="SELECT ID from glpi_groups where name='$name' AND FK_entities='$FK_entities'";

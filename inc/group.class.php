@@ -130,7 +130,7 @@ class Group extends CommonDBTM{
 			autocompletionTextField("name","glpi_groups","name",$this->fields["name"],30,$this->fields["FK_entities"]);	
 			echo "</td></tr>";
 
-			if(isLdapConfigured()){
+			if(useAuthLdap()){
 				echo "<tr><td colspan='2' align='center'>".$LANG["setup"][256].":	</td>";
 				echo "</tr>";
 
