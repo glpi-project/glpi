@@ -450,7 +450,9 @@ class Netport extends CommonDBTM {
 	}
 
 	function post_updateItem($input,$updates,$history=1){
-		$tomatch=array("netpoint","ifaddr","ifmac");
+		//$tomatch=array("netpoint","ifaddr","ifmac");
+		// Only netpoint updates : ifaddr and ifmac may be different.
+		$tomatch=array("netpoint");
 		$updates=array_intersect($updates,$tomatch);
 		if (count($updates)){
 			$save_ID=$this->fields["ID"];
