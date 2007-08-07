@@ -202,7 +202,6 @@ $RULES_CRITERIAS[RULE_SOFTWARE_CATEGORY]['name']['table']='glpi_software';
 $RULES_CRITERIAS[RULE_SOFTWARE_CATEGORY]['manufacturer']['field']='manufacturer';
 $RULES_CRITERIAS[RULE_SOFTWARE_CATEGORY]['manufacturer']['name']=$LANG["common"][5];
 $RULES_CRITERIAS[RULE_SOFTWARE_CATEGORY]['manufacturer']['table']='glpi_dropdown_manufacturer';
-$RULES_CRITERIAS[RULE_SOFTWARE_CATEGORY]['manufacturer']['type']='dropdown';
 
 $RULES_ACTIONS[RULE_SOFTWARE_CATEGORY]['category']['name']=$LANG["common"][36];
 $RULES_ACTIONS[RULE_SOFTWARE_CATEGORY]['category']['type']='dropdown';
