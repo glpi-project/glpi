@@ -74,6 +74,10 @@ $options['clean_softwares']=1;
 $options['keep_contracts']=1;
 $options['clean_contracts']=1;
 
+// Documents : 0 : delete 1 : keep
+$options['keep_documents']=1;
+$options['clean_documents']=1;
+
 // Monitor Direct Connect : keep_dc -> tranfer / clean_dc : delete if unused : 1 = delete, 2 = purge
 $options['keep_dc_monitor']=1;
 $options['clean_dc_monitor']=1;
