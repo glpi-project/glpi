@@ -43,7 +43,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 checkRight("profile","r");
 
 if (!isset($_GET['ID'])) {
-	$_GET['ID']=0;
+	$_GET['ID']="";
 }
 
 
