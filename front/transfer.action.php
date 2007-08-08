@@ -43,7 +43,7 @@ $transfer=new Transfer();
 
 commonHeader($LANG["transfer"][1],$_SERVER['PHP_SELF'],"admin","transfer");
 checkRight("transfer","w");
-
+echo '!!WARNING!! NOT COMPLETE !!  !!WARNING!! NOT COMPLETE !!  !!WARNING!! NOT COMPLETE !!  !!WARNING!! NOT COMPLETE !!';
 if (isset($_POST['transfer'])){
 	if (isset($_SESSION['glpitransfer_list'])){
 		$transfer->moveItems($_SESSION['glpitransfer_list'],$_POST['to_entity'],$_POST);
