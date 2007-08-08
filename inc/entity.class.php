@@ -91,10 +91,10 @@ class Entity extends CommonDBTM{
 	}
 
 	/**
-	 * Print the group form
+	 * Print the entity form
 	 *
 	 *
-	 * Print group form
+	 * Print entity form
 	 *
 	 *@param $target filename : where to go when done.
 	 *@param $ID Integer : Id of the contact to print

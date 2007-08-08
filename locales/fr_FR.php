@@ -1671,6 +1671,7 @@ $LANG["tracking"][36]="Autre";
 $LANG["tracking"][37]="Conserver les tickets à la purge d'un élément de l'inventaire";
 
 $LANG["transfer"][1]="Transfert";
+$LANG["transfer"][2]="Ajouter une configuration de transfert";
 
 $LANG["update"][88]="Votre version de la base de données n'est pas compatible avec la version du code installé. Une mise à jour est nécessaire.";
 $LANG["update"][89]="Vous essayez d'utiliser GLPI avec une version de la base de données prévue pour une version supérieure. Veuillez installer la version correspondante à votre base de données.";

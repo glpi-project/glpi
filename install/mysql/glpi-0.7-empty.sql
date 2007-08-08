@@ -2285,10 +2285,10 @@ CREATE TABLE `glpi_tracking_planning` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
-### Dump table glpi_transfer
+### Dump table glpi_transfers
 
-DROP TABLE IF EXISTS `glpi_transfer`;
-CREATE TABLE `glpi_transfer` (
+DROP TABLE IF EXISTS `glpi_transfers`;
+CREATE TABLE `glpi_transfers` (
   `ID` int(11) NOT NULL auto_increment,
   `name` varchar(255) collate utf8_unicode_ci default NULL,
   `keep_tickets` smallint(6) NOT NULL default '0',
