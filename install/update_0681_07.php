@@ -1347,8 +1347,8 @@ function update0681to07() {
 		}
 	}
 
-	if (!TableExists("glpi_transfer")) {
-		$query="CREATE TABLE `glpi_transfer` (
+	if (!TableExists("glpi_transfers")) {
+		$query="CREATE TABLE `glpi_transfers` (
 		`ID` int(11) NOT NULL auto_increment,
 		`name` varchar(255) NOT NULL,
 		`keep_tickets` tinyint(4) NOT NULL default '0',
@@ -1381,7 +1381,7 @@ function update0681to07() {
 		`keep_consumables` tinyint(4) NOT NULL default '0',
 		PRIMARY KEY  (`ID`)
 		) ENGINE=MyISAM ;";
-		$DB->query($query) or die("0.7 add glpi_transfer " . $LANG["update"][90] . $DB->error());
+		$DB->query($query) or die("0.7 add glpi_transfers " . $LANG["update"][90] . $DB->error());
 	}
 
 	if (!FieldExists("glpi_profiles", "transfer")) {

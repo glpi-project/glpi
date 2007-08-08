@@ -57,7 +57,7 @@ class Transfer extends CommonDBTM{
 	var $DOCUMENTS_TYPES=array(ENTERPRISE_TYPE, CONTRACT_TYPE, CONTACT_TYPE, CONSUMABLE_TYPE, CARTRIDGE_TYPE, COMPUTER_TYPE, NETWORKING_TYPE, PRINTER_TYPE, MONITOR_TYPE, PERIPHERAL_TYPE, PHONE_TYPE, SOFTWARE_TYPE);
 	function Transfer(){
 		$this->table="glpi_transfer";
-		$this->type=-1;
+		$this->type=TRANSFER_TYPE;
 	}
 
 	// Generic function
@@ -1542,5 +1542,98 @@ class Transfer extends CommonDBTM{
 			}
 		}
 	}
+
+	/**
+	 * Print the transfer form
+	 *
+	 *
+	 * Print transfer form
+	 *
+	 *@param $target filename : where to go when done.
+	 *@param $ID Integer : Id of the contact to print
+	 *@param $withtemplate='' boolean : template or basic item
+	 *
+	 *
+	 *@return Nothing (display)
+	 *
+	 **/
+	function showForm ($target,$ID,$withtemplate='') {
+
+		global $CFG_GLPI, $LANG;
+
+		if (!haveRight("transfer","r")) return false;
+
+		$con_spotted=false;
+		$use_cache=true;
+		if (empty($ID)) {
+			if($this->getEmpty()) $con_spotted = true;
+			$use_cache=false;
+		} else {
+			if($this->getfromDB($ID)) $con_spotted = true;
+		}
+
+		if ($con_spotted){
+			$this->showOnglets($ID, $withtemplate,$_SESSION['glpi_onglet']);
+
+			echo "<form method='post' name=form action=\"$target\"><div class='center'>";
+
+			echo "<table class='tab_cadre_fixe' cellpadding='2' >";
+			echo "<tr><th colspan='2'>";
+			if (empty($ID)) {
+				echo $LANG["transfer"][2];
+			} else {
+				echo $LANG["common"][2]." $ID";
+			}		
+			echo "</th></tr>";
+
+			
+			if (!$use_cache||!($CFG_GLPI["cache"]->start($ID."_".$_SESSION["glpilanguage"],"GLPI_".$this->type))) {
+				echo "<tr><td class='tab_bg_1' valign='top'>";
+	
+				echo "<table cellpadding='1' cellspacing='0' border='0'>\n";
+	
+				echo "<tr><td>".$LANG["common"][16].":	</td>";
+				echo "<td>";
+				autocompletionTextField("name","glpi_transfers","name",$this->fields["name"],30);	
+				echo "</td></tr>";
+	
+				if ($use_cache){
+					$CFG_GLPI["cache"]->end();
+				}
+			}
+
+			if (haveRight("transfer","w")) 
+				if ($ID=="") {
+
+					echo "<tr>";
+					echo "<td class='tab_bg_2' valign='top' colspan='2'>";
+					echo "<div class='center'><input type='submit' name='add' value=\"".$LANG["buttons"][8]."\" class='submit'></div>";
+					echo "</td>";
+					echo "</tr>";
+
+
+				} else {
+
+					echo "<tr>";
+					echo "<td class='tab_bg_2' valign='top'>";
+					echo "<input type='hidden' name='ID' value=\"$ID\">\n";
+					echo "<div class='center'><input type='submit' name='update' value=\"".$LANG["buttons"][7]."\" class='submit' ></div>";
+					echo "</td>\n\n";
+					echo "<td class='tab_bg_2' valign='top'>\n";
+					echo "<div class='center'><input type='submit' name='delete' value=\"".$LANG["buttons"][6]."\" class='submit'></div>";
+					echo "</td>";
+					echo "</tr>";
+
+				}
+			echo "</table></div></form>";
+
+		} else {
+			echo "<div class='center'><strong>".$LANG["common"][54]."</strong></div>";
+			return false;
+
+		}
+		return true;
+	}
+
 }
 ?>
