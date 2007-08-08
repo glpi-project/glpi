@@ -155,7 +155,7 @@ class Transfer extends CommonDBTM{
 		global $DB;
 
 		// Init types :
-		$types=array(COMPUTER_TYPE,NETWORKING_TYPE,PRINTER_TYPE,MONITOR_TYPE,PERIPHERAL_TYPE,PHONE_TYPE,SOFTWARE_TYPE,CONTRACT_TYPE,ENTERPRISE_TYPE,CONTACT_TYPE,TRACKING_TYPE);
+		$types=array(COMPUTER_TYPE,NETWORKING_TYPE,PRINTER_TYPE,MONITOR_TYPE,PERIPHERAL_TYPE,PHONE_TYPE,SOFTWARE_TYPE,CONTRACT_TYPE,ENTERPRISE_TYPE,CONTACT_TYPE,TRACKING_TYPE,DOCUMENT_TYPE,CARTRIDGE_TYPE, CONSUMABLE_TYPE);
 		foreach ($types as $t){
 			if (!isset($this->needtobe_transfer[$t])){
 					$this->needtobe_transfer[$t]=array();
@@ -384,9 +384,7 @@ class Transfer extends CommonDBTM{
 	*
 	**/
 	function transferItem($type,$ID,$newID){
-		global $CFG_GLPI;
-
-		// TODO manage update OCS LINKS
+		global $CFG_GLPI,$DB;
 
 		$cinew=new CommonItem();
 		// Is already transfer ?
@@ -394,18 +392,28 @@ class Transfer extends CommonDBTM{
 			// Check computer exists ?
 			if ($cinew->getFromDB($type,$newID)){
 
-
-				// TODO : Update Ocs links 
-
+				// Manage Ocs links 
+				$dataocslink=array();
+				$ocs_computer=false;
+				if ($type==COMPUTER_TYPE&&$CFG_GLPI['ocs_mode']){
+					$query="SELECT * FROM glpi_ocs_link WHERE glpi_id='$ID'";
+					if ($result=$DB->query($query)){
+						if ($DB->numrows($result)>0){
+							$dataocslink=$DB->fetch_assoc($result);
+							$ocs_computer=true;
+						}
+					}
+					
+				}
 
 				// Network connection ? keep connected / keep_disconnected / delete
 				if (in_array($type,
 					array(COMPUTER_TYPE,NETWORKING_TYPE,PRINTER_TYPE,MONITOR_TYPE,PERIPHERAL_TYPE,PHONE_TYPE))) {
-					$this->transferNetworkLink($type,$ID,$newID);
+					$this->transferNetworkLink($type,$ID,$newID,$ocs_computer);
 				}
 				// Device : keep / delete : network case : delete if net connection delete in ocs case
 				if (in_array($type,array(COMPUTER_TYPE))){
-					$this->transferDevices($type,$ID);
+					$this->transferDevices($type,$ID,$ocs_computer);
 				}
 				// Reservation : keep / delete
 				if (in_array($type,$CFG_GLPI["reservation_types"])){
@@ -422,15 +430,15 @@ class Transfer extends CommonDBTM{
 			
 				if ($type==COMPUTER_TYPE){
 					// Monitor Direct Connect : keep / delete + clean unused / keep unused 
-					$this->transferDirectConnection($type,$ID,MONITOR_TYPE);
+					$this->transferDirectConnection($type,$ID,MONITOR_TYPE,$ocs_computer);
 					// Peripheral Direct Connect : keep / delete + clean unused / keep unused 
-					$this->transferDirectConnection($type,$ID,PERIPHERAL_TYPE);
+					$this->transferDirectConnection($type,$ID,PERIPHERAL_TYPE,$ocs_computer);
 					// Phone Direct Connect : keep / delete + clean unused / keep unused 
 					$this->transferDirectConnection($type,$ID,PHONE_TYPE);
 					// Printer Direct Connect : keep / delete + clean unused / keep unused 
-					$this->transferDirectConnection($type,$ID,PRINTER_TYPE);
+					$this->transferDirectConnection($type,$ID,PRINTER_TYPE,$ocs_computer);
 					// Licence / Software :  keep / delete + clean unused / keep unused 
-					$this->transferSoftwares($type,$ID);
+					$this->transferSoftwares($type,$ID,$ocs_computer);
 				}
 				// Computer Direct Connect : delete link if it is the initial transfer item (no recursion)
 				if ($this->inittype==$type&&in_array($type,
@@ -448,7 +456,7 @@ class Transfer extends CommonDBTM{
 					$this->transferEnterpriseContacts($ID,$newID);
 				}
 
-				// TODO Document : keep / delete + clean unused / keep unused
+				// Document : keep / delete + clean unused / keep unused
 				if (in_array($type,$this->CONTRACTS_TYPES)) {
 					$this->transferDocuments($type,$ID,$newID);
 				}
@@ -507,51 +515,51 @@ class Transfer extends CommonDBTM{
 	function transferDropdownLocation($locID){
 		global $DB;
 
-		if (isset($this->already_transfer['location'][$locID])){
-			return $this->already_transfer['location'][$locID];
-		} else { // Not already transfer
-			// Search init item
-			$query="SELECT * FROM glpi_dropdown_locations WHERE ID='$locID'";
-			if ($result=$DB->query($query)){
-				$data=$DB->fetch_array($result);
-				$data=addslashes_deep($data);
-				// Search if the location already exists in the destination entity
-					$query="SELECT ID FROM glpi_dropdown_locations WHERE FK_entities='".$this->to."' AND completename='".$data['completename']."'";	
-					if ($result_search=$DB->query($query)){
-						// Found : -> use it
-						if ($DB->numrows($result_search)>0){
-							$newID=$DB->result($result_search,0,'ID');
+		if ($locID>0){
+			if (isset($this->already_transfer['location'][$locID])){
+				return $this->already_transfer['location'][$locID];
+			} else { // Not already transfer
+				// Search init item
+				$query="SELECT * FROM glpi_dropdown_locations WHERE ID='$locID'";
+				if ($result=$DB->query($query)){
+					if ($DB->numrows($result)){
+						$data=$DB->fetch_array($result);
+						$data=addslashes_deep($data);
+						print_r($data);
+						// Search if the location already exists in the destination entity
+							$query="SELECT ID FROM glpi_dropdown_locations WHERE FK_entities='".$this->to."' AND completename='".$data['completename']."'";	
+							if ($result_search=$DB->query($query)){
+								// Found : -> use it
+								if ($DB->numrows($result_search)>0){
+									$newID=$DB->result($result_search,0,'ID');
+									$this->addToAlreadyTransfer('location',$locID,$newID);
+									return $newID;
+								}
+							}
+							// Not found : 
+							$input=array();
+							$input['tablename']='glpi_dropdown_locations';
+							$input['FK_entities']=$this->to;
+							$input['value']=$data['name'];
+							$input['comments']=$data['comments'];
+							$input['type']="under";
+							$input['value2']=0; // parentID
+							// if parentID>0 : transfer parent ID
+							if ($data['parentID']>0){
+								$input['value2']=$this->transferDropdownLocation($data['parentID']);
+							}
+							// add item
+							$newID=addDropdown($input);
 							$this->addToAlreadyTransfer('location',$locID,$newID);
 							return $newID;
-						}
-					}
-					// Not found : 
-					$input=array();
-					$input['tablename']='glpi_dropdown_locations';
-					$input['FK_entities']=$this->to;
-					$input['value']=$data['name'];
-					$input['comments']=$data['comments'];
-					$input['type']="under";
-					$input['value2']=0; // parentID
-					// if parentID>0 : transfer parent ID
-					if ($data['parentID']>0){
-						$input['value2']=$this->transferDropdownLocation($data['parentID']);
-					}
-					// add item
-					$newID=addDropdown($input);
-					$this->addToAlreadyTransfer('location',$locID,$newID);
-					return $newID;
-			} else { // Not found Set 0
-				return 0;
+					} 
+				}
 			}
-			
 		}
-
+		return 0;
 	}
-	function transferSoftwares($type,$ID){
+	function transferSoftwares($type,$ID,$ocs_computer=false){
 		global $DB;
-		// TODO Update OCS links
-
 		// Get licenses linked
 		$query = "SELECT glpi_licenses.sID as softID, glpi_licenses.ID as licID, glpi_inst_software.ID as instID
 			FROM glpi_inst_software 
@@ -667,6 +675,10 @@ class Transfer extends CommonDBTM{
 							WHERE ID = '".$data['instID']."'";
 						$DB->query($del_query);
 						$need_clean_process=true;
+						if ($ocs_computer){
+							$query="UPDATE glpi_ocs_link SET import_software = NULL WHERE glpi_id='$ID'";
+							$DB->query($query);
+						}
 					}
 					// CLean process
 					if ($need_clean_process&&$this->options['clean_softwares']){
@@ -932,25 +944,29 @@ class Transfer extends CommonDBTM{
 
 	}
 
-	function transferDirectConnection($type,$ID,$link_type){
+	function transferDirectConnection($type,$ID,$link_type,$ocs_computer=false){
 		global $DB,$LINK_ID_TABLE;
 		// Only same Item case : no duplication of computers
 		// Default : delete
-		// TODO manage OCS links
 		$keep=0;
 		$clean=0;
+		$ocs_field="";
+
 		switch ($link_type){
 			case PRINTER_TYPE:
 				$keep=$this->options['keep_dc_printer'];
 				$clean=$this->options['clean_dc_printer'];
+				$ocs_field="import_printer";
 				break;
 			case MONITOR_TYPE:
 				$keep=$this->options['keep_dc_monitor'];
 				$clean=$this->options['clean_dc_monitor'];
+				$ocs_field="import_monitor";
 				break;
 			case PERIPHERAL_TYPE:
 				$keep=$this->options['keep_dc_peripheral'];
 				$clean=$this->options['clean_dc_peripheral'];
+				$ocs_field="import_peripheral";
 				break;
 			case PHONE_TYPE:
 				$keep=$this->options['keep_dc_phone'];
@@ -1028,6 +1044,12 @@ class Transfer extends CommonDBTM{
 									WHERE ID = '".$data['ID']."'";
 								$DB->query($del_query);
 								$need_clean_process=true;
+								// OCS clean link
+								if ($ocs_computer&&!empty($ocs_field)){
+									$query="UPDATE glpi_ocs_link SET $ocs_field = NULL WHERE glpi_id='$ID'";
+									$DB->query($query);
+								}
+
 							}
 							// If clean and not linked dc -> delete
 							if ($need_clean_process&&$clean){
@@ -1060,6 +1082,10 @@ class Transfer extends CommonDBTM{
 								}
 								if ($clean==2){ // purge
 									$ci->obj->delete(array('ID'=>$item_ID),1);
+								}
+								if ($ocs_computer&&!empty($ocs_field)){
+									$query="UPDATE glpi_ocs_link SET $ocs_field = NULL WHERE glpi_id='$ID'";
+									$DB->query($query);
 								}
 							}
 						}
@@ -1418,7 +1444,7 @@ class Transfer extends CommonDBTM{
 		}
 	}
 
-	function transferDevices($type,$ID){
+	function transferDevices($type,$ID,$ocs_computer=false){
 		global $DB;
 		// Only same case because no duplication of computers
 		switch ($this->options['keep_devices']){
@@ -1427,7 +1453,11 @@ class Transfer extends CommonDBTM{
 				$query = "DELETE FROM glpi_computer_device 
 					WHERE FK_computers = '$ID'";
 				$result = $DB->query($query);
-				// TODO manage OCS links : Clean OCS link
+				// Only case of ocs link update is needed (if devices are keep nothing to do)
+				if ($ocs_computer){
+					$query="UPDATE glpi_ocs_link SET import_ip = NULL WHERE glpi_id='$ID'";
+					$DB->query($query);
+				}
 				break;
 			// Keep devices
 			case 1 :	
@@ -1437,10 +1467,9 @@ class Transfer extends CommonDBTM{
 		}
 	}
 
-	function transferNetworkLink($type,$ID,$newID){
+	function transferNetworkLink($type,$ID,$newID,$ocs_computer=false){
 		global $DB;
 		// TODO manage dropdown_netpoint on copy netpoint
-		// TODO manage OCS links
 		$np=new Netport();
 
 		$query = "SELECT ID 
@@ -1456,6 +1485,11 @@ class Transfer extends CommonDBTM{
 							while ($data=$DB->fetch_array($result)) {
 								$np->delete(array('ID'=>$data['ID']));
 							}
+							// Only case of ocs link update is needed (if netports are keep nothing to do)
+							if ($ocs_computer){
+								$query="UPDATE glpi_ocs_link SET import_ip = NULL WHERE glpi_id='$ID'";
+								$DB->query($query);
+							}
 						}
 						// Copy -> do nothing
 						break;
@@ -1466,7 +1500,7 @@ class Transfer extends CommonDBTM{
 							while ($data=$DB->fetch_array($result)) {
 								removeConnector($data['ID']);
 							}
-						} else { // Copy -> copy netpoints
+						} else { // Copy -> copy netports
 							while ($data=$DB->fetch_array($result)) {
 								$data = addslashes_deep($data);
 								unset($data['ID']);
