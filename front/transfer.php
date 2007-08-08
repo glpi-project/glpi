@@ -33,7 +33,7 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-$NEEDED_ITEMS=array("transfer","user","tracking","reservation","document","computer","device","printer","networking","peripheral","monitor","software","infocom","phone","link","ocsng","consumable","cartridge","contract","enterprise","contact","group","profile","search","mailgate","typedoc","setup");
+$NEEDED_ITEMS=array("transfer","user","tracking","reservation","document","computer","device","printer","networking","peripheral","monitor","software","infocom","phone","link","ocsng","consumable","cartridge","contract","enterprise","contact","group","profile","search","mailgate","typedoc","setup","rulesengine","rule.softwarecategories");
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
@@ -41,7 +41,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 $transfer=new Transfer();
 
 // Network links : 0 : delete 1 : keep disconnect 2 : keep connect
-$options['keep_networklinks']=2;
+$options['keep_networklinks']=0;
 
 // Tickets : 0 : delete 1 : keep and clean ref 2 : keep and move
 $options['keep_tickets']=2;
@@ -96,7 +96,7 @@ $options['clean_dc_printer']=1;
 
 $entity_id=4;
 
-$items[COMPUTER_TYPE]=array(3);
+$items[COMPUTER_TYPE]=array(403);
 
 
 $transfer->moveItems($items,$entity_id,$options);
