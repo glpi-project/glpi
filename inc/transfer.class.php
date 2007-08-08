@@ -70,9 +70,10 @@ class Transfer extends CommonDBTM{
 		$default_options=array(
 			'keep_tickets'=>0,
 			'keep_networklinks'=>0,
-			'keep_history'=>0,
+			'keep_reservations'=>0,
 			'keep_history'=>0,
 			'keep_devices'=>0,
+			'keep_infocoms'=>0,
 
 			'keep_dc_monitor'=>0,
 			'clean_dc_monitor'=>0,
@@ -80,7 +81,7 @@ class Transfer extends CommonDBTM{
 			'clean_dc_phone'=>0,
 			'keep_dc_peripheral'=>0,
 			'clean_dc_peripheral'=>0,
-			'keep_dc_printerr'=>0,
+			'keep_dc_printer'=>0,
 			'clean_dc_printer'=>0,
 
 			'keep_enterprises'=>0,
@@ -96,6 +97,12 @@ class Transfer extends CommonDBTM{
 
 			'keep_documents'=>0,
 			'clean_documents'=>0,
+			
+			'keep_cartridges_type' =>0,
+			'clean_cartridges_type' =>0,
+			'keep_cartridges' =>0,
+
+			'keep_consumables' =>0,
 		);
 		$ci=new CommonItem();
 
@@ -123,6 +130,7 @@ class Transfer extends CommonDBTM{
 			// Inventory Items : MONITOR....
 			$INVENTORY_TYPES = array(NETWORKING_TYPE, PRINTER_TYPE, MONITOR_TYPE, PERIPHERAL_TYPE, PHONE_TYPE, SOFTWARE_TYPE, CARTRIDGE_TYPE, CONSUMABLE_TYPE);
 			foreach ($INVENTORY_TYPES as $type){
+				$this->inittype=$type;
 				if (isset($items[$type])&&count($items[$type])){
 					foreach ($items[$type] as $ID){
 						$this->transferItem($type,$ID,$ID);
@@ -132,6 +140,7 @@ class Transfer extends CommonDBTM{
 			// Management Items
 			$MANAGEMENT_TYPES = array(ENTERPRISE_TYPE, CONTRACT_TYPE, CONTACT_TYPE, DOCUMENT_TYPE);
 			foreach ($MANAGEMENT_TYPES as $type){
+				$this->inittype=$type;
 				if (isset($items[$type])&&count($items[$type])){
 					foreach ($items[$type] as $ID){
 						$this->transferItem($type,$ID,$ID);
@@ -462,11 +471,15 @@ class Transfer extends CommonDBTM{
 				}
 
 				// TODO If DOCUMENT_TYPE -> clean links to items
+				if ($this->inittype==$type&&$type==DOCUMENT_TYPE) {
+				}
 
 				// TODO Users ???? : Update right to new entity ?
 				// TODO Linked Users ???? : Update right to new entity ?
 
 				// TODO Cartridges 
+				if ($type==CARTRIDGE_TYPE) {
+				}
 				
 				// Transfer Item
 				$input=array("ID"=>$newID,'FK_entities' => $this->to);

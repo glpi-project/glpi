@@ -58,7 +58,7 @@ foreach ($_POST["item"] as $key => $val){
 		$_SESSION['glpimassiveactionselected'][$key]=$key;
 	}
 }
-
+$REDIRECT=$_SERVER['HTTP_REFERER'];
 
 	switch($_POST["action"]){
 		case "connect":
@@ -309,7 +309,21 @@ foreach ($_POST["item"] as $key => $val){
 				}
 			}
 		break;
-
+		case "add_transfer_list":
+			if (!isset($_SESSION['glpi_transfer_list'])){
+				$_SESSION['glpi_transfer_list']=array();
+			}
+			if (!isset($_SESSION['glpi_transfer_list'][$_POST["device_type"]])){
+				$_SESSION['glpi_transfer_list'][$_POST["device_type"]]=array();
+			}
+			
+			foreach ($_POST["item"] as $key => $val){
+				if ($val==1) {
+					$_SESSION['glpi_transfer_list'][$_POST["device_type"]][$key]=$key;
+				}
+			}
+			$REDIRECT=$CFG_GLPI['root_doc'].'/front/transfer.action.php';
+		break;
 		case "add_followup":
 			$fup=new Followup();
 			foreach ($_POST["item"] as $key => $val){
@@ -335,13 +349,14 @@ foreach ($_POST["item"] as $key => $val){
 	}
 
 	$_SESSION['MESSAGE_AFTER_REDIRECT'].=$LANG["common"][23];
-	glpi_header($_SERVER['HTTP_REFERER']);
+	glpi_header($REDIRECT);
 
 } else {
 	
 	echo "<div align='center'><img src=\"".$CFG_GLPI["root_doc"]."/pics/warning.png\" alt=\"warning\"><br><br>";
 	echo "<b>".$LANG["common"][24]."</b></div>";
 	
+	displayBackLink();
 }
 
 commonFooter();

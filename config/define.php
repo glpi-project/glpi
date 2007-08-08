@@ -86,6 +86,7 @@
 	define("PROFILE_TYPE",34);
 	define("MAILGATE_TYPE",35);
 	define("RULE_TYPE",36);
+	define("TRANSFER_TYPE",37);
 
 	// GLPI MODE
 	define("NORMAL_MODE",0);
@@ -213,6 +214,8 @@
 			REGISTRY_TYPE => "glpi_registry",
 			PROFILE_TYPE => "glpi_profiles",
 			MAILGATE_TYPE => "glpi_mailgate",
+			RULE_TYPE => "glpi_rules_descriptions",
+			TRANSFER_TYPE => "glpi_transfer",
 			);
 
 	$INFOFORM_PAGES=array( 
@@ -249,6 +252,8 @@
 			REGISTRY_TYPE => "???",
 			PROFILE_TYPE => "front/profile.form.php",
 			MAILGATE_TYPE => "front/mailgate.form.php",
+			RULE_TYPE => "???",
+			TRANSFER_TYPE => "front/transfer.form.php",
 			);
 
 	define("AUTH_CAS",0);

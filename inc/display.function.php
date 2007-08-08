@@ -485,6 +485,16 @@ function commonHeader($title,$url,$sector="none",$item="none",$option="")
 
 		}
 
+		if (haveRight("transfer","r")){
+			$menu['admin']['content']['transfer']['title']=$LANG["transfer"][1];
+			$menu['admin']['content']['transfer']['shortcut']='t';
+			$menu['admin']['content']['transfer']['page']='/front/transfer.php';
+			$menu['admin']['content']['transfer']['links']['search']="/front/transfer.php";
+			if (haveRight("transfer","w")){
+				$menu['admin']['content']['transfer']['links']['add']="/front/transfer.form.php";
+			}
+		}
+
 //		$config[$LANG["Menu"][10]]=array("setup.php","2");
 		if (haveRight("backup","w")){
 			$menu['admin']['content']['backup']['title']=$LANG["Menu"][12];
@@ -495,7 +505,6 @@ function commonHeader($title,$url,$sector="none",$item="none",$option="")
 			$menu['admin']['content']['log']['title']=$LANG["Menu"][30];
 			$menu['admin']['content']['log']['shortcut']='l';
 			$menu['admin']['content']['log']['page']='/front/log.php';
-
 		}
 		
 

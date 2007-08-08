@@ -93,6 +93,8 @@ $LANG["buttons"][44]="Vue format CSV";
 $LANG["buttons"][45]="Tout format CSV";
 $LANG["buttons"][46]="Avant";
 $LANG["buttons"][47]="Après";
+$LANG["buttons"][48]="Transférer";
+
 
 $LANG["calendarD"][0]="D";
 $LANG["calendarD"][1]="L";
@@ -1667,6 +1669,8 @@ $LANG["tracking"][34]="Directe";
 $LANG["tracking"][35]="Ecrite";
 $LANG["tracking"][36]="Autre";
 $LANG["tracking"][37]="Conserver les tickets à la purge d'un élément de l'inventaire";
+
+$LANG["transfer"][1]="Transfert";
 
 $LANG["update"][88]="Votre version de la base de données n'est pas compatible avec la version du code installé. Une mise à jour est nécessaire.";
 $LANG["update"][89]="Vous essayez d'utiliser GLPI avec une version de la base de données prévue pour une version supérieure. Veuillez installer la version correspondante à votre base de données.";
