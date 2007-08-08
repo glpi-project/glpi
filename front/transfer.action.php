@@ -45,12 +45,14 @@ commonHeader($LANG["transfer"][1],$_SERVER['PHP_SELF'],"admin","transfer");
 checkRight("transfer","w");
 
 if (isset($_POST['transfer'])){
-	$transfer->moveItems($_SESSION['glpitransfer_list'],$_POST['to_entity'],$_POST);
-	unset($_SESSION['glpitransfer_list']);
-	echo "<strong>".$LANG["common"][23]."</strong><br>";
-	displayBackLink();
-	commonFooter();
-	exit();
+	if (isset($_SESSION['glpitransfer_list'])){
+		$transfer->moveItems($_SESSION['glpitransfer_list'],$_POST['to_entity'],$_POST);
+		unset($_SESSION['glpitransfer_list']);
+		echo "<strong>".$LANG["common"][23]."</strong><br>";
+		displayBackLink();
+		commonFooter();
+		exit();
+	}
 } else if (isset($_GET['clear'])){
 	unset($_SESSION['glpitransfer_list']);
 }
