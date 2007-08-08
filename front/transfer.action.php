@@ -103,6 +103,6 @@ $options['keep_consumables']=1;
 
 $entity_id=4;
 $items[COMPUTER_TYPE]=array(403);
-$transfer->moveItems($items,$entity_id,$options);
+//$transfer->moveItems($items,$entity_id,$options);
 
 ?>
