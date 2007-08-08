@@ -215,7 +215,7 @@
 			PROFILE_TYPE => "glpi_profiles",
 			MAILGATE_TYPE => "glpi_mailgate",
 			RULE_TYPE => "glpi_rules_descriptions",
-			TRANSFER_TYPE => "glpi_transfer",
+			TRANSFER_TYPE => "glpi_transfers",
 			);
 
 	$INFOFORM_PAGES=array( 

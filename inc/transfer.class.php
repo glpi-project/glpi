@@ -56,7 +56,7 @@ class Transfer extends CommonDBTM{
 	var $TICKETS_TYPES = array(COMPUTER_TYPE, NETWORKING_TYPE, PRINTER_TYPE, MONITOR_TYPE, PERIPHERAL_TYPE, PHONE_TYPE, SOFTWARE_TYPE);
 	var $DOCUMENTS_TYPES=array(ENTERPRISE_TYPE, CONTRACT_TYPE, CONTACT_TYPE, CONSUMABLE_TYPE, CARTRIDGE_TYPE, COMPUTER_TYPE, NETWORKING_TYPE, PRINTER_TYPE, MONITOR_TYPE, PERIPHERAL_TYPE, PHONE_TYPE, SOFTWARE_TYPE);
 	function Transfer(){
-		$this->table="glpi_transfer";
+		$this->table="glpi_transfers";
 		$this->type=TRANSFER_TYPE;
 	}
 
@@ -1578,7 +1578,7 @@ class Transfer extends CommonDBTM{
 			echo "<form method='post' name=form action=\"$target\"><div class='center'>";
 
 			echo "<table class='tab_cadre_fixe' cellpadding='2' >";
-			echo "<tr><th colspan='2'>";
+			echo "<tr><th colspan='4'>";
 			if (empty($ID)) {
 				echo $LANG["transfer"][2];
 			} else {
@@ -1588,14 +1588,186 @@ class Transfer extends CommonDBTM{
 
 			
 			if (!$use_cache||!($CFG_GLPI["cache"]->start($ID."_".$_SESSION["glpilanguage"],"GLPI_".$this->type))) {
-				echo "<tr><td class='tab_bg_1' valign='top'>";
-	
-				echo "<table cellpadding='1' cellspacing='0' border='0'>\n";
-	
-				echo "<tr><td>".$LANG["common"][16].":	</td>";
-				echo "<td>";
+				echo "<tr class='tab_bg_1'>";
+				echo "<td colspan='2'>".$LANG["common"][16].":	</td><td colspan='2'>";
 				autocompletionTextField("name","glpi_transfers","name",$this->fields["name"],30);	
-				echo "</td></tr>";
+				echo "</td>";
+				echo "</tr>";
+
+				$keep=array(0=>$LANG["buttons"][6],
+						1=>$LANG["buttons"][49]);
+				$clean=array(0=>$LANG["buttons"][49],
+					1=>$LANG["buttons"][6],
+					2=>$LANG["buttons"][22]);
+
+				echo "<tr class='tab_bg_1'>";
+				echo "<td>".$LANG["title"][38].":	</td><td>";
+				dropdownArrayValues('keep_history',$keep,$this->fields['keep_history']);
+				echo "</td>";
+				echo "<td colspan='2'>&nbsp;</td>";
+				echo "</tr>";
+
+				echo "<tr class='tab_bg_2'>";
+				echo "<td colspan='4' class='center'><strong>".$LANG["Menu"][38]."</strong></td></tr>";
+
+				echo "<tr class='tab_bg_1'>";
+				echo "<td>".$LANG["networking"][6].":	</td><td>";
+				$options=array(0=>$LANG["buttons"][6],
+						1=>$LANG["buttons"][49]." - ".$LANG["buttons"][10] ,
+						2=>$LANG["buttons"][49]." - ".$LANG["buttons"][9] );
+				dropdownArrayValues('keep_networklinks',$options,$this->fields['keep_networklinks']);
+				echo "</td>";
+				echo "<td>".$LANG["title"][28].":	</td><td>";
+				$options=array(0=>$LANG["buttons"][6],
+						1=>$LANG["buttons"][49]." - ".$LANG["buttons"][10] ,
+						2=>$LANG["buttons"][49]." - ".$LANG["buttons"][48] );
+				dropdownArrayValues('keep_tickets',$options,$this->fields['keep_tickets']);
+				echo "</td>";
+				echo "</tr>";
+
+
+
+				echo "<tr class='tab_bg_1'>";
+				echo "<td>".$LANG["Menu"][4].":	</td><td>";
+				dropdownArrayValues('keep_softwares',$keep,$this->fields['keep_softwares']);
+				echo "</td>";
+				echo "<td>".$LANG["Menu"][4].": ".$LANG["transfer"][3]."	</td><td>";
+				dropdownArrayValues('clean_softwares',$clean,$this->fields['clean_softwares']);
+				echo "</td>";
+				echo "</tr>";
+
+				echo "<tr class='tab_bg_1'>";
+				echo "<td>".$LANG["Menu"][17].":	</td><td>";	
+				dropdownArrayValues('keep_reservations',$keep,$this->fields['keep_reservations']);
+				echo "</td>";
+				echo "<td>".$LANG["devices"][10].":	</td><td>";
+				dropdownArrayValues('keep_devices',$keep,$this->fields['keep_devices']);
+				echo "</td>";
+				echo "</tr>";
+
+				echo "<tr class='tab_bg_1'>";
+				echo "<td>".$LANG["cartridges"][12].":	</td><td>";
+				dropdownArrayValues('keep_cartridges_type',$keep,$this->fields['keep_cartridges_type']);
+				echo "</td>";
+				echo "<td>".$LANG["cartridges"][12].": ".$LANG["transfer"][3]."	</td><td>";
+				dropdownArrayValues('clean_cartridges_type',$clean,$this->fields['clean_cartridges_type']);
+				echo "</td>";
+				echo "</tr>";
+
+				echo "<tr class='tab_bg_1'>";
+				echo "<td>".$LANG["title"][19].":	</td><td>";
+				dropdownArrayValues('keep_cartridges',$keep,$this->fields['keep_cartridges']);
+				echo "</td>";				echo "<td>".$LANG["Menu"][32].":	</td><td>";
+				dropdownArrayValues('keep_consumables',$keep,$this->fields['keep_consumables']);
+				echo "</td>";
+
+				echo "<tr class='tab_bg_1'>";
+				echo "<td>".$LANG["financial"][3].":	</td><td>";
+				dropdownArrayValues('keep_infocoms',$keep,$this->fields['keep_infocoms']);
+				echo "</td>";
+				echo "<td colspan='2'>&nbsp;</td>";
+				echo "</tr>";
+
+				echo "<tr class='tab_bg_2'>";
+				echo "<td colspan='4' class='center'><strong>".$LANG["connect"][0]."</strong></td></tr>";
+
+				echo "<tr class='tab_bg_1'>";
+				echo "<td>".$LANG["Menu"][3].":	</td><td>";
+				dropdownArrayValues('keep_dc_monitor',$keep,$this->fields['keep_dc_monitor']);
+				echo "</td>";
+				echo "<td>".$LANG["Menu"][3].": ".$LANG["transfer"][3]."	</td><td>";
+				dropdownArrayValues('clean_dc_monitor',$clean,$this->fields['clean_dc_monitor']);
+				echo "</td>";
+				echo "</tr>";
+
+				echo "<tr class='tab_bg_1'>";
+				echo "<td>".$LANG["Menu"][2].":	</td><td>";
+				dropdownArrayValues('keep_dc_printer',$keep,$this->fields['keep_dc_printer']);
+				echo "</td>";
+				echo "<td>".$LANG["Menu"][2].": ".$LANG["transfer"][3]."	</td><td>";
+				dropdownArrayValues('clean_dc_printer',$clean,$this->fields['clean_dc_printer']);
+				echo "</td>";
+				echo "</tr>";
+
+				echo "<tr class='tab_bg_1'>";
+				echo "<td>".$LANG["Menu"][16].":	</td><td>";
+				dropdownArrayValues('keep_dc_peripheral',$keep,$this->fields['keep_dc_peripheral']);
+				echo "</td>";
+				echo "<td>".$LANG["Menu"][16].": ".$LANG["transfer"][3]."	</td><td>";
+				dropdownArrayValues('clean_dc_peripheral',$clean,$this->fields['clean_dc_peripheral']);
+				echo "</td>";
+				echo "</tr>";
+
+				echo "<tr class='tab_bg_1'>";
+				echo "<td>".$LANG["Menu"][34].":	</td><td>";
+				dropdownArrayValues('keep_dc_phone',$keep,$this->fields['keep_dc_phone']);
+				echo "</td>";
+				echo "<td>".$LANG["Menu"][34].": ".$LANG["transfer"][3]."	</td><td>";
+				dropdownArrayValues('clean_dc_phone',$clean,$this->fields['clean_dc_phone']);
+				echo "</td>";
+				echo "</tr>";
+
+
+				echo "<tr class='tab_bg_2'>";
+				echo "<td colspan='4' class='center'><strong>".$LANG["Menu"][26]."</strong></td></tr>";
+
+
+				echo "<tr class='tab_bg_1'>";
+				echo "<td>".$LANG["Menu"][23].":	</td><td>";
+				dropdownArrayValues('keep_enterprises',$keep,$this->fields['keep_enterprises']);
+				echo "</td>";
+				echo "<td>".$LANG["Menu"][23].": ".$LANG["transfer"][3]."	</td><td>";
+				dropdownArrayValues('clean_enterprises',$clean,$this->fields['clean_enterprises']);
+				echo "</td>";
+				echo "</tr>";
+
+				echo "<tr class='tab_bg_1'>";
+				echo "<td>".$LANG["Menu"][22].":	</td><td>";
+				dropdownArrayValues('keep_contacts',$keep,$this->fields['keep_contacts']);
+				echo "</td>";
+				echo "<td>".$LANG["Menu"][22].": ".$LANG["transfer"][3]."	</td><td>";
+				dropdownArrayValues('clean_contacts',$clean,$this->fields['clean_contacts']);
+				echo "</td>";
+				echo "</tr>";
+
+				echo "<tr class='tab_bg_1'>";
+				echo "<td>".$LANG["Menu"][27].":	</td><td>";
+				dropdownArrayValues('keep_documents',$keep,$this->fields['keep_documents']);
+				echo "</td>";
+				echo "<td>".$LANG["Menu"][27].": ".$LANG["transfer"][3]."	</td><td>";
+				dropdownArrayValues('clean_documents',$clean,$this->fields['clean_documents']);
+				echo "</td>";
+				echo "</tr>";
+
+				echo "<tr class='tab_bg_1'>";
+				echo "<td>".$LANG["Menu"][25].":	</td><td>";
+				dropdownArrayValues('keep_contracts',$keep,$this->fields['keep_contracts']);
+				echo "</td>";
+				echo "<td>".$LANG["Menu"][25].": ".$LANG["transfer"][3]."	</td><td>";
+				dropdownArrayValues('clean_contracts',$clean,$this->fields['clean_contracts']);
+				echo "</td>";
+				echo "</tr>";
+
+/*
+// Monitor Direct Connect : keep_dc -> tranfer / clean_dc : delete if unused : 1 = delete, 2 = purge
+$options['keep_dc_monitor']=1;
+$options['clean_dc_monitor']=1;
+
+// Phone Direct Connect : keep_dc -> tranfer / clean_dc : delete if unused : 1 = delete, 2 = purge
+$options['keep_dc_phone']=1;
+$options['clean_dc_phone']=1;
+
+// Peripheral Direct Connect : keep_dc -> tranfer / clean_dc : delete if unused : 1 = delete, 2 = purge
+$options['keep_dc_peripheral']=1;
+$options['clean_dc_peripheral']=1;
+
+// Printer Direct Connect : keep_dc -> tranfer / clean_dc : delete if unused : 1 = delete, 2 = purge
+$options['keep_dc_printer']=1;
+$options['clean_dc_printer']=1;
+
+*/
+
+
 	
 				if ($use_cache){
 					$CFG_GLPI["cache"]->end();
@@ -1606,20 +1778,22 @@ class Transfer extends CommonDBTM{
 				if ($ID=="") {
 
 					echo "<tr>";
-					echo "<td class='tab_bg_2' valign='top' colspan='2'>";
+					echo "<td class='tab_bg_2' valign='top' colspan='4'>";
 					echo "<div class='center'><input type='submit' name='add' value=\"".$LANG["buttons"][8]."\" class='submit'></div>";
 					echo "</td>";
 					echo "</tr>";
+
+			
 
 
 				} else {
 
 					echo "<tr>";
-					echo "<td class='tab_bg_2' valign='top'>";
+					echo "<td class='tab_bg_2' valign='top' colspan='2'>";
 					echo "<input type='hidden' name='ID' value=\"$ID\">\n";
 					echo "<div class='center'><input type='submit' name='update' value=\"".$LANG["buttons"][7]."\" class='submit' ></div>";
 					echo "</td>\n\n";
-					echo "<td class='tab_bg_2' valign='top'>\n";
+					echo "<td class='tab_bg_2' valign='top' colspan='2'>\n";
 					echo "<div class='center'><input type='submit' name='delete' value=\"".$LANG["buttons"][6]."\" class='submit'></div>";
 					echo "</td>";
 					echo "</tr>";
