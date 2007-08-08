@@ -68,7 +68,7 @@ else if (isset($_POST["delete"]))
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 
-commonHeader($LANG["Menu"][37],$_SERVER['PHP_SELF'],"admin","transfer");
+commonHeader($LANG["transfer"][1],$_SERVER['PHP_SELF'],"admin","transfer");
 
 if (!isset($_SESSION['glpi_onglet'])) $_SESSION['glpi_onglet']=1;
 if (isset($_GET['onglet'])) {

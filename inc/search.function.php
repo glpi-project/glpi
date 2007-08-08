@@ -1465,6 +1465,7 @@ function addSelect ($type,$ID,$num,$meta=0,$meta_type=0){
 		case "glpi_ocs_config.name" :
 		case "glpi_entities.name" :
 		case "glpi_mailgate.name" :
+		case "glpi_transfers.name" :
 		case "state_types.name":
 		case "reservation_types.name":
 			return $table.$addtable.".".$field." AS ".$NAME."_$num, ".$table.$addtable.".ID AS ".$NAME."_".$num."_2, ";
@@ -2036,7 +2037,15 @@ function giveItem ($type,$field,$data,$num,$linkfield=""){
 			$out.= "</a>";
 			return $out;
 		break;
-
+		case "glpi_transfers.name" :
+			$out= "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[TRANSFER_TYPE]."?ID=".$data["ITEM_".$num."_2"]."\">";
+			$out.= $data["ITEM_$num"];
+			if ($CFG_GLPI["view_ID"]||empty($data["ITEM_$num"])) {
+				$out.= " (".$data["ITEM_".$num."_2"].")";
+			}
+			$out.= "</a>";
+			return $out;
+		break;
 		case "glpi_licenses.version" :
 		case "glpi_licenses.serial" :
 		case "glpi_networking_ports.ifaddr" :

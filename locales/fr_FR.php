@@ -94,6 +94,7 @@ $LANG["buttons"][45]="Tout format CSV";
 $LANG["buttons"][46]="Avant";
 $LANG["buttons"][47]="Après";
 $LANG["buttons"][48]="Transférer";
+$LANG["buttons"][49]="Conserver";
 
 
 $LANG["calendarD"][0]="D";
@@ -923,6 +924,7 @@ $LANG["monitors"][30]="Nouvel écran à partir d'un modèle";
 $LANG["monitors"][32]="DVI";
 
 $LANG["networking"][5]="RAM (MB)";
+$LANG["networking"][6]="Ports réseaux";
 $LANG["networking"][12]="Materiel réseau";
 $LANG["networking"][13]="port(s) réseau trouvé(s)";
 $LANG["networking"][14]="IP";
@@ -1501,7 +1503,7 @@ $LANG["setup"][306]="Vérifier la présence de mises à jour";
 $LANG["setup"][307]="Jamais";
 $LANG["setup"][308]="Toutes les semaines";
 $LANG["setup"][309]="Tous les mois";
-$LANG["setup"][311]="Connection au serveur proxy impossible";
+$LANG["setup"][311]="Connexion au serveur proxy impossible";
 
 $LANG["setup"][350]="Liaison avec les matériels pour la création de tickets";
 $LANG["setup"][351]="Tous les matériels";
@@ -1672,6 +1674,7 @@ $LANG["tracking"][37]="Conserver les tickets à la purge d'un élément de l'inv
 
 $LANG["transfer"][1]="Transfert";
 $LANG["transfer"][2]="Ajouter une configuration de transfert";
+$LANG["transfer"][3]="Si n'est plus utilisé";
 
 $LANG["update"][88]="Votre version de la base de données n'est pas compatible avec la version du code installé. Une mise à jour est nécessaire.";
 $LANG["update"][89]="Vous essayez d'utiliser GLPI avec une version de la base de données prévue pour une version supérieure. Veuillez installer la version correspondante à votre base de données.";
