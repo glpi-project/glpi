@@ -37,7 +37,7 @@ if (!defined('GLPI_ROOT')){
 	die("Sorry. You can't access directly to this file");
 	}
 
-function showConfig($target,$ID,$prof){
+function showProfileConfig($target,$ID,$prof){
 	global $LANG,$CFG_GLPI;
 	
 	$onfocus="";

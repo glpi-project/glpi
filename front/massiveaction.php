@@ -311,15 +311,15 @@ $REDIRECT=$_SERVER['HTTP_REFERER'];
 		break;
 		case "add_transfer_list":
 			if (!isset($_SESSION['glpi_transfer_list'])){
-				$_SESSION['glpi_transfer_list']=array();
+				$_SESSION['glpitransfer_list']=array();
 			}
 			if (!isset($_SESSION['glpi_transfer_list'][$_POST["device_type"]])){
-				$_SESSION['glpi_transfer_list'][$_POST["device_type"]]=array();
+				$_SESSION['glpitransfer_list'][$_POST["device_type"]]=array();
 			}
 			
 			foreach ($_POST["item"] as $key => $val){
 				if ($val==1) {
-					$_SESSION['glpi_transfer_list'][$_POST["device_type"]][$key]=$key;
+					$_SESSION['glpitransfer_list'][$_POST["device_type"]][$key]=$key;
 				}
 			}
 			$REDIRECT=$CFG_GLPI['root_doc'].'/front/transfer.action.php';

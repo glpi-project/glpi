@@ -119,7 +119,7 @@ class Transfer extends CommonDBTM{
 			
 			// Simulate transfers To know which items need to be transfer
 			$this->simulateTransfer($items);
-			printCleanArray($this->needtobe_transfer);
+			//printCleanArray($this->needtobe_transfer);
 			// Computer first
 			$this->inittype=COMPUTER_TYPE;
 			if (isset($items[COMPUTER_TYPE])&&count($items[COMPUTER_TYPE])){
@@ -538,7 +538,6 @@ class Transfer extends CommonDBTM{
 					if ($DB->numrows($result)){
 						$data=$DB->fetch_array($result);
 						$data=addslashes_deep($data);
-						print_r($data);
 						// Search if the location already exists in the destination entity
 							$query="SELECT ID FROM glpi_dropdown_locations WHERE FK_entities='".$this->to."' AND completename='".$data['completename']."'";	
 							if ($result_search=$DB->query($query)){
@@ -871,16 +870,17 @@ class Transfer extends CommonDBTM{
 							
 							if ($result_type = $DB->query($query)) {
 								if ($DB->numrows($result_type)>0) {
-									while ($data_type=$DB->fetch_array($result_type)) 
-									if ($canbetransfer) {
+									while ($data_type=$DB->fetch_array($result_type)) {
 										$dtype=$data_type['device_type'];
-										// No items to transfer -> exists links
-										$query_search="SELECT count(*) AS CPT 
-												FROM glpi_doc_device 
-												WHERE FK_doc='$item_ID' AND device_type='$dtype' AND FK_device NOT IN ".$this->item_search[$dtype];
-										$result_search = $DB->query($query_search);
-										if ($DB->result($result_search,0,'CPT')>0){
-											$canbetransfer=false;
+										if (isset($this->item_search[$dtype])&&$canbetransfer) {
+											// No items to transfer -> exists links
+											$query_search="SELECT count(*) AS CPT 
+													FROM glpi_doc_device 
+													WHERE FK_doc='$item_ID' AND device_type='$dtype' AND FK_device NOT IN ".$this->item_search[$dtype];
+											$result_search = $DB->query($query_search);
+											if ($DB->result($result_search,0,'CPT')>0){
+												$canbetransfer=false;
+											}
 										}
 									}
 								}
@@ -1563,6 +1563,11 @@ class Transfer extends CommonDBTM{
 
 		if (!haveRight("transfer","r")) return false;
 
+		$edit_form=true;
+		if (!ereg("transfer.form.php",$_SERVER['PHP_SELF'])){
+			$edit_form=false;
+		}
+
 		$con_spotted=false;
 		$use_cache=true;
 		if (empty($ID)) {
@@ -1573,26 +1578,29 @@ class Transfer extends CommonDBTM{
 		}
 
 		if ($con_spotted){
-			$this->showOnglets($ID, $withtemplate,$_SESSION['glpi_onglet']);
 
 			echo "<form method='post' name=form action=\"$target\"><div class='center'>";
 
 			echo "<table class='tab_cadre_fixe' cellpadding='2' >";
-			echo "<tr><th colspan='4'>";
-			if (empty($ID)) {
-				echo $LANG["transfer"][2];
-			} else {
-				echo $LANG["common"][2]." $ID";
-			}		
-			echo "</th></tr>";
+			if ($edit_form){
+				echo "<tr><th colspan='4'>";
+				if (empty($ID)) {
+					echo $LANG["transfer"][2];
+				} else {
+					echo $LANG["common"][2]." $ID";
+				}		
+				echo "</th></tr>";
+			}
 
 			
 			if (!$use_cache||!($CFG_GLPI["cache"]->start($ID."_".$_SESSION["glpilanguage"],"GLPI_".$this->type))) {
-				echo "<tr class='tab_bg_1'>";
-				echo "<td colspan='2'>".$LANG["common"][16].":	</td><td colspan='2'>";
-				autocompletionTextField("name","glpi_transfers","name",$this->fields["name"],30);	
-				echo "</td>";
-				echo "</tr>";
+				if ($edit_form){
+					echo "<tr class='tab_bg_1'>";
+					echo "<td colspan='2'>".$LANG["common"][16].":	</td><td colspan='2'>";
+					autocompletionTextField("name","glpi_transfers","name",$this->fields["name"],30);	
+					echo "</td>";
+					echo "</tr>";
+				}
 
 				$keep=array(0=>$LANG["buttons"][6],
 						1=>$LANG["buttons"][49]);
@@ -1748,57 +1756,42 @@ class Transfer extends CommonDBTM{
 				echo "</td>";
 				echo "</tr>";
 
-/*
-// Monitor Direct Connect : keep_dc -> tranfer / clean_dc : delete if unused : 1 = delete, 2 = purge
-$options['keep_dc_monitor']=1;
-$options['clean_dc_monitor']=1;
-
-// Phone Direct Connect : keep_dc -> tranfer / clean_dc : delete if unused : 1 = delete, 2 = purge
-$options['keep_dc_phone']=1;
-$options['clean_dc_phone']=1;
-
-// Peripheral Direct Connect : keep_dc -> tranfer / clean_dc : delete if unused : 1 = delete, 2 = purge
-$options['keep_dc_peripheral']=1;
-$options['clean_dc_peripheral']=1;
-
-// Printer Direct Connect : keep_dc -> tranfer / clean_dc : delete if unused : 1 = delete, 2 = purge
-$options['keep_dc_printer']=1;
-$options['clean_dc_printer']=1;
-
-*/
-
-
-	
 				if ($use_cache){
 					$CFG_GLPI["cache"]->end();
 				}
 			}
 
-			if (haveRight("transfer","w")) 
-				if ($ID=="") {
-
+			if (haveRight("transfer","w")) {
+				if ($edit_form){
+					if ($ID=="") {
+						echo "<tr>";
+						echo "<td class='tab_bg_2' valign='top' colspan='4'>";
+						echo "<div class='center'><input type='submit' name='add' value=\"".$LANG["buttons"][8]."\" class='submit'></div>";
+						echo "</td>";
+						echo "</tr>";
+					} else {
+						echo "<tr>";
+						echo "<td class='tab_bg_2' valign='top' colspan='2'>";
+						echo "<input type='hidden' name='ID' value=\"$ID\">\n";
+						echo "<div class='center'><input type='submit' name='update' value=\"".$LANG["buttons"][7]."\" class='submit' ></div>";
+						echo "</td>\n\n";
+						echo "<td class='tab_bg_2' valign='top' colspan='2'>\n";
+						echo "<div class='center'><input type='submit' name='delete' value=\"".$LANG["buttons"][6]."\" class='submit'></div>";
+						echo "</td>";
+						echo "</tr>";
+	
+					}
+				} else {
 					echo "<tr>";
 					echo "<td class='tab_bg_2' valign='top' colspan='4'>";
-					echo "<div class='center'><input type='submit' name='add' value=\"".$LANG["buttons"][8]."\" class='submit'></div>";
+					
+					echo "<div class='center'>";
+					dropdownActiveEntities('to_entity');
+					echo "&nbsp;<input type='submit' name='transfer' value=\"".$LANG["buttons"][48]."\" class='submit'></div>";
 					echo "</td>";
 					echo "</tr>";
-
-			
-
-
-				} else {
-
-					echo "<tr>";
-					echo "<td class='tab_bg_2' valign='top' colspan='2'>";
-					echo "<input type='hidden' name='ID' value=\"$ID\">\n";
-					echo "<div class='center'><input type='submit' name='update' value=\"".$LANG["buttons"][7]."\" class='submit' ></div>";
-					echo "</td>\n\n";
-					echo "<td class='tab_bg_2' valign='top' colspan='2'>\n";
-					echo "<div class='center'><input type='submit' name='delete' value=\"".$LANG["buttons"][6]."\" class='submit'></div>";
-					echo "</td>";
-					echo "</tr>";
-
 				}
+			}
 			echo "</table></div></form>";
 
 		} else {
@@ -1808,6 +1801,70 @@ $options['clean_dc_printer']=1;
 		}
 		return true;
 	}
+	// Display items to transfers
+	function showTransferList(){
+		global $LANG,$LINK_ID_TABLE,$DB,$CFG_GLPI;
+		$ci=new CommonItem();
+		if (isset($_SESSION['glpitransfer_list'])&&count($_SESSION['glpitransfer_list'])){
+			echo "<div class='center'><strong>".$LANG["transfer"][5]."<br>".$LANG["transfer"][6];
+			echo "</strong>";
+			echo "</div>";
+			//echo '<tr><th colspan="2">'.$LANG["transfer"][4].'</th></tr>';
+			echo "<table class='tab_cadre_fixe' >";
+			echo '<tr><th>'.$LANG["transfer"][7].'</th><th>'.$LANG["transfer"][8].":&nbsp;";
+			$rand=dropdownValue("glpi_transfers","ID",0,0);
+			echo '</th></tr>';
+			echo "<tr><td class='tab_bg_1' valign='top'>";
+			
+			foreach ($_SESSION['glpitransfer_list'] as $type => $tab){
+				if (count($tab)){
+					$table=$LINK_ID_TABLE[$type];
+					$query="SELECT $table.name, glpi_entities.completename AS locname, glpi_entities.ID AS entID 
+						FROM $table LEFT JOIN glpi_entities ON ($table.FK_entities = glpi_entities.ID) 
+						WHERE $table.ID IN ".$this->createSearchConditionUsingArray($tab)."
+						ORDER BY locname, $table.name";
+					$entID=-1;
+					if ($result=$DB->query($query)){
+						if ($DB->numrows($result)){
+							$ci->setType($type);
+							echo '<h3>'.$ci->getType().'</h3>';
+							while ($data=$DB->fetch_assoc($result)){
+								if ($entID!=$data['entID']){
+									if ($entID!=-1){
+										echo '<br>';
+									}
+									$entID=$data['entID'];
+									if ($entID>0){
+										echo '<strong>'.$data['locname'].'</strong><br>';
+									} else {
+										echo '<strong>'.$LANG["entity"][2].'</strong><br>';
+									}
+								}
+								echo $data['name']."<br>";
+							}
+						}
+					}
+				}
+			}
+			echo "</td><td class='tab_bg_2' valign='top'>";
+			if (countElementsInTable('glpi_transfers')==0){
+				echo $LANG["search"][15];
+			} else {
+				
+				$params=array('ID'=>'__VALUE__');
+				ajaxUpdateItemOnSelectEvent("dropdown_ID".$rand,"transfer_form",$CFG_GLPI["root_doc"]."/ajax/transfers.php",$params,false);
+				ajaxUpdateItem("transfer_form",$CFG_GLPI["root_doc"]."/ajax/transfers.php",$params,false,"dropdown_ID".$rand);
+			}
+			echo "<div align='center' id='transfer_form'>";
+			echo "</div>";
+			echo '</td></tr>';
+			echo '</table>';
+		} else {
+			echo $LANG["common"][24];
+		}
 
+	}
 }
+
+
 ?>
