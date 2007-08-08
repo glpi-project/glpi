@@ -40,6 +40,25 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 $transfer=new Transfer();
 
+
+commonHeader($LANG["transfer"][1],$_SERVER['PHP_SELF'],"admin","transfer");
+checkRight("transfer","w");
+
+if (isset($_POST['transfer'])){
+	$transfer->moveItems($_SESSION['glpitransfer_list'],$_POST['to_entity'],$_POST);
+	unset($_SESSION['glpitransfer_list']);
+	echo "<strong>".$LANG["common"][23]."</strong><br>";
+	displayBackLink();
+	commonFooter();
+	exit();
+} else if (isset($_GET['clear'])){
+	unset($_SESSION['glpitransfer_list']);
+}
+
+$transfer->showTransferList();
+
+commonFooter();
+
 // Network links : 0 : delete 1 : keep disconnect 2 : keep connect
 $options['keep_networklinks']=0;
 

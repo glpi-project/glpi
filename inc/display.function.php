@@ -485,12 +485,13 @@ function commonHeader($title,$url,$sector="none",$item="none",$option="")
 
 		}
 
-		if (haveRight("transfer","r")){
+		if (haveRight("transfer","r")&&isMultiEntitiesMode()){
 			$menu['admin']['content']['transfer']['title']=$LANG["transfer"][1];
 			$menu['admin']['content']['transfer']['shortcut']='t';
 			$menu['admin']['content']['transfer']['page']='/front/transfer.php';
 			$menu['admin']['content']['transfer']['links']['search']="/front/transfer.php";
 			if (haveRight("transfer","w")){
+				$menu['admin']['content']['transfer']['links']['summary']="/front/transfer.action.php";
 				$menu['admin']['content']['transfer']['links']['add']="/front/transfer.form.php";
 			}
 		}
@@ -1930,13 +1931,6 @@ function showProfileSelecter($target){
 
 
 	} //else echo "only one profile -> no select to print";
-	
-/*	if (count($_SESSION['glpiactiveentities'])>1){
-		echo "<li>";
-			dropdownActiveEntities("activeentity");
-		echo "</li>";
-	} //else echo "only one entity -> no select to print";
-*/	
 
 	if (isMultiEntitiesMode()){
 		echo "<li>";

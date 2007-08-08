@@ -1287,7 +1287,7 @@ function dropdownMassiveAction($device_type,$deleted=0){
 		if (in_array($device_type,array(CARTRIDGE_TYPE,COMPUTER_TYPE,CONSUMABLE_TYPE,CONTACT_TYPE,CONTRACT_TYPE,ENTERPRISE_TYPE,
 				MONITOR_TYPE,NETWORKING_TYPE,PERIPHERAL_TYPE,PHONE_TYPE,PRINTER_TYPE,SOFTWARE_TYPE))
 				&&haveTypeRight($device_type,'w')
-				//&&haveRight('transfer','w')
+				&&haveRight('transfer','w')
 			){
 			echo "<option value=\"add_transfer_list\">".$LANG["buttons"][48]."</option>";
 		}
@@ -1543,31 +1543,19 @@ function displayEntityTree($target,$myname,$tree,$level=0){
 	}
 }
 
-	
 
 function dropdownActiveEntities($myname){
-	global $DB,$CFG_GLPI;
+	global $DB,$CFG_GLPI,$LANG;
 
 	$rand=mt_rand();
 	$query = "SELECT * FROM glpi_entities ".getEntitiesRestrictRequest("WHERE","glpi_entities","ID")." ORDER BY completename";
 	$result = $DB->query($query);
 
-	$link="central.php";
-	if ($_SESSION["glpiactiveprofile"]["interface"]!="central"){
-		$link="helpdesk.public.php";
-	}
+	echo "<select id='active_entity' name=\"".$myname."\">";
 	
-	echo "<form method='POST' action=\"".$CFG_GLPI['root_doc']."/front/$link\">";
-	echo "<select onChange='submit()' id='active_entity' name=\"".$myname."\" size='1'>";
-	
-	/*	$outputval=getDropdownName("glpi_entities",$_SESSION['glpiactive_entity']);
-		if (!empty($outputval)&&$outputval!="&nbsp;"){
-			echo "<option class='tree' selected value='".$_SESSION['active_entity']."'>".$outputval."</option>";
-		}
-	*/
 	// Manage Root entity
 	if (in_array(0,$_SESSION['glpiactiveentities'])){
-		echo "<option ".($_SESSION['glpiactive_entity']==0?" selected ":"")."value=\"0\" class='tree' >ROOT</option>";
+		echo "<option ".($_SESSION['glpiactive_entity']==0?" selected ":"")."value=\"0\" class='tree' >".$LANG["entity"][2]."</option>";
 	}
 
 	if ($DB->numrows($result)) {
@@ -1589,7 +1577,7 @@ function dropdownActiveEntities($myname){
 			echo "<option ".($ID==$_SESSION['glpiactive_entity']?" selected ":"")."value=\"$ID\" $style title=\"".$data['completename']."\">".str_repeat("&nbsp;&nbsp;&nbsp;", $level).$raquo.substr($output,0,50)."</option>";
 		}
 	}
-	echo "</select></form>";
+	echo "</select>";
 }
 
 
