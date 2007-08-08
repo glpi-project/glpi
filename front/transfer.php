@@ -33,72 +33,23 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-$NEEDED_ITEMS=array("transfer","user","tracking","reservation","document","computer","device","printer","networking","peripheral","monitor","software","infocom","phone","link","ocsng","consumable","cartridge","contract","enterprise","contact","group","profile","search","mailgate","typedoc","setup","rulesengine","rule.softwarecategories");
+$NEEDED_ITEMS=array("transfer","search");
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-$transfer=new Transfer();
+// TODO Add transfer Right
 
-// Network links : 0 : delete 1 : keep disconnect 2 : keep connect
-$options['keep_networklinks']=0;
+//checkRight("transfer","r");
 
-// Tickets : 0 : delete 1 : keep and clean ref 2 : keep and move
-$options['keep_tickets']=2;
+commonHeader($LANG["transfer"][1],$_SERVER['PHP_SELF'],"admin","transfer");
 
-// Reservations : 0 : delete 1 : keep
-$options['keep_reservations']=1;
+manageGetValuesInSearch(TRANSFER_TYPE);
 
-// Devices : 0 : delete 1 : keep
-$options['keep_devices']=1;
+searchForm(TRANSFER_TYPE,$_SERVER['PHP_SELF'],$_GET["field"],$_GET["contains"],$_GET["sort"],$_GET["deleted"],$_GET["link"],$_GET["distinct"],$_GET["link2"],$_GET["contains2"],$_GET["field2"],$_GET["type2"]);
 
-// History : 0 : delete 1 : keep
-$options['keep_history']=1;
+showList(TRANSFER_TYPE,$_SERVER['PHP_SELF'],$_GET["field"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"],$_GET["deleted"],$_GET["link"],$_GET["distinct"],$_GET["link2"],$_GET["contains2"],$_GET["field2"],$_GET["type2"]);
 
-// Infocoms : 0 : delete 1 : keep
-$options['keep_infocoms']=1;
-
-// enterprises : 0 : delete 1 : keep
-$options['keep_enterprises']=1;
-$options['clean_enterprises']=1;
-
-// Contacts for enterprises : 0 : delete 1 : keep
-$options['keep_contacts']=1;
-$options['clean_contacts']=1;
-
-// Softwares : 0 : delete 1 : keep
-$options['keep_softwares']=1;
-$options['clean_softwares']=1;
-
-// Contracts : 0 : delete 1 : keep
-$options['keep_contracts']=1;
-$options['clean_contracts']=1;
-
-// Documents : 0 : delete 1 : keep
-$options['keep_documents']=1;
-$options['clean_documents']=1;
-
-// Monitor Direct Connect : keep_dc -> tranfer / clean_dc : delete if unused : 1 = delete, 2 = purge
-$options['keep_dc_monitor']=1;
-$options['clean_dc_monitor']=1;
-
-// Phone Direct Connect : keep_dc -> tranfer / clean_dc : delete if unused : 1 = delete, 2 = purge
-$options['keep_dc_phone']=1;
-$options['clean_dc_phone']=1;
-
-// Peripheral Direct Connect : keep_dc -> tranfer / clean_dc : delete if unused : 1 = delete, 2 = purge
-$options['keep_dc_peripheral']=1;
-$options['clean_dc_peripheral']=1;
-
-// Printer Direct Connect : keep_dc -> tranfer / clean_dc : delete if unused : 1 = delete, 2 = purge
-$options['keep_dc_printer']=1;
-$options['clean_dc_printer']=1;
-
-$entity_id=4;
-
-$items[COMPUTER_TYPE]=array(403);
-
-
-$transfer->moveItems($items,$entity_id,$options);
 commonFooter();
+
 ?>

@@ -2902,4 +2902,12 @@ $SEARCH_OPTION[MAILGATE_TYPE][80]['linkfield']='FK_entities';
 $SEARCH_OPTION[MAILGATE_TYPE][80]['name']=$LANG["entity"][0];
 $SEARCH_OPTION[MAILGATE_TYPE][80]['meta']=0;
 
+// TRANSFER_TYPE
+$SEARCH_OPTION[TRANSFER_TYPE]['common']=$LANG["common"][16];
+$SEARCH_OPTION[TRANSFER_TYPE][1]['table']='glpi_transfer';
+$SEARCH_OPTION[TRANSFER_TYPE][1]['field']='name';
+$SEARCH_OPTION[TRANSFER_TYPE][1]['linkfield']='name';
+$SEARCH_OPTION[TRANSFER_TYPE][1]['name']=$LANG["common"][16];
+$SEARCH_OPTION[TRANSFER_TYPE][1]['meta']=0;
+
 ?>

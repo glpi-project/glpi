@@ -1347,6 +1347,49 @@ function update0681to07() {
 		}
 	}
 
+	if (!TableExists("glpi_transfer")) {
+		$query="CREATE TABLE `glpi_transfer` (
+		`ID` int(11) NOT NULL auto_increment,
+		`name` varchar(255) NOT NULL,
+		`keep_tickets` tinyint(4) NOT NULL default '0',
+		`keep_networklinks` tinyint(4) NOT NULL default '0',
+		`keep_reservations` tinyint(4) NOT NULL default '0',
+		`keep_history` tinyint(4) NOT NULL default '0',
+		`keep_devices` tinyint(4) NOT NULL default '0',
+		`keep_infocoms` tinyint(4) NOT NULL default '0',
+		`keep_dc_monitor` tinyint(4) NOT NULL default '0',
+		`clean_dc_monitor` tinyint(4) NOT NULL default '0',
+		`keep_dc_phone` tinyint(4) NOT NULL default '0',
+		`clean_dc_phone` tinyint(4) NOT NULL default '0',
+		`keep_dc_peripheral` tinyint(4) NOT NULL default '0',
+		`clean_dc_peripheral` tinyint(4) NOT NULL default '0',
+		`keep_dc_printer` tinyint(4) NOT NULL default '0',
+		`clean_dc_printer` tinyint(4) NOT NULL default '0',
+		`keep_enterprises` tinyint(4) NOT NULL default '0',
+		`clean_enterprises` tinyint(4) NOT NULL default '0',
+		`keep_contacts` tinyint(4) NOT NULL default '0',
+		`clean_contacts` tinyint(4) NOT NULL default '0',
+		`keep_contracts` tinyint(4) NOT NULL default '0',
+		`clean_contracts` tinyint(4) NOT NULL default '0',
+		`keep_softwares` tinyint(4) NOT NULL default '0',
+		`clean_softwares` tinyint(4) NOT NULL default '0',
+		`keep_documents` tinyint(4) NOT NULL default '0',
+		`clean_documents` tinyint(4) NOT NULL default '0',
+		`keep_cartridges_type` tinyint(4) NOT NULL default '0',
+		`clean_cartridges_type` tinyint(4) NOT NULL default '0',
+		`keep_cartridges` tinyint(4) NOT NULL default '0',
+		`keep_consumables` tinyint(4) NOT NULL default '0',
+		PRIMARY KEY  (`ID`)
+		) ENGINE=MyISAM ;";
+		$DB->query($query) or die("0.7 add glpi_transfer " . $LANG["update"][90] . $DB->error());
+	}
+
+	if (!FieldExists("glpi_profiles", "transfer")) {
+		$query = "ALTER TABLE `glpi_profiles` ADD COLUMN `transfer` char(1) default NULL AFTER `entity`";
+		$DB->query($query) or die("0.7 add transfer in glpi_profiles" . $LANG["update"][90] . $DB->error());
+		$query = "UPDATE `glpi_profiles` SET `transfer` = entity";
+		$DB->query($query) or die("0.7 update transfer values in glpi_profiles" . $LANG["update"][90] . $DB->error());
+	}
 
 } // fin 0.7 #####################################################################################
 ?>

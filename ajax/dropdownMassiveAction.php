@@ -68,6 +68,7 @@ if (isset($_POST["action"])&&isset($_POST["type"])&&!empty($_POST["type"])){
 		case "delete":
 		case "purge":
 		case "restore":
+		case "add_transfer_list":
 			echo "<input type=\"submit\" name=\"massiveaction\" class=\"submit\" value=\"".$LANG["buttons"][2]."\" >";
 		break;
 		case "install":
