@@ -128,11 +128,6 @@ class Profile extends CommonDBTM{
 			$this->getEmpty();
 		}
 		
-		echo "<table class='tab_cadre' style='margin-bottom:10px'>";
-		echo "<tr><td class='tab_bg_4' width='15'></td><td><strong>".$LANG["profiles"][0]."</strong></td></tr>";
-		echo "<tr><td class='tab_bg_2' width='15'></td><td><strong>".$LANG["profiles"][1]."</strong></td></tr>";
-		echo "</table>";
-		
 		echo "<table class='tab_cadre_fixe'><tr>";
 		echo "<th colspan='4'>".$LANG["profiles"][3].":&nbsp;&nbsp;".$LANG["profiles"][13].":&nbsp;&nbsp;";
 		dropdownYesNo("is_default",$this->fields["is_default"]);
@@ -210,7 +205,6 @@ class Profile extends CommonDBTM{
 		dropdownYesNo("reservation_helpdesk",$this->fields["reservation_helpdesk"]);
 		echo "</td></tr>";
 
-
 		if ($canedit){
 			echo "<tr class='tab_bg_1'>";
 			if ($ID){
@@ -228,7 +222,6 @@ class Profile extends CommonDBTM{
 			echo "</td></tr>";
 		}
 		echo "</table>";
-
 	}
 
 
@@ -244,10 +237,6 @@ class Profile extends CommonDBTM{
 			$this->getEmpty();
 		}
 		
-		echo "<table class='tab_cadre' style='margin-bottom:10px'>";
-		echo "<tr><td class='tab_bg_4' width='15'></td><td><strong>".$LANG["profiles"][0]."</strong></td></tr>";
-		echo "<tr><td class='tab_bg_2' width='15'></td><td><strong>".$LANG["profiles"][1]."</strong></td></tr>";
-		echo "</table>";
 		
 		echo "<table class='tab_cadre_fixe'>";
 		echo "<tr>";
@@ -537,7 +526,6 @@ class Profile extends CommonDBTM{
 		echo "</td>";
 		echo "</tr>";
 
-
 		if ($canedit){
 			echo "<tr class='tab_bg_2'>";
 			if ($ID){
@@ -555,6 +543,6 @@ class Profile extends CommonDBTM{
 		echo "</table>";
 	}
 
-}
 
+}	
 ?>

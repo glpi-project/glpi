@@ -67,11 +67,11 @@ function showConfig($target,$ID,$prof){
 	
 	ajaxUpdateItemOnSelectEvent("profile_interface","profile_form",$CFG_GLPI["root_doc"]."/ajax/profiles.php",$params,false);
 	ajaxUpdateItem("profile_form",$CFG_GLPI["root_doc"]."/ajax/profiles.php",$params,false,'profile_interface');
-	echo "<br>";
 
 	echo "<div align='center' id='profile_form'>";
 	echo "</div>";
 	echo "</div>";
+	showLegend();
 	echo "</form>";
 }
 
@@ -98,34 +98,76 @@ function showProfileEntityUser($target,$ID,$prof,$onglet){
  	echo "<div class='center'>";
 	echo "<table class='tab_cadre_fixe' style='margin-top:10px'>";
  	
+	$i=0;
+	$nb_per_line=3;
+	
  	if ($result = $DB->query($query))
- 		{ 
+ 	{ 
  		if ($DB->numrows($result)!=0)
-	 		{
+	 	{
+	 		
 	 		$temp="";
-	 		echo "<tr><th width='200'>".$LANG["entity"][0]."</th><th>".$LANG["common"][34]."</th></tr>";
+//	 		echo "<tr><th width='200'>".$LANG["entity"][0]."</th><th colspan='3'>".$LANG["common"][34]."</th></tr>";
 	 		while ($data=$DB->fetch_array($result)) 
-	 			{	
-	 			if($data["entite"]==$temp)
-	 				{
-	 				if($_SESSION["glpiactive_entity"]==$data["entite"] || $_SESSION["glpiactive_entity"]==0)
-	 					echo "<tr><td class='tab_bg_1'></td><td class='tab_bg_1'><a href=\"../front/user.form.php?ID=".$data["user"]."\">".getDropdownName('glpi_users',$data["user"])."</a></td></tr>";
-	 				}
-	 			else
-	 				{
-	 				if($_SESSION["glpiactive_entity"]==$data["entite"] || $_SESSION["glpiactive_entity"]==0){
-	 				echo "<tr><td class='tab_bg_2'><a href=\"../front/entity.form.php?ID=".$data["entite"]."\">".getDropdownName('glpi_entities',$data["entite"])."</a></td><td class='tab_bg_2'></td></tr>";
-	 				echo "<tr><td class='tab_bg_1'></td><td class='tab_bg_1'><a href=\"../front/user.form.php?ID=".$data["user"]."\">".getDropdownName('glpi_users',$data["user"])."</a></td></tr>";
-	 				}
-	 				$temp=$data["entite"];
-	 				}
-	 			}
-	 		}
+			{	
+	 			if($data["entite"]!=$temp)
+				{
+		 			if($_SESSION["glpiactive_entity"]==$data["entite"] || $_SESSION["glpiactive_entity"]==0)
+		 			{
+
+						while ($i%$nb_per_line!=0)
+						{
+							echo "<td class='tab_bg_1'>&nbsp;</td>";
+							$i++;
+						}
+
+						if ($i!=0) echo "</tr>";
+							echo "<tr class='tab_bg_1'>";
+
+	 					echo "<tr><th colspan='3'>".getDropdownName('glpi_entities',$data["entite"])."</th></tr>";
+			 			//echo "<td class='tab_bg_2'><a href=\"../front/entity.form.php?ID=".$data["entite"]."\">".getDropdownName('glpi_entities',$data["entite"])."</a></td><td class='tab_bg_2' colspan='3'></td></tr>";
+			 			$i=0;
+			 			$temp=$data["entite"];		
+					}
+				}
+
+		 		if ($i%$nb_per_line==0) {
+					if ($i!=0) echo "</tr>";
+						echo "<tr class='tab_bg_1'>";
+					$i=0;	
+				}
+
+ 				if($_SESSION["glpiactive_entity"]==$data["entite"] || $_SESSION["glpiactive_entity"]==0)
+ 				{
+ 					echo "<td class='tab_bg_1'><a href=\"../front/user.form.php?ID=".$data["user"]."\">".getDropdownName('glpi_users',$data["user"])."</a></td>";
+ 					$i++;
+ 				}
+ 					
+			}
+
+			while ($i%$nb_per_line!=0)
+			{
+				echo "<td class='tab_bg_1'>&nbsp;</td>";
+				$i++;
+			}
+
+		}
  		else
  			echo "<tr><td class='tab_bg_1' align=center>".$LANG["profiles"][33]."</td></tr>";
  		}
+ 
  	echo "</table>";
 	echo "</div>";
- }
+
+  }
+
+function showLegend(){
+	global $LANG;
 	
+	echo "<table class='tab_cadre_fixe'>";
+	echo "<tr class='tab_bg_2'><td width='70' style='text-decoration:underline'><strong>".$LANG["profiles"][34]." : </strong></td><td class='tab_bg_4' width='15' style='border:1px solid black'></td><td><strong>".$LANG["profiles"][0]."</strong></td></tr>";
+	echo "<tr class='tab_bg_2'><td></td><td class='tab_bg_2' width='15' style='border:1px solid black'></td><td><strong>".$LANG["profiles"][1]."</strong></td></tr>";
+	echo "</table>";
+}
+
 ?>

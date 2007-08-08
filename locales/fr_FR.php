@@ -1131,6 +1131,8 @@ $LANG["profiles"][30]="Voir les informations OCSNG";
 $LANG["profiles"][31]="Synchronisation OCSNG manuellement";
 $LANG["profiles"][32]="Voir les tickets qui me sont assignés";
 $LANG["profiles"][33]="Pas d'utilisateur trouvés";
+$LANG["profiles"][34]="Légende";
+
 
 $LANG["registry"][1]="Ruche";
 $LANG["registry"][2]="Chemin";
