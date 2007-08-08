@@ -341,12 +341,14 @@ td { }
 .tab_bg_3 {
 /*background-color: #eeeeee;*/
 	background-color: #e7e7e2;
-
 }  
+
+.tab_bg_4 {
+	background-color: silver;
+}
 
 .tab_find {
 	background-color: #ccccc7;
-
 }
 
 

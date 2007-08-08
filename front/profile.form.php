@@ -42,9 +42,6 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 checkRight("profile","r");
 
-
-commonHeader($LANG["Menu"][35],$_SERVER['PHP_SELF'],"admin","profile");
-
 if (!isset($_GET['ID'])) {
 	$_GET['ID']=0;
 }
@@ -70,7 +67,34 @@ else  if (isset($_POST["update"])){
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 
-$prof->showForm($_SERVER['PHP_SELF'],$_GET["ID"]);
+commonHeader($LANG["Menu"][35],$_SERVER['PHP_SELF'],"admin","profile");
+
+if (!isset($_SESSION['glpi_onglet'])) $_SESSION['glpi_onglet']=1;
+if (isset($_GET['onglet'])) {
+	$_SESSION['glpi_onglet']=$_GET['onglet'];
+}	
+
+
+if ($prof->showForm($_SERVER['PHP_SELF'],$_GET["ID"])){
+	switch($_SESSION['glpi_onglet']){
+		case -1 :	
+			showConfig($_SERVER['PHP_SELF'],$_GET["ID"],$prof);
+			showProfileEntityUser($_SERVER['PHP_SELF'],$_GET["ID"],$prof,$_SESSION['glpi_onglet']);
+			displayPluginAction(PROFILE_TYPE,$_GET["ID"],$_SESSION['glpi_onglet']);
+		break;
+		case 1:
+			showConfig($_SERVER['PHP_SELF'],$_GET["ID"],$prof);
+		break;
+		case 2 : 
+			showProfileEntityUser($_SERVER['PHP_SELF'],$_GET["ID"],$prof,$_SESSION['glpi_onglet']);
+		break;
+		default :
+			if (!displayPluginAction(PROFILE_TYPE,$_GET["ID"],$_SESSION['glpi_onglet'])){
+				
+			}
+		break;
+	}
+}
 
 commonFooter();
 
