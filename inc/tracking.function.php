@@ -357,14 +357,13 @@ function showJobListForItem($username,$item_type,$item,$sort="",$order="") {
 
 	$result = $DB->query($query);
 
-	$i = 0;
 	$number = $DB->numrows($result);
 
 	if ($number > 0)
 	{
 		echo "<div class='center'>&nbsp;<table class='tab_cadre_fixe'>";
 		echo "<tr><th colspan='9'>".$number." ".$LANG["job"][17]."";
-		if ($number > 1) { echo "s"; }
+		//if ($number > 1) { echo "s"; }
 		echo " ".$LANG["job"][16].":&nbsp;";
 		echo "<a href='".$CFG_GLPI["root_doc"]."/front/tracking.php?reset=reset_before&amp;status=all&amp;item=$item&amp;type=$item_type'>".$LANG["buttons"][23]."</a>";
 		echo "</th></tr>";
@@ -381,10 +380,7 @@ function showJobListForItem($username,$item_type,$item,$sort="",$order="") {
 		commonTrackingListHeader(HTML_OUTPUT,$_SERVER['PHP_SELF'],"ID=$item",$sort,$order);
 
 		while ($data=$DB->fetch_assoc($result))
-		{
 			showJobShort($data, 0);
-			$i++;
-		}
 		echo "</table></div>";
 	} 
 	else

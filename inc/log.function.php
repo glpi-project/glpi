@@ -156,7 +156,7 @@ function showHistory($device_type,$id_device){
 	while ($data =$DB->fetch_array($result)){ 
 		$display_history = true;
 		$ID = $data["ID"];
-		$date_mod = $date_mod=convDateTime($data["date_mod"]);
+		$date_mod=convDateTime($data["date_mod"]);
 		$user_name = $data["user_name"];
 		$field="";
 		// This is an internal device ?
