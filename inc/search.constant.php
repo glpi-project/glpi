@@ -374,7 +374,7 @@ $SEARCH_OPTION[COMPUTER_TYPE][52]['meta']=0;
 $SEARCH_OPTION[COMPUTER_TYPE][53]['table']='glpi_enterprises_infocoms';
 $SEARCH_OPTION[COMPUTER_TYPE][53]['field']='name';
 $SEARCH_OPTION[COMPUTER_TYPE][53]['linkfield']='';
-$SEARCH_OPTION[COMPUTER_TYPE][53]['name']=$LANG["financial"][3]." ".$LANG["financial"][26];
+$SEARCH_OPTION[COMPUTER_TYPE][53]['name']=$LANG["financial"][26];
 $SEARCH_OPTION[COMPUTER_TYPE][53]['meta']=0;
 
 $SEARCH_OPTION[COMPUTER_TYPE][54]['table']='glpi_infocoms';
@@ -700,7 +700,7 @@ $SEARCH_OPTION[NETWORKING_TYPE][52]['meta']=0;
 $SEARCH_OPTION[NETWORKING_TYPE][53]['table']='glpi_enterprises_infocoms';
 $SEARCH_OPTION[NETWORKING_TYPE][53]['field']='name';
 $SEARCH_OPTION[NETWORKING_TYPE][53]['linkfield']='';
-$SEARCH_OPTION[NETWORKING_TYPE][53]['name']=$LANG["financial"][3]." ".$LANG["financial"][26];
+$SEARCH_OPTION[NETWORKING_TYPE][53]['name']=$LANG["financial"][26];
 $SEARCH_OPTION[NETWORKING_TYPE][53]['meta']=0;
 
 $SEARCH_OPTION[NETWORKING_TYPE][54]['table']='glpi_infocoms';
@@ -969,7 +969,7 @@ $SEARCH_OPTION[PRINTER_TYPE][52]['meta']=0;
 $SEARCH_OPTION[PRINTER_TYPE][53]['table']='glpi_enterprises_infocoms';
 $SEARCH_OPTION[PRINTER_TYPE][53]['field']='name';
 $SEARCH_OPTION[PRINTER_TYPE][53]['linkfield']='';
-$SEARCH_OPTION[PRINTER_TYPE][53]['name']=$LANG["financial"][3]." ".$LANG["financial"][26];
+$SEARCH_OPTION[PRINTER_TYPE][53]['name']=$LANG["financial"][26];
 $SEARCH_OPTION[PRINTER_TYPE][53]['meta']=0;
 
 $SEARCH_OPTION[PRINTER_TYPE][54]['table']='glpi_infocoms';
@@ -1194,7 +1194,7 @@ $SEARCH_OPTION[MONITOR_TYPE][52]['meta']=0;
 $SEARCH_OPTION[MONITOR_TYPE][53]['table']='glpi_enterprises_infocoms';
 $SEARCH_OPTION[MONITOR_TYPE][53]['field']='name';
 $SEARCH_OPTION[MONITOR_TYPE][53]['linkfield']='';
-$SEARCH_OPTION[MONITOR_TYPE][53]['name']=$LANG["financial"][3]." ".$LANG["financial"][26];
+$SEARCH_OPTION[MONITOR_TYPE][53]['name']=$LANG["financial"][26];
 $SEARCH_OPTION[MONITOR_TYPE][53]['meta']=0;
 
 $SEARCH_OPTION[MONITOR_TYPE][54]['table']='glpi_infocoms';
@@ -1458,7 +1458,7 @@ $SEARCH_OPTION[PERIPHERAL_TYPE][52]['meta']=0;
 $SEARCH_OPTION[PERIPHERAL_TYPE][53]['table']='glpi_enterprises_infocoms';
 $SEARCH_OPTION[PERIPHERAL_TYPE][53]['field']='name';
 $SEARCH_OPTION[PERIPHERAL_TYPE][53]['linkfield']='';
-$SEARCH_OPTION[PERIPHERAL_TYPE][53]['name']=$LANG["financial"][3]." ".$LANG["financial"][26];
+$SEARCH_OPTION[PERIPHERAL_TYPE][53]['name']=$LANG["financial"][26];
 $SEARCH_OPTION[PERIPHERAL_TYPE][53]['meta']=0;
 
 $SEARCH_OPTION[PERIPHERAL_TYPE][54]['table']='glpi_infocoms';
@@ -1672,7 +1672,7 @@ $SEARCH_OPTION[SOFTWARE_TYPE][52]['meta']=0;
 $SEARCH_OPTION[SOFTWARE_TYPE][53]['table']='glpi_enterprises_infocoms';
 $SEARCH_OPTION[SOFTWARE_TYPE][53]['field']='name';
 $SEARCH_OPTION[SOFTWARE_TYPE][53]['linkfield']='';
-$SEARCH_OPTION[SOFTWARE_TYPE][53]['name']=$LANG["financial"][3]." ".$LANG["financial"][26];
+$SEARCH_OPTION[SOFTWARE_TYPE][53]['name']=$LANG["financial"][26];
 $SEARCH_OPTION[SOFTWARE_TYPE][53]['meta']=0;
 
 $SEARCH_OPTION[SOFTWARE_TYPE][54]['table']='glpi_infocoms';
@@ -2500,7 +2500,7 @@ $SEARCH_OPTION[PHONE_TYPE][52]['meta']=0;
 $SEARCH_OPTION[PHONE_TYPE][53]['table']='glpi_enterprises_infocoms';
 $SEARCH_OPTION[PHONE_TYPE][53]['field']='name';
 $SEARCH_OPTION[PHONE_TYPE][53]['linkfield']='';
-$SEARCH_OPTION[PHONE_TYPE][53]['name']=$LANG["financial"][3]." ".$LANG["financial"][26];
+$SEARCH_OPTION[PHONE_TYPE][53]['name']=$LANG["financial"][26];
 $SEARCH_OPTION[PHONE_TYPE][53]['meta']=0;
 
 $SEARCH_OPTION[PHONE_TYPE][54]['table']='glpi_infocoms';
