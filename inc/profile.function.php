@@ -92,8 +92,15 @@ function showProfileEntityUser($target,$ID,$prof,$onglet){
 		echo "<th>".$LANG["profiles"][22]." :&nbsp;&nbsp;&nbsp;&nbsp;".$prof->fields["name"]."</th>";
 	 	echo "</tr></table>";
  		}
- 	
- 	$query="SELECT FK_users AS user,FK_entities AS entity FROM glpi_users_profiles WHERE FK_profiles=".$ID." order by FK_entities";
+ 
+ 
+ 	if ((countElementsInTable("glpi_entities")+1)==count($_SESSION["glpiactiveentities"])){
+		$sql_entities = "";
+	} else {
+		$sql_entities = "AND ".getEntitiesRestrictRequest("","glpi_users_profiles");
+	}
+ 
+ 	$query="SELECT glpi_users_profiles.FK_users AS user, glpi_users_profiles.FK_entities AS entity FROM glpi_users_profiles WHERE glpi_users_profiles.FK_profiles=".$ID." ".$sql_entities." order by FK_entities";
  	
  	echo "<div class='center'>";
 	echo "<table class='tab_cadre_fixe'>";
@@ -111,33 +118,27 @@ function showProfileEntityUser($target,$ID,$prof,$onglet){
 			{	
 	 			if($data["entity"]!=$temp)
 				{
-		 			if($_SESSION["glpiactive_entity"]==$data["entity"] || $_SESSION["glpiactive_entity"]==0)
-		 			{
-						while ($i%$nb_per_line!=0)
-						{
-							echo "<td class='tab_bg_1'>&nbsp;</td>";
-							$i++;
-						}
-
-						if ($i!=0) echo "</tr></div></table>";
-						
-//						echo "<tr class='tab_bg_1'>";
-						echo "	<tr class='tab_bg_2'>";
-						echo "  	<td align='left'>"; 
-						echo "			<a  href=\"javascript:showHideDiv('entity$temp','imgcat$temp','".GLPI_ROOT."/pics/folder.png','".GLPI_ROOT."/pics/folder-open.png');\">";
-						echo "				<img alt='' name='imgcat$temp' src=\"".GLPI_ROOT."/pics/folder.png\">&nbsp;<strong>".getDropdownName('glpi_entities',$data["entity"])."</strong>";
-						echo "			</a>"; 
-						echo "		</td>"; 
-						echo "	</tr>"; 
-						echo "<tr class='tab_bg_2'>";
-						echo "		<td colspan='5'>
-								     <div align='center' id='entity$temp' style=\"display:none;\">"; 
-						echo"			<table class='tab_cadrehov'>";
-
-	 					//echo "<tr><th colspan='3'>".getDropdownName('glpi_entities',$data["entity"])."</th></tr>";
-			 			$i=0;
-			 			$temp=$data["entity"];		
+					while ($i%$nb_per_line!=0)
+					{
+						echo "<td class='tab_bg_1'>&nbsp;</td>";
+						$i++;
 					}
+
+					if ($i!=0) echo "</tr></div></table>";
+					
+					echo "	<tr class='tab_bg_2'>";
+					echo "  	<td align='left'>"; 
+					echo "			<a  href=\"javascript:showHideDiv('entity$temp','imgcat$temp','".GLPI_ROOT."/pics/folder.png','".GLPI_ROOT."/pics/folder-open.png');\">";
+					echo "				<img alt='' name='imgcat$temp' src=\"".GLPI_ROOT."/pics/folder.png\">&nbsp;<strong>".getDropdownName('glpi_entities',$data["entity"])."</strong>";
+					echo "			</a>"; 
+					echo "		</td>"; 
+					echo "	</tr>"; 
+					echo "<tr class='tab_bg_2'>";
+					echo "		<td colspan='5'>
+								     <div align='center' id='entity$temp' style=\"display:none;\">"; 
+					echo"			<table class='tab_cadrehov'>";
+		 			$i=0;
+		 			$temp=$data["entity"];		
 				}
 
 		 		if ($i%$nb_per_line==0) {
@@ -146,11 +147,8 @@ function showProfileEntityUser($target,$ID,$prof,$onglet){
 					$i=0;	
 				}
 
- 				if($_SESSION["glpiactive_entity"]==$data["entity"] || $_SESSION["glpiactive_entity"]==0)
- 				{
- 					echo "<td class='tab_bg_1'><a href=\"../front/user.form.php?ID=".$data["user"]."\">".getDropdownName('glpi_users',$data["user"])."</a></td>";
- 					$i++;
- 				}
+				echo "<td class='tab_bg_1'><a href=\"../front/user.form.php?ID=".$data["user"]."\">".getDropdownName('glpi_users',$data["user"])."</a></td>";
+				$i++;
  					
 			}
 
