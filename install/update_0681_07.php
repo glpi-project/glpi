@@ -1382,6 +1382,9 @@ function update0681to07() {
 		PRIMARY KEY  (`ID`)
 		) ENGINE=MyISAM ;";
 		$DB->query($query) or die("0.7 add glpi_transfers " . $LANG["update"][90] . $DB->error());
+		$query="INSERT INTO glpi_transfers VALUES ('1','complete','2','2','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1');
+";
+		$DB->query($query) or die("0.7 insert transfer default values" . $LANG["update"][90] . $DB->error());
 	}
 
 	if (!FieldExists("glpi_profiles", "transfer")) {
