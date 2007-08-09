@@ -575,6 +575,49 @@ class Transfer extends CommonDBTM{
 		return 0;
 	}
 	
+	function transferDropdownNetpoint($netID){
+		global $DB;
+
+		if ($netID>0){
+			if (isset($this->already_transfer['netpoint'][$netID])){
+				return $this->already_transfer['netpoint'][$netID];
+			} else { // Not already transfer
+				// Search init item
+				$query="SELECT * FROM glpi_dropdown_netpoint WHERE ID='$netID'";
+				if ($result=$DB->query($query)){
+					if ($DB->numrows($result)){
+						$data=$DB->fetch_array($result);
+						$data=addslashes_deep($data);
+						$locID=$this->transferDropdownLocation($data['location']);
+						// Search if the location already exists in the destination entity
+							$query="SELECT ID FROM glpi_dropdown_netpoint WHERE FK_entities='".$this->to."' AND name='".$data['name']."' AND location='$locID'";	
+							if ($result_search=$DB->query($query)){
+								// Found : -> use it
+								if ($DB->numrows($result_search)>0){
+									$newID=$DB->result($result_search,0,'ID');
+									$this->addToAlreadyTransfer('netpoint',$netID,$newID);
+									return $newID;
+								}
+							}
+							// Not found : 
+							$input=array();
+							$input['tablename']='glpi_dropdown_netpoint';
+							$input['FK_entities']=$this->to;
+							$input['value']=$data['name'];
+							$input['comments']=$data['comments'];
+							$input['type']="under";
+							$input['value2']=$locID; 
+							// add item
+							$newID=addDropdown($input);
+							$this->addToAlreadyTransfer('netpoint',$netID,$newID);
+							return $newID;
+					} 
+				}
+			}
+		}
+		return 0;
+	}	
+	
 	function transferSoftwares($type,$ID,$ocs_computer=false){
 		global $DB;
 		// Get licenses linked
@@ -1487,10 +1530,9 @@ class Transfer extends CommonDBTM{
 
 	function transferNetworkLink($type,$ID,$newID,$ocs_computer=false){
 		global $DB;
-		// TODO manage dropdown_netpoint on copy netpoint
 		$np=new Netport();
 
-		$query = "SELECT ID 
+		$query = "SELECT *
 			FROM glpi_networking_ports 
 			WHERE on_device = '$ID' AND device_type = '$type'";
 		if ($result = $DB->query($query)) {
@@ -1513,16 +1555,24 @@ class Transfer extends CommonDBTM{
 						break;
 					// Disconnect
 					case 1 : 
+						
 						// Not a copy -> disconnect
 						if ($ID==$newID){ 
 							while ($data=$DB->fetch_array($result)) {
 								removeConnector($data['ID']);
+								if ($data['netpoint']){
+									$netpointID=$this->transferDropdownNetpoint($data['netpoint']);
+									$input['ID']=$data['ID'];
+									$input['netpoint']=$netpointID;
+									$np->update($input);
+								}
 							}
 						} else { // Copy -> copy netports
 							while ($data=$DB->fetch_array($result)) {
 								$data = addslashes_deep($data);
 								unset($data['ID']);
 								$data['on_device']=$newID;
+								$data['netpoint']=$this->transferDropdownNetpoint($data['netpoint']);
 								unset($np->fields);
 								$np->add($data);
 							}
@@ -1536,11 +1586,22 @@ class Transfer extends CommonDBTM{
 							while ($data=$DB->fetch_array($result)) {
 								unset($data['ID']);
 								$data['on_device']=$newID;
+								$data['netpoint']=$this->transferDropdownNetpoint($data['netpoint']);
 								unset($np->fields);
 								$np->add($data);
 							}
+						} else {
+							while ($data=$DB->fetch_array($result)) {
+								// Not a copy -> only update netpoint
+								if ($data['netpoint']){
+									$netpointID=$this->transferDropdownNetpoint($data['netpoint']);
+									$input['ID']=$data['ID'];
+									$input['netpoint']=$netpointID;
+									$np->update($input);
+								}
+							}
 						}
-						// Not a copy -> nothing to do
+
 						break;
 
 				}
