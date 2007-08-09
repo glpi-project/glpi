@@ -76,31 +76,22 @@ function showProfileConfig($target,$ID,$prof){
 }
 
 	
-function showProfileEntityUser($target,$ID,$prof,$onglet){	
+function showProfileEntityUser($target,$ID,$prof){	
  	
  	global $DB,$LANG;
  	
- 	if($onglet==2)
- 		{
-	 	if (!empty($ID)&&$ID)
-			$prof->getFromDB($ID);
-		else
-			$prof->getEmpty();
+ 	if (!empty($ID)&&$ID)
+		$prof->getFromDB($ID);
+	else
+		$prof->getEmpty();
 	 	
-	 	echo "<div class='center'>";
-		echo "<table class='tab_cadre_fixe'><tr>";
-		echo "<th>".$LANG["profiles"][22]." :&nbsp;&nbsp;&nbsp;&nbsp;".$prof->fields["name"]."</th>";
-	 	echo "</tr></table>";
- 		}
- 
- 
- 	if ((countElementsInTable("glpi_entities")+1)==count($_SESSION["glpiactiveentities"])){
-		$sql_entities = "";
-	} else {
-		$sql_entities = "AND ".getEntitiesRestrictRequest("","glpi_users_profiles");
-	}
- 
- 	$query="SELECT glpi_users.*, glpi_users_profiles.FK_entities AS entity 
+ 	echo "<div class='center'>";
+	echo "<table class='tab_cadre_fixe'><tr>";
+	echo "<th>".$LANG["profiles"][22]." :&nbsp;&nbsp;&nbsp;&nbsp;".$prof->fields["name"]."</th>";
+ 	echo "</tr></table>";
+	echo "</div>";
+  	
+  	$query="SELECT glpi_users.*, glpi_users_profiles.FK_entities AS entity 
  		FROM glpi_users_profiles 
  		LEFT JOIN glpi_entities ON (glpi_entities.ID=glpi_users_profiles.FK_entities)
  		LEFT JOIN glpi_users ON (glpi_users.ID=glpi_users_profiles.FK_users)
@@ -118,18 +109,18 @@ function showProfileEntityUser($target,$ID,$prof,$onglet){
  		if ($DB->numrows($result)!=0)
 	 	{
 	 		
-	 		$temp="";
+	 		$temp=-1;
 	 		while ($data=$DB->fetch_array($result)) 
 			{	
 	 			if($data["entity"]!=$temp)
 				{
 					while ($i%$nb_per_line!=0)
 					{
-						echo "<td class='tab_bg_1'>&nbsp;</td>";
+						echo "<td class='tab_bg_1'>&nbsp;</td>\n";
 						$i++;
 					}
 
-					if ($i!=0) echo "</tr></div></table>";
+					if ($i!=0) echo "</table></div></td></tr>\n";
 					
 					echo "	<tr class='tab_bg_2'>";
 					echo "  	<td align='left'>"; 
@@ -139,20 +130,20 @@ function showProfileEntityUser($target,$ID,$prof,$onglet){
 					echo "		</td>"; 
 					echo "	</tr>"; 
 					echo "<tr class='tab_bg_2'>";
-					echo "		<td colspan='5'>
-								     <div align='center' id='entity$temp' style=\"display:none;\">"; 
-					echo"			<table class='tab_cadrehov'>";
+					echo "		<td>
+								     <div align='center' id='entity$temp' style=\"display:none;\">\n"; 
+					echo"			<table class='tab_cadre'>\n";
 		 			$i=0;
 		 			$temp=$data["entity"];		
 				}
 
 		 		if ($i%$nb_per_line==0) {
-					if ($i!=0) echo "</tr>";
-						echo "<tr class='tab_bg_1'>";
+					if ($i!=0) echo "</tr>\n";
+						echo "<tr class='tab_bg_1'>\n";
 					$i=0;	
 				}
 
-				echo "<td class='tab_bg_1'>".formatUserName($data["ID"],$data["name"],$data["realname"],$data["firstname"],1)."</td>";
+				echo "<td class='tab_bg_1'>".formatUserName($data["ID"],$data["name"],$data["realname"],$data["firstname"],1)."</td>\n";
 				$i++;
  					
 			}
@@ -164,7 +155,7 @@ function showProfileEntityUser($target,$ID,$prof,$onglet){
 					echo "<td class='tab_bg_1'>&nbsp;</td>";
 					$i++;
 				}
-				echo "</tr></div></table>";
+				echo "</table></div></td></tr>";
 			}
 				
 		}
