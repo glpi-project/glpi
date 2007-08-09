@@ -122,8 +122,8 @@ $options['keep_cartridges']=1;
 //$options['keep_consumables_type']=1; // Not needed
 $options['keep_consumables']=1;
 
-$entity_id=4;
-$items[COMPUTER_TYPE]=array(403);
+//$entity_id=4;
+//$items[COMPUTER_TYPE]=array(403);
 //$transfer->moveItems($items,$entity_id,$options);
 
 ?>
