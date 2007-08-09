@@ -245,132 +245,125 @@ class Job extends CommonDBTM{
 				}
 			}
 	
+			if ($CFG_GLPI["followup_on_update_ticket"]&&count($updates)){
 	
 	
-			if ($CFG_GLPI["followup_on_update_ticket"]){
-	
-	
-				if (in_array("name",$updates)){
-					$change_followup_content.=$LANG["mailing"][45]."\n";
-					$global_mail_change_count++;
-				}
-				if (in_array("contents",$updates)){
-					$change_followup_content.=$LANG["mailing"][46]."\n";
-					$global_mail_change_count++;
-				}
-	
-				if (in_array("status",$updates)){
-					$new_status=$this->fields["status"];
-					$change_followup_content.=$LANG["mailing"][27].": ".getStatusName($input["_old_status"])." -> ".getStatusName($new_status)."\n";
-	
-					if (ereg("old_",$new_status))
-						$newinput["add_close"]="add_close";
-					if (in_array("closedate",$updates))	
-						$global_mail_change_count++; // Manage closedate
-	
-					$global_mail_change_count++;
-				}
-	
-				if (in_array("author",$updates)){
-					$author=new User;
-					$author->getFromDB($input["_old_author"]);
-					$old_author_name=$author->getName();
-					$author->getFromDB($this->fields["author"]);
-					$new_author_name=$author->getName();
-					$change_followup_content.=$LANG["mailing"][18].": $old_author_name -> ".$new_author_name."\n";
-	
-					$global_mail_change_count++;
-				}
-	
-				if (in_array("FK_group",$updates)){
-					$new_group=$this->fields["FK_group"];
-					$old_group_name=ereg_replace("&nbsp;",$LANG["mailing"][109],getDropdownName("glpi_groups",$input["_old_group"]));
-					$new_group_name=ereg_replace("&nbsp;",$LANG["mailing"][109],getDropdownName("glpi_groups",$new_group));
-					$change_followup_content.=$LANG["mailing"][20].": ".$old_group_name." -> ".$new_group_name."\n";
-					$global_mail_change_count++;
-				}
-	
-				if (in_array("priority",$updates)){
-					$new_priority=$this->fields["priority"];
-					$change_followup_content.=$LANG["mailing"][15].": ".getPriorityName($input["_old_priority"])." -> ".getPriorityName($new_priority)."\n";
-					$global_mail_change_count++;		
-				}
-				if (in_array("category",$updates)){
-					$new_category=$this->fields["category"];
-					$old_category_name=ereg_replace("&nbsp;",$LANG["mailing"][100],getDropdownName("glpi_dropdown_tracking_category",$input["_old_category"]));
-					$new_category_name=ereg_replace("&nbsp;",$LANG["mailing"][100],getDropdownName("glpi_dropdown_tracking_category",$new_category));
-					$change_followup_content.=$LANG["mailing"][14].": ".$old_category_name." -> ".$new_category_name."\n";
-					$global_mail_change_count++;
-				}
-				if (in_array("request_type",$updates)){
-					$new_request_type=$this->fields["request_type"];
-					$old_request_type_name=getRequestTypeName($input["_old_request_type"]);
-					$new_request_type_name=getRequestTypeName($new_request_type);
-					$change_followup_content.=$LANG["mailing"][21].": ".$old_request_type_name." -> ".$new_request_type_name."\n";
-					$global_mail_change_count++;
-				}
-				if (in_array("computer",$updates)||in_array("device_type",$updates)){	
-					$ci=new CommonItem;
-					$ci->getfromDB($input["_old_item_type"],$input["_old_item"]);
-					$old_item_name=$ci->getName();
-					if ($old_item_name=="N/A"||empty($old_item_name))
-						$old_item_name=$LANG["mailing"][107];
-					$ci->getfromDB($this->fields["device_type"],$this->fields["computer"]);
-					$new_item_name=$ci->getName();
-					if ($new_item_name=="N/A"||empty($new_item_name))
-						$new_item_name=$LANG["mailing"][107];
-	
-					$change_followup_content.=$LANG["mailing"][17].": $old_item_name -> ".$new_item_name."\n";
-					if (in_array("computer",$updates)) $global_mail_change_count++;
-					if (in_array("device_type",$updates)) $global_mail_change_count++;
-				}
-	
-	
-				if (in_array("assign",$updates)){
-					$new_assign_name=getAssignName($this->fields["assign"],USER_TYPE);
-					if ($input["_old_assign"]==0){
-						$input["_old_assign_name"]=$LANG["mailing"][105];
-					}
-					$change_followup_content.=$LANG["mailing"][12].": ".$input["_old_assign_name"]." -> ".$new_assign_name."\n";
-					$global_mail_change_count++;
-					
-				} else {
-					unset($input["_old_assign"]);
-				}
-	
-				if (in_array("assign_ent",$updates)){
-					$new_assign_ent_name=getAssignName($this->fields["assign_ent"],ENTERPRISE_TYPE);
-					$change_followup_content.=$LANG["mailing"][12].": ".$input["_old_assign_ent_name"]." -> ".$new_assign_ent_name."\n";
-					$global_mail_change_count++;
-				}
-				if (in_array("assign_group",$updates)){
-					$new_assign_group_name=getAssignName($this->fields["assign_group"],GROUP_TYPE);
-					$change_followup_content.=$LANG["mailing"][12].": ".$input["_old_assign_group_name"]." -> ".$new_assign_group_name."\n";
-					$global_mail_change_count++;
-				}
-				if (in_array("cost_time",$updates)){
-					$change_followup_content.=$LANG["mailing"][42].": ".number_format($input["_old_cost_time"],$CFG_GLPI["decimal_number"])." -> ".number_format($this->fields["cost_time"],$CFG_GLPI["decimal_number"])."\n";
-					$global_mail_change_count++;
-				}
-				if (in_array("cost_fixed",$updates)){
-					$change_followup_content.=$LANG["mailing"][43].": ".number_format($input["_old_cost_fixed"],$CFG_GLPI["decimal_number"])." -> ".number_format($this->fields["cost_fixed"],$CFG_GLPI["decimal_number"])."\n";
-					$global_mail_change_count++;
-				}
-				if (in_array("cost_material",$updates)){
-					$change_followup_content.=$LANG["mailing"][44].": ".number_format($input["_old_cost_material"],$CFG_GLPI["decimal_number"])." -> ".number_format($this->fields["cost_material"],$CFG_GLPI["decimal_number"])."\n";
-					$global_mail_change_count++;
-				}
-	
-				if (in_array("emailupdates",$updates)){
-					if ($this->fields["emailupdates"]){
-						$change_followup_content.=$LANG["mailing"][101]."\n";
-					} else {
-						$change_followup_content.=$LANG["mailing"][102]."\n";
-					}
-					$global_mail_change_count++;
+				foreach ($updates as $key)
+				switch ($key) {
+					case "name":
+						$change_followup_content.=$LANG["mailing"][45]."\n";
+						$global_mail_change_count++;
+						break;
+					case "contents":
+						$change_followup_content.=$LANG["mailing"][46]."\n";
+						$global_mail_change_count++;
+					break;
+					case "status":
+						$new_status=$this->fields["status"];
+						$change_followup_content.=$LANG["mailing"][27].": ".getStatusName($input["_old_status"])." -> ".getStatusName($new_status)."\n";
+		
+						if (ereg("old_",$new_status))
+							$newinput["add_close"]="add_close";
+						if (in_array("closedate",$updates))	
+							$global_mail_change_count++; // Manage closedate
+		
+						$global_mail_change_count++;
+					break;
+					case "author":
+						$author=new User;
+						$author->getFromDB($input["_old_author"]);
+						$old_author_name=$author->getName();
+						$author->getFromDB($this->fields["author"]);
+						$new_author_name=$author->getName();
+						$change_followup_content.=$LANG["mailing"][18].": $old_author_name -> ".$new_author_name."\n";
+		
+						$global_mail_change_count++;
+					break;
+					case "FK_group" :
+						$new_group=$this->fields["FK_group"];
+						$old_group_name=ereg_replace("&nbsp;",$LANG["mailing"][109],getDropdownName("glpi_groups",$input["_old_group"]));
+						$new_group_name=ereg_replace("&nbsp;",$LANG["mailing"][109],getDropdownName("glpi_groups",$new_group));
+						$change_followup_content.=$LANG["mailing"][20].": ".$old_group_name." -> ".$new_group_name."\n";
+						$global_mail_change_count++;
+					break;
+					case "priority" :
+						$new_priority=$this->fields["priority"];
+						$change_followup_content.=$LANG["mailing"][15].": ".getPriorityName($input["_old_priority"])." -> ".getPriorityName($new_priority)."\n";
+						$global_mail_change_count++;		
+					break;
+					case "category":
+						$new_category=$this->fields["category"];
+						$old_category_name=ereg_replace("&nbsp;",$LANG["mailing"][100],getDropdownName("glpi_dropdown_tracking_category",$input["_old_category"]));
+						$new_category_name=ereg_replace("&nbsp;",$LANG["mailing"][100],getDropdownName("glpi_dropdown_tracking_category",$new_category));
+						$change_followup_content.=$LANG["mailing"][14].": ".$old_category_name." -> ".$new_category_name."\n";
+						$global_mail_change_count++;
+					break;
+					case "request_type":
+						$new_request_type=$this->fields["request_type"];
+						$old_request_type_name=getRequestTypeName($input["_old_request_type"]);
+						$new_request_type_name=getRequestTypeName($new_request_type);
+						$change_followup_content.=$LANG["mailing"][21].": ".$old_request_type_name." -> ".$new_request_type_name."\n";
+						$global_mail_change_count++;
+					break;
+					case "computer" :
+					case "device_type":
+						$ci=new CommonItem;
+						$ci->getfromDB($input["_old_item_type"],$input["_old_item"]);
+						$old_item_name=$ci->getName();
+						if ($old_item_name=="N/A"||empty($old_item_name))
+							$old_item_name=$LANG["mailing"][107];
+						$ci->getfromDB($this->fields["device_type"],$this->fields["computer"]);
+						$new_item_name=$ci->getName();
+						if ($new_item_name=="N/A"||empty($new_item_name))
+							$new_item_name=$LANG["mailing"][107];
+		
+						$change_followup_content.=$LANG["mailing"][17].": $old_item_name -> ".$new_item_name."\n";
+						if (in_array("computer",$updates)) $global_mail_change_count++;
+						if (in_array("device_type",$updates)) $global_mail_change_count++;
+					break;
+					case "assign" :
+						$new_assign_name=getAssignName($this->fields["assign"],USER_TYPE);
+						if ($input["_old_assign"]==0){
+							$input["_old_assign_name"]=$LANG["mailing"][105];
+						}
+						$change_followup_content.=$LANG["mailing"][12].": ".$input["_old_assign_name"]." -> ".$new_assign_name."\n";
+						$global_mail_change_count++;
+					break;
+					case "assign_ent" :
+						$new_assign_ent_name=getAssignName($this->fields["assign_ent"],ENTERPRISE_TYPE);
+						$change_followup_content.=$LANG["mailing"][12].": ".$input["_old_assign_ent_name"]." -> ".$new_assign_ent_name."\n";
+						$global_mail_change_count++;
+					break;
+					case "assign_group" :
+						$new_assign_group_name=getAssignName($this->fields["assign_group"],GROUP_TYPE);
+						$change_followup_content.=$LANG["mailing"][12].": ".$input["_old_assign_group_name"]." -> ".$new_assign_group_name."\n";
+						$global_mail_change_count++;
+					break;
+					case "cost_time":
+						$change_followup_content.=$LANG["mailing"][42].": ".number_format($input["_old_cost_time"],$CFG_GLPI["decimal_number"])." -> ".number_format($this->fields["cost_time"],$CFG_GLPI["decimal_number"])."\n";
+						$global_mail_change_count++;
+					break;
+					case "cost_fixed" :
+						$change_followup_content.=$LANG["mailing"][43].": ".number_format($input["_old_cost_fixed"],$CFG_GLPI["decimal_number"])." -> ".number_format($this->fields["cost_fixed"],$CFG_GLPI["decimal_number"])."\n";
+						$global_mail_change_count++;
+					break;
+					case "cost_material" :
+						$change_followup_content.=$LANG["mailing"][44].": ".number_format($input["_old_cost_material"],$CFG_GLPI["decimal_number"])." -> ".number_format($this->fields["cost_material"],$CFG_GLPI["decimal_number"])."\n";
+						$global_mail_change_count++;
+					break;
+					case "emailupdates":
+						if ($this->fields["emailupdates"]){
+							$change_followup_content.=$LANG["mailing"][101]."\n";
+						} else {
+							$change_followup_content.=$LANG["mailing"][102]."\n";
+						}
+						$global_mail_change_count++;
+					break;
 				}
 			}
-	
+			if (!in_array("assign",$updates)){
+				unset($input["_old_assign"]);
+			}
 			$mail_send=false;
 	
 			if (!empty($change_followup_content)){ // Add followup if not empty
@@ -386,7 +379,7 @@ class Job extends CommonDBTM{
 				if (isset($input["_old_assign"])){
 					$newinput["_old_assign"]=$input["_old_assign"];
 				} 
-				if (in_array("status",$updates)&&ereg("old_",$input["status"])){
+				if (isset($input["status"])&&in_array("status",$updates)&&ereg("old_",$input["status"])){
 					$newinput["type"]="finish";
 				}
 				$fup=new Followup();
@@ -402,7 +395,7 @@ class Job extends CommonDBTM{
 				$user=new User;
 				$user->getfromDBbyName($_SESSION["glpiname"]);
 				$mailtype="update";
-				if (in_array("status",$updates)&&ereg("old_",$input["status"])){
+				if ($input["status"]&&in_array("status",$updates)&&ereg("old_",$input["status"])){
 					$mailtype="finish";
 				} 
 				if (isset($input["_old_assign"])){
