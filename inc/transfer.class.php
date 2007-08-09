@@ -365,7 +365,24 @@ class Transfer extends CommonDBTM{
 		}
 		$this->item_search[DOCUMENT_TYPE]=$this->createSearchConditionUsingArray($this->needtobe_transfer[DOCUMENT_TYPE]);
 
-		
+		// printer -> cartridges : keep / delete + clean
+		if ($this->options['keep_cartridges_type']){
+			if (isset($this->item_search[PRINTER_TYPE])){
+				$query="SELECT FK_glpi_cartridges_type FROM glpi_cartridges
+				WHERE FK_glpi_printers IN ".$this->item_search[PRINTER_TYPE];
+				if ($result = $DB->query($query)) {
+					if ($DB->numrows($result)>0) { 
+						if (!isset($this->needtobe_transfer[CARTRIDGE_TYPE])){
+							$this->needtobe_transfer[CARTRIDGE_TYPE]=array();
+ 						}
+						while ($data=$DB->fetch_array($result)){
+							$this->needtobe_transfer[CARTRIDGE_TYPE][$data['FK_glpi_cartridges_type']]=$data['FK_glpi_cartridges_type'];
+						}
+					}
+				}
+			}
+		}
+		$this->item_search[CARTRIDGE_TYPE]=$this->createSearchConditionUsingArray($this->needtobe_transfer[CARTRIDGE_TYPE]);
 	}
 	function createSearchConditionUsingArray($array){
 		if (is_array($array)&&count($array)){
@@ -474,24 +491,20 @@ class Transfer extends CommonDBTM{
 					$this->transferDocuments($type,$ID,$newID);
 				}
 
-
 				// transfer compatible printers
 				if ($type==CARTRIDGE_TYPE) {
 					$this->transferCompatiblePrinters($ID,$newID);
 				}
-				// TODO Cartridges  and cartrodges type linked to printer
+				// Cartridges  and cartridges type linked to printer
 				if ($type==PRINTER_TYPE) {
+					$this->transferPrinterCartridges($ID,$newID);
+				}
+				// TODO Init transfer of contract / docs / software : check unused : if not ? what to do ?
+				if ($this->inittype==$type&&$type==DOCUMENT_TYPE&&$ID==$newID) {
 				
 				}
 				// TODO Cartridges of cartridges types
 				if ($this->inittype==$type&&$type==CARTRIDGE_TYPE) {
-				}
-
-
-
-				// TODO Init transfer of contract / docs / software : check unused : if not ? what to do ?
-				if ($this->inittype==$type&&$type==DOCUMENT_TYPE&&$ID==$newID) {
-				
 				}
 
 				// TODO Users ???? : Update right to new entity ?
@@ -631,6 +644,104 @@ class Transfer extends CommonDBTM{
 		}
 		return 0;
 	}	
+	
+	function transferPrinterCartridges($ID,$newID){
+		global $DB;
+		
+		// Get cartrdiges linked
+		$query = "SELECT *
+			FROM glpi_cartridges 
+			WHERE glpi_cartridges.FK_glpi_printers = '$ID'";
+		if ($result = $DB->query($query)) {
+			if ($DB->numrows($result)>0) { 
+				$cart=new Cartridge();
+				$carttype=new CartridgeType();
+
+				while ($data=$DB->fetch_array($result)){
+					$need_clean_process=false;
+					// Foreach cartridges
+					// if keep 
+					if ($this->options['keep_cartridges_type']){ 
+						$newcartID=-1;
+						$newcarttypeID=-1;
+						// 1 - Search carttype destination ?
+						// Already transfer carttype : 
+						if (isset($this->already_transfer[CARTRIDGE_TYPE][$data['FK_glpi_cartridges_type']])){
+							$newcarttypeID=$this->already_transfer[CARTRIDGE_TYPE][$data['FK_glpi_cartridges_type']];
+						} else {
+							// Not already transfer cartype
+							$query="SELECT count(*) AS CPT 
+								FROM glpi_cartridges
+								WHERE glpi_cartridges.FK_glpi_cartridges_type='".$data['FK_glpi_cartridges_type']."' 
+								AND glpi_cartridges.FK_glpi_printers > 0 AND glpi_cartridges.FK_glpi_printers NOT IN ".$this->item_search[PRINTER_TYPE];
+							$result_search=$DB->query($query);
+							// Is the carttype will be completly transfer ?
+							if ($DB->result($result_search,0,'CPT')==0){
+								// Yes : transfer
+								$need_clean_process=false;
+								$this->transferItem(CARTRIDGE_TYPE,$data['FK_glpi_cartridges_type'],$data['FK_glpi_cartridges_type']);
+								$newcarttypeID=$data['FK_glpi_cartridges_type'];
+							} else {
+								// No : copy carttype
+								$need_clean_process=true;
+								$carttype->getFromDB($data['FK_glpi_cartridges_type']);
+								// Is existing carttype in the destination entity ?
+								$query="SELECT * FROM glpi_cartridges_type WHERE FK_entities='".$this->to."' AND name='".addslashes($carttype->fields['name'])."'";
+								if ($result_search=$DB->query($query)){
+									if ($DB->numrows($result_search)>0){
+										$newcarttypeID=$DB->result($result_search,0,'ID');
+									}
+								}
+								// Not found -> transfer copy
+								if ($newcarttypeID<0){
+									// 1 - create new item
+									unset($carttype->fields['ID']);
+									$input=$carttype->fields;
+									$input['FK_entities']=$this->to;
+									unset($carttype->fields);
+									$newcarttypeID=$carttype->add($input);
+									// 2 - transfer as copy
+									$this->transferItem(CARTRIDGE_TYPE,$data['FK_glpi_cartridges_type'],$newcarttypeID);
+								}
+								// Founded -> use to link : nothing to do
+							}
+						}
+						
+						// Update cartridge if needed
+						if ($newcarttypeID>0&&$newcarttypeID!=$data['FK_glpi_cartridges_type']){
+							$cart->update(array("ID"=>$data['ID'],'FK_glpi_cartridges_type' => $newcarttypeID));		
+						}
+					} else { // Do not keep 
+						// If same printer : delete cartridges
+						if ($ID==$newID){
+							$del_query="DELETE FROM glpi_cartridges 
+								WHERE FK_glpi_printers = '$ID'";
+							$DB->query($del_query);
+						}
+						$need_clean_process=true;
+					}
+					// CLean process
+					if ($need_clean_process&&$this->options['clean_cartridges_type']){
+						// Clean carttype
+						$query2 = "SELECT COUNT(*) AS CPT
+								FROM glpi_cartridges 
+								WHERE FK_glpi_cartridges_type = '" . $data['FK_glpi_cartridges_type'] . "'";
+						$result2 = $DB->query($query2);
+						if ($DB->result($result2, 0, 'CPT') == 0) {
+							if ($this->options['clean_cartridges_type']==1){ // delete
+								$carttype->delete(array ("ID" => $data['FK_glpi_cartridges_type']));
+							}
+							if ($this->options['clean_cartridges_type']==2){ // purge
+								$carttype->delete(array ("ID" => $data['FK_glpi_cartridges_type']),1);
+							}
+						}
+					}
+
+				}
+			}
+		}
+	
+	}
 	
 	function transferSoftwares($type,$ID,$ocs_computer=false){
 		global $DB;

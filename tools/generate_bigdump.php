@@ -42,7 +42,7 @@ include ("generate_bigdump.function.php");
 
 $entity_number=5;
 
-$multiplicator=0.1;
+$multiplicator=0.5;
 
 $MAX['locations']=100;
 $MAX['kbcategories']=8;
