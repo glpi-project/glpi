@@ -474,16 +474,30 @@ class Transfer extends CommonDBTM{
 					$this->transferDocuments($type,$ID,$newID);
 				}
 
-				// TODO If DOCUMENT_TYPE -> clean links to items
-				if ($this->inittype==$type&&$type==DOCUMENT_TYPE) {
+
+				// transfer compatible printers
+				if ($type==CARTRIDGE_TYPE) {
+					$this->transferCompatiblePrinters($ID,$newID);
+				}
+				// TODO Cartridges  and cartrodges type linked to printer
+				if ($type==PRINTER_TYPE) {
+				
+				}
+				// TODO Cartridges of cartridges types
+				if ($this->inittype==$type&&$type==CARTRIDGE_TYPE) {
+				}
+
+
+
+				// TODO Init transfer of contract / docs / software : check unused : if not ? what to do ?
+				if ($this->inittype==$type&&$type==DOCUMENT_TYPE&&$ID==$newID) {
+				
 				}
 
 				// TODO Users ???? : Update right to new entity ?
 				// TODO Linked Users ???? : Update right to new entity ?
 
-				// TODO Cartridges 
-				if ($type==CARTRIDGE_TYPE) {
-				}
+				
 				
 				// Transfer Item
 				$input=array("ID"=>$newID,'FK_entities' => $this->to);
@@ -1259,6 +1273,24 @@ class Transfer extends CommonDBTM{
 				break;
 		}
 	}
+	function transferCompatiblePrinters($ID,$newID){
+		global $DB;
+		if ($ID!=$newID){
+			
+			$query="SELECT * FROM glpi_cartridges_assoc WHERE FK_glpi_cartridges_type='$ID'";
+			if ($result = $DB->query($query)) {
+				if ($DB->numrows($result)!=0) { 
+					
+					$cartype=new CartridgeType();
+					while ($data=$DB->fetch_array($result)) {
+						$data = addslashes_deep($data);
+						$cartype->addCompatibleType($newID,$data["FK_glpi_dropdown_model_printers"]);
+					}
+				}
+			}
+			
+		}
+	}
 
 	function transferInfocoms($type,$ID,$newID){
 		global $DB;
@@ -1737,13 +1769,13 @@ class Transfer extends CommonDBTM{
 				echo "</td>";
 				echo "</tr>";
 
-/*				echo "<tr class='tab_bg_1'>";
-				echo "<td>".$LANG["Menu"][32].":	</td><td>";
+				echo "<tr class='tab_bg_1'>";
+				echo "<td>".$LANG["setup"][92]." -> ".$LANG["Menu"][32].":	</td><td>";
 				dropdownArrayValues('keep_consumables',$keep,$this->fields['keep_consumables']);
 				echo "</td>";
 				echo "<td colspan='2'>&nbsp;</td>";
 				echo "</tr>";
-*/
+
 				echo "<tr class='tab_bg_2'>";
 				echo "<td colspan='4' class='center'><strong>".$LANG["connect"][0]."</strong></td></tr>";
 
