@@ -95,9 +95,9 @@ class Document extends CommonDBTM {
 
 		if (isset($input["upload_file"])&&!empty($input["upload_file"])){
 			$input['filename']=moveUploadedDocument($input["upload_file"]);
-		} else 	{
+		} else if (isset($_FILES)&&isset($_FILES['filename']))	{
 			$input['filename']= uploadDocument($_FILES['filename']);
-		}
+		} 
 
 		if (!isset($input['name'])&&isset($input['filename'])){
 			$input['name']=$input['filename'];

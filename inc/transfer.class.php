@@ -62,6 +62,10 @@ class Transfer extends CommonDBTM{
 
 	// Generic function
 	function moveItems($items,$to,$options){
+		global $CFG_GLPI;
+		// unset mailing
+		$CFG_GLPI["mailing"]=0;
+		
 		// $items=array(TYPE => array(id_items))
 		// $options=array()
 		$this->to=$to;
