@@ -1394,5 +1394,12 @@ function update0681to07() {
 		$DB->query($query) or die("0.7 update transfer values in glpi_profiles" . $LANG["update"][90] . $DB->error());
 	}
 
+	// Need for update from SVN version
+	if (!FieldExists("glpi_users", "location")) {
+		$query = "ALTER TABLE `glpi_users` ADD `location` int(11) NOT NULL DEFAULT NULL;";
+		$DB->query($query) or die("0.7 add location in users if not present for compatibility " . $LANG["update"][90] . $DB->error());
+	}
+
+
 } // fin 0.7 #####################################################################################
 ?>
