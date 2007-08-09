@@ -1585,7 +1585,7 @@ class Transfer extends CommonDBTM{
 
 			echo "<form method='post' name=form action=\"$target\"><div class='center'>";
 
-			echo "<table class='tab_cadre_fixe' cellpadding='2' >";
+			echo "<table class='tab_cadre' cellpadding='2' >";
 			if ($edit_form){
 				echo "<tr><th colspan='4'>";
 				if (empty($ID)) {
