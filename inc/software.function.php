@@ -669,6 +669,20 @@ function showSoftwareInstalled($instID,$withtemplate='') {
 	$i = 0;
 
 	echo "<br><br><div class='center'><table class='tab_cadre_fixe'>";
+	
+	if((empty($withtemplate) || $withtemplate == 2) && haveRight("software","w")) {
+		echo "<tr class='tab_bg_1'><td align='center' colspan='5'>";
+		echo "<form method='post' action=\"".$CFG_GLPI["root_doc"]."/front/software.licenses.php\">";
+	
+		echo "<div class='software-instal'>";
+		echo "<input type='hidden' name='cID' value='$instID'>";
+		dropdownSoftwareToInstall("licenseID",$withtemplate,$FK_entities);
+		echo "<input type='submit' name='install' value=\"".$LANG["buttons"][4]."\" class='submit'>";
+		echo "</div>";
+		echo "</form>";
+		echo "</td></tr>";
+	}
+	
 	echo "<tr><th colspan='5'>".$LANG["software"][17].":</th></tr>";
 	
 	$cat = -1;
@@ -690,22 +704,8 @@ function showSoftwareInstalled($instID,$withtemplate='') {
 	
 	}
 
-	if((!empty($withtemplate) && $withtemplate == 2) || !haveRight("software","w")) {
-		echo "</table></div>";
-	} else {
-			
-		echo "<tr class='tab_bg_1'><td align='center' colspan='5'>";
-		echo "<form method='post' action=\"".$CFG_GLPI["root_doc"]."/front/software.licenses.php\">";
-	
-		echo "<div class='software-instal'>";
-		echo "<input type='hidden' name='cID' value='$instID'>";
-		dropdownSoftwareToInstall("licenseID",$withtemplate,$FK_entities);
-		echo "<input type='submit' name='install' value=\"".$LANG["buttons"][4]."\" class='submit'>";
-		echo "</div>";
-		echo "</form>";
-		echo "</td></tr>";
-		echo "</table></div>";
-	}
+
+	echo "</table></div>";
 
 }
 
