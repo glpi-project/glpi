@@ -100,7 +100,12 @@ function showProfileEntityUser($target,$ID,$prof,$onglet){
 		$sql_entities = "AND ".getEntitiesRestrictRequest("","glpi_users_profiles");
 	}
  
- 	$query="SELECT glpi_users_profiles.FK_users AS user, glpi_users_profiles.FK_entities AS entity FROM glpi_users_profiles WHERE glpi_users_profiles.FK_profiles=".$ID." ".$sql_entities." order by FK_entities";
+ 	$query="SELECT glpi_users.*, glpi_users_profiles.FK_entities AS entity 
+ 		FROM glpi_users_profiles 
+ 		LEFT JOIN glpi_entities ON (glpi_entities.ID=glpi_users_profiles.FK_entities)
+ 		LEFT JOIN glpi_users ON (glpi_users.ID=glpi_users_profiles.FK_users)
+ 		WHERE glpi_users_profiles.FK_profiles=".$ID." ".getEntitiesRestrictRequest("AND","glpi_users_profiles")." 
+ 		ORDER BY glpi_entities.completename";
  	
  	echo "<div class='center'>";
 	echo "<table class='tab_cadre_fixe'>";
@@ -147,7 +152,7 @@ function showProfileEntityUser($target,$ID,$prof,$onglet){
 					$i=0;	
 				}
 
-				echo "<td class='tab_bg_1'><a href=\"../front/user.form.php?ID=".$data["user"]."\">".getDropdownName('glpi_users',$data["user"])."</a></td>";
+				echo "<td class='tab_bg_1'>".formatUserName($data["ID"],$data["name"],$data["realname"],$data["firstname"],1)."</td>";
 				$i++;
  					
 			}
