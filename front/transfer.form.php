@@ -70,6 +70,11 @@ else if (isset($_POST["delete"]))
 
 commonHeader($LANG["transfer"][1],$_SERVER['PHP_SELF'],"admin","transfer");
 
+if (!isset($_SESSION['glpi_onglet'])||$_SESSION['glpi_onglet']==-1) $_SESSION['glpi_onglet']=1;
+if (isset($_GET['onglet'])) {
+	$_SESSION['glpi_onglet']=$_GET['onglet'];
+}
+
 $transfer->showOnglets($_GET["ID"], '',$_SESSION['glpi_onglet']);
 $transfer->showForm($_SERVER['PHP_SELF'],$_GET["ID"]);
 
