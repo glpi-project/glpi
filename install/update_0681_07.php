@@ -1396,7 +1396,7 @@ function update0681to07() {
 
 	// Need for update from SVN version
 	if (!FieldExists("glpi_users", "location")) {
-		$query = "ALTER TABLE `glpi_users` ADD `location` int(11) NOT NULL DEFAULT NULL;";
+		$query = "ALTER TABLE `glpi_users` ADD `location` int(11) NOT NULL DEFAULT 0;";
 		$DB->query($query) or die("0.7 add location in users if not present for compatibility " . $LANG["update"][90] . $DB->error());
 	}
 
