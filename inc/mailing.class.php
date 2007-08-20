@@ -177,7 +177,7 @@ class Mailing
 							case ASSIGN_ENT_MAILING :
 								
 								if (!$sendprivate&&isset($this->job->fields["assign_ent"])&&$this->job->fields["assign_ent"]>0){
-									$query2 = "SELECT DISTINCT glpi_users.email as EMAIL FROM glpi_enterprises WHERE (glpi_users.ID = '".$this->job->fields["assign_ent"]."')";
+									$query2 = "SELECT DISTINCT glpi_enterprises.email as EMAIL FROM glpi_enterprises WHERE (glpi_users.ID = '".$this->job->fields["assign_ent"]."')";
 									if ($result2 = $DB->query($query2)) {
 										if ($DB->numrows($result2)==1){
 											$row = $DB->fetch_array($result2);
