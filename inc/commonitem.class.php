@@ -157,7 +157,10 @@ class CommonItem{
 				break;					
 			case MAILGATE_TYPE:
 				$this->obj = new Mailgate;
-				break;					
+				break;		
+			case INFOCOM_TYPE:
+				$this->obj = new InfoCom;
+				break;				
 			default :
 				if ($device_type>1000){
 					if (isset($PLUGIN_HOOKS['plugin_classes'][$device_type])){
@@ -288,6 +291,9 @@ class CommonItem{
 				break;					
 			case MAILGATE_TYPE:
 				return $LANG["Menu"][39];
+				break;
+			case INFOCOM_TYPE:
+				return $LANG["financial"][3];
 				break;	
 			default :
 				if ($this->device_type>1000){
