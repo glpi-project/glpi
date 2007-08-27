@@ -48,7 +48,6 @@ if (isset($_POST['update'])){
 	checkSeveralRightsOr(array("update_ticket"=>"1","assign_ticket"=>"1","steal_ticket"=>"1","comment_ticket"=>"1","comment_all_ticket"=>"1"));
 
 	$track->update($_POST);
-
 	logEvent($_POST["ID"], "tracking", 4, "tracking", $_SESSION["glpiname"]." ".$LANG["log"][21]);
 
 	glpi_header($CFG_GLPI["root_doc"]."/front/tracking.form.php?ID=".$_POST["ID"]);
@@ -64,6 +63,7 @@ if (isset($_POST['update'])){
 } else if (isset($_POST["update_followup"])){
 	checkRight("comment_all_ticket","1");
 	$fup->update($_POST);
+
 	logEvent($_POST["tracking"], "tracking", 4, "tracking", $_SESSION["glpiname"]."  ".$LANG["log"][21]." ".$_POST["ID"].".");
 	glpi_header($CFG_GLPI["root_doc"]."/front/tracking.form.php?ID=".$_POST["tracking"]);
 } else if (isset($_POST["delete_followup"])){

@@ -38,11 +38,9 @@
 		}
 	include_once (GLPI_ROOT."/config/based_config.php");
 	include (GLPI_ROOT."/config/define.php");
-	session_save_path(GLPI_SESSION_DIR);
-	if(!session_id()){@session_start();}
 
-
-
+	setGlpiSessionPath();
+	startGlpiSession();
 
 	if(!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
 		nullHeader("Mysql Error",$_SERVER['PHP_SELF']);

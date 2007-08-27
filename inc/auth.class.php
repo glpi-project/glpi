@@ -238,8 +238,8 @@ class Identification {
 	function initSession() {
 		global $CFG_GLPI, $LANG;
 
-		if (!session_id())
-			session_start();
+		startGlpiSession();
+			
 		if (isset($this->user->fields['ID'])){
 			$_SESSION["glpiID"] = $this->user->fields['ID'];
 			$_SESSION["glpiname"] = $this->user->fields['name'];
@@ -275,8 +275,8 @@ class Identification {
 		}
 	}
 	function destroySession() {
-		if (!session_id())
-			session_start();
+		startGlpiSession();
+
 		$_SESSION = array ();
 
 		session_destroy();

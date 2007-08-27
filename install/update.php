@@ -47,7 +47,7 @@ include_once (GLPI_ROOT . "/inc/display.function.php");
 include_once (GLPI_ROOT . "/config/based_config.php");
 include_once (GLPI_CONFIG_DIR . "/config_db.php");
 
-session_save_path(GLPI_SESSION_DIR);
+setGlpiSessionPath();
 
 cleanCache();
 
