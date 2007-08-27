@@ -136,7 +136,7 @@ function searchForm($type,$target,$field="",$contains="",$sort= "",$deleted= 0,$
 	echo "<form method='get' action=\"$target\">";
 	echo "<table class='tab_cadre_fixe'>";
 //	echo "<tr><th colspan='5'>".$LANG["search"][0].":</th></tr>";
-	echo "<tr class='tab_bg_1' class='center'>";
+	echo "<tr class='tab_bg_1'>";
 	echo "<td>";
 	echo "<table>";
 
@@ -344,7 +344,7 @@ function searchForm($type,$target,$field="",$contains="",$sort= "",$deleted= 0,$
 	echo "<a href='".$CFG_GLPI["root_doc"]."/front/computer.php?reset_search=reset_search&amp;type=$type' ><img title=\"".$LANG["buttons"][16]."\" alt=\"".$LANG["buttons"][16]."\" src='".$CFG_GLPI["root_doc"]."/pics/reset.png' class='calendrier'></a>";
 	echo "</td>";
 	// Display submit button
-	echo "<td width='80' class='center' class='tab_bg_2'>";
+	echo "<td width='80' class='tab_bg_2'>";
 	echo "<input type='submit' value=\"".$LANG["buttons"][0]."\" class='submit' >";
 	echo "</td></tr></table>";
 	// Reset to start when submit new search
