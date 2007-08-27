@@ -692,7 +692,7 @@ class User extends CommonDBTM {
 				echo "</td>";
 				echo "<td class='center'>" . $LANG["setup"][14] . ":</td><td>";
 				autocompletionTextField("email_form", "glpi_users", "email", $this->fields["email"], 30);
-				if (!isValidEmail($this->fields["email"])){
+				if (!empty($ID)&&!isValidEmail($this->fields["email"])){
 					echo "<span class='red'>&nbsp;".$LANG["mailing"][110]."</span>";
 				}
 				echo "</td></tr>";
@@ -712,6 +712,9 @@ class User extends CommonDBTM {
 					} else {
 						echo "&nbsp;";
 					}
+				} else if (!isMultiEntitiesMode()){
+					// Display all locations : only one entity
+					dropdownValue("glpi_dropdown_locations", "location", $this->fields["location"],1);
 				}
 				echo "</td>";
 				echo "<td class='center'>&nbsp;</td><td>&nbsp;";

@@ -716,18 +716,23 @@ function ldap_search_user_dn($ds, $basedn, $login_attr, $login, $condition) {
 	// Tenter une recherche pour essayer de retrouver le DN
 	$filter = "($login_attr=$login)";
 	
-	if (!empty ($condition))
+	if (!empty ($condition)){
 		$filter = "(& $filter $condition)";
+	}
+
+	if ($result = ldap_search($ds, $basedn, $filter, 
+		array ("dn", $login_attr),0,0)
+	){
 	
-	$result = @ldap_search($ds, $basedn, $filter, array (
-		"dn", $login_attr
-	),0,0);
-	$info = @ldap_get_entries($ds, $result);
-	if (is_array($info) AND $info['count'] == 1) {
-		return $info[0]['dn'];
-	} else { // Si echec, essayer de deviner le DN / Flat LDAP
-		$dn = "$login_attr=$login, " . $basedn;
-		return $dn;
+		$info = ldap_get_entries($ds, $result);
+		if (is_array($info) AND $info['count'] == 1) {
+			return $info[0]['dn'];
+		} else { // Si echec, essayer de deviner le DN / Flat LDAP
+			$dn = "$login_attr=$login, " . $basedn;
+			return $dn;
+		}
+	} else {
+		return false;
 	}
 }
 
@@ -829,15 +834,15 @@ function import_user_from_ldap_servers($login)
 		
 		foreach ($ldap_methods as $ldap_method)
 		{
+			print_r($ldap_method);
 			$result=ldapImportUserByServerId($login, 0,$ldap_method["ID"]);
 			if ($result != false)
 			{
-				$userid= $result;
-				break;
+				return $result;
 			}  
 		}
-		return $userid;		
 	}
+	return false;
 	
 }
 
