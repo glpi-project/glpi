@@ -1098,7 +1098,9 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 								$count_display=0;
 								$out="";
 								for ($k=0;$k<count($split);$k++)
-									if ($contains2[$j]=="NULL"||(strlen($contains2[$j])==0||eregi($contains2[$j],$split[$k]))){
+									if ($contains2[$j]=="NULL"||(strlen($contains2[$j])==0
+										||preg_match('/'.$contains2[$j].'/i',$split[$k])
+									)){
 
 										if ($count_display) $out.= "<br>";
 										$count_display++;
