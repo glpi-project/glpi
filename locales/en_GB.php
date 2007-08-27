@@ -28,6 +28,8 @@
  */
 //en_GB
 
+$LANG=array();
+
 
 $LANG["backup"][0]="SQL Dump"; 
 $LANG["backup"][1]="XML Dump"; 

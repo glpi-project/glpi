@@ -28,6 +28,8 @@
  */
 //zh_CN
 
+$LANG=array();
+
 
 $LANG["backup"][0]="转储SQL"; 
 $LANG["backup"][1]="转储XML"; 

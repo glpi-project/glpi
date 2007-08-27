@@ -28,6 +28,8 @@
  */
 //ja_JP
 
+$LANG=array();
+
 
 $LANG["backup"][0]="SQL形式でバックアップ"; 
 $LANG["backup"][1]="XML形式でバックアップ"; 

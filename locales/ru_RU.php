@@ -28,6 +28,8 @@
  */
 //ru_RU
 
+$LANG=array();
+
 
 $LANG["backup"][0]="Выгрузить SQL"; 
 $LANG["backup"][1]="Выгрузить XML"; 

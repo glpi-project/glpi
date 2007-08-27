@@ -28,6 +28,8 @@
  */
 //ca_CA
 
+$LANG=array();
+
 
 $LANG["backup"][0]="Còpia de seguretat en SQL"; 
 $LANG["backup"][1]="Còpia de seguretat en XML"; 

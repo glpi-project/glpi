@@ -28,6 +28,8 @@
  */
 //ro_RO
 
+$LANG=array();
+
 
 $LANG["backup"][0]="Exporta in SQL"; 
 $LANG["backup"][1]="Exporta in XMLa"; 

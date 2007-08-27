@@ -28,6 +28,8 @@
  */
 //pl_PL
 
+$LANG=array();
+
 
 $LANG["backup"][0]="Zrzut SQL"; 
 $LANG["backup"][1]="Zrzut XML"; 

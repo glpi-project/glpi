@@ -29,6 +29,8 @@
 */
 //Français
 
+$LANG=array();
+
 $LANG["backup"][0]="Sauvegarde SQL";
 $LANG["backup"][1]="Sauvegarde XML";
 $LANG["backup"][9]="Supprimé !"; 
