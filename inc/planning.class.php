@@ -107,15 +107,15 @@ class PlanningTracking extends CommonDBTM {
 
 		if (isset($updates)){
 			$this->updateInDB($updates);
-		}
 
-		if ((!isset($input["_nomail"])||$input["_nomail"]==0)&&count($updates)>0&&$CFG_GLPI["mailing"]){
-			$user=new User;
-			$user->getfromDBbyName($_SESSION["glpiname"]);
-			$mail = new Mailing("followup",$job,$user,$fup->fields["private"]);
-			$mail->send();
-		}
+			if ((!isset($input["_nomail"])||$input["_nomail"]==0)&&count($updates)>0&&$CFG_GLPI["mailing"]){
+				$user=new User;
+				$user->getfromDBbyName($_SESSION["glpiname"]);
+				$mail = new Mailing("followup",$job,$user,$fup->fields["private"]);
+				$mail->send();
+			}
 
+		}
 		return true;
 	}
 
