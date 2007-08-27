@@ -710,7 +710,10 @@ class Job extends CommonDBTM{
 				$message.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>". $LANG["common"][10].":</span> ".$tech."<br>";
 			$message.= "<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$LANG["joblist"][0].":</span> ".getStatusName($this->fields["status"])."<br>";
 			$assign=getAssignName($this->fields["assign"],USER_TYPE);
-			$assign_group=getAssignName($this->fields["assign_group"],GROUP_TYPE);
+			$assign_group="";
+			if (isset($this->fields["assign_group"])){
+				$assign_group=getAssignName($this->fields["assign_group"],GROUP_TYPE);
+			}
 			if ($assign=="[Nobody]"){
 				if (!empty($assign_group)){
 					$assign=$assign_group;
@@ -753,7 +756,10 @@ class Job extends CommonDBTM{
 				$message.= $LANG["common"][10].": ".$tech."\n";
 			$message.= $LANG["joblist"][0].": ".getStatusName($this->fields["status"])."\n";
 			$assign=getAssignName($this->fields["assign"],USER_TYPE);
-			$assign_group=getAssignName($this->fields["assign_group"],GROUP_TYPE);
+			$assign_group="";
+			if (isset($this->fields["assign_group"])){
+				$assign_group=getAssignName($this->fields["assign_group"],GROUP_TYPE);
+			}
 			if ($assign=="[Nobody]"){
                                 if (!empty($assign_group)){
                                         $assign=$assign_group;
