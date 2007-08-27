@@ -28,6 +28,8 @@
  */
 //pt_PT
 
+$LANG=array();
+
 
 $LANG["backup"][0]="Proteção de uma base SQL"; 
 $LANG["backup"][1]="Proteção de uma base XML"; 

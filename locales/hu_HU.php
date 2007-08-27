@@ -28,6 +28,8 @@
  */
 //hu_HU
 
+$LANG=array();
+
 
 $LANG["backup"][0]="SQL dumpolása"; 
 $LANG["backup"][1]="XMLa dumpolása"; 

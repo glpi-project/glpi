@@ -28,6 +28,8 @@
  */
 //es_AR
 
+$LANG=array();
+
 
 $LANG["backup"][0]="Guardar SQL"; 
 $LANG["backup"][1]="Guardar XML"; 

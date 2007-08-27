@@ -28,6 +28,8 @@
  */
 //bg_BG
 
+$LANG=array();
+
 
 $LANG["backup"][0]="Дъмп SQL"; 
 $LANG["backup"][1]="Дъмп XML"; 

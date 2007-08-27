@@ -28,6 +28,8 @@
  */
 //de_DE
 
+$LANG=array();
+
 
 $LANG["backup"][0]="SQL Dump erzeugen"; 
 $LANG["backup"][1]="XML-Dump erzeugen"; 

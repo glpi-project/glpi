@@ -28,6 +28,8 @@
  */
 //es_ES
 
+$LANG=array();
+
 
 $LANG["backup"][0]="Copia de seguridad en SQL"; 
 $LANG["backup"][1]="Copia de seguridad en XML"; 

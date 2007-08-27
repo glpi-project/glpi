@@ -28,6 +28,8 @@
  */
 //cs_CZ
 
+$LANG=array();
+
 
 $LANG["backup"][0]="Výpis SQL"; 
 $LANG["backup"][1]="Výpis XML"; 

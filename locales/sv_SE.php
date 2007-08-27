@@ -28,6 +28,8 @@
  */
 //sv_SE
 
+$LANG=array();
+
 
 $LANG["backup"][0]="Spara SQL"; 
 $LANG["backup"][1]="Spara XML"; 
