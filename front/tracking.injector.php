@@ -60,6 +60,11 @@ $varstosav = array('emailupdates', 'uemail', 'computer', 'device_type', 'content
 
 $track=new Job();
 
+// Security check
+if (empty($_POST)||count($_POST)==0){
+   glpi_header($CFG_GLPI["root_doc"]."/front/helpdesk.public.php");
+}
+
 if (!empty($_POST["priority"]) && empty($_POST["contents"]))
 {
 	if(!empty($_POST["type"]) && ($_POST["type"] == "Helpdesk")) {
