@@ -1468,7 +1468,15 @@ function addSelect ($type,$ID,$num,$meta=0,$meta_type=0){
 		case "glpi_transfers.name" :
 		case "state_types.name":
 		case "reservation_types.name":
-			return $table.$addtable.".".$field." AS ".$NAME."_$num, ".$table.$addtable.".ID AS ".$NAME."_".$num."_2, ";
+			if ($meta){
+				if ($table!=$LINK_ID_TABLE[$type])
+					return " GROUP_CONCAT( DISTINCT ".$pretable.$table.$addtable.".".$field." SEPARATOR '$$$$') AS META_$num, ";
+				else return " GROUP_CONCAT( DISTINCT ".$table.$addtable.".".$field." SEPARATOR '$$$$') AS META_$num, ";
+
+			}
+			else {
+				return $table.$addtable.".".$field." AS ".$NAME."_$num, ".$table.$addtable.".ID AS ".$NAME."_".$num."_2, ";
+			}
 		break;
 
 
