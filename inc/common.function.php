@@ -44,6 +44,15 @@ if (!defined('GLPI_ROOT')){
 //******************************************************************************************************
 //******************************************************************************************************
 
+	function setGlpiSessionPath(){
+		if (ini_get("session.save_handler")=="files") {
+		session_save_path(GLPI_SESSION_DIR);
+	       }
+	}
+	function startGlpiSession(){
+		if(!session_id()){@session_start();}	
+	}
+
 	function isMultiEntitiesMode(){
 		return (countElementsInTable("glpi_entities")>0);
 	}

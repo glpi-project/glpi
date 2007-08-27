@@ -45,7 +45,7 @@ include_once (GLPI_ROOT . "/inc/db.function.php");
 include_once (GLPI_ROOT . "/inc/display.function.php");
 include_once (GLPI_ROOT . "/inc/dropdown.function.php");
 
-session_save_path(GLPI_SESSION_DIR);
+setGlpiSessionPath();
 
 cleanCache();
 
@@ -945,7 +945,7 @@ function step4 ($host,$user,$password,$databasename,$newdatabasename)
 
 
 	//------------Start of install script---------------------------
-	if(!session_id()) session_start();
+	startGlpiSession();
 	if(empty($_SESSION["dict"])) $_SESSION["dict"] = "en_GB";
 	if(isset($_POST["language"])) $_SESSION["dict"] = $_POST["language"];
 

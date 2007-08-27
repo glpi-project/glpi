@@ -453,7 +453,6 @@ function commonHeader($title,$url,$sector="none",$item="none",$option="")
 			$menu['admin']['content']['rule']['title']=$LANG["rulesengine"][17];
 			$menu['admin']['content']['rule']['shortcut']='r';
 			$menu['admin']['content']['rule']['page']='/front/rule.php';
-
 			switch($option){
 				 case RULE_OCS_AFFECT_COMPUTER :
 					$menu['admin']['content']['rule']['links']['search']='/front/rule.ocs.php';

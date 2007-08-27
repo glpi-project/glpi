@@ -42,7 +42,8 @@ include (GLPI_ROOT . "/inc/db.function.php");
 include (GLPI_ROOT . "/config/based_config.php");
 include(GLPI_CONFIG_DIR . "/config_db.php");
 
-if(!session_id()){@session_start();}
+setGlpiSessionPath();
+startGlpiSession();
 
 // Init debug variable
 $CFG_GLPI["debug"]=0;
