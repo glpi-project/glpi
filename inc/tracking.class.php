@@ -855,28 +855,29 @@ class Followup  extends CommonDBTM {
 				$job->updateRealTime();
 			}
 		}
+		
 		if (isset($input["_plan"])){
 			$pt=new PlanningTracking();
 			// Update case
-			if (isset($input["plan"]["ID"])){
-				$input["plan"]['id_followup']=$input["ID"];
-				$input["plan"]['id_tracking']=$input['tracking'];
-				$input["plan"]['_nomail']=$mailsend;
+			if (isset($input["_plan"]["ID"])){
+				$input["_plan"]['id_followup']=$input["ID"];
+				$input["_plan"]['id_tracking']=$input['tracking'];
+				$input["_plan"]['_nomail']=$mailsend;
 
-				if (!$pt->update($input["plan"])){
+				if (!$pt->update($input["_plan"])){
 					return false;
 				}
-				unset($input["plan"]);
+				unset($input["_plan"]);
 			// Add case
 			} else {
-				$input["plan"]['id_followup']=$input["ID"];
-				$input["plan"]['id_tracking']=$input['tracking'];
-				$input["plan"]['_nomail']=1;
+				$input["_plan"]['id_followup']=$input["ID"];
+				$input["_plan"]['id_tracking']=$input['tracking'];
+				$input["_plan"]['_nomail']=1;
 
 				if (!$pt->add($input["plan"])){
 					return false;
 				}
-				unset($input["plan"]);
+				unset($input["_plan"]);
 				$input['_need_send_mail']=true;
 			}
 		}
