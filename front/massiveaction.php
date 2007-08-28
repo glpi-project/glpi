@@ -283,11 +283,16 @@ $REDIRECT=$_SERVER['HTTP_REFERER'];
 			foreach ($_POST["item"] as $key => $val){
 				if ($val==1) {
 					//Try to get the OCS server whose machine belongs
-					$ocs_server_id = getOCSServerByMachineID($key);
-					//If the machine was imported by OCS
-					if ($ocs_server_id != -1){
-						//Force update of the machine
-						ocsUpdateComputer($key,$ocs_server_id,1,1);
+					$query = "SELECT ocs_server_id, ID 
+						FROM glpi_ocs_link 
+						WHERE glpi_id='".$key."'";
+					$result = $DB->query($query);
+					if ($DB->numrows($result) == 1) {					
+						$data = $DB->fetch_assoc($result);
+						if ($data['ocs_server_id'] != -1){
+							//Force update of the machine
+							ocsUpdateComputer($data['ID'],$data['ocs_server_id'],1,1);
+						}
 					}
 				}
 			}
