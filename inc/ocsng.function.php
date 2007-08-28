@@ -2637,6 +2637,7 @@ function ocsUpdateRegistry($glpi_id, $ocs_id, $ocs_server_id, $cfg_ocs) {
 				$input["registry_ocs_name"] = $data["NAME"];
 				$input["_from_ocs"] = 1;
 				$isNewReg = $reg->add($input);
+				unset($reg->fields);
 			}
 		}
 	}
