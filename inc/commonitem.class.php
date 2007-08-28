@@ -64,9 +64,25 @@ class CommonItem{
 		global $PLUGIN_HOOKS;
 
 		$this->id_device=$id_device;
+		$this->setType($device_type);
+
+		if ($this->obj!=NULL){
+			// Do not load devices
+			return $this->obj->getfromDB($id_device);
+		}
+		else return false;
+
+	}
+
+	/**
+	 * Set the device type
+	 *
+	 * @param $device_type Device Type ID of the object
+	 *
+	 */
+	function setType ($device_type){
 		$this->device_type=$device_type;
 		// Make new database object and fill variables
-
 		switch ($device_type){
 			case COMPUTER_TYPE :
 				$this->obj=new Computer;
@@ -171,23 +187,7 @@ class CommonItem{
 					} 
 				}
 				break;
-		}
-		if ($this->obj!=NULL){
-			// Do not load devices
-			return $this->obj->getfromDB($id_device);
-		}
-		else return false;
-
-	}
-
-	/**
-	 * Set the device type
-	 *
-	 * @param $device_type Device Type ID of the object
-	 *
-	 */
-	function setType ($device_type){
-		$this->device_type=$device_type;
+		}		
 	}
 
 	/**
