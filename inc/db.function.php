@@ -255,6 +255,49 @@ function getRealSearchForTreeItem($table,$search){
 }
 
 
+function getEntityAncestors ($ID){
+	if (!isset($_SESSION['glpi_entities_ancestors'][$ID])){
+		$_SESSION['glpi_entities_ancestors'][$ID]=getAncestorsOfTreeItem("glpi_entities",$ID);
+	}
+	return $_SESSION['glpi_entities_ancestors'][$ID];
+}
+
+/**
+ * Get the ancestors of an item in a tree dropdown
+ *
+ * @param $table
+ * @param $IDf The ID of the item
+ * @return array of IDs of the ancestors
+ */
+function getAncestorsOfTreeItem($table,$IDf){
+	global $DB;
+
+	// IDs to be present in the final array
+	$id_found=array();
+	
+	// Get the leafs of previous founded item
+	while ($IDf>0){
+		// Get next elements
+		$query="SELECT parentID 
+			FROM $table 
+			WHERE ID = '$IDf'";
+
+		$result=$DB->query($query);
+		if ($DB->numrows($result)>0){
+			$IDf=$DB->result($result,0,0);
+		} else {
+			$IDf=0;
+		}
+		if ($IDf>0&&!in_array($IDf,$id_found)){
+			$id_found[]=$IDf;
+		} else {
+			$IDf=0;
+		}
+	}
+	return $id_found;
+
+}
+
 /**
  * Get the sons of an item in a tree dropdown
  *

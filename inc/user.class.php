@@ -633,9 +633,16 @@ class User extends CommonDBTM {
 		$use_cache=true;
 		if (empty ($ID)) {
 			$use_cache=false;
-			$spotted = $this->getEmpty();
+			if ($this->getEmpty()){
+				$spotted = true;
+			}
 		} else {
-			$spotted = $this->getfromDB($ID);
+			if ($this->getfromDB($ID)){
+				$entities=getUserEntities($ID);
+				if (haveAccessToOneOfEntities($entities)){
+					$spotted = true;
+				}
+			}
 		}
 		if ($spotted) {
 			$this->showOnglets($ID, $withtemplate, $_SESSION['glpi_onglet']);
@@ -706,7 +713,6 @@ class User extends CommonDBTM {
 
 				echo "<tr class='tab_bg_1'><td class='center'>" . $LANG["common"][15] . ":</td><td>";
 				if (!empty($ID)){
-					$entities=getUserEntities($ID);
 					if (count($entities)>0){
 						dropdownValue("glpi_dropdown_locations", "location", $this->fields["location"],1,$entities);
 					} else {
@@ -805,8 +811,10 @@ class User extends CommonDBTM {
 
 			echo "</table></form></div>";
 			return true;
+		} else {
+			echo "<div class='center'><strong>".$LANG["common"][54]."</strong></div>";
+			return false;
 		}
-		return false;
 	}
 
 	function showMyForm($target, $ID, $withtemplate = '') {

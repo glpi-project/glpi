@@ -505,6 +505,10 @@ function changeProfile($ID) {
 		$_SESSION['glpiactiveprofile'] = $_SESSION['glpiprofiles'][$ID];
 		$_SESSION['glpi_entities_tree']=array();
 		$_SESSION['glpiactiveentities'] = array ();
+		// Init ancestors if needed
+		if (!isset($_SESSION['glpi_entities_ancestors'])){
+			$_SESSION['glpi_entities_ancestors']=array();
+		}
 		// glpiactiveentities -> active entities
 		foreach ($_SESSION['glpiactiveprofile']['entities'] as $key => $val) {
 			if (!$val['recursive']) {
@@ -624,6 +628,24 @@ function haveAccessToEntity($ID) {
 	} else {
 		return false;
 	}
+}
+
+/**
+ * Check if you could access to one entity of an list
+ *
+ * @param $tab : list ID of entities
+ * @return Boolean : 
+ */
+function haveAccessToOneOfEntities($tab) {
+	$access=false;
+	if (is_array($tab)&&count($tab)){
+		foreach ($tab as $val){
+			if (haveAccessToEntity($val)){
+				return true;
+			}
+		}
+	}
+	return $access;
 }
 
 /**
