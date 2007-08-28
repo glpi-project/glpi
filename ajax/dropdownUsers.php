@@ -57,28 +57,59 @@ if (!isset($_POST['all'])) {
 	$_POST['all']=0;
 }
 
-if ($_POST['right']=="interface"){
-	$where=" glpi_profiles.".$_POST['right']."='central' ";
-	$joinprofile=true;
-} else if ($_POST['right']=="ID"){
-	$where=" glpi_users.ID='".$_SESSION["glpiID"]."' ";
-} else if ($_POST['right']=="all"){
-	$where=" glpi_users.ID > '1' ";
-} else {
-	$joinprofile=true;
-	$where=" glpi_profiles.".$_POST['right']."='1' ";
+switch ($_POST['right']){
+	case "interface" :
+		$where=" glpi_profiles.".$_POST['right']."='central' ";
+		$joinprofile=true;
+		if (isset($_POST["entity_restrict"])&&$_POST["entity_restrict"]>=0){
+			$where.= " AND glpi_users_profiles.FK_entities='".$_POST["entity_restrict"]."'";
+		} else {
+			$where.=getEntitiesRestrictRequest("AND","glpi_users_profiles");
+		}
+	break;
+	case "ID" :
+		$where=" glpi_users.ID='".$_SESSION["glpiID"]."' ";
+		if (isset($_POST["entity_restrict"])&&$_POST["entity_restrict"]>=0){
+			$where.= " AND glpi_users_profiles.FK_entities='".$_POST["entity_restrict"]."'";
+		} else {
+			$where.=getEntitiesRestrictRequest("AND","glpi_users_profiles");
+		}
+	break;
+	case "all" :
+		$where=" glpi_users.ID > '1' ";
+		if (isset($_POST["entity_restrict"])&&$_POST["entity_restrict"]>=0){
+			$where.= " AND glpi_users_profiles.FK_entities='".$_POST["entity_restrict"]."'";
+		} else {
+			$where.=getEntitiesRestrictRequest("AND","glpi_users_profiles");
+		}
+	break;
+	default :
+		$joinprofile=true;
+		$where=" ( glpi_profiles.".$_POST['right']."='1' ";
+		if (isset($_POST["entity_restrict"])&&$_POST["entity_restrict"]>=0){
+			$where.= " AND ( glpi_users_profiles.FK_entities='".$_POST["entity_restrict"]."'";
+			// Specific entity : add ancestors recursive rights
+			$ancestors=getEntityAncestors($_POST["entity_restrict"]);
+			
+			if (count($ancestors)){
+				foreach ($ancestors as $val){
+					$where.=" OR (glpi_users_profiles.FK_entities='$val' AND glpi_users_profiles.recursive='1') ";
+				}
+			}
+			$where.=" ) ";
+		} else {
+			$where.=getEntitiesRestrictRequest("AND","glpi_users_profiles");
+		}
+		$where.=" ) ";
+		
+	break;
 }
 
 $where.=" AND glpi_users.deleted='0' ";
-if (isset($_POST["entity_restrict"])&&$_POST["entity_restrict"]>=0){
-	$where.= " AND glpi_users_profiles.FK_entities='".$_POST["entity_restrict"]."'";
-} else {
-	$where.=getEntitiesRestrictRequest("AND","glpi_users_profiles");
+
+if (isset($_POST['value'])){
+	$where.=" AND  (glpi_users.ID <> '".$_POST['value']."') ";
 }
-
-
-if (isset($_POST['value']))
-$where.=" AND  (glpi_users.ID <> '".$_POST['value']."') ";
 
 if (strlen($_POST['searchText'])>0&&$_POST['searchText']!=$CFG_GLPI["ajax_wildcard"]){
 	$where.=" AND (glpi_users.name ".makeTextSearch($_POST['searchText'])." OR glpi_users.realname ".makeTextSearch($_POST['searchText'])." OR glpi_users.firstname ".makeTextSearch($_POST['searchText'])." OR CONCAT(glpi_users.realname,' ',glpi_users.firstname) ".makeTextSearch($_POST['searchText']).")";
