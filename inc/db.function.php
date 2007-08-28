@@ -288,7 +288,7 @@ function getAncestorsOfTreeItem($table,$IDf){
 		} else {
 			$IDf=0;
 		}
-		if ($IDf>0&&!in_array($IDf,$id_found)){
+		if ($IDf>=0&&!in_array($IDf,$id_found)){
 			$id_found[]=$IDf;
 		} else {
 			$IDf=0;
