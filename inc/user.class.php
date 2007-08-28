@@ -339,7 +339,7 @@ class User extends CommonDBTM {
 		global $DB;
 		if (isset($input["auth_method"])&&$input["auth_method"]==AUTH_LDAP)
 		if (isset ($input["ID"]) && $input["ID"]>0 && isset ($input["_groups"]) && count($input["_groups"])) {
-			$auth_method = $this->getAuthMethodsByID($input["auth_method"], $input["id_auth"]);
+			$auth_method = getAuthMethodsByID($input["auth_method"], $input["id_auth"]);
 			if (count($auth_method)){
 				$WHERE = "";
 				switch ($auth_method["ldap_search_for_groups"]) {
@@ -931,33 +931,5 @@ class User extends CommonDBTM {
 	}
 }
 
-/* Get all the authentication methods parameters for a specific auth_method and id_auth
-	* and return it as an array 
-	*/
-function getAuthMethodsByID($auth_method, $id_auth) {
-	global $DB;
 
-	$auth_methods = array ();
-	$sql = "";
-
-	switch ($auth_method) {
-		case AUTH_LDAP :
-			//Get all the ldap directories
-			$sql = "SELECT * FROM glpi_auth_ldap WHERE ID=" . $id_auth;
-			break;
-		case AUTH_MAIL :
-			//Get all the pop/imap servers
-			$sql = "SELECT * FROM glpi_auth_mail WHERE ID=" . $id_auth;
-			break;
-	}
-
-	if ($sql != "") {
-		$result = $DB->query($sql);
-		if ($DB->numrows($result) > 0) {
-			$auth_methods = $DB->fetch_array($result);
-		}
-	}
-	//Return all the authentication methods in an array
-	return $auth_methods;
-}
 ?>

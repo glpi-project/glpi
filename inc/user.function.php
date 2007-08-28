@@ -410,4 +410,34 @@ function getUserEntities($ID){
 	return array();
 }
 
+/* Get all the authentication methods parameters for a specific auth_method and id_auth
+	* and return it as an array 
+	*/
+function getAuthMethodsByID($auth_method, $id_auth) {
+	global $DB;
+
+	$auth_methods = array ();
+	$sql = "";
+
+	switch ($auth_method) {
+		case AUTH_LDAP :
+			//Get all the ldap directories
+			$sql = "SELECT * FROM glpi_auth_ldap WHERE ID=" . $id_auth;
+			break;
+		case AUTH_MAIL :
+			//Get all the pop/imap servers
+			$sql = "SELECT * FROM glpi_auth_mail WHERE ID=" . $id_auth;
+			break;
+	}
+
+	if ($sql != "") {
+		$result = $DB->query($sql);
+		if ($DB->numrows($result) > 0) {
+			$auth_methods = $DB->fetch_array($result);
+		}
+	}
+	//Return all the authentication methods in an array
+	return $auth_methods;
+}
+
 ?>
