@@ -460,13 +460,15 @@ function acceptLicence() {
 
 	echo "<form action=\"install.php\" method=\"post\">";
 	echo "<p>";
-	echo " <label class=\"block\" for=\"agree\"><input type=\"radio\" name=\"install\" value=\"Licence\" />";
+	echo " <input type=\"radio\" name=\"install\" id=\"agree\" value=\"Licence\" />";
+	echo " <label for=\"agree\">";
 	echo $LANG["install"][93];
 	echo " </label></p>";
 
 
 	echo "<br>";
-	echo "<label class=\"block\" for=\"disagree\"><input type=\"radio\" name=\"install\" value=\"lang_select\" checked=\"checked\" />";
+	echo " <input type=\"radio\" name=\"install\" value=\"lang_select\" id=\"disagree\" checked=\"checked\" />";
+	echo " <label for=\"disagree\">";
 	echo $LANG["install"][94];
 	echo " </label>";
 	echo "<p><input type=\"submit\" name=\"submit\" class=\"submit\" value=\"".$LANG["install"][26]."\"  /></p>";
