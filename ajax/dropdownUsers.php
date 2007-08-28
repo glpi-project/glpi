@@ -92,9 +92,17 @@ switch ($_POST['right']){
 			$ancestors=getEntityAncestors($_POST["entity_restrict"]);
 			
 			if (count($ancestors)){
+				$where.=" OR ( glpi_users_profiles.recursive='1' AND glpi_users_profiles.FK_entities IN (";
+				$first=true;
 				foreach ($ancestors as $val){
-					$where.=" OR (glpi_users_profiles.FK_entities='$val' AND glpi_users_profiles.recursive='1') ";
+					if (!$first){
+						$where.=",";
+					} else {
+						$first=false;
+					}
+					$where.=$val;
 				}
+				$where.="))";
 			}
 			$where.=" ) ";
 		} else {
