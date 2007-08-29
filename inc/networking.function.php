@@ -208,6 +208,7 @@ function showNetportForm($target,$ID,$ondevice,$devtype,$several) {
 	}
 	else
 	{
+		$netport->getDeviceData($ondevice,$devtype);
 		$netport->getEmpty();
 	}
 
