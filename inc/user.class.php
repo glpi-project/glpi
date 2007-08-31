@@ -163,7 +163,11 @@ class User extends CommonDBTM {
 			$result = $DB->query($sql_default_profile);
 			if ($DB->numrows($result)){
 				$right=$DB->result($result,0,0);
-				$affectation["FK_entities"] = 0;
+				if (isset($_SESSION['glpiactive_entity'])){
+					$affectation["FK_entities"] = $_SESSION['glpiactive_entity'];
+				} else {
+					$affectation["FK_entities"] = 0;
+				}
 				$affectation["FK_profiles"] = $DB->result($result,0,0);
 				$affectation["FK_users"] = $input["ID"];
 				$affectation["recursive"] = 0;
@@ -307,7 +311,7 @@ class User extends CommonDBTM {
 			foreach($entities as $entity)
 			{
 				if (count($rights)==0){
-					//If no dynamix profile is provided : get the profil by default if not existing profile
+					//If no dynamics profile is provided : get the profil by default if not existing profile
 					$exist_profile = "SELECT ID FROM glpi_users_profiles WHERE FK_users='".$input["ID"]."'";
 					$result = $DB->query($exist_profile);
 					if ($DB->numrows($result)==0){
