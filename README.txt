@@ -65,7 +65,7 @@ and indexing a problem encountered with one of the technical resources to which 
 *************************************************************************************************************
 
 1) Apache 1.3.>6 with PHP 4 (PHP3 doesn't work anymore)
-2) MySQL 4.1.13 and +
+2) MySQL 4.1.2 and +
 3) Javascript activate
 
 

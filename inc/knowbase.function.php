@@ -105,11 +105,10 @@ function showKbCategoriesFirstLevel($target,$parentID=0,$faq=0)
 	if($faq){
 		if ($CFG_GLPI["public_faq"] == 0 && !haveRight("faq","r")) return false;	
 		
-		$query = "SELECT DISTINCT glpi_dropdown_kbcategories.* FROM glpi_kbitems LEFT JOIN glpi_dropdown_kbcategories ON (glpi_kbitems.categoryID = glpi_dropdown_kbcategories.ID) WHERE (glpi_kbitems.faq = '1') AND  (parentID = $parentID) ORDER  BY name ASC";
+		$query = "SELECT DISTINCT glpi_dropdown_kbcategories.* FROM glpi_kbitems LEFT JOIN glpi_dropdown_kbcategories ON (glpi_kbitems.categoryID = glpi_dropdown_kbcategories.ID) WHERE (glpi_kbitems.faq = '1') AND  (glpi_dropdown_kbcategories.parentID = '$parentID') ORDER  BY name ASC";
 	}else{
-
 		if (!haveRight("knowbase","r")) return false;
-		$query = "SELECT * FROM glpi_dropdown_kbcategories WHERE  (parentID = $parentID) ORDER  BY name ASC";
+		$query = "SELECT * FROM glpi_dropdown_kbcategories WHERE  (glpi_dropdown_kbcategories.parentID = '$parentID') ORDER  BY name ASC";
 	}
 
 	/// Show category
@@ -122,7 +121,7 @@ function showKbCategoriesFirstLevel($target,$parentID=0,$faq=0)
 			$tmpID=$parentID;
 			$todisplay="";
 			while ($tmpID!=0){
-				$query2="SELECT * FROM glpi_dropdown_kbcategories where ID='$tmpID'";
+				$query2="SELECT * FROM glpi_dropdown_kbcategories WHERE ID='$tmpID'";
 				$result2=$DB->query($query2);
 				if ($DB->numrows($result2)==1){	
 					$data=$DB->fetch_assoc($result2);
