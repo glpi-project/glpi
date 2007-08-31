@@ -348,6 +348,15 @@ $REDIRECT=$_SERVER['HTTP_REFERER'];
 						$function($_POST);
 					} 
 				} 
+			} else {
+				// Need to search display item over plugins
+				$split=split('_',$_POST["action"]);
+				if (isset($split[1])){
+					$function='plugin_'.$split[1].'_MassiveActionsProcess';
+						if (function_exists($function)){
+							$function($_POST);
+						} 
+				}
 			}
 
 		break;

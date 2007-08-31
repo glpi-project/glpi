@@ -157,6 +157,15 @@ if (isset($_POST["action"])&&isset($_POST["type"])&&!empty($_POST["type"])){
 						$function($_POST["type"],$_POST["action"]);
 					} 
 				} 
+			} else {
+				// Need to search display item over plugins
+				$split=split('_',$_POST["action"]);
+				if (isset($split[1])){
+					$function='plugin_'.$split[1].'_MassiveActionsDisplay';
+						if (function_exists($function)){
+							$function($_POST["type"],$_POST["action"]);
+						} 
+				}
 			}
 			break;
 
