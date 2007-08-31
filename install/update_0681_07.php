@@ -1047,6 +1047,48 @@ function update0681to07() {
 		$DB->query($query) or die("0.7 delete version in glpi_software" . $LANG["update"][90] . $DB->error());
 	}
 
+	// CLean multiple free / global licenses 
+	
+	$query=	"SELECT count(*) as CPT, glpi_licenses.*
+	FROM `glpi_licenses`
+	WHERE `serial` = 'global' OR `serial` = 'free'
+	GROUP BY sID, serial, expire, buy
+	HAVING CPT > 1";
+	$result=$DB->query($query) or die("0.7 check multiple free global licenses " . $LANG["update"][90] . $DB->error());
+	if ($DB->numrows($result)){
+		while ($data=$DB->fetch_array($result)){
+			// Get licenses AND installations
+			$expire_search="";
+			if ($data['expire']=="")
+				$expire_search=" AND glpi_licenses.expire IS NULL";
+			else $expire_search=" AND glpi_licenses.expire = '".$data['expire']."'";
+
+			$query="SELECT glpi_licenses.ID FROM glpi_licenses 
+				WHERE serial ='".$data['serial']."' AND sID ='".$data['sID']."' $expire_search AND buy ='".$data['buy']."'";
+			$result2=$DB->query($query);
+			if ($DB->numrows($result2)){
+				$licIDs=array();
+				while ($data2=$DB->fetch_array($result2)){
+					$licIDs[]=$data2['ID'];
+				}
+				if (count($licIDs)>1){
+					$refID=array_pop($licIDs);
+					$query="UPDATE glpi_inst_software SET license = '$refID' WHERE license IN (";
+					$first=true;
+					foreach ($licIDs as $id){
+						if ($first) $first=false;
+						else $query.=",";
+						$query.=$id;
+						$query_del="DELETE FROM glpi_licenses WHERE ID = $id";
+						$DB->query($query_del);
+					}
+					$query.=")";
+					$DB->query($query);
+				}
+			}
+		}
+	}
+	
 	if (!FieldExists("glpi_networking_ports", "netmask")) {
 		$query = "ALTER TABLE `glpi_networking_ports` ADD COLUMN `netmask` VARCHAR( 255 ) NULL DEFAULT NULL";
 		$DB->query($query) or die("0.7 add netmask in glpi_networking_ports" . $LANG["update"][90] . $DB->error());
