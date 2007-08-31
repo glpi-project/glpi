@@ -848,7 +848,24 @@ function addFormTracking ($device_type=0,$ID=0,$author,$assign,$assign_group,$ta
 
 	if (haveRight("comment_all_ticket","1")){
 		echo "<tr><th colspan='4' align='center'>".$LANG["job"][45].":</th></tr>";
-		echo "<tr class='tab_bg_1'><td colspan='4' align='center'><textarea cols='80' rows='8'  name='_followup'></textarea></td></tr>";
+		echo "<tr><td colspan='4'>";
+		echo "<script type='text/javascript' >\n";
+		echo "function showPlan(){\n";
+
+			echo "window.document.getElementById('plan').style.display='none';";
+			$params=array('form'=>'followups',
+				'state'=>1,
+				'author'=>$_SESSION['glpiID'],
+				'entity'=>$_SESSION["glpiactive_entity"],
+			);
+			ajaxUpdateItemJsCode('viewplan',$CFG_GLPI["root_doc"]."/ajax/planning.php",$params,false);
+
+		echo "};";
+		echo "</script>";
+
+		showAddFollowupForm(-1);
+		echo "</td></tr>";
+//		echo "<tr class='tab_bg_1'><td colspan='4' align='center'><textarea cols='80' rows='8'  name='_followup'></textarea></td></tr>";
 	}
 
 	echo "</table></div></form>";
@@ -2075,12 +2092,19 @@ function showAddFollowupForm($tID){
 	global $DB,$LANG,$CFG_GLPI;
 
 	$job=new Job;
+
 	if ($tID>0){
 		$job->getFromDB($tID);
 	} else {
 		$job->getEmpty();
 	}
-
+	$prefix="";
+	$postfix="";
+	// Add followup at creating ticket : prefix values
+	if ($tID<0){
+		$prefix="_followup[";
+		$postfix="]";
+	}
 	if (!haveRight("comment_ticket","1")&&!haveRight("comment_all_ticket","1")&&$job->fields["assign"]!=$_SESSION["glpiID"]&&!in_array($job->fields["assign_group"],$_SESSION["glpigroups"])) return false;
 
 
@@ -2093,7 +2117,9 @@ function showAddFollowupForm($tID){
 	}
 	// Display Add Table
 	echo "<div class='center'>";
-	echo "<form name='followups' method='post' action=\"$target\">\n";
+	if ($tID>0){
+		echo "<form name='followups' method='post' action=\"$target\">\n";
+	}
 	echo "<table class='tab_cadre_fixe'>";
 	echo "<tr><th colspan='2'>";
 	echo $LANG["job"][29];
@@ -2111,7 +2137,7 @@ function showAddFollowupForm($tID){
 	echo "<tr class='tab_bg_2'><td width='$width_left'>";
 	echo "<table width='100%'>";
 	echo "<tr><td>".$LANG["joblist"][6]."</td>";
-	echo "<td><textarea name='contents' rows=8 cols=$cols></textarea>";
+	echo "<td><textarea name='".$prefix."contents".$postfix."' rows='8' cols='$cols'></textarea>";
 	echo "</td></tr>";
 	echo "</table>";
 	echo "</td>";
@@ -2123,21 +2149,23 @@ function showAddFollowupForm($tID){
 		echo "<tr>";
 		echo "<td>".$LANG["job"][30].":</td>";
 		echo "<td>";
-		echo "<select name='private'>";
+		echo "<select name='".$prefix."private".$postfix."'>";
 		echo "<option value='0'>".$LANG["choice"][0]."</option>";
 		echo "<option value='1'>".$LANG["choice"][1]."</option>";
 		echo "</select>";
 		echo "</td>";
 		echo "</tr>";
 
-		echo "<tr><td>".$LANG["job"][31].":</td><td>";
-		dropdownInteger('hour',0,0,100);
-		echo $LANG["job"][21]."&nbsp;&nbsp;";
-		dropdownInteger('minute',0,0,59);
-		echo $LANG["job"][22];
-		echo "</tr>";
+		if ($tID>0){
+			echo "<tr><td>".$LANG["job"][31].":</td><td>";
+			dropdownInteger('hour',0,0,100);
+			echo $LANG["job"][21]."&nbsp;&nbsp;";
+			dropdownInteger('minute',0,0,59);
+			echo $LANG["job"][22];
+			echo "</tr>";
+		}
 
-		if (haveRight("show_planning","1")&&$tID>0){
+		if (haveRight("show_planning","1")){
 			echo "<tr>";
 			echo "<td>".$LANG["job"][35]."</td>";
 
@@ -2157,23 +2185,28 @@ function showAddFollowupForm($tID){
 			echo "</tr>";
 		}
 	}
-	echo "<tr class='tab_bg_2'>";
-	echo "<td class='center'>";
-	echo "<input type='submit' name='add' value='".$LANG["buttons"][8]."' class='submit'>";
-	echo "</td>";
-	if ($commentall){
+	if ($tID>0){
+		echo "<tr class='tab_bg_2'>";
 		echo "<td class='center'>";
-		echo "<input type='submit' name='add_close' value='".$LANG["buttons"][26]."' class='submit'>";
+		echo "<input type='submit' name='add' value='".$LANG["buttons"][8]."' class='submit'>";
 		echo "</td>";
+		if ($commentall){
+			echo "<td class='center'>";
+			echo "<input type='submit' name='add_close' value='".$LANG["buttons"][26]."' class='submit'>";
+			echo "</td>";
+		}
+		echo "</tr>";
 	}
-	echo "</tr>";
 
 
 	echo "</table>";
 	echo "</td></tr>";
 	echo "</table>";
-	echo "<input type='hidden' name='tracking' value='$tID'>";
-	echo "</form></div>";
+	if ($tID>0){
+		echo "<input type='hidden' name='tracking' value='$tID'>";
+		echo "</form>";
+	}
+	echo "</div>";
 
 }
 

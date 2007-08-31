@@ -414,7 +414,6 @@ class Job extends CommonDBTM{
 		// Manage helpdesk.html submission type
 		unset($input["type"]);
 
-
 		if (isset($_SESSION["glpiID"])) $input["recipient"]=$_SESSION["glpiID"];
 		else if ($input["author"]) $input["recipient"]=$input["author"];
 
@@ -463,6 +462,7 @@ class Job extends CommonDBTM{
 
 		// Process Business Rules
 		$rules=new TrackingBusinessRuleCollection();
+
 		$input=$rules->processAllRules($input,$input);
 
 		if (isset($input["emailupdates"])&&$input["emailupdates"]&&empty($input["uemail"])){
@@ -532,7 +532,7 @@ class Job extends CommonDBTM{
 		logEvent($newID,"tracking",4,"tracking",getUserName($input["author"])." ".$LANG["log"][20]);
 
 		$already_mail=false;
-		if ((isset($input["_followup"])&&strlen($input["_followup"]))||(isset($input["_hour"])&&isset($input["_minute"])&&isset($input["realtime"])&&$input["realtime"]>0)){
+		if ((isset($input["_followup"])&&is_array($input["_followup"]))||(isset($input["_hour"])&&isset($input["_minute"])&&isset($input["realtime"])&&$input["realtime"]>0)){
 
 			$fup=new Followup();
 			$type="new";
@@ -540,7 +540,9 @@ class Job extends CommonDBTM{
 			$toadd=array("type"=>$type,"tracking"=>$newID);
 			if (isset($input["_hour"])) $toadd["hour"]=$input["_hour"];
 			if (isset($input["_minute"])) $toadd["minute"]=$input["_minute"];
-			if (isset($input["_followup"])&&strlen($input["_followup"])) $toadd["contents"]=$input["_followup"];
+			if (isset($input["_followup"]['contents'])&&strlen($input["_followup"]['contents'])) $toadd["contents"]=$input["_followup"]['contents'];
+			if (isset($input["_followup"]['private'])) $toadd["private"]=$input["_followup"]['private'];
+			if (isset($input["plan"])) $toadd["plan"]=$input["plan"];
 
 			$fup->add($toadd);
 			$already_mail=true;
