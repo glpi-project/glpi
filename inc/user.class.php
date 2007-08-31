@@ -643,7 +643,7 @@ class User extends CommonDBTM {
 		} else {
 			if ($this->getfromDB($ID)){
 				$entities=getUserEntities($ID);
-				if (haveAccessToOneOfEntities($entities)){
+				if (haveAccessToOneOfEntities($entities)||isViewAllEntities()){
 					$spotted = true;
 				}
 			}

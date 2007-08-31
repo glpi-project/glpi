@@ -56,6 +56,9 @@ if (!defined('GLPI_ROOT')){
 	function isMultiEntitiesMode(){
 		return (countElementsInTable("glpi_entities")>0);
 	}
+	function isViewAllEntities(){
+		return ((countElementsInTable("glpi_entities")+1)==count($_SESSION["glpiactiveentities"]));
+	}
 	function logInFile($name,$text){
 		error_log(convDateTime(date("Y-m-d H:i:s"))."\n".$text,3,GLPI_LOG_DIR."/".$name.".log");
 	}
