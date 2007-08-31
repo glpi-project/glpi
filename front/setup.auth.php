@@ -53,15 +53,6 @@ $config_ldap = new AuthLDAP();
 if (!isset($_GET["ID"])) $_GET["ID"]="";
 if (!isset($_GET["next"])) $_GET["next"]="";
 
-
-if (!isset ($_SESSION['glpi_authconfig'])){
-	$_SESSION['glpi_authconfig'] = 1;
-}
-if (isset ($_GET['onglet'])){
-	$_SESSION['glpi_authconfig'] = $_GET['onglet'];
-}
-
-
 //Update CAS configuration
 elseif (isset ($_POST["update_conf_cas"])) {
 	$config->update($_POST);
@@ -128,7 +119,15 @@ elseif (isset ($_POST["test_mail"])) {
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 
-commonHeader($LANG["title"][14], $_SERVER['PHP_SELF'],"config","extauth");
+
+if (!isset ($_SESSION['glpi_authconfig'])){
+	$_SESSION['glpi_authconfig'] = 1;
+}
+if (isset ($_GET['onglet'])){
+	$_SESSION['glpi_authconfig'] = $_GET['onglet'];
+}
+
+commonHeader($LANG["title"][14], $_SERVER['PHP_SELF'],"config","extauth",$_SESSION['glpi_authconfig']);
 switch ($_GET["next"]) {
 	case "extauth_mail" :
 		$config_mail->showForm($_SERVER['PHP_SELF'], $_GET["ID"]);
@@ -140,7 +139,6 @@ switch ($_GET["next"]) {
 		showFormExtAuthList($_SERVER['PHP_SELF']);
 		break;
 }
-
 
 commonFooter();
 ?>
