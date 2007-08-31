@@ -1601,7 +1601,7 @@ function addDefaultWhere ($type){
 		// No link
 		case USER_TYPE:
 			// View all entities
-			if ((countElementsInTable("glpi_entities")+1)==count($_SESSION["glpiactiveentities"])){
+			if (isViewAllEntities()){
 				return "";
 			} else {
 				return getEntitiesRestrictRequest("","glpi_users_profiles");
