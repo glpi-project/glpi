@@ -847,7 +847,7 @@ function addFormTracking ($device_type=0,$ID=0,$author,$assign,$assign_group,$ta
 	echo "</td></tr>";
 
 	if (haveRight("comment_all_ticket","1")){
-		echo "<tr><th colspan='4' align='center'>".$LANG["job"][45].":</th></tr>";
+//		echo "<tr><th colspan='4' align='center'>".$LANG["job"][45].":</th></tr>";
 		echo "<tr><td colspan='4'>";
 		echo "<script type='text/javascript' >\n";
 		echo "function showPlan(){\n";
