@@ -190,7 +190,7 @@ class Mailing
 								break;
 								// ASSIGN GROUP SEND
 							case ASSIGN_GROUP_MAILING :
-								if (isset($this->job->fields["assign"])&&$this->job->fields["assign"]>0){
+								if (isset($this->job->fields["assign_group"])&&$this->job->fields["assign_group"]>0){
 									$query="SELECT glpi_users.email as EMAIL FROM glpi_users_groups INNER JOIN glpi_users ON (glpi_users_groups.FK_users = glpi_users.ID) $join WHERE glpi_users_groups.FK_groups='".$this->job->fields["assign_group"]."'";
 				
 									if ($result2= $DB->query($query)){
