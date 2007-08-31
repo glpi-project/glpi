@@ -1643,7 +1643,7 @@ function showJobDetails ($target,$ID){
 		if ($canupdate){
 			dropdownAllUsers("author",$job->fields["author"],1,$job->fields["FK_entities"]);
 		} else {
-			getUserName($job->fields["author"],haveRight('user','r'));
+			echo getUserName($job->fields["author"],haveRight('user','r'));
 		}
 		echo "</td></tr>";
 
