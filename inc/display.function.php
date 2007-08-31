@@ -539,6 +539,14 @@ function commonHeader($title,$url,$sector="none",$item="none",$option="")
 			$menu['config']['content']['extauth']['title']=$LANG["login"][10];
 			$menu['config']['content']['extauth']['page']='/front/setup.auth.php';
 			$menu['config']['content']['extauth']['links']['search']='/front/setup.auth.php';
+			switch ($option){
+				case 1 : // LDAP
+					$menu['config']['content']['extauth']['links']['add']='/front/setup.auth.php?next=extauth_ldap';
+					break;
+				case 2 : // IMAP
+					$menu['config']['content']['extauth']['links']['add']='/front/setup.auth.php?next=extauth_mail';
+					break;
+			}
 
 			$menu['config']['content']['mailgate']['title']=$LANG["Menu"][39];
 			$menu['config']['content']['mailgate']['page']='/front/mailgate.php';
