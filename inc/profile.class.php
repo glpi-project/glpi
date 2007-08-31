@@ -51,7 +51,7 @@ class Profile extends CommonDBTM{
 
 		$ong[1]=$LANG["title"][2];
 		if (haveRight("user","r")){
-			$ong[2]=$LANG["common"][34];
+			$ong[2]=$LANG["Menu"][14];
 		}
 		
 		return $ong;

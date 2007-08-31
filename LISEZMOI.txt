@@ -71,7 +71,7 @@ avec l'une des ressources techniques à laquelle ils ont accès.
 *************************************************************************************************************
 
 1) Apache 1.3.>6 avec PHP 4 ou PHP 5
-2) MySQL 4.1.13 et supérieures
+2) MySQL 4.1.2 et supérieures
 3) Javascript activé
 
 
