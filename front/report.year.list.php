@@ -85,7 +85,7 @@ if (isset($_POST["item_type"])&&is_array($_POST["item_type"])){
 			}
 			$query[$val].=")";
 		}
-		$query[$val].= " order by ".$LINK_ID_TABLE[$val].".name asc";
+		$query[$val].= " ORDER BY ".$LINK_ID_TABLE[$val].".name ASC";
 	}
 }
 

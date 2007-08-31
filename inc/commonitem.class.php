@@ -64,7 +64,7 @@ class CommonItem{
 		global $PLUGIN_HOOKS;
 
 		$this->id_device=$id_device;
-		$this->setType($device_type);
+		$this->setType($device_type,1);
 
 		if ($this->obj!=NULL){
 			// Do not load devices
@@ -80,114 +80,116 @@ class CommonItem{
 	 * @param $device_type Device Type ID of the object
 	 *
 	 */
-	function setType ($device_type){
+	function setType ($device_type,$init_object=0){
 		$this->device_type=$device_type;
 		// Make new database object and fill variables
-		switch ($device_type){
-			case COMPUTER_TYPE :
-				$this->obj=new Computer;
-				break;
-			case NETWORKING_TYPE :
-				$this->obj=new Netdevice;
-				break;
-			case PRINTER_TYPE :
-				$this->obj=new Printer;
-				break;
-			case MONITOR_TYPE : 
-				$this->obj= new Monitor;	
-				break;
-			case PERIPHERAL_TYPE : 
-				$this->obj= new Peripheral;	
-				break;				
-			case SOFTWARE_TYPE : 
-				$this->obj= new Software;	
-				break;				
-			case CONTACT_TYPE : 
-				$this->obj= new Contact;	
-				break;	
-			case ENTERPRISE_TYPE : 
-				$this->obj= new Enterprise;	
-				break;	
-			case CONTRACT_TYPE : 
-				$this->obj= new Contract;	
-				break;				
-			case CARTRIDGE_TYPE : 
-				$this->obj= new CartridgeType;	
-				break;					
-			case TYPEDOC_TYPE : 
-				$this->obj= new TypeDoc;	
-				break;		
-			case DOCUMENT_TYPE : 
-				$this->obj= new Document;	
-				break;					
-			case KNOWBASE_TYPE : 
-				$this->obj= new kbitem;	
-				break;					
-			case USER_TYPE : 
-				$this->obj= new User;	
-				break;					
-			case TRACKING_TYPE : 
-				$this->obj= new Job;	
-				break;
-			case CONSUMABLE_TYPE : 
-				$this->obj= new ConsumableType;	
-				break;					
-			case CARTRIDGE_ITEM_TYPE : 
-				$this->obj= new Cartridge;	
-				break;					
-			case CONSUMABLE_ITEM_TYPE : 
-				$this->obj= new Consumable;	
-				break;					
-			case LICENSE_TYPE : 
-				$this->obj= new License;	
-				break;					
-			case LINK_TYPE : 
-				$this->obj= new Link;	
-				break;	
-			case PHONE_TYPE : 
-				$this->obj= new Phone;	
-				break;		
-			case REMINDER_TYPE : 
-				$this->obj= new Reminder;	
-				break;			
-			case GROUP_TYPE : 
-				$this->obj= new Group;	
-				break;			
-			case ENTITY_TYPE : 
-				$this->obj= new Entity;	
-				break;			
-			case AUTH_MAIL_TYPE:
-				$this->obj = new AuthMail;
-				break;
-			case AUTH_LDAP_TYPE:
-				$this->obj = new AuthLDAP;
-				break;
-			case OCSNG_TYPE:
-				$this->obj = new Ocsng;
-				break;					
-			case REGISTRY_TYPE:
-				$this->obj = new Registry;
-				break;					
-			case PROFILE_TYPE:
-				$this->obj = new Profile;
-				break;					
-			case MAILGATE_TYPE:
-				$this->obj = new Mailgate;
-				break;		
-			case INFOCOM_TYPE:
-				$this->obj = new InfoCom;
-				break;				
-			default :
-				if ($device_type>1000){
-					if (isset($PLUGIN_HOOKS['plugin_classes'][$device_type])){
-						$class=$PLUGIN_HOOKS['plugin_classes'][$device_type];
-						if (class_exists($class)){
-							$this->obj = new $class();
+		if ($init_object){
+			switch ($device_type){
+				case COMPUTER_TYPE :
+					$this->obj=new Computer;
+					break;
+				case NETWORKING_TYPE :
+					$this->obj=new Netdevice;
+					break;
+				case PRINTER_TYPE :
+					$this->obj=new Printer;
+					break;
+				case MONITOR_TYPE : 
+					$this->obj= new Monitor;	
+					break;
+				case PERIPHERAL_TYPE : 
+					$this->obj= new Peripheral;	
+					break;				
+				case SOFTWARE_TYPE : 
+					$this->obj= new Software;	
+					break;				
+				case CONTACT_TYPE : 
+					$this->obj= new Contact;	
+					break;	
+				case ENTERPRISE_TYPE : 
+					$this->obj= new Enterprise;	
+					break;	
+				case CONTRACT_TYPE : 
+					$this->obj= new Contract;	
+					break;				
+				case CARTRIDGE_TYPE : 
+					$this->obj= new CartridgeType;	
+					break;					
+				case TYPEDOC_TYPE : 
+					$this->obj= new TypeDoc;	
+					break;		
+				case DOCUMENT_TYPE : 
+					$this->obj= new Document;	
+					break;					
+				case KNOWBASE_TYPE : 
+					$this->obj= new kbitem;	
+					break;					
+				case USER_TYPE : 
+					$this->obj= new User;	
+					break;					
+				case TRACKING_TYPE : 
+					$this->obj= new Job;	
+					break;
+				case CONSUMABLE_TYPE : 
+					$this->obj= new ConsumableType;	
+					break;					
+				case CARTRIDGE_ITEM_TYPE : 
+					$this->obj= new Cartridge;	
+					break;					
+				case CONSUMABLE_ITEM_TYPE : 
+					$this->obj= new Consumable;	
+					break;					
+				case LICENSE_TYPE : 
+					$this->obj= new License;	
+					break;					
+				case LINK_TYPE : 
+					$this->obj= new Link;	
+					break;	
+				case PHONE_TYPE : 
+					$this->obj= new Phone;	
+					break;		
+				case REMINDER_TYPE : 
+					$this->obj= new Reminder;	
+					break;			
+				case GROUP_TYPE : 
+					$this->obj= new Group;	
+					break;			
+				case ENTITY_TYPE : 
+					$this->obj= new Entity;	
+					break;			
+				case AUTH_MAIL_TYPE:
+					$this->obj = new AuthMail;
+					break;
+				case AUTH_LDAP_TYPE:
+					$this->obj = new AuthLDAP;
+					break;
+				case OCSNG_TYPE:
+					$this->obj = new Ocsng;
+					break;					
+				case REGISTRY_TYPE:
+					$this->obj = new Registry;
+					break;					
+				case PROFILE_TYPE:
+					$this->obj = new Profile;
+					break;					
+				case MAILGATE_TYPE:
+					$this->obj = new Mailgate;
+					break;		
+				case INFOCOM_TYPE:
+					$this->obj = new InfoCom;
+					break;				
+				default :
+					if ($device_type>1000){
+						if (isset($PLUGIN_HOOKS['plugin_classes'][$device_type])){
+							$class=$PLUGIN_HOOKS['plugin_classes'][$device_type];
+							if (class_exists($class)){
+								$this->obj = new $class();
+							} 
 						} 
-					} 
-				}
-				break;
-		}		
+					}
+					break;
+			}		
+		}
 	}
 
 	/**
