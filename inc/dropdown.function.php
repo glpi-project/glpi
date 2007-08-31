@@ -1316,24 +1316,22 @@ function dropdownMassiveAction($device_type,$deleted=0){
 					echo "<option value=\"add_followup\">".$LANG["job"][29]."</option>";
 				}
 				break;
-			default :
-				// Plugin Specific actions
-				if ($device_type>1000){
-					if (isset($PLUGIN_HOOKS['plugin_types'][$device_type])){
-						$function='plugin_'.$PLUGIN_HOOKS['plugin_types'][$device_type].'_MassiveActions';
-						if (function_exists($function)){
-							$actions=$function($device_type);
-							if (count($actions)){
-								foreach ($actions as $key => $val){
-									echo "<option value=\"$key\">$val</option>";
-								}
-							}
-						} 
-					} 
-				}
-
-				break;
 		}
+
+		// Plugin Specific actions
+		if (isset($PLUGIN_HOOKS['use_massive_action'])){
+			foreach ($PLUGIN_HOOKS['use_massive_action'] as $plugin => $val)
+			$function='plugin_'.$plugin.'_MassiveActions';
+			if (function_exists($function)){
+				$actions=$function($device_type);
+				if (count($actions)){
+					foreach ($actions as $key => $val){
+						echo "<option value=\"$key\">$val</option>";
+					}
+				}
+			} 
+		} 
+
 
 	}
 	echo "</select>";
