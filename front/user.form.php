@@ -180,6 +180,7 @@ else if (isset($_POST["deletegroup"]))
 			if (!empty($_GET["ID"]))
 			switch($_SESSION['glpi_onglet']){
 				case -1:
+					showUserRights($_SERVER['PHP_SELF'],$_GET["ID"]);
 					showGroupAssociated($_SERVER['PHP_SELF'],$_GET["ID"]);
 					showDeviceUser($_GET["ID"]);
 					showUserReservations($_SERVER['PHP_SELF'],$_GET["ID"]);
