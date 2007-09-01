@@ -95,7 +95,6 @@ class Job extends CommonDBTM{
 	function prepareInputForUpdate($input) {
 		global $LANG,$CFG_GLPI;
 
-
 		// Security checks
 		if (!haveRight("assign_ticket","1")){
 			if (isset($input["assign"])){
@@ -827,6 +826,7 @@ class Followup  extends CommonDBTM {
 
 
 	function prepareInputForUpdate($input) {
+
 		$input["realtime"]=$input["hour"]+$input["minute"]/60;
 		$input["author"]=$_SESSION["glpiID"];
 		if (isset($input["plan"])){
@@ -859,6 +859,7 @@ class Followup  extends CommonDBTM {
 		}
 		
 		if (isset($input["_plan"])){
+
 			$pt=new PlanningTracking();
 			// Update case
 			if (isset($input["_plan"]["ID"])){
@@ -876,7 +877,7 @@ class Followup  extends CommonDBTM {
 				$input["_plan"]['id_tracking']=$input['tracking'];
 				$input["_plan"]['_nomail']=1;
 
-				if (!$pt->add($input["plan"])){
+				if (!$pt->add($input["_plan"])){
 					return false;
 				}
 				unset($input["_plan"]);
