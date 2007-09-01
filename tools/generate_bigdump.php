@@ -42,7 +42,7 @@ include ("generate_bigdump.function.php");
 
 $entity_number=5;
 
-$multiplicator=0.5;
+$multiplicator=1;
 
 $MAX['locations']=100;
 $MAX['kbcategories']=8;
@@ -108,7 +108,7 @@ $MAX['type_of_cartridges']=5;
 $MAX['cartridges_by_printer']=4;
 $MAX['cartridges_stock']=2;
 $MAX['device']=10;
-$MAX['software']=10;
+$MAX['software']=50;
 $MAX['global_peripherals']=10;
 // DIRECT PERIPHERALS CONNECTED
 $percent['peripherals']=5;

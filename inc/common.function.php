@@ -259,11 +259,13 @@ function cleanCache($group=""){
  **/
 function cleanRelationCache($table){
 	global $LINK_ID_TABLE;
-	$RELATION=getDbRelations();
-	if (isset($RELATION[$table])){
-		foreach ($RELATION[$table] as $tablename => $field){
-			if ($key=array_search($tablename,$LINK_ID_TABLE)){
-				cleanCache("GLPI_$key");
+	if ($CFG_GLPI["use_cache"]){
+		$RELATION=getDbRelations();
+		if (isset($RELATION[$table])){
+			foreach ($RELATION[$table] as $tablename => $field){
+				if ($key=array_search($tablename,$LINK_ID_TABLE)){
+					cleanCache("GLPI_$key");
+				}
 			}
 		}
 	}
@@ -278,10 +280,11 @@ function cleanRelationCache($table){
  **/
 function cleanAllItemCache($item,$group){
 	global $CFG_GLPI;
-
-	foreach ($CFG_GLPI["languages"] as $key => $val){
-		// clean main sheet
-		$CFG_GLPI["cache"]->remove($item."_".$key,$group);
+	if ($CFG_GLPI["use_cache"]){
+		foreach ($CFG_GLPI["languages"] as $key => $val){
+			// clean main sheet
+			$CFG_GLPI["cache"]->remove($item."_".$key,$group);
+		}
 	}
 }
 
