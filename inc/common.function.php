@@ -258,7 +258,7 @@ function cleanCache($group=""){
  * @return nothing
  **/
 function cleanRelationCache($table){
-	global $LINK_ID_TABLE;
+	global $LINK_ID_TABLE,$CFG_GLPI;
 	if ($CFG_GLPI["use_cache"]){
 		$RELATION=getDbRelations();
 		if (isset($RELATION[$table])){
