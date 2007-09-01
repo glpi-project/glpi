@@ -761,7 +761,7 @@ function generate_entity($ID_entity){
 	$FIRST["enterprises"]=getMaxItem("glpi_enterprises")+1;
 	for ($i=0;$i<$MAX['enterprises'];$i++){
 		if (isset($items[$i])) $val=$items[$i];
-		else $val="enterprise_$i_ID_entity";
+		else $val="enterprise_".$i."_ID_entity";
 	
 		$query="INSERT INTO glpi_enterprises VALUES (NULL,'$ID_entity','$val','".mt_rand(1,$MAX['enttype'])."','address $i', 'postcode $i','town $i','state $i','country $i','http://www.$val.com/','phone $i','comment enterprises $i','0','fax $i','info@ent$i.com','notes enterprises $i')";
 		$DB->query($query) or die("PB REQUETE ".$query);
