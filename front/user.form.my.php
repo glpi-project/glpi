@@ -36,7 +36,8 @@
 
 $NEEDED_ITEMS = array (
 	"user",
-	"profile"
+	"profile",
+	"group"
 );
 
 define('GLPI_ROOT', '..');
