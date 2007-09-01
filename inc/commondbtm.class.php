@@ -376,7 +376,7 @@ class CommonDBTM {
 
 			if ($newID= $this->addToDB()){
 				$this->post_addItem($newID,$input);
-				doHookFunction("item_add",array("type"=>$this->type, "ID" => $newID));
+				doHook("item_add",array("type"=>$this->type, "ID" => $newID));
 				return $newID;
 			} else return false;
 
@@ -447,7 +447,7 @@ class CommonDBTM {
 				list($input,$updates)=$this->pre_updateInDB($input,$updates);
 
 				if ($this->updateInDB($updates)){
-					doHookFunction("item_update",array("type"=>$this->type, "ID" => $input["ID"]));
+					doHook("item_update",array("type"=>$this->type, "ID" => $input["ID"]));
 				}
 			} 
 			$this->post_updateItem($input,$updates,$history);
@@ -489,9 +489,9 @@ class CommonDBTM {
 			$this->pre_deleteItem($input["ID"]);
 			if ($this->deleteFromDB($input["ID"],$force)){
 				if ($force){
-					doHookFunction("item_purge",array("type"=>$this->type, "ID" => $input["ID"]));
+					doHook("item_purge",array("type"=>$this->type, "ID" => $input["ID"]));
 				} else {
-					doHookFunction("item_delete",array("type"=>$this->type, "ID" => $input["ID"]));
+					doHook("item_delete",array("type"=>$this->type, "ID" => $input["ID"]));
 				}
 			}
 
@@ -518,7 +518,7 @@ class CommonDBTM {
 		$input=doHookFunction("pre_item_restore",$input);
 
 		if ($this->restoreInDB($input["ID"])){
-			doHookFunction("item_restore",array("type"=>$this->type, "ID" => $input["ID"]));
+			doHook("item_restore",array("type"=>$this->type, "ID" => $input["ID"]));
 		}
 	}
 

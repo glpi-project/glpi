@@ -75,9 +75,13 @@ function usePlugin ($name) {
  * @param $name Name of hook to fire
  * @return mixed $data
  */
-function doHook ($name) {
+function doHook ($name,$param=NULL) {
 	global $PLUGIN_HOOKS;
-	$data = func_get_args();
+	if ($param==NULL){
+		$data = func_get_args();
+	} else {
+		$data=$param;
+	}
 
 	if (isset($PLUGIN_HOOKS[$name]) && is_array($PLUGIN_HOOKS[$name])) {
 		foreach ($PLUGIN_HOOKS[$name] as $function) {
