@@ -523,7 +523,6 @@ function ShowPlanningCentral($who){
 
 	$query="SELECT * FROM glpi_tracking_planning WHERE $ASSIGN (('".$debut."' <= begin AND adddate( '". $debut ."' , INTERVAL $INTERVAL ) >= begin) OR ('".$debut."' < end AND adddate( '". $debut ."' , INTERVAL $INTERVAL ) >= end) OR (begin <= '".$debut."' AND end > '".$debut."') OR (begin <= adddate( '". $debut ."' , INTERVAL $INTERVAL ) AND end > adddate( '". $debut ."' , INTERVAL $INTERVAL ))) ORDER BY begin";
 
-
 	$result=$DB->query($query);
 
 	$fup=new Followup();
@@ -533,15 +532,16 @@ function ShowPlanningCentral($who){
 	$i=0;
 	if ($DB->numrows($result)>0)
 		while ($data=$DB->fetch_array($result)){
-			$fup->getFromDB($data["id_followup"]);
-			$job->getFromDBwithData($fup->fields["tracking"],0);
-
-			$interv[$data["begin"]."$$".$i]["id_tracking"]=$fup->fields["tracking"];
-			$interv[$data["begin"]."$$".$i]["begin"]=$data["begin"];
-			$interv[$data["begin"]."$$".$i]["end"]=$data["end"];
-			$interv[$data["begin"]."$$".$i]["content"]=resume_text($job->fields["contents"],$CFG_GLPI["cut"]);
-			$interv[$data["begin"]."$$".$i]["device"]=$job->hardwaredatas->getName();
-			$i++;
+			if ($fup->getFromDB($data["id_followup"])){
+				if ($job->getFromDBwithData($fup->fields["tracking"],0)){
+					$interv[$data["begin"]."$$".$i]["id_tracking"]=$fup->fields["tracking"];
+					$interv[$data["begin"]."$$".$i]["begin"]=$data["begin"];
+					$interv[$data["begin"]."$$".$i]["end"]=$data["end"];
+					$interv[$data["begin"]."$$".$i]["content"]=resume_text($job->fields["contents"],$CFG_GLPI["cut"]);
+					$interv[$data["begin"]."$$".$i]["device"]=$job->hardwaredatas->getName();
+					$i++;
+				}
+			}
 		}
 
 
@@ -559,16 +559,14 @@ function ShowPlanningCentral($who){
 	$i=0;
 	if ($DB->numrows($result2)>0)
 		while ($data=$DB->fetch_array($result2)){
-			$remind->getFromDB($data["ID"]);
-
-
-			$interv[$data["begin"]."$$".$i]["id_reminder"]=$remind->fields["ID"];
-			$interv[$data["begin"]."$$".$i]["begin"]=$data["begin"];
-			$interv[$data["begin"]."$$".$i]["end"]=$data["end"];
-			$interv[$data["begin"]."$$".$i]["title"]=resume_text($remind->fields["title"],$CFG_GLPI["cut"]);
-			$interv[$data["begin"]."$$".$i]["text"]=resume_text($remind->fields["text"],$CFG_GLPI["cut"]);
-
-			$i++;
+			if ($remind->getFromDB($data["ID"])){
+				$interv[$data["begin"]."$$".$i]["id_reminder"]=$remind->fields["ID"];
+				$interv[$data["begin"]."$$".$i]["begin"]=$data["begin"];
+				$interv[$data["begin"]."$$".$i]["end"]=$data["end"];
+				$interv[$data["begin"]."$$".$i]["title"]=resume_text($remind->fields["title"],$CFG_GLPI["cut"]);
+				$interv[$data["begin"]."$$".$i]["text"]=resume_text($remind->fields["text"],$CFG_GLPI["cut"]);
+				$i++;
+			}
 		}
 
 
