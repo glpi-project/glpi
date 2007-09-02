@@ -793,7 +793,7 @@ class Transfer extends CommonDBTM{
 									$need_clean_process=true;
 									$soft->getFromDB($data['softID']);
 									// Is existing software in the destination entity ?
-									$query="SELECT * FROM glpi_software WHERE is_global='1' AND FK_entities='".$this->to."' AND name='".addslashes($soft->fields['name'])."'";
+									$query="SELECT * FROM glpi_software WHERE FK_entities='".$this->to."' AND name='".addslashes($soft->fields['name'])."'";
 									if ($result_search=$DB->query($query)){
 										if ($DB->numrows($result_search)>0){
 											$newsoftID=$DB->result($result_search,0,'ID');
