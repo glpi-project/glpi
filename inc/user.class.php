@@ -643,8 +643,12 @@ class User extends CommonDBTM {
 		} else {
 			if ($this->getfromDB($ID)){
 				$entities=getUserEntities($ID);
-				if (haveAccessToOneOfEntities($entities)||isViewAllEntities()){
+				if (haveAccessToOneOfEntities($entities)){
 					$spotted = true;
+				}
+				$strict_entities=getUserEntities($ID,false);
+				if (!haveAccessToOneOfEntities($strict_entities)){
+					$canedit=false;
 				}
 			}
 		}
@@ -788,7 +792,7 @@ class User extends CommonDBTM {
 				}
 			}
 
-			if (haveRight("user", "w"))
+			if ($canedit)
 				if ($this->fields["name"] == "") {
 					echo "<tr>";
 					echo "<td class='tab_bg_2' valign='top' colspan='4' align='center'>";

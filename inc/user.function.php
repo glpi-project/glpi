@@ -160,6 +160,10 @@ function showGroupAssociated($target,$ID){
 	if (!haveRight("user","r")||!haveRight("group","r"))	return false;
 
 	$canedit=haveRight("user","w");
+	$strict_entities=getUserEntities($ID,false);
+	if (!haveAccessToOneOfEntities($strict_entities)){
+		$canedit=false;
+	}
 
 	$nb_per_line=3;
 	if ($canedit) $headerspan=$nb_per_line*2;
@@ -254,6 +258,11 @@ function showUserRights($target,$ID){
 	if (!haveRight("user","r")||!haveRight("entity","r"))	return false;
 
 	$canedit=haveRight("entity","w");
+	$strict_entities=getUserEntities($ID,false);
+	if (!haveAccessToOneOfEntities($strict_entities)){
+		$canedit=false;
+	}
+
 	$canshowentity=haveRight("entity","r");
 	$headerspan=1;
 	if ($canedit) {
@@ -392,17 +401,22 @@ function generateUserVcard($ID){
 
 }
 
-function getUserEntities($ID){
+function getUserEntities($ID,$recursive=true){
 	global $DB;
 
-	$query="SELECT DISTINCT FK_entities
+	$query="SELECT DISTINCT FK_entities, recursive
 			FROM glpi_users_profiles 
 			WHERE FK_users='$ID';";
 	$result=$DB->query($query);
 	if ($DB->numrows($result)>0){
 		$entities=array();
 		while ($data=$DB->fetch_assoc($result)){
-			$entities[]=$data['FK_entities'];
+			if ($data['recursive']&&$recursive){
+				$tab=getSonsOfTreeItem('glpi_entities',$data['FK_entities']);
+				$entities=array_merge($tab,$entities);
+			} else {
+				$entities[]=$data['FK_entities'];
+			}
 		}
 		return $entities;
 	} 
