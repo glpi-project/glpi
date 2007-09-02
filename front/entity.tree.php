@@ -35,7 +35,7 @@
 
 
 
-$NEEDED_ITEMS=array("setup","profile");
+$NEEDED_ITEMS=array("setup","profile","ocsng");
 
 if(!defined('GLPI_ROOT')){
 	define('GLPI_ROOT', '..');
