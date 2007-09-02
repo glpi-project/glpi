@@ -1799,9 +1799,17 @@ class Transfer extends CommonDBTM{
 					echo $LANG["common"][2]." $ID";
 				}		
 				echo "</th></tr>";
+			} else {
+					echo "<tr>";
+					echo "<td class='tab_bg_2' valign='top' colspan='4'>";
+					
+					echo "<div class='center'>";
+					dropdownActiveEntities('to_entity');
+					echo "&nbsp;<input type='submit' name='transfer' value=\"".$LANG["buttons"][48]."\" class='submit'></div>";
+					echo "</td>";
+					echo "</tr>";
 			}
 
-			
 			if (!$use_cache||!($CFG_GLPI["cache"]->start($ID."_".$_SESSION["glpilanguage"],"GLPI_".$this->type))) {
 				if ($edit_form){
 					echo "<tr class='tab_bg_1'>";
@@ -1992,16 +2000,7 @@ class Transfer extends CommonDBTM{
 						echo "</tr>";
 	
 					}
-				} else {
-					echo "<tr>";
-					echo "<td class='tab_bg_2' valign='top' colspan='4'>";
-					
-					echo "<div class='center'>";
-					dropdownActiveEntities('to_entity');
-					echo "&nbsp;<input type='submit' name='transfer' value=\"".$LANG["buttons"][48]."\" class='submit'></div>";
-					echo "</td>";
-					echo "</tr>";
-				}
+				} 
 			}
 			echo "</table></div></form>";
 
