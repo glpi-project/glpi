@@ -238,6 +238,7 @@ $LANG["common"][55]="Etes-vous certain de vouloir supprimer cet élement ?";
 $LANG["common"][56]="Central";
 $LANG["common"][57]="Titre";
 $LANG["common"][58]="Valeur maximale";
+$LANG["common"][59]="Global";
 
 $LANG["computers"][9]="OS";
 $LANG["computers"][10]="OS Numéro de série";
@@ -398,6 +399,7 @@ $LANG["entity"][3]="Associer à une entité";
 $LANG["entity"][5]="Affectation automatique des machines"; 
 $LANG["entity"][6]="Affectation automatique des utilisateurs"; 
 $LANG["entity"][7]="arborescence"; 
+$LANG["entity"][8]="Par entité"; 
 
 $LANG["event"][0]="Item (ID)"; 
 $LANG["event"][2]="Service";
@@ -1511,7 +1513,7 @@ $LANG["setup"][350]="Liaison avec les matériels pour la création de tickets";
 $LANG["setup"][351]="Tous les matériels";
 $LANG["setup"][352]="Matériels associables avec un ticket";
 
-$LANG["setup"][360]="Champs automatiques par entité";
+$LANG["setup"][360]="Champs automatiques (marqués par *)";
 
 $LANG["setup"][401]="Adresse Proxy";
 $LANG["setup"][402]="Port Proxy";
