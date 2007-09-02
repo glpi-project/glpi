@@ -320,6 +320,11 @@ function updateDropdown($input) {
 	if ($result = $DB->query($query)) {
 		if (in_array($input["tablename"], $CFG_GLPI["dropdowntree_tables"])) {
 			regenerateTreeCompleteNameUnderID($input["tablename"], $input["ID"]);
+			if ($input["tablename"]=="glpi_entities"&&isset($_SESSION["glpiID"])){
+				$activeprof=$_SESSION['glpiactiveprofile']['ID'];
+				initEntityProfiles($_SESSION["glpiID"]);
+				changeProfile($activeprof);
+			}
 		}
 		cleanRelationCache($input["tablename"]);
 		return true;
@@ -454,8 +459,7 @@ function replaceDropDropDown($input) {
 		$query = "DELETE FROM `glpi_entities_data` WHERE `FK_entities` = '" . $input["oldID"] . "'";
 		$DB->query($query);
 	}
-		cleanRelationCache($input["tablename"]);
-	
+	cleanRelationCache($input["tablename"]);
 }
 
 function showDeleteConfirmForm($target, $table, $ID,$FK_entities) {
