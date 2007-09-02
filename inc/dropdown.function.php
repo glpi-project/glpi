@@ -1288,6 +1288,7 @@ function dropdownMassiveAction($device_type,$deleted=0){
 				MONITOR_TYPE,NETWORKING_TYPE,PERIPHERAL_TYPE,PHONE_TYPE,PRINTER_TYPE,SOFTWARE_TYPE))
 				&&haveTypeRight($device_type,'w')
 				&&haveRight('transfer','w')
+				&&isMultiEntitiesMode()
 			){
 			echo "<option value=\"add_transfer_list\">".$LANG["buttons"][48]."</option>";
 		}
