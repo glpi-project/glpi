@@ -1313,7 +1313,7 @@ class Transfer extends CommonDBTM{
 							if ($data['assign_ent']>0){
 								$assign_ent=$this->transferSingleEnterprise($data['assign_ent']);
 							}
-							$job->update(array("ID"=>$data['ID'],'FK_entities' => $this->to, 'computer'=>$newID, 'assign_ent'=>$assign_ent));
+							$job->update(array("ID"=>$data['ID'],'FK_entities' => $this->to, 'computer'=>$newID, 'device_type'=>$type, 'assign_ent'=>$assign_ent));
 							$this->addToAlreadyTransfer(TRACKING_TYPE,$data['ID'],$data['ID']);
 						}
 					break;
