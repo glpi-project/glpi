@@ -58,6 +58,29 @@ function completecleandisplay(id){
 	var e = document.getElementById(id);
 	if(e){
 		setdisplay(e,'block');
+
+
+	if(document.getElementById('show_entities')){
+		var oneTime=0;
+		var divHeight = document.getElementById('show_entities').offsetHeight;
+		var divWidth = document.getElementById('show_entities').offsetWidth;
+				
+		if (divHeight>300){
+
+			
+			document.getElementById('show_entities').style.overflow = 'auto';
+			document.getElementById('show_entities').style.height = '400px';
+			// document.getElementById('show_entities').style.width =  divWidth + 'px';
+			document.getElementById('show_entities').style.width =  '300px';
+
+		}
+
+	
+
+	}	
+
+
+
 		if (isIe()) {
 			hideSelect(0,0,	document.documentElement.clientWidth,document.documentElement.clientHeight);
 		} 

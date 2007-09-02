@@ -1211,10 +1211,11 @@ div#show_entities{
 	font-size: 11px;
 	text-align: left;
 	z-index:1000;
-	overflow:scroll;
-	height:300px;
-	width:300px;
+	
+
 }
+
+
 
 div#show_all_menu{
         display: none;
