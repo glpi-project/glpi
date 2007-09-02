@@ -531,7 +531,8 @@ class Job extends CommonDBTM{
 		logEvent($newID,"tracking",4,"tracking",getUserName($input["author"])." ".$LANG["log"][20]);
 
 		$already_mail=false;
-		if ((isset($input["_followup"])&&is_array($input["_followup"]))||(isset($input["_hour"])&&isset($input["_minute"])&&isset($input["realtime"])&&$input["realtime"]>0)){
+		if (((isset($input["_followup"])&&is_array($input["_followup"])&&strlen($input["_followup"]['contents']))||isset($input["plan"]))
+			||(isset($input["_hour"])&&isset($input["_minute"])&&isset($input["realtime"])&&$input["realtime"]>0)){
 
 			$fup=new Followup();
 			$type="new";
