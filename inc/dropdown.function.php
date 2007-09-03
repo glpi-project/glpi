@@ -68,10 +68,11 @@ function dropdown($table,$myname,$display_comments=1,$entity_restrict=-1) {
  * @param $value the preselected value we want
  * @param $display_comments display the comments near the dropdown
  * @param $entity_restrict Restrict to a defined entity
+ * @param $update_item Update a specific item on select change on dropdown (need value_fieldname, to_update, url (see ajaxUpdateItemOnSelectEvent for informations) and may have moreparams)
  * @return nothing (display the select box)
  *
  */
-function dropdownValue($table,$myname,$value=0,$display_comments=1,$entity_restrict=-1) {
+function dropdownValue($table,$myname,$value=0,$display_comments=1,$entity_restrict=-1,$update_item="") {
 
 	global $DB,$CFG_GLPI,$LANG;
 
@@ -115,8 +116,8 @@ function dropdownValue($table,$myname,$value=0,$display_comments=1,$entity_restr
                         'comments'=>$display_comments,
                         'rand'=>$rand,
                         'entity_restrict'=>$entity_restrict,
+			'update_item'=>$update_item
                         );
-	
 	$default="<select name='$myname' id='dropdown_".$myname.$rand."'><option value='$value'>$name</option></select>\n";
 	ajaxDropdown($use_ajax,"/ajax/dropdownValue.php",$params,$default,$rand);
 

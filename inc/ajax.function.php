@@ -197,11 +197,16 @@ function ajaxUpdateItemJsCode($toupdate,$url,$parameters=array(),$spinner=true,$
 			} else {
 				echo "&";
 			}
+			
 			echo $key."=";
 			if ($val==="__VALUE__"){
 				echo "'+\$F('$toobserve')+'";
 			} else {
-				echo $val;
+				if (is_array($val)){
+					echo serialize($val);
+				} else {
+					echo $val;
+				}
 			}
 
 		}
