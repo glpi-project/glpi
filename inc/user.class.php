@@ -643,11 +643,12 @@ class User extends CommonDBTM {
 		} else {
 			if ($this->getfromDB($ID)){
 				$entities=getUserEntities($ID);
-				if (haveAccessToOneOfEntities($entities)){
+				$view_all=isViewAllEntities();
+				if (haveAccessToOneOfEntities($entities)||$view_all){
 					$spotted = true;
 				}
 				$strict_entities=getUserEntities($ID,false);
-				if (!haveAccessToOneOfEntities($strict_entities)){
+				if (!haveAccessToOneOfEntities($strict_entities)&&!$view_all){
 					$canedit=false;
 				}
 			}
