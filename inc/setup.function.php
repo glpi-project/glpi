@@ -333,6 +333,56 @@ function updateDropdown($input) {
 	}
 }
 
+function getDropdownID($input)
+{
+	global $DB, $CFG_GLPI;
+	// Clean datas
+	$input["value"]=trim($input["value"]);
+	if (!empty ($input["value"])) {
+		$add_entity_field_twin = "";
+		if (in_array($input["tablename"], $CFG_GLPI["specif_entities_tables"])) {
+			$add_entity_field_twin = " FK_entities = '" . $input["FK_entities"] . "' AND ";
+		}
+		$query="";
+		$query_twin="";
+		if ($input["tablename"] == "glpi_dropdown_netpoint") {
+			$query_twin="SELECT ID FROM " . $input["tablename"] . " WHERE $add_entity_field_twin name= '".$input["value"]."' AND location = '".$input["value2"]."'";
+		} else {
+			if (in_array($input["tablename"], $CFG_GLPI["dropdowntree_tables"])) {
+
+				$query_twin="SELECT ID FROM " . $input["tablename"] . " WHERE $add_entity_field_twin name= '".$input["value"]."' AND parentID='0'";
+
+				if ($input['type'] != "first" && $input["value2"] != 0) {
+					$level_up=-1;
+					$query = "SELECT * FROM " . $input["tablename"] . " where ID='" . $input["value2"] . "'";
+					
+					$result = $DB->query($query);
+					
+					if ($DB->numrows($result) > 0) {
+						
+						$data = $DB->fetch_array($result);
+						$level_up = $data["parentID"];
+						if ($input["type"] == "under") {
+							$level_up = $data["ID"];
+						}
+					} 
+					$query_twin="SELECT ID FROM " . $input["tablename"] . " WHERE $add_entity_field_twin name= '".$input["value"]."' AND parentID='$level_up'";
+				}
+			} else {
+				$query_twin="SELECT ID FROM " . $input["tablename"] . " WHERE $add_entity_field_twin name= '".$input["value"]."' ";
+			}
+		}
+		
+		// Check twin :
+		if ($result_twin = $DB->query($query_twin) ) {
+			if ($DB->numrows($result_twin) > 0){
+				return $DB->result($result_twin,0,"ID");
+			}
+		}
+		return -1;
+	}
+}
+
 function addDropdown($input) {
 	global $DB, $CFG_GLPI;
 	// Clean datas
