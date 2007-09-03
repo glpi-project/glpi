@@ -105,7 +105,35 @@ function showKbCategoriesFirstLevel($target,$parentID=0,$faq=0)
 	if($faq){
 		if ($CFG_GLPI["public_faq"] == 0 && !haveRight("faq","r")) return false;	
 		
-		$query = "SELECT DISTINCT glpi_dropdown_kbcategories.* FROM glpi_kbitems LEFT JOIN glpi_dropdown_kbcategories ON (glpi_kbitems.categoryID = glpi_dropdown_kbcategories.ID) WHERE (glpi_kbitems.faq = '1') AND  (glpi_dropdown_kbcategories.parentID = '$parentID') ORDER  BY name ASC";
+		// Get All FAQ categories
+		if (!isset($_SESSION['glpi_faqcategories'])){
+			$_SESSION['glpi_faqcategories']=array();
+			$query="SELECT DISTINCT categoryID FROM glpi_kbitems WHERE (glpi_kbitems.faq = '1')";
+			if ($result=$DB->query($query)){
+				if ($DB->numrows($result)){
+					while ($data=$DB->fetch_array($result)){
+						if (!in_array($data['categoryID'],$_SESSION['glpi_faqcategories'])){
+							$_SESSION['glpi_faqcategories'][]=$data['categoryID'];
+							$_SESSION['glpi_faqcategories']=array_merge($_SESSION['glpi_faqcategories'],getAncestorsOfTreeItem('glpi_dropdown_kbcategories',$data['categoryID']));
+						}
+					}
+				}
+				if (count($_SESSION['glpi_faqcategories'])){
+					$tmp='(';
+					$first=true;
+					foreach ($_SESSION['glpi_faqcategories'] as $key => $val){
+						if ($first) $first=false;
+						else $tmp.=',';
+						$tmp.=$val;
+					}
+					$tmp.=')';
+					$_SESSION['glpi_faqcategories']=$tmp;
+				}
+
+			}
+			
+		}
+		$query = "SELECT DISTINCT glpi_dropdown_kbcategories.* FROM glpi_dropdown_kbcategories WHERE ID IN ".$_SESSION['glpi_faqcategories']." AND  (glpi_dropdown_kbcategories.parentID = '$parentID') ORDER  BY name ASC";
 	}else{
 		if (!haveRight("knowbase","r")) return false;
 		$query = "SELECT * FROM glpi_dropdown_kbcategories WHERE  (glpi_dropdown_kbcategories.parentID = '$parentID') ORDER  BY name ASC";
