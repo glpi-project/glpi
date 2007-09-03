@@ -161,7 +161,7 @@ function showGroupAssociated($target,$ID){
 
 	$canedit=haveRight("user","w");
 	$strict_entities=getUserEntities($ID,false);
-	if (!haveAccessToOneOfEntities($strict_entities)){
+	if (!haveAccessToOneOfEntities($strict_entities)&&!isViewAllEntities()){
 		$canedit=false;
 	}
 
@@ -259,7 +259,7 @@ function showUserRights($target,$ID){
 
 	$canedit=haveRight("entity","w");
 	$strict_entities=getUserEntities($ID,false);
-	if (!haveAccessToOneOfEntities($strict_entities)){
+	if (!haveAccessToOneOfEntities($strict_entities)&&!isViewAllEntities()){
 		$canedit=false;
 	}
 
