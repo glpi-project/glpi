@@ -387,24 +387,26 @@ function addDropdown($input) {
 	global $DB, $CFG_GLPI;
 	// Clean datas
 	$input["value"]=trim($input["value"]);
+
+	// Check twin :
+	if ($ID = getDropdownID($input) ) {
+		if ($ID>0){
+			return $ID;
+		}
+	}
+
 	if (!empty ($input["value"])) {
 		$add_entity_field = "";
 		$add_entity_value = "";
-		$add_entity_field_twin = "";
 		if (in_array($input["tablename"], $CFG_GLPI["specif_entities_tables"])) {
 			$add_entity_field = "FK_entities,";
 			$add_entity_value = "'" . $input["FK_entities"] . "',";
-			$add_entity_field_twin = " FK_entities = '" . $input["FK_entities"] . "' AND ";
 		}
 		$query="";
-		$query_twin="";
 		if ($input["tablename"] == "glpi_dropdown_netpoint") {
 			$query = "INSERT INTO " . $input["tablename"] . " (" . $add_entity_field . "name,location,comments) VALUES (" . $add_entity_value . "'" . $input["value"] . "', '" . $input["value2"] . "', '" . $input["comments"] . "')";
-			$query_twin="SELECT ID FROM " . $input["tablename"] . " WHERE $add_entity_field_twin name= '".$input["value"]."' AND location = '".$input["value2"]."'";
 		} else {
 			if (in_array($input["tablename"], $CFG_GLPI["dropdowntree_tables"])) {
-
-				$query_twin="SELECT ID FROM " . $input["tablename"] . " WHERE $add_entity_field_twin name= '".$input["value"]."' AND parentID='0'";
 
 				$query = "INSERT INTO " . $input["tablename"] . " (" . $add_entity_field . "name,parentID,completename,comments) VALUES (" . $add_entity_value . "'" . $input["value"] . "', '0','','" . $input["comments"] . "')";
 
@@ -422,19 +424,10 @@ function addDropdown($input) {
 							$level_up = $data["ID"];
 						}
 					} 
-					$query_twin="SELECT ID FROM " . $input["tablename"] . " WHERE $add_entity_field_twin name= '".$input["value"]."' AND parentID='$level_up'";
-
 					$query = "INSERT INTO " . $input["tablename"] . " (" . $add_entity_field . "name,parentID,completename,comments) VALUES (" . $add_entity_value . "'" . $input["value"] . "', '$level_up','','" . $input["comments"] . "')";
 				}
 			} else {
 				$query = "INSERT INTO " . $input["tablename"] . " (" . $add_entity_field . "name,comments) VALUES (" . $add_entity_value . "'" . $input["value"] . "','" . $input["comments"] . "')";
-				$query_twin="SELECT ID FROM " . $input["tablename"] . " WHERE $add_entity_field_twin name= '".$input["value"]."' ";
-			}
-		}
-		// Check twin :
-		if ($result_twin = $DB->query($query_twin) ) {
-			if ($DB->numrows($result_twin) > 0){
-				return $DB->result($result_twin,0,"ID");
 			}
 		}
 
