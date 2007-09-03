@@ -1514,7 +1514,7 @@ function displayActiveEntities($target,$myname){
 	global $CFG_GLPI,$LANG;
 	
 	echo "<table>";
-	//echo "<tr><td style='text-align:left;'><a href='".$target."?active_entity=all' title=\"".$LANG["buttons"][40]."\">_&nbsp;".ereg_replace(" ","&nbsp;",$LANG["buttons"][40])."&nbsp;_</a></td></tr>";
+	echo "<tr><td style='text-align:left;'><a href='".$target."?active_entity=all' title=\"".$LANG["buttons"][40]."\">_&nbsp;".ereg_replace(" ","&nbsp;",$LANG["buttons"][40])."&nbsp;_</a></td></tr>";
 
 	foreach ($_SESSION['glpi_entities_tree'] as $ID => $tree){
 		displayEntityTree($target,$myname,$tree);
