@@ -2022,7 +2022,8 @@ class Transfer extends CommonDBTM{
 			//echo '<tr><th colspan="2">'.$LANG["transfer"][4].'</th></tr>';
 			echo "<table class='tab_cadre_fixe' >";
 			echo '<tr><th>'.$LANG["transfer"][7].'</th><th>'.$LANG["transfer"][8].":&nbsp;";
-			$rand=dropdownValue("glpi_transfers","ID",0,0);
+			$rand=dropdownValue("glpi_transfers","ID",0,0,-1,array('value_fieldname'=>'ID',
+			'to_update'=>"transfer_form", 'url'=>$CFG_GLPI["root_doc"]."/ajax/transfers.php"));
 			echo '</th></tr>';
 			echo "<tr><td class='tab_bg_1' valign='top'>";
 			
@@ -2062,8 +2063,8 @@ class Transfer extends CommonDBTM{
 			} else {
 				
 				$params=array('ID'=>'__VALUE__');
-				ajaxUpdateItemOnSelectEvent("dropdown_ID".$rand,"transfer_form",$CFG_GLPI["root_doc"]."/ajax/transfers.php",$params,false);
-				ajaxUpdateItem("transfer_form",$CFG_GLPI["root_doc"]."/ajax/transfers.php",$params,false,"dropdown_ID".$rand);
+				ajaxUpdateItemOnSelectEvent("dropdown_ID","transfer_form",$CFG_GLPI["root_doc"]."/ajax/transfers.php",$params,false);
+				//ajaxUpdateItem("transfer_form",$CFG_GLPI["root_doc"]."/ajax/transfers.php",$params,false,"dropdown_ID".$rand);
 			}
 			echo "<div align='center' id='transfer_form'>";
 			echo "</div>";

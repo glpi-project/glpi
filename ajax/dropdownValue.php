@@ -227,4 +227,21 @@ if (isset($_POST["comments"])&&$_POST["comments"]){
 	ajaxUpdateItemOnSelectEvent("dropdown_".$_POST["myname"].$_POST["rand"],"comments_".$_POST["myname"].$_POST["rand"],$CFG_GLPI["root_doc"]."/ajax/comments.php",$params,false);
 }
 
+if (isset($_POST["update_item"])&&strlen($_POST["update_item"])>0){
+	$data=unserialize(stripslashes($_POST["update_item"]));
+	if (is_array($data)&&count($data)){
+		$params=array();
+		if (isset($data['value_fieldname'])){
+			$params=array($data['value_fieldname']=>'__VALUE__');
+		}
+		if (isset($data["moreparams"])&&is_array($data["moreparams"])&&count($data["moreparams"])){
+			foreach ($data["moreparams"] as $key => $val){
+				$params[$key]=$val;
+			}
+		}
+		ajaxUpdateItemOnSelectEvent("dropdown_".$_POST["myname"].$_POST["rand"],$data['to_update'],$data['url'],$params,false);
+	}
+}
+
+
 ?>
