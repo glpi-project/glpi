@@ -561,12 +561,12 @@ function installSoftware($cID,$lID,$sID='',$dohistory=1) {
 				if ($soft->getFromDB($lic->fields["sID"])){
 					$changes[0]='0';
 					$changes[1]="";
-					$changes[2]=$soft->fields["name"]." (v. ".$lic->fields["version"].")";
+					$changes[2]=addslashes($soft->fields["name"]." (v. ".$lic->fields["version"].")");
 					// history log
 					historyLog ($cID,COMPUTER_TYPE,$changes,0,HISTORY_INSTALL_SOFTWARE);
 					$comp=new Computer();
 					$comp->getFromDB($cID);
-					$changes[2]=$comp->fields["name"]." (v. ".$lic->fields["version"].")";
+					$changes[2]=addslashes($comp->fields["name"]." (v. ".$lic->fields["version"].")");
 					historyLog ($lic->fields["sID"],SOFTWARE_TYPE,$changes,0,HISTORY_INSTALL_SOFTWARE);
 				}
 			}
@@ -589,12 +589,12 @@ function installSoftware($cID,$lID,$sID='',$dohistory=1) {
 				if ($soft->getFromDB($sID)){
 					$changes[0]='0';
 					$changes[1]="";
-					$changes[2]=$soft->fields["name"];
+					$changes[2]=addslashes($soft->fields["name"]);
 					// history log
 					historyLog ($cID,COMPUTER_TYPE,$changes,0,HISTORY_INSTALL_SOFTWARE);
 					$comp=new Computer();
 					$comp->getFromDB($cID);
-					$changes[2]=$comp->fields["name"];
+					$changes[2]=addslashes($comp->fields["name"]);
 					historyLog ($sID,SOFTWARE_TYPE,$changes,0,HISTORY_INSTALL_SOFTWARE);
 				}
 			}
@@ -627,13 +627,13 @@ function uninstallSoftware($ID,$dohistory=1) {
 			$soft=new Software();
 			if ($soft->getFromDB($lic->fields["sID"])){
 				$changes[0]='0';
-				$changes[1]=$soft->fields["name"]." (v. ".$lic->fields["version"].")";
+				$changes[1]=addslashes($soft->fields["name"]." (v. ".$lic->fields["version"].")");
 				$changes[2]="";
 				// history log
 				historyLog ($data["cID"],COMPUTER_TYPE,$changes,0,HISTORY_UNINSTALL_SOFTWARE);
 				$comp=new Computer();
 				$comp->getFromDB($data["cID"]);
-				$changes[1]=$comp->fields["name"]." (v. ".$lic->fields["version"].")";
+				$changes[1]=addslashes($comp->fields["name"]." (v. ".$lic->fields["version"].")");
 				historyLog ($lic->fields["sID"],SOFTWARE_TYPE,$changes,0,HISTORY_UNINSTALL_SOFTWARE);
 
 			}
