@@ -1944,12 +1944,23 @@ function showProfileSelecter($target){
 	} //else echo "only one profile -> no select to print";
 
 	if (isMultiEntitiesMode()){
+		$cpt=0;
+		
+		foreach ($_SESSION['glpi_entities_tree'] as $key => $tree){
+			$entities = contructListFromTree($tree);
+			$cpt+=count($entities);
+		}
+	
+		$addname="";
+		if ($cpt>15){
+			$addname="_long";
+		}
 		echo "<li>";
-		echo "<a href='#' onclick=\"completecleandisplay('show_entities');\">";
+		echo "<a href='#' onclick=\"completecleandisplay('show_entities$addname');\">";
 		echo $_SESSION["glpiactive_entity_name"];
 		echo "</a>";
 		
-		echo "<div id='show_entities' onmouseover=\"completecleandisplay('show_entities');\" onmouseout=\"completecleanhide('show_entities');\">";
+		echo "<div id='show_entities$addname' onmouseover=\"completecleandisplay('show_entities$addname');\" onmouseout=\"completecleanhide('show_entities$addname');\">";
 		displayActiveEntities($target,$_SESSION['glpi_entities_tree'],"activeentity");
 		
 		echo "</div>";

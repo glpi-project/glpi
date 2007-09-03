@@ -1211,10 +1211,24 @@ div#show_entities{
 	font-size: 11px;
 	text-align: left;
 	z-index:1000;
-	
-
 }
 
+div#show_entities_long{
+	display: none;
+	position: absolute;
+	top:20px;
+	left:1px;
+	border: 1px solid  #CC9900;
+	background: url("../pics/fd_hoverlink.png") 0 0 repeat;
+	-moz-border-radius: 5px;
+	padding: 5px;
+	font-size: 11px;
+	text-align: left;
+	z-index:1000;     
+	overflow:scroll;
+	height:300px;
+	width:300px;
+}
 
 
 div#show_all_menu{
