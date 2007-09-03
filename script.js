@@ -60,7 +60,7 @@ function completecleandisplay(id){
 		setdisplay(e,'block');
 
 
-	if(document.getElementById('show_entities')){
+/*	if(document.getElementById('show_entities')){
 		var oneTime=0;
 		var divHeight = document.getElementById('show_entities').offsetHeight;
 		var divWidth = document.getElementById('show_entities').offsetWidth;
@@ -78,7 +78,7 @@ function completecleandisplay(id){
 	
 
 	}	
-
+*/
 
 
 		if (isIe()) {
