@@ -98,16 +98,17 @@ $REDIRECT=$_SERVER['HTTP_REFERER'];
 		break;
 		case "delete":
 			$ci=new CommonItem();
-			$ci->getFromDB($_POST["device_type"],-1);
+			$ci->setType($_POST["device_type"],1);
 			foreach ($_POST["item"] as $key => $val){
 				if ($val==1) {
+					print_r($ci);
 					$ci->obj->delete(array("ID"=>$key));
 				}
 			}
 		break;
 		case "purge":
 			$ci=new CommonItem();
-			$ci->getFromDB($_POST["device_type"],-1);
+			$ci->setType($_POST["device_type"],1);
 			foreach ($_POST["item"] as $key => $val){
 				if ($val==1) {
 					$ci->obj->delete(array("ID"=>$key),1);
@@ -116,7 +117,7 @@ $REDIRECT=$_SERVER['HTTP_REFERER'];
 		break;
 		case "restore":
 			$ci=new CommonItem();
-			$ci->getFromDB($_POST["device_type"],-1);
+			$ci->setType($_POST["device_type"],1);
 			foreach ($_POST["item"] as $key => $val){
 				if ($val==1) {
 					$ci->obj->restore(array("ID"=>$key));
@@ -132,7 +133,7 @@ $REDIRECT=$_SERVER['HTTP_REFERER'];
 			||($_POST["id_field"]>=50&&$_POST["id_field"]<=58))){
 				$ic=new Infocom();
 				$ci=new CommonItem();
-				$ci->getFromDB($_POST["device_type"],-1);
+				$ci->setType($_POST["device_type"],1);
 
 				$link_entity_type=-1;
 				// Specific entity item
@@ -157,7 +158,7 @@ $REDIRECT=$_SERVER['HTTP_REFERER'];
 				}
 			} else {
 				$ci=new CommonItem();
-				$ci->getFromDB($_POST["device_type"],-1);
+				$ci->setType($_POST["device_type"],1);
 				$link_entity_type=-1;
 				// Specific entity item
 				

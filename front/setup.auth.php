@@ -54,7 +54,7 @@ if (!isset($_GET["ID"])) $_GET["ID"]="";
 if (!isset($_GET["next"])) $_GET["next"]="";
 
 //Update CAS configuration
-elseif (isset ($_POST["update_conf_cas"])) {
+if (isset ($_POST["update_conf_cas"])) {
 	$config->update($_POST);
 	glpi_header($CFG_GLPI["root_doc"] . "/front/setup.auth.php");
 }
