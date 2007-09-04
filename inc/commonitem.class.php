@@ -61,7 +61,6 @@ class CommonItem{
 	 * @return boolean : object founded and loaded
 	 */
 	function getFromDB ($device_type,$id_device) {
-		global $PLUGIN_HOOKS;
 
 		$this->id_device=$id_device;
 		$this->setType($device_type,1);
@@ -81,6 +80,8 @@ class CommonItem{
 	 *
 	 */
 	function setType ($device_type,$init_object=0){
+		global $PLUGIN_HOOKS;
+
 		$this->device_type=$device_type;
 		// Make new database object and fill variables
 		if ($init_object){
