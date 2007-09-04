@@ -387,7 +387,7 @@ class Mailing
 		$subject=sprintf("%s%07d%s","[GLPI #",$this->job->fields["ID"],"] ");
 
 		if (isMultiEntitiesMode()){
-			$subject.=getDropdownName("glpi_entities",$this->job->fields['FK_entities'])." - ";
+			$subject.=getDropdownName("glpi_entities",$this->job->fields['FK_entities'])." | ";
 		}
 
 		switch ($this->type){
@@ -410,9 +410,13 @@ class Mailing
 			$subject.=$LANG["mailing"][13];
 			break;
 		}
-
-
-
+		
+		if (strlen($this->job->fields['name'])>150){
+			$subject.=" - ".utf8_substr($this->job->fields['name'],0,150)." (...)";
+		}else{
+			$subject.=" - ".$this->job->fields['name'];
+		}
+	
 		return $subject;
 	}
 

@@ -554,7 +554,7 @@ function utf8_decode_deep($value) {
 }
 
 /**
- *  Resume test for followup
+ *  Resume text for followup
  *
  * @param $string
  * @param $length
@@ -569,6 +569,8 @@ function resume_text($string,$length=255){
 
 	return $string;
 }
+
+
 
 /**
  *  Tag suppression
