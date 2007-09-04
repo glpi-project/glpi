@@ -378,8 +378,8 @@ function showPlanning($who,$who_group,$when,$type){
 function displayPlanningItem($val,$who,$type="",$complete=0){
 	global $CFG_GLPI,$LANG,$PLUGIN_HOOKS;
 
-	$author="";  // variable pour l'affichage de l'auteur ou non
-	$img="rdv_private.png"; // variable par defaut pour l'affichage de l'icone du reminder
+	$author="";  // show author reminder
+	$img="rdv_private.png"; // default icon for reminder
 	$color="#e4e4e4";
 	if (isset($val["state"])){
 		switch ($val["state"]){
@@ -390,8 +390,7 @@ function displayPlanningItem($val,$who,$type="",$complete=0){
 				$color="#fbfbfb"; // TODO
 				break;
 			case 2:
-				$color="#e7e7e2"; 
-				// Done
+				$color="#e7e7e2"; // Done
 				$styleText="color:#747474;";
 				
 				break;
@@ -439,7 +438,7 @@ function displayPlanningItem($val,$who,$type="",$complete=0){
 			echo "<br>- ".$val["device"];
 		}
 		
-		if ($who==0){
+		if ($who<=0){ // show tech for "show all and show group"
 			echo "<br>- ";
 			echo $LANG["planning"][9]." ".getUserName($val["id_assign"]);
 		} 
