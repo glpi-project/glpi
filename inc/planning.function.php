@@ -384,19 +384,22 @@ function displayPlanningItem($val,$who,$type="",$complete=0){
 	if (isset($val["state"])){
 		switch ($val["state"]){
 			case 0:
-				$color="#e4e4e4";
+				$color="#efefe7"; // Information
 				break;
 			case 1:
-				$color="#d7d7d2";
+				$color="#fbfbfb"; // TODO
 				break;
 			case 2:
-				$color="#efefe7";
+				$color="#e7e7e2"; 
+				// Done
+				$styleText="color:#747474;";
+				
 				break;
 			
 		}
 	}
 	
-	echo "<div style=' margin:auto; text-align:center; border:1px dashed #cccccc; background-color: $color; font-size:9px; width:98%;'>";
+	echo "<div style=' margin:auto; text-align:left; border:1px dashed #cccccc; background-color: $color; font-size:9px; width:98%; '>";
 	$rand=mt_rand(); 
 
 	// Plugins case
@@ -408,10 +411,10 @@ function displayPlanningItem($val,$who,$type="",$complete=0){
 		}
 	} else if(isset($val["id_tracking"])){  // show tracking
 
-		echo "<img src='".$CFG_GLPI["root_doc"]."/pics/rdv_interv.png' alt=''>&nbsp;";
+		echo "<img src='".$CFG_GLPI["root_doc"]."/pics/rdv_interv.png' alt='' title='".$LANG["planning"][8]."'>&nbsp;";
+		echo "&nbsp;<img src=\"".$CFG_GLPI["root_doc"]."/pics/".$val["status"].".png\" alt='".getStatusName($val["status"])."' title='".getStatusName($val["status"])."'>&nbsp;";
 
-
-		echo "<a href='".$CFG_GLPI["root_doc"]."/front/tracking.form.php?ID=".$val["id_tracking"]."'";
+		echo "<a href='".$CFG_GLPI["root_doc"]."/front/tracking.form.php?ID=".$val["id_tracking"]."' style='$styleText'";
 		if (!$complete){
 			echo "onmouseout=\"cleanhide('content_tracking_".$val["ID"].$rand."')\" onmouseover=\"cleandisplay('content_tracking_".$val["ID"].$rand."')\"";
 		}
@@ -430,13 +433,14 @@ function displayPlanningItem($val,$who,$type="",$complete=0){
 				break;
 
 		}
-		echo $val["name"];
+		echo "<br>- #".$val["ID"]." \"";
+		echo  resume_text($val["name"],80). " \"";
 		if (!empty($val["device"])){
-			echo "<br>".$val["device"];
+			echo "<br>- ".$val["device"];
 		}
-		echo "&nbsp;<img src=\"".$CFG_GLPI["root_doc"]."/pics/".$val["status"].".png\" alt='".getStatusName($val["status"])."' title='".getStatusName($val["status"])."'>";
+		
 		if ($who==0){
-			echo "<br>";
+			echo "<br>- ";
 			echo $LANG["planning"][9]." ".getUserName($val["id_assign"]);
 		} 
 		echo "</a>";
@@ -457,7 +461,7 @@ function displayPlanningItem($val,$who,$type="",$complete=0){
 			$author="<br>".$LANG["planning"][9]." : ".getUserName($val["author"]);
 			$img="rdv_public.png";
 		} 
-		echo "<img src='".$CFG_GLPI["root_doc"]."/pics/".$img."' alt=''>&nbsp;";
+		echo "<img src='".$CFG_GLPI["root_doc"]."/pics/".$img."' alt='' title='".$LANG["reminder"][2]."'>&nbsp;";
 		echo "<a href='".$CFG_GLPI["root_doc"]."/front/reminder.form.php?ID=".$val["id_reminder"]."'";
 			if (!$complete){
 			echo "onmouseout=\"cleanhide('content_reminder_".$val["id_reminder"].$rand."')\" onmouseover=\"cleandisplay('content_reminder_".$val["id_reminder"].$rand."')\"";
