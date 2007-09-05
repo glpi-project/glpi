@@ -101,7 +101,6 @@ $REDIRECT=$_SERVER['HTTP_REFERER'];
 			$ci->setType($_POST["device_type"],1);
 			foreach ($_POST["item"] as $key => $val){
 				if ($val==1) {
-					print_r($ci);
 					$ci->obj->delete(array("ID"=>$key));
 				}
 			}

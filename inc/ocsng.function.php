@@ -1403,7 +1403,6 @@ function replaceOcsArray($glpi_id, $newArray, $field) {
 	global $DB;
 	
 	$newArray = exportArrayToDB($newArray);
-	//print_r($newArray);
 	$query = "SELECT $field FROM glpi_ocs_link WHERE glpi_id=".$glpi_id;
 	if ($result = $DB->query($query)) {
 		$query = "UPDATE glpi_ocs_link 
