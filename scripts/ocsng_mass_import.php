@@ -33,7 +33,20 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-
+if ($argv) {
+	for ($i=1;$i<count($argv);$i++)
+	{
+		//To be able to use = in search filters, enter \= instead in command line
+		//Replace the \= by ° not to match the split function
+		$arg=str_replace('\=','°',$argv[$i]);
+		$it = split("=",$arg);
+		$it[0] = eregi_replace('^--','',$it[0]);
+		
+		//Replace the ° by = the find the good filter 
+		$it=str_replace('°','=',$it);
+		$_GET[$it[0]] = $it[1];
+	}
+}
 // MASS IMPORT for OCSNG
 
 define('GLPI_ROOT', '..');
@@ -41,7 +54,7 @@ define('GLPI_ROOT', '..');
 $NEEDED_ITEMS=array("ocsng","computer","device","printer","networking","peripheral","monitor","software","infocom","phone","tracking","enterprise","reservation","setup","group","entity","rulesengine","rule.ocs","registry","rule.softwarecategories");
 include (GLPI_ROOT."/inc/includes.php");
 
-
+print_r($_GET);
 
 //// PARAMETERS
 // Just import these tags : separeted by $
