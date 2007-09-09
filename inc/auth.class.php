@@ -255,23 +255,24 @@ class Identification {
 			$_SESSION["glpiroot"] = $CFG_GLPI["root_doc"];
 			$_SESSION["glpilist_limit"] = $this->user->fields['list_limit'];
 			$_SESSION["glpicrontimer"] = time();
-						
-			// glpiprofiles -> other available profile with link to the associated entities
-			initEntityProfiles($_SESSION["glpiID"]);
-			
-			changeProfile(key($_SESSION['glpiprofiles']));
-
-
-			// glpiactiveprofile -> active profile
-			// glpiactiveentities -> active entities
-	
-			doHook("init_session");
-			cleanCache("GLPI_HEADER_".$_SESSION["glpiID"]);
 
 			if (!isset($_SESSION["glpiactiveprofile"]["interface"])){
 				$this->auth_succeded=false;
 				$this->err .= $LANG["login"][25] . "<br>";
 			} 
+						
+			// glpiprofiles -> other available profile with link to the associated entities
+			doHook("init_session");
+
+			initEntityProfiles($_SESSION["glpiID"]);
+			changeProfile(key($_SESSION['glpiprofiles']));
+
+			// glpiactiveprofile -> active profile
+			// glpiactiveentities -> active entities
+	
+			// Already done un changeProfile
+			//cleanCache("GLPI_HEADER_".$_SESSION["glpiID"]);
+
 		}
 	}
 	function destroySession() {
