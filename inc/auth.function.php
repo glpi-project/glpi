@@ -536,6 +536,7 @@ function changeProfile($ID) {
 			}
 		}
 		changeActiveEntities("all");
+		doHook("change_profile");
 	}
 	cleanCache("GLPI_HEADER_".$_SESSION["glpiID"]);
 }
