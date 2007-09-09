@@ -1768,11 +1768,12 @@ CREATE TABLE `glpi_ocs_config` (
   `link_mac_address` int(1) NOT NULL,
   `link_serial` int(1) NOT NULL,
   `link_if_status` int(11) NOT NULL default '0',
+  `ocs_url` varchar(255) default NULL,
   PRIMARY KEY  (`ID`),
   KEY `is_template` (`is_template`)
 ) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-INSERT INTO glpi_ocs_config VALUES ('1','localhost','ocs','ocs','localhost','ocsweb','0','0','0','0','1','global','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0',NULL,'0','0','0','0','','1','1','0',NULL,NULL,NULL,'0','0','0','0','0','0');
+INSERT INTO glpi_ocs_config VALUES ('1','localhost','ocs','ocs','localhost','ocsweb','0','0','0','0','1','global','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0',NULL,'0','0','0','0','','1','1','0',NULL,NULL,NULL,'0','0','0','0','0','0','');
 
 ### Dump table glpi_ocs_link
 
@@ -1793,6 +1794,7 @@ CREATE TABLE `glpi_ocs_link` (
   `import_printers` longtext collate utf8_unicode_ci,
   `ocs_server_id` int(11) NOT NULL default '0',
   `import_ip` longtext collate utf8_unicode_ci,
+  `ocs_agent_version` varchar(255) collate utf8_unicode_ci default NULL,
   PRIMARY KEY  (`ID`),
   UNIQUE KEY `ocs_server_id` (`ocs_server_id`,`ocs_id`),
   KEY `glpi_id` (`glpi_id`),

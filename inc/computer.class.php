@@ -635,10 +635,16 @@ class Computer extends CommonDBTM {
 					echo "<br>";
 					if (haveRight("ocsng","r")){
 						echo $LANG["common"][52]." <a href='".$CFG_GLPI["root_doc"]."/front/ocsng.form.php?ID=".getOCSServerByMachineID($ID)."'>".getOCSServerNameByID($ID)."</a>";
+						$query = "SELECT ocs_agent_version FROM glpi_ocs_link WHERE (glpi_id = '$ID')";
+						$result_agent_version = $DB->query($query);
+						$data_version = $DB->fetch_array($result_agent_version);
+						if ($data_version["ocs_agent_version"] != NULL)
+							echo " , ".$LANG["ocsng"][49]." : ".$data_version["ocs_agent_version"];
 					} else {
 						echo $LANG["common"][52]." ".getOCSServerNameByID($ID);	
 						echo "</td>";
 					}
+					
 				} else	{
 					echo "<td colspan=2></td>";	
 				}

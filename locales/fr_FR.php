@@ -1003,6 +1003,7 @@ $LANG["ocsng"][45]="ID OCS";
 $LANG["ocsng"][46]="Supprimé d'OCS"; 
 $LANG["ocsng"][47]="Lié avec une machine d'OCS";
 $LANG["ocsng"][48]="La machine a changé d'identifiant OCS";
+$LANG["ocsng"][49]="Agent";
 
 
 $LANG["ocsconfig"][0]="Configuration du module d'import OCS NG -> GLPI";
@@ -1048,6 +1049,9 @@ $LANG["ocsconfig"][55]="Chercher les machines GLPI ayant le statut";
 $LANG["ocsconfig"][56]="vide";
 $LANG["ocsconfig"][57]="égal";
 $LANG["ocsconfig"][58]="La liaison fusionne automatiquement une machine GLPI avec une d'OCS.<br>Cette option n'est prise en compte que par les scripts de synchronisation (pas manuellement).";
+$LANG["ocsconfig"][59]="URL de la console OCS";
+$LANG["ocsconfig"][60]="Voir la machine dans la ";
+$LANG["ocsconfig"][61]="console OCS";
 
 $LANG["pager"][1]="à";
 $LANG["pager"][2]="de";
