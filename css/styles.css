@@ -1154,7 +1154,7 @@ div#c_ssmenu1 ul{
 
 div#c_ssmenu1 ul li{
 	float: left;
-	padding: 0 1%;
+	padding: 0 10px;
 }
 
 div#c_ssmenu1 ul li a{
