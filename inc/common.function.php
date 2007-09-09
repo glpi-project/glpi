@@ -860,7 +860,7 @@ function return_bytes_from_ini_vars($val) {
  */
 function glpi_header($dest){
 	if (!ereg("\?",$dest)){
-		$toadd.='?tokonq='.getRandomString(5);
+		$toadd='?tokonq='.getRandomString(5);
 	} 	
 	echo "<script language=javascript>
 		NomNav = navigator.appName;
