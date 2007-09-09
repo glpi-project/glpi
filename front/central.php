@@ -44,12 +44,13 @@ include (GLPI_ROOT."/inc/includes.php");
 			changeProfile($_POST['newprofile']);
 			if ($_SESSION["glpiactiveprofile"]["interface"]=="helpdesk"){
 				glpi_header($CFG_GLPI['root_doc']."/front/helpdesk.public.php");
+			} else {
+				glpi_header($_SERVER['PHP_SELF']);
 			}
 		} else {
 			glpi_header(preg_replace("/FK_entities.*/","",$_SERVER['HTTP_REFERER']));
 		}
 	}
-
 	// Manage entity change
 	if (isset($_GET["active_entity"])){
 		if (!isset($_GET["recursive"])) {
@@ -61,7 +62,6 @@ include (GLPI_ROOT."/inc/includes.php");
 		}
 	}
 
-	checkCentralAccess();
 	commonHeader($LANG["title"][0],$_SERVER['PHP_SELF']);
 
 	// Redirect management
