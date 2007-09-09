@@ -788,7 +788,7 @@ function ocsUpdateComputer($ID, $ocs_server_id, $dohistory, $force = 0) {
 			// update last_update and and last_ocs_update
 			$query = "UPDATE glpi_ocs_link 
 					SET last_update='" . $_SESSION["glpi_currenttime"] . "', last_ocs_update='" . $data_ocs["LASTCOME"] . "' 
-					WHERE ID='$ID'";
+					, ocs_agent_version='".$data_ocs["USERAGENT"]." ' WHERE ID='$ID'";
 			$DB->query($query);
 
 			if ($force) {

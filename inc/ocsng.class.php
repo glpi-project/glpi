@@ -173,7 +173,10 @@ function ocsFormConfig($target, $ID,$withtemplate='',$templateid='') {
 		}
 
 
+		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["ocsconfig"][59] . " </td><td> <input type=\"text\" size='30' name=\"ocs_url\" value=\"" . $this->fields["ocs_url"] . "\"></td></tr>";
+
 		echo "<tr><th colspan='2'>" . $LANG["ocsconfig"][5] . "</th></tr>";
+
 		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["ocsconfig"][17] . " </td><td> <input type=\"text\" size='30' name=\"tag_limit\" value=\"" . $this->fields["tag_limit"] . "\"></td></tr>";
 
 		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["ocsconfig"][16] . " </td><td>";

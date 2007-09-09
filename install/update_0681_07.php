@@ -1442,6 +1442,16 @@ function update0681to07() {
 		$DB->query($query) or die("0.7 add location in users if not present for compatibility " . $LANG["update"][90] . $DB->error());
 	}
 
+	if (!FieldExists("glpi_ocs_config", "ocs_url")) {
+		$query = "ALTER TABLE `glpi_ocs_config` ADD `ocs_url` VARCHAR( 255 ) NOT NULL ;";
+		$DB->query($query) or die("0.7 add ocs_url in glpi_ocs_config if not present for compatibility " . $LANG["update"][90] . $DB->error());
+	}
+
+	if (!FieldExists("glpi_ocs_link", "ocs_agent_version")) {
+		$query = "ALTER TABLE `glpi_ocs_link` ADD `ocs_agent_version` VARCHAR( 255 ) default NULL ;";
+		$DB->query($query) or die("0.7 add ocs_agent_version in glpi_ocs_link if not present for compatibility " . $LANG["update"][90] . $DB->error());
+	}
+
 
 } // fin 0.7 #####################################################################################
 ?>
