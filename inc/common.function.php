@@ -1312,4 +1312,18 @@ function cleanInputText($string){
 	return preg_replace('/\"/','&quot;',$string);
 } 
 
+
+function getRandomString($length) {
+
+	$alphabet = "1234567890abcdefghijklmnopqrstuvwxyz";
+	$rndstring="";
+	for ($a = 0; $a <= $length; $a++) {
+		$b = rand(0, strlen($alphabet) - 1);
+		$rndstring .= $alphabet[$b];
+	}
+	return $rndstring;
+}
+
+
+
 ?>
