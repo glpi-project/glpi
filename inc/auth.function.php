@@ -595,6 +595,7 @@ function changeActiveEntities($ID="all",$recursive=false) {
 			$_SESSION["glpiactive_entity_name"] .= " (".$LANG["buttons"][40].")";
 		}
 		loadGroups();
+		doHook("change_entity");
 		cleanCache("GLPI_HEADER_".$_SESSION["glpiID"]);
 	}
 }
