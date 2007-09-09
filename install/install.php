@@ -114,7 +114,7 @@ function acceptLicence() {
 	global $LANG;
 
 	echo "<div align='center'>";
-	echo "<textarea id='license' cols='95' rows='10' readonly='readonly'>";
+	echo "<textarea id='license' cols='85' rows='10' readonly='readonly'>";
 	echo "                        GNU GENERAL PUBLIC LICENSE
 	Version 2, June 1991
 
@@ -132,7 +132,7 @@ function acceptLicence() {
 	General Public License applies to most of the Free Software
 	Foundation's software and to any other program whose authors commit to
 	using it.  (Some other Free Software Foundation software is covered by
-			the GNU Library General Public License instead.)  You can apply it to
+	the GNU Library General Public License instead.)  You can apply it to
 	your programs, too.
 
 	When we speak of free software, we are referring to freedom, not
@@ -172,7 +172,7 @@ function acceptLicence() {
 
 	The precise terms and conditions for copying, distribution and
 	modification follow.
-					
+	
 	GNU GENERAL PUBLIC LICENSE
 	TERMS AND CONDITIONS FOR COPYING, DISTRIBUTION AND MODIFICATION
 
@@ -342,7 +342,7 @@ function acceptLicence() {
 
 	This section is intended to make thoroughly clear what is believed to
 	be a consequence of the rest of this License.
-					
+	
 	8. If the distribution and/or use of the Program is restricted in
 	certain countries either by patents or by copyrighted interfaces, the
 	original copyright holder who places the Program under this License
@@ -395,7 +395,7 @@ function acceptLicence() {
 	POSSIBILITY OF SUCH DAMAGES.
 
 	END OF TERMS AND CONDITIONS
-					
+	
 	How to Apply These Terms to Your New Programs
 	If you develop a new program, and you want it to be of the greatest
 	possible use to the public, the best way to achieve this is to make it
