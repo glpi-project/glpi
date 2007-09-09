@@ -860,9 +860,16 @@ function return_bytes_from_ini_vars($val) {
  */
 function glpi_header($dest){
 	if (!ereg("\?",$dest)){
-		$dest.='?tokonq='.getRandomString(5);
+		$toadd.='?tokonq='.getRandomString(5);
 	} 	
-	echo "<script language=javascript>window.location=\"".$dest."\"</script>";
+	echo "<script language=javascript>
+		NomNav = navigator.appName;
+		if (NomNav=='Konqueror'){
+			window.location=\"".$dest.$toadd."\";
+		} else {
+			window.location=\"".$dest."\";
+		}
+	</script>";
 	exit();
 }
 
