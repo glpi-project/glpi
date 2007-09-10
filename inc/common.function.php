@@ -859,6 +859,7 @@ function return_bytes_from_ini_vars($val) {
  *
  */
 function glpi_header($dest){
+	$toadd='';
 	if (!ereg("\?",$dest)){
 		$toadd='?tokonq='.getRandomString(5);
 	} 	
