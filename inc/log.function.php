@@ -247,6 +247,13 @@ function showHistory($device_type,$id_device){
 						$display_history = false;
 
 					break;	
+					
+				case HISTORY_LOG_SIMPLE_MESSAGE:
+						$ci=new CommonItem();
+						$ci->setType($data["device_internal_type"]);
+						$field=$ci->getType();
+						$change = $data["new_value"];	
+					break;			
 			}
 		}else{
 			$fieldname="";
