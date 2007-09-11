@@ -467,75 +467,76 @@ function makeConnector($sport,$dport) {
 
 	// Get netpoint for $sport and $dport
 	$ps=new Netport;
-	$ps->getFromDB($sport);
-	$nps="";
-	$ips="";
-	$macs="";
-	if (isset($ps->fields["netpoint"])&&$ps->fields["netpoint"]!=0)
-		$nps=$ps->fields["netpoint"];
-	if (isset($ps->fields["ifaddr"]))
-		$ips=$ps->fields["ifaddr"];
-	if (isset($ps->fields["ifmac"]))
-		$macs=$ps->fields["ifmac"];
-
-
+	if (!$ps->getFromDB($sport)){
+		return false;
+	}
 	$pd=new Netport;
-	$pd->getFromDB($dport);
-	$npd="";
-	$ipd="";
-	$macd="";
-	if (isset($pd->fields["netpoint"])&&$pd->fields["netpoint"]!=0)
-		$npd=$pd->fields["netpoint"];
-	if (isset($pd->fields["ifaddr"]))
-		$ipd=$pd->fields["ifaddr"];
-	if (isset($pd->fields["ifmac"]))
-		$macd=$pd->fields["ifmac"];
+	if (!$pd->getFromDB($dport)){
+		return false;
+	}
 
-	// Update unknown IP
-	$updates[0]="ifaddr";
-	if (empty($ips)&&!empty($ipd)){
-		$ps->fields["ifaddr"]=$ipd;
-		$ps->updateInDB($updates);
-		echo "<div class='center'><strong>".$LANG["connect"][19]."</strong></div>";
+	$items_to_check=array('ifmac'=>$LANG["networking"][15],'ifaddr'=>$LANG["networking"][14],'netpoint'=>$LANG["networking"][51],'subnet'=>$LANG["networking"][61],'netmask'=>$LANG["networking"][60],'gateway'=>$LANG["networking"][59]);
+
+	$update_items=array();
+	$conflict_items=array();
+
+	foreach ($items_to_check as $item=>$name){
+		$source="";
+		$destination="";
+		switch ($item){
+			case 'netpoint':
+				if (isset($ps->fields["netpoint"])&&$ps->fields["netpoint"]!=0){
+					$source=$ps->fields["netpoint"];
+				}
+				if (isset($pd->fields["netpoint"])&&$pd->fields["netpoint"]!=0){
+					$destination=$pd->fields["netpoint"];
+				}
+			break;
+			default:
+				if (isset($ps->fields[$item])){
+					$source=$ps->fields[$item];
+				}
+				if (isset($pd->fields[$item])){
+					$destination=$pd->fields[$item];
+				}
+			break;
+		}
+		// Update Item
+		$updates[0]=$item;
+		if (empty($source)&&!empty($destination)){
+			$ps->fields[$item]=$destination;
+			$ps->updateInDB($updates);
+			$update_items[]=$item;
+		}
+		else if (!empty($source)&&empty($destination)){
+			$pd->fields[$item]=$source;		
+			$pd->updateInDB($updates);
+			$update_items[]=$item;
+		}
+		else if ($source!=$destination){
+			$conflict_items[]=$item;
+		}
 	}
-	else if (!empty($ips)&&empty($ipd)){
-		$pd->fields["ifaddr"]=$ips;		
-		$pd->updateInDB($updates);
-		echo "<div class='center'><strong>".$LANG["connect"][19]."</strong></div>";
+	if (count($update_items)){
+		$_SESSION['MESSAGE_AFTER_REDIRECT'].='<br>'.$LANG["connect"][15].": ";
+		$first=true;
+		foreach ($update_items as $item){
+			if ($first) $first=false;
+			else $_SESSION['MESSAGE_AFTER_REDIRECT'].=" - ";
+			$_SESSION['MESSAGE_AFTER_REDIRECT'].=$items_to_check[$item];
+		}
 	}
-	else if ($ips!=$ipd){
-		echo "<div class='center'><strong>".$LANG["connect"][20]."</strong></div>";
+	if (count($conflict_items)){
+		$_SESSION['MESSAGE_AFTER_REDIRECT'].='<br>'.$LANG["connect"][16].": ";
+		$first=true;
+		foreach ($conflict_items as $item){
+			if ($first) $first=false;
+			else $_SESSION['MESSAGE_AFTER_REDIRECT'].=" - ";
+			$_SESSION['MESSAGE_AFTER_REDIRECT'].=$items_to_check[$item];
+		}
 	}
-	// Update unknown MAC
-	$updates[0]="ifmac";
-	if (empty($macs)&&!empty($macd)){
-		$ps->fields["ifmac"]=$macd;
-		$ps->updateInDB($updates);
-		echo "<div class='center'><strong>".$LANG["connect"][21]."</strong></div>";
-	}
-	else if (!empty($macs)&&empty($macd)){
-		$pd->fields["ifmac"]=$macs;		
-		$pd->updateInDB($updates);
-		echo "<div class='center'><strong>".$LANG["connect"][21]."</strong></div>";
-	}
-	else if ($macs!=$macd){
-		echo "<div class='center'><strong>".$LANG["connect"][22]."</strong></div>";
-	}
-	// Update unknown netpoint
-	$updates[0]="netpoint";
-	if (empty($nps)&&!empty($npd)){
-		$ps->fields["netpoint"]=$npd;
-		$ps->updateInDB($updates);
-		echo "<div class='center'><strong>".$LANG["connect"][17]."</strong></div>";
-	}
-	else if (!empty($nps)&&empty($npd)){
-		$pd->fields["netpoint"]=$nps;		
-		$pd->updateInDB($updates);
-		echo "<div class='center'><strong>".$LANG["connect"][17]."</strong></div>";
-	}
-	else if ($nps!=$npd){
-		echo "<div class='center'><strong>".$LANG["connect"][18]."</strong></div>";
-	}
+
+
 
 	$query = "INSERT INTO glpi_networking_wire VALUES (NULL,$sport,$dport)";
 	if ($result = $DB->query($query)) {
@@ -575,7 +576,7 @@ function removeConnector($ID) {
 		}
 		if ($npnet!=-1&&$npdev!=-1){
 			// Unset MAC and IP fron networking device
-			$query = "UPDATE glpi_networking_ports SET ifaddr='', ifmac='' WHERE ID='$npnet'";	
+			$query = "UPDATE glpi_networking_ports SET ifaddr='', ifmac='',netmask='', subnet='',gateway='' WHERE ID='$npnet'";	
 			$DB->query($query);
 			// Unset netpoint from common device
 			$query = "UPDATE glpi_networking_ports SET netpoint=NULL WHERE ID='$npdev'";	
