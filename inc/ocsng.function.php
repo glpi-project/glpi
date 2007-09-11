@@ -1337,7 +1337,7 @@ function ocsShowUpdateComputer($ocs_server_id, $check, $start) {
 			echo "<tr><th>" . $LANG["ocsng"][11] . "</th><th>" . $LANG["ocsng"][13] . "</th><th>" . $LANG["ocsng"][14] . "</th><th>" . $LANG["ocsng"][6] . "</th><th>&nbsp;</th></tr>";
 
 			echo "<tr class='tab_bg_1'><td colspan='5' align='center'>";
-			echo "<input class='submit' type='submit' name='update_ok' value='" . $LANG["buttons"][7] . "'>";
+			echo "<input class='submit' type='submit' name='update_ok' value='" . $LANG["ldap"][15] . "'>";
 			echo "</td></tr>";
 
 			foreach ($already_linked as $ID => $tab) {
@@ -1350,7 +1350,7 @@ function ocsShowUpdateComputer($ocs_server_id, $check, $start) {
 				echo "</td></tr>";
 			}
 			echo "<tr class='tab_bg_1'><td colspan='5' align='center'>";
-			echo "<input class='submit' type='submit' name='update_ok' value='" . $LANG["buttons"][7] . "'>";
+			echo "<input class='submit' type='submit' name='update_ok' value='" . $LANG["ldap"][15] . "'>";
 			echo "<input type=hidden name='ocs_server_id' value='" . $ocs_server_id . "'>";
 			echo "</td></tr>";
 			echo "</table>";
