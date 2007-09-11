@@ -266,12 +266,8 @@ $LANG["computers"][55]="Telefon(y)";
 
 $LANG["connect"][0]="Połączenie Bezpośrednie"; 
 $LANG["connect"][1]="Nie połączony"; 
-$LANG["connect"][17]="Automatyczne uaktualnienie nieznanego punktu sieciowego (netpoint)"; 
-$LANG["connect"][18]="Uwaga!! Punkty sieciowe (netpoint) dwóch pozycji są różne."; 
-$LANG["connect"][19]="Automatyczne uaktualnienie nieznanego adresu IP"; 
-$LANG["connect"][20]="Uwaga!! Adresy IP dwóch pozycji są różne."; 
-$LANG["connect"][21]="Automatyczne uaktualnienie nieznanego adresu MAC"; 
-$LANG["connect"][22]="Uwaga!! Adresy MAC dwóch pozycji są różne."; 
+$LANG["connect"][15]="Automatic update of the following items"; 
+$LANG["connect"][16]="Warning !! The following items of the two hardwares do not match"; 
 
 $LANG["consumables"][0]="Materiały Eksploatacyjne"; 
 $LANG["consumables"][1]="Na magazynie"; 
@@ -988,6 +984,7 @@ $LANG["ocsconfig"][55]="Szukam komputerów posiadających status";
 $LANG["ocsconfig"][56]="pusty"; 
 $LANG["ocsconfig"][57]="równy"; 
 $LANG["ocsconfig"][58]="The connection amalgamates automatically a GLPI computer with one of OCS. This option is taken into account only by scripts of synchronization (not manually)."; 
+$LANG["ocsconfig"][59]="URL of the OCS console"; 
 
 $LANG["ocsng"][0]="OCS Inventory NG"; 
 $LANG["ocsng"][1]="Synchronizuj komputery poprzednio importowane"; 
@@ -1035,6 +1032,7 @@ $LANG["ocsng"][45]="OCS ID";
 $LANG["ocsng"][46]="Usuniete w OCS"; 
 $LANG["ocsng"][47]="Połączony z komputerem z OCS"; 
 $LANG["ocsng"][48]="The OCS ID of the computer changed"; 
+$LANG["ocsng"][49]="Agent"; 
 
 $LANG["pager"][1]="do"; 
 $LANG["pager"][2]="od"; 
