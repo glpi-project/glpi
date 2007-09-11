@@ -266,12 +266,8 @@ $LANG["computers"][55]="Telefon(ok)";
 
 $LANG["connect"][0]="Közvetlen kapcsolatok"; 
 $LANG["connect"][1]="Nem kapcsolódik"; 
-$LANG["connect"][17]="Ismeretlen fali csatlakozó frissítése"; 
-$LANG["connect"][18]="Figyelem !! A két tétel fali csatlakozói különbözők."; 
-$LANG["connect"][19]="Ismeretlen IP cím frissítése"; 
-$LANG["connect"][20]="Figyelem !! A két tétel IP címe eltér"; 
-$LANG["connect"][21]="Az ismeretlen MAC azonosító frissítése megtörtént"; 
-$LANG["connect"][22]="Figyelem !! A két tétel MAC címei különbözők."; 
+$LANG["connect"][15]="Automatic update of the following items"; 
+$LANG["connect"][16]="Warning !! The following items of the two hardwares do not match"; 
 
 $LANG["consumables"][0]="Kellék"; 
 $LANG["consumables"][1]="Raktárban"; 
@@ -988,6 +984,7 @@ $LANG["ocsconfig"][55]="A következő állapotú számítógépek keresése";
 $LANG["ocsconfig"][56]="üres"; 
 $LANG["ocsconfig"][57]="egyenlő"; 
 $LANG["ocsconfig"][58]="The connection amalgamates automatically a GLPI computer with one of OCS. This option is taken into account only by scripts of synchronization (not manually)."; 
+$LANG["ocsconfig"][59]="URL of the OCS console"; 
 
 $LANG["ocsng"][0]="OCS Inventory NG"; 
 $LANG["ocsng"][1]="Már importált gépek szinkronizálása"; 
@@ -1035,6 +1032,7 @@ $LANG["ocsng"][45]="OCS ID";
 $LANG["ocsng"][46]="OCS-ban törölve"; 
 $LANG["ocsng"][47]="Egy OCS géphez kapcsolva"; 
 $LANG["ocsng"][48]="The OCS ID of the computer changed"; 
+$LANG["ocsng"][49]="Agent"; 
 
 $LANG["pager"][1]="vége"; 
 $LANG["pager"][2]="kezdet"; 

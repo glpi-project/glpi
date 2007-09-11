@@ -266,12 +266,8 @@ $LANG["computers"][55]="电话";
 
 $LANG["connect"][0]="直接连接"; 
 $LANG["connect"][1]="没连接。"; 
-$LANG["connect"][17]="未知的网络点的自动更新"; 
-$LANG["connect"][18]="注意!! 两个项目的网络点是不同的。"; 
-$LANG["connect"][19]="未知的IP地址的自动更新"; 
-$LANG["connect"][20]="注意!! 两个项目的IP地址是不同的。"; 
-$LANG["connect"][21]="未知的机器位址的自动更新"; 
-$LANG["connect"][22]="注意!! 两个项目的MAC地址是不同的。"; 
+$LANG["connect"][15]="Automatic update of the following items"; 
+$LANG["connect"][16]="Warning !! The following items of the two hardwares do not match"; 
 
 $LANG["consumables"][0]="消费品"; 
 $LANG["consumables"][1]="在库存"; 
@@ -988,6 +984,7 @@ $LANG["ocsconfig"][55]="Find computers having the state";
 $LANG["ocsconfig"][56]="empty"; 
 $LANG["ocsconfig"][57]="equal"; 
 $LANG["ocsconfig"][58]="The connection amalgamates automatically a GLPI computer with one of OCS. This option is taken into account only by scripts of synchronization (not manually)."; 
+$LANG["ocsconfig"][59]="URL of the OCS console"; 
 
 $LANG["ocsng"][0]="OCS固定资产NG"; 
 $LANG["ocsng"][1]="已经导入的计算机的同步"; 
@@ -1035,6 +1032,7 @@ $LANG["ocsng"][45]="OCS ID";
 $LANG["ocsng"][46]="Deleted in OCS"; 
 $LANG["ocsng"][47]="Linked with an OCS computer"; 
 $LANG["ocsng"][48]="The OCS ID of the computer changed"; 
+$LANG["ocsng"][49]="Agent"; 
 
 $LANG["pager"][1]="到"; 
 $LANG["pager"][2]="从"; 

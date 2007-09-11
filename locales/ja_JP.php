@@ -266,12 +266,8 @@ $LANG["computers"][55]="電話";
 
 $LANG["connect"][0]="直接接続されたデバイス"; 
 $LANG["connect"][1]="接続無し"; 
-$LANG["connect"][17]="不明なドロップを自動更新"; 
-$LANG["connect"][18]="注意：不明なドロップ"; 
-$LANG["connect"][19]="不明なIPアドレスを自動更新"; 
-$LANG["connect"][20]="注意：IPアドレス"; 
-$LANG["connect"][21]="不明なMACアドレスを自動更新"; 
-$LANG["connect"][22]="注意：MACアドレス"; 
+$LANG["connect"][15]="Automatic update of the following items"; 
+$LANG["connect"][16]="Warning !! The following items of the two hardwares do not match"; 
 
 $LANG["consumables"][0]="消耗品"; 
 $LANG["consumables"][1]="在庫"; 
@@ -988,6 +984,7 @@ $LANG["ocsconfig"][55]="Find computers having the state";
 $LANG["ocsconfig"][56]="empty"; 
 $LANG["ocsconfig"][57]="equal"; 
 $LANG["ocsconfig"][58]="The connection amalgamates automatically a GLPI computer with one of OCS. This option is taken into account only by scripts of synchronization (not manually)."; 
+$LANG["ocsconfig"][59]="URL of the OCS console"; 
 
 $LANG["ocsng"][0]="OCS Inventory NG"; 
 $LANG["ocsng"][1]="インポートされたコンピュータを同期"; 
@@ -1035,6 +1032,7 @@ $LANG["ocsng"][45]="OCS ID";
 $LANG["ocsng"][46]="Deleted in OCS"; 
 $LANG["ocsng"][47]="Linked with an OCS computer"; 
 $LANG["ocsng"][48]="The OCS ID of the computer changed"; 
+$LANG["ocsng"][49]="Agent"; 
 
 $LANG["pager"][1]="to"; 
 $LANG["pager"][2]="from"; 

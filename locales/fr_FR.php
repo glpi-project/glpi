@@ -269,12 +269,8 @@ $LANG["computers"][55]="Téléphone(s)";
 
 $LANG["connect"][0]="Connexion(s) directe(s)";
 $LANG["connect"][1]="Non connecté.";
-$LANG["connect"][17]="Mise à jour automatique de la prise réseau qui n'était pas renseignée";
-$LANG["connect"][18]="Attention !! Les prises réseaux des deux matériels ne correspondent pas.";
-$LANG["connect"][19]="Mise à jour automatique de l'adresse IP qui n'était pas renseignée";
-$LANG["connect"][20]="Attention !! Les adresses IP des deux matériels ne correspondent pas.";
-$LANG["connect"][21]="Mise à jour automatique de l'adresse MAC qui n'était pas renseignée";
-$LANG["connect"][22]="Attention !! Les adresses MAC des deux matériels ne correspondent pas.";
+$LANG["connect"][15]="Mise à jour automatique des éléments suivants";
+$LANG["connect"][16]="Attention !! Les éléments suivants des deux matériels ne correspondent pas";
 
 $LANG["consumables"][0]="Consommable";
 $LANG["consumables"][1]="En stock";
@@ -1050,8 +1046,6 @@ $LANG["ocsconfig"][56]="vide";
 $LANG["ocsconfig"][57]="égal";
 $LANG["ocsconfig"][58]="La liaison fusionne automatiquement une machine GLPI avec une d'OCS.<br>Cette option n'est prise en compte que par les scripts de synchronisation (pas manuellement).";
 $LANG["ocsconfig"][59]="URL de la console OCS";
-$LANG["ocsconfig"][60]="Voir la machine dans la ";
-$LANG["ocsconfig"][61]="console OCS";
 
 $LANG["pager"][1]="à";
 $LANG["pager"][2]="de";
