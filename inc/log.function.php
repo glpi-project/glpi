@@ -358,7 +358,8 @@ function logArray(){
 			"security"=>$LANG["log"][66],
 			"reservation"=>$LANG["log"][58],
 			"cron"=>$LANG["log"][59],
-			"document"=>$LANG["log"][56]);
+			"document"=>$LANG["log"][56],
+			"plugin"=>$LANG["common"][29]);
 
 	return array($logItemtype,$logService);
 
