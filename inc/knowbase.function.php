@@ -356,11 +356,11 @@ function showKbRecentPopular($target,$order,$faq=0){
 	
 	
 	if ($order=="recent"){
-		$orderby="ORDER BY view DESC";
-		$title=$LANG["knowbase"][30];
-	}else {
 		$orderby="ORDER BY date DESC";
 		$title=$LANG["knowbase"][29];
+	}else {
+		$orderby="ORDER BY view DESC";
+		$title=$LANG["knowbase"][30];
 	}
 		
 
