@@ -384,7 +384,7 @@ function ocsManageDeleted($ocs_server_id) {
 					$changes[1]=$del;
 					//New ocs_id
 					$changes[2]=$data["ID"];
-					historyLog ($DB->result($res_id,0,"glpi_id"),COMPUTER_TYPE,$changes,null,HISTORY_OCS_IDCHANGED);
+					historyLog ($DB->result($res_id,0,"glpi_id"),COMPUTER_TYPE,$changes,0,HISTORY_OCS_IDCHANGED);
 					
 				} else { // Deleted
 					if (ereg("-", $del))
@@ -408,7 +408,7 @@ function ocsManageDeleted($ocs_server_id) {
 						$changes[0]='0';
 						$changes[1]=$data["ocs_id"];
 						$changes[2]="";
-						historyLog ($data["glpi_id"],COMPUTER_TYPE,$changes,null,HISTORY_OCS_DELETE);
+						historyLog ($data["glpi_id"],COMPUTER_TYPE,$changes,0,HISTORY_OCS_DELETE);
 
 						$query = "DELETE FROM glpi_ocs_link WHERE ID ='" . $data["ID"] . "'";
 						$DB->query($query);
@@ -481,7 +481,7 @@ function ocsImportComputer($ocs_id, $ocs_server_id, $lock = 0, $defaultentity = 
 				$changes[0]='0';
 				$changes[1]="";
 				$changes[2]=$ocs_id;
-				historyLog ($glpi_id,COMPUTER_TYPE,$changes,null,HISTORY_OCS_IMPORT);
+				historyLog ($glpi_id,COMPUTER_TYPE,$changes,0,HISTORY_OCS_IMPORT);
 				
 				if ($idlink = ocsLink($line['ID'], $ocs_server_id, $glpi_id)) {
 					ocsUpdateComputer($idlink, $ocs_server_id, 0);
@@ -590,7 +590,7 @@ function ocsLinkComputer($ocs_id, $ocs_server_id, $glpi_id,$glpi_link=0) {
 			$changes[0]='0';
 			$changes[1]="";
 			$changes[2]=$ocs_id;
-			historyLog ($glpi_id,COMPUTER_TYPE,$changes,null,HISTORY_OCS_LINK);
+			historyLog ($glpi_id,COMPUTER_TYPE,$changes,0,HISTORY_OCS_LINK);
 			
 			ocsUpdateComputer($idlink, $ocs_server_id, 0);
 		}
