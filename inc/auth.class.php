@@ -240,7 +240,7 @@ class Identification {
 
 		startGlpiSession();
 			
-		if (isset($this->user->fields['ID'])){
+		if (isset($this->user->fields['ID'])&&!$this->user->fields['deleted']){
 			$_SESSION["glpiID"] = $this->user->fields['ID'];
 			$_SESSION["glpiname"] = $this->user->fields['name'];
 			$_SESSION["glpirealname"] = $this->user->fields['realname'];
@@ -272,6 +272,9 @@ class Identification {
 				$this->err .= $LANG["login"][25] . "<br>";
 			} 
 
+		} else  {
+			$this->auth_succeded=false;
+			$this->err .= $LANG["login"][25] . "<br>";
 		}
 	}
 	function destroySession() {
