@@ -239,8 +239,7 @@ class Identification {
 		global $CFG_GLPI, $LANG;
 
 		startGlpiSession();
-			
-		if (isset($this->user->fields['ID'])&&!$this->user->fields['deleted']){
+		if (isset($this->user->fields['ID'])&&!$this->user->fields['deleted']&&$this->user->fields['active']){
 			$_SESSION["glpiID"] = $this->user->fields['ID'];
 			$_SESSION["glpiname"] = $this->user->fields['name'];
 			$_SESSION["glpirealname"] = $this->user->fields['realname'];
