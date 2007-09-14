@@ -163,25 +163,21 @@ function update0681to07() {
 
 		$query = " ALTER TABLE `glpi_users_profiles` ADD `FK_entities` INT NOT NULL DEFAULT '0',
 						ADD `recursive` SMALLINT NOT NULL DEFAULT '1',
-						ADD `active` SMALLINT NOT NULL DEFAULT '1',
 						ADD `dynamic` SMALLINT NOT NULL DEFAULT '0' ";
 		$DB->query($query) or die("0.7 alter glpi_users_profiles " . $LANG["update"][90] . $DB->error());
-
-		// Manage inactive users
-		$query = "SELECT ID FROM glpi_users WHERE active='0'";
-		$result = $DB->query($query);
-		if ($DB->numrows($result)) {
-			while ($data = $DB->fetch_array($result)) {
-				$query2 = "UPDATE glpi_users_profiles SET active = '0' WHERE FK_users='" . $data['ID'] . "'";
-				$DB->query($query2);
-			}
+	}
+	// Correct for clean active field for beta users
+	if (FieldExists("glpi_users_profiles", "active")) {
+		$query = "ALTER TABLE `glpi_users_profiles` DROP `active` ";
+		$DB->query($query) or die("0.7 clean active field for beta of glpi_users_profiles " . $LANG["update"][90] . $DB->error());
+	}
+	if (!FieldExists("glpi_users", "active")) {
+		$query = "ALTER TABLE `glpi_users` ADD `active` INT(2) NOT NULL DEFAULT '1' ";
+		$DB->query($query) or die("0.7 add active field for beta of glpi_users " . $LANG["update"][90] . $DB->error());
+		if (!isIndex("glpi_users", "active")) {
+			$query = "ALTER TABLE `glpi_users` ADD INDEX (`active`);";
+			$DB->query($query) or die("0.7 add index active in glpi_users " . $LANG["update"][90] . $DB->error());
 		}
-
-		$query = "ALTER TABLE `glpi_users` DROP `active` ";
-		$DB->query($query) or die("0.7 drop active from glpi_users " . $LANG["update"][90] . $DB->error());
-
-		$query = "DELETE FROM glpi_display WHERE type='" . USER_TYPE . "' AND num='8';";
-		$DB->query($query) or die("0.7 delete active field items for user search " . $LANG["update"][90] . $DB->error());
 	}
 
 	// Add entity tags to tables
@@ -246,10 +242,6 @@ function update0681to07() {
 		$DB->query($query) or die("0.7 drop index FK_users_profiles in glpi_users_profiles " . $LANG["update"][90] . $DB->error());
 	}
 
-	if (!isIndex("glpi_users_profiles", "active")) {
-		$query = "ALTER TABLE `glpi_users_profiles` ADD INDEX (`active`);";
-		$DB->query($query) or die("0.7 add index active in glpi_users_profiles " . $LANG["update"][90] . $DB->error());
-	}
 	if (!isIndex("glpi_users_profiles", "FK_entities")) {
 		$query = "ALTER TABLE `glpi_users_profiles` ADD INDEX (`FK_entities`);";
 		$DB->query($query) or die("0.7 add index FK_entities in glpi_users_profiles " . $LANG["update"][90] . $DB->error());
@@ -605,6 +597,7 @@ function update0681to07() {
 		"glpi_monitors",
 		"glpi_peripherals",
 		"glpi_software",
+
 		"glpi_phones",
 		"state_types",
 		"reservation_types",

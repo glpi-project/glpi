@@ -465,7 +465,7 @@ function initEntityProfiles($userID) {
 	$profile = new Profile;
 
 	$query = "SELECT DISTINCT glpi_profiles.* FROM glpi_users_profiles INNER JOIN glpi_profiles ON (glpi_users_profiles.FK_profiles = glpi_profiles.ID)
-					WHERE glpi_users_profiles.active='1' AND glpi_users_profiles.FK_users='$userID'";
+					WHERE glpi_users_profiles.FK_users='$userID'";
 	$result = $DB->query($query);
 	$_SESSION['glpiprofiles'] = array ();
 	if ($DB->numrows($result)) {
@@ -478,7 +478,7 @@ function initEntityProfiles($userID) {
 
 		foreach ($_SESSION['glpiprofiles'] as $key => $tab) {
 			$query2 = "SELECT glpi_users_profiles.FK_entities as eID, glpi_users_profiles.ID as kID, glpi_users_profiles.recursive as recursive, glpi_entities.* FROM glpi_users_profiles LEFT JOIN glpi_entities ON (glpi_users_profiles.FK_entities = glpi_entities.ID)
-													WHERE glpi_users_profiles.FK_profiles='$key' AND glpi_users_profiles.active='1' AND glpi_users_profiles.FK_users='$userID'";
+													WHERE glpi_users_profiles.FK_profiles='$key' AND glpi_users_profiles.FK_users='$userID'";
 			$result2 = $DB->query($query2);
 			if ($DB->numrows($result2)) {
 				while ($data = $DB->fetch_array($result2)) {

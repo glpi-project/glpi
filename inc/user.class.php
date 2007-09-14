@@ -732,7 +732,8 @@ class User extends CommonDBTM {
 					dropdownValue("glpi_dropdown_locations", "location", $this->fields["location"],1);
 				}
 				echo "</td>";
-				echo "<td class='center'>&nbsp;</td><td>&nbsp;";
+				echo "<td class='center'>".$LANG["common"][60]."</td><td>";
+				dropdownYesNo('active',$this->fields['active']);
 				echo "</td></tr>";
 
 				echo "<tr class='tab_bg_1' align='center'><td>" . $LANG["common"][25] . ":</td><td colspan='3'><textarea  cols='70' rows='3' name='comments' >" . $this->fields["comments"] . "</textarea></td>";
