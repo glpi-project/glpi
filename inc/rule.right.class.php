@@ -189,6 +189,7 @@ class RightAffectRule extends Rule {
 						if ($action->fields["field"] == "FK_entities") $entity = $action->fields["value"]; 
 						elseif ($action->fields["field"] == "FK_profiles") $right = $action->fields["value"];
 						elseif ($action->fields["field"] == "recursive") $recursive = $action->fields["value"];
+						elseif ($action->fields["field"] == "active") $output["active"] = $action->fields["value"];
 					break;
 				}
 			}

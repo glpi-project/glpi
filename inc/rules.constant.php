@@ -115,6 +115,10 @@ $RULES_ACTIONS[RULE_AFFECT_RIGHTS]['recursive']['name']=$LANG["profiles"][28];
 $RULES_ACTIONS[RULE_AFFECT_RIGHTS]['recursive']['type']='yesno';
 $RULES_ACTIONS[RULE_AFFECT_RIGHTS]['recursive']['table']='';
 
+$RULES_ACTIONS[RULE_AFFECT_RIGHTS]['active']['name']=$LANG["common"][60];
+$RULES_ACTIONS[RULE_AFFECT_RIGHTS]['active']['type']='yesno';
+$RULES_ACTIONS[RULE_AFFECT_RIGHTS]['active']['table']='';
+
 // BUSINESS RULES FOR TRACKING
 
 $RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['name']['table']='glpi_tracking';
