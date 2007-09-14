@@ -239,6 +239,7 @@ $LANG["common"][56]="Central";
 $LANG["common"][57]="Titre";
 $LANG["common"][58]="Valeur maximale";
 $LANG["common"][59]="Global";
+$LANG["common"][60]="Actif";
 
 $LANG["computers"][9]="OS";
 $LANG["computers"][10]="OS Numéro de série";
