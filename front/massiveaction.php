@@ -353,10 +353,10 @@ if (isset($_POST["device_type"])){
 				}
 			break;
 			case "add_transfer_list":
-				if (!isset($_SESSION['glpi_transfer_list'])){
+				if (!isset($_SESSION['glpitransfer_list'])){
 					$_SESSION['glpitransfer_list']=array();
 				}
-				if (!isset($_SESSION['glpi_transfer_list'][$_POST["device_type"]])){
+				if (!isset($_SESSION['glpitransfer_list'][$_POST["device_type"]])){
 					$_SESSION['glpitransfer_list'][$_POST["device_type"]]=array();
 				}
 				
