@@ -92,7 +92,7 @@ function showEntityUser($target,$ID){
 			while ($data=$DB->fetch_array($result)){
 				echo "<tr><th colspan='$headerspan'>".$data["name"]."</th></tr>";
 
-				$query="SELECT glpi_users.*,glpi_users_profiles.ID as linkID,glpi_users_profiles.recursive,glpi_users_profiles.dynamic,glpi_users_profiles.active
+				$query="SELECT glpi_users.*,glpi_users_profiles.ID as linkID,glpi_users_profiles.recursive,glpi_users_profiles.dynamic
 					FROM glpi_users_profiles 
 					LEFT JOIN glpi_users ON (glpi_users.ID = glpi_users_profiles.FK_users) 
 					WHERE glpi_users_profiles.FK_entities='$ID' AND glpi_users_profiles.FK_profiles='".$data['ID']."'
@@ -177,8 +177,8 @@ function addUserProfileEntity($input){
 	if (!isset($input['dynamic'])){
 		$input['dynamic']=0;
 	}
-	$query="INSERT INTO `glpi_users_profiles` ( `FK_users` , `FK_profiles` , `FK_entities` , `recursive` , `active` , `dynamic` )
-		VALUES ('".$input['FK_users']."', '".$input['FK_profiles']."', '".$input['FK_entities']."', '".$input['recursive']."', '1', '".$input['dynamic']."');";
+	$query="INSERT INTO `glpi_users_profiles` ( `FK_users` , `FK_profiles` , `FK_entities` , `recursive` , `dynamic` )
+		VALUES ('".$input['FK_users']."', '".$input['FK_profiles']."', '".$input['FK_entities']."', '".$input['recursive']."', '".$input['dynamic']."');";
 	return $DB->query($query);
 }
 

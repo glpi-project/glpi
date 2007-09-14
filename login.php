@@ -180,7 +180,7 @@ if (isset ($_POST["noCAS"])){
 		if (!$identificat->user_present && $CFG_GLPI["auto_add_users"]) {
 			$input = $identificat->user->fields;
 			unset ($identificat->user->fields);
-			$identificat->user->fields["ID"] = $identificat->user->add($input);
+			$identificat->user->add($input);
 		} else	if (!$identificat->user_present) { // Auto add not enable so auth failed
 			$identificat->err .= $LANG["login"][11];
 			$identificat->auth_succeded = false;
