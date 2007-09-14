@@ -123,7 +123,12 @@ class User extends CommonDBTM {
 		if (!isset($input["language"])){
 			$input["language"]=$CFG_GLPI["default_language"];
 		}
-
+		if (!isset($input["active"])){
+			$input["active"]=1;
+		}
+		if (!isset($input["deleted"])){
+			$input["deleted"]=0;
+		}
 		if (!isset($input["list_limit"])){
 			$input["list_limit"]=$CFG_GLPI["list_limit"];
 		}		
@@ -293,7 +298,7 @@ class User extends CommonDBTM {
 				$rights = $input["_ldap_rules"]["rules_rights"];
 			else
 				$rights = array();
-			
+
 			//purge dynamic rights
 			$this->purgeDynamicProfiles();
 			
@@ -308,29 +313,30 @@ class User extends CommonDBTM {
 				addUserProfileEntity($affectation);
 			}
 	
-			foreach($entities as $entity)
-			{
-				if (count($rights)==0){
-					//If no dynamics profile is provided : get the profil by default if not existing profile
-					$exist_profile = "SELECT ID FROM glpi_users_profiles WHERE FK_users='".$input["ID"]."'";
-					$result = $DB->query($exist_profile);
-					if ($DB->numrows($result)==0){
-						$sql_default_profile = "SELECT ID FROM glpi_profiles WHERE is_default=1";
-						$result = $DB->query($sql_default_profile);
-						if ($DB->numrows($result))
-						{
-							$rights[]=$DB->result($result,0,0);
-						}
+			if (count($entities)>0&&count($rights)==0){
+				//If no dynamics profile is provided : get the profil by default if not existing profile
+				$exist_profile = "SELECT ID FROM glpi_users_profiles WHERE FK_users='".$input["ID"]."'";
+				$result = $DB->query($exist_profile);
+				if ($DB->numrows($result)==0){
+					$sql_default_profile = "SELECT ID FROM glpi_profiles WHERE is_default=1";
+					$result = $DB->query($sql_default_profile);
+					if ($DB->numrows($result))
+					{
+						$rights[]=$DB->result($result,0,0);
 					}
 				}
-				
-				foreach($rights as $right){
-					$affectation["FK_entities"] = $entity[0];
-					$affectation["FK_profiles"] = $right;
-					$affectation["FK_users"] = $input["ID"];
-					$affectation["recursive"] = $entity[1];
-					$affectation["dynamic"] = 1;
-					addUserProfileEntity($affectation);
+			}
+
+			if (count($rights)>0&&count($entities)>0){
+				foreach($entities as $entity){
+					foreach($rights as $right){
+						$affectation["FK_entities"] = $entity[0];
+						$affectation["FK_profiles"] = $right;
+						$affectation["FK_users"] = $input["ID"];
+						$affectation["recursive"] = $entity[1];
+						$affectation["dynamic"] = 1;
+						addUserProfileEntity($affectation);
+					}
 				}
 			}
 			
