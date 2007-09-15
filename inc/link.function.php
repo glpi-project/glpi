@@ -175,12 +175,13 @@ function showLinkOnDevice($type,$ID){
 				$ipmac=array();
 				$i=0;
 				if (ereg("\[IP\]",$link)||ereg("\[MAC\]",$link)){
-					$query2 = "SELECT ifaddr,ifmac FROM glpi_networking_ports WHERE (on_device = $ID AND device_type = $type) ORDER BY logical_number";
+					$query2 = "SELECT ifaddr,ifmac,logical_number FROM glpi_networking_ports WHERE (on_device = $ID AND device_type = $type) ORDER BY logical_number";
 					$result2=$DB->query($query2);
 					if ($DB->numrows($result2)>0)
 						while ($data2=$DB->fetch_array($result2)){
 							$ipmac[$i]['ifaddr']=$data2["ifaddr"];
 							$ipmac[$i]['ifmac']=$data2["ifmac"];
+							$ipmac[$i]['number']=$data2["logical_number"];
 							$i++;
 						}
 				}
@@ -191,15 +192,30 @@ function showLinkOnDevice($type,$ID){
 						$tmplink=$link;
 						$tmplink=ereg_replace("\[IP\]",$ci->getField('ifaddr'),$tmplink);
 						$tmplink=ereg_replace("\[MAC\]",$ci->getField('ifmac'),$tmplink);
-						echo "<tr class='tab_bg_2'><td><a target='_blank' href='$tmplink'>$tmplink</a></td></tr>";
+						echo "<tr class='tab_bg_2'><td><a target='_blank' href='$tmplink'>$name - $tmplink</a></td></tr>";
 					}
 
 					if (count($ipmac)>0){
 						foreach ($ipmac as $key => $val){
 							$tmplink=$link;
-							$tmplink=ereg_replace("\[IP\]",$val['ifaddr'],$tmplink);
-							$tmplink=ereg_replace("\[MAC\]",$val['ifmac'],$tmplink);
-							echo "<tr class='tab_bg_2'><td><a target='_blank' href='$tmplink'>$tmplink</a></td></tr>";
+							$disp=1;
+							if (ereg("\[IP\]",$link)) {
+								if (empty($val['ifaddr'])) {
+									$disp=0;
+								} else {
+									$tmplink=ereg_replace("\[IP\]",$val['ifaddr'],$tmplink);
+								}
+							}
+							if (ereg("\[MAC\]",$link)) {
+								if (empty($val['ifmac'])) {
+									$disp=0;
+								} else {
+									$tmplink=ereg_replace("\[MAC\]",$val['ifmac'],$tmplink);
+								}
+							}
+							if ($disp) {
+								echo "<tr class='tab_bg_2'><td><a target='_blank' href='$tmplink'>$name #" . $val['number'] . " - $tmplink</a></td></tr>";
+							}
 						}
 					}
 				} else 
