@@ -49,7 +49,7 @@ if (isset($_POST['transfer'])){
 		$transfer->moveItems($_SESSION['glpitransfer_list'],$_POST['to_entity'],$_POST);
 		unset($_SESSION['glpitransfer_list']);
 		echo "<strong>".$LANG["common"][23]."</strong><br>";
-		displayBackLink();
+		echo "<a href=\"central.php\"><b>".$LANG["buttons"][13]."</b></a>";
 		commonFooter();
 		exit();
 	}
