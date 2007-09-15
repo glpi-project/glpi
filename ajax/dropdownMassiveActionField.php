@@ -40,14 +40,18 @@ include (GLPI_ROOT."/inc/includes.php");
 header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
-switch ($_POST["device_type"]){
-	case TRACKING_TYPE :
-		checkTypeRight("update_ticket","1");
-		break;
-	default :
-		checkTypeRight($_POST["device_type"],"w");
-		break;
-}		
+	switch ($_POST["device_type"]){
+		case TRACKING_TYPE :
+			checkTypeRight("update_ticket","1");
+			break;
+		default :
+			if (in_array($_POST["device_type"],$CFG_GLPI["infocom_types"])){
+				checkSeveralRightsOr(array($_POST["device_type"]=>"w","contract_infocom"=>"w"));
+			} else {
+				checkTypeRight($_POST["device_type"],"w");
+			}
+			break;
+	}	
 
 if (isset($_POST["device_type"])&&isset($_POST["id_field"])&&$_POST["id_field"]){
 

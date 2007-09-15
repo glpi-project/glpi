@@ -118,6 +118,9 @@ function haveTypeRight($type, $right) {
 		case ENTERPRISE_TYPE :
 			return haveRight("contact_enterprise", $right);
 			break;
+		case INFOCOM_TYPE :
+			return haveRight("contract_infocom", $right);
+			break;
 		case CONTRACT_TYPE :
 			return haveRight("contract_infocom", $right);
 			break;

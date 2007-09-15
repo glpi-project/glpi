@@ -51,11 +51,20 @@ if (isset($_GET['multiple_actions'])){
 
 if (isset($_POST["device_type"])){
 
-	if ($_POST["device_type"]==TRACKING_TYPE){
-		checkSeveralRightsOr(array("delete_ticket"=>1,"update_ticket"=>1));
-	} else {
-		checkTypeRight($_POST["device_type"],"w");
+
+	switch ($_POST["device_type"]){
+		case TRACKING_TYPE :
+			checkTypeRight("update_ticket","1");
+			break;
+		default :
+			if (in_array($_POST["device_type"],$CFG_GLPI["infocom_types"])){
+				checkSeveralRightsOr(array($_POST["device_type"]=>"w","contract_infocom"=>"w"));
+			} else {
+				checkTypeRight($_POST["device_type"],"w");
+			}
+			break;
 	}
+
 	commonHeader($LANG["title"][42],$_SERVER['PHP_SELF']);
 	
 	
@@ -146,10 +155,7 @@ if (isset($_POST["device_type"])){
 			case "update":
 	
 				// Infocoms case
-				if ($_POST["device_type"]<1000&&
-				(($_POST["id_field"]>=25&&$_POST["id_field"]<=28)
-				||($_POST["id_field"]>=37&&$_POST["id_field"]<=38)
-				||($_POST["id_field"]>=50&&$_POST["id_field"]<=58))){
+				if ($_POST["device_type"]<1000&&isInfocomSearch($_POST["device_type"],$_POST["id_field"])){
 					$ic=new Infocom();
 					$ci=new CommonItem();
 					$ci->setType($_POST["device_type"],1);
