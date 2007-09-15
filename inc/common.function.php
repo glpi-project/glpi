@@ -581,7 +581,7 @@ function resume_text($string,$length=255){
 
 function mailRow($string,$value){
 
-$row=mb_str_pad( $string . ': ',25,' ', STR_PAD_RIGHT,UTF8).$value."\n";
+$row=mb_str_pad( $string . ': ',25,' ', STR_PAD_RIGHT,'UTF8').$value."\n";
 
 return $row;
 
