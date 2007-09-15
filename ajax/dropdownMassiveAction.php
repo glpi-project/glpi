@@ -42,11 +42,20 @@ header_nocache();
 
 if (isset($_POST["action"])&&isset($_POST["type"])&&!empty($_POST["type"])){
 
-	if ($_POST["type"]==TRACKING_TYPE){
-		checkSeveralRightsOr(array("delete_ticket"=>1,"update_ticket"=>1));
-	} else {
-		checkTypeRight($_POST["type"],"w");
+
+	switch ($_POST["type"]){
+		case TRACKING_TYPE :
+			checkTypeRight("update_ticket","1");
+			break;
+		default :
+			if (in_array($_POST["type"],$CFG_GLPI["infocom_types"])){
+				checkSeveralRightsOr(array($_POST["type"]=>"w","contract_infocom"=>"w"));
+			} else {
+				checkTypeRight($_POST["type"],"w");
+			}
+			break;
 	}
+
 	
 
 	echo "<input type='hidden' name='action' value='".$_POST["action"]."'>";
@@ -105,6 +114,13 @@ if (isset($_POST["action"])&&isset($_POST["type"])&&!empty($_POST["type"])){
 			$first_group=true;
 			$newgroup="";
 			$items_in_group=0;
+			$show_all=true;
+			$show_infocoms=true;
+			if (in_array($_POST["type"],$CFG_GLPI["infocom_types"])&&
+				(!haveTypeRight($_POST["type"],"w")||!haveTypeRight(INFOCOM_TYPE,"w"))){
+				$show_all=false;
+				$show_infocoms=haveTypeRight(INFOCOM_TYPE,"w");
+			}
 			echo "<select name='id_field' id='massiveaction_field'>";
 			echo "<option value='0' selected>------</option>";
 			foreach ($SEARCH_OPTION[$_POST["type"]] as $key => $val){
@@ -127,8 +143,18 @@ if (isset($_POST["action"])&&isset($_POST["type"])&&!empty($_POST["type"])){
 								||$val["table"]=="glpi_dropdown_budget"
 								||($val["table"]=="glpi_ocs_link"&&$key==101) // auto_update_ocs
 								){
-							$newgroup.= "<option value='$key'>".$val["name"]."</option>";
-							$items_in_group++;
+							if ($show_all){
+								$newgroup.= "<option value='$key'>".$val["name"]."</option>";
+								$items_in_group++;
+							} else {
+								// Do not show infocom items
+								if (($show_infocoms&&isInfocomSearch($_POST["type"],$key))
+									||(!$show_infocoms&&!isInfocomSearch($_POST["type"],$key))
+								){
+									$newgroup.= "<option value='$key'>".$val["name"]."</option>";
+									$items_in_group++;
+								} 
+							}
 						}
 					}
 				}

@@ -1251,70 +1251,85 @@ function device_selecter($target,$cID,$withtemplate='') {
 function dropdownMassiveAction($device_type,$deleted=0){
 	global $LANG,$CFG_GLPI,$PLUGIN_HOOKS;
 
-	
+	$isadmin=haveTypeRight($device_type,"w");
 
 	echo "<select name=\"massiveaction\" id='massiveaction'>";
 
 	echo "<option value=\"-1\" selected>-----</option>";
 	if (!in_array($device_type,array(MAILGATE_TYPE,OCSNG_TYPE,ENTITY_TYPE))
-	&& ($device_type!=TRACKING_TYPE||haveRight('update_ticket',1)) ){
+	&& ( $isadmin
+		||(in_array($device_type,$CFG_GLPI["infocom_types"])&&haveTypeRight(INFOCOM_TYPE,"w"))
+		|| ($device_type==TRACKING_TYPE&&haveRight('update_ticket',1)) 
+		)
+	){
 		
 		echo "<option value=\"update\">".$LANG["buttons"][14]."</option>";
 	}
 
 	if ($deleted){
-		echo "<option value=\"purge\">".$LANG["buttons"][22]."</option>";
-		echo "<option value=\"restore\">".$LANG["buttons"][21]."</option>";
+		if ($isadmin){
+			echo "<option value=\"purge\">".$LANG["buttons"][22]."</option>";
+			echo "<option value=\"restore\">".$LANG["buttons"][21]."</option>";
+		}
 	} else {
 		// No delete for entities and tracking of not have right
 		if ($device_type!=ENTITY_TYPE
-		&&($device_type!=TRACKING_TYPE||haveRight('delete_ticket',1))
-		){
+		&&( $isadmin
+			|| ($device_type==TRACKING_TYPE&&haveRight('delete_ticket',1))
+		)){
 			echo "<option value=\"delete\">".$LANG["buttons"][6]."</option>";
 		}
-		if ($device_type==PHONE_TYPE || $device_type==PRINTER_TYPE
-			|| $device_type==PERIPHERAL_TYPE || $device_type==MONITOR_TYPE){
+		if ($isadmin && in_array($device_type,array(PHONE_TYPE,PRINTER_TYPE,PERIPHERAL_TYPE,MONITOR_TYPE))){
 			echo "<option value=\"connect\">".$LANG["buttons"][9]."</option>";
 			echo "<option value=\"disconnect\">".$LANG["buttons"][10]."</option>";
 		}
-		if (in_array($device_type,array(CARTRIDGE_TYPE,COMPUTER_TYPE,CONSUMABLE_TYPE,CONTACT_TYPE,CONTRACT_TYPE,ENTERPRISE_TYPE,
+		if (haveTypeRight(DOCUMENT_TYPE,"w") && in_array($device_type,array(CARTRIDGE_TYPE,COMPUTER_TYPE,CONSUMABLE_TYPE,CONTACT_TYPE,CONTRACT_TYPE,ENTERPRISE_TYPE,
 				MONITOR_TYPE,NETWORKING_TYPE,PERIPHERAL_TYPE,PHONE_TYPE,PRINTER_TYPE,SOFTWARE_TYPE))){
 			echo "<option value=\"add_document\">".$LANG["document"][16]."</option>";
 		}
 
-		if (in_array($device_type,$CFG_GLPI["state_types"])){
+		if (haveTypeRight(CONTRACT_TYPE,"w") &&in_array($device_type,$CFG_GLPI["state_types"])){
 			echo "<option value=\"add_contract\">".$LANG["financial"][36]."</option>";
 		}
 		if (in_array($device_type,array(CARTRIDGE_TYPE,COMPUTER_TYPE,CONSUMABLE_TYPE,CONTACT_TYPE,CONTRACT_TYPE,ENTERPRISE_TYPE,
 				MONITOR_TYPE,NETWORKING_TYPE,PERIPHERAL_TYPE,PHONE_TYPE,PRINTER_TYPE,SOFTWARE_TYPE))
-				&&haveTypeRight($device_type,'w')
-				&&haveRight('transfer','w')
-				&&isMultiEntitiesMode()
+				&& $isadmin
+				&& haveRight('transfer','w')
+				&& isMultiEntitiesMode()
 			){
 			echo "<option value=\"add_transfer_list\">".$LANG["buttons"][48]."</option>";
 		}
 		switch ($device_type){
 			case SOFTWARE_TYPE :
-				if (countElementsInTable("glpi_rules_descriptions","rule_type='".RULE_SOFTWARE_CATEGORY."'") > 0)
+				if ($isadmin && countElementsInTable("glpi_rules_descriptions","rule_type='".RULE_SOFTWARE_CATEGORY."'") > 0){
 					echo "<option value=\"compute_software_category\">".$LANG["rulesengine"][38]." ".$LANG["rulesengine"][40]."</option>";
+				}
 				break;
 			case COMPUTER_TYPE :
-				echo "<option value=\"install\">".$LANG["buttons"][4]."</option>";
-				if ($CFG_GLPI['ocs_mode']&&(haveRight("ocsng","w") || haveRight("sync_ocsng","w"))){
-					echo "<option value=\"force_ocsng_update\">".$LANG["ocsng"][24]."</option>";
+				if ($isadmin){
+					echo "<option value=\"install\">".$LANG["buttons"][4]."</option>";
+					if ($CFG_GLPI['ocs_mode']&&(haveRight("ocsng","w") || haveRight("sync_ocsng","w"))){
+						echo "<option value=\"force_ocsng_update\">".$LANG["ocsng"][24]."</option>";
+					}
 				}
 				break;
 			case ENTERPRISE_TYPE :
-				echo "<option value=\"add_contact\">".$LANG["financial"][24]."</option>";
+				if ($isadmin){
+					echo "<option value=\"add_contact\">".$LANG["financial"][24]."</option>";
+				}
 				break;
 			case CONTACT_TYPE :
-				echo "<option value=\"add_enterprise\">".$LANG["financial"][25]."</option>";
+				if ($isadmin){
+					echo "<option value=\"add_enterprise\">".$LANG["financial"][25]."</option>";
+				}
 				break;
 			case USER_TYPE :
-				echo "<option value=\"add_group\">".$LANG["setup"][604]."</option>";
+				if ($isadmin){
+					echo "<option value=\"add_group\">".$LANG["setup"][604]."</option>";
+				}
 				break;
 			case TRACKING_TYPE :
-				if (haveRight("comment_all_ticket","1")){
+				if ($isadmin && haveRight("comment_all_ticket","1")){
 					echo "<option value=\"add_followup\">".$LANG["job"][29]."</option>";
 				}
 				break;

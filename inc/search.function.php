@@ -945,7 +945,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 			}
 
 			// Form to massive actions
-			$isadmin=haveTypeRight($type,"w");
+			$isadmin=(haveTypeRight($type,"w")||(in_array($type,$CFG_GLPI["infocom_types"])&&haveTypeRight(INFOCOM_TYPE,"w")));
 
 			if ($isadmin&&$output_type==HTML_OUTPUT){
 				echo "<form method='post' name='massiveaction_form' id='massiveaction_form' action=\"".$CFG_GLPI["root_doc"]."/front/massiveaction.php\">";
@@ -2881,6 +2881,13 @@ function getMultiSearchItemForLink($name,$array){
 	}
 	return $out;
 
+}
+
+function isInfocomSearch($device_type,$searchID){
+	global $CFG_GLPI;
+	return (($searchID>=25&&$searchID<=28)
+	||($searchID>=37&&$searchID<=38)
+	||($searchID>=50&&$searchID<=58))&&in_array($device_type,$CFG_GLPI["infocom_types"]);
 }
 
 ?>
