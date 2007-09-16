@@ -1881,11 +1881,11 @@ function ocsUpdateDevices($device_type, $glpi_id, $ocs_id, $ocs_server_id, $cfg_
 							//if never imported in 0.70, insert id in the array
 							if ($count_ip == 0) {
 								//get old IP in DB							
-								$querySelectIDandIP = "SELECT ID,ifaddr FROM glpi_networking_ports 
-																			WHERE device_type='" . COMPUTER_TYPE . "' 
-																			AND on_device='$glpi_id' 
-																			AND ifmac='" . $line2["MACADDR"] . "'" . "
-																			AND name='" . $line2["DESCRIPTION"] . "'";
+								$querySelectIDandIP = "SELECT ID,ifaddr FROM glpi_networking_ports
+											WHERE device_type='" . COMPUTER_TYPE . "' 
+											AND on_device='$glpi_id' 
+											AND ifmac='" . $line2["MACADDR"] . "'" . "
+											AND name='" . $line2["DESCRIPTION"] . "'";
 								$result = $DB->query($querySelectIDandIP);
 								if ($DB->numrows($result) > 0) {
 									while ($data = $DB->fetch_array($result)) {
@@ -1912,7 +1912,7 @@ function ocsUpdateDevices($device_type, $glpi_id, $ocs_id, $ocs_server_id, $cfg_
 							for ($j = 0; $j < count($ocs_ips); $j++) {
 								$id_ip = array_search($ocs_ips[$j], $import_ip);
 								//Update already in DB
-								if ($id_ip) {
+								if ($id_ip>0) {
 									$netport["ifaddr"] = $ocs_ips[$j];
 									$netport["logical_number"] = $j;
 									$netport["ID"] = $id_ip;
