@@ -501,6 +501,12 @@ class Mailing
 							if(!$mmail->Send()){
 								$senderror=true;
 								$_SESSION["MESSAGE_AFTER_REDIRECT"].=$LANG["mailing"][47]."<br>".$mmail->ErrorInfo."<br>";
+							}else{
+
+								if ($CFG_GLPI["use_errorlog"]){
+									logInFile("mail","Tracking successfull mail sent to : ".$email." subject : ".$subject."\n");
+								}
+
 							} 
 							$mmail->ClearAddresses(); 
 						}
@@ -753,7 +759,15 @@ class MailingResa{
 				if(!$mmail->Send()){
 					echo "<div class='center'>There was a problem sending this mail !</div>";
 					return false;
+				}else{
+
+					if ($CFG_GLPI["use_errorlog"]){
+						logInFile("mail","Reservation successfull mail sent to : ".$users[$i]." subject : ".$subject."\n");
+						}
+
 				}
+
+
 				$mmail->ClearAddresses(); 
 			}
 			
@@ -949,6 +963,11 @@ class MailingAlert
 				if(!$mmail->Send()){
 					$_SESSION["MESSAGE_AFTER_REDIRECT"].="There was a problem sending this mail !";
 					return false;
+				}else{
+
+					if ($CFG_GLPI["use_errorlog"]){
+						logInFile("mail","Alert successfull mail sent to : ".$users[$i]." subject : ".$subject."\n");
+					}
 				}
 				$mmail->ClearAddresses(); 
 			}
