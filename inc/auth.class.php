@@ -85,7 +85,7 @@ class Identification {
 		$query = "SELECT * from glpi_users WHERE name='".addslashes($name)."'";
 		$result = $DB->query($query);
 		if ($DB->numrows($result) == 0) {
-			$this->err .= $LANG["login"][14] . "<br>";
+			$this->addToError($LANG["login"][14]);
 			return 0;
 		} else {
 			$pwd = $DB->result($result, 0, "password");
@@ -120,8 +120,8 @@ class Identification {
 			imap_close($mbox);
 			return true;
 		}
+		$this->addToError(imap_last_error());
 
-		$this->err .= imap_last_error() . "<br>";
 		imap_close($mbox);
 		return false;
 	}
@@ -163,15 +163,15 @@ class Identification {
 				if (doHookFunction("restrict_ldap_auth", $dn)) {
 					return $dn;
 				} else {
-					$this->err .= $LANG["login"][16] . "<br>\n";
+					$this->addToError($LANG["login"][16]);
 					return false;
 				}
 			}
 
-			$this->err .= $LANG["login"][15] . "<br>\n";
+			$this->addToError($LANG["login"][15]);
 			return false;
 		} else {
-			$this->err .= $LANG["ldap"][6]."<br>";
+			$this->addToError($LANG["ldap"][6]);
 			return false;
 		}
 	}
@@ -187,14 +187,14 @@ class Identification {
 		// sanity check... we prevent empty passwords...
 		//
 		if (empty ($password)) {
-			$this->err .= $LANG["login"][13] . "<br>";
+			$this->addToError($LANG["login"][13]);
 			return false;
 		}
 
 		$query = "SELECT password, password_md5 from glpi_users where (name = '" . $name . "')";
 		$result = $DB->query($query);
 		if (!$result) {
-			$this->err .= $LANG["login"][14] . "<br>";
+			$this->addToError($LANG["login"][14]);
 			return false;
 		}
 		if ($result) {
@@ -209,7 +209,7 @@ class Identification {
 					$query2 = "SELECT PASSWORD('" . addslashes($password) . "') as password";
 					$result2 = $DB->query($query2);
 					if (!$result2 || $DB->numrows($result2) != 1) {
-						$this->err .= $LANG["login"][12] . "<br>";
+						$this->addToError($LANG["login"][12]);
 						return false;
 					}
 					$pass1 = $DB->result($result, 0, "password");
@@ -219,16 +219,15 @@ class Identification {
 						return true;
 					}
 				}
-				$this->err .= $LANG["login"][12] . "<br>";
+				$this->addToError($LANG["login"][12]);
 				return false;
 			} else {
-				$this->err .= $LANG["login"][12] . "<br>";
+				$this->addToError($LANG["login"][12]);
 				return false;
 			}
 		}
 
-		$this->err .= "Erreur numero : " . $DB->errno() . ": ";
-		$this->err .= $DB->error()."<br>";
+		$this->addToError("#".$DB->errno().": ".$DB->error());
 		
 		return false;
 
@@ -268,12 +267,12 @@ class Identification {
 			//cleanCache("GLPI_HEADER_".$_SESSION["glpiID"]);
 			if (!isset($_SESSION["glpiactiveprofile"]["interface"])){
 				$this->auth_succeded=false;
-				$this->err .= $LANG["login"][25] . "<br>";
+				$this->addToError($LANG["login"][25]);
 			} 
 
 		} else  {
 			$this->auth_succeded=false;
-			$this->err .= $LANG["login"][25] . "<br>";
+			$this->addToError($LANG["login"][25]);
 		}
 	}
 	function destroySession() {
@@ -327,6 +326,15 @@ class Identification {
 			"mail" => $auth_methods_mail
 		);
 	}
+
+
+	function addToError($message){
+		if (!ereg($message,$this->err)){
+			$this->err.=$message."<br>\n";
+		}
+
+	}
+
 }
 
 class AuthMail extends CommonDBTM {
