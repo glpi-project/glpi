@@ -264,9 +264,15 @@ function checkSeveralRightsOr($modules) {
 
 	$valid = false;
 	if (count($modules))
-		foreach ($modules as $mod => $right)
-			if (haveRight($mod, $right))
+		foreach ($modules as $mod => $right){
+			if (is_numeric($mod)){
+				if (haveTypeRight($mod, $right)){
+					$valid = true;
+				}
+			} else if (haveRight($mod, $right)){
 				$valid = true;
+			}
+		}
 
 	if (!$valid) {
 		// Gestion timeout session
@@ -291,9 +297,15 @@ function checkSeveralRightsAnd($modules) {
 
 	$valid = true;
 	if (count($modules))
-		foreach ($modules as $mod => $right)
-			if (!haveRight($mod, $right))
+		foreach ($modules as $mod => $right){
+			if (is_numeric($mod)){
+				if (!haveTypeRight($mod, $right)){
+					$valid = false;
+				}
+			} else if (!haveRight($mod, $right)){
 				$valid = false;
+			}
+		}
 
 	if (!$valid) {
 		// Gestion timeout session
