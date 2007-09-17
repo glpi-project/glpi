@@ -237,6 +237,7 @@ $LANG["common"][56]="Central";
 $LANG["common"][57]="Títol"; 
 $LANG["common"][58]="Maximum value"; 
 $LANG["common"][59]="Global"; 
+$LANG["common"][60]="Active"; 
 
 $LANG["computers"][9]="S.O."; 
 $LANG["computers"][10]="Número de serie del S.O."; 
@@ -1033,6 +1034,8 @@ $LANG["ocsng"][46]="Eliminar a l'OCS";
 $LANG["ocsng"][47]="Linked with an OCS computer"; 
 $LANG["ocsng"][48]="The OCS ID of the computer changed"; 
 $LANG["ocsng"][49]="Agent"; 
+$LANG["ocsng"][50]="Locked IP(s)"; 
+$LANG["ocsng"][51]="No IP locked"; 
 
 $LANG["pager"][1]="fins a"; 
 $LANG["pager"][2]="des de"; 
