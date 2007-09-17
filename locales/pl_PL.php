@@ -237,6 +237,7 @@ $LANG["common"][56]="Wymiana";
 $LANG["common"][57]="Tytuł"; 
 $LANG["common"][58]="Maksymalna wartość"; 
 $LANG["common"][59]="Global"; 
+$LANG["common"][60]="Active"; 
 
 $LANG["computers"][9]="OS"; 
 $LANG["computers"][10]="Serial OS"; 
@@ -1020,7 +1021,7 @@ $LANG["ocsng"][32]="Zablokowane urządzenia";
 $LANG["ocsng"][33]="Brak zablokowanych urządzeń"; 
 $LANG["ocsng"][34]="Zablokowane drukarki"; 
 $LANG["ocsng"][35]="Brak zablokowanych drukarek"; 
-$LANG["ocsng"][36]="Entidade de destino"; 
+$LANG["ocsng"][36]="Destination entity"; 
 $LANG["ocsng"][37]="Aktywuj do podglądu"; 
 $LANG["ocsng"][38]="Disable the preview"; 
 $LANG["ocsng"][40]="Taka sama zasada?"; 
@@ -1033,6 +1034,8 @@ $LANG["ocsng"][46]="Usuniete w OCS";
 $LANG["ocsng"][47]="Połączony z komputerem z OCS"; 
 $LANG["ocsng"][48]="The OCS ID of the computer changed"; 
 $LANG["ocsng"][49]="Agent"; 
+$LANG["ocsng"][50]="Locked IP(s)"; 
+$LANG["ocsng"][51]="No IP locked"; 
 
 $LANG["pager"][1]="do"; 
 $LANG["pager"][2]="od"; 

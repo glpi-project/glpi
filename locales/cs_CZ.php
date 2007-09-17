@@ -237,6 +237,7 @@ $LANG["common"][56]="Výměna";
 $LANG["common"][57]="Název"; 
 $LANG["common"][58]="Maximální hodnota"; 
 $LANG["common"][59]="Globální"; 
+$LANG["common"][60]="Aktivní"; 
 
 $LANG["computers"][9]="OS"; 
 $LANG["computers"][10]="Sériové číslo OS"; 
@@ -266,8 +267,8 @@ $LANG["computers"][55]="Telefon(y)";
 
 $LANG["connect"][0]="Přímá připojení"; 
 $LANG["connect"][1]="Není připojeno"; 
-$LANG["connect"][15]="Automatic update of the following items"; 
-$LANG["connect"][16]="Warning !! The following items of the two hardwares do not match"; 
+$LANG["connect"][15]="Automatická aktualizace následujících položek"; 
+$LANG["connect"][16]="Upozornění !! Následující dvě HW položky nesouhlasí"; 
 
 $LANG["consumables"][0]="Spotřební materiál"; 
 $LANG["consumables"][1]="Ve fondu"; 
@@ -984,7 +985,7 @@ $LANG["ocsconfig"][55]="Najdi počítače v tomto stavu";
 $LANG["ocsconfig"][56]="prázdné"; 
 $LANG["ocsconfig"][57]="rovná se"; 
 $LANG["ocsconfig"][58]="Automaticky sloučit připojení s počítačem GLPI prostřednictvím OCS. Tato volba je přejímána pouze synchronizačními skripty (ne při práci ručně)."; 
-$LANG["ocsconfig"][59]="URL of the OCS console"; 
+$LANG["ocsconfig"][59]="URL adresa konzole OCS"; 
 
 $LANG["ocsng"][0]="Obsah NG OCS"; 
 $LANG["ocsng"][1]="Synchronizovat již naimportované počítače"; 
@@ -1033,6 +1034,8 @@ $LANG["ocsng"][46]="Smazáno v OCS";
 $LANG["ocsng"][47]="Spojeno s počítačem OCS"; 
 $LANG["ocsng"][48]="OCS ID počítače bylo změněno"; 
 $LANG["ocsng"][49]="Agent"; 
+$LANG["ocsng"][50]="Locked IP(s)"; 
+$LANG["ocsng"][51]="No IP locked"; 
 
 $LANG["pager"][1]="do"; 
 $LANG["pager"][2]="od"; 

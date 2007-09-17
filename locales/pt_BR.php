@@ -237,6 +237,7 @@ $LANG["common"][56]="Exchange";
 $LANG["common"][57]="Título"; 
 $LANG["common"][58]="Valor máximo"; 
 $LANG["common"][59]="Global"; 
+$LANG["common"][60]="Ativo"; 
 
 $LANG["computers"][9]="SO"; 
 $LANG["computers"][10]="Número de serial do Sistema Operacional"; 
@@ -266,8 +267,8 @@ $LANG["computers"][55]="Telefone(s)";
 
 $LANG["connect"][0]="Conexões diretas"; 
 $LANG["connect"][1]="Não conectado"; 
-$LANG["connect"][15]="Automatic update of the following items"; 
-$LANG["connect"][16]="Warning !! The following items of the two hardwares do not match"; 
+$LANG["connect"][15]="Atualizar automaticamente os seguintes elementos"; 
+$LANG["connect"][16]="Atenção !!! Os dois elementos seguintes dos materiais não correspondem."; 
 
 $LANG["consumables"][0]="Insumo"; 
 $LANG["consumables"][1]="Em estoque"; 
@@ -984,7 +985,7 @@ $LANG["ocsconfig"][55]="Procurar por computadores que possuem o status";
 $LANG["ocsconfig"][56]="vazio"; 
 $LANG["ocsconfig"][57]="igual"; 
 $LANG["ocsconfig"][58]="A ligação associa automaticamente uma máquina GLPI com uma do OCS.<br>Esta opção é tida em conta apenas pelos certificados de sincronização (não manualmente)."; 
-$LANG["ocsconfig"][59]="URL of the OCS console"; 
+$LANG["ocsconfig"][59]="URL da console do OCS"; 
 
 $LANG["ocsng"][0]="OCS Inventory NG"; 
 $LANG["ocsng"][1]="Sincronização de computadores já importados"; 
@@ -1032,7 +1033,9 @@ $LANG["ocsng"][45]="ID do OCS";
 $LANG["ocsng"][46]="Excluído no OCS"; 
 $LANG["ocsng"][47]="Ligado a um computador do OCS"; 
 $LANG["ocsng"][48]="A máquina alterou seu identificador no OCS"; 
-$LANG["ocsng"][49]="Agent"; 
+$LANG["ocsng"][49]="Agente"; 
+$LANG["ocsng"][50]="Locked IP(s)"; 
+$LANG["ocsng"][51]="No IP locked"; 
 
 $LANG["pager"][1]="para"; 
 $LANG["pager"][2]="de"; 
