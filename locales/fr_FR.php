@@ -1001,6 +1001,8 @@ $LANG["ocsng"][46]="Supprimé d'OCS";
 $LANG["ocsng"][47]="Lié avec une machine d'OCS";
 $LANG["ocsng"][48]="La machine a changé d'identifiant OCS";
 $LANG["ocsng"][49]="Agent";
+$LANG["ocsng"][50]="IP(s) verouillée(s)";
+$LANG["ocsng"][51]="Aucune IP verrouillée";
 
 
 $LANG["ocsconfig"][0]="Configuration du module d'import OCS NG -> GLPI";

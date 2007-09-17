@@ -161,6 +161,14 @@ elseif(isset($_POST["unlock_periph"])){
 	}
 	glpi_header($_SERVER['HTTP_REFERER']);	
 }
+elseif(isset($_POST["unlock_ip"])){
+	checkRight("computer","w");
+	if (isset($_POST["lockip"])&&count($_POST["lockip"])){
+		foreach ($_POST["lockip"] as $key => $val)
+			deleteInOcsArray($_POST["ID"],$key,"import_ip");
+	}
+	glpi_header($_SERVER['HTTP_REFERER']);	
+}
 elseif(isset($_POST["unlock_field"])){
 	checkRight("computer","w");
 	if (isset($_POST["lockfield"])&&count($_POST["lockfield"])){
