@@ -1550,7 +1550,7 @@ function ocsEditLock($target, $ID) {
 			echo "<strong>" . $LANG["ocsng"][35] . "</strong>";
 		echo "</div>";
 
-		//Search locked peripherals
+		// Search locked peripherals
 		$header = false;
 		echo "<br>";
 		echo "<div class='center'>";
@@ -1577,6 +1577,30 @@ function ocsEditLock($target, $ID) {
 		} else
 			echo "<strong>" . $LANG["ocsng"][33] . "</strong>";
 		echo "</div>";
+		
+		// Search locked IP
+		$header = false;
+		echo "<br>";
+		echo "<div class='center'>";
+		$locked_ip = importArrayFromDB($data["import_ip"]);
+		foreach ($locked_ip as $key => $val) {
+			if (!($header)) {
+				$header = true;
+				echo "<form method='post' action=\"$target\">";
+				echo "<input type='hidden' name='ID' value='$ID'>";
+				echo "<table class='tab_cadre'>";
+				echo "<tr><th colspan='2'>" . $LANG["ocsng"][50] . "</th></tr>";
+			}
+			echo "<tr class='tab_bg_1'><td>" . $val . "</td><td><input type='checkbox' name='lockip[" . $key . "]'></td></tr>";
+		}
+		if ($header) {
+			echo "<tr class='tab_bg_2'><td align='center' colspan='2'><input class='submit' type='submit' name='unlock_ip' value='" . $LANG["buttons"][38] . "'></td></tr>";
+			echo "</table>";
+			echo "</form>";
+		} else
+			echo "<strong>" . $LANG["ocsng"][51] . "</strong>";
+		echo "</div>";
+			
 
 	}
 
