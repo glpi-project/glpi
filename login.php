@@ -106,7 +106,7 @@ if (isset ($_POST["noCAS"])){
 
 	if (!$identificat->auth_succeded) // Pas de tests en configuration CAS
 	if (empty ($_POST['login_name']) || empty ($_POST['login_password'])) {
-		$identificat->err = $LANG["login"][8];
+		$identificat->addToError($LANG["login"][8]);
 	} else {
 
 		// exists=0 -> no exist
@@ -182,7 +182,7 @@ if (isset ($_POST["noCAS"])){
 			unset ($identificat->user->fields);
 			$identificat->user->add($input);
 		} else	if (!$identificat->user_present) { // Auto add not enable so auth failed
-			$identificat->err .= $LANG["login"][11];
+			$identificat->addToError($LANG["login"][11]);
 			$identificat->auth_succeded = false;
 		} else	if ($identificat->user_present) {
 			// update user and Blank PWD to clean old database for the external auth
