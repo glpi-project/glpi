@@ -39,15 +39,12 @@ $NEEDED_ITEMS=array("infocom","computer","printer","monitor","peripheral","netwo
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-if(!isset($_GET["ID"])) $_GET["ID"] = "";
-if(!isset($_GET["search"])) $_GET["search"] = "";
-
 $ic=new Infocom();
 
 if (isset($_GET["add"]))
 {
 	checkRight("contract_infocom","w");
-
+	
 	$newID=$ic->add($_GET);
 	logEvent($newID, "infocom", 4, "financial", $_SESSION["glpiname"]." ".$LANG["log"][20]);
 	glpi_header($_SERVER['HTTP_REFERER']);
@@ -57,7 +54,7 @@ else if (isset($_POST["delete"]))
 	checkRight("contract_infocom","w");
 
 	$ic->delete($_POST);
-	logEvent($_GET["ID"], "infocom", 4, "financial", $_SESSION["glpiname"]." ".$LANG["log"][22]);
+	logEvent($_POST["ID"], "infocom", 4, "financial", $_SESSION["glpiname"]." ".$LANG["log"][22]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($_POST["update"]))
