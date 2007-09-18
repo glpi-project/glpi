@@ -670,6 +670,7 @@ function showUserReservations($target,$ID){
 	$query = "SELECT * FROM glpi_reservation_resa WHERE end > '".$now."' AND id_user='$ID' ORDER BY begin";
 	$result=$DB->query($query);
 	$ri=new ReservationItem();
+	$ci=new CommonItem();
 	echo "<table class='tab_cadrehov'><tr><th colspan='6'>".$LANG["reservation"][35]."</th></tr>";
 	if ($DB->numrows($result)==0){	
 		echo "<tr class='tab_bg_2'><td align='center' colspan='6'>".$LANG["reservation"][37]."</td></tr>";
@@ -680,9 +681,12 @@ function showUserReservations($target,$ID){
 			echo "<tr class='tab_bg_2'>";
 			echo "<td class='center'>".convDateTime($data["begin"])."</td>";
 			echo "<td class='center'>".convDateTime($data["end"])."</td>";
-			if ($ri->getFromDB($data["id_item"]))
-				echo "<td class='center'>".$ri->getLink()."</td>";
-			else echo "<td class='center'>&nbsp;</td>";
+			if ($ri->getFromDB($data["id_item"])){
+				$ci->getFromDB($ri->fields['device_type'],$ri->fields['id_device']);
+				echo "<td class='center'>".$ci->getLink()."</td>";
+			} else {
+				echo "<td class='center'>&nbsp;</td>";
+			}
 			echo "<td class='center'>".getUserName($data["id_user"])."</td>";
 			echo "<td class='center'>".nl2br($data["comment"])."</td>";
 			echo "<td class='center'>";
@@ -710,9 +714,12 @@ function showUserReservations($target,$ID){
 			echo "<tr class='tab_bg_2'>";
 			echo "<td class='center'>".convDateTime($data["begin"])."</td>";
 			echo "<td class='center'>".convDateTime($data["end"])."</td>";
-			if ($ri->getFromDB($data["id_item"]))
-				echo "<td class='center'>".$ri->getLink()."</td>";
-			else echo "<td class='center'>&nbsp;</td>";
+			if ($ri->getFromDB($data["id_item"])){
+				$ci->getFromDB($ri->fields['device_type'],$ri->fields['id_device']);
+				echo "<td class='center'>".$ci->getLink()."</td>";
+			} else {
+				echo "<td class='center'>&nbsp;</td>";
+			}
 			echo "<td class='center'>".getUserName($data["id_user"])."</td>";
 			echo "<td class='center'>".nl2br($data["comment"])."</td>";
 			echo "<td class='center'>";
