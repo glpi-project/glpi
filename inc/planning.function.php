@@ -420,7 +420,7 @@ function displayPlanningItem($val,$who,$type="",$complete=0){
 		echo ">";
 		switch ($type){
 			case "in":
-				echo date("H:i",strtotime($val["begin"]))." -> ".date("H:i",strtotime($val["end"])).": ";
+				echo date("H:i",strtotime($val["begin"]))."/".date("H:i",strtotime($val["end"])).": ";
 				break;
 			case "from":
 				break;
@@ -432,7 +432,7 @@ function displayPlanningItem($val,$who,$type="",$complete=0){
 				break;
 
 		}
-		echo "<br>- #".$val["ID"]." \"";
+		echo "<br>- #".$val["id_tracking"]." \"";
 		echo  resume_text($val["name"],80). " \"";
 		if (!empty($val["device"])){
 			echo "<br>- ".$val["device"];
