@@ -1491,12 +1491,12 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$au
 
 			// Delete selected item
 			if (($candelete||$canupdate)&&$output_type==HTML_OUTPUT){
-				echo "<div class='center'>";
+				echo "<div>";
 				echo "<table width='80%'>";
-				echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markAllRows('massiveaction_form') ) return false;\" href='".$_SERVER['PHP_SELF']."?$parameters&amp;select=all&amp;start=$start'>".$LANG["buttons"][18]."</a></td>";
+				echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td><a onclick= \"if ( markAllRows('massiveaction_form') ) return false;\" href='".$_SERVER['PHP_SELF']."?$parameters&amp;select=all&amp;start=$start'>".$LANG["buttons"][18]."</a></td>";
 
-				echo "<td>/</td><td class='center'><a onclick=\"if ( unMarkAllRows('massiveaction_form') ) return false;\" href='".$_SERVER['PHP_SELF']."?$parameters&amp;select=none&amp;start=$start'>".$LANG["buttons"][19]."</a>";
-				echo "</td><td width='80%'>";
+				echo "<td>/</td><td ><a onclick=\"if ( unMarkAllRows('massiveaction_form') ) return false;\" href='".$_SERVER['PHP_SELF']."?$parameters&amp;select=none&amp;start=$start'>".$LANG["buttons"][19]."</a>";
+				echo "</td><td class='left' width='80%'>";
 				dropdownMassiveAction(TRACKING_TYPE);
 				echo "</td></table></div>";
 				// End form for delete item
