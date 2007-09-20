@@ -135,7 +135,7 @@ elseif (isset($_POST["connect_device"])) {
 	checkRight("computer","w");
 	if (isset($_POST["new_device_id"])&&$_POST["new_device_id"]>0)
 		compdevice_add($_POST["cID"],$_POST["new_device_type"],$_POST["new_device_id"]);
-	glpi_header($_SERVER['PHP_SELF']."?ID=".$_POST["cID"]."&withtemplate=".$_GET["withtemplate"]);
+	glpi_header($_SERVER['PHP_SELF']."?ID=".$_POST["cID"]."&withtemplate=".$_POST["withtemplate"]);
 }
 elseif(isset($_POST["unlock_monitor"])){
 	checkRight("computer","w");
