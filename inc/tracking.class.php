@@ -803,6 +803,23 @@ class Job extends CommonDBTM{
 		return getUserName($this->fields["author"],$link);
 	}
 
+	function canAddFollowups(){
+		return (haveRight("comment_ticket","1")
+			||haveRight("comment_all_ticket","1")
+			||(isset($_SESSION["glpiID"])&&$job->fields["assign"]==$_SESSION["glpiID"])
+			||($_SESSION["glpigroups"]&&in_array($job->fields["assign_group"],$_SESSION['glpigroups']))
+			);
+	}
+	function canShowTicket(){
+		return (
+			haveRight("show_all_ticket","1")
+			|| $job->fields["author"]==$_SESSION["glpiID"]
+			|| $job->fields["assign"]==$_SESSION["glpiID"]
+			|| (haveRight("show_group_ticket",'1')&&in_array($job->fields["FK_group"],$_SESSION["glpigroups"]))
+			|| (haveRight("show_assign_ticket",'1')&&in_array($job->fields["assign_group"],$_SESSION["glpigroups"]))
+			);
+	}
+
 }
 
 
@@ -892,10 +909,16 @@ class Followup  extends CommonDBTM {
 		$input["_isadmin"]=haveRight("comment_all_ticket","1");
 
 		$input["_job"]=new Job;
-		$input["_job"]->getFromDB($input["tracking"]);
-
-		// Security to add unauthorized followups
-		if (!isset($input['_changes_to_log'])&&!$input["_isadmin"]&&$input["_job"]->fields["author"]!=$_SESSION["glpiID"]) return false;
+		if ($input["_job"]->getFromDB($input["tracking"])){
+			// Security to add unauthorized followups
+			if (!isset($input['_changes_to_log'])
+			&&$input["_job"]->fields["author"]!=$_SESSION["glpiID"]
+			&&!$input["_job"]->canAddFollowups()) {
+				return false;
+			}
+		} else {
+			return false;
+		}
 
 		// Pass old assign From Job in case of assign change
 		if (isset($input["_old_assign"])){
@@ -944,6 +967,7 @@ class Followup  extends CommonDBTM {
 
 
 		if ($input["_isadmin"]&&$input["_type"]!="update"&&$input["_type"]!="finish"){
+
 			if (isset($input["_plan"])){
 				$input["_plan"]['id_followup']=$newID;
 				$input["_plan"]['id_tracking']=$input['tracking'];
@@ -982,7 +1006,6 @@ class Followup  extends CommonDBTM {
 	function getAuthorName($link=0){
 		return getUserName($this->fields["author"],$link);
 	}	
-
 
 }
 

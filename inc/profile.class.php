@@ -341,7 +341,9 @@ class Profile extends CommonDBTM{
 		echo "<td>".$LANG["profiles"][15].":</td><td>";
 		dropdownYesNo("comment_all_ticket",$this->fields["comment_all_ticket"]);
 		echo "</td>";
-		echo "<td colspan='2'>&nbsp;</td></tr>";
+		echo "<td>".$LANG["profiles"][35].":</td><td>";
+		dropdownYesNo("update_followups",$this->fields["update_followups"]);
+		echo "</td></tr>";
 
 		echo "<tr class='tab_bg_2'>";
 		echo "<td>".$LANG["profiles"][8].":</td><td>";

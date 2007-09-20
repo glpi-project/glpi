@@ -71,10 +71,7 @@ function showTrackingOnglets($target){
 			echo "<li class='invisible'>&nbsp;</li>";
 
 			// admin yes  
-			if (haveRight("comment_ticket","1")
-			||haveRight("comment_all_ticket","1")
-			||$job->fields["assign"]==$_SESSION["glpiID"]
-			||in_array($job->fields["assign_group"],$_SESSION['glpigroups'])){
+			if ($job->canAddFollowups()){
 				echo "<li onClick=\"showAddFollowup(); Effect.Appear('viewfollowup');\" id='addfollowup'><a href='#'>".$LANG["job"][29]."</a></li>";
 			}
 
@@ -413,7 +410,8 @@ function showJobShort($data, $followups,$output_type=HTML_OUTPUT,$row_num=0) {
 
 	// Make new job object and fill it from database, if success, print it
 	$job = new Job;
-	$job->fields['ID'] = $data['ID'];
+	
+	$job->fields = $data;
 	$candelete=haveRight("delete_ticket","1");
 	$canupdate=haveRight("update_ticket","1");
 //	$viewusers=haveRight("user","r");
@@ -570,20 +568,16 @@ function showJobShort($data, $followups,$output_type=HTML_OUTPUT,$row_num=0) {
 		// Job Controls
 
 		if ($_SESSION["glpiactiveprofile"]["interface"]=="central"){
-			if (!haveRight("show_all_ticket","1")
-			&&$data["author"]!=$_SESSION["glpiID"]
-			&&$data["assign"]!=$_SESSION["glpiID"]
-			&&(!haveRight("show_group_ticket",1)||!in_array($data["FK_group"],$_SESSION["glpigroups"]))
-			&&(!haveRight("show_assign_ticket",1)||!in_array($data["assign_group"],$_SESSION["glpigroups"]))
-			) {
+			if (!$job->canShowTicket()) {
 				$nineth_column.="&nbsp;";
 			} else {
 				$nineth_column.="<a href=\"".$CFG_GLPI["root_doc"]."/front/tracking.form.php?ID=".$data["ID"]."\"><strong>".$LANG["joblist"][13]."</strong></a>&nbsp;(".$job->numberOfFollowups().")";
 			}
 		}
-		else
+		else {
 			$nineth_column.="<a href=\"".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php?show=user&amp;ID=".$data["ID"]."\">".$LANG["joblist"][13]."</a>&nbsp;(".$job->numberOfFollowups(haveRight("show_full_ticket","1")).")";
-
+		}
+		
 		echo displaySearchItem($output_type,$nineth_column,$item_num,$row_num,$align." width='40'");
 
 		// Finish Line
@@ -841,9 +835,11 @@ function addFormTracking ($device_type=0,$ID=0,$author,$assign,$assign_group,$ta
 	echo "<tr class='tab_bg_1'><td colspan='2' align='center'>";
 	echo "<input type='submit' name='add' value=\"".$LANG["buttons"][2]."\" class='submit'>";
 	echo "</td><td colspan='2' align='center'>";
-	if (haveRight("comment_all_ticket","1"))
+	if (haveRight("comment_all_ticket","1")){
 		echo "<input type='submit' name='add_close' value=\"".$LANG["buttons"][26]."\" class='submit'>";
-	else echo "&nbsp;";
+	} else {
+		echo "&nbsp;";
+	}
 	echo "</td></tr>";
 
 	if (haveRight("comment_all_ticket","1")){
@@ -1581,18 +1577,16 @@ function showJobDetails ($target,$ID){
 	$job=new Job();
 
 	$canupdate=haveRight("update_ticket","1");
-
+	$showuserlink=0;
+	if (haveRight('user','r')){
+		$showuserlink=1;	
+	}
 	if ($job->getfromDB($ID)) {
 
-		if (!haveRight("show_all_ticket","1")
-			&&$job->fields["author"]!=$_SESSION["glpiID"]
-			&&$job->fields["assign"]!=$_SESSION["glpiID"]
-			&&!(haveRight("show_group_ticket",'1')&&in_array($job->fields["FK_group"],$_SESSION["glpigroups"]))
-			&&!(haveRight("show_assign_ticket",'1')&&in_array($job->fields["assign_group"],$_SESSION["glpigroups"]))
-		 ){
+		if (!$job->canShowTicket()){
 			return false;
 		}
-
+		
 		$canupdate_descr=$canupdate||($job->numberOfFollowups()==0&&$job->fields["author"]==$_SESSION["glpiID"]);
 		$item=new CommonItem();
 		$item->getFromDB($job->fields["device_type"],$job->fields["computer"]);
@@ -1608,7 +1602,7 @@ function showJobDetails ($target,$ID){
 		if ($canupdate){
 			dropdownAllUsers("recipient",$job->fields["recipient"],1,$job->fields["FK_entities"]);
 		} else {
-			getUserName($job->fields["recipient"],haveRight('user','r'));
+			echo getUserName($job->fields["recipient"],$showuserlink);
 		}
 
 		if (count($_SESSION['glpiactiveentities'])>1){
@@ -1660,7 +1654,7 @@ function showJobDetails ($target,$ID){
 		if ($canupdate){
 			dropdownAllUsers("author",$job->fields["author"],1,$job->fields["FK_entities"]);
 		} else {
-			echo getUserName($job->fields["author"],haveRight('user','r'));
+			echo getUserName($job->fields["author"],$showuserlink);
 		}
 		echo "</td></tr>";
 
@@ -1721,7 +1715,7 @@ function showJobDetails ($target,$ID){
 		}else {
 			echo "<tr><td class='left'>";
 			echo $LANG["job"][6].":</td><td>";
-			echo getUserName($job->fields["assign"]);
+			echo getUserName($job->fields["assign"],$showuserlink);
 			echo "</td></tr>";
 		}
 
@@ -1988,6 +1982,7 @@ function showFollowupsSummary($tID){
 	$job->getFromDB($tID);
 	// Display existing Followups
 	$showprivate=haveRight("show_full_ticket","1");
+	$caneditall=haveRight("update_followups","1");
 	
 	$RESTRICT="";
 	if (!$showprivate)  $RESTRICT=" AND ( private='0' OR author ='".$_SESSION["glpiID"]."' ) ";
@@ -1995,7 +1990,7 @@ function showFollowupsSummary($tID){
 	$query = "SELECT * FROM glpi_followups WHERE (tracking = $tID) $RESTRICT ORDER BY date DESC";
 	$result=$DB->query($query);
 
-
+	
 
 	$rand=mt_rand();
 
@@ -2009,29 +2004,31 @@ function showFollowupsSummary($tID){
 		echo "</th></tr></table>";
 	}
 	else {	
-
-		echo "<table class='tab_cadrehov_pointer'>";
+		echo "<table class='tab_cadrehov'>";
 		echo "<tr><th>&nbsp;</th><th>".$LANG["common"][27]."</th><th>".$LANG["joblist"][6]."</th><th>".$LANG["job"][31]."</th><th>".$LANG["job"][35]."</th><th>".$LANG["common"][37]."</th>";
 		if ($showprivate)
 			echo "<th>".$LANG["job"][30]."</th>";
 		echo "</tr>";
 		while ($data=$DB->fetch_array($result)){
+			$canedit=($caneditall||$data['author']==$_SESSION['glpiID']);
 
-			echo "<tr class='tab_bg_2' onClick=\"viewEditFollowup".$data["ID"]."$rand();\" id='viewfollowup".$data["ID"]."$rand'>";
+			echo "<tr class='tab_bg_2' ".($canedit?"style='cursor:pointer' onClick=\"viewEditFollowup".$data["ID"]."$rand();\"":"style='cursor:none'")
+				." id='viewfollowup".$data["ID"]."$rand'>";
 			echo "<td>".$data["ID"]."</td>";
 
 			echo "<td>";
-
-			echo "<script type='text/javascript' >\n";
-			echo "function viewEditFollowup".$data["ID"]."$rand(){\n";
-
-				//echo "window.document.getElementById('viewfollowup').style.display='none';";
-				$params=array('ID'=>$data["ID"],
-				);
-				ajaxUpdateItemJsCode("viewfollowup",$CFG_GLPI["root_doc"]."/ajax/viewfollowup.php",$params,false);
-			echo "};";
-
-			echo "</script>\n";
+			if ($canedit){
+				echo "<script type='text/javascript' >\n";
+				echo "function viewEditFollowup".$data["ID"]."$rand(){\n";
+	
+					//echo "window.document.getElementById('viewfollowup').style.display='none';";
+					$params=array('ID'=>$data["ID"],
+					);
+					ajaxUpdateItemJsCode("viewfollowup",$CFG_GLPI["root_doc"]."/ajax/viewfollowup.php",$params,false);
+				echo "};";
+	
+				echo "</script>\n";
+			}
 
 
 			echo convDateTime($data["date"])."</td>";
@@ -2215,21 +2212,17 @@ function showAddFollowupForm($tID){
 function showUpdateFollowupForm($ID){
 	global $DB,$LANG,$CFG_GLPI;
 
-	if (!haveRight("comment_ticket","1")&&!haveRight("comment_all_ticket","1")) return false;
+	$fup=new Followup();
+	
+	if ($fup->getFromDB($ID)){
+		if ($fup->fields["tracking"]!=$_SESSION['glpiID']&&!haveRight("update_followups","1")) {
+			return false;
+		}
 
-	$commentall=haveRight("comment_all_ticket","1");
-
-	// Display existing Followups
-
-	$query = "SELECT * FROM glpi_followups WHERE (ID = '$ID')";
-	$result=$DB->query($query);
-
-
-	if ($DB->numrows($result)==1){
-		$data=$DB->fetch_array($result);
+		$commentall=haveRight("update_followups","1");
 
 		$job=new Job();
-		$job->getFromDB($data["tracking"]);
+		$job->getFromDB($fup->fields["tracking"]);
 
 		echo "<div class='center'>";
 		echo "<table class='tab_cadre_fixe'>";
@@ -2242,12 +2235,12 @@ function showUpdateFollowupForm($ID){
 		echo "<table width='100%'>";
 		echo "<tr class='tab_bg_2'><td width='50%'>";
 		echo "<table width='100%' bgcolor='#FFFFFF'>";
-		echo "<tr class='tab_bg_1'><td align='center' width='10%'>".$LANG["joblist"][6]."<br><br>".$LANG["common"][27].":<br>".convDateTime($data["date"])."</td>";
+		echo "<tr class='tab_bg_1'><td align='center' width='10%'>".$LANG["joblist"][6]."<br><br>".$LANG["common"][27].":<br>".convDateTime($fup->fields["date"])."</td>";
 		echo "<td width='90%'>";
 
 		if ($commentall){
-			echo "<textarea name='contents' cols='50' rows='6'>".$data["contents"]."</textarea>";
-		} else echo nl2br($data["contents"]);
+			echo "<textarea name='contents' cols='50' rows='6'>".$fup->fields["contents"]."</textarea>";
+		} else echo nl2br($fup->fields["contents"]);
 
 
 		echo "</td></tr>";
@@ -2263,8 +2256,8 @@ function showUpdateFollowupForm($ID){
 			echo "<td>".$LANG["job"][30].":</td>";
 			echo "<td>";
 			echo "<select name='private'>";
-			echo "<option value='0' ".(!$data["private"]?" selected":"").">".$LANG["choice"][0]."</option>";
-			echo "<option value='1' ".($data["private"]?" selected":"").">".$LANG["choice"][1]."</option>";
+			echo "<option value='0' ".(!$fup->fields["private"]?" selected":"").">".$LANG["choice"][0]."</option>";
+			echo "<option value='1' ".($fup->fields["private"]?" selected":"").">".$LANG["choice"][1]."</option>";
 			echo "</select>";
 			echo "</td>";
 			echo "</tr>";
@@ -2273,8 +2266,8 @@ function showUpdateFollowupForm($ID){
 
 
 		echo "<tr><td>".$LANG["job"][31].":</td><td>";
-		$hour=floor($data["realtime"]);
-		$minute=round(($data["realtime"]-$hour)*60,0);
+		$hour=floor($fup->fields["realtime"]);
+		$minute=round(($fup->fields["realtime"]-$hour)*60,0);
 
 		if ($commentall){
 
@@ -2293,7 +2286,7 @@ function showUpdateFollowupForm($ID){
 		echo "<td>".$LANG["job"][35]."</td>";
 		echo "<td>";
 
-		$query2="SELECT * from glpi_tracking_planning WHERE id_followup='".$data['ID']."'";
+		$query2="SELECT * from glpi_tracking_planning WHERE id_followup='".$fup->fields['ID']."'";
 		$result2=$DB->query($query2);
 		if ($DB->numrows($result2)==0){
 			if ($commentall){
@@ -2306,13 +2299,13 @@ function showUpdateFollowupForm($ID){
 				echo $LANG["job"][32];	
 			}
 		 } else {
-			$data2=$DB->fetch_array($result2);
+			$fup->fields2=$DB->fetch_array($result2);
 			if ($commentall){
 
 				echo "<div id='plan'  onClick='showPlan".$ID."()'>\n";
 				echo "<span class='showplan'>";
 			}
-			echo getPlanningState($data2["state"])."<br>".convDateTime($data2["begin"])."<br>->".convDateTime($data2["end"])."<br>".getUserName($data2["id_assign"]);
+			echo getPlanningState($fup->fields2["state"])."<br>".convDateTime($fup->fields2["begin"])."<br>->".convDateTime($fup->fields2["end"])."<br>".getUserName($fup->fields2["id_assign"]);
 			if ($commentall){
 				echo "</span>";
 				echo "</div>\n";	
@@ -2341,8 +2334,8 @@ function showUpdateFollowupForm($ID){
 
 		echo "</table>";
 		if ($commentall){
-			echo "<input type='hidden' name='ID' value='".$data["ID"]."'>";
-			echo "<input type='hidden' name='tracking' value='".$data["tracking"]."'>";
+			echo "<input type='hidden' name='ID' value='".$fup->fields["ID"]."'>";
+			echo "<input type='hidden' name='tracking' value='".$fup->fields["tracking"]."'>";
 			echo "</form>";
 		}
 		echo "</td></tr>";
