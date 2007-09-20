@@ -754,9 +754,8 @@ function getUserName($ID,$link=0){
 		if ($link==2) $user=array("name"=>"","comments"=>"","link"=>"");
 		if ($DB->numrows($result)==1){
 			$data=$DB->fetch_assoc($result);
-
+			
 			$username=formatUserName($data["ID"],$data["name"],$data["realname"],$data["firstname"],$link);
-	
 			if ($link==2){
 				$user["name"]=$username;
 				$user["link"]=$CFG_GLPI["root_doc"]."/front/user.form.php?ID=".$ID;
@@ -765,7 +764,9 @@ function getUserName($ID,$link=0){
 					$user["comments"].=$LANG["setup"][14].": ".$data["email"]."<br>";
 				if (!empty($data["phone"]))
 					$user["comments"].=$LANG["financial"][29].": ".$data["phone"]."<br>";
-			} else $user=$username;
+			} else {
+				$user=$username;
+			}
 		}
 	}
 	return $user;		

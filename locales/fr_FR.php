@@ -650,7 +650,6 @@ $LANG["job"][43]="Coût total";
 $LANG["job"][44]="Source de la demande";
 $LANG["job"][45]="Ajouter un suivi";
 
-
 $LANG["joblist"][0]="Statut";
 $LANG["joblist"][1]="Seulement les miens";
 $LANG["joblist"][2]="Priorité";
@@ -1141,6 +1140,7 @@ $LANG["profiles"][31]="Synchronisation OCSNG manuellement";
 $LANG["profiles"][32]="Voir les tickets qui me sont assignés";
 $LANG["profiles"][33]="Pas d'utilisateur trouvés";
 $LANG["profiles"][34]="Légende";
+$LANG["profiles"][35]="Mettre à jour tous les suivis";
 
 
 $LANG["registry"][1]="Ruche";
