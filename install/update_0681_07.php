@@ -1013,7 +1013,12 @@ function update0681to07() {
 		$query = "UPDATE `glpi_profiles` SET `rule_tracking` = config";
 		$DB->query($query) or die("0.7 update rule_tracking values in glpi_profiles" . $LANG["update"][90] . $DB->error());
 	}
-
+	if (!FieldExists("glpi_profiles", "update_followups")) {
+		$query = "ALTER TABLE `glpi_profiles` ADD COLUMN `update_followups` char(1) default NULL AFTER `observe_ticket`";
+		$DB->query($query) or die("0.7 add update_followups in glpi_profiles" . $LANG["update"][90] . $DB->error());
+		$query = "UPDATE `glpi_profiles` SET `update_followups` = show_full_ticket";
+		$DB->query($query) or die("0.7 update update_followups values in glpi_profiles" . $LANG["update"][90] . $DB->error());
+	}
 
 	//Software version's modifications
 	//First add the version field to the licenses table	
