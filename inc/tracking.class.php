@@ -426,7 +426,7 @@ class Job extends CommonDBTM{
 			else $input["author"]=1; // Helpdesk injector
 		}
 
-		if (!isset($input["date"])||$input["date"]='0000-00-00 00:00'){
+		if (!isset($input["date"])||$input["date"]=='0000-00-00 00:00'){
 			$input["date"] = $_SESSION["glpi_currenttime"];
 		}
 
