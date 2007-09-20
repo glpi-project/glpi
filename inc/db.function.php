@@ -396,6 +396,7 @@ function getTreeForItem($table,$IDf){
 			else $first=false;
 			$query.= " parentID = '$val' ";
 		}
+		$query.=" ORDER BY name";
 		// CLear the found array
 		unset($found);
 		$found=array();
