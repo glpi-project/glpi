@@ -49,7 +49,7 @@ checkCentralAccess();
 
 // Make a select box with all glpi users
 
-$where=" glpi_users.deleted='0' ";
+$where=" glpi_users.deleted='0' AND glpi_users.active='1' ";
 if (strlen($_POST['searchText'])>0&&$_POST['searchText']!=$CFG_GLPI["ajax_wildcard"]){
 	$where.=" AND (glpi_users.name ".makeTextSearch($_POST['searchText'])." OR glpi_users.realname ".makeTextSearch($_POST['searchText'])." OR glpi_users.firstname ".makeTextSearch($_POST['searchText']).")";
 }
