@@ -813,8 +813,8 @@ class Job extends CommonDBTM{
 	function canShowTicket(){
 		return (
 			haveRight("show_all_ticket","1")
-			|| $job->fields["author"]==$_SESSION["glpiID"]
-			|| $job->fields["assign"]==$_SESSION["glpiID"]
+			|| $this->fields["author"]==$_SESSION["glpiID"]
+			|| $this->fields["assign"]==$_SESSION["glpiID"]
 			|| (haveRight("show_group_ticket",'1')&&in_array($job->fields["FK_group"],$_SESSION["glpigroups"]))
 			|| (haveRight("show_assign_ticket",'1')&&in_array($job->fields["assign_group"],$_SESSION["glpigroups"]))
 			);
