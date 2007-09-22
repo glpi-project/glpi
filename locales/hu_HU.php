@@ -237,7 +237,7 @@ $LANG["common"][56]="Cserél";
 $LANG["common"][57]="Cím"; 
 $LANG["common"][58]="Maximum"; 
 $LANG["common"][59]="Globális"; 
-$LANG["common"][60]="Active"; 
+$LANG["common"][60]="Aktív"; 
 
 $LANG["computers"][9]="Operációs rendszer"; 
 $LANG["computers"][10]="OP.rsz. szériaszám"; 
@@ -1034,8 +1034,8 @@ $LANG["ocsng"][46]="OCS-ban törölve";
 $LANG["ocsng"][47]="Egy OCS géphez kapcsolva"; 
 $LANG["ocsng"][48]="A számítógép OCS azonosítója megváltozott"; 
 $LANG["ocsng"][49]="Ügynök"; 
-$LANG["ocsng"][50]="Locked IP(s)"; 
-$LANG["ocsng"][51]="No IP locked"; 
+$LANG["ocsng"][50]="Zárolt IP-k"; 
+$LANG["ocsng"][51]="Nincs zárolt IP"; 
 
 $LANG["pager"][1]="vége"; 
 $LANG["pager"][2]="kezdet"; 
