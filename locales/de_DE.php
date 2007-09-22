@@ -809,7 +809,7 @@ $LANG["mailgate"][0]="Mail-Gateway";
 $LANG["mailgate"][1]="Mail-Gateway hinzufügen"; 
 $LANG["mailgate"][2]="Jetzt Mail-Tickets holen"; 
 $LANG["mailgate"][3]="Anzahl der verfügbaren und abgeholten Mails"; 
-$LANG["mailgate"][4]="Erweiterung "mbstring" nicht gefunden. Bitte verwendeten Zeichensatz beachten."; 
+$LANG["mailgate"][4]="Erweiterung 'mbstring' nicht gefunden. Bitte verwendeten Zeichensatz beachten."; 
 
 $LANG["mailing"][0]="-----------------------"; 
 $LANG["mailing"][1]="======================================="; 
