@@ -699,7 +699,7 @@ class User extends CommonDBTM {
 
 			//do some rights verification
 			if (haveRight("user", "w")) {
-				if ($this->fields["auth_method"]==AUTH_DB_GLPI||!empty ($this->fields["password"]) || !empty ($this->fields["password_md5"]) || $this->fields["name"] == "") {
+				if ($this->fields["auth_method"]==AUTH_DB_GLPI || empty($ID)) {
 					echo "<td class='center'>" . $LANG["setup"][19] . ":</td><td><input type='password' name='password' value='' size='20' /></td></tr>";
 				} else
 					echo "<td colspan='2'>&nbsp;</td></tr>";
@@ -754,35 +754,9 @@ class User extends CommonDBTM {
 				//don't display is creation of a new user'
 				if (!empty ($ID)) {
 					echo "<tr class='tab_bg_1' align='center'><td>" . $LANG["login"][10] . ":</td><td class='center'>";
-					switch ($this->fields["auth_method"]) {
-						case AUTH_LDAP :
-							echo $LANG["login"][2];
-							$url = $CFG_GLPI["root_doc"] . "/front/setup.auth.php?next=extauth_ldap&ID=";
-							break;
-						case AUTH_MAIL :
-							echo $LANG["login"][3];
-							$url = $CFG_GLPI["root_doc"] . "/front/setup.auth.php?next=extauth_mail&ID=";
-							break;
-						case AUTH_CAS :
-							echo $LANG["login"][4];
-							break;
-						case AUTH_DB_GLPI :
-							echo $LANG["login"][18];
-							break;
-						case NOT_YET_AUTHENTIFIED :
-							echo $LANG["login"][9];
-							break;
-					}
 
-					if (($this->fields["auth_method"] == AUTH_LDAP || $this->fields["auth_method"] == AUTH_MAIL)) {
-						if ($method = $this->getAuthMethodsByID()) {
-							//If user have right, display a link to the auth server
-							if (haveRight("config", "w"))
-								echo "&nbsp " . $LANG["common"][52] . " <a href=\"" . $url . $method["ID"] . "\">" . $method["name"] . "</a>";
-							else
-								echo "&nbsp " . $LANG["common"][52] . " " . $method["name"];
-						}
-					}
+					echo getAuthMethodName($this->fields["auth_method"], $this->fields["id_auth"], 1);
+
 					echo "</td><td>" . $LANG["login"][0] . ":</td><td>";
 
 					if ($this->fields["last_login"] != "0000-00-00 00:00:00"){
