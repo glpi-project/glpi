@@ -454,4 +454,43 @@ function getAuthMethodsByID($auth_method, $id_auth) {
 	return $auth_methods;
 }
 
+function getAuthMethodName($auth_method, $id_auth, $link=0,$name=''){
+	global $LANG,$CFG_GLPI;
+	switch ($auth_method) {
+		case AUTH_LDAP :
+			if (empty($name)){
+				$method = getAuthMethodsByID($auth_method,$id_auth);
+				$name=$method["name"];
+			}
+			$out= $LANG["login"][2];
+			if ($link && haveRight("config", "w")){
+				return  $out."&nbsp " . $LANG["common"][52] . " <a href=\"" . $CFG_GLPI["root_doc"] . "/front/setup.auth.php?next=extauth_ldap&ID=" . $id_auth . "\">" . $name . "</a>";
+			} else {
+				return  $out."&nbsp " . $LANG["common"][52] . " " . $name;
+			}
+		break;
+		case AUTH_MAIL :
+			if (empty($name)){
+				$method = getAuthMethodsByID($auth_method,$id_auth);
+				$name=$method["name"];
+			}
+			$out= $LANG["login"][3];
+			if ($link && haveRight("config", "w")){
+				return  $out. "&nbsp " . $LANG["common"][52] . " <a href=\"" . $CFG_GLPI["root_doc"] . "/front/setup.auth.php?next=extauth_mail&ID=" . $id_auth . "\">" . $name . "</a>";
+			} else {
+				return  $out. "&nbsp " . $LANG["common"][52] . " " . $name;
+			}
+		break;
+		case AUTH_CAS :
+			return  $LANG["login"][4];
+			break;
+		case AUTH_DB_GLPI :
+			return $LANG["login"][18];
+		break;
+		case NOT_YET_AUTHENTIFIED :
+			return $LANG["login"][9];
+			break;
+	}
+}
+
 ?>

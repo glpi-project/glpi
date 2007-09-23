@@ -1350,6 +1350,9 @@ function addOrderBy($type,$ID,$order,$key=0){
 		case "glpi_tracking.count" :
 			return " ORDER BY ITEM_$key $order ";
 		break;
+		case "glpi_auth_tables.name" :
+			return " ORDER BY glpi_users.auth_method, glpi_auth_ldap.name, glpi_auth_mail.name $order ";
+		break;
 		case "glpi_contracts.end_date":
 			return " ORDER BY ADDDATE(glpi_contracts.begin_date, INTERVAL glpi_contracts.duration MONTH) $order ";
 		break;
@@ -1535,7 +1538,9 @@ function addSelect ($type,$ID,$num,$meta=0,$meta_type=0){
 		case "glpi_entities.completename" : // ajout jmd
 			return $pretable.$table.$addtable.".completename AS ".$NAME."_$num, ".$pretable.$table.$addtable.".ID AS ".$NAME."_".$num."_2, ";
 		break;
-
+		case "glpi_auth_tables.name":
+			return "glpi_users.auth_method AS ".$NAME."_".$num.", glpi_users.id_auth AS ".$NAME."_".$num."_2, glpi_auth_ldap".$addtable.".".$field." AS ".$NAME."_".$num."_3, glpi_auth_mail".$addtable.".".$field." AS ".$NAME."_".$num."_4, ";
+		break;
 		case "glpi_contracts.name" :
 		case "glpi_contracts.num" :
 			if ($type!=CONTRACT_TYPE){
@@ -1654,11 +1659,7 @@ function addWhere ($link,$nott,$type,$ID,$val,$meta=0){
 			}
 			break;
 		case "glpi_device_hdd.specif_default" :
-			return $link." $table.$field ".makeTextSearch("",$nott);
-			break;
 		case "glpi_device_ram.specif_default" :
-			return $link." $table.$field ".makeTextSearch("",$nott);
-			break;
 		case "glpi_device_processor.specif_default" :
 			return $link." $table.$field ".makeTextSearch("",$nott);
 			break;
@@ -1816,6 +1817,10 @@ function addWhere ($link,$nott,$type,$ID,$val,$meta=0){
 			break;
 		case "glpi_contacts.completename":
 			return $link." ($table.name $SEARCH OR $table.firstname $SEARCH ) ";
+		break;
+		case "glpi_auth_tables.name":
+			return $link." (glpi_auth_mail.name $SEARCH OR glpi_auth_ldap.name $SEARCH ) ";
+		break;
 		default:
 
 			
@@ -2439,6 +2444,9 @@ function giveItem ($type,$field,$data,$num,$linkfield=""){
 			}
 			return $out;
 			break;
+		case "glpi_auth_tables.name" :
+			return getAuthMethodName($data["ITEM_".$num], $data["ITEM_".$num."_2"], 1,$data["ITEM_".$num."_3"].$data["ITEM_".$num."_4"]);
+			break;
 		case "glpi_reservation_item.comments" :
 			if (empty($data["ITEM_$num"])){
 				return  "<a href='".$CFG_GLPI["root_doc"]."/front/reservation.php?comment=".$data["refID"]."' title='".$LANG["reservation"][22]."'>".$LANG["common"][49]."</a>";
@@ -2570,6 +2578,10 @@ function addLeftJoin ($type,$ref_table,&$already_link_tables,$new_table,$linkfie
 
 	switch ($new_table){
 		// No link
+		case "glpi_auth_tables":
+			return " LEFT JOIN glpi_auth_ldap ON (glpi_users.auth_method = ".AUTH_LDAP." AND glpi_users.id_auth = glpi_auth_ldap.ID) 
+				LEFT JOIN glpi_auth_mail ON (glpi_users.auth_method = ".AUTH_MAIL." AND glpi_users.id_auth = glpi_auth_mail.ID) ";
+		break;
 		case "glpi_reservation_item":
 			return "";
 		break;
