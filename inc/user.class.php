@@ -79,6 +79,11 @@ class User extends CommonDBTM {
 
 		return $ong;
 	}
+
+	function post_getEmpty () {
+		$this->fields["active"]=1;
+	}
+
 	function cleanDBonMarkDeleted($ID) {
 
 		global $DB;
