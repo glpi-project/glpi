@@ -63,7 +63,7 @@ if (!defined('GLPI_ROOT')){
 		error_log(convDateTime(date("Y-m-d H:i:s"))."\n".$text,3,GLPI_LOG_DIR."/".$name.".log");
 	}
 
-	// Fonction spéciale de gestion des erreurs
+	// Fonction spÃ©ciale de gestion des erreurs
 	function userErrorHandler($errno, $errmsg, $filename, $linenum, $vars){
 		global $CFG_GLPI;
 		// Date et heure de l'erreur
@@ -85,7 +85,7 @@ if (!defined('GLPI_ROOT')){
 			// Need php 5.2.0
 			4096 /*E_RECOVERABLE_ERROR*/  => 'Catchable Fatal Error'
 			);			
-		// Les niveaux qui seront enregistrés
+		// Les niveaux qui seront enregistrÃ©s
 		$user_errors = array(E_USER_ERROR, E_USER_WARNING, E_USER_NOTICE);
 			
 		$err = "<errorentry>\n";
@@ -123,6 +123,33 @@ function utf8_substr($str,$start)
        return join("",array_slice($ar[0],$start));
    }
 }
+
+function utf8_strlen($str)
+{
+    $i = 0;
+    $count = 0;
+    $len = strlen ($str);
+    while ($i < $len)
+    {
+    $chr = ord ($str[$i]);
+    $count++;
+    $i++;
+    if ($i >= $len)
+        break;
+
+    if ($chr & 0x80)
+    {
+        $chr <<= 1;
+        while ($chr & 0x80)
+        {
+        $i++;
+        $chr <<= 1;
+        }
+    }
+    }
+    return $count;
+}
+
 /**
  * Clean cache cron function
  *
@@ -581,7 +608,7 @@ function resume_text($string,$length=255){
 
 function mailRow($string,$value){
 
-$row=mb_str_pad( $string . ': ',25,' ', STR_PAD_RIGHT,'UTF8').$value."\n";
+$row=utf8_str_pad( $string . ': ',25,' ', STR_PAD_RIGHT).$value."\n";
 
 return $row;
 
@@ -599,14 +626,11 @@ return $row;
  * @return string
  *
  */
-function mb_str_pad($ps_input, $pn_pad_length, $ps_pad_string = " ", $pn_pad_type = STR_PAD_RIGHT, $ps_encoding = NULL) {
+function utf8_str_pad($ps_input, $pn_pad_length, $ps_pad_string = " ", $pn_pad_type = STR_PAD_RIGHT) {
   $ret = "";
 
-  if (is_null($ps_encoding))
-    $ps_encoding = mb_internal_encoding();
-
-  $hn_length_of_padding = $pn_pad_length - mb_strlen($ps_input, $ps_encoding);
-  $hn_psLength = mb_strlen($ps_pad_string, $ps_encoding); // pad string length
+  $hn_length_of_padding = $pn_pad_length - utf8_strlen($ps_input);
+  $hn_psLength = utf8_strlen($ps_pad_string); // pad string length
   
   if ($hn_psLength <= 0 || $hn_length_of_padding <= 0) {
     // Padding string equal to 0:
@@ -625,15 +649,15 @@ function mb_str_pad($ps_input, $pn_pad_length, $ps_pad_string = " ", $pn_pad_typ
       $hs_lastStrLeftLength = $hs_lastStrRightLength = floor($hs_lastStrLength / 2);      // the rest length divide to 2 parts
       $hs_lastStrRightLength += $hs_lastStrLength % 2; // the last char add to right side
 
-      $hs_lastStrLeft = mb_substr($ps_pad_string, 0, $hs_lastStrLeftLength, $ps_encoding);
-      $hs_lastStrRight = mb_substr($ps_pad_string, 0, $hs_lastStrRightLength, $ps_encoding);
+      $hs_lastStrLeft = utf8_substr($ps_pad_string, 0, $hs_lastStrLeftLength);
+      $hs_lastStrRight = utf8_substr($ps_pad_string, 0, $hs_lastStrRightLength);
 
       $ret = str_repeat($ps_pad_string, $hn_repeatCountLeft) . $hs_lastStrLeft;
       $ret .= $ps_input;
       $ret .= str_repeat($ps_pad_string, $hn_repeatCountRight) . $hs_lastStrRight;
       }
     else {
-      $hs_lastStr = mb_substr($ps_pad_string, 0, $hn_length_of_padding % $hn_psLength, $ps_encoding); // last part of pad string
+      $hs_lastStr = utf8_substr($ps_pad_string, 0, $hn_length_of_padding % $hn_psLength); // last part of pad string
 
       if ($pn_pad_type == STR_PAD_LEFT)
         $ret = str_repeat($ps_pad_string, $hn_repeatCount) . $hs_lastStr . $ps_input;
@@ -706,7 +730,7 @@ function convDateTime($time) {
 	if ($CFG_GLPI["dateformat"]!=0) {
 		$date = substr($time,8,2)."-";        // jour 
 		$date = $date.substr($time,5,2)."-";  // mois 
-		$date = $date.substr($time,0,4). " "; // année 
+		$date = $date.substr($time,0,4). " "; // annÃ©e 
 		$date = $date.substr($time,11,5);     // heures et minutes 
 		return $date; 
 	}else {
@@ -729,7 +753,7 @@ function convDate($time) {
 	if ($CFG_GLPI["dateformat"]!=0) {
 		$date = substr($time,8,2)."-";        // jour 
 		$date = $date.substr($time,5,2)."-";  // mois 
-		$date = $date.substr($time,0,4); // année 
+		$date = $date.substr($time,0,4); // annÃ©e 
 		//$date = $date.substr($time,11,5);     // heures et minutes 
 		return $date; 
 	}else {
@@ -954,14 +978,14 @@ function seems_utf8($Str) {
 
 
 //*************************************************************************************************************
-// De jolies fonctions pour am�iorer l'affichage du texte de la FAQ/knowledgbase
-// obsol�e since 0.68 but DONT DELETE  THIS SECTION !!
+// De jolies fonctions pour amï¿½iorer l'affichage du texte de la FAQ/knowledgbase
+// obsolï¿½e since 0.68 but DONT DELETE  THIS SECTION !!
 // USED IN THE UPDATE SCRIPT
 //************************************************************************************************************
 
 /**
  *Met en "ordre" une chaine avant affichage
- * Remplace tr� AVANTAGEUSEMENT nl2br 
+ * Remplace trï¿½ AVANTAGEUSEMENT nl2br 
  * 
  * @param $pee
  * @param $br
@@ -1008,7 +1032,7 @@ function clicurl($chaine){
 function split_text($text, $start, $end)
 {
 
-	// Adapt�de PunBB 
+	// Adaptï¿½de PunBB 
 	//Copyright (C)  Rickard Andersson (rickard@punbb.org)
 
 	$tokens = explode($start, $text);
@@ -1040,7 +1064,7 @@ function split_text($text, $start, $end)
  */
 function rembo($string){
 
-	// Adapt�de PunBB 
+	// Adaptï¿½de PunBB 
 	//Copyright (C)  Rickard Andersson (rickard@punbb.org)
 
 	// If the message contains a code tag we have to split it up (text within [code][/code] shouldn't be touched)
@@ -1334,7 +1358,6 @@ function getRandomString($length) {
 	}
 	return $rndstring;
 }
-
 
 
 ?>
