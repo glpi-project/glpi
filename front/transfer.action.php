@@ -44,6 +44,8 @@ $transfer=new Transfer();
 commonHeader($LANG["transfer"][1],$_SERVER['PHP_SELF'],"admin","transfer");
 checkRight("transfer","w");
 
+
+
 if (isset($_POST['transfer'])){
 	if (isset($_SESSION['glpitransfer_list'])){
 		$transfer->moveItems($_SESSION['glpitransfer_list'],$_POST['to_entity'],$_POST);
@@ -60,6 +62,8 @@ if (isset($_POST['transfer'])){
 	commonFooter();
 	exit();
 }
+
+unset($_SESSION['glpimassiveactionselected']);
 
 $transfer->showTransferList();
 
