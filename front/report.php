@@ -92,7 +92,28 @@ while($data = each($report_list)) {
 	$i++;
 }
 
+
+$names=array();
+if (isset($PLUGIN_HOOKS["reports"]) && is_array($PLUGIN_HOOKS["reports"])) {
+	foreach ($PLUGIN_HOOKS["reports"] as $plug => $pages){
+		$function="plugin_version_$plug";
+		$plugname=$function();
+		if (is_array($pages)&&count($pages)){
+			foreach ($pages as $page => $name){
+				$names[$plug.'/'.$page]=$plugname['name'].' - '.$name;
+			}
+		}
+	}
+	asort($names);
+}
+
+foreach ($names as $key => $val) {
+	echo "<tr class='tab_bg_1'><td align='center'><a href='".$CFG_GLPI["root_doc"]."/plugins/$key'><strong>".$val."</strong></a></td></tr>";
+}
+
+
 echo "</table></div>";
+
 
 commonFooter();
 ?>
