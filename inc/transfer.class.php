@@ -110,7 +110,7 @@ class Transfer extends CommonDBTM{
 		);
 		$ci=new CommonItem();
 
-		if ($this->to>0){
+		if ($this->to>=0){
 			// Store to
 			$this->to=$to;
 			// Store options
@@ -144,6 +144,16 @@ class Transfer extends CommonDBTM{
 			// Management Items
 			$MANAGEMENT_TYPES = array(ENTERPRISE_TYPE, CONTRACT_TYPE, CONTACT_TYPE, DOCUMENT_TYPE);
 			foreach ($MANAGEMENT_TYPES as $type){
+				$this->inittype=$type;
+				if (isset($items[$type])&&count($items[$type])){
+					foreach ($items[$type] as $ID){
+						$this->transferItem($type,$ID,$ID);
+					}
+				}
+			}
+			// Tickets
+			$OTHER_TYPES = array(TRACKING_TYPE);
+			foreach ($OTHER_TYPES as $type){
 				$this->inittype=$type;
 				if (isset($items[$type])&&count($items[$type])){
 					foreach ($items[$type] as $ID){
@@ -415,7 +425,7 @@ class Transfer extends CommonDBTM{
 	**/
 	function transferItem($type,$ID,$newID){
 		global $CFG_GLPI,$DB;
-
+		
 		$cinew=new CommonItem();
 		// Is already transfer ?
 		if (!isset($this->already_transfer[$type][$ID])){

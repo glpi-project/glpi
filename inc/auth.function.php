@@ -140,7 +140,13 @@ function haveTypeRight($type, $right) {
 			return haveRight("user", $right);
 			break;
 		case TRACKING_TYPE :
-			return haveRight("show_all_ticket", $right);
+			if ($right=='r'){
+				return haveRight("show_all_ticket", 1);
+			} else  if ($right=='w'){
+				return haveRight("update_ticket", 1);
+			} else {
+				return haveRight("show_all_ticket", $right);
+			}
 			break;
 		case CONSUMABLE_TYPE :
 			return haveRight("consumable", $right);

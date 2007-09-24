@@ -1252,7 +1252,7 @@ function dropdownMassiveAction($device_type,$deleted=0){
 	global $LANG,$CFG_GLPI,$PLUGIN_HOOKS;
 
 	$isadmin=haveTypeRight($device_type,"w");
-
+	
 	echo "<select name=\"massiveaction\" id='massiveaction'>";
 
 	echo "<option value=\"-1\" selected>-----</option>";
@@ -1291,11 +1291,10 @@ function dropdownMassiveAction($device_type,$deleted=0){
 		if (haveTypeRight(CONTRACT_TYPE,"w") &&in_array($device_type,$CFG_GLPI["state_types"])){
 			echo "<option value=\"add_contract\">".$LANG["financial"][36]."</option>";
 		}
-		if (in_array($device_type,array(CARTRIDGE_TYPE,COMPUTER_TYPE,CONSUMABLE_TYPE,CONTACT_TYPE,CONTRACT_TYPE,ENTERPRISE_TYPE,
+		if (haveRight('transfer','w') && isMultiEntitiesMode() && 
+				in_array($device_type, 	array(CARTRIDGE_TYPE,COMPUTER_TYPE,CONSUMABLE_TYPE,CONTACT_TYPE,CONTRACT_TYPE,ENTERPRISE_TYPE,
 				MONITOR_TYPE,NETWORKING_TYPE,PERIPHERAL_TYPE,PHONE_TYPE,PRINTER_TYPE,SOFTWARE_TYPE,TRACKING_TYPE))
 				&& $isadmin
-				&& haveRight('transfer','w')
-				&& isMultiEntitiesMode()
 			){
 			echo "<option value=\"add_transfer_list\">".$LANG["buttons"][48]."</option>";
 		}
