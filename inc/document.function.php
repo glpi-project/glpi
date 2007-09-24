@@ -203,22 +203,25 @@ function showDeviceDocument($instID,$search='') {
 		$ci=new CommonItem();
 		while ($i < $number) {
 			$type=$DB->result($result, $i, "device_type");
-			if (($type!=TRACKING_TYPE&&haveTypeRight($type,"r"))||($type==TRACKING_TYPE&&haveTypeRight($type,"1"))){
+			if (haveTypeRight($type,"r")){
 				$column="name";
 				if ($type==TRACKING_TYPE) $column="ID";
+				if ($type==KNOWBASE_TYPE) $column="question";
 	
 				$query = "SELECT ".$LINK_ID_TABLE[$type].".*, glpi_doc_device.ID AS IDD  FROM glpi_doc_device INNER JOIN ".$LINK_ID_TABLE[$type]." ON (".$LINK_ID_TABLE[$type].".ID = glpi_doc_device.FK_device) WHERE glpi_doc_device.device_type='$type' AND glpi_doc_device.FK_doc = '$instID' ";
 				if (in_array($LINK_ID_TABLE[$type],$CFG_GLPI["template_tables"])){
 					$query.=" AND ".$LINK_ID_TABLE[$type].".is_template='0'";
 				}
-				$query.=" order by ".$LINK_ID_TABLE[$type].".$column";
-
+				$query.=" ORDER BY ".$LINK_ID_TABLE[$type].".$column";
+				
 				if ($result_linked=$DB->query($query))
 					if ($DB->numrows($result_linked)){
 						$ci->setType($type);
 						while ($data=$DB->fetch_assoc($result_linked)){
 							$ID="";
 							if ($type==TRACKING_TYPE) $data["name"]=$LANG["job"][38]." ".$data["ID"];
+							if ($type==KNOWBASE_TYPE) $data["name"]=$data["question"];
+							
 							if($CFG_GLPI["view_ID"]||empty($data["name"])) $ID= " (".$data["ID"].")";
 							$name= "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data["ID"]."\">".$data["name"]."$ID</a>";
 	

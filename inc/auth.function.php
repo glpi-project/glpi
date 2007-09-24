@@ -134,7 +134,7 @@ function haveTypeRight($type, $right) {
 			return haveRight("document", $right);
 			break;
 		case KNOWBASE_TYPE :
-			return haveRight("knowbase", $right);
+			return (haveRight("knowbase", $right)||haveRight("faq", $right));
 			break;
 		case USER_TYPE :
 			return haveRight("user", $right);
