@@ -60,7 +60,7 @@ if (isset($_POST['transfer'])){
 $transfer->showTransferList();
 
 commonFooter();
-
+/*
 // Network links : 0 : delete 1 : keep disconnect 2 : keep connect
 $options['keep_networklinks']=0;
 
@@ -125,5 +125,5 @@ $options['keep_consumables']=1;
 //$entity_id=4;
 //$items[COMPUTER_TYPE]=array(403);
 //$transfer->moveItems($items,$entity_id,$options);
-
+*/
 ?>
