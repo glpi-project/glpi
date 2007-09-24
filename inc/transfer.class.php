@@ -131,6 +131,7 @@ class Transfer extends CommonDBTM{
 					$this->transferItem(COMPUTER_TYPE,$ID,$ID);
 				}
 			}
+			
 			// Inventory Items : MONITOR....
 			$INVENTORY_TYPES = array(NETWORKING_TYPE, PRINTER_TYPE, MONITOR_TYPE, PERIPHERAL_TYPE, PHONE_TYPE, SOFTWARE_TYPE, CARTRIDGE_TYPE, CONSUMABLE_TYPE);
 			foreach ($INVENTORY_TYPES as $type){
@@ -161,7 +162,7 @@ class Transfer extends CommonDBTM{
 					}
 				}
 			}
-
+			
 		}
 
 	}
@@ -769,100 +770,110 @@ class Transfer extends CommonDBTM{
 					$need_clean_process=false;
 					// Foreach licenses
 					// if keep 
-					if ($this->options['keep_softwares']&&$data['softID']>0&&$data['licID']>0&&$data['instID']>0){ 
-						$newlicID=-1;
-						// Already_transfer license
-						if (isset($this->already_transfer[LICENSE_TYPE][$data['licID']])){
-							// Copy license : update link in inst_software
-							if ($this->already_transfer[LICENSE_TYPE][$data['licID']]!=$data['licID']){
-								$newlicID=$this->already_transfer[LICENSE_TYPE][$data['licID']];
-								$need_clean_process=true;
-							} 
-							// Same license : nothing to do
-						} else {
-						// Not already transfer license 
-							$newsoftID=-1;
-							// 1 - Search software destination ?
-							// Already transfer soft : 
-							if (isset($this->already_transfer[SOFTWARE_TYPE][$data['softID']])){
-								$newsoftID=$this->already_transfer[SOFTWARE_TYPE][$data['softID']];
-							} else {
-								// Not already transfer soft
-								$query="SELECT count(*) AS CPT 
-									FROM glpi_inst_software INNER JOIN glpi_licenses ON (glpi_inst_software.license = glpi_licenses.ID)
-									WHERE glpi_licenses.sID='".$data['softID']."' AND glpi_inst_software.cID NOT IN ".$this->item_search[COMPUTER_TYPE];
-								$result_search=$DB->query($query);
-								// Is the software will be completly transfer ?
-								if ($DB->result($result_search,0,'CPT')==0){
-									// Yes : transfer
-									$need_clean_process=false;
-									$this->transferItem(SOFTWARE_TYPE,$data['softID'],$data['softID']);
-									$newsoftID=$data['softID'];
-								} else {
-									// No : copy software
+					if ($this->options['keep_softwares']){ 
+						if (!empty($data['softID'])&&$data['softID']>0
+						&&!empty($data['licID'])&&$data['licID']>0
+						&&!empty($data['instID'])&&$data['instID']>0){
+							$newlicID=-1;
+							// Already_transfer license
+							if (isset($this->already_transfer[LICENSE_TYPE][$data['licID']])){
+								// Copy license : update link in inst_software
+								if ($this->already_transfer[LICENSE_TYPE][$data['licID']]!=$data['licID']){
+									$newlicID=$this->already_transfer[LICENSE_TYPE][$data['licID']];
 									$need_clean_process=true;
-									$soft->getFromDB($data['softID']);
-									// Is existing software in the destination entity ?
-									$query="SELECT * FROM glpi_software WHERE FK_entities='".$this->to."' AND name='".addslashes($soft->fields['name'])."'";
-									if ($result_search=$DB->query($query)){
-										if ($DB->numrows($result_search)>0){
-											$newsoftID=$DB->result($result_search,0,'ID');
-										}
-									}
-									// Not found -> transfer copy
-									if ($newsoftID<0){
-										// 1 - create new item
-										unset($soft->fields['ID']);
-										$input=$soft->fields;
-										$input['FK_entities']=$this->to;
-										unset($soft->fields);
-										$newsoftID=$soft->add($input);
-										// 2 - transfer as copy
-										$this->transferItem(SOFTWARE_TYPE,$data['softID'],$newsoftID);
-									}
-									// Founded -> use to link : nothing to do
-								}
-							}
-							// 2 - Transfer licence
-							if ($newsoftID>0&&$newsoftID!=$data['softID']){
-							// destination soft <> original soft -> copy soft
-								$query="SELECT count(*) AS CPT 
-									FROM glpi_inst_software 
-									WHERE glpi_inst_software.license='".$data['licID']."' AND glpi_inst_software.cID NOT IN ".$this->item_search[COMPUTER_TYPE];
-								$result_search=$DB->query($query);
-								// Is the license will be completly transfer ?
-								if ($DB->result($result_search,0,'CPT')==0){
-									// Yes : transfer license to copy software
-									$lic->update(array("ID"=>$data['licID'],'sID' => $newsoftID));
-									$this->addToAlreadyTransfer(LICENSE_TYPE,$data['licID'],$data['licID']);
+								} 
+								// Same license : nothing to do
+							} else {
+							// Not already transfer license 
+								$newsoftID=-1;
+								// 1 - Search software destination ?
+								// Already transfer soft : 
+								if (isset($this->already_transfer[SOFTWARE_TYPE][$data['softID']])){
+									$newsoftID=$this->already_transfer[SOFTWARE_TYPE][$data['softID']];
 								} else {
-									$lic->getFromDB($data['licID']);
-									// No : Search licence
-									$query="SELECT ID 
-										FROM glpi_licenses WHERE sID='$newsoftID' AND  version='".addslashes($lic->fields['version'])."' AND serial='".addslashes($lic->fields['serial'])."'";
-									if ($result_search=$DB->query($query)){
-										if ($DB->numrows($result_search)>0){
-											$newlicID=$DB->result($result_search,0,'ID');
+									// Not already transfer soft
+									$query="SELECT count(*) AS CPT 
+										FROM glpi_inst_software INNER JOIN glpi_licenses ON (glpi_inst_software.license = glpi_licenses.ID)
+										WHERE glpi_licenses.sID='".$data['softID']."' AND glpi_inst_software.cID NOT IN ".$this->item_search[COMPUTER_TYPE];
+									$result_search=$DB->query($query);
+									// Is the software will be completly transfer ?
+									if ($DB->result($result_search,0,'CPT')==0){
+										// Yes : transfer
+										$need_clean_process=false;
+										$this->transferItem(SOFTWARE_TYPE,$data['softID'],$data['softID']);
+										$newsoftID=$data['softID'];
+									} else {
+										// No : copy software
+										$need_clean_process=true;
+										$soft->getFromDB($data['softID']);
+										// Is existing software in the destination entity ?
+										$query="SELECT * FROM glpi_software WHERE FK_entities='".$this->to."' AND name='".addslashes($soft->fields['name'])."'";
+										if ($result_search=$DB->query($query)){
+											if ($DB->numrows($result_search)>0){
+												$newsoftID=$DB->result($result_search,0,'ID');
+											}
 										}
+										// Not found -> transfer copy
+										if ($newsoftID<0){
+											// 1 - create new item
+											unset($soft->fields['ID']);
+											$input=$soft->fields;
+											$input['FK_entities']=$this->to;
+											unset($soft->fields);
+											$newsoftID=$soft->add($input);
+											// 2 - transfer as copy
+											$this->transferItem(SOFTWARE_TYPE,$data['softID'],$newsoftID);
+										}
+										// Founded -> use to link : nothing to do
 									}
-									if ($newlicID<0){
-										// Not found : copy license
-										unset($lic->fields['ID']);
-										$input=$lic->fields;
-										unset($lic->fields);
-										$input['sID']=$newsoftID;
-										$newlicID=$lic->add($input);
-									}
-									$this->addToAlreadyTransfer(LICENSE_TYPE,$data['licID'],$newlicID);
-									// Found : use it 
 								}
-							} 
-							// else destination soft = original soft -> nothing to do / keep links
-						}
-						// Update inst software if needed
-						if ($newlicID>0&&$newlicID!=$data['licID']){
-							$query="UPDATE glpi_inst_software SET license='$newlicID' WHERE ID='".$data['instID']."'";
-							$DB->query($query);	
+								// 2 - Transfer licence
+								if ($newsoftID>0&&$newsoftID!=$data['softID']){
+								// destination soft <> original soft -> copy soft
+									$query="SELECT count(*) AS CPT 
+										FROM glpi_inst_software 
+										WHERE glpi_inst_software.license='".$data['licID']."' AND glpi_inst_software.cID NOT IN ".$this->item_search[COMPUTER_TYPE];
+									$result_search=$DB->query($query);
+									// Is the license will be completly transfer ?
+									if ($DB->result($result_search,0,'CPT')==0){
+										// Yes : transfer license to copy software
+										$lic->update(array("ID"=>$data['licID'],'sID' => $newsoftID));
+										$this->addToAlreadyTransfer(LICENSE_TYPE,$data['licID'],$data['licID']);
+									} else {
+										$lic->getFromDB($data['licID']);
+										// No : Search licence
+										$query="SELECT ID 
+											FROM glpi_licenses WHERE sID='$newsoftID' AND  version='".addslashes($lic->fields['version'])."' AND serial='".addslashes($lic->fields['serial'])."'";
+										if ($result_search=$DB->query($query)){
+											if ($DB->numrows($result_search)>0){
+												$newlicID=$DB->result($result_search,0,'ID');
+											}
+										}
+										if ($newlicID<0){
+											// Not found : copy license
+											unset($lic->fields['ID']);
+											$input=$lic->fields;
+											unset($lic->fields);
+											$input['sID']=$newsoftID;
+											$newlicID=$lic->add($input);
+										}
+										$this->addToAlreadyTransfer(LICENSE_TYPE,$data['licID'],$newlicID);
+										// Found : use it 
+									}
+								} 
+								// else destination soft = original soft -> nothing to do / keep links
+							}
+							// Update inst software if needed
+							if ($newlicID>0&&$newlicID!=$data['licID']){
+								$query="UPDATE glpi_inst_software SET license='$newlicID' WHERE ID='".$data['instID']."'";
+								$DB->query($query);	
+							}
+						} else {
+							// Bad inst data : delete them
+							$del_query="DELETE FROM glpi_inst_software 
+								WHERE ID = '".$data['instID']."'";
+							$DB->query($del_query);
+							$need_clean_process=false;
 						}
 					} else { // Do not keep 
 						// Delete inst software for computer
