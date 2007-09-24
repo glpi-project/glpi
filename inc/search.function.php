@@ -2189,6 +2189,28 @@ function giveItem ($type,$field,$data,$num,$linkfield=""){
 			return $out;
 			break;
 		case "glpi_contracts.name" :
+			if (empty($linkfield)){
+				$out="";
+				$split=explode("$$$$",$data["ITEM_$num"]);
+
+				$count_display=0;
+				for ($k=0;$k<count($split);$k++)
+					if (strlen(trim($split[$k]))>0){
+						if ($count_display) $out.= "<br>";
+						$count_display++;
+						$out.= $split[$k];
+					}
+			} else {
+				if ($type==CONTRACT_TYPE){
+					$out= "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data['ID']."\">";
+					$out.= $data["ITEM_$num"];
+					if ($CFG_GLPI["view_ID"]||empty($data["ITEM_$num"])) $out.= " (".$data["ID"].")";
+					$out.= "</a>";
+				} else {
+					$out= $data["ITEM_$num"];
+				}
+			}
+		return $out;
 		case "glpi_contracts.num" :
 			if (empty($linkfield)){
 				$out="";
@@ -2203,16 +2225,8 @@ function giveItem ($type,$field,$data,$num,$linkfield=""){
 					}
 				return $out;
 			} else {
-				if ($type==CONTRACT_TYPE){
-					$out= "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data['ID']."\">";
-					$out.= $data["ITEM_$num"];
-					if ($CFG_GLPI["view_ID"]||empty($data["ITEM_$num"])) $out.= " (".$data["ID"].")";
-					$out.= "</a>";
-				} else {
-					$out= $data["ITEM_$num"];
-				}
+				return $data["ITEM_$num"];
 			}
-		return $out;
 		break;
 
 		case "glpi_contacts.completename":
