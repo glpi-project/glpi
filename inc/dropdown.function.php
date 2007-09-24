@@ -1293,7 +1293,7 @@ function dropdownMassiveAction($device_type,$deleted=0){
 		}
 		if (haveRight('transfer','w') && isMultiEntitiesMode() && 
 				in_array($device_type, 	array(CARTRIDGE_TYPE,COMPUTER_TYPE,CONSUMABLE_TYPE,CONTACT_TYPE,CONTRACT_TYPE,ENTERPRISE_TYPE,
-				MONITOR_TYPE,NETWORKING_TYPE,PERIPHERAL_TYPE,PHONE_TYPE,PRINTER_TYPE,SOFTWARE_TYPE,TRACKING_TYPE))
+				MONITOR_TYPE,NETWORKING_TYPE,PERIPHERAL_TYPE,PHONE_TYPE,PRINTER_TYPE,SOFTWARE_TYPE,TRACKING_TYPE,DOCUMENT_TYPE))
 				&& $isadmin
 			){
 			echo "<option value=\"add_transfer_list\">".$LANG["buttons"][48]."</option>";
