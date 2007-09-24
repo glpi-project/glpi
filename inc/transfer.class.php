@@ -497,7 +497,7 @@ class Transfer extends CommonDBTM{
 				}
 
 				// Document : keep / delete + clean unused / keep unused
-				if (in_array($type,$this->CONTRACTS_TYPES)) {
+				if (in_array($type,$this->DOCUMENTS_TYPES)) {
 					$this->transferDocuments($type,$ID,$newID);
 				}
 
