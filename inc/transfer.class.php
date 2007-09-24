@@ -537,6 +537,7 @@ class Transfer extends CommonDBTM{
 
 				$cinew->obj->update($input);
 				$this->addToAlreadyTransfer($type,$ID,$newID);
+				doHook("item_transfer",array("type"=>$type, "ID" => $ID, "newID"=>$newID));
 			}
 		}
 	}
