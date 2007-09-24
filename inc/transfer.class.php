@@ -519,7 +519,6 @@ class Transfer extends CommonDBTM{
 
 				// TODO Users ???? : Update right to new entity ?
 				// TODO Linked Users ???? : Update right to new entity ?
-
 				
 				
 				// Transfer Item
@@ -2077,6 +2076,7 @@ class Transfer extends CommonDBTM{
 				//ajaxUpdateItem("transfer_form",$CFG_GLPI["root_doc"]."/ajax/transfers.php",$params,false,"dropdown_ID".$rand);
 			}
 			echo "<div align='center' id='transfer_form'>";
+			echo "<a href='".$_SERVER['PHp_SELF']."?clear=1'>".$LANG["transfer"][4]."</a>";
 			echo "</div>";
 			echo '</td></tr>';
 			echo '</table>';

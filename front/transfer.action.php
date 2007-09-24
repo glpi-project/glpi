@@ -55,6 +55,10 @@ if (isset($_POST['transfer'])){
 	}
 } else if (isset($_GET['clear'])){
 	unset($_SESSION['glpitransfer_list']);
+	echo "<strong>".$LANG["common"][23]."</strong><br>";
+	echo "<a href=\"central.php\"><b>".$LANG["buttons"][13]."</b></a>";
+	commonFooter();
+	exit();
 }
 
 $transfer->showTransferList();
