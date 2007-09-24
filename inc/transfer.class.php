@@ -1480,7 +1480,7 @@ class Transfer extends CommonDBTM{
 					if ($this->options['keep_infocoms']){
 						foreach ($this->INFOCOMS_TYPES as $type){
 							$query="SELECT count(*) AS CPT FROM glpi_infocoms
-								WHERE device_type='$type' AND FK_device NOT IN ".$this->item_search[$type];
+								WHERE FK_enterprise='$ID' AND device_type='$type' AND FK_device NOT IN ".$this->item_search[$type];
 							if ($result_search = $DB->query($query)) {
 								$links_remaining+=$DB->result($result_search,0,'CPT');
 							}
