@@ -1290,32 +1290,34 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$au
 	if ($priority>0) $where.=" AND glpi_tracking.priority = '$priority'";
 	if ($priority<0) $where.=" AND glpi_tracking.priority >= '".abs($priority)."'";
 
+
+	echo $group;
 	$search_author=false;
 	if ($group>0) $where.=" AND glpi_tracking.FK_group = '$group'";
 	else if ($group==-1&&$author!=0&&haveRight("show_group_ticket",1)){
 		// Get Author group's
 		if (count($_SESSION["glpigroups"])){
-			$where.=" AND ( ";
-			$i=0;
-			foreach ($_SESSION["glpigroups"] as $gp){
-				if ($i>0) $where.=" OR ";
-				$where.=" glpi_tracking.FK_group = '$gp' ";
-				$i++;
-			}
+			$first=true;
+			$groups="";
+			foreach ($_SESSION['glpigroups'] as $val){
+				if (!$first) $groups.=",";
+				else $first=false;
+				$groups.=$val;
+			}			
+			$where.=" AND ( glpi_tracking.FK_group IN ($groups) ";
 
 			if ($author!=0) {
-				if ($i>0) $where.=" OR ";
+				$where.=" OR ";
 				$where.=" glpi_tracking.author = '$author'";
 				$search_author=true;
 			}
-
 			
 			$where.=")";
 		}
 	}
 
 	if ($author!=0&&!$search_author) {
-		$where.=" AND glpi_tracking.author = '$author'";
+		$where.=" AND glpi_tracking.author = '$author' ";
 	}
 
 	if ($contains2!=""){
@@ -1353,7 +1355,7 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$au
 			$where.=" AND ($TMPWHERE) ";
 		}
 	}
-	$where.=getEntitiesRestrictRequest("AND","glpi_tracking");
+	$where.=getEntitiesRestrictRequest(" AND","glpi_tracking");
 
 	if (!empty($wherecomp)){
 		$where.=" AND glpi_tracking.device_type= '1'";
