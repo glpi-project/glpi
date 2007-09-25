@@ -94,7 +94,7 @@ else if (isset($_POST["update"]))
 	checkRight("printer","w");
 
 	$print->update($_POST);
-	logEvent($POST["ID"], "printers", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][21]);
+	logEvent($_POST["ID"], "printers", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][21]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($_GET["unglobalize"]))
