@@ -54,8 +54,8 @@ $CFG_GLPI["debug"]=0;
 function loadLang() {
 	unset($LANG);
 	global $LANG;
-	if (isset($_SESSION["dict"]))
-		$dict=$_SESSION["dict"];
+	if (isset($_SESSION["glpilanguage"]))
+		$dict=$_SESSION["glpilanguage"];
 	else $dict="en_GB";
 
 	$file = GLPI_ROOT ."/locales/$dict.php";
