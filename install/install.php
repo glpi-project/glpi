@@ -102,11 +102,14 @@ function choose_language()
 // load language
 
 function loadLang($LANGuage) {
-
-	unset($LANG);
 	global $LANG;
+	unset($LANG);
 	$file = GLPI_ROOT ."/locales/".$LANGuage.".php";
-	include($file);
+	if (file_exists($file)){
+		include($file);
+	} else {
+		include(GLPI_ROOT ."/locales/en_GB.php");
+	}
 }
 
 function acceptLicence() {
@@ -804,9 +807,9 @@ function step4 ($host,$user,$password,$databasename,$newdatabasename)
 			$DB->query($sql_line);
 		}
 		// Mise a jour de la langue par defaut
-		$query = "UPDATE `glpi_config` SET default_language='".$_SESSION["dict"]."' ;";
+		$query = "UPDATE `glpi_config` SET default_language='".$_SESSION["glpilanguage"]."' ;";
 		$DB->query($query) or die("4203 ".$LANG["update"][90].$DB->error());
-		$query = "UPDATE `glpi_users` SET language='".$_SESSION["dict"]."' ;";
+		$query = "UPDATE `glpi_users` SET language='".$_SESSION["glpilanguage"]."' ;";
 		$DB->query($query) or die("4203 ".$LANG["update"][90].$DB->error());
 	}
 
@@ -947,8 +950,9 @@ function step4 ($host,$user,$password,$databasename,$newdatabasename)
 
 	//------------Start of install script---------------------------
 	startGlpiSession();
-	if(empty($_SESSION["dict"])) $_SESSION["dict"] = "en_GB";
-	if(isset($_POST["language"])) $_SESSION["dict"] = $_POST["language"];
+
+	if(!isset($_SESSION["glpilanguage"])||empty($_SESSION["glpilanguage"])) $_SESSION["glpilanguage"] = "en_GB";
+	if(isset($_POST["language"])) $_SESSION["glpilanguage"] = $_POST["language"];
 
 
 	// If this file exists, it is load, allow to set configdir/dumpdir elsewhere
@@ -957,7 +961,7 @@ function step4 ($host,$user,$password,$databasename,$newdatabasename)
 	}
 
 
-	loadLang($_SESSION["dict"]);
+	loadLang($_SESSION["glpilanguage"]);
 	if(!isset($_POST["install"])) {
 		$_SESSION = array();
 		if(file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {

@@ -60,11 +60,15 @@ $DB=new DB();
 //Load language
 if(!function_exists('loadLang')) {
 	function loadLang($LANGuage) {
-
-		unset($LANG);
 		global $LANG;
+		unset($LANG);
+
 		$file = GLPI_ROOT ."/locales/".$LANGuage.".php";
-		include($file);
+		if (file_exists($file)){
+			include($file);
+		} else {
+			include(GLPI_ROOT ."/locales/en_GB.php");
+		}
 	}
 }
 
@@ -447,7 +451,7 @@ function updatedbUpTo031()
 	}
 
 	// Update version number and default langage and new version_founded ---- LEAVE AT THE END
-	$query = "UPDATE `glpi_config` SET `version` = ' 0.7', default_language='".$_SESSION["dict"]."',founded_new_version='' ;";
+	$query = "UPDATE `glpi_config` SET `version` = ' 0.7', default_language='".$_SESSION["glpilanguage"]."',founded_new_version='' ;";
 	$DB->query($query) or die("0.6 ".$LANG["update"][90].$DB->error());
 
 	optimize_tables();
@@ -481,13 +485,13 @@ function updateTreeDropdown(){
 
 //Debut du script
 $HEADER_LOADED=true;
-if(!isset($_SESSION)) session_start();
 
-if(empty($_SESSION["dict"])) {
-	if (isset($_SESSION["glpilanguage"])) $_SESSION["dict"]=$_SESSION["glpilanguage"];
-	else $_SESSION["dict"] = "en_GB";
-}
-loadLang($_SESSION["dict"]);
+startGlpiSession();
+
+if(!isset($_SESSION["glpilanguage"])||empty($_SESSION["glpilanguage"])) $_SESSION["glpilanguage"] = "en_GB";
+
+
+loadLang($_SESSION["glpilanguage"]);
 
 // Send UTF8 Headers
 header("Content-Type: text/html; charset=UTF-8");
