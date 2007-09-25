@@ -41,6 +41,71 @@ if (!defined('GLPI_ROOT')) {
 
 // FUNCTIONS Setup
 
+
+function showDropdownList($target, $tablename,$FK_entities=''){
+	global $DB,$CFG_GLPI,$LANG;
+	
+	if (!haveRight("dropdown", "w")&&!haveRight("entity_dropdown", "w"))
+		return false;	
+	
+	$field="name";
+	if (in_array($tablename, $CFG_GLPI["specif_entities_tables"])) {
+		$field="completename";
+	}
+	
+	$entity_restrict = -1;
+	if (in_array($tablename, $CFG_GLPI["specif_entities_tables"])) {
+		$field="completename";
+		if (!empty($FK_entities)&&$FK_entities>=0){
+			$entity_restrict = $FK_entities;
+		} else {	
+			$entity_restrict = $_SESSION["glpiactive_entity"];
+		}
+	} 
+	
+	echo "<div class='center'>";
+	$query="SELECT * FROM $tablename ".($entity_restrict>=0?" WHERE FK_entities='$entity_restrict' ":"")." ORDER BY $field";
+	if ($result=$DB->query($query)){
+		if ($DB->numrows($result)>0){
+			echo "<form method='post' name='massiveaction_form' id='massiveaction_form' action=\"$target\"><table class='tab_cadre_fixe'>";
+			
+			$sel="";
+			if (isset($_GET["select"])&&$_GET["select"]=="all") {
+				$sel="checked";
+			}			
+			$i=0;
+			while ($data=$DB->fetch_assoc($result)){
+				$class=" class='tab_bg_2' ";
+				if ($i%2){
+					$class=" class='tab_bg_1' ";
+				} 
+				echo "<tr $class><td width='10'><input type='checkbox' name='item[".$data["ID"]."]' value='1' $sel></td><td>".$data[$field]."</td></tr>";
+				$i++;
+			}
+			echo "</table>";
+			echo "<input type='hidden' name='which' value='$tablename'>";
+			echo "<input type='hidden' name='FK_entities' value='$entity_restrict'>";
+			
+			echo "<div>";
+			echo "<table width='80%'>";
+			$parameters="which=$tablename&amp;mass_deletion=1&amp;FK_entities=$FK_entities";
+			echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td><a onclick= \"if ( markAllRows('massiveaction_form') ) return false;\" href='".$_SERVER['PHP_SELF']."?$parameters&amp;select=all'>".$LANG["buttons"][18]."</a></td>";
+
+			echo "<td>/</td><td ><a onclick=\"if ( unMarkAllRows('massiveaction_form') ) return false;\" href='".$_SERVER['PHP_SELF']."?$parameters&amp;select=none'>".$LANG["buttons"][19]."</a>";
+			echo "</td><td class='left' width='80%'>";
+			echo "<input type='submit' class='submit' name='mass_delete' value='".$LANG["buttons"][6]."'>";
+			echo "&nbsp;<strong>".$LANG["setup"][1]."</strong>";
+			echo "</td></table></div>";
+			echo "</form>";
+		} else {
+			echo "<strong>".$LANG["search"][15]."</strong>";
+		}
+	
+	}
+	echo "</div>";
+	
+}
+
 function showFormTreeDown($target, $tablename, $human, $ID, $value2 = '', $where = '', $tomove = '', $type = '',$FK_entities='') {
 
 	global $CFG_GLPI, $LANG;
@@ -48,34 +113,42 @@ function showFormTreeDown($target, $tablename, $human, $ID, $value2 = '', $where
 	if (!haveRight("dropdown", "w")&&!haveRight("entity_dropdown", "w"))
 		return false;
 
-	echo "<div class='center'>&nbsp;\n";
-	echo "<form method='post' action=\"$target\">";
 
-
-	$entity_restict = -1;
+	$entity_restrict = -1;
 	$numberof = 0;
 	if (in_array($tablename, $CFG_GLPI["specif_entities_tables"])) {
 		if (!empty($FK_entities)&&$FK_entities>=0){
-			$entity_restict = $FK_entities;
+			$entity_restrict = $FK_entities;
 		} else {	
-			$entity_restict = $_SESSION["glpiactive_entity"];
+			$entity_restrict = $_SESSION["glpiactive_entity"];
 		}
 
-		$numberof = countElementsInTableForEntity($tablename, $entity_restict);
+		$numberof = countElementsInTableForEntity($tablename, $entity_restrict);
 	} else {
 		$numberof = countElementsInTable($tablename);
 	}
+
+
+	echo "<div class='center'>&nbsp;\n";
+	
+	if (ereg('setup.dropdowns.php',$target)){
+		echo "<a href='$target?which=$tablename&amp;mass_deletion=1&amp;FK_entities=$FK_entities'>".$LANG["title"][42]."</a>";
+	}
+	
+	echo "<form method='post' action=\"$target\">";
+
+
 
 	echo "<table class='tab_cadre_fixe'  cellpadding='1'>\n";
 	echo "<tr><th colspan='3'>$human:</th></tr>";
 	if ($numberof > 0) {
 		echo "<tr><td  align='center' valign='middle' class='tab_bg_1'>";
 		echo "<input type='hidden' name='which' value='$tablename'>";
-		echo "<input type='hidden' name='FK_entities' value='$entity_restict'>";
+		echo "<input type='hidden' name='FK_entities' value='$entity_restrict'>";
 
 		$value = getTreeLeafValueName($tablename, $ID, 1);
 
-		dropdownValue($tablename, "ID", $ID, 0, $entity_restict);
+		dropdownValue($tablename, "ID", $ID, 0, $entity_restrict);
 		// on ajoute un input text pour entrer la valeur modifier
 		echo "&nbsp;&nbsp<input type='image' class='calendrier' src=\"" . $CFG_GLPI["root_doc"] . "/pics/puce.gif\" alt='' title='' name='fillright' value='fillright'>&nbsp";
 
@@ -98,14 +171,14 @@ function showFormTreeDown($target, $tablename, $human, $ID, $value2 = '', $where
 
 		echo "<tr><td align='center' class='tab_bg_1'>";
 
-		dropdownValue($tablename, "value_to_move", $tomove, 0, $entity_restict);
+		dropdownValue($tablename, "value_to_move", $tomove, 0, $entity_restrict);
 		echo "&nbsp;&nbsp;&nbsp;" . $LANG["setup"][75] . " :&nbsp;&nbsp;&nbsp;";
 
-		dropdownValue($tablename, "value_where", $where, 0, $entity_restict);
+		dropdownValue($tablename, "value_where", $where, 0, $entity_restrict);
 		echo "</td><td align='center' colspan='2' class='tab_bg_2' width='202'>";
 		echo "<input type='hidden' name='tablename' value='$tablename' >";
 		echo "<input type='submit' name='move' value=\"" . $LANG["buttons"][20] . "\" class='submit'>";
-		echo "<input type='hidden' name='FK_entities' value='$entity_restict'>";
+		echo "<input type='hidden' name='FK_entities' value='$entity_restrict'>";
 
 		echo "</td></tr>";
 
@@ -113,7 +186,7 @@ function showFormTreeDown($target, $tablename, $human, $ID, $value2 = '', $where
 	echo "</table></form>";
 
 	echo "<form action=\"$target\" method='post'>";
-	echo "<input type='hidden' name='FK_entities' value='$entity_restict'>";
+	echo "<input type='hidden' name='FK_entities' value='$entity_restrict'>";
 	echo "<input type='hidden' name='which' value='$tablename'>";
 
 	echo "<table class='tab_cadre_fixe' cellpadding='1'>\n";
@@ -126,7 +199,7 @@ function showFormTreeDown($target, $tablename, $human, $ID, $value2 = '', $where
 		echo "<option value='same' " . ($type == 'same' ? " selected " : "") . ">" . $LANG["setup"][76] . "</option>";
 		echo "</select>&nbsp;&nbsp;&nbsp;";
 		;
-		dropdownValue($tablename, "value2", $value2, 0, $entity_restict);
+		dropdownValue($tablename, "value2", $value2, 0, $entity_restrict);
 	} else
 		echo "<input type='hidden' name='type' value='first'>";
 
@@ -148,15 +221,15 @@ function showFormDropDown($target, $tablename, $human, $ID, $value2 = '',$FK_ent
 	if (!haveRight("dropdown", "w")&&!haveRight("entity_dropdown", "w"))
 		return false;
 
-	$entity_restict = -1;
+	$entity_restrict = -1;
 	$numberof=0;
 	if (in_array($tablename, $CFG_GLPI["specif_entities_tables"])) {
 		if (!empty($FK_entities)&&$FK_entities>=0){
-			$entity_restict = $FK_entities;
+			$entity_restrict = $FK_entities;
 		} else {	
-			$entity_restict = $_SESSION["glpiactive_entity"];
+			$entity_restrict = $_SESSION["glpiactive_entity"];
 		}
-		$numberof = countElementsInTableForEntity($tablename, $entity_restict);
+		$numberof = countElementsInTableForEntity($tablename, $entity_restrict);
 	} else {
 		$numberof = countElementsInTable($tablename);
 	}
@@ -170,7 +243,7 @@ function showFormDropDown($target, $tablename, $human, $ID, $value2 = '',$FK_ent
 	if ($numberof > 0) {
 		echo "<tr><td class='tab_bg_1' align='center' valign='top'>";
 		echo "<input type='hidden' name='which' value='$tablename'>";
-		echo "<input type='hidden' name='FK_entities' value='$entity_restict'>";
+		echo "<input type='hidden' name='FK_entities' value='$entity_restrict'>";
 
 		if ($tablename != "glpi_dropdown_netpoint") {
 			if (!empty ($ID)) {
@@ -181,12 +254,12 @@ function showFormDropDown($target, $tablename, $human, $ID, $value2 = '',$FK_ent
 					"comments" => ""
 				);
 			}
-			dropdownValue($tablename, "ID", $ID, 0, $entity_restict);
+			dropdownValue($tablename, "ID", $ID, 0, $entity_restrict);
 
 		} else {
 			$value = "";
 			$loc = "";
-			dropdownNetpoint("ID", $ID, 0, $entity_restict);
+			dropdownNetpoint("ID", $ID, 0, $entity_restrict);
 		}
 
 		// on ajoute un input text pour entrer la valeur modifier
@@ -206,7 +279,7 @@ function showFormDropDown($target, $tablename, $human, $ID, $value2 = '',$FK_ent
 			echo "<br>";
 			echo $LANG["common"][15] . ": ";
 
-			dropdownValue("glpi_dropdown_locations", "value2", $loc, 0, $entity_restict);
+			dropdownValue("glpi_dropdown_locations", "value2", $loc, 0, $entity_restrict);
 			echo $LANG["networking"][52] . ": ";
 			echo "<input type='text' maxlength='100' size='10' name='value' value=\"" . $value . "\"><br>";
 			echo "<textarea rows='2' cols='50' name='comments' title='" . $LANG["common"][25] . "' >" . $comments . "</textarea>";
@@ -231,13 +304,13 @@ function showFormDropDown($target, $tablename, $human, $ID, $value2 = '',$FK_ent
 	echo "</table></form>";
 	echo "<form action=\"$target\" method='post'>";
 	echo "<input type='hidden' name='which' value='$tablename'>";
-	echo "<input type='hidden' name='FK_entities' value='$entity_restict'>";
+	echo "<input type='hidden' name='FK_entities' value='$entity_restrict'>";
 
 	echo "<table class='tab_cadre_fixe' cellpadding='1'>";
 	echo "<tr><td align='center'  class='tab_bg_1'>";
 	if ($tablename == "glpi_dropdown_netpoint") {
 		echo $LANG["common"][15] . ": ";
-		dropdownValue("glpi_dropdown_locations", "value2", $value2, 0, $entity_restict);
+		dropdownValue("glpi_dropdown_locations", "value2", $value2, 0, $entity_restrict);
 		echo $LANG["networking"][52] . ": ";
 		echo "<input type='text' maxlength='100' size='10' name='value'><br>";
 		echo "<textarea rows='2' cols='50' name='comments' title='" . $LANG["common"][25] . "'></textarea>";
@@ -247,7 +320,7 @@ function showFormDropDown($target, $tablename, $human, $ID, $value2 = '',$FK_ent
 	}
 	echo "</td><td align='center' colspan='2' class='tab_bg_2' width='202'>";
 	echo "<input type='hidden' name='tablename' value='$tablename' >";
-	echo "<input type='hidden' name='FK_entities' value='$entity_restict'>";
+	echo "<input type='hidden' name='FK_entities' value='$entity_restrict'>";
 
 	echo "<input type='submit' name='add' value=\"" . $LANG["buttons"][8] . "\" class='submit'>";
 	echo "</td></tr>";
@@ -262,7 +335,7 @@ function showFormDropDown($target, $tablename, $human, $ID, $value2 = '',$FK_ent
 		echo "<tr><td align='center'  class='tab_bg_1'>";
 
 		echo $LANG["common"][15] . ": ";
-		dropdownValue("glpi_dropdown_locations", "value2", $value2, 0, $entity_restict);
+		dropdownValue("glpi_dropdown_locations", "value2", $value2, 0, $entity_restrict);
 		echo $LANG["networking"][52] . ": ";
 		echo "<input type='text' maxlength='100' size='5' name='before'>";
 		dropdownInteger('from', 0, 0, 400);
@@ -273,7 +346,7 @@ function showFormDropDown($target, $tablename, $human, $ID, $value2 = '',$FK_ent
 		echo "<textarea rows='2' cols='50' name='comments' title='" . $LANG["common"][25] . "'></textarea>";
 		echo "</td><td align='center' colspan='2' class='tab_bg_2' width='202'>";
 		echo "<input type='hidden' name='tablename' value='$tablename' >";
-		echo "<input type='hidden' name='FK_entities' value='$entity_restict'>";
+		echo "<input type='hidden' name='FK_entities' value='$entity_restrict'>";
 
 		echo "<input type='submit' name='several_add' value=\"" . $LANG["buttons"][8] . "\" class='submit'>";
 		echo "</td></tr>";
