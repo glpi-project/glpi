@@ -317,7 +317,7 @@ function showDocumentAssociated($device_type,$ID,$withtemplate=''){
 		$assocID=$data["assocID"];
 
 		echo "<tr class='tab_bg_1".($data["deleted"]?"_2":"")."'>";
-		if ($withtemplate!=3&&$canread){
+		if ($withtemplate!=3&&$canread&&in_array($data['FK_entities'],$_SESSION['glpiactiveentities'])){
 			echo "<td class='center'><a href='".$CFG_GLPI["root_doc"]."/front/document.form.php?ID=$docID'><strong>".$data["name"];
 			if ($CFG_GLPI["view_ID"]) echo " (".$docID.")";
 			echo "</strong></a></td>";
