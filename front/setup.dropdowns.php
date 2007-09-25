@@ -72,8 +72,18 @@ if (isset($_POST["FK_entities"])) $FK_entities=$_POST["FK_entities"];
 elseif (isset($_GET["FK_entities"])) $FK_entities=$_GET["FK_entities"];
 else $FK_entities="";
 
-if (isset($_POST["several_add"])) {
 
+if (isset($_POST['mass_delete'])){
+	$input['tablename']=$_POST['which'];
+	foreach ($_POST["item"] as $key => $val){
+		if ($val==1) {
+			$input['ID']=$key;
+			deleteDropdown($input);
+		}
+	}
+	glpi_header($_SERVER['PHP_SELF']."?which=$which&value2=$value2&tomove=$tomove&where=$where&type=$type&FK_entities=$FK_entities");
+}else if (isset($_POST["several_add"])) {
+	
 	for ($i=$_POST["from"];$i<=$_POST["to"];$i++){
 		$_POST["value"]=$_POST["before"].$i.$_POST["after"];
 		addDropdown($_POST);
@@ -249,11 +259,16 @@ else {
 				$title=$val[$which];
 			}
 		}
-		if (!empty($title))
-		if (in_array($which,$CFG_GLPI["dropdowntree_tables"])){
-			showFormTreeDown($_SERVER['PHP_SELF'],$which,$title,$ID,$value2,$where,$tomove,$type,$FK_entities);
+		if (isset($_GET['mass_deletion'])){
+			showDropdownList($_SERVER['PHP_SELF'],$which,$FK_entities);
 		} else {
-			showFormDropDown($_SERVER['PHP_SELF'],$which,$title,$ID,$value2,$FK_entities);
+			if (!empty($title)){
+				if (in_array($which,$CFG_GLPI["dropdowntree_tables"])){
+					showFormTreeDown($_SERVER['PHP_SELF'],$which,$title,$ID,$value2,$where,$tomove,$type,$FK_entities);
+				} else {
+					showFormDropDown($_SERVER['PHP_SELF'],$which,$title,$ID,$value2,$FK_entities);
+				}
+			}
 		}
 	}
 

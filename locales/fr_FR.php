@@ -1277,6 +1277,7 @@ $LANG["search"][19]="Ajouter un critère global de recherche";
 $LANG["search"][20]="Supprimer un critère global de recherche"; 
 
 $LANG["setup"][0]="Intitulés"; 
+$LANG["setup"][1]="Attention si ces éléments sont utilisés, ils seront remplacés par une valeur nulle."; 
 $LANG["setup"][2]="Ajouter utilisateur..."; 
 $LANG["setup"][3]="Liaison LDAP"; 
 $LANG["setup"][4]="Types d'ordinateurs"; 
