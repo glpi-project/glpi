@@ -60,8 +60,8 @@ $DB=new DB();
 //Load language
 if(!function_exists('loadLang')) {
 	function loadLang($LANGuage) {
-		global $LANG;
 		unset($LANG);
+		global $LANG;
 
 		$file = GLPI_ROOT ."/locales/".$LANGuage.".php";
 		if (file_exists($file)){
