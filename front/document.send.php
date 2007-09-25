@@ -58,7 +58,7 @@ if (isset($_GET["file"])){
 			if ($founded){
 
 
-				if ($_SESSION["glpiactiveprofile"]["interface"]=="central"){
+				if (isset($_SESSION["glpiactiveprofile"]["interface"])&&$_SESSION["glpiactiveprofile"]["interface"]=="central"){
 					// My doc Check and Common doc right access
 					if (haveRight("document","r")
 							||$doc->fields["FK_users"]==$_SESSION["glpiID"])
@@ -96,9 +96,9 @@ if (isset($_GET["file"])){
 				} else {
 
 					// Check if it is my doc
-					if ($doc->fields["FK_users"]==$_SESSION["glpiID"])
+					if (isset($_SESSION["glpiID"])&&$doc->fields["FK_users"]==$_SESSION["glpiID"]){
 						$send=true;
-					else {
+					} else {
 						if (haveRight("faq","r")||$CFG_GLPI["public_faq"]){
 							// Check if it is a FAQ document
 							$query = "SELECT * FROM glpi_doc_device LEFT JOIN glpi_kbitems ON (glpi_kbitems.ID = glpi_doc_device.Fk_device) WHERE glpi_doc_device.device_type = '".KNOWBASE_TYPE."' AND glpi_doc_device.FK_doc='".$doc->fields["ID"]."' AND glpi_kbitems.faq='1'";
