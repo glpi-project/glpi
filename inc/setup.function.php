@@ -131,10 +131,6 @@ function showFormTreeDown($target, $tablename, $human, $ID, $value2 = '', $where
 
 	echo "<div class='center'>&nbsp;\n";
 	
-	if (ereg('setup.dropdowns.php',$target)){
-		echo "<a href='$target?which=$tablename&amp;mass_deletion=1&amp;FK_entities=$FK_entities'>".$LANG["title"][42]."</a>";
-	}
-	
 	echo "<form method='post' action=\"$target\">";
 
 
@@ -211,7 +207,14 @@ function showFormTreeDown($target, $tablename, $human, $ID, $value2 = '', $where
 	echo "<input type='submit' name='add' value=\"" . $LANG["buttons"][8] . "\" class='submit'>";
 	echo "</td></tr>";
 
-	echo "</table></form></div>";
+	echo "</table></form>";
+	
+	if (ereg('setup.dropdowns.php',$target)){
+		echo "<a href='$target?which=$tablename&amp;mass_deletion=1&amp;FK_entities=$FK_entities'>".$LANG["title"][42]."</a>";
+	}
+	
+	
+	echo "</div>";
 }
 
 function showFormDropDown($target, $tablename, $human, $ID, $value2 = '',$FK_entities='') {
@@ -352,7 +355,13 @@ function showFormDropDown($target, $tablename, $human, $ID, $value2 = '',$FK_ent
 		echo "</td></tr>";
 	}
 
-	echo "</table></form></div>";
+	echo "</table></form>";
+	
+	if (ereg('setup.dropdowns.php',$target)){
+		echo "<a href='$target?which=$tablename&amp;mass_deletion=1&amp;FK_entities=$FK_entities'>".$LANG["title"][42]."</a>";
+	}
+	
+	echo "</div>";
 }
 
 function moveTreeUnder($table, $to_move, $where) {
