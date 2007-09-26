@@ -730,7 +730,7 @@ function step3($host,$user,$password,$update)
 				echo "<p><input type=\"radio\" name=\"databasename\" value=\"". $row->Database ."\" />$row->Database.</p>";
 			}
 			echo "<p><input type=\"radio\" name=\"databasename\" value=\"0\" />".$LANG["install"][39];
-			echo "<input type=\"text\" name=\"newdatabasename\"/></p>";
+			echo "&nbsp;<input type=\"text\" name=\"newdatabasename\"/></p>";
 			echo "<input type=\"hidden\" name=\"db_host\" value=\"". $host ."\" />";
 			echo "<input type=\"hidden\" name=\"db_user\" value=\"". $user ."\" />";
 			echo "<input type=\"hidden\" name=\"db_pass\" value=\"". urlencode($password) ."\" />";
@@ -839,43 +839,52 @@ function step4 ($host,$user,$password,$databasename,$newdatabasename)
 				prev_form($host,$user,$password);
 			}
 		}
-		mysql_close($link);
-	}
-	elseif(!empty($newdatabasename)) { // create new db
-		// BUG cette fonction est obsol�e je l'ai remplac�par la nouvelle
-		//if (mysql_create_db($newdatabasename)) {
-		// END BUG
-		if (mysql_query("CREATE DATABASE IF NOT EXISTS `".$newdatabasename."`")){
-
+	} elseif(!empty($newdatabasename)) { // create new db
+		// Try to connect 
+		if (mysql_select_db($newdatabasename, $link)){
+		
 			echo "<p>".$LANG["install"][82]."</p>";
-			mysql_select_db($newdatabasename, $link);
-			if (create_conn_file($host,$user,$password,$newdatabasename)) {
+			if (create_conn_file($host,$user,$password,$newdatabasename)){
 				fill_db();
 				echo "<p>".$LANG["install"][43]."</p>";
 				echo "<p>".$LANG["install"][44]."</p>";
 				echo "<p>".$LANG["install"][45]."</p>";
 				echo "<p>".$LANG["install"][46]."</p>";
 				next_form();
-
-			}
-			else { // can't create config_db file
+			} else { // can't create config_db file
 				echo "<p>".$LANG["install"][47]."</p>";
 				prev_form($host,$user,$password);
 			}
+		} else { // try to create the DB
+			if (mysql_query("CREATE DATABASE IF NOT EXISTS `".$newdatabasename."`")){
+	
+				echo "<p>".$LANG["install"][82]."</p>";
+				
+				if (mysql_select_db($newdatabasename, $link)&&create_conn_file($host,$user,$password,$newdatabasename)) {
+					fill_db();
+					echo "<p>".$LANG["install"][43]."</p>";
+					echo "<p>".$LANG["install"][44]."</p>";
+					echo "<p>".$LANG["install"][45]."</p>";
+					echo "<p>".$LANG["install"][46]."</p>";
+					next_form();
+	
+				}
+				else { // can't create config_db file
+					echo "<p>".$LANG["install"][47]."</p>";
+					prev_form($host,$user,$password);
+				}
+			} else { // can't create database
+				echo $LANG["install"][48];
+				echo "<br />".$LANG["install"][42] . mysql_error();
+				prev_form($host,$user,$password);
+			}
 		}
-		else { // can't create database
-			echo $LANG["install"][48];
-			echo "<br />".$LANG["install"][42] . mysql_error();
-			prev_form($host,$user,$password);
-		}
-		mysql_close($link);
-	}
-	else { // no db selected
+	} else { // no db selected
 		echo "<p>".$LANG["install"][49]. "</p>";
 		//prev_form();
 		prev_form($host,$user,$password);
-		mysql_close($link);
 	}
+	mysql_close($link);
 
 	}
 
