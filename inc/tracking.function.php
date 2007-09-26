@@ -1582,7 +1582,7 @@ function showJobDetails ($target,$ID){
 	if (haveRight('user','r')){
 		$showuserlink=1;	
 	}
-	if ($job->getfromDB($ID)) {
+	if ($job->getfromDB($ID)&&haveAccessToEntity($job->fields["FK_entities"])) {
 
 		if (!$job->canShowTicket()){
 			return false;
@@ -1968,6 +1968,9 @@ function showJobDetails ($target,$ID){
 
 
 		return true;
+	} else {
+		echo "<div class='center'><strong>".$LANG["common"][54]."</strong></div>";
+		return false;
 	}
 
 	return false;
