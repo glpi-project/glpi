@@ -702,6 +702,8 @@ $LANG["ldap"][12]="Synchronisation";
 $LANG["ldap"][13]="dans LDAP"; 
 $LANG["ldap"][14]="dans GLPI"; 
 $LANG["ldap"][15]="Synchroniser"; 
+$LANG["ldap"][16]="Préconfiguration"; 
+$LANG["ldap"][17]="Active Directory"; 
 
 $LANG["links"][1]="Lien ou Nom du fichier"; 
 $LANG["links"][3]="Ajouter un lien externe"; 
