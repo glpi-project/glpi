@@ -459,7 +459,7 @@ class AuthLDAP extends CommonDBTM {
 			$this->fields['ldap_condition']='(objectClass=user)';
 			$this->fields['ldap_login']='samaccountname';
 			$this->fields['ldap_use_tls']=0;
-			$this->fields['ldap_field_group']='memberOf';
+			$this->fields['ldap_field_group']='memberof';
 			$this->fields['ldap_group_condition']='(objectClass=user)';
 			$this->fields['ldap_search_for_groups']=0;
 			$this->fields['ldap_field_group_member']='';
@@ -467,9 +467,9 @@ class AuthLDAP extends CommonDBTM {
 			$this->fields['ldap_field_realname']='sn';
 			$this->fields['ldap_field_firstname']='givenname';
 			$this->fields['ldap_field_phone']='telephonenumber';
-			$this->fields['ldap_field_phone2']='';
-			$this->fields['ldap_field_mobile']='';
-			$this->fields['ldap_field_comments']='';
+			$this->fields['ldap_field_phone2']='othertelephone';
+			$this->fields['ldap_field_mobile']='mobile';
+			$this->fields['ldap_field_comments']='info';
 			$this->fields['use_dn']=1;
 			break;
 			default:
