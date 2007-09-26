@@ -834,10 +834,9 @@ function showFormExtAuthList($target) {
 			if (function_exists('imap_open')) {
 				echo "<table class='tab_cadre_fixe' cellpadding='5'>";
 				echo "<tr><th colspan='2'>";
-				echo "<div class='relative'><span><strong>" . $LANG["login"][3] . "</strong></span>";
-				echo "<span style='  position:absolute; right:0; margin-right:5px; font-size:10px;'><a href=\"".$target."?next=extauth_mail\"><img src=\"".$CFG_GLPI["root_doc"]."/pics/plus.png\" alt='+' title='".$LANG["buttons"][8]."'></a></span>";
+				echo "<strong>" . $LANG["login"][3] . "</strong>";
 
-				echo "</div></th></tr>";
+				echo "</th></tr>";
 				echo "<tr class='tab_bg_1'><td class='center'>" . $LANG["common"][16] . "</td><td class='center'>" . $LANG["common"][52] . "</td></tr>";
 				$sql = "SELECT * from glpi_auth_mail";
 				$result = $DB->query($sql);
@@ -863,10 +862,8 @@ function showFormExtAuthList($target) {
 				
 				echo "<table class='tab_cadre_fixe' cellpadding='5'>";
 				echo "<tr><th colspan='2'>";
-				echo "<div class='relative'><span><strong>" . $LANG["login"][2] . "</strong></span>";
-				echo "<span style='  position:absolute; right:0; margin-right:5px; font-size:10px;'><a href=\"".$target."?next=extauth_ldap\"><img src=\"".$CFG_GLPI["root_doc"]."/pics/plus.png\" alt='+' title='".$LANG["buttons"][8]."'></a></span>";
-
-				echo "</div></th></tr>";
+				echo "<strong>" . $LANG["login"][2] . "</strong>";
+				echo "</th></tr>";
 				echo "<tr class='tab_bg_1'><td class='center'>" . $LANG["common"][16] . "</td><td class='center'>" . $LANG["common"][52] . "</td></tr>";
 		
 				$sql = "SELECT * from glpi_auth_ldap";

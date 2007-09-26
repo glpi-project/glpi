@@ -431,7 +431,53 @@ class AuthLDAP extends CommonDBTM {
 		$this->type = AUTH_LDAP_TYPE;
 
 	}
-
+	
+	function post_getEmpty () {
+		$this->fields["ldap_port"]="389";
+		$this->fields['ldap_condition']='(objectClass=user)';
+		$this->fields["ldap_login"]="uid";
+		$this->fields['ldap_use_tls']=0;
+		$this->fields['ldap_field_group']='';
+		$this->fields['ldap_group_condition']='';
+		$this->fields['ldap_search_for_groups']=0;
+		$this->fields['ldap_field_group_member']='';
+		$this->fields["ldap_field_email"]="mail";
+		$this->fields["ldap_field_realname"]="cn";
+		$this->fields['ldap_field_firstname']='givenname';
+		$this->fields["ldap_field_phone"]="telephonenumber";
+		$this->fields['ldap_field_phone2']='';
+		$this->fields['ldap_field_mobile']='';
+		$this->fields['ldap_field_comments']='';
+		$this->fields['use_dn']=0;
+	}
+	
+	function preconfig($type){
+	
+		switch($type){
+			case 'AD':
+			$this->fields['ldap_port']="389";
+			$this->fields['ldap_condition']='(objectClass=user)';
+			$this->fields['ldap_login']='samaccountname';
+			$this->fields['ldap_use_tls']=0;
+			$this->fields['ldap_field_group']='memberOf';
+			$this->fields['ldap_group_condition']='(objectClass=user)';
+			$this->fields['ldap_search_for_groups']=0;
+			$this->fields['ldap_field_group_member']='';
+			$this->fields['ldap_field_email']='mail';
+			$this->fields['ldap_field_realname']='sn';
+			$this->fields['ldap_field_firstname']='givenname';
+			$this->fields['ldap_field_phone']='telephonenumber';
+			$this->fields['ldap_field_phone2']='';
+			$this->fields['ldap_field_mobile']='';
+			$this->fields['ldap_field_comments']='';
+			$this->fields['use_dn']=1;
+			break;
+			default:
+			$this->post_getEmpty();
+			break;
+		
+		}
+	}
 	function showForm($target, $ID) {
 
 		global $LANG;
@@ -441,15 +487,24 @@ class AuthLDAP extends CommonDBTM {
 
 		$spotted = false;
 		if (empty ($ID)) {
-
-			if ($this->getEmpty())
+			if ($this->getEmpty()){
 				$spotted = true;
+			}
+			if (isset($_GET['preconfig'])){
+				$this->preconfig($_GET['preconfig']);
+			}
 		} else {
 			if ($this->getfromDB($ID))
 				$spotted = true;
 		}
 
 		if (extension_loaded('ldap')) {
+
+			if (empty($ID)){
+				echo $LANG["ldap"][16].": ";
+				echo "<a href='$target?next=extauth_ldap&preconfig=AD'>".$LANG["ldap"][17]."</a>&nbsp;&nbsp;";
+				echo "<a href='$target?next=extauth_ldap&preconfig=default'>".$LANG["common"][44]."</a>";
+			}
 
 			echo "<form action=\"$target\" method=\"post\">";
 			if (!empty($ID)){
@@ -465,7 +520,7 @@ class AuthLDAP extends CommonDBTM {
 			echo "<td align='center' colspan=2></tr>";
 
 			echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["common"][52] . "</td><td><input type=\"text\" name=\"ldap_host\" value=\"" . $this->fields["ldap_host"] . "\"></td>";
-			echo "<td class='center'>" . $LANG["setup"][172] . "</td><td><input type=\"text\" name=\"ldap_port\" value=\"" . $this->fields["ldap_port"] . "\"></td></tr>";
+			echo "<td class='center'>" . $LANG["setup"][172] . "</td><td><input id='ldap_port' type=\"text\" name=\"ldap_port\" value=\"" . $this->fields["ldap_port"] . "\"></td></tr>";
 
 			echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["setup"][154] . "</td><td><input type=\"text\" name=\"ldap_basedn\" value=\"" . $this->fields["ldap_basedn"] . "\" ></td>";
 			echo "<td class='center'>" . $LANG["setup"][155] . "</td><td><input type=\"text\" name=\"ldap_rootdn\" value=\"" . $this->fields["ldap_rootdn"] . "\" ></td></tr>";
@@ -553,14 +608,5 @@ class AuthLDAP extends CommonDBTM {
 		}
 
 	}
-	
-	function post_getEmpty () {
-		$this->fields["ldap_port"]="389";
-		$this->fields["ldap_login"]="uid";
-		$this->fields["ldap_field_realname"]="cn";
-		$this->fields["ldap_field_email"]="mail";
-		$this->fields["ldap_field_phone"]="telephonenumber";
-	}
-	
 }
 ?>
