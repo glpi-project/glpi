@@ -202,7 +202,10 @@ function getAllLdapUsers($id_auth, $sync = 0,$myfilter='') {
 	}
 	
 	$glpi_users = array ();
-	$sql = "SELECT name, date_mod FROM glpi_users";
+	$sql = "SELECT name, date_mod FROM glpi_users ";
+	if ($sync){
+		$sql.=" WHERE auth_method IN (-1,".AUTH_LDAP.") ";
+	}
 	$result = $DB->query($sql);
 	if ($DB->numrows($result) > 0)
 		while ($user = $DB->fetch_array($result))
