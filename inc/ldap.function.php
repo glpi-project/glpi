@@ -490,8 +490,8 @@ function displayLdapFilter($target)
 	echo "<table class='tab_cadre'>"; 
 	echo "<tr><th colspan='2'>" . $LANG["setup"][263] . "</th></tr>";
 	echo"<tr class='tab_bg_2'><td>";
-	echo "<input type='text' name='ldap_filter' value='" . $_SESSION["ldap_filter"] . "'>";
-	echo "<input class=submit type='submit' name='change_ldap_filter' value='" . $LANG["buttons"][2] . "'>";
+	echo "<input type='text' name='ldap_filter' value='" . $_SESSION["ldap_filter"] . "' size='70'>";
+	echo "&nbsp;<input class=submit type='submit' name='change_ldap_filter' value='" . $LANG["buttons"][2] . "'>";
 	echo "</td></tr></table>";
 	echo "</form></div>";	
 }
