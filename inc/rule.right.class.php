@@ -59,7 +59,7 @@ class RightAffectRule extends Rule {
 
 	function maxActionsCount(){
 		// Unlimited
-		return 3;
+		return 4;
 	}
 	/**
 	 * Display form to add rules
