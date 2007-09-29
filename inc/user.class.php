@@ -86,16 +86,14 @@ class User extends CommonDBTM {
 
 	function cleanDBonMarkDeleted($ID) {
 
-		global $DB;
-
-		$query = "DELETE FROM glpi_users_profiles WHERE (FK_users = '$ID')";
-		$DB->query($query);
-
 	}
 
 	function cleanDBonPurge($ID) {
 
 		global $DB;
+
+		$query = "DELETE FROM glpi_users_profiles WHERE (FK_users = '$ID')";
+		$DB->query($query);
 
 		$query = "DELETE from glpi_users_groups WHERE FK_users = '$ID'";
 		$DB->query($query);

@@ -41,7 +41,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 checkRight("user","w");
 
-commonHeader($LANG["setup"][3],$_SERVER['PHP_SELF'],"admin","ldap");
+commonHeader($LANG["setup"][3],$_SERVER['PHP_SELF'],"admin","user");
 
 if (isset($_GET['next']))
 {
