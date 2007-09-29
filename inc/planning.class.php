@@ -110,7 +110,7 @@ class PlanningTracking extends CommonDBTM {
 
 			if ((!isset($input["_nomail"])||$input["_nomail"]==0)&&count($updates)>0&&$CFG_GLPI["mailing"]){
 				$user=new User;
-				$user->getfromDBbyName($_SESSION["glpiname"]);
+				$user->getFromDBbyName($_SESSION["glpiname"]);
 				$mail = new Mailing("followup",$job,$user,$fup->fields["private"]);
 				$mail->send();
 			}
@@ -174,7 +174,7 @@ class PlanningTracking extends CommonDBTM {
 		if ((!isset($input["_nomail"])||$input["_nomail"]==0)&&$CFG_GLPI["mailing"])
 		{
 			$user=new User;
-			$user->getfromDBbyName($_SESSION["glpiname"]);
+			$user->getFromDBbyName($_SESSION["glpiname"]);
 			$mail = new Mailing("followup",$job,$user,$fup->fields["private"]);
 			$mail->send();
 		}
@@ -185,8 +185,7 @@ class PlanningTracking extends CommonDBTM {
 
 	function pre_deleteItem($ID) {
 
-		if ($this->getfromDB($ID)){
-
+		if ($this->getFromDB($ID)){
 			if (isset($this->fields["id_assign"])&&($this->fields["id_assign"]==$_SESSION["glpiID"]||haveRight("comment_all_ticket","1"))){
 				// Auto update realtime
 				$fup=new Followup();
@@ -196,6 +195,7 @@ class PlanningTracking extends CommonDBTM {
 				$fup->updateInDB($updates2);
 			}
 		} 
+		return true;
 	}
 
 

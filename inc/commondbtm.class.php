@@ -486,21 +486,23 @@ class CommonDBTM {
 		}
 
 		if ($this->getFromDB($input["ID"])){
-			$this->pre_deleteItem($input["ID"]);
-			if ($this->deleteFromDB($input["ID"],$force)){
-				if ($force){
-					doHook("item_purge",array("type"=>$this->type, "ID" => $input["ID"]));
-				} else {
-					doHook("item_delete",array("type"=>$this->type, "ID" => $input["ID"]));
+			if ($this->pre_deleteItem($input["ID"])){
+				if ($this->deleteFromDB($input["ID"],$force)){
+					if ($force){
+						doHook("item_purge",array("type"=>$this->type, "ID" => $input["ID"]));
+					} else {
+						doHook("item_delete",array("type"=>$this->type, "ID" => $input["ID"]));
+					}
 				}
+				return true;
+			} else {
+				return false;
 			}
-
-			return true;
 		} else return false;
 
 	}
 	function pre_deleteItem($ID) {
-
+		return true;
 	}
 	/**
 	 * Restore an item trashed in the database.
