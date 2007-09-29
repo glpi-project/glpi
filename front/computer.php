@@ -41,20 +41,20 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 if (isset($_GET["add_search_count"])){
 	$_SESSION["glpisearchcount"][$_GET["type"]]++;
-	glpi_header($_SERVER['HTTP_REFERER']);
+	glpi_header(ereg_replace("reset_before=1","",$_SERVER['HTTP_REFERER']));
 }
 if (isset($_GET["delete_search_count"])){
 	$_SESSION["glpisearchcount"][$_GET["type"]]--;
-	glpi_header($_SERVER['HTTP_REFERER']);
+	glpi_header(ereg_replace("reset_before=1","",$_SERVER['HTTP_REFERER']));
 }
 
 if (isset($_GET["add_search_count2"])){
 	$_SESSION["glpisearchcount2"][$_GET["type"]]++;
-	glpi_header($_SERVER['HTTP_REFERER']);
+	glpi_header(ereg_replace("reset_before=1","",$_SERVER['HTTP_REFERER']));
 }
 if (isset($_GET["delete_search_count2"])){
 	$_SESSION["glpisearchcount2"][$_GET["type"]]--;
-	glpi_header($_SERVER['HTTP_REFERER']);
+	glpi_header(ereg_replace("reset_before=1","",$_SERVER['HTTP_REFERER']));
 }
 
 if (isset($_GET["reset_search"])){

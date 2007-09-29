@@ -1679,42 +1679,8 @@ function addWhere ($link,$nott,$type,$ID,$val,$meta=0){
 				return $link." $table.$field $SEARCH $ADD";
 			}
 			break;
+
 		case "glpi_contracts.end_date" :
-			$search=array("/\&lt;/","/\&gt;/");
-			$replace=array("<",">");
-			$val=preg_replace($search,$replace,$val);
-			if (ereg("([<>])(.*)",$val,$regs)){
-				if (is_numeric($regs[2])){
-					return $link." NOW() ".$regs[1]." ADDDATE(ADDDATE($table.begin_date, INTERVAL $table.duration MONTH), INTERVAL ".$regs[2]." MONTH) ";	
-				} else {
-					return "";
-				}
-			} else {
-				return $link." ADDDATE($table.begin_date, INTERVAL $table.duration MONTH) $SEARCH ";		
-			}
-			break;
-			// ajout jmd
-		case "glpi_contracts.expire" :
-			$search=array("/\&lt;/","/\&gt;/");
-			$replace=array("<",">");
-			$val=preg_replace($search,$replace,$val);
-			if (ereg("([<>])(.*)",$val,$regs)){
-				return $link." DATEDIFF(ADDDATE($table.begin_date, INTERVAL $table.duration MONTH),CURDATE() )".$regs[1].$regs[2]." ";
-				} else {
-				return $link." ADDDATE($table.begin_date, INTERVAL $table.duration MONTH) $SEARCH ";		
-			}
-			break;
-		// ajout jmd
-		case "glpi_contracts.expire_notice" :
-			$search=array("/\&lt;/","/\&gt;/");
-			$replace=array("<",">");
-			$val=preg_replace($search,$replace,$val);
-			if (ereg("([<>])(.*)",$val,$regs)){
-				return $link." $table.notice<>0 AND DATEDIFF(ADDDATE($table.begin_date, INTERVAL ($table.duration - $table.notice) MONTH),CURDATE() )".$regs[1].$regs[2]." ";
-			} else {
-				return $link." ADDDATE($table.begin_date, INTERVAL ($table.duration - $table.notice) MONTH) $SEARCH ";		
-			}
-			break;
 		case "glpi_ocs_link.last_update":
 		case "glpi_ocs_link.last_ocs_update":
 		case "glpi_computers.date_mod":
@@ -1731,27 +1697,63 @@ function addWhere ($link,$nott,$type,$ID,$val,$meta=0){
 		case "reservation_types.date_mod":
 		case "glpi_users.last_login":
 		case "glpi_users.date_mod":
+			$date_computation=$table.".".$field;
+			$interval_search=" MONTH ";
+			switch ($table.".".$field){
+				case "glpi_contracts.end_date":
+					$date_computation=" ADDDATE($table.begin_date, INTERVAL $table.duration MONTH) ";
+					break;
+			}
+			
 			$search=array("/\&lt;/","/\&gt;/");
 			$replace=array("<",">");
 			$val=preg_replace($search,$replace,$val);
-			if (ereg("([<>])(.*)",$val,$regs)){
+			if (ereg("([<>=])(.*)",$val,$regs)){
 				if (is_numeric($regs[2])){
-					return $link." NOW() ".$regs[1]." ADDDATE($table.$field, INTERVAL ".$regs[2]." MONTH) ";	
+					return $link." NOW() ".$regs[1]." ADDDATE($date_computation, INTERVAL ".$regs[2]." $interval_search) ";	
 				} else {
-					return "";
+					// Reformat date if needed
+					$regs[2]=preg_replace('/(\d{1,2})-(\d{1,2})-(\d{4})/','\3-\2-\1',$regs[2]);
+					if (ereg('[0-9]{2,4}-[0-9]{1,2}-[0-9]{1,2}',$regs[2])){
+						return $link." $date_computation ".$regs[1]." '".$regs[2]."'";
+					} else {
+						return "";
+					}
 				}
-			} else {
+			} else { // standard search
 				// Date format modification if needed
 				$val=preg_replace('/(\d{1,2})-(\d{1,2})-(\d{4})/','\3-\2-\1',$val);
 				$SEARCH=makeTextSearch($val,$nott);
-
 				$ADD="";	
 				if ($nott) {
 					$ADD=" OR $table.$field IS NULL";
 				}
-				return $link." ($table.$field $SEARCH ".$ADD." ) ";
+				return $link." $date_computation $SEARCH $ADD ";
 			}
 			break;
+		case "glpi_contracts.expire" :
+			$search=array("/\&lt;/","/\&gt;/");
+			$replace=array("<",">");
+			$val=preg_replace($search,$replace,$val);
+			if (ereg("([<>=])(.*)",$val,$regs)){
+				return $link." DATEDIFF(ADDDATE($table.begin_date, INTERVAL $table.duration MONTH),CURDATE() )".$regs[1].$regs[2]." ";
+				} else {
+				return $link." ADDDATE($table.begin_date, INTERVAL $table.duration MONTH) $SEARCH ";		
+			}
+			break;
+		// ajout jmd
+		case "glpi_contracts.expire_notice" :
+			$search=array("/\&lt;/","/\&gt;/");
+			$replace=array("<",">");
+			$val=preg_replace($search,$replace,$val);
+			if (ereg("([<>])(.*)",$val,$regs)){
+				return $link." $table.notice<>0 AND DATEDIFF(ADDDATE($table.begin_date, INTERVAL ($table.duration - $table.notice) MONTH),CURDATE() )".$regs[1].$regs[2]." ";
+			} else {
+				return $link." ADDDATE($table.begin_date, INTERVAL ($table.duration - $table.notice) MONTH) $SEARCH ";		
+			}
+			break;
+
+
 		case "glpi_infocoms.value":
 		case "glpi_infocoms.warranty_value":
 			if (is_numeric($val)){
