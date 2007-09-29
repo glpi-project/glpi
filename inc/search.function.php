@@ -1840,7 +1840,7 @@ function addWhere ($link,$nott,$type,$ID,$val,$meta=0){
 			}
 
 			$ADD="";	
-			if ($nott&&$val!="NULL") {
+			if (($nott&&$val!="NULL")||$val=='^$') {
 				$ADD=" OR $table.$field IS NULL";
 			}
 			
