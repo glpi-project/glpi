@@ -62,23 +62,53 @@ switch ($_POST['right']){
 		$where=" glpi_profiles.".$_POST['right']."='central' ";
 		$joinprofile=true;
 		if (isset($_POST["entity_restrict"])&&$_POST["entity_restrict"]>=0){
-			$where.= " AND glpi_users_profiles.FK_entities='".$_POST["entity_restrict"]."'";
+			$where.= " AND ( glpi_users_profiles.FK_entities='".$_POST["entity_restrict"]."'";
+			// Specific entity : add ancestors recursive rights
+			$ancestors=getEntityAncestors($_POST["entity_restrict"]);
+			
+			if (count($ancestors)){
+				$where.=" OR ( glpi_users_profiles.recursive='1' AND glpi_users_profiles.FK_entities IN (";
+				$first=true;
+				foreach ($ancestors as $val){
+					if (!$first){
+						$where.=",";
+					} else {
+						$first=false;
+					}
+					$where.=$val;
+				}
+				$where.="))";
+			}
+			$where.=" ) ";
 		} else {
 			$where.=getEntitiesRestrictRequest("AND","glpi_users_profiles");
 		}
 	break;
 	case "ID" :
 		$where=" glpi_users.ID='".$_SESSION["glpiID"]."' ";
-		if (isset($_POST["entity_restrict"])&&$_POST["entity_restrict"]>=0){
-			$where.= " AND glpi_users_profiles.FK_entities='".$_POST["entity_restrict"]."'";
-		} else {
-			$where.=getEntitiesRestrictRequest("AND","glpi_users_profiles");
-		}
 	break;
 	case "all" :
 		$where=" glpi_users.ID > '1' ";
 		if (isset($_POST["entity_restrict"])&&$_POST["entity_restrict"]>=0){
-			$where.= " AND glpi_users_profiles.FK_entities='".$_POST["entity_restrict"]."'";
+			$where.= " AND ( glpi_users_profiles.FK_entities='".$_POST["entity_restrict"]."'";
+			// Specific entity : add ancestors recursive rights
+			$ancestors=getEntityAncestors($_POST["entity_restrict"]);
+			
+			if (count($ancestors)){
+				$where.=" OR ( glpi_users_profiles.recursive='1' AND glpi_users_profiles.FK_entities IN (";
+				$first=true;
+				foreach ($ancestors as $val){
+					if (!$first){
+						$where.=",";
+					} else {
+						$first=false;
+					}
+					$where.=$val;
+				}
+				$where.="))";
+			}
+			$where.=" ) ";
+
 		} else {
 			$where.=getEntitiesRestrictRequest("AND","glpi_users_profiles");
 		}
