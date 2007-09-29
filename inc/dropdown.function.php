@@ -351,7 +351,7 @@ function dropdownUsers($myname,$value,$right,$all=0,$display_comments=1,$entity_
 
 	// Display comments
 
-	$view_users=haveRight("user","r");
+	$view_users=(haveRight("user","r")&&!empty($user["link"]));
 	if ($display_comments) {
 		if ($view_users){
 			echo "<a id='comments_link_$myname$rand' href='".$user["link"]."'>";
