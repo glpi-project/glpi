@@ -84,16 +84,37 @@ class User extends CommonDBTM {
 		$this->fields["active"]=1;
 	}
 
-	function cleanDBonMarkDeleted($ID) {
+	function pre_deleteItem($ID){
+		global $LANG,$DB;
 
+		if ($ID == 1) {
+			echo "<script language=\"JavaScript\" type=\"text/javascript\">";
+			echo "alert('" . addslashes($LANG["setup"][220]) . "');";
+			echo "</script>";
+			return false;
+		}
+
+		$entities=getUserEntities($ID);
+		$view_all=isViewAllEntities();
+		foreach ($entities as $ent){
+			if ($view_all||haveAccessToEntity($ent)){
+				$query = "DELETE FROM glpi_users_profiles WHERE (FK_users = '$ID' AND FK_entities='$ent')";
+				$DB->query($query);
+			}
+		}
+		$entities=getUserEntities($ID);
+		if (count($entities)>0){
+			return false;
+		} else {
+			return true;
+		}
+
+	}
+	function cleanDBonMarkDeleted($ID) {
 	}
 
 	function cleanDBonPurge($ID) {
-
 		global $DB;
-
-		$query = "DELETE FROM glpi_users_profiles WHERE (FK_users = '$ID')";
-		$DB->query($query);
 
 		$query = "DELETE from glpi_users_groups WHERE FK_users = '$ID'";
 		$DB->query($query);
@@ -183,18 +204,6 @@ class User extends CommonDBTM {
 				addUserProfileEntity($affectation);
 			}
 		}
-	}
-
-	function pre_deleteItem($ID) {
-		global $LANG;
-		if ($ID == 1) {
-			echo "<script language=\"JavaScript\" type=\"text/javascript\">";
-			echo "alert('" . addslashes($LANG["setup"][220]) . "');";
-			echo "</script>";
-			glpi_header($_SERVER['HTTP_REFERER']);
-			exit ();
-		}
-
 	}
 
 	function prepareInputForUpdate($input) {
