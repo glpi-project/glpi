@@ -484,12 +484,13 @@ function getDeviceTypeName($ID){
 		case PRINTER_TYPE : return $LANG["help"][27];break;
 		case MONITOR_TYPE : return $LANG["help"][28];break;
 		case PERIPHERAL_TYPE : return $LANG["help"][29];break;
+		case PHONE_TYPE : return $LANG["help"][35];break;
 		case SOFTWARE_TYPE : return $LANG["help"][31];break;
 		case CARTRIDGE_TYPE : return $LANG["Menu"][21];break;
 		case CONTACT_TYPE : return $LANG["Menu"][22];break;
 		case ENTERPRISE_TYPE : return $LANG["Menu"][23];break;
 		case CONTRACT_TYPE : return $LANG["Menu"][25];break;
-		case CONSUMABLE_TYPE : return $LANG["Menu"][32];break;
+		case CONSUMABLE_TYPE : return $LANG["Menu"][32];break;	
 	}
 
 }
