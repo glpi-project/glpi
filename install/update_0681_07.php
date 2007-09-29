@@ -1449,7 +1449,10 @@ function update0681to07() {
 		$query = "ALTER TABLE `glpi_ocs_link` ADD `ocs_agent_version` VARCHAR( 255 ) default NULL ;";
 		$DB->query($query) or die("0.7 add ocs_agent_version in glpi_ocs_link if not present for compatibility " . $LANG["update"][90] . $DB->error());
 	}
-
+	if (!isIndex("glpi_history", "date_mod")) {
+		$query = "ALTER TABLE `glpi_history` ADD INDEX ( `date_mod` )";
+		$DB->query($query) or die("0.7 alter history add index on date_mod " . $LANG["update"][90] . $DB->error());
+	}
 
 } // fin 0.7 #####################################################################################
 ?>
