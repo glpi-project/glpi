@@ -150,7 +150,17 @@ class User extends CommonDBTM {
 	}
 
 	function prepareInputForAdd($input) {
-		global $CFG_GLPI;
+		global $CFG_GLPI,$DB,$LANG;
+
+	
+		// Check if user does not exists
+		$query="SELECT * FROM glpi_users WHERE name='".$input['name']."';";
+		$result=$DB->query($query);
+		if ($DB->numrows($result)>0){
+			$_SESSION["MESSAGE_AFTER_REDIRECT"]=$LANG["setup"][606];
+			return false;
+		}
+
 		//We add the user, we set the last modification date
 		$input["date_mod"]=$_SESSION["glpi_currenttime"];
 

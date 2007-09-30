@@ -237,7 +237,7 @@ class PlanningTracking extends CommonDBTM {
 				$_SESSION["MESSAGE_AFTER_REDIRECT"].=$LANG["planning"][0]."<br>";
 			break;
 			default :
-				$_SESSION["MESSAGE_AFTER_REDIRECT"].="Erreur Inconnue<br>";
+				$_SESSION["MESSAGE_AFTER_REDIRECT"].=$LANG["common"][61]."<br>";
 			break;
 		}
 	}

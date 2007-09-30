@@ -238,6 +238,7 @@ $LANG["common"][57]="Titre";
 $LANG["common"][58]="Valeur maximale"; 
 $LANG["common"][59]="Global"; 
 $LANG["common"][60]="Actif"; 
+$LANG["common"][61]="Erreur inconnue"; 
 
 $LANG["computers"][9]="OS"; 
 $LANG["computers"][10]="OS Numéro de série"; 
@@ -1506,6 +1507,7 @@ $LANG["setup"][601]="Valeur LDAP";
 $LANG["setup"][603]="Ajouter un Utilisateur"; 
 $LANG["setup"][604]="Associer à un groupe"; 
 $LANG["setup"][605]="Ajouter Groupe"; 
+$LANG["setup"][606]="AJout impossible. L'utilisateur existe déjà."; 
 $LANG["setup"][701]="Sélectionnez le plugin à configurer"; 
 $LANG["setup"][703]="Générale"; 
 $LANG["setup"][704]="Notifications"; 
