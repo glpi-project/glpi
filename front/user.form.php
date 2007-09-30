@@ -214,9 +214,15 @@ else if (isset($_POST["deletegroup"]))
 		}
 		commonFooter();
 	} else {
-		if (isset($_GET['add_ext_auth'])){
+		if (isset($_GET['add_ext_auth_ldap'])){
 			if (isset($_GET['login'])&&!empty($_GET['login'])){
 				import_user_from_ldap_servers($_GET['login']);
+			}
+			glpi_header($_SERVER['HTTP_REFERER']);
+		}
+		if (isset($_GET['add_ext_auth_simple'])){
+			if (isset($_GET['login'])&&!empty($_GET['login'])){
+				$user->add(array('name'=>$_GET['login'],'_extauth'=>1));
 			}
 			glpi_header($_SERVER['HTTP_REFERER']);
 		}

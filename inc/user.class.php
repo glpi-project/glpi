@@ -543,20 +543,21 @@ class User extends CommonDBTM {
 				}
 			}
 
-		//Instanciate the affectation's rule
-		$rule = new RightRuleCollection();
+			//Instanciate the affectation's rule
+			$rule = new RightRuleCollection();
+				
+			//Process affectation rules :
+			//we don't care about the function's return because all the datas are stored in session temporary
+			if (isset($this->fields["_groups"]))
+				$groups = $this->fields["_groups"];
+			else
+				$groups = array();	
+	
+			$this->fields=$rule->processAllRules($groups,$this->fields,array("type"=>"LDAP","ldap_server"=>$ldap_method["ID"],"connection"=>$ds,"userdn"=>$userdn));
 			
-		//Process affectation rules :
-		//we don't care about the function's return because all the datas are stored in session temporary
-		if (isset($this->fields["_groups"]))
-			$groups = $this->fields["_groups"];
-		else
-			$groups = array();	
-
-		$this->fields=$rule->processAllRules($groups,$this->fields,array("type"=>"LDAP","ldap_server"=>$ldap_method["ID"],"connection"=>$ds,"userdn"=>$userdn));
-		
-		//Hook to retrieve more informations for ldap
-		$this->fields = doHookFunction("retrieve_more_data_from_ldap", $this->fields);
+			//Hook to retrieve more informations for ldap
+			$this->fields = doHookFunction("retrieve_more_data_from_ldap", $this->fields);
+			return true;
 		}
 		return false;
 

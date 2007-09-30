@@ -867,6 +867,8 @@ function test_auth_mail($imap_auth_server,$login,$password)
  */
 function import_user_from_ldap_servers($login)
 {
+	global $LANG;
+
 	$identificat = new Identification;
 	$identificat->user_present = $identificat->userExists($login);
 
@@ -885,6 +887,9 @@ function import_user_from_ldap_servers($login)
 				return $result;
 			}  
 		}
+		$_SESSION["MESSAGE_AFTER_REDIRECT"]=$LANG["login"][15];
+	} else {
+		$_SESSION["MESSAGE_AFTER_REDIRECT"]=$LANG["setup"][606];
 	}
 	return false;
 	
