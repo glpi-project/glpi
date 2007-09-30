@@ -103,6 +103,7 @@ function showConsumables ($tID,$show_old=0) {
 				$old=getOldConsumablesNumber($tID);
 				if (!$show_old&&$canedit){
 					echo "<form method='post' action='".$CFG_GLPI["root_doc"]."/front/consumable.edit.php'>";
+					echo "<input type='hidden' name='tID' value=\"$tID\">\n";
 				}
 				echo "<br><div class='center'><table cellpadding='2' class='tab_cadre_fixe'>";
 				if ($show_old==0){
