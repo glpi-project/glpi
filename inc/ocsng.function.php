@@ -1226,8 +1226,9 @@ function cron_ocsng() {
 			logInFile("cron", "Check updates from server " . $cfg_ocs['name'] . "\n");
 		}
 
-		if (!$cfg_ocs["cron_sync_number"])
+		if (!$cfg_ocs["cron_sync_number"]){
 			return 0;
+		}
 
 		ocsManageDeleted($ocs_server_id);
 
@@ -1235,34 +1236,18 @@ function cron_ocsng() {
 						FROM hardware 
 						WHERE (CHECKSUM & " . $cfg_ocs["checksum"] . ") > 0";
 		$result_ocs = $DBocs->query($query_ocs);
+		$done=0;
 		if ($DBocs->numrows($result_ocs) > 0) {
-
-			$hardware = array ();
-			while ($data = $DBocs->fetch_array($result_ocs)) {
-				$hardware[$data["ID"]]["date"] = $data["LASTDATE"];
-				$hardware[$data["ID"]]["name"] = addslashes($data["NAME"]);
-			}
-
-			$query_glpi = "SELECT * 
-									FROM glpi_ocs_link 
-									WHERE auto_update= '1'
-									ORDER BY last_update";
-			$result_glpi = $DB->query($query_glpi);
-			$done = 0;
-			while ($done < $cfg_ocs["cron_sync_number"] && $data = $DB->fetch_assoc($result_glpi)) {
-				$data = clean_cross_side_scripting_deep(addslashes_deep($data));
-
-				if (isset ($hardware[$data["ocs_id"]])) {
-					ocsUpdateComputer($data["ID"], $ocs_server_id, 2);
-					if ($CFG_GLPI["use_errorlog"]) {
-						logInFile("cron", "Update computer " . $data["ID"] . "\n");
-					}
-					$done++;
+			while ($done < $cfg_ocs["cron_sync_number"] && $data = $DBocs->fetch_array($result_ocs)) {
+				ocsProcessComputer($data["ID"],$ocs_server_id,0,-1,1);
+				if ($CFG_GLPI["use_errorlog"]) {
+					logInFile("cron", "Update computer " . $data["ID"] . "\n");
 				}
+				$done++;
 			}
-			if ($done > 0) {
-				return 1;
-			}
+		}
+		if ($done > 0) {
+			return 1;
 		}
 		return 0;
 	}

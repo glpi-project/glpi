@@ -35,7 +35,8 @@
 
 
 $NEEDED_ITEMS=array("cron","computer","device","printer","networking","peripheral","monitor","setup",
-"software","infocom","phone","tracking","enterprise","ocsng","mailgate","rulesengine","rule.tracking","user","reservation","reminder");
+"software","infocom","phone","tracking","enterprise","ocsng","mailgate","rulesengine","rule.tracking","rule.softwarecategories","rule.ocs",
+"user","reservation","reminder","admininfo","group");
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
