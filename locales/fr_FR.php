@@ -239,6 +239,7 @@ $LANG["common"][58]="Valeur maximale";
 $LANG["common"][59]="Global"; 
 $LANG["common"][60]="Actif"; 
 $LANG["common"][61]="Erreur inconnue"; 
+$LANG["common"][62]="Autre"; 
 
 $LANG["computers"][9]="OS"; 
 $LANG["computers"][10]="OS Numéro de série"; 
@@ -1357,7 +1358,7 @@ $LANG["setup"][121]="Joker Ajax";
 $LANG["setup"][122]="Ajax - Nombre d'élèments maximum affichés"; 
 $LANG["setup"][123]="Ne pas utiliser ajax si le nombre d'élèments est inférieur à (0=jamais)"; 
 $LANG["setup"][124]="Ajout automatique des utilisateurs à partir des sources externes d'authentification"; 
-$LANG["setup"][125]="... Depuis une source externe (Simple)"; 
+$LANG["setup"][125]="... Depuis une source externe"; 
 $LANG["setup"][126]="Ajouter directement un utilisateur d'une source externe"; 
 $LANG["setup"][127]="Autocomplétion des champs textes avec AJAX"; 
 $LANG["setup"][128]="Format des dates"; 
@@ -1642,7 +1643,6 @@ $LANG["tracking"][32]="En cours (planifiés)";
 $LANG["tracking"][33]="En attente"; 
 $LANG["tracking"][34]="Directe"; 
 $LANG["tracking"][35]="Ecrite"; 
-$LANG["tracking"][36]="Autre"; 
 $LANG["tracking"][37]="Conserver les tickets à la purge d'un élément de l'inventaire"; 
 
 $LANG["transfer"][1]="Transfert"; 

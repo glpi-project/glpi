@@ -53,10 +53,15 @@ function showAddExtAuthUserForm($target){
 	echo "<td>";
 	echo "<input type='text' name='login'>";
 	echo "</td>";
-	echo "<td align='center' class='tab_bg_2' rowspan='2'>\n";
+	echo "<td align='center' class='tab_bg_2'>\n";
 	echo "<input type='hidden' name='ext_auth' value='1'>\n";
-	echo "<input type='submit' name='add_ext_auth' value=\"".$LANG["buttons"][8]."\" class='submit'>\n";
-	echo "</td></tr>\n";
+	echo "<input type='submit' name='add_ext_auth_ldap' value=\"".$LANG["buttons"][8]." ".$LANG["login"][2]."\" class='submit'>\n";
+	echo "</td>";
+	echo "<td align='center' class='tab_bg_2'>\n";
+	echo "<input type='submit' name='add_ext_auth_simple' value=\"".$LANG["buttons"][8]." ".$LANG["common"][62]."\" class='submit'>\n";
+	echo "</td>";
+
+	echo "</tr>\n";
 
 	echo "</table>";
 	echo "</form>\n";
