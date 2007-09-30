@@ -52,7 +52,7 @@ if (isset($_GET["action"])){
 	// Use massive action system
 	switch ($_POST["action"]){
 		case "delete":
-			if (count($_POST["item"])){
+			if (isset($_POST["item"])&&count($_POST["item"])){
 				foreach ($_POST["item"] as $key => $val)
 				{
 					$rule->getFromDB($key);
