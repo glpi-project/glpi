@@ -47,8 +47,8 @@ function showAddExtAuthUserForm($target){
 	echo "<div class='center'>\n";
 	echo "<form method='get' action=\"$target\">\n";
 
-	echo "<table class='tab_cadre' cellpadding='5'>\n";
-	echo "<tr><th colspan='3'>".$LANG["setup"][126]."</th></tr>\n";
+	echo "<table class='tab_cadre'>\n";
+	echo "<tr><th colspan='4'>".$LANG["setup"][126]."</th></tr>\n";
 	echo "<tr class='tab_bg_1'><td>".$LANG["login"][6]."</td>\n";
 	echo "<td>";
 	echo "<input type='text' name='login'>";

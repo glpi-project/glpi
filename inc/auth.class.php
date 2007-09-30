@@ -434,7 +434,7 @@ class AuthLDAP extends CommonDBTM {
 	
 	function post_getEmpty () {
 		$this->fields["ldap_port"]="389";
-		$this->fields['ldap_condition']='(objectClass=user)';
+		$this->fields['ldap_condition']='';
 		$this->fields["ldap_login"]="uid";
 		$this->fields['ldap_use_tls']=0;
 		$this->fields['ldap_field_group']='';
