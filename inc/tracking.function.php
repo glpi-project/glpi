@@ -877,7 +877,7 @@ function getRealtime($realtime){
 	return $output;
 }
 
-function searchSimpleFormTracking($target,$status="all",$group=-1){
+function searchSimpleFormTracking($extended=0,$target,$status="all",$tosearch='',$search='',$group=-1,$showfollowups=0,$category=0){
 
 global $CFG_GLPI,  $LANG;
 
@@ -886,8 +886,23 @@ global $CFG_GLPI,  $LANG;
 
 	echo "<form method='get' name=\"form\" action=\"".$target."\">";
 	echo "<table class='tab_cadre_fixe'>";
-	echo "<tr class='tab_bg_1'>";
-	echo "<td colspan='1' align='center'>".$LANG["joblist"][0].":&nbsp;";
+
+	echo "<tr><th colspan='5' class='middle' ><div class='relative'><span>".$LANG["search"][0]."</span>";
+	$parm="";
+	if ($_SESSION["glpiactiveprofile"]["interface"]=="helpdesk"){
+		$parm="show=user&amp;";
+	}
+
+	if ($extended){
+		echo "<span class='tracking_right'><a href='$target?".$parm."extended=0'><img src=\"".$CFG_GLPI["root_doc"]."/pics/deplier_up.png\" alt=''>".$LANG["buttons"][36]."</a></span>";
+	} else {
+		echo "<span   class='tracking_right'><a href='$target?".$parm."extended=1'><img src=\"".$CFG_GLPI["root_doc"]."/pics/deplier_down.png\" alt=''>".$LANG["buttons"][35]."</a></span>";
+	}
+	echo "</div></th></tr>";
+
+
+	echo "<tr class='tab_bg_1' align='center'>";
+	echo "<td colspan='1' >".$LANG["joblist"][0].":&nbsp;";
 	echo "<select name='status'>";
 	echo "<option value='new' ".($status=="new"?" selected ":"").">".$LANG["joblist"][9]."</option>";
 	echo "<option value='assign' ".($status=="assign"?" selected ":"").">".$LANG["joblist"][18]."</option>";
@@ -908,12 +923,49 @@ global $CFG_GLPI,  $LANG;
 		echo "<option value='0' ".($group==0?" selected ":"").">".$LANG["joblist"][1]."</option>";
 		echo "</select>";
 		echo "</td>";
+	} else {
+		echo '<td>&nbsp;</td>';
 	}
+
+	echo "<td class='center' colspan='2'>".$LANG["reports"][59].":&nbsp;";
+	dropdownYesNo('showfollowups',$showfollowups);
+	echo "</td>";
+
+	if ($extended){
+		echo "<td>".$LANG["common"][36].":&nbsp;";
+		dropdownValue("glpi_dropdown_tracking_category","category",$category);
+		echo "</td></tr>";
+		echo "<tr class='tab_bg_1' align='center'>";
+		echo "<td class='center' colspan='2'>";
+		$elts=array("name"=>$LANG["common"][57],
+			"contents"=>$LANG["joblist"][6],
+			"followup"=>$LANG["job"][7],
+			"name_contents"=>$LANG["common"][57]." / ".$LANG["joblist"][6],
+			"name_contents_followup"=>$LANG["common"][57]." / ".$LANG["joblist"][6]." / ".$LANG["job"][7],
+			"ID"=>"ID");
+		echo "<select name='tosearch'>";
+		foreach ($elts as $key => $val){
+			$selected="";
+			if ($tosearch==$key) $selected="selected";
+			echo "<option value=\"$key\" $selected>$val</option>";
+		}
+		echo "</select>";
+	
+	
+	
+		echo "&nbsp;".$LANG["search"][2]."&nbsp;";
+		echo "<input type='text' size='15' name=\"search\" value=\"".stripslashes($search)."\">";
+		echo "</td>";
+		echo "<td colspan='2'>&nbsp;</td>";
+				
+	}
+
 
 	echo "<td align='center' colspan='1'><input type='submit' value=\"".$LANG["buttons"][0]."\" class='submit'></td>";
 	echo "</tr>";
 	echo "</table>";
 	echo "<input type='hidden' name='start' value='0'>";
+	echo "<input type='hidden' name='extended' value='$extended'>";
 	// helpdesk case
 	if (ereg("helpdesk.public.php",$target)){
 		echo "<input type='hidden' name='show' value='user'>";
@@ -923,7 +975,7 @@ global $CFG_GLPI,  $LANG;
 
 }
 
-function searchFormTracking($extended=0,$target,$start="",$status="new",$author=0,$group=0,$assign=0,$assign_ent=0,$assign_group=0,$category=0,$priority=0,$request_type=0,$item=0,$type=0,$showfollowups="",$field2="",$contains2="",$field="",$contains="",$date1="",$date2="",$computers_search="",$enddate1="",$enddate2="") {
+function searchFormTracking($extended=0,$target,$start="",$status="new",$tosearch="",$search="",$author=0,$group=0,$showfollowups=0,$category=0,$assign=0,$assign_ent=0,$assign_group=0,$priority=0,$request_type=0,$item=0,$type=0,$field="",$contains="",$date1="",$date2="",$computers_search="",$enddate1="",$enddate2="") {
 	// Print Search Form
 
 	global $CFG_GLPI,  $LANG;
@@ -1095,10 +1147,10 @@ function searchFormTracking($extended=0,$target,$start="",$status="new",$author=
 		    "name_contents"=>$LANG["common"][57]." / ".$LANG["joblist"][6],
 		    "name_contents_followup"=>$LANG["common"][57]." / ".$LANG["joblist"][6]." / ".$LANG["job"][7],
 		    "ID"=>"ID");
-	echo "<select name='field2'>";
+	echo "<select name='tosearch'>";
 	foreach ($elts as $key => $val){
 		$selected="";
-		if ($field2==$key) $selected="selected";
+		if ($tosearch==$key) $selected="selected";
 		echo "<option value=\"$key\" $selected>$val</option>";
 	}
 	echo "</select>";
@@ -1106,13 +1158,12 @@ function searchFormTracking($extended=0,$target,$start="",$status="new",$author=
 
 
 	echo "&nbsp;".$LANG["search"][2]."&nbsp;";
-	echo "<input type='text' size='15' name=\"contains2\" value=\"".stripslashes($contains2)."\">";
+	echo "<input type='text' size='15' name=\"search\" value=\"".stripslashes($search)."\">";
 	echo "</td>";
 
-	echo "<td class='center' colspan='2'>".$LANG["reports"][59].":<select name='showfollowups'>";
-	echo "<option value='1' ".($showfollowups=="1"?"selected":"").">".$LANG["choice"][1]."</option>";
-	echo "<option value='0' ".($showfollowups=="0"?"selected":"").">".$LANG["choice"][0]."</option>";	
-	echo "</select></td>";
+	echo "<td class='center' colspan='2'>".$LANG["reports"][59].":&nbsp;";
+	dropdownYesNo('showfollowups',$showfollowups);
+	echo "</td>";
 
 
 	echo "<td class='center' colspan='1'><input type='submit' value=\"".$LANG["buttons"][0]."\" class='submit'></td>";
@@ -1145,7 +1196,7 @@ function getCommonLeftJoinForTrackingSearch(){
 }
 
 
-function showTrackingList($target,$start="",$sort="",$order="",$status="new",$author=0,$group=0,$assign=0,$assign_ent=0,$assign_group=0,$category=0,$priority=0,$request_type=0,$item=0,$type=0,$showfollowups="",$field2="",$contains2="",$field="",$contains="",$date1="",$date2="",$computers_search="",$enddate1="",$enddate2="") {
+function showTrackingList($target,$start="",$sort="",$order="",$status="new",$tosearch="",$search="",$author=0,$group=0,$showfollowups=0,$category=0,$assign=0,$assign_ent=0,$assign_group=0,$priority=0,$request_type=0,$item=0,$type=0,$field="",$contains="",$date1="",$date2="",$computers_search="",$enddate1="",$enddate2="") {
 	// Lists all Jobs, needs $show which can have keywords 
 	// (individual, unassigned) and $contains with search terms.
 	// If $item is given, only jobs for a particular machine
@@ -1223,7 +1274,7 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$au
 	$SELECT = "SELECT ".getCommonSelectForTrackingSearch();
 	$FROM = " FROM glpi_tracking ".getCommonLeftJoinForTrackingSearch();
 
-	if ($contains2!=""&&strpos($field2,"followup")!==false) {
+	if ($search!=""&&strpos($tosearch,"followup")!==false) {
 		$FROM.= " LEFT JOIN glpi_followups ON ( glpi_followups.tracking = glpi_tracking.ID)";
 	}
 
@@ -1319,14 +1370,14 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$au
 		$where.=" AND glpi_tracking.author = '$author' ";
 	}
 
-	if ($contains2!=""){
-		$SEARCH2=makeTextSearch($contains2);
-		if ($field2=="ID"){
-			$where= " WHERE (glpi_tracking.ID = '".$contains2."')";
+	if ($search!=""){
+		$SEARCH2=makeTextSearch($search);
+		if ($tosearch=="ID"){
+			$where= " WHERE (glpi_tracking.ID = '".$search."')";
 		}
 		$TMPWHERE="";
 		$first=true;
-		if (strpos($field2,"followup")!== false){
+		if (strpos($tosearch,"followup")!== false){
 			if ($first){
 				$first=false;
 			} else {
@@ -1334,7 +1385,7 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$au
 			}
 			$TMPWHERE.= "glpi_followups.contents $SEARCH2 ";
 		}
-		if (strpos($field2,"name")!== false){
+		if (strpos($tosearch,"name")!== false){
 			if ($first){
 				$first=false;
 			} else {
@@ -1342,7 +1393,7 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$au
 			}
 			$TMPWHERE.= "glpi_tracking.name $SEARCH2 ";
 		}
-		if (strpos($field2,"contents")!== false){
+		if (strpos($tosearch,"contents")!== false){
 			if ($first){
 				$first=false;
 			} else {
@@ -1400,7 +1451,7 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$au
 
 
 			// Pager
-			$parameters2="field=$field&amp;contains=$contains&amp;date1=$date1&amp;date2=$date2&amp;only_computers=$computers_search&amp;field2=$field2&amp;contains2=$contains2&amp;assign=$assign&amp;assign_ent=$assign_ent&amp;assign_group=$assign_group&amp;author=$author&amp;group=$group&amp;start=$start&amp;status=$status&amp;category=$category&amp;priority=$priority&amp;type=$type&amp;showfollowups=$showfollowups&amp;enddate1=$enddate1&amp;enddate2=$enddate2&amp;item=$item&amp;request_type=$request_type";
+			$parameters2="field=$field&amp;contains=$contains&amp;date1=$date1&amp;date2=$date2&amp;only_computers=$computers_search&amp;tosearch=$tosearch&amp;search=$search&amp;assign=$assign&amp;assign_ent=$assign_ent&amp;assign_group=$assign_group&amp;author=$author&amp;group=$group&amp;start=$start&amp;status=$status&amp;category=$category&amp;priority=$priority&amp;type=$type&amp;showfollowups=$showfollowups&amp;enddate1=$enddate1&amp;enddate2=$enddate2&amp;item=$item&amp;request_type=$request_type";
 			
 			// Specific case of showing tracking of an item
 			if (isset($_GET["ID"])){

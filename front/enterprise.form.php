@@ -123,7 +123,7 @@ else
 					showAssociatedContact($_GET["ID"]);
 					showContractAssociatedEnterprise($_GET["ID"]);
 					showDocumentAssociated(ENTERPRISE_TYPE,$_GET["ID"]);
-					showTrackingList($_SERVER['PHP_SELF'],$_GET["start"],$_GET["sort"],$_GET["order"],"all",0,0,0,$_GET["ID"]);
+					showTrackingList($_SERVER['PHP_SELF'],$_GET["start"],$_GET["sort"],$_GET["order"],"all",'','',0,0,0,0,0,$_GET["ID"]);
 					showLinkOnDevice(ENTERPRISE_TYPE,$_GET["ID"]);
 					displayPluginAction(ENTERPRISE_TYPE,$_GET["ID"],$_SESSION['glpi_onglet']);
 					break;
@@ -137,7 +137,7 @@ else
 					showDocumentAssociated(ENTERPRISE_TYPE,$_GET["ID"],0);
 					break;
 				case 6 :
-					showTrackingList($_SERVER['PHP_SELF']."?ID=".$_GET["ID"],$_GET["start"],$_GET["sort"],$_GET["order"],"all",0,0,0,$_GET["ID"]);
+					showTrackingList($_SERVER['PHP_SELF']."?ID=".$_GET["ID"],$_GET["start"],$_GET["sort"],$_GET["order"],"all",'','',0,0,0,0,0,$_GET["ID"]);
 					break;
 				case 7 : 
 					showLinkOnDevice(ENTERPRISE_TYPE,$_GET["ID"]);
