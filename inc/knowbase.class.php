@@ -109,10 +109,22 @@ class kbitem extends CommonDBTM {
 		if($spotted) {
 			
 			echo "<div id='contenukb'>";
-			echo "<script type=\"text/javascript\" src=\"".$CFG_GLPI["root_doc"]."/lib/tiny_mce/tiny_mce_gzip.php\"></script>";
+
+			echo "<script type=\"text/javascript\" src=\"".$CFG_GLPI["root_doc"]."/lib/tiny_mce/tiny_mce.js\"></script>";
 			echo "<script language=\"javascript\" type=\"text/javascript\">";
-			echo "tinyMCE.init({	language : \"".$CFG_GLPI["languages"][$_SESSION["glpilanguage"]][3]."\",  mode : \"exact\",  elements: \"answer\", plugins : \"table\", theme : \"advanced\",  theme_advanced_toolbar_location : \"top\", theme_advanced_toolbar_align : \"left\",   theme_advanced_buttons1 : \"bold,italic,underline,strikethrough,fontsizeselect,formatselect,separator,justifyleft,justifycenter,justifyright,justifyfull,bullist,numlist,outdent,indent\", theme_advanced_buttons2 : \"forecolor,backcolor,separator,hr,separator,link,unlink,anchor,separator,tablecontrols,undo,redo,cleanup,code,separator\",  theme_advanced_buttons3 : \"\"});";
+			echo "tinyMCE.init({	
+				language : \"".$CFG_GLPI["languages"][$_SESSION["glpilanguage"]][3]."\",  
+				mode : \"exact\",  
+				elements: \"answer\", 
+				plugins : \"table\", 
+				theme : \"advanced\",  
+				theme_advanced_toolbar_location : \"top\", 
+				theme_advanced_toolbar_align : \"left\",   
+				theme_advanced_buttons1 : \"bold,italic,underline,strikethrough,fontsizeselect,formatselect,separator,justifyleft,justifycenter,justifyright,justifyfull,bullist,numlist,outdent,indent\", 
+				theme_advanced_buttons2 : \"forecolor,backcolor,separator,hr,separator,link,unlink,anchor,separator,tablecontrols,undo,redo,cleanup,code,separator\",  
+				theme_advanced_buttons3 : \"\"});";
 			echo "</script>";
+
 			echo "<form method='post' id='form_kb' name='form_kb' action=\"$target\">";
 		
 		
