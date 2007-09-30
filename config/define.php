@@ -24,7 +24,7 @@
 		"it_IT"=>array("Italiano","it_IT.php","it","it"),
 		"ja_JP"=>array("Japanese","ja_JP.php","ja","ja_utf-8"),
 		"pl_PL"=>array("Polish","pl_PL.php","pl","pl"),
-		"pt_PT"=>array("Português","pt_PT.php","br","pt"),
+		"pt_PT"=>array("Português","pt_PT.php","br","pt_br"),
 		"ro_RO"=>array("Romanian","ro_RO.php","ro","ro"),
 		"ru_RU"=>array("Russian","ru_RU.php","ru","ru"),
 		"zh_CN"=>array("Simplified Chinese","zh_CN.php","en","zh_cn_utf8"),
