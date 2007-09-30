@@ -1699,7 +1699,7 @@ function getRequestTypeName($value){
 			return $LANG["tracking"][35];
 			break;
 		case 6 :
-			return $LANG["tracking"][36];
+			return $LANG["common"][62];
 			break;
 		default : return "";
 	}	
@@ -1715,7 +1715,7 @@ function dropdownRequestType($name,$value=0){
 	echo "<option value='3' ".($value==3?" selected ":"").">".$LANG["title"][41]."</option>"; // phone
 	echo "<option value='4' ".($value==4?" selected ":"").">".$LANG["tracking"][34]."</option>"; // direct
 	echo "<option value='5' ".($value==5?" selected ":"").">".$LANG["tracking"][35]."</option>"; // writing
-	echo "<option value='6' ".($value==6?" selected ":"").">".$LANG["tracking"][36]."</option>"; // other
+	echo "<option value='6' ".($value==6?" selected ":"").">".$LANG["common"][62]."</option>"; // other
 
 	echo "</select>";	
 }

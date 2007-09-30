@@ -426,6 +426,13 @@ function commonHeader($title,$url,$sector="none",$item="none",$option="")
 				$menu['admin']['content']['user']['links']['add']="/front/user.form.php";
 			}
 
+			switch($option){
+				case 'ldap' :
+					$menu['admin']['content']['user']['links']['showall']="/front/ldap.php";
+					break;
+
+			}
+
 		}
 		if (haveRight("group","r")){
 			$menu['admin']['content']['group']['title']=$LANG["Menu"][36];
@@ -437,7 +444,7 @@ function commonHeader($title,$url,$sector="none",$item="none",$option="")
 				$menu['admin']['content']['group']['links']['add']="/front/group.form.php";
 			}
 
-			}
+		}
 
 		if (haveRight("entity","r")){
 			$menu['admin']['content']['entity']['title']=$LANG["Menu"][37];
