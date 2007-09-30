@@ -370,8 +370,10 @@ class User extends CommonDBTM {
 	}
 	function syncLdapGroups($input){
 		global $DB;
+
+
 		if (isset($input["auth_method"])&&$input["auth_method"]==AUTH_LDAP)
-		if (isset ($input["ID"]) && $input["ID"]>0 && isset ($input["_groups"]) && count($input["_groups"])) {
+		if (isset ($input["ID"]) && $input["ID"]>0) {
 			$auth_method = getAuthMethodsByID($input["auth_method"], $input["id_auth"]);
 			if (count($auth_method)){
 				$WHERE = "";
@@ -393,7 +395,7 @@ class User extends CommonDBTM {
 							FROM glpi_users_groups 
 							LEFT JOIN glpi_groups ON (glpi_groups.ID = glpi_users_groups.FK_groups) 
 							WHERE glpi_users_groups.FK_users='" . $input["ID"] . "' $WHERE";
-	
+
 				$result = $DB->query($query);
 				if ($DB->numrows($result) > 0) {
 					while ($data = $DB->fetch_array($result))
