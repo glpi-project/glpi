@@ -132,11 +132,13 @@ else if (isset($_POST["deletegroup"]))
 {
 	checkRight("entity","w");
 
-	if (count($_POST["item"]))
-		foreach ($_POST["item"] as $key => $val)
+	if (isset($_POST["item"])&&count($_POST["item"])){
+		foreach ($_POST["item"] as $key => $val){
 			deleteUserProfileEntity($key);
+		}
+		logEvent($_POST["FK_users"], "users", 4, "setup", $_SESSION["glpiname"]." ".$LANG["log"][62]);
+	}
 
-	logEvent($_POST["FK_users"], "users", 4, "setup", $_SESSION["glpiname"]." ".$LANG["log"][62]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }elseif (isset($_POST["switch_auth_internal"]))
 {
