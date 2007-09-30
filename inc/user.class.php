@@ -96,25 +96,36 @@ class User extends CommonDBTM {
 
 		$entities=getUserEntities($ID);
 		$view_all=isViewAllEntities();
-		foreach ($entities as $ent){
-			if ($view_all||haveAccessToEntity($ent)){
-				$query = "DELETE FROM glpi_users_profiles WHERE (FK_users = '$ID' AND FK_entities='$ent')";
-				$DB->query($query);
+		// Have right on all entities ?
+		$all=true;
+		if (!$view_all){
+			foreach ($entities as $ent){
+				if (!haveAccessToEntity($ent)){
+					$all=false;
+				}
 			}
 		}
-		$entities=getUserEntities($ID);
-		if (count($entities)>0){
-			return false;
-		} else {
+		if ($all){ // Mark as deleted
 			return true;
+		} else { // only delete profile
+			foreach ($entities as $ent){
+				if (haveAccessToEntity($ent)){
+					$all=false;
+					$query = "DELETE FROM glpi_users_profiles WHERE (FK_users = '$ID' AND FK_entities='$ent')";
+					$DB->query($query);
+				}
+			}
+			return false;
 		}
-
 	}
 	function cleanDBonMarkDeleted($ID) {
 	}
 
 	function cleanDBonPurge($ID) {
 		global $DB;
+
+		$query = "DELETE FROM glpi_users_profiles WHERE (FK_users = '$ID')";
+		$DB->query($query);
 
 		$query = "DELETE from glpi_users_groups WHERE FK_users = '$ID'";
 		$DB->query($query);
