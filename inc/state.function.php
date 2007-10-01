@@ -83,7 +83,7 @@ function showStateSummary($target){
 		
 		while ($data=$DB->fetch_array($result)){
 			$tot=0;
-			echo "<tr class='tab_bg_2'><td class='center'><strong><a href='".$CFG_GLPI['root_doc']."/front/state.php?reset_before=1&amp;contains[0]=Reparation&amp;field[0]=31&amp;sort=1&amp;start=0'>".$data["name"]."</a></strong></td>";
+			echo "<tr class='tab_bg_2'><td class='center'><strong><a href='".$CFG_GLPI['root_doc']."/front/state.php?reset_before=1&amp;contains[0]=".$data["name"]."&amp;field[0]=31&amp;sort=1&amp;start=0'>".$data["name"]."</a></strong></td>";
 	
 			foreach ($state_type as $type){
 				echo "<td class='center'>";
