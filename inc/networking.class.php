@@ -156,6 +156,7 @@ class Netdevice extends CommonDBTM {
 
 	function pre_deleteItem($ID) {
 		removeConnector($ID);	
+		return true;
 	}
 
 
