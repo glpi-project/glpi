@@ -96,7 +96,8 @@ class ReservationResa extends CommonDBTM {
 					$mail->send();
 				}
 
-			}
+		}
+		return true;
 	}
 
 
