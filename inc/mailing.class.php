@@ -144,9 +144,9 @@ class Mailing
 					ON (glpi_users_profiles.FK_users = glpi_users.ID 
 						AND glpi_users_profiles.FK_entities='".$this->job->fields['FK_entities']."')
 					INNER JOIN glpi_profiles 
-					ON (glpi_profiles.ID = glpi_users_profiles.FK_profiles AND glpi_profiles.show_full_ticket = '1') ";
+					ON (glpi_profiles.ID = glpi_users_profiles.FK_profiles AND glpi_profiles.interface='central' AND glpi_profiles.show_full_ticket = '1') ";
 				$joinprofile=	"INNER JOIN glpi_profiles 
-					ON (glpi_profiles.ID = glpi_users_profiles.FK_profiles AND glpi_profiles.show_full_ticket = '1') ";
+					ON (glpi_profiles.ID = glpi_users_profiles.FK_profiles AND glpi_profiles.interface='central' AND glpi_profiles.show_full_ticket = '1') ";
 
 			}
 
