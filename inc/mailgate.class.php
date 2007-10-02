@@ -237,10 +237,9 @@ class MailCollect  extends receiveMail {
 		//  Who is the user ?
 		$query="SELECT ID from glpi_users WHERE email='".$head['from']."'";
 		$result=$DB->query($query);
-		$glpiID="";
-			if ($result&&$DB->numrows($result))
-				$glpiID=$DB->result($result,0,"ID");
-		$tkt['author']=$glpiID;
+		if ($result&&$DB->numrows($result)){
+			$tkt['author']=$DB->result($result,0,"ID");
+		}
 		// Mail followup
 		$tkt['uemail']=$head['from'];
 		$tkt['emailupdates']=1;
@@ -250,11 +249,11 @@ class MailCollect  extends receiveMail {
 		//$tkt['Subject']= $head['subject'];   // not use for the moment
 		$tkt['name']=$this->textCleaner($this->decodeMimeString($head['subject']));
 		// Medium
-		$tkt['priority']= "3";
+		$tkt['priority']= 3;
 		// No hardware associated
-		$tkt['device_type']="0";
+		$tkt['device_type']=0;
 		// Mail request type
-		$tkt['request_type']="2";
+		$tkt['request_type']=2;
 		$body=$this->getBody($i);
 		
 		if (!empty($this->charset)&&function_exists('mb_convert_encoding')){
