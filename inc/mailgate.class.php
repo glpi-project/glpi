@@ -308,8 +308,8 @@ class MailCollect  extends receiveMail {
 				$mimeStr=$mimeStrs[$i];
 				$mimeStr->charset=strtolower($mimeStr->charset);
 				if (($mimeStr == 'default' && $inputCharset == $targetCharset)
-				|| $mimStr->charset == $targetCharset) {
-					$decodedStr.=$mimStr->text;
+				|| $mimeStr->charset == $targetCharset) {
+					$decodedStr.=$mimeStr->text;
 				} else {
 					if (in_array($mimeStr->charset, $encodings)){
 						$this->charset=	$mimeStr->charset;
