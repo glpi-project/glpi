@@ -416,11 +416,15 @@ class User extends CommonDBTM {
 							unset($input["_groups"][array_search($data["FK_groups"], $input["_groups"])]);
 						}
 				}
-	
-				foreach ($input["_groups"] as $group) {
-					addUserGroup($input["ID"], $group);
+
+				//If the user needs to be added to one group or more
+				if (isset($input["_groups"]) && count($input["_groups"])>0)
+				{
+					foreach ($input["_groups"] as $group) {
+						addUserGroup($input["ID"], $group);
+					}
+					unset ($input["_groups"]);
 				}
-				unset ($input["_groups"]);
 			}
 		}
 	}
