@@ -240,6 +240,7 @@ $LANG["common"][59]="Global";
 $LANG["common"][60]="Actif"; 
 $LANG["common"][61]="Erreur inconnue"; 
 $LANG["common"][62]="Autre"; 
+$LANG["common"][63]="Erreur(s)"; 
 
 $LANG["computers"][9]="OS"; 
 $LANG["computers"][10]="OS Numéro de série"; 
