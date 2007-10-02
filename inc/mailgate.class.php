@@ -173,25 +173,29 @@ class MailCollect  extends receiveMail {
 			if ($this->marubox){
 				// Get Total Number of Unread Email in mail box
 				$tot=$this->getTotalMails(); //Total Mails in Inbox Return integer value
-
+				$error=0;
 //				if (isset ($tot))
 //				{
 						
 					for($i=1;$i<=$tot;$i++)
 					{
 						$tkt= $this->buildTicket($i);
-						$this->deleteMails($i); // Delete Mail from Mail box
+						
 						$track=new job;
-						$track->add($tkt);
+						if ($track->add($tkt)){
+							$this->deleteMails($i); // Delete Mail from Mail box
+						} else {
+							$error++;
+						}
 					}
 					imap_expunge($this->marubox);
 //				}
 				$this->close_mailbox();   //Close Mail Box
 
 				if ($display){
-					$_SESSION["MESSAGE_AFTER_REDIRECT"].=$LANG["mailgate"][3].": $tot<br>";
+					$_SESSION["MESSAGE_AFTER_REDIRECT"].=$LANG["mailgate"][3].": $tot ".($error>0?"($error ".$LANG["common"][63].")":"")."<br>";
 				} else {
-					return $LANG["mailgate"][3].": $tot";
+					return $LANG["mailgate"][3].": $tot ".($error>0?"($error ".$LANG["common"][63].")":"");
 				}
 				
 			}
