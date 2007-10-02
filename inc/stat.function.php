@@ -882,6 +882,12 @@ function showItemStats($target,$date1,$date2,$start){
 	global $DB,$CFG_GLPI,$LANG;
 
 
+	$view_entities=(count($_SESSION["glpiactiveentities"])>1);
+
+	if ($view_entities){
+		$entities=getAllDatasFromTable('glpi_entities');
+	}
+
 	$output_type=HTML_OUTPUT;
 	if (isset($_GET["display_type"]))
 		$output_type=$_GET["display_type"];
@@ -893,7 +899,10 @@ function showItemStats($target,$date1,$date2,$start){
 	$date1.=" 00:00:00";
 
 
-	$query="SELECT device_type,computer,COUNT(*) AS NB FROM glpi_tracking WHERE date<= '".$date2."' AND date>= '".$date1."' ".getEntitiesRestrictRequest("AND","glpi_tracking")." GROUP BY device_type,computer ORDER BY NB DESC";
+	$query="SELECT device_type,computer,COUNT(*) AS NB 
+		FROM glpi_tracking 
+		WHERE date<= '".$date2."' AND date>= '".$date1."' ".getEntitiesRestrictRequest("AND","glpi_tracking")." 
+		GROUP BY device_type,computer ORDER BY NB DESC";
 	
 	$result=$DB->query($query);
 	$numrows=$DB->numrows($result);
@@ -915,6 +924,9 @@ function showItemStats($target,$date1,$date2,$start){
 		$header_num=1;
 		echo displaySearchNewLine($output_type);
 		echo displaySearchHeaderItem($output_type,$LANG["common"][1],$header_num);
+		if ($view_entities){
+			echo displaySearchHeaderItem($output_type,$LANG["entity"][0],$header_num);
+		}
 		echo displaySearchHeaderItem($output_type,$LANG["stats"][13],$header_num);
 		echo displaySearchEndLine($output_type);
 
@@ -929,6 +941,15 @@ function showItemStats($target,$date1,$date2,$start){
 				//echo "<tr class='tab_bg_2$del'><td>".$ci->getLink()."</td><td>".$data["NB"]."</td></tr>";
 				echo displaySearchNewLine($output_type,$i%2);
 				echo displaySearchItem($output_type,$ci->getLink(),$item_num,$i-$start+1,"align='center'"." ".($ci->getField("deleted")?" class='deleted' ":""));
+				if ($view_entities){
+					$ent=$ci->getField('FK_entities');
+					if ($ent==0){
+						$ent=$LANG["entity"][2];
+					} else {
+						$ent=$entities[$ent]['completename'];
+					}
+					echo displaySearchItem($output_type,$ent,$item_num,$i-$start+1,"align='center'"." ".($ci->getField("deleted")?" class='deleted' ":""));
+				}	
 				echo displaySearchItem($output_type,$data["NB"],$item_num,$i-$start+1,"align='center'"." ".($ci->getField("deleted")?" class='deleted' ":""));
 			}
 			$i++;

@@ -79,6 +79,18 @@ function countElementsInTableForEntity($table,$entity){
 	return countElementsInTable($table,"FK_entities='$entity'");
 }
 
+function getAllDatasFromTable($table){
+	global $DB;
+	$datas=array();
+	$query="SELECT * FROM $table";
+	if ($result=$DB->query($query)){
+		while ($data=$DB->fetch_assoc($result)){
+			$datas[$data['ID']]=$data;
+		}
+	}
+	return $datas;
+}
+
 /**
  * Get the Name of the element of a Dropdown Tree table
  *
