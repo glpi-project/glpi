@@ -119,7 +119,7 @@ function showAssociatedContact($instID) {
 	if ($number)
 	while ($data=$DB->fetch_array($result)) {
 		$ID=$data["ID_ent"];
-		echo "<tr class='tab_bg_1'>";
+		echo "<tr class='tab_bg_1".($data["deleted"]?"_2":"")."'>";
 		echo "<td class='center'><a href='".$CFG_GLPI["root_doc"]."/front/contact.form.php?ID=".$data["ID"]."'>".$data["name"]." ".$data["firstname"]."</a></td>";
 		echo "<td align='center'  width='100'>".$data["phone"]."</td>";
 		echo "<td align='center'  width='100'>".$data["phone2"]."</td>";
