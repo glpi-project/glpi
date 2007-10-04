@@ -114,7 +114,7 @@ checkRight("reports","r");
 
 				//inserer ces valeures dans un tableau
 
-				echo "<tr>";
+				echo "<tr class='tab_bg_1'>";
 				if($lieu) echo "<td>$lieu</td>"; else echo "<td> N/A </td>";	
 				if($switch) echo "<td>$switch</td>"; else echo "<td> N/A </td>";
 				if($ip) echo "<td>$ip</td>"; else echo "<td> N/A </td>";
