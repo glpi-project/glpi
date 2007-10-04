@@ -132,9 +132,9 @@ else
 	echo "</div>";  // fin box login
 
 	echo '<div class="error">';
-	echo "<noscript>";
+	echo "<noscript><p>";
 	echo $LANG["login"][26];
-	echo "</noscript>";
+	echo "</p></noscript>";
 	if (isset($_GET['cookie_error'])){
 		echo $LANG["login"][27];
 	}
