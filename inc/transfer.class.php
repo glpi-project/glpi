@@ -355,6 +355,7 @@ class Transfer extends CommonDBTM{
 				}
 			}
 		}
+		$this->item_search[CONTACT_TYPE]=$this->createSearchConditionUsingArray($this->needtobe_transfer[CONTACT_TYPE]);
 
 		// Document : keep / delete + clean unused / keep unused
 		if ($this->options['keep_documents']){
@@ -1015,10 +1016,10 @@ class Transfer extends CommonDBTM{
 								WHERE FK_contract='$item_ID'";
 							if ($result_remaining=$DB->query($query)){
 								if ($DB->result($result_remaining,0,'CPT')==0){
-									if ($clean==1){
+									if ($this->options['clean_contracts']==1){
 										$contract->delete(array('ID'=>$item_ID));
 									} 
-									if ($clean==2) { // purge
+									if ($this->options['clean_contracts']==2) { // purge
 										$contract->delete(array('ID'=>$item_ID),1);
 									}
 								}
@@ -1132,10 +1133,10 @@ class Transfer extends CommonDBTM{
 								WHERE FK_doc='$item_ID'";
 							if ($result_remaining=$DB->query($query)){
 								if ($DB->result($result_remaining,0,'CPT')==0){
-									if ($clean==1){
+									if ($this->options['clean_documents']==1){
 										$document->delete(array('ID'=>$item_ID));
 									} 
-									if ($clean==2) { // purge
+									if ($this->options['clean_documents']==2) { // purge
 										$document->delete(array('ID'=>$item_ID),1);
 									}
 								}
@@ -1553,17 +1554,18 @@ class Transfer extends CommonDBTM{
 								$need_clean_process=true;
 							}
 						} else {
-							// No
-							// Can be transfer without copy ? = all linked items need to be transfer (so not copy)
-							$canbetransfer=true;
-							// No items to transfer -> exists links
-							$query_search="SELECT count(*) AS CPT 
+							$canbetransfer=false;
+							// Transfer enterprise : is the contact used for another enterprise ?
+							if ($ID==$newID){
+								$query_search="SELECT count(*) AS CPT 
 									FROM glpi_contact_enterprise 
-									WHERE FK_contact='$item_ID' AND FK_enterprise NOT IN ".$this->item_search[ENTERPRISE_TYPE];
-							$result_search = $DB->query($query_search);
-							if ($DB->result($result_search,0,'CPT')>0){
-								$canbetransfer=false;
+									WHERE FK_contact='$item_ID' AND FK_enterprise <> $ID";
+								$result_search = $DB->query($query_search);
+								if ($DB->result($result_search,0,'CPT')>0){
+									$canbetransfer=false;
+								}
 							}
+
 							// Yes : transfer 
 							if ($canbetransfer){
 								$this->transferItem(CONTACT_TYPE,$item_ID,$item_ID);
@@ -1617,10 +1619,10 @@ class Transfer extends CommonDBTM{
 								WHERE FK_contact='$item_ID'";
 							if ($result_remaining=$DB->query($query)){
 								if ($DB->result($result_remaining,0,'CPT')==0){
-									if ($clean==1){
+									if ($this->options['clean_contacts']==1){
 										$contact->delete(array('ID'=>$item_ID));
 									} 
-									if ($clean==2) { // purge
+									if ($this->options['clean_contacts']==2) { // purge
 										$contact->delete(array('ID'=>$item_ID),1);
 									}
 								}
