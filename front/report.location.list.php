@@ -103,7 +103,7 @@ if (isset($_POST["location"])&&$_POST["location"]){
 
 			//inserer ces valeures dans un tableau
 
-			echo "<tr>";	
+			echo "<tr class='tab_bg_1'>";	
 			if($lieu) echo "<td>$lieu</td>"; else echo "<td> N/A </td>";
 			if($prise) echo "<td>$prise</td>"; else echo "<td> N/A </td>";
 			if($switch) echo "<td>$switch</td>"; else echo "<td> N/A </td>";

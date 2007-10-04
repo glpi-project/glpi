@@ -103,7 +103,7 @@ if (isset($query)&&count($query)){
 			echo "<th>".$LANG["search"][9]."</th>";
 			echo "</tr>";
 			while( $data = $DB->fetch_array($result)){
-				echo "<tr>";	
+				echo "<tr class='tab_bg_1'>";	
 				if($data['itemname']) {
 					echo "<td> ".$data['itemname']." </td>"; 
 				} else { 
