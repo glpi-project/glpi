@@ -1466,7 +1466,12 @@ function printHelpDesk ($ID,$from_helpdesk) {
 	echo "<input type='hidden' name='FK_entities' value='".$_SESSION["glpiactive_entity"]."'>";
 	echo "<div class='center'><table  class='tab_cadre'>";
 
-	echo "<tr><th colspan='2'>".$LANG["help"][1].":</th></tr>";
+	echo "<tr><th colspan='2'>".$LANG["help"][1].": ";
+	if (isMultiEntitiesMode()){
+		echo "&nbsp;(".getDropdownName("glpi_entities",$_SESSION["glpiactive_entity"]).")";
+	}
+
+	echo "</th></tr>";
 	echo "<tr class='tab_bg_1'>";
 	echo "<td>".$LANG["help"][2].": </td>";
 	echo "<td>";
