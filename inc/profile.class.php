@@ -473,8 +473,9 @@ class Profile extends CommonDBTM{
 		dropdownNoneReadWrite("rule_softwarecategories",$this->fields["rule_softwarecategories"],1,1,1);
 		echo "</td>";
 		echo "<td class='tab_bg_4' colspan='2'></td>";
-		echo "<td class='tab_bg_4' colspan='2'></td>";
-		echo "</tr>";
+		echo "<td class='tab_bg_4'>".$LANG["transfer"][1].":</td><td>";
+		dropdownNoneReadWrite("transfer",$this->fields["transfer"],1,1,1);
+		echo "</td></tr>";
 
 		echo "<tr class='tab_bg_4'>";
 		echo "<td class='tab_bg_4'>".$LANG["Menu"][35].":</td><td>";
