@@ -77,7 +77,7 @@ title=\"".$ref_pic_text."\" ></td>";
  * @param $item item corresponding to the page displayed
  *
  **/
-function commonHeader($title,$url,$sector="none",$item="none",$option="")
+function commonHeader($title,$url='',$sector="none",$item="none",$option="")
 {
 	// Print a nice HTML-head for every page
 
@@ -871,7 +871,7 @@ function displayMessageAfterRedirect(){
  * @param $title title of the page
  * @param $url not used anymore.
  **/
-function helpHeader($title,$url) {
+function helpHeader($title,$url='') {
 	// Print a nice HTML-head for help page
 
 	global $CFG_GLPI,$LANG, $CFG_GLPI,$HEADER_LOADED,$PLUGIN_HOOKS ;
@@ -1090,6 +1090,150 @@ function helpHeader($title,$url) {
 	displayMessageAfterRedirect();
 }
 
+
+/**
+ * Print a simple HTML head with links
+ *
+ *
+ * @param $title title of the page
+ * @param $links links to display
+ **/
+function simpleHeader($title,$links=array()) {
+	// Print a nice HTML-head for help page
+
+	global $CFG_GLPI,$LANG, $CFG_GLPI,$HEADER_LOADED ;
+
+	if ($HEADER_LOADED) return;
+	$HEADER_LOADED=true;
+
+	// Override list-limit if choosen
+	if (isset($_POST['list_limit'])) {
+		$_SESSION['glpilist_limit']=$_POST['list_limit'];
+	}
+
+	// Send extra expires header if configured
+	if ($CFG_GLPI["sendexpire"]) {
+		header_nocache(); 
+	}
+	// Send UTF8 Headers
+	header("Content-Type: text/html; charset=UTF-8");
+
+	// Start the page
+	echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">";
+	echo "<html><head><title>GLPI Helpdesk - ".$title."</title>";
+	echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8 \" >";
+	echo "<link rel='shortcut icon' type='images/x-icon' href='".$CFG_GLPI["root_doc"]."/pics/favicon.ico' >";
+	// Send extra expires header if configured
+
+	if ($CFG_GLPI["sendexpire"]) {
+		echo "<meta http-equiv=\"Expires\" content=\"Fri, Jun 12 1981 08:20:00 GMT\">\n";
+		echo "<meta http-equiv=\"Pragma\" content=\"no-cache\">\n";
+		echo "<meta http-equiv=\"Cache-Control\" content=\"no-cache\">\n";
+	}
+
+	// Some Javascript-Functions which we may need later
+
+	echo "<script type=\"text/javascript\" src='".$CFG_GLPI["root_doc"]."/script.js'></script>";
+
+	// AJAX library
+	echo "<script type=\"text/javascript\" src='".$CFG_GLPI["root_doc"]."/lib/scriptaculous/prototype.js'></script>";
+	echo "<script type=\"text/javascript\" src='".$CFG_GLPI["root_doc"]."/lib/scriptaculous/scriptaculous.js'></script>";
+
+
+	// Appel CSS
+
+	echo "<link rel='stylesheet'  href='".$CFG_GLPI["root_doc"]."/css/styles.css' type='text/css' media='screen' >";
+	// surcharge CSS hack for IE
+	echo "<!--[if lte IE 6]>" ;
+ 	echo "<link rel='stylesheet' href='".$CFG_GLPI["root_doc"]."/css/styles_ie.css' type='text/css' media='screen' >\n";
+ 	echo "<![endif]-->";
+	echo "<link rel='stylesheet' type='text/css' media='print' href='".$CFG_GLPI["root_doc"]."/css/print.css' >";
+
+
+	// Calendar scripts 
+	echo "<style type=\"text/css\">@import url(".$CFG_GLPI["root_doc"]."/lib/calendar/aqua/theme.css);</style>";
+	echo "<script type=\"text/javascript\" src=\"".$CFG_GLPI["root_doc"]."/lib/calendar/calendar.js\"></script>";
+	echo "<script type=\"text/javascript\" src=\"".$CFG_GLPI["root_doc"]."/lib/calendar/lang/calendar-".$CFG_GLPI["languages"][$_SESSION["glpilanguage"]][2].".js\"></script>";
+	echo "<script type=\"text/javascript\" src=\"".$CFG_GLPI["root_doc"]."/lib/calendar/calendar-setup.js\"></script>";
+
+
+	// End of Head
+	echo "</head>\n";
+
+	// Body 
+	echo "<body>";
+
+	// Main Headline
+	echo "<div id='header'>";
+		echo "<div id='c_logo' ><a href=\"".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php\" accesskey=\"0\"  title=\"".$LANG["central"][5]."\"><span class='invisible'>Logo</span></a></div>";
+
+		// Les préférences + lien déconnexion 
+		echo "<div id='c_preference' >";
+		echo "<div class='sep'></div>\n"; 
+		echo "</div>\n"; 
+		//-- Le moteur de recherche -->
+		echo "<div id='c_recherche' >\n"; 
+		/*
+		echo "<form id='recherche' action=''>\n"; 
+		echo "	<div id='boutonRecherche'><input type='submit' value='OK' /></div>\n"; 
+		echo "	<div id='champRecherche'><input type='text' value='Recherche' /></div>	\n"; 		
+		echo "</form>\n"; 
+		*/
+		echo "<div class='sep'></div>\n"; 
+		echo "</div>";
+
+
+		//<!-- Le menu principal -->
+		echo "<div id='c_menu'>";
+		echo "	<ul id='menu'>";
+		
+	
+		// Build the navigation-elements
+		if (count($links)){
+			$i=1;
+			foreach ($links as $name => $link){
+				echo "	<li id='menu$i' >";
+				echo "<a href=\"$link\" title=\"".$name."\"   class='itemP'>".$name."</a>";
+				echo "</li>";	
+				$i++;
+			}
+		
+		}
+			
+		echo "</ul>";		
+		echo "</div>";
+		// End navigation bar
+	
+		// End headline
+		
+		///Le sous menu contextuel 1
+		echo "<div id='c_ssmenu1' >";
+		echo "</div>";
+
+		//  Le fil d arianne 
+		echo "<div id='c_ssmenu2' >";
+		echo "	</div>";
+		
+		echo "</div>\n"; // fin header
+
+		echo "<div  id='page' >";
+		
+	
+	
+	
+
+	// call function callcron() every 5min
+	if (isset($_SESSION["glpicrontimer"])){
+		if (($_SESSION["glpicrontimer"]-time())>300){
+			callCron();
+			$_SESSION["glpicrontimer"]=time();
+		}
+	} else $_SESSION["glpicrontimer"]=time();
+
+	displayMessageAfterRedirect();
+}
+
+
 /**
  * Print a nice HTML head with no controls
  *
@@ -1097,7 +1241,7 @@ function helpHeader($title,$url) {
  * @param $title title of the page
  * @param $url not used anymore.
  **/
-function nullHeader($title,$url) {
+function nullHeader($title,$url='') {
 	global $CFG_GLPI,$HEADER_LOADED,$LANG ;
 	if ($HEADER_LOADED) return;
 	$HEADER_LOADED=true;
@@ -1187,7 +1331,7 @@ function nullHeader($title,$url) {
 }
 
 
-function popHeader($title,$url)
+function popHeader($title,$url='')
 {
 	// Print a nice HTML-head for every page
 
