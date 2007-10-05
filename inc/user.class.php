@@ -385,7 +385,7 @@ class User extends CommonDBTM {
 		if (isset($input["auth_method"])&&$input["auth_method"]==AUTH_LDAP)
 		if (isset ($input["ID"]) && $input["ID"]>0) {
 			$auth_method = getAuthMethodsByID($input["auth_method"], $input["id_auth"]);
-			if (count($auth_method)){
+			if (count($auth_method)&&isset($input["_groups"])){
 				$WHERE = "";
 				switch ($auth_method["ldap_search_for_groups"]) {
 					case 0 : // user search
@@ -418,7 +418,7 @@ class User extends CommonDBTM {
 				}
 
 				//If the user needs to be added to one group or more
-				if (isset($input["_groups"]) && count($input["_groups"])>0)
+				if (count($input["_groups"])>0)
 				{
 					foreach ($input["_groups"] as $group) {
 						addUserGroup($input["ID"], $group);
