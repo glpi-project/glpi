@@ -1691,6 +1691,7 @@ function addWhere ($link,$nott,$type,$ID,$val,$meta=0){
 		case "glpi_phones.date_mod":
 		case "glpi_monitors.date_mod":
 		case "glpi_contracts.begin_date":
+		case "glpi_docs.date_mod":
 		case "glpi_infocoms.buy_date":
 		case "glpi_infocoms.use_date":
 		case "state_types.date_mod":
@@ -1874,6 +1875,7 @@ function displayConfigItem ($type,$field){
 		case "glpi_phones.date_mod":
 		case "glpi_software.date_mod":
 		case "glpi_monitors.date_mod":
+		case "glpi_docs.date_mod":
 		case "glpi_ocs_config.date_mod" :
 		case "glpi_users.last_login":
 		case "glpi_users.date_mod":	
@@ -2400,6 +2402,7 @@ function giveItem ($type,$field,$data,$num,$linkfield=""){
 		case "glpi_phones.date_mod":
 		case "glpi_software.date_mod":
 		case "glpi_monitors.date_mod":
+		case "glpi_docs.date_mod":
 		case "glpi_ocs_config.date_mod" :
 		case "glpi_users.last_login":
 		case "glpi_users.date_mod":	
