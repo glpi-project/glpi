@@ -1230,7 +1230,7 @@ function simpleHeader($title,$links=array()) {
 		}
 	} else $_SESSION["glpicrontimer"]=time();
 
-	displayMessageAfterRedirect();
+//	displayMessageAfterRedirect();
 }
 
 
