@@ -55,7 +55,7 @@ if (isset($_POST["delete"])){
 
 checkRight("user","w");
 
-commonHeader($LANG["setup"][142]." ".$LANG["ruleldap"][1],$_SERVER['PHP_SELF'],"admin","ldap");
+commonHeader($LANG["setup"][142]." ".$LANG["ruleldap"][1],$_SERVER['PHP_SELF'],"admin","rule",-1);
 
 $params = new LdapCriteria;
 $params->showForm($_SERVER['PHP_SELF']);
