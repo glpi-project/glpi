@@ -56,11 +56,11 @@ if (isset($_GET["redirect"])){
 	$name="";
 	checkFaqAccess();
 	if (isset($_SESSION["glpiID"])){
-		helpHeader($LANG["title"][1],$_SERVER['PHP_SELF'],$_SESSION["glpiname"]);
+		helpHeader($LANG["Menu"][20],$_SERVER['PHP_SELF'],$_SESSION["glpiname"]);
 	} else {
 		$_SESSION["glpilanguage"]=$CFG_GLPI['default_language'];
 		// Anonymous FAQ
-		popHeader($LANG["title"][1],$_SERVER['PHP_SELF']);
+		simpleHeader($LANG["Menu"][20],array($LANG["Menu"][20]=>$_SERVER['PHP_SELF']));
 	}
 	
 	if(!isset($_GET["start"])) $_GET["start"] = 0;
