@@ -1782,7 +1782,6 @@ $SEARCH_OPTION[CONTACT_TYPE][80]['linkfield']='FK_entities';
 $SEARCH_OPTION[CONTACT_TYPE][80]['name']=$LANG["entity"][0];
 $SEARCH_OPTION[CONTACT_TYPE][80]['meta']=0;
 
-
 //////ENTERPRISE_TYPE
 
 $SEARCH_OPTION[ENTERPRISE_TYPE]['common']=$LANG["common"][32];
@@ -2133,6 +2132,13 @@ $SEARCH_OPTION[DOCUMENT_TYPE][80]['field']='completename';
 $SEARCH_OPTION[DOCUMENT_TYPE][80]['linkfield']='FK_entities';
 $SEARCH_OPTION[DOCUMENT_TYPE][80]['name']=$LANG["entity"][0];
 $SEARCH_OPTION[DOCUMENT_TYPE][80]['meta']=0;
+
+$SEARCH_OPTION[DOCUMENT_TYPE][19]['table']='glpi_docs';
+$SEARCH_OPTION[DOCUMENT_TYPE][19]['field']='date_mod';
+$SEARCH_OPTION[DOCUMENT_TYPE][19]['linkfield']='';
+$SEARCH_OPTION[DOCUMENT_TYPE][19]['name']=$LANG["common"][26];
+$SEARCH_OPTION[DOCUMENT_TYPE][19]['meta']=1;
+
 
 //////USER_TYPE
 
