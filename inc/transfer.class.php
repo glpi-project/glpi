@@ -153,7 +153,7 @@ class Transfer extends CommonDBTM{
 				}
 			}
 			// Tickets
-			$OTHER_TYPES = array(TRACKING_TYPE);
+			$OTHER_TYPES = array(TRACKING_TYPE,GROUP_TYPE);
 			foreach ($OTHER_TYPES as $type){
 				$this->inittype=$type;
 				if (isset($items[$type])&&count($items[$type])){
