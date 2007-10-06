@@ -769,7 +769,7 @@ class Rule extends CommonDBTM{
 				
 				//If the value is not an array
 				if (!is_array($input[$criteria->fields["criteria"]])){
-					$value=$this->getCriteriaValueToMatch($criteria->fields["criteria"],$criteria->fields["condition"],$input[$criteria->fields["criteria"]]);
+					$value=$criteria->getValueToMatch($criteria->fields["condition"],$input[$criteria->fields["criteria"]]);
 					$results[] = matchRules($value,$criteria->fields["condition"],$criteria->fields["pattern"]);
 				} else	{
 					//If the value if, in fact, an array of values
@@ -777,7 +777,7 @@ class Rule extends CommonDBTM{
 					if (in_array($criteria->fields["condition"],array(PATTERN_IS_NOT,PATTERN_NOT_CONTAIN,REGEX_NOT_MATCH))){
 						$res = true;
 						foreach($input[$criteria->fields["criteria"]] as $tmp){
-							$value=$this->getCriteriaValueToMatch($criteria->fields["criteria"],$criteria->fields["condition"],$tmp);
+							$value=$criteria->getValueToMatch($criteria->fields["condition"],$tmp);
 							$res &= matchRules($value,$criteria->fields["condition"],$criteria->fields["pattern"]);
 						}
 	
@@ -787,7 +787,7 @@ class Rule extends CommonDBTM{
 					 } else {
 						$res = false;
 						foreach($input[$criteria->fields["criteria"]] as $tmp){
-							$value=$this->getCriteriaValueToMatch($criteria->fields["criteria"],$criteria->fields["condition"],$tmp);
+							$value=$criteria->getValueToMatch($criteria->fields["condition"],$tmp);
 
 							$res |= matchRules($value,$criteria->fields["condition"],$criteria->fields["pattern"]);
 						}
@@ -1049,46 +1049,6 @@ class Rule extends CommonDBTM{
 	}
 
 	/**
- 	* Return a value associated with a pattern associated to a criteria to compare it
- 	* @param $ID the given criteria
-        * @param $condition condition used
- 	* @param $initValue the pattern
- 	*/
- 	function getCriteriaValueToMatch($ID,$condition,$initValue)
-	{
-		$crit=$this->getCriteria($ID);
-		
-		if (empty($crit['type'])){
-			return $initValue;
-		} else {
-			
-			switch ($crit['type']){
-				case "dropdown":
-					if ($condition!=PATTERN_IS&&$condition!=PATTERN_IS_NOT){
-						return getDropdownName($crit["table"],$initValue);
-					}
-					break;
-				case "dropdown_users":
-					if ($condition!=PATTERN_IS&&$condition!=PATTERN_IS_NOT){
-						return getUserName($initValue);
-					}
-					break;
-				case "dropdown_request_type":
-					if ($condition!=PATTERN_IS&&$condition!=PATTERN_IS_NOT){
-						return getRequestTypeName($initValue);
-					}
-					break;
-				case "dropdown_priority":
-					if ($condition!=PATTERN_IS&&$condition!=PATTERN_IS_NOT){
-						return getPriorityName($initValue);
-					} 
-					break;
-			}
-		}
-		return $initValue;
-	}
-
-	/**
  	* Return a value associated with a pattern associated to a criteria
  	* @param $ID the given action
  	* @param $value the value
@@ -1217,6 +1177,42 @@ class RuleCriteria extends CommonDBTM {
 		
 	}
 	
+	/**
+ 	* Return a value associated with a pattern associated to a criteria to compare it
+    * @param $condition condition used
+ 	* @param $initValue the pattern
+ 	*/
+ 	function getValueToMatch($condition,$initValue)
+	{
+		if (empty($this->type)){
+			return $initValue;
+		} else {
+			
+			switch ($this->type){
+				case "dropdown":
+					if ($condition!=PATTERN_IS&&$condition!=PATTERN_IS_NOT){
+						return getDropdownName($this->table,$initValue);
+					}
+					break;
+				case "dropdown_users":
+					if ($condition!=PATTERN_IS&&$condition!=PATTERN_IS_NOT){
+						return getUserName($initValue);
+					}
+					break;
+				case "dropdown_request_type":
+					if ($condition!=PATTERN_IS&&$condition!=PATTERN_IS_NOT){
+						return getRequestTypeName($initValue);
+					}
+					break;
+				case "dropdown_priority":
+					if ($condition!=PATTERN_IS&&$condition!=PATTERN_IS_NOT){
+						return getPriorityName($initValue);
+					} 
+					break;
+			}
+		}
+		return $initValue;
+	}
 
 }
 	
