@@ -507,17 +507,15 @@ class Transfer extends CommonDBTM{
 				if ($type==CARTRIDGE_TYPE) {
 					$this->transferCompatiblePrinters($ID,$newID);
 				}
+
 				// Cartridges  and cartridges type linked to printer
 				if ($type==PRINTER_TYPE) {
 					$this->transferPrinterCartridges($ID,$newID);
 				}
 				// TODO Init transfer of contract / docs / software : check unused : if not ? what to do ?
-				if ($this->inittype==$type&&$type==DOCUMENT_TYPE&&$ID==$newID) {
+				//if ($this->inittype==$type&&$type==DOCUMENT_TYPE&&$ID==$newID) {
 				
-				}
-				// TODO Cartridges of cartridges types
-				if ($this->inittype==$type&&$type==CARTRIDGE_TYPE) {
-				}
+				//}
 
 				// TODO Users ???? : Update right to new entity ?
 				// TODO Linked Users ???? : Update right to new entity ?
@@ -1471,7 +1469,7 @@ class Transfer extends CommonDBTM{
 	}
 	function transferSingleEnterprise($ID){
 		global $DB;
-		// TODO clean system
+		// TODO clean system : needed ?
 		$ent=new Enterprise();
 		if ($this->options['keep_enterprises']&&$ent->getFromDB($ID)){
 			// Already transfer
