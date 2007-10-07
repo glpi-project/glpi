@@ -386,6 +386,10 @@ class User extends CommonDBTM {
 		if (isset ($input["ID"]) && $input["ID"]>0) {
 			$auth_method = getAuthMethodsByID($input["auth_method"], $input["id_auth"]);
 			if (count($auth_method)&&isset($input["_groups"])){
+				// Clean groups
+				$input["_groups"] = array_unique ($input["_groups"]);
+
+
 				$WHERE = "";
 				switch ($auth_method["ldap_search_for_groups"]) {
 					case 0 : // user search
@@ -397,9 +401,8 @@ class User extends CommonDBTM {
 					case 2 : // user+ group search
 						$WHERE = "AND ((glpi_groups.ldap_field <> '' AND glpi_groups.ldap_field IS NOT NULL AND glpi_groups.ldap_value<>'' AND glpi_groups.ldap_value IS NOT NULL) 
 																			OR (ldap_group_dn<>'' AND ldap_group_dn IS NOT NULL) )";
-						// Clean groups
-						$input["_groups"] = array_unique ($input["_groups"]);
 						break;
+
 				}
 	
 				// Delete not available groups like to LDAP
