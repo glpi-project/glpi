@@ -3358,6 +3358,7 @@ function setEntityLock($entity) {
 	if (flock($fp, LOCK_EX)) {
 		return $fp;
 	} else {
+		fclose($fp);
 		return false;
 	}
 }
