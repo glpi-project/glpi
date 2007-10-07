@@ -264,7 +264,7 @@ class RuleCollection {
 
 			foreach ($this->rule_list as $rule){
 				$output["_rule_process"]=false;
-				$output=$rule->process($input,$output,$params);
+				$rule->process($input,$output,$params);
 				if ($output["_rule_process"]&&$this->stop_on_first_match){
 					unset($output["_rule_process"]);
 					return $output;
@@ -755,79 +755,41 @@ class Rule extends CommonDBTM{
 	* @param $params parameters for all internal functions
 	* @return the output array updated by actions. If rule matched add field _rule_process to return value
 	*/
-	function process($input,$output,$params)
+	function process(&$input,&$output,&$params)
 	{
 		if (count($this->criterias))	{
 			$input=$this->prepareInputDataForProcess($input,$params);
-			$results=array();
-			foreach ($this->criterias as $criteria){
 
-				// Undefine criteria field : set to blank
-				if (!isset($input[$criteria->fields["criteria"]])){
-					$input[$criteria->fields["criteria"]]='';
+			reset($this->criterias);
+			if ($this->fields["match"]==AND_MATCHING){
+				$doactions=true;			
+				foreach ($this->criterias as $criteria){
+					$doactions &= $criteria->process($input);
+					if (!$doactions) break;
 				}
-				
-				//If the value is not an array
-				if (!is_array($input[$criteria->fields["criteria"]])){
-					$value=$criteria->getValueToMatch($criteria->fields["condition"],$input[$criteria->fields["criteria"]]);
-					$results[] = matchRules($value,$criteria->fields["condition"],$criteria->fields["pattern"]);
-				} else	{
-					//If the value if, in fact, an array of values
-					// Negative condition : Need to match all condition (never be)
-					if (in_array($criteria->fields["condition"],array(PATTERN_IS_NOT,PATTERN_NOT_CONTAIN,REGEX_NOT_MATCH))){
-						$res = true;
-						foreach($input[$criteria->fields["criteria"]] as $tmp){
-							$value=$criteria->getValueToMatch($criteria->fields["condition"],$tmp);
-							$res &= matchRules($value,$criteria->fields["condition"],$criteria->fields["pattern"]);
-						}
-	
-						$results[] = $res;	
-
-					// Positive condition : Need to match one
-					 } else {
-						$res = false;
-						foreach($input[$criteria->fields["criteria"]] as $tmp){
-							$value=$criteria->getValueToMatch($criteria->fields["condition"],$tmp);
-
-							$res |= matchRules($value,$criteria->fields["condition"],$criteria->fields["pattern"]);
-						}
-	
-						$results[] = $res;	
-					}
-				}	
-			}
-			
-			if (count($results)){
+			} else { // OR MATCHING
 				$doactions=false;
-				if ($this->fields["match"]==AND_MATCHING){
-					$doactions=true;
-					foreach ($results as $res){
-						$doactions&=$res;
-					}
-				} else { // OR MATCHING
-					$doactions=false;
-					foreach ($results as $res){
-						$doactions|=$res;
-					}
-
+				foreach ($this->criterias as $criteria){
+					$doactions |= $criteria->process($input);
+					if ($doactions) break;
 				}
 
-				if ($doactions){
-					$output=$this->executeActions($output,$params);
-					
-					//Hook
-					$hook_params["rule_type"]=$this->rule_type;
-					$hook_params["ruleid"]=$this->fields["ID"];
-					$hook_params["input"]=$input;
-					$hook_params["output"]=$output;
-					
-					doHook("rule_matched",$hook_params);
-					$output["_rule_process"]=true;
-				}
 			}
 			
+			if ($doactions){
+				$output=$this->executeActions($output,$params);
+				
+				//Hook
+				$hook_params["rule_type"]=$this->rule_type;
+				$hook_params["ruleid"]=$this->fields["ID"];
+				$hook_params["input"]=$input;
+				$hook_params["output"]=$output;
+				
+				doHook("rule_matched",$hook_params);
+				$output["_rule_process"]=true;
+			}			
 		}
-		return $output; 
+		// return $output; 
 	}
 
 	/**
@@ -1178,11 +1140,52 @@ class RuleCriteria extends CommonDBTM {
 	}
 	
 	/**
+	* Process a criteria of a rule
+	* @param $input the input data used to check criterias
+	*/
+	function process(&$input)
+	{
+
+		// Undefine criteria field : set to blank
+		if (!isset($input[$this->fields["criteria"]])){
+			$input[$this->fields["criteria"]]='';
+		}
+		
+		//If the value is not an array
+		if (!is_array($input[$this->fields["criteria"]])){
+			$value=$this->getValueToMatch($this->fields["condition"],$input[$this->fields["criteria"]]);
+			$res = matchRules($value,$this->fields["condition"],$this->fields["pattern"]);
+		} else	{
+			//If the value if, in fact, an array of values
+			// Negative condition : Need to match all condition (never be)
+			if (in_array($this->fields["condition"],array(PATTERN_IS_NOT,PATTERN_NOT_CONTAIN,REGEX_NOT_MATCH))){
+				$res = true;
+				foreach($input[$this->fields["criteria"]] as $tmp){
+					$value=$this->getValueToMatch($this->fields["condition"],$tmp);
+					$res &= matchRules($value,$this->fields["condition"],$this->fields["pattern"]);
+					if (!$res) break;
+				}
+		
+			// Positive condition : Need to match one
+			 } else {
+				$res = false;
+				foreach($input[$this->fields["criteria"]] as $tmp){
+					$value=$this->getValueToMatch($this->fields["condition"],$tmp);
+					$res |= matchRules($value,$this->fields["condition"],$this->fields["pattern"]);
+					if ($res) break;
+				}
+	
+			}
+		}
+		return $res;	
+	}
+
+	/**
  	* Return a value associated with a pattern associated to a criteria to compare it
     * @param $condition condition used
  	* @param $initValue the pattern
  	*/
- 	function getValueToMatch($condition,$initValue)
+ 	function getValueToMatch($condition,&$initValue)
 	{
 		if (empty($this->type)){
 			return $initValue;
