@@ -1415,6 +1415,24 @@ function addToOcsArray($glpi_id, $toadd, $field) {
 
 }
 
+function getOcsLockableFields(){
+	return array (
+			"name",
+			"type",
+			"FK_glpi_enterprise",
+			"model",
+			"serial",
+			"comments",
+			"contact",
+			"domain",
+			"os",
+			"os_sp",
+			"os_version",
+			"os_license_number",
+			"FK_users"
+		);
+}
+
 function ocsEditLock($target, $ID) {
 	global $DB, $LANG, $SEARCH_OPTION;
 
@@ -1443,21 +1461,8 @@ function ocsEditLock($target, $ID) {
 		echo "<div class='center'>";
 		// Print lock fields for OCSNG
 
-		$lockable_fields = array (
-			"name",
-			"type",
-			"FK_glpi_enterprise",
-			"model",
-			"serial",
-			"comments",
-			"contact",
-			"domain",
-			"os",
-			"os_sp",
-			"os_version",
-			"os_license_number",
-			"FK_users"
-		);
+		$lockable_fields = getOcsLockableFields();
+
 		$locked = array_intersect(importArrayFromDB($data["computer_update"]), $lockable_fields);
 
 		if (count($locked)) {
