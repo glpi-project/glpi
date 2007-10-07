@@ -397,6 +397,8 @@ class User extends CommonDBTM {
 					case 2 : // user+ group search
 						$WHERE = "AND ((glpi_groups.ldap_field <> '' AND glpi_groups.ldap_field IS NOT NULL AND glpi_groups.ldap_value<>'' AND glpi_groups.ldap_value IS NOT NULL) 
 																			OR (ldap_group_dn<>'' AND ldap_group_dn IS NOT NULL) )";
+						// Clean groups
+						$input["_groups"] = array_unique ($input["_groups"]);
 						break;
 				}
 	
