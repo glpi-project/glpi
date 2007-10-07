@@ -240,7 +240,7 @@ $LANG["common"][59]="Globalny";
 $LANG["common"][60]="Aktywny"; 
 $LANG["common"][61]="Nieznany błąd."; 
 $LANG["common"][62]="Inny"; 
-$LANG["common"][63]="Error(s)"; 
+$LANG["common"][63]="Błędy"; 
 
 $LANG["computers"][9]="OS"; 
 $LANG["computers"][10]="Serial OS"; 
