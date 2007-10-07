@@ -240,6 +240,7 @@ $LANG["common"][59]="Globální";
 $LANG["common"][60]="Aktivní"; 
 $LANG["common"][61]="Unknown error"; 
 $LANG["common"][62]="Other"; 
+$LANG["common"][63]="Error(s)"; 
 
 $LANG["computers"][9]="OS"; 
 $LANG["computers"][10]="Sériové číslo OS"; 
