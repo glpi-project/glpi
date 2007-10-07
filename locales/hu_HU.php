@@ -240,6 +240,7 @@ $LANG["common"][59]="Globális";
 $LANG["common"][60]="Aktív"; 
 $LANG["common"][61]="Unknown error"; 
 $LANG["common"][62]="Other"; 
+$LANG["common"][63]="Error(s)"; 
 
 $LANG["computers"][9]="Operációs rendszer"; 
 $LANG["computers"][10]="OP.rsz. szériaszám"; 
