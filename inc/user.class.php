@@ -406,15 +406,17 @@ class User extends CommonDBTM {
 							LEFT JOIN glpi_groups ON (glpi_groups.ID = glpi_users_groups.FK_groups) 
 							WHERE glpi_users_groups.FK_users='" . $input["ID"] . "' $WHERE";
 
+
 				$result = $DB->query($query);
 				if ($DB->numrows($result) > 0) {
-					while ($data = $DB->fetch_array($result))
+					while ($data = $DB->fetch_array($result)){
 						if (!in_array($data["FK_groups"], $input["_groups"])) {
 							deleteUserGroup($data["ID"]);
 						} else {
 							// Delete found item in order not to add it again
 							unset($input["_groups"][array_search($data["FK_groups"], $input["_groups"])]);
 						}
+					}
 				}
 
 				//If the user needs to be added to one group or more
@@ -579,7 +581,7 @@ class User extends CommonDBTM {
 		);
 
 		$filter = "(& $group_condition ($group_field_member=$user_dn))";
-	
+
 		//Perform the search
 		$sr = ldap_search($ds, $ldap_base_dn, $filter, $attrs);
 
