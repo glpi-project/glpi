@@ -35,7 +35,7 @@
 
 
 define('GLPI_ROOT','..');
-$NEEDED_ITEMS=array("search","enterprise","tracking");
+$NEEDED_ITEMS=array("search","enterprise","tracking","ocsng");
 include (GLPI_ROOT."/inc/includes.php");
 header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
@@ -80,6 +80,19 @@ if (isset($_POST["action"])&&isset($_POST["type"])&&!empty($_POST["type"])){
 		case "add_transfer_list":
 			echo "<input type=\"submit\" name=\"massiveaction\" class=\"submit\" value=\"".$LANG["buttons"][2]."\" >";
 		break;
+		case "unlock_ocsng_field":
+			$fields['all']=$LANG["search"][7];
+			$fields+=getOcsLockableFields();
+			dropdownArrayValues("field",$fields);
+			
+			echo "&nbsp;<input type=\"submit\" name=\"massiveaction\" class=\"submit\" value=\"".$LANG["buttons"][2]."\" >";
+			break;	
+		case "unlock_ocsng_monitor";
+		case "unlock_ocsng_peripheral";
+		case "unlock_ocsng_printer";
+		case "unlock_ocsng_ip";
+			echo "<input type=\"submit\" name=\"massiveaction\" class=\"submit\" value=\"".$LANG["buttons"][2]."\" >";
+			break;
 		case "install":
 			dropdownSoftwareToInstall("lID",0,$_SESSION["glpiactive_entity"],1);
 		break;
