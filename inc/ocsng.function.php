@@ -1470,8 +1470,15 @@ function ocsEditLock($target, $ID) {
 		// Print lock fields for OCSNG
 
 		$lockable_fields = getOcsLockableFields();
-
-		$locked = array_intersect(importArrayFromDB($data["computer_update"]), $lockable_fields);
+		$locked = importArrayFromDB($data["computer_update"]);
+		if (count($locked)>0){
+			foreach ($locked as $key => $val){
+				if (!isset($lockable_fields[$val])){
+					unset($locked[$key]);
+				}
+			}
+		}
+		
 
 		if (count($locked)) {
 			echo "<form method='post' action=\"$target\">";
@@ -1479,13 +1486,14 @@ function ocsEditLock($target, $ID) {
 			echo "<table class='tab_cadre'>";
 			echo "<tr><th colspan='2'>" . $LANG["ocsng"][16] . "</th></tr>";
 			foreach ($locked as $key => $val) {
-				echo "<tr class='tab_bg_1'><td>" . $lockable_fields[$key] . "</td><td><input type='checkbox' name='lockfield[" . $key . "]'></td></tr>";
+				echo "<tr class='tab_bg_1'><td>" . $lockable_fields[$val] . "</td><td><input type='checkbox' name='lockfield[" . $key . "]'></td></tr>";
 			}
 			echo "<tr class='tab_bg_2'><td align='center' colspan='2'><input class='submit' type='submit' name='unlock_field' value='" . $LANG["buttons"][38] . "'></td></tr>";
 			echo "</table>";
 			echo "</form>";
-		} else
+		} else {
 			echo "<strong>" . $LANG["ocsng"][15] . "</strong>";
+		}
 		echo "</div>";
 
 		//Search locked monitors
