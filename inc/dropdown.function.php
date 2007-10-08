@@ -1307,8 +1307,15 @@ function dropdownMassiveAction($device_type,$deleted=0){
 			case COMPUTER_TYPE :
 				if ($isadmin){
 					echo "<option value=\"install\">".$LANG["buttons"][4]."</option>";
-					if ($CFG_GLPI['ocs_mode']&&(haveRight("ocsng","w") || haveRight("sync_ocsng","w"))){
-						echo "<option value=\"force_ocsng_update\">".$LANG["ocsng"][24]."</option>";
+					if ($CFG_GLPI['ocs_mode']){
+						if (haveRight("ocsng","w") || haveRight("sync_ocsng","w")){
+							echo "<option value=\"force_ocsng_update\">".$LANG["ocsng"][24]."</option>";
+						}
+						echo "<option value=\"unlock_ocsng_field\">".$LANG["buttons"][38]." ".$LANG["Menu"][33]." - ".$LANG["ocsng"][16]."</option>";
+						echo "<option value=\"unlock_ocsng_monitor\">".$LANG["buttons"][38]." ".$LANG["Menu"][33]." - ".$LANG["ocsng"][30]."</option>";
+						echo "<option value=\"unlock_ocsng_peripheral\">".$LANG["buttons"][38]." ".$LANG["Menu"][33]." - ".$LANG["ocsng"][32]."</option>";
+						echo "<option value=\"unlock_ocsng_printer\">".$LANG["buttons"][38]." ".$LANG["Menu"][33]." - ".$LANG["ocsng"][34]."</option>";
+						echo "<option value=\"unlock_ocsng_ip\">".$LANG["buttons"][38]." ".$LANG["Menu"][33]." - ".$LANG["ocsng"][50]."</option>";
 					}
 				}
 				break;

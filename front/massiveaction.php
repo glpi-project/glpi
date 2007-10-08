@@ -304,7 +304,44 @@ if (isset($_POST["device_type"])){
 					}
 				}
 			break;
-	
+			case "unlock_ocsng_field":
+				$fields=getOcsLockableFields();
+				if ($_POST['field']=='all'||isset($fields[$_POST['field']])){
+					foreach ($_POST["item"] as $key => $val){
+						if ($val==1) {
+							if ($_POST['field']=='all'){
+								replaceOcsArray($key,array(),"computer_update");
+							} else {
+								deleteInOcsArray($key,$_POST['field'],"computer_update",true);
+							}
+						}
+					}
+				}
+				break;
+			case "unlock_ocsng_monitor":
+			case "unlock_ocsng_printer":
+			case "unlock_ocsng_peripheral":
+			case "unlock_ocsng_ip":
+				foreach ($_POST["item"] as $key => $val){
+					if ($val==1) {
+						switch ($_POST["action"]){
+							case "unlock_ocsng_monitor":
+								ocsUnlockItems($key,"import_monitor");
+								break;
+							case "unlock_ocsng_printer":
+								ocsUnlockItems($key,"import_printers");
+								break;
+							case "unlock_ocsng_peripheral":
+								ocsUnlockItems($key,"import_peripheral");
+								break;
+							case "unlock_ocsng_ip":
+								ocsUnlockItems($key,"import_ip");
+								break;
+						}
+					}
+				}
+				break;
+
 			case "force_ocsng_update":
 				// First time
 				if (!isset($_GET['multiple_actions'])){

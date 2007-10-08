@@ -1357,7 +1357,7 @@ function mergeOcsArray($glpi_id, $tomerge, $field) {
 				FROM glpi_ocs_link 
 				WHERE glpi_id='$glpi_id'";
 	$result = $DB->query($query);
-	if ($DB->numrows($result))
+	if ($DB->numrows($result)){
 		if ($result = $DB->query($query)) {
 			$tab = importArrayFromDB($DB->result($result, 0, 0));
 			$newtab = array_merge($tomerge, $tab);
@@ -1367,21 +1367,26 @@ function mergeOcsArray($glpi_id, $tomerge, $field) {
 									WHERE glpi_id='$glpi_id'";
 			$DB->query($query);
 		}
+	}
 
 }
 
-function deleteInOcsArray($glpi_id, $todel, $field) {
+function deleteInOcsArray($glpi_id, $todel, $field,$is_value_to_del=false) {
 	global $DB;
 	$query = "SELECT $field FROM glpi_ocs_link WHERE glpi_id='$glpi_id'";
 	if ($result = $DB->query($query)) {
 		$tab = importArrayFromDB($DB->result($result, 0, 0));
-		unset ($tab[$todel]);
-		$query = "UPDATE glpi_ocs_link 
-							SET $field='" . exportArrayToDB($tab) . "' 
-							WHERE glpi_id='$glpi_id'";
-		$DB->query($query);
+		if ($is_value_to_del){
+			$todel=array_search($todel,$tab);
+		}
+		if (isset($tab[$todel])){
+			unset ($tab[$todel]);
+			$query = "UPDATE glpi_ocs_link 
+								SET $field='" . exportArrayToDB($tab) . "' 
+								WHERE glpi_id='$glpi_id'";
+			$DB->query($query);
+		}
 	}
-
 }
 
 function replaceOcsArray($glpi_id, $newArray, $field) {
@@ -1439,6 +1444,51 @@ function getOcsLockableFields(){
 			"location"=>$LANG["common"][15],
 			"FK_groups"=>$LANG["common"][35],
 		);
+}
+
+function ocsUnlockItems($glpi_id,$field){
+	global $DB;
+	
+	if (!in_array($field,array("import_monitor","import_printers","import_peripheral","import_ip"))){
+		return false;
+	}
+	$query = "SELECT $field 
+			FROM glpi_ocs_link 
+			WHERE glpi_id='$glpi_id'";
+	if ($result = $DB->query($query)) {
+		$tab = importArrayFromDB($DB->result($result, 0, 0));
+		$update_done=false;
+		
+		foreach ($tab as $key => $val) {
+			if ($val != "_version_070_") {
+				switch ($field){
+					case "import_monitor":
+					case "import_printers":
+					case "import_peripheral":
+						$querySearchLocked = "SELECT end1 FROM glpi_connect_wire WHERE ID='$key'";
+						break;
+					case "import_ip":
+						$querySearchLocked = "SELECT * FROM glpi_networking_ports WHERE on_device='$glpi_id' AND device_type='".COMPUTER_TYPE."' AND ifaddr='$val'";
+						break;
+					default :
+						return;
+				}
+				$resultSearch = $DB->query($querySearchLocked);
+				if ($DB->numrows($resultSearch) == 0) {
+					unset($tab[$key]);
+					$update_done=true;
+				}
+			}
+		}		
+		
+		if ($update_done){
+			$query = "UPDATE glpi_ocs_link 
+					SET $field='" . exportArrayToDB($tab) . "' 
+					WHERE glpi_id='$glpi_id'";
+			$DB->query($query);
+		}
+	}
+	
 }
 
 function ocsEditLock($target, $ID) {
@@ -2551,7 +2601,7 @@ function ocsUpdatePeripherals($device_type, $entity, $glpi_id, $ocs_id, $ocs_ser
 					deleteInOcsArray($glpi_id, $key, "import_monitor");
 					break;
 				case PRINTER_TYPE :
-					deleteInOcsArray($glpi_id, $key, "import_printer");
+					deleteInOcsArray($glpi_id, $key, "import_printers");
 					break;
 				case PERIPHERAL_TYPE :
 					deleteInOcsArray($glpi_id, $key, "import_peripheral");
