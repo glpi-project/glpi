@@ -1416,20 +1416,28 @@ function addToOcsArray($glpi_id, $toadd, $field) {
 }
 
 function getOcsLockableFields(){
+	global $LANG;
+	
 	return array (
-			"name",
-			"type",
-			"FK_glpi_enterprise",
-			"model",
-			"serial",
-			"comments",
-			"contact",
-			"domain",
-			"os",
-			"os_sp",
-			"os_version",
-			"os_license_number",
-			"FK_users"
+			"name"=>$LANG["common"][16],
+			"type"=>$LANG["common"][17],
+			"FK_glpi_enterprise"=>$LANG["common"][5],
+			"model"=>$LANG["common"][22],
+			"serial"=>$LANG["common"][19],
+			"otherserial"=>$LANG["common"][20],
+			"comments"=>$LANG["common"][25],
+			"contact"=>$LANG["common"][18],
+			"contact_num"=>$LANG["common"][21],
+			"domain"=>$LANG["setup"][89],
+			"network"=>$LANG["setup"][88],
+			"os"=>$LANG["computers"][9],
+			"os_sp"=>$LANG["computers"][53],
+			"os_version"=>$LANG["computers"][52],
+			"os_license_number"=>$LANG["computers"][10],
+			"os_license_id"=>$LANG["computers"][11],
+			"FK_users"=>$LANG["common"][34],
+			"location"=>$LANG["common"][15],
+			"FK_groups"=>$LANG["common"][35],
 		);
 }
 
@@ -1471,9 +1479,7 @@ function ocsEditLock($target, $ID) {
 			echo "<table class='tab_cadre'>";
 			echo "<tr><th colspan='2'>" . $LANG["ocsng"][16] . "</th></tr>";
 			foreach ($locked as $key => $val) {
-				foreach ($SEARCH_OPTION[COMPUTER_TYPE] as $key2 => $val2)
-					if ($val2["linkfield"] == $val || ($val2["table"] == "glpi_computers" && $val2["field"] == $val))
-						echo "<tr class='tab_bg_1'><td>" . $val2["name"] . "</td><td><input type='checkbox' name='lockfield[" . $key . "]'></td></tr>";
+				echo "<tr class='tab_bg_1'><td>" . $lockable_fields[$key] . "</td><td><input type='checkbox' name='lockfield[" . $key . "]'></td></tr>";
 			}
 			echo "<tr class='tab_bg_2'><td align='center' colspan='2'><input class='submit' type='submit' name='unlock_field' value='" . $LANG["buttons"][38] . "'></td></tr>";
 			echo "</table>";
@@ -1574,14 +1580,19 @@ function ocsEditLock($target, $ID) {
 		echo "<div class='center'>";
 		$locked_ip = importArrayFromDB($data["import_ip"]);
 		foreach ($locked_ip as $key => $val) {
-			if (!($header)) {
-				$header = true;
-				echo "<form method='post' action=\"$target\">";
-				echo "<input type='hidden' name='ID' value='$ID'>";
-				echo "<table class='tab_cadre'>";
-				echo "<tr><th colspan='2'>" . $LANG["ocsng"][50] . "</th></tr>";
+			$querySearchLockedIP = "SELECT * FROM glpi_networking_ports WHERE on_device='$ID' AND device_type='".COMPUTER_TYPE."' AND ifaddr='$val'";
+			$resultSearchIP = $DB->query($querySearchLockedIP);
+			if ($DB->numrows($resultSearchIP) == 0) {
+		
+				if (!($header)) {
+					$header = true;
+					echo "<form method='post' action=\"$target\">";
+					echo "<input type='hidden' name='ID' value='$ID'>";
+					echo "<table class='tab_cadre'>";
+					echo "<tr><th colspan='2'>" . $LANG["ocsng"][50] . "</th></tr>";
+				}
+				echo "<tr class='tab_bg_1'><td>" . $val . "</td><td><input type='checkbox' name='lockip[" . $key . "]'></td></tr>";
 			}
-			echo "<tr class='tab_bg_1'><td>" . $val . "</td><td><input type='checkbox' name='lockip[" . $key . "]'></td></tr>";
 		}
 		if ($header) {
 			echo "<tr class='tab_bg_2'><td align='center' colspan='2'><input class='submit' type='submit' name='unlock_ip' value='" . $LANG["buttons"][38] . "'></td></tr>";
