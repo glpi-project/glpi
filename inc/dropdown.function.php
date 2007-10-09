@@ -1274,7 +1274,7 @@ function dropdownMassiveAction($device_type,$deleted=0){
 	} else {
 		// No delete for entities and tracking of not have right
 		if ($device_type!=ENTITY_TYPE
-		&&( $isadmin
+		&&( ($isadmin && $device_type!=TRACKING_TYPE)
 			|| ($device_type==TRACKING_TYPE&&haveRight('delete_ticket',1))
 		)){
 			echo "<option value=\"delete\">".$LANG["buttons"][6]."</option>";
