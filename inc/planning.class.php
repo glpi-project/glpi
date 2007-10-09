@@ -121,10 +121,10 @@ class PlanningTracking extends CommonDBTM {
 
 	function add($input){
 		global $LANG,$CFG_GLPI;
-
 		// set new date.
 		$this->fields["id_followup"] = $input["id_followup"];
 		$this->fields["id_assign"] = $input["id_assign"];
+		$this->fields["state"] = $input["state"];
 		$this->fields["begin"] = $input["begin_date"]." ".$input["begin_hour"].":00";
 		$this->fields["end"] = $input["end_date"]." ".$input["end_hour"].":00";
 
