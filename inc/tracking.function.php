@@ -668,7 +668,7 @@ function showJobVeryShort($ID) {
 	}
 }
 
-function addFormTracking ($device_type=0,$ID=0,$author,$assign,$assign_group,$target,$error,$searchauthor='') {
+function addFormTracking ($device_type=0,$ID=0,$author,$group,$assign,$assign_group,$target,$error,$searchauthor='') {
 	// Prints a nice form to add jobs
 
 	global $CFG_GLPI, $LANG,$CFG_GLPI,$REFERER,$DB;
@@ -707,9 +707,12 @@ function addFormTracking ($device_type=0,$ID=0,$author,$assign,$assign_group,$ta
 	$author_rand=0;
 	if (haveRight("update_ticket","1")){
 		echo "<tr class='tab_bg_2' align='center'><td>".$LANG["job"][4].":</td>";
-		echo "<td align='center' colspan='3'>";
+		echo "<td align='center'>";
 		$author_rand=dropdownAllUsers("author",$author,1,$_SESSION["glpiactive_entity"],1);
 
+		echo "</td><td>".$LANG["common"][35].":</td>";
+		echo "<td align='center'>";
+		dropdownValue("glpi_groups","FK_group",$group,1,$_SESSION["glpiactive_entity"]);
 		echo "</td></tr>";
 	} 
 	
@@ -820,7 +823,9 @@ function addFormTracking ($device_type=0,$ID=0,$author,$assign,$assign_group,$ta
 
 	echo "<tr><th align='center'>".$LANG["common"][57].":";
 	echo "</th><th colspan='3'>";
-	echo "<input type='text' size='60' name='name' >";
+	$name="";
+	if (isset($_POST["name"])) $name=$_POST["name"];
+	echo "<input type='text' size='60' name='name' value='$name'>";
 	echo "</th> </tr>";
 
 	
