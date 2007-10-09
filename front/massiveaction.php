@@ -54,7 +54,17 @@ if (isset($_POST["device_type"])){
 
 	switch ($_POST["device_type"]){
 		case TRACKING_TYPE :
-			checkTypeRight("update_ticket","1");
+			switch ($_POST["action"]){
+				case "delete":
+					checkTypeRight("delete","1");
+					break;
+				case "add_followup":
+					checkTypeRight("comment_all_ticket","1");
+					break;
+				default:
+					checkTypeRight("update_ticket","1");
+					break;
+			}
 			break;
 		default :
 			if (in_array($_POST["device_type"],$CFG_GLPI["infocom_types"])){

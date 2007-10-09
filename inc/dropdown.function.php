@@ -1335,7 +1335,7 @@ function dropdownMassiveAction($device_type,$deleted=0){
 				}
 				break;
 			case TRACKING_TYPE :
-				if ($isadmin && haveRight("comment_all_ticket","1")){
+				if (haveRight("comment_all_ticket","1")){
 					echo "<option value=\"add_followup\">".$LANG["job"][29]."</option>";
 				}
 				break;
