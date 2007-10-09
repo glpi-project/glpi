@@ -155,9 +155,9 @@ function showProfileEntityUser($target,$ID,$prof){
 					echo "<td class='tab_bg_1'>&nbsp;</td>";
 					$i++;
 				}
-				echo "</table></div></td></tr>";
-			}
 				
+			}
+			if ($i!=0) echo "</table></div></td></tr>\n";	
 		}
  		else
  			echo "<tr><td class='tab_bg_1' align=center>".$LANG["profiles"][33]."</td></tr>";
