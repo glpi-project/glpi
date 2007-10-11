@@ -51,7 +51,7 @@ function showStateSummary($target){
 		if (!haveTypeRight($type,"r")) {
 			unset($state_type[$key]);
 		} else {
-			$query= "SELECT state, COUNT(*) AS CPT FROM ".$LINK_ID_TABLE[$type]." ".getEntitiesRestrictRequest("WHERE",$LINK_ID_TABLE[$type])." AND deleted=0 GROUP BY state";
+			$query= "SELECT state, COUNT(*) AS CPT FROM ".$LINK_ID_TABLE[$type]." ".getEntitiesRestrictRequest("WHERE",$LINK_ID_TABLE[$type])." AND deleted=0 AND is_template=0 GROUP BY state";
 			
 			if ($result = $DB->query($query)) {
 				if ($DB->numrows($result)>0){
