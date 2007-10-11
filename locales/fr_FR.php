@@ -1265,16 +1265,6 @@ $LANG["rulesengine"][31]="Récupérer la valeur";
 $LANG["rulesengine"][37]="Règles d'affectation des logiciels à une catégorie"; 
 $LANG["rulesengine"][38]="Recalculer"; 
 $LANG["rulesengine"][40]="la catégorie"; 
-$LANG["rulesengine"][47]="Tester la règle";
-$LANG["rulesengine"][48]="Liste des critères";
-$LANG["rulesengine"][49]="Résutlat de l'exécution de la règle";
-
-$LANG["rulesengine"][70]="La règle n'a pas été vérifiée";
-$LANG["rulesengine"][71]="Règle entité + profil";
-$LANG["rulesengine"][72]="Règle entité";
-$LANG["rulesengine"][73]="Règle profil";
-$LANG["rulesengine"][74]="ET";
-$LANG["rulesengine"][75]="OU";
 
 $LANG["search"][0]="Recherche"; 
 $LANG["search"][2]="contient"; 
