@@ -51,7 +51,8 @@ function showStateSummary($target){
 		if (!haveTypeRight($type,"r")) {
 			unset($state_type[$key]);
 		} else {
-			$query= "SELECT state, COUNT(*) AS CPT FROM ".$LINK_ID_TABLE[$type]." ".getEntitiesRestrictRequest("WHERE",$LINK_ID_TABLE[$type])."GROUP BY state";
+			$query= "SELECT state, COUNT(*) AS CPT FROM ".$LINK_ID_TABLE[$type]." ".getEntitiesRestrictRequest("WHERE",$LINK_ID_TABLE[$type])." AND deleted=0 GROUP BY state";
+			
 			if ($result = $DB->query($query)) {
 				if ($DB->numrows($result)>0){
 					while ($data=$DB->fetch_array($result)){
@@ -61,7 +62,7 @@ function showStateSummary($target){
 			}
 		}
 	}
-
+	
 	if (count($states)){
 		// Produce headline
 		echo "<div class='center'><table  class='tab_cadrehov'><tr>";
@@ -80,6 +81,23 @@ function showStateSummary($target){
 		echo "</tr>";
 		$query="SELECT * FROM glpi_dropdown_state ORDER BY name";
 		$result = $DB->query($query);
+		
+		// No state
+		$tot=0;
+		echo "<tr class='tab_bg_2'><td class='center'>&nbsp;</td>";
+		foreach ($state_type as $type){
+			echo "<td class='center'>";
+			
+			if (isset($states[0][$type])) {
+				echo $states[0][$type];
+				$total[$type]+=$states[0][$type];
+				$tot+=$states[0][$type];
+			}
+			else echo "&nbsp;";
+			echo "</td>";
+		}
+		echo "<td class='center'><strong>$tot</strong></td>";
+		echo "</tr>";
 		
 		while ($data=$DB->fetch_array($result)){
 			$tot=0;
