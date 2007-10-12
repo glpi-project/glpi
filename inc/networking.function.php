@@ -128,7 +128,7 @@ function showPorts ($device,$device_type,$withtemplate='') {
 				echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkAllRows('networking_ports') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$device&amp;select=none'>".$LANG["buttons"][19]."</a>";
 				echo "</td>";
 				echo "<td width='80%' align='left'>";
-				dropdownMassiveActionPorts();
+				dropdownMassiveActionPorts($device_type);
 				echo "</td>";
 				echo "</table>";
 

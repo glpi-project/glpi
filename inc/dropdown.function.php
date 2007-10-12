@@ -1370,7 +1370,7 @@ function dropdownMassiveAction($device_type,$deleted=0){
 	echo "<span id='show_massiveaction'>&nbsp;</span>\n";
 }
 
-function dropdownMassiveActionPorts(){
+function dropdownMassiveActionPorts($device_type){
 	global $LANG,$CFG_GLPI;
 
 	echo "<select name=\"massiveaction\" id='massiveaction'>";
@@ -1379,10 +1379,12 @@ function dropdownMassiveActionPorts(){
 	echo "<option value=\"delete\">".$LANG["buttons"][6]."</option>";
 	echo "<option value=\"assign_vlan\">".$LANG["networking"][55]."</option>";
 	echo "<option value=\"unassign_vlan\">".$LANG["networking"][58]."</option>";
+	echo "<option value=\"move\">".$LANG["buttons"][20]."</option>";
 	echo "</select>";
 
 
 	$params=array('action'=>'__VALUE__',
+			'type'=>$device_type,
 			);
 	
 	ajaxUpdateItemOnSelectEvent("massiveaction","show_massiveaction",$CFG_GLPI["root_doc"]."/ajax/dropdownMassiveActionPorts.php",$params);
