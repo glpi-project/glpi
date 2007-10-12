@@ -132,28 +132,29 @@ function showPlanning($who,$who_group,$when,$type){
 		while ($data=$DB->fetch_array($result)){
 			$fup->getFromDB($data["id_followup"]);
 			$job->getFromDBwithData($fup->fields["tracking"],0);
-
-			$interv[$data["begin"]."$$$".$i]["id_followup"]=$data["id_followup"];
-			$interv[$data["begin"]."$$$".$i]["state"]=$data["state"];
-			$interv[$data["begin"]."$$$".$i]["id_tracking"]=$fup->fields["tracking"];
-			$interv[$data["begin"]."$$$".$i]["id_assign"]=$data["id_assign"];
-			$interv[$data["begin"]."$$$".$i]["ID"]=$data["ID"];
-			if (strcmp($begin,$data["begin"])>0){
-				$interv[$data["begin"]."$$$".$i]["begin"]=$begin;
-			} else {
-				$interv[$data["begin"]."$$$".$i]["begin"]=$data["begin"];
+			if (haveAccessToEntity($job->fields["FK_entities"])){
+				$interv[$data["begin"]."$$$".$i]["id_followup"]=$data["id_followup"];
+				$interv[$data["begin"]."$$$".$i]["state"]=$data["state"];
+				$interv[$data["begin"]."$$$".$i]["id_tracking"]=$fup->fields["tracking"];
+				$interv[$data["begin"]."$$$".$i]["id_assign"]=$data["id_assign"];
+				$interv[$data["begin"]."$$$".$i]["ID"]=$data["ID"];
+				if (strcmp($begin,$data["begin"])>0){
+					$interv[$data["begin"]."$$$".$i]["begin"]=$begin;
+				} else {
+					$interv[$data["begin"]."$$$".$i]["begin"]=$data["begin"];
+				}
+				if (strcmp($end,$data["end"])<0){
+					$interv[$data["begin"]."$$$".$i]["end"]=$end;
+				} else {
+					$interv[$data["begin"]."$$$".$i]["end"]=$data["end"];
+				}
+				$interv[$data["begin"]."$$$".$i]["name"]=$job->fields["name"];
+				$interv[$data["begin"]."$$$".$i]["content"]=resume_text($job->fields["contents"],$CFG_GLPI["cut"]);
+				$interv[$data["begin"]."$$$".$i]["device"]=$job->hardwaredatas->getName();
+				$interv[$data["begin"]."$$$".$i]["status"]=$job->fields["status"];
+				$interv[$data["begin"]."$$$".$i]["priority"]=$job->fields["priority"];
+				$i++;
 			}
-			if (strcmp($end,$data["end"])<0){
-				$interv[$data["begin"]."$$$".$i]["end"]=$end;
-			} else {
-				$interv[$data["begin"]."$$$".$i]["end"]=$data["end"];
-			}
-			$interv[$data["begin"]."$$$".$i]["name"]=$job->fields["name"];
-			$interv[$data["begin"]."$$$".$i]["content"]=resume_text($job->fields["contents"],$CFG_GLPI["cut"]);
-			$interv[$data["begin"]."$$$".$i]["device"]=$job->hardwaredatas->getName();
-			$interv[$data["begin"]."$$$".$i]["status"]=$job->fields["status"];
-			$interv[$data["begin"]."$$$".$i]["priority"]=$job->fields["priority"];
-			$i++;
 		}
 	// ---------------reminder 
 
