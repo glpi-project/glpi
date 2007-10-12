@@ -381,6 +381,7 @@ function displayPlanningItem($val,$who,$type="",$complete=0){
 	$author="";  // show author reminder
 	$img="rdv_private.png"; // default icon for reminder
 	$color="#e4e4e4";
+	$styleText="";
 	if (isset($val["state"])){
 		switch ($val["state"]){
 			case 0:
