@@ -112,6 +112,22 @@ else if(isset($_POST["delete_several"]))
 	logEvent(0, "networking", 5, "inventory", $_SESSION["glpiname"]." deleted several networking ports.");
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
+else if(isset($_POST["move"]))
+{
+	checkRight("networking","w");
+	if (isset($_POST["del_port"])&&count($_POST["del_port"]))
+		foreach ($_POST["del_port"] as $port_id => $val){
+			if ($np->getFromDB($port_id)){
+				$input=array();
+				$input['ID']=$port_id;
+				$input['on_device']=$_POST["device"];
+				$np->update($input);
+			}
+		}
+
+	logEvent(0, "networking", 5, "inventory", $_SESSION["glpiname"]." move networking ports.");
+	glpi_header($_SERVER['HTTP_REFERER']);
+}
 else if(isset($_POST["update"]))
 {
 	checkRight("networking","w");
