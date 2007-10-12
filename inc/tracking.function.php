@@ -1809,15 +1809,15 @@ function showJobDetails ($target,$ID){
 
 		// Troisieme Colonne
 		echo "<td class='top' width='20%'>";
+		echo "<table border='0'>";
+
+		echo "<tr><td class='left'>";
+		echo $LANG["job"][20].":</td><td>";
+		echo "<strong>".getRealtime($job->fields["realtime"])."</strong>";
+		echo "</td></tr>";
 
 		if(haveRight("contract_infocom","r")){  // admin = oui on affiche les couts liés à l'interventions
-			echo "<table border='0'>";
-			if ($job->fields["realtime"]>0){
-				echo "<tr><td class='left'>";
-				echo $LANG["job"][20].":</td><td>";
-				echo "<strong>".getRealtime($job->fields["realtime"])."</strong>";
-				echo "</td></tr>";
-			}
+
 			echo "<tr><td class='left'>";
 			// cout
 			echo $LANG["job"][40].": ";
@@ -1842,9 +1842,9 @@ function showJobDetails ($target,$ID){
 			echo $LANG["job"][43].": ";
 			echo "</td><td><strong>";
 			echo trackingTotalCost($job->fields["realtime"],$job->fields["cost_time"],$job->fields["cost_fixed"],$job->fields["cost_material"]);
-			echo "</strong></td></tr>\n</table>";
+			echo "</strong></td></tr>\n";
 		}
-
+		echo '</table>';
 		echo "</td></tr>";
 
 

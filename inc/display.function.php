@@ -562,7 +562,7 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="")
 
 		}
 
-		if ($CFG_GLPI["ocs_mode"]&&haveRight("ocsng","w")){
+		if ($CFG_GLPI["ocs_mode"]&&haveRight("config","w")){
 			$menu['config']['content']['ocsng']['title']=$LANG["setup"][134];
 			$menu['config']['content']['ocsng']['page']='/front/setup.ocsng.php';
 			$menu['config']['content']['ocsng']['links']['search']='/front/setup.ocsng.php';

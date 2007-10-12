@@ -805,7 +805,7 @@ function dropdownMyDevices($userID=0){
 				foreach ($CFG_GLPI["linkuser_type"] as $type){
 					if ($_SESSION["glpiactiveprofile"]["helpdesk_hardware_type"]&pow(2,$type))
 					{
-						$query="SELECT * from ".$LINK_ID_TABLE[$type]." WHERE $group_where AND deleted='0'";
+						$query="SELECT * FROM ".$LINK_ID_TABLE[$type]." WHERE $group_where AND deleted='0' ";
 						$query.=getEntitiesRestrictRequest("AND",$LINK_ID_TABLE[$type]);
 						$result=$DB->query($query);
 						if ($DB->numrows($result)>0){
