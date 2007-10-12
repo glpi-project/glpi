@@ -273,7 +273,7 @@ class Netdevice extends CommonDBTM {
 	
 				echo "<table cellpadding='1' cellspacing='0' border='0'>\n";
 	
-				echo "<tr><td>".$LANG["common"][16]."*:	</td>\n";
+				echo "<tr><td>".$LANG["common"][16].($template?"*":"").":	</td>\n";
 				echo "<td>";
 				$objectName = autoName($this->fields["name"], "name", ($template === "newcomp"), NETWORKING_TYPE,$this->fields["FK_entities"]);
 				autocompletionTextField("name","glpi_networking","name",$objectName,20,$this->fields["FK_entities"]);
@@ -342,7 +342,7 @@ class Netdevice extends CommonDBTM {
 				autocompletionTextField("serial","glpi_networking","serial",$this->fields["serial"],20,$this->fields["FK_entities"]);
 				echo "</td></tr>\n";
 	
-				echo "<tr><td>".$LANG["common"][20]."*:</td><td>\n";
+				echo "<tr><td>".$LANG["common"][20].($template?"*":"").":</td><td>\n";
 				$objectName = autoName($this->fields["otherserial"], "otherserial", ($template === "newcomp"), NETWORKING_TYPE,$this->fields["FK_entities"]);
 				autocompletionTextField("otherserial","glpi_networking","otherserial",$objectName,20,$this->fields["FK_entities"]);
 				echo "</td></tr>\n";
