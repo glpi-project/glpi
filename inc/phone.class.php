@@ -267,7 +267,7 @@ class Phone extends CommonDBTM {
 	
 				echo "<table cellpadding='1' cellspacing='0' border='0'>\n";
 	
-				echo "<tr><td>".$LANG["common"][16]."*:	</td>";
+				echo "<tr><td>".$LANG["common"][16].($template?"*":"").":	</td>";
 				echo "<td>";
 				$objectName = autoName($this->fields["name"], "name", ($template === "newcomp"), PHONE_TYPE,$this->fields["FK_entities"]);
 				autocompletionTextField("name","glpi_phones","name",$objectName,20,$this->fields["FK_entities"]);
@@ -336,7 +336,7 @@ class Phone extends CommonDBTM {
 				autocompletionTextField("serial","glpi_phones","serial",$this->fields["serial"],20,$this->fields["FK_entities"]);
 				echo "</td></tr>";
 	
-				echo "<tr><td>".$LANG["common"][20]."*:</td><td>";
+				echo "<tr><td>".$LANG["common"][20].($template?"*":"").":</td><td>";
 				$objectName = autoName($this->fields["otherserial"], "otherserial", ($template === "newcomp"), PHONE_TYPE,$this->fields["FK_entities"]);
 				autocompletionTextField("otherserial","glpi_phones","otherserial",$objectName,20,$this->fields["FK_entities"]);
 				echo "</td></tr>";

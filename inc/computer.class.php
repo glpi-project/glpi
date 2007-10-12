@@ -491,7 +491,7 @@ class Computer extends CommonDBTM {
 				echo "</th></tr>";
 
 
-				echo "<tr class='tab_bg_1'><td>".$LANG["common"][16]."*:		</td>";
+				echo "<tr class='tab_bg_1'><td>".$LANG["common"][16].($template?"*":"").":		</td>";
 	
 				echo "<td>";
 	
@@ -581,7 +581,7 @@ class Computer extends CommonDBTM {
 				autocompletionTextField("os_license_number","glpi_computers","os_license_number",$this->fields["os_license_number"],35,$this->fields["FK_entities"]);
 				echo"</td>";
 	
-				echo "<td>".$LANG["common"][20]."*:	</td><td>";
+				echo "<td>".$LANG["common"][20].($template?"*":"").":	</td><td>";
 				$objectName = autoName($this->fields["otherserial"], "otherserial", ($template === "newcomp"), COMPUTER_TYPE,$this->fields["FK_entities"]);
 				autocompletionTextField("otherserial","glpi_computers","otherserial",$objectName,20,$this->fields["FK_entities"]);
 

@@ -244,7 +244,7 @@ class Monitor extends CommonDBTM {
 	
 				echo "<table cellpadding='1' cellspacing='0' border='0'>\n";
 	
-				echo "<tr><td>".$LANG["common"][16]."*:	</td>";
+				echo "<tr><td>".$LANG["common"][16].($template?"*":"").":	</td>";
 				echo "<td>";
 				$objectName = autoName($this->fields["name"], "name", ($template === "newcomp"), MONITOR_TYPE,$this->fields["FK_entities"]);
 				autocompletionTextField("name","glpi_monitors","name",$objectName,20,$this->fields["FK_entities"]);
@@ -307,7 +307,7 @@ class Monitor extends CommonDBTM {
 				autocompletionTextField("serial","glpi_monitors","serial",$this->fields["serial"],20,$this->fields["FK_entities"]);
 				echo "</td></tr>";
 	
-				echo "<tr><td>".$LANG["common"][20]."*:</td><td>";
+				echo "<tr><td>".$LANG["common"][20].($template?"*":"").":</td><td>";
 				$objectName = autoName($this->fields["otherserial"], "otherserial", ($template === "newcomp"), MONITOR_TYPE,$this->fields["FK_entities"]);
 				autocompletionTextField("otherserial","glpi_monitors","otherserial",$objectName,20,$this->fields["FK_entities"]);
 	
