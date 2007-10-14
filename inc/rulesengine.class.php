@@ -67,10 +67,10 @@ class RuleCollection {
 		 	while ($rule=$DB->fetch_array($result)) {
 			 	//For each rule, get a Rule object with all the criterias and actions
 				$tempRule= new $this->rule_class_name();
-				$tempRule->getRuleWithCriteriasAndActions($rule["ID"],$retrieve_criteria,$retrieve_action);
-			
-				//Add the object to the list of rules
-				$this->rule_list[] = $tempRule; 	
+				if ($tempRule->getRuleWithCriteriasAndActions($rule["ID"],$retrieve_criteria,$retrieve_action)){
+					//Add the object to the list of rules
+					$this->rule_list[] = $tempRule;
+				}
 			}
 		}
 	}
@@ -371,7 +371,13 @@ class Rule extends CommonDBTM{
 			$this->dropdownRulesMatch("match",$this->fields["match"]);
 			echo "</td>";
 			
-			echo "<td class='tab_bg_2' colspan='2'></td>";
+			echo "<td class='tab_bg_2' colspan='2'>";
+			if ($new){
+				echo '&nbsp;';
+			} else {
+				echo "<a href='#' onClick=\"window.open('".$CFG_GLPI["root_doc"]."/front/popup.php?popup=test_rule&amp;rule_type=".$this->rule_type."&amp;rule_id=".$this->fields["ID"]."' ,'glpipopup', 'height=400, width=1000, top=100, left=100, scrollbars=yes' )\">".$LANG["buttons"][50]."</a>"; 
+			}
+			echo "</td>";
 
 			echo "</tr>";
 			
@@ -403,9 +409,10 @@ class Rule extends CommonDBTM{
 	* Display a dropdown with all the rule matching
 	*/
 	function dropdownRulesMatch($name,$value=''){
-	
-		$elements[AND_MATCHING] = AND_MATCHING;
-		$elements[OR_MATCHING] = OR_MATCHING;
+		global $LANG;
+
+		$elements[AND_MATCHING] = $LANG["rulesengine"][42];
+		$elements[OR_MATCHING] = $LANG["rulesengine"][43];
 		return dropdownArrayValues($name,$elements,$value);
 	}
 
@@ -417,19 +424,21 @@ class Rule extends CommonDBTM{
 	 */
 	function getRuleWithCriteriasAndActions($ID, $withcriterias = 0, $withactions = 0) {
 		if ($ID == ""){
-			$this->getEmpty();
+			return $this->getEmpty();
 		} else {
-			$this->getFromDB($ID);
-		
-			if ($withactions){
-				$RuleAction = new RuleAction;
-				$this->actions = $RuleAction->getRuleActions($ID);
-			}	
-			if ($withcriterias){
-				$RuleCriterias = new RuleCriteria;
-				$this->criterias = $RuleCriterias->getRuleCriterias($ID);
+			if ($ret=$this->getFromDB($ID)){
+				if ($withactions){
+					$RuleAction = new RuleAction;
+					$this->actions = $RuleAction->getRuleActions($ID);
+				}	
+				if ($withcriterias){
+					$RuleCriterias = new RuleCriteria;
+					$this->criterias = $RuleCriterias->getRuleCriterias($ID);
+				}
+				return true;
 			}
 		}
+		return false;
 	}
 	
 	function getTitleAction($target)
@@ -759,24 +768,8 @@ class Rule extends CommonDBTM{
 	{
 		if (count($this->criterias))	{
 			$input=$this->prepareInputDataForProcess($input,$params);
-
-			reset($this->criterias);
-			if ($this->fields["match"]==AND_MATCHING){
-				$doactions=true;			
-				foreach ($this->criterias as $criteria){
-					$doactions &= $criteria->process($input);
-					if (!$doactions) break;
-				}
-			} else { // OR MATCHING
-				$doactions=false;
-				foreach ($this->criterias as $criteria){
-					$doactions |= $criteria->process($input);
-					if ($doactions) break;
-				}
-
-			}
 			
-			if ($doactions){
+			if ($this->checkCriterias($input)){
 				$output=$this->executeActions($output,$params);
 				
 				//Hook
@@ -790,6 +783,29 @@ class Rule extends CommonDBTM{
 			}			
 		}
 		// return $output; 
+	}
+	/**
+	* Check criterias
+	* @param $input the input data used to check criterias
+	* @return boolean if criterias match
+	*/
+	function checkCriterias($input){
+		$doactions=false;
+		reset($this->criterias);
+		if ($this->fields["match"]==AND_MATCHING){
+			$doactions=true;			
+			foreach ($this->criterias as $criteria){
+				$doactions &= $criteria->process($input);
+				if (!$doactions) break;
+			}
+		} else { // OR MATCHING
+			$doactions=false;
+			foreach ($this->criterias as $criteria){
+				$doactions |= $criteria->process($input);
+				if ($doactions) break;
+			}
+		}
+		return $doactions;
 	}
 
 	/**
@@ -996,7 +1012,7 @@ class Rule extends CommonDBTM{
 					}
 					break;
 				case "dropdown_request_type":
-					if ($condition==PATTERN_IS||v==PATTERN_IS_NOT){
+					if ($condition==PATTERN_IS||$condition==PATTERN_IS_NOT){
 						return getRequestTypeName($pattern);
 					}
 					break;
@@ -1008,6 +1024,59 @@ class Rule extends CommonDBTM{
 			}
 			return $pattern;
 		}
+	}
+
+	/**
+ 	* Display item used to select a pattern for a criteria
+ 	* @param $ID the given criteria
+        * @param $condition condition used
+ 	* @param $pattern the pattern
+ 	*/
+ 	function displayCriteriaSelectPattern($name,$ID,$condition,$value=""){
+		$crit=$this->getCriteria($ID);
+		
+		$display=false;
+		if (isset($crit['type'])){
+			switch ($crit['type']){
+				case "dropdown":
+					if ($condition==PATTERN_IS||$condition==PATTERN_IS_NOT){
+						dropdownValue($crit['table'],$name,$value);
+						$display=true;
+					}
+					break;
+				case "dropdown_users":
+					if ($condition==PATTERN_IS||$condition==PATTERN_IS_NOT){
+						dropdownAllUsers($name,$value);
+						$display=true;
+					}
+					break;
+				case "dropdown_request_type":
+					if ($condition==PATTERN_IS||$condition==PATTERN_IS_NOT){
+						dropdownRequestType($name,$value);
+						$display=true;
+					}
+					break;
+				case "dropdown_priority":
+					if ($condition==PATTERN_IS||$condition==PATTERN_IS_NOT){
+						dropdownPriority($name,$value);
+						$display=true;
+					} 
+					break;
+			}
+		} 
+		if (!$display){
+			autocompletionTextField($name, "glpi_rules_criterias", "pattern", $value, 30);
+		}
+	}
+
+
+	/**
+ 	* Display item to select a value for criteria
+ 	* @param $type criteria type
+        * @param $condition condition used
+ 	*/
+ 	function displayCriteriaSelectValue($type,$condition){
+		$display=false;
 	}
 
 	/**
@@ -1045,6 +1114,64 @@ class Rule extends CommonDBTM{
 					return $value;
 					break;
 			}
+		}
+	}
+
+	function testRuleForm($target,$rule_id){
+
+		global $DB, $LANG,$RULES_CRITERIAS,$RULES_ACTIONS; 
+		
+		if ($this->getRuleWithCriteriasAndActions($rule_id,1,0)){
+			echo "<form name='testrule_form' id='testrule_form' method='post' action=\"$target\">\n";
+			echo "<div class='center'>";
+			echo "<table class='tab_cadre_fixe'>"; 
+			echo "<tr><th colspan='3'>" . $LANG["rulesengine"][6] . "</th></tr>"; 
+
+			$type_match=($this->fields["match"]==AND_MATCHING?$LANG["rulesengine"][42]:$LANG["rulesengine"][43]);
+			$already_displayed=array(); 
+			$first=true;
+			 //Brower all criterias 
+			foreach ($this->criterias as $criteria){
+				
+				//Look for the criteria in the field of already displayed criteria : if present, don't display it again 
+				if (!in_array($criteria->fields["criteria"],$already_displayed)){
+					$already_displayed[]=$criteria->fields["criteria"];
+
+					echo "<tr class='tab_bg_1'>"; 
+					echo "<td>";
+					if ($first){
+						echo "&nbsp;";
+						$first=false;
+					} else {
+						echo $type_match;
+					}
+					echo "</td>";
+					
+					$criteria_constants = $RULES_CRITERIAS[$this->fields["rule_type"]][$criteria->fields["criteria"]];
+					echo "<td>".$criteria_constants["name"].":</td>";
+					echo "<td>";
+					$value="";
+
+					if (isset($_POST[$criteria->fields["criteria"]])){
+						$value=$_POST[$criteria->fields["criteria"]];
+					}	
+					$this->displayCriteriaSelectPattern($criteria->fields["criteria"],$criteria->fields['criteria'],$criteria->fields['condition'],$value);
+					echo "</td>";
+					echo "</tr>"; 
+				}
+		
+			}
+
+		
+
+			echo "<tr><td class='tab_bg_2' colspan='3' align='center'>"; 
+			echo "<input type='submit' name='test_rule' value=\"" . $LANG["buttons"][50] . "\" class='submit'>";
+			echo "<input type='hidden' name='rule_id' value=\"" . $rule_id . "\">"; 
+			echo "<input type='hidden' name='rule_type' value=\"" . $this->rule_type . "\">"; 
+			echo "</td></tr>"; 
+			echo "</table>";
+			echo "</div>";
+			echo "</form>";
 		}
 	}
 
@@ -1181,11 +1308,11 @@ class RuleCriteria extends CommonDBTM {
 	}
 
 	/**
- 	* Return a value associated with a pattern associated to a criteria to compare it
-    * @param $condition condition used
- 	* @param $initValue the pattern
- 	*/
- 	function getValueToMatch($condition,&$initValue)
+	* Return a value associated with a pattern associated to a criteria to compare it
+	* @param $condition condition used
+	* @param $initValue the pattern
+	*/
+	function getValueToMatch($condition,&$initValue)
 	{
 		if (empty($this->type)){
 			return $initValue;
