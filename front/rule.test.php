@@ -61,9 +61,6 @@ if (!ereg("popup",$_SERVER['PHP_SELF'])){
 }
 
 $rule->testRuleForm($_SERVER['PHP_SELF'],$rule_id);
-if (!ereg("popup",$_SERVER['PHP_SELF'])){
-	commonFooter();
-}
 
 
 if (isset($_POST["test_rule"]))
@@ -76,6 +73,10 @@ if (isset($_POST["test_rule"]))
 	$rule->getRuleWithCriteriasAndActions($rule_id,1,1);
 	$input=$rule->prepareInputDataForProcess($_POST,$params);
 	echo "<br><div class='center'>".$LANG["rulesengine"][41].": <strong>".getYesNo($rule->checkCriterias($input))."</strong></div>";
+}
+
+if (!ereg("popup",$_SERVER['PHP_SELF'])){
+	commonFooter();
 }
 
 ?>
