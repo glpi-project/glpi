@@ -770,7 +770,7 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="")
 		echo "<li>";
 
 			// Display MENU ALL
-			echo "<div id='show_all_menu' onmouseover=\"completecleandisplay('show_all_menu');\" onmouseout=\"completecleanhide('show_all_menu');\">";
+			echo "<div id='show_all_menu' onmouseover=\"completecleandisplay('show_all_menu');\">";
 			$items_per_columns=15;
 			$i=-1;
 			echo "<table><tr><td valign='top'><table>";
@@ -2115,8 +2115,8 @@ function showProfileSelecter($target){
 		echo "<a href='#' onclick=\"completecleandisplay('show_entities$addname');\">";
 		echo $_SESSION["glpiactive_entity_name"];
 		echo "</a>";
+		echo "<div id='show_entities$addname' onmouseover=\"completecleandisplay('show_entities$addname');\">";	
 		
-		echo "<div id='show_entities$addname' onmouseover=\"completecleandisplay('show_entities$addname');\" onmouseout=\"completecleanhide('show_entities$addname');\">";
 		displayActiveEntities($target,$_SESSION['glpi_entities_tree'],"activeentity");
 		
 		echo "</div>";
