@@ -154,7 +154,8 @@ function showSelect(x,y,w,h){
 		sely=getTop(sel[i]);
 		selw=sel[i].offsetWidth;
 		selh=sel[i].offsetHeight;
-		if(selx+selw>x && selx<x+w && sely+selh>y && sely<y+h)
+		// || Manage position error computation
+		if((selx+selw>x && selx<x+w && sely+selh>y && sely<y+h ) || selx<0 || sely<0)
 			sel[i].style.visibility="visible";
 	}
 	return true;
@@ -186,8 +187,10 @@ function hideSelect(x,y,w,h){
 		sely=getTop(sel[i]);
 		selw=sel[i].offsetWidth;
 		selh=sel[i].offsetHeight;
-		if(selx+selw>x && selx<x+w && sely+selh>y && sely<y+h)
+		// || Manage position error computation
+		if((selx+selw>x && selx<x+w && sely+selh>y && sely<y+h ) || selx<0 || sely<0 ){
 			sel[i].style.visibility="hidden";
+		} 	
 	}
 	return true;
 }
