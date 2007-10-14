@@ -82,20 +82,21 @@ function completecleandisplay(id){
 
 
 		if (isIe()) {
+			e.onmouseleave = function(){ completecleanhide(id) };
 			hideSelect(0,0,	document.documentElement.clientWidth,document.documentElement.clientHeight);
-		} 
+		} else {
+			e.onmouseout = function(){ completecleanhide(id) };
+		}
 	}
 }
 
 function completecleanhide(id){
 	var e = document.getElementById(id);
 	if(e){
-		if (!setdisplay(e,'none')){
-			if(isIe()){
-				showSelect(0,0,document.documentElement.clientWidth,document.documentElement.clientHeight);
-			}
+		setdisplay(e,'none');
+		if(isIe()){
+			showSelect(0,0,document.documentElement.clientWidth,document.documentElement.clientHeight);
 		}
-		
 	}
 }
 
