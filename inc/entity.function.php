@@ -188,4 +188,12 @@ function deleteUserProfileEntity($ID){
 	$query="DELETE FROM glpi_users_profiles WHERE ID= '$ID';";
 	$result = $DB->query($query);
 }
+
+function moveUserProfileEntity($ID,$FK_entities){
+
+	global $DB;
+	$query="UPDATE glpi_users_profiles SET FK_entities='$FK_entities' WHERE ID= '$ID';";
+	return $DB->query($query);
+}
+
 ?>

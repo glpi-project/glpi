@@ -35,7 +35,7 @@
 
 
 
-$NEEDED_ITEMS=array("profile","search");
+$NEEDED_ITEMS=array("profile","search",'entity');
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
@@ -64,6 +64,16 @@ else  if (isset($_POST["update"])){
 	checkRight("profile","w");
 
 	$prof->update($_POST);
+	glpi_header($_SERVER['HTTP_REFERER']);
+} else if (isset($_POST["moveentity"])){
+	checkRight("user","w");
+	if (isset($_POST['FK_entities'])&&$_POST['FK_entities']>=0){
+		foreach ($_POST["item"] as $key => $val){
+			if ($val==1) {
+				moveUserProfileEntity($key,$_POST['FK_entities']);
+			}
+		}
+	}
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 
