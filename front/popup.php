@@ -66,6 +66,11 @@ if (isset($_SESSION["glpipopup"]["name"])){
 			include "setup.display.php";
 			popFooter();
 		break;
+		case "test_rule": 
+			popHeader($LANG["buttons"][50],$_SERVER['PHP_SELF']); 
+			include "rule.test.php"; 
+			popFooter(); 
+		break;
 
 	}
 }

@@ -97,6 +97,8 @@ $LANG["buttons"][46]="Avant";
 $LANG["buttons"][47]="Après"; 
 $LANG["buttons"][48]="Transférer"; 
 $LANG["buttons"][49]="Conserver"; 
+$LANG["buttons"][50]="Tester";
+
 
 $LANG["calendarD"][0]="D"; 
 $LANG["calendarD"][1]="L"; 
@@ -1265,6 +1267,9 @@ $LANG["rulesengine"][31]="Récupérer la valeur";
 $LANG["rulesengine"][37]="Règles d'affectation des logiciels à une catégorie"; 
 $LANG["rulesengine"][38]="Recalculer"; 
 $LANG["rulesengine"][40]="la catégorie"; 
+$LANG["rulesengine"][41]="Validation";
+$LANG["rulesengine"][42]="ET";
+$LANG["rulesengine"][43]="OU";
 
 $LANG["search"][0]="Recherche"; 
 $LANG["search"][2]="contient"; 
