@@ -78,12 +78,17 @@ function showProfileConfig($target,$ID,$prof){
 	
 function showProfileEntityUser($target,$ID,$prof){	
  	
- 	global $DB,$LANG;
+ 	global $DB,$LANG,$CFG_GLPI;
  	
- 	if (!empty($ID)&&$ID)
+	$canedit=haveRight("user","w");
+
+	$show=true;
+ 	if (!empty($ID)&&$ID){
 		$prof->getFromDB($ID);
-	else
+	} else {
 		$prof->getEmpty();
+		$show=false;
+	}
 	 	
  	echo "<div class='center'>";
 	echo "<table class='tab_cadre_fixe'><tr>";
@@ -91,19 +96,23 @@ function showProfileEntityUser($target,$ID,$prof){
  	echo "</tr></table>";
 	echo "</div>";
   	
-  	$query="SELECT glpi_users.*, glpi_users_profiles.FK_entities AS entity 
+	if (!$show){
+		return false;
+	}
+
+  	$query="SELECT glpi_users.*, glpi_users_profiles.FK_entities AS entity, glpi_users_profiles.ID AS linkID  
  		FROM glpi_users_profiles 
  		LEFT JOIN glpi_entities ON (glpi_entities.ID=glpi_users_profiles.FK_entities)
  		LEFT JOIN glpi_users ON (glpi_users.ID=glpi_users_profiles.FK_users)
  		WHERE glpi_users_profiles.FK_profiles=".$ID." ".getEntitiesRestrictRequest("AND","glpi_users_profiles")." 
  		ORDER BY glpi_entities.completename";
- 	
+
  	echo "<div class='center'>";
 	echo "<table class='tab_cadre_fixe'>";
  	
 	$i=0;
 	$nb_per_line=3;
-	
+
  	if ($result = $DB->query($query))
  	{ 
  		if ($DB->numrows($result)!=0)
@@ -116,25 +125,49 @@ function showProfileEntityUser($target,$ID,$prof){
 				{
 					while ($i%$nb_per_line!=0)
 					{
+						if ($canedit){
+							echo "<td width='10'>&nbsp;</td>";
+						}
 						echo "<td class='tab_bg_1'>&nbsp;</td>\n";
 						$i++;
 					}
 
-					if ($i!=0) echo "</table></div></td></tr>\n";
-					
-					echo "	<tr class='tab_bg_2'>";
-					echo "  	<td align='left'>"; 
-					echo "			<a  href=\"javascript:showHideDiv('entity$temp','imgcat$temp','".GLPI_ROOT."/pics/folder.png','".GLPI_ROOT."/pics/folder-open.png');\">";
-					echo "				<img alt='' name='imgcat$temp' src=\"".GLPI_ROOT."/pics/folder.png\">&nbsp;<strong>".getDropdownName('glpi_entities',$data["entity"])."</strong>";
-					echo "			</a>"; 
-					echo "		</td>"; 
-					echo "	</tr>"; 
-					echo "<tr class='tab_bg_2'>";
-					echo "		<td>
-								     <div align='center' id='entity$temp' style=\"display:none;\">\n"; 
-					echo"			<table class='tab_cadre'>\n";
+					if ($i!=0) {
+						echo "</table>";
+						if ($canedit){
+							echo "<div class='center'>";
+							echo "<table width='80%'>";
+							echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markAllRows('profileuser_form$temp') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$ID&amp;select=all'>".$LANG["buttons"][18]."</a></td>";
+							
+							echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkAllRows('profileuser_form$temp') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$ID&amp;select=none'>".$LANG["buttons"][19]."</a>";
+							echo "</td><td align='left' width='80%'>";
+							dropdownValue("glpi_entities","FK_entities",0);
+							echo "<input type='submit' name='moveentity' value=\"".$LANG["buttons"][20]."\" class='submit'>";
+							echo "</td>";
+							echo "</table>";
+							echo "</div>";
+						}
+						echo "</div></form></td></tr>\n";
+					}
+
+
+					// New entity
 		 			$i=0;
 		 			$temp=$data["entity"];		
+
+					
+					echo "<tr class='tab_bg_2'>";
+					echo "<td align='left'>"; 
+					echo "<a href=\"javascript:showHideDiv('entity$temp','imgcat$temp', '".GLPI_ROOT."/pics/folder.png','".GLPI_ROOT."/pics/folder-open.png');\">";
+					echo "<img alt='' name='imgcat$temp' src=\"".GLPI_ROOT."/pics/folder.png\">&nbsp; <strong>".getDropdownName('glpi_entities',$data["entity"])."</strong>";
+					echo "</a>"; 
+					echo "</td>"; 
+					echo "</tr>"; 
+					echo "<tr class='tab_bg_2'><td>";
+
+					echo "<form name='profileuser_form$temp' id='profileuser_form$temp' method='post' action=\"$target\">";
+					echo "<div align='center' id='entity$temp' style=\"display:none;\">\n"; 
+					echo "<table class='tab_cadre_fixe'>\n";
 				}
 
 		 		if ($i%$nb_per_line==0) {
@@ -143,21 +176,51 @@ function showProfileEntityUser($target,$ID,$prof){
 					$i=0;	
 				}
 
+				if ($canedit){
+					echo "<td width='10'>";
+					$sel="";
+					if (isset($_GET["select"])&&$_GET["select"]=="all") $sel="checked";
+					echo "<input type='checkbox' name='item[".$data["linkID"]."]' value='1' $sel>";
+					echo "</td>";
+				}
+
 				echo "<td class='tab_bg_1'>".formatUserName($data["ID"],$data["name"],$data["realname"],$data["firstname"],1)."</td>\n";
 				$i++;
  					
 			}
-
+			
 			if ($i%$nb_per_line!=0)
 			{
 				while ($i%$nb_per_line!=0)
 				{
-					echo "<td class='tab_bg_1'>&nbsp;</td>";
+					if ($canedit){
+						echo "<td width='10'>&nbsp;</td>";
+					}
+
+					echo "<td class='tab_bg_1'>&nbsp;---</td>";
+
 					$i++;
 				}
 				
 			}
-			if ($i!=0) echo "</table></div></td></tr>\n";	
+			if ($i!=0) {
+				echo "</table>";
+				if ($canedit){
+					echo "<div class='center'>";
+					echo "<table width='80%'>";
+					echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markAllRows('profileuser_form$temp') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$ID&amp;select=all'>".$LANG["buttons"][18]."</a></td>";
+					
+					echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkAllRows('profileuser_form$temp') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$ID&amp;select=none'>".$LANG["buttons"][19]."</a>";
+					echo "</td><td align='left' width='80%'>";
+					dropdownValue("glpi_entities","FK_entities",0);
+					echo "<input type='submit' name='moveentity' value=\"".$LANG["buttons"][20]."\" class='submit'>";
+					echo "</td>";
+					echo "</table>";
+					echo "</div>";
+				}
+				echo "</div></form></td></tr>\n";	
+			}
+
 		}
  		else
  			echo "<tr><td class='tab_bg_1' align=center>".$LANG["profiles"][33]."</td></tr>";
