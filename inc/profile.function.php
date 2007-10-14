@@ -163,7 +163,7 @@ function showProfileEntityUser($target,$ID,$prof){
 					echo "</a>"; 
 					echo "</td>"; 
 					echo "</tr>"; 
-					echo "<tr class='tab_bg_2'><td>";
+					echo "<tr><td>";
 
 					echo "<form name='profileuser_form$temp' id='profileuser_form$temp' method='post' action=\"$target\">";
 					echo "<div align='center' id='entity$temp' style=\"display:none;\">\n"; 
