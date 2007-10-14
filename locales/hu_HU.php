@@ -97,6 +97,7 @@ $LANG["buttons"][46]="Előtte";
 $LANG["buttons"][47]="Utána"; 
 $LANG["buttons"][48]="Áthelyez"; 
 $LANG["buttons"][49]="Védett"; 
+$LANG["buttons"][50]="Test"; 
 
 $LANG["calendarD"][0]="V"; 
 $LANG["calendarD"][1]="H"; 
@@ -1265,6 +1266,9 @@ $LANG["rulesengine"][31]="Érték beállítása";
 $LANG["rulesengine"][37]="Szoftverek kategóriákhoz rendelésének szabályai"; 
 $LANG["rulesengine"][38]="Újraszámol"; 
 $LANG["rulesengine"][40]="a kategória"; 
+$LANG["rulesengine"][41]="Validation"; 
+$LANG["rulesengine"][42]="AND"; 
+$LANG["rulesengine"][43]="OR"; 
 
 $LANG["search"][0]="Keresés"; 
 $LANG["search"][2]="tartalmaz"; 
@@ -1510,6 +1514,7 @@ $LANG["setup"][603]="Új felhasználó";
 $LANG["setup"][604]="Csoporthoz rendelés"; 
 $LANG["setup"][605]="Új csoport"; 
 $LANG["setup"][606]="A felhasználó már létezik."; 
+$LANG["setup"][607]="Associate to a profile"; 
 $LANG["setup"][701]="Válassza ki a beállítandó bővítményt"; 
 $LANG["setup"][703]="Általános"; 
 $LANG["setup"][704]="Értesítések"; 

@@ -97,6 +97,7 @@ $LANG["buttons"][46]="Before";
 $LANG["buttons"][47]="After"; 
 $LANG["buttons"][48]="Transfer"; 
 $LANG["buttons"][49]="Preserve"; 
+$LANG["buttons"][50]="Test"; 
 
 $LANG["calendarD"][0]="D"; 
 $LANG["calendarD"][1]="L"; 
@@ -1265,6 +1266,9 @@ $LANG["rulesengine"][31]="Recuperar el valor";
 $LANG["rulesengine"][37]="Rules of assignment of the software to a category"; 
 $LANG["rulesengine"][38]="Recalculate"; 
 $LANG["rulesengine"][40]="the category"; 
+$LANG["rulesengine"][41]="Validation"; 
+$LANG["rulesengine"][42]="AND"; 
+$LANG["rulesengine"][43]="OR"; 
 
 $LANG["search"][0]="Buscar"; 
 $LANG["search"][2]="contiene"; 
@@ -1510,6 +1514,7 @@ $LANG["setup"][603]="Agregar un usuario";
 $LANG["setup"][604]="Asociar a un grupo"; 
 $LANG["setup"][605]="Agregar Grupo"; 
 $LANG["setup"][606]="Unable to add. The user already exists."; 
+$LANG["setup"][607]="Associate to a profile"; 
 $LANG["setup"][701]="Seleccione el plugin a configurar"; 
 $LANG["setup"][703]="General"; 
 $LANG["setup"][704]="Notificaciones"; 

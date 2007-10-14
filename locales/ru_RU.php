@@ -97,6 +97,7 @@ $LANG["buttons"][46]="Before";
 $LANG["buttons"][47]="After"; 
 $LANG["buttons"][48]="Transfer"; 
 $LANG["buttons"][49]="Preserve"; 
+$LANG["buttons"][50]="Test"; 
 
 $LANG["calendarD"][0]="Вс"; 
 $LANG["calendarD"][1]="Пн"; 
@@ -1265,6 +1266,9 @@ $LANG["rulesengine"][31]="Взять значение";
 $LANG["rulesengine"][37]="Правила назначения категории для ПО"; 
 $LANG["rulesengine"][38]="Recalculate"; 
 $LANG["rulesengine"][40]="the category"; 
+$LANG["rulesengine"][41]="Validation"; 
+$LANG["rulesengine"][42]="AND"; 
+$LANG["rulesengine"][43]="OR"; 
 
 $LANG["search"][0]="Параметры отбора"; 
 $LANG["search"][2]="содержит"; 
@@ -1510,6 +1514,7 @@ $LANG["setup"][603]="Добавить пользователя";
 $LANG["setup"][604]="Добавить в группу"; 
 $LANG["setup"][605]="Добавить группу"; 
 $LANG["setup"][606]="Unable to add. The user already exists."; 
+$LANG["setup"][607]="Associate to a profile"; 
 $LANG["setup"][701]="Выберите плагин для настройки"; 
 $LANG["setup"][703]="Общие"; 
 $LANG["setup"][704]="Уведомления"; 
