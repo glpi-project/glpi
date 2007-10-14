@@ -97,6 +97,7 @@ $LANG["buttons"][46]="Abans";
 $LANG["buttons"][47]="Després"; 
 $LANG["buttons"][48]="Transferir"; 
 $LANG["buttons"][49]="Conservar"; 
+$LANG["buttons"][50]="Test"; 
 
 $LANG["calendarD"][0]="D"; 
 $LANG["calendarD"][1]="L"; 
@@ -1265,6 +1266,9 @@ $LANG["rulesengine"][31]="Recuperar el valor";
 $LANG["rulesengine"][37]="Regles d'assignació de SW a una categoria"; 
 $LANG["rulesengine"][38]="Tornar a calcular"; 
 $LANG["rulesengine"][40]="la categoria"; 
+$LANG["rulesengine"][41]="Validation"; 
+$LANG["rulesengine"][42]="AND"; 
+$LANG["rulesengine"][43]="OR"; 
 
 $LANG["search"][0]="Buscar"; 
 $LANG["search"][2]="conté"; 
@@ -1510,6 +1514,7 @@ $LANG["setup"][603]="Afegir un usuari";
 $LANG["setup"][604]="Associar a un grup"; 
 $LANG["setup"][605]="Afegir Grup"; 
 $LANG["setup"][606]="No es poden afegir. Aquest usuari ja existeix."; 
+$LANG["setup"][607]="Associate to a profile"; 
 $LANG["setup"][701]="Selecciona el plugin que desitges configurar"; 
 $LANG["setup"][703]="General"; 
 $LANG["setup"][704]="Notificacions"; 

@@ -97,6 +97,7 @@ $LANG["buttons"][46]="Předchozí";
 $LANG["buttons"][47]="Další"; 
 $LANG["buttons"][48]="Přesun"; 
 $LANG["buttons"][49]="Zachovat"; 
+$LANG["buttons"][50]="Test"; 
 
 $LANG["calendarD"][0]="Ne"; 
 $LANG["calendarD"][1]="Po"; 
@@ -1265,6 +1266,9 @@ $LANG["rulesengine"][31]="Získat hodnotu";
 $LANG["rulesengine"][37]="Pravidla pro přiřazení programů do kategorií"; 
 $LANG["rulesengine"][38]="Přepočítat"; 
 $LANG["rulesengine"][40]="kategorie"; 
+$LANG["rulesengine"][41]="Validation"; 
+$LANG["rulesengine"][42]="AND"; 
+$LANG["rulesengine"][43]="OR"; 
 
 $LANG["search"][0]="Hledat"; 
 $LANG["search"][2]="obsahuje"; 
@@ -1510,6 +1514,7 @@ $LANG["setup"][603]="Přidat uživatele";
 $LANG["setup"][604]="Přiřadit ke skupině"; 
 $LANG["setup"][605]="Přidat skupinu"; 
 $LANG["setup"][606]="Není možno přidat. Uživatel již existuje."; 
+$LANG["setup"][607]="Associate to a profile"; 
 $LANG["setup"][701]="Zvolte plugin ke konfiguraci"; 
 $LANG["setup"][703]="Obecné"; 
 $LANG["setup"][704]="Upozornění"; 

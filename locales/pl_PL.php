@@ -97,6 +97,7 @@ $LANG["buttons"][46]="Wcześniej";
 $LANG["buttons"][47]="Później"; 
 $LANG["buttons"][48]="Przeniesienie"; 
 $LANG["buttons"][49]="Zabezpiecz"; 
+$LANG["buttons"][50]="Test"; 
 
 $LANG["calendarD"][0]="Nie."; 
 $LANG["calendarD"][1]="Pon."; 
@@ -1265,6 +1266,9 @@ $LANG["rulesengine"][31]="Pobierz wartość";
 $LANG["rulesengine"][37]="Zasady przydzielania oprogramowania do kategorii"; 
 $LANG["rulesengine"][38]="Ponowne obliczenie"; 
 $LANG["rulesengine"][40]="kategoria"; 
+$LANG["rulesengine"][41]="Validation"; 
+$LANG["rulesengine"][42]="AND"; 
+$LANG["rulesengine"][43]="OR"; 
 
 $LANG["search"][0]="Szukaj"; 
 $LANG["search"][2]="zawiera"; 
@@ -1510,6 +1514,7 @@ $LANG["setup"][603]="Dodaj użytkownika";
 $LANG["setup"][604]="Połącz z grupą"; 
 $LANG["setup"][605]="Dodaj Grupę"; 
 $LANG["setup"][606]="Nie mogę dodać. Użytkownik istnieje."; 
+$LANG["setup"][607]="Associate to a profile"; 
 $LANG["setup"][701]="Wybierz wtyczkę do konfiguracji"; 
 $LANG["setup"][703]="Ustawienia"; 
 $LANG["setup"][704]="Przypomnienia"; 
