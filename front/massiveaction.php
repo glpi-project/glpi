@@ -34,7 +34,7 @@
 // ----------------------------------------------------------------------
 
 
-$NEEDED_ITEMS=array("user","tracking","reservation","document","computer","device","printer","networking","peripheral","monitor","software","infocom","phone","link","ocsng","consumable","cartridge","contract","enterprise","contact","group","profile","search","mailgate","typedoc","admininfo","registry","setup","rulesengine","rule.softwarecategories");
+$NEEDED_ITEMS=array("user","tracking","reservation","document","computer","device","printer","networking","peripheral","monitor","software","infocom","phone","link","ocsng","consumable","cartridge","contract","enterprise","contact","group","profile","search","mailgate","typedoc","admininfo","registry","setup","rulesengine","rule.softwarecategories","entity");
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
@@ -238,6 +238,17 @@ if (isset($_POST["device_type"])){
 				foreach ($_POST["item"] as $key => $val){
 					if ($val==1) {
 						addUserGroup($key,$_POST["group"]);
+					}
+				}
+			break;
+			case "add_userprofile":
+				$input['FK_entities']=$_POST['FK_entities'];
+				$input['FK_profiles']=$_POST['FK_profiles'];
+				$input['recursive']=$_POST['recursive'];
+				foreach ($_POST["item"] as $key => $val){
+					if ($val==1) {
+						$input['FK_users']=$key;
+						addUserProfileEntity($input);
 					}
 				}
 			break;

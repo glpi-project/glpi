@@ -1510,6 +1510,8 @@ $LANG["setup"][603]="Ajouter un Utilisateur";
 $LANG["setup"][604]="Associer à un groupe"; 
 $LANG["setup"][605]="Ajouter Groupe"; 
 $LANG["setup"][606]="Ajout impossible. L'utilisateur existe déjà."; 
+$LANG["setup"][607]="Associer à un profil"; 
+
 $LANG["setup"][701]="Sélectionnez le plugin à configurer"; 
 $LANG["setup"][703]="Générale"; 
 $LANG["setup"][704]="Notifications"; 

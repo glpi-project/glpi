@@ -105,7 +105,16 @@ if (isset($_POST["action"])&&isset($_POST["type"])&&!empty($_POST["type"])){
 		break;
 		case "add_group":
 			dropdownValue("glpi_groups","group",0);
-		echo "&nbsp;<input type=\"submit\" name=\"massiveaction\" class=\"submit\" value=\"".$LANG["buttons"][2]."\" >";
+			echo "&nbsp;<input type=\"submit\" name=\"massiveaction\" class=\"submit\" value=\"".$LANG["buttons"][2]."\" >";
+		break;
+		case "add_userprofile":
+			dropdownValue("glpi_entities","FK_entities",0);
+			echo $LANG["profiles"][22].":";
+			dropdownValue("glpi_profiles","FK_profiles");
+			echo $LANG["profiles"][28].":";
+			dropdownYesNo("recursive",0);
+			
+			echo "&nbsp;<input type=\"submit\" name=\"massiveaction\" class=\"submit\" value=\"".$LANG["buttons"][2]."\" >";
 		break;
 		case "add_document":
 			dropdownDocument("docID");
