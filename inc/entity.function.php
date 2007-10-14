@@ -166,7 +166,7 @@ function showEntityUser($target,$ID){
 
 function addUserProfileEntity($input){
 	global $DB;
-	if (!isset($input['FK_entities'])
+	if (!isset($input['FK_entities'])||$input['FK_entities']<0
 		||!isset($input['FK_users'])||$input['FK_users']==0
 		||!isset($input['FK_profiles'])||$input['FK_profiles']==0) {
 		return false;
