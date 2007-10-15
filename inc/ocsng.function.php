@@ -395,23 +395,24 @@ function ocsManageDeleted($ocs_server_id) {
 						$query = "SELECT * 
 														FROM glpi_ocs_link 
 														WHERE ocs_id='$del' AND ocs_server_id='$ocs_server_id'";
-					$result = $DB->query($query);
-					if ($DB->numrows($result)) {
-						$data = $DB->fetch_array($result);
-						$comp = new Computer();
-						$comp->delete(array (
-							"ID" => $data["glpi_id"],
-							"_from_ocs" => 1
-						), 0);
-
-						//Add history to indicates that the machine was deleted from OCS
-						$changes[0]='0';
-						$changes[1]=$data["ocs_id"];
-						$changes[2]="";
-						historyLog ($data["glpi_id"],COMPUTER_TYPE,$changes,0,HISTORY_OCS_DELETE);
-
-						$query = "DELETE FROM glpi_ocs_link WHERE ID ='" . $data["ID"] . "'";
-						$DB->query($query);
+					if ($result = $DB->query($query)){
+						if ($DB->numrows($result)) {
+							$data = $DB->fetch_array($result);
+							$comp = new Computer();
+							$comp->delete(array (
+								"ID" => $data["glpi_id"],
+								"_from_ocs" => 1
+							), 0);
+	
+							//Add history to indicates that the machine was deleted from OCS
+							$changes[0]='0';
+							$changes[1]=$data["ocs_id"];
+							$changes[2]="";
+							historyLog ($data["glpi_id"],COMPUTER_TYPE,$changes,0,HISTORY_OCS_DELETE);
+	
+							$query = "DELETE FROM glpi_ocs_link WHERE ID ='" . $data["ID"] . "'";
+							$DB->query($query);
+						}
 					}
 				}
 			}
