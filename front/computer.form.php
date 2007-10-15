@@ -153,6 +153,14 @@ elseif(isset($_POST["unlock_printer"])){
 	}
 	glpi_header($_SERVER['HTTP_REFERER']);	
 }
+elseif(isset($_POST["unlock_soft"])){
+	checkRight("computer","w");
+	if (isset($_POST["locksoft"])&&count($_POST["locksoft"])){
+		foreach ($_POST["locksoft"] as $key => $val)
+			deleteInOcsArray($_POST["ID"],$key,"import_software");
+	}
+	glpi_header($_SERVER['HTTP_REFERER']);	
+}
 elseif(isset($_POST["unlock_periph"])){
 	checkRight("computer","w");
 	if (isset($_POST["lockperiph"])&&count($_POST["lockperiph"])){

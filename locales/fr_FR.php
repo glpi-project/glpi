@@ -1043,6 +1043,8 @@ $LANG["ocsng"][48]="La machine a changé d'identifiant OCS";
 $LANG["ocsng"][49]="Agent"; 
 $LANG["ocsng"][50]="IP(s) verouillée(s)"; 
 $LANG["ocsng"][51]="Aucune IP verrouillée"; 
+$LANG["ocsng"][52]="Logiciel(s) verouillé(s)"; 
+$LANG["ocsng"][53]="Aucun Logiciel verrouillé"; 
 
 $LANG["pager"][1]="à"; 
 $LANG["pager"][2]="de"; 

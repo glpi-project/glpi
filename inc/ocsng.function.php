@@ -1188,7 +1188,6 @@ function ocsCleanLinks($ocs_server_id) {
 			$hardware[$data["ID"]] = $data["DEVICEID"];
 		}
 	}
-
 	$query = "SELECT *
 				FROM glpi_ocs_link
 				WHERE ocs_server_id='$ocs_server_id'";
@@ -1199,7 +1198,7 @@ function ocsCleanLinks($ocs_server_id) {
 			$data = clean_cross_side_scripting_deep(addslashes_deep($data));
 			if (!isset ($hardware[$data["ocs_id"]])) {
 				$query_del = "DELETE FROM glpi_ocs_link 
-										WHERE ID='" . $data["ID"] . "'";
+						WHERE ID='" . $data["ID"] . "'";
 				$DB->query($query_del);
 				$comp = new Computer();
 				$comp->delete(array (
@@ -1518,7 +1517,7 @@ function ocsEditLock($target, $ID) {
 			echo "</div>";
 		}
 
-		echo "<div class='center'>";
+		echo "<div width='50%'>";
 		// Print lock fields for OCSNG
 
 		$lockable_fields = getOcsLockableFields();
@@ -1551,7 +1550,7 @@ function ocsEditLock($target, $ID) {
 		//Search locked monitors
 		$header = false;
 		echo "<br>";
-		echo "<div class='center'>";
+		echo "<div width='50%'>";
 		$locked_monitor = importArrayFromDB($data["import_monitor"]);
 		foreach ($locked_monitor as $key => $val) {
 			if ($val != "_version_070_") {
@@ -1661,7 +1660,38 @@ function ocsEditLock($target, $ID) {
 		} else
 			echo "<strong>" . $LANG["ocsng"][51] . "</strong>";
 		echo "</div>";
-			
+
+
+		// Search locked softwares
+		$header = false;
+		echo "<br>";
+		echo "<div class='center'>";
+		$locked_software = importArrayFromDB($data["import_software"]);
+		foreach ($locked_software as $key => $val) {
+			if ($val != "_version_070_") {
+				$querySearchLockedSoft = "SELECT ID FROM glpi_inst_software WHERE ID='$key'";
+				$resultSearchSoft = $DB->query($querySearchLockedSoft);
+				if ($DB->numrows($resultSearchSoft) == 0) {
+					//$header = true;
+					if (!($header)) {
+						$header = true;
+						echo "<form method='post' action=\"$target\">";
+						echo "<input type='hidden' name='ID' value='$ID'>";
+						echo "<table class='tab_cadre'>";
+						echo "<tr><th colspan='2'>" . $LANG["ocsng"][52] . "</th></tr>";
+					}
+					
+					echo "<tr class='tab_bg_1'><td>" . ereg_replace('\$\$\$\$\$',' v. ',$val) . "</td><td><input type='checkbox' name='locksoft[" . $key . "]'></td></tr>";
+				}
+			}
+		}
+		if ($header) {
+			echo "<tr class='tab_bg_2'><td align='center' colspan='2'><input class='submit' type='submit' name='unlock_soft' value='" . $LANG["buttons"][38] . "'></td></tr>";
+			echo "</table>";
+			echo "</form>";
+		} else
+			echo "<strong>" . $LANG["ocsng"][53] . "</strong>";
+		echo "</div>";			
 
 	}
 
