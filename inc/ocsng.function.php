@@ -319,13 +319,8 @@ function ocsManageDeleted($ocs_server_id) {
 			$deleted[$data["DELETED"]] = $data["EQUIVALENT"];
 		}
 
-		$query = "TRUNCATE TABLE deleted_equiv";
-		$result = $DBocs->query($query);
-
-		if (count($deleted))
+		if (count($deleted)){
 			foreach ($deleted as $del => $equiv) {
-
-
 				if (!empty ($equiv)) { // New name
 
 
@@ -376,15 +371,17 @@ function ocsManageDeleted($ocs_server_id) {
 					}
 
 					$sql_id = "SELECT glpi_id FROM glpi_ocs_link WHERE ocs_id=".$data["ID"]." AND ocs_server_id=$ocs_server_id";
-					$res_id = $DB->query($sql_id);
-
-					//Add history to indicates that the ocs_id changed
-					$changes[0]='0';
-					//Old ocs_id
-					$changes[1]=$del;
-					//New ocs_id
-					$changes[2]=$data["ID"];
-					historyLog ($DB->result($res_id,0,"glpi_id"),COMPUTER_TYPE,$changes,0,HISTORY_OCS_IDCHANGED);
+					if ($res_id = $DB->query($sql_id)){
+						if ($DB->numrows($res_id)>0){
+							//Add history to indicates that the ocs_id changed
+							$changes[0]='0';
+							//Old ocs_id
+							$changes[1]=$del;
+							//New ocs_id
+							$changes[2]=$data["ID"];
+							historyLog ($DB->result($res_id,0,"glpi_id"),COMPUTER_TYPE,$changes,0,HISTORY_OCS_IDCHANGED);
+						}
+					}
 					
 				} else { // Deleted
 					if (ereg("-", $del))
@@ -396,7 +393,7 @@ function ocsManageDeleted($ocs_server_id) {
 														FROM glpi_ocs_link 
 														WHERE ocs_id='$del' AND ocs_server_id='$ocs_server_id'";
 					if ($result = $DB->query($query)){
-						if ($DB->numrows($result)) {
+						if ($DB->numrows($result)>0) {
 							$data = $DB->fetch_array($result);
 							$comp = new Computer();
 							$comp->delete(array (
@@ -415,7 +412,11 @@ function ocsManageDeleted($ocs_server_id) {
 						}
 					}
 				}
+				// Delete item in DB
+				$query="DELETE FROM deleted_equiv WHERE DELETED = '$del' AND EQUIVALENT = '$equiv'";
+				$DBocs->query($query);
 			}
+		}
 	}
 }
 
