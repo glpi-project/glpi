@@ -707,6 +707,12 @@ class User extends CommonDBTM {
 			}
 		}
 		if ($spotted) {
+		
+			$extauth = ! ($this->fields["auth_method"]==AUTH_DB_GLPI 
+				|| ($this->fields["auth_method"]==NOT_YET_AUTHENTIFIED 
+						&& (!empty ($this->fields["password"]) || !empty ($this->fields["password_md5"])))
+				);
+		
 			$this->showOnglets($ID, $withtemplate, $_SESSION['glpi_onglet']);
 			echo "<div class='center'>";
 			echo "<form method='post' name=\"user_manager\" action=\"$target\"><table class='tab_cadre_fixe'>";
@@ -741,10 +747,11 @@ class User extends CommonDBTM {
 
 			//do some rights verification
 			if (haveRight("user", "w")) {
-				if ($this->fields["auth_method"]==AUTH_DB_GLPI || empty($ID)) {
+				if ( !$extauth || empty($ID)) {
 					echo "<td class='center'>" . $LANG["setup"][19] . ":</td><td><input type='password' name='password' value='' size='20' /></td></tr>";
-				} else
+				} else {
 					echo "<td colspan='2'>&nbsp;</td></tr>";
+				}
 			} else
 				echo "<td colspan='2'>&nbsp;</td></tr>";
 
@@ -821,7 +828,7 @@ class User extends CommonDBTM {
 				}
 			}
 
-			if ($canedit)
+			if ($canedit){
 				if ($this->fields["name"] == "") {
 					echo "<tr>";
 					echo "<td class='tab_bg_2' valign='top' colspan='4' align='center'>";
@@ -845,7 +852,7 @@ class User extends CommonDBTM {
 					echo "</td>";
 					echo "</tr>";
 				}
-
+			}
 			echo "</table></form></div>";
 			return true;
 		} else {
@@ -866,7 +873,11 @@ class User extends CommonDBTM {
 			//$this->showOnglets($ID, $withtemplate,$_SESSION['glpi_onglet']);
 			$auth_method = $this->getAuthMethodsByID();
 
-			$extauth = empty ($this->fields["password"]) && empty ($this->fields["password_md5"]);
+			$extauth = ! ($this->fields["auth_method"]==AUTH_DB_GLPI 
+				|| ($this->fields["auth_method"]==NOT_YET_AUTHENTIFIED 
+						&& (!empty ($this->fields["password"]) || !empty ($this->fields["password_md5"])))
+				);
+			
 			$imapauth = !empty ($auth_method["imap_host"]);
 
 			echo "<div class='center'>";
