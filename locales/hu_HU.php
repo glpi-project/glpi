@@ -1042,6 +1042,8 @@ $LANG["ocsng"][48]="A számítógép OCS azonosítója megváltozott";
 $LANG["ocsng"][49]="Ügynök"; 
 $LANG["ocsng"][50]="Zárolt IP-k"; 
 $LANG["ocsng"][51]="Nincs zárolt IP"; 
+$LANG["ocsng"][52]="Locked software(s)"; 
+$LANG["ocsng"][53]="No software locked"; 
 
 $LANG["pager"][1]="vége"; 
 $LANG["pager"][2]="kezdet"; 
