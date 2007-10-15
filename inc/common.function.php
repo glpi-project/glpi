@@ -424,6 +424,55 @@ function testWriteAccessToDirectory($dir){
 	return 0;
 }
 
+function commonCheckForUseGLPI(){
+	global $LANG;
+
+	// memory test
+	echo "<tr class='tab_bg_1'><td><b>".$LANG["install"][86]."</b></td>";
+
+	$mem=ini_get("memory_limit");
+
+	// Cette bidouille me plait pas
+	//if(empty($mem)) {$mem=get_cfg_var("memory_limit");}  // Sous Win l'ini_get ne retourne rien.....
+
+	preg_match("/([0-9]+)([KMG]*)/",$mem,$matches);
+
+	// no K M or G 
+	if (!isset($matches[2])){
+		$mem=$matches[1];
+	} else {
+		$mem=$matches[1];
+		switch ($matches[2]){
+			case "G" : $mem*=1024;
+			case "M" : $mem*=1024;
+			case "K" : $mem*=1024;
+			break;
+		}
+	}
+
+	if( $mem == "" ){          // memory_limit non compilé -> no memory limit
+		echo "<td>".$LANG["install"][95]." - ".$LANG["install"][89]."</td></tr>";
+	}
+	else if( $mem == "-1" ){   // memory_limit compilé mais illimité
+		echo "<td>".$LANG["install"][96]." - ".$LANG["install"][89]."</td></tr>";
+	}
+	else{	
+		if ($mem<32*1024*1024){ // memoire insuffisante
+			echo "<td  class='red'><b>".$LANG["install"][87]." $mem octets</b><br>".$LANG["install"][88]."<br>".$LANG["install"][90]."</td></tr>";
+		}
+		else{ // on a sufisament de mémoire on passe à la suite
+			echo "<td>".$LANG["install"][91]." - ".$LANG["install"][89]."</td></tr>";
+		}
+	}
+
+
+
+	return checkWriteAccessToDirs();
+
+	
+
+}
+
 function checkWriteAccessToDirs(){
 		global $LANG;
 		$dir_to_check=array(

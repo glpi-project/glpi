@@ -538,49 +538,8 @@ function step1($update)
 
 
 	// ***********
-
-	// memory test
-	echo "<tr class='tab_bg_1'><td><b>".$LANG["install"][86]."</b></td>";
-
-	$mem=ini_get("memory_limit");
-
-	// Cette bidouille me plait pas
-	//if(empty($mem)) {$mem=get_cfg_var("memory_limit");}  // Sous Win l'ini_get ne retourne rien.....
-
-	preg_match("/([0-9]+)([KMG]*)/",$mem,$matches);
-
-	// no K M or G 
-	if (!isset($matches[2])){
-		$mem=$matches[1];
-	} else {
-		$mem=$matches[1];
-		switch ($matches[2]){
-			case "G" : $mem*=1024;
-			case "M" : $mem*=1024;
-			case "K" : $mem*=1024;
-			break;
-		}
-	}
-
-	if( $mem == "" ){          // memory_limit non compil�-> no memory limit
-		echo "<td>".$LANG["install"][95]." - ".$LANG["install"][89]."</td></tr>";
-	}
-	else if( $mem == "-1" ){   // memory_limit compil� mais illimit�
-		echo "<td>".$LANG["install"][96]." - ".$LANG["install"][89]."</td></tr>";
-	}
-	else{	
-		if ($mem<16*1024*1024){ // memoire insuffisante
-			echo "<td  class='red'><b>".$LANG["install"][87]." $mem octets</b><br>".$LANG["install"][88]."<br>".$LANG["install"][90]."</td></tr>";
-		}
-		else{ // on a sufisament de m�oire on passe �la suite
-			echo "<td>".$LANG["install"][91]." - ".$LANG["install"][89]."</td></tr>";
-		}
-	}
 	// session test
 	echo "<tr class='tab_bg_1'><td><b>".$LANG["install"][12]."</b></td>";
-
-
-
 	// check whether session are enabled at all!!
 	if (!extension_loaded('session')) {
 		$error = 2;
@@ -631,16 +590,11 @@ function step1($update)
 		echo "<td>".$LANG["install"][85]."</td></tr>";
 
 	}
-
-
 	// *********
-
-
-
 	// file test
 
 	// Check right permission to specific directories
-	$tmperror=checkWriteAccessToDirs();
+	$tmperror=commonCheckForUseGLPI();
 	if ($tmperror) $error=$tmperror;
 	echo "</table>";
 	switch ($error) {
