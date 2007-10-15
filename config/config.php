@@ -147,10 +147,10 @@
 			echo "<div align='center'>";
 	
 	
-			echo "<table class='tab_cadre' style='width:600px'>";
+			echo "<table class='tab_cadre' style='width:700px'>";
 			echo "<tr><th>".$LANG["install"][6]."</th><th >".$LANG["install"][7]."</th></tr>";
 	
-			$error=checkWriteAccessToDirs();
+			$error=commonCheckForUseGLPI();
 	
 			echo "</table><br>";
 	
