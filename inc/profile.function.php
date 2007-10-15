@@ -142,7 +142,7 @@ function showProfileEntityUser($target,$ID,$prof){
 							echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkAllRows('profileuser_form$temp') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$ID&amp;select=none'>".$LANG["buttons"][19]."</a>";
 							echo "</td><td align='left' width='80%'>";
 							dropdownValue("glpi_entities","FK_entities",0);
-							echo "<input type='submit' name='moveentity' value=\"".$LANG["buttons"][20]."\" class='submit'>";
+							echo "&nbsp;<input type='submit' name='moveentity' value=\"".$LANG["buttons"][20]."\" class='submit'>";
 							echo "</td>";
 							echo "</table>";
 							echo "</div>";
@@ -213,7 +213,7 @@ function showProfileEntityUser($target,$ID,$prof){
 					echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkAllRows('profileuser_form$temp') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$ID&amp;select=none'>".$LANG["buttons"][19]."</a>";
 					echo "</td><td align='left' width='80%'>";
 					dropdownValue("glpi_entities","FK_entities",0);
-					echo "<input type='submit' name='moveentity' value=\"".$LANG["buttons"][20]."\" class='submit'>";
+					echo "&nbsp;<input type='submit' name='moveentity' value=\"".$LANG["buttons"][20]."\" class='submit'>";
 					echo "</td>";
 					echo "</table>";
 					echo "</div>";
