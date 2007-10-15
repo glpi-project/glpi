@@ -109,9 +109,9 @@ if (isset($_POST["action"])&&isset($_POST["type"])&&!empty($_POST["type"])){
 		break;
 		case "add_userprofile":
 			dropdownValue("glpi_entities","FK_entities",0);
-			echo $LANG["profiles"][22].":";
+			echo ".&nbsp;".$LANG["profiles"][22].":";
 			dropdownValue("glpi_profiles","FK_profiles");
-			echo $LANG["profiles"][28].":";
+			echo ".&nbsp;".$LANG["profiles"][28].":";
 			dropdownYesNo("recursive",0);
 			
 			echo "&nbsp;<input type=\"submit\" name=\"massiveaction\" class=\"submit\" value=\"".$LANG["buttons"][2]."\" >";
