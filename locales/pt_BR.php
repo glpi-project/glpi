@@ -1042,6 +1042,8 @@ $LANG["ocsng"][48]="A máquina alterou seu identificador no OCS";
 $LANG["ocsng"][49]="Agente"; 
 $LANG["ocsng"][50]="IP(s) bloqueado(s)"; 
 $LANG["ocsng"][51]="Sem IP bloqueado"; 
+$LANG["ocsng"][52]="Locked software(s)"; 
+$LANG["ocsng"][53]="No software locked"; 
 
 $LANG["pager"][1]="para"; 
 $LANG["pager"][2]="de"; 

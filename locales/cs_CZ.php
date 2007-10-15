@@ -1042,6 +1042,8 @@ $LANG["ocsng"][48]="OCS ID počítače bylo změněno";
 $LANG["ocsng"][49]="Agent"; 
 $LANG["ocsng"][50]="Uzamknuté IP"; 
 $LANG["ocsng"][51]="Žádná IP není uzamknuta"; 
+$LANG["ocsng"][52]="Locked software(s)"; 
+$LANG["ocsng"][53]="No software locked"; 
 
 $LANG["pager"][1]="do"; 
 $LANG["pager"][2]="od"; 
