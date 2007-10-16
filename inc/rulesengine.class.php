@@ -42,6 +42,7 @@ class RuleCollection {
 	var $rule_class_name="Rule";
 	var $stop_on_first_match=false;
 	var $right="config";
+	var $orderby="ranking";
 
 	
 	/**
@@ -61,7 +62,7 @@ class RuleCollection {
 	function getCollectionDatas($retrieve_criteria=0,$retrieve_action=0){
 		global $DB;
 		//Select all the rules of a different type
-		$sql = "SELECT ID FROM glpi_rules_descriptions WHERE rule_type=".$this->rule_type." ORDER by ranking ASC";
+		$sql = "SELECT ID FROM glpi_rules_descriptions WHERE rule_type=".$this->rule_type." ORDER by ".$this->orderby." ASC";
 		 $result = $DB->query($sql);
 		if ($result){
 		 	while ($rule=$DB->fetch_array($result)) {
