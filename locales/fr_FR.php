@@ -800,6 +800,7 @@ $LANG["login"][14]="Utilisateur inconnu";
 $LANG["login"][15]="Utilisateur non trouvé ou plusieurs utilisateurs identiques trouvés"; 
 $LANG["login"][16]="Echec de l'authentification LDAP"; 
 $LANG["login"][18]="Base interne GLPI"; 
+$LANG["login"][20]="Vous n'avez pas accès à cette application car votre compte a été désactivé ou supprimé"; 
 $LANG["login"][21]="Test de connexion au serveur IMAP/POP"; 
 $LANG["login"][22]="Test réussi"; 
 $LANG["login"][23]="Test échoué"; 
