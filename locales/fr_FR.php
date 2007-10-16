@@ -667,7 +667,7 @@ $LANG["joblist"][18]="En cours (Attribué)";
 $LANG["joblist"][19]="En cours (Planifié)"; 
 $LANG["joblist"][20]="Tous"; 
 $LANG["joblist"][21]="En cours"; 
-$LANG["joblist"][22]="Pas d'anciens tickets trouvés"; 
+$LANG["joblist"][22]="Pas d'ancien ticket trouvé"; 
 $LANG["joblist"][24]="Non fermé"; 
 $LANG["joblist"][25]="Fermé"; 
 $LANG["joblist"][26]="En attente"; 
@@ -1133,7 +1133,7 @@ $LANG["profiles"][29]="Dynamique";
 $LANG["profiles"][30]="Voir les informations OCSNG"; 
 $LANG["profiles"][31]="Synchronisation OCSNG manuellement"; 
 $LANG["profiles"][32]="Voir les tickets qui me sont assignés"; 
-$LANG["profiles"][33]="Pas d'utilisateur trouvés"; 
+$LANG["profiles"][33]="Pas d'utilisateur trouvé"; 
 $LANG["profiles"][34]="Légende"; 
 $LANG["profiles"][35]="Mettre à jour tous les suivis"; 
 
