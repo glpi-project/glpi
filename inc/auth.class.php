@@ -82,7 +82,7 @@ class Identification {
 	function userExists($name) {
 		global $DB, $LANG;
 
-		$query = "SELECT * from glpi_users WHERE name='".addslashes($name)."'";
+		$query = "SELECT * FROM glpi_users WHERE name='".addslashes($name)."'";
 		$result = $DB->query($query);
 		if ($DB->numrows($result) == 0) {
 			$this->addToError($LANG["login"][14]);
@@ -238,37 +238,41 @@ class Identification {
 		global $CFG_GLPI, $LANG;
 
 		startGlpiSession();
-		if (isset($this->user->fields['ID'])&&!$this->user->fields['deleted']&&$this->user->fields['active']){
-			$_SESSION["glpiID"] = $this->user->fields['ID'];
-			$_SESSION["glpiname"] = $this->user->fields['name'];
-			$_SESSION["glpirealname"] = $this->user->fields['realname'];
-			$_SESSION["glpifirstname"] = $this->user->fields['firstname'];
-			$_SESSION["glpilanguage"] = $this->user->fields['language'];
-			loadLanguage();
-			$_SESSION["glpitracking_order"] = $this->user->fields['tracking_order'];
-			$_SESSION["glpiauthorisation"] = true;
-			$_SESSION["glpiextauth"] = $this->extauth;
-			$_SESSION["glpisearchcount"] = array ();
-			$_SESSION["glpisearchcount2"] = array ();
-			$_SESSION["glpiroot"] = $CFG_GLPI["root_doc"];
-			$_SESSION["glpilist_limit"] = $this->user->fields['list_limit'];
-			$_SESSION["glpicrontimer"] = time();
-						
-			// glpiprofiles -> other available profile with link to the associated entities
-			doHook("init_session");
-
-			initEntityProfiles($_SESSION["glpiID"]);
-			changeProfile(key($_SESSION['glpiprofiles']));
-
-			// glpiactiveprofile -> active profile
-			// glpiactiveentities -> active entities
+		if (isset($this->user->fields['ID'])){
+			if (!$this->user->fields['deleted']&&$this->user->fields['active']){
+				$_SESSION["glpiID"] = $this->user->fields['ID'];
+				$_SESSION["glpiname"] = $this->user->fields['name'];
+				$_SESSION["glpirealname"] = $this->user->fields['realname'];
+				$_SESSION["glpifirstname"] = $this->user->fields['firstname'];
+				$_SESSION["glpilanguage"] = $this->user->fields['language'];
+				loadLanguage();
+				$_SESSION["glpitracking_order"] = $this->user->fields['tracking_order'];
+				$_SESSION["glpiauthorisation"] = true;
+				$_SESSION["glpiextauth"] = $this->extauth;
+				$_SESSION["glpisearchcount"] = array ();
+				$_SESSION["glpisearchcount2"] = array ();
+				$_SESSION["glpiroot"] = $CFG_GLPI["root_doc"];
+				$_SESSION["glpilist_limit"] = $this->user->fields['list_limit'];
+				$_SESSION["glpicrontimer"] = time();
+							
+				// glpiprofiles -> other available profile with link to the associated entities
+				doHook("init_session");
 	
-			// Already done un changeProfile
-			//cleanCache("GLPI_HEADER_".$_SESSION["glpiID"]);
-			if (!isset($_SESSION["glpiactiveprofile"]["interface"])){
-				$this->auth_succeded=false;
-				$this->addToError($LANG["login"][25]);
-			} 
+				initEntityProfiles($_SESSION["glpiID"]);
+				changeProfile(key($_SESSION['glpiprofiles']));
+	
+				// glpiactiveprofile -> active profile
+				// glpiactiveentities -> active entities
+		
+				// Already done un changeProfile
+				//cleanCache("GLPI_HEADER_".$_SESSION["glpiID"]);
+				if (!isset($_SESSION["glpiactiveprofile"]["interface"])){
+					$this->auth_succeded=false;
+					$this->addToError($LANG["login"][25]);
+				} 
+			} else {
+				$this->addToError($LANG["login"][20]);
+			}
 
 		} else  {
 			$this->auth_succeded=false;
