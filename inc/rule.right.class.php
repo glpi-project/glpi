@@ -268,6 +268,7 @@ class RightRuleCollection extends RuleCollection {
 		$this->rule_class_name = 'RightAffectRule';
 		$this->stop_on_first_match=false;
 		$this->right="rule_ldap";
+		$this->orderby="name";
 	}
 
 	function getTitle() {
