@@ -130,7 +130,9 @@ class RuleCollection {
 			echo "<select name=\"massiveaction\" id='massiveaction'>";
 			echo "<option value=\"-1\" selected>-----</option>";
 			echo "<option value=\"delete\">".$LANG["buttons"][6]."</option>";
-			echo "<option value=\"move_rule\">".$LANG["buttons"][20]."</option>";
+			if ($this->orderby=="ranking")
+				echo "<option value=\"move_rule\">".$LANG["buttons"][20]."</option>";
+				
 			echo "</select>";
 
 			$params=array('action'=>'__VALUE__',
