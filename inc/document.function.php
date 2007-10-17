@@ -193,15 +193,15 @@ function showDeviceDocument($instID,$search='') {
 		$number = $DB->numrows($result);
 		$i = 0;
 	
-		echo "<form method='post' action=\"".$CFG_GLPI["root_doc"]."/front/document.form.php\">";
+		echo "<form method='post' name='document_form' id='document_form'  action=\"".$CFG_GLPI["root_doc"]."/front/document.form.php\">";
 	
 		echo "<br><br><div class='center'><table class='tab_cadre_fixe'>";
 		echo "<tr><th colspan='5'>".$LANG["document"][19].":</th></tr>";
-		echo "<tr><th>".$LANG["common"][17]."</th>";
+		echo "<tr><th>&nbsp;</th><th>".$LANG["common"][17]."</th>";
 		echo "<th>".$LANG["common"][16]."</th>";
 		echo "<th>".$LANG["common"][19]."</th>";
 		echo "<th>".$LANG["common"][20]."</th>";
-		echo "<th>&nbsp;</th></tr>";
+		echo "</tr>";
 		$ci=new CommonItem();
 		while ($i < $number) {
 			$type=$DB->result($result, $i, "device_type");
@@ -229,16 +229,21 @@ function showDeviceDocument($instID,$search='') {
 	
 	
 							echo "<tr class='tab_bg_1'>";
+
+							if ($canedit){
+								echo "<td width='10'>";
+								$sel="";
+								if (isset($_GET["select"])&&$_GET["select"]=="all") $sel="checked";
+								echo "<input type='checkbox' name='item[".$data["IDD"]."]' value='1' $sel>";
+								echo "</td>";
+							}
 							echo "<td class='center'>".$ci->getType()."</td>";
 	
 							echo "<td class='center' ".(isset($data['deleted'])&&$data['deleted']?"class='tab_bg_2_2'":"").">".$name."</td>";
 							echo "<td class='center'>".(isset($data["serial"])? "".$data["serial"]."" :"-")."</td>";
 							echo "<td class='center'>".(isset($data["otherserial"])? "".$data["otherserial"]."" :"-")."</td>";
-							echo "<td class='center' class='tab_bg_2'>";
-							if ($canedit){
-								echo "<a href='".$_SERVER['PHP_SELF']."?deleteitem=deleteitem&amp;ID=".$data["IDD"]."'><strong>".$LANG["buttons"][6]."</strong></a>";
-							} else echo "&nbsp;";
-							echo "</td></tr>";
+							
+							echo "</tr>";
 						}
 					}
 			}
@@ -260,9 +265,25 @@ function showDeviceDocument($instID,$search='') {
 			echo "<td colspan='2' class='center' class='tab_bg_2'>";
 			echo "<input type='submit' name='additem' value=\"".$LANG["buttons"][8]."\" class='submit'>";
 			echo "</td></tr>";
-		}
+			echo "</table></div>" ;
+			
+			echo "<div class='center'>";
+			echo "<table width='950px'>";
+			echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markAllRows('document_form') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$instID&amp;select=all'>".$LANG["buttons"][18]."</a></td>";
+		
+			echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkAllRows('document_form') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$instID&amp;select=none'>".$LANG["buttons"][19]."</a>";
+			echo "</td><td align='left' width='80%'>";
+			echo "<input type='submit' name='deleteitem' value=\"".$LANG["buttons"][6]."\" class='submit'>";
+			echo "</td>";
+			echo "</table>";
+		
+			echo "</div>";
+
+
+		}else{
 	
-		echo "</table></div>"    ;
+			echo "</table></div>"    ;
+		}
 		echo "</form>";
 	}
 
