@@ -301,7 +301,9 @@ function showDocumentAssociated($device_type,$ID,$withtemplate=''){
 	$number = $DB->numrows($result);
 	$i = 0;
 
-	if ($withtemplate!=2) echo "<form method='post' action=\"".$CFG_GLPI["root_doc"]."/front/document.form.php\" enctype=\"multipart/form-data\">";
+	if ($withtemplate!=2) {
+		echo "<form method='post' action=\"".$CFG_GLPI["root_doc"]."/front/document.form.php\" enctype=\"multipart/form-data\">";
+	}
 	echo "<br><br><div class='center'><table class='tab_cadre_fixe'>";
 	echo "<tr><th colspan='6'>".$LANG["document"][21].":</th></tr>";
 	echo "<tr><th>".$LANG["common"][16]."</th>";
@@ -311,41 +313,42 @@ function showDocumentAssociated($device_type,$ID,$withtemplate=''){
 	echo "<th>".$LANG["document"][4]."</th>";
 	if ($withtemplate<2)echo "<th>&nbsp;</th>";
 	echo "</tr>";
-	if ($number)
-	while ($data=$DB->fetch_assoc($result)) {
-		$docID=$data["ID"];
-		$assocID=$data["assocID"];
-
-		echo "<tr class='tab_bg_1".($data["deleted"]?"_2":"")."'>";
-		if ($withtemplate!=3&&$canread&&in_array($data['FK_entities'],$_SESSION['glpiactiveentities'])){
-			echo "<td class='center'><a href='".$CFG_GLPI["root_doc"]."/front/document.form.php?ID=$docID'><strong>".$data["name"];
-			if ($CFG_GLPI["view_ID"]) echo " (".$docID.")";
-			echo "</strong></a></td>";
-		} else {
-			echo "<td class='center'><strong>".$data["name"];
-			if ($CFG_GLPI["view_ID"]) echo " (".$docID.")";
-			echo "</strong></td>";
-		}
-
-		echo "<td align='center'  width='100px'>".getDocumentLink($data["filename"])."</td>";
-
-		echo "<td class='center'>";
-		if (!empty($data["link"]))
-			echo "<a target=_blank href='".$data["link"]."'>".$data["link"]."</a>";
-		else echo "&nbsp;";
-		echo "</td>";
-		echo "<td class='center'>".getDropdownName("glpi_dropdown_rubdocs",$data["rubrique"])."</td>";
-		echo "<td class='center'>".$data["mime"]."</td>";
-
-		if ($withtemplate<2) {
-			echo "<td align='center' class='tab_bg_2'>";
-			if ($canedit)
-				echo "<a href='".$CFG_GLPI["root_doc"]."/front/document.form.php?deleteitem=deleteitem&amp;ID=$assocID'><strong>".$LANG["buttons"][6]."</strong></a>";
+	if ($number){
+		while ($data=$DB->fetch_assoc($result)) {
+			$docID=$data["ID"];
+			$assocID=$data["assocID"];
+	
+			echo "<tr class='tab_bg_1".($data["deleted"]?"_2":"")."'>";
+			if ($withtemplate!=3&&$canread&&in_array($data['FK_entities'],$_SESSION['glpiactiveentities'])){
+				echo "<td class='center'><a href='".$CFG_GLPI["root_doc"]."/front/document.form.php?ID=$docID'><strong>".$data["name"];
+				if ($CFG_GLPI["view_ID"]) echo " (".$docID.")";
+				echo "</strong></a></td>";
+			} else {
+				echo "<td class='center'><strong>".$data["name"];
+				if ($CFG_GLPI["view_ID"]) echo " (".$docID.")";
+				echo "</strong></td>";
+			}
+	
+			echo "<td align='center'  width='100px'>".getDocumentLink($data["filename"])."</td>";
+	
+			echo "<td class='center'>";
+			if (!empty($data["link"]))
+				echo "<a target=_blank href='".$data["link"]."'>".$data["link"]."</a>";
 			else echo "&nbsp;";
 			echo "</td>";
+			echo "<td class='center'>".getDropdownName("glpi_dropdown_rubdocs",$data["rubrique"])."</td>";
+			echo "<td class='center'>".$data["mime"]."</td>";
+	
+			if ($withtemplate<2) {
+				echo "<td align='center' class='tab_bg_2'>";
+				if ($canedit)
+					echo "<a href='".$CFG_GLPI["root_doc"]."/front/document.form.php?deleteitem=deleteitem&amp;ID=$assocID'><strong>".$LANG["buttons"][6]."</strong></a>";
+				else echo "&nbsp;";
+				echo "</td>";
+			}
+			echo "</tr>";
+			$i++;
 		}
-		echo "</tr>";
-		$i++;
 	}
 
 	if ($canedit){
