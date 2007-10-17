@@ -807,15 +807,18 @@ class Job extends CommonDBTM{
 		return ((haveRight("comment_ticket","1")&&$this->fields["author"]==$_SESSION["glpiID"])
 			||haveRight("comment_all_ticket","1")
 			||(isset($_SESSION["glpiID"])&&$this->fields["assign"]==$_SESSION["glpiID"])
-			||($_SESSION["glpigroups"]&&in_array($this->fields["assign_group"],$_SESSION['glpigroups']))
+			||(isset($_SESSION["glpigroups"])&&in_array($this->fields["assign_group"],$_SESSION['glpigroups']))
 			);
 	}
 	function canShowTicket(){
 		return (
 			haveRight("show_all_ticket","1")
-			|| $this->fields["author"]==$_SESSION["glpiID"]
-			|| (haveRight("show_group_ticket",'1')&&in_array($this->fields["FK_group"],$_SESSION["glpigroups"]))
-			|| (haveRight("show_assign_ticket",'1')&&($this->fields["assign"]==$_SESSION["glpiID"]||in_array($this->fields["assign_group"],$_SESSION["glpigroups"])))
+			|| (isset($_SESSION["glpiID"])&&$this->fields["author"]==$_SESSION["glpiID"])
+			|| (haveRight("show_group_ticket",'1')&&isset($_SESSION["glpigroups"])&&in_array($this->fields["FK_group"],$_SESSION["glpigroups"]))
+			|| (haveRight("show_assign_ticket",'1')&&
+				(isset($_SESSION["glpiID"])&&$this->fields["assign"]==$_SESSION["glpiID"])
+				||(isset($_SESSION["glpigroups"])&&in_array($this->fields["assign_group"],$_SESSION["glpigroups"]))
+			)
 			);
 	}
 
@@ -845,7 +848,10 @@ class Followup  extends CommonDBTM {
 	function prepareInputForUpdate($input) {
 
 		$input["realtime"]=$input["hour"]+$input["minute"]/60;
-		$input["author"]=$_SESSION["glpiID"];
+		if (isset($_SESSION["glpiID"])){
+			$input["author"]=$_SESSION["glpiID"];
+		}
+
 		if (isset($input["plan"])){
 			$input["_plan"]=$input["plan"];
 			unset($input["plan"]);
