@@ -231,10 +231,10 @@ function showDeviceDocument($instID,$search='') {
 							echo "<tr class='tab_bg_1'>";
 							echo "<td class='center'>".$ci->getType()."</td>";
 	
-							echo "<td align='center' ".(isset($data['deleted'])&&$data['deleted']?"class='tab_bg_2_2'":"").">".$name."</td>";
+							echo "<td class='center' ".(isset($data['deleted'])&&$data['deleted']?"class='tab_bg_2_2'":"").">".$name."</td>";
 							echo "<td class='center'>".(isset($data["serial"])? "".$data["serial"]."" :"-")."</td>";
 							echo "<td class='center'>".(isset($data["otherserial"])? "".$data["otherserial"]."" :"-")."</td>";
-							echo "<td align='center' class='tab_bg_2'>";
+							echo "<td class='center' class='tab_bg_2'>";
 							if ($canedit){
 								echo "<a href='".$_SERVER['PHP_SELF']."?deleteitem=deleteitem&amp;ID=".$data["IDD"]."'><strong>".$LANG["buttons"][6]."</strong></a>";
 							} else echo "&nbsp;";
@@ -246,7 +246,7 @@ function showDeviceDocument($instID,$search='') {
 		}
 	
 		if (haveRight("document","w"))	{
-			echo "<tr class='tab_bg_1'><td>&nbsp;</td><td>&nbsp;</td><td class='center'>";
+			echo "<tr class='tab_bg_1'><td colspan='3' class='center'>";
 	
 			echo "<input type='hidden' name='conID' value='$instID'>";
 			$types=$CFG_GLPI["state_types"];
@@ -255,9 +255,10 @@ function showDeviceDocument($instID,$search='') {
 			$types[]=CONSUMABLE_TYPE;
 			$types[]=CONTRACT_TYPE;
 			dropdownAllItems("item",0,0,$doc->fields['FK_entities'],$types);
-			echo "<input type='submit' name='additem' value=\"".$LANG["buttons"][8]."\" class='submit'>";
+			
 			echo "</td>";
-			echo "<td align='center' class='tab_bg_2'>";
+			echo "<td colspan='2' class='center' class='tab_bg_2'>";
+			echo "<input type='submit' name='additem' value=\"".$LANG["buttons"][8]."\" class='submit'>";
 			echo "</td></tr>";
 		}
 	

@@ -84,7 +84,7 @@ function showInfocomEnterprise($instID) {
 					echo "<tr class='tab_bg_1'>";
 					echo "<td class='center'>".$ci->getType()."</td>";
 					
-					echo "<td align='center' ".(isset($data['deleted'])&&$data['deleted']?"class='tab_bg_2_2'":"").">".$name."</td>";
+					echo "<td class='center' ".(isset($data['deleted'])&&$data['deleted']?"class='tab_bg_2_2'":"").">".$name."</td>";
 					echo "<td class='center'>".(isset($data["serial"])? "".$data["serial"]."" :"-")."</td>";
 					echo "<td class='center'>".(isset($data["otherserial"])? "".$data["otherserial"]."" :"-")."</td>";
 					echo "</tr>";
@@ -94,7 +94,7 @@ function showInfocomEnterprise($instID) {
 		}
 		$i++;
 	}
-	echo "<tr class='tab_bg_2'><td colspan='4' align='center'>$num</td></tr> ";
+	echo "<tr class='tab_bg_2'><td colspan='4' class='center'>$num</td></tr> ";
 	echo "</table></div>"    ;
 
 
