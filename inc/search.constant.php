@@ -2240,6 +2240,12 @@ $SEARCH_OPTION[USER_TYPE][20]['linkfield']='';
 $SEARCH_OPTION[USER_TYPE][20]['name']=$LANG["Menu"][35];
 $SEARCH_OPTION[USER_TYPE][20]['meta']=0;
 
+$SEARCH_OPTION[USER_TYPE][80]['table']='glpi_entities';
+$SEARCH_OPTION[USER_TYPE][80]['field']='completename';
+$SEARCH_OPTION[USER_TYPE][80]['linkfield']='FK_entities';
+$SEARCH_OPTION[USER_TYPE][80]['name']=$LANG["entity"][0];
+$SEARCH_OPTION[USER_TYPE][80]['meta']=0;
+
 //////CONSUMABLE_TYPE
 
 $SEARCH_OPTION[CONSUMABLE_TYPE]['common']=$LANG["common"][32];
