@@ -1468,7 +1468,6 @@ function addSelect ($type,$ID,$num,$meta=0,$meta_type=0){
 		case "glpi_links.name" :
 		case "glpi_docs.name" :
 		case "glpi_ocs_config.name" :
-		case "glpi_entities.name" :
 		case "glpi_mailgate.name" :
 		case "glpi_transfers.name" :
 		case "state_types.name":
@@ -1504,6 +1503,8 @@ function addSelect ($type,$ID,$num,$meta=0,$meta_type=0){
 
 		return $pretable.$table.$linkfield.$addtable.".".$field." AS ".$NAME."_$num, ".$pretable.$table.$linkfield.$addtable.".realname AS ".$NAME."_".$num."_2, ".$pretable.$table.$linkfield.$addtable.".ID AS ".$NAME."_".$num."_3, ".$pretable.$table.$linkfield.$addtable.".firstname AS ".$NAME."_".$num."_4,";
 		break;
+
+
 		case "glpi_contracts.end_date" :
 			return $pretable.$table.$addtable.".begin_date AS ".$NAME."_$num, ".$pretable.$table.$addtable.".duration AS ".$NAME."_".$num."_2, ";
 		break;
@@ -1528,15 +1529,28 @@ function addSelect ($type,$ID,$num,$meta=0,$meta_type=0){
 			else return " GROUP_CONCAT( DISTINCT ".$pretable.$table.$addtable.".".$field." SEPARATOR '$$$$') AS ".$NAME."_$num, ";
 		break;
 		case "glpi_profiles.name" :
+			if ($type==USER_TYPE){
+				return " GROUP_CONCAT( ".$pretable.$table.$addtable.".".$field." SEPARATOR '$$$$') AS ITEM_$num, 
+					GROUP_CONCAT( glpi_entities.completename SEPARATOR '$$$$') AS ITEM_".$num."_2,
+					GROUP_CONCAT( glpi_users_profiles.recursive SEPARATOR '$$$$') AS ITEM_".$num."_3,";
+			} else {
+				return $table.$addtable.".".$field." AS ITEM_$num, ";
+			}
+		case "glpi_entities.completename" :
+			if ($type==USER_TYPE){
+				return " GROUP_CONCAT( ".$pretable.$table.$addtable.".completename SEPARATOR '$$$$') AS ITEM_$num, 
+					GROUP_CONCAT( glpi_profiles.name SEPARATOR '$$$$') AS ITEM_".$num."_2,
+					GROUP_CONCAT( glpi_users_profiles.recursive SEPARATOR '$$$$') AS ITEM_".$num."_3,";
+			} else {
+				return $pretable.$table.$addtable.".completename AS ".$NAME."_$num, ".$pretable.$table.$addtable.".ID AS ".$NAME."_".$num."_2, ";
+			}
+
 		case "glpi_groups.name" :
 			if ($type==USER_TYPE){
 				return " GROUP_CONCAT( DISTINCT ".$pretable.$table.$addtable.".".$field." SEPARATOR '$$$$') AS ITEM_$num, ";
 			} else {
 				return $table.$addtable.".".$field." AS ITEM_$num, ";
 			}
-		break;
-		case "glpi_entities.completename" : // ajout jmd
-			return $pretable.$table.$addtable.".completename AS ".$NAME."_$num, ".$pretable.$table.$addtable.".ID AS ".$NAME."_".$num."_2, ";
 		break;
 		case "glpi_auth_tables.name":
 			return "glpi_users.auth_method AS ".$NAME."_".$num.", glpi_users.id_auth AS ".$NAME."_".$num."_2, glpi_auth_ldap".$addtable.".".$field." AS ".$NAME."_".$num."_3, glpi_auth_mail".$addtable.".".$field." AS ".$NAME."_".$num."_4, ";
@@ -2151,30 +2165,36 @@ function giveItem ($type,$field,$data,$num,$linkfield=""){
 			return nl2br($data["ITEM_$num"]);
 		break;
 		case "glpi_profiles.name" :
-		if ($type==PROFILE_TYPE){
+			if ($type==PROFILE_TYPE){
 				$out= "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data['ID']."\">";
 				$out.= $data["ITEM_$num"];
 				if ($CFG_GLPI["view_ID"]||empty($data["ITEM_$num"])) {
 					$out.= " (".$data["ID"].")";
 				}
 				$out.= "</a>";
-			} else if ($type=USER_TYPE){	
+			} else if ($type==USER_TYPE){	
 				$out="";
+
 				$split=explode("$$$$",$data["ITEM_$num"]);
+				$split2=explode("$$$$",$data["ITEM_".$num."_2"]);
+				$split3=explode("$$$$",$data["ITEM_".$num."_3"]);
 
 				$count_display=0;
 				for ($k=0;$k<count($split);$k++)
 					if (strlen(trim($split[$k]))>0){
 						if ($count_display) $out.= "<br>";
 						$count_display++;
-						$out.= $split[$k];
+						$out.= $split[$k]." - ".$split2[$k];
+						if ($split3[$k]){
+							$out.=" (R)";
+						}
 					}
 				return $out;
 			} else {
 				$out= $data["ITEM_$num"];
 			}
 			return $out;
-			break;
+		break;
 		case "glpi_entities.completename" :
 			if ($type==ENTITY_TYPE){
 				$out= "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data['ID']."\">";
@@ -2183,6 +2203,24 @@ function giveItem ($type,$field,$data,$num,$linkfield=""){
 					$out.= " (".$data["ID"].")";
 				}
 				$out.= "</a>";
+			} else if ($type==USER_TYPE){	
+				$out="";
+
+				$split=explode("$$$$",$data["ITEM_$num"]);
+				$split2=explode("$$$$",$data["ITEM_".$num."_2"]);
+				$split3=explode("$$$$",$data["ITEM_".$num."_3"]);
+
+				$count_display=0;
+				for ($k=0;$k<count($split);$k++)
+					if (strlen(trim($split[$k]))>0){
+						if ($count_display) $out.= "<br>";
+						$count_display++;
+						$out.= $split[$k]." - ".$split2[$k];
+						if ($split3[$k]){
+							$out.=" (R)";
+						}
+					}
+				return $out;
 			} else {
 				if ($data["ITEM_".$num."_2"]==0){
 					$out=$LANG["entity"][2];
@@ -2569,7 +2607,7 @@ function addDefaultJoin ($type,$ref_table,&$already_link_tables){
  **/
 function addLeftJoin ($type,$ref_table,&$already_link_tables,$new_table,$linkfield,$device_type=0,$meta=0,$meta_type=0){
 
-	global $PLUGIN_HOOKS;
+	global $PLUGIN_HOOKS,$LANG;
 
 	// Rename table for meta left join
 	$AS="";
@@ -2591,7 +2629,6 @@ function addLeftJoin ($type,$ref_table,&$already_link_tables,$new_table,$linkfie
 
 	// Auto link
 	if ($ref_table==$new_table) return "";
-
 	if (in_array(translate_table($new_table,$device_type,$meta_type).".".$linkfield,$already_link_tables)) return "";
 	else array_push($already_link_tables,translate_table($new_table,$device_type,$meta_type).".".$linkfield);
 
@@ -2682,9 +2719,28 @@ function addLeftJoin ($type,$ref_table,&$already_link_tables,$new_table,$linkfie
 		case "glpi_profiles":
 			// Link to glpi_users_profiles before
 			$out=addLeftJoin($type,$rt,$already_link_tables,"glpi_users_profiles",$linkfield);
-
+			if ($type==USER_TYPE){
+				$out.=addLeftJoin($type,"glpi_users_profiles",$already_link_tables,"glpi_complete_entities","FK_entities");
+			}
 		return $out." LEFT JOIN $new_table $AS ON (glpi_users_profiles.FK_profiles = $nt.ID) ";
 		break;
+		case "glpi_entities":
+			if ($type==USER_TYPE){
+				$out=addLeftJoin($type,"glpi_users_profiles",$already_link_tables,"glpi_profiles","FK_profiles");
+				$out.=addLeftJoin($type,"glpi_users_profiles",$already_link_tables,"glpi_complete_entities","FK_entities");
+				return $out;
+			} else {
+				return " LEFT JOIN $new_table $AS ON ($rt.$linkfield = $nt.ID) ";
+			}
+		break;
+		case "glpi_complete_entities":
+			
+			if (empty($AS)){
+				$AS = "AS glpi_entities";
+			}
+			return " LEFT JOIN ( SELECT * FROM glpi_entities UNION SELECT 0 AS ID, '".addslashes($LANG["entity"][2])."' AS name, -1 AS parentID, '".addslashes($LANG["entity"][2])."' AS completename, '' AS comments, -1 AS level) 
+				$AS ON ($rt.$linkfield = glpi_entities.ID) ";
+			break;
 		case "glpi_users_groups":
 			return " LEFT JOIN $new_table $AS ON ($rt.ID = $nt.FK_users) ";
 		break;
