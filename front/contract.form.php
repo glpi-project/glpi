@@ -92,11 +92,13 @@ else if (isset($_POST["additem"])){
 	}
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
-else if (isset($_GET["deleteitem"])){
+else if (isset($_POST["deleteitem"])){
 
 	checkRight("contract_infocom","w");
+	if (count($_POST["item"]))
+		foreach ($_POST["item"] as $key => $val)
+		deleteDeviceContract($key);
 
-	deleteDeviceContract($_GET["ID"]);
 	logEvent($_GET["ID"], "contracts", 4, "financial", $_SESSION["glpiname"]." ".$LANG["log"][33]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
