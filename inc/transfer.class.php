@@ -254,7 +254,7 @@ class Transfer extends CommonDBTM{
 			// Clean DB
 			$query="SELECT glpi_inst_software.ID 
 				FROM glpi_inst_software 
-				LEFT JOIN glpi_computers ON (glpi_inst_software.cID = glpi_inst_software.ID ) 
+				LEFT JOIN glpi_computers ON (glpi_inst_software.cID = glpi_computers.ID ) 
 				WHERE glpi_computers.ID IS NULL";
 
 			if ($result = $DB->query($query)) {
