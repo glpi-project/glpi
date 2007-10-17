@@ -60,10 +60,11 @@ function showInfocomEnterprise($instID) {
 	$number = $DB->numrows($result);
 	$i = 0;
 
-	echo "<br><br><div class='center'><table class='tab_cadre'>";
-	echo "<tr><th colspan='3'>".$LANG["financial"][26].":</th></tr>";
+	echo "<br><br><div class='center'><table class='tab_cadre_fixe'>";
+	echo "<tr><th colspan='4'>".$LANG["financial"][26].":</th></tr>";
 	echo "<tr><th>".$LANG["common"][17]."</th>";
 	echo "<th>".$LANG["common"][16]."</th>";
+	echo "<th>".$LANG["common"][19]."</th>";
 	echo "<th>".$LANG["common"][20]."</th>";
 	echo "</tr>";
 	$ci=new CommonItem;
@@ -84,6 +85,7 @@ function showInfocomEnterprise($instID) {
 					echo "<td class='center'>".$ci->getType()."</td>";
 					
 					echo "<td align='center' ".(isset($data['deleted'])&&$data['deleted']?"class='tab_bg_2_2'":"").">".$name."</td>";
+					echo "<td class='center'>".(isset($data["serial"])? "".$data["serial"]."" :"-")."</td>";
 					echo "<td class='center'>".(isset($data["otherserial"])? "".$data["otherserial"]."" :"-")."</td>";
 					echo "</tr>";
 					$num++;
@@ -92,7 +94,7 @@ function showInfocomEnterprise($instID) {
 		}
 		$i++;
 	}
-	echo "<tr class='tab_bg_2'><td colspan='3' align='center'>$num</td></tr> ";
+	echo "<tr class='tab_bg_2'><td colspan='4' align='center'>$num</td></tr> ";
 	echo "</table></div>"    ;
 
 

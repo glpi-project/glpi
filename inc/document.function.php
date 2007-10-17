@@ -196,9 +196,11 @@ function showDeviceDocument($instID,$search='') {
 		echo "<form method='post' action=\"".$CFG_GLPI["root_doc"]."/front/document.form.php\">";
 	
 		echo "<br><br><div class='center'><table class='tab_cadre_fixe'>";
-		echo "<tr><th colspan='3'>".$LANG["document"][19].":</th></tr>";
+		echo "<tr><th colspan='5'>".$LANG["document"][19].":</th></tr>";
 		echo "<tr><th>".$LANG["common"][17]."</th>";
 		echo "<th>".$LANG["common"][16]."</th>";
+		echo "<th>".$LANG["common"][19]."</th>";
+		echo "<th>".$LANG["common"][20]."</th>";
 		echo "<th>&nbsp;</th></tr>";
 		$ci=new CommonItem();
 		while ($i < $number) {
@@ -230,6 +232,8 @@ function showDeviceDocument($instID,$search='') {
 							echo "<td class='center'>".$ci->getType()."</td>";
 	
 							echo "<td align='center' ".(isset($data['deleted'])&&$data['deleted']?"class='tab_bg_2_2'":"").">".$name."</td>";
+							echo "<td class='center'>".(isset($data["serial"])? "".$data["serial"]."" :"-")."</td>";
+							echo "<td class='center'>".(isset($data["otherserial"])? "".$data["otherserial"]."" :"-")."</td>";
 							echo "<td align='center' class='tab_bg_2'>";
 							if ($canedit){
 								echo "<a href='".$_SERVER['PHP_SELF']."?deleteitem=deleteitem&amp;ID=".$data["IDD"]."'><strong>".$LANG["buttons"][6]."</strong></a>";
@@ -242,7 +246,7 @@ function showDeviceDocument($instID,$search='') {
 		}
 	
 		if (haveRight("document","w"))	{
-			echo "<tr class='tab_bg_1'><td>&nbsp;</td><td class='center'>";
+			echo "<tr class='tab_bg_1'><td>&nbsp;</td><td>&nbsp;</td><td class='center'>";
 	
 			echo "<input type='hidden' name='conID' value='$instID'>";
 			$types=$CFG_GLPI["state_types"];
