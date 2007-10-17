@@ -90,7 +90,7 @@ class Document extends CommonDBTM {
 		if (isset($input["item"])&&isset($input["type"])&&$input["type"]>0&&$input["item"]>0){
 			$ci=new CommonItem();
 			$ci->getFromDB($input["type"],$input["item"]);
-			$input["name"]=substr($LANG["document"][18]." ".$ci->getType()." - ".$ci->getNameID(),0,255);
+			$input["name"]=addslashes(utf8_substr($LANG["document"][18]." ".$ci->getType()." - ".$ci->getNameID(),0,255));
 		}
 
 		if (isset($input["upload_file"])&&!empty($input["upload_file"])){
