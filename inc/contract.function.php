@@ -139,9 +139,10 @@ function showDeviceContract($instID) {
 	echo "<form method='post' action=\"".$CFG_GLPI["root_doc"]."/front/contract.form.php\">";
 
 	echo "<br><br><div class='center'><table class='tab_cadre_fixe'>";
-	echo "<tr><th colspan='4'>".$LANG["financial"][49].":</th></tr>";
+	echo "<tr><th colspan='5'>".$LANG["financial"][49].":</th></tr>";
 	echo "<tr><th>".$LANG["common"][17]."</th>";
 	echo "<th>".$LANG["common"][16]."</th>";
+	echo "<th>".$LANG["common"][19]."</th>";
 	echo "<th>".$LANG["common"][20]."</th>";
 	echo "<th>&nbsp;</th></tr>";
 	$ci=new CommonItem;
@@ -166,6 +167,7 @@ function showDeviceContract($instID) {
 					echo "<tr class='tab_bg_1'>";
 					echo "<td class='center'>".$ci->getType()."</td>";
 					echo "<td align='center' ".(isset($data['deleted'])&&$data['deleted']?"class='tab_bg_2_2'":"").">".$name."</td>";
+					echo "<td class='center'>".(isset($data["serial"])? "".$data["serial"]."" :"-")."</td>";
 					echo "<td class='center'>".(isset($data["otherserial"])? "".$data["otherserial"]."" :"-")."</td>";
 					echo "<td align='center' class='tab_bg_2'>";
 					if ($canedit){
@@ -178,7 +180,7 @@ function showDeviceContract($instID) {
 		$i++;
 	}
 	if ($canedit){
-		echo "<tr class='tab_bg_1'><td colspan='3' style='right'>";
+		echo "<tr class='tab_bg_1'><td colspan='4' style='right'>";
 		echo "<div class='software-instal'><input type='hidden' name='conID' value='$instID'>";
 		dropdownAllItems("item",0,0,$contract->fields["FK_entities"]);
 		echo "</div></td><td colspan='2' style='center'><input type='submit' name='additem' value=\"".$LANG["buttons"][8]."\" class='submit'>";
