@@ -686,7 +686,7 @@ function addFormTracking ($device_type=0,$ID=0,$author,$group,$assign,$assign_gr
 	//	if ($device_type!=0){
 	echo "<input type='hidden' name='_referer' value='$REFERER'>";
 	//	}	
-	echo "<table class='tab_cadre'><tr><th ><a href='$target'><img title=\"".$LANG["buttons"][16]."\" alt=\"".$LANG["buttons"][16]."\" src='".$CFG_GLPI["root_doc"]."/pics/reset.png' class='calendrier'></a></th><th colspan='3'>".$LANG["job"][13].": ";
+	echo "<table class='tab_cadre_fixe'><tr><th ><a href='$target'><img title=\"".$LANG["buttons"][16]."\" alt=\"".$LANG["buttons"][16]."\" src='".$CFG_GLPI["root_doc"]."/pics/reset.png' class='calendrier'></a></th><th colspan='3'>".$LANG["job"][13].": ";
 
 	if (isMultiEntitiesMode()){
 		echo "&nbsp;(".getDropdownName("glpi_entities",$_SESSION["glpiactive_entity"]).")";
@@ -821,18 +821,19 @@ function addFormTracking ($device_type=0,$ID=0,$author,$group,$assign,$assign_gr
 
 	}
 
-	echo "<tr><th align='center'>".$LANG["common"][57].":";
-	echo "</th><th colspan='3'>";
+	echo "</table><br><table class='tab_cadre_fixe'>";
+	echo "<tr><th class='center'>".$LANG["common"][57].":";
+	echo "</th><th colspan='3' class='left'>";
 	$name="";
 	if (isset($_POST["name"])) $name=$_POST["name"];
-	echo "<input type='text' size='60' name='name' value='$name'>";
+	echo "<input type='text' size='80' name='name' value='$name'>";
 	echo "</th> </tr>";
 
 	
 	echo "<tr><th colspan='4' align='center'>".$LANG["job"][11].":";
 	echo "</th></tr>";
 
-	echo "<tr class='tab_bg_1'><td colspan='4' align='center'><textarea cols='80' rows='8'  name='contents'></textarea></td></tr>";
+	echo "<tr class='tab_bg_1'><td colspan='4' align='center'><textarea cols='100' rows='6'  name='contents'></textarea></td></tr>";
 
 	$max_size=return_bytes_from_ini_vars(ini_get("upload_max_filesize"));
 	$max_size/=1024*1024;
@@ -856,7 +857,7 @@ function addFormTracking ($device_type=0,$ID=0,$author,$group,$assign,$assign_gr
 
 	if (haveRight("comment_all_ticket","1")){
 //		echo "<tr><th colspan='4' align='center'>".$LANG["job"][45].":</th></tr>";
-		echo "<tr><td colspan='4'>";
+		echo "</table><br>";
 		echo "<script type='text/javascript' >\n";
 		echo "function showPlan(){\n";
 
@@ -872,11 +873,11 @@ function addFormTracking ($device_type=0,$ID=0,$author,$group,$assign,$assign_gr
 		echo "</script>";
 
 		showAddFollowupForm(-1);
-		echo "</td></tr>";
+		//echo "</td></tr></table>";
 //		echo "<tr class='tab_bg_1'><td colspan='4' align='center'><textarea cols='80' rows='8'  name='_followup'></textarea></td></tr>";
 	}
 
-	echo "</table></div></form>";
+	echo "</div></form>";
 
 }
 
