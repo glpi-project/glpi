@@ -1,14 +1,13 @@
 ***************************************************************************
-***************************Main dev team*******************************
-													*
-Developers :
-													*
-- Jean-Mathieu Doleans (jmd at indepnet.net)				*
-- Julien Dombre (moyo at indepnet.net)						*
-													*
-Ex-developer :												*
-- Bazile Lebeau (baaz at indepnet.net)						*
-													*	
-													*
+***************************Main dev team***********************************
+                                                                          *
+Developers :                                                              *
+- Jean-Mathieu Doleans (jmd at indepnet.net)                              *
+- Julien Dombre (moyo at indepnet.net)                                    *
+                                                                          *		
+Old-developer :	                                                          *
+- Bazile Lebeau (baaz at indepnet.net)                                    *
+                                                                          *	
+                                                                          *
 ***************************************************************************
 ***************************************************************************
