@@ -166,10 +166,10 @@ function showDeviceContract($instID) {
 
 					echo "<tr class='tab_bg_1'>";
 					echo "<td class='center'>".$ci->getType()."</td>";
-					echo "<td align='center' ".(isset($data['deleted'])&&$data['deleted']?"class='tab_bg_2_2'":"").">".$name."</td>";
+					echo "<td class='center' ".(isset($data['deleted'])&&$data['deleted']?"class='tab_bg_2_2'":"").">".$name."</td>";
 					echo "<td class='center'>".(isset($data["serial"])? "".$data["serial"]."" :"-")."</td>";
 					echo "<td class='center'>".(isset($data["otherserial"])? "".$data["otherserial"]."" :"-")."</td>";
-					echo "<td align='center' class='tab_bg_2'>";
+					echo "<td class='center' class='tab_bg_2'>";
 					if ($canedit){
 						echo "<a href='".$_SERVER['PHP_SELF']."?deleteitem=deleteitem&amp;ID=".$data["IDD"]."'><strong>".$LANG["buttons"][6]."</strong></a>";
 					} else echo "&nbsp;";
@@ -180,10 +180,10 @@ function showDeviceContract($instID) {
 		$i++;
 	}
 	if ($canedit){
-		echo "<tr class='tab_bg_1'><td colspan='4' style='right'>";
+		echo "<tr class='tab_bg_1'><td colspan='4' class='right'>";
 		echo "<div class='software-instal'><input type='hidden' name='conID' value='$instID'>";
 		dropdownAllItems("item",0,0,$contract->fields["FK_entities"]);
-		echo "</div></td><td colspan='2' style='center'><input type='submit' name='additem' value=\"".$LANG["buttons"][8]."\" class='submit'>";
+		echo "</div></td><td colspan='2' class='center'><input type='submit' name='additem' value=\"".$LANG["buttons"][8]."\" class='submit'>";
 		echo "<input type='hidden' name='ID' value='$instID'>";
 		echo "</td>";
 		echo "</tr>";
