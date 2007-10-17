@@ -123,6 +123,7 @@ class Transfer extends CommonDBTM{
 			
 			// Simulate transfers To know which items need to be transfer
 			$this->simulateTransfer($items);
+
 			//printCleanArray($this->needtobe_transfer);
 			// Computer first
 			$this->inittype=COMPUTER_TYPE;
@@ -176,7 +177,7 @@ class Transfer extends CommonDBTM{
 	*
 	**/
 	function simulateTransfer($items){
-		global $DB;
+		global $DB,$LINK_ID_TABLE;
 
 		// Init types :
 		$types=array(COMPUTER_TYPE,NETWORKING_TYPE,PRINTER_TYPE,MONITOR_TYPE,PERIPHERAL_TYPE,PHONE_TYPE,SOFTWARE_TYPE,CONTRACT_TYPE,ENTERPRISE_TYPE,CONTACT_TYPE,TRACKING_TYPE,DOCUMENT_TYPE,CARTRIDGE_TYPE, CONSUMABLE_TYPE);
@@ -194,8 +195,6 @@ class Transfer extends CommonDBTM{
 				}
 			}
 		}
-
-
 
 		// Computer first
 		$this->item_search[COMPUTER_TYPE]=$this->createSearchConditionUsingArray($this->needtobe_transfer[COMPUTER_TYPE]);
@@ -215,8 +214,24 @@ class Transfer extends CommonDBTM{
 		if ($this->options['keep_dc_printer']){
 			$DC_CONNECT[]=PRINTER_TYPE;
 		}
-		if (count($DC_CONNECT)){
+		if (count($DC_CONNECT)&&count($this->needtobe_transfer[COMPUTER_TYPE])>0){
 			foreach ($DC_CONNECT as $type){
+				// Clean DB
+				$query="SELECT glpi_connect_wire.ID 
+					FROM glpi_connect_wire 
+					LEFT JOIN ".$LINK_ID_TABLE[$type]." ON (glpi_connect_wire.end1 = ".$LINK_ID_TABLE[$type].".ID ) 
+					WHERE glpi_connect_wire.type='".$type."' AND ".$LINK_ID_TABLE[$type].".ID IS NULL";
+
+				if ($result = $DB->query($query)) {
+					if ($DB->numrows($result)>0) { 
+						while ($data=$DB->fetch_array($result)){
+							$query="DELETE FROM glpi_connect_wire WHERE ID='".$data['ID']."'";
+							$DB->query($query);
+						}
+					}
+				}
+				
+
 				$query = "SELECT DISTINCT end1
 				FROM glpi_connect_wire 
 				WHERE type='".$type."' AND end2 IN ".$this->item_search[COMPUTER_TYPE];
@@ -236,6 +251,51 @@ class Transfer extends CommonDBTM{
 
 		// Licence / Software :  keep / delete + clean unused / keep unused 
 		if ($this->options['keep_softwares']){
+			// Clean DB
+			$query="SELECT glpi_inst_software.ID 
+				FROM glpi_inst_software 
+				LEFT JOIN glpi_computers ON (glpi_inst_software.cID = glpi_inst_software.ID ) 
+				WHERE glpi_computers.ID IS NULL";
+
+			if ($result = $DB->query($query)) {
+				if ($DB->numrows($result)>0) { 
+					while ($data=$DB->fetch_array($result)){
+						$query="DELETE FROM glpi_inst_software WHERE ID='".$data['ID']."'";
+						$DB->query($query);
+					}
+				}
+			}
+
+			// Clean DB
+			$query="SELECT glpi_inst_software.ID 
+				FROM glpi_inst_software 
+				LEFT JOIN glpi_licenses ON (glpi_inst_software.license = glpi_licenses.ID ) 
+				WHERE glpi_licenses.ID IS NULL";
+
+			if ($result = $DB->query($query)) {
+				if ($DB->numrows($result)>0) { 
+					while ($data=$DB->fetch_array($result)){
+						$query="DELETE FROM glpi_inst_software WHERE ID='".$data['ID']."'";
+						$DB->query($query);
+					}
+				}
+			}
+
+			// Clean DB
+			$query="SELECT glpi_licenses.ID 
+				FROM glpi_licenses 
+				LEFT JOIN glpi_software ON (glpi_software.ID = glpi_licenses.sID ) 
+				WHERE glpi_software.ID IS NULL";
+
+			if ($result = $DB->query($query)) {
+				if ($DB->numrows($result)>0) { 
+					while ($data=$DB->fetch_array($result)){
+						$query="DELETE FROM glpi_licenses WHERE ID='".$data['ID']."'";
+						$DB->query($query);
+					}
+				}
+			}
+
 			$query = "SELECT glpi_licenses.sID
 				FROM glpi_inst_software 
 				INNER  JOIN glpi_licenses ON (glpi_inst_software.license = glpi_licenses.ID)
@@ -277,6 +337,20 @@ class Transfer extends CommonDBTM{
 		if ($this->options['keep_contracts']){
 			foreach ($this->CONTRACTS_TYPES as $type)
 			if (isset($this->item_search[$type])){
+				// Clean DB
+				$query="SELECT glpi_contract_device.ID FROM glpi_contract_device 
+					LEFT JOIN ".$LINK_ID_TABLE[$type]." ON (glpi_contract_device.FK_device = ".$LINK_ID_TABLE[$type].".ID ) 
+					WHERE glpi_contract_device.device_type='".$type."' AND ".$LINK_ID_TABLE[$type].".ID IS NULL";
+
+				if ($result = $DB->query($query)) {
+					if ($DB->numrows($result)>0) { 
+						while ($data=$DB->fetch_array($result)){
+							$query="DELETE FROM glpi_contract_device WHERE ID='".$data['ID']."'";
+							$DB->query($query);
+						}
+					}
+				}
+
 				$query="SELECT FK_contract FROM glpi_contract_device
 				WHERE device_type='$type' AND   FK_device IN ".$this->item_search[$type];
 				if ($result = $DB->query($query)) {
@@ -295,6 +369,34 @@ class Transfer extends CommonDBTM{
 		// Enterprise (depending of item link) / Contract - infocoms : keep / delete + clean unused / keep unused
 		
 		if ($this->options['keep_enterprises']){
+			// Clean DB
+			$query="SELECT glpi_contract_enterprise.ID FROM glpi_contract_enterprise 
+				LEFT JOIN glpi_contracts ON (glpi_contract_enterprise.FK_contract = glpi_contracts.ID ) 
+				WHERE glpi_contracts.ID IS NULL";
+
+			if ($result = $DB->query($query)) {
+				if ($DB->numrows($result)>0) { 
+					while ($data=$DB->fetch_array($result)){
+						$query="DELETE FROM glpi_contract_enterprise WHERE ID='".$data['ID']."'";
+						$DB->query($query);
+					}
+				}
+			}
+
+			// Clean DB
+			$query="SELECT glpi_contract_enterprise.ID FROM glpi_contract_enterprise 
+				LEFT JOIN glpi_enterprises ON (glpi_contract_enterprise.FK_enterprise = glpi_enterprises.ID ) 
+				WHERE glpi_enterprises.ID IS NULL";
+
+			if ($result = $DB->query($query)) {
+				if ($DB->numrows($result)>0) { 
+					while ($data=$DB->fetch_array($result)){
+						$query="DELETE FROM glpi_contract_enterprise WHERE ID='".$data['ID']."'";
+						$DB->query($query);
+					}
+				}
+			}
+
 			// Enterprise Contract
 			$query="SELECT DISTINCT FK_enterprise FROM glpi_contract_enterprise WHERE FK_contract IN ".$this->item_search[CONTRACT_TYPE];
 			if ($result = $DB->query($query)) {
@@ -307,7 +409,7 @@ class Transfer extends CommonDBTM{
 					}
 				}
 			}
-			// Ticket Contract
+			// Ticket Enterprise
 			$query="SELECT DISTINCT assign_ent FROM glpi_tracking WHERE assign_ent > 0 AND ID IN ".$this->item_search[TRACKING_TYPE];
 			if ($result = $DB->query($query)) {
 				if ($DB->numrows($result)>0) { 
@@ -319,19 +421,37 @@ class Transfer extends CommonDBTM{
 					}
 				}
 			}
+
+
+
 			// Enterprise infocoms
 			if ($this->options['keep_infocoms']){
-				foreach ($this->INFOCOMS_TYPES as $type)
-				if (isset($this->item_search[$type])){
-					$query="SELECT DISTINCT FK_enterprise FROM glpi_infocoms
-					WHERE FK_enterprise > 0 AND device_type='$type' AND FK_device IN ".$this->item_search[$type];
-					if ($result = $DB->query($query)) {
-						if ($DB->numrows($result)>0) { 
-							if (!isset($this->needtobe_transfer[ENTERPRISE_TYPE])){
-								$this->needtobe_transfer[ENTERPRISE_TYPE]=array();
+				foreach ($this->INFOCOMS_TYPES as $type){
+					if (isset($this->item_search[$type])){
+						// Clean DB
+						$query="SELECT glpi_infocoms.ID FROM glpi_infocoms 
+							LEFT JOIN ".$LINK_ID_TABLE[$type]." ON (glpi_infocoms.FK_device = ".$LINK_ID_TABLE[$type].".ID ) 
+							WHERE glpi_infocoms.device_type='".$type."' AND ".$LINK_ID_TABLE[$type].".ID IS NULL";
+		
+						if ($result = $DB->query($query)) {
+							if ($DB->numrows($result)>0) { 
+								while ($data=$DB->fetch_array($result)){
+									$query="DELETE FROM glpi_infocoms WHERE ID='".$data['ID']."'";
+									$DB->query($query);
+								}
 							}
-							while ($data=$DB->fetch_array($result)){
-								$this->needtobe_transfer[ENTERPRISE_TYPE][$data['FK_enterprise']]=$data['FK_enterprise'];
+						}
+	
+						$query="SELECT DISTINCT FK_enterprise FROM glpi_infocoms
+						WHERE FK_enterprise > 0 AND device_type='$type' AND FK_device IN ".$this->item_search[$type];
+						if ($result = $DB->query($query)) {
+							if ($DB->numrows($result)>0) { 
+								if (!isset($this->needtobe_transfer[ENTERPRISE_TYPE])){
+									$this->needtobe_transfer[ENTERPRISE_TYPE]=array();
+								}
+								while ($data=$DB->fetch_array($result)){
+									$this->needtobe_transfer[ENTERPRISE_TYPE][$data['FK_enterprise']]=$data['FK_enterprise'];
+								}
 							}
 						}
 					}
@@ -342,6 +462,34 @@ class Transfer extends CommonDBTM{
 
 		// Contact / Enterprise : keep / delete + clean unused / keep unused
 		if ($this->options['keep_contacts']){
+			// Clean DB
+			$query="SELECT glpi_contact_enterprise.ID FROM glpi_contact_enterprise 
+				LEFT JOIN glpi_contacts ON (glpi_contact_enterprise.FK_contact = glpi_contacts.ID ) 
+				WHERE glpi_contacts.ID IS NULL";
+
+			if ($result = $DB->query($query)) {
+				if ($DB->numrows($result)>0) { 
+					while ($data=$DB->fetch_array($result)){
+						$query="DELETE FROM glpi_contact_enterprise WHERE ID='".$data['ID']."'";
+						$DB->query($query);
+					}
+				}
+			}
+			// Clean DB
+			$query="SELECT glpi_contact_enterprise.ID FROM glpi_contact_enterprise 
+				LEFT JOIN glpi_enterprises ON (glpi_contact_enterprise.FK_enterprise = glpi_enterprises.ID ) 
+				WHERE glpi_enterprises.ID IS NULL";
+
+			if ($result = $DB->query($query)) {
+				if ($DB->numrows($result)>0) { 
+					while ($data=$DB->fetch_array($result)){
+						$query="DELETE FROM glpi_contact_enterprise WHERE ID='".$data['ID']."'";
+						$DB->query($query);
+					}
+				}
+			}
+
+
 			// Enterprise Contact
 			$query="SELECT DISTINCT FK_contact FROM glpi_contact_enterprise WHERE FK_enterprise IN ".$this->item_search[ENTERPRISE_TYPE];
 			if ($result = $DB->query($query)) {
@@ -361,6 +509,20 @@ class Transfer extends CommonDBTM{
 		if ($this->options['keep_documents']){
 			foreach ($this->DOCUMENTS_TYPES as $type)
 			if (isset($this->item_search[$type])){
+				// Clean DB
+				$query="SELECT glpi_doc_device.ID FROM glpi_doc_device 
+					LEFT JOIN ".$LINK_ID_TABLE[$type]." ON (glpi_doc_device.FK_device = ".$LINK_ID_TABLE[$type].".ID ) 
+					WHERE glpi_doc_device.device_type='".$type."' AND ".$LINK_ID_TABLE[$type].".ID IS NULL";
+		
+				if ($result = $DB->query($query)) {
+					if ($DB->numrows($result)>0) { 
+						while ($data=$DB->fetch_array($result)){
+							$query="DELETE FROM glpi_doc_device WHERE ID='".$data['ID']."'";
+							$DB->query($query);
+						}
+					}
+				}
+
 				$query="SELECT FK_doc FROM glpi_doc_device
 				WHERE device_type='$type' AND FK_device IN ".$this->item_search[$type];
 				if ($result = $DB->query($query)) {
