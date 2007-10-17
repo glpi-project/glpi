@@ -338,4 +338,3 @@ the launching of this procedure).
 
 Plugins are managed by GLPI in the plugins directory.
 Just copy the directory of the plugin into the plugins directory and it will appeared in the menu.
-
