@@ -2629,9 +2629,10 @@ function addLeftJoin ($type,$ref_table,&$already_link_tables,$new_table,$linkfie
 
 	// Auto link
 	if ($ref_table==$new_table) return "";
+	
 	if (in_array(translate_table($new_table,$device_type,$meta_type).".".$linkfield,$already_link_tables)) return "";
 	else array_push($already_link_tables,translate_table($new_table,$device_type,$meta_type).".".$linkfield);
-
+	
 	switch ($new_table){
 		// No link
 		case "glpi_auth_tables":
@@ -2726,7 +2727,7 @@ function addLeftJoin ($type,$ref_table,&$already_link_tables,$new_table,$linkfie
 		break;
 		case "glpi_entities":
 			if ($type==USER_TYPE){
-				$out=addLeftJoin($type,"glpi_users_profiles",$already_link_tables,"glpi_profiles","FK_profiles");
+				$out=addLeftJoin($type,"glpi_users_profiles",$already_link_tables,"glpi_profiles","");
 				$out.=addLeftJoin($type,"glpi_users_profiles",$already_link_tables,"glpi_complete_entities","FK_entities");
 				return $out;
 			} else {
@@ -2734,7 +2735,8 @@ function addLeftJoin ($type,$ref_table,&$already_link_tables,$new_table,$linkfie
 			}
 		break;
 		case "glpi_complete_entities":
-			
+			array_push($already_link_tables,translate_table("glpi_entities",$device_type,$meta_type).".".$linkfield);
+
 			if (empty($AS)){
 				$AS = "AS glpi_entities";
 			}
