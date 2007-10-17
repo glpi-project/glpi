@@ -70,7 +70,7 @@ if (isset($_POST["action"])&&isset($_POST["type"])&&!empty($_POST["type"])){
 			echo "<input type=\"submit\" name=\"massiveaction\" class=\"submit\" value=\"".$LANG["buttons"][2]."\" >";
 		break;
 		case "add_followup":
-			showAddFollowupForm(-1);
+			showAddFollowupForm(-1,true);
 		break;
 		case "compute_software_category":
 		case "force_ocsng_update":

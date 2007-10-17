@@ -2152,7 +2152,7 @@ function showFollowupsSummary($tID){
 }
 
 // Formulaire d'ajout de followup
-function showAddFollowupForm($tID){
+function showAddFollowupForm($tID,$massiveaction=false){
 	global $DB,$LANG,$CFG_GLPI;
 
 	$job=new Job;
@@ -2165,7 +2165,7 @@ function showAddFollowupForm($tID){
 	$prefix="";
 	$postfix="";
 	// Add followup at creating ticket : prefix values
-	if ($tID<0){
+	if ($tID<0&&!$massiveaction){
 		$prefix="_followup[";
 		$postfix="]";
 	}
@@ -2229,7 +2229,7 @@ function showAddFollowupForm($tID){
 			echo "</tr>";
 		}
 
-		if (haveRight("show_planning","1")){
+		if (haveRight("show_planning","1")&&!$massiveaction){
 			echo "<tr>";
 			echo "<td>".$LANG["job"][35]."</td>";
 
@@ -2249,17 +2249,19 @@ function showAddFollowupForm($tID){
 			echo "</tr>";
 		}
 	}
-	if ($tID>0){
+	if ($tID>0||$massiveaction){
 		echo "<tr class='tab_bg_2'>";
 		echo "<td class='center'>";
 		echo "<input type='submit' name='add' value='".$LANG["buttons"][8]."' class='submit'>";
 		echo "</td>";
-		if ($commentall){
+		if ($commentall&&$tID>0){
 			echo "<td class='center'>";
 			echo "<input type='submit' name='add_close' value='".$LANG["buttons"][26]."' class='submit'>";
 			echo "</td>";
 		}
 		echo "</tr>";
+	} else {
+
 	}
 
 
