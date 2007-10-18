@@ -80,8 +80,8 @@ function showTrackingOnglets($target){
 			if (haveRight("show_all_ticket","1")){
 				echo "<li class='invisible'>&nbsp;</li>";
 
-				$next=getNextItem("glpi_tracking",$ID);
-				$prev=getPreviousItem("glpi_tracking",$ID);
+				$next=getNextItem("glpi_tracking",$ID,"","ID");
+				$prev=getPreviousItem("glpi_tracking",$ID,"","ID");
 				$cleantarget=preg_replace("/\?ID=([0-9]+)/","",$target);
 				if ($prev>0) echo "<li><a href='$cleantarget?ID=$prev'><img src=\"".$CFG_GLPI["root_doc"]."/pics/left.png\" alt='".$LANG["buttons"][12]."' title='".$LANG["buttons"][12]."'></a></li>";
 				if ($next>0) echo "<li><a href='$cleantarget?ID=$next'><img src=\"".$CFG_GLPI["root_doc"]."/pics/right.png\" alt='".$LANG["buttons"][11]."' title='".$LANG["buttons"][11]."'></a></li>";
