@@ -398,11 +398,12 @@ class License extends CommonDBTM {
 	function prepareInputForUpdate($input) {
 		if (empty ($input['expire']))
 			unset ($input['expire']);
-		if (!isset ($input['expire']) || $input['expire'] == "0000-00-00")
+		if (!isset ($input['expire']) || $input['expire'] == "0000-00-00"){
 			$input['expire'] = "NULL";
+		}
 		if (isset ($input['oem']) && !$input['oem'])
 			$input['oem_computer'] = -1;
-
+		
 		return $input;
 	}
 
@@ -415,6 +416,7 @@ class License extends CommonDBTM {
 		if (isset($input['oem_computer']) && $input['oem_computer'] == 0){
 			$input['oem_computer'] = -1;
 		}
+		
 		unset ($input["form"]);
 		unset ($input["withtemplate"]);
 		unset ($input["lID"]);

@@ -827,30 +827,31 @@ function unglobalizeLicense($ID){
 
 		if (($nb=$DB->numrows($result))>0){
 			// Update item to unit management :
-			$input=array("ID"=>$ID,"serial"=>"_".$license->fields["serial"]."_");
+			$input=$license->fields;
+			$input["serial"]="_".$license->fields["serial"]."_";
 
 			// skip first
 			$data=$DB->fetch_array($result);
 			if ($license->fields["oem"]){
 				$input["oem_computer"]=$data["cID"];
-			}
+			} 
+			
 			$license->update($input);
-
 
 			$input=$license->fields;
 			$input["_duplicate_license"]=$ID;
 			unset($input["ID"]);
-
+			
 			// Get ID of the inst_software
 			while ($data=$DB->fetch_array($result)){
-				unset($input["oem_computer"]);
-				if ($license->fields["oem"])
+				if ($license->fields["oem"]){
 					$input["oem_computer"]=$data["cID"];
+				} else {
+					$input["oem"]=0;
+				}
 
 				// Add new Item
-				unset($license->fields["ID"]);
-				unset($license->fields["expire"]);
-				unset($license->fields["oem_computer"]);
+				unset($license->fields);
 				if ($newID=$license->add($input)){
 					// Update inst_software
 					$query2="UPDATE glpi_inst_software SET license='$newID' WHERE ID='".$data["ID"]."'";
