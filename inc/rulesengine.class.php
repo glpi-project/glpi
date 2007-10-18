@@ -307,6 +307,7 @@ class Rule extends CommonDBTM{
 	var $rule_type;
 	var $right="config";
 	var $can_sort;
+	var $orderby="ranking";
 
 	/**
 	* Constructor
@@ -351,7 +352,7 @@ class Rule extends CommonDBTM{
 			
 			$this->getTitleRule($target);
 
-			$this->showOnglets($ID, $new,$_SESSION['glpi_onglet'],"rule_type='".$this->rule_type."'");
+			$this->showOnglets($ID, $new,$_SESSION['glpi_onglet'],"rule_type='".$this->rule_type."'",$this->orderby);
 			echo "<form name='rule_form'  method='post' action=\"$target\">\n";
 
 			echo "<div class='center'>"; 

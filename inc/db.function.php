@@ -587,13 +587,16 @@ function regenerateTreeCompleteNameUnderID($table,$ID){
  * @param $table table to search next item
  * @param $ID current ID
  * @param $condition condition to add to the search
+ * @param $nextprev_item field used to sort
  * @return the next ID, -1 if not exist
  */
-function getNextItem($table,$ID,$condition=""){
+function getNextItem($table,$ID,$condition="",$nextprev_item=""){
 	global $DB,$CFG_GLPI;
 
-	$nextprev_item=$CFG_GLPI["nextprev_item"];
-	if ($table=="glpi_tracking"||ereg("glpi_device",$table)) $nextprev_item="ID";
+	if (empty($nextprev_item)){
+		$nextprev_item=$CFG_GLPI["nextprev_item"];
+		if ($table=="glpi_tracking"||ereg("glpi_device",$table)) $nextprev_item="ID";
+	}
 
 	$search=$ID;
 
@@ -650,13 +653,16 @@ function getNextItem($table,$ID,$condition=""){
  * @param $table table to search next item
  * @param $ID current ID
  * @param $condition condition to add to the search
+ * @param $nextprev_item field used to sort
  * @return the previous ID, -1 if not exist
  */
-function getPreviousItem($table,$ID,$condition=""){
+function getPreviousItem($table,$ID,$condition="",$nextprev_item=""){
 	global $DB,$CFG_GLPI;
 
-	$nextprev_item=$CFG_GLPI["nextprev_item"];
-	if ($table=="glpi_tracking"||ereg("glpi_device",$table)) $nextprev_item="ID";
+	if (empty($nextprev_item)){
+		$nextprev_item=$CFG_GLPI["nextprev_item"];
+		if ($table=="glpi_tracking"||ereg("glpi_device",$table)) $nextprev_item="ID";
+	}
 
 	$search=$ID;
 	if ($nextprev_item!="ID"){
