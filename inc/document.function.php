@@ -234,7 +234,7 @@ function showDeviceDocument($instID,$search='') {
 								echo "<td width='10'>";
 								$sel="";
 								if (isset($_GET["select"])&&$_GET["select"]=="all") $sel="checked";
-								echo "<input type='checkbox' name='item[".$data["IDD"]."]' value='1' $sel>";
+								echo "<input type='checkbox' name='items[".$data["IDD"]."]' value='1' $sel>";
 								echo "</td>";
 							}
 							echo "<td class='center'>".$ci->getType()."</td>";
@@ -328,16 +328,20 @@ function showDocumentAssociated($device_type,$ID,$withtemplate=''){
 	$i = 0;
 
 	if ($withtemplate!=2) {
-		echo "<form method='post' action=\"".$CFG_GLPI["root_doc"]."/front/document.form.php\" enctype=\"multipart/form-data\">";
+		echo "<form name='document_form' id='document_form' method='post' action=\"".$CFG_GLPI["root_doc"]."/front/document.form.php\" enctype=\"multipart/form-data\">";
 	}
 	echo "<br><br><div class='center'><table class='tab_cadre_fixe'>";
 	echo "<tr><th colspan='6'>".$LANG["document"][21].":</th></tr>";
-	echo "<tr><th>".$LANG["common"][16]."</th>";
+	echo "<tr>";
+	if ($withtemplate<2&&$canedit){
+		echo "<th>&nbsp;</th>";
+	}
+
+	echo "<th>".$LANG["common"][16]."</th>";
 	echo "<th width='100px'>".$LANG["document"][2]."</th>";
 	echo "<th>".$LANG["document"][33]."</th>";
 	echo "<th>".$LANG["document"][3]."</th>";
 	echo "<th>".$LANG["document"][4]."</th>";
-	if ($withtemplate<2)echo "<th>&nbsp;</th>";
 	echo "</tr>";
 	if ($number){
 		while ($data=$DB->fetch_assoc($result)) {
@@ -345,6 +349,15 @@ function showDocumentAssociated($device_type,$ID,$withtemplate=''){
 			$assocID=$data["assocID"];
 	
 			echo "<tr class='tab_bg_1".($data["deleted"]?"_2":"")."'>";
+			
+			if ($withtemplate<2&&$canedit){
+			echo "<td width='10'>";
+				$sel="";
+				if (isset($_GET["select"])&&$_GET["select"]=="all") $sel="checked";
+				echo "<input type='checkbox' name='items[".$assocID."]' value='1' $sel>";
+				echo "</td>";
+			}
+			
 			if ($withtemplate!=3&&$canread&&in_array($data['FK_entities'],$_SESSION['glpiactiveentities'])){
 				echo "<td class='center'><a href='".$CFG_GLPI["root_doc"]."/front/document.form.php?ID=$docID'><strong>".$data["name"];
 				if ($CFG_GLPI["view_ID"]) echo " (".$docID.")";
@@ -365,13 +378,6 @@ function showDocumentAssociated($device_type,$ID,$withtemplate=''){
 			echo "<td class='center'>".getDropdownName("glpi_dropdown_rubdocs",$data["rubrique"])."</td>";
 			echo "<td class='center'>".$data["mime"]."</td>";
 	
-			if ($withtemplate<2) {
-				echo "<td align='center' class='tab_bg_2'>";
-				if ($canedit)
-					echo "<a href='".$CFG_GLPI["root_doc"]."/front/document.form.php?deleteitem=deleteitem&amp;ID=$assocID'><strong>".$LANG["buttons"][6]."</strong></a>";
-				else echo "&nbsp;";
-				echo "</td>";
-			}
 			echo "</tr>";
 			$i++;
 		}
@@ -416,6 +422,19 @@ function showDocumentAssociated($device_type,$ID,$withtemplate=''){
 	}
 
 	echo "</table></div>"    ;
+	
+	echo "<div class='center'>";
+	echo "<table width='950px'>";
+	echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markAllRows('document_form') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$ID&amp;select=all'>".$LANG["buttons"][18]."</a></td>";
+		
+	echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkAllRows('document_form') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$ID&amp;select=none'>".$LANG["buttons"][19]."</a>";
+	echo "</td><td align='left' width='80%'>";
+	echo "<input type='submit' name='deleteitem' value=\"".$LANG["buttons"][6]."\" class='submit'>";
+	echo "</td>";
+	echo "</table>";
+	
+	echo "</div>";
+	
 	echo "</form>";
 
 }
