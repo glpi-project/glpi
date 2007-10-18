@@ -1466,6 +1466,7 @@ function addSelect ($type,$ID,$num,$meta=0,$meta_type=0){
 		case "glpi_contacts.name" :
 		case "glpi_type_docs.name" :
 		case "glpi_links.name" :
+		case "glpi_entities.name" :
 		case "glpi_docs.name" :
 		case "glpi_ocs_config.name" :
 		case "glpi_mailgate.name" :
