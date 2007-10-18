@@ -149,8 +149,9 @@ else {
 		if (isset($_GET["add"]))
 		{
 			checkRight("reservation_central","w");
-			$ri->add($_GET);
-			logEvent(0, "reservation", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][20]." ".$_GET["device_type"]."-".$_GET["id_device"].".");
+			if ($ri->add($_GET)){
+				logEvent(0, "reservation", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][20]." ".$_GET["device_type"]."-".$_GET["id_device"].".");
+			}
 			glpi_header($_SERVER['HTTP_REFERER']);
 		} 
 		else if (isset($_GET["delete"]))
