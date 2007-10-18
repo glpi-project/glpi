@@ -533,7 +533,7 @@ class CommonDBTM {
 		return array();
 	}
 
-	function showOnglets($ID,$withtemplate,$actif,$nextprevcondition="",$nextprev_item=""){
+	function showOnglets($ID,$withtemplate,$actif,$nextprevcondition="",$nextprev_item="",$addurlparam=""){
 		global $LANG,$CFG_GLPI;
 
 		$target=$_SERVER['PHP_SELF']."?ID=".$ID;
@@ -551,11 +551,11 @@ class CommonDBTM {
 			//	ksort($onglets);
 			//}
 			foreach ($onglets as $key => $val ) {
-				echo "<li "; if ($actif==$key){ echo "class='actif'";} echo  "><a href='$target&amp;onglet=$key$template'>".$val."</a></li>";
+				echo "<li "; if ($actif==$key){ echo "class='actif'";} echo  "><a href='$target&amp;onglet=$key$template$addurlparam'>".$val."</a></li>";
 			}
 			if(empty($withtemplate)){
 				echo "<li class='invisible'>&nbsp;</li>";
-				echo "<li "; if ($actif=="-1") {echo "class='actif'";} echo "><a href='$target&amp;onglet=-1$template'>".$LANG["title"][29]."</a></li>";
+				echo "<li "; if ($actif=="-1") {echo "class='actif'";} echo "><a href='$target&amp;onglet=-1$template$addurlparam'>".$LANG["title"][29]."</a></li>";
 			}
 		}
 	
@@ -570,8 +570,8 @@ class CommonDBTM {
 			$next=getNextItem($this->table,$ID,$nextprevcondition,$nextprev_item);
 			$prev=getPreviousItem($this->table,$ID,$nextprevcondition,$nextprev_item);
 			$cleantarget=preg_replace("/\?ID=([0-9]+)/","",$target);
-			if ($prev>0) echo "<li><a href='$cleantarget?ID=$prev'><img src=\"".$CFG_GLPI["root_doc"]."/pics/left.png\" alt='".$LANG["buttons"][12]."' title='".$LANG["buttons"][12]."'></a></li>";
-			if ($next>0) echo "<li><a href='$cleantarget?ID=$next'><img src=\"".$CFG_GLPI["root_doc"]."/pics/right.png\" alt='".$LANG["buttons"][11]."' title='".$LANG["buttons"][11]."'></a></li>";
+			if ($prev>0) echo "<li><a href='$cleantarget?ID=$prev$addurlparam'><img src=\"".$CFG_GLPI["root_doc"]."/pics/left.png\" alt='".$LANG["buttons"][12]."' title='".$LANG["buttons"][12]."'></a></li>";
+			if ($next>0) echo "<li><a href='$cleantarget?ID=$next$addurlparam'><img src=\"".$CFG_GLPI["root_doc"]."/pics/right.png\" alt='".$LANG["buttons"][11]."' title='".$LANG["buttons"][11]."'></a></li>";
 		}
 	
 		echo "</ul></div>";
