@@ -821,22 +821,6 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 			$query_num.= $LINK.$COMMONWHERE;
 		}
 
-		if (in_array($itemtable,$CFG_GLPI["deleted_tables"])){
-			$LINK= " AND " ;
-			if ($first) {$LINK=" WHERE ";$first=false;}
-			$query_num.= $LINK.$itemtable.".deleted='$deleted' ";
-		}
-		if (in_array($itemtable,$CFG_GLPI["template_tables"])){
-			$LINK= " AND " ;
-			if ($first) {$LINK=" WHERE ";$first=false;}
-			$query_num.= $LINK.$itemtable.".is_template='0' ";
-		}
-		if ($entity_restrict){
-			$LINK="AND";
-			if ($first) {$LINK=" WHERE ";$first=false;}
-			$query_num.=getEntitiesRestrictRequest($LINK,$itemtable);
-		}
-
 		// Union Search :
 		if (isset($CFG_GLPI["union_search_type"][$type])){
 			$tmpquery=$query_num;
