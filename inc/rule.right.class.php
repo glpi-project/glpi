@@ -55,6 +55,7 @@ class RightAffectRule extends Rule {
 		//Dynamically add all the ldap criterias to the current list of rule's criterias
 		$this->addLdapCriteriasToArray();
 		$this->right="rule_ldap";
+		$this->orderby="name";
 	}
 
 	function maxActionsCount(){
