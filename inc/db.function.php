@@ -778,6 +778,7 @@ function getUserName($ID,$link=0){
 				$user["name"]=$username;
 				$user["link"]=$CFG_GLPI["root_doc"]."/front/user.form.php?ID=".$ID;
 				$user["comments"]=$LANG["common"][16].": ".$username."<br>";
+				$user["comments"].=$LANG["setup"][18].": ".$data["name"]."<br>";
 				if (!empty($data["email"]))
 					$user["comments"].=$LANG["setup"][14].": ".$data["email"]."<br>";
 				if (!empty($data["phone"]))
