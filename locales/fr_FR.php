@@ -822,7 +822,7 @@ $LANG["mailgate"][4]="Extension mbstring indisponible. Attention aux jeux de cha
 $LANG["mailing"][0]="----------------------------------------------------------"; 
 $LANG["mailing"][1]="======================================================================"; 
 $LANG["mailing"][3]="Contenu"; 
-$LANG["mailing"][4]="Suivi(s) déjà effectuée(s)"; 
+$LANG["mailing"][4]="Suivi(s) déjà effectué(s)"; 
 $LANG["mailing"][5]="Description du ticket"; 
 $LANG["mailing"][7]="Matériel concerné"; 
 $LANG["mailing"][8]="Attribué à"; 
