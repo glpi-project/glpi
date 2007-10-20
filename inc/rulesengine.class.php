@@ -829,7 +829,6 @@ class Rule extends CommonDBTM{
 		//If the value is not an array
 		if (!is_array($input[$criteria->fields["criteria"]])){
 			$value=$this->getCriteriaValue($criteria->fields["criteria"],$criteria->fields["condition"],$input[$criteria->fields["criteria"]]);
-			echo $value;
 			$res = matchRules($value,$criteria->fields["condition"],$criteria->fields["pattern"]);
 		} else	{
 			//If the value if, in fact, an array of values

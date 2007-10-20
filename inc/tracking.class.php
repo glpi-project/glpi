@@ -470,7 +470,10 @@ class Job extends CommonDBTM{
 			$input["uemail"]=$user->fields["email"];
 		}
 
-		if (($input["assign"]>0||$input["assign_group"]>0||$input["assign_ent"]>0)&&$input["status"]=="new"){
+		if (((isset($input["assign"])&&$input["assign"]>0)
+				||(isset($input["assign_group"])&&$input["assign_group"]>0)
+				||(isset($input["assign_ent"])&&$input["assign_ent"]>0))
+			&&$input["status"]=="new"){
 			$input["status"] = "assign";
 		}
 
