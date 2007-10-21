@@ -46,9 +46,7 @@ function ocsShowNewComputer($ocs_server_id, $advanced, $check, $start, $tolinked
 		return false;
 
 	$cfg_ocs = getOcsConf($ocs_server_id);
-	if ($advanced){
-		$CFG_GLPI['use_ajax']=0;
-	}
+
 	$WHERE = "";
 	if (!empty ($cfg_ocs["tag_limit"])) {
 		$splitter = explode("$", $cfg_ocs["tag_limit"]);
