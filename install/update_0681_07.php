@@ -1087,6 +1087,32 @@ function update0681to07() {
 		}
 	}
 	
+	// Clean multiple reservation item
+	$query=	"SELECT count(*) as CPT, glpi_reservation_item.*
+	FROM `glpi_reservation_item`
+	GROUP BY device_type, id_device
+	HAVING CPT > 1";
+	$result=$DB->query($query) or die("0.7 check multiple free global licenses " . $LANG["update"][90] . $DB->error());
+	if ($DB->numrows($result)){
+		while ($data=$DB->fetch_array($result)){
+			$refID=$data['ID'];
+			// Get duplicates
+			$query2="SELECT * FROM `glpi_reservation_item` WHERE device_type='".$data['device_type']."' AND id_device='".$data['id_device']."' AND ID <> '$refID'";
+			$result2=$DB->query($query2);
+			if ($DB->numrows($result2)){
+				while ($data2=$DB->fetch_array($result2)){
+					// Update réservations
+					$query="UPDATE glpi_reservation_resa SET id_item='$refID' WHERE id_item='".$data2['ID']."'";
+					$DB->query($query);
+					// Delete Reservation Item 
+					$query="DELETE FROM `glpi_reservation_item` WHERE ID = '".$data2['ID']."'";
+					$DB->query($query);
+				}
+			}
+			
+		}
+	}
+
 	if (!FieldExists("glpi_networking_ports", "netmask")) {
 		$query = "ALTER TABLE `glpi_networking_ports` ADD COLUMN `netmask` VARCHAR( 255 ) NULL DEFAULT NULL";
 		$DB->query($query) or die("0.7 add netmask in glpi_networking_ports" . $LANG["update"][90] . $DB->error());
