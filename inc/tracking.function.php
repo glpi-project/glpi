@@ -845,14 +845,20 @@ function addFormTracking ($device_type=0,$ID=0,$author,$group,$assign,$assign_gr
 	echo "<td colspan='3'><input type='file' name='filename' value=\"\" size='25'></td>";
 	echo "</tr>";
 
-	echo "<tr class='tab_bg_1'><td colspan='2' align='center'>";
-	echo "<input type='submit' name='add' value=\"".$LANG["buttons"][2]."\" class='submit'>";
-	echo "</td><td colspan='2' align='center'>";
+	echo "<tr class='tab_bg_1'>";
+
 	if (haveRight("comment_all_ticket","1")){
-		echo "<input type='submit' name='add_close' value=\"".$LANG["buttons"][26]."\" class='submit'>";
+		echo "<td colspan='2' align='center'>".$LANG["joblist"][0].":&nbsp;";
+		dropdownStatus("status",1);		
+		echo '</td>';
+		echo "<td colspan='2' align='center'>";
 	} else {
-		echo "&nbsp;";
+		echo "<td colspan='4' align='center'>";
 	}
+
+
+	echo "<input type='submit' name='add' value=\"".$LANG["buttons"][2]."\" class='submit'>";
+
 	echo "</td></tr>";
 
 	echo "</table>";

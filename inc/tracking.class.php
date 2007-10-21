@@ -477,15 +477,6 @@ class Job extends CommonDBTM{
 			$input["status"] = "assign";
 		}
 
-		if (strstr($input["status"],"old_")){
-			$input["closedate"] = $input["date"];
-		}
-
-
-
-
-
-
 		if (isset($input["hour"])&&isset($input["minute"])){
 			$input["realtime"]=$input["hour"]+$input["minute"]/60;
 			$input["_hour"]=$input["hour"];
@@ -494,16 +485,13 @@ class Job extends CommonDBTM{
 			unset($input["minute"]);
 		}
 
-		// Add and close for central helpdesk
-		if (isset($input["add_close"])){
-			$input["status"]="old_done";
-			unset($input["add_close"]);
+		if (isset($input["status"])&&strstr($input["status"],"old_")){
 			if (isset($input["date"])){
 				$input["closedate"]=$input["date"];
 			} else {
 				$input["closedate"]=$_SESSION["glpi_currenttime"];
 			}
-		}
+		} 
 
 		if (empty($input["name"])) {
 			$input["name"]=preg_replace('/\r\n/',' ',$input['contents']);
