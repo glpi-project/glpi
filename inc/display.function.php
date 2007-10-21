@@ -1776,7 +1776,7 @@ function printPager($start,$numrows,$target,$parameters,$item_type_output=0,$ite
 		echo "<option value='-1'>".$LANG["buttons"][30]."</option>";
 		echo "<option value='-3'>".$LANG["buttons"][45]."</option>";
 		echo "</select>";
-		echo "&nbsp;<input type='image' name='export'  src='".$CFG_GLPI["root_doc"]."/pics/export.png' title='".$LANG["buttons"][31]."' value='".$LANG["buttons"][31]."'>";
+		echo "&nbsp;<input type='image' name='export'  src='".$CFG_GLPI["root_doc"]."/pics/greenbutton.png' title='".$LANG["buttons"][31]."' value='".$LANG["buttons"][31]."'>";
 		echo "</form>";
 		echo "</td>" ;
 	}

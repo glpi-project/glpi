@@ -187,7 +187,7 @@ function ocsShowNewComputer($ocs_server_id, $advanced, $check, $start, $tolinked
 						echo "<td class='center'><img src=\"" . GLPI_ROOT . "/pics/redbutton.png\"></td>";
 						$data['FK_entities'] = -1;
 					} else
-						echo "<td class='center'><img src=\"" . GLPI_ROOT . "/pics/export.png\"></td>";
+						echo "<td class='center'><img src=\"" . GLPI_ROOT . "/pics/greenbutton.png\"></td>";
 
 					echo "<td>";
 					dropdownValue("glpi_entities", "toimport_entities[" . $tab["ID"] . "]=" . $data['FK_entities'], $data['FK_entities'], 0);
