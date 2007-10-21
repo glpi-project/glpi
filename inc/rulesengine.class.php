@@ -819,7 +819,7 @@ class Rule extends CommonDBTM{
 	* Process a criteria of a rule
 	* @param $input the input data used to check criterias
 	*/
-	function checkCriteria($criteria,&$input)
+	function checkCriteria(&$criteria,&$input)
 	{
 
 		// Undefine criteria field : set to blank
@@ -1174,6 +1174,7 @@ class Rule extends CommonDBTM{
  	*/
  	function getCriteriaValue($ID,$condition,$value)
 	{
+		global $LANG;
 		$crit=$this->getCriteria($ID);
 		if (!isset($crit['type'])){
 			return $value;
