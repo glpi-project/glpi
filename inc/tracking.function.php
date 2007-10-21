@@ -2286,7 +2286,7 @@ function showUpdateFollowupForm($ID){
 	$fup=new Followup();
 	
 	if ($fup->getFromDB($ID)){
-		if ($fup->fields["tracking"]!=$_SESSION['glpiID']&&!haveRight("update_followups","1")) {
+		if ($fup->fields["author"]!=$_SESSION['glpiID']&&!haveRight("update_followups","1")) {
 			return false;
 		}
 
