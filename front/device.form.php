@@ -51,6 +51,10 @@ else if (isset($_POST["referer"])) {
 
 $REFERER=preg_replace("/&/","&amp;",$REFERER);
 
+if (!isset($_SESSION['glpi_onglet'])) $_SESSION['glpi_onglet']=1;
+if (isset($_GET['onglet'])) {
+	$_SESSION['glpi_onglet']=$_GET['onglet'];
+}
 
 
 checkRight("device","w");
