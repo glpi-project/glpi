@@ -755,6 +755,9 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="")
 						case "summary":
 							echo "<li><a href='".$CFG_GLPI["root_doc"].$val."' ><img title='".$LANG["state"][11]."' alt='".$LANG["state"][11]."' src='".$CFG_GLPI["root_doc"]."/pics/menu_show.png' > </a></li>";
 							break;
+						case "config":
+							echo "<li><a href='".$CFG_GLPI["root_doc"].$val."' ><img title='".$LANG["Menu"][10]."' alt='".$LANG["Menu"][10]."' src='".$CFG_GLPI["root_doc"]."/pics/menu_config.png' > </a></li>";
+							break;
 
 						default :
 							echo "<li><a href='".$CFG_GLPI["root_doc"].$val."' >".$key." </a></li>";
