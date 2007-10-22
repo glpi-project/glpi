@@ -149,8 +149,8 @@ else {
 		if (isset($_GET["add"]))
 		{
 			checkRight("reservation_central","w");
-			if ($ri->add($_GET)){
-				logEvent(0, "reservation", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][20]." ".$_GET["device_type"]."-".$_GET["id_device"].".");
+			if ($newID=$ri->add($_GET)){
+				logEvent($newID, "reservation", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][20]." ".$_GET["device_type"]."-".$_GET["id_device"].".");
 			}
 			glpi_header($_SERVER['HTTP_REFERER']);
 		} 
@@ -158,13 +158,13 @@ else {
 		{
 			checkRight("reservation_central","w");
 			$ri->delete($_GET);
-			logEvent(0, "reservation", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][22]);
+			logEvent($_GET['ID'], "reservation", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][22]);
 			glpi_header($_SERVER['HTTP_REFERER']);
 		} else if (isset($_GET["active"]))
 		{
 			checkRight("reservation_central","w");
 			$ri->update($_GET);
-			logEvent(0, "reservation", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][21]);
+			logEvent($_GET['ID'], "reservation", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][21]);
 			glpi_header($_SERVER['HTTP_REFERER']);
 		}
 
@@ -172,7 +172,7 @@ else {
 		{
 			checkRight("reservation_central","w");
 			$ri->update($_POST);
-			logEvent(0, "reservation", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][21]);
+			logEvent($_POST['ID'], "reservation", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][21]);
 		} 
 
 		checkRight("reservation_central","r");
