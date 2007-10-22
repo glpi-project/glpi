@@ -83,16 +83,23 @@ if (!isset($_POST["limit"])) $_POST["limit"]=$CFG_GLPI["dropdown_limit"];
 
 		// Manage multiple Entities dropdowns
 		$add_order="";
-		if (in_array($_POST['table'],$CFG_GLPI["specif_entities_tables"])){
+		if (in_array($_POST['table'],$CFG_GLPI["specif_entities_tables"])||$_POST['table']=='glpi_entities'){
+			$field='FK_entities';
 			$add_order=" FK_entities, ";
+			if ($_POST['table']=='glpi_entities'){
+				$field='ID';
+				$add_order=" ";
+
+			}
+			
 
 			if (!$first) $where.=" AND ";
 			else $first=false;
 
 			if (isset($_POST["entity_restrict"])&&$_POST["entity_restrict"]>=0){
-				$where.=getEntitiesRestrictRequest("",$_POST['table'],"FK_entities",$_POST["entity_restrict"]);
+				$where.=getEntitiesRestrictRequest("",$_POST['table'],$field,$_POST["entity_restrict"]);
 			} else {
-				$where.=getEntitiesRestrictRequest("",$_POST['table']);
+				$where.=getEntitiesRestrictRequest("",$_POST['table'],$field);
 			}
 		}
 
@@ -101,7 +108,7 @@ if (!isset($_POST["limit"])) $_POST["limit"]=$CFG_GLPI["dropdown_limit"];
 
 
 		$query = "SELECT * FROM ".$_POST['table']." $where ORDER BY $add_order completename $LIMIT";
-//		echo $query;
+		//echo $query;
 
 		$result = $DB->query($query);
 
@@ -109,22 +116,32 @@ if (!isset($_POST["limit"])) $_POST["limit"]=$CFG_GLPI["dropdown_limit"];
 
 		if ($_POST['searchText']!=$CFG_GLPI["ajax_wildcard"]&&$DB->numrows($result)==$NBMAX)
 			echo "<option class='tree' value=\"0\">--".$LANG["common"][11]."--</option>";
-
+		$display_selected=true;
 		switch ($_POST["table"]){
 			case "glpi_dropdown_kbcategories" :
 				echo "<option class='tree' value=\"0\">--".$LANG["knowbase"][12]."--</option>";
 				break;
 			case "glpi_entities" :
-				echo "<option class='tree' value=\"0\">--".$LANG["entity"][2]."--</option>";
+				if (isset($_POST["entity_restrict"])&&$_POST["entity_restrict"]<0
+					|| (is_array($_POST["entity_restrict"]) && in_array(0,$_POST["entity_restrict"]))
+				){	
+					echo "<option class='tree' value=\"0\">--".$LANG["entity"][2]."--</option>";
+				} else {
+					if ($_POST['value']==0){
+						$display_selected=false;
+					}
+				}
 				break;
 			default :
 				echo "<option class='tree' value=\"0\">-----</option>";
 				break;
 		}
 
-		$outputval=getDropdownName($_POST['table'],$_POST['value']);
-		if (!empty($outputval)&&$outputval!="&nbsp;")
-			echo "<option class='tree' selected value='".$_POST['value']."'>".$outputval."</option>";
+		if ($display_selected){
+			$outputval=getDropdownName($_POST['table'],$_POST['value']);
+			if (!empty($outputval)&&$outputval!="&nbsp;")
+				echo "<option class='tree' selected value='".$_POST['value']."'>".$outputval."</option>";
+		}
 
 		if ($DB->numrows($result)) {
 			while ($data =$DB->fetch_array($result)) {

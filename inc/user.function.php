@@ -260,9 +260,10 @@ function showGroupAssociated($target,$ID){
 function showUserRights($target,$ID){
 	global $DB,$CFG_GLPI, $LANG;
 
-	if (!haveRight("user","r")||!haveRight("entity","r"))	return false;
+	if (!haveRight("user","r"))	return false;
 
-	$canedit=haveRight("entity","w");
+	$canedit=haveRight("user","w");
+
 	$strict_entities=getUserEntities($ID,false);
 	if (!haveAccessToOneOfEntities($strict_entities)&&!isViewAllEntities()){
 		$canedit=false;
@@ -281,7 +282,8 @@ function showUserRights($target,$ID){
 
 		echo "<tr class='tab_bg_1'><th colspan='4'>".$LANG["entity"][3]."</tr><tr class='tab_bg_2'><td class='center'>";
 		echo "<input type='hidden' name='FK_users' value='$ID'>";
-		dropdownValue("glpi_entities","FK_entities",0);
+
+		dropdownValue("glpi_entities","FK_entities",0,1,$_SESSION['glpiactiveentities']);
 		echo "</td><td class='center'>";
 
 		echo $LANG["profiles"][22].":";
@@ -311,13 +313,15 @@ function showUserRights($target,$ID){
 
 		while ($data=$DB->fetch_array($result)){
 			echo "<tr class='tab_bg_1'>";
-			if ($canedit){
-				echo "<td width='10'>";
+			
+			echo "<td width='10'>";
+			if ($canedit&&in_array($data["FK_entities"],$_SESSION['glpiactiveentities'])){
 				$sel="";
 				if (isset($_GET["select"])&&$_GET["select"]=="all") $sel="checked";
 				echo "<input type='checkbox' name='item[".$data["linkID"]."]' value='1' $sel>";
-				echo "</td>";
 			}
+			echo "</td>";
+
 			if ($data["FK_entities"]==0) {
 				$data["completename"]=$LANG["entity"][2];
 			}

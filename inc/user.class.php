@@ -215,7 +215,9 @@ class User extends CommonDBTM {
 			$result = $DB->query($sql_default_profile);
 			if ($DB->numrows($result)){
 				$right=$DB->result($result,0,0);
-				if (isset($_SESSION['glpiactive_entity'])){
+				if (isset($input["FK_entities"])){
+					$affectation["FK_entities"] = $input["FK_entities"];
+				} else if (isset($_SESSION['glpiactive_entity'])){
 					$affectation["FK_entities"] = $_SESSION['glpiactive_entity'];
 				} else {
 					$affectation["FK_entities"] = 0;

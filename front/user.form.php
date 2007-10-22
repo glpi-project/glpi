@@ -122,7 +122,7 @@ else if (isset($_POST["deletegroup"]))
 	glpi_header($_SERVER['HTTP_REFERER']);
 } else if (isset($_POST["addright"]))
 {
-	checkRight("entity","w");
+	checkRight("user","w");
 
 	addUserProfileEntity($_POST);
 
@@ -130,7 +130,7 @@ else if (isset($_POST["deletegroup"]))
 	glpi_header($_SERVER['HTTP_REFERER']);
 } else if (isset($_POST["deleteright"]))
 {
-	checkRight("entity","w");
+	checkRight("user","w");
 
 	if (isset($_POST["item"])&&count($_POST["item"])){
 		foreach ($_POST["item"] as $key => $val){
