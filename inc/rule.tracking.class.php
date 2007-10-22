@@ -42,6 +42,7 @@ class TrackingBusinessRuleCollection extends RuleCollection {
 		$this->rule_type = RULE_TRACKING_AUTO_ACTION;
 		$this->rule_class_name="TrackingBusinessRule";
 		$this->right="rule_tracking";
+		$this->use_output_rule_process_as_next_input=true;
 	}
 
 	function getTitle() {

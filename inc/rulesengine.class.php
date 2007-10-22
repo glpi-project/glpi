@@ -43,6 +43,7 @@ class RuleCollection {
 	var $stop_on_first_match=false;
 	var $right="config";
 	var $orderby="ranking";
+	var $use_output_rule_process_as_next_input=false;
 
 	
 	/**
@@ -271,6 +272,9 @@ class RuleCollection {
 				if ($output["_rule_process"]&&$this->stop_on_first_match){
 					unset($output["_rule_process"]);
 					return $output;
+				}
+				if ($this->use_output_rule_process_as_next_input){
+					$input=$output;
 				}
 			}
 		}
