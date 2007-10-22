@@ -65,6 +65,8 @@ if (isset($LINK_ID_TABLE[$_POST["idtable"]])){
                         'table'=>$table,
                         'rand'=>$rand,
                         'myname'=>$_POST["myname"],
+			'withserial'=>1,
+			'withotherserial'=>1,
                         );
 
 	if(isset($_POST['value'])) {

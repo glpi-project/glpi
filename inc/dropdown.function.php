@@ -643,8 +643,6 @@ function dropdownAllItems($myname,$value_type=0,$value=0,$entity_restrict=-1,$ty
 	}
 	asort($options);
 	if (count($options)){
-		echo "<table border='0'><tr><td>\n";
-	
 		echo "<select name='type' id='item_type$rand'>\n";
 			echo "<option value='0'>-----</option>\n";
 		foreach ($options as $key => $val){
@@ -659,9 +657,7 @@ function dropdownAllItems($myname,$value_type=0,$value=0,$entity_restrict=-1,$ty
 			);
 		ajaxUpdateItemOnSelectEvent("item_type$rand","show_$myname$rand",$CFG_GLPI["root_doc"]."/ajax/dropdownAllItems.php",$params);
 
-		echo "</td><td>\n"	;
-		echo "<span id='show_$myname$rand'>&nbsp;</span>\n";
-		echo "</td></tr></table>\n";
+		echo "<br><span id='show_$myname$rand'>&nbsp;</span>\n";
 
 		if ($value>0){
 			echo "<script type='text/javascript' >\n";
