@@ -487,7 +487,8 @@ function update068to0681(){
 
 
 	if (countElementsInTable("glpi_ocs_link")){
-		include (GLPI_ROOT . "/inc/ocsng.class.php");
+		include_once (GLPI_ROOT . "/inc/commondbtm.class.php");
+		include_once (GLPI_ROOT . "/inc/ocsng.class.php");
 		$CFG_GLPI["ocs_mode"]=1;
 		$DBocs=new DBocs;
 		// Get datas to update

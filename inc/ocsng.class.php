@@ -68,7 +68,7 @@ class Ocsng extends CommonDBTM {
 		$this->type = OCSNG_TYPE;
 	}
 
-function ocsFormConfig($target, $ID,$withtemplate='',$templateid='') {
+	function ocsFormConfig($target, $ID,$withtemplate='',$templateid='') {
 		global $DB, $LANG, $CFG_GLPI;
 		
 		if (!haveRight("ocsng", "w"))
