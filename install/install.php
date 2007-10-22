@@ -34,9 +34,6 @@
 // ----------------------------------------------------------------------
 
 
-//Ce script gère ses propres messages d'erreur 
-//Pas besoin des warnings de PHP
-error_reporting(0);
 define('GLPI_ROOT', '..');
 include_once (GLPI_ROOT . "/config/based_config.php");
 include_once (GLPI_ROOT . "/config/define.php");
@@ -49,7 +46,7 @@ setGlpiSessionPath();
 
 cleanCache();
 
-$CFG_GLPI["debug"]=0;
+$CFG_GLPI["debug"]=DEBUG_MODE;
 //Print a correct  Html header for application
 function header_html($etape)
 {
