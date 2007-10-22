@@ -68,21 +68,21 @@ function getStatsItems($date1,$date2,$type){
 			$val = getNbIntervRecipient($date1,$date2);
 		break;
 		case "category":
-			$val = getNbIntervCategory();
+			$val = getNbIntervCategory($date1,$date2);
 		break;
 		case "group":
-			$val = getNbIntervGroup();
+			$val = getNbIntervGroup($date1,$date2);
 		break;
 		case "assign_group":
-			$val = getNbIntervGroup();
+			$val = getNbIntervAssignGroup($date1,$date2);
 		break;
 
 		case "priority":
-			$val = getNbIntervPriority();
+			$val = getNbIntervPriority($date1,$date2);
 
 		break;
 		case "request_type":
-			$val = getNbIntervRequestType();
+			$val = getNbIntervRequestType($date1,$date2);
 
 		break;
 		case "glpi_type_computers":
@@ -253,11 +253,10 @@ function getNbIntervTech($date1,$date2)
 	$query.= " FROM glpi_tracking ";
 	$query.= " LEFT JOIN glpi_users  ON (glpi_users.ID=glpi_tracking.assign) ";
 
-	$query.= " WHERE '1'='1' ";
-	if ($date1!="") $query.= " and glpi_tracking.date >= '". $date1 ."' ";
-	if ($date2!="") $query.= " and glpi_tracking.date <= adddate( '". $date2 ."' , INTERVAL 1 DAY ) ";
-	$query.=getEntitiesRestrictRequest("AND","glpi_tracking");
-	$query.= " order by realname, firstname, name";
+	$query.=getEntitiesRestrictRequest("WHERE","glpi_tracking");
+	if ($date1!="") $query.= " AND glpi_tracking.date >= '". $date1 ."' ";
+	if ($date2!="") $query.= " AND glpi_tracking.date <= adddate( '". $date2 ."' , INTERVAL 1 DAY ) ";
+	$query.= " ORDER BY realname, firstname, name";
 	$result = $DB->query($query);
 	$tab=array();
 
@@ -276,17 +275,16 @@ function getNbIntervTech($date1,$date2)
 function getNbIntervTechFollowup($date1,$date2)
 {
 	global $DB;
-	$query = "SELECT distinct glpi_followups.author as author, glpi_users.name as name, glpi_users.realname as realname, glpi_users.firstname as firstname";
+	$query = "SELECT DISTINCT glpi_followups.author as author, glpi_users.name as name, glpi_users.realname as realname, glpi_users.firstname as firstname";
 	$query.= " FROM glpi_tracking ";
 	$query.= " LEFT JOIN glpi_followups ON (glpi_tracking.ID = glpi_followups.tracking) ";
 	$query.= " LEFT JOIN glpi_users  ON (glpi_users.ID=glpi_followups.author) ";
 
-	$query.= " WHERE '1'='1' ";
-	if ($date1!="") $query.= " and glpi_tracking.date >= '". $date1 ."' ";
-	if ($date2!="") $query.= " and glpi_tracking.date <= adddate( '". $date2 ."' , INTERVAL 1 DAY ) ";
-	$query.=getEntitiesRestrictRequest("AND","glpi_tracking");
+	$query.=getEntitiesRestrictRequest("WHERE","glpi_tracking");
+	if ($date1!="") $query.= " AND glpi_tracking.date >= '". $date1 ."' ";
+	if ($date2!="") $query.= " AND glpi_tracking.date <= adddate( '". $date2 ."' , INTERVAL 1 DAY ) ";
 
-	$query.= " order by realname,firstname, name";
+	$query.= " ORDER BY realname,firstname, name";
 	$result = $DB->query($query);
 	$tab=array();
 
@@ -310,10 +308,9 @@ function getNbIntervEnterprise($date1,$date2)
 	$query.= " FROM glpi_tracking ";
 	$query.= " LEFT JOIN glpi_enterprises  ON (glpi_enterprises.ID=glpi_tracking.assign_ent) ";
 
-	$query.= " WHERE '1'='1' ";
-	if ($date1!="") $query.= " and glpi_tracking.date >= '". $date1 ."' ";
-	if ($date2!="") $query.= " and glpi_tracking.date <= adddate( '". $date2 ."' , INTERVAL 1 DAY ) ";
-	$query.=getEntitiesRestrictRequest("AND","glpi_tracking");
+	$query.=getEntitiesRestrictRequest("WHERE","glpi_tracking");
+	if ($date1!="") $query.= " AND glpi_tracking.date >= '". $date1 ."' ";
+	if ($date2!="") $query.= " AND glpi_tracking.date <= adddate( '". $date2 ."' , INTERVAL 1 DAY ) ";
 
 	$query.= " ORDER BY name";
 	$tab=array();
@@ -338,6 +335,7 @@ function getNbIntervDropdown($dropdown)
 {
 	global $DB,$CFG_GLPI;
 	$field="name";
+
 	if (in_array($dropdown,$CFG_GLPI["dropdowntree_tables"])) {
 		$field="completename";
 	}
@@ -369,12 +367,11 @@ function getNbIntervAuthor($date1,$date2)
 {	
 	global $DB;
 	$query = "SELECT DISTINCT glpi_tracking.author as ID, glpi_users.name as name, glpi_users.realname as realname, glpi_users.firstname as firstname FROM glpi_tracking INNER JOIN glpi_users ON (glpi_users.ID=glpi_tracking.author)";
-	$query.= " WHERE '1'='1' ";
-	if ($date1!="") $query.= " and glpi_tracking.date >= '". $date1 ."' ";
-	if ($date2!="") $query.= " and glpi_tracking.date <= adddate( '". $date2 ."' , INTERVAL 1 DAY ) ";
-	$query.=getEntitiesRestrictRequest("AND","glpi_tracking");
+	$query.=getEntitiesRestrictRequest("WHERE","glpi_tracking");
+	if ($date1!="") $query.= " AND glpi_tracking.date >= '". $date1 ."' ";
+	if ($date2!="") $query.= " AND glpi_tracking.date <= adddate( '". $date2 ."' , INTERVAL 1 DAY ) ";
 
-	$query.= " order by realname, firstname, name";
+	$query.= " ORDER BY realname, firstname, name";
 	$result = $DB->query($query);
 	$tab=array();
 	if($DB->numrows($result) >=1) {
@@ -394,10 +391,9 @@ function getNbIntervRecipient($date1,$date2)
 {	
 	global $DB;
 	$query = "SELECT DISTINCT glpi_tracking.recipient as ID, glpi_users.name as name, glpi_users.realname as realname, glpi_users.firstname as firstname FROM glpi_tracking LEFT JOIN glpi_users ON (glpi_users.ID=glpi_tracking.recipient)";
-	$query.= " WHERE '1'='1' ";
-	if ($date1!="") $query.= " and glpi_tracking.date >= '". $date1 ."' ";
-	if ($date2!="") $query.= " and glpi_tracking.date <= adddate( '". $date2 ."' , INTERVAL 1 DAY ) ";
-	$query.=getEntitiesRestrictRequest("AND","glpi_tracking");
+	$query.=getEntitiesRestrictRequest("WHERE","glpi_tracking");
+	if ($date1!="") $query.= " AND glpi_tracking.date >= '". $date1 ."' ";
+	if ($date2!="") $query.= " AND glpi_tracking.date <= adddate( '". $date2 ."' , INTERVAL 1 DAY ) ";
 
 	$query.= " ORDER BY realname, firstname, name";
 	$result = $DB->query($query);
@@ -414,11 +410,16 @@ function getNbIntervRecipient($date1,$date2)
 }
 //return an array from tracking
 //it contains the distinct priority of interventions.
-function getNbIntervPriority()
+function getNbIntervPriority($date1,$date2)
 {	
 	global $DB;
 
-	$query = "SELECT DISTINCT priority FROM glpi_tracking ".getEntitiesRestrictRequest("WHERE","glpi_tracking")." order by priority";
+	$query = "SELECT DISTINCT priority 
+		FROM glpi_tracking ".getEntitiesRestrictRequest("WHERE","glpi_tracking");
+	if ($date1!="") $query.= " AND glpi_tracking.date >= '". $date1 ."' ";
+	if ($date2!="") $query.= " AND glpi_tracking.date <= adddate( '". $date2 ."' , INTERVAL 1 DAY ) ";
+	$query.=" ORDER BY priority";
+	
 	$result = $DB->query($query);
 	$tab=array();
 	if($DB->numrows($result) >=1) {
@@ -433,10 +434,14 @@ function getNbIntervPriority()
 
 }
 
-function getNbIntervRequestType()
+function getNbIntervRequestType($date1,$date2)
 {	
 	global $DB;
-	$query = "SELECT DISTINCT request_type FROM glpi_tracking ".getEntitiesRestrictRequest("WHERE","glpi_tracking")." order by request_type";
+	$query = "SELECT DISTINCT request_type 
+		FROM glpi_tracking ".getEntitiesRestrictRequest("WHERE","glpi_tracking");
+	if ($date1!="") $query.= " AND glpi_tracking.date >= '". $date1 ."' ";
+	if ($date2!="") $query.= " AND glpi_tracking.date <= adddate( '". $date2 ."' , INTERVAL 1 DAY ) ";
+	$query.=" ORDER BY request_type";
 	$result = $DB->query($query);
 	$tab=array();
 	if($DB->numrows($result) >=1) {
@@ -452,16 +457,21 @@ function getNbIntervRequestType()
 
 //return an array from tracking
 //it contains the distinct category of interventions.
-function getNbIntervCategory()
+function getNbIntervCategory($date1,$date2)
 {	
 	global $DB;
-	$query = "SELECT id as ID, completename as category FROM glpi_dropdown_tracking_category order by completename";
+	
+	$query = "SELECT DISTINCT glpi_dropdown_tracking_category.ID,   glpi_dropdown_tracking_category.completename AS category
+		FROM glpi_tracking 
+		LEFT JOIN glpi_dropdown_tracking_category ON (glpi_tracking.category = glpi_dropdown_tracking_category.ID) ";
+	$query.=getEntitiesRestrictRequest(" WHERE","glpi_tracking");
+	if ($date1!="") $query.= " AND glpi_tracking.date >= '". $date1 ."' ";
+	if ($date2!="") $query.= " AND glpi_tracking.date <= adddate( '". $date2 ."' , INTERVAL 1 DAY ) ";
+		
+	$query.=" ORDER BY glpi_dropdown_tracking_category.completename";
+
 	$result = $DB->query($query);
 	$tab=array();
-	$tmp["ID"] = 0;
-	$tmp["link"] = '';
-	$tab[]=$tmp;
-
 	if($DB->numrows($result) >=1) {
 		while($line = $DB->fetch_assoc($result)) {
 			$tmp['ID']= $line["ID"];
@@ -476,15 +486,18 @@ function getNbIntervCategory()
 
 //return an array from tracking
 //it contains the distinct group of interventions.
-function getNbIntervGroup()
+function getNbIntervGroup($date1,$date2)
 {	
 	global $DB;
-	$query = "SELECT id AS ID, name FROM glpi_groups ".getEntitiesRestrictRequest("WHERE","glpi_groups")." ORDER BY name";
+	$query = "SELECT DISTINCT glpi_groups.id AS ID,glpi_groups.name FROM glpi_tracking 
+		LEFT JOIN  glpi_groups ON (glpi_tracking.FK_group = glpi_groups.ID)";
+	$query.=getEntitiesRestrictRequest(" WHERE","glpi_tracking");
+	if ($date1!="") $query.= " AND glpi_tracking.date >= '". $date1 ."' ";
+	if ($date2!="") $query.= " AND glpi_tracking.date <= adddate( '". $date2 ."' , INTERVAL 1 DAY ) ";
+	$query.=" ORDER BY glpi_groups.name";
+	
 	$result = $DB->query($query);
 	$tab=array();
-	$tmp["ID"] = 0;
-	$tmp["link"] = '';
-	$tab[]=$tmp;
 
 	if($DB->numrows($result) >=1) {
 		while($line = $DB->fetch_assoc($result)) {
@@ -496,6 +509,33 @@ function getNbIntervGroup()
 	}
 	return $tab;
 }
+
+//return an array from tracking
+//it contains the distinct group of interventions.
+function getNbIntervAssignGroup($date1,$date2)
+{	
+	global $DB;
+	$query = "SELECT DISTINCT glpi_groups.id AS ID,glpi_groups.name FROM glpi_tracking 
+		LEFT JOIN  glpi_groups ON (glpi_tracking.assign_group = glpi_groups.ID)";
+	$query.=getEntitiesRestrictRequest(" WHERE","glpi_tracking");
+	if ($date1!="") $query.= " AND glpi_tracking.date >= '". $date1 ."' ";
+	if ($date2!="") $query.= " AND glpi_tracking.date <= adddate( '". $date2 ."' , INTERVAL 1 DAY ) ";
+	$query.=" ORDER BY glpi_groups.name";
+	
+	$result = $DB->query($query);
+	$tab=array();
+
+	if($DB->numrows($result) >=1) {
+		while($line = $DB->fetch_assoc($result)) {
+			$tmp['ID']= $line["ID"];
+			$tmp['link']=$line["name"];
+			
+			$tab[]=$tmp;
+		}
+	}
+	return $tab;
+}
+
 
 //Make a good string from the unix timestamp $sec
 //
