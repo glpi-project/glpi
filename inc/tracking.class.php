@@ -692,7 +692,7 @@ class Job extends CommonDBTM{
 			$message.=" </style></head><body>";
 
 			$message.="<div class='description'><strong>".$LANG["mailing"][5]."</strong></div><br>";
-			
+			$message.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$LANG["common"][57].":</span> ".$this->fields["name"]."<br>";
 			$author=$this->getAuthorName();
 			if (empty($author)) $author=$LANG["mailing"][108];
 			$message.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$LANG["job"][4].":</span> ".$author."<br>";
@@ -739,6 +739,7 @@ class Job extends CommonDBTM{
 		}else{ //text format
 			$message = $LANG["mailing"][1]."\n*".$LANG["mailing"][5]."*\n".$LANG["mailing"][1]."\n";
 			
+			$message.=mailRow($LANG["common"][57],$this->fields["name"]);
 			$author=$this->getAuthorName();
 			if (empty($author)) $author=$LANG["mailing"][108];
 			$message.=mailRow($LANG["job"][4],$author);
