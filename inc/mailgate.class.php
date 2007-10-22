@@ -100,7 +100,7 @@ class Mailgate  extends CommonDBTM {
 			echo "</td></tr>";
 
 			echo "<tr class='tab_bg_2'><td>".$LANG["entity"][0].":	</td><td>";
-			dropdownValue("glpi_entities", "FK_entities",$this->fields["FK_entities"]);
+			dropdownValue("glpi_entities", "FK_entities",$this->fields["FK_entities"],1,$_SESSION['glpiactiveentities']);
 			echo "</td></tr>";
 
 			showMailServerConfig($this->fields["host"]);

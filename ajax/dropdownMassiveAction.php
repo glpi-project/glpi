@@ -109,7 +109,7 @@ if (isset($_POST["action"])&&isset($_POST["type"])&&!empty($_POST["type"])){
 			echo "&nbsp;<input type=\"submit\" name=\"massiveaction\" class=\"submit\" value=\"".$LANG["buttons"][2]."\" >";
 		break;
 		case "add_userprofile":
-			dropdownValue("glpi_entities","FK_entities",0);
+			dropdownValue("glpi_entities","FK_entities",0,1,$_SESSION['glpiactiveentities']);
 			echo ".&nbsp;".$LANG["profiles"][22].":";
 			dropdownValue("glpi_profiles","FK_profiles");
 			echo ".&nbsp;".$LANG["profiles"][28].":";
