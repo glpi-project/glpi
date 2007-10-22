@@ -885,6 +885,12 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 						$tmpquery=ereg_replace("FROM ".$CFG_GLPI["union_search_type"][$type],$replace,$tmpquery);
 						$tmpquery=ereg_replace($CFG_GLPI["union_search_type"][$type],$LINK_ID_TABLE[$ctype],$tmpquery);
 				}
+				// SOFTWARE HACK
+				if ($ctype==SOFTWARE_TYPE){
+					$tmpquery=ereg_replace("glpi_software.serial","''",$tmpquery);
+					$tmpquery=ereg_replace("glpi_software.otherserial","''",$tmpquery);
+				}
+
 				$QUERY.=$tmpquery;
 			}
 		}
