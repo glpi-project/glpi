@@ -119,6 +119,18 @@ else if (isset($_POST["move"])||isset($_POST["move"])){
 	}
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
+else if (isset($_POST["move_to_software"])||isset($_POST["move_to_software"])){
+	print_r($_POST);
+	$soft=new Software;
+	if ($_POST["sID"]&&$soft->getFromDB($_POST["sID"])){
+		foreach ($_POST as $key => $val){
+			if (ereg("license_([0-9]+)",$key,$ereg)){
+				moveSimilarLicensesToSoftware($ereg[1],$_POST["sID"]);
+			}
+		}
+	}
+	glpi_header($_SERVER['HTTP_REFERER']);
+}
 else if (isset($_POST["update"]))
 {
 	checkRight("software","w");

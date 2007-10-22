@@ -76,35 +76,64 @@ function showLicenses ($sID,$show_computers=0) {
 			$pb="";
 			if (($nb_licences-$nb_updates-$installed)<0&&!$isfreeorglobal) $pb="class='tab_bg_1_2'";
 
-			echo "<form name='lic_form' method='post' action=\"".$CFG_GLPI["root_doc"]."/front/software.licenses.php\">";
+			echo "<form id='lic_form' name='lic_form' method='post' action=\"".$CFG_GLPI["root_doc"]."/front/software.licenses.php\">";
 
 			echo "<br><div class='center'><table cellpadding='2' class='tab_cadre_fixe'>";
-			echo "<tr><th colspan='6' $pb >";
+			echo "<tr>";
+			if ($canedit&&!$show_computers){
+				echo "<th>&nbsp;</th>";
+			}
+
+			echo "<th colspan='6' $pb >";
 			echo $nb_licences;
 			echo "&nbsp;".$LANG["software"][13]."&nbsp;-&nbsp;$nb_updates&nbsp;".$LANG["software"][36]."&nbsp;-&nbsp;$installed&nbsp;".$LANG["software"][19]."&nbsp;-&nbsp;$tobuy&nbsp;".$LANG["software"][37]."</th>";
 			echo "<th colspan='1'>";
 			echo " ".$LANG["software"][19]." :</th></tr>";
 			$i=0;
-			echo "<tr><th>".$LANG["software"][5]."</th><th>".$LANG["common"][19]."</th><th>".$LANG["common"][33]."</th><th>".$LANG["software"][32]."</th><th>".$LANG["software"][28]."</th><th>".$LANG["software"][35]."</th>";
+			echo "<tr>";
+			if ($canedit&&!$show_computers){
+				echo "<th>&nbsp;</th>";
+			}
+
+			echo "<th>".$LANG["software"][5]."</th><th>".$LANG["common"][19]."</th><th>".$LANG["common"][33]."</th><th>".$LANG["software"][32]."</th><th>".$LANG["software"][28]."</th><th>".$LANG["software"][35]."</th>";
 			echo "<th>";
 
-			if ($show_computers&&$canedit){
-				echo $LANG["buttons"][14]."&nbsp;";
-				echo "<select name='update_licenses' id='update_licenses_choice'>";
-				echo "<option value=''>-----</option>";
-				echo "<option value='update_expire'>".$LANG["software"][32]."</option>";
-				echo "<option value='update_buy'>".$LANG["software"][35]."</option>";
-				echo "<option value='move'>".$LANG["buttons"][20]."</option>";
-				echo "</select>";
-
-				$params=array('type'=>'__VALUE__',
-						'sID'=>$sID,
-				);
-				ajaxUpdateItemOnSelectEvent("update_licenses_choice","update_licenses_view",$CFG_GLPI["root_doc"]."/ajax/updateLicenses.php",$params,false);
-
+			if ($canedit){
+				if ($show_computers){
+					echo $LANG["buttons"][14]."&nbsp;";
+					echo "<select name='update_licenses' id='update_licenses_choice'>";
+					echo "<option value=''>-----</option>";
+					echo "<option value='update_expire'>".$LANG["software"][32]."</option>";
+					echo "<option value='update_buy'>".$LANG["software"][35]."</option>";
+					echo "<option value='move'>".$LANG["buttons"][20]."</option>";
+					echo "</select>";
+	
+					$params=array('type'=>'__VALUE__',
+							'sID'=>$sID,
+					);
+					ajaxUpdateItemOnSelectEvent("update_licenses_choice","update_licenses_view",$CFG_GLPI["root_doc"]."/ajax/updateLicenses.php",$params,false);
+	
+					echo "<span id='update_licenses_view'>\n";
+					echo "&nbsp;";
+					echo "</span>\n";	
+				} else {
+					echo $LANG["buttons"][14]."&nbsp;";
+					echo "<select name='update_licenses' id='update_licenses_choice'>";
+					echo "<option value=''>-----</option>";
+					echo "<option value='move_to_software'>".$LANG["buttons"][20]."</option>";
+					echo "</select>";
+	
+					$params=array('type'=>'__VALUE__',
+							'sID'=>$sID,
+							'sID'=>$sID,
+					);
+					ajaxUpdateItemOnSelectEvent("update_licenses_choice","update_licenses_view",$CFG_GLPI["root_doc"]."/ajax/updateLicenses.php",$params,false);
+	
+				}
 				echo "<span id='update_licenses_view'>\n";
 				echo "&nbsp;";
 				echo "</span>\n";	
+
 			} else echo "&nbsp;";
 
 			echo "</th></tr>";
@@ -116,7 +145,7 @@ function showLicenses ($sID,$show_computers=0) {
 		}
 	}
 
-	$query = "SELECT count(ID) AS COUNT , version as VERSION, serial as SERIAL, expire as EXPIRE, oem as OEM, oem_computer as OEM_COMPUTER, buy as BUY  FROM glpi_licenses WHERE (sID = '$sID') GROUP BY version, serial, expire, oem, oem_computer, buy ORDER BY version, serial,oem, oem_computer";
+	$query = "SELECT count(ID) AS COUNT , version as VERSION, serial as SERIAL, expire as EXPIRE, oem as OEM, oem_computer as OEM_COMPUTER, buy as BUY, ID AS ID  FROM glpi_licenses WHERE (sID = '$sID') GROUP BY version, serial, expire, oem, oem_computer, buy ORDER BY version, serial,oem, oem_computer";
 	//echo $query;
 	if ($result = $DB->query($query)) {			
 		while ($data=$DB->fetch_array($result)) {
@@ -159,6 +188,9 @@ function showLicenses ($sID,$show_computers=0) {
 			$num_inst=$DB->numrows($result_inst);
 
 			echo "<tr class='tab_bg_1' valign='top'>";
+			if ($canedit&&!$show_computers){
+				echo "<td><input type='checkbox' name='license_".$data['ID']."'></td>";
+			}
 			echo "<td class='center'><strong>".$version."</strong></td>";
 			echo "<td class='center'><strong>".$serial."</strong></td>";
 			echo "<td class='center'><strong>";
@@ -300,8 +332,9 @@ function showLicenses ($sID,$show_computers=0) {
 				while ($data_inst=$DB->fetch_array($result_inst)){
 					echo "<tr class='tab_bg_1".(($data["OEM"]&&$data["OEM_COMPUTER"]!=$data_inst["cID"])||$data_inst["deleted"]?"_2":"")."'><td class='center'>";
 
-					if ($serial!="free"&&$serial!="global"&&$canedit) 
+					if ($serial!="free"&&$serial!="global"&&$canedit){
 						echo "<input type='checkbox' name='license_".$data_inst["lID"]."' id='license_".$data_inst["lID"]."'>";
+					}
 					$ci->getFromDB(COMPUTER_TYPE,$data_inst["cID"]);
 					
 					echo "&nbsp;<strong>";
@@ -345,6 +378,15 @@ function showLicenses ($sID,$show_computers=0) {
 		}
 	}	
 	echo "</table></div>\n\n";
+
+	echo "<div>";
+	echo "<table width='80%'>";
+	echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td><a onclick= \"if ( markAllRows('lic_form') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$sID&amp;select=all'>".$LANG["buttons"][18]."</a></td>";
+
+	echo "<td>/</td><td ><a onclick=\"if ( unMarkAllRows('lic_form') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$sID&amp;select=none'>".$LANG["buttons"][19]."</a>";
+	echo "</td><td class='left' width='80%'>&nbsp;";
+	echo "</td></table></div>";
+
 	echo "</form>";
 }
 
@@ -938,6 +980,24 @@ function countInstallations($sID,$nohtml=0) {
 	}
 	return $out;
 }	
+
+function moveSimilarLicensesToSoftware($lID,$sID){
+	global $DB;
+	$lic=new License();
+	if ($lic->getFromDB($lID)){
+		$query="UPDATE glpi_licenses SET sID='$sID' WHERE version='".addslashes($lic->fields['version'])."'
+			AND serial='".addslashes($lic->fields['serial'])."'
+			AND oem='".addslashes($lic->fields['oem'])."'
+			AND oem_computer='".addslashes($lic->fields['oem_computer'])."'
+			AND buy='".addslashes($lic->fields['buy'])."'
+			AND sID='".addslashes($lic->fields['sID'])."' ";
+		if ($lic->fields['expire']=="")
+			$query.=" AND expire IS NULL";
+		else $query.=" AND .expire = '".addslashes($lic->fields['expire'])."'";
+		$DB->query($query);
+	}
+
+}
 
 function getInstalledLicence($sID){
 	global $DB;
