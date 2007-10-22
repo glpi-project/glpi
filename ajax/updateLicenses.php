@@ -36,6 +36,7 @@
 	define('GLPI_ROOT','..');
 
 	$AJAX_INCLUDE=1;
+	$NEEDED_ITEMS=array("software");
 	include (GLPI_ROOT."/inc/includes.php");
 	
 	header("Content-Type: text/html; charset=UTF-8");
@@ -56,6 +57,13 @@
 			dropdownLicenseOfSoftware("lID",$_POST["sID"]);
 			echo "&nbsp;&nbsp;<input type='submit' name='move' value='".$LANG["buttons"][14]."' class='submit'>";
 		break;
+		case "move_to_software":
+			$soft=new Software();
+			$soft->getFromDB($_POST["sID"]);
+			dropdownValue("glpi_software","sID",0,1,$soft->fields['FK_entities']);
+			echo "&nbsp;&nbsp;<input type='submit' name='move_to_software' value='".$LANG["buttons"][14]."' class='submit'>";
+		break;
+		
 	}
 
 ?>
