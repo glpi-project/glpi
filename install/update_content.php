@@ -46,7 +46,7 @@ setGlpiSessionPath();
 startGlpiSession();
 
 // Init debug variable
-$CFG_GLPI["debug"]=0;
+$CFG_GLPI["debug"]=DEBUG_MODE;
 
 
 //################################ Functions ################################
