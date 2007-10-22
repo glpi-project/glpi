@@ -63,7 +63,7 @@ if (isset($_POST["add"])) {
 	$device=new Device($_POST["device_type"]);	
 	$newID=$device->add($_POST);
 
-	logEvent($newID, "devices", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][21]." ".$_POST["designation"].".");
+	logEvent(0, "devices", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][20]." ".$_POST["designation"].".");
 	glpi_header($CFG_GLPI["root_doc"]."/front/device.php?device_type=".$_POST["device_type"]);
 }
 else if (isset($_POST["delete"])) {
