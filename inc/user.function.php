@@ -110,10 +110,10 @@ function showDeviceUser($ID){
 
 
 	$ci=new CommonItem();
-	echo "<div class='center'><table class='tab_cadre'><tr><th>".$LANG["common"][17]."</th><th>".$LANG["common"][16]."</th><th>&nbsp;</th></tr>";
+	echo "<div class='center'><table class='tab_cadre_fixe'><tr><th>".$LANG["common"][17]."</th><th>".$LANG["common"][16]."</th><th>".$LANG["common"][19]."</th><th>".$LANG["common"][20]."</th><th>&nbsp;</th></tr>";
 
 	foreach ($CFG_GLPI["linkuser_type"] as $type){
-		$query="SELECT * from ".$LINK_ID_TABLE[$type]." WHERE FK_users='$ID'";
+		$query="SELECT * FROM ".$LINK_ID_TABLE[$type]." WHERE FK_users='$ID'";
 		$result=$DB->query($query);
 		if ($DB->numrows($result)>0){
 			$ci->setType($type);
@@ -126,7 +126,17 @@ function showDeviceUser($ID){
 				if ($data["FK_users"]==$ID){
 					$linktype=$LANG["common"][34];
 				}
-				echo "<tr class='tab_bg_1'><td>$type_name</td><td>$link</td><td>$linktype</td></tr>";
+				echo "<tr class='tab_bg_1'><td class='center'>$type_name</td><td class='center'>$link</td>";
+				echo "<td class='center'>";
+				if (isset($data["serial"])&&!empty($data["serial"])){
+					echo $data["serial"];
+				} else echo '&nbsp;';
+				echo "</td><td class='center'>";
+				if (isset($data["otherserial"])&&!empty($data["otherserial"])) {
+					echo $data["otherserial"];
+				} else echo '&nbsp;';
+
+				echo "<td class='center'>$linktype</td></tr>";
 			}
 		}
 
@@ -134,10 +144,10 @@ function showDeviceUser($ID){
 	echo "</table></div><br>";
 
 	if (!empty($group_where)){
-		echo "<div class='center'><table class='tab_cadre'><tr><th>".$LANG["common"][17]."</th><th>".$LANG["common"][16]."</th><th>&nbsp;</th></tr>";
+		echo "<div class='center'><table class='tab_cadre_fixe'><tr><th>".$LANG["common"][17]."</th><th>".$LANG["common"][16]."</th><th>".$LANG["common"][19]."</th><th>".$LANG["common"][20]."</th><th>&nbsp;</th></tr>";
 	
 		foreach ($CFG_GLPI["linkuser_type"] as $type){
-			$query="SELECT * from ".$LINK_ID_TABLE[$type]." WHERE $group_where";
+			$query="SELECT * FROM ".$LINK_ID_TABLE[$type]." WHERE $group_where";
 			$result=$DB->query($query);
 			if ($DB->numrows($result)>0){
 				$ci->setType($type);
@@ -150,7 +160,16 @@ function showDeviceUser($ID){
 					if (isset($groups[$data["FK_groups"]])){
 						$linktype=$LANG["common"][35]." ".$groups[$data["FK_groups"]];
 					}
-					echo "<tr class='tab_bg_1'><td>$type_name</td><td>$link</td><td>$linktype</td></tr>";
+					echo "<tr class='tab_bg_1'><td class='center'>$type_name</td><td class='center'>$link</td>";
+					echo "<td class='center'>";
+					if (isset($data["serial"])&&!empty($data["serial"])){
+						echo $data["serial"];
+					} else echo '&nbsp;';
+					echo "</td><td class='center'>";
+					if (isset($data["otherserial"])&&!empty($data["otherserial"])) {
+						echo $data["otherserial"];
+					} else echo '&nbsp;';
+					echo "</td><td class='center'>$linktype</td></tr>";
 				}
 			}
 	
