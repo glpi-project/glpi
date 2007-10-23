@@ -173,18 +173,37 @@ function showConnections($target,$ID,$withtemplate='') {
 		if (count($items)){
 			echo "&nbsp;<div class='center'><table class='tab_cadre_fixe'>";
 	
-			echo "<tr><th colspan='".count($items)."'>".$LANG["connect"][0].":</th></tr>";
+			echo "<tr><th colspan='".max(2,count($items))."'>".$LANG["connect"][0].":</th></tr>";
 	
 			echo "<tr>";
-			foreach ($items as $type => $title)
+			$header_displayed=0;
+			foreach ($items as $type => $title){
+				if ($header_displayed==2){
+					break;
+				}
 				echo "<th>".$title.":</th>";
+				$header_displayed++;
+			}
 			echo "</tr>";
 	
 			echo "<tr class='tab_bg_1'>";
-	
-			foreach ($items as $type=>$title){	
+			$items_displayed=0;
+			foreach ($items as $type=>$title){
+				if ($items_displayed==2){
+					
+					echo "</tr><tr>";
+					$header_displayed=0;
+					foreach ($items as $type => $title){
+						if ($header_displayed>=2){
+							echo "<th>".$title.":</th>";
+						}
+						$header_displayed++;
+					}
+
+					echo "</tr><tr class='tab_bg_1'>";
+				}
 				echo "<td class='center'>";
-				$query = "SELECT * from glpi_connect_wire WHERE end2='$ID' AND type='".$type."'";
+				$query = "SELECT * FROM glpi_connect_wire WHERE end2='$ID' AND type='".$type."'";
 				if ($result=$DB->query($query)) {
 					$resultnum = $DB->numrows($result);
 					if ($resultnum>0) {
@@ -200,7 +219,9 @@ function showConnections($target,$ID,$withtemplate='') {
 							echo "</strong>";
 							echo " - ".getDropdownName("glpi_dropdown_state",$ci->getField('state'));
 	
-							echo "</td>";
+							echo "</td><td>".$ci->getField('serial');
+							echo "</td><td>".$ci->getField('otherserial');
+							echo "</td><td>";
 							if($canedit&&(empty($withtemplate) || $withtemplate != 2)) {
 								echo "<td class='center'><a 	href=\"".$CFG_GLPI["root_doc"]."/front/computer.form.php?cID=$ID&amp;ID=$connID&amp;disconnect=1&amp;withtemplate=".$withtemplate."\"><strong>";
 								echo $LANG["buttons"][10];
@@ -244,6 +265,7 @@ function showConnections($target,$ID,$withtemplate='') {
 					}
 				}
 				echo "</td>";
+				$items_displayed++;
 			}
 	
 			echo "</tr>";
