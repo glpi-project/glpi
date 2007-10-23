@@ -86,9 +86,10 @@ if ($_POST["onlyglobal"]&&$_POST["idtable"]!=COMPUTER_TYPE){
 }	
 
 $LEFTJOINCONNECT="";
-if ($_POST["idtable"]!=COMPUTER_TYPE&&!$_POST["onlyglobal"])		
-$LEFTJOINCONNECT="left join glpi_connect_wire on ($table.ID = glpi_connect_wire.end1 AND glpi_connect_wire.type = '".$_POST['idtable']."')";
-$query = "SELECT DISTINCT $table.ID as ID,$table.name as name,$table.serial as serial from $table $LEFTJOINCONNECT $CONNECT_SEARCH $where order by name ASC";
+if ($_POST["idtable"]!=COMPUTER_TYPE&&!$_POST["onlyglobal"]){
+	$LEFTJOINCONNECT="LEFT JOIN glpi_connect_wire on ($table.ID = glpi_connect_wire.end1 AND glpi_connect_wire.type = '".$_POST['idtable']."')";
+}
+$query = "SELECT DISTINCT $table.ID AS ID,$table.name AS name,$table.serial AS serial,$table.otherserial AS otherserial FROM $table $LEFTJOINCONNECT $CONNECT_SEARCH $where ORDER BY name ASC";
 
 
 
@@ -103,6 +104,7 @@ if ($DB->numrows($result)) {
 	while ($data = $DB->fetch_array($result)) {
 		$output = $data['name'];
 		if (!empty($data['serial'])) $output.=" - ".$data["serial"];
+		if (!empty($data['otherserial'])) $output.=" - ".$data["otherserial"];
 		$ID = $data['ID'];
 		if (empty($output)) $output="($ID)";
 
