@@ -166,8 +166,10 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="")
 			$menu['inventory']['content']['computer']['shortcut']='c';
 			$menu['inventory']['content']['computer']['page']='/front/computer.php';
 			$menu['inventory']['content']['computer']['links']['search']='/front/computer.php';
-			$menu['inventory']['content']['computer']['links']['add']='/front/setup.templates.php?type='.COMPUTER_TYPE.'&amp;add=1';
-			$menu['inventory']['content']['computer']['links']['template']='/front/setup.templates.php?type='.COMPUTER_TYPE.'&amp;add=0';
+			if (haveRight("computer","w")){
+				$menu['inventory']['content']['computer']['links']['add']='/front/setup.templates.php?type='.COMPUTER_TYPE.'&amp;add=1';
+				$menu['inventory']['content']['computer']['links']['template']='/front/setup.templates.php?type='.COMPUTER_TYPE.'&amp;add=0';
+			}
 			$showstate=true;
 		}
 		if (haveRight("monitor","r")){
@@ -175,8 +177,10 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="")
 			$menu['inventory']['content']['monitor']['shortcut']='m';
 			$menu['inventory']['content']['monitor']['page']='/front/monitor.php';
 			$menu['inventory']['content']['monitor']['links']['search']='/front/monitor.php';
-			$menu['inventory']['content']['monitor']['links']['add']='/front/setup.templates.php?type='.MONITOR_TYPE.'&amp;add=1';
-			$menu['inventory']['content']['monitor']['links']['template']='/front/setup.templates.php?type='.MONITOR_TYPE.'&amp;add=0';
+			if (haveRight("monitor","w")){
+				$menu['inventory']['content']['monitor']['links']['add']='/front/setup.templates.php?type='.MONITOR_TYPE.'&amp;add=1';
+				$menu['inventory']['content']['monitor']['links']['template']='/front/setup.templates.php?type='.MONITOR_TYPE.'&amp;add=0';
+			}
 
 			$showstate=true;
 		}
@@ -185,8 +189,10 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="")
 			$menu['inventory']['content']['software']['shortcut']='s';
 			$menu['inventory']['content']['software']['page']='/front/software.php';
 			$menu['inventory']['content']['software']['links']['search']='/front/software.php';
-			$menu['inventory']['content']['software']['links']['add']='/front/setup.templates.php?type='.SOFTWARE_TYPE.'&amp;add=1';
-			$menu['inventory']['content']['software']['links']['template']='/front/setup.templates.php?type='.SOFTWARE_TYPE.'&amp;add=0';
+			if (haveRight("software","w")){
+				$menu['inventory']['content']['software']['links']['add']='/front/setup.templates.php?type='.SOFTWARE_TYPE.'&amp;add=1';
+				$menu['inventory']['content']['software']['links']['template']='/front/setup.templates.php?type='.SOFTWARE_TYPE.'&amp;add=0';
+			}
 
 			$showstate=true;
 		}
@@ -195,8 +201,10 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="")
 			$menu['inventory']['content']['networking']['shortcut']='n';
 			$menu['inventory']['content']['networking']['page']='/front/networking.php';
 			$menu['inventory']['content']['networking']['links']['search']='/front/networking.php';
-			$menu['inventory']['content']['networking']['links']['add']='/front/setup.templates.php?type='.NETWORKING_TYPE.'&amp;add=1';
-			$menu['inventory']['content']['networking']['links']['template']='/front/setup.templates.php?type='.NETWORKING_TYPE.'&amp;add=0';
+			if (haveRight("networking","w")){
+				$menu['inventory']['content']['networking']['links']['add']='/front/setup.templates.php?type='.NETWORKING_TYPE.'&amp;add=1';
+				$menu['inventory']['content']['networking']['links']['template']='/front/setup.templates.php?type='.NETWORKING_TYPE.'&amp;add=0';
+			}
 			$showstate=true;
 		}
 		if (haveRight("peripheral","r")){
@@ -204,8 +212,10 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="")
 			$menu['inventory']['content']['peripheral']['shortcut']='n';
 			$menu['inventory']['content']['peripheral']['page']='/front/peripheral.php';
 			$menu['inventory']['content']['peripheral']['links']['search']='/front/peripheral.php';
-			$menu['inventory']['content']['peripheral']['links']['add']='/front/setup.templates.php?type='.PERIPHERAL_TYPE.'&amp;add=1';
-			$menu['inventory']['content']['peripheral']['links']['template']='/front/setup.templates.php?type='.PERIPHERAL_TYPE.'&amp;add=0';
+			if (haveRight("peripheral","w")){
+				$menu['inventory']['content']['peripheral']['links']['add']='/front/setup.templates.php?type='.PERIPHERAL_TYPE.'&amp;add=1';
+				$menu['inventory']['content']['peripheral']['links']['template']='/front/setup.templates.php?type='.PERIPHERAL_TYPE.'&amp;add=0';
+			}
 			$showstate=true;
 		}
 		if (haveRight("printer","r")){
@@ -213,8 +223,10 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="")
 			$menu['inventory']['content']['printer']['shortcut']='p';
 			$menu['inventory']['content']['printer']['page']='/front/printer.php';
 			$menu['inventory']['content']['printer']['links']['search']='/front/printer.php';
-			$menu['inventory']['content']['printer']['links']['add']='/front/setup.templates.php?type='.PRINTER_TYPE.'&amp;add=1';
-			$menu['inventory']['content']['printer']['links']['template']='/front/setup.templates.php?type='.PRINTER_TYPE.'&amp;add=0';
+			if (haveRight("printer","w")){
+				$menu['inventory']['content']['printer']['links']['add']='/front/setup.templates.php?type='.PRINTER_TYPE.'&amp;add=1';
+				$menu['inventory']['content']['printer']['links']['template']='/front/setup.templates.php?type='.PRINTER_TYPE.'&amp;add=0';
+			}
 			$showstate=true;
 		}
 		if (haveRight("cartridge","r")){
@@ -230,18 +242,21 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="")
 			$menu['inventory']['content']['consumable']['title']=$LANG["Menu"][32];
 			$menu['inventory']['content']['consumable']['shortcut']='g';
 			$menu['inventory']['content']['consumable']['page']='/front/consumable.php';
+			$menu['inventory']['content']['consumable']['links']['search']='/front/consumable.php';
 			if (haveRight("consumable","w")){
 				$menu['inventory']['content']['consumable']['links']['add']='/front/consumable.form.php';
-				$menu['inventory']['content']['consumable']['links']['summary']='/front/consumable.php?synthese=yes';
 			}
+			$menu['inventory']['content']['consumable']['links']['summary']='/front/consumable.php?synthese=yes';
 		}
 		if (haveRight("phone","r")){
 			$menu['inventory']['content']['phone']['title']=$LANG["Menu"][34];
 			$menu['inventory']['content']['phone']['shortcut']='t';
 			$menu['inventory']['content']['phone']['page']='/front/phone.php';
 			$menu['inventory']['content']['phone']['links']['search']='/front/phone.php';
-			$menu['inventory']['content']['phone']['links']['add']='/front/setup.templates.php?type='.PHONE_TYPE.'&amp;add=1';
-			$menu['inventory']['content']['phone']['links']['template']='/front/setup.templates.php?type='.PHONE_TYPE.'&amp;add=0';
+			if (haveRight("phone","w")){
+				$menu['inventory']['content']['phone']['links']['add']='/front/setup.templates.php?type='.PHONE_TYPE.'&amp;add=1';
+				$menu['inventory']['content']['phone']['links']['template']='/front/setup.templates.php?type='.PHONE_TYPE.'&amp;add=0';
+			}
 			$showstate=true;
 		}
 		if ($showstate){
