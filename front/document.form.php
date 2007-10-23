@@ -111,6 +111,15 @@ else if (isset($_POST["deleteitem"])){
 		}
 	}
 
+	logEvent($_POST["conID"], "documents", 4, "document", $_SESSION["glpiname"]." ".$LANG["log"][33]);
+	glpi_header($_SERVER['HTTP_REFERER']);
+}
+else if (isset($_GET["deleteitem"])){
+
+	checkRight("document","w");
+	
+	deleteDeviceDocument($_GET["ID"]);
+
 	logEvent($_GET["ID"], "documents", 4, "document", $_SESSION["glpiname"]." ".$LANG["log"][33]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
