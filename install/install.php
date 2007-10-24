@@ -47,6 +47,7 @@ setGlpiSessionPath();
 cleanCache();
 
 $CFG_GLPI["debug"]=DEBUG_MODE;
+$CFG_GLPI["debug_sql"]=$CFG_GLPI["debug_vars"]=$CFG_GLPI["debug_profile"]=$CFG_GLPI["debug_lang"]=0;
 //Print a correct  Html header for application
 function header_html($etape)
 {
