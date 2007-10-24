@@ -53,6 +53,7 @@ cleanCache();
 
 // Init debug variable
 $CFG_GLPI["debug"]=DEBUG_MODE;
+$CFG_GLPI["debug_sql"]=$CFG_GLPI["debug_vars"]=$CFG_GLPI["debug_profile"]=$CFG_GLPI["debug_lang"]=0;
 
 $DB=new DB();
 
