@@ -2163,10 +2163,24 @@ function ocsUpdateDevices($device_type, $glpi_id, $ocs_id, $ocs_server_id, $cfg_
 function ocsAddDevice($device_type, $dev_array) {
 
 	global $DB;
+	$table = getDeviceTable($device_type);
+	
 	$query = "SELECT * 
-				FROM " . getDeviceTable($device_type) . " 
+				FROM " . $table . " 
 				WHERE designation='" . $dev_array["designation"] . "'";
+
+	switch ($table)
+	{
+		//For network interfaces, check designation AND speed
+		case "glpi_device_iface":
+			$query.=" AND bandwith=".$dev_array["SPEED"];
+		break;
+		default:
+		break;	
+	}
+
 	$result = $DB->query($query);
+	
 	if ($DB->numrows($result) == 0) {
 		$dev = new Device($device_type);
 		$input = array ();
