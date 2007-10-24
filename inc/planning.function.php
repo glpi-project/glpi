@@ -592,7 +592,7 @@ function showPlanningCentral($who){
 	$end=date("Y-m-d H:i:s",$end);
 
 
-	$data=doHookFunction("planning_populate",array("begin"=>$begin,"end"=>$end,"who"=>$who));
+	$data=doHookFunction("planning_populate",array("begin"=>$begin,"end"=>$end,"who"=>$who,"who_group"=>-1));
 
 	if (isset($data["items"])&&count($data["items"])){
 		$interv=array_merge($data["items"],$interv);
