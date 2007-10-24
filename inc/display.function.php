@@ -2078,7 +2078,7 @@ function showCentralMyView(){
 		echo "</table></td><td class='top'><table><tr>";
 	
 		echo "<td class='top'  width='450px'><br>";
-		ShowPlanningCentral($_SESSION["glpiID"]);
+		showPlanningCentral($_SESSION["glpiID"]);
 		echo "</td></tr>";
 		echo "<tr>";
 	
