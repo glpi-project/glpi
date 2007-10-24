@@ -156,6 +156,28 @@ function update0681to07() {
 		$DB->query($query) or die("0.7 create glpi_entities_data " . $LANG["update"][90] . $DB->error());
 	}
 
+	// Add default profile to all users without any profile
+	$query="SELECT ID FROM glpi_profiles WHERE is_default='1'";
+	if ($result=$DB->query($query)){
+		if ($DB->numrows($result)>0){
+			$IDprof=$DB->result($result,0,0);
+			$query="SELECT glpi_users.ID 
+				FROM glpi_users LEFT JOIN glpi_users_profiles ON (glpi_users_profiles.FK_users = glpi_users.ID )
+				WHERE glpi_users_profiles.ID IS NULL";
+			if ($result=$DB->query($query)){
+				if ($DB->numrows($result)>0){
+					while ($data=$DB->fetch_assoc($result)){
+						$query="INSERT INTO glpi_users_profiles (`FK_users` ,`FK_profiles`) VALUES ('".$data['ID']."','$IDprof') ";
+						$DB->query($query);
+					}
+				}
+			}
+			
+		}
+	}
+
+
+
 	if (!FieldExists("glpi_users_profiles", "FK_entities")) {
 		// Clean Datas
 		$query = "DELETE FROM glpi_users_profiles WHERE FK_users='0'";
