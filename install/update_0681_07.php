@@ -619,10 +619,7 @@ function update0681to07() {
 		"glpi_monitors",
 		"glpi_peripherals",
 		"glpi_software",
-
 		"glpi_phones",
-		"state_types",
-		"reservation_types",
 		"glpi_ocs_config"
 	);
 
