@@ -509,7 +509,7 @@ function display_time($time){
 }
 
 
-function ShowPlanningCentral($who){
+function showPlanningCentral($who){
 
 	global $DB,$CFG_GLPI,$LANG;
 
@@ -539,12 +539,19 @@ function ShowPlanningCentral($who){
 		while ($data=$DB->fetch_array($result)){
 			if ($fup->getFromDB($data["id_followup"])){
 				if ($job->getFromDBwithData($fup->fields["tracking"],0)){
-					$interv[$data["begin"]."$$".$i]["id_tracking"]=$fup->fields["tracking"];
-					$interv[$data["begin"]."$$".$i]["begin"]=$data["begin"];
-					$interv[$data["begin"]."$$".$i]["end"]=$data["end"];
-					$interv[$data["begin"]."$$".$i]["content"]=resume_text($job->fields["contents"],$CFG_GLPI["cut"]);
-					$interv[$data["begin"]."$$".$i]["device"]=$job->hardwaredatas->getName();
-					$i++;
+					if (haveAccessToEntity($job->fields["FK_entities"])){
+						$interv[$data["begin"]."$$".$i]["id_tracking"]=$fup->fields["tracking"];
+						$interv[$data["begin"]."$$".$i]["begin"]=$data["begin"];
+						$interv[$data["begin"]."$$".$i]["end"]=$data["end"];
+						$interv[$data["begin"]."$$".$i]["state"]=$data["state"];
+						$interv[$data["begin"]."$$".$i]["content"]=resume_text($job->fields["contents"],$CFG_GLPI["cut"]);
+						$interv[$data["begin"]."$$".$i]["device"]=$job->hardwaredatas->getName();
+						$interv[$data["begin"]."$$".$i]["status"]=$job->fields['status'];
+						$interv[$data["begin"]."$$".$i]["ID"]=$job->fields['ID'];
+						$interv[$data["begin"]."$$".$i]["name"]=$job->fields['name'];
+						$interv[$data["begin"]."$$".$i]["priority"]=$job->fields['priority'];
+						$i++;
+					}
 				}
 			}
 		}
@@ -568,12 +575,28 @@ function ShowPlanningCentral($who){
 				$interv[$data["begin"]."$$".$i]["id_reminder"]=$remind->fields["ID"];
 				$interv[$data["begin"]."$$".$i]["begin"]=$data["begin"];
 				$interv[$data["begin"]."$$".$i]["end"]=$data["end"];
+				$interv[$data["begin"]."$$".$i]["type"]=$remind->fields["type"];
+				$interv[$data["begin"]."$$".$i]["state"]=$remind->fields["state"];
 				$interv[$data["begin"]."$$".$i]["title"]=resume_text($remind->fields["title"],$CFG_GLPI["cut"]);
 				$interv[$data["begin"]."$$".$i]["text"]=resume_text($remind->fields["text"],$CFG_GLPI["cut"]);
 				$i++;
 			}
 		}
 
+	// Get begin and duration
+	$date=split("-",$when);
+	$time=mktime(0,0,0,$date[1],$date[2],$date[0]);
+	$begin=$time;
+	$end=$begin+DAY_TIMESTAMP;
+	$begin=date("Y-m-d H:i:s",$begin);
+	$end=date("Y-m-d H:i:s",$end);
+
+
+	$data=doHookFunction("planning_populate",array("begin"=>$begin,"end"=>$end,"who"=>$who));
+
+	if (isset($data["items"])&&count($data["items"])){
+		$interv=array_merge($data["items"],$interv);
+	}
 
 
 	ksort($interv);
@@ -588,14 +611,9 @@ function ShowPlanningCentral($who){
 			echo "</td>";
 			echo "<td>";
 			echo date("H:i",strtotime($val["end"]));
-			echo "</td>";
-			if(isset($val["id_tracking"])){
-				echo "<td>".$val["device"]."<a href='".$CFG_GLPI["root_doc"]."/front/tracking.form.php?ID=".$val["id_tracking"]."'>";
-				echo " ".resume_text($val["content"],65)."</a>";
-			}else{
-				echo "<td><a href='".$CFG_GLPI["root_doc"]."/front/reminder.form.php?ID=".$val["id_reminder"]."'>".$val["title"]."";
-				echo "</a>: ".resume_text($val["text"],65);
-			}
+			echo "</td><td>";
+
+			displayPlanningItem($val,$who,'in');
 
 			echo "</td></tr>";
 
@@ -772,6 +790,14 @@ function generateIcal($who){
 	$event="";
 	$fincal="";
 
+	$data=doHookFunction("planning_populate",array("begin"=>$begin,"end"=>$end,"who"=>$who));
+
+	if (isset($data["items"])&&count($data["items"])){
+		$interv=array_merge($data["items"],$interv);
+	}
+
+
+
 	ksort($interv);
 
 	if (count($interv)>0) {
@@ -784,9 +810,11 @@ function generateIcal($who){
 
 			if(isset($val["id_tracking"])){
 				$event.="UID:Job#".$val["id_tracking"]."\n";
-			}else{
+			}else if (isset($val["id_reminder"])){
 				$event.="UID:Event#".$val["id_reminder"]."\n";
-			}		
+			} else {
+				$event.="UID:Plugin#".$key."\n";
+			}	
 
 			$event.="DTSTAMP:".date_ical($val["begin"])."\n";
 
@@ -796,11 +824,13 @@ function generateIcal($who){
 
 			if(isset($val["id_tracking"])){
 				$event .= "SUMMARY:".$LANG["planning"][8]." # ".$val["id_tracking"]." ".$LANG["planning"][10]." # ".$val["device"]."\n";
-			}else{
+			}else if (isset($val["title"])){
 				$event .= "SUMMARY:".$val["title"]."\n";
 			}
 
-			$event .= "DESCRIPTION:".$val["content"]."\n";
+			if (isset($val["content"])){
+				$event .= "DESCRIPTION:".$val["content"]."\n";
+			}
 
 			//todo recup la cat�orie d'intervention.
 			//$event .= "CATEGORIES:".$val["categorie"]."\n";
