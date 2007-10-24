@@ -535,11 +535,13 @@ function showPlanningCentral($who){
 
 	$interv=array();
 	$i=0;
+
 	if ($DB->numrows($result)>0)
 		while ($data=$DB->fetch_array($result)){
 			if ($fup->getFromDB($data["id_followup"])){
 				if ($job->getFromDBwithData($fup->fields["tracking"],0)){
 					if (haveAccessToEntity($job->fields["FK_entities"])){
+						$interv[$data["begin"]."$$".$i]["id_followup"]=$data["id_followup"];
 						$interv[$data["begin"]."$$".$i]["id_tracking"]=$fup->fields["tracking"];
 						$interv[$data["begin"]."$$".$i]["begin"]=$data["begin"];
 						$interv[$data["begin"]."$$".$i]["end"]=$data["end"];
@@ -547,6 +549,7 @@ function showPlanningCentral($who){
 						$interv[$data["begin"]."$$".$i]["content"]=resume_text($job->fields["contents"],$CFG_GLPI["cut"]);
 						$interv[$data["begin"]."$$".$i]["device"]=$job->hardwaredatas->getName();
 						$interv[$data["begin"]."$$".$i]["status"]=$job->fields['status'];
+						$interv[$data["begin"]."$$".$i]["id_assign"]=$data["id_assign"];
 						$interv[$data["begin"]."$$".$i]["ID"]=$job->fields['ID'];
 						$interv[$data["begin"]."$$".$i]["name"]=$job->fields['name'];
 						$interv[$data["begin"]."$$".$i]["priority"]=$job->fields['priority'];
@@ -569,14 +572,16 @@ function showPlanningCentral($who){
 	$remind=new Reminder();
 
 	$i=0;
+
 	if ($DB->numrows($result2)>0)
 		while ($data=$DB->fetch_array($result2)){
 			if ($remind->getFromDB($data["ID"])){
-				$interv[$data["begin"]."$$".$i]["id_reminder"]=$remind->fields["ID"];
+				$interv[$data["begin"]."$$".$i]["id_reminder"]=$data["ID"];
 				$interv[$data["begin"]."$$".$i]["begin"]=$data["begin"];
 				$interv[$data["begin"]."$$".$i]["end"]=$data["end"];
-				$interv[$data["begin"]."$$".$i]["type"]=$remind->fields["type"];
-				$interv[$data["begin"]."$$".$i]["state"]=$remind->fields["state"];
+				$interv[$data["begin"]."$$".$i]["type"]=$data["type"];
+				$interv[$data["begin"]."$$".$i]["state"]=$data["state"];
+				$interv[$data["begin"]."$$".$i]["author"]=$data["author"];
 				$interv[$data["begin"]."$$".$i]["title"]=resume_text($remind->fields["title"],$CFG_GLPI["cut"]);
 				$interv[$data["begin"]."$$".$i]["text"]=resume_text($remind->fields["text"],$CFG_GLPI["cut"]);
 				$i++;
