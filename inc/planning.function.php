@@ -601,17 +601,12 @@ function showPlanningCentral($who){
 
 	ksort($interv);
 
-	echo "<table class='tab_cadrehov'><tr><th colspan='3'><a href='".$CFG_GLPI["root_doc"]."/front/planning.php'>".$LANG["planning"][15]."</a></th></tr><tr><th>".$LANG["buttons"][33]."</th><th>".$LANG["buttons"][32]."</th><th>".$LANG["joblist"][6]."</th></tr>";
+	echo "<table class='tab_cadrehov'><tr><th><a href='".$CFG_GLPI["root_doc"]."/front/planning.php'>".$LANG["planning"][15]."</a></th></tr>";
 	if (count($interv)>0){
 		foreach ($interv as $key => $val){
 
 			echo "<tr class='tab_bg_1'>";
 			echo "<td>";		
-			echo date("H:i",strtotime($val["begin"]));
-			echo "</td>";
-			echo "<td>";
-			echo date("H:i",strtotime($val["end"]));
-			echo "</td><td>";
 
 			displayPlanningItem($val,$who,'in');
 
