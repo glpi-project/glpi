@@ -1080,11 +1080,11 @@ function dropdownDocument($myname,$entity_restrict=-1) {
 
 	$rand=mt_rand();
 
-	$where="";
+	$where=" WHERE glpi_docs.deleted='0' ";
 	if ($entity_restrict>=0){
-		$where=" WHERE FK_entities='".$entity_restrict."'";
+		$where.=" AND FK_entities='".$entity_restrict."' ";
 	} else {
-		$where.=getEntitiesRestrictRequest(" WHERE ","glpi_docs");
+		$where.=getEntitiesRestrictRequest("AND","glpi_docs");
 	}
 
 
