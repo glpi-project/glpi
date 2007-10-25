@@ -104,7 +104,9 @@
 			exit();
 		}
 
-
+		if (!isset($CFG_GLPI["use_cache"])){
+			$CFG_GLPI["use_cache"]=0;
+		}
 		$cache_options = array(
 			'cacheDir' => GLPI_CACHE_DIR,
 			'lifeTime' => DEFAULT_CACHE_LIFETIME,
