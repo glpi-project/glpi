@@ -745,7 +745,7 @@ function getMachinesAlreadyInGLPI($ocs_id,$ocs_server_id,$entity)
 		if ($conf["link_if_status"] > 0)
 			$sql_and .= " AND glpi_computers.state=".$conf["link_if_status"];
 		
-		$sql_glpi = "SELECT glpi_computers.ID FROM glpi_computers ".$sql_from." WHERE FK_entities=".$entity.$sql_and;
+		$sql_glpi = "SELECT glpi_computers.ID FROM glpi_computers ".$sql_from." WHERE FK_entities=".$entity.$sql_and. " AND is_template=0";
 		$result_glpi = $DB->query($sql_glpi);
 		if ($DB->numrows($result_glpi) > 0)
 			return $DB->result($result_glpi,0,"ID");
