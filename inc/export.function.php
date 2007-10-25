@@ -411,21 +411,23 @@ function sylk_clean($value){
 function html_clean($value){
 
 	$search=array(
-			"/<a[^>]+>/",
-			"/<img[^>]+>/",
-			"/<span[^>]+>/",
-			"/<\/span>/",
-			"/<\/a>/",
-			"/<strong>/",
-			"/<\/strong>/",
-			"/<small>/",
-			"/<\/small>/",
-			"/<i>/",
-			"/<\/i>/",
-			"/<br>/",
-			"/<br \/>/",
+			"/<a[^>]+>/i",
+			"/<img[^>]+>/i",
+			"/<span[^>]+>/i",
+			"/<\/span>/i",
+			"/<\/a>/i",
+			"/<strong>/i",
+			"/<\/strong>/i",
+			"/<small>/i",
+			"/<\/small>/i",
+			"/<i>/i",
+			"/<\/i>/i",
+			"/<br>/i",
+			"/<br \/>/i",
 			"/&nbsp;;/",
 			"/&nbsp;/",
+			"/<p>/i",
+			"/<\/p>/i",
 		     );
 	$replace=array(
 			"",
@@ -443,6 +445,8 @@ function html_clean($value){
 			"",
 			" ",
 			" ",
+			"",
+			"",
 		      );
 	
 	$value=preg_replace($search,$replace,$value);
