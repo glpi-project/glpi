@@ -491,7 +491,7 @@ class User extends CommonDBTM {
 							
 			$sr = @ ldap_read($ds, $userdn, "objectClass=*", $f);
 			$v = ldap_get_entries($ds, $sr);
-		
+			
 			if (!is_array($v) || count($v) == 0 || empty ($v[0][$fields['name']][0]))
 				return false;
 
@@ -546,13 +546,20 @@ class User extends CommonDBTM {
 
 			}
 
+			//Try to find is DN in present: if yes, then extract only the OU from it
+			for ($i=0;$i<count($v['count']);$i++) 
+              	if (array_key_exists('dn',$v[$i]) ) {
+	                 list($null,$ou) = explode(",",$v[$i]['dn'],2);
+                     $v[$i]['dn'] = array( $ou );
+            }
+			
 			if (is_array($v) && count($v) > 0) {
 				foreach ($v as $attribute => $valattribute) {
 					if (is_array($valattribute))
 						foreach ($valattribute as $key => $val) {
 							if (is_array($val))
 								for ($i = 0; $i < count($val); $i++) {
-									if (isset ($val[$i]))
+									 if (isset ($val[$i]))
 										if ($group_found = array_search($val[$i], $groups[$key])) {
 											$this->fields["_groups"][] = $group_found;
 										}
