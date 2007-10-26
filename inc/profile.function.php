@@ -92,8 +92,9 @@ function showProfileEntityUser($target,$ID,$prof){
 	 	
  	echo "<div class='center'>";
 	echo "<table class='tab_cadre_fixe'><tr>";
-	echo "<th>".$LANG["profiles"][22]." :&nbsp;&nbsp;&nbsp;&nbsp;".$prof->fields["name"]."</th>";
- 	echo "</tr></table>";
+	echo "<th>".$LANG["profiles"][22]." :&nbsp;&nbsp;&nbsp;&nbsp;".$prof->fields["name"]."</th></tr>";
+	echo "<tr><th colspan='2'>".$LANG["Menu"][14]." (D=".$LANG["profiles"][29].", R=".$LANG["profiles"][28].")</th></tr>";
+ 	echo "</table>";
 	echo "</div>";
   	
 	if (!$show){
