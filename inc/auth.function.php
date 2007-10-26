@@ -615,6 +615,11 @@ function changeActiveEntities($ID="all",$recursive=false) {
 		if ($ID=="all"){
 			$_SESSION["glpiactive_entity_name"] .= " (".$LANG["buttons"][40].")";
 		}
+		if (countElementsInTable('glpi_entities')<count($_SESSION['glpiactiveentities'])){
+			$_SESSION['glpishowallentities']=1;
+		} else {
+			$_SESSION['glpishowallentities']=0;
+		}
 		loadGroups();
 		doHook("change_entity");
 		cleanCache("GLPI_HEADER_".$_SESSION["glpiID"]);
@@ -684,6 +689,9 @@ function getEntitiesRestrictRequest($separator = "AND", $table = "", $field = ""
 
 	$query = $separator ." ";
 
+	if (isset($_SESSION['glpishowallentities'])&&$_SESSION['glpishowallentities']){
+		return $query." '1'='1' ";
+	}
 
 	if (!empty ($table)) {
 		$query .= $table . ".";
