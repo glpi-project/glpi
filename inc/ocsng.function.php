@@ -1242,7 +1242,7 @@ function cron_ocsng() {
 		}
 
 		$query_ocs = "SELECT * FROM hardware 
-			WHERE (CHECKSUM & " . $cfg_ocs["checksum"] . ") > 0 OR LASTDATE > '$max_date' LIMIT ".$cfg_ocs["cron_sync_number"];
+			WHERE (CHECKSUM & " . $cfg_ocs["checksum"] . ") > 0 OR LASTDATE > '$max_date' ORDER BY LASTDATE ASC LIMIT ".$cfg_ocs["cron_sync_number"];
 		
 		$result_ocs = $DBocs->query($query_ocs);
 		if ($DBocs->numrows($result_ocs) > 0) {
