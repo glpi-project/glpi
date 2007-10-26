@@ -785,11 +785,11 @@ function ocsUpdateComputer($ID, $ocs_server_id, $dohistory, $force = 0) {
 			$dohistory = 2;
 		}
 		if ($DBocs->numrows($result_ocs) == 1) {
-			$data_ocs = $DBocs->fetch_array($result_ocs);
+			$data_ocs = addslashes_deep($DBocs->fetch_array($result_ocs));
 
 			// update last_update and and last_ocs_update
 			$query = "UPDATE glpi_ocs_link 
-					SET last_update='" . $_SESSION["glpi_currenttime"] . "', last_ocs_update='" . $data_ocs["LASTCOME"] . "' 
+					SET last_update='" . $_SESSION["glpi_currenttime"] . "', last_ocs_update='" . $data_ocs["LASTDATE"] . "' 
 					, ocs_agent_version='".$data_ocs["USERAGENT"]." ' WHERE ID='$ID'";
 			$DB->query($query);
 
@@ -1233,9 +1233,8 @@ function cron_ocsng() {
 
 		ocsManageDeleted($ocs_server_id);
 
-		$query_ocs = "SELECT * 
-						FROM hardware 
-						WHERE (CHECKSUM & " . $cfg_ocs["checksum"] . ") > 0";
+		$query_ocs = "SELECT * FROM hardware 
+			WHERE (CHECKSUM & " . $cfg_ocs["checksum"] . ") > 0";
 		$result_ocs = $DBocs->query($query_ocs);
 		$done=0;
 		if ($DBocs->numrows($result_ocs) > 0) {
@@ -1254,6 +1253,58 @@ function cron_ocsng() {
 	}
 	return 1;
 }
+
+// Update OCS last date
+function cron_ocsng2() {
+
+	global $DB, $CFG_GLPI;
+
+	//Get a randon server id
+	$ocs_server_id = getRandomOCSServerID();
+	if ($ocs_server_id > 0) {
+		//Initialize the server connection
+		$DBocs = getDBocs($ocs_server_id);
+
+		$cfg_ocs = getOcsConf($ocs_server_id);
+		if ($CFG_GLPI["use_errorlog"]) {
+			logInFile("cron", "Check last ocs inventory from server " . $cfg_ocs['name'] . "\n");
+		}
+
+		if (!$cfg_ocs["cron_sync_number"]){
+			return 0;
+		}
+
+		$nbservers=countElementsInTable("glpi_ocs_config");
+
+		// Default Cheksum (complely update item) and LASTDATE more than 5*day*nbservers
+		$query_ocs = "SELECT * FROM hardware 
+				WHERE ( CHECKSUM & ".$cfg_ocs["checksum"].") = 0 AND DATE_ADD(LASTDATE, INTERVAL ".(5*$nbservers)." DAY) > NOW()";
+
+		$result_ocs = $DBocs->query($query_ocs);
+		if ($DBocs->numrows($result_ocs) > 0) {
+			while ( $data_ocs = $DBocs->fetch_array($result_ocs)) {
+				$data_ocs=addslashes_deep($data_ocs);
+				$query = "SELECT * 
+					FROM glpi_ocs_link 
+					WHERE ocs_id='".$data_ocs['ID']."' and ocs_server_id=" . $ocs_server_id;
+
+				if ($result=$DB->query($query)){
+					if ($DB->numrows($result)>0){
+						$data=$DB->fetch_array($result);
+						if ($data['last_ocs_update']!=$data_ocs["LASTDATE"]){
+							$query = "UPDATE glpi_ocs_link 
+								SET last_update='" . $_SESSION["glpi_currenttime"] . "', last_ocs_update='" . $data_ocs["LASTDATE"] . "', ocs_agent_version='".$data_ocs["USERAGENT"]." ' 
+								WHERE ID='".$data['ID']."'";
+							$DB->query($query);
+						}
+					}
+				}
+			}
+		}
+	}
+	return 1;
+}
+
 
 function ocsShowUpdateComputer($ocs_server_id, $check, $start) {
 	global $DB, $DBocs, $LANG, $CFG_GLPI;

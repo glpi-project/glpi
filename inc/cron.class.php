@@ -109,6 +109,7 @@ class Cron {
 			if ($CFG_GLPI["ocs_mode"]){
 				// Every 5 mns
 				$this->taches["ocsng"]=300;
+				$this->taches["ocsng2"]=DAY_TIMESTAMP;
 			}
 			// Mailing alerts if mailing activated
 			if ($CFG_GLPI["mailing"]){
