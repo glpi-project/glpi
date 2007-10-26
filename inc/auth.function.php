@@ -689,9 +689,14 @@ function getEntitiesRestrictRequest($separator = "AND", $table = "", $field = ""
 
 	$query = $separator ." ";
 
-	if (isset($_SESSION['glpishowallentities'])&&$_SESSION['glpishowallentities']){
+	if (empty($value)&&isset($_SESSION['glpishowallentities'])&&$_SESSION['glpishowallentities']){
 		return $query." '1'='1' ";
 	}
+
+	if (!is_array($value)&&strlen($value)==0){
+		$value=$_SESSION['glpiactiveentities'];
+	}
+
 
 	if (!empty ($table)) {
 		$query .= $table . ".";
@@ -703,9 +708,6 @@ function getEntitiesRestrictRequest($separator = "AND", $table = "", $field = ""
 		$query .= "FK_entities";
 	}
 	
-	if (!is_array($value)&&strlen($value)==0){
-		$value=$_SESSION['glpiactiveentities'];
-	}
 
 	if (is_array($value)){
 		$query.=" IN (";
