@@ -289,10 +289,10 @@ function showKbItemList($target,$field,$phrasetype,$contains,$sort,$order,$start
 				echo displaySearchNewLine($output_type,$i%2);
 
 				if ($output_type==HTML_OUTPUT){
-					echo displaySearchItem($output_type,"<div class='left'><a ".($data['faq']?" class='pubfaq' ":" class='knowbase' ")." href=\"".$target."?ID=".$data["ID"]."\">".resume_text($data["question"],80)."</a></div><div class='kb_resume'>".resume_text(html_clean(unclean_cross_side_scripting_deep($data["answer"])),600)."</div>",$item_num,$row_num);
+					echo displaySearchItem($output_type,"<div class='left'><a ".($data['faq']?" class='pubfaq' ":" class='knowbase' ")." href=\"".$target."?ID=".$data["ID"]."\">".resume_text($data["question"],80)."</a></div><div class='kb_resume'>".resume_text(textBrut(unclean_cross_side_scripting_deep($data["answer"])),600)."</div>",$item_num,$row_num);
 				} else {
 					echo displaySearchItem($output_type,$data["question"],$item_num,$row_num);
-					echo displaySearchItem($output_type,html_entity_decode(textBrut(unclean_cross_side_scripting_deep($data["answer"]))),$item_num,$row_num);
+					echo displaySearchItem($output_type,html_entity_decode(html_clean(unclean_cross_side_scripting_deep($data["answer"]))),$item_num,$row_num);
 				}
 				// le cumul de fonction me plait pas TODO à optimiser.
 				
