@@ -546,12 +546,19 @@ class User extends CommonDBTM {
 
 			}
 
-			//Try to find is DN in present: if yes, then extract only the OU from it
-			for ($i=0;$i<count($v['count']);$i++) 
-              	if (array_key_exists('dn',$v[$i]) ) {
-	                 list($null,$ou) = explode(",",$v[$i]['dn'],2);
-                     $v[$i]['dn'] = array( $ou );
-            }
+			if ($ldap_method["ldap_field_group"] == "dn")
+			{
+				for ($i=0;$i<count($v['count']);$i++) 
+				{
+					//Try to find is DN in present: if yes, then extract only the OU from it
+			        if (array_key_exists($ldap_method["ldap_field_group"],$v[$i]))
+			        {
+			         	list($null,$ou) = explode(",",$v[$i][$ldap_method["ldap_field_group"]],2);
+		                $v[$i]['ou'] = array( $ou );
+		                $v[$i]['count'] = 1;
+			        }
+				}
+			}
 			
 			if (is_array($v) && count($v) > 0) {
 				foreach ($v as $attribute => $valattribute) {
