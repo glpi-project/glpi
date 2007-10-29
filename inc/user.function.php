@@ -289,9 +289,9 @@ function showUserRights($target,$ID){
 	}
 
 	$canshowentity=haveRight("entity","r");
-	$headerspan=1;
+	$headerspan=2;
 	if ($canedit) {
-		$headerspan=2;
+		$headerspan=3;
 	}
 	echo "<form name='entityuser_form' id='entityuser_form' method='post' action=\"$target\">";
 
@@ -317,7 +317,7 @@ function showUserRights($target,$ID){
 		echo "</table></div><br>";
 	}
 
-	echo "<div class='center'><table class='tab_cadrehov'><tr><th colspan='$headerspan'>".$LANG["Menu"][37]."</th><th>".$LANG["profiles"][22]." (D=".$LANG["profiles"][29].", R=".$LANG["profiles"][28].")</th></tr>";
+	echo "<div class='center'><table class='tab_cadrehov'><tr><th colspan='2'>".$LANG["Menu"][37]."</th><th>".$LANG["profiles"][22]." (D=".$LANG["profiles"][29].", R=".$LANG["profiles"][28].")</th></tr>";
 
 	$query="SELECT DISTINCT glpi_users_profiles.ID as linkID, glpi_profiles.ID, glpi_profiles.name, glpi_users_profiles.recursive,
 			glpi_users_profiles.dynamic, glpi_entities.completename, glpi_users_profiles.FK_entities
