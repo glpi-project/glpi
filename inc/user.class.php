@@ -736,12 +736,12 @@ class User extends CommonDBTM {
 		
 			$this->showOnglets($ID, $withtemplate, $_SESSION['glpi_onglet']);
 			echo "<div class='center'>";
-			echo "<form method='post' name=\"user_manager\" action=\"$target\"><table class='tab_cadre_fixe'>";
+			echo "<form method='post' name=\"user_manager\" action=\"$target\">";
 			if (empty ($ID)) {
 				echo "<input type='hidden' name='FK_entities' value='" . $_SESSION["glpiactive_entity"] . "'>";
 				echo "<input type='hidden' name='auth_method' value='1'>";
 			}
-
+			echo "<table class='tab_cadre_fixe'>";
 			echo "<tr><th colspan='4'>" . $LANG["setup"][57] . " : " . $this->fields["name"] . "&nbsp;";
 			echo "<a href='" . $CFG_GLPI["root_doc"] . "/front/user.vcard.php?ID=$ID'>" . $LANG["common"][46] . "</a>";
 			echo "</th></tr>";
@@ -769,7 +769,7 @@ class User extends CommonDBTM {
 			//do some rights verification
 			if (haveRight("user", "w")) {
 				if ( !$extauth || empty($ID)) {
-					echo "<td class='center'>" . $LANG["setup"][19] . ":</td><td><input type='password' name='password' value='' size='20' /></td></tr>";
+					echo "<td class='center'>" . $LANG["setup"][19] . ":</td><td><input type='password' name='password' value='' size='20'></td></tr>";
 				} else {
 					echo "<td colspan='2'>&nbsp;</td></tr>";
 				}
@@ -808,9 +808,13 @@ class User extends CommonDBTM {
 					} else {
 						echo "&nbsp;";
 					}
-				} else if (!isMultiEntitiesMode()){
-					// Display all locations : only one entity
-					dropdownValue("glpi_dropdown_locations", "location", $this->fields["location"],1);
+				} else {
+					if (!isMultiEntitiesMode()){
+						// Display all locations : only one entity
+						dropdownValue("glpi_dropdown_locations", "location", $this->fields["location"],1);
+					} else {
+						echo "&nbsp;";
+					}
 				}
 				echo "</td>";
 				echo "<td class='center'>".$LANG["common"][60]."</td><td>";
