@@ -86,10 +86,7 @@ else
 
 	echo nl2br(unclean_cross_side_scripting_deep($CFG_GLPI['text_login']));
 
-	// Affichage autorisee FAQ
-	if ($CFG_GLPI["public_faq"]){
-		echo '<ul><li><a href="front/helpdesk.faq.php">'.$LANG["knowbase"][24].'</a></li></ul>';
-	}
+	
 	echo "</div>";
 
 
@@ -131,6 +128,8 @@ else
 
 	echo "</div>";  // fin box login
 
+
+
 	echo '<div class="error">';
 	echo "<noscript><p>";
 	echo $LANG["login"][26];
@@ -140,6 +139,11 @@ else
 	}
 	echo "</div>";
 
+
+	// Affichage autorisee FAQ
+	if ($CFG_GLPI["public_faq"]){
+		echo '<div id="box-faq" "><a href="front/helpdesk.faq.php">[ '.$LANG["knowbase"][24].' ]</a></div>';
+	}
 	
 
 	echo "</div>"; // fin contenu login
