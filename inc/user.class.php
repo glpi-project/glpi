@@ -179,6 +179,11 @@ class User extends CommonDBTM {
 		if (!isset($input["deleted"])){
 			$input["deleted"]=0;
 		}
+
+		if (!isset($input["auth_method"])){
+			$input["auth_method"]=-1;
+		}
+
 		if (!isset($input["list_limit"])){
 			$input["list_limit"]=$CFG_GLPI["list_limit"];
 		}		
