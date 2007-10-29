@@ -55,10 +55,7 @@ function showCartridgesAdd($ID) {
 
 	echo "<form method='post'  action=\"".$CFG_GLPI["root_doc"]."/front/cartridge.edit.php\">";
 	echo "<div class='center'>&nbsp;<table class='tab_cadre_fixe' cellpadding='2'>";
-	echo "<tr><td align='center' class='tab_bg_2'><strong>";
-	echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/cartridge.edit.php?add=add&amp;tID=$ID\">";
-	echo $LANG["cartridges"][17];
-	echo "</a></strong></td>";
+	echo "<tr>";
 	echo "<td align='center' class='tab_bg_2'>";
 	echo "<input type='submit' name='add_several' value=\"".$LANG["buttons"][8]."\" class='submit'>";
 	echo "<input type='hidden' name='tID' value=\"$ID\">\n";

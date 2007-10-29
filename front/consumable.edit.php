@@ -42,16 +42,8 @@ if(!isset($_GET["tID"])) $_GET["tID"] = "";
 if(!isset($_GET["cID"])) $_GET["cID"] = "";
 
 $con=new Consumable();
-if (isset($_GET["add"]))
-{
-	checkRight("consumable","w");
 
-	$con->add($_GET);
-	logEvent($_GET["tID"], "consumables", 4, "inventory", $_SESSION["glpiname"]." added a consumable.");
-
-	glpi_header($_SERVER['HTTP_REFERER']);
-}
-else if (isset($_POST["add_several"]))
+if (isset($_POST["add_several"]))
 {
 	checkRight("consumable","w");
 

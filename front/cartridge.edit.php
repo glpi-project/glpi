@@ -54,15 +54,6 @@ if (isset($_POST["update_pages"])||isset($_POST["update_pages_x"]))
 
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
-else if (isset($_GET["add"]))
-{
-
-	checkRight("cartridge","w");
-	$cart->add($_GET);
-	logEvent($_GET["tID"], "cartridges", 4, "inventory", $_SESSION["glpiname"]." added a cartridge.");
-
-	glpi_header($_SERVER['HTTP_REFERER']);
-}
 else if (isset($_POST["add_several"]))
 {
 	checkRight("cartridge","w");
