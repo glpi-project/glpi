@@ -270,10 +270,10 @@ function showLocationUpdateForm(){
 		echo "<p>".$LANG["update"][131]."</p>";
 		echo "<p>".$LANG["update"][132]."<br>".$LANG["update"][133]."</p>";
 		echo "<form action=\"".$_SERVER['PHP_SELF']."\" method=\"post\">";
-		echo "<p>".$LANG["update"][134].": <input type=\"text\" name=\"car_sep\" value=\"".$_POST['car_sep']."\"/></p>";
-		echo "<p>".$LANG["update"][135].": <input type=\"text\" name=\"root\" value=\"".$_POST['root']."\"/></p>";
-		echo "<input type=\"submit\" class='submit' name=\"new_location\" value=\"".$LANG["buttons"][2]."\" />";
-		echo "<input type=\"hidden\" name=\"from_update\" value=\"from_update\" />";
+		echo "<p>".$LANG["update"][134].": <input type=\"text\" name=\"car_sep\" value=\"".$_POST['car_sep']."\"></p>";
+		echo "<p>".$LANG["update"][135].": <input type=\"text\" name=\"root\" value=\"".$_POST['root']."\"></p>";
+		echo "<input type=\"submit\" class='submit' name=\"new_location\" value=\"".$LANG["buttons"][2]."\">";
+		echo "<input type=\"hidden\" name=\"from_update\" value=\"from_update\">";
 		echo "</form>";
 		echo "</div>";
 	}
@@ -288,8 +288,8 @@ function showLocationUpdateForm(){
 		display_new_locations();	
 		echo "<p>".$LANG["update"][136]."</p>";
 		echo "<form action=\"".$_SERVER['PHP_SELF']."\" method=\"post\">";
-		echo "<input type=\"submit\" class='submit' name=\"validate_location\" value=\"".$LANG["buttons"][2]."\" />";
-		echo "<input type=\"hidden\" name=\"from_update\" value=\"from_update\" />";
+		echo "<input type=\"submit\" class='submit' name=\"validate_location\" value=\"".$LANG["buttons"][2]."\">";
+		echo "<input type=\"hidden\" name=\"from_update\" value=\"from_update\">";
 		echo "</form>";
 	}
 	else if (isset($_POST["validate_location"])){
@@ -516,7 +516,7 @@ echo "<div id='principal'>";
 echo "<div id='bloc'>";
 echo "<div class='haut'></div>";
 echo "<h2>GLPI SETUP</h2>";
-echo "<br/><h3>Update</h3>";
+echo "<br><h3>Update</h3>";
 
 // step 1    avec bouton de confirmation
 
@@ -533,7 +533,7 @@ if(empty($_POST["continuer"]) && empty($_POST["from_update"])) {
 		echo "<h3><span class='red'>".$LANG["update"][91]."</span>".$LANG["update"][92]. $DB->dbdefault ."</h3>";
 
 		echo "<form action=\"update.php\" method=\"post\">";
-		echo "<input type=\"submit\" class='submit' name=\"continuer\" value=\"".$LANG["install"][25] ."\" />";
+		echo "<input type=\"submit\" class='submit' name=\"continuer\" value=\"".$LANG["install"][25] ."\">";
 		echo "</form></div>";
 	}
 }
