@@ -1734,7 +1734,7 @@ function addWhere ($link,$nott,$type,$ID,$val,$meta=0){
 				if ($nott) {
 					$ADD=" OR $table.$field IS NULL";
 				}
-				return $link." $date_computation $SEARCH $ADD ";
+				return $link." ( $date_computation $SEARCH $ADD )";
 			}
 			break;
 		case "glpi_contracts.expire" :
