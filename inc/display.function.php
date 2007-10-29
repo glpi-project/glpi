@@ -2129,13 +2129,14 @@ function showProfileSelecter($target){
 		if ($cpt>15){
 			$addname="_long";
 		}
+		
 		echo "<li>";
 		echo "<a href='#' onclick=\"completecleandisplay('show_entities$addname');\">";
 		echo $_SESSION["glpiactive_entity_name"];
 		echo "</a>";
 		echo "<div id='show_entities$addname' onmouseover=\"completecleandisplay('show_entities$addname');\">";	
 		
-		displayActiveEntities($target,$_SESSION['glpi_entities_tree'],"activeentity");
+		displayActiveEntities($target,"activeentity");
 		
 		echo "</div>";
 		echo "</li>";
