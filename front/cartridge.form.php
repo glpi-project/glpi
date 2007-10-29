@@ -87,7 +87,7 @@ else if (isset($_POST["update"]))
 	checkRight("cartridge","w");
 
 	$cartype->addCompatibleType($_POST["tID"],$_POST["model"]);
-	logEvent($_POST["ID"], "cartridges", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][30]);
+	logEvent($_POST["tID"], "cartridges", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][30]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($_GET["deletetype"])){
