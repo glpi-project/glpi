@@ -2224,7 +2224,7 @@ $SEARCH_OPTION[USER_TYPE][14]['meta']=0;
 
 $SEARCH_OPTION[USER_TYPE][15]['table']='glpi_auth_tables';
 $SEARCH_OPTION[USER_TYPE][15]['field']='name';
-$SEARCH_OPTION[USER_TYPE][15]['linkfield']='auth_method';
+$SEARCH_OPTION[USER_TYPE][15]['linkfield']='';
 $SEARCH_OPTION[USER_TYPE][15]['name']=$LANG["login"][10];
 $SEARCH_OPTION[USER_TYPE][15]['meta']=0;
 
