@@ -289,10 +289,7 @@ function showUserRights($target,$ID){
 	}
 
 	$canshowentity=haveRight("entity","r");
-	$headerspan=2;
-	if ($canedit) {
-		$headerspan=3;
-	}
+
 	echo "<form name='entityuser_form' id='entityuser_form' method='post' action=\"$target\">";
 
 	if ($canedit){
@@ -338,6 +335,8 @@ function showUserRights($target,$ID){
 				$sel="";
 				if (isset($_GET["select"])&&$_GET["select"]=="all") $sel="checked";
 				echo "<input type='checkbox' name='item[".$data["linkID"]."]' value='1' $sel>";
+			} else {
+				echo "&nbsp;";
 			}
 			echo "</td>";
 
