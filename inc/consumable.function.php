@@ -130,7 +130,7 @@ function showConsumables ($tID,$show_old=0) {
 				if (!$show_old&&$canedit){
 					echo "<th>";
 					dropdownAllUsers("id_user",0,1,$cartype->fields["FK_entities"]);
-					echo "&nbsp;<input type='submit' name='give' value='".$LANG["consumables"][32]."'>";
+					echo "&nbsp;<input type='submit' class='submit' name='give' value='".$LANG["consumables"][32]."'>";
 					echo "</th>";
 				} else {echo "<th>&nbsp;</th>";}
 
