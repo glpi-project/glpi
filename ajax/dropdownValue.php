@@ -52,6 +52,11 @@ if (!defined('GLPI_ROOT')){
 
 checkLoginUser();
 
+
+if (isset($_POST["entity_restrict"])&&!is_numeric($_POST["entity_restrict"])&&!is_array($_POST["entity_restrict"])){
+	$_POST["entity_restrict"]=unserialize($_POST["entity_restrict"]);
+}
+
 // Make a select box with preselected values
 if (!isset($_POST["limit"])) $_POST["limit"]=$CFG_GLPI["dropdown_limit"];
 	$first=true;
@@ -108,7 +113,6 @@ if (!isset($_POST["limit"])) $_POST["limit"]=$CFG_GLPI["dropdown_limit"];
 
 
 		$query = "SELECT * FROM ".$_POST['table']." $where ORDER BY $add_order completename $LIMIT";
-		//echo $query;
 
 		$result = $DB->query($query);
 
