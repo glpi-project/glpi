@@ -853,7 +853,7 @@ ul#onglet li.actif a {
 
 #boxlogin legend {
 	font-family:"Trebuchet MS",Verdana,Geneva,Arial,Helvetica,sans-serif;
-	font-size: 16px;
+	font-size: 15px;
 	font-weight: 700;
 	background-color: transparent;
 	color :#659900;
@@ -866,7 +866,7 @@ ul#onglet li.actif a {
 }
 
 #logo-login {
-
+	font-size: 11px;
 	float:right;
 	height: 160px;
 	width: 230px;
@@ -874,6 +874,7 @@ ul#onglet li.actif a {
 	margin-left:0px;
 	margin-top:80px;
 	color :#000000;
+	overflow: auto;
 }
 
 #logo-login a:hover {
@@ -881,6 +882,11 @@ ul#onglet li.actif a {
 	text-decoration: underline;
 }
 
+#box-faq {
+	float:right;
+	margin-right:10px;
+
+}
 
 .sous_logo {
 	font-family: arial;
