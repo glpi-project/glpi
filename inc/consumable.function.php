@@ -95,18 +95,15 @@ function showConsumables ($tID,$show_old=0) {
 	
 		if ($result = $DB->query($query)) {
 			if ($DB->result($result,0,0)!=0) { 
-				$total=$DB->result($result, 0, "COUNT");
-				$unused=getUnusedConsumablesNumber($tID);
-				$old=getOldConsumablesNumber($tID);
 				if (!$show_old&&$canedit){
 					echo "<form method='post' action='".$CFG_GLPI["root_doc"]."/front/consumable.edit.php'>";
 					echo "<input type='hidden' name='tID' value=\"$tID\">\n";
 				}
 				echo "<br><div class='center'><table cellpadding='2' class='tab_cadre_fixe'>";
-				if ($show_old==0){
+				if (!$show_old){
 					echo "<tr><th colspan='7'>";
-					echo $total;
-					echo "&nbsp;".$LANG["consumables"][16]."&nbsp;-&nbsp;$unused&nbsp;".$LANG["consumables"][13]."&nbsp;-&nbsp;$old&nbsp;".$LANG["consumables"][15]."</th></tr>";
+					echo countConsumables($tID,-1);
+					echo "</th></tr>";
 				}
 				else { // Old
 					echo "<tr><th colspan='8'>";
@@ -146,7 +143,7 @@ function showConsumables ($tID,$show_old=0) {
 		$where="";
 		$leftjoin="";
 		$addselect="";
-		if ($show_old==0){ // NEW
+		if (!$show_old){ // NEW
 			$where= " AND date_out IS NULL ORDER BY date_in, ID";
 		} else { //OLD
 			$where= " AND date_out IS NOT NULL ORDER BY date_out DESC, date_in, ID";
@@ -188,13 +185,13 @@ function showConsumables ($tID,$show_old=0) {
 				echo "</td>";
 	
 	
-				if ($show_old==0&&$canedit){
+				if (!$show_old&&$canedit){
 					echo "<td class='center'>";
 					echo "<input type='checkbox' name='out[".$data["ID"]."]'>";
 					echo "</td>";
 				}
 	
-				if ($show_old!=0&&$canedit){
+				if ($show_old&&$canedit){
 					echo "<td class='center'>";
 					echo "<a href='".$CFG_GLPI["root_doc"]."/front/consumable.edit.php?restore=restore&amp;ID=".$data["ID"]."&amp;tID=$tID'>".$LANG["consumables"][37]."</a>";
 					echo "</td>";
