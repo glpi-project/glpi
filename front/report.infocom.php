@@ -80,14 +80,22 @@ $valeurgraphtot=array();
 function display_infocoms_report($device_type,$begin,$end){
 	global $DB,$valeurtot,$valeurnettetot, $valeurnettegraphtot, $valeurgraphtot,$LANG,$CFG_GLPI,$LINK_ID_TABLE;
 
-	$query="SELECT * FROM glpi_infocoms 
-		INNER JOIN ".$LINK_ID_TABLE[$device_type]." ON (".$LINK_ID_TABLE[$device_type].".ID = glpi_infocoms.FK_device AND glpi_infocoms.device_type='".$device_type."' ".getEntitiesRestrictRequest("AND",$LINK_ID_TABLE[$device_type]).")
-		WHERE ".$LINK_ID_TABLE[$device_type].".is_template='0' ";
+	$query="SELECT glpi_infocoms.*, ".$LINK_ID_TABLE[$device_type].".name AS name, ".$LINK_ID_TABLE[$device_type].".ticket_tco, glpi_entities.completename as entname, glpi_entities.ID as entID FROM glpi_infocoms 
+		INNER JOIN ".$LINK_ID_TABLE[$device_type]." ON (".$LINK_ID_TABLE[$device_type].".ID = glpi_infocoms.FK_device AND glpi_infocoms.device_type='".$device_type."')";
+	$query.= " LEFT JOIN glpi_entities ON (".$LINK_ID_TABLE[$device_type].".FK_entities = glpi_entities.ID) ";
+
+	$query.= " WHERE ".$LINK_ID_TABLE[$device_type].".is_template='0' ".getEntitiesRestrictRequest("AND",$LINK_ID_TABLE[$device_type]);
 
 	if (!empty($begin)) $query.= " AND (glpi_infocoms.buy_date >= '".$begin."' OR glpi_infocoms.use_date >= '".$begin."' )";
 	if (!empty($end)) $query.= " AND (glpi_infocoms.buy_date <= '".$end."' OR glpi_infocoms.use_date <= '".$end."' )";
 
-	$query .=" ORDER BY buy_date, use_date";
+	$query .=" ORDER BY entname ASC, buy_date, use_date";
+
+	$display_entity=false;
+	if (count($_SESSION['glpiactiveentities'])>1){
+		$display_entity=true;
+	}
+
 
 	$result=$DB->query($query);
 	if ($DB->numrows($result)>0){
@@ -96,7 +104,12 @@ function display_infocoms_report($device_type,$begin,$end){
 
 		echo "<h2>".$comp->getType()."</h2>";
 
-		echo "<table class='tab_cadre'><tr><th>".$LANG["common"][16]."</th><th>".$LANG["financial"][21]."</th><th>".$LANG["financial"][92]."</th><th>".$LANG["financial"][91]."</th><th>".$LANG["financial"][14]."</th><th>".$LANG["financial"][76]."</th><th>".$LANG["financial"][80]."</th></tr>";
+		echo "<table class='tab_cadre'><tr><th>".$LANG["common"][16]."</th>";
+		if ($display_entity){
+			echo "<th>".$LANG["entity"][0]."</th>";
+		}
+
+		echo "<th>".$LANG["financial"][21]."</th><th>".$LANG["financial"][92]."</th><th>".$LANG["financial"][91]."</th><th>".$LANG["financial"][14]."</th><th>".$LANG["financial"][76]."</th><th>".$LANG["financial"][80]."</th></tr>";
 
 
 		$valeursoustot=0;
@@ -133,7 +146,16 @@ function display_infocoms_report($device_type,$begin,$end){
 
 			$valeurnettesoustot+=str_replace(" ","",$valeurnette);	
 
-			echo "<tr class='tab_bg_1'><td>".$line["name"]."</td><td class='right'>".number_format($line["value"],$CFG_GLPI["decimal_number"],"."," ")."</td><td class='right'>".number_format($valeurnette,$CFG_GLPI["decimal_number"],"."," ")."</td><td class='right'>".showTco($line["ticket_tco"],$line["value"])."</td><td>".convDate($line["buy_date"])."</td><td>".convDate($line["use_date"])."</td><td>".getWarrantyExpir($line["buy_date"],$line["warranty_duration"])."</td></tr>";
+			echo "<tr class='tab_bg_1'><td>".$line["name"]."</td>";
+			if ($display_entity){
+				if ($line['entID']==0){
+					echo "<td>".$LANG["entity"][2]."</td>";
+				} else {
+					echo "<td>".$line['entname']."</td>";
+				}
+			}
+
+			echo "<td class='right'>".number_format($line["value"],$CFG_GLPI["decimal_number"],"."," ")."</td><td class='right'>".number_format($valeurnette,$CFG_GLPI["decimal_number"],"."," ")."</td><td class='right'>".showTco($line["ticket_tco"],$line["value"])."</td><td>".convDate($line["buy_date"])."</td><td>".convDate($line["use_date"])."</td><td>".getWarrantyExpir($line["buy_date"],$line["warranty_duration"])."</td></tr>";
 
 
 		}	

@@ -59,13 +59,14 @@ if (isset($_POST["item_type"])&&is_array($_POST["item_type"])){
 	foreach ($_POST["item_type"] as $key => $val)
 	if (in_array($val,$items)){
 		$query[$val] = "SELECT  ".$LINK_ID_TABLE[$val].".name AS itemname, ".$LINK_ID_TABLE[$val].".deleted AS itemdeleted, ";
-		$query[$val].= " glpi_dropdown_locations.completename AS location, glpi_dropdown_contract_type.name AS type, glpi_infocoms.buy_date, glpi_infocoms.warranty_duration, glpi_contracts.begin_date, glpi_contracts.duration ";
+		$query[$val].= " glpi_dropdown_locations.completename AS location, glpi_dropdown_contract_type.name AS type, glpi_infocoms.buy_date, glpi_infocoms.warranty_duration, glpi_contracts.begin_date, glpi_contracts.duration, glpi_entities.completename as entname, glpi_entities.ID as entID ";
 		$query[$val].= " FROM glpi_contract_device ";
 		$query[$val].= " INNER JOIN glpi_contracts ON (glpi_contract_device.FK_contract=glpi_contracts.ID) ";
 		$query[$val].= " INNER JOIN ".$LINK_ID_TABLE[$val]." ON (glpi_contract_device.device_type='$val' AND ".$LINK_ID_TABLE[$val].".ID =  glpi_contract_device.FK_device )";
 		$query[$val].= " LEFT JOIN glpi_infocoms ON ( glpi_infocoms.device_type = '$val' AND ".$LINK_ID_TABLE[$val].".ID =  glpi_infocoms.FK_device ) ";
 		$query[$val].= " LEFT JOIN glpi_dropdown_contract_type ON (glpi_contracts.contract_type = glpi_dropdown_contract_type.ID) ";
 		$query[$val].= " LEFT JOIN glpi_dropdown_locations ON (".$LINK_ID_TABLE[$val].".location = glpi_dropdown_locations.ID) ";
+		$query[$val].= " LEFT JOIN glpi_entities ON (".$LINK_ID_TABLE[$val].".FK_entities = glpi_entities.ID) ";
 
 		$query[$val].=" WHERE ".$LINK_ID_TABLE[$val].".is_template ='0' ";
 		$query[$val].=getEntitiesRestrictRequest("AND",$LINK_ID_TABLE[$val]);
@@ -81,7 +82,13 @@ if (isset($_POST["item_type"])&&is_array($_POST["item_type"])){
 			}
 			$query[$val].= ")";
 		}
+		$query[$val].=" ORDER BY entname ASC, itemdeleted DESC, itemname ASC";
 	}		
+}
+
+$display_entity=false;
+if (count($_SESSION['glpiactiveentities'])>1){
+	$display_entity=true;
 }
 
 $ci=new CommonItem();
@@ -95,6 +102,9 @@ if (isset($query)&&count($query)){
 			echo "<tr> ";
 			echo "<th>".$LANG["common"][16]."</th>";
 			echo "<th>".$LANG["common"][28]."</th>";
+			if ($display_entity){
+				echo "<th>".$LANG["entity"][0]."</th>";
+			}
 			echo "<th>".$LANG["common"][15]."</th>";
 			echo "<th>".$LANG["financial"][14]."</th>";
 			echo "<th>".$LANG["financial"][80]."</th>";
@@ -109,10 +119,15 @@ if (isset($query)&&count($query)){
 				} else { 
 					echo "<td> N/A </td>";
 				}
-				if($data['itemdeleted']) {
-					echo "<td> ".$data['itemdeleted']." </td>"; 
-				} else { 
-					echo "<td> N/A </td>";
+
+				echo "<td> ".getYesNo($data['itemdeleted'])." </td>"; 
+
+				if ($display_entity){
+					if ($data['entID']==0){
+						echo "<td>".$LANG["entity"][2]."</td>";
+					} else {
+						echo "<td>".$data['entname']."</td>";
+					}
 				}
 		
 				if($data['location']) {
