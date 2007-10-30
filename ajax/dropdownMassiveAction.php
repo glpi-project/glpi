@@ -66,7 +66,7 @@ if (isset($_POST["action"])&&isset($_POST["type"])&&!empty($_POST["type"])){
 			echo "<option value='after' selected>".$LANG["buttons"][47]."</option>";
 			echo "<option value='before'>".$LANG["buttons"][46]."</option>";
 			echo "</select>&nbsp;";
-			echo dropdownRules($_POST['rule_type']);
+			dropdownRules($_POST['rule_type'],"ranking");
 			echo "<input type=\"submit\" name=\"massiveaction\" class=\"submit\" value=\"".$LANG["buttons"][2]."\" >";
 		break;
 		case "add_followup":
