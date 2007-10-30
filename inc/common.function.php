@@ -105,10 +105,13 @@ if (!defined('GLPI_ROOT')){
 		if ($CFG_GLPI["use_errorlog"]){
 			logInFile("php-errors",$err);
 		}
-
-		echo '<div style="position:fload-left; background-color:red; z-index:10000"><strong>PHP ERROR : </strong>';
-		echo $errmsg." in ".$filename." at line ".$linenum;
-		echo '</div>';
+		if (isset($_SERVER["SERVER_NAME"])){
+			echo '<div style="position:fload-left; background-color:red; z-index:10000"><strong>PHP ERROR: </strong>';
+			echo $errmsg." in ".$filename." at line ".$linenum;
+			echo '</div>';
+		} else {
+			echo "PHP ERROR: ".$errmsg." in ".$filename." at line ".$linenum;
+		}
 	}
 
 

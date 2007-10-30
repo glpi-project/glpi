@@ -78,14 +78,25 @@ $valeurgraphtot=array();
 
 
 function display_infocoms_report($device_type,$begin,$end){
-	global $DB,$valeurtot,$valeurnettetot, $valeurnettegraphtot, $valeurgraphtot,$LANG,$CFG_GLPI;
+	global $DB,$valeurtot,$valeurnettetot, $valeurnettegraphtot, $valeurgraphtot,$LANG,$CFG_GLPI,$LINK_ID_TABLE;
 
-	$query="SELECT * FROM glpi_infocoms WHERE device_type='".$device_type."'";
+	$query="SELECT glpi_infocoms.* FROM glpi_infocoms INNER JOIN ".$LINK_ID_TABLE[$device_type]." ON (".$LINK_ID_TABLE[$device_type].".ID = glpi_infocoms.FK_device AND glpi_infocoms.device_type='".$device_type."') ";
+	
+	switch ($device_type){
+		case CONSUMABLE_ITEM_TYPE :
+			$query.=" INNER JOIN glpi_consumables_type ON (glpi_consumables.FK_glpi_consumables_type = glpi_consumables_type.ID) ".getEntitiesRestrictRequest("WHERE","glpi_consumables_type");
+		break;
+		case CARTRIDGE_ITEM_TYPE :
+			$query.=" INNER JOIN glpi_cartridges_type ON (glpi_cartridges.FK_glpi_cartridges_type = glpi_cartridges_type.ID) ".getEntitiesRestrictRequest("WHERE","glpi_cartridges_type");
+		break;
+		case LICENSE_TYPE :
+			$query.=" INNER JOIN glpi_software ON (glpi_licenses.sID = glpi_software.ID) ".getEntitiesRestrictRequest("WHERE","glpi_software");
+		break;
+	
+	}
 
 	if (!empty($begin)) $query.= " AND (glpi_infocoms.buy_date >= '".$begin."' OR glpi_infocoms.use_date >= '".$begin."' )";
 	if (!empty($end)) $query.= " AND (glpi_infocoms.buy_date <= '".$end."' OR glpi_infocoms.use_date <= '".$end."' )";
-
-	$query .=" ORDER BY buy_date, use_date";
 
 	$result=$DB->query($query);
 	if ($DB->numrows($result)>0){
@@ -94,7 +105,6 @@ function display_infocoms_report($device_type,$begin,$end){
 
 		echo "<h2>".$comp->getType()."</h2>";
 
-		//		echo "<table class='tab_cadre'><tr><th>".$LANG["common"][16]."</th><th>".$LANG["financial"][21]."</th><th>".$LANG["financial"][81]."</th><th>".$LANG["financial"][14]."</th><th>".$LANG["financial"][76]."</th><th>".$LANG["financial"][80]."</th></tr>";
 		echo "<table class='tab_cadre'>";	
 
 		$valeursoustot=0;
@@ -104,10 +114,11 @@ function display_infocoms_report($device_type,$begin,$end){
 
 		while ($line=$DB->fetch_array($result)){
 
-
-			if ($device_type==LICENSE_TYPE&&$comp->obj->fields["serial"]=="global"){
+			if ($device_type==LICENSE_TYPE){
 				$comp->getFromDB($device_type,$line["FK_device"]);
-				$line["value"]*=getInstallionsForLicense($line["FK_device"]);
+				if ($comp->obj->fields["serial"]=="global"){
+					$line["value"]*=getInstallionsForLicense($line["FK_device"]);
+				}
 			}
 			if ($line["value"]>0) $valeursoustot+=$line["value"];	
 
@@ -132,14 +143,11 @@ function display_infocoms_report($device_type,$begin,$end){
 
 			$valeurnettesoustot+=str_replace(" ","",$valeurnette);	
 
-			//				echo "<tr class='tab_bg_1'><td>".$comp->getName()."</td><td>".$line["value"]."</td><td>$valeurnette</td><td>".$line["buy_date"]."</td><td>".$line["use_date"]."</td><td>".getWarrantyExpir($line["buy_date"],$line["warranty_duration"])."</td></tr>";
 
 		}	
 
 		$valeurtot+=$valeursoustot;
 		$valeurnettetot+=$valeurnettesoustot;
-
-		//	echo "<tr><td colspan='6' align='center'><h1>".$LANG["common"][33].": ".$LANG["financial"][21]."=$valeursoustot - ".$LANG["financial"][81]."=$valeurnettesoustot</h1></td></tr>";
 
 
 		if (count($valeurnettegraph)>0){
