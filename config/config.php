@@ -43,11 +43,16 @@
 	startGlpiSession();
 
 	if(!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
-		nullHeader("Mysql Error",$_SERVER['PHP_SELF']);
-		echo "<div align='center'>";
-		echo "<p>Error : GLPI seems to not be installed properly.</p><p> config_db.php file is missing.</p><p>Please restart the install process.</p>";
-		echo "</div>";
-		nullFooter("Mysql Error",$_SERVER['PHP_SELF']);
+		nullHeader("DB Error",$_SERVER['PHP_SELF']);
+		if (!isCommandLine()){
+			echo "<div align='center'>";
+			echo "<p>Error : GLPI seems to not be installed properly.</p><p> config_db.php file is missing.</p><p>Please restart the install process.</p>";
+			echo "</div>";
+		} else {
+			echo "Error : GLPI seems to not be installed properly.</p><p> config_db.php file is missing.\n";
+			echo "Please restart the install process.\n";
+		}
+		nullFooter("DB Error",$_SERVER['PHP_SELF']);
 	
 		die();
 	} else {
