@@ -1580,10 +1580,10 @@ function nullFooter() {
 		echo 'GLPI version '.(isset($CFG_GLPI["version"])?$CFG_GLPI["version"]:"").' Copyright (C) 2003-'.date("Y").' INDEPNET Development Team.';
 		echo "</a>";
 		echo "</div>";
+		
+		echo "</body></html>";
 	}
 	
-	
-	echo "</body></html>";
 	closeDBConnections();
 }
 
