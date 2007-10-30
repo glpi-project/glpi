@@ -1488,7 +1488,10 @@ function dropdownHours($name,$value,$limit_planning=0){
 function dropdownLicenseOfSoftware($myname,$sID) {
 	global $DB,$LANG;
 
-	$query="SELECT * from glpi_licenses WHERE sID='$sID' GROUP BY serial, expire, oem, oem_computer, buy ORDER BY serial,oem, oem_computer";
+	$query="SELECT * FROM glpi_licenses 
+		WHERE sID='$sID' 
+		GROUP BY serial, expire, oem, oem_computer, buy 
+		ORDER BY serial, oem, oem_computer";
 	$result=$DB->query($query);
 	if ($DB->numrows($result)){
 		echo "<select name='$myname'>";
@@ -1571,7 +1574,9 @@ function dropdownActiveEntities($myname){
 	global $DB,$CFG_GLPI,$LANG;
 
 	$rand=mt_rand();
-	$query = "SELECT * FROM glpi_entities ".getEntitiesRestrictRequest("WHERE","glpi_entities","ID")." ORDER BY completename";
+	$query = "SELECT * 
+		FROM glpi_entities ".getEntitiesRestrictRequest("WHERE","glpi_entities","ID")." 
+		ORDER BY completename";
 	$result = $DB->query($query);
 
 	echo "<select id='active_entity' name=\"".$myname."\">";
@@ -1853,13 +1858,16 @@ function dropdownGMT($name,$value='')
 	echo "</select>";	
 }
 
-function dropdownRules($rule_type)
+function dropdownRules($rule_type,$name,$value='')
 {
 	global $DB,$LANG;
 
 	$ranks = array();
 	
-	$sql = "SELECT ID,name FROM glpi_rules_descriptions WHERE rule_type=".$rule_type." ORDER BY ranking ASC";
+	$sql = "SELECT ID,name 
+		FROM glpi_rules_descriptions 
+		WHERE rule_type=".$rule_type." 
+		ORDER BY ranking ASC";
 	$res = $DB->query($sql);
 	$numrankings = $DB->numrows($res);
 
@@ -1870,6 +1878,6 @@ function dropdownRules($rule_type)
 		} 
 	}
 
-	dropdownArrayValues("ranking",$ranks);
+	dropdownArrayValues($name,$ranks,$value);
 }
 ?>
