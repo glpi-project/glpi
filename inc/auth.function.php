@@ -54,8 +54,8 @@ function haveRight($module, $right) {
 			"",
 			"r",
 			"w"
-			), // ne doit pas arriver normalement
-	"r" => array (
+		), // ne doit pas arriver normalement
+		"r" => array (
 			"r",
 			"w"
 		),
@@ -68,9 +68,7 @@ function haveRight($module, $right) {
 		"0" => array (
 			"0",
 			"1"
-			), // ne doit pas arriver non plus
-
-	
+		), // ne doit pas arriver non plus
 	);
 
 	if (isset ($_SESSION["glpiactiveprofile"][$module]) && in_array($_SESSION["glpiactiveprofile"][$module], $matches[$right]))
