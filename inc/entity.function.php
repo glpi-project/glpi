@@ -62,7 +62,7 @@ function showEntityUser($target,$ID){
 			dropdownAllUsers("FK_users",0,1);
 			echo "</td><td align='center' class='tab_bg_2'>";
 			echo $LANG["profiles"][22].":";
-			dropdownValue("glpi_profiles","FK_profiles");
+			dropdownUnderProfiles("FK_profiles");
 			echo "</td><td align='center' class='tab_bg_2'>";
 			echo $LANG["profiles"][28].":";
 			dropdownYesNo("recursive",0);

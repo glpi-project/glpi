@@ -1860,7 +1860,7 @@ function dropdownGMT($name,$value='')
 
 function dropdownRules($rule_type,$name,$value='')
 {
-	global $DB,$LANG;
+	global $DB;
 
 	$ranks = array();
 	
@@ -1869,7 +1869,6 @@ function dropdownRules($rule_type,$name,$value='')
 		WHERE rule_type=".$rule_type." 
 		ORDER BY ranking ASC";
 	$res = $DB->query($sql);
-	$numrankings = $DB->numrows($res);
 
 	//New rule -> get the next free ranking
 	if ($DB->numrows($res)){
@@ -1880,4 +1879,26 @@ function dropdownRules($rule_type,$name,$value='')
 
 	dropdownArrayValues($name,$ranks,$value);
 }
+
+function dropdownUnderProfiles($name,$value=''){
+	global $DB;
+
+	$profiles[0]="-----";
+
+	$prof=new Profile();
+
+	$query="SELECT * FROM glpi_profiles ".$prof->getUnderProfileRetrictRequest("WHERE")." ORDER BY name";
+
+	$res = $DB->query($query);
+
+	//New rule -> get the next free ranking
+	if ($DB->numrows($res)){
+		while ($data = $DB->fetch_array($res)){
+			$profiles[$data['ID']]=$data['name'];
+		} 
+	}
+
+	dropdownArrayValues($name,$profiles,$value);
+}
+
 ?>

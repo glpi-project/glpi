@@ -44,6 +44,7 @@ class Profile extends CommonDBTM{
 	var $helpdesk_rights=array("faq","reservation_helpdesk","create_ticket","comment_ticket","observe_ticket","password_update","helpdesk_hardware","helpdesk_hardware_type","show_group_ticket","show_group_hardware");
 
 	var $common_fields=array("ID","name","interface","is_default");
+	var $noright_fields=array("helpdesk_hardware","helpdesk_hardware_type","show_group_ticket","show_group_hardware","own_ticket");
 
 	function Profile () {
 		$this->table="glpi_profiles";
@@ -109,6 +110,52 @@ class Profile extends CommonDBTM{
 				}
 			}
 		}
+	}
+	function getUnderProfileRetrictRequest($separator = "AND"){
+		$query = $separator ." ";
+
+	
+		if (!isset($_SESSION['glpiactiveprofile'])){
+			return $query." '0'='1' ";
+		}
+		
+		if ($_SESSION['glpiactiveprofile']['interface']=='central'){
+			$query.=" (glpi_profiles.interface='helpdesk') " ;
+		}
+		
+		$query.=" OR ( glpi_profiles.interface='".$_SESSION['glpiactiveprofile']['interface']."' ";
+		foreach ($_SESSION['glpiactiveprofile'] as $key => $val){
+			if (
+			!is_array($val)
+			&&!in_array($key,$this->common_fields)
+			&&!in_array($key,$this->noright_fields)
+			&&($_SESSION['glpiactiveprofile']['interface']=='central'||in_array($key,$this->helpdesk_rights))){
+				switch ($key){
+				
+					default:
+						switch ($val){
+							case '0':
+								$query.=" AND (glpi_profiles.$key = '0' OR glpi_profiles.$key IS NULL ) ";
+								break;	
+							case '1':
+								$query.=" AND (glpi_profiles.$key = '1' OR glpi_profiles.$key = '0' OR glpi_profiles.$key IS NULL ) ";
+								break;	
+							case 'r':
+								$query.=" AND (glpi_profiles.$key = 'r' OR glpi_profiles.$key IS NULL ) ";
+								break;	
+							case 'w':
+								$query.=" AND (glpi_profiles.$key = 'w' OR glpi_profiles.$key = 'r' OR glpi_profiles.$key IS NULL ) ";
+								break;	
+							default:
+								$query.=" AND glpi_profiles.$key IS NULL ";
+								break;
+						}
+					break;
+				}
+			}
+		}	
+		$query.=")";
+		return $query;
 	}
 
 	function showForm($target,$ID, $withtemplate=''){

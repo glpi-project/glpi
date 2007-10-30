@@ -303,7 +303,7 @@ function showUserRights($target,$ID){
 		echo "</td><td class='center'>";
 
 		echo $LANG["profiles"][22].":";
-		dropdownValue("glpi_profiles","FK_profiles");
+		dropdownUnderProfiles("FK_profiles");
 		echo "</td><td class='center'>";
 		echo $LANG["profiles"][28].":";
 		dropdownYesNo("recursive",0);
