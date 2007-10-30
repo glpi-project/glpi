@@ -41,6 +41,10 @@ if (!defined('GLPI_ROOT')){
 // CLASSES contact
 class Profile extends CommonDBTM{
 
+	var $helpdesk_rights=array("faq","reservation_helpdesk","create_ticket","comment_ticket","observe_ticket","password_update","helpdesk_hardware","helpdesk_hardware_type","show_group_ticket","show_group_hardware");
+
+	var $common_fields=array("ID","name","interface");
+
 	function Profile () {
 		$this->table="glpi_profiles";
 		$this->type=PROFILE_TYPE;
@@ -98,11 +102,11 @@ class Profile extends CommonDBTM{
 
 	// Unset unused rights for helpdesk
 	function cleanProfile(){
-		$helpdesk=array("ID","name","interface","faq","reservation_helpdesk","create_ticket","comment_ticket","observe_ticket","password_update","helpdesk_hardware","helpdesk_hardware_type","show_group_ticket","show_group_hardware");
 		if ($this->fields["interface"]=="helpdesk"){
 			foreach($this->fields as $key=>$val){
-				if (!in_array($key,$helpdesk))
+				if (!in_array($key,$this->common_fields)&&!in_array($key,$this->helpdesk_rights)){
 					unset($this->fields[$key]);
+				}
 			}
 		}
 	}
