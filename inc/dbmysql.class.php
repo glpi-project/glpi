@@ -66,7 +66,12 @@ class DBmysql {
 			mysql_select_db($this->dbdefault) or $this->error = 1;
 		} else {
 			nullHeader("Mysql Error",$_SERVER['PHP_SELF']);
-			echo "<div class='center'><p><strong>A link to the Mysql server could not be established. Please Check your configuration.</strong></p><p><strong>Le serveur Mysql est inaccessible. V&eacute;rifiez votre configuration</strong></p></div>";
+			if (!isCommandLine()){
+				echo "<div class='center'><p><strong>A link to the Mysql server could not be established. Please Check your configuration.</strong></p><p><strong>Le serveur Mysql est inaccessible. V&eacute;rifiez votre configuration</strong></p></div>";
+			} else {
+				echo "A link to the Mysql server could not be established. Please Check your configuration.\n";
+				echo "Le serveur Mysql est inaccessible. Vérifiez votre configuration\n";
+			}
 			nullFooter("Mysql Error",$_SERVER['PHP_SELF']);
 			die();
 		}
