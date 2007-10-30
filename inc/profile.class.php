@@ -114,9 +114,14 @@ class Profile extends CommonDBTM{
 	function getUnderProfileRetrictRequest($separator = "AND"){
 		$query = $separator ." ";
 
-	
+		// Not logged -> no profile to see
 		if (!isset($_SESSION['glpiactiveprofile'])){
 			return $query." '0'='1' ";
+		}
+
+		// Profile right : may modify profile so can attach all profile
+		if (haveRight("profile","w")){
+			return $query." '1'='1' ";
 		}
 		
 		if ($_SESSION['glpiactiveprofile']['interface']=='central'){
@@ -126,8 +131,8 @@ class Profile extends CommonDBTM{
 		$query.=" OR ( glpi_profiles.interface='".$_SESSION['glpiactiveprofile']['interface']."' ";
 		foreach ($_SESSION['glpiactiveprofile'] as $key => $val){
 			if (
-			!is_array($val)
-			&&!in_array($key,$this->common_fields)
+			!is_array($val) // Do not include entities field added by login
+			&&!in_array($key,$this->common_fields) // 
 			&&!in_array($key,$this->noright_fields)
 			&&($_SESSION['glpiactiveprofile']['interface']=='central'||in_array($key,$this->helpdesk_rights))){
 				switch ($key){
