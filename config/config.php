@@ -126,8 +126,8 @@
 		if ($CFG_GLPI["debug"]==DEBUG_MODE){
 			ini_set('display_errors','On'); 
 			error_reporting(E_ALL); 
-			ini_set('error_prepend_string','<div style="position:fload-left; background-color:red; z-index:10000">PHP ERROR : '); 
-			ini_set('error_append_string','</div>'); 
+			//ini_set('error_prepend_string','<div style="position:fload-left; background-color:red; z-index:10000">PHP ERROR : '); 
+			//ini_set('error_append_string','</div>'); 
 			set_error_handler("userErrorHandler"); 
 		}else{
 			//Pas besoin des warnings de PHP en mode normal : on va eviter de faire peur ;)
