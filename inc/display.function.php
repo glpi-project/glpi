@@ -1295,6 +1295,10 @@ function nullHeader($title,$url='') {
 		header_nocache();
 	}
 
+	if (isCommandLine()){
+		return true;
+	}
+
 	// Start the page
 	echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">";
 	echo "<html><head><title>GLPI - ".$title."</title>";
@@ -1566,15 +1570,17 @@ function nullFooter() {
 	if ($FOOTER_LOADED) return;
 	$FOOTER_LOADED=true;
 
-	echo "</div>";  // fin box text-nullHeader ouvert dans le null header
-	echo "</div>"; // fin contenu-nullHeader ouvert dans le null header
+	if (!isCommandLine()){
+		echo "</div>";  // fin box text-nullHeader ouvert dans le null header
+		echo "</div>"; // fin contenu-nullHeader ouvert dans le null header
+		
 	
-
-	echo "<div id='footer-login'>";
-	echo "<a href=\"http://glpi-project.org/\" title=\"Powered By Indepnet\"  >";
-	echo 'GLPI version '.(isset($CFG_GLPI["version"])?$CFG_GLPI["version"]:"").' Copyright (C) 2003-'.date("Y").' INDEPNET Development Team.';
-	echo "</a>";
-	echo "</div>";
+		echo "<div id='footer-login'>";
+		echo "<a href=\"http://glpi-project.org/\" title=\"Powered By Indepnet\"  >";
+		echo 'GLPI version '.(isset($CFG_GLPI["version"])?$CFG_GLPI["version"]:"").' Copyright (C) 2003-'.date("Y").' INDEPNET Development Team.';
+		echo "</a>";
+		echo "</div>";
+	}
 	
 	
 	echo "</body></html>";
