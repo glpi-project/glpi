@@ -110,7 +110,7 @@ if (!defined('GLPI_ROOT')){
 			echo $errmsg." in ".$filename." at line ".$linenum;
 			echo '</div>';
 		} else {
-			echo "PHP ERROR: ".$errmsg." in ".$filename." at line ".$linenum;
+			echo "PHP ERROR: ".$errmsg." in ".$filename." at line ".$linenum."\n";
 		}
 	}
 
