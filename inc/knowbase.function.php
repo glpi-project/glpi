@@ -628,40 +628,4 @@ function getFAQCategories()
 
 }
 	
-
-/**
- * 
- * get parent FAQ Categories
- * 
- * @param $ID
- * @param $catNumbers
- * 
- * @return $catNumbers
- **/
-function getFAQParentCategories($ID, $catNumbers)
-{
-	global $DB;
-
-	$query = "select * from glpi_dropdown_kbcategories where (ID = '$ID')";
-
-	if ($result=$DB->query($query)){
-		if ($DB->numrows($result)>0){
-
-			$data = $DB->fetch_array($result);
-
-			$parentID = $data["parentID"];
-			if(!in_array($parentID, $catNumbers))
-			{
-				$catNumbers=getFAQParentCategories($parentID, $catNumbers);
-			}
-			if(!in_array($ID, $catNumbers))
-			{
-				array_push($catNumbers,$ID);
-			}
-
-		}
-	}
-	return($catNumbers);
-}
-
 ?>
