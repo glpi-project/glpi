@@ -739,14 +739,14 @@ function utf8_str_pad($ps_input, $pn_pad_length, $ps_pad_string = " ", $pn_pad_t
  */
 //  Inspired From SPIP
 // Suppression basique et brutale de tous les <...>
-function removeTags($string, $rempl = "") {
+/*function removeTags($string, $rempl = "") {
 	$string = preg_replace(",<[^>]*>,U", $rempl, $string);
 	// ne pas oublier un < final non ferme
 	// mais qui peut aussi etre un simple signe plus petit que
 	$string = str_replace('<', ' ', $string);
 	return $string;
 }
-
+*/
 /**
  *  convert html text to 
  *
@@ -755,7 +755,7 @@ function removeTags($string, $rempl = "") {
  *
  */
 //  Inspired from SPIP
-function textBrut($string) {
+/*function textBrut($string) {
 
 	$string = preg_replace("/\s+/u", " ", $string);
 	$string = preg_replace("/<(p|br)( [^>]*)?".">/i", "\n\n", $string);
@@ -769,6 +769,110 @@ function textBrut($string) {
 	return $string;
 }
 
+*/
+
+/**
+ * Clean display value deleting html tags
+ *
+ *
+ *@param $value string value
+ *
+ *@return clean value
+ *
+ **/
+function html_clean($value){
+//  Inspired from SPIP and http://fr3.php.net/strip-tags
+/*
+	$search=array(
+			"/<a[^>]+>/i",
+			"/<img[^>]+>/i",
+			"/<span[^>]+>/i",
+			"/<\/span>/i",
+			"/<\/a>/i",
+			"/<strong>/i",
+			"/<\/strong>/i",
+			"/<small>/i",
+			"/<\/small>/i",
+			"/<i>/i",
+			"/<\/i>/i",
+			"/<br>/i",
+			"/<br \/>/i",
+			"/&nbsp;;/",
+			"/&nbsp;/",
+			"/<p>/i",
+			"/<\/p>/i",
+			"/<div[^>]+>/i",
+			"/<\/div>/i",
+			"/<ul>/i",
+			"/<\/ul>/i",
+			"/<li>/i",
+			"/<\/li>/i",
+			"/<ol>/i",
+			"/<\/ol>/i",
+			"/<h[0-9]>/i",
+			"/<\/h[0-9]>/i",
+			"/<font[^>]+>/i",
+			"/<\/font>/i",
+
+		     );
+	$replace=array(
+			"",
+			"",
+			"",
+			"",
+			"",
+			"",
+			"",
+			"",
+			"",
+			"",
+			"",
+			", ",
+			"",
+			" ",
+			" ",
+			"",
+			"\n",
+			"",
+			"\n",
+			"",
+			"\n",
+			"",
+			"\n",
+			"",
+			"\n",
+			"",
+			"\n",
+			"",
+			"",
+		      );
+	
+	$value=preg_replace($search,$replace,$value);
+	return trim($value);
+*/
+
+
+$value = preg_replace("/\s+/u", " ", $value);
+$value = preg_replace("/<(p|br)( [^>]*)?".">/i", "\n\n", $value);
+$value = preg_replace("/^\n+/", " ", $value);
+$value = preg_replace("/\n+$/", " ", $value);
+$value = preg_replace("/\n +/", "\n", $value);
+
+
+$search = array('@<script[^>]*?>.*?</script>@si',  // Strip out javascript
+               '@<style[^>]*?>.*?</style>@siU',    // Strip style tags properly
+               '@<[\/\!]*?[^<>]*?>@si',            // Strip out HTML tags
+               '@<![\s\S]*?--[ \t\n\r]*>@'        // Strip multi-line comments including CDATA
+);
+$value = preg_replace($search, ' ', $value);
+
+$value = preg_replace("/(&nbsp;| )+/", " ", $value);
+// nettoyer l'apostrophe curly qui pose probleme a certains rss-readers, lecteurs de mail...
+$value = str_replace("&#8217;","'",$value);
+
+return $value;
+
+}
 
 
 

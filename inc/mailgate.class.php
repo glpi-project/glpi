@@ -183,7 +183,7 @@ class MailCollect  extends receiveMail {
 						
 						$track=new job;
 						if ($track->add($tkt)){
-							$this->deleteMails($i); // Delete Mail from Mail box
+							//$this->deleteMails($i); // Delete Mail from Mail box
 						} else {
 							$error++;
 						}
@@ -264,9 +264,9 @@ class MailCollect  extends receiveMail {
 			$body=mb_convert_encoding($body, 'utf-8',$this->charset);
 		}
 		if (!seems_utf8($body)){
-			$tkt['contents']= textBrut(utf8_encode($body));	
+			$tkt['contents']= html_clean(utf8_encode($body));	
 		}else{
-			$tkt['contents']= textBrut($body);
+			$tkt['contents']= html_clean($body);
 		}
 		
 		$tkt=addslashes_deep($tkt);
