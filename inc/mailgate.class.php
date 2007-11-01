@@ -264,11 +264,11 @@ class MailCollect  extends receiveMail {
 			$body=mb_convert_encoding($body, 'utf-8',$this->charset);
 		}
 		if (!seems_utf8($body)){
-			$tkt['contents']= html_clean(utf8_encode($body));	
+			$tkt['contents']= utf8_encode($body);	
 		}else{
-			$tkt['contents']= html_clean($body);
+			$tkt['contents']= $body;
 		}
-		
+		$tkt['contents']=clean_cross_side_scripting_deep(html_clean($tkt['contents']));
 		$tkt=addslashes_deep($tkt);
 		
 		return $tkt;
