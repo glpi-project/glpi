@@ -859,8 +859,8 @@ $value = preg_replace("/\n+$/", " ", $value);
 $value = preg_replace("/\n +/", "\n", $value);
 
 
-$search = array('@<script[^>]*?>.*?</script>@si',  // Strip out javascript
-               '@<style[^>]*?>.*?</style>@siU',    // Strip style tags properly
+$search = array('@<script[^>]*?>.*?</script[^>]*?>@si',  // Strip out javascript
+               '@<style[^>]*?>.*?</style[^>]*?>@siU',    // Strip style tags properly
                '@<[\/\!]*?[^<>]*?>@si',            // Strip out HTML tags
                '@<![\s\S]*?--[ \t\n\r]*>@'        // Strip multi-line comments including CDATA
 );
