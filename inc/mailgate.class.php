@@ -183,7 +183,7 @@ class MailCollect  extends receiveMail {
 						
 						$track=new job;
 						if ($track->add($tkt)){
-							//$this->deleteMails($i); // Delete Mail from Mail box
+							$this->deleteMails($i); // Delete Mail from Mail box
 						} else {
 							$error++;
 						}
