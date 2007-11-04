@@ -280,6 +280,7 @@ $LANG["consumables"][2]="Référence";
 $LANG["consumables"][6]="Ajouter Type de Consommable..."; 
 $LANG["consumables"][7]="Pas de consommable trouvé"; 
 $LANG["consumables"][9]="Aucun consommable"; 
+$LANG["consumables"][12]="Type de Consommable"; 
 $LANG["consumables"][13]="Neuf(s)"; 
 $LANG["consumables"][15]="Utilisé(s)"; 
 $LANG["consumables"][16]="Consommable(s)"; 
