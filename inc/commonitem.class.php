@@ -233,7 +233,7 @@ class CommonItem{
 				return $LANG["financial"][1];
 				break;	
 			case CARTRIDGE_TYPE : 
-				return $LANG["cartridges"][16];
+				return $LANG["cartridges"][12];
 				break;
 			case TYPEDOC_TYPE : 
 				return $LANG["document"][7];
@@ -251,7 +251,7 @@ class CommonItem{
 				return $LANG["job"][38];
 				break;	
 			case CONSUMABLE_TYPE : 
-				return $LANG["consumables"][16];
+				return $LANG["consumables"][12];
 				break;					
 			case CARTRIDGE_ITEM_TYPE : 
 				return $LANG["cartridges"][0];
