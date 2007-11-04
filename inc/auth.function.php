@@ -618,6 +618,16 @@ function changeActiveEntities($ID="all",$recursive=false) {
 		} else {
 			$_SESSION['glpishowallentities']=0;
 		}
+		
+		// Clean session variable to search system
+		if (isset($_SESSION['glpisearch'])&&count($_SESSION['glpisearch'])){
+			foreach ($_SESSION['glpisearch'] as $type => $tab){
+				if (isset($tab['start'])&&$tab['start']>0){
+					$_SESSION['glpisearch'][$type]['start']=0;
+				}
+			}
+		}
+
 		loadGroups();
 		doHook("change_entity");
 		cleanCache("GLPI_HEADER_".$_SESSION["glpiID"]);
