@@ -104,7 +104,7 @@ else if (isset($_GET["unglobalize"]))
 
 	unglobalizeDevice(PERIPHERAL_TYPE,$_GET["ID"]);
 	logEvent($_GET["ID"], "peripherals", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][60]);
-	glpi_header($_SERVER['HTTP_REFERER']);
+	glpi_header($CFG_GLPI["root_doc"]."/front/peripheral.form.php?ID=".$_GET["ID"]);
 }
 else if (isset($_GET["disconnect"]))
 {
