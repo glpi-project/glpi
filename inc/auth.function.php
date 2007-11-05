@@ -697,7 +697,8 @@ function getEntitiesRestrictRequest($separator = "AND", $table = "", $field = ""
 
 	$query = $separator ." ";
 
-	if (empty($value)&&isset($_SESSION['glpishowallentities'])&&$_SESSION['glpishowallentities']){
+	// !='0' needed because consider as empty
+	if ($value!='0'&&empty($value)&&isset($_SESSION['glpishowallentities'])&&$_SESSION['glpishowallentities']){
 		return $query." '1'='1' ";
 	}
 
