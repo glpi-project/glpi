@@ -484,10 +484,12 @@ function showJobShort($data, $followups,$output_type=HTML_OUTPUT,$row_num=0) {
 			$userdata=getUserName($data['author'],2);
 	
 			$comments_display="";
-			$comments_display="<a href='".$userdata["link"]."'>";
-			$comments_display.="<img alt='' src='".$CFG_GLPI["root_doc"]."/pics/aide.png' onmouseout=\"cleanhide('comments_trackauthor".$data['ID']."')\" onmouseover=\"cleandisplay('comments_trackauthor".$data['ID']."')\">";
-			$comments_display.="</a>";
-			$comments_display.="<span class='over_link' id='comments_trackauthor".$data['ID']."'>".$userdata["comments"]."</span>";
+			if ($output_type==HTML_OUTPUT){
+				$comments_display="<a href='".$userdata["link"]."'>";
+				$comments_display.="<img alt='' src='".$CFG_GLPI["root_doc"]."/pics/aide.png' onmouseout=\"cleanhide('comments_trackauthor".$data['ID']."')\" onmouseover=\"cleandisplay('comments_trackauthor".$data['ID']."')\">";
+				$comments_display.="</a>";
+				$comments_display.="<span class='over_link' id='comments_trackauthor".$data['ID']."'>".$userdata["comments"]."</span>";
+			} 
 	
 			$fourth_col.="<strong>".$userdata['name']."&nbsp;".$comments_display."</strong>";
 		}
@@ -503,10 +505,12 @@ function showJobShort($data, $followups,$output_type=HTML_OUTPUT,$row_num=0) {
 			$userdata=getUserName($data['assign'],2);
 
 			$comments_display="";
-			$comments_display="<a href='".$userdata["link"]."'>";
-			$comments_display.="<img alt='' src='".$CFG_GLPI["root_doc"]."/pics/aide.png' onmouseout=\"cleanhide('comments_trackassign".$data['ID']."')\" onmouseover=\"cleandisplay('comments_trackassign".$data['ID']."')\">";
-			$comments_display.="</a>";
-			$comments_display.="<span class='over_link' id='comments_trackassign".$data['ID']."'>".$userdata["comments"]."</span>";
+			if ($output_type==HTML_OUTPUT){
+				$comments_display="<a href='".$userdata["link"]."'>";
+				$comments_display.="<img alt='' src='".$CFG_GLPI["root_doc"]."/pics/aide.png' onmouseout=\"cleanhide('comments_trackassign".$data['ID']."')\" onmouseover=\"cleandisplay('comments_trackassign".$data['ID']."')\">";
+				$comments_display.="</a>";
+				$comments_display.="<span class='over_link' id='comments_trackassign".$data['ID']."'>".$userdata["comments"]."</span>";
+			}
 	
 			$fifth_col="<strong>".$userdata['name']."&nbsp;".$comments_display."</strong>";
 		}
@@ -567,15 +571,17 @@ function showJobShort($data, $followups,$output_type=HTML_OUTPUT,$row_num=0) {
 		$nineth_column="";
 		// Job Controls
 
-		if ($_SESSION["glpiactiveprofile"]["interface"]=="central"){
-			if (!$job->canShowTicket()) {
-				$nineth_column.="&nbsp;";
-			} else {
-				$nineth_column.="<a href=\"".$CFG_GLPI["root_doc"]."/front/tracking.form.php?ID=".$data["ID"]."\"><strong>".$LANG["joblist"][13]."</strong></a>&nbsp;(".$job->numberOfFollowups().")";
+		if ($output_type==HTML_OUTPUT){
+			if ($_SESSION["glpiactiveprofile"]["interface"]=="central"){
+				if (!$job->canShowTicket()) {
+					$nineth_column.="&nbsp;";
+				} else {
+					$nineth_column.="<a href=\"".$CFG_GLPI["root_doc"]."/front/tracking.form.php?ID=".$data["ID"]."\"><strong>".$LANG["joblist"][13]."</strong></a>&nbsp;(".$job->numberOfFollowups().")";
+				}
 			}
-		}
-		else {
-			$nineth_column.="<a href=\"".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php?show=user&amp;ID=".$data["ID"]."\">".$LANG["joblist"][13]."</a>&nbsp;(".$job->numberOfFollowups(haveRight("show_full_ticket","1")).")";
+			else {
+				$nineth_column.="<a href=\"".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php?show=user&amp;ID=".$data["ID"]."\">".$LANG["joblist"][13]."</a>&nbsp;(".$job->numberOfFollowups(haveRight("show_full_ticket","1")).")";
+			}
 		}
 		
 		echo displaySearchItem($output_type,$nineth_column,$item_num,$row_num,$align." width='40'");
