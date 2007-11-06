@@ -87,7 +87,7 @@ function showDropdownList($target, $tablename,$FK_entities=''){
 			echo "<input type='hidden' name='FK_entities' value='$entity_restrict'>";
 			
 			echo "<div>";
-			echo "<table width='80%'>";
+			echo "<table width='950'>";
 			$parameters="which=$tablename&amp;mass_deletion=1&amp;FK_entities=$FK_entities";
 			echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td><a onclick= \"if ( markAllRows('massiveaction_form') ) return false;\" href='".$_SERVER['PHP_SELF']."?$parameters&amp;select=all'>".$LANG["buttons"][18]."</a></td>";
 
