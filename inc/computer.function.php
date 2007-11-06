@@ -177,7 +177,9 @@ function showConnections($target,$ID,$withtemplate='') {
 	
 			echo "<tr>";
 			$header_displayed=0;
+
 			foreach ($items as $type => $title){
+
 				if ($header_displayed==2){
 					break;
 				}
@@ -185,7 +187,6 @@ function showConnections($target,$ID,$withtemplate='') {
 				$header_displayed++;
 			}
 			echo "</tr>";
-	
 			echo "<tr class='tab_bg_1'>";
 			$items_displayed=0;
 			foreach ($items as $type=>$title){
@@ -193,9 +194,9 @@ function showConnections($target,$ID,$withtemplate='') {
 					
 					echo "</tr><tr>";
 					$header_displayed=0;
-					foreach ($items as $type => $title){
+					foreach ($items as $tmp_title){
 						if ($header_displayed>=2){
-							echo "<th>".$title.":</th>";
+							echo "<th>".$tmp_title.":</th>";
 						}
 						$header_displayed++;
 					}
