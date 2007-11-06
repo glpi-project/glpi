@@ -1570,11 +1570,12 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$to
 				// End form for delete item
 				echo "</form>";
 			}
-			echo "<br>";
 
 			// Pager
-			if ($output_type==HTML_OUTPUT) // In case of HTML display
+			if ($output_type==HTML_OUTPUT){ // In case of HTML display
+				echo "<br>";
 				printPager($start,$numrows,$target,$parameters);
+			}
 
 		} else {
 			echo "<div class='center'><strong>".$LANG["joblist"][8]."</strong></div>";
