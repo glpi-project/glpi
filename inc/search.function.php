@@ -700,7 +700,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 		for ($i=0;$i<$_SESSION["glpisearchcount2"][$type];$i++)
 			if (isset($type2[$i])&&$type2[$i]>0&&isset($contains2[$i])&&strlen($contains2[$i])) {
 				if (!in_array($LINK_ID_TABLE[$type2[$i]],$already_link_tables2))
-					$FROM.=addMetaLeftJoin($type,$type2[$i],$already_link_tables2,$i,($contains2[$i]=="NULL"));	
+					$FROM.=addMetaLeftJoin($type,$type2[$i],$already_link_tables2,($contains2[$i]=="NULL"));	
 			}
 		// Link items tables
 		for ($i=0;$i<$_SESSION["glpisearchcount2"][$type];$i++)
@@ -1437,7 +1437,6 @@ function addSelect ($type,$ID,$num,$meta=0,$meta_type=0){
 	$pretable="";
 	$NAME="ITEM";
 	if ($meta) {
-		//$pretable="META_";
 		$NAME="META";
 		if ($LINK_ID_TABLE[$meta_type]!=$table)
 			$addtable="_".$meta_type;
@@ -2826,14 +2825,13 @@ function addLeftJoin ($type,$ref_table,&$already_link_tables,$new_table,$linkfie
  *@param $from_type reference item type ID 
  *@param $to_type item type to add
  *@param $already_link_tables2 array of tables already joined
- *@param $num meta number
  *@param $null Used LEFT JOIN (null generation) or INNER JOIN for strict join
  *
  *
  *@return Meta Left join string
  *
  **/
-function addMetaLeftJoin($from_type,$to_type,&$already_link_tables2,$num,$null){
+function addMetaLeftJoin($from_type,$to_type,&$already_link_tables2,$null){
 	global $LINK_ID_TABLE;
 
 
@@ -2845,41 +2843,41 @@ function addMetaLeftJoin($from_type,$to_type,&$already_link_tables2,$num,$null){
 		case COMPUTER_TYPE :
 			switch ($to_type){
 				/*				case NETWORKING_TYPE :
-								array_push($already_link_tables2,$LINK_ID_TABLE[NETWORKING_TYPE]."_$num");
-								return " $LINK glpi_networking_ports as META_ports ON (glpi_computers.ID = META_ports.on_device AND META_ports.device_type='".COMPUTER_TYPE."') ".
-								" $LINK glpi_networking_wire as META_wire1 ON (META_ports.ID = META_wire1.end1) ".
-								" $LINK glpi_networking_ports as META_ports21 ON (META_ports21.device_type='".NETWORKING_TYPE."' AND META_wire1.end2 = META_ports21.ID ) ".
-								" $LINK glpi_networking_wire as META_wire2 ON (META_ports.ID = META_wire2.end2) ".
-								" $LINK glpi_networking_ports as META_ports22 ON (META_ports22.device_type='".NETWORKING_TYPE."' AND META_wire2.end1 = META_ports22.ID ) ".
-								" $LINK glpi_networking$num ON (glpi_networking$num.ID = META_ports22.on_device OR glpi_networking.ID = META_ports21.on_device)";
+								array_push($already_link_tables2,$LINK_ID_TABLE[NETWORKING_TYPE]."_$to_type");
+								return " $LINK glpi_networking_ports as ports ON (glpi_computers.ID = ports.on_device AND ports.device_type='".COMPUTER_TYPE."') ".
+								" $LINK glpi_networking_wire as wire1 ON (ports.ID = wire1.end1) ".
+								" $LINK glpi_networking_ports as ports21 ON (ports21.device_type='".NETWORKING_TYPE."' AND wire1.end2 = ports21.ID ) ".
+								" $LINK glpi_networking_wire as wire2 ON (ports.ID = wire2.end2) ".
+								" $LINK glpi_networking_ports as ports22 ON (ports22.device_type='".NETWORKING_TYPE."' AND wire2.end1 = ports22.ID ) ".
+								" $LINK glpi_networking$to_type ON (glpi_networking$to_type.ID = ports22.on_device OR glpi_networking.ID = ports21.on_device)";
 								break;
 				 */				
 				case PRINTER_TYPE :
 					array_push($already_link_tables2,$LINK_ID_TABLE[PRINTER_TYPE]);
-					return " $LINK glpi_connect_wire AS META_conn_print_$num ON (META_conn_print_$num.end2=glpi_computers.ID  AND META_conn_print_$num.type='".PRINTER_TYPE."') ".
-						" $LINK glpi_printers ON (META_conn_print_$num.end1=glpi_printers.ID) ";
+					return " $LINK glpi_connect_wire AS conn_print_$to_type ON (conn_print_$to_type.end2=glpi_computers.ID  AND conn_print_$to_type.type='".PRINTER_TYPE."') ".
+						" $LINK glpi_printers ON (conn_print_$to_type.end1=glpi_printers.ID) ";
 					break;				
 				case MONITOR_TYPE :
 					array_push($already_link_tables2,$LINK_ID_TABLE[MONITOR_TYPE]);
-					return " $LINK glpi_connect_wire AS META_conn_mon_$num ON (META_conn_mon_$num.end2=glpi_computers.ID  AND META_conn_mon_$num.type='".MONITOR_TYPE."') ".
-						" $LINK glpi_monitors ON (META_conn_mon_$num.end1=glpi_monitors.ID) ";
+					return " $LINK glpi_connect_wire AS conn_mon_$to_type ON (conn_mon_$to_type.end2=glpi_computers.ID  AND conn_mon_$to_type.type='".MONITOR_TYPE."') ".
+						" $LINK glpi_monitors ON (conn_mon_$to_type.end1=glpi_monitors.ID) ";
 					break;				
 				case PERIPHERAL_TYPE :
 					array_push($already_link_tables2,$LINK_ID_TABLE[PERIPHERAL_TYPE]);
-					return " $LINK glpi_connect_wire AS META_conn_periph_$num ON (META_conn_periph_$num.end2=glpi_computers.ID  AND META_conn_periph_$num.type='".PERIPHERAL_TYPE."') ".
-						" $LINK glpi_peripherals ON (META_conn_periph_$num.end1=glpi_peripherals.ID) ";
+					return " $LINK glpi_connect_wire AS conn_periph_$to_type ON (conn_periph_$num.end2=glpi_computers.ID  AND conn_periph_$to_type.type='".PERIPHERAL_TYPE."') ".
+						" $LINK glpi_peripherals ON (conn_periph_$to_type.end1=glpi_peripherals.ID) ";
 					break;				
 				case PHONE_TYPE :
 					array_push($already_link_tables2,$LINK_ID_TABLE[PHONE_TYPE]);
-					return " $LINK glpi_connect_wire AS META_conn_phones_$num ON (META_conn_phones_$num.end2=glpi_computers.ID  AND META_conn_phones_$num.type='".PHONE_TYPE."') ".
-						" $LINK glpi_phones ON (META_conn_phones_$num.end1=glpi_phones.ID) ";
+					return " $LINK glpi_connect_wire AS conn_phones_$to_type ON (conn_phones_$to_type.end2=glpi_computers.ID  AND conn_phones_$to_type.type='".PHONE_TYPE."') ".
+						" $LINK glpi_phones ON (conn_phones_$to_type.end1=glpi_phones.ID) ";
 					break;			
 
 				case SOFTWARE_TYPE :
 					array_push($already_link_tables2,$LINK_ID_TABLE[SOFTWARE_TYPE]);
-					return " $LINK glpi_inst_software as META_inst_$num ON (META_inst_$num.cID = glpi_computers.ID) ".
-						" $LINK glpi_licenses as META_glpi_licenses_$num ON ( META_inst_$num.license=META_glpi_licenses_$num.ID ) ".
-						" $LINK glpi_software ON (META_glpi_licenses_$num.sID = glpi_software.ID)"; 
+					return " $LINK glpi_inst_software as inst_$to_type ON (inst_$to_type.cID = glpi_computers.ID) ".
+						" $LINK glpi_licenses as glpi_licenses_$to_type ON ( inst_$to_type.license=glpi_licenses_$to_type.ID ) ".
+						" $LINK glpi_software ON (glpi_licenses_$to_type.sID = glpi_software.ID)"; 
 					break;
 			}
 			break;
@@ -2887,8 +2885,8 @@ function addMetaLeftJoin($from_type,$to_type,&$already_link_tables2,$num,$null){
 			switch ($to_type){
 				case COMPUTER_TYPE :
 					array_push($already_link_tables2,$LINK_ID_TABLE[COMPUTER_TYPE]);
-					return " $LINK glpi_connect_wire AS META_conn_mon_$num ON (META_conn_mon_$num.end1=glpi_monitors.ID  AND META_conn_mon_$num.type='".MONITOR_TYPE."') ".
-						" $LINK glpi_computers ON (META_conn_mon_$num.end2=glpi_computers.ID) ";
+					return " $LINK glpi_connect_wire AS conn_mon_$to_type ON (conn_mon_$to_type.end1=glpi_monitors.ID  AND conn_mon_$to_type.type='".MONITOR_TYPE."') ".
+						" $LINK glpi_computers ON (conn_mon_$to_type.end2=glpi_computers.ID) ";
 
 					break;
 			}
@@ -2897,8 +2895,8 @@ function addMetaLeftJoin($from_type,$to_type,&$already_link_tables2,$num,$null){
 			switch ($to_type){
 				case COMPUTER_TYPE :
 					array_push($already_link_tables2,$LINK_ID_TABLE[COMPUTER_TYPE]);
-					return " $LINK glpi_connect_wire AS META_conn_mon_$num ON (META_conn_mon_$num.end1=glpi_printers.ID  AND META_conn_mon_$num.type='".PRINTER_TYPE."') ".
-						" $LINK glpi_computers ON (META_conn_mon_$num.end2=glpi_computers.ID) ";
+					return " $LINK glpi_connect_wire AS conn_mon_$to_type ON (conn_mon_$to_type.end1=glpi_printers.ID  AND conn_mon_$to_type.type='".PRINTER_TYPE."') ".
+						" $LINK glpi_computers ON (conn_mon_$to_type.end2=glpi_computers.ID) ";
 
 					break;
 			}
@@ -2907,8 +2905,8 @@ function addMetaLeftJoin($from_type,$to_type,&$already_link_tables2,$num,$null){
 			switch ($to_type){
 				case COMPUTER_TYPE :
 					array_push($already_link_tables2,$LINK_ID_TABLE[COMPUTER_TYPE]);
-					return " $LINK glpi_connect_wire AS META_conn_mon_$num ON (META_conn_mon_$num.end1=glpi_peripherals.ID  AND META_conn_mon_$num.type='".PERIPHERAL_TYPE."') ".
-						" $LINK glpi_computers ON (META_conn_mon_$num.end2=glpi_computers.ID) ";
+					return " $LINK glpi_connect_wire AS conn_mon_$to_type ON (conn_mon_$to_type.end1=glpi_peripherals.ID  AND conn_mon_$to_type.type='".PERIPHERAL_TYPE."') ".
+						" $LINK glpi_computers ON (conn_mon_$to_type.end2=glpi_computers.ID) ";
 
 					break;
 			}
@@ -2917,8 +2915,8 @@ function addMetaLeftJoin($from_type,$to_type,&$already_link_tables2,$num,$null){
 			switch ($to_type){
 				case COMPUTER_TYPE :
 					array_push($already_link_tables2,$LINK_ID_TABLE[COMPUTER_TYPE]);
-					return " $LINK glpi_connect_wire AS META_conn_mon_$num ON (META_conn_mon_$num.end1=glpi_phones.ID  AND META_conn_mon_$num.type='".PHONE_TYPE."') ".
-						" $LINK glpi_computers ON (META_conn_mon_$num.end2=glpi_computers.ID) ";
+					return " $LINK glpi_connect_wire AS conn_mon_$to_type ON (conn_mon_$to_type.end1=glpi_phones.ID  AND conn_mon_$to_type.type='".PHONE_TYPE."') ".
+						" $LINK glpi_computers ON (conn_mon_$to_type.end2=glpi_computers.ID) ";
 
 					break;
 			}
@@ -2927,9 +2925,9 @@ function addMetaLeftJoin($from_type,$to_type,&$already_link_tables2,$num,$null){
 			switch ($to_type){
 				case COMPUTER_TYPE :
 					array_push($already_link_tables2,$LINK_ID_TABLE[COMPUTER_TYPE]);
-					return " $LINK glpi_licenses as META_glpi_licenses_$num ON ( META_glpi_licenses_$num.sID = glpi_software.ID ) ".
-						" $LINK glpi_inst_software as META_inst_$num ON (META_inst_$num.license = META_glpi_licenses_$num.ID) ".
-						" $LINK glpi_computers ON (META_inst_$num.cID = glpi_computers.ID)";
+					return " $LINK glpi_licenses as glpi_licenses_$to_type ON ( glpi_licenses_$to_type.sID = glpi_software.ID ) ".
+						" $LINK glpi_inst_software as inst_$to_type ON (inst_$to_type.license = glpi_licenses_$to_type.ID) ".
+						" $LINK glpi_computers ON (inst_$to_type.cID = glpi_computers.ID)";
 
 					break;
 			}
