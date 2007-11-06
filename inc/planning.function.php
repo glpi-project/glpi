@@ -109,13 +109,33 @@ function showPlanning($who,$who_group,$when,$type){
 	$ASSIGN="";
 	if ($who>0)
 		$ASSIGN="id_assign='$who' AND";
-	if ($who_group>0)
+	if ($who_group>0){
 		$ASSIGN="id_assign IN (SELECT FK_users FROM glpi_users_groups WHERE FK_groups = '$who_group') AND";
+	}
 	if (empty($ASSIGN)){
 		$ASSIGN=" id_assign IN (SELECT DISTINCT glpi_users_profiles.FK_users 
 					FROM glpi_profiles 
 					LEFT JOIN glpi_users_profiles ON (glpi_profiles.ID = glpi_users_profiles.FK_profiles)
-					WHERE glpi_profiles.interface='central' AND glpi_users_profiles.FK_entities='".$_SESSION["glpiactive_entity"]."') AND";
+					WHERE glpi_profiles.interface='central' AND ( glpi_users_profiles.FK_entities='".$_SESSION["glpiactive_entity"]."' ";
+
+		$ancestors=getEntityAncestors($_SESSION["glpiactive_entity"]);
+		print_r($ancestors);
+		if (count($ancestors)){
+			$ASSIGN.=" OR ( glpi_users_profiles.recursive='1' AND glpi_users_profiles.FK_entities IN (";
+			$first=true;
+			foreach ($ancestors as $val){
+				if (!$first){
+					$ASSIGN.=",";
+				} else {
+					$first=false;
+				}
+				$ASSIGN.=$val;
+			}
+			$ASSIGN.="))";
+		}
+		$ASSIGN.=" ) ) AND ";
+
+
 	}
 	// ---------------Tracking
 
