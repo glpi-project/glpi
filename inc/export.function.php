@@ -52,7 +52,7 @@ function displaySearchHeaderItem($type,$value,&$num,$linkto="",$issort=0,$order=
 	switch ($type){
 		case PDF_OUTPUT : //pdf
 			global $PDF_HEADER;
-			$PDF_HEADER[$num]=html_clean(utf8_decode($value));
+			$PDF_HEADER[$num]=utf8_decode(html_clean($value));
 			break;
 		case SYLK_OUTPUT : //sylk
 			global $SYLK_HEADER,$SYLK_SIZE;
@@ -108,7 +108,7 @@ function displaySearchItem($type,$value,&$num,$row,$extraparam=''){
 	switch ($type){
 		case PDF_OUTPUT : //pdf
 			global $PDF_ARRAY,$PDF_HEADER;
-			$PDF_ARRAY[$row][$num]=html_clean(utf8_decode($value));
+			$PDF_ARRAY[$row][$num]=utf8_decode(html_clean($value));
 			break;
 		case SYLK_OUTPUT : //sylk
 			global $SYLK_ARRAY,$SYLK_HEADER,$SYLK_SIZE;
