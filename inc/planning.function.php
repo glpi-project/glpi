@@ -119,7 +119,7 @@ function showPlanning($who,$who_group,$when,$type){
 					WHERE glpi_profiles.interface='central' AND ( glpi_users_profiles.FK_entities='".$_SESSION["glpiactive_entity"]."' ";
 
 		$ancestors=getEntityAncestors($_SESSION["glpiactive_entity"]);
-		print_r($ancestors);
+		//print_r($ancestors);
 		if (count($ancestors)){
 			$ASSIGN.=" OR ( glpi_users_profiles.recursive='1' AND glpi_users_profiles.FK_entities IN (";
 			$first=true;
