@@ -104,6 +104,7 @@ class PlanningTracking extends CommonDBTM {
 		$updates2[]="realtime";
 		$fup->fields["realtime"]=$dateDiff/60/60;
 		$fup->updateInDB($updates2);
+		$job->updateRealTime();
 
 		if (isset($updates)){
 			$this->updateInDB($updates);
@@ -165,6 +166,7 @@ class PlanningTracking extends CommonDBTM {
 			$updates2[]="realtime";
 			$fup->fields["realtime"]=$dateDiff/60/60;
 			$fup->updateInDB($updates2);
+			$job->updateRealTime();
 		}
 
 		if ($input["id_tracking"]>0)
