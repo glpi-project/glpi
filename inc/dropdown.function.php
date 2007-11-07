@@ -747,7 +747,7 @@ function dropdownMyDevices($userID=0){
 		if (isset($_SESSION["helpdeskSaved"]["_my_items"])) $my_item=$_SESSION["helpdeskSaved"]["_my_items"];
 
 		// My items
-		foreach ($CFG_GLPI["linkuser_type"] as $type){
+		foreach ($CFG_GLPI["linkuser_types"] as $type){
 			if ($_SESSION["glpiactiveprofile"]["helpdesk_hardware_type"]&pow(2,$type)){
 				$query="SELECT * from ".$LINK_ID_TABLE[$type]." WHERE FK_users='".$userID."' AND deleted='0' ";
 				if (in_array($LINK_ID_TABLE[$type],$CFG_GLPI["template_tables"])){
@@ -798,7 +798,7 @@ function dropdownMyDevices($userID=0){
 				}
 
 				$tmp_device="";
-				foreach ($CFG_GLPI["linkuser_type"] as $type){
+				foreach ($CFG_GLPI["linkuser_types"] as $type){
 					if ($_SESSION["glpiactiveprofile"]["helpdesk_hardware_type"]&pow(2,$type))
 					{
 						$query="SELECT * FROM ".$LINK_ID_TABLE[$type]." WHERE $group_where AND deleted='0' ";
@@ -1045,11 +1045,14 @@ function dropdownConnectPort($ID,$type,$myname,$entity_restrict=-1) {
 	$rand=mt_rand();
 	echo "<select name='type[$ID]' id='item_type$rand'>\n";
 	echo "<option value='0'>-----</option>\n";
-	echo "<option value='".COMPUTER_TYPE."'>".$LANG["Menu"][0]."</option>\n";
-	echo "<option value='".NETWORKING_TYPE."'>".$LANG["Menu"][1]."</option>\n";
-	echo "<option value='".PRINTER_TYPE."'>".$LANG["Menu"][2]."</option>\n";
-	echo "<option value='".PERIPHERAL_TYPE."'>".$LANG["Menu"][16]."</option>\n";
-	echo "<option value='".PHONE_TYPE."'>".$LANG["Menu"][34]."</option>\n";
+
+	$ci =new CommonItem();
+
+	foreach ($CFG_GLPI["netport_types"] as $type){
+		$ci->setType($type);
+		echo "<option value='".$type."'>".$ci->getType()."</option>\n";
+	}
+
 	echo "</select>\n";
 
 

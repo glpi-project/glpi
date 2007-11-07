@@ -112,7 +112,7 @@ function showDeviceUser($ID){
 	$ci=new CommonItem();
 	echo "<div class='center'><table class='tab_cadre_fixe'><tr><th>".$LANG["common"][17]."</th><th>".$LANG["common"][16]."</th><th>".$LANG["common"][19]."</th><th>".$LANG["common"][20]."</th><th>&nbsp;</th></tr>";
 
-	foreach ($CFG_GLPI["linkuser_type"] as $type){
+	foreach ($CFG_GLPI["linkuser_types"] as $type){
 		$query="SELECT * FROM ".$LINK_ID_TABLE[$type]." WHERE FK_users='$ID'";
 		$result=$DB->query($query);
 		if ($DB->numrows($result)>0){
@@ -146,7 +146,7 @@ function showDeviceUser($ID){
 	if (!empty($group_where)){
 		echo "<div class='center'><table class='tab_cadre_fixe'><tr><th>".$LANG["common"][17]."</th><th>".$LANG["common"][16]."</th><th>".$LANG["common"][19]."</th><th>".$LANG["common"][20]."</th><th>&nbsp;</th></tr>";
 	
-		foreach ($CFG_GLPI["linkuser_type"] as $type){
+		foreach ($CFG_GLPI["linkuser_types"] as $type){
 			$query="SELECT * FROM ".$LINK_ID_TABLE[$type]." WHERE $group_where";
 			$result=$DB->query($query);
 			if ($DB->numrows($result)>0){
