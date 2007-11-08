@@ -1904,4 +1904,12 @@ function dropdownUnderProfiles($name,$value=''){
 	dropdownArrayValues($name,$profiles,$value);
 }
 
+function dropdownAlertInfocoms($name,$value=0){
+	global $LANG;
+	echo "<select name=\"$name\">";
+	echo "<option value=\"0\" ".($value==0?" selected ":"")." >-----</option>";
+	echo "<option value=\"".pow(2,ALERT_END)."\" ".($value==pow(2,ALERT_END)?" selected ":"")." >".$LANG["financial"][80]." </option>";
+	echo "</select>";
+}
+
 ?>

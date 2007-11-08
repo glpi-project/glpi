@@ -2970,7 +2970,7 @@ function isInfocomSearch($device_type,$searchID){
 	global $CFG_GLPI;
 	return (($searchID>=25&&$searchID<=28)
 	||($searchID>=37&&$searchID<=38)
-	||($searchID>=50&&$searchID<=58))&&in_array($device_type,$CFG_GLPI["infocom_types"]);
+	||($searchID>=50&&$searchID<=59))&&in_array($device_type,$CFG_GLPI["infocom_types"]);
 }
 
 ?>

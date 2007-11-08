@@ -61,7 +61,7 @@ if (isset($_POST["device_type"])&&isset($_POST["id_field"])&&$_POST["id_field"])
 
 	$FIELDNAME_PRINTED=false;
 
-	
+
 	if ($search["table"]==$LINK_ID_TABLE[$_POST["device_type"]]){ // field type
 		switch ($search["table"].".".$search["linkfield"]){
 			case "glpi_software.helpdesk_visible":
@@ -99,6 +99,10 @@ if (isset($_POST["device_type"])&&isset($_POST["id_field"])&&$_POST["id_field"])
 
 			case "glpi_infocoms":  // infocoms case
 				switch ($search["field"]){
+					case "alert":
+						dropdownAlertInfocoms($search["field"]);
+					break;
+
 					case "buy_date" :
 					case "use_date" :
 						showCalendarForm("massiveaction_form",$search["field"]);
