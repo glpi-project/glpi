@@ -593,28 +593,36 @@ function installSoftware($cID,$lID,$sID='',$dohistory=1) {
 
 
 	if (!empty($lID)&&$lID>0){
-		$query = "INSERT INTO glpi_inst_software VALUES (NULL,$cID,$lID)";
-		if ($result = $DB->query($query)) {
-			$newID=$DB->insert_id();
-			if ($dohistory){
-				$lic=new License();
-				$lic->getFromDB($lID);
-				$soft=new Software();
-				if ($soft->getFromDB($lic->fields["sID"])){
-					$changes[0]='0';
-					$changes[1]="";
-					$changes[2]=addslashes($soft->fields["name"]." (v. ".$lic->fields["version"].")");
-					// history log
-					historyLog ($cID,COMPUTER_TYPE,$changes,0,HISTORY_INSTALL_SOFTWARE);
-					$comp=new Computer();
-					$comp->getFromDB($cID);
-					$changes[2]=addslashes($comp->fields["name"]." (v. ".$lic->fields["version"].")");
-					historyLog ($lic->fields["sID"],SOFTWARE_TYPE,$changes,0,HISTORY_INSTALL_SOFTWARE);
+		
+		$query_exists = "SELECT ID FROM glpi_inst_software WHERE cID=".$cID." AND license=".$lID;
+		$result = $DB->query($query_exists);
+		if ($DB->numrows($result) > 0)
+			return $DB->result($result,0,"ID");
+		else
+		{
+			$query = "INSERT INTO glpi_inst_software VALUES (NULL,$cID,$lID)";
+			if ($result = $DB->query($query)) {
+				$newID=$DB->insert_id();
+				if ($dohistory){
+					$lic=new License();
+					$lic->getFromDB($lID);
+					$soft=new Software();
+					if ($soft->getFromDB($lic->fields["sID"])){
+						$changes[0]='0';
+						$changes[1]="";
+						$changes[2]=addslashes($soft->fields["name"]." (v. ".$lic->fields["version"].")");
+						// history log
+						historyLog ($cID,COMPUTER_TYPE,$changes,0,HISTORY_INSTALL_SOFTWARE);
+						$comp=new Computer();
+						$comp->getFromDB($cID);
+						$changes[2]=addslashes($comp->fields["name"]." (v. ".$lic->fields["version"].")");
+						historyLog ($lic->fields["sID"],SOFTWARE_TYPE,$changes,0,HISTORY_INSTALL_SOFTWARE);
+					}
 				}
+				return $newID;
+			} else {
+				return false;
 			}
-			return $newID;
-		} else {
-			return false;
 		}
 	} else if ($lID<0&&!empty($sID)){ // Auto Add a license
 		$lic=new License();
