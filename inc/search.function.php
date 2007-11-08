@@ -1758,7 +1758,6 @@ function addWhere ($link,$nott,$type,$ID,$val,$meta=0){
 			}
 			break;
 
-
 		case "glpi_infocoms.value":
 		case "glpi_infocoms.warranty_value":
 			if (is_numeric($val)){
@@ -2480,6 +2479,12 @@ function giveItem ($type,$field,$data,$num,$linkfield=""){
 		case "glpi_infocoms.value":
 		case "glpi_infocoms.warranty_value":
 			return number_format($data["ITEM_$num"],$CFG_GLPI["decimal_number"],'.','');
+			break;
+		case "glpi_infocoms.alert":
+			if ($data["ITEM_$num"]==pow(2,ALERT_END)){
+				return $LANG["financial"][80];
+			} 
+			return "";
 			break;
 		case "glpi_tracking.count":
 			if ($data["ITEM_$num"]>0&&haveRight("show_all_ticket","1")){

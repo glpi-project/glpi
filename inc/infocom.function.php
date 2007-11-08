@@ -190,19 +190,21 @@ function showInfocomForm($target,$device_type,$dev_ID,$show_immo=1,$withtemplate
 			echo "</td></tr>";
 		}
 
-		echo "<tr class='tab_bg_1'><td>".$LANG["setup"][247].":		</td>";
-		echo "<td>";
-		echo "<select name=\"alert\">";
-		echo "<option value=\"0\" ".($ic->fields["alert"]==0?" selected ":"")." >-----</option>";
-		echo "<option value=\"".pow(2,ALERT_END)."\" ".($ic->fields["alert"]==pow(2,ALERT_END)?" selected ":"")." >".$LANG["financial"][80]." </option>";
-		echo "</select>";
-
-		echo "</td>";
-
-
-		echo "<td>&nbsp;</td>";
-		echo "<td >&nbsp;";
-		echo "</td></tr>";
+		if ($CFG_GLPI['mailing']){
+			echo "<tr class='tab_bg_1'><td>".$LANG["setup"][247].":		</td>";
+			echo "<td>";
+			echo "<select name=\"alert\">";
+			echo "<option value=\"0\" ".($ic->fields["alert"]==0?" selected ":"")." >-----</option>";
+			echo "<option value=\"".pow(2,ALERT_END)."\" ".($ic->fields["alert"]==pow(2,ALERT_END)?" selected ":"")." >".$LANG["financial"][80]." </option>";
+			echo "</select>";
+	
+			echo "</td>";
+	
+	
+			echo "<td>&nbsp;</td>";
+			echo "<td >&nbsp;";
+			echo "</td></tr>";
+		}
 
 		// commment
 		echo "<tr class='tab_bg_1'><td valign='top'>";
