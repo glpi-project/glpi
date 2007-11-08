@@ -63,6 +63,7 @@ function showLicenses ($sID,$show_computers=0) {
 	$query = "SELECT count(*) AS COUNT  FROM glpi_licenses WHERE (sID = '$sID')";
 	$query_update = "SELECT count(glpi_licenses.ID) AS COUNT  FROM glpi_licenses, glpi_software WHERE (glpi_software.ID = glpi_licenses.sID AND glpi_software.update_software = '$sID' and glpi_software.is_update='1')";
 
+	$found_soft=true;
 	if ($result = $DB->query($query)) {
 		if ($DB->result($result,0,0)!=0) { 
 			$nb_licences=$DB->result($result, 0, "COUNT");
@@ -142,6 +143,7 @@ function showLicenses ($sID,$show_computers=0) {
 			echo "<br><div class='center'><table border='0' width='50%' cellpadding='2'>";
 			echo "<tr><th>".$LANG["software"][14]."</th></tr>";
 			echo "</table></div>";
+			$found_soft=false;
 		}
 	}
 
@@ -378,14 +380,15 @@ function showLicenses ($sID,$show_computers=0) {
 		}
 	}	
 	echo "</table></div>\n\n";
-
-	echo "<div>";
-	echo "<table width='950px'>";
-	echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td><a onclick= \"if ( markAllRows('lic_form') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$sID&amp;select=all'>".$LANG["buttons"][18]."</a></td>";
-
-	echo "<td>/</td><td ><a onclick=\"if ( unMarkAllRows('lic_form') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$sID&amp;select=none'>".$LANG["buttons"][19]."</a>";
-	echo "</td><td class='left' width='80%'>&nbsp;";
-	echo "</td></table></div>";
+	if ($found_soft){
+		echo "<div>";
+		echo "<table width='950px'>";
+		echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td><a onclick= \"if ( markAllRows('lic_form') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$sID&amp;select=all'>".$LANG["buttons"][18]."</a></td>";
+	
+		echo "<td>/</td><td ><a onclick=\"if ( unMarkAllRows('lic_form') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$sID&amp;select=none'>".$LANG["buttons"][19]."</a>";
+		echo "</td><td class='left' width='80%'>&nbsp;";
+		echo "</td></table></div>";
+	}
 
 	echo "</form>";
 }
@@ -703,16 +706,22 @@ function showSoftwareInstalled($instID,$withtemplate='') {
 	$comp->getFromDB($instID);
 	$FK_entities=$comp->fields["FK_entities"];
 
-	$query_cat = "SELECT 1 as TYPE, glpi_dropdown_software_category.name as category, glpi_software.category as category_id, glpi_software.name as softname, glpi_inst_software.license as license, glpi_inst_software.ID as ID,glpi_licenses.expire,glpi_software.deleted, glpi_licenses.sID, glpi_licenses.version, glpi_licenses.oem, glpi_licenses.oem_computer, glpi_licenses.serial, glpi_licenses.buy	FROM glpi_inst_software LEFT JOIN glpi_licenses ON ( glpi_inst_software.license = glpi_licenses.ID )
+	$query_cat = "SELECT 1 as TYPE, glpi_dropdown_software_category.name as category, glpi_software.category as category_id, glpi_software.name as softname, glpi_inst_software.license as license, glpi_inst_software.ID as ID,glpi_licenses.expire,glpi_software.deleted, glpi_licenses.sID, GROUP_CONCAT( DISTINCT CONCAT(glpi_licenses.version,' ', glpi_licenses.serial) SEPARATOR '$$$$') AS version, glpi_licenses.serial, glpi_licenses.oem, glpi_licenses.oem_computer, glpi_licenses.buy	
+	FROM glpi_inst_software 
+	LEFT JOIN glpi_licenses ON ( glpi_inst_software.license = glpi_licenses.ID )
 	LEFT JOIN glpi_software ON (glpi_licenses.sID = glpi_software.ID) 
 	LEFT JOIN glpi_dropdown_software_category ON (glpi_dropdown_software_category.ID = glpi_software.category)";
 
-	$query_cat.=" WHERE glpi_inst_software.cID = '$instID' AND glpi_software.category > 0 "; 
-    $query_nocat = "SELECT 2 as TYPE, glpi_dropdown_software_category.name as category, glpi_software.category as category_id, glpi_software.name as softname, glpi_inst_software.license as license, glpi_inst_software.ID as ID,glpi_licenses.expire,glpi_software.deleted, glpi_licenses.sID, glpi_licenses.version, glpi_licenses.oem, glpi_licenses.oem_computer, glpi_licenses.serial, glpi_licenses.buy  
-        FROM glpi_inst_software LEFT JOIN glpi_licenses ON ( glpi_inst_software.license = glpi_licenses.ID ) 
+	$query_cat.=" WHERE glpi_inst_software.cID = '$instID' AND glpi_software.category > 0 
+			GROUP BY glpi_licenses.sID"; 
+
+    $query_nocat = "SELECT 2 as TYPE, glpi_dropdown_software_category.name as category, glpi_software.category as category_id, glpi_software.name as softname, glpi_inst_software.license as license, glpi_inst_software.ID as ID,glpi_licenses.expire,glpi_software.deleted, glpi_licenses.sID, GROUP_CONCAT( DISTINCT CONCAT(glpi_licenses.version,' ', glpi_licenses.serial) SEPARATOR '$$$$') AS version, glpi_licenses.serial, glpi_licenses.oem, glpi_licenses.oem_computer, glpi_licenses.buy  
+        FROM glpi_inst_software 
+	LEFT JOIN glpi_licenses ON ( glpi_inst_software.license = glpi_licenses.ID ) 
         LEFT JOIN glpi_software ON (glpi_licenses.sID = glpi_software.ID)  
         LEFT JOIN glpi_dropdown_software_category ON (glpi_dropdown_software_category.ID = glpi_software.category)"; 
-    $query_nocat.= " WHERE glpi_inst_software.cID = '$instID' AND (glpi_software.category <= 0 OR glpi_software.category IS NULL ) "; 
+    $query_nocat.= " WHERE glpi_inst_software.cID = '$instID' AND (glpi_software.category <= 0 OR glpi_software.category IS NULL ) 
+		GROUP BY glpi_licenses.sID"; 
     $query="( $query_cat ) UNION ($query_nocat) ORDER BY TYPE, category, softname, version";
 
 	$result = $DB->query($query);
@@ -733,7 +742,7 @@ function showSoftwareInstalled($instID,$withtemplate='') {
 		echo "</td></tr>";
 	}
 	
-	echo "<tr><th colspan='5'>".$LANG["software"][17].":</th></tr>";
+	echo "<tr><th colspan='6'>".$LANG["software"][17].":</th></tr>";
 	
 	$cat = -1;
 	
@@ -794,7 +803,7 @@ function displayCategoryHeader($data,$cat)
 			     <div align='center' id='softcat$cat' ".(!$display?"style=\"display:none;\"":'').">"; 
 	echo"			<table class='tab_cadre_fixe'>";
 	echo "				<tr>"; 
-	echo "					<th>".$LANG["common"][16]."</th><th>".$LANG["software"][32]."</th><th>".$LANG["software"][28]."</th><th>".$LANG["software"][35]."</th><th>&nbsp;</th>"; 
+	echo "					<th>".$LANG["common"][16]."</th><th>".$LANG["software"][11]."</th><th>".$LANG["software"][32]."</th><th>".$LANG["software"][28]."</th><th>".$LANG["software"][35]."</th><th>&nbsp;</th>"; 
 	echo"				</tr>";
 	return $cat;
 }
@@ -816,9 +825,20 @@ function displaySoftsByCategory($data,$instID,$withtemplate)
 
 	echo "<tr class='tab_bg_1$expirecss'>";
 	echo "<td class='center'><strong><a href=\"".$CFG_GLPI["root_doc"]."/front/software.form.php?ID=".$data['sID']."\">";
-	echo $data["softname"]." (v. ".$data["version"].")".($CFG_GLPI["view_ID"]?" (".$data['ID'].")":"")."</a>";
+	echo $data["softname"].($CFG_GLPI["view_ID"]?" (".$data['ID'].")":"")."</a>";
 	echo "</strong>";
-	echo " - ".$data['serial']."</td>";
+	echo "</td>";
+	echo "<td>";
+
+	$split=explode("$$$$",$data["version"]);
+	$count_display=0;
+	$out="";
+	for ($k=0;$k<count($split);$k++){
+		if ($count_display) echo "<br>";
+		$count_display++;
+		echo  $split[$k];
+	}
+	echo "</td>";
 	echo "<td class='center'><strong>";
 	if ($data['expire']==NULL)
 		echo $LANG["software"][26];

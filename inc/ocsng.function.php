@@ -2851,17 +2851,18 @@ function ocsUpdateSoftware($glpi_id, $entity, $ocs_id, $ocs_server_id, $cfg_ocs,
 		$import_software_buy = $cfg_ocs["import_software_buy"];
 
 		//---- Get all the softwares for this machine from OCS -----//
-		if ($cfg_ocs["use_soft_dict"])
+		if ($cfg_ocs["use_soft_dict"]){
 			$query2 = "SELECT softwares.NAME AS INITNAME, dico_soft.FORMATTED AS NAME, 
 							softwares.VERSION AS VERSION, softwares.PUBLISHER AS PUBLISHER, softwares.COMMENTS AS COMMENTS 
 							FROM softwares 
 							INNER JOIN dico_soft ON (softwares.NAME = dico_soft.EXTRACTED) 
 							WHERE softwares.HARDWARE_ID='$ocs_id'";
-		else
+		} else {
 			$query2 = "SELECT softwares.NAME AS INITNAME, softwares.NAME AS NAME, 
 								softwares.VERSION AS VERSION, softwares.PUBLISHER AS PUBLISHER, softwares.COMMENTS AS COMMENTS
 								FROM softwares 
 								WHERE softwares.HARDWARE_ID='$ocs_id'";
+		}
 
 		$result2 = $DBocs->query($query2);
 		$to_add_to_ocs_array = array ();
