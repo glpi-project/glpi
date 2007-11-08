@@ -724,6 +724,8 @@ function showSoftwareInstalled($instID,$withtemplate='') {
 		GROUP BY glpi_licenses.sID"; 
     $query="( $query_cat ) UNION ($query_nocat) ORDER BY TYPE, category, softname, version";
 
+	$DB->query("SET SESSION group_concat_max_len = 9999999;");
+
 	$result = $DB->query($query);
 	$i = 0;
 
