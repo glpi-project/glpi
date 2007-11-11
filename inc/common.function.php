@@ -1521,4 +1521,67 @@ function getRandomString($length) {
 }
 
 
+//Make a good string from the unix timestamp $sec
+function timestampToString($sec,$display_sec=1)
+{
+	global $LANG;
+	$sec=floor($sec);
+	if ($sec<0) $sec=0;
+
+	if($sec < MINUTE_TIMESTAMP) {
+
+		return $sec." ".$LANG["stats"][34];
+	}
+	elseif($sec < HOUR_TIMESTAMP) {
+		$min = floor($sec/MINUTE_TIMESTAMP);
+		$sec = $sec%MINUTE_TIMESTAMP;
+
+		$out=$min." ".$LANG["stats"][33];
+		if ($display_sec) $out.=" ".$sec." ".$LANG["stats"][34];
+		return $out;
+	}
+	elseif($sec <  DAY_TIMESTAMP) {
+		$heure = floor($sec/HOUR_TIMESTAMP);
+		$min = floor(($sec%HOUR_TIMESTAMP)/(MINUTE_TIMESTAMP));
+		$sec = $sec%MINUTE_TIMESTAMP;
+		$out=$heure." ".$LANG["stats"][32]." ".$min." ".$LANG["stats"][33];
+		if ($display_sec) $out.=" ".$sec." ".$LANG["stats"][34];
+		return $out;
+	}
+	else {
+		$jour = floor($sec/DAY_TIMESTAMP);
+		$heure = floor(($sec%DAY_TIMESTAMP)/(HOUR_TIMESTAMP));
+		$min = floor(($sec%HOUR_TIMESTAMP)/(MINUTE_TIMESTAMP));
+		$sec = $sec%MINUTE_TIMESTAMP;
+		$out=$jour." ".$LANG["stats"][31]." ".$heure." ".$LANG["stats"][32]." ".$min." ".$LANG["stats"][33];
+		if ($display_sec) $out.=" ".$sec." ".$LANG["stats"][34];
+		return $out;
+
+	}
+}
+// Delete a directory and file contains in it
+function deleteDir($dir) {
+	if (file_exists($dir)){
+		chmod($dir,0777);
+		if (is_dir($dir)){
+			$id_dir = opendir($dir);
+			while($element = readdir($id_dir)){
+				if ($element != "." && $element != ".."){
+					if (is_dir($element)){
+						deleteDir($dir."/".$element);
+					} else {
+						unlink($dir."/".$element);
+					}
+	
+				}
+			}
+			closedir($id_dir);
+			rmdir($dir);
+		}
+	else unlink($dir);
+	}
+}
+
+
+
 ?>
