@@ -166,10 +166,10 @@ function showPlanning($who,$who_group,$when,$type){
 
 	$ASSIGN="";
 	if ($who>0){
-		$ASSIGN=" AND ( author='$who' OR type='public' )";
+		$ASSIGN=" AND ( author='$who' OR (type='public' ".getEntitiesRestrictRequest("AND","glpi_reminder")."))";
 	}
 	if ($who_group>0){
-		$ASSIGN=" AND ( type='public' OR author IN (SELECT FK_users FROM glpi_users_groups WHERE FK_groups = '$who_group') )";
+		$ASSIGN=" AND ( (type='public' ".getEntitiesRestrictRequest("AND","glpi_reminder").") OR author IN (SELECT FK_users FROM glpi_users_groups WHERE FK_groups = '$who_group') )";
 	}
 	$query2="SELECT * FROM glpi_reminder WHERE FK_entities= '".$_SESSION["glpiactive_entity"]."' AND rv='1' $ASSIGN  AND (('$begin' <= begin AND '$end' >= begin) OR ('$begin' < end AND '$end' >= end) OR (begin <= '$begin' AND end > '$begin') OR (begin <= '$end' AND end > '$end')) ORDER BY begin";
 
@@ -568,7 +568,7 @@ function showPlanningCentral($who){
 
 	// reminder 
 	$read_public="";
-	if (haveRight("reminder_public","r")) $read_public=" OR type='public' ";
+	if (haveRight("reminder_public","r")) $read_public=" OR ( type='public' ".getEntitiesRestrictRequest("AND","glpi_reminder").") ";
 
 	$query2="SELECT * FROM glpi_reminder WHERE rv='1' AND (author='$who' $read_public)    AND (('".$debut."' <= begin AND adddate( '". $debut ."' , INTERVAL $INTERVAL ) >= begin) OR ('".$debut."' < end AND adddate( '". $debut ."' , INTERVAL $INTERVAL ) >= end) OR (begin <= '".$debut."' AND end > '".$debut."') OR (begin <= adddate( '". $debut ."' , INTERVAL $INTERVAL ) AND end > adddate( '". $debut ."' , INTERVAL $INTERVAL ))) ORDER BY begin";
 
