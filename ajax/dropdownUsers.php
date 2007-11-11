@@ -62,26 +62,9 @@ switch ($_POST['right']){
 		$where=" glpi_profiles.".$_POST['right']."='central' ";
 		$joinprofile=true;
 		if (isset($_POST["entity_restrict"])&&$_POST["entity_restrict"]>=0){
-			$where.= " AND ( glpi_users_profiles.FK_entities='".$_POST["entity_restrict"]."'";
-			// Specific entity : add ancestors recursive rights
-			$ancestors=getEntityAncestors($_POST["entity_restrict"]);
-			
-			if (count($ancestors)){
-				$where.=" OR ( glpi_users_profiles.recursive='1' AND glpi_users_profiles.FK_entities IN (";
-				$first=true;
-				foreach ($ancestors as $val){
-					if (!$first){
-						$where.=",";
-					} else {
-						$first=false;
-					}
-					$where.=$val;
-				}
-				$where.="))";
-			}
-			$where.=" ) ";
+			$where.=getEntitiesRestrictRequest("AND","glpi_users_profiles", '',$_POST["entity_restrict"],1);
 		} else {
-			$where.=getEntitiesRestrictRequest("AND","glpi_users_profiles");
+			$where.=getEntitiesRestrictRequest("AND","glpi_users_profiles",'',$_SESSION["glpiactive_entity"],1);
 		}
 	break;
 	case "ID" :
@@ -90,53 +73,18 @@ switch ($_POST['right']){
 	case "all" :
 		$where=" glpi_users.ID > '1' ";
 		if (isset($_POST["entity_restrict"])&&$_POST["entity_restrict"]>=0){
-			$where.= " AND ( glpi_users_profiles.FK_entities='".$_POST["entity_restrict"]."'";
-			// Specific entity : add ancestors recursive rights
-			$ancestors=getEntityAncestors($_POST["entity_restrict"]);
-			
-			if (count($ancestors)){
-				$where.=" OR ( glpi_users_profiles.recursive='1' AND glpi_users_profiles.FK_entities IN (";
-				$first=true;
-				foreach ($ancestors as $val){
-					if (!$first){
-						$where.=",";
-					} else {
-						$first=false;
-					}
-					$where.=$val;
-				}
-				$where.="))";
-			}
-			$where.=" ) ";
-
+			$where.=getEntitiesRestrictRequest("AND","glpi_users_profiles", '',$_POST["entity_restrict"],1);
 		} else {
-			$where.=getEntitiesRestrictRequest("AND","glpi_users_profiles");
+			$where.=getEntitiesRestrictRequest("AND","glpi_users_profiles",'',$_SESSION["glpiactive_entity"],1);
 		}
 	break;
 	default :
 		$joinprofile=true;
 		$where=" ( glpi_profiles.".$_POST['right']."='1' AND glpi_profiles.interface='central'";
 		if (isset($_POST["entity_restrict"])&&$_POST["entity_restrict"]>=0){
-			$where.= " AND ( glpi_users_profiles.FK_entities='".$_POST["entity_restrict"]."'";
-			// Specific entity : add ancestors recursive rights
-			$ancestors=getEntityAncestors($_POST["entity_restrict"]);
-			
-			if (count($ancestors)){
-				$where.=" OR ( glpi_users_profiles.recursive='1' AND glpi_users_profiles.FK_entities IN (";
-				$first=true;
-				foreach ($ancestors as $val){
-					if (!$first){
-						$where.=",";
-					} else {
-						$first=false;
-					}
-					$where.=$val;
-				}
-				$where.="))";
-			}
-			$where.=" ) ";
+			$where.=getEntitiesRestrictRequest("AND","glpi_users_profiles", '',$_POST["entity_restrict"],1);
 		} else {
-			$where.=getEntitiesRestrictRequest("AND","glpi_users_profiles");
+			$where.=getEntitiesRestrictRequest("AND","glpi_users_profiles",'',$_SESSION["glpiactive_entity"],1);
 		}
 		$where.=" ) ";
 		

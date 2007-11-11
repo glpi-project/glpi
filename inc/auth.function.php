@@ -691,15 +691,16 @@ function haveAccessToOneOfEntities($tab) {
  * @param $table : table where apply the limit (if needed, multiple tables queries)
  * @param $field : field where apply the limit (id != FK_entities)
  * @param $value : entity to restrict (if not set use $_SESSION['glpiactiveentities']). single item or array
+ * @param $recursive : need to use recursive process to find item (field need to be named recursive)
  * @return String : the WHERE clause to restrict 
  */
-function getEntitiesRestrictRequest($separator = "AND", $table = "", $field = "",$value='') {
+function getEntitiesRestrictRequest($separator = "AND", $table = "", $field = "",$value='',$recursive=false) {
 
-	$query = $separator ." ";
+	$query = $separator ." ( ";
 
 	// !='0' needed because consider as empty
 	if ($value!='0'&&empty($value)&&isset($_SESSION['glpishowallentities'])&&$_SESSION['glpishowallentities']){
-		return $query." '1'='1' ";
+		return $query." '1'='1' ) ";
 	}
 
 	if (!is_array($value)&&strlen($value)==0){
@@ -710,13 +711,11 @@ function getEntitiesRestrictRequest($separator = "AND", $table = "", $field = ""
 	if (!empty ($table)) {
 		$query .= $table . ".";
 	}
-
-	if (!empty ($field)) {
-		$query .= $field;
-	} else {
-		$query .= "FK_entities";
+	if (empty($field)){
+		$field="FK_entities";
 	}
-	
+
+	$query.=$field;
 
 	if (is_array($value)){
 		$query.=" IN (";
@@ -734,6 +733,34 @@ function getEntitiesRestrictRequest($separator = "AND", $table = "", $field = ""
 	} else {
 		$query.= " = '$value' ";
 	}
+
+	if ($recursive){
+		$ancestors=array();
+		if (is_array($value)){
+			foreach ($value as $val){
+				$ancestors+=getEntityAncestors($val);
+			}
+		} else {
+			$ancestors=getEntityAncestors($value);
+		}
+		
+		if (count($ancestors)){
+			$query.=" OR ( $table.recursive='1' AND $table.$field IN (";
+			$first=true;
+			foreach ($ancestors as $val){
+				if (!$first){
+					$query.=",";
+				} else {
+					$first=false;
+				}
+				$query.=$val;
+			}
+			$query.="))";
+		}
+	}
+
+	$query.=" ) ";
+
 	return $query;
 }
 
