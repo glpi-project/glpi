@@ -80,7 +80,7 @@ switch ($_POST['right']){
 	break;
 	default :
 		$joinprofile=true;
-		$where=" ( glpi_profiles.".$_POST['right']."='1' AND glpi_profiles.interface='central'";
+		$where=" ( glpi_profiles.".$_POST['right']."='1' AND glpi_profiles.interface='central' ";
 		if (isset($_POST["entity_restrict"])&&$_POST["entity_restrict"]>=0){
 			$where.=getEntitiesRestrictRequest("AND","glpi_users_profiles", '',$_POST["entity_restrict"],1);
 		} else {
