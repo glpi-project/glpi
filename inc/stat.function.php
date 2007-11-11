@@ -189,7 +189,7 @@ function displayStats($type,$field,$date1,$date2,$start,$value,$value2=""){
 
 			$timedisplay=$nb*HOUR_TIMESTAMP;
 			if ($output_type==HTML_OUTPUT || $output_type==PDF_OUTPUT){
-				$timedisplay=toTimeStr($timedisplay,0);
+				$timedisplay=timestampToString($timedisplay,0);
 			}
 			echo displaySearchItem($output_type,$timedisplay,$item_num,$row_num);
 			//Le temps moyen de l'intervention r�lle
@@ -205,14 +205,14 @@ function displayStats($type,$field,$date1,$date2,$start,$value,$value2=""){
 
 			$timedisplay=$nb*MINUTE_TIMESTAMP;
 			if ($output_type==HTML_OUTPUT || $output_type==PDF_OUTPUT){
-				$timedisplay=toTimeStr($timedisplay,0);
+				$timedisplay=timestampToString($timedisplay,0);
 			}
 			echo displaySearchItem($output_type,$timedisplay,$item_num,$row_num);
 			//Le temps total de l'intervention r�lle
 			//The total realtime to resolv
 			$timedisplay=$total_realtime*MINUTE_TIMESTAMP;
 			if ($output_type==HTML_OUTPUT || $output_type==PDF_OUTPUT){
-				$timedisplay=toTimeStr($timedisplay,0);
+				$timedisplay=timestampToString($timedisplay,0);
 			}
 			echo displaySearchItem($output_type,$timedisplay,$item_num,$row_num);				
 			//Le temps moyen de prise en compte du ticket
@@ -228,7 +228,7 @@ function displayStats($type,$field,$date1,$date2,$start,$value,$value2=""){
 
 			$timedisplay=$nb*HOUR_TIMESTAMP;
 			if ($output_type==HTML_OUTPUT || $output_type==PDF_OUTPUT){
-				$timedisplay=toTimeStr($timedisplay,0);
+				$timedisplay=timestampToString($timedisplay,0);
 			}
 			echo displaySearchItem($output_type,$timedisplay,$item_num,$row_num);
 
@@ -535,49 +535,6 @@ function getNbIntervAssignGroup($date1,$date2)
 	}
 	return $tab;
 }
-
-
-//Make a good string from the unix timestamp $sec
-//
-function toTimeStr($sec,$display_sec=1)
-{
-	global $LANG;
-	$sec=floor($sec);
-	if ($sec<0) $sec=0;
-
-	if($sec < MINUTE_TIMESTAMP) {
-
-		return $sec." ".$LANG["stats"][34];
-	}
-	elseif($sec < HOUR_TIMESTAMP) {
-		$min = floor($sec/MINUTE_TIMESTAMP);
-		$sec = $sec%MINUTE_TIMESTAMP;
-
-		$out=$min." ".$LANG["stats"][33];
-		if ($display_sec) $out.=" ".$sec." ".$LANG["stats"][34];
-		return $out;
-	}
-	elseif($sec <  DAY_TIMESTAMP) {
-		$heure = floor($sec/HOUR_TIMESTAMP);
-		$min = floor(($sec%HOUR_TIMESTAMP)/(MINUTE_TIMESTAMP));
-		$sec = $sec%MINUTE_TIMESTAMP;
-		$out=$heure." ".$LANG["stats"][32]." ".$min." ".$LANG["stats"][33];
-		if ($display_sec) $out.=" ".$sec." ".$LANG["stats"][34];
-		return $out;
-	}
-	else {
-		$jour = floor($sec/DAY_TIMESTAMP);
-		$heure = floor(($sec%DAY_TIMESTAMP)/(HOUR_TIMESTAMP));
-		$min = floor(($sec%HOUR_TIMESTAMP)/(MINUTE_TIMESTAMP));
-		$sec = $sec%MINUTE_TIMESTAMP;
-		$out=$jour." ".$LANG["stats"][31]." ".$heure." ".$LANG["stats"][32]." ".$min." ".$LANG["stats"][33];
-		if ($display_sec) $out.=" ".$sec." ".$LANG["stats"][34];
-		return $out;
-
-	}
-}
-
-
 
 function constructEntryValues($type,$begin="",$end="",$param="",$value="",$value2=""){
 	global $DB;
