@@ -116,12 +116,12 @@ class Profile extends CommonDBTM{
 
 		// Not logged -> no profile to see
 		if (!isset($_SESSION['glpiactiveprofile'])){
-			return $query." '0'='1' ";
+			return $query." 0 ";
 		}
 
 		// Profile right : may modify profile so can attach all profile
 		if (haveRight("profile","w")){
-			return $query." '1'='1' ";
+			return $query." 1 ";
 		}
 		
 		if ($_SESSION['glpiactiveprofile']['interface']=='central'){
