@@ -279,6 +279,7 @@ $LANG["consumables"][2]="Referens";
 $LANG["consumables"][6]="Ny förbrukningsvarutyp"; 
 $LANG["consumables"][7]="Ingen förbrukningsvara funnen"; 
 $LANG["consumables"][9]="Ingen förbrukningsvara"; 
+$LANG["consumables"][12]="Consumable Type"; 
 $LANG["consumables"][13]="Ny"; 
 $LANG["consumables"][15]="Använd"; 
 $LANG["consumables"][16]="Förbrukningsvaror"; 

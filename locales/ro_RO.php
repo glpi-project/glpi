@@ -279,6 +279,7 @@ $LANG["consumables"][2]="Referinta";
 $LANG["consumables"][6]="Adauga tip de consumabil..."; 
 $LANG["consumables"][7]="Nici un consumabil gasit"; 
 $LANG["consumables"][9]="Nici un consumabil"; 
+$LANG["consumables"][12]="Consumable Type"; 
 $LANG["consumables"][13]="Nou"; 
 $LANG["consumables"][15]="Folosit"; 
 $LANG["consumables"][16]="Consumabil(e)"; 

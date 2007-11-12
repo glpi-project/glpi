@@ -279,6 +279,7 @@ $LANG["consumables"][2]="Referenzmodell";
 $LANG["consumables"][6]="Neue Art von Verbrauchsmaterial..."; 
 $LANG["consumables"][7]="Keine ausgegebenen Einheiten gefunden"; 
 $LANG["consumables"][9]="Nichts auf Lager!"; 
+$LANG["consumables"][12]="Consumable Type"; 
 $LANG["consumables"][13]="Neu"; 
 $LANG["consumables"][15]="Verbraucht"; 
 $LANG["consumables"][16]="Einheit(en)"; 

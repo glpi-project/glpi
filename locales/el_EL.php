@@ -279,6 +279,7 @@ $LANG["consumables"][2]="Πηγή";
 $LANG["consumables"][6]="Προσθήκη Τύπου Αναλωσίμου..."; 
 $LANG["consumables"][7]="Δεν βρέθηκε αναλώσιμο"; 
 $LANG["consumables"][9]="Κανένα αναλώσιμο"; 
+$LANG["consumables"][12]="Consumable Type"; 
 $LANG["consumables"][13]="Νέο"; 
 $LANG["consumables"][15]="Χρησιμοποιημένο"; 
 $LANG["consumables"][16]="Αναλώσιμο(α)"; 

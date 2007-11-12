@@ -279,6 +279,7 @@ $LANG["consumables"][2]="Referência";
 $LANG["consumables"][6]="Adicionar Tipos de Insumos"; 
 $LANG["consumables"][7]="Nenhum insumo encontrado"; 
 $LANG["consumables"][9]="Sem insumo"; 
+$LANG["consumables"][12]="Tipo de Insumo."; 
 $LANG["consumables"][13]="Novo"; 
 $LANG["consumables"][15]="Usado"; 
 $LANG["consumables"][16]="Insumo(s)"; 

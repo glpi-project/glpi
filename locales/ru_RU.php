@@ -279,6 +279,7 @@ $LANG["consumables"][2]="Заказной номер";
 $LANG["consumables"][6]="Новый тип расходного материала"; 
 $LANG["consumables"][7]="Расходный материал не найден"; 
 $LANG["consumables"][9]="Нет расходного материала"; 
+$LANG["consumables"][12]="Consumable Type"; 
 $LANG["consumables"][13]="Новый"; 
 $LANG["consumables"][15]="Использованный"; 
 $LANG["consumables"][16]="Расходный материал(ы)"; 
