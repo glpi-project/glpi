@@ -79,7 +79,7 @@ if ($_POST["onlyglobal"]&&$_POST["idtable"]!=COMPUTER_TYPE){
 	$CONNECT_SEARCH=" WHERE ( $table.is_global='1' ) ";
 } else {
 	if ($_POST["idtable"]==COMPUTER_TYPE)
-		$CONNECT_SEARCH=" WHERE '1' = '1' ";
+		$CONNECT_SEARCH=" WHERE 1 ";
 	else {
 		$CONNECT_SEARCH=" WHERE (glpi_connect_wire.ID IS NULL OR $table.is_global='1' )";	
 	}

@@ -49,8 +49,7 @@ if (isset($LINK_ID_TABLE[$_POST["type"]])&&$_POST["type"]>0){
 	$rand=mt_rand();
 	if (!isset($_POST['searchText']))$_POST['searchText']="";
 
-	$where="WHERE '1'='1' ";
-	$where.=" AND deleted='N' ";
+	$where=" WHERE deleted='N' ";
 	$where.=" AND is_template='0' ";		
 
 	if (isset($_POST["entity_restrict"])&&$_POST["entity_restrict"]>=0){

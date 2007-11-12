@@ -50,7 +50,7 @@ if (isset($_POST["entity_restrict"])&&$_POST["entity_restrict"]>=0){
 }
 
 if (empty($where)){
-	$where="WHERE '1'='1' ";
+	$where="WHERE 1 ";
 }
 if (in_array($_POST['table'],$CFG_GLPI["deleted_tables"]))
 $where.=" AND deleted='N' ";

@@ -549,7 +549,7 @@ function constructEntryValues($type,$begin="",$end="",$param="",$value="",$value
 
 	$WHERE=getEntitiesRestrictRequest("WHERE","glpi_tracking");
 	if (empty($WHERE)){
-		$WHERE=" WHERE '1'='1' ";
+		$WHERE=" WHERE 1 ";
 	}
 	$LEFTJOIN="";
 	switch ($param){
