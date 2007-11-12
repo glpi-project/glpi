@@ -279,6 +279,7 @@ $LANG["consumables"][2]="Reference";
 $LANG["consumables"][6]="Tilføj en forbrugs type..."; 
 $LANG["consumables"][7]="Ingen forbrugs vare fundet"; 
 $LANG["consumables"][9]="Ingen forbrugs vare"; 
+$LANG["consumables"][12]="Consumable Type"; 
 $LANG["consumables"][13]="Ny"; 
 $LANG["consumables"][15]="Brugt"; 
 $LANG["consumables"][16]="Forbrugsvare"; 

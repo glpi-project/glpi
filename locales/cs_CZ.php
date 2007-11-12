@@ -279,6 +279,7 @@ $LANG["consumables"][2]="Reference";
 $LANG["consumables"][6]="Přidat typ spotřebního materiálu..."; 
 $LANG["consumables"][7]="Nebylo nalezeno žádné spotřební zboží"; 
 $LANG["consumables"][9]="Žádný spotřební materiál"; 
+$LANG["consumables"][12]="Consumable Type"; 
 $LANG["consumables"][13]="Nová"; 
 $LANG["consumables"][15]="Použito"; 
 $LANG["consumables"][16]="Spotřební materiál(y)"; 

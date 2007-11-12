@@ -279,6 +279,7 @@ $LANG["consumables"][2]="Odniesienie";
 $LANG["consumables"][6]="Dodaj typ materiału eksploatacyjnego"; 
 $LANG["consumables"][7]="Nie znaleziono materiału eksploatacyjnego"; 
 $LANG["consumables"][9]="Brak materiału eksploatacyjnego"; 
+$LANG["consumables"][12]="Typy materiałów eksploatacyjnych"; 
 $LANG["consumables"][13]="Nowe"; 
 $LANG["consumables"][15]="Używane"; 
 $LANG["consumables"][16]="Materiał(y) Eksploatacyjne(y)"; 

@@ -279,6 +279,7 @@ $LANG["consumables"][2]="Referência";
 $LANG["consumables"][6]="Adicionar Tipos de consumiveis"; 
 $LANG["consumables"][7]="Nenhum consumivel encontrado"; 
 $LANG["consumables"][9]="Sem consumiveis"; 
+$LANG["consumables"][12]="Consumable Type"; 
 $LANG["consumables"][13]="Novo"; 
 $LANG["consumables"][15]="Usado"; 
 $LANG["consumables"][16]="Consumivel"; 

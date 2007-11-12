@@ -279,6 +279,7 @@ $LANG["consumables"][2]="参考";
 $LANG["consumables"][6]="添加消费的类型…"; 
 $LANG["consumables"][7]="没有消费品发现了"; 
 $LANG["consumables"][9]="没有消费品"; 
+$LANG["consumables"][12]="Consumable Type"; 
 $LANG["consumables"][13]="新的"; 
 $LANG["consumables"][15]="用过的"; 
 $LANG["consumables"][16]="消费品"; 

@@ -279,6 +279,7 @@ $LANG["consumables"][2]="Номер за заявка";
 $LANG["consumables"][6]="Нов тип консуматив..."; 
 $LANG["consumables"][7]="Консуматива не е намерен"; 
 $LANG["consumables"][9]="Няма консуматив"; 
+$LANG["consumables"][12]="Consumable Type"; 
 $LANG["consumables"][13]="Нов"; 
 $LANG["consumables"][15]="Рециклиран"; 
 $LANG["consumables"][16]="Консуматив(и)"; 

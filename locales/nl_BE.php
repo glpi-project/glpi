@@ -279,6 +279,7 @@ $LANG["consumables"][2]="Referentie";
 $LANG["consumables"][6]="Toevoegen verbruiksartikel type..."; 
 $LANG["consumables"][7]="Geen verbruiksartikelen gevonden"; 
 $LANG["consumables"][9]="Geen verbruiksartikel"; 
+$LANG["consumables"][12]="Consumable Type"; 
 $LANG["consumables"][13]="Nieuw"; 
 $LANG["consumables"][15]="Gebruikt"; 
 $LANG["consumables"][16]="Verbruiksartikel(en)"; 
