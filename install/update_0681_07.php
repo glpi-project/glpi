@@ -44,11 +44,11 @@ function update0681to07() {
 	// Improve user table :
 	if (!isIndex("glpi_users", "firstname")) {
 		$query = "ALTER TABLE `glpi_users` ADD INDEX ( `firstname` )";
-		$DB->query($query) or die("0.7 alter users add indesx on firstname " . $LANG["update"][90] . $DB->error());
+		$DB->query($query) or die("0.7 alter users add index on firstname " . $LANG["update"][90] . $DB->error());
 	}
 	if (!isIndex("glpi_users", "realname")) {
 		$query = "ALTER TABLE `glpi_users` ADD INDEX ( `realname` )";
-		$DB->query($query) or die("0.7 alter users add indesx on realname " . $LANG["update"][90] . $DB->error());
+		$DB->query($query) or die("0.7 alter users add index on realname " . $LANG["update"][90] . $DB->error());
 	}
 	// Decimal problem
 	if (FieldExists("glpi_infocoms", "value")) {
