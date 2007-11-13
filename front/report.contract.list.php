@@ -86,10 +86,7 @@ if (isset($_POST["item_type"])&&is_array($_POST["item_type"])){
 	}		
 }
 
-$display_entity=false;
-if (count($_SESSION['glpiactiveentities'])>1){
-	$display_entity=true;
-}
+$display_entity=isMultiEntitiesMode();
 
 $ci=new CommonItem();
 if (isset($query)&&count($query)){

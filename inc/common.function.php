@@ -54,7 +54,14 @@ if (!defined('GLPI_ROOT')){
 	}
 
 	function isMultiEntitiesMode(){
-		return (countElementsInTable("glpi_entities")>0);
+		if (!isset($_SESSION['glpi_multientitiesmode'])){
+			if (countElementsInTable("glpi_entities")>0){
+				$_SESSION['glpi_multientitiesmode']=1;
+			} else {
+				$_SESSION['glpi_multientitiesmode']=0;
+			}
+		}
+		return $_SESSION['glpi_multientitiesmode'];
 	}
 	function isViewAllEntities(){
 		return ((countElementsInTable("glpi_entities")+1)==count($_SESSION["glpiactiveentities"]));

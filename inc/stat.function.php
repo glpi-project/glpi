@@ -879,7 +879,7 @@ function showItemStats($target,$date1,$date2,$start){
 	global $DB,$CFG_GLPI,$LANG;
 
 
-	$view_entities=(count($_SESSION["glpiactiveentities"])>1);
+	$view_entities=isMultiEntitiesMode();
 
 	if ($view_entities){
 		$entities=getAllDatasFromTable('glpi_entities');
