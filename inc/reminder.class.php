@@ -122,7 +122,7 @@ class Reminder extends CommonDBTM {
 					$remind_show = true;
 				}
 
-			}else $remind_show = false;
+			} else $remind_show = false;
 
 		}
 		if ($remind_show||$remind_edit){
@@ -137,10 +137,14 @@ class Reminder extends CommonDBTM {
 			echo "<div class='center'><table class='tab_cadre' width='450'>";
 			echo "<tr><th></th><th>";
 			if (!$ID) {
-				echo $LANG["reminder"][6].":";
+				echo $LANG["reminder"][6];
 			} else {
-				echo $LANG["reminder"][7]." ID $ID:";
+				echo $LANG["common"][2]." $ID";
 			}		
+			if (isMultiEntitiesMode()){
+				echo "&nbsp;(".getDropdownName("glpi_entities",$this->fields["FK_entities"]).")";
+			}
+
 			echo "</th></tr>";
 
 			echo "<tr class='tab_bg_2'><td>".$LANG["common"][57].":		</td>";

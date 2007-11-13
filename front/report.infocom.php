@@ -91,11 +91,7 @@ function display_infocoms_report($device_type,$begin,$end){
 
 	$query .=" ORDER BY entname ASC, buy_date, use_date";
 
-	$display_entity=false;
-	if (count($_SESSION['glpiactiveentities'])>1){
-		$display_entity=true;
-	}
-
+	$display_entity=isMultiEntitiesMode();
 
 	$result=$DB->query($query);
 	if ($DB->numrows($result)>0){

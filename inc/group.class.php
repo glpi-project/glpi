@@ -115,7 +115,7 @@ class Group extends CommonDBTM{
 			} else {
 				echo $LANG["common"][2]." ".$this->fields["ID"];
 			}		
-			if (count($_SESSION['glpiactiveentities'])>1){
+			if (isMultiEntitiesMode()){
 				echo "&nbsp;(".getDropdownName("glpi_entities",$this->fields["FK_entities"]).")";
 			}
 

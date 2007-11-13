@@ -480,10 +480,8 @@ function printReservationItems($target){
 	$ri=new ReservationItem;
 	$ci=new CommonItem();
 	$ok=false;
-	$showentity=false;
-	if (count($_SESSION['glpiactiveentities'])>1){
-		$showentity=true;
-	}
+	$showentity=isMultiEntitiesMode();
+
 	echo "<div class='center'><form name='form' method='get' action='$target'><table class='tab_cadre' cellpadding='5'>";
 	echo "<tr><th colspan='".($showentity?"5":"4")."'>".$LANG["reservation"][1]."</th></tr>";
 

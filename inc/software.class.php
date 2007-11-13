@@ -258,7 +258,7 @@ class Software extends CommonDBTM {
 				echo $LANG["common"][6] . "&nbsp;: ";
 				autocompletionTextField("tplname", "glpi_software", "tplname", $this->fields["tplname"], 20,$this->fields["FK_entities"]);
 			}
-			if (count($_SESSION['glpiactiveentities'])>1){
+			if (isMultiEntitiesMode()){
 				echo "&nbsp;(".getDropdownName("glpi_entities",$this->fields["FK_entities"]).")";
 			}
 

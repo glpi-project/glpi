@@ -1684,7 +1684,7 @@ function showJobDetails ($target,$ID){
 			echo getUserName($job->fields["recipient"],$showuserlink);
 		}
 
-		if (count($_SESSION['glpiactiveentities'])>1){
+		if (isMultiEntitiesMode()){
 			echo "&nbsp;(".getDropdownName("glpi_entities",$job->fields["FK_entities"]).")";
 		}
 

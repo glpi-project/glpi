@@ -89,10 +89,7 @@ if (isset($_POST["item_type"])&&is_array($_POST["item_type"])){
 		$query[$val].=" ORDER BY entname ASC, itemdeleted DESC, itemname ASC";
 	}
 }
-$display_entity=false;
-if (count($_SESSION['glpiactiveentities'])>1){
-	$display_entity=true;
-}
+$display_entity=isMultiEntitiesMode();
 
 $ci=new CommonItem();
 if (isset($query)&&count($query)){
