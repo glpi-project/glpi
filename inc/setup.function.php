@@ -392,6 +392,10 @@ function moveTreeUnder($table, $to_move, $where) {
 function updateDropdown($input) {
 	global $DB, $CFG_GLPI;
 
+	// Clean datas
+	$input["value"]=trim($input["value"]);
+	if (empty($input["value"])) return false;
+	
 	if ($input["tablename"] == "glpi_dropdown_netpoint") {
 		$query = "update " . $input["tablename"] . " SET name = '" . $input["value"] . "', location = '" . $input["value2"] . "', comments='" . $input["comments"] . "' where ID = '" . $input["ID"] . "'";
 
