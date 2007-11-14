@@ -599,8 +599,13 @@ function replaceDropDropDown($input) {
 function showDeleteConfirmForm($target, $table, $ID,$FK_entities) {
 	global $DB, $LANG,$CFG_GLPI;
 
-	if (!haveRight("dropdown", "w"))
-		return false;
+	if (in_array($table, $CFG_GLPI["specif_entities_tables"])) {
+		if (!haveRight("entity_dropdown","w"))
+			return false;		
+	} else {
+		if (!haveRight("dropdown", "w"))
+			return false;		
+	}
 
 	if (in_array($table,$CFG_GLPI["dropdowntree_tables"])) {
 
