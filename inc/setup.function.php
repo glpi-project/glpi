@@ -49,13 +49,12 @@ function showDropdownList($target, $tablename,$FK_entities=''){
 		return false;	
 	
 	$field="name";
-	if (in_array($tablename, $CFG_GLPI["specif_entities_tables"])) {
+	if ($tablename=="glpi_dropdown_locations") {
 		$field="completename";
 	}
 	
 	$entity_restrict = -1;
 	if (in_array($tablename, $CFG_GLPI["specif_entities_tables"])) {
-		$field="completename";
 		if (!empty($FK_entities)&&$FK_entities>=0){
 			$entity_restrict = $FK_entities;
 		} else {	
