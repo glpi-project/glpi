@@ -49,7 +49,7 @@ function showDropdownList($target, $tablename,$FK_entities=''){
 		return false;	
 	
 	$field="name";
-	if ($tablename=="glpi_dropdown_locations") {
+	if (in_array($tablename, $CFG_GLPI["dropdowntree_tables"])) {
 		$field="completename";
 	}
 	
