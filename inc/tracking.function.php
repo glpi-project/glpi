@@ -1316,7 +1316,7 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$to
 		case "old_notdone": $where.=" ( glpi_tracking.status = 'old_notdone' )"; break;
 		case "assign": $where.=" ( glpi_tracking.status = 'assign' )"; break;
 		case "plan": $where.=" ( glpi_tracking.status = 'plan' )"; break;
-		default : $where.=" ( glpi_tracking.status <> '' )";;break;
+		default : $where.=" ( 1 )";;break;
 	}
 
 
@@ -1423,6 +1423,7 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$to
 			}
 			$TMPWHERE.= "glpi_tracking.contents $SEARCH2 ";
 		}
+
 		if (!empty($TMPWHERE)){
 			$where.=" AND ($TMPWHERE) ";
 		}
