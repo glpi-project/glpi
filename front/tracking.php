@@ -112,7 +112,7 @@ if ($_GET["enddate1"]!="0000-00-00"&&$_GET["enddate2"]!="0000-00-00"&&strcmp($_G
 
 if (!haveRight("show_all_ticket","1")&&!haveRight("show_assign_ticket",'1')){
 	searchSimpleFormTracking($_GET["extended"],$_SERVER['PHP_SELF'],$_GET["status"],$_GET["tosearch"],$_GET["search"],$_GET["group"],$_GET["showfollowups"],$_GET["category"]);
-	showTrackingList($_SERVER['PHP_SELF'],$_GET["start"],$_GET["sort"],$_GET["order"],$_GET["tosearch"],$_GET["search"],$_GET["status"],$_SESSION["glpiID"],$_GET["group"],$_GET["showfollowups"],$_GET["category"]);
+	showTrackingList($_SERVER['PHP_SELF'],$_GET["start"],$_GET["sort"],$_GET["order"],$_GET["status"],$_GET["tosearch"],$_GET["search"],$_SESSION["glpiID"],$_GET["group"],$_GET["showfollowups"],$_GET["category"]);
 } else {
 	// show_assign_case
 	if (!haveRight("show_all_ticket","1")){
