@@ -506,8 +506,8 @@ class AuthLDAP extends CommonDBTM {
 
 			if (empty($ID)){
 				echo $LANG["ldap"][16].": ";
-				echo "<a href='$target?next=extauth_ldap&preconfig=AD'>".$LANG["ldap"][17]."</a>&nbsp;&nbsp;";
-				echo "<a href='$target?next=extauth_ldap&preconfig=default'>".$LANG["common"][44]."</a>";
+				echo "<a href='$target?next=extauth_ldap&amp;preconfig=AD'>".$LANG["ldap"][17]."</a>&nbsp;&nbsp;";
+				echo "<a href='$target?next=extauth_ldap&amp;preconfig=default'>".$LANG["common"][44]."</a>";
 			}
 
 			echo "<form action=\"$target\" method=\"post\">";
