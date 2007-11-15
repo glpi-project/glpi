@@ -77,7 +77,7 @@ function searchFormKnowbase($target,$contains,$parentID=0,$faq=0){
 		echo "<td><form method=get action=\"".$target."\">";
 		echo "<table border='0' class='tab_cadre'>";
 		echo "<tr ><th colspan='2'>".$LANG["buttons"][43]."</th></tr>";
-		echo "<tr><td class='center'>";
+		echo "<tr class='tab_bg_2'><td class='center'>";
 		echo $LANG["common"][36]." : &nbsp; &nbsp;";
 		dropdownValue("glpi_dropdown_kbcategories","parentID",$parentID);
 		// ----***** TODO Dropdown qui affiche uniquement les categories contenant une FAQ
