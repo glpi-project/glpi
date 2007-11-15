@@ -244,7 +244,10 @@ function getPluginsDropdowns(){
 			$function2="plugin_".$plug."_getDropdown";
 			if (function_exists($function2)) {
 				$name=$function();
-				$dps=array_merge($dps,array($name['name']=>$function2()));
+				$tab=$function2();
+				if (is_array($tab)){
+					$dps=array_merge($dps,array($name['name']=>$tab));
+				}
 			}
 		} 
 	} 
