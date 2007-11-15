@@ -119,7 +119,7 @@ function showPlanning($who,$who_group,$when,$type){
 					WHERE glpi_profiles.interface='central' ";
 
 		$ASSIGN.=getEntitiesRestrictRequest("AND","glpi_users_profiles", '',$_SESSION["glpiactive_entity"],1);	
-		$ASSIGN.=" AND ";
+		$ASSIGN.=") AND ";
 
 
 	}
