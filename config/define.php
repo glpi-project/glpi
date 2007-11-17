@@ -11,7 +11,7 @@
 		"bg_BG"=>array("Bulgarian","bg_BG.php","en","en"),
 		"ca_CA"=>array("Catalan","ca_CA.php","ca","ca"),
 		"cs_CZ"=>array("Czech","cs_CZ.php","cs","cs"),
-		"de_DE"=>array("Deutch","de_DE.php","de","de"),
+		"de_DE"=>array("Deutsch","de_DE.php","de","de"),
 		"dk_DK"=>array("Danish","dk_DK.php","da","da"),
 		"nl_NL"=>array("Dutch","nl_NL.php","nl","nl"),
 		"nl_BE"=>array("Dutch (Belgium)","nl_BE.php","nl","nl"),
