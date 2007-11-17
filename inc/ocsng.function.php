@@ -321,7 +321,7 @@ function ocsManageDeleted($ocs_server_id) {
 
 		if (count($deleted)){
 			foreach ($deleted as $del => $equiv) {
-				if (!empty ($equiv)) { // New name
+				if (!empty ($equiv)&&!is_null($equiv)) { // New name
 
 
 					// Get hardware due to bug of duplicates management of OCS
@@ -413,7 +413,11 @@ function ocsManageDeleted($ocs_server_id) {
 					}
 				}
 				// Delete item in DB
-				$query="DELETE FROM deleted_equiv WHERE DELETED = '$del' AND EQUIVALENT = '$equiv'";
+				$equiv_clean="EQUIVALENT = '$equiv'";
+				if (empty($equiv)){
+					$equiv_clean=" ( EQUIVALENT = '$equiv' OR EQUIVALENT IS NULL ) ";
+				}
+				$query="DELETE FROM deleted_equiv WHERE DELETED = '$del' AND $equiv_clean";
 				$DBocs->query($query);
 			}
 		}
