@@ -554,28 +554,28 @@ function replaceDropDropDown($input) {
 	// Man
 
 	if (isset ($RELATION[$input["tablename"]]))
-		foreach ($RELATION[$input["tablename"]] as $table => $field) {
-
-			if (!is_array($field)){
-
-				// Manage OCS lock for items - no need for array case
-				if ($table=="glpi_computers"&&$CFG_GLPI['ocs_mode']){
-					$query="SELECT ID FROM `glpi_computers` WHERE ocs_import='1' AND `$field` = '" . $input["oldID"] . "'";
-					$result=$DB->query($query);
-					if ($DB->numrows($result)){
-						while ($data=$DB->fetch_array($result)){
-							mergeOcsArray($data['ID'],array($field),"computer_update");
+		foreach ($RELATION[$input["tablename"]] as $table => $field){ 
+			if ($table[0]!='_'){
+				if (!is_array($field)){
+					// Manage OCS lock for items - no need for array case
+					if ($table=="glpi_computers"&&$CFG_GLPI['ocs_mode']){
+						$query="SELECT ID FROM `glpi_computers` WHERE ocs_import='1' AND `$field` = '" . $input["oldID"] . "'";
+						$result=$DB->query($query);
+						if ($DB->numrows($result)){
+							while ($data=$DB->fetch_array($result)){
+								mergeOcsArray($data['ID'],array($field),"computer_update");
+							}
 						}
 					}
-				}
-
-
-				$query = "UPDATE `$table` SET `$field` = '" . $input["newID"] . "'  WHERE `$field` = '" . $input["oldID"] . "'";
-				$DB->query($query);
-			} else {
-				foreach ($field as $f){
-					$query = "UPDATE `$table` SET `$f` = '" . $input["newID"] . "'  WHERE `$f` = '" . $input["oldID"] . "'";
+	
+	
+					$query = "UPDATE `$table` SET `$field` = '" . $input["newID"] . "'  WHERE `$field` = '" . $input["oldID"] . "'";
 					$DB->query($query);
+				} else {
+					foreach ($field as $f){
+						$query = "UPDATE `$table` SET `$f` = '" . $input["newID"] . "'  WHERE `$f` = '" . $input["oldID"] . "'";
+						$DB->query($query);
+					}
 				}
 			}
 		}
@@ -700,10 +700,12 @@ function dropdownUsed($table, $ID) {
 	if (isset ($RELATION[$table])){
 
 		foreach ($RELATION[$table] as $tablename => $field) {
-			$query = "SELECT COUNT(*) AS cpt FROM `$tablename` WHERE `$field` = '" . $ID . "'";
-			$result = $DB->query($query);
-			if ($DB->result($result, 0, "cpt") > 0)
-				$var1 = false;
+			if ($tablename[0]!='_'){
+				$query = "SELECT COUNT(*) AS cpt FROM `$tablename` WHERE `$field` = '" . $ID . "'";
+				$result = $DB->query($query);
+				if ($DB->result($result, 0, "cpt") > 0)
+					$var1 = false;
+			}
 		}
 	}
 
