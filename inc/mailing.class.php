@@ -142,7 +142,7 @@ class Mailing
 			if ($sendprivate){
 				$join=" INNER JOIN glpi_users_profiles 
 					ON (glpi_users_profiles.FK_users = glpi_users.ID 
-						AND glpi_users_profiles.FK_entities='".$this->job->fields['FK_entities']."')
+						".getEntitiesRestrictRequest("AND","glpi_users_profiles","FK_entities",$this->job->fields['FK_entities'],true).")
 					INNER JOIN glpi_profiles 
 					ON (glpi_profiles.ID = glpi_users_profiles.FK_profiles AND glpi_profiles.interface='central' AND glpi_profiles.show_full_ticket = '1') ";
 				$joinprofile=	"INNER JOIN glpi_profiles 
@@ -302,7 +302,8 @@ class Mailing
 						}
 						break;
 					case PROFILE_MAILING_TYPE :
-						$query="SELECT glpi_users.email as EMAIL FROM glpi_users_profiles INNER JOIN glpi_users ON (glpi_users_profiles.FK_users = glpi_users.ID) $joinprofile WHERE glpi_users_profiles.FK_profiles='".$data["FK_item"]."' AND glpi_users_profiles.FK_entities='".$this->job->fields["FK_entities"]."'";
+						$query="SELECT glpi_users.email as EMAIL FROM glpi_users_profiles INNER JOIN glpi_users ON (glpi_users_profiles.FK_users = glpi_users.ID) $joinprofile WHERE glpi_users_profiles.FK_profiles='".$data["FK_item"]."' ".getEntitiesRestrictRequest("AND","glpi_users_profiles","FK_entities",$this->job->fields['FK_entities'],true);
+
 						if ($result2= $DB->query($query)){
 							if ($DB->numrows($result2))
 								while ($data=$DB->fetch_assoc($result2)){
