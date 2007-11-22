@@ -413,6 +413,12 @@ class Job extends CommonDBTM{
 		// Manage helpdesk.html submission type
 		unset($input["type"]);
 
+		if (!isset($input["author"])){
+			if (isset($_SESSION["glpiID"])&&$_SESSION["glpiID"]>0)
+				$input["author"]=$_SESSION["glpiID"];
+			else $input["author"]=1; // Helpdesk injector
+		}
+
 		if (isset($_SESSION["glpiID"])) $input["recipient"]=$_SESSION["glpiID"];
 		else if ($input["author"]) $input["recipient"]=$input["author"];
 
@@ -420,11 +426,7 @@ class Job extends CommonDBTM{
 		if (!isset($input["status"])) $input["status"]="new";
 		if (!isset($input["assign"])) $input["assign"]=0;
 
-		if (!isset($input["author"])){
-			if (isset($_SESSION["glpiID"])&&$_SESSION["glpiID"]>0)
-				$input["author"]=$_SESSION["glpiID"];
-			else $input["author"]=1; // Helpdesk injector
-		}
+
 
 		if (!isset($input["date"])||$input["date"]=='0000-00-00 00:00'){
 			$input["date"] = $_SESSION["glpi_currenttime"];
