@@ -55,6 +55,7 @@ if (!isset($_POST["limit"])) $_POST["limit"]=$CFG_GLPI["dropdown_limit"];
 	if (strlen($_POST['searchText'])>0&&$_POST['searchText']!=$CFG_GLPI["ajax_wildcard"]){
 		$where=" WHERE (glpi_dropdown_netpoint.name ".makeTextSearch($_POST['searchText'])." OR glpi_dropdown_locations.completename ".makeTextSearch($_POST['searchText']).")";
 	}
+
 	if (isset($_POST["location"])&&$_POST["location"]>0){
 		if (empty($where)) $where=" WHERE ";
 		else $where.=" AND ";
@@ -78,7 +79,7 @@ if (!isset($_POST["limit"])) $_POST["limit"]=$CFG_GLPI["dropdown_limit"];
 	$query = "SELECT glpi_dropdown_netpoint.comments as comments, glpi_dropdown_netpoint.ID as ID, glpi_dropdown_netpoint.name as netpname, glpi_dropdown_locations.completename as loc from glpi_dropdown_netpoint";
 	$query .= " LEFT JOIN glpi_dropdown_locations ON (glpi_dropdown_netpoint.location = glpi_dropdown_locations.ID)";
 	$query.=$where;
-	$query .= " ORDER BY glpi_dropdown_netpoint.name,glpi_dropdown_locations.completename $LIMIT"; 
+	$query .= " ORDER BY glpi_dropdown_locations.completename, glpi_dropdown_netpoint.name $LIMIT"; 
 
 	$result = $DB->query($query);
 

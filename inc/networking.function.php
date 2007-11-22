@@ -318,7 +318,12 @@ function showNetportForm($target,$ID,$ondevice,$devtype,$several) {
 		echo "<tr class='tab_bg_1'><td>".$LANG["networking"][51].":</td>";
 
 		echo "<td align='center' >";
-		dropdownNetpoint("netpoint", $netport->fields["netpoint"],$netport->location,1,$netport->FK_entities);		
+		// On all location
+		if ($netport->device_type==NETWORKING_TYPE){
+			dropdownNetpoint("netpoint", $netport->fields["netpoint"],0,1,$netport->FK_entities);		
+		} else { // On location of the item
+			dropdownNetpoint("netpoint", $netport->fields["netpoint"],$netport->location,1,$netport->FK_entities);		
+		}
 		echo "</td></tr>";
 	}
 	if ($ID) {
