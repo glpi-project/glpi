@@ -471,11 +471,12 @@ class Mailing
 				$users[1]=$this->get_users_to_send_mail(1);
 				// Delete users who can see private followups to all users list
 				$users[0]=array_diff($users[0],$users[1]);
-				
+
 				// New Followup is private : do not send to common users
 				if ($this->followupisprivate){
 					unset($users[0]);
 				}
+
 				// get subject
 				$subject=$this->get_mail_subject();
 				// get sender
@@ -488,16 +489,18 @@ class Mailing
 						$htmlbody=$this->get_mail_body("html",$private);
 						$textbody=$this->get_mail_body("text",$private);
 
+						$mmail=new glpi_phpmailer();
+						$mmail->From=$sender;
+						$mmail->AddReplyTo("$replyto", ''); 
+						$mmail->FromName=$sender;
+						$mmail->Subject=$subject	;  
+						$mmail->Body=$htmlbody;
+						$mmail->isHTML(true);
+						$mmail->AltBody=$textbody;
+
 						foreach ($someusers as $email){
-							$mmail=new glpi_phpmailer();
-							$mmail->From=$sender;
-							$mmail->AddReplyTo("$replyto", ''); 
-							$mmail->FromName=$sender;
 							$mmail->AddAddress($email, "");
-							$mmail->Subject=$subject	;  
-							$mmail->Body=$htmlbody;
-							$mmail->isHTML(true);
-							$mmail->AltBody=$textbody;
+
 							if(!$mmail->Send()){
 								$senderror=true;
 								$_SESSION["MESSAGE_AFTER_REDIRECT"].=$LANG["mailing"][47]."<br>".$mmail->ErrorInfo."<br>";
@@ -506,8 +509,8 @@ class Mailing
 								if ($CFG_GLPI["use_errorlog"]){
 									logInFile("mail","Tracking successfull mail sent to : ".$email." subject : ".$subject."\n");
 								}
-
 							} 
+
 							$mmail->ClearAddresses(); 
 						}
 					}
@@ -741,20 +744,21 @@ class MailingResa{
 			// get reply-to address : user->email ou job_email if not set OK
 			$replyto=$this->get_reply_to_address ();
 
+
+			$mmail=new glpi_phpmailer();
+			$mmail->From=$sender;
+			$mmail->AddReplyTo("$replyto", ''); 
+			$mmail->FromName=$sender;
+			$mmail->Subject=$subject	;  
+			$mmail->Body=$this->get_mail_body("html");
+			$mmail->isHTML(true);
+			$mmail->AltBody=$this->get_mail_body("text");
+
 			// Send all mails
 			for ($i=0;$i<count($users);$i++)
 			{
 
-				$mmail=new glpi_phpmailer();
-				$mmail->From=$sender;
-				$mmail->AddReplyTo("$replyto", ''); 
-				$mmail->FromName=$sender;
 				$mmail->AddAddress($users[$i], "");
-				$mmail->Subject=$subject	;  
-				$mmail->Body=$this->get_mail_body("html");
-				$mmail->isHTML(true);
-				$mmail->AltBody=$this->get_mail_body("text");
-
 
 				if(!$mmail->Send()){
 					echo "<div class='center'>There was a problem sending this mail !</div>";
@@ -947,19 +951,23 @@ class MailingAlert
 			$sender= $CFG_GLPI["admin_email"];
 			// get reply-to address : user->email ou job_email if not set OK
 			$replyto=$this->get_reply_to_address ();
+
+
+			$mmail=new glpi_phpmailer();
+			$mmail->From=$sender;
+			$mmail->AddReplyTo("$replyto", ''); 
+			$mmail->FromName=$sender;
+
+			$mmail->Subject=$subject	;  
+			$mmail->Body=$this->get_mail_body("html");
+			$mmail->isHTML(true);
+			$mmail->AltBody=$this->get_mail_body("text");
+
 			// Send all mails
 			for ($i=0;$i<count($users);$i++)
 			{
-				$mmail=new glpi_phpmailer();
-				$mmail->From=$sender;
-				$mmail->AddReplyTo("$replyto", ''); 
-				$mmail->FromName=$sender;
-
 				$mmail->AddAddress($users[$i], "");
-				$mmail->Subject=$subject	;  
-				$mmail->Body=$this->get_mail_body("html");
-				$mmail->isHTML(true);
-				$mmail->AltBody=$this->get_mail_body("text");
+
 				if(!$mmail->Send()){
 					$_SESSION["MESSAGE_AFTER_REDIRECT"].="There was a problem sending this mail !";
 					return false;
