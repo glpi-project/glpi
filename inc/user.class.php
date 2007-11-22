@@ -908,8 +908,6 @@ class User extends CommonDBTM {
 						&& (!empty ($this->fields["password"]) || !empty ($this->fields["password_md5"])))
 				);
 			
-			$imapauth = !empty ($auth_method["imap_host"]);
-
 			echo "<div class='center'>";
 			echo "<form method='post' name=\"user_manager\" action=\"$target\"><table class='tab_cadre'>";
 			echo "<tr><th colspan='2'>" . $LANG["setup"][57] . " : " . $this->fields["name"] . "</th></tr>";
@@ -933,49 +931,55 @@ class User extends CommonDBTM {
 			}
 
 			echo "<tr class='tab_bg_1'><td class='center'>" . $LANG["common"][48] . "</td><td>";
-			if (!$extauth || $imapauth || (isset ($auth_method['ldap_fields']) && empty ($auth_method['ldap_fields']["realname"]))) {
-				autocompletionTextField("realname", "glpi_users", "realname", $this->fields["realname"], 30);
-			} else
+			if ($extauth && isset ($auth_method['ldap_field_email']) && !empty ($auth_method['ldap_field_realname'])) {
 				echo $this->fields["realname"];
+			} else {
+				autocompletionTextField("realname", "glpi_users", "realname", $this->fields["realname"], 30);
+			}
 			echo "</td></tr>";
 
 			echo "<tr class='tab_bg_1'><td class='center'>" . $LANG["common"][43] . "</td><td>";
-			if (!$extauth || $imapauth || (isset ($auth_method['ldap_fields']) && empty ($auth_method['ldap_fields']["firstname"]))) {
-				autocompletionTextField("firstname", "glpi_users", "firstname", $this->fields["firstname"], 30);
-			} else
+			if ($extauth && isset ($auth_method['ldap_field_firstname']) && !empty ($auth_method['ldap_field_firstname'])) {
 				echo $this->fields["firstname"];
+			} else {
+				autocompletionTextField("firstname", "glpi_users", "firstname", $this->fields["firstname"], 30);
+			}
 			echo "</td></tr>";
 
 			echo "<tr class='tab_bg_1'><td class='center'>" . $LANG["setup"][14] . "</td><td>";
-			if (!$extauth || (isset ($auth_method['ldap_fields']) && empty ($auth_method['ldap_fields']["email"]))) {
+			if ($extauth && isset ($auth_method['ldap_field_email']) && !empty ($auth_method['ldap_field_email'])) {
+				echo $this->fields["email"];
+			} else {
 				autocompletionTextField("email_form", "glpi_users", "email", $this->fields["email"], 30);
 				if (!isValidEmail($this->fields["email"])){
 					echo "<span class='red'>".$LANG["mailing"][110]."</span>";
 				}
-			} else {
-				echo $this->fields["email"];
 			}
+
 			echo "</td></tr>";
 
 			echo "<tr class='tab_bg_1'><td class='center'>" . $LANG["financial"][29] . "</td><td>";
-			if (!$extauth || $imapauth || (isset ($auth_method['ldap_fields']) && empty ($auth_method['ldap_fields']["phone"]))) {
-				autocompletionTextField("phone", "glpi_users", "phone", $this->fields["phone"], 30);
-			} else
+			if ($extauth && isset ($auth_method['ldap_field_phone']) && !empty ($auth_method['ldap_field_phone'])) {
 				echo $this->fields["phone"];
+			} else {
+				autocompletionTextField("phone", "glpi_users", "phone", $this->fields["phone"], 30);
+			}
 			echo "</td></tr>";
 
 			echo "<tr class='tab_bg_1'><td class='center'>" . $LANG["financial"][29] . " 2</td><td>";
-			if (!$extauth || $imapauth || (isset ($auth_method['ldap_fields']) && empty ($auth_method['ldap_fields']["phone2"]))) {
-				autocompletionTextField("phone2", "glpi_users", "phone2", $this->fields["phone2"], 30);
-			} else
+			if ($extauth && isset ($auth_method['ldap_field_phone2']) && !empty ($auth_method['ldap_field_phone2'])) {
 				echo $this->fields["phone2"];
+			} else {
+				autocompletionTextField("phone2", "glpi_users", "phone2", $this->fields["phone2"], 30);
+			}
 			echo "</td></tr>";
 
 			echo "<tr class='tab_bg_1'><td class='center'>" . $LANG["common"][42] . "</td><td>";
-			if (!$extauth || $imapauth || (isset ($auth_method['ldap_fields']) && empty ($auth_method['ldap_fields']["mobile"]))) {
-				autocompletionTextField("mobile", "glpi_users", "mobile", $this->fields["mobile"], 30);
-			} else
+			if ($extauth && isset ($auth_method['ldap_field_mobile']) && !empty ($auth_method['ldap_field_mobile'])) {
 				echo $this->fields["mobile"];
+			} else {
+				autocompletionTextField("mobile", "glpi_users", "mobile", $this->fields["mobile"], 30);
+			}
 			echo "</td></tr>";
 
 			echo "<tr class='tab_bg_1'><td class='center'>" . $LANG["setup"][40] . "</td><td>";
