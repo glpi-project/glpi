@@ -117,6 +117,7 @@ hr{
 	background: url("../pics/fd_hoverlink.png") 0 0 repeat;
 	-moz-border-radius: 5px;
 	padding: 5px;
+	max-width: 350px;
 	font-size: 11px;
 	text-align: left;
 	z-index:1000;
