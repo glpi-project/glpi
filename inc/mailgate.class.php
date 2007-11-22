@@ -239,6 +239,7 @@ class MailCollect  extends receiveMail {
 		$tkt= array ();
 		
 		//  Who is the user ?
+		$tkt['author']=0;
 		$query="SELECT ID from glpi_users WHERE email='".$head['from']."'";
 		$result=$DB->query($query);
 		if ($result&&$DB->numrows($result)){
