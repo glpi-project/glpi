@@ -1335,34 +1335,6 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$to
 
 	if ($item!=0&&$type!=0)
 		$where.=" AND glpi_tracking.computer = '$item'";	
-	
-	if (strcmp($assign,"mine")==0){
-		$search_assign=" glpi_tracking.assign = '".$_SESSION["glpiID"]."' ";
-		if (count($_SESSION['glpigroups'])){
-			$first=true;
-			$groups="";
-			foreach ($_SESSION['glpigroups'] as $val){
-				if (!$first) $groups.=",";
-				else $first=false;
-				$groups.=$val;
-			}
-			$search_assign.= " OR glpi_tracking.assign_group IN ($groups) ";
-		}
-		$where.=" AND ($search_assign) ";
-
-	} else {
-		if ($assign_ent!=0) $where.=" AND glpi_tracking.assign_ent = '$assign_ent'";
-		if ($assign!=0) $where.=" AND glpi_tracking.assign = '$assign'";
-		if ($assign_group!=0) $where.=" AND glpi_tracking.assign_group = '$assign_group'";
-	}
-
-
-
-	if ($request_type!=0) $where.=" AND glpi_tracking.request_type = '$request_type'";
-
-	if ($priority>0) $where.=" AND glpi_tracking.priority = '$priority'";
-	if ($priority<0) $where.=" AND glpi_tracking.priority >= '".abs($priority)."'";
-
 
 	$search_author=false;
 	if ($group>0) $where.=" AND glpi_tracking.FK_group = '$group'";
@@ -1388,9 +1360,61 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$to
 		}
 	}
 
+
 	if ($author!=0&&!$search_author) {
 		$where.=" AND glpi_tracking.author = '$author' ";
 	}
+
+	if (strcmp($assign,"mine")==0){
+		// Case : central acces with show_assign_ticket but without show_all_ticket
+		$search_assign=" glpi_tracking.assign = '".$_SESSION["glpiID"]."' ";
+		if (count($_SESSION['glpigroups'])){
+			$first=true;
+			$groups="";
+			foreach ($_SESSION['glpigroups'] as $val){
+				if (!$first) $groups.=",";
+				else $first=false;
+				$groups.=$val;
+			}
+			$search_assign.= " OR glpi_tracking.assign_group IN ($groups) ";
+		}
+
+		// Display mine but also the ones which i am the author
+		$author_part="";
+		if (!$search_author&&isset($_SESSION['glpiID'])){
+			$author_part.=" OR glpi_tracking.author = '".$_SESSION['glpiID']."'";
+
+			// Get Author group's
+			if (count($_SESSION["glpigroups"])){
+				$first=true;
+				$groups="";
+				foreach ($_SESSION['glpigroups'] as $val){
+					if (!$first) $groups.=",";
+					else $first=false;
+					$groups.=$val;
+				}			
+				$author_part.=" OR glpi_tracking.FK_group IN ($groups) ";
+	
+			}
+		}
+
+		$where.=" AND ($search_assign $author_part ) ";
+
+
+	} else {
+		if ($assign_ent!=0) $where.=" AND glpi_tracking.assign_ent = '$assign_ent'";
+		if ($assign!=0) $where.=" AND glpi_tracking.assign = '$assign'";
+		if ($assign_group!=0) $where.=" AND glpi_tracking.assign_group = '$assign_group'";
+	}
+
+
+
+	if ($request_type!=0) $where.=" AND glpi_tracking.request_type = '$request_type'";
+
+	if ($priority>0) $where.=" AND glpi_tracking.priority = '$priority'";
+	if ($priority<0) $where.=" AND glpi_tracking.priority >= '".abs($priority)."'";
+
+
 
 	if ($search!=""){
 		$SEARCH2=makeTextSearch($search);
