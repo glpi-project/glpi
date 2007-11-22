@@ -63,7 +63,7 @@ function showLicenses ($sID,$show_computers=0) {
 	$query = "SELECT count(*) AS COUNT  FROM glpi_licenses WHERE (sID = '$sID')";
 	$query_update = "SELECT count(glpi_licenses.ID) AS COUNT  FROM glpi_licenses, glpi_software WHERE (glpi_software.ID = glpi_licenses.sID AND glpi_software.update_software = '$sID' and glpi_software.is_update='1')";
 
-	$found_soft=true;
+	$found_soft=false;
 	if ($result = $DB->query($query)) {
 		if ($DB->result($result,0,0)!=0) { 
 			$nb_licences=$DB->result($result, 0, "COUNT");
@@ -143,7 +143,6 @@ function showLicenses ($sID,$show_computers=0) {
 			echo "<br><div class='center'><table border='0' width='50%' cellpadding='2'>";
 			echo "<tr><th>".$LANG["software"][14]."</th></tr>";
 			echo "</table></div>";
-			$found_soft=false;
 		}
 	}
 
@@ -191,6 +190,7 @@ function showLicenses ($sID,$show_computers=0) {
 
 			echo "<tr class='tab_bg_1' valign='top'>";
 			if ($canedit&&!$show_computers){
+				$found_soft=true;
 				echo "<td><input type='checkbox' name='license_".$data['ID']."'></td>";
 			}
 			echo "<td class='center'><strong>".$version."</strong></td>";
@@ -312,6 +312,7 @@ function showLicenses ($sID,$show_computers=0) {
 					echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;".$LANG["search"][7].":";
 					$rand=mt_rand();
 
+					$found_soft=true;
 					echo "<input type='checkbox' onclick='toggle$rand();'>";
 					echo "<script type='text/javascript' >\n";
 					echo "function toggle$rand(){\n";
@@ -335,6 +336,7 @@ function showLicenses ($sID,$show_computers=0) {
 					echo "<tr class='tab_bg_1".(($data["OEM"]&&$data["OEM_COMPUTER"]!=$data_inst["cID"])||$data_inst["deleted"]?"_2":"")."'><td class='center'>";
 
 					if ($serial!="free"&&$serial!="global"&&$canedit){
+						$found_soft=true;
 						echo "<input type='checkbox' name='license_".$data_inst["lID"]."' id='license_".$data_inst["lID"]."'>";
 					}
 					$ci->getFromDB(COMPUTER_TYPE,$data_inst["cID"]);
