@@ -164,8 +164,8 @@ function showLicenses ($sID,$show_computers=0) {
 				$SEARCH_LICENCE.=" AND glpi_licenses.expire IS NULL";
 			else $SEARCH_LICENCE.=" AND glpi_licenses.expire = '$expire'";
 
-			if ($version=="")
-				$SEARCH_LICENCE.=" AND glpi_licenses.version='')";
+			if ($version=="" || is_null($version))
+				$SEARCH_LICENCE.=" AND (glpi_licenses.version='' OR glpi_licenses.version IS NULL))";
 			else $SEARCH_LICENCE.=" AND glpi_licenses.version = '$version')";
 
 
@@ -706,7 +706,7 @@ function showSoftwareInstalled($instID,$withtemplate='') {
 	$comp->getFromDB($instID);
 	$FK_entities=$comp->fields["FK_entities"];
 
-	$query_cat = "SELECT 1 as TYPE, glpi_dropdown_software_category.name as category, glpi_software.category as category_id, glpi_software.name as softname, glpi_inst_software.license as license, glpi_inst_software.ID as ID,glpi_licenses.expire,glpi_software.deleted, glpi_licenses.sID, GROUP_CONCAT( DISTINCT CONCAT(glpi_licenses.version,' - ', glpi_licenses.serial) SEPARATOR '$$$$') AS version, glpi_licenses.serial, glpi_licenses.oem, glpi_licenses.oem_computer, glpi_licenses.buy	
+	$query_cat = "SELECT 1 as TYPE, glpi_dropdown_software_category.name as category, glpi_software.category as category_id, glpi_software.name as softname, glpi_inst_software.license as license, glpi_inst_software.ID as ID,glpi_licenses.expire,glpi_software.deleted, glpi_licenses.sID, GROUP_CONCAT( DISTINCT CONCAT(glpi_licenses.version,' - ', glpi_licenses.serial) SEPARATOR '$$$$') AS version, glpi_licenses.serial, glpi_licenses.version AS orig_version, glpi_licenses.oem, glpi_licenses.oem_computer, glpi_licenses.buy	
 	FROM glpi_inst_software 
 	LEFT JOIN glpi_licenses ON ( glpi_inst_software.license = glpi_licenses.ID )
 	LEFT JOIN glpi_software ON (glpi_licenses.sID = glpi_software.ID) 
@@ -715,7 +715,7 @@ function showSoftwareInstalled($instID,$withtemplate='') {
 	$query_cat.=" WHERE glpi_inst_software.cID = '$instID' AND glpi_software.category > 0 
 			GROUP BY glpi_licenses.sID"; 
 
-    $query_nocat = "SELECT 2 as TYPE, glpi_dropdown_software_category.name as category, glpi_software.category as category_id, glpi_software.name as softname, glpi_inst_software.license as license, glpi_inst_software.ID as ID,glpi_licenses.expire,glpi_software.deleted, glpi_licenses.sID, GROUP_CONCAT( DISTINCT CONCAT(glpi_licenses.version,' - ', glpi_licenses.serial) SEPARATOR '$$$$') AS version, glpi_licenses.serial, glpi_licenses.oem, glpi_licenses.oem_computer, glpi_licenses.buy  
+    $query_nocat = "SELECT 2 as TYPE, glpi_dropdown_software_category.name as category, glpi_software.category as category_id, glpi_software.name as softname, glpi_inst_software.license as license, glpi_inst_software.ID as ID,glpi_licenses.expire,glpi_software.deleted, glpi_licenses.sID, GROUP_CONCAT( DISTINCT CONCAT(glpi_licenses.version,' - ', glpi_licenses.serial) SEPARATOR '$$$$') AS version, glpi_licenses.serial, glpi_licenses.version AS orig_version, glpi_licenses.oem, glpi_licenses.oem_computer, glpi_licenses.buy  
         FROM glpi_inst_software 
 	LEFT JOIN glpi_licenses ON ( glpi_inst_software.license = glpi_licenses.ID ) 
         LEFT JOIN glpi_software ON (glpi_licenses.sID = glpi_software.ID)  
@@ -832,13 +832,17 @@ function displaySoftsByCategory($data,$instID,$withtemplate)
 	echo "</td>";
 	echo "<td>";
 
-	$split=explode("$$$$",$data["version"]);
-	$count_display=0;
-	$out="";
-	for ($k=0;$k<count($split);$k++){
-		if ($count_display) echo "<br>";
-		$count_display++;
-		echo  $split[$k];
+	if (!strpos($data["version"],"$$$$")){
+			echo $data["serial"]." - ".$data["orig_version"];
+	} else {
+		$split=explode("$$$$",$data["version"]);
+		$count_display=0;
+		$out="";
+		for ($k=0;$k<count($split);$k++){
+			if ($count_display) echo "<br>";
+			$count_display++;
+			echo  $split[$k];
+		}
 	}
 	echo "</td>";
 	echo "<td class='center'><strong>";
