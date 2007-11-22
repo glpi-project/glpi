@@ -486,17 +486,15 @@ class Mailing
 				// Send all mails
 				foreach ($users as $private=>$someusers) {
 					if (count($someusers)){
-						$htmlbody=$this->get_mail_body("html",$private);
-						$textbody=$this->get_mail_body("text",$private);
 
 						$mmail=new glpi_phpmailer();
 						$mmail->From=$sender;
 						$mmail->AddReplyTo("$replyto", ''); 
 						$mmail->FromName=$sender;
 						$mmail->Subject=$subject	;  
-						$mmail->Body=$htmlbody;
+						$mmail->Body=$this->get_mail_body("html",$private);
 						$mmail->isHTML(true);
-						$mmail->AltBody=$textbody;
+						$mmail->AltBody=$this->get_mail_body("text",$private);
 
 						foreach ($someusers as $email){
 							$mmail->AddAddress($email, "");
