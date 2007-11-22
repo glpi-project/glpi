@@ -758,7 +758,7 @@ function addFormTracking ($device_type=0,$ID=0,$author,$group,$assign,$assign_gr
 		echo $LANG["job"][21]."&nbsp;&nbsp;";
 		$min=0;
 		if (isset($_POST["minute"])) $min=$_POST["minute"];
-		dropdownInteger('minute',$min,0,59);
+		dropdownInteger('minute',$min,0,59,5);
 
 		echo $LANG["job"][22]."&nbsp;&nbsp;";
 		echo "</td></tr>";
@@ -2236,7 +2236,7 @@ function showAddFollowupForm($tID,$massiveaction=false){
 			echo "<tr><td>".$LANG["job"][31].":</td><td>";
 			dropdownInteger('hour',0,0,100);
 			echo $LANG["job"][21]."&nbsp;&nbsp;";
-			dropdownInteger('minute',0,0,59);
+			dropdownInteger('minute',0,0,59,5);
 			echo $LANG["job"][22];
 			echo "</tr>";
 		}
@@ -2354,7 +2354,7 @@ function showUpdateFollowupForm($ID){
 
 			dropdownInteger('hour',$hour,0,100);
 			echo $LANG["job"][21]."&nbsp;&nbsp;";
-			dropdownInteger('minute',$minute,0,59);
+			dropdownInteger('minute',$minute,0,59,5);
 			echo $LANG["job"][22];
 		} else {
 			echo $hour." ".$LANG["job"][21]." ".$minute." ".$LANG["job"][22];
