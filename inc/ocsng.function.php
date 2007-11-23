@@ -2892,7 +2892,7 @@ function ocsUpdateSoftware($glpi_id, $entity, $ocs_id, $ocs_server_id, $cfg_ocs,
 						//Look for the software by his name in GLPI for a specific entity
 						$query_search = "SELECT glpi_software.ID as ID, glpi_software.deleted as deleted  
 												FROM glpi_software 
-												WHERE name = '" . $name . "' AND FK_entities=" . $entity;
+												WHERE name = '" . $name . "' AND is_template='0' AND FK_entities=" . $entity;
 						$result_search = $DB->query($query_search);
 						if ($DB->numrows($result_search) > 0) {
 							//Software already exists for this entity, get his ID
