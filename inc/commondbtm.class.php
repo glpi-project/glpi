@@ -487,7 +487,7 @@ class CommonDBTM {
 			$input=doHookFunction("pre_item_delete",$input);
 		}
 
-		if ($this->getFromDB($input["ID"])){
+		if ($this->getFromDB($input[$this->getIndexName()])){
 			if ($this->pre_deleteItem($this->fields["ID"])){
 				if ($this->deleteFromDB($this->fields["ID"],$force)){
 					if ($force){
