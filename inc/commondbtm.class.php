@@ -434,14 +434,15 @@ class CommonDBTM {
 					}
 */
 					if ($this->fields[$key] != stripslashes($input[$key])) {
-						// Do logs
-						if ($this->dohistory&&$history){
-							constructHistory($input["ID"],$this->type,$key,$this->fields[$key],$input[$key]);
+						if ($key!="ID"){
+							// Do logs
+							if ($this->dohistory&&$history){
+								constructHistory($input["ID"],$this->type,$key,$this->fields[$key],$input[$key]);
+							}
+							$this->fields[$key] = $input[$key];
+							$updates[$x] = $key;
+							$x++;
 						}
-
-						$this->fields[$key] = $input[$key];
-						$updates[$x] = $key;
-						$x++;
 					}
 				}
 			}	
