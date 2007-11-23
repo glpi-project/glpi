@@ -1385,7 +1385,7 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$to
 			$author_part.=" OR glpi_tracking.author = '".$_SESSION['glpiID']."'";
 
 			// Get Author group's
-			if (count($_SESSION["glpigroups"])){
+			if (haveRight("show_group_ticket",1)&&count($_SESSION["glpigroups"])){
 				$first=true;
 				$groups="";
 				foreach ($_SESSION['glpigroups'] as $val){
