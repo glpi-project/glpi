@@ -50,7 +50,7 @@ if (isset($_POST["add"]))
 		checkRight("reminder_public","w");
 	}
 	$newID=$remind->add($_POST);
-	logEvent($newID, "reminder", 4, "utils", $_SESSION["glpiname"]." added ".$_POST["title"].".");
+	logEvent($newID, "reminder", 4, "tools", $_SESSION["glpiname"]." added ".$_POST["title"].".");
 	glpi_header($_SERVER['HTTP_REFERER']);
 } 
 else if (isset($_POST["delete"]))
@@ -59,7 +59,7 @@ else if (isset($_POST["delete"]))
 		checkRight("reminder_public","w");
 	}
 	$remind->delete($_POST);
-	logEvent($_POST["ID"], "reminder", 4, "utils", $_SESSION["glpiname"]." ".$LANG["log"][22]);
+	logEvent($_POST["ID"], "reminder", 4, "tools", $_SESSION["glpiname"]." ".$LANG["log"][22]);
 	glpi_header($CFG_GLPI["root_doc"]."/front/reminder.php");
 }
 else if (isset($_POST["update"]))
@@ -69,12 +69,12 @@ else if (isset($_POST["update"]))
 	}
 
 	$remind->update($_POST);
-	logEvent($_POST["ID"], "reminder", 4, "utils", $_SESSION["glpiname"]." ".$LANG["log"][21]);
+	logEvent($_POST["ID"], "reminder", 4, "tools", $_SESSION["glpiname"]." ".$LANG["log"][21]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else
 {
-	commonHeader($LANG["title"][40],$_SERVER['PHP_SELF'],"utils","reminder");
+	commonHeader($LANG["title"][40],$_SERVER['PHP_SELF'],"tools","reminder");
 	$remind->showForm($_SERVER['PHP_SELF'],$_GET["ID"]);
 
 	commonFooter();
