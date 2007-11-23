@@ -2890,7 +2890,7 @@ function ocsUpdateSoftware($glpi_id, $entity, $ocs_id, $ocs_server_id, $cfg_ocs,
 						//----------------------------------------------------------------------------------------------------------------//
 
 						//Look for the software by his name in GLPI for a specific entity
-						$query_search = "SELECT glpi_software.ID as ID  
+						$query_search = "SELECT glpi_software.ID as ID, glpi_software.deleted as deleted  
 												FROM glpi_software 
 												WHERE name = '" . $name . "' AND FK_entities=" . $entity;
 						$result_search = $DB->query($query_search);
@@ -2898,8 +2898,14 @@ function ocsUpdateSoftware($glpi_id, $entity, $ocs_id, $ocs_server_id, $cfg_ocs,
 							//Software already exists for this entity, get his ID
 							$data = $DB->fetch_array($result_search);
 							$isNewSoft = $data["ID"];
-						} else
-						$isNewSoft = 0;
+							// restore software
+							if ($data['deleted']){
+								$s = new Software;
+								$s->restore($data);
+							}
+						} else {
+							$isNewSoft = 0;
+						}
 						
 						if (!$isNewSoft) {
 							$input = array ();
@@ -2915,8 +2921,7 @@ function ocsUpdateSoftware($glpi_id, $entity, $ocs_id, $ocs_server_id, $cfg_ocs,
 							}
 							$input["_from_ocs"] = 1;
 							$isNewSoft = $soft->add($input);
-	
-						}
+						} 
 						
 						//Import license for this software
 						$licenseID = ocsImportLicense($isNewSoft, $version,$import_software_licensetype,$import_software_buy);
