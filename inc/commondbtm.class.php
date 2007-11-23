@@ -420,7 +420,7 @@ class CommonDBTM {
 
 		$input=$this->prepareInputForUpdate($input);
 		unset($input['update']);
-		if ($this->getFromDB($input["ID"])){
+		if ($this->getFromDB($input[$this->getIndexName()])){
 			// Fill the update-array with changes
 			$x=0;
 			$updates=array();
