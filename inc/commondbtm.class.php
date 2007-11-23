@@ -488,12 +488,12 @@ class CommonDBTM {
 		}
 
 		if ($this->getFromDB($input["ID"])){
-			if ($this->pre_deleteItem($input["ID"])){
-				if ($this->deleteFromDB($input["ID"],$force)){
+			if ($this->pre_deleteItem($this->fields["ID"])){
+				if ($this->deleteFromDB($this->fields["ID"],$force)){
 					if ($force){
-						doHook("item_purge",array("type"=>$this->type, "ID" => $input["ID"]));
+						doHook("item_purge",array("type"=>$this->type, "ID" => $this->fields["ID"]));
 					} else {
-						doHook("item_delete",array("type"=>$this->type, "ID" => $input["ID"]));
+						doHook("item_delete",array("type"=>$this->type, "ID" => $this->fields["ID"]));
 					}
 				}
 				return true;
