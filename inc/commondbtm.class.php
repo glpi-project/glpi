@@ -150,11 +150,10 @@ class CommonDBTM {
 				$query .= " = '";
 				$query .= $this->fields[$updates[$i]]."'";
 			}
-			$query .= " WHERE ".$this->getIndexName()." ='";
+			$query .= " WHERE ID ='";
 			$query .= $this->fields["ID"];	
 			$query .= "'";
 			$result=$DB->query($query);
-	
 		}
 		$this->cleanCache($this->fields["ID"]);
 		return true;
@@ -218,7 +217,7 @@ class CommonDBTM {
 	function restoreInDB($ID) {
 		global $DB,$CFG_GLPI;
 		if (in_array($this->table,$CFG_GLPI["deleted_tables"])){
-			$query = "UPDATE ".$this->table." SET deleted='0' WHERE (".$this->getIndexName()." = '$ID')";
+			$query = "UPDATE ".$this->table." SET deleted='0' WHERE (ID = '$ID')";
 			if ($result = $DB->query($query)) {
 				return true;
 			} else {
@@ -248,7 +247,7 @@ class CommonDBTM {
 
 			$this->cleanRelationData($ID);
 
-			$query = "DELETE from ".$this->table." WHERE ".$this->getIndexName()." = '$ID'";
+			$query = "DELETE from ".$this->table." WHERE ID = '$ID'";
 
 			if ($result = $DB->query($query)) {
 				$this->post_deleteFromDB($ID);
@@ -258,7 +257,7 @@ class CommonDBTM {
 				return false;
 			}
 		}else {
-			$query = "UPDATE ".$this->table." SET deleted='1' WHERE ".$this->getIndexName()." = '$ID'";		
+			$query = "UPDATE ".$this->table." SET deleted='1' WHERE ID = '$ID'";		
 			$this->cleanDBonMarkDeleted($ID);
 
 			if ($result = $DB->query($query)){
