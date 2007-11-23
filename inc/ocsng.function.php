@@ -631,8 +631,8 @@ function getMachinesAlreadyInGLPI($ocs_id,$ocs_server_id,$entity)
 {
 	global $DB,$DBocs;
 	$conf = getOcsConf($ocs_server_id);
-	$sql_and = "";
-	$sql_fields = "";
+
+	$sql_fields = "hardware.ID";
 	$sql_from ="hardware";
 	$first = true;
 	$ocsParams = array();
@@ -642,38 +642,34 @@ function getMachinesAlreadyInGLPI($ocs_id,$ocs_server_id,$entity)
 		//Build the request against OCS database to get the machine's informations
 		if ( $conf["link_ip"] || $conf["link_mac_address"])
 		{
-			$sql_from.=" ,networks";
-			$sql_and.=" AND hardware.ID=networks.HARDWARE_ID";
+			$sql_from.=" LEFT JOIN networks ON (hardware.ID=networks.HARDWARE_ID) ";
 		}	
+
 		if ($conf["link_ip"])
 		{
-			$sql_fields.=(!$first?",":'')."networks.IPADDRESS";
-			$first=false;
+			$sql_fields.=", networks.IPADDRESS";
 			$ocsParams["IPADDRESS"] = array();
 		}
 		if ($conf["link_mac_address"])
 		{
-			$sql_fields.=(!$first?",":'')."networks.MACADDR";
-			$first=false;
+			$sql_fields.=", networks.MACADDR";
 			$ocsParams["MACADDR"] = array();
 		}
 		if ($conf["link_serial"])
 		{
-			$sql_from.=",bios";
-			$sql_and .= " AND bios.HARDWARE_ID=hardware.ID";
-			$sql_fields.=(!$first?",":'')."bios.SSN";
+			$sql_from.=" LEFT JOIN bios ON (bios.HARDWARE_ID=hardware.ID) ";
+
+			$sql_fields.=", bios.SSN";
 			$ocsParams["SSN"] = array();
-			$first=false;
 		}
 		if ($conf["link_name"] > 0)
 		{
-			$sql_fields.=(!$first?",":'')."hardware.NAME";
-			$first=false;
+			$sql_fields.=", hardware.NAME";
 			$ocsParams["NAME"] = array();
 		}
 		
 		//Execute request
-		$sql = "SELECT ".$sql_fields." from ".$sql_from." WHERE hardware.ID=".$ocs_id." ".$sql_and;
+		$sql = "SELECT ".$sql_fields." FROM ".$sql_from." WHERE hardware.ID=".$ocs_id.";";
 		$result = $DBocs->query($sql);
 		
 		//Get the list of parameters
@@ -695,12 +691,11 @@ function getMachinesAlreadyInGLPI($ocs_id,$ocs_server_id,$entity)
 		}
 
 		//Build the request to check if the machine exists in GLPI
-		$sql_and = "";
+		$sql_where = " FK_entities=$entity AND is_template=0 AND deleted=0 ";
 		$sql_from = "";
 		if ( $conf["link_ip"] || $conf["link_mac_address"])
 		{
-			$sql_from.=" ,glpi_networking_ports";
-			$sql_and.=" AND glpi_computers.ID=glpi_networking_ports.on_device AND glpi_networking_ports.device_type=".COMPUTER_TYPE;
+			$sql_from.=" LEFT JOIN glpi_networking_ports ON (glpi_computers.ID=glpi_networking_ports.on_device AND glpi_networking_ports.device_type=".COMPUTER_TYPE.") ";
 		}	
 		if ($conf["link_ip"])
 		{
@@ -708,10 +703,10 @@ function getMachinesAlreadyInGLPI($ocs_id,$ocs_server_id,$entity)
 				return -1;
 			else
 			{	
-				$sql_and.=" AND glpi_networking_ports.ifaddr IN ";
+				$sql_where.=" AND glpi_networking_ports.ifaddr IN ";
 				for ($i=0; $i < count($ocsParams["IPADDRESS"]);$i++)
-					$sql_and .= ($i>0 ? ',"' : '("').$ocsParams["IPADDRESS"][$i].'"';
-				$sql_and.=")";
+					$sql_where .= ($i>0 ? ',"' : '("').$ocsParams["IPADDRESS"][$i].'"';
+				$sql_where.=")";
 			}			
 		}
 		if ($conf["link_mac_address"])
@@ -720,23 +715,23 @@ function getMachinesAlreadyInGLPI($ocs_id,$ocs_server_id,$entity)
 				return -1;
 			else
 			{	
-				$sql_and.=" AND glpi_networking_ports.ifmac IN ";
+				$sql_where.=" AND glpi_networking_ports.ifmac IN ";
 				for ($i=0; $i < count($ocsParams["MACADDR"]);$i++)
-					$sql_and .= ($i>0 ? ',"' : '("').$ocsParams["MACADDR"][$i].'"';
-				$sql_and.=")";
+					$sql_where .= ($i>0 ? ',"' : '("').$ocsParams["MACADDR"][$i].'"';
+				$sql_where.=")";
 			}
 		}
 		if ($conf["link_name"] > 0)
 		{
 			//Search only computers with blank name
 			if ($conf["link_name"] == 2)
-				$sql_and .= " AND glpi_computers.name=\"\"";
+				$sql_where .= " AND glpi_computers.name=\"\"";
 			else
 			{	
 				if (empty($ocsParams["NAME"]))
 					return -1;
 				else
-					$sql_and .= " AND glpi_computers.name=\"".$ocsParams["NAME"][0]."\"";
+					$sql_where .= " AND glpi_computers.name=\"".$ocsParams["NAME"][0]."\"";
 			}
 		}
 		if ($conf["link_serial"])
@@ -744,12 +739,12 @@ function getMachinesAlreadyInGLPI($ocs_id,$ocs_server_id,$entity)
 			if (empty($ocsParams["SSN"]))
 				return -1;
 			else
-				$sql_and .= (!$first?" AND ":' ')."glpi_computers.serial=\"".$ocsParams["SSN"][0]."\"";
+				$sql_where .= " AND glpi_computers.serial=\"".$ocsParams["SSN"][0]."\"";
 		}
 		if ($conf["link_if_status"] > 0)
-			$sql_and .= " AND glpi_computers.state=".$conf["link_if_status"];
+			$sql_where .= " AND glpi_computers.state=".$conf["link_if_status"];
 		
-		$sql_glpi = "SELECT glpi_computers.ID FROM glpi_computers ".$sql_from." WHERE FK_entities=".$entity.$sql_and. " AND is_template=0";
+		$sql_glpi = "SELECT glpi_computers.ID FROM glpi_computers ".$sql_from." WHERE  ".$sql_where;
 		$result_glpi = $DB->query($sql_glpi);
 		if ($DB->numrows($result_glpi) > 0)
 			return $DB->result($result_glpi,0,"ID");
@@ -1251,7 +1246,6 @@ function cron_ocsng() {
 		$result_ocs = $DBocs->query($query_ocs);
 		if ($DBocs->numrows($result_ocs) > 0) {
 			while ($data = $DBocs->fetch_array($result_ocs)) {
-				echo $data["ID"];
 				ocsProcessComputer($data["ID"],$ocs_server_id,0,-1,1);
 				if ($CFG_GLPI["use_errorlog"]) {
 					logInFile("cron", "Update computer " . $data["ID"] . "\n");
