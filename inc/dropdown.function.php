@@ -558,9 +558,15 @@ function dropdownIcons($myname,$value,$store_path){
 	global $LANG;
 	if (is_dir($store_path)){
 		if ($dh = opendir($store_path)) {
+			$files=array();
+			while (($file = readdir($dh)) !== false) {
+				$files[]=$file;
+			}
+			closedir($dh);
+			sort($files);
 			echo "<select name=\"$myname\">";
 			echo "<option value=''>-----</option>";
-			while (($file = readdir($dh)) !== false) {
+			foreach ($files as $file){
 				if (eregi(".png$",$file)){
 					if ($file == $value) {
 						echo "<option value=\"$file\" selected>".$file;
@@ -570,7 +576,6 @@ function dropdownIcons($myname,$value,$store_path){
 					echo "</option>";
 				}
 			}
-			closedir($dh);
 			echo "</select>";
 		} else echo "Error reading directory $store_path";
 	} else echo "Error $store_path is not a directory";
