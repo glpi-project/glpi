@@ -669,7 +669,7 @@ function getMachinesAlreadyInGLPI($ocs_id,$ocs_server_id,$entity)
 		}
 		
 		//Execute request
-		$sql = "SELECT ".$sql_fields." FROM ".$sql_from." WHERE hardware.ID=".$ocs_id.";";
+		$sql = "SELECT ".$sql_fields." FROM $sql_from WHERE hardware.ID=$ocs_id;";
 		$result = $DBocs->query($sql);
 		
 		//Get the list of parameters
@@ -692,7 +692,7 @@ function getMachinesAlreadyInGLPI($ocs_id,$ocs_server_id,$entity)
 
 		//Build the request to check if the machine exists in GLPI
 		$sql_where = " FK_entities=$entity AND is_template=0 AND deleted=0 ";
-		$sql_from = "";
+		$sql_from = "glpi_computers";
 		if ( $conf["link_ip"] || $conf["link_mac_address"])
 		{
 			$sql_from.=" LEFT JOIN glpi_networking_ports ON (glpi_computers.ID=glpi_networking_ports.on_device AND glpi_networking_ports.device_type=".COMPUTER_TYPE.") ";
@@ -744,7 +744,7 @@ function getMachinesAlreadyInGLPI($ocs_id,$ocs_server_id,$entity)
 		if ($conf["link_if_status"] > 0)
 			$sql_where .= " AND glpi_computers.state=".$conf["link_if_status"];
 		
-		$sql_glpi = "SELECT glpi_computers.ID FROM glpi_computers ".$sql_from." WHERE  ".$sql_where;
+		$sql_glpi = "SELECT glpi_computers.ID FROM $sql_from WHERE  $sql_where ;";
 		$result_glpi = $DB->query($sql_glpi);
 		if ($DB->numrows($result_glpi) > 0)
 			return $DB->result($result_glpi,0,"ID");
