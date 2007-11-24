@@ -67,9 +67,15 @@ function manageGetValuesInSearch($type=0){
 	$default_values["sort"]=1;
 
 	if (isset($_GET["reset_before"])){
-		unset($_SESSION['glpisearch'][$type]);
-		unset($_SESSION['glpisearchcount'][$type]);
-		unset($_SESSION['glpisearchcount2'][$type]);
+		if (isset($_SESSION['glpisearch'][$type])){
+			unset($_SESSION['glpisearch'][$type]);
+		}
+		if (isset($_SESSION['glpisearchcount'][$type])){
+			unset($_SESSION['glpisearchcount'][$type]);
+		}
+		if (isset($_SESSION['glpisearchcount2'][$type])){
+			unset($_SESSION['glpisearchcount2'][$type]);
+		}
 		if (isset($_GET["glpisearchcount"])){
 			$_SESSION["glpisearchcount"][$type]=$_GET["glpisearchcount"];
 		}
