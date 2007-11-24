@@ -639,6 +639,7 @@ function getMachinesAlreadyInGLPI($ocs_id,$ocs_server_id,$entity)
 	
 	if ($conf["glpi_link_enabled"])
 	{
+		$ok=false;
 		//Build the request against OCS database to get the machine's informations
 		if ( $conf["link_ip"] || $conf["link_mac_address"])
 		{
@@ -649,11 +650,13 @@ function getMachinesAlreadyInGLPI($ocs_id,$ocs_server_id,$entity)
 		{
 			$sql_fields.=", networks.IPADDRESS";
 			$ocsParams["IPADDRESS"] = array();
+			$ok=true;
 		}
 		if ($conf["link_mac_address"])
 		{
 			$sql_fields.=", networks.MACADDR";
 			$ocsParams["MACADDR"] = array();
+			$ok=true;
 		}
 		if ($conf["link_serial"])
 		{
@@ -661,17 +664,24 @@ function getMachinesAlreadyInGLPI($ocs_id,$ocs_server_id,$entity)
 
 			$sql_fields.=", bios.SSN";
 			$ocsParams["SSN"] = array();
+			$ok=true;
 		}
 		if ($conf["link_name"] > 0)
 		{
 			$sql_fields.=", hardware.NAME";
 			$ocsParams["NAME"] = array();
+			$ok=true;
 		}
 		
+		// No criteria to link
+		if (!$ok){
+			return -1;
+		}
+
 		//Execute request
 		$sql = "SELECT ".$sql_fields." FROM $sql_from WHERE hardware.ID=$ocs_id;";
 		$result = $DBocs->query($sql);
-		
+
 		//Get the list of parameters
 		
 		while ($dataOcs = $DB->fetch_array($result))
