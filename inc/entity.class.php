@@ -206,6 +206,7 @@ class Entity extends CommonDBTM{
 				echo "<tr>";
 				echo "<td class='tab_bg_2' colspan='4' valign='top' align='center'>";
 				echo "<input type='hidden' name='FK_entities' value=\"$ID\">\n";
+				echo "<input type='hidden' name='ID' value=\"".$entdata->fields["ID"]."\">\n";
 				echo "<input type='submit' name='update' value=\"".$LANG["buttons"][7]."\" class='submit' >";
 				echo "</td>\n\n";
 				echo "</tr>";
