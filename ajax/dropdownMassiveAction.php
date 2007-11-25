@@ -96,6 +96,7 @@ if (isset($_POST["action"])&&isset($_POST["type"])&&!empty($_POST["type"])){
 			break;
 		case "install":
 			dropdownSoftwareToInstall("lID",0,$_SESSION["glpiactive_entity"],1);
+			echo "<input type=\"submit\" name=\"massiveaction\" class=\"submit\" value=\"".$LANG["buttons"][4]."\" >";
 		break;
 		case "connect":
 			dropdownConnect(COMPUTER_TYPE,$_POST["type"],"connect_item");
