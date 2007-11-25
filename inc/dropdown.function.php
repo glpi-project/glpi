@@ -1149,10 +1149,12 @@ function dropdownSoftwareToInstall($myname,$withtemplate,$entity_restrict,$massi
 		}
 	}
 
-
+	$only_globalfree=0;
+	if ($massiveaction||(!empty($withtemplate)&&$withtemplate>0)){
+		$only_globalfree=1;
+	}
         $params=array('searchText'=>'__VALUE__',
-                        'withtemplate'=>$withtemplate,
-                        'massiveaction'=>$massiveaction,
+                        'only_globalfree'=>$only_globalfree,
                         'myname'=>$myname,
                         'entity_restrict'=>$entity_restrict,
                         );
