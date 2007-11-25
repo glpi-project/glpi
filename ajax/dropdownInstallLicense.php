@@ -48,12 +48,11 @@ if ($_POST['sID']>0){
 	// Make a select box
 
 	$where="";
-	if (!$_POST["massiveaction"]) $where=" glpi_inst_software.cID IS NULL OR ";
+	if (!$_POST["massiveaction"]) $where=" glpi_inst_software.cID IS NULL OR  glpi_inst_software.cID = 0 OR ";
 	$query = "SELECT DISTINCT glpi_licenses.* from glpi_licenses ";
 	$query.= " LEFT JOIN glpi_inst_software on (glpi_licenses.ID=glpi_inst_software.license)";
 	$query.= " WHERE glpi_licenses.sID='".$_POST['sID']."' AND ($where glpi_licenses.serial='free' OR glpi_licenses.serial='global' ) ";
-	$query.= " GROUP BY version order by serial ASC";
-
+	$query.= " GROUP BY version, serial, expire, oem, oem_computer, buy ORDER BY version, serial ASC";
 
 	$result = $DB->query($query);
 	$number=$DB->numrows($result);
