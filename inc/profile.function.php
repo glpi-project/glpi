@@ -1,6 +1,6 @@
 <?php
 /*
- * @version $Id: entity.function.php 5254 2007-07-20 00:47:39Z jmd $
+ * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2007 by the INDEPNET Development Team.
