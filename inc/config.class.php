@@ -37,15 +37,24 @@ if (!defined('GLPI_ROOT')){
 	die("Sorry. You can't access directly to this file");
 	}
 
-// CLASSES Setup
-
+// Config class
 class Config extends CommonDBTM {
 
+	/**
+	 * Constructor
+	 **/
 	function Config () {
 		$this->table="glpi_config";
 		$this->type=-1;
 	}
-
+	/**
+	 * Prepare input datas for updating the item
+	 *
+	 *@param $input datas used to update the item
+	 *
+	 *@return the modified $input array
+	 *
+	 **/
 	function prepareInputForUpdate($input) {
 		if (isset($input["planning_begin"]))
 			$input["planning_begin"]=$input["planning_begin"].":00:00";
@@ -54,13 +63,28 @@ class Config extends CommonDBTM {
 		return $input;
 	}
 
+	/**
+	 * Actions done after the UPDATE of the item in the database
+	 *
+	 *@param $input datas used to update the item
+	 *@param $updates array of the updated fields
+	 *@param $history store changes history ?
+	 *
+	 **/
 	function post_updateItem($input,$updates,$history=1) {
 		global $CACHE_CFG;
 		if (count($updates)){
 			cleanCache(); 
 		}
 	}
-	
+	/**
+	 * Print the config form
+	 *
+	 *@param $target filename : where to go when done.
+	 *
+	 *@return Nothing (display)
+	 *
+	 **/
 	function showForm($target) {
 	
 		global $DB, $LANG, $CFG_GLPI;
@@ -450,6 +474,14 @@ class Config extends CommonDBTM {
 	}
 
 
+	/**
+	 * Print the mailing config form
+	 *
+	 *@param $target filename : where to go when done.
+	 *
+	 *@return Nothing (display)
+	 *
+	 **/
 	function showFormMailing($target) {
 	
 		global $DB, $LANG, $CFG_GLPI;
@@ -656,13 +688,25 @@ class Config extends CommonDBTM {
 
 }
 
+// OCS Config class
 class ConfigOCS extends CommonDBTM {
 
+	/**
+	 * Constructor
+	 **/	
 	function ConfigOCS () {
 		$this->table="glpi_ocs_config";
 		$this->type=-1;
 	}
 
+	/**
+	 * Prepare input datas for updating the item
+	 *
+	 *@param $input datas used to update the item
+	 *
+	 *@return the modified $input array
+	 *
+	 **/
 	function prepareInputForUpdate($input) {
 		if (isset($input["ocs_db_passwd"])&&!empty($input["ocs_db_passwd"])){
 			$input["ocs_db_passwd"]=urlencode(stripslashes($input["ocs_db_passwd"]));
@@ -700,6 +744,14 @@ class ConfigOCS extends CommonDBTM {
 
 		return $input;
 	}
+	/**
+	 * Actions done after the UPDATE of the item in the database
+	 *
+	 *@param $input datas used to update the item
+	 *@param $updates array of the updated fields
+	 *@param $history store changes history ?
+	 *
+	 **/
 	function post_updateItem($input,$updates,$history=1) {
 		global $CACHE_CFG;
 		if (count($updates)){

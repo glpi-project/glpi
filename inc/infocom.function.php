@@ -526,9 +526,7 @@ function cron_infocom(){
 			foreach ($message as $entity => $msg){
 				$mail=new MailingAlert("alertinfocom",$msg,$entity);
 				$mail->send();
-				if ($CFG_GLPI["use_errorlog"]){
-					logInFile("cron","Entity $entity :  $msg\n");
-				}
+				logInFile("cron","Entity $entity :  $msg\n");
 			}
 			return 1;
 		}

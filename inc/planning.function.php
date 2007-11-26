@@ -399,8 +399,8 @@ function showPlanning($who,$who_group,$when,$type){
  *  
  * @param $val Array of the item to display
  * @param $who ID of the user (0 if all)
- * @param $when Date of the planning to display
  * @param $type position of the item in the time block (in, through, begin or end)
+ * @param $complete complete display (more details)
  * @return Nothing (display function)
  *
  **/

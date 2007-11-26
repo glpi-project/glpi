@@ -36,8 +36,8 @@
 /**
  *  Show onglet for central
  *
- * @param $target 
- * @param $actif
+ * @param $target target URL
+ * @param $actif which onglet is active ? (my, global or plugins)
  * @return nothing
  */
 function showCentralOnglets($target,$actif) {

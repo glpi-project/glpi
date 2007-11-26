@@ -490,9 +490,8 @@ function cron_consumable(){
 			foreach ($message as $entity => $msg){
 				$mail=new MailingAlert("alertconsumable",$msg,$entity);
 				$mail->send();
-				if ($CFG_GLPI["use_errorlog"]){
-					logInFile("cron","Entity $entity :  $msg\n");
-				}
+
+				logInFile("cron","Entity $entity :  $msg\n");
 			}
 			return 1;
 		}
