@@ -1,6 +1,6 @@
 <?php
 /*
- * @version $Id: rule.right.form.php 4985 2007-05-15 16:04:38Z moyo $
+ * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2007 by the INDEPNET Development Team.
