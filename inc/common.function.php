@@ -716,7 +716,6 @@ return $row;
  * @param $pn_pad_length
  * @param $ps_pad_string
  * @param $pn_pad_type
- * @param $ps_encoding
  * @return string
  *
  */
@@ -766,14 +765,6 @@ function utf8_str_pad($ps_input, $pn_pad_length, $ps_pad_string = " ", $pn_pad_t
 
 
 
-/**
- *  Tag suppression
- *
- * @param $string
- * @param rempl
- * @return clean string
- *
- */
 //  Inspired From SPIP
 // Suppression basique et brutale de tous les <...>
 /*function removeTags($string, $rempl = "") {
@@ -783,14 +774,7 @@ function utf8_str_pad($ps_input, $pn_pad_length, $ps_pad_string = " ", $pn_pad_t
 	$string = str_replace('<', ' ', $string);
 	return $string;
 }
-*/
-/**
- *  convert html text to 
- *
- * @param $string
- * @return clean string
- *
- */
+
 //  Inspired from SPIP
 /*function textBrut($string) {
 

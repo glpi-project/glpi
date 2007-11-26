@@ -77,9 +77,10 @@ class CommonItem{
 	 * Set the device type
 	 *
 	 * @param $device_type Device Type ID of the object
+	 * @param $init_object Create an instance of the object ?
 	 *
 	 */
-	function setType ($device_type,$init_object=0){
+	function setType ($device_type,$init_object=false){
 		global $PLUGIN_HOOKS;
 
 		$this->device_type=$device_type;
