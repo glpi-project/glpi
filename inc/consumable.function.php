@@ -354,8 +354,11 @@ function getConsumableStatus($cID){
 	else if (isOldConsumable($cID)) return $LANG["consumables"][22];
 }
 
-
-function showConsumableSummary($target){
+/**
+ * Show the usage summary of consumables by user
+ *
+ **/
+function showConsumableSummary(){
 	global $DB,$LANG;
 
 	if (!haveRight("consumable","r")) return false;
@@ -445,6 +448,10 @@ function showConsumableSummary($target){
 
 }
 
+/**
+ * Cron action on consumables : alert if a stock is behind the threshold
+ *
+ **/
 function cron_consumable(){
 	global $DB,$CFG_GLPI,$LANG;
 
