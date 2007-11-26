@@ -48,7 +48,6 @@ if (!defined('GLPI_ROOT')){
  * @return Nothing (display)
  *
  **/
-
 function showCentralContract(){
 
 	global $DB,$CFG_GLPI, $LANG;
@@ -459,12 +458,13 @@ function dropdownContracts($name,$entity_restrict=-1){
 		$entrest=" AND FK_entities='$entity_restrict'";
 
 	}
-	$query="SELECT * from glpi_contracts WHERE deleted = '0' $entrest ORDER BY begin_date DESC";
+	$query="SELECT * FROM glpi_contracts WHERE deleted = '0' $entrest ORDER BY begin_date DESC";
 	$result=$DB->query($query);
 	echo "<select name='$name'>";
 	echo "<option value='-1'>-----</option>";
 	while ($data=$DB->fetch_array($result)){
-		if ($data["device_countmax"]==0||$data["device_countmax"]>countDeviceForContract($data['ID'])){
+
+		if ($data["device_countmax"]==0||$data["device_countmax"]>countElementsInTable("glpi_contract_device","FK_contract = '".$data['ID']."'" )){
 			echo "<option value='".$data["ID"]."'>";
 			echo "#".$data["num"]." - ".convDateTime($data["begin_date"])." - ".$data["name"];
 			echo "</option>";
@@ -646,33 +646,10 @@ function showContractAssociatedEnterprise($ID){
 	echo "</form>";
 
 }
-
-function addContractOptionFieldsToResearch($option){
-	global $LANG;
-	$option["glpi_contracts.name"]=$LANG["common"][16]." ".$LANG["financial"][1];
-	$option["glpi_contracts.num"]=$LANG["financial"][4]." ".$LANG["financial"][1];
-	return $option;
-
-}
-
-function getContractSearchToRequest($table,$type){
-	return " LEFT JOIN glpi_contract_device ON ($table.ID = glpi_contract_device.FK_device AND glpi_contract_device.device_type='".$type."') LEFT JOIN glpi_contracts ON (glpi_contracts.ID = glpi_contract_device.FK_contract)";
-
-}
-
-function getContractSearchToViewAllRequest($contains){
-	return " OR glpi_contracts.name LIKE '%".$contains."%' OR glpi_contracts.num LIKE '%".$contains."%' ";
-}
-
-function countDeviceForContract($ID){
-	global $DB;
-	$query = "SELECT * FROM glpi_contract_device WHERE FK_contract = '$ID'";
-
-	$result = $DB->query($query);
-	return $DB->numrows($result);
-
-}
-
+/**
+ * Cron action on contracts : alert depending of the config : on notice and expire
+ *
+ **/
 function cron_contract(){
 	global $DB,$CFG_GLPI,$LANG;
 

@@ -44,7 +44,7 @@ checkRight("consumable","r");
 commonHeader($LANG["title"][36],$_SERVER['PHP_SELF'],"inventory","consumable");
 
 if (isset($_GET["synthese"])){
-	showConsumableSummary($_SERVER['PHP_SELF']);
+	showConsumableSummary();
 
 } else {
 

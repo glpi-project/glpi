@@ -107,6 +107,15 @@ function showEnterpriseContact($instID) {
 
 }
 
+
+/**
+ * Generate the Vcard for a specific user
+ *
+ *@param $ID ID of the user
+ *
+ *@return Nothing (display)
+ *
+ **/
 function generateContactVcard($ID){
 
 	$contact = new Contact;

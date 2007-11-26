@@ -587,7 +587,10 @@ function getCartridgeStatus($date_use,$date_out){
 		return $LANG["cartridges"][22];
 	}
 }
-
+/**
+ * Cron action on cartridges : alert if a stock is behind the threshold
+ *
+ **/
 function cron_cartridge(){
 	global $DB,$CFG_GLPI,$LANG;
 

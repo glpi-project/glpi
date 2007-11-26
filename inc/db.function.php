@@ -78,11 +78,23 @@ function countElementsInTableForMyEntities($table){
 function countElementsInTableForEntity($table,$entity){
 	return countElementsInTable($table,"FK_entities='$entity'");
 }
-
-function getAllDatasFromTable($table){
+/**
+ * Get datas from a table in an array : CAUTION TO USE ONLY FOR SMALL TABLES OR USING A STRICT CONDITION
+ * 
+ * @param $table table name
+ * @param $condition condition to use
+ *
+ * return array containing all the datas
+ */
+function getAllDatasFromTable($table,$condition=""){
 	global $DB;
 	$datas=array();
-	$query="SELECT * FROM $table";
+	$query="SELECT * FROM $table ";
+
+	if (!empty($condition)){
+		$query.=" WHERE $condition ";
+	}
+
 	if ($result=$DB->query($query)){
 		while ($data=$DB->fetch_assoc($result)){
 			$datas[$data['ID']]=$data;
