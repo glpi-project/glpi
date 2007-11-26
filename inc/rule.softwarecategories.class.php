@@ -1,6 +1,6 @@
 <?php
 /*
- * @version $Id: rule.ocs.class.php 5175 2007-07-03 19:14:11Z tsmr $
+ * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2007 by the INDEPNET Development Team.
