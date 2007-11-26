@@ -327,6 +327,11 @@ function update_device_specif($newValue,$compDevID,$strict=false,$checkcoherence
 
 	// Check old value for history 
 	global $DB;
+	
+	//Prevent division by O error if newValue is null or doesn't contains any value
+	if ($newValue == null || $newValue=='')
+		return false;
+		
 	$query ="SELECT * FROM glpi_computer_device WHERE ID = '".$compDevID."'";
 
 	if ($result = $DB->query($query)) {
