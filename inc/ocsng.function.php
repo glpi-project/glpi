@@ -1232,9 +1232,7 @@ function cron_ocsng() {
 		$DBocs = getDBocs($ocs_server_id);
 
 		$cfg_ocs = getOcsConf($ocs_server_id);
-		if ($CFG_GLPI["use_errorlog"]) {
-			logInFile("cron", "Check updates from server " . $cfg_ocs['name'] . "\n");
-		}
+		logInFile("cron", "Check updates from server " . $cfg_ocs['name'] . "\n");
 
 		if (!$cfg_ocs["cron_sync_number"]){
 			return 0;
@@ -1257,9 +1255,7 @@ function cron_ocsng() {
 		if ($DBocs->numrows($result_ocs) > 0) {
 			while ($data = $DBocs->fetch_array($result_ocs)) {
 				ocsProcessComputer($data["ID"],$ocs_server_id,0,-1,1);
-				if ($CFG_GLPI["use_errorlog"]) {
-					logInFile("cron", "Update computer " . $data["ID"] . "\n");
-				}
+				logInFile("cron", "Update computer " . $data["ID"] . "\n");
 			}
 		} else {
 			return 0;

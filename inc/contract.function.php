@@ -710,9 +710,7 @@ function cron_contract(){
 		foreach ($message as $entity => $msg){
 			$mail=new MailingAlert("alertcontract",$msg,$entity);
 			$mail->send();
-			if ($CFG_GLPI["use_errorlog"]){
-				logInFile("cron","Entity $entity :  $msg\n");
-			}
+			logInFile("cron","Entity $entity :  $msg\n");
 		}
 		return 1;
 	}

@@ -74,9 +74,9 @@ class CommonDBTM {
 	 *
 	 *@param $ID ID of the item to get
 	 *@return true if succeed else false
+	 *@todo Specific ones : Reservation Item
 	 *
 	 **/
-	// Specific ones : Reservation Item
 	function getFromDB ($ID) {
 
 		// Make new database object and fill variables
@@ -328,9 +328,7 @@ class CommonDBTM {
 	 *
 	 *@param $ID ID of the item
 	 *
-	 *
 	 *@return nothing
-	 *
 	 **/
 	function cleanDBonPurge($ID) {
 	}
@@ -355,9 +353,10 @@ class CommonDBTM {
 	 *
 	 *
 	 *@return integer the new ID of the added item
+	 *@todo specific ones : reservationresa , planningtracking
 	 *
 	 **/
-	// specific ones : reservationresa , planningtracking
+	
 	function add($input) {
 		global $DB;
 		$input['_item_type_']=$this->type;
@@ -396,6 +395,15 @@ class CommonDBTM {
 		return $input;
 	}
 
+	/**
+	 * Actions done after the ADD of the item in the database
+	 *
+	 *@param $newID ID of the new item
+	 *@param $input datas used to add the item
+	 *
+	 *@return nothing
+	 *
+	 **/
 	function post_addItem($newID,$input) {
 	}
 
@@ -410,9 +418,10 @@ class CommonDBTM {
 	 *
 	 *
 	 *@return Nothing (call to the class member)
+	 *@todo specific ones : reservationresa, planningtracking
 	 *
 	 **/
-	// specific ones : reservationresa, planningtracking
+	
 	function update($input,$history=1) {
 
 		$input['_item_type_']=$this->type;
@@ -456,13 +465,40 @@ class CommonDBTM {
 		}
 	}
 
+	/**
+	 * Prepare input datas for updating the item
+	 *
+	 *@param $input datas used to update the item
+	 *
+	 *@return the modified $input array
+	 *
+	 **/
 	function prepareInputForUpdate($input) {
 		return $input;
 	}
 
+	/**
+	 * Actions done after the UPDATE of the item in the database
+	 *
+	 *@param $input datas used to update the item
+	 *@param $updates array of the updated fields
+	 *@param $history store changes history ?
+	 *
+	 *@return nothing
+	 *
+	 **/
 	function post_updateItem($input,$updates,$history=1) {
 	}
 
+	/**
+	 * Actions done before the UPDATE of the item in the database
+	 *
+	 *@param $input datas used to update the item
+	 *@param $updates array of the updated fields
+	 *
+	 *@return nothing
+	 *
+	 **/
 	function pre_updateInDB($input,$updates) {
 		return array($input,$updates);
 	}
@@ -503,6 +539,15 @@ class CommonDBTM {
 		} else return false;
 
 	}
+
+	/**
+	 * Actions done before the DELETE of the item in the database / Maybe used to add another check for deletion
+	 *
+	 *@param $ID ID of the item to delete
+	 *
+	 *@return bool : true if item need to be deleted else false
+	 *
+	 **/
 	function pre_deleteItem($ID) {
 		return true;
 	}
@@ -514,9 +559,9 @@ class CommonDBTM {
 	 *@param $input array : the _POST vars returned bye the item form when press restore
 	 *
 	 *@return Nothing ()
+	 *@todo specific ones : cartridges / consumables
 	 *
 	 **/
-	// specific ones : cartridges / consumables
 	function restore($input) {
 		$input['_item_type_']=$this->type;
 		$input=doHookFunction("pre_item_restore",$input);
@@ -526,15 +571,39 @@ class CommonDBTM {
 		}
 	}
 
+	/**
+	 * Reset fields of the item
+	 *
+	 **/
 	function reset(){
 		$this->fields=array();
 
 	}
 
+
+	/**
+	 * Define onglets to display
+	 *
+	 *@param $withtemplate is a template view ?
+	 *
+	 *@return array containing the onglets
+	 **/
 	function defineOnglets($withtemplate){
 		return array();
 	}
 
+	/**
+	 * Show onglets
+	 *
+	 *@param $ID ID of the item to display
+	 *@param $withtemplate is a template view ?
+	 *@param $actif active onglet
+	 *@param $nextprevcondition condition used to find next/previous items
+	 *@param $nextprev_item field used to define next/previous items
+	 *@param $addurlparam parameters to add to the URLs
+	 *
+	 *@return Nothing ()
+	 **/
 	function showOnglets($ID,$withtemplate,$actif,$nextprevcondition="",$nextprev_item="",$addurlparam=""){
 		global $LANG,$CFG_GLPI;
 

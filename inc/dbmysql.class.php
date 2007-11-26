@@ -104,10 +104,7 @@ class DBmysql {
 			$res=mysql_query($query,$this->dbh);
 			
 			if (!$res) {
-				if ($CFG_GLPI["use_errorlog"]){
-					$error = "*** MySQL query error : \n***\nScript: " . $_SERVER["SCRIPT_NAME"]."\nSQL: ".addslashes($query)."\nError: ". mysql_error()."\n";
-					logInFile("sql-errors",$error);
-				}
+				logInFile("sql-errors","*** MySQL query error : \n***\nScript: " . $_SERVER["SCRIPT_NAME"]."\nSQL: ".addslashes($query)."\nError: ". mysql_error()."\n");
 		
 				if ($CFG_GLPI["debug"]&&$CFG_GLPI["debug_sql"]){
 					$DEBUG_SQL["errors"][$SQL_TOTAL_REQUEST]=$this->error();
