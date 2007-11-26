@@ -536,7 +536,6 @@ class Job extends CommonDBTM{
 			if (isset($input["_followup"]['contents'])&&strlen($input["_followup"]['contents'])) $toadd["contents"]=$input["_followup"]['contents'];
 			if (isset($input["_followup"]['private'])) $toadd["private"]=$input["_followup"]['private'];
 			if (isset($input["plan"])) $toadd["plan"]=$input["plan"];
-
 			$fup->add($toadd);
 			$already_mail=true;
 		}
@@ -935,7 +934,7 @@ class Followup  extends CommonDBTM {
 		if (!isset($input["author"]))
 			$input["author"]=$_SESSION["glpiID"];
 
-		if ($input["_isadmin"]&&$input["_type"]!="update"&&$input["_type"]!="finish"){
+		if ($input["_isadmin"]&&$input["_type"]!="update"){
 			if (isset($input['plan'])){
 				$input['_plan']=$input['plan'];
 				unset($input['plan']);
@@ -965,7 +964,7 @@ class Followup  extends CommonDBTM {
 		}
 
 
-		if ($input["_isadmin"]&&$input["_type"]!="update"&&$input["_type"]!="finish"){
+		if ($input["_isadmin"]&&$input["_type"]!="update"){
 
 			if (isset($input["_plan"])){
 				$input["_plan"]['id_followup']=$newID;
