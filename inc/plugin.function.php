@@ -45,6 +45,11 @@ $PLUGIN_HOOKS = array();
 global $CFG_GLPI_PLUGINS;
 $CFG_GLPI_PLUGINS = array();
 
+
+/**
+ * Init plugins list reading plugins directory
+ * @return nothing
+ */
 function initPlugins(){
 
 	$_SESSION["glpi_plugins"]=array();
@@ -57,7 +62,11 @@ function initPlugins(){
 	}
 
 }
-
+/**
+ * Init a plugin uncluding setup.php file and launching plugin_init_NAME function
+ * @param $name Name of hook to use
+ * @return nothing
+ */
 function usePlugin ($name) {
 	global $CFG_GLPI;
 	if (file_exists(GLPI_ROOT . "/plugins/$name/setup.php")) {
@@ -73,6 +82,7 @@ function usePlugin ($name) {
 /**
  * This function executes a hook.
  * @param $name Name of hook to fire
+ * @param $param Parameters if needed
  * @return mixed $data
  */
 function doHook ($name,$param=NULL) {

@@ -41,6 +41,17 @@ if (!defined('GLPI_ROOT')){
 // FUNCTIONS Planning
 
 
+/**
+ * Show the planning
+ *
+ *  
+ * @param $who ID of the user (0 = undefined)
+ * @param $who_group ID of the group of users (0 = undefined)
+ * @param $when Date of the planning to display
+ * @param $type type of planning to display (day, week, month) 
+ * @return Nothing (display function)
+ *
+ **/
 function showPlanning($who,$who_group,$when,$type){
 	global $LANG,$CFG_GLPI,$DB;
 
@@ -218,7 +229,7 @@ function showPlanning($who,$who_group,$when,$type){
 				echo "<tr>";
 				for ($i=1;$i<=7;$i++){
 					echo "<td class='tab_bg_3' width='12%' valign='top' >";
-					echo "<strong>".display_time($hour).":00</strong><br>";
+					echo "<strong>".displayUsingTwoDigits($hour).":00</strong><br>";
 					
 					// From midnight
 					if ($hour==$hour_begin){
@@ -240,7 +251,7 @@ function showPlanning($who,$who_group,$when,$type){
 						if ($data["begin"]>=$begin_time&&$data["end"]<=$end_time){
 							$type="in";
 						} else if ($data["begin"]<$begin_time&&$data["end"]>$end_time){
-							$type="from";
+							$type="through";
 						} else if ($data["begin"]>=$begin_time&&$data["begin"]<$end_time){
 							$type="begin";
 						} else if ($data["end"]>$begin_time&&$data["end"]<=$end_time){
@@ -272,14 +283,14 @@ function showPlanning($who,$who_group,$when,$type){
 				$begin_time=date("Y-m-d H:i:s",strtotime($when)+($hour)*HOUR_TIMESTAMP);
 				$end_time=date("Y-m-d H:i:s",strtotime($when)+($hour+1)*HOUR_TIMESTAMP);
 				echo "<td class='tab_bg_3' width='12%' valign='top' >";
-				echo "<strong>".display_time($hour).":00</strong><br>";
+				echo "<strong>".displayUsingTwoDigits($hour).":00</strong><br>";
 				reset($interv);
 				while ($data=current($interv)){
 					$type="";
 					if ($data["begin"]>=$begin_time&&$data["end"]<=$end_time){
 						$type="in";
 					} else if ($data["begin"]<$begin_time&&$data["end"]>$end_time){
-						$type="from";
+						$type="through";
 					} else if ($data["begin"]>=$begin_time&&$data["begin"]<$end_time){
 						$type="begin";
 					} else if ($data["end"]>$begin_time&&$data["end"]<=$end_time){
@@ -332,7 +343,7 @@ function showPlanning($who,$who_group,$when,$type){
 					if ($data["begin"]>=$begin_day&&$data["end"]<=$end_day){
 						$type="in";
 					} else if ($data["begin"]<$begin_day&&$data["end"]>$end_day){
-						$type="from";
+						$type="through";
 					} else if ($data["begin"]>=$begin_day&&$data["begin"]<$end_day){
 						$type="begin";
 					} else if ($data["end"]>$begin_day&&$data["end"]<=$end_day){
@@ -382,6 +393,17 @@ function showPlanning($who,$who_group,$when,$type){
 
 }
 
+/**
+ * Display a Planning Item
+ *
+ *  
+ * @param $val Array of the item to display
+ * @param $who ID of the user (0 if all)
+ * @param $when Date of the planning to display
+ * @param $type position of the item in the time block (in, through, begin or end)
+ * @return Nothing (display function)
+ *
+ **/
 function displayPlanningItem($val,$who,$type="",$complete=0){
 	global $CFG_GLPI,$LANG,$PLUGIN_HOOKS;
 
@@ -430,7 +452,7 @@ function displayPlanningItem($val,$who,$type="",$complete=0){
 			case "in":
 				echo date("H:i",strtotime($val["begin"]))."/".date("H:i",strtotime($val["end"])).": ";
 				break;
-			case "from":
+			case "through":
 				break;
 			case "begin";
 				echo $LANG["planning"][19]." ".date("H:i",strtotime($val["begin"])).": ";
@@ -479,7 +501,7 @@ function displayPlanningItem($val,$who,$type="",$complete=0){
 			case "in":
 				echo date("H:i",strtotime($val["begin"]))." -> ".date("H:i",strtotime($val["end"])).": ";
 				break;
-			case "from":
+			case "through":
 				break;
 			case "begin";
 				echo $LANG["planning"][19]." ".date("H:i",strtotime($val["begin"])).": ";
@@ -506,15 +528,29 @@ function displayPlanningItem($val,$who,$type="",$complete=0){
 }
 
 
-function display_time($time){
+/**
+ * Display an integer using 2 digits
+ *
+ *  
+ * @param $time value to display
+ * @return string return the 2 digits item
+ *
+ **/
+function displayUsingTwoDigits($time){
 
 	$time=round($time);
 	if ($time<10&&strlen($time)) return "0".$time;
 	else return $time;
-
 }
 
-
+/**
+ * Show the planning for the central page of a user
+ *
+ *  
+ * @param $who ID of the user
+ * @return Nothing (display function)
+ *
+ **/
 function showPlanningCentral($who){
 
 	global $DB,$CFG_GLPI,$LANG;
@@ -526,8 +562,11 @@ function showPlanningCentral($who){
 
 	// followup
 	$ASSIGN="";
-	if ($who!=0)
+	if ($who!=0){
 		$ASSIGN="id_assign='$who' AND";
+	} else {
+		return false;
+	} 
 
 
 	$INTERVAL=" 1 DAY "; // we want to show planning of the day
@@ -663,7 +702,7 @@ function showPlanningCentral($who){
  *
  *  
  * @param $who 
- * @Return Nothing (display function)
+ * @return Nothing (display function)
  *
  **/      
 function urlIcal ($who) {
@@ -683,7 +722,7 @@ function urlIcal ($who) {
  * Convert date mysql to timestamp
  * 
  * @param $date  date in mysql format
- * @Return timestamp
+ * @return timestamp
  *
  **/      
 function date_mysql_to_timestamp($date){
@@ -699,7 +738,7 @@ function date_mysql_to_timestamp($date){
  * Convert timestamp to date in ical format
  * 
  * @param $date  timestamp
- * @Return date in ical format
+ * @return date in ical format
  *
  **/      
 function date_ical($date) {
@@ -713,7 +752,7 @@ function date_ical($date) {
  * Generate header for ical file
  * 
  * @param $name 
- * @Return $debut_cal  
+ * @return $debut_cal  
  *
  **/      
 function debutIcal($name) {
@@ -743,7 +782,7 @@ function debutIcal($name) {
  *  Generate ical body file
  *  
  * @param $who
- * @Return $debutcal $event $fincal
+ * @return $debutcal $event $fincal
  **/      
 function generateIcal($who){
 

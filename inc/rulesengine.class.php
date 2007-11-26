@@ -821,6 +821,7 @@ class Rule extends CommonDBTM{
 
 	/**
 	* Process a criteria of a rule
+        * @param $criteria criteria to check
 	* @param $input the input data used to check criterias
 	*/
 	function checkCriteria(&$criteria,&$input)
@@ -1082,9 +1083,10 @@ class Rule extends CommonDBTM{
 
 	/**
  	* Display item used to select a pattern for a criteria
+	* @param $name criteria name
  	* @param $ID the given criteria
         * @param $condition condition used
- 	* @param $pattern the pattern
+ 	* @param $value the pattern
  	*/
  	function displayCriteriaSelectPattern($name,$ID,$condition,$value=""){
 		$crit=$this->getCriteria($ID);
@@ -1174,7 +1176,7 @@ class Rule extends CommonDBTM{
  	* Return a value associated with a pattern associated to a criteria to display it
  	* @param $ID the given criteria
         * @param $condition condition used
- 	* @param $pattern the pattern
+ 	* @param $value the pattern
  	*/
  	function getCriteriaValue($ID,$condition,$value)
 	{

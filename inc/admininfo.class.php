@@ -35,13 +35,30 @@
 if (!defined('GLPI_ROOT')){
 	die("Sorry. You can't access directly to this file");
 	}
-	
-class AdminInfo extends CommonDBTM{
 
-   function AdminInfo () {
+/**
+ *  OCS Administration Information management class
+ */
+class AdminInfo extends CommonDBTM{
+	/**
+	 * Constructor
+	 *
+	 *@return nothing
+	 *
+	**/
+	function AdminInfo () {
 		$this->table="glpi_ocs_admin_link";		
 		
 	}
+	/**
+	 * Actions done when item is deleted from the database
+	 *
+	 *@param $ID ID of the item
+	 *
+	 *
+	 *@return nothing
+	 *
+	 **/
 	function cleanDBonPurge($ID) {
 		global $DB;
 		$query = "DELETE FROM glpi_ocs_admin_link WHERE ocs_server_id = '$ID'"; 

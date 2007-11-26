@@ -171,8 +171,7 @@ class Transfer extends CommonDBTM{
 	/**
 	* simulate the transfer to know which items need to be transfer
 	*
-	*@param $type device type to transfer
-	*@param $ID ID of the item to transfer
+	*@param $items Array of the items to transfer
 	*
 	*
 	**/

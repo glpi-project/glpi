@@ -59,7 +59,7 @@ class Identification {
 
 	//Indicates if the user is already present in database
 	var $user_present = 0;
-
+	// Really used ??? define twice but never used...
 	var $auth_parameters = array ();
 
 	/**
@@ -176,12 +176,21 @@ class Identification {
 		}
 	}
 
-	// void;
-	//try to connect to DB
-	//update the instance variable user with the user who has the name $name
-	//and the password is $password in the DB.
-	//If not found or can't connect to DB updates the instance variable err
-	//with an eventual error message
+
+	/**
+	 * Find a user in the GLPI DB
+	 *
+	 * @param $name User Login
+	 * @param $password User Password
+	 *
+	 * try to connect to DB
+	 * update the instance variable user with the user who has the name $name
+	 * and the password is $password in the DB.
+	 * If not found or can't connect to DB updates the instance variable err
+	 * with an eventual error message
+         *
+	 * @return boolean : user in GLPI DB with the right password
+	 */
 	function connection_db($name, $password) {
 		global $DB, $LANG;
 		// sanity check... we prevent empty passwords...
@@ -233,7 +242,11 @@ class Identification {
 
 	} // connection_db()
 
-	// Init session for this user
+	/**
+	 * Init session for the user is defined
+	 *
+	 * @return nothing
+	 */
 	function initSession() {
 		global $CFG_GLPI, $LANG;
 
@@ -279,25 +292,43 @@ class Identification {
 			$this->addToError($LANG["login"][25]);
 		}
 	}
+	/**
+	 * Destroy the current session
+	 *
+	 * @return nothing
+	 */
 	function destroySession() {
 		startGlpiSession();
 
 		$_SESSION = array ();
 
 		session_destroy();
-
 	}
 
+	/**
+	 * Get the current identification error
+	 *
+	 * @return string : current identification error
+	 */
 	function getErr() {
 		return $this->err;
 	}
+	/**
+	 * Get the current user object
+	 *
+	 * @return object : current user
+	 */
 	function getUser() {
 		return $this->user;
 	}
 
-	/* 
+	/** 
 	 * Get all the authentication methods parameters
 	 * and return it as an array 
+	 *
+         * @todo is it the correct place to this function ? Maybe split it into and add it to AuthMail and AuthLdap classes ?
+	 *
+	 * @return nothing
 	 */
 	function getAuthMethods() {
 		global $DB;
@@ -331,12 +362,16 @@ class Identification {
 		);
 	}
 
-
+	/**
+	 * Add a message to the global identification error message
+	 * @param $message the message to add
+	 *
+	 * @return nothing
+	 */
 	function addToError($message){
 		if (!ereg($message,$this->err)){
 			$this->err.=$message."<br>\n";
 		}
-
 	}
 
 }
