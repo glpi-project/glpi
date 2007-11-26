@@ -47,10 +47,9 @@ if (!isset($_SESSION["noCAS"])&&!empty($CFG_GLPI["cas_host"])) {
 }
 
 $noCAS="";
-if (isset($_SESSION["noCAS"])) $noCAS="?noCAS=1";
-
-
-
+if (isset($_SESSION["noCAS"])) {
+	$noCAS="?noCAS=1";
+}
 
 
 $id = new Identification();
