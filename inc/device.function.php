@@ -328,9 +328,6 @@ function update_device_specif($newValue,$compDevID,$strict=false,$checkcoherence
 	// Check old value for history 
 	global $DB;
 	
-	//Prevent division by O error if newValue is null or doesn't contains any value
-	if ($newValue == null || $newValue=='')
-		return false;
 		
 	$query ="SELECT * FROM glpi_computer_device WHERE ID = '".$compDevID."'";
 
@@ -344,6 +341,10 @@ function update_device_specif($newValue,$compDevID,$strict=false,$checkcoherence
 				switch ($data["device_type"])
 				{
 					case PROCESSOR_DEVICE :
+						//Prevent division by O error if newValue is null or doesn't contains any value
+						if ($newValue == null || $newValue=='')
+							return false;
+
 						//Calculate pourcent change of frequency
 						$pourcent =  ( $newValue / ($data["specificity"] / 100) ) - 100;
 						
