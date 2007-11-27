@@ -854,7 +854,7 @@ function displaySoftsByCategory($data,$instID,$withtemplate)
 			$split2=explode("$$",$split[$k]);
 			echo  $split2[0];
 			
-			if (is_numeric($split2[1])
+			if (isset($split2[1]) && is_numeric($split2[1])
 				&& (empty($withtemplate) || $withtemplate != 2)){
 				echo " - <a href=\"".$CFG_GLPI["root_doc"]."/front/software.licenses.php?uninstall=uninstall&amp;ID=".$split2[1]."&amp;cID=$instID\">";
 				echo "<strong>".$LANG["buttons"][5]."</strong></a>";
