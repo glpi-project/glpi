@@ -81,7 +81,7 @@ class CommonDBTM {
 
 		// Make new database object and fill variables
 		global $DB,$CFG_GLPI;
-		if (empty($ID)&&$ID!=0) return false;
+		if (empty($ID)||$ID==0) return false;
 		$query = "SELECT * FROM ".$this->table." WHERE (".$this->getIndexName()." = $ID)";
 		if ($result = $DB->query($query)) {
 			if ($DB->numrows($result)==1){
