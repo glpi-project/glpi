@@ -710,7 +710,7 @@ function showSoftwareInstalled($instID,$withtemplate='') {
 	$comp->getFromDB($instID);
 	$FK_entities=$comp->fields["FK_entities"];
 
-	$query_cat = "SELECT 1 as TYPE, glpi_dropdown_software_category.name as category, glpi_software.category as category_id, glpi_software.name as softname, glpi_inst_software.license as license, glpi_inst_software.ID as ID,glpi_licenses.expire,glpi_software.deleted, glpi_licenses.sID, GROUP_CONCAT( DISTINCT CONCAT_WS(' - ',glpi_licenses.version, glpi_licenses.serial) SEPARATOR '$$$$') AS version, glpi_licenses.serial, glpi_licenses.version AS orig_version, glpi_licenses.oem, glpi_licenses.oem_computer, glpi_licenses.buy	
+	$query_cat = "SELECT 1 as TYPE, glpi_dropdown_software_category.name as category, glpi_software.category as category_id, glpi_software.name as softname, glpi_inst_software.license as license, glpi_inst_software.ID as ID,glpi_licenses.expire,glpi_software.deleted, glpi_licenses.sID, GROUP_CONCAT( DISTINCT CONCAT(CONCAT_WS(' - ',glpi_licenses.version, glpi_licenses.serial),'$$',glpi_inst_software.ID) SEPARATOR '$$$$') AS version, glpi_licenses.serial, glpi_licenses.version AS orig_version, glpi_licenses.oem, glpi_licenses.oem_computer, glpi_licenses.buy	
 	FROM glpi_inst_software 
 	LEFT JOIN glpi_licenses ON ( glpi_inst_software.license = glpi_licenses.ID )
 	LEFT JOIN glpi_software ON (glpi_licenses.sID = glpi_software.ID) 
