@@ -72,7 +72,7 @@ function showLicenses ($sID,$show_computers=0) {
 			$installed = getInstalledLicence($sID);
 			$tobuy=getLicenceToBuy($sID);
 			$isfreeorglobal=isFreeSoftware($sID)||isGlobalSoftware($sID);
-			// As t'on utilis�trop de licences en prenant en compte les mises a jours (double install original + mise �jour)
+			// As t'on utilisé trop de licences en prenant en compte les mises a jours (double install original + mise �jour)
 			// Rien si free software
 			$pb="";
 			if (($nb_licences-$nb_updates-$installed)<0&&!$isfreeorglobal) $pb="class='tab_bg_1_2'";
@@ -146,13 +146,12 @@ function showLicenses ($sID,$show_computers=0) {
 		}
 	}
 
-	$query = "SELECT count(ID) AS COUNT , version as VERSION, serial as SERIAL, expire as EXPIRE, oem as OEM, oem_computer as OEM_COMPUTER, buy as BUY, ID AS ID  FROM glpi_licenses WHERE (sID = '$sID') GROUP BY version, serial, expire, oem, oem_computer, buy ORDER BY version, serial,oem, oem_computer";
+	$query = "SELECT count(ID) AS COUNT, version as VERSION, serial as SERIAL, expire as EXPIRE, oem as OEM, oem_computer as OEM_COMPUTER, buy as BUY, ID AS ID  FROM glpi_licenses WHERE (sID = '$sID') GROUP BY version, serial, expire, oem, oem_computer, buy ORDER BY version, serial,oem, oem_computer";
 	//echo $query;
 	if ($result = $DB->query($query)) {			
 		while ($data=$DB->fetch_array($result)) {
 			$version=$data["VERSION"];
 			$serial=$data["SERIAL"];
-			$num_tot=$data["COUNT"];
 			$expire=$data["EXPIRE"];
 			$oem=$data["OEM"];
 			$oem_computer=$data["OEM_COMPUTER"];
@@ -176,18 +175,38 @@ function showLicenses ($sID,$show_computers=0) {
 			// Get installed licences
 
 
-			$query_inst = "SELECT glpi_inst_software.ID AS ID, glpi_inst_software.license AS lID, glpi_computers.deleted as deleted, ";
-			$query_inst .= " glpi_infocoms.ID as infocoms, glpi_licenses.comments AS COMMENT, ";
-			$query_inst .= " glpi_computers.ID AS cID, glpi_computers.name AS cname FROM glpi_licenses";
-			$query_inst .= " INNER JOIN glpi_inst_software ";
-			$query_inst .= " ON ( glpi_inst_software.license = glpi_licenses.ID )";
-			$query_inst .= " INNER JOIN glpi_computers ON (glpi_computers.deleted='0' AND glpi_computers.is_template='0' AND glpi_inst_software.cID= glpi_computers.ID) ";
-			$query_inst .= " LEFT JOIN glpi_infocoms ON (glpi_infocoms.device_type='".LICENSE_TYPE."' AND glpi_infocoms.FK_device=glpi_licenses.ID) ";
-			$query_inst .= " WHERE $SEARCH_LICENCE ORDER BY cname";
-			//echo $query_inst;
-			$result_inst = $DB->query($query_inst);
-			$num_inst=$DB->numrows($result_inst);
+			$query_lic = "SELECT glpi_inst_software.ID AS ID, glpi_licenses.ID AS lID, glpi_computers.deleted as deleted, ";
+			$query_lic .= " glpi_infocoms.ID as infocoms, glpi_licenses.comments AS COMMENT, ";
+			$query_lic .= " glpi_inst_software.cID AS cID, glpi_computers.name AS cname FROM glpi_licenses";
+			$query_lic .= " LEFT JOIN glpi_inst_software ";
+			$query_lic .= " ON ( glpi_inst_software.license = glpi_licenses.ID )";
+			$query_lic .= " LEFT JOIN glpi_computers ON (glpi_computers.deleted='0' AND glpi_computers.is_template='0' AND glpi_inst_software.cID= glpi_computers.ID) ";
+			$query_lic .= " LEFT JOIN glpi_infocoms ON (glpi_infocoms.device_type='".LICENSE_TYPE."' AND glpi_infocoms.FK_device=glpi_licenses.ID) ";
+			$query_lic .= " WHERE $SEARCH_LICENCE ORDER BY cname";
+			//echo $query_lic;
+			$result_lic = $DB->query($query_lic);
+			$num_tot=$DB->numrows($result_lic);
 
+			$num_inst=0;
+			$firstID=0;
+			$freeID=0;
+
+			while ($data_lic=$DB->fetch_array($result_lic)){
+				if ($firstID==0){
+					$firstID=$data_lic['lID'];
+				}
+				if ($data_lic['cID']>0){
+					$num_inst++;
+				} else {
+					$freeID=$data_lic['lID'];
+				}
+			}
+
+			$DB->data_seek($result_lic,0);
+
+			$restant=$num_tot-$num_inst;
+
+			
 			echo "<tr class='tab_bg_1' valign='top'>";
 			if ($canedit&&!$show_computers){
 				$found_soft=true;
@@ -244,65 +263,46 @@ function showLicenses ($sID,$show_computers=0) {
 				echo $LANG["software"][19].": $num_inst&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 			}	
 
-
-			$restant=$num_tot-$num_inst;
-			$query_new="SELECT glpi_licenses.ID as ID FROM glpi_licenses WHERE $SEARCH_LICENCE";	
+//			$query_new="SELECT glpi_licenses.ID as ID FROM glpi_licenses WHERE $SEARCH_LICENCE";	
 			//echo $query_new;	
-			if ($result_new = $DB->query($query_new)) 
-			if ($DB->numrows($result_new)>0){			
-				$IDdup=$DB->result($result_new,0,0);
+//			if ($result_new = $DB->query($result_lic)) 
 
-				if ($serial!="free"&&$serial!="global"&&$canedit) {
-					echo $LANG["software"][20].":";
-					echo "<select name='stock_licenses_$IDdup'>";
-					if (max(0,$restant-100)>0) echo "<option value='0'>0</option>";
-					for ($i=max(0,$restant-100);$i<=$restant+100;$i++)
-						echo "<option value='$i' ".($i==$restant?" selected ":"").">$i</option>";
-					echo "</select>";
-					echo "<input type='hidden' name='nb_licenses_$IDdup' value='$restant'>";
-					echo "<input type='image' name='update_stock_licenses' value='$IDdup' src='".$CFG_GLPI["root_doc"]."/pics/actualiser.png' class='calendrier'>";
-				}
-				if (($serial=="free"||$serial=="global")){
-					// Display infocoms
-					echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>";
-					showDisplayInfocomLink(LICENSE_TYPE,$IDdup,1);
-					echo "</strong>";
-				}
+			if ($firstID&&$serial!="free"&&$serial!="global"&&$canedit) {
+				echo $LANG["software"][20].":";
+				echo "<select name='stock_licenses_$firstID'>";
+				if (max(0,$restant-100)>0) echo "<option value='0'>0</option>";
+				for ($i=max(0,$restant-100);$i<=$restant+100;$i++)
+					echo "<option value='$i' ".($i==$restant?" selected ":"").">$i</option>";
+				echo "</select>";
+				echo "<input type='hidden' name='nb_licenses_$firstID' value='$restant'>";
+				echo "<input type='image' name='update_stock_licenses' value='$firstID' src='".$CFG_GLPI["root_doc"]."/pics/actualiser.png' class='calendrier'>";
+			}
+			if (($serial=="free"||$serial=="global")){
+				// Display infocoms
+				echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>";
+				showDisplayInfocomLink(LICENSE_TYPE,$firstID,1);
+				echo "</strong>";
 			}
 
-			if ($restant!=0||$serial=="free"||$serial=="global") {
-				// Get first non installed license ID
-				$query_first="SELECT glpi_licenses.ID as ID, glpi_inst_software.license as iID FROM glpi_licenses LEFT JOIN glpi_inst_software ON glpi_inst_software.license = glpi_licenses.ID WHERE $SEARCH_LICENCE";
-				if ($result_first = $DB->query($query_first)) {			
-					if ($serial=="free"||$serial=="global")
-						$ID=$DB->result($result_first,0,"ID");
-					else{
-						$fin=0;
-						while (!$fin&&$temp=$DB->fetch_array($result_first))
-							if ($temp["iID"]==NULL){
-								$fin=1;
-								$ID=$temp["ID"];
-							}
-					}
-					if (!empty($ID)){
-						echo "</td><td class='center'>";
-						if ($canedit){
-							if (($serial=="free"||$serial=="global")){
-								echo "<strong><a href=\"".$CFG_GLPI["root_doc"]."/front/software.licenses.php?delete=delete&amp;ID=$ID\">";
-								echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/delete.png\" alt='".$LANG["buttons"][6]."' title='".$LANG["buttons"][6]."'>";
-								echo "</a></strong>";
-								if ($CFG_GLPI["license_deglobalisation"])
-								{
-									echo "&nbsp;&nbsp;<a href=\"javascript:confirmAction('".addslashes($LANG["common"][40])."\\n".addslashes($LANG["common"][39])."','".$CFG_GLPI["root_doc"]."/front/software.licenses.php?unglobalize=unglobalize&amp;sID=$sID&amp;ID=$ID')\" title=\"".$LANG["common"][39]."\">".$LANG["common"][38]."</a>&nbsp;";	
-									echo "<img src='".$CFG_GLPI["root_doc"]."/pics/aide.png' alt=\"".$LANG["common"][39]."\" title=\"".$LANG["common"][39]."\">";
-								}
-							}
-							echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong><a href=\"".$CFG_GLPI["root_doc"]."/front/software.licenses.php?form=update&amp;lID=$ID&amp;sID=$sID\">";
-							echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/edit.png\" alt='".$LANG["buttons"][14]."' title='".$LANG["buttons"][14]."'>";
+			if ($restant>0||$serial=="free"||$serial=="global") {
+				if ($firstID>0){
+					echo "</td><td class='center'>";
+					if ($canedit){
+						if (($serial=="free"||$serial=="global")){
+							echo "<strong><a href=\"".$CFG_GLPI["root_doc"]."/front/software.licenses.php?delete=delete&amp;ID=$firstID\">";
+							echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/delete.png\" alt='".$LANG["buttons"][6]."' title='".$LANG["buttons"][6]."'>";
 							echo "</a></strong>";
-						} else echo "&nbsp;";
+							if ($CFG_GLPI["license_deglobalisation"]){
+								echo "&nbsp;&nbsp;<a href=\"javascript:confirmAction('".addslashes($LANG["common"][40])."\\n".addslashes($LANG["common"][39])."','".$CFG_GLPI["root_doc"]."/front/software.licenses.php?unglobalize=unglobalize&amp;sID=$sID&amp;ID=$firstID')\" title=\"".$LANG["common"][39]."\">".$LANG["common"][38]."</a>&nbsp;";	
+								echo "<img src='".$CFG_GLPI["root_doc"]."/pics/aide.png' alt=\"".$LANG["common"][39]."\" title=\"".$LANG["common"][39]."\">";
+							}
+						}
+						echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong><a href=\"".$CFG_GLPI["root_doc"]."/front/software.licenses.php?form=update&amp;lID=$firstID&amp;sID=$sID\">";
+						echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/edit.png\" alt='".$LANG["buttons"][14]."' title='".$LANG["buttons"][14]."'>";
+						echo "</a></strong>";
+					} else {
+						echo "&nbsp;";
 					}
-
 				}
 			}
 
@@ -316,14 +316,16 @@ function showLicenses ($sID,$show_computers=0) {
 					echo "<input type='checkbox' onclick='toggle$rand();'>";
 					echo "<script type='text/javascript' >\n";
 					echo "function toggle$rand(){\n";
-					while ($data_inst=$DB->fetch_array($result_inst)){
-						echo " var lic=window.document.getElementById('license_".$data_inst["lID"]."');";
-						echo " if (lic.checked) \n";
-						echo "      lic.checked = false;\n";
-						echo " else lic.checked = true;\n";
+					while ($data_inst=$DB->fetch_array($result_lic)){
+						if ($data_inst['cID']>0){
+							echo " var lic=window.document.getElementById('license_".$data_inst["lID"]."');";
+							echo " if (lic.checked) \n";
+							echo "      lic.checked = false;\n";
+							echo " else lic.checked = true;\n";
+						}
 					}
 					echo "}</script>\n";
-					$DB->data_seek($result_inst,0);
+					$DB->data_seek($result_lic,0);
 				}
 			}		
 
@@ -331,50 +333,50 @@ function showLicenses ($sID,$show_computers=0) {
 
 
 			// Logiciels install�
-			if ($show_computers)
-				while ($data_inst=$DB->fetch_array($result_inst)){
-					echo "<tr class='tab_bg_1".(($data["OEM"]&&$data["OEM_COMPUTER"]!=$data_inst["cID"])||$data_inst["deleted"]?"_2":"")."'><td class='center'>";
-
-					if ($serial!="free"&&$serial!="global"&&$canedit){
-						$found_soft=true;
-						echo "<input type='checkbox' name='license_".$data_inst["lID"]."' id='license_".$data_inst["lID"]."'>";
-					}
-					$ci->getFromDB(COMPUTER_TYPE,$data_inst["cID"]);
-					
-					echo "&nbsp;<strong>";
-					echo $ci->getLink($canshowcomputer);
-					echo "</strong></td><td class='center'>";
-
-					// Comment
-					if (!empty($data_inst["COMMENT"])) {
-						echo "<img onmouseout=\"cleanhide('comment_".$data_inst["ID"]."')\" onmouseover=\"cleandisplay('comment_".$data_inst["ID"]."')\" src=\"".$CFG_GLPI["root_doc"]."/pics/aide.png\" alt=''>";
-						echo "<div class='over_link' id='comment_".$data_inst["ID"]."'>".nl2br($data_inst["COMMENT"])."</div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
-					}
-					// delete
-					if ($canedit){
-						echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/software.licenses.php?uninstall=uninstall&amp;ID=".$data_inst["ID"]."&amp;cID=".$data_inst["cID"]."\">";
-						echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/remove.png\" alt='".$LANG["buttons"][5]."' title='".$LANG["buttons"][5]."'>";
-						echo "</a>";
-					}
-
-					if ($serial!="free"&&$serial!="global"){
-						echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
-						if ($canedit){
-							echo "<strong><a href=\"".$CFG_GLPI["root_doc"]."/front/software.licenses.php?form=update&amp;lID=".$data_inst["lID"]."&amp;sID=$sID\">";
-							echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/edit.png\" alt='".$LANG["buttons"][14]."' title='".$LANG["buttons"][14]."'>";
-							echo "</a></strong>";
+			if ($show_computers){
+				while ($data_inst=$DB->fetch_array($result_lic)){
+					if ($data_inst['cID']>0){
+						echo "<tr class='tab_bg_1".(($data["OEM"]&&$data["OEM_COMPUTER"]!=$data_inst["cID"])||$data_inst["deleted"]?"_2":"")."'><td class='center'>";
+	
+						if ($serial!="free"&&$serial!="global"&&$canedit){
+							$found_soft=true;
+							echo "<input type='checkbox' name='license_".$data_inst["lID"]."' id='license_".$data_inst["lID"]."'>";
 						}
-						// Display infocoms
-						echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>";
-						showDisplayInfocomLink(LICENSE_TYPE,$data_inst["lID"],1);
-						echo "</strong>";
+						$ci->getFromDB(COMPUTER_TYPE,$data_inst["cID"]);
+						
+						echo "&nbsp;<strong>";
+						echo $ci->getLink($canshowcomputer);
+						echo "</strong></td><td class='center'>";
+	
+						// Comment
+						if (!empty($data_inst["COMMENT"])) {
+							echo "<img onmouseout=\"cleanhide('comment_".$data_inst["ID"]."')\" onmouseover=\"cleandisplay('comment_".$data_inst["ID"]."')\" src=\"".$CFG_GLPI["root_doc"]."/pics/aide.png\" alt=''>";
+							echo "<div class='over_link' id='comment_".$data_inst["ID"]."'>".nl2br($data_inst["COMMENT"])."</div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+						}
+						// delete
+						if ($canedit){
+							echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/software.licenses.php?uninstall=uninstall&amp;ID=".$data_inst["ID"]."&amp;cID=".$data_inst["cID"]."\">";
+							echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/remove.png\" alt='".$LANG["buttons"][5]."' title='".$LANG["buttons"][5]."'>";
+							echo "</a>";
+						}
+	
+						if ($serial!="free"&&$serial!="global"){
+							echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+							if ($canedit){
+								echo "<strong><a href=\"".$CFG_GLPI["root_doc"]."/front/software.licenses.php?form=update&amp;lID=".$data_inst["lID"]."&amp;sID=$sID\">";
+								echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/edit.png\" alt='".$LANG["buttons"][14]."' title='".$LANG["buttons"][14]."'>";
+								echo "</a></strong>";
+							}
+							// Display infocoms
+							echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>";
+							showDisplayInfocomLink(LICENSE_TYPE,$data_inst["lID"],1);
+							echo "</strong>";
+						}
+	
+						echo "</td></tr>";
 					}
-
-					echo "</td></tr>";
 				}
-
-
-
+			}
 			echo "</table></td>";
 
 			echo "</tr>";
