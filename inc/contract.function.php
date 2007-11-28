@@ -544,7 +544,8 @@ function showContractAssociated($device_type,$ID,$withtemplate=''){
 		echo "</tr>";
 		$i++;
 	}
-	$q="SELECT * FROM glpi_contracts WHERE deleted='0'";
+	$q="SELECT * FROM glpi_contracts WHERE deleted='0' AND FK_entities='".$ci->obj->fields["FK_entities"]."'";
+	
 	$result = $DB->query($q);
 	$nb = $DB->numrows($result);
 
