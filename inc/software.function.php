@@ -238,7 +238,7 @@ function showLicenses ($sID,$show_computers=0) {
 				if (isset($comp->fields['ID']))
 					echo "<a href='".$CFG_GLPI["root_doc"]."/front/computer.form.php?ID=".$comp->fields['ID']."'>".$comp->fields['name']."</a>";
 				else echo "N/A";
-				echo "<strong>";
+				echo "</strong>";
 			} 
 			echo "</td>";
 
@@ -884,7 +884,7 @@ function displaySoftsByCategory($data,$instID,$withtemplate)
 			if (isset($comp->fields['ID']))
 				echo "<a href='".$CFG_GLPI["root_doc"]."/front/computer.form.php?ID=".$comp->fields['ID']."'>".$comp->fields['name']."</a>";
 			else echo "N/A";
-			echo "<strong>";
+			echo "</strong>";
 		} 
 		echo "</td>";
 	
