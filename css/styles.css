@@ -416,6 +416,7 @@ ul.autocomp  {
 	margin:0;
 	margin-left:3px;
 	padding:3px;
+	text-align:left;
 }
 
 ul.autocomp   li.selected { background-color: #FFF6CF; }

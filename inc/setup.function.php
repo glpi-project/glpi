@@ -147,7 +147,8 @@ function showFormTreeDown($target, $tablename, $human, $ID, $value2 = '', $where
 		// on ajoute un input text pour entrer la valeur modifier
 		echo "&nbsp;&nbsp<input type='image' class='calendrier' src=\"" . $CFG_GLPI["root_doc"] . "/pics/puce.gif\" alt='' title='' name='fillright' value='fillright'>&nbsp";
 
-		echo "<input type='text' maxlength='100' size='20' name='value' value=\"" . cleanInputText($value["name"]) . "\"><br>";
+		autocompletionTextField('value',$tablename,'name',$value["name"],20,$entity_restrict,'maxlength=\'100\'');
+		echo '<br>';
 		echo "<textarea rows='2' cols='50' name='comments' title='" . $LANG["common"][25] . "' >" . $value["comments"] . "</textarea>";
 
 		echo "</td><td align='center' class='tab_bg_2' width='99'>";
@@ -186,7 +187,8 @@ function showFormTreeDown($target, $tablename, $human, $ID, $value2 = '', $where
 
 	echo "<table class='tab_cadre_fixe' cellpadding='1'>\n";
 	echo "<tr><td  align='center'  class='tab_bg_1'>";
-	echo "<input type='text' maxlength='100' size='15' name='value'>&nbsp;&nbsp;&nbsp;";
+	autocompletionTextField('value',$tablename,'name','',15,$entity_restrict,'maxlength=\'100\'');
+	echo "&nbsp;&nbsp;&nbsp;";
 
 	if ($numberof > 0) {
 		echo "<select name='type'>";
@@ -283,12 +285,13 @@ function showFormDropDown($target, $tablename, $human, $ID, $value2 = '',$FK_ent
 
 			dropdownValue("glpi_dropdown_locations", "value2", $loc, 0, $entity_restrict);
 			echo $LANG["networking"][52] . ": ";
-			echo "<input type='text' maxlength='100' size='10' name='value' value=\"" . cleanInputText($value) . "\"><br>";
+			autocompletionTextField('value',$tablename,'name',$value,10,$entity_restrict,'maxlength=\'100\'');
+			echo "<br>";
 			echo "<textarea rows='2' cols='50' name='comments' title='" . $LANG["common"][25] . "' >" . $comments . "</textarea>";
 
 		} else {
-
-			echo "<input type='text' maxlength='100' size='20' name='value' value=\"" . cleanInputText($value["name"]) . "\"><br>";
+			autocompletionTextField('value',$tablename,'name',$value["name"],20,$entity_restrict,'maxlength=\'100\'');
+			echo "<br>";
 			echo "<textarea rows='2' cols='50' name='comments' title='" . $LANG["common"][25] . "' >" . $value["comments"] . "</textarea>";
 		}
 		//
@@ -314,10 +317,12 @@ function showFormDropDown($target, $tablename, $human, $ID, $value2 = '',$FK_ent
 		echo $LANG["common"][15] . ": ";
 		dropdownValue("glpi_dropdown_locations", "value2", $value2, 0, $entity_restrict);
 		echo $LANG["networking"][52] . ": ";
-		echo "<input type='text' maxlength='100' size='10' name='value'><br>";
+		autocompletionTextField('value',$tablename,'name','',10,$entity_restrict,'maxlength=\'100\'');
+		echo "<br>";
 		echo "<textarea rows='2' cols='50' name='comments' title='" . $LANG["common"][25] . "'></textarea>";
 	} else {
-		echo "<input type='text' maxlength='100' size='20' name='value'><br>";
+		autocompletionTextField('value',$tablename,'name','',20,$entity_restrict,'maxlength=\'100\'');
+		echo "<br>";
 		echo "<textarea rows='2' cols='50' name='comments' title='" . $LANG["common"][25] . "'></textarea>";
 	}
 	echo "</td><td align='center' colspan='2' class='tab_bg_2' width='202'>";
