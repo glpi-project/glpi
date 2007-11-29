@@ -54,8 +54,8 @@ header_nocache();
 	}	
 
 if (isset($_POST["device_type"])&&isset($_POST["id_field"])&&$_POST["id_field"]){
-
 	$search=$SEARCH_OPTION[$_POST["device_type"]][$_POST["id_field"]];	
+	
 	// Specific budget case
 	if ($_POST["id_field"]==50) $search["linkfield"]="budget";
 
