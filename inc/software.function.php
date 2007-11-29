@@ -636,6 +636,7 @@ function installSoftware($cID,$lID,$sID='',$dohistory=1) {
 		$lic->fields['buy']=0;
 		$lic->fields['sID']=$sID;
 		$lic->fields['serial']='Automatic Add';
+		$lic->fields['version']='';
 		$lID=$lic->addToDB();
 
 		$query = "INSERT INTO glpi_inst_software VALUES (NULL,$cID,$lID)";
