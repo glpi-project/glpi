@@ -163,7 +163,7 @@ if (isset($_POST["device_type"])){
 				}
 			break;
 			case "update":
-				$searchopt=cleanSearchOption($_POST["device_type"]);
+				$searchopt=cleanSearchOption($_POST["device_type"],'w');
 				
 				if (isset($searchopt[$_POST["id_field"]])){
 					// Infocoms case

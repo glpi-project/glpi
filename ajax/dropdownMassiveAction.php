@@ -147,7 +147,7 @@ if (isset($_POST["action"])&&isset($_POST["type"])&&!empty($_POST["type"])){
 			}
 			echo "<select name='id_field' id='massiveaction_field'>";
 			echo "<option value='0' selected>------</option>";
-			$searchopt=cleanSearchOption($_POST["type"]);
+			$searchopt=cleanSearchOption($_POST["type"],'w');
 			foreach ($searchopt as $key => $val){
 				if (!is_array($val)){
 					if (!empty($newgroup)&&$items_in_group>0) {
