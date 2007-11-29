@@ -633,11 +633,11 @@ function installSoftware($cID,$lID,$sID='',$dohistory=1) {
 		}
 	} else if ($lID<0&&!empty($sID)){ // Auto Add a license
 		$lic=new License();
-		$lic->fields['buy']=0;
-		$lic->fields['sID']=$sID;
-		$lic->fields['serial']='Automatic Add';
-		$lic->fields['version']='';
-		$lID=$lic->addToDB();
+		$newinput=array();
+		$newinput['buy']=0;
+		$newinput['sID']=$sID;
+		$newinput['serial']='Automatic Add';
+		$lID=$lic->add($newinput);
 
 		$query = "INSERT INTO glpi_inst_software VALUES (NULL,$cID,$lID)";
 		if ($result = $DB->query($query)) {

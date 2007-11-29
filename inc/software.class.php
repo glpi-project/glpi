@@ -413,10 +413,12 @@ class License extends CommonDBTM {
 		if (isset($input['oem']) && !$input['oem']){
 			$input['oem_computer'] = -1;
 		}
-		if (isset($input['oem_computer']) && $input['oem_computer'] == 0){
+		if (!isset($input['oem_computer']) || $input['oem_computer'] == 0){
 			$input['oem_computer'] = -1;
 		}
-		
+		if (!isset($input['version'])){
+			$input['version'] = '';
+		}
 		unset ($input["form"]);
 		unset ($input["withtemplate"]);
 		unset ($input["lID"]);
