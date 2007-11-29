@@ -715,6 +715,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 	}
 
 	//// 4 - ORDER
+	$ORDER="ORDER BY ID";
 	foreach($toview as $key => $val){
 		if ($sort==$val){
 			$ORDER= addOrderBy($type,$sort,$order,$key);	
@@ -740,8 +741,9 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 		// Link reference tables
 		for ($i=0;$i<$_SESSION["glpisearchcount2"][$type];$i++)
 			if (isset($type2[$i])&&$type2[$i]>0&&isset($contains2[$i])&&strlen($contains2[$i])) {
-				if (!in_array($LINK_ID_TABLE[$type2[$i]],$already_link_tables2))
-					$FROM.=addMetaLeftJoin($type,$type2[$i],$already_link_tables2,($contains2[$i]=="NULL"));	
+				if (!in_array($LINK_ID_TABLE[$type2[$i]],$already_link_tables2)){
+					$FROM.=addMetaLeftJoin($type,$type2[$i],$already_link_tables2,($contains2[$i]=="NULL"));
+				}
 			}
 		// Link items tables
 		for ($i=0;$i<$_SESSION["glpisearchcount2"][$type];$i++)
