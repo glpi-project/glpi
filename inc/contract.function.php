@@ -164,13 +164,17 @@ function showDeviceContract($instID) {
 					$name= "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data["ID"]."\">".$data["name"]."$ID</a>";
 
 					echo "<tr class='tab_bg_1'>";
+					
+					echo "<td width='10'>";
 					if ($canedit){
-						echo "<td width='10'>";
 						$sel="";
 						if (isset($_GET["select"])&&$_GET["select"]=="all") $sel="checked";
 						echo "<input type='checkbox' name='item[".$data["IDD"]."]' value='1' $sel>";
-						echo "</td>";
+					} else {
+						echo '&nbsp;';
 					}
+					echo "</td>";
+					
 
 					echo "<td class='center'>".$ci->getType()."</td>";
 					echo "<td class='center' ".(isset($data['deleted'])&&$data['deleted']?"class='tab_bg_2_2'":"").">".$name."</td>";
