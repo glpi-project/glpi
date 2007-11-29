@@ -460,9 +460,9 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 	}
 
 	if ($DB->numrows($result)>0){
-		while ($data=$DB->fetch_array($result))
-			if (isset($limitsearchopt[$data["num"]]))
-				array_push($toview,$data["num"]);
+		while ($data=$DB->fetch_array($result)){
+			array_push($toview,$data["num"]);
+		}
 	}
 
 	// Add searched items
@@ -486,6 +486,12 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 
 	// Clean toview array
 	$toview=array_unique($toview);
+	foreach ($toview as $key => $val){
+		if (!isset($limitsearchopt[$val])){
+			unset($toview[$key]);
+		}
+
+	}
 	$toview_count=count($toview);
 
 	// Construct the request 
