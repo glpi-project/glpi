@@ -490,7 +490,6 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 		if (!isset($limitsearchopt[$val])){
 			unset($toview[$key]);
 		}
-
 	}
 	$toview_count=count($toview);
 
@@ -499,8 +498,8 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 	$SELECT ="SELECT ".addDefaultSelect($type);
 
 	// Add select for all toview item
-	for ($i=0;$i<$toview_count;$i++){
-		$SELECT.=addSelect($type,$toview[$i],$i,0);
+	foreach ($toview as $key => $val){
+		$SELECT.=addSelect($type,$val,$key,0);
 	}
 
 	//// 2 - FROM AND LEFT JOIN
@@ -520,8 +519,8 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 
 
 	// Add all table for toview items
-	for ($i=1;$i<$toview_count;$i++){
-		$FROM.=addLeftJoin($type,$itemtable,$already_link_tables,$SEARCH_OPTION[$type][$toview[$i]]["table"],$SEARCH_OPTION[$type][$toview[$i]]["linkfield"]);
+	foreach ($toview as $key => $val){
+		$FROM.=addLeftJoin($type,$itemtable,$already_link_tables,$SEARCH_OPTION[$type][$val]["table"],$SEARCH_OPTION[$type][$val]["linkfield"]);
 	}
 
 
@@ -568,7 +567,6 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 	// If there is search items
 	if ($_SESSION["glpisearchcount"][$type]>0&&count($contains)>0) {
 		$i=0;
-		//foreach($contains as $key => $val)
 		for ($key=0;$key<$_SESSION["glpisearchcount"][$type];$key++){
 			// if real search (strlen >0) and not all and view search
 			if (isset($contains[$key])&&strlen($contains[$key])>0&&$field[$key]!="all"&&$field[$key]!="view"){
@@ -632,7 +630,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 
 				$WHERE.= " ( ";
 				$first2=true;
-				foreach ($toview as $key2 => $val2)
+				foreach ($toview as $key2 => $val2){
 					// Add Where clause if not to be done ine HAVING CLAUSE
 					if (!in_array($SEARCH_OPTION[$type][$val2]["table"],$META_SPECIF_TABLE)){
 						$tmplink=$LINK;
@@ -642,6 +640,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 						}
 						$WHERE.= addWhere($tmplink,$NOT,$type,$val2,$contains[$key]);
 					}
+				}
 				$WHERE.=" ) ";
 				$i++;
 				// if real search (strlen >0) and all search
@@ -1034,11 +1033,10 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 			}
 
 			// Display column Headers for toview items
-			for ($i=0;$i<$toview_count;$i++){
+			foreach ($toview as $key => $val){
+				$linkto="$target?sort=".$val."&amp;order=".($order=="ASC"?"DESC":"ASC")."&amp;start=$start".$globallinkto;
 
-				$linkto="$target?sort=".$toview[$i]."&amp;order=".($order=="ASC"?"DESC":"ASC")."&amp;start=$start".$globallinkto;
-
-				echo displaySearchHeaderItem($output_type,$SEARCH_OPTION[$type][$toview[$i]]["name"],$header_num,$linkto,$sort==$toview[$i],$order);
+				echo displaySearchHeaderItem($output_type,$SEARCH_OPTION[$type][$val]["name"],$header_num,$linkto,$sort==$val,$order);
 			}
 
 			// Display columns Headers for meta items
@@ -1111,9 +1109,11 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 				echo displaySearchItem($output_type,giveItem($type,$SEARCH_OPTION[$type][1]["table"].".".$SEARCH_OPTION[$type][1]["field"],$data,0,$SEARCH_OPTION[$type][1]["linkfield"]),$item_num,$row_num,displayConfigItem($type,$SEARCH_OPTION[$type][1]["table"].".".$SEARCH_OPTION[$type][1]["field"]));
 
 				// Print other toview items
-				for ($j=1;$j<$toview_count;$j++){
-					echo displaySearchItem($output_type,giveItem($type,$SEARCH_OPTION[$type][$toview[$j]]["table"].".".$SEARCH_OPTION[$type][$toview[$j]]["field"],$data,$j,$SEARCH_OPTION[$type][$toview[$j]]["linkfield"]),$item_num,$row_num,displayConfigItem($type,$SEARCH_OPTION[$type][$toview[$j]]["table"].".".$SEARCH_OPTION[$type][$toview[$j]]["field"]));
-
+				foreach ($toview as $key => $val){
+					// Do not display first item
+					if ($key>0){
+						echo displaySearchItem($output_type,giveItem($type,$SEARCH_OPTION[$type][$val]["table"].".".$SEARCH_OPTION[$type][$val]["field"],$data,$key,$SEARCH_OPTION[$type][$val]["linkfield"]),$item_num,$row_num,displayConfigItem($type,$SEARCH_OPTION[$type][$val]["table"].".".$SEARCH_OPTION[$type][$val]["field"]));
+					}
 				}
 
 				// Print Meta Item
