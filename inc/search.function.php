@@ -39,19 +39,19 @@ if (!defined('GLPI_ROOT')){
 $SEARCH_OPTION=getSearchOptions();
 
 
-function cleanSearchOption($type){
+function cleanSearchOption($type,$action='r'){
 	global $CFG_GLPI,$SEARCH_OPTION;
 	$options=$SEARCH_OPTION[$type];
 	$todel=array();
-	if (!haveRight('contract_infocom','r')&&in_array($type,$CFG_GLPI["infocom_types"])){
+	if (!haveRight('contract_infocom',$action)&&in_array($type,$CFG_GLPI["infocom_types"])){
 		$todel=array_merge($todel,array('financial',25,26,27,28,29,30,37,38,50,51,52,53,54,55,56,57,58,59));
 	}
 
 	if ($type==COMPUTER_TYPE){
-		if (!haveRight('networking','r')){
+		if (!haveRight('networking',$action)){
 			$todel=array_merge($todel,array('network',20,21,22,83,84,85));
 		}
-		if (!$CFG_GLPI['ocs_mode']||!haveRight('view_ocsng','r')){
+		if (!$CFG_GLPI['ocs_mode']||!haveRight('view_ocsng',$action)){
 			$todel=array_merge($todel,array('ocsng',100,101,102,103));
 		}
 	}
