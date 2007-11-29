@@ -163,63 +163,66 @@ if (isset($_POST["device_type"])){
 				}
 			break;
 			case "update":
-	
-				// Infocoms case
-				if ($_POST["device_type"]<1000&&isInfocomSearch($_POST["device_type"],$_POST["id_field"])){
-					$ic=new Infocom();
-					$ci=new CommonItem();
-					$ci->setType($_POST["device_type"],1);
-	
-					$link_entity_type=-1;
-					// Specific entity item
-					if ($SEARCH_OPTION[$_POST["device_type"]][$_POST["id_field"]]["table"]=="glpi_enterprises_infocoms"){
-						$ent=new Enterprise();
-						if ($ent->getFromDB($_POST[$_POST["field"]])){
-							$link_entity_type=$ent->fields["FK_entities"];
+				$searchopt=cleanSearchOption($_POST["device_type"]);
+				
+				if (isset($searchopt[$_POST["id_field"]])){
+					// Infocoms case
+					if ($_POST["device_type"]<1000&&isInfocomSearch($_POST["device_type"],$_POST["id_field"])){
+						$ic=new Infocom();
+						$ci=new CommonItem();
+						$ci->setType($_POST["device_type"],1);
+		
+						$link_entity_type=-1;
+						// Specific entity item
+						if ($searchopt[$_POST["id_field"]]["table"]=="glpi_enterprises_infocoms"){
+							$ent=new Enterprise();
+							if ($ent->getFromDB($_POST[$_POST["field"]])){
+								$link_entity_type=$ent->fields["FK_entities"];
+							}
+							
 						}
 						
-					}
-					
-					foreach ($_POST["item"] as $key => $val){
-						if ($val==1){
-							if ($ci->getFromDB($_POST["device_type"],$key)){
-								if ($link_entity_type<0
-								||$link_entity_type==$ci->obj->fields["FK_entities"]){
-									unset($ic->fields);
-									$ic->update(array("device_type"=>$_POST["device_type"],"FK_device"=>$key,$_POST["field"] => $_POST[$_POST["field"]]));
+						foreach ($_POST["item"] as $key => $val){
+							if ($val==1){
+								if ($ci->getFromDB($_POST["device_type"],$key)){
+									if ($link_entity_type<0
+									||$link_entity_type==$ci->obj->fields["FK_entities"]){
+										unset($ic->fields);
+										$ic->update(array("device_type"=>$_POST["device_type"],"FK_device"=>$key,$_POST["field"] => $_POST[$_POST["field"]]));
+									}
 								}
 							}
 						}
-					}
-				} else {
-					$ci=new CommonItem();
-					$ci->setType($_POST["device_type"],1);
-					$link_entity_type=-1;
-					// Specific entity item
-					
-					if ($SEARCH_OPTION[$_POST["device_type"]][$_POST["id_field"]]["table"]!=$LINK_ID_TABLE[$_POST["device_type"]]
-					&& in_array($SEARCH_OPTION[$_POST["device_type"]][$_POST["id_field"]]["table"],$CFG_GLPI["specif_entities_tables"])
-					&& in_array($LINK_ID_TABLE[$_POST["device_type"]],$CFG_GLPI["specif_entities_tables"])){
+					} else {
+						$ci=new CommonItem();
+						$ci->setType($_POST["device_type"],1);
+						$link_entity_type=-1;
+						// Specific entity item
 						
-						$ci2=new CommonDBTM();
-						$ci2->table=$SEARCH_OPTION[$_POST["device_type"]][$_POST["id_field"]]["table"];
-	
-						if ($ci2->getFromDB($_POST[$_POST["field"]])){
-							if (isset($ci2->fields["FK_entities"])&&$ci2->fields["FK_entities"]>=0){
-								$link_entity_type=$ci2->fields["FK_entities"];
-							}
-	
-						}
-						
-					}
-					foreach ($_POST["item"] as $key => $val){
-						if ($val==1) {
-							if ($ci->getFromDB($_POST["device_type"],$key)){
-								if ($link_entity_type<0
-								||$link_entity_type==$ci->obj->fields["FK_entities"]){
-									$ci->obj->update(array("ID"=>$key,$_POST["field"] => $_POST[$_POST["field"]]));
+						if ($searchopt[$_POST["id_field"]]["table"]!=$LINK_ID_TABLE[$_POST["device_type"]]
+						&& in_array($searchopt[$_POST["id_field"]]["table"],$CFG_GLPI["specif_entities_tables"])
+						&& in_array($LINK_ID_TABLE[$_POST["device_type"]],$CFG_GLPI["specif_entities_tables"])){
+							
+							$ci2=new CommonDBTM();
+							$ci2->table=$searchopt[$_POST["id_field"]]["table"];
+		
+							if ($ci2->getFromDB($_POST[$_POST["field"]])){
+								if (isset($ci2->fields["FK_entities"])&&$ci2->fields["FK_entities"]>=0){
+									$link_entity_type=$ci2->fields["FK_entities"];
 								}
-							} 
+		
+							}
+							
+						}
+						foreach ($_POST["item"] as $key => $val){
+							if ($val==1) {
+								if ($ci->getFromDB($_POST["device_type"],$key)){
+									if ($link_entity_type<0
+									||$link_entity_type==$ci->obj->fields["FK_entities"]){
+										$ci->obj->update(array("ID"=>$key,$_POST["field"] => $_POST[$_POST["field"]]));
+									}
+								} 
+							}
 						}
 					}
 				}

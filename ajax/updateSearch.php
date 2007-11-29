@@ -53,7 +53,8 @@
 		$first_group=true;
 		$newgroup="";
 		$items_in_group=0;
-		foreach ($SEARCH_OPTION[$_POST["type"]] as $key => $val) {
+		$searchopt=cleanSearchOption($_POST["type"]);
+		foreach ($searchopt as $key => $val) {
 			// print groups
 			if (!is_array($val)){
 				if (!empty($newgroup)&&$items_in_group>0) {

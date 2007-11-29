@@ -32,12 +32,39 @@ if (!defined('GLPI_ROOT')){
 	die("Sorry. You can't access directly to this file");
 	}
 
-// Get search_option array
-$SEARCH_OPTION=getSearchOptions();
-
 /** \file search.function.php
  * Generic functions for Search Engine
  */
+// Get search_option array
+$SEARCH_OPTION=getSearchOptions();
+
+
+function cleanSearchOption($type){
+	global $CFG_GLPI,$SEARCH_OPTION;
+	$options=$SEARCH_OPTION[$type];
+	$todel=array();
+	if (!haveRight('contract_infocom','r')&&in_array($type,$CFG_GLPI["infocom_types"])){
+		$todel=array_merge($todel,array('financial',25,26,27,28,29,30,37,38,50,51,52,53,54,55,56,57,58,59));
+	}
+
+	if ($type==COMPUTER_TYPE){
+		if (!haveRight('networking','r')){
+			$todel=array_merge($todel,array('network',20,21,22,83,84,85));
+		}
+		if (!$CFG_GLPI['ocs_mode']||!haveRight('view_ocsng','r')){
+			$todel=array_merge($todel,array('ocsng',100,101,102,103));
+		}
+	}
+	if (count($todel)){
+		foreach ($todel as $ID){
+			if (isset($options[$ID])){
+				unset($options[$ID]);
+			}
+		}
+	}
+
+	return $options;
+}
 
 
 /**
@@ -126,7 +153,7 @@ function manageGetValuesInSearch($type=0){
 function searchForm($type,$target,$field="",$contains="",$sort= "",$deleted= 0,$link="",$distinct="Y",$link2="",$contains2="",$field2="",$type2=""){
 	global $LANG,$SEARCH_OPTION,$CFG_GLPI,$LINK_ID_TABLE;
 
-	$options=$SEARCH_OPTION[$type];
+	$options=cleanSearchOption($type);
 
 	// Meta search names
 	$names=array(
@@ -386,6 +413,8 @@ function searchForm($type,$target,$field="",$contains="",$sort= "",$deleted= 0,$
 function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$link,$distinct,$link2="",$contains2="",$field2="",$type2=""){
 	global $DB,$INFOFORM_PAGES,$SEARCH_OPTION,$LINK_ID_TABLE,$CFG_GLPI,$LANG;
 
+	$limitsearchopt=cleanSearchOption($type);
+
 	$itemtable=$LINK_ID_TABLE[$type];
 	if (isset($CFG_GLPI["union_search_type"][$type])){
 		$itemtable=$CFG_GLPI["union_search_type"][$type];
@@ -432,7 +461,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 
 	if ($DB->numrows($result)>0){
 		while ($data=$DB->fetch_array($result))
-			if (isset($SEARCH_OPTION[$type][$data["num"]]))
+			if (isset($limitsearchopt[$data["num"]]))
 				array_push($toview,$data["num"]);
 	}
 

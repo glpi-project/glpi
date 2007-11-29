@@ -275,7 +275,8 @@ class SetupSearchDisplay extends CommonDBTM{
 				echo "<input type='hidden' name='FK_users' value='$IDuser'>";
 				echo "<select name='num'>";
 				$first_group=true;
-				foreach ($SEARCH_OPTION[$type] as $key => $val)
+				$searchopt=cleanSearchOption($type);
+				foreach ($searchopt as $key => $val)
 					if (!is_array($val)){
 						if (!$first_group) echo "</optgroup>";
 						else $first_group=false;
