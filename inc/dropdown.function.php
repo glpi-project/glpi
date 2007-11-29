@@ -1211,7 +1211,7 @@ function device_selecter($target,$cID,$withtemplate='') {
 		//do nothing
 	} else {
 		echo "<table class='tab_cadre_fixe'>";
-		echo "<tr  class='tab_bg_1'><td colspan='2' align='right'>";
+		echo "<tr  class='tab_bg_1'><td colspan='2' align='right' width='30%'>";
 		echo $LANG["devices"][0].":";
 		echo "</td>";
 		echo "<td colspan='63'>"; 
