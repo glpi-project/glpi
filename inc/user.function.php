@@ -112,34 +112,35 @@ function showDeviceUser($ID){
 	$ci=new CommonItem();
 	echo "<div class='center'><table class='tab_cadre_fixe'><tr><th>".$LANG["common"][17]."</th><th>".$LANG["common"][16]."</th><th>".$LANG["common"][19]."</th><th>".$LANG["common"][20]."</th><th>&nbsp;</th></tr>";
 
-	foreach ($CFG_GLPI["linkuser_types"] as $type){
-		$query="SELECT * FROM ".$LINK_ID_TABLE[$type]." WHERE FK_users='$ID'";
-		$result=$DB->query($query);
-		if ($DB->numrows($result)>0){
-			$ci->setType($type);
-			$type_name=$ci->getType();
-			$cansee=haveTypeRight($type,"r");
-			while ($data=$DB->fetch_array($result)){
-				$link=$data["name"];
-				if ($cansee) $link="<a href='".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data["ID"]."'>".$link.(($CFG_GLPI["view_ID"]||empty($link))?" (".$data["ID"].")":"")."</a>";
-				$linktype="";
-				if ($data["FK_users"]==$ID){
-					$linktype=$LANG["common"][34];
+	foreach ($CFG_GLPI["linkuser_types"] as $type)
+		if (haveTypeRight($type)){
+			$query="SELECT * FROM ".$LINK_ID_TABLE[$type]." WHERE FK_users='$ID'";
+			$result=$DB->query($query);
+			if ($DB->numrows($result)>0){
+				$ci->setType($type);
+				$type_name=$ci->getType();
+				$cansee=haveTypeRight($type,"r");
+				while ($data=$DB->fetch_array($result)){
+					$link=$data["name"];
+					if ($cansee) $link="<a href='".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data["ID"]."'>".$link.(($CFG_GLPI["view_ID"]||empty($link))?" (".$data["ID"].")":"")."</a>";
+					$linktype="";
+					if ($data["FK_users"]==$ID){
+						$linktype=$LANG["common"][34];
+					}
+					echo "<tr class='tab_bg_1'><td class='center'>$type_name</td><td class='center'>$link</td>";
+					echo "<td class='center'>";
+					if (isset($data["serial"])&&!empty($data["serial"])){
+						echo $data["serial"];
+					} else echo '&nbsp;';
+					echo "</td><td class='center'>";
+					if (isset($data["otherserial"])&&!empty($data["otherserial"])) {
+						echo $data["otherserial"];
+					} else echo '&nbsp;';
+	
+					echo "<td class='center'>$linktype</td></tr>";
 				}
-				echo "<tr class='tab_bg_1'><td class='center'>$type_name</td><td class='center'>$link</td>";
-				echo "<td class='center'>";
-				if (isset($data["serial"])&&!empty($data["serial"])){
-					echo $data["serial"];
-				} else echo '&nbsp;';
-				echo "</td><td class='center'>";
-				if (isset($data["otherserial"])&&!empty($data["otherserial"])) {
-					echo $data["otherserial"];
-				} else echo '&nbsp;';
-
-				echo "<td class='center'>$linktype</td></tr>";
 			}
 		}
-
 	}
 	echo "</table></div><br>";
 
