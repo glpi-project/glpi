@@ -147,7 +147,7 @@ function showFormTreeDown($target, $tablename, $human, $ID, $value2 = '', $where
 		// on ajoute un input text pour entrer la valeur modifier
 		echo "&nbsp;&nbsp<input type='image' class='calendrier' src=\"" . $CFG_GLPI["root_doc"] . "/pics/puce.gif\" alt='' title='' name='fillright' value='fillright'>&nbsp";
 
-		echo "<input type='text' maxlength='100' size='20' name='value' value=\"" . $value["name"] . "\"><br>";
+		echo "<input type='text' maxlength='100' size='20' name='value' value=\"" . cleanInputText($value["name"]) . "\"><br>";
 		echo "<textarea rows='2' cols='50' name='comments' title='" . $LANG["common"][25] . "' >" . $value["comments"] . "</textarea>";
 
 		echo "</td><td align='center' class='tab_bg_2' width='99'>";
@@ -283,12 +283,12 @@ function showFormDropDown($target, $tablename, $human, $ID, $value2 = '',$FK_ent
 
 			dropdownValue("glpi_dropdown_locations", "value2", $loc, 0, $entity_restrict);
 			echo $LANG["networking"][52] . ": ";
-			echo "<input type='text' maxlength='100' size='10' name='value' value=\"" . $value . "\"><br>";
+			echo "<input type='text' maxlength='100' size='10' name='value' value=\"" . cleanInputText($value) . "\"><br>";
 			echo "<textarea rows='2' cols='50' name='comments' title='" . $LANG["common"][25] . "' >" . $comments . "</textarea>";
 
 		} else {
 
-			echo "<input type='text' maxlength='100' size='20' name='value' value=\"" . $value["name"] . "\"><br>";
+			echo "<input type='text' maxlength='100' size='20' name='value' value=\"" . cleanInputText($value["name"]) . "\"><br>";
 			echo "<textarea rows='2' cols='50' name='comments' title='" . $LANG["common"][25] . "' >" . $value["comments"] . "</textarea>";
 		}
 		//
