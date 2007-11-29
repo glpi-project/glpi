@@ -112,8 +112,8 @@ function showDeviceUser($ID){
 	$ci=new CommonItem();
 	echo "<div class='center'><table class='tab_cadre_fixe'><tr><th>".$LANG["common"][17]."</th><th>".$LANG["common"][16]."</th><th>".$LANG["common"][19]."</th><th>".$LANG["common"][20]."</th><th>&nbsp;</th></tr>";
 
-	foreach ($CFG_GLPI["linkuser_types"] as $type)
-		if (haveTypeRight($type)){
+	foreach ($CFG_GLPI["linkuser_types"] as $type){
+		if (haveTypeRight($type,'r')){
 			$query="SELECT * FROM ".$LINK_ID_TABLE[$type]." WHERE FK_users='$ID'";
 			$result=$DB->query($query);
 			if ($DB->numrows($result)>0){
