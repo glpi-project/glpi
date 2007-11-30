@@ -105,6 +105,8 @@ function showAssociatedContact($instID) {
 	global $DB,$CFG_GLPI, $LANG;
 
 	if (!haveRight("contact_enterprise","r")) return false;
+	$enterprise=new Enterprise();
+	$enterprise->getFromDB($instID);
 	$canedit=haveRight("contact_enterprise","w");
 
 	$query = "SELECT glpi_contacts.*, glpi_contact_enterprise.ID as ID_ent FROM glpi_contact_enterprise, glpi_contacts WHERE glpi_contact_enterprise.FK_contact=glpi_contacts.ID AND glpi_contact_enterprise.FK_enterprise = '$instID' order by glpi_contacts.name";
@@ -147,7 +149,7 @@ function showAssociatedContact($instID) {
 
 		echo "<tr class='tab_bg_1'><th colspan='2'>".$LANG["financial"][33]."</tr><tr><td class='tab_bg_2' align='center'>";
 		echo "<input type='hidden' name='eID' value='$instID'>";
-		dropdown("glpi_contacts","cID");
+		dropdown("glpi_contacts","cID",1,$enterprise->fields["FK_entities"]);
 		echo "</td><td align='center' class='tab_bg_2'>";
 		echo "<input type='submit' name='addcontact' value=\"".$LANG["buttons"][8]."\" class='submit'>";
 		echo "</td></tr>";

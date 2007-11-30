@@ -54,6 +54,9 @@ function showEnterpriseContact($instID) {
 	global $DB,$CFG_GLPI, $LANG;
 
 	if (!haveRight("contact_enterprise","r")) return false;
+
+	$contact=new Contact();
+	$contact->getFromDB($instID);
 	$canedit=haveRight("contact_enterprise","w");
 
 	$query = "SELECT glpi_contact_enterprise.ID as ID, glpi_enterprises.ID as entID, glpi_enterprises.name as name, glpi_enterprises.website as website, glpi_enterprises.fax as fax,glpi_enterprises.phonenumber as phone, glpi_enterprises.type as type, glpi_enterprises.deleted as deleted";
@@ -95,8 +98,8 @@ function showEnterpriseContact($instID) {
 	if ($canedit){
 		echo "<tr class='tab_bg_1'><td>&nbsp;</td><td class='center'>";
 		echo "<div class='software-instal'><input type='hidden' name='conID' value='$instID'>";
-		dropdown("glpi_enterprises","entID");
-
+		dropdown("glpi_enterprises","entID",1,$contact->fields["FK_entities"]);
+		
 		echo "&nbsp;&nbsp;<input type='submit' name='addenterprise' value=\"".$LANG["buttons"][8]."\" class='submit'>";
 		echo "</div>";
 		echo "</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>";
