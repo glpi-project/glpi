@@ -122,6 +122,7 @@ function showLicenses ($sID,$show_computers=0) {
 					echo "<select name='update_licenses' id='update_licenses_choice'>";
 					echo "<option value=''>-----</option>";
 					echo "<option value='move_to_software'>".$LANG["buttons"][20]."</option>";
+					echo "<option value='delete_license'>".$LANG["buttons"][6]."</option>";
 					echo "</select>";
 	
 					$params=array('type'=>'__VALUE__',
@@ -1042,6 +1043,29 @@ function moveSimilarLicensesToSoftware($lID,$sID){
 			$query.=" AND expire IS NULL";
 		else $query.=" AND .expire = '".addslashes($lic->fields['expire'])."'";
 		$DB->query($query);
+	}
+}
+
+function deleteSimilarLicenses($lID){
+	global $DB;
+	$lic=new License();
+	if ($lic->getFromDB($lID)){
+		
+		$query="SELECT ID FROM glpi_licenses WHERE version='".addslashes($lic->fields['version'])."'
+			AND serial='".addslashes($lic->fields['serial'])."'
+			AND oem='".addslashes($lic->fields['oem'])."'
+			AND oem_computer='".addslashes($lic->fields['oem_computer'])."'
+			AND buy='".addslashes($lic->fields['buy'])."'
+			AND sID='".addslashes($lic->fields['sID'])."' ";
+		if ($lic->fields['expire']=="")
+			$query.=" AND expire IS NULL";
+		else $query.=" AND .expire = '".addslashes($lic->fields['expire'])."'";
+		
+		if ($result=$DB->query($query)){
+			while ($data=$DB->fetch_array($result)){
+				$lic->delete(array('ID'=>$data['ID']));
+			}
+		}
 	}
 }
 
