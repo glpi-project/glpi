@@ -57,6 +57,9 @@
 			dropdownLicenseOfSoftware("lID",$_POST["sID"]);
 			echo "&nbsp;&nbsp;<input type='submit' name='move' value='".$LANG["buttons"][14]."' class='submit'>";
 		break;
+		case "delete_similar_license":
+			echo "&nbsp;&nbsp;<input type='submit' name='delete_similar_license' value='".$LANG["buttons"][6]."' class='submit'>";
+		break;
 		case "delete_license":
 			echo "&nbsp;&nbsp;<input type='submit' name='delete_license' value='".$LANG["buttons"][6]."' class='submit'>";
 		break;
