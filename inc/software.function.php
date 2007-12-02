@@ -107,6 +107,7 @@ function showLicenses ($sID,$show_computers=0) {
 					echo "<option value='update_expire'>".$LANG["software"][32]."</option>";
 					echo "<option value='update_buy'>".$LANG["software"][35]."</option>";
 					echo "<option value='move'>".$LANG["buttons"][20]."</option>";
+					echo "<option value='delete_license'>".$LANG["buttons"][6]."</option>";
 					echo "</select>";
 	
 					$params=array('type'=>'__VALUE__',
@@ -122,7 +123,7 @@ function showLicenses ($sID,$show_computers=0) {
 					echo "<select name='update_licenses' id='update_licenses_choice'>";
 					echo "<option value=''>-----</option>";
 					echo "<option value='move_to_software'>".$LANG["buttons"][20]."</option>";
-					echo "<option value='delete_license'>".$LANG["buttons"][6]."</option>";
+					echo "<option value='delete_similar_license'>".$LANG["buttons"][6]."</option>";
 					echo "</select>";
 	
 					$params=array('type'=>'__VALUE__',

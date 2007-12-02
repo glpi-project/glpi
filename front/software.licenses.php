@@ -130,7 +130,7 @@ else if (isset($_POST["move_to_software"])||isset($_POST["move_to_software"])){
 	}
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
-else if (isset($_POST["delete_license"]))
+else if (isset($_POST["delete_similar_license"]))
 {
 	checkRight("software","w");
 
@@ -142,6 +142,15 @@ else if (isset($_POST["delete_license"]))
 
 	logEvent(0, "software", 4, "inventory", $_SESSION["glpiname"]." deleted licenses.");
 	glpi_header($_SERVER['HTTP_REFERER']." ");
+}
+else if (isset($_POST["delete_license"])){
+	checkRight("software","w");
+
+	foreach ($_POST as $key => $val)
+		if (ereg("license_([0-9]+)",$key,$ereg)){
+			$lic->delete(array("ID"=>$ereg[1]));
+		}
+	glpi_header($_SERVER['HTTP_REFERER']);        
 }
 else if (isset($_POST["update"]))
 {
