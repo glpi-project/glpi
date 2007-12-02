@@ -447,9 +447,8 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 		    );	
 
 	// Get the items to display
-	$toview=array();
-	// Add first element (name)
-	array_push($toview,1);
+	$toview=addDefaultToView($type);
+
 	// Add default items
 	$query="SELECT * FROM glpi_display WHERE type='$type' AND FK_users='".$_SESSION["glpiID"]."' ORDER by rank";
 	$result=$DB->query($query);
@@ -1433,6 +1432,26 @@ function addOrderBy($type,$ID,$order,$key=0){
 		break;
 	}
 
+}
+
+
+/**
+ * Generic Function to add default columns to view
+ *
+ *
+ *@param $type device type
+ *
+ *
+ *@return select string
+ *
+ **/
+function addDefaultToView ($type){
+
+	$toview=array();
+	// Add first element (name)
+	array_push($toview,1);
+
+	return $toview;
 }
 
 
