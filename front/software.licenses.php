@@ -108,14 +108,15 @@ else if (isset($_POST["move"])||isset($_POST["move"])){
 		unset($lic->fields["ID"]);
 		unset($lic->fields["comments"]);
 
-		$lic2=new License();
-		foreach ($_POST as $key => $val)
+		foreach ($_POST as $key => $val){
+			$lic=array();
 			if (ereg("license_([0-9]+)",$key,$ereg)){
-				$input=$lic->fields;
-				$input["ID"]=$ereg[1];
-				unset($lic2->fields);
-				$lic2->update($input);
+				$lic[]=$ereg[1];
 			}
+			if (count($lic)){
+				moveLicensesToLicense($lic,$_POST["lID"]);
+			}
+		}
 	}
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
