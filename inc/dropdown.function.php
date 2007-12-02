@@ -1500,8 +1500,8 @@ function dropdownLicenseOfSoftware($myname,$sID) {
 
 	$query="SELECT * FROM glpi_licenses 
 		WHERE sID='$sID' 
-		GROUP BY serial, expire, oem, oem_computer, buy 
-		ORDER BY serial, oem, oem_computer";
+		GROUP BY version, serial, expire, oem, oem_computer, buy 
+		ORDER BY version, serial, expire, oem, oem_computer, buy";
 	$result=$DB->query($query);
 	if ($DB->numrows($result)){
 		echo "<select name='$myname'>";

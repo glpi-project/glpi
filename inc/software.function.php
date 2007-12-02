@@ -308,25 +308,29 @@ function showLicenses ($sID,$show_computers=0) {
 
 			// Add select all checkbox
 			if ($show_computers&&$canedit){
-				if ($num_inst>0&&$serial!="free"&&$serial!="global"){
-					echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;".$LANG["search"][7].":";
-					$rand=mt_rand();
-
-					$found_soft=true;
-					echo "<input type='checkbox' onclick='toggle$rand();'>";
-					echo "<script type='text/javascript' >\n";
-					echo "function toggle$rand(){\n";
-					while ($data_inst=$DB->fetch_array($result_lic)){
-						if ($data_inst['cID']>0){
-							echo " var lic=window.document.getElementById('license_".$data_inst["lID"]."');";
-							echo " if (lic.checked) \n";
-							echo "      lic.checked = false;\n";
-							echo " else lic.checked = true;\n";
+				if ($num_inst>0){
+					if ($serial!="free"&&$serial!="global"){
+						echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;".$LANG["search"][7].":";
+						$rand=mt_rand();
+	
+						$found_soft=true;
+						echo "<input type='checkbox' onclick='toggle$rand();'>";
+						echo "<script type='text/javascript' >\n";
+						echo "function toggle$rand(){\n";
+						while ($data_inst=$DB->fetch_array($result_lic)){
+							if ($data_inst['cID']>0){
+								echo " var lic=window.document.getElementById('license_".$data_inst["lID"]."');";
+								echo " if (lic.checked) \n";
+								echo "      lic.checked = false;\n";
+								echo " else lic.checked = true;\n";
+							}
 						}
+						echo "}</script>\n";
+						$DB->data_seek($result_lic,0);
+					} else {
+						echo "<input type='checkbox' name='license_".$data['ID']."'>";
 					}
-					echo "}</script>\n";
-					$DB->data_seek($result_lic,0);
-				}
+				} 
 			}		
 
 			echo "</td></tr>";
@@ -915,13 +919,12 @@ function unglobalizeLicense($ID){
 			// Update item to unit management :
 			$input=$license->fields;
 			$input["serial"]="_".$license->fields["serial"]."_";
-
+			
 			// skip first
 			$data=$DB->fetch_array($result);
 			if ($license->fields["oem"]){
 				$input["oem_computer"]=$data["cID"];
 			} 
-			
 			$license->update($input);
 
 			$input=$license->fields;
@@ -1040,7 +1043,64 @@ function moveSimilarLicensesToSoftware($lID,$sID){
 		else $query.=" AND .expire = '".addslashes($lic->fields['expire'])."'";
 		$DB->query($query);
 	}
+}
 
+function moveLicensesToLicense($tomove=array(),$lID){
+	global $DB;
+	
+	$lic=new License();
+	$lic2=new License();
+
+	if (count($tomove)&&$lic->getFromDB($lID)){
+
+		if ($lic->fields['serial']=='free'||$lic->fields['serial']=='global'){
+			// Destination is global : Only move inst_software and delete old license if unused
+			foreach ($tomove as $moveID){
+				if ($moveID!=$lID && $lic2->getFromDB($moveID)){
+					$query="UPDATE glpi_inst_software SET license='$lID' WHERE license='$moveID'";
+					$DB->query($query);
+
+					if (getInstallionsForLicense($moveID)==0){
+						$lic2->delete(array('ID'=>$moveID));
+					}
+				}
+			}
+		} else {
+			// Individual one : if original is global create a copy else copy license
+			foreach ($tomove as $moveID){
+				if ($moveID!=$lID && $lic2->getFromDB($moveID)){
+					if ($lic2->fields['serial']=='free'||$lic2->fields['serial']=='global'){
+						// Create a copy of the original one foreach installation and move inst_software
+						$query="SELECT * FROM glpi_inst_software WHERE license='$moveID'";
+
+						$input=$lic->fields;
+						unset($input['ID']);
+
+						if ($result=$DB->query($query)){
+							while ($data_inst=$DB->fetch_array($result)){
+								unset($lic2->fields);
+								$newID=$lic2->add($input);
+								$query="UPDATE glpi_inst_software SET license='$newID' WHERE ID='".$data_inst['ID']."'";
+								$DB->query($query);
+							}
+						}
+					} else {
+						// Only update license to be the same as the destination one
+						$input=$lic->fields;
+						$input["ID"]=$moveID;
+						unset($lic2->fields);
+						$lic2->update($input);
+					}
+					if (getInstallionsForLicense($moveID)==0){
+						$lic2->delete(array('ID'=>$moveID));
+					}
+
+	
+				}
+			}
+			
+		}
+	}
 }
 
 function getInstalledLicence($sID){
