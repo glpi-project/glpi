@@ -1323,7 +1323,6 @@ function dropdownMassiveAction($device_type,$deleted=0){
 						echo "<option value=\"unlock_ocsng_printer\">".$LANG["buttons"][38]." ".$LANG["Menu"][33]." - ".$LANG["ocsng"][34]."</option>";
 						echo "<option value=\"unlock_ocsng_software\">".$LANG["buttons"][38]." ".$LANG["Menu"][33]." - ".$LANG["ocsng"][52]."</option>";
 						echo "<option value=\"unlock_ocsng_ip\">".$LANG["buttons"][38]." ".$LANG["Menu"][33]." - ".$LANG["ocsng"][50]."</option>";
-						}
 					}
 				}
 				break;
