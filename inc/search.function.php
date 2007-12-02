@@ -1452,7 +1452,7 @@ function addDefaultToView ($type){
 	array_push($toview,1);
 
 	// Add entity view :
-	if (count($_SESSION["glpiactiveentities"])){
+	if (count($_SESSION["glpiactiveentities"])>1){
 		array_push($toview,80);
 	}
 	return $toview;
