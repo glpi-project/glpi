@@ -40,12 +40,9 @@ $NEEDED_ITEMS=array("reservation","search","user","computer","printer","monitor"
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-
-if(!isset($_GET["ID"])) $_GET["ID"] = "";
-
-
 $ri=new ReservationItem();
 $rr=new ReservationResa();
+
 if (isset($_POST["clear_resa"])||isset($_POST["add_resa"])||isset($_POST["edit_resa"])||(isset($_GET["show"]) && strcmp($_GET["show"],"resa") == 0)){
 
 	checkRight("reservation_helpdesk","1");
@@ -127,9 +124,7 @@ if (isset($_POST["clear_resa"])||isset($_POST["add_resa"])||isset($_POST["edit_r
 		
 	} else if (isset($_GET["ID"])){
 		printCalendrier($_SERVER['PHP_SELF'],$_GET["ID"]);
-	}
-
-	else {
+	} else {
 		manageGetValuesInSearch(RESERVATION_TYPE);
 
 		searchForm(RESERVATION_TYPE,$_SERVER['PHP_SELF'],$_GET["field"],$_GET["contains"],$_GET["sort"],$_GET["deleted"],$_GET["link"],$_GET["distinct"],$_GET["link2"],$_GET["contains2"],$_GET["field2"],$_GET["type2"]);
