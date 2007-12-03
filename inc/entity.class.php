@@ -123,14 +123,18 @@ class Entity extends CommonDBTM{
 			else if($this->getfromDB($ID)) $con_spotted = true;
 		}
 
-		if ($con_spotted){
-			// Get data
-			$entdata=new EntityData();
 
+		// Get data
+		$entdata=new EntityData();
+		if (!$entdata->getFromDB($ID)){
+			$entdata->add(array("FK_entities"=>$ID));
 			if (!$entdata->getFromDB($ID)){
-				$entdata->add(array("FK_entities"=>$ID));
-				$entdata->getFromDB($ID);	
+				$con_spotted=false;
 			}
+		}
+
+
+		if ($con_spotted){
 
 			$this->showOnglets($ID, $withtemplate,$_SESSION['glpi_onglet']);
 
