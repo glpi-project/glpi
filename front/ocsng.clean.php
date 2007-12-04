@@ -43,7 +43,7 @@ checkRight("ocsng","w");
 
 commonHeader($LANG["title"][39],$_SERVER['PHP_SELF'],"utils","ocsng");
 
-ocsManageDeleted($_SESSION["ocs_server_id"]);
+
 ocsCleanLinks($_SESSION["ocs_server_id"]);
 
 echo "<div align='center'><strong>".$LANG["ocsng"][3]." - ".$LANG["log"][45]."<br>";

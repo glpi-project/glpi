@@ -557,7 +557,7 @@ function ocsLinkComputer($ocs_id, $ocs_server_id, $glpi_id,$glpi_link=0) {
 			$comp->update($input);
 
 			// Auto restore if deleted
-			if ($comp->fields['deleted']==1){
+			if ($comp->fields['deleted']){
 				$comp->restore(array('ID'=>$glpi_id));
 			}
 		
@@ -1174,6 +1174,7 @@ function ocsCleanLinks($ocs_server_id) {
 	global $DB, $DBocs;
 
 	checkOCSconnection($ocs_server_id);
+	ocsManageDeleted($ocs_server_id);
 
 	// Delete unexisting GLPI computers
 	$query = "SELECT glpi_ocs_link.ID AS ID 
