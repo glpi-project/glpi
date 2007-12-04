@@ -555,6 +555,11 @@ function ocsLinkComputer($ocs_id, $ocs_server_id, $glpi_id,$glpi_link=0) {
 				$input["state"] = $ocsConfig["default_state"];
 			
 			$comp->update($input);
+
+			// Auto restore if deleted
+			if ($comp->fields['deleted']==1){
+				$comp->restore(array('ID'=>$glpi_id));
+			}
 		
 			// Reset using GLPI Config
 			$cfg_ocs = getOcsConf($ocs_server_id);
