@@ -454,15 +454,17 @@ function ocsImportComputer($ocs_id, $ocs_server_id, $lock = 0, $defaultentity = 
 			}
 
 			//Check if machine could be linked with another one already in DB
-			if ($canlink)
-			{
-				$glpi_id = getMachinesAlreadyInGLPI($ocs_id,$ocs_server_id,$data['FK_entities']);
-				//One machine was found -> link
-				if ($glpi_id != -1)
-				{
-					ocsLinkComputer($ocs_id,$ocs_server_id,$glpi_id,1);
-					return 3;
+			if ($canlink){
+				$found_computers = getMachinesAlreadyInGLPI($ocs_id,$ocs_server_id,$data['FK_entities']);
+				// machines founded -> try to link
+				if (count($found_computers)){
+					foreach ($found_computers as $glpi_id){
+						if (ocsLinkComputer($ocs_id,$ocs_server_id,$glpi_id)){
+							return 3;
+						}
+					}
 				}
+				// Else simple Import
 			}
 			
 			//New machine to import
@@ -506,13 +508,13 @@ function ocsImportComputer($ocs_id, $ocs_server_id, $lock = 0, $defaultentity = 
 			return 2;
 }
 
-function ocsLinkComputer($ocs_id, $ocs_server_id, $glpi_id,$glpi_link=0) {
+function ocsLinkComputer($ocs_id, $ocs_server_id, $glpi_id) {
 	global $DB, $DBocs, $LANG;
 	checkOCSconnection($ocs_server_id);
 
 	$query = "SELECT *  
-				FROM glpi_ocs_link
-				WHERE glpi_id='$glpi_id'";
+			FROM glpi_ocs_link
+			WHERE glpi_id='$glpi_id'";
 
 	$result = $DB->query($query);
 	$ocs_exists = true;
@@ -533,7 +535,8 @@ function ocsLinkComputer($ocs_id, $ocs_server_id, $glpi_id,$glpi_link=0) {
 		}
 	}
 
-	if ($glpi_link || (!$ocs_exists || $numrows == 0)) {
+	// No ocs_link or ocs computer does not exists so can link
+	if (!$ocs_exists || $numrows == 0) {
 
 		$ocsConfig = getOcsConf($ocs_server_id);
 		
@@ -604,11 +607,13 @@ function ocsLinkComputer($ocs_id, $ocs_server_id, $glpi_id,$glpi_link=0) {
 			historyLog ($glpi_id,COMPUTER_TYPE,$changes,0,HISTORY_OCS_LINK);
 			
 			ocsUpdateComputer($idlink, $ocs_server_id, 0);
+			return true;
 		}
 	} else {
 		$_SESSION["MESSAGE_AFTER_REDIRECT"] = $ocs_id . " - " . $LANG["ocsng"][23];
 	}
 
+	return false;
 }
 
 
@@ -632,18 +637,22 @@ function ocsProcessComputer($ocs_id, $ocs_server_id, $lock = 0, $defaultentity =
 		return ocsImportComputer($ocs_id, $ocs_server_id, $lock, $defaultentity,$canlink);
 }
 
+
+// Return array of GLPI computers matching the OCS one using the OCS config
 function getMachinesAlreadyInGLPI($ocs_id,$ocs_server_id,$entity)
 {
 	global $DB,$DBocs;
 	$conf = getOcsConf($ocs_server_id);
+
+	$found_computers=array();
+
 
 	$sql_fields = "hardware.ID";
 	$sql_from ="hardware";
 	$first = true;
 	$ocsParams = array();
 	
-	if ($conf["glpi_link_enabled"])
-	{
+	if ($conf["glpi_link_enabled"]){
 		$ok=false;
 		//Build the request against OCS database to get the machine's informations
 		if ( $conf["link_ip"] || $conf["link_mac_address"])
@@ -706,7 +715,7 @@ function getMachinesAlreadyInGLPI($ocs_id,$ocs_server_id,$entity)
 		}
 
 		//Build the request to check if the machine exists in GLPI
-		$sql_where = " FK_entities=$entity AND is_template=0 AND deleted=0 ";
+		$sql_where = " FK_entities=$entity AND is_template=0 ";
 		$sql_from = "glpi_computers";
 		if ( $conf["link_ip"] || $conf["link_mac_address"])
 		{
@@ -761,13 +770,16 @@ function getMachinesAlreadyInGLPI($ocs_id,$ocs_server_id,$entity)
 		
 		$sql_glpi = "SELECT glpi_computers.ID FROM $sql_from WHERE  $sql_where ;";
 		$result_glpi = $DB->query($sql_glpi);
-		if ($DB->numrows($result_glpi) > 0)
-			return $DB->result($result_glpi,0,"ID");
-		else
-			return -1;	
+		
+		// If only one result
+		if ($DB->numrows($result_glpi) >0){
+			while ($data = $DB->fetch_array($result_glpi)) {
+				$found_computers[]=$data['ID'];
+			}
+		} 
 	}
-	else
-		return -1;
+
+	return $found_computers;
 	
 		
 }
