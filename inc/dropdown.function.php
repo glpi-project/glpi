@@ -330,7 +330,7 @@ function dropdownUsers($myname,$value,$right,$all=0,$display_comments=1,$entity_
 	$user=getUserName($value,2);
 	$default_display="";
 
-	$default_display="<select id='dropdown_".$myname.$rand."' name='$myname'><option value='$value'>".utf8_substr($user["name"],0,$CFG_GLPI["dropdown_limit"])."</option></select>\n";
+	$default_display="<select id='dropdown_".$myname.$rand."' name='$myname'><option value='$value'>".substr($user["name"],0,$CFG_GLPI["dropdown_limit"])."</option></select>\n";
 
 
 	$params=array('searchText'=>'__VALUE__',
@@ -525,7 +525,7 @@ function dropdownUsersTracking($myname,$value,$field,$display_comments=1) {
 
 	$default="";
 	$user=getUserName($value,2);
-	$default="<select name='$myname'><option value='$value'>".utf8_substr($user["name"],0,$CFG_GLPI["dropdown_limit"])."</option></select>\n";
+	$default="<select name='$myname'><option value='$value'>".substr($user["name"],0,$CFG_GLPI["dropdown_limit"])."</option></select>\n";
 	if (empty($value)||$value==0){
 			$default= "<select name='$myname'><option value='0'>[ ".$LANG["search"][7]." ]</option></select>\n";
 	}
@@ -781,7 +781,7 @@ function dropdownMyDevices($userID=0){
 						}
 						if (empty($output)||$CFG_GLPI["view_ID"]) $output.=" (".$data['ID'].")";
 						$my_devices.="<option title=\"$output\" value='".$type."_".$data["ID"]."' ".($my_item==$type."_".$data["ID"]?"selected":"").">";
-						$my_devices.="$type_name - ".utf8_substr($output,0,$CFG_GLPI["dropdown_limit"]);
+						$my_devices.="$type_name - ".substr($output,0,$CFG_GLPI["dropdown_limit"]);
 						$my_devices.="</option>";
 
 						$already_add[$type][]=$data["ID"];
@@ -830,7 +830,7 @@ function dropdownMyDevices($userID=0){
 
 									if (empty($output)||$CFG_GLPI["view_ID"]) $output.=" (".$data['ID'].")";
 									$tmp_device.="<option title=\"$output\" value='".$type."_".$data["ID"]."' ".($my_item==$type."_".$data["ID"]?"selected":"").">";
-									$tmp_device.="$type_name - ".utf8_substr($output,0,$CFG_GLPI["dropdown_limit"]);
+									$tmp_device.="$type_name - ".substr($output,0,$CFG_GLPI["dropdown_limit"]);
 									$tmp_device.="</option>";
 									$already_add[$type][]=$data["ID"];
 								}
@@ -879,7 +879,7 @@ function dropdownMyDevices($userID=0){
 								}
 								if (empty($output)||$CFG_GLPI["view_ID"]) $output.=" (".$data['ID'].")";
 								$tmp_device.="<option title=\"$output\" value='".$type."_".$data["ID"]."' ".($my_item==$type."_".$data["ID"]?"selected":"").">";
-								$tmp_device.="$type_name - ".utf8_substr($output,0,$CFG_GLPI["dropdown_limit"]);
+								$tmp_device.="$type_name - ".substr($output,0,$CFG_GLPI["dropdown_limit"]);
 								$tmp_device.="</option>";
 
 								$already_add[$type][]=$data["ID"];
