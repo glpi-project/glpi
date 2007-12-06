@@ -1588,44 +1588,6 @@ function displayEntityTree($target,$myname,$tree,$level=0){
 }
 
 
-function dropdownActiveEntities($myname){
-	global $DB,$CFG_GLPI,$LANG;
-
-	$rand=mt_rand();
-	$query = "SELECT * 
-		FROM glpi_entities ".getEntitiesRestrictRequest("WHERE","glpi_entities","ID")." 
-		ORDER BY completename";
-	$result = $DB->query($query);
-
-	echo "<select id='active_entity' name=\"".$myname."\">";
-	
-	// Manage Root entity
-	if (in_array(0,$_SESSION['glpiactiveentities'])){
-		echo "<option ".($_SESSION['glpiactive_entity']==0?" selected ":"")."value=\"0\" class='tree' >".$LANG["entity"][2]."</option>";
-	}
-
-	if ($DB->numrows($result)) {
-		while ($data =$DB->fetch_array($result)) {
-
-			$ID = $data['ID'];
-			$level = $data['level'];
-
-			if (empty($data['name'])) $output="($ID)";
-			else $output=$data['name'];
-
-			$class=" class='tree' ";
-			$raquo="&raquo;";
-			if ($level==1){
-				$class=" class='treeroot' ";
-				$raquo="";
-			}
-			$style=$class;
-			echo "<option ".($ID==$_SESSION['glpiactive_entity']?" selected ":"")."value=\"$ID\" $style title=\"".$data['completename']."\">".str_repeat("&nbsp;&nbsp;&nbsp;", $level).$raquo.substr($output,0,50)."</option>";
-		}
-	}
-	echo "</select>";
-}
-
 
 function dropdownStatus($name,$value=0){
 	global $LANG;
