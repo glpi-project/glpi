@@ -712,7 +712,11 @@ function getEntitiesRestrictRequest($separator = "AND", $table = "", $field = ""
 		$query .= $table . ".";
 	}
 	if (empty($field)){
-		$field="FK_entities";
+		if ($table=='glpi_entities') { 
+			$field="ID"; 
+		} else { 
+			$field="FK_entities"; 
+		}
 	}
 
 	$query.=$field;

@@ -65,7 +65,7 @@ function countElementsInTable($table,$condition=""){
  * return int nb of elements in table
  */
 function countElementsInTableForMyEntities($table){
-	return countElementsInTable($table,getEntitiesRestrictRequest("",$table,"FK_entities"));
+	return countElementsInTable($table,getEntitiesRestrictRequest("",$table));
 }
 /**
  * Count the number of elements in a table for a specific entity
@@ -76,7 +76,7 @@ function countElementsInTableForMyEntities($table){
  * return int nb of elements in table
  */
 function countElementsInTableForEntity($table,$entity){
-	return countElementsInTable($table,"FK_entities='$entity'");
+	return countElementsInTable($table,getEntitiesRestrictRequest("",$table,'',$entity));
 }
 /**
  * Get datas from a table in an array : CAUTION TO USE ONLY FOR SMALL TABLES OR USING A STRICT CONDITION
