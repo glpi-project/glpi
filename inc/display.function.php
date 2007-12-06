@@ -1941,8 +1941,8 @@ function showNotesForm($target,$type,$id){
 	if (!haveRight("notes","r")) return false;
 	//new objet
 	$ci =new CommonItem;
-	//getfromdb
-	$ci->getfromDB ($type,$id);
+	//getFromDB
+	$ci->getFromDB ($type,$id);
 
 
 	echo "<form name='form' method='post' action=\"".$target."\">";

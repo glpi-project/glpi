@@ -217,7 +217,7 @@ class Software extends CommonDBTM {
 				$sw_spotted = true;
 			}
 		} else {
-			if ($this->getfromDB($ID) && haveAccessToEntity($this->fields["FK_entities"])){
+			if ($this->getFromDB($ID) && haveAccessToEntity($this->fields["FK_entities"])){
 				$sw_spotted = true;
 			}
 		}

@@ -189,7 +189,7 @@ class Monitor extends CommonDBTM {
 			if($this->getEmpty()) $mon_spotted = true;
 
 		} else {
-			if($this->getfromDB($ID)&&haveAccessToEntity($this->fields["FK_entities"])) $mon_spotted = true;
+			if($this->getFromDB($ID)&&haveAccessToEntity($this->fields["FK_entities"])) $mon_spotted = true;
 		}
 
 		if($mon_spotted) {

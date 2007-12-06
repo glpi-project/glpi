@@ -69,7 +69,7 @@ class Job extends CommonDBTM{
 
 	function getHardwareData(){
 		$m= new CommonItem;
-		if ($m->getfromDB($this->fields["device_type"],$this->fields["computer"])){
+		if ($m->getFromDB($this->fields["device_type"],$this->fields["computer"])){
 			$this->hardwaredatas=$m;
 			$this->computerfound=0;
 		} else {
@@ -215,7 +215,7 @@ class Job extends CommonDBTM{
 
 		if (in_array("author",$updates)){
 			$user=new User;
-			$user->getfromDB($input["author"]);
+			$user->getFromDB($input["author"]);
 			if (!empty($user->fields["email"])){
 				$updates[]="uemail";
 				$this->fields["uemail"]=$user->fields["email"];
@@ -236,7 +236,7 @@ class Job extends CommonDBTM{
 			// Update Ticket Tco
 			if (in_array("realtime",$updates)||in_array("cost_time",$updates)|| in_array("cost_fixed",$updates)||in_array("cost_material",$updates)){
 				$ci=new CommonItem;
-				if ($ci->getfromDB($this->fields["device_type"],$this->fields["computer"])){
+				if ($ci->getFromDB($this->fields["device_type"],$this->fields["computer"])){
 					$newinput=array();
 					$newinput['ID']=$this->fields["computer"];
 					$newinput['ticket_tco']=computeTicketTco($this->fields["device_type"],$this->fields["computer"]);
@@ -307,11 +307,11 @@ class Job extends CommonDBTM{
 					case "computer" :
 					case "device_type":
 						$ci=new CommonItem;
-						$ci->getfromDB($input["_old_item_type"],$input["_old_item"]);
+						$ci->getFromDB($input["_old_item_type"],$input["_old_item"]);
 						$old_item_name=$ci->getName();
 						if ($old_item_name=="N/A"||empty($old_item_name))
 							$old_item_name=$LANG["mailing"][107];
-						$ci->getfromDB($this->fields["device_type"],$this->fields["computer"]);
+						$ci->getFromDB($this->fields["device_type"],$this->fields["computer"]);
 						$new_item_name=$ci->getName();
 						if ($new_item_name=="N/A"||empty($new_item_name))
 							$new_item_name=$LANG["mailing"][107];
@@ -392,7 +392,7 @@ class Job extends CommonDBTM{
 	
 			if (!$mail_send&&count($updates)>$global_mail_change_count&&$CFG_GLPI["mailing"]){
 				$user=new User;
-				$user->getfromDBbyName($_SESSION["glpiname"]);
+				$user->getFromDBbyName($_SESSION["glpiname"]);
 				$mailtype="update";
 				if ($input["status"]&&in_array("status",$updates)&&ereg("old_",$input["status"])){
 					$mailtype="finish";
@@ -604,7 +604,7 @@ class Job extends CommonDBTM{
 				if ($nbfollow>0){
 					$fup=new Followup();
 					while ($data=$DB->fetch_array($result)){
-						$fup->getfromDB($data['ID']);
+						$fup->getFromDB($data['ID']);
 						$message .= "<strong>[ ".convDateTime($fup->fields["date"])." ] ".($fup->fields["private"]?"<i>".$LANG["job"][30]."</i>":"")."</strong><br>";
 						$message .= "<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$LANG["job"][4].":</span> ".$fup->getAuthorName()."<br>";
 						$message .= "<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$LANG["mailing"][3]."</span>:<br>".nl2br($fup->fields["contents"])."<br>";
@@ -630,7 +630,7 @@ class Job extends CommonDBTM{
 				if ($nbfollow>0){
 					$fup=new Followup();
 					while ($data=$DB->fetch_array($result)){
-						$fup->getfromDB($data['ID']);
+						$fup->getFromDB($data['ID']);
 						$message .= "[ ".convDateTime($fup->fields["date"])." ]".($fup->fields["private"]?"\t".$LANG["job"][30]:"")."\n";
 						$message .= $LANG["job"][4].": ".$fup->getAuthorName()."\n";
 						$message .= $LANG["mailing"][3].":\n".$fup->fields["contents"]."\n";
@@ -863,7 +863,7 @@ class Followup  extends CommonDBTM {
 			if ($CFG_GLPI["mailing"]&&
 			 (in_array("contents",$updates)||isset($input['_need_send_mail']))){
 				$user=new User;
-				$user->getfromDBbyName($_SESSION["glpiname"]);
+				$user->getFromDBbyName($_SESSION["glpiname"]);
 				$mail = new Mailing("followup",$job,$user,(isset($input["private"]) && $input["private"]));
 				$mail->send();
 				$mailsend=true;
@@ -959,7 +959,7 @@ class Followup  extends CommonDBTM {
 
 		if (isset($input["realtime"])&&$input["realtime"]>0) {
 			$job=new Job();
-			$job->getfromDB($input["tracking"]);
+			$job->getFromDB($input["tracking"]);
 			$job->updateRealTime();
 		}
 
@@ -991,7 +991,7 @@ class Followup  extends CommonDBTM {
 		if ($CFG_GLPI["mailing"]){
 			if ($input["_close"]) $input["_type"]="finish";
 			$user=new User;
-			$user->getfromDBbyName($_SESSION["glpiname"]);
+			$user->getFromDBbyName($_SESSION["glpiname"]);
 			$mail = new Mailing($input["_type"],$input["_job"],$user,
 						(isset($input["private"])&&$input["private"]));
 			$mail->send();

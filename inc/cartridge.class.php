@@ -166,7 +166,7 @@ class CartridgeType extends CommonDBTM {
 			$use_cache=false;
 			if($this->getEmpty()) $ct_spotted = true;
 		} else {
-			if($this->getfromDB($ID)&&haveAccessToEntity($this->fields["FK_entities"])) $ct_spotted = true;
+			if($this->getFromDB($ID)&&haveAccessToEntity($this->fields["FK_entities"])) $ct_spotted = true;
 		}		
 
 		if ($ct_spotted){

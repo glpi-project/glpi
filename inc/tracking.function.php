@@ -603,7 +603,7 @@ function showJobVeryShort($ID) {
 	// Make new job object and fill it from database, if success, print it
 	$job = new Job;
 	$viewusers=haveRight("user","r");
-	if ($job->getfromDBwithData($ID,0))
+	if ($job->getFromDBwithData($ID,0))
 	{
 		$bgcolor=$CFG_GLPI["priority_".$job->fields["priority"]];
 		
@@ -700,7 +700,7 @@ function addFormTracking ($device_type=0,$ID=0,$author,$group,$assign,$assign_gr
 
 	if ($device_type!=0){
 		$m=new CommonItem;
-		$m->getfromDB($device_type,$ID);
+		$m->getFromDB($device_type,$ID);
 		echo $m->getType()." - ".$m->getNameID();
 	}
 	echo "<input type='hidden' name='computer' value=\"$ID\">";
@@ -1681,7 +1681,7 @@ function showJobDetails ($target,$ID){
 	if (haveRight('user','r')){
 		$showuserlink=1;	
 	}
-	if ($job->getfromDB($ID)&&haveAccessToEntity($job->fields["FK_entities"])) {
+	if ($job->getFromDB($ID)&&haveAccessToEntity($job->fields["FK_entities"])) {
 
 		if (!$job->canShowTicket()){
 			return false;

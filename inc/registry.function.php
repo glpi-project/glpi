@@ -69,7 +69,7 @@ function showRegistry($device_type,$ID,$withtemplate=''){
 			echo "<th>".$LANG["registry"][3]."</th></tr>\n";	
 			while ($regid=$DB->fetch_row($result)) {
 				$reg = new Registry;
-				$reg->getfromDB(current($regid));	
+				$reg->getFromDB(current($regid));	
 				echo "<tr class='tab_bg_1'>";								
 				echo "<td>".$reg->fields["registry_ocs_name"]."</td>";
 				echo "<td>".$REGISTRY_HIVE[$reg->fields["registry_hive"]]."</td>";

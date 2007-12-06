@@ -215,7 +215,7 @@ class Netdevice extends CommonDBTM {
 			$use_cache=false;
 			if($this->getEmpty()) $spotted = true;
 		} else {
-			if($this->getfromDB($ID)&&haveAccessToEntity($this->fields["FK_entities"])) $spotted = true;
+			if($this->getFromDB($ID)&&haveAccessToEntity($this->fields["FK_entities"])) $spotted = true;
 		}
 
 		if($spotted) {

@@ -105,7 +105,7 @@ function printCalendrier($target,$ID=""){
 
 	if (!empty($ID)){
 		$m=new ReservationItem;
-		$m->getfromDB($ID);
+		$m->getFromDB($ID);
 		if (!$m->fields['active']){
 			echo "<div class='center'><strong>";
 			echo $LANG["reservation"][2]."<br>";
@@ -309,7 +309,7 @@ function showAddReservationForm($target,$items,$date,$resaID=-1){
 	echo "<tr class='tab_bg_1'><td>".$LANG["reservation"][4].":	</td>";
 	echo "<td>";
 	foreach ($items as $ID){
-		$r->getfromDB($ID);
+		$r->getFromDB($ID);
 		$ci->getFromDB($r->fields["device_type"],$r->fields["id_device"]);
 		echo "<strong>".$ci->getType()." - ".$ci->getName()."</strong><br>";
 		echo "<input type='hidden' name='items[$ID]' value='$ID'>";
@@ -400,7 +400,7 @@ function printReservation($target,$ID,$date){
 
 			while ($data=$DB->fetch_array($result)){
 
-				$m->getfromDB($data['ID']);
+				$m->getFromDB($data['ID']);
 				$ci=new CommonItem();
 				$ci->getFromDB($m->fields["device_type"],$m->fields["id_device"]);
 				
@@ -435,7 +435,7 @@ function printReservationItem($target,$ID,$date){
 			echo "<table width='100%' >";
 			while ($row=$DB->fetch_array($result)){
 				echo "<tr>";
-				$user->getfromDB($row["id_user"]);
+				$user->getFromDB($row["id_user"]);
 				$display="";					
 				if ($debut>$row['begin']) $heure_debut="00:00";
 				else $heure_debut=get_hour_from_sql($row['begin']);
@@ -529,7 +529,7 @@ function showReservationCommentForm($target,$ID){
 	if (!haveRight("reservation_central","w")) return false;
 
 	$r=new ReservationItem;
-	if ($r->getfromDB($ID)){
+	if ($r->getFromDB($ID)){
 		$ci=new CommonItem();
 		$ci->getFromDB($r->fields["device_type"],$r->fields["id_device"]);
 

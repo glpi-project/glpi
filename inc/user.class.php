@@ -720,7 +720,7 @@ class User extends CommonDBTM {
 				$spotted = true;
 			}
 		} else {
-			if ($this->getfromDB($ID)){
+			if ($this->getFromDB($ID)){
 				$entities=getUserEntities($ID);
 				$view_all=isViewAllEntities();
 				if (haveAccessToOneOfEntities($entities)||$view_all){
@@ -899,7 +899,7 @@ class User extends CommonDBTM {
 		if ($ID != $_SESSION["glpiID"])
 			return false;
 
-		if ($this->getfromDB($ID)) {
+		if ($this->getFromDB($ID)) {
 			//$this->showOnglets($ID, $withtemplate,$_SESSION['glpi_onglet']);
 			$auth_method = $this->getAuthMethodsByID();
 

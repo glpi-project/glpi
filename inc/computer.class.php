@@ -188,7 +188,7 @@ class Computer extends CommonDBTM {
 						if ($resultnum>0) {
 							for ($j=0; $j < $resultnum; $j++) {
 								$tID = $DB->result($result, $j, "end1");
-								$ci->getfromDB($t,$tID);
+								$ci->getFromDB($t,$tID);
 								if (!$ci->getField('is_global')){
 									if ($ci->getField('contact')!=$this->fields['contact']||$ci->getField('contact_num')!=$this->fields['contact_num']){
 										$tmp["ID"]=$ci->getField('ID');
@@ -229,7 +229,7 @@ class Computer extends CommonDBTM {
 							for ($j=0; $j < $resultnum; $j++) {
 								$tID = $DB->result($result, $j, "end1");
 
-								$ci->getfromDB($t,$tID);
+								$ci->getFromDB($t,$tID);
 								if (!$ci->getField('is_global')){
 									if ($ci->getField('FK_users')!=$this->fields["FK_users"]||$ci->getField('FK_groups')!=$this->fields["FK_groups"]){
 										$tmp["ID"]=$ci->getField('ID');
@@ -273,7 +273,7 @@ class Computer extends CommonDBTM {
 							for ($j=0; $j < $resultnum; $j++) {
 								$tID = $DB->result($result, $j, "end1");
 
-								$ci->getfromDB($t,$tID);
+								$ci->getFromDB($t,$tID);
 								if (!$ci->getField('is_global')){
 									if ($ci->getField('location')!=$this->fields["location"]){
 										$tmp["ID"]=$ci->getField('ID');
@@ -489,7 +489,7 @@ class Computer extends CommonDBTM {
 			$use_cache=false;
 			if($this->getEmpty()) $computer_spotted = true;
 		} else {
-			if($this->getfromDB($ID)&&haveAccessToEntity($this->fields["FK_entities"])) $computer_spotted = true;
+			if($this->getFromDB($ID)&&haveAccessToEntity($this->fields["FK_entities"])) $computer_spotted = true;
 		}
 		
 		if($computer_spotted) {

@@ -67,7 +67,7 @@ class CommonItem{
 
 		if ($this->obj!=NULL){
 			// Do not load devices
-			return $this->obj->getfromDB($id_device);
+			return $this->obj->getFromDB($id_device);
 		}
 		else return false;
 

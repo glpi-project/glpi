@@ -406,7 +406,7 @@ function kbItemMenu($ID)
 
 	$ki= new kbitem;	
 
-	$ki->getfromDB($ID);
+	$ki->getFromDB($ID);
 	$isFAQ = $ki->fields["faq"];
 	$editFAQ=haveRight("faq","w");
 	$edit=true;
@@ -468,7 +468,7 @@ function ShowKbItemFull($ID,$linkauthor="yes")
 
 	$ki= new kbitem;	
 
-	if ($ki->getfromDB($ID)){
+	if ($ki->getFromDB($ID)){
 		if ($ki->fields["faq"]){
 			if ($CFG_GLPI["public_faq"] == 0&&!haveRight("faq","r")&&!haveRight("knowbase","r")) return false;	
 		}

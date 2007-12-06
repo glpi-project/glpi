@@ -412,7 +412,7 @@ class AuthMail extends CommonDBTM {
 			if ($this->getEmpty())
 				$spotted = true;
 		} else {
-			if ($this->getfromDB($ID))
+			if ($this->getFromDB($ID))
 				$spotted = true;
 		}
 
@@ -533,7 +533,7 @@ class AuthLDAP extends CommonDBTM {
 				$this->preconfig($_GET['preconfig']);
 			}
 		} else {
-			if ($this->getfromDB($ID))
+			if ($this->getFromDB($ID))
 				$spotted = true;
 		}
 
