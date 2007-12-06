@@ -184,14 +184,36 @@ function assignVlan($port,$vlan){
 
 function unassignVlanbyID($ID){
 	global $DB;
-	$query="DELETE FROM glpi_networking_vlan WHERE ID='$ID'";
-	$DB->query($query);
+
+	$query="SELECT * FROM glpi_networking_vlan WHERE ID='$ID'";
+	if ($result=$DB->query($query)){
+		$data=$DB->fetch_array($result);
+		
+		// Delete VLAN
+		$query="DELETE FROM glpi_networking_vlan WHERE ID='$ID'";
+		$DB->query($query);
+	
+		// Delete Contact VLAN if set
+		$np=new NetPort();
+		if ($np->getContact($data['FK_port'])){
+			$query="DELETE FROM glpi_networking_vlan WHERE FK_port='".$np->contact_id."' AND FK_vlan='".$data['FK_vlan']."'";
+			$DB->query($query);
+		}
+	}
 }
 
 function unassignVlan($portID,$vlanID){
 	global $DB;
 	$query="DELETE FROM glpi_networking_vlan WHERE FK_port='$portID' AND FK_vlan='$vlanID'";
 	$DB->query($query);
+
+	// Delete Contact VLAN if set
+	$np=new NetPort();
+	if ($np->getContact($portID)){
+		$query="DELETE FROM glpi_networking_vlan WHERE FK_port='".$np->contact_id."' AND FK_vlan='$vlanID'";
+		$DB->query($query);
+	}
+
 }
 
 function showNetportForm($target,$ID,$ondevice,$devtype,$several) {
@@ -541,8 +563,35 @@ function makeConnector($sport,$dport) {
 		}
 	}
 
-
-
+	// Manage VLAN : use networkings one as defaults
+	$npnet=-1;
+	$npdev=-1;
+	if ($ps->fields["device_type"]!=NETWORKING_TYPE && $pd->fields["device_type"]==NETWORKING_TYPE){
+		$npnet=$dport;
+		$npdev=$sport;
+	}
+	if ($pd->fields["device_type"]!=NETWORKING_TYPE && $ps->fields["device_type"]==NETWORKING_TYPE){
+		$npnet=$sport;
+		$npdev=$dport;
+	}
+	if ($npnet>0&&$npdev>0){
+		// Get networking VLAN
+		// Unset MAC and IP from networking device
+		$query = "SELECT * FROM glpi_networking_vlan WHERE FK_port='$npnet'";	
+		if ($result=$DB->query($query)){
+			if (count($DB->numrows($result))){
+				// Found VLAN : clean vlan device and add found ones
+				$query="DELETE FROM glpi_networking_vlan WHERE FK_port='$npdev' ";
+				$DB->query($query);
+				while ($data=$DB->fetch_array($result)){
+					$query="INSERT INTO glpi_networking_vlan (FK_port,FK_vlan) VALUES ('$npdev','".$data['FK_vlan']."')";	
+					$DB->query($query);
+				}
+			}
+		}
+	}
+	// end manage VLAN
+	
 	$query = "INSERT INTO glpi_networking_wire VALUES (NULL,$sport,$dport)";
 	if ($result = $DB->query($query)) {
 		$source=new CommonItem;
@@ -580,13 +629,12 @@ function removeConnector($ID) {
 			$npdev=$ID2;
 		}
 		if ($npnet!=-1&&$npdev!=-1){
-			// Unset MAC and IP fron networking device
+			// Unset MAC and IP from networking device
 			$query = "UPDATE glpi_networking_ports SET ifaddr='', ifmac='',netmask='', subnet='',gateway='' WHERE ID='$npnet'";	
 			$DB->query($query);
 			// Unset netpoint from common device
 			$query = "UPDATE glpi_networking_ports SET netpoint=NULL WHERE ID='$npdev'";	
 			$DB->query($query);
-
 		}
 
 		$query = "DELETE FROM glpi_networking_wire WHERE (end1 = '$ID' OR end2 = '$ID')";
