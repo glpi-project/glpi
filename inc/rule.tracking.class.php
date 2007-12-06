@@ -63,6 +63,9 @@ class TrackingBusinessRule extends Rule {
 
 	}
 
+	function maxActionsCount(){
+		return 5;
+	}
 
 }
 
