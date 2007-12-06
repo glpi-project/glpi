@@ -192,14 +192,11 @@ if (isset ($_POST["noCAS"])){
 				$identificat->user->blankPassword();
 			}
 		}
-
-		// now we can continue with the process...
-		$identificat->initSession();
 	}
-
-
-	// we have done at least a good login? No, we exit.
-	if (!$identificat->auth_succeded) {
+	// now we can continue with the process...
+	if ($identificat->auth_succeded) {
+		$identificat->initSession();
+	} else { // we have done at least a good login? No, we exit.
 		nullHeader("Login", $_SERVER['PHP_SELF']);
 		echo '<div align="center"><b>' . $identificat->getErr() . '</b><br><br>';
 		echo '<b><a href="' . $CFG_GLPI["root_doc"] . '/logout.php">' . $LANG["login"][1] . '</a></b></div>';
