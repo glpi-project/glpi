@@ -126,15 +126,19 @@ if (!isset($_POST["limit"])) $_POST["limit"]=$CFG_GLPI["dropdown_limit"];
 				echo "<option class='tree' value=\"0\">--".$LANG["knowbase"][12]."--</option>";
 				break;
 			case "glpi_entities" :
-				if (isset($_POST["entity_restrict"])&&$_POST["entity_restrict"]<0
-					|| (is_array($_POST["entity_restrict"]) && in_array(0,$_POST["entity_restrict"]))
-				){	
+				// If entity=0 allowed 
+				if (isset($_POST["entity_restrict"])&&  
+					(($_POST["entity_restrict"]<0 && in_array(0,$_SESSION['glpiactiveentities'])) 
+					|| (is_array($_POST["entity_restrict"]) && in_array(0,$_POST["entity_restrict"])))) 
+				{    
 					echo "<option class='tree' value=\"0\">--".$LANG["entity"][2]."--</option>";
-				} else {
-					if ($_POST['value']==0){
-						$display_selected=false;
-					}
-				}
+				} 
+
+				// Entity=0 already add above 
+				if ($_POST['value']==0){ 
+					$display_selected=false; 
+				} 
+
 				break;
 			default :
 				echo "<option class='tree' value=\"0\">-----</option>";

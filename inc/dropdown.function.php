@@ -56,7 +56,7 @@ if (!defined('GLPI_ROOT')){
  **/
 function dropdown($table,$myname,$display_comments=1,$entity_restrict=-1) {
 
-	return dropdownValue($table,$myname,0,$display_comments,$entity_restrict);
+	return dropdownValue($table,$myname,'',$display_comments,$entity_restrict);
 }
 
 /**
@@ -72,7 +72,7 @@ function dropdown($table,$myname,$display_comments=1,$entity_restrict=-1) {
  * @return nothing (display the select box)
  *
  */
-function dropdownValue($table,$myname,$value=0,$display_comments=1,$entity_restrict=-1,$update_item="") {
+function dropdownValue($table,$myname,$value='',$display_comments=1,$entity_restrict=-1,$update_item="") {
 
 	global $DB,$CFG_GLPI,$LANG;
 
@@ -81,8 +81,12 @@ function dropdownValue($table,$myname,$value=0,$display_comments=1,$entity_restr
 	$name="------";
 	$comments="";
 	$limit_length=$CFG_GLPI["dropdown_limit"];
-	if (empty($value)) $value=0;
-	if ($value>0){
+
+
+	if (strlen($value)==0) $value=-1;
+
+	if ($value>0 
+		|| ($table=="glpi_entities"&&$value>=0)){
 		$tmpname=getDropdownName($table,$value,1);
 		if ($tmpname["name"]!="&nbsp;"){
 			$name=$tmpname["name"];
@@ -91,18 +95,22 @@ function dropdownValue($table,$myname,$value=0,$display_comments=1,$entity_restr
 		}
 	}
 
+
+
 	$use_ajax=false;
 	if ($CFG_GLPI["use_ajax"]){
 		$nb=0;
-		if (!in_array($table,$CFG_GLPI["specif_entities_tables"])){
-			$nb=countElementsInTable($table);
-		} else {
+
+ 		if ($table=='glpi_entities' || in_array($table,$CFG_GLPI["specif_entities_tables"])){
 			if ($entity_restrict>=0){
 				$nb=countElementsInTableForEntity($table,$entity_restrict);
 			} else {
 				$nb=countElementsInTableForMyEntities($table);
 			}
+		} else {
+			$nb=countElementsInTable($table);
 		}
+	
 		if ($nb>$CFG_GLPI["ajax_limit_count"]){
 			$use_ajax=true;
 		}
