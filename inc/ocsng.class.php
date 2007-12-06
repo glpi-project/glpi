@@ -119,14 +119,14 @@ class Ocsng extends CommonDBTM {
 				if (empty($ID))
 					$this->getEmpty($ID);
 				else
-					$this->getfromDB($ID);
+					$this->getFromDB($ID);
 				break;
 			case "add_template" :
 					$this->getEmpty($ID);
 					break;
 			case  "update_template" :
 			case "add_server_with_template" :
-				$this->getfromDB($templateid);
+				$this->getFromDB($templateid);
 			break;	
 		}
 		
@@ -439,12 +439,12 @@ function showForm($target, $ID,$withtemplate='',$templateid='') {
 		if (empty ($ID) || $ID == -1 ) {
 			//Create a server using a template
 			if ($templateid != '' && $templateid != -1)
-				$this->getfromDB($templateid);
+				$this->getFromDB($templateid);
 			else
 			//Installing without a template	
 			$this->getEmpty();
 		} else {
-			$this->getfromDB($ID);
+			$this->getFromDB($ID);
 		}
 
 		echo "<br><form name='formdbconfig' action=\"$target\" method=\"post\">";

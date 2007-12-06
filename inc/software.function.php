@@ -448,7 +448,7 @@ function showLicenseForm($target,$action,$sID,$lID="") {
 
 	} else if (!empty($lID)){ // Get from DB
 		$lic=new License();
-		$lic->getfromDB($lID);
+		$lic->getFromDB($lID);
 		$values=$lic->fields;
 	}
 	

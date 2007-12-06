@@ -102,7 +102,7 @@ class Contract extends CommonDBTM {
 			$use_cache=false;
 			if($this->getEmpty()) $con_spotted = true;
 		} else {
-			if($this->getfromDB($ID)&&haveAccessToEntity($this->fields["FK_entities"])) $con_spotted = true;
+			if($this->getFromDB($ID)&&haveAccessToEntity($this->fields["FK_entities"])) $con_spotted = true;
 		}
 
 		if ($con_spotted){

@@ -1965,7 +1965,7 @@ class Transfer extends CommonDBTM{
 			if($this->getEmpty()) $con_spotted = true;
 			$use_cache=false;
 		} else {
-			if($this->getfromDB($ID)) $con_spotted = true;
+			if($this->getFromDB($ID)) $con_spotted = true;
 		}
 
 		if ($con_spotted){

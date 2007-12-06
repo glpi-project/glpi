@@ -221,7 +221,7 @@ class Printer  extends CommonDBTM {
 			$use_cache=false;
 			if($this->getEmpty()) $printer_spotted = true;
 		} else {
-			if($this->getfromDB($ID)&&haveAccessToEntity($this->fields["FK_entities"])) $printer_spotted = true;
+			if($this->getFromDB($ID)&&haveAccessToEntity($this->fields["FK_entities"])) $printer_spotted = true;
 		}
 
 		if($printer_spotted) {

@@ -57,7 +57,7 @@ function showInfocomForm($target,$device_type,$dev_ID,$show_immo=1,$withtemplate
 
 	echo "<br>";
 	if ($ci->getFromDB($device_type,$dev_ID))
-	if (!$ic->getfromDBforDevice($device_type,$dev_ID)){
+	if (!$ic->getFromDBforDevice($device_type,$dev_ID)){
 		if (haveRight("contract_infocom","w")&&$withtemplate!=2){
 			echo "<div class='center'>";
 			echo "<strong><a href='$target?device_type=$device_type&amp;FK_device=$dev_ID&amp;add=add'>".$LANG["financial"][68]."</a></strong>";

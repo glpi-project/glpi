@@ -120,7 +120,7 @@ class Entity extends CommonDBTM{
 				$this->fields["name"]=$LANG["entity"][2];
 				$this->fields["completename"]="";
 			}
-			else if($this->getfromDB($ID)) $con_spotted = true;
+			else if($this->getFromDB($ID)) $con_spotted = true;
 		}
 
 

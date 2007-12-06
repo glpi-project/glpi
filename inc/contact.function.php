@@ -122,7 +122,7 @@ function showEnterpriseContact($instID) {
 function generateContactVcard($ID){
 
 	$contact = new Contact;
-	$contact->getfromDB($ID);
+	$contact->getFromDB($ID);
 
 	// build the Vcard
 

@@ -114,7 +114,7 @@ class Reminder extends CommonDBTM {
 
 
 		} else {
-			if($this->getfromDB($ID)){
+			if($this->getFromDB($ID)){
 				$onfocus="";
 				if($this->fields["author"]==$author) {
 					$remind_edit = true;

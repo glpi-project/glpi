@@ -108,7 +108,7 @@ function showDeviceComputerForm($target,$ID,$withtemplate='') {
 	if(empty($ID) && $withtemplate == 1) {
 		$comp->getEmpty();
 	} else {
-		$comp->getfromDBwithDevices($ID);
+		$comp->getFromDBwithDevices($ID);
 	}
 
 	if (!empty($ID)){

@@ -3018,7 +3018,7 @@ function ocsUpdateSoftware($glpi_id, $entity, $ocs_id, $ocs_server_id, $cfg_ocs,
 						$result2 = $DB->query($query2);
 						if ($DB->result($result2, 0, 0) == 0) {
 							$lic = new License;
-							$lic->getfromDB($data['license']);
+							$lic->getFromDB($data['license']);
 							$query3 = "SELECT COUNT(*) 
 																FROM glpi_licenses 
 																WHERE sID='" . $lic->fields['sID'] . "'";
@@ -3112,7 +3112,7 @@ function ocsResetLicenses($glpi_computer_id) {
 			$result2 = $DB->query($query2);
 			if ($DB->result($result2, 0, 0) == 1) {
 				$lic = new License;
-				$lic->getfromDB($data['license']);
+				$lic->getFromDB($data['license']);
 				$query3 = "SELECT COUNT(*) 
 													FROM glpi_licenses 
 													WHERE sID='" . $lic->fields['sID'] . "'";

@@ -472,7 +472,7 @@ function unlink_device_computer($compDevID,$dohistory=1){
 //Link the device to the computer
 function compdevice_add($cID,$device_type,$dID,$specificity='',$dohistory=1) {
 	$device = new Device($device_type);
-	$device->getfromDB($dID);
+	$device->getFromDB($dID);
 	if (empty($specificity)) $specificity=$device->fields['specif_default'];
 	$newID=$device->computer_link($cID,$device_type,$specificity);
 	cleanAllItemCache("device_".$cID,"GLPI_".COMPUTER_TYPE);
@@ -577,7 +577,7 @@ function showDevicesForm ($target,$ID,$device_type) {
 	if(empty($ID)) {
 		if($device->getEmpty()) $device_spotted = true;
 	} else {
-		if($device->getfromDB($ID)) $device_spotted = true;
+		if($device->getFromDB($ID)) $device_spotted = true;
 	}
 	
 	if ($device_spotted){

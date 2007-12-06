@@ -90,7 +90,7 @@ function showPorts ($device,$device_type,$withtemplate='') {
 			$i=0;
 			while ($devid=$DB->fetch_row($result)) {
 				$netport = new Netport;
-				$netport->getfromDB(current($devid));
+				$netport->getFromDB(current($devid));
 				echo "<tr class='tab_bg_1'>";
 				if ($withtemplate!=2&&$canedit){
 					echo "<td align='center' width='20'><input type='checkbox' name='del_port[".$netport->fields["ID"]."]' value='1'></td>";
@@ -438,7 +438,7 @@ function showConnection($ID,$withtemplate='',$type=COMPUTER_TYPE) {
 	$netport = new Netport;
 
 	if ($contact->getContact($ID)) {
-		$netport->getfromDB($contact->contact_id);
+		$netport->getFromDB($contact->contact_id);
 		$netport->getDeviceData($netport->fields["on_device"],$netport->fields["device_type"]);
 		echo "\n\n<table border='0' cellspacing='0' width='100%'><tr ".($netport->deleted?"class='tab_bg_2_2'":"").">";
 		echo "<td><strong>";
@@ -469,7 +469,7 @@ function showConnection($ID,$withtemplate='',$type=COMPUTER_TYPE) {
 		if ($canedit){
 			echo "<td class='left'>";
 			if ($withtemplate!=2&&$withtemplate!=1){
-				$netport->getfromDB($ID);
+				$netport->getFromDB($ID);
 
 				if ($netport->getDeviceData($netport->fields["on_device"],$netport->fields["device_type"])){
 					dropdownConnectPort($ID,$type,"dport",$netport->FK_entities);

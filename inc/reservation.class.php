@@ -91,7 +91,7 @@ class ReservationResa extends CommonDBTM {
 
 	function pre_deleteItem($ID) {
 		global $CFG_GLPI;
-		if ($this->getfromDB($ID))
+		if ($this->getFromDB($ID))
 			if (isset($this->fields["id_user"])&&($this->fields["id_user"]==$_SESSION["glpiID"]||haveRight("reservation_central","w"))){
 				// Processing Email
 				if ($CFG_GLPI["mailing"]){

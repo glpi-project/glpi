@@ -73,7 +73,7 @@ class Mailgate  extends CommonDBTM {
 		if(empty($ID)) {
 			if($this->getEmpty()) $spotted = true;
 		} else {
-			if($this->getfromDB($ID)) $spotted = true;
+			if($this->getFromDB($ID)) $spotted = true;
 		}
 
 		if ($spotted){
