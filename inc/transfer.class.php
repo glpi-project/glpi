@@ -1986,7 +1986,7 @@ class Transfer extends CommonDBTM{
 					echo "<td class='tab_bg_2' valign='top' colspan='4'>";
 					
 					echo "<div class='center'>";
-					dropdownActiveEntities('to_entity');
+					dropdown("glpi_entities",'to_entity');
 					echo "&nbsp;<input type='submit' name='transfer' value=\"".$LANG["buttons"][48]."\" class='submit'></div>";
 					echo "</td>";
 					echo "</tr>";
