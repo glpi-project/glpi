@@ -808,8 +808,7 @@ function generateIcal($who){
 			$interv[$data["begin"]."$$".$i]["ID"]=$data['ID'];
 			$interv[$data["begin"]."$$".$i]["begin"]=$data['begin'];
 			$interv[$data["begin"]."$$".$i]["end"]=$data['end'];
-			//$interv[$i]["content"]=substr($job->contents,0,$CFG_GLPI["cut"]);
-			$interv[$data["begin"]."$$".$i]["content"]=substr($job->fields['contents'],0,$CFG_GLPI["cut"]);
+			$interv[$data["begin"]."$$".$i]["content"]=utf8_substr($job->fields['contents'],0,$CFG_GLPI["cut"]);
 			$interv[$data["begin"]."$$".$i]["device"]=$job->hardwaredatas->getName();
 			$i++;
 		}

@@ -80,7 +80,7 @@ if (isset($LINK_ID_TABLE[$_POST["type"]])&&$_POST["type"]>0){
 			$output = $data['name'];
 			$ID = $data['ID'];
 			if (empty($output)) $output="($ID)";
-			echo "<option value=\"$ID\" title=\"$output\">".substr($output,0,$CFG_GLPI["dropdown_limit"])."</option>";
+			echo "<option value=\"$ID\" title=\"$output\">".utf8_substr($output,0,$CFG_GLPI["dropdown_limit"])."</option>";
 		}
 	}
 	echo "</select>";
