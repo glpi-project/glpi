@@ -39,7 +39,7 @@ if (!defined('GLPI_ROOT')) {
 	die("Sorry. You can't access directly to this file");
 }
 
-function ocsShowNewComputer($ocs_server_id, $advanced, $check, $start, $tolinked = 0) {
+function ocsShowNewComputer($ocs_server_id, $advanced, $check, $start, $tolinked = false) {
 	global $DB, $DBocs, $LANG, $CFG_GLPI;
 
 	if (!haveRight("ocsng", "w"))
@@ -67,14 +67,16 @@ function ocsShowNewComputer($ocs_server_id, $advanced, $check, $start, $tolinked
 
 	// Existing OCS - GLPI link
 	$query_glpi = "SELECT * 
-				FROM glpi_ocs_link WHERE ocs_server_id=" . $ocs_server_id;
+			FROM glpi_ocs_link WHERE ocs_server_id=" . $ocs_server_id;
 	$result_glpi = $DB->query($query_glpi);
 
-	// Computers existing in GLPI
-	$query_glpi_comp = "SELECT ID,name 
-				FROM glpi_computers 
-				WHERE deleted = '0' AND is_template='0'";
-	$result_glpi_comp = $DB->query($query_glpi_comp);
+	if ($tolinked){
+		// Computers existing in GLPI
+		$query_glpi_comp = "SELECT ID,name 
+					FROM glpi_computers 
+					WHERE is_template='0'";
+		$result_glpi_comp = $DB->query($query_glpi_comp);
+	}
 
 	if ($DBocs->numrows($result_ocs) > 0) {
 
@@ -97,10 +99,12 @@ function ocsShowNewComputer($ocs_server_id, $advanced, $check, $start, $tolinked
 		}
 
 		// Get all existing computers name in GLPI
-		$computer_names = array ();
-		if ($DB->numrows($result_glpi_comp) > 0) {
-			while ($data = $DBocs->fetch_array($result_glpi_comp)) {
-				$computer_names[$data["name"]] = $data["ID"];
+		if ($tolinked){
+			$computer_names = array ();
+			if ($DB->numrows($result_glpi_comp) > 0) {
+				while ($data = $DBocs->fetch_array($result_glpi_comp)) {
+					$computer_names[$data["name"]] = $data["ID"];
+				}
 			}
 		}
 
@@ -152,8 +156,9 @@ function ocsShowNewComputer($ocs_server_id, $advanced, $check, $start, $tolinked
 
 			echo "<strong>" . $LANG["ocsconfig"][18] . "</strong><br>";
 			echo "<form method='post' name='ocsng_form' id='ocsng_form' action='" . $_SERVER['PHP_SELF'] . "'>";
-			if ($tolinked == 0)
+			if (!$tolinked){
 				echo "<a href='" . $_SERVER['PHP_SELF'] . "?check=all&amp;start=$start' onclick= \"if ( markAllRows('ocsng_form') ) return false;\">" . $LANG["buttons"][18] . "</a>&nbsp;/&nbsp;<a href='" . $_SERVER['PHP_SELF'] . "?check=none&amp;start=$start' onclick= \"if ( unMarkAllRows('ocsng_form') ) return false;\">" . $LANG["buttons"][19] . "</a>";
+			}
 
 			echo "<table class='tab_cadre'>";
 
@@ -193,15 +198,16 @@ function ocsShowNewComputer($ocs_server_id, $advanced, $check, $start, $tolinked
 				}
 
 				echo "<td>";
-				if ($tolinked == 0)
+				if (!$tolinked){
 					echo "<input type='checkbox' name='toimport[" . $tab["ID"] . "]' " . ($check == "all" ? "checked" : "") . ">";
-				else {
-					if (isset ($computer_names[$tab["name"]]))
+				} else {
+					if (isset ($computer_names[$tab["name"]])){
 						dropdownValue("glpi_computers", "tolink[" .
 						$tab["ID"] . "]", $computer_names[$tab["name"]]);
-					else
+					} else {
 						dropdown("glpi_computers", "tolink[" .
 						$tab["ID"] . "]");
+					}
 				}
 				echo "</td>";
 
