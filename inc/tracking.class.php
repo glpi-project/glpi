@@ -498,7 +498,7 @@ class Job extends CommonDBTM{
 		if (empty($input["name"])) {
 			$input["name"]=preg_replace('/\r\n/',' ',$input['contents']);
 			$input["name"]=preg_replace('/\n/',' ',$input['name']);
-			$input["name"]=utf8_substr($input['name'],0,70);
+			$input["name"]=substr($input['name'],0,70);
 		}
 
 		return $input;

@@ -71,7 +71,7 @@ echo "<option value=\"0\">-----</option>";
 if ($DB->numrows($result)) {
 	while ($data=$DB->fetch_array($result)) {
 		$output = $data["name"];
-		echo "<option value=\"".$data["ID"]."\" title=\"$output\">".utf8_substr($output,0,$CFG_GLPI["dropdown_limit"])."</option>";
+		echo "<option value=\"".$data["ID"]."\" title=\"$output\">".substr($output,0,$CFG_GLPI["dropdown_limit"])."</option>";
 	}
 }
 echo "</select>";
