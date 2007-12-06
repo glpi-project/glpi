@@ -628,7 +628,7 @@ class MailingResa{
 						$ri->getFromDB($this->resa->fields['id_item']);
 						$ci = new CommonItem();
 						$ci->getFromDB($ri->fields['device_type'],$ri->fields['id_device']);
-						$FK_entities=$ci->getFields('FK_entities');
+						$FK_entities=$ci->getField('FK_entities');
 						$query="SELECT glpi_users.email as EMAIL FROM glpi_users_profiles INNER JOIN glpi_users ON (glpi_users_profiles.FK_users = glpi_users.ID) WHERE glpi_users_profiles.FK_profiles='".$data["FK_item"]."' AND glpi_users_profiles.FK_entities='".$FK_entities."'";
 						if ($result2= $DB->query($query)){
 							if ($DB->numrows($result2))
