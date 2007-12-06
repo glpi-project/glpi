@@ -192,9 +192,10 @@ if (isset ($_POST["noCAS"])){
 				$identificat->user->blankPassword();
 			}
 		}
+
+		// now we can continue with the process...
+		$identificat->initSession();
 	}
-	// now we can continue with the process...
-	$identificat->initSession();
 
 
 	// we have done at least a good login? No, we exit.
