@@ -59,8 +59,8 @@ class RightAffectRule extends Rule {
 	}
 
 	function maxActionsCount(){
-		// Unlimited
-		return 4;
+		global $RULES_ACTIONS;
+		 return count($RULES_ACTIONS[RULE_AFFECT_RIGHTS]);
 	}
 	/**
 	 * Display form to add rules

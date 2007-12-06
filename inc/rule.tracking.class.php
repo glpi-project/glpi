@@ -64,7 +64,8 @@ class TrackingBusinessRule extends Rule {
 	}
 
 	function maxActionsCount(){
-		return 5;
+		global $RULES_ACTIONS;
+		return count($RULES_ACTIONS[RULE_TRACKING_AUTO_ACTION]);
 	}
 
 }
