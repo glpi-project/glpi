@@ -227,8 +227,8 @@ class OcsAffectEntityRule extends Rule {
 	}
 
 	function maxActionsCount(){
-		global $RULES_ACTIONS;
-		 return count($RULES_ACTIONS[RULE_OCS_AFFECT_COMPUTER]);
+	// Unlimited
+		return 1;
 	}
 	/**
 	 * Display form to add rules

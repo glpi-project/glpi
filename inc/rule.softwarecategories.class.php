@@ -87,8 +87,7 @@ class SoftwareCategoriesRule extends Rule {
 	}
 
 	function maxActionsCount(){
-		global $RULES_ACTIONS;
-		 return count($RULES_ACTIONS[RULE_SOFTWARE_CATEGORY]);
+		return 1;
 	}
 }
 
