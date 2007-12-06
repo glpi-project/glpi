@@ -92,7 +92,7 @@ if ($DB->numrows($result)) {
 			$output.=" - ".$data['serial']." - ".$data['otherserial'];
 		}
 		if (empty($output)||$CFG_GLPI["view_ID"]) $output.=" (".$data['ID'].")";
-		echo "<option value=\"".$data['ID']."\" title=\"$output\">".substr($output,0,$CFG_GLPI["dropdown_limit"])."</option>";
+		echo "<option value=\"".$data['ID']."\" title=\"$output\">".utf8_substr($output,0,$CFG_GLPI["dropdown_limit"])."</option>";
 	}
 }
 echo "</select>";

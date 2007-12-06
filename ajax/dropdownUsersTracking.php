@@ -74,7 +74,7 @@ echo "<option value=\"0\">[ ".$LANG["search"][7]." ]</option>";
 if (isset($_POST['value'])){
 	$output=getUserName($_POST['value']);
 	if (!empty($output)&&$output!="&nbsp;")
-		echo "<option selected value='".$_POST['value']."' title=\"".$output."\">".substr($output,0,$CFG_GLPI["dropdown_limit"])."</option>";
+		echo "<option selected value='".$_POST['value']."' title=\"".$output."\">".utf8_substr($output,0,$CFG_GLPI["dropdown_limit"])."</option>";
 }	
 
 if ($DB->numrows($result)) {
@@ -82,7 +82,7 @@ if ($DB->numrows($result)) {
 		$output=formatUserName($data["ID"],$data["name"],$data["realname"],$data["firstname"]);
 
 
-		echo "<option value=\"".$data["ID"]."\" ".($data["ID"] == $_POST['value']?"selected":"")." title=\"$output\">".substr($output,0,$CFG_GLPI["dropdown_limit"])."</option>";
+		echo "<option value=\"".$data["ID"]."\" ".($data["ID"] == $_POST['value']?"selected":"")." title=\"$output\">".utf8_substr($output,0,$CFG_GLPI["dropdown_limit"])."</option>";
 	}
 }
 echo "</select>";

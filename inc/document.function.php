@@ -450,7 +450,7 @@ function getDocumentLink($filename,$params=""){
 		$fileout=$splitter[1];
 	else $fileout=$filename;
 
-	if (strlen($fileout)>20) $fileout=substr($fileout,0,20)."...";
+	if (strlen($fileout)>20) $fileout=utf8_substr($fileout,0,20)."...";
 
 	if (count($splitter)==2){
 
