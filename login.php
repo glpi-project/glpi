@@ -197,6 +197,7 @@ if (isset ($_POST["noCAS"])){
 	if ($identificat->auth_succeded) {
 		$identificat->initSession();
 	} else { // we have done at least a good login? No, we exit.
+		$identificat->destroySession();
 		nullHeader("Login", $_SERVER['PHP_SELF']);
 		echo '<div align="center"><b>' . $identificat->getErr() . '</b><br><br>';
 		echo '<b><a href="' . $CFG_GLPI["root_doc"] . '/logout.php">' . $LANG["login"][1] . '</a></b></div>';
