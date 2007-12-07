@@ -197,16 +197,17 @@ if (isset ($_POST["noCAS"])){
 	if ($identificat->auth_succeded) {
 		$identificat->initSession();
 	} else { // we have done at least a good login? No, we exit.
-		$identificat->destroySession();
+		
 		nullHeader("Login", $_SERVER['PHP_SELF']);
 		echo '<div align="center"><b>' . $identificat->getErr() . '</b><br><br>';
 		echo '<b><a href="' . $CFG_GLPI["root_doc"] . '/logout.php">' . $LANG["login"][1] . '</a></b></div>';
 		if ($CFG_GLPI["debug"] == DEMO_MODE){
-			logevent(-1, "system", 1, "login", "failed login: " . $_POST['login_name']);
+			logEvent(-1, "system", 1, "login", "failed login: " . $_POST['login_name']);
 		} else {
-			logevent(-1, "system", 1, "login", $LANG["log"][41] . ": " . $_POST['login_name']);
+			logEvent(-1, "system", 1, "login", $LANG["log"][41] . ": " . $_POST['login_name']);
 		}
 		nullFooter();
+		$identificat->destroySession();
 
 		exit();
 	}
