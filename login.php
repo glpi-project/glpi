@@ -193,6 +193,10 @@ if (isset ($_POST["noCAS"])){
 			}
 		}
 	}
+
+	// GET THE IP OF THE CLIENT
+	$ip = (getenv("HTTP_X_FORWARDED_FOR") ? getenv("HTTP_X_FORWARDED_FOR") : getenv("REMOTE_ADDR"));
+
 	// now we can continue with the process...
 	if ($identificat->auth_succeded) {
 		$identificat->initSession();
@@ -202,19 +206,15 @@ if (isset ($_POST["noCAS"])){
 		echo '<div align="center"><b>' . $identificat->getErr() . '</b><br><br>';
 		echo '<b><a href="' . $CFG_GLPI["root_doc"] . '/logout.php">' . $LANG["login"][1] . '</a></b></div>';
 		if ($CFG_GLPI["debug"] == DEMO_MODE){
-			logEvent(-1, "system", 1, "login", "failed login: " . $_POST['login_name']);
+			logEvent(-1, "system", 1, "login", "failed login: " . $_POST['login_name'] . "  ($ip)");
 		} else {
-			logEvent(-1, "system", 1, "login", $LANG["log"][41] . ": " . $_POST['login_name']);
+			logEvent(-1, "system", 1, "login", $LANG["log"][41] . ": " . $_POST['login_name'] . " ($ip)");
 		}
 		nullFooter();
 		$identificat->destroySession();
 
 		exit();
 	}
-
-
-	// GET THE IP OF THE CLIENT
-	$ip = (getenv("HTTP_X_FORWARDED_FOR") ? getenv("HTTP_X_FORWARDED_FOR") : getenv("REMOTE_ADDR"));
 
 	// Log Event
 	if ($CFG_GLPI["debug"] == DEMO_MODE){
