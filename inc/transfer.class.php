@@ -1305,7 +1305,7 @@ class Transfer extends CommonDBTM{
 				}
 			}
 		} else {// else unlink
-			$query="DELETE FROM glpi_contract_device WHERE FK_device = '$ID' AND device_type = '$type'";
+			$query="DELETE FROM glpi_doc_device WHERE FK_device = '$ID' AND device_type = '$type'";
 			$DB->query($query);
 		}
 
