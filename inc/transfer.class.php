@@ -1713,12 +1713,12 @@ class Transfer extends CommonDBTM{
 								$need_clean_process=true;
 							}
 						} else {
-							$canbetransfer=false;
+							$canbetransfer=true;
 							// Transfer enterprise : is the contact used for another enterprise ?
 							if ($ID==$newID){
 								$query_search="SELECT count(*) AS CPT 
 									FROM glpi_contact_enterprise 
-									WHERE FK_contact='$item_ID' AND FK_enterprise <> $ID";
+									WHERE FK_contact='$item_ID' AND FK_enterprise NOT IN ".$this->item_search[ENTERPRISE_TYPE];
 								$result_search = $DB->query($query_search);
 								if ($DB->result($result_search,0,'CPT')>0){
 									$canbetransfer=false;
