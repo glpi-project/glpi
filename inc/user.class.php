@@ -280,31 +280,6 @@ class User extends CommonDBTM {
 			$_SESSION["glpilist_limit"] = $input["list_limit"];
 		}
 
-		// Security system execpt for login update
-		if (isset ($_SESSION["glpiID"]) && !haveRight("user", "w") && !ereg("login.php", $_SERVER['PHP_SELF'])) {
-			if ($_SESSION["glpiID"] == $input['ID']) {
-				$ret = $input;
-				// extauth ldap case
-				if ($_SESSION["glpiextauth"] && $input["auth_method"] != AUTH_LDAP) {
-					foreach ($input['ldap_fields'] as $key => $val){
-						if (!empty ($val)){
-							unset ($ret[$key]);
-						}
-					}
-				}
-				// extauth imap case
-				if (isset($input["auth_method"])&&$input["auth_method"] == AUTH_MAIL){
-					unset ($ret["email"]);
-					}
-
-				unset ($ret["active"]);
-				unset ($ret["comments"]);
-				return $ret;
-			} else {
-				return array ();
-			}
-		}
-
 		$this->syncLdapGroups($input);
 
 		$this->applyRightRules($input);
@@ -312,7 +287,7 @@ class User extends CommonDBTM {
 		return $input;
 	}
 
-	
+
 
 	function post_updateItem($input, $updates, $history=1) {
 		// Clean header cache for the user
@@ -482,14 +457,8 @@ class User extends CommonDBTM {
 			//Set all the search fields
 			$this->fields['password'] = "";
 			$this->fields['password_md5'] = "";
-			$fields['name'] = $ldap_method["ldap_login"];
-			$fields['email'] = $ldap_method["ldap_field_email"];
-			$fields['realname'] = $ldap_method["ldap_field_realname"];
-			$fields['firstname'] = $ldap_method["ldap_field_firstname"];
-			$fields['phone'] = $ldap_method["ldap_field_phone"];
-			$fields['phone2'] = $ldap_method["ldap_field_phone2"];
-			$fields['mobile'] = $ldap_method["ldap_field_mobile"];
-			$fields['comments'] = $ldap_method["ldap_field_comments"];
+
+			$fields=getLDAPSyncFields($ldap_method);
 
 			$fields = array_filter($fields);
 			$f = array_values($fields);
@@ -1008,6 +977,44 @@ class User extends CommonDBTM {
 	}
 
 	function pre_updateInDB($input,$updates) {
+
+		// Security system except for login update
+		if (isset ($_SESSION["glpiID"]) && !haveRight("user", "w") && !ereg("login.php", $_SERVER['PHP_SELF'])) {
+			if ($_SESSION["glpiID"] == $input['ID']) {
+				$ret = $updates;
+
+				if (isset($this->fields["auth_method"])){
+					// extauth ldap case
+					if ($_SESSION["glpiextauth"] && $this->fields["auth_method"] == AUTH_LDAP) {
+						$auth_method = getAuthMethodsByID($this->fields["auth_method"], $this->fields["id_auth"]);
+						if (count($auth_method)){
+							$fields=getLDAPSyncFields($auth_method);
+							foreach ($fields as $key => $val){
+								if (!empty ($val)){
+									unset ($ret[$key]);
+								}
+							}
+						}
+					}
+					// extauth imap case
+					if (isset($this->fields["auth_method"])&&$this->fields["auth_method"] == AUTH_MAIL){
+						unset ($ret["email"]);
+						}
+	
+					unset ($ret["active"]);
+					unset ($ret["comments"]);
+				}
+
+				return array($input,$ret);
+			} else {
+				return array($input,array());
+			}
+		}
+
+
+
+
+
 		$this->fields["date_mod"]=$_SESSION["glpi_currenttime"];
 		$updates[]="date_mod";
 		return array($input,$updates);
