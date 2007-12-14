@@ -1271,6 +1271,9 @@ $LANG["rulesengine"][40]="a categoria";
 $LANG["rulesengine"][41]="Validação"; 
 $LANG["rulesengine"][42]="E"; 
 $LANG["rulesengine"][43]="OU"; 
+$LANG["rulesengine"][120]="The engine stops on the first checked rule."; 
+$LANG["rulesengine"][121]="The engine treats all the rules."; 
+$LANG["rulesengine"][122]="The engine passes the result of a rule to the following ones."; 
 
 $LANG["search"][0]="Pesquisar"; 
 $LANG["search"][2]="contém"; 
