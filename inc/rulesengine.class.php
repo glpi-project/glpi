@@ -94,9 +94,22 @@ class RuleCollection {
 		global $CFG_GLPI, $LANG;
 			
 		$canedit = haveRight($this->right, "w");
+
+		//Display informations about the how the rules engine process the rules
+		if ($this->stop_on_first_match)
+			//The engine stop on the first matched rule
+			echo "<span align='center'><strong>".$LANG["rulesengine"][120]."</strong></span><br>";
+		else
+			//The engine process all the rules
+			echo "<span align='center'><strong>".$LANG["rulesengine"][121]."</strong></span><br>";
+		if ($this->use_output_rule_process_as_next_input)
+			//The engine keep the result of a rule to be processed further
+			echo "<span align='center'><strong>".$LANG["rulesengine"][122]."</strong></span><br>";
+
 		$this->getCollectionDatas(0,0);
-		echo "<form name='ruleactions_form' id='ruleactions_form' method='post' action=\"$target\">\n";
+		echo "<br><form name='ruleactions_form' id='ruleactions_form' method='post' action=\"$target\">\n";
 		echo "<div class='center'>"; 
+
 		echo "<table class='tab_cadrehov'>";
 
 		echo "<tr><th colspan='5'><div class='relative'><span><strong>" . $this->getTitle() . "</strong></span>";
