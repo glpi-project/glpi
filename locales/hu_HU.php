@@ -1271,6 +1271,9 @@ $LANG["rulesengine"][40]="a kategória";
 $LANG["rulesengine"][41]="Érvényesítés"; 
 $LANG["rulesengine"][42]="ÉS"; 
 $LANG["rulesengine"][43]="VAGY"; 
+$LANG["rulesengine"][120]="The engine stops on the first checked rule."; 
+$LANG["rulesengine"][121]="The engine treats all the rules."; 
+$LANG["rulesengine"][122]="The engine passes the result of a rule to the following ones."; 
 
 $LANG["search"][0]="Keresés"; 
 $LANG["search"][2]="tartalmaz"; 
