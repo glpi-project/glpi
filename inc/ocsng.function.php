@@ -52,9 +52,9 @@ function ocsShowNewComputer($ocs_server_id, $advanced, $check, $start, $tolinked
 		$splitter = explode("$", $cfg_ocs["tag_limit"]);
 		if (count($splitter)) {
 			$WHERE = "WHERE TAG='" . $splitter[0] . "' ";
-			for ($i = 1; $i < count($splitter); $i++)
-				$WHERE .= " OR TAG='" .
-				$splitter[$i] . "' ";
+			for ($i = 1; $i < count($splitter); $i++){
+				$WHERE .= " OR TAG='" .$splitter[$i] . "' ";
+			}
 		}
 	}
 
@@ -1272,9 +1272,22 @@ function cron_ocsng() {
 			}
 		}
 
-		$query_ocs = "SELECT * FROM hardware 
-			WHERE (CHECKSUM & " . $cfg_ocs["checksum"] . ") > 0 OR LASTDATE > '$max_date' ORDER BY LASTDATE ASC LIMIT ".$cfg_ocs["cron_sync_number"];
-		
+		$query_ocs = "SELECT * FROM hardware INNER JOIN accountinfo ON (hardware.ID = accountinfo.HARDWARE_ID) 
+			WHERE ((hardware.CHECKSUM & " . $cfg_ocs["checksum"] . ") > 0 OR hardware.LASTDATE > '$max_date') ";
+
+		if (!empty ($cfg_ocs["tag_limit"])) {
+			$splitter = explode("$", $cfg_ocs["tag_limit"]);
+			if (count($splitter)) {
+				$query_ocs .= " AND (accountinfo.TAG='" . $splitter[0] . "' ";
+				for ($i = 1; $i < count($splitter); $i++){
+					$query_ocs .= " OR accountinfo.TAG='" .$splitter[$i] . "' ";
+				}
+				$query_ocs .=")";
+			}
+		}
+
+		$query_ocs.=" ORDER BY hardware.LASTDATE ASC LIMIT ".$cfg_ocs["cron_sync_number"];
+
 		$result_ocs = $DBocs->query($query_ocs);
 		if ($DBocs->numrows($result_ocs) > 0) {
 			while ($data = $DBocs->fetch_array($result_ocs)) {
