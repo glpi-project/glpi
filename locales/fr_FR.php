@@ -1273,6 +1273,11 @@ $LANG["rulesengine"][41]="Validation";
 $LANG["rulesengine"][42]="ET";
 $LANG["rulesengine"][43]="OU";
 
+$LANG["rulesengine"][120]="Le moteur s'arrête à la première règle vérifiée.";
+$LANG["rulesengine"][121]="Le moteur traite toutes les règles.";
+$LANG["rulesengine"][122]="Le moteur passe le résultat d'une règle aux suivantes.";
+
+
 $LANG["search"][0]="Recherche"; 
 $LANG["search"][2]="contient"; 
 $LANG["search"][4]="trié par"; 
