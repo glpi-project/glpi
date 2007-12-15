@@ -69,6 +69,7 @@ class kbitem extends CommonDBTM {
 	}
 
 	function prepareInputForUpdate($input) {
+		global $LANG;
 		// set title for question if empty
 		if(empty($input["question"])) $input["question"]=$LANG["common"][30];
 
