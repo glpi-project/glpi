@@ -263,7 +263,7 @@ function showFormDropDown($target, $tablename, $human, $ID, $value2 = '',$FK_ent
 		} else {
 			$value = "";
 			$loc = "";
-			dropdownNetpoint("ID", $ID, 0, $entity_restrict);
+			dropdownNetpoint("ID", $ID, -1, 0, $entity_restrict);
 		}
 
 		// on ajoute un input text pour entrer la valeur modifier
