@@ -492,7 +492,7 @@ function getAuthMethodName($auth_method, $id_auth, $link=0,$name=''){
 			}
 			$out= $LANG["login"][2];
 			if ($link && haveRight("config", "w")){
-				return  $out."&nbsp " . $LANG["common"][52] . " <a href=\"" . $CFG_GLPI["root_doc"] . "/front/setup.auth.php?next=extauth_ldap&ID=" . $id_auth . "\">" . $name . "</a>";
+				return  $out."&nbsp " . $LANG["common"][52] . " <a href=\"" . $CFG_GLPI["root_doc"] . "/front/setup.auth.php?next=extauth_ldap&amp;ID=" . $id_auth . "\">" . $name . "</a>";
 			} else {
 				return  $out."&nbsp " . $LANG["common"][52] . " " . $name;
 			}
@@ -504,7 +504,7 @@ function getAuthMethodName($auth_method, $id_auth, $link=0,$name=''){
 			}
 			$out= $LANG["login"][3];
 			if ($link && haveRight("config", "w")){
-				return  $out. "&nbsp " . $LANG["common"][52] . " <a href=\"" . $CFG_GLPI["root_doc"] . "/front/setup.auth.php?next=extauth_mail&ID=" . $id_auth . "\">" . $name . "</a>";
+				return  $out. "&nbsp " . $LANG["common"][52] . " <a href=\"" . $CFG_GLPI["root_doc"] . "/front/setup.auth.php?next=extauth_mail&amp;ID=" . $id_auth . "\">" . $name . "</a>";
 			} else {
 				return  $out. "&nbsp " . $LANG["common"][52] . " " . $name;
 			}
