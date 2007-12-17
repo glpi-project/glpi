@@ -845,8 +845,8 @@ function generateIcal($who){
 
 
 	// 
-	$begin=mktime()-MONTH_TIMESTAMP*12;
-	$end=mktime()+MONTH_TIMESTAMP*12;
+	$begin=time()-MONTH_TIMESTAMP*12;
+	$end=time()+MONTH_TIMESTAMP*12;
 	$begin=date("Y-m-d H:i:s",$begin);
 	$end=date("Y-m-d H:i:s",$end);
 
