@@ -541,6 +541,8 @@ function ocsLinkComputer($ocs_id, $ocs_server_id, $glpi_id) {
 		}
 	}
 
+	// TODO : if OCS ID change : ocs_link exists but not hardware in OCS so update only ocs_link and do not reset items before updateComputer
+
 	// No ocs_link or ocs computer does not exists so can link
 	if (!$ocs_exists || $numrows == 0) {
 
@@ -555,11 +557,19 @@ function ocsLinkComputer($ocs_id, $ocs_server_id, $glpi_id) {
 		if ($idlink = ocsLink($ocs_id, $ocs_server_id, $glpi_id)) {
 		
 			$comp = new Computer;
+			$comp->getFromDB($glpi_id);
 			$input["ID"] = $glpi_id;
 			$input["ocs_import"] = 1;
 			$input["_from_ocs"] = 1;
-						
+			
+			// Not already import from OCS / mark default state
+			if (!$comp->fields['ocs_import']){
+				$input["state"] = $ocsConfig["default_state"];
+			}
+			
 			$comp->update($input);
+
+			
 
 			// Auto restore if deleted
 			if ($comp->fields['deleted']){
