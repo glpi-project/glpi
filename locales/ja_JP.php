@@ -50,7 +50,7 @@ $LANG["backup"][23]="Mysqlエラー：";
 $LANG["backup"][24]="自動転送、さもなくばクリック"; 
 
 $LANG["buttons"][0]="検索"; 
-$LANG["buttons"][2]="ログイン"; 
+$LANG["buttons"][2]="更新/ログイン"; 
 $LANG["buttons"][3]="担当者割り当て"; 
 $LANG["buttons"][4]="インストール"; 
 $LANG["buttons"][5]="アンインストール"; 

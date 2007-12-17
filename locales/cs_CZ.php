@@ -1271,9 +1271,9 @@ $LANG["rulesengine"][40]="kategorie";
 $LANG["rulesengine"][41]="Validace"; 
 $LANG["rulesengine"][42]="A"; 
 $LANG["rulesengine"][43]="NEBO"; 
-$LANG["rulesengine"][120]="The engine stops on the first checked rule."; 
-$LANG["rulesengine"][121]="The engine treats all the rules."; 
-$LANG["rulesengine"][122]="The engine passes the result of a rule to the following ones."; 
+$LANG["rulesengine"][120]="Zastavit na prvním vybraném pravidlu."; 
+$LANG["rulesengine"][121]="Vsechna pravidla jsou prováděna."; 
+$LANG["rulesengine"][122]="Pravidla jsou použita pro následující."; 
 
 $LANG["search"][0]="Hledat"; 
 $LANG["search"][2]="obsahuje"; 
