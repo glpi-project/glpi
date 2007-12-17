@@ -1271,9 +1271,9 @@ $LANG["rulesengine"][40]="kategoria";
 $LANG["rulesengine"][41]="Walidacja"; 
 $LANG["rulesengine"][42]="I"; 
 $LANG["rulesengine"][43]="LUB"; 
-$LANG["rulesengine"][120]="The engine stops on the first checked rule."; 
-$LANG["rulesengine"][121]="The engine treats all the rules."; 
-$LANG["rulesengine"][122]="The engine passes the result of a rule to the following ones."; 
+$LANG["rulesengine"][120]="Silnik zatrzymuje sie na pierwszej regule."; 
+$LANG["rulesengine"][121]="Silnik traktuje wszystkie reguly."; 
+$LANG["rulesengine"][122]="Silnik przekazuje rezultat reguly do nastepujacych."; 
 
 $LANG["search"][0]="Szukaj"; 
 $LANG["search"][2]="zawiera"; 
