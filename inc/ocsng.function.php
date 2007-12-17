@@ -263,6 +263,7 @@ function ocsLink($ocs_id, $ocs_server_id, $glpi_computer_id) {
 	if ($result) {
 		return ($DB->insert_id());
 	} else {
+		// TODO : Check if this code part is ok ? why to send a link if insert do not works ? May have problem for example on ocsLinkComputer
 		$query = "SELECT ID
 		                        FROM glpi_ocs_link
 		                        WHERE ocs_id = '$ocs_id' AND ocs_server_id='" . $ocs_server_id . "';";
@@ -569,8 +570,6 @@ function ocsLinkComputer($ocs_id, $ocs_server_id, $glpi_id) {
 			
 			$comp->update($input);
 
-			
-
 			// Auto restore if deleted
 			if ($comp->fields['deleted']){
 				$comp->restore(array('ID'=>$glpi_id));
@@ -579,8 +578,8 @@ function ocsLinkComputer($ocs_id, $ocs_server_id, $glpi_id) {
 			// Reset using GLPI Config
 			$cfg_ocs = getOcsConf($ocs_server_id);
 			$query = "SELECT * 
-										FROM hardware 
-										WHERE ID='$ocs_id'";
+					FROM hardware 
+					WHERE ID='$ocs_id'";
 			$result = $DBocs->query($query);
 			$line = $DBocs->fetch_array($result);
 
