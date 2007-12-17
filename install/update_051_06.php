@@ -108,7 +108,6 @@ function update051to06(){
 		$DB->query($query) or die("0.6 add is_template in contract_device ".$LANG["update"][90].$DB->error());
 		//$query= " ALTER TABLE `glpi_contract_device` ADD INDEX (`is_template `) ";
 		//$DB->query($query) or die("0.6 alter is_template in contract_device ".$LANG["update"][90].$DB->error());	
-		// TODO SET TO 1 the template item
 	}
 
 	if(!FieldExists("glpi_doc_device","is_template")) {
@@ -116,7 +115,6 @@ function update051to06(){
 		$DB->query($query) or die("0.6 add is_template in doc_device ".$LANG["update"][90].$DB->error());	
 		$query= "ALTER TABLE `glpi_doc_device` ADD INDEX (`is_template`) ;";
 		$DB->query($query) or die("0.6 alter is_template in doc_device ".$LANG["update"][90].$DB->error());	
-		// TODO SET TO 1 the template item
 	}
 
 	// Contract Type to dropdown

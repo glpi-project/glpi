@@ -55,7 +55,9 @@ $CFG_GLPI["use_errorlog"]=1;
 //################################ Functions ################################
 
 function loadLang() {
-	unset($LANG);
+	if (isset($LANG)){
+		unset($LANG);
+	}
 	global $LANG;
 	if (isset($_SESSION["glpilanguage"]))
 		$dict=$_SESSION["glpilanguage"];
@@ -144,7 +146,7 @@ function UpdateContent($DB, $duree,$rowlimit,$conv_utf8,$complete_utf8)
 	// $duree=timeout pour changement de page (-1 = aucun)
 
 
-	global $TPSCOUR,$offsettable,$offsetrow,$cpt;
+	global $TPSCOUR,$offsettable,$offsetrow,$cpt,$LANG;
 
 	$result=$DB->list_tables();
 	$numtab=0;

@@ -1158,7 +1158,7 @@ function date_diff($from, $to) {
 }
 
 function updateMaintenanceInfos($table,$type,$ID){
-	global $DB;
+	global $DB,$LANG;
 	$elements=array();
 	$query="SELECT ID from $table WHERE maintenance='1'";
 	$result=$DB->query($query);
@@ -1174,7 +1174,7 @@ function updateMaintenanceInfos($table,$type,$ID){
 }
 
 function updateWarrantyInfos($table,$type){
-	global $DB;
+	global $DB,$LANG;
 	$elements=array();
 	$query="SELECT ID,achat_date,date_fin_garantie from $table ORDER BY achat_date,date_fin_garantie";
 	$result=$DB->query($query) or die("0.5 select for update warranty ".$LANG["update"][90].$DB->error());
@@ -1199,7 +1199,7 @@ function updateWarrantyInfos($table,$type){
 
 }
 function isMaintenanceUsed(){
-	global $DB;
+	global $DB,$LANG;
 	$tables=array("glpi_computers","glpi_printers","glpi_monitors","glpi_peripherals","glpi_networking");
 	foreach ($tables as $key => $table){
 		$query="SELECT ID from $table WHERE maintenance='1';";
@@ -1211,7 +1211,7 @@ function isMaintenanceUsed(){
 }
 
 function dropMaintenanceField(){
-	global $DB;
+	global $DB,$LANG;
 	$tables=array("glpi_computers","glpi_printers","glpi_monitors","glpi_peripherals","glpi_networking");
 	foreach ($tables as $key => $table){
 		$query="ALTER TABLE `$table` DROP `maintenance`";

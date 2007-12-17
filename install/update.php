@@ -61,7 +61,9 @@ $DB=new DB();
 //Load language
 if(!function_exists('loadLang')) {
 	function loadLang($LANGuage) {
-		unset($LANG);
+		if (isset($LANG)){
+			unset($LANG);
+		}
 		global $LANG;
 
 		$file = GLPI_ROOT ."/locales/".$LANGuage.".php";
@@ -469,7 +471,7 @@ function updatedbUpTo031()
 
 
 function updateTreeDropdown(){
-	global $DB;
+	global $DB,$LANG;
 
 	// Update Tree dropdown
 	if(!FieldExists("glpi_dropdown_locations","completename")) {
