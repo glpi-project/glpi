@@ -102,7 +102,9 @@ function choose_language()
 // load language
 
 function loadLang($LANGuage) {
-	unset($LANG);
+	if (isset($LANG)){
+		unset($LANG);
+	}
 	global $LANG;
 	$file = GLPI_ROOT ."/locales/".$LANGuage.".php";
 	if (file_exists($file)){

@@ -655,6 +655,7 @@ function constructEntryValues($type,$begin="",$end="",$param="",$value="",$value
 	}
 	//echo $query."<br><br>";
 	$entrees=array();
+	$count=array();
 	if (empty($query)) return array();
 
 	$result=$DB->query($query);

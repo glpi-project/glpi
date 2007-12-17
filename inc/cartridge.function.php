@@ -611,13 +611,13 @@ function cron_cartridge(){
 
 				// Mark alert as done
 				$alert=new Alert();
-				//// if alert exists -> delete 
+				// if alert exists -> delete 
 				if (!empty($data["alertID"])){
 					$alert->delete(array("ID"=>$data["alertID"]));
 				}
 
 				$alert=new Alert();
-				//// add alert
+				// add alert
 				$input["type"]=ALERT_THRESHOLD;
 				$input["device_type"]=CARTRIDGE_TYPE;
 				$input["FK_device"]=$data["cartID"];

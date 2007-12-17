@@ -2071,8 +2071,6 @@ function showJobDetails ($target,$ID){
 		echo "<div class='center'><strong>".$LANG["common"][54]."</strong></div>";
 		return false;
 	}
-
-	return false;
 }
 
 function showFollowupsSummary($tID){

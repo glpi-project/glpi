@@ -558,11 +558,7 @@ function ocsLinkComputer($ocs_id, $ocs_server_id, $glpi_id) {
 			$input["ID"] = $glpi_id;
 			$input["ocs_import"] = 1;
 			$input["_from_ocs"] = 1;
-			
-			if ($glpi_link)
-				//Change the state
-				$input["state"] = $ocsConfig["default_state"];
-			
+						
 			$comp->update($input);
 
 			// Auto restore if deleted
@@ -2063,7 +2059,7 @@ function ocsUpdateDevices($device_type, $glpi_id, $ocs_id, $ocs_server_id, $cfg_
 									}
 								}
 							}
-							unset ($netport);
+							$netport=array();
 							$netport["ifmac"] = $line2["MACADDR"];
 							$netport["iface"] = ocsImportDropdown("glpi_dropdown_iface", $line2["TYPE"]);
 							$netport["name"] = $line2["DESCRIPTION"];
