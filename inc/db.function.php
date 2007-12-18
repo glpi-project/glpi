@@ -607,7 +607,6 @@ function getNextItem($table,$ID,$condition="",$nextprev_item=""){
 
 	if (empty($nextprev_item)){
 		$nextprev_item=$CFG_GLPI["nextprev_item"];
-		if ($table=="glpi_tracking"||ereg("glpi_device",$table)) $nextprev_item="ID";
 	}
 
 	$search=$ID;
