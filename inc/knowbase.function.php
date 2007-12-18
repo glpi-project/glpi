@@ -264,8 +264,9 @@ function showKbItemList($target,$field,$phrasetype,$contains,$sort,$order,$start
 
 			// Pager
 			$parameters="start=$start&amp;parentID=$parentID&amp;field=$field&amp;phrasetype=$phrasetype&amp;contains=$contains&amp;sort=$sort&amp;order=$order&amp;faq=$faq";
-			if ($output_type==HTML_OUTPUT)
-				printPager($start,$numrows,$target,$parameters,KNOWBASE_TYPE);
+			if ($output_type==HTML_OUTPUT){
+				printPager($start,$numrows,$_SERVER['PHP_SELF'],$parameters,KNOWBASE_TYPE);
+			}
 
 			$nbcols=1;
 			// Display List Header
@@ -309,8 +310,8 @@ function showKbItemList($target,$field,$phrasetype,$contains,$sort,$order,$start
 				echo displaySearchFooter($output_type);
 			}
 			echo "<br>";
-			if ($output_type==HTML_OUTPUT) {// In case of HTML display
-				printPager($start,$numrows,$target,$parameters);
+			if ($output_type==HTML_OUTPUT){
+				printPager($start,$numrows,$_SERVER['PHP_SELF'],$parameters,KNOWBASE_TYPE);
 			}
 
 		} else {
