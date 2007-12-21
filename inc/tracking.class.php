@@ -670,7 +670,25 @@ class Job extends CommonDBTM{
 				$name.=" - #".$this->hardwaredatas->obj->fields["serial"];
 			}
 			if (isset($this->hardwaredatas->obj->fields["model"])&&$this->hardwaredatas->obj->fields["model"]>0){
-				$name.=" - ".getDropdownName("glpi_dropdown_model",$this->hardwaredatas->obj->fields["model"]);
+				$add="";
+				switch ($this->fields['device_type']){
+					case MONITOR_TYPE:
+						$add='_monitors';
+						break;
+					case NETWORKING_TYPE:
+						$add='_networking';
+						break;
+					case PERIPHERAL_TYPE:
+						$add='_peripherals';
+						break;
+					case PHONE_TYPE:
+						$add='_phones';
+						break;
+					case PRINTER_TYPE:
+						$add='_printers';
+						break;
+				}
+				$name.=" - ".getDropdownName("glpi_dropdown_model".$add,$this->hardwaredatas->obj->fields["model"]);
 			}
 			if (isset($this->hardwaredatas->obj->fields["tech_num"])&&$this->hardwaredatas->obj->fields["tech_num"]>0){
 					$tech=getUserName($this->hardwaredatas->obj->fields["tech_num"]);
