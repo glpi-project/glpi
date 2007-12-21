@@ -531,6 +531,29 @@ class Profile extends CommonDBTM{
 		echo "</tr>";
 
 		echo "<tr class='tab_bg_4'>";
+		
+		echo "<td class='tab_bg_4'>".$LANG["transfer"][1].":</td><td>";
+		dropdownNoneReadWrite("transfer",$this->fields["transfer"],1,1,1);
+		echo "</td>";
+
+		echo "<td class='tab_bg_4'>".$LANG["Menu"][35].":</td><td>";
+		dropdownNoneReadWrite("profile",$this->fields["profile"],1,1,1);
+		echo "</td>";
+
+		echo "<td class='tab_bg_4'>".$LANG["Menu"][12].":</td><td>";
+		dropdownNoneReadWrite("backup",$this->fields["backup"],1,0,1);
+		echo "</td>";
+
+		echo "<tr class='tab_bg_4'>";
+		echo "<td class='tab_bg_4'>".$LANG["Menu"][30].":</td><td>";
+		dropdownNoneReadWrite("logs",$this->fields["logs"],1,1,0);
+		echo "</td>";
+		echo "<td colspan='4'></td></tr>";
+
+
+		echo "<tr><td class='tab_bg_1' colspan='6' align='center'><strong>".$LANG["rulesengine"][77]."</strong></td></tr>";
+
+		echo "<tr class='tab_bg_4'>";
 		echo "<td class='tab_bg_4'>".$LANG["rulesengine"][19].":</td><td>";
 		dropdownNoneReadWrite("rule_ldap",$this->fields["rule_ldap"],1,1,1);
 		echo "</td>";
@@ -545,22 +568,28 @@ class Profile extends CommonDBTM{
 		echo "<td class='tab_bg_4'>".$LANG["rulesengine"][37].":</td><td>";
 		dropdownNoneReadWrite("rule_softwarecategories",$this->fields["rule_softwarecategories"],1,1,1);
 		echo "</td>";
-		echo "<td class='tab_bg_4' colspan='2'></td>";
-		echo "<td class='tab_bg_4'>".$LANG["transfer"][1].":</td><td>";
-		dropdownNoneReadWrite("transfer",$this->fields["transfer"],1,1,1);
-		echo "</td></tr>";
+
+		echo "<td class='tab_bg_4'>".$LANG["rulesengine"][36].":</td><td>";
+		dropdownNoneReadWrite("rule_dictionnary_manufacturer",$this->fields["rule_dictionnary_manufacturer"],1,1,1);
+		echo"</td>";
+
+		echo "<td class='tab_bg_4'>".$LANG["rulesengine"][35].":</td><td>";
+		dropdownNoneReadWrite("rule_dictionnary_software",$this->fields["rule_dictionnary_software"],1,1,1);
+		echo"</td>";
+		echo "</tr>";
 
 		echo "<tr class='tab_bg_4'>";
-		echo "<td class='tab_bg_4'>".$LANG["Menu"][35].":</td><td>";
-		dropdownNoneReadWrite("profile",$this->fields["profile"],1,1,1);
+		echo "<td class='tab_bg_4'>".$LANG["rulesengine"][34].":</td><td>";
+		dropdownNoneReadWrite("rule_dictionnary_type",$this->fields["rule_dictionnary_type"],1,1,1);
+		echo "</td>";
+		echo "<td class='tab_bg_4'>".$LANG["rulesengine"][33].":</td><td>";
+		dropdownNoneReadWrite("rule_dictionnary_model",$this->fields["rule_dictionnary_model"],1,1,1);
+		echo"</td>";
+
+		echo "<td class='tab_bg_4'>".$LANG["rulesengine"][67].":</td><td>";
+		dropdownNoneReadWrite("rule_dictionnary_os",$this->fields["rule_dictionnary_os"],1,1,1);
 		echo "</td>";
 
-		echo "<td class='tab_bg_4'>".$LANG["Menu"][12].":</td><td>";
-		dropdownNoneReadWrite("backup",$this->fields["backup"],1,0,1);
-		echo "</td>";
-		echo "<td class='tab_bg_4'>".$LANG["Menu"][30].":</td><td>";
-		dropdownNoneReadWrite("logs",$this->fields["logs"],1,1,0);
-		echo "</td></tr>";
 		// Configuration 
 		echo "<tr><td class='tab_bg_1' colspan='6' align='center'><strong>".$LANG["title"][2]."</strong></td></tr>";
 

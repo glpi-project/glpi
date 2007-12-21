@@ -62,6 +62,8 @@ class Identification {
 	// Really used ??? define twice but never used...
 	var $auth_parameters = array ();
 
+	var $ldap_connection;
+	
 	/**
 	 * Constructor
 	 *
@@ -126,6 +128,8 @@ class Identification {
 		return false;
 	}
 
+
+	
 	/**
 	 * Find a user in a LDAP and return is BaseDN
 	 * Based on GRR auth system
@@ -143,22 +147,32 @@ class Identification {
 	 *
 	 * @return String : basedn of the user / false if not founded
 	 */
-	function connection_ldap($host, $port, $basedn, $rdn, $rpass, $login_attr, $login, $password, $condition = "", $use_tls = false) {
+	function connection_ldap($id,$host, $port, $basedn, $rdn, $rpass, $login_attr, $login, $password, $condition = "", $use_tls = false) {
 		global $CFG_GLPI, $LANG;
+
 		// we prevent some delay...
 		if (empty ($host)) {
 			return false;
 		}
-		$ds = connect_ldap($host, $port, $rdn, $rpass, $use_tls);
-		// Test with login and password of the user
-		if (!$ds) {
-			$ds = connect_ldap($host, $port, $login, $password, $use_tls);
-		}
-		if ($ds) {
-			$dn = ldap_search_user_dn($ds, $basedn, $login_attr, $login, $condition);
-			if (@ldap_bind($ds, $dn, $password)) {
 
-				@ldap_unbind($ds);
+		$this->ldap_connection = try_connect_ldap($host, $port, $rdn, $rpass, $use_tls,$login, $password);
+
+		//If user is not authentified on this directory, try replicates (if replicates exists)
+		if (!$this->ldap_connection && $id != -1)
+		{
+			foreach (getAllReplicateForAMaster($id) as $replicate)
+			{
+				$this->ldap_connection = try_connect_ldap($replicate["ldap_host"], $replicate["ldap_port"], $rdn, $rpass, $use_tls,$login, $password);
+				if ($this->ldap_connection)
+					break;
+			}
+		}
+
+		if ($this->ldap_connection) {
+			$dn = ldap_search_user_dn($this->ldap_connection, $basedn, $login_attr, $login, $condition);
+			if (@ldap_bind($this->ldap_connection, $dn, $password)) {
+
+				//@ldap_unbind($this->ldap_connection);
 				//Hook to implement to restrict access by checking the ldap directory
 				if (doHookFunction("restrict_ldap_auth", $dn)) {
 					return $dn;
@@ -633,11 +647,24 @@ class AuthLDAP extends CommonDBTM {
 				echo "</table>";
 				echo "<br><table class='tab_cadre_fixe'>";
 				echo "<tr><th colspan='4'>" . $LANG["ldap"][9] . "</th></tr>";
+
+				if (isset($_SESSION["LDAP_TEST_MESSAGE"]))
+				{
+					echo "<tr class='tab_bg_2'><td align='center' colspan=4>";
+					echo $_SESSION["LDAP_TEST_MESSAGE"];
+					echo"</td></tr>";
+					unset($_SESSION["LDAP_TEST_MESSAGE"]);
+				}
+				
 				echo "<tr class='tab_bg_2'><td align='center' colspan=4><input type=\"submit\" name=\"test_ldap\" class=\"submit\" value=\"" . $LANG["buttons"][2] . "\" ></td></tr>";
 				echo "</table>&nbsp;";
+
 			}
 
 			echo "</div></form>";
+
+			if (!empty ($ID))
+				showReplicatesList($target,$ID);
 
 		} else {
 			echo "<input type=\"hidden\" name=\"LDAP_Test\" value=\"1\" >";
@@ -646,6 +673,14 @@ class AuthLDAP extends CommonDBTM {
 			echo "<tr class='tab_bg_2'><td class='center'><p class='red'>" . $LANG["setup"][157] . "</p><p>" . $LANG["setup"][158] . "</p></td></tr></table></div>";
 		}
 
+		
+	}
+}
+
+class AuthLdapReplicate extends CommonDBTM{
+	function AuthLdapReplicate()
+	{
+		$this->table ="glpi_auth_ldap_replicate";
 	}
 }
 ?>

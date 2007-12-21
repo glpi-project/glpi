@@ -322,7 +322,7 @@ function showLdapUsers($target, $check, $start, $sync = 0,$filter='') {
 }
 
 //Test a connection to the ldap directory
-function testLDAPConnection($id_auth) {
+function testLDAPConnection($id_auth,$replicate_id=-1) {
 	$config_ldap = new AuthLDAP();
 	$res = $config_ldap->getFromDB($id_auth);
 	$ldap_users = array ();
@@ -331,8 +331,22 @@ function testLDAPConnection($id_auth) {
 	if (!$res) {
 		return false;
 	}
-
-	$ds = connect_ldap($config_ldap->fields['ldap_host'], $config_ldap->fields['ldap_port'], $config_ldap->fields['ldap_rootdn'], $config_ldap->fields['ldap_pass'], $config_ldap->fields['ldap_use_tls']);
+	
+	//Test connection to a replicate
+	if ($replicate_id != -1)
+	{
+		$replicate = new AuthLdapReplicate;
+		$replicate->getFromDB($replicate_id);
+		$host = $replicate->fields["ldap_host"];
+		$port = $replicate->fields["ldap_port"];
+	}
+	else
+	{
+		//Test connection to a master ldap server
+		$host = $config_ldap->fields['ldap_host'];
+		$port = $config_ldap->fields['ldap_port'];
+	}
+	$ds = connect_ldap($host, $port, $config_ldap->fields['ldap_rootdn'], $config_ldap->fields['ldap_pass'], $config_ldap->fields['ldap_use_tls']);
 	if ($ds)
 		return true;
 	else

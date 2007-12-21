@@ -49,15 +49,15 @@ checkRight("software","w");
 
 $rand=mt_rand();
 
-$where="";	
-$leftjoin="";
+$where="";
+$leftjoin=""; 
 
-// only global and free 
-if ($_POST['only_globalfree']){
-	$leftjoin="LEFT JOIN glpi_licenses ON (glpi_licenses.sID = glpi_software.ID )";
-	$where="AND (glpi_licenses.serial='global' OR glpi_licenses.serial='free') ";
-}
-
+// only global and free  
+if ($_POST['only_globalfree']){ 
+        $leftjoin="LEFT JOIN glpi_licenses ON (glpi_licenses.sID = glpi_software.ID )"; 
+        $where="AND (glpi_licenses.serial='global' OR glpi_licenses.serial='free') "; 
+} 
+	 	
 if (strlen($_POST['searchText'])>0&&$_POST['searchText']!=$CFG_GLPI["ajax_wildcard"])
 	$where.=" AND name ".makeTextSearch($_POST['searchText'])." ";
 
@@ -69,17 +69,17 @@ $result = $DB->query($query);
 echo "<select name='sID' id='item_type$rand'>\n";
 echo "<option value='0'>-----</option>\n";
 if ($DB->numrows($result))
-	while ($data=$DB->fetch_array($result)) {
-		$sID = $data["ID"];
-		$output=$data["name"];
-		echo  "<option value='$sID' title=\"$output\">".substr($output,0,$CFG_GLPI["dropdown_limit"])."</option>";
-	}	
+		while ($data=$DB->fetch_array($result)) {
+				$sID = $data["ID"];
+				$output=$data["name"];
+				echo  "<option value='$sID' title=\"$output\">".substr($output,0,$CFG_GLPI["dropdown_limit"])."</option>";
+		}	
 echo "</select>\n";
 
 
 $params=array('sID'=>'__VALUE__',
 		'myname'=>$_POST["myname"],
-		'only_globalfree'=>$_POST["only_globalfree"]
+		'only_globalfree'=>$_POST["only_globalfree"],
 );
 ajaxUpdateItemOnSelectEvent("item_type$rand","show_".$_POST["myname"].$rand,$CFG_GLPI["root_doc"]."/ajax/dropdownInstallLicense.php",$params,false);
 

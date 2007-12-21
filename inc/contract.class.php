@@ -100,21 +100,27 @@ class Contract extends CommonDBTM {
 		$use_cache=true;
 		if (!$ID) {
 			$use_cache=false;
-			if($this->getEmpty()) $con_spotted = true;
+			if($this->getEmpty()) {
+				$con_spotted = true;	
+			}
 		} else {
-			if($this->getFromDB($ID)&&haveAccessToEntity($this->fields["FK_entities"])) $con_spotted = true;
+			if($this->getFromDB($ID) && haveAccessToEntity($this->fields["FK_entities"],$this->fields["recursive"])) {
+				$con_spotted = true;
+			}
 		}
 
 		if ($con_spotted){
+			list($can_edit,$can_recu)=$this->canEditAndRecurs();
 
 			$this->showOnglets($ID, $withtemplate,$_SESSION['glpi_onglet']);
 
-			echo "<form name='form' method='post' action=\"$target\"><div class='center'>";
-
-			if (empty($ID)){
-				echo "<input type='hidden' name='FK_entities' value='".$_SESSION["glpiactive_entity"]."'>";
+			if ($can_edit) { 
+				echo "<form name='form' method='post' action=\"$target\"><div class='center'>";
+				if (empty($ID)){
+					echo "<input type='hidden' name='FK_entities' value='".$_SESSION["glpiactive_entity"]."'>";
+				}
 			}
-
+			
 			echo "<table class='tab_cadre_fixe'>";
 			echo "<tr><th colspan='4'>";
 			if (!$ID) {
@@ -137,25 +143,27 @@ class Contract extends CommonDBTM {
 				echo "<td>".$LANG["financial"][6].":		</td><td >";
 				dropdownValue("glpi_dropdown_contract_type","contract_type",$this->fields["contract_type"]);
 				echo "</td></tr>";
-	
-	
+
+				
 				echo "<tr class='tab_bg_1'><td>".$LANG["financial"][4].":		</td>";
 				echo "<td><input type='text' name='num' value=\"".$this->fields["num"]."\" size='25'></td>";
 	
-				echo "<td>".$LANG["search"][8].":	</td>";
-				echo "<td>";
-				showCalendarForm("form","begin_date",$this->fields["begin_date"]);	
-				echo "</td>";
-				echo "</tr>";
-	
+				echo "<td>".$LANG["entity"][9].":	</td><td>";
+				if ($can_recu) {
+					dropdownYesNo("recursive",$this->fields["recursive"]);					
+				} else {
+					echo getYesNo($this->fields["recursive"]);
+				}
+				echo "</td></tr>";
+
 	
 				echo "<tr class='tab_bg_1'><td>".$LANG["financial"][5].":		</td><td>";
 				echo "<input type='text' name='cost' value=\"".number_format($this->fields["cost"],$CFG_GLPI["decimal_number"],'.','')."\" size='16'>";
 				echo "</td>";
 	
-				echo "<td>".$LANG["financial"][13].":		</td><td>";
-				autocompletionTextField("compta_num","glpi_contracts","compta_num",$this->fields["compta_num"],25,$this->fields["FK_entities"]);
-	
+				echo "<td>".$LANG["search"][8].":	</td>";
+				echo "<td>";
+				showCalendarForm("form","begin_date",$this->fields["begin_date"]);	
 				echo "</td></tr>";
 	
 	
@@ -166,11 +174,9 @@ class Contract extends CommonDBTM {
 					echo " -> ".getWarrantyExpir($this->fields["begin_date"],$this->fields["duration"]);
 				echo "</td>";
 	
-				echo "<td>".$LANG["financial"][10].":		</td><td>";
-				dropdownInteger("notice",$this->fields["notice"],0,120);
-				echo " ".$LANG["financial"][57];
-				if ($this->fields["begin_date"]!=''&&$this->fields["begin_date"]!="0000-00-00")
-					echo " -> ".getWarrantyExpir($this->fields["begin_date"],$this->fields["duration"]-$this->fields["notice"]);
+				echo "<td>".$LANG["financial"][13].":		</td><td>";
+				autocompletionTextField("compta_num","glpi_contracts","compta_num",$this->fields["compta_num"],25,$this->fields["FK_entities"]);
+	
 				echo "</td></tr>";
 	
 				echo "<tr class='tab_bg_1'><td>".$LANG["financial"][69].":		</td><td>";
@@ -178,9 +184,11 @@ class Contract extends CommonDBTM {
 				echo "</td>";
 	
 	
-				echo "<td>".$LANG["financial"][11].":		</td>";
-				echo "<td>";
-				dropdownContractPeriodicity("facturation",$this->fields["facturation"]);
+				echo "<td>".$LANG["financial"][10].":		</td><td>";
+				dropdownInteger("notice",$this->fields["notice"],0,120);
+				echo " ".$LANG["financial"][57];
+				if ($this->fields["begin_date"]!=''&&$this->fields["begin_date"]!="0000-00-00")
+					echo " -> ".getWarrantyExpir($this->fields["begin_date"],$this->fields["duration"]-$this->fields["notice"]);
 				echo "</td></tr>";
 	
 				echo "<tr class='tab_bg_1'><td>".$LANG["financial"][107].":		</td><td>";
@@ -188,8 +196,9 @@ class Contract extends CommonDBTM {
 				echo "</td>";
 	
 	
-				echo "<td>&nbsp;</td>";
-				echo "<td>&nbsp;";
+				echo "<td>".$LANG["financial"][11].":		</td>";
+				echo "<td>";
+				dropdownContractPeriodicity("facturation",$this->fields["facturation"]);
 				echo "</td></tr>";
 	
 				echo "<tr class='tab_bg_1'><td>".$LANG["financial"][83].":		</td><td>";
@@ -240,7 +249,7 @@ class Contract extends CommonDBTM {
 				}
 			}
 
-			if (haveRight("contract_infocom","w"))
+			if ($can_edit) {
 				if (!$ID) {
 
 					echo "<tr>";
@@ -271,9 +280,13 @@ class Contract extends CommonDBTM {
 					echo "</tr>";
 
 				}
-			echo "</table></div></form>";
+				echo "</table></div></form>";
 
-		} else {
+			} else { // can't edit
+				echo "</table></div>";
+			}
+
+		} else { // con_spotted
 			echo "<div class='center'><strong>".$LANG["common"][54]."</strong></div>";
 			return false;
 

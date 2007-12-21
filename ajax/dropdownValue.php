@@ -34,7 +34,6 @@
 // ----------------------------------------------------------------------
 
 // Direct access to file
-
 if(ereg("dropdownValue.php",$_SERVER['PHP_SELF'])){
 	define('GLPI_ROOT','..');
 	// Include plugin if it is a plugin table
@@ -56,21 +55,16 @@ checkLoginUser();
 if (isset($_POST["entity_restrict"])&&!is_numeric($_POST["entity_restrict"])&&!is_array($_POST["entity_restrict"])){
 	$_POST["entity_restrict"]=unserialize($_POST["entity_restrict"]);
 }
-
 // Make a select box with preselected values
 if (!isset($_POST["limit"])) $_POST["limit"]=$CFG_GLPI["dropdown_limit"];
-	$first=true;
-	$where="WHERE ";
+
+	$where="WHERE 1 ";
 	
 	if (in_array($_POST['table'],$CFG_GLPI["deleted_tables"])){
-		if (!$first) $where.=" AND ";
-		else $first=false;
-		$where.=" deleted='N' ";
+		$where.=" AND deleted='N' ";
 	}
 	if (in_array($_POST['table'],$CFG_GLPI["template_tables"])){
-		if (!$first) $where.=" AND ";
-		else $first=false;
-		$where.=" is_template='0' ";
+		$where.=" AND is_template='0' ";
 	}
 
 
@@ -80,9 +74,7 @@ if (!isset($_POST["limit"])) $_POST["limit"]=$CFG_GLPI["dropdown_limit"];
 
 	if (in_array($_POST['table'],$CFG_GLPI["dropdowntree_tables"])){
 		if ($_POST['searchText']!=$CFG_GLPI["ajax_wildcard"]){
-			if (!$first) $where.=" AND ";
-			else $first=false;
-			$where.=" completename ".makeTextSearch($_POST['searchText']);
+			$where.=" AND completename ".makeTextSearch($_POST['searchText']);
 		}
 
 
@@ -98,22 +90,17 @@ if (!isset($_POST["limit"])) $_POST["limit"]=$CFG_GLPI["dropdown_limit"];
 			}
 			
 
-			if (!$first) $where.=" AND ";
-			else $first=false;
-
 			if (isset($_POST["entity_restrict"])&&$_POST["entity_restrict"]>=0){
-				$where.=getEntitiesRestrictRequest("",$_POST['table'],$field,$_POST["entity_restrict"]);
+				$where.=getEntitiesRestrictRequest(" AND ",$_POST['table'],$field,$_POST["entity_restrict"]);
 			} else {
-				$where.=getEntitiesRestrictRequest("",$_POST['table'],$field);
+				$where.=getEntitiesRestrictRequest(" AND ",$_POST['table'],$field);
 			}
 		}
 
 
-		if ($where=="WHERE ") $where="";
-
-
 		$query = "SELECT * FROM ".$_POST['table']." $where ORDER BY $add_order completename $LIMIT";
 
+		//error_log("SQL1:".$query);
 		$result = $DB->query($query);
 
 		echo "<select id='dropdown_".$_POST["myname"].$_POST["rand"]."' name=\"".$_POST['myname']."\" size='1'>";
@@ -126,19 +113,17 @@ if (!isset($_POST["limit"])) $_POST["limit"]=$CFG_GLPI["dropdown_limit"];
 				echo "<option class='tree' value=\"0\">--".$LANG["knowbase"][12]."--</option>";
 				break;
 			case "glpi_entities" :
-				// If entity=0 allowed 
-				if (isset($_POST["entity_restrict"])&&  
-					(($_POST["entity_restrict"]<0 && in_array(0,$_SESSION['glpiactiveentities'])) 
-					|| (is_array($_POST["entity_restrict"]) && in_array(0,$_POST["entity_restrict"])))) 
-				{    
+				// If entity=0 allowed
+				if (isset($_POST["entity_restrict"])&& 
+					(($_POST["entity_restrict"]<0 && in_array(0,$_SESSION['glpiactiveentities']))
+					|| (is_array($_POST["entity_restrict"]) && in_array(0,$_POST["entity_restrict"]))))
+				{	
 					echo "<option class='tree' value=\"0\">--".$LANG["entity"][2]."--</option>";
-				} 
-
-				// Entity=0 already add above 
-				if ($_POST['value']==0){ 
-					$display_selected=false; 
-				} 
-
+				}
+				// Entity=0 already add above
+				if ($_POST['value']==0){
+					$display_selected=false;
+				}
 				break;
 			default :
 				echo "<option class='tree' value=\"0\">-----</option>";
@@ -189,17 +174,28 @@ if (!isset($_POST["limit"])) $_POST["limit"]=$CFG_GLPI["dropdown_limit"];
 		}
 		echo "</select>";
 
-	} else {
-		if (!$first) $where.=" AND ";
-		else $first=false;
-		$where .=" ID <> '".$_POST['value']."' ";
-
-		if (in_array($_POST['table'],$CFG_GLPI["specif_entities_tables"])){
-
-			if (isset($_POST["entity_restrict"])&&$_POST["entity_restrict"]>=0){
-				$where.=getEntitiesRestrictRequest("AND",$_POST['table'],"FK_entities",$_POST["entity_restrict"]);
+	} else { // Not dropdowntree_tables
+		$where .=" AND ID NOT IN (".$_POST['value'];
+		if (isset($_POST['used'])) {
+			if (is_array($_POST['used'])) {
+				$used=$_POST['used'];
 			} else {
-				$where.=getEntitiesRestrictRequest("AND",$_POST['table']);
+				$used=unserialize(stripslashes($_POST['used']));
+			}
+			foreach($used as $val)
+				$where .= ", $val";
+		}
+		$where .= ") ";
+
+		$multi=false;
+		if (in_array($_POST['table'],$CFG_GLPI["specif_entities_tables"])){
+			$multi=in_array($_POST['table'],$CFG_GLPI["recursive_type"]);
+			
+			if (isset($_POST["entity_restrict"])&&$_POST["entity_restrict"]>=0){
+				$where.=getEntitiesRestrictRequest("AND",$_POST['table'],"FK_entities",$_POST["entity_restrict"],$multi);
+			} else {
+				$where.=getEntitiesRestrictRequest("AND",$_POST['table'],'','',in_array($_POST['table'],$CFG_GLPI["recursive_type"]));	
+				if (count($_SESSION['glpiactiveentities'])>1) $multi=true;
 			}
 		}
 
@@ -209,16 +205,20 @@ if (!isset($_POST["limit"])) $_POST["limit"]=$CFG_GLPI["dropdown_limit"];
 		if ($_POST['searchText']!=$CFG_GLPI["ajax_wildcard"])
 			$where.=" AND $field ".makeTextSearch($_POST['searchText']);
 
-
 		switch ($_POST['table']){
 			case "glpi_contacts":
-				$query = "SELECT CONCAT(name,' ',firstname) as $field, ".$_POST['table'].".comments, ".$_POST['table'].".ID FROM ".$_POST['table']." $where ORDER BY $field $LIMIT";
+				$query = "SELECT FK_entities, CONCAT(name,' ',firstname) as $field, ".$_POST['table'].".comments, ".$_POST['table'].".ID FROM ".$_POST['table']." $where";
 			break;
 			default :
-				$query = "SELECT * FROM ".$_POST['table']." $where ORDER BY $field $LIMIT";
+				$query = "SELECT * FROM ".$_POST['table']." $where";
 			break;
 		}
-//		echo $query;
+		if ($multi) {
+			$query.=" ORDER BY FK_entities, $field $LIMIT";			
+		} else {
+			$query.=" ORDER BY $field $LIMIT";			
+		}
+		//error_log("SQL2:".$query);
 		$result = $DB->query($query);
 
 		echo "<select id='dropdown_".$_POST["myname"].$_POST["rand"]."' name=\"".$_POST['myname']."\" size='1'>";
@@ -234,6 +234,7 @@ if (!isset($_POST["limit"])) $_POST["limit"]=$CFG_GLPI["dropdown_limit"];
 		}
 
 		if ($DB->numrows($result)) {
+			$prev=-1;
 			while ($data =$DB->fetch_array($result)) {
 				$output = $data[$field];
 				if (isset($_POST['withserial'])&&isset($data["serial"])) $output.=" - ".$data["serial"];
@@ -243,8 +244,18 @@ if (!isset($_POST["limit"])) $_POST["limit"]=$CFG_GLPI["dropdown_limit"];
 				if (isset($data["comments"])) $addcomment=" - ".$data["comments"];
 
 				if (empty($output)) $output="($ID)";
+				if ($multi && $data["FK_entities"]!=$prev) {
+					if ($prev>=0) {
+						echo "</optgroup>";
+					}
+					$prev=$data["FK_entities"];
+					echo "<optgroup label=\"". getDropdownName("glpi_entities", $prev) ."\">";
+				}
  				echo "<option value=\"$ID\" title=\"$output$addcomment\">".utf8_substr($output,0,$_POST["limit"])."</option>";
 			}
+			if ($multi) {
+				echo "</optgroup>";
+			}		
 		}
 		echo "</select>";
 	}

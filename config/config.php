@@ -37,6 +37,7 @@
 		die("Sorry. You can't access directly to this file");
 		}
 	include_once (GLPI_ROOT."/config/based_config.php");
+	include_once (GLPI_ROOT."/inc/dbreplicate.function.php");
 	include (GLPI_ROOT."/config/define.php");
 
 	setGlpiSessionPath();
@@ -61,7 +62,9 @@
 		include_once (GLPI_ROOT."/lib/cache_lite/Lite/Output.php");
 		include_once (GLPI_ROOT."/lib/cache_lite/Lite/File.php");
 
-		$DB = new DB;
+		//Database connection
+		establishDBConnection((isset($USEDBREPLICATE)?$USEDBREPLICATE:0),
+		(isset($DBCONNECTION_REQUIRED)?$DBCONNECTION_REQUIRED:0));
 
 
 		// *************************** Statics config options **********************

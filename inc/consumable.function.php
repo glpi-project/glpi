@@ -490,7 +490,7 @@ function cron_consumable(){
 			foreach ($message as $entity => $msg){
 				$mail=new MailingAlert("alertconsumable",$msg,$entity);
 				$mail->send();
-
+				
 				logInFile("cron","Entity $entity :  $msg\n");
 			}
 			return 1;

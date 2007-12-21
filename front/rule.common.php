@@ -73,10 +73,23 @@ if (isset($_GET["action"])){
 				}
 			}
 		break;
+		case "activate_rule":
+			if (isset($_POST["item"]))
+			{
+				$rule = new Rule();
+				foreach ($_POST["item"] as $key => $val){
+					if ($val==1) {
+						$input['ID']=$key;
+						$input['active']=$_POST["activate_rule"];
+						$rule->update($input);
+					}
+				}
+		}
+		break;		
 	}
 }
 
-commonHeader($LANG["rulesengine"][17],$_SERVER['PHP_SELF'],"admin","rule",$rulecollection->rule_type);
+commonHeader($LANG["rulesengine"][17],$_SERVER['PHP_SELF'],"admin",getCategoryNameToDisplay($rulecollection->rule_type),$rulecollection->rule_type);
 
 $rulecollection->showForm($_SERVER['PHP_SELF']);
 commonFooter();

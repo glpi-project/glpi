@@ -54,9 +54,9 @@ if (!defined('GLPI_ROOT')){
  * @param $entity_restrict Restrict to a defined entity
  * @return nothing (display the select box)
  **/
-function dropdown($table,$myname,$display_comments=1,$entity_restrict=-1) {
+function dropdown($table,$myname,$display_comments=1,$entity_restrict=-1,$used=array()) {
 
-	return dropdownValue($table,$myname,'',$display_comments,$entity_restrict);
+	return dropdownValue($table,$myname,'',$display_comments,$entity_restrict,"",$used);
 }
 
 /**
@@ -72,7 +72,7 @@ function dropdown($table,$myname,$display_comments=1,$entity_restrict=-1) {
  * @return nothing (display the select box)
  *
  */
-function dropdownValue($table,$myname,$value='',$display_comments=1,$entity_restrict=-1,$update_item="") {
+function dropdownValue($table,$myname,$value='',$display_comments=1,$entity_restrict=-1,$update_item="",$used=array()) {
 
 	global $DB,$CFG_GLPI,$LANG;
 
@@ -81,7 +81,7 @@ function dropdownValue($table,$myname,$value='',$display_comments=1,$entity_rest
 	$name="------";
 	$comments="";
 	$limit_length=$CFG_GLPI["dropdown_limit"];
-
+	
 
 	if (strlen($value)==0) $value=-1;
 
@@ -95,13 +95,10 @@ function dropdownValue($table,$myname,$value='',$display_comments=1,$entity_rest
 		}
 	}
 
-
-
 	$use_ajax=false;
 	if ($CFG_GLPI["use_ajax"]){
 		$nb=0;
-
- 		if ($table=='glpi_entities' || in_array($table,$CFG_GLPI["specif_entities_tables"])){
+		if ($table=='glpi_entities' || in_array($table,$CFG_GLPI["specif_entities_tables"])){
 			if ($entity_restrict>=0){
 				$nb=countElementsInTableForEntity($table,$entity_restrict);
 			} else {
@@ -110,7 +107,7 @@ function dropdownValue($table,$myname,$value='',$display_comments=1,$entity_rest
 		} else {
 			$nb=countElementsInTable($table);
 		}
-	
+		$nb -= count($used);
 		if ($nb>$CFG_GLPI["ajax_limit_count"]){
 			$use_ajax=true;
 		}
@@ -124,7 +121,8 @@ function dropdownValue($table,$myname,$value='',$display_comments=1,$entity_rest
                         'comments'=>$display_comments,
                         'rand'=>$rand,
                         'entity_restrict'=>$entity_restrict,
-			'update_item'=>$update_item
+						'update_item'=>$update_item,
+						'used'=>$used
                         );
 	$default="<select name='$myname' id='dropdown_".$myname.$rand."'><option value='$value'>$name</option></select>\n";
 	ajaxDropdown($use_ajax,"/ajax/dropdownValue.php",$params,$default,$rand);
@@ -172,7 +170,7 @@ function dropdownValue($table,$myname,$value='',$display_comments=1,$entity_rest
  * @return nothing (display the select box)
  *
  */
-function dropdownNetpoint($myname,$value=0,$location=-1,$display_comments=1,$entity_restrict=-1) {
+function dropdownNetpoint($myname,$value=0,$location=-1,$display_comments=1,$entity_restrict=-1,$devtype=-1) {
 
 	global $DB,$CFG_GLPI,$LANG;
 
@@ -193,7 +191,11 @@ function dropdownNetpoint($myname,$value=0,$location=-1,$display_comments=1,$ent
 	
 	$use_ajax=false;	
 	if ($CFG_GLPI["use_ajax"]){
-		$nb=countElementsInTableForEntity("glpi_dropdown_netpoint",$entity_restrict);
+		if ($location < 0) {
+			$nb=countElementsInTableForEntity("glpi_dropdown_netpoint",$entity_restrict);
+		} else {
+			$nb=countElementsInTable("glpi_dropdown_netpoint", "location=$location ".getEntitiesRestrictRequest(" AND ","glpi_dropdown_netpoint",'',$entity_restrict));
+		}
 		if ($nb>$CFG_GLPI["ajax_limit_count"]){
 			$use_ajax=true;
 		}
@@ -207,6 +209,7 @@ function dropdownNetpoint($myname,$value=0,$location=-1,$display_comments=1,$ent
 			'comments'=>$display_comments,
 			'rand'=>$rand,
 			'entity_restrict'=>$entity_restrict,
+			'devtype'=>$devtype,
 			);
 
 	$default="<select name='$myname'><option value='$value'>$name</option></select>\n";
@@ -1089,7 +1092,7 @@ function dropdownConnectPort($ID,$type,$myname,$entity_restrict=-1) {
  * @param $entity_restrict restrict multi entity
  * @return nothing (print out an HTML select box)
  */
-function dropdownDocument($myname,$entity_restrict=-1) {
+function dropdownDocument($myname,$entity_restrict='',$used=array()) {
 
 
 	global $DB,$LANG,$CFG_GLPI;
@@ -1097,14 +1100,17 @@ function dropdownDocument($myname,$entity_restrict=-1) {
 	$rand=mt_rand();
 
 	$where=" WHERE glpi_docs.deleted='0' ";
-	if ($entity_restrict>=0){
-		$where.=" AND FK_entities='".$entity_restrict."' ";
-	} else {
-		$where.=getEntitiesRestrictRequest("AND","glpi_docs");
+	$where.=getEntitiesRestrictRequest("AND","glpi_docs",'',$entity_restrict,true);
+	if (count($used)) {
+		$where .= " AND ID NOT IN (0";
+		foreach ($used as $ID)
+			$where .= ",$ID";
+		$where .= ")";
 	}
 
 
 	$query="SELECT * FROM glpi_dropdown_rubdocs WHERE ID IN (SELECT DISTINCT rubrique FROM glpi_docs $where) ORDER BY name";
+	//error_log($query);
 	$result=$DB->query($query);
 
 	echo "<select name='_rubdoc' id='rubdoc'>\n";
@@ -1118,6 +1124,7 @@ function dropdownDocument($myname,$entity_restrict=-1) {
 			'entity_restrict'=>$entity_restrict,
 			'rand'=>$rand,
 			'myname'=>$myname,
+			'used'=>$used
 			);
 
 	ajaxUpdateItemOnSelectEvent("rubdoc","show_$myname$rand",$CFG_GLPI["root_doc"]."/ajax/dropdownDocument.php",$params);
@@ -1127,6 +1134,7 @@ function dropdownDocument($myname,$entity_restrict=-1) {
 	$_POST["rubdoc"]=0;
 	$_POST["myname"]=$myname;
 	$_POST["rand"]=$rand;
+	$_POST["used"]=$used;
 	include (GLPI_ROOT."/ajax/dropdownDocument.php");
 	echo "</span>\n";
 
@@ -1157,12 +1165,10 @@ function dropdownSoftwareToInstall($myname,$withtemplate,$entity_restrict,$massi
 		}
 	}
 
-	$only_globalfree=0;
-	if ($massiveaction||(!empty($withtemplate)&&$withtemplate>0)){
-		$only_globalfree=1;
-	}
+
         $params=array('searchText'=>'__VALUE__',
-                        'only_globalfree'=>$only_globalfree,
+                        'withtemplate'=>$withtemplate,
+                        'massiveaction'=>$massiveaction,
                         'myname'=>$myname,
                         'entity_restrict'=>$entity_restrict,
                         );
@@ -1317,6 +1323,10 @@ function dropdownMassiveAction($device_type,$deleted=0){
 				if ($isadmin && countElementsInTable("glpi_rules_descriptions","rule_type='".RULE_SOFTWARE_CATEGORY."'") > 0){
 					echo "<option value=\"compute_software_category\">".$LANG["rulesengine"][38]." ".$LANG["rulesengine"][40]."</option>";
 				}
+					if (haveRight("rule_dictionnary_software","w") && countElementsInTable("glpi_rules_descriptions","rule_type='".RULE_DICTIONNARY_SOFTWARE."'") > 0){
+					echo "<option value=\"replay_dictionnary\">".$LANG["rulesengine"][76]."</option>";
+				}
+			
 				break;
 			case COMPUTER_TYPE :
 				if ($isadmin){
@@ -1771,13 +1781,15 @@ function dropdownPlanningState($name,$value='')
 	
 }
 	
-function dropdownArrayValues($name,$elements,$value='')
+function dropdownArrayValues($name,$elements,$value='',$used=array())
 {
 	$rand=mt_rand();
 	echo "<select name='$name' id='dropdown_".$name.$rand."'>";
 
 	foreach($elements as $key => $val){
-		echo "<option value='".$key."'".($value==$key?" selected ":"").">".$val."</option>";
+			if (!in_array($val,$used)) {
+				echo "<option value='".$key."'".($value==$key?" selected ":"").">".$val."</option>";				
+			}
 	}
 
 	echo "</select>";	

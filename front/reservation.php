@@ -124,7 +124,7 @@ if (isset($_POST["clear_resa"])||isset($_POST["add_resa"])||isset($_POST["edit_r
 		
 	} else if (isset($_GET["ID"])){
 		printCalendrier($_SERVER['PHP_SELF'],$_GET["ID"]);
-	} else {
+	}else {
 		manageGetValuesInSearch(RESERVATION_TYPE);
 
 		searchForm(RESERVATION_TYPE,$_SERVER['PHP_SELF'],$_GET["field"],$_GET["contains"],$_GET["sort"],$_GET["deleted"],$_GET["link"],$_GET["distinct"],$_GET["link2"],$_GET["contains2"],$_GET["field2"],$_GET["type2"]);

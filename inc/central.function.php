@@ -158,6 +158,7 @@ function showCentralMyView(){
 		if (haveRight("reminder_public","r")){
 			echo "<tr><td class='top'  width='450px'>";
 			showCentralReminder("public");
+			showCentralReminder("global");
 			echo "</td></tr>";
 		}
 	

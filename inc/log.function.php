@@ -304,7 +304,7 @@ function logEvent ($item, $itemtype, $level, $service, $event) {
 	// Logs the event if level is above or equal to setting from configuration
 	
 	global $DB,$CFG_GLPI, $LANG;
-	if ($level <= $CFG_GLPI["event_loglevel"]) { 
+	if ($level <= $CFG_GLPI["event_loglevel"] && !$DB->isSlave()) { 
 		$query = "INSERT INTO glpi_event_log VALUES (NULL, '".addslashes($item)."', '".addslashes($itemtype)."', '".$_SESSION["glpi_currenttime"]."', '".addslashes($service)."', '".addslashes($level)."', '".addslashes($event)."')";
 		$result = $DB->query($query);    
 

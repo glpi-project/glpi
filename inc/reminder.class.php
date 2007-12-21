@@ -60,7 +60,9 @@ class Reminder extends CommonDBTM {
 			$input["begin"] = $input['_plan']["begin_date"]." ".$input['_plan']["begin_hour"].":00";
 			$input["end"] = $input['_plan']["end_date"]." ".$input['_plan']["end_hour"].":00";
 		}	
-
+		if (isset($input['type']) && $input['type']=="global")
+				$input['recursive']=1;
+		else	$input['recursive']=0;
 
 		// set new date.
 		$input["date"] = $_SESSION["glpi_currenttime"];
@@ -88,6 +90,9 @@ class Reminder extends CommonDBTM {
 			$input["end"] = $input['_plan']["end_date"]." ".$input['_plan']["end_hour"].":00";
 			$input["state"] = $input['_plan']["state"];
 		}	
+		if (isset($input['type']) && $input['type']=="global")
+				$input['recursive']=1;
+		else	$input['recursive']=0;
 
 		return $input;
 	}
@@ -97,34 +102,33 @@ class Reminder extends CommonDBTM {
 
 		global $CFG_GLPI,$LANG;
 
-		$issuperadmin=haveRight("reminder_public","w");
+		$isglobaladmin=$issuperadmin=haveRight("reminder_public","w");
 		$author=$_SESSION['glpiID'];
 
 		$read ="";
 		$remind_edit=false;
-		$remind_show =false;
+		$remind_show=false;
 
 		if (!$ID) {
 
 			if($this->getEmpty()){
 				$remind_edit = true;
+				$isglobaladmin &= haveRecursiveAccessToEntity($_SESSION["glpiactive_entity"]);
 				$this->fields["title"]=$LANG["reminder"][6];
 				$onfocus="onfocus=\"this.value=''\"";
 			}
 
-
-		} else {
-			if($this->getFromDB($ID)){
-				$onfocus="";
-				if($this->fields["author"]==$author) {
-					$remind_edit = true;
-				} elseif($this->fields["type"]=="public") { 
-					$remind_show = true;
-				}
-
-			} else $remind_show = false;
-
+		} else if($this->getFromDB($ID)){
+			
+			$onfocus="";
+			if($this->fields["author"]==$author) {
+				$remind_edit = true;
+				$isglobaladmin &= haveRecursiveAccessToEntity($this->fields["FK_entities"]);
+			} elseif($this->fields["type"]!="private") { 
+				$remind_show = true;
+			}
 		}
+
 		if ($remind_show||$remind_edit){
 
 			if($remind_edit) {
@@ -141,6 +145,7 @@ class Reminder extends CommonDBTM {
 			} else {
 				echo $LANG["common"][2]." $ID";
 			}		
+
 			if (isMultiEntitiesMode()){
 				echo "&nbsp;(".getDropdownName("glpi_entities",$this->fields["FK_entities"]).")";
 			}
@@ -170,10 +175,18 @@ class Reminder extends CommonDBTM {
 			if($remind_edit) { 
 				echo "<select name='type' $read>";
 
-				echo "<option value='private' ". (((isset($_GET["type"])&&$_GET["type"]=="private")||$this->fields["type"]=="private")?"selected='selected'":"") .">".$LANG["reminder"][4]."</option>";	
+				echo "<option value='private' ". (((isset($_GET["type"])&&$_GET["type"]=="private")||$this->fields["type"]=="private")?"selected='selected'":"") .">".
+					$LANG["reminder"][4]."  (".getUserName($author).")</option>";	
 
 				if($issuperadmin){
-					echo "<option value='public' ". ((isset($_GET["type"])&&$_GET["type"]=="public")||($this->fields["type"]=="public")?"selected='selected'":"").">".$LANG["reminder"][5]."</option>";	
+					$name=getDropdownName("glpi_entities", $_SESSION["glpiactive_entity"]);
+					
+					echo "<option value='public' ". ((isset($_GET["type"])&&$_GET["type"]=="public")||($this->fields["type"]=="public")?"selected='selected'":"").">".
+					$LANG["reminder"][5]."  ($name)</option>";	
+				}		
+				if($isglobaladmin){
+					echo "<option value='global' ". ((isset($_GET["type"])&&$_GET["type"]=="global")||($this->fields["type"]=="global")?"selected='selected'":"").">".
+					$LANG["reminder"][17]."  ($name + ".$LANG["entity"][9].")</option>";	
 				}		
 				echo "</select>";
 			}else{

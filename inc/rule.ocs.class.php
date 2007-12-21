@@ -42,7 +42,7 @@ class OcsRuleCollection extends RuleCollection {
 	//Store the id of the ocs server
 	var $ocs_server_id;
 
-	function OcsRuleCollection($ocs_server_id) {
+	function OcsRuleCollection($ocs_server_id=-1) {
 		$this->rule_type = RULE_OCS_AFFECT_COMPUTER;
 		$this->rule_class_name = 'OcsAffectEntityRule';
 		$this->ocs_server_id = $ocs_server_id;
@@ -65,7 +65,6 @@ class OcsRuleCollection extends RuleCollection {
 		$fields = $this->getFieldsForQuery();
 		$linked_fields = $this->getFKFieldsForQuery();
 
-
 		$rule_parameters = array ();
 
 		$sql = "";
@@ -77,7 +76,6 @@ class OcsRuleCollection extends RuleCollection {
 		//Build the select request
 		foreach ($fields as $field) {
 			switch (strtoupper($field)) {
-				
 				//OCS server ID is provided by extra_params -> get the configuration associated with the ocs server
 				case "OCS_SERVER" :
 					$rule_parameters["OCS_SERVER"] = $this->ocs_server_id;
@@ -122,7 +120,14 @@ class OcsRuleCollection extends RuleCollection {
 							$ocs_datas[$field][] = $datas[$field];
 					}
 				}
+				
 			}
+
+			//This cas should never happend but...
+			//Sometimes OCS can't find network ports but fill the right ip in hardware table...
+			//So let's use the ip to proceed rules (if IP is a criteria of course)
+			if (in_array("IPADDRESS",$fields) && !isset($ocs_datas['IPADDRESS']))
+				$ocs_datas['IPADDRESS']=getOcsGeneralIpAddress($this->ocs_server_id,$computer_id);	
 
 			return array_merge($rule_parameters, $ocs_datas);
 		} else
@@ -227,7 +232,7 @@ class OcsAffectEntityRule extends Rule {
 	}
 
 	function maxActionsCount(){
-	// Unlimited
+		// Unlimited
 		return 1;
 	}
 	/**

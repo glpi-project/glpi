@@ -208,6 +208,7 @@ class RightAffectRule extends Rule {
 		return $output;
 	}
 
+
 /**
  * Return all rules from database
  * @param $ID of rules
@@ -277,7 +278,106 @@ class RightRuleCollection extends RuleCollection {
 		return $LANG["rulesengine"][19];
 	}
 
+
+	function cleanTestOutputCriterias($output)
+	{
+		if (isset($output["_rule_process"]))
+			unset($output["_rule_process"]);
+			
+		return $output;			
+	}
+
+	function showTestResults($rule,$output,$global_result)
+	{
+		global $LANG,$RULES_ACTIONS;
+
+		echo "<tr><th colspan='4'>" . $LANG["rulesengine"][81] . "</th></tr>";
+		echo "<tr  class='tab_bg_2'>";
+		echo "<td class='tab_bg_2' colspan='4' align='center'>".$LANG["rulesengine"][41]." : <strong> ".getYesNo($global_result)."</strong></td>";
+
+		
+		if (isset($output["_ldap_rules"]["rules_entities"]))
+		{
+			echo "<tr  class='tab_bg_2'>";
+			echo "<td class='tab_bg_2' colspan='4' align='center'>".$LANG["rulesengine"][111]."</td>";
+
+			foreach ($output["_ldap_rules"]["rules_entities"] as $val)
+			{
+				$this->displayActionByName("entity",$val[0]);
+				if (isset($val[1]))
+					$this->displayActionByName("recursive",$val[1]);
+			}
+		}
+
+		if (isset($output["_ldap_rules"]["rules_rights"]))
+		{
+			echo "<tr  class='tab_bg_2'>";
+			echo "<td class='tab_bg_2' colspan='4' align='center'>".$LANG["rulesengine"][110]."</td>";
+
+			foreach ($output["_ldap_rules"]["rules_rights"] as $val)
+				$this->displayActionByName("profile",$val[0]);
+		}
+
+		if (isset($output["_ldap_rules"]["rules_entities_rights"]))
+		{
+			echo "<tr  class='tab_bg_2'>";
+			echo "<td class='tab_bg_2' colspan='4' align='center'>".$LANG["rulesengine"][112]."</td>";
+
+			foreach ($output["_ldap_rules"]["rules_entities_rights"] as $val)
+			{
+				$this->displayActionByName("entity",$val[0]);
+				if (isset($val[1]))
+					$this->displayActionByName("profile",$val[1]);
+				if (isset($val[2]))
+					$this->displayActionByName("recursive",$val[2]);
+			}
+		}
+		
+		if (isset($output["_ldap_rules"]))
+			unset($output["_ldap_rules"]);
+			
+		foreach ($output as $criteria => $value)
+		{
+			echo "<tr  class='tab_bg_2'>";
+			echo "<td class='tab_bg_2' align='center'>";
+			echo $RULES_ACTIONS[$this->rule_type][$criteria]["name"];
+			echo "</td>";
+			echo "<td class='tab_bg_2' align='center'>";
+			echo $rule->getActionValue($criteria,$value);
+			echo "</td>";
+			echo "</tr>";
+
+		}
+		echo "</tr>";
+	}
 	
+	function displayActionByName($name,$value)
+	{
+		global $LANG;
+		echo "<tr>"; 
+		switch ($name)
+		{
+			case "entity":
+			 	echo  "<td class='tab_bg_2' align='center'>".$LANG["entity"][0]." </td>\n"; 
+			 	echo  "<td class='tab_bg_2' align='center'>";                                                                         
+			 	echo  getDropdownName("glpi_entities",$value);  
+			 	echo  "</td>"; 
+			break;
+			case "profile":
+			 	echo  "<td class='tab_bg_2' align='center'>".$LANG["Menu"][35]." </td>\n"; 
+			 	echo  "<td class='tab_bg_2' align='center'>";                                                                         
+			 	echo  getDropdownName("glpi_profiles",$value);  
+			 	echo  "</td>"; 
+			break;			
+			case "recursive":
+			 	echo "<td class='tab_bg_2' align='center'>".$LANG["profiles"][28]." </td>\n";
+			 	echo  "<td class='tab_bg_2' align='center'>";                                                                         
+			 	echo ((!$value)?$LANG["choice"][0]:$LANG["choice"][1]); 
+			 	echo  "</td>"; 
+			break;			
+		}
+		echo  "</tr>"; 
+	}
 	/**
 	 * Get all the fields needed to perform the rule
 	 */

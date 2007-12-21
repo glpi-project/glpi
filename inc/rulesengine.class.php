@@ -44,7 +44,11 @@ class RuleCollection {
 	var $right="config";
 	var $orderby="ranking";
 	var $use_output_rule_process_as_next_input=false;
-
+	
+	var $use_cache=false;
+	var $cache_table;
+	var $cache_params;
+	var $can_replay_rules;
 	
 	/**
 	* Constructor
@@ -52,6 +56,10 @@ class RuleCollection {
 	*/
 	function RuleCollection($rule_type){
 		$this->rule_type = $rule_type;
+		$this->use_cache = false;
+		$this->cache_table="";	
+		$this->cache_params = array();
+		$this->can_replay_rules = false;
 	}
 
 
@@ -109,10 +117,9 @@ class RuleCollection {
 		$this->getCollectionDatas(0,0);
 		echo "<br><form name='ruleactions_form' id='ruleactions_form' method='post' action=\"$target\">\n";
 		echo "<div class='center'>"; 
-
 		echo "<table class='tab_cadrehov'>";
 
-		echo "<tr><th colspan='5'><div class='relative'><span><strong>" . $this->getTitle() . "</strong></span>";
+		echo "<tr><th colspan='6'><div class='relative'><span><strong>" . $this->getTitle() . "</strong></span>";
 		if ($canedit){
 			echo "<span style='  position:absolute; right:0; margin-right:5px; font-size:10px;'><a href=\"".ereg_replace(".php",".form.php",$target)."\"><img src=\"".$CFG_GLPI["root_doc"]."/pics/plus.png\" alt='+' title='".$LANG["buttons"][8]."'></a></span>";
 		}
@@ -122,6 +129,7 @@ class RuleCollection {
 		echo "<td class='tab_bg_2'></td>";
 		echo "<td class='tab_bg_2'>".$LANG["common"][16]."</td>";
 		echo "<td class='tab_bg_2'>".$LANG["joblist"][6]."</td>";
+		echo "<td class='tab_bg_2'>".$LANG["common"][60]."</td>";
 		echo "<td class='tab_bg_2' colspan='2'></td>";
 		echo "</tr>";
 		
@@ -147,6 +155,7 @@ class RuleCollection {
 			if ($this->orderby=="ranking")
 				echo "<option value=\"move_rule\">".$LANG["buttons"][20]."</option>";
 				
+			echo "<option value=\"activate_rule\">".$LANG["rulesengine"][46]."</option>";
 			echo "</select>";
 
 			$params=array('action'=>'__VALUE__',
@@ -158,11 +167,20 @@ class RuleCollection {
 		
 			echo "<span id='show_massiveaction'>&nbsp;</span>\n";			
 
-			echo "</td></tr>";
+			echo "</td>";
+			if ($this->can_replay_rules)
+				echo "<td><input type='submit' name='replay_rule' value=\"" . $LANG["rulesengine"][76] . "\" class='submit'></td>";
+
+			echo "</tr>";
 			
 			echo "</table>";
 			echo "</div>";
 		} 
+		
+		if ($this->use_cache)
+			echo "<span='center'><a href='#' onClick=\"window.open('".$CFG_GLPI["root_doc"]."/front/popup.php?popup=show_cache&amp;rule_type=".$this->rule_type."' ,'glpipopup', 'height=400, width=1000, top=100, left=100, scrollbars=yes' )\">".$LANG["rulesengine"][100]."</a></span>"; 
+
+		echo "<br><span='center'><a href='#' onClick=\"window.open('".$CFG_GLPI["root_doc"]."/front/popup.php?popup=test_all_rules&amp;rule_type=".$this->rule_type."&amp' ,'glpipopup', 'height=400, width=1000, top=100, left=100, scrollbars=yes' )\">".$LANG["rulesengine"][84]."</a></span>"; 
 		echo "</form>";
 
 	}
@@ -266,13 +284,28 @@ class RuleCollection {
 	}
 	/**
 	* Process all the rules collection
-	* @param $input the input data used to check criterias
-	* @param $output the initial ouput array used to be manipulate by actions
-	* @param $params parameters for all internal functions
+	* @param input the input data used to check criterias
+	* @param output the initial ouput array used to be manipulate by actions
+	* @param params parameters for all internal functions
+	* @param force_no_cache don't write rule's result into cache (for preview mode mainly)
 	* @return the output array updated by actions
+				}
+				if ($this->use_output_rule_process_as_next_input){
+					$input=$output;
 	*/
-	function processAllRules($input=array(),$output=array(),$params=array())
+	function processAllRules($input=array(),$output=array(),$params=array(),$force_no_cache=false)
 	{	
+		//If cache enabled : try to get value from the cache
+		if ($this->use_cache)
+		{
+			$new_values = $this->checkDataInCache($input);
+			if ($new_values != RULE_NOT_IN_CACHE)
+			{
+				$output["_rule_process"]=true;
+				return array_merge($output,$new_values);
+			}
+		}
+		
 		// Get Collection datas
 		$this->getCollectionDatas(1,1);
 		$input=$this->prepareInputDataForProcess($input,$params);
@@ -280,19 +313,117 @@ class RuleCollection {
 		if (count($this->rule_list)){
 
 			foreach ($this->rule_list as $rule){
-				$output["_rule_process"]=false;
-				$rule->process($input,$output,$params);
-				if ($output["_rule_process"]&&$this->stop_on_first_match){
-					unset($output["_rule_process"]);
-					return $output;
-				}
-				if ($this->use_output_rule_process_as_next_input){
-					$input=$output;
+				//If the rule is active, process it
+				if ($rule->fields["active"])
+				{
+					$output["_rule_process"]=false;
+					$rule->process($input,$output,$params,$this->use_cache);
+						if ($output["_rule_process"]&&$this->stop_on_first_match){
+							unset($output["_rule_process"]);
+							
+							$output["_ruleid"]=$rule->fields["ID"];
+							if ($this->use_cache && !$force_no_cache)
+							{
+								$this->insertDataInCache($input,$output);
+								unset($output["_ruleid"]);
+							}
+							return $output;
+						}
 				}
 			}
 		}
 		return $output;
 	}
+
+	function showRulesEngineCriteriasForm($target,$rule_type,$values){
+
+		global $DB, $LANG,$RULES_CRITERIAS,$RULES_ACTIONS; 
+
+		$input = $this->prepareInputDataForTestProcess();
+
+		if (count($input)){
+			echo "<form name='testrule_form' id='testrulesengine_form' method='post' action=\"$target\">\n";
+			echo "<div class='center'>";
+			echo "<table class='tab_cadre_fixe'>"; 
+			echo "<tr><th colspan='2'>" . $LANG["rulesengine"][6] . "</th></tr>"; 
+			
+			 //Brower all criterias 
+			foreach ($input as $criteria){
+				echo "<tr class='tab_bg_1'>"; 
+
+				if (isset($RULES_CRITERIAS[$rule_type][$criteria]))
+				{
+					$criteria_constants = $RULES_CRITERIAS[$rule_type][$criteria];
+					echo "<td>".$criteria_constants["name"].":</td>";
+				}
+				else
+					echo "<td>".$criteria.":</td>";
+				
+				echo "<td>";
+
+				$rule = getRuleClass($this->rule_type);
+				$rule->displayCriteriaSelectPattern($criteria,$criteria,PATTERN_IS,isset($values[$criteria])?$values[$criteria]:'');
+				echo "</td>";
+				echo "</tr>"; 
+			}
+			$rule->showSpecificCriteriasForPreview($_POST);
+
+			echo "<tr><td class='tab_bg_2' colspan='2' align='center'>"; 
+			echo "<input type='submit' name='test_all_rules' value=\"" . $LANG["buttons"][50] . "\" class='submit'>";
+			echo "<input type='hidden' name='rule_type' value=\"" . $this->rule_type . "\">"; 
+			echo "</td></tr>"; 
+			echo "</table>";
+			echo "</div>";
+			echo "</form>";
+		}
+		
+		return $input;
+	}
+
+
+	/**
+	* Test all the rules collection
+	* @param input the input data used to check criterias
+	* @param output the initial ouput array used to be manipulate by actions
+	* @param params parameters for all internal functions
+	* @param force_no_cache don't write rule's result into cache (for preview mode mainly)
+	* @return the output array updated by actions
+	*/
+	function testAllRules($input=array(),$output=array(),$params=array())
+	{	
+		// Get Collection datas
+		$this->getCollectionDatas(1,1);
+		
+		if (count($this->rule_list)){
+
+			foreach ($this->rule_list as $rule){
+				//If the rule is active, process it
+				if ($rule->fields["active"])
+				{
+					$output["_rule_process"]=false;
+					$output["result"][$rule->fields["ID"]]["ID"]=$rule->fields["ID"];
+					
+					$rule->process($input,$output,$params,$this->use_cache);
+					if ($output["_rule_process"]&&$this->stop_on_first_match){
+						unset($output["_rule_process"]);
+						$output["result"][$rule->fields["ID"]]["result"]=1;
+						$output["_ruleid"]=$rule->fields["ID"];
+						return $output;
+					}
+					elseif ($output["_rule_process"])
+							$output["result"][$rule->fields["ID"]]["result"]=1;
+						else
+							$output["result"][$rule->fields["ID"]]["result"]=0;
+				}
+				else
+					//Rule is inactive
+					$output["result"][$rule->fields["ID"]]["result"]=2;
+			}
+		}
+		return $output;
+	}
+
+
 
 	/**
 	* Prepare input datas for the rules collection
@@ -303,14 +434,179 @@ class RuleCollection {
 	function prepareInputDataForProcess($input,$params){
 		return $input;
 	}
-	
 
+	/**
+	* Prepare input datas for the rules collection
+	* @param $input the input data used to check criterias
+	* @param $params parameters
+	* @return the updated input datas
+	*/
+	function prepareInputDataForTestProcess(){
+		global $DB;
+		$input = array();
+		
+		$res = $DB->query("SELECT DISTINCT grc.criteria as criteria FROM glpi_rules_criterias as grc, glpi_rules_descriptions grd WHERE grc.FK_rules=grd.ID AND grd.rule_type=".$this->rule_type);
+		while ($data = $DB->fetch_array($res))
+			$input[]=$data["criteria"];
+		return $input;
+	}
+	
+	function checkDataInCache($input)
+	{
+		global $DB;
+		
+		$where="";
+		$first=true;
+		foreach($this->cache_params["input_value"] as $param => $value)
+		{
+			if (isset($input[$param]))	
+			{
+				$where.=(!$first?" AND ":"")."`".$value."`=\"".$input[$param]."\"";
+				$first=false;
+			}
+		}
+			
+		$sql = "SELECT * FROM ".$this->cache_table." WHERE ".$where;
+		$res_check = $DB->query($sql);
+		$output_values=array();
+		if ($DB->numrows($res_check) == 1)
+		{
+			foreach ($this->cache_params["output_value"] as $param => $param_value)
+				$output_values[$param]=$DB->result($res_check,0,$param_value);
+			return $output_values;
+		}
+		else	
+			return RULE_NOT_IN_CACHE;	
+	}
+
+	function insertDataInCache($input,$output)
+	{
+		global $DB;
+
+		$old_values="";
+		$into_old="";
+		foreach($this->cache_params["input_value"] as $param => $value)
+		{
+			$into_old.="`".$value."`, ";
+			$old_values.="\"".$input[$param]."\", ";
+		}
+		
+		$into_new="";
+		$new_values="";
+		foreach($this->cache_params["output_value"] as $param => $value)
+		{
+			$into_new.=", `".$value."`";
+			$new_values.=" ,\"".$output[$param]."\"";
+		}
+		$sql="INSERT INTO ".$this->cache_table." (".$into_old."`rule_id`".$into_new.") VALUES (".$old_values.$output["_ruleid"].$new_values.")";
+		$DB->query($sql);
+	}
+
+	function deleteCache()
+	{
+		global $DB;
+		$DB->query("TRUNCATE TABLE ".$this->cache_table);
+	}	
+	
+	function replayRulesOnExistingDB()
+	{
+		
+	}	
+	
+	function showRulesEnginePreviewResultsForm($target,$input)
+	{
+		global $LANG,$RULES_ACTIONS;
+		$output = array();
+
+		$output = $this->testAllRules($input,array(),array());
+		$rule = getRuleClass($this->rule_type);
+
+		echo "<div class='center'>"; 
+		
+		if (isset($output["result"]))
+		{
+			echo "<table class='tab_cadrehov'>";
+			echo "<tr><th colspan='4'>" . $LANG["rulesengine"][82] . "</th></tr>";
+
+			foreach ($output["result"] as $ID=>$rule_result)
+			{
+				echo "<tr  class='tab_bg_2'>";
+				$rule->getFromDB($ID);
+				echo "<td class='tab_bg_2'>";
+				echo $rule->fields["name"];
+				echo "</td>";
+				
+				echo "<td class='tab_bg_2'>";
+				switch ($rule_result["result"])
+				{
+					case 0 : 
+						echo "<strong>".$LANG["choice"][0]."</strong>";
+					break;
+					case 1 : 
+						echo "<strong>".$LANG["choice"][1]."</strong>";
+					break;
+					case 2 : 
+						echo "<strong>".$LANG["rulesengine"][107]."</strong>";
+					break;
+					
+				}
+				echo "</td>";
+				echo "</tr>";
+			}
+			echo "</table>";
+		}
+		
+		$output = $this->cleanTestOutputCriterias($output);
+		unset($output["result"]);			
+
+		$global_result =(count($output)?1:0);
+		
+		echo "<br><table class='tab_cadrehov'>";
+		$this->showTestResults($rule,$output,$global_result);
+		echo "</table></div>";
+		
+	}
+	
+	/**
+	 * Unset criterias from the rule's ouput results
+	 */
+	function cleanTestOutputCriterias($output)
+	{
+		//If output array contains keys begining with _ : drop it
+		foreach($output as $criteria => $value)
+			if ($criteria[0]=='_')
+			unset($output[$criteria]);
+		return $output;			
+	}
+	
+	function showTestResults($rule,$output,$global_result)
+	{
+		global $LANG,$RULES_ACTIONS;
+		echo "<tr><th colspan='4'>" . $LANG["rulesengine"][81] . "</th></tr>";
+		echo "<tr  class='tab_bg_2'>";
+		echo "<td class='tab_bg_2' colspan='4' align='center'>".$LANG["rulesengine"][41]." : <strong> ".getYesNo($global_result)."</strong></td>";
+
+		foreach ($output as $criteria => $value)
+		{
+			echo "<tr  class='tab_bg_2'>";
+			echo "<td class='tab_bg_2'>";
+			echo $RULES_ACTIONS[$this->rule_type][$criteria]["name"];
+			echo "</td>";
+			echo "<td class='tab_bg_2'>";
+			echo $rule->getActionValue($criteria,$value);
+			echo "</td>";
+			echo "</tr>";
+
+		}
+		echo "</tr>";
+	}
 }
 
 /**
  * Rule class store all informations about a GLPI rule :
  *   - description
  *   - criterias
+/
  *   - actions
 */
 class Rule extends CommonDBTM{
@@ -392,13 +688,10 @@ class Rule extends CommonDBTM{
 			$this->dropdownRulesMatch("match",$this->fields["match"]);
 			echo "</td>";
 			
-			echo "<td class='tab_bg_2' colspan='2'>";
-			if ($new){
-				echo '&nbsp;';
-			} else {
-				echo "<a href='#' onClick=\"window.open('".$CFG_GLPI["root_doc"]."/front/popup.php?popup=test_rule&amp;rule_type=".$this->rule_type."&amp;rule_id=".$this->fields["ID"]."' ,'glpipopup', 'height=400, width=1000, top=100, left=100, scrollbars=yes' )\">".$LANG["buttons"][50]."</a>"; 
-			}
-			echo "</td>";
+			echo "<td class='tab_bg_2'>".$LANG["common"][60]."</td>";
+			echo "<td class='tab_bg_2'>";
+			dropdownYesNo("active",$this->fields["active"]);
+			echo"</td>";
 
 			echo "</tr>";
 			
@@ -418,6 +711,10 @@ class Rule extends CommonDBTM{
 					echo "<td class='tab_bg_2' align='center' colspan='2'>";
 					echo "<input type='submit' name='delete_rule' value=\"" . $LANG["buttons"][6] . "\" class='submit'></td>";
 					echo "</tr>";
+
+					echo "<tr><td class='tab_bg_2' align='center' colspan='4'>";
+					echo "<a href='#' onClick=\"window.open('".$CFG_GLPI["root_doc"]."/front/popup.php?popup=test_rule&amp;rule_type=".$this->rule_type."&amp;rule_id=".$this->fields["ID"]."' ,'glpipopup', 'height=400, width=1000, top=100, left=100, scrollbars=yes' )\">".$LANG["buttons"][50]."</a>"; 
+					echo "</td></tr>";
 				}
 			}
 			
@@ -478,20 +775,22 @@ class Rule extends CommonDBTM{
 		// Unlimited
 		return 0;
 	}
+
 	/**
 	 * Display all rules actions
 	* @param $target  
 	 */
-	function showActionsList($target)
+	function showActionsList($target,$rule_id)
 	{
 		global $CFG_GLPI, $LANG;
 			
 		$canedit = haveRight($this->right, "w");
 		
 		$this->getTitleAction($target);	
+
 		if (($this->maxActionsCount()==0 || sizeof($this->actions) < $this->maxActionsCount()) && $canedit){
 			echo "<form name='actionsaddform' method='post' action=\"$target\">\n";
-			$this->addActionForm();
+			$this->addActionForm($rule_id);
 			echo "</form>";
 		}
 		
@@ -523,16 +822,18 @@ class Rule extends CommonDBTM{
 			echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkAllRows('actionsform') ) return false;\" href='" . $_SERVER['PHP_SELF'] . "?select=none'>" . $LANG["buttons"][19] . "</a>";
 			echo "</td><td align='left' width='80%'>";
 			echo "<input type='submit' name='delete_action' value=\"" . $LANG["buttons"][6] . "\" class='submit'>";
+			echo "<input type='hidden' name='rule_id' value='" . $rule_id . "'>";
 			echo "</td></tr></table>";
 			echo "</div>";
 		} 			
 		echo "</form>";
 
 	}
+
 	/**
 	 * Display the add action form
 	 */
-	function addActionForm() {
+	function addActionForm($rule_id) {
 		global $LANG,$CFG_GLPI;
 		echo "<div class='center'>";
 		echo "<table  class='tab_cadre_fixe'>";
@@ -540,9 +841,8 @@ class Rule extends CommonDBTM{
 		echo "<tr  class='tab_bg_2' align='center'><td>";
 		echo $LANG["rulesengine"][30] . ":";
 		echo "</td><td>";
-		$val=$this->dropdownActions();
+		$val=$this->dropdownActions(getAlreadyUsedActionsByRuleID($rule_id,$this->rule_type));
 		echo "</td><td align='left' width='500px'>";
-		
 		echo "<span id='action_span'>\n";
 		$_POST["rule_type"]=$this->rule_type;
 		$_POST["field"]=$val;
@@ -552,6 +852,8 @@ class Rule extends CommonDBTM{
 		echo "</td><td>";
 		echo "<input type=hidden name='FK_rules' value=\"" . $this->fields["ID"] . "\">";
 		echo "<input type='submit' name='add_action' value=\"" . $LANG["buttons"][8] . "\" class='submit'>";
+		echo "<input type='hidden' name='rule_id' value='" . $rule_id . "'>";
+		
 		echo "</td></tr>";
 
 		echo "</table></div><br>";
@@ -560,7 +862,7 @@ class Rule extends CommonDBTM{
 	/**
 	 * Display the add criteria form
 	 */
-	function addCriteriaForm() {
+	function addCriteriaForm($rule_id) {
 		global $LANG,$CFG_GLPI,$RULES_CRITERIAS;
 		echo "<div class='center'>";
 		echo "<table  class='tab_cadre_fixe'>";
@@ -583,6 +885,7 @@ class Rule extends CommonDBTM{
 			
 		echo "<input type=hidden name='FK_rules' value=\"" . $this->fields["ID"] . "\">";
 		echo "<input type='submit' name='add_criteria' value=\"" . $LANG["buttons"][8] . "\" class='submit'>";
+		echo "<input type='hidden' name='rule_id' value='" . $rule_id . "'>";
 		echo "</td></tr>";
 
 		echo "</table></div><br>";
@@ -599,7 +902,7 @@ class Rule extends CommonDBTM{
 	/**
 	 * Display all rules criterias
 	 */
-	function showCriteriasList($target)
+	function showCriteriasList($target,$rule_id)
 	{
 		global $CFG_GLPI, $LANG;
 			
@@ -610,7 +913,7 @@ class Rule extends CommonDBTM{
 		$this->getTitleCriteria($target);
 		if (($this->maxCriteriasCount()==0 || sizeof($this->criterias) < $this->maxCriteriasCount()) && $canedit){
 			echo "<form name='criteriasaddform'method='post' action=\"$target\">\n";
-			$this->addCriteriaForm();
+			$this->addCriteriaForm($rule_id);
 			echo "</form>";	
 		}
 		
@@ -640,6 +943,7 @@ class Rule extends CommonDBTM{
 			echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkAllRows('criteriasform') ) return false;\" href='" . $_SERVER['PHP_SELF'] . "?ID=".$this->fields["ID"]."&amp;select=none'>" . $LANG["buttons"][19] . "</a>";
 			echo "</td><td align='left' width='80%'>";
 			echo "<input type='submit' name='delete_criteria' value=\"" . $LANG["buttons"][6] . "\" class='submit'>";
+			echo "<input type='hidden' name='rule_id' value='" . $rule_id . "'>";
 			echo "</td></tr>";
 			echo "</table>";
 			echo "</div>";
@@ -667,22 +971,25 @@ class Rule extends CommonDBTM{
 
 		return key($items);
 	}
+
 	/**
 	 * Display the dropdown of the actions for the rule
 	 */
-	function dropdownActions(){
+	function dropdownActions($used=array()){
 		global $CFG_GLPI;
+
 		$items=array();
 		foreach ($this->getActions() as $ID => $act){
-			$items[$ID]=$act['name'];
+				$items[$ID]=$act['name'];
 		}
 
-		$rand=dropdownArrayValues("field", $items);
-		$params=array('field'=>'__VALUE__',
-				'rule_type'=>$this->rule_type,
-		);
-		ajaxUpdateItemOnSelectEvent("dropdown_field$rand","action_span",$CFG_GLPI["root_doc"]."/ajax/ruleaction.php",$params,false);
-		ajaxUpdateItem("action_span",$CFG_GLPI["root_doc"]."/ajax/ruleaction.php",$params,false,"dropdown_field$rand");
+		$rand=dropdownArrayValues("field", $items,'',$used);
+			$params=array('field'=>'__VALUE__',
+					'rule_type'=>$this->rule_type
+			);
+			ajaxUpdateItemOnSelectEvent("dropdown_field$rand","action_span",$CFG_GLPI["root_doc"]."/ajax/ruleaction.php",$params,false);
+			ajaxUpdateItem("action_span",$CFG_GLPI["root_doc"]."/ajax/ruleaction.php",$params,false,"dropdown_field$rand");
+	
 	}
 
 	/**
@@ -691,6 +998,7 @@ class Rule extends CommonDBTM{
 	 */
 	function getCriterias(){
 		global $RULES_CRITERIAS;
+
 		if (isset($RULES_CRITERIAS[$this->rule_type])){
 			return $RULES_CRITERIAS[$this->rule_type];
 		} else {
@@ -719,7 +1027,6 @@ class Rule extends CommonDBTM{
 	function filterActions($actions){
 		return $actions;
 	}
-
 	/**
 	 * Get a criteria description by his ID
 	 * @param $ID the criteria's ID
@@ -728,12 +1035,14 @@ class Rule extends CommonDBTM{
 	function getCriteria($ID)
 	{
 		$criterias=$this->getCriterias();
+
 		if (isset($criterias[$ID])){
 			return $criterias[$ID];
 		} else {
 			return array();
 		}
 	}
+
 	/**
 	 * Get a action description by his ID
 	 * @param $ID the action's ID
@@ -748,6 +1057,7 @@ class Rule extends CommonDBTM{
 			return array();
 		}
 	}
+
 	/**
 	 * Get a criteria description by his ID
 	 * @param $ID the criteria's ID
@@ -763,7 +1073,6 @@ class Rule extends CommonDBTM{
 		}
 	}
 
-
 	/**
 	 * Get a action description by his ID
 	 * @param $ID the action's ID
@@ -778,6 +1087,7 @@ class Rule extends CommonDBTM{
 			return "&nbsp;";
 		}
 	}
+
 	/**
 	* Process the rule
 	* @param $input the input data used to check criterias
@@ -785,77 +1095,100 @@ class Rule extends CommonDBTM{
 	* @param $params parameters for all internal functions
 	* @return the output array updated by actions. If rule matched add field _rule_process to return value
 	*/
-	function process(&$input,&$output,&$params)
+	function process(&$input,&$output,&$params,$getvalue=true)
 	{
-		if (count($this->criterias))	{
-			$input=$this->prepareInputDataForProcess($input,$params);
+		if (count($this->criterias))	
+		{
+			$regex_result=array();
 			
-			if ($this->checkCriterias($input)){
-				$output=$this->executeActions($output,$params);
-				
-				//Hook
-				$hook_params["rule_type"]=$this->rule_type;
-				$hook_params["ruleid"]=$this->fields["ID"];
-				$hook_params["input"]=$input;
-				$hook_params["output"]=$output;
-				
-				doHook("rule_matched",$hook_params);
-				$output["_rule_process"]=true;
-			}			
+			$input=$this->prepareInputDataForProcess($input,$params);
+
+ 			if ($this->checkCriterias($input,$regex_result,$getvalue)){
+				$output=$this->executeActions($output,$params,$regex_result);
+	
+	            //Hook 
+	           $hook_params["rule_type"]=$this->rule_type; 
+	           $hook_params["ruleid"]=$this->fields["ID"]; 
+	           $hook_params["input"]=$input; 
+	           $hook_params["output"]=$output; 
+	           doHook("rule_matched",$hook_params); 
+	           $output["_rule_process"]=true;
+           }			
 		}
-		// return $output; 
 	}
+
 	/**
 	* Check criterias
 	* @param $input the input data used to check criterias
 	* @return boolean if criterias match
 	*/
-	function checkCriterias($input){
+	function checkCriterias($input,&$regex_result,$getvalue=true){
 		$doactions=false;
 		reset($this->criterias);
 		if ($this->fields["match"]==AND_MATCHING){
 			$doactions=true;			
 			foreach ($this->criterias as $criteria){
-				$doactions &= $this->checkCriteria($criteria,$input);
+				$doactions &= $this->checkCriteria($criteria,$input,$regex_result,$getvalue);
 				if (!$doactions) break;
 			}
 		} else { // OR MATCHING
 			$doactions=false;
 			foreach ($this->criterias as $criteria){
-				$doactions |= $this->checkCriteria($criteria,$input);
+				$doactions |= $this->checkCriteria($criteria,$input,$regex_result,$getvalue);
 				if ($doactions) break;
 			}
 		}
 		return $doactions;
 	}
 
-
-
+	/**
+	* Check criterias
+	* @param $input the input data used to check criterias
+	* @return boolean if criterias match
+	*/
+	function testCriterias($input,&$regex_result,&$check_results){
+		reset($this->criterias);
+		
+		foreach ($this->criterias as $criteria)
+		{
+			$result = $this->checkCriteria($criteria,$input,$regex_result,false);
+			$check_results[$criteria->fields["ID"]]["name"]=$criteria->fields["criteria"];
+			$check_results[$criteria->fields["ID"]]["value"]=$criteria->fields["pattern"];
+			$check_results[$criteria->fields["ID"]]["result"]=((!$result)?0:1);
+			$check_results[$criteria->fields["ID"]]["ID"]=$criteria->fields["ID"];
+		}
+	}
 
 	/**
 	* Process a criteria of a rule
-        * @param $criteria criteria to check
+	* @param $criteria criteria to check
 	* @param $input the input data used to check criterias
 	*/
-	function checkCriteria(&$criteria,&$input)
+	function checkCriteria(&$criteria,&$input,&$regex_result,$get_value=true)
 	{
-
 		// Undefine criteria field : set to blank
 		if (!isset($input[$criteria->fields["criteria"]])){
 			$input[$criteria->fields["criteria"]]='';
 		}
 		//If the value is not an array
 		if (!is_array($input[$criteria->fields["criteria"]])){
-			$value=$this->getCriteriaValue($criteria->fields["criteria"],$criteria->fields["condition"],$input[$criteria->fields["criteria"]]);
-			$res = matchRules($value,$criteria->fields["condition"],$criteria->fields["pattern"]);
+			if ($get_value)
+				$value=$this->getCriteriaValue($criteria->fields["criteria"],$criteria->fields["condition"],$input[$criteria->fields["criteria"]]);
+			else
+			$value = $input[$criteria->fields["criteria"]];
+				
+			$res = matchRules($value,$criteria->fields["condition"],$criteria->fields["pattern"],$regex_result);
 		} else	{
 			//If the value if, in fact, an array of values
 			// Negative condition : Need to match all condition (never be)
 			if (in_array($criteria->fields["condition"],array(PATTERN_IS_NOT,PATTERN_NOT_CONTAIN,REGEX_NOT_MATCH))){
 				$res = true;
 				foreach($input[$criteria->fields["criteria"]] as $tmp){
-					$value=$this->getCriteriaValue($criteria->fields["criteria"],$criteria->fields["condition"],$tmp);
-					$res &= matchRules($value,$criteria->fields["condition"],$criteria->fields["pattern"]);
+					if ($get_value)
+						$value=$this->getCriteriaValue($criteria->fields["criteria"],$criteria->fields["condition"],$tmp);
+					else
+						$value = $tmp;	
+					$res &= matchRules($value,$criteria->fields["condition"],$criteria->fields["pattern"],$regex_result);
 					if (!$res) break;
 				}
 		
@@ -863,8 +1196,11 @@ class Rule extends CommonDBTM{
 			 } else {
 				$res = false;
 				foreach($input[$criteria->fields["criteria"]] as $tmp){
-					$value=$this->getCriteriaValue($criteria->fields["criteria"],$criteria->fields["condition"],$tmp);
-					$res |= matchRules($value,$criteria->fields["condition"],$criteria->fields["pattern"]);
+					if ($get_value)
+						$value=$this->getCriteriaValue($criteria->fields["criteria"],$criteria->fields["condition"],$tmp);
+					else
+						$value = $tmp;	
+					$res |= matchRules($value,$criteria->fields["condition"],$criteria->fields["pattern"],$regex_result);
 					if ($res) break;
 				}
 	
@@ -872,8 +1208,6 @@ class Rule extends CommonDBTM{
 		}
 		return $res;	
 	}
-
-
 
 	/**
 	* Specific prepare input datas for the rule
@@ -891,7 +1225,7 @@ class Rule extends CommonDBTM{
 	* @param $params parameters
 	* @return the $output array modified
 	*/
-	function executeActions($output,$params)
+	function executeActions($output,$params,$regex_results)
 	{
 		if (count($this->actions)){
 			foreach ($this->actions as $action){
@@ -899,14 +1233,28 @@ class Rule extends CommonDBTM{
 					case "assign" :
 						$output[$action->fields["field"]] = $action->fields["value"];
 					break;
+					case "ignore":
+						$output["ignore"] = $action->fields["value"];
+					case "regex_result":
+					case "append_regex_result":
+						//Regex result : assign value from the regex
+						//Append regex result : append result from a regex
+						if ($action->fields["action_type"] == "append_regex_result")
+							$res=(isset($params[$action->fields["field"]])?$params[$action->fields["field"]]:"");
+						else
+							$res="";	
+							
+						$res .= getRegexResultById($action->fields["value"],$regex_results);
+						if ($res != null) 
+							$output[$action->fields["field"]]=$res;
+					break;
 				}
 			}
 		}
-
 		return $output;
 	}
 
-
+	
 	/**
 	 * Delete a rule and all associated criterias and actions
 	 */
@@ -948,6 +1296,11 @@ class Rule extends CommonDBTM{
 		echo "<td><a href=\"".ereg_replace(".php",".form.php",$target)."?ID=".$this->fields["ID"]."&amp;onglet=1\">" . $this->fields["name"] . "</a></td>";
 					
 		echo "<td>".$this->fields["description"]."</td>";
+		if ($this->fields["active"])
+			echo "<td>".$LANG["choice"][1]."</td>";
+		else
+			echo "<td>".$LANG["choice"][0]."</td>";
+				
 		if ($this->can_sort && !$first && $canedit){
 			echo "<td><a href=\"".$target."?type=".$this->fields["rule_type"]."&amp;action=up&amp;ID=".$this->fields["ID"]."\"><img src=\"".$CFG_GLPI["root_doc"]."/pics/deplier_up.png\" alt=''></a></td>";
 		} else {
@@ -1011,6 +1364,82 @@ class Rule extends CommonDBTM{
 		echo "</tr>";
 	}
 
+	function showRulePreviewResultsForm($target,$input,$params)
+	{
+		global $LANG,$RULES_ACTIONS;
+		$regex_results = array();
+		$check_results = array();
+		$output = array();
+		
+		//Test all criterias, without stopping at the first good one
+		$this->testCriterias($input,$regex_results,$check_results);
+
+		//Process the rule
+		$this->process($input,$output,$params,false);
+
+		$criteria = new RuleCriteria;
+
+		echo "<div class='center'>"; 
+		echo "<table class='tab_cadrehov'>";
+		echo "<tr><th colspan='4'>" . $LANG["rulesengine"][82] . "</th></tr>";
+		
+		echo "<tr class='tab_bg_2'>";
+		$criteria->showForm('','',-1,true);			
+		echo "<td class='tab_bg_2'>".$LANG["rulesengine"][41]."</td>";
+		echo "</tr>";
+
+		foreach ($check_results as $ID=>$criteria_result)
+		{
+			echo "<tr  class='tab_bg_2'>";
+			$criteria->getFromDB($criteria_result["ID"]);
+			$this->showMinimalCriteria($criteria->fields);
+			echo "<td class='tab_bg_2'>";
+			echo "<strong>".getYesNo($criteria_result["result"])."</strong>";
+			echo "</td>";
+		}
+		echo "</table>";
+
+		$global_result =(isset($output["_rule_process"])?1:0);
+		
+		echo "<br><table class='tab_cadrehov'>";
+		echo "<tr><th colspan='4'>" . $LANG["rulesengine"][81] . "</th></tr>";
+		echo "<tr  class='tab_bg_2'>";
+		echo "<td class='tab_bg_2' colspan='4' align='center'>".$LANG["rulesengine"][41]." : <strong> ".getYesNo($global_result)."</strong></td>";
+
+		//If output array contains keys begining with _ : drop it
+		foreach($output as $criteria => $value)
+			if ($criteria[0]=='_')
+			unset($output[$criteria]);
+			
+		
+		foreach ($output as $criteria => $value)
+		{
+			echo "<tr  class='tab_bg_2'>";
+			echo "<td class='tab_bg_2'>";
+			echo $RULES_ACTIONS[$this->rule_type][$criteria]["name"];
+			echo "</td>";
+			echo "<td class='tab_bg_2'>";
+			echo $this->getActionValue($criteria,$value);
+			echo "</td>";
+			echo "</tr>";
+		}
+
+		//If a regular expression was used, and matched, display the results
+		if (count($regex_results))
+		{
+				echo "<tr  class='tab_bg_2'>";
+				echo "<td class='tab_bg_2'>".$LANG["rulesengine"][85]."</td>";
+				echo "<td class='tab_bg_2'>";
+				print_r($regex_results);
+				echo "</td>";
+				echo "</tr>";
+		}
+
+		echo "</tr>";
+		
+		echo "</table></div>";
+	}
+
 	/**
 	 * Show the minimal form for the criteria rule
 	* @param $fields datas used to display the criteria
@@ -1032,6 +1461,7 @@ class Rule extends CommonDBTM{
 		$this->showMinimalCriteria($fields);	
 		echo "</tr>";
 	}
+
 	/**
 	 * Show the minimal infos for the criteria rule
 	* @param $fields datas used to display the criteria
@@ -1041,6 +1471,7 @@ class Rule extends CommonDBTM{
 		echo "<td>" . getConditionByID($fields["condition"]) . "</td>";
 		echo "<td>" . $this->getCriteriaDisplayPattern($fields["criteria"],$fields["condition"],$fields["pattern"]) . "</td>";
 	}	
+
 	/**
 	 * Show the minimal infos for the action rule
 	* @param $fields datas used to display the action
@@ -1050,7 +1481,7 @@ class Rule extends CommonDBTM{
 	{
 		echo "<td>" . $this->getActionName($fields["field"]) . "</td>";
 		echo "<td>" . getActionByID($fields["action_type"]) . "</td>";
-		echo "<td>" . $this->getActionValue($fields["field"],$fields["value"]) . "</td>";
+		echo "<td>" . stripslashes($this->getActionValue($fields["field"],$fields["value"],$fields["action_type"])) . "</td>";
 		
 	}	
 	
@@ -1093,17 +1524,16 @@ class Rule extends CommonDBTM{
 		}
 	}
 
-
 	/**
  	* Display item used to select a pattern for a criteria
 	* @param $name criteria name
  	* @param $ID the given criteria
-        * @param $condition condition used
+	* @param $condition condition used
  	* @param $value the pattern
  	*/
  	function displayCriteriaSelectPattern($name,$ID,$condition,$value=""){
 		$crit=$this->getCriteria($ID);
-		
+
 		$display=false;
 		if (isset($crit['type'])){
 			switch ($crit['type']){
@@ -1138,11 +1568,10 @@ class Rule extends CommonDBTM{
 		}
 	}
 
-
 	/**
  	* Display item to select a value for criteria
  	* @param $type criteria type
-        * @param $condition condition used
+	* @param $condition condition used
  	*/
  	function displayCriteriaSelectValue($type,$condition){
 		$display=false;
@@ -1157,12 +1586,12 @@ class Rule extends CommonDBTM{
 	{
 		global $LANG;
 		$action=$this->getAction($ID);
-		
+
 		if (!isset($action['type'])){
 			return $value;
 		} else {
-			
-			switch ($action['type']){
+			switch ($action['type'])
+			{
 				case "dropdown":
 					return getDropdownName($action["table"],$value);
 					break;
@@ -1185,10 +1614,11 @@ class Rule extends CommonDBTM{
 			}
 		}
 	}
+
 	/**
  	* Return a value associated with a pattern associated to a criteria to display it
  	* @param $ID the given criteria
-        * @param $condition condition used
+	* @param $condition condition used
  	* @param $value the pattern
  	*/
  	function getCriteriaValue($ID,$condition,$value)
@@ -1201,38 +1631,57 @@ class Rule extends CommonDBTM{
 			
 			switch ($crit['type']){
 				case "dropdown":
-					if ($condition!=PATTERN_IS&&$condition!=PATTERN_IS_NOT){
-						return getDropdownName($crit["table"],$value);
+					return getDropdownName($crit["table"],$value);
+					switch ($crit['type']){
+						case "dropdown":
+							if ($condition!=PATTERN_IS&&$condition!=PATTERN_IS_NOT){
+ 								return getDropdownName($crit["table"],$value);
+ 							}
+ 						break;
+						case "dropdown_assign":
+						case "dropdown_users":
+		 					if ($condition!=PATTERN_IS&&$condition!=PATTERN_IS_NOT){
+		 						return getUserName($value);
+		 					}
+							break;
+						case "yesno":
+		 					if ($condition!=PATTERN_IS&&$condition!=PATTERN_IS_NOT){
+		 						if ($value) 
+		 							return $LANG["choice"][1];
+		 						else
+		 							return $LANG["choice"][0];	
+		 					}
+							break;
+						case "dropdown_priority":
+		 					if ($condition!=PATTERN_IS&&$condition!=PATTERN_IS_NOT){
+		 						return getPriorityName($value);
+		 					}
+		 					break;
+						default :
+							return $value;
+							break;
 					}
-					break;
-				case "dropdown_assign":
-				case "dropdown_users":
-					if ($condition!=PATTERN_IS&&$condition!=PATTERN_IS_NOT){
-						return getUserName($value);
-					}
-					break;
-				case "yesno":
-					if ($condition!=PATTERN_IS&&$condition!=PATTERN_IS_NOT){
-						if ($value) 
-							return $LANG["choice"][1];
-						else
-							return $LANG["choice"][0];	
-					}
-					break;
-				case "dropdown_priority":
-					if ($condition!=PATTERN_IS&&$condition!=PATTERN_IS_NOT){
-						return getPriorityName($value);
-					}
-					break;
-				default :
-					return $value;
-					break;
-			}
-			return $value;
+				}
 		}
 	}
 
-	function testRuleForm($target,$rule_id){
+	/**
+	 * Function used to display type specific criterias during rule's preview
+	 */
+	function showSpecificCriteriasForPreview($fields)
+	{
+		
+	}
+	
+	/**
+	 * Function used to add specific params before rule processing
+	 */
+	function addSpecificParamsForPreview($fields,$params)
+	{
+		return $params;
+	}
+	
+	function showRulePreviewCriteriasForm($target,$rule_id){
 
 		global $DB, $LANG,$RULES_CRITERIAS,$RULES_ACTIONS; 
 		
@@ -1276,7 +1725,7 @@ class Rule extends CommonDBTM{
 				}
 		
 			}
-
+			$this->showSpecificCriteriasForPreview($_POST);
 		
 
 			echo "<tr><td class='tab_bg_2' colspan='3' align='center'>"; 
@@ -1289,10 +1738,7 @@ class Rule extends CommonDBTM{
 			echo "</form>";
 		}
 	}
-
 }
-
-
 
 class RuleAction extends CommonDBTM {
 	function RuleAction() {
@@ -1365,25 +1811,394 @@ class RuleCriteria extends CommonDBTM {
 		return $rules_list;
 	}
 
-	function showForm($target,$ID,$ruleid=-1)
+	function showForm($target,$ID,$ruleid=-1,$only_td=false)
 	{
 			global $LANG,$CFG_GLPI;
-			echo "<form name='entityaffectation_form' id='entityaffectation_form' method='post' action=\"$target\">\n";
-			echo "<div class='center'>"; 
-			echo "<table class='tab_cadre_fixe'>";
-			echo "<tr><th colspan='4'>" . $LANG["rulesengine"][6] . "</th></tr>";
-			echo "<tr>";
-			echo "<td class='tab_bg_2'></td>";
+			if (!$only_td)
+			{
+				echo "<form name='entityaffectation_form' id='entityaffectation_form' method='post' action=\"$target\">\n";
+				echo "<div class='center'>"; 
+				echo "<table class='tab_cadre_fixe'>";
+				echo "<tr><th colspan='4'>" . $LANG["rulesengine"][6] . "</th></tr>";
+				echo "<tr>";
+				echo "<td class='tab_bg_2'></td>";
+			}
+
 			echo "<td class='tab_bg_2'>".$LANG["rulesengine"][16]."</td>";
 			echo "<td class='tab_bg_2'>".$LANG["rulesengine"][14]."</td>";
 			echo "<td class='tab_bg_2'>".$LANG["rulesengine"][15]."</td>";
-			echo "</tr>";
+
+			if (!$only_td)
+				echo "</tr>";
 		
 	}
 	
+	/**
+	* Process a criteria of a rule
+	* @param $input the input data used to check criterias
+	*/
+	function process(&$input,&$regex_result)
+	{
 
+		// Undefine criteria field : set to blank
+		if (!isset($input[$this->fields["criteria"]])){
+			$input[$this->fields["criteria"]]='';
+		}
+		
+		//If the value is not an array
+		if (!is_array($input[$this->fields["criteria"]])){
+			$value=$this->getValueToMatch($this->fields["condition"],$input[$this->fields["criteria"]]);
+			$res = matchRules($value,$this->fields["condition"],$this->fields["pattern"],$regex_result);
+		} else	{
+			//If the value if, in fact, an array of values
+			// Negative condition : Need to match all condition (never be)
+			if (in_array($this->fields["condition"],array(PATTERN_IS_NOT,PATTERN_NOT_CONTAIN,REGEX_NOT_MATCH))){
+				$res = true;
+				foreach($input[$this->fields["criteria"]] as $tmp){
+					$value=$this->getValueToMatch($this->fields["condition"],$tmp);
+					$res &= matchRules($value,$this->fields["condition"],$this->fields["pattern"],$regex_result);
+					if (!$res) break;
+				}
+		
+			// Positive condition : Need to match one
+			 } else {
+				$res = false;
+				foreach($input[$this->fields["criteria"]] as $tmp){
+					$value=$this->getValueToMatch($this->fields["condition"],$tmp);
+					$res |= matchRules($value,$this->fields["condition"],$this->fields["pattern"],$regex_result);
+					if ($res) break;
+				}
+	
+			}
+			return $value;
+		}
+		return $res;	
+	}
 
+	/**
+	* Return a value associated with a pattern associated to a criteria to compare it
+	* @param $condition condition used
+	* @param $initValue the pattern
+	*/
+	function getValueToMatch($condition,&$initValue)
+	{
+		if (empty($this->type)){
+			return $initValue;
+		} else {
+			
+			switch ($this->type){
+				case "dropdown":
+					if ($condition!=PATTERN_IS&&$condition!=PATTERN_IS_NOT){
+						return getDropdownName($this->table,$initValue);
+					}
+					break;
+				case "dropdown_users":
+					if ($condition!=PATTERN_IS&&$condition!=PATTERN_IS_NOT){
+						return getUserName($initValue);
+					}
+					break;
+				case "dropdown_request_type":
+					if ($condition!=PATTERN_IS&&$condition!=PATTERN_IS_NOT){
+						return getRequestTypeName($initValue);
+					}
+					break;
+				case "dropdown_priority":
+					if ($condition!=PATTERN_IS&&$condition!=PATTERN_IS_NOT){
+						return getPriorityName($initValue);
+					} 
+					break;
+			}
+		}
+		return $initValue;
+	}
 
 }
+
+class RuleDictionnary extends Rule{
+
+	function getTitleAction($target)
+	{
+		global $LANG,$CFG_GLPI;
+		echo "<div class='center'>"; 
+		echo "<table class='tab_cadrehov'>";
+		echo "<tr  class='tab_bg_2'>";
+		echo "<td width='100%'>";
+		echo $LANG["rulesengine"][83];
+		echo "</td></tr>";
+		echo "</table></div><br>";
+	}
+
+	function deleteCacheByRuleId($ID)
+	{
+		global $DB;
+		$DB->query("DELETE FROM ".getCacheTableByRuleType($this->rule_type)." WHERE rule_id=".$ID);
+	}
 	
+	function showCacheStatusByRule($target)
+	{
+		global $DB,$LANG;
+		echo "<div class='center'>"; 
+		echo "<table  class='tab_cadre_fixe'>";
+
+		$rulecollection = getRuleCollectionClass($this->rule_type);
+		
+		$res_count=$DB->query("SELECT *
+		FROM ".$rulecollection->cache_table.", glpi_rules_descriptions
+		WHERE ".$rulecollection->cache_table.".rule_id=glpi_rules_descriptions.ID 
+		AND ".$rulecollection->cache_table.".rule_id=".$this->fields["ID"].
+		" ORDER BY name");
+
+		$this->showCacheRuleHeader();
+		
+		$total = 0;		
+		while ($datas = $DB->fetch_array($res_count))
+		{
+			echo "<tr>";
+			$this->showCacheRuleDetail($datas);
+			echo "</tr>";
+			$total++;
+		}
+		
+		echo "</table></div>";
+		echo "<br>";
+		echo "<center><a href=\"$target\">".$LANG["buttons"][13]."</center>";
+		
+	}
+
+	
+	function showCacheRuleHeader()
+	{
+		global $LANG;
+		echo "<th colspan='2'>".$LANG["rulesengine"][100]." : ".$this->fields["name"]."</th></tr>";
+		echo "<tr>";
+		echo "<td class='tab_bg_1'>".$LANG["rulesengine"][104]."</td>";
+		echo "<td class='tab_bg_1'>".$LANG["rulesengine"][105]."</td>";
+		echo "</tr>";
+	}
+
+	function showCacheRuleDetail($fields)
+	{
+		global $LANG;
+		echo "<td class='tab_bg_1'>".$fields["old_value"]."</td>";
+		echo "<td class='tab_bg_1'>".($fields["new_value"]!=''?$fields["new_value"]:$LANG["rulesengine"][106])."</td>";
+	}
+			
+}
+
+class RuleDictionnaryModel extends RuleDictionnary{
+	function maxActionsCount(){
+		return 1;
+	}
+
+	function showCacheRuleHeader()
+	{
+		global $LANG;
+		echo "<th colspan='3'>".$LANG["rulesengine"][100]." : ".$this->fields["name"]."</th></tr>";
+		echo "<tr>";
+		echo "<td class='tab_bg_1'>".$LANG["rulesengine"][104]."</td>";
+		echo "<td class='tab_bg_1'>".$LANG["common"][5]."</td>";
+		echo "<td class='tab_bg_1'>".$LANG["rulesengine"][105]."</td>";
+		echo "</tr>";
+	}
+
+	function showCacheRuleDetail($fields)
+	{
+		global $LANG;
+		echo "<td class='tab_bg_1'>".$fields["old_value"]."</td>";
+		echo "<td class='tab_bg_1'>".($fields["manufacturer"]!=''?$fields["manufacturer"]:'')."</td>";		
+		echo "<td class='tab_bg_1'>".($fields["new_value"]!=''?$fields["new_value"]:$LANG["rulesengine"][106])."</td>";
+	}
+}
+
+class RuleDictionnaryType extends RuleDictionnary{
+	function maxActionsCount(){
+		return 1;
+	}
+}
+
+/**
+ * Specific rule collection for dictionnary : got a function initialize rule's caching system
+ * 
+ */
+class RuleDictionnaryCollection extends RuleCollection{
+	
+	
+	function initCache($cache_table,$input_params=array("name"=>"old_value"),$output_params=array("name"=>"new_value"))
+	{
+		$this->use_cache=true;
+		$this->can_replay_rules=true;
+		$this->cache_table=$cache_table;
+		$this->cache_params["input_value"]=$input_params;
+		$this->cache_params["output_value"]=$output_params;
+	}
+
+	function showCacheStatusByRuleType()
+	{
+		global $DB,$LANG,$CFG_GLPI;
+		echo "<div class='center'>"; 
+		echo "<table  class='tab_cadre_fixe'>";
+
+		$res_count=$DB->query("SELECT name, rule_id, count(rule_id) as cpt
+		FROM ".$this->cache_table.", glpi_rules_descriptions
+		WHERE ".$this->cache_table.".rule_id=glpi_rules_descriptions.ID GROUP BY rule_id
+		ORDER BY name");
+
+		echo "<th colspan='2'>".$LANG["rulesengine"][100]." : ".$this->getTitle()."</th></tr>";
+		echo "<tr>";
+		echo "<td class='tab_bg_1'>".$LANG["rulesengine"][102]."</td>";
+		echo "<td class='tab_bg_1'>".$LANG["rulesengine"][103]."</td>";
+		echo "</tr>";
+		
+		$total = 0;		
+		while ($datas = $DB->fetch_array($res_count))
+		{
+			echo "<tr>";
+			
+			echo "<td class='tab_bg_2'>";
+			echo "<a href='#' onClick=\"window.open('".$CFG_GLPI["root_doc"]."/front/popup.php?popup=show_cache&amp;rule_type=".$this->rule_type."&rule_id=".$datas["rule_id"]."' ,'glpipopup', 'height=400, width=1000, top=100, left=100, scrollbars=yes' )\">";
+			echo $datas["name"];
+			echo "</a></td>";
+			echo "<td class='tab_bg_2'>".$datas["cpt"]."</td>";
+			echo "</tr>";
+			$total+=$datas["cpt"];
+		}
+		
+		echo "<tr>";
+		echo "<td class='tab_bg_2'><strong>".$LANG["common"][33]."</strong></td>";
+		echo "<td class='tab_bg_2'><strong>".$total."</strong></td>";
+		echo "</tr>";
+		
+		echo "</table></div>";
+		
+	}
+	
+}
+class RuleTypeCollection extends RuleDictionnaryCollection{
+
+	var $item_table="";
+	
+	function getRelatedObject()
+	{
+		
+	}
+
+	function replayRulesOnExistingDB()
+	{
+		global $DB;
+
+		$obj = $this->getRelatedObject();
+		$this->deleteCache();
+
+		$Sql="SELECT * FROM " . $this->item_table;
+		$result = $DB->query($Sql);
+
+		$nb = $DB->numrows($result);
+		$step=($nb>20 ? floor($DB->numrows($result)/20) : 1);
+
+		if ($result && $DB->numrows($result)>0) for ($i=0;$data = $DB->fetch_array($result);$i++) {
+			
+			if (!($i % $step) && !isCommandLine())
+				changeProgressBarPosition($i,$nb,"$i / $nb");
+				
+			//Replay Type dictionnary
+			$ID=externalImportDropdown($this->item_table,addslashes($data["name"]),-1,array(),addslashes($data["comments"]));
+
+			if ($data['ID'] != $ID) {
+				$nbupd=0;
+
+				$Sql = "UPDATE ".$obj->table." SET type=".$ID." WHERE type=".$data['ID'];
+				$resupd = $DB->query($Sql);
+				$nbupd = ($resupd ? $DB->affected_rows() : -1);					
+
+				$Sql = "DELETE FROM ".$this->item_table." WHERE ID=".$data['ID'];
+				$resdel = $DB->query($Sql);
+				$nbdel = ($resdel ? $DB->affected_rows() : -1);
+			}		
+		} // for fetch
+		
+		if (!isCommandLine()) {
+			changeProgressBarPosition($nb,$nb,"$i / $nb");
+		}
+	} // function
+}	
+
+class RuleModelCollection extends RuleDictionnaryCollection{
+	var $item_table;
+	
+	function getRelatedObject()
+	{
+		
+	}
+	function RuleModelCollection()
+	{
+		$this->item_table = "";
+	}
+	
+	function replayRulesOnExistingDB()
+	{
+		global $DB;
+		
+		//error_log("RuleModelCollection::replayRulesOnExistingDB");
+		$this->deleteCache();
+		$item = $this->getRelatedObject();
+		
+		$tocheck=array();
+		$sql="SELECT DISTINCT glpi_dropdown_manufacturer.ID AS idmanu, glpi_dropdown_manufacturer.name AS manufacturer, ".
+			$this->item_table.".ID AS idmodel, ".$this->item_table.".name AS name, ".$this->item_table.".comments AS comments ".
+			"FROM ".$item->table.", ".$this->item_table.", .glpi_dropdown_manufacturer ".
+			"WHERE ".$item->table.".model=".$this->item_table.".ID ".
+			"AND ".$item->table.".FK_glpi_enterprise=glpi_dropdown_manufacturer.ID";
+		$result = $DB->query($sql);
+
+		$nb = $DB->numrows($result);
+		$step=($nb>20 ? floor($DB->numrows($result)/20) : 1);
+
+		if ($DB->numrows($result)>0) {	
+			for ($i=0;$data = $DB->fetch_array($result); $i++) {
+				
+				if (!($i % $step) && !isCommandLine())
+					changeProgressBarPosition($i,$nb,"$i / $nb");
+				
+				if (isset($data["manufacturer"]))
+					$data["manufacturer"] = processManufacturerName($data["manufacturer"]);
+					
+				$ID=externalImportDropdown($this->item_table,addslashes($data["name"]),-1,$data,addslashes($data["comments"]));
+				if ($ID != $data["idmodel"]) {
+					$tocheck[$data["idmodel"]]=1;
+
+					$sql = "UPDATE ".$item->table." SET model=".$ID." WHERE FK_glpi_enterprise=".$data['idmanu']." AND model=".$data['idmodel'];
+					$resupd = $DB->query($sql);
+				}
+			} // while fetch
+		}
+		foreach ($tocheck AS $ID => $rien) 	{
+			$sql="SELECT COUNT(*) FROM ".$item->table." WHERE model=$ID";
+			$result = $DB->query($sql);
+			if ($result && $DB->result($result,0,0)==0) {
+				$Sql = "DELETE FROM ".$this->item_table." WHERE ID=".$ID;
+				$resdel = $DB->query($Sql);
+				
+				//if ($resdel) error_log("$ID not used, deleted");								
+			}		
+		} // each tocheck
+		if (!isCommandLine()) {
+			changeProgressBarPosition($nb,$nb,"$i / $nb");
+		}
+	}
+	
+	/**
+	 * Override rulesengine::insertDataInCache. The insert request is specific because of the insertion of the field manufacturer
+	 * It is, moreover, quicker because the request is hardcoded
+	 */
+	/*
+	function insertDataInCache($old_values,$output)
+	{
+		global $DB;
+		$sql="INSERT INTO ".$this->cache_table." (`old_value`,`manufacturer`,`rule_id`,`new_value`) VALUES (\"".$old_values["name"]."\",\"".$old_values["manufacturer"]."\", ".$output["_ruleid"].", \"".$output["name"]."\")";
+		$DB->query($sql);
+	}*/
+	
+	
+}	
+
 ?>

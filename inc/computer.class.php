@@ -43,13 +43,13 @@ if (!defined('GLPI_ROOT')){
 class Computer extends CommonDBTM {
 
 
-	/// Device container - format $device = array(ID,"device type","ID in device table","specificity value")
+	//Device container - format $device = array(ID,"device type","ID in device table","specificity value")
 	var $devices	= array();
 
 	/**
 	 * Constructor
 	 *
-	 **/
+	**/
 	function Computer () {
 		$this->table="glpi_computers";
 		$this->type=COMPUTER_TYPE;
@@ -59,10 +59,10 @@ class Computer extends CommonDBTM {
 	/**
 	 * Define onglets to display
 	 *
-	 *@param $withtemplate is a template view ?
-	 *
-	 *@return array containing the onglets
-	 **/
+	 *@param $withtemplate is a template view ? 
+	 * 
+	 *@return array containing the onglets 
+	**/
 	function defineOnglets($withtemplate){
 		global $LANG,$CFG_GLPI;
 
@@ -110,7 +110,7 @@ class Computer extends CommonDBTM {
 	 *
 	 *@param $ID ID of the item to get
 	 *@return true if succeed else false
-	 **/
+	**/
 	function getFromDBwithDevices ($ID) {
 
 		global $DB;
@@ -132,14 +132,14 @@ class Computer extends CommonDBTM {
 	}
 
 	/**
-	 * Actions done before the UPDATE of the item in the database
+	 * Actions done before the UPDATE of the item in the database 
 	 *
 	 *@param $input datas used to update the item
-	 *@param $updates array of the updated fields
-	 *
-	 *@return nothing
-	 *
-	 **/
+	 *@param $updates array of the updated fields 
+	 * 
+	 *@return nothing 
+	 * 
+	**/
 	function pre_updateInDB($input,$updates) {
 		$this->fields["date_mod"]=$_SESSION["glpi_currenttime"];
 		$updates[]="date_mod";
@@ -151,11 +151,11 @@ class Computer extends CommonDBTM {
 	 *
 	 *@param $input datas used to update the item
 	 *@param $updates array of the updated fields
-	 *@param $history store changes history ?
-	 *
+	 *@param $history store changes history ? 
+	 * 
 	 *@return nothing
-	 *
-	 **/
+	 * 
+	**/
 	function post_updateItem($input,$updates,$history=1) {
 		global $DB,$LANG,$CFG_GLPI;
 		
@@ -305,8 +305,8 @@ class Computer extends CommonDBTM {
 	 *@param $input datas used to add the item
 	 *
 	 *@return the modified $input array
-	 *
-	 **/
+	 * 
+	**/
 	function prepareInputForAdd($input) {
 		// set new date.
 		$input["date_mod"] = $_SESSION["glpi_currenttime"];
@@ -324,10 +324,10 @@ class Computer extends CommonDBTM {
 	 *
 	 *@param $newID ID of the new item
 	 *@param $input datas used to add the item
-	 *
-	 *@return nothing
-	 *
-	 **/
+	 * 
+	 *@param $input datas used to add the item
+	 * 
+	**/
 	function post_addItem($newID,$input) {
 		global $DB;
 
@@ -409,9 +409,9 @@ class Computer extends CommonDBTM {
 	 * Actions done when item is deleted from the database
 	 *
 	 *@param $ID ID of the item
-	 *
-	 *@return nothing
-	 **/
+	 * 
+	 *@return nothing 
+	**/
 	function cleanDBonPurge($ID) {
 		global $DB,$CFG_GLPI;
 

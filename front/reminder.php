@@ -48,6 +48,7 @@ showListReminder();
 
 if (haveRight("reminder_public","r")){
 	showListReminder("public");
+	showListReminder("global");
 }
 
 

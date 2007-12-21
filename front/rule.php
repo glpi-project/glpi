@@ -58,6 +58,5 @@ commonHeader($LANG["title"][2],$_SERVER['PHP_SELF'],"admin","rule",-1);
 	}
 
 	echo "</table></div>";
-
 commonFooter();
 ?>

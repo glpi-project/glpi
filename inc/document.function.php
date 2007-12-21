@@ -182,10 +182,10 @@ function showDeviceDocument($instID,$search='') {
 	global $DB,$CFG_GLPI, $LANG,$INFOFORM_PAGES,$LINK_ID_TABLE;
 
 	if (!haveRight("document","r"))	return false;
-	$canedit=haveRight("document","w");
 
 	$doc=new Document();
 	if ($doc->getFromDB($instID)){
+		$canedit=$doc->canEdit();
 
 		$query = "SELECT DISTINCT device_type FROM glpi_doc_device WHERE glpi_doc_device.FK_doc = '$instID' order by device_type";
 		
@@ -196,9 +196,13 @@ function showDeviceDocument($instID,$search='') {
 		echo "<form method='post' name='document_form' id='document_form'  action=\"".$CFG_GLPI["root_doc"]."/front/document.form.php\">";
 	
 		echo "<br><br><div class='center'><table class='tab_cadre_fixe'>";
-		echo "<tr><th colspan='5'>".$LANG["document"][19].":</th></tr>";
-		echo "<tr><th>&nbsp;</th><th>".$LANG["common"][17]."</th>";
+		echo "<tr><th colspan='".($canedit?6:5)."'>".$LANG["document"][19].":</th></tr><tr>";
+		if ($canedit) {
+			echo "<th>&nbsp;</th>";
+		}
+		echo "<th>".$LANG["common"][17]."</th>";
 		echo "<th>".$LANG["common"][16]."</th>";
+		echo "<th>".$LANG["entity"][0]."</th>";
 		echo "<th>".$LANG["common"][19]."</th>";
 		echo "<th>".$LANG["common"][20]."</th>";
 		echo "</tr>";
@@ -210,11 +214,16 @@ function showDeviceDocument($instID,$search='') {
 				if ($type==TRACKING_TYPE) $column="ID";
 				if ($type==KNOWBASE_TYPE) $column="question";
 	
-				$query = "SELECT ".$LINK_ID_TABLE[$type].".*, glpi_doc_device.ID AS IDD  FROM glpi_doc_device INNER JOIN ".$LINK_ID_TABLE[$type]." ON (".$LINK_ID_TABLE[$type].".ID = glpi_doc_device.FK_device) WHERE glpi_doc_device.device_type='$type' AND glpi_doc_device.FK_doc = '$instID' ";
+				$query = "SELECT ".$LINK_ID_TABLE[$type].".*, glpi_doc_device.ID AS IDD, glpi_entities.ID AS entity "
+					." FROM glpi_doc_device, ".$LINK_ID_TABLE[$type]
+					." LEFT JOIN glpi_entities ON (glpi_entities.ID=".$LINK_ID_TABLE[$type].".FK_entities) "
+					." WHERE ".$LINK_ID_TABLE[$type].".ID = glpi_doc_device.FK_device  AND glpi_doc_device.device_type='$type' AND glpi_doc_device.FK_doc = '$instID' "
+					. getEntitiesRestrictRequest(" AND ",$LINK_ID_TABLE[$type],'','',isset($CFG_GLPI["recursive_type"][$type])); 
+
 				if (in_array($LINK_ID_TABLE[$type],$CFG_GLPI["template_tables"])){
 					$query.=" AND ".$LINK_ID_TABLE[$type].".is_template='0'";
 				}
-				$query.=" ORDER BY ".$LINK_ID_TABLE[$type].".$column";
+				$query.=" ORDER BY glpi_entities.completename, ".$LINK_ID_TABLE[$type].".$column";
 				
 				if ($result_linked=$DB->query($query))
 					if ($DB->numrows($result_linked)){
@@ -225,8 +234,8 @@ function showDeviceDocument($instID,$search='') {
 							if ($type==KNOWBASE_TYPE) $data["name"]=$data["question"];
 							
 							if($CFG_GLPI["view_ID"]||empty($data["name"])) $ID= " (".$data["ID"].")";
-							$name= "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data["ID"]."\">".$data["name"]."$ID</a>";
-	
+							$name= "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data["ID"]."\">"
+								.$data["name"]."$ID</a>";
 	
 							echo "<tr class='tab_bg_1'>";
 
@@ -234,12 +243,13 @@ function showDeviceDocument($instID,$search='') {
 								echo "<td width='10'>";
 								$sel="";
 								if (isset($_GET["select"])&&$_GET["select"]=="all") $sel="checked";
-								echo "<input type='checkbox' name='items[".$data["IDD"]."]' value='1' $sel>";
+								echo "<input type='checkbox' name='item[".$data["IDD"]."]' value='1' $sel>";
 								echo "</td>";
 							}
 							echo "<td class='center'>".$ci->getType()."</td>";
-	
+							
 							echo "<td class='center' ".(isset($data['deleted'])&&$data['deleted']?"class='tab_bg_2_2'":"").">".$name."</td>";
+							echo "<td class='center'>".getDropdownName("glpi_entities",$data['entity'])."</td>";
 							echo "<td class='center'>".(isset($data["serial"])? "".$data["serial"]."" :"-")."</td>";
 							echo "<td class='center'>".(isset($data["otherserial"])? "".$data["otherserial"]."" :"-")."</td>";
 							
@@ -250,8 +260,8 @@ function showDeviceDocument($instID,$search='') {
 			$i++;
 		}
 	
-		if (haveRight("document","w"))	{
-			echo "<tr class='tab_bg_1'><td colspan='3' class='center'>";
+		if ($canedit)	{
+			echo "<tr class='tab_bg_1'><td colspan='4' class='center'>";
 	
 			echo "<input type='hidden' name='conID' value='$instID'>";
 			$types=$CFG_GLPI["state_types"];
@@ -259,7 +269,7 @@ function showDeviceDocument($instID,$search='') {
 			$types[]=CARTRIDGE_TYPE;
 			$types[]=CONSUMABLE_TYPE;
 			$types[]=CONTRACT_TYPE;
-			dropdownAllItems("item",0,0,$doc->fields['FK_entities'],$types);
+			dropdownAllItems("item",0,0,($doc->fields['recursive']?-1:$doc->fields['FK_entities']),$types);
 			
 			echo "</td>";
 			echo "<td colspan='2' class='center' class='tab_bg_2'>";
@@ -309,7 +319,7 @@ function deleteDeviceDocument($ID){
 // $withtemplate==3 -> visu via le helpdesk -> plus aucun lien
 function showDocumentAssociated($device_type,$ID,$withtemplate=''){
 
-	global $DB,$CFG_GLPI, $LANG;
+	global $DB, $CFG_GLPI, $LANG, $LINK_ID_TABLE;
 
 	if ($device_type!=KNOWBASE_TYPE)
 		if (!haveRight("document","r")||!haveTypeRight($device_type,"r"))	return false;
@@ -317,48 +327,48 @@ function showDocumentAssociated($device_type,$ID,$withtemplate=''){
 	if (empty($withtemplate)) $withtemplate=0;
 
 	$canread=haveTypeRight($device_type,"r");
-	$canedit=haveTypeRight($device_type,"w");
+	$canedit=canEditItem($device_type,$ID);
 
-	$query = "SELECT glpi_doc_device.ID as assocID, glpi_docs.* FROM glpi_doc_device 
-		LEFT JOIN glpi_docs ON (glpi_doc_device.FK_doc=glpi_docs.ID) 
-		WHERE glpi_doc_device.FK_device = '$ID' AND glpi_doc_device.device_type = '$device_type' ";
+	$query = "SELECT glpi_doc_device.ID as assocID, glpi_docs.*, glpi_entities.ID AS entity "
+		." FROM glpi_doc_device"
+		." LEFT JOIN glpi_docs ON (glpi_doc_device.FK_doc=glpi_docs.ID)"
+		." LEFT JOIN glpi_entities ON (glpi_docs.FK_entities=glpi_entities.ID)" 
+		." WHERE glpi_doc_device.FK_device = '$ID' AND glpi_doc_device.device_type = '$device_type' ";
+		
+	if (isset($_SESSION["glpiID"])){
+		$query .= getEntitiesRestrictRequest(" AND","glpi_docs",'','',true);
+	} else {
+		// Anonymous access from FAQ
+		$query .= " AND glpi_docs.FK_entities=0 ";
+	}
 	//echo $query;
+	
 	$result = $DB->query($query);
 	$number = $DB->numrows($result);
 	$i = 0;
 
 	if ($withtemplate!=2) {
-		echo "<form name='document_form' id='document_form' method='post' action=\"".$CFG_GLPI["root_doc"]."/front/document.form.php\" enctype=\"multipart/form-data\">";
+		echo "<form method='post' action=\"".$CFG_GLPI["root_doc"]."/front/document.form.php\" enctype=\"multipart/form-data\">";
 	}
 	echo "<br><br><div class='center'><table class='tab_cadre_fixe'>";
-	echo "<tr><th colspan='6'>".$LANG["document"][21].":</th></tr>";
-	echo "<tr>";
-	if ($withtemplate<2&&$canedit){
-		echo "<th>&nbsp;</th>";
-	}
-
-	echo "<th>".$LANG["common"][16]."</th>";
+	echo "<tr><th colspan='7'>".$LANG["document"][21].":</th></tr>";
+	echo "<tr><th>".$LANG["common"][16]."</th>";
+	echo "<th>".$LANG["entity"][0]."</th>";
 	echo "<th width='100px'>".$LANG["document"][2]."</th>";
 	echo "<th>".$LANG["document"][33]."</th>";
 	echo "<th>".$LANG["document"][3]."</th>";
 	echo "<th>".$LANG["document"][4]."</th>";
+	if ($withtemplate<2)echo "<th>&nbsp;</th>";
 	echo "</tr>";
+	$used=array();
 	if ($number){
 		while ($data=$DB->fetch_assoc($result)) {
 			$docID=$data["ID"];
+			$used[]=$docID;
 			$assocID=$data["assocID"];
 	
 			echo "<tr class='tab_bg_1".($data["deleted"]?"_2":"")."'>";
-			
-			if ($withtemplate<2&&$canedit){
-			echo "<td width='10'>";
-				$sel="";
-				if (isset($_GET["select"])&&$_GET["select"]=="all") $sel="checked";
-				echo "<input type='checkbox' name='items[".$assocID."]' value='1' $sel>";
-				echo "</td>";
-			}
-			
-			if ($withtemplate!=3&&$canread&&in_array($data['FK_entities'],$_SESSION['glpiactiveentities'])){
+			if ($withtemplate!=3 && $canread && (in_array($data['FK_entities'],$_SESSION['glpiactiveentities']) || $data["recursive"])){
 				echo "<td class='center'><a href='".$CFG_GLPI["root_doc"]."/front/document.form.php?ID=$docID'><strong>".$data["name"];
 				if ($CFG_GLPI["view_ID"]) echo " (".$docID.")";
 				echo "</strong></a></td>";
@@ -367,7 +377,8 @@ function showDocumentAssociated($device_type,$ID,$withtemplate=''){
 				if ($CFG_GLPI["view_ID"]) echo " (".$docID.")";
 				echo "</strong></td>";
 			}
-	
+			echo "<td class='center'>".getDropdownName("glpi_entities",$data['entity'])."</td>";
+			
 			echo "<td align='center'  width='100px'>".getDocumentLink($data["filename"])."</td>";
 	
 			echo "<td class='center'>";
@@ -378,6 +389,13 @@ function showDocumentAssociated($device_type,$ID,$withtemplate=''){
 			echo "<td class='center'>".getDropdownName("glpi_dropdown_rubdocs",$data["rubrique"])."</td>";
 			echo "<td class='center'>".$data["mime"]."</td>";
 	
+			if ($withtemplate<2) {
+				echo "<td align='center' class='tab_bg_2'>";
+				if ($canedit)
+					echo "<a href='".$CFG_GLPI["root_doc"]."/front/document.form.php?deleteitem=deleteitem&amp;ID=$assocID'><strong>".$LANG["buttons"][6]."</strong></a>";
+				else echo "&nbsp;";
+				echo "</td>";
+			}
 			echo "</tr>";
 			$i++;
 		}
@@ -386,14 +404,12 @@ function showDocumentAssociated($device_type,$ID,$withtemplate=''){
 	if ($canedit){
 		// Restrict entity for knowbase
 		$ci=new CommonItem();
-		$ci->getFromDB($device_type,$ID);
-		$entity=-1;
+		$entity="";
 		$limit="";
-		if ($ci->getField('FK_entities')>=0){
-			$entity=$ci->getField('FK_entities');
-			$limit=" AND FK_entities='$entity' ";
+		if ($ci->getFromDB($device_type,$ID) && isset($ci->obj->fields["FK_entities"])) {
+			$entity = $ci->obj->fields["FK_entities"];
+			$limit = getEntitiesRestrictRequest(" AND ","glpi_docs",'',$entity,true);
 		}
-
 		$q="SELECT count(*) FROM glpi_docs WHERE deleted='0' $limit";
 			
 		$result = $DB->query($q);
@@ -411,31 +427,16 @@ function showDocumentAssociated($device_type,$ID,$withtemplate=''){
 			echo "</td>";
 			echo "<td align='left' colspan='2'>";
 			echo "<div class='software-instal'><input type='hidden' name='item' value='$ID'><input type='hidden' name='type' value='$device_type'>";
-			dropdownDocument("conID",$entity);
-			//dropdown("glpi_docs","conID",1,$entity);
+			dropdownDocument("conID",$entity,$used);
 			echo "</div></td><td class='center'>";
 			echo "<input type='submit' name='additem' value=\"".$LANG["buttons"][8]."\" class='submit'>";
-			echo "</td>";
+			echo "</td><td>&nbsp;</td>";
 	
 			echo "</tr>";
 		}
 	}
 
 	echo "</table></div>"    ;
-	
-	if ($canedit){
-		echo "<div class='center'>";
-		echo "<table width='950px'>";
-		echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markAllRows('document_form') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$ID&amp;select=all'>".$LANG["buttons"][18]."</a></td>";
-			
-		echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkAllRows('document_form') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$ID&amp;select=none'>".$LANG["buttons"][19]."</a>";
-		echo "</td><td align='left' width='80%'>";
-		echo "<input type='submit' name='deleteitem' value=\"".$LANG["buttons"][6]."\" class='submit'>";
-		echo "</td>";
-		echo "</table>";
-		echo "</div>";
-	}
-	
 	echo "</form>";
 
 }

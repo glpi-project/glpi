@@ -104,12 +104,9 @@ else if (isset($_POST["additem"])){
 else if (isset($_POST["deleteitem"])){
 
 	checkRight("document","w");
-	
-	if (count($_POST["items"])){
-		foreach ($_POST["items"] as $key => $val){
-			deleteDeviceDocument($key);
-		}
-	}
+	if (count($_POST["item"]))
+		foreach ($_POST["item"] as $key => $val)
+		deleteDeviceDocument($key);
 
 	logEvent($_POST["conID"], "documents", 4, "document", $_SESSION["glpiname"]." ".$LANG["log"][33]);
 	glpi_header($_SERVER['HTTP_REFERER']);

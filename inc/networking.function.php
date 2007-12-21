@@ -340,23 +340,20 @@ function showNetportForm($target,$ID,$ondevice,$devtype,$several) {
 		echo "<tr class='tab_bg_1'><td>".$LANG["networking"][51].":</td>";
 
 		echo "<td align='center' >";
-		// On all location
-		if ($netport->device_type==NETWORKING_TYPE){
-			dropdownNetpoint("netpoint", $netport->fields["netpoint"],0,1,$netport->FK_entities);		
-		} else { // On location of the item
-			dropdownNetpoint("netpoint", $netport->fields["netpoint"],$netport->location,1,$netport->FK_entities);		
-		}
+		dropdownNetpoint("netpoint", $netport->fields["netpoint"],$netport->location,1,$netport->FK_entities,
+						($ID?$netport->fields["device_type"]: $devtype));		
 		echo "</td></tr>";
 	}
 	if ($ID) {
 		echo "<tr class='tab_bg_2'>";
 		echo "<td class='center'>";
 		echo "<input type='hidden' name='ID' value=".$netport->fields["ID"].">";
-		echo "<input type='submit' name='update' value=\"".$LANG["buttons"][7]."\" class='submit'>";
+		echo "<input type='submit' name='delete' value=\"".$LANG["buttons"][6]."\" class='submit' " .
+				"OnClick='return window.confirm(\"".$LANG["common"][50]."\");'>";
 		echo "</td>";
 
 		echo "<td class='center'>";
-		echo "<input type='submit' name='delete' value=\"".$LANG["buttons"][6]."\" class='submit'>";
+		echo "<input type='submit' name='update' value=\"".$LANG["buttons"][7]."\" class='submit'>";
 		echo "</td></tr>";
 	} else 
 	{

@@ -50,6 +50,15 @@ class DBmysql {
 	//! Database Error
 	var $error = 0;
 
+	//Slave management
+	var $slave = false;
+	//Indicates if the first connection attempt is successful or not
+	//if first attempt fail -> display a warning which indicates
+	//that glpi is in readonly
+	var $first_connection = true;
+	
+	var $connected = false;
+	
 	/**
 	 * Constructor / Connect to the MySQL Database
 	 *
@@ -64,17 +73,9 @@ class DBmysql {
 		if ($this->dbh){
 			@mysql_query("SET NAMES '" . (isset($this->dbenc) ? $this->dbenc : "utf8") . "'",$this->dbh);
 			mysql_select_db($this->dbdefault) or $this->error = 1;
-		} else {
-			nullHeader("Mysql Error",$_SERVER['PHP_SELF']);
-			if (!isCommandLine()){
-				echo "<div class='center'><p><strong>A link to the Mysql server could not be established. Please Check your configuration.</strong></p><p><strong>Le serveur Mysql est inaccessible. V&eacute;rifiez votre configuration</strong></p></div>";
-			} else {
-				echo "A link to the Mysql server could not be established. Please Check your configuration.\n";
-				echo "Le serveur Mysql est inaccessible. Vérifiez votre configuration\n";
-			}
-			nullFooter("Mysql Error",$_SERVER['PHP_SELF']);
-			die();
-		}
+			$this->connected=true;
+		} else 
+			$this->connected=false;
 	}
 	/**
 	 * Execute a MySQL query
@@ -104,7 +105,22 @@ class DBmysql {
 			$res=mysql_query($query,$this->dbh);
 			
 			if (!$res) {
-				logInFile("sql-errors","*** MySQL query error : \n***\nScript: " . $_SERVER["SCRIPT_NAME"]."\nSQL: ".addslashes($query)."\nError: ". mysql_error()."\n");
+				$error = "*** MySQL query error : \n***\nSQL: ".addslashes($query)."\nError: ". mysql_error()."\n";
+				if (function_exists("debug_backtrace")) {
+					$error .= "Backtrace :\n";
+					$traces=debug_backtrace();
+					foreach ($traces as $trace) {
+						$error .= $trace["file"] . ":" . $trace["line"] . "\t\t"
+								. (isset($trace["class"]) ? $trace["class"] : "")
+								. (isset($trace["type"]) ? $trace["type"] : "")
+								. (isset($trace["function"]) ? $trace["function"]."()" : "")
+								. "\n";
+					}
+				} else {
+					$error .= "Script: " ; 
+				}
+				$error .= $_SERVER["SCRIPT_FILENAME"]. "\n";
+				logInFile("sql-errors",$error);
 		
 				if ($CFG_GLPI["debug"]&&$CFG_GLPI["debug_sql"]){
 					$DEBUG_SQL["errors"][$SQL_TOTAL_REQUEST]=$this->error();
@@ -240,7 +256,10 @@ class DBmysql {
 	{
 		return @mysql_close($this->dbh);
 	}
-
+	
+	function isSlave()
+	{
+		return $this->slave;
+	}
 }
-
 ?>

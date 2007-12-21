@@ -61,6 +61,10 @@ if (isset($_POST["action"])&&isset($_POST["type"])&&!empty($_POST["type"])){
 	echo "<input type='hidden' name='action' value='".$_POST["action"]."'>";
 	echo "<input type='hidden' name='device_type' value='".$_POST["type"]."'>";
 	switch($_POST["action"]){
+		case "activate_rule":
+			echo dropdownYesNo("activate_rule");
+			echo "&nbsp;<input type=\"submit\" name=\"massiveaction\" class=\"submit\" value=\"".$LANG["buttons"][2]."\" >";
+		break;
 		case "move_rule":
 			echo "<select name='move_type'>";
 			echo "<option value='after' selected>".$LANG["buttons"][47]."</option>";
@@ -73,6 +77,7 @@ if (isset($_POST["action"])&&isset($_POST["type"])&&!empty($_POST["type"])){
 			showAddFollowupForm(-1,true);
 		break;
 		case "compute_software_category":
+		case "replay_dictionnary":
 		case "force_ocsng_update":
 		case "delete":
 		case "purge":
@@ -96,7 +101,7 @@ if (isset($_POST["action"])&&isset($_POST["type"])&&!empty($_POST["type"])){
 			break;
 		case "install":
 			dropdownSoftwareToInstall("lID",0,$_SESSION["glpiactive_entity"],1);
-			echo "<input type=\"submit\" name=\"massiveaction\" class=\"submit\" value=\"".$LANG["buttons"][4]."\" >";
+            echo "<input type=\"submit\" name=\"massiveaction\" class=\"submit\" value=\"".$LANG["buttons"][4]."\" >"; 
 		break;
 		case "connect":
 			dropdownConnect(COMPUTER_TYPE,$_POST["type"],"connect_item");

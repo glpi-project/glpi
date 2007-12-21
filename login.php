@@ -43,7 +43,8 @@ $NEEDED_ITEMS = array (
 	"group",
 	"entity",
 	"rulesengine",
-	"rule.right"
+	"rule.right",
+	"dbreplicate"
 );
 
 include (GLPI_ROOT . "/inc/includes.php");
@@ -72,16 +73,16 @@ if (isset ($_POST['login_password'])) {
 
 if (!isset ($_POST["noCAS"]) && !empty ($CFG_GLPI["cas_host"])) {
 	include (GLPI_ROOT . "/lib/phpcas/CAS.php");
-	$cas = new phpCas();
-	$cas->client(CAS_VERSION_2_0, $CFG_GLPI["cas_host"], intval($CFG_GLPI["cas_port"]), $CFG_GLPI["cas_uri"]);
+	$cas = new phpCas(); 
+	$cas->client(CAS_VERSION_2_0, $CFG_GLPI["cas_host"], intval($CFG_GLPI["cas_port"]), $CFG_GLPI["cas_uri"]); 
 
 	// force CAS authentication
-	$cas->forceAuthentication();
-	$user = $cas->getUser();
+	$cas->forceAuthentication(); 
+	$user = $cas->getUser(); 
 	$identificat->auth_succeded = true;
 	$identificat->extauth = 1;
 	$identificat->user_present = $identificat->user->getFromDBbyName($user);
-	$identificat->user->fields['auth_method'] = AUTH_CAS;
+ 	$identificat->user->fields['auth_method'] = AUTH_CAS; 
 
 	// if LDAP enabled too, get user's infos from LDAP
 	//If the user is already in database, let's check if he there's a dictory reported in id_auth, to get his personal informations  
@@ -103,7 +104,6 @@ if (!isset ($_POST["noCAS"]) && !empty ($CFG_GLPI["cas_host"])) {
 if (isset ($_POST["noCAS"])){
 	$_SESSION["noCAS"] = 1;
 }
-
 	if (!$identificat->auth_succeded) // Pas de tests en configuration CAS
 	if (empty ($_POST['login_name']) || empty ($_POST['login_password'])) {
 		$identificat->addToError($LANG["login"][8]);
@@ -149,7 +149,7 @@ if (isset ($_POST["noCAS"])){
 					break;
 			}
 		}
-		
+
 		//If the last good auth method is not valid anymore, we test all the methods !
 		//test all the ldap servers
 		if (!$identificat->auth_succeded){
@@ -168,8 +168,7 @@ if (isset ($_POST["noCAS"])){
 	// Ok, we have gathered sufficient data, if the first return false the user
 	// are not present on the DB, so we add it.
 	// if not, we update it.
-
-	if ($identificat->auth_succeded) {
+	if (!$DB->isSlave() && $identificat->auth_succeded) {
 		
 		// Prepare data
 		$identificat->user->fields["last_login"]=$_SESSION["glpi_currenttime"];
@@ -193,15 +192,14 @@ if (isset ($_POST["noCAS"])){
 			}
 		}
 	}
-
 	// GET THE IP OF THE CLIENT
 	$ip = (getenv("HTTP_X_FORWARDED_FOR") ? getenv("HTTP_X_FORWARDED_FOR") : getenv("REMOTE_ADDR"));
 
 	// now we can continue with the process...
 	if ($identificat->auth_succeded) {
 		$identificat->initSession();
-	} else { // we have done at least a good login? No, we exit.
-		
+	} else { // we have done at least a good login? No, we exit. 
+
 		nullHeader("Login", $_SERVER['PHP_SELF']);
 		echo '<div align="center"><b>' . $identificat->getErr() . '</b><br><br>';
 		echo '<b><a href="' . $CFG_GLPI["root_doc"] . '/logout.php">' . $LANG["login"][1] . '</a></b></div>';
@@ -212,7 +210,7 @@ if (isset ($_POST["noCAS"])){
 		}
 		nullFooter();
 		$identificat->destroySession();
-
+		
 		exit();
 	}
 
@@ -227,11 +225,6 @@ if (isset ($_POST["noCAS"])){
 	$REDIRECT = "";
 	if (isset ($_POST['redirect'])&&strlen($_POST['redirect'])>0){
 		$REDIRECT = "?redirect=" .$_POST['redirect'];
-	} else {
-		// Check mail if mail followup is activated
-//		if ($CFG_GLPI['mailing']&&!checkEmailForUser($_SESSION['glpiID'])){
-//			$REDIRECT="?redirect=prefs_prefs";
-//		}
 	}
 
 	// Redirect to Command Central if not post-only

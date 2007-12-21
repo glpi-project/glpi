@@ -52,8 +52,7 @@ $NEEDED_ITEMS=array("search",
 "enterprise",
 "device",
 "document",
-"knowbase",
-"group"
+"knowbase"
 );
 
 

@@ -54,7 +54,7 @@ function ocsShowNewComputer($ocs_server_id, $advanced, $check, $start, $tolinked
 			$WHERE = "WHERE TAG='" . $splitter[0] . "' ";
 			for ($i = 1; $i < count($splitter); $i++){
 				$WHERE .= " OR TAG='" .$splitter[$i] . "' ";
-			}
+			}	
 		}
 	}
 
@@ -73,8 +73,8 @@ function ocsShowNewComputer($ocs_server_id, $advanced, $check, $start, $tolinked
 	if ($tolinked){
 		// Computers existing in GLPI
 		$query_glpi_comp = "SELECT ID,name 
-					FROM glpi_computers 
-					WHERE is_template='0'";
+								FROM glpi_computers 
+								WHERE is_template='0'";
 		$result_glpi_comp = $DB->query($query_glpi_comp);
 	}
 
@@ -263,7 +263,7 @@ function ocsLink($ocs_id, $ocs_server_id, $glpi_computer_id) {
 	if ($result) {
 		return ($DB->insert_id());
 	} else {
-		// TODO : Check if this code part is ok ? why to send a link if insert do not works ? May have problem for example on ocsLinkComputer
+		// TODO : Check if this code part is ok ? why to send a link if insert do not works ? May have problem for example on ocsLinkComputer 
 		$query = "SELECT ID
 		                        FROM glpi_ocs_link
 		                        WHERE ocs_id = '$ocs_id' AND ocs_server_id='" . $ocs_server_id . "';";
@@ -466,7 +466,7 @@ function ocsImportComputer($ocs_id, $ocs_server_id, $lock = 0, $defaultentity = 
 				// machines founded -> try to link
 				if (count($found_computers)){
 					foreach ($found_computers as $glpi_id){
-						if (ocsLinkComputer($ocs_id,$ocs_server_id,$glpi_id)){
+						if (ocsLinkComputer($ocs_id,$ocs_server_id,$glpi_id)){ 
 							return 3;
 						}
 					}
@@ -520,8 +520,8 @@ function ocsLinkComputer($ocs_id, $ocs_server_id, $glpi_id) {
 	checkOCSconnection($ocs_server_id);
 
 	$query = "SELECT *  
-			FROM glpi_ocs_link
-			WHERE glpi_id='$glpi_id'";
+				FROM glpi_ocs_link
+				WHERE glpi_id='$glpi_id'";
 
 	$result = $DB->query($query);
 	$ocs_exists = true;
@@ -541,10 +541,10 @@ function ocsLinkComputer($ocs_id, $ocs_server_id, $glpi_id) {
 			$DB->query($query);
 		}
 	}
-
+	
 	// TODO : if OCS ID change : ocs_link exists but not hardware in OCS so update only ocs_link and do not reset items before updateComputer
 
-	// No ocs_link or ocs computer does not exists so can link
+	// No ocs_link or ocs computer does not exists so can link 
 	if (!$ocs_exists || $numrows == 0) {
 
 		$ocsConfig = getOcsConf($ocs_server_id);
@@ -563,23 +563,23 @@ function ocsLinkComputer($ocs_id, $ocs_server_id, $glpi_id) {
 			$input["ocs_import"] = 1;
 			$input["_from_ocs"] = 1;
 			
-			// Not already import from OCS / mark default state
+			// Not already import from OCS / mark default state 
 			if (!$comp->fields['ocs_import']){
 				$input["state"] = $ocsConfig["default_state"];
 			}
-			
+	
 			$comp->update($input);
-
-			// Auto restore if deleted
-			if ($comp->fields['deleted']){
+			
+			// Auto restore if deleted 
+			if ($comp->fields['deleted']){ 
 				$comp->restore(array('ID'=>$glpi_id));
 			}
-		
+			
 			// Reset using GLPI Config
 			$cfg_ocs = getOcsConf($ocs_server_id);
 			$query = "SELECT * 
-					FROM hardware 
-					WHERE ID='$ocs_id'";
+						FROM hardware 
+						WHERE ID='$ocs_id'";
 			$result = $DBocs->query($query);
 			$line = $DBocs->fetch_array($result);
 
@@ -624,7 +624,7 @@ function ocsLinkComputer($ocs_id, $ocs_server_id, $glpi_id) {
 		$_SESSION["MESSAGE_AFTER_REDIRECT"] = $ocs_id . " - " . $LANG["ocsng"][23];
 	}
 
-	return false;
+	return false; 
 }
 
 
@@ -648,22 +648,20 @@ function ocsProcessComputer($ocs_id, $ocs_server_id, $lock = 0, $defaultentity =
 		return ocsImportComputer($ocs_id, $ocs_server_id, $lock, $defaultentity,$canlink);
 }
 
-
-// Return array of GLPI computers matching the OCS one using the OCS config
+// Return array of GLPI computers matching the OCS one using the OCS config 
 function getMachinesAlreadyInGLPI($ocs_id,$ocs_server_id,$entity)
 {
 	global $DB,$DBocs;
 	$conf = getOcsConf($ocs_server_id);
-
-	$found_computers=array();
-
+	
+	$found_computers=array(); 
 
 	$sql_fields = "hardware.ID";
 	$sql_from ="hardware";
 	$first = true;
 	$ocsParams = array();
 	
-	if ($conf["glpi_link_enabled"]){
+	if ($conf["glpi_link_enabled"])	{
 		$ok=false;
 		//Build the request against OCS database to get the machine's informations
 		if ( $conf["link_ip"] || $conf["link_mac_address"])
@@ -783,15 +781,14 @@ function getMachinesAlreadyInGLPI($ocs_id,$ocs_server_id,$entity)
 		$result_glpi = $DB->query($sql_glpi);
 		
 		// If only one result
-		if ($DB->numrows($result_glpi) >0){
-			while ($data = $DB->fetch_array($result_glpi)) {
-				$found_computers[]=$data['ID'];
+			if ($DB->numrows($result_glpi) > 0){
+				while ($data = $DB->fetch_array($result_glpi)) {
+					$found_computers[]=$data['ID'];
+				}
 			}
-		} 
 	}
 
-	return $found_computers;
-	
+	return $found_computers; 
 		
 }
 function ocsUpdateComputer($ID, $ocs_server_id, $dohistory, $force = 0) {
@@ -1031,17 +1028,17 @@ function ocsUpdateHardware($glpi_id, $ocs_id, $ocs_server_id, $cfg_ocs, $compute
 			
 		if ($cfg_ocs["import_general_os"]) {
 			if (!in_array("os", $computer_updates)) {
-				$compupdate["os"] = ocsImportDropdown('glpi_dropdown_os', $line["OSNAME"]);
+				$compupdate["os"] = externalImportDropdown('glpi_dropdown_os', $line["OSNAME"]);
 			}
 			if (!in_array("os_version", $computer_updates)) {
-				$compupdate["os_version"] = ocsImportDropdown('glpi_dropdown_os_version', $line["OSVERSION"]);
+				$compupdate["os_version"] = externalImportDropdown('glpi_dropdown_os_version', $line["OSVERSION"]);
 			}
 			if (!ereg("CEST", $line["OSCOMMENTS"]) && !in_array("os_sp", $computer_updates)) // Not linux comment
-				$compupdate["os_sp"] = ocsImportDropdown('glpi_dropdown_os_sp', $line["OSCOMMENTS"]);
+				$compupdate["os_sp"] = externalImportDropdown('glpi_dropdown_os_sp', $line["OSCOMMENTS"]);
 		}
 
 		if ($cfg_ocs["import_general_domain"] && !in_array("domain", $computer_updates)) {
-			$compupdate["domain"] = ocsImportDropdown('glpi_dropdown_domain', $line["WORKGROUP"]);
+			$compupdate["domain"] = externalImportDropdown('glpi_dropdown_domain', $line["WORKGROUP"]);
 		}
 
 		if ($cfg_ocs["import_general_contact"] && !in_array("contact", $computer_updates)) {
@@ -1112,15 +1109,15 @@ function ocsUpdateBios($glpi_id, $ocs_id, $ocs_server_id, $cfg_ocs, $computer_up
 		}
 
 		if ($cfg_ocs["import_general_model"] && !in_array("model", $computer_updates)) {
-			$compupdate["model"] = ocsImportDropdown('glpi_dropdown_model', $line["SMODEL"]);
+			$compupdate["model"] = externalImportDropdown('glpi_dropdown_model', $line["SMODEL"],-1,(isset($line["SMANUFACTURER"])?array("manufacturer"=>$line["SMANUFACTURER"]):array()));
 		}
 
 		if ($cfg_ocs["import_general_enterprise"] && !in_array("FK_glpi_enterprise", $computer_updates)) {
-			$compupdate["FK_glpi_enterprise"] = ocsImportDropdown("glpi_dropdown_manufacturer", $line["SMANUFACTURER"]);
+			$compupdate["FK_glpi_enterprise"] = externalImportDropdown("glpi_dropdown_manufacturer", $line["SMANUFACTURER"]);
 		}
 
 		if ($cfg_ocs["import_general_type"] && !empty ($line["TYPE"]) && !in_array("type", $computer_updates)) {
-			$compupdate["type"] = ocsImportDropdown('glpi_type_computers', $line["TYPE"]);
+			$compupdate["type"] = externalImportDropdown('glpi_type_computers', $line["TYPE"]);
 		}
 
 		if (count($compupdate)) {
@@ -1146,17 +1143,60 @@ function ocsUpdateBios($glpi_id, $ocs_id, $ocs_server_id, $cfg_ocs, $computer_up
  *
  **/
 
-function ocsImportDropdown($dpdTable, $value, $FK_entities = -1) {
+function externalImportDropdown($dpdTable, $value, $FK_entities = -1,$external_params=array(),$comments="") {
 	global $DB, $CFG_GLPI;
 
+	$value=trim($value);
 	if (empty ($value))
 		return 0;
 
 	$input["tablename"] = $dpdTable;
 	$input["value"] = $value;
 	$input['type'] = "first";
-	$input["comments"] = "";
+	$input["comments"] = $comments;
 	$input["FK_entities"] = $FK_entities;
+
+
+	$process = false;
+	
+	$input_values=array("name"=>$value);
+	
+	switch ($dpdTable)
+	{
+		case "glpi_dropdown_manufacturer":
+		case "glpi_dropdown_os":
+		case "glpi_dropdown_os_sp":
+		case "glpi_dropdown_os_version":		
+			$rulecollection = getRuleCollectionClassByTableName($dpdTable);
+			$process = true;
+		break;
+		case "glpi_dropdown_model":
+		case "glpi_dropdown_model_monitors":
+		case "glpi_dropdown_model_printers":
+		case "glpi_dropdown_model_peripherals":
+			$rulecollection = getRuleCollectionClassByTableName($dpdTable);
+			$process = true;
+			if (isset($external_params["manufacturer"]))
+				$input_values["manufacturer"] = $external_params["manufacturer"];
+		break;
+		case "glpi_type_computers":
+		case "glpi_type_monitors":
+		case "glpi_type_printers":
+		case "glpi_type_peripherals":
+			$rulecollection = getRuleCollectionClassByTableName($dpdTable);
+			$process = true;
+		break;
+		default:
+		break;
+	}
+
+	if ($process)
+	{
+		$res_rule = $rulecollection->processAllRules($input_values, array (), array());
+		if (isset($res_rule["name"]))
+			$input["value"] = $res_rule["name"];
+	}
+
 	return addDropdown($input);
 }
 
@@ -1261,7 +1301,9 @@ function cron_ocsng() {
 		$DBocs = getDBocs($ocs_server_id);
 
 		$cfg_ocs = getOcsConf($ocs_server_id);
-		logInFile("cron", "Check updates from server " . $cfg_ocs['name'] . "\n");
+		if ($CFG_GLPI["use_errorlog"]) {
+			logInFile("cron", "Check updates from server " . $cfg_ocs['name'] . "\n");
+		}
 
 		if (!$cfg_ocs["cron_sync_number"]){
 			return 0;
@@ -1277,22 +1319,22 @@ function cron_ocsng() {
 			}
 		}
 
-		$query_ocs = "SELECT * FROM hardware INNER JOIN accountinfo ON (hardware.ID = accountinfo.HARDWARE_ID) 
+		$query_ocs = "SELECT * FROM hardware INNER JOIN accountinfo ON (hardware.ID = accountinfo.HARDWARE_ID)
 			WHERE ((hardware.CHECKSUM & " . $cfg_ocs["checksum"] . ") > 0 OR hardware.LASTDATE > '$max_date') ";
-
+		
 		if (!empty ($cfg_ocs["tag_limit"])) {
 			$splitter = explode("$", $cfg_ocs["tag_limit"]);
 			if (count($splitter)) {
 				$query_ocs .= " AND (accountinfo.TAG='" . $splitter[0] . "' ";
-				for ($i = 1; $i < count($splitter); $i++){
+				for ($i = 1; $i < count($splitter); $i++){ 
 					$query_ocs .= " OR accountinfo.TAG='" .$splitter[$i] . "' ";
 				}
-				$query_ocs .=")";
+				$query_ocs .=")"; 
 			}
 		}
-
-		$query_ocs.=" ORDER BY hardware.LASTDATE ASC LIMIT ".$cfg_ocs["cron_sync_number"];
-
+		
+		$query_ocs.=" ORDER BY hardware.LASTDATE ASC LIMIT ".$cfg_ocs["cron_sync_number"]; 
+		
 		$result_ocs = $DBocs->query($query_ocs);
 		if ($DBocs->numrows($result_ocs) > 0) {
 			while ($data = $DBocs->fetch_array($result_ocs)) {
@@ -1798,7 +1840,7 @@ function ocsUpdateDevices($device_type, $glpi_id, $ocs_id, $ocs_server_id, $cfg_
 							$ram["specif_default"] = $line2["CAPACITY"];
 							if (!in_array(RAM_DEVICE . '$$$$$' . $ram["designation"], $import_device)) {
 								$ram["frequence"] = $line2["SPEED"];
-								$ram["type"] = ocsImportDropdown("glpi_dropdown_ram_type", $line2["TYPE"]);
+								$ram["type"] = externalImportDropdown("glpi_dropdown_ram_type", $line2["TYPE"]);
 								$ram_id = ocsAddDevice(RAM_DEVICE, $ram);
 								if ($ram_id) {
 									$devID = compdevice_add($glpi_id, RAM_DEVICE, $ram_id, $line2["CAPACITY"], $dohistory);
@@ -2070,7 +2112,7 @@ function ocsUpdateDevices($device_type, $glpi_id, $ocs_id, $ocs_server_id, $cfg_
 							}
 							$netport=array();
 							$netport["ifmac"] = $line2["MACADDR"];
-							$netport["iface"] = ocsImportDropdown("glpi_dropdown_iface", $line2["TYPE"]);
+							$netport["iface"] = externalImportDropdown("glpi_dropdown_iface", $line2["TYPE"]);
 							$netport["name"] = $line2["DESCRIPTION"];
 							$netport["on_device"] = $glpi_id;
 							$netport["device_type"] = COMPUTER_TYPE;
@@ -2325,207 +2367,221 @@ function ocsUpdatePeripherals($device_type, $entity, $glpi_id, $ocs_id, $ocs_ser
 													FROM monitors 
 													WHERE HARDWARE_ID = '" . $ocs_id . "'";
 				$result = $DBocs->query($query);
-				if ($DBocs->numrows($result) > 0)
+				$lines=array();
+
+				// First pass - check if all serial present
+				if ($DBocs->numrows($result) > 0) {
+					$checkserial=true;
 					while ($line = $DBocs->fetch_array($result)) {
-						$line = clean_cross_side_scripting_deep(addslashes_deep($line));
-						$mon = array ();
-						$mon["name"] = $line["CAPTION"];
+						if (empty($line["SERIAL"])) {
+							$checkserial=false;
+						} 
+						$lines[]=clean_cross_side_scripting_deep(addslashes_deep($line));
+					}
+				}
+				/* Second pass - import    
+					1:Global, 
+					2:Unique, 
+					3:Unique on serial : Don't synchronize if serial missing
+				*/
+				if (count($lines)>0 && ($cfg_ocs["import_monitor"]<=2 || $checkserial)) foreach ($lines as $line) {
+					$mon = array ();
+					$mon["name"] = $line["CAPTION"];
 
-						if (empty ($line["CAPTION"]) && !empty ($line["MANUFACTURER"])) {
-							$mon["name"] = $line["MANUFACTURER"];
+					if (empty ($line["CAPTION"]) && !empty ($line["MANUFACTURER"])) {
+						$mon["name"] = $line["MANUFACTURER"];
+					}
+					if (empty ($line["CAPTION"]) && !empty ($line["TYPE"])) {
+						if (!empty ($line["MANUFACTURER"])) {
+							$mon["name"] .= " ";
 						}
-						if (empty ($line["CAPTION"]) && !empty ($line["TYPE"])) {
-							if (!empty ($line["MANUFACTURER"])) {
-								$mon["name"] .= " ";
-							}
-							$mon["name"] .= $line["TYPE"];
-						}
+						$mon["name"] .= $line["TYPE"];
+					}
 
-						$mon["serial"] = $line["SERIAL"];
-						$checkMonitor = "";
-						if (!empty ($mon["serial"])) {
-							$checkMonitor = $mon["name"];
-							$checkMonitor .= $mon["serial"];
-						} else {
-							$checkMonitor = $mon["name"];
-						}
+					$mon["serial"] = $line["SERIAL"];
+					$checkMonitor = "";
+					if (!empty ($mon["serial"])) {
+						$checkMonitor = $mon["name"];
+						$checkMonitor .= $mon["serial"];
+					} else {
+						$checkMonitor = $mon["name"];
+					}
 
-						if (!empty ($mon["name"])) {
-							if (!in_array($checkMonitor, $import_periph)) {
-								// Clean monitor object
-								$m->reset();
+					if (!empty ($mon["name"])) {
+						if (!in_array($checkMonitor, $import_periph)) {
+							// Clean monitor object
+							$m->reset();
 
-								$mon["FK_glpi_enterprise"] = ocsImportDropdown("glpi_dropdown_manufacturer", $line["MANUFACTURER"]);
-								
-								if ($cfg_ocs["import_monitor_comments"])
-									$mon["comments"] = $line["DESCRIPTION"];
-								$id_monitor = 0;
-								$found_already_monitor = false;
-								if ($cfg_ocs["import_monitor"] == 1) {
-									//Config says : manage monitors as global
-									//check if monitors already exists in GLPI
-									$mon["is_global"] = 1;
-									$query = "SELECT ID FROM glpi_monitors WHERE name = '" . $mon["name"] . "'
-																				AND is_global = '1' AND FK_entities=" . $entity;
-									$result_search = $DB->query($query);
-									if ($DB->numrows($result_search) > 0) {
-										//Periph is already in GLPI
-										//Do not import anything just get periph ID for link
-										$id_monitor = $DB->result($result_search, 0, "ID");
-									} else {
+							$mon["FK_glpi_enterprise"] = externalImportDropdown("glpi_dropdown_manufacturer", processManufacturerName($line["MANUFACTURER"]));
+							
+							if ($cfg_ocs["import_monitor_comments"])
+								$mon["comments"] = $line["DESCRIPTION"];
+							$id_monitor = 0;
+							$found_already_monitor = false;
+							if ($cfg_ocs["import_monitor"] == 1) {
+								//Config says : manage monitors as global
+								//check if monitors already exists in GLPI
+								$mon["is_global"] = 1;
+								$query = "SELECT ID FROM glpi_monitors WHERE name = '" . $mon["name"] . "'
+																			AND is_global = '1' AND FK_entities=" . $entity;
+								$result_search = $DB->query($query);
+								if ($DB->numrows($result_search) > 0) {
+									//Periph is already in GLPI
+									//Do not import anything just get periph ID for link
+									$id_monitor = $DB->result($result_search, 0, "ID");
+								} else {
+									$input = $mon;
+									$input["state"] = $cfg_ocs["default_state"];
+									$input["FK_entities"] = $entity;
+									$input["_from_ocs"] = 1;
+									$id_monitor = $m->add($input);
+								}
+							} else if ($cfg_ocs["import_monitor"] >= 2) {
+								//COnfig says : manage monitors as single units
+								//Import all monitors as non global.
+								$mon["is_global"] = 0;
+								// First import - Is there already a monitor ?
+								if ($count_monitor == 0) {
+									$query_search = "SELECT ID FROM glpi_monitors WHERE name = '" . $mon["name"] . 
+										"' AND is_global = '1' AND FK_entities=" . $entity;
+									$result_search = $DB->query($query_search);
+									if ($DB->numrows($result_search) == 1) {
+										$id_monitor = $DB->result($result_search, 0, 0);
+										$found_already_monitor = true;
+									}
+								}
+
+								if ($found_already_monitor && $id_monitor) {
+
+									$m->getFromDB($id_monitor);
+									// Found a non global monitor : good
+									if (!$m->fields["is_global"]) {
+										$mon["ID"] = $id_monitor;
+										unset ($mon["comments"]);
+										$mon["_from_ocs"] = 1;
+										$m->update($mon);
+									} else { // Found a global monitor : bad idea. need to add another one
+										$found_already_monitor = false;
+										$id_monitor = 0;
+										// Try to find a monitor with the same serial.
+										if (!empty ($mon["serial"])) {
+											$query = "SELECT ID FROM glpi_monitors WHERE serial LIKE '%" . $mon["serial"] . "%' AND FK_entities=" . $entity;
+											$result_search = $DB->query($query);
+											if ($DB->numrows($result_search) == 1) {
+												//Monitor founded
+												$id_monitor = $DB->result($result_search, 0, "ID");
+											}
+										}
+										//Search by serial failed, search by name
+										if (!$id_monitor) {
+											//Try to find a monitor with the same name.
+											if (!empty ($mon["name"])) {
+												$query = "SELECT ID,serial FROM glpi_monitors WHERE name = '" . $mon["name"] . "' AND FK_entities=" . $entity;
+												$result_search = $DB->query($query);
+												if ($DB->numrows($result_search) == 1) {
+													//Monitor founded
+													$serial_monitor = "";
+													$serial_monitor = $DB->result($result_search, 0, "serial");
+													//Verify if serial are equals (for monitor with the same name and different serial)
+													if ($serial_monitor == $mon['serial'])
+														$id_monitor = $DB->result($result_search, 0, "ID");
+												}
+											}
+										}
+										// Nothing found : add it
+										if (!$id_monitor) {
+											$input = $mon;
+											$input["state"] = $cfg_ocs["default_state"];
+											$input["FK_entities"] = $entity;
+											$input["_from_ocs"] = 1;
+											$id_monitor = $m->add($input);
+										}
+									}
+								} else {  // !($found_already_monitor && $id_monitor)
+									// Try to find a monitor with the same serial.
+									if (!empty ($mon["serial"])) {
+										$query = "SELECT ID FROM glpi_monitors WHERE serial LIKE '%" . $mon["serial"] . "%' AND FK_entities=" . $entity;
+										$result_search = $DB->query($query);
+										if ($DB->numrows($result_search) == 1) {
+											//Monitor founded												
+											$id_monitor = $DB->result($result_search, 0, "ID");
+										}
+									}
+									//Search by serial failed, search by name
+									if (!$id_monitor) {
+										//Try to find a monitor with the same name.
+										if (!empty ($mon["name"])) {
+											$query = "SELECT ID,serial FROM glpi_monitors WHERE name = '" . $mon["name"] . "' AND FK_entities=" . $entity;
+											$result_search = $DB->query($query);
+											if ($DB->numrows($result_search) == 1) {
+												//Monitor founded
+												$serial_monitor = "";
+												$serial_monitor = $DB->result($result_search, 0, "serial");
+												//Verify if serial are equals (for dual monitor with the same name)
+												if ($serial_monitor != "" && !empty ($mon['serial']))
+													if ($serial_monitor == $mon['serial'])
+														$id_monitor = $DB->result($result_search, 0, "ID");
+											}
+										}
+									}
+									if (!$id_monitor) {
 										$input = $mon;
 										$input["state"] = $cfg_ocs["default_state"];
 										$input["FK_entities"] = $entity;
 										$input["_from_ocs"] = 1;
 										$id_monitor = $m->add($input);
 									}
-								} else {
+								}
+							} // ($cfg_ocs["import_monitor"] == 2)
+							
+							if ($id_monitor) {
+								if (!$found_already_monitor) {
+									//Import unique : Disconnect monitor on other computer
 									if ($cfg_ocs["import_monitor"] == 2) {
-										//COnfig says : manage monitors as single units
-										//Import all monitors as non global.
-										$mon["is_global"] = 0;
-										// First import - Is there already a monitor ?
-										if ($count_monitor == 0) {
-											$query_search = "SELECT ID FROM glpi_monitors WHERE name = '" . $mon["name"] . "'
-																										 AND is_global = '1' AND FK_entities=" . $entity;
-											$result_search = $DB->query($query_search);
-											if ($DB->numrows($result_search) == 1) {
-												$id_monitor = $DB->result($result_search, 0, 0);
-												$found_already_monitor = true;
-											}
-										}
-
-										if ($found_already_monitor && $id_monitor) {
-
-											$m->getFromDB($id_monitor);
-											// Found a non global monitor : good
-											if (!$m->fields["is_global"]) {
-												$mon["ID"] = $id_monitor;
-												unset ($mon["comments"]);
-												$mon["_from_ocs"] = 1;
-												$m->update($mon);
-											} else { // Found a global monitor : bad idea. need to add another one
-												$found_already_monitor = false;
-												$id_monitor = 0;
-												// Try to find a monitor with the same serial.
-												if (!empty ($mon["serial"])) {
-													$query = "SELECT ID FROM glpi_monitors WHERE serial LIKE '%" . $mon["serial"] . "%' AND FK_entities=" . $entity;
-													$result_search = $DB->query($query);
-													if ($DB->numrows($result_search) == 1) {
-														//Monitor founded
-														$id_monitor = $DB->result($result_search, 0, "ID");
-													}
-												}
-												//Search by serial failed, search by name
-												if (!$id_monitor) {
-													//Try to find a monitor with the same name.
-													if (!empty ($mon["name"])) {
-														$query = "SELECT ID,serial FROM glpi_monitors WHERE name = '" . $mon["name"] . "' AND FK_entities=" . $entity;
-														$result_search = $DB->query($query);
-														if ($DB->numrows($result_search) == 1) {
-															//Monitor founded
-															$serial_monitor = "";
-															$serial_monitor = $DB->result($result_search, 0, "serial");
-															//Verify if serial are equals (for monitor with the same name and different serial)
-															if ($serial_monitor == $mon['serial'])
-																$id_monitor = $DB->result($result_search, 0, "ID");
-														}
-													}
-												}
-												// Nothing found : add it
-												if (!$id_monitor) {
-													$input = $mon;
-													$input["state"] = $cfg_ocs["default_state"];
-													$input["FK_entities"] = $entity;
-													$input["_from_ocs"] = 1;
-													$id_monitor = $m->add($input);
-												}
-											}
-										} else {
-											// Try to find a monitor with the same serial.
-											if (!empty ($mon["serial"])) {
-												$query = "SELECT ID FROM glpi_monitors WHERE serial LIKE '%" . $mon["serial"] . "%' AND FK_entities=" . $entity;
-												$result_search = $DB->query($query);
-												if ($DB->numrows($result_search) == 1) {
-													//Monitor founded												
-													$id_monitor = $DB->result($result_search, 0, "ID");
-												}
-											}
-											//Search by serial failed, search by name
-											if (!$id_monitor) {
-												//Try to find a monitor with the same name.
-												if (!empty ($mon["name"])) {
-													$query = "SELECT ID,serial FROM glpi_monitors WHERE name = '" . $mon["name"] . "' AND FK_entities=" . $entity;
-													$result_search = $DB->query($query);
-													if ($DB->numrows($result_search) == 1) {
-														//Monitor founded
-														$serial_monitor = "";
-														$serial_monitor = $DB->result($result_search, 0, "serial");
-														//Verify if serial are equals (for dual monitor with the same name)
-														if ($serial_monitor != "" && !empty ($mon['serial']))
-															if ($serial_monitor == $mon['serial'])
-																$id_monitor = $DB->result($result_search, 0, "ID");
-													}
-												}
-											}
-											if (!$id_monitor) {
-												$input = $mon;
-												$input["state"] = $cfg_ocs["default_state"];
-												$input["FK_entities"] = $entity;
-												$input["_from_ocs"] = 1;
-												$id_monitor = $m->add($input);
-											}
+										$queryGetConnectionID = "SELECT * FROM glpi_connect_wire WHERE end1=$id_monitor";
+										$result_search_id = $DB->query($queryGetConnectionID);
+										if ($DB->numrows($result_search_id) == 1) {
+											$id_conn = $DB->result($result_search_id, 0, "ID");
+											Disconnect($id_conn, $dohistory, $ocs_server_id);
 										}
 									}
+									$connID = Connect($id_monitor, $glpi_id, MONITOR_TYPE, $dohistory);
 								}
-								if ($id_monitor) {
-									if (!$found_already_monitor) {
-										//Import unique : Disconnect monitor on other computer
-										if ($cfg_ocs["import_monitor"] == 2) {
-											$queryGetConnectionID = "SELECT * FROM glpi_connect_wire WHERE end1=$id_monitor";
-											$result_search_id = $DB->query($queryGetConnectionID);
-											if ($DB->numrows($result_search_id) == 1) {
-												$id_conn = $DB->result($result_search_id, 0, "ID");
-												Disconnect($id_conn, $dohistory, $ocs_server_id);
-											}
-										}
-										$connID = Connect($id_monitor, $glpi_id, MONITOR_TYPE, $dohistory);
-									}
-									if (!empty ($mon["serial"])) {
-										$addValuetoDB = $mon["name"];
-										$addValuetoDB .= $mon["serial"];
-									} else {
-										$addValuetoDB = $mon["name"];
-									}
-									if (!in_array($tagVersionInArray, $import_periph)) {
-										addToOcsArray($glpi_id, array (
-											0 => $tagVersionInArray
-										), "import_monitor");
-									}
-									addToOcsArray($glpi_id, array (
-										$connID => $addValuetoDB
-									), "import_monitor");
-									$count_monitor++;
-									//Update column "deleted" set value to 0 and set status to default
-									$input = array ();
-									$input["ID"] = $id_monitor;
-									$input["deleted"] = 0;
-									$input["state"] = $cfg_ocs["default_state"];
-									$input["_from_ocs"] = 1;
-									$m->update($input);
-								}
-							} else {
-								$searchDBValue = "";
 								if (!empty ($mon["serial"])) {
-									$searchDBValue = $mon["name"];
-									$searchDBValue .= $mon["serial"];
-								} else
-									$searchDBValue = $mon["name"];
-								$id = array_search($searchDBValue, $import_periph);
-								unset ($import_periph[$id]);
-							}
+									$addValuetoDB = $mon["name"];
+									$addValuetoDB .= $mon["serial"];
+								} else {
+									$addValuetoDB = $mon["name"];
+								}
+								if (!in_array($tagVersionInArray, $import_periph)) {
+									addToOcsArray($glpi_id, array (
+										0 => $tagVersionInArray
+									), "import_monitor");
+								}
+								addToOcsArray($glpi_id, array (
+									$connID => $addValuetoDB
+								), "import_monitor");
+								$count_monitor++;
+								//Update column "deleted" set value to 0 and set status to default
+								$input = array ();
+								$input["ID"] = $id_monitor;
+								$input["deleted"] = 0;
+								$input["state"] = $cfg_ocs["default_state"];
+								$input["_from_ocs"] = 1;
+								$m->update($input);
+							} 
+						} else { // (!$id_monitor) 
+							$searchDBValue = "";
+							if (!empty ($mon["serial"])) {
+								$searchDBValue = $mon["name"];
+								$searchDBValue .= $mon["serial"];
+							} else
+								$searchDBValue = $mon["name"];
+							$id = array_search($searchDBValue, $import_periph);
+							unset ($import_periph[$id]);
 						}
-					}
+					} // empty name
+				} // while fetch
 				if (in_array($tagVersionInArray, $import_periph)) {
 					//unset the version Tag
 					unset ($import_periph[0]);
@@ -2633,7 +2689,7 @@ function ocsUpdatePeripherals($device_type, $entity, $glpi_id, $ocs_id, $ocs_ser
 								$periph["brand"] = $line["MANUFACTURER"];
 							if ($line["INTERFACE"] != "NULL")
 								$periph["comments"] = $line["INTERFACE"];
-							$periph["type"] = ocsImportDropdown("glpi_type_peripherals", $line["TYPE"]);
+							$periph["type"] = externalImportDropdown("glpi_type_peripherals", $line["TYPE"]);
 
 							$id_periph = 0;
 
@@ -2701,7 +2757,10 @@ function ocsUpdatePeripherals($device_type, $entity, $glpi_id, $ocs_id, $ocs_ser
 
 			switch ($device_type) {
 				case MONITOR_TYPE :
-					deleteInOcsArray($glpi_id, $key, "import_monitor");
+					// Only if sync done
+					if ($cfg_ocs["import_monitor"]<=2 || $checkserial) {
+						deleteInOcsArray($glpi_id, $key, "import_monitor");
+					}
 					break;
 				case PRINTER_TYPE :
 					deleteInOcsArray($glpi_id, $key, "import_printers");
@@ -2757,10 +2816,10 @@ function ocsUpdateAdministrativeInfo($glpi_id, $ocs_id, $ocs_server_id, $cfg_ocs
 							$var = ocsImportGroup($var, $entity);
 							break;
 						case "location" :
-							$var = ocsImportDropdown("glpi_dropdown_locations", $var, $entity);
+							$var = externalImportDropdown("glpi_dropdown_locations", $var, $entity);
 							break;
 						case "network" :
-							$var = ocsImportDropdown("glpi_dropdown_network", $var);
+							$var = externalImportDropdown("glpi_dropdown_network", $var);
 							break;
 					}
 					$input = array ();
@@ -2846,7 +2905,7 @@ function ocsUpdateRegistry($glpi_id, $ocs_id, $ocs_server_id, $cfg_ocs) {
  *
  **/
 function ocsUpdateSoftware($glpi_id, $entity, $ocs_id, $ocs_server_id, $cfg_ocs, $import_software, $dohistory) {
-	global $DB, $DBocs;
+	global $DB, $DBocs, $LANG;
 
 	checkOCSconnection($ocs_server_id);
 
@@ -2920,98 +2979,136 @@ function ocsUpdateSoftware($glpi_id, $entity, $ocs_id, $ocs_server_id, $cfg_ocs,
 				$initname = $data2["INITNAME"];
 				$name = $data2["NAME"];
 				$version = $data2["VERSION"];
-
-				// Clean software object
-				$soft->reset();
-
-				//If name+version not in present for this computer in glpi, add it 
-				if (!in_array($initname . '$$$$$'. $version, $import_software)) 
+				$manufacturer = processManufacturerName($data2["PUBLISHER"]);
+				
+				$use_glpi_dictionnary = false;
+				if (!$cfg_ocs["use_soft_dict"])
 				{
-						//------------------------------------------------------------------------------------------------------------------//
-						//---- The software doesn't exists in this version for this computer -----//
-						//----------------------------------------------------------------------------------------------------------------//
-
-						//Look for the software by his name in GLPI for a specific entity
-						$query_search = "SELECT glpi_software.ID as ID, glpi_software.deleted as deleted  
-												FROM glpi_software 
-												WHERE name = '" . $name . "' AND is_template='0' AND FK_entities=" . $entity;
-						$result_search = $DB->query($query_search);
-						if ($DB->numrows($result_search) > 0) {
-							//Software already exists for this entity, get his ID
-							$data = $DB->fetch_array($result_search);
-							$isNewSoft = $data["ID"];
-							// restore software
-							if ($data['deleted']){
-								$s = new Software;
-								$s->restore($data);
+					//Software dictionnary
+					$rulecollection = new DictionnarySoftwareCollection;
+					$res_rule = $rulecollection->processAllRules(array("name"=>$name,"manufacturer"=>$manufacturer,"old_version"=>$version), array (), array());
+					
+					if (isset($res_rule["name"]))
+						$modified_name = $res_rule["name"];
+					else
+						$modified_name = $name;
+						
+					if (isset($res_rule["version"]) && $res_rule["version"]!= '')
+						$modified_version = $res_rule["version"];
+					else
+						$modified_version = $version;
+				}
+				else
+				{
+					$modified_name = $name;
+					$modified_version = $version;
+				}
+				
+				//Ignore this software
+				if (!isset($res_rule["ignore"]) || !$res_rule["ignore"])
+				{	
+	
+					// Clean software object
+					$soft->reset();
+	
+					//If name+version not in present for this computer in glpi, add it 
+					if (!in_array($initname . '$$$$$'. $version, $import_software)) 
+					{
+							//------------------------------------------------------------------------------------------------------------------//
+							//---- The software doesn't exists in this version for this computer -----//
+							//----------------------------------------------------------------------------------------------------------------//
+	
+							/*
+							//Look for the software by his name in GLPI for a specific entity
+							$query_search = "SELECT glpi_software.ID as ID, glpi_software.deleted as deleted  
+													FROM glpi_software 
+													WHERE name = '" . $modified_name . "' AND is_template='0' AND FK_entities=" . $entity;
+							$result_search = $DB->query($query_search);
+							if ($DB->numrows($result_search) > 0) {
+								//Software already exists for this entity, get his ID
+								$data = $DB->fetch_array($result_search);
+								$isNewSoft = $data["ID"];
+								
+								// restore software
+								if ($data['deleted']){
+									
+									$s = new Software;
+									$s->restore($data);
+								}
+								
+								
+							} else {
+								$isNewSoft = 0;
 							}
-						} else {
-							$isNewSoft = 0;
+							
+							if (!$isNewSoft) {
+								
+								$input = array ();
+								$input["name"] = $modified_name;
+								
+								if ($cfg_ocs["import_software_comments"])
+									$input["comments"] = $data2["COMMENTS"];
+									
+								$input["FK_entities"] = $entity;
+		
+								if (!empty ($data2["PUBLISHER"])) {
+									$input["FK_glpi_enterprise"] = externalImportDropdown("glpi_dropdown_manufacturer", $manufacturer);
+								}
+								$input["_from_ocs"] = 1;
+								$isNewSoft = $soft->add($input);
+							
+							}
+							*/
+							
+							$isNewSoft= addSoftwareOrRestoreFromTrash($modified_name,$manufacturer,$entity,'',IMPORT_TYPE_OCS);
+							//Import license for this software
+							$licenseID = ocsImportLicense($isNewSoft, $modified_version,$import_software_licensetype,$import_software_buy);
+		
+							//Install license for this machine
+							$instID = installSoftware($glpi_id, $licenseID, '', $dohistory);
+							
+							//Add the software to the table of softwares for this computer to add in database
+							$to_add_to_ocs_array[$instID] = $initname . '$$$$$'. $version;
+	
+					} else {
+						$instID = -1;
+	
+						//------------------------------------------------------------------------------------------------------------------//
+						//--------------------- The software exists in this version for this computer --------------//
+						//----------------------------------------------------------------------------------------------------------------//
+	
+						//Get the name of the software in GLPI to know if the software's name have already been changed by the OCS dictionnary
+						$instID = array_search($initname . '$$$$$'. $version, $import_software);
+						$query_soft = "SELECT glpi_software.ID, glpi_software.name FROM glpi_software, glpi_inst_software, glpi_licenses".
+						" WHERE glpi_inst_software.ID=".$instID." AND glpi_inst_software.license=glpi_licenses.ID AND glpi_licenses.sID=glpi_software.ID";
+	
+						$result_soft = $DB->query($query_soft);
+						$tmpsoft = $DB->fetch_array($result_soft);
+						$softName = $tmpsoft["name"];
+						$softID = $tmpsoft["ID"];
+						$s = new Software;
+						$input["ID"]=$softID;
+						$input["_from_ocs"] = 1;
+		
+						//First, get the name of the software into GLPI db IF dictionnary is used
+						if ($cfg_ocs["use_soft_dict"])
+						{
+								//First use of the dictionnary OR name changed in the dictionnary
+								if ($softName != $name)
+								{
+									$input["name"]=$name;
+									$s->update($input);
+								}
+						}
+						//Dictionnary not use anymore : revert to original name
+						elseif ($softName != $initname)
+						{	
+							$input["name"]=$initname;
+							$s->update($input);
 						}
 						
-						if (!$isNewSoft) {
-							$input = array ();
-							$input["name"] = $name;
-							
-							if ($cfg_ocs["import_software_comments"])
-								$input["comments"] = $data2["COMMENTS"];
-								
-							$input["FK_entities"] = $entity;
-	
-							if (!empty ($data2["PUBLISHER"])) {
-								$input["FK_glpi_enterprise"] = ocsImportDropdown("glpi_dropdown_manufacturer", $data2["PUBLISHER"]);
-							}
-							$input["_from_ocs"] = 1;
-							$isNewSoft = $soft->add($input);
-						} 
-						
-						//Import license for this software
-						$licenseID = ocsImportLicense($isNewSoft, $version,$import_software_licensetype,$import_software_buy);
-	
-						//Install license for this machine
-						$instID = installSoftware($glpi_id, $licenseID, '', $dohistory);
-						
-						//Add the software to the table of softwares for this computer to add in database
-						$to_add_to_ocs_array[$instID] = $initname . '$$$$$'. $version;
-
-				} else {
-					$instID = -1;
-
-					//------------------------------------------------------------------------------------------------------------------//
-					//--------------------- The software exists in this version for this computer --------------//
-					//----------------------------------------------------------------------------------------------------------------//
-
-					//Get the name of the software in GLPI to know if the software's name have already been changed by the OCS dictionnary
-					$instID = array_search($initname . '$$$$$'. $version, $import_software);
-					$query_soft = "SELECT glpi_software.ID, glpi_software.name FROM glpi_software, glpi_inst_software, glpi_licenses".
-					" WHERE glpi_inst_software.ID=".$instID." AND glpi_inst_software.license=glpi_licenses.ID AND glpi_licenses.sID=glpi_software.ID";
-
-					$result_soft = $DB->query($query_soft);
-					$tmpsoft = $DB->fetch_array($result_soft);
-					$softName = $tmpsoft["name"];
-					$softID = $tmpsoft["ID"];
-					$s = new Software;
-					$input["ID"]=$softID;
-					$input["_from_ocs"] = 1;
-	
-					//First, get the name of the software into GLPI db IF dictionnary is used
-					if ($cfg_ocs["use_soft_dict"])
-					{
-							//First use of the dictionnary OR name changed in the dictionnary
-							if ($softName != $name)
-							{
-								$input["name"]=$name;
-								$s->update($input);
-							}
+						unset ($import_software[$instID]);
 					}
-					//Dictionnary not use anymore : revert to original name
-					elseif ($softName != $initname)
-					{	
-						$input["name"]=$initname;
-						$s->update($input);
-					}
-					
-					unset ($import_software[$instID]);
 				}
 			}
 		
@@ -3047,13 +3144,9 @@ function ocsUpdateSoftware($glpi_id, $entity, $ocs_id, $ocs_server_id, $cfg_ocs,
 																FROM glpi_licenses 
 																WHERE sID='" . $lic->fields['sID'] . "'";
 							$result3 = $DB->query($query3);
-							if ($DB->result($result3, 0, 0) == 1) {
-								$soft = new Software();
-								$soft->delete(array (
-									'ID' => $lic->fields['sID'],
-									"_from_ocs" => 1
-								), 0);
-							}
+							if ($DB->result($result3, 0, 0) == 1) 
+								putSoftwareInTrash($lic->fields['sID'],$LANG["ocsng"][54],0);
+							
 							$lic->delete(array (
 								"ID" => $data['license'],
 								"_from_ocs" => 1
@@ -3570,5 +3663,21 @@ function getMaterialManagementMode($ocs_config, $device_type) {
 			return $ocs_config["import_periph"];
 			break;
 	}
+}
+
+/**
+ * Get IP address from OCS hardware table
+ * @param ocs_server_id the ID of the OCS server
+ * @param computer_id ID of the computer in OCS hardware table
+ * @return the ip address or ''
+ */
+function getOcsGeneralIpAddress($ocs_server_id,$computer_id)
+{
+	global $DBocs;
+	$res = $DBocs->query("SELECT IPADDR FROM hardware WHERE ID=".$computer_id);
+	if ($DBocs->numrows($res) == 1)
+		return $DBocs->result($res,0,"IPADDR");
+	else
+		return '';	
 }
 ?>

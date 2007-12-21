@@ -37,7 +37,8 @@
 
 $NEEDED_ITEMS = array (
 	"setup",
-	"ocsng"
+	"ocsng",
+	"dbreplicate"
 );
 
 define('GLPI_ROOT', '..');
@@ -58,6 +59,26 @@ if (!empty ($_POST["update"])) {
 		glpi_header($CFG_GLPI["root_doc"] ."/front/setup.ocsng.php");
 	else
 		glpi_header($CFG_GLPI["root_doc"] ."/front/setup.config.php");
+}
+elseif (isset($_POST["activate_slave"]) && $_POST["slave_status"] == 1)
+{
+		if (!isDBSlaveActive())
+			createDBSlaveConfig();
+}
+elseif (isset($_POST["update_slave"]))
+{
+	if ($_POST["slave_status"] == 0)
+	{
+		if (isDBSlaveActive())
+			deleteDBSlaveConfig();
+	}
+	else
+	{
+		saveDBSlaveConf($_POST["dbhost"],$_POST["dbuser"],$_POST["dbpassword"],$_POST["dbdefault"]);
+		$replicate = new DBReplicate();
+		$replicate->update($_POST);
+	}
+		
 }
 
 commonHeader($LANG["title"][2], $_SERVER['PHP_SELF'],"config","config");

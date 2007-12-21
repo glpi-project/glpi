@@ -46,8 +46,8 @@ function cron_mailgate(){
 			$mc=new MailCollect();
 			while ($data=$DB->fetch_assoc($result)){
 				logInFile("cron","Collect mails from ".$data["host"]." for entity ".$data["FK_entities"]."\n");
-				$message=$mc->collect($data["host"],$data["login"],$data["password"],$data["FK_entities"]);
-				logInFile("cron","$message\n");
+				$message=$mc->collect($data["host"],$data["login"],$data["password"],$data["FK_entities"]); 
+ 				logInFile("cron","$message\n");
 			}
 		}
 	}

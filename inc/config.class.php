@@ -37,24 +37,24 @@ if (!defined('GLPI_ROOT')){
 	die("Sorry. You can't access directly to this file");
 	}
 
-// Config class
+// Config class 
 class Config extends CommonDBTM {
 
 	/**
-	 * Constructor
-	 **/
+	 * Constructor 
+	**/
 	function Config () {
 		$this->table="glpi_config";
 		$this->type=-1;
 	}
 	/**
-	 * Prepare input datas for updating the item
+	 * Prepare input datas for updating the item 
 	 *
 	 *@param $input datas used to update the item
-	 *
+	 * 
 	 *@return the modified $input array
-	 *
-	 **/
+	 * 
+	**/
 	function prepareInputForUpdate($input) {
 		if (isset($input["planning_begin"]))
 			$input["planning_begin"]=$input["planning_begin"].":00:00";
@@ -69,8 +69,8 @@ class Config extends CommonDBTM {
 	 *@param $input datas used to update the item
 	 *@param $updates array of the updated fields
 	 *@param $history store changes history ?
-	 *
-	 **/
+	 * 
+	**/
 	function post_updateItem($input,$updates,$history=1) {
 		global $CACHE_CFG;
 		if (count($updates)){
@@ -81,13 +81,13 @@ class Config extends CommonDBTM {
 	 * Print the config form
 	 *
 	 *@param $target filename : where to go when done.
-	 *
-	 *@return Nothing (display)
-	 *
-	 **/
+	 * 
+	 *@return Nothing (display) 
+	 * 
+	**/	
 	function showForm($target) {
 	
-		global $DB, $LANG, $CFG_GLPI;
+		global $DB, $LANG, $CFG_GLPI, $DBSlave;
 	
 		if (!haveRight("config", "w"))
 			return false;
@@ -112,6 +112,12 @@ class Config extends CommonDBTM {
 			echo "class='actif'";
 		}
 		echo "><a href='$target?onglet=3'>" . $LANG["setup"][184] . "</a></li>";
+
+		echo "<li ";
+		if ($_SESSION['glpi_configgen'] == 4) {
+			echo "class='actif'";
+		}
+		echo "><a href='$target?onglet=4'>" . $LANG["setup"][800] . "</a></li>";
 
 		echo "</ul></div>";
 
@@ -246,8 +252,14 @@ class Config extends CommonDBTM {
 			
 				echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["setup"][403] . " </td><td><input type=\"text\" name=\"proxy_user\" value=\"" . $CFG_GLPI["proxy_user"] . "\"></td>";
 				echo "<td class='center'>" . $LANG["setup"][404] . " </td><td><input type=\"text\" name=\"proxy_password\" value=\"" . $CFG_GLPI["proxy_password"] . "\"></td></tr>";
+
+				echo "<tr class='tab_bg_1'><td colspan='4' align='center'><strong>" . $LANG["rulesengine"][77] . "</strong></td></tr>";
+				echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["rulesengine"][86] . " </td><td>";
+				dropdownValue("glpi_dropdown_software_category","category_on_software_delete",$CFG_GLPI["category_on_software_delete"]);				
+				echo "</td><td class='center' colspan='2'></td></tr>";
 			
 				echo "<tr class='tab_bg_2'><td colspan='4' align='center'><input type=\"submit\" name=\"update\" class=\"submit\" value=\"" . $LANG["buttons"][2] . "\" ></td></tr>";
+	
 			
 				echo "</table></div>";
 				break;
@@ -468,6 +480,70 @@ class Config extends CommonDBTM {
 				echo "</table></div>";
 				
 			break;
+			case 4 :
+				$replicate = new DBReplicate();
+				$replicate->getFromDB($CFG_GLPI["ID"]);
+				echo "<form name='form' action=\"$target\" method=\"post\">";
+				echo "<input type='hidden' name='ID' value='" . $CFG_GLPI["ID"] . "'>";
+		
+				$active = isDBSlaveActive();
+		
+				echo "<div class='center'><table class='tab_cadre_fixe'>";
+		
+				echo "<tr class='tab_bg_2'><th colspan='4'>" . $LANG["setup"][800] . "</th></tr>";
+		
+				echo "<tr class='tab_bg_2'><td class='center'> " . $LANG["setup"][801] . " </td><td>";
+				dropdownYesNo("slave_status", $active);
+				echo " </td><td  colspan='2'></td></tr>";
+		
+				if (!$active)
+					echo "<tr class='tab_bg_2'><td colspan='4' align='center'><input type=\"submit\" name=\"activate_slave\" class=\"submit\" value=\"" . $LANG["buttons"][2] . "\" ></td></tr>";
+				else {
+					$DBSlave = getDBSlaveConf();
+					echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["install"][30] . " </td><td><input type=\"text\" name=\"dbhost\" size='40' value=\"" . $DBSlave->dbhost . "\"></td>";
+					echo "<td class='center'>" . $LANG["setup"][802] . "</td><td>";
+					echo "<input type=\"text\" name=\"dbdefault\" value=\"" . $DBSlave->dbdefault . "\">";
+					echo "</td></tr>";
+		
+					echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["install"][31] . "</td><td>";
+					echo "<input type=\"text\" name=\"dbuser\" value=\"" . $DBSlave->dbuser . "\">";
+					echo "<td class='center'>" . $LANG["install"][32] . "</td><td>";
+					echo "<input type=\"text\" name=\"dbpassword\" value=\"" . $DBSlave->dbpassword . "\">";
+					echo "</td></tr>";
+		
+					echo "<tr class='tab_bg_2'><th colspan='4'>" . $LANG["setup"][704] . "</th></tr>";
+		
+					echo "<tr class='tab_bg_2'><td class='center'> " . $LANG["setup"][804] . " </td><td>";
+					dropdownYesNo("notify_db_desynchronization", $replicate->fields["notify_db_desynchronization"]);
+					echo " </td>";
+		
+					echo "<td class='center'> " . $LANG["setup"][805] . " </td><td>";
+					autocompletionTextField("admin_email","glpi_db_replicate", "admin_email", $replicate->fields["admin_email"]);
+					echo " </td></tr>";
+		
+					echo "<tr class='tab_bg_2'><td class='center'> " . $LANG["setup"][806] . " </td><td>";
+					autocompletionTextField("max_delay", "glpi_db_replicate", "max_delay",$replicate->fields["max_delay"],10);
+					echo "&nbsp;" . $LANG["stats"][34]." </td>";
+					echo "<td colspan='2'></td></tr>";
+		
+		
+					echo "<tr class='tab_bg_2'>";			
+					if ($DBSlave->connected && !$DB->isSlave()) {
+						echo "<td colspan='4' align='center'>" . $LANG["setup"][803] . " : ";
+						echo timestampToString(getReplicateDelay(),1);
+						echo "</td>";
+					} else
+						echo "<td colspan='4'></td>";
+		
+					echo "</tr>";
+		
+					echo "<tr class='tab_bg_2'><td colspan='4' align='center'><input type=\"submit\" name=\"update_slave\" class=\"submit\" value=\"" . $LANG["buttons"][2] . "\" ></td></tr>";
+		
+				}
+		
+				echo "</tr>";
+				echo "</table></div>";
+			break;
 		}
 		echo "</form>";
 
@@ -477,11 +553,11 @@ class Config extends CommonDBTM {
 	/**
 	 * Print the mailing config form
 	 *
-	 *@param $target filename : where to go when done.
-	 *
-	 *@return Nothing (display)
-	 *
-	 **/
+	 *@param $target filename : where to go when done. 
+	 * 
+	 *@return Nothing (display) 
+	 * 
+	**/
 	function showFormMailing($target) {
 	
 		global $DB, $LANG, $CFG_GLPI;
@@ -693,7 +769,7 @@ class ConfigOCS extends CommonDBTM {
 
 	/**
 	 * Constructor
-	 **/	
+	**/
 	function ConfigOCS () {
 		$this->table="glpi_ocs_config";
 		$this->type=-1;
@@ -702,11 +778,11 @@ class ConfigOCS extends CommonDBTM {
 	/**
 	 * Prepare input datas for updating the item
 	 *
-	 *@param $input datas used to update the item
-	 *
+	 *@param $input datas used to update the item 
+	 * 
 	 *@return the modified $input array
-	 *
-	 **/
+	 * 
+	**/
 	function prepareInputForUpdate($input) {
 		if (isset($input["ocs_db_passwd"])&&!empty($input["ocs_db_passwd"])){
 			$input["ocs_db_passwd"]=urlencode(stripslashes($input["ocs_db_passwd"]));
@@ -749,9 +825,9 @@ class ConfigOCS extends CommonDBTM {
 	 *
 	 *@param $input datas used to update the item
 	 *@param $updates array of the updated fields
-	 *@param $history store changes history ?
-	 *
-	 **/
+	 *@param $history store changes history ? 
+	 * 
+	**/
 	function post_updateItem($input,$updates,$history=1) {
 		global $CACHE_CFG;
 		if (count($updates)){

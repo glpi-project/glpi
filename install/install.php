@@ -104,7 +104,7 @@ function choose_language()
 function loadLang($LANGuage) {
 	if (isset($LANG)){
 		unset($LANG);
-	}
+	}	
 	global $LANG;
 	$file = GLPI_ROOT ."/locales/".$LANGuage.".php";
 	if (file_exists($file)){
@@ -754,7 +754,7 @@ function step4 ($host,$user,$password,$databasename,$newdatabasename)
 		include_once (GLPI_CONFIG_DIR . "/config_db.php");
 
 		$DB = new DB;
-		$DB_file = GLPI_ROOT ."/install/mysql/glpi-0.7-empty.sql";
+		$DB_file = GLPI_ROOT ."/install/mysql/glpi-0.71-empty.sql";
 		$DBf_handle = fopen($DB_file, "rt");
 		$sql_query = fread($DBf_handle, filesize($DB_file));
 		fclose($DBf_handle);

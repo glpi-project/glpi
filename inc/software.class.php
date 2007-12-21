@@ -403,7 +403,7 @@ class License extends CommonDBTM {
 		}
 		if (isset ($input['oem']) && !$input['oem'])
 			$input['oem_computer'] = -1;
-		
+
 		return $input;
 	}
 

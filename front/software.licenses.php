@@ -53,10 +53,12 @@ if (isset($_POST["add"]))
 {
 	checkRight("software","w");
 
-	if ($_POST["serial"]=="free"||$_POST["serial"]=="global") $number=1;
-	else $number=$_POST["number"];
+	if ($_POST["serial"]=="free"||$_POST["serial"]=="global"){
+		$number=1;
+	}else {
+		$number=$_POST["number"];
+	}
 	unset($_POST["number"]);
-
 
 	for ($i=1;$i<=$number;$i++){
 		unset($lic->fields["ID"]);
@@ -70,10 +72,13 @@ if (isset($_POST["add"]))
 else if (isset($_POST["update_stock_licenses"])||isset($_POST["update_stock_licenses_x"])){
 	checkRight("software","w");
 
-	foreach ($_POST as $key => $val)
-		if (ereg("stock_licenses_([0-9]+)",$key,$regs))
-			if ($val!=$_POST["nb_licenses_".$regs[1]])
+	foreach ($_POST as $key => $val){
+		if (ereg("stock_licenses_([0-9]+)",$key,$regs)){
+			if ($val!=$_POST["nb_licenses_".$regs[1]]){
 				updateNumberLicenses($regs[1],$_POST["nb_licenses_".$regs[1]],$val);
+			}
+		}
+	}
 	glpi_header($_SERVER['HTTP_REFERER']);
 
 }	
@@ -83,12 +88,12 @@ else if (isset($_POST["update_expire"])||isset($_POST["update_expire_x"])){
 	$lic=new License;
 	$input["expire"]=$_POST["expire"];
 
-	foreach ($_POST as $key => $val)
+	foreach ($_POST as $key => $val){
 		if (ereg("license_([0-9]+)",$key,$ereg)){
 			$input["ID"]=$ereg[1];
 			$lic->update($input);
 		}
-
+	}
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($_POST["update_buy"])||isset($_POST["update_buy_x"])){
@@ -96,11 +101,12 @@ else if (isset($_POST["update_buy"])||isset($_POST["update_buy_x"])){
 
 	$input["buy"]=$_POST["buy"];	
 
-	foreach ($_POST as $key => $val)
+	foreach ($_POST as $key => $val){
 		if (ereg("license_([0-9]+)",$key,$ereg)){
 			$input["ID"]=$ereg[1];
 			$lic->update($input);
 		}
+	}
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($_POST["move"])||isset($_POST["move"])){
@@ -111,9 +117,9 @@ else if (isset($_POST["move"])||isset($_POST["move"])){
 		foreach ($_POST as $key => $val){
 			$lic=array();
 			if (ereg("license_([0-9]+)",$key,$ereg)){
-				$lic[]=$ereg[1];
+				$lic[]=$ereg[1]; 
 			}
-			if (count($lic)){
+			if (count($lic)){ 
 				moveLicensesToLicense($lic,$_POST["lID"]);
 			}
 		}
@@ -130,30 +136,28 @@ else if (isset($_POST["move_to_software"])||isset($_POST["move_to_software"])){
 	}
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
-else if (isset($_POST["delete_similar_license"]))
-{
+else if (isset($_POST["delete_similar_license"])){
 	checkRight("software","w");
-
+	
 	foreach ($_POST as $key => $val){
 		if (ereg("license_([0-9]+)",$key,$ereg)){
 			deleteSimilarLicenses($ereg[1]);
 		}
-	}
-
+	}	
 	logEvent(0, "software", 4, "inventory", $_SESSION["glpiname"]." deleted licenses.");
 	glpi_header($_SERVER['HTTP_REFERER']." ");
 }
-else if (isset($_POST["delete_license"])){
+else if (isset($_POST["delete_license"])){ 
 	checkRight("software","w");
-
-	foreach ($_POST as $key => $val)
+	
+	foreach ($_POST as $key => $val){
 		if (ereg("license_([0-9]+)",$key,$ereg)){
 			$lic->delete(array("ID"=>$ereg[1]));
 		}
-	glpi_header($_SERVER['HTTP_REFERER']);        
+	}
+	glpi_header($_SERVER['HTTP_REFERER']);
 }
-else if (isset($_POST["update"]))
-{
+else if (isset($_POST["update"])){
 	checkRight("software","w");
 
 	unset($_POST["search_software"]);
@@ -162,32 +166,28 @@ else if (isset($_POST["update"]))
 	logEvent(0, "software", 4, "inventory", $_SESSION["glpiname"]." update a license.");
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
-else if (isset($_GET["form"]))
-{
+else if (isset($_GET["form"])){
 	checkRight("software","w");
 
 	commonHeader($LANG["title"][12],$_SERVER['PHP_SELF'],"inventory","software");
 	showLicenseForm($_SERVER['PHP_SELF'],$_GET['form'],$_GET["sID"],$_GET["lID"]);
 	commonFooter();
 }
-else if (isset($_GET["delete"]))
-{
+else if (isset($_GET["delete"])){
 	checkRight("software","w");
 
 	$lic->delete(array("ID"=>$_GET["ID"]));
 	logEvent(0, "software", 4, "inventory", $_SESSION["glpiname"]." deleted a license.");
 	glpi_header($_SERVER['HTTP_REFERER']." ");
 }
-else if (isset($_POST["install"]))
-{
+else if (isset($_POST["install"])){
 	checkRight("software","w");
 
 	installSoftware($_POST["cID"],$_POST["licenseID"],$_POST["sID"]);
 	logEvent($_POST["cID"], "computers", 5, "inventory", $_SESSION["glpiname"]." installed software.");
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
-else if (isset($_GET["uninstall"]))
-{
+else if (isset($_GET["uninstall"])){
 	checkRight("software","w");
 
 	uninstallSoftware($_GET["ID"]);
@@ -199,8 +199,7 @@ else if (isset($_GET["unglobalize"])&&isset($_GET["ID"])){
 	logEvent($_GET["sID"], "software", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][60]);
 	glpi_header($CFG_GLPI["root_doc"]."/front/software.form.php?ID=".$_GET["sID"]);
 }
-else if (isset($_GET["back"]))
-{
+else if (isset($_GET["back"])){
 	glpi_header($_GET["back"]);
 }
 
