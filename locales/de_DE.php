@@ -1271,9 +1271,9 @@ $LANG["rulesengine"][40]="Kategorie";
 $LANG["rulesengine"][41]="Prüfung"; 
 $LANG["rulesengine"][42]="UND"; 
 $LANG["rulesengine"][43]="ODER"; 
-$LANG["rulesengine"][120]="The engine stops on the first checked rule."; 
-$LANG["rulesengine"][121]="The engine treats all the rules."; 
-$LANG["rulesengine"][122]="The engine passes the result of a rule to the following ones."; 
+$LANG["rulesengine"][120]="Stoppen bei erster verarbeiteten Regel."; 
+$LANG["rulesengine"][121]="Verarbeitung aller Regeln."; 
+$LANG["rulesengine"][122]="Ergebnis einer Regel an die nachfolgenden Regeln weitergeben."; 
 
 $LANG["search"][0]="Suchen"; 
 $LANG["search"][2]="enthält"; 
