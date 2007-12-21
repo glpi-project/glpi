@@ -203,7 +203,7 @@ $RULES_CRITERIAS[RULE_SOFTWARE_CATEGORY]['name']['field']='name';
 $RULES_CRITERIAS[RULE_SOFTWARE_CATEGORY]['name']['name']=$LANG["software"][10];
 $RULES_CRITERIAS[RULE_SOFTWARE_CATEGORY]['name']['table']='glpi_software';
 
-$RULES_CRITERIAS[RULE_SOFTWARE_CATEGORY]['manufacturer']['field']='manufacturer';
+$RULES_CRITERIAS[RULE_SOFTWARE_CATEGORY]['manufacturer']['field']='name';
 $RULES_CRITERIAS[RULE_SOFTWARE_CATEGORY]['manufacturer']['name']=$LANG["common"][5];
 $RULES_CRITERIAS[RULE_SOFTWARE_CATEGORY]['manufacturer']['table']='glpi_dropdown_manufacturer';
 
@@ -211,4 +211,153 @@ $RULES_ACTIONS[RULE_SOFTWARE_CATEGORY]['category']['name']=$LANG["common"][36];
 $RULES_ACTIONS[RULE_SOFTWARE_CATEGORY]['category']['type']='dropdown';
 $RULES_ACTIONS[RULE_SOFTWARE_CATEGORY]['category']['table']='glpi_dropdown_software_category';
 
+//Dictionnary Software
+$RULES_CRITERIAS[RULE_DICTIONNARY_SOFTWARE]['name']['field']='name';
+$RULES_CRITERIAS[RULE_DICTIONNARY_SOFTWARE]['name']['name']=$LANG["software"][10];
+$RULES_CRITERIAS[RULE_DICTIONNARY_SOFTWARE]['name']['table']='glpi_software';
+
+$RULES_CRITERIAS[RULE_DICTIONNARY_SOFTWARE]['manufacturer']['field']='name';
+$RULES_CRITERIAS[RULE_DICTIONNARY_SOFTWARE]['manufacturer']['name']=$LANG["common"][5];
+$RULES_CRITERIAS[RULE_DICTIONNARY_SOFTWARE]['manufacturer']['table']='glpi_dropdown_manufacturer';
+
+$RULES_ACTIONS[RULE_DICTIONNARY_SOFTWARE]['name']['name']=$LANG["software"][10];
+$RULES_ACTIONS[RULE_DICTIONNARY_SOFTWARE]['name']['optional_actions']=array("ignore","regex_result");
+
+$RULES_ACTIONS[RULE_DICTIONNARY_SOFTWARE]['version']['name']=$LANG["rulesengine"][78];
+$RULES_ACTIONS[RULE_DICTIONNARY_SOFTWARE]['version']['optional_actions']=array("regex_result","append_regex_result");
+
+$RULES_ACTIONS[RULE_DICTIONNARY_SOFTWARE]['FK_glpi_enterprise']['name']=$LANG["common"][5];
+$RULES_ACTIONS[RULE_DICTIONNARY_SOFTWARE]['FK_glpi_enterprise']['table']="glpi_dropdown_manufacturer";
+$RULES_ACTIONS[RULE_DICTIONNARY_SOFTWARE]['FK_glpi_enterprise']['type']='dropdown';
+
+//Dictionnary Manufacturer
+$RULES_CRITERIAS[RULE_DICTIONNARY_MANUFACTURER]['name']['field']='name';
+$RULES_CRITERIAS[RULE_DICTIONNARY_MANUFACTURER]['name']['name']=$LANG["common"][5];
+$RULES_CRITERIAS[RULE_DICTIONNARY_MANUFACTURER]['name']['table']='glpi_dropdown_manufacturer';
+
+$RULES_ACTIONS[RULE_DICTIONNARY_MANUFACTURER]['name']['name']=$LANG["common"][5];
+
+//Dictionnary Model Computer
+$RULES_CRITERIAS[RULE_DICTIONNARY_MODEL_COMPUTER]['name']['field']='name';
+$RULES_CRITERIAS[RULE_DICTIONNARY_MODEL_COMPUTER]['name']['name']=$LANG["common"][22];
+$RULES_CRITERIAS[RULE_DICTIONNARY_MODEL_COMPUTER]['name']['table']='glpi_dropdown_model';
+
+$RULES_CRITERIAS[RULE_DICTIONNARY_MODEL_COMPUTER]['manufacturer']['field']='name';
+$RULES_CRITERIAS[RULE_DICTIONNARY_MODEL_COMPUTER]['manufacturer']['name']=$LANG["common"][5];
+$RULES_CRITERIAS[RULE_DICTIONNARY_MODEL_COMPUTER]['manufacturer']['table']='glpi_dropdown_manufacturer';
+
+$RULES_ACTIONS[RULE_DICTIONNARY_MODEL_COMPUTER]['name']['name']=$LANG["common"][22];
+$RULES_ACTIONS[RULE_DICTIONNARY_MODEL_COMPUTER]['name']['optional_actions']=array("regex_result","append_regex_result");
+
+//Dictionnary Model Monitor
+$RULES_CRITERIAS[RULE_DICTIONNARY_MODEL_MONITOR]['name']['field']='name';
+$RULES_CRITERIAS[RULE_DICTIONNARY_MODEL_MONITOR]['name']['name']=$LANG["common"][22];
+$RULES_CRITERIAS[RULE_DICTIONNARY_MODEL_MONITOR]['name']['table']='glpi_dropdown_model_monitors';
+
+$RULES_CRITERIAS[RULE_DICTIONNARY_MODEL_MONITOR]['manufacturer']['field']='name';
+$RULES_CRITERIAS[RULE_DICTIONNARY_MODEL_MONITOR]['manufacturer']['name']=$LANG["common"][5];
+$RULES_CRITERIAS[RULE_DICTIONNARY_MODEL_MONITOR]['manufacturer']['table']='glpi_dropdown_manufacturer';
+
+$RULES_ACTIONS[RULE_DICTIONNARY_MODEL_MONITOR]['name']['name']=$LANG["common"][22];
+$RULES_ACTIONS[RULE_DICTIONNARY_MODEL_MONITOR]['name']['optional_actions']=array("regex_result","append_regex_result");
+
+//Dictionnary Model Printer
+$RULES_CRITERIAS[RULE_DICTIONNARY_MODEL_PRINTER]['name']['field']='name';
+$RULES_CRITERIAS[RULE_DICTIONNARY_MODEL_PRINTER]['name']['name']=$LANG["common"][22];
+$RULES_CRITERIAS[RULE_DICTIONNARY_MODEL_PRINTER]['name']['table']='glpi_dropdown_model_printers';
+
+$RULES_CRITERIAS[RULE_DICTIONNARY_MODEL_PRINTER]['manufacturer']['field']='name';
+$RULES_CRITERIAS[RULE_DICTIONNARY_MODEL_PRINTER]['manufacturer']['name']=$LANG["common"][5];
+$RULES_CRITERIAS[RULE_DICTIONNARY_MODEL_PRINTER]['manufacturer']['table']='glpi_dropdown_manufacturer';
+
+$RULES_ACTIONS[RULE_DICTIONNARY_MODEL_PRINTER]['name']['name']=$LANG["common"][22];
+$RULES_ACTIONS[RULE_DICTIONNARY_MODEL_PRINTER]['name']['optional_actions']=array("regex_result","append_regex_result");
+
+//Dictionnary Model Peripheral
+$RULES_CRITERIAS[RULE_DICTIONNARY_MODEL_PERIPHERAL]['name']['field']='name';
+$RULES_CRITERIAS[RULE_DICTIONNARY_MODEL_PERIPHERAL]['name']['name']=$LANG["common"][22];
+$RULES_CRITERIAS[RULE_DICTIONNARY_MODEL_PERIPHERAL]['name']['table']='glpi_dropdown_model_peripherals';
+
+$RULES_CRITERIAS[RULE_DICTIONNARY_MODEL_PERIPHERAL]['manufacturer']['field']='name';
+$RULES_CRITERIAS[RULE_DICTIONNARY_MODEL_PERIPHERAL]['manufacturer']['name']=$LANG["common"][5];
+$RULES_CRITERIAS[RULE_DICTIONNARY_MODEL_PERIPHERAL]['manufacturer']['table']='glpi_dropdown_manufacturer';
+
+$RULES_ACTIONS[RULE_DICTIONNARY_MODEL_PERIPHERAL]['name']['name']=$LANG["common"][22];
+$RULES_ACTIONS[RULE_DICTIONNARY_MODEL_PERIPHERAL]['name']['optional_actions']=array("regex_result","append_regex_result");
+
+//Dictionnary Model Networking
+$RULES_CRITERIAS[RULE_DICTIONNARY_MODEL_NETWORKING]['name']['field']='name';
+$RULES_CRITERIAS[RULE_DICTIONNARY_MODEL_NETWORKING]['name']['name']=$LANG["common"][22];
+$RULES_CRITERIAS[RULE_DICTIONNARY_MODEL_NETWORKING]['name']['table']='glpi_dropdown_model_networking';
+
+$RULES_CRITERIAS[RULE_DICTIONNARY_MODEL_NETWORKING]['manufacturer']['field']='name';
+$RULES_CRITERIAS[RULE_DICTIONNARY_MODEL_NETWORKING]['manufacturer']['name']=$LANG["common"][5];
+$RULES_CRITERIAS[RULE_DICTIONNARY_MODEL_NETWORKING]['manufacturer']['table']='glpi_dropdown_manufacturer';
+
+$RULES_ACTIONS[RULE_DICTIONNARY_MODEL_NETWORKING]['name']['name']=$LANG["common"][22];
+$RULES_ACTIONS[RULE_DICTIONNARY_MODEL_NETWORKING]['name']['optional_actions']=array("regex_result","append_regex_result");
+
+//Dictionnary Type Computer
+$RULES_CRITERIAS[RULE_DICTIONNARY_TYPE_COMPUTER]['name']['field']='name';
+$RULES_CRITERIAS[RULE_DICTIONNARY_TYPE_COMPUTER]['name']['name']=$LANG["common"][17];
+$RULES_CRITERIAS[RULE_DICTIONNARY_TYPE_COMPUTER]['name']['table']='glpi_type_computers';
+
+$RULES_ACTIONS[RULE_DICTIONNARY_TYPE_COMPUTER]['name']['name']=$LANG["common"][17];
+$RULES_ACTIONS[RULE_DICTIONNARY_TYPE_COMPUTER]['name']['optional_actions']=array("regex_result","append_regex_result");
+
+//Dictionnary Type Monitor
+$RULES_CRITERIAS[RULE_DICTIONNARY_TYPE_MONITOR]['name']['field']='name';
+$RULES_CRITERIAS[RULE_DICTIONNARY_TYPE_MONITOR]['name']['name']=$LANG["common"][17];
+$RULES_CRITERIAS[RULE_DICTIONNARY_TYPE_MONITOR]['name']['table']='glpi_type_monitors';
+
+$RULES_ACTIONS[RULE_DICTIONNARY_TYPE_MONITOR]['name']['name']=$LANG["common"][17];
+$RULES_ACTIONS[RULE_DICTIONNARY_TYPE_MONITOR]['name']['optional_actions']=array("regex_result","append_regex_result");
+
+//Dictionnary Type Printer
+$RULES_CRITERIAS[RULE_DICTIONNARY_TYPE_PRINTER]['name']['field']='name';
+$RULES_CRITERIAS[RULE_DICTIONNARY_TYPE_PRINTER]['name']['name']=$LANG["common"][17];
+$RULES_CRITERIAS[RULE_DICTIONNARY_TYPE_PRINTER]['name']['table']='glpi_type_printers';
+
+$RULES_ACTIONS[RULE_DICTIONNARY_TYPE_PRINTER]['name']['name']=$LANG["common"][17];
+$RULES_ACTIONS[RULE_DICTIONNARY_TYPE_PRINTER]['name']['optional_actions']=array("regex_result","append_regex_result");
+
+//Dictionnary Type Peripheral
+$RULES_CRITERIAS[RULE_DICTIONNARY_TYPE_PERIPHERAL]['name']['field']='name';
+$RULES_CRITERIAS[RULE_DICTIONNARY_TYPE_PERIPHERAL]['name']['name']=$LANG["common"][17];
+$RULES_CRITERIAS[RULE_DICTIONNARY_TYPE_PERIPHERAL]['name']['table']='glpi_type_peripherals';
+
+$RULES_ACTIONS[RULE_DICTIONNARY_TYPE_PERIPHERAL]['name']['name']=$LANG["common"][17];
+$RULES_ACTIONS[RULE_DICTIONNARY_TYPE_PERIPHERAL]['name']['optional_actions']=array("regex_result","append_regex_result");
+
+//Dictionnary Type Networking
+$RULES_CRITERIAS[RULE_DICTIONNARY_TYPE_NETWORKING]['name']['field']='name';
+$RULES_CRITERIAS[RULE_DICTIONNARY_TYPE_NETWORKING]['name']['name']=$LANG["common"][17];
+$RULES_CRITERIAS[RULE_DICTIONNARY_TYPE_NETWORKING]['name']['table']='glpi_type_networking';
+
+$RULES_ACTIONS[RULE_DICTIONNARY_TYPE_NETWORKING]['name']['name']=$LANG["common"][17];
+$RULES_ACTIONS[RULE_DICTIONNARY_TYPE_NETWORKING]['name']['optional_actions']=array("regex_result","append_regex_result");
+
+//Dictionnary OS
+$RULES_CRITERIAS[RULE_DICTIONNARY_OS]['name']['field']='name';
+$RULES_CRITERIAS[RULE_DICTIONNARY_OS]['name']['name']=$LANG["computers"][9];
+$RULES_CRITERIAS[RULE_DICTIONNARY_OS]['name']['table']='glpi_dropdown_os';
+
+$RULES_ACTIONS[RULE_DICTIONNARY_OS]['name']['name']=$LANG["computers"][9];
+$RULES_ACTIONS[RULE_DICTIONNARY_OS]['name']['optional_actions']=array("regex_result","append_regex_result");
+
+//Dictionnary OS SP
+$RULES_CRITERIAS[RULE_DICTIONNARY_OS_SP]['name']['field']='name';
+$RULES_CRITERIAS[RULE_DICTIONNARY_OS_SP]['name']['name']=$LANG["computers"][53];
+$RULES_CRITERIAS[RULE_DICTIONNARY_OS_SP]['name']['table']='glpi_dropdown_os_sp';
+
+$RULES_ACTIONS[RULE_DICTIONNARY_OS_SP]['name']['name']=$LANG["computers"][53];
+$RULES_ACTIONS[RULE_DICTIONNARY_OS_SP]['name']['optional_actions']=array("regex_result","append_regex_result");
+
+//Dictionnary OS Version
+$RULES_CRITERIAS[RULE_DICTIONNARY_OS_VERSION]['name']['field']='name';
+$RULES_CRITERIAS[RULE_DICTIONNARY_OS_VERSION]['name']['name']=$LANG["rulesengine"][78];
+$RULES_CRITERIAS[RULE_DICTIONNARY_OS_VERSION]['name']['table']='glpi_dropdown_os_version';
+
+$RULES_ACTIONS[RULE_DICTIONNARY_OS_VERSION]['name']['name']=$LANG["rulesengine"][78];
+$RULES_ACTIONS[RULE_DICTIONNARY_OS_VERSION]['name']['optional_actions']=array("regex_result","append_regex_result");
 ?>

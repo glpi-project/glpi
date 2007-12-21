@@ -114,16 +114,24 @@ class Enterprise extends CommonDBTM {
 		$spotted=false;
 		$use_cache=true;
 		if (!$ID) {
+			if($this->getEmpty()) {
+				$spotted = true;
+			}
 			$use_cache=false;
-			if($this->getEmpty()) $spotted = true;
 		} else {
-			if($this->getFromDB($ID)&&haveAccessToEntity($this->fields["FK_entities"])) $spotted = true;
+			if($this->getFromDB($ID) && haveAccessToEntity($this->fields["FK_entities"],$this->fields["recursive"])) {
+				$spotted = true;
+			}
 		}
 		if ($spotted){
+			list($can_edit,$can_recu)=$this->canEditAndRecurs();
+			
 			$this->showOnglets($ID, $withtemplate,$_SESSION['glpi_onglet']);
-			echo "<form method='post' action=\"$target\"><div class='center'>";
-			if (empty($ID)){
-				echo "<input type='hidden' name='FK_entities' value='".$_SESSION["glpiactive_entity"]."'>";
+			if ($can_edit) {
+				echo "<form method='post' action=\"$target\"><div class='center'>";
+				if (empty($ID)){
+					echo "<input type='hidden' name='FK_entities' value='".$_SESSION["glpiactive_entity"]."'>";
+				}
 			}
 
 			echo "<table class='tab_cadre_fixe'>";
@@ -153,17 +161,25 @@ class Enterprise extends CommonDBTM {
 				autocompletionTextField("phonenumber","glpi_enterprises","phonenumber",$this->fields["phonenumber"],25,$this->fields["FK_entities"]);	
 				echo "</td>";
 	
-				echo "<td valign='top' rowspan='4'>";
-				echo $LANG["common"][25].":	</td>";
-				echo "<td align='center'  rowspan='4'><textarea cols='35' rows='4' name='comments' >".$this->fields["comments"]."</textarea>";
+				echo "<td>".$LANG["entity"][9].":	</td>";
+				echo "<td>";
+				if ($can_recu) {
+					dropdownYesNo("recursive",$this->fields["recursive"]);					
+				} else {
+					echo getYesNo($this->fields["recursive"]);
+				}
 				echo "</td></tr>";
-	
 	
 				echo "<tr class='tab_bg_1'>";
 				echo "<td>".$LANG["financial"][30].":		</td><td>";
 				autocompletionTextField("fax","glpi_enterprises","fax",$this->fields["fax"],25,$this->fields["FK_entities"]);
-				echo "</td></tr>";
+				echo "</td>";
 	
+				echo "<td valign='top' rowspan='3'>";
+				echo $LANG["common"][25].":	</td>";
+				echo "<td align='center'  rowspan='3'><textarea cols='35' rows='3' name='comments' >".$this->fields["comments"]."</textarea>";
+				echo "</td></tr>";
+
 				echo "<tr class='tab_bg_1'><td>".$LANG["financial"][45].":		</td>";
 				echo "<td>";
 				autocompletionTextField("website","glpi_enterprises","website",$this->fields["website"],25,$this->fields["FK_entities"]);	
@@ -203,7 +219,7 @@ class Enterprise extends CommonDBTM {
 				}
 			}
 
-			if (haveRight("contact_enterprise","w")){
+			if ($can_edit) {
 				if (!$ID) {
 
 					echo "<tr>";
@@ -233,8 +249,10 @@ class Enterprise extends CommonDBTM {
 					echo "</td>";
 					echo "</tr>";
 				}
+				echo "</table></div></form>";
+			} else { // canedit
+				echo "</table></div>";				
 			}
-			echo "</table></div></form>";
 
 
 		} else {

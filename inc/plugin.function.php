@@ -255,7 +255,7 @@ function getPluginsDropdowns(){
 			if (function_exists($function2)) {
 				$name=$function();
 				$tab=$function2();
-				if (is_array($tab)){
+				if (is_array($tab)){ 
 					$dps=array_merge($dps,array($name['name']=>$tab));
 				}
 			}

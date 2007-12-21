@@ -44,10 +44,14 @@ class Transfer extends CommonDBTM{
 
 	// Already transfer item
 	var $already_transfer=array();	
-	// Items simulate to move
+	// Items simulate to move - non recursive item or recursive item not visible in destination entity
 	var $needtobe_transfer=array();	
+	// Items simulate to move - recursive item visible in destination entity
+	var $noneedtobe_transfer=array();	
 	// Search in need to be transfer items
 	var $item_search=array();
+	// Search in need to be exclude from transfer
+	var $item_recurs=array();
 	var $options=array();
 	var $to=-1;
 	var $inittype=0;
@@ -68,8 +72,6 @@ class Transfer extends CommonDBTM{
 		
 		// $items=array(TYPE => array(id_items))
 		// $options=array()
-		$this->to=$to;
-		$this->options=$options;
 		
 		$default_options=array(
 			'keep_tickets'=>0,
@@ -110,7 +112,7 @@ class Transfer extends CommonDBTM{
 		);
 		$ci=new CommonItem();
 
-		if ($this->to>=0){
+		if ($to>=0){
 			// Store to
 			$this->to=$to;
 			// Store options
@@ -163,9 +165,51 @@ class Transfer extends CommonDBTM{
 					}
 				}
 			}
-			
-		}
 
+		} // $to >= 0
+	}
+	
+	/**
+	* Add an item in the needtobe_transfer list
+	*
+	*@param $type of the item
+	*@param $ID of the item
+	*
+	*
+	**/
+	function addToBeTransfer ($type, $ID) {
+		global $LINK_ID_TABLE;
+		// error_log("Transfer::addToBeTransfer(".$LINK_ID_TABLE[$type].",$ID)");
+		
+		if (!isset($this->needtobe_transfer[$type])){
+			$this->needtobe_transfer[$type]=array();
+		}
+		// Can't be in both list (in fact, always false)
+		if (isset($this->noneedtobe_transfer[$type][$ID]))
+			unset($this->noneedtobe_transfer[$type][$ID]);
+			
+		$this->needtobe_transfer[$type][$ID]=$ID;
+	}
+
+	/**
+	* Add an item in the noneedtobe_transfer list
+	*
+	*@param $type of the item
+	*@param $ID of the item
+	*
+	*
+	**/
+	function addNotToBeTransfer ($type, $ID) {
+		global $LINK_ID_TABLE;
+		// error_log("Transfer::addNotToBeTransfer(".$LINK_ID_TABLE[$type].",$ID)");
+		
+		if (!isset($this->noneedtobe_transfer[$type])){
+			$this->noneedtobe_transfer[$type]=array();
+		}
+		// Can't be in both list (in fact, always true)
+		if (!isset($this->needtobe_transfer[$type][$ID])) {
+			$this->noneedtobe_transfer[$type][$ID]=$ID;
+		}
 	}
 
 	/**
@@ -176,7 +220,7 @@ class Transfer extends CommonDBTM{
 	*
 	**/
 	function simulateTransfer($items){
-		global $DB,$LINK_ID_TABLE;
+		global $DB,$LINK_ID_TABLE,$CFG_GLPI;
 
 		// Init types :
 		$types=array(COMPUTER_TYPE,NETWORKING_TYPE,PRINTER_TYPE,MONITOR_TYPE,PERIPHERAL_TYPE,PHONE_TYPE,SOFTWARE_TYPE,CONTRACT_TYPE,ENTERPRISE_TYPE,CONTACT_TYPE,TRACKING_TYPE,DOCUMENT_TYPE,CARTRIDGE_TYPE, CONSUMABLE_TYPE);
@@ -185,12 +229,16 @@ class Transfer extends CommonDBTM{
 					$this->needtobe_transfer[$t]=array();
 			}
 		}
-
+		foreach ($CFG_GLPI["recursive_type"] as $t => $table) {
+			if (!isset($this->noneedtobe_transfer[$t])){
+					$this->noneedtobe_transfer[$t]=array();
+			}
+		}
 		// Copy items to needtobe_transfer
 		foreach ($items as $key => $tab){
 			if (count($tab)){
 				foreach ($tab as $ID){
-					$this->needtobe_transfer[$key][$ID]=$ID;
+					$this->addToBeTransfer($key,$ID);
 				}
 			}
 		}
@@ -237,7 +285,7 @@ class Transfer extends CommonDBTM{
 				if ($result = $DB->query($query)) {
 					if ($DB->numrows($result)>0) { 
 						while ($data=$DB->fetch_array($result)){
-							$this->needtobe_transfer[$type][$data['end1']]=$data['end1'];
+							$this->addToBeTransfer($type,$data['end1']);
 						}
 					}
 				}
@@ -302,7 +350,7 @@ class Transfer extends CommonDBTM{
 			if ($result = $DB->query($query)) {
 				if ($DB->numrows($result)>0) { 
 					while ($data=$DB->fetch_array($result)){
-						$this->needtobe_transfer[SOFTWARE_TYPE][$data['sID']]=$data['sID'];
+						$this->addToBeTransfer(SOFTWARE_TYPE,$data['sID']);
 					}
 				}
 			}
@@ -320,11 +368,8 @@ class Transfer extends CommonDBTM{
 				WHERE device_type='$type' AND computer IN ".$this->item_search[$type];
 				if ($result = $DB->query($query)) {
 					if ($DB->numrows($result)>0) { 
-						if (!isset($this->needtobe_transfer[TRACKING_TYPE])){
-							$this->needtobe_transfer[TRACKING_TYPE]=array();
-						}
 						while ($data=$DB->fetch_array($result)){
-							$this->needtobe_transfer[TRACKING_TYPE][$data['ID']]=$data['ID'];
+							$this->addToBeTransfer(TRACKING_TYPE,$data['ID']);
 						}
 					}
 				}
@@ -350,21 +395,25 @@ class Transfer extends CommonDBTM{
 					}
 				}
 
-				$query="SELECT FK_contract FROM glpi_contract_device
-				WHERE device_type='$type' AND   FK_device IN ".$this->item_search[$type];
+				$query="SELECT FK_contract, glpi_contracts.FK_entities, glpi_contracts.recursive" .
+						" FROM glpi_contract_device" .
+						" LEFT JOIN glpi_contracts ON (glpi_contract_device.FK_contract=glpi_contracts.ID)" .
+						" WHERE device_type='$type' AND FK_device IN ".$this->item_search[$type];
 				if ($result = $DB->query($query)) {
 					if ($DB->numrows($result)>0) { 
-						if (!isset($this->needtobe_transfer[CONTRACT_TYPE])){
-							$this->needtobe_transfer[CONTRACT_TYPE]=array();
- 						}
 						while ($data=$DB->fetch_array($result)){
-							$this->needtobe_transfer[CONTRACT_TYPE][$data['FK_contract']]=$data['FK_contract'];
+							if ($data['recursive'] && in_array($data['FK_entities'], getEntityAncestors($this->to))) {
+								$this->addNotToBeTransfer(CONTRACT_TYPE,$data['FK_contract']);
+							} else {
+								$this->addToBeTransfer(CONTRACT_TYPE,$data['FK_contract']);
+							}
 						}
 					}
 				}
 			}
 		}
 		$this->item_search[CONTRACT_TYPE]=$this->createSearchConditionUsingArray($this->needtobe_transfer[CONTRACT_TYPE]);
+		$this->item_recurs[CONTRACT_TYPE]=$this->createSearchConditionUsingArray($this->noneedtobe_transfer[CONTRACT_TYPE]);
 		// Enterprise (depending of item link) / Contract - infocoms : keep / delete + clean unused / keep unused
 		
 		if ($this->options['keep_enterprises']){
@@ -397,26 +446,34 @@ class Transfer extends CommonDBTM{
 			}
 
 			// Enterprise Contract
-			$query="SELECT DISTINCT FK_enterprise FROM glpi_contract_enterprise WHERE FK_contract IN ".$this->item_search[CONTRACT_TYPE];
+			$query="SELECT DISTINCT FK_enterprise, glpi_enterprises.recursive, glpi_enterprises.FK_entities" .
+					" FROM glpi_contract_enterprise " .
+					" LEFT JOIN glpi_enterprises ON (glpi_enterprises.ID=glpi_contract_enterprise.FK_enterprise) " .
+					" WHERE FK_contract IN ".$this->item_search[CONTRACT_TYPE];
 			if ($result = $DB->query($query)) {
 				if ($DB->numrows($result)>0) { 
-					if (!isset($this->needtobe_transfer[ENTERPRISE_TYPE])){
-						$this->needtobe_transfer[ENTERPRISE_TYPE]=array();
-					}
 					while ($data=$DB->fetch_array($result)){
-						$this->needtobe_transfer[ENTERPRISE_TYPE][$data['FK_enterprise']]=$data['FK_enterprise'];
+						if ($data['recursive'] && in_array($data['FK_entities'], getEntityAncestors($this->to))) {
+							$this->addNotToBeTransfer(ENTERPRISE_TYPE,$data['FK_enterprise']);
+						} else {
+							$this->addToBeTransfer(ENTERPRISE_TYPE,$data['FK_enterprise']);
+						}
 					}
 				}
 			}
 			// Ticket Enterprise
-			$query="SELECT DISTINCT assign_ent FROM glpi_tracking WHERE assign_ent > 0 AND ID IN ".$this->item_search[TRACKING_TYPE];
+			$query="SELECT DISTINCT assign_ent, glpi_enterprises.recursive, glpi_enterprises.FK_entities" .
+					" FROM glpi_tracking" .
+					" LEFT JOIN glpi_enterprises ON (glpi_enterprises.ID=glpi_tracking.assign_ent) " .
+					" WHERE assign_ent > 0 AND glpi_tracking.ID IN ".$this->item_search[TRACKING_TYPE];
 			if ($result = $DB->query($query)) {
 				if ($DB->numrows($result)>0) { 
-					if (!isset($this->needtobe_transfer[ENTERPRISE_TYPE])){
-						$this->needtobe_transfer[ENTERPRISE_TYPE]=array();
-					}
 					while ($data=$DB->fetch_array($result)){
-						$this->needtobe_transfer[ENTERPRISE_TYPE][$data['assign_ent']]=$data['assign_ent'];
+						if ($data['recursive'] && in_array($data['FK_entities'], getEntityAncestors($this->to))) {
+							$this->addNotToBeTransfer(ENTERPRISE_TYPE,$data['assign_ent']);
+						} else {
+							$this->addToBeTransfer(ENTERPRISE_TYPE,$data['assign_ent']);
+						}
 					}
 				}
 			}
@@ -441,15 +498,18 @@ class Transfer extends CommonDBTM{
 							}
 						}
 	
-						$query="SELECT DISTINCT FK_enterprise FROM glpi_infocoms
-						WHERE FK_enterprise > 0 AND device_type='$type' AND FK_device IN ".$this->item_search[$type];
+						$query="SELECT DISTINCT FK_enterprise, glpi_enterprises.recursive, glpi_enterprises.FK_entities" .
+								" FROM glpi_infocoms" .
+								" LEFT JOIN glpi_enterprises ON (glpi_enterprises.ID=glpi_infocoms.FK_enterprise) " .
+								" WHERE FK_enterprise > 0 AND device_type='$type' AND FK_device IN ".$this->item_search[$type];
 						if ($result = $DB->query($query)) {
 							if ($DB->numrows($result)>0) { 
-								if (!isset($this->needtobe_transfer[ENTERPRISE_TYPE])){
-									$this->needtobe_transfer[ENTERPRISE_TYPE]=array();
-								}
 								while ($data=$DB->fetch_array($result)){
-									$this->needtobe_transfer[ENTERPRISE_TYPE][$data['FK_enterprise']]=$data['FK_enterprise'];
+									if ($data['recursive'] && in_array($data['FK_entities'], getEntityAncestors($this->to))) {
+										$this->addNotToBeTransfer(ENTERPRISE_TYPE,$data['FK_enterprise']);
+									} else {
+										$this->addToBeTransfer(ENTERPRISE_TYPE,$data['FK_enterprise']);
+									}
 								}
 							}
 						}
@@ -458,6 +518,7 @@ class Transfer extends CommonDBTM{
 			}
 		}
 		$this->item_search[ENTERPRISE_TYPE]=$this->createSearchConditionUsingArray($this->needtobe_transfer[ENTERPRISE_TYPE]);
+		$this->item_recurs[ENTERPRISE_TYPE]=$this->createSearchConditionUsingArray($this->noneedtobe_transfer[ENTERPRISE_TYPE]);
 
 		// Contact / Enterprise : keep / delete + clean unused / keep unused
 		if ($this->options['keep_contacts']){
@@ -490,19 +551,24 @@ class Transfer extends CommonDBTM{
 
 
 			// Enterprise Contact
-			$query="SELECT DISTINCT FK_contact FROM glpi_contact_enterprise WHERE FK_enterprise IN ".$this->item_search[ENTERPRISE_TYPE];
+			$query="SELECT DISTINCT FK_contact, glpi_contacts.recursive, glpi_contacts.FK_entities " .
+					" FROM glpi_contact_enterprise" .
+					" LEFT JOIN glpi_contacts ON (glpi_contacts.ID=glpi_contact_enterprise.FK_contact) " .
+					" WHERE FK_enterprise IN ".$this->item_search[ENTERPRISE_TYPE];
 			if ($result = $DB->query($query)) {
 				if ($DB->numrows($result)>0) { 
-					if (!isset($this->needtobe_transfer[CONTACT_TYPE])){
-						$this->needtobe_transfer[CONTACT_TYPE]=array();
-					}
 					while ($data=$DB->fetch_array($result)){
-						$this->needtobe_transfer[CONTACT_TYPE][$data['FK_contact']]=$data['FK_contact'];
+						if ($data['recursive'] && in_array($data['FK_entities'], getEntityAncestors($this->to))) {
+							$this->addNotToBeTransfer(CONTACT_TYPE,$data['FK_contact']);
+						} else {
+							$this->addToBeTransfer(CONTACT_TYPE,$data['FK_contact']);
+						}
 					}
 				}
 			}
 		}
 		$this->item_search[CONTACT_TYPE]=$this->createSearchConditionUsingArray($this->needtobe_transfer[CONTACT_TYPE]);
+		$this->item_recurs[CONTACT_TYPE]=$this->createSearchConditionUsingArray($this->noneedtobe_transfer[CONTACT_TYPE]);
 
 		// Document : keep / delete + clean unused / keep unused
 		if ($this->options['keep_documents']){
@@ -522,21 +588,25 @@ class Transfer extends CommonDBTM{
 					}
 				}
 
-				$query="SELECT FK_doc FROM glpi_doc_device
-				WHERE device_type='$type' AND FK_device IN ".$this->item_search[$type];
+				$query="SELECT FK_doc, glpi_docs.recursive, glpi_docs.FK_entities" .
+						" FROM glpi_doc_device" .
+						" LEFT JOIN glpi_docs ON (glpi_docs.ID=glpi_doc_device.FK_doc) " .
+						" WHERE device_type='$type' AND FK_device IN ".$this->item_search[$type];
 				if ($result = $DB->query($query)) {
 					if ($DB->numrows($result)>0) { 
-						if (!isset($this->needtobe_transfer[DOCUMENT_TYPE])){
-							$this->needtobe_transfer[DOCUMENT_TYPE]=array();
- 						}
 						while ($data=$DB->fetch_array($result)){
-							$this->needtobe_transfer[DOCUMENT_TYPE][$data['FK_doc']]=$data['FK_doc'];
+							if ($data['recursive'] && in_array($data['FK_entities'], getEntityAncestors($this->to))) {
+								$this->addNotToBeTransfer(DOCUMENT_TYPE,$data['FK_doc']);
+							} else {
+								$this->addToBeTransfer(DOCUMENT_TYPE,$data['FK_doc']);
+							}
 						}
 					}
 				}
 			}
 		}
 		$this->item_search[DOCUMENT_TYPE]=$this->createSearchConditionUsingArray($this->needtobe_transfer[DOCUMENT_TYPE]);
+		$this->item_recurs[DOCUMENT_TYPE]=$this->createSearchConditionUsingArray($this->noneedtobe_transfer[DOCUMENT_TYPE]);
 
 		// printer -> cartridges : keep / delete + clean
 		if ($this->options['keep_cartridges_type']){
@@ -545,11 +615,8 @@ class Transfer extends CommonDBTM{
 				WHERE FK_glpi_printers IN ".$this->item_search[PRINTER_TYPE];
 				if ($result = $DB->query($query)) {
 					if ($DB->numrows($result)>0) { 
-						if (!isset($this->needtobe_transfer[CARTRIDGE_TYPE])){
-							$this->needtobe_transfer[CARTRIDGE_TYPE]=array();
- 						}
 						while ($data=$DB->fetch_array($result)){
-							$this->needtobe_transfer[CARTRIDGE_TYPE][$data['FK_glpi_cartridges_type']]=$data['FK_glpi_cartridges_type'];
+							$this->addToBeTransfer(CARTRIDGE_TYPE,$data['FK_glpi_cartridges_type']);
 						}
 					}
 				}
@@ -557,6 +624,7 @@ class Transfer extends CommonDBTM{
 		}
 		$this->item_search[CARTRIDGE_TYPE]=$this->createSearchConditionUsingArray($this->needtobe_transfer[CARTRIDGE_TYPE]);
 	}
+
 	function createSearchConditionUsingArray($array){
 		if (is_array($array)&&count($array)){
 			$condition="";
@@ -702,12 +770,14 @@ class Transfer extends CommonDBTM{
 			}
 		}
 	}
+	
 	function addToAlreadyTransfer($type,$ID,$newID){
 		if (!isset($this->already_transfer[$type])){
 			$this->already_transfer[$type]=array();
 		}
 		$this->already_transfer[$type][$ID]=$newID;
 	}
+	
 	function transferDocumentFile($filename){
 		if (is_file(GLPI_DOC_DIR."/".$filename)){
 			$splitter=split("/",$filename);
@@ -1086,7 +1156,8 @@ class Transfer extends CommonDBTM{
 		if ($this->options['keep_contracts']){
 			$contract=new Contract();
 			// Get contracts for the item
-			$query="SELECT * FROM glpi_contract_device WHERE FK_device = '$ID' AND device_type = '$type'";
+			$query="SELECT * FROM glpi_contract_device" .
+					" WHERE FK_device = '$ID' AND device_type = '$type' AND FK_contract NOT IN ".$this->item_recurs[CONTRACT_TYPE];
 			if ($result = $DB->query($query)) {
 				if ($DB->numrows($result)>0) { 
 					// Foreach get item 
@@ -1108,8 +1179,7 @@ class Transfer extends CommonDBTM{
 							
 							if ($result_type = $DB->query($query)) {
 								if ($DB->numrows($result_type)>0) {
-									while ($data_type=$DB->fetch_array($result_type)) 
-									if ($canbetransfer) {
+									while ($data_type=$DB->fetch_array($result_type) && $canbetransfer) {
 										$dtype=$data_type['device_type'];
 										// No items to transfer -> exists links
 										$query_search="SELECT count(*) AS CPT 
@@ -1202,7 +1272,7 @@ class Transfer extends CommonDBTM{
 		if ($this->options['keep_documents']){
 			$document=new Document();
 			// Get contracts for the item
-			$query="SELECT * FROM glpi_doc_device WHERE FK_device = '$ID' AND device_type = '$type'";
+			$query="SELECT * FROM glpi_doc_device WHERE FK_device = '$ID' AND device_type = '$type' AND FK_doc NOT IN ".$this->item_recurs[DOCUMENT_TYPE];
 			if ($result = $DB->query($query)) {
 				if ($DB->numrows($result)>0) { 
 					// Foreach get item 
@@ -1224,13 +1294,17 @@ class Transfer extends CommonDBTM{
 							
 							if ($result_type = $DB->query($query)) {
 								if ($DB->numrows($result_type)>0) {
-									while ($data_type=$DB->fetch_array($result_type)) {
+									while ($data_type=$DB->fetch_array($result_type) && $canbetransfer) {
 										$dtype=$data_type['device_type'];
-										if (isset($this->item_search[$dtype])&&$canbetransfer) {
+										if (isset($this->item_search[$dtype])) {
 											// No items to transfer -> exists links
 											$query_search="SELECT count(*) AS CPT 
 													FROM glpi_doc_device 
 													WHERE FK_doc='$item_ID' AND device_type='$dtype' AND FK_device NOT IN ".$this->item_search[$dtype];
+											// contacts, contracts, and enterprises are linked as device. 
+											if (isset($this->item_recurs[$dtype])) {
+												$query_search .= " AND FK_device NOT IN ".$this->item_recurs[$dtype];
+											}
 											$result_search = $DB->query($query_search);
 											if ($DB->result($result_search,0,'CPT')>0){
 												$canbetransfer=false;
@@ -1633,8 +1707,11 @@ class Transfer extends CommonDBTM{
 		// TODO clean system : needed ?
 		$ent=new Enterprise();
 		if ($this->options['keep_enterprises']&&$ent->getFromDB($ID)){
-			// Already transfer
-			if (isset($this->already_transfer[ENTERPRISE_TYPE][$ID])){
+			if (isset($this->noneedtobe_transfer[ENTERPRISE_TYPE][$ID])) {
+				// recursive enterprise
+				return $ID;
+			} else if (isset($this->already_transfer[ENTERPRISE_TYPE][$ID])){
+				// Already transfer
 				return $this->already_transfer[ENTERPRISE_TYPE][$ID];
 			} else {
 				$newID=-1;
@@ -1698,7 +1775,8 @@ class Transfer extends CommonDBTM{
 		if ($this->options['keep_contacts']){
 			$contact=new Contact();
 			// Get contracts for the item
-			$query="SELECT * FROM glpi_contact_enterprise WHERE FK_enterprise = '$ID'";
+			$query="SELECT * FROM glpi_contact_enterprise" .
+					" WHERE FK_enterprise = '$ID' AND FK_contact NOT IN " . $this->item_recurs[CONTACT_TYPE];
 			if ($result = $DB->query($query)) {
 				if ($DB->numrows($result)>0) { 
 					// Foreach get item 
@@ -1716,9 +1794,11 @@ class Transfer extends CommonDBTM{
 							$canbetransfer=true;
 							// Transfer enterprise : is the contact used for another enterprise ?
 							if ($ID==$newID){
-								$query_search="SELECT count(*) AS CPT 
-									FROM glpi_contact_enterprise 
-									WHERE FK_contact='$item_ID' AND FK_enterprise NOT IN ".$this->item_search[ENTERPRISE_TYPE];
+								$query_search="SELECT count(*) AS CPT " .
+										" FROM glpi_contact_enterprise" .
+										" WHERE FK_contact='$item_ID' " .
+										" AND FK_enterprise NOT IN ".$this->item_search[ENTERPRISE_TYPE] .
+										" AND FK_enterprise NOT IN ".$this->item_recurs[ENTERPRISE_TYPE];
 								$result_search = $DB->query($query_search);
 								if ($DB->result($result_search,0,'CPT')>0){
 									$canbetransfer=false;

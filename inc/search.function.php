@@ -559,7 +559,11 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 		$LINK= " AND " ;
 		if ($first) {$LINK=" ";$first=false;}
 
-		$COMMONWHERE.=getEntitiesRestrictRequest($LINK,$itemtable);
+		if (in_array($itemtable, $CFG_GLPI["recursive_type"])) {
+			$COMMONWHERE.=getEntitiesRestrictRequest($LINK,$itemtable,'','',true);
+		} else {
+			$COMMONWHERE.=getEntitiesRestrictRequest($LINK,$itemtable);
+		}
 	}
 	$first=true;
 	// Add search conditions
@@ -1034,7 +1038,6 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 			// Display column Headers for toview items
 			foreach ($toview as $key => $val){
 				$linkto="$target?sort=".$val."&amp;order=".($order=="ASC"?"DESC":"ASC")."&amp;start=$start".$globallinkto;
-
 				echo displaySearchHeaderItem($output_type,$SEARCH_OPTION[$type][$val]["name"],$header_num,$linkto,$sort==$val,$order);
 			}
 
@@ -1092,14 +1095,18 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 				if ($output_type==HTML_OUTPUT){// HTML display - massive modif
 					$tmpcheck="";
 					if ($isadmin){
-						$sel="";
-						if (isset($_GET["select"])&&$_GET["select"]=="all") {
-							$sel="checked";
-						}
-						if (isset($_SESSION['glpimassiveactionselected'][$data["ID"]])){
-							$sel="checked";
-						}
-						$tmpcheck="<input type='checkbox' name='item[".$data["ID"]."]' value='1' $sel>";
+						if (isset($CFG_GLPI["recursive_type"][$type]) && !in_array($data["FK_entities"],$_SESSION["glpiactiveentities"])) {
+							echo "&nbsp;";
+						} else {
+							$sel="";
+							if (isset($_GET["select"])&&$_GET["select"]=="all") {
+								$sel="checked";
+							}
+							if (isset($_SESSION['glpimassiveactionselected'][$data["ID"]])){
+								$sel="checked";
+							}
+							$tmpcheck="<input type='checkbox' name='item[".$data["ID"]."]' value='1' $sel>";							
+						}						
 					}
 					echo displaySearchItem($output_type,$tmpcheck,$item_num,$row_num,"width='10'");
 				}
@@ -1389,8 +1396,8 @@ function addOrderBy($type,$ID,$order,$key=0){
 			return " ORDER BY ADDDATE(glpi_contracts.begin_date, INTERVAL glpi_contracts.duration MONTH) $order ";
 		break;
 		case "glpi_infocoms.end_warranty_buy":
-			return " ORDER BY ADDDATE(glpi_infocoms.buy_date, INTERVAL glpi_infocoms.warranty_duration MONTH) $order ";
-		break;
+			return " ORDER BY ADDDATE(glpi_infocoms.buy_date, INTERVAL glpi_infocoms.warranty_duration MONTH) $order "; 
+		break; 
 		case "glpi_infocoms.end_warranty_use":
 			return " ORDER BY ADDDATE(glpi_infocoms.use_date, INTERVAL glpi_infocoms.warranty_duration MONTH) $order ";
 		break;
@@ -1434,7 +1441,6 @@ function addOrderBy($type,$ID,$order,$key=0){
 
 }
 
-
 /**
  * Generic Function to add default columns to view
  *
@@ -1446,15 +1452,18 @@ function addOrderBy($type,$ID,$order,$key=0){
  *
  **/
 function addDefaultToView ($type){
+	global $CFG_GLPI;
 
 	$toview=array();
+
 	// Add first element (name)
 	array_push($toview,1);
-
-	// Add entity view :
-	if (count($_SESSION["glpiactiveentities"])>1){
-		array_push($toview,80);
+	
+	// Add entity view : 
+	if (isset($CFG_GLPI["recursive_type"][$type]) || count($_SESSION["glpiactiveentities"])>1) {
+		array_push($toview,80);  
 	}
+
 	return $toview;
 }
 
@@ -1470,20 +1479,26 @@ function addDefaultToView ($type){
  *
  **/
 function addDefaultSelect ($type){
+	global $CFG_GLPI;
+	
 	switch ($type){
 		case RESERVATION_TYPE:
-			return "glpi_reservation_item.active as ACTIVE, ";
+			$ret = "glpi_reservation_item.active as ACTIVE, ";
 		break;
 		case CARTRIDGE_TYPE:
-			return "glpi_cartridges_type.alarm as ALARM, ";
+			$ret = "glpi_cartridges_type.alarm as ALARM, ";
 		break;
 		case CONSUMABLE_TYPE:
-			return "glpi_consumables_type.alarm as ALARM, ";
+			$ret = "glpi_consumables_type.alarm as ALARM, ";
 		break;
 		default :
-			return "";
+			$ret = "";
 		break;
 	}
+	if (isset($CFG_GLPI["recursive_type"][$type])) {
+		$ret .= "FK_entities, recursive, ";
+	}
+	return $ret;
 }
 
 /**
@@ -1721,6 +1736,11 @@ function addWhere ($link,$nott,$type,$ID,$val,$meta=0){
 	$field=$SEARCH_OPTION[$type][$ID]["field"];
 	
 	if ($meta&&$LINK_ID_TABLE[$type]!=$table) $table.="_".$type;
+
+	// Hack to allow search by ID on every sub-table
+	if (preg_match('/^\$\$\$\$([0-9]+)$/',$val,$regs)){
+ 		return $link." ($table.ID ".($nott?"<>":"=").$regs[1].") ";
+ 	}
 
 	$SEARCH=makeTextSearch($val,$nott);
 

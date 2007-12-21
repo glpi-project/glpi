@@ -42,7 +42,7 @@ if (!defined('GLPI_ROOT')) {
 // FUNCTIONS Setup
 
 
-function showDropdownList($target, $tablename,$FK_entities=''){
+function showDropdownList($target, $tablename,$FK_entities='',$location=-1){
 	global $DB,$CFG_GLPI,$LANG;
 	
 	if (!haveRight("dropdown", "w")&&!haveRight("entity_dropdown", "w"))
@@ -53,6 +53,7 @@ function showDropdownList($target, $tablename,$FK_entities=''){
 		$field="completename";
 	}
 	
+	$where="";
 	$entity_restrict = -1;
 	if (in_array($tablename, $CFG_GLPI["specif_entities_tables"])) {
 		if (!empty($FK_entities)&&$FK_entities>=0){
@@ -60,10 +61,14 @@ function showDropdownList($target, $tablename,$FK_entities=''){
 		} else {	
 			$entity_restrict = $_SESSION["glpiactive_entity"];
 		}
+		$where=getEntitiesRestrictRequest(" WHERE ",$tablename,'',$entity_restrict);
+		if ($tablename=="glpi_dropdown_netpoint" && $location>=0) {
+			$where .= " AND location=$location";
+		}
 	} 
 	
 	echo "<div class='center'>";
-	$query="SELECT * FROM $tablename ".($entity_restrict>=0?" WHERE FK_entities='$entity_restrict' ":"")." ORDER BY $field";
+	$query="SELECT * FROM $tablename $where ORDER BY $field";
 	if ($result=$DB->query($query)){
 		if ($DB->numrows($result)>0){
 			echo "<form method='post' name='massiveaction_form' id='massiveaction_form' action=\"$target\"><table class='tab_cadre_fixe'>";
@@ -84,6 +89,7 @@ function showDropdownList($target, $tablename,$FK_entities=''){
 			echo "</table>";
 			echo "<input type='hidden' name='which' value='$tablename'>";
 			echo "<input type='hidden' name='FK_entities' value='$entity_restrict'>";
+			echo "<input type='hidden' name='value2' value='$location'>";
 			
 			echo "<div>";
 			echo "<table width='950'>";
@@ -148,7 +154,7 @@ function showFormTreeDown($target, $tablename, $human, $ID, $value2 = '', $where
 		echo "&nbsp;&nbsp<input type='image' class='calendrier' src=\"" . $CFG_GLPI["root_doc"] . "/pics/puce.gif\" alt='' title='' name='fillright' value='fillright'>&nbsp";
 
 		autocompletionTextField('value',$tablename,'name',$value["name"],20,$entity_restrict,'maxlength=\'100\'');
-		echo '<br>';
+		echo '<br>'; 
 		echo "<textarea rows='2' cols='50' name='comments' title='" . $LANG["common"][25] . "' >" . $value["comments"] . "</textarea>";
 
 		echo "</td><td align='center' class='tab_bg_2' width='99'>";
@@ -195,7 +201,6 @@ function showFormTreeDown($target, $tablename, $human, $ID, $value2 = '', $where
 		echo "<option value='under' " . ($type == 'under' ? " selected " : "") . ">" . $LANG["setup"][75] . "</option>";
 		echo "<option value='same' " . ($type == 'same' ? " selected " : "") . ">" . $LANG["setup"][76] . "</option>";
 		echo "</select>&nbsp;&nbsp;&nbsp;";
-		;
 		dropdownValue($tablename, "value2", $value2, 0, $entity_restrict);
 	} else
 		echo "<input type='hidden' name='type' value='first'>";
@@ -210,7 +215,7 @@ function showFormTreeDown($target, $tablename, $human, $ID, $value2 = '', $where
 
 	echo "</table></form>";
 	
-	if (ereg('setup.dropdowns.php',$target)){
+	if (ereg('setup.dropdowns.php',$target) && $numberof>0){
 		echo "<a href='$target?which=$tablename&amp;mass_deletion=1&amp;FK_entities=$FK_entities'>".$LANG["title"][42]."</a>";
 	}
 	
@@ -218,7 +223,125 @@ function showFormTreeDown($target, $tablename, $human, $ID, $value2 = '', $where
 	echo "</div>";
 }
 
-function showFormDropDown($target, $tablename, $human, $ID, $value2 = '',$FK_entities='') {
+function showFormNetPoint($target, $human, $ID, $FK_entities='',$location=0) {
+
+	global $DB, $CFG_GLPI, $LANG;
+
+	$tablename="glpi_dropdown_netpoint";
+	
+	if (!haveRight("entity_dropdown", "w"))
+		return false;
+
+	$entity_restrict = -1;
+	$numberof=0;
+	if (!empty($FK_entities)&&$FK_entities>=0){
+		$entity_restrict = $FK_entities;
+	} else {	
+		$entity_restrict = $_SESSION["glpiactive_entity"];
+	}
+	$numberof = countElementsInTable($tablename, "location=$location ".getEntitiesRestrictRequest(" AND ",$tablename,'',$entity_restrict));
+
+	echo "<div class='center'>&nbsp;";
+	echo "<form method='post' action=\"$target\">";
+	echo "<table class='tab_cadre_fixe' cellpadding='1'>";
+	echo "<tr><th colspan='3'>$human:</th></tr>";
+	if ($numberof > 0) {
+		echo "<tr><td class='tab_bg_1' align='center' valign='top'>";
+		echo "<input type='hidden' name='which' value='$tablename'>";
+		echo "<input type='hidden' name='FK_entities' value='$entity_restrict'>";
+		echo "<input type='hidden' name='value2' value='$location'>";
+
+		dropdownNetpoint("ID", $ID, $location, 0, $entity_restrict);
+
+		// on ajoute un input text pour entrer la valeur modifier
+		echo "&nbsp;&nbsp;<input type='image' class='calendrier'  src=\"" . $CFG_GLPI["root_doc"] . "/pics/puce.gif\" alt='' title='' name='fillright' value='fillright'>&nbsp;";
+
+
+		$query = "select * from glpi_dropdown_netpoint where ID = '" . $ID . "'";
+		$result = $DB->query($query);
+		$value = $loc = $comments = "";
+		$entity = 0;
+		if ($DB->numrows($result) == 1) {
+			$value = $DB->result($result, 0, "name");
+			$loc = $DB->result($result, 0, "location");
+			$comments = $DB->result($result, 0, "comments");
+		}
+		echo "<br>";
+		echo $LANG["common"][15] . ": ";
+		dropdownValue("glpi_dropdown_locations", "value2", $location, 0, $entity_restrict);
+		
+		echo $LANG["networking"][52] . ": ";
+		autocompletionTextField('value',$tablename,'name',$value,10,$entity_restrict,'maxlength=\'100\''); 
+		echo "<br>"; 
+		echo "<textarea rows='2' cols='50' name='comments' title='" . $LANG["common"][25] . "' >" . $comments . "</textarea>";
+
+		//
+		echo "</td><td align='center' class='tab_bg_2' width='99'>";
+		echo "<input type='hidden' name='tablename' value='$tablename'>";
+
+		//  on ajoute un bouton modifier
+		echo "<input type='submit' name='update' value='" . $LANG["buttons"][14] . "' class='submit'>";
+		echo "</td><td align='center' class='tab_bg_2' width='99'>";
+		//
+		echo "<input type='submit' name='delete' value=\"" . $LANG["buttons"][6] . "\" class='submit'>";
+		echo "</td></tr>";
+
+	}
+	echo "</table></form>";
+	echo "<form action=\"$target\" method='post'>";
+	echo "<input type='hidden' name='which' value='$tablename'>";
+	echo "<input type='hidden' name='tablename' value='$tablename' >";
+	echo "<input type='hidden' name='FK_entities' value='$entity_restrict'>";
+	echo "<input type='hidden' name='value2' value='$location'>";
+
+	echo "<table class='tab_cadre_fixe' cellpadding='1'>";
+	echo "<tr><td align='center'  class='tab_bg_1'>";
+
+	echo $LANG["networking"][52] . ": ";
+	autocompletionTextField('value',$tablename,'name','',10,$entity_restrict,'maxlength=\'100\''); 
+	echo "<br>"; 
+	echo "<textarea rows='2' cols='50' name='comments' title='" . $LANG["common"][25] . "'></textarea>";
+
+	echo "</td><td align='center' colspan='2' class='tab_bg_2' width='202'>";
+
+	echo "<input type='submit' name='add' value=\"" . $LANG["buttons"][8] . "\" class='submit'>";
+	echo "</td></tr>";
+
+	// Multiple Add for Netpoint
+	echo "</table></form>";
+
+	echo "<form action=\"$target\" method='post'>";
+	echo "<input type='hidden' name='which' value='$tablename'>";
+	echo "<input type='hidden' name='value2' value='$location'>";
+	echo "<input type='hidden' name='tablename' value='$tablename' >";
+	echo "<input type='hidden' name='FK_entities' value='$entity_restrict'>";
+	
+	echo "<table class='tab_cadre_fixe' cellpadding='1'>";
+	echo "<tr><td align='center'  class='tab_bg_1'>";
+
+	echo $LANG["networking"][52] . ": ";
+	echo "<input type='text' maxlength='100' size='5' name='before'>";
+	dropdownInteger('from', 0, 0, 400);
+	echo "-->";
+	dropdownInteger('to', 0, 0, 400);
+
+	echo "<input type='text' maxlength='100' size='5' name='after'><br>";
+	echo "<textarea rows='2' cols='50' name='comments' title='" . $LANG["common"][25] . "'></textarea>";
+	echo "</td><td align='center' colspan='2' class='tab_bg_2' width='202'>";
+
+	echo "<input type='submit' name='several_add' value=\"" . $LANG["buttons"][8] . "\" class='submit'>";
+	echo "</td></tr>";
+
+	echo "</table></form>";
+	
+	if (ereg('setup.dropdowns.php',$target) && $numberof>0){
+		echo "<a href='$target?which=$tablename&amp;mass_deletion=1&amp;FK_entities=$FK_entities&amp;value2=$location'>".$LANG["title"][42]."</a>";
+	}
+	
+	echo "</div>";
+}
+
+function showFormDropDown($target, $tablename, $human, $ID, $FK_entities='') {
 
 	global $DB, $CFG_GLPI, $LANG;
 
@@ -249,51 +372,24 @@ function showFormDropDown($target, $tablename, $human, $ID, $value2 = '',$FK_ent
 		echo "<input type='hidden' name='which' value='$tablename'>";
 		echo "<input type='hidden' name='FK_entities' value='$entity_restrict'>";
 
-		if ($tablename != "glpi_dropdown_netpoint") {
-			if (!empty ($ID)) {
-				$value = getDropdownName($tablename, $ID, 1);
-			} else {
-				$value = array (
-					"name" => "",
-					"comments" => ""
-				);
-			}
-			dropdownValue($tablename, "ID", $ID, 0, $entity_restrict);
-
+		if (!empty ($ID)) {
+			$value = getDropdownName($tablename, $ID, 1);
 		} else {
-			$value = "";
-			$loc = "";
-			dropdownNetpoint("ID", $ID, -1, 0, $entity_restrict);
+			$value = array (
+				"name" => "",
+				"comments" => ""
+			);
 		}
+		dropdownValue($tablename, "ID", $ID, 0, $entity_restrict);
 
 		// on ajoute un input text pour entrer la valeur modifier
 		echo "&nbsp;&nbsp;<input type='image' class='calendrier'  src=\"" . $CFG_GLPI["root_doc"] . "/pics/puce.gif\" alt='' title='' name='fillright' value='fillright'>&nbsp;";
 
 
-		if ($tablename == "glpi_dropdown_netpoint") {
-			$query = "select * from glpi_dropdown_netpoint where ID = '" . $ID . "'";
-			$result = $DB->query($query);
-			$value = $loc = $comments = "";
-			$entity = 0;
-			if ($DB->numrows($result) == 1) {
-				$value = $DB->result($result, 0, "name");
-				$loc = $DB->result($result, 0, "location");
-				$comments = $DB->result($result, 0, "comments");
-			}
-			echo "<br>";
-			echo $LANG["common"][15] . ": ";
+		autocompletionTextField('value',$tablename,'name',$value["name"],20,$entity_restrict,'maxlength=\'100\''); 
+		echo "<br>";
+		echo "<textarea rows='2' cols='50' name='comments' title='" . $LANG["common"][25] . "' >" . $value["comments"] . "</textarea>";
 
-			dropdownValue("glpi_dropdown_locations", "value2", $loc, 0, $entity_restrict);
-			echo $LANG["networking"][52] . ": ";
-			autocompletionTextField('value',$tablename,'name',$value,10,$entity_restrict,'maxlength=\'100\'');
-			echo "<br>";
-			echo "<textarea rows='2' cols='50' name='comments' title='" . $LANG["common"][25] . "' >" . $comments . "</textarea>";
-
-		} else {
-			autocompletionTextField('value',$tablename,'name',$value["name"],20,$entity_restrict,'maxlength=\'100\'');
-			echo "<br>";
-			echo "<textarea rows='2' cols='50' name='comments' title='" . $LANG["common"][25] . "' >" . $value["comments"] . "</textarea>";
-		}
 		//
 		echo "</td><td align='center' class='tab_bg_2' width='99'>";
 		echo "<input type='hidden' name='tablename' value='$tablename'>";
@@ -313,18 +409,10 @@ function showFormDropDown($target, $tablename, $human, $ID, $value2 = '',$FK_ent
 
 	echo "<table class='tab_cadre_fixe' cellpadding='1'>";
 	echo "<tr><td align='center'  class='tab_bg_1'>";
-	if ($tablename == "glpi_dropdown_netpoint") {
-		echo $LANG["common"][15] . ": ";
-		dropdownValue("glpi_dropdown_locations", "value2", $value2, 0, $entity_restrict);
-		echo $LANG["networking"][52] . ": ";
-		autocompletionTextField('value',$tablename,'name','',10,$entity_restrict,'maxlength=\'100\'');
-		echo "<br>";
-		echo "<textarea rows='2' cols='50' name='comments' title='" . $LANG["common"][25] . "'></textarea>";
-	} else {
-		autocompletionTextField('value',$tablename,'name','',20,$entity_restrict,'maxlength=\'100\'');
-		echo "<br>";
-		echo "<textarea rows='2' cols='50' name='comments' title='" . $LANG["common"][25] . "'></textarea>";
-	}
+	autocompletionTextField('value',$tablename,'name','',20,$entity_restrict,'maxlength=\'100\'');
+	echo "<br>"; 
+	echo "<textarea rows='2' cols='50' name='comments' title='" . $LANG["common"][25] . "'></textarea>";
+
 	echo "</td><td align='center' colspan='2' class='tab_bg_2' width='202'>";
 	echo "<input type='hidden' name='tablename' value='$tablename' >";
 	echo "<input type='hidden' name='FK_entities' value='$entity_restrict'>";
@@ -332,36 +420,9 @@ function showFormDropDown($target, $tablename, $human, $ID, $value2 = '',$FK_ent
 	echo "<input type='submit' name='add' value=\"" . $LANG["buttons"][8] . "\" class='submit'>";
 	echo "</td></tr>";
 
-	// Multiple Add for Netpoint
-	if ($tablename == "glpi_dropdown_netpoint") {
-		echo "</table></form>";
-
-		echo "<form action=\"$target\" method='post'>";
-		echo "<input type='hidden' name='which' value='$tablename'>";
-		echo "<table class='tab_cadre_fixe' cellpadding='1'>";
-		echo "<tr><td align='center'  class='tab_bg_1'>";
-
-		echo $LANG["common"][15] . ": ";
-		dropdownValue("glpi_dropdown_locations", "value2", $value2, 0, $entity_restrict);
-		echo $LANG["networking"][52] . ": ";
-		echo "<input type='text' maxlength='100' size='5' name='before'>";
-		dropdownInteger('from', 0, 0, 400);
-		echo "-->";
-		dropdownInteger('to', 0, 0, 400);
-
-		echo "<input type='text' maxlength='100' size='5' name='after'><br>";
-		echo "<textarea rows='2' cols='50' name='comments' title='" . $LANG["common"][25] . "'></textarea>";
-		echo "</td><td align='center' colspan='2' class='tab_bg_2' width='202'>";
-		echo "<input type='hidden' name='tablename' value='$tablename' >";
-		echo "<input type='hidden' name='FK_entities' value='$entity_restrict'>";
-
-		echo "<input type='submit' name='several_add' value=\"" . $LANG["buttons"][8] . "\" class='submit'>";
-		echo "</td></tr>";
-	}
-
 	echo "</table></form>";
 	
-	if (ereg('setup.dropdowns.php',$target)){
+	if (ereg('setup.dropdowns.php',$target) && $numberof>0){
 		echo "<a href='$target?which=$tablename&amp;mass_deletion=1&amp;FK_entities=$FK_entities'>".$LANG["title"][42]."</a>";
 	}
 	
@@ -886,7 +947,7 @@ function showFormExtAuthList($target) {
 				if ($DB->numrows($result)) {
 					while ($ldap_method = $DB->fetch_array($result)){
 						echo "<tr class='tab_bg_2'><td class='center'><a href='$target?next=extauth_ldap&amp;ID=" . $ldap_method["ID"] . "' >" . $ldap_method["name"] . "</a>" .
-						"</td><td class='center'>" . $ldap_method["ldap_host"] . "</td></tr>";
+						"</td><td class='center'>" . $LANG["ldap"][21]." : ".$ldap_method["ldap_host"].":".$ldap_method["ldap_port"] ."<br>".$LANG["ldap"][22]." : ".getAllReplicatesNamesForAMaster($ldap_method["ID"]). "</td></tr>";
 					}
 				}
 				echo "</table>";

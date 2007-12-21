@@ -51,7 +51,7 @@ if (!isset($_GET["order"])) $_GET["order"]="";
 $ent=new Enterprise();
 if (isset($_POST["add"]))
 {
-	checkRight("contact_enterprise","w");
+	checkEditItem(ENTERPRISE_TYPE);
 
 	$newID=$ent->add($_POST);
 	logEvent($newID, "enterprises", 4, "financial", $_SESSION["glpiname"]." ".$LANG["log"][20]." ".$_POST["name"].".");
@@ -59,7 +59,7 @@ if (isset($_POST["add"]))
 } 
 else if (isset($_POST["delete"]))
 {
-	checkRight("contact_enterprise","w");
+	checkEditItem(ENTERPRISE_TYPE, $_POST["ID"]);
 
 	$ent->delete($_POST);
 	logEvent($_POST["ID"], "enterprises", 4, "financial", $_SESSION["glpiname"]." ".$LANG["log"][22]);
@@ -67,7 +67,7 @@ else if (isset($_POST["delete"]))
 }
 else if (isset($_POST["restore"]))
 {
-	checkRight("contact_enterprise","w");
+	checkEditItem(ENTERPRISE_TYPE, $_POST["ID"]);
 
 	$ent->restore($_POST);
 	logEvent($_POST["ID"], "enterprises", 4, "financial", $_SESSION["glpiname"]." ".$LANG["log"][23]);
@@ -75,7 +75,7 @@ else if (isset($_POST["restore"]))
 }
 else if (isset($_POST["purge"]))
 {
-	checkRight("contact_enterprise","w");
+	checkEditItem(ENTERPRISE_TYPE, $_POST["ID"]);
 
 	$ent->delete($_POST,1);
 	logEvent($_POST["ID"], "enterprises", 4, "financial", $_SESSION["glpiname"]." ".$LANG["log"][24]);
@@ -83,24 +83,42 @@ else if (isset($_POST["purge"]))
 }
 else if (isset($_POST["update"]))
 {
-	checkRight("contact_enterprise","w");
+	checkEditItem(ENTERPRISE_TYPE, $_POST["ID"]);
 
 	$ent->update($_POST);
 	logEvent($_POST["ID"], "enterprises", 4, "financial", $_SESSION["glpiname"]." ".$LANG["log"][21]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 } 
-else if (isset($_POST["addcontact"])){
-	checkRight("contact_enterprise","w");
+else if (isset($_POST["addcontact"]))
+{
+	checkEditItem(ENTERPRISE_TYPE, $_POST["eID"]);
 
 	addContactEnterprise($_POST["eID"],$_POST["cID"]);
 	logEvent($_POST["eID"], "enterprises", 4, "financial", $_SESSION["glpiname"]." ".$LANG["log"][36]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
-else if (isset($_GET["deletecontact"])){
-	checkRight("contact_enterprise","w");
+else if (isset($_GET["deletecontact"]))
+{
+	checkEditItem(ENTERPRISE_TYPE, $_GET["eID"]);
 
 	deleteContactEnterprise($_GET["ID"]);
 	logEvent($_GET["eID"], "enterprises", 4, "financial", $_SESSION["glpiname"]." ".$LANG["log"][37]);
+	glpi_header($_SERVER['HTTP_REFERER']);
+}
+else if (isset($_POST["addcontract"]))
+{
+	checkEditItem(ENTERPRISE_TYPE, $_POST["conID"]);
+
+	addEnterpriseContract($_POST["conID"],$_POST["entID"]);
+	logEvent($_POST["conID"], "contracts", 4, "financial", $_SESSION["glpiname"]." ".$LANG["log"][34]);
+	glpi_header($_SERVER['HTTP_REFERER']);
+}
+else if (isset($_GET["deletecontract"]))
+{
+	checkEditItem(ENTERPRISE_TYPE, $_GET["ID"]);
+
+	deleteEnterpriseContract($_GET["ID"]);
+	logEvent($_GET["ID"], "contracts", 4, "financial", $_SESSION["glpiname"]." ".$LANG["log"][35]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else

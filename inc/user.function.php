@@ -136,7 +136,7 @@ function showDeviceUser($ID){
 					if (isset($data["otherserial"])&&!empty($data["otherserial"])) {
 						echo $data["otherserial"];
 					} else echo '&nbsp;';
-	
+
 					echo "<td class='center'>$linktype</td></tr>";
 				}
 			}
@@ -521,26 +521,26 @@ function getAuthMethodName($auth_method, $id_auth, $link=0,$name=''){
 	}
 }
 
-// Get LDAP fields to sync to GLPI data from a glpi_auth_ldap array
-function getLDAPSyncFields($auth_method_array){
+// Get LDAP fields to sync to GLPI data from a glpi_auth_ldap array 
+function getLDAPSyncFields($auth_method_array){ 
 
-	$ret=array();
-	
-	$fields=array('ldap_login'=>'name',
-			'ldap_field_email'=>'email',
-			'ldap_field_realname'=>'realname',
-			'ldap_field_firstname'=>'firstname',
-			'ldap_field_phone'=>'phone',
-			'ldap_field_phone2'=>'phone2',
-			'ldap_field_mobile'=>'mobile',
-			'ldap_field_comments'=>'comments',
-		);
-	foreach ($fields as $key => $val){
-		if (isset($auth_method_array[$key])){
-			$ret[$val]=$auth_method_array[$key];
-		}
-	}
-	return $ret;
-}
+	$ret=array(); 
+      
+	$fields=array('ldap_login'=>'name', 
+			'ldap_field_email'=>'email', 
+			'ldap_field_realname'=>'realname', 
+ 			'ldap_field_firstname'=>'firstname', 
+ 			'ldap_field_phone'=>'phone', 
+ 			'ldap_field_phone2'=>'phone2', 
+ 			'ldap_field_mobile'=>'mobile', 
+ 			'ldap_field_comments'=>'comments', 
+ 		); 
+ 	foreach ($fields as $key => $val){ 
+ 		if (isset($auth_method_array[$key])){ 
+ 			$ret[$val]=$auth_method_array[$key]; 
+ 		} 
+ 	} 
+ 	return $ret; 
+} 
 
 ?>

@@ -65,7 +65,8 @@ function countElementsInTable($table,$condition=""){
  * return int nb of elements in table
  */
 function countElementsInTableForMyEntities($table){
-	return countElementsInTable($table,getEntitiesRestrictRequest("",$table));
+	global $CFG_GLPI;
+	return countElementsInTable($table,getEntitiesRestrictRequest("",$table,'','',in_array($table,$CFG_GLPI["recursive_type"])));
 }
 /**
  * Count the number of elements in a table for a specific entity
@@ -76,7 +77,8 @@ function countElementsInTableForMyEntities($table){
  * return int nb of elements in table
  */
 function countElementsInTableForEntity($table,$entity){
-	return countElementsInTable($table,getEntitiesRestrictRequest("",$table,'',$entity));
+	global $CFG_GLPI;
+	return countElementsInTable($table,getEntitiesRestrictRequest("",$table,'',$entity,in_array($table,$CFG_GLPI["recursive_type"])));
 }
 /**
  * Get datas from a table in an array : CAUTION TO USE ONLY FOR SMALL TABLES OR USING A STRICT CONDITION
@@ -645,7 +647,7 @@ function getNextItem($table,$ID,$condition="",$nextprev_item=""){
 
 	// Restrict to active entities
 	if (in_array($table,$CFG_GLPI["specif_entities_tables"])){
-		$query.=getEntitiesRestrictRequest("AND",$table);
+		$query.=getEntitiesRestrictRequest("AND",$table,'','',in_array($table,$CFG_GLPI["recursive_type"]));
 	}
 
 	//$query.=" ORDER BY ".$nextprev_item." ASC, ID ASC";
@@ -710,7 +712,7 @@ function getPreviousItem($table,$ID,$condition="",$nextprev_item=""){
 
 	// Restrict to active entities
 	if (in_array($table,$CFG_GLPI["specif_entities_tables"])){
-		$query.=getEntitiesRestrictRequest("AND",$table);
+		$query.=getEntitiesRestrictRequest("AND",$table,'','',in_array($table,$CFG_GLPI["recursive_type"]));
 	}
 
 	$query.=" ORDER BY ".$nextprev_item." DESC, ID DESC";
@@ -721,7 +723,6 @@ function getPreviousItem($table,$ID,$condition="",$nextprev_item=""){
 	else return -1;
 
 }
-
 
 function formatUserName($ID,$login,$realname,$firstname,$link=0,$cut=0){
 	global $CFG_GLPI;

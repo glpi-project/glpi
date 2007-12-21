@@ -48,7 +48,12 @@ if (!defined('GLPI_ROOT')) {
  * @return Boolean : session variable have more than the right specified for the module
  */
 function haveRight($module, $right) {
-
+	global $DB;
+	
+	//If GLPI is using the slave DB -> read only mode
+	if ($DB->isSlave() && $right == "w")
+		return false;
+		
 	$matches = array (
 		"" => array (
 			"",
@@ -209,6 +214,56 @@ function haveTypeRight($type, $right) {
 
 	}
 	return false;
+}
+
+/**
+ * Have I the right to "write" an Object
+ *
+ * @param $type Type of the object
+ * @param $ID ID of the object
+ *
+ * @return Boolean
+ */
+function canEditItem ($type,$ID=0) {
+	global $CFG_GLPI;
+
+	$can_edit = haveTypeRight($type,"w");
+	
+	if (isset($CFG_GLPI["recursive_type"][$type]) && $ID) {
+		$obj = new CommonItem;
+		if ($obj->getFromDB($type,$ID)) {
+			if ($obj->obj->fields["recursive"]) {
+				$can_edit = $can_edit && haveRecursiveAccessToEntity($obj->obj->fields["FK_entities"]);
+			}	
+		} else {
+			$can_edit = false;
+		}		
+	}
+
+	return $can_edit;
+}
+
+
+/**
+ * Check if I the right to "write" an Object
+ *
+ * @param $type Type of the object
+ * @param $ID ID of the object
+ *
+ * @return Nothing : display error if not permit
+ */
+function checkEditItem ($type,$ID=0) {
+	global $CFG_GLPI;
+
+	if (!canEditItem ($type,$ID)) {
+		// Gestion timeout session
+		if (!isset ($_SESSION["glpiID"])) {
+			glpi_header($CFG_GLPI["root_doc"] . "/index.php");
+			exit ();
+		}
+
+		displayRightError();
+	}
 }
 
 /**
@@ -653,17 +708,54 @@ function loadGroups() {
 }
 
 /**
+ * Check if you could create recursive object in the entity of id = $ID
+ *
+ * @param $ID : ID of the entity
+ * @return Boolean : 
+ */
+function haveRecursiveAccessToEntity($ID) {
+	// Right by profile
+	foreach ($_SESSION['glpiactiveprofile']['entities'] as $key => $val) {
+		if ($val['ID']==$ID) {
+			return $val['recursive']; 		
+		}
+	}
+
+	// Right is from a recursive profile
+	if (isset ($_SESSION['glpiactiveentities'])) {
+		return in_array($ID, $_SESSION['glpiactiveentities']);
+	} 
+
+	return false;
+}
+
+/**
  * Check if you could access to the entity of id = $ID
  *
  * @param $ID : ID of the entity
  * @return Boolean : 
  */
-function haveAccessToEntity($ID) {
-	if (isset ($_SESSION['glpiactiveentities'])) {
-		return in_array($ID, $_SESSION['glpiactiveentities']);
-	} else {
+function haveAccessToEntity($ID, $recursive=0) {
+	if (!isset ($_SESSION['glpiactiveentities'])) {
 		return false;
 	}
+	
+	if (!$recursive) {		
+		return in_array($ID, $_SESSION['glpiactiveentities']);
+	}
+	 
+	if (in_array($ID, $_SESSION['glpiactiveentities'])) {
+		return true;
+	}
+		
+	// Recursive object
+	foreach ($_SESSION['glpiactiveentities'] as $ent) {
+		if (in_array($ID, getEntityAncestors($ent))) {
+			return true;		
+		}
+	}
+
+	return false;
 }
 
 /**
@@ -698,7 +790,7 @@ function getEntitiesRestrictRequest($separator = "AND", $table = "", $field = ""
 
 	$query = $separator ." ( ";
 
-	// !='0' needed because consider as empty
+	// !='0' needed because consider as empty 
 	if ($value!='0'&&empty($value)&&isset($_SESSION['glpishowallentities'])&&$_SESSION['glpishowallentities']){
 		return $query." 1 ) ";
 	}
@@ -712,10 +804,10 @@ function getEntitiesRestrictRequest($separator = "AND", $table = "", $field = ""
 		$query .= $table . ".";
 	}
 	if (empty($field)){
-		if ($table=='glpi_entities') { 
-			$field="ID"; 
-		} else { 
-			$field="FK_entities"; 
+		if ($table=='glpi_entities') {
+			$field="ID";
+		} else {
+			$field="FK_entities";
 		}
 	}
 
@@ -806,6 +898,16 @@ function connect_ldap($host, $port, $login = "", $password = "", $use_tls = fals
 	}
 }
 
+function try_connect_ldap($host, $port, $rdn, $rpass, $use_tls,$login, $password)
+{
+	$ds = connect_ldap($host, $port, $rdn, $rpass, $use_tls);
+	// Test with login and password of the user
+	if (!$ds) {
+			$ds = connect_ldap($host, $port, $login, $password, $use_tls);
+	}
+	return $ds;		
+}
+
 function ldap_search_user_dn($ds, $basedn, $login_attr, $login, $condition) {
 
 	// Tenter une recherche pour essayer de retrouver le DN
@@ -855,14 +957,14 @@ function try_ldap_auth($identificat,$login,$password, $id_auth = -1,$isCAS=0) {
  * Authentify a user by checking a specific directory
  */
 function ldap_auth($identificat,$login,$password, $ldap_method,$isCAS) {
-	//$user_dn = $identificat->connection_ldap($ldap_method["ldap_host"], $ldap_method["ldap_port"], $ldap_method["ldap_basedn"], $ldap_method["ldap_rootdn"], $ldap_method["ldap_pass"], $ldap_method["ldap_login"], utf8_decode($login), utf8_decode($password), $ldap_method["ldap_condition"], $ldap_method["ldap_use_tls"]);
-	$user_dn = $identificat->connection_ldap($ldap_method["ldap_host"], $ldap_method["ldap_port"], $ldap_method["ldap_basedn"], $ldap_method["ldap_rootdn"], $ldap_method["ldap_pass"], $ldap_method["ldap_login"],$login, $password, $ldap_method["ldap_condition"], $ldap_method["ldap_use_tls"]);
+
+	$user_dn = $identificat->connection_ldap($ldap_method["ID"],$ldap_method["ldap_host"], $ldap_method["ldap_port"], $ldap_method["ldap_basedn"], $ldap_method["ldap_rootdn"], $ldap_method["ldap_pass"], $ldap_method["ldap_login"],$login, $password, $ldap_method["ldap_condition"], $ldap_method["ldap_use_tls"]);
 	if ($user_dn) {
 		$identificat->auth_succeded = true;
 		$identificat->extauth = 1;
 		$identificat->user_present = $identificat->user->getFromDBbyName($login);
 		//$identificat->user->getFromLDAP($ldap_method, $user_dn, utf8_decode($login), utf8_decode($password));
-		$identificat->user->getFromLDAP($ldap_method, $user_dn, $login, $password);
+		$identificat->user->getFromLDAP($identificat->ldap_connection,$ldap_method, $user_dn, $login, $password);
 		$identificat->auth_parameters = $ldap_method;
 		if (!$isCAS) $identificat->user->fields["auth_method"] = AUTH_LDAP;
 		else $identificat->user->fields["auth_method"] = AUTH_CAS;
@@ -985,4 +1087,99 @@ function useAuthExt(){
 	return false;
 }
 
+function showReplicatesList($target,$master_id)
+{
+	global $DB,$LANG,$CFG_GLPI;
+
+	addNewReplicateForm($target, $master_id);
+	
+	$sql = "SELECT * FROM glpi_auth_ldap_replicate WHERE server_id=".$master_id." ORDER BY name";
+	$result = $DB->query($sql);
+	if ($DB->numrows($result)>0)
+	{
+			echo "<br>";
+			$canedit = haveRight("config", "w");
+
+			echo "<form action=\"$target\" method=\"post\" name=\"ldap_replicates_form\" id=\"ldap_replicates_form\">";
+			echo"<input type=\"hidden\" name=\"ID\" value=\"" . $master_id . "\" ></td>";
+			echo "<div class='center'>";
+			echo "<table class='tab_cadre_fixe'>";
+	
+			echo "<tr><th colspan='4'><div class='relative'><span><strong>" . $LANG["ldap"][18] . "</strong></span></th></tr>";
+			echo "<tr class='tab_bg_1'><td class='center'></td><td class='center'>".$LANG["common"][16]."</td><td class='center'>".$LANG["ldap"][18]."</td><td class='center'></td>";
+			while ($ldap_replicate = $DB->fetch_array($result)){
+				echo "<tr class='tab_bg_2'><td class='center'>";
+				
+				if (isset ($_GET["select"]) && $_GET["select"] == "all")
+					$sel = "checked";
+				else
+					$sel="";	
+				echo "<input type='checkbox' name='item[" . $ldap_replicate["ID"] . "]' value='1' $sel>";
+				echo "</td>";
+				echo "<td class='center'>" . $ldap_replicate["name"] . "</td>";
+				echo "<td class='center'>".$ldap_replicate["ldap_host"]." : ".$ldap_replicate["ldap_port"] . "</td>"; 
+				echo "<td align='center' colspan=4>"; 
+				echo"<input type=\"submit\" name=\"test_ldap_replicate[".$ldap_replicate["ID"]."]\" class=\"submit\" value=\"" . $LANG["buttons"][50] . "\" ></td>";
+				echo"</tr>";
+				
+			}
+				
+			echo "<div class='center'>";
+			echo "<table width='950px'>";
+				
+			echo "<tr><td><img src=\"" . $CFG_GLPI["root_doc"] . "/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markAllRows('ldap_replicates_form') ) return false;\" href='" . $_SERVER['PHP_SELF'] . "?next=extauth_ldap&ID=$master_id&select=all'>" . $LANG["buttons"][18] . "</a></td>";
+			echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkAllRows('ldap_replicates_form') ) return false;\" href='" . $_SERVER['PHP_SELF'] . "?next=extauth_ldap&ID=$master_id&select=none'>" . $LANG["buttons"][19] . "</a>";
+			echo "</td><td align='left' width='80%'>";
+			echo "<input type='submit' name='delete_replicate' value=\"" . $LANG["buttons"][6] . "\" class='submit'></td>";
+			echo "</tr>";
+				
+			echo "</table>";
+			echo "</div>";
+			echo "</form>";
+	}
+}
+
+function addNewReplicateForm($target, $master_id)
+{
+	global $LANG;
+	echo "<form action=\"$target\" method=\"post\" name=\"add_replicate_form\" id=\"add_replicate_form\">";
+	echo "<div class='center'>";
+	echo "<table class='tab_cadre_fixe'>";
+	
+	echo "<tr><th colspan='4'><div class='relative'><span><strong>" .$LANG["ldap"][20] . "</strong></span></th></tr>";
+	echo "<tr class='tab_bg_1'><td class='center'>".$LANG["common"][16]."</td><td class='center'>".$LANG["common"][52]."</td><td class='center'>".$LANG["setup"][175]."</td><td></td></tr>";
+	echo "<tr class='tab_bg_1'>"; 
+	echo "<td class='center'><input type='text' name='name'></td>";
+	echo "<td class='center'><input type='text' name='ldap_host'></td>"; 
+	echo "<td class='center'><input type='text' name='ldap_port'></td>";
+	echo "<input type='hidden' name='next' value=\"extauth_ldap\"></td>";
+	echo "<input type='hidden' name='server_id' value=\"".$master_id."\">";
+	echo "<td class='center'><input type='submit' name='add_replicate' value=\"" . $LANG["buttons"][2] . "\" class='submit'></td></tr>";
+	echo "</table>";
+	echo "</div>";
+	echo "</form>";
+	
+}
+
+function getAllReplicateForAMaster($master_id)
+{
+	global $DB;
+	$replicates = array();
+	$result = $DB->query("SELECT ID, ldap_host,ldap_port FROM glpi_auth_ldap_replicate WHERE server_id=".$master_id);
+	if ($DB->numrows($result)>0)
+		while ($replicate = $DB->fetch_array($result))
+			$replicates[] = array("ID"=>$replicate["ID"], "ldap_host"=>$replicate["ldap_host"], "ldap_port"=>$replicate["ldap_port"]);
+		
+	return $replicates;
+}
+
+function getAllReplicatesNamesForAMaster($master_id)
+{
+	$replicates = getAllReplicateForAMaster($master_id);
+	$str = "";
+	foreach ($replicates as $replicate)
+		$str.= ($str!=''?',':'')."&nbsp;".$replicate["ldap_host"].":".$replicate["ldap_port"];
+	
+	return $str;	
+}
 ?>

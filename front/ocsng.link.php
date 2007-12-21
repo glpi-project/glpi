@@ -34,7 +34,8 @@
 // ----------------------------------------------------------------------
 
 
-$NEEDED_ITEMS=array("ocsng","rulesengine","rule.ocs","computer","device","printer","networking","peripheral","monitor","software","infocom","phone","tracking","enterprise","reservation","setup","admininfo","registry","rule.softwarecategories","group");
+$NEEDED_ITEMS=array("ocsng","rulesengine","rule.ocs","computer","device","printer","networking","peripheral","monitor","software","infocom","phone","tracking","enterprise","reservation","setup","registry","admininfo","group","rule.softwarecategories","rule.dictionnary.software","rule.dictionnary.manufacturer",
+"rule.dictionnary.model","rule.dictionnary.type");
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");

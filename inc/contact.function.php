@@ -54,29 +54,38 @@ function showEnterpriseContact($instID) {
 	global $DB,$CFG_GLPI, $LANG;
 
 	if (!haveRight("contact_enterprise","r")) return false;
-
+	
 	$contact=new Contact();
 	$contact->getFromDB($instID);
-	$canedit=haveRight("contact_enterprise","w");
+	$canedit=$contact->canEdit();
 
-	$query = "SELECT glpi_contact_enterprise.ID as ID, glpi_enterprises.ID as entID, glpi_enterprises.name as name, glpi_enterprises.website as website, glpi_enterprises.fax as fax,glpi_enterprises.phonenumber as phone, glpi_enterprises.type as type, glpi_enterprises.deleted as deleted";
-	$query.= " FROM glpi_enterprises,glpi_contact_enterprise WHERE glpi_contact_enterprise.FK_contact = '$instID' AND glpi_contact_enterprise.FK_enterprise = glpi_enterprises.ID";
+	$query = "SELECT glpi_contact_enterprise.ID as ID, glpi_enterprises.ID as entID, glpi_enterprises.name as name, glpi_enterprises.website as website, glpi_enterprises.fax as fax, "
+		. " glpi_enterprises.phonenumber as phone, glpi_enterprises.type as type, glpi_enterprises.deleted as deleted, glpi_entities.ID AS entity"
+		. " FROM glpi_contact_enterprise, glpi_enterprises "
+		. " LEFT JOIN glpi_entities ON (glpi_entities.ID=glpi_enterprises.FK_entities) "
+		. " WHERE glpi_contact_enterprise.FK_contact = '$instID' AND glpi_contact_enterprise.FK_enterprise = glpi_enterprises.ID"
+		. getEntitiesRestrictRequest(" AND","glpi_enterprises",'','',true) 
+		. " ORDER BY glpi_entities.completename,name";
+	
 	$result = $DB->query($query);
 	$number = $DB->numrows($result);
 	$i = 0;
 
 	echo "<form method='post' action=\"".$CFG_GLPI["root_doc"]."/front/contact.form.php\">";
 	echo "<br><br><div class='center'><table class='tab_cadre_fixe'>";
-	echo "<tr><th colspan='6'>".$LANG["financial"][65].":</th></tr>";
+	echo "<tr><th colspan='7'>".$LANG["financial"][65].":</th></tr>";
 	echo "<tr><th>".$LANG["financial"][26]."</th>";
+	echo "<th>".$LANG["entity"][0]."</th>";
 	echo "<th>".$LANG["financial"][79]."</th>";
 	echo "<th>".$LANG["financial"][29]."</th>";
 	echo "<th>".$LANG["financial"][30]."</th>";
 	echo "<th>".$LANG["financial"][45]."</th>";
 	echo "<th>&nbsp;</th></tr>";
 
+	$used=array();
 	while ($data= $DB->fetch_array($result)) {
 		$ID=$data["ID"];
+		$used[]=$data["entID"];
 		$website=$data["website"];
 		if (!empty($website)){
 			$website=$data["website"];
@@ -85,6 +94,7 @@ function showEnterpriseContact($instID) {
 		}
 		echo "<tr class='tab_bg_1".($data["deleted"]?"_2":"")."'>";
 		echo "<td class='center'><a href='".$CFG_GLPI["root_doc"]."/front/enterprise.form.php?ID=".$data["entID"]."'>".getDropdownName("glpi_enterprises",$data["entID"])."</a></td>";
+		echo "<td class='center'>".getDropdownName("glpi_entities",$data["entity"])."</td>";
 		echo "<td class='center'>".getDropdownName("glpi_dropdown_enttype",$data["type"])."</td>";
 		echo "<td align='center'  width='100'>".$data["phone"]."</td>";
 		echo "<td align='center'  width='100'>".$data["fax"]."</td>";
@@ -96,14 +106,24 @@ function showEnterpriseContact($instID) {
 		echo "</td></tr>";
 	}
 	if ($canedit){
-		echo "<tr class='tab_bg_1'><td>&nbsp;</td><td class='center'>";
-		echo "<div class='software-instal'><input type='hidden' name='conID' value='$instID'>";
-		dropdown("glpi_enterprises","entID",1,$contact->fields["FK_entities"]);
-		
-		echo "&nbsp;&nbsp;<input type='submit' name='addenterprise' value=\"".$LANG["buttons"][8]."\" class='submit'>";
-		echo "</div>";
-		echo "</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>";
-		echo "</tr>";
+		if ($contact->fields["recursive"]) {
+			$nb=countElementsInTableForMyEntities("glpi_enterprises");			
+		} else {
+			$nb=countElementsInTableForEntity("glpi_enterprises",$contact->fields["FK_entities"]);
+		}		
+		if ($nb>count($used)) {
+			echo "<tr class='tab_bg_1'><td>&nbsp;</td><td class='center' colspan='4'>";
+			echo "<div class='software-instal'><input type='hidden' name='conID' value='$instID'>";
+			if ($contact->fields["recursive"]) {
+				dropdown("glpi_enterprises","entID",1,-1,$used);
+			} else {
+				dropdown("glpi_enterprises","entID",1,$contact->fields["FK_entities"],$used);
+			}
+			echo "&nbsp;&nbsp;<input type='submit' name='addenterprise' value=\"".$LANG["buttons"][8]."\" class='submit'>";
+			echo "</div>";
+			echo "</td><td>&nbsp;</td><td>&nbsp;</td>";
+			echo "</tr>";
+		}
 	}
 
 	echo "</table></div></form>"    ;

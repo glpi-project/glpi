@@ -1,7 +1,7 @@
 <?php
 
 	// Current version of GLPI
-	define("GLPI_VERSION","0.7");
+	define("GLPI_VERSION","0.71");
 
 	// dicts
 	// dictionnaires
@@ -88,7 +88,8 @@
 	define("MAILGATE_TYPE",35);
 	define("RULE_TYPE",36);
 	define("TRANSFER_TYPE",37);
-
+	define("DB_REPLICATE_TYPE",11);//
+	
 	// GLPI MODE
 	define("NORMAL_MODE",0);
 	define("TRANSLATION_MODE",1);
@@ -150,6 +151,7 @@
 	define("USER_MAILING_TYPE",1);
 	define("PROFILE_MAILING_TYPE",2);
 	define("GROUP_MAILING_TYPE",3);
+	define("DB_NOTIFICATION_MAILING_TYPE",3);	
 
 	// MAILING USERS TYPE
 	define("ADMIN_MAILING",1);
@@ -257,7 +259,18 @@
 			RULE_TYPE => "???",
 			TRANSFER_TYPE => "front/transfer.form.php",
 			);
-
+	$SEARCH_PAGES=array( 
+			COMPUTER_TYPE=> "front/computer.php",
+			NETWORKING_TYPE => "front/networking.php",
+			PRINTER_TYPE => "front/printer.php",
+			MONITOR_TYPE => "front/monitor.php",
+			SOFTWARE_TYPE => "front/software.php",
+			PERIPHERAL_TYPE => "front/peripheral.php",
+			CONTACT_TYPE => "front/contact.php",
+			ENTERPRISE_TYPE => "front/enterprise.php",
+			CONTRACT_TYPE => "front/contract.php",
+			DOCUMENT_TYPE => "front/document.php",
+		);
 	define("AUTH_CAS",0);
 	define("AUTH_DB_GLPI",1);
 	define("AUTH_MAIL",2);
@@ -278,10 +291,33 @@
 	define("AND_MATCHING","AND");
 	define("OR_MATCHING","OR");	
 	
+	define("RULE_NOT_IN_CACHE",-1);	
 	define("RULE_OCS_AFFECT_COMPUTER",0);
 	define("RULE_AFFECT_RIGHTS",1);
 	define("RULE_TRACKING_AUTO_ACTION",2);
 	define("RULE_SOFTWARE_CATEGORY",3);
+	define("RULE_DICTIONNARY_SOFTWARE",4);
+	define("RULE_DICTIONNARY_MANUFACTURER",5);
+	define("RULE_DICTIONNARY_MODEL_COMPUTER",6);
+	define("RULE_DICTIONNARY_TYPE_COMPUTER",7);
+	define("RULE_DICTIONNARY_MODEL_MONITOR",8);
+	define("RULE_DICTIONNARY_TYPE_MONITOR",9);
+	define("RULE_DICTIONNARY_MODEL_PRINTER",10);
+	define("RULE_DICTIONNARY_TYPE_PRINTER",11);
+	define("RULE_DICTIONNARY_MODEL_PHONE",12);
+	define("RULE_DICTIONNARY_TYPE_PHONE",13);
+	define("RULE_DICTIONNARY_MODEL_PERIPHERAL",14);
+	define("RULE_DICTIONNARY_TYPE_PERIPHERAL",15);
+	define("RULE_DICTIONNARY_MODEL_NETWORKING",16);
+	define("RULE_DICTIONNARY_TYPE_NETWORKING",17);
+	define("RULE_DICTIONNARY_OS",18);
+	define("RULE_DICTIONNARY_OS_SP",19);
+	define("RULE_DICTIONNARY_OS_VERSION",20);	
+
+	//Type of process to import datas in GLPI
+	define("IMPORT_TYPE_OCS",0); //Import from OCS
+	define("IMPORT_TYPE_DICTIONNARY",1); //Import or modified from dictionnaries
+
 
 		//DEVICE ARRAY.
 	$CFG_GLPI["devices_tables"] =array("moboard","processor","ram","hdd","iface","drive","control","gfxcard","sndcard","pci","case","power");
@@ -293,7 +329,7 @@
 	
 	$CFG_GLPI["dropdowntree_tables"]=array("glpi_entities","glpi_dropdown_locations","glpi_dropdown_kbcategories","glpi_dropdown_tracking_category");
 	$CFG_GLPI["state_types"]=array(COMPUTER_TYPE,PRINTER_TYPE,MONITOR_TYPE,PERIPHERAL_TYPE,NETWORKING_TYPE,PHONE_TYPE,SOFTWARE_TYPE);
-        $CFG_GLPI["infocom_types"]=array(COMPUTER_TYPE,PRINTER_TYPE,MONITOR_TYPE,PERIPHERAL_TYPE,NETWORKING_TYPE,PHONE_TYPE,SOFTWARE_TYPE,CONSUMABLE_TYPE,CARTRIDGE_TYPE,CONSUMABLE_ITEM_TYPE,CARTRIDGE_ITEM_TYPE);
+	$CFG_GLPI["infocom_types"]=array(COMPUTER_TYPE,PRINTER_TYPE,MONITOR_TYPE,PERIPHERAL_TYPE,NETWORKING_TYPE,PHONE_TYPE,SOFTWARE_TYPE,CONSUMABLE_TYPE,CARTRIDGE_TYPE,CONSUMABLE_ITEM_TYPE,CARTRIDGE_ITEM_TYPE);
 	$CFG_GLPI["reservation_types"]=array(COMPUTER_TYPE,PRINTER_TYPE,MONITOR_TYPE,PERIPHERAL_TYPE,NETWORKING_TYPE,PHONE_TYPE,SOFTWARE_TYPE);
 	$CFG_GLPI["linkuser_types"]=array(COMPUTER_TYPE,PRINTER_TYPE,MONITOR_TYPE,PERIPHERAL_TYPE,NETWORKING_TYPE,PHONE_TYPE,SOFTWARE_TYPE);
  	$CFG_GLPI["netport_types"]=array(COMPUTER_TYPE,PRINTER_TYPE,PERIPHERAL_TYPE,NETWORKING_TYPE,PHONE_TYPE);
@@ -306,4 +342,6 @@
 
 	$CFG_GLPI["union_search_type"]=array(RESERVATION_TYPE=>"reservation_types",STATE_TYPE=>"state_types");
 
+	$CFG_GLPI["recursive_type"]=array(CONTACT_TYPE=>"glpi_contacts", ENTERPRISE_TYPE=>"glpi_enterprises", CONTRACT_TYPE=>"glpi_contracts", 
+		DOCUMENT_TYPE=>"glpi_docs", KNOWBASE_TYPE=>"glpi_kbitems");
 ?>

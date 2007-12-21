@@ -45,18 +45,18 @@ if (!defined('GLPI_ROOT')){
 //******************************************************************************************************
 
 	/**
-	* Set the directory where are store the session files
+	* Set the directory where are store the session file
 	*
-	**/	
+	**/
 	function setGlpiSessionPath(){
 		if (ini_get("session.save_handler")=="files") {
 			session_save_path(GLPI_SESSION_DIR);
 	       }
 	}
 	/**
-	* Start the GLPI php session
+	* Start the GLPI php session 
 	*
-	**/	
+	**/
 	function startGlpiSession(){
 		if(!session_id()){@session_start();}	
 	}
@@ -64,8 +64,8 @@ if (!defined('GLPI_ROOT')){
 	/**
 	* Is GLPI used in mutli-entities mode ?
 	*@return boolean
-	*
-	**/	
+	* 
+	**/
 	function isMultiEntitiesMode(){
 		if (!isset($_SESSION['glpi_multientitiesmode'])){
 			if (countElementsInTable("glpi_entities")>0){
@@ -79,32 +79,32 @@ if (!defined('GLPI_ROOT')){
 	/**
 	* Is the user have right to see all entities ?
 	*@return boolean
-	*
-	**/	
+	* 
+	**/
 	function isViewAllEntities(){
 		return ((countElementsInTable("glpi_entities")+1)==count($_SESSION["glpiactiveentities"]));
 	}
 	/**
 	* Log a message in log file
 	*@param $name name of the log file
-	*@param $text text to log
+	*@param $text text to log 
 	*@param $force force log in file not seeing use_errorlog config
-	*
-	**/	
+	* 
+	**/
 	function logInFile($name,$text,$force=false){
 		global $CFG_GLPI;
-		if ($CFG_GLPI["use_errorlog"]||$force){
+		if ($CFG_GLPI["use_errorlog"]||$force){ 
 			error_log(convDateTime(date("Y-m-d H:i:s"))."\n".$text,3,GLPI_LOG_DIR."/".$name.".log");
 		}
 	}
-
+	
 	/**
 	* Specific error handler
 	*@param $errno level of the error raised, as an integer.
 	*@param $errmsg  error message, as a string.
 	*@param $filename filename that the error was raised in, as a string.
-	*@param $linenum line number the error was raised at, as an integer.
-	*@param $vars array that points to the active symbol table at the point the error occurred. 
+	*@param $linenum line number the error was raised at, as an integer. 
+	*@param $vars array that points to the active symbol table at the point the error occurred.
 	*
 	**/
 	function userErrorHandler($errno, $errmsg, $filename, $linenum, $vars){
@@ -146,7 +146,7 @@ if (!defined('GLPI_ROOT')){
 		
 		// sauvegarde de l'erreur, et mail si c'est critique
 		logInFile("php-errors",$err);
-
+		
 		if (!isCommandLine()){
 			echo '<div style="position:fload-left; background-color:red; z-index:10000"><strong>PHP ERROR: </strong>';
 			echo $errmsg." in ".$filename." at line ".$linenum;
@@ -159,7 +159,7 @@ if (!defined('GLPI_ROOT')){
 	* Is the script launch in Command line ?
 	*@return boolean
 	*
-	**/	
+	**/
 	function isCommandLine(){
 		return (!isset($_SERVER["SERVER_NAME"]));
 	}
@@ -170,88 +170,86 @@ if (!defined('GLPI_ROOT')){
 	*@param $start start of the result substring
 	*
 	* Can have a third parameters : length
-	*
+	* 
 	*@return substring
 	**/
 	function utf8_substr($str,$start){
-		preg_match_all("/./su", $str, $ar);
-	
-		if(func_num_args() >= 3) {
-			$end = func_get_arg(2);
-			return join("",array_slice($ar[0],$start,$end));
-		} else {
-			return join("",array_slice($ar[0],$start));
-		}
+   		preg_match_all("/./su", $str, $ar);
+
+   		if(func_num_args() >= 3) {
+       		$end = func_get_arg(2);
+       		return join("",array_slice($ar[0],$start,$end));
+   		} else {
+       		return join("",array_slice($ar[0],$start));
+   		}
 	}
 	/**
 	* strlen function for utf8 string
-	*@param $str string
+	*strlen function for utf8 string
 	*
 	*@return length of the string
-	**/	
+	**/
 	function utf8_strlen($str){
-		$i = 0;
-		$count = 0;
-		$len = strlen ($str);
-		while ($i < $len){
-			$chr = ord ($str[$i]);
-			$count++;
-			$i++;
-			if ($i >= $len){
-				break;
-			}
-			if ($chr & 0x80){
-				$chr <<= 1;
-				while ($chr & 0x80){
-					$i++;
-					$chr <<= 1;
-				}
-			}
-		}
-		return $count;
+    	$i = 0;
+    	$count = 0;
+    	$len = strlen ($str);
+    	while ($i < $len){
+    		$chr = ord ($str[$i]);
+    		$count++;
+    		$i++;
+    		if ($i >= $len){
+        		break;
+    		}
+    		if ($chr & 0x80){
+        		$chr <<= 1;
+        		while ($chr & 0x80){
+        			$i++;
+        			$chr <<= 1;
+        		}
+    		}
+    	}
+    	return $count;
 	}
 	/**
 	* html_entity_decode function for utf8 string
 	*@param $string string
 	*
 	*@return converted string
-	**/	
+	**/
 	function utf8_html_entity_decode($string){
-		static $trans_tbl;
-	
-		// replace numeric entities
-		$string = preg_replace('~&#x([0-9a-f]+);~ei', 'code2utf(hexdec("\\1"))', $string);
-		$string = preg_replace('~&#([0-9]+);~e', 'code2utf(\\1)', $string);
-	
-		// replace literal entities
-		if (!isset($trans_tbl)){
-			$trans_tbl = array();
-	
-			foreach (get_html_translation_table(HTML_ENTITIES) as $val=>$key){
-				$trans_tbl[$key] = utf8_encode($val);
-			}
-		}
-	
-		return strtr($string, $trans_tbl);
+    	static $trans_tbl;
+   
+    	// replace numeric entities
+    	$string = preg_replace('~&#x([0-9a-f]+);~ei', 'code2utf(hexdec("\\1"))', $string);
+    	$string = preg_replace('~&#([0-9]+);~e', 'code2utf(\\1)', $string);
+
+    	// replace literal entities
+    	if (!isset($trans_tbl)){
+        	$trans_tbl = array();
+       
+        	foreach (get_html_translation_table(HTML_ENTITIES) as $val=>$key){
+            	$trans_tbl[$key] = utf8_encode($val);
+    		}
+    	}   
+    	return strtr($string, $trans_tbl);
 	}
 
 	// Returns the utf string corresponding to the unicode value (from php.net, courtesy - romans@void.lv)
 	function code2utf($num){
-		if ($num < 128) return chr($num);
-		if ($num < 2048) return chr(($num >> 6) + 192) . chr(($num & 63) + 128);
-		if ($num < 65536) return chr(($num >> 12) + 224) . chr((($num >> 6) & 63) + 128) . chr(($num & 63) + 128);
-		if ($num < 2097152) return chr(($num >> 18) + 240) . chr((($num >> 12) & 63) + 128) . chr((($num >> 6) & 63) + 128) . chr(($num & 63) + 128);
-		return '';
+	    if ($num < 128) return chr($num);
+	    if ($num < 2048) return chr(($num >> 6) + 192) . chr(($num & 63) + 128);
+	    if ($num < 65536) return chr(($num >> 12) + 224) . chr((($num >> 6) & 63) + 128) . chr(($num & 63) + 128);
+	    if ($num < 2097152) return chr(($num >> 18) + 240) . chr((($num >> 12) & 63) + 128) . chr((($num >> 6) & 63) + 128) . chr(($num & 63) + 128);
+	    return '';
 	}
 
 	/**
-	* Clean cache cron function
-	*
-	**/
+ 	* Clean log cron function
+ 	*
+ 	**/
 	function cron_logs(){
-	
 		global $CFG_GLPI,$DB;
-	
+
 		// Expire Event Log
 		if ($CFG_GLPI["expire_events"] > 0) {
 			$secs = $CFG_GLPI["expire_events"] * DAY_TIMESTAMP;
@@ -262,9 +260,9 @@ if (!defined('GLPI_ROOT')){
 	}
 
 	/**
-	* Clean cache cron function
-	*
-	**/
+ 	* Clean cache cron function
+ 	*
+ 	**/
 	function cron_cache(){
 		global $CFG_GLPI;
 		$max_recursion=5;
@@ -282,9 +280,8 @@ if (!defined('GLPI_ROOT')){
 			);
 			$cache = new Cache_Lite($cache_options);
 			$cache->clean(false,"old");
-	
+
 			logInFile("cron","Clean cache created since more than $lifetime seconds\n");
-	
 			$lifetime/=2;
 			$max_recursion--;
 		}
@@ -296,9 +293,9 @@ if (!defined('GLPI_ROOT')){
 	}
 
 	/**
-	* Garbage collector for expired file session
-	*
-	**/
+	 * Garbage collector for expired file session
+	 *
+	 **/
 	function cron_session(){
 		global $CFG_GLPI;
 		// max time to keep the file session
@@ -317,9 +314,6 @@ if (!defined('GLPI_ROOT')){
 		return true;
 	}
 
-
-
-
 /**
  * Get the filesize of a complete directory (from php.net)
  *
@@ -327,20 +321,20 @@ if (!defined('GLPI_ROOT')){
  * @return size of the $path
  **/
 function filesizeDirectory($path){
-	if(!is_dir($path)) {
+	if(!is_dir($path)){
 		return filesize($path);
 	}
-	if ($handle = opendir($path)) {
-		$size = 0;
-		while (false !== ($file = readdir($handle))) {
-			if($file!='.' && $file!='..'){
-				$size += filesize($path.'/'.$file);
-			$size += filesizeDirectory($path.'/'.$file);
-			}
-		}
-		closedir($handle);
-		return $size;
-	}
+   	if ($handle = opendir($path)) {
+       	$size = 0;
+       	while (false !== ($file = readdir($handle))) {
+	    	if($file!='.' && $file!='..'){
+	        	$size += filesize($path.'/'.$file);
+	            $size += filesizeDirectory($path.'/'.$file);
+	        }
+	    }
+	    closedir($handle);
+       	return $size;
+   	}
 }
 
 
@@ -518,10 +512,10 @@ function testWriteAccessToDirectory($dir){
 }
 
 /**
- * Common Checks needed to use GLPI
- *
- * @return 2 : creation error 1 : delete error 0: OK
- **/
+* Common Checks needed to use GLPI
+*
+* @return 2 : creation error 1 : delete error 0: OK
+**/
 function commonCheckForUseGLPI(){
 	global $LANG;
 
@@ -562,16 +556,14 @@ function commonCheckForUseGLPI(){
 			echo "<td>".$LANG["install"][91]." - ".$LANG["install"][89]."</td></tr>";
 		}
 	}
-
-
-
 	return checkWriteAccessToDirs();
 }
+
 /**
- * Check Write Access to needed directories
- *
- * @return 2 : creation error 1 : delete error 0: OK
- **/
+* Check Write Access to needed directories
+*
+* @return 2 : creation error 1 : delete error 0: OK
+**/
 function checkWriteAccessToDirs(){
 		global $LANG;
 		$dir_to_check=array(
@@ -755,7 +747,7 @@ function resume_text($string,$length=255){
 
 function mailRow($string,$value){
 	$row=utf8_str_pad( $string . ': ',25,' ', STR_PAD_RIGHT).$value."\n";
-	
+
 	return $row;
 }
 
@@ -811,7 +803,6 @@ function utf8_str_pad($ps_input, $pn_pad_length, $ps_pad_string = " ", $pn_pad_t
 	
 	return $ret;
 }
-
 
 
 
@@ -928,23 +919,22 @@ function html_clean($value){
 	$value = preg_replace("/^\n+/", " ", $value);
 	$value = preg_replace("/\n+$/", " ", $value);
 	$value = preg_replace("/\n +/", "\n", $value);
-	
-	
+
+
 	$search = array('@<script[^>]*?>.*?</script[^>]*?>@si',  // Strip out javascript
-		'@<style[^>]*?>.*?</style[^>]*?>@siU',    // Strip style tags properly
-		'@<[\/\!]*?[^<>]*?>@si',            // Strip out HTML tags
-		'@<![\s\S]*?--[ \t\n\r]*>@'        // Strip multi-line comments including CDATA
+               '@<style[^>]*?>.*?</style[^>]*?>@siU',    // Strip style tags properly
+               '@<[\/\!]*?[^<>]*?>@si',            // Strip out HTML tags
+               '@<![\s\S]*?--[ \t\n\r]*>@'        // Strip multi-line comments including CDATA
 	);
 	$value = preg_replace($search, ' ', $value);
-	
+
 	$value = preg_replace("/(&nbsp;| )+/", " ", $value);
 	// nettoyer l'apostrophe curly qui pose probleme a certains rss-readers, lecteurs de mail...
 	$value = str_replace("&#8217;","'",$value);
-	
+
 	return $value;
 
 }
-
 
 
 /**
@@ -1144,8 +1134,6 @@ function callCron(){
 }
 
 
-
-
 /**
  * Get hour from sql
  *
@@ -1184,16 +1172,14 @@ function optimize_tables (){
 	$DB->free_result($result);
 }
 
-
 /**
- * Is a string seems to be UTF-8 one ?
- *
- *
- *
- * @param $Str
- * @return  boolean
- *
- */
+* Is a string seems to be UTF-8 one ?
+* 
+* * 
+* @param $Str
+* @return  boolean 
+* 
+**/
 function seems_utf8($Str) {
 	for ($i=0; $i<strlen($Str); $i++) {
 		if (ord($Str[$i]) < 0x80) continue; # 0bbbbbbb
@@ -1283,8 +1269,6 @@ function split_text($text, $start, $end)
 		$outside[] = $temp[1];
 	}
 
-
-
 	return array($inside, $outside);
 }
 
@@ -1310,8 +1294,6 @@ function rembo($string){
 		$outside = array_map('trim', $outside);
 		$string = implode('<">', $outside);
 	}
-
-
 
 
 	$pattern = array('#\[b\](.*?)\[/b\]#s',
@@ -1347,28 +1329,28 @@ function rembo($string){
 
 	// If we split up the message before we have to concatenate it together again (code tags)
 	if (isset($inside)){
-		$outside = explode('<">', $string);
-		$string = '';
-		$num_tokens = count($outside);
+			$outside = explode('<">', $string);
+			$string = '';
+			$num_tokens = count($outside);
 
-		for ($i = 0; $i < $num_tokens; ++$i){
-			$string .= $outside[$i];
-			if (isset($inside[$i]))
-				$string .= '<br><br><table  class="code" align="center" cellspacing="4" cellpadding="6"><tr><td class="punquote"><strong>Code:</strong><br><br><pre>'.trim($inside[$i]).'</pre></td></tr></table><br>';
-		}
+			for ($i = 0; $i < $num_tokens; ++$i){
+					$string .= $outside[$i];
+					if (isset($inside[$i]))
+						$string .= '<br><br><table  class="code" align="center" cellspacing="4" cellpadding="6"><tr><td class="punquote"><strong>Code:</strong><br><br><pre>'.trim($inside[$i]).'</pre></td></tr></table><br>';
+			}
 	}
 
 	return $string;
 }
 
 /**
- * Create SQL search condition
- *
- * @param $val value to search
- * @param $not is a negative search ?
- * 
- * @return search string 
- */
+* Create SQL search condition
+* 
+* @param $val value to search
+* @param $not is a negative search ?
+* 
+* @return search string 
+**/ 
 function makeTextSearch($val,$not=0){
 	$NOT="";
 	if ($not) $NOT= " NOT ";
@@ -1394,12 +1376,12 @@ function makeTextSearch($val,$not=0){
 	return $SEARCH;
 }
 /**
- * Check if new version is available
- *
- * @param $auto check done autically ? (if not display result)
- * 
- * @return string explaining the result
- */
+* Check if new version is available 
+* 
+* @param $auto check done autically ? (if not display result)
+* 
+* @return string explaining the result 
+**/
 function checkNewVersionAvailable($auto=1){
 	global $DB,$LANG,$CFG_GLPI;
 
@@ -1495,9 +1477,9 @@ function checkNewVersionAvailable($auto=1){
 	return 1;
 }
 /**
- * Cron job to check if a new version is available
- *
- */
+* Cron job to check if a new version is available
+* 
+**/
 function cron_check_update(){
 	global $CFG_GLPI;
 	$result=checkNewVersionAvailable(1);
@@ -1505,13 +1487,13 @@ function cron_check_update(){
 }
 
 /**
- * Get date using a begin date and a period in month
- *
- * @param $from begin date
- * @param $addwarranty period in months
- * 
- * @return search string 
- */
+* Get date using a begin date and a period in month
+* 
+* @param $from begin date
+* @param $addwarranty period in months
+* 
+* @param $addwarranty period in months
+**/
 function getWarrantyExpir($from,$addwarranty){
 	if ($from==NULL || $from=='0000-00-00')
 		return "";
@@ -1519,14 +1501,14 @@ function getWarrantyExpir($from,$addwarranty){
 
 }
 /**
- * Get date using a begin date and a period in month and a notice one
- *
- * @param $begin begin date
- * @param $duration period in months
- * @param $notice notice in months
- * 
- * @return expiration string 
- */
+* Get date using a begin date and a period in month and a notice one
+* 
+* @param $begin begin date
+* @param $duration period in months
+* @param $notice notice in months 
+* 
+* @return expiration string 
+**/
 function getExpir($begin,$duration,$notice="0"){
 	global $LANG;
 	if ($begin==NULL || $begin=='0000-00-00'){
@@ -1543,10 +1525,11 @@ function getExpir($begin,$duration,$notice="0"){
 
 }
 /**
- * Manage login redirection
- *
- * @param $where where to redirect ?
- */
+* Manage login redirection 
+* 
+* @param $where where to redirect ? 
+* 
+**/
 function manageRedirect($where){
 	global $CFG_GLPI,$PLUGIN_HOOKS;
 	if (!empty($where)){
@@ -1601,23 +1584,25 @@ function manageRedirect($where){
 	}
 }
 /**
- * Clean string for input text field
- *
- * @param $string begin date
- * 
- * @return clean string 
- */
+* Clean string for input text field 
+* 
+* @param $string begin date 
+* 
+* @return clean string
+* 
+**/
 function cleanInputText($string){
 	return preg_replace('/\"/','&quot;',$string);
 } 
 
 /**
- * Get a random string
- *
- * @param $length length of the random string
- * 
- * @return random string 
- */
+* Get a random string 
+* 
+* @param $length length of the random string 
+* 
+* @return random string
+* 
+**/
 function getRandomString($length) {
 
 	$alphabet = "1234567890abcdefghijklmnopqrstuvwxyz";
@@ -1629,24 +1614,22 @@ function getRandomString($length) {
 	return $rndstring;
 }
 
-
-
-
 /**
- * Make a good string from the unix timestamp $sec
- *
- * @param $sec timestamp
- * @param $display_sec display seconds ?
- * 
- * @return string 
- */
+* Make a good string from the unix timestamp $sec
+* 
+* @param $sec timestamp
+* 
+* @param $display_sec display seconds ? 
+* 
+* @return string 
+* 
+**/
 function timestampToString($sec,$display_sec=1){
 	global $LANG;
 	$sec=floor($sec);
 	if ($sec<0) $sec=0;
 
 	if($sec < MINUTE_TIMESTAMP) {
-
 		return $sec." ".$LANG["stats"][34];
 	}
 	elseif($sec < HOUR_TIMESTAMP) {
@@ -1676,13 +1659,12 @@ function timestampToString($sec,$display_sec=1){
 
 	}
 }
-
 /**
- *  Delete a directory and file contains in it
- *
- * @param $dir directory to delete
- * 
- */
+* Delete a directory and file contains in it
+* 
+* @param $dir directory to delete
+* 
+**/
 function deleteDir($dir) {
 	if (file_exists($dir)){
 		chmod($dir,0777);
@@ -1705,7 +1687,5 @@ function deleteDir($dir) {
 		}
 	}
 }
-
-
 
 ?>

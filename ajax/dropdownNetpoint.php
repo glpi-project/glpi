@@ -51,36 +51,46 @@ checkLoginUser();
 // Make a select box with preselected values
 if (!isset($_POST["limit"])) $_POST["limit"]=$CFG_GLPI["dropdown_limit"];
 
-	$where="";
 	if (strlen($_POST['searchText'])>0&&$_POST['searchText']!=$CFG_GLPI["ajax_wildcard"]){
 		$where=" WHERE (glpi_dropdown_netpoint.name ".makeTextSearch($_POST['searchText'])." OR glpi_dropdown_locations.completename ".makeTextSearch($_POST['searchText']).")";
+	} else {
+		$where=" WHERE 1 ";		
 	}
-
-	if (isset($_POST["location"])&&$_POST["location"]>0){
-		if (empty($where)) $where=" WHERE ";
-		else $where.=" AND ";
-		$where.=" glpi_dropdown_netpoint.location='".$_POST["location"]."' ";
-	}
-
 
 	$NBMAX=$CFG_GLPI["dropdown_max"];
 	$LIMIT="LIMIT 0,$NBMAX";
 	if ($_POST['searchText']==$CFG_GLPI["ajax_wildcard"]) $LIMIT="";
 	if (isset($_POST["entity_restrict"])&&$_POST["entity_restrict"]>=0){
-		if (!empty($where)) $where.= " AND glpi_dropdown_netpoint.FK_entities='".$_POST["entity_restrict"]."'";
-		else $where.=" WHERE glpi_dropdown_netpoint.FK_entities='".$_POST["entity_restrict"]."'";
+		$where.= " AND glpi_dropdown_netpoint.FK_entities='".$_POST["entity_restrict"]."'";
 	} else {
-		$link="";
-		if (!empty($where)) $link= " AND ";
-		else $link=" WHERE ";
-		$where.=getEntitiesRestrictRequest($link,"glpi_dropdown_locations");
+		$where.=getEntitiesRestrictRequest(" AND ","glpi_dropdown_locations");
 	}
 
 	$query = "SELECT glpi_dropdown_netpoint.comments as comments, glpi_dropdown_netpoint.ID as ID, glpi_dropdown_netpoint.name as netpname, glpi_dropdown_locations.completename as loc from glpi_dropdown_netpoint";
 	$query .= " LEFT JOIN glpi_dropdown_locations ON (glpi_dropdown_netpoint.location = glpi_dropdown_locations.ID)";
-	$query.=$where;
-	$query .= " ORDER BY glpi_dropdown_locations.completename, glpi_dropdown_netpoint.name $LIMIT"; 
 
+	if (isset($_POST["devtype"])&&$_POST["devtype"]>0){
+		$query .= " LEFT JOIN glpi_networking_ports ON (glpi_dropdown_netpoint.ID = glpi_networking_ports.netpoint";
+	
+		if ($_POST["devtype"]==NETWORKING_TYPE){
+			$query .= " AND  glpi_networking_ports.device_type =" . NETWORKING_TYPE .")";
+		}
+		else {
+			$query .= " AND  glpi_networking_ports.device_type !=" . NETWORKING_TYPE .")";
+
+			if (isset($_POST["location"]) && $_POST["location"]>=0){
+				$where.=" AND glpi_dropdown_netpoint.location='".$_POST["location"]."' ";
+			}
+		}
+		$where.=" AND glpi_networking_ports.netpoint IS NULL ";
+
+	} else	if (isset($_POST["location"]) && $_POST["location"]>=0){
+		$where.=" AND glpi_dropdown_netpoint.location='".$_POST["location"]."' ";
+	}
+
+	$query .= $where . " ORDER BY glpi_dropdown_locations.completename, glpi_dropdown_netpoint.name $LIMIT"; 
+
+	//logInFile("debug","SQL:".$query."\n\n");
 	$result = $DB->query($query);
 
 	echo "<select id='dropdown_".$_POST["myname"].$_POST["rand"]."' name=\"".$_POST['myname']."\" size='1'>";

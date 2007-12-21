@@ -67,7 +67,6 @@ class TrackingBusinessRule extends Rule {
 		global $RULES_ACTIONS;
 		return count($RULES_ACTIONS[RULE_TRACKING_AUTO_ACTION]);
 	}
-
 }
 
 

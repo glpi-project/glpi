@@ -354,9 +354,13 @@ class Monitor extends CommonDBTM {
 				dropdownYesNo("flags_dvi",$this->fields["flags_dvi"]);
 				echo "</td>";
 	
-				echo "<td>&nbsp;</td><td>&nbsp;</td>";
+				// pivot ?
+				echo "<td>".$LANG["monitors"][33]."</td>";
+				echo "<td>";
+				dropdownYesNo("flags_pivot",$this->fields["flags_pivot"]);
+				echo "</td>";
+
 				echo "</tr></table>";
-	
 	
 				echo "</td></tr>";
 	

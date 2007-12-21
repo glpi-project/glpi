@@ -204,27 +204,33 @@ function showKbItemList($target,$field,$phrasetype,$contains,$sort,$order,$start
 	$where="";
 
 	// Build query
+	if (isset($_SESSION["glpiID"])){
+		$where = getEntitiesRestrictRequest("", "glpi_kbitems", "", "", true); 
+	} else {
+		// Anonymous access
+		$where = "(glpi_kbitems.FK_entities=0)";
+	}	
+
 	if ($faq){ // helpdesk
-		$where="(glpi_kbitems.faq = '1') AND";
-	
+		$where .= " AND (glpi_kbitems.faq = '1') AND ";
+	} else {
+		$where .= " AND ";
 	}
-	
 	
 	
 	if (strlen($contains)) { // il s'agit d'une recherche 
 		
 		if($field=="all") {
 			$search=makeTextSearch($contains);
-			$where.=" (glpi_kbitems.question $search OR glpi_kbitems.answer $search) ";
+			$where.="(glpi_kbitems.question $search OR glpi_kbitems.answer $search) ";
 			
 		} else {
-			$where.= "($field ".makeTextSearch($contains).")";
-			
+			$where.= "($field ".makeTextSearch($contains).")";			
 		}
-	}else { // Il ne s'agit pas d'une recherche, on browse by category
+		
+	} else { // Il ne s'agit pas d'une recherche, on browse by category
 	
-		$where.=" (glpi_kbitems.categoryID = $parentID) ";
-	
+		$where.="(glpi_kbitems.categoryID = $parentID) ";
 	}
 	
 	
@@ -310,7 +316,7 @@ function showKbItemList($target,$field,$phrasetype,$contains,$sort,$order,$start
 				echo displaySearchFooter($output_type);
 			}
 			echo "<br>";
-			if ($output_type==HTML_OUTPUT){
+			if ($output_type==HTML_OUTPUT) {
 				printPager($start,$numrows,$_SERVER['PHP_SELF'],$parameters,KNOWBASE_TYPE);
 			}
 
@@ -368,6 +374,12 @@ function showKbRecentPopular($target,$order,$faq=0){
 	if($faq){ // FAQ
 		$faq_limit=" WHERE (glpi_kbitems.faq = '1')";
 	}
+	if (isset($_SESSION["glpiID"])){
+		$where = getEntitiesRestrictRequest(" AND ", "glpi_kbitems", "", "", true); 
+	} else {
+		// Anonymous access
+		$where = " AND (glpi_kbitems.FK_entities=0)";
+	}	
 
 	$query = "SELECT  *  FROM glpi_kbitems $faq_limit $orderby LIMIT 10";
 	//echo $query;

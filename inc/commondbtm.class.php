@@ -75,17 +75,17 @@ class CommonDBTM {
 	 *@param $ID ID of the item to get
 	 *@return true if succeed else false
 	 *@todo Specific ones : Reservation Item
-	 *
-	 **/
+	 * 
+	**/	
 	function getFromDB ($ID) {
 
 		// Make new database object and fill variables
 		global $DB,$CFG_GLPI;
 		// != 0 because 0 is consider as empty
 		if (strlen($ID)==0) return false;
-
+		
 		$query = "SELECT * FROM ".$this->table." WHERE (".$this->getIndexName()." = $ID)";
-
+		
 		if ($result = $DB->query($query)) {
 			if ($DB->numrows($result)==1){
 				$this->fields = $DB->fetch_assoc($result);
@@ -357,11 +357,15 @@ class CommonDBTM {
 	 *
 	 *@return integer the new ID of the added item
 	 *@todo specific ones : reservationresa , planningtracking
-	 *
-	 **/
-	
+	 * 
+	**/
+
 	function add($input) {
 		global $DB;
+		
+		if ($DB->isSlave())
+			return false;
+			
 		$input['_item_type_']=$this->type;
 		$input=doHookFunction("pre_item_add",$input);
 
@@ -394,19 +398,19 @@ class CommonDBTM {
 	 *@return the modified $input array
 	 *
 	 **/
+	
 	function prepareInputForAdd($input) {
 		return $input;
 	}
-
 	/**
 	 * Actions done after the ADD of the item in the database
-	 *
-	 *@param $newID ID of the new item
+	 * 
+	 *@param $newID ID of the new item 
 	 *@param $input datas used to add the item
 	 *
-	 *@return nothing
-	 *
-	 **/
+	 * @return nothing 
+	 * 
+	**/
 	function post_addItem($newID,$input) {
 	}
 
@@ -423,9 +427,11 @@ class CommonDBTM {
 	 *@return Nothing (call to the class member)
 	 *@todo specific ones : reservationresa, planningtracking
 	 *
-	 **/
-	
-	function update($input,$history=1) {
+	**/
+    function update($input,$history=1) {
+		global $DB;
+		if ($DB->isSlave())
+			return false;
 
 		$input['_item_type_']=$this->type;
 		$input=doHookFunction("pre_item_update",$input);
@@ -472,10 +478,10 @@ class CommonDBTM {
 	 * Prepare input datas for updating the item
 	 *
 	 *@param $input datas used to update the item
-	 *
-	 *@return the modified $input array
-	 *
-	 **/
+	 * 
+	 *@return the modified $input array 
+	 * 
+	**/
 	function prepareInputForUpdate($input) {
 		return $input;
 	}
@@ -484,12 +490,12 @@ class CommonDBTM {
 	 * Actions done after the UPDATE of the item in the database
 	 *
 	 *@param $input datas used to update the item
-	 *@param $updates array of the updated fields
-	 *@param $history store changes history ?
-	 *
-	 *@return nothing
-	 *
-	 **/
+	 *@param $updates array of the updated fields 
+	 *@param $history store changes history ? 
+	 * 
+	 *@return nothing 
+	 * 
+	**/
 	function post_updateItem($input,$updates,$history=1) {
 	}
 
@@ -498,10 +504,10 @@ class CommonDBTM {
 	 *
 	 *@param $input datas used to update the item
 	 *@param $updates array of the updated fields
-	 *
+	 * 
 	 *@return nothing
-	 *
-	 **/
+	 * 
+	**/
 	function pre_updateInDB($input,$updates) {
 		return array($input,$updates);
 	}
@@ -519,6 +525,11 @@ class CommonDBTM {
 	 *
 	 **/
 	function delete($input,$force=0) {
+		global $DB;
+		
+		if ($DB->isSlave())
+			return false;
+
 		$input['_item_type_']=$this->type;
 		if ($force){
 			$input=doHookFunction("pre_item_purge",$input);
@@ -542,29 +553,30 @@ class CommonDBTM {
 		} else return false;
 
 	}
-
+	
 	/**
-	 * Actions done before the DELETE of the item in the database / Maybe used to add another check for deletion
+	 * Actions done before the DELETE of the item in the database / Maybe used to add another check for deletion 
 	 *
 	 *@param $ID ID of the item to delete
-	 *
+	 * 
 	 *@return bool : true if item need to be deleted else false
-	 *
-	 **/
+	 * 
+	**/
 	function pre_deleteItem($ID) {
 		return true;
 	}
-	/**
-	 * Restore an item trashed in the database.
-	 *
-	 * Restore an item trashed in the database.
-	 *
-	 *@param $input array : the _POST vars returned bye the item form when press restore
-	 *
-	 *@return Nothing ()
-	 *@todo specific ones : cartridges / consumables
-	 *
-	 **/
+	/** 
+	 * Restore an item trashed in the database. 
+	 * 
+     * Restore an item trashed in the database. 
+     * 
+     *@param $input array : the _POST vars returned bye the item form when press restore 
+     * 
+     *@return Nothing () 
+     *@todo specific ones : cartridges / consumables 
+     * 
+    **/ 
+	// specific ones : cartridges / consumables
 	function restore($input) {
 		$input['_item_type_']=$this->type;
 		$input=doHookFunction("pre_item_restore",$input);
@@ -575,22 +587,22 @@ class CommonDBTM {
 	}
 
 	/**
-	 * Reset fields of the item
+	 * Reset fields of the item 
 	 *
-	 **/
+	**/
 	function reset(){
 		$this->fields=array();
 
 	}
 
-
 	/**
 	 * Define onglets to display
 	 *
 	 *@param $withtemplate is a template view ?
-	 *
+	 * 
 	 *@return array containing the onglets
-	 **/
+	 * 
+	*/
 	function defineOnglets($withtemplate){
 		return array();
 	}
@@ -603,10 +615,11 @@ class CommonDBTM {
 	 *@param $actif active onglet
 	 *@param $nextprevcondition condition used to find next/previous items
 	 *@param $nextprev_item field used to define next/previous items
-	 *@param $addurlparam parameters to add to the URLs
-	 *
-	 *@return Nothing ()
-	 **/
+	 *@param $addurlparam parameters to add to the URLs 
+	 * 
+	 *@return Nothing () 
+	 *  
+	**/
 	function showOnglets($ID,$withtemplate,$actif,$nextprevcondition="",$nextprev_item="",$addurlparam=""){
 		global $LANG,$CFG_GLPI;
 
@@ -651,9 +664,43 @@ class CommonDBTM {
 		echo "</ul></div>";
 	} 
 
+	/**
+	 * Have I the right to "write" the Object
+	 *
+	 * @return Array of can_edit (can write) + can_recu (can make recursive)
+	 */
+	function canEditAndRecurs () {
+		global $CFG_GLPI;
+		$can_edit = haveTypeRight($this->type,"w");
+		
+		if (!isset($CFG_GLPI["recursive_type"][$this->type])) {
+			$can_recu = false;
+			
+		} else if (!isset($this->fields["ID"])) {
+			$can_recu = haveRecursiveAccessToEntity($_SESSION["glpiactive_entity"]);
+				
+		} else {
+			if ($this->fields["recursive"]) {
+				$can_edit = $can_edit && haveRecursiveAccessToEntity($this->fields["FK_entities"]);
+				$can_recu = $can_edit;
+			}	
+			else {
+				$can_recu = $can_edit && haveRecursiveAccessToEntity($this->fields["FK_entities"]);	
+			}
+		}
+	
+		return array($can_edit, $can_recu);		
+	}
+	
+	/**
+	 * Have I the right to "write" the Object
+	 *
+	 * @return bitmask : 0:no, 1:can_edit (can write), 2:can_recu (can make recursive)
+	 */
+	function canEdit () {
+		list($can_edit,$can_recu)=$this->canEditAndRecurs();
+		return ($can_edit?1:0)+($can_recu?2:0);
+	}
 }
-
-
-
 
 ?>

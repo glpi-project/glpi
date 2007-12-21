@@ -554,17 +554,22 @@ function update0681to07() {
 	}
 
 	if (!isIndex("glpi_ocs_link", "ocs_server_id")) {
+		$query = "ALTER TABLE `glpi_ocs_link` ADD UNIQUE `ocs_server_id` (`ocs_server_id` ,`ocs_id`);";
+		$DB->query($query) or die("0.7 alter ocs_link add index ocs_server_id " . $LANG["update"][90] . $DB->error());
+	}
+
+	if (!isIndex("glpi_ocs_link", "`ocs_deviceid`")) {
 		// Clean duplicates
-		$query="SELECT COUNT(*) as CPT, ocs_id FROM glpi_ocs_link GROUP BY ocs_id HAVING CPT >1";
-		if ($result=$DB->query($query)){
+		$query="SELECT COUNT(*) as CPT, ocs_id FROM glpi_ocs_link GROUP BY ocs_id HAVING CPT >1"; 
+		if ($result=$DB->query($query)){ 
 			if ($DB->numrows($result)>0){
-				while ($data=$DB->fetch_array($result)){
+				while ($data=$DB->fetch_array($result)){ 
 					// Skip first
 					$query="SELECT ID FROM glpi_ocs_link WHERE ocs_id = '".$data['ocs_id']."' ORDER BY last_update DESC LIMIT 1,99999";
-					if ($result2=$DB->query($query)){
+					if ($result2=$DB->query($query)){ 
 						if ($DB->numrows($result2)){
-							while ($data2=$DB->fetch_array($result2)){
-								$query="DELETE FROM glpi_ocs_link WHERE ID ='".$data2['ID']."'";
+							while ($data2=$DB->fetch_array($result2)){ 
+								$query="DELETE FROM glpi_ocs_link WHERE ID ='".$data2['ID']."'"; 
 								$DB->query($query) or die("0.7 clean to update ocs_server_id=1 in glpi_ocs_link " . $LANG["update"][90] . $DB->error());
 							}
 						}
@@ -573,13 +578,7 @@ function update0681to07() {
 			}
 		}
 		
-
-
-		$query = "ALTER TABLE `glpi_ocs_link` ADD UNIQUE `ocs_server_id` (`ocs_server_id` ,`ocs_id`);";
-		$DB->query($query) or die("0.7 alter ocs_link add index ocs_server_id " . $LANG["update"][90] . $DB->error());
-	}
-
-	if (!isIndex("glpi_ocs_link", "`ocs_deviceid`")) {
+		
 		$query = "ALTER TABLE `glpi_ocs_link` ADD INDEX ( `ocs_deviceid` )";
 		$DB->query($query) or die("0.7 alter ocs_link add index ocs_deviceid " . $LANG["update"][90] . $DB->error());
 	}

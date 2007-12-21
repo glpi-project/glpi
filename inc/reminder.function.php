@@ -43,7 +43,10 @@ function showCentralReminder($type="private"){
 	$author=$_SESSION['glpiID'];	
 	$today=$_SESSION["glpi_currenttime"];
 
-	if($type=="public"){ // show public reminder
+	if($type=="global"){ // show public reminder
+		$query="SELECT * FROM glpi_reminder WHERE type='global' ".getEntitiesRestrictRequest("AND","glpi_reminder","","",true);
+		$titre="<a href=\"".$CFG_GLPI["root_doc"]."/front/reminder.php\">".$LANG["reminder"][16]."</a>";
+	} else if($type=="public"){ // show public reminder
 		$query="SELECT * FROM glpi_reminder WHERE type='public' AND (end>='$today' or rv='0') ".getEntitiesRestrictRequest("AND","glpi_reminder");
 		$titre="<a href=\"".$CFG_GLPI["root_doc"]."/front/reminder.php\">".$LANG["reminder"][1]."</a>";
 	}else{ // show private reminder
@@ -59,7 +62,9 @@ function showCentralReminder($type="private"){
 	echo "<br><table class='tab_cadrehov'>";
 
 	echo "<tr><th><div class='relative'><span>"."$titre"."</span>";
-	if ($type!="public"||haveRight("reminder_public","w")){
+	if (($type=="private") || 
+		($type=="public" && haveRight("reminder_public","w")) ||
+		($type=="global" && haveRight("reminder_public","w")) && haveRecursiveAccessToEntity($_SESSION["glpiactive_entity"])){
 		echo "<span class='reminder_right'><a href=\"".$CFG_GLPI["root_doc"]."/front/reminder.form.php?type=$type\"><img src=\"".$CFG_GLPI["root_doc"]."/pics/plus.png\" alt='+' title='".$LANG["buttons"][8]."'></a></span>";
 	}
 	echo "</div>";
@@ -100,10 +105,13 @@ function showListReminder($type="private"){
 
 	$author=$_SESSION['glpiID'];	
 
-	if($type=="public"){ // show public reminder
+	if($type=="global"){ // show public reminder
+		$query="SELECT * FROM glpi_reminder WHERE type='global' ".getEntitiesRestrictRequest("AND","glpi_reminder","","",true);
+		$titre=$LANG["reminder"][16];
+	} else if($type=="public"){ // show public reminder
 		$query="SELECT * FROM glpi_reminder WHERE type='public' ".getEntitiesRestrictRequest("AND","glpi_reminder");
 		$titre=$LANG["reminder"][1];
-	}else{ // show private reminder
+	} else { // show private reminder
 		$query="SELECT * FROM glpi_reminder WHERE author='$author' AND type='private' ";
 		$titre=$LANG["reminder"][0];
 	}

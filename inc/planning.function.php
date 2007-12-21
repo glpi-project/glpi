@@ -842,14 +842,13 @@ function generateIcal($who){
 	$debutcal="";
 	$event="";
 	$fincal="";
-
-
-	// 
+	
+	//
 	$begin=time()-MONTH_TIMESTAMP*12;
 	$end=time()+MONTH_TIMESTAMP*12;
-	$begin=date("Y-m-d H:i:s",$begin);
-	$end=date("Y-m-d H:i:s",$end);
-
+	$begin=date("Y-m-d H:i:s",$begin); 
+	$end=date("Y-m-d H:i:s",$end); 
+	
 
 	$data=doHookFunction("planning_populate",array("begin"=>$begin,"end"=>$end,"who"=>$who));
 

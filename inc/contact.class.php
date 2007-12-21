@@ -114,21 +114,29 @@ class Contact extends CommonDBTM{
 
 		if (!haveRight("contact_enterprise","r")) return false;
 
-		$con_spotted=false;
+		$con_spotted = false;
 		$use_cache=true;
 		if (empty($ID)) {
-			if($this->getEmpty()) $con_spotted = true;
+			if($this->getEmpty()) {
+				$con_spotted = true;
+			}
 			$use_cache=false;
 		} else {
-			if($this->getFromDB($ID)&&haveAccessToEntity($this->fields["FK_entities"])) $con_spotted = true;
+			if($this->getFromDB($ID) && haveAccessToEntity($this->fields["FK_entities"],$this->fields["recursive"])) {
+				$con_spotted = true;
+			}
 		}
 
 		if ($con_spotted){
+			list($can_edit,$can_recu)=$this->canEditAndRecurs();
+
 			$this->showOnglets($ID, $withtemplate,$_SESSION['glpi_onglet']);
 
-			echo "<form method='post' name=form action=\"$target\"><div class='center'>";
-			if (empty($ID)){
-				echo "<input type='hidden' name='FK_entities' value='".$_SESSION["glpiactive_entity"]."'>";
+			if ($can_edit) {
+				echo "<form method='post' name=form action=\"$target\"><div class='center'>";
+				if (empty($ID)){
+					echo "<input type='hidden' name='FK_entities' value='".$_SESSION["glpiactive_entity"]."'>";
+				}
 			}
 
 			echo "<table class='tab_cadre_fixe' cellpadding='2' >";
@@ -137,11 +145,13 @@ class Contact extends CommonDBTM{
 				echo $LANG["financial"][33];
 			} else {
 				echo $LANG["common"][2]." $ID";
-				echo "&nbsp;<a href='".$CFG_GLPI["root_doc"]."/front/contact.vcard.php?ID=$ID'>".$LANG["common"][46]."</a>";
-			}		
+			}
 			if (isMultiEntitiesMode()){
 				echo "&nbsp;(".getDropdownName("glpi_entities",$this->fields["FK_entities"]).")";
 			}
+			if ($ID) {				
+				echo "&nbsp;<a href='".$CFG_GLPI["root_doc"]."/front/contact.vcard.php?ID=$ID'>".$LANG["common"][46]."</a>";
+			}		
 
 			echo "</th></tr>";
 
@@ -182,9 +192,20 @@ class Contact extends CommonDBTM{
 				echo "<tr><td>".$LANG["setup"][14].":	</td><td>";
 				autocompletionTextField("email","glpi_contacts","email",$this->fields["email"],30,$this->fields["FK_entities"]);
 				echo "</td></tr>";
+
 				echo "<tr><td>".$LANG["common"][17].":	</td>";
 				echo "<td>";
 				dropdownValue("glpi_dropdown_contact_type","type",$this->fields["type"]);
+				echo "</td>";
+				echo "</tr>";
+	
+				echo "<tr><td>".$LANG["entity"][9].":	</td>";
+				echo "<td>";
+				if ($can_recu) {
+					dropdownYesNo("recursive",$this->fields["recursive"]);					
+				} else {
+					echo getYesNo($this->fields["recursive"]);
+				}
 				echo "</td>";
 				echo "</tr>";
 	
@@ -206,7 +227,7 @@ class Contact extends CommonDBTM{
 				}
 			}
 
-			if (haveRight("contact_enterprise","w")) 
+			if ($can_edit) {
 				if ($ID=="") {
 
 					echo "<tr>";
@@ -235,9 +256,12 @@ class Contact extends CommonDBTM{
 					echo "</tr>";
 
 				}
-			echo "</table></div></form>";
+				echo "</table></div></form>";
+			} else { // canedit
+				echo "</table></div>";
+			}
 
-		} else {
+		} else { // con_spotted
 			echo "<div class='center'><strong>".$LANG["common"][54]."</strong></div>";
 			return false;
 

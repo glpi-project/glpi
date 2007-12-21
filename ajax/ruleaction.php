@@ -61,41 +61,18 @@ if (!defined('GLPI_ROOT')){
 			$_POST["field"]=key($RULES_ACTIONS[$_POST["rule_type"]]);
 		}
 
-		dropdownRulesActions("action_type");
+		$rand=dropdownRulesActions($_POST["rule_type"],"action_type",$_POST["field"]);
 
 		echo "&nbsp;&nbsp;";
-		$display=false;
-		
-		if (isset($RULES_ACTIONS[$_POST["rule_type"]][$_POST["field"]]['type'])){
-			switch($RULES_ACTIONS[$_POST["rule_type"]][$_POST["field"]]['type']){
-				case "dropdown":
-					dropdownValue($RULES_ACTIONS[$_POST["rule_type"]][$_POST["field"]]['table'],"value");
-					$display=true;
-					break;
-				case "dropdown_assign":
-					dropdownUsers("value",0,"own_ticket");
-					$display=true;
-					break;
-				case "dropdown_users":
-					dropdownAllUsers("value");
-					$display=true;
-					break;
-				case "dropdown_priority":
-					dropdownPriority("value");
-					$display=true;
-					break;
-				case "yesno":
-					dropdownYesNo("value");
-					$display=true;
-					break;	
-			}
-		}
-		if (!$display){
-			autocompletionTextField("value", "glpi_rules_actions", "value", "", 30);
-		}
-			
-	
+		echo "<span id='action_type_span'>\n";
+		echo "</span>\n";
 
+		$params=array('action_type'=>'__VALUE__',
+				'field'=>$_POST["field"],
+				'rule_type'=>$_POST["rule_type"],
+		);
+		ajaxUpdateItemOnSelectEvent("dropdown_action_type$rand","action_type_span",$CFG_GLPI["root_doc"]."/ajax/ruleactionvalue.php",$params,false);
+		ajaxUpdateItem("action_type_span",$CFG_GLPI["root_doc"]."/ajax/ruleactionvalue.php",$params,false,"dropdown_action_type$rand");
 	}
 
 	

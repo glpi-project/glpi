@@ -52,7 +52,7 @@ else $rule_id=0;
 
 
 $rule = getRuleClass($rule_type);
-checkRight($rule->right,"w");
+checkRight($rule->right,"r");
 
 $test_rule_output=null;
 
@@ -60,8 +60,7 @@ if (!ereg("popup",$_SERVER['PHP_SELF'])){
 	commonHeader($LANG["title"][2],$_SERVER['PHP_SELF'],"config","display");
 }
 
-$rule->testRuleForm($_SERVER['PHP_SELF'],$rule_id);
-
+$rule->showRulePreviewCriteriasForm($_SERVER['PHP_SELF'],$rule_id,array(),array());
 
 if (isset($_POST["test_rule"]))
 {
@@ -71,8 +70,18 @@ if (isset($_POST["test_rule"]))
 	unset($_POST["rule_id"]);
 	unset($_POST["rule_type"]);
 	$rule->getRuleWithCriteriasAndActions($rule_id,1,1);
+	
+	//Add rules specific POST fields to the param array
+	$params = $rule->addSpecificParamsForPreview($_POST,$params);
+
 	$input=$rule->prepareInputDataForProcess($_POST,$params);
-	echo "<br><div class='center'>".$LANG["rulesengine"][41].": <strong>".getYesNo($rule->checkCriterias($input))."</strong></div>";
+	$regex_results=array();
+	echo "<br>";
+	$rule->showRulePreviewResultsForm($_SERVER['PHP_SELF'],$input,$params);
+}
+
+if (!ereg("popup",$_SERVER['PHP_SELF'])){
+	commonFooter();
 }
 
 if (!ereg("popup",$_SERVER['PHP_SELF'])){

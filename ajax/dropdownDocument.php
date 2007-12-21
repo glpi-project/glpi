@@ -51,27 +51,47 @@ checkCentralAccess();
 $where=" WHERE  (glpi_docs.rubrique = '".$_POST['rubdoc']."' AND glpi_docs.deleted='0' ) ";
 
 
-if (isset($_POST["entity_restrict"])&&$_POST["entity_restrict"]>=0){
-	$where.= " AND glpi_docs.FK_entities='".$_POST["entity_restrict"]."'";
+if (isset($_POST["entity_restrict"]) && strlen($_POST["entity_restrict"])){
+	$where.=getEntitiesRestrictRequest("AND","glpi_docs",'',$_POST["entity_restrict"],true);
 } else {
-	$where.=getEntitiesRestrictRequest("AND","glpi_docs");
+	$where.=getEntitiesRestrictRequest("AND","glpi_docs",'','',true);
 }
 
+if (isset($_POST['used'])) {
+	$where .=" AND ID NOT IN (0";
+	if (is_array($_POST['used'])) {
+			$used=$_POST['used'];
+		} else {
+			$used=unserialize(stripslashes($_POST['used']));
+		}
+	foreach($used as $val)
+		$where .= ",$val";
+	$where .= ") ";
+}
 
-
-$query = "SELECT * FROM glpi_docs $where";
-//echo $query;
+$query = "SELECT * FROM glpi_docs $where ORDER BY FK_entities, name";
+//error_log($query);
 $result = $DB->query($query);
 
 echo "<select name=\"".$_POST['myname']."\">";
 
-
 echo "<option value=\"0\">-----</option>";
 
 if ($DB->numrows($result)) {
+	$prev=-1;
 	while ($data=$DB->fetch_array($result)) {
+		if ($data["FK_entities"]!=$prev) {
+			if ($prev>=0) {
+				echo "</optgroup>";
+			}
+			$prev=$data["FK_entities"];
+			echo "<optgroup label=\"". getDropdownName("glpi_entities", $prev) ."\">";
+		}
 		$output = $data["name"];
 		echo "<option value=\"".$data["ID"]."\" title=\"$output\">".substr($output,0,$CFG_GLPI["dropdown_limit"])."</option>";
+	}
+	if ($prev>=0) {
+		echo "</optgroup>";
 	}
 }
 echo "</select>";

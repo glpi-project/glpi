@@ -122,6 +122,7 @@ class Cron {
 			$this->taches["logs"]=DAY_TIMESTAMP;
 
 			$this->taches["mailgate"]=600;
+			$this->taches["dbreplicate"]=300;
 			
 			// Auto update check
 			if ($CFG_GLPI["auto_update_check"]>0)

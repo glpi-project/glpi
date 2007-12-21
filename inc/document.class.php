@@ -156,20 +156,25 @@ class Document extends CommonDBTM {
 		$use_cache=true;
 		if (!$ID) {
 			$use_cache=false;
-			if($this->getEmpty()) $spotted = true;
-		} else {
-			if($this->getFromDB($ID)&&haveAccessToEntity($this->fields["FK_entities"])) $spotted = true;
+			if($this->getEmpty()) {
+				$spotted = true;	
+			}
+		} else if($this->getFromDB($ID) && haveAccessToEntity($this->fields["FK_entities"],$this->fields["recursive"])) {
+			$spotted = true;	
 		}
 
 		if ($spotted){
+			list($canedit,$canrecu)=$this->canEditAndRecurs();
 			$this->showOnglets($ID, $withtemplate,$_SESSION['glpi_onglet']);
 
-			echo "<form name='form' method='post' action=\"$target\" enctype=\"multipart/form-data\"><div class='center'>";
-			if (empty($ID)){
-				echo "<input type='hidden' name='FK_entities' value='".$_SESSION["glpiactive_entity"]."'>";
+			if ($canedit) {
+				echo "<form name='form' method='post' action=\"$target\" enctype=\"multipart/form-data\">";
+				if (empty($ID)){
+					echo "<input type='hidden' name='FK_entities' value='".$_SESSION["glpiactive_entity"]."'>";
+				}
 			}
 
-			echo "<table class='tab_cadre_fixe'>";
+			echo "<div class='center'><table class='tab_cadre_fixe'>";
 			if (!$ID) {
 				echo "<tr><th colspan='3'>";
 				echo $LANG["document"][16];
@@ -230,6 +235,15 @@ class Document extends CommonDBTM {
 				autocompletionTextField("mime","glpi_docs","mime",$this->fields["mime"],25,$this->fields["FK_entities"]);
 				echo "</td></tr>";
 	
+				echo "<tr class='tab_bg_1'><td>".$LANG["entity"][9].":	</td>";
+				echo "<td colspan='2'>";
+				if ($canrecu) {
+					dropdownYesNo("recursive",$this->fields["recursive"]);					
+				} else {
+					echo getYesNo($this->fields["recursive"]);
+				}
+				echo "</td></tr>";
+
 				echo "<tr>";
 				echo "<td class='tab_bg_1' valign='top'>";
 	
@@ -244,21 +258,16 @@ class Document extends CommonDBTM {
 				}
 			}
 
-			if (haveRight("document","w")){
+			if ($canedit){
 				if (!$ID) {
 		
-					echo "<tr>";
-					echo "<td class='tab_bg_2' valign='top' colspan='3'>";
+					echo "<tr><td class='tab_bg_2' valign='top' colspan='3'>";
 					echo "<div class='center'><input type='submit' name='add' value=\"".$LANG["buttons"][8]."\" class='submit'></div>";
-					echo "</td>";
-					echo "</tr>";
-		
-					echo "</table></div></form>";
-		
+					echo "</td></tr>";
+				
 				} else {
 		
-					echo "<tr>";
-					echo "<td class='tab_bg_2'>";
+					echo "<tr><td class='tab_bg_2'>";
 					if ($this->fields["FK_users"]>0){
 						echo $LANG["document"][42]." ".getUserName($this->fields["FK_users"],1);
 					} else {
@@ -280,13 +289,13 @@ class Document extends CommonDBTM {
 						echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='submit' name='purge' value=\"".$LANG["buttons"][22]."\" class='submit'></div>";
 					}
 		
-					echo "</td>";
-					echo "</tr>";
+					echo "</td></tr>";
 				}
-			}
-	
-			echo "</table></div>";
-			echo "</form>";
+				echo "</table></div></form>";
+				
+			} else { //  can't edit
+				echo "</table></div>";			
+			} 
 		} else {
 			echo "<div class='center'><strong>".$LANG["common"][54]."</strong></div>";
 			return false;

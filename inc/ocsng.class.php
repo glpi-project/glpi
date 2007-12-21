@@ -188,6 +188,7 @@ class Ocsng extends CommonDBTM {
 		echo "</td></tr>";
 		
 		$import_array = array("0"=>$LANG["ocsconfig"][11],"1"=>$LANG["ocsconfig"][10],"2"=>$LANG["ocsconfig"][12]);
+		$import_array2= array("0"=>$LANG["ocsconfig"][11],"1"=>$LANG["ocsconfig"][10],"2"=>$LANG["ocsconfig"][12],"3"=>$LANG["ocsconfig"][19]);
 		$periph = $this->fields["import_periph"];
 		$monitor = $this->fields["import_monitor"];
 		$printer = $this->fields["import_printer"];
@@ -198,8 +199,7 @@ class Ocsng extends CommonDBTM {
 		echo "</td></tr>";
 
 		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["ocsconfig"][7] . " </td><td>";
-		dropdownArrayValues("import_monitor",$import_array,
-			$monitor);
+		dropdownArrayValues("import_monitor",$import_array2,$monitor);
 		echo "</td></tr>";
 
 		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["ocsconfig"][9] . " </td><td>";
@@ -287,7 +287,7 @@ class Ocsng extends CommonDBTM {
 		echo "</td></tr>";
 
 		echo "</table></td>";
-
+		
 		echo "<td class='tab_bg_2' valign='top'><table width='100%' cellpadding='1' cellspacing='0' border='0'>";
 
 		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["devices"][4] . " </td><td>";
@@ -367,20 +367,20 @@ class Ocsng extends CommonDBTM {
 		echo "</tr>";
 
 		echo "<tr><th>" . $LANG["ocsconfig"][27] ." ".$LANG["Menu"][3]. "</th><th>" . $LANG["ocsconfig"][27] ." ".$LANG["Menu"][4] . "</th><th>&nbsp;</th></tr>";
-
+		
 		echo "<tr><td class='tab_bg_2' valign='top'><table width='100%' cellpadding='1' cellspacing='0' border='0'>";
 		echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["common"][25] . " </td><td>";
 		dropdownYesNo("import_monitor_comments", $this->fields["import_monitor_comments"]);
 		echo "</td></tr>";
 		echo "</table></td>";
-
+		
 		echo "<td class='tab_bg_2' valign='top'><table width='100%' cellpadding='1' cellspacing='0' border='0'>";
 		echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["common"][25] . " </td><td>";
 		dropdownYesNo("import_software_comments", $this->fields["import_software_comments"]);
 		echo "</td></tr>";
 		echo "</table></td>";
-		echo "<td class='tab_bg_2' valign='top'></td></tr>";
-
+		echo "<td class='tab_bg_2' valign='top'></td></tr>"; 
+		
 		echo "</table></div>";
 
 		echo "<br><div class='center'><table class='tab_cadre'>";

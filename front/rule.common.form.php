@@ -49,9 +49,16 @@ $rulecriteria = new RuleCriteria();
 $ruleaction = new RuleAction();
 $rulecollection = new RuleCollection($rule->rule_type);
 
+if (isset($_GET["delete_cache_rule"]) && $_GET["delete_cache_rule"]==1 && isset($_POST["rule_id"]) && $_POST["rule_id"]!='')
+	$delete_rule_cache = true;
+else	
+	$delete_rule_cache = false;
+		
 if (isset($_POST["delete_criteria"]))
 {
 	checkRight($rule->right,"w");
+
+
 	if (count($_POST["item"]))
 		foreach ($_POST["item"] as $key => $val)
 		{
@@ -59,6 +66,9 @@ if (isset($_POST["delete_criteria"]))
 			$rulecriteria->delete($input);
 		}
 	
+	if($delete_rule_cache)
+		$rule->deleteCacheByRuleId($_POST["rule_id"]);
+		
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 if (isset($_POST["delete_action"]))
@@ -70,32 +80,61 @@ if (isset($_POST["delete_action"]))
 			$input["ID"]=$key;
 			$ruleaction->delete($input);
 		}
+
+	if($delete_rule_cache)
+		$rule->deleteCacheByRuleId($_POST["rule_id"]);
 	
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 elseif (isset($_POST["add_criteria"]))
 {
 	checkRight($rule->right,"w");
+
+	if($delete_rule_cache)
+		$rule->deleteCacheByRuleId($_POST["rule_id"]);
+	
+	unset($_POST["rule_id"]);
 	$rulecriteria->add($_POST);
+
+
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 elseif (isset($_POST["add_action"]))
 {
 	checkRight($rule->right,"w");
+
+	if($delete_rule_cache)
+		$rule->deleteCacheByRuleId($_POST["rule_id"]);
+	
+	unset($_POST["rule_id"]);
+
 	$ruleaction->add($_POST);
+
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 elseif (isset($_POST["update_rule"]))
 {
 	checkRight($rule->right,"w");
+
+	if($delete_rule_cache)
+		$rule->deleteCacheByRuleId($_POST["rule_id"]);
+	unset($_POST["rule_id"]);
+
 	$rule->update($_POST);
 	logEvent($_POST['ID'], "rules", 4, "setup", $_SESSION["glpiname"]." ".$LANG["log"][21]);
+
 	glpi_header($_SERVER['HTTP_REFERER']);
 } elseif (isset($_POST["add_rule"]))
 {
 	checkRight($rule->right,"w");
+
+	if($delete_rule_cache)
+		$rule->deleteCacheByRuleId($_POST["rule_id"]);
+	unset($_POST["rule_id"]);
+
 	$newID=$rule->add($_POST);
 	logEvent($newID, "rules", 4, "setup", $_SESSION["glpiname"]." ".$LANG["log"][20]);
+
 	glpi_header($_SERVER['HTTP_REFERER']."?ID=$newID");
 } elseif (isset($_POST["delete_rule"]))
 {
@@ -103,17 +142,21 @@ elseif (isset($_POST["update_rule"]))
 	$rulecollection->deleteRuleOrder($_POST["ranking"]);
 	$rule->delete($_POST);
 	logEvent($_POST["ID"], "rules", 4, "setup", $_SESSION["glpiname"]." ".$LANG["log"][22]);
+
+	if($delete_rule_cache)
+		$rule->deleteCacheByRuleId($_GET["rule_id"]);
+
 	glpi_header($CFG_GLPI['root_doc']."/front/rule.php");
 }
 
-commonHeader($LANG["title"][2],$_SERVER['PHP_SELF'],"admin","rule",$rulecollection->rule_type);
+commonHeader($LANG["title"][2],$_SERVER['PHP_SELF'],"admin",getCategoryNameToDisplay($rulecollection->rule_type),$rulecollection->rule_type);
 
 $rule->showForm($_SERVER['PHP_SELF'],$_GET["ID"]);
 if (!empty($_GET["ID"])&&$_GET["ID"] >0) {
 	switch($_SESSION['glpi_onglet']){
 			case 1 :
-				$rule->showCriteriasList($_SERVER['PHP_SELF']);
-				$rule->showActionsList($_SERVER['PHP_SELF']);
+				$rule->showCriteriasList($_SERVER['PHP_SELF'],$_GET["ID"]);
+				$rule->showActionsList($_SERVER['PHP_SELF'],$_GET["ID"]);
 			break;
 	}
 }

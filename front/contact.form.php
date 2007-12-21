@@ -42,7 +42,7 @@ if(empty($_GET["ID"])) $_GET["ID"] = "";
 $contact=new Contact;
 if (isset($_POST["add"]))
 {
-	checkRight("contact_enterprise","w");
+	checkEditItem(CONTACT_TYPE);
 
 	$newID=$contact->add($_POST);
 	logEvent($newID, "contacts", 4, "financial", $_SESSION["glpiname"]." ".$LANG["log"][20]." ".$_POST["name"].".");
@@ -50,7 +50,7 @@ if (isset($_POST["add"]))
 }
 else if (isset($_POST["delete"]))
 {
-	checkRight("contact_enterprise","w");
+	checkEditItem(CONTACT_TYPE, $_POST["ID"]);
 
 	$contact->delete($_POST);
 	logEvent($_POST["ID"], "contacts", 4, "financial", $_SESSION["glpiname"]." ".$LANG["log"][22]);
@@ -58,7 +58,7 @@ else if (isset($_POST["delete"]))
 }
 else if (isset($_POST["restore"]))
 {
-	checkRight("contact_enterprise","w");
+	checkEditItem(CONTACT_TYPE, $_POST["ID"]);
 
 	$contact->restore($_POST);
 	logEvent($_POST["ID"], "contacts", 4, "financial", $_SESSION["glpiname"]." ".$LANG["log"][23]);
@@ -66,7 +66,7 @@ else if (isset($_POST["restore"]))
 }
 else if (isset($_POST["purge"]))
 {
-	checkRight("contact_enterprise","w");
+	checkEditItem(CONTACT_TYPE, $_POST["ID"]);
 
 	$contact->delete($_POST,1);
 	logEvent($_POST["ID"], "contacts", 4, "financial", $_SESSION["glpiname"]." ".$LANG["log"][24]);
@@ -74,21 +74,23 @@ else if (isset($_POST["purge"]))
 }
 else if (isset($_POST["update"]))
 {
-	checkRight("contact_enterprise","w");
+	checkEditItem(CONTACT_TYPE, $_POST["ID"]);
 
 	$contact->update($_POST);
 	logEvent($_POST["ID"], "contacts", 4, "financial", $_SESSION["glpiname"]." ".$LANG["log"][21]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
-else if (isset($_POST["addenterprise"])){
-	checkRight("contact_enterprise","w");
+else if (isset($_POST["addenterprise"]))
+{
+	checkEditItem(CONTACT_TYPE, $_POST["conID"]);
 
 	addContactEnterprise($_POST["entID"],$_POST["conID"]);
 	logEvent($_POST["conID"], "contacts", 4, "financial", $_SESSION["glpiname"]."  ".$LANG["log"][34]);
 	glpi_header($CFG_GLPI["root_doc"]."/front/contact.form.php?ID=".$_POST["conID"]);
 }
-else if (isset($_GET["deleteenterprise"])){
-	checkRight("contact_enterprise","w");
+else if (isset($_GET["deleteenterprise"]))
+{
+	checkEditItem(CONTACT_TYPE, $_GET["cID"]);
 
 	deleteContactEnterprise($_GET["ID"]);
 	logEvent($_GET["cID"], "contacts", 4, "financial", $_SESSION["glpiname"]."  ".$LANG["log"][35]);
@@ -106,7 +108,7 @@ else
 
 	commonHeader($LANG["title"][22],$_SERVER['PHP_SELF'],"financial","contact");
 
-	if ($contact->showForm($_SERVER['PHP_SELF'],$_GET["ID"])) {
+	if ($contact->showForm($_SERVER['PHP_SELF'],$_GET["ID"],'')) {
 		if (!empty($_GET['ID'])){
 			switch($_SESSION['glpi_onglet']){
 				case -1 :	

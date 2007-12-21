@@ -82,7 +82,7 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="")
 {
 	// Print a nice HTML-head for every page
 
-	global $CFG_GLPI,$LANG,$PLUGIN_HOOKS,$HEADER_LOADED,$INFOFORM_PAGES ;
+	global $CFG_GLPI,$LANG,$PLUGIN_HOOKS,$HEADER_LOADED,$INFOFORM_PAGES,$DB ;
 	if ($HEADER_LOADED) return;
 	$HEADER_LOADED=true;
 	// Override list-limit if choosen
@@ -98,7 +98,6 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="")
 		header_nocache();
 	}
 
-	
 		// Start the page
 		echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">";
 		 // echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\"  \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">";
@@ -472,7 +471,7 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="")
 			$menu['admin']['content']['entity']['links']['add']="/front/entity.tree.php";
 		}
 
-		if (haveRight("rule_ldap","r")||haveRight("rule_ocs","r")||haveRight("rule_tracking","r")||haveRight("rule_softwarecategories","r")){
+		if (haveRight("rule_ldap","r")||haveRight("rule_ocs","r")||haveRight("rule_tracking","r")|| haveRight("rule_softwarecategories","r")){
 			$menu['admin']['content']['rule']['title']=$LANG["rulesengine"][17];
 			$menu['admin']['content']['rule']['shortcut']='r';
 			$menu['admin']['content']['rule']['page']='/front/rule.php';
@@ -495,6 +494,77 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="")
 					break;
 			}
 		}
+
+		if (haveRight("rule_dictionnary_manufacturer","r") || haveRight("rule_dictionnary_software","r") ||
+			haveRight("rule_dictionnary_model","r") || haveRight("rule_dictionnary_type","r")||
+			 haveRight("rule_dictionnary_os","r")){
+			$menu['admin']['content']['dictionnary']['title']=$LANG["rulesengine"][77];
+			$menu['admin']['content']['dictionnary']['shortcut']='r';
+			$menu['admin']['content']['dictionnary']['page']='/front/dictionnary.php';
+			switch($option){
+				case RULE_DICTIONNARY_MANUFACTURER :
+					$menu['admin']['content']['dictionnary']['links']['search']='/front/rule.dictionnary.manufacturer.php';
+					$menu['admin']['content']['dictionnary']['links']['add']='/front/rule.dictionnary.manufacturer.form.php';
+					break;
+				case RULE_DICTIONNARY_SOFTWARE :
+					$menu['admin']['content']['dictionnary']['links']['search']='/front/rule.dictionnary.software.php';
+					$menu['admin']['content']['dictionnary']['links']['add']='/front/rule.dictionnary.software.form.php';
+					break;
+				case RULE_DICTIONNARY_MODEL_COMPUTER :
+					$menu['admin']['content']['dictionnary']['links']['search']='/front/rule.dictionnary.model.computer.php';
+					$menu['admin']['content']['dictionnary']['links']['add']='/front/rule.dictionnary.model.computer.form.php';
+					break;
+				case RULE_DICTIONNARY_MODEL_MONITOR :
+					$menu['admin']['content']['dictionnary']['links']['search']='/front/rule.dictionnary.model.monitor.php';
+					$menu['admin']['content']['dictionnary']['links']['add']='/front/rule.dictionnary.model.monitor.form.php';
+					break;
+				case RULE_DICTIONNARY_MODEL_PRINTER :
+					$menu['admin']['content']['dictionnary']['links']['search']='/front/rule.dictionnary.model.printer.php';
+					$menu['admin']['content']['dictionnary']['links']['add']='/front/rule.dictionnary.model.printer.form.php';
+					break;
+				case RULE_DICTIONNARY_MODEL_PERIPHERAL :
+					$menu['admin']['content']['dictionnary']['links']['search']='/front/rule.dictionnary.model.peripheral.php';
+					$menu['admin']['content']['dictionnary']['links']['add']='/front/rule.dictionnary.model.peripheral.form.php';
+					break;
+				case RULE_DICTIONNARY_MODEL_NETWORKING :
+					$menu['admin']['content']['dictionnary']['links']['search']='/front/rule.dictionnary.model.networking.php';
+					$menu['admin']['content']['dictionnary']['links']['add']='/front/rule.dictionnary.model.networking.form.php';
+					break;
+				case RULE_DICTIONNARY_TYPE_COMPUTER :
+					$menu['admin']['content']['dictionnary']['links']['search']='/front/rule.dictionnary.type.computer.php';
+					$menu['admin']['content']['dictionnary']['links']['add']='/front/rule.dictionnary.type.computer.form.php';
+					break;
+				case RULE_DICTIONNARY_TYPE_MONITOR :
+					$menu['admin']['content']['dictionnary']['links']['search']='/front/rule.dictionnary.type.monitor.php';
+					$menu['admin']['content']['dictionnary']['links']['add']='/front/rule.dictionnary.type.monitor.form.php';
+					break;
+				case RULE_DICTIONNARY_TYPE_PRINTER :
+					$menu['admin']['content']['dictionnary']['links']['search']='/front/rule.dictionnary.type.printer.php';
+					$menu['admin']['content']['dictionnary']['links']['add']='/front/rule.dictionnary.type.printer.form.php';
+					break;
+				case RULE_DICTIONNARY_TYPE_PERIPHERAL :
+					$menu['admin']['content']['dictionnary']['links']['search']='/front/rule.dictionnary.type.peripheral.php';
+					$menu['admin']['content']['dictionnary']['links']['add']='/front/rule.dictionnary.type.peripheral.form.php';
+					break;
+				case RULE_DICTIONNARY_TYPE_NETWORKING :
+					$menu['admin']['content']['dictionnary']['links']['search']='/front/rule.dictionnary.type.networking.php';
+					$menu['admin']['content']['dictionnary']['links']['add']='/front/rule.dictionnary.type.networking.form.php';
+					break;
+				case RULE_DICTIONNARY_OS :
+					$menu['admin']['content']['dictionnary']['links']['search']='/front/rule.dictionnary.os.php';
+					$menu['admin']['content']['dictionnary']['links']['add']='/front/rule.dictionnary.os.form.php';
+					break;
+				case RULE_DICTIONNARY_OS_SP :
+					$menu['admin']['content']['dictionnary']['links']['search']='/front/rule.dictionnary.os_sp.php';
+					$menu['admin']['content']['dictionnary']['links']['add']='/front/rule.dictionnary.os_sp.form.php';
+					break;
+				case RULE_DICTIONNARY_OS_VERSION :
+					$menu['admin']['content']['dictionnary']['links']['search']='/front/rule.dictionnary.os_version.php';
+					$menu['admin']['content']['dictionnary']['links']['add']='/front/rule.dictionnary.os_version.form.php';
+					break;
+			}
+		}
+
 
 		if (haveRight("profile","r")){
 			$menu['admin']['content']['profile']['title']=$LANG["Menu"][35];
@@ -537,12 +607,6 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="")
 		$menu['config']['title']=$LANG["Menu"][10];
 		$menu['config']['default']='/front/setup.php';
 
-
-//		if (haveRight("search_config","w")||haveRight("search_config_global","w")){
-//			$menu['config']['content']['display']['title']=$LANG["search"][0];
-//			$menu['config']['content']['display']['page']='/front/setup.display.php';
-//		}
-		
 		if (haveRight("dropdown","w")||haveRight("entity_dropdown","w")){
 			$menu['config']['content']['dropdowns']['title']=$LANG["setup"][0];
 			$menu['config']['content']['dropdowns']['page']='/front/setup.dropdowns.php';
@@ -558,7 +622,7 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="")
 
 			$menu['config']['content']['mailing']['title']=$LANG["setup"][704];
 			$menu['config']['content']['mailing']['page']='/front/setup.mailing.php';
-			
+
 			$menu['config']['content']['extauth']['title']=$LANG["login"][10];
 			$menu['config']['content']['extauth']['page']='/front/setup.auth.php';
 			$menu['config']['content']['extauth']['links']['search']='/front/setup.auth.php';
@@ -860,6 +924,13 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="")
 		echo "<div  id='page' >";
 		
 		$CFG_GLPI["cache"]->end();
+	}
+
+	if ($DB->isSlave() && !$DB->first_connection)
+	{	
+		echo "<div id='dbslave-float'>";		
+		echo "<a href='#see_debug'>".$LANG["setup"][809]."</a>";
+		echo "</div>";
 	}
 	
 	// call function callcron() every 5min
@@ -1452,9 +1523,10 @@ function popFooter() {
 /**
  * Print footer for every page
  *
+ * @param $keepDB booleen, closeDBConnections if false
  *
  **/
-function commonFooter() {
+function commonFooter($keepDB=false) {
 	// Print foot for every page
 
 	global $LANG,$CFG_GLPI,$DEBUG_SQL,$TIMER_DEBUG,$SQL_TOTAL_TIMER,$SQL_TOTAL_REQUEST,$FOOTER_LOADED;
@@ -1527,6 +1599,9 @@ function commonFooter() {
 				echo "</td></tr>";
 			}
 			echo "</table>";
+			
+			// Reset, as further request will not be displayed
+			$CFG_GLPI["debug_sql"]=false;
 		}
 		
 		
@@ -1545,7 +1620,10 @@ function commonFooter() {
 		echo "</div>";
 	}
 	echo "</body></html>";
-	closeDBConnections();
+	
+	if (!$keepDB) {
+		closeDBConnections();
+	}
 }
 
 /**
@@ -1723,6 +1801,34 @@ function printHelpDesk ($ID,$from_helpdesk) {
 
 }
 
+/**
+ * Display the list_limit combo choice
+ * 
+ * 
+ * @param $action page would be posted when change the value (URL + param)
+ * @return nothing (print a combo)
+ * 
+ */
+function printPagerForm ($action) {
+	global $LANG;
+	
+	echo "<form method='POST' action=\"$action\">\n";
+	echo "<span>".$LANG["pager"][4]."&nbsp;</span>";
+	echo "<select name='list_limit' onChange='submit()'>";
+
+	for ($i=5;$i<20;$i+=5) echo "<option value='$i' ".((isset($_SESSION["glpilist_limit"])&&$_SESSION["glpilist_limit"]==$i)?" selected ":"").">$i</option>\n";
+	for ($i=20;$i<50;$i+=10) echo "<option value='$i' ".((isset($_SESSION["glpilist_limit"])&&$_SESSION["glpilist_limit"]==$i)?" selected ":"").">$i</option>\n";
+	for ($i=50;$i<250;$i+=50) echo "<option value='$i' ".((isset($_SESSION["glpilist_limit"])&&$_SESSION["glpilist_limit"]==$i)?" selected ":"").">$i</option>\n";
+	for ($i=250;$i<1000;$i+=250) echo "<option value='$i' ".((isset($_SESSION["glpilist_limit"])&&$_SESSION["glpilist_limit"]==$i)?" selected ":"").">$i</option>\n";
+	for ($i=1000;$i<5000;$i+=1000) echo "<option value='$i' ".((isset($_SESSION["glpilist_limit"])&&$_SESSION["glpilist_limit"]==$i)?" selected ":"").">$i</option>\n";
+	for ($i=5000;$i<=10000;$i+=5000) echo "<option value='$i' ".((isset($_SESSION["glpilist_limit"])&&$_SESSION["glpilist_limit"]==$i)?" selected ":"").">$i</option>\n";
+	echo "<option value='9999999' ".((isset($_SESSION["glpilist_limit"])&&$_SESSION["glpilist_limit"]==9999999)?" selected ":"").">9999999</option>\n";	
+
+	echo "</select><span>&nbsp;";
+	echo $LANG["pager"][5];
+	echo "</span>";
+	echo "</form>\n";
+}
 
 /**
  * Print pager for search option (first/previous/next/last)
@@ -1786,22 +1892,7 @@ function printPager($start,$numrows,$target,$parameters,$item_type_output=0,$ite
 
 	// Print the "where am I?" 
 	echo "<td width='50%'  class='tab_bg_2'>";
-	echo "<form method='POST' action=\"$target?$parameters&amp;start=$start\">\n";
-	echo "<span>".$LANG["pager"][4]."&nbsp;</span>";
-	echo "<select name='list_limit' onChange='submit()'>";
-
-
-	for ($i=5;$i<20;$i+=5) echo "<option value='$i' ".((isset($_SESSION["glpilist_limit"])&&$_SESSION["glpilist_limit"]==$i)?" selected ":"").">$i</option>\n";
-	for ($i=20;$i<50;$i+=10) echo "<option value='$i' ".((isset($_SESSION["glpilist_limit"])&&$_SESSION["glpilist_limit"]==$i)?" selected ":"").">$i</option>\n";
-	for ($i=50;$i<250;$i+=50) echo "<option value='$i' ".((isset($_SESSION["glpilist_limit"])&&$_SESSION["glpilist_limit"]==$i)?" selected ":"").">$i</option>\n";
-	for ($i=250;$i<1000;$i+=250) echo "<option value='$i' ".((isset($_SESSION["glpilist_limit"])&&$_SESSION["glpilist_limit"]==$i)?" selected ":"").">$i</option>\n";
-	for ($i=1000;$i<5000;$i+=1000) echo "<option value='$i' ".((isset($_SESSION["glpilist_limit"])&&$_SESSION["glpilist_limit"]==$i)?" selected ":"").">$i</option>\n";
-	for ($i=5000;$i<=10000;$i+=5000) echo "<option value='$i' ".((isset($_SESSION["glpilist_limit"])&&$_SESSION["glpilist_limit"]==$i)?" selected ":"").">$i</option>\n";
-	echo "<option value='9999999' ".((isset($_SESSION["glpilist_limit"])&&$_SESSION["glpilist_limit"]==9999999)?" selected ":"").">9999999</option>\n";	
-	echo "</select><span>&nbsp;";
-	echo $LANG["pager"][5];
-	echo "</span>";
-	echo "</form>\n";
+	printPagerForm("$target?$parameters&amp;start=$start");
 	echo "</td>\n";
 
 	if ($item_type_output>0&&isset($_SESSION["glpiactiveprofile"])&&$_SESSION["glpiactiveprofile"]["interface"]=="central"){
@@ -2033,13 +2124,14 @@ function displayBackLink(){
 		echo "<a href='javascript:history.back();'>".$LANG["buttons"][13]."</a>";
 	}
 }
+
 /**
- * Print the form used to select profile if several are available
- * @param $target target of the form
- * @return nothing
- *
- *
- **/
+* Print the form used to select profile if several are available
+* @param $target target of the form
+* @return nothing
+*
+*
+**/
 function showProfileSelecter($target){
 	global $CFG_GLPI;
 
@@ -2085,4 +2177,47 @@ function showProfileSelecter($target){
 
 } 
 
+/**
+ * Create a Dynamic Progress Bar
+ *
+ * @param $msg initial message (under the bar)
+ * @return nothing
+ **/
+function createProgressBar ($msg="&nbsp;") {
+	echo "<div class='doaction_cadre'><div class='doaction_progress' id='doaction_progress'>".
+		"<div class='doaction_pourcent' id='doaction_pourcent'>&nbsp;</div></div></div><br />".
+		"<div id='doaction_message'>$msg</div>";
+}
+
+/**
+ * Change the Progress Bar Position
+ *
+ * @param $crt Current Value (less then $max)
+ * @param $max Target Value 
+ * @param $msg message inside the bar (defaut is %)
+ * @return nothing
+ **/
+function changeProgressBarPosition ($crt, $tot, $msg="") {
+	if (!$tot)
+		$pct=0;
+	else if ($crt>$tot)
+		$pct=100;
+	else
+		$pct = floor($crt*100/$tot);
+	
+	if (empty($msg)) $msg = $pct." %";
+
+	echo "<script type='text/javascript'>action_change_progress(\"$pct%\",\"$msg\")</script>\n";
+	glpi_flush();							
+}
+
+/**
+ * Change the Message under the Progress Bar
+ *
+ * @param $msg message under the bar
+ * @return nothing
+ **/
+function changeProgressBarMessage ($msg="&nbsp;") {
+	echo "<script type='text/javascript'>action_change_message(\"$msg\")</script>\n";	
+}
 ?>

@@ -288,7 +288,6 @@ class User extends CommonDBTM {
 	}
 
 
-
 	function post_updateItem($input, $updates, $history=1) {
 		// Clean header cache for the user
 		if (in_array("language", $updates) && isset ($input["ID"])) {
@@ -410,7 +409,7 @@ class User extends CommonDBTM {
 						}
 					}
 				}
-
+				
 				//If the user needs to be added to one group or more
 				if (count($input["_groups"])>0)
 				{
@@ -441,7 +440,7 @@ class User extends CommonDBTM {
 	 *
 	 * @return String : basedn of the user / false if not founded
 	 */
-	function getFromLDAP($ldap_method, $userdn, $login, $password = "") {
+	function getFromLDAP($ldap_connection,$ldap_method, $userdn, $login, $password = "") {
 		global $DB;
 
 		// we prevent some delay...
@@ -449,22 +448,18 @@ class User extends CommonDBTM {
 			return false;
 		}
 
-		$ds = connect_ldap($ldap_method["ldap_host"], $ldap_method["ldap_port"], $ldap_method["ldap_rootdn"], $ldap_method["ldap_pass"], $ldap_method["ldap_use_tls"]);
-		// Test with login and password of the user
-		if (!$ds)
-			$ds = connect_ldap($ldap_method["ldap_host"], $ldap_method["ldap_port"], $login, $password, $ldap_method["ldap_use_tls"]);
-		if ($ds) {
+		if ($ldap_connection) {
 			//Set all the search fields
 			$this->fields['password'] = "";
 			$this->fields['password_md5'] = "";
-
+			
 			$fields=getLDAPSyncFields($ldap_method);
-
+	
 			$fields = array_filter($fields);
 			$f = array_values($fields);
 							
-			$sr = @ ldap_read($ds, $userdn, "objectClass=*", $f);
-			$v = ldap_get_entries($ds, $sr);
+			$sr = @ ldap_read($ldap_connection, $userdn, "objectClass=*", $f);
+			$v = ldap_get_entries($ldap_connection, $sr);
 			
 			if (!is_array($v) || count($v) == 0 || empty ($v[0][$fields['name']][0]))
 				return false;
@@ -495,8 +490,8 @@ class User extends CommonDBTM {
 					}
 					$group_fields = array_unique($group_fields);
 					// If the groups must be retrieve from the ldap user object
-					$sr = @ ldap_read($ds, $userdn, "objectClass=*", $group_fields);
-					$v = ldap_get_entries($ds, $sr);
+					$sr = @ ldap_read($ldap_connection, $userdn, "objectClass=*", $group_fields);
+					$v = ldap_get_entries($ldap_connection, $sr);
 				}
 			}
 			//The groupes are retrived by looking into an ldap group object
@@ -513,7 +508,7 @@ class User extends CommonDBTM {
 					else
 						$user_tmp = $ldap_method["ldap_login"]."=".$login;
 						
-					$v2 = $this->ldap_get_user_groups($ds, $ldap_method["ldap_basedn"], $user_tmp, $ldap_method["ldap_group_condition"], $ldap_method["ldap_field_group_member"]);
+					$v2 = $this->ldap_get_user_groups($ldap_connection, $ldap_method["ldap_basedn"], $user_tmp, $ldap_method["ldap_group_condition"], $ldap_method["ldap_field_group_member"]);
 					
 					$v = array_merge($v, $v2);
 				}
@@ -549,20 +544,24 @@ class User extends CommonDBTM {
 				}
 			}
 
-			//Instanciate the affectation's rule
-			$rule = new RightRuleCollection();
+			//Only process rules if working on the master database
+			if (!$DB->isSlave())
+			{
+				//Instanciate the affectation's rule
+				$rule = new RightRuleCollection();
+					
+				//Process affectation rules :
+				//we don't care about the function's return because all the datas are stored in session temporary
+				if (isset($this->fields["_groups"]))
+					$groups = $this->fields["_groups"];
+				else
+					$groups = array();	
+		
+				$this->fields=$rule->processAllRules($groups,$this->fields,array("type"=>"LDAP","ldap_server"=>$ldap_method["ID"],"connection"=>$ldap_connection,"userdn"=>$userdn));
 				
-			//Process affectation rules :
-			//we don't care about the function's return because all the datas are stored in session temporary
-			if (isset($this->fields["_groups"]))
-				$groups = $this->fields["_groups"];
-			else
-				$groups = array();	
-	
-			$this->fields=$rule->processAllRules($groups,$this->fields,array("type"=>"LDAP","ldap_server"=>$ldap_method["ID"],"connection"=>$ds,"userdn"=>$userdn));
-			
-			//Hook to retrieve more informations for ldap
-			$this->fields = doHookFunction("retrieve_more_data_from_ldap", $this->fields);
+				//Hook to retrieve more informations for ldap
+				$this->fields = doHookFunction("retrieve_more_data_from_ldap", $this->fields);
+			}
 			return true;
 		}
 		return false;
@@ -619,17 +618,19 @@ class User extends CommonDBTM {
 
 		$this->fields['name'] = $name;
 
-		//Instanciate the affectation's rule
-		$rule = new RightRuleCollection();
-			
-		//Process affectation rules :
-		//we don't care about the function's return because all the datas are stored in session temporary
-		if (isset($this->fields["_groups"]))
-			$groups = $this->fields["_groups"];
-		else
-			$groups = array();	
-		$this->fields=$rule->processAllRules($groups,$this->fields,array("type"=>"MAIL","mail_server"=>$mail_method["ID"],"email"=>$this->fields["email"]));
-		
+		if (!$DB->isSlave())
+		{
+			//Instanciate the affectation's rule
+			$rule = new RightRuleCollection();
+				
+			//Process affectation rules :
+			//we don't care about the function's return because all the datas are stored in session temporary
+			if (isset($this->fields["_groups"]))
+				$groups = $this->fields["_groups"];
+			else
+				$groups = array();	
+			$this->fields=$rule->processAllRules($groups,$this->fields,array("type"=>"MAIL","mail_server"=>$mail_method["ID"],"email"=>$this->fields["email"]));
+		}
 		return true;
 
 	} // getFromIMAP()  	    
@@ -977,19 +978,19 @@ class User extends CommonDBTM {
 	}
 
 	function pre_updateInDB($input,$updates) {
-
+		
 		// Security system except for login update
-		if (isset ($_SESSION["glpiID"]) && !haveRight("user", "w") && !ereg("login.php", $_SERVER['PHP_SELF'])) {
-			if ($_SESSION["glpiID"] == $input['ID']) {
+		if (isset ($_SESSION["glpiID"]) && !haveRight("user", "w") && !ereg("login.php", $_SERVER['PHP_SELF'])) { 
+			if ($_SESSION["glpiID"] == $input['ID']) { 
 				$ret = $updates;
-
+				
 				if (isset($this->fields["auth_method"])){
-					// extauth ldap case
+					// extauth ldap case 
 					if ($_SESSION["glpiextauth"] && $this->fields["auth_method"] == AUTH_LDAP) {
 						$auth_method = getAuthMethodsByID($this->fields["auth_method"], $this->fields["id_auth"]);
 						if (count($auth_method)){
 							$fields=getLDAPSyncFields($auth_method);
-							foreach ($fields as $key => $val){
+							foreach ($fields as $key => $val){ 
 								if (!empty ($val)){
 									unset ($ret[$key]);
 								}
@@ -999,22 +1000,19 @@ class User extends CommonDBTM {
 					// extauth imap case
 					if (isset($this->fields["auth_method"])&&$this->fields["auth_method"] == AUTH_MAIL){
 						unset ($ret["email"]);
-						}
-	
+					}
+					
 					unset ($ret["active"]);
 					unset ($ret["comments"]);
 				}
-
-				return array($input,$ret);
-			} else {
+				
+				return array($input,$ret); 
+			} else { 
 				return array($input,array());
 			}
 		}
-
-
-
-
-
+		
+		
 		$this->fields["date_mod"]=$_SESSION["glpi_currenttime"];
 		$updates[]="date_mod";
 		return array($input,$updates);
@@ -1023,8 +1021,13 @@ class User extends CommonDBTM {
 	function purgeDynamicProfiles()
 	{
 		global $DB;
-		$sql = "DELETE FROM glpi_users_profiles WHERE FK_users=".$this->fields["ID"]." AND dynamic=1";
-		$DB->query($sql);
+		
+		//Purge only in case of connection to the master mysql server
+		if (!$DB->isSlave())
+		{
+			$sql = "DELETE FROM glpi_users_profiles WHERE FK_users=".$this->fields["ID"]." AND dynamic=1";
+			$DB->query($sql);
+		}
 	}
 }
 

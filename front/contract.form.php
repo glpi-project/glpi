@@ -44,7 +44,7 @@ $contract=new Contract();
 
 if (isset($_POST["add"]))
 {
-	checkRight("contract_infocom","w");
+	checkEditItem(CONTRACT_TYPE);
 
 	$newID=$contract->add($_POST);
 	logEvent($newID, "contracts", 4, "financial", $_SESSION["glpiname"]." ".$LANG["log"][20]." ".$_POST["num"].".");
@@ -52,7 +52,7 @@ if (isset($_POST["add"]))
 } 
 else if (isset($_POST["delete"]))
 {
-	checkRight("contract_infocom","w");
+	checkEditItem(CONTRACT_TYPE, $_POST["ID"]);
 
 	$contract->delete($_POST);
 	logEvent($_POST["ID"], "contracts", 4, "financial", $_SESSION["glpiname"]." ".$LANG["log"][22]);
@@ -60,7 +60,7 @@ else if (isset($_POST["delete"]))
 }
 else if (isset($_POST["restore"]))
 {
-	checkRight("contract_infocom","w");
+	checkEditItem(CONTRACT_TYPE, $_POST["ID"]);
 
 	$contract->restore($_POST);
 	logEvent($_POST["ID"], "contracts", 4, "financial", $_SESSION["glpiname"]." ".$LANG["log"][23]);
@@ -68,7 +68,7 @@ else if (isset($_POST["restore"]))
 }
 else if (isset($_POST["purge"]))
 {
-	checkRight("contract_infocom","w");
+	checkEditItem(CONTRACT_TYPE, $_POST["ID"]);
 
 	$contract->delete($_POST,1);
 	logEvent($_POST["ID"], "contracts", 4, "financial", $_SESSION["glpiname"]." ".$LANG["log"][24]);
@@ -76,43 +76,75 @@ else if (isset($_POST["purge"]))
 }
 else if (isset($_POST["update"]))
 {
-	checkRight("contract_infocom","w");
+	checkEditItem(CONTRACT_TYPE, $_POST["ID"]);
 
 	$contract->update($_POST);
 	logEvent($_POST["ID"], "contracts", 4, "financial", $_SESSION["glpiname"]." ".$LANG["log"][21]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 } 
-else if (isset($_POST["additem"])){
-
-	checkRight("contract_infocom","w");
+else if (isset($_POST["additem"]))
+{
+	if (strstr($_SERVER['HTTP_REFERER'], $_SERVER['SCRIPT_NAME'])) {
+		// error_log("update from contract form");
+		checkEditItem(CONTRACT_TYPE, $_POST["conID"]);
+	} else {
+		// error_log("update from infocom form of an equipement");
+		checkRight("contract_infocom","w");
+	}
 
 	if ($_POST['type']>0&&$_POST['item']>0){
 		addDeviceContract($_POST["conID"],$_POST['type'],$_POST['item']);
-		logEvent($_POST["ID"], "contracts", 4, "financial", $_SESSION["glpiname"]." ".$LANG["log"][32]);
+		logEvent($_POST["conID"], "contracts", 4, "financial", $_SESSION["glpiname"]." ".$LANG["log"][32]);
 	}
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
-else if (isset($_POST["deleteitem"])){
+else if (isset($_POST["deleteitem"]))
+{
+	// delete item from massive action menu
+	
+	if (strstr($_SERVER['HTTP_REFERER'], $_SERVER['SCRIPT_NAME'])) {
+		// error_log("update from contract form");
+		checkEditItem(CONTRACT_TYPE, $_POST["conID"]);
+	} else {
+		// error_log("update from infocom form of an equipement");
+		checkRight("contract_infocom","w");
+	}
 
-	checkRight("contract_infocom","w");
 	if (count($_POST["item"]))
 		foreach ($_POST["item"] as $key => $val)
-		deleteDeviceContract($key);
+			deleteDeviceContract($key);
 
-	logEvent($_GET["ID"], "contracts", 4, "financial", $_SESSION["glpiname"]." ".$LANG["log"][33]);
+	logEvent($_POST["conID"], "contracts", 4, "financial", $_SESSION["glpiname"]." ".$LANG["log"][33]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
-else if (isset($_POST["addenterprise"])){
+else if (isset($_GET["deleteitem"]))
+{
+	// delete single item from url on list
+	
+	if (strstr($_SERVER['HTTP_REFERER'], $_SERVER['SCRIPT_NAME'])) {
+		// error_log("update from contract form");
+		checkEditItem(CONTRACT_TYPE, $_GET["conID"]);
+	} else {
+		// error_log("update from infocom form of an equipement");
+		checkRight("contract_infocom","w");
+	}
 
-	checkRight("contract_infocom","w");
+	deleteDeviceContract($_GET["ID"]);
+
+	logEvent($_GET["conID"], "contracts", 4, "financial", $_SESSION["glpiname"]." ".$LANG["log"][33]);
+	glpi_header($_SERVER['HTTP_REFERER']);
+}
+else if (isset($_POST["addenterprise"]))
+{
+	checkEditItem(CONTRACT_TYPE, $_POST["conID"]);
 
 	addEnterpriseContract($_POST["conID"],$_POST["entID"]);
 	logEvent($_POST["conID"], "contracts", 4, "financial", $_SESSION["glpiname"]." ".$LANG["log"][34]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
-else if (isset($_GET["deleteenterprise"])){
-
-	checkRight("contract_infocom","w");
+else if (isset($_GET["deleteenterprise"]))
+{
+	checkEditItem(CONTRACT_TYPE, $_GET["ID"]);
 
 	deleteEnterpriseContract($_GET["ID"]);
 	logEvent($_GET["ID"], "contracts", 4, "financial", $_SESSION["glpiname"]." ".$LANG["log"][35]);

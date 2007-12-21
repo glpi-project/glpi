@@ -371,18 +371,18 @@ $SEARCH_OPTION[COMPUTER_TYPE][52]['linkfield']='';
 $SEARCH_OPTION[COMPUTER_TYPE][52]['name']=$LANG["financial"][16];
 $SEARCH_OPTION[COMPUTER_TYPE][52]['meta']=0;
 
-$SEARCH_OPTION[COMPUTER_TYPE][120]['table']='glpi_infocoms';
-$SEARCH_OPTION[COMPUTER_TYPE][120]['field']='end_warranty_buy';
-$SEARCH_OPTION[COMPUTER_TYPE][120]['linkfield']='';
-$SEARCH_OPTION[COMPUTER_TYPE][120]['name']=$LANG["financial"][14]." - ".$LANG["financial"][80];
-$SEARCH_OPTION[COMPUTER_TYPE][120]['meta']=0;
+$SEARCH_OPTION[COMPUTER_TYPE][120]['table']='glpi_infocoms'; 
+$SEARCH_OPTION[COMPUTER_TYPE][120]['field']='end_warranty_buy'; 
+$SEARCH_OPTION[COMPUTER_TYPE][120]['linkfield']=''; 
+$SEARCH_OPTION[COMPUTER_TYPE][120]['name']=$LANG["financial"][14]." - ".$LANG["financial"][80]; 
+$SEARCH_OPTION[COMPUTER_TYPE][120]['meta']=0; 
 
-$SEARCH_OPTION[COMPUTER_TYPE][121]['table']='glpi_infocoms';
-$SEARCH_OPTION[COMPUTER_TYPE][121]['field']='end_warranty_buy';
-$SEARCH_OPTION[COMPUTER_TYPE][121]['linkfield']='';
-$SEARCH_OPTION[COMPUTER_TYPE][121]['name']=$LANG["financial"][76]." - ".$LANG["financial"][80];
-$SEARCH_OPTION[COMPUTER_TYPE][121]['meta']=0;
-
+$SEARCH_OPTION[COMPUTER_TYPE][121]['table']='glpi_infocoms'; 
+$SEARCH_OPTION[COMPUTER_TYPE][121]['field']='end_warranty_buy'; 
+$SEARCH_OPTION[COMPUTER_TYPE][121]['linkfield']=''; 
+$SEARCH_OPTION[COMPUTER_TYPE][121]['name']=$LANG["financial"][76]." - ".$LANG["financial"][80]; 
+$SEARCH_OPTION[COMPUTER_TYPE][121]['meta']=0; 
+ 
 $SEARCH_OPTION[COMPUTER_TYPE][53]['table']='glpi_enterprises_infocoms';
 $SEARCH_OPTION[COMPUTER_TYPE][53]['field']='name';
 $SEARCH_OPTION[COMPUTER_TYPE][53]['linkfield']='';
@@ -426,11 +426,11 @@ $SEARCH_OPTION[COMPUTER_TYPE][59]['name']=$LANG["common"][41];
 $SEARCH_OPTION[COMPUTER_TYPE][59]['meta']=0;
 
 $SEARCH_OPTION[COMPUTER_TYPE][122]['table']='glpi_infocoms';
-$SEARCH_OPTION[COMPUTER_TYPE][122]['field']='comments';
-$SEARCH_OPTION[COMPUTER_TYPE][122]['linkfield']='';
-$SEARCH_OPTION[COMPUTER_TYPE][122]['name']=$LANG["common"][25]." - ".$LANG["financial"][3];
-$SEARCH_OPTION[COMPUTER_TYPE][122]['meta']=0;
-
+$SEARCH_OPTION[COMPUTER_TYPE][122]['field']='comments'; 
+$SEARCH_OPTION[COMPUTER_TYPE][122]['linkfield']=''; 
+$SEARCH_OPTION[COMPUTER_TYPE][122]['name']=$LANG["common"][25]." - ".$LANG["financial"][3]; 
+$SEARCH_OPTION[COMPUTER_TYPE][122]['meta']=0; 
+ 	
 
 $SEARCH_OPTION[COMPUTER_TYPE]['ocsng']=$LANG["Menu"][33];
 
@@ -722,18 +722,18 @@ $SEARCH_OPTION[NETWORKING_TYPE][52]['linkfield']='';
 $SEARCH_OPTION[NETWORKING_TYPE][52]['name']=$LANG["financial"][16];
 $SEARCH_OPTION[NETWORKING_TYPE][52]['meta']=0;
 
-$SEARCH_OPTION[NETWORKING_TYPE][120]['table']='glpi_infocoms';
-$SEARCH_OPTION[NETWORKING_TYPE][120]['field']='end_warranty_buy';
-$SEARCH_OPTION[NETWORKING_TYPE][120]['linkfield']='';
-$SEARCH_OPTION[NETWORKING_TYPE][120]['name']=$LANG["financial"][14]." - ".$LANG["financial"][80];
-$SEARCH_OPTION[NETWORKING_TYPE][120]['meta']=0;
+$SEARCH_OPTION[NETWORKING_TYPE][120]['table']='glpi_infocoms'; 
+$SEARCH_OPTION[NETWORKING_TYPE][120]['field']='end_warranty_buy'; 
+$SEARCH_OPTION[NETWORKING_TYPE][120]['linkfield']=''; 
+$SEARCH_OPTION[NETWORKING_TYPE][120]['name']=$LANG["financial"][14]." - ".$LANG["financial"][80]; 
+$SEARCH_OPTION[NETWORKING_TYPE][120]['meta']=0; 
 
-$SEARCH_OPTION[NETWORKING_TYPE][121]['table']='glpi_infocoms';
-$SEARCH_OPTION[NETWORKING_TYPE][121]['field']='end_warranty_buy';
-$SEARCH_OPTION[NETWORKING_TYPE][121]['linkfield']='';
-$SEARCH_OPTION[NETWORKING_TYPE][121]['name']=$LANG["financial"][76]." - ".$LANG["financial"][80];
-$SEARCH_OPTION[NETWORKING_TYPE][121]['meta']=0;
-
+$SEARCH_OPTION[NETWORKING_TYPE][121]['table']='glpi_infocoms'; 
+$SEARCH_OPTION[NETWORKING_TYPE][121]['field']='end_warranty_buy'; 
+$SEARCH_OPTION[NETWORKING_TYPE][121]['linkfield']=''; 
+$SEARCH_OPTION[NETWORKING_TYPE][121]['name']=$LANG["financial"][76]." - ".$LANG["financial"][80]; 
+$SEARCH_OPTION[NETWORKING_TYPE][121]['meta']=0; 
+ 
 $SEARCH_OPTION[NETWORKING_TYPE][53]['table']='glpi_enterprises_infocoms';
 $SEARCH_OPTION[NETWORKING_TYPE][53]['field']='name';
 $SEARCH_OPTION[NETWORKING_TYPE][53]['linkfield']='';
@@ -776,11 +776,11 @@ $SEARCH_OPTION[NETWORKING_TYPE][59]['linkfield']='';
 $SEARCH_OPTION[NETWORKING_TYPE][59]['name']=$LANG["common"][41];
 $SEARCH_OPTION[NETWORKING_TYPE][59]['meta']=0;
 
-$SEARCH_OPTION[NETWORKING_TYPE][122]['table']='glpi_infocoms';
-$SEARCH_OPTION[NETWORKING_TYPE][122]['field']='comments';
-$SEARCH_OPTION[NETWORKING_TYPE][122]['linkfield']='';
-$SEARCH_OPTION[NETWORKING_TYPE][122]['name']=$LANG["common"][25]." - ".$LANG["financial"][3];
-$SEARCH_OPTION[NETWORKING_TYPE][122]['meta']=0;
+$SEARCH_OPTION[NETWORKING_TYPE][122]['table']='glpi_infocoms'; 
+$SEARCH_OPTION[NETWORKING_TYPE][122]['field']='comments'; 
+$SEARCH_OPTION[NETWORKING_TYPE][122]['linkfield']=''; 
+$SEARCH_OPTION[NETWORKING_TYPE][122]['name']=$LANG["common"][25]." - ".$LANG["financial"][3]; 
+$SEARCH_OPTION[NETWORKING_TYPE][122]['meta']=0; 
 
 
 //////PRINTER_TYPE
@@ -1015,18 +1015,18 @@ $SEARCH_OPTION[PRINTER_TYPE][52]['linkfield']='';
 $SEARCH_OPTION[PRINTER_TYPE][52]['name']=$LANG["financial"][16];
 $SEARCH_OPTION[PRINTER_TYPE][52]['meta']=0;
 
-$SEARCH_OPTION[PRINTER_TYPE][120]['table']='glpi_infocoms';
-$SEARCH_OPTION[PRINTER_TYPE][120]['field']='end_warranty_buy';
-$SEARCH_OPTION[PRINTER_TYPE][120]['linkfield']='';
-$SEARCH_OPTION[PRINTER_TYPE][120]['name']=$LANG["financial"][14]." - ".$LANG["financial"][80];
-$SEARCH_OPTION[PRINTER_TYPE][120]['meta']=0;
-
-$SEARCH_OPTION[PRINTER_TYPE][121]['table']='glpi_infocoms';
-$SEARCH_OPTION[PRINTER_TYPE][121]['field']='end_warranty_buy';
-$SEARCH_OPTION[PRINTER_TYPE][121]['linkfield']='';
-$SEARCH_OPTION[PRINTER_TYPE][121]['name']=$LANG["financial"][76]." - ".$LANG["financial"][80];
-$SEARCH_OPTION[PRINTER_TYPE][121]['meta']=0;
-
+$SEARCH_OPTION[PRINTER_TYPE][120]['table']='glpi_infocoms'; 
+$SEARCH_OPTION[PRINTER_TYPE][120]['field']='end_warranty_buy'; 
+$SEARCH_OPTION[PRINTER_TYPE][120]['linkfield']=''; 
+$SEARCH_OPTION[PRINTER_TYPE][120]['name']=$LANG["financial"][14]." - ".$LANG["financial"][80]; 
+$SEARCH_OPTION[PRINTER_TYPE][120]['meta']=0; 
+ 
+$SEARCH_OPTION[PRINTER_TYPE][121]['table']='glpi_infocoms'; 
+$SEARCH_OPTION[PRINTER_TYPE][121]['field']='end_warranty_buy'; 
+$SEARCH_OPTION[PRINTER_TYPE][121]['linkfield']=''; 
+$SEARCH_OPTION[PRINTER_TYPE][121]['name']=$LANG["financial"][76]." - ".$LANG["financial"][80]; 
+$SEARCH_OPTION[PRINTER_TYPE][121]['meta']=0; 
+	 
 $SEARCH_OPTION[PRINTER_TYPE][53]['table']='glpi_enterprises_infocoms';
 $SEARCH_OPTION[PRINTER_TYPE][53]['field']='name';
 $SEARCH_OPTION[PRINTER_TYPE][53]['linkfield']='';
@@ -1069,11 +1069,11 @@ $SEARCH_OPTION[PRINTER_TYPE][59]['linkfield']='';
 $SEARCH_OPTION[PRINTER_TYPE][59]['name']=$LANG["common"][41];
 $SEARCH_OPTION[PRINTER_TYPE][59]['meta']=0;
 
-$SEARCH_OPTION[PRINTER_TYPE][122]['table']='glpi_infocoms';
-$SEARCH_OPTION[PRINTER_TYPE][122]['field']='comments';
-$SEARCH_OPTION[PRINTER_TYPE][122]['linkfield']='';
-$SEARCH_OPTION[PRINTER_TYPE][122]['name']=$LANG["common"][25]." - ".$LANG["financial"][3];
-$SEARCH_OPTION[PRINTER_TYPE][122]['meta']=0;
+$SEARCH_OPTION[PRINTER_TYPE][122]['table']='glpi_infocoms'; 
+$SEARCH_OPTION[PRINTER_TYPE][122]['field']='comments'; 
+$SEARCH_OPTION[PRINTER_TYPE][122]['linkfield']=''; 
+$SEARCH_OPTION[PRINTER_TYPE][122]['name']=$LANG["common"][25]." - ".$LANG["financial"][3]; 
+$SEARCH_OPTION[PRINTER_TYPE][122]['meta']=0; 
 
 //////MONITOR_TYPE
 
@@ -1263,18 +1263,17 @@ $SEARCH_OPTION[MONITOR_TYPE][52]['linkfield']='';
 $SEARCH_OPTION[MONITOR_TYPE][52]['name']=$LANG["financial"][16];
 $SEARCH_OPTION[MONITOR_TYPE][52]['meta']=0;
 
-$SEARCH_OPTION[MONITOR_TYPE][120]['table']='glpi_infocoms';
-$SEARCH_OPTION[MONITOR_TYPE][120]['field']='end_warranty_buy';
-$SEARCH_OPTION[MONITOR_TYPE][120]['linkfield']='';
-$SEARCH_OPTION[MONITOR_TYPE][120]['name']=$LANG["financial"][14]." - ".$LANG["financial"][80];
-$SEARCH_OPTION[MONITOR_TYPE][120]['meta']=0;
-
-$SEARCH_OPTION[MONITOR_TYPE][121]['table']='glpi_infocoms';
-$SEARCH_OPTION[MONITOR_TYPE][121]['field']='end_warranty_buy';
-$SEARCH_OPTION[MONITOR_TYPE][121]['linkfield']='';
-$SEARCH_OPTION[MONITOR_TYPE][121]['name']=$LANG["financial"][76]." - ".$LANG["financial"][80];
-$SEARCH_OPTION[MONITOR_TYPE][121]['meta']=0;
-
+$SEARCH_OPTION[MONITOR_TYPE][120]['table']='glpi_infocoms'; 
+$SEARCH_OPTION[MONITOR_TYPE][120]['field']='end_warranty_buy'; 
+$SEARCH_OPTION[MONITOR_TYPE][120]['linkfield']=''; 
+$SEARCH_OPTION[MONITOR_TYPE][120]['name']=$LANG["financial"][14]." - ".$LANG["financial"][80]; 
+$SEARCH_OPTION[MONITOR_TYPE][120]['meta']=0; 
+	 
+$SEARCH_OPTION[MONITOR_TYPE][121]['table']='glpi_infocoms'; 
+$SEARCH_OPTION[MONITOR_TYPE][121]['field']='end_warranty_buy'; 
+$SEARCH_OPTION[MONITOR_TYPE][121]['linkfield']=''; 
+$SEARCH_OPTION[MONITOR_TYPE][121]['name']=$LANG["financial"][76]." - ".$LANG["financial"][80]; 
+$SEARCH_OPTION[MONITOR_TYPE][121]['meta']=0; 
 
 $SEARCH_OPTION[MONITOR_TYPE][53]['table']='glpi_enterprises_infocoms';
 $SEARCH_OPTION[MONITOR_TYPE][53]['field']='name';
@@ -1318,11 +1317,11 @@ $SEARCH_OPTION[MONITOR_TYPE][59]['linkfield']='';
 $SEARCH_OPTION[MONITOR_TYPE][59]['name']=$LANG["common"][41];
 $SEARCH_OPTION[MONITOR_TYPE][59]['meta']=0;
 
-$SEARCH_OPTION[MONITOR_TYPE][122]['table']='glpi_infocoms';
-$SEARCH_OPTION[MONITOR_TYPE][122]['field']='comments';
-$SEARCH_OPTION[MONITOR_TYPE][122]['linkfield']='';
-$SEARCH_OPTION[MONITOR_TYPE][122]['name']=$LANG["common"][25]." - ".$LANG["financial"][3];
-$SEARCH_OPTION[MONITOR_TYPE][122]['meta']=0;
+$SEARCH_OPTION[MONITOR_TYPE][122]['table']='glpi_infocoms'; 
+$SEARCH_OPTION[MONITOR_TYPE][122]['field']='comments'; 
+$SEARCH_OPTION[MONITOR_TYPE][122]['linkfield']=''; 
+$SEARCH_OPTION[MONITOR_TYPE][122]['name']=$LANG["common"][25]." - ".$LANG["financial"][3]; 
+$SEARCH_OPTION[MONITOR_TYPE][122]['meta']=0; 
 
 //////PERIPHERAL_TYPE
 
@@ -1551,17 +1550,17 @@ $SEARCH_OPTION[PERIPHERAL_TYPE][52]['linkfield']='';
 $SEARCH_OPTION[PERIPHERAL_TYPE][52]['name']=$LANG["financial"][16];
 $SEARCH_OPTION[PERIPHERAL_TYPE][52]['meta']=0;
 
-$SEARCH_OPTION[PERIPHERAL_TYPE][120]['table']='glpi_infocoms';
-$SEARCH_OPTION[PERIPHERAL_TYPE][120]['field']='end_warranty_buy';
-$SEARCH_OPTION[PERIPHERAL_TYPE][120]['linkfield']='';
-$SEARCH_OPTION[PERIPHERAL_TYPE][120]['name']=$LANG["financial"][14]." - ".$LANG["financial"][80];
-$SEARCH_OPTION[PERIPHERAL_TYPE][120]['meta']=0;
-
-$SEARCH_OPTION[PERIPHERAL_TYPE][121]['table']='glpi_infocoms';
-$SEARCH_OPTION[PERIPHERAL_TYPE][121]['field']='end_warranty_buy';
-$SEARCH_OPTION[PERIPHERAL_TYPE][121]['linkfield']='';
-$SEARCH_OPTION[PERIPHERAL_TYPE][121]['name']=$LANG["financial"][76]." - ".$LANG["financial"][80];
-$SEARCH_OPTION[PERIPHERAL_TYPE][121]['meta']=0;
+$SEARCH_OPTION[PERIPHERAL_TYPE][120]['table']='glpi_infocoms'; 
+$SEARCH_OPTION[PERIPHERAL_TYPE][120]['field']='end_warranty_buy'; 
+$SEARCH_OPTION[PERIPHERAL_TYPE][120]['linkfield']=''; 
+$SEARCH_OPTION[PERIPHERAL_TYPE][120]['name']=$LANG["financial"][14]." - ".$LANG["financial"][80]; 
+$SEARCH_OPTION[PERIPHERAL_TYPE][120]['meta']=0; 
+ 
+$SEARCH_OPTION[PERIPHERAL_TYPE][121]['table']='glpi_infocoms'; 
+$SEARCH_OPTION[PERIPHERAL_TYPE][121]['field']='end_warranty_buy'; 
+$SEARCH_OPTION[PERIPHERAL_TYPE][121]['linkfield']=''; 
+$SEARCH_OPTION[PERIPHERAL_TYPE][121]['name']=$LANG["financial"][76]." - ".$LANG["financial"][80]; 
+$SEARCH_OPTION[PERIPHERAL_TYPE][121]['meta']=0; 
 
 $SEARCH_OPTION[PERIPHERAL_TYPE][53]['table']='glpi_enterprises_infocoms';
 $SEARCH_OPTION[PERIPHERAL_TYPE][53]['field']='name';
@@ -1605,12 +1604,12 @@ $SEARCH_OPTION[PERIPHERAL_TYPE][59]['linkfield']='';
 $SEARCH_OPTION[PERIPHERAL_TYPE][59]['name']=$LANG["common"][41];
 $SEARCH_OPTION[PERIPHERAL_TYPE][59]['meta']=0;
 
-$SEARCH_OPTION[PERIPHERAL_TYPE][122]['table']='glpi_infocoms';
-$SEARCH_OPTION[PERIPHERAL_TYPE][122]['field']='comments';
-$SEARCH_OPTION[PERIPHERAL_TYPE][122]['linkfield']='';
-$SEARCH_OPTION[PERIPHERAL_TYPE][122]['name']=$LANG["common"][25]." - ".$LANG["financial"][3];
-$SEARCH_OPTION[PERIPHERAL_TYPE][122]['meta']=0;
-
+$SEARCH_OPTION[PERIPHERAL_TYPE][122]['table']='glpi_infocoms'; 
+$SEARCH_OPTION[PERIPHERAL_TYPE][122]['field']='comments'; 
+$SEARCH_OPTION[PERIPHERAL_TYPE][122]['linkfield']=''; 
+$SEARCH_OPTION[PERIPHERAL_TYPE][122]['name']=$LANG["common"][25]." - ".$LANG["financial"][3]; 
+$SEARCH_OPTION[PERIPHERAL_TYPE][122]['meta']=0; 
+	 
 //////SOFTWARE_TYPE
 
 $SEARCH_OPTION[SOFTWARE_TYPE]['common']=$LANG["common"][32];
@@ -1788,17 +1787,17 @@ $SEARCH_OPTION[SOFTWARE_TYPE][52]['linkfield']='';
 $SEARCH_OPTION[SOFTWARE_TYPE][52]['name']=$LANG["financial"][16];
 $SEARCH_OPTION[SOFTWARE_TYPE][52]['meta']=0;
 
-$SEARCH_OPTION[SOFTWARE_TYPE][120]['table']='glpi_infocoms';
-$SEARCH_OPTION[SOFTWARE_TYPE][120]['field']='end_warranty_buy';
-$SEARCH_OPTION[SOFTWARE_TYPE][120]['linkfield']='';
-$SEARCH_OPTION[SOFTWARE_TYPE][120]['name']=$LANG["financial"][14]." - ".$LANG["financial"][80];
-$SEARCH_OPTION[SOFTWARE_TYPE][120]['meta']=0;
-
-$SEARCH_OPTION[SOFTWARE_TYPE][121]['table']='glpi_infocoms';
-$SEARCH_OPTION[SOFTWARE_TYPE][121]['field']='end_warranty_buy';
-$SEARCH_OPTION[SOFTWARE_TYPE][121]['linkfield']='';
-$SEARCH_OPTION[SOFTWARE_TYPE][121]['name']=$LANG["financial"][76]." - ".$LANG["financial"][80];
-$SEARCH_OPTION[SOFTWARE_TYPE][121]['meta']=0;
+$SEARCH_OPTION[SOFTWARE_TYPE][120]['table']='glpi_infocoms'; 
+$SEARCH_OPTION[SOFTWARE_TYPE][120]['field']='end_warranty_buy'; 
+$SEARCH_OPTION[SOFTWARE_TYPE][120]['linkfield']=''; 
+$SEARCH_OPTION[SOFTWARE_TYPE][120]['name']=$LANG["financial"][14]." - ".$LANG["financial"][80]; 
+$SEARCH_OPTION[SOFTWARE_TYPE][120]['meta']=0; 
+	 
+$SEARCH_OPTION[SOFTWARE_TYPE][121]['table']='glpi_infocoms'; 
+$SEARCH_OPTION[SOFTWARE_TYPE][121]['field']='end_warranty_buy'; 
+$SEARCH_OPTION[SOFTWARE_TYPE][121]['linkfield']=''; 
+$SEARCH_OPTION[SOFTWARE_TYPE][121]['name']=$LANG["financial"][76]." - ".$LANG["financial"][80]; 
+$SEARCH_OPTION[SOFTWARE_TYPE][121]['meta']=0; 
 
 $SEARCH_OPTION[SOFTWARE_TYPE][53]['table']='glpi_enterprises_infocoms';
 $SEARCH_OPTION[SOFTWARE_TYPE][53]['field']='name';
@@ -1842,12 +1841,12 @@ $SEARCH_OPTION[SOFTWARE_TYPE][59]['linkfield']='';
 $SEARCH_OPTION[SOFTWARE_TYPE][59]['name']=$LANG["common"][41];
 $SEARCH_OPTION[SOFTWARE_TYPE][59]['meta']=0;
 
-$SEARCH_OPTION[SOFTWARE_TYPE][122]['table']='glpi_infocoms';
-$SEARCH_OPTION[SOFTWARE_TYPE][122]['field']='comments';
-$SEARCH_OPTION[SOFTWARE_TYPE][122]['linkfield']='';
-$SEARCH_OPTION[SOFTWARE_TYPE][122]['name']=$LANG["common"][25]." - ".$LANG["financial"][3];
-$SEARCH_OPTION[SOFTWARE_TYPE][122]['meta']=0;
-
+$SEARCH_OPTION[SOFTWARE_TYPE][122]['table']='glpi_infocoms'; 
+$SEARCH_OPTION[SOFTWARE_TYPE][122]['field']='comments'; 
+$SEARCH_OPTION[SOFTWARE_TYPE][122]['linkfield']=''; 
+$SEARCH_OPTION[SOFTWARE_TYPE][122]['name']=$LANG["common"][25]." - ".$LANG["financial"][3]; 
+$SEARCH_OPTION[SOFTWARE_TYPE][122]['meta']=0; 
+	 
 //////CONTACT_TYPE
 
 $SEARCH_OPTION[CONTACT_TYPE]['common']=$LANG["common"][32];
@@ -2663,18 +2662,18 @@ $SEARCH_OPTION[PHONE_TYPE][52]['linkfield']='';
 $SEARCH_OPTION[PHONE_TYPE][52]['name']=$LANG["financial"][16];
 $SEARCH_OPTION[PHONE_TYPE][52]['meta']=0;
 
-$SEARCH_OPTION[PHONE_TYPE][120]['table']='glpi_infocoms';
-$SEARCH_OPTION[PHONE_TYPE][120]['field']='end_warranty_buy';
-$SEARCH_OPTION[PHONE_TYPE][120]['linkfield']='';
-$SEARCH_OPTION[PHONE_TYPE][120]['name']=$LANG["financial"][14]." - ".$LANG["financial"][80];
-$SEARCH_OPTION[PHONE_TYPE][120]['meta']=0;
-
-$SEARCH_OPTION[PHONE_TYPE][121]['table']='glpi_infocoms';
-$SEARCH_OPTION[PHONE_TYPE][121]['field']='end_warranty_buy';
-$SEARCH_OPTION[PHONE_TYPE][121]['linkfield']='';
-$SEARCH_OPTION[PHONE_TYPE][121]['name']=$LANG["financial"][76]." - ".$LANG["financial"][80];
-$SEARCH_OPTION[PHONE_TYPE][121]['meta']=0;
-
+$SEARCH_OPTION[PHONE_TYPE][120]['table']='glpi_infocoms'; 
+$SEARCH_OPTION[PHONE_TYPE][120]['field']='end_warranty_buy'; 
+$SEARCH_OPTION[PHONE_TYPE][120]['linkfield']=''; 
+$SEARCH_OPTION[PHONE_TYPE][120]['name']=$LANG["financial"][14]." - ".$LANG["financial"][80]; 
+$SEARCH_OPTION[PHONE_TYPE][120]['meta']=0; 
+	 
+$SEARCH_OPTION[PHONE_TYPE][121]['table']='glpi_infocoms'; 
+$SEARCH_OPTION[PHONE_TYPE][121]['field']='end_warranty_buy'; 
+$SEARCH_OPTION[PHONE_TYPE][121]['linkfield']=''; 
+$SEARCH_OPTION[PHONE_TYPE][121]['name']=$LANG["financial"][76]." - ".$LANG["financial"][80]; 
+$SEARCH_OPTION[PHONE_TYPE][121]['meta']=0; 
+	 
 $SEARCH_OPTION[PHONE_TYPE][53]['table']='glpi_enterprises_infocoms';
 $SEARCH_OPTION[PHONE_TYPE][53]['field']='name';
 $SEARCH_OPTION[PHONE_TYPE][53]['linkfield']='';
@@ -2716,12 +2715,12 @@ $SEARCH_OPTION[PHONE_TYPE][59]['field']='alert';
 $SEARCH_OPTION[PHONE_TYPE][59]['linkfield']='';
 $SEARCH_OPTION[PHONE_TYPE][59]['name']=$LANG["common"][41];
 $SEARCH_OPTION[PHONE_TYPE][59]['meta']=0;
-
-$SEARCH_OPTION[PHONE_TYPE][122]['table']='glpi_infocoms';
-$SEARCH_OPTION[PHONE_TYPE][122]['field']='comments';
-$SEARCH_OPTION[PHONE_TYPE][122]['linkfield']='';
-$SEARCH_OPTION[PHONE_TYPE][122]['name']=$LANG["common"][25]." - ".$LANG["financial"][3];
-$SEARCH_OPTION[PHONE_TYPE][122]['meta']=0;
+ 
+$SEARCH_OPTION[PHONE_TYPE][122]['table']='glpi_infocoms'; 
+$SEARCH_OPTION[PHONE_TYPE][122]['field']='comments'; 
+$SEARCH_OPTION[PHONE_TYPE][122]['linkfield']=''; 
+$SEARCH_OPTION[PHONE_TYPE][122]['name']=$LANG["common"][25]." - ".$LANG["financial"][3]; 
+$SEARCH_OPTION[PHONE_TYPE][122]['meta']=0; 
 
 //////GROUP_TYPE
 
