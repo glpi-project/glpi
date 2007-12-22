@@ -1479,7 +1479,7 @@ function addDefaultToView ($type){
  *
  **/
 function addDefaultSelect ($type){
-	global $CFG_GLPI;
+	global $CFG_GLPI, $LINK_ID_TABLE;
 	
 	switch ($type){
 		case RESERVATION_TYPE:
@@ -1496,7 +1496,7 @@ function addDefaultSelect ($type){
 		break;
 	}
 	if (isset($CFG_GLPI["recursive_type"][$type])) {
-		$ret .= "FK_entities, recursive, ";
+		$ret .= $LINK_ID_TABLE[$type].".FK_entities, ".$LINK_ID_TABLE[$type].".recursive, ";
 	}
 	return $ret;
 }
