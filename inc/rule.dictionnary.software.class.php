@@ -78,7 +78,7 @@ class DictionnarySoftwareCollection extends RuleDictionnaryCollection {
 			for ($i = 0; $input = $DB->fetch_array($res); $i++) {
 				if (!($i % $step)) {
 					if (isCommandLine()) {
-						echo "replayRulesOnExistingDB : $i/$nb (".round(memory_get_usage()/(1024*1024),2)." Mo)\n";
+						echo date("H:i:s") . " replayRulesOnExistingDB : $i/$nb (".round(memory_get_usage()/(1024*1024),2)." Mo)\n";
 					} else {
 						changeProgressBarPosition($i,$nb,"$i / $nb");
 					}
@@ -222,14 +222,13 @@ class DictionnarySoftwareCollection extends RuleDictionnaryCollection {
 			}
 
 			//Try to delete all the software that are not used anymore (which means that don't have license associated anymore)
-			$res_countsoftinstall = $DB->query("SELECT glpi_software.ID as ID, count( glpi_licenses.sID ) AS cpt
-							FROM `glpi_software` LEFT JOIN glpi_licenses ON glpi_licenses.sID = glpi_software.ID
-							WHERE glpi_software.ID IN (" . $ids . ") GROUP BY glpi_software.ID ORDER BY cpt");
+			$res_countsoftinstall = $DB->query("SELECT glpi_software.ID as ID, count( glpi_licenses.sID ) AS cpt " .
+						"FROM `glpi_software` LEFT JOIN glpi_licenses ON glpi_licenses.sID = glpi_software.ID " .
+						"WHERE glpi_software.ID IN (" . $ids . ") AND deleted=0 GROUP BY glpi_software.ID HAVING cpt=0 ORDER BY cpt");
 
 			$software = new Software;
 			while ($soft = $DB->fetch_array($res_countsoftinstall)) {
-				if (!$soft["cpt"])
-					putSoftwareInTrash($soft["ID"], $LANG["rulesengine"][87], IMPORT_TYPE_DICTIONNARY);
+				putSoftwareInTrash($soft["ID"], $LANG["rulesengine"][87], IMPORT_TYPE_DICTIONNARY);
 			}
 		}
 	}
