@@ -73,9 +73,11 @@ class RuleCollection {
 	function getCollectionDatas($retrieve_criteria=0,$retrieve_action=0){
 		global $DB;
 		
-		$need = ($retrieve_criteria?1:0)+($retrieve_action?2:0);
+		$need = 1+($retrieve_criteria?2:0)+($retrieve_action?4:0);
 
+		// check if load required
 		if (($need & $this->load) != $need) {
+
 			//Select all the rules of a different type
 			$sql = "SELECT ID FROM glpi_rules_descriptions WHERE rule_type=".$this->rule_type." ORDER by ".$this->orderby." ASC";
 			 $result = $DB->query($sql);
@@ -91,9 +93,7 @@ class RuleCollection {
 				}
 				$this->load = $need;
 			}
-			// echo "+ getCollectionDatas(".$this->rule_class_name.",$retrieve_criteria,$retrieve_action)\t=> " . count($this->rule_list) . "\n";
 		}
-		// else echo ". getCollectionDatas(".$this->rule_class_name.",$retrieve_criteria,$retrieve_action)\t=> " . count($this->rule_list) . "\n";
 	}
 	/**
 	* Get title used in list of rules
