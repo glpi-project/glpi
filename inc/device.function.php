@@ -101,7 +101,7 @@ function getDeviceSpecifityLabel($dev_type){
 			break;
 		case GFX_DEVICE :
 			//return "";
-			return  $LANG["device_ram"][2];
+			return  $LANG["device_gfxcard"][0];
 			break;
 		case SND_DEVICE :
 			return "";
@@ -192,7 +192,7 @@ function printDeviceComputer($device,$quantity,$specif,$compID,$compDevID,$witht
 			$type=$LANG["devices"][2];
 			$name=$device->fields["designation"];
 //			if (!empty($device->fields["ram"])) $entry[$LANG["device_gfxcard"][0]]=$device->fields["ram"];
-			if (!empty($device->fields["interface"])) $entry[$LANG["device_gfxcard"][2]]=$device->fields["interface"];
+			if (!empty($device->fields["interface"])) $entry[$LANG["device_gfxcard"][2]]=getDropdownName("glpi_dropdown_interface",$device->fields["interface"]);
 
 			$specificity_size = 10;
 			break;
