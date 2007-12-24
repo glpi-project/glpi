@@ -49,6 +49,7 @@ class RuleCollection {
 	var $cache_table;
 	var $cache_params;
 	var $can_replay_rules;
+	var $load=0;
 	
 	/**
 	* Constructor
@@ -60,6 +61,7 @@ class RuleCollection {
 		$this->cache_table="";	
 		$this->cache_params = array();
 		$this->can_replay_rules = false;
+		$this->load = 0;
 	}
 
 
@@ -70,19 +72,28 @@ class RuleCollection {
 	*/
 	function getCollectionDatas($retrieve_criteria=0,$retrieve_action=0){
 		global $DB;
-		//Select all the rules of a different type
-		$sql = "SELECT ID FROM glpi_rules_descriptions WHERE rule_type=".$this->rule_type." ORDER by ".$this->orderby." ASC";
-		 $result = $DB->query($sql);
-		if ($result){
-		 	while ($rule=$DB->fetch_array($result)) {
-			 	//For each rule, get a Rule object with all the criterias and actions
-				$tempRule= new $this->rule_class_name();
-				if ($tempRule->getRuleWithCriteriasAndActions($rule["ID"],$retrieve_criteria,$retrieve_action)){
-					//Add the object to the list of rules
-					$this->rule_list[] = $tempRule;
+		
+		$need = ($retrieve_criteria?1:0)+($retrieve_action?2:0);
+
+		if (($need & $this->load) != $need) {
+			//Select all the rules of a different type
+			$sql = "SELECT ID FROM glpi_rules_descriptions WHERE rule_type=".$this->rule_type." ORDER by ".$this->orderby." ASC";
+			 $result = $DB->query($sql);
+			if ($result){
+				$this->rule_list = array();
+			 	while ($rule=$DB->fetch_array($result)) {
+				 	//For each rule, get a Rule object with all the criterias and actions
+					$tempRule= new $this->rule_class_name();
+					if ($tempRule->getRuleWithCriteriasAndActions($rule["ID"],$retrieve_criteria,$retrieve_action)){
+						//Add the object to the list of rules
+						$this->rule_list[] = $tempRule;
+					}
 				}
+				$this->load = $need;
 			}
+			// echo "+ getCollectionDatas(".$this->rule_class_name.",$retrieve_criteria,$retrieve_action)\t=> " . count($this->rule_list) . "\n";
 		}
+		// else echo ". getCollectionDatas(".$this->rule_class_name.",$retrieve_criteria,$retrieve_action)\t=> " . count($this->rule_list) . "\n";
 	}
 	/**
 	* Get title used in list of rules

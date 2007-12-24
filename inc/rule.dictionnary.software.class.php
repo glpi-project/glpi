@@ -195,8 +195,8 @@ class DictionnarySoftwareCollection extends RuleDictionnaryCollection {
 			else
 				$new_software_id = $ID;
 				
-			if (isCommandLine())
-				echo "replayDictionnaryOnOneSoftware".$ID."/".$entity."/".$name."/".(isset($res_rule["version"]) && $res_rule["version"] != '')."/".$manufacturer."\n";
+			//if (isCommandLine())
+			//	echo "replayDictionnaryOnOneSoftware".$ID."/".$entity."/".$name."/".(isset($res_rule["version"]) && $res_rule["version"] != '')."/".$manufacturer."\n";
 			
 			$this->moveLicenses($ID, $new_software_id, $license["ID"], $input["version"], ((isset($res_rule["version"]) && $res_rule["version"] != '') ? $res_rule["version"] : $license["version"]), $entity);
 		}
@@ -210,7 +210,7 @@ class DictionnarySoftwareCollection extends RuleDictionnaryCollection {
 		global $DB,$CFG_GLPI,$LANG;
 
 		if (isCommandLine()) {
-			echo "checkUnusedSoftwaresAndDelete ()\n";
+			//echo "checkUnusedSoftwaresAndDelete ()\n";
 		}
 		if (count($soft_ids) > 0) {
 			
