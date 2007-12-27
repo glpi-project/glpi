@@ -72,6 +72,13 @@ class InfoCom extends CommonDBTM {
 		}
 	}
 
+	function prepareInputForAdd($input) { 
+		if (!$this->getFromDBforDevice($input['device_type'],$input['FK_device'])){ 
+			return $input; 
+		} 
+		return false; 
+	} 
+
 	function prepareInputForUpdate($input) {
 		if (isset($input["ID"])){
 

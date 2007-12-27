@@ -68,19 +68,20 @@ $result = $DB->query($query);
 
 echo "<select name='sID' id='item_type$rand'>\n";
 echo "<option value='0'>-----</option>\n";
-if ($DB->numrows($result))
-		while ($data=$DB->fetch_array($result)) {
-				$sID = $data["ID"];
-				$output=$data["name"];
-				echo  "<option value='$sID' title=\"$output\">".substr($output,0,$CFG_GLPI["dropdown_limit"])."</option>";
-		}	
+if ($DB->numrows($result)) {
+	while ($data=$DB->fetch_array($result)) {
+		$sID = $data["ID"];
+		$output=$data["name"];
+		echo  "<option value='$sID' title=\"$output\">".substr($output,0,$CFG_GLPI["dropdown_limit"])."</option>";
+	}	
+}
 echo "</select>\n";
 
 
 $params=array('sID'=>'__VALUE__',
 		'myname'=>$_POST["myname"],
-		'only_globalfree'=>$_POST["only_globalfree"],
-);
+		'only_globalfree'=>$_POST["only_globalfree"]
+		);
 ajaxUpdateItemOnSelectEvent("item_type$rand","show_".$_POST["myname"].$rand,$CFG_GLPI["root_doc"]."/ajax/dropdownInstallLicense.php",$params,false);
 
 echo "<span id='show_".$_POST["myname"]."$rand'>&nbsp;</span>\n";	
