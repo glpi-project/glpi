@@ -53,8 +53,7 @@ if (isset($_GET["action"])){
 	switch ($_POST["action"]){
 		case "delete":
 			if (isset($_POST["item"])&&count($_POST["item"])){
-				foreach ($_POST["item"] as $key => $val)
-				{
+				foreach ($_POST["item"] as $key => $val){
 					$rule->getFromDB($key);
 					$input["ID"]=$key;
 					$rulecollection->deleteRuleOrder($rule->fields["ranking"]);
@@ -66,16 +65,14 @@ if (isset($_GET["action"])){
 		break;
 		case "move_rule":
 			if (isset($_POST["item"])&&count($_POST["item"])){
-				foreach ($_POST["item"] as $key => $val)
-				{
+				foreach ($_POST["item"] as $key => $val){
 					$rule->getFromDB($key);
 					$rulecollection->moveRule($key,$_POST['ranking'],$_POST['move_type']);
 				}
 			}
 		break;
 		case "activate_rule":
-			if (isset($_POST["item"]))
-			{
+			if (isset($_POST["item"])){
 				$rule = new Rule();
 				foreach ($_POST["item"] as $key => $val){
 					if ($val==1) {
@@ -84,7 +81,7 @@ if (isset($_GET["action"])){
 						$rule->update($input);
 					}
 				}
-		}
+			}
 		break;		
 	}
 }

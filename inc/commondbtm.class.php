@@ -117,7 +117,9 @@ class CommonDBTM {
 			foreach ($fields as $key => $val){
 				$this->fields[$key] = "";
 			}
-		} else return false;
+		} else {
+			return false;
+		}
 		if (isset($this->fields['FK_entities'])&&isset($_SESSION["glpiactive_entity"])){
 			$this->fields['FK_entities']=$_SESSION["glpiactive_entity"];
 		}
@@ -226,7 +228,9 @@ class CommonDBTM {
 			} else {
 				return false;
 			}
-		} else return false;
+		} else {
+			return false;
+		}
 	}
 	/**
 	 * Mark deleted or purge an item in the database
@@ -266,7 +270,9 @@ class CommonDBTM {
 			if ($result = $DB->query($query)){
 				$this->cleanCache($ID);
 				return true;
-			} else return false;
+			} else {
+				return false;
+			}
 		}
 	}
 
@@ -348,8 +354,6 @@ class CommonDBTM {
 	// Common functions
 
 	/**
-	 * Add an item in the database.
-	 *
 	 * Add an item in the database with all it's items.
 	 *
 	 *@param $input array : the _POST vars returned bye the item form when press add
@@ -385,9 +389,13 @@ class CommonDBTM {
 				$this->post_addItem($newID,$input);
 				doHook("item_add",array("type"=>$this->type, "ID" => $newID));
 				return $newID;
-			} else return false;
+			} else {
+				return false;
+			}
 
-		} else return false;
+		} else {
+			return false;
+		}	
 	}
 
 	/**
@@ -416,8 +424,6 @@ class CommonDBTM {
 
 
 	/**
-	 * Update some elements of an item in the database
-	 *
 	 * Update some elements of an item in the database.
 	 *
 	 *@param $input array : the _POST vars returned bye the item form when press update
@@ -515,8 +521,6 @@ class CommonDBTM {
 	/**
 	 * Delete an item in the database.
 	 *
-	 * Delete an item in the database.
-	 *
 	 *@param $input array : the _POST vars returned bye the item form when press delete
 	 *@param $force boolean : force deletion
 	 *
@@ -550,7 +554,9 @@ class CommonDBTM {
 			} else {
 				return false;
 			}
-		} else return false;
+		} else {
+			return false;
+		}
 
 	}
 	
@@ -602,7 +608,7 @@ class CommonDBTM {
 	 * 
 	 *@return array containing the onglets
 	 * 
-	*/
+	**/
 	function defineOnglets($withtemplate){
 		return array();
 	}
@@ -657,8 +663,12 @@ class CommonDBTM {
 			$next=getNextItem($this->table,$ID,$nextprevcondition,$nextprev_item);
 			$prev=getPreviousItem($this->table,$ID,$nextprevcondition,$nextprev_item);
 			$cleantarget=preg_replace("/\?ID=([0-9]+)/","",$target);
-			if ($prev>0) echo "<li><a href='$cleantarget?ID=$prev$addurlparam'><img src=\"".$CFG_GLPI["root_doc"]."/pics/left.png\" alt='".$LANG["buttons"][12]."' title='".$LANG["buttons"][12]."'></a></li>";
-			if ($next>0) echo "<li><a href='$cleantarget?ID=$next$addurlparam'><img src=\"".$CFG_GLPI["root_doc"]."/pics/right.png\" alt='".$LANG["buttons"][11]."' title='".$LANG["buttons"][11]."'></a></li>";
+			if ($prev>0) {
+				echo "<li><a href='$cleantarget?ID=$prev$addurlparam'><img src=\"".$CFG_GLPI["root_doc"]."/pics/left.png\" alt='".$LANG["buttons"][12]."' title='".$LANG["buttons"][12]."'></a></li>";
+			}
+			if ($next>0) {
+				echo "<li><a href='$cleantarget?ID=$next$addurlparam'><img src=\"".$CFG_GLPI["root_doc"]."/pics/right.png\" alt='".$LANG["buttons"][11]."' title='".$LANG["buttons"][11]."'></a></li>";
+			}
 		}
 	
 		echo "</ul></div>";
@@ -668,7 +678,7 @@ class CommonDBTM {
 	 * Have I the right to "write" the Object
 	 *
 	 * @return Array of can_edit (can write) + can_recu (can make recursive)
-	 */
+	**/
 	function canEditAndRecurs () {
 		global $CFG_GLPI;
 		$can_edit = haveTypeRight($this->type,"w");
@@ -696,7 +706,7 @@ class CommonDBTM {
 	 * Have I the right to "write" the Object
 	 *
 	 * @return bitmask : 0:no, 1:can_edit (can write), 2:can_recu (can make recursive)
-	 */
+	**/
 	function canEdit () {
 		list($can_edit,$can_recu)=$this->canEditAndRecurs();
 		return ($can_edit?1:0)+($can_recu?2:0);

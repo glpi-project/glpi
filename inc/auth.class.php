@@ -41,7 +41,7 @@ if (!defined('GLPI_ROOT')) {
 
 /**
  *  Identification class used to login
- */
+**/
 class Identification {
 	//! Error string
 	var $err;
@@ -69,7 +69,7 @@ class Identification {
 	 *
 	 * @return nothing 
 	 *
-	 */
+	**/
 	function Identification() {
 		$this->err = "";
 		$this->user = new User();
@@ -80,7 +80,7 @@ class Identification {
 	 *
 	 * @return 0 (Not in the DB -> check external auth), 1 ( Exist in the DB with a password -> check first local connection and external after), 2 (Exist in the DB with no password -> check only external auth)
 	 *
-	 */
+	**/
 	function userExists($name) {
 		global $DB, $LANG;
 
@@ -108,7 +108,7 @@ class Identification {
 	 *
 	 * @return boolean : connection success
 	 *
-	 */
+	**/
 	function connection_imap($host, $login, $pass) {
 		// we prevent some delay...
 		if (empty ($host)) {
@@ -116,9 +116,8 @@ class Identification {
 		}
 
 		error_reporting(16);
-		if ($mbox = imap_open($host, $login, $pass))
+		if ($mbox = imap_open($host, $login, $pass)){
 			//if($mbox)$mbox =
-			{
 			imap_close($mbox);
 			return true;
 		}
@@ -146,7 +145,7 @@ class Identification {
 	 * @param $condition Condition used to restrict login
 	 *
 	 * @return String : basedn of the user / false if not founded
-	 */
+	**/
 	function connection_ldap($id,$host, $port, $basedn, $rdn, $rpass, $login_attr, $login, $password, $condition = "", $use_tls = false) {
 		global $CFG_GLPI, $LANG;
 
@@ -158,13 +157,12 @@ class Identification {
 		$this->ldap_connection = try_connect_ldap($host, $port, $rdn, $rpass, $use_tls,$login, $password);
 
 		//If user is not authentified on this directory, try replicates (if replicates exists)
-		if (!$this->ldap_connection && $id != -1)
-		{
-			foreach (getAllReplicateForAMaster($id) as $replicate)
-			{
+		if (!$this->ldap_connection && $id != -1){
+			foreach (getAllReplicateForAMaster($id) as $replicate){
 				$this->ldap_connection = try_connect_ldap($replicate["ldap_host"], $replicate["ldap_port"], $rdn, $rpass, $use_tls,$login, $password);
-				if ($this->ldap_connection)
+				if ($this->ldap_connection){
 					break;
+				}
 			}
 		}
 
@@ -204,7 +202,7 @@ class Identification {
 	 * with an eventual error message
          *
 	 * @return boolean : user in GLPI DB with the right password
-	 */
+	**/
 	function connection_db($name, $password) {
 		global $DB, $LANG;
 		// sanity check... we prevent empty passwords...
@@ -260,7 +258,7 @@ class Identification {
 	 * Init session for the user is defined
 	 *
 	 * @return nothing
-	 */
+	**/
 	function initSession() {
 		global $CFG_GLPI, $LANG;
 
@@ -310,7 +308,7 @@ class Identification {
 	 * Destroy the current session
 	 *
 	 * @return nothing
-	 */
+	**/
 	function destroySession() {
 		startGlpiSession();
 
@@ -323,7 +321,7 @@ class Identification {
 	 * Get the current identification error
 	 *
 	 * @return string : current identification error
-	 */
+	**/
 	function getErr() {
 		return $this->err;
 	}
@@ -331,7 +329,7 @@ class Identification {
 	 * Get the current user object
 	 *
 	 * @return object : current user
-	 */
+	**/
 	function getUser() {
 		return $this->user;
 	}
@@ -343,7 +341,7 @@ class Identification {
          * @todo is it the correct place to this function ? Maybe split it into and add it to AuthMail and AuthLdap classes ?
 	 *
 	 * @return nothing
-	 */
+	**/
 	function getAuthMethods() {
 		global $DB;
 
@@ -355,8 +353,9 @@ class Identification {
 		if ($DB->numrows($result) > 0) {
 
 			//Store in an array all the directories
-			while ($ldap_method = $DB->fetch_array($result))
+			while ($ldap_method = $DB->fetch_array($result)){
 				$auth_methods_ldap[$ldap_method["ID"]] = $ldap_method;
+			}
 		}
 
 		$auth_methods_mail = array ();
@@ -366,14 +365,15 @@ class Identification {
 		if ($DB->numrows($result) > 0) {
 
 			//Store all in an array
-			while ($mail_method = $DB->fetch_array($result))
+			while ($mail_method = $DB->fetch_array($result)){
 				$auth_methods_mail[$mail_method["ID"]] = $mail_method;
+			}
 		}
 		//Return all the authentication methods in an array
 		$this->auth_methods = array (
 			"ldap" => $auth_methods_ldap,
 			"mail" => $auth_methods_mail
-		);
+			);
 	}
 
 	/**
@@ -381,7 +381,7 @@ class Identification {
 	 * @param $message the message to add
 	 *
 	 * @return nothing
-	 */
+	**/
 	function addToError($message){
 		if (!ereg($message,$this->err)){
 			$this->err.=$message."<br>\n";
@@ -401,15 +401,17 @@ class AuthMail extends CommonDBTM {
 	}
 
 	function prepareInputForUpdate($input) {
-		if (isset ($input['mail_server']) && !empty ($input['mail_server']))
+		if (isset ($input['mail_server']) && !empty ($input['mail_server'])){
 			$input["imap_auth_server"] = constructMailServerConfig($input);
+		}
 		return $input;
 	}
 
 	function prepareInputForAdd($input) {
 
-		if (isset ($input['mail_server']) && !empty ($input['mail_server']))
+		if (isset ($input['mail_server']) && !empty ($input['mail_server'])){
 			$input["imap_auth_server"] = constructMailServerConfig($input);
+		}
 		return $input;
 	}
 
@@ -417,17 +419,20 @@ class AuthMail extends CommonDBTM {
 
 		global $LANG;
 
-		if (!haveRight("config", "w"))
+		if (!haveRight("config", "w")) {
 			return false;
+		}
 
 		$spotted = false;
 		if (empty ($ID)) {
 
-			if ($this->getEmpty())
+			if ($this->getEmpty()){
 				$spotted = true;
+			}
 		} else {
-			if ($this->getFromDB($ID))
+			if ($this->getFromDB($ID)){
 				$spotted = true;
+			}
 		}
 
 		if (function_exists('imap_open')) {
@@ -445,9 +450,9 @@ class AuthMail extends CommonDBTM {
 
 			showMailServerConfig($this->fields["imap_auth_server"]);
 
-			if (empty ($ID))
+			if (empty ($ID)){
 				echo "<tr class='tab_bg_2'><td align='center' colspan=4><input type=\"submit\" name=\"add_mail\" class=\"submit\" value=\"" . $LANG["buttons"][2] . "\" ></td></tr></table>";
-			else {
+			} else {
 				echo "<tr class='tab_bg_2'><td align='center' colspan=2><input type=\"submit\" name=\"update_mail\" class=\"submit\" value=\"" . $LANG["buttons"][7] . "\" >";
 				echo "&nbsp<input type=\"submit\" name=\"delete_mail\" class=\"submit\" value=\"" . $LANG["buttons"][6] . "\" ></td></tr></table>";
 				
@@ -535,8 +540,9 @@ class AuthLDAP extends CommonDBTM {
 
 		global $LANG;
 
-		if (!haveRight("config", "w"))
+		if (!haveRight("config", "w")){
 			return false;
+		}
 
 		$spotted = false;
 		if (empty ($ID)) {
@@ -547,8 +553,9 @@ class AuthLDAP extends CommonDBTM {
 				$this->preconfig($_GET['preconfig']);
 			}
 		} else {
-			if ($this->getFromDB($ID))
+			if ($this->getFromDB($ID)){
 				$spotted = true;
+			}
 		}
 
 		if (extension_loaded('ldap')) {
@@ -648,8 +655,7 @@ class AuthLDAP extends CommonDBTM {
 				echo "<br><table class='tab_cadre_fixe'>";
 				echo "<tr><th colspan='4'>" . $LANG["ldap"][9] . "</th></tr>";
 
-				if (isset($_SESSION["LDAP_TEST_MESSAGE"]))
-				{
+				if (isset($_SESSION["LDAP_TEST_MESSAGE"])){
 					echo "<tr class='tab_bg_2'><td align='center' colspan=4>";
 					echo $_SESSION["LDAP_TEST_MESSAGE"];
 					echo"</td></tr>";
@@ -663,8 +669,9 @@ class AuthLDAP extends CommonDBTM {
 
 			echo "</div></form>";
 
-			if (!empty ($ID))
+			if (!empty ($ID)){
 				showReplicatesList($target,$ID);
+			}
 
 		} else {
 			echo "<input type=\"hidden\" name=\"LDAP_Test\" value=\"1\" >";
