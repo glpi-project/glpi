@@ -355,7 +355,7 @@ function cleanCache($group=""){
 		'fileLocking' => CACHE_FILELOCKINGCONTROL,
 		'writeControl' => CACHE_WRITECONTROL,
 		'readControl' => CACHE_READCONTROL,
-	);
+		);
 	$CACHE = new Cache_Lite($cache_options);
 	if (empty($group)){
 		$CACHE->clean();
