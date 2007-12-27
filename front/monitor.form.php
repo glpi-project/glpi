@@ -101,7 +101,7 @@ else if (isset($_GET["unglobalize"]))
 
 	unglobalizeDevice(MONITOR_TYPE,$_GET["ID"]);
 	logEvent($_GET["ID"], "monitors", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][60]);
-	glpi_header($_SERVER['HTTP_REFERER']);
+	glpi_header($CFG_GLPI["root_doc"]."/front/monitor.form.php?ID=".$_GET["ID"]);
 }
 else if (isset($_GET["disconnect"]))
 {
@@ -116,7 +116,7 @@ else if(isset($_POST["connect"])&&isset($_POST["item"])&&$_POST["item"]>0)
 
 	Connect($_POST["sID"],$_POST["item"],MONITOR_TYPE);
 	logEvent($_POST["sID"], "monitors", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][27]);
-	glpi_header($CFG_GLPI["root_doc"]."/front/monitor.form.php?ID=".$_GET["sID"]);
+	glpi_header($CFG_GLPI["root_doc"]."/front/monitor.form.php?ID=".$_POST["sID"]);
 
 }
 else

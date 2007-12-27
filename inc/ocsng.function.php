@@ -1301,9 +1301,7 @@ function cron_ocsng() {
 		$DBocs = getDBocs($ocs_server_id);
 
 		$cfg_ocs = getOcsConf($ocs_server_id);
-		if ($CFG_GLPI["use_errorlog"]) {
 			logInFile("cron", "Check updates from server " . $cfg_ocs['name'] . "\n");
-		}
 
 		if (!$cfg_ocs["cron_sync_number"]){
 			return 0;
