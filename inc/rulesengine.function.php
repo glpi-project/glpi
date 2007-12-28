@@ -40,15 +40,14 @@ include_once (GLPI_ROOT."/inc/rules.constant.php");
  * @param $condition the condition (is, is_not, contain, not_contain,begin,end)
  * @param $pattern the pattern to match
  * @return true if the field match the rule, false if it doesn't match
- */
+**/
 function matchRules($field, $condition, $pattern,&$regex_result) {
 
 	//If pattern is wildcard, don't check the rule and return true
-	if ($pattern == RULE_WILDCARD)
+	if ($pattern == RULE_WILDCARD){
 		return true;
-	
-	if ($condition != REGEX_MATCH && $condition != REGEX_NOT_MATCH)
-	{
+	}
+	if ($condition != REGEX_MATCH && $condition != REGEX_NOT_MATCH){
 		//Perform comparison with fields in lower case
 		$field = strtolower($field);
 		$pattern = strtolower($pattern);
@@ -56,67 +55,70 @@ function matchRules($field, $condition, $pattern,&$regex_result) {
 	
 	switch ($condition) {
 		case PATTERN_IS :
-			if ($field == $pattern)
+			if ($field == $pattern){
 				return true;
-			else
+			}else {
 				return false;
+			}
 		case PATTERN_IS_NOT :
-			if ($field == $pattern)
+			if ($field == $pattern){
 				return false;
-			else
+			}else {
 				return true;
+			}
 		case PATTERN_END:
 			$value = "/".$pattern."$/";
-			if (preg_match($value, $field) > 0)
+			if (preg_match($value, $field) > 0){
 				return true;
-			else
-				return false;	
+			}else {
+				return false;
+			}	
 		case PATTERN_BEGIN:
 			if (empty($pattern)){
 				return false;
 			}
 			$value = strpos($field,$pattern);
-			if (($value !== false) && $value == 0)
+			if (($value !== false) && $value == 0){
 				return true;
-			else
+			}else{
 				return false;	
-			
+			}
 		case PATTERN_CONTAIN:
 			if (empty($pattern)){
 				return false;
 			}
-
 			$value = strpos($field,$pattern);
-			if (($value !== false) && $value >= 0)
+			if (($value !== false) && $value >= 0){
 				return true;
-			else
+			}else{
 				return false;	
-			
+			}
 		case PATTERN_NOT_CONTAIN:
 			if (empty($pattern)){
 				return false;
 			}
-
 			$value = strpos($field,$pattern);
-			if ($value === false)
+			if ($value === false){
 				return true;
-			else
+			}else {
 				return false;
+			}
 		case REGEX_MATCH:
 			$results = array();
-			if (preg_match($pattern."i",$field,$results)>0)
-			{
-				for ($i=1;$i<count($results);$i++)
+			if (preg_match($pattern."i",$field,$results)>0){
+				for ($i=1;$i<count($results);$i++){
 					$regex_result[]=$results[$i];
+				}
 				return true;
+			}else {
+				return false;
 			}
-			else
-				return false;	
 		case REGEX_NOT_MATCH:
-			if (preg_match($pattern."i", $field) == 0)
+			if (preg_match($pattern."i", $field) == 0){
 				return true;
-			else
-				return false;	
+			}else {
+				return false;
+			}	
 	}
 	return false;
 }
@@ -126,37 +128,34 @@ function matchRules($field, $condition, $pattern,&$regex_result) {
  * Return the condition label by giving his ID
  * @param $ID condition's ID
  * @return condition's label
- */
-function getConditionByID($ID)
-{
-		global $LANG;
-		switch ($ID)
-		{
-			case PATTERN_IS : 
-				return $LANG["rulesengine"][0];
-			case PATTERN_IS_NOT:
-				return $LANG["rulesengine"][1];
-			case PATTERN_CONTAIN:
-				return $LANG["rulesengine"][2];
-			case PATTERN_NOT_CONTAIN:
-				return $LANG["rulesengine"][3];
-			case PATTERN_BEGIN:
-				return $LANG["rulesengine"][4];
-			case PATTERN_END:
-				return $LANG["rulesengine"][5];
-			case REGEX_MATCH:
-				return $LANG["rulesengine"][26];
-			case REGEX_NOT_MATCH:
-				return $LANG["rulesengine"][27];
+**/
+function getConditionByID($ID){
+	global $LANG;
+	
+	switch ($ID){
+		case PATTERN_IS : 
+			return $LANG["rulesengine"][0];
+		case PATTERN_IS_NOT:
+			return $LANG["rulesengine"][1];
+		case PATTERN_CONTAIN:
+			return $LANG["rulesengine"][2];
+		case PATTERN_NOT_CONTAIN:
+			return $LANG["rulesengine"][3];
+		case PATTERN_BEGIN:
+			return $LANG["rulesengine"][4];
+		case PATTERN_END:
+			return $LANG["rulesengine"][5];
+		case REGEX_MATCH:
+			return $LANG["rulesengine"][26];
+		case REGEX_NOT_MATCH:
+			return $LANG["rulesengine"][27];
 	}
 }
 
 
-
-
 /**
  * Display a dropdown with all the criterias
- */
+**/
 function dropdownRulesConditions($type,$name,$value=''){
 	global $LANG;
 
@@ -172,34 +171,36 @@ function dropdownRulesConditions($type,$name,$value=''){
 	return dropdownArrayValues($name,$elements,$value);
 }
 
+
 /**
  * Display a dropdown with all the possible actions
- */
+**/
 function dropdownRulesActions($rule_type,$name,$value=''){
 	global $LANG,$CFG_GLPI,$RULES_ACTIONS;
 
 	//All the elements have assign as default action
 	$elements["assign"] = $LANG["rulesengine"][22];
 
-	if (isset($RULES_ACTIONS[$rule_type][$value]['optional_actions']))
-	{
+	if (isset($RULES_ACTIONS[$rule_type][$value]['optional_actions'])){
 		$actions = $RULES_ACTIONS[$rule_type][$value]['optional_actions'];
-		if(in_array("regex_result",$actions))
+		if(in_array("regex_result",$actions)){
 			$elements["regex_result"] = $LANG["rulesengine"][45];
-		if(in_array("append_regex_result",$actions))
+		}
+		if(in_array("append_regex_result",$actions)){
 			$elements["append_regex_result"] = $LANG["rulesengine"][79];
-		if(in_array("ignore",$actions))
+		}
+		if(in_array("ignore",$actions)){
 			$elements["ignore"] = $LANG["rulesengine"][39];
+		}
 	}
 	
 	return dropdownArrayValues($name,$elements,$value);
 }
 
-function getActionByID($ID)
-{
+function getActionByID($ID){
 	global $LANG;
-	switch ($ID)
-	{
+	
+	switch ($ID){
 		case "assign" : 
 			return $LANG["rulesengine"][22];
 		case "ignore":
@@ -207,8 +208,7 @@ function getActionByID($ID)
 		case "regex_result":
 			return $LANG["rulesengine"][45];
 		case "append_regex_result":
-			return $LANG["rulesengine"][79];
-			
+			return $LANG["rulesengine"][79];			
 	}
 }
 
@@ -220,91 +220,91 @@ function getRuleClass($type){
 				include_once(GLPI_ROOT."/inc/rule.ocs.class.php");
 			}
 			return new OcsAffectEntityRule();
-		break;		
+			break;		
 		case RULE_AFFECT_RIGHTS :
 			if (!class_exists('RightAffectRule')){
 				include_once(GLPI_ROOT."/inc/rulesengine.class.php");
 				include_once(GLPI_ROOT."/inc/rule.right.class.php");
 			}
 			return new RightAffectRule();
-		break;
+			break;
 		case RULE_TRACKING_AUTO_ACTION:
 			if (!class_exists('TrackingBusinessRule')){
 				include_once(GLPI_ROOT."/inc/rulesengine.class.php");
 				include_once(GLPI_ROOT."/inc/rule.tracking.class.php");
 			}
 			return new TrackingBusinessRule();
-		break;
+			break;
 		case RULE_SOFTWARE_CATEGORY:
 			if (!class_exists('SoftwareCategoriesRule')){
 				include_once(GLPI_ROOT."/inc/rulesengine.class.php");
 				include_once(GLPI_ROOT."/inc/rule.softwarecategories.class.php");
 			}
 			return new SoftwareCategoriesRule();
-		break;
+			break;
 		case RULE_DICTIONNARY_SOFTWARE:
 			if (!class_exists('DictionnarySoftwareRule')){
 				include_once(GLPI_ROOT."/inc/rulesengine.class.php");
 				include_once(GLPI_ROOT."/inc/rule.dictionnary.software.class.php");
 			}
 			return new DictionnarySoftwareRule;
-		break;
+			break;
 		case RULE_DICTIONNARY_MANUFACTURER:
 			if (!class_exists('DictionnaryManufacturerRule')){
 				include_once(GLPI_ROOT."/inc/rulesengine.class.php");
 				include_once(GLPI_ROOT."/inc/rule.dictionnary.manufacturer.class.php");
 			}
 			return new DictionnaryManufacturerRule;
-		break;
+			break;
 		case RULE_DICTIONNARY_MODEL_COMPUTER:
 			if (!class_exists('DictionnaryModelComputerRule')){
 				include_once(GLPI_ROOT."/inc/rulesengine.class.php");
 				include_once(GLPI_ROOT."/inc/rule.dictionnary.model.class.php");
 			}
 			return new DictionnaryModelComputerRule;
-		break;
+			break;
 		case RULE_DICTIONNARY_MODEL_MONITOR:
 			if (!class_exists('DictionnaryModelMonitorRule')){
 				include_once(GLPI_ROOT."/inc/rulesengine.class.php");
 				include_once(GLPI_ROOT."/inc/rule.dictionnary.model.class.php");
 			}
 			return new DictionnaryModelMonitorRule;
-		break;
+			break;
 		case RULE_DICTIONNARY_MODEL_PRINTER:
 			if (!class_exists('DictionnaryModelPrinterRule')){
 				include_once(GLPI_ROOT."/inc/rulesengine.class.php");
 				include_once(GLPI_ROOT."/inc/rule.dictionnary.model.class.php");
 			}
 			return new DictionnaryModelPrinterRule;
-		break;
+			break;
 		case RULE_DICTIONNARY_MODEL_PERIPHERAL:
 			if (!class_exists('DictionnaryModelPeripheralRule')){
 				include_once(GLPI_ROOT."/inc/rulesengine.class.php");
 				include_once(GLPI_ROOT."/inc/rule.dictionnary.model.class.php");
 			}
 			return new DictionnaryModelPeripheralRule;
-		break;
+			break;
 		case RULE_DICTIONNARY_TYPE_COMPUTER:
 			if (!class_exists('DictionnaryTypeComputerRule')){
 				include_once(GLPI_ROOT."/inc/rulesengine.class.php");
 				include_once(GLPI_ROOT."/inc/rule.dictionnary.type.class.php");
 			}
 			return new DictionnaryTypeComputerRule;
-		break;
+			break;
 		case RULE_DICTIONNARY_TYPE_PRINTER:
 			if (!class_exists('DictionnaryTypePrinterRule')){
 				include_once(GLPI_ROOT."/inc/rulesengine.class.php");
 				include_once(GLPI_ROOT."/inc/rule.dictionnary.type.class.php");
 			}
 			return new DictionnaryTypePrinterRule;
-		break;
+			break;
 		case RULE_DICTIONNARY_TYPE_MONITOR:
 			if (!class_exists('DictionnaryTypeMonitorRule')){
 				include_once(GLPI_ROOT."/inc/rulesengine.class.php");
 				include_once(GLPI_ROOT."/inc/rule.dictionnary.type.class.php");
 			}
 			return new DictionnaryTypeMonitorRule;
-		break;
+			break;
 		case RULE_DICTIONNARY_TYPE_PERIPHERAL:
 			if (!class_exists('DictionnaryTypePeripheralRule')){
 				include_once(GLPI_ROOT."/inc/rulesengine.class.php");
@@ -317,7 +317,7 @@ function getRuleClass($type){
 				include_once(GLPI_ROOT."/inc/rule.dictionnary.os.class.php");
 			}
 			return new DictionnaryOSRule;
-		break;
+			break;
 		case RULE_DICTIONNARY_OS_SP:
 			if (!class_exists('DictionnaryOSSPRule')){
 				include_once(GLPI_ROOT."/inc/rulesengine.class.php");
@@ -330,7 +330,7 @@ function getRuleClass($type){
 				include_once(GLPI_ROOT."/inc/rule.dictionnary.os.class.php");
 			}
 			return new DictionnaryOSVersionRule;
-		break;
+			break;
 	}
 }
 
@@ -342,105 +342,105 @@ function getRuleCollectionClass($type){
 				include_once(GLPI_ROOT."/inc/rule.ocs.class.php");
 			}
 			return new OcsRuleCollection();
-		break;		
+			break;		
 		case RULE_AFFECT_RIGHTS :
 			if (!class_exists('RightRuleCollection')){
 				include_once(GLPI_ROOT."/inc/rulesengine.class.php");
 				include_once(GLPI_ROOT."/inc/rule.right.class.php");
 			}
 			return new RightRuleCollection();
-		break;
+			break;
 		case RULE_TRACKING_AUTO_ACTION:
 			if (!class_exists('TrackingBusinessRuleCollection')){
 				include_once(GLPI_ROOT."/inc/rulesengine.class.php");
 				include_once(GLPI_ROOT."/inc/rule.tracking.class.php");
 			}
 			return new TrackingBusinessRuleCollection();
-		break;
+			break;
 		case RULE_SOFTWARE_CATEGORY:
 			if (!class_exists('SoftwareCategoriesRuleCollection')){
 				include_once(GLPI_ROOT."/inc/rulesengine.class.php");
 				include_once(GLPI_ROOT."/inc/rule.softwarecategories.class.php");
 			}
 			return new SoftwareCategoriesRuleCollection();
-		break;
+			break;
 		case RULE_DICTIONNARY_SOFTWARE:
 			if (!class_exists('DictionnarySoftwareCollection')){
 				include_once(GLPI_ROOT."/inc/rulesengine.class.php");
 				include_once(GLPI_ROOT."/inc/rule.dictionnary.software.class.php");
 			}
 			return new DictionnarySoftwareCollection;
-		break;
+			break;
 		case RULE_DICTIONNARY_MANUFACTURER:
 			if (!class_exists('DictionnaryManufacturerCollection')){
 				include_once(GLPI_ROOT."/inc/rulesengine.class.php");
 				include_once(GLPI_ROOT."/inc/rule.dictionnary.manufacturer.class.php");
 			}
 			return new DictionnaryManufacturerCollection;
-		break;
+			break;
 		case RULE_DICTIONNARY_MODEL_COMPUTER:
 			if (!class_exists('DictionnaryModelComputerCollection')){
 				include_once(GLPI_ROOT."/inc/rulesengine.class.php");
 				include_once(GLPI_ROOT."/inc/rule.dictionnary.model.class.php");
 			}
 			return new DictionnaryModelComputerCollection;
-		break;
+			break;
 		case RULE_DICTIONNARY_MODEL_MONITOR:
 			if (!class_exists('DictionnaryModelMonitorCollection')){
 				include_once(GLPI_ROOT."/inc/rulesengine.class.php");
 				include_once(GLPI_ROOT."/inc/rule.dictionnary.model.class.php");
 			}
 			return new DictionnaryModelMonitorCollection;
-		break;
+			break;
 		case RULE_DICTIONNARY_MODEL_PRINTER:
 			if (!class_exists('DictionnaryModelPrinterCollection')){
 				include_once(GLPI_ROOT."/inc/rulesengine.class.php");
 				include_once(GLPI_ROOT."/inc/rule.dictionnary.model.class.php");
 			}
 			return new DictionnaryModelPrinterCollection;
-		break;
+			break;
 		case RULE_DICTIONNARY_MODEL_PERIPHERAL:
 			if (!class_exists('DictionnaryModelPeripheralCollection')){
 				include_once(GLPI_ROOT."/inc/rulesengine.class.php");
 				include_once(GLPI_ROOT."/inc/rule.dictionnary.model.class.php");
 			}
 			return new DictionnaryModelPeripheralCollection;
-		break;
+			break;
 		case RULE_DICTIONNARY_TYPE_COMPUTER:
 			if (!class_exists('DictionnaryTypeComputerCollection')){
 				include_once(GLPI_ROOT."/inc/rulesengine.class.php");
 				include_once(GLPI_ROOT."/inc/rule.dictionnary.type.class.php");
 			}
 			return new DictionnaryTypeComputerCollection;
-		break;
+			break;
 		case RULE_DICTIONNARY_TYPE_MONITOR:
 			if (!class_exists('DictionnaryTypeMonitorCollection')){
 				include_once(GLPI_ROOT."/inc/rulesengine.class.php");
 				include_once(GLPI_ROOT."/inc/rule.dictionnary.type.class.php");
 			}
 			return new DictionnaryTypeMonitorCollection;
-		break;
+			break;
 		case RULE_DICTIONNARY_TYPE_PRINTER:
 			if (!class_exists('DictionnaryTypePrinterCollection')){
 				include_once(GLPI_ROOT."/inc/rulesengine.class.php");
 				include_once(GLPI_ROOT."/inc/rule.dictionnary.type.class.php");
 			}
 			return new DictionnaryTypePrinterCollection;
-		break;
+			break;
 		case RULE_DICTIONNARY_TYPE_PERIPHERAL:
 			if (!class_exists('DictionnaryTypePeripheralCollection')){
 				include_once(GLPI_ROOT."/inc/rulesengine.class.php");
 				include_once(GLPI_ROOT."/inc/rule.dictionnary.type.class.php");
 			}
 			return new DictionnaryTypePeripheralCollection;
-		break;
+			break;
 		case RULE_DICTIONNARY_OS:
 			if (!class_exists('DictionnaryOSCollection')){
 				include_once(GLPI_ROOT."/inc/rulesengine.class.php");
 				include_once(GLPI_ROOT."/inc/rule.dictionnary.os.class.php");
 			}
 			return new DictionnaryOSCollection;
-		break;
+			break;
 		case RULE_DICTIONNARY_OS_SP:
 			if (!class_exists('DictionnaryOSSPCollection')){
 				include_once(GLPI_ROOT."/inc/rulesengine.class.php");
@@ -453,14 +453,13 @@ function getRuleCollectionClass($type){
 				include_once(GLPI_ROOT."/inc/rule.dictionnary.os.class.php");
 			}
 			return new DictionnaryOSVersionCollection;
-		break;
+			break;
 	}
 }
 
-function getRuleCollectionClassByTableName($tablename)
-{
-	switch ($tablename)
-	{
+function getRuleCollectionClassByTableName($tablename){
+	
+	switch ($tablename){
 		case "glpi_software":
 			return getRuleCollectionClass(RULE_DICTIONNARY_SOFTWARE);
 		case "glpi_dropdown_manufacturer":
@@ -496,21 +495,20 @@ function getRuleCollectionClassByTableName($tablename)
 	}
 }
 
-function getCacheTableByRuleType($type)
-{
+function getCacheTableByRuleType($type){
+	
 	$rulecollection = getRuleCollectionClass($type);
 	return $rulecollection->cache_table;
 }
 
-function getRegexResultById($action,$regex_results)
-{
-	if (count($regex_results)>0)
-	{
-		if (preg_match("/^.*#([0-9]).*$/",$action,$results)>0)
-		{
+function getRegexResultById($action,$regex_results){
+	
+	if (count($regex_results)>0){
+		if (preg_match("/^.*#([0-9]).*$/",$action,$results)>0){
 			unset($results[0]);
-			foreach($results as $result)
+			foreach($results as $result){
 				$action=str_replace("#$result",(isset($regex_results[$result])?$regex_results[$result]:''),$action);
+			}
 		}	
 	}
 	return $action;
@@ -518,11 +516,10 @@ function getRegexResultById($action,$regex_results)
 
 /**
  * Get category name to display in commonheader by rule_type
- */
-function getCategoryNameToDisplay($rule_type)
-{
-	switch ($rule_type)
-	{
+**/
+function getCategoryNameToDisplay($rule_type){
+	
+	switch ($rule_type){
 		case RULE_OCS_AFFECT_COMPUTER:
 		case RULE_AFFECT_RIGHTS:
 		case RULE_SOFTWARE_CATEGORY:
@@ -533,14 +530,12 @@ function getCategoryNameToDisplay($rule_type)
 	}
 }
 
-function getAlreadyUsedActionsByRuleID($rule_id,$rule_type)
-{
+function getAlreadyUsedActionsByRuleID($rule_id,$rule_type){
 	global $DB,$RULES_ACTIONS;
 	$actions = array();
 
 	$res = $DB->query("SELECT field FROM glpi_rules_actions WHERE FK_rules=".$rule_id);
-	while ($action = $DB->fetch_array($res))
-	{
+	while ($action = $DB->fetch_array($res)){
 		if (isset($RULES_ACTIONS[$rule_type][$action["field"]])) {
 			$actions[] = $RULES_ACTIONS[$rule_type][$action["field"]]["name"];
 		}
@@ -548,4 +543,5 @@ function getAlreadyUsedActionsByRuleID($rule_id,$rule_type)
 
 	return $actions;	
 }
+
 ?>
