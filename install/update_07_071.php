@@ -235,5 +235,8 @@ function update07to071() {
 		$DB->query("UPDATE glpi_config SET category_on_software_delete=".$cat_id);
  	}	  	
 
+	$query="DELETE FROM glpi_display WHERE num='121'";
+	$DB->query($query) or die("0.71 clean glpi_display for end_warranty infocoms " . $DB->error());
+
 } // fin 0.71 #####################################################################################
 ?>

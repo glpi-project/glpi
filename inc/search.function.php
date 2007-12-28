@@ -44,7 +44,7 @@ function cleanSearchOption($type,$action='r'){
 	$options=$SEARCH_OPTION[$type];
 	$todel=array();
 	if (!haveRight('contract_infocom',$action)&&in_array($type,$CFG_GLPI["infocom_types"])){
-		$todel=array_merge($todel,array('financial',25,26,27,28,29,30,37,38,50,51,52,53,54,55,56,57,58,59,120,121,122));
+		$todel=array_merge($todel,array('financial',25,26,27,28,29,30,37,38,50,51,52,53,54,55,56,57,58,59,120,122));
 	}
 
 	if ($type==COMPUTER_TYPE){
@@ -1395,12 +1395,9 @@ function addOrderBy($type,$ID,$order,$key=0){
 		case "glpi_contracts.end_date":
 			return " ORDER BY ADDDATE(glpi_contracts.begin_date, INTERVAL glpi_contracts.duration MONTH) $order ";
 		break;
-		case "glpi_infocoms.end_warranty_buy":
+		case "glpi_infocoms.end_warranty":
 			return " ORDER BY ADDDATE(glpi_infocoms.buy_date, INTERVAL glpi_infocoms.warranty_duration MONTH) $order "; 
 		break; 
-		case "glpi_infocoms.end_warranty_use":
-			return " ORDER BY ADDDATE(glpi_infocoms.use_date, INTERVAL glpi_infocoms.warranty_duration MONTH) $order ";
-		break;
 		case "glpi_contracts.expire":
 			return " ORDER BY ADDDATE(glpi_contracts.begin_date, INTERVAL glpi_contracts.duration MONTH) $order ";
 		break;
@@ -1585,11 +1582,8 @@ function addSelect ($type,$ID,$num,$meta=0,$meta_type=0){
 		case "glpi_contracts.end_date" :
 			return $pretable.$table.$addtable.".begin_date AS ".$NAME."_$num, ".$pretable.$table.$addtable.".duration AS ".$NAME."_".$num."_2, ";
 		break;
-		case "glpi_infocoms.end_warranty_buy":
+		case "glpi_infocoms.end_warranty":
 			return $pretable.$table.$addtable.".buy_date AS ".$NAME."_$num, ".$pretable.$table.$addtable.".warranty_duration AS ".$NAME."_".$num."_2, ";
-		break;
-		case "glpi_infocoms.end_warranty_use":
-			return $pretable.$table.$addtable.".use_date AS ".$NAME."_$num, ".$pretable.$table.$addtable.".warranty_duration AS ".$NAME."_".$num."_2, ";
 		break;
 		case "glpi_contracts.expire_notice" : // ajout jmd
 			return $pretable.$table.$addtable.".begin_date AS ".$NAME."_$num, ".$pretable.$table.$addtable.".duration AS ".$NAME."_".$num."_2, ".$pretable.$table.$addtable.".notice AS ".$NAME."_".$num."_3, ";
@@ -1782,8 +1776,7 @@ function addWhere ($link,$nott,$type,$ID,$val,$meta=0){
 			}
 			break;
 
-		case "glpi_infocoms.end_warranty_use" :
-		case "glpi_infocoms.end_warranty_buy" :
+		case "glpi_infocoms.end_warranty" :
 		case "glpi_contracts.end_date" :
 		case "glpi_ocs_link.last_update":
 		case "glpi_ocs_link.last_ocs_update":
@@ -1808,10 +1801,7 @@ function addWhere ($link,$nott,$type,$ID,$val,$meta=0){
 				case "glpi_contracts.end_date":
 					$date_computation=" ADDDATE($table.begin_date, INTERVAL $table.duration MONTH) ";
 					break;
-				case "glpi_infocoms.end_warranty_use":
-					$date_computation=" ADDDATE($table.use_date, INTERVAL $table.warranty_duration MONTH) ";
-					break;
-				case "glpi_infocoms.end_warranty_buy":
+				case "glpi_infocoms.end_warranty":
 					$date_computation=" ADDDATE($table.buy_date, INTERVAL $table.warranty_duration MONTH) ";
 					break;
 			}
@@ -2541,8 +2531,7 @@ function giveItem ($type,$field,$data,$num,$linkfield=""){
 		case "glpi_users.date_mod":	
 			return convDateTime($data["ITEM_$num"]);
 			break;
-		case "glpi_infocoms.end_warranty_use":
-		case "glpi_infocoms.end_warranty_buy":
+		case "glpi_infocoms.end_warranty":
 		case "glpi_contracts.end_date":
 			if ($data["ITEM_$num"]!=''&&$data["ITEM_$num"]!="0000-00-00"){
 				return getWarrantyExpir($data["ITEM_$num"],$data["ITEM_".$num."_2"]);
