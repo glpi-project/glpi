@@ -66,6 +66,7 @@ class RuleCollection {
 		$sql = "SELECT ID FROM glpi_rules_descriptions WHERE rule_type=".$this->rule_type." ORDER by ".$this->orderby." ASC";
 		 $result = $DB->query($sql);
 		if ($result){
+			$this->rule_list = array();
 		 	while ($rule=$DB->fetch_array($result)) {
 			 	//For each rule, get a Rule object with all the criterias and actions
 				$tempRule= new $this->rule_class_name();
