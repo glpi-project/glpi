@@ -46,7 +46,7 @@ if (isset($_POST["replay_rule"]))
 	ini_set("max_execution_time", "0");
 
 	$deb=time();	
-	commonHeader($LANG["rulesengine"][17],$_SERVER['PHP_SELF'],"admin","rule",$rulecollection->rule_type);
+	commonHeader($LANG["rulesengine"][17],$_SERVER['PHP_SELF'],"admin","dictionnary",$rulecollection->rule_type);
 
 	echo "<div class='center'>"; 
 	echo "<table class='tab_cadrehov'>";

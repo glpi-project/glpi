@@ -2016,7 +2016,7 @@ class RuleDictionnaryCollection extends RuleCollection{
 		}
 		
 		echo "<tr>";
-		echo "<td class='tab_bg_2'><strong>".$LANG["common"][33]."</strong></td>";
+		echo "<td class='tab_bg_2'><strong>".$LANG["common"][33]." (".$DB->numrows($res_count).")</strong></td>";
 		echo "<td class='tab_bg_2'><strong>".$total."</strong></td>";
 		echo "</tr></table></div>";		
 	}

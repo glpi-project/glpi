@@ -122,7 +122,11 @@ function update07to071() {
 	}
 	if (!FieldExists("glpi_rule_cache_software", "manufacturer")) {
 		$query = "ALTER TABLE `glpi_rule_cache_software` ADD `manufacturer` VARCHAR( 255 ) NOT NULL AFTER `old_value` ;";
-		$DB->query($query) or die("0.71 add version in glpi_rule_cache_software if not present " . $LANG["update"][90] . $DB->error());
+		$DB->query($query) or die("0.71 add manufacturer in glpi_rule_cache_software if not present " . $LANG["update"][90] . $DB->error());
+	}
+	if (!FieldExists("glpi_rule_cache_software", "new_manufacturer")) {
+		$query = "ALTER TABLE `glpi_rule_cache_software` ADD `new_manufacturer` VARCHAR( 255 ) NOT NULL AFTER `version` ;";
+		$DB->query($query) or die("0.71 add new_manufacturer in glpi_rule_cache_software if not present " . $LANG["update"][90] . $DB->error());
 	}
 
 	$model_cache_tables = array("glpi_rule_cache_model_computer",
