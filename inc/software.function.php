@@ -71,9 +71,9 @@ function showLicenses($sID, $show_computers = 0) {
 			$nb_licences = $DB->result($result, 0, "COUNT");
 			$result_update = $DB->query($query_update);
 			$nb_updates = $DB->result($result_update, 0, "COUNT");
-			;
 			$installed = getInstalledLicence($sID);
 			$tobuy = getLicenceToBuy($sID);
+
 			$isfreeorglobal = isFreeSoftware($sID) || isGlobalSoftware($sID);
 			// As t'on utilisé trop de licences en prenant en compte les mises a jours (double install original + mise �jour)
 			// Rien si free software
@@ -134,7 +134,6 @@ function showLicenses($sID, $show_computers = 0) {
 
 					$params = array (
 						'type' => '__VALUE__',
-						'sID' => $sID,
 						'sID' => $sID,
 						
 					);
