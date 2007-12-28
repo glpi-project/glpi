@@ -42,7 +42,7 @@ $rulecollection = new DictionnarySoftwareCollection;
 
 
 if (isset($_POST["replay_rule"])) {
-	commonHeader($LANG["rulesengine"][17],$_SERVER['PHP_SELF'],"admin","rule",$rulecollection->rule_type);
+	commonHeader($LANG["rulesengine"][17],$_SERVER['PHP_SELF'],"admin","dictionnary",$rulecollection->rule_type);
 	showWarningPageBeforeProcessingDictionnary($_SERVER['PHP_SELF']);
 	commonFooter();
 	

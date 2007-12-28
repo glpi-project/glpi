@@ -66,7 +66,7 @@ class DictionnaryManufacturerCollection extends RuleDictionnaryCollection {
 		// error_log("DictionnaryManufacturerCollection::replayRulesOnExistingDB");
 		
 		$types = array(COMPUTER_TYPE, PRINTER_TYPE, SOFTWARE_TYPE, PHONE_TYPE, PERIPHERAL_TYPE, NETWORKING_TYPE, MONITOR_TYPE);
-		$this->deleteCache();
+		//$this->deleteCache();
 
 		$Sql="SELECT * FROM " . $this->item_table;
 		$result = $DB->query($Sql);
