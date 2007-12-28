@@ -68,7 +68,7 @@ function showLicenses ($sID,$show_computers=0) {
 		if ($DB->result($result,0,0)!=0) { 
 			$nb_licences=$DB->result($result, 0, "COUNT");
 			$result_update = $DB->query($query_update);
-			$nb_updates=$DB->result($result_update, 0, "COUNT");;
+			$nb_updates=$DB->result($result_update, 0, "COUNT");
 			$installed = getInstalledLicence($sID);
 			$tobuy=getLicenceToBuy($sID);
 			$isfreeorglobal=isFreeSoftware($sID)||isGlobalSoftware($sID);
@@ -127,7 +127,6 @@ function showLicenses ($sID,$show_computers=0) {
 					echo "</select>";
 	
 					$params=array('type'=>'__VALUE__',
-							'sID'=>$sID,
 							'sID'=>$sID,
 					);
 					ajaxUpdateItemOnSelectEvent("update_licenses_choice","update_licenses_view",$CFG_GLPI["root_doc"]."/ajax/updateLicenses.php",$params,false);
