@@ -66,6 +66,10 @@ else
 
 	// Appel CSS
 	echo '<link rel="stylesheet"  href="'.$CFG_GLPI["root_doc"].'/css/styles.css" type="text/css" media="screen" />';
+	// surcharge CSS hack for IE 
+	echo "<!--[if lte IE 6]>" ; 
+	echo "<link rel='stylesheet' href='".$CFG_GLPI["root_doc"]."/css/styles_ie.css' type='text/css' media='screen' >\n"; 
+	echo "<![endif]-->";
 	echo "<script type=\"text/javascript\"><!--document.getElementById('var_login_name').focus();--></script>";
 
 	echo "</head>";
@@ -126,7 +130,7 @@ else
 
 
 
-	echo "<div style='color: red; margin-top:20px; text-align:center;'>";
+	echo "<div class='error'>";
 	echo "<noscript><p>";
 	echo $LANG["login"][26];
 	echo "</p></noscript>";
