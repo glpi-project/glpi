@@ -159,7 +159,7 @@ function display_infocoms_report($device_type,$begin,$end){
 		$valeurtot+=$valeursoustot;
 		$valeurnettetot+=$valeurnettesoustot;
 
-		echo "<tr><td colspan='6' class='center'><h3>".$LANG["common"][33].": ".$LANG["financial"][21]."=$valeursoustot - ".$LANG["financial"][81]."=$valeurnettesoustot</h3></td></tr>";
+		echo "<tr><td colspan='6' class='center'><h3>".$LANG["common"][33].": ".$LANG["financial"][21]."=".number_format($valeursoustot,$CFG_GLPI["decimal_number"],"."," ")." - ".$LANG["financial"][81]."=".number_format($valeurnettesoustot,$CFG_GLPI["decimal_number"],"."," ")."</h3></td></tr>";
 
 
 		if (count($valeurnettegraph)>0){
@@ -220,7 +220,7 @@ echo "</table>";
 
 
 
-echo "<div align='center'><h3>".$LANG["common"][33].": ".$LANG["financial"][21]."=".number_format($valeurtot,$CFG_GLPI["decimal_number"])." - ".$LANG["financial"][81]."=".number_format($valeurnettetot,$CFG_GLPI["decimal_number"])."</h3></div>";
+echo "<div align='center'><h3>".$LANG["common"][33].": ".$LANG["financial"][21]."=".number_format($valeurtot,$CFG_GLPI["decimal_number"],"."," ")." - ".$LANG["financial"][81]."=".number_format($valeurnettetot,$CFG_GLPI["decimal_number"],"."," ")."</h3></div>";
 
 if (count($valeurnettegraphtot)>0){
 	$valeurnettegraphtotdisplay=array_map('round',$valeurnettegraphtot);
