@@ -1897,6 +1897,11 @@ class RuleDictionnary extends Rule{
 		global $DB;
 		$DB->query("DELETE FROM ".getCacheTableByRuleType($this->rule_type)." WHERE rule_id=".$ID);
 	}
+
+	function post_updateItem($input,$updates) {
+		if(isset($updates['match']))
+			$this->deleteCacheByRuleId($input["ID"]);
+	}
 	
 	function showCacheStatusByRule($target){
 		global $DB,$LANG;
@@ -1938,8 +1943,8 @@ class RuleDictionnary extends Rule{
 
 	function showCacheRuleDetail($fields){
 		global $LANG;
-		echo "<td class='tab_bg_1'>".$fields["old_value"]."</td>";
-		echo "<td class='tab_bg_1'>".($fields["new_value"]!=''?$fields["new_value"]:$LANG["rulesengine"][106])."</td>";
+		echo "<td class='tab_bg_2'>".$fields["old_value"]."</td>";
+		echo "<td class='tab_bg_2'>".($fields["new_value"]!=''?$fields["new_value"]:$LANG["rulesengine"][106])."</td>";
 	}
 			
 }
@@ -1961,9 +1966,9 @@ class RuleDictionnaryModel extends RuleDictionnary{
 
 	function showCacheRuleDetail($fields){
 		global $LANG;
-		echo "<td class='tab_bg_1'>".$fields["old_value"]."</td>";
-		echo "<td class='tab_bg_1'>".($fields["manufacturer"]!=''?$fields["manufacturer"]:'')."</td>";		
-		echo "<td class='tab_bg_1'>".($fields["new_value"]!=''?$fields["new_value"]:$LANG["rulesengine"][106])."</td>";
+		echo "<td class='tab_bg_2'>".$fields["old_value"]."</td>";
+		echo "<td class='tab_bg_2'>".($fields["manufacturer"]!=''?$fields["manufacturer"]:'')."</td>";		
+		echo "<td class='tab_bg_2'>".($fields["new_value"]!=''?$fields["new_value"]:$LANG["rulesengine"][106])."</td>";
 	}
 }
 

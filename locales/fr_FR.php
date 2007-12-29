@@ -1350,6 +1350,7 @@ $LANG["rulesengine"][104]="Valeur originale";
 $LANG["rulesengine"][105]="Valeur modifiée";
 $LANG["rulesengine"][106]="Inchangé(e)";
 $LANG["rulesengine"][107]="Inactive";
+$LANG["rulesengine"][108]="original";
 
 $LANG["rulesengine"][110]="Affectation de droits";
 $LANG["rulesengine"][111]="Affectation d'entités";
