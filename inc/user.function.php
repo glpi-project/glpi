@@ -70,24 +70,6 @@ function showAddExtAuthUserForm($target){
 
 }
 
-function dropdownUserType($myname,$value="post-only"){
-	echo "<select name='$myname' >";
-	echo "<option value=\"post-only\"";
-	if ($value=="post-only") { echo " selected"; }
-	echo ">Post Only</option>";
-	echo "<option value=normal";
-	if ($value=="normal") { echo " selected"; }
-	echo ">Normal</option>";
-	echo "<option value='admin'";
-	if ($value=="admin") { echo " selected"; }
-	echo ">Admin</option>";
-	echo "<option value='super-admin'";
-	if ($value=="super-admin") { echo " selected"; }
-	echo ">Super-Admin</option>";
-	echo "</select>";
-
-}
-
 function showDeviceUser($ID){
 	global $DB,$CFG_GLPI, $LANG, $LINK_ID_TABLE,$INFOFORM_PAGES;
 
