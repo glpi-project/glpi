@@ -324,9 +324,10 @@ class DictionnarySoftwareRule extends RuleDictionnary {
 	function showCacheRuleHeader()
 	{
 		global $LANG;
-		echo "<th colspan='4'>".$LANG["rulesengine"][100]." : ".$this->fields["name"]."</th></tr>";
+		echo "<th colspan='5'>".$LANG["rulesengine"][100]." : ".$this->fields["name"]."</th></tr>";
 		echo "<tr>";
 		echo "<td class='tab_bg_1'>".$LANG["rulesengine"][104]."</td>";
+		echo "<td class='tab_bg_1'>".$LANG["common"][5]." ".$LANG["rulesengine"][108]."</td>";
 		echo "<td class='tab_bg_1'>".$LANG["rulesengine"][105]."</td>";
 		echo "<td class='tab_bg_1'>".$LANG["rulesengine"][78]."</td>";		
 		echo "<td class='tab_bg_1'>".$LANG["common"][5]."</td>";
@@ -336,10 +337,11 @@ class DictionnarySoftwareRule extends RuleDictionnary {
 	function showCacheRuleDetail($fields)
 	{
 		global $LANG;
-		echo "<td class='tab_bg_1'>".$fields["old_value"]."</td>";
-		echo "<td class='tab_bg_1'>".($fields["new_value"]!=''?$fields["new_value"]:$LANG["rulesengine"][106])."</td>";
-		echo "<td class='tab_bg_1'>".($fields["version"]!=''?$fields["version"]:$LANG["rulesengine"][106])."</td>";		
-		echo "<td class='tab_bg_1'>".((isset($fields["new_manufacturer"]) && $fields["new_manufacturer"]!='')?getDropdownName("glpi_dropdown_manufacturer",$fields["new_manufacturer"]):$LANG["rulesengine"][106])."</td>";
+		echo "<td class='tab_bg_2'>".$fields["old_value"]."</td>";
+		echo "<td class='tab_bg_2'>".$fields["manufacturer"]."</td>";
+		echo "<td class='tab_bg_2'>".($fields["new_value"]!=''?$fields["new_value"]:$LANG["rulesengine"][106])."</td>";
+		echo "<td class='tab_bg_2'>".($fields["version"]!=''?$fields["version"]:$LANG["rulesengine"][106])."</td>";		
+		echo "<td class='tab_bg_2'>".((isset($fields["new_manufacturer"]) && $fields["new_manufacturer"]!='')?getDropdownName("glpi_dropdown_manufacturer",$fields["new_manufacturer"]):$LANG["rulesengine"][106])."</td>";
 	}	
 }
 ?>
