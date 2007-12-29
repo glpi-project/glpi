@@ -39,6 +39,7 @@ include_once (GLPI_ROOT."/inc/rules.constant.php");
  * @param $field the field to match
  * @param $condition the condition (is, is_not, contain, not_contain,begin,end)
  * @param $pattern the pattern to match
+ * @param $regex_result
  * @return true if the field match the rule, false if it doesn't match
 **/
 function matchRules($field, $condition, $pattern,&$regex_result) {

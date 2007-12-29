@@ -133,6 +133,7 @@ class Identification {
 	 * Find a user in a LDAP and return is BaseDN
 	 * Based on GRR auth system
 	 *
+	 * @param $id
 	 * @param $host LDAP host to connect
 	 * @param $port LDAP port
 	 * @param $use_tls use a tls connection
