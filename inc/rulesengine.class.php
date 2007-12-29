@@ -1079,14 +1079,14 @@ class Rule extends CommonDBTM{
  			if ($this->checkCriterias($input,$regex_result,$getvalue)){
 				$output=$this->executeActions($output,$params,$regex_result);
 	
-	            //Hook 
-	           $hook_params["rule_type"]=$this->rule_type; 
-	           $hook_params["ruleid"]=$this->fields["ID"]; 
-	           $hook_params["input"]=$input; 
-	           $hook_params["output"]=$output; 
-	           doHook("rule_matched",$hook_params); 
-	           $output["_rule_process"]=true;
-           }			
+				//Hook 
+				$hook_params["rule_type"]=$this->rule_type; 
+				$hook_params["ruleid"]=$this->fields["ID"]; 
+				$hook_params["input"]=$input; 
+				$hook_params["output"]=$output; 
+				doHook("rule_matched",$hook_params); 
+				$output["_rule_process"]=true;
+			}			
 		}
 	}
 
@@ -1154,7 +1154,7 @@ class Rule extends CommonDBTM{
 				$value=$this->getCriteriaValue($criteria->fields["criteria"],$criteria->fields["condition"],$input[$criteria->fields["criteria"]]);
 			else
 			$value = $input[$criteria->fields["criteria"]];
-				
+
 			$res = matchRules($value,$criteria->fields["condition"],$criteria->fields["pattern"],$regex_result);
 		} else	{
 			//If the value if, in fact, an array of values
