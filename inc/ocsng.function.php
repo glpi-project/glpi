@@ -1138,6 +1138,8 @@ function ocsUpdateBios($glpi_id, $ocs_id, $ocs_server_id, $cfg_ocs, $computer_up
  *@param $dpdTable string : Name of the glpi dropdown table.
  *@param $value string : Value of the new dropdown.
  *@param $FK_entities int : entity in case of specific dropdown
+ *@param $external_params
+ *@param $comments
  *
  *@return integer : dropdown id.
  *

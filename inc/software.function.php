@@ -1220,6 +1220,7 @@ function isSoftwareDeleted($ID) {
  * @param name the software's name
  * @param manufacturer the software's manufacturer
  * @param entity the entity in which the software must be added
+ * @param comments
  * @param process_type process which calls the function (IMPORT_TYPE_OCS, IMPORT_TYPE_DICTIONNARY, etc...) 
  * @return the software's ID
  */

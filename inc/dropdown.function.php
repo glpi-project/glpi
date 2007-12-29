@@ -45,13 +45,11 @@ if (!defined('GLPI_ROOT')){
 /**
  * Print out an HTML "<select>" for a dropdown
  *
- * 
- * 
- *
  * @param $table the dropdown table from witch we want values on the select
  * @param $myname the name of the HTML select
  * @param $display_comments display the comments near the dropdown
  * @param $entity_restrict Restrict to a defined entity
+ * @param $used Already used items : not to display in dropdown
  * @return nothing (display the select box)
  **/
 function dropdown($table,$myname,$display_comments=1,$entity_restrict=-1,$used=array()) {
@@ -69,6 +67,7 @@ function dropdown($table,$myname,$display_comments=1,$entity_restrict=-1,$used=a
  * @param $display_comments display the comments near the dropdown
  * @param $entity_restrict Restrict to a defined entity
  * @param $update_item Update a specific item on select change on dropdown (need value_fieldname, to_update, url (see ajaxUpdateItemOnSelectEvent for informations) and may have moreparams)
+ * @param $used Already used items : not to display in dropdown
  * @return nothing (display the select box)
  *
  */
@@ -167,6 +166,7 @@ function dropdownValue($table,$myname,$value='',$display_comments=1,$entity_rest
  * @param $location default location for search
  * @param $display_comments display the comments near the dropdown
  * @param $entity_restrict Restrict to a defined entity
+ * @param $devtype
  * @return nothing (display the select box)
  *
  */
@@ -1090,6 +1090,7 @@ function dropdownConnectPort($ID,$type,$myname,$entity_restrict=-1) {
  *
  * @param $myname name of the select box
  * @param $entity_restrict restrict multi entity
+ * @param $used Already used items : not to display in dropdown
  * @return nothing (print out an HTML select box)
  */
 function dropdownDocument($myname,$entity_restrict='',$used=array()) {

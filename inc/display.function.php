@@ -2193,7 +2193,7 @@ function createProgressBar ($msg="&nbsp;") {
  * Change the Progress Bar Position
  *
  * @param $crt Current Value (less then $max)
- * @param $max Target Value 
+ * @param $tot Maximum Value 
  * @param $msg message inside the bar (defaut is %)
  * @return nothing
  **/

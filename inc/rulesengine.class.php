@@ -388,7 +388,6 @@ class RuleCollection {
 	* @param input the input data used to check criterias
 	* @param output the initial ouput array used to be manipulate by actions
 	* @param params parameters for all internal functions
-	* @param force_no_cache don't write rule's result into cache (for preview mode mainly)
 	* @return the output array updated by actions
 	**/
 	function testAllRules($input=array(),$output=array(),$params=array()){	
@@ -437,8 +436,6 @@ class RuleCollection {
 
 	/**
 	* Prepare input datas for the rules collection
-	* @param $input the input data used to check criterias
-	* @param $params parameters
 	* @return the updated input datas
 	**/
 	function prepareInputDataForTestProcess(){
@@ -752,6 +749,7 @@ class Rule extends CommonDBTM{
 	/**
 	 * Display all rules actions
 	 * @param $target  
+	 * @param $rule_id  
 	**/
 	function showActionsList($target,$rule_id){
 		global $CFG_GLPI, $LANG;
@@ -1067,6 +1065,7 @@ class Rule extends CommonDBTM{
 	* @param $input the input data used to check criterias
 	* @param $output the initial ouput array used to be manipulate by actions
 	* @param $params parameters for all internal functions
+	* @param $getvalue
 	* @return the output array updated by actions. If rule matched add field _rule_process to return value
 	*/
 	function process(&$input,&$output,&$params,$getvalue=true)
@@ -1094,6 +1093,8 @@ class Rule extends CommonDBTM{
 	/**
 	 * Check criterias
 	 * @param $input the input data used to check criterias
+	 * @param $regex_result
+	 * @param $getvalue
 	 * @return boolean if criterias match
 	**/
 	function checkCriterias($input,&$regex_result,$getvalue=true){
@@ -1118,6 +1119,8 @@ class Rule extends CommonDBTM{
 	/**
 	* Check criterias
 	* @param $input the input data used to check criterias
+	* @param $regex_result
+	* @param $check_results
 	* @return boolean if criterias match
 	*/
 	function testCriterias($input,&$regex_result,&$check_results){
@@ -1136,6 +1139,8 @@ class Rule extends CommonDBTM{
 	 * Process a criteria of a rule
 	 * @param $criteria criteria to check
 	 * @param $input the input data used to check criterias
+	 * @param $regex_result
+	 * @param $get_value
 	**/
 	function checkCriteria(&$criteria,&$input,&$regex_result,$get_value=true)
 	{
@@ -1196,6 +1201,7 @@ class Rule extends CommonDBTM{
 	* Execute the actions as defined in the rule
 	* @param $output the fields to manipulate
 	* @param $params parameters
+	* @param $regex_results 
 	* @return the $output array modified
 	*/
 	function executeActions($output,$params,$regex_results)
@@ -1802,6 +1808,7 @@ class RuleCriteria extends CommonDBTM {
 	/**
 	 * Process a criteria of a rule
 	 * @param $input the input data used to check criterias
+	 * @param $regex_result
 	**/
 	function process(&$input,&$regex_result){
 
