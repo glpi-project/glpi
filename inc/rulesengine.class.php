@@ -76,10 +76,7 @@ class RuleCollection {
 	var $orderby="ranking";
 	var $use_output_rule_process_as_next_input=false;
 	
-	var $use_cache=false;
-	var $cache_table;
-	var $cache_params;
-	var $can_replay_rules;
+	var $can_replay_rules=false;
 	var $RuleList=NULL;
 	
 	/**
@@ -88,7 +85,6 @@ class RuleCollection {
 	**/
 	function RuleCollection($rule_type){
 		$this->rule_type = $rule_type;
-		$this->use_cache = false;
 		$this->cache_table="";	
 		$this->cache_params = array();
 		$this->can_replay_rules = false;
@@ -244,13 +240,21 @@ class RuleCollection {
 			echo "</div>";
 		} 
 		
-		if ($this->use_cache){
-			echo "<span class='center'><a href='#' onClick=\"window.open('".$CFG_GLPI["root_doc"]."/front/popup.php?popup=show_cache&amp;rule_type=".$this->rule_type."' ,'glpipopup', 'height=400, width=1000, top=100, left=100, scrollbars=yes' )\">".$LANG["rulesengine"][100]."</a></span>"; 
-		}
-		echo "<br><span class='center'><a href='#' onClick=\"window.open('".$CFG_GLPI["root_doc"]."/front/popup.php?popup=test_all_rules&amp;rule_type=".$this->rule_type."&amp' ,'glpipopup', 'height=400, width=1000, top=100, left=100, scrollbars=yes' )\">".$LANG["rulesengine"][84]."</a></span>"; 
+		echo "<span class='center'><a href='#' onClick=\"window.open('".$CFG_GLPI["root_doc"]."/front/popup.php?popup=test_all_rules&amp;rule_type=".$this->rule_type."&amp' ,'glpipopup', 'height=400, width=1000, top=100, left=100, scrollbars=yes' )\">".$LANG["rulesengine"][84]."</a></span>"; 
 		echo "</form>";
 
+
+		$this->showAdditionalInformationsInForm($target);
+
 	}
+
+	/**
+	* Show the list of rules
+	* @param $target  
+	* @return nothing
+	**/
+	function showAdditionalInformationsInForm($target){
+	}	
 
 	/**
 	* Complete reorder the rules
@@ -352,21 +356,10 @@ class RuleCollection {
 	* @param input the input data used to check criterias
 	* @param output the initial ouput array used to be manipulate by actions
 	* @param params parameters for all internal functions
-	* @param force_no_cache don't write rule's result into cache (for preview mode mainly)
 	* @return the output array updated by actions
-				}
-				if ($this->use_output_rule_process_as_next_input){
-					$input=$output;
+
 	**/
-	function processAllRules($input=array(),$output=array(),$params=array(),$force_no_cache=false){	
-		//If cache enabled : try to get value from the cache
-		if ($this->use_cache){
-			$new_values = $this->checkDataInCache($input);
-			if ($new_values != RULE_NOT_IN_CACHE){
-				$output["_rule_process"]=true;
-				return array_merge($output,$new_values);
-			}
-		}
+	function processAllRules($input=array(),$output=array(),$params=array()){	
 		
 		// Get Collection datas
 		$this->getCollectionDatas(1,1);
@@ -378,17 +371,15 @@ class RuleCollection {
 				//If the rule is active, process it
 				if ($rule->fields["active"]){
 					$output["_rule_process"]=false;
-					$rule->process($input,$output,$params,$this->use_cache);
+					$rule->process($input,$output,$params);
 					if ($output["_rule_process"]&&$this->stop_on_first_match){
 						unset($output["_rule_process"]);
-							
 						$output["_ruleid"]=$rule->fields["ID"];
-						if ($this->use_cache && !$force_no_cache){
-							$this->insertDataInCache($input,$output);
-							unset($output["_ruleid"]);
-						}
 						return $output;
 					}
+				}
+				if ($this->use_output_rule_process_as_next_input){
+					$input=$output;
 				}
 			}
 		}
@@ -457,7 +448,7 @@ class RuleCollection {
 					$output["_rule_process"]=false;
 					$output["result"][$rule->fields["ID"]]["ID"]=$rule->fields["ID"];
 					
-					$rule->process($input,$output,$params,$this->use_cache);
+					$rule->process($input,$output,$params);
 					if ($output["_rule_process"]&&$this->stop_on_first_match){
 						unset($output["_rule_process"]);
 						$output["result"][$rule->fields["ID"]]["result"]=1;
@@ -501,58 +492,7 @@ class RuleCollection {
 		while ($data = $DB->fetch_array($res))
 			$input[]=$data["criteria"];
 		return $input;
-	}
-	
-	function checkDataInCache($input){
-		global $DB;
-		
-		$where="";
-		$first=true;
-		foreach($this->cache_params["input_value"] as $param => $value){
-			if (isset($input[$param])){
-				$where.=(!$first?" AND ":"")."`".$value."`=\"".$input[$param]."\"";
-				$first=false;
-			}
-		}
-			
-		$sql = "SELECT * FROM ".$this->cache_table." WHERE ".$where;
-		$res_check = $DB->query($sql);
-		$output_values=array();
-		if ($DB->numrows($res_check) == 1){
-			foreach ($this->cache_params["output_value"] as $param => $param_value){
-				$output_values[$param]=$DB->result($res_check,0,$param_value);
-			}
-			return $output_values;
-		}else{	
-			return RULE_NOT_IN_CACHE;
-		}	
-	}
-
-	function insertDataInCache($input,$output){
-		global $DB;
-
-		$old_values="";
-		$into_old="";
-		foreach($this->cache_params["input_value"] as $param => $value){
-			$into_old.="`".$value."`, ";
-			$old_values.="\"".$input[$param]."\", ";
-		}
-		
-		$into_new="";
-		$new_values="";
-		foreach($this->cache_params["output_value"] as $param => $value){
-			$into_new.=", `".$value."`";
-			$new_values.=" ,\"".$output[$param]."\"";
-		}
-		$sql="INSERT INTO ".$this->cache_table." (".$into_old."`rule_id`".$into_new.") VALUES (".$old_values.$output["_ruleid"].$new_values.")";
-		$DB->query($sql);
-	}
-
-	function deleteCache(){
-		global $DB;
-		$DB->query("TRUNCATE TABLE ".$this->cache_table);
 	}	
-	
 
 	function showRulesEnginePreviewResultsForm($target,$input){
 		global $LANG,$RULES_ACTIONS;
@@ -2044,14 +1984,54 @@ class RuleDictionnaryType extends RuleCached{
 **/
 class RuleCachedCollection extends RuleCollection{
 	
+	var $cache_table;
+	var $cache_params;
+
 	function initCache($cache_table,$input_params=array("name"=>"old_value"),$output_params=array("name"=>"new_value")){
-		$this->use_cache=true;
 		$this->can_replay_rules=true;
 		$this->cache_table=$cache_table;
 		$this->cache_params["input_value"]=$input_params;
 		$this->cache_params["output_value"]=$output_params;
 	}
 
+	/**
+	* Show the list of rules
+	* @param $target  
+	* @return nothing
+	**/
+	function showAdditionalInformationsInForm($target){
+		global $CFG_GLPI,$LANG;
+		echo "<span class='center'><a href='#' onClick=\"window.open('".$CFG_GLPI["root_doc"]."/front/popup.php?popup=show_cache&amp;rule_type=".$this->rule_type."' ,'glpipopup', 'height=400, width=1000, top=100, left=100, scrollbars=yes' )\">".$LANG["rulesengine"][100]."</a></span>"; 
+
+	}	
+
+
+	/**
+	* Process all the rules collection
+	* @param input the input data used to check criterias
+	* @param output the initial ouput array used to be manipulate by actions
+	* @param params parameters for all internal functions
+	* @param force_no_cache don't write rule's result into cache (for preview mode mainly)
+	* @return the output array updated by actions
+	**/
+	function processAllRules($input=array(),$output=array(),$params=array(),$force_no_cache=false){	
+
+		//If cache enabled : try to get value from the cache
+		$new_values = $this->checkDataInCache($input);
+
+		if ($new_values != RULE_NOT_IN_CACHE){
+			$output["_rule_process"]=true;
+			return array_merge($output,$new_values);
+		}
+
+		$output=parent::processAllRules($input,$output,$params);
+
+		if (!$force_no_cache&&isset($output["_ruleid"])){
+			$this->insertDataInCache($input,$output);
+			unset($output["_ruleid"]);
+		}
+
+	}
 
 	function showCacheStatusByRuleType(){
 		global $DB,$LANG,$CFG_GLPI;
@@ -2086,6 +2066,62 @@ class RuleCachedCollection extends RuleCollection{
 		echo "<td class='tab_bg_2'><strong>".$total."</strong></td>";
 		echo "</tr></table></div>";		
 	}
+
+
+	function checkDataInCache($input){
+		global $DB;
+		
+		$where="";
+		$first=true;
+		foreach($this->cache_params["input_value"] as $param => $value){
+			if (isset($input[$param])){
+				$where.=(!$first?" AND ":"")." ".$value."='".$input[$param]."'";
+				$first=false;
+			}
+		}
+			
+		$sql = "SELECT * FROM ".$this->cache_table." WHERE ".$where;
+
+		if ($res_check = $DB->query($sql)){
+			$output_values=array();
+			if ($DB->numrows($res_check) == 1){
+				$data=$DB->fetch_assoc($res_check);
+				foreach ($this->cache_params["output_value"] as $param => $param_value){
+					if (isset($data[$param_value])){
+						$output_values[$param]=$data[$param_value];
+					}
+				}
+				return $output_values;
+		
+			}
+		}
+		return RULE_NOT_IN_CACHE;
+	}
+
+	function insertDataInCache($input,$output){
+		global $DB;
+
+		$old_values="";
+		$into_old="";
+		foreach($this->cache_params["input_value"] as $param => $value){
+			$into_old.="`".$value."`, ";
+			$old_values.="\"".$input[$param]."\", ";
+		}
+		
+		$into_new="";
+		$new_values="";
+		foreach($this->cache_params["output_value"] as $param => $value){
+			$into_new.=", `".$value."`";
+			$new_values.=" ,\"".$output[$param]."\"";
+		}
+		$sql="INSERT INTO ".$this->cache_table." (".$into_old."`rule_id`".$into_new.") VALUES (".$old_values.$output["_ruleid"].$new_values.")";
+		$DB->query($sql);
+	}
+
+	function deleteCache(){
+		global $DB;
+		$DB->query("TRUNCATE TABLE ".$this->cache_table);
+	}	
 	
 }
 class RuleTypeCollection extends RuleCachedCollection{
@@ -2096,7 +2132,7 @@ class RuleTypeCollection extends RuleCachedCollection{
 	}
 
 	function replayRulesOnExistingDB(){
-		global $DB;
+		global $DB,$LANG;
 
 		$obj = $this->getRelatedObject();
 		$this->deleteCache();
@@ -2110,14 +2146,13 @@ class RuleTypeCollection extends RuleCachedCollection{
 			// Step to refresh progressbar
 			$step=($nb>20 ? floor($nb/20) : 1);
 			$i=0;
-			createProgressBar($LANG["rulesengine"][90]);
 			while ($data = $DB->fetch_array($result)){
 				if (!($i % $step) && !isCommandLine()){
 					changeProgressBarPosition($i,$nb,"$i / $nb");
 				}
 				//Replay Type dictionnary
 				$ID=externalImportDropdown($this->item_table,addslashes($data["name"]),-1,array(),addslashes($data["comments"]));
-	
+
 				if ($data['ID'] != $ID) {
 					$nbupd=0;
 	
@@ -2135,7 +2170,7 @@ class RuleTypeCollection extends RuleCachedCollection{
 		}
 		
 		if (!isCommandLine()) {
-//			changeProgressBarPosition($nb,$nb,"$i / $nb");
+			changeProgressBarPosition($nb,$nb,"$i / $nb");
 		}
 	} // function
 }	

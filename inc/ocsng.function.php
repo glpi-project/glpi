@@ -1130,77 +1130,7 @@ function ocsUpdateBios($glpi_id, $ocs_id, $ocs_server_id, $cfg_ocs, $computer_up
 	}
 }
 
-/**
- * Import a dropdown from OCS table.
- *
- * This import a new dropdown if it doesn't exist.
- *
- *@param $dpdTable string : Name of the glpi dropdown table.
- *@param $value string : Value of the new dropdown.
- *@param $FK_entities int : entity in case of specific dropdown
- *@param $external_params
- *@param $comments
- *
- *@return integer : dropdown id.
- *
- **/
 
-function externalImportDropdown($dpdTable, $value, $FK_entities = -1,$external_params=array(),$comments="") {
-	global $DB, $CFG_GLPI;
-
-	$value=trim($value);
-	if (empty ($value))
-		return 0;
-
-	$input["tablename"] = $dpdTable;
-	$input["value"] = $value;
-	$input['type'] = "first";
-	$input["comments"] = $comments;
-	$input["FK_entities"] = $FK_entities;
-
-
-	$process = false;
-	
-	$input_values=array("name"=>$value);
-	
-	switch ($dpdTable)
-	{
-		case "glpi_dropdown_manufacturer":
-		case "glpi_dropdown_os":
-		case "glpi_dropdown_os_sp":
-		case "glpi_dropdown_os_version":		
-			$rulecollection = getRuleCollectionClassByTableName($dpdTable);
-			$process = true;
-		break;
-		case "glpi_dropdown_model":
-		case "glpi_dropdown_model_monitors":
-		case "glpi_dropdown_model_printers":
-		case "glpi_dropdown_model_peripherals":
-			$rulecollection = getRuleCollectionClassByTableName($dpdTable);
-			$process = true;
-			if (isset($external_params["manufacturer"]))
-				$input_values["manufacturer"] = $external_params["manufacturer"];
-		break;
-		case "glpi_type_computers":
-		case "glpi_type_monitors":
-		case "glpi_type_printers":
-		case "glpi_type_peripherals":
-			$rulecollection = getRuleCollectionClassByTableName($dpdTable);
-			$process = true;
-		break;
-		default:
-		break;
-	}
-
-	if ($process)
-	{
-		$res_rule = $rulecollection->processAllRules($input_values, array (), array());
-		if (isset($res_rule["name"]))
-			$input["value"] = $res_rule["name"];
-	}
-
-	return addDropdown($input);
-}
 
 /**
  * Import a group from OCS table.
