@@ -40,6 +40,6 @@ define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
 $rulecollection = new DictionnaryModelComputerCollection;
-$_GET["delete_cache_rule"]=1;
+
 include (GLPI_ROOT . "/front/rule.common.form.php");
 ?>

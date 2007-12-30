@@ -109,12 +109,13 @@ if (isset($_GET["action"])){
 	echo "</table>";
 	echo "</div>";
 	
-	commonFooter(true);
 
 	$rulecollection->replayRulesOnExistingDB(array(),$_POST);
 
 	changeProgressBarMessage($LANG["rulesengine"][91]." (".timestampToString($timer->Get_Time()).
 		")<br /><a href='".$_SERVER['PHP_SELF']."'>".$LANG["buttons"][13]."</a>");
+
+	commonFooter(true);
 
 
 	exit();

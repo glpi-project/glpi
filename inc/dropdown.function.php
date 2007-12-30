@@ -1327,7 +1327,7 @@ function dropdownMassiveAction($device_type,$deleted=0){
 				if ($isadmin && countElementsInTable("glpi_rules_descriptions","rule_type='".RULE_SOFTWARE_CATEGORY."'") > 0){
 					echo "<option value=\"compute_software_category\">".$LANG["rulesengine"][38]." ".$LANG["rulesengine"][40]."</option>";
 				}
-					if (haveRight("rule_dictionnary_software","w") && countElementsInTable("glpi_rules_descriptions","rule_type='".RULE_DICTIONNARY_SOFTWARE."'") > 0){
+				if (haveRight("rule_dictionnary_software","w") && countElementsInTable("glpi_rules_descriptions","rule_type='".RULE_DICTIONNARY_SOFTWARE."'") > 0){
 					echo "<option value=\"replay_dictionnary\">".$LANG["rulesengine"][76]."</option>";
 				}
 			
