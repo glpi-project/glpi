@@ -1190,9 +1190,6 @@ class Rule extends CommonDBTM{
 //			else
 //			$value = $input[$criteria->fields["criteria"]];
 
-			// TODO Store value in temp array : $criteria->fields["criteria"] / $criteria->fields["condition"] -> value
-			// TODO : Clean on update action
-
 			$res = matchRules($value,$criteria->fields["condition"],$criteria->fields["pattern"],$regex_result);
 		} else	{
 			//If the value if, in fact, an array of values
