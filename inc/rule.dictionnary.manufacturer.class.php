@@ -36,7 +36,7 @@ if (!defined('GLPI_ROOT')) {
 	die("Sorry. You can't access directly to this file");
 }
 
-class DictionnaryManufacturerCollection extends RuleDictionnaryCollection {
+class DictionnaryManufacturerCollection extends RuleCachedCollection {
 
 	var $item_table;
 	
@@ -122,7 +122,7 @@ class DictionnaryManufacturerCollection extends RuleDictionnaryCollection {
 *   - actions
 * 
 **/
-class DictionnaryManufacturerRule extends RuleDictionnary {
+class DictionnaryManufacturerRule extends RuleCached {
 
 	function DictionnaryManufacturerRule() {
 		$this->table = "glpi_rules_descriptions";
