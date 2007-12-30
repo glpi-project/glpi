@@ -57,20 +57,43 @@ class DictionnarySoftwareCollection extends RuleCachedCollection {
 		return $LANG["rulesengine"][35];
 	}
 
-	function replayRulesOnExistingDB($softs_ids = array (),$manufacturer=0) {
+	function warningBeforeReplayRulesOnExistingDB($target){
+		global $LANG,$CFG_GLPI;
+		echo "<form name='testrule_form' id='softdictionnary_confirmation' method='post' action=\"".$target."\">\n";
+		echo "<div class='center'>"; 
+		echo "<table class='tab_cadre_fixe'>";
+		echo "<tr><th colspan='2'><strong>" .$LANG["rulesengine"][92]. "</strong></th</tr>";
+		echo "<tr><td align='center' class='tab_bg_2'>"; 
+		echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/warning2.png\"></td>";
+		echo "<td align='center' class='tab_bg_2'>".$LANG["rulesengine"][93]. "</td></tr>\n";
+		echo "<tr><th colspan='2'><strong>" .$LANG["rulesengine"][95]. "</strong></th</tr>";
+		echo "<tr><td align='center' class='tab_bg_2'>".$LANG["rulesengine"][96]."</td>"; 
+		echo "<td align='center' class='tab_bg_2'>"; 
+		dropdownValue("glpi_dropdown_manufacturer","manufacturer");
+		echo"</td></tr>\n";
+	
+		echo "<tr><td align='center' class='tab_bg_2' colspan='2'><input type='submit' name='replay_rule' value=\"" . $LANG["buttons"][2] . "\" class='submit'><input type='hidden' name='replay_confirm' value='replay_confirm'</td></tr>";
+		echo "</table>";
+		echo "</div></form>";
+		return true;
+	}
+
+	function replayRulesOnExistingDB($items = array (),$params=0) {
 		global $DB;
-		if (isCommandLine())
+		if (isCommandLine()){
 			echo "replayRulesOnExistingDB started : " . date("r") . "\n";
+		}
+
 		
-		if (count($softs_ids) == 0) {
+		if (count($items) == 0) {
 			//Select all the differents software
 			$sql = "SELECT DISTINCT glpi_software.name, glpi_dropdown_manufacturer.name AS manufacturer," .
 			" glpi_software.FK_glpi_enterprise as FK_glpi_enterprise " .
 			"FROM glpi_software LEFT JOIN glpi_dropdown_manufacturer " .
 			"ON glpi_dropdown_manufacturer.ID=glpi_software.FK_glpi_enterprise ";
 			
-			if ($manufacturer > 0)
-				$sql.=" WHERE FK_glpi_enterprise=".$manufacturer;
+			if (isset($params['manufacturer'])&&$params['manufacturer'] > 0)
+				$sql.=" WHERE FK_glpi_enterprise=".$params['manufacturer'];
 				
 			$res = $DB->query($sql);
 			$nb = $DB->numrows($res);
@@ -120,7 +143,7 @@ class DictionnarySoftwareCollection extends RuleCachedCollection {
 			}
 						
 		} else {
-			$this->replayDictionnaryOnSoftwaresByID($softs_ids);
+			$this->replayDictionnaryOnSoftwaresByID($items);
 		}
 		if (isCommandLine())
 			echo "replayRulesOnExistingDB ended : " . date("r") . "\n";

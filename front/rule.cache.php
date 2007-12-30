@@ -55,7 +55,7 @@ if (isset($_GET["rule_type"]))
 			$rulecollection->showCacheStatusByRuleType();
 		else
 		{
-			$rule = getRuleClass($_GET["rule_type"]);
+			$rule = new $rulecollection->rule_class_name();
 			$rule->getRuleWithCriteriasAndActions($_GET["rule_id"],0,0);
 			$rule->showCacheStatusByRule($_SERVER["HTTP_REFERER"]);
 		}

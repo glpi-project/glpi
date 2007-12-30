@@ -84,6 +84,37 @@ if (isset($_GET["action"])){
 			}
 		break;		
 	}
+} else if (isset($_POST["replay_rule"])){
+
+	checkRight($rulecollection->right,"w");	
+
+	// Force ini_set is not a good idea
+	//ini_set("max_execution_time", "0");
+	$timer=new Script_Timer();
+	$timer->Start_Timer();
+	commonHeader($LANG["rulesengine"][17],$_SERVER['PHP_SELF'],"admin",getCategoryNameToDisplay($rulecollection->rule_type),$rulecollection->rule_type);
+
+	if (!isset($_POST['replay_confirm'])&&$rulecollection->warningBeforeReplayRulesOnExistingDB($_SERVER['PHP_SELF'])){
+		commonFooter();
+	}
+
+	echo "<div class='center'>"; 
+	echo "<table class='tab_cadrehov'>";
+
+	echo "<tr><th><div class='relative'><span><strong>" .$LANG["rulesengine"][36]. "</strong></span>";
+	echo " - " .$LANG["rulesengine"][76]. "</th></tr>\n";
+	echo "<tr><td align='center'>";
+	createProgressBar($LANG["rulesengine"][90]);
+	echo "</td></tr>\n";
+	echo "</table>";
+	echo "</div>";
+	commonFooter(true);
+	
+	$rulecollection->replayRulesOnExistingDB(array(),$_POST);
+
+	changeProgressBarMessage($LANG["rulesengine"][91]." (".timestampToString($timer->Get_Time()).
+		")<br /><a href='".$_SERVER['PHP_SELF']."'>".$LANG["buttons"][13]."</a>");
+	//glpi_header($_SERVER['PHP_SELF']);
 }
 
 commonHeader($LANG["rulesengine"][17],$_SERVER['PHP_SELF'],"admin",getCategoryNameToDisplay($rulecollection->rule_type),$rulecollection->rule_type);

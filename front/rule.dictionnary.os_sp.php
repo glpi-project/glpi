@@ -41,9 +41,5 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 $rulecollection = new DictionnaryOSSPCollection;
 
-if (isset($_POST["replay_rule"])){
-	$rulecollection->replayRulesOnExistingDB();
-	glpi_header($_SERVER['PHP_SELF']);
-}
 include (GLPI_ROOT . "/front/rule.common.php");
 ?>
