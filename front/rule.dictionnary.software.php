@@ -40,38 +40,5 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 $rulecollection = new DictionnarySoftwareCollection;
 
-
-if (isset($_POST["replay_rule"])) {
-	commonHeader($LANG["rulesengine"][17],$_SERVER['PHP_SELF'],"admin","dictionnary",$rulecollection->rule_type);
-	showWarningPageBeforeProcessingDictionnary($_SERVER['PHP_SELF']);
-	commonFooter();
-	
-}
-if (isset($_POST["replay_rule_process"])) {
-	ini_set("max_execution_time", "0");
-
-	if (!isset($_POST["manufacturer"])) 
-		$_POST["manufacturer"] = 0;
-		
-	$deb=time();	
-	commonHeader($LANG["rulesengine"][17],$_SERVER['PHP_SELF'],"admin","rule",$rulecollection->rule_type);
-
-	echo "<div class='center'>"; 
-	echo "<table class='tab_cadrehov'>";
-
-	echo "<tr><th><div class='relative'><span><strong>" .$LANG["rulesengine"][35]. "</strong></span>";
-	echo " - " .$LANG["rulesengine"][76]. "</th></tr>\n";
-	echo "<tr><td align='center'>";
-	createProgressBar($LANG["rulesengine"][90]);
-	echo "</td></tr>\n";
-	echo "</table>";
-	echo "</div>";
-	commonFooter(true);
-	
-	$rulecollection->replayRulesOnExistingDB(array(),$_POST["manufacturer"]);
-	
-	changeProgressBarMessage($LANG["rulesengine"][91]." (".timestampToString(time()-$deb).
-		")<br /><a href='".$_SERVER['PHP_SELF']."'>".$LANG["buttons"][13]."</a>");
-}
-else include (GLPI_ROOT . "/front/rule.common.php");
+include (GLPI_ROOT . "/front/rule.common.php");
 ?>

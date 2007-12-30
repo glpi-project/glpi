@@ -130,6 +130,26 @@ class RuleCollection {
 		}
 		// else echo "- getCollectionDatas(".$this->rule_class_name.",$retrieve_criteria,$retrieve_action)\t=> " . count($this->RuleList->list) . "\n";
 	}
+
+	/**
+	 * Is a confirmation needed before replay on DB ?
+	 * If needed need to send 'replay_confirm' in POST 
+	 * @param $target filename : where to go when done
+	 * @return  true if confirmtion is needed, else false
+	**/
+	function warningBeforeReplayRulesOnExistingDB($target){
+		return false;
+	}
+
+	/**
+	 * Replay Collection on DB
+	 * @param $items array containg items to replay. If empty -> all
+	 * @param $params additional parameters if needed
+	**/
+	function replayRulesOnExistingDB($items=array(),$params=array()){
+
+	}
+
 	/**
 	* Get title used in list of rules
 	* @return Title of the rule collection
@@ -152,14 +172,14 @@ class RuleCollection {
 		//Display informations about the how the rules engine process the rules
 		if ($this->stop_on_first_match){
 			//The engine stop on the first matched rule
-			echo "<span align='center'><strong>".$LANG["rulesengine"][120]."</strong></span><br>";
+			echo "<span class='center'><strong>".$LANG["rulesengine"][120]."</strong></span><br>";
 		} else {
 			//The engine process all the rules
-			echo "<span align='center'><strong>".$LANG["rulesengine"][121]."</strong></span><br>";
+			echo "<span class='center'><strong>".$LANG["rulesengine"][121]."</strong></span><br>";
 		}
 		if ($this->use_output_rule_process_as_next_input){
 			//The engine keep the result of a rule to be processed further
-			echo "<span align='center'><strong>".$LANG["rulesengine"][122]."</strong></span><br>";
+			echo "<span class='center'><strong>".$LANG["rulesengine"][122]."</strong></span><br>";
 		}
 		$this->getCollectionDatas(0,0);
 		echo "<br><form name='ruleactions_form' id='ruleactions_form' method='post' action=\"$target\">\n";
@@ -225,9 +245,9 @@ class RuleCollection {
 		} 
 		
 		if ($this->use_cache){
-			echo "<span='center'><a href='#' onClick=\"window.open('".$CFG_GLPI["root_doc"]."/front/popup.php?popup=show_cache&amp;rule_type=".$this->rule_type."' ,'glpipopup', 'height=400, width=1000, top=100, left=100, scrollbars=yes' )\">".$LANG["rulesengine"][100]."</a></span>"; 
+			echo "<span class='center'><a href='#' onClick=\"window.open('".$CFG_GLPI["root_doc"]."/front/popup.php?popup=show_cache&amp;rule_type=".$this->rule_type."' ,'glpipopup', 'height=400, width=1000, top=100, left=100, scrollbars=yes' )\">".$LANG["rulesengine"][100]."</a></span>"; 
 		}
-		echo "<br><span='center'><a href='#' onClick=\"window.open('".$CFG_GLPI["root_doc"]."/front/popup.php?popup=test_all_rules&amp;rule_type=".$this->rule_type."&amp' ,'glpipopup', 'height=400, width=1000, top=100, left=100, scrollbars=yes' )\">".$LANG["rulesengine"][84]."</a></span>"; 
+		echo "<br><span class='center'><a href='#' onClick=\"window.open('".$CFG_GLPI["root_doc"]."/front/popup.php?popup=test_all_rules&amp;rule_type=".$this->rule_type."&amp' ,'glpipopup', 'height=400, width=1000, top=100, left=100, scrollbars=yes' )\">".$LANG["rulesengine"][84]."</a></span>"; 
 		echo "</form>";
 
 	}
@@ -533,9 +553,7 @@ class RuleCollection {
 		$DB->query("TRUNCATE TABLE ".$this->cache_table);
 	}	
 	
-	function replayRulesOnExistingDB(){		
-	}	
-	
+
 	function showRulesEnginePreviewResultsForm($target,$input){
 		global $LANG,$RULES_ACTIONS;
 		$output = array();
@@ -2034,6 +2052,7 @@ class RuleCachedCollection extends RuleCollection{
 		$this->cache_params["output_value"]=$output_params;
 	}
 
+
 	function showCacheStatusByRuleType(){
 		global $DB,$LANG,$CFG_GLPI;
 		echo "<div class='center'>"; 
@@ -2086,10 +2105,13 @@ class RuleTypeCollection extends RuleCachedCollection{
 		$result = $DB->query($Sql);
 
 		$nb = $DB->numrows($result);
-		$step=($nb>20 ? floor($DB->numrows($result)/20) : 1);
-
-		if ($result && $DB->numrows($result)>0) {
-			for ($i=0;$data = $DB->fetch_array($result);$i++) {			
+		
+		if ($result && $nb>0) {
+			// Step to refresh progressbar
+			$step=($nb>20 ? floor($nb/20) : 1);
+			$i=0;
+			createProgressBar($LANG["rulesengine"][90]);
+			while ($data = $DB->fetch_array($result)){
 				if (!($i % $step) && !isCommandLine()){
 					changeProgressBarPosition($i,$nb,"$i / $nb");
 				}
@@ -2107,11 +2129,13 @@ class RuleTypeCollection extends RuleCachedCollection{
 					$resdel = $DB->query($Sql);
 					$nbdel = ($resdel ? $DB->affected_rows() : -1);
 				}		
-			} // for fetch
+
+				$i++;
+			} 
 		}
 		
 		if (!isCommandLine()) {
-			changeProgressBarPosition($nb,$nb,"$i / $nb");
+//			changeProgressBarPosition($nb,$nb,"$i / $nb");
 		}
 	} // function
 }	
@@ -2125,7 +2149,7 @@ class RuleModelCollection extends RuleCachedCollection{
 	function RuleModelCollection(){
 		$this->item_table = "";
 	}
-	
+
 	function replayRulesOnExistingDB(){
 		global $DB;
 		

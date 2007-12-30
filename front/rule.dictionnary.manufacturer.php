@@ -41,29 +41,5 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 $rulecollection = new DictionnaryManufacturerCollection;
 
-if (isset($_POST["replay_rule"])){
-	ini_set("max_execution_time", "0");
-
-	$deb=time();	
-	commonHeader($LANG["rulesengine"][17],$_SERVER['PHP_SELF'],"admin","dictionnary",$rulecollection->rule_type);
-
-	echo "<div class='center'>"; 
-	echo "<table class='tab_cadrehov'>";
-
-	echo "<tr><th><div class='relative'><span><strong>" .$LANG["rulesengine"][36]. "</strong></span>";
-	echo " - " .$LANG["rulesengine"][76]. "</th></tr>\n";
-	echo "<tr><td align='center'>";
-	createProgressBar($LANG["rulesengine"][90]);
-	echo "</td></tr>\n";
-	echo "</table>";
-	echo "</div>";
-	commonFooter(true);
-	
-	$rulecollection->replayRulesOnExistingDB();
-	
-	changeProgressBarMessage($LANG["rulesengine"][91]." (".timestampToString(time()-$deb).
-		")<br /><a href='".$_SERVER['PHP_SELF']."'>".$LANG["buttons"][13]."</a>");
-	
-}
-else include (GLPI_ROOT . "/front/rule.common.php");
+include (GLPI_ROOT . "/front/rule.common.php");
 ?>

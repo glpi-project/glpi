@@ -2204,7 +2204,7 @@ function changeProgressBarPosition ($crt, $tot, $msg="") {
 		$pct=100;
 	else
 		$pct = floor($crt*100/$tot);
-	
+
 	if (empty($msg)) $msg = $pct." %";
 
 	echo "<script type='text/javascript'>action_change_progress(\"$pct%\",\"$msg\")</script>\n";
