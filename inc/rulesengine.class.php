@@ -48,7 +48,14 @@ class SingletonRuleList {
 	 
 }
 
-// Not member of SingletonRuleLis because PHP 5 need 'static' 
+/**
+ * get a unique instance of a SingletonRuleList for a type of RuleCollection
+ * 
+ * Not member of SingletonRuleList because PHP 5 need 'static function'
+ * 
+ * @param $type of the Rule listed
+ * @return unique instance of an object
+ */
 function &getInstanceOfSingletonRuleList($type) {
 	static $instances = array();
 	
