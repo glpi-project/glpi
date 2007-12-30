@@ -101,19 +101,23 @@ if (isset($_GET["action"])){
 	echo "<div class='center'>"; 
 	echo "<table class='tab_cadrehov'>";
 
-	echo "<tr><th><div class='relative'><span><strong>" .$LANG["rulesengine"][36]. "</strong></span>";
+	echo "<tr><th><div class='relative'><span><strong>" .$rulecollection->getTitle(). "</strong></span>";
 	echo " - " .$LANG["rulesengine"][76]. "</th></tr>\n";
 	echo "<tr><td align='center'>";
 	createProgressBar($LANG["rulesengine"][90]);
 	echo "</td></tr>\n";
 	echo "</table>";
 	echo "</div>";
-	commonFooter(true);
 	
+	commonFooter(true);
+
 	$rulecollection->replayRulesOnExistingDB(array(),$_POST);
 
 	changeProgressBarMessage($LANG["rulesengine"][91]." (".timestampToString($timer->Get_Time()).
 		")<br /><a href='".$_SERVER['PHP_SELF']."'>".$LANG["buttons"][13]."</a>");
+
+
+	exit();
 	//glpi_header($_SERVER['PHP_SELF']);
 }
 
