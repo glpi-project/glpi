@@ -41,8 +41,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 $rulecollection = new DictionnaryOSCollection;
 
-if (isset($_POST["replay_rule"]))
-{
+if (isset($_POST["replay_rule"])){
 	$rulecollection->replayRulesOnExistingDB();
 	glpi_header($_SERVER['PHP_SELF']);
 }

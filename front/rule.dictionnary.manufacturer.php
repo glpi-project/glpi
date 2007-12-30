@@ -41,8 +41,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 $rulecollection = new DictionnaryManufacturerCollection;
 
-if (isset($_POST["replay_rule"]))
-{
+if (isset($_POST["replay_rule"])){
 	ini_set("max_execution_time", "0");
 
 	$deb=time();	

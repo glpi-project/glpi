@@ -39,7 +39,7 @@ $NEEDED_ITEMS=array("entity","rulesengine","ocsng","rule.ocs");
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-$rule = new OcsAffectEntityRule();
+$rulecollection = new OcsRuleCollection(-1);
 
 include (GLPI_ROOT . "/front/rule.common.form.php");
 ?>
