@@ -1062,10 +1062,9 @@ class Rule extends CommonDBTM{
 	* @param $input the input data used to check criterias
 	* @param $output the initial ouput array used to be manipulate by actions
 	* @param $params parameters for all internal functions
-	* @param $getvalue
 	* @return the output array updated by actions. If rule matched add field _rule_process to return value
 	*/
-	function process(&$input,&$output,&$params,$getvalue=true)
+	function process(&$input,&$output,&$params)
 	{
 		if (count($this->criterias))	
 		{
@@ -1073,7 +1072,7 @@ class Rule extends CommonDBTM{
 			
 			$input=$this->prepareInputDataForProcess($input,$params);
 
- 			if ($this->checkCriterias($input,$regex_result,$getvalue)){
+ 			if ($this->checkCriterias($input,$regex_result)){
 				$output=$this->executeActions($output,$params,$regex_result);
 	
 				//Hook 
@@ -1091,22 +1090,21 @@ class Rule extends CommonDBTM{
 	 * Check criterias
 	 * @param $input the input data used to check criterias
 	 * @param $regex_result
-	 * @param $getvalue
 	 * @return boolean if criterias match
 	**/
-	function checkCriterias($input,&$regex_result,$getvalue=true){
+	function checkCriterias($input,&$regex_result){
 		$doactions=false;
 		reset($this->criterias);
 		if ($this->fields["match"]==AND_MATCHING){
 			$doactions=true;			
 			foreach ($this->criterias as $criteria){
-				$doactions &= $this->checkCriteria($criteria,$input,$regex_result,$getvalue);
+				$doactions &= $this->checkCriteria($criteria,$input,$regex_result);
 				if (!$doactions) break;
 			}
 		} else { // OR MATCHING
 			$doactions=false;
 			foreach ($this->criterias as $criteria){
-				$doactions |= $this->checkCriteria($criteria,$input,$regex_result,$getvalue);
+				$doactions |= $this->checkCriteria($criteria,$input,$regex_result);
 				if ($doactions) break;
 			}
 		}
@@ -1124,7 +1122,7 @@ class Rule extends CommonDBTM{
 		reset($this->criterias);
 		
 		foreach ($this->criterias as $criteria){
-			$result = $this->checkCriteria($criteria,$input,$regex_result,false);
+			$result = $this->checkCriteria($criteria,$input,$regex_result);
 			$check_results[$criteria->fields["ID"]]["name"]=$criteria->fields["criteria"];
 			$check_results[$criteria->fields["ID"]]["value"]=$criteria->fields["pattern"];
 			$check_results[$criteria->fields["ID"]]["result"]=((!$result)?0:1);
@@ -1137,9 +1135,8 @@ class Rule extends CommonDBTM{
 	 * @param $criteria criteria to check
 	 * @param $input the input data used to check criterias
 	 * @param $regex_result
-	 * @param $get_value
 	**/
-	function checkCriteria(&$criteria,&$input,&$regex_result,$get_value=true)
+	function checkCriteria(&$criteria,&$input,&$regex_result)
 	{
 		// Undefine criteria field : set to blank
 		if (!isset($input[$criteria->fields["criteria"]])){
@@ -1147,10 +1144,7 @@ class Rule extends CommonDBTM{
 		}
 		//If the value is not an array
 		if (!is_array($input[$criteria->fields["criteria"]])){
-//			if ($get_value)
-				$value=$this->getCriteriaValue($criteria->fields["criteria"],$criteria->fields["condition"],$input[$criteria->fields["criteria"]]);
-//			else
-//			$value = $input[$criteria->fields["criteria"]];
+			$value=$this->getCriteriaValue($criteria->fields["criteria"],$criteria->fields["condition"],$input[$criteria->fields["criteria"]]);
 
 			// TODO Store value in temp array : $criteria->fields["criteria"] / $criteria->fields["condition"] -> value
 			// TODO : Clean on update action
@@ -1162,10 +1156,8 @@ class Rule extends CommonDBTM{
 			if (in_array($criteria->fields["condition"],array(PATTERN_IS_NOT,PATTERN_NOT_CONTAIN,REGEX_NOT_MATCH))){
 				$res = true;
 				foreach($input[$criteria->fields["criteria"]] as $tmp){
-//					if ($get_value)
-						$value=$this->getCriteriaValue($criteria->fields["criteria"],$criteria->fields["condition"],$tmp);
-//					else
-//						$value = $tmp;	
+					$value=$this->getCriteriaValue($criteria->fields["criteria"],$criteria->fields["condition"],$tmp);
+
 					$res &= matchRules($value,$criteria->fields["condition"],$criteria->fields["pattern"],$regex_result);
 					if (!$res) break;
 				}
@@ -1174,10 +1166,8 @@ class Rule extends CommonDBTM{
 			 } else {
 				$res = false;
 				foreach($input[$criteria->fields["criteria"]] as $tmp){
-//					if ($get_value)
-						$value=$this->getCriteriaValue($criteria->fields["criteria"],$criteria->fields["condition"],$tmp);
-//					else
-//						$value = $tmp;	
+					$value=$this->getCriteriaValue($criteria->fields["criteria"],$criteria->fields["condition"],$tmp);
+
 					$res |= matchRules($value,$criteria->fields["condition"],$criteria->fields["pattern"],$regex_result);
 					if ($res) break;
 				}
