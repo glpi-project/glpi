@@ -41,6 +41,5 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 $rulecollection = new DictionnaryTypePrinterCollection;
 
-$_GET["delete_cache_rule"]=1;
 include (GLPI_ROOT . "/front/rule.common.form.php");
 ?>

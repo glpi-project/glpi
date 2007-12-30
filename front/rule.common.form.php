@@ -51,11 +51,6 @@ if (isset($_GET['onglet'])) {
 
 $rulecriteria = new RuleCriteria();
 $ruleaction = new RuleAction();
-
-if (isset($_GET["delete_cache_rule"]) && $_GET["delete_cache_rule"]==1 && isset($_POST["rule_id"]) && $_POST["rule_id"]!='')
-	$delete_rule_cache = true;
-else	
-	$delete_rule_cache = false;
 		
 if (isset($_POST["delete_criteria"]))
 {
@@ -69,8 +64,10 @@ if (isset($_POST["delete_criteria"]))
 			$rulecriteria->delete($input);
 		}
 	
-	if($delete_rule_cache)
+	// Is a cached Rule ?
+	if(method_exists($rule,'deleteCacheByRuleId')){
 		$rule->deleteCacheByRuleId($_POST["rule_id"]);
+	}
 		
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
@@ -84,8 +81,10 @@ if (isset($_POST["delete_action"]))
 			$ruleaction->delete($input);
 		}
 
-	if($delete_rule_cache)
+	// Is a cached Rule ?
+	if(method_exists($rule,'deleteCacheByRuleId')){
 		$rule->deleteCacheByRuleId($_POST["rule_id"]);
+	}
 	
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
@@ -93,8 +92,10 @@ elseif (isset($_POST["add_criteria"]))
 {
 	checkRight($rule->right,"w");
 
-	if($delete_rule_cache)
+	// Is a cached Rule ?
+	if(method_exists($rule,'deleteCacheByRuleId')){
 		$rule->deleteCacheByRuleId($_POST["rule_id"]);
+	}
 	
 	unset($_POST["rule_id"]);
 	$rulecriteria->add($_POST);
@@ -106,9 +107,11 @@ elseif (isset($_POST["add_action"]))
 {
 	checkRight($rule->right,"w");
 
-	if($delete_rule_cache)
+	// Is a cached Rule ?
+	if(method_exists($rule,'deleteCacheByRuleId')){
 		$rule->deleteCacheByRuleId($_POST["rule_id"]);
-	
+	}
+
 	unset($_POST["rule_id"]);
 
 	$ruleaction->add($_POST);
@@ -119,8 +122,11 @@ elseif (isset($_POST["update_rule"]))
 {
 	checkRight($rule->right,"w");
 
-	if($delete_rule_cache)
+	// Is a cached Rule ?
+	if(method_exists($rule,'deleteCacheByRuleId')){
 		$rule->deleteCacheByRuleId($_POST["rule_id"]);
+	}
+
 	unset($_POST["rule_id"]);
 
 	$rule->update($_POST);
@@ -131,8 +137,11 @@ elseif (isset($_POST["update_rule"]))
 {
 	checkRight($rule->right,"w");
 
-	if($delete_rule_cache)
+	// Is a cached Rule ?
+	if(method_exists($rule,'deleteCacheByRuleId')){
 		$rule->deleteCacheByRuleId($_POST["rule_id"]);
+	}
+
 	unset($_POST["rule_id"]);
 
 	$newID=$rule->add($_POST);
@@ -146,8 +155,10 @@ elseif (isset($_POST["update_rule"]))
 	$rule->delete($_POST);
 	logEvent($_POST["ID"], "rules", 4, "setup", $_SESSION["glpiname"]." ".$LANG["log"][22]);
 
-	if($delete_rule_cache)
-		$rule->deleteCacheByRuleId($_GET["rule_id"]);
+	// Is a cached Rule ?
+	if(method_exists($rule,'deleteCacheByRuleId')){
+		$rule->deleteCacheByRuleId($_POST["rule_id"]);
+	}
 
 	glpi_header($CFG_GLPI['root_doc']."/front/rule.php");
 }
