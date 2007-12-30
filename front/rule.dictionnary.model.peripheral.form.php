@@ -39,7 +39,7 @@ $NEEDED_ITEMS=array("entity","rulesengine","rule.dictionnary.model");
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-$rule = new DictionnaryModelPeripheralRule;
+$rulecollection = new DictionnaryModelPeripheralCollection;
 $_GET["delete_cache_rule"]=1;
 include (GLPI_ROOT . "/front/rule.common.form.php");
 ?>

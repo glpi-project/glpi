@@ -36,6 +36,10 @@
 if (!defined('GLPI_ROOT')){
 	die("Sorry. You can't access directly to this file");
 	}
+
+
+$rule = new $rulecollection->rule_class_name();
+
 checkRight($rule->right,"r");
 
 if(!isset($_GET["ID"])) $_GET["ID"] = "";
@@ -47,7 +51,6 @@ if (isset($_GET['onglet'])) {
 
 $rulecriteria = new RuleCriteria();
 $ruleaction = new RuleAction();
-$rulecollection = new RuleCollection($rule->rule_type);
 
 if (isset($_GET["delete_cache_rule"]) && $_GET["delete_cache_rule"]==1 && isset($_POST["rule_id"]) && $_POST["rule_id"]!='')
 	$delete_rule_cache = true;

@@ -40,8 +40,8 @@ define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
 $rulecollection = new DictionnaryTypePrinterCollection;
-if (isset($_POST["replay_rule"]))
-{
+
+if (isset($_POST["replay_rule"])){
 	$rulecollection->replayRulesOnExistingDB();
 	glpi_header($_SERVER['PHP_SELF']);
 }
