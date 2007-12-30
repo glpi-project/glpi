@@ -36,8 +36,32 @@ if (!defined('GLPI_ROOT')){
 	die("Sorry. You can't access directly to this file");
 	}
 
+
+class SingletonRuleList {
+	var $list;
+	var $load;	
+	
+	function SingletonRuleList () {
+		$this->list = array();
+		$this->load = 0;
+	}
+	 
+}
+
+// Not member of SingletonRuleLis because PHP 5 need 'static' 
+function &getInstanceOfSingletonRuleList($type) {
+	static $instances = array();
+	
+	if (!isset($instances[$type])) {
+		$instances[$type] = new SingletonRuleList();
+		// echo("++ getInstance($type) : created\n");
+	}
+	// else	echo("++ getInstance($type) : reused\n");
+	
+	return $instances[$type];
+}
+
 class RuleCollection {
-	var $rule_list = array();
 	var $rule_type;
 	var $rule_class_name="Rule";
 	var $stop_on_first_match=false;
@@ -49,7 +73,7 @@ class RuleCollection {
 	var $cache_table;
 	var $cache_params;
 	var $can_replay_rules;
-	var $load=0;
+	var $RuleList=NULL;
 	
 	/**
 	* Constructor
@@ -61,7 +85,6 @@ class RuleCollection {
 		$this->cache_table="";	
 		$this->cache_params = array();
 		$this->can_replay_rules = false;
-		$this->load = 0;
 	}
 
 
@@ -73,27 +96,32 @@ class RuleCollection {
 	function getCollectionDatas($retrieve_criteria=0,$retrieve_action=0){
 		global $DB;
 		
+		if ($this->RuleList === NULL)
+			$this->RuleList = getInstanceOfSingletonRuleList($this->rule_type);
+			
 		$need = 1+($retrieve_criteria?2:0)+($retrieve_action?4:0);
 
 		// check if load required
-		if (($need & $this->load) != $need) {
+		if (($need & $this->RuleList->load) != $need) {
 
 			//Select all the rules of a different type
 			$sql = "SELECT ID FROM glpi_rules_descriptions WHERE rule_type=".$this->rule_type." ORDER by ".$this->orderby." ASC";
 			 $result = $DB->query($sql);
 			if ($result){
-				$this->rule_list = array();
+				$this->RuleList->list = array();
 			 	while ($rule=$DB->fetch_array($result)) {
 				 	//For each rule, get a Rule object with all the criterias and actions
 					$tempRule= new $this->rule_class_name();
 					if ($tempRule->getRuleWithCriteriasAndActions($rule["ID"],$retrieve_criteria,$retrieve_action)){
 						//Add the object to the list of rules
-						$this->rule_list[] = $tempRule;
+						$this->RuleList->list[] = $tempRule;
 					}
 				}
-				$this->load = $need;
+				$this->RuleList->load = $need;
 			}
+			// echo "+ getCollectionDatas(".$this->rule_class_name.",$retrieve_criteria,$retrieve_action)\t=> " . count($this->RuleList->list) . "\n";
 		}
+		// else echo "- getCollectionDatas(".$this->rule_class_name.",$retrieve_criteria,$retrieve_action)\t=> " . count($this->RuleList->list) . "\n";
 	}
 	/**
 	* Get title used in list of rules
@@ -146,8 +174,8 @@ class RuleCollection {
 		echo "</tr>";
 		
 		$i=0;
-		$nb=count($this->rule_list);
-		foreach ($this->rule_list as $rule){
+		$nb=count($this->RuleList->list);
+		foreach ($this->RuleList->list as $rule){
 			$rule->showMinimalForm($target,$i==0,$i==$nb-1);
 			$i++;
 		}
@@ -317,9 +345,9 @@ class RuleCollection {
 		$this->getCollectionDatas(1,1);
 		$input=$this->prepareInputDataForProcess($input,$params);
 		
-		if (count($this->rule_list)){
+		if (count($this->RuleList->list)){
 
-			foreach ($this->rule_list as $rule){
+			foreach ($this->RuleList->list as $rule){
 				//If the rule is active, process it
 				if ($rule->fields["active"]){
 					$output["_rule_process"]=false;
@@ -394,9 +422,9 @@ class RuleCollection {
 		// Get Collection datas
 		$this->getCollectionDatas(1,1);
 		
-		if (count($this->rule_list)){
+		if (count($this->RuleList->list)){
 
-			foreach ($this->rule_list as $rule){
+			foreach ($this->RuleList->list as $rule){
 				//If the rule is active, process it
 				if ($rule->fields["active"]){
 					$output["_rule_process"]=false;
