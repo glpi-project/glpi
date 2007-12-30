@@ -38,7 +38,7 @@ chdir(dirname($_SERVER["SCRIPT_FILENAME"]));
 
 $NEEDED_ITEMS=array("cron","computer","device","printer","networking","peripheral","monitor","setup",
 "software","infocom","phone","tracking","enterprise","ocsng","mailgate","rulesengine","rule.tracking","rule.softwarecategories","rule.ocs",
-"user","reservation","reminder","admininfo","group","dbreplicate");
+"user","reservation","reminder","admininfo","group");
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
