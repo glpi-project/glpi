@@ -36,7 +36,7 @@ if (!defined('GLPI_ROOT')) {
 	die("Sorry. You can't access directly to this file");
 }
 
-class DictionnaryOSCollection extends RuleDictionnaryCollection {
+class DictionnaryOSCollection extends RuleCachedCollection {
 
 	var $item_table;
 	
@@ -101,7 +101,7 @@ class DictionnaryOSCollection extends RuleDictionnaryCollection {
 *   - actions
 * 
 **/
-class DictionnaryOSRule extends RuleDictionnary {
+class DictionnaryOSRule extends RuleCached {
 
 	function DictionnaryOSRule() {
 		$this->table = "glpi_rules_descriptions";
@@ -122,7 +122,7 @@ class DictionnaryOSRule extends RuleDictionnary {
 }
 
 
-class DictionnaryOSSPCollection extends RuleDictionnaryCollection {
+class DictionnaryOSSPCollection extends RuleCachedCollection {
 
 	var $item_table;
 	
@@ -180,7 +180,7 @@ class DictionnaryOSSPCollection extends RuleDictionnaryCollection {
 *   - actions
 * 
 **/
-class DictionnaryOSSPRule extends RuleDictionnary {
+class DictionnaryOSSPRule extends RuleCached {
 
 	function DictionnaryOSSPRule() {
 		$this->table = "glpi_rules_descriptions";
@@ -201,7 +201,7 @@ class DictionnaryOSSPRule extends RuleDictionnary {
 }
 
 
-class DictionnaryOSVersionCollection extends RuleDictionnaryCollection {
+class DictionnaryOSVersionCollection extends RuleCachedCollection {
 
 	var $item_table;
 	
@@ -259,7 +259,7 @@ class DictionnaryOSVersionCollection extends RuleDictionnaryCollection {
 *   - actions
 * 
 **/
-class DictionnaryOSVersionRule extends RuleDictionnary {
+class DictionnaryOSVersionRule extends RuleCached {
 
 	function DictionnaryOSVersionRule() {
 		$this->table = "glpi_rules_descriptions";
