@@ -1185,10 +1185,10 @@ class Rule extends CommonDBTM{
 		}
 		//If the value is not an array
 		if (!is_array($input[$criteria->fields["criteria"]])){
-			if ($get_value)
+//			if ($get_value)
 				$value=$this->getCriteriaValue($criteria->fields["criteria"],$criteria->fields["condition"],$input[$criteria->fields["criteria"]]);
-			else
-			$value = $input[$criteria->fields["criteria"]];
+//			else
+//			$value = $input[$criteria->fields["criteria"]];
 
 			$res = matchRules($value,$criteria->fields["condition"],$criteria->fields["pattern"],$regex_result);
 		} else	{
@@ -1197,10 +1197,10 @@ class Rule extends CommonDBTM{
 			if (in_array($criteria->fields["condition"],array(PATTERN_IS_NOT,PATTERN_NOT_CONTAIN,REGEX_NOT_MATCH))){
 				$res = true;
 				foreach($input[$criteria->fields["criteria"]] as $tmp){
-					if ($get_value)
+//					if ($get_value)
 						$value=$this->getCriteriaValue($criteria->fields["criteria"],$criteria->fields["condition"],$tmp);
-					else
-						$value = $tmp;	
+//					else
+//						$value = $tmp;	
 					$res &= matchRules($value,$criteria->fields["condition"],$criteria->fields["pattern"],$regex_result);
 					if (!$res) break;
 				}
@@ -1209,10 +1209,10 @@ class Rule extends CommonDBTM{
 			 } else {
 				$res = false;
 				foreach($input[$criteria->fields["criteria"]] as $tmp){
-					if ($get_value)
+//					if ($get_value)
 						$value=$this->getCriteriaValue($criteria->fields["criteria"],$criteria->fields["condition"],$tmp);
-					else
-						$value = $tmp;	
+//					else
+//						$value = $tmp;	
 					$res |= matchRules($value,$criteria->fields["condition"],$criteria->fields["pattern"],$regex_result);
 					if ($res) break;
 				}
@@ -1642,40 +1642,33 @@ class Rule extends CommonDBTM{
 		if (!isset($crit['type'])){
 			return $value;
 		} else {
-			
 			switch ($crit['type']){
 				case "dropdown":
-					return getDropdownName($crit["table"],$value);
-					switch ($crit['type']){
-						case "dropdown":
-							if ($condition!=PATTERN_IS&&$condition!=PATTERN_IS_NOT){
- 								return getDropdownName($crit["table"],$value);
- 							}
- 						break;
-						case "dropdown_assign":
-						case "dropdown_users":
-		 					if ($condition!=PATTERN_IS&&$condition!=PATTERN_IS_NOT){
-		 						return getUserName($value);
-		 					}
-							break;
-						case "yesno":
-		 					if ($condition!=PATTERN_IS&&$condition!=PATTERN_IS_NOT){
-		 						if ($value) 
-		 							return $LANG["choice"][1];
-		 						else
-		 							return $LANG["choice"][0];	
-		 					}
-							break;
-						case "dropdown_priority":
-		 					if ($condition!=PATTERN_IS&&$condition!=PATTERN_IS_NOT){
-		 						return getPriorityName($value);
-		 					}
-		 					break;
-						default :
-							return $value;
-							break;
+					if ($condition!=PATTERN_IS && $condition!=PATTERN_IS_NOT){
+						return getDropdownName($crit["table"],$value);
 					}
-				}
+				break;
+				case "dropdown_assign":
+				case "dropdown_users":
+ 					if ($condition!=PATTERN_IS&&$condition!=PATTERN_IS_NOT){
+ 						return getUserName($value);
+ 					}
+				break;
+				case "yesno":
+ 					if ($condition!=PATTERN_IS&&$condition!=PATTERN_IS_NOT){
+ 						if ($value) 
+ 							return $LANG["choice"][1];
+ 						else
+ 							return $LANG["choice"][0];	
+ 					}
+				break;
+				case "dropdown_priority":
+ 					if ($condition!=PATTERN_IS&&$condition!=PATTERN_IS_NOT){
+ 						return getPriorityName($value);
+ 					}
+				break;
+			}
+			return $value;
 		}
 	}
 
