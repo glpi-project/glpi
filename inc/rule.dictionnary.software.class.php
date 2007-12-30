@@ -37,10 +37,10 @@ if (!defined('GLPI_ROOT')) {
 	die("Sorry. You can't access directly to this file");
 }
 
-class DictionnarySoftwareCollection extends RuleDictionnaryCollection {
+class DictionnarySoftwareCollection extends RuleCachedCollection {
 
 	function DictionnarySoftwareCollection() {
-
+		
 		$this->rule_type = RULE_DICTIONNARY_SOFTWARE;
 		$this->rule_class_name = 'DictionnarySoftwareRule';
 		$this->stop_on_first_match = true;
@@ -302,7 +302,7 @@ class DictionnarySoftwareCollection extends RuleDictionnaryCollection {
 *   - actions
 * 
 **/
-class DictionnarySoftwareRule extends RuleDictionnary {
+class DictionnarySoftwareRule extends RuleCached {
 
 	function DictionnarySoftwareRule() {
 		$this->table = "glpi_rules_descriptions";
@@ -344,4 +344,5 @@ class DictionnarySoftwareRule extends RuleDictionnary {
 		echo "<td class='tab_bg_2'>".((isset($fields["new_manufacturer"]) && $fields["new_manufacturer"]!='')?getDropdownName("glpi_dropdown_manufacturer",$fields["new_manufacturer"]):$LANG["rulesengine"][106])."</td>";
 	}	
 }
+
 ?>

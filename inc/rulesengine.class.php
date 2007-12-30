@@ -649,6 +649,10 @@ class Rule extends CommonDBTM{
 		$this->can_sort=false;
 	}
 
+	function post_getEmpty () {
+		$this->fields['active']=1;
+	}
+
 	function getTitleRule($target){
 	}
 	
@@ -1918,7 +1922,7 @@ class RuleCriteria extends CommonDBTM {
 
 }
 
-class RuleDictionnary extends Rule{
+class RuleCached extends Rule{
 
 	function getTitleAction($target){
 		global $LANG,$CFG_GLPI;
@@ -1987,7 +1991,7 @@ class RuleDictionnary extends Rule{
 			
 }
 
-class RuleDictionnaryModel extends RuleDictionnary{
+class RuleDictionnaryModel extends RuleCached{
 	function maxActionsCount(){
 		return 1;
 	}
@@ -2010,7 +2014,7 @@ class RuleDictionnaryModel extends RuleDictionnary{
 	}
 }
 
-class RuleDictionnaryType extends RuleDictionnary{
+class RuleDictionnaryType extends RuleCached{
 	function maxActionsCount(){
 		return 1;
 	}
@@ -2020,7 +2024,7 @@ class RuleDictionnaryType extends RuleDictionnary{
  * Specific rule collection for dictionnary : got a function initialize rule's caching system
  * 
 **/
-class RuleDictionnaryCollection extends RuleCollection{
+class RuleCachedCollection extends RuleCollection{
 	
 	function initCache($cache_table,$input_params=array("name"=>"old_value"),$output_params=array("name"=>"new_value")){
 		$this->use_cache=true;
@@ -2065,7 +2069,7 @@ class RuleDictionnaryCollection extends RuleCollection{
 	}
 	
 }
-class RuleTypeCollection extends RuleDictionnaryCollection{
+class RuleTypeCollection extends RuleCachedCollection{
 
 	var $item_table="";
 	
@@ -2112,7 +2116,7 @@ class RuleTypeCollection extends RuleDictionnaryCollection{
 	} // function
 }	
 
-class RuleModelCollection extends RuleDictionnaryCollection{
+class RuleModelCollection extends RuleCachedCollection{
 	var $item_table;
 	
 	function getRelatedObject(){		

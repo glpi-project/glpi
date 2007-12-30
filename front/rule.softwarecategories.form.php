@@ -39,7 +39,7 @@ $NEEDED_ITEMS=array("entity","rulesengine","rule.softwarecategories");
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-$rule = new SoftwareCategoriesRule();
+$rulecollection = new SoftwareCategoriesRuleCollection();
 
 include (GLPI_ROOT . "/front/rule.common.form.php");
 ?>
