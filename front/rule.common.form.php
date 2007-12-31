@@ -56,7 +56,6 @@ if (isset($_POST["delete_criteria"]))
 {
 	checkRight($rule->right,"w");
 
-
 	if (count($_POST["item"]))
 		foreach ($_POST["item"] as $key => $val)
 		{
@@ -74,6 +73,7 @@ if (isset($_POST["delete_criteria"]))
 if (isset($_POST["delete_action"]))
 {
 	checkRight($rule->right,"w");
+
 	if (count($_POST["item"]))
 		foreach ($_POST["item"] as $key => $val)
 		{
@@ -151,12 +151,7 @@ elseif (isset($_POST["update_rule"]))
 		$rule->deleteCacheByRuleId($_POST["ID"]);
 	}
 
-	// TODO : find the exact "search" page, also need in commonHeader (a new property ? a new array in define ?)
-	if (strpos($rule->right, "dictionnary")) {
-		glpi_header($CFG_GLPI['root_doc']."/front/dictionnary.php");
-	} else {
-		glpi_header($CFG_GLPI['root_doc']."/front/rule.php");		
-	}
+	glpi_header(ereg_replace('.form','',$_SERVER['PHP_SELF']));
 }
 
 commonHeader($LANG["title"][2],$_SERVER['PHP_SELF'],"admin",getCategoryNameToDisplay($rulecollection->rule_type),$rulecollection->rule_type);
