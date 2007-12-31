@@ -124,10 +124,8 @@ elseif (isset($_POST["update_rule"]))
 
 	// Is a cached Rule ?
 	if(method_exists($rule,'deleteCacheByRuleId')){
-		$rule->deleteCacheByRuleId($_POST["rule_id"]);
+		$rule->deleteCacheByRuleId($_POST["ID"]);
 	}
-
-	unset($_POST["rule_id"]);
 
 	$rule->update($_POST);
 	logEvent($_POST['ID'], "rules", 4, "setup", $_SESSION["glpiname"]." ".$LANG["log"][21]);
@@ -136,13 +134,6 @@ elseif (isset($_POST["update_rule"]))
 } elseif (isset($_POST["add_rule"]))
 {
 	checkRight($rule->right,"w");
-
-	// Is a cached Rule ?
-	if(method_exists($rule,'deleteCacheByRuleId')){
-		$rule->deleteCacheByRuleId($_POST["rule_id"]);
-	}
-
-	unset($_POST["rule_id"]);
 
 	$newID=$rule->add($_POST);
 	logEvent($newID, "rules", 4, "setup", $_SESSION["glpiname"]." ".$LANG["log"][20]);
@@ -157,22 +148,23 @@ elseif (isset($_POST["update_rule"]))
 
 	// Is a cached Rule ?
 	if(method_exists($rule,'deleteCacheByRuleId')){
-		$rule->deleteCacheByRuleId($_POST["rule_id"]);
+		$rule->deleteCacheByRuleId($_POST["ID"]);
 	}
 
-	glpi_header($CFG_GLPI['root_doc']."/front/rule.php");
+	// TODO : find the exact "search" page, also need in commonHeader (a new property ? a new array in define ?)
+	if (strpos($rule->right, "dictionnary")) {
+		glpi_header($CFG_GLPI['root_doc']."/front/dictionnary.php");
+	} else {
+		glpi_header($CFG_GLPI['root_doc']."/front/rule.php");		
+	}
 }
 
 commonHeader($LANG["title"][2],$_SERVER['PHP_SELF'],"admin",getCategoryNameToDisplay($rulecollection->rule_type),$rulecollection->rule_type);
 
 $rule->showForm($_SERVER['PHP_SELF'],$_GET["ID"]);
 if (!empty($_GET["ID"])&&$_GET["ID"] >0) {
-	switch($_SESSION['glpi_onglet']){
-			case 1 :
-				$rule->showCriteriasList($_SERVER['PHP_SELF'],$_GET["ID"]);
-				$rule->showActionsList($_SERVER['PHP_SELF'],$_GET["ID"]);
-			break;
-	}
+	$rule->showCriteriasList($_SERVER['PHP_SELF'],$_GET["ID"]);
+	$rule->showActionsList($_SERVER['PHP_SELF'],$_GET["ID"]);
 }
 commonFooter();
 ?>
