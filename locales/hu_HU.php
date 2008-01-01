@@ -1,12 +1,11 @@
 <?php 
 /* 
- * @version $Id$
- -------------------------------------------------------------------------
+ ----------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2008 by the INDEPNET Development Team.
-
+ 
  http://indepnet.net/   http://glpi-project.org
- -------------------------------------------------------------------------
+ ----------------------------------------------------------------------
 
  LICENSE
 
@@ -25,7 +24,7 @@
  You should have received a copy of the GNU General Public License
  along with GLPI; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- --------------------------------------------------------------------------
+ ------------------------------------------------------------------------
  */
 //hu_HU
 
@@ -398,6 +397,7 @@ $LANG["entity"][5]="Automatikus számítógép hozzárendelés";
 $LANG["entity"][6]="Automatikus felhasználó hozzárendelés"; 
 $LANG["entity"][7]="fastruktúra"; 
 $LANG["entity"][8]="Cégenként"; 
+$LANG["entity"][9]="Sous-entités"; 
 
 $LANG["event"][0]="Tétel azonosító"; 
 $LANG["event"][2]="Szervíz"; 
@@ -708,6 +708,11 @@ $LANG["ldap"][14]="GLPI-ben";
 $LANG["ldap"][15]="Szinkronizál"; 
 $LANG["ldap"][16]="Előbeállítás"; 
 $LANG["ldap"][17]="Active Directory"; 
+$LANG["ldap"][18]="Liste des réplicats LDAP"; 
+$LANG["ldap"][19]="Réplicat"; 
+$LANG["ldap"][20]="Ajout d'un réplicat LDAP"; 
+$LANG["ldap"][21]="Serveur principal"; 
+$LANG["ldap"][22]="Réplicat(s)"; 
 
 $LANG["links"][1]="Hivatkozás vagy fájlnév"; 
 $LANG["links"][3]="Új külső hivatkozás"; 
@@ -821,7 +826,7 @@ $LANG["mailgate"][4]="Az mbstring kiterjesztés hiányzik, kéretik figyelni a h
 $LANG["mailing"][0]="----------------------------------------------------------"; 
 $LANG["mailing"][1]="======================================================================"; 
 $LANG["mailing"][3]="Tartalom"; 
-$LANG["mailing"][4]="A bejelentés már kész"; 
+$LANG["mailing"][4]="Suivi(s) déjà effectuée(s)"; 
 $LANG["mailing"][5]="Bejelentés leírása"; 
 $LANG["mailing"][7]="Kapcsolódó elem"; 
 $LANG["mailing"][8]="Felelőse"; 
@@ -918,6 +923,7 @@ $LANG["monitors"][20]="BNC";
 $LANG["monitors"][21]="Méret"; 
 $LANG["monitors"][30]="Új monitor sablonból"; 
 $LANG["monitors"][32]="DVI"; 
+$LANG["monitors"][33]="Pivot"; 
 
 $LANG["networking"][5]="RAM (MB)"; 
 $LANG["networking"][6]="Hálózati port"; 
@@ -968,6 +974,7 @@ $LANG["ocsconfig"][15]="Nincs import: a beépülő modul nem fogja importálni e
 $LANG["ocsconfig"][16]="Alapértelmezett állapot"; 
 $LANG["ocsconfig"][17]="Az import szűkítése a következőkkel (elválasztó $, ha üres, mindent behoz)"; 
 $LANG["ocsconfig"][18]="Először ellenőrizze a duplikátumok kezelését az OCSNG-ben"; 
+$LANG["ocsconfig"][19]="Import unique sur numéro de série"; 
 $LANG["ocsconfig"][27]="Általános számítógép információk"; 
 $LANG["ocsconfig"][28]="Alkatrészek"; 
 $LANG["ocsconfig"][36]="Modemek"; 
@@ -1045,6 +1052,7 @@ $LANG["ocsng"][50]="Zárolt IP-k";
 $LANG["ocsng"][51]="Nincs zárolt IP"; 
 $LANG["ocsng"][52]="Zárolt szoftver(ek)"; 
 $LANG["ocsng"][53]="Nincs zárolt szoftver"; 
+$LANG["ocsng"][54]="Logiciel mis dans la corbeille par la synchro OCS"; 
 
 $LANG["pager"][1]="vége"; 
 $LANG["pager"][2]="kezdet"; 
@@ -1150,12 +1158,13 @@ $LANG["reminder"][2]="Jegyzetek";
 $LANG["reminder"][4]="Személyes jegyzet"; 
 $LANG["reminder"][5]="Nyilvános jegyzet"; 
 $LANG["reminder"][6]="Új jegyzet"; 
-$LANG["reminder"][7]="Jegyzet"; 
 $LANG["reminder"][9]="Szöveg"; 
 $LANG["reminder"][10]="Típus"; 
 $LANG["reminder"][11]="Naptár"; 
 $LANG["reminder"][12]="Hozzáadás a naptárhoz"; 
 $LANG["reminder"][15]="Cím nélkül"; 
+$LANG["reminder"][16]="Notes globales"; 
+$LANG["reminder"][17]="Note globale"; 
 
 $LANG["reports"][0]="Válassz jelentéstípust"; 
 $LANG["reports"][4]="Szerződéses hardverek"; 
@@ -1257,7 +1266,6 @@ $LANG["rulesengine"][17]="Szabályok";
 $LANG["rulesengine"][18]="Számítógép céghez rendelésének szabályai"; 
 $LANG["rulesengine"][19]="Cégek és jogok összerendelése"; 
 $LANG["rulesengine"][22]="Hozzárendel"; 
-$LANG["rulesengine"][23]="Érték megadása"; 
 $LANG["rulesengine"][24]="Szabály típusa"; 
 $LANG["rulesengine"][25]="Számítógép neve"; 
 $LANG["rulesengine"][26]="Regex ellenőrzések"; 
@@ -1265,13 +1273,66 @@ $LANG["rulesengine"][27]="regex nem illeszkedik";
 $LANG["rulesengine"][28]="Bejelentések üzleti szabályai"; 
 $LANG["rulesengine"][29]="Szabályok listája"; 
 $LANG["rulesengine"][30]="Művelet"; 
-$LANG["rulesengine"][31]="Érték beállítása"; 
+$LANG["rulesengine"][33]="Dictionnaire des modèles de matériels"; 
+$LANG["rulesengine"][34]="Dictionnaire des types de matériels"; 
+$LANG["rulesengine"][35]="Dictionnaire logiciel"; 
+$LANG["rulesengine"][36]="Dictionnaire des fabricants"; 
 $LANG["rulesengine"][37]="Szoftverek kategóriákhoz rendelésének szabályai"; 
 $LANG["rulesengine"][38]="Újraszámol"; 
+$LANG["rulesengine"][39]="Ignorer"; 
 $LANG["rulesengine"][40]="a kategória"; 
 $LANG["rulesengine"][41]="Érvényesítés"; 
 $LANG["rulesengine"][42]="ÉS"; 
 $LANG["rulesengine"][43]="VAGY"; 
+$LANG["rulesengine"][45]="Assigner valeur depuis regex"; 
+$LANG["rulesengine"][46]="Activer"; 
+$LANG["rulesengine"][50]="Dictionnaire des modèles d'ordinateurs"; 
+$LANG["rulesengine"][51]="Dictionnaire des modèles de moniteurs"; 
+$LANG["rulesengine"][52]="Dictionnaire des modèles de téléphones"; 
+$LANG["rulesengine"][53]="Dictionnaire des modèles de périphériques"; 
+$LANG["rulesengine"][54]="Dictionnaire des modèles d'imprimantes"; 
+$LANG["rulesengine"][55]="Dictionnaire des modèles de matériels réseaux"; 
+$LANG["rulesengine"][56]="Modèles"; 
+$LANG["rulesengine"][60]="Dictionnaire des types d'ordinateurs"; 
+$LANG["rulesengine"][61]="Dictionnaire des types de moniteurs"; 
+$LANG["rulesengine"][63]="Dictionnaire des types de périphériques"; 
+$LANG["rulesengine"][64]="Dictionnaire des types d'imprimantes"; 
+$LANG["rulesengine"][65]="Dictionnaire des types de matériels réseaux"; 
+$LANG["rulesengine"][66]="Types"; 
+$LANG["rulesengine"][67]="Dictionnaire des OS"; 
+$LANG["rulesengine"][68]="Dictionnaire des service packs"; 
+$LANG["rulesengine"][69]="Dictionnaire des versions"; 
+$LANG["rulesengine"][76]="Rejouer le dictionnaire"; 
+$LANG["rulesengine"][77]="Dictionnaires"; 
+$LANG["rulesengine"][78]="Version"; 
+$LANG["rulesengine"][79]="Ajouter résultat regex"; 
+$LANG["rulesengine"][80]="Dictionnaire général"; 
+$LANG["rulesengine"][81]="Résultat de la règle"; 
+$LANG["rulesengine"][82]="Détail du résultat"; 
+$LANG["rulesengine"][83]="Il est possible d'utiliser le résultat d'une expression régulère en utilisant la chaine #0"; 
+$LANG["rulesengine"][84]="Tester le moteur de règles"; 
+$LANG["rulesengine"][85]="Résultat de l'expression régulière"; 
+$LANG["rulesengine"][86]="Catégorie du logiciel si suppression par le dictionnaire"; 
+$LANG["rulesengine"][87]="Logiciel mis dans la corbeille par le dictionnaire GLPI"; 
+$LANG["rulesengine"][88]="Logiciel crée par le dictionnaire GLPI"; 
+$LANG["rulesengine"][90]="Traitement en cours..."; 
+$LANG["rulesengine"][91]="Traitement terminé."; 
+$LANG["rulesengine"][92]="Avertissement avant de rejouer le dictionnaire"; 
+$LANG["rulesengine"][93]="Attention ! Cette opération peut mettre à la poubelle des logiciels fusionnés.<br>Pensez à prévenir vos utilisateurs."; 
+$LANG["rulesengine"][94]="FUSION"; 
+$LANG["rulesengine"][95]="Choix d'un fabricant"; 
+$LANG["rulesengine"][96]="Rejouer le dictionnaire sur le(s) fabricant(s)<br> ( ----- = Tous)"; 
+$LANG["rulesengine"][100]="Informations sur le cache"; 
+$LANG["rulesengine"][102]="Nom de la règle"; 
+$LANG["rulesengine"][103]="Objets en cache"; 
+$LANG["rulesengine"][104]="Valeur originale"; 
+$LANG["rulesengine"][105]="Valeur modifiée"; 
+$LANG["rulesengine"][106]="Inchangé(e)"; 
+$LANG["rulesengine"][107]="Inactive"; 
+$LANG["rulesengine"][108]="original"; 
+$LANG["rulesengine"][110]="Affectation de droits"; 
+$LANG["rulesengine"][111]="Affectation d'entités"; 
+$LANG["rulesengine"][112]="Affectation de droits et d'entités"; 
 $LANG["rulesengine"][120]="A motor megáll az első szabály után"; 
 $LANG["rulesengine"][121]="A motor minden szabályt feldolgoz"; 
 $LANG["rulesengine"][122]="A motor átadja egy szabály eredményét a következőknek"; 
@@ -1324,6 +1385,7 @@ $LANG["setup"][73]="Fali csatlakozó";
 $LANG["setup"][74]="Nem törölhetsz, mert almappákat tartalmaz"; 
 $LANG["setup"][75]="a következő fia"; 
 $LANG["setup"][76]="Ugyanazon a szinten"; 
+$LANG["setup"][77]="Sélectionnez un lieu"; 
 $LANG["setup"][78]="Tudásbázis"; 
 $LANG["setup"][79]="Bejelentések kategorizálása"; 
 $LANG["setup"][80]="Partner típusa"; 
@@ -1524,6 +1586,16 @@ $LANG["setup"][607]="Profilhoz rendelés";
 $LANG["setup"][701]="Válassza ki a beállítandó bővítményt"; 
 $LANG["setup"][703]="Általános"; 
 $LANG["setup"][704]="Értesítések"; 
+$LANG["setup"][800]="Réplicat MySQL"; 
+$LANG["setup"][801]="Activer le réplicat"; 
+$LANG["setup"][802]="Base"; 
+$LANG["setup"][803]="Ecart entre le maître et l'esclave"; 
+$LANG["setup"][804]="Notifier par mail si désynchronisation"; 
+$LANG["setup"][805]="E-mail de l'administrateur"; 
+$LANG["setup"][806]="Durée maximum de désynchronisation"; 
+$LANG["setup"][807]="La base de donnée esclave est désynchronisée. L'écart est de :"; 
+$LANG["setup"][808]="Base de données esclave désynchronisée !"; 
+$LANG["setup"][809]="Réplicat MySQL : lecture seule"; 
 
 $LANG["software"][3]="Platform"; 
 $LANG["software"][5]="Verziók"; 

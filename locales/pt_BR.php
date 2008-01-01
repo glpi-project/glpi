@@ -1,12 +1,11 @@
 <?php 
 /* 
- * @version $Id$
- -------------------------------------------------------------------------
+ ----------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2008 by the INDEPNET Development Team.
-
+ 
  http://indepnet.net/   http://glpi-project.org
- -------------------------------------------------------------------------
+ ----------------------------------------------------------------------
 
  LICENSE
 
@@ -25,7 +24,7 @@
  You should have received a copy of the GNU General Public License
  along with GLPI; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- --------------------------------------------------------------------------
+ ------------------------------------------------------------------------
  */
 //pt_BR
 
@@ -398,6 +397,7 @@ $LANG["entity"][5]="Atribuir computador automaticamente";
 $LANG["entity"][6]="Atribuir usuário automaticamente"; 
 $LANG["entity"][7]="Estrutura da árvore"; 
 $LANG["entity"][8]="Por entidade"; 
+$LANG["entity"][9]="Sous-entités"; 
 
 $LANG["event"][0]="ID do Item"; 
 $LANG["event"][2]="Serviço"; 
@@ -708,6 +708,11 @@ $LANG["ldap"][14]="no GLPI";
 $LANG["ldap"][15]="Sincronizador"; 
 $LANG["ldap"][16]="Pre-Configuração"; 
 $LANG["ldap"][17]="Active Directory"; 
+$LANG["ldap"][18]="Liste des réplicats LDAP"; 
+$LANG["ldap"][19]="Réplicat"; 
+$LANG["ldap"][20]="Ajout d'un réplicat LDAP"; 
+$LANG["ldap"][21]="Serveur principal"; 
+$LANG["ldap"][22]="Réplicat(s)"; 
 
 $LANG["links"][1]="Link ou nome de arquivo"; 
 $LANG["links"][3]="Adicionar um link externo"; 
@@ -821,7 +826,7 @@ $LANG["mailgate"][4]="Extensão 'mbstring' não encontrada. Cuidado com o códig
 $LANG["mailing"][0]="----------------------------------------------------------"; 
 $LANG["mailing"][1]="======================================================================"; 
 $LANG["mailing"][3]="Conteúdo"; 
-$LANG["mailing"][4]="Chamado(s) já atendido(s)"; 
+$LANG["mailing"][4]="Suivi(s) déjà effectuée(s)"; 
 $LANG["mailing"][5]="Descrição do chamado"; 
 $LANG["mailing"][7]="Item interessado"; 
 $LANG["mailing"][8]="Atribuido a"; 
@@ -918,6 +923,7 @@ $LANG["monitors"][20]="BNC";
 $LANG["monitors"][21]="Tamanho"; 
 $LANG["monitors"][30]="Novo monitor baseado no modelo"; 
 $LANG["monitors"][32]="DVI"; 
+$LANG["monitors"][33]="Pivot"; 
 
 $LANG["networking"][5]="RAM (MB)"; 
 $LANG["networking"][6]="Portas de rede"; 
@@ -968,6 +974,7 @@ $LANG["ocsconfig"][15]="Não importa: o plugin não importará estes elementos";
 $LANG["ocsconfig"][16]="Status padrão"; 
 $LANG["ocsconfig"][17]="Limitar a importação às seguintes tags (separador $, vazio todas)"; 
 $LANG["ocsconfig"][18]="Primeiro, verifique que duplicatas são gerenciados no OCS-NG"; 
+$LANG["ocsconfig"][19]="Import unique sur numéro de série"; 
 $LANG["ocsconfig"][27]="Informação geral do computador"; 
 $LANG["ocsconfig"][28]="Componentes"; 
 $LANG["ocsconfig"][36]="Modems"; 
@@ -1045,6 +1052,7 @@ $LANG["ocsng"][50]="IP(s) bloqueado(s)";
 $LANG["ocsng"][51]="Sem IP bloqueado"; 
 $LANG["ocsng"][52]="Software(s) Bloqueado(s)"; 
 $LANG["ocsng"][53]="Nenhum software bloqueado"; 
+$LANG["ocsng"][54]="Logiciel mis dans la corbeille par la synchro OCS"; 
 
 $LANG["pager"][1]="para"; 
 $LANG["pager"][2]="de"; 
@@ -1150,12 +1158,13 @@ $LANG["reminder"][2]="Notas";
 $LANG["reminder"][4]="Anotação pessoal"; 
 $LANG["reminder"][5]="Anotação pública"; 
 $LANG["reminder"][6]="Nova anotação"; 
-$LANG["reminder"][7]="Anotação"; 
 $LANG["reminder"][9]="Texto"; 
 $LANG["reminder"][10]="Tipo"; 
 $LANG["reminder"][11]="Calendário"; 
 $LANG["reminder"][12]="Adicionar ao calendário"; 
 $LANG["reminder"][15]="Sem título"; 
+$LANG["reminder"][16]="Notes globales"; 
+$LANG["reminder"][17]="Note globale"; 
 
 $LANG["reports"][0]="Selecione o relatório que você quer gerar"; 
 $LANG["reports"][4]="Lista de hardwares sob contrato"; 
@@ -1257,7 +1266,6 @@ $LANG["rulesengine"][17]="Regras";
 $LANG["rulesengine"][18]="Regras para associar um computador a uma entidade"; 
 $LANG["rulesengine"][19]="Associação de regras para entidade e direitos"; 
 $LANG["rulesengine"][22]="Associar"; 
-$LANG["rulesengine"][23]="Estabeleça o valor"; 
 $LANG["rulesengine"][24]="Tipo de regra"; 
 $LANG["rulesengine"][25]="Nome do computador"; 
 $LANG["rulesengine"][26]="Verificação de expressão regular"; 
@@ -1265,13 +1273,66 @@ $LANG["rulesengine"][27]="expressão regular não casa";
 $LANG["rulesengine"][28]="Regras de negócios para chamados"; 
 $LANG["rulesengine"][29]="Listar regras"; 
 $LANG["rulesengine"][30]="Ação"; 
-$LANG["rulesengine"][31]="Recupere o valor"; 
+$LANG["rulesengine"][33]="Dictionnaire des modèles de matériels"; 
+$LANG["rulesengine"][34]="Dictionnaire des types de matériels"; 
+$LANG["rulesengine"][35]="Dictionnaire logiciel"; 
+$LANG["rulesengine"][36]="Dictionnaire des fabricants"; 
 $LANG["rulesengine"][37]="Regras atribuidas a uma classe de software"; 
 $LANG["rulesengine"][38]="Recalcular"; 
+$LANG["rulesengine"][39]="Ignorer"; 
 $LANG["rulesengine"][40]="a categoria"; 
 $LANG["rulesengine"][41]="Validação"; 
 $LANG["rulesengine"][42]="E"; 
 $LANG["rulesengine"][43]="OU"; 
+$LANG["rulesengine"][45]="Assigner valeur depuis regex"; 
+$LANG["rulesengine"][46]="Activer"; 
+$LANG["rulesengine"][50]="Dictionnaire des modèles d'ordinateurs"; 
+$LANG["rulesengine"][51]="Dictionnaire des modèles de moniteurs"; 
+$LANG["rulesengine"][52]="Dictionnaire des modèles de téléphones"; 
+$LANG["rulesengine"][53]="Dictionnaire des modèles de périphériques"; 
+$LANG["rulesengine"][54]="Dictionnaire des modèles d'imprimantes"; 
+$LANG["rulesengine"][55]="Dictionnaire des modèles de matériels réseaux"; 
+$LANG["rulesengine"][56]="Modèles"; 
+$LANG["rulesengine"][60]="Dictionnaire des types d'ordinateurs"; 
+$LANG["rulesengine"][61]="Dictionnaire des types de moniteurs"; 
+$LANG["rulesengine"][63]="Dictionnaire des types de périphériques"; 
+$LANG["rulesengine"][64]="Dictionnaire des types d'imprimantes"; 
+$LANG["rulesengine"][65]="Dictionnaire des types de matériels réseaux"; 
+$LANG["rulesengine"][66]="Types"; 
+$LANG["rulesengine"][67]="Dictionnaire des OS"; 
+$LANG["rulesengine"][68]="Dictionnaire des service packs"; 
+$LANG["rulesengine"][69]="Dictionnaire des versions"; 
+$LANG["rulesengine"][76]="Rejouer le dictionnaire"; 
+$LANG["rulesengine"][77]="Dictionnaires"; 
+$LANG["rulesengine"][78]="Version"; 
+$LANG["rulesengine"][79]="Ajouter résultat regex"; 
+$LANG["rulesengine"][80]="Dictionnaire général"; 
+$LANG["rulesengine"][81]="Résultat de la règle"; 
+$LANG["rulesengine"][82]="Détail du résultat"; 
+$LANG["rulesengine"][83]="Il est possible d'utiliser le résultat d'une expression régulère en utilisant la chaine #0"; 
+$LANG["rulesengine"][84]="Tester le moteur de règles"; 
+$LANG["rulesengine"][85]="Résultat de l'expression régulière"; 
+$LANG["rulesengine"][86]="Catégorie du logiciel si suppression par le dictionnaire"; 
+$LANG["rulesengine"][87]="Logiciel mis dans la corbeille par le dictionnaire GLPI"; 
+$LANG["rulesengine"][88]="Logiciel crée par le dictionnaire GLPI"; 
+$LANG["rulesengine"][90]="Traitement en cours..."; 
+$LANG["rulesengine"][91]="Traitement terminé."; 
+$LANG["rulesengine"][92]="Avertissement avant de rejouer le dictionnaire"; 
+$LANG["rulesengine"][93]="Attention ! Cette opération peut mettre à la poubelle des logiciels fusionnés.<br>Pensez à prévenir vos utilisateurs."; 
+$LANG["rulesengine"][94]="FUSION"; 
+$LANG["rulesengine"][95]="Choix d'un fabricant"; 
+$LANG["rulesengine"][96]="Rejouer le dictionnaire sur le(s) fabricant(s)<br> ( ----- = Tous)"; 
+$LANG["rulesengine"][100]="Informations sur le cache"; 
+$LANG["rulesengine"][102]="Nom de la règle"; 
+$LANG["rulesengine"][103]="Objets en cache"; 
+$LANG["rulesengine"][104]="Valeur originale"; 
+$LANG["rulesengine"][105]="Valeur modifiée"; 
+$LANG["rulesengine"][106]="Inchangé(e)"; 
+$LANG["rulesengine"][107]="Inactive"; 
+$LANG["rulesengine"][108]="original"; 
+$LANG["rulesengine"][110]="Affectation de droits"; 
+$LANG["rulesengine"][111]="Affectation d'entités"; 
+$LANG["rulesengine"][112]="Affectation de droits et d'entités"; 
 $LANG["rulesengine"][120]="A engine parou na primeira regra verificada."; 
 $LANG["rulesengine"][121]="A engine tratou todas as regras"; 
 $LANG["rulesengine"][122]="A engine repassou o resultado de uma regra para a regra seguinte."; 
@@ -1324,6 +1385,7 @@ $LANG["setup"][73]="Ponto de rede";
 $LANG["setup"][74]="Você não pode deletar este local, ele tem sub-locais"; 
 $LANG["setup"][75]="Como filho de"; 
 $LANG["setup"][76]="No mesmo nível"; 
+$LANG["setup"][77]="Sélectionnez un lieu"; 
 $LANG["setup"][78]="Base de conhecimentos"; 
 $LANG["setup"][79]="Categorias dos chamados"; 
 $LANG["setup"][80]="Tipo de Terceirizado"; 
@@ -1524,6 +1586,16 @@ $LANG["setup"][607]="Associar a um perfil";
 $LANG["setup"][701]="Escolha um plugin para configuar"; 
 $LANG["setup"][703]="Geral"; 
 $LANG["setup"][704]="Notificações"; 
+$LANG["setup"][800]="Réplicat MySQL"; 
+$LANG["setup"][801]="Activer le réplicat"; 
+$LANG["setup"][802]="Base"; 
+$LANG["setup"][803]="Ecart entre le maître et l'esclave"; 
+$LANG["setup"][804]="Notifier par mail si désynchronisation"; 
+$LANG["setup"][805]="E-mail de l'administrateur"; 
+$LANG["setup"][806]="Durée maximum de désynchronisation"; 
+$LANG["setup"][807]="La base de donnée esclave est désynchronisée. L'écart est de :"; 
+$LANG["setup"][808]="Base de données esclave désynchronisée !"; 
+$LANG["setup"][809]="Réplicat MySQL : lecture seule"; 
 
 $LANG["software"][3]="Plataforma"; 
 $LANG["software"][5]="Versões"; 
