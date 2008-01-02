@@ -163,12 +163,15 @@ class Job extends CommonDBTM{
 			$doc=new Document();
 			if ($docID=$doc->add($input2)){
 				addDeviceDocument($docID,TRACKING_TYPE,$input["ID"]);
+				// force update date_mod
+				$input["date_mod"]=$_SESSION["glpi_currenttime"];
 			}
 		}
 
 		if (isset($input["document"])&&$input["document"]>0){
 			addDeviceDocument($input["document"],TRACKING_TYPE,$input["ID"]);
 			unset($input["document"]);
+			$input["date_mod"]=$_SESSION["glpi_currenttime"];
 		}
 
 		// Old values for add followup in change
@@ -195,6 +198,9 @@ class Job extends CommonDBTM{
 	}
 
 	function pre_updateInDB($input,$updates) {
+
+		$this->fields["date_mod"]=$_SESSION["glpi_currenttime"];
+		$updates[]="date_mod";
 
 		if (((in_array("assign",$updates)&&$input["assign"]>0)||(in_array("assign_ent",$updates)&&$input["assign_ent"]>0)||(in_array("assign_group",$updates)&&$input["assign_group"]>0))&&$this->fields["status"]=="new"){
 			$updates[]="status";
@@ -410,6 +416,9 @@ class Job extends CommonDBTM{
 	function prepareInputForAdd($input) {
 		global $CFG_GLPI;
 
+		// set new date.
+		$input["date_mod"] = $_SESSION["glpi_currenttime"];
+
 		// Manage helpdesk.html submission type
 		unset($input["type"]);
 
@@ -573,20 +582,26 @@ class Job extends CommonDBTM{
 
 	}
 
-	function updateRealTime() {
+	function updateRealTime($ID) {
 		// update Status of Job
 
 		global $DB;
-		$query = "SELECT SUM(realtime) FROM glpi_followups WHERE tracking = '".$this->fields["ID"]."'";
+		$query = "SELECT SUM(realtime) FROM glpi_followups WHERE tracking = '$ID'";
 		if ($result = $DB->query($query)) {
 			$sum=$DB->result($result,0,0);
 			if (is_null($sum)) $sum=0;
-			$query2="UPDATE glpi_tracking SET realtime='".$sum."' WHERE ID='".$this->fields["ID"]."'";
+			$query2="UPDATE glpi_tracking SET realtime='".$sum."' WHERE ID='$ID'";
 			$DB->query($query2);
 			return true;
 		} else {
 			return false;
 		}
+	}
+
+	function updateDateMod($ID) {
+		global $DB;
+		$query="UPDATE glpi_tracking SET date_mod='".$_SESSION["glpi_currenttime"]."' WHERE ID='$ID'";
+		$DB->query($query);
 	}
 
 	/**
@@ -856,8 +871,8 @@ class Followup  extends CommonDBTM {
 
 	function post_deleteFromDB($ID){
 		$job=new Job();
-		$job->getFromDB($this->fields['tracking']);
-		$job->updateRealtime();		
+		$job->updateRealtime($this->fields['tracking']);
+		$job->updateDateMod($this->fields["tracking"]);		
 	}
 
 
@@ -877,11 +892,12 @@ class Followup  extends CommonDBTM {
 
 	function post_updateItem($input,$updates,$history=1) {
 		global $CFG_GLPI;
+
+		$job=new Job;
+		$job->updateDateMod($input["tracking"]);
 		
 		$mailsend=false;
 		if (count($updates)){
-			$job=new Job;
-			$job->getFromDBwithData($input["tracking"],1);
 	
 			if ($CFG_GLPI["mailing"]&&
 			 (in_array("contents",$updates)||isset($input['_need_send_mail']))){
@@ -893,7 +909,7 @@ class Followup  extends CommonDBTM {
 			}
 	
 			if (in_array("realtime",$updates)) {
-				$job->updateRealTime();
+				$job->updateRealTime($input["tracking"]);
 			}
 		}
 		
@@ -980,10 +996,13 @@ class Followup  extends CommonDBTM {
 	function post_addItem($newID,$input) {
 		global $CFG_GLPI;
 
+		$job=new Job();
+		$job->getFromDB($input["tracking"]);
+
+		$job->updateDateMod($input["tracking"]);
+
 		if (isset($input["realtime"])&&$input["realtime"]>0) {
-			$job=new Job();
-			$job->getFromDB($input["tracking"]);
-			$job->updateRealTime();
+			$job->updateRealTime($input["tracking"]);
 		}
 
 
