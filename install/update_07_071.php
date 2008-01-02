@@ -238,5 +238,17 @@ function update07to071() {
 	$query="DELETE FROM glpi_display WHERE num='121'";
 	$DB->query($query) or die("0.71 clean glpi_display for end_warranty infocoms " . $DB->error());
 
+	// Delete helpdesk injector user
+	$query="DELETE FROM glpi_users WHERE ID='1'";
+	$DB->query($query) or die("0.71 delete helpdesk injector user " . $DB->error());
+	// Delete helpdesk injector user
+	$query="DELETE FROM glpi_users_profiles WHERE FK_users='1'";
+	$DB->query($query) or die("0.71 delete helpdesk injector user profile " . $DB->error());
+	// change default device type for tracking
+	if (!FieldExists("glpi_tracking", "device_type")) {
+		$query=" ALTER TABLE `glpi_tracking` CHANGE `device_type` `device_type` INT( 11 ) NOT NULL DEFAULT '0' ";
+		$DB->query($query) or die("0.71 alter device_type from glpi_tracking " . $DB->error());		
+	}
+
 } // fin 0.71 #####################################################################################
 ?>
