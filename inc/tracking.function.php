@@ -1017,7 +1017,7 @@ global $CFG_GLPI,  $LANG;
 
 }
 
-function searchFormTracking($extended=0,$target,$start="",$status="new",$tosearch="",$search="",$author=0,$group=0,$showfollowups=0,$category=0,$assign=0,$assign_ent=0,$assign_group=0,$priority=0,$request_type=0,$item=0,$type=0,$field="",$contains="",$date1="",$date2="",$computers_search="",$enddate1="",$enddate2="") {
+function searchFormTracking($extended=0,$target,$start="",$status="new",$tosearch="",$search="",$author=0,$group=0,$showfollowups=0,$category=0,$assign=0,$assign_ent=0,$assign_group=0,$priority=0,$request_type=0,$item=0,$type=0,$field="",$contains="",$date1="",$date2="",$computers_search="",$enddate1="",$enddate2="",$datemod1="",$datemod2="") {
 	// Print Search Form
 
 	global $CFG_GLPI,  $LANG;
@@ -1179,6 +1179,13 @@ function searchFormTracking($extended=0,$target,$start="",$status="new",$tosearc
 		echo $LANG["search"][9].":&nbsp;";
 		showCalendarForm("form","enddate2",$enddate2);
 		echo "</td></tr>";
+
+		echo "<tr class='tab_bg_1'><td colspan='2' class='right'>".$LANG["common"][26].":</td><td class='center' colspan='2'>".$LANG["search"][8].":&nbsp;";
+		showCalendarForm("form","datemod1",$datemod1);
+		echo "</td><td class='center' colspan='2'>";
+		echo $LANG["search"][9].":&nbsp;";
+		showCalendarForm("form","datemod2",$datemod2);
+		echo "</td></tr>";
 	}
 	echo "<tr  class='tab_bg_1'>";
 
@@ -1238,7 +1245,7 @@ function getCommonLeftJoinForTrackingSearch(){
 }
 
 
-function showTrackingList($target,$start="",$sort="",$order="",$status="new",$tosearch="",$search="",$author=0,$group=0,$showfollowups=0,$category=0,$assign=0,$assign_ent=0,$assign_group=0,$priority=0,$request_type=0,$item=0,$type=0,$field="",$contains="",$date1="",$date2="",$computers_search="",$enddate1="",$enddate2="") {
+function showTrackingList($target,$start="",$sort="",$order="",$status="new",$tosearch="",$search="",$author=0,$group=0,$showfollowups=0,$category=0,$assign=0,$assign_ent=0,$assign_group=0,$priority=0,$request_type=0,$item=0,$type=0,$field="",$contains="",$date1="",$date2="",$computers_search="",$enddate1="",$enddate2="",$datemod1="",$datemod2="") {
 	// Lists all Jobs, needs $show which can have keywords 
 	// (individual, unassigned) and $contains with search terms.
 	// If $item is given, only jobs for a particular machine
@@ -1346,6 +1353,8 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$to
 	if (!empty($date2)&&$date2!="0000-00-00") $where.=" AND glpi_tracking.date <= adddate( '". $date2 ."' , INTERVAL 1 DAY ) ";
 	if (!empty($enddate1)&&$enddate1!="0000-00-00") $where.=" AND glpi_tracking.closedate >= '$enddate1'";
 	if (!empty($enddate2)&&$enddate2!="0000-00-00") $where.=" AND glpi_tracking.closedate <= adddate( '". $enddate2 ."' , INTERVAL 1 DAY ) ";
+	if (!empty($datemod1)&&$datemod1!="0000-00-00") $where.=" AND glpi_tracking.date_mod >= '$datemod1'";
+	if (!empty($datemod2)&&$datemod2!="0000-00-00") $where.=" AND glpi_tracking.date_mod <= adddate( '". $datemod2 ."' , INTERVAL 1 DAY ) ";
 
 
 	if ($type!=0)
@@ -1516,7 +1525,7 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$to
 
 
 			// Pager
-			$parameters2="field=$field&amp;contains=$contains&amp;date1=$date1&amp;date2=$date2&amp;only_computers=$computers_search&amp;tosearch=$tosearch&amp;search=$search&amp;assign=$assign&amp;assign_ent=$assign_ent&amp;assign_group=$assign_group&amp;author=$author&amp;group=$group&amp;start=$start&amp;status=$status&amp;category=$category&amp;priority=$priority&amp;type=$type&amp;showfollowups=$showfollowups&amp;enddate1=$enddate1&amp;enddate2=$enddate2&amp;item=$item&amp;request_type=$request_type";
+			$parameters2="field=$field&amp;contains=$contains&amp;date1=$date1&amp;date2=$date2&amp;only_computers=$computers_search&amp;tosearch=$tosearch&amp;search=$search&amp;assign=$assign&amp;assign_ent=$assign_ent&amp;assign_group=$assign_group&amp;author=$author&amp;group=$group&amp;start=$start&amp;status=$status&amp;category=$category&amp;priority=$priority&amp;type=$type&amp;showfollowups=$showfollowups&amp;enddate1=$enddate1&amp;enddate2=$enddate2&amp;datemod1=$datemod1&amp;datemod2=$datemod2&amp;item=$item&amp;request_type=$request_type";
 			
 			// Specific case of showing tracking of an item
 			if (isset($_GET["ID"])){

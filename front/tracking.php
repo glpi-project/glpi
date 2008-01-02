@@ -92,8 +92,10 @@ if (!isset($_GET["contains"])||isset($_GET['reset'])) $_GET["contains"]="";
 if (!isset($_GET["contains3"])||isset($_GET['reset'])) $_GET["contains3"]="";
 if (!isset($_GET["date1"])||isset($_GET['reset'])) $_GET["date1"]="0000-00-00";
 if (!isset($_GET["enddate1"])||isset($_GET['reset'])) $_GET["enddate1"]="0000-00-00";
+if (!isset($_GET["datemod1"])||isset($_GET['reset'])) $_GET["datemod1"]="0000-00-00";
 if (!isset($_GET["date2"])||isset($_GET['reset'])) $_GET["date2"]="0000-00-00";
 if (!isset($_GET["enddate2"])||isset($_GET['reset'])) $_GET["enddate2"]="0000-00-00";
+if (!isset($_GET["datemod2"])||isset($_GET['reset'])) $_GET["datemod2"]="0000-00-00";
 if (!isset($_GET["field"])||isset($_GET['reset'])) $_GET["field"]="";
 if (!isset($_GET["only_computers"])||isset($_GET['reset'])) $_GET["only_computers"] = "";
 
@@ -123,13 +125,13 @@ if (!haveRight("show_all_ticket","1")&&!haveRight("show_assign_ticket",'1')){
 	if (!$_GET["extended"]){
 		searchFormTracking($_GET["extended"],$_SERVER['PHP_SELF'],$_GET["start"],$_GET["status"],$_GET["tosearch"],$_GET["search"],$_GET["author"],$_GET["group"],$_GET["showfollowups"],$_GET["category"],$_GET["assign"],$_GET["assign_ent"],$_GET["assign_group"],$_GET["priority"],$_GET["request_type"],$_GET["item"],$_GET["type"]);
 	} else {
-		searchFormTracking($_GET["extended"],$_SERVER['PHP_SELF'],$_GET["start"],$_GET["status"],$_GET["tosearch"],$_GET["search"],$_GET["author"],$_GET["group"],$_GET["showfollowups"],$_GET["category"],$_GET["assign"],$_GET["assign_ent"],$_GET["assign_group"],$_GET["priority"],$_GET["request_type"],$_GET["item"],$_GET["type"],$_GET["field"],$_GET["contains"],$_GET["date1"],$_GET["date2"],$_GET["only_computers"],$_GET["enddate1"],$_GET["enddate2"]);
+		searchFormTracking($_GET["extended"],$_SERVER['PHP_SELF'],$_GET["start"],$_GET["status"],$_GET["tosearch"],$_GET["search"],$_GET["author"],$_GET["group"],$_GET["showfollowups"],$_GET["category"],$_GET["assign"],$_GET["assign_ent"],$_GET["assign_group"],$_GET["priority"],$_GET["request_type"],$_GET["item"],$_GET["type"],$_GET["field"],$_GET["contains"],$_GET["date1"],$_GET["date2"],$_GET["only_computers"],$_GET["enddate1"],$_GET["enddate2"],$_GET["datemod1"],$_GET["datemod2"]);
 	}
 
 	if (!$_GET["extended"]){
 		showTrackingList($_SERVER['PHP_SELF'],$_GET["start"],$_GET["sort"],$_GET["order"],$_GET["status"],$_GET["tosearch"],$_GET["search"],$_GET["author"],$_GET["group"],$_GET["showfollowups"],$_GET["category"],$_GET["assign"],$_GET["assign_ent"],$_GET["assign_group"],$_GET["priority"],$_GET["request_type"],$_GET["item"],$_GET["type"]);
 	} else {
-		showTrackingList($_SERVER['PHP_SELF'],$_GET["start"],$_GET["sort"],$_GET["order"],$_GET["status"],$_GET["tosearch"],$_GET["search"],$_GET["author"],$_GET["group"],$_GET["showfollowups"],$_GET["category"],$_GET["assign"],$_GET["assign_ent"],$_GET["assign_group"],$_GET["priority"],$_GET["request_type"],$_GET["item"],$_GET["type"],$_GET["field"],$_GET["contains"],$_GET["date1"],$_GET["date2"],$_GET["only_computers"],$_GET["enddate1"],$_GET["enddate2"]);
+		showTrackingList($_SERVER['PHP_SELF'],$_GET["start"],$_GET["sort"],$_GET["order"],$_GET["status"],$_GET["tosearch"],$_GET["search"],$_GET["author"],$_GET["group"],$_GET["showfollowups"],$_GET["category"],$_GET["assign"],$_GET["assign_ent"],$_GET["assign_group"],$_GET["priority"],$_GET["request_type"],$_GET["item"],$_GET["type"],$_GET["field"],$_GET["contains"],$_GET["date1"],$_GET["date2"],$_GET["only_computers"],$_GET["enddate1"],$_GET["enddate2"],$_GET["datemod1"],$_GET["datemod2"]);
 	}
 }
 
