@@ -35,7 +35,8 @@
 
 
 
-$NEEDED_ITEMS=array("setup","ocsng","rulesengine","computer","monitor","printer","peripheral","phone","software","networking","computer","monitor","printer","peripheral","phone","software","networking");
+$NEEDED_ITEMS=array("setup");
+//,"ocsng","rulesengine","computer","monitor","printer","peripheral","phone","software","networking","computer","monitor","printer","peripheral","phone","software","networking");
 
 if(!defined('GLPI_ROOT')){
 	define('GLPI_ROOT', '..');
