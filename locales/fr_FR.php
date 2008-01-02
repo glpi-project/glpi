@@ -1478,6 +1478,7 @@ $LANG["setup"][146]="Réseau";
 $LANG["setup"][147]="Ajax"; 
 $LANG["setup"][148]="Pas pour les horaires"; 
 $LANG["setup"][149]="Nombre de décimales pour les montants"; 
+$LANG["setup"][150]="Format des nombres"; 
 $LANG["setup"][152]="LDAP configuration"; 
 $LANG["setup"][154]="Basedn"; 
 $LANG["setup"][155]="rootdn (pour les connexions non anonymes)"; 

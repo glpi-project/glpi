@@ -151,7 +151,7 @@ function display_infocoms_report($device_type,$begin,$end){
 				}
 			}
 
-			echo "<td class='right'>".number_format($line["value"],$CFG_GLPI["decimal_number"],"."," ")."</td><td class='right'>".number_format($valeurnette,$CFG_GLPI["decimal_number"],"."," ")."</td><td class='right'>".showTco($line["ticket_tco"],$line["value"])."</td><td>".convDate($line["buy_date"])."</td><td>".convDate($line["use_date"])."</td><td>".getWarrantyExpir($line["buy_date"],$line["warranty_duration"])."</td></tr>";
+			echo "<td class='right'>".formatNumber($line["value"])."</td><td class='right'>".formatNumber($valeurnette)."</td><td class='right'>".showTco($line["ticket_tco"],$line["value"])."</td><td>".convDate($line["buy_date"])."</td><td>".convDate($line["use_date"])."</td><td>".getWarrantyExpir($line["buy_date"],$line["warranty_duration"])."</td></tr>";
 
 
 		}	
@@ -159,7 +159,7 @@ function display_infocoms_report($device_type,$begin,$end){
 		$valeurtot+=$valeursoustot;
 		$valeurnettetot+=$valeurnettesoustot;
 
-		echo "<tr><td colspan='6' class='center'><h3>".$LANG["common"][33].": ".$LANG["financial"][21]."=".number_format($valeursoustot,$CFG_GLPI["decimal_number"],"."," ")." - ".$LANG["financial"][81]."=".number_format($valeurnettesoustot,$CFG_GLPI["decimal_number"],"."," ")."</h3></td></tr>";
+		echo "<tr><td colspan='6' class='center'><h3>".$LANG["common"][33].": ".$LANG["financial"][21]."=".formatNumber($valeursoustot)." - ".$LANG["financial"][81]."=".formatNumber($valeurnettesoustot)."</h3></td></tr>";
 
 
 		if (count($valeurnettegraph)>0){
@@ -220,7 +220,7 @@ echo "</table>";
 
 
 
-echo "<div align='center'><h3>".$LANG["common"][33].": ".$LANG["financial"][21]."=".number_format($valeurtot,$CFG_GLPI["decimal_number"],"."," ")." - ".$LANG["financial"][81]."=".number_format($valeurnettetot,$CFG_GLPI["decimal_number"],"."," ")."</h3></div>";
+echo "<div align='center'><h3>".$LANG["common"][33].": ".$LANG["financial"][21]."=".formatNumber($valeurtot)." - ".$LANG["financial"][81]."=".formatNumber($valeurnettetot)."</h3></div>";
 
 if (count($valeurnettegraphtot)>0){
 	$valeurnettegraphtotdisplay=array_map('round',$valeurnettegraphtot);
