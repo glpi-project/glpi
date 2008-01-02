@@ -159,10 +159,7 @@ function getTrackingOrderPrefs ($ID) {
 }
 
 function showCentralJobList($target,$start,$status="process",$showgrouptickets=true) {
-	// Lists all Jobs, needs $show which can have keywords 
-	// (individual, unassigned) and $contains with search terms.
-	// If $item is given, only jobs for a particular machine
-	// are listed.
+	
 
 	global $DB,$CFG_GLPI, $LANG;
 
@@ -185,14 +182,22 @@ function showCentralJobList($target,$start,$status="process",$showgrouptickets=t
 
 	if($status=="waiting"){ // on affiche les tickets en attente
 		$query = "SELECT ID FROM glpi_tracking WHERE ( $search_assign ) AND status ='waiting' ".getEntitiesRestrictRequest("AND","glpi_tracking")." ORDER BY date ".getTrackingOrderPrefs($_SESSION["glpiID"]);
-
-		$title=$LANG["central"][11];
+		
+		if($showgrouptickets){
+			$title=$LANG["central"][15];
+		}else{
+ 			$title=$LANG["central"][11];
+		}
 
 	}else{ // on affiche les tickets planifiés ou assignés à glpiID
 
 		$query = "SELECT ID FROM glpi_tracking WHERE ( $search_assign ) AND (status ='plan' OR status = 'assign') ".getEntitiesRestrictRequest("AND","glpi_tracking")." ORDER BY date ".getTrackingOrderPrefs($_SESSION["glpiID"]);
-
-		$title=$LANG["central"][9];
+		
+		if($showgrouptickets){
+			$title=$LANG["central"][16];
+		}else{
+			$title=$LANG["central"][9];
+		}
 	}
 
 	$lim_query = " LIMIT ".$start.",".$_SESSION["glpilist_limit"]."";	

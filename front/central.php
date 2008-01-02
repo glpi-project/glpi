@@ -109,7 +109,8 @@ include (GLPI_ROOT."/inc/includes.php");
 		case "all":
 			showCentralMyView();
 			echo "<br>";
-
+			showCentralGroupView();
+			echo "<br>";
 			showCentralGlobalView();
 			echo "<br>";
 			if (isset($PLUGIN_HOOKS['central_action'])&&count($PLUGIN_HOOKS['central_action'])){
