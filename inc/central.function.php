@@ -158,12 +158,17 @@ function showCentralMyView(){
 		if (haveRight("reminder_public","r")){
 			echo "<tr><td class='top'  width='450px'>";
 			
+			showCentralReminder($_SESSION["glpiactive_entity"]);
+
 			$entities=array_reverse(getEntityAncestors($_SESSION["glpiactive_entity"]));
 			foreach ($entities as $entity) {
 				showCentralReminder($entity, true);
 			}	
+			
 			foreach ($_SESSION["glpiactiveentities"] as $entity) {
-				showCentralReminder($entity, false);				
+				if ($entity != $_SESSION["glpiactive_entity"]) {
+					showCentralReminder($entity, false);				
+				}
 			}
 			echo "</td></tr>";
 		}
