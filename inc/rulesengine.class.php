@@ -2021,6 +2021,7 @@ class RuleCachedCollection extends RuleCollection{
 			unset($output["_ruleid"]);
 		}
 
+		return $output;
 	}
 
 	function showCacheStatusByRuleType(){
