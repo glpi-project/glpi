@@ -109,7 +109,7 @@ function update07to071() {
 			PRIMARY KEY ( `ID` ),
 			KEY `rule_id` (`rule_id`),
 			KEY `old_value` (`old_value`)
-			) ENGINE = MYISAM DEFAULT CHARSET=utf8;";
+			) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
 			$DB->query($query) or die("0.71 add table ".$cache_table." " . $LANG["update"][90] . $DB->error());
 		}
 		
@@ -156,7 +156,7 @@ function update07to071() {
 	  `ldap_port` int(11) NOT NULL default '389',
 	  `name` varchar(255) NOT NULL,
 	  PRIMARY KEY  (`ID`)
-	) ENGINE=MyISAM  DEFAULT CHARSET=latin1;";
+	) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
 		$DB->query($query) or die("0.71 add table glpi_auth_ldap_replicate " . $LANG["update"][90] . $DB->error());
 	}	
 
@@ -166,7 +166,7 @@ function update07to071() {
 		`admin_email` VARCHAR( 255 ) NOT NULL,
 		`max_delay` INT( 11 ) NOT NULL DEFAULT '3600',
 		PRIMARY KEY  (`ID`)
-	    ) ENGINE = MYISAM";
+	    ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
 		$DB->query($query) or die("0.71 add table glpi_db_replicate if not present " . $LANG["update"][90] . $DB->error());
 	
 		$query = "INSERT INTO `glpi_db_replicate` (`ID`, `notify_db_desynchronization`, `admin_email`, `max_delay`) VALUES
