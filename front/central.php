@@ -93,6 +93,9 @@ include (GLPI_ROOT."/inc/includes.php");
 		case "global" :
 			showCentralGlobalView();
 			break;
+		case "group" :
+			showCentralGroupView();
+			break;
 		case "plugins" :
 			
 			echo "<table class='tab_cadre_central' ><tr><td>";
