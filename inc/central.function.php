@@ -44,6 +44,7 @@ function showCentralOnglets($target,$actif) {
 	global $LANG,$PLUGIN_HOOKS;
 	echo "<div id='barre_onglets'><ul id='onglet'>";
 	echo "<li ".($actif=="my"?"class='actif'":"")."><a href='$target?onglet=my'>".$LANG["central"][12]."</a></li>";
+	echo "<li ".($actif=="group"?"class='actif'":"")."><a href='$target?onglet=group'>".$LANG["central"][14]."</a></li>";
 	if (haveRight("show_all_ticket","1")||haveRight("logs","r")||haveRight("contract_infocom","r"))
 		echo "<li ".($actif=="global"?"class='actif'":"")."><a href='$target?onglet=global'>".$LANG["central"][13]."</a></li>";
 	if (isset($PLUGIN_HOOKS['central_action'])&&count($PLUGIN_HOOKS['central_action'])){
@@ -135,10 +136,10 @@ function showCentralMyView(){
 	
 		if ($showticket){
 			echo "<tr><td class='top'  width='450px'><br>";
-			showCentralJobList($_SERVER['PHP_SELF'],$_GET['start']);
+			showCentralJobList($_SERVER['PHP_SELF'],$_GET['start'],"process",false);
 			echo "</td></tr>";
 			echo "<tr><td   class='top' width='450px'>";
-			showCentralJobList($_SERVER['PHP_SELF'],$_GET['start'],"waiting");
+			showCentralJobList($_SERVER['PHP_SELF'],$_GET['start'],"waiting",false);
 			echo "</td></tr>";
 		}
 	
@@ -180,6 +181,39 @@ function showCentralMyView(){
 
 }
 
+/**
+ * Show the central group view
+ *
+ *
+ **/
+function showCentralGroupView(){
 
+		$showticket=haveRight("show_all_ticket","1");
+		
+		echo "<table class='tab_cadre_central' >";
+		echo "<tr><td class='top'>";
+		echo "<table>";
+	
+		if ($showticket){
+			echo "<tr><td class='top'  width='450px'><br>";
+			showCentralJobList($_SERVER['PHP_SELF'],$_GET['start'],"process",true);
+			echo "</td></tr>";
+		}
+	
+		echo "</table></td><td class='top'><table>";
+
+		if ($showticket){
+			echo "<tr><td   class='top' width='450px'>";
+			showCentralJobList($_SERVER['PHP_SELF'],$_GET['start'],"waiting",true);
+			echo "</td></tr>";
+		}
+
+	
+	
+		echo "</table></td></tr></table>";
+		
+
+
+}
 
 ?>

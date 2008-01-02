@@ -157,7 +157,7 @@ function getTrackingOrderPrefs ($ID) {
 
 }
 
-function showCentralJobList($target,$start,$status="process") {
+function showCentralJobList($target,$start,$status="process",$showgrouptickets=true) {
 	// Lists all Jobs, needs $show which can have keywords 
 	// (individual, unassigned) and $contains with search terms.
 	// If $item is given, only jobs for a particular machine
@@ -168,15 +168,17 @@ function showCentralJobList($target,$start,$status="process") {
 	if (!haveRight("show_all_ticket","1")&&!haveRight("show_assign_ticket","1")) return false;
 
 	$search_assign="assign = '".$_SESSION["glpiID"]."'";
-	if (count($_SESSION['glpigroups'])){
-		$first=true;
-		$groups="";
-		foreach ($_SESSION['glpigroups'] as $val){
-			if (!$first) $groups.=",";
-			else $first=false;
-			$groups.=$val;
+	if ($showgrouptickets){
+		if (count($_SESSION['glpigroups'])){
+			$first=true;
+			$groups="";
+			foreach ($_SESSION['glpigroups'] as $val){
+				if (!$first) $groups.=",";
+				else $first=false;
+				$groups.=$val;
+			}
+			$search_assign.= " OR assign_group IN ($groups) ";
 		}
-		$search_assign.= " OR assign_group IN ($groups) ";
 	}
 
 

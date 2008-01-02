@@ -176,6 +176,7 @@ $LANG["central"][10]="Les nouveaux tickets";
 $LANG["central"][11]="Vos tickets en attente"; 
 $LANG["central"][12]="Vue personnelle"; 
 $LANG["central"][13]="Vue globale"; 
+$LANG["central"][14]="Vue groupe"; 
 
 $LANG["choice"][0]="Non"; 
 $LANG["choice"][1]="Oui"; 
