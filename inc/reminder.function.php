@@ -170,21 +170,30 @@ function showListReminder($type="private"){
 	ksort($tabremind);
 
 
-	echo "<br><table class='tab_cadrehov' style='width:700px'>";
-	echo "<tr><th>"."$titre"."</th><th colspan='2'>".$LANG["common"][27]."</th></tr>";
+	echo "<br><table class='tab_cadre_fixehov'>";
+	echo "<tr><th colspan='2'>"."$titre"."</th><th colspan='2'>".$LANG["common"][27]."</th></tr>";
 
 	if (count($tabremind)>0){
 		foreach ($tabremind as $key => $val){
 
-			echo "<tr class='tab_bg_2'>" .
-				"<td width='60%' class='left'><a href=\"".$CFG_GLPI["root_doc"]."/front/reminder.form.php?ID=".$val["id_reminder"]."\">".$val["title"]."</a>" .
+			echo "<tr class='tab_bg_2'>";
+			
+			if ($type == 'private') {
+				echo "<td  colspan='2' width='70%' class='left'>";
+			} else {
+				echo "<td>" .getdropdownName("glpi_entities", $val["entity"]). "<br /><div align='right'>".
+					getdropdownName("glpi_users", $val["author"]) . "</div></td><td width='60%' class='left'>";
+			}
+			echo 	"<a href=\"".$CFG_GLPI["root_doc"]."/front/reminder.form.php?ID=".$val["id_reminder"]."\">".$val["title"]."</a>" .
 				"<div class='kb_resume'>".resume_text($val["text"],125);
 				
+			/*
 			if ($type != 'private') {
 				echo "<br />&nbsp;<br /><strong>".
 					getdropdownName("glpi_entities", $val["entity"]). "</strong> / ".
 					getdropdownName("glpi_users", $val["author"]);
-			}
+			} 
+			*/
 			echo "</div></td>";
 
 			if($val["end"]!=""){	
