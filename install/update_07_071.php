@@ -245,9 +245,16 @@ function update07to071() {
 	$query="DELETE FROM glpi_users_profiles WHERE FK_users='1'";
 	$DB->query($query) or die("0.71 delete helpdesk injector user profile " . $DB->error());
 	// change default device type for tracking
-	if (!FieldExists("glpi_tracking", "device_type")) {
+	if (FieldExists("glpi_tracking", "device_type")) {
 		$query=" ALTER TABLE `glpi_tracking` CHANGE `device_type` `device_type` INT( 11 ) NOT NULL DEFAULT '0' ";
 		$DB->query($query) or die("0.71 alter device_type from glpi_tracking " . $DB->error());		
+	}
+
+	// Change ldap condition field bigger
+	if (FieldExists("glpi_auth_ldap", "ldap_condition")) {
+ 	
+		$query="ALTER TABLE `glpi_auth_ldap` CHANGE `ldap_condition` `ldap_condition` TEXT CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL   ";
+		$DB->query($query) or die("0.71 alter change ldap_condition field to be bigger " . $DB->error());		
 	}
 
 } // fin 0.71 #####################################################################################
