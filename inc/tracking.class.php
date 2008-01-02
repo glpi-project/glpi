@@ -414,17 +414,17 @@ class Job extends CommonDBTM{
 		unset($input["type"]);
 
 		// No Auto set Import for external source
-		if (!isset($input['_auto_import'])&&!isset($input["author"])){
-			if (isset($_SESSION["glpiID"])&&$_SESSION["glpiID"]>0)
-				$input["author"]=$_SESSION["glpiID"];
-			else $input["author"]=1; // Helpdesk injector
-		} else {
-			$input["author"]=0;
+		if (!isset($input['_auto_import'])){
+			if (!isset($input["author"])){
+				if (isset($_SESSION["glpiID"])&&$_SESSION["glpiID"]>0)
+					$input["author"]=$_SESSION["glpiID"];
+				else $input["author"]=1; // Helpdesk injector
+			}
 		}
 
 		// No Auto set Import for external source
 		if (isset($_SESSION["glpiID"])&&!isset($input['_auto_import'])) {
-				$input["recipient"]=$_SESSION["glpiID"];
+			$input["recipient"]=$_SESSION["glpiID"];
 		} else if ($input["author"]) {
 			$input["recipient"]=$input["author"];
 		}
