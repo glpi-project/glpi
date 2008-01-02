@@ -73,7 +73,7 @@ if(isset($_POST["add"])){
 
 	if (!isset($_POST["several"])){
 		$np->add($_POST);
-		logEvent(0, "networking", 5, "inventory", $_SESSION["glpiname"]." added networking port.");
+		logEvent(0, "networking", 5, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][70]);
 		glpi_header($_SERVER['HTTP_REFERER'].$ADDREFERER);
 	}
 	else {
@@ -89,7 +89,7 @@ if(isset($_POST["add"])){
 			unset($np->fields["ID"]);
 			$np->add($input);	
 		}
-		logEvent(0, "networking", 5, "inventory", $_SESSION["glpiname"]." added ".($_POST["to_logical_number"]-$_POST["from_logical_number"]+1)." networking ports.");
+		logEvent(0, "networking", 5, "inventory", $_SESSION["glpiname"]."  ".($_POST["to_logical_number"]-$_POST["from_logical_number"]+1)."  ".$LANG["log"][71]);
 		glpi_header($_SERVER['HTTP_REFERER'].$ADDREFERER);
 	}
 
@@ -98,7 +98,7 @@ else if(isset($_POST["delete"]))
 {
 	checkRight("networking","w");
 	$np->delete($_POST);
-	logEvent(0, "networking", 5, "inventory", $_SESSION["glpiname"]." deleted networking port.");
+	logEvent(0, "networking", 5, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][73]);
 	glpi_header(preg_replace("/&amp;/","&",urldecode($_POST["referer"])));
 }
 else if(isset($_POST["delete_several"]))
@@ -109,7 +109,7 @@ else if(isset($_POST["delete_several"]))
 			$np->delete(array("ID"=>$port_id));
 		}
 
-	logEvent(0, "networking", 5, "inventory", $_SESSION["glpiname"]." deleted several networking ports.");
+	logEvent(0, "networking", 5, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][74]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if(isset($_POST["move"]))
@@ -125,7 +125,7 @@ else if(isset($_POST["move"]))
 			}
 		}
 
-	logEvent(0, "networking", 5, "inventory", $_SESSION["glpiname"]." move networking ports.");
+	logEvent(0, "networking", 5, "inventory", $_SESSION["glpiname"]."  ".$LANG["log"][75]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if(isset($_POST["update"]))
@@ -165,7 +165,7 @@ else if(isset($_POST["assign_vlan_several"]))
 				assignVlan($port_id,$_POST["vlan"]);
 			}
 
-		logEvent(0, "networking", 5, "inventory", $_SESSION["glpiname"]." assign vlan to ports.");
+		logEvent(0, "networking", 5, "inventory", $_SESSION["glpiname"]."  ".$LANG["log"][78]);
 	}
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
@@ -174,7 +174,7 @@ else if (isset($_POST['assign_vlan'])){
 
 	if (isset($_POST["vlan"])&&$_POST["vlan"]>0){
 		assignVlan($_POST["ID"],$_POST["vlan"]);	
-		logEvent(0, "networking", 5, "inventory", $_SESSION["glpiname"]." assign vlan to ports.");
+		logEvent(0, "networking", 5, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][77]);
 	}
 	glpi_header($_SERVER['HTTP_REFERER'].$ADDREFERER);
 }
@@ -187,7 +187,7 @@ else if(isset($_POST["unassign_vlan_several"]))
 				unassignVlan($port_id,$_POST["vlan"]);
 			}
 
-		logEvent(0, "networking", 5, "inventory", $_SESSION["glpiname"]." unassign vlan to ports.");
+		logEvent(0, "networking", 5, "inventory", $_SESSION["glpiname"]."  ".$LANG["log"][80]);
 	}
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
@@ -195,7 +195,7 @@ else if (isset($_GET['unassign_vlan'])){
 	checkRight("networking","w");
 
 	unassignVlanbyID($_GET['ID']);
-	logEvent(0, "networking", 5, "inventory", $_SESSION["glpiname"]." unassign a vlan to a port.");
+	logEvent(0, "networking", 5, "inventory", $_SESSION["glpiname"]."  ".$LANG["log"][79]);
 	glpi_header($_SERVER['HTTP_REFERER'].$ADDREFERER);
 }
 else 
