@@ -87,13 +87,6 @@ class User extends CommonDBTM {
 	function pre_deleteItem($ID){
 		global $LANG,$DB;
 
-		if ($ID == 1) {
-			echo "<script language=\"JavaScript\" type=\"text/javascript\">";
-			echo "alert('" . addslashes($LANG["setup"][220]) . "');";
-			echo "</script>";
-			return false;
-		}
-
 		$entities=getUserEntities($ID);
 		$view_all=isViewAllEntities();
 		// Have right on all entities ?
@@ -242,13 +235,6 @@ class User extends CommonDBTM {
 	function prepareInputForUpdate($input) {
 		global  $LANG;
 
-		if (isset ($input["ID"]) && $input["ID"] == 1) {
-			echo "<script language=\"JavaScript\" type=\"text/javascript\">";
-			echo "alert('" . addslashes($LANG["setup"][220]) . "');";
-			echo "</script>";
-			glpi_header($_SERVER['HTTP_REFERER']);
-			exit ();
-		}
 		if (isset ($input["password"])) {
 			if (empty ($input["password"])) {
 				unset ($input["password"]);
@@ -676,13 +662,6 @@ class User extends CommonDBTM {
 		$canedit = haveRight("user", "w");
 		$canread = haveRight("user", "r");
 
-		// Helpdesk case
-		if ($ID == 1) {
-			echo "<div class='center'>";
-			echo $LANG["setup"][220];
-			echo "</div>";
-			return false;
-		}
 		$spotted = false;
 		$use_cache=true;
 		if (empty ($ID)) {

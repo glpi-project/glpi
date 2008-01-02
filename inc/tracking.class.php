@@ -418,7 +418,6 @@ class Job extends CommonDBTM{
 			if (!isset($input["author"])){
 				if (isset($_SESSION["glpiID"])&&$_SESSION["glpiID"]>0)
 					$input["author"]=$_SESSION["glpiID"];
-				else $input["author"]=1; // Helpdesk injector
 			}
 		}
 

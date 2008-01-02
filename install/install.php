@@ -786,7 +786,6 @@ function step4 ($host,$user,$password,$databasename,$newdatabasename)
 				fill_db();
 				echo "<p>".$LANG["install"][43]."</p>";
 				echo "<p>".$LANG["install"][44]."</p>";
-				echo "<p>".$LANG["install"][45]."</p>";
 				echo "<p>".$LANG["install"][46]."</p>";
 				next_form();
 			}
@@ -804,7 +803,6 @@ function step4 ($host,$user,$password,$databasename,$newdatabasename)
 				fill_db();
 				echo "<p>".$LANG["install"][43]."</p>";
 				echo "<p>".$LANG["install"][44]."</p>";
-				echo "<p>".$LANG["install"][45]."</p>";
 				echo "<p>".$LANG["install"][46]."</p>";
 				next_form();
 			} else { // can't create config_db file
@@ -820,7 +818,6 @@ function step4 ($host,$user,$password,$databasename,$newdatabasename)
 					fill_db();
 					echo "<p>".$LANG["install"][43]."</p>";
 					echo "<p>".$LANG["install"][44]."</p>";
-					echo "<p>".$LANG["install"][45]."</p>";
 					echo "<p>".$LANG["install"][46]."</p>";
 					next_form();
 	
