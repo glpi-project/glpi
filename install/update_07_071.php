@@ -271,7 +271,18 @@ function update07to071() {
 		$query="ALTER TABLE `glpi_config` ADD `numberformat` SMALLINT NOT NULL DEFAULT '0' AFTER `dateformat` ;";
 		$DB->query($query) or die("0.71 alter config add numberformat" . $DB->error());		
 	}
+	// Add group supervisor
+	if (!FieldExists("glpi_groups", "FK_users")) {
+		$query="ALTER TABLE `glpi_groups` ADD `FK_users` INT NOT NULL DEFAULT '0' AFTER `comments` ;";
+		$DB->query($query) or die("0.71 alter groups add FK_users supervisor" . $DB->error());		
+	}
 
+	// Add group supervisor
+	if (!FieldExists("glpi_entities_data", "admin_email")) {
+		$query="ALTER TABLE `glpi_entities_data` ADD `admin_email` VARCHAR( 255 ) NULL AFTER `email` ;";
+		$DB->query($query) or die("0.71 alter entities_data add admin_email " . $DB->error());		
+	}
 
+	
 } // fin 0.71 #####################################################################################
 ?>

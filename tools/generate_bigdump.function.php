@@ -662,15 +662,6 @@ function generate_entity($ID_entity){
 	$LAST["locations"]=getMaxItem("glpi_dropdown_locations");
 
 
-	// glpi_groups
-	$FIRST["groups"]=getMaxItem("glpi_groups");
-	for ($i=0;$i<$MAX['groups'];$i++){
-		$query="INSERT INTO glpi_groups VALUES (NULL,'$ID_entity','group $i','comment group $i','','','')";
-		$DB->query($query) or die("PB REQUETE ".$query);
-	}
-	$LAST["groups"]=$DB->insert_id();
-
-
 	// glpi_kbitems
 	$MAX["kbcategories"]=getMaxItem("glpi_dropdown_kbcategories");
 
@@ -696,6 +687,14 @@ function generate_entity($ID_entity){
 	}
 	$LAST["kbitems"]=getMaxItem("glpi_kbitems");
 
+	// glpi_groups
+	$FIRST["groups"]=getMaxItem("glpi_groups");
+	for ($i=0;$i<$MAX['groups'];$i++){
+		$query="INSERT INTO glpi_groups VALUES (NULL,'$ID_entity','group $i','comment group $i','0','','','')";
+		$DB->query($query) or die("PB REQUETE ".$query);
+	}
+	$LAST["groups"]=$DB->insert_id();
+
 	
 	// glpi_users
 	$FIRST["users_sadmin"]=getMaxItem("glpi_users")+1;
@@ -716,7 +715,10 @@ function generate_entity($ID_entity){
 		$user_id=$DB->insert_id();
 		$query="INSERT INTO glpi_users_profiles VALUES (NULL,'$user_id','3','$ID_entity','1','0');";
 		$DB->query($query) or die("PB REQUETE ".$query);
-		$query="INSERT INTO glpi_users_groups VALUES (NULL,'$user_id','".mt_rand($FIRST['groups'],$LAST['groups'])."');";
+		$group=mt_rand($FIRST['groups'],$LAST['groups']);
+		$query="INSERT INTO glpi_users_groups VALUES (NULL,'$user_id','$group');";
+		$DB->query($query) or die("PB REQUETE ".$query);
+		$query="UPDATE glpi_groups SET FK_users='$user_id' WHERE FK_users='$group'";
 		$DB->query($query) or die("PB REQUETE ".$query);
 	}
 	$LAST["users_admin"]=getMaxItem("glpi_users");
