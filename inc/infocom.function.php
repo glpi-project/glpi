@@ -95,13 +95,16 @@ function showInfocomForm($target,$device_type,$dev_ID,$show_immo=1,$withtemplate
 		autocompletionTextField("bon_livraison","glpi_infocoms","bon_livraison",$ic->fields["bon_livraison"],25,-1,$option);	
 		echo "</td></tr>";
 
+		// Can edit calendar ?
+		$editcalendar=($withtemplate!=2);
+		
 		echo "<tr class='tab_bg_1'><td>".$LANG["financial"][14].":	</td><td>";
-		showCalendarForm("form_ic","buy_date",$ic->fields["buy_date"],$withtemplate);	
+		showCalendarForm("form_ic","buy_date",$ic->fields["buy_date"],$editcalendar);	
 		echo "</td>";
 
 
 		echo "<td>".$LANG["financial"][76].":	</td><td>";
-		showCalendarForm("form_ic","use_date",$ic->fields["use_date"],$withtemplate);	
+		showCalendarForm("form_ic","use_date",$ic->fields["use_date"],$editcalendar);	
 		echo "</td>";
 		echo "</tr>";
 

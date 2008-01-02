@@ -751,7 +751,7 @@ function addFormTracking ($device_type=0,$ID=0,$author,$group,$assign,$assign_gr
 	if (haveRight("update_ticket","1")){
 		echo "<tr class='tab_bg_2'><td class='center'>".$LANG["common"][27].":</td>";
 		echo "<td align='center' class='tab_bg_2'>";
-		showCalendarForm("form_ticket","date",date("Y-m-d H:i"),0,1);	
+		showCalendarForm("form_ticket","date",date("Y-m-d H:i"),true,true);	
 		echo "</td>";
 
 		echo "<td class='center'>".$LANG["job"][44].":</td>";
@@ -1721,11 +1721,13 @@ function showJobDetails ($target,$ID){
 		showTrackingOnglets($_SERVER['PHP_SELF']."?ID=".$ID);
 
 		//echo "<div class='center'>";
-		echo "<form method='post' action='$target'  enctype=\"multipart/form-data\">\n";
+		echo "<form method='post' name='form_ticket' action='$target'  enctype=\"multipart/form-data\">\n";
 		echo "<table class='tab_cadre_fixe' cellpadding='5'>";
 		// First line
 		echo "<tr><th colspan='2' style='text-align:left;'><span class='tracking_small'>";
-		echo $LANG["joblist"][11].": ".convDateTime($job->fields["date"])."&nbsp;&nbsp; ".$LANG["job"][2]." &nbsp; ";
+		echo $LANG["joblist"][11].": ";
+		showCalendarForm("form_ticket","date",$job->fields["date"],true,true,false);	
+		echo "&nbsp;&nbsp; ".$LANG["job"][2]." &nbsp; ";
 		if ($canupdate){
 			dropdownAllUsers("recipient",$job->fields["recipient"],1,$job->fields["FK_entities"]);
 		} else {
@@ -1739,7 +1741,9 @@ function showJobDetails ($target,$ID){
 		echo "</span>";
 
 		if (ereg("old_",$job->fields["status"])){
-			echo "<br><span class='tracking_small'>".$LANG["joblist"][12].": ".convDateTime($job->fields["closedate"])."</span>\n";
+			echo "<br><span class='tracking_small'>".$LANG["joblist"][12].": ";
+			showCalendarForm("form_ticket","closedate",$job->fields["closedate"],true,true,false);	
+			echo "</span>\n";
 		}
 
 		echo "</th>";

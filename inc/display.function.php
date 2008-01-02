@@ -1949,11 +1949,12 @@ function printPager($start,$numrows,$target,$parameters,$item_type_output=0,$ite
  * @param $form form in which the calendar is display
  * @param $element name of the element
  * @param $value default value to display
- * @param $withtemplate if = 2 only display (add from template) : could not modify element
+ * @param $can_edit could not modify element
  * @param $with_time use datetime format instead of date format ?
+ * @param $with_reset do not display reset button
  * @return nothing
  */
-function showCalendarForm($form,$element,$value='',$withtemplate='',$with_time=0){
+function showCalendarForm($form,$element,$value='',$can_edit=true,$with_time=false,$with_reset=true){
 	global $LANG,$CFG_GLPI;
 	$rand=mt_rand();
 	if (empty($value)) {
@@ -1964,7 +1965,7 @@ function showCalendarForm($form,$element,$value='',$withtemplate='',$with_time=0
 	$size=10;
 	$dvalue=$value;
 	if ($with_time) {
-		$size=16;
+		$size=18;
 		$dvalue=convDateTime($value);
 	} else {
 		$dvalue=convDate($value);
@@ -1973,10 +1974,12 @@ function showCalendarForm($form,$element,$value='',$withtemplate='',$with_time=0
 	echo "<input id='show$rand' type='text' name='____".$element."_show' readonly size='$size' value=\"".$dvalue."\">";
 	echo "<input id='data$rand' type='hidden' name='$element' size='$size' value=\"".$value."\">";
 
-	if ($withtemplate!=2){
+	if ($can_edit){
 		echo "&nbsp;<img id='button$rand' src='".$CFG_GLPI["root_doc"]."/pics/calendar.png' class='calendrier' alt='".$LANG["buttons"][15]."' title='".$LANG["buttons"][15]."'>";
 
-		echo "&nbsp;<img src='".$CFG_GLPI["root_doc"]."/pics/reset.png' class='calendrier' onclick=\"window.document.getElementById('data$rand').value='0000-00-00".($with_time?" 00:00":"")."';window.document.getElementById('show$rand').value='".($with_time?convDateTime("0000-00-00 00:00"):convDate("0000-00-00"))."'\" alt='Reset' title='Reset'>";	
+		if ($with_reset){
+			echo "&nbsp;<img src='".$CFG_GLPI["root_doc"]."/pics/reset.png' class='calendrier' onclick=\"window.document.getElementById('data$rand').value='0000-00-00".($with_time?" 00:00":"")."';window.document.getElementById('show$rand').value='".($with_time?convDateTime("0000-00-00 00:00"):convDate("0000-00-00"))."'\" alt='Reset' title='Reset'>";	
+		}
 
 		echo "<script type='text/javascript'>";
 		echo "Calendar.setup(";
@@ -2013,8 +2016,6 @@ function showCalendarForm($form,$element,$value='',$withtemplate='',$with_time=0
 		}
 		echo "})\n";
 		echo "</script>\n";
-
-
 	}
 }
 

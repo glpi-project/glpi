@@ -195,7 +195,7 @@ class Config extends CommonDBTM {
 				echo "</td>";
 			
 				echo "<td class='center'>" . $LANG["setup"][221] . "</td><td>";
-				showCalendarForm("form", "date_fiscale", $CFG_GLPI["date_fiscale"], 0);
+				showCalendarForm("form", "date_fiscale", $CFG_GLPI["date_fiscale"]);
 				echo "</td></tr>";
 
 				echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["setup"][360] . "</td><td>";
