@@ -35,7 +35,7 @@ if (!defined('GLPI_ROOT')){
 	}
 
 
-function showCentralReminder($type="private"){
+function showCentralReminder($entity = -1, $parent = false){
 	// show reminder that are not planned 
 
 	global $DB,$CFG_GLPI, $LANG;
@@ -43,33 +43,60 @@ function showCentralReminder($type="private"){
 	$author=$_SESSION['glpiID'];	
 	$today=$_SESSION["glpi_currenttime"];
 
-	if($type=="global"){ // show public reminder
+	if ($entity < 0) {
+
+		$query = "SELECT * FROM glpi_reminder WHERE author='$author' AND type='private' AND (end>='$today' or rv='0') ";
+		$titre = "<a href=\"".$CFG_GLPI["root_doc"]."/front/reminder.php\">".$LANG["reminder"][0]."</a>";	
+		$type  = "private";
+
+	} else if ($entity == $_SESSION["glpiactive_entity"]) {
+		
+		$query = "SELECT * FROM glpi_reminder WHERE type!='private' ".getEntitiesRestrictRequest("AND","glpi_reminder","",$entity);
+		$titre = "<a href=\"".$CFG_GLPI["root_doc"]."/front/reminder.php\">".$LANG["reminder"][1]."</a> (".getdropdownName("glpi_entities", $entity).")";
+		
+		if (haveRight("reminder_public","w")) {
+			$type = "public";
+		}
+		
+	} else if ($parent) {
+		
+		$query = "SELECT * FROM glpi_reminder WHERE type='global' ".getEntitiesRestrictRequest("AND","glpi_reminder","",$entity);
+		$titre = $LANG["reminder"][1]." (".getdropdownName("glpi_entities", $entity).")";		
+		
+	} else { // Filles
+		
+		$query = "SELECT * FROM glpi_reminder WHERE type!='private' ".getEntitiesRestrictRequest("AND","glpi_reminder","",$entity);
+		$titre = $LANG["reminder"][1]." (".getdropdownName("glpi_entities", $entity).")";
+
+	}
+	/*
+	if ($type=="global"){ // show public reminder
 		$query="SELECT * FROM glpi_reminder WHERE type='global' ".getEntitiesRestrictRequest("AND","glpi_reminder","","",true);
 		$titre="<a href=\"".$CFG_GLPI["root_doc"]."/front/reminder.php\">".$LANG["reminder"][16]."</a>";
-	} else if($type=="public"){ // show public reminder
+
+	} else if ($type=="public"){ // show public reminder
 		$query="SELECT * FROM glpi_reminder WHERE type='public' AND (end>='$today' or rv='0') ".getEntitiesRestrictRequest("AND","glpi_reminder");
 		$titre="<a href=\"".$CFG_GLPI["root_doc"]."/front/reminder.php\">".$LANG["reminder"][1]."</a>";
-	}else{ // show private reminder
+
+	} else { // show private reminder
 		$query="SELECT * FROM glpi_reminder WHERE author='$author' AND type='private' AND (end>='$today' or rv='0') ";
 		$titre="<a href=\"".$CFG_GLPI["root_doc"]."/front/reminder.php\">".$LANG["reminder"][0]."</a>";
 	}
-
+	*/
 
 	$result = $DB->query($query);
+	$nb=$DB->numrows($result);
 
-
-
-	echo "<br><table class='tab_cadrehov'>";
-
-	echo "<tr><th><div class='relative'><span>"."$titre"."</span>";
-	if (($type=="private") || 
-		($type=="public" && haveRight("reminder_public","w")) ||
-		($type=="global" && haveRight("reminder_public","w")) && haveRecursiveAccessToEntity($_SESSION["glpiactive_entity"])){
-		echo "<span class='reminder_right'><a href=\"".$CFG_GLPI["root_doc"]."/front/reminder.form.php?type=$type\"><img src=\"".$CFG_GLPI["root_doc"]."/pics/plus.png\" alt='+' title='".$LANG["buttons"][8]."'></a></span>";
+	if ($nb || isset($type)) {
+		echo "<br><table class='tab_cadrehov'>";
+	
+		echo "<tr><th><div class='relative'><span>$titre</span>";
+		if (isset($type)){
+			echo "<span class='reminder_right'><a href=\"".$CFG_GLPI["root_doc"]."/front/reminder.form.php?type=$type\"><img src=\"".$CFG_GLPI["root_doc"]."/pics/plus.png\" alt='+' title='".$LANG["buttons"][8]."'></a></span>";
+		}
+		echo "</div></th></tr>\n";
 	}
-	echo "</div>";
-	echo "</th></tr>";
-	if($DB->numrows($result)>0){
+	if ($nb) {
 		while ($data =$DB->fetch_array($result)){ 
 
 			echo "<tr class='tab_bg_2'><td><div class='relative'><div class='reminder_list'><a  href=\"".$CFG_GLPI["root_doc"]."/front/reminder.form.php?ID=".$data["ID"]."\">".$data["title"]."</a>";
@@ -81,18 +108,14 @@ function showCentralReminder($type="private"){
 
 				echo "<span class='reminder_right'><a href=\"".$CFG_GLPI["root_doc"]."/front/planning.php?date=".$date_url."&amp;type=day\"><img src=\"".$CFG_GLPI["root_doc"]."/pics/rdv.png\" alt='".$LANG["planning"][3]."' title='".convDateTime($data["begin"])."=>".convDateTime($data["end"])."'></a></span>";
 
-
-
 			}
-
-			echo "</div></div></td></tr>";
-
-
+			echo "</div></div></td></tr>\n";
 		}
 	}
 
-
-	echo "</table>";
+	if ($nb || isset($type)) {
+		echo "</table>";
+	}
 }
 
 
