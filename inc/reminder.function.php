@@ -170,21 +170,28 @@ function showListReminder($type="private"){
 	ksort($tabremind);
 
 
+	
 	echo "<br><table class='tab_cadre_fixehov'>";
-	echo "<tr><th colspan='2'>"."$titre"."</th><th colspan='2'>".$LANG["common"][27]."</th></tr>";
+	if ($type == 'private') {
+		echo "<tr><th>"."$titre"."</th><th colspan='2'>".$LANG["common"][27]."</th></tr>";
+	} else {
+		echo "<tr><th colspan='5'>"."$titre"."</th></tr>" .
+			 "<tr><th>".$LANG["entity"][0]."</th><th>".$LANG["common"][37]."</th><th>".$LANG["reminder"][2]."</th>" .
+			 "<th colspan='2'>".$LANG["common"][27]."</th></tr>";
+		
+	}
 
 	if (count($tabremind)>0){
 		foreach ($tabremind as $key => $val){
 
 			echo "<tr class='tab_bg_2'>";
 			
-			if ($type == 'private') {
-				echo "<td  colspan='2' width='70%' class='left'>";
-			} else {
-				echo "<td>" .getdropdownName("glpi_entities", $val["entity"]). "<br /><div align='right'>".
-					getdropdownName("glpi_users", $val["author"]) . "</div></td><td width='60%' class='left'>";
+			if ($type != 'private') {
+				// ereg to split line (if needed) before ">" sign in completename
+				echo "<td>" .ereg_replace(" ([[:alnum:]])", "&nbsp;\\1", getdropdownName("glpi_entities", $val["entity"])). "</td>".
+					 "<td>" .getdropdownName("glpi_users", $val["author"]) . "</td>";
 			}
-			echo 	"<a href=\"".$CFG_GLPI["root_doc"]."/front/reminder.form.php?ID=".$val["id_reminder"]."\">".$val["title"]."</a>" .
+			echo 	"<td width='60%' class='left'><a href=\"".$CFG_GLPI["root_doc"]."/front/reminder.form.php?ID=".$val["id_reminder"]."\">".$val["title"]."</a>" .
 				"<div class='kb_resume'>".resume_text($val["text"],125);
 				
 			/*
