@@ -1723,6 +1723,14 @@ function showJobDetails ($target,$ID){
 		//echo "<div class='center'>";
 		echo "<form method='post' name='form_ticket' action='$target'  enctype=\"multipart/form-data\">\n";
 		echo "<table class='tab_cadre_fixe' cellpadding='5'>";
+
+		// OPtional line 
+		if (isMultiEntitiesMode()){
+			echo "<tr><th colspan='4'>";
+			echo getDropdownName("glpi_entities",$job->fields["FK_entities"]);
+			echo "</th></tr>";
+		}
+
 		// First line
 		echo "<tr><th colspan='2' style='text-align:left;'><span class='tracking_small'>";
 		echo $LANG["joblist"][11].": ";
@@ -1732,10 +1740,6 @@ function showJobDetails ($target,$ID){
 			dropdownAllUsers("recipient",$job->fields["recipient"],1,$job->fields["FK_entities"]);
 		} else {
 			echo getUserName($job->fields["recipient"],$showuserlink);
-		}
-
-		if (isMultiEntitiesMode()){
-			echo "&nbsp;(".getDropdownName("glpi_entities",$job->fields["FK_entities"]).")";
 		}
 
 		echo "</span>";
