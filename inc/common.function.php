@@ -1020,6 +1020,9 @@ function formatNumber($number,$edit=false,$forcedecimal=-1) {
 
 	// Display : clean display
 	switch ($CFG_GLPI["numberformat"]){
+		case 2: // Other French
+			return number_format($number,$decimal,',',' ');
+			break;
 		case 0: // French
 			return number_format($number,$decimal,'.',' ');
 			break;
