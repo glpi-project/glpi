@@ -1716,14 +1716,17 @@ function showJobDetails ($target,$ID){
 			echo "&nbsp;(".getDropdownName("glpi_entities",$job->fields["FK_entities"]).")";
 		}
 
-		echo "</span></th>";
-		echo "<th><span class='tracking_small'>".$LANG["joblist"][12].":\n";
-		if (!ereg("old_",$job->fields["status"])){
-			echo "<i>".$LANG["job"][1]."</i>\n";
+		echo "</span>";
+
+		if (ereg("old_",$job->fields["status"])){
+			echo "<br><span class='tracking_small'".convDateTime($job->fields["closedate"])."</span>\n";
 		}
-		else{
-			echo "<strong>".convDateTime($job->fields["closedate"])."</strong>\n";
-		}
+
+		echo "</th>";
+		echo "<th><span class='tracking_small'>".$LANG["common"][26].":\n";
+		
+		echo convDateTime($job->fields["date_mod"])."\n";
+	
 		echo "</span></th></tr>";
 		echo "<tr class='tab_bg_2'>";
 		// Premier Colonne
