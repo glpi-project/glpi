@@ -223,7 +223,7 @@ function showFormTreeDown($target, $tablename, $human, $ID, $value2 = '', $where
 	echo "</div>";
 }
 
-function showFormNetPoint($target, $human, $ID, $FK_entities='',$location=0) {
+function showFormNetpoint($target, $human, $ID, $FK_entities='',$location=0) {
 
 	global $DB, $CFG_GLPI, $LANG;
 
