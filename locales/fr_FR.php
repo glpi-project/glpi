@@ -787,6 +787,19 @@ $LANG["log"][63]="entité";
 $LANG["log"][64]="modification des commentaires"; 
 $LANG["log"][65]="règle"; 
 $LANG["log"][66]="Sécurité"; 
+$LANG["log"][70]="ajout d'un port réseau";
+$LANG["log"][71]="ajout de plusieurs ports réseau";
+$LANG["log"][72]="ajout d'un port réseau";
+$LANG["log"][73]="suppression d'un port réseau";
+$LANG["log"][74]="supression de plusieurs ports réseau";
+$LANG["log"][75]="déplacement d'un port réseau";
+$LANG["log"][76]="suppression d'un port réseau";
+$LANG["log"][77]="assignation d'un vlan à un port réseau";
+$LANG["log"][78]="assignation d'un vlan à plusieurs ports réseau";
+$LANG["log"][79]="désassignation d'un vlan à un port réseau";
+$LANG["log"][80]="désassignation d'un vlan à plusieurs ports réseau";
+
+
 
 $LANG["login"][0]="Dernière connexion"; 
 $LANG["login"][1]="Se reconnecter"; 
