@@ -257,5 +257,21 @@ function update07to071() {
 		$DB->query($query) or die("0.71 alter change ldap_condition field to be bigger " . $DB->error());		
 	}
 
+	// Add date_mod to glpi_tracking
+	if (!FieldExists("glpi_tracking", "date_mod")) {
+		$query="ALTER TABLE `glpi_tracking` ADD `date_mod` DATETIME NULL DEFAULT NULL AFTER `closedate` ;";
+		$DB->query($query) or die("0.71 alter glpi_tracking add date_mod" . $DB->error());		
+		$query="UPDATE `glpi_tracking` SET `date_mod` = date;";
+		$DB->query($query) or die("0.71 alter glpi_tracking update date_mod value to creation date" . $DB->error());		
+
+	}
+
+	// Add number format
+	if (!FieldExists("glpi_config", "numberformat")) {
+		$query="ALTER TABLE `glpi_config` ADD `numberformat` SMALLINT NOT NULL DEFAULT '0' AFTER `dateformat` ;";
+		$DB->query($query) or die("0.71 alter config add numberformat" . $DB->error());		
+	}
+
+
 } // fin 0.71 #####################################################################################
 ?>
