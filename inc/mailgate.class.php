@@ -259,6 +259,8 @@ class MailCollect  extends receiveMail {
 		$tkt['device_type']=0;
 		// Mail request type
 		$tkt['request_type']=2;
+		// AUto_import
+		$tkt['_auto_import']=1;
 		$body=$this->getBody($i);
 		
 		if (!empty($this->charset)&&function_exists('mb_convert_encoding')){
