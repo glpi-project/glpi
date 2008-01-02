@@ -74,7 +74,7 @@ else if (isset($_POST["update"]))
 }
 else
 {
-	commonHeader($LANG["title"][40],$_SERVER['PHP_SELF'],"tools","reminder");
+	commonHeader($LANG["title"][40],$_SERVER['PHP_SELF'],"utils","reminder");
 	$remind->showForm($_SERVER['PHP_SELF'],$_GET["ID"]);
 
 	commonFooter();
