@@ -146,9 +146,8 @@ function showListReminder($type="private"){
 
 	$remind=new Reminder();
 
-	$i=0;
 	if ($DB->numrows($result)>0)
-		while ($data=$DB->fetch_array($result)){
+		for ($i=0 ; $data=$DB->fetch_array($result) ; $i++) {
 			$remind->getFromDB($data["ID"]);
 
 			if($data["rv"]==1){ //Un rdv on va trier sur la date begin
@@ -157,13 +156,13 @@ function showListReminder($type="private"){
 				$sort=$data["date"];
 			}
 
-
 			$tabremind[$sort."$$".$i]["id_reminder"]=$remind->fields["ID"];
+			$tabremind[$sort."$$".$i]["author"]=$remind->fields["author"];
+			$tabremind[$sort."$$".$i]["entity"]=$remind->fields["FK_entities"];
 			$tabremind[$sort."$$".$i]["begin"]=($data["rv"]==1?"".$data["begin"]."":"".$data["date"]."");
 			$tabremind[$sort."$$".$i]["end"]=($data["rv"]==1?"".$data["end"]."":"");
 			$tabremind[$sort."$$".$i]["title"]=resume_text($remind->fields["title"],$CFG_GLPI["cut"]);
 			$tabremind[$sort."$$".$i]["text"]=resume_text($remind->fields["text"],$CFG_GLPI["cut"]);
-			$i++;
 		}
 
 
@@ -177,9 +176,16 @@ function showListReminder($type="private"){
 	if (count($tabremind)>0){
 		foreach ($tabremind as $key => $val){
 
-			echo "<tr class='tab_bg_2'><td width='70%' class='left'>";
-			echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/reminder.form.php?ID=".$val["id_reminder"]."\">".$val["title"]."</a><div class='kb_resume'>".resume_text($val["text"],125)."</div>";
-			echo "</td>";
+			echo "<tr class='tab_bg_2'>" .
+				"<td width='60%' class='left'><a href=\"".$CFG_GLPI["root_doc"]."/front/reminder.form.php?ID=".$val["id_reminder"]."\">".$val["title"]."</a>" .
+				"<div class='kb_resume'>".resume_text($val["text"],125);
+				
+			if ($type != 'private') {
+				echo "<br />&nbsp;<br /><strong>".
+					getdropdownName("glpi_entities", $val["entity"]). "</strong> / ".
+					getdropdownName("glpi_users", $val["author"]);
+			}
+			echo "</div></td>";
 
 			if($val["end"]!=""){	
 				echo "<td class='center'>";
