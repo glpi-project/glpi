@@ -203,7 +203,7 @@ function showCentralGroupView(){
 		echo "</table></td><td class='top'><table>";
 
 		if ($showticket){
-			echo "<tr><td   class='top' width='450px'>";
+			echo "<tr><td   class='top' width='450px'><br>";
 			showCentralJobList($_SERVER['PHP_SELF'],$_GET['start'],"waiting",true);
 			echo "</td></tr>";
 		}
