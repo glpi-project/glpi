@@ -413,14 +413,21 @@ class Job extends CommonDBTM{
 		// Manage helpdesk.html submission type
 		unset($input["type"]);
 
-		if (!isset($input["author"])){
+		// No Auto set Import for external source
+		if (!isset($input['_auto_import'])&&!isset($input["author"])){
 			if (isset($_SESSION["glpiID"])&&$_SESSION["glpiID"]>0)
 				$input["author"]=$_SESSION["glpiID"];
 			else $input["author"]=1; // Helpdesk injector
+		} else {
+			$input["author"]=0;
 		}
 
-		if (isset($_SESSION["glpiID"])) $input["recipient"]=$_SESSION["glpiID"];
-		else if ($input["author"]) $input["recipient"]=$input["author"];
+		// No Auto set Import for external source
+		if (isset($_SESSION["glpiID"])&&!isset($input['_auto_import'])) {
+				$input["recipient"]=$_SESSION["glpiID"];
+		} else if ($input["author"]) {
+			$input["recipient"]=$input["author"];
+		}
 
 		if (!isset($input["request_type"])) $input["request_type"]=1;
 		if (!isset($input["status"])) $input["status"]="new";
@@ -439,7 +446,6 @@ class Job extends CommonDBTM{
 		if ($input["device_type"]==0){
 			$input["computer"]=0;
 		}
-
 
 		// Auto group define
 		if (isset($input["computer"])&&$input["computer"]&&$input["device_type"]){
