@@ -70,7 +70,7 @@ function showCentralGlobalView(){
 	
 	echo "<table  class='tab_cadre_central' ><tr>";
 
-	echo "<td class='top'>";
+	echo "<td class='top'><br>";
 	echo "<table >";
 	if ($showticket){
 		echo "<tr><td class='top'  width='450px'>";
@@ -88,9 +88,8 @@ function showCentralGlobalView(){
 	echo "</td>";
 
 	if (haveRight("logs","r")){
-		echo "<td class='top'>";
-		echo "<table><tr>";
-		echo "<td aclass='center'>";
+		echo "<td class='top' width='450px'>";
+		
 		if ($CFG_GLPI["num_of_events"]>0){
 
 			//Show last add events
@@ -99,8 +98,7 @@ function showCentralGlobalView(){
 		} else {
 			echo "&nbsp;";
 		}
-		echo "</td></tr>";
-		echo "</table>";
+	
 		echo "</td>";
 	}
 	echo "</tr>";
