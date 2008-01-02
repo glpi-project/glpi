@@ -1016,7 +1016,12 @@ function showFormExtAuthList($target) {
 				if ($DB->numrows($result)) {
 					while ($ldap_method = $DB->fetch_array($result)){
 						echo "<tr class='tab_bg_2'><td class='center'><a href='$target?next=extauth_ldap&amp;ID=" . $ldap_method["ID"] . "' >" . $ldap_method["name"] . "</a>" .
-						"</td><td class='center'>" . $LANG["ldap"][21]." : ".$ldap_method["ldap_host"].":".$ldap_method["ldap_port"] ."<br>".$LANG["ldap"][22]." : ".getAllReplicatesNamesForAMaster($ldap_method["ID"]). "</td></tr>";
+						"</td><td class='center'>" . $LANG["ldap"][21]." : ".$ldap_method["ldap_host"].":".$ldap_method["ldap_port"];
+						$replicates=getAllReplicatesNamesForAMaster($ldap_method["ID"]);
+						if (!empty($replicates)){
+							echo "<br>".$LANG["ldap"][22]." : ".$replicates. "</td>";
+						}
+						echo '</tr>';
 					}
 				}
 				echo "</table>";
