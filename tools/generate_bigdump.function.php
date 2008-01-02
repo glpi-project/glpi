@@ -197,7 +197,7 @@ function addTracking($type,$ID,$ID_entity){
 
 // DROPDOWNS
 function generateGlobalDropdowns(){
-	global $MAX,$DB,$MAX_KBITEMS_BY_CAT;
+	global $MAX,$DB;
 
 //	$FIRST["kbcategories"]=getMaxItem("glpi_dropdown_kbcategories")+1;
 	for ($i=0;$i<max(1,pow($MAX['kbcategories'],1/3));$i++){
@@ -618,7 +618,7 @@ function getMaxItem($table){
 
 function generate_entity($ID_entity){
 
-	global $MAX,$DB,$MAX_CONTRACT_TYPE,$percent,$FIRST,$LAST;
+	global $MAX,$DB,$MAX_CONTRACT_TYPE,$percent,$FIRST,$LAST,$MAX_KBITEMS_BY_CAT;
 	$current_year=date("Y");
 
 
