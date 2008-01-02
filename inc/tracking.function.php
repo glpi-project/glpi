@@ -1704,7 +1704,7 @@ function showJobDetails ($target,$ID){
 		echo "<form method='post' action='$target'  enctype=\"multipart/form-data\">\n";
 		echo "<table class='tab_cadre_fixe' cellpadding='5'>";
 		// First line
-		echo "<tr ><th colspan='2' ><span class='tracking_small'>";
+		echo "<tr><th colspan='2' style='text-align:left;'><span class='tracking_small'>";
 		echo $LANG["joblist"][11].": ".convDateTime($job->fields["date"])."&nbsp;&nbsp; ".$LANG["job"][2]." &nbsp; ";
 		if ($canupdate){
 			dropdownAllUsers("recipient",$job->fields["recipient"],1,$job->fields["FK_entities"]);
@@ -1719,11 +1719,11 @@ function showJobDetails ($target,$ID){
 		echo "</span>";
 
 		if (ereg("old_",$job->fields["status"])){
-			echo "<br><span class='tracking_small'".convDateTime($job->fields["closedate"])."</span>\n";
+			echo "<br><span class='tracking_small'>".$LANG["joblist"][12].": ".convDateTime($job->fields["closedate"])."</span>\n";
 		}
 
 		echo "</th>";
-		echo "<th><span class='tracking_small'>".$LANG["common"][26].":\n";
+		echo "<th><span class='tracking_small'>".$LANG["common"][26].":<br>";
 		
 		echo convDateTime($job->fields["date_mod"])."\n";
 	
