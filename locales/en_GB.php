@@ -1584,6 +1584,7 @@ $LANG["setup"][605]="Add Group";
 $LANG["setup"][606]="Unable to add. The user already exists."; 
 $LANG["setup"][607]="Associate to a profile"; 
 $LANG["setup"][701]="Select a plugin to configure"; 
+$LANG["setup"][702]="plugin incompatible with this version"; 
 $LANG["setup"][703]="General"; 
 $LANG["setup"][704]="Notifications"; 
 $LANG["setup"][800]="Réplicat MySQL"; 
