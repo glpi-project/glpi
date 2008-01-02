@@ -996,6 +996,40 @@ function convDate($time) {
 }
 
 /**
+ * Convert a number to correct display
+ *
+ * @param $number Number to display
+ * @param $edit display number for edition ?
+ * @param $forcedecimal Force decimal number (do not use default value)
+
+ * @return formatted number
+ *
+ */
+function formatNumber($number,$edit=false,$forcedecimal=-1) { 
+	global $CFG_GLPI;
+
+	$decimal=$CFG_GLPI["decimal_number"];
+	if ($forcedecimal>=0){
+		$decimal=$forcedecimal;
+	}
+
+	// Edit : clean display for mysql
+	if ($edit){
+		return number_format($number,$decimal,'.','');
+	}
+
+	// Display : clean display
+	switch ($CFG_GLPI["numberformat"]){
+		case 0: // French
+			return number_format($number,$decimal,'.',' ');
+			break;
+		default: // English
+			return number_format($number,$decimal,'.',',');
+			break;
+	}	
+}
+
+/**
  *  Send a file to the navigator
  *
  * @param $file

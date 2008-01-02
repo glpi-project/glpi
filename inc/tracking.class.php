@@ -339,15 +339,15 @@ class Job extends CommonDBTM{
 						$global_mail_change_count++;
 					break;
 					case "cost_time":
-						$change_followup_content.=$LANG["mailing"][42].": ".number_format($input["_old_cost_time"],$CFG_GLPI["decimal_number"])." -> ".number_format($this->fields["cost_time"],$CFG_GLPI["decimal_number"])."\n";
+						$change_followup_content.=$LANG["mailing"][42].": ".formatNumber($input["_old_cost_time"])." -> ".formatNumber($this->fields["cost_time"])."\n";
 						$global_mail_change_count++;
 					break;
 					case "cost_fixed" :
-						$change_followup_content.=$LANG["mailing"][43].": ".number_format($input["_old_cost_fixed"],$CFG_GLPI["decimal_number"])." -> ".number_format($this->fields["cost_fixed"],$CFG_GLPI["decimal_number"])."\n";
+						$change_followup_content.=$LANG["mailing"][43].": ".formatNumber($input["_old_cost_fixed"])." -> ".formatNumber($this->fields["cost_fixed"])."\n";
 						$global_mail_change_count++;
 					break;
 					case "cost_material" :
-						$change_followup_content.=$LANG["mailing"][44].": ".number_format($input["_old_cost_material"],$CFG_GLPI["decimal_number"])." -> ".number_format($this->fields["cost_material"],$CFG_GLPI["decimal_number"])."\n";
+						$change_followup_content.=$LANG["mailing"][44].": ".formatNumber($input["_old_cost_material"])." -> ".formatNumber($this->fields["cost_material"])."\n";
 						$global_mail_change_count++;
 					break;
 					case "emailupdates":

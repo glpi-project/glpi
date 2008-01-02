@@ -283,18 +283,17 @@ class Config extends CommonDBTM {
 				echo ">DD-MM-YYYY</option>";
 				echo "</select></td>";
 				
-				echo "<td class='center'>" . $LANG["setup"][130] . " </td><td><select name=\"nextprev_item\">";
-				$nextprev_item = $CFG_GLPI["nextprev_item"];
-				echo "<option value=\"ID\"";
-				if ($nextprev_item == "ID") {
+				echo "<td class='center'>" . $LANG["setup"][150] . " </td><td><select name=\"numberformat\">";
+				echo "<option value=\"0\"";
+				if ($CFG_GLPI["numberformat"] == 0) {
 					echo " selected";
 				}
-				echo ">" . $LANG["common"][2] . " </option>";
-				echo "<option value=\"name\"";
-				if ($nextprev_item == "name") {
+				echo ">1 234.56</option>";
+				echo "<option value=\"1\"";
+				if ($CFG_GLPI["numberformat"] == 1) {
 					echo " selected";
 				}
-				echo ">" . $LANG["common"][16] . "</option>";
+				echo ">1,234.56</option>";
 				echo "</select></td></tr>";
 				
 				echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["setup"][149] . " </td><td>";
@@ -341,6 +340,23 @@ class Config extends CommonDBTM {
 			
 				echo "<td class='center'>" . $LANG["setup"][108] . "</td><td><input size='10' type=\"text\" name=\"num_of_events\" value=\"" . $CFG_GLPI["num_of_events"] . "\">";
 				echo "</td></tr>";
+
+				echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["setup"][130] . " </td><td><select name=\"nextprev_item\">";
+				$nextprev_item = $CFG_GLPI["nextprev_item"];
+				echo "<option value=\"ID\"";
+				if ($nextprev_item == "ID") {
+					echo " selected";
+				}
+				echo ">" . $LANG["common"][2] . " </option>";
+				echo "<option value=\"name\"";
+				if ($nextprev_item == "name") {
+					echo " selected";
+				}
+				echo ">" . $LANG["common"][16] . "</option>";
+				echo "</select></td>";
+				echo "<td colspan='2'>&nbsp;</td>";
+				echo "</tr>";
+
 			
 				echo "<tr class='tab_bg_1'><td colspan='4' align='center'><strong>" . $LANG["setup"][111] . "</strong></td></tr>";
 

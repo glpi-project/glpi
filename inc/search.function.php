@@ -2575,7 +2575,7 @@ function giveItem ($type,$field,$data,$num,$linkfield=""){
 			break;
 		case "glpi_infocoms.value":
 		case "glpi_infocoms.warranty_value":
-			return number_format($data["ITEM_$num"],$CFG_GLPI["decimal_number"],'.','');
+			return formatNumber($data["ITEM_$num"]);
 			break;
 		case "glpi_infocoms.alert":
 			if ($data["ITEM_$num"]==pow(2,ALERT_END)){

@@ -1864,19 +1864,19 @@ function showJobDetails ($target,$ID){
 			echo "<tr><td class='left'>";
 			// cout
 			echo $LANG["job"][40].": ";
-			echo "</td><td><input type='text' maxlength='100' size='15' name='cost_time' value=\"".number_format($job->fields["cost_time"],$CFG_GLPI["decimal_number"],'.','')."\"></td></tr>";
+			echo "</td><td><input type='text' maxlength='100' size='15' name='cost_time' value=\"".formatNumber($job->fields["cost_time"],true)."\"></td></tr>";
 
 			echo "<tr><td class='left'>";
 
 			echo $LANG["job"][41].": ";
-			echo "</td><td><input type='text' maxlength='100' size='15' name='cost_fixed' value=\"".number_format($job->fields["cost_fixed"],$CFG_GLPI["decimal_number"],'.','')."\">";
+			echo "</td><td><input type='text' maxlength='100' size='15' name='cost_fixed' value=\"".formatNumber($job->fields["cost_fixed"],true)."\">";
 
 			echo "</td></tr>\n";
 
 			echo "<tr><td class='left'>";
 
 			echo $LANG["job"][42].": ";
-			echo "</td><td><input type='text' maxlength='100' size='15' name='cost_material' value=\"".number_format($job->fields["cost_material"],$CFG_GLPI["decimal_number"],'.','')."\">";
+			echo "</td><td><input type='text' maxlength='100' size='15' name='cost_material' value=\"".formatNumber($job->fields["cost_material"],true)."\">";
 
 			echo "</td></tr>\n";
 
@@ -2458,8 +2458,7 @@ function showUpdateFollowupForm($ID){
 
 // fonction calcul de cout total d'un ticket
 function trackingTotalCost($realtime,$cost_time,$cost_fixed,$cost_material){
-	global $CFG_GLPI;
-	return number_format(($realtime*$cost_time)+$cost_fixed+$cost_material,$CFG_GLPI["decimal_number"],'.','');
+	return formatNumber(($realtime*$cost_time)+$cost_fixed+$cost_material);
 }
 
 /**
