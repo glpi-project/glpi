@@ -294,6 +294,11 @@ class Config extends CommonDBTM {
 					echo " selected";
 				}
 				echo ">1,234.56</option>";
+				echo "<option value=\"2\"";
+				if ($CFG_GLPI["numberformat"] == 2) {
+					echo " selected";
+				}
+				echo ">1 234,56</option>";
 				echo "</select></td></tr>";
 				
 				echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["setup"][149] . " </td><td>";
