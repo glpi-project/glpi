@@ -116,6 +116,7 @@ function commonTrackingListHeader($output_type=HTML_OUTPUT,$target="",$parameter
 	$items=array(
 			$LANG["joblist"][0]=>"glpi_tracking.status",
 			$LANG["common"][27]=>"glpi_tracking.date",
+			$LANG["common"][26]=>"glpi_tracking.date_mod",
 			$LANG["joblist"][2]=>"glpi_tracking.priority",
 			$LANG["job"][4]=>"glpi_tracking.author",
 			$LANG["joblist"][4]=>"glpi_tracking.assign",
@@ -474,6 +475,11 @@ function showJobShort($data, $followups,$output_type=HTML_OUTPUT,$row_num=0) {
 		}
 
 		echo displaySearchItem($output_type,$second_col,$item_num,$row_num,$align." width=130");
+
+		// Second BIS column 
+		$second_col=convDateTime($data["date_mod"]);
+
+		echo displaySearchItem($output_type,$second_col,$item_num,$row_num,$align." width=90");
 
 		// Third Column
 		echo displaySearchItem($output_type,"<strong>".getPriorityName($data["priority"])."</strong>",$item_num,$row_num,"$align bgcolor='$bgcolor'");
@@ -1484,7 +1490,7 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$to
 	}
 
 	if ($sort=="")
-		$sort="glpi_tracking.date";
+		$sort="glpi_tracking.date_mod";
 	if ($order=="")
 		$order=getTrackingOrderPrefs($_SESSION["glpiID"]);
 
