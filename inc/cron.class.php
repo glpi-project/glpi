@@ -120,6 +120,7 @@ class Cron {
 			$this->taches["contract"]=DAY_TIMESTAMP;
 			$this->taches["infocom"]=DAY_TIMESTAMP;
 			$this->taches["logs"]=DAY_TIMESTAMP;
+			$this->taches["optimize"]=DAY_TIMESTAMP;
 
 			$this->taches["mailgate"]=600;
 			$this->taches["dbreplicate"]=300;

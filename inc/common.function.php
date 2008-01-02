@@ -260,6 +260,18 @@ if (!defined('GLPI_ROOT')){
 	}
 
 	/**
+ 	* Clean log cron function
+ 	*
+ 	**/
+	function cron_optimize(){
+		global $CFG_GLPI,$DB;
+
+		logInFile("cron","Start optimize tables\n");
+		optimize_tables();
+		logInFile("cron","Optimize tables done\n");
+	}
+
+	/**
  	* Clean cache cron function
  	*
  	**/
