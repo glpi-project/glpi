@@ -690,7 +690,12 @@ function addFormTracking ($device_type=0,$ID=0,$author,$group,$assign,$assign_gr
 	//	if ($device_type!=0){
 	echo "<input type='hidden' name='_referer' value='$REFERER'>";
 	//	}	
-	echo "<table class='tab_cadre_fixe'><tr><th ><a href='$target'><img title=\"".$LANG["buttons"][16]."\" alt=\"".$LANG["buttons"][16]."\" src='".$CFG_GLPI["root_doc"]."/pics/reset.png' class='calendrier'></a></th><th colspan='3'>".$LANG["job"][13].": ";
+	echo "<table class='tab_cadre_fixe'><tr><th ><th colspan='4'>".$LANG["job"][13];
+	if (haveRight("comment_all_ticket","1")){
+		echo "&nbsp:&nbsp;";
+		dropdownStatus("status",1);		
+		
+	}
 
 	if (isMultiEntitiesMode()){
 		echo "&nbsp;(".getDropdownName("glpi_entities",$_SESSION["glpiactive_entity"]).")";
@@ -810,7 +815,14 @@ function addFormTracking ($device_type=0,$ID=0,$author,$group,$assign,$assign_gr
 		$email="";
 		if ($result&&$DB->numrows($result))
 			$email=$DB->result($result,0,"email");
-
+if (haveRight("comment_all_ticket","1")){
+		echo "<td colspan='2' align='center'>".$LANG["joblist"][0].":&nbsp;";
+		dropdownStatus("status",1);		
+		echo '</td>';
+		echo "<td colspan='2' align='center'>";
+	} else {
+		echo "<td colspan='4' align='center'>";
+	}
 		echo "<tr class='tab_bg_1'>";
 		echo "<td class='center'>".$LANG["help"][8].":</td>";
 		echo "<td class='center'>";
@@ -851,17 +863,11 @@ function addFormTracking ($device_type=0,$ID=0,$author,$group,$assign,$assign_gr
 
 	echo "<tr class='tab_bg_1'>";
 
-	if (haveRight("comment_all_ticket","1")){
-		echo "<td colspan='2' align='center'>".$LANG["joblist"][0].":&nbsp;";
-		dropdownStatus("status",1);		
-		echo '</td>';
-		echo "<td colspan='2' align='center'>";
-	} else {
-		echo "<td colspan='4' align='center'>";
-	}
+	echo "<td colspan='2' class='center'><a href='$target'><img title=\"".$LANG["buttons"][16]."\" alt=\"".$LANG["buttons"][16]."\" src='".$CFG_GLPI["root_doc"]."/pics/reset.png' class='calendrier'></a></td>";
 
 
-	echo "<input type='submit' name='add' value=\"".$LANG["buttons"][2]."\" class='submit'>";
+
+	echo "<td colspan='2' align='center'><input type='submit' name='add' value=\"".$LANG["buttons"][2]."\" class='submit'>";
 
 	echo "</td></tr>";
 
