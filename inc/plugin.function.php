@@ -63,14 +63,32 @@ function initPlugins(){
 
 }
 /**
- * Init a plugin uncluding setup.php file and launching plugin_init_NAME function
+ * Init a plugin including setup.php file 
+ * launching plugin_init_NAME function  after checking compatibility 
+ * 
  * @param $name Name of hook to use
  * @return nothing
  */
 function usePlugin ($name) {
-	global $CFG_GLPI;
+	global $CFG_GLPI, $PLUGIN_HOOKS;
+
 	if (file_exists(GLPI_ROOT . "/plugins/$name/setup.php")) {
 		include_once(GLPI_ROOT . "/plugins/$name/setup.php");
+
+		$function = "plugin_version_$name";
+		if (function_exists($function)) {
+			$info=$function();
+			
+			if ((isset($info["minGlpiVersion"]) && $info["minGlpiVersion"]>GLPI_VERSION) ||
+				(isset($info["maxGlpiVersion"]) && $info["maxGlpiVersion"]<GLPI_VERSION)) {
+				
+				// Note this to have the plugin listed (as incompatible) on config page.
+				$PLUGIN_HOOKS["config_page"][$name]=false;
+				
+				return false;
+			}
+			
+		}
 		$function = "plugin_init_$name";
 
 		if (function_exists($function)) {

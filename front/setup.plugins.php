@@ -52,7 +52,8 @@ $names=array();
 if (isset($PLUGIN_HOOKS["config_page"]) && is_array($PLUGIN_HOOKS["config_page"])) {
 	foreach ($PLUGIN_HOOKS["config_page"] as $plug => $page){
 		$function="plugin_version_$plug";
-		$names[$plug]=$function();
+		$infos[$plug]=$function();
+		$names[$plug]=$infos[$plug]["name"];
 		$pages[$plug]=$page;
 	}
 	asort($names);
@@ -66,9 +67,17 @@ echo "<div align='center'><table class='tab_cadre' cellpadding='5'>";
 // ligne a modifier en fonction de la modification des fichiers de langues
 echo "<tr><th colspan='2'>".$LANG["setup"][701]."</th></tr>";
 
-foreach ($names as $key => $val) {
+foreach ($names as $key => $name) {
 
-	echo "<tr class='tab_bg_1'><td align='center'><a href='".$CFG_GLPI["root_doc"]."/plugins/$key/".$pages[$key]."'><strong>".$val["name"]."</strong></a></td><td align='center'>#".$val["version"]."</td></tr>";
+	$val = $infos[$key];
+	if ($pages[$key]) {
+		echo "<tr class='tab_bg_1'><td align='center'><a href='".$CFG_GLPI["root_doc"]."/plugins/$key/".$pages[$key]."'><strong>".$val["name"]."</strong></a></td>" .
+				"<td><img src='../pics/greenbutton.png' /> #".$val["version"]."</td></tr>";		
+	} else {
+		echo "<tr class='tab_bg_2'><td align='center'>".$val["name"]."</td><td><img src='../pics/redbutton.png' /> #".$val["version"]." : ".$LANG["setup"][702].
+			(isset($val["minGlpiVersion"]) ? "<br />GPLI >= " . $val["minGlpiVersion"] : "") .
+			(isset($val["maxGlpiVersion"]) ? "<br />GLPI <= " . $val["maxGlpiVersion"] : "") . "</td></tr>";
+	}
 }
 
 echo "</table></div>";
