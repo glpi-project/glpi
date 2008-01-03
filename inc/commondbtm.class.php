@@ -681,8 +681,15 @@ class CommonDBTM {
 	**/
 	function canEditAndRecurs () {
 		global $CFG_GLPI;
-		$can_edit = haveTypeRight($this->type,"w");
 		
+		if ($this->type != KNOWBASE_TYPE) {
+			$can_edit = haveTypeRight($this->type,"w");
+		} else if ($this->fields["faq"]) {
+			$can_edit = haveRight("faq", "w");
+		} else {
+			$can_edit = haveRight("knowbase", "w");	
+		}
+
 		if (!isset($CFG_GLPI["recursive_type"][$this->type])) {
 			$can_recu = false;
 			
