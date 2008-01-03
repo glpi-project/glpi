@@ -377,7 +377,7 @@ function backupMySql($DB,$dumpFile, $duree,$rowlimit)
 			return TRUE;
 	}
 	if ($DB->error())
-		echo "<hr>".$LANG["backup"][27]." [$formattedQuery]<br>".$DB->error()."<hr>";
+		echo "<hr>".$LANG["backup"][23]." [$formattedQuery]<br>".$DB->error()."<hr>";
 	$offsettable=-1;
 	fclose($fileHandle);
 	return TRUE;
