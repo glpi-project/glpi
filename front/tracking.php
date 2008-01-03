@@ -120,7 +120,10 @@ if (!haveRight("show_all_ticket","1")&&!haveRight("show_assign_ticket",'1')){
 	if (!haveRight("show_all_ticket","1")){
 		$_GET["assign"]='mine';
 		$_GET["assign_ent"]=0;
-		$_GET["assign_group"]=0;
+		// Only one group : no choice
+		if ($_SESSION['glpigroups']<=1){
+			$_GET["assign_group"]=0;
+		}
 	}
 	if (!$_GET["extended"]){
 		searchFormTracking($_GET["extended"],$_SERVER['PHP_SELF'],$_GET["start"],$_GET["status"],$_GET["tosearch"],$_GET["search"],$_GET["author"],$_GET["group"],$_GET["showfollowups"],$_GET["category"],$_GET["assign"],$_GET["assign_ent"],$_GET["assign_group"],$_GET["priority"],$_GET["request_type"],$_GET["item"],$_GET["type"]);

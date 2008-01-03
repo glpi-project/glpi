@@ -435,7 +435,7 @@ function getDropdownName($table,$id,$withcomments=0) {
 		$name = "";
 		$comments = "";
 		if ($id){
-			$query = "select * from ". $table ." where ID = '". $id ."'";
+			$query = "SELECT * FROM ". $table ." WHERE ID = '". $id ."'";
 			if ($result = $DB->query($query)){
 				if($DB->numrows($result) != 0) {
 					$data=$DB->fetch_assoc($result);
@@ -494,6 +494,43 @@ function getDropdownName($table,$id,$withcomments=0) {
 	if ($withcomments) return array("name"=>$name,"comments"=>$comments);
 	else return $name;
 }
+
+/**
+ * Get values of a dropdown for a list of item
+ *
+* @param $table the dropdown table from witch we want values on the select
+ * @param $ids array containing the ids to get
+ * @return array containing the value of the dropdown or &nbsp; if not exists
+ */
+function getDropdownArrayNames($table,$ids) {
+	global $DB,$CFG_GLPI;
+	$tabs=array();
+
+	if (count($ids)){
+		$field='name';
+		if (in_array($table,$CFG_GLPI["dropdowntree_tables"])){
+			$field='completename';
+		}
+
+		$query="SELECT ID, $field FROM $table WHERE ID IN (";
+		$first=true;
+		foreach ($ids as $val){
+			if (!$first) $query.=",";
+			else $first=false;
+			$query.=$val;
+		}			
+		$query.=")";
+
+		if ($result=$DB->query($query)){
+			while ($data=$DB->fetch_assoc($result)){
+				$tabs[$data['ID']]=$data[$field];
+			}
+		}
+	} 
+	return $tabs;
+}
+
+
 
 /**
  * Make a select box with all glpi users in tracking table
