@@ -683,6 +683,7 @@ class Config extends CommonDBTM {
 			if ($_SESSION['glpi_mailconfig'] == 2) {
 	
 				$profiles[USER_MAILING_TYPE . "_" . ADMIN_MAILING] = $LANG["setup"][237];
+				$profiles[USER_MAILING_TYPE . "_" . ADMIN_ENTITY_MAILING] = $LANG["setup"][237]." ".$LANG["entity"][0];
 				$profiles[USER_MAILING_TYPE . "_" . TECH_MAILING] = $LANG["common"][10];
 				$profiles[USER_MAILING_TYPE . "_" . AUTHOR_MAILING] = $LANG["job"][4];
 				$profiles[USER_MAILING_TYPE . "_" . RECIPIENT_MAILING] = $LANG["job"][3];
@@ -690,7 +691,12 @@ class Config extends CommonDBTM {
 				$profiles[USER_MAILING_TYPE . "_" . ASSIGN_MAILING] = $LANG["setup"][239];
 				$profiles[USER_MAILING_TYPE . "_" . ASSIGN_ENT_MAILING] = $LANG["financial"][26];
 				$profiles[USER_MAILING_TYPE . "_" . ASSIGN_GROUP_MAILING] = $LANG["setup"][248];
-	
+				$profiles[USER_MAILING_TYPE . "_" . SUPERVISOR_ASSIGN_GROUP_MAILING] = $LANG["common"][64]." ".$LANG["setup"][248];
+				$profiles[USER_MAILING_TYPE . "_" . SUPERVISOR_AUTHOR_GROUP_MAILING] = $LANG["common"][64]." ".$LANG["setup"][249];
+				
+				
+				asort($profiles);
+
 				$query = "SELECT ID, name FROM glpi_profiles order by name";
 				$result = $DB->query($query);
 				while ($data = $DB->fetch_assoc($result))
@@ -703,7 +709,6 @@ class Config extends CommonDBTM {
 					$profiles[GROUP_MAILING_TYPE .
 					"_" . $data["ID"]] = $LANG["common"][35] . " " . $data["name"];
 	
-				ksort($profiles);
 				echo "<div class='center'>";
 				echo "<input type='hidden' name='update_notifications' value='1'>";
 				// ADMIN
@@ -733,7 +738,10 @@ class Config extends CommonDBTM {
 				unset ($profiles[USER_MAILING_TYPE . "_" . ASSIGN_MAILING]);
 				unset ($profiles[USER_MAILING_TYPE . "_" . ASSIGN_ENT_MAILING]);
 				unset ($profiles[USER_MAILING_TYPE . "_" . ASSIGN_GROUP_MAILING]);
+				unset ($profiles[USER_MAILING_TYPE . "_" . SUPERVISOR_ASSIGN_GROUP_MAILING]);
+				unset ($profiles[USER_MAILING_TYPE . "_" . SUPERVISOR_AUTHOR_GROUP_MAILING]);
 				unset ($profiles[USER_MAILING_TYPE . "_" . RECIPIENT_MAILING]);
+
 				showFormMailingType("resa", $profiles);
 				echo "</tr>";
 	

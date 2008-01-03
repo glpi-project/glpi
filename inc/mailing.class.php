@@ -156,10 +156,23 @@ class Mailing
 						switch($data["FK_item"]){
 							// ADMIN SEND
 							case ADMIN_MAILING :
-								if (isValidEmail($CFG_GLPI["admin_email"])&&!in_array($CFG_GLPI["admin_email"],$emails))
+								if (isValidEmail($CFG_GLPI["admin_email"])&&!in_array($CFG_GLPI["admin_email"],$emails)){
 									$emails[]=$CFG_GLPI["admin_email"];
+								}
 								break;
-								// ASSIGN SEND
+							// ADMIN ENTITY SEND
+							case ADMIN_ENTITY_MAILING :
+								$query2 = "SELECT admin_email as EMAIL FROM glpi_entities_data WHERE (FK_entities = '".$this->job->fields["FK_entities"]."')";
+								if ($result2 = $DB->query($query2)) {
+									if ($DB->numrows($result2)==1){
+										$row = $DB->fetch_array($result2);
+										if (isValidEmail($row['EMAIL'])&&!in_array($row['EMAIL'],$emails)){
+											$emails[]=$row['EMAIL'];
+										}
+									}
+								}
+								break;
+							// ASSIGN SEND
 							case ASSIGN_MAILING :
 								if (isset($this->job->fields["assign"])&&$this->job->fields["assign"]>0){
 									$query2 = "SELECT DISTINCT glpi_users.email as EMAIL FROM glpi_users $join WHERE (glpi_users.ID = '".$this->job->fields["assign"]."')";
@@ -173,7 +186,7 @@ class Mailing
 									}
 								}
 								break;
-								// ASSIGN SEND
+							// ASSIGN SEND
 							case ASSIGN_ENT_MAILING :
 								
 								if (!$sendprivate&&isset($this->job->fields["assign_ent"])&&$this->job->fields["assign_ent"]>0){
@@ -188,7 +201,7 @@ class Mailing
 									}
 								}
 								break;
-								// ASSIGN GROUP SEND
+							// ASSIGN GROUP SEND
 							case ASSIGN_GROUP_MAILING :
 								if (isset($this->job->fields["assign_group"])&&$this->job->fields["assign_group"]>0){
 									$query="SELECT glpi_users.email as EMAIL FROM glpi_users_groups INNER JOIN glpi_users ON (glpi_users_groups.FK_users = glpi_users.ID) $join WHERE glpi_users_groups.FK_groups='".$this->job->fields["assign_group"]."'";
@@ -204,9 +217,23 @@ class Mailing
 									}
 								}
 								break;
+							// SUPERVISOR ASSIGN GROUP SEND
+							case SUPERVISOR_ASSIGN_GROUP_MAILING :
+								if (isset($this->job->fields["assign_group"])&&$this->job->fields["assign_group"]>0){
+									$query2 = "SELECT DISTINCT glpi_users.email as EMAIL FROM glpi_groups LEFT JOIN glpi_users ON (glpi_users.ID = glpi_groups.FK_users) $join WHERE (glpi_groups.ID = '".$this->job->fields["assign_group"]."')";
+									if ($result2 = $DB->query($query2)) {
+										if ($DB->numrows($result2)==1){
+											$row = $DB->fetch_array($result2);
+											if (isValidEmail($row['EMAIL'])&&!in_array($row['EMAIL'],$emails)){
+												$emails[]=$row['EMAIL'];
+											}
+										}
+									}
+								}
+								break;
 
 
-								// RECIPIENT SEND
+							// RECIPIENT SEND
 							case RECIPIENT_MAILING :
 								if (isset($this->job->fields["recipient"])&&$this->job->fields["recipient"]>0){
 									$query2 = "SELECT DISTINCT glpi_users.email as EMAIL FROM glpi_users $join WHERE (glpi_users.ID = '".$this->job->fields["recipient"]."')";
@@ -221,7 +248,7 @@ class Mailing
 								}
 								break;
 
-								// AUTHOR SEND
+							// AUTHOR SEND
 							case AUTHOR_MAILING :
 								if ($this->job->fields["emailupdates"]&&isValidEmail($this->job->fields["uemail"])&&!in_array($this->job->fields["uemail"],$emails)){
 
@@ -248,7 +275,22 @@ class Mailing
 									}
 								}
 								break;
-								// OLD ASSIGN SEND
+							// SUPERVISOR ASSIGN GROUP SEND
+							case SUPERVISOR_AUTHOR_GROUP_MAILING :
+								if (isset($this->job->fields["FK_group"])&&$this->job->fields["FK_group"]>0){
+									$query2 = "SELECT DISTINCT glpi_users.email as EMAIL FROM glpi_groups LEFT JOIN glpi_users ON (glpi_users.ID = glpi_groups.FK_users) $join WHERE (glpi_groups.ID = '".$this->job->fields["FK_group"]."')";
+									if ($result2 = $DB->query($query2)) {
+										if ($DB->numrows($result2)==1){
+											$row = $DB->fetch_array($result2);
+											if (isValidEmail($row['EMAIL'])&&!in_array($row['EMAIL'],$emails)){
+												$emails[]=$row['EMAIL'];
+											}
+										}
+									}
+								}
+								break;
+
+							// OLD ASSIGN SEND
 							case OLD_ASSIGN_MAILING :
 								if (isset($this->job->fields["_old_assign"])&&$this->job->fields["_old_assign"]>0){
 									$query2 = "SELECT DISTINCT glpi_users.email AS EMAIL FROM glpi_users $join WHERE (glpi_users.ID = '".$this->job->fields["_old_assign"]."')";
