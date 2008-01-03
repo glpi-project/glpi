@@ -2100,7 +2100,7 @@ $SEARCH_OPTION[CARTRIDGE_TYPE][2]['meta']=0;
 $SEARCH_OPTION[CARTRIDGE_TYPE][3]['table']='glpi_cartridges_type';
 $SEARCH_OPTION[CARTRIDGE_TYPE][3]['field']='ref';
 $SEARCH_OPTION[CARTRIDGE_TYPE][3]['linkfield']='ref';
-$SEARCH_OPTION[CARTRIDGE_TYPE][3]['name']=$LANG["cartridges"][2];
+$SEARCH_OPTION[CARTRIDGE_TYPE][3]['name']=$LANG["consumables"][2];
 $SEARCH_OPTION[CARTRIDGE_TYPE][3]['meta']=0;
 
 $SEARCH_OPTION[CARTRIDGE_TYPE][4]['table']='glpi_dropdown_cartridge_type';
@@ -2118,7 +2118,7 @@ $SEARCH_OPTION[CARTRIDGE_TYPE][5]['meta']=0;
 $SEARCH_OPTION[CARTRIDGE_TYPE][6]['table']='glpi_dropdown_locations';
 $SEARCH_OPTION[CARTRIDGE_TYPE][6]['field']='completename';
 $SEARCH_OPTION[CARTRIDGE_TYPE][6]['linkfield']='location';
-$SEARCH_OPTION[CARTRIDGE_TYPE][6]['name']=$LANG["cartridges"][36];
+$SEARCH_OPTION[CARTRIDGE_TYPE][6]['name']=$LANG["consumables"][36];
 $SEARCH_OPTION[CARTRIDGE_TYPE][6]['meta']=0;
 
 $SEARCH_OPTION[CARTRIDGE_TYPE][7]['table']='glpi_users';
@@ -2130,7 +2130,7 @@ $SEARCH_OPTION[CARTRIDGE_TYPE][7]['meta']=0;
 $SEARCH_OPTION[CARTRIDGE_TYPE][8]['table']='glpi_cartridges_type';
 $SEARCH_OPTION[CARTRIDGE_TYPE][8]['field']='alarm';
 $SEARCH_OPTION[CARTRIDGE_TYPE][8]['linkfield']='alarm';
-$SEARCH_OPTION[CARTRIDGE_TYPE][8]['name']=$LANG["cartridges"][38];
+$SEARCH_OPTION[CARTRIDGE_TYPE][8]['name']=$LANG["consumables"][38];
 $SEARCH_OPTION[CARTRIDGE_TYPE][8]['meta']=0;
 
 $SEARCH_OPTION[CARTRIDGE_TYPE][10]['table']='glpi_cartridges_type';
