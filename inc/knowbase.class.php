@@ -46,6 +46,31 @@ class kbitem extends CommonDBTM {
 		$this->type=KNOWBASE_TYPE;
 	}
 
+	/**
+	 * Actions done at the end of the getEmpty function
+	 *
+	 *@return nothing
+	 *
+	 **/
+	function post_getEmpty () {
+		if (haveRight("faq","w") && !haveRight("knowbase","w")) {
+			$this->fields["faq"]=1;
+		}
+	}
+	
+	/**
+	 * Have I the right to "create" the Object
+	 * 
+	 * overloaded function of CommonDBTM
+	 * 
+	 * @return booleen
+	 **/
+	function canCreate () {
+		return ($this->fields["faq"] ?
+			haveRight("faq", "w") :
+			haveRight("knowbase", "w"));	
+	}
+
 	function prepareInputForAdd($input) {
 
 		global $LANG;
@@ -98,10 +123,6 @@ class kbitem extends CommonDBTM {
 		if (empty($ID)) {
 	
 			if ($this->getEmpty()) {
-				$this->fields["FK_entities"] = $_SESSION["glpiactive_entity"];
-				if (haveRight("faq","w") && !haveRight("knowbase","w")) {
-					$this->fields["faq"]=1;
-				}
 				list($can_edit,$can_recu)=$this->canEditAndRecurs();			
 			}
 				

@@ -675,20 +675,24 @@ class CommonDBTM {
 	} 
 
 	/**
-	 * Have I the right to "write" the Object
+	 * Have I the right to "create" the Object
+	 * 
+	 * May be overloaded if needed (ex kbitem)
 	 *
+	 * @return booleen
+	 **/
+	function canCreate () {
+		return haveTypeRight($this->type,"w");
+	}
+	/**
+	 * Have I the right to "write" the Object
+	 * 
 	 * @return Array of can_edit (can write) + can_recu (can make recursive)
 	**/
 	function canEditAndRecurs () {
 		global $CFG_GLPI;
 		
-		if ($this->type != KNOWBASE_TYPE) {
-			$can_edit = haveTypeRight($this->type,"w");
-		} else if ($this->fields["faq"]) {
-			$can_edit = haveRight("faq", "w");
-		} else {
-			$can_edit = haveRight("knowbase", "w");	
-		}
+		$can_edit = $this->canCreate();
 
 		if (!isset($CFG_GLPI["recursive_type"][$this->type])) {
 			$can_recu = false;
