@@ -954,8 +954,26 @@ function displayMessageAfterRedirect(){
 	// Affichage du message apres redirection
 	if (isset($_SESSION["MESSAGE_AFTER_REDIRECT"])&&!empty($_SESSION["MESSAGE_AFTER_REDIRECT"])){
 		echo "<div class='center'><strong>".$_SESSION["MESSAGE_AFTER_REDIRECT"]."</strong></div>";
-		$_SESSION["MESSAGE_AFTER_REDIRECT"]="";
-	} else $_SESSION["MESSAGE_AFTER_REDIRECT"]="";
+	} 
+	// Clean message
+	$_SESSION["MESSAGE_AFTER_REDIRECT"]="";
+}
+/**
+ * Add a message to be displayed after redirect
+ *
+ * @param $msg Message to add
+ * @param $check_once Check if the message is not already added
+ **/
+function addMessageAfterRedirect($msg,$check_once=false){
+	if (!empty($msg)){
+		if ($check_once){
+			if (strstr($_SESSION["MESSAGE_AFTER_REDIRECT"],$msg)===false){
+				$_SESSION["MESSAGE_AFTER_REDIRECT"].=$msg.'<br>';
+			}
+		} else {
+			$_SESSION["MESSAGE_AFTER_REDIRECT"].=$msg.'<br>';
+		}
+	}
 }
 
 /**

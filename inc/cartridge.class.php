@@ -356,7 +356,7 @@ class Cartridge extends CommonDBTM {
 				return false;
 			}
 		} else {
-			$_SESSION["MESSAGE_AFTER_REDIRECT"]=$LANG["cartridges"][34];
+			addMessageAfterRedirect($LANG["cartridges"][34]);
 			return false;		
 		}
 	}

@@ -193,7 +193,7 @@ class MailCollect  extends receiveMail {
 				$this->close_mailbox();   //Close Mail Box
 
 				if ($display){
-					$_SESSION["MESSAGE_AFTER_REDIRECT"].=$LANG["mailgate"][3].": $tot ".($error>0?"($error ".$LANG["common"][63].")":"")."<br>";
+					addMessageAfterRedirect($LANG["mailgate"][3].": $tot ".($error>0?"($error ".$LANG["common"][63].")":""));
 				} else {
 					return $LANG["mailgate"][3].": $tot ".($error>0?"($error ".$LANG["common"][63].")":"");
 				}
@@ -202,7 +202,7 @@ class MailCollect  extends receiveMail {
 			else
 			{
 				if ($display){
-					$_SESSION["MESSAGE_AFTER_REDIRECT"].= $LANG["log"][41]."<br>";
+					addMessageAfterRedirect($LANG["log"][41]);
 				} else {
 					return $LANG["log"][41];
 				}

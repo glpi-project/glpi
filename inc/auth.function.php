@@ -1045,9 +1045,9 @@ function import_user_from_ldap_servers($login){
 				return $result;
 			}  
 		}
-		$_SESSION["MESSAGE_AFTER_REDIRECT"]=$LANG["login"][15];
+		addMessageAfterRedirect($LANG["login"][15]);
 	} else {
-		$_SESSION["MESSAGE_AFTER_REDIRECT"]=$LANG["setup"][606];
+		addMessageAfterRedirect($LANG["setup"][606]);
 	}
 	return false;
 	

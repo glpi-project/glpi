@@ -281,8 +281,7 @@ function Connect($sID,$cID,$type,$dohistory=1) {
 			$updates[0]="location";
 			$dev->obj->fields['location']=addslashes($comp->fields['location']);
 			$dev->obj->updateInDB($updates);
-			if (!empty($_SESSION["MESSAGE_AFTER_REDIRECT"])) $_SESSION["MESSAGE_AFTER_REDIRECT"].="<br>";
-			$_SESSION["MESSAGE_AFTER_REDIRECT"]=$LANG["computers"][48];
+			addMessageAfterRedirect($LANG["computers"][48]);
 		}
 		if (($CFG_GLPI["autoupdate_link_user"]&&$comp->fields['FK_users']!=$dev->getField('FK_users'))
 		||($CFG_GLPI["autoupdate_link_group"]&&$comp->fields['FK_groups']!=$dev->getField('FK_groups'))){
@@ -295,8 +294,7 @@ function Connect($sID,$cID,$type,$dohistory=1) {
 				$dev->obj->fields['FK_groups']=$comp->fields['FK_groups'];
 			}
 			$dev->obj->updateInDB($updates);
-			if (!empty($_SESSION["MESSAGE_AFTER_REDIRECT"])) $_SESSION["MESSAGE_AFTER_REDIRECT"].="<br>";
-			$_SESSION["MESSAGE_AFTER_REDIRECT"]=$LANG["computers"][50];
+			addMessageAfterRedirect($LANG["computers"][50]);
 		}
 
 		if ($CFG_GLPI["autoupdate_link_contact"]
@@ -306,8 +304,7 @@ function Connect($sID,$cID,$type,$dohistory=1) {
 			$dev->obj->fields['contact']=addslashes($comp->fields['contact']);
 			$dev->obj->fields['contact_num']=addslashes($comp->fields['contact_num']);
 			$dev->obj->updateInDB($updates);
-			if (!empty($_SESSION["MESSAGE_AFTER_REDIRECT"])) $_SESSION["MESSAGE_AFTER_REDIRECT"].="<br>";
-			$_SESSION["MESSAGE_AFTER_REDIRECT"]=$LANG["computers"][49];
+			addMessageAfterRedirect($LANG["computers"][49]);
 		}
 	}
 	return $newID;	

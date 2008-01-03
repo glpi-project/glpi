@@ -542,22 +542,24 @@ function makeConnector($sport,$dport) {
 		}
 	}
 	if (count($update_items)){
-		$_SESSION['MESSAGE_AFTER_REDIRECT'].='<br>'.$LANG["connect"][15].": ";
+		$message=$LANG["connect"][15].": ";
 		$first=true;
 		foreach ($update_items as $item){
 			if ($first) $first=false;
-			else $_SESSION['MESSAGE_AFTER_REDIRECT'].=" - ";
-			$_SESSION['MESSAGE_AFTER_REDIRECT'].=$items_to_check[$item];
+			else $message.=" - ";
+			$message.=$items_to_check[$item];
 		}
+		addMessageAfterRedirect($message);
 	}
 	if (count($conflict_items)){
-		$_SESSION['MESSAGE_AFTER_REDIRECT'].='<br>'.$LANG["connect"][16].": ";
+		$message=$LANG["connect"][16].": ";
 		$first=true;
 		foreach ($conflict_items as $item){
 			if ($first) $first=false;
-			else $_SESSION['MESSAGE_AFTER_REDIRECT'].=" - ";
-			$_SESSION['MESSAGE_AFTER_REDIRECT'].=$items_to_check[$item];
+			else $message.=" - ";
+			$message.=$items_to_check[$item];
 		}
+		addMessageAfterRedirect($message);
 	}
 
 	// Manage VLAN : use networkings one as defaults
