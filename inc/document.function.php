@@ -118,7 +118,7 @@ function uploadDocument($FILEDESC,$old_file=''){
 		}
 
 
-	}	
+	} 
 	return "";	
 }
 

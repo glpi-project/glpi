@@ -955,7 +955,6 @@ function displayMessageAfterRedirect(){
 	if (isset($_SESSION["MESSAGE_AFTER_REDIRECT"])&&!empty($_SESSION["MESSAGE_AFTER_REDIRECT"])){
 		echo "<div class='center'><strong>".$_SESSION["MESSAGE_AFTER_REDIRECT"]."</strong></div>";
 		$_SESSION["MESSAGE_AFTER_REDIRECT"]="";
-		unset($_SESSION["MESSAGE_AFTER_REDIRECT"]);
 	} else $_SESSION["MESSAGE_AFTER_REDIRECT"]="";
 }
 

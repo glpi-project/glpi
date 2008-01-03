@@ -385,6 +385,7 @@ $LANG["document"][42]="Ajouté par";
 $LANG["document"][43]="Fichier inconnu"; 
 $LANG["document"][44]="Nom de fichier incorrect"; 
 $LANG["document"][45]="Vous n'avez pas le droit d'accèder à ce fichier"; 
+$LANG["document"][46]="Echec dans l'envoi du fichier (sûrement trop volumineux)"; 
 
 $LANG["entity"][0]="Entité"; 
 $LANG["entity"][1]="Hierarchie"; 
