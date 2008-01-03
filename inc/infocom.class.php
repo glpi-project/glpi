@@ -73,7 +73,7 @@ class InfoCom extends CommonDBTM {
 	}
 
 	function prepareInputForAdd($input) {
-		global CFG_GLPI;
+		global $CFG_GLPI;
 		if (!$this->getFromDBforDevice($input['device_type'],$input['FK_device'])){
 			$input['alert']=$CFG_GLPI["infocom_alerts"];
 			return $input;
