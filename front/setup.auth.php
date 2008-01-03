@@ -84,9 +84,9 @@ elseif (isset ($_POST["add_ldap"])) {
 	if ($_POST["name"] != ""){
 		if ($newID=$config_ldap->add($_POST)){
 			if (testLDAPConnection($newID)){
-				$_SESSION["MESSAGE_AFTER_REDIRECT"] =$LANG["login"][22];
+				addMessageAfterRedirect($LANG["login"][22]);
 			} else{
-				$_SESSION["MESSAGE_AFTER_REDIRECT"] =$LANG["login"][23];	
+				addMessageAfterRedirect($LANG["login"][23]);	
 			}
 			glpi_header($CFG_GLPI["root_doc"] . "/front/setup.auth.php?next=extauth_ldap&ID=".$newID);
 		}
@@ -124,9 +124,9 @@ elseif (isset ($_POST["test_ldap_replicate"])) {
 }elseif (isset ($_POST["test_mail"])) {
 	
 	if (test_auth_mail($_POST["imap_string"],$_POST["imap_login"],$_POST["imap_password"])){
-		$_SESSION["MESSAGE_AFTER_REDIRECT"] =$LANG["login"][22];
+		addMessageAfterRedirect($LANG["login"][22]);
 	} else {
-		$_SESSION["MESSAGE_AFTER_REDIRECT"] =$LANG["login"][23];	
+		addMessageAfterRedirect($LANG["login"][23]);	
 	}
 	glpi_header($_SERVER['HTTP_REFERER']);
 }

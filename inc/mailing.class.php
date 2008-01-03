@@ -502,7 +502,7 @@ class Mailing
 
 							if(!$mmail->Send()){
 								$senderror=true;
-								$_SESSION["MESSAGE_AFTER_REDIRECT"].=$LANG["mailing"][47]."<br>".$mmail->ErrorInfo."<br>";
+								addMessageAfterRedirect($LANG["mailing"][47]."<br>".$mmail->ErrorInfo);
 							}else{
 								logInFile("mail","Tracking successfull mail sent to : ".$email." subject : ".$subject."\n");
 							} 
@@ -515,7 +515,7 @@ class Mailing
 					return false;
 				}
 			} else {
-				$_SESSION['MESSAGE_AFTER_REDIRECT'].="Invalid mail type";
+				addMessageAfterRedirect("Invalid mail type");
 			}
 		}
 		return true;
@@ -961,7 +961,7 @@ class MailingAlert
 				$mmail->AddAddress($users[$i], "");
 
 				if(!$mmail->Send()){
-					$_SESSION["MESSAGE_AFTER_REDIRECT"].="There was a problem sending this mail !";
+					addMessageAfterRedirect("There was a problem sending this mail !");
 					return false;
 				}else{
 					logInFile("mail","Alert successfull mail sent to : ".$users[$i]." subject : ".$subject."\n");

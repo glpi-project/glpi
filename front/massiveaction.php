@@ -492,7 +492,7 @@ if (isset($_POST["device_type"])){
 			break;
 		}
 	
-		$_SESSION['MESSAGE_AFTER_REDIRECT'].=$LANG["common"][23];
+		addMessageAfterRedirect($LANG["common"][23]);
 		glpi_header($REDIRECT);
 	
 	} else {

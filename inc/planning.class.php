@@ -233,13 +233,13 @@ class PlanningTracking extends CommonDBTM {
 
 		switch ($type){
 			case "date":
-				$_SESSION["MESSAGE_AFTER_REDIRECT"].=$LANG["planning"][1]."<br>";
+				addMessageAfterRedirect($LANG["planning"][1]);
 			break;
 			case "is_res":
-				$_SESSION["MESSAGE_AFTER_REDIRECT"].=$LANG["planning"][0]."<br>";
+				addMessageAfterRedirect(	$LANG["planning"][0]);
 			break;
 			default :
-				$_SESSION["MESSAGE_AFTER_REDIRECT"].=$LANG["common"][61]."<br>";
+				addMessageAfterRedirect($LANG["common"][61]);
 			break;
 		}
 	}

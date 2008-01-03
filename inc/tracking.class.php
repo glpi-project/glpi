@@ -168,7 +168,7 @@ class Job extends CommonDBTM{
 				$input["date_mod"]=$_SESSION["glpi_currenttime"];
 			}
 		} else if (isset($_FILES['filename']['error'])&&$_FILES['filename']['error']){
-			$_SESSION["MESSAGE_AFTER_REDIRECT"].=$LANG["document"][46]."<br>";
+			addMessageAfterRedirect($LANG["document"][46]);
 		}
 
 		if (isset($input["document"])&&$input["document"]>0){

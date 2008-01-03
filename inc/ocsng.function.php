@@ -621,7 +621,7 @@ function ocsLinkComputer($ocs_id, $ocs_server_id, $glpi_id) {
 			return true;
 		}
 	} else {
-		$_SESSION["MESSAGE_AFTER_REDIRECT"] = $ocs_id . " - " . $LANG["ocsng"][23];
+		addMessageAfterRedirect($ocs_id . " - " . $LANG["ocsng"][23]);
 	}
 
 	return false; 
