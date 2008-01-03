@@ -208,7 +208,7 @@ function showKbItemList($target,$field,$phrasetype,$contains,$sort,$order,$start
 		$where = getEntitiesRestrictRequest("", "glpi_kbitems", "", "", true); 
 	} else {
 		// Anonymous access
-		$where = "(glpi_kbitems.FK_entities=0)";
+		$where = "(glpi_kbitems.FK_entities=0 AND glpi_kbitems.recursive=1)";
 	}	
 
 	if ($faq){ // helpdesk
@@ -378,7 +378,7 @@ function showKbRecentPopular($target,$order,$faq=0){
 		$where = getEntitiesRestrictRequest(" AND ", "glpi_kbitems", "", "", true); 
 	} else {
 		// Anonymous access
-		$where = " AND (glpi_kbitems.FK_entities=0)";
+		$where = "(glpi_kbitems.FK_entities=0 AND glpi_kbitems.recursive=1)";
 	}	
 
 	$query = "SELECT  *  FROM glpi_kbitems $faq_limit $orderby LIMIT 10";
@@ -422,40 +422,34 @@ function kbItemMenu($ID)
 	$ki->getFromDB($ID);
 	$isFAQ = $ki->fields["faq"];
 	$editFAQ=haveRight("faq","w");
-	$edit=true;
-	if ($isFAQ&&!haveRight("faq","w")) $edit=false;
-	if (!$isFAQ&&!haveRight("knowbase","w")) $edit=false;
+	$edit=$ki->canEdit();
 
 	echo "<table class='tab_cadre_fixe' cellpadding='10' ><tr><th colspan='3'>";
 
-	if($isFAQ)
-	{
-		echo $LANG["knowbase"][10]."</th></tr>";
-	}
-	else
-	{
-		echo $LANG["knowbase"][11]."</th></tr>";
+	if($isFAQ) {
+		echo $LANG["knowbase"][10]."</th></tr>\n";
+	} else {
+		echo $LANG["knowbase"][11]."</th></tr>\n";
 	}
 
-
-	echo "<tr>\n";
-	if ($editFAQ)
-		if($isFAQ)
-		{
-			echo "<td align='center' width=\"33%\"><a class='icon_nav_move' href=\"".$CFG_GLPI["root_doc"]."/front/knowbase.form.php?ID=$ID&amp;removefromfaq=yes\"><img  src=\"".$CFG_GLPI["root_doc"]."/pics/faqremove.png\" alt='".$LANG["knowbase"][7]."' title='".$LANG["knowbase"][7]."'></a></td>\n";
+	if ($edit) {
+		echo "<tr>";
+		
+		if ($editFAQ) {
+			if($isFAQ) {
+				echo "<td align='center' width=\"33%\"><a class='icon_nav_move' href=\"".$CFG_GLPI["root_doc"]."/front/knowbase.form.php?ID=$ID&amp;removefromfaq=yes\"><img  src=\"".$CFG_GLPI["root_doc"]."/pics/faqremove.png\" alt='".$LANG["knowbase"][7]."' title='".$LANG["knowbase"][7]."'></a></td>\n";
+			} else {
+				echo "<td align='center' width=\"33%\"><a  class='icon_nav_move' href=\"".$CFG_GLPI["root_doc"]."/front/knowbase.form.php?ID=$ID&amp;addtofaq=yes\"><img  src=\"".$CFG_GLPI["root_doc"]."/pics/faqadd.png\" alt='".$LANG["knowbase"][5]."' title='".$LANG["knowbase"][5]."'></a></td>\n";
+			}
 		}
-		else
-		{
-			echo "<td align='center' width=\"33%\"><a  class='icon_nav_move' href=\"".$CFG_GLPI["root_doc"]."/front/knowbase.form.php?ID=$ID&amp;addtofaq=yes\"><img  src=\"".$CFG_GLPI["root_doc"]."/pics/faqadd.png\" alt='".$LANG["knowbase"][5]."' title='".$LANG["knowbase"][5]."'></a></td>\n";
-		}
-
-	if ($edit){
+		
 		echo "<td align='center' width=\"34%\"><a class='icon_nav_move' href=\"".$CFG_GLPI["root_doc"]."/front/knowbase.form.php?ID=$ID&amp;modify=yes\"><img  src=\"".$CFG_GLPI["root_doc"]."/pics/faqedit.png\" alt='".$LANG["knowbase"][8]."' title='".$LANG["knowbase"][8]."'></a></td>\n";
 		echo "<td align='center' width=\"33%\"><a class='icon_nav_move' href=\"javascript:confirmAction('".addslashes($LANG["common"][55])."','".$CFG_GLPI["root_doc"]."/front/knowbase.form.php?ID=$ID&amp;delete=yes')\"><img  src=\"".$CFG_GLPI["root_doc"]."/pics/faqdelete.png\" alt='".$LANG["knowbase"][9]."' title='".$LANG["knowbase"][9]."'></a></td>";
-	}
-	echo "</tr>\n";
-	echo "</table>\n";
 
+		echo "</tr>\n";
+	} 
+
+	echo "</table>\n";
 }
 
 
