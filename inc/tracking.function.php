@@ -828,14 +828,14 @@ function addFormTracking ($device_type=0,$ID=0,$author,$group,$assign,$assign_gr
 		$email="";
 		if ($result&&$DB->numrows($result))
 			$email=$DB->result($result,0,"email");
-if (haveRight("comment_all_ticket","1")){
-		echo "<td colspan='2' align='center'>".$LANG["joblist"][0].":&nbsp;";
-		dropdownStatus("status",1);		
-		echo '</td>';
-		echo "<td colspan='2' align='center'>";
-	} else {
-		echo "<td colspan='4' align='center'>";
-	}
+		if (haveRight("comment_all_ticket","1")){
+			echo "<td colspan='2' align='center'>".$LANG["joblist"][0].":&nbsp;";
+			dropdownStatus("status",1);		
+			echo '</td>';
+			echo "<td colspan='2' align='center'>";
+		} else {
+			echo "<td colspan='4' align='center'>";
+		}
 		echo "<tr class='tab_bg_1'>";
 		echo "<td class='center'>".$LANG["help"][8].":</td>";
 		echo "<td class='center'>";

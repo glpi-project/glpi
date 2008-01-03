@@ -688,7 +688,7 @@ function generate_entity($ID_entity){
 	$LAST["kbitems"]=getMaxItem("glpi_kbitems");
 
 	// glpi_groups
-	$FIRST["groups"]=getMaxItem("glpi_groups");
+	$FIRST["groups"]=getMaxItem("glpi_groups")+1;
 	for ($i=0;$i<$MAX['groups'];$i++){
 		$query="INSERT INTO glpi_groups VALUES (NULL,'$ID_entity','group $i','comment group $i','0','','','')";
 		$DB->query($query) or die("PB REQUETE ".$query);
