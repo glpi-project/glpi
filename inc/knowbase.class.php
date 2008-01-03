@@ -94,20 +94,23 @@ class kbitem extends CommonDBTM {
 		global  $LANG,$CFG_GLPI;
 		if (!haveRight("knowbase","w")&&!haveRight("faq","w")) return false;
 	
-		$spotted=false;
+		$can_edit=false;
 		if (empty($ID)) {
 	
-			if ($this->getEmpty()) $spotted=true;
-	
-	
-		} else {
-			if ($this->getFromDB($ID)) $spotted=true;
-			if ($this->fields["faq"]&&!haveRight("faq","w")) $spotted=false;
-			if (!$this->fields["faq"]&&!haveRight("knowbase","w")) $spotted=false;
-	
-		}	
+			if ($this->getEmpty()) {
+				$this->fields["FK_entities"] = $_SESSION["glpiactive_entity"];
+				if (haveRight("faq","w") && !haveRight("knowbase","w")) {
+					$this->fields["faq"]=1;
+				}
+				list($can_edit,$can_recu)=$this->canEditAndRecurs();			
+			}
+				
+		} else if ($this->getFromDB($ID)) {
 
-		if($spotted) {
+			list($can_edit,$can_recu)=$this->canEditAndRecurs();			
+		}
+
+		if($can_edit) {
 			
 			echo "<div id='contenukb'>";
 
@@ -182,12 +185,23 @@ class kbitem extends CommonDBTM {
 			}
 			echo "<p class='center'>";
 		
-			if (haveRight("faq","w")&&haveRight("knowbase","w")){
-				
-				echo $LANG["knowbase"][5].": ";
-				dropdownYesNo('faq',$this->fields["faq"]);
-				echo "<br><br>\n";
+			echo $LANG["entity"][0].": ";
+			dropdownValue("glpi_entities", "FK_entities", $this->fields["FK_entities"],0);
+
+			echo "&nbsp;&nbsp;".$LANG["entity"][9].":	";
+			if ($can_recu) {
+				dropdownYesNo("recursive",$this->fields["recursive"]);					
+			} else {
+				echo getYesNo($this->fields["recursive"]);
 			}
+			
+			echo "<br /><br />" . $LANG["knowbase"][5].": ";
+			if (haveRight("faq","w")&&haveRight("knowbase","w")){			
+				dropdownYesNo('faq',$this->fields["faq"]);
+			} else {
+				echo getYesNo($this->fields["faq"]);				
+			}
+			echo "<br /><br />\n";
 		
 			if (empty($ID)) {
 				echo "<input type='hidden' name='author' value=\"".$_SESSION['glpiID']."\">\n";
@@ -201,12 +215,13 @@ class kbitem extends CommonDBTM {
 		
 			echo "</div>";
 			return true;
-		} else return false;
-	} 
+
+		} else { // Cannot edit
+			return false;
+		}
+	} // function showForm
 
 
-
-
-}
+} // class kbitem
 
 ?>
