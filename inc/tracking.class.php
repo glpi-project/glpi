@@ -167,7 +167,7 @@ class Job extends CommonDBTM{
 				// force update date_mod
 				$input["date_mod"]=$_SESSION["glpi_currenttime"];
 			}
-		} else if (isset($_FILES['filename']['error'])&&$_FILES['filename']['error']){
+		} else if (!empty($_FILES['filename']['name'])&&isset($_FILES['filename']['error'])&&$_FILES['filename']['error']){
 			addMessageAfterRedirect($LANG["document"][46]);
 		}
 
@@ -195,15 +195,33 @@ class Job extends CommonDBTM{
 			$input["_old_cost_time"]=$this->fields["cost_time"];
 			$input["_old_cost_fixed"]=$this->fields["cost_fixed"];
 			$input["_old_cost_material"]=$this->fields["cost_material"];
+			$input["_old_date"]=$this->fields["date"];
+			$input["_old_closedate"]=$this->fields["closedate"];
 		}
 
 		return $input;
 	}
 
 	function pre_updateInDB($input,$updates) {
+		global $LANG;
 
 		$this->fields["date_mod"]=$_SESSION["glpi_currenttime"];
 		$updates[]="date_mod";
+		// Status close : check dates
+		if (ereg("old_",$this->fields["status"])&&(in_array("date",$updates)||in_array("closedate",$updates))){
+			// Invalid dates : no change
+			if ($this->fields["closedate"]<$this->fields["date"]){
+				addMessageAfterRedirect($LANG["tracking"][3]);
+				if (($key=array_search('date',$updates))!==false){
+					unset($updates[$key]);
+				}
+				if (($key=array_search('closedate',$updates))!==false){
+					unset($updates[$key]);
+				}
+			}
+		}
+
+
 
 		if (((in_array("assign",$updates)&&$input["assign"]>0)||(in_array("assign_ent",$updates)&&$input["assign_ent"]>0)||(in_array("assign_group",$updates)&&$input["assign_group"]>0))&&$this->fields["status"]=="new"){
 			$updates[]="status";
@@ -219,6 +237,10 @@ class Job extends CommonDBTM{
 			if (in_array("status",$updates)&&ereg("old_",$input["status"])){
 				$updates[]="closedate";
 				$this->fields["closedate"]=$_SESSION["glpi_currenttime"];
+				// If invalid date : set open date
+				if ($this->fields["closedate"]<$this->fields["date"]){
+					$this->fields["closedate"]=$this->fields["date"];
+				}
 			}
 		}
 
@@ -266,12 +288,26 @@ class Job extends CommonDBTM{
 						$change_followup_content.=$LANG["mailing"][46]."\n";
 						$global_mail_change_count++;
 					break;
+					case "date":
+						$change_followup_content.=$LANG["mailing"][48].": ".$input["_old_date"]." -> ".$this->fields["date"]."\n";
+		
+						$global_mail_change_count++;
+					break;
+					case "closedate":
+						// if update status from an not closed status : no mail for change closedate
+						if (!in_array("status",$updates)||!ereg("old_",$input["status"])){
+							$change_followup_content.=$LANG["mailing"][49].": ".$input["_old_closedate"]." -> ".$this->fields["closedate"]."\n";
+			
+							$global_mail_change_count++;
+						}
+					break;
 					case "status":
 						$new_status=$this->fields["status"];
 						$change_followup_content.=$LANG["mailing"][27].": ".getStatusName($input["_old_status"])." -> ".getStatusName($new_status)."\n";
 		
 						if (ereg("old_",$new_status))
 							$newinput["add_close"]="add_close";
+
 						if (in_array("closedate",$updates))	
 							$global_mail_change_count++; // Manage closedate
 		
