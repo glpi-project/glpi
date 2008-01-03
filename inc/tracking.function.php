@@ -1020,7 +1020,7 @@ global $CFG_GLPI,  $LANG;
 function searchFormTracking($extended=0,$target,$start="",$status="new",$tosearch="",$search="",$author=0,$group=0,$showfollowups=0,$category=0,$assign=0,$assign_ent=0,$assign_group=0,$priority=0,$request_type=0,$item=0,$type=0,$field="",$contains="",$date1="",$date2="",$computers_search="",$enddate1="",$enddate2="",$datemod1="",$datemod2="") {
 	// Print Search Form
 
-	global $CFG_GLPI,  $LANG;
+	global $CFG_GLPI,  $LANG, $DB;
 
 	if (!haveRight("show_all_ticket","1")) {
 		
@@ -1126,6 +1126,15 @@ function searchFormTracking($extended=0,$target,$start="",$status="new",$tosearc
 	echo "<td colspan='2' align='center'>".$LANG["job"][5].":<br>";
 	if (strcmp($assign,"mine")==0){
 		echo formatUserName($_SESSION["glpiID"],$_SESSION["glpiname"],$_SESSION["glpirealname"],$_SESSION["glpifirstname"]);
+		// Display the group if unique
+		if (count($_SESSION['glpigroups'])==1){
+			echo "<br>".getDropdownName("glpi_groups",current($_SESSION['glpigroups']));
+		} else if (count($_SESSION['glpigroups'])>1){ // Display limited dropdown
+			echo "<br>";
+			$groups[0]='-----';
+			$groups=array_merge($groups,getDropdownArrayNames('glpi_groups',$_SESSION['glpigroups']));
+			dropdownArrayValues('assign_group',$groups,$assign_group);
+		}
 	} else {
 		dropdownUsers("assign",$assign,"own_ticket",1);
 		echo "<br>".$LANG["common"][35].": ";
@@ -1394,16 +1403,21 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$to
 
 	if (strcmp($assign,"mine")==0){
 		// Case : central acces with show_assign_ticket but without show_all_ticket
+
 		$search_assign=" glpi_tracking.assign = '".$_SESSION["glpiID"]."' ";
 		if (count($_SESSION['glpigroups'])){
-			$first=true;
-			$groups="";
-			foreach ($_SESSION['glpigroups'] as $val){
-				if (!$first) $groups.=",";
-				else $first=false;
-				$groups.=$val;
+			if ($assign_group>0){
+				$search_assign.= " OR glpi_tracking.assign_group = $assign_group ";
+			} else {
+				$first=true;
+				$groups="";
+				foreach ($_SESSION['glpigroups'] as $val){
+					if (!$first) $groups.=",";
+					else $first=false;
+					$groups.=$val;
+				}
+				$search_assign.= " OR glpi_tracking.assign_group IN ($groups) ";
 			}
-			$search_assign.= " OR glpi_tracking.assign_group IN ($groups) ";
 		}
 
 		// Display mine but also the ones which i am the author
