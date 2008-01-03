@@ -151,6 +151,7 @@ class Job extends CommonDBTM{
 			unset($input["computer"]);
 			unset($input["device_type"]);
 		}	
+
 		// add Document if exists
 		if (isset($_FILES['filename'])&&count($_FILES['filename'])>0&&$_FILES['filename']["size"]>0){
 			$input2=array();
@@ -166,6 +167,8 @@ class Job extends CommonDBTM{
 				// force update date_mod
 				$input["date_mod"]=$_SESSION["glpi_currenttime"];
 			}
+		} else if (isset($_FILES['filename']['error'])&&$_FILES['filename']['error']){
+			$_SESSION["MESSAGE_AFTER_REDIRECT"].=$LANG["document"][46]."<br>";
 		}
 
 		if (isset($input["document"])&&$input["document"]>0){

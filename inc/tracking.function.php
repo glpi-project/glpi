@@ -1734,7 +1734,11 @@ function showJobDetails ($target,$ID){
 		// First line
 		echo "<tr><th colspan='2' style='text-align:left;'><span class='tracking_small'>";
 		echo $LANG["joblist"][11].": ";
-		showCalendarForm("form_ticket","date",$job->fields["date"],true,true,false);	
+		if ($canupdate){
+			showCalendarForm("form_ticket","date",$job->fields["date"],true,true,false);	
+		} else {
+			echo $job->fields["date"];
+		}
 		echo "&nbsp;&nbsp; ".$LANG["job"][2]." &nbsp; ";
 		if ($canupdate){
 			dropdownAllUsers("recipient",$job->fields["recipient"],1,$job->fields["FK_entities"]);
@@ -1746,7 +1750,12 @@ function showJobDetails ($target,$ID){
 
 		if (ereg("old_",$job->fields["status"])){
 			echo "<br><span class='tracking_small'>".$LANG["joblist"][12].": ";
-			showCalendarForm("form_ticket","closedate",$job->fields["closedate"],true,true,false);	
+
+			if ($canupdate){
+				showCalendarForm("form_ticket","closedate",$job->fields["closedate"],true,true,false);	
+			} else {
+				echo $job->fields["closedate"];
+			}
 			echo "</span>\n";
 		}
 
