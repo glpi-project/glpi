@@ -109,7 +109,7 @@ function showCartridges ($tID,$show_old=0) {
 				echo "&nbsp;</th></tr>";
 			}
 			$i=0;
-			echo "<tr><th>".$LANG["common"][2]."</th><th>".$LANG["cartridges"][23]."</th><th>".$LANG["cartridges"][24]."</th><th>".$LANG["cartridges"][25]."</th><th>".$LANG["cartridges"][27]."</th><th>".$LANG["search"][9]."</th>";
+			echo "<tr><th>".$LANG["common"][2]."</th><th>".$LANG["consumables"][23]."</th><th>".$LANG["cartridges"][24]."</th><th>".$LANG["consumables"][26]."</th><th>".$LANG["cartridges"][27]."</th><th>".$LANG["search"][9]."</th>";
 
 			if ($show_old){
 				echo "<th>".$LANG["cartridges"][39]."</th>";
@@ -208,7 +208,7 @@ function showCartridges ($tID,$show_old=0) {
 			echo "</td>";
 			echo "<td class='center'>";
 			if (!is_null($date_use)&&$canedit)
-				echo "<a href='".$CFG_GLPI["root_doc"]."/front/cartridge.edit.php?restore=restore&amp;ID=".$data["ID"]."&amp;tID=$tID'>".$LANG["cartridges"][43]."</a>";		
+				echo "<a href='".$CFG_GLPI["root_doc"]."/front/cartridge.edit.php?restore=restore&amp;ID=".$data["ID"]."&amp;tID=$tID'>".$LANG["consumables"][37]."</a>";		
 			else echo "&nbsp;";
 
 			echo "</td>";
@@ -316,7 +316,7 @@ function showCartridgeInstalled($instID,$old=0) {
 		echo "<tr><th colspan='7'>".$LANG["cartridges"][33].":</th></tr>";
 	else echo "<tr><th colspan='8'>".$LANG["cartridges"][35].":</th></tr>";
 
-	echo "<tr><th>".$LANG["common"][2]."</th><th>".$LANG["cartridges"][12]."</th><th>".$LANG["cartridges"][23]."</th><th>".$LANG["cartridges"][24]."</th><th>".$LANG["cartridges"][25]."</th><th>".$LANG["search"][9]."</th>";
+	echo "<tr><th>".$LANG["common"][2]."</th><th>".$LANG["cartridges"][12]."</th><th>".$LANG["consumables"][23]."</th><th>".$LANG["cartridges"][24]."</th><th>".$LANG["consumables"][26]."</th><th>".$LANG["search"][9]."</th>";
 	if ($old!=0)
 		echo "<th>".$LANG["cartridges"][39]."</th>";
 
@@ -607,7 +607,7 @@ function cron_cartridge(){
 					$message[$data["entity"]]="";
 				}
 				// define message alert
-				$message[$data["entity"]].=$LANG["mailing"][34]." ".$data["cartname"]." - ".$LANG["cartridges"][2].": ".$data["cartref"]." - ".$LANG["software"][20].": ".$unused."<br>\n";
+				$message[$data["entity"]].=$LANG["mailing"][34]." ".$data["cartname"]." - ".$LANG["consumables"][2].": ".$data["cartref"]." - ".$LANG["software"][20].": ".$unused."<br>\n";
 
 				// Mark alert as done
 				$alert=new Alert();

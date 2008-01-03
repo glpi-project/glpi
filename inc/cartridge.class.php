@@ -196,7 +196,7 @@ class CartridgeType extends CommonDBTM {
 				autocompletionTextField("name","glpi_cartridges_type","name",$this->fields["name"],25,$this->fields["FK_entities"]);
 				echo "</td></tr>\n";
 	
-				echo "<tr class='tab_bg_1'><td>".$LANG["cartridges"][2].":		</td>\n";
+				echo "<tr class='tab_bg_1'><td>".$LANG["consumables"][2].":		</td>\n";
 				echo "<td colspan='2'>";
 				autocompletionTextField("ref","glpi_cartridges_type","ref",$this->fields["ref"],25,$this->fields["FK_entities"]);	
 				echo "</td></tr>\n";
@@ -213,11 +213,11 @@ class CartridgeType extends CommonDBTM {
 				dropdownUsersID("tech_num", $this->fields["tech_num"],"interface",1,$this->fields["FK_entities"]);
 				echo "</td></tr>\n";
 	
-				echo "<tr class='tab_bg_1'><td>".$LANG["cartridges"][36].": 	</td><td colspan='2'>\n";
+				echo "<tr class='tab_bg_1'><td>".$LANG["consumables"][36].": 	</td><td colspan='2'>\n";
 				dropdownValue("glpi_dropdown_locations","location",$this->fields["location"],1,$this->fields["FK_entities"]);
 				echo "</td></tr>\n";
 	
-				echo "<tr class='tab_bg_1'><td>".$LANG["cartridges"][38].":</td><td colspan='2'>";
+				echo "<tr class='tab_bg_1'><td>".$LANG["consumables"][38].":</td><td colspan='2'>";
 				dropdownInteger('alarm',$this->fields["alarm"],-1,100);
 				echo "</td></tr>\n";
 	

@@ -61,7 +61,7 @@ else {$defaulttimeout=max(1,$max_time-2);$defaultrowlimit=2;}
 <script language="JavaScript" type="text/javascript">
 <!--
 function dump(what3){
-	if (confirm("<?php echo $LANG["backup"][15];?> " + what3 +  "?")) {
+	if (confirm("<?php echo $LANG["backup"][18];?> " + what3 +  "?")) {
 		window.location = "backup.php?dump=" + what3;
 	}
 }
@@ -511,13 +511,13 @@ if (isset($_GET["delfile"]) && $_GET["delfile"] != ""){
 	$filename=$_GET["delfile"];
 	if (is_file($path."/".$_GET["delfile"])){
 		unlink($path."/".$_GET["delfile"]);
-		echo "<div align ='center'>".$filename." ".$LANG["backup"][9]."</div>";
+		echo "<div align ='center'>".$filename." ".$LANG["common"][28]."</div>";
 	}
 
 }
 
 // Title backup
-echo " <div align='center'> <table border='0'><tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/sauvegardes.png\" alt='".$LANG["backup"][9]."'></td> <td><a href=\"javascript:dump('".$LANG["backup"][19]."')\"  class='icon_consol'><b>". $LANG["backup"][0]."</b></a></td><td><a href=\"javascript:xmlnow('".$LANG["backup"][19]."')\" class='icon_consol'><b>". $LANG["backup"][1]."</b></a></td></tr></table>";
+echo " <div align='center'> <table border='0'><tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/sauvegardes.png\" alt='".$LANG["common"][28]."'></td> <td><a href=\"javascript:dump('".$LANG["backup"][19]."')\"  class='icon_consol'><b>". $LANG["backup"][0]."</b></a></td><td><a href=\"javascript:xmlnow('".$LANG["backup"][19]."')\" class='icon_consol'><b>". $LANG["backup"][1]."</b></a></td></tr></table>";
 
 
 ?>
@@ -551,7 +551,7 @@ if (count($files)){
 			<td>&nbsp;" . convDateTime(date("Y-m-d H:i",$date)) . "</td>
 			<td>&nbsp;<a href=\"javascript:erase('$file')\">".$LANG["backup"][20]."</a>&nbsp;</td>
 
-			<td>&nbsp;<a href=\"javascript:restore('$file')\">".$LANG["backup"][14]."</a>&nbsp;</td>
+			<td>&nbsp;<a href=\"javascript:restore('$file')\">".$LANG["buttons"][21]."</a>&nbsp;</td>
 			<td>&nbsp;<a href=\"document.send.php?file=_dumps/$file\">".$LANG["backup"][13]."</a></td></tr>";
 	}
 }
