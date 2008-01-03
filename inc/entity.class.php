@@ -204,6 +204,10 @@ class Entity extends CommonDBTM{
 			autocompletionTextField("country","glpi_entities_data","country",$entdata->fields["country"],25);		
 			echo "</td></tr>";
 
+			echo "<tr class='tab_bg_1'>";
+			echo "<td>".$LANG["setup"][14]." ".$LANG["setup"][237].":		</td><td colspan='3'>";
+			autocompletionTextField("admin_email","glpi_entities_data","admin_email",$entdata->fields["admin_email"],50);		
+			echo "</td></tr>";
 
 
 			if (haveRight("entity","w")) {

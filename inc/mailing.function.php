@@ -83,6 +83,9 @@ function testMail(){
 					case ADMIN_MAILING :
 						$name = $LANG["setup"][237];
 						break;
+					case ADMIN_ENTITY_MAILING :
+						$name = $LANG["setup"][237]." ".$LANG["entity"][0];
+						break;
 					case ASSIGN_MAILING :
 						$name = $LANG["setup"][239];
 						break;
@@ -106,6 +109,12 @@ function testMail(){
 						break;
 					case ASSIGN_GROUP_MAILING :
 						$name = $LANG["setup"][248];
+						break;
+					case SUPERVISOR_ASSIGN_GROUP_MAILING :
+						$name = $LANG["common"][64]." ".$LANG["setup"][248];
+						break;
+					case SUPERVISOR_AUTHOR_GROUP_MAILING :
+						$name = $LANG["common"][64]." ".$LANG["setup"][249];
 						break;
 					default :
 						$name="&nbsp;";
