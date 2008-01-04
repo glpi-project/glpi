@@ -109,7 +109,7 @@ class DictionnarySoftwareCollection extends RuleCachedCollection {
 				
 				//If manufacturer is set, then first run the manufacturer's dictionnary
 				if (isset($input["manufacturer"]))
-					$input["manufacturer"] = processManufacturerName($data["manufacturer"]);
+					$input["manufacturer"] = processManufacturerName($input["manufacturer"]);
 				
 				//Replay software dictionnary rules
 				$input=addslashes_deep($input);
