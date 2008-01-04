@@ -119,6 +119,7 @@ class kbitem extends CommonDBTM {
 				elements: \"answer\", 
 				plugins : \"table\", 
 				theme : \"advanced\",  
+				entity_encoding : \"numeric\",
 				theme_advanced_toolbar_location : \"top\", 
 				theme_advanced_toolbar_align : \"left\",   
 				theme_advanced_buttons1 : \"bold,italic,underline,strikethrough,fontsizeselect,formatselect,separator,justifyleft,justifycenter,justifyright,justifyfull,bullist,numlist,outdent,indent\", 
