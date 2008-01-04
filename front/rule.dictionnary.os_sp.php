@@ -34,12 +34,12 @@
 // ----------------------------------------------------------------------
 
 
-$NEEDED_ITEMS=array("rulesengine","rule.dictionnary.os","computer","software","ocsng","setup");
+$NEEDED_ITEMS=array("rulesengine","rule.dictionnary.dropdown","setup");
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-$rulecollection = new DictionnaryOSSPCollection;
+$rulecollection = new DictionnaryDropdownCollection(RULE_DICTIONNARY_OS_SP);
 
 include (GLPI_ROOT . "/front/rule.common.php");
 ?>
