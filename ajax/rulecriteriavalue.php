@@ -46,16 +46,15 @@ if (!defined('GLPI_ROOT')){
 	die("Can not acces directly to this file");
 }
 
-	include_once (GLPI_ROOT."/inc/rulesengine.function.php");
-
+include_once (GLPI_ROOT."/inc/rulesengine.function.php");
 	
-	checkLoginUser();
-	// Non define case
-	if (isset($_POST["rule_type"])){
-		$rule=getRuleClass($_POST["rule_type"]);
-		$criterias=$rule->getCriterias();
-		$rule->displayCriteriaSelectPattern("pattern",$_POST["criteria"],$_POST['condition']);
-	}
+checkLoginUser();
+// Non define case
+if (isset($_POST["rule_type"])){
+	$rule=getRuleClass($_POST["rule_type"]);
+	$criterias=$rule->getCriterias();
+	$rule->displayCriteriaSelectPattern("pattern",$_POST["criteria"],$_POST['condition']);
+}
 
 	
 

@@ -36,7 +36,8 @@
 if (!defined('GLPI_ROOT')){
 	die("Sorry. You can't access directly to this file");
 	}
-$rule = new $rulecollection->rule_class_name();
+
+$rule = $rulecollection->getRuleClass();;
 
 if(!isset($_GET["ID"])) $_GET["ID"] = "";
 

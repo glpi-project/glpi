@@ -530,6 +530,10 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="")
 					$menu['admin']['content']['dictionnary']['links']['search']='/front/rule.dictionnary.model.networking.php';
 					$menu['admin']['content']['dictionnary']['links']['add']='/front/rule.dictionnary.model.networking.form.php';
 					break;
+				case RULE_DICTIONNARY_MODEL_PHONE :
+					$menu['admin']['content']['dictionnary']['links']['search']='/front/rule.dictionnary.model.phone.php';
+					$menu['admin']['content']['dictionnary']['links']['add']='/front/rule.dictionnary.model.phone.form.php';
+					break;
 				case RULE_DICTIONNARY_TYPE_COMPUTER :
 					$menu['admin']['content']['dictionnary']['links']['search']='/front/rule.dictionnary.type.computer.php';
 					$menu['admin']['content']['dictionnary']['links']['add']='/front/rule.dictionnary.type.computer.form.php';
@@ -549,6 +553,10 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="")
 				case RULE_DICTIONNARY_TYPE_NETWORKING :
 					$menu['admin']['content']['dictionnary']['links']['search']='/front/rule.dictionnary.type.networking.php';
 					$menu['admin']['content']['dictionnary']['links']['add']='/front/rule.dictionnary.type.networking.form.php';
+					break;
+				case RULE_DICTIONNARY_TYPE_PHONE :
+					$menu['admin']['content']['dictionnary']['links']['search']='/front/rule.dictionnary.type.phone.php';
+					$menu['admin']['content']['dictionnary']['links']['add']='/front/rule.dictionnary.type.phone.form.php';
 					break;
 				case RULE_DICTIONNARY_OS :
 					$menu['admin']['content']['dictionnary']['links']['search']='/front/rule.dictionnary.os.php';

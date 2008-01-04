@@ -251,86 +251,26 @@ function getRuleClass($type){
 			return new DictionnarySoftwareRule;
 			break;
 		case RULE_DICTIONNARY_MANUFACTURER:
-			if (!class_exists('DictionnaryManufacturerRule')){
-				include_once(GLPI_ROOT."/inc/rulesengine.class.php");
-				include_once(GLPI_ROOT."/inc/rule.dictionnary.manufacturer.class.php");
-			}
-			return new DictionnaryManufacturerRule;
-			break;
+		case RULE_DICTIONNARY_MODEL_NETWORKING :
 		case RULE_DICTIONNARY_MODEL_COMPUTER:
-			if (!class_exists('DictionnaryModelComputerRule')){
-				include_once(GLPI_ROOT."/inc/rulesengine.class.php");
-				include_once(GLPI_ROOT."/inc/rule.dictionnary.model.class.php");
-			}
-			return new DictionnaryModelComputerRule;
-			break;
 		case RULE_DICTIONNARY_MODEL_MONITOR:
-			if (!class_exists('DictionnaryModelMonitorRule')){
-				include_once(GLPI_ROOT."/inc/rulesengine.class.php");
-				include_once(GLPI_ROOT."/inc/rule.dictionnary.model.class.php");
-			}
-			return new DictionnaryModelMonitorRule;
-			break;
 		case RULE_DICTIONNARY_MODEL_PRINTER:
-			if (!class_exists('DictionnaryModelPrinterRule')){
-				include_once(GLPI_ROOT."/inc/rulesengine.class.php");
-				include_once(GLPI_ROOT."/inc/rule.dictionnary.model.class.php");
-			}
-			return new DictionnaryModelPrinterRule;
-			break;
 		case RULE_DICTIONNARY_MODEL_PERIPHERAL:
-			if (!class_exists('DictionnaryModelPeripheralRule')){
-				include_once(GLPI_ROOT."/inc/rulesengine.class.php");
-				include_once(GLPI_ROOT."/inc/rule.dictionnary.model.class.php");
-			}
-			return new DictionnaryModelPeripheralRule;
-			break;
+		case RULE_DICTIONNARY_MODEL_PHONE:
+		case RULE_DICTIONNARY_TYPE_NETWORKING :
 		case RULE_DICTIONNARY_TYPE_COMPUTER:
-			if (!class_exists('DictionnaryTypeComputerRule')){
-				include_once(GLPI_ROOT."/inc/rulesengine.class.php");
-				include_once(GLPI_ROOT."/inc/rule.dictionnary.type.class.php");
-			}
-			return new DictionnaryTypeComputerRule;
-			break;
 		case RULE_DICTIONNARY_TYPE_PRINTER:
-			if (!class_exists('DictionnaryTypePrinterRule')){
-				include_once(GLPI_ROOT."/inc/rulesengine.class.php");
-				include_once(GLPI_ROOT."/inc/rule.dictionnary.type.class.php");
-			}
-			return new DictionnaryTypePrinterRule;
-			break;
 		case RULE_DICTIONNARY_TYPE_MONITOR:
-			if (!class_exists('DictionnaryTypeMonitorRule')){
-				include_once(GLPI_ROOT."/inc/rulesengine.class.php");
-				include_once(GLPI_ROOT."/inc/rule.dictionnary.type.class.php");
-			}
-			return new DictionnaryTypeMonitorRule;
-			break;
 		case RULE_DICTIONNARY_TYPE_PERIPHERAL:
-			if (!class_exists('DictionnaryTypePeripheralRule')){
-				include_once(GLPI_ROOT."/inc/rulesengine.class.php");
-				include_once(GLPI_ROOT."/inc/rule.dictionnary.type.class.php");
-			}
-			return new DictionnaryTypePeripheralRule;
+		case RULE_DICTIONNARY_TYPE_PHONE:
 		case RULE_DICTIONNARY_OS:
-			if (!class_exists('DictionnaryOSRule')){
-				include_once(GLPI_ROOT."/inc/rulesengine.class.php");
-				include_once(GLPI_ROOT."/inc/rule.dictionnary.os.class.php");
-			}
-			return new DictionnaryOSRule;
-			break;
 		case RULE_DICTIONNARY_OS_SP:
-			if (!class_exists('DictionnaryOSSPRule')){
-				include_once(GLPI_ROOT."/inc/rulesengine.class.php");
-				include_once(GLPI_ROOT."/inc/rule.dictionnary.os.class.php");
-			}
-			return new DictionnaryOSSPRule;
 		case RULE_DICTIONNARY_OS_VERSION:
-			if (!class_exists('DictionnaryOSVersionRule')){
+			if (!class_exists('DictionnaryDropdownCollection')){
 				include_once(GLPI_ROOT."/inc/rulesengine.class.php");
-				include_once(GLPI_ROOT."/inc/rule.dictionnary.os.class.php");
+				include_once(GLPI_ROOT."/inc/rule.dictionnary.dropdown.class.php");
 			}
-			return new DictionnaryOSVersionRule;
+			return new RuleDictionnaryDropdown($type);
 			break;
 	}
 }
@@ -373,87 +313,26 @@ function getRuleCollectionClass($type){
 			return new DictionnarySoftwareCollection;
 			break;
 		case RULE_DICTIONNARY_MANUFACTURER:
-			if (!class_exists('DictionnaryManufacturerCollection')){
-				include_once(GLPI_ROOT."/inc/rulesengine.class.php");
-				include_once(GLPI_ROOT."/inc/rule.dictionnary.manufacturer.class.php");
-			}
-			return new DictionnaryManufacturerCollection;
-			break;
+		case RULE_DICTIONNARY_MODEL_NETWORKING :
 		case RULE_DICTIONNARY_MODEL_COMPUTER:
-			if (!class_exists('DictionnaryModelComputerCollection')){
-				include_once(GLPI_ROOT."/inc/rulesengine.class.php");
-				include_once(GLPI_ROOT."/inc/rule.dictionnary.model.class.php");
-			}
-			return new DictionnaryModelComputerCollection;
-			break;
 		case RULE_DICTIONNARY_MODEL_MONITOR:
-			if (!class_exists('DictionnaryModelMonitorCollection')){
-				include_once(GLPI_ROOT."/inc/rulesengine.class.php");
-				include_once(GLPI_ROOT."/inc/rule.dictionnary.model.class.php");
-			}
-			return new DictionnaryModelMonitorCollection;
-			break;
 		case RULE_DICTIONNARY_MODEL_PRINTER:
-			if (!class_exists('DictionnaryModelPrinterCollection')){
-				include_once(GLPI_ROOT."/inc/rulesengine.class.php");
-				include_once(GLPI_ROOT."/inc/rule.dictionnary.model.class.php");
-			}
-			return new DictionnaryModelPrinterCollection;
-			break;
 		case RULE_DICTIONNARY_MODEL_PERIPHERAL:
-			if (!class_exists('DictionnaryModelPeripheralCollection')){
-				include_once(GLPI_ROOT."/inc/rulesengine.class.php");
-				include_once(GLPI_ROOT."/inc/rule.dictionnary.model.class.php");
-			}
-			return new DictionnaryModelPeripheralCollection;
-			break;
+		case RULE_DICTIONNARY_MODEL_PHONE:
+		case RULE_DICTIONNARY_TYPE_NETWORKING :
 		case RULE_DICTIONNARY_TYPE_COMPUTER:
-			if (!class_exists('DictionnaryTypeComputerCollection')){
-				include_once(GLPI_ROOT."/inc/rulesengine.class.php");
-				include_once(GLPI_ROOT."/inc/rule.dictionnary.type.class.php");
-			}
-			return new DictionnaryTypeComputerCollection;
-			break;
-		case RULE_DICTIONNARY_TYPE_MONITOR:
-			if (!class_exists('DictionnaryTypeMonitorCollection')){
-				include_once(GLPI_ROOT."/inc/rulesengine.class.php");
-				include_once(GLPI_ROOT."/inc/rule.dictionnary.type.class.php");
-			}
-			return new DictionnaryTypeMonitorCollection;
-			break;
 		case RULE_DICTIONNARY_TYPE_PRINTER:
-			if (!class_exists('DictionnaryTypePrinterCollection')){
-				include_once(GLPI_ROOT."/inc/rulesengine.class.php");
-				include_once(GLPI_ROOT."/inc/rule.dictionnary.type.class.php");
-			}
-			return new DictionnaryTypePrinterCollection;
-			break;
+		case RULE_DICTIONNARY_TYPE_MONITOR:
 		case RULE_DICTIONNARY_TYPE_PERIPHERAL:
-			if (!class_exists('DictionnaryTypePeripheralCollection')){
-				include_once(GLPI_ROOT."/inc/rulesengine.class.php");
-				include_once(GLPI_ROOT."/inc/rule.dictionnary.type.class.php");
-			}
-			return new DictionnaryTypePeripheralCollection;
-			break;
+		case RULE_DICTIONNARY_TYPE_PHONE:
 		case RULE_DICTIONNARY_OS:
-			if (!class_exists('DictionnaryOSCollection')){
-				include_once(GLPI_ROOT."/inc/rulesengine.class.php");
-				include_once(GLPI_ROOT."/inc/rule.dictionnary.os.class.php");
-			}
-			return new DictionnaryOSCollection;
-			break;
 		case RULE_DICTIONNARY_OS_SP:
-			if (!class_exists('DictionnaryOSSPCollection')){
-				include_once(GLPI_ROOT."/inc/rulesengine.class.php");
-				include_once(GLPI_ROOT."/inc/rule.dictionnary.os.class.php");
-			}
-			return new DictionnaryOSSPCollection;
 		case RULE_DICTIONNARY_OS_VERSION:
-			if (!class_exists('DictionnaryOSVersionCollection')){
+			if (!class_exists('DictionnaryDropdownCollection')){
 				include_once(GLPI_ROOT."/inc/rulesengine.class.php");
-				include_once(GLPI_ROOT."/inc/rule.dictionnary.os.class.php");
+				include_once(GLPI_ROOT."/inc/rule.dictionnary.dropdown.class.php");
 			}
-			return new DictionnaryOSVersionCollection;
+			return new DictionnaryDropdownCollection($type);
 			break;
 	}
 }
@@ -475,6 +354,8 @@ function getRuleCollectionClassByTableName($tablename){
 			return getRuleCollectionClass(RULE_DICTIONNARY_MODEL_PERIPHERAL);
 		case "glpi_dropdown_model_networking":
 			return getRuleCollectionClass(RULE_DICTIONNARY_MODEL_NETWORKING);
+		case "glpi_dropdown_model_phone":
+			return getRuleCollectionClass(RULE_DICTIONNARY_MODEL_PHONE);
 		case "glpi_type_computers":
 			return getRuleCollectionClass(RULE_DICTIONNARY_TYPE_COMPUTER);
 		case "glpi_type_monitors":
@@ -485,6 +366,8 @@ function getRuleCollectionClassByTableName($tablename){
 			return getRuleCollectionClass(RULE_DICTIONNARY_TYPE_PERIPHERAL);
 		case "glpi_type_networking":
 			return getRuleCollectionClass(RULE_DICTIONNARY_TYPE_NETWORKING);
+		case "glpi_dropdown_type_phone":
+			return getRuleCollectionClass(RULE_DICTIONNARY_TYPE_PHONE);
 		case "glpi_dropdown_os":
 			return getRuleCollectionClass(RULE_DICTIONNARY_OS);
 		case "glpi_dropdown_os_sp":
@@ -545,4 +428,17 @@ function getAlreadyUsedActionsByRuleID($rule_id,$rule_type){
 	return $actions;	
 }
 
+function processManufacturerName($old_name)
+{
+	if ($old_name == null)
+		return $old_name;
+		
+	$rulecollection = new DictionnaryDropdownCollection(RULE_DICTIONNARY_MANUFACTURER);
+	$output=array();
+	$rulecollection->processAllRules(array("name"=>addslashes($old_name)),$output,array());
+	if (isset($output["name"]))
+		return $output["name"];
+	else
+		return $old_name;	
+}
 ?>

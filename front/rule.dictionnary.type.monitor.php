@@ -34,12 +34,12 @@
 // ----------------------------------------------------------------------
 
 
-$NEEDED_ITEMS=array("rulesengine","ocsng","setup","rule.dictionnary.type","monitor");
+$NEEDED_ITEMS=array("rulesengine","rule.dictionnary.dropdown","setup");
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-$rulecollection = new DictionnaryTypeMonitorCollection;
+$rulecollection = new DictionnaryDropdownCollection(RULE_DICTIONNARY_TYPE_MONITOR);
 
 include (GLPI_ROOT . "/front/rule.common.php");
 ?>

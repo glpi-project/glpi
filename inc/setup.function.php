@@ -684,7 +684,15 @@ function deleteDropdown($input) {
 //replace all entries for a dropdown in each items
 function replaceDropDropDown($input) {
 	global $DB,$CFG_GLPI;
+
+	if (!isset($input["tablename"])||!isset($input["oldID"])||!isset($input["newID"])||$input["oldID"]==$input["newID"]){
+		return false;
+	}
+
 	$name = getDropdownNameFromTable($input["tablename"]);
+	if (empty($name)){
+		return false;
+	}
 	$RELATION = getDbRelations();
 	// Man
 
@@ -697,6 +705,9 @@ function replaceDropDropDown($input) {
 						$query="SELECT ID FROM `glpi_computers` WHERE ocs_import='1' AND `$field` = '" . $input["oldID"] . "'";
 						$result=$DB->query($query);
 						if ($DB->numrows($result)){
+							if (!function_exists('mergeOcsArray')){
+								include_once (GLPI_ROOT . "/inc/ocsng.function.php");
+							}
 							while ($data=$DB->fetch_array($result)){
 								mergeOcsArray($data['ID'],array($field),"computer_update");
 							}
@@ -717,10 +728,12 @@ function replaceDropDropDown($input) {
 
 	$query = "DELETE  FROM `".$input["tablename"]."` WHERE `ID` = '" . $input["oldID"] . "'";
 	$DB->query($query);
+
 	// Need to be done on entity class
 	if ($input["tablename"]=="glpi_entities"){
 		$query = "DELETE FROM `glpi_entities_data` WHERE `FK_entities` = '" . $input["oldID"] . "'";
 		$DB->query($query);
+
 		if (isset($_SESSION["glpiID"])){
 			$activeprof=$_SESSION['glpiactiveprofile']['ID'];
 			initEntityProfiles($_SESSION["glpiID"]);
@@ -796,7 +809,7 @@ function showDeleteConfirmForm($target, $table, $ID,$FK_entities) {
 }
 
 function getDropdownNameFromTable($table) {
-
+	$name="";
 	if (ereg("glpi_type_", $table)) {
 		$name = ereg_replace("glpi_type_", "", $table);
 	} else {

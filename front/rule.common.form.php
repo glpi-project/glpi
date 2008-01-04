@@ -38,7 +38,7 @@ if (!defined('GLPI_ROOT')){
 	}
 
 
-$rule = new $rulecollection->rule_class_name();
+$rule = $rulecollection->getRuleClass();
 
 checkRight($rule->right,"r");
 

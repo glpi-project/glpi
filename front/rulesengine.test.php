@@ -33,8 +33,7 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-$NEEDED_ITEMS=array("rulesengine","rule.ocs","rule.right","rule.softwarecategory","rule.dictionnary.software",
-					"rule.dictionnary.model","rule.dictionnary.type","rule.dictionnary.os");
+$NEEDED_ITEMS=array("rulesengine");
 
 if(!defined('GLPI_ROOT')){
 	define('GLPI_ROOT', '..');
