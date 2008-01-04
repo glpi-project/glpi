@@ -53,10 +53,8 @@ if ($argv) {
 $NEEDED_ITEMS=array(
 					"rulesengine",
 					"setup",
-					"computer","rule.softwarecategories",
-					"rule.dictionnary.software","rule.dictionnary.model","rule.dictionnary.type","rule.dictionnary.manufacturer",
-					"software","ocsng","printer","monitor","phone","peripheral","networking"
-					);
+					"rule.softwarecategories",
+					"rule.dictionnary.software","rule.dictionnary.dropdown");
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");

@@ -1233,7 +1233,7 @@ function addSoftware($name, $manufacturer, $entity, $comments = '', $process_typ
 		$manufacturer_id = externalImportDropdown("glpi_dropdown_manufacturer", $manufacturer);
 	}									
 
-	$sql = "SELECT ID FROM glpi_software WHERE FK_entities=$entity AND FK_glpi_enterprise=$manufacturer_id AND name='".$name."'";
+	$sql = "SELECT ID FROM glpi_software WHERE FK_entities='$entity' AND FK_glpi_enterprise='$manufacturer_id' AND name='".$name."'";
 	$res_soft = $DB->query($sql);
 	if ($soft = $DB->fetch_array($res_soft)) {
 		$id = $soft["ID"];

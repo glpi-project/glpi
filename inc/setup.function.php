@@ -553,8 +553,9 @@ function externalImportDropdown($dpdTable, $value, $FK_entities = -1,$external_p
 	global $DB, $CFG_GLPI;
 
 	$value=trim($value);
-	if (empty ($value))
+	if (strlen($value)==0){
 		return 0;
+	}
 
 	$input["tablename"] = $dpdTable;
 	$input["value"] = $value;
@@ -594,9 +595,11 @@ function externalImportDropdown($dpdTable, $value, $FK_entities = -1,$external_p
 	}
 
 	if ($process){
+
 		$res_rule = $rulecollection->processAllRules($input_values, array (), array());
-		if (isset($res_rule["name"]))
+		if (isset($res_rule["name"])){
 			$input["value"] = $res_rule["name"];
+		}
 	}
 
 	return addDropdown($input);
