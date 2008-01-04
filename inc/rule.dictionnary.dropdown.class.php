@@ -312,11 +312,10 @@ class DictionnaryDropdownCollection extends RuleCachedCollection{
 		$result = $DB->query($Sql);
 
 		$nb = $DB->numrows($result);
-		
+		$i=0;
 		if ($result && $nb>0) {
 			// Step to refresh progressbar
 			$step=($nb>20 ? floor($nb/20) : 1);
-			$i=0;
 			$send = array ();
 			$send["tablename"] = $this->item_table;
 			while ($data = $DB->fetch_array($result)){
@@ -330,7 +329,7 @@ class DictionnaryDropdownCollection extends RuleCachedCollection{
 
 				//Replay Type dictionnary
 				$ID=externalImportDropdown($this->item_table,addslashes($data["name"]),-1,array(),addslashes($data["comments"]));
-
+				
 				if ($data['ID'] != $ID) {
 					$tomove[$data['ID']]=$ID;
 					$send["oldID"] = $data['ID'];

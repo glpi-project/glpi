@@ -612,7 +612,7 @@ class Rule extends CommonDBTM{
 	}
 
 	function post_getEmpty () {
-		$this->fields['active']=1;
+		$this->fields['active']=0;
 	}
 
 	function getTitleRule($target){
@@ -1990,7 +1990,6 @@ class RuleCachedCollection extends RuleCollection{
 			$output["_rule_process"]=true;
 			return array_merge($output,$new_values);
 		}
-
 		$output=parent::processAllRules($input,$output,$params);
 
 		if (!$force_no_cache&&isset($output["_ruleid"])){
@@ -2079,6 +2078,9 @@ class RuleCachedCollection extends RuleCollection{
 		$into_new="";
 		$new_values="";
 		foreach($this->cache_params["output_value"] as $param => $value){
+			if (!isset($output[$param])){
+				$output[$param]="";
+			}
 			$into_new.=", `".$value."`";
 			$new_values.=" ,\"".$output[$param]."\"";
 		}
