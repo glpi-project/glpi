@@ -85,9 +85,6 @@ class RuleCollection {
 	**/
 	function RuleCollection($rule_type){
 		$this->rule_type = $rule_type;
-		$this->cache_table="";	
-		$this->cache_params = array();
-		$this->can_replay_rules = false;
 	}
 
 
@@ -114,7 +111,7 @@ class RuleCollection {
 				$this->RuleList->list = array();
 			 	while ($rule=$DB->fetch_array($result)) {
 				 	//For each rule, get a Rule object with all the criterias and actions
-					$tempRule= new $this->rule_class_name();
+					$tempRule= $this->getRuleClass();
 					if ($tempRule->getRuleWithCriteriasAndActions($rule["ID"],$retrieve_criteria,$retrieve_action)){
 						//Add the object to the list of rules
 						$this->RuleList->list[] = $tempRule;
@@ -122,9 +119,15 @@ class RuleCollection {
 				}
 				$this->RuleList->load = $need;
 			}
-			// echo "+ getCollectionDatas(".$this->rule_class_name.",$retrieve_criteria,$retrieve_action)\t=> " . count($this->RuleList->list) . "\n";
 		}
-		// else echo "- getCollectionDatas(".$this->rule_class_name.",$retrieve_criteria,$retrieve_action)\t=> " . count($this->RuleList->list) . "\n";
+	}
+
+	/**
+	 * Get a instance of the class to manipulate rule of this collection
+	 * 
+	**/
+	function getRuleClass(){
+		return new $this->rule_class_name();
 	}
 
 	/**
@@ -360,7 +363,6 @@ class RuleCollection {
 
 	**/
 	function processAllRules($input=array(),$output=array(),$params=array()){	
-		
 		// Get Collection datas
 		$this->getCollectionDatas(1,1);
 		$input=$this->prepareInputDataForProcess($input,$params);
@@ -424,6 +426,8 @@ class RuleCollection {
 			echo "</table>";
 			echo "</div>";
 			echo "</form>";
+		} else {
+			echo '<br><div class="center"><strong>'.$LANG["rulesengine"][97].'</strong></div>';
 		}		
 		return $input;
 	}
@@ -1399,7 +1403,7 @@ class Rule extends CommonDBTM{
 				echo "<tr  class='tab_bg_2'>";
 				echo "<td class='tab_bg_2'>".$LANG["rulesengine"][85]."</td>";
 				echo "<td class='tab_bg_2'>";
-				print_r($regex_results);
+				printCleanArray($regex_results);
 				echo "</td>";
 				echo "</tr>";
 		}
@@ -1939,34 +1943,6 @@ class RuleCached extends Rule{
 			
 }
 
-class RuleDictionnaryModel extends RuleCached{
-	function maxActionsCount(){
-		return 1;
-	}
-
-	function showCacheRuleHeader(){
-		global $LANG;
-		echo "<th colspan='3'>".$LANG["rulesengine"][100]." : ".$this->fields["name"]."</th></tr>";
-		echo "<tr>";
-		echo "<td class='tab_bg_1'>".$LANG["rulesengine"][104]."</td>";
-		echo "<td class='tab_bg_1'>".$LANG["common"][5]."</td>";
-		echo "<td class='tab_bg_1'>".$LANG["rulesengine"][105]."</td>";
-		echo "</tr>";
-	}
-
-	function showCacheRuleDetail($fields){
-		global $LANG;
-		echo "<td class='tab_bg_2'>".$fields["old_value"]."</td>";
-		echo "<td class='tab_bg_2'>".($fields["manufacturer"]!=''?$fields["manufacturer"]:'')."</td>";		
-		echo "<td class='tab_bg_2'>".($fields["new_value"]!=''?$fields["new_value"]:$LANG["rulesengine"][106])."</td>";
-	}
-}
-
-class RuleDictionnaryType extends RuleCached{
-	function maxActionsCount(){
-		return 1;
-	}
-}
 
 /**
  * Specific rule collection for dictionnary : got a function initialize rule's caching system
@@ -1979,6 +1955,7 @@ class RuleCachedCollection extends RuleCollection{
 
 	function initCache($cache_table,$input_params=array("name"=>"old_value"),$output_params=array("name"=>"new_value")){
 		$this->can_replay_rules=true;
+		$this->stop_on_first_match=true;
 		$this->cache_table=$cache_table;
 		$this->cache_params["input_value"]=$input_params;
 		$this->cache_params["output_value"]=$output_params;
@@ -2115,129 +2092,5 @@ class RuleCachedCollection extends RuleCollection{
 	}	
 	
 }
-class RuleTypeCollection extends RuleCachedCollection{
-
-	var $item_table="";
-	
-	function getRelatedObject(){		
-	}
-
-	function replayRulesOnExistingDB(){
-		global $DB,$LANG;
-
-		$obj = $this->getRelatedObject();
-		//$this->deleteCache();
-
-		$Sql="SELECT * FROM " . $this->item_table;
-		$result = $DB->query($Sql);
-
-		$nb = $DB->numrows($result);
-		
-		if ($result && $nb>0) {
-			// Step to refresh progressbar
-			$step=($nb>20 ? floor($nb/20) : 1);
-			$i=0;
-			while ($data = $DB->fetch_array($result)){
-				if (!($i % $step) && !isCommandLine()){
-					changeProgressBarPosition($i,$nb,"$i / $nb");
-				}
-				//Replay Type dictionnary
-				$ID=externalImportDropdown($this->item_table,addslashes($data["name"]),-1,array(),addslashes($data["comments"]));
-
-				if ($data['ID'] != $ID) {
-					$nbupd=0;
-	
-					$Sql = "UPDATE ".$obj->table." SET type=".$ID." WHERE type=".$data['ID'];
-					$resupd = $DB->query($Sql);
-					$nbupd = ($resupd ? $DB->affected_rows() : -1);					
-	
-					$Sql = "DELETE FROM ".$this->item_table." WHERE ID=".$data['ID'];
-					$resdel = $DB->query($Sql);
-					$nbdel = ($resdel ? $DB->affected_rows() : -1);
-				}		
-
-				$i++;
-			} 
-		}
-		
-		if (!isCommandLine()) {
-			changeProgressBarPosition($nb,$nb,"$i / $nb");
-		}
-	} // function
-}	
-
-class RuleModelCollection extends RuleCachedCollection{
-	var $item_table;
-	
-	function getRelatedObject(){		
-	}
-	
-	function RuleModelCollection(){
-		$this->item_table = "";
-	}
-
-	function replayRulesOnExistingDB(){
-		global $DB;
-		
-		//error_log("RuleModelCollection::replayRulesOnExistingDB");
-		//$this->deleteCache();
-		$item = $this->getRelatedObject();
-		
-		$tocheck=array();
-		$sql="SELECT DISTINCT glpi_dropdown_manufacturer.ID AS idmanu, glpi_dropdown_manufacturer.name AS manufacturer, ".
-			$this->item_table.".ID AS idmodel, ".$this->item_table.".name AS name, ".$this->item_table.".comments AS comments ".
-			"FROM ".$item->table.", ".$this->item_table.", .glpi_dropdown_manufacturer ".
-			"WHERE ".$item->table.".model=".$this->item_table.".ID ".
-			"AND ".$item->table.".FK_glpi_enterprise=glpi_dropdown_manufacturer.ID";
-		$result = $DB->query($sql);
-
-		$nb = $DB->numrows($result);
-		$step=($nb>20 ? floor($DB->numrows($result)/20) : 1);
-
-		if ($DB->numrows($result)>0) {	
-			for ($i=0;$data = $DB->fetch_array($result); $i++) {
-				
-				if (!($i % $step) && !isCommandLine()){
-					changeProgressBarPosition($i,$nb,"$i / $nb");
-				}
-				if (isset($data["manufacturer"])){
-					$data["manufacturer"] = processManufacturerName($data["manufacturer"]);
-				}
-				$ID=externalImportDropdown($this->item_table,addslashes($data["name"]),-1,$data,addslashes($data["comments"]));
-				if ($ID != $data["idmodel"]) {
-					$tocheck[$data["idmodel"]]=1;
-
-					$sql = "UPDATE ".$item->table." SET model=".$ID." WHERE FK_glpi_enterprise=".$data['idmanu']." AND model=".$data['idmodel'];
-					$resupd = $DB->query($sql);
-				}
-			} // while fetch
-		}
-		foreach ($tocheck AS $ID => $rien) 	{
-			$sql="SELECT COUNT(*) FROM ".$item->table." WHERE model=$ID";
-			$result = $DB->query($sql);
-			if ($result && $DB->result($result,0,0)==0) {
-				$Sql = "DELETE FROM ".$this->item_table." WHERE ID=".$ID;
-				$resdel = $DB->query($Sql);
-				
-				//if ($resdel) error_log("$ID not used, deleted");								
-			}		
-		} // each tocheck
-		if (!isCommandLine()) {
-			changeProgressBarPosition($nb,$nb,"$i / $nb");
-		}
-	}
-	
-	/**
-	 * Override rulesengine::insertDataInCache. The insert request is specific because of the insertion of the field manufacturer
-	 * It is, moreover, quicker because the request is hardcoded
-	**/
-
-	function insertDataInCache($old_values,$output){
-		global $DB;
-		$sql="INSERT INTO ".$this->cache_table." (`old_value`,`manufacturer`,`rule_id`,`new_value`) VALUES (\"".$old_values["name"]."\",\"".$old_values["manufacturer"]."\", ".$output["_ruleid"].", \"".$output["name"]."\")";
-		$DB->query($sql);
-	}
-		
-}	
 
 ?>

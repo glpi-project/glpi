@@ -34,8 +34,7 @@
 // ----------------------------------------------------------------------
 
 
-$NEEDED_ITEMS=array("entity","rulesengine","ocsng","rule.dictionnary.model",
-					"rule.dictionnary.type","rule.dictionnary.manufacturer","rule.dictionnary.software");
+$NEEDED_ITEMS=array("entity","rulesengine","ocsng");
 
 if(!defined('GLPI_ROOT')){
 	define('GLPI_ROOT', '..');
@@ -55,7 +54,7 @@ if (isset($_GET["rule_type"]))
 			$rulecollection->showCacheStatusByRuleType();
 		else
 		{
-			$rule = new $rulecollection->rule_class_name();
+			$rule = $rulecollection->getRuleClass();
 			$rule->getRuleWithCriteriasAndActions($_GET["rule_id"],0,0);
 			$rule->showCacheStatusByRule($_SERVER["HTTP_REFERER"]);
 		}

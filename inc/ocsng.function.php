@@ -2342,7 +2342,7 @@ function ocsUpdatePeripherals($device_type, $entity, $glpi_id, $ocs_id, $ocs_ser
 							// Clean monitor object
 							$m->reset();
 
-							$mon["FK_glpi_enterprise"] = externalImportDropdown("glpi_dropdown_manufacturer", processManufacturerName($line["MANUFACTURER"]));
+							$mon["FK_glpi_enterprise"] = externalImportDropdown("glpi_dropdown_manufacturer", $line["MANUFACTURER"]);
 							
 							if ($cfg_ocs["import_monitor_comments"])
 								$mon["comments"] = $line["DESCRIPTION"];

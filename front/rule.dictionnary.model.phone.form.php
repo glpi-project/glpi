@@ -33,17 +33,13 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-function processManufacturerName($old_name)
-{
-	if ($old_name == null)
-		return $old_name;
-		
-	$rulecollection = new DictionnaryManufacturerCollection;
-	$output=array();
-	$rulecollection->processAllRules(array("name"=>addslashes($old_name)),$output,array());
-	if (isset($output["name"]))
-		return $output["name"];
-	else
-		return $old_name;	
-}
+
+$NEEDED_ITEMS=array("rulesengine","rule.dictionnary.dropdown");
+
+define('GLPI_ROOT', '..');
+include (GLPI_ROOT . "/inc/includes.php");
+
+$rulecollection = new DictionnaryDropdownCollection(RULE_DICTIONNARY_TYPE_PHONE);
+
+include (GLPI_ROOT . "/front/rule.common.form.php");
 ?>

@@ -1308,6 +1308,7 @@ $LANG["rulesengine"][56]="Modèles";
 
 $LANG["rulesengine"][60]="Dictionnaire des types d'ordinateurs";
 $LANG["rulesengine"][61]="Dictionnaire des types de moniteurs";
+$LANG["rulesengine"][62]="Dictionnaire des types de téléphones";
 $LANG["rulesengine"][63]="Dictionnaire des types de périphériques";
 $LANG["rulesengine"][64]="Dictionnaire des types d'imprimantes";
 $LANG["rulesengine"][65]="Dictionnaire des types de matériels réseaux";
@@ -1338,6 +1339,7 @@ $LANG["rulesengine"][93]="Attention ! Cette opération peut mettre à la poubell
 $LANG["rulesengine"][94]="FUSION";
 $LANG["rulesengine"][95]="Choix d'un fabricant";
 $LANG["rulesengine"][96]="Rejouer le dictionnaire sur le(s) fabricant(s)<br> ( ----- = Tous)";
+$LANG["rulesengine"][97]="Aucun élément à tester";
 
 $LANG["rulesengine"][100]="Informations sur le cache";
 $LANG["rulesengine"][102]="Nom de la règle";

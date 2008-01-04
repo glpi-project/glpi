@@ -50,7 +50,6 @@ if (isset($_POST["rule_id"]))$rule_id=$_POST["rule_id"];
 elseif (isset($_GET["rule_id"]))$rule_id=$_GET["rule_id"];
 else $rule_id=0;
 
-
 $rule = getRuleClass($rule_type);
 checkRight($rule->right,"r");
 

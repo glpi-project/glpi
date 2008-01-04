@@ -34,12 +34,12 @@
 // ----------------------------------------------------------------------
 
 
-$NEEDED_ITEMS=array("entity","rulesengine","rule.dictionnary.model");
+$NEEDED_ITEMS=array("rulesengine","rule.dictionnary.dropdown");
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-$rulecollection = new DictionnaryModelPeripheralCollection;
+$rulecollection = new DictionnaryDropdownCollection(RULE_DICTIONNARY_MODEL_PERIPHERAL);
 
 include (GLPI_ROOT . "/front/rule.common.form.php");
 ?>

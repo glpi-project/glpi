@@ -64,6 +64,7 @@ commonHeader($LANG["title"][2],$_SERVER['PHP_SELF'],"admin","dictionnary",-1);
 		echo "<tr class='tab_bg_1'><td  align='center'><a href=\"rule.dictionnary.model.printer.php\"><strong>" . $LANG["rulesengine"][54] . "</strong></a></td></tr>";
 		echo "<tr class='tab_bg_1'><td  align='center'><a href=\"rule.dictionnary.model.peripheral.php\"><strong>" . $LANG["rulesengine"][53] . "</strong></a></td></tr>";
 		echo "<tr class='tab_bg_1'><td  align='center'><a href=\"rule.dictionnary.model.networking.php\"><strong>" . $LANG["rulesengine"][55] . "</strong></a></td></tr>";
+		echo "<tr class='tab_bg_1'><td  align='center'><a href=\"rule.dictionnary.model.phone.php\"><strong>" . $LANG["rulesengine"][52] . "</strong></a></td></tr>";
 	}
 	echo "</table></td>";
 
@@ -75,6 +76,7 @@ commonHeader($LANG["title"][2],$_SERVER['PHP_SELF'],"admin","dictionnary",-1);
 		echo "<tr class='tab_bg_1'><td  align='center'><a href=\"rule.dictionnary.type.printer.php\"><strong>" . $LANG["rulesengine"][64] . "</strong></a></td></tr>";
 		echo "<tr class='tab_bg_1'><td  align='center'><a href=\"rule.dictionnary.type.peripheral.php\"><strong>" . $LANG["rulesengine"][63] . "</strong></a></td></tr>";
 		echo "<tr class='tab_bg_1'><td  align='center'><a href=\"rule.dictionnary.type.networking.php\"><strong>" . $LANG["rulesengine"][65] . "</strong></a></td></tr>";		
+		echo "<tr class='tab_bg_1'><td  align='center'><a href=\"rule.dictionnary.type.phone.php\"><strong>" . $LANG["rulesengine"][62] . "</strong></a></td></tr>";		
 	}
 	echo "</table></td>";
 
