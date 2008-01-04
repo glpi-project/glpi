@@ -54,22 +54,6 @@ function testMail(){
 	function showFormMailingType($type, $profiles) {
 		global $LANG, $DB;
 	
-		echo "<td class='right'>";
-	
-		echo "<select name='mailing_to_add_" . $type . "[]' multiple size='5'>";
-	
-		foreach ($profiles as $key => $val) {
-			list ($item_type, $item) = split("_", $key);
-			echo "<option value='$key'>" . $val . "</option>";
-		}
-		echo "</select>";
-		echo "</td>";
-		echo "<td class='center'>";
-		echo "<input type='submit'  class=\"submit\" name='mailing_add_$type' value='" . $LANG["buttons"][8] . " >>'><br><br>";
-		echo "<input type='submit'  class=\"submit\" name='mailing_delete_$type' value='<< " . $LANG["buttons"][6] . "'>";
-		echo "</td>";
-		echo "<td>";
-
 		$options="";
 		// Get User mailing
 		$query = "SELECT glpi_mailing.FK_item as item, glpi_mailing.ID as ID 
@@ -79,6 +63,9 @@ function testMail(){
 		$result = $DB->query($query);
 		if ($DB->numrows($result))
 			while ($data = $DB->fetch_assoc($result)) {
+				if (isset($profiles[USER_MAILING_TYPE."_".$data["item"]])) {
+					unset($profiles[USER_MAILING_TYPE."_".$data["item"]]);
+				}
 				switch ($data["item"]) {
 					case ADMIN_MAILING :
 						$name = $LANG["setup"][237];
@@ -120,7 +107,7 @@ function testMail(){
 						$name="&nbsp;";
 						break;
 				}
-				$options.= "<option value='" . $data["ID"] . "'>" . $name . "</option>";
+				$options.= "<option value='" . $data["ID"] . "'>" . $name . "</option>\n";
 			}
 		// Get Profile mailing
 		$query = "SELECT glpi_mailing.FK_item as item, glpi_mailing.ID as ID, glpi_profiles.name as prof 
@@ -131,7 +118,10 @@ function testMail(){
 		$result = $DB->query($query);
 		if ($DB->numrows($result))
 			while ($data = $DB->fetch_assoc($result)) {
-				$options.= "<option value='" . $data["ID"] . "'>" . $LANG["profiles"][22] . " " . $data["prof"] . "</option>";
+				$options.= "<option value='" . $data["ID"] . "'>" . $LANG["profiles"][22] . " " . $data["prof"] . "</option>\n";
+				if (isset($profiles[PROFILE_MAILING_TYPE."_".$data["item"]])) {
+					unset($profiles[PROFILE_MAILING_TYPE."_".$data["item"]]);
+				}
 			}
 	
 		// Get Group mailing
@@ -143,8 +133,33 @@ function testMail(){
 		$result = $DB->query($query);
 		if ($DB->numrows($result))
 			while ($data = $DB->fetch_assoc($result)) {
-				$options.= "<option value='" . $data["ID"] . "'>" . $LANG["common"][35] . " " . $data["name"] . "</option>";
+				$options.= "<option value='" . $data["ID"] . "'>" . $LANG["common"][35] . " " . $data["name"] . "</option>\n";
+				if (isset($profiles[GROUP_MAILING_TYPE."_".$data["item"]])) {
+					unset($profiles[GROUP_MAILING_TYPE."_".$data["item"]]);
+				}
 			}
+
+		echo "<td class='right'>";
+		if (count($profiles)) {
+			echo "<select name='mailing_to_add_" . $type . "[]' multiple size='5'>";
+		
+			foreach ($profiles as $key => $val) {
+				list ($item_type, $item) = split("_", $key);
+				echo "<option value='$key'>" . $val . "</option>\n";
+			}
+			echo "</select>";			
+		}
+
+		echo "</td><td class='center'>";
+		if (count($profiles)) {
+			echo "<input type='submit'  class=\"submit\" name='mailing_add_$type' value='" . $LANG["buttons"][8] . " >>'>";
+		}
+		echo "<br /><br />";
+		if (!empty($options)){
+			echo "<input type='submit'  class=\"submit\" name='mailing_delete_$type' value='<< " . $LANG["buttons"][6] . "'>";
+		}
+
+		echo "</td><td>";
 		if (!empty($options)){
 			echo "<select name='mailing_to_delete_" . $type . "[]' multiple size='5'>";
 			echo $options;
