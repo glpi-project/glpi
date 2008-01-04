@@ -2126,7 +2126,7 @@ class RuleTypeCollection extends RuleCachedCollection{
 		global $DB,$LANG;
 
 		$obj = $this->getRelatedObject();
-		$this->deleteCache();
+		//$this->deleteCache();
 
 		$Sql="SELECT * FROM " . $this->item_table;
 		$result = $DB->query($Sql);
@@ -2180,7 +2180,7 @@ class RuleModelCollection extends RuleCachedCollection{
 		global $DB;
 		
 		//error_log("RuleModelCollection::replayRulesOnExistingDB");
-		$this->deleteCache();
+		//$this->deleteCache();
 		$item = $this->getRelatedObject();
 		
 		$tocheck=array();
