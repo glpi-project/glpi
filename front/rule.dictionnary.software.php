@@ -33,10 +33,15 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-$NEEDED_ITEMS=array("rulesengine","rule.dictionnary.software","software","rule.dictionnary.dropdown","setup");
+$NEEDED_ITEMS=array("rulesengine","rule.dictionnary.software","software","rule.dictionnary.dropdown", "rule.softwarecategories","setup");
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
+
+// euh... celui la est vraiment long...
+if (isset($_POST["replay_rule"])){
+	ini_set("max_execution_time", "0");
+}
 
 $rulecollection = new DictionnarySoftwareCollection;
 
