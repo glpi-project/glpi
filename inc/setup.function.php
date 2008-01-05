@@ -55,16 +55,23 @@ function showDropdownList($target, $tablename,$FK_entities='',$location=-1){
 	
 	$where="";
 	$entity_restrict = -1;
-	if (in_array($tablename, $CFG_GLPI["specif_entities_tables"])) {
-		if (!empty($FK_entities)&&$FK_entities>=0){
-			$entity_restrict = $FK_entities;
-		} else {	
-			$entity_restrict = $_SESSION["glpiactive_entity"];
+
+	if (!empty($FK_entities) && $FK_entities>=0){
+		$entity_restrict = $FK_entities;
+	} else {	
+		$entity_restrict = $_SESSION["glpiactive_entity"];
+	}
+
+	if ($tablename=="glpi_dropdown_netpoint") {
+		if ($location > 0) {
+			$where = " WHERE location=$location";			
+		} else if ($location < 0) {
+			$where = getEntitiesRestrictRequest(" WHERE ",$tablename,'',$entity_restrict);
+		} else {
+			$where = " WHERE location=0 " . getEntitiesRestrictRequest(" AND ",$tablename,'',$entity_restrict);			
 		}
+	} else if (in_array($tablename, $CFG_GLPI["specif_entities_tables"])) {
 		$where=getEntitiesRestrictRequest(" WHERE ",$tablename,'',$entity_restrict);
-		if ($tablename=="glpi_dropdown_netpoint" && $location>=0) {
-			$where .= " AND location=$location";
-		}
 	} 
 	
 	echo "<div class='center'>";
@@ -239,7 +246,13 @@ function showFormNetpoint($target, $human, $ID, $FK_entities='',$location=0) {
 	} else {	
 		$entity_restrict = $_SESSION["glpiactive_entity"];
 	}
-	$numberof = countElementsInTable($tablename, "location=$location ".getEntitiesRestrictRequest(" AND ",$tablename,'',$entity_restrict));
+	if ($location>0) {
+		$numberof = countElementsInTable($tablename, "location=$location ");
+	} else if ($location<0){
+		$numberof = countElementsInTable($tablename, getEntitiesRestrictRequest(" ",$tablename,'',$entity_restrict));
+	} else {
+		$numberof = countElementsInTable($tablename, "location=0 ".getEntitiesRestrictRequest(" AND ",$tablename,'',$entity_restrict));
+	}
 
 	echo "<div class='center'>&nbsp;";
 	echo "<form method='post' action=\"$target\">";
