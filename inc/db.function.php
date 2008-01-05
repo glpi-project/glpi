@@ -289,11 +289,32 @@ function getRealSearchForTreeItem($table,$search){
 }
 
 
+/**
+ * Get the ancestors of an entity
+ * result is cached in session
+ *
+ * @param $ID The ID of the entity
+ * @return array of IDs of the ancestors
+ */
 function getEntityAncestors ($ID){
 	if (!isset($_SESSION['glpi_entities_ancestors'][$ID])){
 		$_SESSION['glpi_entities_ancestors'][$ID]=getAncestorsOfTreeItem("glpi_entities",$ID);
 	}
 	return $_SESSION['glpi_entities_ancestors'][$ID];
+}
+
+/**
+ * Get the sons of an entity
+ * result is cached in session
+ *
+ * @param $ID The ID of the entity
+ * @return array of IDs of the sons (including ID of the searched entity)
+ */
+function getEntitySons ($ID){
+	if (!isset($_SESSION['glpi_entities_sons'][$ID])){
+		$_SESSION['glpi_entities_sons'][$ID]=getSonsOfTreeItem("glpi_entities",$ID);
+	}
+	return $_SESSION['glpi_entities_sons'][$ID];
 }
 
 /**
