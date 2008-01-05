@@ -456,15 +456,16 @@ function ocsImportComputer($ocs_id, $ocs_server_id, $lock = 0, $defaultentity = 
 		if (isset ($data['FK_entities']) && $data['FK_entities'] >= 0) {
 
 			if ($lock) {
-				while (!$fp = setEntityLock($data['FK_entities']))
-					sleep(2);
+				while (!$fp = setEntityLock($data['FK_entities'])) {
+					sleep(1);
+				}
 			}
 
 			//Check if machine could be linked with another one already in DB
 			if ($canlink){
 				$found_computers = getMachinesAlreadyInGLPI($ocs_id,$ocs_server_id,$data['FK_entities']);
 				// machines founded -> try to link
-				if (count($found_computers)){
+				if (is_array($found_computers) && count($found_computers)>0){
 					foreach ($found_computers as $glpi_id){
 						if (ocsLinkComputer($ocs_id,$ocs_server_id,$glpi_id)){ 
 							return 3;
@@ -504,9 +505,9 @@ function ocsImportComputer($ocs_id, $ocs_server_id, $lock = 0, $defaultentity = 
 	
 			}
 	
-			if ($lock)
+			if ($lock) {
 				removeEntityLock($data['FK_entities'], $fp);
-	
+			}
 			//Return code to indicates that the machine was imported
 			return 1;	
 		}
@@ -3570,8 +3571,9 @@ function removeEntityLock($entity, $fp) {
 
 	//Test if the lock file still exists before removing it
 	// (sometimes another thread already already removed the file)
+	clearstatcache();
 	if (file_exists(GLPI_LOCK_DIR . "/lock_entity_" . $entity)) {
-		unlink(GLPI_LOCK_DIR . "/lock_entity_" . $entity);
+		@unlink(GLPI_LOCK_DIR . "/lock_entity_" . $entity);
 	}
 }
 
