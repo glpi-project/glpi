@@ -60,16 +60,19 @@ if (!isset($_POST["limit"])) $_POST["limit"]=$CFG_GLPI["dropdown_limit"];
 	$NBMAX=$CFG_GLPI["dropdown_max"];
 	$LIMIT="LIMIT 0,$NBMAX";
 	if ($_POST['searchText']==$CFG_GLPI["ajax_wildcard"]) $LIMIT="";
-	if (isset($_POST["entity_restrict"])&&$_POST["entity_restrict"]>=0){
-		$where.= " AND glpi_dropdown_netpoint.FK_entities='".$_POST["entity_restrict"]."'";
-	} else {
-		$where.=getEntitiesRestrictRequest(" AND ","glpi_dropdown_locations");
+
+	if (!(isset($_POST["devtype"]) && $_POST["devtype"]!=NETWORKING_TYPE && isset($_POST["location"]) && $_POST["location"]>0)) {
+		if (isset($_POST["entity_restrict"])&&$_POST["entity_restrict"]>=0){
+			$where.= " AND glpi_dropdown_netpoint.FK_entities='".$_POST["entity_restrict"]."'";
+		} else {
+			$where.=getEntitiesRestrictRequest(" AND ","glpi_dropdown_locations");
+		}
 	}
 
-	$query = "SELECT glpi_dropdown_netpoint.comments as comments, glpi_dropdown_netpoint.ID as ID, glpi_dropdown_netpoint.name as netpname, glpi_dropdown_locations.completename as loc from glpi_dropdown_netpoint";
+	$query = "SELECT glpi_dropdown_netpoint.comments as comments, glpi_dropdown_netpoint.ID as ID, glpi_dropdown_netpoint.name as netpname, glpi_dropdown_locations.completename as loc FROM glpi_dropdown_netpoint";
 	$query .= " LEFT JOIN glpi_dropdown_locations ON (glpi_dropdown_netpoint.location = glpi_dropdown_locations.ID)";
 
-	if (isset($_POST["devtype"])&&$_POST["devtype"]>0){
+	if (isset($_POST["devtype"]) && $_POST["devtype"]>0){
 		$query .= " LEFT JOIN glpi_networking_ports ON (glpi_dropdown_netpoint.ID = glpi_networking_ports.netpoint";
 	
 		if ($_POST["devtype"]==NETWORKING_TYPE){

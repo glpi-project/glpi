@@ -191,10 +191,12 @@ function dropdownNetpoint($myname,$value=0,$location=-1,$display_comments=1,$ent
 	
 	$use_ajax=false;	
 	if ($CFG_GLPI["use_ajax"]){
-		if ($location < 0) {
+		if ($location < 0 || $devtype==NETWORKING_TYPE) {
 			$nb=countElementsInTableForEntity("glpi_dropdown_netpoint",$entity_restrict);
+		} else if ($location > 0) {
+			$nb=countElementsInTable("glpi_dropdown_netpoint", "location=$location ");
 		} else {
-			$nb=countElementsInTable("glpi_dropdown_netpoint", "location=$location ".getEntitiesRestrictRequest(" AND ","glpi_dropdown_netpoint",'',$entity_restrict));
+			$nb=countElementsInTable("glpi_dropdown_netpoint", "location=0 ".getEntitiesRestrictRequest(" AND ","glpi_dropdown_netpoint",'',$entity_restrict));
 		}
 		if ($nb>$CFG_GLPI["ajax_limit_count"]){
 			$use_ajax=true;
