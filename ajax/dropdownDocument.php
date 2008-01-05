@@ -51,7 +51,7 @@ checkCentralAccess();
 $where=" WHERE  (glpi_docs.rubrique = '".$_POST['rubdoc']."' AND glpi_docs.deleted='0' ) ";
 
 
-if (isset($_POST["entity_restrict"]) && strlen($_POST["entity_restrict"])){
+if (isset($_POST["entity_restrict"])){
 	$where.=getEntitiesRestrictRequest("AND","glpi_docs",'',$_POST["entity_restrict"],true);
 } else {
 	$where.=getEntitiesRestrictRequest("AND","glpi_docs",'','',true);
