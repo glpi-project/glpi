@@ -403,30 +403,31 @@ function showDocumentAssociated($device_type,$ID,$withtemplate=''){
 	if ($canedit){
 		// Restrict entity for knowbase
 		$ci=new CommonItem();
-		$entity="";
-		$limit="";
-		if ($ci->getFromDB($device_type,$ID) && isset($ci->obj->fields["FK_entities"])) {
-			$entity = $ci->obj->fields["FK_entities"];
-			$limit = getEntitiesRestrictRequest(" AND ","glpi_docs",'',$entity,true);
+		$entities="";
+		if ($ci->getFromDB($device_type,$ID) && isset($ci->obj->fields["FK_entities"])) {		
+
+			if (isset($ci->obj->fields["recursive"]) && $ci->obj->fields["recursive"]) {
+				$entities = getEntitySons($ci->obj->fields["FK_entities"]);
+			} else {
+				$entities = $ci->obj->fields["FK_entities"];
+			}
 		}
+		$limit = getEntitiesRestrictRequest(" AND ","glpi_docs",'',$entities,true);
 		$q="SELECT count(*) FROM glpi_docs WHERE deleted='0' $limit";
 			
 		$result = $DB->query($q);
 		$nb = $DB->result($result,0,0);
 	
-		if ($withtemplate<2){
+		if ($withtemplate<2 && $nb>count($used)){
 	
 			echo "<tr class='tab_bg_1'>";
 			echo "<td align='center' colspan='3'>";
 			echo "<input type='file' name='filename' size='25'>&nbsp;&nbsp;";
-			if ($entity){
-				echo "<input type='hidden' name='FK_entities' value='$entity'>";
-			}
 			echo "<input type='submit' name='add' value=\"".$LANG["buttons"][8]."\" class='submit'>";
 			echo "</td>";
 			echo "<td align='left' colspan='2'>";
 			echo "<div class='software-instal'><input type='hidden' name='item' value='$ID'><input type='hidden' name='type' value='$device_type'>";
-			dropdownDocument("conID",$entity,$used);
+			dropdownDocument("conID",$entities,$used);
 			echo "</div></td><td class='center'>";
 			echo "<input type='submit' name='additem' value=\"".$LANG["buttons"][8]."\" class='submit'>";
 			echo "</td><td>&nbsp;</td>";
