@@ -962,12 +962,7 @@ function getOcsConf($id) {
 function getNumberOfOcsConfigs() {
 	global $DB, $CACHE_CFG;
 
-	$sql = "SELECT ID FROM glpi_ocs_config";
-	$result = $DB->query($sql);
-	if ($DB->numrows($result) > 0)
-		return size($DB->fetch_array($result));
-	else
-		return 0;
+	return countElementsInTable("glpi_ocs_config");
 }
 
 /**
