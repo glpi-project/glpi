@@ -613,7 +613,31 @@ class MailingResa{
 								if (isValidEmail($CFG_GLPI["admin_email"])&&!in_array($CFG_GLPI["admin_email"],$emails))
 									$emails[]=$CFG_GLPI["admin_email"];
 								break;
-								// AUTHOR SEND
+							// ADMIN ENTITY SEND
+							case ADMIN_ENTITY_MAILING :
+
+								$ri=new ReservationItem();
+								$ci=new CommonItem();
+								$entity=-1;
+								if ($ri->getFromDB($this->resa->fields["id_item"])){
+									if ($ci->getFromDB($ri->fields['device_type'],$ri->fields['id_device'])	){
+										$entity=$ci->getField('FK_entities');
+									}
+								}
+								
+								if ($entity>=0){
+									$query2 = "SELECT admin_email as EMAIL FROM glpi_entities_data WHERE (FK_entities = '".$entity."')";
+									if ($result2 = $DB->query($query2)) {
+										if ($DB->numrows($result2)==1){
+											$row = $DB->fetch_array($result2);
+											if (isValidEmail($row['EMAIL'])&&!in_array($row['EMAIL'],$emails)){
+												$emails[]=$row['EMAIL'];
+											}
+										}
+									}
+								}
+								break;
+							// AUTHOR SEND
 							case AUTHOR_MAILING :
 								$user = new User;
 								if ($user->getFromDB($this->resa->fields["id_user"]))
@@ -866,6 +890,19 @@ class MailingAlert
 								if (isValidEmail($CFG_GLPI["admin_email"])&&!in_array($CFG_GLPI["admin_email"],$emails))
 									$emails[]=$CFG_GLPI["admin_email"];
 								break;
+							// ADMIN ENTITY SEND
+							case ADMIN_ENTITY_MAILING :
+								$query2 = "SELECT admin_email as EMAIL FROM glpi_entities_data WHERE (FK_entities = '".$this->entity."')";
+								if ($result2 = $DB->query($query2)) {
+									if ($DB->numrows($result2)==1){
+										$row = $DB->fetch_array($result2);
+										if (isValidEmail($row['EMAIL'])&&!in_array($row['EMAIL'],$emails)){
+											$emails[]=$row['EMAIL'];
+										}
+									}
+								}
+								break;
+
 						}
 						break;
 					case PROFILE_MAILING_TYPE :
