@@ -264,7 +264,7 @@ class Mailing
 
 							// AUTHOR SEND
 							case AUTHOR_MAILING :
-								if ($this->job->fields["emailupdates"]&&isValidEmail($this->job->fields["uemail"])&&!in_array($this->job->fields["uemail"],$emails)){
+								if ($this->job->fields["emailupdates"]&&isValidEmail($this->job->fields["uemail"])&&!isset($emails[$this->job->fields["uemail"]])){
 
 									// Uemail = mail of the author ? -> use right of the author to see private followups
 									// Else not see private
