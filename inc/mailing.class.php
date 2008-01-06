@@ -265,29 +265,28 @@ class Mailing
 							// AUTHOR SEND
 							case AUTHOR_MAILING :
 								if ($this->job->fields["emailupdates"]&&isValidEmail($this->job->fields["uemail"])&&!isset($emails[$this->job->fields["uemail"]])){
-
 									// Uemail = mail of the author ? -> use right of the author to see private followups
 									// Else not see private
 									$authorsend=false;
 									$authorlang=$CFG_GLPI["default_language"];
 									if (!$sendprivate){
 										$authorsend=true;
-									} else {
-										// Is the user have the same mail that uemail ?
-										$query2 = "SELECT DISTINCT glpi_users.email AS EMAIL, glpi_users.language AS LANG   
-										FROM glpi_users $join 
-										WHERE (glpi_users.ID = '".$this->job->fields["author"]."')";
-										if ($result2 = $DB->query($query2)) {
-											if ($DB->numrows($result2)==1){
-												$row = $DB->fetch_array($result2);
-												if ($row['EMAIL']==$this->job->fields["uemail"]){
-													$authorsend=true;
-													$authorlang=$row['LANG'];
-												}
+									} 
+
+									// Is the user have the same mail that uemail ?
+									$query2 = "SELECT DISTINCT glpi_users.email AS EMAIL, glpi_users.language AS LANG   
+									FROM glpi_users $join 
+									WHERE (glpi_users.ID = '".$this->job->fields["author"]."')";
+									if ($result2 = $DB->query($query2)) {
+										if ($DB->numrows($result2)==1){
+											$row = $DB->fetch_array($result2);
+											if ($row['EMAIL']==$this->job->fields["uemail"]){
+												$authorsend=true;
+												$authorlang=$row['LANG'];
 											}
 										}
-
 									}
+
 									if ($authorsend){
 										$emails[$this->job->fields["uemail"]]=$authorlang;
 									}
@@ -567,7 +566,11 @@ class Mailing
 				// Users who could see private followups
 				$users[1]=$this->get_users_to_send_mail(1);
 				// Delete users who can see private followups to all users list
-				$users[0]=array_diff($users[0],$users[1]);
+				foreach ($users[1] as $email => $lang){
+					if (isset($users[0][$email])){
+						unset($users[0][$email]);
+					}
+				}
 
 				// New Followup is private : do not send to common users
 				if ($this->followupisprivate){
