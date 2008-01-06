@@ -519,7 +519,7 @@ class Mailing
 	 * Get reply to address 
 	 * @return return mail
 	 */
-	function get_reply_to_address ()
+	function get_reply_to_address ($sender)
 	{
 		global $CFG_GLPI;
 		$replyto=$CFG_GLPI["admin_email"];
@@ -529,7 +529,7 @@ class Mailing
 				if (isValidEmail($this->job->fields["uemail"])) {
 					$replyto=$this->job->fields["uemail"];
 				} else {
-					$replyto=$CFG_GLPI["admin_email"];
+					$replyto=$sender;
 				}
 				break;
 			case "followup":
@@ -537,7 +537,7 @@ class Mailing
 				if (isValidEmail($this->user->fields["email"])) {
 					$replyto=$this->user->fields["email"];
 				} else {
-					$replyto=$CFG_GLPI["admin_email"];
+					$replyto=$sender;
 				}
 			break;
 		}
@@ -577,7 +577,7 @@ class Mailing
 				// get sender
 				$sender= $this->get_mail_sender(); 
 				// get reply-to address : user->email ou job_email if not set OK
-				$replyto=$this->get_reply_to_address ();
+				$replyto=$this->get_reply_to_address ($sender);
 				// Send all mails
 				foreach ($users as $private=>$someusers) {
 					if (count($someusers)){
@@ -775,6 +775,39 @@ class MailingResa{
 		return $emails;
 	}
 
+
+	/**
+	 * Format the mail sender to send
+	 * @return mail sender email string
+	 */
+	function get_mail_sender(){
+		global $CFG_GLPI,$DB;
+
+
+		$ri=new ReservationItem();
+		$ci=new CommonItem();
+		$entity=-1;
+		if ($ri->getFromDB($this->resa->fields["id_item"])){
+			if ($ci->getFromDB($ri->fields['device_type'],$ri->fields['id_device'])	){
+				$entity=$ci->getField('FK_entities');
+			}
+		}
+		if ($entity>=0){
+			$query = "SELECT admin_email AS EMAIL FROM glpi_entities_data WHERE (FK_entities = '".$this->job->fields["FK_entities"]."')";
+			if ($result=$DB->query($query)){
+				if ($DB->numrows($result)){
+					$data=$DB->fetch_assoc($result);
+					if (isValidEmail($data["EMAIL"])){
+						return $data["EMAIL"];
+					}
+				}
+			}
+		}
+
+		return $CFG_GLPI["admin_email"];
+	}
+
+
 	/**
 	 * Format the mail body to send
 	 * @return mail body string
@@ -822,7 +855,7 @@ class MailingResa{
 	 * Get reply to address 
 	 * @return return mail
 	 */
-	function get_reply_to_address ()
+	function get_reply_to_address ($sender)
 	{
 		global $CFG_GLPI;
 		$replyto="";
@@ -830,9 +863,9 @@ class MailingResa{
 		$user = new User;
 		if ($user->getFromDB($this->resa->fields["id_user"])){
 			if (isValidEmail($user->fields["email"])) $replyto=$user->fields["email"];		
-			else $replyto=$CFG_GLPI["admin_email"];
+			else $replyto=$sender;
 		}
-		else $replyto=$CFG_GLPI["admin_email"];		
+		else $replyto=$sender;		
 
 		return $replyto;		
 	}
@@ -851,12 +884,12 @@ class MailingResa{
 			// get users to send mail
 			$users=$this->get_users_to_send_mail();
 
-			// get subject OK
+			// get subject
 			$subject=$this->get_mail_subject();
-			// get sender :  OK
-			$sender= $CFG_GLPI["admin_email"];
+			// get sender
+			$sender= $this->get_mail_sender(); 
 			// get reply-to address : user->email ou job_email if not set OK
-			$replyto=$this->get_reply_to_address ();
+			$replyto=$this->get_reply_to_address ($sender);
 
 
 			$mmail=new glpi_phpmailer();
@@ -1044,16 +1077,26 @@ class MailingAlert
 	}
 
 	/**
-	 * Get reply to address 
-	 * @return return mail
+	 * Format the mail sender to send
+	 * @return mail sender email string
 	 */
-	function get_reply_to_address ()
-	{
-		global $CFG_GLPI;
-		$replyto=$CFG_GLPI["admin_email"];
+	function get_mail_sender(){
+		global $CFG_GLPI,$DB;
 
-		return $replyto;		
+		$query = "SELECT admin_email AS EMAIL FROM glpi_entities_data WHERE (FK_entities = '".$this->entity."')";
+		if ($result=$DB->query($query)){
+			if ($DB->numrows($result)){
+				$data=$DB->fetch_assoc($result);
+				if (isValidEmail($data["EMAIL"])){
+					return $data["EMAIL"];
+				}
+			}
+		}
+
+		return $CFG_GLPI["admin_email"];
 	}
+
+
 	/**
 	 * Send mail function
 	 *
@@ -1071,9 +1114,9 @@ class MailingAlert
 			// get subject OK
 			$subject=$this->get_mail_subject();
 			// get sender :  OK
-			$sender= $CFG_GLPI["admin_email"];
+			$sender= $this->get_mail_sender();
 			// get reply-to address : user->email ou job_email if not set OK
-			$replyto=$this->get_reply_to_address ();
+			$replyto=$sender;
 
 
 			$mmail=new glpi_phpmailer();
