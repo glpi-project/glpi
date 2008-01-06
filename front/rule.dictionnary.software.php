@@ -39,9 +39,10 @@ define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
 // euh... celui la est vraiment long...
-if (isset($_POST["replay_rule"])){
-	ini_set("max_execution_time", "0");
-}
+// MoYo : Il est long mais on essaye de ne pas faire de ini_set dans GLPI car ce n'est pas forcement compatible suivant les configs PHP
+//if (isset($_POST["replay_rule"])){
+//	ini_set("max_execution_time", "0");
+//}
 
 $rulecollection = new DictionnarySoftwareCollection;
 
