@@ -46,41 +46,18 @@ function update07to071() {
 		$query = "ALTER TABLE `glpi_profiles` ADD `rule_dictionnary_software` VARCHAR( 1 ) NULL DEFAULT NULL;";
 		$DB->query($query) or die("0.71 add rule_dictionnary_software in glpi_profiles if not present for compatibility " . $LANG["update"][90] . $DB->error());
 		
-		$query="UPDATE glpi_profiles SET rule_dictionnary_software='w' WHERE name='super-admin'";
-		$DB->query($query) or die("0.71 add rule_dictionnary_software right for profile super-admin " . $LANG["update"][90] . $DB->error());
+		$query="UPDATE glpi_profiles SET rule_dictionnary_software=rule_softwarecategories";
+		$DB->query($query) or die("0.71 update value of rule_dictionnary_software right " . $LANG["update"][90] . $DB->error());
 	}
 
-	if (!FieldExists("glpi_profiles", "rule_dictionnary_manufacturer")) {
-		$query = "ALTER TABLE `glpi_profiles` ADD `rule_dictionnary_manufacturer` VARCHAR( 1 ) NULL DEFAULT NULL ;";
-		$DB->query($query) or die("0.71 add rule_dictionnary_manufacturer in glpi_profiles if not present for compatibility " . $LANG["update"][90] . $DB->error());
+	if (!FieldExists("glpi_profiles", "rule_dictionnary_dropdown")) {
+		$query = "ALTER TABLE `glpi_profiles` ADD `rule_dictionnary_dropdown` VARCHAR( 1 ) NULL DEFAULT NULL;";
+		$DB->query($query) or die("0.71 add rule_dictionnary_dropdown in glpi_profiles " . $LANG["update"][90] . $DB->error());
 
-		$query="UPDATE glpi_profiles SET rule_dictionnary_manufacturer='w' WHERE name='super-admin'";
-		$DB->query($query) or die("0.71 add rule_dictionnary_manufacturer right for profile super-admin " . $LANG["update"][90] . $DB->error());
+		$query="UPDATE glpi_profiles SET rule_dictionnary_dropdown=rule_dictionnary_software";
+		$DB->query($query) or die("0.71 update value of rule_dictionnary_dropdown" . $LANG["update"][90] . $DB->error());
 	}
 
-	if (!FieldExists("glpi_profiles", "rule_dictionnary_model")) {
-		$query = "ALTER TABLE `glpi_profiles` ADD `rule_dictionnary_model` VARCHAR( 1 ) NULL DEFAULT NULL ;";
-		$DB->query($query) or die("0.71 add rule_dictionnary_model in glpi_profiles if not present for compatibility " . $LANG["update"][90] . $DB->error());
-
-		$query="UPDATE glpi_profiles SET rule_dictionnary_model='w' WHERE name='super-admin'";
-		$DB->query($query) or die("0.71 add rule_dictionnary_model right for profile super-admin " . $LANG["update"][90] . $DB->error());
-	}
-
-	if (!FieldExists("glpi_profiles", "rule_dictionnary_type")) {
-		$query = "ALTER TABLE `glpi_profiles` ADD `rule_dictionnary_type` VARCHAR( 1 ) NULL DEFAULT NULL ;";
-		$DB->query($query) or die("0.71 add rule_dictionnary_type in glpi_profiles if not present for compatibility " . $LANG["update"][90] . $DB->error());
-
-		$query="UPDATE glpi_profiles SET rule_dictionnary_type='w' WHERE name='super-admin'";
-		$DB->query($query) or die("0.71 add rule_dictionnary_type right for profile super-admin " . $LANG["update"][90] . $DB->error());
-	}
-
-	if (!FieldExists("glpi_profiles", "rule_dictionnary_os")) {
-		$query = "ALTER TABLE `glpi_profiles` ADD `rule_dictionnary_os` VARCHAR( 1 ) NULL DEFAULT NULL ;";
-		$DB->query($query) or die("0.71 add rule_dictionnary_os in glpi_profiles if not present for compatibility " . $LANG["update"][90] . $DB->error());
-
-		$query="UPDATE glpi_profiles SET rule_dictionnary_os='w' WHERE name='super-admin'";
-		$DB->query($query) or die("0.71 add rule_dictionnary_os right for profile super-admin " . $LANG["update"][90] . $DB->error());
-	}
 
 	$cache_tables = array("glpi_rule_cache_manufacturer",
 							"glpi_rule_cache_model_computer",
@@ -137,6 +114,8 @@ function update07to071() {
 							"glpi_rule_cache_model_monitor",
 							"glpi_rule_cache_model_printer",
 							"glpi_rule_cache_model_peripheral",
+							"glpi_rule_cache_model_phone",
+							"glpi_rule_cache_model_networking",
 							);
 
 	foreach ($model_cache_tables as $model_cache_table)

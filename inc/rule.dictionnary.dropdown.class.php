@@ -39,7 +39,7 @@ class RuleDictionnaryDropdown extends RuleCached{
 		parent::RuleCached();
 		$this->rule_type=$type;
 		$this->can_sort=true;
-		$this->right="rule_dictionnary_type";
+		$this->right="rule_dictionnary_dropdown";
 	}
 
 	function maxActionsCount(){
@@ -150,7 +150,7 @@ class DictionnaryDropdownCollection extends RuleCachedCollection{
 	function DictionnaryDropdownCollection($type){
 		$this->rule_type = $type;
 		$this->rule_class_name = 'RuleDictionnaryDropdown';
-		$this->right="rule_dictionnary_type";
+		$this->right="rule_dictionnary_dropdown";
 
 		switch ($this->rule_type){
 			case RULE_DICTIONNARY_MANUFACTURER :

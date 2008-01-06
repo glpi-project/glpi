@@ -34,7 +34,7 @@
 // ----------------------------------------------------------------------
 
 
-$NEEDED_ITEMS=array("rulesengine","affectentity");
+$NEEDED_ITEMS=array("rulesengine");
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
@@ -50,14 +50,14 @@ commonHeader($LANG["title"][2],$_SERVER['PHP_SELF'],"admin","dictionnary",-1);
 	if (haveRight("rule_dictionnary_software","r")){
 		echo "<tr class='tab_bg_1'><td  align='center'><a href=\"rule.dictionnary.software.php\"><strong>" . $LANG["rulesengine"][35] . "</strong></a></td></tr>";
 	}
-	if (haveRight("rule_dictionnary_manufacturer","r")){
+	if (haveRight("rule_dictionnary_dropdown","r")){
 		echo "<tr class='tab_bg_1'><td  align='center'><a href=\"rule.dictionnary.manufacturer.php\"><strong>" . $LANG["rulesengine"][36] . "</strong></a></td></tr>";
 	}
 
 	echo "</table></td>";
 
 	echo "<td valign='top'><table class='tab_cadre' cellpadding='5'>";
-	if (haveRight("rule_dictionnary_model","r")){
+	if (haveRight("rule_dictionnary_dropdown","r")){
 		echo "<tr class='tab_bg_1'><th>".$LANG["rulesengine"][56]."</th></tr>";
 		echo "<tr class='tab_bg_1'><td  align='center'><a href=\"rule.dictionnary.model.computer.php\"><strong>" . $LANG["rulesengine"][50] . "</strong></a></td></tr>";
 		echo "<tr class='tab_bg_1'><td  align='center'><a href=\"rule.dictionnary.model.monitor.php\"><strong>" . $LANG["rulesengine"][51] . "</strong></a></td></tr>";
@@ -69,7 +69,7 @@ commonHeader($LANG["title"][2],$_SERVER['PHP_SELF'],"admin","dictionnary",-1);
 	echo "</table></td>";
 
 	echo "<td valign='top'><table class='tab_cadre' cellpadding='5'>";
-	if (haveRight("rule_dictionnary_type","r")){
+	if (haveRight("rule_dictionnary_dropdown","r")){
 		echo "<tr class='tab_bg_1'><th>".$LANG["rulesengine"][66]."</th></tr>";
 		echo "<tr class='tab_bg_1'><td  align='center'><a href=\"rule.dictionnary.type.computer.php\"><strong>" . $LANG["rulesengine"][60] . "</strong></a></td></tr>";
 		echo "<tr class='tab_bg_1'><td  align='center'><a href=\"rule.dictionnary.type.monitor.php\"><strong>" . $LANG["rulesengine"][61] . "</strong></a></td></tr>";
@@ -81,7 +81,7 @@ commonHeader($LANG["title"][2],$_SERVER['PHP_SELF'],"admin","dictionnary",-1);
 	echo "</table></td>";
 
 	echo "<td valign='top'><table class='tab_cadre' cellpadding='5'>";
-	if (haveRight("rule_dictionnary_os","r")){
+	if (haveRight("rule_dictionnary_dropdown","r")){
 		echo "<tr class='tab_bg_1'><th>".$LANG["computers"][9]."</th></tr>";
 		echo "<tr class='tab_bg_1'><td  align='center'><a href=\"rule.dictionnary.os.php\"><strong>" . $LANG["rulesengine"][67] . "</strong></a></td></tr>";
 		echo "<tr class='tab_bg_1'><td  align='center'><a href=\"rule.dictionnary.os_sp.php\"><strong>" . $LANG["rulesengine"][68] . "</strong></a></td></tr>";
