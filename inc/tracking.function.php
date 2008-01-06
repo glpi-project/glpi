@@ -70,9 +70,10 @@ function showTrackingOnglets($target){
 
 			echo "<li class='invisible'>&nbsp;</li>";
 
+
 			// admin yes  
 			if ($job->canAddFollowups()){
-				echo "<li onClick=\"showAddFollowup(); Effect.Appear('viewfollowup');\" id='addfollowup'><a href='#'>".$LANG["job"][29]."</a></li>";
+				echo "<li onClick=\"showAddFollowup(); Effect.Appear('viewfollowup');\" id='addfollowup'><span class='fake'>".$LANG["job"][29]."</span></li>";
 			}
 
 
@@ -2106,11 +2107,12 @@ function showJobDetails ($target,$ID){
 
 		echo "};";
 		echo "function showAddFollowup(){\n";
-
+			echo "$('viewfollowup').scrollTo();";
 			echo "window.document.getElementById('viewfollowup').style.display='none';";
 			$params=array('tID'=>$ID,
 			);
 			ajaxUpdateItemJsCode('viewfollowup',$CFG_GLPI["root_doc"]."/ajax/addfollowup.php",$params,false);
+			
 		echo "};";
 
 		echo "</script>";

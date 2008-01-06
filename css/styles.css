@@ -720,6 +720,21 @@ ul#onglet li.actif a {
 
 }
 
+ul#onglet span.fake{
+	float: left;
+	display: block;
+	color: #666;
+	text-decoration: none;
+	padding: 3px;
+	font-size: 10px;
+	font-family:  Verdana,Arial,Helvetica,sans-serif;
+	font-weight: bold;
+	cursor:pointer;
+
+}
+
+
+
 /* Over onglet div */
 #onglet_plugins{
 	display: none; 
