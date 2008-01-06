@@ -312,7 +312,7 @@ function showOldJobListForItem($username,$item_type,$item,$sort="",$order="") {
 	if ($number > 0)
 	{
 		echo "<div class='center'>&nbsp;<table class='tab_cadre_fixe'>";
-		echo "<tr><th colspan=9>".$number." ".$LANG["job"][18]."  ".$LANG["job"][17];
+		echo "<tr><th colspan='10'>".$number." ".$LANG["job"][18]."  ".$LANG["job"][17];
 		echo " ".$LANG["job"][16].":&nbsp;";
 		echo "<a href='".$CFG_GLPI["root_doc"]."/front/tracking.php?reset=reset_before&amp;status=all&amp;item=$item&amp;type=$item_type'>".$LANG["buttons"][23]."</a>";
 
@@ -366,7 +366,7 @@ function showJobListForItem($username,$item_type,$item,$sort="",$order="") {
 	if ($number > 0)
 	{
 		echo "<div class='center'>&nbsp;<table class='tab_cadre_fixe'>";
-		echo "<tr><th colspan='9'>".$number." ".$LANG["job"][17]."";
+		echo "<tr><th colspan='10'>".$number." ".$LANG["job"][17]."";
 		//if ($number > 1) { echo "s"; }
 		echo " ".$LANG["job"][16].":&nbsp;";
 		echo "<a href='".$CFG_GLPI["root_doc"]."/front/tracking.php?reset=reset_before&amp;status=all&amp;item=$item&amp;type=$item_type'>".$LANG["buttons"][23]."</a>";
@@ -374,7 +374,7 @@ function showJobListForItem($username,$item_type,$item,$sort="",$order="") {
 
 		if ($item)
 		{
-			echo "<tr><td align='center' class='tab_bg_2' colspan='9'>";
+			echo "<tr><td align='center' class='tab_bg_2' colspan='10'>";
 			echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/helpdesk.php?computer=$item&amp;device_type=$item_type\"><strong>";
 			echo $LANG["joblist"][7];
 			echo "</strong></a>";
