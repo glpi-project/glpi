@@ -744,8 +744,9 @@ function showContractAssociatedEnterprise($ID){
  *
  **/
 function cron_contract(){
-	global $DB,$CFG_GLPI,$LANG;
+	global $DB,$CFG_GLPI;
 
+	loadLanguage($CFG_GLPI["default_language"]);
 
 	$message=array();
 	$items_notice=array();

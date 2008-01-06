@@ -453,9 +453,9 @@ function showConsumableSummary(){
  *
  **/
 function cron_consumable(){
-	global $DB,$CFG_GLPI,$LANG;
+	global $DB,$CFG_GLPI;
 
-
+	loadLanguage($CFG_GLPI["default_language"]);
 
 	// Get cartridges type with alarm activated and last warning > config
 	$query="SELECT glpi_consumables_type.ID AS consID, glpi_consumables_type.FK_entities as entity, glpi_consumables_type.ref as consref, glpi_consumables_type.name AS consname, glpi_consumables_type.alarm AS threshold, glpi_alerts.ID AS alertID, glpi_alerts.date FROM glpi_consumables_type LEFT JOIN glpi_alerts ON (glpi_consumables_type.ID = glpi_alerts.FK_device AND glpi_alerts.device_type='".CONSUMABLE_TYPE."') WHERE glpi_consumables_type.deleted='0' AND glpi_consumables_type.alarm>='0' AND (glpi_alerts.date IS NULL OR (glpi_alerts.date+".$CFG_GLPI["consumables_alert"].") < CURRENT_TIMESTAMP());";
