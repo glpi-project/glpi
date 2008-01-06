@@ -78,7 +78,7 @@ class DictionnarySoftwareCollection extends RuleCachedCollection {
 		return true;
 	}
 
-	function replayRulesOnExistingDB($items = array (),$params=0) {
+	function replayRulesOnExistingDB($offset=0,$maxtime=0, $items = array (),$params=0) {
 		global $DB;
 		if (isCommandLine()){
 			echo "replayRulesOnExistingDB started : " . date("r") . "\n";
@@ -92,13 +92,19 @@ class DictionnarySoftwareCollection extends RuleCachedCollection {
 			"FROM glpi_software LEFT JOIN glpi_dropdown_manufacturer " .
 			"ON glpi_dropdown_manufacturer.ID=glpi_software.FK_glpi_enterprise ";
 			
-			if (isset($params['manufacturer'])&&$params['manufacturer'] > 0)
+			if (isset($params['manufacturer'])&&$params['manufacturer'] > 0) {
 				$sql.=" WHERE FK_glpi_enterprise=".$params['manufacturer'];
+			}
+			if ($offset) {
+				$sql .= "LIMIT $offset,999999999";
+			} 
 				
 			$res = $DB->query($sql);
-			$nb = $DB->numrows($res);
+			$nb = $DB->numrows($res)+$offset;
+			$i  = $offset;
 			$step=($nb>1000 ? 50 : ($nb>20 ? floor($DB->numrows($res)/20) : 1));
-			for ($i = 0; $input = $DB->fetch_array($res); $i++) {
+
+			while ($input = $DB->fetch_array($res)) {
 				if (!($i % $step)) {
 					if (isCommandLine()) {
 						echo date("H:i:s") . " replayRulesOnExistingDB : $i/$nb (".round(memory_get_usage()/(1024*1024),2)." Mo)\n";
@@ -134,12 +140,19 @@ class DictionnarySoftwareCollection extends RuleCachedCollection {
 					}
 				}
 				
-			} // each distrinct software
+				$i++;
+				if ($maxtime) {
+					$crt=explode(" ",microtime());
+					if ($crt[0]+$crt[1] > $maxtime) {
+						break;
+					}
+				}
+			} // each distinct software
 
 			if (isCommandLine()) {
 				echo "replayRulesOnExistingDB : $i/$nb               \n";
 			} else {
-				changeProgressBarPosition($nb,$nb,"$i / $nb");
+				changeProgressBarPosition($i,$nb,"$i / $nb");
 			}
 						
 		} else {
@@ -147,6 +160,8 @@ class DictionnarySoftwareCollection extends RuleCachedCollection {
 		}
 		if (isCommandLine())
 			echo "replayRulesOnExistingDB ended : " . date("r") . "\n";
+
+		return ($i==$nb ? -1 : $i);
 	}
 
 	/**

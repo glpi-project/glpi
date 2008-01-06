@@ -85,18 +85,23 @@ if (isset($_GET["action"])){
 			}
 		break;		
 	}
-} else if (isset($_POST["replay_rule"])){
+} else if (isset($_POST["replay_rule"]) || isset($_GET["replay_rule"])){
 
 	checkRight($rulecollection->right,"w");	
 
-	// Force ini_set is not a good idea
-	//ini_set("max_execution_time", "0");
-	$timer=new Script_Timer();
-	$timer->Start_Timer();
+	// Current time
+	$start = explode(" ",microtime());
+	$start = $start[0]+$start[1];
+	
+	// Limit computed from current time
+	$max = get_cfg_var("max_execution_time");
+	$max = $start + ($max>0 ? $max/2.0 : 30.0);
+	
 	commonHeader($LANG["rulesengine"][17],$_SERVER['PHP_SELF'],"admin",getCategoryNameToDisplay($rulecollection->rule_type),$rulecollection->rule_type);
 
-	if (!isset($_POST['replay_confirm'])&&$rulecollection->warningBeforeReplayRulesOnExistingDB($_SERVER['PHP_SELF'])){
+	if (!(isset($_POST['replay_confirm']) || isset($_GET['offset'])) && $rulecollection->warningBeforeReplayRulesOnExistingDB($_SERVER['PHP_SELF'])){
 		commonFooter();
+		exit();
 	}
 
 	echo "<div class='center'>"; 
@@ -110,17 +115,33 @@ if (isset($_GET["action"])){
 	echo "</table>";
 	echo "</div>";
 	
+	if (!isset($_GET['offset'])) {
+		// First run		
+		$offset = $rulecollection->replayRulesOnExistingDB(0,$max,array(),$_POST);
+		$manufacturer=$_POST["manufacturer"];
+	} else {
+		// Next run
+		$offset = $rulecollection->replayRulesOnExistingDB($_GET['offset'],$max,array(),$_GET);
+		$manufacturer=$_GET["manufacturer"];
 
-	$rulecollection->replayRulesOnExistingDB(array(),$_POST);
+		// global start for stat
+		$start = $_GET["start"];
+	}
 
-	changeProgressBarMessage($LANG["rulesengine"][91]." (".timestampToString($timer->Get_Time()).
-		")<br /><a href='".$_SERVER['PHP_SELF']."'>".$LANG["buttons"][13]."</a>");
+	if ($offset < 0) {
+		// Work ended
+		$end=explode(" ",microtime());
+		$duree=round($end[0]+$end[1]-$start);
+
+		changeProgressBarMessage($LANG["rulesengine"][91]." (".timestampToString($duree).
+			")<br /><a href='".$_SERVER['PHP_SELF']."'>".$LANG["buttons"][13]."</a>");		
+	} else {
+		// Need more work
+		glpi_header($_SERVER['PHP_SELF']."?start=$start&replay_rule=1&offset=$offset&manufacturer=$manufacturer");
+	}
 
 	commonFooter(true);
-
-
 	exit();
-	//glpi_header($_SERVER['PHP_SELF']);
 }
 
 commonHeader($LANG["rulesengine"][17],$_SERVER['PHP_SELF'],"admin",getCategoryNameToDisplay($rulecollection->rule_type),$rulecollection->rule_type);

@@ -441,7 +441,7 @@ if (isset($_POST["device_type"])){
 					if ($val==1) 
 						$ids[]=$key;
 				}
-				$softdictionnayrule->replayRulesOnExistingDB($ids);
+				$softdictionnayrule->replayRulesOnExistingDB(0,0,$ids);
 			break;
 			
 			case "add_transfer_list":

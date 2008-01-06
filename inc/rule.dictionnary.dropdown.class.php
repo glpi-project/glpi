@@ -287,7 +287,7 @@ class DictionnaryDropdownCollection extends RuleCachedCollection{
 	}
 
 
-	function replayRulesOnExistingDB(){
+	function replayRulesOnExistingDB($offset=0,$maxtime=0){
 		global $DB,$LANG;
 
 
@@ -300,7 +300,7 @@ class DictionnaryDropdownCollection extends RuleCachedCollection{
 						RULE_DICTIONNARY_MODEL_PERIPHERAL,
 						RULE_DICTIONNARY_MODEL_NETWORKING,
 		))){
-			return replayRulesOnExistingDBForModel();
+			return replayRulesOnExistingDBForModel($offset,$maxtime);
 		}
 
 
@@ -309,11 +309,15 @@ class DictionnaryDropdownCollection extends RuleCachedCollection{
 
 		// Get All items
 		$Sql="SELECT * FROM " . $this->item_table;
+		if ($offset) {
+			$Sql .= "LIMIT $offset,999999999";
+		} 
+		
 		$result = $DB->query($Sql);
 
-		$nb = $DB->numrows($result);
-		$i=0;
-		if ($result && $nb>0) {
+		$nb = $DB->numrows($result)+$offset;
+		$i  = $offset;
+		if ($result && $nb>$offset) {
 			// Step to refresh progressbar
 			$step=($nb>20 ? floor($nb/20) : 1);
 			$send = array ();
@@ -338,18 +342,26 @@ class DictionnaryDropdownCollection extends RuleCachedCollection{
 				}		
 
 				$i++;
-			} 
+				if ($maxtime) {
+					$crt=explode(" ",microtime());
+					if ($crt[0]+$crt[1] > $maxtime) {
+						break;
+					}
+				}
+			} // end while 
 		}
 		
 		if (isCommandLine()) {
 			echo "replayRulesOnExistingDB ended : " . date("r") . "\n";			
 		} else {
-			changeProgressBarPosition($nb,$nb,"$i / $nb");
+			changeProgressBarPosition($i,$nb,"$i / $nb");
 		}
+		
+		return ($i==$nb ? -1 : $i);
 	} // function
 
 
-	function replayRulesOnExistingDBForModel(){
+	function replayRulesOnExistingDBForModel($offset=0,$maxtime=0){
 		global $DB,$LANG;
 
 
@@ -378,14 +390,17 @@ class DictionnaryDropdownCollection extends RuleCachedCollection{
 			$this->item_table.".ID AS ID, ".$this->item_table.".name AS name, ".$this->item_table.".comments AS comments ".
 			"FROM ".$this->item_table.", $model_table LEFT JOIN glpi_dropdown_manufacturer ON ($model_table.FK_glpi_enterprise=glpi_dropdown_manufacturer.ID) ".
 			"WHERE $model_table.model=".$this->item_table.".ID ";
+		if ($offset) {
+			$Sql .= "LIMIT $offset,999999999";
+		} 
 		$result = $DB->query($Sql);
 
-		$nb = $DB->numrows($result);
+		$nb = $DB->numrows($result)+$offset;
+		$i  = $offset;
 		
-		if ($result && $nb>0) {
+		if ($result && $nb>$offset) {
 			// Step to refresh progressbar
 			$step=($nb>20 ? floor($nb/20) : 1);
-			$i=0;
 			$tocheck=array();
 			while ($data = $DB->fetch_array($result)){
 
@@ -412,6 +427,12 @@ class DictionnaryDropdownCollection extends RuleCachedCollection{
 				}		
 
 				$i++;
+				if ($maxtime) {
+					$crt=explode(" ",microtime());
+					if ($crt[0]+$crt[1] > $maxtime) {
+						break;
+					}
+				}
 			} 
 
 			foreach ($tocheck AS $ID => $tab) 	{
@@ -458,8 +479,9 @@ class DictionnaryDropdownCollection extends RuleCachedCollection{
 		if (isCommandLine()) {
 			echo "replayRulesOnExistingDB ended : " . date("r") . "\n";			
 		} else {
-			changeProgressBarPosition($nb,$nb,"$i / $nb");
+			changeProgressBarPosition($i,$nb,"$i / $nb");
 		}
+		return ($i==$nb ? -1 : $i);
 	}
 
 }	
