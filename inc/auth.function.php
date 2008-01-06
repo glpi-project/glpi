@@ -474,28 +474,36 @@ function checkFaqAccess() {
  *
  * Get the default language from current user in $_SESSION["glpilanguage"].
  * And load the dict that correspond.
+ * @param $forcelang Force to load a specific lang 
  *
  * @return nothing (make an include)
  *
 **/
-function loadLanguage() {
+function loadLanguage($forcelang='') {
 
 	global $LANG, $CFG_GLPI;
 	$file = "";
+
 	if (!isset($_SESSION["glpilanguage"])){
 		$_SESSION["glpilanguage"]=$CFG_GLPI["default_language"];
 	}
 
-	if (empty ($_SESSION["glpilanguage"])) {
-		if (isset ($CFG_GLPI["languages"][$CFG_GLPI["default_language"]][1])) {
-			$file = "/locales/" . $CFG_GLPI["languages"][$CFG_GLPI["default_language"]][1];
-		}
-	} else {
-		if (isset ($CFG_GLPI["languages"][$_SESSION["glpilanguage"]][1])) {
-			$file = "/locales/" . $CFG_GLPI["languages"][$_SESSION["glpilanguage"]][1];
-		}
+	$trytoload=$_SESSION["glpilanguage"];
+	// Force to load a specific lang
+	if (!empty($forcelang)){
+		$trytoload=$forcelang;
 	}
+	// If not set try default lang file
+	if (empty($trytoload)){
+		$trytoload=$CFG_GLPI["default_language"];
+	}
+
+	if (isset ($CFG_GLPI["languages"][$trytoload][1])) {
+		$file = "/locales/" . $CFG_GLPI["languages"][$trytoload][1];
+	}
+
 	if (empty ($file) || !is_file(GLPI_ROOT . $file)) {
+		$trytoload='en_GB';
 		$file = "/locales/en_GB.php";
 	}
 	$options = array (
@@ -527,7 +535,7 @@ function loadLanguage() {
 			}
 		}
 	}
-
+	return $trytoload;
 }
 
 /**

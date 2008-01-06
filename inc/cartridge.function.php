@@ -592,9 +592,9 @@ function getCartridgeStatus($date_use,$date_out){
  *
  **/
 function cron_cartridge(){
-	global $DB,$CFG_GLPI,$LANG;
+	global $DB,$CFG_GLPI;
 
-
+	loadLanguage($CFG_GLPI["default_language"]);
 
 	// Get cartridges type with alarm activated and last warning > X days depending on config
 	$query="SELECT glpi_cartridges_type.ID AS cartID, glpi_cartridges_type.FK_entities as entity, glpi_cartridges_type.ref as cartref, glpi_cartridges_type.name AS cartname, glpi_cartridges_type.alarm AS threshold, glpi_alerts.ID AS alertID, glpi_alerts.date 

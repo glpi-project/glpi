@@ -156,8 +156,8 @@ class Mailing
 						switch($data["FK_item"]){
 							// ADMIN SEND
 							case ADMIN_MAILING :
-								if (isValidEmail($CFG_GLPI["admin_email"])&&!in_array($CFG_GLPI["admin_email"],$emails)){
-									$emails[]=$CFG_GLPI["admin_email"];
+								if (isValidEmail($CFG_GLPI["admin_email"])&&!isset($emails[$CFG_GLPI["admin_email"]])){
+									$emails[$CFG_GLPI["admin_email"]]=$CFG_GLPI["default_language"];
 								}
 								break;
 							// ADMIN ENTITY SEND
@@ -168,8 +168,8 @@ class Mailing
 								if ($result2 = $DB->query($query2)) {
 									if ($DB->numrows($result2)==1){
 										$row = $DB->fetch_array($result2);
-										if (isValidEmail($row['EMAIL'])&&!in_array($row['EMAIL'],$emails)){
-											$emails[]=$row['EMAIL'];
+										if (isValidEmail($row['EMAIL'])&&!isset($emails[$row['EMAIL']])){
+											$emails[$row['EMAIL']]=$CFG_GLPI["admin_email"];
 										}
 									}
 								}
@@ -177,14 +177,14 @@ class Mailing
 							// ASSIGN SEND
 							case ASSIGN_MAILING :
 								if (isset($this->job->fields["assign"])&&$this->job->fields["assign"]>0){
-									$query2 = "SELECT DISTINCT glpi_users.email AS EMAIL 
+									$query2 = "SELECT DISTINCT glpi_users.email AS EMAIL, glpi_users.language AS LANG 
 										FROM glpi_users $join 
 										WHERE (glpi_users.ID = '".$this->job->fields["assign"]."')";
 									if ($result2 = $DB->query($query2)) {
 										if ($DB->numrows($result2)==1){
 											$row = $DB->fetch_array($result2);
-											if (isValidEmail($row['EMAIL'])&&!in_array($row['EMAIL'],$emails)){
-												$emails[]=$row['EMAIL'];
+											if (isValidEmail($row['EMAIL'])&&!isset($emails[$row['EMAIL']])){
+												$emails[$row['EMAIL']]=$row['LANG'];
 											}
 										}
 									}
@@ -200,8 +200,8 @@ class Mailing
 									if ($result2 = $DB->query($query2)) {
 										if ($DB->numrows($result2)==1){
 											$row = $DB->fetch_array($result2);
-											if (isValidEmail($row['EMAIL'])&&!in_array($row['EMAIL'],$emails)){
-												$emails[]=$row['EMAIL'];
+											if (isValidEmail($row['EMAIL'])&&!isset($emails[$row['EMAIL']])){
+												$emails[$row['EMAIL']]=$CFG_GLPI["admin_email"];
 											}
 										}
 									}
@@ -210,16 +210,16 @@ class Mailing
 							// ASSIGN GROUP SEND
 							case ASSIGN_GROUP_MAILING :
 								if (isset($this->job->fields["assign_group"])&&$this->job->fields["assign_group"]>0){
-									$query="SELECT glpi_users.email AS EMAIL 
+									$query="SELECT glpi_users.email AS EMAIL, glpi_users.language AS LANG 
 									FROM glpi_users_groups 
 									INNER JOIN glpi_users ON (glpi_users_groups.FK_users = glpi_users.ID) $join 
 									WHERE glpi_users_groups.FK_groups='".$this->job->fields["assign_group"]."'";
 				
 									if ($result2= $DB->query($query)){
 										if ($DB->numrows($result2)){
-											while ($data=$DB->fetch_assoc($result2)){
-												if (isValidEmail($data["EMAIL"])&&!in_array($data["EMAIL"],$emails)){
-													$emails[]=$data["EMAIL"];
+											while ($row=$DB->fetch_assoc($result2)){
+												if (isValidEmail($row["EMAIL"])&&!isset($emails[$row['EMAIL']])){
+													$emails[$row['EMAIL']]=$row['LANG'];
 												}
 											}
 										}
@@ -229,15 +229,15 @@ class Mailing
 							// SUPERVISOR ASSIGN GROUP SEND
 							case SUPERVISOR_ASSIGN_GROUP_MAILING :
 								if (isset($this->job->fields["assign_group"])&&$this->job->fields["assign_group"]>0){
-									$query2 = "SELECT DISTINCT glpi_users.email AS EMAIL 
+									$query2 = "SELECT DISTINCT glpi_users.email AS EMAIL, glpi_users.language AS LANG 
 									FROM glpi_groups 
 									LEFT JOIN glpi_users ON (glpi_users.ID = glpi_groups.FK_users) $join 
 									WHERE (glpi_groups.ID = '".$this->job->fields["assign_group"]."')";
 									if ($result2 = $DB->query($query2)) {
 										if ($DB->numrows($result2)==1){
 											$row = $DB->fetch_array($result2);
-											if (isValidEmail($row['EMAIL'])&&!in_array($row['EMAIL'],$emails)){
-												$emails[]=$row['EMAIL'];
+											if (isValidEmail($row['EMAIL'])&&!isset($emails[$row['EMAIL']])){
+												$emails[$row['EMAIL']]=$row['LANG'];
 											}
 										}
 									}
@@ -248,14 +248,14 @@ class Mailing
 							// RECIPIENT SEND
 							case RECIPIENT_MAILING :
 								if (isset($this->job->fields["recipient"])&&$this->job->fields["recipient"]>0){
-									$query2 = "SELECT DISTINCT glpi_users.email AS EMAIL 
+									$query2 = "SELECT DISTINCT glpi_users.email AS EMAIL, glpi_users.language AS LANG  
 										FROM glpi_users $join 
 										WHERE (glpi_users.ID = '".$this->job->fields["recipient"]."')";
 									if ($result2 = $DB->query($query2)) {
 										if ($DB->numrows($result2)==1){
 											$row = $DB->fetch_array($result2);
-											if (isValidEmail($row['EMAIL'])&&!in_array($row['EMAIL'],$emails)){
-												$emails[]=$row['EMAIL'];
+											if (isValidEmail($row['EMAIL'])&&!isset($emails[$row['EMAIL']])){
+												$emails[$row['EMAIL']]=$row['LANG'];
 											}
 										}
 									}
@@ -269,11 +269,12 @@ class Mailing
 									// Uemail = mail of the author ? -> use right of the author to see private followups
 									// Else not see private
 									$authorsend=false;
+									$authorlang=$CFG_GLPI["default_language"];
 									if (!$sendprivate){
 										$authorsend=true;
 									} else {
 										// Is the user have the same mail that uemail ?
-										$query2 = "SELECT DISTINCT glpi_users.email AS EMAIL 
+										$query2 = "SELECT DISTINCT glpi_users.email AS EMAIL, glpi_users.language AS LANG   
 										FROM glpi_users $join 
 										WHERE (glpi_users.ID = '".$this->job->fields["author"]."')";
 										if ($result2 = $DB->query($query2)) {
@@ -281,28 +282,29 @@ class Mailing
 												$row = $DB->fetch_array($result2);
 												if ($row['EMAIL']==$this->job->fields["uemail"]){
 													$authorsend=true;
+													$authorlang=$row['LANG'];
 												}
 											}
 										}
 
 									}
 									if ($authorsend){
-										$emails[]=$this->job->fields["uemail"];
+										$emails[$this->job->fields["uemail"]]=$authorlang;
 									}
 								}
 								break;
 							// SUPERVISOR ASSIGN GROUP SEND
 							case SUPERVISOR_AUTHOR_GROUP_MAILING :
 								if (isset($this->job->fields["FK_group"])&&$this->job->fields["FK_group"]>0){
-									$query2 = "SELECT DISTINCT glpi_users.email AS EMAIL 
+									$query2 = "SELECT DISTINCT glpi_users.email AS EMAIL, glpi_users.language AS LANG 
 										FROM glpi_groups 
 										LEFT JOIN glpi_users ON (glpi_users.ID = glpi_groups.FK_users) $join 
 										WHERE (glpi_groups.ID = '".$this->job->fields["FK_group"]."')";
 									if ($result2 = $DB->query($query2)) {
 										if ($DB->numrows($result2)==1){
 											$row = $DB->fetch_array($result2);
-											if (isValidEmail($row['EMAIL'])&&!in_array($row['EMAIL'],$emails)){
-												$emails[]=$row['EMAIL'];
+											if (isValidEmail($row['EMAIL'])&&!isset($emails[$row['EMAIL']])){
+												$emails[$row['EMAIL']]=$row['LANG'];
 											}
 										}
 									}
@@ -312,14 +314,14 @@ class Mailing
 							// OLD ASSIGN SEND
 							case OLD_ASSIGN_MAILING :
 								if (isset($this->job->fields["_old_assign"])&&$this->job->fields["_old_assign"]>0){
-									$query2 = "SELECT DISTINCT glpi_users.email AS EMAIL 
+									$query2 = "SELECT DISTINCT glpi_users.email AS EMAIL, glpi_users.language AS LANG  
 										FROM glpi_users $join 
 										WHERE (glpi_users.ID = '".$this->job->fields["_old_assign"]."')";
 									if ($result2 = $DB->query($query2)) {
 										if ($DB->numrows($result2)==1){
 											$row = $DB->fetch_array($result2);
-											if (isValidEmail($row['EMAIL'])&&!in_array($row['EMAIL'],$emails)){
-												$emails[]=$row['EMAIL'];
+											if (isValidEmail($row['EMAIL'])&&!isset($emails[$row['EMAIL']])){
+												$emails[$row['EMAIL']]=$row['LANG'];
 											}
 										}
 									}
@@ -331,14 +333,14 @@ class Mailing
 									$ci= new CommonItem();
 									$ci->getFromDB($this->job->fields["device_type"],$this->job->fields["computer"]);
 									if ($tmp=$ci->getField('tech_num')){
-										$query2 = "SELECT DISTINCT glpi_users.email AS EMAIL 
+										$query2 = "SELECT DISTINCT glpi_users.email AS EMAIL, glpi_users.language AS LANG 
 											FROM glpi_users $join 
 											WHERE (glpi_users.ID = '".$tmp."')";
 										if ($result2 = $DB->query($query2)) {
 											if ($DB->numrows($result2)==1){
 												$row = $DB->fetch_array($result2);
-												if (isValidEmail($row['EMAIL'])&&!in_array($row['EMAIL'],$emails)){
-													$emails[]=$row['EMAIL'];
+												if (isValidEmail($row['EMAIL'])&&!isset($emails[$row['EMAIL']])){
+													$emails[$row['EMAIL']]=$row['LANG'];
 												}
 											}
 										}
@@ -351,14 +353,14 @@ class Mailing
 									$ci= new CommonItem();
 									$ci->getFromDB($this->job->fields["device_type"],$this->job->fields["computer"]);
 									if ($tmp=$ci->getField('FK_users')){
-										$query2 = "SELECT DISTINCT glpi_users.email AS EMAIL 
+										$query2 = "SELECT DISTINCT glpi_users.email AS EMAIL, glpi_users.language AS LANG 
 											FROM glpi_users $join 
 											WHERE (glpi_users.ID = '".$tmp."')";
 										if ($result2 = $DB->query($query2)) {
 											if ($DB->numrows($result2)==1){
 												$row = $DB->fetch_array($result2);
-												if (isValidEmail($row['EMAIL'])&&!in_array($row['EMAIL'],$emails)){
-													$emails[]=$row['EMAIL'];
+												if (isValidEmail($row['EMAIL'])&&!isset($emails[$row['EMAIL']])){
+													$emails[$row['EMAIL']]=$row['LANG'];
 												}
 											}
 										}
@@ -369,7 +371,7 @@ class Mailing
 						}
 						break;
 					case PROFILE_MAILING_TYPE :
-						$query="SELECT glpi_users.email AS EMAIL 
+						$query="SELECT glpi_users.email AS EMAIL, glpi_users.language AS LANG 
 						FROM glpi_users_profiles 
 						INNER JOIN glpi_users ON (glpi_users_profiles.FK_users = glpi_users.ID) $joinprofile 
 						WHERE glpi_users_profiles.FK_profiles='".$data["FK_item"]."' ".
@@ -377,24 +379,24 @@ class Mailing
 
 						if ($result2= $DB->query($query)){
 							if ($DB->numrows($result2))
-								while ($data=$DB->fetch_assoc($result2)){
-									if (isValidEmail($data["EMAIL"])&&!in_array($data["EMAIL"],$emails)){
-										$emails[]=$data["EMAIL"];
+								while ($row=$DB->fetch_assoc($result2)){
+									if (isValidEmail($row['EMAIL'])&&!isset($emails[$row['EMAIL']])){
+										$emails[$row['EMAIL']]=$row['LANG'];
 									}
 								}
 						}
 						break;
 					case GROUP_MAILING_TYPE :
-						$query="SELECT glpi_users.email AS EMAIL 
+						$query="SELECT glpi_users.email AS EMAIL, glpi_users.language AS LANG 
 							FROM glpi_users_groups 
 							INNER JOIN glpi_users ON (glpi_users_groups.FK_users = glpi_users.ID) $join 
 							WHERE glpi_users_groups.FK_groups='".$data["FK_item"]."'";
 
 						if ($result2= $DB->query($query)){
 							if ($DB->numrows($result2))
-								while ($data=$DB->fetch_assoc($result2)){
-									if (isValidEmail($data["EMAIL"])&&!in_array($data["EMAIL"],$emails)){
-										$emails[]=$data["EMAIL"];
+								while ($row=$DB->fetch_assoc($result2)){
+									if (isValidEmail($row['EMAIL'])&&!isset($emails[$row['EMAIL']])){
+										$emails[$row['EMAIL']]=$row['LANG'];
 									}
 								}
 						}
@@ -572,12 +574,13 @@ class Mailing
 					unset($users[0]);
 				}
 
-				// get subject
-				$subject=$this->get_mail_subject();
+				$subjects=array();
 				// get sender
 				$sender= $this->get_mail_sender(); 
 				// get reply-to address : user->email ou job_email if not set OK
 				$replyto=$this->get_reply_to_address ($sender);
+
+				$messageerror=$LANG["mailing"][47];
 				// Send all mails
 				foreach ($users as $private=>$someusers) {
 					if (count($someusers)){
@@ -586,25 +589,38 @@ class Mailing
 						$mmail->From=$sender;
 						$mmail->AddReplyTo("$replyto", ''); 
 						$mmail->FromName=$sender;
-						$mmail->Subject=$subject	;  
-						$mmail->Body=$this->get_mail_body("html",$private);
 						$mmail->isHTML(true);
-						$mmail->AltBody=$this->get_mail_body("text",$private);
+						
+						$bodys=array();
+						$altbodys=array();
+						foreach ($someusers as $email => $lang){
+							if (!isset($subjects[$lang])||!isset($bodys[$lang])||!isset($altbodys[$lang])){
+								loadLanguage($lang);
+								if (!isset($subjects[$lang])){
+									$subjects[$lang]=$this->get_mail_subject();
+								}
+								$bodys[$lang]=$this->get_mail_body("html",$private);
+								$altbodys[$lang]=$this->get_mail_body("text",$private);
+							}
+							$mmail->Subject=$subjects[$lang];
+							$mmail->Body=$bodys[$lang];
+							$mmail->AltBody=$altbodys[$lang];
 
-						foreach ($someusers as $email){
 							$mmail->AddAddress($email, "");
 
 							if(!$mmail->Send()){
 								$senderror=true;
-								addMessageAfterRedirect($LANG["mailing"][47]."<br>".$mmail->ErrorInfo);
+								addMessageAfterRedirect($messageerror."<br>".$mmail->ErrorInfo);
 							}else{
-								logInFile("mail","Tracking successfull mail sent to : ".$email." subject : ".$subject."\n");
+								logInFile("mail","Tracking successfull mail sent to : ".$email." subject : ".$subjects[$lang]."\n");
 							} 
 
 							$mmail->ClearAddresses(); 
 						}
 					}
 				}
+				// Reinit language
+				loadLanguage();
 				if ($senderror){
 					return false;
 				}
@@ -662,8 +678,8 @@ class MailingResa{
 						switch ($data["FK_item"]){
 							// ADMIN SEND
 							case ADMIN_MAILING :
-								if (isValidEmail($CFG_GLPI["admin_email"])&&!in_array($CFG_GLPI["admin_email"],$emails))
-									$emails[]=$CFG_GLPI["admin_email"];
+								if (isValidEmail($CFG_GLPI["admin_email"])&&!isset($emails[$CFG_GLPI["admin_email"]]))
+									$emails[$CFG_GLPI["admin_email"]]=$CFG_GLPI["default_language"];
 								break;
 							// ADMIN ENTITY SEND
 							case ADMIN_ENTITY_MAILING :
@@ -682,8 +698,8 @@ class MailingResa{
 									if ($result2 = $DB->query($query2)) {
 										if ($DB->numrows($result2)==1){
 											$row = $DB->fetch_array($result2);
-											if (isValidEmail($row['EMAIL'])&&!in_array($row['EMAIL'],$emails)){
-												$emails[]=$row['EMAIL'];
+											if (isValidEmail($CFG_GLPI["admin_email"])&&!isset($emails[$CFG_GLPI["admin_email"]])){
+												$emails[$row['EMAIL']]=$CFG_GLPI["default_language"];
 											}
 										}
 									}
@@ -693,8 +709,8 @@ class MailingResa{
 							case AUTHOR_MAILING :
 								$user = new User;
 								if ($user->getFromDB($this->resa->fields["id_user"]))
-									if (isValidEmail($user->fields["email"])&&!in_array($user->fields["email"],$emails)){
-										$emails[]=$user->fields["email"];
+									if (isValidEmail($user->fields["email"])&&!isset($emails[$user->fields["email"]])){
+										$emails[$user->fields["email"]]=$user->fields['language'];
 									}
 								break;
 							// TECH SEND
@@ -705,12 +721,13 @@ class MailingResa{
 									$ci->getFromDB($ri->fields["device_type"],$ri->fields["id_device"]);
 
 									if ($tmp=$ci->getField('tech_num')){
-										$query2 = "SELECT glpi_users.email FROM glpi_users WHERE (glpi_users.ID = '".$tmp."')";
+										$query2 = "SELECT glpi_users.email as EMAIL, glpi_users.language as LANG 
+										FROM glpi_users WHERE (glpi_users.ID = '".$tmp."')";
 										if ($result2 = $DB->query($query2)) {
 											if ($DB->numrows($result2)==1){
 												$row = $DB->fetch_row($result2);
-												if (isValidEmail($row[0])&&!in_array($row[0],$emails)){
-													$emails[]=$row[0];
+												if (isValidEmail($row['EMAIL'])&&!isset($emails[$row['EMAIL']])){
+													$emails[$row['EMAIL']]=$row['LANG'];
 												}
 											}
 										}
@@ -725,12 +742,13 @@ class MailingResa{
 									$ci->getFromDB($ri->fields["device_type"],$ri->fields["id_device"]);
 
 									if ($tmp=$ci->getField('FK_users')){
-										$query2 = "SELECT glpi_users.email FROM glpi_users WHERE (glpi_users.ID = '".$tmp."')";
+										$query2 = "SELECT glpi_users.email AS EMAIL, glpi_users.language as LANG 
+										FROM glpi_users WHERE (glpi_users.ID = '".$tmp."')";
 										if ($result2 = $DB->query($query2)) {
 											if ($DB->numrows($result2)==1){
 												$row = $DB->fetch_row($result2);
-												if (isValidEmail($row[0])&&!in_array($row[0],$emails)){
-													$emails[]=$row[0];
+												if (isValidEmail($row['EMAIL'])&&!isset($emails[$row['EMAIL']])){
+													$emails[$row['EMAIL']]=$row['LANG'];
 												}
 											}
 										}
@@ -747,23 +765,30 @@ class MailingResa{
 						$ci = new CommonItem();
 						$ci->getFromDB($ri->fields['device_type'],$ri->fields['id_device']);
 						$FK_entities=$ci->getField('FK_entities');
-						$query="SELECT glpi_users.email AS EMAIL FROM glpi_users_profiles INNER JOIN glpi_users ON (glpi_users_profiles.FK_users = glpi_users.ID) WHERE glpi_users_profiles.FK_profiles='".$data["FK_item"]."' AND glpi_users_profiles.FK_entities='".$FK_entities."'";
+						$query="SELECT glpi_users.email AS EMAIL, glpi_users.language as LANG 
+							FROM glpi_users_profiles 
+							INNER JOIN glpi_users ON (glpi_users_profiles.FK_users = glpi_users.ID) 
+							WHERE glpi_users_profiles.FK_profiles='".$data["FK_item"]."' 
+							AND glpi_users_profiles.FK_entities='".$FK_entities."'";
 						if ($result2= $DB->query($query)){
 							if ($DB->numrows($result2))
-								while ($data=$DB->fetch_assoc($result2)){
-									if (isValidEmail($data["EMAIL"])&&!in_array($data["EMAIL"],$emails)){
-										$emails[]=$data["EMAIL"];
+								while ($row=$DB->fetch_assoc($result2)){
+									if (isValidEmail($row['EMAIL'])&&!isset($emails[$row['EMAIL']])){
+										$emails[$row['EMAIL']]=$row['LANG'];
 									}
-								}
+							}
 						}
 						break;
 					case GROUP_MAILING_TYPE :
-						$query="SELECT glpi_users.email AS EMAIL FROM glpi_users_groups INNER JOIN glpi_users ON (glpi_users_groups.FK_users = glpi_users.ID) WHERE glpi_users_groups.FK_groups='".$data["FK_item"]."'";
+						$query="SELECT glpi_users.email AS EMAIL, glpi_users.language as LANG  
+						FROM glpi_users_groups 
+						INNER JOIN glpi_users ON (glpi_users_groups.FK_users = glpi_users.ID) 
+						WHERE glpi_users_groups.FK_groups='".$data["FK_item"]."'";
 						if ($result2= $DB->query($query)){
 							if ($DB->numrows($result2))
-								while ($data=$DB->fetch_assoc($result2)){
-									if (isValidEmail($data["EMAIL"])&&!in_array($data["EMAIL"],$emails)){
-										$emails[]=$data["EMAIL"];
+								while ($row=$DB->fetch_assoc($result2)){
+									if (isValidEmail($row['EMAIL'])&&!isset($emails[$row['EMAIL']])){
+										$emails[$row['EMAIL']]=$row['LANG'];
 									}
 								}
 						}
@@ -793,7 +818,7 @@ class MailingResa{
 			}
 		}
 		if ($entity>=0){
-			$query = "SELECT admin_email AS EMAIL FROM glpi_entities_data WHERE (FK_entities = '".$this->job->fields["FK_entities"]."')";
+			$query = "SELECT admin_email AS EMAIL FROM glpi_entities_data WHERE (FK_entities = '$entity')";
 			if ($result=$DB->query($query)){
 				if ($DB->numrows($result)){
 					$data=$DB->fetch_assoc($result);
@@ -884,8 +909,6 @@ class MailingResa{
 			// get users to send mail
 			$users=$this->get_users_to_send_mail();
 
-			// get subject
-			$subject=$this->get_mail_subject();
 			// get sender
 			$sender= $this->get_mail_sender(); 
 			// get reply-to address : user->email ou job_email if not set OK
@@ -896,28 +919,42 @@ class MailingResa{
 			$mmail->From=$sender;
 			$mmail->AddReplyTo("$replyto", ''); 
 			$mmail->FromName=$sender;
-			$mmail->Subject=$subject	;  
-			$mmail->Body=$this->get_mail_body("html");
-			$mmail->isHTML(true);
-			$mmail->AltBody=$this->get_mail_body("text");
-
-			// Send all mails
-			for ($i=0;$i<count($users);$i++)
-			{
-
-				$mmail->AddAddress($users[$i], "");
-
-				if(!$mmail->Send()){
-					echo "<div class='center'>There was a problem sending this mail !</div>";
-					return false;
-				}else{
-					logInFile("mail","Reservation successfull mail sent to : ".$users[$i]." subject : ".$subject."\n");
-				}
-
-
-				$mmail->ClearAddresses(); 
-			}
 			
+			$mmail->isHTML(true);
+
+			// get subject
+			$bodys=array();
+			$altbodys=array();
+			$subjects=array();
+			// Send all mails
+			if (count($users)){
+				foreach ($users as $email => $lang){
+					if (!isset($subjects[$lang])||!isset($bodys[$lang])||!isset($altbodys[$lang])){
+						loadLanguage($lang);
+						$subjects[$lang]=$this->get_mail_subject();
+						$bodys[$lang]=$this->get_mail_body("html");
+						$altbodys[$lang]=$this->get_mail_body("text");
+					}
+
+					$mmail->Subject=$subjects[$lang];
+
+					$mmail->Body=$bodys[$lang];
+					$mmail->AltBody=$altbodys[$lang];
+
+					$mmail->AddAddress($email, "");
+	
+					if(!$mmail->Send()){
+						echo "<div class='center'>There was a problem sending this mail !</div>";
+						return false;
+					}else{
+						logInFile("mail","Reservation successfull mail sent to : ".$email." subject : ".$subjects[$lang]."\n");
+					}
+	
+					$mmail->ClearAddresses(); 
+				}
+			} else {
+				return false;
+			}
 		}
 		return true;
 	}
@@ -972,17 +1009,19 @@ class MailingAlert
 						switch($data["FK_item"]){
 							// ADMIN SEND
 							case ADMIN_MAILING :
-								if (isValidEmail($CFG_GLPI["admin_email"])&&!in_array($CFG_GLPI["admin_email"],$emails))
-									$emails[]=$CFG_GLPI["admin_email"];
+								if (isValidEmail($CFG_GLPI["admin_email"])&&!isset($emails[$CFG_GLPI["admin_email"]]))
+									$emails[$CFG_GLPI["admin_email"]]=$CFG_GLPI["default_language"];
 								break;
 							// ADMIN ENTITY SEND
 							case ADMIN_ENTITY_MAILING :
-								$query2 = "SELECT admin_email AS EMAIL FROM glpi_entities_data WHERE (FK_entities = '".$this->entity."')";
+								$query2 = "SELECT admin_email AS EMAIL 
+									FROM glpi_entities_data 
+									WHERE (FK_entities = '".$this->entity."')";
 								if ($result2 = $DB->query($query2)) {
 									if ($DB->numrows($result2)==1){
 										$row = $DB->fetch_array($result2);
-										if (isValidEmail($row['EMAIL'])&&!in_array($row['EMAIL'],$emails)){
-											$emails[]=$row['EMAIL'];
+										if (isValidEmail($row['EMAIL'])&&!isset($emails[$row['EMAIL']])){
+											$emails[$row['EMAIL']]=$CFG_GLPI["default_language"];
 										}
 									}
 								}
@@ -991,25 +1030,32 @@ class MailingAlert
 						}
 						break;
 					case PROFILE_MAILING_TYPE :
-						$query="SELECT glpi_users.email AS EMAIL FROM glpi_users_profiles INNER JOIN glpi_users ON (glpi_users_profiles.FK_users = glpi_users.ID) WHERE glpi_users_profiles.FK_profiles='".$data["FK_item"]."'
-						AND glpi_users_profiles.FK_entities='".$this->entity."'";
+						$query="SELECT glpi_users.email AS EMAIL, glpi_users.language AS LANG 
+							FROM glpi_users_profiles 
+							INNER JOIN glpi_users ON (glpi_users_profiles.FK_users = glpi_users.ID) 
+							WHERE glpi_users_profiles.FK_profiles='".$data["FK_item"]."'
+								AND glpi_users_profiles.FK_entities='".$this->entity."'";
 						if ($result2= $DB->query($query)){
-							if ($DB->numrows($result2))
-								while ($data=$DB->fetch_assoc($result2)){
-									if (isValidEmail($data["EMAIL"])&&!in_array($data["EMAIL"],$emails)){
-										$emails[]=$data["EMAIL"];
+							if ($DB->numrows($result2)){
+								while ($row=$DB->fetch_assoc($result2)){
+									if (isValidEmail($row['EMAIL'])&&!isset($emails[$row['EMAIL']])){
+										$emails[$row['EMAIL']]=$row['LANG'];
 									}
 								}
+							}
 						}
 						break;
 					case GROUP_MAILING_TYPE :
-						$query="SELECT glpi_users.email AS EMAIL FROM glpi_users_groups INNER JOIN glpi_users ON (glpi_users_groups.FK_users = glpi_users.ID) WHERE glpi_users_groups.FK_groups='".$data["FK_item"]."'";
+						$query="SELECT glpi_users.email AS EMAIL, glpi_users.language AS LANG 
+							FROM glpi_users_groups 
+							INNER JOIN glpi_users ON (glpi_users_groups.FK_users = glpi_users.ID) 
+							WHERE glpi_users_groups.FK_groups='".$data["FK_item"]."'";
 
 						if ($result2= $DB->query($query)){
 							if ($DB->numrows($result2))
-								while ($data=$DB->fetch_assoc($result2)){
-									if (isValidEmail($data["EMAIL"])&&!in_array($data["EMAIL"],$emails)){
-										$emails[]=$data["EMAIL"];
+								while ($row=$DB->fetch_assoc($result2)){
+									if (isValidEmail($row['EMAIL'])&&!isset($emails[$row['EMAIL']])){
+										$emails[$row['EMAIL']]=$row['LANG'];
 									}
 								}
 						}
@@ -1124,25 +1170,42 @@ class MailingAlert
 			$mmail->AddReplyTo("$replyto", ''); 
 			$mmail->FromName=$sender;
 
-			$mmail->Subject=$subject	;  
-			$mmail->Body=$this->get_mail_body("html");
 			$mmail->isHTML(true);
-			$mmail->AltBody=$this->get_mail_body("text");
 
 			// Send all mails
-			for ($i=0;$i<count($users);$i++)
-			{
-				$mmail->AddAddress($users[$i], "");
 
-				if(!$mmail->Send()){
-					addMessageAfterRedirect("There was a problem sending this mail !");
-					return false;
-				}else{
-					logInFile("mail","Alert successfull mail sent to : ".$users[$i]." subject : ".$subject."\n");
+			// get subject
+			$bodys=array();
+			$altbodys=array();
+			$subjects=array();
+			// Send all mails
+			if (count($users)){
+				foreach ($users as $email => $lang){
+					if (!isset($subjects[$lang])||!isset($bodys[$lang])||!isset($altbodys[$lang])){
+						loadLanguage($lang);
+						$subjects[$lang]=$this->get_mail_subject();
+						$bodys[$lang]=$this->get_mail_body("html");
+						$altbodys[$lang]=$this->get_mail_body("text");
+					}
+
+					$mmail->Subject=$subjects[$lang];
+
+					$mmail->Body=$bodys[$lang];
+					$mmail->AltBody=$altbodys[$lang];
+
+					$mmail->AddAddress($email, "");
+
+					if(!$mmail->Send()){
+						addMessageAfterRedirect("There was a problem sending this mail !");
+						return false;
+					}else{
+						logInFile("mail","Alert successfull mail sent to : ".$email." subject : ".$subjects[$lang]."\n");
+					}
+					$mmail->ClearAddresses(); 
 				}
-				$mmail->ClearAddresses(); 
+			} else {
+				return false;
 			}
-			
 		}
 		return true;
 	}
