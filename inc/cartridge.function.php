@@ -592,7 +592,7 @@ function getCartridgeStatus($date_use,$date_out){
  *
  **/
 function cron_cartridge(){
-	global $DB,$CFG_GLPI;
+	global $DB,$CFG_GLPI,$LANG;
 
 	loadLanguage($CFG_GLPI["default_language"]);
 
@@ -655,6 +655,7 @@ function cron_cartridge(){
 			return 1;
 		}
 	}
+
 	return 0;
 }
 
