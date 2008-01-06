@@ -483,7 +483,7 @@ function showDisplayInfocomLink($device_type,$device_id,$update=0){
 
 
 function cron_infocom(){
-	global $DB,$CFG_GLPI;
+	global $DB,$CFG_GLPI,$LANG;
 
 	loadLanguage($CFG_GLPI["default_language"]);
 
