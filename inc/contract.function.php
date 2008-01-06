@@ -748,9 +748,23 @@ function cron_contract(){
 
 
 	$message=array();
+	$items_notice=array();
+	$items_end=array();
 
 	// Check notice
-	$query="SELECT glpi_contracts.* FROM glpi_contracts LEFT JOIN glpi_alerts ON (glpi_contracts.ID = glpi_alerts.FK_device AND glpi_alerts.device_type='".CONTRACT_TYPE."' AND glpi_alerts.type='".ALERT_NOTICE."') WHERE (glpi_contracts.alert & ".pow(2,ALERT_NOTICE).") >0 AND glpi_contracts.deleted='0' AND glpi_contracts.begin_date IS NOT NULL AND glpi_contracts.duration <> '0' AND glpi_contracts.notice<>'0' AND DATEDIFF( ADDDATE(glpi_contracts.begin_date, INTERVAL glpi_contracts.duration MONTH),CURDATE() )>0 AND DATEDIFF( ADDDATE(glpi_contracts.begin_date, INTERVAL (glpi_contracts.duration-glpi_contracts.notice) MONTH),CURDATE() )<0 AND glpi_alerts.date IS NULL;";
+	$query="SELECT glpi_contracts.* 
+		FROM glpi_contracts 
+		LEFT JOIN glpi_alerts ON (glpi_contracts.ID = glpi_alerts.FK_device 
+					AND glpi_alerts.device_type='".CONTRACT_TYPE."' 
+					AND glpi_alerts.type='".ALERT_NOTICE."') 
+		WHERE (glpi_contracts.alert & ".pow(2,ALERT_NOTICE).") >0 
+			AND glpi_contracts.deleted='0' 
+			AND glpi_contracts.begin_date IS NOT NULL 
+			AND glpi_contracts.duration <> '0' 
+			AND glpi_contracts.notice<>'0' 
+			AND DATEDIFF( ADDDATE(glpi_contracts.begin_date, INTERVAL glpi_contracts.duration MONTH),CURDATE() )>0 
+			AND DATEDIFF( ADDDATE(glpi_contracts.begin_date, INTERVAL (glpi_contracts.duration-glpi_contracts.notice) MONTH),CURDATE() )<0 
+			AND glpi_alerts.date IS NULL;";
 	
 	$result=$DB->query($query);
 	if ($DB->numrows($result)>0){
@@ -758,17 +772,12 @@ function cron_contract(){
 			if (!isset($message[$data["FK_entities"]])){
 				$message[$data["FK_entities"]]="";
 			}
+			if (!isset($items_notice[$data["FK_entities"]])){
+				$items_notice[$data["FK_entities"]]=array();
+			}
 			// define message alert
 			$message[$data["FK_entities"]].=$LANG["mailing"][37]." ".$data["name"]."<br>\n";
-
-			// Mark alert as done
-			$alert=new Alert();
-			//// add alert
-			$input["type"]=ALERT_NOTICE;
-			$input["device_type"]=CONTRACT_TYPE;
-			$input["FK_device"]=$data["ID"];
-
-			$alert->add($input);
+			$items_notice[$data["FK_entities"]][]=$data["ID"];
 		}
 
 
@@ -783,17 +792,13 @@ function cron_contract(){
 			if (!isset($message[$data["FK_entities"]])){
 				$message[$data["FK_entities"]]="";
 			}
+			if (!isset($items_end[$data["FK_entities"]])){
+				$items_end[$data["FK_entities"]]=array();
+			}
+
 			// define message alert
 			$message[$data["FK_entities"]].=$LANG["mailing"][38]." ".$data["name"]."<br>\n";
-
-			// Mark alert as done
-			$alert=new Alert();
-			//// add alert
-			$input["type"]=ALERT_END;
-			$input["device_type"]=CONTRACT_TYPE;
-			$input["FK_device"]=$data["ID"];
-
-			$alert->add($input);
+			$items_end[$data["FK_entities"]][]=$data["ID"];
 		}
 
 
@@ -802,8 +807,32 @@ function cron_contract(){
 	if (count($message)>0){
 		foreach ($message as $entity => $msg){
 			$mail=new MailingAlert("alertcontract",$msg,$entity);
-			$mail->send();
-			logInFile("cron","Entity $entity :  $msg\n");
+			if ($mail->send()){
+				logInFile("cron","Entity $entity :  $msg\n");
+		
+				// Mark alert as done
+				$alert=new Alert();
+				$input["device_type"]=CONTRACT_TYPE;
+
+				$input["type"]=ALERT_NOTICE;
+				if (isset($items_notice[$entity])){
+					foreach ($items_notice[$entity] as $ID){
+						$input["FK_device"]=$ID;
+						$alert->add($input);
+						unset($alert->fields['ID']);
+					}
+				}
+				$input["type"]=ALERT_END;
+				if (isset($items_end[$entity])){
+					foreach ($items_end[$entity] as $ID){
+						$input["FK_device"]=$ID;
+						$alert->add($input);
+						unset($alert->fields['ID']);
+					}
+				}
+			} else {
+				logInFile("cron","Entity $entity :  Send contract alert failed\n");
+			}
 		}
 		return 1;
 	}

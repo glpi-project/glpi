@@ -487,9 +487,19 @@ function cron_infocom(){
 
 
 	$message=array();
+	$items=array();
 
 	// Check notice
-	$query="SELECT glpi_infocoms.* FROM glpi_infocoms LEFT JOIN glpi_alerts ON (glpi_infocoms.ID = glpi_alerts.FK_device AND glpi_alerts.device_type='".INFOCOM_TYPE."' AND glpi_alerts.type='".ALERT_END."') WHERE (glpi_infocoms.alert & ".pow(2,ALERT_END).") >0 AND glpi_infocoms.warranty_duration<>0 AND glpi_infocoms.buy_date<>'0000-00-00' AND DATEDIFF( ADDDATE(glpi_infocoms.buy_date, INTERVAL (glpi_infocoms.warranty_duration) MONTH),CURDATE() )<0 AND glpi_alerts.date IS NULL;";
+	$query="SELECT glpi_infocoms.* 
+		FROM glpi_infocoms 
+		LEFT JOIN glpi_alerts ON (glpi_infocoms.ID = glpi_alerts.FK_device 
+					AND glpi_alerts.device_type='".INFOCOM_TYPE."' 
+					AND glpi_alerts.type='".ALERT_END."') 
+		WHERE (glpi_infocoms.alert & ".pow(2,ALERT_END).") >0 
+			AND glpi_infocoms.warranty_duration<>0 
+			AND glpi_infocoms.buy_date<>'0000-00-00' 
+			AND DATEDIFF( ADDDATE(glpi_infocoms.buy_date, INTERVAL (glpi_infocoms.warranty_duration) MONTH),CURDATE() )<0 
+			AND glpi_alerts.date IS NULL;";
 
 	$result=$DB->query($query);
 	if ($DB->numrows($result)>0){
@@ -509,27 +519,40 @@ function cron_infocom(){
 				if (!isset($message[$entity])){
 					$message[$entity]="";
 				}
+				if (!isset($items[$entity])){
+					$items[$entity]=array();
+				}
+
 				// define message alert / Not for template items
 				if (!$ci->getField('is_template')){
 					$message[$entity].=$LANG["mailing"][40]." ".$ci->getType()." - ".$ci->getName()."<br>\n";
+					$items[$entity][]=$data["ID"];
 				}
 			} 
 
-			// Mark alert as done
-			$alert=new Alert();
-			//// add alert
-			$input["type"]=ALERT_END;
-			$input["device_type"]=INFOCOM_TYPE;
-			$input["FK_device"]=$data["ID"];
-
-			$alert->add($input);
-
 		}
 		if (count($message)>0){
+			// Mark alert as done
+			$alert=new Alert();
+
 			foreach ($message as $entity => $msg){
 				$mail=new MailingAlert("alertinfocom",$msg,$entity);
-				$mail->send();
-				logInFile("cron","Entity $entity :  $msg\n");
+				if ($mail->send()){
+					logInFile("cron","Entity $entity :  $msg\n");
+
+					$input["type"]=ALERT_END;
+					$input["device_type"]=INFOCOM_TYPE;
+
+					//// add alerts
+					foreach ($items[$entity] as $ID){
+						$input["FK_device"]=$ID;
+						$alert->add($input);
+						unset($alert->fields['ID']);
+					}
+
+				} else {
+					logInFile("cron","Entity $entity :  Send infocom alert failed\n");
+				}
 			}
 			return 1;
 		}

@@ -2005,13 +2005,13 @@ $SEARCH_OPTION[CONTRACT_TYPE][4]['meta']=0;
 
 $SEARCH_OPTION[CONTRACT_TYPE][5]['table']='glpi_contracts';
 $SEARCH_OPTION[CONTRACT_TYPE][5]['field']='begin_date';
-$SEARCH_OPTION[CONTRACT_TYPE][5]['linkfield']='';
+$SEARCH_OPTION[CONTRACT_TYPE][5]['linkfield']='begin_date';
 $SEARCH_OPTION[CONTRACT_TYPE][5]['name']=$LANG["search"][8];
 $SEARCH_OPTION[CONTRACT_TYPE][5]['meta']=0;
 
 $SEARCH_OPTION[CONTRACT_TYPE][6]['table']='glpi_contracts';
 $SEARCH_OPTION[CONTRACT_TYPE][6]['field']='duration';
-$SEARCH_OPTION[CONTRACT_TYPE][6]['linkfield']='';
+$SEARCH_OPTION[CONTRACT_TYPE][6]['linkfield']='duration';
 $SEARCH_OPTION[CONTRACT_TYPE][6]['name']=$LANG["financial"][8];
 $SEARCH_OPTION[CONTRACT_TYPE][6]['meta']=0;
 
@@ -2023,7 +2023,7 @@ $SEARCH_OPTION[CONTRACT_TYPE][20]['meta']=0;
 
 $SEARCH_OPTION[CONTRACT_TYPE][7]['table']='glpi_contracts';
 $SEARCH_OPTION[CONTRACT_TYPE][7]['field']='notice';
-$SEARCH_OPTION[CONTRACT_TYPE][7]['linkfield']='';
+$SEARCH_OPTION[CONTRACT_TYPE][7]['linkfield']='notice';
 $SEARCH_OPTION[CONTRACT_TYPE][7]['name']=$LANG["financial"][10];
 $SEARCH_OPTION[CONTRACT_TYPE][7]['meta']=0;
 
@@ -2080,6 +2080,13 @@ $SEARCH_OPTION[CONTRACT_TYPE][80]['field']='completename';
 $SEARCH_OPTION[CONTRACT_TYPE][80]['linkfield']='FK_entities';
 $SEARCH_OPTION[CONTRACT_TYPE][80]['name']=$LANG["entity"][0];
 $SEARCH_OPTION[CONTRACT_TYPE][80]['meta']=0;
+
+$SEARCH_OPTION[CONTRACT_TYPE][59]['table']='glpi_contracts';
+$SEARCH_OPTION[CONTRACT_TYPE][59]['field']='alert';
+$SEARCH_OPTION[CONTRACT_TYPE][59]['linkfield']='alert';
+$SEARCH_OPTION[CONTRACT_TYPE][59]['name']=$LANG["common"][41];
+$SEARCH_OPTION[CONTRACT_TYPE][59]['meta']=0;
+
 
 //////CARTRIDGE_TYPE
 

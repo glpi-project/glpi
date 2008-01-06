@@ -2583,6 +2583,20 @@ function giveItem ($type,$field,$data,$num,$linkfield=""){
 			} 
 			return "";
 			break;
+		case "glpi_contracts.alert":
+			switch ($data["ITEM_$num"]){
+				case pow(2,ALERT_END);
+					return $LANG["buttons"][32];
+					break;
+				case pow(2,ALERT_NOTICE);
+					return $LANG["financial"][10];
+					break;
+				case pow(2,ALERT_END)+pow(2,ALERT_NOTICE);
+					return $LANG["buttons"][32]." + ".$LANG["financial"][10];
+					break;
+			} 
+			return "";
+			break;
 		case "glpi_tracking.count":
 			if ($data["ITEM_$num"]>0&&haveRight("show_all_ticket","1")){
 				$out= "<a href=\"".$CFG_GLPI["root_doc"]."/front/tracking.php?reset=reset_before&status=all&type=$type&item=".$data['ID']."\">";
