@@ -455,43 +455,59 @@ function showConsumableSummary(){
 function cron_consumable(){
 	global $DB,$CFG_GLPI,$LANG;
 
+
+
 	// Get cartridges type with alarm activated and last warning > config
 	$query="SELECT glpi_consumables_type.ID AS consID, glpi_consumables_type.FK_entities as entity, glpi_consumables_type.ref as consref, glpi_consumables_type.name AS consname, glpi_consumables_type.alarm AS threshold, glpi_alerts.ID AS alertID, glpi_alerts.date FROM glpi_consumables_type LEFT JOIN glpi_alerts ON (glpi_consumables_type.ID = glpi_alerts.FK_device AND glpi_alerts.device_type='".CONSUMABLE_TYPE."') WHERE glpi_consumables_type.deleted='0' AND glpi_consumables_type.alarm>='0' AND (glpi_alerts.date IS NULL OR (glpi_alerts.date+".$CFG_GLPI["consumables_alert"].") < CURRENT_TIMESTAMP());";
 
 	$result=$DB->query($query);
 	$message=array();
+	$items=array();
+	$alert=new Alert();
+
 	if ($DB->numrows($result)>0){
 		while ($data=$DB->fetch_array($result)){
 			if (($unused=getUnusedConsumablesNumber($data["consID"]))<=$data["threshold"]){
 				if (!isset($message[$data["entity"]])){
 					$message[$data["entity"]]="";
 				}
+				if (!isset($items[$data["entity"]])){
+					$items[$data["entity"]]=array();
+				}
+
 				// define message alert
 				$message[$data["entity"]].=$LANG["mailing"][35]." ".$data["consname"]." - ".$LANG["consumables"][2].": ".$data["consref"]." - ".$LANG["software"][20].": ".$unused."<br>\n";
+				$items[$data["entity"]][]=$data["consID"];
 
-				// Mark alert as done
-				$alert=new Alert();
 				//// if alert exists -> delete 
 				if (!empty($data["alertID"])){
 					$alert->delete(array("ID"=>$data["alertID"]));
 				}
 
-				$alert=new Alert();
-				//// add alert
-				$input["type"]=ALERT_THRESHOLD;
-				$input["device_type"]=CONSUMABLE_TYPE;
-				$input["FK_device"]=$data["consID"];
-
-				$alert->add($input);
 			}
 		}
 
 		if (count($message)>0){
 			foreach ($message as $entity => $msg){
 				$mail=new MailingAlert("alertconsumable",$msg,$entity);
-				$mail->send();
-				
-				logInFile("cron","Entity $entity :  $msg\n");
+
+				if ($mail->send()){
+					logInFile("cron","Entity $entity :  $msg\n");
+
+					$input["type"]=ALERT_THRESHOLD;
+					$input["device_type"]=CONSUMABLE_TYPE;
+
+					//// add alerts
+					foreach ($items[$entity] as $ID){
+						$input["FK_device"]=$ID;
+						$alert->add($input);
+						unset($alert->fields['ID']);
+					}
+
+				} else {
+					logInFile("cron","Entity $entity :  Send consumable alert failed\n");
+				}
+
 			}
 			return 1;
 		}

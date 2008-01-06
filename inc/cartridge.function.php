@@ -594,42 +594,63 @@ function getCartridgeStatus($date_use,$date_out){
 function cron_cartridge(){
 	global $DB,$CFG_GLPI,$LANG;
 
-	// Get cartridges type with alarm activated and last warning > 7 days
-	// TODO -> last warning delay to config
-	$query="SELECT glpi_cartridges_type.ID AS cartID, glpi_cartridges_type.FK_entities as entity, glpi_cartridges_type.ref as cartref, glpi_cartridges_type.name AS cartname, glpi_cartridges_type.alarm AS threshold, glpi_alerts.ID AS alertID, glpi_alerts.date FROM glpi_cartridges_type LEFT JOIN glpi_alerts ON (glpi_cartridges_type.ID = glpi_alerts.FK_device AND glpi_alerts.device_type='".CARTRIDGE_TYPE."') WHERE glpi_cartridges_type.deleted='0' AND glpi_cartridges_type.alarm>='0' AND (glpi_alerts.date IS NULL OR (glpi_alerts.date+".$CFG_GLPI["cartridges_alert"].") < CURRENT_TIMESTAMP()) ORDER BY glpi_cartridges_type.name;";
+
+
+	// Get cartridges type with alarm activated and last warning > X days depending on config
+	$query="SELECT glpi_cartridges_type.ID AS cartID, glpi_cartridges_type.FK_entities as entity, glpi_cartridges_type.ref as cartref, glpi_cartridges_type.name AS cartname, glpi_cartridges_type.alarm AS threshold, glpi_alerts.ID AS alertID, glpi_alerts.date 
+		FROM glpi_cartridges_type 
+		LEFT JOIN glpi_alerts ON (glpi_cartridges_type.ID = glpi_alerts.FK_device AND glpi_alerts.device_type='".CARTRIDGE_TYPE."') 
+		WHERE glpi_cartridges_type.deleted='0' AND glpi_cartridges_type.alarm>='0' 
+			AND (glpi_alerts.date IS NULL OR (glpi_alerts.date+".$CFG_GLPI["cartridges_alert"].") < CURRENT_TIMESTAMP()) 
+		ORDER BY glpi_cartridges_type.name;";
 
 	$result=$DB->query($query);
+
 	$message=array();
+	$items=array();
+	$alert=new Alert();
+
 	if ($DB->numrows($result)>0){
 		while ($data=$DB->fetch_array($result)){
 			if (($unused=getUnusedCartridgesNumber($data["cartID"]))<=$data["threshold"]){
 				if (!isset($message[$data["entity"]])){
 					$message[$data["entity"]]="";
 				}
+				if (!isset($items[$data["entity"]])){
+					$items[$data["entity"]]=array();
+				}
+
 				// define message alert
 				$message[$data["entity"]].=$LANG["mailing"][34]." ".$data["cartname"]." - ".$LANG["consumables"][2].": ".$data["cartref"]." - ".$LANG["software"][20].": ".$unused."<br>\n";
+				$items[$data["entity"]][]=$data["cartID"];
 
-				// Mark alert as done
-				$alert=new Alert();
 				// if alert exists -> delete 
 				if (!empty($data["alertID"])){
 					$alert->delete(array("ID"=>$data["alertID"]));
 				}
-
-				$alert=new Alert();
-				// add alert
-				$input["type"]=ALERT_THRESHOLD;
-				$input["device_type"]=CARTRIDGE_TYPE;
-				$input["FK_device"]=$data["cartID"];
-
-				$alert->add($input);
 			}
 		}
 
 		if (count($message)>0){
 			foreach ($message as $entity => $msg){
 				$mail=new MailingAlert("alertcartridge",$msg,$entity);
-				$mail->send();
+
+				if ($mail->send()){
+					logInFile("cron","Entity $entity :  $msg\n");
+
+					$input["type"]=ALERT_THRESHOLD;
+					$input["device_type"]=CARTRIDGE_TYPE;
+
+					//// add alerts
+					foreach ($items[$entity] as $ID){
+						$input["FK_device"]=$ID;
+						$alert->add($input);
+						unset($alert->fields['ID']);
+					}
+
+				} else {
+					logInFile("cron","Entity $entity :  Send cartdridge alert failed\n");
+				}
 			}
 			return 1;
 		}

@@ -72,6 +72,17 @@ if (isset($_POST["device_type"])&&isset($_POST["id_field"])&&$_POST["id_field"])
 			case "glpi_consumables_type.alarm":
 				dropdownInteger($search["linkfield"],0,-1,100);
 				break;
+			case "glpi_contracts.duration":
+			case "glpi_contracts.notice":
+				dropdownInteger($search["field"],0,0,120);
+				echo " ".$LANG["financial"][57];
+				break;
+			case "glpi_contracts.begin_date":
+				showCalendarForm("massiveaction_form",$search["field"]);
+				break;
+			case "glpi_contracts.alert":
+				dropdownContractAlerting($search["linkfield"],0);
+				break;
 			case "glpi_tracking.status":
 				dropdownStatus($search["linkfield"]);
 				break;
