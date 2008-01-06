@@ -1,4 +1,4 @@
-#GLPI Dump database on 2008-01-06 13:43
+#GLPI Dump database on 2008-01-06 16:34
 
 ### Dump table glpi_alerts
 
@@ -56,9 +56,9 @@ DROP TABLE IF EXISTS `glpi_auth_ldap_replicate`;
 CREATE TABLE `glpi_auth_ldap_replicate` (
   `ID` int(11) NOT NULL auto_increment,
   `server_id` int(11) NOT NULL default '0',
-  `ldap_host` varchar(255) collate utf8_unicode_ci NOT NULL,
+  `ldap_host` varchar(255) collate utf8_unicode_ci default NULL,
   `ldap_port` int(11) NOT NULL default '389',
-  `name` varchar(255) collate utf8_unicode_ci NOT NULL,
+  `name` varchar(255) collate utf8_unicode_ci default NULL,
   PRIMARY KEY  (`ID`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -302,11 +302,14 @@ CREATE TABLE `glpi_config` (
   `autoname_entity` smallint(6) NOT NULL default '1',
   `expand_soft_categorized` int(1) NOT NULL default '1',
   `expand_soft_not_categorized` int(1) NOT NULL default '1',
+  `dbreplicate_notify_desynchronization` smallint(6) NOT NULL default '0',
+  `dbreplicate_email` varchar(255) collate utf8_unicode_ci default NULL,
+  `dbreplicate_maxdelay` int(11) NOT NULL default '3600',
   `category_on_software_delete` int(11) NOT NULL default '0',
   PRIMARY KEY  (`ID`)
 ) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-INSERT INTO glpi_config VALUES ('1','10','0','1','255','30','15','50',' 0.71','GLPI powered by indepnet','5','0','admsys@xxxxx.fr','SIGNATURE','','fr_FR','#fff2f2','#ffe0e0','#ffcece','#ffbfbf','#ffadad','2005-12-31','10','','','',NULL,'08:00:00','20:00:00','1','0','0','http://localhost/glpi/','0','','0','','100','*','0','50','1','1','0','0','name','0','50','0','0','1','0',NULL,'25',NULL,NULL,NULL,'8080',NULL,NULL,'1','0','0','0','0','0','0','5','2',NULL,NULL,'0','2','2','2','2','2','1','0','0','1','1','1','1','0','1','1','1','1');
+INSERT INTO glpi_config VALUES ('1','10','0','1','255','30','15','50',' 0.71','GLPI powered by indepnet','5','0','admsys@xxxxx.fr','SIGNATURE','','fr_FR','#fff2f2','#ffe0e0','#ffcece','#ffbfbf','#ffadad','2005-12-31','10','','','',NULL,'08:00:00','20:00:00','1','0','0','http://localhost/glpi/','0','','0','','100','*','0','50','1','1','0','0','name','0','50','0','0','1','0',NULL,'25',NULL,NULL,NULL,'8080',NULL,NULL,'1','0','0','0','0','0','0','5','2',NULL,NULL,'0','2','2','2','2','2','1','0','0','1','1','1','1','0','1','1','1','0',NULL,'3600','1');
 
 ### Dump table glpi_connect_wire
 
@@ -480,19 +483,6 @@ CREATE TABLE `glpi_contracts` (
   KEY `deleted` (`deleted`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-
-### Dump table glpi_db_replicate
-
-DROP TABLE IF EXISTS `glpi_db_replicate`;
-CREATE TABLE `glpi_db_replicate` (
-  `ID` int(11) NOT NULL,
-  `notify_db_desynchronization` int(1) NOT NULL default '0',
-  `admin_email` varchar(255) collate utf8_unicode_ci NOT NULL,
-  `max_delay` int(11) NOT NULL default '3600',
-  PRIMARY KEY  (`ID`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
-INSERT INTO glpi_db_replicate VALUES ('1','1','admsys@xxxxx.fr','3600');
 
 ### Dump table glpi_device_case
 
@@ -1367,7 +1357,7 @@ CREATE TABLE `glpi_event_log` (
 ) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 INSERT INTO glpi_event_log VALUES ('1','-1','system','2007-09-29 15:51:43','login','3','glpi connexion de l\'IP : 127.0.0.1');
-INSERT INTO glpi_event_log VALUES ('2','-1','system','2008-01-06 13:43:42','login','3','glpi connexion de l\'IP : 127.0.0.1');
+INSERT INTO glpi_event_log VALUES ('2','-1','system','2008-01-06 16:33:54','login','3','glpi connexion de l\'IP : 127.0.0.1');
 
 ### Dump table glpi_followups
 
@@ -2157,9 +2147,9 @@ CREATE TABLE `glpi_reservation_resa` (
 DROP TABLE IF EXISTS `glpi_rule_cache_manufacturer`;
 CREATE TABLE `glpi_rule_cache_manufacturer` (
   `ID` int(11) NOT NULL auto_increment,
-  `old_value` varchar(255) collate utf8_unicode_ci NOT NULL,
-  `rule_id` int(11) NOT NULL,
-  `new_value` varchar(255) collate utf8_unicode_ci NOT NULL,
+  `old_value` varchar(255) collate utf8_unicode_ci default NULL,
+  `rule_id` int(11) NOT NULL default '0',
+  `new_value` varchar(255) collate utf8_unicode_ci default NULL,
   PRIMARY KEY  (`ID`),
   KEY `rule_id` (`rule_id`),
   KEY `old_value` (`old_value`)
@@ -2171,9 +2161,9 @@ CREATE TABLE `glpi_rule_cache_manufacturer` (
 DROP TABLE IF EXISTS `glpi_rule_cache_model_computer`;
 CREATE TABLE `glpi_rule_cache_model_computer` (
   `ID` int(11) NOT NULL auto_increment,
-  `old_value` varchar(255) collate utf8_unicode_ci NOT NULL,
-  `rule_id` int(11) NOT NULL,
-  `new_value` varchar(255) collate utf8_unicode_ci NOT NULL,
+  `old_value` varchar(255) collate utf8_unicode_ci default NULL,
+  `rule_id` int(11) NOT NULL default '0',
+  `new_value` varchar(255) collate utf8_unicode_ci default NULL,
   `manufacturer` varchar(255) collate utf8_unicode_ci default NULL,
   PRIMARY KEY  (`ID`),
   KEY `rule_id` (`rule_id`),
@@ -2186,9 +2176,9 @@ CREATE TABLE `glpi_rule_cache_model_computer` (
 DROP TABLE IF EXISTS `glpi_rule_cache_model_monitor`;
 CREATE TABLE `glpi_rule_cache_model_monitor` (
   `ID` int(11) NOT NULL auto_increment,
-  `old_value` varchar(255) collate utf8_unicode_ci NOT NULL,
-  `rule_id` int(11) NOT NULL,
-  `new_value` varchar(255) collate utf8_unicode_ci NOT NULL,
+  `old_value` varchar(255) collate utf8_unicode_ci default NULL,
+  `rule_id` int(11) NOT NULL default '0',
+  `new_value` varchar(255) collate utf8_unicode_ci default NULL,
   `manufacturer` varchar(255) collate utf8_unicode_ci default NULL,
   PRIMARY KEY  (`ID`),
   KEY `rule_id` (`rule_id`),
@@ -2201,9 +2191,9 @@ CREATE TABLE `glpi_rule_cache_model_monitor` (
 DROP TABLE IF EXISTS `glpi_rule_cache_model_networking`;
 CREATE TABLE `glpi_rule_cache_model_networking` (
   `ID` int(11) NOT NULL auto_increment,
-  `old_value` varchar(255) collate utf8_unicode_ci NOT NULL,
-  `rule_id` int(11) NOT NULL,
-  `new_value` varchar(255) collate utf8_unicode_ci NOT NULL,
+  `old_value` varchar(255) collate utf8_unicode_ci default NULL,
+  `rule_id` int(11) NOT NULL default '0',
+  `new_value` varchar(255) collate utf8_unicode_ci default NULL,
   `manufacturer` varchar(255) collate utf8_unicode_ci default NULL,
   PRIMARY KEY  (`ID`),
   KEY `rule_id` (`rule_id`),
@@ -2216,9 +2206,9 @@ CREATE TABLE `glpi_rule_cache_model_networking` (
 DROP TABLE IF EXISTS `glpi_rule_cache_model_peripheral`;
 CREATE TABLE `glpi_rule_cache_model_peripheral` (
   `ID` int(11) NOT NULL auto_increment,
-  `old_value` varchar(255) collate utf8_unicode_ci NOT NULL,
-  `rule_id` int(11) NOT NULL,
-  `new_value` varchar(255) collate utf8_unicode_ci NOT NULL,
+  `old_value` varchar(255) collate utf8_unicode_ci default NULL,
+  `rule_id` int(11) NOT NULL default '0',
+  `new_value` varchar(255) collate utf8_unicode_ci default NULL,
   `manufacturer` varchar(255) collate utf8_unicode_ci default NULL,
   PRIMARY KEY  (`ID`),
   KEY `rule_id` (`rule_id`),
@@ -2231,9 +2221,9 @@ CREATE TABLE `glpi_rule_cache_model_peripheral` (
 DROP TABLE IF EXISTS `glpi_rule_cache_model_phone`;
 CREATE TABLE `glpi_rule_cache_model_phone` (
   `ID` int(11) NOT NULL auto_increment,
-  `old_value` varchar(255) collate utf8_unicode_ci NOT NULL,
-  `rule_id` int(11) NOT NULL,
-  `new_value` varchar(255) collate utf8_unicode_ci NOT NULL,
+  `old_value` varchar(255) collate utf8_unicode_ci default NULL,
+  `rule_id` int(11) NOT NULL default '0',
+  `new_value` varchar(255) collate utf8_unicode_ci default NULL,
   `manufacturer` varchar(255) collate utf8_unicode_ci default NULL,
   PRIMARY KEY  (`ID`),
   KEY `rule_id` (`rule_id`),
@@ -2246,9 +2236,9 @@ CREATE TABLE `glpi_rule_cache_model_phone` (
 DROP TABLE IF EXISTS `glpi_rule_cache_model_printer`;
 CREATE TABLE `glpi_rule_cache_model_printer` (
   `ID` int(11) NOT NULL auto_increment,
-  `old_value` varchar(255) collate utf8_unicode_ci NOT NULL,
-  `rule_id` int(11) NOT NULL,
-  `new_value` varchar(255) collate utf8_unicode_ci NOT NULL,
+  `old_value` varchar(255) collate utf8_unicode_ci default NULL,
+  `rule_id` int(11) NOT NULL default '0',
+  `new_value` varchar(255) collate utf8_unicode_ci default NULL,
   `manufacturer` varchar(255) collate utf8_unicode_ci default NULL,
   PRIMARY KEY  (`ID`),
   KEY `rule_id` (`rule_id`),
@@ -2261,9 +2251,9 @@ CREATE TABLE `glpi_rule_cache_model_printer` (
 DROP TABLE IF EXISTS `glpi_rule_cache_os`;
 CREATE TABLE `glpi_rule_cache_os` (
   `ID` int(11) NOT NULL auto_increment,
-  `old_value` varchar(255) collate utf8_unicode_ci NOT NULL,
-  `rule_id` int(11) NOT NULL,
-  `new_value` varchar(255) collate utf8_unicode_ci NOT NULL,
+  `old_value` varchar(255) collate utf8_unicode_ci default NULL,
+  `rule_id` int(11) NOT NULL default '0',
+  `new_value` varchar(255) collate utf8_unicode_ci default NULL,
   PRIMARY KEY  (`ID`),
   KEY `rule_id` (`rule_id`),
   KEY `old_value` (`old_value`)
@@ -2275,9 +2265,9 @@ CREATE TABLE `glpi_rule_cache_os` (
 DROP TABLE IF EXISTS `glpi_rule_cache_os_sp`;
 CREATE TABLE `glpi_rule_cache_os_sp` (
   `ID` int(11) NOT NULL auto_increment,
-  `old_value` varchar(255) collate utf8_unicode_ci NOT NULL,
-  `rule_id` int(11) NOT NULL,
-  `new_value` varchar(255) collate utf8_unicode_ci NOT NULL,
+  `old_value` varchar(255) collate utf8_unicode_ci default NULL,
+  `rule_id` int(11) NOT NULL default '0',
+  `new_value` varchar(255) collate utf8_unicode_ci default NULL,
   PRIMARY KEY  (`ID`),
   KEY `rule_id` (`rule_id`),
   KEY `old_value` (`old_value`)
@@ -2289,9 +2279,9 @@ CREATE TABLE `glpi_rule_cache_os_sp` (
 DROP TABLE IF EXISTS `glpi_rule_cache_os_version`;
 CREATE TABLE `glpi_rule_cache_os_version` (
   `ID` int(11) NOT NULL auto_increment,
-  `old_value` varchar(255) collate utf8_unicode_ci NOT NULL,
-  `rule_id` int(11) NOT NULL,
-  `new_value` varchar(255) collate utf8_unicode_ci NOT NULL,
+  `old_value` varchar(255) collate utf8_unicode_ci default NULL,
+  `rule_id` int(11) NOT NULL default '0',
+  `new_value` varchar(255) collate utf8_unicode_ci default NULL,
   PRIMARY KEY  (`ID`),
   KEY `rule_id` (`rule_id`),
   KEY `old_value` (`old_value`)
@@ -2303,10 +2293,10 @@ CREATE TABLE `glpi_rule_cache_os_version` (
 DROP TABLE IF EXISTS `glpi_rule_cache_software`;
 CREATE TABLE `glpi_rule_cache_software` (
   `ID` int(11) NOT NULL auto_increment,
-  `old_value` varchar(255) collate utf8_unicode_ci NOT NULL,
+  `old_value` varchar(255) collate utf8_unicode_ci default NULL,
   `manufacturer` varchar(255) collate utf8_unicode_ci NOT NULL,
-  `rule_id` int(11) NOT NULL,
-  `new_value` varchar(255) collate utf8_unicode_ci NOT NULL,
+  `rule_id` int(11) NOT NULL default '0',
+  `new_value` varchar(255) collate utf8_unicode_ci default NULL,
   `version` varchar(255) collate utf8_unicode_ci default NULL,
   `new_manufacturer` varchar(255) collate utf8_unicode_ci NOT NULL,
   PRIMARY KEY  (`ID`),
@@ -2320,9 +2310,9 @@ CREATE TABLE `glpi_rule_cache_software` (
 DROP TABLE IF EXISTS `glpi_rule_cache_type_computer`;
 CREATE TABLE `glpi_rule_cache_type_computer` (
   `ID` int(11) NOT NULL auto_increment,
-  `old_value` varchar(255) collate utf8_unicode_ci NOT NULL,
-  `rule_id` int(11) NOT NULL,
-  `new_value` varchar(255) collate utf8_unicode_ci NOT NULL,
+  `old_value` varchar(255) collate utf8_unicode_ci default NULL,
+  `rule_id` int(11) NOT NULL default '0',
+  `new_value` varchar(255) collate utf8_unicode_ci default NULL,
   PRIMARY KEY  (`ID`),
   KEY `rule_id` (`rule_id`),
   KEY `old_value` (`old_value`)
@@ -2334,9 +2324,9 @@ CREATE TABLE `glpi_rule_cache_type_computer` (
 DROP TABLE IF EXISTS `glpi_rule_cache_type_monitor`;
 CREATE TABLE `glpi_rule_cache_type_monitor` (
   `ID` int(11) NOT NULL auto_increment,
-  `old_value` varchar(255) collate utf8_unicode_ci NOT NULL,
-  `rule_id` int(11) NOT NULL,
-  `new_value` varchar(255) collate utf8_unicode_ci NOT NULL,
+  `old_value` varchar(255) collate utf8_unicode_ci default NULL,
+  `rule_id` int(11) NOT NULL default '0',
+  `new_value` varchar(255) collate utf8_unicode_ci default NULL,
   PRIMARY KEY  (`ID`),
   KEY `rule_id` (`rule_id`),
   KEY `old_value` (`old_value`)
@@ -2348,9 +2338,9 @@ CREATE TABLE `glpi_rule_cache_type_monitor` (
 DROP TABLE IF EXISTS `glpi_rule_cache_type_networking`;
 CREATE TABLE `glpi_rule_cache_type_networking` (
   `ID` int(11) NOT NULL auto_increment,
-  `old_value` varchar(255) collate utf8_unicode_ci NOT NULL,
-  `rule_id` int(11) NOT NULL,
-  `new_value` varchar(255) collate utf8_unicode_ci NOT NULL,
+  `old_value` varchar(255) collate utf8_unicode_ci default NULL,
+  `rule_id` int(11) NOT NULL default '0',
+  `new_value` varchar(255) collate utf8_unicode_ci default NULL,
   PRIMARY KEY  (`ID`),
   KEY `rule_id` (`rule_id`),
   KEY `old_value` (`old_value`)
@@ -2362,9 +2352,9 @@ CREATE TABLE `glpi_rule_cache_type_networking` (
 DROP TABLE IF EXISTS `glpi_rule_cache_type_peripheral`;
 CREATE TABLE `glpi_rule_cache_type_peripheral` (
   `ID` int(11) NOT NULL auto_increment,
-  `old_value` varchar(255) collate utf8_unicode_ci NOT NULL,
-  `rule_id` int(11) NOT NULL,
-  `new_value` varchar(255) collate utf8_unicode_ci NOT NULL,
+  `old_value` varchar(255) collate utf8_unicode_ci default NULL,
+  `rule_id` int(11) NOT NULL default '0',
+  `new_value` varchar(255) collate utf8_unicode_ci default NULL,
   PRIMARY KEY  (`ID`),
   KEY `rule_id` (`rule_id`),
   KEY `old_value` (`old_value`)
@@ -2376,9 +2366,9 @@ CREATE TABLE `glpi_rule_cache_type_peripheral` (
 DROP TABLE IF EXISTS `glpi_rule_cache_type_phone`;
 CREATE TABLE `glpi_rule_cache_type_phone` (
   `ID` int(11) NOT NULL auto_increment,
-  `old_value` varchar(255) collate utf8_unicode_ci NOT NULL,
-  `rule_id` int(11) NOT NULL,
-  `new_value` varchar(255) collate utf8_unicode_ci NOT NULL,
+  `old_value` varchar(255) collate utf8_unicode_ci default NULL,
+  `rule_id` int(11) NOT NULL default '0',
+  `new_value` varchar(255) collate utf8_unicode_ci default NULL,
   PRIMARY KEY  (`ID`),
   KEY `rule_id` (`rule_id`),
   KEY `old_value` (`old_value`)
@@ -2390,9 +2380,9 @@ CREATE TABLE `glpi_rule_cache_type_phone` (
 DROP TABLE IF EXISTS `glpi_rule_cache_type_printer`;
 CREATE TABLE `glpi_rule_cache_type_printer` (
   `ID` int(11) NOT NULL auto_increment,
-  `old_value` varchar(255) collate utf8_unicode_ci NOT NULL,
-  `rule_id` int(11) NOT NULL,
-  `new_value` varchar(255) collate utf8_unicode_ci NOT NULL,
+  `old_value` varchar(255) collate utf8_unicode_ci default NULL,
+  `rule_id` int(11) NOT NULL default '0',
+  `new_value` varchar(255) collate utf8_unicode_ci default NULL,
   PRIMARY KEY  (`ID`),
   KEY `rule_id` (`rule_id`),
   KEY `old_value` (`old_value`)
@@ -2814,7 +2804,7 @@ CREATE TABLE `glpi_users` (
   KEY `deleted` (`deleted`)
 ) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-INSERT INTO glpi_users VALUES ('2','glpi','','41ece51526515624ff89973668497d00','','','','','',NULL,'0','1','fr_FR','20','1',NULL,'-1','1','2008-01-06 13:43:42','2008-01-06 13:43:42','0');
+INSERT INTO glpi_users VALUES ('2','glpi','','41ece51526515624ff89973668497d00','','','','','',NULL,'0','1','fr_FR','20','1',NULL,'-1','1','2008-01-06 16:33:54','2008-01-06 16:33:54','0');
 INSERT INTO glpi_users VALUES ('3','post-only','*5683D7F638D6598D057638B1957F194E4CA974FB','3177926a7314de24680a9938aaa97703','','','','','',NULL,'0','0','en_GB','20','1',NULL,'-1','-1','0000-00-00 00:00:00','0000-00-00 00:00:00','0');
 INSERT INTO glpi_users VALUES ('4','tech','*B09F1B2C210DEEA69C662977CC69C6C461965B09','d9f9133fb120cd6096870bc2b496805b','','','','','',NULL,'0','1','fr_FR','20','1',NULL,'-1','-1','0000-00-00 00:00:00','0000-00-00 00:00:00','0');
 INSERT INTO glpi_users VALUES ('5','normal','*F3F91B23FC1DB728B49B1F22DEE3D7A839E10F0E','fea087517c26fadd409bd4b9dc642555','','','','','',NULL,'0','0','en_GB','20','1',NULL,'-1','-1','0000-00-00 00:00:00','0000-00-00 00:00:00','0');

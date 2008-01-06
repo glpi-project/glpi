@@ -50,6 +50,9 @@ class Mailgate  extends CommonDBTM {
 	}
 	function prepareInputForUpdate($input) {
 
+		if (isset($input['password'])&&empty($input['password'])){
+			unset($input['password']);
+		}
 		if (isset ($input['mail_server']) && !empty ($input['mail_server']))
 			$input["host"] = constructMailServerConfig($input);
 		return $input;
@@ -110,7 +113,7 @@ class Mailgate  extends CommonDBTM {
 			echo "</td></tr>";
 
 			echo "<tr class='tab_bg_2'><td>".$LANG["login"][7].":	</td><td>";
-			echo "<input type='password' name='password' value='".$this->fields["password"]."' size='20'>";
+			echo "<input type='password' name='password' value='' size='20'>";
 			echo "</td></tr>";
 
 

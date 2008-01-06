@@ -184,17 +184,15 @@ function cron_dbreplicate() {
 	if (!$DB->isSlave() && isDBSlaveActive())
 	{
 		$diff = getReplicateDelay();
-		$dbconfig = new DBReplicate;
-		$dbconfig->getFromDB(1);
 		
 		//If admin must be notified when slave is not synchronized with master
-		if ($dbconfig->fields["notify_db_desynchronization"] && $diff > $dbconfig->fields["max_delay"]) {
+		if ($CFG_GLPI["dbreplicate_notify_desynchronization"] && $diff > $CFG_GLPI["dbreplicate_maxdelay"]) {
 			$msg = $LANG["setup"][807] . " " . timestampToString($diff);
 			$mmail = new glpi_phpmailer();
 			$mmail->From = $CFG_GLPI["admin_email"];
 			$mmail->AddReplyTo($CFG_GLPI["admin_email"], '');
-			$mmail->FromName = $dbconfig->fields["admin_email"];
-			$mmail->AddAddress($dbconfig->fields["admin_email"], "");
+			$mmail->FromName = $CFG_GLPI["dbreplicate_email"];
+			$mmail->AddAddress($CFG_GLPI["dbreplicate_email"], "");
 			$mmail->Subject = $LANG["setup"][808];
 			$mmail->Body = $msg;
 			$mmail->isHTML(false);

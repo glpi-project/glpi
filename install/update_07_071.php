@@ -84,9 +84,9 @@ function update07to071() {
 		if (!TableExists($cache_table)) {
 			$query = "CREATE TABLE `".$cache_table."` (
 			`ID` INT( 11 ) NOT NULL auto_increment ,
-			`old_value` VARCHAR( 255 ) NOT NULL ,
-			`rule_id` INT( 11 ) NOT NULL ,
-			`new_value` VARCHAR( 255 ) NOT NULL ,
+			`old_value` VARCHAR( 255 ) NULL default NULL ,
+			`rule_id` INT( 11 ) NOT NULL DEFAULT '0',
+			`new_value` VARCHAR( 255 ) NULL default NULL ,
 			PRIMARY KEY ( `ID` ),
 			KEY `rule_id` (`rule_id`),
 			KEY `old_value` (`old_value`)
@@ -135,26 +135,20 @@ function update07to071() {
 	$query="CREATE TABLE IF NOT EXISTS `glpi_auth_ldap_replicate` (
 	  `ID` int(11) NOT NULL auto_increment,
 	  `server_id` int(11) NOT NULL default '0',
-	  `ldap_host` varchar(255) NOT NULL,
+	  `ldap_host` varchar(255) NULL default NULL,
 	  `ldap_port` int(11) NOT NULL default '389',
-	  `name` varchar(255) NOT NULL,
+	  `name` varchar(255) NULL default NULL,
 	  PRIMARY KEY  (`ID`)
 	) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
 		$DB->query($query) or die("0.71 add table glpi_auth_ldap_replicate " . $LANG["update"][90] . $DB->error());
 	}	
 
-	if (!TableExists("glpi_db_replicate")) {
-		$query = " CREATE TABLE `glpi_db_replicate` (`ID` INT( 11 ) NOT NULL ,
-		`notify_db_desynchronization` INT( 1 ) NOT NULL DEFAULT '0',
-		`admin_email` VARCHAR( 255 ) NOT NULL,
-		`max_delay` INT( 11 ) NOT NULL DEFAULT '3600',
-		PRIMARY KEY  (`ID`)
-	    ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
-		$DB->query($query) or die("0.71 add table glpi_db_replicate if not present " . $LANG["update"][90] . $DB->error());
-	
-		$query = "INSERT INTO `glpi_db_replicate` (`ID`, `notify_db_desynchronization`, `admin_email`, `max_delay`) VALUES
-		(1, 1, 'admsys@xxxxx.fr', 3600);";
-		$DB->query($query) or die("0.71 add values in glpi_db_replicate  " . $LANG["update"][90] . $DB->error());
+	if (!FieldExists("glpi_config","dbreplicate_notify_desynchronization")) {
+		$query = "ALTER TABLE `glpi_config` ADD `dbreplicate_notify_desynchronization` SMALLINT NOT NULL DEFAULT '0',
+				ADD `dbreplicate_email` VARCHAR( 255 ) NULL ,
+				ADD `dbreplicate_maxdelay` INT NOT NULL DEFAULT '3600';";
+
+		$DB->query($query) or die("0.71 alter config add config for dbreplicate notif " . $LANG["update"][90] . $DB->error());
 	}
 
  	if (!FieldExists("glpi_reminder", "recursive")) {

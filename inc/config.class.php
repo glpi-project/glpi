@@ -56,10 +56,32 @@ class Config extends CommonDBTM {
 	 * 
 	**/
 	function prepareInputForUpdate($input) {
+		if (isset($input["smtp_password"])&&empty($input["smtp_password"]))
+			unset($input["smtp_password"]);
+		if (isset($input["proxy_password"])&&empty($input["proxy_password"]))
+			unset($input["proxy_password"]);
+
 		if (isset($input["planning_begin"]))
 			$input["planning_begin"]=$input["planning_begin"].":00:00";
 		if (isset($input["planning_end"]))
 			$input["planning_end"]=$input["planning_end"].":00:00";
+
+
+		// Manage DB Slave process
+		if (isset($input['_dbslave_status'])){
+			$already_active=isDBSlaveActive();
+			if ($input['_dbslave_status']&&!$already_active){
+				createDBSlaveConfig();
+			} else {
+				saveDBSlaveConf($input["_dbreplicate_dbhost"],$input["_dbreplicate_dbuser"],$input["_dbreplicate_dbpassword"],$input["_dbreplicate_dbdefault"]);
+			}
+			if (!$input['_dbslave_status']&&$already_active){
+				deleteDBSlaveConfig();
+			}
+
+		}
+
+
 		return $input;
 	}
 
@@ -251,7 +273,7 @@ class Config extends CommonDBTM {
 				echo "<td class='center'>" . $LANG["setup"][402] . " </td><td><input type=\"text\" name=\"proxy_port\" value=\"" . $CFG_GLPI["proxy_port"] . "\"></td></tr>";
 			
 				echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["setup"][403] . " </td><td><input type=\"text\" name=\"proxy_user\" value=\"" . $CFG_GLPI["proxy_user"] . "\"></td>";
-				echo "<td class='center'>" . $LANG["setup"][404] . " </td><td><input type=\"text\" name=\"proxy_password\" value=\"" . $CFG_GLPI["proxy_password"] . "\"></td></tr>";
+				echo "<td class='center'>" . $LANG["setup"][404] . " </td><td><input type=\"text\" name=\"proxy_password\" value=\"\"></td></tr>";
 
 				echo "<tr class='tab_bg_1'><td colspan='4' align='center'><strong>" . $LANG["rulesengine"][77] . "</strong></td></tr>";
 				echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["rulesengine"][86] . " </td><td>";
@@ -502,11 +524,6 @@ class Config extends CommonDBTM {
 				
 			break;
 			case 4 :
-				$replicate = new DBReplicate();
-				$replicate->getFromDB($CFG_GLPI["ID"]);
-				echo "<form name='form' action=\"$target\" method=\"post\">";
-				echo "<input type='hidden' name='ID' value='" . $CFG_GLPI["ID"] . "'>";
-		
 				$active = isDBSlaveActive();
 		
 				echo "<div class='center'><table class='tab_cadre_fixe'>";
@@ -514,38 +531,38 @@ class Config extends CommonDBTM {
 				echo "<tr class='tab_bg_2'><th colspan='4'>" . $LANG["setup"][800] . "</th></tr>";
 		
 				echo "<tr class='tab_bg_2'><td class='center'> " . $LANG["setup"][801] . " </td><td>";
-				dropdownYesNo("slave_status", $active);
+				dropdownYesNo("_dbslave_status", $active);
 				echo " </td><td  colspan='2'></td></tr>";
 		
 				if (!$active)
-					echo "<tr class='tab_bg_2'><td colspan='4' align='center'><input type=\"submit\" name=\"activate_slave\" class=\"submit\" value=\"" . $LANG["buttons"][2] . "\" ></td></tr>";
+					echo "<tr class='tab_bg_2'><td colspan='4' align='center'><input type=\"submit\" name=\"update\" class=\"submit\" value=\"" . $LANG["buttons"][2] . "\" ></td></tr>";
 				else {
 					$DBSlave = getDBSlaveConf();
-					echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["install"][30] . " </td><td><input type=\"text\" name=\"dbhost\" size='40' value=\"" . $DBSlave->dbhost . "\"></td>";
+
+					echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["install"][30] . " </td><td><input type=\"text\" name=\"_dbreplicate_dbhost\" size='40' value=\"" . $DBSlave->dbhost . "\"></td>";
 					echo "<td class='center'>" . $LANG["setup"][802] . "</td><td>";
-					echo "<input type=\"text\" name=\"dbdefault\" value=\"" . $DBSlave->dbdefault . "\">";
+					echo "<input type=\"text\" name=\"_dbreplicate_dbdefault\" value=\"" . $DBSlave->dbdefault . "\">";
 					echo "</td></tr>";
 		
 					echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["install"][31] . "</td><td>";
-					echo "<input type=\"text\" name=\"dbuser\" value=\"" . $DBSlave->dbuser . "\">";
+					echo "<input type=\"text\" name=\"_dbreplicate_dbuser\" value=\"" . $DBSlave->dbuser . "\">";
 					echo "<td class='center'>" . $LANG["install"][32] . "</td><td>";
-					echo "<input type=\"text\" name=\"dbpassword\" value=\"" . $DBSlave->dbpassword . "\">";
+					echo "<input type=\"_dbreplicate_password\" name=\"dbpassword\" value=\"" . $DBSlave->dbpassword . "\">";
 					echo "</td></tr>";
 		
 					echo "<tr class='tab_bg_2'><th colspan='4'>" . $LANG["setup"][704] . "</th></tr>";
 		
 					echo "<tr class='tab_bg_2'><td class='center'> " . $LANG["setup"][804] . " </td><td>";
-					dropdownYesNo("notify_db_desynchronization", $replicate->fields["notify_db_desynchronization"]);
+					dropdownYesNo("dbreplicate_notify_desynchronization", $CFG_GLPI["dbreplicate_notify_desynchronization"]);
 					echo " </td>";
 		
-					echo "<td class='center'> " . $LANG["setup"][805] . " </td><td>";
-					autocompletionTextField("admin_email","glpi_db_replicate", "admin_email", $replicate->fields["admin_email"]);
-					echo " </td></tr>";
+					echo "<td class='center'> " . $LANG["setup"][806] . " </td><td>";
+					echo "<input type=\"text\" name=\"dbreplicate_maxdelay\" size='8' value=\"" . $CFG_GLPI["dbreplicate_maxdelay"] . "\">";
+					echo "&nbsp;" . $LANG["stats"][34]."</td></tr>";
 		
-					echo "<tr class='tab_bg_2'><td class='center'> " . $LANG["setup"][806] . " </td><td>";
-					autocompletionTextField("max_delay", "glpi_db_replicate", "max_delay",$replicate->fields["max_delay"],10);
-					echo "&nbsp;" . $LANG["stats"][34]." </td>";
-					echo "<td colspan='2'></td></tr>";
+					echo "<tr class='tab_bg_2'><td class='center'> " . $LANG["setup"][805] . " </td><td colspan='3'>";
+					echo "<input type=\"text\" size='50' name=\"dbreplicate_email\" value=\"" . $CFG_GLPI["dbreplicate_email"] . "\">";
+					echo "</td></tr>";
 		
 		
 					echo "<tr class='tab_bg_2'>";			
@@ -558,11 +575,10 @@ class Config extends CommonDBTM {
 		
 					echo "</tr>";
 		
-					echo "<tr class='tab_bg_2'><td colspan='4' align='center'><input type=\"submit\" name=\"update_slave\" class=\"submit\" value=\"" . $LANG["buttons"][2] . "\" ></td></tr>";
+					echo "<tr class='tab_bg_2'><td colspan='4' align='center'><input type=\"submit\" name=\"update\" class=\"submit\" value=\"" . $LANG["buttons"][2] . "\" ></td></tr>";
 		
 				}
 		
-				echo "</tr>";
 				echo "</table></div>";
 			break;
 		}
@@ -647,7 +663,7 @@ class Config extends CommonDBTM {
 	
 			echo "<tr class='tab_bg_2'><td >" . $LANG["setup"][234] . "</td><td> <input type=\"text\" name=\"smtp_username\" size='40' value=\"" . $CFG_GLPI["smtp_username"] . "\"> </td></tr>";
 	
-			echo "<tr class='tab_bg_2'><td >" . $LANG["setup"][235] . "</td><td> <input type=\"password\" name=\"smtp_password\" size='40' value=\"" . $CFG_GLPI["smtp_password"] . "\"> </td></tr>";
+			echo "<tr class='tab_bg_2'><td >" . $LANG["setup"][235] . "</td><td> <input type=\"password\" name=\"smtp_password\" size='40' value=\"\"> </td></tr>";
 	
 			echo "<tr class='tab_bg_2'><td >" . $LANG["setup"][245] . " " . $LANG["setup"][244] . "</td><td>";
 			echo "<select name='cartridges_alert'> ";
