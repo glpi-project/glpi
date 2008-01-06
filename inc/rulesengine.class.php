@@ -142,10 +142,14 @@ class RuleCollection {
 
 	/**
 	 * Replay Collection on DB
-	 * @param $items array containg items to replay. If empty -> all
-	 * @param $params additional parameters if needed
+	 * @param $offset  first row to work on
+	 * @param $maxtime float : max system time to stop working 
+	 * @param $items   array containg items to replay. If empty -> all
+	 * @param $params  additional parameters if needed
+	 * 
+	 * @return -1 if all rows done, else offset for next run
 	**/
-	function replayRulesOnExistingDB($items=array(),$params=array()){
+	function replayRulesOnExistingDB($offset=0,$maxtime=0, $items=array(),$params=array()){
 
 	}
 
