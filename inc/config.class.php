@@ -750,6 +750,7 @@ class Config extends CommonDBTM {
 			} else
 				if ($_SESSION['glpi_mailconfig'] == 3) {
 					$profiles[USER_MAILING_TYPE . "_" . ADMIN_MAILING] = $LANG["setup"][237];
+					$profiles[USER_MAILING_TYPE . "_" . ADMIN_ENTITY_MAILING] = $LANG["setup"][237]." ".$LANG["entity"][0];
 					$query = "SELECT ID, name FROM glpi_profiles order by name";
 					$result = $DB->query($query);
 					while ($data = $DB->fetch_assoc($result))
