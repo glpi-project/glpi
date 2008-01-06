@@ -462,7 +462,7 @@ function showForm($target, $ID,$withtemplate='',$templateid='') {
 		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["ocsconfig"][2] . " </td><td> <input type=\"text\" name=\"ocs_db_host\" value=\"" . $this->fields["ocs_db_host"] . "\"></td></tr>";
 		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["ocsconfig"][4] . " </td><td> <input type=\"text\" name=\"ocs_db_name\" value=\"" . $this->fields["ocs_db_name"] . "\"></td></tr>";
 		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["ocsconfig"][1] . " </td><td> <input type=\"text\" name=\"ocs_db_user\" value=\"" . $this->fields["ocs_db_user"] . "\"></td></tr>";
-		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["ocsconfig"][3] . " </td><td> <input type=\"password\" name=\"ocs_db_passwd\" value=\"" . $this->fields["ocs_db_passwd"] . "\"></td></tr>";
+		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["ocsconfig"][3] . " </td><td> <input type=\"password\" name=\"ocs_db_passwd\" value=\"\"></td></tr>";
 		echo "</table></div>";
 
 		echo "<br><div class='center'><table border='0'>";
@@ -511,11 +511,10 @@ function showForm($target, $ID,$withtemplate='',$templateid='') {
 		echo "</div>";
 	}
 	
-	function prepareInputForUpdate($input)
-	{
+	function prepareInputForUpdate($input){
 		$input["date_mod"]=$_SESSION["glpi_currenttime"];
 		
-		if (isset($input["ocs_db_passwd"])){
+		if (isset($input["ocs_db_passwd"])&&!empty($input["ocs_db_passwd"])){
 			$input["ocs_db_passwd"]=urlencode(stripslashes($input["ocs_db_passwd"]));
 		} else {
 			unset($input["ocs_db_passwd"]);

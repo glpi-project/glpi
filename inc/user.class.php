@@ -179,7 +179,8 @@ class User extends CommonDBTM {
 
 		if (!isset($input["list_limit"])){
 			$input["list_limit"]=$CFG_GLPI["list_limit"];
-		}		
+		}	
+		
 		// Add User, nasty hack until we get PHP4-array-functions
 		if (isset ($input["password"])) {
 			if (empty ($input["password"])) {
@@ -235,13 +236,15 @@ class User extends CommonDBTM {
 	function prepareInputForUpdate($input) {
 		global  $LANG;
 
+
+		if (isset ($input["password"])&&empty($input["password"])) {
+			unset($input["password"]);
+		}
+
+
 		if (isset ($input["password"])) {
-			if (empty ($input["password"])) {
-				unset ($input["password"]);
-			} else {
-				$input["password_md5"] = md5(unclean_cross_side_scripting_deep($input["password"]));
-				$input["password"] = "";
-			}
+			$input["password_md5"] = md5(unclean_cross_side_scripting_deep($input["password"]));
+			$input["password"] = "";
 		}
 
 		// change email_form to email (not to have a problem with preselected email)
