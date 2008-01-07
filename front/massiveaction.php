@@ -37,7 +37,7 @@
 $NEEDED_ITEMS=array("user","tracking","reservation","document","computer","device","printer","networking",
 					"peripheral","monitor","software","infocom","phone","link","ocsng","consumable","cartridge",
 					"contract","enterprise","contact","group","profile","search","mailgate","typedoc","admininfo",
-					"registry","setup","rulesengine","rule.softwarecategories","rule.dictionnary.software","entity","rule.dictionnary.manufacturer");
+					"registry","setup","rulesengine","rule.softwarecategories","rule.dictionnary.software","rule.dictionnary.dropdown","entity");
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
