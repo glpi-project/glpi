@@ -462,6 +462,12 @@ function getAuthMethodsByID($auth_method, $id_auth) {
 	$sql = "";
 
 	switch ($auth_method) {
+		case AUTH_CAS :
+			if ($id_auth>0){
+				//Get all the ldap directories
+				$sql = "SELECT * FROM glpi_auth_ldap WHERE ID=" . $id_auth;
+			}
+			break;
 		case AUTH_LDAP :
 			//Get all the ldap directories
 			$sql = "SELECT * FROM glpi_auth_ldap WHERE ID=" . $id_auth;

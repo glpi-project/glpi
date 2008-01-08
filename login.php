@@ -82,20 +82,22 @@ if (!isset ($_POST["noCAS"]) && !empty ($CFG_GLPI["cas_host"])) {
 	$identificat->extauth = 1;
 	$identificat->user_present = $identificat->user->getFromDBbyName($user);
 	$identificat->user->fields['auth_method'] = AUTH_CAS;
-
 	// if LDAP enabled too, get user's infos from LDAP
 	//If the user is already in database, let's check if he there's a dictory reported in id_auth, to get his personal informations  
-/*	if ($user_present && !empty($identificat->auth_methods["ldap"][$identificat->user->fields["id_auth"]])) {
+	$ldap_server_id=1;
+	$identificat->user->fields["id_auth"]=$ldap_server_id;
+
+	if (isset($identificat->auth_methods["ldap"][$identificat->user->fields["id_auth"]])) {
 		$ldap_method = $identificat->auth_methods["ldap"][$identificat->user->fields["id_auth"]];
+		print_r($ldap_method);
 		$ds = connect_ldap($ldap_method["ldap_host"], $ldap_method["ldap_port"], $ldap_method["ldap_rootdn"], $ldap_method["ldap_pass"], $ldap_method["ldap_use_tls"]);
 		if ($ds) {
 			$user_dn = ldap_search_user_dn($ds, $ldap_method["ldap_basedn"], $ldap_method["ldap_login"], $user, $ldap_method["ldap_condition"]);
 			if ($user_dn) {
-				$identificat->user->getFromLDAP($ldap_method["ldap_host"], $ldap_method["ldap_port"], $user_dn, $ldap_method["ldap_rootdn"], $ldap_method["ldap_pass"], $ldap_method['ldap_fields'], $user, "", $ldap_method["ldap_use_tls"]);
+				$identificat->user->getFromLDAP($ds,$ldap_method, $user_dn, $ldap_method["ldap_rootdn"], $ldap_method["ldap_pass"]);
 			}
 		}
 	}
-*/
 	$identificat->user->fields["last_login"] = $_SESSION["glpi_currenttime"];
 	$identificat->user->fields["name"] = $user;
 
