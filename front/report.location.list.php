@@ -123,6 +123,8 @@ if (isset($_POST["location"])&&$_POST["location"]){
 	echo "</div>";
 	commonFooter();
 
-} else  glpi_header($_SERVER['HTTP_REFERER']); 
+} else  {
+	glpi_header($CFG_GLPI['root_doc']."/front/report.networking.php"); 
+}
 
 ?>
