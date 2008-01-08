@@ -131,5 +131,7 @@ checkRight("reports","r");
 
 		commonFooter();
 
-	} else  glpi_header($_SERVER['HTTP_REFERER']); 
+	} else  {
+		glpi_header($CFG_GLPI['root_doc']."/front/report.networking.php"); 
+	}
 ?>
