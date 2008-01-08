@@ -83,9 +83,7 @@ if (!isset ($_POST["noCAS"]) && !empty ($CFG_GLPI["cas_host"])) {
 	$identificat->user_present = $identificat->user->getFromDBbyName($user);
  	$identificat->user->fields['auth_method'] = AUTH_CAS; 
 	// if LDAP enabled too, get user's infos from LDAP
-	//If the user is already in database, let's check if he there's a dictory reported in id_auth, to get his personal informations  
-	$ldap_server_id=1;
-	$identificat->user->fields["id_auth"]=$ldap_server_id;
+	$identificat->user->fields["id_auth"]=$CFG_GLPI['cas_ldap_server'];
 
 	if (isset($identificat->auth_methods["ldap"][$identificat->user->fields["id_auth"]])) {
 		$ldap_method = $identificat->auth_methods["ldap"][$identificat->user->fields["id_auth"]];
