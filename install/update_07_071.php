@@ -261,9 +261,9 @@ function update07to071() {
 	}
 
 	// Add cas ldap server link
-	if (!FieldExists("glpi_config", "cas_ldap_server")) {
-		$query="ALTER TABLE `glpi_config` ADD `cas_ldap_server` INT NOT NULL DEFAULT '1' AFTER `cas_logout` ;";
-		$DB->query($query) or die("0.71 alter config add cas_ldap_server" . $DB->error());		
+	if (!FieldExists("glpi_config", "extra_ldap_server")) {
+		$query="ALTER TABLE `glpi_config` ADD `extra_ldap_server` INT NOT NULL DEFAULT '1' AFTER `cas_logout` ;";
+		$DB->query($query) or die("0.71 alter config add extra_ldap_server" . $DB->error());		
 	}
 
 	// Add x509 email field definition
@@ -274,10 +274,9 @@ function update07to071() {
 
 	// Add x509 email field definition
 	if (!FieldExists("glpi_config", "existing_auth_server_field")) {
-		$query="ALTER TABLE `glpi_config` ADD `existing_auth_server_field` VARCHAR( 255 ) NULL;";
+		$query="ALTER TABLE `glpi_config` ADD `existing_auth_server_field` VARCHAR( 255 ) NULL  AFTER `extra_ldap_server`;";
 		$DB->query($query) or die("0.71 alter config add existing_auth_server_field" . $DB->error());		
 	}
-
 
 	
 } // fin 0.71 #####################################################################################
