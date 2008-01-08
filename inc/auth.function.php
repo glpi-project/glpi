@@ -947,20 +947,20 @@ function ldap_search_user_dn($ds, $basedn, $login_attr, $login, $condition) {
 /*
  * Try to authentify a user by checking all the directories
 **/
-function try_ldap_auth($identificat,$login,$password, $id_auth = -1,$isCAS=0) {
+function try_ldap_auth($identificat,$login,$password, $id_auth = -1) {
 
 	//If no specific source is given, test all ldap directories
 	if ($id_auth == -1) {
 		foreach  ($identificat->auth_methods["ldap"] as $ldap_method) {
 			if (!$identificat->auth_succeded) {
-				$identificat = ldap_auth($identificat, $login,$password,$ldap_method,$isCAS);
+				$identificat = ldap_auth($identificat, $login,$password,$ldap_method);
 			} else {
 				break;
 			}
 		}
 	} else if(array_key_exists($id_auth,$identificat->auth_methods["ldap"])){ //Check if the ldap server indicated as the last good one still exists !
 		//A specific ldap directory is given, test it and only this one !
-		$identificat = ldap_auth($identificat, $login,$password,$identificat->auth_methods["ldap"][$id_auth],$isCAS);
+		$identificat = ldap_auth($identificat, $login,$password,$identificat->auth_methods["ldap"][$id_auth]);
 	}
 	return $identificat;
 }
@@ -968,7 +968,7 @@ function try_ldap_auth($identificat,$login,$password, $id_auth = -1,$isCAS=0) {
 /*
  * Authentify a user by checking a specific directory
 **/
-function ldap_auth($identificat,$login,$password, $ldap_method,$isCAS) {
+function ldap_auth($identificat,$login,$password, $ldap_method) {
 
 	$user_dn = $identificat->connection_ldap($ldap_method["ID"],$ldap_method["ldap_host"], $ldap_method["ldap_port"], $ldap_method["ldap_basedn"], $ldap_method["ldap_rootdn"], $ldap_method["ldap_pass"], $ldap_method["ldap_login"],$login, $password, $ldap_method["ldap_condition"], $ldap_method["ldap_use_tls"]);
 	if ($user_dn) {
@@ -978,11 +978,7 @@ function ldap_auth($identificat,$login,$password, $ldap_method,$isCAS) {
 		//$identificat->user->getFromLDAP($ldap_method, $user_dn, utf8_decode($login), utf8_decode($password));
 		$identificat->user->getFromLDAP($identificat->ldap_connection,$ldap_method, $user_dn, $login, $password);
 		$identificat->auth_parameters = $ldap_method;
-		if (!$isCAS) {
-			$identificat->user->fields["auth_method"] = AUTH_LDAP;
-		} else {
-			$identificat->user->fields["auth_method"] = AUTH_CAS;
-		}
+		$identificat->user->fields["auth_method"] = AUTH_LDAP;
 		$identificat->user->fields["id_auth"] = $ldap_method["ID"];
 	}
 	return $identificat;
