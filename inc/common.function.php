@@ -959,7 +959,7 @@ function html_clean($value){
 function convDateTime($time) { 
 	global $CFG_GLPI;
 	if (is_null($time)) return $time;
-	if ($CFG_GLPI["dateformat"]!=0) {
+	if (isset($CFG_GLPI["dateformat"])&&$CFG_GLPI["dateformat"]!=0) {
 		$date = substr($time,8,2)."-";        // jour 
 		$date = $date.substr($time,5,2)."-";  // mois 
 		$date = $date.substr($time,0,4). " "; // annÃ©e 
@@ -982,7 +982,7 @@ function convDateTime($time) {
 function convDate($time) { 
 	global $CFG_GLPI;
 	if (is_null($time)) return $time;
-	if ($CFG_GLPI["dateformat"]!=0) {
+	if (isset($CFG_GLPI["dateformat"])&&$CFG_GLPI["dateformat"]!=0) {
 		$date = substr($time,8,2)."-";        // jour 
 		$date = $date.substr($time,5,2)."-";  // mois 
 		$date = $date.substr($time,0,4); // annÃ©e 
