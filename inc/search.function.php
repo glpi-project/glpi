@@ -1807,7 +1807,7 @@ function addWhere ($link,$nott,$type,$ID,$val,$meta=0){
 				$SEARCH=makeTextSearch($val,$nott);
 				$ADD="";	
 				if ($nott) {
-					$ADD=" OR $table.$field IS NULL";
+					$ADD=" OR $date_computation IS NULL";
 				}
 				return $link." ( $date_computation $SEARCH $ADD )";
 			}
