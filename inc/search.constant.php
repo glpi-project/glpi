@@ -2687,6 +2687,44 @@ $SEARCH_OPTION[PHONE_TYPE][122]['linkfield']='';
 $SEARCH_OPTION[PHONE_TYPE][122]['name']=$LANG["common"][25]." - ".$LANG["financial"][3]; 
 $SEARCH_OPTION[PHONE_TYPE][122]['meta']=0; 
 
+$SEARCH_OPTION[PHONE_TYPE]['network']=$LANG["setup"][88];
+
+$SEARCH_OPTION[PHONE_TYPE][20]['table']='glpi_networking_ports';
+$SEARCH_OPTION[PHONE_TYPE][20]['field']='ifaddr';
+$SEARCH_OPTION[PHONE_TYPE][20]['linkfield']='';
+$SEARCH_OPTION[PHONE_TYPE][20]['name']=$LANG["networking"][14];
+$SEARCH_OPTION[PHONE_TYPE][20]['meta']=0;
+
+$SEARCH_OPTION[PHONE_TYPE][21]['table']='glpi_networking_ports';
+$SEARCH_OPTION[PHONE_TYPE][21]['field']='ifmac';
+$SEARCH_OPTION[PHONE_TYPE][21]['linkfield']='';
+$SEARCH_OPTION[PHONE_TYPE][21]['name']=$LANG["networking"][15];
+$SEARCH_OPTION[PHONE_TYPE][21]['meta']=0;
+
+$SEARCH_OPTION[PHONE_TYPE][83]['table']='glpi_networking_ports';
+$SEARCH_OPTION[PHONE_TYPE][83]['field']='netmask';
+$SEARCH_OPTION[PHONE_TYPE][83]['linkfield']='';
+$SEARCH_OPTION[PHONE_TYPE][83]['name']=$LANG["networking"][60];
+$SEARCH_OPTION[PHONE_TYPE][83]['meta']=0;
+
+$SEARCH_OPTION[PHONE_TYPE][84]['table']='glpi_networking_ports';
+$SEARCH_OPTION[PHONE_TYPE][84]['field']='subnet';
+$SEARCH_OPTION[PHONE_TYPE][84]['linkfield']='';
+$SEARCH_OPTION[PHONE_TYPE][84]['name']=$LANG["networking"][61];
+$SEARCH_OPTION[PHONE_TYPE][84]['meta']=0;
+
+$SEARCH_OPTION[PHONE_TYPE][85]['table']='glpi_networking_ports';
+$SEARCH_OPTION[PHONE_TYPE][85]['field']='gateway';
+$SEARCH_OPTION[PHONE_TYPE][85]['linkfield']='';
+$SEARCH_OPTION[PHONE_TYPE][85]['name']=$LANG["networking"][59];
+$SEARCH_OPTION[PHONE_TYPE][85]['meta']=0;
+
+$SEARCH_OPTION[PHONE_TYPE][22]['table']='glpi_dropdown_netpoint';
+$SEARCH_OPTION[PHONE_TYPE][22]['field']='name';
+$SEARCH_OPTION[PHONE_TYPE][22]['linkfield']='';
+$SEARCH_OPTION[PHONE_TYPE][22]['name']=$LANG["networking"][51];
+$SEARCH_OPTION[PHONE_TYPE][22]['meta']=0;
+
 //////GROUP_TYPE
 
 $SEARCH_OPTION[GROUP_TYPE]['common']=$LANG["common"][32];
