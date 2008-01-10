@@ -359,9 +359,13 @@ function dropdownUsers($myname,$value,$right,$all=0,$display_comments=1,$entity_
 
 	// Display comments
 
-	$view_users=(haveRight("user","r")&&!empty($user["link"]));
+	$view_users=(haveRight("user","r"));
+
 	if ($display_comments) {
 		if ($view_users){
+			if (empty($user["link"])){
+				$user["link"]=$_SERVER['PHP_SELF'];
+			}
 			echo "<a id='comments_link_$myname$rand' href='".$user["link"]."'>";
 		}
 		echo "<img alt='' src='".$CFG_GLPI["root_doc"]."/pics/aide.png' onmouseout=\"cleanhide('comments_$myname$rand')\" onmouseover=\"cleandisplay('comments_$myname$rand')\">";
