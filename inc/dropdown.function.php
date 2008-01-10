@@ -332,6 +332,7 @@ function dropdownUsers($myname,$value,$right,$all=0,$display_comments=1,$entity_
 
 	$default_display="<select id='dropdown_".$myname.$rand."' name='$myname'><option value='$value'>".substr($user["name"],0,$CFG_GLPI["dropdown_limit"])."</option></select>\n";
 
+	$view_users=(haveRight("user","r"));
 
 	$params=array('searchText'=>'__VALUE__',
 			'value'=>$value,
@@ -343,6 +344,9 @@ function dropdownUsers($myname,$value,$right,$all=0,$display_comments=1,$entity_
 			'helpdesk_ajax'=>$helpdesk_ajax,
 			'entity_restrict'=>$entity_restrict,
 			);
+	if ($view_users){
+		$params['update_link']=$view_users;
+	}
 
 	$default="";
 	if (!empty($value)&&$value>0){
@@ -358,8 +362,6 @@ function dropdownUsers($myname,$value,$right,$all=0,$display_comments=1,$entity_
 	ajaxDropdown($use_ajax,"/ajax/dropdownUsers.php",$params,$default,$rand);
 
 	// Display comments
-
-	$view_users=(haveRight("user","r"));
 
 	if ($display_comments) {
 		if ($view_users){

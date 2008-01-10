@@ -145,7 +145,10 @@ if ($DB->numrows($result)) {
 echo "</select>";
 
 if (isset($_POST["comments"])&&$_POST["comments"]){
-	$params=array('value'=>'__VALUE__','table'=>"glpi_users", 'withlink'=>"comments_link_".$_POST["myname"].$_POST["rand"]);
+	$params=array('value'=>'__VALUE__','table'=>"glpi_users");
+	if (isset($_POST['update_link'])){
+		$params['withlink']="comments_link_".$_POST["myname"].$_POST["rand"];
+	}
 	ajaxUpdateItemOnSelectEvent("dropdown_".$_POST["myname"].$_POST["rand"],"comments_".$_POST["myname"].$_POST["rand"],$CFG_GLPI["root_doc"]."/ajax/comments.php",$params,false);
 }
 
