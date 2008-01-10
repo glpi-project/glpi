@@ -1652,9 +1652,15 @@ function showFollowupsShort($ID) {
 
 	global $DB,$CFG_GLPI, $LANG;
 
+	$showprivate=haveRight("show_full_ticket","1");
+	
+	$RESTRICT="";
+	if (!$showprivate)  $RESTRICT=" AND ( private='0' OR author ='".$_SESSION["glpiID"]."' ) ";
+
+
 	// Get Number of Followups
 
-	$query="SELECT * FROM glpi_followups WHERE tracking='$ID' ORDER BY date DESC";
+	$query="SELECT * FROM glpi_followups WHERE tracking='$ID' $RESTRICT ORDER BY date DESC";
 	$result=$DB->query($query);
 
 	$out="";
