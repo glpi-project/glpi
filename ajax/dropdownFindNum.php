@@ -90,7 +90,15 @@ if ($DB->numrows($result)) {
 
 		$output = $data['name'];
 		if ($_POST['table']!="glpi_software"){
-			$output.=" - ".$data['serial']." - ".$data['otherserial'];
+			if (!empty($data['contact'])){
+				$output.=" - ".$data['contact'];
+			}
+			if (!empty($data['serial'])){
+				$output.=" - ".$data['serial'];
+			}
+			if (!empty($data['otherserial'])){
+				$output.=" - ".$data['otherserial'];
+			}
 		}
 		if (empty($output)||$CFG_GLPI["view_ID"]) $output.=" (".$data['ID'].")";
 		echo "<option value=\"".$data['ID']."\" title=\"$output\">".substr($output,0,$CFG_GLPI["dropdown_limit"])."</option>";
