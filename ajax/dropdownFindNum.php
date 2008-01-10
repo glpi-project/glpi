@@ -58,13 +58,14 @@ if (in_array($_POST['table'],$CFG_GLPI["template_tables"]))
 $where.=" AND is_template='0' ";		
 
 if (strlen($_POST['searchText'])>0&&$_POST['searchText']!=$CFG_GLPI["ajax_wildcard"]){
+	$search=makeTextSearch($_POST['searchText']);
 	$WWHERE="";
 	$FWHERE="";
 	if ($_POST['table']!="glpi_software"){
-		$WWHERE=" OR serial ".makeTextSearch($_POST['searchText'])." OR otherserial ".makeTextSearch($_POST['searchText']);
+		$WWHERE=" OR contact ".$search." OR serial ".$search." OR otherserial ".$search;
 	} 
 	 	
-	$where.=" AND (name ".makeTextSearch($_POST['searchText'])." OR ID = '".$_POST['searchText']."' $WWHERE)";
+	$where.=" AND (name ".$search." OR ID = '".$_POST['searchText']."' $WWHERE)";
 }
 //If software : filter to display only the softwares that are allowed to be visible in Helpdesk
 if ($_POST['table']=="glpi_software"){
