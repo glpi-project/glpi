@@ -74,9 +74,9 @@ if (isset($_POST["move"])) {
 } else if (isset($_POST["delete"])) {
 	if(!dropdownUsed($_POST["tablename"], $_POST["ID"]) && empty($_POST["forcedelete"])) {
 		if (ereg("popup",$_SERVER['PHP_SELF']))
-			popHeader($LANG["title"][2],$_SERVER['PHP_SELF']);
+			popHeader($LANG["common"][12],$_SERVER['PHP_SELF']);
 		else 	
-			commonHeader($LANG["title"][2],$_SERVER['PHP_SELF']);
+			commonHeader($LANG["common"][12],$_SERVER['PHP_SELF']);
 		showDeleteConfirmForm($_SERVER['PHP_SELF'],$_POST["tablename"], $_POST["ID"],$_POST["FK_entities"]);
 		if (ereg("popup",$_SERVER['PHP_SELF']))
 			popFooter();
@@ -98,7 +98,7 @@ if (isset($_POST["move"])) {
 	glpi_header($_SERVER['PHP_SELF']."?which=$which");
 }
 else {
-	commonHeader($LANG["title"][2],$_SERVER['PHP_SELF'],"admin","entity");
+	commonHeader($LANG["common"][12],$_SERVER['PHP_SELF'],"admin","entity");
 
 	showFormTreeDown($_SERVER['PHP_SELF'],"glpi_entities",$LANG["entity"][1],$ID,$value2,$where,$tomove,$type);
 	commonFooter();

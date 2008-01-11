@@ -39,7 +39,7 @@ $NEEDED_ITEMS=array("rulesengine");
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-commonHeader($LANG["title"][2],$_SERVER['PHP_SELF'],"admin","dictionnary",-1);
+commonHeader($LANG["common"][12],$_SERVER['PHP_SELF'],"admin","dictionnary",-1);
 
 	echo "<div align='center'><table class='tab_cadre' cellpadding='5'>";
 	echo "<tr class='tab_bg_1'><th colspan='4'>" . $LANG["rulesengine"][77] . "</th></tr>";

@@ -560,7 +560,7 @@ class Config extends CommonDBTM {
 					echo "<input type=\"text\" name=\"dbreplicate_maxdelay\" size='8' value=\"" . $CFG_GLPI["dbreplicate_maxdelay"] . "\">";
 					echo "&nbsp;" . $LANG["stats"][34]."</td></tr>";
 		
-					echo "<tr class='tab_bg_2'><td class='center'> " . $LANG["setup"][805] . " </td><td colspan='3'>";
+					echo "<tr class='tab_bg_2'><td class='center'> " . $LANG["setup"][203] . " </td><td colspan='3'>";
 					echo "<input type=\"text\" size='50' name=\"dbreplicate_email\" value=\"" . $CFG_GLPI["dbreplicate_email"] . "\">";
 					echo "</td></tr>";
 		
@@ -610,7 +610,7 @@ class Config extends CommonDBTM {
 		if ($_SESSION['glpi_mailconfig'] == 1) {
 			echo "class='actif'";
 		}
-		echo "><a href='$target?onglet=1'>" . $LANG["Menu"][10] . "</a></li>";
+		echo "><a href='$target?onglet=1'>" . $LANG["common"][12] . "</a></li>";
 		echo "<li ";
 		if ($_SESSION['glpi_mailconfig'] == 2) {
 			echo "class='actif'";

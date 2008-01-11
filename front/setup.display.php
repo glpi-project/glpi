@@ -51,7 +51,7 @@ if (!isset($_SESSION['glpi_searchconfig'])) $_SESSION['glpi_searchconfig']=1;
 if (isset($_GET['onglet'])) $_SESSION['glpi_searchconfig']=$_GET['onglet'];
 
 if (!ereg("popup",$_SERVER['PHP_SELF'])){
-	commonHeader($LANG["title"][2],$_SERVER['PHP_SELF'],"config","display");
+	commonHeader($LANG["common"][12],$_SERVER['PHP_SELF'],"config","display");
 }
 
 checkSeveralRightsOr(array("search_config_global"=>"w","search_config"=>"w"));

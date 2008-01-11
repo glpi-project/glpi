@@ -596,7 +596,7 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="")
 			}
 		}
 
-//		$config[$LANG["Menu"][10]]=array("setup.php","2");
+//		$config[$LANG["common"][12]]=array("setup.php","2");
 		if (haveRight("backup","w")){
 			$menu['admin']['content']['backup']['title']=$LANG["Menu"][12];
 			$menu['admin']['content']['backup']['shortcut']='b';
@@ -612,7 +612,7 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="")
 // CONFIG
 		$config=array();
 		$addconfig=array();
-		$menu['config']['title']=$LANG["Menu"][10];
+		$menu['config']['title']=$LANG["common"][12];
 		$menu['config']['default']='/front/setup.php';
 
 		if (haveRight("dropdown","w")||haveRight("entity_dropdown","w")){
@@ -844,7 +844,7 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="")
 							echo "<li><a href='".$CFG_GLPI["root_doc"].$val."' ><img title='".$LANG["state"][11]."' alt='".$LANG["state"][11]."' src='".$CFG_GLPI["root_doc"]."/pics/menu_show.png' > </a></li>";
 							break;
 						case "config":
-							echo "<li><a href='".$CFG_GLPI["root_doc"].$val."' ><img title='".$LANG["Menu"][10]."' alt='".$LANG["Menu"][10]."' src='".$CFG_GLPI["root_doc"]."/pics/menu_config.png' > </a></li>";
+							echo "<li><a href='".$CFG_GLPI["root_doc"].$val."' ><img title='".$LANG["common"][12]."' alt='".$LANG["common"][12]."' src='".$CFG_GLPI["root_doc"]."/pics/menu_config.png' > </a></li>";
 							break;
 
 						default :

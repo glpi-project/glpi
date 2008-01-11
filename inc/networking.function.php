@@ -84,7 +84,7 @@ function showPorts ($device,$device_type,$withtemplate='') {
 			echo "<br>".$LANG["networking"][59]."</th>";
 
 			echo "<th>".$LANG["networking"][56]."</th>";
-			echo "<th>".$LANG["networking"][16]."</th>";
+			echo "<th>".$LANG["common"][65]."</th>";
 			
 			echo"<th>".$LANG["networking"][17].":</th></tr>\n";
 			$i=0;
@@ -276,7 +276,7 @@ function showNetportForm($target,$ID,$ondevice,$devtype,$several) {
 	autocompletionTextField("name","glpi_networking_ports","name",$netport->fields["name"],80);	
 	echo "</td></tr>";
 
-	echo "<tr class='tab_bg_1'><td>".$LANG["networking"][16].":</td><td>";
+	echo "<tr class='tab_bg_1'><td>".$LANG["common"][65].":</td><td>";
 	dropdownValue("glpi_dropdown_iface","iface", $netport->fields["iface"]);
 	echo "</td></tr>";
 

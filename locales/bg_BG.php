@@ -190,6 +190,7 @@ $LANG["common"][8]="Управление на шаблоните...";
 $LANG["common"][9]="Добавяне на шаблон..."; 
 $LANG["common"][10]="Технически отговорник"; 
 $LANG["common"][11]="Ограничен изглед"; 
+$LANG["common"][12]="Настройки"; 
 $LANG["common"][13]="Шаблон"; 
 $LANG["common"][14]="Шаблони"; 
 $LANG["common"][15]="Местонахождение"; 
@@ -241,6 +242,8 @@ $LANG["common"][60]="Active";
 $LANG["common"][61]="Unknown error"; 
 $LANG["common"][62]="Other"; 
 $LANG["common"][63]="Error(s)"; 
+$LANG["common"][64]="Superviseur";
+$LANG["common"][65]="Интерфейс"; 
 
 $LANG["computers"][9]="Операционна система"; 
 $LANG["computers"][10]="OS serial"; 
@@ -320,7 +323,6 @@ $LANG["device_case"][2]="Среден";
 $LANG["device_case"][3]="Микро"; 
 
 $LANG["device_control"][0]="RAID"; 
-$LANG["device_control"][1]="Интерфейс"; 
 $LANG["device_control"][2]="IDE"; 
 $LANG["device_control"][3]="SATA"; 
 $LANG["device_control"][4]="SCSI"; 
@@ -328,14 +330,11 @@ $LANG["device_control"][5]="USB";
 
 $LANG["device_drive"][0]="Запис"; 
 $LANG["device_drive"][1]="Скорост"; 
-$LANG["device_drive"][2]="Интерфейс"; 
 
 $LANG["device_gfxcard"][0]="Памет"; 
-$LANG["device_gfxcard"][2]="интерфейс"; 
 
 $LANG["device_hdd"][0]="об/мин"; 
 $LANG["device_hdd"][1]="Кеш"; 
-$LANG["device_hdd"][2]="Интерфейс"; 
 $LANG["device_hdd"][4]="Размер"; 
 
 $LANG["device_iface"][0]="Скорост"; 
@@ -775,7 +774,6 @@ $LANG["log"][53]="Инструменти";
 $LANG["log"][54]="Управление"; 
 $LANG["log"][55]="Връзка"; 
 $LANG["log"][56]="Документи"; 
-$LANG["log"][57]="Настройки"; 
 $LANG["log"][58]="Съхранение"; 
 $LANG["log"][59]="Cron"; 
 $LANG["log"][60]="Деглобализация"; 
@@ -883,7 +881,6 @@ $LANG["Menu"][3]="Монитори";
 $LANG["Menu"][4]="Софтуеър"; 
 $LANG["Menu"][5]="Проследяване"; 
 $LANG["Menu"][6]="Отчети"; 
-$LANG["Menu"][10]="Настройки"; 
 $LANG["Menu"][11]="Предпочитания"; 
 $LANG["Menu"][12]="Данни"; 
 $LANG["Menu"][13]="Статистика"; 
@@ -931,7 +928,6 @@ $LANG["networking"][12]="Мрежово устройство";
 $LANG["networking"][13]="открити мрежови портове"; 
 $LANG["networking"][14]="IP"; 
 $LANG["networking"][15]="MAC"; 
-$LANG["networking"][16]="Интерфейс"; 
 $LANG["networking"][17]="Включен към"; 
 $LANG["networking"][19]="Добавяне на мрежови порт..."; 
 $LANG["networking"][20]="Управление на портовете"; 
@@ -1110,7 +1106,6 @@ $LANG["printers"][35]="Тип на управления";
 
 $LANG["profiles"][0]="Global right"; 
 $LANG["profiles"][1]="Entity Right"; 
-$LANG["profiles"][2]="Интерфейс"; 
 $LANG["profiles"][3]="Права на Helpdesk"; 
 $LANG["profiles"][4]="Общи права"; 
 $LANG["profiles"][5]="Създаване на заявка"; 
@@ -1591,7 +1586,6 @@ $LANG["setup"][801]="Activer le réplicat";
 $LANG["setup"][802]="Base"; 
 $LANG["setup"][803]="Ecart entre le maître et l'esclave"; 
 $LANG["setup"][804]="Notifier par mail si désynchronisation"; 
-$LANG["setup"][805]="E-mail de l'administrateur"; 
 $LANG["setup"][806]="Durée maximum de désynchronisation"; 
 $LANG["setup"][807]="La base de donnée esclave est désynchronisée. L'écart est de :"; 
 $LANG["setup"][808]="Base de données esclave désynchronisée !"; 
@@ -1670,7 +1664,6 @@ $LANG["stats"][49]="(проследявания)";
 
 $LANG["title"][0]="Център за управление"; 
 $LANG["title"][1]="Helpdesk Access Only"; 
-$LANG["title"][2]="Настройки"; 
 $LANG["title"][3]="Компютри"; 
 $LANG["title"][5]="База знания"; 
 $LANG["title"][6]="Мрежи"; 

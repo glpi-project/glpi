@@ -183,7 +183,7 @@ function printDeviceComputer($device,$quantity,$specif,$compID,$compDevID,$witht
 			$type=$LANG["devices"][1];
 			$name=$device->fields["designation"];
 			if (!empty($device->fields["rpm"]))	$entry[$LANG["device_hdd"][0]]=$device->fields["rpm"];
-			if ($device->fields["interface"])	$entry[$LANG["device_hdd"][2]]=getDropdownName("glpi_dropdown_interface",$device->fields["interface"]);
+			if ($device->fields["interface"])	$entry[$LANG["common"][65]]=getDropdownName("glpi_dropdown_interface",$device->fields["interface"]);
 			if (!empty($device->fields["cache"])) $entry[$LANG["device_hdd"][1]]=$device->fields["cache"];
 
 			$specificity_size = 10;
@@ -192,9 +192,9 @@ function printDeviceComputer($device,$quantity,$specif,$compID,$compDevID,$witht
 			$type=$LANG["devices"][2];
 			$name=$device->fields["designation"];
 //			if (!empty($device->fields["ram"])) $entry[$LANG["device_gfxcard"][0]]=$device->fields["ram"];
-//			if (!empty($device->fields["interface"])) 		$entry[$LANG["device_gfxcard"][2]]=getDropdownName("glpi_dropdown_interface",$device->fields["interface"]);
+//			if (!empty($device->fields["interface"])) 		$entry[$LANG["common"][65]]=getDropdownName("glpi_dropdown_interface",$device->fields["interface"]);
 
-			$entry[$LANG["device_gfxcard"][2]]=$device->fields["interface"];
+			$entry[$LANG["common"][65]]=$device->fields["interface"];
 			$specificity_size = 10;
 			break;
 		case NETWORK_DEVICE :
@@ -239,13 +239,13 @@ function printDeviceComputer($device,$quantity,$specif,$compID,$compDevID,$witht
 			$name=$device->fields["designation"];
 			if ($device->fields["is_writer"]) $entry[$LANG["device_drive"][0]]=getYesNo($device->fields["is_writer"]);
 			if (!empty($device->fields["speed"])) $entry[$LANG["device_drive"][1]]=$device->fields["speed"];
-			if (!empty($device->fields["frequence"])) $entry[$LANG["device_drive"][2]]=$device->fields["frequence"];
+			if (!empty($device->fields["frequence"])) $entry[$LANG["common"][65]]=$device->fields["frequence"];
 			break;
 		case CONTROL_DEVICE :
 			$type=$LANG["devices"][20];
 			$name=$device->fields["designation"];
 			if ($device->fields["raid"]) $entry[$LANG["device_control"][0]]=getYesNo($device->fields["raid"]);
-			if ($device->fields["interface"]) $entry[$LANG["device_control"][1]]=getDropdownName("glpi_dropdown_interface",$device->fields["interface"]);
+			if ($device->fields["interface"]) $entry[$LANG["common"][65]]=getDropdownName("glpi_dropdown_interface",$device->fields["interface"]);
 
 			break;
 		case PCI_DEVICE :
@@ -650,7 +650,7 @@ function showDevicesForm ($target,$ID,$device_type) {
 			echo "</td></tr>";
 	
 	
-			echo "<tr><td>".$LANG["device_hdd"][2].":</td>";
+			echo "<tr><td>".$LANG["common"][65].":</td>";
 			echo "<td>";
 			dropdownValue("glpi_dropdown_interface","interface",$device->fields["interface"]);
 			echo "</td>";
@@ -669,7 +669,7 @@ function showDevicesForm ($target,$ID,$device_type) {
 			dropdownYesNo("is_writer",$device->fields["is_writer"]);
 			echo "</td>";
 			echo "</tr>";
-			echo "<tr><td>".$LANG["device_drive"][2].":</td>";
+			echo "<tr><td>".$LANG["common"][65].":</td>";
 			echo "<td>";
 	
 			dropdownValue("glpi_dropdown_interface","interface",$device->fields["interface"]);
@@ -689,7 +689,7 @@ function showDevicesForm ($target,$ID,$device_type) {
 			dropdownYesNo("raid",$device->fields["raid"]);
 			echo "</td>";
 			echo "</tr>";
-			echo "<tr><td>".$LANG["device_control"][1].":</td>";
+			echo "<tr><td>".$LANG["common"][65].":</td>";
 			echo "<td>";
 			dropdownValue("glpi_dropdown_interface","interface",$device->fields["interface"]);
 			echo "</td>";
@@ -700,7 +700,7 @@ function showDevicesForm ($target,$ID,$device_type) {
 				echo "<tr><td>".$LANG["device_gfxcard"][0].":</td><td>";
 			autocompletionTextField("specif_default",$table,"specif_default",$device->fields["specif_default"],20);
 			echo "</td></tr>";
-			echo "<tr><td>".$LANG["device_gfxcard"][2].":</td>";
+			echo "<tr><td>".$LANG["common"][65].":</td>";
 			echo "<td><select name='interface'>";
 			echo "<option value='AGP' ".($device->fields["interface"]=="AGP"?"selected":"").">AGP</option>";
 			echo "<option value='PCI' ".($device->fields["interface"]=="PCI"?"selected":"").">PCI</option>";

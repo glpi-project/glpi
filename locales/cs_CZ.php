@@ -190,6 +190,7 @@ $LANG["common"][8]="Spravovat šablony";
 $LANG["common"][9]="Přidat šablonu"; 
 $LANG["common"][10]="Zodpovědnost technika"; 
 $LANG["common"][11]="Omezený pohled"; 
+$LANG["common"][12]="Nastavení"; 
 $LANG["common"][13]="Šablona"; 
 $LANG["common"][14]="Šablony"; 
 $LANG["common"][15]="Umístění"; 
@@ -241,6 +242,8 @@ $LANG["common"][60]="Aktivní";
 $LANG["common"][61]="Neznámá chyba"; 
 $LANG["common"][62]="Ostatní"; 
 $LANG["common"][63]="Chyba(y)"; 
+$LANG["common"][64]="Superviseur";
+$LANG["common"][65]="Rozhraní"; 
 
 $LANG["computers"][9]="OS"; 
 $LANG["computers"][10]="Sériové číslo OS"; 
@@ -320,7 +323,6 @@ $LANG["device_case"][2]="Průměr";
 $LANG["device_case"][3]="Micro"; 
 
 $LANG["device_control"][0]="RAID"; 
-$LANG["device_control"][1]="Rozhraní"; 
 $LANG["device_control"][2]="IDE"; 
 $LANG["device_control"][3]="SATA"; 
 $LANG["device_control"][4]="SCSI"; 
@@ -328,14 +330,11 @@ $LANG["device_control"][5]="USB";
 
 $LANG["device_drive"][0]="Schopnost psát"; 
 $LANG["device_drive"][1]="Rychlost"; 
-$LANG["device_drive"][2]="Rozhraní"; 
 
 $LANG["device_gfxcard"][0]="Paměť"; 
-$LANG["device_gfxcard"][2]="rozhraní"; 
 
 $LANG["device_hdd"][0]="Rpm"; 
 $LANG["device_hdd"][1]="Cache"; 
-$LANG["device_hdd"][2]="Rozhraní"; 
 $LANG["device_hdd"][4]="Kapacita"; 
 
 $LANG["device_iface"][0]="Datový tok"; 
@@ -775,7 +774,6 @@ $LANG["log"][53]="Nástroje";
 $LANG["log"][54]="Management"; 
 $LANG["log"][55]="Připojení"; 
 $LANG["log"][56]="Dokumenty"; 
-$LANG["log"][57]="Nastavení"; 
 $LANG["log"][58]="Rezervace"; 
 $LANG["log"][59]="Cron"; 
 $LANG["log"][60]="Deglobalizace položky"; 
@@ -883,7 +881,6 @@ $LANG["Menu"][3]="Monitory";
 $LANG["Menu"][4]="Software"; 
 $LANG["Menu"][5]="Sledování"; 
 $LANG["Menu"][6]="Zprávy"; 
-$LANG["Menu"][10]="Nastavení"; 
 $LANG["Menu"][11]="Nastavení"; 
 $LANG["Menu"][12]="Data"; 
 $LANG["Menu"][13]="Statistika"; 
@@ -931,7 +928,6 @@ $LANG["networking"][12]="Síťové zařízení";
 $LANG["networking"][13]="nalezen síťový port"; 
 $LANG["networking"][14]="IP"; 
 $LANG["networking"][15]="MAC"; 
-$LANG["networking"][16]="Rozhraní"; 
 $LANG["networking"][17]="Připojen k"; 
 $LANG["networking"][19]="Přidat síťový port..."; 
 $LANG["networking"][20]="Správce portu"; 
@@ -1110,7 +1106,6 @@ $LANG["printers"][35]="Typ správy";
 
 $LANG["profiles"][0]="Globální oprávnění"; 
 $LANG["profiles"][1]="Práva objektu"; 
-$LANG["profiles"][2]="Rozhraní"; 
 $LANG["profiles"][3]="Oprávnění Odborné pomoci"; 
 $LANG["profiles"][4]="Hlavní oprávnění"; 
 $LANG["profiles"][5]="Vytvořit požadavek"; 
@@ -1591,7 +1586,6 @@ $LANG["setup"][801]="Activer le réplicat";
 $LANG["setup"][802]="Base"; 
 $LANG["setup"][803]="Ecart entre le maître et l'esclave"; 
 $LANG["setup"][804]="Notifier par mail si désynchronisation"; 
-$LANG["setup"][805]="E-mail de l'administrateur"; 
 $LANG["setup"][806]="Durée maximum de désynchronisation"; 
 $LANG["setup"][807]="La base de donnée esclave est désynchronisée. L'écart est de :"; 
 $LANG["setup"][808]="Base de données esclave désynchronisée !"; 
@@ -1670,7 +1664,6 @@ $LANG["stats"][49]="(sledovat)";
 
 $LANG["title"][0]="Ovládací centrum"; 
 $LANG["title"][1]="Přístup pouze k Odborné pomoci"; 
-$LANG["title"][2]="Nastavení"; 
 $LANG["title"][3]="Počítače"; 
 $LANG["title"][5]="Databáze znalostí"; 
 $LANG["title"][6]="Vytváření sítě"; 

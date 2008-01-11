@@ -190,6 +190,7 @@ $LANG["common"][8]="テンプレートを管理...";
 $LANG["common"][9]="テンプレートを追加..."; 
 $LANG["common"][10]="管理担当者"; 
 $LANG["common"][11]="限定表示"; 
+$LANG["common"][12]="セットアップ"; 
 $LANG["common"][13]="テンプレート"; 
 $LANG["common"][14]="テンプレート"; 
 $LANG["common"][15]="場所"; 
@@ -241,6 +242,8 @@ $LANG["common"][60]="アクティブ";
 $LANG["common"][61]="不明なエラー"; 
 $LANG["common"][62]="その他"; 
 $LANG["common"][63]="エラー"; 
+$LANG["common"][64]="Superviseur";
+$LANG["common"][65]="インターフェース"; 
 
 $LANG["computers"][9]="OS"; 
 $LANG["computers"][10]="OSのシリアル番号"; 
@@ -320,7 +323,6 @@ $LANG["device_case"][2]="通常タイプ";
 $LANG["device_case"][3]="マイクロタワー"; 
 
 $LANG["device_control"][0]="RAID"; 
-$LANG["device_control"][1]="インターフェース"; 
 $LANG["device_control"][2]="IDE"; 
 $LANG["device_control"][3]="SATA"; 
 $LANG["device_control"][4]="SCSI"; 
@@ -328,14 +330,11 @@ $LANG["device_control"][5]="USB";
 
 $LANG["device_drive"][0]="書き込み可能"; 
 $LANG["device_drive"][1]="速度"; 
-$LANG["device_drive"][2]="インターフェース"; 
 
 $LANG["device_gfxcard"][0]="メモリ"; 
-$LANG["device_gfxcard"][2]="インターフェース"; 
 
 $LANG["device_hdd"][0]="回転速度（RPM）"; 
 $LANG["device_hdd"][1]="キャッシュのサイズ"; 
-$LANG["device_hdd"][2]="インターフェース"; 
 $LANG["device_hdd"][4]="容量"; 
 
 $LANG["device_iface"][0]="Flow"; 
@@ -775,7 +774,6 @@ $LANG["log"][53]="ツール";
 $LANG["log"][54]="管理"; 
 $LANG["log"][55]="接続"; 
 $LANG["log"][56]="ドキュメント"; 
-$LANG["log"][57]="セットアップ"; 
 $LANG["log"][58]="予約"; 
 $LANG["log"][59]="Cron"; 
 $LANG["log"][60]="アイテムのUnglobalization"; 
@@ -883,7 +881,6 @@ $LANG["Menu"][3]="モニタ";
 $LANG["Menu"][4]="ソフトウエア"; 
 $LANG["Menu"][5]="対応状況"; 
 $LANG["Menu"][6]="レポート"; 
-$LANG["Menu"][10]="セットアップ"; 
 $LANG["Menu"][11]="個人別設定"; 
 $LANG["Menu"][12]="バックアップツール"; 
 $LANG["Menu"][13]="ヘルプデスク統計"; 
@@ -931,7 +928,6 @@ $LANG["networking"][12]="ネットワーク機器";
 $LANG["networking"][13]="ネットワーク情報が見付かりました"; 
 $LANG["networking"][14]="IP"; 
 $LANG["networking"][15]="MAC"; 
-$LANG["networking"][16]="インターフェース"; 
 $LANG["networking"][17]="接続先"; 
 $LANG["networking"][19]="ネットワーク情報を追加..."; 
 $LANG["networking"][20]="ポートマネジャー"; 
@@ -1110,7 +1106,6 @@ $LANG["printers"][35]="管理種別";
 
 $LANG["profiles"][0]="グローバル権限"; 
 $LANG["profiles"][1]="エンティティ権限"; 
-$LANG["profiles"][2]="インターフェイス"; 
 $LANG["profiles"][3]="ヘルプデスク権限"; 
 $LANG["profiles"][4]="主要権限"; 
 $LANG["profiles"][5]="チケットを作成"; 
@@ -1591,7 +1586,6 @@ $LANG["setup"][801]="Activer le réplicat";
 $LANG["setup"][802]="Base"; 
 $LANG["setup"][803]="Ecart entre le maître et l'esclave"; 
 $LANG["setup"][804]="Notifier par mail si désynchronisation"; 
-$LANG["setup"][805]="E-mail de l'administrateur"; 
 $LANG["setup"][806]="Durée maximum de désynchronisation"; 
 $LANG["setup"][807]="La base de donnée esclave est désynchronisée. L'écart est de :"; 
 $LANG["setup"][808]="Base de données esclave désynchronisée !"; 
@@ -1670,7 +1664,6 @@ $LANG["stats"][49]="（対応内容）";
 
 $LANG["title"][0]="コマンドセンター"; 
 $LANG["title"][1]="ヘルプデスク"; 
-$LANG["title"][2]="セットアップ"; 
 $LANG["title"][3]="コンピュータ"; 
 $LANG["title"][5]="ナレッジベース"; 
 $LANG["title"][6]="ネットワーク"; 

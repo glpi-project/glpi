@@ -49,7 +49,7 @@ $rulecollection = getRuleCollectionClass($rule_type);
 checkRight($rulecollection->right,"r");
 
 if (!ereg("popup",$_SERVER['PHP_SELF'])){
-	commonHeader($LANG["title"][2],$_SERVER['PHP_SELF'],"config","display");
+	commonHeader($LANG["common"][12],$_SERVER['PHP_SELF'],"config","display");
 }
 
 $input = $rulecollection->showRulesEngineCriteriasForm($_SERVER['PHP_SELF'],$rule_type,$_POST);

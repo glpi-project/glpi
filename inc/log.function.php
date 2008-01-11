@@ -354,7 +354,7 @@ function logArray(){
 			"tools"=>$LANG["log"][53],
 			"financial"=>$LANG["log"][54],
 			"login"=>$LANG["log"][55],
-			"setup"=>$LANG["log"][57],
+			"setup"=>$LANG["common"][12],
 			"security"=>$LANG["log"][66],
 			"reservation"=>$LANG["log"][58],
 			"cron"=>$LANG["log"][59],

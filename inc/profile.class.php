@@ -54,7 +54,7 @@ class Profile extends CommonDBTM{
 	function defineOnglets($withtemplate){
 		global $LANG,$CFG_GLPI;
 
-		$ong[1]=$LANG["title"][2];
+		$ong[1]=$LANG["common"][12];
 		if (haveRight("user","r")){
 			$ong[2]=$LANG["Menu"][14];
 		}
@@ -591,10 +591,10 @@ class Profile extends CommonDBTM{
 		echo "</td>";
 
 		// Configuration 
-		echo "<tr><td class='tab_bg_1' colspan='6' align='center'><strong>".$LANG["title"][2]."</strong></td></tr>";
+		echo "<tr><td class='tab_bg_1' colspan='6' align='center'><strong>".$LANG["common"][12]."</strong></td></tr>";
 
 		echo "<tr class='tab_bg_2'>";
-		echo "<td  class='tab_bg_4'>".$LANG["title"][2].":</td><td class='tab_bg_4'>";
+		echo "<td  class='tab_bg_4'>".$LANG["common"][12].":</td><td class='tab_bg_4'>";
 		dropdownNoneReadWrite("config",$this->fields["config"],1,0,1);
 		echo "</td>";
 		echo "<td class='tab_bg_4'>".$LANG["setup"][250].":</td><td class='tab_bg_4'>";

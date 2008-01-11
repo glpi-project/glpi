@@ -73,7 +73,7 @@ else
 {
 	checkRight("typedoc","r");
 
-	commonHeader($LANG["title"][2],$_SERVER['PHP_SELF'],"config","typedoc");
+	commonHeader($LANG["common"][12],$_SERVER['PHP_SELF'],"config","typedoc");
 	$typedoc->showForm($_SERVER['PHP_SELF'],$_GET["ID"]);
 	commonFooter();
 }

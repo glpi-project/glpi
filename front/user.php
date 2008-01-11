@@ -43,7 +43,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 checkRight("user","r");
 
-commonHeader($LANG["title"][2],$_SERVER['PHP_SELF'],"admin","user");	
+commonHeader($LANG["common"][12],$_SERVER['PHP_SELF'],"admin","user");	
 
 $user=new User();
 $user->title();
