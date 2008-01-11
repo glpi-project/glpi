@@ -61,7 +61,7 @@ if (!empty ($_POST["update"])) {
 		glpi_header($CFG_GLPI["root_doc"] ."/front/setup.config.php");
 }
 
-commonHeader($LANG["title"][2], $_SERVER['PHP_SELF'],"config","config");
+commonHeader($LANG["common"][12], $_SERVER['PHP_SELF'],"config","config");
 $config->showForm($_SERVER['PHP_SELF']);
 
 commonFooter();

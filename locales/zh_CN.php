@@ -190,6 +190,7 @@ $LANG["common"][8]="处理模板…";
 $LANG["common"][9]="添加一块模板…"; 
 $LANG["common"][10]="技术负责任"; 
 $LANG["common"][11]="限制了视图"; 
+$LANG["common"][12]="设定"; 
 $LANG["common"][13]="模板"; 
 $LANG["common"][14]="模板"; 
 $LANG["common"][15]="地点"; 
@@ -241,6 +242,8 @@ $LANG["common"][60]="Active";
 $LANG["common"][61]="Unknown error"; 
 $LANG["common"][62]="Other"; 
 $LANG["common"][63]="Error(s)"; 
+$LANG["common"][64]="Superviseur";
+$LANG["common"][65]="接口"; 
 
 $LANG["computers"][9]="操作系统"; 
 $LANG["computers"][10]="OS serial"; 
@@ -320,7 +323,6 @@ $LANG["device_case"][2]="媒介";
 $LANG["device_case"][3]="微"; 
 
 $LANG["device_control"][0]="RAID"; 
-$LANG["device_control"][1]="接口"; 
 $LANG["device_control"][2]="IDE"; 
 $LANG["device_control"][3]="SATA"; 
 $LANG["device_control"][4]="SCSI"; 
@@ -328,14 +330,11 @@ $LANG["device_control"][5]="USB";
 
 $LANG["device_drive"][0]="写入"; 
 $LANG["device_drive"][1]="速度"; 
-$LANG["device_drive"][2]="接口"; 
 
 $LANG["device_gfxcard"][0]="内存"; 
-$LANG["device_gfxcard"][2]="接口"; 
 
 $LANG["device_hdd"][0]="转/每分"; 
 $LANG["device_hdd"][1]="高速缓存"; 
-$LANG["device_hdd"][2]="接口"; 
 $LANG["device_hdd"][4]="容量"; 
 
 $LANG["device_iface"][0]="流量"; 
@@ -775,7 +774,6 @@ $LANG["log"][53]="工具";
 $LANG["log"][54]="管理"; 
 $LANG["log"][55]="连接"; 
 $LANG["log"][56]="文档"; 
-$LANG["log"][57]="设定"; 
 $LANG["log"][58]="保留"; 
 $LANG["log"][59]="Cron"; 
 $LANG["log"][60]="项目Unglobalization"; 
@@ -883,7 +881,6 @@ $LANG["Menu"][3]="显示器";
 $LANG["Menu"][4]="软件"; 
 $LANG["Menu"][5]="固定资产跟踪"; 
 $LANG["Menu"][6]="报告"; 
-$LANG["Menu"][10]="设定"; 
 $LANG["Menu"][11]="设置"; 
 $LANG["Menu"][12]="数据"; 
 $LANG["Menu"][13]="统计"; 
@@ -931,7 +928,6 @@ $LANG["networking"][12]="网络设备";
 $LANG["networking"][13]="发现网络端口"; 
 $LANG["networking"][14]="IP"; 
 $LANG["networking"][15]="MAC"; 
-$LANG["networking"][16]="接口"; 
 $LANG["networking"][17]="连接到"; 
 $LANG["networking"][19]="添加网络端口…"; 
 $LANG["networking"][20]="端口管理"; 
@@ -1110,7 +1106,6 @@ $LANG["printers"][35]="管理类型";
 
 $LANG["profiles"][0]="Global right"; 
 $LANG["profiles"][1]="Entity Right"; 
-$LANG["profiles"][2]="接口"; 
 $LANG["profiles"][3]="服务台权限"; 
 $LANG["profiles"][4]="中央权限"; 
 $LANG["profiles"][5]="创建一张case"; 
@@ -1591,7 +1586,6 @@ $LANG["setup"][801]="Activer le réplicat";
 $LANG["setup"][802]="Base"; 
 $LANG["setup"][803]="Ecart entre le maître et l'esclave"; 
 $LANG["setup"][804]="Notifier par mail si désynchronisation"; 
-$LANG["setup"][805]="E-mail de l'administrateur"; 
 $LANG["setup"][806]="Durée maximum de désynchronisation"; 
 $LANG["setup"][807]="La base de donnée esclave est désynchronisée. L'écart est de :"; 
 $LANG["setup"][808]="Base de données esclave désynchronisée !"; 
@@ -1670,7 +1664,6 @@ $LANG["stats"][49]="(后续)";
 
 $LANG["title"][0]="指挥中心"; 
 $LANG["title"][1]="仅服务台通入"; 
-$LANG["title"][2]="设定了"; 
 $LANG["title"][3]="计算机"; 
 $LANG["title"][5]="知识库"; 
 $LANG["title"][6]="网络"; 

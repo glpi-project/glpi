@@ -56,7 +56,7 @@ checkRight($rule->right,"r");
 $test_rule_output=null;
 
 if (!ereg("popup",$_SERVER['PHP_SELF'])){
-	commonHeader($LANG["title"][2],$_SERVER['PHP_SELF'],"config","display");
+	commonHeader($LANG["common"][12],$_SERVER['PHP_SELF'],"config","display");
 }
 
 $rule->showRulePreviewCriteriasForm($_SERVER['PHP_SELF'],$rule_id,array(),array());

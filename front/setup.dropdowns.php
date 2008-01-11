@@ -106,7 +106,7 @@ if (isset($_POST['mass_delete'])){
 } else if (isset($_POST["delete"])) {
 	if(!dropdownUsed($_POST["tablename"], $_POST["ID"]) && empty($_POST["forcedelete"])) {
 		if (!ereg("popup",$_SERVER['PHP_SELF'])){
-			commonHeader($LANG["title"][2],$_SERVER['PHP_SELF'],"config","dropdowns");
+			commonHeader($LANG["common"][12],$_SERVER['PHP_SELF'],"config","dropdowns");
 		}
 		showDeleteConfirmForm($_SERVER['PHP_SELF'],$_POST["tablename"], $_POST["ID"],$_POST["FK_entities"]);
 		if (!ereg("popup",$_SERVER['PHP_SELF'])){
@@ -130,7 +130,7 @@ if (isset($_POST['mass_delete'])){
 
 } else {
 	if (!ereg("popup",$_SERVER['PHP_SELF'])){
-		commonHeader($LANG["title"][2],$_SERVER['PHP_SELF'],"config","dropdowns");
+		commonHeader($LANG["common"][12],$_SERVER['PHP_SELF'],"config","dropdowns");
 	}
 
 	$optgroup=array(

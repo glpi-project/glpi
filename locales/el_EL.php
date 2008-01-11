@@ -190,6 +190,7 @@ $LANG["common"][8]="Διαχείρηση προτύπων...";
 $LANG["common"][9]="Προσθήκη πρότυπου..."; 
 $LANG["common"][10]="Εξουσιοδοτημένος τεχνικός"; 
 $LANG["common"][11]="Περιορισμένη προβολή"; 
+$LANG["common"][12]="Εγκατάσταση"; 
 $LANG["common"][13]="Πρότυπο"; 
 $LANG["common"][14]="Πρότυπα"; 
 $LANG["common"][15]="Τοποθεσία"; 
@@ -241,6 +242,8 @@ $LANG["common"][60]="Active";
 $LANG["common"][61]="Unknown error"; 
 $LANG["common"][62]="Other"; 
 $LANG["common"][63]="Error(s)"; 
+$LANG["common"][64]="Superviseur";
+$LANG["common"][65]="Interface"; 
 
 $LANG["computers"][9]="Λειτουργικό σύστημα"; 
 $LANG["computers"][10]="Σειριακός αριθμός λειτουργικού συστήματος"; 
@@ -320,7 +323,6 @@ $LANG["device_case"][2]="Μεσαίο";
 $LANG["device_case"][3]="Μικρό"; 
 
 $LANG["device_control"][0]="RAID"; 
-$LANG["device_control"][1]="Πρωτόκολο Σύνδεσης"; 
 $LANG["device_control"][2]="IDE"; 
 $LANG["device_control"][3]="SATA"; 
 $LANG["device_control"][4]="SCSI"; 
@@ -328,14 +330,11 @@ $LANG["device_control"][5]="USB";
 
 $LANG["device_drive"][0]="Ικανότητα εγγραφής"; 
 $LANG["device_drive"][1]="Ταχύτητα"; 
-$LANG["device_drive"][2]="Interface"; 
 
 $LANG["device_gfxcard"][0]="Μνήμη"; 
-$LANG["device_gfxcard"][2]="interface"; 
 
 $LANG["device_hdd"][0]="Στροφές το λεπτό"; 
 $LANG["device_hdd"][1]="Προσωρινή μνήμη"; 
-$LANG["device_hdd"][2]="Interface"; 
 $LANG["device_hdd"][4]="Χωρητικότητα"; 
 
 $LANG["device_iface"][0]="Ροή"; 
@@ -883,7 +882,6 @@ $LANG["Menu"][3]="Monitors";
 $LANG["Menu"][4]="Software"; 
 $LANG["Menu"][5]="Tracking"; 
 $LANG["Menu"][6]="Reports"; 
-$LANG["Menu"][10]="Setup"; 
 $LANG["Menu"][11]="Settings"; 
 $LANG["Menu"][12]="Data"; 
 $LANG["Menu"][13]="Statistics"; 
@@ -931,7 +929,6 @@ $LANG["networking"][12]="Networking device";
 $LANG["networking"][13]="networking ports found"; 
 $LANG["networking"][14]="IP"; 
 $LANG["networking"][15]="MAC"; 
-$LANG["networking"][16]="Interface"; 
 $LANG["networking"][17]="Connected to"; 
 $LANG["networking"][19]="Add networking port..."; 
 $LANG["networking"][20]="Port Manager"; 
@@ -1110,7 +1107,6 @@ $LANG["printers"][35]="Management Type";
 
 $LANG["profiles"][0]="Global right"; 
 $LANG["profiles"][1]="Entity Right"; 
-$LANG["profiles"][2]="Interface"; 
 $LANG["profiles"][3]="Helpdesk Rights"; 
 $LANG["profiles"][4]="Central Rights"; 
 $LANG["profiles"][5]="Create a ticket"; 
@@ -1591,7 +1587,6 @@ $LANG["setup"][801]="Activer le réplicat";
 $LANG["setup"][802]="Base"; 
 $LANG["setup"][803]="Ecart entre le maître et l'esclave"; 
 $LANG["setup"][804]="Notifier par mail si désynchronisation"; 
-$LANG["setup"][805]="E-mail de l'administrateur"; 
 $LANG["setup"][806]="Durée maximum de désynchronisation"; 
 $LANG["setup"][807]="La base de donnée esclave est désynchronisée. L'écart est de :"; 
 $LANG["setup"][808]="Base de données esclave désynchronisée !"; 
@@ -1670,7 +1665,6 @@ $LANG["stats"][49]="(follow-ups)";
 
 $LANG["title"][0]="Command Center"; 
 $LANG["title"][1]="Helpdesk Access Only"; 
-$LANG["title"][2]="Setup"; 
 $LANG["title"][3]="Computers"; 
 $LANG["title"][5]="Knowledge database"; 
 $LANG["title"][6]="Networking"; 

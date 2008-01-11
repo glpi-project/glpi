@@ -46,7 +46,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 checkCentralAccess();
 
 
-commonHeader($LANG["title"][2],$_SERVER['PHP_SELF'],"config");
+commonHeader($LANG["common"][12],$_SERVER['PHP_SELF'],"config");
 
 
 echo "<div align='center'><table class='tab_cadre' cellpadding='5'>";

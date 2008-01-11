@@ -190,6 +190,7 @@ $LANG["common"][8]="Zarządzaj szablonami";
 $LANG["common"][9]="Dodaj szablon"; 
 $LANG["common"][10]="Odpowiedzialny techniczny"; 
 $LANG["common"][11]="Ograniczony widok"; 
+$LANG["common"][12]="Konfiguracja"; 
 $LANG["common"][13]="Szablon"; 
 $LANG["common"][14]="Szablony"; 
 $LANG["common"][15]="Lokalizacja"; 
@@ -241,6 +242,8 @@ $LANG["common"][60]="Aktywny";
 $LANG["common"][61]="Nieznany błąd."; 
 $LANG["common"][62]="Inny"; 
 $LANG["common"][63]="Błędy"; 
+$LANG["common"][64]="Superviseur";
+$LANG["common"][65]="Interfejs"; 
 
 $LANG["computers"][9]="OS"; 
 $LANG["computers"][10]="Serial OS"; 
@@ -320,7 +323,6 @@ $LANG["device_case"][2]="Średnia";
 $LANG["device_case"][3]="Mikro"; 
 
 $LANG["device_control"][0]="RAID"; 
-$LANG["device_control"][1]="Interfejs"; 
 $LANG["device_control"][2]="IDE"; 
 $LANG["device_control"][3]="SATA"; 
 $LANG["device_control"][4]="SCSI"; 
@@ -328,14 +330,11 @@ $LANG["device_control"][5]="USB";
 
 $LANG["device_drive"][0]="Zapisywalny"; 
 $LANG["device_drive"][1]="Prędkość"; 
-$LANG["device_drive"][2]="Interfejs"; 
 
 $LANG["device_gfxcard"][0]="Pamięć"; 
-$LANG["device_gfxcard"][2]="interfejs"; 
 
 $LANG["device_hdd"][0]="Rpm"; 
 $LANG["device_hdd"][1]="Cache"; 
-$LANG["device_hdd"][2]="Interfejs"; 
 $LANG["device_hdd"][4]="Pojemność"; 
 
 $LANG["device_iface"][0]="Przepływ"; 
@@ -775,7 +774,6 @@ $LANG["log"][53]="Narzędzia";
 $LANG["log"][54]="Zarządzanie"; 
 $LANG["log"][55]="Połączenie"; 
 $LANG["log"][56]="Dokumenty"; 
-$LANG["log"][57]="Ustawienia"; 
 $LANG["log"][58]="Rezerwacja"; 
 $LANG["log"][59]="Harmonogram zadań"; 
 $LANG["log"][60]="Pozycja odglobalizowana"; 
@@ -883,7 +881,6 @@ $LANG["Menu"][3]="Monitory";
 $LANG["Menu"][4]="Oprogramowanie"; 
 $LANG["Menu"][5]="Śledzenie"; 
 $LANG["Menu"][6]="Raporty"; 
-$LANG["Menu"][10]="Konfiguracja"; 
 $LANG["Menu"][11]="Ustawienia"; 
 $LANG["Menu"][12]="Dane"; 
 $LANG["Menu"][13]="Statystyki"; 
@@ -931,7 +928,6 @@ $LANG["networking"][12]="Urządzenie sieciowe";
 $LANG["networking"][13]="znalezione porty sieciowe"; 
 $LANG["networking"][14]="IP"; 
 $LANG["networking"][15]="MAC"; 
-$LANG["networking"][16]="Interfejs"; 
 $LANG["networking"][17]="Podłączone do"; 
 $LANG["networking"][19]="Dodaj port sieciowy"; 
 $LANG["networking"][20]="Zarządzanie Portami"; 
@@ -1110,7 +1106,6 @@ $LANG["printers"][35]="Typ zarządzania";
 
 $LANG["profiles"][0]="Globalne prawa"; 
 $LANG["profiles"][1]="Uprawnienia Jednostki"; 
-$LANG["profiles"][2]="Interfejs"; 
 $LANG["profiles"][3]="Uprawnienia Pomocy"; 
 $LANG["profiles"][4]="Główne prawa"; 
 $LANG["profiles"][5]="Stwórz zgłoszenie"; 
@@ -1591,7 +1586,6 @@ $LANG["setup"][801]="Activer le réplicat";
 $LANG["setup"][802]="Base"; 
 $LANG["setup"][803]="Ecart entre le maître et l'esclave"; 
 $LANG["setup"][804]="Notifier par mail si désynchronisation"; 
-$LANG["setup"][805]="E-mail de l'administrateur"; 
 $LANG["setup"][806]="Durée maximum de désynchronisation"; 
 $LANG["setup"][807]="La base de donnée esclave est désynchronisée. L'écart est de :"; 
 $LANG["setup"][808]="Base de données esclave désynchronisée !"; 
@@ -1670,7 +1664,6 @@ $LANG["stats"][49]="(śledzenie)";
 
 $LANG["title"][0]="Centrum komend"; 
 $LANG["title"][1]="Dostęp tylko do pomocy"; 
-$LANG["title"][2]="Ustawienia"; 
 $LANG["title"][3]="Komputery"; 
 $LANG["title"][5]="Baza wiedzy"; 
 $LANG["title"][6]="Sieć"; 

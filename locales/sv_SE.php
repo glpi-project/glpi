@@ -190,6 +190,7 @@ $LANG["common"][8]="Hantera mallar";
 $LANG["common"][9]="Ny mall"; 
 $LANG["common"][10]="Tekniskt ansvarig"; 
 $LANG["common"][11]="Begränsad vy"; 
+$LANG["common"][12]="Inställningar"; 
 $LANG["common"][13]="Mall"; 
 $LANG["common"][14]="Mallar"; 
 $LANG["common"][15]="Plats"; 
@@ -241,6 +242,8 @@ $LANG["common"][60]="Active";
 $LANG["common"][61]="Unknown error"; 
 $LANG["common"][62]="Other"; 
 $LANG["common"][63]="Error(s)"; 
+$LANG["common"][64]="Superviseur";
+$LANG["common"][65]="Interface"; 
 
 $LANG["computers"][9]="Operativsystem"; 
 $LANG["computers"][10]="OS serial"; 
@@ -320,7 +323,6 @@ $LANG["device_case"][2]="Medium";
 $LANG["device_case"][3]="Mikro"; 
 
 $LANG["device_control"][0]="RAID"; 
-$LANG["device_control"][1]="Interface"; 
 $LANG["device_control"][2]="IDE"; 
 $LANG["device_control"][3]="SATA"; 
 $LANG["device_control"][4]="SCSI"; 
@@ -328,14 +330,11 @@ $LANG["device_control"][5]="USB";
 
 $LANG["device_drive"][0]="Writing ability"; 
 $LANG["device_drive"][1]="Hastighet"; 
-$LANG["device_drive"][2]="Interface"; 
 
 $LANG["device_gfxcard"][0]="Memory"; 
-$LANG["device_gfxcard"][2]="interface"; 
 
 $LANG["device_hdd"][0]="RPM"; 
 $LANG["device_hdd"][1]="Cache"; 
-$LANG["device_hdd"][2]="Interface"; 
 $LANG["device_hdd"][4]="Capacity"; 
 
 $LANG["device_iface"][0]="Flow"; 
@@ -775,7 +774,6 @@ $LANG["log"][53]="Verktyg";
 $LANG["log"][54]="Information"; 
 $LANG["log"][55]="Anslutning"; 
 $LANG["log"][56]="Dokument"; 
-$LANG["log"][57]="Inställningar"; 
 $LANG["log"][58]="Reservering"; 
 $LANG["log"][59]="Cron"; 
 $LANG["log"][60]="Cron"; 
@@ -883,7 +881,6 @@ $LANG["Menu"][3]="Bildskärmar";
 $LANG["Menu"][4]="Mjukvaror"; 
 $LANG["Menu"][5]="Ärendeuppföljning"; 
 $LANG["Menu"][6]="Rapporter"; 
-$LANG["Menu"][10]="Inställningar"; 
 $LANG["Menu"][11]="Alternativ"; 
 $LANG["Menu"][12]="Databas"; 
 $LANG["Menu"][13]="Statistik"; 
@@ -931,7 +928,6 @@ $LANG["networking"][12]="Nätverksenhet";
 $LANG["networking"][13]="nätverksportar funna"; 
 $LANG["networking"][14]="IP"; 
 $LANG["networking"][15]="MAC"; 
-$LANG["networking"][16]="Gränssnitt"; 
 $LANG["networking"][17]="Ansluten till"; 
 $LANG["networking"][19]="Ny nätverksport"; 
 $LANG["networking"][20]="Port Manager"; 
@@ -1110,7 +1106,6 @@ $LANG["printers"][35]="Management Type";
 
 $LANG["profiles"][0]="Global right"; 
 $LANG["profiles"][1]="Entity Right"; 
-$LANG["profiles"][2]="Interface"; 
 $LANG["profiles"][3]="Helpdesk Rights"; 
 $LANG["profiles"][4]="Central Rights"; 
 $LANG["profiles"][5]="Skapa ärende"; 
@@ -1591,7 +1586,6 @@ $LANG["setup"][801]="Activer le réplicat";
 $LANG["setup"][802]="Base"; 
 $LANG["setup"][803]="Ecart entre le maître et l'esclave"; 
 $LANG["setup"][804]="Notifier par mail si désynchronisation"; 
-$LANG["setup"][805]="E-mail de l'administrateur"; 
 $LANG["setup"][806]="Durée maximum de désynchronisation"; 
 $LANG["setup"][807]="La base de donnée esclave est désynchronisée. L'écart est de :"; 
 $LANG["setup"][808]="Base de données esclave désynchronisée !"; 
@@ -1670,7 +1664,6 @@ $LANG["stats"][49]="(uppföljningar)";
 
 $LANG["title"][0]="Command Center"; 
 $LANG["title"][1]="Helpdesk Access Only"; 
-$LANG["title"][2]="Setup"; 
 $LANG["title"][3]="Computers"; 
 $LANG["title"][5]="Kunskapsdatabas"; 
 $LANG["title"][6]="Networking"; 
