@@ -56,7 +56,7 @@ function showProfileConfig($target,$ID,$prof){
 	echo "<table class='tab_cadre_fixe'><tr>";
 	echo "<th>".$LANG["common"][16]." :&nbsp;&nbsp;&nbsp;&nbsp;";
 	echo "<input type='text' name='name' value=\"".$prof->fields["name"]."\" $onfocus></th>";
-	echo "<th>".$LANG["common"][65]." :&nbsp;&nbsp;&nbsp;&nbsp;";
+	echo "<th>".$LANG["profiles"][2]." :&nbsp;&nbsp;&nbsp;&nbsp;";
 	echo "<select name='interface' id='profile_interface'>";
 	echo "<option value='helpdesk' ".($prof->fields["interface"]=="helpdesk"?"selected":"").">".$LANG["Menu"][31]."</option>";
 	echo "<option value='central' ".($prof->fields["interface"]=="central"?"selected":"").">".$LANG["title"][0]."</option>";

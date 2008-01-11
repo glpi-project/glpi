@@ -3087,7 +3087,7 @@ $SEARCH_OPTION[PROFILE_TYPE][1]['meta']=0;
 $SEARCH_OPTION[PROFILE_TYPE][2]['table']='glpi_profiles';
 $SEARCH_OPTION[PROFILE_TYPE][2]['field']='interface';
 $SEARCH_OPTION[PROFILE_TYPE][2]['linkfield']='interface';
-$SEARCH_OPTION[PROFILE_TYPE][2]['name']=$LANG["common"][65];
+$SEARCH_OPTION[PROFILE_TYPE][2]['name']=$LANG["profiles"][2];
 $SEARCH_OPTION[PROFILE_TYPE][2]['meta']=0;
 
 

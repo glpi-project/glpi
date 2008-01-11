@@ -1115,6 +1115,7 @@ $LANG["printers"][35]="Type de gestion";
 
 $LANG["profiles"][0]="Droit global"; 
 $LANG["profiles"][1]="Droit local"; 
+$LANG["profiles"][2]="Interface"; 
 $LANG["profiles"][3]="Droits de l'interface Helpdesk"; 
 $LANG["profiles"][4]="Droits de l'interface Central"; 
 $LANG["profiles"][5]="Créer un ticket"; 
