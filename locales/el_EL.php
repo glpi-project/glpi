@@ -774,7 +774,6 @@ $LANG["log"][53]="Εργαλεία";
 $LANG["log"][54]="Management"; 
 $LANG["log"][55]="Σύνδεση"; 
 $LANG["log"][56]="Έγγραφα"; 
-$LANG["log"][57]="Εγκατάσταση"; 
 $LANG["log"][58]="Κράτηση"; 
 $LANG["log"][59]="Cron"; 
 $LANG["log"][60]="Item Unglobalization"; 
