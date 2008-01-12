@@ -1457,23 +1457,25 @@ function checkNewVersionAvailable($auto=1){
 			fclose($fp);
 		}
 	} else { // Connection using proxy
-		$proxy_cont = ''; //laissez vide
 
 		$proxy_fp = fsockopen($CFG_GLPI["proxy_name"], $CFG_GLPI["proxy_port"], $errno, $errstr, 1);
-		if (!$proxy_fp)    {
-			if (!$auto) echo "<div class='center'>".$LANG["setup"][311]." ($errstr)</div>";
-		} 
+		if ($proxy_fp)    {
+	
+			fputs($proxy_fp, "GET http://glpi-project.org/latest_version HTTP/1.0\r\nHost: ".$CFG_GLPI["proxy_name"]."\r\n");
+			if (!empty($CFG_GLPI["proxy_user"]))
+				fputs($proxy_fp, "Proxy-Authorization: Basic " . base64_encode ($CFG_GLPI["proxy_user"].":".$CFG_GLPI["proxy_password"]) . "\r\n");    // added
+			fputs($proxy_fp,"\r\n");
+			while(!feof($proxy_fp)) {
+				$ret = fread($proxy_fp,128);
+				if (!empty($ret))
+					$latest_version=$ret;
+			}
+			fclose($proxy_fp);
 
-		fputs($proxy_fp, "GET http://glpi-project.org/latest_version HTTP/1.0\r\nHost: ".$CFG_GLPI["proxy_name"]."\r\n");
-		if (!empty($CFG_GLPI["proxy_user"]))
-			fputs($proxy_fp, "Proxy-Authorization: Basic " . base64_encode ($CFG_GLPI["proxy_user"].":".$CFG_GLPI["proxy_password"]) . "\r\n");    // added
-		fputs($proxy_fp,"\r\n");
-		while(!feof($proxy_fp)) {
-			$ret = fread($proxy_fp,128);
-			if (!empty($ret))
-				$latest_version=$ret;
+		} else 	if (!$auto) {
+			echo "<div class='center'>".$LANG["setup"][311]." ($errstr)</div>";
 		}
-		fclose($proxy_fp);
+		 
 	}
 
 	if (strlen(trim($latest_version)) == 0){
