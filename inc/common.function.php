@@ -1424,6 +1424,104 @@ function makeTextSearch($val,$not=0){
 
 	return $SEARCH;
 }
+
+/**
+ * Get a web page. Use proxy if configured
+ * 
+ * @param $url to retrieve
+ * @param $errmsg set if problem encountered
+ * 
+ * @return content of the page (or empty)
+ */
+function getURLContent ($url, &$msgerr=NULL) {
+
+	global $LANG,$CFG_GLPI;
+	
+	$content="";
+
+	// Connection directe
+	if (empty($CFG_GLPI["proxy_name"])){
+		$taburl=parse_url($url);
+		if ($fp=@fsockopen($taburl["host"], (isset($taburl["port"]) ? $taburl["port"] : 80), $errno, $errstr, 1)){
+
+			if (isset($taburl["path"]) && $taburl["path"]!='/') {
+				// retrieve path + args
+				$request  = "GET ".strstr($url, $taburl["path"])." HTTP/1.1\r\n";
+			} else {
+				$request  = "GET / HTTP/1.1\r\n";
+			}
+			$request .= "Host: ".$taburl["host"]."\r\n";
+
+		} else {
+			if (isset($msgerr)) {
+				$msgerr=$LANG["setup"][304] . " ($errstr)"; // failed direct connexion - try proxy
+			}
+			return "";
+		}
+		
+	} else { // Connection using proxy
+
+		$fp = fsockopen($CFG_GLPI["proxy_name"], $CFG_GLPI["proxy_port"], $errno, $errstr, 1);
+		if ($fp) {
+	
+			$request  = "GET $url HTTP/1.1\r\n";
+			$request .= "Host: ".$CFG_GLPI["proxy_name"]."\r\n";
+			if (!empty($CFG_GLPI["proxy_user"])) {
+				$request .= "Proxy-Authorization: Basic " . base64_encode ($CFG_GLPI["proxy_user"].":".$CFG_GLPI["proxy_password"]) . "\r\n";				
+			}
+			
+		} else {
+			if (isset($msgerr)) {
+				$msgerr=$LANG["setup"][311] . " ($errstr)"; // failed proxy connexion
+			}
+			return "";
+		}
+	}
+		 
+	$request .= "User-Agent: GLPI/".trim($CFG_GLPI["version"])."\r\n";
+	$request .= "Connection: Close\r\n\r\n";
+	
+	fwrite($fp, $request);
+	
+	$header=true ;
+	$http200=false;
+	$errstr="";
+	while(!feof($fp)) {
+		if ($buf=fgets($fp, 1024)) {
+			if ($header) {
+				if (strlen(trim($buf))==0) {
+					// Empty line = end of header
+					$header=false;
+				} else if (ereg("^HTTP.*200.*OK", $buf)) {
+					// HTTP 200 = OK
+					$http200=true;
+				} else if (ereg("^HTTP", $buf)) {
+					// Other HTTP status = error
+					$errstr=trim($buf);
+					break;
+				}	
+			}
+			else { 
+				// Body
+				$content .= $buf;	
+			}
+		}
+	} // eof
+	
+	fclose($fp);
+
+ 	if (empty($content) && isset($msgerr)) {
+ 		if (empty($errstr)) {
+ 			$msgerr=$LANG["setup"][312]; // no data
+ 		}
+		else {
+			$msgerr=$LANG["setup"][310] . " ($errstr)"; // HTTP error	
+		}
+	}
+
+	return $content;	
+}
+
 /**
 * Check if new version is available 
 * 
@@ -1437,52 +1535,15 @@ function checkNewVersionAvailable($auto=1){
 	if (!haveRight("check_update","r")) return false;	
 
 	if (!$auto) echo "<br>";
-	$latest_version = '';
 
-	// Connection directe
-	if (empty($CFG_GLPI["proxy_name"])){
-		if ($fp=@fsockopen("glpi-project.org", 80, $errno, $errstr, 1)){
-
-			$request  = "GET /latest_version HTTP/1.1\r\n";
-			$request .= "Host: glpi-project.org\r\n";
-			$request .= 'User-Agent: GLPICheckUpdate/'.trim($CFG_GLPI["version"])."\r\n";
-			$request .= "Connection: Close\r\n\r\n";
-
-			fwrite($fp, $request);
-			while (!feof($fp)) {
-				$ret=fgets($fp, 128);
-				if (!empty($ret))
-					$latest_version=$ret;
-			}
-			fclose($fp);
-		}
-	} else { // Connection using proxy
-
-		$proxy_fp = fsockopen($CFG_GLPI["proxy_name"], $CFG_GLPI["proxy_port"], $errno, $errstr, 1);
-		if ($proxy_fp)    {
-	
-			fputs($proxy_fp, "GET http://glpi-project.org/latest_version HTTP/1.0\r\nHost: ".$CFG_GLPI["proxy_name"]."\r\n");
-			if (!empty($CFG_GLPI["proxy_user"]))
-				fputs($proxy_fp, "Proxy-Authorization: Basic " . base64_encode ($CFG_GLPI["proxy_user"].":".$CFG_GLPI["proxy_password"]) . "\r\n");    // added
-			fputs($proxy_fp,"\r\n");
-			while(!feof($proxy_fp)) {
-				$ret = fread($proxy_fp,128);
-				if (!empty($ret))
-					$latest_version=$ret;
-			}
-			fclose($proxy_fp);
-
-		} else 	if (!$auto) {
-			echo "<div class='center'>".$LANG["setup"][311]." ($errstr)</div>";
-		}
-		 
-	}
+	$error="";
+	$latest_version = getURLContent("http://glpi-project.org/latest_version", $error);
 
 	if (strlen(trim($latest_version)) == 0){
 		if (!$auto) {
-			echo "<div class='center'>".$LANG["setup"][304]." ($errstr)</div>";
+			echo "<div class='center'> $error </div>";
 		} else {
-			return $LANG["setup"][304];
+			return $error;
 		}
 	} else {			
 		$splitted=split("\.",trim($CFG_GLPI["version"]));
