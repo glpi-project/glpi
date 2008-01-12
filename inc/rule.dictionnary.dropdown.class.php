@@ -310,7 +310,7 @@ class DictionnaryDropdownCollection extends RuleCachedCollection{
 		// Get All items
 		$Sql="SELECT * FROM " . $this->item_table;
 		if ($offset) {
-			$Sql .= "LIMIT $offset,999999999";
+			$Sql .= " LIMIT $offset,999999999";
 		} 
 		
 		$result = $DB->query($Sql);
@@ -391,7 +391,7 @@ class DictionnaryDropdownCollection extends RuleCachedCollection{
 			"FROM ".$this->item_table.", $model_table LEFT JOIN glpi_dropdown_manufacturer ON ($model_table.FK_glpi_enterprise=glpi_dropdown_manufacturer.ID) ".
 			"WHERE $model_table.model=".$this->item_table.".ID ";
 		if ($offset) {
-			$Sql .= "LIMIT $offset,999999999";
+			$Sql .= " LIMIT $offset,999999999";
 		} 
 		$result = $DB->query($Sql);
 
