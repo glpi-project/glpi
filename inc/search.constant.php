@@ -195,7 +195,7 @@ $SEARCH_OPTION[COMPUTER_TYPE][80]['linkfield']='FK_entities';
 $SEARCH_OPTION[COMPUTER_TYPE][80]['name']=$LANG["entity"][0];
 $SEARCH_OPTION[COMPUTER_TYPE][80]['meta']=0;
 
-$SEARCH_OPTION[COMPUTER_TYPE]['periph']=$LANG["devices"][10];
+$SEARCH_OPTION[COMPUTER_TYPE]['periph']=$LANG["title"][30];
 
 $SEARCH_OPTION[COMPUTER_TYPE][7]['table']='glpi_device_processor';
 $SEARCH_OPTION[COMPUTER_TYPE][7]['field']='designation';
@@ -1836,13 +1836,13 @@ $SEARCH_OPTION[CONTACT_TYPE][2]['meta']=0;
 $SEARCH_OPTION[CONTACT_TYPE][3]['table']='glpi_contacts';
 $SEARCH_OPTION[CONTACT_TYPE][3]['field']='phone';
 $SEARCH_OPTION[CONTACT_TYPE][3]['linkfield']='phone';
-$SEARCH_OPTION[CONTACT_TYPE][3]['name']=$LANG["financial"][29];
+$SEARCH_OPTION[CONTACT_TYPE][3]['name']=$LANG["help"][35];
 $SEARCH_OPTION[CONTACT_TYPE][3]['meta']=0;
 
 $SEARCH_OPTION[CONTACT_TYPE][4]['table']='glpi_contacts';
 $SEARCH_OPTION[CONTACT_TYPE][4]['field']='phone2';
 $SEARCH_OPTION[CONTACT_TYPE][4]['linkfield']='phone2';
-$SEARCH_OPTION[CONTACT_TYPE][4]['name']=$LANG["financial"][29]." 2";
+$SEARCH_OPTION[CONTACT_TYPE][4]['name']=$LANG["help"][35]." 2";
 $SEARCH_OPTION[CONTACT_TYPE][4]['meta']=0;
 
 $SEARCH_OPTION[CONTACT_TYPE][10]['table']='glpi_contacts';
@@ -1942,7 +1942,7 @@ $SEARCH_OPTION[ENTERPRISE_TYPE][4]['meta']=0;
 $SEARCH_OPTION[ENTERPRISE_TYPE][5]['table']='glpi_enterprises';
 $SEARCH_OPTION[ENTERPRISE_TYPE][5]['field']='phonenumber';
 $SEARCH_OPTION[ENTERPRISE_TYPE][5]['linkfield']='phonenumber';
-$SEARCH_OPTION[ENTERPRISE_TYPE][5]['name']=$LANG["financial"][29];
+$SEARCH_OPTION[ENTERPRISE_TYPE][5]['name']=$LANG["help"][35];
 $SEARCH_OPTION[ENTERPRISE_TYPE][5]['meta']=0;
 
 $SEARCH_OPTION[ENTERPRISE_TYPE][6]['table']='glpi_enterprises';
@@ -2301,13 +2301,13 @@ $SEARCH_OPTION[USER_TYPE][8]['meta']=0;
 $SEARCH_OPTION[USER_TYPE][6]['table']='glpi_users';
 $SEARCH_OPTION[USER_TYPE][6]['field']='phone';
 $SEARCH_OPTION[USER_TYPE][6]['linkfield']='phone';
-$SEARCH_OPTION[USER_TYPE][6]['name']=$LANG["financial"][29];
+$SEARCH_OPTION[USER_TYPE][6]['name']=$LANG["help"][35];
 $SEARCH_OPTION[USER_TYPE][6]['meta']=0;
 
 $SEARCH_OPTION[USER_TYPE][10]['table']='glpi_users';
 $SEARCH_OPTION[USER_TYPE][10]['field']='phone2';
 $SEARCH_OPTION[USER_TYPE][10]['linkfield']='phone2';
-$SEARCH_OPTION[USER_TYPE][10]['name']=$LANG["financial"][29]." 2";
+$SEARCH_OPTION[USER_TYPE][10]['name']=$LANG["help"][35]." 2";
 $SEARCH_OPTION[USER_TYPE][10]['meta']=0;
 
 $SEARCH_OPTION[USER_TYPE][11]['table']='glpi_users';
@@ -2838,7 +2838,7 @@ $SEARCH_OPTION[ENTITY_TYPE][4]['meta']=0;
 $SEARCH_OPTION[ENTITY_TYPE][5]['table']='glpi_entities_data';
 $SEARCH_OPTION[ENTITY_TYPE][5]['field']='phonenumber';
 $SEARCH_OPTION[ENTITY_TYPE][5]['linkfield']='';
-$SEARCH_OPTION[ENTITY_TYPE][5]['name']=$LANG["financial"][29];
+$SEARCH_OPTION[ENTITY_TYPE][5]['name']=$LANG["help"][35];
 $SEARCH_OPTION[ENTITY_TYPE][5]['meta']=0;
 
 $SEARCH_OPTION[ENTITY_TYPE][6]['table']='glpi_entities_data';

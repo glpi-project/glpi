@@ -68,7 +68,7 @@ if (haveRight("dropdown","w")||haveRight("entity_dropdown","w")){
 	$data["setup.dropdowns.php"]=$LANG["setup"][0];
 }
 if (haveRight("device","w")){
-	$data[$CFG_GLPI["root_doc"]."/front/device.php"]=$LANG["setup"][222];
+	$data[$CFG_GLPI["root_doc"]."/front/device.php"]=$LANG["title"][30];
 }
 if (haveRight("typedoc","r")){
 	$data[$CFG_GLPI["root_doc"]."/front/typedoc.php"]=$LANG["document"][7];

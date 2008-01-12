@@ -200,7 +200,7 @@ $RULES_ACTIONS[RULE_TRACKING_AUTO_ACTION]['priority']['type']='dropdown_priority
 
 //Software categories
 $RULES_CRITERIAS[RULE_SOFTWARE_CATEGORY]['name']['field']='name';
-$RULES_CRITERIAS[RULE_SOFTWARE_CATEGORY]['name']['name']=$LANG["software"][10];
+$RULES_CRITERIAS[RULE_SOFTWARE_CATEGORY]['name']['name']=$LANG["help"][31];
 $RULES_CRITERIAS[RULE_SOFTWARE_CATEGORY]['name']['table']='glpi_software';
 
 $RULES_CRITERIAS[RULE_SOFTWARE_CATEGORY]['manufacturer']['field']='name';
@@ -213,14 +213,14 @@ $RULES_ACTIONS[RULE_SOFTWARE_CATEGORY]['category']['table']='glpi_dropdown_softw
 
 //Dictionnary Software
 $RULES_CRITERIAS[RULE_DICTIONNARY_SOFTWARE]['name']['field']='name';
-$RULES_CRITERIAS[RULE_DICTIONNARY_SOFTWARE]['name']['name']=$LANG["software"][10];
+$RULES_CRITERIAS[RULE_DICTIONNARY_SOFTWARE]['name']['name']=$LANG["help"][31];
 $RULES_CRITERIAS[RULE_DICTIONNARY_SOFTWARE]['name']['table']='glpi_software';
 
 $RULES_CRITERIAS[RULE_DICTIONNARY_SOFTWARE]['manufacturer']['field']='name';
 $RULES_CRITERIAS[RULE_DICTIONNARY_SOFTWARE]['manufacturer']['name']=$LANG["common"][5];
 $RULES_CRITERIAS[RULE_DICTIONNARY_SOFTWARE]['manufacturer']['table']='glpi_dropdown_manufacturer';
 
-$RULES_ACTIONS[RULE_DICTIONNARY_SOFTWARE]['name']['name']=$LANG["software"][10];
+$RULES_ACTIONS[RULE_DICTIONNARY_SOFTWARE]['name']['name']=$LANG["help"][31];
 $RULES_ACTIONS[RULE_DICTIONNARY_SOFTWARE]['name']['optional_actions']=array("ignore","regex_result");
 
 $RULES_ACTIONS[RULE_DICTIONNARY_SOFTWARE]['version']['name']=$LANG["rulesengine"][78];

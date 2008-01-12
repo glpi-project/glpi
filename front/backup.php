@@ -549,7 +549,7 @@ if (count($files)){
 		echo "<tr class='tab_bg_2'><td>$file&nbsp;</td>
 			<td align=\"right\">&nbsp;" . $taille_fic . " kB&nbsp;</td>
 			<td>&nbsp;" . convDateTime(date("Y-m-d H:i",$date)) . "</td>
-			<td>&nbsp;<a href=\"javascript:erase('$file')\">".$LANG["backup"][20]."</a>&nbsp;</td>
+			<td>&nbsp;<a href=\"javascript:erase('$file')\">".$LANG["buttons"][6]."</a>&nbsp;</td>
 
 			<td>&nbsp;<a href=\"javascript:restore('$file')\">".$LANG["buttons"][21]."</a>&nbsp;</td>
 			<td>&nbsp;<a href=\"document.send.php?file=_dumps/$file\">".$LANG["backup"][13]."</a></td></tr>";
@@ -574,7 +574,7 @@ if (count($files)){
 			<tr class='tab_bg_2'><td>$file&nbsp;</td>
 			<td align=\"right\">&nbsp;" . $taille_fic . " kB&nbsp;</td>
 			<td>&nbsp;" . convDateTime(date("Y-m-d H:i",$date)) . "</td>
-			<td>&nbsp;<a href=\"javascript:erase('$file')\">".$LANG["backup"][20]."</a>&nbsp;</td>
+			<td>&nbsp;<a href=\"javascript:erase('$file')\">".$LANG["buttons"][6]."</a>&nbsp;</td>
 			<td>&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;</td>
 
 			<td>&nbsp;<a  href=\"document.send.php?file=_dumps/$file\">".$LANG["backup"][13]."</a></td></tr>";

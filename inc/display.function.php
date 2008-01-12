@@ -620,7 +620,7 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="")
 			$menu['config']['content']['dropdowns']['page']='/front/setup.dropdowns.php';
 		}
 		if (haveRight("device","w")){
-			$menu['config']['content']['device']['title']=$LANG["setup"][222];
+			$menu['config']['content']['device']['title']=$LANG["title"][30];
 			$menu['config']['content']['device']['page']='/front/device.php';
 		}
 

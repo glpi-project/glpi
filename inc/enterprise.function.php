@@ -146,8 +146,8 @@ function showAssociatedContact($instID) {
 
 	echo "<br><div class='center'><table class='tab_cadre_fixe'>";
 	echo "<tr><th colspan='9'>".$LANG["financial"][46].":</th></tr>";
-	echo "<tr><th>".$LANG["common"][16]."</th><th>".$LANG["entity"][0]."</th><th>".$LANG["financial"][29]."</th>";
-	echo "<th>".$LANG["financial"][29]." 2</th><th>".$LANG["common"][42]."</th><th>".$LANG["financial"][30]."</th>";
+	echo "<tr><th>".$LANG["common"][16]."</th><th>".$LANG["entity"][0]."</th><th>".$LANG["help"][35]."</th>";
+	echo "<th>".$LANG["help"][35]." 2</th><th>".$LANG["common"][42]."</th><th>".$LANG["financial"][30]."</th>";
 	echo "<th>".$LANG["setup"][14]."</th><th>".$LANG["common"][17]."</th>";
 	echo "<th>&nbsp;</th></tr>";
 

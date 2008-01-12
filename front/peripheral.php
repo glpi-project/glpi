@@ -41,7 +41,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 checkRight("peripheral","r");
 
-commonHeader($LANG["title"][7],$_SERVER['PHP_SELF'],"inventory","peripheral");
+commonHeader($LANG["Menu"][16],$_SERVER['PHP_SELF'],"inventory","peripheral");
 
 manageGetValuesInSearch(PERIPHERAL_TYPE);
 

@@ -169,7 +169,7 @@ else if (isset($_POST["update"])){
 else if (isset($_GET["form"])){
 	checkRight("software","w");
 
-	commonHeader($LANG["title"][12],$_SERVER['PHP_SELF'],"inventory","software");
+	commonHeader($LANG["Menu"][4],$_SERVER['PHP_SELF'],"inventory","software");
 	showLicenseForm($_SERVER['PHP_SELF'],$_GET['form'],$_GET["sID"],$_GET["lID"]);
 	commonFooter();
 }

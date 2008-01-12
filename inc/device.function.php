@@ -82,7 +82,7 @@ function getDeviceSpecifityLabel($dev_type){
 			return "";
 			break;
 		case PROCESSOR_DEVICE :
-			return $LANG["device_processor"][0];
+			return $LANG["device_ram"][1];
 			break;
 		case RAM_DEVICE :
 			return  $LANG["device_ram"][2];
@@ -214,7 +214,7 @@ function printDeviceComputer($device,$quantity,$specif,$compID,$compDevID,$witht
 		case PROCESSOR_DEVICE :
 			$type=$LANG["devices"][4];
 			$name=$device->fields["designation"];
-			if (!empty($device->fields["frequence"])) $entry[$LANG["device_processor"][0]]=$device->fields["frequence"];
+			if (!empty($device->fields["frequence"])) $entry[$LANG["device_ram"][1]]=$device->fields["frequence"];
 
 			$specificity_size = 10;
 			break;
@@ -626,7 +626,7 @@ function showDevicesForm ($target,$ID,$device_type) {
 			echo "</td></tr>";
 			break;
 			case "glpi_device_processor" :
-				echo "<tr><td>".$LANG["device_processor"][0].":</td><td>";
+				echo "<tr><td>".$LANG["device_ram"][1].":</td><td>";
 			autocompletionTextField("frequence",$table,"frequence",$device->fields["frequence"],20);
 			echo "</td></tr>";
 			break;

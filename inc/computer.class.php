@@ -68,7 +68,7 @@ class Computer extends CommonDBTM {
 
 		$ong[1]=$LANG["title"][26];
 		if (haveRight("software","r"))	{
-			$ong[2]=$LANG["title"][12];
+			$ong[2]=$LANG["Menu"][4];
 		}
 		if (haveRight("networking","r")||haveRight("printer","r")||haveRight("monitor","r")||haveRight("peripheral","r")||haveRight("phone","r")){	
 			$ong[3]=$LANG["title"][27];

@@ -752,10 +752,10 @@ class User extends CommonDBTM {
 				}
 				echo "</td></tr>";
 
-				echo "<tr class='tab_bg_1'><td class='center'>" . $LANG["financial"][29] . ":</td><td>";
+				echo "<tr class='tab_bg_1'><td class='center'>" . $LANG["help"][35] . ":</td><td>";
 				autocompletionTextField("phone", "glpi_users", "phone", $this->fields["phone"], 20);
 				echo "</td>";
-				echo "<td class='center'>" . $LANG["financial"][29] . " 2:</td><td>";
+				echo "<td class='center'>" . $LANG["help"][35] . " 2:</td><td>";
 				autocompletionTextField("phone2", "glpi_users", "phone2", $this->fields["phone2"], 20);
 				echo "</td></tr>";
 
@@ -911,7 +911,7 @@ class User extends CommonDBTM {
 
 			echo "</td></tr>";
 
-			echo "<tr class='tab_bg_1'><td class='center'>" . $LANG["financial"][29] . "</td><td>";
+			echo "<tr class='tab_bg_1'><td class='center'>" . $LANG["help"][35] . "</td><td>";
 			if ($extauth && isset ($auth_method['ldap_field_phone']) && !empty ($auth_method['ldap_field_phone'])) {
 				echo $this->fields["phone"];
 			} else {
@@ -919,7 +919,7 @@ class User extends CommonDBTM {
 			}
 			echo "</td></tr>";
 
-			echo "<tr class='tab_bg_1'><td class='center'>" . $LANG["financial"][29] . " 2</td><td>";
+			echo "<tr class='tab_bg_1'><td class='center'>" . $LANG["help"][35] . " 2</td><td>";
 			if ($extauth && isset ($auth_method['ldap_field_phone2']) && !empty ($auth_method['ldap_field_phone2'])) {
 				echo $this->fields["phone2"];
 			} else {

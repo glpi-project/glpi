@@ -823,7 +823,7 @@ function getUserName($ID,$link=0){
 				if (!empty($data["email"]))
 					$user["comments"].=$LANG["setup"][14].": ".$data["email"]."<br>";
 				if (!empty($data["phone"]))
-					$user["comments"].=$LANG["financial"][29].": ".$data["phone"]."<br>";
+					$user["comments"].=$LANG["help"][35].": ".$data["phone"]."<br>";
 			} else {
 				$user=$username;
 			}

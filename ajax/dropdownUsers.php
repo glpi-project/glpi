@@ -124,7 +124,7 @@ echo "<option value=\"0\">--".$LANG["common"][11]."--</option>";
 if ($_POST['all']==0){
 echo "<option value=\"0\">[ Nobody ]</option>";
 } else if($_POST['all']==1) {
-	echo "<option value=\"0\">[ ".$LANG["search"][7]." ]</option>";
+	echo "<option value=\"0\">[ ".$LANG["common"][66]." ]</option>";
 }
 
 if (isset($_POST['value'])){

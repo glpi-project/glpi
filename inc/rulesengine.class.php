@@ -225,7 +225,7 @@ class RuleCollection {
 			if ($this->orderby=="ranking"){
 				echo "<option value=\"move_rule\">".$LANG["buttons"][20]."</option>";
 			}
-			echo "<option value=\"activate_rule\">".$LANG["rulesengine"][46]."</option>";
+			echo "<option value=\"activate_rule\">".$LANG["buttons"][41]."</option>";
 			echo "</select>";
 
 			$params=array('action'=>'__VALUE__',

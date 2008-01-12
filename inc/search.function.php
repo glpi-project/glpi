@@ -240,7 +240,7 @@ function searchForm($type,$target,$field="",$contains="",$sort= "",$deleted= 0,$
 
 		echo "<option value='all' ";
 		if(is_array($field)&&isset($field[$i]) && $field[$i] == "all") echo "selected";
-		echo ">".$LANG["search"][7]."</option>";
+		echo ">".$LANG["common"][66]."</option>";
 
 		echo "</select>&nbsp;";
 
@@ -965,7 +965,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 			echo "<div class='center'><h2>".$ci->getType($type);
 			// More items
 			if ($numrows>$start+GLOBAL_SEARCH_DISPLAY_COUNT){
-				echo " <a href='$target?$parameters'>".$LANG["search"][7]."</a>";
+				echo " <a href='$target?$parameters'>".$LANG["common"][66]."</a>";
 			}
 			echo "</h2></div>";
 		}
@@ -1191,7 +1191,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 							if (isset($link[$key])) $title.=" ".$link[$key]." ";
 							switch ($field[$key]){
 								case "all":
-									$title.=$LANG["search"][7];
+									$title.=$LANG["common"][66];
 								break;
 								case "view":
 									$title.=$LANG["search"][11];

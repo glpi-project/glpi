@@ -129,7 +129,7 @@ else
 		//		glpi_header($_SERVER['HTTP_REFERER']);
 	}
 
-	commonHeader($LANG["title"][18],$_SERVER['PHP_SELF'],"inventory","monitor");
+	commonHeader($LANG["Menu"][3],$_SERVER['PHP_SELF'],"inventory","monitor");
 
 	if (!empty($_GET["withtemplate"])) {
 

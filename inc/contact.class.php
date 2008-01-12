@@ -171,13 +171,13 @@ class Contact extends CommonDBTM{
 				autocompletionTextField("firstname","glpi_contacts","firstname",$this->fields["firstname"],30,$this->fields["FK_entities"]);	
 				echo "</td></tr>";
 	
-				echo "<tr><td>".$LANG["financial"][29].": 	</td>";
+				echo "<tr><td>".$LANG["help"][35].": 	</td>";
 				echo "<td>";
 				autocompletionTextField("phone","glpi_contacts","phone",$this->fields["phone"],30,$this->fields["FK_entities"]);	
 	
 				echo "</td></tr>";
 	
-				echo "<tr><td>".$LANG["financial"][29]." 2:	</td><td>";
+				echo "<tr><td>".$LANG["help"][35]." 2:	</td><td>";
 				autocompletionTextField("phone2","glpi_contacts","phone2",$this->fields["phone2"],30,$this->fields["FK_entities"]);
 				echo "</td></tr>";
 	

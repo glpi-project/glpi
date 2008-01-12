@@ -42,7 +42,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 checkRight("phone","r");
 
-commonHeader($LANG["title"][41],$_SERVER['PHP_SELF'],"inventory","phone");
+commonHeader($LANG["help"][35],$_SERVER['PHP_SELF'],"inventory","phone");
 
 manageGetValuesInSearch(PHONE_TYPE);
 
