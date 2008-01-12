@@ -96,7 +96,7 @@ class DictionnarySoftwareCollection extends RuleCachedCollection {
 				$sql.=" WHERE FK_glpi_enterprise=".$params['manufacturer'];
 			}
 			if ($offset) {
-				$sql .= "LIMIT $offset,999999999";
+				$sql .= " LIMIT $offset,999999999";
 			} 
 				
 			$res = $DB->query($sql);
