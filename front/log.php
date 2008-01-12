@@ -44,7 +44,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 checkRight("logs","r");
 
-commonHeader($LANG["title"][32],$_SERVER['PHP_SELF'],"admin","log");
+commonHeader($LANG["Menu"][30],$_SERVER['PHP_SELF'],"admin","log");
 
 //echo "<hr noshade>";
 

@@ -93,7 +93,7 @@ else
 		//	glpi_header($_SERVER['HTTP_REFERER']);
 	}
 
-	commonHeader($LANG["title"][36],$_SERVER['PHP_SELF'],"inventory","consumable");
+	commonHeader($LANG["Menu"][32],$_SERVER['PHP_SELF'],"inventory","consumable");
 
 
 

@@ -56,7 +56,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 checkRight("ocsng", "w");
 
-commonHeader($LANG["title"][39], $_SERVER['PHP_SELF'], "utils","ocsng");
+commonHeader($LANG["ocsng"][0], $_SERVER['PHP_SELF'], "utils","ocsng");
 if (isset ($_SESSION["ocs_import"]))
 	unset ($_SESSION["ocs_import"]);
 if (isset ($_SESSION["ocs_link"]))

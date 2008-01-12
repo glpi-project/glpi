@@ -71,7 +71,7 @@ class User extends CommonDBTM {
 			$ong[3] = $LANG["title"][28]; // tickets
 		}
 		if (haveRight("reservation_central", "r")){
-			$ong[11] = $LANG["title"][35];
+			$ong[11] = $LANG["Menu"][17];
 		}
 		if (haveRight("user", "w")){
 			$ong[12] = $LANG["ldap"][12];

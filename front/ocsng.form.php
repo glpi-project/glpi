@@ -49,7 +49,7 @@ if(!isset($tab["ID"])) $tab["ID"] = "";
 if(!isset($tab["withtemplate"])) $tab["withtemplate"] = "";
 if ($tab["ID"] == -1) $tab["ID"] = "";
 
-commonHeader($LANG["title"][39], $_SERVER['PHP_SELF'], "config","ocsng");
+commonHeader($LANG["ocsng"][0], $_SERVER['PHP_SELF'], "config","ocsng");
 
 //Delete template or server
 if (isset ($tab["purge"]) || isset ($tab["delete"])) {

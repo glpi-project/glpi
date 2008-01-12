@@ -41,7 +41,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 checkRight("contact_enterprise","r");
 
-commonHeader($LANG["title"][23],$_SERVER['PHP_SELF'],"financial","enterprise");
+commonHeader($LANG["Menu"][23],$_SERVER['PHP_SELF'],"financial","enterprise");
 
 manageGetValuesInSearch(ENTERPRISE_TYPE);
 

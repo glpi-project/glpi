@@ -2133,7 +2133,7 @@ class Transfer extends CommonDBTM{
 				echo "</tr>";
 
 				echo "<tr class='tab_bg_1'>";
-				echo "<td>".$LANG["Menu"][2]." -> ".$LANG["title"][19]." / ".$LANG["cartridges"][12].":	</td><td>";
+				echo "<td>".$LANG["Menu"][2]." -> ".$LANG["Menu"][21]." / ".$LANG["cartridges"][12].":	</td><td>";
 				dropdownArrayValues('keep_cartridges_type',$keep,$this->fields['keep_cartridges_type']);
 				echo "</td>";
 				echo "<td>".$LANG["cartridges"][12].": ".$LANG["transfer"][3]."	</td><td>";
@@ -2142,7 +2142,7 @@ class Transfer extends CommonDBTM{
 				echo "</tr>";
 
 				echo "<tr class='tab_bg_1'>";
-				echo "<td>".$LANG["cartridges"][12]." -> ".$LANG["title"][19].":	</td><td>";
+				echo "<td>".$LANG["cartridges"][12]." -> ".$LANG["Menu"][21].":	</td><td>";
 				dropdownArrayValues('keep_cartridges',$keep,$this->fields['keep_cartridges']);
 				echo "</td>";				
 				echo "<td>".$LANG["common"][66]." -> ".$LANG["financial"][3].":	</td><td>";

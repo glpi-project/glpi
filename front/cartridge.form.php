@@ -107,7 +107,7 @@ else
 		$_SESSION['glpi_onglet']=$_GET['onglet'];
 	}
 
-	commonHeader($LANG["title"][19],$_SERVER['PHP_SELF'],"inventory","cartridge");
+	commonHeader($LANG["Menu"][21],$_SERVER['PHP_SELF'],"inventory","cartridge");
 
 
 	if ($cartype->showForm($_SERVER['PHP_SELF'],$_GET["ID"])) {

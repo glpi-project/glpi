@@ -41,7 +41,7 @@ $NEEDED_ITEMS=array("stat","tracking","user","enterprise","device");
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-commonHeader($LANG["title"][11],$_SERVER['PHP_SELF'],"maintain","stat");
+commonHeader($LANG["Menu"][13],$_SERVER['PHP_SELF'],"maintain","stat");
 
 checkRight("statistic","1");
 
@@ -171,7 +171,7 @@ switch($_GET["type"]){
 		$query = "select  designation from ".$device_table." WHERE ID='".$_GET['ID']."'";
 		$result=$DB->query($query);
 	
-		$title=$LANG["stats"][19].": ".$DB->result($result,0,"designation");
+		$title=$LANG["Menu"][13].": ".$DB->result($result,0,"designation");
 
 		break;
 	case "comp_champ":

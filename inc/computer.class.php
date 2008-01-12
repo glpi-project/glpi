@@ -77,7 +77,7 @@ class Computer extends CommonDBTM {
 			$ong[4]=$LANG["Menu"][26];
 		}
 		if (haveRight("document","r")){
-			$ong[5]=$LANG["title"][25];
+			$ong[5]=$LANG["Menu"][27];
 		}
 
 		if(empty($withtemplate)){
@@ -94,7 +94,7 @@ class Computer extends CommonDBTM {
 				$ong[10]=$LANG["title"][37];
 			}
 			if (haveRight("reservation_central","r")){
-				$ong[11]=$LANG["title"][35];
+				$ong[11]=$LANG["Menu"][17];
 			}
 				
 			$ong[12]=$LANG["title"][38];

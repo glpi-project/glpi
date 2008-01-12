@@ -40,7 +40,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 checkRight("cartridge","r");
 
-commonHeader($LANG["title"][19],$_SERVER['PHP_SELF'],"inventory","cartridge");
+commonHeader($LANG["Menu"][21],$_SERVER['PHP_SELF'],"inventory","cartridge");
 
 manageGetValuesInSearch(CARTRIDGE_TYPE);
 
