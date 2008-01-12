@@ -136,7 +136,7 @@ else
 	}
 
 
-	commonHeader($LANG["title"][41],$_SERVER['PHP_SELF'],"inventory","phone");
+	commonHeader($LANG["help"][35],$_SERVER['PHP_SELF'],"inventory","phone");
 
 	if (!empty($_GET["withtemplate"])) {
 

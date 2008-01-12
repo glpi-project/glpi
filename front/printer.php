@@ -42,7 +42,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 checkRight("printer","r");
 
-commonHeader($LANG["title"][8],$_SERVER['PHP_SELF'],"inventory","printer");
+commonHeader($LANG["Menu"][2],$_SERVER['PHP_SELF'],"inventory","printer");
 
 manageGetValuesInSearch(PRINTER_TYPE);
 

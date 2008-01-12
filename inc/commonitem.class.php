@@ -213,16 +213,16 @@ class CommonItem{
 				return $LANG["networking"][12];
 				break;
 			case PRINTER_TYPE :
-				return $LANG["printers"][4];
+				return $LANG["help"][27];
 				break;
 			case MONITOR_TYPE : 
-				return $LANG["monitors"][4];
+				return $LANG["help"][28];
 				break;
 			case PERIPHERAL_TYPE : 
-				return $LANG["peripherals"][4];
+				return $LANG["help"][29];
 				break;				
 			case SOFTWARE_TYPE : 
-				return $LANG["software"][10];
+				return $LANG["help"][31];
 				break;				
 			case CONTACT_TYPE : 
 				return $LANG["common"][18];
@@ -267,7 +267,7 @@ class CommonItem{
 				return $LANG["setup"][87];
 				break;					
 			case PHONE_TYPE : 
-				return $LANG["phones"][4];
+				return $LANG["help"][35];
 				break;				
 			case REMINDER_TYPE : 
 				return $LANG["title"][37];

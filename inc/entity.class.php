@@ -163,7 +163,7 @@ class Entity extends CommonDBTM{
 			}
 			echo "</tr>";
 
-			echo "<tr class='tab_bg_1'><td>".$LANG["financial"][29].":		</td>";
+			echo "<tr class='tab_bg_1'><td>".$LANG["help"][35].":		</td>";
 			echo "<td>";
 			autocompletionTextField("phonenumber","glpi_entities_data","phonenumber",$entdata->fields["phonenumber"],25);	
 			echo "</td>";

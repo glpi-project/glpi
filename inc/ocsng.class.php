@@ -194,19 +194,19 @@ class Ocsng extends CommonDBTM {
 		$printer = $this->fields["import_printer"];
 		$software = $this->fields["import_software"];
 		$license = $this->fields["import_software_licensetype"];
-		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["ocsconfig"][8] . " </td><td>";
+		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["Menu"][16] . " </td><td>";
 		dropdownArrayValues("import_periph",$import_array,$periph);
 		echo "</td></tr>";
 
-		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["ocsconfig"][7] . " </td><td>";
+		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["Menu"][3] . " </td><td>";
 		dropdownArrayValues("import_monitor",$import_array2,$monitor);
 		echo "</td></tr>";
 
-		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["ocsconfig"][9] . " </td><td>";
+		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["Menu"][2] . " </td><td>";
 		dropdownArrayValues("import_printer",$import_array,$printer);
 		echo "</td></tr>";
 
-		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["ocsconfig"][6] . " </td><td>";
+		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["Menu"][4] . " </td><td>";
 		$import_array = array("0"=>$LANG["ocsconfig"][11],"1"=>$LANG["ocsconfig"][12]);
 		dropdownArrayValues("import_software",$import_array,$software);
 		echo "</td></tr>";
@@ -241,7 +241,7 @@ class Ocsng extends CommonDBTM {
 		echo "<br>";
 
 		echo "<div class='center'><table class='tab_cadre'>";
-		echo "<tr><th>" . $LANG["ocsconfig"][27] ." ".$LANG["Menu"][0]. "</th><th>" . $LANG["ocsconfig"][28] . "</th><th>" . $LANG["ocsconfig"][43] . "</th></tr>";
+		echo "<tr><th>" . $LANG["ocsconfig"][27] ." ".$LANG["Menu"][0]. "</th><th>" . $LANG["title"][30] . "</th><th>" . $LANG["ocsconfig"][43] . "</th></tr>";
 		echo "<tr><td class='tab_bg_2' valign='top'><table width='100%' cellpadding='1' cellspacing='0' border='0'>";
 
 		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["common"][16] . " </td><td>";

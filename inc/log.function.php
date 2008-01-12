@@ -180,11 +180,11 @@ function showHistory($device_type,$id_device){
 					$change = $LANG["devices"][26]."&nbsp;<strong>:</strong>&nbsp;"."\"".$data["old_value"]."\"";	
 					break;
 				case HISTORY_INSTALL_SOFTWARE :
-					$field=$LANG["software"][10];
+					$field=$LANG["help"][31];
 					$change = $LANG["software"][44]."&nbsp;<strong>:</strong>&nbsp;"."\"".$data["new_value"]."\"";	
 					break;				
 				case HISTORY_UNINSTALL_SOFTWARE :
-					$field=$LANG["software"][10];
+					$field=$LANG["help"][31];
 					$change = $LANG["software"][45]."&nbsp;<strong>:</strong>&nbsp;"."\"".$data["old_value"]."\"";	
 					break;	
 				case HISTORY_DISCONNECT_DEVICE:

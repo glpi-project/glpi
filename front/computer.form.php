@@ -205,7 +205,7 @@ elseif(isset($_POST["unlock_field"])){
 	}
 
 
-	commonHeader($LANG["title"][3],$_SERVER['PHP_SELF'],"inventory","computer");
+	commonHeader($LANG["Menu"][0],$_SERVER['PHP_SELF'],"inventory","computer");
 
 	//show computer form to add
 	if (!empty($_GET["withtemplate"])) {

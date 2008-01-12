@@ -77,7 +77,7 @@ function showEnterpriseContact($instID) {
 	echo "<tr><th>".$LANG["financial"][26]."</th>";
 	echo "<th>".$LANG["entity"][0]."</th>";
 	echo "<th>".$LANG["financial"][79]."</th>";
-	echo "<th>".$LANG["financial"][29]."</th>";
+	echo "<th>".$LANG["help"][35]."</th>";
 	echo "<th>".$LANG["financial"][30]."</th>";
 	echo "<th>".$LANG["financial"][45]."</th>";
 	echo "<th>&nbsp;</th></tr>";

@@ -156,7 +156,7 @@ class Enterprise extends CommonDBTM {
 				dropdownValue("glpi_dropdown_enttype", "type", $this->fields["type"]);
 				echo "</td></tr>";
 	
-				echo "<tr class='tab_bg_1'><td>".$LANG["financial"][29].":		</td>";
+				echo "<tr class='tab_bg_1'><td>".$LANG["help"][35].":		</td>";
 				echo "<td>";
 				autocompletionTextField("phonenumber","glpi_enterprises","phonenumber",$this->fields["phonenumber"],25,$this->fields["FK_entities"]);	
 				echo "</td>";

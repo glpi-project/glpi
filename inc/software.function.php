@@ -324,7 +324,7 @@ function showLicenses($sID, $show_computers = 0) {
 			if ($show_computers && $canedit) {
 				if ($num_inst > 0) {
 					if ($serial != "free" && $serial != "global") {
-						echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" . $LANG["search"][7] . ":";
+						echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" . $LANG["common"][66] . ":";
 						$rand = mt_rand();
 
 						$found_soft = true;

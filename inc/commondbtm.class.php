@@ -648,7 +648,7 @@ class CommonDBTM {
 			}
 			if(empty($withtemplate)){
 				echo "<li class='invisible'>&nbsp;</li>";
-				echo "<li "; if ($actif=="-1") {echo "class='actif'";} echo "><a href='$target&amp;onglet=-1$template$addurlparam'>".$LANG["title"][29]."</a></li>";
+				echo "<li "; if ($actif=="-1") {echo "class='actif'";} echo "><a href='$target&amp;onglet=-1$template$addurlparam'>".$LANG["common"][66]."</a></li>";
 			}
 		}
 	

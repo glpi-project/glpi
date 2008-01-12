@@ -595,7 +595,7 @@ class Profile extends CommonDBTM{
 
 
 		echo "<tr class='tab_bg_2'>";
-		echo "<td class='tab_bg_4'>".$LANG["setup"][222].":</td><td class='tab_bg_4'>";
+		echo "<td class='tab_bg_4'>".$LANG["title"][30].":</td><td class='tab_bg_4'>";
 		dropdownNoneReadWrite("device",$this->fields["device"],1,0,1);
 		echo "</td>";
 		echo "<td  class='tab_bg_4'>".$LANG["setup"][0].":</td><td class='tab_bg_4'>";

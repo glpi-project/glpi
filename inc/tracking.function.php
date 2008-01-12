@@ -948,13 +948,13 @@ global $CFG_GLPI,  $LANG;
 	echo "<option value='notold' ".($status=="notold"?"selected":"").">".$LANG["joblist"][24]."</option>";	
 	echo "<option value='process' ".($status=="process"?"selected":"").">".$LANG["joblist"][21]."</option>";
 	echo "<option value='old' ".($status=="old"?"selected":"").">".$LANG["joblist"][25]."</option>";	
-	echo "<option value='all' ".($status=="all"?"selected":"").">".$LANG["joblist"][20]."</option>";
+	echo "<option value='all' ".($status=="all"?"selected":"").">".$LANG["common"][66]."</option>";
 	echo "</select></td>";
 
 	if (haveRight("show_group_ticket",1)){
 		echo "<td class='center'>";
 		echo "<select name='group'>";
-		echo "<option value='-1' ".($group==-1?" selected ":"").">".$LANG["search"][7]."</option>";
+		echo "<option value='-1' ".($group==-1?" selected ":"").">".$LANG["common"][66]."</option>";
 		echo "<option value='0' ".($group==0?" selected ":"").">".$LANG["joblist"][1]."</option>";
 		echo "</select>";
 		echo "</td>";
@@ -1083,7 +1083,7 @@ function searchFormTracking($extended=0,$target,$start="",$status="new",$tosearc
 	echo "<option value='notold' ".($status=="notold"?"selected":"").">".$LANG["joblist"][24]."</option>";	
 	echo "<option value='process' ".($status=="process"?"selected":"").">".$LANG["joblist"][21]."</option>";
 	echo "<option value='old' ".($status=="old"?"selected":"").">".$LANG["joblist"][25]."</option>";	
-	echo "<option value='all' ".($status=="all"?"selected":"").">".$LANG["joblist"][20]."</option>";
+	echo "<option value='all' ".($status=="all"?"selected":"").">".$LANG["common"][66]."</option>";
 	echo "</select></td>";
 
 
@@ -1156,7 +1156,7 @@ function searchFormTracking($extended=0,$target,$start="",$status="new",$tosearc
 		echo "<select name='field' size='1'>";
 		echo "<option value='all' ";
 		if($field == "all") echo "selected";
-		echo ">".$LANG["search"][7]."</option>";
+		echo ">".$LANG["common"][66]."</option>";
 		reset($option);
 		foreach ($option as $key => $val) {
 			echo "<option value=\"".$key."\""; 
@@ -1595,7 +1595,7 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$to
 					case "notold": $title.=$LANG["joblist"][24];break;
 					case "process": $title.=$LANG["joblist"][21];break;
 					case "old": $title.=$LANG["joblist"][25];break;
-					case "all": $title.=$LANG["joblist"][20];break;
+					case "all": $title.=$LANG["common"][66];break;
 				}
 				if ($author!=0) $title.=" - ".$LANG["job"][4]." = ".getUserName($author);
 				if ($group>0) $title.=" - ".$LANG["common"][35]." = ".getDropdownName("glpi_groups",$group);

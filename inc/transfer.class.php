@@ -2088,7 +2088,7 @@ class Transfer extends CommonDBTM{
 					2=>$LANG["buttons"][22]);
 
 				echo "<tr class='tab_bg_1'>";
-				echo "<td>".$LANG["search"][7]." -> ".$LANG["title"][38].":	</td><td>";
+				echo "<td>".$LANG["common"][66]." -> ".$LANG["title"][38].":	</td><td>";
 				dropdownArrayValues('keep_history',$keep,$this->fields['keep_history']);
 				echo "</td>";
 				echo "<td colspan='2'>&nbsp;</td>";
@@ -2098,13 +2098,13 @@ class Transfer extends CommonDBTM{
 				echo "<td colspan='4' class='center'><strong>".$LANG["Menu"][38]."</strong></td></tr>";
 
 				echo "<tr class='tab_bg_1'>";
-				echo "<td>".$LANG["search"][7]." -> ".$LANG["networking"][6].":	</td><td>";
+				echo "<td>".$LANG["common"][66]." -> ".$LANG["networking"][6].":	</td><td>";
 				$options=array(0=>$LANG["buttons"][6],
 						1=>$LANG["buttons"][49]." - ".$LANG["buttons"][10] ,
 						2=>$LANG["buttons"][49]." - ".$LANG["buttons"][9] );
 				dropdownArrayValues('keep_networklinks',$options,$this->fields['keep_networklinks']);
 				echo "</td>";
-				echo "<td>".$LANG["search"][7]." -> ".$LANG["title"][28].":	</td><td>";
+				echo "<td>".$LANG["common"][66]." -> ".$LANG["title"][28].":	</td><td>";
 				$options=array(0=>$LANG["buttons"][6],
 						1=>$LANG["buttons"][49]." - ".$LANG["buttons"][10] ,
 						2=>$LANG["buttons"][49]." - ".$LANG["buttons"][48] );
@@ -2124,10 +2124,10 @@ class Transfer extends CommonDBTM{
 				echo "</tr>";
 
 				echo "<tr class='tab_bg_1'>";
-				echo "<td>".$LANG["search"][7]." -> ".$LANG["Menu"][17].":	</td><td>";	
+				echo "<td>".$LANG["common"][66]." -> ".$LANG["Menu"][17].":	</td><td>";	
 				dropdownArrayValues('keep_reservations',$keep,$this->fields['keep_reservations']);
 				echo "</td>";
-				echo "<td>".$LANG["Menu"][0]." -> ".$LANG["devices"][10].":	</td><td>";
+				echo "<td>".$LANG["Menu"][0]." -> ".$LANG["title"][30].":	</td><td>";
 				dropdownArrayValues('keep_devices',$keep,$this->fields['keep_devices']);
 				echo "</td>";
 				echo "</tr>";
@@ -2145,7 +2145,7 @@ class Transfer extends CommonDBTM{
 				echo "<td>".$LANG["cartridges"][12]." -> ".$LANG["title"][19].":	</td><td>";
 				dropdownArrayValues('keep_cartridges',$keep,$this->fields['keep_cartridges']);
 				echo "</td>";				
-				echo "<td>".$LANG["search"][7]." -> ".$LANG["financial"][3].":	</td><td>";
+				echo "<td>".$LANG["common"][66]." -> ".$LANG["financial"][3].":	</td><td>";
 				dropdownArrayValues('keep_infocoms',$keep,$this->fields['keep_infocoms']);
 				echo "</td>";
 				echo "</tr>";
@@ -2202,7 +2202,7 @@ class Transfer extends CommonDBTM{
 
 
 				echo "<tr class='tab_bg_1'>";
-				echo "<td>".$LANG["search"][7]." -> ".$LANG["Menu"][23].":	</td><td>";
+				echo "<td>".$LANG["common"][66]." -> ".$LANG["Menu"][23].":	</td><td>";
 				dropdownArrayValues('keep_enterprises',$keep,$this->fields['keep_enterprises']);
 				echo "</td>";
 				echo "<td>".$LANG["Menu"][23].": ".$LANG["transfer"][3]."	</td><td>";
@@ -2220,7 +2220,7 @@ class Transfer extends CommonDBTM{
 				echo "</tr>";
 
 				echo "<tr class='tab_bg_1'>";
-				echo "<td>".$LANG["search"][7]." -> ".$LANG["Menu"][27].":	</td><td>";
+				echo "<td>".$LANG["common"][66]." -> ".$LANG["Menu"][27].":	</td><td>";
 				dropdownArrayValues('keep_documents',$keep,$this->fields['keep_documents']);
 				echo "</td>";
 				echo "<td>".$LANG["Menu"][27].": ".$LANG["transfer"][3]."	</td><td>";
@@ -2229,7 +2229,7 @@ class Transfer extends CommonDBTM{
 				echo "</tr>";
 
 				echo "<tr class='tab_bg_1'>";
-				echo "<td>".$LANG["search"][7]." -> ".$LANG["Menu"][25].":	</td><td>";
+				echo "<td>".$LANG["common"][66]." -> ".$LANG["Menu"][25].":	</td><td>";
 				dropdownArrayValues('keep_contracts',$keep,$this->fields['keep_contracts']);
 				echo "</td>";
 				echo "<td>".$LANG["Menu"][25].": ".$LANG["transfer"][3]."	</td><td>";

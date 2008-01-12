@@ -51,7 +51,7 @@ function showCentralOnglets($target,$actif) {
 		echo "<li ".($actif=="plugins"?"class='actif'":"")."><a href='$target?onglet=plugins'>".$LANG["common"][29]."</a></li>";
 	}
 	echo "<li class='invisible'>&nbsp;</li>";
-	echo "<li ".($actif=="all"?"class='actif'":"")."><a href='$target?onglet=all'>".$LANG["title"][29]."</a></li>";
+	echo "<li ".($actif=="all"?"class='actif'":"")."><a href='$target?onglet=all'>".$LANG["common"][66]."</a></li>";
 
 	echo "</ul></div>";
 }

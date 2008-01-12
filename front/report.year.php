@@ -56,19 +56,19 @@ echo "<tr class='tab_bg_2'>";
 echo "<td width='150'  align='center'>";
 echo "<p><b>".$LANG["reports"][12]."</b></p> ";
 echo "<p><select name='item_type[]' size='8'  multiple>";
-echo "<option value='0' selected>".$LANG["reports"][16]."</option>";
-echo "<option value='".COMPUTER_TYPE."'>".$LANG["reports"][6]."</option>";
-echo "<option value='".PRINTER_TYPE."'>".$LANG["reports"][7]."</option>";
-echo "<option value='".NETWORKING_TYPE."'>".$LANG["reports"][8]."</option>";
-echo "<option value='".MONITOR_TYPE."'>".$LANG["reports"][9]."</option>";
-echo "<option value='".PERIPHERAL_TYPE."'>".$LANG["reports"][29]."</option>";
-echo "<option value='".SOFTWARE_TYPE."'>".$LANG["reports"][55]."</option>";
+echo "<option value='0' selected>".$LANG["common"][66]."</option>";
+echo "<option value='".COMPUTER_TYPE."'>".$LANG["Menu"][0]."</option>";
+echo "<option value='".PRINTER_TYPE."'>".$LANG["Menu"][2]."</option>";
+echo "<option value='".NETWORKING_TYPE."'>".$LANG["help"][26]."</option>";
+echo "<option value='".MONITOR_TYPE."'>".$LANG["Menu"][3]."</option>";
+echo "<option value='".PERIPHERAL_TYPE."'>".$LANG["Menu"][16]."</option>";
+echo "<option value='".SOFTWARE_TYPE."'>".$LANG["Menu"][4]."</option>";
 echo "<option value='".PHONE_TYPE."'>".$LANG["reports"][64]."</option>";
 echo "</select> </p></td>";
 
 echo "<td width='150' align='center'><p><b>".$LANG["reports"][23]."</b></p> ";
 echo "<p> <select name='annee[]'  size='8' multiple>";
-echo " <option value='toutes' selected>".$LANG["reports"][16]."</option>";
+echo " <option value='toutes' selected>".$LANG["common"][66]."</option>";
 $y = date("Y");
 for ($i=$y-10;$i<$y+10;$i++)
 {

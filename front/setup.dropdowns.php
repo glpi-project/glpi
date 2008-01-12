@@ -169,7 +169,7 @@ if (isset($_POST['mass_delete'])){
 					),
 
 			$LANG["setup"][142]=>array(
-					"glpi_dropdown_budget"=>$LANG["setup"][99],
+					"glpi_dropdown_budget"=>$LANG["financial"][87],
 					"glpi_dropdown_rubdocs"=>$LANG["setup"][81],
 					),
 
@@ -197,7 +197,7 @@ if (isset($_POST['mass_delete'])){
 					"glpi_dropdown_vlan"=>$LANG["setup"][90],	
 					),
 			
-			$LANG["reports"][55]=>array(
+			$LANG["Menu"][4]=>array(
 			"glpi_dropdown_software_category"=>$LANG["softwarecategories"][5],
 			)
 			

@@ -42,7 +42,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 checkRight("software","r");
 
-commonHeader($LANG["title"][12],$_SERVER['PHP_SELF'],"inventory","software");
+commonHeader($LANG["Menu"][4],$_SERVER['PHP_SELF'],"inventory","software");
 
 manageGetValuesInSearch(SOFTWARE_TYPE);
 

@@ -502,7 +502,7 @@ function update0681to07() {
 					if (!empty ($data['phonenumber'])) {
 						if (!empty ($comments))
 							$comments .= "\n";
-						$comments .= $LANG["financial"][29] . ": ";
+						$comments .= $LANG["help"][35] . ": ";
 						$comments .= $data['phonenumber'];
 					}
 					if (!empty ($data['fax'])) {

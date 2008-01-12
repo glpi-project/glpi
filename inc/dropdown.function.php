@@ -358,7 +358,7 @@ function dropdownUsers($myname,$value,$right,$all=0,$display_comments=1,$entity_
 		$default=$default_display;
 	} else {
 		if ($all){
-			$default="<select name='$myname' id='dropdown_".$myname.$rand."'><option value='0'>[ ".$LANG["search"][7]." ]</option></select>\n";
+			$default="<select name='$myname' id='dropdown_".$myname.$rand."'><option value='0'>[ ".$LANG["common"][66]." ]</option></select>\n";
 		} else {
 			$default="<select name='$myname' id='dropdown_".$myname.$rand."'><option value='0'>[ Nobody ]</option></select>\n";
 		}
@@ -455,10 +455,10 @@ function getDropdownName($table,$id,$withcomments=0) {
 						case "glpi_contacts" :
 							$name .= " ".$data["firstname"];
 							if (!empty($data["phone"])){
-								$comments.="<br><strong>".$LANG["financial"][29].":</strong> ".$data["phone"];
+								$comments.="<br><strong>".$LANG["help"][35].":</strong> ".$data["phone"];
 							}
 							if (!empty($data["phone2"])){
-								$comments.="<br><strong>".$LANG["financial"][29]." 2:</strong> ".$data["phone2"];
+								$comments.="<br><strong>".$LANG["help"][35]." 2:</strong> ".$data["phone2"];
 							}
 							if (!empty($data["mobile"])){
 								$comments.="<br><strong>".$LANG["common"][42].":</strong> ".$data["mobile"];
@@ -472,7 +472,7 @@ function getDropdownName($table,$id,$withcomments=0) {
 							break;
 						case "glpi_enterprises" :
 							if (!empty($data["phone"])){
-								$comments.="<br><strong>".$LANG["financial"][29].":</strong> ".$data["phone"];
+								$comments.="<br><strong>".$LANG["help"][35].":</strong> ".$data["phone"];
 							}
 							if (!empty($data["fax"])){
 								$comments.="<br><strong>".$LANG["financial"][30].":</strong> ".$data["fax"];
@@ -575,7 +575,7 @@ function dropdownUsersTracking($myname,$value,$field,$display_comments=1) {
 	$user=getUserName($value,2);
 	$default="<select name='$myname'><option value='$value'>".substr($user["name"],0,$CFG_GLPI["dropdown_limit"])."</option></select>\n";
 	if (empty($value)||$value==0){
-			$default= "<select name='$myname'><option value='0'>[ ".$LANG["search"][7]." ]</option></select>\n";
+			$default= "<select name='$myname'><option value='0'>[ ".$LANG["common"][66]." ]</option></select>\n";
 	}
 
 	$params=array('searchText'=>'__VALUE__',
@@ -1691,7 +1691,7 @@ function dropdownPriority($name,$value=0,$complete=0){
 
 	echo "<select name='$name'>";
 	if ($complete){
-		echo "<option value='0' ".($value==1?" selected ":"").">".$LANG["search"][7]."</option>";
+		echo "<option value='0' ".($value==1?" selected ":"").">".$LANG["common"][66]."</option>";
 		echo "<option value='-5' ".($value==-5?" selected ":"").">".$LANG["search"][16]." ".$LANG["help"][3]."</option>";
 		echo "<option value='-4' ".($value==-4?" selected ":"").">".$LANG["search"][16]." ".$LANG["help"][4]."</option>";
 		echo "<option value='-3' ".($value==-3?" selected ":"").">".$LANG["search"][16]." ".$LANG["help"][5]."</option>";
@@ -1741,7 +1741,7 @@ function getRequestTypeName($value){
 			return $LANG["setup"][14];
 			break;
 		case 3 :
-			return $LANG["title"][41];
+			return $LANG["help"][35];
 			break;
 		case 4 :
 			return $LANG["tracking"][34];
@@ -1763,7 +1763,7 @@ function dropdownRequestType($name,$value=0){
 	echo "<option value='0' ".($value==0?" selected ":"").">-----</option>";
 	echo "<option value='1' ".($value==1?" selected ":"").">".$LANG["Menu"][31]."</option>"; // Helpdesk
 	echo "<option value='2' ".($value==2?" selected ":"").">".$LANG["setup"][14]."</option>"; // mail
-	echo "<option value='3' ".($value==3?" selected ":"").">".$LANG["title"][41]."</option>"; // phone
+	echo "<option value='3' ".($value==3?" selected ":"").">".$LANG["help"][35]."</option>"; // phone
 	echo "<option value='4' ".($value==4?" selected ":"").">".$LANG["tracking"][34]."</option>"; // direct
 	echo "<option value='5' ".($value==5?" selected ":"").">".$LANG["tracking"][35]."</option>"; // writing
 	echo "<option value='6' ".($value==6?" selected ":"").">".$LANG["common"][62]."</option>"; // other
