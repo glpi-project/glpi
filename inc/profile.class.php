@@ -258,7 +258,7 @@ class Profile extends CommonDBTM{
 		echo "<td>".$LANG["knowbase"][1].":</td><td>";
 		dropdownNoneReadWrite("faq",$this->fields["faq"],1,1,0);
 		echo "</td>";
-		echo "<td>".$LANG["title"][35].":</td><td>";
+		echo "<td>".$LANG["Menu"][17].":</td><td>";
 		dropdownYesNo("reservation_helpdesk",$this->fields["reservation_helpdesk"]);
 		echo "</td></tr>";
 
@@ -473,7 +473,7 @@ class Profile extends CommonDBTM{
 		echo "<td>".$LANG["profiles"][21].":</td><td>";
 		dropdownYesNo("show_all_planning",$this->fields["show_all_planning"]);
 		echo "</td>";
-		echo "<td>".$LANG["stats"][19].":</td><td>";
+		echo "<td>".$LANG["Menu"][13].":</td><td>";
 		dropdownYesNo("statistic",$this->fields["statistic"]);
 		echo "</td></tr>";
 
@@ -489,12 +489,12 @@ class Profile extends CommonDBTM{
 		echo "<td>".$LANG["Menu"][6].":</td><td>";
 		dropdownNoneReadWrite("reports",$this->fields["reports"],1,1,0);
 		echo "</td>";
-		echo "<td>".$LANG["title"][35].":</td><td>";
+		echo "<td>".$LANG["Menu"][17].":</td><td>";
 		dropdownYesNo("reservation_helpdesk",$this->fields["reservation_helpdesk"]);
 		echo "</td></tr>";
 
 		echo "<tr class='tab_bg_2'>";
-		echo "<td class='tab_bg_4'>".$LANG["knowbase"][0].":</td><td class='tab_bg_4'>";
+		echo "<td class='tab_bg_4'>".$LANG["title"][5].":</td><td class='tab_bg_4'>";
 		dropdownNoneReadWrite("knowbase",$this->fields["knowbase"],1,1,1);
 		echo "</td>";
 		echo "<td>".$LANG["profiles"][23].":</td><td>";

@@ -350,7 +350,7 @@ function logArray(){
 
 	$logService=array("inventory"=>$LANG["log"][50],
 			"tracking"=>$LANG["log"][51],
-			"planning"=>$LANG["log"][52],
+			"planning"=>$LANG["Menu"][29],
 			"tools"=>$LANG["log"][53],
 			"financial"=>$LANG["log"][54],
 			"login"=>$LANG["log"][55],
@@ -358,7 +358,7 @@ function logArray(){
 			"security"=>$LANG["log"][66],
 			"reservation"=>$LANG["log"][58],
 			"cron"=>$LANG["log"][59],
-			"document"=>$LANG["log"][56],
+			"document"=>$LANG["Menu"][27],
 			"plugin"=>$LANG["common"][29]);
 
 	return array($logItemtype,$logService);

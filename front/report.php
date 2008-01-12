@@ -43,7 +43,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 checkRight("reports","r");
 
-commonHeader($LANG["title"][16],$_SERVER['PHP_SELF'],"utils","report");
+commonHeader($LANG["Menu"][6],$_SERVER['PHP_SELF'],"utils","report");
 
 
 echo "<div align='center'><table class='tab_cadre' cellpadding='5'>";

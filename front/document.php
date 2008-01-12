@@ -40,7 +40,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 checkRight("document","r");
 
-commonHeader($LANG["title"][25],$_SERVER['PHP_SELF'],"financial","document");
+commonHeader($LANG["Menu"][27],$_SERVER['PHP_SELF'],"financial","document");
 
 manageGetValuesInSearch(DOCUMENT_TYPE);
 

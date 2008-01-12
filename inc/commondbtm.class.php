@@ -640,7 +640,7 @@ class CommonDBTM {
 	
 		if (count($onglets=$this->defineOnglets($withtemplate))){
 			//if (empty($withtemplate)&&haveRight("reservation_central","r")&&function_exists("isReservable")){
-			//	$onglets[11]=$LANG["title"][35];
+			//	$onglets[11]=$LANG["Menu"][17];
 			//	ksort($onglets);
 			//}
 			foreach ($onglets as $key => $val ) {

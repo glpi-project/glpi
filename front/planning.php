@@ -40,7 +40,7 @@ $NEEDED_ITEMS=array("planning","tracking","user","computer","printer","monitor",
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-commonHeader($LANG["title"][31],$_SERVER['PHP_SELF'],"maintain","planning");
+commonHeader($LANG["Menu"][29],$_SERVER['PHP_SELF'],"maintain","planning");
 
 checkSeveralRightsOr(array("show_all_planning"=>"1","show_planning"=>"1"));
 

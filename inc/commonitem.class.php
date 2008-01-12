@@ -240,10 +240,10 @@ class CommonItem{
 				return $LANG["document"][7];
 				break;
 			case DOCUMENT_TYPE : 
-				return $LANG["document"][0];
+				return $LANG["Menu"][27];
 				break;					
 			case KNOWBASE_TYPE : 
-				return $LANG["knowbase"][0];
+				return $LANG["title"][5];
 				break;	
 			case USER_TYPE : 
 				return $LANG["setup"][57];

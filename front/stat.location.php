@@ -40,11 +40,11 @@ $NEEDED_ITEMS=array("stat","tracking","user","setup","device");
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-commonHeader($LANG["title"][11],$_SERVER['PHP_SELF'],"maintain","stat");
+commonHeader($LANG["Menu"][13],$_SERVER['PHP_SELF'],"maintain","stat");
 
 checkRight("statistic","1");
 
-echo "<div align='center'><p><b><span class='icon_consol'>".$LANG["stats"][19]."</span></b></p>";
+echo "<div align='center'><p><b><span class='icon_consol'>".$LANG["Menu"][13]."</span></b></p>";
 
 if (isset($_GET["date1"])) $_POST["date1"] = $_GET["date1"];
 if (isset($_GET["date2"])) $_POST["date2"] = $_GET["date2"];

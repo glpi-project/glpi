@@ -41,7 +41,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 checkRight("consumable","r");
 
-commonHeader($LANG["title"][36],$_SERVER['PHP_SELF'],"inventory","consumable");
+commonHeader($LANG["Menu"][32],$_SERVER['PHP_SELF'],"inventory","consumable");
 
 if (isset($_GET["synthese"])){
 	showConsumableSummary();

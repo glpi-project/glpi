@@ -145,7 +145,7 @@ function displayStats($type,$field,$date1,$date2,$start,$value,$value2=""){
 			echo displaySearchHeaderItem($output_type,"",$header_num);
 		}
 		echo displaySearchHeaderItem($output_type,$LANG["stats"][13],$header_num);
-		echo displaySearchHeaderItem($output_type,$LANG["stats"][14],$header_num);
+		echo displaySearchHeaderItem($output_type,$LANG["stats"][11],$header_num);
 		echo displaySearchHeaderItem($output_type,$LANG["stats"][15],$header_num);
 		echo displaySearchHeaderItem($output_type,$LANG["stats"][25],$header_num);
 		echo displaySearchHeaderItem($output_type,$LANG["stats"][27],$header_num);

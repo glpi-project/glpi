@@ -159,7 +159,7 @@ else
 		$_SESSION['glpi_onglet']=$_GET['onglet'];
 	}
 
-	commonHeader($LANG["title"][20],$_SERVER['PHP_SELF'],"financial","contract");
+	commonHeader($LANG["Menu"][25],$_SERVER['PHP_SELF'],"financial","contract");
 
 	if ($contract->showForm($_SERVER['PHP_SELF'],$_GET["ID"])) {
 		if (!empty($_GET['ID'])){
