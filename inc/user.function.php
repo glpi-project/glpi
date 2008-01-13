@@ -444,6 +444,8 @@ function getAuthMethodsByID($auth_method, $id_auth) {
 	$sql = "";
 
 	switch ($auth_method) {
+		case AUTH_X509 :
+		case AUTH_EXTERNAL :
 		case AUTH_CAS :
 			if ($id_auth>0){
 				//Get all the ldap directories
@@ -499,6 +501,12 @@ function getAuthMethodName($auth_method, $id_auth, $link=0,$name=''){
 		break;
 		case AUTH_CAS :
 			return  $LANG["login"][4];
+			break;
+		case AUTH_X509 :
+			return  $LANG["setup"][190];
+			break;
+		case AUTH_EXTERNAL :
+			return  $LANG["common"][62];
 			break;
 		case AUTH_DB_GLPI :
 			return $LANG["login"][18];

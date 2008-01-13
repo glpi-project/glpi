@@ -51,7 +51,7 @@ $config_mail = new AuthMail();
 $config_ldap = new AuthLDAP();
 
 //Update CAS configuration
-if (isset ($_POST["update_conf_cas"])) {
+if (isset ($_POST["update"])) {
 	$config->update($_POST);
 	glpi_header($CFG_GLPI["root_doc"] . "/front/setup.auth.php");
 }

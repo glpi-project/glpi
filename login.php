@@ -70,98 +70,102 @@ if (isset ($_POST['login_password'])) {
 	$_POST['login_password'] = unclean_cross_side_scripting_deep($_POST['login_password']);
 }
 
-if (!isset ($_POST["noCAS"]) && !empty ($CFG_GLPI["cas_host"])) {
-	include (GLPI_ROOT . "/lib/phpcas/CAS.php");
-	$cas = new phpCas(); 
-	$cas->client(CAS_VERSION_2_0, $CFG_GLPI["cas_host"], intval($CFG_GLPI["cas_port"]), $CFG_GLPI["cas_uri"]); 
+if (!isset ($_POST["noAUTO"]) && $auth_method=checkAlternateAuthSystems()) {
 
-	// force CAS authentication
-	$cas->forceAuthentication(); 
-	$user = $cas->getUser(); 
-	$identificat->auth_succeded = true;
-	$identificat->extauth = 1;
-	$identificat->user_present = $identificat->user->getFromDBbyName($user);
- 	$identificat->user->fields['auth_method'] = AUTH_CAS; 
-	// if LDAP enabled too, get user's infos from LDAP
-	$identificat->user->fields["id_auth"]=$CFG_GLPI['extra_ldap_server'];
+	if ($identificat->getAlternateAuthSystemsUserLogin($auth_method)&&!empty($identificat->user->fields['name'])){
+		$user=$identificat->user->fields['name'];
+		$identificat->auth_succeded = true;
+		$identificat->extauth = 1;
+		$identificat->user_present = $identificat->user->getFromDBbyName($user);
+		$identificat->user->fields['auth_method'] = $auth_method; 
 
-	if (isset($identificat->auth_methods["ldap"][$identificat->user->fields["id_auth"]])) {
-		$ldap_method = $identificat->auth_methods["ldap"][$identificat->user->fields["id_auth"]];
-		print_r($ldap_method);
-		$ds = connect_ldap($ldap_method["ldap_host"], $ldap_method["ldap_port"], $ldap_method["ldap_rootdn"], $ldap_method["ldap_pass"], $ldap_method["ldap_use_tls"]);
-		if ($ds) {
-			$user_dn = ldap_search_user_dn($ds, $ldap_method["ldap_basedn"], $ldap_method["ldap_login"], $user, $ldap_method["ldap_condition"]);
-			if ($user_dn) {
-				$identificat->user->getFromLDAP($ds,$ldap_method, $user_dn, $ldap_method["ldap_rootdn"], $ldap_method["ldap_pass"]);
+		// if LDAP enabled too, get user's infos from LDAP
+		$identificat->user->fields["id_auth"]=$CFG_GLPI['extra_ldap_server'];
+	
+		if (isset($identificat->auth_methods["ldap"][$identificat->user->fields["id_auth"]])) {
+			$ldap_method = $identificat->auth_methods["ldap"][$identificat->user->fields["id_auth"]];
+			
+			$ds = connect_ldap($ldap_method["ldap_host"], $ldap_method["ldap_port"], $ldap_method["ldap_rootdn"], $ldap_method["ldap_pass"], $ldap_method["ldap_use_tls"]);
+			if ($ds) {
+				$user_dn = ldap_search_user_dn($ds, $ldap_method["ldap_basedn"], $ldap_method["ldap_login"], $user, $ldap_method["ldap_condition"]);
+				if ($user_dn) {
+					$identificat->user->getFromLDAP($ds,$ldap_method, $user_dn, $ldap_method["ldap_rootdn"], $ldap_method["ldap_pass"]);
+				}
 			}
 		}
-	}
-	$identificat->user->fields["last_login"] = $_SESSION["glpi_currenttime"];
-	$identificat->user->fields["name"] = $user;
-
-}
-if (isset ($_POST["noCAS"])){
-	$_SESSION["noCAS"] = 1;
-}
-	if (!$identificat->auth_succeded) // Pas de tests en configuration CAS
-	if (empty ($_POST['login_name']) || empty ($_POST['login_password'])) {
-		$identificat->addToError($LANG["login"][8]);
+		// Reset to secure it
+		$identificat->user->fields['name']=$user;
+		$identificat->user->fields["last_login"] = $_SESSION["glpi_currenttime"];
 	} else {
+		$identificat->addToError($LANG["login"][8]);
+	}
+}
 
-		// exists=0 -> no exist
-		// exists=1 -> exist with password
-		// exists=2 -> exist without password
-		$exists = $identificat->userExists($_POST['login_name']);
+	if (isset ($_POST["noAUTO"])){
+		$_SESSION["noAUTO"] = 1;
+	}
 
-		// Pas en premier car sinon on ne fait pas le blankpassword
-		// First try to connect via le DATABASE
-		if ($exists == 1) {
-			
-			// Without UTF8 decoding
+	// If not already auth
+	if (!$identificat->auth_succeded){ 
+		if (empty ($_POST['login_name']) || empty ($_POST['login_password'])) {
+			$identificat->addToError($LANG["login"][8]);
+		} else {
+	
+			// exists=0 -> no exist
+			// exists=1 -> exist with password
+			// exists=2 -> exist without password
+			$exists = $identificat->userExists($_POST['login_name']);
+	
+			// Pas en premier car sinon on ne fait pas le blankpassword
+			// First try to connect via le DATABASE
+			if ($exists == 1) {
+				
+				// Without UTF8 decoding
+				if (!$identificat->auth_succeded){
+					$identificat->auth_succeded = $identificat->connection_db($_POST['login_name'], $_POST['login_password']);
+					if ($identificat->auth_succeded) {
+						$identificat->extauth=0;
+						$identificat->user_present = $identificat->user->getFromDBbyName($_POST['login_name']);
+						$identificat->user->fields["auth_method"] = AUTH_DB_GLPI;
+						$identificat->user->fields["password"] = $_POST['login_password'];
+					} 
+	
+				}
+			}
+			elseif ($exists == 2) {
+				//The user is not authenticated on the GLPI DB, but we need to get informations about him
+				//The determine authentication method
+				$identificat->user->getFromDBbyName(addslashes($_POST['login_name']));
+				
+				//If the user has already been logged, the method_auth and id_auth are already set
+				//so we test this connection first
+				switch ($identificat->user->fields["auth_method"]) {
+					case AUTH_LDAP :
+						error_reporting(0);
+						$identificat = try_ldap_auth($identificat, $_POST['login_name'], $_POST['login_password'],$identificat->user->fields["id_auth"]);
+						break;
+					case AUTH_MAIL :
+						$identificat = try_mail_auth($identificat,$_POST['login_name'], $_POST['login_password'],$identificat->user->fields["id_auth"]);
+						break;
+					case NOT_YET_AUTHENTIFIED:
+						break;
+				}
+			}
+	
+			//If the last good auth method is not valid anymore, we test all the methods !
+			//test all the ldap servers
 			if (!$identificat->auth_succeded){
-				$identificat->auth_succeded = $identificat->connection_db($_POST['login_name'], $_POST['login_password']);
-				if ($identificat->auth_succeded) {
-					$identificat->extauth=0;
-					$identificat->user_present = $identificat->user->getFromDBbyName($_POST['login_name']);
-					$identificat->user->fields["auth_method"] = AUTH_DB_GLPI;
-					$identificat->user->fields["password"] = $_POST['login_password'];
-				} 
-
+				error_reporting(0);
+				$identificat = try_ldap_auth($identificat,$_POST['login_name'],$_POST['login_password']);
 			}
-		}
-		elseif ($exists == 2) {
-			//The user is not authenticated on the GLPI DB, but we need to get informations about him
-			//The determine authentication method
-			$identificat->user->getFromDBbyName(addslashes($_POST['login_name']));
-			
-			//If the user has already been logged, the method_auth and id_auth are already set
-			//so we test this connection first
-			switch ($identificat->user->fields["auth_method"]) {
-				case AUTH_LDAP :
-					error_reporting(0);
-					$identificat = try_ldap_auth($identificat, $_POST['login_name'], $_POST['login_password'],$identificat->user->fields["id_auth"]);
-					break;
-				case AUTH_MAIL :
-					$identificat = try_mail_auth($identificat,$_POST['login_name'], $_POST['login_password'],$identificat->user->fields["id_auth"]);
-					break;
-				case NOT_YET_AUTHENTIFIED:
-					break;
+	
+			//test all the imap/pop servers
+			if (!$identificat->auth_succeded){
+				$identificat = try_mail_auth($identificat,$_POST['login_name'],$_POST['login_password']);
 			}
+			// Fin des tests de connexion
+	
 		}
-
-		//If the last good auth method is not valid anymore, we test all the methods !
-		//test all the ldap servers
-		if (!$identificat->auth_succeded){
-			error_reporting(0);
-			$identificat = try_ldap_auth($identificat,$_POST['login_name'],$_POST['login_password']);
-		}
-
-		//test all the imap/pop servers
-		if (!$identificat->auth_succeded){
-			$identificat = try_mail_auth($identificat,$_POST['login_name'],$_POST['login_password']);
-		}
-		// Fin des tests de connexion
-
 	}
 
 	// Ok, we have gathered sufficient data, if the first return false the user
@@ -198,7 +202,6 @@ if (isset ($_POST["noCAS"])){
 	if ($identificat->auth_succeded) {
 		$identificat->initSession();
 	} else { // we have done at least a good login? No, we exit. 
-
 		nullHeader("Login", $_SERVER['PHP_SELF']);
 		echo '<div align="center"><b>' . $identificat->getErr() . '</b><br><br>';
 		echo '<b><a href="' . $CFG_GLPI["root_doc"] . '/logout.php">' . $LANG["login"][1] . '</a></b></div>';
@@ -208,8 +211,6 @@ if (isset ($_POST["noCAS"])){
 			logEvent(-1, "system", 1, "login", $LANG["log"][41] . ": " . $_POST['login_name'] . " ($ip)");
 		}
 		nullFooter();
-		$identificat->destroySession();
-		
 		exit();
 	}
 

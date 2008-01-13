@@ -1192,4 +1192,44 @@ function getAllReplicatesNamesForAMaster($master_id){
 	}
 	return $str;	
 }
+
+// Check if auto login or CAS is activate and redirect to login.php if ok
+function checkAlternateAuthSystems($redirect=false){
+	global $CFG_GLPI;
+	if (isset($_GET["noAUTO"])||isset($_POST["noAUTO"])){
+		return false;
+	}
+
+	// Using CAS server
+	if (!empty($CFG_GLPI["cas_host"])) {
+		if ($redirect){
+			glpi_header("login.php");
+		} else {
+			return AUTH_CAS;
+		}
+	}
+
+	// Using x509 server
+	if (!empty($CFG_GLPI["x509_email_field"])
+		&&isset($_SERVER['SSL_CLIENT_S_DN'])&&ereg($CFG_GLPI["x509_email_field"],$_SERVER['SSL_CLIENT_S_DN'])) {
+		if ($redirect){
+			glpi_header("login.php");
+		} else {
+			return AUTH_X509;
+		}
+	}
+
+	// Existing auth method
+	if (!empty($CFG_GLPI["existing_auth_server_field"])
+		&&isset($_SERVER[$CFG_GLPI["existing_auth_server_field"]])&&!empty($_SERVER[$CFG_GLPI["existing_auth_server_field"]])) {
+		if ($redirect){
+			glpi_header("login.php");
+		} else {
+			return AUTH_EXTERNAL;
+		}
+	}
+
+	return false;
+}
+
 ?>

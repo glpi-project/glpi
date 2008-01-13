@@ -274,10 +274,13 @@
 			CONTRACT_TYPE => "front/contract.php",
 			DOCUMENT_TYPE => "front/document.php",
 		);
-	define("AUTH_CAS",0);
+
 	define("AUTH_DB_GLPI",1);
 	define("AUTH_MAIL",2);
 	define("AUTH_LDAP",3);
+	define("AUTH_EXTERNAL",4);
+	define("AUTH_CAS",5);
+	define("AUTH_X509",6);
 	define("NOT_YET_AUTHENTIFIED",-1);
 
 	//Generic rules engine

@@ -1800,4 +1800,19 @@ function deleteDir($dir) {
 	}
 }
 
+/**
+ * Determine if a login is valid
+ * @param $login login to check
+ * @return boolean 
+ */
+function isValidLogin($login="")
+{
+	if( !eregi( "^[a-zA-Z0-9@.-_]+$", $login) )
+	{
+		return false;
+	}
+	else return true;
+}
+
+
 ?>
