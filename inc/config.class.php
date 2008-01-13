@@ -606,24 +606,21 @@ class Config extends CommonDBTM {
 		echo "<input type='hidden' name='ID' value='" . $CFG_GLPI["ID"] . "'>";
 	
 		echo "<div id='barre_onglets'><ul id='onglet'>";
-		echo "<li ";
-		if ($_SESSION['glpi_mailconfig'] == 1) {
-			echo "class='actif'";
+
+		$onglets=array(1=>$LANG["common"][12],
+				2=>$LANG["setup"][240],
+				3=>$LANG["setup"][242]);
+		foreach ($onglets as $key => $val){
+			echo "<li ";
+			if ($_SESSION['glpi_mailconfig'] == $key) {
+				echo "class='actif'";
+			}
+			echo "><a href='$target?onglet=$key'>$val</a></li>";
 		}
-		echo "><a href='$target?onglet=1'>" . $LANG["common"][12] . "</a></li>";
-		echo "<li ";
-		if ($_SESSION['glpi_mailconfig'] == 2) {
-			echo "class='actif'";
-		}
-		echo "><a href='$target?onglet=2'>" . $LANG["setup"][240] . "</a></li>";
-		echo "<li ";
-		if ($_SESSION['glpi_mailconfig'] == 3) {
-			echo "class='actif'";
-		}
-		echo "><a href='$target?onglet=3'>" . $LANG["setup"][242] . "</a></li>";
 		echo "</ul></div>";
 	
-		if ($_SESSION['glpi_mailconfig'] == 1) {
+		switch ($_SESSION['glpi_mailconfig']){
+			case 1:
 			echo "<div class='center'><table class='tab_cadre_fixe'><tr><th colspan='2'>" . $LANG["setup"][201] . "</th></tr>";
 	
 			echo "<tr class='tab_bg_2'><td >" . $LANG["setup"][202] . "</td><td>";
@@ -694,116 +691,124 @@ class Config extends CommonDBTM {
 			echo "<td class='center'>";
 			echo "<input class=\"submit\" type=\"submit\" name=\"test_smtp_send\" value=\"" . $LANG["buttons"][2] . "\">";
 			echo " </td></tr></table></div>";
-	
-		} else
-			if ($_SESSION['glpi_mailconfig'] == 2) {
-	
-				$profiles[USER_MAILING_TYPE . "_" . ADMIN_MAILING] = $LANG["setup"][237];
-				$profiles[USER_MAILING_TYPE . "_" . ADMIN_ENTITY_MAILING] = $LANG["setup"][237]." ".$LANG["entity"][0];
-				$profiles[USER_MAILING_TYPE . "_" . TECH_MAILING] = $LANG["common"][10];
-				$profiles[USER_MAILING_TYPE . "_" . AUTHOR_MAILING] = $LANG["job"][4];
-				$profiles[USER_MAILING_TYPE . "_" . RECIPIENT_MAILING] = $LANG["job"][3];
-				$profiles[USER_MAILING_TYPE . "_" . USER_MAILING] = $LANG["common"][34] . " " . $LANG["common"][1];
-				$profiles[USER_MAILING_TYPE . "_" . ASSIGN_MAILING] = $LANG["setup"][239];
-				$profiles[USER_MAILING_TYPE . "_" . ASSIGN_ENT_MAILING] = $LANG["financial"][26];
-				$profiles[USER_MAILING_TYPE . "_" . ASSIGN_GROUP_MAILING] = $LANG["setup"][248];
-				$profiles[USER_MAILING_TYPE . "_" . SUPERVISOR_ASSIGN_GROUP_MAILING] = $LANG["common"][64]." ".$LANG["setup"][248];
-				$profiles[USER_MAILING_TYPE . "_" . SUPERVISOR_AUTHOR_GROUP_MAILING] = $LANG["common"][64]." ".$LANG["setup"][249];
+		break;
+		case 2:
+			$profiles[USER_MAILING_TYPE . "_" . ADMIN_MAILING] = $LANG["setup"][237];
+			$profiles[USER_MAILING_TYPE . "_" . ADMIN_ENTITY_MAILING] = $LANG["setup"][237]." ".$LANG["entity"][0];
+			$profiles[USER_MAILING_TYPE . "_" . TECH_MAILING] = $LANG["common"][10];
+			$profiles[USER_MAILING_TYPE . "_" . AUTHOR_MAILING] = $LANG["job"][4];
+			$profiles[USER_MAILING_TYPE . "_" . RECIPIENT_MAILING] = $LANG["job"][3];
+			$profiles[USER_MAILING_TYPE . "_" . USER_MAILING] = $LANG["common"][34] . " " . $LANG["common"][1];
+			$profiles[USER_MAILING_TYPE . "_" . ASSIGN_MAILING] = $LANG["setup"][239];
+			$profiles[USER_MAILING_TYPE . "_" . ASSIGN_ENT_MAILING] = $LANG["financial"][26];
+			$profiles[USER_MAILING_TYPE . "_" . ASSIGN_GROUP_MAILING] = $LANG["setup"][248];
+			$profiles[USER_MAILING_TYPE . "_" . SUPERVISOR_ASSIGN_GROUP_MAILING] = $LANG["common"][64]." ".$LANG["setup"][248];
+			$profiles[USER_MAILING_TYPE . "_" . SUPERVISOR_AUTHOR_GROUP_MAILING] = $LANG["common"][64]." ".$LANG["setup"][249];
 				
 				
-				asort($profiles);
+			asort($profiles);
 
-				$query = "SELECT ID, name FROM glpi_profiles order by name";
-				$result = $DB->query($query);
-				while ($data = $DB->fetch_assoc($result))
-					$profiles[PROFILE_MAILING_TYPE .
-					"_" . $data["ID"]] = $LANG["profiles"][22] . " " . $data["name"];
-	
-				$query = "SELECT ID, name FROM glpi_groups order by name";
-				$result = $DB->query($query);
-				while ($data = $DB->fetch_assoc($result))
-					$profiles[GROUP_MAILING_TYPE .
-					"_" . $data["ID"]] = $LANG["common"][35] . " " . $data["name"];
-	
-				echo "<div class='center'>";
-				echo "<input type='hidden' name='update_notifications' value='1'>";
-				// ADMIN
-				echo "<table class='tab_cadre_fixe'>";
-				echo "<tr><th colspan='3'>" . $LANG["setup"][211] . "</th></tr>";
-				echo "<tr class='tab_bg_2'>";
-				showFormMailingType("new", $profiles);
-				echo "</tr>";
-				echo "<tr><th colspan='3'>" . $LANG["setup"][212] . "</th></tr>";
-				echo "<tr class='tab_bg_1'>";
-				showFormMailingType("followup", $profiles);
-				echo "</tr>";
-				echo "<tr class='tab_bg_2'><th colspan='3'>" . $LANG["setup"][213] . "</th></tr>";
-				echo "<tr class='tab_bg_2'>";
-				showFormMailingType("finish", $profiles);
-				echo "</tr>";
-				echo "<tr class='tab_bg_2'><th colspan='3'>" . $LANG["setup"][230] . "</th></tr>";
-				echo "<tr class='tab_bg_1'>";
-				$profiles[USER_MAILING_TYPE . "_" . OLD_ASSIGN_MAILING] = $LANG["setup"][236];
-				ksort($profiles);
-				showFormMailingType("update", $profiles);
-				unset ($profiles[USER_MAILING_TYPE . "_" . OLD_ASSIGN_MAILING]);
-				echo "</tr>";
-	
-				echo "<tr class='tab_bg_2'><th colspan='3'>" . $LANG["setup"][225] . "</th></tr>";
-				echo "<tr class='tab_bg_2'>";
-				unset ($profiles[USER_MAILING_TYPE . "_" . ASSIGN_MAILING]);
-				unset ($profiles[USER_MAILING_TYPE . "_" . ASSIGN_ENT_MAILING]);
-				unset ($profiles[USER_MAILING_TYPE . "_" . ASSIGN_GROUP_MAILING]);
-				unset ($profiles[USER_MAILING_TYPE . "_" . SUPERVISOR_ASSIGN_GROUP_MAILING]);
-				unset ($profiles[USER_MAILING_TYPE . "_" . SUPERVISOR_AUTHOR_GROUP_MAILING]);
-				unset ($profiles[USER_MAILING_TYPE . "_" . RECIPIENT_MAILING]);
+			$query = "SELECT ID, name FROM glpi_profiles order by name";
+			$result = $DB->query($query);
+			while ($data = $DB->fetch_assoc($result)){
+				$profiles[PROFILE_MAILING_TYPE ."_" . $data["ID"]] = $LANG["profiles"][22] . " " . $data["name"];
+			}
 
-				showFormMailingType("resa", $profiles);
-				echo "</tr>";
+			$query = "SELECT ID, name FROM glpi_groups order by name";
+			$result = $DB->query($query);
+			while ($data = $DB->fetch_assoc($result)){
+				$profiles[GROUP_MAILING_TYPE ."_" . $data["ID"]] = $LANG["common"][35] . " " . $data["name"];
+			}
 	
-				echo "</table>";
-				echo "</div>";
-			} else
-				if ($_SESSION['glpi_mailconfig'] == 3) {
-					$profiles[USER_MAILING_TYPE . "_" . ADMIN_MAILING] = $LANG["setup"][237];
-					$profiles[USER_MAILING_TYPE . "_" . ADMIN_ENTITY_MAILING] = $LANG["setup"][237]." ".$LANG["entity"][0];
-					$query = "SELECT ID, name FROM glpi_profiles order by name";
-					$result = $DB->query($query);
-					while ($data = $DB->fetch_assoc($result))
-						$profiles[PROFILE_MAILING_TYPE .
-						"_" . $data["ID"]] = $LANG["profiles"][22] . " " . $data["name"];
+			echo "<div class='center'>";
+			echo "<input type='hidden' name='update_notifications' value='1'>";
+			// ADMIN
+			echo "<table class='tab_cadre_fixe'>";
+			echo "<tr><th colspan='3'>" . $LANG["setup"][211] . "</th></tr>";
+			echo "<tr class='tab_bg_2'>";
+			showFormMailingType("new", $profiles);
+			echo "</tr>";
+			echo "<tr><th colspan='3'>" . $LANG["setup"][212] . "</th></tr>";
+			echo "<tr class='tab_bg_1'>";
+			showFormMailingType("followup", $profiles);
+			echo "</tr>";
+			echo "<tr class='tab_bg_2'><th colspan='3'>" . $LANG["setup"][213] . "</th></tr>";
+			echo "<tr class='tab_bg_2'>";
+			showFormMailingType("finish", $profiles);
+			echo "</tr>";
+			echo "<tr class='tab_bg_2'><th colspan='3'>" . $LANG["setup"][230] . "</th></tr>";
+			echo "<tr class='tab_bg_1'>";
+			$profiles[USER_MAILING_TYPE . "_" . OLD_ASSIGN_MAILING] = $LANG["setup"][236];
+			ksort($profiles);
+			showFormMailingType("update", $profiles);
+			unset ($profiles[USER_MAILING_TYPE . "_" . OLD_ASSIGN_MAILING]);
+			echo "</tr>";
 	
-					$query = "SELECT ID, name FROM glpi_groups order by name";
-					$result = $DB->query($query);
-					while ($data = $DB->fetch_assoc($result))
-						$profiles[GROUP_MAILING_TYPE .
-						"_" . $data["ID"]] = $LANG["common"][35] . " " . $data["name"];
+			echo "<tr class='tab_bg_2'><th colspan='3'>" . $LANG["setup"][225] . "</th></tr>";
+			echo "<tr class='tab_bg_2'>";
+			unset ($profiles[USER_MAILING_TYPE . "_" . ASSIGN_MAILING]);
+			unset ($profiles[USER_MAILING_TYPE . "_" . ASSIGN_ENT_MAILING]);
+			unset ($profiles[USER_MAILING_TYPE . "_" . ASSIGN_GROUP_MAILING]);
+			unset ($profiles[USER_MAILING_TYPE . "_" . SUPERVISOR_ASSIGN_GROUP_MAILING]);
+			unset ($profiles[USER_MAILING_TYPE . "_" . SUPERVISOR_AUTHOR_GROUP_MAILING]);
+			unset ($profiles[USER_MAILING_TYPE . "_" . RECIPIENT_MAILING]);
+
+			showFormMailingType("resa", $profiles);
+			echo "</tr>";
 	
-					ksort($profiles);
-					echo "<div class='center'>";
-					echo "<input type='hidden' name='update_notifications' value='1'>";
-					// ADMIN
-					echo "<table class='tab_cadre_fixe'>";
-					echo "<tr><th colspan='3'>" . $LANG["setup"][243] . "</th></tr>";
-					echo "<tr class='tab_bg_2'>";
-					showFormMailingType("alertconsumable", $profiles);
-					echo "</tr>";
-					echo "<tr><th colspan='3'>" . $LANG["setup"][244] . "</th></tr>";
-					echo "<tr class='tab_bg_1'>";
-					showFormMailingType("alertcartridge", $profiles);
-					echo "</tr>";
-					echo "<tr><th colspan='3'>" . $LANG["setup"][246] . "</th></tr>";
-					echo "<tr class='tab_bg_2'>";
-					showFormMailingType("alertcontract", $profiles);
-					echo "</tr>";
-					echo "<tr><th colspan='3'>" . $LANG["setup"][247] . "</th></tr>";
-					echo "<tr class='tab_bg_1'>";
-					showFormMailingType("alertinfocom", $profiles);
-					echo "</tr>";
-					echo "</table>";
-					echo "</div>";
+			echo "</table>";
+			echo "</div>";
+		break;
+		case 3:
+			$profiles[USER_MAILING_TYPE . "_" . ADMIN_MAILING] = $LANG["setup"][237];
+			$profiles[USER_MAILING_TYPE . "_" . ADMIN_ENTITY_MAILING] = $LANG["setup"][237]." ".$LANG["entity"][0];
+			$query = "SELECT ID, name FROM glpi_profiles order by name";
+			$result = $DB->query($query);
+			while ($data = $DB->fetch_assoc($result)){
+				$profiles[PROFILE_MAILING_TYPE ."_" . $data["ID"]] = $LANG["profiles"][22] . " " . $data["name"];
+			}
 	
-				}
+			$query = "SELECT ID, name FROM glpi_groups order by name";
+			$result = $DB->query($query);
+			while ($data = $DB->fetch_assoc($result)){
+				$profiles[GROUP_MAILING_TYPE ."_" . $data["ID"]] = $LANG["common"][35] . " " . $data["name"];
+			}
+	
+			ksort($profiles);
+			echo "<div class='center'>";
+			echo "<input type='hidden' name='update_notifications' value='1'>";
+			// ADMIN
+			echo "<table class='tab_cadre_fixe'>";
+			echo "<tr><th colspan='3'>" . $LANG["setup"][243]."&nbsp;&nbsp;";
+			echo "<input class=\"submit\" type=\"submit\" name=\"test_cron_consumables\" value=\"" . $LANG["buttons"][50] . "\">";
+			echo "</th></tr>";
+			echo "<tr class='tab_bg_2'>";
+			showFormMailingType("alertconsumable", $profiles);
+			echo "</tr>";
+
+			echo "<tr><th colspan='3'>" . $LANG["setup"][244]."&nbsp;&nbsp;";
+			echo "<input class=\"submit\" type=\"submit\" name=\"test_cron_cartridges\" value=\"" . $LANG["buttons"][50] . "\">";
+			echo "</th></tr>";
+			echo "<tr class='tab_bg_1'>";
+			showFormMailingType("alertcartridge", $profiles);
+			echo "</tr>";
+			echo "<tr><th colspan='3'>" . $LANG["setup"][246]."&nbsp;&nbsp;";
+			echo "<input class=\"submit\" type=\"submit\" name=\"test_cron_contracts\" value=\"" . $LANG["buttons"][50] . "\">";
+			echo "</th></tr>";
+			echo "<tr class='tab_bg_2'>";
+			showFormMailingType("alertcontract", $profiles);
+			echo "</tr>";
+			echo "<tr><th colspan='3'>" . $LANG["setup"][247]."&nbsp;&nbsp;";
+			echo "<input class=\"submit\" type=\"submit\" name=\"test_cron_infocoms\" value=\"" . $LANG["buttons"][50] . "\">";
+			echo "</th></tr>";
+			echo "<tr class='tab_bg_1'>";
+			showFormMailingType("alertinfocom", $profiles);
+			echo "</tr>";
+			echo "</table>";
+			echo "</div>";
+		break;
+	
+		}
 		echo "</form>";
 	
 	}

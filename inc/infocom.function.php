@@ -482,8 +482,12 @@ function showDisplayInfocomLink($device_type,$device_id,$update=0){
 }
 
 
-function cron_infocom(){
+function cron_infocom($display=false){
 	global $DB,$CFG_GLPI,$LANG;
+
+	if (!$CFG_GLPI["mailing"]){
+		return false;
+	}
 
 	loadLanguage($CFG_GLPI["default_language"]);
 
@@ -539,7 +543,11 @@ function cron_infocom(){
 			foreach ($message as $entity => $msg){
 				$mail=new MailingAlert("alertinfocom",$msg,$entity);
 				if ($mail->send()){
-					logInFile("cron","Entity $entity :  $msg\n");
+					if ($display){
+						addMessageAfterRedirect("Entity $entity :  $msg");
+					} else {
+						logInFile("cron","Entity $entity :  $msg\n");
+					}
 
 					$input["type"]=ALERT_END;
 					$input["device_type"]=INFOCOM_TYPE;
@@ -552,7 +560,11 @@ function cron_infocom(){
 					}
 
 				} else {
-					logInFile("cron","Entity $entity :  Send infocom alert failed\n");
+					if ($display){
+						addMessageAfterRedirect("Entity $entity :  Send infocom alert failed");
+					} else {
+						logInFile("cron","Entity $entity :  Send infocom alert failed\n");
+					}
 				}
 			}
 			return 1;
