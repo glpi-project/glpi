@@ -746,6 +746,10 @@ function showContractAssociatedEnterprise($ID){
 function cron_contract(){
 	global $DB,$CFG_GLPI,$LANG;
 
+	if (!$CFG_GLPI["mailing"]){
+		return false;
+	}
+
 	loadLanguage($CFG_GLPI["default_language"]);
 
 	$message=array();
@@ -809,7 +813,11 @@ function cron_contract(){
 		foreach ($message as $entity => $msg){
 			$mail=new MailingAlert("alertcontract",$msg,$entity);
 			if ($mail->send()){
-				logInFile("cron","Entity $entity :  $msg\n");
+				if ($display){
+					addMessageAfterRedirect("Entity $entity :  $msg");
+				} else {
+					logInFile("cron","Entity $entity :  $msg\n");
+				}
 		
 				// Mark alert as done
 				$alert=new Alert();
@@ -832,7 +840,11 @@ function cron_contract(){
 					}
 				}
 			} else {
-				logInFile("cron","Entity $entity :  Send contract alert failed\n");
+				if ($display){
+					addMessageAfterRedirect("Entity $entity :  Send contract alert failed");
+				} else {
+					logInFile("cron","Entity $entity :  Send contract alert failed\n");
+				}
 			}
 		}
 		return 1;

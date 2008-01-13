@@ -38,7 +38,12 @@
 $NEEDED_ITEMS = array (
 	"setup",
 	"ocsng",
-	"mailing"
+	"mailing",
+	"consumable",
+	"cartridge",
+	"contract",
+	"infocom",
+	"cron"
 );
 
 define('GLPI_ROOT', '..');
@@ -53,8 +58,27 @@ if (isset ($_GET['onglet']))
 	$_SESSION['glpi_mailconfig'] = $_GET['onglet'];
 
 
-
-if (!empty ($_POST["test_smtp_send"])) {
+if (!empty ($_POST["test_cron_consumables"])) {
+	addMessageAfterRedirect($LANG["install"][6]);
+	cron_consumable(true);
+	glpi_header($_SERVER['HTTP_REFERER']);
+}
+else if (!empty ($_POST["test_cron_cartridges"])) {
+	addMessageAfterRedirect($LANG["install"][6]);
+	cron_cartridge(true);
+	glpi_header($_SERVER['HTTP_REFERER']);
+}
+else if (!empty ($_POST["test_cron_contracts"])) {
+	addMessageAfterRedirect($LANG["install"][6]);
+	cron_contract(true);
+	glpi_header($_SERVER['HTTP_REFERER']);
+}
+else if (!empty ($_POST["test_cron_infocoms"])) {
+	addMessageAfterRedirect($LANG["install"][6]);
+	cron_infocom(true);
+	glpi_header($_SERVER['HTTP_REFERER']);
+}
+else if (!empty ($_POST["test_smtp_send"])) {
 	testMail();
 	glpi_header($_SERVER['HTTP_REFERER']);
 }

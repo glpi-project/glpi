@@ -452,8 +452,12 @@ function showConsumableSummary(){
  * Cron action on consumables : alert if a stock is behind the threshold
  *
  **/
-function cron_consumable(){
+function cron_consumable($display=false){
 	global $DB,$CFG_GLPI,$LANG;
+
+	if (!$CFG_GLPI["mailing"]||!$CFG_GLPI["consumables_alert"]){
+		return false;
+	}
 
 	loadLanguage($CFG_GLPI["default_language"]);
 
@@ -492,7 +496,11 @@ function cron_consumable(){
 				$mail=new MailingAlert("alertconsumable",$msg,$entity);
 
 				if ($mail->send()){
-					logInFile("cron","Entity $entity :  $msg\n");
+					if ($display){
+						addMessageAfterRedirect("Entity $entity :  $msg");
+					} else {
+						logInFile("cron","Entity $entity :  $msg\n");
+					}
 
 					$input["type"]=ALERT_THRESHOLD;
 					$input["device_type"]=CONSUMABLE_TYPE;
@@ -505,7 +513,11 @@ function cron_consumable(){
 					}
 
 				} else {
-					logInFile("cron","Entity $entity :  Send consumable alert failed\n");
+					if ($display){
+						addMessageAfterRedirect("Entity $entity :  Send consumable alert failed");
+					} else {
+						logInFile("cron","Entity $entity :  Send consumable alert failed\n");
+					}
 				}
 
 			}

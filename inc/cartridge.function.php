@@ -591,8 +591,12 @@ function getCartridgeStatus($date_use,$date_out){
  * Cron action on cartridges : alert if a stock is behind the threshold
  *
  **/
-function cron_cartridge(){
+function cron_cartridge($display=false){
 	global $DB,$CFG_GLPI,$LANG;
+
+	if (!$CFG_GLPI["mailing"]||!$CFG_GLPI["cartridges_alert"]){
+		return false;
+	}
 
 	loadLanguage($CFG_GLPI["default_language"]);
 
@@ -636,7 +640,11 @@ function cron_cartridge(){
 				$mail=new MailingAlert("alertcartridge",$msg,$entity);
 
 				if ($mail->send()){
-					logInFile("cron","Entity $entity :  $msg\n");
+					if ($display){
+						addMessageAfterRedirect("Entity $entity :  $msg");
+					} else {
+						logInFile("cron","Entity $entity :  $msg\n");
+					}
 
 					$input["type"]=ALERT_THRESHOLD;
 					$input["device_type"]=CARTRIDGE_TYPE;
@@ -649,7 +657,11 @@ function cron_cartridge(){
 					}
 
 				} else {
-					logInFile("cron","Entity $entity :  Send cartdridge alert failed\n");
+					if ($display){
+						addMessageAfterRedirect("Entity $entity :  Send infocom alert failed");
+					} else {
+						logInFile("cron","Entity $entity :  Send cartdridge alert failed");
+					}
 				}
 			}
 			return 1;
