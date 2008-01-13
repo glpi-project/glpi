@@ -642,9 +642,8 @@ function cron_cartridge($display=false){
 				if ($mail->send()){
 					if ($display){
 						addMessageAfterRedirect("Entity $entity :  $msg");
-					} else {
-						logInFile("cron","Entity $entity :  $msg\n");
 					}
+					logInFile("cron","Entity $entity :  $msg\n");
 
 					$input["type"]=ALERT_THRESHOLD;
 					$input["device_type"]=CARTRIDGE_TYPE;
@@ -659,9 +658,8 @@ function cron_cartridge($display=false){
 				} else {
 					if ($display){
 						addMessageAfterRedirect("Entity $entity :  Send infocom alert failed");
-					} else {
-						logInFile("cron","Entity $entity :  Send cartdridge alert failed");
 					}
+					logInFile("cron","Entity $entity :  Send cartdridge alert failed");
 				}
 			}
 			return 1;
