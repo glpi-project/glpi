@@ -1066,11 +1066,6 @@ function showFormExtAuthList($target) {
 		case 3 :
 				echo "<table class='tab_cadre_fixe' cellpadding='5'>";
 
-				echo "<tr><th colspan='2'>" . $LANG["common"][66]."</th></tr>";
-				echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["ldap"][4] . "</td><td>";
-				dropdownValue("glpi_auth_ldap","extra_ldap_server",$CFG_GLPI["extra_ldap_server"]);
-				echo "</td></tr>";
-
 				// CAS config
 				echo "<tr><th colspan='2'>" . $LANG["setup"][177];
 				if (!empty($CFG_GLPI["cas_host"])){
@@ -1108,6 +1103,11 @@ function showFormExtAuthList($target) {
 				echo "<option value='USERNAME' " . ($CFG_GLPI["existing_auth_server_field"]=="USERNAME" ? " selected " : "") . ">USERNAME</option>";
 				echo "</select>";
 				
+				echo "</td></tr>";
+
+				echo "<tr><th colspan='2'>" . $LANG["setup"][194]."</th></tr>";
+				echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["ldap"][4] . "</td><td>";
+				dropdownValue("glpi_auth_ldap","extra_ldap_server",$CFG_GLPI["extra_ldap_server"]);
 				echo "</td></tr>";
 
 				echo "<tr class='tab_bg_1'><td align='center' colspan='2'><input type=\"submit\" name=\"update\" class=\"submit\" value=\"" . $LANG["buttons"][7] . "\" ></td></tr>";

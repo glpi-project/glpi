@@ -1478,6 +1478,8 @@ $LANG["setup"][190]="Certificat x509";
 $LANG["setup"][191]="Attribut mail pour x509";
 $LANG["setup"][192]="Activé";
 $LANG["setup"][193]="Champ de stockage du login dans la variable _SERVER";
+$LANG["setup"][194]="Récupération d'informations complémentaires via annuaire LDAP";
+
 
 $LANG["setup"][201]="Configuration de la fonction"; 
 $LANG["setup"][202]="Utiliser le suivi par mail"; 
