@@ -212,7 +212,8 @@ class User extends CommonDBTM {
 		$this->applyRightRules($input);
 
 		// Add default profile
-		if ($input['auth_method']==AUTH_DB_GLPI||$input['auth_method']==AUTH_CAS){
+		if ($input['auth_method']==AUTH_DB_GLPI||$input['auth_method']==AUTH_CAS
+			||$input['auth_method']==AUTH_EXTERNAL||$input['auth_method']==AUTH_X509){
 			$sql_default_profile = "SELECT ID FROM glpi_profiles WHERE is_default=1";
 			$result = $DB->query($sql_default_profile);
 			if ($DB->numrows($result)){

@@ -37,6 +37,7 @@
 
 define('GLPI_ROOT', '.');
 
+
 include (GLPI_ROOT . "/config/based_config.php");
 if(!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
 	include (GLPI_ROOT . "/inc/common.function.php");
@@ -47,10 +48,13 @@ else
 {
 	include (GLPI_ROOT . "/inc/includes.php");
 	$_SESSION["glpitest"]='testcookie';
-	// Using CAS server
-	if (!empty($CFG_GLPI["cas_host"])&&!isset($_GET["noCAS"])) {
-		glpi_header("login.php");
+
+	// For compatibility reason
+	if (isset($_GET["noCAS"])) {
+		$_GET["noAUTO"]=$_GET["noCAS"];
 	}
+	
+	checkAlternateAuthSystems(true);
 	
 	// Send UTF8 Headers
 	header("Content-Type: text/html; charset=UTF-8");
@@ -78,8 +82,6 @@ else
 	echo "<body>";
 	// contenu
 
-
-
 	echo "<div id='contenulogin'>";
 	
 	echo "<div id='logo-login'>";
@@ -89,14 +91,14 @@ else
 	
 	echo "</div>";
 
-
-
-
 	echo "<div id='boxlogin'>";
 
 	echo "<form action='login.php' method='post'>";
-	// authentification CAS 
-	if (isset($_GET["noCAS"])) echo "<input type='hidden' name='noCAS' value='1' />";
+
+	// Other CAS 
+	if (isset($_GET["noAUTO"])) {
+		echo "<input type='hidden' name='noAUTO' value='1' />";
+	}
 
 	// redirect to tracking
 	if (isset($_GET["redirect"])){

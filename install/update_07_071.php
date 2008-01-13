@@ -278,6 +278,9 @@ function update07to071() {
 		$DB->query($query) or die("0.71 alter config add existing_auth_server_field" . $DB->error());		
 	}
 
+	// update cas auth field from 0 -> 5
+	$query="UPDATE `glpi_users` SET `auth_method`=5 WHERE `auth_method`=0;";
+	$DB->query($query) or die("0.71 update auth method for CAS " . $DB->error());		
 	
 } // fin 0.71 #####################################################################################
 ?>

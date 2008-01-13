@@ -983,23 +983,24 @@ function showFormExtAuthList($target) {
 	echo "<form name=cas action=\"$target\" method=\"post\">";
 	echo "<input type='hidden' name='ID' value='" . $CFG_GLPI["ID"] . "'>";
 
-	echo "<div id='barre_onglets'><ul id='onglet'>";
-	echo "<li ";
-	if ($_SESSION['glpi_authconfig'] == 1) {
-		echo "class='actif'";
-	}
-	echo "><a href='$target?onglet=1'>" . $LANG["login"][2] . "</a></li>";
-	echo "<li ";
-	if ($_SESSION['glpi_authconfig'] == 2) {
-		echo "class='actif'";
-	}
-	echo "><a href='$target?onglet=2'>" . $LANG["login"][3] . "</a></li>";
 
-	echo "<li ";
-	if ($_SESSION['glpi_authconfig'] == 3) {
-		echo "class='actif'";
+
+
+	echo "<div id='barre_onglets'><ul id='onglet'>";
+
+	$onglets=array(
+		1 => $LANG["login"][2],
+		2 => $LANG["login"][3],
+		3 => $LANG["common"][67]
+	);
+
+	foreach($onglets as $key => $val){
+		echo "<li ";
+		if ($_SESSION['glpi_authconfig'] == $key) {
+			echo "class='actif'";
+		}
+		echo "><a href='$target?onglet=$key'>$val</a></li>";
 	}
-	echo "><a href='$target?onglet=3'>" . $LANG["login"][4] . "</a></li>";
 	echo "</ul></div>";
 
 
@@ -1063,27 +1064,57 @@ function showFormExtAuthList($target) {
 		break;
 
 		case 3 :
-			if (function_exists('curl_init') && (version_compare(PHP_VERSION, '5', '>=') || (function_exists("domxml_open_mem") && function_exists("utf8_decode")))) {		
 				echo "<table class='tab_cadre_fixe' cellpadding='5'>";
-				echo "<tr><th colspan='2'>" . $LANG["setup"][177] . "</th></tr>";
-				echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["setup"][174] . "</td><td><input type=\"text\" name=\"cas_host\" value=\"" . $CFG_GLPI["cas_host"] . "\"></td></tr>";
-				echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["setup"][175] . "</td><td><input type=\"text\" name=\"cas_port\" value=\"" . $CFG_GLPI["cas_port"] . "\"></td></tr>";
-				echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["setup"][176] . "</td><td><input type=\"text\" name=\"cas_uri\" value=\"" . $CFG_GLPI["cas_uri"] . "\" ></td></tr>";
-				echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["setup"][182] . "</td><td><input type=\"text\" name=\"cas_logout\" value=\"" . $CFG_GLPI["cas_logout"] . "\" ></td></tr>";
+
+				echo "<tr><th colspan='2'>" . $LANG["common"][66]."</th></tr>";
 				echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["ldap"][4] . "</td><td>";
 				dropdownValue("glpi_auth_ldap","extra_ldap_server",$CFG_GLPI["extra_ldap_server"]);
 				echo "</td></tr>";
-				echo "<tr class='tab_bg_1'><td align='center' colspan='2'><input type=\"submit\" name=\"update_conf_cas\" class=\"submit\" value=\"" . $LANG["buttons"][7] . "\" ></td></tr>";
+
+				// CAS config
+				echo "<tr><th colspan='2'>" . $LANG["setup"][177];
+				if (!empty($CFG_GLPI["cas_host"])){
+					echo " - ".$LANG["setup"][192];
+				}
+				echo "</th></tr>";
+
+				if (function_exists('curl_init') && (version_compare(PHP_VERSION, '5', '>=') || (function_exists("domxml_open_mem") && function_exists("utf8_decode")))) {		
+					echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["setup"][174] . "</td><td><input type=\"text\" name=\"cas_host\" value=\"" . $CFG_GLPI["cas_host"] . "\"></td></tr>";
+					echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["setup"][175] . "</td><td><input type=\"text\" name=\"cas_port\" value=\"" . $CFG_GLPI["cas_port"] . "\"></td></tr>";
+					echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["setup"][176] . "</td><td><input type=\"text\" name=\"cas_uri\" value=\"" . $CFG_GLPI["cas_uri"] . "\" ></td></tr>";
+					echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["setup"][182] . "</td><td><input type=\"text\" name=\"cas_logout\" value=\"" . $CFG_GLPI["cas_logout"] . "\" ></td></tr>";
+				} else {
+					echo "<tr class='tab_bg_2'><td class='center' colspan='2'><p class='red'>" . $LANG["setup"][178] . "</p><p>" . $LANG["setup"][179] . "</p></td></tr>";
+				}
+				// X509 config
+				echo "<tr><th colspan='2'>" . $LANG["setup"][190];
+				if (!empty($CFG_GLPI["x509_email_field"])){
+					echo " - ".$LANG["setup"][192];
+				}
+				echo "</th></tr>";
+				echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["setup"][191] . "</td><td><input type=\"text\" name=\"x509_email_field\" value=\"" . $CFG_GLPI["x509_email_field"] . "\"></td></tr>";
+
+				// X509 config
+				echo "<tr><th colspan='2'>" . $LANG["common"][67];
+				if (!empty($CFG_GLPI["existing_auth_server_field"])){
+					echo " - ".$LANG["setup"][192];
+				}
+				echo "</th></tr>";
+				echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["setup"][193] . "</td><td>";
+				echo "<select name='existing_auth_server_field'>";
+				echo "<option value=''>&nbsp;</option>";
+				echo "<option value='REMOTE_USER' " . ($CFG_GLPI["existing_auth_server_field"]=="REMOTE_USER" ? " selected " : "") . ">REMOTE_USER</option>";
+				echo "<option value='PHP_AUTH_USER' " . ($CFG_GLPI["existing_auth_server_field"]=="PHP_AUTH_USER" ? " selected " : "") . ">PHP_AUTH_USER</option>";
+				echo "<option value='USERNAME' " . ($CFG_GLPI["existing_auth_server_field"]=="USERNAME" ? " selected " : "") . ">USERNAME</option>";
+				echo "</select>";
+				
+				echo "</td></tr>";
+
+				echo "<tr class='tab_bg_1'><td align='center' colspan='2'><input type=\"submit\" name=\"update\" class=\"submit\" value=\"" . $LANG["buttons"][7] . "\" ></td></tr>";
 		
 				echo "</table>";
-				echo "<p> " . $LANG["setup"][173] . "</p>";
-			} else {
-				echo "<input type=\"hidden\" name=\"CAS_Test\" value=\"1\" >";
-				echo "<div class='center'><table class='tab_cadre_fixe'>";
-				echo "<tr><th colspan='2'>" . $LANG["setup"][177] . "</th></tr>";
-				echo "<tr class='tab_bg_2'><td class='center'><p class='red'>" . $LANG["setup"][178] . "</p><p>" . $LANG["setup"][179] . "</p></td></tr></table></div>";
-			}
-		}
+		break;
+	}
 
 
 	echo "</form>";

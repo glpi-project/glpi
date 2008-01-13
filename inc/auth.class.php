@@ -255,6 +255,61 @@ class Identification {
 
 	} // connection_db()
 
+
+	// Try to get login of external auth method
+	function getAlternateAuthSystemsUserLogin($auth_method=-1){
+		global $CFG_GLPI;
+	
+		switch ($auth_method){
+			case AUTH_CAS:
+				include (GLPI_ROOT . "/lib/phpcas/CAS.php");
+				$cas = new phpCas(); 
+				$cas->client(CAS_VERSION_2_0, $CFG_GLPI["cas_host"], intval($CFG_GLPI["cas_port"]), $CFG_GLPI["cas_uri"]); 
+				// force CAS authentication
+				$cas->forceAuthentication(); 
+				$this->user->fields['name'] = $cas->getUser(); 
+				return true;
+			break;
+			case AUTH_EXTERNAL:
+				$login_string=$_SERVER[$CFG_GLPI["existing_auth_server_field"]];
+				if (isValidLogin($login_string)){
+					return $login_string;
+				} else {
+					$pos = stripos($login_string,"\\");
+					if (!$pos === false) {
+						$login = substr($_SERVER["REMOTE_USER"], $pos + 1);
+						if (isValidLogin($login)){
+							$this->user->fields['name'] = $login;
+							return true;
+						}
+					}
+				}
+			break;
+			case AUTH_X509:
+				// From eGroupWare  http://www.egroupware.org  
+				// an X.509 subject looks like:
+				// CN=john.doe/OU=Department/O=Company/C=xx/Email=john@comapy.tld/L=City/
+				$sslattribs = explode('/',$_SERVER['SSL_CLIENT_S_DN']);
+				while(($sslattrib = next($sslattribs))){
+					list($key,$val) = explode('=',$sslattrib);
+					$sslattributes[$key] = $val;
+				}			
+				if(isset($sslattributes[$CFG_GLPI["x509_email_field"]])
+					&&isValidEmail($sslattributes[$CFG_GLPI["x509_email_field"]])
+					&&isValidLogin($sslattributes[$CFG_GLPI["x509_email_field"]])){
+					$this->user->fields['name'] = $sslattributes[$CFG_GLPI["x509_email_field"]];
+
+					// Can do other things if need : only add it here
+					$this->user->fields['email']=$this->user->fields['name'];
+
+					return true;
+				}
+			break;
+		}
+		return '';
+	}
+
+
 	/**
 	 * Init session for the user is defined
 	 *
@@ -275,6 +330,7 @@ class Identification {
 				$_SESSION["glpitracking_order"] = $this->user->fields['tracking_order'];
 				$_SESSION["glpiauthorisation"] = true;
 				$_SESSION["glpiextauth"] = $this->extauth;
+				$_SESSION["glpiauth_method"] = $this->user->fields['auth_method'];
 				$_SESSION["glpisearchcount"] = array ();
 				$_SESSION["glpisearchcount2"] = array ();
 				$_SESSION["glpiroot"] = $CFG_GLPI["root_doc"];

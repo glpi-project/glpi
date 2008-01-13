@@ -241,6 +241,7 @@ $LANG["common"][63]="Erreur(s)";
 $LANG["common"][64]="Superviseur";
 $LANG["common"][65]="Interface"; 
 $LANG["common"][66]="Tous"; 
+$LANG["common"][67]="Autres"; 
 
 $LANG["computers"][9]="OS"; 
 $LANG["computers"][10]="OS Numéro de série"; 
@@ -1473,6 +1474,11 @@ $LANG["setup"][183]="Utiliser le cache";
 $LANG["setup"][184]="Restrictions"; 
 $LANG["setup"][185]="Traceurs dans fichiers (SQL, mail, cron...)"; 
 $LANG["setup"][186]="Fuseau horaire"; 
+$LANG["setup"][190]="Certificat x509";
+$LANG["setup"][191]="Attribut mail pour x509";
+$LANG["setup"][192]="Activé";
+$LANG["setup"][193]="Champ de stockage du login dans la variable _SERVER";
+
 $LANG["setup"][201]="Configuration de la fonction"; 
 $LANG["setup"][202]="Utiliser le suivi par mail"; 
 $LANG["setup"][203]="Courriel de l'administrateur"; 

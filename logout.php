@@ -39,25 +39,22 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 //@session_start();
 
-if (!isset($_SESSION["noCAS"])&&!empty($CFG_GLPI["cas_host"])) {
+if (!isset($_SESSION["noAUTO"])&&$_SESSION["glpiauth_method"]==AUTH_CAS) {
 	include (GLPI_ROOT . "/lib/phpcas/CAS.php");
 	$cas=new phpCAS();
 	$cas->client(CAS_VERSION_2_0,$CFG_GLPI["cas_host"],intval($CFG_GLPI["cas_port"]),$CFG_GLPI["cas_uri"]);
 	$cas->logout($CFG_GLPI["cas_logout"]);
 }
 
-$noCAS="";
-if (isset($_SESSION["noCAS"])) {
-	$noCAS="?noCAS=1";
+$noAUTO="";
+if (isset($_SESSION["noAUTO"])) {
+	$noAUTO="?noAUTO=1";
 }
-
 
 $id = new Identification();
 $id->destroySession();
 
-
-
 // Redirect to the login-page
 
-glpi_header($CFG_GLPI["root_doc"]."/".$noCAS);
+glpi_header($CFG_GLPI["root_doc"]."/".$noAUTO);
 ?>
