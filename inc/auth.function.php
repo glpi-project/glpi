@@ -1200,15 +1200,6 @@ function checkAlternateAuthSystems($redirect=false){
 		return false;
 	}
 
-	// Using CAS server
-	if (!empty($CFG_GLPI["cas_host"])) {
-		if ($redirect){
-			glpi_header("login.php");
-		} else {
-			return AUTH_CAS;
-		}
-	}
-
 	// Using x509 server
 	if (!empty($CFG_GLPI["x509_email_field"])
 		&&isset($_SERVER['SSL_CLIENT_S_DN'])&&ereg($CFG_GLPI["x509_email_field"],$_SERVER['SSL_CLIENT_S_DN'])) {
@@ -1226,6 +1217,15 @@ function checkAlternateAuthSystems($redirect=false){
 			glpi_header("login.php");
 		} else {
 			return AUTH_EXTERNAL;
+		}
+	}
+
+	// Using CAS server
+	if (!empty($CFG_GLPI["cas_host"])) {
+		if ($redirect){
+			glpi_header("login.php");
+		} else {
+			return AUTH_CAS;
 		}
 	}
 
