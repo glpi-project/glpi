@@ -545,9 +545,9 @@ function cron_infocom($display=false){
 				if ($mail->send()){
 					if ($display){
 						addMessageAfterRedirect("Entity $entity :  $msg");
-					} else {
-						logInFile("cron","Entity $entity :  $msg\n");
-					}
+					} 
+					logInFile("cron","Entity $entity :  $msg\n");
+					
 
 					$input["type"]=ALERT_END;
 					$input["device_type"]=INFOCOM_TYPE;
@@ -562,9 +562,8 @@ function cron_infocom($display=false){
 				} else {
 					if ($display){
 						addMessageAfterRedirect("Entity $entity :  Send infocom alert failed");
-					} else {
-						logInFile("cron","Entity $entity :  Send infocom alert failed\n");
 					}
+					logInFile("cron","Entity $entity :  Send infocom alert failed\n");
 				}
 			}
 			return 1;

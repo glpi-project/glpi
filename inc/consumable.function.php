@@ -498,9 +498,8 @@ function cron_consumable($display=false){
 				if ($mail->send()){
 					if ($display){
 						addMessageAfterRedirect("Entity $entity :  $msg");
-					} else {
-						logInFile("cron","Entity $entity :  $msg\n");
-					}
+					} 
+					logInFile("cron","Entity $entity :  $msg\n");
 
 					$input["type"]=ALERT_THRESHOLD;
 					$input["device_type"]=CONSUMABLE_TYPE;
@@ -515,9 +514,8 @@ function cron_consumable($display=false){
 				} else {
 					if ($display){
 						addMessageAfterRedirect("Entity $entity :  Send consumable alert failed");
-					} else {
-						logInFile("cron","Entity $entity :  Send consumable alert failed\n");
 					}
+					logInFile("cron","Entity $entity :  Send consumable alert failed\n");
 				}
 
 			}

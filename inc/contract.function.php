@@ -815,9 +815,8 @@ function cron_contract(){
 			if ($mail->send()){
 				if ($display){
 					addMessageAfterRedirect("Entity $entity :  $msg");
-				} else {
-					logInFile("cron","Entity $entity :  $msg\n");
 				}
+				logInFile("cron","Entity $entity :  $msg\n");
 		
 				// Mark alert as done
 				$alert=new Alert();
@@ -842,9 +841,8 @@ function cron_contract(){
 			} else {
 				if ($display){
 					addMessageAfterRedirect("Entity $entity :  Send contract alert failed");
-				} else {
-					logInFile("cron","Entity $entity :  Send contract alert failed\n");
 				}
+				logInFile("cron","Entity $entity :  Send contract alert failed\n");
 			}
 		}
 		return 1;
