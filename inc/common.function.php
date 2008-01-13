@@ -1430,10 +1430,11 @@ function makeTextSearch($val,$not=0){
  * 
  * @param $url to retrieve
  * @param $errmsg set if problem encountered
+ * @param $rec internal use only Must be 0
  * 
  * @return content of the page (or empty)
  */
-function getURLContent ($url, &$msgerr=NULL) {
+function getURLContent ($url, &$msgerr=NULL, $rec=0) {
 
 	global $LANG,$CFG_GLPI;
 	
@@ -1484,7 +1485,7 @@ function getURLContent ($url, &$msgerr=NULL) {
 	fwrite($fp, $request);
 	
 	$header=true ;
-	$http200=false;
+	$redir=false;
 	$errstr="";
 	while(!feof($fp)) {
 		if ($buf=fgets($fp, 1024)) {
@@ -1492,9 +1493,18 @@ function getURLContent ($url, &$msgerr=NULL) {
 				if (strlen(trim($buf))==0) {
 					// Empty line = end of header
 					$header=false;
+				} else if ($redir && ereg("^Location: (.*)$", $buf, $rep)) {
+					if ($rec<9) {
+						return (getURLContent(trim($rep[1]),$errstr,$rec+1));						
+					} else {
+						$errstr="Too deep";
+						break;
+					}
 				} else if (ereg("^HTTP.*200.*OK", $buf)) {
 					// HTTP 200 = OK
-					$http200=true;
+				} else if (ereg("^HTTP.*302", $buf)) {
+					// HTTP 302 = Moved Temporarily
+					$redir=true;
 				} else if (ereg("^HTTP", $buf)) {
 					// Other HTTP status = error
 					$errstr=trim($buf);
