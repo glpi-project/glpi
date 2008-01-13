@@ -300,7 +300,7 @@ class DictionnaryDropdownCollection extends RuleCachedCollection{
 						RULE_DICTIONNARY_MODEL_PERIPHERAL,
 						RULE_DICTIONNARY_MODEL_NETWORKING,
 		))){
-			return replayRulesOnExistingDBForModel($offset,$maxtime);
+			return $this->replayRulesOnExistingDBForModel($offset,$maxtime);
 		}
 
 
