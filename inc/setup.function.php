@@ -593,12 +593,16 @@ function externalImportDropdown($dpdTable, $value, $FK_entities = -1,$external_p
 		case "glpi_type_monitors":
 		case "glpi_type_printers":
 		case "glpi_type_peripherals":		
+		case "glpi_type_phones":		
+		case "glpi_type_networking":		
 			$process = true;
 		break;
 		case "glpi_dropdown_model":
 		case "glpi_dropdown_model_monitors":
 		case "glpi_dropdown_model_printers":
 		case "glpi_dropdown_model_peripherals":
+		case "glpi_dropdown_model_phones":
+		case "glpi_dropdown_model_networking":
 			$process = true;
 			if (isset($external_params["manufacturer"]))
 				$input_values["manufacturer"] = $external_params["manufacturer"];
