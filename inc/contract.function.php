@@ -541,7 +541,7 @@ function showContractAssociated($device_type,$ID,$withtemplate=''){
 		if ($withtemplate!=2) {
 			echo "<td align='center' class='tab_bg_2'>";
 			if ($canedit)
-				echo "<a href='".$CFG_GLPI["root_doc"]."/front/contract.form.php?deleteitem=deleteitem&amp;ID=$assocID'><strong>".$LANG["buttons"][6]."</strong></a>";
+				echo "<a href='".$CFG_GLPI["root_doc"]."/front/contract.form.php?deleteitem=deleteitem&amp;ID=$assocID&amp;conID=".$con->fields["ID"]."'><strong>".$LANG["buttons"][6]."</strong></a>";
 			else echo "&nbsp;";
 			echo "</td>";
 		}
