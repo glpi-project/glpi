@@ -501,7 +501,16 @@ function printReservationItems($target){
 			while ($row=$DB->fetch_array($result)){
 				echo "<tr class='tab_bg_2'>";
 				echo "<td><input type='checkbox' name='add_item[".$row["ID"]."]' value='".$row["ID"]."' ></td>";
-				echo "<td><a href='".$target."?show=resa&amp;ID=".$row['ID']."'>".$ci->getType()." - ".$row["name"]."</a></td>";
+				
+				$typename=$ci->getType();
+				if ($type==PERIPHERAL_TYPE){
+					$ci->getFromDB($type,$row['ID']);
+					if (isset($ci->obj->fields["type"])&&$ci->obj->fields["type"]!=0){
+						$typename=getDropdownName("glpi_type_peripherals",$ci->obj->fields["type"]);
+					}
+				}
+				
+				echo "<td><a href='".$target."?show=resa&amp;ID=".$row['ID']."'>$typename - ".$row["name"]."</a></td>";
 				echo "<td>".$row["location"]."</td>";
 				echo "<td>".nl2br($row["comments"])."</td>";
 				if ($showentity){
