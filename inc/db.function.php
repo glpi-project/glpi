@@ -725,8 +725,13 @@ function getPreviousItem($table,$ID,$condition="",$nextprev_item=""){
 		}
 	}
 
+	$LEFTJOIN='';
+	if ($table=="glpi_users"){
+		$LEFTJOIN=' LEFT JOIN glpi_users_profiles ON (glpi_users.ID = glpi_users_profiles.FK_users)';
+	}	
+
 	$query = "SELECT $table.ID 
-		FROM $table 
+		FROM $table $LEFTJOIN
 		WHERE  ($table.".$nextprev_item." < '$search' ";
 
 	// Same name case
