@@ -655,13 +655,18 @@ function getNextItem($table,$ID,$condition="",$nextprev_item=""){
 		}
 	}
 
-	$query = "SELECT ID 
-		FROM $table 
-		WHERE ( ".$nextprev_item." > '$search' ";
+	$LEFTJOIN='';
+	if ($table=="glpi_users"){
+		$LEFTJOIN=' LEFT JOIN glpi_users_profiles ON (glpi_users.ID = glpi_users_profiles.FK_users)';
+	}	
+
+	$query = "SELECT $table.ID 
+		FROM $table $LEFTJOIN
+		WHERE ( $table.".$nextprev_item." > '$search' ";
 
 	// Same name case
 	if ($nextprev_item!="ID"){
-		$query .= " OR (".$nextprev_item." = '$search' AND ID > '$ID') ";
+		$query .= " OR ($table.".$nextprev_item." = '$search' AND $table.ID > '$ID') ";
 	}
 
 	$query.=" ) ";
@@ -670,17 +675,19 @@ function getNextItem($table,$ID,$condition="",$nextprev_item=""){
 		$query.=" AND $condition";
 	}
 	if (in_array($table,$CFG_GLPI["deleted_tables"]))
-		$query.=" AND deleted='0' ";
+		$query.=" AND $table.deleted='0' ";
 	if (in_array($table,$CFG_GLPI["template_tables"]))
-		$query.=" AND is_template='0' ";	
+		$query.=" AND $table.is_template='0' ";	
 
 	// Restrict to active entities
 	if (in_array($table,$CFG_GLPI["specif_entities_tables"])){
 		$query.=getEntitiesRestrictRequest("AND",$table,'','',in_array($table,$CFG_GLPI["recursive_type"]));
+	} else if ($table=="glpi_users"){
+		$query.=getEntitiesRestrictRequest("AND","glpi_users_profiles");
 	}
 
 	//$query.=" ORDER BY ".$nextprev_item." ASC, ID ASC";
-	$query.=" ORDER BY $nextprev_item ASC, ID ASC";
+	$query.=" ORDER BY $table.$nextprev_item ASC, $table.ID ASC";
 
 	$result=$DB->query($query);
 	if ($result&&$DB->numrows($result)>0)
@@ -718,13 +725,13 @@ function getPreviousItem($table,$ID,$condition="",$nextprev_item=""){
 		}
 	}
 
-	$query = "SELECT ID 
+	$query = "SELECT $table.ID 
 		FROM $table 
-		WHERE  (".$nextprev_item." < '$search' ";
+		WHERE  ($table.".$nextprev_item." < '$search' ";
 
 	// Same name case
 	if ($nextprev_item!="ID"){
-		$query .= " OR (".$nextprev_item." = '$search' AND ID < '$ID') ";
+		$query .= " OR ($table.".$nextprev_item." = '$search' AND $table.ID < '$ID') ";
 	}
 
 	$query.=" ) ";
@@ -735,16 +742,18 @@ function getPreviousItem($table,$ID,$condition="",$nextprev_item=""){
 	}
 
 	if (in_array($table,$CFG_GLPI["deleted_tables"]))
-		$query.="AND deleted='0'";
+		$query.="AND $table.deleted='0'";
 	if (in_array($table,$CFG_GLPI["template_tables"]))
-		$query.="AND is_template='0'";	
+		$query.="AND $table.is_template='0'";	
 
 	// Restrict to active entities
 	if (in_array($table,$CFG_GLPI["specif_entities_tables"])){
 		$query.=getEntitiesRestrictRequest("AND",$table,'','',in_array($table,$CFG_GLPI["recursive_type"]));
+	} else if ($table=="glpi_users"){
+		$query.=getEntitiesRestrictRequest("AND","glpi_users_profiles");
 	}
 
-	$query.=" ORDER BY ".$nextprev_item." DESC, ID DESC";
+	$query.=" ORDER BY $table.".$nextprev_item." DESC, $table.ID DESC";
 
 	$result=$DB->query($query);
 	if ($result&&$DB->numrows($result)>0)
