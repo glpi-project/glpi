@@ -98,11 +98,16 @@ else if (isset($_POST["deleteitem"])){
 	if (count($_POST["item"]))
 		foreach ($_POST["item"] as $key => $val)
 		deleteDeviceContract($key);
-
-	logEvent($_GET["ID"], "contracts", 4, "financial", $_SESSION["glpiname"]." ".$LANG["log"][33]);
+	logEvent($_POST["conID"], "contracts", 4, "financial", $_SESSION["glpiname"]." ".$LANG["log"][33]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
-else if (isset($_POST["addenterprise"])){
+else if (isset($_GET["deleteitem"])){
+
+	checkRight("contract_infocom","w");
+	deleteDeviceContract($_GET['ID']);
+	logEvent($_GET["conID"], "contracts", 4, "financial", $_SESSION["glpiname"]." ".$LANG["log"][33]);
+	glpi_header($_SERVER['HTTP_REFERER']);
+} else if (isset($_POST["addenterprise"])){
 
 	checkRight("contract_infocom","w");
 

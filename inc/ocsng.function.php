@@ -103,7 +103,7 @@ function ocsShowNewComputer($ocs_server_id, $advanced, $check, $start, $tolinked
 			$computer_names = array ();
 			if ($DB->numrows($result_glpi_comp) > 0) {
 				while ($data = $DBocs->fetch_array($result_glpi_comp)) {
-					$computer_names[$data["name"]] = $data["ID"];
+					$computer_names[strtolower($data["name"])] = $data["ID"];
 				}
 			}
 		}
@@ -119,7 +119,7 @@ function ocsShowNewComputer($ocs_server_id, $advanced, $check, $start, $tolinked
 		if ($tolinked && count($hardware)) {
 			echo "<div class='center'><strong>" . $LANG["ocsng"][22] . "</strong></div>";
 		}
-
+		
 		echo "<div class='center'>";
 		if (($numrows = count($hardware)) > 0) {
 
@@ -201,9 +201,9 @@ function ocsShowNewComputer($ocs_server_id, $advanced, $check, $start, $tolinked
 				if (!$tolinked){
 					echo "<input type='checkbox' name='toimport[" . $tab["ID"] . "]' " . ($check == "all" ? "checked" : "") . ">";
 				} else {
-					if (isset ($computer_names[$tab["name"]])){
+					if (isset ($computer_names[strtolower($tab["name"])])){
 						dropdownValue("glpi_computers", "tolink[" .
-						$tab["ID"] . "]", $computer_names[$tab["name"]]);
+						$tab["ID"] . "]", $computer_names[strtolower($tab["name"])]);
 					} else {
 						dropdown("glpi_computers", "tolink[" .
 						$tab["ID"] . "]");
