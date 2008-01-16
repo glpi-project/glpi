@@ -569,6 +569,11 @@ background-color:#ffffff;
 	width:550px;
 }
 
+#kbanswer ul {
+padding-left: 15px;
+
+}
+
 .tdkb_result{
 	vertical-align:top;
 	text-align:left;
