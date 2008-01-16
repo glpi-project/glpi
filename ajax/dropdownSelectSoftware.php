@@ -63,7 +63,7 @@ if (strlen($_POST['searchText'])>0&&$_POST['searchText']!=$CFG_GLPI["ajax_wildca
 
 $where.=" AND FK_entities='".$_POST["entity_restrict"]."' ";
 
-$query = "SELECT DISTINCT glpi_software.ID, glpi_software.name FROM glpi_software $leftjoin WHERE glpi_software.deleted='N' AND glpi_software.is_template='0' $where ORDER BY glpi_software.name";
+$query = "SELECT DISTINCT glpi_software.ID, glpi_software.name FROM glpi_software $leftjoin WHERE glpi_software.deleted=0 AND glpi_software.is_template=0 $where ORDER BY glpi_software.name";
 $result = $DB->query($query);
 
 echo "<select name='sID' id='item_type$rand'>\n";
