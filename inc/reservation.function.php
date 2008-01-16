@@ -489,7 +489,7 @@ function printReservationItems($target){
 	foreach ($CFG_GLPI["reservation_types"] as $type){
 		$ci->setType($type);
 		$query="SELECT glpi_reservation_item.ID as ID, glpi_reservation_item.comments as comments, 
-				".$LINK_ID_TABLE[$type].".name as name, ".$LINK_ID_TABLE[$type].".FK_entities as FK_entities, glpi_dropdown_locations.completename as location	
+				".$LINK_ID_TABLE[$type].".name as name, ".$LINK_ID_TABLE[$type].".FK_entities as FK_entities, glpi_dropdown_locations.completename as location, glpi_reservation_item.id_device as id_device	
 			FROM glpi_reservation_item 
 			INNER JOIN ".$LINK_ID_TABLE[$type]." ON (glpi_reservation_item.device_type='$type' AND glpi_reservation_item.id_device=".$LINK_ID_TABLE[$type].".ID)
 			LEFT JOIN glpi_dropdown_locations ON (".$LINK_ID_TABLE[$type].".location = glpi_dropdown_locations.ID)
@@ -504,7 +504,7 @@ function printReservationItems($target){
 				
 				$typename=$ci->getType();
 				if ($type==PERIPHERAL_TYPE){
-					$ci->getFromDB($type,$row['ID']);
+					$ci->getFromDB($type,$row['id_device']);
 					if (isset($ci->obj->fields["type"])&&$ci->obj->fields["type"]!=0){
 						$typename=getDropdownName("glpi_type_peripherals",$ci->obj->fields["type"]);
 					}
