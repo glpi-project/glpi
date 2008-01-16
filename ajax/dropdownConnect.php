@@ -54,9 +54,9 @@ $table=$LINK_ID_TABLE[$_POST["idtable"]];
 
 $where="";		
 if (in_array($table,$CFG_GLPI["deleted_tables"]))
-$where.=" AND $table.deleted='N' ";
+	$where.=" AND $table.deleted=0 ";
 if (in_array($table,$CFG_GLPI["template_tables"]))
-$where.=" AND $table.is_template='0' ";		
+	$where.=" AND $table.is_template=0 ";		
 
 if (strlen($_POST['searchText'])>0&&$_POST['searchText']!=$CFG_GLPI["ajax_wildcard"])
 $where.=" AND ( $table.name ".makeTextSearch($_POST['searchText'])." OR $table.serial ".makeTextSearch($_POST['searchText'])." )";

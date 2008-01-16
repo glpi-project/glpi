@@ -65,12 +65,12 @@ if (!isset($_POST["limit"])) $_POST["limit"]=$CFG_GLPI["dropdown_limit"];
 	if (in_array($_POST['table'],$CFG_GLPI["deleted_tables"])){
 		if (!$first) $where.=" AND ";
 		else $first=false;
-		$where.=" deleted='N' ";
+		$where.=" deleted=0 ";
 	}
 	if (in_array($_POST['table'],$CFG_GLPI["template_tables"])){
 		if (!$first) $where.=" AND ";
 		else $first=false;
-		$where.=" is_template='0' ";
+		$where.=" is_template=0 ";
 	}
 
 

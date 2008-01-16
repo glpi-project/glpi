@@ -49,8 +49,8 @@ if (isset($LINK_ID_TABLE[$_POST["type"]])&&$_POST["type"]>0){
 	$rand=mt_rand();
 	if (!isset($_POST['searchText']))$_POST['searchText']="";
 
-	$where=" WHERE deleted='N' ";
-	$where.=" AND is_template='0' ";		
+	$where=" WHERE deleted=0 ";
+	$where.=" AND is_template=0 ";		
 
 	if (isset($_POST["entity_restrict"])&&$_POST["entity_restrict"]>=0){
 		$where.= " AND $table.FK_entities='".$_POST["entity_restrict"]."'";
