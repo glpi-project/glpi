@@ -504,7 +504,7 @@ function ShowKbItemFull($ID,$linkauthor="yes")
 		
 			$answer = unclean_cross_side_scripting_deep($ki->fields["answer"]);
 		
-			echo $answer;
+			echo "<div id='kbanswer'>".$answer."</div>";
 			echo "</td></tr>";
 		
 			echo "<tr><th class='tdkb'>";
