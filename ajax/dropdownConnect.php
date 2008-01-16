@@ -54,7 +54,7 @@ $table=$LINK_ID_TABLE[$_POST["idtable"]];
 
 $where="";		
 if (in_array($table,$CFG_GLPI["deleted_tables"]))
-$where.=" AND $table.deleted='N' ";
+$where.=" AND $table.deleted=0 ";
 if (in_array($table,$CFG_GLPI["template_tables"]))
 $where.=" AND $table.is_template='0' ";		
 
