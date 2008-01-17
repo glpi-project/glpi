@@ -666,7 +666,7 @@ function constructEntryValues($type,$begin="",$end="",$param="",$value="",$value
 				$min=$row["OPEN"];	
 				if (!empty($row["FIRST"])&&!is_null($row["FIRST"])&&$row["FIRST"]<$min) $min=$row["FIRST"];
 				if (!isset($entrees["$date"])) {$entrees["$date"]=$min; $count["$date"]=1;}
-				else if ($min<$entrees["$date"]) {$entrees["$date"]+=$min;$count["$date"]++;}
+				else {$entrees["$date"]+=$min;$count["$date"]++;}
 			} else {
 				$visites = round($row['total_visites']);
 				$entrees["$date"] = $visites;
