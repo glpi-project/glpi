@@ -443,6 +443,10 @@ class Computer extends CommonDBTM {
 		$query = "DELETE FROM glpi_connect_wire WHERE (end2 = '$ID')";
 		$result = $DB->query($query);
 
+
+		$query = "DELETE FROM glpi_registry WHERE (computer_id = '$ID')";
+		$result = $DB->query($query);
+
 		$query="select * from glpi_reservation_item where (device_type='".COMPUTER_TYPE."' and id_device='$ID')";
 		if ($result = $DB->query($query)) {
 			if ($DB->numrows($result)>0) {
