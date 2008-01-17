@@ -56,6 +56,8 @@ class DBocs extends DBmysql {
 	{
 		return $this->ocs_server_id;
 	}
+
+
 }
 
 class Ocsng extends CommonDBTM {
@@ -593,6 +595,14 @@ function showForm($target, $ID,$withtemplate='',$templateid='') {
 		
 		return $input;
 	}
+
+	function cleanDBOnPurge($ID){
+		global $DB;
+
+		$query = "DELETE FROM glpi_ocs_link WHERE (ocs_server_id = '$ID')";
+		$result = $DB->query($query);
+	}
+
 		
 	function updateAdminInfo($tab){
 		$adm = new AdminInfo();	
