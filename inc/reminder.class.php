@@ -126,10 +126,17 @@ class Reminder extends CommonDBTM {
 				$isglobaladmin &= haveRecursiveAccessToEntity($this->fields["FK_entities"]);
 
 				// Even if the user is the author, check if its profil is ok. 
-				$remind_edit = in_array($this->fields["FK_entities"], $_SESSION["glpiactiveentities"]) &&
-						(($this->fields["type"]=="private") ||
-						 ($this->fields["type"]=="public" && $issuperadmin) || 
-						 ($this->fields["type"]=="global" && $isglobaladmin));
+				switch ($this->fields["type"]) {
+					case "private":
+						$remind_edit = true;
+						break;
+					case "public":
+						$remind_edit = $issuperadmin && in_array($this->fields["FK_entities"], $_SESSION["glpiactiveentities"]);
+						break;
+					case "global":
+						$remind_edit = $isglobaladmin && in_array($this->fields["FK_entities"], $_SESSION["glpiactiveentities"]);
+						break;
+				}
 						 
 			} else if($this->fields["type"]!="private") { 
 				$remind_show = true;
