@@ -119,7 +119,8 @@ $RELATION=array(
 					"glpi_dropdown_netpoint"=>"location",
 					"glpi_cartridges_type"=>"location",
 					"glpi_consumables_type"=>"location",
-					"glpi_dropdown_locations"=>"parentID"
+					"glpi_dropdown_locations"=>"parentID",
+					"glpi_users"=>"location",	
 				),
 	
 	
@@ -153,7 +154,8 @@ $RELATION=array(
 	
 	"glpi_dropdown_ram_type" =>array("glpi_device_ram"=>"type"),
 	
-	"glpi_dropdown_rubdocs" =>array("glpi_docs"=>"rubrique"),
+	"glpi_dropdown_rubdocs" =>array("glpi_config"=>"default_rubdoc_tracking",
+					"glpi_docs"=>"rubrique"),
 
 	"glpi_dropdown_software_category" =>array("glpi_software"=>"category"),
 	
@@ -207,7 +209,7 @@ $RELATION=array(
 						"glpi_phones"=>"FK_groups",
 						"glpi_printers"=>"FK_groups",
 						"glpi_software"=>"FK_groups",
-						"glpi_tracking"=>"FK_group",
+						"glpi_tracking"=>array("FK_group","assign_group"),
 						"glpi_users_groups"=>"FK_groups",
 	),
 	
@@ -218,6 +220,8 @@ $RELATION=array(
 	"glpi_networking_ports"=>array("glpi_networking_vlan"=>"FK_port",
 							"glpi_networking_wire"=>array("end1","end2")
 	),
+
+	"glpi_ocs_config" => array("glpi_ocs_link"=>"ocs_server_id"),
 
 	"glpi_printers" =>array("glpi_cartridges"=>"FK_glpi_printers"),
 	
