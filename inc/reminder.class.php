@@ -118,13 +118,20 @@ class Reminder extends CommonDBTM {
 				$onfocus="onfocus=\"this.value=''\"";
 			}
 
-		} else if($this->getFromDB($ID)){
+		} else if($this->getFromDB($ID)) {
 			
 			$onfocus="";
-			if($this->fields["author"]==$author) {
-				$remind_edit = true;
+			if ($this->fields["author"]==$author) {
+				$remind_show = true;
 				$isglobaladmin &= haveRecursiveAccessToEntity($this->fields["FK_entities"]);
-			} elseif($this->fields["type"]!="private") { 
+
+				// Even if the user is the author, check if its profil is ok. 
+				$remind_edit = in_array($this->fields["FK_entities"], $_SESSION["glpiactiveentities"]) &&
+						(($this->fields["type"]=="private") ||
+						 ($this->fields["type"]=="public" && $issuperadmin) || 
+						 ($this->fields["type"]=="global" && $isglobaladmin));
+						 
+			} else if($this->fields["type"]!="private") { 
 				$remind_show = true;
 			}
 		}
