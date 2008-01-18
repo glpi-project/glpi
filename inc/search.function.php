@@ -379,7 +379,12 @@ function searchForm($type,$target,$field="",$contains="",$sort= "",$deleted= 0,$
 	// Display submit button
 	echo "<td width='80' class='tab_bg_2'>";
 	echo "<input type='submit' value=\"".$LANG["buttons"][0]."\" class='submit' >";
-	echo "</td></tr></table>";
+	echo "</td></tr>"; 
+	echo "<tr class='tab_bg_2'><td colspan='5' align='center'>"; 
+	echo "<a href='#' onClick=\"window.open('".$CFG_GLPI["root_doc"]."/front/popup.php?popup=save_query&amp;type=$type' ,'glpipopup', 'height=100, width=400, top=100, left=100, scrollbars=yes' )\">".$LANG["search"][21]."</a>&nbsp;&nbsp;";
+	echo "<a href='#' onClick=\"window.open('".$CFG_GLPI["root_doc"]."/front/popup.php?popup=load_query&amp;type=$type' ,'glpipopup', 'height=100, width=400, top=100, left=100, scrollbars=yes' )\">".$LANG["common"][68]."</a>";
+	echo "</td></tr>";
+	echo "</table>";
 	// Reset to start when submit new search
 	echo "<input type='hidden' name='start' value='0'>";
 	echo "</form>";

@@ -241,7 +241,8 @@ $LANG["common"][63]="Erreur(s)";
 $LANG["common"][64]="Superviseur";
 $LANG["common"][65]="Interface"; 
 $LANG["common"][66]="Tous"; 
-$LANG["common"][67]="Autres"; 
+$LANG["common"][67]="Autres";
+$LANG["common"][68]="Charger";  
 
 $LANG["computers"][9]="OS"; 
 $LANG["computers"][10]="OS Numéro de série"; 
@@ -702,6 +703,7 @@ $LANG["ldap"][19]="Réplicat";
 $LANG["ldap"][20]="Ajout d'un réplicat LDAP";
 $LANG["ldap"][21]="Serveur principal";
 $LANG["ldap"][22]="Réplicat(s)";
+
 
 $LANG["links"][1]="Lien ou Nom du fichier"; 
 $LANG["links"][3]="Ajouter un lien externe"; 
@@ -1338,7 +1340,11 @@ $LANG["search"][16]="Au moins";
 $LANG["search"][17]="Ajouter un critère de recherche"; 
 $LANG["search"][18]="Supprimer un critère de recherche"; 
 $LANG["search"][19]="Ajouter un critère global de recherche"; 
-$LANG["search"][20]="Supprimer un critère global de recherche"; 
+$LANG["search"][20]="Supprimer un critère global de recherche";
+$LANG["search"][21]="Enregister";  
+$LANG["search"][22]="recherche favorite";
+$LANG["search"][23]="La recherche a été enregistrée, vous pouvez fermer la fenêtre";
+$LANG["search"][24]="Aucune recherche favorite enregistrée.";
 
 $LANG["setup"][0]="Intitulés"; 
 $LANG["setup"][1]="Attention si ces éléments sont utilisés, ils seront remplacés par une valeur nulle."; 
