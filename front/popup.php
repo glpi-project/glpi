@@ -81,6 +81,19 @@ if (isset($_SESSION["glpipopup"]["name"])){
 			include "rule.cache.php"; 
 			popFooter(); 
 		break;
+		case "save_query": 
+			popHeader($LANG["buttons"][50],$_SERVER['PHP_SELF']);
+			$_GET["action"]="save"; 
+			include "query.bookmark.php"; 
+			popFooter(); 
+		break;
+		case "load_query": 
+			popHeader($LANG["buttons"][50],$_SERVER['PHP_SELF']); 
+			$_GET["action"]="load";
+			include "query.bookmark.php"; 
+			popFooter(); 
+		break;
+
 	}
 }
 
