@@ -397,8 +397,7 @@ function dropdownUsersSelect ($count=true, $right="all", $entity_restrict=-1, $v
 /**
  * Make a select box with all glpi users where select key = name
  *
- * Think it's unused now.
- *
+ * 
  *
  * @param $myname select name
  * @param $value default value
