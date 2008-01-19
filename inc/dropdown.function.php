@@ -300,6 +300,82 @@ function dropdownNoValue($table,$myname,$value,$entity_restrict=-1) {
 	echo "</select>";
 }
 
+/**
+ * Execute the query to select box with all glpi users where select key = name
+ * 
+ * Internaly used by dropdownUsersSelect and ajax/dropdownUsers.php
+ *
+ * @param $count true if execute an count(*), 
+ * @param $right limit user who have specific right
+ * @param $entity_restrict Restrict to a defined entity
+ * @param $value default value
+ * @param $search pattern
+ * 
+ * @return mysql result set.
+ *
+ */
+function dropdownUsersSelect ($count=true, $right="all", $entity_restrict=-1, $value=0, $search='') {
+
+	global $DB, $CFG_GLPI;
+	
+	if ($entity_restrict<0) {
+		$entity_restrict = $_SESSION["glpiactive_entity"];
+	}
+
+	$joinprofile=false;
+	switch ($right){
+		case "interface" :
+			$where=" glpi_profiles.interface='central' ";
+			$joinprofile=true;
+			$where.=getEntitiesRestrictRequest("AND","glpi_users_profiles",'',$entity_restrict,1);
+		break;
+		case "ID" :
+			$where=" glpi_users.ID='".$_SESSION["glpiID"]."' ";
+		break;
+		case "all" :
+			$where=" glpi_users.ID > '1' ";
+			$where.=getEntitiesRestrictRequest("AND","glpi_users_profiles",'',$entity_restrict,1);
+		break;
+		default :
+			$joinprofile=true;
+			$where=" ( glpi_profiles.".$right."='1' AND glpi_profiles.interface='central' ";
+			$where.=getEntitiesRestrictRequest("AND","glpi_users_profiles",'',$entity_restrict,1);
+			$where.=" ) ";
+			
+		break;
+	}
+	
+	$where.=" AND glpi_users.deleted='0' AND glpi_users.active='1' ";
+	
+	if ($value){
+		$where.=" AND  (glpi_users.ID <> '$value') ";
+	}
+
+	if ($count) {
+		$query = "SELECT COUNT( DISTINCT glpi_users.ID ) AS CPT FROM glpi_users ";
+	} else {
+		$query = "SELECT DISTINCT glpi_users.* FROM glpi_users ";
+	}
+	$query.=" LEFT JOIN glpi_users_profiles ON (glpi_users.ID = glpi_users_profiles.FK_users)";
+	if ($joinprofile){
+		$query .= " LEFT JOIN glpi_profiles ON (glpi_profiles.ID= glpi_users_profiles.FK_profiles) ";
+	}
+
+	if ($count) {
+		$query.= " WHERE $where ";
+	} else {
+		if (strlen($search)>0 && $search!=$CFG_GLPI["ajax_wildcard"]){
+			$where.=" AND (glpi_users.name ".makeTextSearch($search)." OR glpi_users.realname ".makeTextSearch($search).
+				"  OR glpi_users.firstname ".makeTextSearch($search)." OR CONCAT(glpi_users.realname,' ',glpi_users.firstname) ".makeTextSearch($search).")";
+		}
+		$query .= " WHERE $where ORDER BY glpi_users.realname,glpi_users.firstname, glpi_users.name ";
+		if ($search != $CFG_GLPI["ajax_wildcard"]) {
+			$query .= " LIMIT 0,".$CFG_GLPI["dropdown_max"];
+		}
+	}
+
+	return $DB->query($query);
+}
 
 /**
  * Make a select box with all glpi users where select key = name
@@ -328,7 +404,9 @@ function dropdownUsers($myname,$value,$right,$all=0,$display_comments=1,$entity_
 
 	$use_ajax=false;
 	if ($CFG_GLPI["use_ajax"]){
-		if (countElementsInTable("glpi_users")>$CFG_GLPI["ajax_limit_count"]){
+		$res=dropdownUsersSelect (true, $right, $entity_restrict, $value);
+		$nb=($res ? $DB->result($res,0,"CPT") : 0);
+		if ($res && $nb > $CFG_GLPI["ajax_limit_count"]){
 			$use_ajax=true;
 		}
 	}

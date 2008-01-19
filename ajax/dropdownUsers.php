@@ -48,7 +48,6 @@ if (!defined('GLPI_ROOT')){
 checkCentralAccess();
 // Make a select box with all glpi users
 
-$joinprofile=false;
 if (!isset($_POST['right'])) {
 	$_POST['right']="all";
 }
@@ -57,67 +56,11 @@ if (!isset($_POST['all'])) {
 	$_POST['all']=0;
 }
 
-switch ($_POST['right']){
-	case "interface" :
-		$where=" glpi_profiles.".$_POST['right']."='central' ";
-		$joinprofile=true;
-		if (isset($_POST["entity_restrict"])&&$_POST["entity_restrict"]>=0){
-			$where.=getEntitiesRestrictRequest("AND","glpi_users_profiles", '',$_POST["entity_restrict"],1);
-		} else {
-			$where.=getEntitiesRestrictRequest("AND","glpi_users_profiles",'',$_SESSION["glpiactive_entity"],1);
-		}
-	break;
-	case "ID" :
-		$where=" glpi_users.ID='".$_SESSION["glpiID"]."' ";
-	break;
-	case "all" :
-		$where=" glpi_users.ID > '1' ";
-		if (isset($_POST["entity_restrict"])&&$_POST["entity_restrict"]>=0){
-			$where.=getEntitiesRestrictRequest("AND","glpi_users_profiles", '',$_POST["entity_restrict"],1);
-		} else {
-			$where.=getEntitiesRestrictRequest("AND","glpi_users_profiles",'',$_SESSION["glpiactive_entity"],1);
-		}
-	break;
-	default :
-		$joinprofile=true;
-		$where=" ( glpi_profiles.".$_POST['right']."='1' AND glpi_profiles.interface='central' ";
-		if (isset($_POST["entity_restrict"])&&$_POST["entity_restrict"]>=0){
-			$where.=getEntitiesRestrictRequest("AND","glpi_users_profiles", '',$_POST["entity_restrict"],1);
-		} else {
-			$where.=getEntitiesRestrictRequest("AND","glpi_users_profiles",'',$_SESSION["glpiactive_entity"],1);
-		}
-		$where.=" ) ";
-		
-	break;
-}
-
-$where.=" AND glpi_users.deleted='0' AND glpi_users.active='1' ";
-
-if (isset($_POST['value'])){
-	$where.=" AND  (glpi_users.ID <> '".$_POST['value']."') ";
-}
-
-if (strlen($_POST['searchText'])>0&&$_POST['searchText']!=$CFG_GLPI["ajax_wildcard"]){
-	$where.=" AND (glpi_users.name ".makeTextSearch($_POST['searchText'])." OR glpi_users.realname ".makeTextSearch($_POST['searchText'])." OR glpi_users.firstname ".makeTextSearch($_POST['searchText'])." OR CONCAT(glpi_users.realname,' ',glpi_users.firstname) ".makeTextSearch($_POST['searchText']).")";
-}
-
-
-$NBMAX=$CFG_GLPI["dropdown_max"];
-$LIMIT="LIMIT 0,$NBMAX";
-if ($_POST['searchText']==$CFG_GLPI["ajax_wildcard"]) $LIMIT="";
-
-$query = "SELECT DISTINCT glpi_users.* FROM glpi_users ";
-$query.=" LEFT JOIN glpi_users_profiles ON (glpi_users.ID = glpi_users_profiles.FK_users)";
-if ($joinprofile){
-  $query .=" LEFT JOIN glpi_profiles ON (glpi_profiles.ID= glpi_users_profiles.FK_profiles) ";
-}
-$query.= " WHERE $where ORDER BY glpi_users.realname,glpi_users.firstname, glpi_users.name $LIMIT";
-//echo $query;
-$result = $DB->query($query);
+$result=dropdownUsersSelect(false, $_POST['right'], $_POST["entity_restrict"], $_POST['value'], $_POST['searchText']);
 
 echo "<select id='dropdown_".$_POST["myname"].$_POST["rand"]."' name=\"".$_POST['myname']."\">";
 
-if ($_POST['searchText']!=$CFG_GLPI["ajax_wildcard"]&&$DB->numrows($result)==$NBMAX)
+if ($_POST['searchText']!=$CFG_GLPI["ajax_wildcard"] && $DB->numrows($result)==$CFG_GLPI["dropdown_max"])
 echo "<option value=\"0\">--".$LANG["common"][11]."--</option>";
 
 
