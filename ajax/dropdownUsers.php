@@ -55,8 +55,15 @@ if (!isset($_POST['right'])) {
 if (!isset($_POST['all'])) {
 	$_POST['all']=0;
 }
+if (isset($_POST['used'])) {
+	if (is_array($_POST['used'])) {
+		$used=$_POST['used'];
+	} else {
+		$used=unserialize(stripslashes($_POST['used']));
+	}
+}
 
-$result=dropdownUsersSelect(false, $_POST['right'], $_POST["entity_restrict"], $_POST['value'], $_POST['searchText']);
+$result=dropdownUsersSelect(false, $_POST['right'], $_POST["entity_restrict"], $_POST['value'], $used, $_POST['searchText']);
 
 echo "<select id='dropdown_".$_POST["myname"].$_POST["rand"]."' name=\"".$_POST['myname']."\">";
 

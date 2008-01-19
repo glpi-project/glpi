@@ -72,31 +72,19 @@ function showGroupUser($target,$ID){
 	if ($canedit) $headerspan=$nb_per_line*2;
 	else $headerspan=$nb_per_line;
 
-	echo "<form name='groupuser_form' id='groupuser_form' method='post' action=\"$target\">";
 
 	$group=new Group();
 
 	if ($group->getFromDB($ID)){
-		if ($canedit){
 	
-			echo "<div class='center'>";
-			echo "<table  class='tab_cadre_fixe'>";
-			echo "<tr class='tab_bg_1'><th colspan='2'>".$LANG["setup"][603]."</tr><tr><td class='tab_bg_2' align='center'>";
-			echo "<input type='hidden' name='FK_groups' value='$ID'>";
-			dropdownAllUsers("FK_users",0,1,$group->fields["FK_entities"]);
-			echo "</td><td align='center' class='tab_bg_2'>";
-			echo "<input type='submit' name='adduser' value=\"".$LANG["buttons"][8]."\" class='submit'>";
-			echo "</td></tr>";
-	
-			echo "</table></div><br>";
-	
+		if ($canedit) {
+			echo "<form name='groupuser_form' id='groupuser_form' method='post' action=\"$target\">";
 		}
-	
-	
-	
 		echo "<div class='center'><table class='tab_cadrehov'><tr><th colspan='$headerspan'>".$LANG["Menu"][14]."</th></tr>";
 		$query="SELECT glpi_users.*,glpi_users_groups.ID as linkID from glpi_users_groups LEFT JOIN glpi_users ON (glpi_users.ID = glpi_users_groups.FK_users) WHERE glpi_users_groups.FK_groups='$ID' ORDER BY glpi_users.name, glpi_users.realname, glpi_users.firstname";
 	
+		$used = array();
+
 		$result=$DB->query($query);
 		if ($DB->numrows($result)>0){
 			$i=0;
@@ -114,6 +102,8 @@ function showGroupUser($target,$ID){
 					echo "</td>";
 				}
 	
+				$used[]=$data["ID"];
+				
 				echo "<td>";
 				echo formatUserName($data["ID"],$data["name"],$data["realname"],$data["firstname"],1);
 				echo "</td>";
@@ -130,22 +120,38 @@ function showGroupUser($target,$ID){
 		echo "</table></div>";
 	
 		if ($canedit){
+
 			echo "<div class='center'>";
 			echo "<table width='80%'>";
 			echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markAllRows('groupuser_form') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$ID&amp;select=all'>".$LANG["buttons"][18]."</a></td>";
 	
 			echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkAllRows('groupuser_form') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$ID&amp;select=none'>".$LANG["buttons"][19]."</a>";
 			echo "</td><td align='left' width='80%'>";
+			echo "<input type='hidden' name='FK_groups' value='$ID'>";
 			echo "<input type='submit' name='deleteuser' value=\"".$LANG["buttons"][6]."\" class='submit'>";
 			echo "</td>";
 			echo "</table>";
-	
 			echo "</div>";
-	
-		}
-		echo "</form>";
-	}
 
+			$res=dropdownUsersSelect (true, "all", $group->fields["FK_entities"], 0, $used);
+			$nb=($res ? $DB->result($res,0,"CPT") : 0);
+			
+			if ($nb) {		
+				echo "<div class='center'>";
+				echo "<table  class='tab_cadre_fixe'>";
+				echo "<tr class='tab_bg_1'><th colspan='2'>".$LANG["setup"][603]."</tr><tr><td class='tab_bg_2' align='center'>";
+				dropdownUsers("FK_users",0,"all",-1,1,$group->fields["FK_entities"],0,$used);
+				//dropdownAllUsers("FK_users",0,1,$group->fields["FK_entities"],0,$used);
+				echo "</td><td align='center' class='tab_bg_2'>";
+				echo "<input type='submit' name='adduser' value=\"".$LANG["buttons"][8]."\" class='submit'>";
+				echo "</td></tr>";
+		
+				echo "</table></div><br>";
+			}
+	
+			echo "</form>";
+		}
+	}
 }
 
 function addUserGroup($uID,$gID){

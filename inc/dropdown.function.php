@@ -309,12 +309,13 @@ function dropdownNoValue($table,$myname,$value,$entity_restrict=-1) {
  * @param $right limit user who have specific right
  * @param $entity_restrict Restrict to a defined entity
  * @param $value default value
- * @param $search pattern
+ * @param $used array of user ID
+ * @param $search pattern 
  * 
  * @return mysql result set.
  *
  */
-function dropdownUsersSelect ($count=true, $right="all", $entity_restrict=-1, $value=0, $search='') {
+function dropdownUsersSelect ($count=true, $right="all", $entity_restrict=-1, $value=0, $used=array(), $search='') {
 
 	global $DB, $CFG_GLPI;
 	
@@ -345,10 +346,26 @@ function dropdownUsersSelect ($count=true, $right="all", $entity_restrict=-1, $v
 		break;
 	}
 	
-	$where.=" AND glpi_users.deleted='0' AND glpi_users.active='1' ";
+	$where .= " AND glpi_users.deleted='0' AND glpi_users.active='1' ";
 	
-	if ($value){
-		$where.=" AND  (glpi_users.ID <> '$value') ";
+	if ($value || count($used)) {
+		$where .= " AND glpi_users.ID NOT IN (";
+		if ($value) {
+			$first=false;
+			$where .= $value;
+		}
+		else {
+			$first=true;	
+		}
+		foreach($used as $val) {
+			if ($first) {
+				$first = false;
+			} else {
+				$where .= ",";
+			}
+			$where .= $val;
+		}
+		$where .= ")";
 	}
 
 	if ($count) {
@@ -390,12 +407,13 @@ function dropdownUsersSelect ($count=true, $right="all", $entity_restrict=-1, $v
  * @param $display_comments display comments near the dropdown
  * @param $entity_restrict Restrict to a defined entity
  * @param $helpdesk_ajax use ajax for helpdesk auto update (mail device_type)
+ * @param $used array of user ID
+ * 
  * @return nothing (print out an HTML select box)
- *
  *
  */
 // $all =0 -> Nobody $all=1 -> All $all=-1-> nothing
-function dropdownUsers($myname,$value,$right,$all=0,$display_comments=1,$entity_restrict=-1,$helpdesk_ajax=0) {
+function dropdownUsers($myname,$value,$right,$all=0,$display_comments=1,$entity_restrict=-1,$helpdesk_ajax=0,$used=array()) {
 	// Make a select box with all glpi users
 
 	global $DB,$CFG_GLPI,$LANG;
@@ -404,9 +422,9 @@ function dropdownUsers($myname,$value,$right,$all=0,$display_comments=1,$entity_
 
 	$use_ajax=false;
 	if ($CFG_GLPI["use_ajax"]){
-		$res=dropdownUsersSelect (true, $right, $entity_restrict, $value);
+		$res=dropdownUsersSelect (true, $right, $entity_restrict, $value, $used);
 		$nb=($res ? $DB->result($res,0,"CPT") : 0);
-		if ($res && $nb > $CFG_GLPI["ajax_limit_count"]){
+		if ($nb > $CFG_GLPI["ajax_limit_count"]) {
 			$use_ajax=true;
 		}
 	}
@@ -426,6 +444,7 @@ function dropdownUsers($myname,$value,$right,$all=0,$display_comments=1,$entity_
 			'rand'=>$rand,
 			'helpdesk_ajax'=>$helpdesk_ajax,
 			'entity_restrict'=>$entity_restrict,
+			'used'=>$used
 			);
 	if ($view_users){
 		$params['update_link']=$view_users;
@@ -468,16 +487,18 @@ function dropdownUsers($myname,$value,$right,$all=0,$display_comments=1,$entity_
  * Make a select box with all glpi users
  *
  *
-* @param $myname select name
+ * @param $myname select name
  * @param $value default value
  * @param $display_comments display comments near the dropdown
  * @param $entity_restrict Restrict to a defined entity
  * @param $helpdesk_ajax use ajax for helpdesk auto update (mail device_type)
+ * @param $used array of user ID
+ * 
  * @return nothing (print out an HTML select box)
  * 
  */
-function dropdownAllUsers($myname,$value=0,$display_comments=1,$entity_restrict=-1,$helpdesk_ajax=0) {
-	return dropdownUsers($myname,$value,"all",0,$display_comments,$entity_restrict,$helpdesk_ajax);
+function dropdownAllUsers($myname,$value=0,$display_comments=1,$entity_restrict=-1,$helpdesk_ajax=0,$used=array()) {
+	return dropdownUsers($myname,$value,"all",0,$display_comments,$entity_restrict,$helpdesk_ajax,$used);
 }
 
 
