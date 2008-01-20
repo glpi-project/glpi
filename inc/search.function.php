@@ -1522,7 +1522,6 @@ function addSelect ($type,$ID,$num,$meta=0,$meta_type=0){
 	$table=$SEARCH_OPTION[$type][$ID]["table"];
 	$field=$SEARCH_OPTION[$type][$ID]["field"];
 	$addtable="";
-	$pretable="";
 	$NAME="ITEM";
 	if ($meta) {
 		$NAME="META";
@@ -1552,7 +1551,7 @@ function addSelect ($type,$ID,$num,$meta=0,$meta_type=0){
 		case "reservation_types.name":
 			if ($meta){
 				if ($table!=$LINK_ID_TABLE[$type])
-					return " GROUP_CONCAT( DISTINCT ".$pretable.$table.$addtable.".".$field." SEPARATOR '$$$$') AS ".$NAME."_$num, ";
+					return " GROUP_CONCAT( DISTINCT ".$table.$addtable.".".$field." SEPARATOR '$$$$') AS ".$NAME."_$num, ";
 				else return " GROUP_CONCAT( DISTINCT ".$table.$addtable.".".$field." SEPARATOR '$$$$') AS ".$NAME."_$num, ";
 
 			}
@@ -1565,35 +1564,42 @@ function addSelect ($type,$ID,$num,$meta=0,$meta_type=0){
 		case "glpi_enterprises.name" :
 		case "glpi_enterprises_infocoms.name" :
 			if ($type==CONTACT_TYPE){
-				return " GROUP_CONCAT( DISTINCT ".$pretable.$table.$addtable.".".$field." SEPARATOR '$$$$') AS ".$NAME."_$num, ";
+				return " GROUP_CONCAT( DISTINCT ".$table.$addtable.".".$field." SEPARATOR '$$$$') AS ".$NAME."_$num, ";
 			} else {
-				return $pretable.$table.$addtable.".".$field." AS ".$NAME."_$num, ".$pretable.$table.$addtable.".website AS ".$NAME."_".$num."_2, ".$pretable.$table.$addtable.".ID AS ".$NAME."_".$num."_3, ";
+				return $table.$addtable.".".$field." AS ".$NAME."_$num, ".$table.$addtable.".website AS ".$NAME."_".$num."_2, ".$table.$addtable.".ID AS ".$NAME."_".$num."_3, ";
 			}
 		break;
 		// Contact for display in the enterprise item
 		case "glpi_contacts.completename":
-			return " GROUP_CONCAT( DISTINCT CONCAT(".$pretable.$table.$addtable.".name, ' ', ".$pretable.$table.$addtable.".firstname) SEPARATOR '$$$$') AS ".$NAME."_$num, ";
+			return " GROUP_CONCAT( DISTINCT CONCAT(".$table.$addtable.".name, ' ', ".$table.$addtable.".firstname) SEPARATOR '$$$$') AS ".$NAME."_$num, ";
 		break;
 		case "glpi_users.name" :
 			$linkfield="";
 		if (!empty($SEARCH_OPTION[$type][$ID]["linkfield"]))
 			$linkfield="_".$SEARCH_OPTION[$type][$ID]["linkfield"];
 
-		return $pretable.$table.$linkfield.$addtable.".".$field." AS ".$NAME."_$num, ".$pretable.$table.$linkfield.$addtable.".realname AS ".$NAME."_".$num."_2, ".$pretable.$table.$linkfield.$addtable.".ID AS ".$NAME."_".$num."_3, ".$pretable.$table.$linkfield.$addtable.".firstname AS ".$NAME."_".$num."_4,";
+			if ($meta){
+				return " GROUP_CONCAT( DISTINCT CONCAT(".$table.$linkfield.$addtable.".realname,".$table.$linkfield.$addtable.".firstname) SEPARATOR '$$$$') AS ".$NAME."_$num, ";
+			} else {
+				return $table.$linkfield.$addtable.".".$field." AS ".$NAME."_$num,
+					".$table.$linkfield.$addtable.".realname AS ".$NAME."_".$num."_2,
+					".$table.$linkfield.$addtable.".ID AS ".$NAME."_".$num."_3,
+					".$table.$linkfield.$addtable.".firstname AS ".$NAME."_".$num."_4,";
+			}
 		break;
 
 
 		case "glpi_contracts.end_date" :
-			return $pretable.$table.$addtable.".begin_date AS ".$NAME."_$num, ".$pretable.$table.$addtable.".duration AS ".$NAME."_".$num."_2, ";
+			return $table.$addtable.".begin_date AS ".$NAME."_$num, ".$table.$addtable.".duration AS ".$NAME."_".$num."_2, ";
 		break;
 		case "glpi_infocoms.end_warranty":
-			return $pretable.$table.$addtable.".buy_date AS ".$NAME."_$num, ".$pretable.$table.$addtable.".warranty_duration AS ".$NAME."_".$num."_2, ";
+			return $table.$addtable.".buy_date AS ".$NAME."_$num, ".$table.$addtable.".warranty_duration AS ".$NAME."_".$num."_2, ";
 		break;
 		case "glpi_contracts.expire_notice" : // ajout jmd
-			return $pretable.$table.$addtable.".begin_date AS ".$NAME."_$num, ".$pretable.$table.$addtable.".duration AS ".$NAME."_".$num."_2, ".$pretable.$table.$addtable.".notice AS ".$NAME."_".$num."_3, ";
+			return $table.$addtable.".begin_date AS ".$NAME."_$num, ".$table.$addtable.".duration AS ".$NAME."_".$num."_2, ".$table.$addtable.".notice AS ".$NAME."_".$num."_3, ";
 		break;
 		case "glpi_contracts.expire" : // ajout jmd
-			return $pretable.$table.$addtable.".begin_date AS ".$NAME."_$num, ".$pretable.$table.$addtable.".duration AS ".$NAME."_".$num."_2, ";
+			return $table.$addtable.".begin_date AS ".$NAME."_$num, ".$table.$addtable.".duration AS ".$NAME."_".$num."_2, ";
 		break;
 		case "glpi_device_hdd.specif_default" :
 			return " SUM(DEVICE_".HDD_DEVICE.".specificity) / COUNT( DEVICE_".HDD_DEVICE.".ID) * COUNT( DISTINCT DEVICE_".HDD_DEVICE.".ID) AS ".$NAME."_".$num.", ";
@@ -1606,12 +1612,12 @@ function addSelect ($type,$ID,$num,$meta=0,$meta_type=0){
 		break;
 		case "glpi_networking_ports.ifmac" :
 			if ($type==COMPUTER_TYPE)
-				return " GROUP_CONCAT( DISTINCT ".$pretable.$table.$addtable.".".$field." SEPARATOR '$$$$') AS ".$NAME."_$num, GROUP_CONCAT( DISTINCT DEVICE_".NETWORK_DEVICE.".specificity  SEPARATOR '$$$$') AS ".$NAME."_".$num."_2, ";
-			else return " GROUP_CONCAT( DISTINCT ".$pretable.$table.$addtable.".".$field." SEPARATOR '$$$$') AS ".$NAME."_$num, ";
+				return " GROUP_CONCAT( DISTINCT ".$table.$addtable.".".$field." SEPARATOR '$$$$') AS ".$NAME."_$num, GROUP_CONCAT( DISTINCT DEVICE_".NETWORK_DEVICE.".specificity  SEPARATOR '$$$$') AS ".$NAME."_".$num."_2, ";
+			else return " GROUP_CONCAT( DISTINCT ".$table.$addtable.".".$field." SEPARATOR '$$$$') AS ".$NAME."_$num, ";
 		break;
 		case "glpi_profiles.name" :
 			if ($type==USER_TYPE){
-				return " GROUP_CONCAT( ".$pretable.$table.$addtable.".".$field." SEPARATOR '$$$$') AS ".$NAME."_$num, 
+				return " GROUP_CONCAT( ".$table.$addtable.".".$field." SEPARATOR '$$$$') AS ".$NAME."_$num, 
 					GROUP_CONCAT( glpi_entities.completename SEPARATOR '$$$$') AS ".$NAME."_".$num."_2,
 					GROUP_CONCAT( glpi_users_profiles.recursive SEPARATOR '$$$$') AS ".$NAME."_".$num."_3,";
 			} else {
@@ -1619,16 +1625,16 @@ function addSelect ($type,$ID,$num,$meta=0,$meta_type=0){
 			}
 		case "glpi_entities.completename" :
 			if ($type==USER_TYPE){
-				return " GROUP_CONCAT( ".$pretable.$table.$addtable.".completename SEPARATOR '$$$$') AS ".$NAME."_$num, 
+				return " GROUP_CONCAT( ".$table.$addtable.".completename SEPARATOR '$$$$') AS ".$NAME."_$num, 
 					GROUP_CONCAT( glpi_profiles.name SEPARATOR '$$$$') AS ".$NAME."_".$num."_2,
 					GROUP_CONCAT( glpi_users_profiles.recursive SEPARATOR '$$$$') AS ".$NAME."_".$num."_3,";
 			} else {
-				return $pretable.$table.$addtable.".completename AS ".$NAME."_$num, ".$pretable.$table.$addtable.".ID AS ".$NAME."_".$num."_2, ";
+				return $table.$addtable.".completename AS ".$NAME."_$num, ".$table.$addtable.".ID AS ".$NAME."_".$num."_2, ";
 			}
 
 		case "glpi_groups.name" :
 			if ($type==USER_TYPE){
-				return " GROUP_CONCAT( DISTINCT ".$pretable.$table.$addtable.".".$field." SEPARATOR '$$$$') AS ".$NAME."_$num, ";
+				return " GROUP_CONCAT( DISTINCT ".$table.$addtable.".".$field." SEPARATOR '$$$$') AS ".$NAME."_$num, ";
 			} else {
 				return $table.$addtable.".".$field." AS ".$NAME."_$num, ";
 			}
@@ -1639,7 +1645,7 @@ function addSelect ($type,$ID,$num,$meta=0,$meta_type=0){
 		case "glpi_contracts.name" :
 		case "glpi_contracts.num" :
 			if ($type!=CONTRACT_TYPE){
-				return " GROUP_CONCAT( DISTINCT ".$pretable.$table.$addtable.".".$field." SEPARATOR '$$$$') AS ".$NAME."_$num, ";
+				return " GROUP_CONCAT( DISTINCT ".$table.$addtable.".".$field." SEPARATOR '$$$$') AS ".$NAME."_$num, ";
 			} else {
 				return $table.$addtable.".".$field." AS ".$NAME."_$num, ";
 			}
@@ -1650,7 +1656,7 @@ function addSelect ($type,$ID,$num,$meta=0,$meta_type=0){
 		case "glpi_dropdown_netpoint.name" :
 		case "glpi_registry.registry_ocs_name" :
 		case "glpi_registry.registry_value" :
-			return " GROUP_CONCAT( DISTINCT ".$pretable.$table.$addtable.".".$field." SEPARATOR '$$$$') AS ".$NAME."_".$num.", ";
+			return " GROUP_CONCAT( DISTINCT ".$table.$addtable.".".$field." SEPARATOR '$$$$') AS ".$NAME."_".$num.", ";
 		break;
 		case "glpi_tracking.count" :
 			return " COUNT(DISTINCT glpi_tracking.ID) AS ".$NAME."_".$num.", ";
@@ -1672,11 +1678,7 @@ function addSelect ($type,$ID,$num,$meta=0,$meta_type=0){
 
 
 			if ($meta){
-
-				if ($table!=$LINK_ID_TABLE[$type])
-					return " GROUP_CONCAT( DISTINCT ".$pretable.$table.$addtable.".".$field." SEPARATOR '$$$$') AS ".$NAME."_$num, ";
-				else return " GROUP_CONCAT( DISTINCT ".$table.$addtable.".".$field." SEPARATOR '$$$$') AS ".$NAME."_$num, ";
-
+				return " GROUP_CONCAT( DISTINCT ".$table.$addtable.".".$field." SEPARATOR '$$$$') AS ".$NAME."_$num, ";
 			}
 			else {
 				return $table.$addtable.".".$field." AS ".$NAME."_$num, ";
