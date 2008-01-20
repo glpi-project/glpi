@@ -217,7 +217,7 @@ function showPlanning($who,$who_group,$when,$type){
 			$ASSIGN=" AND ( (type='public' ".getEntitiesRestrictRequest("AND","glpi_reminder").") OR author IN (SELECT FK_users FROM glpi_users_groups WHERE FK_groups = '$who_group') )";
 		}
 	}
-	echo $ASSIGN;
+	
 	$query2="SELECT * FROM glpi_reminder WHERE FK_entities= '".$_SESSION["glpiactive_entity"]."' AND rv='1' $ASSIGN  AND (('$begin' <= begin AND '$end' >= begin) OR ('$begin' < end AND '$end' >= end) OR (begin <= '$begin' AND end > '$begin') OR (begin <= '$end' AND end > '$end')) ORDER BY begin";
 
 	$result2=$DB->query($query2);
