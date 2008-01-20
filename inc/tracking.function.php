@@ -182,20 +182,20 @@ function showCentralJobList($target,$start,$status="process",$showgrouptickets=t
 
 
 	if($status=="waiting"){ // on affiche les tickets en attente
-		$query = "SELECT ID FROM glpi_tracking WHERE ( $search_assign ) AND status ='waiting' ".getEntitiesRestrictRequest("AND","glpi_tracking")." ORDER BY date ".getTrackingOrderPrefs($_SESSION["glpiID"]);
+		$query = "SELECT ID FROM glpi_tracking WHERE ( $search_assign ) AND status ='waiting' ".getEntitiesRestrictRequest("AND","glpi_tracking")." ORDER BY date_mod ".getTrackingOrderPrefs($_SESSION["glpiID"]);
 		
 		if($showgrouptickets){
-			$title=$LANG["central"][15];
+			$title=$LANG["central"][16];
 		}else{
  			$title=$LANG["central"][11];
 		}
 
 	}else{ // on affiche les tickets planifiés ou assignés à glpiID
 
-		$query = "SELECT ID FROM glpi_tracking WHERE ( $search_assign ) AND (status ='plan' OR status = 'assign') ".getEntitiesRestrictRequest("AND","glpi_tracking")." ORDER BY date ".getTrackingOrderPrefs($_SESSION["glpiID"]);
+		$query = "SELECT ID FROM glpi_tracking WHERE ( $search_assign ) AND (status ='plan' OR status = 'assign') ".getEntitiesRestrictRequest("AND","glpi_tracking")." ORDER BY date_mod ".getTrackingOrderPrefs($_SESSION["glpiID"]);
 		
 		if($showgrouptickets){
-			$title=$LANG["central"][16];
+			$title=$LANG["central"][15];
 		}else{
 			$title=$LANG["central"][9];
 		}
@@ -294,7 +294,7 @@ function showOldJobListForItem($username,$item_type,$item,$sort="",$order="") {
 	if (!haveRight("show_all_ticket","1")) return false;
 
 	if ($sort==""){
-		$sort="glpi_tracking.date";
+		$sort="glpi_tracking.date_mod";
 	}
 	if ($order==""){
 		$order=getTrackingOrderPrefs($_SESSION["glpiID"]);
@@ -348,7 +348,7 @@ function showJobListForItem($username,$item_type,$item,$sort="",$order="") {
 	if (!haveRight("show_all_ticket","1")) return false;
 
 	if ($sort==""){
-		$sort="glpi_tracking.date";
+		$sort="glpi_tracking.date_mod";
 	}
 	if ($order==""){
 		$order=getTrackingOrderPrefs($_SESSION["glpiID"]);
