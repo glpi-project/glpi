@@ -64,7 +64,7 @@ class DictionnarySoftwareCollection extends RuleCachedCollection {
 		echo "<table class='tab_cadre_fixe'>";
 		echo "<tr><th colspan='2'><strong>" .$LANG["rulesengine"][92]. "</strong></th</tr>";
 		echo "<tr><td align='center' class='tab_bg_2'>"; 
-		echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/warning2.png\"></td>";
+		echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/warning.png\"></td>";
 		echo "<td align='center' class='tab_bg_2'>".$LANG["rulesengine"][93]. "</td></tr>\n";
 		echo "<tr><th colspan='2'><strong>" .$LANG["rulesengine"][95]. "</strong></th</tr>";
 		echo "<tr><td align='center' class='tab_bg_2'>".$LANG["rulesengine"][96]."</td>"; 
