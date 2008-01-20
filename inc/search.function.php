@@ -1132,7 +1132,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 									||(!ereg("NOT",$link2[$j]) || $contains2[$j]=="NULL"))){
 
 							// General case
-							if (!strpos($data["META_$j"],"$$$$")){
+							if (strpos($data["META_$j"],"$$$$")===false){
 								echo displaySearchItem($output_type,$data["META_$j"],$item_num,$row_num);
 							// Case of GROUP_CONCAT item : split item and multilline display
 							} else {
