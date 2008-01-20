@@ -372,7 +372,12 @@ class User extends CommonDBTM {
 		if (isset($input["auth_method"])&&$input["auth_method"]==AUTH_LDAP)
 		if (isset ($input["ID"]) && $input["ID"]>0) {
 			$auth_method = getAuthMethodsByID($input["auth_method"], $input["id_auth"]);
-			if (count($auth_method)&&isset($input["_groups"])){
+			if (count($auth_method)){
+
+				if (!isset($input["_groups"])){
+					$input["_groups"]=array();
+				}
+
 				// Clean groups
 				$input["_groups"] = array_unique ($input["_groups"]);
 
