@@ -301,5 +301,16 @@ function update07to071() {
 		) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=19 ;";
 		$DB->query($query) or die("0.71 add table glpi_query_bookmark " . $DB->error());		
 	}
+
+
+	if (!FieldExists("glpi_profiles", "show_group_planning")) {
+		$query = "ALTER TABLE `glpi_profiles` ADD `show_group_planning` CHAR( 1 ) NULL AFTER `show_planning` ;";
+		$DB->query($query) or die("0.71 add show_group_planning in glpi_profiles " . $LANG["update"][90] . $DB->error());
+		
+		$query="UPDATE glpi_profiles SET show_group_planning=show_all_planning";
+		$DB->query($query) or die("0.71 update value of show_group_planning right " . $LANG["update"][90] . $DB->error());
+	}
+
+
 } // fin 0.71 #####################################################################################
 ?>

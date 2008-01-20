@@ -118,10 +118,29 @@ function showPlanning($who,$who_group,$when,$type){
 
 	// Get items to print
 	$ASSIGN="";
-	if ($who>0)
-		$ASSIGN="id_assign='$who' AND";
-	if ($who_group>0){
-		$ASSIGN="id_assign IN (SELECT FK_users FROM glpi_users_groups WHERE FK_groups = '$who_group') AND";
+
+	if ($who_group=="mine"){
+		if (count($_SESSION["glpigroups"])){
+			$first=true;
+			$groups="";
+			foreach ($_SESSION['glpigroups'] as $val){
+				if (!$first) $groups.=",";
+				else $first=false;
+				$groups.=$val;
+			}			
+			$ASSIGN="id_assign IN (SELECT DISTINCT FK_users FROM glpi_users_groups WHERE FK_groups IN ($groups)) AND";
+		} else { // Only personal ones
+			$ASSIGN="id_assign='$who' AND ";
+		}
+	} else {
+
+		if ($who>0){
+			$ASSIGN="id_assign='$who' AND ";
+		}
+
+		if ($who_group>0){
+			$ASSIGN="id_assign IN (SELECT FK_users FROM glpi_users_groups WHERE FK_groups = '$who_group') AND";
+		}
 	}
 	if (empty($ASSIGN)){
 		$ASSIGN=" id_assign IN (SELECT DISTINCT glpi_users_profiles.FK_users 
@@ -135,7 +154,6 @@ function showPlanning($who,$who_group,$when,$type){
 
 	}
 	// ---------------Tracking
-
 	$query="SELECT * FROM glpi_tracking_planning WHERE $ASSIGN (('$begin' <= begin AND '$end' >= begin) OR ('$begin' < end AND '$end' >= end) OR (begin <= '$begin' AND end > '$begin') OR (begin <= '$end' AND end > '$end')) ORDER BY begin";
 	
 	$result=$DB->query($query);
@@ -176,12 +194,30 @@ function showPlanning($who,$who_group,$when,$type){
 	// ---------------reminder 
 
 	$ASSIGN="";
-	if ($who>0){
-		$ASSIGN=" AND ( author='$who' OR (type='public' ".getEntitiesRestrictRequest("AND","glpi_reminder")."))";
+
+
+	if ($who_group=="mine"){
+		if (count($_SESSION["glpigroups"])){
+			$first=true;
+			$groups="";
+			foreach ($_SESSION['glpigroups'] as $val){
+				if (!$first) $groups.=",";
+				else $first=false;
+				$groups.=$val;
+			}			
+			$ASSIGN=" AND author IN (SELECT DISTINCT FK_users FROM glpi_users_groups WHERE FK_groups IN ($groups)) ";
+		} else { // Only personal ones
+			$ASSIGN=" AND ( author='$who' OR (type='public' ".getEntitiesRestrictRequest("AND","glpi_reminder")."))";
+		}
+	} else {
+		if ($who>0){
+			$ASSIGN=" AND ( author='$who' OR (type='public' ".getEntitiesRestrictRequest("AND","glpi_reminder")."))";
+		}
+		if ($who_group>0){
+			$ASSIGN=" AND ( (type='public' ".getEntitiesRestrictRequest("AND","glpi_reminder").") OR author IN (SELECT FK_users FROM glpi_users_groups WHERE FK_groups = '$who_group') )";
+		}
 	}
-	if ($who_group>0){
-		$ASSIGN=" AND ( (type='public' ".getEntitiesRestrictRequest("AND","glpi_reminder").") OR author IN (SELECT FK_users FROM glpi_users_groups WHERE FK_groups = '$who_group') )";
-	}
+	echo $ASSIGN;
 	$query2="SELECT * FROM glpi_reminder WHERE FK_entities= '".$_SESSION["glpiactive_entity"]."' AND rv='1' $ASSIGN  AND (('$begin' <= begin AND '$end' >= begin) OR ('$begin' < end AND '$end' >= end) OR (begin <= '$begin' AND end > '$begin') OR (begin <= '$end' AND end > '$end')) ORDER BY begin";
 
 	$result2=$DB->query($query2);

@@ -643,6 +643,7 @@ $LANG["job"][45]="Ajouter un suivi";
 $LANG["joblist"][0]="Statut"; 
 $LANG["joblist"][1]="Seulement les miens"; 
 $LANG["joblist"][2]="Priorité"; 
+$LANG["joblist"][3]="Les miens et ceux de mes groupes"; 
 $LANG["joblist"][4]="Attribué"; 
 $LANG["joblist"][6]="Description"; 
 $LANG["joblist"][7]="Nouveau ticket pour cet item..."; 
@@ -1133,6 +1134,7 @@ $LANG["profiles"][32]="Voir les tickets attribués (personnel + groupe(s) associ
 $LANG["profiles"][33]="Pas d'utilisateur trouvé"; 
 $LANG["profiles"][34]="Légende"; 
 $LANG["profiles"][35]="Editer tous les suivis"; 
+$LANG["profiles"][36]="Voir les planning de personnes de mes groupes"; 
 
 $LANG["registry"][1]="Ruche"; 
 $LANG["registry"][2]="Chemin"; 
