@@ -1652,6 +1652,8 @@ function addSelect ($type,$ID,$num,$meta=0,$meta_type=0){
 		break;
 		case "glpi_licenses.serial" :
 		case "glpi_licenses.version" :
+			return " GROUP_CONCAT( DISTINCT CONCAT(".$table.$addtable.".serial, ' - ',".$table.$addtable.".version) SEPARATOR '$$$$') AS ".$NAME."_".$num.", ";
+		break;
 		case "glpi_networking_ports.ifaddr" :
 		case "glpi_dropdown_netpoint.name" :
 		case "glpi_registry.registry_ocs_name" :
