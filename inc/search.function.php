@@ -1551,8 +1551,8 @@ function addSelect ($type,$ID,$num,$meta=0,$meta_type=0){
 		case "reservation_types.name":
 			if ($meta){
 				if ($table!=$LINK_ID_TABLE[$type])
-					return " GROUP_CONCAT( DISTINCT ".$pretable.$table.$addtable.".".$field." SEPARATOR '$$$$') AS META_$num, ";
-				else return " GROUP_CONCAT( DISTINCT ".$table.$addtable.".".$field." SEPARATOR '$$$$') AS META_$num, ";
+					return " GROUP_CONCAT( DISTINCT ".$pretable.$table.$addtable.".".$field." SEPARATOR '$$$$') AS ".$NAME."_$num, ";
+				else return " GROUP_CONCAT( DISTINCT ".$table.$addtable.".".$field." SEPARATOR '$$$$') AS ".$NAME."_$num, ";
 
 			}
 			else {
@@ -1564,14 +1564,14 @@ function addSelect ($type,$ID,$num,$meta=0,$meta_type=0){
 		case "glpi_enterprises.name" :
 		case "glpi_enterprises_infocoms.name" :
 			if ($type==CONTACT_TYPE){
-				return " GROUP_CONCAT( DISTINCT ".$pretable.$table.$addtable.".".$field." SEPARATOR '$$$$') AS ITEM_$num, ";
+				return " GROUP_CONCAT( DISTINCT ".$pretable.$table.$addtable.".".$field." SEPARATOR '$$$$') AS ".$NAME."_$num, ";
 			} else {
 				return $pretable.$table.$addtable.".".$field." AS ".$NAME."_$num, ".$pretable.$table.$addtable.".website AS ".$NAME."_".$num."_2, ".$pretable.$table.$addtable.".ID AS ".$NAME."_".$num."_3, ";
 			}
 		break;
 		// Contact for display in the enterprise item
 		case "glpi_contacts.completename":
-			return " GROUP_CONCAT( DISTINCT CONCAT(".$pretable.$table.$addtable.".name, ' ', ".$pretable.$table.$addtable.".firstname) SEPARATOR '$$$$') AS ITEM_$num, ";
+			return " GROUP_CONCAT( DISTINCT CONCAT(".$pretable.$table.$addtable.".name, ' ', ".$pretable.$table.$addtable.".firstname) SEPARATOR '$$$$') AS ".$NAME."_$num, ";
 		break;
 		case "glpi_users.name" :
 			$linkfield="";
@@ -1605,31 +1605,31 @@ function addSelect ($type,$ID,$num,$meta=0,$meta_type=0){
 		break;
 		case "glpi_networking_ports.ifmac" :
 			if ($type==COMPUTER_TYPE)
-				return " GROUP_CONCAT( DISTINCT ".$pretable.$table.$addtable.".".$field." SEPARATOR '$$$$') AS ITEM_$num, GROUP_CONCAT( DISTINCT DEVICE_".NETWORK_DEVICE.".specificity  SEPARATOR '$$$$') AS ".$NAME."_".$num."_2, ";
+				return " GROUP_CONCAT( DISTINCT ".$pretable.$table.$addtable.".".$field." SEPARATOR '$$$$') AS ".$NAME."_$num, GROUP_CONCAT( DISTINCT DEVICE_".NETWORK_DEVICE.".specificity  SEPARATOR '$$$$') AS ".$NAME."_".$num."_2, ";
 			else return " GROUP_CONCAT( DISTINCT ".$pretable.$table.$addtable.".".$field." SEPARATOR '$$$$') AS ".$NAME."_$num, ";
 		break;
 		case "glpi_profiles.name" :
 			if ($type==USER_TYPE){
-				return " GROUP_CONCAT( ".$pretable.$table.$addtable.".".$field." SEPARATOR '$$$$') AS ITEM_$num, 
-					GROUP_CONCAT( glpi_entities.completename SEPARATOR '$$$$') AS ITEM_".$num."_2,
-					GROUP_CONCAT( glpi_users_profiles.recursive SEPARATOR '$$$$') AS ITEM_".$num."_3,";
+				return " GROUP_CONCAT( ".$pretable.$table.$addtable.".".$field." SEPARATOR '$$$$') AS ".$NAME."_$num, 
+					GROUP_CONCAT( glpi_entities.completename SEPARATOR '$$$$') AS ".$NAME."_".$num."_2,
+					GROUP_CONCAT( glpi_users_profiles.recursive SEPARATOR '$$$$') AS ".$NAME."_".$num."_3,";
 			} else {
-				return $table.$addtable.".".$field." AS ITEM_$num, ";
+				return $table.$addtable.".".$field." AS ".$NAME."_$num, ";
 			}
 		case "glpi_entities.completename" :
 			if ($type==USER_TYPE){
-				return " GROUP_CONCAT( ".$pretable.$table.$addtable.".completename SEPARATOR '$$$$') AS ITEM_$num, 
-					GROUP_CONCAT( glpi_profiles.name SEPARATOR '$$$$') AS ITEM_".$num."_2,
-					GROUP_CONCAT( glpi_users_profiles.recursive SEPARATOR '$$$$') AS ITEM_".$num."_3,";
+				return " GROUP_CONCAT( ".$pretable.$table.$addtable.".completename SEPARATOR '$$$$') AS ".$NAME."_$num, 
+					GROUP_CONCAT( glpi_profiles.name SEPARATOR '$$$$') AS ".$NAME."_".$num."_2,
+					GROUP_CONCAT( glpi_users_profiles.recursive SEPARATOR '$$$$') AS ".$NAME."_".$num."_3,";
 			} else {
 				return $pretable.$table.$addtable.".completename AS ".$NAME."_$num, ".$pretable.$table.$addtable.".ID AS ".$NAME."_".$num."_2, ";
 			}
 
 		case "glpi_groups.name" :
 			if ($type==USER_TYPE){
-				return " GROUP_CONCAT( DISTINCT ".$pretable.$table.$addtable.".".$field." SEPARATOR '$$$$') AS ITEM_$num, ";
+				return " GROUP_CONCAT( DISTINCT ".$pretable.$table.$addtable.".".$field." SEPARATOR '$$$$') AS ".$NAME."_$num, ";
 			} else {
-				return $table.$addtable.".".$field." AS ITEM_$num, ";
+				return $table.$addtable.".".$field." AS ".$NAME."_$num, ";
 			}
 		break;
 		case "glpi_auth_tables.name":
@@ -1638,9 +1638,9 @@ function addSelect ($type,$ID,$num,$meta=0,$meta_type=0){
 		case "glpi_contracts.name" :
 		case "glpi_contracts.num" :
 			if ($type!=CONTRACT_TYPE){
-				return " GROUP_CONCAT( DISTINCT ".$pretable.$table.$addtable.".".$field." SEPARATOR '$$$$') AS ITEM_$num, ";
+				return " GROUP_CONCAT( DISTINCT ".$pretable.$table.$addtable.".".$field." SEPARATOR '$$$$') AS ".$NAME."_$num, ";
 			} else {
-				return $table.$addtable.".".$field." AS ITEM_$num, ";
+				return $table.$addtable.".".$field." AS ".$NAME."_$num, ";
 			}
 		break;
 		case "glpi_licenses.serial" :
@@ -1673,8 +1673,8 @@ function addSelect ($type,$ID,$num,$meta=0,$meta_type=0){
 			if ($meta){
 
 				if ($table!=$LINK_ID_TABLE[$type])
-					return " GROUP_CONCAT( DISTINCT ".$pretable.$table.$addtable.".".$field." SEPARATOR '$$$$') AS META_$num, ";
-				else return " GROUP_CONCAT( DISTINCT ".$table.$addtable.".".$field." SEPARATOR '$$$$') AS META_$num, ";
+					return " GROUP_CONCAT( DISTINCT ".$pretable.$table.$addtable.".".$field." SEPARATOR '$$$$') AS ".$NAME."_$num, ";
+				else return " GROUP_CONCAT( DISTINCT ".$table.$addtable.".".$field." SEPARATOR '$$$$') AS ".$NAME."_$num, ";
 
 			}
 			else {
@@ -1732,7 +1732,10 @@ function addWhere ($link,$nott,$type,$ID,$val,$meta=0){
 	$table=$SEARCH_OPTION[$type][$ID]["table"];
 	$field=$SEARCH_OPTION[$type][$ID]["field"];
 	
-	if ($meta&&$LINK_ID_TABLE[$type]!=$table) $table.="_".$type;
+	$inittable=$table;
+	if ($meta&&$LINK_ID_TABLE[$type]!=$table) {
+		$table.="_".$type;
+	}
 
 	// Hack to allow search by ID on every sub-table
 	if (preg_match('/^\$\$\$\$([0-9]+)$/',$val,$regs)){
@@ -1741,11 +1744,16 @@ function addWhere ($link,$nott,$type,$ID,$val,$meta=0){
 
 	$SEARCH=makeTextSearch($val,$nott);
 
-	switch ($table.".".$field){
+	switch ($inittable.".".$field){
 		case "glpi_users.name" :
 			$linkfield="";
 			if (!empty($SEARCH_OPTION[$type][$ID]["linkfield"])){
 				$linkfield="_".$SEARCH_OPTION[$type][$ID]["linkfield"];
+
+				if ($meta&&$LINK_ID_TABLE[$type]!=$inittable) {
+					$table=$inittable;
+					$linkfield.="_".$type;
+				}
 			}
 			if ($type==USER_TYPE){ // glpi_users case / not link table
 				return $link." ( $table$linkfield.$field $SEARCH ) ";
@@ -2731,8 +2739,8 @@ function addLeftJoin ($type,$ref_table,&$already_link_tables,$new_table,$linkfie
 	$addmetanum="";
 	$rt=$ref_table;
 	if ($meta) {
-		$AS= " AS ".$new_table."_".$meta_type;
-		$nt=$new_table."_".$meta_type;
+		$AS= " AS ".$nt."_".$meta_type;
+		$nt=$nt."_".$meta_type;
 		//$rt.="_".$meta_type;
 	}
 
