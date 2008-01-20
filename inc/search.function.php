@@ -72,10 +72,12 @@ function cleanSearchOption($type,$action='r'){
  *
  *
  * @param $type item type to manage
+ * @param $usesession Use datas save in sesion
+ * @param $save Save params to session
  * @return nothing
  *
  */
-function manageGetValuesInSearch($type=0){
+function manageGetValuesInSearch($type=0,$usesession=true,$save=true){
 	global $_GET;
 	$tab=array();
 
@@ -93,7 +95,7 @@ function manageGetValuesInSearch($type=0){
 	$default_values["type2"]="";
 	$default_values["sort"]=1;
 
-	if (isset($_GET["reset_before"])){
+	if ($usesession&&isset($_GET["reset_before"])){
 		if (isset($_SESSION['glpisearch'][$type])){
 			unset($_SESSION['glpisearch'][$type]);
 		}
@@ -108,7 +110,7 @@ function manageGetValuesInSearch($type=0){
 		}
 	}
 
-	if (is_array($_GET)){
+	if (is_array($_GET)&&$save){
 		foreach ($_GET as $key => $val){
 			$_SESSION['glpisearch'][$type][$key]=$val;
 		}
@@ -116,7 +118,7 @@ function manageGetValuesInSearch($type=0){
 
 	foreach ($default_values as $key => $val){
 		if (!isset($_GET[$key])){
-			if (isset($_SESSION['glpisearch'][$type][$key])) {
+			if ($usesession&&isset($_SESSION['glpisearch'][$type][$key])) {
 				$_GET[$key]=$_SESSION['glpisearch'][$type][$key];
 			} else {
 				$_GET[$key] = $val;

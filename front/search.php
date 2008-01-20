@@ -46,12 +46,15 @@ commonHeader($LANG["search"][0],$_SERVER['PHP_SELF']);
 if (isset($_GET["globalsearch"])){
 	$_GET["reset_before"]=1;
 	$_GET["display_type"]=GLOBAL_SEARCH;
-	$types=array(COMPUTER_TYPE=>"computer.php",MONITOR_TYPE=>"monitor.php",SOFTWARE_TYPE=>"software.php",NETWORKING_TYPE=>"networking.php",PERIPHERAL_TYPE=>"peripheral.php",PRINTER_TYPE=>"printer.php",PHONE_TYPE=>"phone.php");
+	$types=array(COMPUTER_TYPE,MONITOR_TYPE,SOFTWARE_TYPE,NETWORKING_TYPE,PERIPHERAL_TYPE,PRINTER_TYPE,PHONE_TYPE);
+
 	$ci=new CommonItem();
 	
-	foreach($types as $type => $page){
+	foreach($types as $type){
 		if (haveTypeRight($type,'r')){
-			manageGetValuesInSearch($type);
+			$page=ereg_replace('front/','',ereg_replace('.form','',$INFOFORM_PAGES[$type]));
+
+			manageGetValuesInSearch($type,false,false);
 			$_GET["contains"][0]=$_GET["globalsearch"];
 			showList($type,$page,$_GET["field"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"],$_GET["deleted"],$_GET["link"],$_GET["distinct"],$_GET["link2"],$_GET["contains2"],$_GET["field2"],$_GET["type2"]);
 			echo "<hr>";
