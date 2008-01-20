@@ -143,7 +143,7 @@ elseif (isset($_POST["emailupdates"]) && $_POST["emailupdates"] && isset($_POST[
 		else commonHeader($LANG["title"][1],$_SERVER['PHP_SELF'],$_SESSION["glpiname"],"maintain","tracking");
 
 		echo "<div align='center'><img src=\"".$CFG_GLPI["root_doc"]."/pics/ok.png\" alt=\"OK\"><br><br><b>";
-		echo $LANG["help"][18]." (".$LANG["common"][2]." <a href='helpdesk.public.php?show=user&amp;ID=$newID'>$newID</a>)<br>";
+		echo $LANG["help"][18]." (".$LANG["job"][38]." <a class='b' href='helpdesk.public.php?show=user&amp;ID=$newID'>$newID</a>)<br>";
 		echo $LANG["help"][19];
 		echo "</b></div>";
 		nullFooter();
