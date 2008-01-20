@@ -1629,7 +1629,7 @@ $SEARCH_OPTION[SOFTWARE_TYPE][6]['meta']=1;
 $SEARCH_OPTION[SOFTWARE_TYPE][7]['table']='glpi_licenses';
 $SEARCH_OPTION[SOFTWARE_TYPE][7]['field']='serial';
 $SEARCH_OPTION[SOFTWARE_TYPE][7]['linkfield']='';
-$SEARCH_OPTION[SOFTWARE_TYPE][7]['name']=$LANG["software"][11];
+$SEARCH_OPTION[SOFTWARE_TYPE][7]['name']=$LANG["common"][19];
 $SEARCH_OPTION[SOFTWARE_TYPE][7]['meta']=1;
 
 
