@@ -86,7 +86,7 @@ CREATE TABLE `glpi_bookmark` (
   `query` text NOT NULL,
   PRIMARY KEY  (`ID`),
   KEY `FK_user` (`FK_users`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
 ### Dump table glpi_cartridges
