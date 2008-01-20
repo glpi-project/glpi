@@ -708,7 +708,19 @@ function loadGroups() {
 	global $DB;
 
 	$_SESSION["glpigroups"] = array ();
-	$query_gp = "SELECT FK_groups FROM glpi_users_groups LEFT JOIN glpi_groups ON (glpi_users_groups.FK_groups = glpi_groups.ID) WHERE glpi_users_groups.FK_users='" . $_SESSION['glpiID'] . "' AND glpi_groups.FK_entities='" . $_SESSION["glpiactive_entity"] . "'";
+
+
+	$first=true;
+	$entities="";
+	foreach ($_SESSION['glpiactiveentities'] as $val){
+		if (!$first) $entities.=",";
+		else $first=false;
+		$entities.=$val;
+	}			
+
+
+	$query_gp = "SELECT FK_groups FROM glpi_users_groups LEFT JOIN glpi_groups ON (glpi_users_groups.FK_groups = glpi_groups.ID) WHERE glpi_users_groups.FK_users='" . $_SESSION['glpiID'] . "' AND glpi_groups.FK_entities IN ($entities)";
+
 	$result_gp = $DB->query($query_gp);
 	if ($DB->numrows($result_gp)) {
 		while ($data = $DB->fetch_array($result_gp)) {
