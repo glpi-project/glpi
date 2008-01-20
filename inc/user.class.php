@@ -128,6 +128,10 @@ class User extends CommonDBTM {
 
 		$query = "DELETE FROM glpi_reminder WHERE author = '$ID'";
 		$DB->query($query);
+
+		$query = "DELETE FROM glpi_bookmark WHERE FK_users = '$ID'";
+		$DB->query($query);
+		
 	}
 
 	function getFromDBbyName($name) {

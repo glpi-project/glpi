@@ -46,6 +46,13 @@ $LANG["backup"][22]="Impossible de trouver l'octet";
 $LANG["backup"][23]="Erreur Mysql à partir de"; 
 $LANG["backup"][24]="Redirection automatique, sinon cliquez"; 
 
+$LANG["bookmark"][0]="Enregistrer";  
+$LANG["bookmark"][1]="marque-page";
+$LANG["bookmark"][2]="La page a été enregistrée, vous pouvez fermer la fenêtre";
+$LANG["bookmark"][3]="Vous n'avez pas encore enregistré de marque-pages.";
+
+
+
 $LANG["buttons"][0]="Rechercher"; 
 $LANG["buttons"][2]="Valider"; 
 $LANG["buttons"][3]="Attribuer"; 
@@ -1343,10 +1350,6 @@ $LANG["search"][17]="Ajouter un critère de recherche";
 $LANG["search"][18]="Supprimer un critère de recherche"; 
 $LANG["search"][19]="Ajouter un critère global de recherche"; 
 $LANG["search"][20]="Supprimer un critère global de recherche";
-$LANG["search"][21]="Enregistrer";  
-$LANG["search"][22]="recherche favorite";
-$LANG["search"][23]="La recherche a été enregistrée, vous pouvez fermer la fenêtre";
-$LANG["search"][24]="Aucune recherche favorite enregistrée.";
 
 $LANG["setup"][0]="Intitulés"; 
 $LANG["setup"][1]="Attention si ces éléments sont utilisés, ils seront remplacés par une valeur nulle."; 

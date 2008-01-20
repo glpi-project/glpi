@@ -34,7 +34,7 @@
 // ----------------------------------------------------------------------
 
 
-$NEEDED_ITEMS=array("query.bookmark");
+$NEEDED_ITEMS=array("bookmark");
 
 if(!defined('GLPI_ROOT')){
 	define('GLPI_ROOT', '..');
@@ -44,29 +44,39 @@ include (GLPI_ROOT . "/inc/includes.php");
 if (!ereg("popup",$_SERVER['PHP_SELF']))
 	commonHeader($LANG["rulesengine"][17],$_SERVER['PHP_SELF'],"admin","dictionnary","cache");
 
-$query_bookmark = new QueryBookmark;
+$bookmark = new Bookmark;
 
 if (isset($_POST["save"]))
 {
-	$_POST = exportSearchParameters($_POST,$_SESSION["glpisearch"][$_POST["type"]]);
-	$query_bookmark->add($_POST);
-	$query_bookmark->showQuerySavedForm();	
-}elseif (isset($_POST["load"]))
-{
-	$query_bookmark->getFromDB($_POST["ID"]);
-	$url=buildRequestUrl($query_bookmark->fields);
-	$query_bookmark->showQueryLoadedForm($url);
+	$bookmark->add($_POST);
+	$bookmark->showBookmarkSavedForm();	
+
 }elseif (isset($_POST["delete"]))
 {
-	$query_bookmark->delete($_POST);
-	$query_bookmark->showLoadQueryForm($_SERVER['PHP_SELF'],$_POST["type"],$_SESSION["glpiID"]);
+	foreach ($_POST["bookmark"] as $ID=>$value)
+		$bookmark->delete(array("ID"=>$ID));
+		
+	$bookmark->showLoadBookmarkForm($_SERVER['PHP_SELF'],$_SESSION["glpiID"]);
 }
 else
 {
 	if ($_GET["action"] == "save")
-		$query_bookmark->showSaveQueryForm($_SERVER['PHP_SELF'],$_GET["type"],$_SESSION["glpiID"]);	
+		$bookmark->showSaveBookmarkForm($_SERVER['PHP_SELF'],$_SERVER["HTTP_REFERER"],$_SESSION["glpiID"],$_SERVER["HTTP_REFERER"]);	
 	else
-		$query_bookmark->showLoadQueryForm($_SERVER['PHP_SELF'],$_GET["type"],$_SESSION["glpiID"]);
+	{
+		if (!isset($_GET["check"]))
+			$_GET["check"]="none";
+		if (!isset($_GET["start"]))
+			$_GET["start"]=0;
+					
+		if (isset($_GET["bookmark_id"]))
+		{
+			$bookmark->getFromDB($_GET["bookmark_id"]);
+			$url = GLPI_ROOT."/".urldecode($bookmark->fields["path"]).(isset($bookmark->fields["query"])&&$bookmark->fields["query"]!=''?'?':'').urldecode($bookmark->fields["query"]);
+			$bookmark->showBookmarkLoadedForm($url);
+		}
+		$bookmark->showLoadBookmarkForm($_SERVER['PHP_SELF'],$_SESSION["glpiID"]);
+	}
 		
 	if (!ereg("popup",$_SERVER['PHP_SELF']))
 		commonFooter();
