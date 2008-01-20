@@ -51,7 +51,6 @@ class Bookmark extends CommonDBTM {
 		$index = strpos($taburl["path"],"plugins");
 		if (!$index)
 			$index = strpos($taburl["path"],"front");
-		echo $taburl["path"]." index=".$index."\n";
 		$path = substr($taburl["path"],$index,strlen($taburl["path"]) - $index);
 			
 		echo "<input type='hidden' name='path' value='" . urlencode($path) . "'>";
