@@ -292,7 +292,7 @@ function update07to071() {
 		  `query` text NOT NULL,
 		  PRIMARY KEY  (`ID`),
 		  KEY `FK_user` (`FK_users`)
-		) ENGINE=MyISAM;";
+		) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
 		$DB->query($query) or die("0.71 add table glpi_bookmark " . $DB->error());		
 	}
 

@@ -711,10 +711,10 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="")
 		echo "	<div id='champRecherche'><input size='15' type='text' name='globalsearch' value='".$LANG["buttons"][0]."' onfocus=\"this.value='';\" ></div>	\n"; 		
 		echo "<div id='bookmark' >\n"; 
 		echo "  <a href='#' onClick=\"window.open('".$CFG_GLPI["root_doc"]."/front/popup.php?popup=save_bookmark' ,'glpipopup', 'height=100, width=400, top=100, left=100, scrollbars=yes' )\">"; 
-		echo"    	<input type='image' src='".$CFG_GLPI["root_doc"]."/pics/menu_add.png'  value='OK'   title=\"".$LANG["common"][68]." ".$LANG["bookmark"][1]."\"  alt=\"".$LANG["common"][68]." ".$LANG["bookmark"][1]."\"  >"; 
+		echo"    	<input type='image' src='".$CFG_GLPI["root_doc"]."/pics/menu_add.png'  value='OK'   title=\"".$LANG["bookmark"][0]." ".$LANG["bookmark"][1]."\"  alt=\"".$LANG["bookmark"][0]." ".$LANG["bookmark"][1]."\"  >"; 
 		echo "	</a>";
 		echo "  <a href='#' onClick=\"window.open('".$CFG_GLPI["root_doc"]."/front/popup.php?popup=load_bookmark' ,'glpipopup', 'height=400, width=400, top=100, left=100, scrollbars=yes' )\">"; 
-		echo "   <input type='image' src='".$CFG_GLPI["root_doc"]."/pics/folder-open.png'  value='OK'   title=\"".$LANG["bookmark"][0]." ".$LANG["bookmark"][1]."\"  alt=\"".$LANG["bookmark"][0]." ".$LANG["bookmark"][1]."\"  >"; 
+		echo "   <input type='image' src='".$CFG_GLPI["root_doc"]."/pics/folder-open.png'  value='OK'   title=\"".$LANG["common"][68]." ".$LANG["bookmark"][1]."\"  alt=\"".$LANG["common"][68]." ".$LANG["bookmark"][1]."\"  >"; 
 		echo "  </a>";
 		echo "</div>";
 
