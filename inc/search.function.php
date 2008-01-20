@@ -258,10 +258,11 @@ function searchForm($type,$target,$field="",$contains="",$sort= "",$deleted= 0,$
 			case COMPUTER_TYPE :
 				$linked=array(PRINTER_TYPE,MONITOR_TYPE,PERIPHERAL_TYPE,SOFTWARE_TYPE,PHONE_TYPE);
 				break;
-				/*			case NETWORKING_TYPE :
-							$linked=array(COMPUTER_TYPE,PRINTER_TYPE,PERIPHERAL_TYPE);
-							break;
-				 */			case PRINTER_TYPE :
+			/*			case NETWORKING_TYPE :
+						$linked=array(COMPUTER_TYPE,PRINTER_TYPE,PERIPHERAL_TYPE);
+						break;
+			 */			
+			case PRINTER_TYPE :
 				$linked=array(COMPUTER_TYPE);
 				break;
 			case MONITOR_TYPE :
