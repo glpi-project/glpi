@@ -462,19 +462,20 @@ class Profile extends CommonDBTM{
 		echo "<td>".$LANG["profiles"][8].":</td><td>";
 		dropdownYesNo("show_full_ticket",$this->fields["show_full_ticket"]);
 		echo "</td>";
-		echo "<td colspan='2'>&nbsp;</td>";
-		echo "</tr>";
+		echo "<td>".$LANG["Menu"][13].":</td><td>";
+		dropdownYesNo("statistic",$this->fields["statistic"]);
+		echo "</td></tr>";
 
 		echo "<tr class='tab_bg_2'>";
 		
 		echo "<td>".$LANG["profiles"][20].":</td><td>";
 		dropdownYesNo("show_planning",$this->fields["show_planning"]);
 		echo "</td>";
+		echo "<td>".$LANG["profiles"][36].":</td><td>";
+		dropdownYesNo("show_group_planning",$this->fields["show_group_planning"]);
+		echo "</td>";
 		echo "<td>".$LANG["profiles"][21].":</td><td>";
 		dropdownYesNo("show_all_planning",$this->fields["show_all_planning"]);
-		echo "</td>";
-		echo "<td>".$LANG["Menu"][13].":</td><td>";
-		dropdownYesNo("statistic",$this->fields["statistic"]);
 		echo "</td></tr>";
 
 		

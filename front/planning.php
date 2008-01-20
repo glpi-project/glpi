@@ -101,6 +101,11 @@ if (haveRight("show_all_planning","1")){
 	echo "<hr>";
 	echo "<input type='radio' id='radio_group' name='usertype' value='group' ".($_GET["usertype"]=="group"?"checked":"").">";
 	$rand_group=dropdownValue("glpi_groups","gID",$_GET['gID'],1,$_SESSION["glpiactive_entity"]);
+	echo "<hr>";
+	echo "<input type='radio' id='radio_group' name='usertype' value='user_group' ".($_GET["usertype"]=="user_group"?"checked":"").">";
+	echo $LANG["joblist"][3];
+
+
 	echo "<script type='text/javascript' >\n";
 	echo "   new Form.Element.Observer('dropdown_uID".$rand_user."', 1, \n";
 	echo "      function(element, value) {\n";
@@ -112,8 +117,11 @@ if (haveRight("show_all_planning","1")){
 	echo "});\n";
 
 	echo "</script>\n";
-} else {
-	echo "&nbsp;";
+} else if (haveRight("show_group_planning","1")){
+	echo "<select name='usertype'>";
+	echo "<option value='user' ".($_GET['usertype']=='user'?'selected':'').">".$LANG["joblist"][1]."</option>";
+	echo "<option value='user_group' ".($_GET['usertype']=='user_group'?'selected':'').">".$LANG["joblist"][3]."</option>";
+	echo "</select>";
 }
 echo "</td>";
 echo "<td align='right'>";
@@ -136,10 +144,16 @@ echo "</td>";
 echo "</tr>";
 echo "</table></form></div>";
 
-if ($_GET["usertype"]=="user"){
-	$_GET['gID']=-1;
-} else {
-	$_GET['uID']=-1;
+switch ($_GET["usertype"]){
+	case "user" :
+		$_GET['gID']=-1;
+		break;
+	case "group" :	
+		$_GET['uID']=-1;
+		break;
+	case "user_group":
+		$_GET['gID']="mine";
+		break;
 }
 showPlanning($_GET['uID'],$_GET['gID'],$_GET["date"],$_GET["type"]);
 
