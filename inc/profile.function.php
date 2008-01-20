@@ -137,13 +137,16 @@ function showProfileEntityUser($target,$ID,$prof){
 						echo "</table>";
 						if ($canedit){
 							echo "<div class='center'>";
-							echo "<table width='80%'>";
+							echo "<table width='100%'>";
 							echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markAllRows('profileuser_form$temp') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$ID&amp;select=all'>".$LANG["buttons"][18]."</a></td>";
 							
 							echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkAllRows('profileuser_form$temp') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$ID&amp;select=none'>".$LANG["buttons"][19]."</a>";
 							echo "</td><td align='left' width='80%'>";
 							dropdownValue("glpi_entities","FK_entities",0,1,$_SESSION['glpiactiveentities']);
-							echo "&nbsp;<input type='submit' name='moveentity' value=\"".$LANG["buttons"][20]."\" class='submit'>";
+							echo "&nbsp;<input type='submit' name='moveentity' value=\"".$LANG["buttons"][20]."\"
+ class='submit'>";
+							echo "&nbsp;<input type='submit' name='deleteuser' value=\"".$LANG["buttons"][6]."\" class='submit'>";
+
 							echo "</td>";
 							echo "</table>";
 							echo "</div>";
@@ -218,13 +221,14 @@ function showProfileEntityUser($target,$ID,$prof){
 				echo "</table>";
 				if ($canedit){
 					echo "<div class='center'>";
-					echo "<table width='80%'>";
+					echo "<table width='100%'>";
 					echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markAllRows('profileuser_form$temp') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$ID&amp;select=all'>".$LANG["buttons"][18]."</a></td>";
 					
 					echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkAllRows('profileuser_form$temp') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$ID&amp;select=none'>".$LANG["buttons"][19]."</a>";
 					echo "</td><td align='left' width='80%'>";
 					dropdownValue("glpi_entities","FK_entities",0,1,$_SESSION['glpiactiveentities']);
 					echo "&nbsp;<input type='submit' name='moveentity' value=\"".$LANG["buttons"][20]."\" class='submit'>";
+					echo "&nbsp;<input type='submit' name='deleteuser' value=\"".$LANG["buttons"][6]."\" class='submit'>";
 					echo "</td>";
 					echo "</table>";
 					echo "</div>";

@@ -75,7 +75,16 @@ else  if (isset($_POST["update"])){
 		}
 	}
 	glpi_header($_SERVER['HTTP_REFERER']);
+} else if (isset($_POST["deleteuser"])){
+	checkRight("user","w");
+	foreach ($_POST["item"] as $key => $val){
+		if ($val==1) {
+			deleteUserProfileEntity($key);
+		}
+	}
+	glpi_header($_SERVER['HTTP_REFERER']);
 }
+
 
 commonHeader($LANG["Menu"][35],$_SERVER['PHP_SELF'],"admin","profile");
 
