@@ -357,11 +357,14 @@ class User extends CommonDBTM {
 	function syncLdapGroups($input){
 		global $DB;
 
-
 		if (isset($input["auth_method"])&&$input["auth_method"]==AUTH_LDAP)
 		if (isset ($input["ID"]) && $input["ID"]>0) {
 			$auth_method = getAuthMethodsByID($input["auth_method"], $input["id_auth"]);
-			if (count($auth_method)&&isset($input["_groups"])){
+			
+			if (count($auth_method)){
+				if (!isset($input["_groups"])){
+					$input["_groups"]=array();
+				}
 				// Clean groups
 				$input["_groups"] = array_unique ($input["_groups"]);
 
@@ -380,13 +383,11 @@ class User extends CommonDBTM {
 						break;
 
 				}
-	
 				// Delete not available groups like to LDAP
 				$query = "SELECT glpi_users_groups.ID, glpi_users_groups.FK_groups 
 							FROM glpi_users_groups 
 							LEFT JOIN glpi_groups ON (glpi_groups.ID = glpi_users_groups.FK_groups) 
 							WHERE glpi_users_groups.FK_users='" . $input["ID"] . "' $WHERE";
-
 
 				$result = $DB->query($query);
 				if ($DB->numrows($result) > 0) {

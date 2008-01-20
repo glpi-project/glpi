@@ -593,6 +593,13 @@ class AuthLDAP extends CommonDBTM {
 		
 		}
 	}
+
+	function prepareInputForUpdate($input){
+		if (isset($input["ldap_pass"])&&empty($input["ldap_pass"])){
+			unset($input["ldap_pass"]);
+		}
+		return $input;
+	}
 	function showForm($target, $ID) {
 
 		global $LANG;
@@ -642,7 +649,7 @@ class AuthLDAP extends CommonDBTM {
 			echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["setup"][154] . "</td><td><input type=\"text\" name=\"ldap_basedn\" value=\"" . $this->fields["ldap_basedn"] . "\" ></td>";
 			echo "<td class='center'>" . $LANG["setup"][155] . "</td><td><input type=\"text\" name=\"ldap_rootdn\" value=\"" . $this->fields["ldap_rootdn"] . "\" ></td></tr>";
 
-			echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["setup"][156] . "</td><td><input type=\"password\" name=\"ldap_pass\" value=\"" . $this->fields["ldap_pass"] . "\" ></td>";
+			echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["setup"][156] . "</td><td><input type=\"password\" name=\"ldap_pass\" value=\"\" ></td>";
 			echo "<td class='center'>" . $LANG["setup"][228] . "</td><td><input type=\"text\" name=\"ldap_login\" value=\"" . $this->fields["ldap_login"] . "\" ></td></tr>";
 
 			echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["setup"][159] . "</td><td colspan='3'><input type=\"text\" name=\"ldap_condition\" value=\"" . $this->fields["ldap_condition"] . "\" size='100'></td></tr>";
