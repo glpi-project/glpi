@@ -911,7 +911,7 @@ function isIndex($table, $field) {
 function exportArrayToDB($TAB) {
 	$EXPORT = "";
 	while (list($KEY,$VALUE) = each($TAB)) {
-		$EXPORT .= urlencode($KEY)."=>".urlencode($VALUE)." ";
+		$EXPORT .= urlencode($KEY)."=>".(is_array($VALUE)?" ".exportArrayToDB($VALUE):urlencode($VALUE))." ";
 	}
 	return $EXPORT;
 }
