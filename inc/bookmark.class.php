@@ -98,7 +98,7 @@ class Bookmark extends CommonDBTM {
 		echo "<form method='post' name='form_load_bookmark' action=\"$target\">";
 
 		echo "<table class='tab_cadrehov'>";
-		echo "<tr><th align='center' colspan='2'>".$LANG["common"][68]." ".$LANG["bookmark"][1]."</th>";
+		echo "<tr><th align='center' colspan='2'>".$LANG["buttons"][52]." ".$LANG["bookmark"][1]."</th>";
 
 		if( $DB->numrows($result))
 		{
