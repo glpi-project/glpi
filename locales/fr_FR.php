@@ -102,6 +102,7 @@ $LANG["buttons"][48]="Transférer";
 $LANG["buttons"][49]="Conserver"; 
 $LANG["buttons"][50]="Tester";
 $LANG["buttons"][51]="Enregistrer";
+$LANG["buttons"][52]="Charger";  
 
 $LANG["calendarD"][0]="D"; 
 $LANG["calendarD"][1]="L"; 
@@ -248,7 +249,6 @@ $LANG["common"][64]="Superviseur";
 $LANG["common"][65]="Interface"; 
 $LANG["common"][66]="Tous"; 
 $LANG["common"][67]="Autres";
-$LANG["common"][68]="Charger";  
 
 $LANG["computers"][9]="OS"; 
 $LANG["computers"][10]="OS Numéro de série"; 

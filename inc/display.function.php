@@ -714,7 +714,7 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="")
 		echo"    	<input type='image' src='".$CFG_GLPI["root_doc"]."/pics/menu_add.png'  value='OK'   title=\"".$LANG["buttons"][51]." ".$LANG["bookmark"][1]."\"  alt=\"".$LANG["buttons"][51]." ".$LANG["bookmark"][1]."\"  >"; 
 		echo "	</a>";
 		echo "  <a href='#' onClick=\"window.open('".$CFG_GLPI["root_doc"]."/front/popup.php?popup=load_bookmark' ,'glpipopup', 'height=400, width=400, top=100, left=100, scrollbars=yes' )\">"; 
-		echo "   <input type='image' src='".$CFG_GLPI["root_doc"]."/pics/folder-open.png'  value='OK'   title=\"".$LANG["common"][68]." ".$LANG["bookmark"][1]."\"  alt=\"".$LANG["common"][68]." ".$LANG["bookmark"][1]."\"  >"; 
+		echo "   <input type='image' src='".$CFG_GLPI["root_doc"]."/pics/folder-open.png'  value='OK'   title=\"".$LANG["buttons"][52]." ".$LANG["bookmark"][1]."\"  alt=\"".$LANG["buttons"][52]." ".$LANG["bookmark"][1]."\"  >"; 
 		echo "  </a>";
 		echo "</div>";
 
