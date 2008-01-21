@@ -272,18 +272,16 @@ class Identification {
 			break;
 			case AUTH_EXTERNAL:
 				$login_string=$_SERVER[$CFG_GLPI["existing_auth_server_field"]];
-				if (isValidLogin($login_string)){
-					$this->user->fields['name'] = $login_string;
+
+				$login=$login_string;
+
+				$pos = stripos($login_string,"\\");
+				if (!$pos === false) {
+					$login = substr($login_string, $pos + 1);
+				} 
+				if (isValidLogin($login)){
+					$this->user->fields['name'] = $login;
 					return true;
-				} else {
-					$pos = stripos($login_string,"\\");
-					if (!$pos === false) {
-						$login = substr($login_string, $pos + 1);
-						if (isValidLogin($login)){
-							$this->user->fields['name'] = $login;
-							return true;
-						}
-					}
 				}
 			break;
 			case AUTH_X509:
@@ -307,7 +305,7 @@ class Identification {
 				}
 			break;
 		}
-		return '';
+		return false;
 	}
 
 
