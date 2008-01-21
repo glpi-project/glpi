@@ -175,7 +175,7 @@ class Profile extends CommonDBTM{
 
 
 	function showHelpdeskForm($ID){
-		global $LANG;
+		global $LANG,$CFG_GLPI;
 
 		if (!haveRight("profile","r")) return false;
 		$canedit=haveRight("profile","w");
@@ -237,15 +237,15 @@ class Profile extends CommonDBTM{
 		echo "</select>";
 		echo "</td><td>".$LANG["setup"][352]."</td>";
 		echo "<td>";
+
 		echo "<select name='helpdesk_hardware_type[]' multiple size='3'>";
-		echo "<option value='".COMPUTER_TYPE."' ".(($this->fields["helpdesk_hardware_type"]&pow(2,COMPUTER_TYPE))?" selected":"").">".$LANG["help"][25]."</option>\n";
-		echo "<option value='".NETWORKING_TYPE."' ".(($this->fields["helpdesk_hardware_type"]&pow(2,NETWORKING_TYPE))?" selected":"").">".$LANG["help"][26]."</option>\n";
-		echo "<option value='".PRINTER_TYPE."' ".(($this->fields["helpdesk_hardware_type"]&pow(2,PRINTER_TYPE))?" selected":"").">".$LANG["help"][27]."</option>\n";
-		echo "<option value='".MONITOR_TYPE."' ".(($this->fields["helpdesk_hardware_type"]&pow(2,MONITOR_TYPE))?" selected":"").">".$LANG["help"][28]."</option>\n";
-		echo "<option value='".PERIPHERAL_TYPE."' ".(($this->fields["helpdesk_hardware_type"]&pow(2,PERIPHERAL_TYPE))?" selected":"").">".$LANG["help"][29]."</option>\n";
-		echo "<option value='".SOFTWARE_TYPE."' ".(($this->fields["helpdesk_hardware_type"]&pow(2,SOFTWARE_TYPE))?" selected":"").">".$LANG["help"][31]."</option>\n";
-		echo "<option value='".PHONE_TYPE."' ".(($this->fields["helpdesk_hardware_type"]&pow(2,PHONE_TYPE))?" selected":"").">".$LANG["help"][35]."</option>\n";
+		$ci = new CommonItem();
+		foreach($CFG_GLPI["helpdesk_types"] as $type){
+			$ci->setType($type);
+			echo "<option value='".$type."' ".(($this->fields["helpdesk_hardware_type"]&pow(2,$type))?" selected":"").">".$ci->getType()."</option>\n";
+		}
 		echo "</select>";
+
 		echo "</td>";
 
 		echo "</tr>";
@@ -283,7 +283,7 @@ class Profile extends CommonDBTM{
 
 
 	function showCentralForm($ID){
-		global $LANG;
+		global $LANG,$CFG_GLPI;
 
 		if (!haveRight("profile","r")) return false;
 		$canedit=haveRight("profile","w");
@@ -426,14 +426,13 @@ class Profile extends CommonDBTM{
 
 		echo "<td>".$LANG["setup"][352].":</td>";
 		echo "<td>";
+
 		echo "<select name='helpdesk_hardware_type[]' multiple size='3'>";
-		echo "<option value='".COMPUTER_TYPE."' ".(($this->fields["helpdesk_hardware_type"]&pow(2,COMPUTER_TYPE))?" selected":"").">".$LANG["help"][25]."</option>\n";
-		echo "<option value='".NETWORKING_TYPE."' ".(($this->fields["helpdesk_hardware_type"]&pow(2,NETWORKING_TYPE))?" selected":"").">".$LANG["help"][26]."</option>\n";
-		echo "<option value='".PRINTER_TYPE."' ".(($this->fields["helpdesk_hardware_type"]&pow(2,PRINTER_TYPE))?" selected":"").">".$LANG["help"][27]."</option>\n";
-		echo "<option value='".MONITOR_TYPE."' ".(($this->fields["helpdesk_hardware_type"]&pow(2,MONITOR_TYPE))?" selected":"").">".$LANG["help"][28]."</option>\n";
-		echo "<option value='".PERIPHERAL_TYPE."' ".(($this->fields["helpdesk_hardware_type"]&pow(2,PERIPHERAL_TYPE))?" selected":"").">".$LANG["help"][29]."</option>\n";
-		echo "<option value='".SOFTWARE_TYPE."' ".(($this->fields["helpdesk_hardware_type"]&pow(2,SOFTWARE_TYPE))?" selected":"").">".$LANG["help"][31]."</option>\n";
-		echo "<option value='".PHONE_TYPE."' ".(($this->fields["helpdesk_hardware_type"]&pow(2,PHONE_TYPE))?" selected":"").">".$LANG["help"][35]."</option>\n";
+		$ci = new CommonItem();
+		foreach($CFG_GLPI["helpdesk_types"] as $type){
+			$ci->setType($type);
+			echo "<option value='".$type."' ".(($this->fields["helpdesk_hardware_type"]&pow(2,$type))?" selected":"").">".$ci->getType()."</option>\n";
+		}
 		echo "</select>";
 		echo "</td>";
 		echo "</tr>";

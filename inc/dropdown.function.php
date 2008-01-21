@@ -742,34 +742,26 @@ function dropdownIcons($myname,$value,$store_path){
  *
  *
  * @param $name name of the select box
- * @param $device_type default device type
- * @param $soft with softwares ?
- * @param $cart with cartridges ?
- * @param $cons with consumables ?
+ * @param $value default device type
+ * @param $types types to display
  * @return nothing (print out an HTML select box)
  */
-function dropdownDeviceType($name,$device_type,$soft=1,$cart=1,$cons=1){
-	global $LANG;
-	echo "<select name='$name'>\n";
-	echo "<option value='0'>-----</option>\n";
-	echo "<option value='".COMPUTER_TYPE."' ".(($device_type==COMPUTER_TYPE)?" selected":"").">".$LANG["help"][25]."</option>\n";
-	echo "<option value='".NETWORKING_TYPE."' ".(($device_type==NETWORKING_TYPE)?" selected":"").">".$LANG["help"][26]."</option>\n";
-	echo "<option value='".PRINTER_TYPE."' ".(($device_type==PRINTER_TYPE)?" selected":"").">".$LANG["help"][27]."</option>\n";
-	echo "<option value='".MONITOR_TYPE."' ".(($device_type==MONITOR_TYPE)?" selected":"").">".$LANG["help"][28]."</option>\n";
-	echo "<option value='".PERIPHERAL_TYPE."' ".(($device_type==PERIPHERAL_TYPE)?" selected":"").">".$LANG["help"][29]."</option>\n";
-	echo "<option value='".PHONE_TYPE."' ".(($device_type==PHONE_TYPE)?" selected":"").">".$LANG["help"][35]."</option>\n";
+function dropdownDeviceTypes($name,$value=0,$types=array()){
+	global $CFG_GLPI;
 
-	if ($soft)
-		echo "<option value='".SOFTWARE_TYPE."' ".(($device_type==SOFTWARE_TYPE)?" selected":"").">".$LANG["help"][31]."</option>\n";
-	if ($cart)
-		echo "<option value='".CARTRIDGE_TYPE."' ".(($device_type==CARTRIDGE_TYPE)?" selected":"").">".$LANG["Menu"][21]."</option>\n";
-	if ($cons)
-		echo "<option value='".CONSUMABLE_TYPE."' ".(($device_type==CONSUMABLE_TYPE)?" selected":"").">".$LANG["Menu"][32]."</option>\n";
-	echo "<option value='".CONTACT_TYPE."' ".(($device_type==CONTACT_TYPE)?" selected":"").">".$LANG["Menu"][22]."</option>\n";
-	echo "<option value='".ENTERPRISE_TYPE."' ".(($device_type==ENTERPRISE_TYPE)?" selected":"").">".$LANG["Menu"][23]."</option>\n";
-	echo "<option value='".CONTRACT_TYPE."' ".(($device_type==CONTRACT_TYPE)?" selected":"").">".$LANG["Menu"][25]."</option>\n";
-	echo "</select>\n";
 
+	$options=array(0=>'----');
+	if (count($types)){
+		$ci=new CommonItem();
+						
+		foreach ($types as $type){
+			$ci->setType($type);
+			$options[$type]=$ci->getType();
+		}
+		asort($options);
+	}
+
+	dropdownArrayValues($name,$options,$value);
 
 }
 

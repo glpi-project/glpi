@@ -738,8 +738,7 @@ function addFormTracking ($device_type=0,$ID=0,$author,$group,$assign,$assign_gr
 		dropdownValue("glpi_groups","FK_group",$group,1,$_SESSION["glpiactive_entity"]);
 		echo "</td></tr>";
 	} 
-	
-	if ($device_type==0&&$_SESSION["glpiactiveprofile"]["helpdesk_hardware"]!=0){
+	if ($_SESSION["glpiactiveprofile"]["helpdesk_hardware"]!=0){
 		echo "<tr class='tab_bg_2'>";
 		echo "<td class='center'>".$LANG["help"][24].": </td>";
 		echo "<td align='center' colspan='3'>";
