@@ -1142,6 +1142,7 @@ $LANG["profiles"][33]="Pas d'utilisateur trouvé";
 $LANG["profiles"][34]="Légende"; 
 $LANG["profiles"][35]="Editer tous les suivis"; 
 $LANG["profiles"][36]="Voir les planning de personnes de mes groupes"; 
+$LANG["profiles"][37]="Entité par défaut"; 
 
 $LANG["registry"][1]="Ruche"; 
 $LANG["registry"][2]="Chemin"; 
