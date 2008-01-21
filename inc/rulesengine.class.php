@@ -1490,6 +1490,13 @@ class Rule extends CommonDBTM{
 						return getRequestTypeName($pattern);
 					}
 					break;
+				case "dropdown_tracking_device_type":
+					if ($condition==PATTERN_IS||$condition==PATTERN_IS_NOT){
+						$ci =new CommonItem();
+						$ci->setType($pattern);
+						return $ci->getType($pattern);
+					}
+					break;
 				case "dropdown_priority":
 					if ($condition==PATTERN_IS||$condition==PATTERN_IS_NOT){
 						return getPriorityName($pattern);
@@ -1508,6 +1515,8 @@ class Rule extends CommonDBTM{
  	* @param $value the pattern
  	*/
  	function displayCriteriaSelectPattern($name,$ID,$condition,$value=""){
+		global $CFG_GLPI;
+
 		$crit=$this->getCriteria($ID);
 
 		$display=false;
@@ -1528,6 +1537,12 @@ class Rule extends CommonDBTM{
 				case "dropdown_request_type":
 					if ($condition==PATTERN_IS||$condition==PATTERN_IS_NOT){
 						dropdownRequestType($name,$value);
+						$display=true;
+					}
+					break;
+				case "dropdown_tracking_device_type":
+					if ($condition==PATTERN_IS||$condition==PATTERN_IS_NOT){
+						dropdownDeviceTypes($name,0,$CFG_GLPI["helpdesk_types"]);
 						$display=true;
 					}
 					break;
@@ -1864,6 +1879,13 @@ class RuleCriteria extends CommonDBTM {
 				case "dropdown_request_type":
 					if ($condition!=PATTERN_IS&&$condition!=PATTERN_IS_NOT){
 						return getRequestTypeName($initValue);
+					}
+					break;
+				case "dropdown_tracking_device_type":
+					if ($condition!=PATTERN_IS&&$condition!=PATTERN_IS_NOT){
+						$ci =new CommonItem();
+						$ci->setType($initValue);
+						return $ci->getType($initValue);
 					}
 					break;
 				case "dropdown_priority":

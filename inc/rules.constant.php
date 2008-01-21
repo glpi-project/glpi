@@ -167,6 +167,12 @@ $RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['request_type']['name']=$LANG["job"]
 $RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['request_type']['linkfield']='request_type';
 $RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['request_type']['type']='dropdown_request_type';
 
+$RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['device_type']['table']='glpi_tracking';
+$RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['device_type']['field']='device_type';
+$RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['device_type']['name']=$LANG["state"][6];
+$RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['device_type']['linkfield']='device_type';
+$RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['device_type']['type']='dropdown_tracking_device_type';
+
 $RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['FK_entities']['table']='glpi_entities';
 $RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['FK_entities']['field']='name';
 $RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['FK_entities']['name']=$LANG["entity"][0];
