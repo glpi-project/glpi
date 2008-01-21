@@ -286,12 +286,12 @@ function update07to071() {
 	{
 	 	$query="CREATE TABLE IF NOT EXISTS `glpi_bookmark` (
 		  `ID` int(11) NOT NULL auto_increment,
-		  `name` varchar(255) NOT NULL,
-		  `FK_users` int(11) NOT NULL,
-		  `path` varchar(255) NOT NULL,
-		  `query` text NOT NULL,
+		  `name` varchar(255) NULL,
+		  `FK_users` int(11) NOT NULL DEFAULT '0',
+		  `path` varchar(255) NULL,
+		  `query` text NULL,
 		  PRIMARY KEY  (`ID`),
-		  KEY `FK_user` (`FK_users`)
+		  KEY `FK_users` (`FK_users`)
 		) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
 		$DB->query($query) or die("0.71 add table glpi_bookmark " . $DB->error());		
 	}
@@ -305,6 +305,14 @@ function update07to071() {
 		$DB->query($query) or die("0.71 update value of show_group_planning right " . $LANG["update"][90] . $DB->error());
 	}
 
+	if (!FieldExists("glpi_users", "FK_profiles")) {
+		$query = "ALTER TABLE `glpi_users` ADD `FK_profiles` INT NOT NULL DEFAULT '0';";
+		$DB->query($query) or die("0.71 add default profile to user " . $LANG["update"][90] . $DB->error());
+	}
+	if (!FieldExists("glpi_users", "FK_entities")) {
+		$query = "ALTER TABLE `glpi_users` ADD `FK_entities` INT NOT NULL DEFAULT '0';";
+		$DB->query($query) or die("0.71 add default entity to user " . $LANG["update"][90] . $DB->error());
+	}
 
 } // fin 0.71 #####################################################################################
 ?>
