@@ -143,6 +143,12 @@ $RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['author']['name']=$LANG["job"][4]." 
 $RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['author']['linkfield']='author';
 $RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['author']['type']='dropdown_users';
 
+$RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['author_location']['table']='glpi_dropdown_locations';
+$RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['author_location']['field']='completename';
+$RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['author_location']['name']=$LANG["job"][4]." - ".$LANG["common"][15];
+$RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['author_location']['linkfield']='author_location';
+$RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['author_location']['type']='dropdown';
+
 $RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['FK_group']['table']='glpi_groups';
 $RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['FK_group']['field']='name';
 $RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['FK_group']['name']=$LANG["job"][4]." - ".$LANG["common"][35];
