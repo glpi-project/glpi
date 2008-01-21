@@ -78,9 +78,14 @@ if (!isset($_POST["limit"])) $_POST["limit"]=$CFG_GLPI["dropdown_limit"];
 		}
 
 
+		$multi=false;
+
 		// Manage multiple Entities dropdowns
 		$add_order="";
 		if (in_array($_POST['table'],$CFG_GLPI["specif_entities_tables"])||$_POST['table']=='glpi_entities'){
+
+			$multi=in_array($_POST['table'],$CFG_GLPI["recursive_type"]);
+
 			$field='FK_entities';
 			$add_order=" FK_entities, ";
 			if ($_POST['table']=='glpi_entities'){
@@ -94,9 +99,9 @@ if (!isset($_POST["limit"])) $_POST["limit"]=$CFG_GLPI["dropdown_limit"];
 				$where.=getEntitiesRestrictRequest(" AND ",$_POST['table'],$field,$_POST["entity_restrict"]);
 			} else {
 				$where.=getEntitiesRestrictRequest(" AND ",$_POST['table'],$field);
+				if (count($_SESSION['glpiactiveentities'])>1) $multi=true;
 			}
 		}
-
 
 		$query = "SELECT * FROM ".$_POST['table']." $where ORDER BY $add_order completename $LIMIT";
 
@@ -137,12 +142,21 @@ if (!isset($_POST["limit"])) $_POST["limit"]=$CFG_GLPI["dropdown_limit"];
 		}
 
 		if ($DB->numrows($result)) {
+			$prev=-1;
 			while ($data =$DB->fetch_array($result)) {
 
 				$ID = $data['ID'];
 				$level = $data['level'];
 	
 				$output=$data['name'];
+
+				if ($multi && $data["FK_entities"]!=$prev) {
+					if ($prev>=0) {
+						echo "</optgroup>";
+					}
+					$prev=$data["FK_entities"];
+					echo "<optgroup label=\"". getDropdownName("glpi_entities", $prev) ."\">";
+				}
 
 				$class=" class='tree' ";
 				$raquo="&raquo;";

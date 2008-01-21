@@ -479,8 +479,11 @@ class Job extends CommonDBTM{
 		if (!isset($input["request_type"])) $input["request_type"]=1;
 		if (!isset($input["status"])) $input["status"]="new";
 		if (!isset($input["assign"])) $input["assign"]=0;
-
-
+		
+		$user=new User();
+		if ($user->getFromDB($input["author"])){
+			$input['author_location']=$user->fields['location'];
+		}
 
 		if (!isset($input["date"])||$input["date"]=='0000-00-00 00:00'){
 			$input["date"] = $_SESSION["glpi_currenttime"];
