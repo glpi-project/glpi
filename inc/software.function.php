@@ -609,7 +609,7 @@ function updateNumberLicenses($likeID, $number, $new_number) {
 
 function installSoftware($cID, $lID, $sID = '', $dohistory = 1) {
 
-	global $DB;
+	global $DB,$LANG;
 
 	if (!empty ($lID) && $lID > 0) {
 
@@ -648,7 +648,7 @@ function installSoftware($cID, $lID, $sID = '', $dohistory = 1) {
 			$newinput = array ();
 			$newinput['buy'] = 0;
 			$newinput['sID'] = $sID;
-			$newinput['serial'] = 'Automatic Add';
+			$newinput['serial'] = $LANG["software"][6];
 			$lID = $lic->add($newinput);
 
 			$query = "INSERT INTO glpi_inst_software VALUES (NULL,$cID,$lID)";

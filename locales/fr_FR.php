@@ -1609,6 +1609,7 @@ $LANG["setup"][809]="Réplicat MySQL : lecture seule";
 
 $LANG["software"][3]="Plateforme"; 
 $LANG["software"][5]="Versions"; 
+$LANG["software"][6]="Ajout automatique"; 
 $LANG["software"][11]="Licences"; 
 $LANG["software"][12]="Ajouter licence..."; 
 $LANG["software"][13]="licence(s) trouvée(s)"; 
