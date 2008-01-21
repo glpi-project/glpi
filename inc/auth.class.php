@@ -273,11 +273,12 @@ class Identification {
 			case AUTH_EXTERNAL:
 				$login_string=$_SERVER[$CFG_GLPI["existing_auth_server_field"]];
 				if (isValidLogin($login_string)){
-					return $login_string;
+					$this->user->fields['name'] = $login_string;
+					return true;
 				} else {
 					$pos = stripos($login_string,"\\");
 					if (!$pos === false) {
-						$login = substr($_SERVER["REMOTE_USER"], $pos + 1);
+						$login = substr($login_string, $pos + 1);
 						if (isValidLogin($login)){
 							$this->user->fields['name'] = $login;
 							return true;
