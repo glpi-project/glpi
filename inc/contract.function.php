@@ -743,7 +743,7 @@ function showContractAssociatedEnterprise($ID){
  * Cron action on contracts : alert depending of the config : on notice and expire
  *
  **/
-function cron_contract(){
+function cron_contract($display=false){
 	global $DB,$CFG_GLPI,$LANG;
 
 	if (!$CFG_GLPI["mailing"]){
