@@ -709,6 +709,9 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="")
 		echo "<form method='get' action='".$CFG_GLPI["root_doc"]."/front/search.php'>\n"; 
 		echo "	<div id='boutonRecherche'><input type='image' src='".$CFG_GLPI["root_doc"]."/pics/ok2.png'  value='OK'   title=\"".$LANG["buttons"][2]."\"  alt=\"".$LANG["buttons"][2]."\"  ></div>\n"; 
 		echo "	<div id='champRecherche'><input size='15' type='text' name='globalsearch' value='".$LANG["buttons"][0]."' onfocus=\"this.value='';\" ></div>	\n"; 		
+
+		echo "</form>\n"; 
+/*
 		echo "<div id='bookmark' >\n"; 
 		echo "  <a href='#' onClick=\"window.open('".$CFG_GLPI["root_doc"]."/front/popup.php?popup=save_bookmark' ,'glpipopup', 'height=100, width=400, top=100, left=100, scrollbars=yes' )\">"; 
 		echo"    	<input type='image' src='".$CFG_GLPI["root_doc"]."/pics/menu_add.png'  value='OK'   title=\"".$LANG["buttons"][51]." ".$LANG["bookmark"][1]."\"  alt=\"".$LANG["buttons"][51]." ".$LANG["bookmark"][1]."\"  >"; 
@@ -716,10 +719,7 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="")
 		echo "  <a href='#' onClick=\"window.open('".$CFG_GLPI["root_doc"]."/front/popup.php?popup=load_bookmark' ,'glpipopup', 'height=400, width=400, top=100, left=100, scrollbars=yes' )\">"; 
 		echo "   <input type='image' src='".$CFG_GLPI["root_doc"]."/pics/folder-open.png'  value='OK'   title=\"".$LANG["buttons"][52]." ".$LANG["bookmark"][1]."\"  alt=\"".$LANG["buttons"][52]." ".$LANG["bookmark"][1]."\"  >"; 
 		echo "  </a>";
-		echo "</div>";
-
-		echo "</form>\n"; 
-
+*/
 		echo "<div class='sep'></div>\n"; 
 		echo "</div>";
 	
