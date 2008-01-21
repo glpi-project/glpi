@@ -326,6 +326,7 @@ class Identification {
 				$_SESSION["glpirealname"] = $this->user->fields['realname'];
 				$_SESSION["glpifirstname"] = $this->user->fields['firstname'];
 				$_SESSION["glpilanguage"] = $this->user->fields['language'];
+				$_SESSION["glpidefault_entity"] = $this->user->fields['FK_entities'];
 				loadLanguage();
 				$_SESSION["glpitracking_order"] = $this->user->fields['tracking_order'];
 				$_SESSION["glpiauthorisation"] = true;
@@ -341,7 +342,13 @@ class Identification {
 				doHook("init_session");
 	
 				initEntityProfiles($_SESSION["glpiID"]);
-				changeProfile(key($_SESSION['glpiprofiles']));
+				// Use default profile if exist
+				
+				if (isset($_SESSION['glpiprofiles'][$this->user->fields['FK_profiles']])){
+					changeProfile($this->user->fields['FK_profiles']);
+				} else { // Else use first
+					changeProfile(key($_SESSION['glpiprofiles']));
+				}
 	
 				// glpiactiveprofile -> active profile
 				// glpiactiveentities -> active entities

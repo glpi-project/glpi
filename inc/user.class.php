@@ -948,6 +948,23 @@ class User extends CommonDBTM {
 			echo "<tr class='tab_bg_1'><td class='center'>" . $LANG["setup"][111] . "</td><td>";
 			dropdownInteger("list_limit", $this->fields["list_limit"],5,$CFG_GLPI['list_limit_max'],5);
 			echo "</td></tr>";
+
+			if (count($_SESSION['glpiprofiles'])>1){
+				echo "<tr class='tab_bg_1'><td class='center'>" . $LANG["profiles"][13] . "</td><td>";
+				$options=array(0=>'----');
+		
+				foreach ($_SESSION['glpiprofiles'] as $prof){
+					$options[$prof['ID']]=$prof['name'];
+				}
+				dropdownArrayValues("FK_profiles",$options,$this->fields["FK_profiles"]);
+				echo "</td></tr>";
+			}
+
+			if (count($_SESSION['glpiactiveentities'])>1){
+				echo "<tr class='tab_bg_1'><td class='center'>" . $LANG["profiles"][37] . "</td><td>";
+				dropdownValue("glpi_entities","FK_entities",0,1,$_SESSION['glpiactiveentities']);
+				echo "</td></tr>";
+			}
 			
 			echo "<tr>";
 			echo "<td class='tab_bg_2' valign='top' align='center' colspan='2'>";

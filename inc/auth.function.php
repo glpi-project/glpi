@@ -613,6 +613,7 @@ function changeProfile($ID) {
 				$entitytree = getTreeForItem("glpi_entities", $val['ID']);
 				$_SESSION['glpi_entities_tree'][]=$entitytree;
 				$entities = contructListFromTree($entitytree);
+
 				if (count($entities)) {
 					foreach ($entities as $key2 => $val2) {
 						$_SESSION['glpiactiveentities'][$key2] = $key2;
@@ -620,7 +621,13 @@ function changeProfile($ID) {
 				}
 			}
 		}
-		changeActiveEntities("all");
+		if (isset($_SESSION['glpiactiveentities'][$_SESSION["glpidefault_entity"]])){
+			changeActiveEntities($_SESSION["glpidefault_entity"],true);
+		} else {
+			changeActiveEntities("all");
+		}
+
+		
 		doHook("change_profile");
 	}
 	cleanCache("GLPI_HEADER_".$_SESSION["glpiID"]);
