@@ -46,7 +46,6 @@ $LANG["backup"][22]="Impossible de trouver l'octet";
 $LANG["backup"][23]="Erreur Mysql à partir de"; 
 $LANG["backup"][24]="Redirection automatique, sinon cliquez"; 
 
-$LANG["bookmark"][0]="Enregistrer";  
 $LANG["bookmark"][1]="marque-page";
 $LANG["bookmark"][2]="La page a été enregistrée, vous pouvez fermer la fenêtre";
 $LANG["bookmark"][3]="Vous n'avez pas encore enregistré de marque-pages.";
@@ -102,7 +101,7 @@ $LANG["buttons"][47]="Après";
 $LANG["buttons"][48]="Transférer"; 
 $LANG["buttons"][49]="Conserver"; 
 $LANG["buttons"][50]="Tester";
-
+$LANG["buttons"][51]="Enregistrer";
 
 $LANG["calendarD"][0]="D"; 
 $LANG["calendarD"][1]="L"; 
