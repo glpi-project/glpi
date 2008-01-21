@@ -1530,12 +1530,12 @@ function addSelect ($type,$ID,$num,$meta=0,$meta_type=0){
 	}
 
 	switch ($table.".".$field){
+		case "glpi_software.name" :
 		case "glpi_computers.name" :
 		case "glpi_printers.name" :
 		case "glpi_networking.name" :
 		case "glpi_phones.name" :
 		case "glpi_monitors.name" :
-		case "glpi_software.name" :
 		case "glpi_peripherals.name" :
 		case "glpi_cartridges_type.name" :
 		case "glpi_consumables_type.name" :
@@ -1550,10 +1550,7 @@ function addSelect ($type,$ID,$num,$meta=0,$meta_type=0){
 		case "state_types.name":
 		case "reservation_types.name":
 			if ($meta){
-				if ($table!=$LINK_ID_TABLE[$type])
-					return " GROUP_CONCAT( DISTINCT ".$table.$addtable.".".$field." SEPARATOR '$$$$') AS ".$NAME."_$num, ";
-				else return " GROUP_CONCAT( DISTINCT ".$table.$addtable.".".$field." SEPARATOR '$$$$') AS ".$NAME."_$num, ";
-
+				return " GROUP_CONCAT( DISTINCT ".$table.$addtable.".".$field." SEPARATOR '$$$$') AS ".$NAME."_$num, ";
 			}
 			else {
 				return $table.$addtable.".".$field." AS ".$NAME."_$num, ".$table.$addtable.".ID AS ".$NAME."_".$num."_2, ";
