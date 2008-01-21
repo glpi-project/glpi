@@ -57,7 +57,7 @@ class Bookmark extends CommonDBTM {
 		echo "<input type='hidden' name='query' value='" . (isset($taburl["query"])?urlencode($taburl["query"]):'') . "'>";
 
 		echo "<table class='tab_cadre'>";
-		echo "<tr><th align='center' colspan='2'>".$LANG["bookmark"][0]." ".$LANG["bookmark"][1]."</th>";
+		echo "<tr><th align='center' colspan='2'>".$LANG["buttons"][51]." ".$LANG["bookmark"][1]."</th>";
 		echo "<tr><td class='tab_bg_1'>".$LANG["common"][16]."</td>"; 
 		echo "<td class='tab_bg_1'>";
 		autocompletionTextField("name",$this->table,"name",'',40);				
