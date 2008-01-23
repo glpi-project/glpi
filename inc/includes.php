@@ -156,6 +156,4 @@ if (isset($NEEDED_ITEMS)&&is_array($NEEDED_ITEMS)){
 
 
 if (!isset($_SESSION["MESSAGE_AFTER_REDIRECT"])) $_SESSION["MESSAGE_AFTER_REDIRECT"]="";
-// Define current time for sync of action timing
-$_SESSION["glpi_currenttime"]=date("Y-m-d H:i:s");
 ?>

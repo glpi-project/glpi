@@ -58,7 +58,9 @@ if (!defined('GLPI_ROOT')){
 	*
 	**/	
 	function startGlpiSession(){
-		if(!session_id()){@session_start();}	
+		if(!session_id()){@session_start();}
+		// Define current time for sync of action timing
+		$_SESSION["glpi_currenttime"]=date("Y-m-d H:i:s");	
 	}
 
 	/**
