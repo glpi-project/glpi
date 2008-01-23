@@ -134,12 +134,15 @@ class Job extends CommonDBTM{
 			$input=$ret;
 		}
 
-		if (isset($input["item"])&& $input["item"]!=0&&isset($input["type"])&& $input["type"]!=0){
+		if (isset($input["type"])&& $input["type"]==0&&!isset($input["item"])){
+			$input["computer"]=0;
+			$input["device_type"]=$input["type"];
+		} else if (isset($input["item"])&& $input["item"]!=0&&isset($input["type"])&& $input["type"]!=0){
 			$input["computer"]=$input["item"];
 			$input["device_type"]=$input["type"];
 		} 
-		
-		if (isset($input["computer"])&&$input["computer"]>0&&isset($input["device_type"])&&$input["device_type"]>0){
+
+		if (isset($input["computer"])&&$input["computer"]>=0&&isset($input["device_type"])&&$input["device_type"]>=0){
 			if (isset($this->fields['FK_group'])&&$this->fields['FK_group']){
 				$ci=new CommonItem;
 				$ci->getFromDB($input["device_type"],$input["computer"]);
