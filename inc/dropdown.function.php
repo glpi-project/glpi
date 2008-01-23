@@ -98,7 +98,7 @@ function dropdownValue($table,$myname,$value='',$display_comments=1,$entity_rest
 	if ($CFG_GLPI["use_ajax"]){
 		$nb=0;
 		if ($table=='glpi_entities' || in_array($table,$CFG_GLPI["specif_entities_tables"])){
-			if ($entity_restrict>=0){
+			if (!($entity_restrict<0)){
 				$nb=countElementsInTableForEntity($table,$entity_restrict);
 			} else {
 				$nb=countElementsInTableForMyEntities($table);

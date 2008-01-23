@@ -53,7 +53,7 @@ checkLoginUser();
 
 
 if (isset($_POST["entity_restrict"])&&!is_numeric($_POST["entity_restrict"])&&!is_array($_POST["entity_restrict"])){
-	$_POST["entity_restrict"]=unserialize($_POST["entity_restrict"]);
+	$_POST["entity_restrict"]=unserialize(stripslashes($_POST["entity_restrict"]));
 }
 // Make a select box with preselected values
 if (!isset($_POST["limit"])) $_POST["limit"]=$CFG_GLPI["dropdown_limit"];
@@ -94,7 +94,7 @@ if (!isset($_POST["limit"])) $_POST["limit"]=$CFG_GLPI["dropdown_limit"];
 
 			}
 
-			if (isset($_POST["entity_restrict"]) && !$_POST["entity_restrict"]<0){
+			if (isset($_POST["entity_restrict"]) && !($_POST["entity_restrict"]<0)){
 				$where.=getEntitiesRestrictRequest(" AND ",$_POST['table'],$field,$_POST["entity_restrict"]);
 				if (is_array($_POST["entity_restrict"]) && count($_POST["entity_restrict"])>1) {
 					$multi=true;	
@@ -212,7 +212,7 @@ if (!isset($_POST["limit"])) $_POST["limit"]=$CFG_GLPI["dropdown_limit"];
 		if (in_array($_POST['table'],$CFG_GLPI["specif_entities_tables"])){
 			$multi=in_array($_POST['table'],$CFG_GLPI["recursive_type"]);
 			
-			if (isset($_POST["entity_restrict"]) && !$_POST["entity_restrict"]<0){
+			if (isset($_POST["entity_restrict"]) && !($_POST["entity_restrict"]<0)){
 				$where.=getEntitiesRestrictRequest("AND",$_POST['table'],"FK_entities",$_POST["entity_restrict"],$multi);
 				if (is_array($_POST["entity_restrict"]) && count($_POST["entity_restrict"])>1) {
 					$multi=true;	
