@@ -250,6 +250,7 @@ class Identification {
 	function initSession() {
 		global $CFG_GLPI, $LANG;
 
+		$this->destroySession();
 		startGlpiSession();
 		if (isset($this->user->fields['ID'])){
 			if (!$this->user->fields['deleted']&&$this->user->fields['active']){

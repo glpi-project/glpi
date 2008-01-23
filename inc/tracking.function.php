@@ -1796,7 +1796,7 @@ function showJobDetails ($target,$ID){
 			} else {
 				echo $item->getType()." ".$item->getNameID();
 			}
-			dropdownTrackingAllDevices("device_type",0,1,$job->fields["FK_entities"]);
+			dropdownTrackingAllDevices("device_type",$job->fields["device_type"],1,$job->fields["FK_entities"]);
 		}
 		else {
 			echo $item->getType()." ".$item->getNameID();
