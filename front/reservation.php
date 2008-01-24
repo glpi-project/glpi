@@ -40,6 +40,10 @@ $NEEDED_ITEMS=array("reservation","search","user","computer","printer","monitor"
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
+
+checkCentralAccess();
+
+
 $ri=new ReservationItem();
 $rr=new ReservationResa();
 
@@ -70,9 +74,13 @@ if (isset($_POST["clear_resa"])||isset($_POST["add_resa"])||isset($_POST["edit_r
 		$_GET["mois_courant"]=$begin_month;
 		$_GET["annee_courant"]=$begin_year;
 		printCalendrier($_SERVER['PHP_SELF'],$id_item);
-	} else if (isset($_GET["add_item"])){
+	} else if (isset($_GET["add_resa_on_item"])){
 		if (!isset($_GET["date"])) $_GET["date"]=date("Y-m-d");
-		showAddReservationForm($_SERVER['PHP_SELF'],$_GET["add_item"],$_GET["date"]);
+		if (count($_GET["add_item"])){
+			showAddReservationForm($_SERVER['PHP_SELF'],$_GET["add_item"],$_GET["date"]);
+		}else {
+			glpi_header($_SERVER['HTTP_REFERER']);
+		}
 	}
 	else if (isset($_GET["edit"])){
 		showAddReservationForm($_SERVER['PHP_SELF'],$_GET["edit_item"],"",$_GET["edit"]);
