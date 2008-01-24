@@ -1415,11 +1415,10 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$to
 	if ($priority<0) $where.=" AND glpi_tracking.priority >= '".abs($priority)."'";
 
 
-
 	if ($search!=""){
 		$SEARCH2=makeTextSearch($search);
 		if ($tosearch=="ID"){
-			$where= " WHERE (glpi_tracking.ID = '".$search."')";
+			$where.= " AND (glpi_tracking.ID = '".$search."')";
 		}
 		$TMPWHERE="";
 		$first=true;
@@ -1452,8 +1451,9 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$to
 			$where.=" AND ($TMPWHERE) ";
 		}
 	}
-	$where.=getEntitiesRestrictRequest(" AND","glpi_tracking");
 
+	$where.=getEntitiesRestrictRequest(" AND","glpi_tracking");
+	
 	if (!empty($wherecomp)){
 		$where.=" AND glpi_tracking.device_type= '1'";
 		$where.= " AND glpi_tracking.computer IN (SELECT comp.ID FROM glpi_computers as comp ";
@@ -2493,4 +2493,5 @@ function computeTicketTco($item_type,$item){
 	}
 	return $totalcost;
 }
+
 ?>
