@@ -891,9 +891,10 @@ class Job extends CommonDBTM{
 			haveRight("show_all_ticket","1")
 			|| (isset($_SESSION["glpiID"])&&$this->fields["author"]==$_SESSION["glpiID"])
 			|| (haveRight("show_group_ticket",'1')&&isset($_SESSION["glpigroups"])&&in_array($this->fields["FK_group"],$_SESSION["glpigroups"]))
-			|| (haveRight("show_assign_ticket",'1')&&
+			|| (haveRight("show_assign_ticket",'1')&&(
 				(isset($_SESSION["glpiID"])&&$this->fields["assign"]==$_SESSION["glpiID"])
 				||(isset($_SESSION["glpigroups"])&&in_array($this->fields["assign_group"],$_SESSION["glpigroups"]))
+				)
 			)
 			);
 	}
