@@ -943,12 +943,16 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 				$QUERY.=$tmpquery;
 			}
 		}
+		if (empty($QUERY)){
+			echo displaySearchError();
+			return;
+		}
 		$QUERY.=ereg_replace($CFG_GLPI["union_search_type"][$type].".","",$ORDER).$LIMIT;
 	} else {
 		$QUERY=$SELECT.$FROM.$WHERE.$GROUPBY.$ORDER.$LIMIT;
 	}
 
-	//echo $QUERY."<br>\n";
+//	echo $QUERY."<br>\n";
 
 	// Get it from database and DISPLAY
 	if ($result = $DB->query($QUERY)) {

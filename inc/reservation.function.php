@@ -526,6 +526,7 @@ function printReservationItems($target){
 	}
 		echo "</table>";
 		echo "<input type='hidden' name='show' value='resa'>";
+		echo "<input type='hidden' name='add_resa_on_item' value='resa'>";
 		echo "</form></div>";
 
 	
