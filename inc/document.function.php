@@ -263,6 +263,7 @@ function showDeviceDocument($instID,$search='') {
 			echo "<tr class='tab_bg_1'><td colspan='4' class='center'>";
 	
 			echo "<input type='hidden' name='conID' value='$instID'>";
+			echo "<input type='hidden' name='right' value='doc'>";
 			$types=$CFG_GLPI["state_types"];
 			$types[]=ENTERPRISE_TYPE;
 			$types[]=CARTRIDGE_TYPE;
@@ -427,6 +428,7 @@ function showDocumentAssociated($device_type,$ID,$withtemplate=''){
 			echo "</td>";
 			echo "<td align='left' colspan='2'>";
 			echo "<div class='software-instal'><input type='hidden' name='item' value='$ID'><input type='hidden' name='type' value='$device_type'>";
+			echo "<input type='hidden' name='right' value='item'>";
 			dropdownDocument("conID",$entities,$used);
 			echo "</div></td><td class='center'>";
 			echo "<input type='submit' name='additem' value=\"".$LANG["buttons"][8]."\" class='submit'>";
