@@ -44,7 +44,7 @@ $doc= new Document();
 
 if (isset($_POST["add"]))
 {
-	checkRight("document","w");
+	checkEditItem(DOCUMENT_TYPE);
 
 	$newID=$doc->add($_POST);
 	$name="";
@@ -60,7 +60,7 @@ if (isset($_POST["add"]))
 } 
 else if (isset($_POST["delete"]))
 {
-	checkRight("document","w");
+	checkEditItem(DOCUMENT_TYPE, $_POST["ID"]);
 
 	$doc->delete($_POST);
 	logEvent($_POST["ID"], "documents", 4, "document", $_SESSION["glpiname"]." ".$LANG["log"][22]);
@@ -68,7 +68,7 @@ else if (isset($_POST["delete"]))
 }
 else if (isset($_POST["restore"]))
 {
-	checkRight("document","w");
+	checkEditItem(DOCUMENT_TYPE, $_POST["ID"]);
 
 	$doc->restore($_POST);
 	logEvent($_POST["ID"], "documents", 4, "document", $_SESSION["glpiname"]." ".$LANG["log"][23]);
@@ -76,7 +76,7 @@ else if (isset($_POST["restore"]))
 }
 else if (isset($_POST["purge"]))
 {
-	checkRight("document","w");
+	checkEditItem(DOCUMENT_TYPE, $_POST["ID"]);
 
 	$doc->delete($_POST,1);
 	logEvent($_POST["ID"], "documents", 4, "document", $_SESSION["glpiname"]." ".$LANG["log"][24]);
@@ -85,7 +85,7 @@ else if (isset($_POST["purge"]))
 
 else if (isset($_POST["update"]))
 {
-	checkRight("document","w");
+	checkEditItem(DOCUMENT_TYPE, $_POST["ID"]);
 
 	$doc->update($_POST);
 	logEvent($_POST["ID"], "documents", 4, "document", $_SESSION["glpiname"]." ".$LANG["log"][21]);
@@ -93,7 +93,7 @@ else if (isset($_POST["update"]))
 } 
 else if (isset($_POST["additem"])){
 
-	checkRight("document","w");
+	checkEditItem(DOCUMENT_TYPE, $_POST["conID"]);
 
 	if ($_POST['type']>0&&$_POST['item']>0){
 		addDeviceDocument($_POST["conID"],$_POST['type'],$_POST['item']);
@@ -103,7 +103,8 @@ else if (isset($_POST["additem"])){
 }
 else if (isset($_POST["deleteitem"])){
 
-	checkRight("document","w");
+	checkEditItem(DOCUMENT_TYPE, $_POST["conID"]);
+
 	if (count($_POST["item"])){
 		foreach ($_POST["item"] as $key => $val){
 			deleteDeviceDocument($key);
@@ -112,29 +113,13 @@ else if (isset($_POST["deleteitem"])){
 	logEvent($_POST["conID"], "documents", 4, "document", $_SESSION["glpiname"]." ".$LANG["log"][33]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
-else if (isset($_GET["deleteitem"])){
+else if (isset($_GET["deleteitem"]) && isset($_GET["docid"]) && isset($_GET["devtype"]) && isset($_GET["devid"]) && isset($_GET["ID"])){
 
-	checkRight("document","w");
+	checkEditItem($_GET["devtype"], $_GET["devid"]);
 	
 	deleteDeviceDocument($_GET["ID"]);
 
-	logEvent($_GET["ID"], "documents", 4, "document", $_SESSION["glpiname"]." ".$LANG["log"][33]);
-	glpi_header($_SERVER['HTTP_REFERER']);
-}
-else if (isset($_POST["addenterprise"])){
-
-	checkRight("document","w");
-
-	addEnterpriseDocument($_POST["conID"],$_POST["entID"]);
-	logEvent($_POST["ID"], "documents", 4, "document", $_SESSION["glpiname"]."  ".$LANG["log"][32]);
-	glpi_header($_SERVER['HTTP_REFERER']);
-}
-else if (isset($_GET["deleteenterprise"])){
-
-	checkRight("document","w");
-
-	deleteEnterpriseDocument($_GET["ID"]);
-	logEvent($_GET["ID"], "documents", 4, "document", $_SESSION["glpiname"]."  ".$LANG["log"][33]);
+	logEvent($_GET["docid"], "documents", 4, "document", $_SESSION["glpiname"]." ".$LANG["log"][33]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else
