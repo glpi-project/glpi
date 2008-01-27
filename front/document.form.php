@@ -93,7 +93,11 @@ else if (isset($_POST["update"]))
 } 
 else if (isset($_POST["additem"])){
 
-	checkEditItem(DOCUMENT_TYPE, $_POST["conID"]);
+	if ($_POST["right"]=="doc") {
+		checkEditItem(DOCUMENT_TYPE, $_POST["conID"]);
+	} else { // $_POST["right"]=="item"
+		checkEditItem($_POST['type'], $_POST['item']);
+	}
 
 	if ($_POST['type']>0&&$_POST['item']>0){
 		addDeviceDocument($_POST["conID"],$_POST['type'],$_POST['item']);
