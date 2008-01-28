@@ -125,7 +125,7 @@ function showCentralGlobalView(){
  **/
 function showCentralMyView(){
 
-		$showticket=haveRight("show_all_ticket","1")||haveRight("show_assign_ticket","1")|;
+		$showticket=(haveRight("show_all_ticket","1")||haveRight("show_assign_ticket","1"));
 
 		
 		echo "<table class='tab_cadre_central' >";
@@ -186,7 +186,7 @@ function showCentralMyView(){
  **/
 function showCentralGroupView(){
 
-		$showticket=haveRight("show_all_ticket","1")||haveRight("show_assign_ticket","1")|;
+		$showticket=haveRight("show_all_ticket","1")||haveRight("show_assign_ticket","1");
 		
 		echo "<table class='tab_cadre_central' >";
 		echo "<tr><td class='top'>";
