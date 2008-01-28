@@ -230,7 +230,7 @@ function printCalendrier($target,$ID=""){
 		echo "<table class='center' ><tr><td class='center' ><span class='calendrier_jour'>".$i."</span></td></tr>";
 
 		if (!empty($ID)){
-			echo "<tr><td class='center'><a href=\"".$target."?show=resa&amp;add_item[$ID]=$ID&amp;date=".$annee_courante."-".$mois_courant."-".$ii."\"><img  src=\"".$CFG_GLPI["root_doc"]."/pics/addresa.png\" alt='".$LANG["reservation"][8]."' title='".$LANG["reservation"][8]."'></a></td></tr>";
+			echo "<tr><td class='center'><a href=\"".$target."?show=resa&amp;add_resa_on_item=1&amp;add_item[$ID]=$ID&amp;date=".$annee_courante."-".$mois_courant."-".$ii."\"><img  src=\"".$CFG_GLPI["root_doc"]."/pics/addresa.png\" alt='".$LANG["reservation"][8]."' title='".$LANG["reservation"][8]."'></a></td></tr>";
 		}
 		//if (($i-1+$jour_debut_mois)%7!=6&&($i-1+$jour_debut_mois)%7!=0){
 		echo "<tr><td>";
