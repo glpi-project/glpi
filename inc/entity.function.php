@@ -177,14 +177,25 @@ function addUserProfileEntity($input){
 	if (!isset($input['dynamic'])){
 		$input['dynamic']=0;
 	}
+
+	$user=new User();
+	$user->cleanCache($input['FK_users']);
 	$query="INSERT INTO `glpi_users_profiles` ( `FK_users` , `FK_profiles` , `FK_entities` , `recursive` , `dynamic` )
 		VALUES ('".$input['FK_users']."', '".$input['FK_profiles']."', '".$input['FK_entities']."', '".$input['recursive']."', '".$input['dynamic']."');";
+	
 	return $DB->query($query);
 }
 
 function deleteUserProfileEntity($ID){
 
 	global $DB;
+
+	$query="SELECT FK_users FROM glpi_users_profiles WHERE ID= '$ID';";
+	$result = $DB->query($query);
+	$data=$DB->fetch_assoc($result);
+	$user=new User();
+	$user->cleanCache($data['FK_users']);
+	
 	$query="DELETE FROM glpi_users_profiles WHERE ID= '$ID';";
 	$result = $DB->query($query);
 }
