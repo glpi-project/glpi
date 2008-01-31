@@ -1832,7 +1832,7 @@ function isValidLogin($login="")
  * @return boolean 
  */
 function canUseLdap(){
-	return !extension_loaded('ldap');
+	return extension_loaded('ldap');
 }
 
 /**
@@ -1840,7 +1840,7 @@ function canUseLdap(){
  * @return boolean 
  */
 function canUseImapPop(){
-	return !extension_loaded('imap');
+	return extension_loaded('imap');
 }
 
 
