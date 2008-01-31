@@ -1010,7 +1010,7 @@ function showFormExtAuthList($target) {
 
 	switch ($_SESSION['glpi_authconfig']){
 		case 2 :
-			if (function_exists('imap_open')) {
+			if (canUseImapPop()) {
 				echo "<table class='tab_cadre_fixe' cellpadding='5'>";
 				echo "<tr><th colspan='2'>";
 				echo "<strong>" . $LANG["login"][3] . "</strong>";
@@ -1037,7 +1037,7 @@ function showFormExtAuthList($target) {
 			}
 		break;
 		case 1 :
-			if (extension_loaded('ldap')) {
+			if (canUseLdap()) {
 				
 				echo "<table class='tab_cadre_fixe' cellpadding='5'>";
 				echo "<tr><th colspan='2'>";

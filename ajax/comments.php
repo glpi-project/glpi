@@ -43,20 +43,28 @@ header_nocache();
 
 checkLoginUser();
 
-if (isset($_POST["table"])&&isset($_POST["value"])&&$_POST["value"]>0){	
+if (isset($_POST["table"])&&isset($_POST["value"])){	
 	switch ($_POST["table"]){
 		case "glpi_users":
-			$tmpname=getUserName($_POST["value"],2);
+			if ($_POST['value']==0){
+				$tmpname['link']=$CFG_GLPI['root_doc']."/front/user.php";
+				$tmpname['comments']="";
+			} else {
+				$tmpname=getUserName($_POST["value"],2);
+			}
 			echo $tmpname["comments"];
+
 			if (isset($_POST['withlink'])){
 				echo "<script type='text/javascript' >\n";
 				echo "\$('".$_POST['withlink']."').href='".$tmpname['link']."';";
 				echo "</script>\n";
-			}
+			} 
 			break;
 		default :
-			$tmpname=getDropdownName($_POST["table"],$_POST["value"],1);
-			echo $tmpname["comments"];
+			if ($_POST["value"]>0){
+				$tmpname=getDropdownName($_POST["table"],$_POST["value"],1);
+				echo $tmpname["comments"];
+			} 
 			break;
 	}
 }

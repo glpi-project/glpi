@@ -81,15 +81,16 @@ if (!isset ($_POST["noAUTO"]) && $auth_method=checkAlternateAuthSystems()) {
 
 		// if LDAP enabled too, get user's infos from LDAP
 		$identificat->user->fields["id_auth"]=$CFG_GLPI['extra_ldap_server'];
-	
-		if (isset($identificat->auth_methods["ldap"][$identificat->user->fields["id_auth"]])) {
-			$ldap_method = $identificat->auth_methods["ldap"][$identificat->user->fields["id_auth"]];
-			
-			$ds = connect_ldap($ldap_method["ldap_host"], $ldap_method["ldap_port"], $ldap_method["ldap_rootdn"], $ldap_method["ldap_pass"], $ldap_method["ldap_use_tls"]);
-			if ($ds) {
-				$user_dn = ldap_search_user_dn($ds, $ldap_method["ldap_basedn"], $ldap_method["ldap_login"], $user, $ldap_method["ldap_condition"]);
-				if ($user_dn) {
-					$identificat->user->getFromLDAP($ds,$ldap_method, $user_dn, $ldap_method["ldap_rootdn"], $ldap_method["ldap_pass"]);
+		if (canUseLdap()){
+			if (isset($identificat->auth_methods["ldap"][$identificat->user->fields["id_auth"]])) {
+				$ldap_method = $identificat->auth_methods["ldap"][$identificat->user->fields["id_auth"]];
+				
+				$ds = connect_ldap($ldap_method["ldap_host"], $ldap_method["ldap_port"], $ldap_method["ldap_rootdn"], $ldap_method["ldap_pass"], $ldap_method["ldap_use_tls"]);
+				if ($ds) {
+					$user_dn = ldap_search_user_dn($ds, $ldap_method["ldap_basedn"], $ldap_method["ldap_login"], $user, $ldap_method["ldap_condition"]);
+					if ($user_dn) {
+						$identificat->user->getFromLDAP($ds,$ldap_method, $user_dn, $ldap_method["ldap_rootdn"], $ldap_method["ldap_pass"]);
+					}
 				}
 			}
 		}
@@ -141,11 +142,17 @@ if (!isset ($_POST["noAUTO"]) && $auth_method=checkAlternateAuthSystems()) {
 				//so we test this connection first
 				switch ($identificat->user->fields["auth_method"]) {
 					case AUTH_LDAP :
-						error_reporting(0);
-						$identificat = try_ldap_auth($identificat, $_POST['login_name'], $_POST['login_password'],$identificat->user->fields["id_auth"]);
+						if (canUseLdap()){
+							error_reporting(0);
+							$identificat = try_ldap_auth($identificat, $_POST['login_name'],
+									$_POST['login_password'],$identificat->user->fields["id_auth"]);
+						}
 						break;
 					case AUTH_MAIL :
-						$identificat = try_mail_auth($identificat,$_POST['login_name'], $_POST['login_password'],$identificat->user->fields["id_auth"]);
+						if (canUseImapPop()){
+							$identificat = try_mail_auth($identificat,$_POST['login_name'],
+									$_POST['login_password'],$identificat->user->fields["id_auth"]);
+						}
 						break;
 					case NOT_YET_AUTHENTIFIED:
 						break;
@@ -154,13 +161,13 @@ if (!isset ($_POST["noAUTO"]) && $auth_method=checkAlternateAuthSystems()) {
 	
 			//If the last good auth method is not valid anymore, we test all the methods !
 			//test all the ldap servers
-			if (!$identificat->auth_succeded){
+			if (!$identificat->auth_succeded && canUseLdap()){
 				error_reporting(0);
 				$identificat = try_ldap_auth($identificat,$_POST['login_name'],$_POST['login_password']);
 			}
 	
 			//test all the imap/pop servers
-			if (!$identificat->auth_succeded){
+			if (!$identificat->auth_succeded && canUseImapPop()){
 				$identificat = try_mail_auth($identificat,$_POST['login_name'],$_POST['login_password']);
 			}
 			// Fin des tests de connexion

@@ -45,6 +45,7 @@ class InfoCom extends CommonDBTM {
 	function InfoCom () {
 		$this->table="glpi_infocoms";
 		$this->type=INFOCOM_TYPE;
+		$this->dohistory=true;
 	}
 
 	function post_getEmpty () {
@@ -97,7 +98,6 @@ class InfoCom extends CommonDBTM {
 		}
 		return $input;
 	}
-
 }
 
 ?>
