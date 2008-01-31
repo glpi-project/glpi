@@ -366,7 +366,7 @@ function dropdownUsers($myname,$value,$right,$all=0,$display_comments=1,$entity_
 	if ($display_comments) {
 		if ($view_users){
 			if (empty($user["link"])){
-				$user["link"]=$_SERVER['PHP_SELF'];
+				$user["link"]=$CFG_GLPI['root_doc']."/front/user.php"; 
 			}
 			echo "<a id='comments_link_$myname$rand' href='".$user["link"]."'>";
 		}

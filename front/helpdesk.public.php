@@ -46,6 +46,8 @@ include (GLPI_ROOT . "/inc/includes.php");
 			changeProfile($_POST['newprofile']);
 			if ($_SESSION["glpiactiveprofile"]["interface"]=="central"){
 				glpi_header($CFG_GLPI['root_doc']."/front/central.php");
+			} else {
+                                glpi_header($_SERVER['PHP_SELF']); 
 			}
 		} else {
 			glpi_header(preg_replace("/FK_entities=.*/","",$_SERVER['HTTP_REFERER']));
