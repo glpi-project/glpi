@@ -137,10 +137,12 @@ class CommonDBTM {
 	/**
 	 * Update the item in the database
 	 * 
+	 *  @param $updates fields to update
+ 	 *  @param $oldvalues old values of the updated fields
 	 *@return nothing
 	 *
 	 **/
-	function updateInDB($updates)  {
+	function updateInDB($updates,$oldvalues=array())  {
 
 		global $DB,$CFG_GLPI;
 
@@ -158,8 +160,18 @@ class CommonDBTM {
 			$query .= " WHERE ID ='";
 			$query .= $this->fields["ID"];	
 			$query .= "'";
-			$result=$DB->query($query);
+			if (!$DB->query($query)){
+				if (isset($oldvalues[$updates[$i]])){
+					unset($oldvalues[$updates[$i]]);
+				}
+			}
 		}
+
+		if(count($oldvalues)){
+			constructHistory($this->fields["ID"],$this->type,$oldvalues,$this->fields);
+		}
+
+		
 		$this->cleanCache($this->fields["ID"]);
 		return true;
 	}
@@ -445,9 +457,11 @@ class CommonDBTM {
 		$input=$this->prepareInputForUpdate($input);
 		unset($input['update']);
 		if ($this->getFromDB($input[$this->getIndexName()])){
+
 			// Fill the update-array with changes
 			$x=0;
 			$updates=array();
+			$oldvalues=array();
 			foreach ($input as $key => $val) {
 				if (array_key_exists($key,$this->fields)){
 					// Secu for null values on history
@@ -460,7 +474,7 @@ class CommonDBTM {
 						if ($key!="ID"){
 							// Do logs
 							if ($this->dohistory&&$history){
-								constructHistory($input["ID"],$this->type,$key,$this->fields[$key],$input[$key]);
+								$oldvalues[$key]=$this->fields[$key];
 							}
 							$this->fields[$key] = $input[$key];
 							$updates[$x] = $key;
@@ -472,7 +486,7 @@ class CommonDBTM {
 			if(count($updates)){
 				list($input,$updates)=$this->pre_updateInDB($input,$updates);
 
-				if ($this->updateInDB($updates)){
+				if ($this->updateInDB($updates,$oldvalues)){
 					doHook("item_update",array("type"=>$this->type, "ID" => $input["ID"]));
 				}
 			} 

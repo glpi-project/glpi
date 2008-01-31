@@ -46,7 +46,7 @@ checkRight("config", "w");
 
 	commonHeader($LANG["Menu"][39], $_SERVER['PHP_SELF'], "config","mailgate");
 
-if (!function_exists('imap_open')) {
+if (!canUseImapPop()) {
 	echo "<div align='center'>";
 	echo "<table class='tab_cadre_fixe'>";
 	echo "<tr><th colspan='2'>" . $LANG["Menu"][39] . "</th></tr>";
@@ -54,11 +54,11 @@ if (!function_exists('imap_open')) {
 	echo "</div>";
 	commonFooter();
 	exit();
-}
-	
+} else {
 	manageGetValuesInSearch(MAILGATE_TYPE);
 	searchForm(MAILGATE_TYPE,$_SERVER['PHP_SELF'],$_GET["field"],$_GET["contains"],$_GET["sort"],$_GET["deleted"],$_GET["link"],$_GET["distinct"]);
 	showList(MAILGATE_TYPE,$_SERVER['PHP_SELF'],$_GET["field"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"],$_GET["deleted"],$_GET["link"],$_GET["distinct"]);
 	
 	commonFooter();
+}
 ?>

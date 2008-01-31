@@ -71,6 +71,7 @@ function historyLog ($id_device,$device_type,$changes,$device_internal_type='0',
 		$query = "INSERT INTO glpi_history (FK_glpi_device,device_type,device_internal_type,linked_action,user_name,date_mod,id_search_option,old_value,new_value)  VALUES ('$id_device','$device_type','$device_internal_type','$linked_action','". addslashes($username)."','$date_mod','$id_search_option','$old_value','$new_value');";
 		$DB->query($query)  or die($DB->error());
 	}
+
 }
 
 /**
@@ -78,38 +79,66 @@ function historyLog ($id_device,$device_type,$changes,$device_internal_type='0',
  *
  * 
  *
- * @param $id_device
- * @param $device_type
- * @param $key
- * @param $oldvalues
- * @param $newvalues
+ * @param $id_device ID of the device
+ * @param $device_type ID of the device type
+ * @param $oldvalues old values updated
+ * @param $values all values of the item
  **/
-function constructHistory($id_device,$device_type,$key,$oldvalues,$newvalues) {
+function constructHistory($id_device,$device_type,&$oldvalues,&$values) {
 
 	global $LINK_ID_TABLE, $LANG ;
 
-	$changes=array();
-	// needed to have  $SEARCH_OPTION
-	$SEARCH_OPTION=getSearchOptions();
+	if (count($oldvalues)){
+		// needed to have  $SEARCH_OPTION
+		$SEARCH_OPTION=getSearchOptions();
 
-	// Parsing $SEARCH_OPTION, check if an entry exists matching $key
-	foreach($SEARCH_OPTION[$device_type] as $key2 => $val2){
-
-		if($val2["linkfield"]==$key){
-			$id_search_option=$key2; // Give ID of the $SEARCH_OPTION
-
-			if($val2["table"]==$LINK_ID_TABLE[$device_type]){
-				// 1st case : text field -> keep datas
-				$changes=array($id_search_option, addslashes($oldvalues),$newvalues);
-			}else {
-				// 2nd case ; link field -> get data from dropdown
-				$changes=array($id_search_option,  addslashes(getDropdownName( $val2["table"],$oldvalues)), addslashes(getDropdownName( $val2["table"],$newvalues)));
+		foreach ($oldvalues as $key => $oldval){
+			$changes=array();
+			// Parsing $SEARCH_OPTIONS to find infocom 
+			if ($device_type==INFOCOM_TYPE) {
+				$ic=new Infocom();
+				if ($ic->getFromDB($values['ID'])){
+					$device_type=$ic->fields['device_type'];
+					$id_device=$ic->fields['FK_device'];
+					echo $key."jjj".$oldval;
+					foreach($SEARCH_OPTION[$device_type] as $key2 => $val2){
+						if(($val2["field"]==$key&&ereg('infocoms',$val2['table'])) || 
+						($key=='budget'&&$val2['table']=='glpi_dropdown_budget')){
+							$id_search_option=$key2; // Give ID of the $SEARCH_OPTION
+							if($val2["table"]=="glpi_infocoms"){
+								// 1st case : text field -> keep datas
+								$changes=array($id_search_option, addslashes($oldval),$values[$key]);
+							}else {
+								// 2nd case ; link field -> get data from dropdown
+								$changes=array($id_search_option,  addslashes(getDropdownName( $val2["table"],$oldval)), addslashes(getDropdownName( $val2["table"],$values[$key])));
+							}
+						}
+					}
+				}
+			} else {
+				// Parsing $SEARCH_OPTION, check if an entry exists matching $key
+				foreach($SEARCH_OPTION[$device_type] as $key2 => $val2){
+			
+					if($val2["linkfield"]==$key){
+						$id_search_option=$key2; // Give ID of the $SEARCH_OPTION
+			
+						if($val2["table"]==$LINK_ID_TABLE[$device_type]){
+							// 1st case : text field -> keep datas
+							$changes=array($id_search_option, addslashes($oldval),$values[$key]);
+						}else {
+							// 2nd case ; link field -> get data from dropdown
+							$changes=array($id_search_option,  addslashes(getDropdownName( $val2["table"],$oldval)), addslashes(getDropdownName( $val2["table"],$values[$key])));
+						}
+					}
+				} 
 			}
-		}
-	} 
-	if (count($changes))
-		historyLog ($id_device,$device_type,$changes);
+		
+			if (count($changes)){
+				historyLog ($id_device,$device_type,$changes);
+			}
 
+		}
+	}
 } // function construct_history
 
 

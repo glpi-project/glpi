@@ -1827,4 +1827,21 @@ function isValidLogin($login="")
 }
 
 
+/**
+ * Determine if Ldap is usable checking ldap extension existence
+ * @return boolean 
+ */
+function canUseLdap(){
+	return !extension_loaded('ldap');
+}
+
+/**
+ * Determine if Imap/Pop is usable checking extension existence
+ * @return boolean 
+ */
+function canUseImapPop(){
+	return !extension_loaded('imap');
+}
+
+
 ?>

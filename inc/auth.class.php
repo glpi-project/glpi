@@ -499,7 +499,7 @@ class AuthMail extends CommonDBTM {
 			}
 		}
 
-		if (function_exists('imap_open')) {
+		if (canUseImapPop()) {
 
 			echo "<form action=\"$target\" method=\"post\">";
 			if (!empty ($ID)){
@@ -629,7 +629,7 @@ class AuthLDAP extends CommonDBTM {
 			}
 		}
 
-		if (extension_loaded('ldap')) {
+		if (canUseLdap()) {
 
 			if (empty($ID)){
 				echo $LANG["ldap"][16].": ";

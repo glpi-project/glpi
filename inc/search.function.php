@@ -2810,14 +2810,16 @@ function addLeftJoin ($type,$ref_table,&$already_link_tables,$new_table,$linkfie
 		case "glpi_enterprises":
 			if ($type==CONTACT_TYPE){
 				$out=addLeftJoin($type,$ref_table,$already_link_tables,"glpi_contact_enterprise","FK_contact");
-				return $out." LEFT JOIN $new_table $AS ON (glpi_contact_enterprise.FK_enterprise = $nt.ID) ";
+				return $out." LEFT JOIN $new_table $AS ON (glpi_contact_enterprise.FK_enterprise = $nt.ID ".
+				getEntitiesRestrictRequest("AND","glpi_enterprises",'','',true).") ";
 			} else {
 				return " LEFT JOIN $new_table $AS ON ($rt.FK_enterprise = $nt.ID) ";
 			}
 		break;
 		case "glpi_contacts":
 			$out=addLeftJoin($type,$ref_table,$already_link_tables,"glpi_contact_enterprise","FK_enterprise");
-			return $out." LEFT JOIN $new_table $AS ON (glpi_contact_enterprise.FK_contact = $nt.ID) ";
+			return $out." LEFT JOIN $new_table $AS ON (glpi_contact_enterprise.FK_contact = $nt.ID ".
+				getEntitiesRestrictRequest("AND","glpi_contacts",'','',true)." ) ";
 		break;
 		case "glpi_contact_enterprise":
 			return " LEFT JOIN $new_table $AS ON ($rt.ID = $nt.$linkfield) ";
