@@ -55,18 +55,28 @@ class Software extends CommonDBTM {
 		if (empty ($withtemplate)) {
 			$ong[2] = $LANG["software"][19];
 		}
-		$ong[4] = $LANG["Menu"][26];
-		$ong[5] = $LANG["Menu"][27];
+		if (haveRight("contract_infocom","r")){
+			$ong[4] = $LANG["Menu"][26];
+		}
+		if (haveRight("document","r")){
+			$ong[5] = $LANG["Menu"][27];
+		}
 
 		if (empty ($withtemplate)) {
-			$ong[6] = $LANG["title"][28];
-			$ong[7] = $LANG["title"][34];
-			$ong[10] = $LANG["title"][37];
-			if (haveRight("reservation_central", "r"))
+			if (haveRight("show_all_ticket","1")){
+				$ong[6] = $LANG["title"][28];
+			}
+			if (haveRight("link","r")){
+				$ong[7] = $LANG["title"][34];
+			}
+			if (haveRight("notes","r")){
+				$ong[10] = $LANG["title"][37];
+			}
+			if (haveRight("reservation_central", "r")){
 				$ong[11] = $LANG["Menu"][17];
-
+			}
+		
 			$ong[12] = $LANG["title"][38];
-
 		}
 		return $ong;
 	}
