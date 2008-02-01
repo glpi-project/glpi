@@ -145,7 +145,7 @@ else if (isset($_POST["deletegroup"]))
 	$user = new User;
 	$input["ID"]=$_POST["ID"];
 	$input["auth_method"]=AUTH_DB_GLPI;
-	$input["id_auth"]='';
+	$input["id_auth"]=0;
 	$user->update($input);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }elseif (isset($_POST["switch_auth_ldap"]))
