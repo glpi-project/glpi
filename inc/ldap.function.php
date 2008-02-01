@@ -403,6 +403,17 @@ function showSynchronizationForm($target, $ID) {
 				formChangeAuthMethodToLDAP($ID);
 				echo "</form></div>";
 			break;
+			case AUTH_EXTERNAL :
+			case AUTH_X509 :
+				echo "<div class='center'>";
+				echo "<form method='post' action=\"$target\">";
+				formChangeAuthMethodToDB($ID);
+				echo "<br>";
+				formChangeAuthMethodToLDAP($ID);
+				echo "<br>";
+				formChangeAuthMethodToMail($ID);
+				echo "</form></div>";
+			break;
 		} 
 	}
 	}
