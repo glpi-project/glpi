@@ -45,6 +45,8 @@ class Contract extends CommonDBTM {
 	function Contract () {
 		$this->table="glpi_contracts";
 		$this->type=CONTRACT_TYPE;
+		$this->entity_assign=true;
+		$this->may_be_recursive=true;
 	}
 
 	function post_getEmpty () {
@@ -94,29 +96,32 @@ class Contract extends CommonDBTM {
 
 		global $CFG_GLPI,$LANG;
 
-		if (!haveRight("contract_infocom","r")) return false;
+//		if (!haveRight("contract_infocom","r")) return false;
 
-		$con_spotted=false;
+		$spotted=false;
 		$use_cache=true;
-		if (!$ID) {
-			$use_cache=false;
-			if($this->getEmpty()) {
-				$con_spotted = true;	
+
+
+		if ($ID>0) {
+			if($this->can($ID,'r')) {
+				$spotted = true;	
 			}
 		} else {
-			if($this->getFromDB($ID) && haveAccessToEntity($this->fields["FK_entities"],$this->fields["recursive"])) {
-				$con_spotted = true;
+			$use_cache=false;
+			if ($this->can(-1,'w')){
+				$spotted = true;	
 			}
-		}
+		} 
 
-		if ($con_spotted){
-			list($can_edit,$can_recu)=$this->canEditAndRecurs();
+		if ($spotted){
+			$can_edit=$this->can($ID,'w');
+			$can_recu=$this->can($ID,'recursive');
 
 			$this->showOnglets($ID, $withtemplate,$_SESSION['glpi_onglet']);
 
 			if ($can_edit) { 
 				echo "<form name='form' method='post' action=\"$target\"><div class='center'>";
-				if (empty($ID)){
+				if (empty($ID)||$ID<0){
 					echo "<input type='hidden' name='FK_entities' value='".$_SESSION["glpiactive_entity"]."'>";
 				}
 			}
@@ -148,14 +153,7 @@ class Contract extends CommonDBTM {
 				echo "<tr class='tab_bg_1'><td>".$LANG["financial"][4].":		</td>";
 				echo "<td><input type='text' name='num' value=\"".$this->fields["num"]."\" size='25'></td>";
 	
-				echo "<td>".$LANG["entity"][9].":	</td><td>";
-				if ($can_recu) {
-					dropdownYesNo("recursive",$this->fields["recursive"]);					
-				} else {
-					echo getYesNo($this->fields["recursive"]);
-				}
-				echo "</td></tr>";
-
+				echo "<td colspan='2'></td></tr>";
 	
 				echo "<tr class='tab_bg_1'><td>".$LANG["financial"][5].":		</td><td>";
 				echo "<input type='text' name='cost' value=\"".formatNumber($this->fields["cost"],true)."\" size='16'>";
@@ -250,18 +248,17 @@ class Contract extends CommonDBTM {
 			}
 
 			if ($can_edit) {
-				if (!$ID) {
-
-					echo "<tr>";
-					echo "<td class='tab_bg_2' valign='top' colspan='4'>";
-					echo "<div class='center'><input type='submit' name='add' value=\"".$LANG["buttons"][8]."\" class='submit'></div>";
-					echo "</td>";
-					echo "</tr>";
-
+				echo "<tr>";
+				echo "<td class='tab_bg_2'>".$LANG["entity"][9].":&nbsp;";
+				if ($can_recu) {
+					dropdownYesNo("recursive",$this->fields["recursive"]);					
 				} else {
+					echo getYesNo($this->fields["recursive"]);
+				}
+				echo "</td>";
 
-					echo "<tr>";
-					echo "<td class='tab_bg_2'></td>";
+				if ($ID>0) {
+
 					echo "<td class='tab_bg_2' valign='top'>";
 					echo "<input type='hidden' name='ID' value=\"$ID\">\n";
 					echo "<div class='center'><input type='submit' name='update' value=\"".$LANG["buttons"][7]."\" class='submit'></div>";
@@ -279,6 +276,12 @@ class Contract extends CommonDBTM {
 					echo "</td>";
 					echo "</tr>";
 
+				} else {
+
+					echo "<td class='tab_bg_2' valign='top' colspan='3'>";
+					echo "<div class='center'><input type='submit' name='add' value=\"".$LANG["buttons"][8]."\" class='submit'></div>";
+					echo "</td>";
+					echo "</tr>";
 				}
 				echo "</table></div></form>";
 

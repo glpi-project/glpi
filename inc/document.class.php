@@ -44,6 +44,8 @@ class Document extends CommonDBTM {
 	function Document () {
 		$this->table="glpi_docs";
 		$this->type=DOCUMENT_TYPE;
+		$this->entity_assign=true;
+		$this->may_be_recursive=true;
 	}
 	function getFromDBbyFilename($filename){
 		global $DB;
@@ -156,42 +158,54 @@ class Document extends CommonDBTM {
 
 		$spotted=false;
 		$use_cache=true;
-		if (!$ID) {
-			$use_cache=false;
-			if($this->getEmpty()) {
+		if ($ID>0) {
+			if($this->can($ID,'r')) {
 				$spotted = true;	
 			}
-		} else if($this->getFromDB($ID) && haveAccessToEntity($this->fields["FK_entities"],$this->fields["recursive"])) {
-			$spotted = true;	
-		}
+		} else {
+			$use_cache=false;
+			if ($this->can(-1,'w')){
+				$spotted = true;	
+			}
+		} 
 
 		if ($spotted){
-			list($canedit,$canrecu)=$this->canEditAndRecurs();
+			$canedit=$this->can($ID,'w');
+
+			$canrecu=$this->can($ID,'recursive');
+
 			$this->showOnglets($ID, $withtemplate,$_SESSION['glpi_onglet']);
 
 			if ($canedit) {
 				echo "<form name='form' method='post' action=\"$target\" enctype=\"multipart/form-data\">";
-				if (empty($ID)){
+				if (empty($ID)||$ID<0){
 					echo "<input type='hidden' name='FK_entities' value='".$_SESSION["glpiactive_entity"]."'>";
 				}
 			}
 
 			echo "<div class='center'><table class='tab_cadre_fixe'>";
-			if (!$ID) {
+			if ($ID>0) {
+				echo "<tr><th>";
+				echo $LANG["common"][2]." $ID";
+				if (isMultiEntitiesMode()){
+					echo "&nbsp;(".getDropdownName("glpi_entities",$this->fields["FK_entities"]).")";
+				}
+				echo "</th><th>".$LANG["common"][26].": ".convDateTime($this->fields["date_mod"])."</th>";
+				echo "<th>";
+				if ($this->fields["FK_users"]>0){
+					echo $LANG["document"][42]." ".getUserName($this->fields["FK_users"],1);
+				} else {
+					echo "&nbsp;";
+				}
+				echo "</th></tr>";
+			} else {
 				echo "<tr><th colspan='3'>";
 				echo $LANG["document"][16];
 				if (isMultiEntitiesMode()){
 					echo "&nbsp;(".getDropdownName("glpi_entities",$this->fields["FK_entities"]).")";
 				}
 				echo "</th></tr>";
-			} else {
-				echo "<tr><th colspan='1'>";
-				echo $LANG["common"][2]." $ID";
-				if (isMultiEntitiesMode()){
-					echo "&nbsp;(".getDropdownName("glpi_entities",$this->fields["FK_entities"]).")";
-				}
-				echo "</th><th colspan='2'>".$LANG["common"][26].": ".convDateTime($this->fields["date_mod"])."</th></tr>";
-			}		
+			} 
 			
 			if (!$use_cache||!($CFG_GLPI["cache"]->start($ID."_".$_SESSION["glpilanguage"],"GLPI_".$this->type))) {
 				echo "<tr class='tab_bg_1'><td>".$LANG["common"][16].":		</td>";
@@ -237,15 +251,6 @@ class Document extends CommonDBTM {
 				autocompletionTextField("mime","glpi_docs","mime",$this->fields["mime"],25,$this->fields["FK_entities"]);
 				echo "</td></tr>";
 	
-				echo "<tr class='tab_bg_1'><td>".$LANG["entity"][9].":	</td>";
-				echo "<td colspan='2'>";
-				if ($canrecu) {
-					dropdownYesNo("recursive",$this->fields["recursive"]);					
-				} else {
-					echo getYesNo($this->fields["recursive"]);
-				}
-				echo "</td></tr>";
-
 				echo "<tr>";
 				echo "<td class='tab_bg_1' valign='top'>";
 	
@@ -261,21 +266,18 @@ class Document extends CommonDBTM {
 			}
 
 			if ($canedit){
-				if (!$ID) {
-		
-					echo "<tr><td class='tab_bg_2' valign='top' colspan='3'>";
-					echo "<div class='center'><input type='submit' name='add' value=\"".$LANG["buttons"][8]."\" class='submit'></div>";
-					echo "</td></tr>";
-				
+				echo "<tr>";
+				echo "<td class='tab_bg_2'>";
+				echo $LANG["entity"][9].":&nbsp;";
+				if ($canrecu) {
+					dropdownYesNo("recursive",$this->fields["recursive"]);					
 				} else {
-		
-					echo "<tr><td class='tab_bg_2'>";
-					if ($this->fields["FK_users"]>0){
-						echo $LANG["document"][42]." ".getUserName($this->fields["FK_users"],1);
-					} else {
-						echo "&nbsp;";
-					}
-					echo "</td>";
+					echo getYesNo($this->fields["recursive"]);
+				}
+				echo "</td>";
+
+				if ($ID>0) {
+
 					echo "<td class='tab_bg_2' valign='top'>";
 					echo "<input type='hidden' name='ID' value=\"$ID\">\n";
 					echo "<div class='center'><input type='submit' name='update' value=\"".$LANG["buttons"][7]."\" class='submit'></div>";
@@ -292,6 +294,12 @@ class Document extends CommonDBTM {
 					}
 		
 					echo "</td></tr>";
+				} else {
+
+					echo "<td class='tab_bg_2' valign='top' colspan='2'>";
+					echo "<div class='center'><input type='submit' name='add' value=\"".$LANG["buttons"][8]."\" class='submit'></div>";
+					echo "</td></tr>";
+		
 				}
 				echo "</table></div></form>";
 				

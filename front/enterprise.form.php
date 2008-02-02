@@ -39,7 +39,7 @@ $NEEDED_ITEMS=array("enterprise","contact","document","contract","tracking","use
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-if(!isset($_GET["ID"])) $_GET["ID"] = "";
+if(!isset($_GET["ID"])) $_GET["ID"] = -1;
 
 if (!isset($_GET["start"])) {
 	$_GET["start"]=0;
@@ -51,7 +51,7 @@ if (!isset($_GET["order"])) $_GET["order"]="";
 $ent=new Enterprise();
 if (isset($_POST["add"]))
 {
-	checkEditItem(ENTERPRISE_TYPE);
+	$ent->check(-1,'w',$_POST['FK_entities']);
 
 	$newID=$ent->add($_POST);
 	logEvent($newID, "enterprises", 4, "financial", $_SESSION["glpiname"]." ".$LANG["log"][20]." ".$_POST["name"].".");
@@ -59,7 +59,7 @@ if (isset($_POST["add"]))
 } 
 else if (isset($_POST["delete"]))
 {
-	checkEditItem(ENTERPRISE_TYPE, $_POST["ID"]);
+	$ent->check($_POST["ID"],'w');
 
 	$ent->delete($_POST);
 	logEvent($_POST["ID"], "enterprises", 4, "financial", $_SESSION["glpiname"]." ".$LANG["log"][22]);
@@ -67,7 +67,7 @@ else if (isset($_POST["delete"]))
 }
 else if (isset($_POST["restore"]))
 {
-	checkEditItem(ENTERPRISE_TYPE, $_POST["ID"]);
+	$ent->check($_POST["ID"],'w');
 
 	$ent->restore($_POST);
 	logEvent($_POST["ID"], "enterprises", 4, "financial", $_SESSION["glpiname"]." ".$LANG["log"][23]);
@@ -75,7 +75,7 @@ else if (isset($_POST["restore"]))
 }
 else if (isset($_POST["purge"]))
 {
-	checkEditItem(ENTERPRISE_TYPE, $_POST["ID"]);
+	$ent->check($_POST["ID"],'w');
 
 	$ent->delete($_POST,1);
 	logEvent($_POST["ID"], "enterprises", 4, "financial", $_SESSION["glpiname"]." ".$LANG["log"][24]);
@@ -83,7 +83,7 @@ else if (isset($_POST["purge"]))
 }
 else if (isset($_POST["update"]))
 {
-	checkEditItem(ENTERPRISE_TYPE, $_POST["ID"]);
+	$ent->check($_POST["ID"],'w');
 
 	$ent->update($_POST);
 	logEvent($_POST["ID"], "enterprises", 4, "financial", $_SESSION["glpiname"]." ".$LANG["log"][21]);
@@ -91,7 +91,7 @@ else if (isset($_POST["update"]))
 } 
 else if (isset($_POST["addcontact"]))
 {
-	checkEditItem(ENTERPRISE_TYPE, $_POST["eID"]);
+	$ent->check($_POST["eID"],'w');
 
 	addContactEnterprise($_POST["eID"],$_POST["cID"]);
 	logEvent($_POST["eID"], "enterprises", 4, "financial", $_SESSION["glpiname"]." ".$LANG["log"][36]);
@@ -99,7 +99,7 @@ else if (isset($_POST["addcontact"]))
 }
 else if (isset($_GET["deletecontact"]))
 {
-	checkEditItem(ENTERPRISE_TYPE, $_GET["eID"]);
+	$ent->check($_GET["eID"],'w');
 
 	deleteContactEnterprise($_GET["ID"]);
 	logEvent($_GET["eID"], "enterprises", 4, "financial", $_SESSION["glpiname"]." ".$LANG["log"][37]);
@@ -107,7 +107,7 @@ else if (isset($_GET["deletecontact"]))
 }
 else if (isset($_POST["addcontract"]))
 {
-	checkEditItem(ENTERPRISE_TYPE, $_POST["conID"]);
+	$ent->check($_POST["conID"],'w');
 
 	addEnterpriseContract($_POST["conID"],$_POST["entID"]);
 	logEvent($_POST["conID"], "contracts", 4, "financial", $_SESSION["glpiname"]." ".$LANG["log"][34]);
@@ -115,7 +115,7 @@ else if (isset($_POST["addcontract"]))
 }
 else if (isset($_GET["deletecontract"]))
 {
-	checkEditItem(ENTERPRISE_TYPE, $_GET["ID"]);
+	$ent->check($_GET["ID"],'w');
 
 	deleteEnterpriseContract($_GET["ID"]);
 	logEvent($_GET["ID"], "contracts", 4, "financial", $_SESSION["glpiname"]." ".$LANG["log"][35]);
@@ -123,7 +123,7 @@ else if (isset($_GET["deletecontract"]))
 }
 else
 {
-	checkRight("contact_enterprise","r");
+	$ent->check($_GET["ID"],'r');
 
 	if (!isset($_SESSION['glpi_onglet'])) $_SESSION['glpi_onglet']=1;
 	if (isset($_GET['onglet'])) {
@@ -135,7 +135,7 @@ else
 
 
 	if ($ent->showForm($_SERVER['PHP_SELF'],$_GET["ID"])){
-		if (!empty($_GET["ID"])){
+		if ($_GET["ID"]>0){
 			switch($_SESSION['glpi_onglet']){
 				case -1:
 					showAssociatedContact($_GET["ID"]);

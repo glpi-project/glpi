@@ -416,14 +416,16 @@ function kbItemMenu($ID)
 {
 	global $LANG, $CFG_GLPI;
 
-	if (!haveRight("knowbase","w")&&!haveRight("faq","w")) return false;
-
 	$ki= new kbitem;	
 
-	$ki->getFromDB($ID);
+	if (!$ki->can($ID,'r')) {
+		return false;
+	}
+
+	$edit=$ki->can($ID,'w');
 	$isFAQ = $ki->fields["faq"];
+
 	$editFAQ=haveRight("faq","w");
-	$edit=$ki->canEdit();
 
 	echo "<table class='tab_cadre_fixe' cellpadding='10' ><tr><th colspan='3'>";
 

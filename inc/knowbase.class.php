@@ -44,6 +44,8 @@ class kbitem extends CommonDBTM {
 	function kbitem () {
 		$this->table="glpi_kbitems";
 		$this->type=KNOWBASE_TYPE;
+		$this->entity_assign=true;
+		$this->may_be_recursive=true;
 	}
 
 	/**
@@ -119,19 +121,24 @@ class kbitem extends CommonDBTM {
 		global  $LANG,$CFG_GLPI;
 		if (!haveRight("knowbase","w")&&!haveRight("faq","w")) return false;
 	
-		$can_edit=false;
-		if (empty($ID)) {
-	
-			if ($this->getEmpty()) {
-				list($can_edit,$can_recu)=$this->canEditAndRecurs();			
+		$spotted = false;
+		if ($ID>0) {
+			if($this->can($ID,'r')) {
+				$spotted = true;	
 			}
-				
-		} else if ($this->getFromDB($ID)) {
+		} else {
+			$use_cache=false;
+			if ($this->can(-1,'w')){
+				if($this->getEmpty()) {
+					$spotted = true;	
+				}
+			}
+		} 
 
-			list($can_edit,$can_recu)=$this->canEditAndRecurs();			
-		}
+		$canedit=$this->can($ID,'w');
+		$canrecu=$this->can($ID,'recursive');
 
-		if($can_edit) {
+		if($canedit) {
 			
 			echo "<div id='contenukb'>";
 
@@ -211,7 +218,7 @@ class kbitem extends CommonDBTM {
 			dropdownValue("glpi_entities", "FK_entities", $this->fields["FK_entities"],0);
 
 			echo "&nbsp;&nbsp;".$LANG["entity"][9].":	";
-			if ($can_recu) {
+			if ($canrecu) {
 				dropdownYesNo("recursive",$this->fields["recursive"]);					
 			} else {
 				echo getYesNo($this->fields["recursive"]);
@@ -225,11 +232,11 @@ class kbitem extends CommonDBTM {
 			}
 			echo "<br /><br />\n";
 		
-			if (empty($ID)) {
-				echo "<input type='hidden' name='author' value=\"".$_SESSION['glpiID']."\">\n";
-				echo "<input type='submit' class='submit' name='add' value=\"".$LANG["buttons"][2]."\"> <input type='reset' class='submit' value=\"".$LANG["buttons"][16]."\">";
-			} else {
+			if ($ID>0) {
 				echo "<input type='submit' class='submit' name='update' value=\"".$LANG["buttons"][7]."\"> <input type='reset' class='submit' value=\"".$LANG["buttons"][16]."\">";
+			} else {
+				echo "<input type='hidden' name='author' value=\"".$_SESSION['glpiID']."\">\n";
+				echo "<input type='submit' class='submit' name='add' value=\"".$LANG["buttons"][8]."\"> <input type='reset' class='submit' value=\"".$LANG["buttons"][16]."\">";
 			}
 		
 			echo "</p>";

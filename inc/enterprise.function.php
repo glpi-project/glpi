@@ -127,10 +127,11 @@ function showInfocomEnterprise($instID) {
 function showAssociatedContact($instID) {
 	global $DB,$CFG_GLPI, $LANG;
 
-	if (!haveRight("contact_enterprise","r")) return false;
 	$enterprise=new Enterprise();
-	$enterprise->getFromDB($instID);
-	$canedit=$enterprise->canEdit();
+	if (!$enterprise->can($instID,'r')){
+		return false;
+	}
+	$canedit=$enterprise->can($instID,'w');
 
 	$query = "SELECT glpi_contacts.*, glpi_contact_enterprise.ID as ID_ent, glpi_entities.ID as entity "
 		. " FROM glpi_contact_enterprise, glpi_contacts "

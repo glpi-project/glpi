@@ -184,7 +184,7 @@ function showDeviceDocument($instID,$search='') {
 
 	$doc=new Document();
 	if ($doc->getFromDB($instID)){
-		$canedit=$doc->canEdit();
+		$canedit=$doc->can($instID,'w');
 
 		$query = "SELECT DISTINCT device_type FROM glpi_doc_device WHERE glpi_doc_device.FK_doc = '$instID' order by device_type";
 		
@@ -247,7 +247,7 @@ function showDeviceDocument($instID,$search='') {
 							}
 							echo "<td class='center'>".$ci->getType()."</td>";
 							
-							echo "<td class='center' ".(isset($data['deleted'])&&$data['deleted']?"class='tab_bg_2_2'":"").">".$name."</td>";
+							echo "<td ".(isset($data['deleted'])&&$data['deleted']?"class='tab_bg_2_2'":"").">".$name."</td>";
 							echo "<td class='center'>".getDropdownName("glpi_entities",$data['entity'])."</td>";
 							echo "<td class='center'>".(isset($data["serial"])? "".$data["serial"]."" :"-")."</td>";
 							echo "<td class='center'>".(isset($data["otherserial"])? "".$data["otherserial"]."" :"-")."</td>";
@@ -272,7 +272,7 @@ function showDeviceDocument($instID,$search='') {
 			dropdownAllItems("item",0,0,($doc->fields['recursive']?-1:$doc->fields['FK_entities']),$types);
 			
 			echo "</td>";
-			echo "<td colspan='2' class='center' class='tab_bg_2'>";
+			echo "<td colspan='2' class='center'>";
 			echo "<input type='submit' name='additem' value=\"".$LANG["buttons"][8]."\" class='submit'>";
 			echo "</td></tr>";
 			echo "</table></div>" ;
@@ -326,8 +326,10 @@ function showDocumentAssociated($device_type,$ID,$withtemplate=''){
 
 	if (empty($withtemplate)) $withtemplate=0;
 
-	$canread=haveTypeRight($device_type,"r");
-	$canedit=canEditItem($device_type,$ID);
+	$ci=new CommonItem();
+	$ci->getFromDB($device_type,$ID);
+	$canread=$ci->obj->can($ID,'r');
+	$canedit=$ci->obj->can($ID,'w');
 
 	$query = "SELECT glpi_doc_device.ID as assocID, glpi_docs.*, glpi_entities.ID AS entity "
 		." FROM glpi_doc_device"

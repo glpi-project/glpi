@@ -38,13 +38,15 @@ $NEEDED_ITEMS=array("document","computer","printer","monitor","peripheral","netw
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-if(!isset($_GET["ID"])) $_GET["ID"] = "";
+if(!isset($_GET["ID"])) {
+	$_GET["ID"] = -1;
+}
 
 $doc= new Document();
 
 if (isset($_POST["add"]))
 {
-	checkEditItem(DOCUMENT_TYPE);
+	$doc->check(-1,'w',$_POST['FK_entities']);
 
 	$newID=$doc->add($_POST);
 	$name="";
@@ -60,7 +62,7 @@ if (isset($_POST["add"]))
 } 
 else if (isset($_POST["delete"]))
 {
-	checkEditItem(DOCUMENT_TYPE, $_POST["ID"]);
+	$doc->check($_POST["ID"],'w');
 
 	$doc->delete($_POST);
 	logEvent($_POST["ID"], "documents", 4, "document", $_SESSION["glpiname"]." ".$LANG["log"][22]);
@@ -68,7 +70,7 @@ else if (isset($_POST["delete"]))
 }
 else if (isset($_POST["restore"]))
 {
-	checkEditItem(DOCUMENT_TYPE, $_POST["ID"]);
+	$doc->check($_POST["ID"],'w');
 
 	$doc->restore($_POST);
 	logEvent($_POST["ID"], "documents", 4, "document", $_SESSION["glpiname"]." ".$LANG["log"][23]);
@@ -76,7 +78,7 @@ else if (isset($_POST["restore"]))
 }
 else if (isset($_POST["purge"]))
 {
-	checkEditItem(DOCUMENT_TYPE, $_POST["ID"]);
+	$doc->check($_POST["ID"],'w');
 
 	$doc->delete($_POST,1);
 	logEvent($_POST["ID"], "documents", 4, "document", $_SESSION["glpiname"]." ".$LANG["log"][24]);
@@ -85,7 +87,7 @@ else if (isset($_POST["purge"]))
 
 else if (isset($_POST["update"]))
 {
-	checkEditItem(DOCUMENT_TYPE, $_POST["ID"]);
+	$doc->check($_POST["ID"],'w');
 
 	$doc->update($_POST);
 	logEvent($_POST["ID"], "documents", 4, "document", $_SESSION["glpiname"]." ".$LANG["log"][21]);
@@ -94,9 +96,11 @@ else if (isset($_POST["update"]))
 else if (isset($_POST["additem"])){
 
 	if ($_POST["right"]=="doc") {
-		checkEditItem(DOCUMENT_TYPE, $_POST["conID"]);
+		$doc->check($_POST["ID"],'w');
 	} else { // $_POST["right"]=="item"
-		checkEditItem($_POST['type'], $_POST['item']);
+		$ci=new CommonItem();
+		$ci->getFromDB($_POST['type'], $_POST['item']);
+		$ci->obj->check($_POST['item'],'w');
 	}
 
 	if ($_POST['type']>0&&$_POST['item']>0){
@@ -107,7 +111,7 @@ else if (isset($_POST["additem"])){
 }
 else if (isset($_POST["deleteitem"])){
 
-	checkEditItem(DOCUMENT_TYPE, $_POST["conID"]);
+	$doc->check($_POST["conID"],'w');
 
 	if (count($_POST["item"])){
 		foreach ($_POST["item"] as $key => $val){
@@ -119,8 +123,10 @@ else if (isset($_POST["deleteitem"])){
 }
 else if (isset($_GET["deleteitem"]) && isset($_GET["docid"]) && isset($_GET["devtype"]) && isset($_GET["devid"]) && isset($_GET["ID"])){
 
-	checkEditItem($_GET["devtype"], $_GET["devid"]);
-	
+	$ci=new CommonItem();
+	$ci->getFromDB($_GET["devtype"], $_GET["devid"]);
+	$ci->obj->check($_GET["devid"],'w');
+
 	deleteDeviceDocument($_GET["ID"]);
 
 	logEvent($_GET["docid"], "documents", 4, "document", $_SESSION["glpiname"]." ".$LANG["log"][33]);
@@ -128,7 +134,7 @@ else if (isset($_GET["deleteitem"]) && isset($_GET["docid"]) && isset($_GET["dev
 }
 else
 {
-	checkRight("document","r");
+	$doc->check($_GET["ID"],'r');
 
 	if (!isset($_SESSION['glpi_onglet'])) $_SESSION['glpi_onglet']=1;
 	if (isset($_GET['onglet'])) {
@@ -137,7 +143,6 @@ else
 	}
 
 	commonHeader($LANG["Menu"][27],$_SERVER['PHP_SELF'],"financial","document");
-
 
 	if ($doc->showForm($_SERVER['PHP_SELF'],$_GET["ID"])){
 		switch ($_SESSION['glpi_onglet']){
