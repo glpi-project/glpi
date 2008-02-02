@@ -405,8 +405,10 @@ function showDocumentAssociated($device_type,$ID,$withtemplate=''){
 		// Restrict entity for knowbase
 		$ci=new CommonItem();
 		$entities="";
+		$entity=$_SESSION["glpiactive_entity"];
 		if ($ci->getFromDB($device_type,$ID) && isset($ci->obj->fields["FK_entities"])) {		
-
+			$entity=$ci->getField('FK_entities');
+			
 			if (isset($ci->obj->fields["recursive"]) && $ci->obj->fields["recursive"]) {
 				$entities = getEntitySons($ci->obj->fields["FK_entities"]);
 			} else {
@@ -419,21 +421,28 @@ function showDocumentAssociated($device_type,$ID,$withtemplate=''){
 		$result = $DB->query($q);
 		$nb = $DB->result($result,0,0);
 	
-		if ($withtemplate<2 && $nb>count($used)){
+		if ($withtemplate<2){
 	
-			echo "<tr class='tab_bg_1'>";
-			echo "<td align='center' colspan='3'>";
-			echo "<input type='file' name='filename' size='25'>&nbsp;&nbsp;";
-			echo "<input type='submit' name='add' value=\"".$LANG["buttons"][8]."\" class='submit'>";
-			echo "</td>";
-			echo "<td align='left' colspan='2'>";
-			echo "<div class='software-instal'><input type='hidden' name='item' value='$ID'><input type='hidden' name='type' value='$device_type'>";
-			echo "<input type='hidden' name='right' value='item'>";
-			dropdownDocument("conID",$entities,$used);
-			echo "</div></td><td class='center'>";
-			echo "<input type='submit' name='additem' value=\"".$LANG["buttons"][8]."\" class='submit'>";
-			echo "</td><td>&nbsp;</td>";
-	
+			echo "<tr class='tab_bg_1'><td align='center' colspan='3'>" .
+				"<input type='hidden' name='FK_entities' value='$entity'>" .
+				"<input type='hidden' name='item' value='$ID'>" .
+				"<input type='hidden' name='type' value='$device_type'>" .
+				"<input type='file' name='filename' size='25'>&nbsp;&nbsp;" .
+				"<input type='submit' name='add' value=\"".$LANG["buttons"][8]."\" class='submit'>" .
+				"</td>";
+
+			if ($nb>count($used)) {
+				echo "<td align='left' colspan='2'>";
+				echo "<div class='software-instal'>";
+				echo "<input type='hidden' name='right' value='item'>";
+				dropdownDocument("conID",$entities,$used);
+				echo "</div></td><td class='center'>";
+				echo "<input type='submit' name='additem' value=\"".$LANG["buttons"][8]."\" class='submit'>";
+				echo "</td><td>&nbsp;</td>";
+			}
+			else {
+				echo "<td colspan='4'>&nbsp;</td>";
+			}	
 			echo "</tr>";
 		}
 	}
