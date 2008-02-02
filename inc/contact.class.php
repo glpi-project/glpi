@@ -44,6 +44,8 @@ class Contact extends CommonDBTM{
 	function Contact () {
 		$this->table="glpi_contacts";
 		$this->type=CONTACT_TYPE;
+		$this->entity_assign=true;
+		$this->may_be_recursive=true;
 	}
 
 	function cleanDBonPurge($ID) {
@@ -114,34 +116,38 @@ class Contact extends CommonDBTM{
 
 		if (!haveRight("contact_enterprise","r")) return false;
 
-		$con_spotted = false;
+		$spotted = false;
 		$use_cache=true;
-		if (empty($ID)) {
-			if($this->getEmpty()) {
-				$con_spotted = true;
-			}
-			$use_cache=false;
-		} else {
-			if($this->getFromDB($ID) && haveAccessToEntity($this->fields["FK_entities"],$this->fields["recursive"])) {
-				$con_spotted = true;
-			}
-		}
 
-		if ($con_spotted){
-			list($can_edit,$can_recu)=$this->canEditAndRecurs();
+
+		if ($ID>0) {
+			if($this->can($ID,'r')) {
+				$spotted = true;	
+			}
+		} else {
+			$use_cache=false;
+			if ($this->can(-1,'w')){
+				$spotted = true;	
+			}
+		} 
+
+
+		if ($spotted){
+			$canedit=$this->can($ID,'w');
+			$canrecu=$this->can($ID,'recursive');
 
 			$this->showOnglets($ID, $withtemplate,$_SESSION['glpi_onglet']);
 
-			if ($can_edit) {
+			if ($canedit) {
 				echo "<form method='post' name=form action=\"$target\"><div class='center'>";
-				if (empty($ID)){
+				if (empty($ID)||$ID<0){
 					echo "<input type='hidden' name='FK_entities' value='".$_SESSION["glpiactive_entity"]."'>";
 				}
 			}
 
 			echo "<table class='tab_cadre_fixe' cellpadding='2' >";
-			echo "<tr><th colspan='2'>";
-			if (empty($ID)) {
+			echo "<tr><th>";
+			if (empty($ID)||$ID<0){
 				echo $LANG["financial"][33];
 			} else {
 				echo $LANG["common"][2]." $ID";
@@ -153,7 +159,15 @@ class Contact extends CommonDBTM{
 				echo "&nbsp;<a href='".$CFG_GLPI["root_doc"]."/front/contact.vcard.php?ID=$ID'>".$LANG["common"][46]."</a>";
 			}		
 
-			echo "</th></tr>";
+			echo "</th>";
+			echo "<th>".$LANG["entity"][9].":&nbsp;";
+			if ($canrecu) {
+				dropdownYesNo("recursive",$this->fields["recursive"]);					
+			} else {
+				echo getYesNo($this->fields["recursive"]);
+			}
+			echo "</th>";
+			echo "</tr>";
 
 			
 			if (!$use_cache||!($CFG_GLPI["cache"]->start($ID."_".$_SESSION["glpilanguage"],"GLPI_".$this->type))) {
@@ -199,16 +213,6 @@ class Contact extends CommonDBTM{
 				echo "</td>";
 				echo "</tr>";
 	
-				echo "<tr><td>".$LANG["entity"][9].":	</td>";
-				echo "<td>";
-				if ($can_recu) {
-					dropdownYesNo("recursive",$this->fields["recursive"]);					
-				} else {
-					echo getYesNo($this->fields["recursive"]);
-				}
-				echo "</td>";
-				echo "</tr>";
-	
 				echo "</table>";
 	
 				echo "</td>\n";	
@@ -227,18 +231,8 @@ class Contact extends CommonDBTM{
 				}
 			}
 
-			if ($can_edit) {
-				if ($ID=="") {
-
-					echo "<tr>";
-					echo "<td class='tab_bg_2' valign='top' colspan='2'>";
-					echo "<div class='center'><input type='submit' name='add' value=\"".$LANG["buttons"][8]."\" class='submit'></div>";
-					echo "</td>";
-					echo "</tr>";
-
-
-				} else {
-
+			if ($canedit) {
+				if ($ID>0){
 					echo "<tr>";
 					echo "<td class='tab_bg_2' valign='top'>";
 					echo "<input type='hidden' name='ID' value=\"$ID\">\n";
@@ -255,6 +249,13 @@ class Contact extends CommonDBTM{
 					echo "</td>";
 					echo "</tr>";
 
+				} else {
+
+					echo "<tr>";
+					echo "<td class='tab_bg_2' valign='top' colspan='2'>";
+					echo "<div class='center'><input type='submit' name='add' value=\"".$LANG["buttons"][8]."\" class='submit'></div>";
+					echo "</td>";
+					echo "</tr>";
 				}
 				echo "</table></div></form>";
 			} else { // canedit

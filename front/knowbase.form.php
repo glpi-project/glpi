@@ -51,7 +51,7 @@ $kb=new kbItem;
 
 if ($_GET["ID"]=="new"){
 	// on affiche le formulaire de saisie de l'item
-	checkSeveralRightsOr(array("knowbase"=>"w","faq"=>"w"));
+	$kb->can(-1,'w');
 
 	commonHeader($LANG["title"][5],$_SERVER['PHP_SELF'],"utils","knowbase");
 	$kb->showForm($_SERVER['PHP_SELF'],"");
@@ -59,7 +59,7 @@ if ($_GET["ID"]=="new"){
 
 } else if (isset($_POST["add"])){
 	// ajoute un item dans la base de connaisssances 	
-	checkSeveralRightsOr(array("knowbase"=>"w","faq"=>"w"));
+	$kb->can(-1,'w');
 
 	$newID=$kb->add($_POST);
 	logEvent($newID, "knowbase", 5, "tools", $_SESSION["glpiname"]." ".$LANG["log"][20]);
@@ -67,7 +67,7 @@ if ($_GET["ID"]=="new"){
 
 } else if (isset($_GET["ID"])  && strcmp($_GET["modify"],"yes") == 0){
 	// modifier un item dans la base de connaissance
-	checkSeveralRightsOr(array("knowbase"=>"r","faq"=>"r"));
+	$kb->can($_GET["ID"],'r');
 
 	commonHeader($LANG["title"][5],$_SERVER['PHP_SELF'],"utils","knowbase");
 	$kb->showForm($_SERVER['PHP_SELF'],$_GET["ID"]);
@@ -75,15 +75,15 @@ if ($_GET["ID"]=="new"){
 
 } else if (isset($_POST["update"])){
 	// actualiser  un item dans la base de connaissances
-	checkSeveralRightsOr(array("knowbase"=>"w","faq"=>"w"));
+	$kb->can($_POST["ID"],'w');
 
 	$kb->update($_POST);
-	logEvent($_GET["ID"], "knowbase", 5, "tools", $_SESSION["glpiname"]." ".$LANG["log"][21]);	
+	logEvent($_POST["ID"], "knowbase", 5, "tools", $_SESSION["glpiname"]." ".$LANG["log"][21]);	
 	glpi_header($CFG_GLPI["root_doc"]."/front/knowbase.form.php?ID=".$_POST['ID']);
 
 } else if (isset($_GET["ID"])  && strcmp($_GET["delete"],"yes") == 0){
 	// effacer un item dans la base de connaissances
-	checkSeveralRightsOr(array("knowbase"=>"w","faq"=>"w"));
+	$kb->can($_GET["ID"],'w');
 
 	$kb->delete($_GET);
 	logEvent(0, "knowbase", 5, "tools", $_SESSION["glpiname"]." ".$LANG["log"][22]);	
@@ -91,14 +91,14 @@ if ($_GET["ID"]=="new"){
 
 } else if (isset($_GET["ID"])  && strcmp($_GET["addtofaq"],"yes") == 0){
 	// ajouter  un item dans la faq
-	checkRight("faq","w");
+	$kb->can($_GET["ID"],'w');
 
 	KbItemaddtofaq($_GET["ID"]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 
 } else if (isset($_GET["ID"])  && strcmp($_GET["removefromfaq"],"yes") == 0){
 	// retirer  un item de la faq
-	checkRight("faq","w");
+	$kb->can($_GET["ID"],'w');
 
 	KbItemremovefromfaq($_GET["ID"]);
 	glpi_header($_SERVER['HTTP_REFERER']);
@@ -108,7 +108,7 @@ if ($_GET["ID"]=="new"){
 
 } else  {
 	// Affiche un item de la base de connaissances
-	checkSeveralRightsOr(array("knowbase"=>"r","faq"=>"r"));
+	$kb->can($_GET["ID"],'r');
 
 	commonHeader($LANG["title"][5],$_SERVER['PHP_SELF'],"utils","knowbase");
 

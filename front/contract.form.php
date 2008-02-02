@@ -38,21 +38,21 @@ $NEEDED_ITEMS=array("contract","enterprise","computer","printer","monitor","peri
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-if(!isset($_GET["ID"])) $_GET["ID"] = "";
+if(!isset($_GET["ID"])) $_GET["ID"] = -1;
 
 $contract=new Contract();
 
 if (isset($_POST["add"]))
 {
-	checkEditItem(CONTRACT_TYPE);
-
+	$contract->check(-1,'w',$_POST['FK_entities']);
+	
 	$newID=$contract->add($_POST);
 	logEvent($newID, "contracts", 4, "financial", $_SESSION["glpiname"]." ".$LANG["log"][20]." ".$_POST["num"].".");
 	glpi_header($_SERVER['HTTP_REFERER']);
 } 
 else if (isset($_POST["delete"]))
 {
-	checkEditItem(CONTRACT_TYPE, $_POST["ID"]);
+	$contract->check($_POST['ID'],'w');
 
 	$contract->delete($_POST);
 	logEvent($_POST["ID"], "contracts", 4, "financial", $_SESSION["glpiname"]." ".$LANG["log"][22]);
@@ -60,7 +60,7 @@ else if (isset($_POST["delete"]))
 }
 else if (isset($_POST["restore"]))
 {
-	checkEditItem(CONTRACT_TYPE, $_POST["ID"]);
+	$contract->check($_POST['ID'],'w');
 
 	$contract->restore($_POST);
 	logEvent($_POST["ID"], "contracts", 4, "financial", $_SESSION["glpiname"]." ".$LANG["log"][23]);
@@ -68,7 +68,7 @@ else if (isset($_POST["restore"]))
 }
 else if (isset($_POST["purge"]))
 {
-	checkEditItem(CONTRACT_TYPE, $_POST["ID"]);
+	$contract->check($_POST['ID'],'w');
 
 	$contract->delete($_POST,1);
 	logEvent($_POST["ID"], "contracts", 4, "financial", $_SESSION["glpiname"]." ".$LANG["log"][24]);
@@ -76,7 +76,7 @@ else if (isset($_POST["purge"]))
 }
 else if (isset($_POST["update"]))
 {
-	checkEditItem(CONTRACT_TYPE, $_POST["ID"]);
+	$contract->check($_POST['ID'],'w');
 
 	$contract->update($_POST);
 	logEvent($_POST["ID"], "contracts", 4, "financial", $_SESSION["glpiname"]." ".$LANG["log"][21]);
@@ -86,7 +86,7 @@ else if (isset($_POST["additem"]))
 {
 	if (strstr($_SERVER['HTTP_REFERER'], $_SERVER['SCRIPT_NAME'])) {
 		// error_log("update from contract form");
-		checkEditItem(CONTRACT_TYPE, $_POST["conID"]);
+		$contract->check($_POST['conID'],'w');
 	} else {
 		// error_log("update from infocom form of an equipement");
 		checkRight("contract_infocom","w");
@@ -104,7 +104,7 @@ else if (isset($_POST["deleteitem"]))
 	
 	if (strstr($_SERVER['HTTP_REFERER'], $_SERVER['SCRIPT_NAME'])) {
 		// error_log("update from contract form");
-		checkEditItem(CONTRACT_TYPE, $_POST["conID"]);
+		$contract->check($_POST['conID'],'w');
 	} else {
 		// error_log("update from infocom form of an equipement");
 		checkRight("contract_infocom","w");
@@ -123,7 +123,7 @@ else if (isset($_GET["deleteitem"]))
 	
 	if (strstr($_SERVER['HTTP_REFERER'], $_SERVER['SCRIPT_NAME'])) {
 		// error_log("update from contract form");
-		checkEditItem(CONTRACT_TYPE, $_GET["conID"]);
+		$contract->check($_GET['conID'],'w');
 	} else {
 		// error_log("update from infocom form of an equipement");
 		checkRight("contract_infocom","w");
@@ -136,7 +136,7 @@ else if (isset($_GET["deleteitem"]))
 }
 else if (isset($_POST["addenterprise"]))
 {
-	checkEditItem(CONTRACT_TYPE, $_POST["conID"]);
+	$contract->check($_POST['conID'],'w');
 
 	addEnterpriseContract($_POST["conID"],$_POST["entID"]);
 	logEvent($_POST["conID"], "contracts", 4, "financial", $_SESSION["glpiname"]." ".$LANG["log"][34]);
@@ -144,7 +144,7 @@ else if (isset($_POST["addenterprise"]))
 }
 else if (isset($_GET["deleteenterprise"]))
 {
-	checkEditItem(CONTRACT_TYPE, $_GET["ID"]);
+	$contract->check($_GET['ID'],'w');
 
 	deleteEnterpriseContract($_GET["ID"]);
 	logEvent($_GET["ID"], "contracts", 4, "financial", $_SESSION["glpiname"]." ".$LANG["log"][35]);
@@ -152,7 +152,7 @@ else if (isset($_GET["deleteenterprise"]))
 }
 else
 {
-	checkRight("contract_infocom","r");
+	$contract->check($_GET["ID"],'r');
 
 	if (!isset($_SESSION['glpi_onglet'])) $_SESSION['glpi_onglet']=1;
 	if (isset($_GET['onglet'])) {
@@ -162,7 +162,7 @@ else
 	commonHeader($LANG["Menu"][25],$_SERVER['PHP_SELF'],"financial","contract");
 
 	if ($contract->showForm($_SERVER['PHP_SELF'],$_GET["ID"])) {
-		if (!empty($_GET['ID'])){
+		if ($_GET['ID']>0){
 			switch($_SESSION['glpi_onglet']){
 				case -1 :	
 					showEnterpriseContract($_GET["ID"]);

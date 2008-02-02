@@ -129,8 +129,7 @@ function showDeviceContract($instID) {
 
 	if (!haveRight("contract_infocom","r")) return false;
 	$contract=new Contract();
-	$contract->getFromDB($instID);
-	$canedit=$contract->canEdit();
+	$canedit=$contract->can($instID,'w');
 	$query = "SELECT DISTINCT device_type FROM glpi_contract_device WHERE glpi_contract_device.FK_contract = '$instID' order by device_type";
 
 	$result = $DB->query($query);
@@ -297,8 +296,7 @@ function showEnterpriseContract($instID) {
 
 	if (!haveRight("contract_infocom","r")||!haveRight("contact_enterprise","r"))	return false;
 	$contract=new Contract();
-	$contract->getFromDB($instID);
-	$canedit=$contract->canEdit();
+	$canedit=$contract->can($instID,'w');
 	
 	$query = "SELECT glpi_contract_enterprise.ID as ID, glpi_enterprises.ID as entID, glpi_enterprises.name as name, glpi_enterprises.website as website, "
 		. " glpi_enterprises.phonenumber as phone, glpi_enterprises.type as type, glpi_entities.ID AS entity"
@@ -660,8 +658,7 @@ function showContractAssociatedEnterprise($ID){
 	global $DB,$CFG_GLPI, $LANG,$CFG_GLPI;
 	if (!haveRight("contract_infocom","r")||!haveRight("contact_enterprise","r")) return false;
 	$ent=new Enterprise();
-	$ent->getFromDB($ID);
-	$canedit=$ent->canEdit();
+	$canedit=$contract->can($ID,'w');
 
 	$query = "SELECT glpi_contracts.*, glpi_contract_enterprise.ID AS assocID, glpi_entities.ID AS entity"
 		. " FROM glpi_contract_enterprise, glpi_contracts "

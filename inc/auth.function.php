@@ -224,6 +224,7 @@ function haveTypeRight($type, $right) {
  *
  * @return Boolean
 **/
+/*
 function canEditItem ($type,$ID=0) {
 	global $CFG_GLPI;
 
@@ -242,7 +243,7 @@ function canEditItem ($type,$ID=0) {
 
 	return $can_edit;
 }
-
+*/
 
 /**
  * Check if I the right to "write" an Object
@@ -252,6 +253,7 @@ function canEditItem ($type,$ID=0) {
  *
  * @return Nothing : display error if not permit
 **/
+/*
 function checkEditItem ($type,$ID=0) {
 	global $CFG_GLPI;
 
@@ -265,7 +267,7 @@ function checkEditItem ($type,$ID=0) {
 		displayRightError();
 	}
 }
-
+*/
 /**
  * Display common message for privileges errors
  *
@@ -743,6 +745,7 @@ function loadGroups() {
  * @return Boolean : 
 **/
 function haveRecursiveAccessToEntity($ID) {
+
 	// Right by profile
 	foreach ($_SESSION['glpiactiveprofile']['entities'] as $key => $val) {
 		if ($val['ID']==$ID) {
@@ -774,7 +777,7 @@ function haveAccessToEntity($ID, $recursive=0) {
 	if (!$recursive) {		
 		return in_array($ID, $_SESSION['glpiactiveentities']);
 	}
-	 
+
 	if (in_array($ID, $_SESSION['glpiactiveentities'])) {
 		return true;
 	}

@@ -43,6 +43,10 @@ class CommonDBTM {
 	var $type=-1;
 	// Make an history of the changes
 	var $dohistory=false;
+	// Is an item specific to entity
+	var $entity_assign=false;
+	// Is an item that can be recursivly assign to an entity
+	var $may_be_recursive=false;
 
 	/**
 	 * Constructor
@@ -689,21 +693,11 @@ class CommonDBTM {
 	} 
 
 	/**
-	 * Have I the right to "create" the Object
-	 * 
-	 * May be overloaded if needed (ex kbitem)
-	 *
-	 * @return booleen
-	 **/
-	function canCreate () {
-		return haveTypeRight($this->type,"w");
-	}
-	/**
 	 * Have I the right to "write" the Object
 	 * 
 	 * @return Array of can_edit (can write) + can_recu (can make recursive)
 	**/
-	function canEditAndRecurs () {
+/*	function canEditAndRecurs () {
 		global $CFG_GLPI;
 		
 		$can_edit = $this->canCreate();
@@ -726,15 +720,135 @@ class CommonDBTM {
 	
 		return array($can_edit, $can_recu);		
 	}
-	
+*/	
 	/**
 	 * Have I the right to "write" the Object
 	 *
 	 * @return bitmask : 0:no, 1:can_edit (can write), 2:can_recu (can make recursive)
 	**/
-	function canEdit () {
+/*	function canEdit () {
 		list($can_edit,$can_recu)=$this->canEditAndRecurs();
 		return ($can_edit?1:0)+($can_recu?2:0);
+	}
+*/
+
+
+	/**
+	 * Have I the right to "create" the Object
+	 * 
+	 * May be overloaded if needed (ex kbitem)
+	 *
+	 * @return booleen
+	 **/
+	function canCreate () {
+		return haveTypeRight($this->type,"w");
+	}
+
+	/**
+	 * Have I the right to "view" the Object
+	 * 
+	 * May be overloaded if needed
+	 *
+	 * @return booleen
+	 **/
+	function canView () {
+		return haveTypeRight($this->type,"r");
+	}
+
+	/**
+	 * Check right on an item
+	 *
+	 * @param $ID ID of the item (-1 if new item)
+	 * @param $right Right to check : r / w / recursive
+	 * @param $entity entity to check right (used for adding item)
+	 *
+	 * @return boolean
+	**/
+	function can($ID,$right,$entity=-1){
+
+		$entity_to_check=-1;
+		$recursive_state_to_check=0;
+		// Get item if not already loaded
+		if (empty($ID)||$ID<=0){
+			$this->getEmpty($ID);
+			// No entity define : adding process : use active entity
+			if ($entity==-1){
+				$entity_to_check=$_SESSION["glpiactive_entity"];
+			} else { 
+				$entity_to_check=$entity;
+			}
+		} else {
+			if (!isset($this->fields['ID'])||$this->fields['ID']!=$ID){
+				$this->getFromDB($ID);
+			}
+			if ($this->entity_assign){
+				$entity_to_check=$this->fields["FK_entities"];
+				if ($this->may_be_recursive){
+					$recursive_state_to_check=$this->fields["recursive"];
+				}
+			}
+
+		} 
+
+//		echo $ID."_".$entity_to_check."_".$recursive_state_to_check.'<br>';
+		switch ($right){
+			case 'r':
+				// Check Global Right
+				if ($this->canView()){
+					// Is an item assign to an entity
+					if ($this->entity_assign){
+						// Can be recursive check 
+						if ($this->may_be_recursive){
+							return haveAccessToEntity($entity_to_check,$recursive_state_to_check);
+						} else { // Non recursive item
+							return haveAccessToEntity($entity_to_check);
+						}
+					} else { // Global item
+						return true;
+					}
+				}
+				break;
+			case 'w':
+				// Check Global Right
+				if ($this->canCreate()){
+					// Is an item assign to an entity
+					if ($this->entity_assign){
+						// Have access to entity
+						return haveAccessToEntity($entity_to_check);
+					} else { // Global item
+						return true;
+					}
+				} 
+				break;
+			case 'recursive':
+				if ($this->entity_assign && $this->may_be_recursive){
+					// Can make recursive if recursive access to entity
+					return haveRecursiveAccessToEntity($entity_to_check);
+				}
+				break;
+		}
+		return false;
+
+	}
+	/**
+	 * Check right on an item with block
+	 *
+	 * @param $ID ID of the item (-1 if new item)
+	 * @param $right Right to check : r / w / recursive
+	 * @param $entity entity to check right (used for adding item)
+	 * @return nothing
+	**/
+	function check($ID,$right,$entity=-1) {
+		global $CFG_GLPI;
+	
+		if (!$this->can($ID,$right,$entity)) {
+			// Gestion timeout session
+			if (!isset ($_SESSION["glpiID"])) {
+				glpi_header($CFG_GLPI["root_doc"] . "/index.php");
+				exit ();
+			}
+			displayRightError();
+		}
 	}
 }
 
