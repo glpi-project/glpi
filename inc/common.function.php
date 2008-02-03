@@ -1619,6 +1619,11 @@ function cron_check_update(){
 * @param $addwarranty period in months
 **/
 function getWarrantyExpir($from,$addwarranty){
+	global $LANG;
+	// Life warranty
+	if ($addwarranty==-1){
+		return $LANG["setup"][307];
+	}
 	if ($from==NULL || $from=='0000-00-00')
 		return "";
 	else return convDate(date("Y-m-d", strtotime("$from+$addwarranty month ")));

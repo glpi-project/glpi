@@ -1677,9 +1677,14 @@ function dropdownLicenseOfSoftware($myname,$sID) {
 }
 
 
-function dropdownInteger($myname,$value,$min=0,$max=100,$step=1){
+function dropdownInteger($myname,$value,$min=0,$max=100,$step=1,$toadd=array()){
 
 	echo "<select name='$myname'>\n";
+	if (count($toadd)){
+		foreach ($toadd as $key => $val){
+			echo "<option value='$key' ".($key==$value?" selected ":"").">$val</option>";
+		}
+	}
 	for ($i=$min;$i<=$max;$i+=$step){
 		echo "<option value='$i' ".($i==$value?" selected ":"").">$i</option>";
 	}

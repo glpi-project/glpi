@@ -410,6 +410,7 @@ $LANG["event"][19]="Changement";
 $LANG["event"][20]="Pas d'historique"; 
 
 $LANG["financial"][1]="Contrat"; 
+$LANG["financial"][2]="A vie"; 
 $LANG["financial"][3]="Informations financières"; 
 $LANG["financial"][4]="Numéro"; 
 $LANG["financial"][5]="Coût"; 
