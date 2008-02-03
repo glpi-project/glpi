@@ -112,11 +112,18 @@ function showInfocomForm($target,$device_type,$dev_ID,$show_immo=1,$withtemplate
 
 			echo "<tr class='tab_bg_1'><td>".$LANG["financial"][15].":	</td><td>";
 			if ($withtemplate==2){
-				echo $ic->fields["warranty_duration"];
+				// -1 = life
+				if ($ic->fields["warranty_duration"]==-1){
+					echo $LANG["financial"][2];
+				} else {
+					echo $ic->fields["warranty_duration"];
+				}
 			} else {
-				dropdownInteger("warranty_duration",$ic->fields["warranty_duration"],0,120);
+				dropdownInteger("warranty_duration",$ic->fields["warranty_duration"],0,120,1,array(-1=>$LANG["financial"][2]));
 			}
-			echo " ".$LANG["financial"][57];
+			if ($ic->fields["warranty_duration"]>=0){
+				echo " ".$LANG["financial"][57];
+			}
 			echo "&nbsp;&nbsp; &nbsp; &nbsp;&nbsp;&nbsp;".$LANG["financial"][88];
 			echo getWarrantyExpir($ic->fields["buy_date"],$ic->fields["warranty_duration"]);
 			echo "</td>";
@@ -501,7 +508,7 @@ function cron_infocom($display=false){
 					AND glpi_alerts.device_type='".INFOCOM_TYPE."' 
 					AND glpi_alerts.type='".ALERT_END."') 
 		WHERE (glpi_infocoms.alert & ".pow(2,ALERT_END).") >0 
-			AND glpi_infocoms.warranty_duration<>0 
+			AND glpi_infocoms.warranty_duration>0 
 			AND glpi_infocoms.buy_date<>'0000-00-00' 
 			AND DATEDIFF( ADDDATE(glpi_infocoms.buy_date, INTERVAL (glpi_infocoms.warranty_duration) MONTH),CURDATE() )<0 
 			AND glpi_alerts.date IS NULL;";
