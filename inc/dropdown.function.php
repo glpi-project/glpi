@@ -1263,7 +1263,7 @@ function dropdownDocument($myname,$entity_restrict='',$used=array()) {
 			'used'=>$used
 			);
 
-	ajaxUpdateItemOnSelectEvent("rubdoc","show_$myname$rand",$CFG_GLPI["root_doc"]."/ajax/dropdownDocument.php",$params);
+	ajaxUpdateItemOnSelectEvent("rubdoc","show_$myname$rand",$CFG_GLPI["root_doc"]."/ajax/dropdownRubDocument.php",$params);
 
 	echo "<span id='show_$myname$rand'>";
 	$_POST["entity_restrict"]=$entity_restrict;
@@ -1271,7 +1271,7 @@ function dropdownDocument($myname,$entity_restrict='',$used=array()) {
 	$_POST["myname"]=$myname;
 	$_POST["rand"]=$rand;
 	$_POST["used"]=$used;
-	include (GLPI_ROOT."/ajax/dropdownDocument.php");
+	include (GLPI_ROOT."/ajax/dropdownRubDocument.php");
 	echo "</span>\n";
 
 	return $rand;
