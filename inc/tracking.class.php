@@ -169,6 +169,9 @@ class Job extends CommonDBTM{
 				addDeviceDocument($docID,TRACKING_TYPE,$input["ID"]);
 				// force update date_mod
 				$input["date_mod"]=$_SESSION["glpi_currenttime"];
+				if ($CFG_GLPI["followup_on_update_ticket"]){
+					$input['_doc_added']=$doc->fields["name"];
+				}
 			}
 		} else if (!empty($_FILES['filename']['name'])&&isset($_FILES['filename']['error'])&&$_FILES['filename']['error']){
 			addMessageAfterRedirect($LANG["document"][46]);
@@ -176,8 +179,11 @@ class Job extends CommonDBTM{
 
 		if (isset($input["document"])&&$input["document"]>0){
 			addDeviceDocument($input["document"],TRACKING_TYPE,$input["ID"]);
+			$doc=new Document();
+			$doc->getFromDB($input["document"]);
 			unset($input["document"]);
 			$input["date_mod"]=$_SESSION["glpi_currenttime"];
+			$input['_doc_added']=$doc->fields["name"];
 		}
 
 		// Old values for add followup in change
@@ -265,6 +271,9 @@ class Job extends CommonDBTM{
 		if (count($updates)){
 			// New values for add followup in change
 			$change_followup_content="";
+			if (isset($input['_doc_added'])){
+				$change_followup_content=$LANG["mailing"][26]." ".$input['_doc_added'];
+			}
 			$global_mail_change_count=0;
 	
 			// Update Ticket Tco
