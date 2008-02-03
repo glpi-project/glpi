@@ -393,6 +393,7 @@ class CommonDBTM {
 		$input=$this->prepareInputForAdd($input);
 
 		if ($input&&is_array($input)){
+			$this->fields=array();
 			$table_fields=$DB->list_fields($this->table);
 			// fill array for udpate
 			foreach ($input as $key => $val) {

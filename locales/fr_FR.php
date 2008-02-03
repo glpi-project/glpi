@@ -850,6 +850,7 @@ $LANG["mailing"][20]="Changement de groupe demandeur du ticket";
 $LANG["mailing"][21]="Changement de la source du ticket"; 
 $LANG["mailing"][23]="Modification réservation"; 
 $LANG["mailing"][25]="Planification :"; 
+$LANG["mailing"][26]="Document ajouté :"; 
 $LANG["mailing"][27]="Changement de statut du ticket"; 
 $LANG["mailing"][28]="Contact"; 
 $LANG["mailing"][29]="Annulation réservation"; 
