@@ -2076,7 +2076,9 @@ function showJobDetails ($target,$ID){
 				echo "</td></tr>";
 			}
 		}
-		if ($canupdate||haveRight("comment_all_ticket","1")||haveRight("comment_ticket","1")){
+		if ($canupdate||haveRight("comment_all_ticket","1")
+			||(haveRight("comment_ticket","1")&&!ereg('old_',$job->fields["status"]))
+		){
 			echo "<tr><td colspan='2'>";
 			echo "<input type='file' name='filename' size='20'>";
 			if ($canupdate&&haveRight("document","r")){
@@ -2089,7 +2091,11 @@ function showJobDetails ($target,$ID){
 
 		echo "</td></tr>";
 		// Troisi�e Ligne
-		if ($canupdate||$canupdate_descr||haveRight("comment_all_ticket","1")||haveRight("comment_ticket","1")||haveRight("assign_ticket","1")||haveRight("steal_ticket","1")){
+		if ($canupdate||$canupdate_descr||haveRight("comment_all_ticket","1")
+			||(haveRight("comment_ticket","1")&&!ereg('old_',$job->fields["status"]))
+			||haveRight("assign_ticket","1")||haveRight("steal_ticket","1")
+			
+			){
 			echo "<tr class='tab_bg_1'><td colspan='3' class='center'>";
 			echo "<input type='submit' class='submit' name='update' value='".$LANG["buttons"][14]."'></td></tr>";
 		}
