@@ -137,8 +137,6 @@ function commonTrackingListHeader($output_type=HTML_OUTPUT,$target="",$parameter
 		echo displaySearchHeaderItem($output_type,$key,$header_num,$link,$issort,$order);
 	}
 
-	echo displaySearchHeaderItem($output_type,"",$header_num,"",0,$order);
-
 	// End Line for column headers		
 	echo displaySearchEndLine($output_type);
 }
@@ -219,7 +217,7 @@ function showCentralJobList($target,$start,$status="process",$showgrouptickets=t
 		echo "<tr><th></th>";
 		echo "<th>".$LANG["job"][4]."</th>";
 		echo "<th>".$LANG["common"][1]."</th>";
-		echo "<th colspan='2'>".$LANG["joblist"][6]."</th></tr>";
+		echo "<th>".$LANG["joblist"][6]."</th></tr>";
 		while ($i < $number) {
 			$ID = $DB->result($result, $i, "ID");
 			showJobVeryShort($ID);
@@ -575,28 +573,18 @@ function showJobShort($data, $followups,$output_type=HTML_OUTPUT,$row_num=0) {
 			$eigth_column.=showFollowupsShort($data["ID"]);
 		}
 
-
-		echo displaySearchItem($output_type,$eigth_column,$item_num,$row_num,$align_desc."width='300'");
-
-
-		// Nineth column
-		$nineth_column="";
-		// Job Controls
-
-		if ($output_type==HTML_OUTPUT){
-			if ($_SESSION["glpiactiveprofile"]["interface"]=="central"){
-				if (!$job->canShowTicket()) {
-					$nineth_column.="&nbsp;";
-				} else {
-					$nineth_column.="<a href=\"".$CFG_GLPI["root_doc"]."/front/tracking.form.php?ID=".$data["ID"]."\"><strong>".$LANG["joblist"][13]."</strong></a>&nbsp;(".$job->numberOfFollowups().")";
-				}
-			}
-			else {
-				$nineth_column.="<a href=\"".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php?show=user&amp;ID=".$data["ID"]."\">".$LANG["joblist"][13]."</a>&nbsp;(".$job->numberOfFollowups(haveRight("show_full_ticket","1")).")";
+		// Add link
+		if ($_SESSION["glpiactiveprofile"]["interface"]=="central"){
+			if ($job->canShowTicket()) {
+				$eigth_column="<a href=\"".$CFG_GLPI["root_doc"]."/front/tracking.form.php?ID=".$data["ID"]."\">$eigth_column</a>&nbsp;(".$job->numberOfFollowups().")";
 			}
 		}
-		
-		echo displaySearchItem($output_type,$nineth_column,$item_num,$row_num,$align." width='40'");
+		else {
+			$eigth_column="<a href=\"".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php?show=user&amp;ID=".$data["ID"]."\">$eigth_column</a>&nbsp;(".$job->numberOfFollowups(haveRight("show_full_ticket","1")).")";
+		}
+
+
+		echo displaySearchItem($output_type,$eigth_column,$item_num,$row_num,$align_desc."width='300'");
 
 		// Finish Line
 		echo displaySearchEndLine($output_type);
@@ -662,20 +650,19 @@ function showJobVeryShort($ID) {
 			echo "<td  align='center' >".$job->hardwaredatas->getType()."<br><strong>".$job->hardwaredatas->getNameID()."</strong></td>";
 		}
 
-		echo "<td ><strong>".$job->fields["name"];
-		echo "<img alt='".$LANG["joblist"][6]."' src='".$CFG_GLPI["root_doc"]."/pics/aide.png' onmouseout=\"cleanhide('comments_tracking".$job->fields["ID"]."')\" onmouseover=\"cleandisplay('comments_tracking".$job->fields["ID"]."')\" >";
-		echo "<span class='over_link' id='comments_tracking".$job->fields["ID"]."'>".nl2br($job->fields['contents'])."</span>";
-
-		echo "</strong>";
-		echo "</td>";
-
-		// Job Controls
-		echo "<td width='40' align='center'>";
+		echo "<td>";
 
 		if ($_SESSION["glpiactiveprofile"]["interface"]=="central")
-			echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/tracking.form.php?ID=".$job->fields["ID"]."\"><strong>".$LANG["joblist"][13]."</strong></a>&nbsp;(".$job->numberOfFollowups().")&nbsp;<br>";
+			echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/tracking.form.php?ID=".$job->fields["ID"]."\"><strong>";
 		else
-			echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php?show=user&amp;ID=".$job->fields["ID"]."\">".$LANG["joblist"][13]."</a>&nbsp;(".$job->numberOfFollowups().")&nbsp;<br>";
+			echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php?show=user&amp;ID=".$job->fields["ID"]."\"><strong>";
+
+		echo $job->fields["name"];
+		echo "</strong>&nbsp;<img alt='".$LANG["joblist"][6]."' src='".$CFG_GLPI["root_doc"]."/pics/aide.png' onmouseout=\"cleanhide('comments_tracking".$job->fields["ID"]."')\" onmouseover=\"cleandisplay('comments_tracking".$job->fields["ID"]."')\" >";
+		echo "<span class='over_link' id='comments_tracking".$job->fields["ID"]."'>".nl2br($job->fields['contents'])."</span>";
+		echo "</a>&nbsp;(".$job->numberOfFollowups().")&nbsp;";
+
+		echo "</td>";
 
 		// Finish Line
 		echo "</tr>";
