@@ -367,7 +367,7 @@ class Profile extends CommonDBTM{
 		// Assistance / Tracking-helpdesk
 		echo "<tr><td class='tab_bg_1' colspan='6' align='center'><strong>".$LANG["title"][24]."</strong></td></tr>";
 
-		echo "<tr><td class='tab_bg_5' colspan='6' ><strong>Création</strong></td></tr>";
+		echo "<tr><td class='tab_bg_5' colspan='6' ><strong>".$LANG["buttons"][8]."</strong></td></tr>";
 
 		echo "<tr class='tab_bg_2'>";
 		echo "<td>".$LANG["profiles"][5].":</td><td>";
@@ -381,7 +381,7 @@ class Profile extends CommonDBTM{
 		echo "</td>";
 		echo "</tr>";
 
-		echo "<tr><td class='tab_bg_5' colspan='6' ><strong>Edition</strong></td></tr>";
+		echo "<tr><td class='tab_bg_5' colspan='6' ><strong>".$LANG["buttons"][14]."</strong></td></tr>";
 
 		echo "<tr class='tab_bg_2'>";
 		echo "<td>".$LANG["profiles"][18].":</td><td>";
@@ -394,7 +394,7 @@ class Profile extends CommonDBTM{
 		dropdownYesNo("update_followups",$this->fields["update_followups"]);
 		echo "</td></tr>";
 
-		echo "<tr><td class='tab_bg_5' colspan='6' ><strong>Attribution</strong></td></tr>";
+		echo "<tr><td class='tab_bg_5' colspan='6' ><strong>".$LANG["buttons"][3]."</strong></td></tr>";
 
 		echo "<tr class='tab_bg_2'>";
 		
@@ -408,7 +408,7 @@ class Profile extends CommonDBTM{
 		dropdownYesNo("assign_ticket",$this->fields["assign_ticket"]);
 		echo "</td></tr>";
 
-		echo "<tr><td class='tab_bg_5' colspan='6' ><strong>Association</strong></td></tr>";
+		echo "<tr><td class='tab_bg_5' colspan='6' ><strong>".$LANG["common"][1]."</strong></td></tr>";
 		
 		echo "<tr class='tab_bg_2'>";
 		echo "<td>".$LANG["profiles"][27]."</td><td>";
@@ -440,7 +440,7 @@ class Profile extends CommonDBTM{
 
 
 		
-		echo "<tr><td class='tab_bg_5' colspan='6' ><strong>Vision</strong></td></tr>";
+		echo "<tr><td class='tab_bg_5' colspan='6' ><strong>".$LANG["buttons"][23]."</strong></td></tr>";
 
 		echo "<tr class='tab_bg_2'>";
 		
