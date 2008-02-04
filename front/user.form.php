@@ -187,7 +187,7 @@ else if (isset($_POST["deletegroup"]))
 					showDeviceUser($_GET["ID"]);
 					showUserReservations($_SERVER['PHP_SELF'],$_GET["ID"]);
 					if (haveRight("show_all_ticket", "1")){
-						showTrackingList($_SERVER['PHP_SELF'],$_GET["start"],$_GET["sort"],$_GET["order"],"all",'','',$_GET["ID"],-1);
+						showTrackingList($_SERVER['PHP_SELF'],$_GET["start"],$_GET["sort"],$_GET["order"],"all",'','',$_GET["ID"],0);
 					}
 					displayPluginAction(USER_TYPE,$_GET["ID"],$_SESSION['glpi_onglet']);
 					break;
@@ -198,7 +198,7 @@ else if (isset($_POST["deletegroup"]))
 					showDeviceUser($_GET["ID"]);
 					break;
 				case 3 :
-					showTrackingList($_SERVER['PHP_SELF'],$_GET["start"],$_GET["sort"],$_GET["order"],"all",'','',$_GET["ID"],-1);
+					showTrackingList($_SERVER['PHP_SELF'],$_GET["start"],$_GET["sort"],$_GET["order"],"all",'','',$_GET["ID"],0);
 					break;
 				case 4 :
 					showGroupAssociated($_SERVER['PHP_SELF'],$_GET["ID"]);
