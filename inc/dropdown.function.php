@@ -878,9 +878,10 @@ function dropdownNoneReadWrite($name,$value,$none=1,$read=1,$write=1){
  *
  *
  * @param $userID User ID for my device section
+ * @param $entity_restrict restrict to a specific entity
  * @return nothing (print out an HTML select box)
  */
-function dropdownMyDevices($userID=0){
+function dropdownMyDevices($userID=0,$entity_restrict=-1){
 	global $DB,$LANG,$CFG_GLPI,$LINK_ID_TABLE;
 
 	if ($userID==0) $userID=$_SESSION["glpiID"];
@@ -900,11 +901,11 @@ function dropdownMyDevices($userID=0){
 		// My items
 		foreach ($CFG_GLPI["linkuser_types"] as $type){
 			if ($_SESSION["glpiactiveprofile"]["helpdesk_hardware_type"]&pow(2,$type)){
-				$query="SELECT * from ".$LINK_ID_TABLE[$type]." WHERE FK_users='".$userID."' AND deleted='0' ";
+				$query="SELECT * FROM ".$LINK_ID_TABLE[$type]." WHERE FK_users='".$userID."' AND deleted='0' ";
 				if (in_array($LINK_ID_TABLE[$type],$CFG_GLPI["template_tables"])){
 					$query.=" AND is_template='0' ";
 				}
-				$query.=getEntitiesRestrictRequest("AND",$LINK_ID_TABLE[$type]);
+				$query.=getEntitiesRestrictRequest("AND",$LINK_ID_TABLE[$type],"",$entity_restrict);
 				$query.=" ORDER BY name ";
 
 				$result=$DB->query($query);
@@ -937,7 +938,7 @@ function dropdownMyDevices($userID=0){
 			$group_where="";
 			$groups=array();
 			$query="SELECT glpi_users_groups.FK_groups, glpi_groups.name FROM glpi_users_groups LEFT JOIN glpi_groups ON (glpi_groups.ID = glpi_users_groups.FK_groups) WHERE glpi_users_groups.FK_users='".$userID."' ";
-			$query.=getEntitiesRestrictRequest("AND","glpi_groups");
+			$query.=getEntitiesRestrictRequest("AND","glpi_groups","",$entity_restrict);
 			$result=$DB->query($query);
 			$first=true;
 			if ($DB->numrows($result)>0){
@@ -953,7 +954,7 @@ function dropdownMyDevices($userID=0){
 					if ($_SESSION["glpiactiveprofile"]["helpdesk_hardware_type"]&pow(2,$type))
 					{
 						$query="SELECT * FROM ".$LINK_ID_TABLE[$type]." WHERE $group_where AND deleted='0' ";
-						$query.=getEntitiesRestrictRequest("AND",$LINK_ID_TABLE[$type]);
+						$query.=getEntitiesRestrictRequest("AND",$LINK_ID_TABLE[$type],"",$entity_restrict);
 						$result=$DB->query($query);
 						if ($DB->numrows($result)>0){
 							$ci->setType($type);
@@ -1003,6 +1004,7 @@ function dropdownMyDevices($userID=0){
 					if (in_array($LINK_ID_TABLE[$type],$CFG_GLPI["template_tables"])){
 						$query.=" AND is_template='0' ";
 					}
+					$query.=getEntitiesRestrictRequest("AND",$LINK_ID_TABLE[$type],"",$entity_restrict);
 					$query.=" ORDER BY ".$LINK_ID_TABLE[$type].".name";
 
 					$result=$DB->query($query);
@@ -1033,8 +1035,10 @@ function dropdownMyDevices($userID=0){
 			// Software
 			if ($_SESSION["glpiactiveprofile"]["helpdesk_hardware_type"]&pow(2,SOFTWARE_TYPE)){
 				$query = "SELECT DISTINCT glpi_licenses.version as version, glpi_software.name as name, glpi_software.ID as ID FROM glpi_inst_software, glpi_software,glpi_licenses ";
-				$query.= "WHERE glpi_inst_software.license = glpi_licenses.ID AND glpi_licenses.sID = glpi_software.ID AND ".ereg_replace("XXXX","glpi_inst_software.cID",$search_computer)."AND  glpi_software.helpdesk_visible=1 order by glpi_software.name";
-				
+				$query.= "WHERE glpi_inst_software.license = glpi_licenses.ID AND glpi_licenses.sID = glpi_software.ID AND ".ereg_replace("XXXX","glpi_inst_software.cID",$search_computer)." AND  glpi_software.helpdesk_visible=1 ";
+				$query.=getEntitiesRestrictRequest("AND","glpi_software","",$entity_restrict);
+				$query.=" ORDER BY glpi_software.name";
+
 				$result=$DB->query($query);
 				if ($DB->numrows($result)>0){
 					$tmp_device="";
