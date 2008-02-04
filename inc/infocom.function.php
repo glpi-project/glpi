@@ -537,7 +537,7 @@ function cron_infocom($display=false){
 
 				// define message alert / Not for template items
 				if (!$ci->getField('is_template')){
-					$message[$entity].=$LANG["mailing"][40]." ".$ci->getType()." - ".$ci->getName()."<br>\n";
+					$message[$entity].=$LANG["mailing"][40]." ".$ci->getType()." - ".$ci->getName().": ".getWarrantyExpir($data["buy_date"],$data["warranty_duration"])."<br>\n";
 					$items[$entity][]=$data["ID"];
 				}
 			} 

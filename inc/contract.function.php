@@ -778,7 +778,7 @@ function cron_contract($display=false){
 				$items_notice[$data["FK_entities"]]=array();
 			}
 			// define message alert
-			$message[$data["FK_entities"]].=$LANG["mailing"][37]." ".$data["name"]."<br>\n";
+			$message[$data["FK_entities"]].=$LANG["mailing"][37]." ".$data["name"].": ".getWarrantyExpir($data["begin_date"],$data["duration"]-$data["notice"])."<br>\n";
 			$items_notice[$data["FK_entities"]][]=$data["ID"];
 		}
 
@@ -799,7 +799,7 @@ function cron_contract($display=false){
 			}
 
 			// define message alert
-			$message[$data["FK_entities"]].=$LANG["mailing"][38]." ".$data["name"]."<br>\n";
+			$message[$data["FK_entities"]].=$LANG["mailing"][38]." ".$data["name"].": ".getWarrantyExpir($data["begin_date"],$data["duration"])."<br>\n";
 			$items_end[$data["FK_entities"]][]=$data["ID"];
 		}
 
