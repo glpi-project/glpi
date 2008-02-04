@@ -1143,6 +1143,11 @@ $LANG["profiles"][34]="Légende";
 $LANG["profiles"][35]="Editer tous les suivis"; 
 $LANG["profiles"][36]="Voir les planning de personnes de mes groupes"; 
 $LANG["profiles"][37]="Entité par défaut"; 
+$LANG["profiles"][38]="Vision"; 
+$LANG["profiles"][39]="Attribution"; 
+$LANG["profiles"][40]="Edition"; 
+$LANG["profiles"][41]="Création"; 
+$LANG["profiles"][42]="Association"; 
 
 $LANG["registry"][1]="Ruche"; 
 $LANG["registry"][2]="Chemin"; 
