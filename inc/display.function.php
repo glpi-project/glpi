@@ -1678,7 +1678,7 @@ function printHelpDesk ($ID,$from_helpdesk) {
 		echo "<tr class='tab_bg_1'>";
 		echo "<td>".$LANG["help"][24].": </td>";
 		echo "<td class='center'>";
-		dropdownMyDevices($_SESSION["glpiID"]);
+		dropdownMyDevices($_SESSION["glpiID"],$_SESSION["glpiactive_entity"]);
 		
 		dropdownTrackingAllDevices("device_type",$device_type,0,$_SESSION["glpiactive_entity"]);
 		echo "</td></tr>";

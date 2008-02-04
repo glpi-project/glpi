@@ -724,7 +724,7 @@ function addFormTracking ($device_type=0,$ID=0,$author,$group,$assign,$assign_gr
 		echo "<tr class='tab_bg_2'>";
 		echo "<td class='center'>".$LANG["help"][24].": </td>";
 		echo "<td align='center' colspan='3'>";
-		dropdownMyDevices($_SESSION["glpiID"]);
+		dropdownMyDevices($_SESSION["glpiID"],$_SESSION["glpiactive_entity"]);
 		dropdownTrackingAllDevices("device_type",$device_type,0,$_SESSION["glpiactive_entity"]);
 		echo "</td></tr>";
 	} 

@@ -156,6 +156,7 @@ if (isset($_POST["comments"])&&$_POST["comments"]){
 if (isset($_POST["helpdesk_ajax"])&&$_POST["helpdesk_ajax"]){
 
 	$params=array('userID'=>'__VALUE__',
+			'entity_restrict'=>$_POST["entity_restrict"],
 			'device_type'=>0
 	);
 	ajaxUpdateItemOnSelectEvent("dropdown_author".$_POST["rand"],"tracking_my_devices",$CFG_GLPI["root_doc"]."/ajax/updateTrackingDeviceType.php",$params,false);
