@@ -488,7 +488,9 @@ function ocsImportComputer($ocs_id, $ocs_server_id, $lock = 0, $defaultentity = 
 				$input["FK_entities"] = $data['FK_entities'];
 				$input["name"] = $line["NAME"];
 				$input["ocs_import"] = 1;
-				$input["state"] = $cfg_ocs["default_state"];
+				if ($cfg_ocs["default_state"]>0){
+					$input["state"] = $cfg_ocs["default_state"];
+				}
 				$input["_from_ocs"] = 1;
 				$glpi_id = $comp->add($input);
 	
@@ -565,7 +567,7 @@ function ocsLinkComputer($ocs_id, $ocs_server_id, $glpi_id) {
 			$input["_from_ocs"] = 1;
 			
 			// Not already import from OCS / mark default state 
-			if (!$comp->fields['ocs_import']){
+			if (!$comp->fields['ocs_import'] && $ocsConfig["default_state"]>0){
 				$input["state"] = $ocsConfig["default_state"];
 			}
 	
@@ -2357,7 +2359,9 @@ function ocsUpdatePeripherals($device_type, $entity, $glpi_id, $ocs_id, $ocs_ser
 									$id_monitor = $DB->result($result_search, 0, "ID");
 								} else {
 									$input = $mon;
-									$input["state"] = $cfg_ocs["default_state"];
+									if ($cfg_ocs["default_state"]>0){
+										$input["state"] = $cfg_ocs["default_state"];
+									}
 									$input["FK_entities"] = $entity;
 									$input["_from_ocs"] = 1;
 									$id_monitor = $m->add($input);
@@ -2417,7 +2421,9 @@ function ocsUpdatePeripherals($device_type, $entity, $glpi_id, $ocs_id, $ocs_ser
 										// Nothing found : add it
 										if (!$id_monitor) {
 											$input = $mon;
-											$input["state"] = $cfg_ocs["default_state"];
+											if ($cfg_ocs["default_state"]>0){
+												$input["state"] = $cfg_ocs["default_state"];
+											}
 											$input["FK_entities"] = $entity;
 											$input["_from_ocs"] = 1;
 											$id_monitor = $m->add($input);
@@ -2452,7 +2458,9 @@ function ocsUpdatePeripherals($device_type, $entity, $glpi_id, $ocs_id, $ocs_ser
 									}
 									if (!$id_monitor) {
 										$input = $mon;
-										$input["state"] = $cfg_ocs["default_state"];
+										if ($cfg_ocs["default_state"]>0){
+											$input["state"] = $cfg_ocs["default_state"];
+										}
 										$input["FK_entities"] = $entity;
 										$input["_from_ocs"] = 1;
 										$id_monitor = $m->add($input);
@@ -2492,7 +2500,9 @@ function ocsUpdatePeripherals($device_type, $entity, $glpi_id, $ocs_id, $ocs_ser
 								$input = array ();
 								$input["ID"] = $id_monitor;
 								$input["deleted"] = 0;
-								$input["state"] = $cfg_ocs["default_state"];
+								if ($cfg_ocs["default_state"]>0){
+									$input["state"] = $cfg_ocs["default_state"];
+								}
 								$input["_from_ocs"] = 1;
 								$m->update($input);
 							} 
@@ -2556,7 +2566,9 @@ function ocsUpdatePeripherals($device_type, $entity, $glpi_id, $ocs_id, $ocs_ser
 										$id_printer = $DB->result($result_search, 0, "ID");
 									} else {
 										$input = $print;
-										$input["state"] = $cfg_ocs["default_state"];
+										if ($cfg_ocs["default_state"]>0){
+											$input["state"] = $cfg_ocs["default_state"];
+										}
 										$input["FK_entities"] = $entity;
 										$input["_from_ocs"] = 1;
 										$id_printer = $p->add($input);
@@ -2567,7 +2579,9 @@ function ocsUpdatePeripherals($device_type, $entity, $glpi_id, $ocs_id, $ocs_ser
 										//Import all printers as non global.
 										$input = $print;
 										$input["is_global"] = 0;
-										$input["state"] = $cfg_ocs["default_state"];
+										if ($cfg_ocs["default_state"]>0){
+											$input["state"] = $cfg_ocs["default_state"];
+										}
 										$input["FK_entities"] = $entity;
 										$input["_from_ocs"] = 1;
 										$id_printer = $p->add($input);
@@ -2581,7 +2595,9 @@ function ocsUpdatePeripherals($device_type, $entity, $glpi_id, $ocs_id, $ocs_ser
 									$input = array ();
 									$input["ID"] = $id_printer;
 									$input["deleted"] = 0;
-									$input["state"] = $cfg_ocs["default_state"];
+									if ($cfg_ocs["default_state"]>0){
+										$input["state"] = $cfg_ocs["default_state"];
+									}
 									$input["_from_ocs"] = 1;
 									$p->update($input);
 								}
@@ -2634,7 +2650,9 @@ function ocsUpdatePeripherals($device_type, $entity, $glpi_id, $ocs_id, $ocs_ser
 									$id_periph = $DB->result($result_search, 0, "ID");
 								} else {
 									$input = $periph;
-									$input["state"] = $cfg_ocs["default_state"];
+									if ($cfg_ocs["default_state"]>0){
+										$input["state"] = $cfg_ocs["default_state"];
+									}
 									$input["FK_entities"] = $entity;
 									$input["_from_ocs"] = 1;
 									$id_periph = $p->add($input);
@@ -2645,7 +2663,9 @@ function ocsUpdatePeripherals($device_type, $entity, $glpi_id, $ocs_id, $ocs_ser
 									//Import all peripherals as non global.
 									$input = $periph;
 									$input["is_global"] = 0;
-									$input["state"] = $cfg_ocs["default_state"];
+									if ($cfg_ocs["default_state"]>0){
+										$input["state"] = $cfg_ocs["default_state"];
+									}
 									$input["FK_entities"] = $entity;
 									$input["_from_ocs"] = 1;
 									$id_periph = $p->add($input);
@@ -2656,15 +2676,14 @@ function ocsUpdatePeripherals($device_type, $entity, $glpi_id, $ocs_id, $ocs_ser
 									$connID => $periph["name"]
 								), "import_peripheral");
 								//Update column "deleted" set value to 0 and set status to default
-								$default_state = $cfg_ocs["default_state"];
 								$input = array ();
 								$input["ID"] = $id_periph;
 								$input["deleted"] = 0;
-								$input["state"] = $default_state;
+								if ($cfg_ocs["default_state"]>0){
+									$input["state"] = $cfg_ocs["default_state"];
+								}
 								$input["_from_ocs"] = 1;
 								$p->update($input);
-								//$queryUpdate = "UPDATE glpi_peripherals SET deleted='0', state='$default_state' WHERE ID='$id_periph'";
-								//$DB->query($queryUpdate);
 							}
 						} else {
 							$id = array_search($periph["name"], $import_periph);
