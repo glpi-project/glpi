@@ -55,6 +55,9 @@ if (!isset($_POST['right'])) {
 if (!isset($_POST['all'])) {
 	$_POST['all']=0;
 }
+
+$used=array();
+
 if (isset($_POST['used'])) {
 	if (is_array($_POST['used'])) {
 		$used=$_POST['used'];
