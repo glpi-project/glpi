@@ -440,6 +440,7 @@ function updatedbUpTo031()
 			update0681to07();
 		case "0.7":
 		case "0.70.1":
+		case "0.70.2":
 			include("update_07_071.php");
 			update07to071();
 			break;
