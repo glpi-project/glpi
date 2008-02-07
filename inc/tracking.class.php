@@ -197,6 +197,7 @@ class Job extends CommonDBTM{
 			$input["_old_item"]=$this->fields["computer"];
 			$input["_old_item_type"]=$this->fields["device_type"];
 			$input["_old_author"]=$this->fields["author"];
+			$input["_old_recipient"]=$this->fields["recipient"];
 			$input["_old_group"]=$this->fields["FK_group"];
 			$input["_old_priority"]=$this->fields["priority"];
 			$input["_old_status"]=$this->fields["status"];
@@ -286,7 +287,7 @@ class Job extends CommonDBTM{
 					$ci->obj->update($newinput);
 				}
 			}
-	
+
 			if ($CFG_GLPI["followup_on_update_ticket"]&&count($updates)){
 	
 	
@@ -332,6 +333,16 @@ class Job extends CommonDBTM{
 						$author->getFromDB($this->fields["author"]);
 						$new_author_name=$author->getName();
 						$change_followup_content.=$LANG["mailing"][18].": $old_author_name -> ".$new_author_name."\n";
+		
+						$global_mail_change_count++;
+					break;
+					case "recipient":
+						$recipient=new User;
+						$recipient->getFromDB($input["_old_recipient"]);
+						$old_recipient_name=$recipient->getName();
+						$recipient->getFromDB($this->fields["recipient"]);
+						$new_recipient_name=$recipient->getName();
+						$change_followup_content.=$LANG["mailing"][50].": $old_recipient_name -> ".$new_recipient_name."\n";
 		
 						$global_mail_change_count++;
 					break;
