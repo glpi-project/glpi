@@ -874,6 +874,7 @@ $LANG["mailing"][46]="Changement de la description du ticket";
 $LANG["mailing"][47]="Erreur dans l'envoi de l'email";
 $LANG["mailing"][48]="Changement de la date d'ouverture"; 
 $LANG["mailing"][49]="Changement de la date de cloture";  
+$LANG["mailing"][50]="Changement du receveur du ticket"; 
 $LANG["mailing"][100]="Pas de catégorie attribuée"; 
 $LANG["mailing"][101]="Le suivi par email a été activé"; 
 $LANG["mailing"][102]="Le suivi par email a été désactivé"; 
