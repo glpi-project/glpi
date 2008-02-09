@@ -119,27 +119,37 @@ function establishDBConnection($use_slave, $required) {
 	global $DB;
 	$DB = null;
 
-	//Choose with connection to try first
-	if (!$use_slave)
+	//If no slave database, use master
+	if (!isDBSlaveActive())
+	{
 		$res = switchToMaster();
-	else
-		$res = switchToSlave();
-
-	//If connection failed but was required -> show error
-	if (!$res) {
-		if ($required == 1)
+		if (!$res)
 			displayMySQLError();
-		else {
-			//Try to establish the connection
-			if ($use_slave)
-				$res = switchToMaster();
-			else
-				$res = switchToSlave();
-
-			if (!$res)
+	}
+	else
+	{		
+		//Choose with connection to try first
+		if (!$use_slave)
+			$res = switchToMaster();
+		else
+			$res = switchToSlave();
+	
+		//If connection failed but was required -> show error
+		if (!$res) {
+			if ($required == 1)
 				displayMySQLError();
-			else
-				$DB->first_connection=false;	
+			else {
+				//Try to establish the connection
+				if ($use_slave)
+					$res = switchToMaster();
+				else
+					$res = switchToSlave();
+	
+				if (!$res)
+					displayMySQLError();
+				else
+					$DB->first_connection=false;	
+			}
 		}
 	}
 }
