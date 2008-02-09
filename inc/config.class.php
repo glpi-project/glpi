@@ -547,7 +547,7 @@ class Config extends CommonDBTM {
 					echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["install"][31] . "</td><td>";
 					echo "<input type=\"text\" name=\"_dbreplicate_dbuser\" value=\"" . $DBSlave->dbuser . "\">";
 					echo "<td class='center'>" . $LANG["install"][32] . "</td><td>";
-					echo "<input type=\"_dbreplicate_password\" name=\"dbpassword\" value=\"" . $DBSlave->dbpassword . "\">";
+					echo "<input type=\"password\" name=\"_dbreplicate_dbpassword\" value=\"" . $DBSlave->dbpassword . "\">";
 					echo "</td></tr>";
 		
 					echo "<tr class='tab_bg_2'><th colspan='4'>" . $LANG["setup"][704] . "</th></tr>";
