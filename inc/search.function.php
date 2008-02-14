@@ -1285,7 +1285,6 @@ function addGroupByHaving($GROUPBY,$field,$val,$num,$meta=0,$link=""){
 	if (!ereg("GROUP BY ID",$GROUPBY)) $GROUPBY=" GROUP BY ID ";
 
 
-	if (!ereg("$NAME$num",$GROUPBY)) {
 		if (ereg("HAVING",$GROUPBY)) $GROUPBY.=" ".$link." ";
 		else $GROUPBY.=" HAVING ";
 
@@ -1350,7 +1349,6 @@ function addGroupByHaving($GROUPBY,$field,$val,$num,$meta=0,$link=""){
 			$GROUPBY.= $NAME.$num.makeTextSearch($val,$NOT);
 			break;
 		}
-	}
 	return $GROUPBY;
 }
 
