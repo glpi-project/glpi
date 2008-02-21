@@ -80,9 +80,19 @@ $REFERER=preg_replace("/&/","&amp;",$REFERER);
 
 $track=new Job();
 
-if (isset($_POST["priority"]) && empty($_POST["contents"]))
+if (isset($_POST["priority"]) && $CFG_GLPI["ticket_content_mandatory"] && empty($_POST["contents"]))
 {
 	$error=$LANG["tracking"][8] ;
+	addFormTracking($device_type,$computer,$user,$group,$assign,$assign_group,$_SERVER['PHP_SELF'],$error);
+}
+elseif (isset($_POST["priority"]) && $CFG_GLPI["ticket_title_mandatory"] && empty($_POST["name"]))
+{
+	$error=$LANG["help"][40] ;
+	addFormTracking($device_type,$computer,$user,$group,$assign,$assign_group,$_SERVER['PHP_SELF'],$error);
+}
+elseif (isset($_POST["priority"]) && $CFG_GLPI["ticket_category_mandatory"] && !$_POST["category"])
+{
+	$error=$LANG["help"][41] ;
 	addFormTracking($device_type,$computer,$user,$group,$assign,$assign_group,$_SERVER['PHP_SELF'],$error);
 }
 elseif (isset($_POST["priority"]) && !empty($_POST["contents"]))

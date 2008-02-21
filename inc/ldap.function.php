@@ -53,6 +53,28 @@ if (!defined('GLPI_ROOT')) {
        return $result;
    }
 
+function ldapImportGroup ($group_dn,$ldap_server,$entity)
+{
+	$config_ldap = new AuthLDAP();
+	$res = $config_ldap->getFromDB($ldap_server);
+	$ldap_users = array ();
+	$group_dn = $group_dn;
+	
+	// we prevent some delay...
+	if (!$res) {
+		return false;
+	}
+	
+	//Connect to the directory
+	$ds = connect_ldap($config_ldap->fields['ldap_host'], $config_ldap->fields['ldap_port'], $config_ldap->fields['ldap_rootdn'], $config_ldap->fields['ldap_pass'], $config_ldap->fields['ldap_use_tls'],$config_ldap->fields['ldap_opt_deref']);
+	if ($ds) {
+		$group_infos = ldap_search_group_by_dn($ds, $config_ldap->fields['ldap_basedn'], stripslashes($group_dn),$config_ldap->fields["ldap_group_condition"]);
+		$group = new Group();
+		$group->add(array("name"=>$group_infos["cn"][0],"ldap_group_dn"=>$group_infos["dn"],"FK_entities"=>$entity));
+	}
+	
+	
+}
 function ldapImportUser ($login,$sync)
 {
 	ldapImportUserByServerId($login, $sync,$_SESSION["ldap_server"]);
@@ -70,7 +92,7 @@ function ldapImportUserByServerId($login, $sync,$ldap_server) {
 	}
 	
 	//Connect to the directory
-	$ds = connect_ldap($config_ldap->fields['ldap_host'], $config_ldap->fields['ldap_port'], $config_ldap->fields['ldap_rootdn'], $config_ldap->fields['ldap_pass'], $config_ldap->fields['ldap_use_tls']);
+	$ds = connect_ldap($config_ldap->fields['ldap_host'], $config_ldap->fields['ldap_port'], $config_ldap->fields['ldap_rootdn'], $config_ldap->fields['ldap_pass'], $config_ldap->fields['ldap_use_tls'],$config_ldap->fields['ldap_opt_deref']);
 	if ($ds) {
 		//Get the user's dn
 		$user_dn = ldap_search_user_dn($ds, $config_ldap->fields['ldap_basedn'], $config_ldap->fields['ldap_login'], stripslashes($login), $config_ldap->fields['ldap_condition']);
@@ -146,6 +168,114 @@ function ldapChooseDirectory($target) {
 
 	echo "</table></div></form>";
 }
+
+
+
+
+function getAllGroups($id_auth,$myfilter,$entity)
+{
+	global $DB, $LANG,$CFG_GLPI;
+	$config_ldap = new AuthLDAP();
+	$res = $config_ldap->getFromDB($id_auth);
+	$groups = array();
+	
+	$ds = connect_ldap($config_ldap->fields['ldap_host'], $config_ldap->fields['ldap_port'], $config_ldap->fields['ldap_rootdn'], $config_ldap->fields['ldap_pass'], $config_ldap->fields['ldap_use_tls'], $config_ldap->fields['ldap_opt_deref']);
+	if ($ds) {
+			$attrs = array ("dn","cn");
+	
+		//Get all groups from LDAP
+		if ($myfilter == '')
+			$filter = $config_ldap->fields['ldap_group_condition'];
+		else
+			$filter = $myfilter;
+		
+		$sr = @ldap_search($ds, $config_ldap->fields['ldap_basedn'],$filter , $attrs);
+
+		if ($sr){
+			$glpi_groups = array();
+			//Get all groups from GLPI DB for the current entity and the subentities
+			$sql = "SELECT name FROM glpi_groups ".getEntitiesRestrictRequest("WHERE","glpi_groups");
+
+			$res = $DB->query($sql);
+			//If the group exists in DB -> unset it from the LDAP groups
+			while ($group = $DB->fetch_array($res))
+				$glpi_groups[$group["name"]] = 1;
+			
+			$info = ldap_get_entries($ds, $sr);
+
+			for ($ligne = 0; $ligne < $info["count"]; $ligne++)
+			{
+				if (!isset($glpi_groups[$info[$ligne]["cn"][0]]))
+				{
+					$groups[$ligne]["dn"]=$info[$ligne]["dn"];
+					$groups[$ligne]["cn"]=$info[$ligne]["cn"][0];
+				}						
+			}
+		}
+		
+	}
+	return $groups;		
+}
+
+function showLdapGroups($target, $check, $start, $sync = 0,$filter='',$entity) {
+	global $DB, $CFG_GLPI, $LANG;
+
+	displayLdapFilter($target);
+	echo "<br>";	
+	$ldap_groups = getAllGroups($_SESSION["ldap_server"],$filter,$entity);
+
+	if (is_array($ldap_groups)){
+		$numrows = count($ldap_groups);
+	
+		$action = "toimport";
+		$form_action = "import_ok";
+	
+		if ($numrows > 0) {
+			$parameters = "check=$check";
+			printPager($start, $numrows, $target, $parameters);
+	
+			// delete end 
+			array_splice($ldap_groups, $start + $_SESSION["glpilist_limit"]);
+			// delete begin
+			if ($start > 0)
+				array_splice($ldap_groups, 0, $start);
+	
+			echo "<div class='center'>";
+			echo "<form method='post' name='ldap_form' action='" . $target . "'>";
+			echo "<a href='" . $target . "?check=all' onclick= \"if ( markAllRows('ldap_form') ) return false;\">" . $LANG["buttons"][18] . "</a>&nbsp;/&nbsp;<a href='" . $target . "?check=none' onclick= \"if ( unMarkAllRows('ldap_form') ) return false;\">" . $LANG["buttons"][19] . "</a>";
+			echo "<table class='tab_cadre'>";
+			echo "<tr><th>" . $LANG["buttons"][37]. "</th><th colspan='2'>" . $LANG["common"][35] . "</th><th>".$LANG["setup"][261]."</th>"; 
+			echo"<th>".$LANG["ocsng"][36]."</th></tr>";
+	
+			foreach ($ldap_groups as $groupinfos) {
+				$group = $groupinfos["cn"];
+				$group_dn = $groupinfos["dn"];
+					
+				echo "<tr align='center' class='tab_bg_2'>";
+				//Need to use " instead of ' because it doesn't work with names with ' inside !
+				echo "<td><input type='checkbox' name=\"" . $action . "[" .$group_dn . "]\" " . ($check == "all" ? "checked" : "") ."></td>";
+				echo "<td colspan='2'>" . $group . "</td>";
+				echo "<td>" .$group_dn. "</td>";
+				echo "<td>";
+				dropdownValue("glpi_entities", "toimport_entities[" .$group_dn . "]=".$entity, $entity);
+				echo "</td>";
+						
+				echo "</tr>";
+			}
+			echo "<tr class='tab_bg_1'><td colspan='5' align='center'>";
+			echo "<input class='submit' type='submit' name='" . $form_action . "' value='" . $LANG["buttons"][37] . "'>";
+			echo "</td></tr>";
+			echo "</table>";
+			echo "</form></div>";
+			printPager($start, $numrows, $target, $parameters);
+		} else {
+			echo "<div class='center'><strong>" . $LANG["ldap"][3] . "</strong></div>";
+		}
+	} else {
+		echo "<div class='center'><strong>" . $LANG["ldap"][3] . "</strong></div>";
+	}
+}
+
 
 //Get the list of LDAP users to add/synchronize
 function getAllLdapUsers($id_auth, $sync = 0,$myfilter='') {
@@ -346,7 +476,7 @@ function testLDAPConnection($id_auth,$replicate_id=-1) {
 		$host = $config_ldap->fields['ldap_host'];
 		$port = $config_ldap->fields['ldap_port'];
 	}
-	$ds = connect_ldap($host, $port, $config_ldap->fields['ldap_rootdn'], $config_ldap->fields['ldap_pass'], $config_ldap->fields['ldap_use_tls']);
+	$ds = connect_ldap($host, $port, $config_ldap->fields['ldap_rootdn'], $config_ldap->fields['ldap_pass'], $config_ldap->fields['ldap_use_tls'], $config_ldap->fields['ldap_opt_deref']);
 	if ($ds)
 		return true;
 	else
@@ -511,7 +641,7 @@ function displayLdapFilter($target)
 	{
 			$config_ldap = new AuthLDAP();
 			$res = $config_ldap->getFromDB($_SESSION["ldap_server"]);
-			$_SESSION["ldap_filter"]="(".$config_ldap->fields['ldap_login']."=*)";
+			$_SESSION["ldap_filter"]=$config_ldap->fields['ldap_group_condition'];
 	}
 		
 	echo "<div class='center'>";

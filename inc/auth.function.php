@@ -904,13 +904,14 @@ function getEntitiesRestrictRequest($separator = "AND", $table = "", $field = ""
  * @param $use_tls : use a tls connection ?
  * @return link to the LDAP server : false if connection failed
 **/
-function connect_ldap($host, $port, $login = "", $password = "", $use_tls = false) {
+function connect_ldap($host, $port, $login = "", $password = "", $use_tls = false,$deref_options) {
 	global $CFG_GLPI;
 
 	$ds = @ldap_connect($host, $port);
 	if ($ds) {
 		@ldap_set_option($ds, LDAP_OPT_PROTOCOL_VERSION, 3);
 		@ldap_set_option($ds, LDAP_OPT_REFERRALS, 0);
+		@ldap_set_option($ds, LDAP_OPT_DEREF, $deref_options);
 		if ($use_tls) {
 			if (!@ldap_start_tls($ds)) {
 				return false;
@@ -932,14 +933,28 @@ function connect_ldap($host, $port, $login = "", $password = "", $use_tls = fals
 	}
 }
 
-function try_connect_ldap($host, $port, $rdn, $rpass, $use_tls,$login, $password){
-	$ds = connect_ldap($host, $port, $rdn, $rpass, $use_tls);
+function try_connect_ldap($host, $port, $rdn, $rpass, $use_tls,$login, $password,$deref_options){
+	$ds = connect_ldap($host, $port, $rdn, $rpass, $use_tls,$deref_options);
 	// Test with login and password of the user
 	if (!$ds) {
-		$ds = connect_ldap($host, $port, $login, $password, $use_tls);
+		$ds = connect_ldap($host, $port, $login, $password, $use_tls,$deref_options);
+		
 	}
 	return $ds;		
 }
+
+function ldap_search_group_by_dn($ds, $basedn, $group_dn,$condition) {
+	if($result =  @ ldap_read($ds, $group_dn, "objectClass=*", array("cn")))
+	{
+		$info = ldap_get_entries($ds, $result);
+		if (is_array($info) AND $info['count'] == 1)
+			return $info[0];
+		else
+			return false;
+	}
+	return false;
+}
+
 
 function ldap_search_user_dn($ds, $basedn, $login_attr, $login, $condition) {
 
@@ -992,7 +1007,7 @@ function try_ldap_auth($identificat,$login,$password, $id_auth = -1) {
 **/
 function ldap_auth($identificat,$login,$password, $ldap_method) {
 
-	$user_dn = $identificat->connection_ldap($ldap_method["ID"],$ldap_method["ldap_host"], $ldap_method["ldap_port"], $ldap_method["ldap_basedn"], $ldap_method["ldap_rootdn"], $ldap_method["ldap_pass"], $ldap_method["ldap_login"],$login, $password, $ldap_method["ldap_condition"], $ldap_method["ldap_use_tls"]);
+	$user_dn = $identificat->connection_ldap($ldap_method["ID"],$ldap_method["ldap_host"], $ldap_method["ldap_port"], $ldap_method["ldap_basedn"], $ldap_method["ldap_rootdn"], $ldap_method["ldap_pass"], $ldap_method["ldap_login"],$login, $password, $ldap_method["ldap_condition"], $ldap_method["ldap_use_tls"],$ldap_method["alias_search_options"]);
 	if ($user_dn) {
 		$identificat->auth_succeded = true;
 		$identificat->extauth = 1;

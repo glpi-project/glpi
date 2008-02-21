@@ -65,7 +65,43 @@ if (empty($_POST)||count($_POST)==0){
    glpi_header($CFG_GLPI["root_doc"]."/front/helpdesk.public.php");
 }
 
-if (!empty($_POST["priority"]) && empty($_POST["contents"]))
+if (!empty($_POST["priority"]) && empty($_POST["name"]))
+{
+	if(!empty($_POST["type"]) && ($_POST["type"] == "Helpdesk")) {
+		nullHeader($LANG["title"][10],$_SERVER['PHP_SELF']);
+	}
+	else if ($_POST["_from_helpdesk"]){
+		helpHeader($LANG["title"][1],$_SERVER['PHP_SELF'],$_SESSION["glpiname"]);
+	}
+	else commonHeader($LANG["title"][1],$_SERVER['PHP_SELF'],$_SESSION["glpiname"],"maintain","tracking");
+
+	echo "<div align='center'><img src=\"".$CFG_GLPI["root_doc"]."/pics/warning.png\" alt=\"warning\"><br><br><b>";
+	echo $LANG["help"][200]."<br><br>";
+	displayBackLink();
+	echo "</b></div>";
+
+	nullFooter();
+	exit;
+}
+if (!empty($_POST["priority"]) && !$_POST["category"])
+{
+	if(!empty($_POST["type"]) && ($_POST["type"] == "Helpdesk")) {
+		nullHeader($LANG["title"][10],$_SERVER['PHP_SELF']);
+	}
+	else if ($_POST["_from_helpdesk"]){
+		helpHeader($LANG["title"][1],$_SERVER['PHP_SELF'],$_SESSION["glpiname"]);
+	}
+	else commonHeader($LANG["title"][1],$_SERVER['PHP_SELF'],$_SESSION["glpiname"],"maintain","tracking");
+
+	echo "<div align='center'><img src=\"".$CFG_GLPI["root_doc"]."/pics/warning.png\" alt=\"warning\"><br><br><b>";
+	echo $LANG["help"][201]."<br><br>";
+	displayBackLink();
+	echo "</b></div>";
+
+	nullFooter();
+	exit;
+}
+elseif (!empty($_POST["priority"]) && empty($_POST["contents"]))
 {
 	if(!empty($_POST["type"]) && ($_POST["type"] == "Helpdesk")) {
 		nullHeader($LANG["title"][10],$_SERVER['PHP_SELF']);

@@ -208,6 +208,17 @@ class Group extends CommonDBTM{
 	}
 
 
+	function title() {
+		global $LANG, $CFG_GLPI;
+
+		$buttons = array ();
+		if (haveRight("group", "w") && useAuthLdap()) {
+				$buttons["ldap.group.php"] = $LANG["setup"][3];
+			}
+
+		displayTitle($CFG_GLPI["root_doc"] . "/pics/groupes.png", $LANG["Menu"][14], '', $buttons);
+	}
+
 }
 
 ?>

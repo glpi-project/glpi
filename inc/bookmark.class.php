@@ -54,7 +54,7 @@ class Bookmark extends CommonDBTM {
 		$path = substr($taburl["path"],$index,strlen($taburl["path"]) - $index);
 			
 		echo "<input type='hidden' name='path' value='" . urlencode($path) . "'>";
-		echo "<input type='hidden' name='query' value='" . (isset($taburl["query"])?urlencode($taburl["query"]):'') . "'>";
+		echo "<input type='hidden' name='query' value='" . (isset($taburl["query"])?urlencode($taburl["query"]."&reset_before"):"reset_before") . "'>";
 
 		echo "<table class='tab_cadre'>";
 		echo "<tr><th align='center' colspan='2'>".$LANG["buttons"][51]." ".$LANG["bookmark"][1]."</th>";
@@ -82,6 +82,7 @@ class Bookmark extends CommonDBTM {
 	function showBookmarkLoadedForm($url)
 	{
 		global $LANG;
+		
 		echo "<script type='text/javascript' >\n";
 				echo "window.opener.location.href='$url';";
 				//echo "window.close();";

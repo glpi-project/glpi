@@ -313,6 +313,24 @@ function update07to071() {
 		$query = "ALTER TABLE `glpi_users` ADD `FK_entities` INT NOT NULL DEFAULT '0';";
 		$DB->query($query) or die("0.71 add default entity to user " . $LANG["update"][90] . $DB->error());
 	}
+	if (!FieldExists("glpi_auth_ldap", "ldap_opt_deref")) {
+		$query = "ALTER TABLE `glpi_auth_ldap` ADD `ldap_opt_deref` INT (1) NOT NULL DEFAULT '0';";
+		$DB->query($query) or die("0.71 add ldap_opt_deref to glpi_auth_ldap " . $LANG["update"][90] . $DB->error());
+	}
+
+	//ticket opening restrictions
+	if (!FieldExists("glpi_config", "ticket_title_mandatory")) {
+		$query = "ALTER TABLE `glpi_config` ADD `ticket_title_mandatory` INT (1) NOT NULL DEFAULT '0';";
+		$DB->query($query) or die("0.71 add ticket_title_mandatory to glpi_config " . $LANG["update"][90] . $DB->error());
+	}
+	if (!FieldExists("glpi_config", "ticket_content_mandatory")) {
+		$query = "ALTER TABLE `glpi_config` ADD `ticket_content_mandatory` INT (1) NOT NULL DEFAULT '1';";
+		$DB->query($query) or die("0.71 add ticket_content_mandatory to glpi_config " . $LANG["update"][90] . $DB->error());
+	}
+	if (!FieldExists("glpi_config", "ticket_category_mandatory")) {
+		$query = "ALTER TABLE `glpi_config` ADD `ticket_category_mandatory` INT (1) NOT NULL DEFAULT '0';";
+		$DB->query($query) or die("0.71 add ticket_category_mandatory to glpi_config " . $LANG["update"][90] . $DB->error());
+	}
 
 } // fin 0.71 #####################################################################################
 ?>

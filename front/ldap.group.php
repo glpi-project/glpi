@@ -1,6 +1,6 @@
 <?php
 /*
- * @version $Id$
+ * @version $Id: ldap.php 6217 2008-01-01 01:32:45Z moyo $
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2008 by the INDEPNET Development Team.
@@ -36,19 +36,17 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-checkRight("user","w");
+checkRight("group","w");
 
 commonHeader($LANG["setup"][3],$_SERVER['PHP_SELF'],"admin","group","ldap");
 if (isset($_SESSION["ldap_import"])) unset($_SESSION["ldap_import"]);
-if (isset($_SESSION["ldap_sync"])) unset($_SESSION["ldap_sync"]);
 if (isset($_SESSION["ldap_server"])) unset($_SESSION["ldap_server"]);
+if (isset($_SESSION["entity"])) unset($_SESSION["entity"]);
 
 echo "<div align='center'><table class='tab_cadre' cellpadding='5'>";
-echo "<tr><th>".$LANG["ldap"][0]."</th></tr>";
+echo "<tr><th>".$LANG["ldap"][23]."</th></tr>";
 
-echo "<tr class='tab_bg_1'><td  align='center'><a href=\"ldap.sync.php?next=listservers\"><b>".$LANG["ldap"][1]."</b></a></td></tr>";
-
-echo "<tr class='tab_bg_1'><td align='center'><a href=\"ldap.import.php?next=listservers\"><b>".$LANG["ldap"][2]."</b></a></td> </tr>";
+echo "<tr class='tab_bg_1'><td align='center'><a href=\"ldap.group.import.php?next=servers\"><b>".$LANG["ldap"][24]."</b></a></td> </tr>";
 
 echo "</table></div>";
 
