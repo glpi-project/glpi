@@ -1249,6 +1249,11 @@ function cron_ocsng() {
 
 		$query_ocs = "SELECT * FROM hardware INNER JOIN accountinfo ON (hardware.ID = accountinfo.HARDWARE_ID)
 			WHERE ((hardware.CHECKSUM & " . $cfg_ocs["checksum"] . ") > 0 OR hardware.LASTDATE > '$max_date') ";
+			
+		// workaround to avoid duplicate when synchro occurs during an inventory 
+		// "after" insert in ocsweb.hardware  and "before" insert in ocsweb.deleted_equiv 
+		$query_ocs .= " AND LASTDATE < TIMESTAMPADD(MINUTE,-3,now()) ";
+		
 		
 		if (!empty ($cfg_ocs["tag_limit"])) {
 			$splitter = explode("$", $cfg_ocs["tag_limit"]);
