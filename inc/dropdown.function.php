@@ -1998,26 +1998,31 @@ function dropdownGMT($name,$value='')
 	echo "</select>";	
 }
 
-function dropdownRules($rule_type,$name,$value='')
+function dropdownRules ($rule_type, $myname)
 {
-	global $DB;
+	global $DB, $CFG_GLPI, $LANG;
 
-	$ranks = array();
-	
-	$sql = "SELECT ID,name 
-		FROM glpi_rules_descriptions 
-		WHERE rule_type=".$rule_type." 
-		ORDER BY ranking ASC";
-	$res = $DB->query($sql);
+	$rand=mt_rand();
+	$limit_length=$CFG_GLPI["dropdown_limit"];
 
-	//New rule -> get the next free ranking
-	if ($DB->numrows($res)){
-		while ($data = $DB->fetch_array($res)){
-			$ranks[$data['ID']]=$data['name'];
-		} 
+	$use_ajax=false;
+	if ($CFG_GLPI["use_ajax"]){
+		$nb=countElementsInTable("glpi_rules_descriptions", "rule_type=".$rule_type);
+		
+		if ($nb>$CFG_GLPI["ajax_limit_count"]){
+			$use_ajax=true;
+		}
 	}
+	$params=array('searchText'=>'__VALUE__',
+		'myname'=>$myname,
+		'limit'=>$limit_length,
+		'rand'=>$rand,
+		'type'=>$rule_type
+		);
+	$default="<select name='$myname' id='dropdown_".$myname.$rand."'><option value='0'>------</option></select>\n";
+	ajaxDropdown($use_ajax,"/ajax/dropdownRules.php",$params,$default,$rand);
 
-	dropdownArrayValues($name,$ranks,$value);
+	return $rand;
 }
 
 function dropdownUnderProfiles($name,$value=''){

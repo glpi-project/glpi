@@ -328,38 +328,76 @@ class RuleCollection {
 		return $DB->query($sql);
 	}
 	
+	/**
+	 * Move a rule in an ordered collection
+	 * 
+	 * @param $ID of the rule to move
+	 * @param $ref_ID of the rule position  (0 means all, so before all or after all)
+	 * @param $type of move : after or before
+	 * 
+	 * @return true if all ok
+	 * 
+	**/
 	function moveRule($ID,$ref_ID,$type='after'){
 		global $DB;
 
 		$ruleDescription = new Rule;
-		$ruleDescription->getFromDB($ID);
-		$old_rank=$ruleDescription->fields["ranking"];	
-		$ruleDescription->getFromDB($ref_ID);
-		$rank=$ruleDescription->fields["ranking"];	
-
-		// Move items to replace new hole
-		$query="UPDATE glpi_rules_descriptions SET ranking=ranking-1 
-			WHERE rule_type ='".$this->rule_type."' 
-				AND ranking > '$old_rank' ";
-		$result = $DB->query($query);
-
-		// Move if rank is more than $rank / UPDATE rule
-		$query="UPDATE glpi_rules_descriptions SET ranking=ranking+1 
-			WHERE rule_type ='".$this->rule_type."' 
-				AND ranking ".($type=="after"?'>':'>=')." '$rank' ";
-		$result = $DB->query($query);
-		// Move rule
-		if ($type=='after'){
-			$rank++;
-		}
-		$query="UPDATE glpi_rules_descriptions SET ranking='$rank' 
-			WHERE ID='$ID' ";
-		$result = $DB->query($query);
-
 		
+		// Get actual ranking of Rule to move
+		$ruleDescription->getFromDB($ID);
+		$old_rank=$ruleDescription->fields["ranking"];
+		
+		// Compute new ranking
+		if ($ref_ID) { // Move after/before an existing rule
+			$ruleDescription->getFromDB($ref_ID);
+			$rank=$ruleDescription->fields["ranking"];	
+			
+		} else if ($type == "after") {
+			// Move after all			 
+			$query = "SELECT MAX(ranking) AS maxi FROM glpi_rules_descriptions  " .
+					" WHERE rule_type ='".$this->rule_type."' ";
+			$result = $DB->query($query);
+			$ligne = $DB->fetch_array($result);
+			$rank = $ligne['maxi'];
+		} else { 
+			// Move before all
+			$rank=0;
+		}	
+
+		// Move others rules in the collection
+		if ($old_rank < $rank) {
+			if ($type=="before") $rank--;
+
+			// Move back all rules between old and new rank
+			$query = "UPDATE glpi_rules_descriptions SET ranking=ranking-1 " .
+					" WHERE rule_type ='".$this->rule_type."' " .
+					" AND ranking > '$old_rank' AND ranking <= '$rank'";
+			$result = $DB->query($query);
+			
+		} else if ($old_rank > $rank) {
+			if ($type=="after") $rank++;
+			
+			// Move forward all rule  between old and new rank 
+			$query = "UPDATE glpi_rules_descriptions SET ranking=ranking+1 " .
+					" WHERE rule_type ='".$this->rule_type."' " .
+					" AND ranking >= '$rank' AND ranking < '$old_rank'";
+			$result = $DB->query($query);
+
+		} else { // $old_rank == $rank : nothing to do
+			$result = false;
+		}
+		
+		// Move the rule
+		if ($result && $old_rank != $rank) {	
+			$query = "UPDATE glpi_rules_descriptions SET ranking='$rank' " .
+					" WHERE ID='$ID' ";
+			$result = $DB->query($query);
+		} 
+		return ($result ? true : false);
 	}
+	
 	/**
-	* Process all the rules collection
+ 	* Process all the rules collection
 	* @param input the input data used to check criterias
 	* @param output the initial ouput array used to be manipulate by actions
 	* @param params parameters for all internal functions
