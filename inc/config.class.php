@@ -481,13 +481,11 @@ class Config extends CommonDBTM {
 				dropdownYesNo("license_deglobalisation",$CFG_GLPI["license_deglobalisation"]);
 				echo"</td></tr>";
 
-				echo "<tr><th colspan='2'>" . $LANG["setup"][134]. "</th><th colspan='2'>" . $LANG["Menu"][31] . "</th></tr>";
+				echo "<tr><th colspan='2'>" . $LANG["setup"][134]. "</th><th colspan='2'></th></tr>";
 
 				echo "<tr class='tab_bg_2'><td class='center'> " . $LANG["setup"][133] . " </td><td>";
 				dropdownYesNo("ocs_mode", $CFG_GLPI["ocs_mode"]);
-				echo "</td><td class='center'>" . $LANG["setup"][219] . "</td><td>";
-				dropdownYesNo("permit_helpdesk", $CFG_GLPI["permit_helpdesk"]);
-				echo "</td></tr>";
+				echo "</td><td class='center'colspan='2'></tr>";
 
 				echo "<tr><th colspan='2'>" . $LANG["login"][10] . "</th><th colspan='2'>".$LANG["Menu"][20]."</th></tr>";
 				echo "<tr class='tab_bg_2'><td class='center'> " . $LANG["setup"][124] . " </td><td>";
@@ -515,10 +513,22 @@ class Config extends CommonDBTM {
 				echo "<td class='center'> " . $LANG["common"][15] . " </td><td>";
 				dropdownYesNo("autoupdate_link_location", $CFG_GLPI["autoupdate_link_location"]);
 				echo " </td></tr>";
-
 				
-				echo "<tr class='tab_bg_2'><td colspan='4' align='center'><input type=\"submit\" name=\"update\" class=\"submit\" value=\"" . $LANG["buttons"][2] . "\" ></td></tr>";
+				echo "<tr><th colspan='4' align='center'>" . $LANG["Menu"][31]. "</th></tr>";
 
+				echo "<tr class='tab_bg_2'><td class='center'> " . $LANG["setup"][219] . " </td><td>";
+				dropdownYesNo("permit_helpdesk", $CFG_GLPI["permit_helpdesk"]);
+				echo "</td><td class='center'>" . $LANG["setup"][610] . "</td><td>";
+				dropdownYesNo("ticket_title_mandatory", $CFG_GLPI["ticket_title_mandatory"]);
+				echo "</td></tr>";
+
+				echo "<tr class='tab_bg_2'><td class='center'> " . $LANG["setup"][611] . " </td><td>";
+				dropdownYesNo("ticket_content_mandatory", $CFG_GLPI["ticket_content_mandatory"]);
+				echo "</td><td class='center'>" . $LANG["setup"][612] . "</td><td>";
+				dropdownYesNo("ticket_category_mandatory", $CFG_GLPI["ticket_category_mandatory"]);
+				echo "</td></tr>";
+
+				echo "<tr class='tab_bg_2'><td colspan='4' align='center'><input type=\"submit\" name=\"update\" class=\"submit\" value=\"" . $LANG["buttons"][2] . "\" ></td></tr>";
 									
 				echo "</table></div>";
 				

@@ -524,6 +524,8 @@ $LANG["help"][31]="Logiciel";
 $LANG["help"][32]="Vous n'avez pas spécifié de numéro de matériel pour une catégorie de matériel précis."; 
 $LANG["help"][33]="Si vous ne trouvez pas votre matériel, vous pouvez utiliser le type Général"; 
 $LANG["help"][35]="Téléphone"; 
+$LANG["help"][40]="Votre ticket ne contient pas de titre, veuillez corriger.";
+$LANG["help"][41]="Votre ticket ne contient pas de catégorie, veuillez corriger.";  
 
 $LANG["install"][0]="Installation ou mise à jour de GLPI"; 
 $LANG["install"][1]="Choisissez 'Installation' pour  une nouvelle installation complète de GLPI ( les données importées par GLPI seront les données par défaut)."; 
@@ -710,7 +712,14 @@ $LANG["ldap"][19]="Réplicat";
 $LANG["ldap"][20]="Ajout d'un réplicat LDAP";
 $LANG["ldap"][21]="Serveur principal";
 $LANG["ldap"][22]="Réplicat(s)";
+$LANG["ldap"][23]="Import en masse de groupes depuis un annuaire";
+$LANG["ldap"][24]="Importation de nouveaux groupes";
 
+$LANG["ldap"][30]="Traitement des alias LDAP";
+$LANG["ldap"][31]="None (défaut)";
+$LANG["ldap"][32]="Always";
+$LANG["ldap"][33]="Searching";
+$LANG["ldap"][34]="Finding";
 
 $LANG["links"][1]="Lien ou Nom du fichier"; 
 $LANG["links"][3]="Ajouter un lien externe"; 
@@ -1596,11 +1605,16 @@ $LANG["setup"][604]="Associer à un groupe";
 $LANG["setup"][605]="Ajouter Groupe"; 
 $LANG["setup"][606]="Ajout impossible. L'utilisateur existe déjà."; 
 $LANG["setup"][607]="Associer à un profil"; 
+
+$LANG["setup"][610]="Titre du ticket obligatoire"; 
+$LANG["setup"][611]="Contenu du ticket obligatoire"; 
+$LANG["setup"][612]="Catégorie du ticket obligatoire"; 
  
 $LANG["setup"][701]="Sélectionnez le plugin à configurer"; 
 $LANG["setup"][702]="plugin incompatible avec cette version"; 
 $LANG["setup"][703]="Générale"; 
 $LANG["setup"][704]="Notifications"; 
+
 
 //MySQL Replicate
 $LANG["setup"][800]="Réplicat MySQL";

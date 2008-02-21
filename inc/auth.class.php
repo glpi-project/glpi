@@ -147,7 +147,7 @@ class Identification {
 	 *
 	 * @return String : basedn of the user / false if not founded
 	**/
-	function connection_ldap($id,$host, $port, $basedn, $rdn, $rpass, $login_attr, $login, $password, $condition = "", $use_tls = false) {
+	function connection_ldap($id,$host, $port, $basedn, $rdn, $rpass, $login_attr, $login, $password, $condition = "", $use_tls = false,$deref_options) {
 		global $CFG_GLPI, $LANG;
 
 		// we prevent some delay...
@@ -155,12 +155,12 @@ class Identification {
 			return false;
 		}
 
-		$this->ldap_connection = try_connect_ldap($host, $port, $rdn, $rpass, $use_tls,$login, $password);
+		$this->ldap_connection = try_connect_ldap($host, $port, $rdn, $rpass, $use_tls,$login, $password,$deref_options);
 
 		//If user is not authentified on this directory, try replicates (if replicates exists)
 		if (!$this->ldap_connection && $id != -1){
 			foreach (getAllReplicateForAMaster($id) as $replicate){
-				$this->ldap_connection = try_connect_ldap($replicate["ldap_host"], $replicate["ldap_port"], $rdn, $rpass, $use_tls,$login, $password);
+				$this->ldap_connection = try_connect_ldap($replicate["ldap_host"], $replicate["ldap_port"], $rdn, $rpass, $use_tls,$login, $password,$deref_options);
 				if ($this->ldap_connection){
 					break;
 				}
@@ -678,6 +678,17 @@ class AuthLDAP extends CommonDBTM {
 			echo "<td class='center'>" . $LANG["setup"][186] . "</td><td>";
 			dropdownGMT("timezone",$this->fields["timezone"]);
 			echo"</td></tr>";			
+
+			echo "<tr class='tab_bg_2'>";
+			echo "<td class='center'>" . $LANG["ldap"][30] . "</td><td>";
+			$alias_options[LDAP_DEREF_NEVER] = $LANG["ldap"][31];
+			$alias_options[LDAP_DEREF_ALWAYS] = $LANG["ldap"][32];
+			$alias_options[LDAP_DEREF_SEARCHING] = $LANG["ldap"][33];
+			$alias_options[LDAP_DEREF_FINDING] = $LANG["ldap"][34];
+			dropdownArrayValues("ldap_opt_deref",$alias_options,$this->fields["ldap_opt_deref"]);
+			echo"</td>";			
+			echo "<td class='center' colspan='2'></td></tr>";
+
 
 			echo "<tr class='tab_bg_1'><td align='center' colspan='4'>" . $LANG["setup"][259] . "</td></tr>";
 
