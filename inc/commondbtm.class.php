@@ -542,12 +542,13 @@ class CommonDBTM {
 	 *
 	 *@param $input array : the _POST vars returned bye the item form when press delete
 	 *@param $force boolean : force deletion
+	 *@param $history boolean : do history log ?
 	 *
 	 *
 	 *@return Nothing ()
 	 *
 	 **/
-	function delete($input,$force=0) {
+	function delete($input,$force=0,$history=1) {
 		global $DB;
 		
 		if ($DB->isSlave())
@@ -566,6 +567,13 @@ class CommonDBTM {
 					if ($force){
 						doHook("item_purge",array("type"=>$this->type, "ID" => $this->fields["ID"]));
 					} else {
+						if ($this->dohistory&&$history){
+							$changes[0] = 0;
+							$changes[1] = $changes[2] = "";
+				
+							historyLog ($this->fields["ID"],$this->type,$changes,0,HISTORY_DELETE_ITEM);
+						}
+
 						doHook("item_delete",array("type"=>$this->type, "ID" => $this->fields["ID"]));
 					}
 				}
@@ -596,17 +604,26 @@ class CommonDBTM {
      * Restore an item trashed in the database. 
      * 
      *@param $input array : the _POST vars returned bye the item form when press restore 
+     *@param $history boolean : do history log ?
      * 
      *@return Nothing () 
      *@todo specific ones : cartridges / consumables 
      * 
     **/ 
 	// specific ones : cartridges / consumables
-	function restore($input) {
+	function restore($input,$history=1) {
 		$input['_item_type_']=$this->type;
 		$input=doHookFunction("pre_item_restore",$input);
 
 		if ($this->restoreInDB($input["ID"])){
+			if ($this->dohistory&&$history){
+				$changes[0] = 0;
+				$changes[1] = $changes[2] = "";
+
+
+				historyLog ($input["ID"],$this->type,$changes,0,HISTORY_RESTORE_ITEM);
+			}
+
 			doHook("item_restore",array("type"=>$this->type, "ID" => $input["ID"]));
 		}
 	}
