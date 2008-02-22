@@ -194,6 +194,13 @@ function showHistory($device_type,$id_device){
 
 			switch ($data["linked_action"]){
 
+				case HISTORY_DELETE_ITEM :
+					$change = $LANG["log"][22];	
+					break;
+				case HISTORY_RESTORE_ITEM :
+					$change = $LANG["log"][23];	
+					break;
+
 				case HISTORY_ADD_DEVICE :
 					$field=getDeviceTypeLabel($data["device_internal_type"]);
 					$change = $LANG["devices"][25]."&nbsp;<strong>:</strong>&nbsp;\"".$data[ "new_value"]."\"";	
