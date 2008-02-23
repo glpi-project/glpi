@@ -117,6 +117,10 @@ class Cron {
 				if ($CFG_GLPI["consumables_alert"]>0)
 					$this->taches["consumable"]=$CFG_GLPI["consumables_alert"];
 			}
+			if ($CFG_GLPI["licenses_alert"]>0){
+				$this->taches["software"]=DAY_TIMESTAMP;
+			}
+
 			$this->taches["contract"]=DAY_TIMESTAMP;
 			$this->taches["infocom"]=DAY_TIMESTAMP;
 			$this->taches["logs"]=DAY_TIMESTAMP;
@@ -126,8 +130,9 @@ class Cron {
 			$this->taches["dbreplicate"]=300;
 			
 			// Auto update check
-			if ($CFG_GLPI["auto_update_check"]>0)
-			$this->taches["check_update"]=$CFG_GLPI["auto_update_check"]*DAY_TIMESTAMP;
+			if ($CFG_GLPI["auto_update_check"]>0){
+				$this->taches["check_update"]=$CFG_GLPI["auto_update_check"]*DAY_TIMESTAMP;
+			}
 			// Garbage collector for expired file cache
 			if ($CFG_GLPI["use_cache"]){
 				$this->taches["cache"]=DAY_TIMESTAMP;

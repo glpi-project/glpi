@@ -1355,4 +1355,95 @@ function addSoftwareOrRestoreFromTrash($name,$manufacturer,$entity,$comments='',
 		$ID = addSoftware($name, $manufacturer, $entity, $comments, $process_type);
 	return $ID;	
 }
+
+
+/**
+ * Cron action on softwares : alert on expired licences
+ *
+ **/
+function cron_software($display=false){
+	global $DB,$CFG_GLPI,$LANG;
+
+	if (!$CFG_GLPI["mailing"]){
+		return false;
+	}
+
+	loadLanguage($CFG_GLPI["default_language"]);
+
+	$message=array();
+	$items_notice=array();
+	$items_end=array();
+
+	// Check notice
+	$query="SELECT glpi_licenses.*, glpi_software.FK_entities, glpi_software.name as softname
+		FROM glpi_licenses 
+		LEFT JOIN glpi_alerts ON (glpi_licenses.ID = glpi_alerts.FK_device 
+					AND glpi_alerts.device_type='".LICENSE_TYPE."' 
+					AND glpi_alerts.type='".ALERT_END."') 
+		LEFT JOIN glpi_software ON (glpi_licenses.sID = glpi_software.ID)
+		WHERE glpi_alerts.date IS NULL
+			AND glpi_licenses.expire <> '0000-00-00' 
+			AND glpi_licenses.expire IS NOT NULL 
+			AND glpi_licenses.expire < CURDATE()
+		";
+
+	$result=$DB->query($query);
+	if ($DB->numrows($result)>0){
+		while ($data=$DB->fetch_array($result)){
+			if (!isset($message[$data["FK_entities"]])){
+				$message[$data["FK_entities"]]="";
+			}
+			if (!isset($items_notice[$data["FK_entities"]])){
+				$items[$data["FK_entities"]]=array();
+			}
+
+			$name = $data['softname'].' '.$data['version'].' - '.$data['serial'];
+
+			// define message alert
+			if (strstr($message[$data["FK_entities"]],$name)===false){
+				$message[$data["FK_entities"]].=$LANG["mailing"][51]." ".$name.": ".convDate($data["expire"])."<br>\n";
+			}
+			$items[$data["FK_entities"]][]=$data["ID"];
+		}
+
+
+	}
+
+	if (count($message)>0){
+		foreach ($message as $entity => $msg){
+			$mail=new MailingAlert("alertlicense",$msg,$entity);
+			if ($mail->send()){
+				if ($display){
+					addMessageAfterRedirect("Entity $entity :  $msg");
+				}
+				logInFile("cron","Entity $entity :  $msg\n");
+		
+				// Mark alert as done
+				$alert=new Alert();
+				$input["device_type"]=LICENSE_TYPE;
+
+				$input["type"]=ALERT_END;
+				if (isset($items[$entity])){
+					foreach ($items[$entity] as $ID){
+						$input["FK_device"]=$ID;
+						$alert->add($input);
+						unset($alert->fields['ID']);
+					}
+				}
+			} else {
+				if ($display){
+					addMessageAfterRedirect("Entity $entity :  Send licenses alert failed");
+				}
+				logInFile("cron","Entity $entity :  Send licenses alert failed\n");
+			}
+		}
+		return 1;
+	}
+
+	return 0;
+
+
+}
+
+
 ?>

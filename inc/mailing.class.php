@@ -1121,6 +1121,9 @@ class MailingAlert
 			case "alertinfocom":
 				$subject.=" ".$LANG["mailing"][41]. " - ".getDropdownName("glpi_entities",$this->entity);
 			break;
+			case "alertlicense":
+				$subject.=" ".$LANG["mailing"][52]. " - ".getDropdownName("glpi_entities",$this->entity);
+			break;
 		}
 		return $subject;
 	}
