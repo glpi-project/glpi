@@ -38,7 +38,6 @@
 define('GLPI_ROOT', '.');
 
 
-
 include (GLPI_ROOT . "/config/based_config.php");
 if(!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
 	include (GLPI_ROOT . "/inc/common.function.php");
