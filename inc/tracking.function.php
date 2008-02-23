@@ -114,17 +114,18 @@ function commonTrackingListHeader($output_type=HTML_OUTPUT,$target="",$parameter
 	// $show_sort if 
 	$header_num=1;
 
-	$items=array(
-			$LANG["joblist"][0]=>"glpi_tracking.status",
-			$LANG["common"][27]=>"glpi_tracking.date",
-			$LANG["common"][26]=>"glpi_tracking.date_mod",
-			$LANG["joblist"][2]=>"glpi_tracking.priority",
-			$LANG["job"][4]=>"glpi_tracking.author",
-			$LANG["joblist"][4]=>"glpi_tracking.assign",
-			$LANG["common"][1]=>"glpi_tracking.device_type,glpi_tracking.computer",
-			$LANG["common"][36]=>"glpi_dropdown_tracking_category.completename",
-			$LANG["common"][57]=>"glpi_tracking.name",
-		    );
+	$items[$LANG["joblist"][0]]="glpi_tracking.status";
+	$items[$LANG["common"][27]]="glpi_tracking.date";
+	$items[$LANG["common"][26]]="glpi_tracking.date_mod";
+	if (count($_SESSION["glpiactiveentities"])>1){
+		$items[$LANG["Menu"][37]]="glpi_entities.completename";
+	}
+	$items[$LANG["joblist"][2]]="glpi_tracking.priority";
+	$items[$LANG["job"][4]]="glpi_tracking.author";
+	$items[$LANG["joblist"][4]]="glpi_tracking.assign";
+	$items[$LANG["common"][1]]="glpi_tracking.device_type,glpi_tracking.computer";
+	$items[$LANG["common"][36]]="glpi_dropdown_tracking_category.completename";
+	$items[$LANG["common"][57]]="glpi_tracking.name";
 
 	foreach ($items as $key => $val){
 		$issort=0;
@@ -318,8 +319,7 @@ function showOldJobListForItem($username,$item_type,$item,$sort="",$order="") {
 
 		commonTrackingListHeader(HTML_OUTPUT,$_SERVER['PHP_SELF'],"ID=$item",$sort,$order);
 
-		while ($data=$DB->fetch_assoc($result))
-		{
+		while ($data=$DB->fetch_assoc($result)){
 			showJobShort($data, 0);
 			$i++;
 		}
@@ -381,8 +381,9 @@ function showJobListForItem($username,$item_type,$item,$sort="",$order="") {
 		
 		commonTrackingListHeader(HTML_OUTPUT,$_SERVER['PHP_SELF'],"ID=$item",$sort,$order);
 
-		while ($data=$DB->fetch_assoc($result))
+		while ($data=$DB->fetch_assoc($result)){
 			showJobShort($data, 0);
+		}
 		echo "</table></div>";
 	} 
 	else
@@ -484,6 +485,13 @@ function showJobShort($data, $followups,$output_type=HTML_OUTPUT,$row_num=0) {
 		$second_col=convDateTime($data["date_mod"]);
 
 		echo displaySearchItem($output_type,$second_col,$item_num,$row_num,$align." width=90");
+
+		// Second TER column
+		if (count($_SESSION["glpiactiveentities"])>1){
+			$second_col=getDropdownName("glpi_entities",$data['FK_entities']);
+	
+			echo displaySearchItem($output_type,$second_col,$item_num,$row_num,$align." width=100");
+		}
 
 		// Third Column
 		echo displaySearchItem($output_type,"<strong>".getPriorityName($data["priority"])."</strong>",$item_num,$row_num,"$align bgcolor='$bgcolor'");
