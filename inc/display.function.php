@@ -1774,8 +1774,7 @@ function printHelpDesk ($ID,$from_helpdesk) {
 	echo "<td>";
 	dropdownPriority("priority",3);
 	echo "</td></tr>";
-	if($CFG_GLPI["mailing"] != 0)
-	{
+	if(isAuthorMailingActivatedForHelpdesk()){
 		echo "<tr class='tab_bg_1'>";
 		echo "<td>".$LANG["help"][8].":</td>";
 		echo "<td>";

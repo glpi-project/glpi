@@ -225,4 +225,19 @@ function isValidEmail($email="")
 	else return true;
 }
 
+function isAuthorMailingActivatedForHelpdesk(){
+	global $DB,$CFG_GLPI;
+
+	if ($CFG_GLPI['mailing']){
+		$query="SELECT COUNT(ID) FROM glpi_mailing WHERE type IN ('new','followup','update','finish') 
+				AND item_type = '".USER_MAILING_TYPE."' AND FK_item = '".AUTHOR_MAILING."' ;";
+		if ($result=$DB->query($query)){
+			if ($DB->result($result,0,0)>0){
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
 ?>
