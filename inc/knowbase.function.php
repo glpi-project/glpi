@@ -310,7 +310,7 @@ function showKbItemList($target,$field,$phrasetype,$contains,$sort,$order,$start
 			}
 
 			// Display footer
-			if ($output_type==PDF_OUTPUT){
+			if ($output_type==PDF_OUTPUT_LANDSCAPE || $output_type==PDF_OUTPUT_PORTRAIT){
 				echo displaySearchFooter($output_type,getDropdownName("glpi_dropdown_kbcategories",$parentID));
 			} else {
 				echo displaySearchFooter($output_type);

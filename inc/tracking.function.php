@@ -1577,7 +1577,7 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$to
 			}
 			$title="";
 			// Title for PDF export
-			if ($output_type==PDF_OUTPUT){
+			if ($output_type==PDF_OUTPUT_LANDSCAPE || $output_type==PDF_OUTPUT_PORTRAIT){
 				$title.=$LANG["joblist"][0]." = ";
 				switch($status){
 					case "new": $title.=$LANG["joblist"][9];break;

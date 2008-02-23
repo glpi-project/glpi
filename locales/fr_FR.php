@@ -249,6 +249,8 @@ $LANG["common"][64]="Superviseur";
 $LANG["common"][65]="Interface"; 
 $LANG["common"][66]="Tous"; 
 $LANG["common"][67]="Autres";
+$LANG["common"][68]="Paysage";
+$LANG["common"][69]="Portrait";
 
 $LANG["computers"][9]="OS"; 
 $LANG["computers"][10]="OS Numéro de série"; 

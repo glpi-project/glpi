@@ -50,7 +50,8 @@ function displaySearchHeaderItem($type,$value,&$num,$linkto="",$issort=0,$order=
 	global $CFG_GLPI;
 	$out="";
 	switch ($type){
-		case PDF_OUTPUT : //pdf
+		case PDF_OUTPUT_LANDSCAPE : //pdf
+		case PDF_OUTPUT_PORTRAIT :
 			global $PDF_HEADER;
 			$PDF_HEADER[$num]=utf8_decode(html_clean($value));
 			break;
@@ -106,7 +107,8 @@ function displaySearchHeaderItem($type,$value,&$num,$linkto="",$issort=0,$order=
 function displaySearchItem($type,$value,&$num,$row,$extraparam=''){
 	$out="";
 	switch ($type){
-		case PDF_OUTPUT : //pdf
+		case PDF_OUTPUT_LANDSCAPE : //pdf
+		case PDF_OUTPUT_PORTRAIT :
 			global $PDF_ARRAY,$PDF_HEADER;
 			$PDF_ARRAY[$row][$num]=utf8_decode(html_clean($value));
 			break;
@@ -143,7 +145,8 @@ function displaySearchError($type){
 	global $LANG;
 	$out="";
 	switch ($type){
-		case PDF_OUTPUT : //pdf
+		case PDF_OUTPUT_LANDSCAPE : //pdf
+		case PDF_OUTPUT_PORTRAIT :
 			break;
 		case SYLK_OUTPUT : //sylk
 			break;
@@ -170,12 +173,22 @@ function displaySearchFooter($type,$title=""){
 	global $LANG;
 	$out="";
 	switch ($type){
-		case PDF_OUTPUT : //pdf
+		case PDF_OUTPUT_LANDSCAPE : //pdf
 			global $PDF_HEADER,$PDF_ARRAY;
 			$pdf= new Cezpdf('a4','landscape');
 			$pdf->selectFont(GLPI_ROOT."/lib/ezpdf/fonts/Helvetica.afm");
 			$pdf->ezStartPageNumbers(750,10,10,'left',"GLPI PDF export - ".convDate(date("Y-m-d"))." - ".count($PDF_ARRAY)." ".utf8_decode($LANG["pager"][5])."- {PAGENUM}/{TOTALPAGENUM}");
 			$options=array('fontSize'=>8,'colGap'=>2,'maxWidth'=>800,'titleFontSize'=>8,);
+			$pdf->ezTable($PDF_ARRAY,$PDF_HEADER,utf8_decode($title),$options);
+			$pdf->ezStream();
+
+			break;
+		case PDF_OUTPUT_PORTRAIT : //pdf
+			global $PDF_HEADER,$PDF_ARRAY;
+			$pdf= new Cezpdf('a4','portrait');
+			$pdf->selectFont(GLPI_ROOT."/lib/ezpdf/fonts/Helvetica.afm");
+			$pdf->ezStartPageNumbers(750,10,10,'left',"GLPI PDF export - ".convDate(date("Y-m-d"))." - ".count($PDF_ARRAY)." ".utf8_decode($LANG["pager"][5])."- {PAGENUM}/{TOTALPAGENUM}");
+			$options=array('fontSize'=>8,'colGap'=>2,'maxWidth'=>565,'titleFontSize'=>8,);
 			$pdf->ezTable($PDF_ARRAY,$PDF_HEADER,utf8_decode($title),$options);
 			$pdf->ezStream();
 
@@ -228,7 +241,8 @@ function displaySearchFooter($type,$title=""){
 function displaySearchHeader($type,$rows,$cols,$fixed=0){
 	$out="";
 	switch ($type){
-		case PDF_OUTPUT : //pdf
+		case PDF_OUTPUT_LANDSCAPE : //pdf
+		case PDF_OUTPUT_PORTRAIT :
 			global $PDF_ARRAY,$PDF_HEADER;
 			$PDF_ARRAY=array();
 			$PDF_HEADER=array();
@@ -312,7 +326,8 @@ function displaySearchHeader($type,$rows,$cols,$fixed=0){
 function displaySearchNewLine($type,$odd=false){
 	$out="";
 	switch ($type){
-		case PDF_OUTPUT : //pdf
+		case PDF_OUTPUT_LANDSCAPE : //pdf
+		case PDF_OUTPUT_PORTRAIT :
 			break;
 		case SYLK_OUTPUT : //sylk
 //			$out="\n";
@@ -341,7 +356,8 @@ function displaySearchNewLine($type,$odd=false){
 function displaySearchEndLine($type){
 	$out="";
 	switch ($type){
-		case PDF_OUTPUT : //pdf
+		case PDF_OUTPUT_LANDSCAPE : //pdf
+		case PDF_OUTPUT_PORTRAIT :
 			break;
 		case SYLK_OUTPUT : //sylk
 			break;
