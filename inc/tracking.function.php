@@ -703,7 +703,6 @@ function addFormTracking ($device_type=0,$ID=0,$author,$group,$assign,$assign_gr
 	if (haveRight("comment_all_ticket","1")){
 		echo "&nbsp:&nbsp;";
 		dropdownStatus("status",1);		
-		
 	}
 
 	if (isMultiEntitiesMode()){
@@ -815,7 +814,7 @@ function addFormTracking ($device_type=0,$ID=0,$author,$group,$assign,$assign_gr
 
 
 
-	if($CFG_GLPI["mailing"] == 1){
+	if(isAuthorMailingActivatedForHelpdesk()){
 
 		$query="SELECT email from glpi_users WHERE ID='$author'";
 		
