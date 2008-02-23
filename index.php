@@ -35,7 +35,6 @@
 
 // Test si config_db n'existe pas on lance l'installation
 
-
 define('GLPI_ROOT', '.');
 
 
