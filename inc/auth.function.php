@@ -682,11 +682,14 @@ function changeActiveEntities($ID="all",$recursive=false) {
 		$active=key($_SESSION['glpiactiveentities']);
 		$_SESSION["glpiactive_entity"] = $active;
 		$_SESSION["glpiactive_entity_name"] = getDropdownName("glpi_entities",$active);
+		$_SESSION["glpiactive_entity_shortname"] = getTreeLeafValueName("glpi_entities",$active);
 		if ($recursive){
 			$_SESSION["glpiactive_entity_name"] .= " (".$LANG["entity"][7].")";
+			$_SESSION["glpiactive_entity_shortname"] .= " (".$LANG["entity"][7].")";
 		}
 		if ($ID=="all"){
 			$_SESSION["glpiactive_entity_name"] .= " (".$LANG["buttons"][40].")";
+			$_SESSION["glpiactive_entity_shortname"] .= " (".$LANG["buttons"][40].")";
 		}
 		if (countElementsInTable('glpi_entities')<count($_SESSION['glpiactiveentities'])){
 			$_SESSION['glpishowallentities']=1;

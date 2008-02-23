@@ -2198,8 +2198,8 @@ function showProfileSelecter($target){
 		}
 		
 		echo "<li>";
-		echo "<a href='#' onclick=\"completecleandisplay('show_entities$addname');\">";
-		echo $_SESSION["glpiactive_entity_name"];
+		echo "<a href='#' title=\"".$_SESSION["glpiactive_entity_name"]."\" onclick=\"completecleandisplay('show_entities$addname');\">";
+		echo $_SESSION["glpiactive_entity_shortname"];
 		echo "</a>";
 		echo "<div id='show_entities$addname' onmouseover=\"completecleandisplay('show_entities$addname');\">";	
 		
