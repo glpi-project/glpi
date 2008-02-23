@@ -103,26 +103,49 @@ if (isset($_POST["device_type"])){
 	$REDIRECT=$_SERVER['HTTP_REFERER'];
 	
 		switch($_POST["action"]){
-			case "connect":
+			case "connect_to_computer":
 				$ci=new CommonItem();
 				$ci2=new CommonItem();
-	
-			if (isset($_POST["connect_item"])&&$_POST["connect_item"]){
-				foreach ($_POST["item"] as $key => $val){
-					if ($val==1&&$ci->getFromDB($_POST["device_type"],$key)) {
-						// Items exists ?
-						if ($ci2->getFromDB(COMPUTER_TYPE,$_POST["connect_item"])){
-							// Entity security
-							if ($ci->obj->fields["FK_entities"]==$ci2->obj->fields["FK_entities"]){
-								if ($ci->obj->fields["is_global"]
-								||(!$ci->obj->fields["is_global"]&&getNumberConnections($_POST["device_type"],$key)==0)){
-									Connect($key,$_POST["connect_item"],$_POST["device_type"]);
+
+				if (isset($_POST["connect_item"])&&$_POST["connect_item"]){
+					foreach ($_POST["item"] as $key => $val){
+						if ($val==1&&$ci->getFromDB($_POST["type"],$_POST["connect_item"])) {
+							// Items exists ?
+							if ($ci2->getFromDB(COMPUTER_TYPE,$key)){
+								// Entity security
+								if ($ci->obj->fields["FK_entities"]==$ci2->obj->fields["FK_entities"]){
+									if ($ci->obj->fields["is_global"]
+									||(!$ci->obj->fields["is_global"]&&getNumberConnections($_POST["device_type"],$key)==0)){
+										Connect($_POST["connect_item"],$key,$_POST["type"]);
+									}
 								}
 							}
 						}
 					}
 				}
-			}
+	
+			break;
+
+			case "connect":
+				$ci=new CommonItem();
+				$ci2=new CommonItem();
+	
+				if (isset($_POST["connect_item"])&&$_POST["connect_item"]){
+					foreach ($_POST["item"] as $key => $val){
+						if ($val==1&&$ci->getFromDB($_POST["device_type"],$key)) {
+							// Items exists ?
+							if ($ci2->getFromDB(COMPUTER_TYPE,$_POST["connect_item"])){
+								// Entity security
+								if ($ci->obj->fields["FK_entities"]==$ci2->obj->fields["FK_entities"]){
+									if ($ci->obj->fields["is_global"]
+									||(!$ci->obj->fields["is_global"]&&getNumberConnections($_POST["device_type"],$key)==0)){
+										Connect($key,$_POST["connect_item"],$_POST["device_type"]);
+									}
+								}
+							}
+						}
+					}
+				}
 	
 			break;
 			case "disconnect":

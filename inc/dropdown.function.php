@@ -776,10 +776,11 @@ function dropdownDeviceTypes($name,$value=0,$types=array()){
  * @param $value default value
  * @param $value_type default value for the device type
  * @param $entity_restrict Restrict to a defined entity
-* @param $types Types used
+ * @param $types Types used
+ * @param $onlyglobal Restrict to global items
  * @return nothing (print out an HTML select box)
  */
-function dropdownAllItems($myname,$value_type=0,$value=0,$entity_restrict=-1,$types='') {
+function dropdownAllItems($myname,$value_type=0,$value=0,$entity_restrict=-1,$types='',$onlyglobal=false) {
 	global $LANG,$CFG_GLPI;
 	if (!is_array($types)){
 		$types=$CFG_GLPI["state_types"];
@@ -805,7 +806,11 @@ function dropdownAllItems($myname,$value_type=0,$value=0,$entity_restrict=-1,$ty
 			'value'=>$value,
 			'myname'=>$myname,
 			'entity_restrict'=>$entity_restrict,
+			'onlyglobal'=>$entity_restrict,
 			);
+		if ($onlyglobal){
+			$params['onlyglobal']=1;
+		}
 		ajaxUpdateItemOnSelectEvent("item_type$rand","show_$myname$rand",$CFG_GLPI["root_doc"]."/ajax/dropdownAllItems.php",$params);
 
 		echo "<br><span id='show_$myname$rand'>&nbsp;</span>\n";
@@ -1473,6 +1478,7 @@ function dropdownMassiveAction($device_type,$deleted=0){
 				break;
 			case COMPUTER_TYPE :
 				if ($isadmin){
+					echo "<option value=\"connect_to_computer\">".$LANG["buttons"][9]."</option>";
 					echo "<option value=\"install\">".$LANG["buttons"][4]."</option>";
 					if ($CFG_GLPI['ocs_mode']){
 						if (haveRight("ocsng","w") || haveRight("sync_ocsng","w")){

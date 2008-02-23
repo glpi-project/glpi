@@ -67,6 +67,9 @@ if (!isset($_POST["limit"])) $_POST["limit"]=$CFG_GLPI["dropdown_limit"];
 		$where.=" AND is_template=0 ";
 	}
 
+	if (isset($_POST['onlyglobal'])&&$_POST['onlyglobal']){
+		$where.=" AND is_global=1 ";
+	}
 
 	$NBMAX=$CFG_GLPI["dropdown_max"];
 	$LIMIT="LIMIT 0,$NBMAX";
@@ -111,7 +114,6 @@ if (!isset($_POST["limit"])) $_POST["limit"]=$CFG_GLPI["dropdown_limit"];
 		}
 
 		$query = "SELECT * FROM ".$_POST['table']." $where ORDER BY $add_order completename $LIMIT";
-
 		//error_log("SQL1:".$query);
 		$result = $DB->query($query);
 

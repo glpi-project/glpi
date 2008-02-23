@@ -107,6 +107,10 @@ if (isset($_POST["action"])&&isset($_POST["type"])&&!empty($_POST["type"])){
 			dropdownConnect(COMPUTER_TYPE,$_POST["type"],"connect_item");
 		echo "<input type=\"submit\" name=\"massiveaction\" class=\"submit\" value=\"".$LANG["buttons"][2]."\" >";
 		break;
+		case "connect_to_computer":
+			dropdownAllItems("connect_item",0,0,$_SESSION["glpiactive_entity"],array(PHONE_TYPE,MONITOR_TYPE,PRINTER_TYPE,PERIPHERAL_TYPE),true);
+		echo "<input type=\"submit\" name=\"massiveaction\" class=\"submit\" value=\"".$LANG["buttons"][2]."\" >";
+		break;
 		case "disconnect":
 			echo "<input type=\"submit\" name=\"massiveaction\" class=\"submit\" value=\"".$LANG["buttons"][2]."\" >";
 		break;
