@@ -75,6 +75,9 @@ if (isset($LINK_ID_TABLE[$_POST["idtable"]])){
 	if(isset($_POST['entity_restrict'])) {
 		$params['entity_restrict']=$_POST['entity_restrict'];
 	}
+	if(isset($_POST['onlyglobal'])) {
+		$params['onlyglobal']=$_POST['onlyglobal'];
+	}
 	
 	$default="<select name='".$_POST["myname"]."'><option value='0'>------</option></select>";
 	ajaxDropdown($use_ajax,"/ajax/$link",$params,$default,$rand);
