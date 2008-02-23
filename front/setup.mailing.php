@@ -43,6 +43,7 @@ $NEEDED_ITEMS = array (
 	"cartridge",
 	"contract",
 	"infocom",
+	"software",
 	"cron"
 );
 
@@ -76,6 +77,11 @@ else if (!empty ($_POST["test_cron_contracts"])) {
 else if (!empty ($_POST["test_cron_infocoms"])) {
 	addMessageAfterRedirect($LANG["install"][6]);
 	cron_infocom(true);
+	glpi_header($_SERVER['HTTP_REFERER']);
+}
+else if (!empty ($_POST["test_cron_softwares"])) {
+	addMessageAfterRedirect($LANG["install"][6]);
+	cron_software(true);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (!empty ($_POST["test_smtp_send"])) {

@@ -332,5 +332,14 @@ function update07to071() {
 		$DB->query($query) or die("0.71 add ticket_category_mandatory to glpi_config " . $LANG["update"][90] . $DB->error());
 	}
 
+
+	// Add alerts on licenses
+	if (!FieldExists("glpi_config", "licenses_alert")) {
+		$query = "ALTER TABLE `glpi_config` ADD `licenses_alert` SMALLINT NOT NULL DEFAULT '0' AFTER `infocom_alerts` ;";
+		$DB->query($query) or die("0.71 add licenses_alert to glpi_config " . $LANG["update"][90] . $DB->error());
+	}
+
+	
+
 } // fin 0.71 #####################################################################################
 ?>

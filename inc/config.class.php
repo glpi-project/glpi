@@ -687,6 +687,10 @@ class Config extends CommonDBTM {
 			echo "<option value='" . MONTH_TIMESTAMP . "' " . ($CFG_GLPI["consumables_alert"] == MONTH_TIMESTAMP ? "selected" : "") . " >" . $LANG["setup"][309] . "</option>";
 			echo "</select>";
 			echo "</td></tr>";
+
+			echo "<tr class='tab_bg_2'><td >" . $LANG["setup"][264] . "</td><td>";
+			dropdownYesNo("licenses_alert", $CFG_GLPI["licenses_alert"]);
+			echo "</td></tr>";
 	
 			echo "<tr class='tab_bg_2'><td align='center' colspan='2'>";
 			echo "<input type=\"submit\" name=\"update_mailing\" class=\"submit\" value=\"" . $LANG["buttons"][2] . "\" >";
@@ -814,6 +818,13 @@ class Config extends CommonDBTM {
 			echo "<tr class='tab_bg_1'>";
 			showFormMailingType("alertinfocom", $profiles);
 			echo "</tr>";
+			echo "<tr><th colspan='3'>" . $LANG["setup"][264]."&nbsp;&nbsp;";
+			echo "<input class=\"submit\" type=\"submit\" name=\"test_cron_softwares\" value=\"" . $LANG["buttons"][50] . "\">";
+			echo "</th></tr>";
+			echo "<tr class='tab_bg_1'>";
+			showFormMailingType("alertlicense", $profiles);
+			echo "</tr>";
+
 			echo "</table>";
 			echo "</div>";
 		break;
