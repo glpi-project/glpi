@@ -188,7 +188,7 @@ function displayStats($type,$field,$date1,$date2,$start,$value,$value2=""){
 			else $nb=0;
 
 			$timedisplay=$nb*HOUR_TIMESTAMP;
-			if ($output_type==HTML_OUTPUT || $output_type==PDF_OUTPUT){
+			if ($output_type==HTML_OUTPUT || $output_type==PDF_OUTPUT_LANDSCAPE || $output_type==PDF_OUTPUT_PORTRAIT){
 				$timedisplay=timestampToString($timedisplay,0);
 			}
 			echo displaySearchItem($output_type,$timedisplay,$item_num,$row_num);
@@ -204,14 +204,14 @@ function displayStats($type,$field,$date1,$date2,$start,$value,$value2=""){
 			else $nb=0;
 
 			$timedisplay=$nb*MINUTE_TIMESTAMP;
-			if ($output_type==HTML_OUTPUT || $output_type==PDF_OUTPUT){
+			if ($output_type==HTML_OUTPUT || $output_type==PDF_OUTPUT_LANDSCAPE || $output_type==PDF_OUTPUT_PORTRAIT){
 				$timedisplay=timestampToString($timedisplay,0);
 			}
 			echo displaySearchItem($output_type,$timedisplay,$item_num,$row_num);
 			//Le temps total de l'intervention r�lle
 			//The total realtime to resolv
 			$timedisplay=$total_realtime*MINUTE_TIMESTAMP;
-			if ($output_type==HTML_OUTPUT || $output_type==PDF_OUTPUT){
+			if ($output_type==HTML_OUTPUT || $output_type==PDF_OUTPUT_LANDSCAPE || $output_type==PDF_OUTPUT_PORTRAIT){
 				$timedisplay=timestampToString($timedisplay,0);
 			}
 			echo displaySearchItem($output_type,$timedisplay,$item_num,$row_num);				
@@ -227,7 +227,7 @@ function displayStats($type,$field,$date1,$date2,$start,$value,$value2=""){
 			else $nb=0;
 
 			$timedisplay=$nb*HOUR_TIMESTAMP;
-			if ($output_type==HTML_OUTPUT || $output_type==PDF_OUTPUT){
+			if ($output_type==HTML_OUTPUT || $output_type==PDF_OUTPUT_LANDSCAPE || $output_type==PDF_OUTPUT_PORTRAIT){
 				$timedisplay=timestampToString($timedisplay,0);
 			}
 			echo displaySearchItem($output_type,$timedisplay,$item_num,$row_num);

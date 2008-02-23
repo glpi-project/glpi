@@ -1942,12 +1942,14 @@ function printPager($start,$numrows,$target,$parameters,$item_type_output=0,$ite
 			echo "<input type='hidden' name=\"".substr($split[$i],0,$pos)."\" value=\"".substr($split[$i],$pos+1)."\">";
 		}
 		echo "<select name='display_type'>";
-		echo "<option value='2'>".$LANG["buttons"][27]."</option>";
-		echo "<option value='1'>".$LANG["buttons"][28]."</option>";
-		echo "<option value='3'>".$LANG["buttons"][44]."</option>";
-		echo "<option value='-2'>".$LANG["buttons"][29]."</option>";
-		echo "<option value='-1'>".$LANG["buttons"][30]."</option>";
-		echo "<option value='-3'>".$LANG["buttons"][45]."</option>";
+		echo "<option value='".PDF_OUTPUT_LANDSCAPE."'>".$LANG["buttons"][27]." ".$LANG["common"][68]."</option>";
+		echo "<option value='".PDF_OUTPUT_PORTRAIT."'>".$LANG["buttons"][27]." ".$LANG["common"][69]."</option>";
+		echo "<option value='".SYLK_OUTPUT."'>".$LANG["buttons"][28]."</option>";
+		echo "<option value='".CSV_OUTPUT."'>".$LANG["buttons"][44]."</option>";
+		echo "<option value='-".PDF_OUTPUT_LANDSCAPE."'>".$LANG["buttons"][29]." ".$LANG["common"][68]."</option>";
+		echo "<option value='-".PDF_OUTPUT_PORTRAIT."'>".$LANG["buttons"][29]." ".$LANG["common"][69]."</option>";
+		echo "<option value='-".SYLK_OUTPUT."'>".$LANG["buttons"][30]."</option>";
+		echo "<option value='-".CSV_OUTPUT."'>".$LANG["buttons"][45]."</option>";
 		echo "</select>";
 		echo "&nbsp;<input type='image' name='export'  src='".$CFG_GLPI["root_doc"]."/pics/greenbutton.png' title='".$LANG["buttons"][31]."' value='".$LANG["buttons"][31]."'>";
 		echo "</form>";

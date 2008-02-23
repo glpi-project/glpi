@@ -1192,7 +1192,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 			}
 			$title="";
 			// Create title
-			if ($output_type==PDF_OUTPUT) {
+			if ($output_type==PDF_OUTPUT_LANDSCAPE || $output_type==PDF_OUTPUT_PORTRAIT){
 				if ($_SESSION["glpisearchcount"][$type]>0&&count($contains)>0) {
 					for ($key=0;$key<$_SESSION["glpisearchcount"][$type];$key++){
 						if (strlen($contains[$key])){
