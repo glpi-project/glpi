@@ -445,8 +445,8 @@ class CommonDBTM {
 
 		if ($addMessAfterRedirect) {
 			addMessageAfterRedirect($LANG["common"][70] . 
-			": <a href='" . $CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$this->type] . "?ID=" . $input['ID'] . "'>" .
-			(isset($input["name"]) && !empty($input["name"]) ? $input["name"] : "(".$input['ID'].")") . "</a>");
+			": <a href='" . $CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$this->type] . "?ID=" . $this->fields['ID'] . "'>" .
+			(isset($this->fields["name"]) && !empty($this->fields["name"]) ? $this->fields["name"] : "(".$this->fields['ID'].")") . "</a>");
 		} 
 	}
 
@@ -564,7 +564,7 @@ class CommonDBTM {
 		}
 
 		if ($addMessAfterRedirect) {
-			addMessageAfterRedirect($LANG["common"][71].": ".(isset($input["name"]) && !empty($input["name"]) ? $input["name"] : "(".$input['ID'].")"));
+			addMessageAfterRedirect($LANG["common"][71].": ".(isset($this->fields["name"]) && !empty($this->fields["name"]) ? $this->fields["name"] : "(".$this->fields['ID'].")"));
 		} 
 	}
 
@@ -693,8 +693,8 @@ class CommonDBTM {
 
 		if ($addMessAfterRedirect) {
 			addMessageAfterRedirect($LANG["common"][72] . 
-			": <a href='" . $CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$this->type] . "?ID=" . $input['ID'] . "'>" .
-			(isset($input["name"]) && !empty($input["name"]) ? $input["name"] : "(".$input['ID'].")") . "</a>");
+			": <a href='" . $CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$this->type] . "?ID=" . $this->fields['ID'] . "'>" .
+			(isset($this->fields["name"]) && !empty($this->fields["name"]) ? $this->fields["name"] : "(".$this->fields['ID'].")") . "</a>");
 		} 
 	}
 
@@ -720,7 +720,7 @@ class CommonDBTM {
 		}
 
 		if ($addMessAfterRedirect) {
-			addMessageAfterRedirect($LANG["common"][73].": ".(isset($input["name"]) && !empty($input["name"]) ? $input["name"] : "(".$input['ID'].")"));
+			addMessageAfterRedirect($LANG["common"][73].": ".(isset($this->fields["name"]) && !empty($this->fields["name"]) ? $this->fields["name"] : "(".$this->fields['ID'].")"));
 		} 
 	}
 
@@ -796,8 +796,8 @@ class CommonDBTM {
 
 		if ($addMessAfterRedirect) {
 			addMessageAfterRedirect($LANG["common"][74] . 
-			": <a href='" . $CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$this->type] . "?ID=" . $input['ID'] . "'>" .
-			(isset($input["name"]) && !empty($input["name"]) ? $input["name"] : "(".$input['ID'].")") . "</a>");
+			": <a href='" . $CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$this->type] . "?ID=" . $this->fields['ID'] . "'>" .
+			(isset($this->fields["name"]) && !empty($this->fields["name"]) ? $this->fields["name"] : "(".$this->fields['ID'].")") . "</a>");
 		} 
 	}
 
