@@ -431,7 +431,7 @@ class CommonDBTM {
 	function addMessageOnAddAction($input){
 		global $INFOFORM_PAGES, $CFG_GLPI, $LANG;
 
-		if (!isset($INFOFORM_PAGES[$this->type]){
+		if (!isset($INFOFORM_PAGES[$this->type])){
 			return;
 		}
 
@@ -551,7 +551,7 @@ class CommonDBTM {
 	function addMessageOnUpdateAction($input){
 		global $INFOFORM_PAGES, $CFG_GLPI, $LANG;
 
-		if (!isset($INFOFORM_PAGES[$this->type]){
+		if (!isset($INFOFORM_PAGES[$this->type])){
 			return;
 		}
 
@@ -675,7 +675,7 @@ class CommonDBTM {
 	function addMessageOnDeleteAction($input){
 		global $INFOFORM_PAGES, $CFG_GLPI, $LANG;
 
-		if (!isset($INFOFORM_PAGES[$this->type]){
+		if (!isset($INFOFORM_PAGES[$this->type])){
 			return;
 		}
 
@@ -707,7 +707,7 @@ class CommonDBTM {
 	function addMessageOnPurgeAction($input){
 		global $INFOFORM_PAGES, $CFG_GLPI, $LANG;
 
-		if (!isset($INFOFORM_PAGES[$this->type]){
+		if (!isset($INFOFORM_PAGES[$this->type])){
 			return;
 		}
 
@@ -782,7 +782,7 @@ class CommonDBTM {
 	function addMessageOnRestoreAction($input){
 		global $INFOFORM_PAGES, $CFG_GLPI, $LANG;
 
-		if (!isset($INFOFORM_PAGES[$this->type]){
+		if (!isset($INFOFORM_PAGES[$this->type])){
 			return;
 		}
 
@@ -794,7 +794,7 @@ class CommonDBTM {
 			$addMessAfterRedirect=false;
 		}
 
-		if ($addMessAfterRedirect)) {
+		if ($addMessAfterRedirect) {
 			addMessageAfterRedirect($LANG["common"][74] . 
 			" : <a href='" . $CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$this->type] . "?ID=" . $input['ID'] . "'>" .
 			(isset($input["name"]) && !empty($input["name"]) ? $input["name"] : "(".$input['ID'].")") . "</a>");
