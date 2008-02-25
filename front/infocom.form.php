@@ -45,7 +45,7 @@ if (isset($_GET["add"]))
 {
 	checkRight("contract_infocom","w");
 	
-	$newID=$ic->add($_GET);
+	$newID=$ic->add($_GET, false);
 	logEvent($newID, "infocom", 4, "financial", $_SESSION["glpiname"]." ".$LANG["log"][20]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 } 

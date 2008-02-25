@@ -373,18 +373,22 @@ class CommonDBTM {
 	 * Add an item in the database with all it's items.
 	 *
 	 *@param $input array : the _POST vars returned bye the item form when press add
-	 *
+	 *@param $verbose : add 
 	 *
 	 *@return integer the new ID of the added item
 	 *@todo specific ones : reservationresa , planningtracking
 	 * 
 	**/
 
-	function add($input) {
-		global $DB;
+	function add($input, $addMessAfterRedirect=NULL) {
+		global $DB, $INFOFORM_PAGES, $CFG_GLPI, $LANG;
 		
-		if ($DB->isSlave())
+		if (!isset($addMessAfterRedirect)) {
+			$addMessAfterRedirect = isset($input['add']);
+		}
+		if ($DB->isSlave()) {
 			return false;
+		}
 			
 		$input['_item_type_']=$this->type;
 		$input=doHookFunction("pre_item_add",$input);
@@ -405,6 +409,12 @@ class CommonDBTM {
 			if ($newID= $this->addToDB()){
 				$this->post_addItem($newID,$input);
 				doHook("item_add",array("type"=>$this->type, "ID" => $newID));
+				
+				if ($addMessAfterRedirect && isset($INFOFORM_PAGES[$this->type])) {
+					addMessageAfterRedirect($LANG["common"][70] . 
+						" : <a href='" . $CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$this->type] . "?ID=" . $newID . "'>" .
+						(isset($input["name"]) && !empty($input["name"]) ? $input["name"] : "($newID)") . "</a>");
+				} 
 				return $newID;
 			} else {
 				return false;
