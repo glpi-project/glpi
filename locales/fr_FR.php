@@ -251,6 +251,7 @@ $LANG["common"][66]="Tous";
 $LANG["common"][67]="Autres";
 $LANG["common"][68]="Paysage";
 $LANG["common"][69]="Portrait";
+$LANG["common"][70]="Élément ajouté";
 
 $LANG["computers"][9]="OS"; 
 $LANG["computers"][10]="OS Numéro de série"; 
