@@ -46,6 +46,7 @@ class InfoCom extends CommonDBTM {
 		$this->table="glpi_infocoms";
 		$this->type=INFOCOM_TYPE;
 		$this->dohistory=true;
+		$this->auto_message_on_action=false;
 	}
 
 	function post_getEmpty () {

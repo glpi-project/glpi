@@ -47,6 +47,8 @@ class CommonDBTM {
 	var $entity_assign=false;
 	// Is an item that can be recursivly assign to an entity
 	var $may_be_recursive=false;
+	// Is an item that can be recursivly assign to an entity
+	var $auto_message_on_action=true;
 
 	/**
 	 * Constructor
@@ -373,17 +375,17 @@ class CommonDBTM {
 	 * Add an item in the database with all it's items.
 	 *
 	 *@param $input array : the _POST vars returned bye the item form when press add
-	 *@param $verbose : add 
 	 *
 	 *@return integer the new ID of the added item
 	 *@todo specific ones : reservationresa , planningtracking
 	 * 
 	**/
 
-	function add($input, $addMessAfterRedirect=NULL) {
+	function add($input) {
 		global $DB, $INFOFORM_PAGES, $CFG_GLPI, $LANG;
 		
-		if (!isset($addMessAfterRedirect)) {
+		$addMessAfterRedirect = false;
+		if ($this->auto_message_on_action) {
 			$addMessAfterRedirect = isset($input['add']);
 		}
 		if ($DB->isSlave()) {
