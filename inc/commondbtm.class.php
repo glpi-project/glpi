@@ -47,8 +47,8 @@ class CommonDBTM {
 	var $entity_assign=false;
 	// Is an item that can be recursivly assign to an entity
 	var $may_be_recursive=false;
-	// Define no_auto_message to desactivate automatic message on action
-	// var $no_auto_message_on_action=true;
+	// set false to desactivate automatic message on action
+	var $auto_message_on_action=true;
 
 	/**
 	 * Constructor
@@ -439,13 +439,13 @@ class CommonDBTM {
 		if (isset($input['_add'])){
 			$addMessAfterRedirect=true;
 		}
-		if (isset($input['_no_message']) || isset($this->no_auto_message_on_action)){
+		if (isset($input['_no_message']) || !$this->auto_message_on_action){
 			$addMessAfterRedirect=false;
 		}
 
 		if ($addMessAfterRedirect) {
 			addMessageAfterRedirect($LANG["common"][70] . 
-			" : <a href='" . $CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$this->type] . "?ID=" . $input['ID'] . "'>" .
+			": <a href='" . $CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$this->type] . "?ID=" . $input['ID'] . "'>" .
 			(isset($input["name"]) && !empty($input["name"]) ? $input["name"] : "(".$input['ID'].")") . "</a>");
 		} 
 	}
@@ -559,12 +559,12 @@ class CommonDBTM {
 		if (isset($input['_update'])){
 			$addMessAfterRedirect=true;
 		}
-		if (isset($input['_no_message']) || isset($this->no_auto_message_on_action)){
+		if (isset($input['_no_message']) || !$this->auto_message_on_action){
 			$addMessAfterRedirect=false;
 		}
 
 		if ($addMessAfterRedirect) {
-			addMessageAfterRedirect($LANG["common"][71]);
+			addMessageAfterRedirect($LANG["common"][71].": ".(isset($input["name"]) && !empty($input["name"]) ? $input["name"] : "(".$input['ID'].")"));
 		} 
 	}
 
@@ -687,13 +687,13 @@ class CommonDBTM {
 		if (isset($input['_delete'])){
 			$addMessAfterRedirect=true;
 		}
-		if (isset($input['_no_message']) || isset($this->no_auto_message_on_action)){
+		if (isset($input['_no_message']) || !$this->auto_message_on_action){
 			$addMessAfterRedirect=false;
 		}
 
 		if ($addMessAfterRedirect) {
 			addMessageAfterRedirect($LANG["common"][72] . 
-			" : <a href='" . $CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$this->type] . "?ID=" . $input['ID'] . "'>" .
+			": <a href='" . $CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$this->type] . "?ID=" . $input['ID'] . "'>" .
 			(isset($input["name"]) && !empty($input["name"]) ? $input["name"] : "(".$input['ID'].")") . "</a>");
 		} 
 	}
@@ -715,12 +715,12 @@ class CommonDBTM {
 		if (isset($input['_purge'])){
 			$addMessAfterRedirect=true;
 		}
-		if (isset($input['_no_message']) || isset($this->no_auto_message_on_action)){
+		if (isset($input['_no_message']) || !$this->auto_message_on_action){
 			$addMessAfterRedirect=false;
 		}
 
 		if ($addMessAfterRedirect) {
-			addMessageAfterRedirect($LANG["common"][73]);
+			addMessageAfterRedirect($LANG["common"][73].": ".(isset($input["name"]) && !empty($input["name"]) ? $input["name"] : "(".$input['ID'].")"));
 		} 
 	}
 
@@ -790,15 +790,14 @@ class CommonDBTM {
 		if (isset($input['_restore'])){
 			$addMessAfterRedirect=true;
 		}
-		if (isset($input['_no_message']) || isset($this->no_auto_message_on_action)){
+		if (isset($input['_no_message']) || !$this->auto_message_on_action){
 			$addMessAfterRedirect=false;
 		}
 
 		if ($addMessAfterRedirect) {
 			addMessageAfterRedirect($LANG["common"][74] . 
-			" : <a href='" . $CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$this->type] . "?ID=" . $input['ID'] . "'>" .
+			": <a href='" . $CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$this->type] . "?ID=" . $input['ID'] . "'>" .
 			(isset($input["name"]) && !empty($input["name"]) ? $input["name"] : "(".$input['ID'].")") . "</a>");
-
 		} 
 	}
 
