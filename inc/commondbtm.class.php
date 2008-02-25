@@ -47,8 +47,8 @@ class CommonDBTM {
 	var $entity_assign=false;
 	// Is an item that can be recursivly assign to an entity
 	var $may_be_recursive=false;
-	// Is an item that can be recursivly assign to an entity
-	var $auto_message_on_action=true;
+	// Define no_auto_message to desactivate automatic message on action
+	// var $no_auto_message_on_action=true;
 
 	/**
 	 * Constructor
@@ -380,14 +380,11 @@ class CommonDBTM {
 	 *@todo specific ones : reservationresa , planningtracking
 	 * 
 	**/
-
 	function add($input) {
-		global $DB, $INFOFORM_PAGES, $CFG_GLPI, $LANG;
+		global $DB;
 		
 		$addMessAfterRedirect = false;
-		if ($this->auto_message_on_action) {
-			$addMessAfterRedirect = isset($input['add']);
-		}
+
 		if ($DB->isSlave()) {
 			return false;
 		}
@@ -395,7 +392,10 @@ class CommonDBTM {
 		$input['_item_type_']=$this->type;
 		$input=doHookFunction("pre_item_add",$input);
 
-		unset($input['add']);
+		if (isset($input['add'])){
+			$input['_add']=$input['add'];
+			unset($input['add']);
+		}
 		$input=$this->prepareInputForAdd($input);
 
 		if ($input&&is_array($input)){
@@ -411,12 +411,7 @@ class CommonDBTM {
 			if ($newID= $this->addToDB()){
 				$this->post_addItem($newID,$input);
 				doHook("item_add",array("type"=>$this->type, "ID" => $newID));
-				
-				if ($addMessAfterRedirect && isset($INFOFORM_PAGES[$this->type])) {
-					addMessageAfterRedirect($LANG["common"][70] . 
-						" : <a href='" . $CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$this->type] . "?ID=" . $newID . "'>" .
-						(isset($input["name"]) && !empty($input["name"]) ? $input["name"] : "($newID)") . "</a>");
-				} 
+				$this->addMessageOnAddAction($input);
 				return $newID;
 			} else {
 				return false;
@@ -425,6 +420,30 @@ class CommonDBTM {
 		} else {
 			return false;
 		}	
+	}
+
+	/**
+	 * Add a message on add action
+	 *
+	 *@param $input array : the _POST vars returned bye the item form when press add
+	 *
+	**/
+	function addMessageOnAddAction($input){
+		global $INFOFORM_PAGES, $CFG_GLPI, $LANG;
+
+		$addMessAfterRedirect=false;
+		if (isset($input['_add'])){
+			$addMessAfterRedirect=true;
+		}
+		if (isset($input['_no_message']) || isset($this->no_auto_message_on_action)){
+			$addMessAfterRedirect=false;
+		}
+
+		if ($addMessAfterRedirect && isset($INFOFORM_PAGES[$this->type])) {
+			addMessageAfterRedirect($LANG["common"][70] . 
+			" : <a href='" . $CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$this->type] . "?ID=" . $input['ID'] . "'>" .
+			(isset($input["name"]) && !empty($input["name"]) ? $input["name"] : "(".$input['ID'].")") . "</a>");
+		} 
 	}
 
 	/**
@@ -472,7 +491,13 @@ class CommonDBTM {
 		$input=doHookFunction("pre_item_update",$input);
 
 		$input=$this->prepareInputForUpdate($input);
-		unset($input['update']);
+
+
+		if (isset($input['update'])){
+			$input['_update']=$input['update'];
+			unset($input['update']);
+		}
+
 		if ($this->getFromDB($input[$this->getIndexName()])){
 
 			// Fill the update-array with changes
@@ -502,13 +527,37 @@ class CommonDBTM {
 			}	
 			if(count($updates)){
 				list($input,$updates)=$this->pre_updateInDB($input,$updates);
+				
 
 				if ($this->updateInDB($updates,$oldvalues)){
 					doHook("item_update",array("type"=>$this->type, "ID" => $input["ID"]));
+					$this->addMessageOnUpdateAction($input);
 				}
 			} 
 			$this->post_updateItem($input,$updates,$history);
 		}
+	}
+
+	/**
+	 * Add a message on update action
+	 *
+	 *@param $input array : the _POST vars returned bye the item form when press add
+	 *
+	**/
+	function addMessageOnUpdateAction($input){
+		global $INFOFORM_PAGES, $CFG_GLPI, $LANG;
+
+		$addMessAfterRedirect=false;
+		if (isset($input['_update'])){
+			$addMessAfterRedirect=true;
+		}
+		if (isset($input['_no_message']) || isset($this->no_auto_message_on_action)){
+			$addMessAfterRedirect=false;
+		}
+
+		if ($addMessAfterRedirect && isset($INFOFORM_PAGES[$this->type])) {
+			addMessageAfterRedirect($LANG["common"][71]);
+		} 
 	}
 
 	/**
@@ -569,8 +618,16 @@ class CommonDBTM {
 		$input['_item_type_']=$this->type;
 		if ($force){
 			$input=doHookFunction("pre_item_purge",$input);
+			if (isset($input['purge'])){
+				$input['_purge']=$input['purge'];
+				unset($input['purge']);
+			}
 		} else {
 			$input=doHookFunction("pre_item_delete",$input);
+			if (isset($input['delete'])){
+				$input['_delete']=$input['delete'];
+				unset($input['delete']);
+			}
 		}
 
 		if ($this->getFromDB($input[$this->getIndexName()])){
@@ -578,6 +635,7 @@ class CommonDBTM {
 				if ($this->deleteFromDB($this->fields["ID"],$force)){
 					if ($force){
 						doHook("item_purge",array("type"=>$this->type, "ID" => $this->fields["ID"]));
+						$this->addMessageOnPurgeAction($input);
 					} else {
 						if ($this->dohistory&&$history){
 							$changes[0] = 0;
@@ -587,6 +645,7 @@ class CommonDBTM {
 						}
 
 						doHook("item_delete",array("type"=>$this->type, "ID" => $this->fields["ID"]));
+						$this->addMessageOnDeleteAction($input);
 					}
 				}
 				return true;
@@ -598,6 +657,58 @@ class CommonDBTM {
 		}
 
 	}
+
+	/**
+	 * Add a message on delete action
+	 *
+	 *@param $input array : the _POST vars returned bye the item form when press add
+	 *
+	**/
+	function addMessageOnDeleteAction($input){
+		global $INFOFORM_PAGES, $CFG_GLPI, $LANG;
+
+		if (!in_array($this->table,$CFG_GLPI["deleted_tables"])){
+			return;
+		}
+
+		$addMessAfterRedirect=false;
+		if (isset($input['_delete'])){
+			$addMessAfterRedirect=true;
+		}
+		if (isset($input['_no_message']) || isset($this->no_auto_message_on_action)){
+			$addMessAfterRedirect=false;
+		}
+
+		if ($addMessAfterRedirect && isset($INFOFORM_PAGES[$this->type])) {
+			addMessageAfterRedirect($LANG["common"][72] . 
+			" : <a href='" . $CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$this->type] . "?ID=" . $input['ID'] . "'>" .
+			(isset($input["name"]) && !empty($input["name"]) ? $input["name"] : "(".$input['ID'].")") . "</a>");
+		} 
+	}
+
+	/**
+	 * Add a message on purge action
+	 *
+	 *@param $input array : the _POST vars returned bye the item form when press add
+	 *
+	**/
+	function addMessageOnPurgeAction($input){
+		global $INFOFORM_PAGES, $CFG_GLPI, $LANG;
+
+		$addMessAfterRedirect=false;
+		if (isset($input['_purge'])){
+			$addMessAfterRedirect=true;
+		}
+		if (isset($input['_no_message']) || isset($this->no_auto_message_on_action)){
+			$addMessAfterRedirect=false;
+		}
+
+		if ($addMessAfterRedirect && isset($INFOFORM_PAGES[$this->type])) {
+			addMessageAfterRedirect($LANG["common"][73]);
+		} 
+	}
+
+
 	
 	/**
 	 * Actions done before the DELETE of the item in the database / Maybe used to add another check for deletion 
@@ -624,6 +735,12 @@ class CommonDBTM {
     **/ 
 	// specific ones : cartridges / consumables
 	function restore($input,$history=1) {
+
+		if (isset($input['restore'])){
+			$input['_restore']=$input['restore'];
+			unset($input['restore']);
+		}
+
 		$input['_item_type_']=$this->type;
 		$input=doHookFunction("pre_item_restore",$input);
 
@@ -632,12 +749,37 @@ class CommonDBTM {
 				$changes[0] = 0;
 				$changes[1] = $changes[2] = "";
 
-
 				historyLog ($input["ID"],$this->type,$changes,0,HISTORY_RESTORE_ITEM);
 			}
 
 			doHook("item_restore",array("type"=>$this->type, "ID" => $input["ID"]));
+			$this->addMessageOnRestoreAction($input);
 		}
+	}
+
+	/**
+	 * Add a message on restore action
+	 *
+	 *@param $input array : the _POST vars returned bye the item form when press add
+	 *
+	**/
+	function addMessageOnRestoreAction($input){
+		global $INFOFORM_PAGES, $CFG_GLPI, $LANG;
+
+		$addMessAfterRedirect=false;
+		if (isset($input['_restore'])){
+			$addMessAfterRedirect=true;
+		}
+		if (isset($input['_no_message']) || isset($this->no_auto_message_on_action)){
+			$addMessAfterRedirect=false;
+		}
+
+		if ($addMessAfterRedirect && isset($INFOFORM_PAGES[$this->type])) {
+			addMessageAfterRedirect($LANG["common"][74] . 
+			" : <a href='" . $CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$this->type] . "?ID=" . $input['ID'] . "'>" .
+			(isset($input["name"]) && !empty($input["name"]) ? $input["name"] : "(".$input['ID'].")") . "</a>");
+
+		} 
 	}
 
 	/**
