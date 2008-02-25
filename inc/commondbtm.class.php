@@ -760,16 +760,18 @@ class CommonDBTM {
 		$input['_item_type_']=$this->type;
 		$input=doHookFunction("pre_item_restore",$input);
 
-		if ($this->restoreInDB($input["ID"])){
-			if ($this->dohistory&&$history){
-				$changes[0] = 0;
-				$changes[1] = $changes[2] = "";
-
-				historyLog ($input["ID"],$this->type,$changes,0,HISTORY_RESTORE_ITEM);
+		if ($this->getFromDB($input["ID"])){
+			if ($this->restoreInDB($input["ID"])){
+				if ($this->dohistory&&$history){
+					$changes[0] = 0;
+					$changes[1] = $changes[2] = "";
+	
+					historyLog ($input["ID"],$this->type,$changes,0,HISTORY_RESTORE_ITEM);
+				}
+	
+				doHook("item_restore",array("type"=>$this->type, "ID" => $input["ID"]));
+				$this->addMessageOnRestoreAction($input);
 			}
-
-			doHook("item_restore",array("type"=>$this->type, "ID" => $input["ID"]));
-			$this->addMessageOnRestoreAction($input);
 		}
 	}
 
