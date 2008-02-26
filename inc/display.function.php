@@ -44,6 +44,70 @@ if (!defined('GLPI_ROOT')){
 //******************************************************************************************************
 //******************************************************************************************************
 
+function includeCommonHtmlHeader($title=''){
+	global $CFG_GLPI,$PLUGIN_HOOKS;
+
+	// Send UTF8 Headers
+	header("Content-Type: text/html; charset=UTF-8");
+	// Send extra expires header if configured
+	if ($CFG_GLPI["sendexpire"]) {
+		header_nocache();
+	}
+
+	// Start the page
+	echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">";
+	 // echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\"  \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">";
+	echo "\n<html><head><title>GLPI - ".$title."</title>";
+	echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8 \" >";
+	// Send extra expires header if configured
+	if ($CFG_GLPI["sendexpire"]) {
+		echo "<meta http-equiv=\"Expires\" content=\"Fri, Jun 12 1981 08:20:00 GMT\" >\n";
+		echo "<meta http-equiv=\"Pragma\" content=\"no-cache\">\n";
+		echo "<meta http-equiv=\"Cache-Control\" content=\"no-cache\">\n";
+	}
+	//  CSS link
+	echo "<link rel='stylesheet'  href='".$CFG_GLPI["root_doc"]."/css/styles.css' type='text/css' media='screen' >\n";
+	// surcharge CSS hack for IE
+	echo "<!--[if lte IE 6]>" ;
+	echo "<link rel='stylesheet' href='".$CFG_GLPI["root_doc"]."/css/styles_ie.css' type='text/css' media='screen' >\n";
+	echo "<![endif]-->";
+
+	echo "<link rel='stylesheet' type='text/css' media='print' href='".$CFG_GLPI["root_doc"]."/css/print.css' >\n";
+	echo "<link rel='shortcut icon' type='images/x-icon' href='".$CFG_GLPI["root_doc"]."/pics/favicon.ico' >\n";
+
+	// AJAX library
+	echo "<script type=\"text/javascript\" src='".$CFG_GLPI["root_doc"]."/lib/js/prototype.js'></script>\n";
+	echo "<script type=\"text/javascript\" src='".$CFG_GLPI["root_doc"]."/lib/js/control.modal.js'></script>\n";
+	echo "<script type=\"text/javascript\" src='".$CFG_GLPI["root_doc"]."/lib/js/scriptaculous/scriptaculous.js'></script>\n";
+
+	// Some Javascript-Functions which we may need later
+	echo "<script type=\"text/javascript\" src='".$CFG_GLPI["root_doc"]."/script.js'></script>\n";
+	
+	// Calendar scripts 
+	if (isset($_SESSION["glpilanguage"])){
+		echo "<style type=\"text/css\">@import url(".$CFG_GLPI["root_doc"]."/lib/calendar/aqua/theme.css);</style>\n";
+		echo "<script type=\"text/javascript\" src=\"".$CFG_GLPI["root_doc"]."/lib/calendar/calendar.js\"></script>\n";
+		echo "<script type=\"text/javascript\" src=\"".$CFG_GLPI["root_doc"]."/lib/calendar/lang/calendar-".$CFG_GLPI["languages"][$_SESSION["glpilanguage"]][2].".js\"></script>\n";
+		echo "<script type=\"text/javascript\" src=\"".$CFG_GLPI["root_doc"]."/lib/calendar/calendar-setup.js\"></script>\n";
+	}
+	
+	// Add specific javascript for plugins
+	if (isset($PLUGIN_HOOKS['add_javascript'])&&count($PLUGIN_HOOKS['add_javascript'])){
+		foreach  ($PLUGIN_HOOKS["add_javascript"] as $plugin => $file) {
+			echo "<script type=\"text/javascript\" src='".$CFG_GLPI["root_doc"]."/plugins/$plugin/$file'></script>\n";
+		}
+	}
+	// Add specific css for plugins
+	if (isset($PLUGIN_HOOKS['add_css'])&&count($PLUGIN_HOOKS['add_css'])){
+		foreach  ($PLUGIN_HOOKS["add_css"] as $plugin => $file) {
+			echo "<link rel='stylesheet'  href='".$CFG_GLPI["root_doc"]."/plugins/$plugin/$file' type='text/css' media='screen' >\n";
+		}
+	}
+	
+	// End of Head
+	echo "</head>\n";
+}
+
 /**
  * Common Title Function
  *
@@ -91,62 +155,8 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="")
 		$_SESSION['glpilist_limit']=$_POST['list_limit'];
 	}
 
-	// Send UTF8 Headers
-	header("Content-Type: text/html; charset=UTF-8");
-	// Send extra expires header if configured
-	if ($CFG_GLPI["sendexpire"]) {
-		header_nocache();
-	}
+	includeCommonHtmlHeader($title);
 
-		// Start the page
-		echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">";
-		 // echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\"  \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">";
-		echo "\n<html><head><title>GLPI - ".$title."</title>";
-		echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8 \" >";
-		// Send extra expires header if configured
-		if ($CFG_GLPI["sendexpire"]) {
-			echo "<meta http-equiv=\"Expires\" content=\"Fri, Jun 12 1981 08:20:00 GMT\" >\n";
-			echo "<meta http-equiv=\"Pragma\" content=\"no-cache\">\n";
-			echo "<meta http-equiv=\"Cache-Control\" content=\"no-cache\">\n";
-		}
-		//  CSS link
-		echo "<link rel='stylesheet'  href='".$CFG_GLPI["root_doc"]."/css/styles.css' type='text/css' media='screen' >\n";
-		// surcharge CSS hack for IE
-		echo "<!--[if lte IE 6]>" ;
- 		echo "<link rel='stylesheet' href='".$CFG_GLPI["root_doc"]."/css/styles_ie.css' type='text/css' media='screen' >\n";
- 		echo "<![endif]-->";
-
-
-		echo "<link rel='stylesheet' type='text/css' media='print' href='".$CFG_GLPI["root_doc"]."/css/print.css' >\n";
-		echo "<link rel='shortcut icon' type='images/x-icon' href='".$CFG_GLPI["root_doc"]."/pics/favicon.ico' >\n";
-		// AJAX library
-		echo "<script type=\"text/javascript\" src='".$CFG_GLPI["root_doc"]."/lib/scriptaculous/prototype.js'></script>\n";
-		echo "<script type=\"text/javascript\" src='".$CFG_GLPI["root_doc"]."/lib/scriptaculous/scriptaculous.js'></script>\n";
-
-		// Some Javascript-Functions which we may need later
-		echo "<script type=\"text/javascript\" src='".$CFG_GLPI["root_doc"]."/script.js'></script>\n";
-	
-		// Calendar scripts 
-		echo "<style type=\"text/css\">@import url(".$CFG_GLPI["root_doc"]."/lib/calendar/aqua/theme.css);</style>\n";
-		echo "<script type=\"text/javascript\" src=\"".$CFG_GLPI["root_doc"]."/lib/calendar/calendar.js\"></script>\n";
-		echo "<script type=\"text/javascript\" src=\"".$CFG_GLPI["root_doc"]."/lib/calendar/lang/calendar-".$CFG_GLPI["languages"][$_SESSION["glpilanguage"]][2].".js\"></script>\n";
-		echo "<script type=\"text/javascript\" src=\"".$CFG_GLPI["root_doc"]."/lib/calendar/calendar-setup.js\"></script>\n";
-	
-		// Add specific javascript for plugins
-		if (isset($PLUGIN_HOOKS['add_javascript'])&&count($PLUGIN_HOOKS['add_javascript'])){
-			foreach  ($PLUGIN_HOOKS["add_javascript"] as $plugin => $file) {
-				echo "<script type=\"text/javascript\" src='".$CFG_GLPI["root_doc"]."/plugins/$plugin/$file'></script>\n";
-			}
-		}
-		// Add specific css for plugins
-		if (isset($PLUGIN_HOOKS['add_css'])&&count($PLUGIN_HOOKS['add_css'])){
-			foreach  ($PLUGIN_HOOKS["add_css"] as $plugin => $file) {
-				echo "<link rel='stylesheet'  href='".$CFG_GLPI["root_doc"]."/plugins/$plugin/$file' type='text/css' media='screen' >\n";
-			}
-		}
-	
-		// End of Head
-		echo "</head>\n";
 	if (!($CFG_GLPI["cache"]->start($sector.'_'.$item.$option,"GLPI_HEADER_".$_SESSION["glpiID"]))) {
 		
 	// Body 
@@ -1014,67 +1024,8 @@ function helpHeader($title,$url='') {
 		$_SESSION['glpilist_limit']=$_POST['list_limit'];
 	}
 
-	// Send extra expires header if configured
-	if ($CFG_GLPI["sendexpire"]) {
-		header_nocache(); 
-	}
-	// Send UTF8 Headers
-	header("Content-Type: text/html; charset=UTF-8");
 
-	// Start the page
-	echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">";
-	echo "<html><head><title>GLPI Helpdesk - ".$title."</title>";
-	echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8 \" >";
-	echo "<link rel='shortcut icon' type='images/x-icon' href='".$CFG_GLPI["root_doc"]."/pics/favicon.ico' >";
-	// Send extra expires header if configured
-
-	if ($CFG_GLPI["sendexpire"]) {
-		echo "<meta http-equiv=\"Expires\" content=\"Fri, Jun 12 1981 08:20:00 GMT\">\n";
-		echo "<meta http-equiv=\"Pragma\" content=\"no-cache\">\n";
-		echo "<meta http-equiv=\"Cache-Control\" content=\"no-cache\">\n";
-	}
-
-	// Some Javascript-Functions which we may need later
-
-	echo "<script type=\"text/javascript\" src='".$CFG_GLPI["root_doc"]."/script.js'></script>";
-
-	// AJAX library
-	echo "<script type=\"text/javascript\" src='".$CFG_GLPI["root_doc"]."/lib/scriptaculous/prototype.js'></script>";
-	echo "<script type=\"text/javascript\" src='".$CFG_GLPI["root_doc"]."/lib/scriptaculous/scriptaculous.js'></script>";
-
-
-	// Appel CSS
-
-	echo "<link rel='stylesheet'  href='".$CFG_GLPI["root_doc"]."/css/styles.css' type='text/css' media='screen' >";
-	// surcharge CSS hack for IE
-	echo "<!--[if lte IE 6]>" ;
- 	echo "<link rel='stylesheet' href='".$CFG_GLPI["root_doc"]."/css/styles_ie.css' type='text/css' media='screen' >\n";
- 	echo "<![endif]-->";
-	echo "<link rel='stylesheet' type='text/css' media='print' href='".$CFG_GLPI["root_doc"]."/css/print.css' >";
-
-
-	// Calendar scripts 
-	echo "<style type=\"text/css\">@import url(".$CFG_GLPI["root_doc"]."/lib/calendar/aqua/theme.css);</style>";
-	echo "<script type=\"text/javascript\" src=\"".$CFG_GLPI["root_doc"]."/lib/calendar/calendar.js\"></script>";
-	echo "<script type=\"text/javascript\" src=\"".$CFG_GLPI["root_doc"]."/lib/calendar/lang/calendar-".$CFG_GLPI["languages"][$_SESSION["glpilanguage"]][2].".js\"></script>";
-	echo "<script type=\"text/javascript\" src=\"".$CFG_GLPI["root_doc"]."/lib/calendar/calendar-setup.js\"></script>";
-
-
-	// Add specific javascript for plugins
-	if (isset($PLUGIN_HOOKS['add_javascript'])&&count($PLUGIN_HOOKS['add_javascript'])){
-		foreach  ($PLUGIN_HOOKS["add_javascript"] as $plugin => $file) {
-			echo "<script type=\"text/javascript\" src='".$CFG_GLPI["root_doc"]."/plugins/$plugin/$file'></script>\n";
-		}
-	}
-	// Add specific css for plugins
-	if (isset($PLUGIN_HOOKS['add_css'])&&count($PLUGIN_HOOKS['add_css'])){
-		foreach  ($PLUGIN_HOOKS["add_css"] as $plugin => $file) {
-			echo "<link rel='stylesheet'  href='".$CFG_GLPI["root_doc"]."/plugins/$plugin/$file' type='text/css' media='screen' >\n";
-		}
-	}
-
-	// End of Head
-	echo "</head>\n";
+	includeCommonHtmlHeader($title);
 
 	// Body 
 	echo "<body>";
@@ -1241,116 +1192,62 @@ function simpleHeader($title,$links=array()) {
 		$_SESSION['glpilist_limit']=$_POST['list_limit'];
 	}
 
-	// Send extra expires header if configured
-	if ($CFG_GLPI["sendexpire"]) {
-		header_nocache(); 
-	}
-	// Send UTF8 Headers
-	header("Content-Type: text/html; charset=UTF-8");
-
-	// Start the page
-	echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">";
-	echo "<html><head><title>GLPI Helpdesk - ".$title."</title>";
-	echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8 \" >";
-	echo "<link rel='shortcut icon' type='images/x-icon' href='".$CFG_GLPI["root_doc"]."/pics/favicon.ico' >";
-	// Send extra expires header if configured
-
-	if ($CFG_GLPI["sendexpire"]) {
-		echo "<meta http-equiv=\"Expires\" content=\"Fri, Jun 12 1981 08:20:00 GMT\">\n";
-		echo "<meta http-equiv=\"Pragma\" content=\"no-cache\">\n";
-		echo "<meta http-equiv=\"Cache-Control\" content=\"no-cache\">\n";
-	}
-
-	// Some Javascript-Functions which we may need later
-
-	echo "<script type=\"text/javascript\" src='".$CFG_GLPI["root_doc"]."/script.js'></script>";
-
-	// AJAX library
-	echo "<script type=\"text/javascript\" src='".$CFG_GLPI["root_doc"]."/lib/scriptaculous/prototype.js'></script>";
-	echo "<script type=\"text/javascript\" src='".$CFG_GLPI["root_doc"]."/lib/scriptaculous/scriptaculous.js'></script>";
-
-
-	// Appel CSS
-
-	echo "<link rel='stylesheet'  href='".$CFG_GLPI["root_doc"]."/css/styles.css' type='text/css' media='screen' >";
-	// surcharge CSS hack for IE
-	echo "<!--[if lte IE 6]>" ;
- 	echo "<link rel='stylesheet' href='".$CFG_GLPI["root_doc"]."/css/styles_ie.css' type='text/css' media='screen' >\n";
- 	echo "<![endif]-->";
-	echo "<link rel='stylesheet' type='text/css' media='print' href='".$CFG_GLPI["root_doc"]."/css/print.css' >";
-
-
-	// Calendar scripts 
-	echo "<style type=\"text/css\">@import url(".$CFG_GLPI["root_doc"]."/lib/calendar/aqua/theme.css);</style>";
-	echo "<script type=\"text/javascript\" src=\"".$CFG_GLPI["root_doc"]."/lib/calendar/calendar.js\"></script>";
-	echo "<script type=\"text/javascript\" src=\"".$CFG_GLPI["root_doc"]."/lib/calendar/lang/calendar-".$CFG_GLPI["languages"][$_SESSION["glpilanguage"]][2].".js\"></script>";
-	echo "<script type=\"text/javascript\" src=\"".$CFG_GLPI["root_doc"]."/lib/calendar/calendar-setup.js\"></script>";
-
-
-	// End of Head
-	echo "</head>\n";
+	includeCommonHtmlHeader($title);
 
 	// Body 
 	echo "<body>";
 
 	// Main Headline
 	echo "<div id='header'>";
-		echo "<div id='c_logo' ><a href=\"".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php\" accesskey=\"0\"  title=\"".$LANG["central"][5]."\"><span class='invisible'>Logo</span></a></div>";
+	echo "<div id='c_logo' ><a href=\"".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php\" accesskey=\"0\"  title=\"".$LANG["central"][5]."\"><span class='invisible'>Logo</span></a></div>";
 
-		// Les préférences + lien déconnexion 
-		echo "<div id='c_preference' >";
-		echo "<div class='sep'></div>\n"; 
-		echo "</div>\n"; 
-		//-- Le moteur de recherche -->
-		echo "<div id='c_recherche' >\n"; 
-		/*
-		echo "<form id='recherche' action=''>\n"; 
-		echo "	<div id='boutonRecherche'><input type='submit' value='OK' /></div>\n"; 
-		echo "	<div id='champRecherche'><input type='text' value='Recherche' /></div>	\n"; 		
-		echo "</form>\n"; 
-		*/
-		echo "<div class='sep'></div>\n"; 
-		echo "</div>";
+	// Les préférences + lien déconnexion 
+	echo "<div id='c_preference' >";
+	echo "<div class='sep'></div>\n"; 
+	echo "</div>\n"; 
+	//-- Le moteur de recherche -->
+	echo "<div id='c_recherche' >\n"; 
+	/*
+	echo "<form id='recherche' action=''>\n"; 
+	echo "	<div id='boutonRecherche'><input type='submit' value='OK' /></div>\n"; 
+	echo "	<div id='champRecherche'><input type='text' value='Recherche' /></div>	\n"; 		
+	echo "</form>\n"; 
+	*/
+	echo "<div class='sep'></div>\n"; 
+	echo "</div>";
 
-
-		//<!-- Le menu principal -->
-		echo "<div id='c_menu'>";
-		echo "	<ul id='menu'>";
-		
+	//<!-- Le menu principal -->
+	echo "<div id='c_menu'>";
+	echo "	<ul id='menu'>";
 	
-		// Build the navigation-elements
-		if (count($links)){
-			$i=1;
-			foreach ($links as $name => $link){
-				echo "	<li id='menu$i' >";
-				echo "<a href=\"$link\" title=\"".$name."\"   class='itemP'>".$name."</a>";
-				echo "</li>";	
-				$i++;
-			}
-		
+	// Build the navigation-elements
+	if (count($links)){
+		$i=1;
+		foreach ($links as $name => $link){
+			echo "	<li id='menu$i' >";
+			echo "<a href=\"$link\" title=\"".$name."\"   class='itemP'>".$name."</a>";
+			echo "</li>";	
+			$i++;
 		}
+	}
 			
-		echo "</ul>";		
-		echo "</div>";
-		// End navigation bar
+	echo "</ul>";		
+	echo "</div>";
+	// End navigation bar
 	
-		// End headline
+	// End headline
 		
-		///Le sous menu contextuel 1
-		echo "<div id='c_ssmenu1' >";
-		echo "</div>";
+	///Le sous menu contextuel 1
+	echo "<div id='c_ssmenu1' >";
+	echo "</div>";
 
-		//  Le fil d arianne 
-		echo "<div id='c_ssmenu2' >";
-		echo "	</div>";
+	//  Le fil d arianne 
+	echo "<div id='c_ssmenu2' >";
+	echo "	</div>";
 		
-		echo "</div>\n"; // fin header
+	echo "</div>\n"; // fin header
 
-		echo "<div  id='page' >";
-		
-	
-	
-	
+	echo "<div  id='page' >";
 
 	// call function callcron() every 5min
 	if (isset($_SESSION["glpicrontimer"])){
@@ -1411,45 +1308,9 @@ function nullHeader($title,$url='') {
 		return true;
 	}
 
-	// Start the page
-	echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">";
-	echo "<html><head><title>GLPI - ".$title."</title>";
-	echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8 \" >";
-	echo "<link rel='shortcut icon' type='images/x-icon' href='".$CFG_GLPI["root_doc"]."/pics/favicon.ico' >";
-	// Send extra expires header if configured
-	if (!empty($cft_features["sendexpire"])) {
-		echo "<meta http-equiv=\"Expires\" content=\"Fri, Jun 12 1981 08:20:00 GMT\">\n";
-		echo "<meta http-equiv=\"Pragma\" content=\"no-cache\">\n";
-		echo "<meta http-equiv=\"Cache-Control\" content=\"no-cache\">\n";
-	}
 
-	// Some Javascript-Functions which we may need later
+	includeCommonHtmlHeader($title);
 
-	echo "<script type=\"text/javascript\" src='".$CFG_GLPI["root_doc"]."/script.js'></script>";
-
-	// AJAX library
-	echo "<script type=\"text/javascript\" src='".$CFG_GLPI["root_doc"]."/lib/scriptaculous/prototype.js'></script>";
-	echo "<script type=\"text/javascript\" src='".$CFG_GLPI["root_doc"]."/lib/scriptaculous/scriptaculous.js'></script>";
-
-	// Appel CSS
-
-	echo "<link rel='stylesheet'  href='".$CFG_GLPI["root_doc"]."/css/styles.css' type='text/css' media='screen' >";
-	// surcharge CSS hack for IE
-	echo "<!--[if lte IE 6]>" ;
- 	echo "<link rel='stylesheet' href='".$CFG_GLPI["root_doc"]."/css/styles_ie.css' type='text/css' media='screen' >\n";
- 	echo "<![endif]-->";
-
-	// Calendar scripts 
-	if (isset($_SESSION["glpilanguage"])){
-		echo "<style type=\"text/css\">@import url(".$CFG_GLPI["root_doc"]."/lib/calendar/aqua/theme.css);</style>";
-		echo "<script type=\"text/javascript\" src=\"".$CFG_GLPI["root_doc"]."/lib/calendar/calendar.js\"></script>";
-		echo "<script type=\"text/javascript\" src=\"".$CFG_GLPI["root_doc"]."/lib/calendar/lang/calendar-".$CFG_GLPI["languages"][$_SESSION["glpilanguage"]][2].".js\"></script>";
-		echo "<script type=\"text/javascript\" src=\"".$CFG_GLPI["root_doc"]."/lib/calendar/calendar-setup.js\"></script>";
-	}
-
-
-	// End of Head
-	echo "</head>\n";
 
 	// Body with configured stuff
 	echo "<body>";
@@ -1457,11 +1318,6 @@ function nullHeader($title,$url='') {
 	echo "<div id='contenu-nullHeader'>";
 
 	echo "<div id='text-nullHeader'>";
-		
-			
-		
-	
-	
 }
 
 /**
@@ -1486,44 +1342,8 @@ function popHeader($title,$url='')
 		$_SESSION['glpilist_limit']=$_POST['list_limit'];
 	}
 
+	includeCommonHtmlHeader($title);	// Body 
 
-
-	// Send UTF8 Headers
-	header("Content-Type: text/html; charset=UTF-8");
-	// Send extra expires header if configured
-	if ($CFG_GLPI["sendexpire"]) {
-		header_nocache();
-	}
-	// Start the page
-	echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">";
-	echo "\n<html><head><title>GLPI - ".$title."</title>";
-	echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8 \" >";
-	// Send extra expires header if configured
-	if ($CFG_GLPI["sendexpire"]) {
-		echo "<meta http-equiv=\"Expires\" content=\"Fri, Jun 12 1981 08:20:00 GMT\">\n";
-		echo "<meta http-equiv=\"Pragma\" content=\"no-cache\">\n";
-		echo "<meta http-equiv=\"Cache-Control\" content=\"no-cache\">\n";
-	}
-	//  CSS link
-	echo "<link rel='stylesheet'  href='".$CFG_GLPI["root_doc"]."/css/styles.css' type='text/css' media='screen' >";
-	echo "<link rel='stylesheet' type='text/css' media='print' href='".$CFG_GLPI["root_doc"]."/css/print.css' >";
-	echo "<link rel='shortcut icon' type='images/x-icon' href='".$CFG_GLPI["root_doc"]."/pics/favicon.ico' >";
-	// AJAX library
-	echo "<script type=\"text/javascript\" src='".$CFG_GLPI["root_doc"]."/lib/scriptaculous/prototype.js'></script>";
-	echo "<script type=\"text/javascript\" src='".$CFG_GLPI["root_doc"]."/lib/scriptaculous/scriptaculous.js'></script>";
-	// Some Javascript-Functions which we may need later
-	echo "<script type=\"text/javascript\" src='".$CFG_GLPI["root_doc"]."/script.js'></script>";
-
-	// Calendar scripts 
-	echo "<style type=\"text/css\">@import url(".$CFG_GLPI["root_doc"]."/lib/calendar/aqua/theme.css);</style>";
-	echo "<script type=\"text/javascript\" src=\"".$CFG_GLPI["root_doc"]."/lib/calendar/calendar.js\"></script>";
-	echo "<script type=\"text/javascript\" src=\"".$CFG_GLPI["root_doc"]."/lib/calendar/lang/calendar-".$CFG_GLPI["languages"][$_SESSION["glpilanguage"]][2].".js\"></script>";
-	echo "<script type=\"text/javascript\" src=\"".$CFG_GLPI["root_doc"]."/lib/calendar/calendar-setup.js\"></script>";
-
-
-	// End of Head
-	echo "</head>\n";
-	// Body 
 	echo "<body>";
 
 	displayMessageAfterRedirect();
