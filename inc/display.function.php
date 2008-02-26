@@ -76,9 +76,9 @@ function includeCommonHtmlHeader($title=''){
 	echo "<link rel='shortcut icon' type='images/x-icon' href='".$CFG_GLPI["root_doc"]."/pics/favicon.ico' >\n";
 
 	// AJAX library
-	echo "<script type=\"text/javascript\" src='".$CFG_GLPI["root_doc"]."/lib/js/prototype.js'></script>\n";
-	echo "<script type=\"text/javascript\" src='".$CFG_GLPI["root_doc"]."/lib/js/control.modal.js'></script>\n";
-	echo "<script type=\"text/javascript\" src='".$CFG_GLPI["root_doc"]."/lib/js/scriptaculous/scriptaculous.js'></script>\n";
+	echo "<script type=\"text/javascript\" src='".$CFG_GLPI["root_doc"]."/lib/prototype.js'></script>\n";
+	echo "<script type=\"text/javascript\" src='".$CFG_GLPI["root_doc"]."/lib/control.modal.js'></script>\n";
+	echo "<script type=\"text/javascript\" src='".$CFG_GLPI["root_doc"]."/lib/scriptaculous/scriptaculous.js'></script>\n";
 
 	// Some Javascript-Functions which we may need later
 	echo "<script type=\"text/javascript\" src='".$CFG_GLPI["root_doc"]."/script.js'></script>\n";
