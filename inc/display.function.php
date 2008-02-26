@@ -2018,7 +2018,26 @@ function showProfileSelecter($target){
 		}
 		
 		echo "<li>";
-		echo "<a href='#' title=\"".$_SESSION["glpiactive_entity_name"]."\" onclick=\"completecleandisplay('show_entities$addname');\">";
+
+
+		//echo "<a href='".$CFG_GLPI["root_doc"]."/front/entity.select.php?target=$target' id='modal_entity_selection'>".$_SESSION["glpiactive_entity_name"]."</a>";
+
+
+		echo "<a href='#test_one_contents' id='modal_entity_selection'>".$_SESSION["glpiactive_entity_shortname"]."</a>";
+		echo "<div id='test_one_contents'>";	
+		displayActiveEntities($target,"activeentity");
+		echo "</div>";
+		
+
+		echo "<script  type='text/javascript'>";
+		echo "new Control.Modal('modal_entity_selection',{";
+		//echo "iframe: true,";
+		//echo "opacity: 0.8, position: 'relative', width:300, height:50";
+		echo "opacity: 0.8, width: 500, height: 500";
+		echo "});";
+		echo "</script>";
+
+/*		echo "<a href='#' title=\"".$_SESSION["glpiactive_entity_name"]."\" onclick=\"completecleandisplay('show_entities$addname');\">";
 		echo $_SESSION["glpiactive_entity_shortname"];
 		echo "</a>";
 		echo "<div id='show_entities$addname' onmouseover=\"completecleandisplay('show_entities$addname');\">";	
@@ -2026,6 +2045,7 @@ function showProfileSelecter($target){
 		displayActiveEntities($target,"activeentity");
 		
 		echo "</div>";
+*/
 		echo "</li>";
 	}
 

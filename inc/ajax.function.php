@@ -138,13 +138,10 @@ function ajaxUpdateItemOnEvent($toobserve,$toupdate,$url,$parameters=array(),$ev
 function ajaxUpdateItemOnEventJsCode($toobserve,$toupdate,$url,$parameters=array(),$events=array("change"),$spinner=true){
 	global $CFG_GLPI;
 
-		echo "   new Form.Element.Observer('$toobserve', 1, \n";
-		echo "      function(element, value) {\n";
-			ajaxUpdateItemJsCode($toupdate,$url,$parameters,$spinner,$toobserve);
-		echo "});\n";
-
-
-	
+	echo "   new Form.Element.Observer('$toobserve', 1, \n";
+	echo "      function(element, value) {\n";
+		ajaxUpdateItemJsCode($toupdate,$url,$parameters,$spinner,$toobserve);
+	echo "});\n";
 }
 
 
