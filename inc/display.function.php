@@ -1874,7 +1874,6 @@ function printPagerForm ($action) {
  * @param $target page would be open when click on the option (last,previous etc)
  * @param $parameters parameters would be passed on the URL.
  * @param $item_type_output item type display - if >0 display export PDF et Sylk form
- * @param $item_type_output item type display - if >0 display export PDF et Sylk form
  * @param $item_type_output_param item type parameter for export
  * @return nothing (print a pager)
  *
