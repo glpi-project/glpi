@@ -37,7 +37,7 @@
 $NEEDED_ITEMS=array("user","tracking","reservation","document","computer","device","printer","networking",
 					"peripheral","monitor","software","infocom","phone","link","ocsng","consumable","cartridge",
 					"contract","enterprise","contact","group","profile","search","mailgate","typedoc","admininfo",
-					"registry","setup","rulesengine","rule.softwarecategories","rule.dictionnary.software","rule.dictionnary.dropdown","entity");
+					"registry","setup","rulesengine","rule.right", "rule.softwarecategories","rule.dictionnary.software","rule.dictionnary.dropdown","entity","ldap");
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
@@ -465,6 +465,21 @@ if (isset($_POST["device_type"])){
 						$ids[]=$key;
 				}
 				$softdictionnayrule->replayRulesOnExistingDB(0,0,$ids);
+			break;
+
+			case "force_user_ldap_update":
+				checkRight("user","w");
+
+				$user = new User;
+				$ids=array();
+				foreach ($_POST["item"] as $key => $val){
+					if ($val==1)
+					{
+						$user->getFromDB($key);
+						if ($user->fields["auth_method"] == AUTH_LDAP)
+							ldapImportUserByServerId($user->fields["name"],1,$user->fields["id_auth"]);
+					} 
+				}
 			break;
 			
 			case "add_transfer_list":

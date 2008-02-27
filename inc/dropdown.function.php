@@ -1508,6 +1508,11 @@ function dropdownMassiveAction($device_type,$deleted=0){
 					echo "<option value=\"add_group\">".$LANG["setup"][604]."</option>";
 					echo "<option value=\"add_userprofile\">".$LANG["setup"][607]."</option>";
 				}
+
+				if (haveRight("user","w")){
+					echo "<option value=\"force_user_ldap_update\">".$LANG["ocsng"][24]."</option>";
+				}
+
 				break;
 			case TRACKING_TYPE :
 				if (haveRight("comment_all_ticket","1")){

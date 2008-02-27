@@ -79,6 +79,7 @@ if (isset($_POST["action"])&&isset($_POST["type"])&&!empty($_POST["type"])){
 		case "compute_software_category":
 		case "replay_dictionnary":
 		case "force_ocsng_update":
+		case "force_user_ldap_update":
 		case "delete":
 		case "purge":
 		case "restore":
