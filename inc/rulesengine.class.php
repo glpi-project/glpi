@@ -87,6 +87,44 @@ class RuleCollection {
 		$this->rule_type = $rule_type;
 	}
 
+	/**
+	* Get Collection Size : retrieve the number of rules
+	* 
+	* @return : number of rules
+	**/
+	function getCollectionSize(){
+
+		return countElementsInTable("glpi_rules_descriptions", "rule_type=".$this->rule_type);
+	}
+	
+	/**
+	* Get Collection Part : retrieve descriptions of a range of rules
+	* 
+	* @param $start : first rule (in the result set)
+	* @param $limit : max number of rules ti retrieve
+	**/
+	function getCollectionPart($start=0,$limit=0){
+		global $DB;
+		
+		$this->RuleList = new SingletonRuleList($this->rule_type);
+		$this->RuleList->list = array();
+			
+		//Select all the rules of a different type
+		$sql = "SELECT * FROM glpi_rules_descriptions WHERE rule_type=" . $this->rule_type . " ORDER by ".$this->orderby." ASC";
+		if ($limit) {
+			$sql .= " LIMIT $start,$limit";
+		}
+
+		$result = $DB->query($sql);
+		if ($result){
+		 	while ($data=$DB->fetch_assoc($result)) {
+			 	//For each rule, get a Rule object with all the criterias and actions
+				$tempRule= $this->getRuleClass();
+				$tempRule->fields = $data;
+				$this->RuleList->list[] = $tempRule;
+			}
+		}
+	}
 
 	/**
 	* Get Collection Datas : retrieve descriptions and rules
@@ -184,7 +222,18 @@ class RuleCollection {
 			//The engine keep the result of a rule to be processed further
 			echo "<span class='center'><strong>".$LANG["rulesengine"][122]."</strong></span><br>";
 		}
-		$this->getCollectionDatas(0,0);
+
+		$nb = $this->getCollectionSize();
+		$start = (isset($_GET["start"]) ? $_GET["start"] : 0);
+		if ($start >= $nb) {
+			$start = 0;
+		}
+		$limit = $_SESSION["glpilist_limit"];
+
+		$this->getCollectionPart($start,$limit);
+		
+		printPager($start,$nb,$_SERVER['PHP_SELF'],"");
+		
 		echo "<br><form name='ruleactions_form' id='ruleactions_form' method='post' action=\"$target\">\n";
 		echo "<div class='center'>"; 
 		echo "<table class='tab_cadrehov'>";
@@ -203,11 +252,9 @@ class RuleCollection {
 		echo "<td class='tab_bg_2' colspan='2'></td>";
 		echo "</tr>";
 		
-		$i=0;
-		$nb=count($this->RuleList->list);
-		foreach ($this->RuleList->list as $rule){
-			$rule->showMinimalForm($target,$i==0,$i==$nb-1);
-			$i++;
+		//foreach ($this->RuleList->list as $rule){
+		for ($i=$start,$j=0 ; isset($this->RuleList->list[$j]) ; $i++,$j++) {
+			$this->RuleList->list[$j]->showMinimalForm($target,$i==0,$i==$nb-1);
 		}
 		echo "</table>";
 		echo "</div>";
