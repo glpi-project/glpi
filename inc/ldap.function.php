@@ -290,7 +290,7 @@ function getAllLdapUsers($id_auth, $sync = 0,$myfilter='') {
 		return false;
 	}
 
-	$ds = connect_ldap($config_ldap->fields['ldap_host'], $config_ldap->fields['ldap_port'], $config_ldap->fields['ldap_rootdn'], $config_ldap->fields['ldap_pass'], $config_ldap->fields['ldap_use_tls']);
+	$ds = connect_ldap($config_ldap->fields['ldap_host'], $config_ldap->fields['ldap_port'], $config_ldap->fields['ldap_rootdn'], $config_ldap->fields['ldap_pass'], $config_ldap->fields['ldap_use_tls'], $config_ldap->fields['ldap_opt_deref']);
 	if ($ds) {
 
 		//Search for ldap login AND modifyTimestamp, which indicates the last update of the object in directory
