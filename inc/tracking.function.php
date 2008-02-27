@@ -488,7 +488,12 @@ function showJobShort($data, $followups,$output_type=HTML_OUTPUT,$row_num=0) {
 
 		// Second TER column
 		if (count($_SESSION["glpiactiveentities"])>1){
-			$second_col=getDropdownName("glpi_entities",$data['FK_entities']);
+
+			if ($data['entityID']==0){
+				$second_col=$LANG["entity"][2];
+			} else {
+				$second_col=$data['entityname'];
+			}
 	
 			echo displaySearchItem($output_type,$second_col,$item_num,$row_num,$align." width=100");
 		}
@@ -1316,12 +1321,18 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$to
 		$start = 0;
 	}
 	$SELECT = "SELECT ".getCommonSelectForTrackingSearch();
+
+
 	$FROM = " FROM glpi_tracking ".getCommonLeftJoinForTrackingSearch();
 
 	if ($search!=""&&strpos($tosearch,"followup")!==false) {
 		$FROM.= " LEFT JOIN glpi_followups ON ( glpi_followups.tracking = glpi_tracking.ID)";
 	}
 
+	if (count($_SESSION["glpiactiveentities"])>1){
+		$SELECT.= ", glpi_entities.completename as entityname, glpi_tracking.FK_entities as entityID";
+		$FROM.= " LEFT JOIN glpi_entities ON ( glpi_entities.ID = glpi_tracking.FK_entities)";
+	}
 
 	$where=" WHERE ";
 
