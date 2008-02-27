@@ -723,10 +723,10 @@ $LANG["ldap"][23]="Import en masse de groupes depuis un annuaire";
 $LANG["ldap"][24]="Importation de nouveaux groupes";
 
 $LANG["ldap"][30]="Traitement des alias LDAP";
-$LANG["ldap"][31]="None (défaut)";
-$LANG["ldap"][32]="Always";
-$LANG["ldap"][33]="Searching";
-$LANG["ldap"][34]="Finding";
+$LANG["ldap"][31]="Jamais déréférencés (défaut)";
+$LANG["ldap"][32]="Toujours déréférencés";
+$LANG["ldap"][33]="Déréférencés pendant la recherche";
+$LANG["ldap"][34]="Déréférencés pendant la localisation";
 
 $LANG["links"][1]="Lien ou Nom du fichier"; 
 $LANG["links"][3]="Ajouter un lien externe"; 
