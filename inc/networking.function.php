@@ -485,7 +485,7 @@ function showConnection($ID,$withtemplate='',$type=COMPUTER_TYPE) {
 ///// Wire the Ports /////
 
 
-function makeConnector($sport,$dport) {
+function makeConnector($sport,$dport,$dohistory=1) {
 
 	global $DB,$CFG_GLPI, $LANG;
 
@@ -597,6 +597,29 @@ function makeConnector($sport,$dport) {
 		$source->getFromDB($ps->fields['device_type'],$ps->fields['on_device']);
 		$dest=new CommonItem;
 		$dest->getFromDB($pd->fields['device_type'],$pd->fields['on_device']);
+		
+		if ($dohistory) {
+			$changes[0]=0;
+			$changes[1]="";
+			$changes[2]=$dest->getName();
+			if ($ps->fields["device_type"]==NETWORKING_TYPE) {
+				$changes[2] = "#" . $ps->fields["name"] . " > " . $changes[2];
+			}
+			if ($pd->fields["device_type"]==NETWORKING_TYPE) {
+				$changes[2] = $changes[2] . " > #" . $pd->fields["name"];
+			}
+			historyLog ($ps->fields["on_device"],$ps->fields["device_type"],$changes,$pd->fields["device_type"],HISTORY_CONNECT_DEVICE);
+	
+			$changes[2]=$source->getName();
+			if ($pd->fields["device_type"]==NETWORKING_TYPE) {
+				$changes[2] = "#" . $pd->fields["name"] . " > " . $changes[2];
+			}
+			if ($ps->fields["device_type"]==NETWORKING_TYPE) {
+				$changes[2] = $changes[2] . " > #" . $ps->fields["name"];
+			}
+			historyLog ($pd->fields["on_device"],$pd->fields["device_type"],$changes,$ps->fields["device_type"],HISTORY_CONNECT_DEVICE);			
+		}
+					
 		echo "<br><div class='center'><strong>".$LANG["networking"][44]." ".$source->getName()." - ".$ps->fields['logical_number']."  (".$ps->fields['ifaddr']." - ".$ps->fields['ifmac'].") ".$LANG["networking"][45]." ".$dest->getName()." - ".$pd->fields['logical_number']." (".$pd->fields['ifaddr']." - ".$pd->fields['ifmac'].") </strong></div>";
 		return true;
 	} else {
@@ -605,7 +628,7 @@ function makeConnector($sport,$dport) {
 
 }
 
-function removeConnector($ID) {
+function removeConnector($ID,$dohistory=1) {
 
 	global $DB,$CFG_GLPI;
 
@@ -619,13 +642,16 @@ function removeConnector($ID) {
 		$np2->getFromDB($ID2);
 		$npnet=-1;
 		$npdev=-1;
+		$port="";
 		if ($np1->fields["device_type"]!=NETWORKING_TYPE&&$np2->fields["device_type"]==NETWORKING_TYPE){
 			$npnet=$ID2;
 			$npdev=$ID;
+			$port=$np2->fields["logical_number"];
 		}
 		if ($np2->fields["device_type"]!=NETWORKING_TYPE&&$np1->fields["device_type"]==NETWORKING_TYPE){
 			$npnet=$ID;
 			$npdev=$ID2;
+			$port=$np1->fields["logical_number"];
 		}
 		if ($npnet!=-1&&$npdev!=-1){
 			// Unset MAC and IP from networking device
@@ -633,11 +659,37 @@ function removeConnector($ID) {
 			$DB->query($query);
 			// Unset netpoint from common device
 			$query = "UPDATE glpi_networking_ports SET netpoint=NULL WHERE ID='$npdev'";	
-			$DB->query($query);
+			$DB->query($query);			
 		}
 
 		$query = "DELETE FROM glpi_networking_wire WHERE (end1 = '$ID' OR end2 = '$ID')";
 		if ($result=$DB->query($query)) {
+			if ($dohistory) {
+				$device=new CommonItem();
+
+				$device->getFromDB($np2->fields["device_type"],$np2->fields["on_device"]);
+				$changes[0]=0;
+				$changes[1]=$device->getName();
+				$changes[2]="";
+				if ($np1->fields["device_type"]==NETWORKING_TYPE) {
+					$changes[1] = "#" . $np1->fields["name"] . " > " . $changes[1];
+				}
+				if ($np2->fields["device_type"]==NETWORKING_TYPE) {
+					$changes[1] = $changes[1] . " > #" . $np2->fields["name"];
+				}
+				historyLog ($np1->fields["on_device"],$np1->fields["device_type"],$changes,$np2->fields["device_type"],HISTORY_DISCONNECT_DEVICE);
+
+				$device->getFromDB($np1->fields["device_type"],$np1->fields["on_device"]);
+				$changes[1]=$device->getName();
+				if ($np2->fields["device_type"]==NETWORKING_TYPE) {
+					$changes[1] = "#" . $np2->fields["name"] . " > " . $changes[1];
+				}
+				if ($np1->fields["device_type"]==NETWORKING_TYPE) {
+					$changes[1] = $changes[1] . " > #" . $np1->fields["name"];
+				}
+				historyLog ($np2->fields["on_device"],$np2->fields["device_type"],$changes,$np1->fields["device_type"],HISTORY_DISCONNECT_DEVICE);
+			}
+			
 			return true;
 		} else {
 			return false;
