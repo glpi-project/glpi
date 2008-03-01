@@ -18,7 +18,6 @@
  (at your option) any later version.
 
  GLPI is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  GNU General Public License for more details.
 
@@ -482,10 +481,16 @@ function showConnection($ID,$withtemplate='',$type=COMPUTER_TYPE) {
 }	
 
 
-///// Wire the Ports /////
-
-
-function makeConnector($sport,$dport,$dohistory=1) {
+/**
+ * Wire the Ports
+ *
+ *@param $sport : source port ID
+ *@param $dport : destination port ID
+ *@param $dohistory : add event in the history
+ * 
+ *@return true on success 
+**/
+function makeConnector($sport, $dport, $dohistory=true) {
 
 	global $DB,$CFG_GLPI, $LANG;
 
@@ -628,7 +633,15 @@ function makeConnector($sport,$dport,$dohistory=1) {
 
 }
 
-function removeConnector($ID,$dohistory=1) {
+/**
+ * Unwire the Ports
+ *
+ *@param $ID : ID of the link
+ *@param $dohistory : add event in the history
+ * 
+ *@return true on success 
+**/
+function removeConnector($ID, $dohistory=true) {
 
 	global $DB,$CFG_GLPI;
 
@@ -642,16 +655,13 @@ function removeConnector($ID,$dohistory=1) {
 		$np2->getFromDB($ID2);
 		$npnet=-1;
 		$npdev=-1;
-		$port="";
 		if ($np1->fields["device_type"]!=NETWORKING_TYPE&&$np2->fields["device_type"]==NETWORKING_TYPE){
 			$npnet=$ID2;
 			$npdev=$ID;
-			$port=$np2->fields["logical_number"];
 		}
 		if ($np2->fields["device_type"]!=NETWORKING_TYPE&&$np1->fields["device_type"]==NETWORKING_TYPE){
 			$npnet=$ID;
 			$npdev=$ID2;
-			$port=$np1->fields["logical_number"];
 		}
 		if ($npnet!=-1&&$npdev!=-1){
 			// Unset MAC and IP from networking device
