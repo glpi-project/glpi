@@ -214,7 +214,13 @@ function showCentralJobList($target,$start,$status="process",$showgrouptickets=t
 	if ($number > 0) {
 		echo "<table class='tab_cadrehov'>";
 
-		echo "<tr><th colspan='5'><a href=\"".$CFG_GLPI["root_doc"]."/front/tracking.php?assign=mine&amp;status=$status&amp;reset=reset_before\">".$title."</a></th></tr>";
+		$link="assign=mine&amp;status=$status&amp;reset=reset_before";
+		// Only mine
+		if (!$showgrouptickets&&(haveRight("show_all_ticket","1")||haveRight("show_assign_ticket",'1'))){
+			$link="assign=".$_SESSION["glpiID"]."&amp;status=$status&amp;reset=reset_before";
+		}
+
+		echo "<tr><th colspan='5'><a href=\"".$CFG_GLPI["root_doc"]."/front/tracking.php?$link\">".$title."</a></th></tr>";
 		echo "<tr><th></th>";
 		echo "<th>".$LANG["job"][4]."</th>";
 		echo "<th>".$LANG["common"][1]."</th>";
