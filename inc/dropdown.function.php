@@ -1724,6 +1724,13 @@ function dropdownLanguages($myname,$value){
 function displayActiveEntities($target,$myname){
 	global $CFG_GLPI,$LANG;
 	
+
+echo "<a href='".$target."?active_entity=all' title=\"".$LANG["buttons"][40]."\">_&nbsp;".ereg_replace(" ","&nbsp;",$LANG["buttons"][40])."&nbsp;_</a><br>";
+foreach ($_SESSION['glpi_entities_tree'] as $ID => $tree){
+	displayEntityTree($target,$myname,$tree);
+}
+
+/*
 	echo "<table>";
 	echo "<tr><td style='text-align:left;'><a href='".$target."?active_entity=all' title=\"".$LANG["buttons"][40]."\">_&nbsp;".ereg_replace(" ","&nbsp;",$LANG["buttons"][40])."&nbsp;_</a></td></tr>";
 
@@ -1731,11 +1738,34 @@ function displayActiveEntities($target,$myname){
 		displayEntityTree($target,$myname,$tree);
 	}
 	echo "</table>";
+*/
 }
 
 function displayEntityTree($target,$myname,$tree,$level=0){
 	global $CFG_GLPI,$LANG;
+
+
 	if (count($tree)){
+		foreach ($tree as $ID => $data){
+			if (isset($data['name'])){
+				$class=" class='tree' ";
+				$raquo="&raquo;";
+				if ($level==0){
+					$class=" class='treeroot' ";
+					$raquo="";
+				}
+
+				echo "<span $class>".str_repeat("&nbsp;&nbsp;&nbsp;", $level+1).$raquo."&nbsp;<a title=\"".$data['name']."\" href='".$target."?active_entity=$ID'>".ereg_replace(" ","&nbsp;",$data['name'])."</a>";
+
+				if (isset($data['tree'])&&count($data['tree'])){
+					echo "&nbsp;&nbsp;<a title=\"".$LANG["buttons"][40]."\" href='".$target."?active_entity=$ID&amp;recursive=1'><img alt=\"".$LANG["buttons"][40]."\" src='".$CFG_GLPI["root_doc"]."/pics/entity_all.png'></a></span><br>";
+					displayEntityTree($target,$myname,$data['tree'],$level+1);
+				} else echo "&nbsp;</span><br>";
+			}
+		}
+	}
+
+/*	if (count($tree)){
 		foreach ($tree as $ID => $data){
 			if (isset($data['name'])){
 				$class=" class='tree' ";
@@ -1754,6 +1784,7 @@ function displayEntityTree($target,$myname,$tree,$level=0){
 			}
 		}
 	}
+	*/
 }
 
 
