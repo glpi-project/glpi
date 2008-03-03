@@ -195,7 +195,8 @@ function Disconnect($ID,$dohistory=1,$ocs_server_id=0) {
 			//Change status if : 
 			// 1 : the management mode IS NOT global
 			// 2 : a deconnection's status have been defined 
-			if($mode == 2 && strlen($decoConf)>0){
+			// 3 : unique with serial
+			if($mode >= 2 && strlen($decoConf)>0){
 				//Delete periph from glpi
 				if($decoConf == "delete")
 					$device->obj->delete($id_elem);
