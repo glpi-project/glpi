@@ -1753,9 +1753,9 @@ function displayEntityTree($target,$myname,$tree,$level=0){
 				if ($level==0){
 					$class=" class='treeroot' ";
 					$raquo="";
-				}
+				} 
 
-				echo "<span $class>".str_repeat("&nbsp;&nbsp;&nbsp;", $level+1).$raquo."&nbsp;<a title=\"".$data['name']."\" href='".$target."?active_entity=$ID'>".ereg_replace(" ","&nbsp;",$data['name'])."</a>";
+				echo "<span $class >".str_repeat("&nbsp;&nbsp;&nbsp;", max(1,$level)).$raquo."&nbsp;<a title=\"".$data['name']."\" href='".$target."?active_entity=$ID'>".ereg_replace(" ","&nbsp;",$data['name'])."</a>";
 
 				if (isset($data['tree'])&&count($data['tree'])){
 					echo "&nbsp;&nbsp;<a title=\"".$LANG["buttons"][40]."\" href='".$target."?active_entity=$ID&amp;recursive=1'><img alt=\"".$LANG["buttons"][40]."\" src='".$CFG_GLPI["root_doc"]."/pics/entity_all.png'></a></span><br>";
