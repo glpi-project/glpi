@@ -2033,7 +2033,7 @@ function showProfileSelecter($target){
 		echo "new Control.Modal('modal_entity_selection',{";
 		//echo "iframe: true,";
 		//echo "opacity: 0.8, position: 'relative', width:300, height:50";
-		echo "opacity: 0.8, width: 500, height: 500";
+		echo "opacity: 0.2, width: 500, height: 500";
 		echo "});";
 		echo "</script>";
 
