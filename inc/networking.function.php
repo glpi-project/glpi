@@ -583,7 +583,7 @@ function makeConnector($sport, $dport, $dohistory=true) {
 		// Unset MAC and IP from networking device
 		$query = "SELECT * FROM glpi_networking_vlan WHERE FK_port='$npnet'";	
 		if ($result=$DB->query($query)){
-			if (count($DB->numrows($result))){
+			if ($DB->numrows($result)>0){
 				// Found VLAN : clean vlan device and add found ones
 				$query="DELETE FROM glpi_networking_vlan WHERE FK_port='$npdev' ";
 				$DB->query($query);
