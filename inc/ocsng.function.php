@@ -2301,10 +2301,10 @@ function ocsUpdatePeripherals($device_type, $entity, $glpi_id, $ocs_id, $ocs_ser
 													WHERE HARDWARE_ID = '" . $ocs_id . "'";
 				$result = $DBocs->query($query);
 				$lines=array();
-
+				$checkserial=true;
+				
 				// First pass - check if all serial present
 				if ($DBocs->numrows($result) > 0) {
-					$checkserial=true;
 					while ($line = $DBocs->fetch_array($result)) {
 						if (empty($line["SERIAL"])) {
 							$checkserial=false;
