@@ -123,11 +123,6 @@ hr{
 	z-index:1000;
 }
 
-/* message div */
-.message  {
-	margin: 0 auto; 
-	text-align:center;
-	font-weight:bold;}
 
 .pointer {cursor:pointer;}
 
@@ -378,7 +373,7 @@ td { }
 }
 
 /* ################--------------- Bouton navigation   ---------------#################### */
-/* 								(obsolète mais encore utilisés)								*/
+/* (obsolète mais encore utilisés)							*/
 
 .icon_consol_hov, .icon_consol{
 	font-family: "Trebuchet MS", Tahoma, Arial, Helvetica, sans-serif;
@@ -791,6 +786,20 @@ ul#onglet span.fake{
 
 }
 
+/* ################--------------- box (redirect and other)  ---------------#################### */
+.box {margin: 0 auto; width:400px;	text-align:center;}
+.box-tleft{background:transparent url(../pics/corners.gif) no-repeat 0 0;zoom:1;}
+.box-tcenter{height:8px;background:transparent url(../pics/tb.gif) repeat-x 0 0;overflow:hidden;}
+.box-tright{background:transparent url(../pics/corners.gif) no-repeat right -8px;}
+.box-mleft{background:transparent url(../pics/l.gif) repeat-y 0;padding-left:4px;overflow:hidden;zoom:1;}
+.box-mcenter{background:#eee url(../pics/tb.gif) repeat-x 0 -16px;padding:4px 10px;font-family:"Myriad Pro","Myriad Web","Tahoma","Helvetica","Arial",sans-serif;color:#393939;font-size:11px;}
+.box-mcenter h3{font-size:11px;font-weight:bold;margin:0 0 4px 0;zoom:1;}
+.box-mright{background:transparent url(../pics/r.gif) repeat-y right;padding-right:4px;overflow:hidden;}
+.box-bleft{background:transparent url(../pics/corners.gif) no-repeat 0 -16px;zoom:1;}
+.box-bcenter{background:transparent url(../pics/tb.gif) repeat-x 0 -8px;height:8px;overflow:hidden;}
+.box-bright{background:transparent url(../pics/corners.gif) no-repeat right -24px;}
+.box-tleft,.box-bleft{padding-left:8px;overflow:hidden;}
+.box-tright,.box-bright{padding-right:8px;overflow:hidden;}
 
 
 

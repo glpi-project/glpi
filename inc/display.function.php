@@ -981,7 +981,14 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="")
 function displayMessageAfterRedirect(){
 	// Affichage du message apres redirection
 	if (isset($_SESSION["MESSAGE_AFTER_REDIRECT"])&&!empty($_SESSION["MESSAGE_AFTER_REDIRECT"])){
-		echo "<div class='center'><strong>".$_SESSION["MESSAGE_AFTER_REDIRECT"]."</strong></div>";
+		echo "<div class=\"box\" style=\"margin-bottom:20px;\">";
+		echo "<div class=\"box-tleft\"><div class=\"box-tright\"><div class=\"box-tcenter\"></div></div></div>";
+		echo "<div class=\"box-mleft\"><div class=\"box-mright\"><div class=\"box-mcenter\">";
+		echo "<h3>".$_SESSION["MESSAGE_AFTER_REDIRECT"]."</h3>";
+		echo "</div></div></div>";
+		echo "<div class=\"box-bleft\"><div class=\"box-bright\"><div class=\"box-bcenter\"></div></div></div>";
+		echo "</div>";
+
 	} 
 	// Clean message
 	$_SESSION["MESSAGE_AFTER_REDIRECT"]="";
