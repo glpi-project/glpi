@@ -469,7 +469,7 @@ function update065to068(){
 	// Ticket Category -> Tree mode
 	if(!FieldExists("glpi_dropdown_tracking_category","completename")) {	
 		$query = "ALTER TABLE glpi_dropdown_tracking_category ADD `parentID` INT NOT NULL DEFAULT '0' AFTER `ID`,
-			ADD `completename` TEXT NOT NULL DEFAULT '' AFTER `name`,
+			ADD `completename` TEXT NULL AFTER `name`,
 			ADD `level` INT NULL AFTER `comments` "; 
 				$DB->query($query) or die("0.68 glpi_dropdown_tracking_category to dropdown tree".$LANG["update"][90].$DB->error());
 		regenerateTreeCompleteName("glpi_dropdown_tracking_category");
