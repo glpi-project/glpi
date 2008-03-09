@@ -558,11 +558,12 @@ function getDropdownID($input)
  *@param $FK_entities int : entity in case of specific dropdown
  *@param $external_params
  *@param $comments
+ *@param $add if true, add it if not found. if false, just check if exists 
  *
  *@return integer : dropdown id.
  *
  **/
-function externalImportDropdown($dpdTable, $value, $FK_entities = -1,$external_params=array(),$comments="") {
+function externalImportDropdown($dpdTable, $value, $FK_entities = -1,$external_params=array(),$comments="",$add=true) {
 	global $DB, $CFG_GLPI;
 
 	$value=trim($value);
@@ -619,7 +620,7 @@ function externalImportDropdown($dpdTable, $value, $FK_entities = -1,$external_p
 		}
 	}
 
-	return addDropdown($input);
+	return ($add ? addDropdown($input) : getDropdownID($input));
 }
 
 
