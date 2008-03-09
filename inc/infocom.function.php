@@ -124,7 +124,7 @@ function showInfocomForm($target,$device_type,$dev_ID,$show_immo=1,$withtemplate
 			if ($ic->fields["warranty_duration"]>=0){
 				echo " ".$LANG["financial"][57];
 			}
-			echo "&nbsp;&nbsp; &nbsp; &nbsp;&nbsp;&nbsp;".$LANG["financial"][88];
+			echo "&nbsp;&nbsp; &nbsp; &nbsp;&nbsp;&nbsp;".$LANG["financial"][88]."&nbsp;";
 			echo getWarrantyExpir($ic->fields["buy_date"],$ic->fields["warranty_duration"]);
 			echo "</td>";
 
