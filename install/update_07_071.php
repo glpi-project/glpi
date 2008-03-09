@@ -282,17 +282,19 @@ function update07to071() {
 	$query="UPDATE `glpi_users` SET `auth_method`=5 WHERE `auth_method`=0;";
 	$DB->query($query) or die("0.71 update auth method for CAS " . $DB->error());		
 	
-	if (!TableExists("glpi_bookmark"))
-	{
+	if (!TableExists("glpi_bookmark")){
 	 	$query="CREATE TABLE IF NOT EXISTS `glpi_bookmark` (
-		  `ID` int(11) NOT NULL auto_increment,
-		  `name` varchar(255) NULL,
-		  `FK_users` int(11) NOT NULL DEFAULT '0',
-		  `path` varchar(255) NULL,
-		  `query` text NULL,
-		  PRIMARY KEY  (`ID`),
-		  KEY `FK_users` (`FK_users`)
-		) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+			`ID` int(11) NOT NULL auto_increment,
+			`name` varchar(255) collate utf8_unicode_ci default NULL,
+			`FK_users` int(11) NOT NULL default '0',
+			`FK_entities` int(11) NOT NULL default '-1',
+			`recursive` smallint(6) NOT NULL default '0',
+			`path` varchar(255) collate utf8_unicode_ci default NULL,
+			`query` text collate utf8_unicode_ci,
+			PRIMARY KEY  (`ID`),
+			KEY `FK_users` (`FK_users`),
+			KEY `FK_entities` (`FK_entities`)
+			) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
 		$DB->query($query) or die("0.71 add table glpi_bookmark " . $DB->error());		
 	}
 
