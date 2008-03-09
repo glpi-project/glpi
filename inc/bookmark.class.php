@@ -40,21 +40,42 @@ class Bookmark extends CommonDBTM {
 		$this->table = "glpi_bookmark";
 	}
 
-	function showSaveBookmarkForm($target,$url, $user_id,$url) {
+
+	function prepareInputForAdd($input) {
+		if (!isset($input['url'])||!isset($input['type'])){
+			return false;
+		}
+
+		$taburl = parse_url(urldecode($input['url']));
+
+		$index = strpos($taburl["path"],"plugins");
+		if (!$index)
+			$index = strpos($taburl["path"],"front");
+		$input['path'] = substr($taburl["path"],$index,strlen($taburl["path"]) - $index);
+
+		$query_tab=array();
+		
+		if (isset($taburl["query"])){
+			parse_str($taburl["query"],$query_tab);
+		}
+
+		$input['query']=append_params($this->prepareQueryToStore($input['type'],$query_tab));
+
+		return $input;
+	}
+
+	function showSaveBookmarkForm($type,$target,$url) {
 		global $LANG;
+
 		echo "<br>";
 		echo "<div class='center'>";
 		echo "<form method='post' name='form_save_query' action=\"$target\">";
 
-		echo "<input type='hidden' name='FK_users' value='" . $user_id . "'>";
-		$taburl = parse_url($url);
-		$index = strpos($taburl["path"],"plugins");
-		if (!$index)
-			$index = strpos($taburl["path"],"front");
-		$path = substr($taburl["path"],$index,strlen($taburl["path"]) - $index);
-			
-		echo "<input type='hidden' name='path' value='" . urlencode($path) . "'>";
-		echo "<input type='hidden' name='query' value='" . (isset($taburl["query"])?urlencode($taburl["query"]."&reset_before"):"reset_before") . "'>";
+		echo "<input type='hidden' name='type' value='$type'>";
+		echo "<input type='hidden' name='FK_users' value='" . $_SESSION['glpiID'] . "'>";
+		echo "<input type='hidden' name='url' value='" . urlencode($url) . "'>";
+
+//" . (isset($taburl["query"])?urlencode($taburl["query"]."&reset_before"):"reset_before") . "
 
 		echo "<table class='tab_cadre'>";
 		echo "<tr><th align='center' colspan='2'>".$LANG["buttons"][51]." ".$LANG["bookmark"][1]."</th>";
@@ -69,6 +90,28 @@ class Bookmark extends CommonDBTM {
 		
 	}
 
+	function prepareQueryToStore($type,$query_tab){
+		switch ($type){
+			case BOOKMARK_SEARCH :
+				if (isset($query_tab['start'])){
+					unset($query_tab['start']);
+				}
+			break;
+		}
+		
+		return $query_tab;
+	}
+
+	function prepareQueryToUse($type,$query_tab){
+		switch ($type){
+			case BOOKMARK_SEARCH :
+				$query_tab['reset_before']=1;
+			break;
+		}
+		
+		return $query_tab;
+	}
+
 	function showBookmarkSavedForm()
 	{
 		global $LANG;
@@ -79,13 +122,18 @@ class Bookmark extends CommonDBTM {
 		echo "</tr></table></div>";
 	}
 	
-	function showBookmarkLoadedForm($url)
-	{
-		global $LANG;
+
+	function load($ID){
 		
+		$this->getFromDB($ID);
+		$url = GLPI_ROOT."/".urldecode($this->fields["path"]);
+		$query_tab=array();
+		parse_str($this->fields["query"],$query_tab);
+		$params=$this->prepareQueryToUse($this->fields["type"],$query_tab);
+		$url.="?".append_params($params);
 		echo "<script type='text/javascript' >\n";
-				echo "window.opener.location.href='$url';";
-				//echo "window.close();";
+			echo "window.opener.location.href='$url';";
+			//echo "window.close();";
 		echo "</script>";
 	}
 	

@@ -1849,4 +1849,38 @@ function canUseImapPop(){
 }
 
 
+/* Converts an array of parameters into a query string to be appended to a URL.
+ *
+ * @return  string              : Query string to append to a URL.
+ * @param   array    $array     : Array of parameters to append to the query string.
+ * @param   string   $parent    : This should be left blank (it is used internally by the function).
+ */
+function append_params($array, $parent='')
+{
+    $params = array();
+    foreach ($array as $k => $v)
+    {
+        if (is_array($v))
+            $params[] = append_params($v, (empty($parent) ? urlencode($k) : $parent . '[' . urlencode($k) . ']'));
+        else
+            $params[] = (!empty($parent) ? $parent . '[' . urlencode($k) . ']' : urlencode($k)) . '=' . urlencode($v);
+    }
+
+/*    $sessid = session_id();
+    if (!empty($parent) || empty($sessid))
+        return implode('&', $params);
+
+    // Append the session ID to the query string if we have to.
+    $sessname = session_name();
+    if (ini_get('session.use_cookies'))
+    {
+        if (!ini_get('session.use_only_cookies') && (!isset($_COOKIE[$sessname]) || ($_COOKIE[$sessname] != $sessid)))
+            $params[] = $sessname . '=' . urlencode($sessid);
+    }
+    elseif (!ini_get('session.use_only_cookies'))
+        $params[] = $sessname . '=' . urlencode($sessid);
+*/
+
+    return implode('&', $params);
+}
 ?>
