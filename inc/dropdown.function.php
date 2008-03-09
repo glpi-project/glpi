@@ -806,7 +806,6 @@ function dropdownAllItems($myname,$value_type=0,$value=0,$entity_restrict=-1,$ty
 			'value'=>$value,
 			'myname'=>$myname,
 			'entity_restrict'=>$entity_restrict,
-			'onlyglobal'=>$entity_restrict,
 			);
 		if ($onlyglobal){
 			$params['onlyglobal']=1;
