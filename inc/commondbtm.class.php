@@ -458,7 +458,6 @@ class CommonDBTM {
 	 *@return the modified $input array
 	 *
 	 **/
-	
 	function prepareInputForAdd($input) {
 		return $input;
 	}

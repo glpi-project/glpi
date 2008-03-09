@@ -286,6 +286,7 @@ function update07to071() {
 	 	$query="CREATE TABLE IF NOT EXISTS `glpi_bookmark` (
 			`ID` int(11) NOT NULL auto_increment,
 			`name` varchar(255) collate utf8_unicode_ci default NULL,
+			`type` int(11) NOT NULL default '0',
 			`FK_users` int(11) NOT NULL default '0',
 			`FK_entities` int(11) NOT NULL default '-1',
 			`recursive` smallint(6) NOT NULL default '0',
@@ -293,7 +294,8 @@ function update07to071() {
 			`query` text collate utf8_unicode_ci,
 			PRIMARY KEY  (`ID`),
 			KEY `FK_users` (`FK_users`),
-			KEY `FK_entities` (`FK_entities`)
+			KEY `FK_entities` (`FK_entities`),
+			KEY `type` (`type`)
 			) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
 		$DB->query($query) or die("0.71 add table glpi_bookmark " . $DB->error());		
 	}

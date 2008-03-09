@@ -327,6 +327,9 @@
 	define("IMPORT_TYPE_OCS",0); //Import from OCS
 	define("IMPORT_TYPE_DICTIONNARY",1); //Import or modified from dictionnaries
 
+	//Bookmark types
+	define("BOOKMARK_SEARCH",1); //SEARCH SYSTEM bookmark
+
 
 		//DEVICE ARRAY.
 	$CFG_GLPI["devices_tables"] =array("moboard","processor","ram","hdd","iface","drive","control","gfxcard","sndcard","pci","case","power");

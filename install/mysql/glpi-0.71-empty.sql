@@ -1,4 +1,4 @@
-#GLPI Dump database on 2008-03-09 21:10
+#GLPI Dump database on 2008-03-09 22:41
 
 ### Dump table glpi_alerts
 
@@ -82,6 +82,7 @@ DROP TABLE IF EXISTS `glpi_bookmark`;
 CREATE TABLE `glpi_bookmark` (
   `ID` int(11) NOT NULL auto_increment,
   `name` varchar(255) collate utf8_unicode_ci default NULL,
+  `type` int(11) NOT NULL default '0',
   `FK_users` int(11) NOT NULL default '0',
   `FK_entities` int(11) NOT NULL default '-1',
   `recursive` smallint(6) NOT NULL default '0',
@@ -89,7 +90,8 @@ CREATE TABLE `glpi_bookmark` (
   `query` text collate utf8_unicode_ci,
   PRIMARY KEY  (`ID`),
   KEY `FK_users` (`FK_users`),
-  KEY `FK_entities` (`FK_entities`)
+  KEY `FK_entities` (`FK_entities`),
+  KEY `type` (`type`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
@@ -1382,7 +1384,7 @@ CREATE TABLE `glpi_event_log` (
 ) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 INSERT INTO glpi_event_log VALUES ('1','-1','system','2007-09-29 15:51:43','login','3','glpi connexion de l\'IP : 127.0.0.1');
-INSERT INTO glpi_event_log VALUES ('2','-1','system','2008-03-09 21:10:03','login','3','glpi connexion de l\'IP : 127.0.0.1');
+INSERT INTO glpi_event_log VALUES ('2','-1','system','2008-03-09 22:40:46','login','3','glpi connexion de l\'IP : 127.0.0.1');
 
 ### Dump table glpi_followups
 
@@ -2832,7 +2834,7 @@ CREATE TABLE `glpi_users` (
   KEY `deleted` (`deleted`)
 ) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-INSERT INTO glpi_users VALUES ('2','glpi','','41ece51526515624ff89973668497d00','','','','','',NULL,'0','1','fr_FR','20','1',NULL,'-1','1','2008-03-09 21:10:03','2008-03-09 21:10:03','0','0','0');
+INSERT INTO glpi_users VALUES ('2','glpi','','41ece51526515624ff89973668497d00','','','','','',NULL,'0','1','fr_FR','20','1',NULL,'-1','1','2008-03-09 22:40:46','2008-03-09 22:40:46','0','0','0');
 INSERT INTO glpi_users VALUES ('3','post-only','*5683D7F638D6598D057638B1957F194E4CA974FB','3177926a7314de24680a9938aaa97703','','','','','',NULL,'0','0','en_GB','20','1',NULL,'-1','-1','0000-00-00 00:00:00','0000-00-00 00:00:00','0','0','0');
 INSERT INTO glpi_users VALUES ('4','tech','*B09F1B2C210DEEA69C662977CC69C6C461965B09','d9f9133fb120cd6096870bc2b496805b','','','','','',NULL,'0','1','fr_FR','20','1',NULL,'-1','-1','0000-00-00 00:00:00','0000-00-00 00:00:00','0','0','0');
 INSERT INTO glpi_users VALUES ('5','normal','*F3F91B23FC1DB728B49B1F22DEE3D7A839E10F0E','fea087517c26fadd409bd4b9dc642555','','','','','',NULL,'0','0','en_GB','20','1',NULL,'-1','-1','0000-00-00 00:00:00','0000-00-00 00:00:00','0','0','0');

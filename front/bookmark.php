@@ -60,22 +60,16 @@ if (isset($_POST["save"]))
 }
 else
 {
-	if ($_GET["action"] == "save")
-		$bookmark->showSaveBookmarkForm($_SERVER['PHP_SELF'],$_SERVER["HTTP_REFERER"],$_SESSION["glpiID"],$_SERVER["HTTP_REFERER"]);	
-	else
-	{
-		if (!isset($_GET["check"]))
-			$_GET["check"]="none";
-		if (!isset($_GET["start"]))
-			$_GET["start"]=0;
-					
-		if (isset($_GET["bookmark_id"]))
-		{
-			$bookmark->getFromDB($_GET["bookmark_id"]);
-			$url = GLPI_ROOT."/".urldecode($bookmark->fields["path"]).(isset($bookmark->fields["query"])&&$bookmark->fields["query"]!=''?'?':'').urldecode($bookmark->fields["query"]);
-			$bookmark->showBookmarkLoadedForm($url);
-		}
-		$bookmark->showLoadBookmarkForm($_SERVER['PHP_SELF'],$_SESSION["glpiID"]);
+	switch($_GET["action"]){
+		case "save" :
+			$bookmark->showSaveBookmarkForm($_GET["type"],$_SERVER['PHP_SELF'],$_SERVER["HTTP_REFERER"]);	
+			break;
+		case "load" :
+			if (isset($_GET["bookmark_id"])){
+				$bookmark->load($_GET["bookmark_id"]);
+			}
+			$bookmark->showLoadBookmarkForm($_SERVER['PHP_SELF'],$_SESSION["glpiID"]);
+			break;
 	}
 		
 	if (!ereg("popup",$_SERVER['PHP_SELF']))
