@@ -1561,6 +1561,7 @@ function printHelpDesk ($ID,$from_helpdesk) {
 	$contents="";
 	$title="";
 	$category = 0;
+	$priority  = 3;
 
 
 	if (isset($_SESSION["helpdeskSaved"]["emailupdates"]))
@@ -1575,6 +1576,10 @@ function printHelpDesk ($ID,$from_helpdesk) {
 		$title = stripslashes($_SESSION["helpdeskSaved"]["name"]);
 	if (isset($_SESSION["helpdeskSaved"]["category"]))
 		$category = stripslashes($_SESSION["helpdeskSaved"]["category"]);
+	if (isset($_SESSION["helpdeskSaved"]["priority"]))
+		$priority = stripslashes($_SESSION["helpdeskSaved"]["priority"]);
+	unset($_SESSION["helpdeskSaved"]);
+	
 
 	echo "<form method='post' name=\"helpdeskform\" action=\"".$CFG_GLPI["root_doc"]."/front/tracking.injector.php\"  enctype=\"multipart/form-data\">";
 	echo "<input type='hidden' name='_from_helpdesk' value='$from_helpdesk'>";
@@ -1591,7 +1596,7 @@ function printHelpDesk ($ID,$from_helpdesk) {
 	echo "<tr class='tab_bg_1'>";
 	echo "<td>".$LANG["help"][2].": </td>";
 	echo "<td>";
-	dropdownPriority("priority",3);
+	dropdownPriority("priority",$priority);
 	echo "</td></tr>";
 	if(isAuthorMailingActivatedForHelpdesk()){
 		echo "<tr class='tab_bg_1'>";

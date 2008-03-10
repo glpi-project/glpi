@@ -476,8 +476,34 @@ class Job extends CommonDBTM{
 
 
 	function prepareInputForAdd($input) {
-		global $CFG_GLPI;
+		global $CFG_GLPI,$LANG;
 
+//		print_r($input);
+//		exit();
+		// Check mandatory
+		$mandatory_ok=true;
+		$_SESSION["helpdeskSaved"]=$input;
+		if ($CFG_GLPI["ticket_content_mandatory"]&&(!isset($input['contents'])||empty($input['contents']))){
+			addMessageAfterRedirect($LANG["tracking"][8]);
+			$mandatory_ok=false;
+		}
+		if ($CFG_GLPI["ticket_title_mandatory"]&&(!isset($input['name'])||empty($input['name']))){
+			addMessageAfterRedirect($LANG["help"][40]);
+			$mandatory_ok=false;
+		}
+		if ($CFG_GLPI["ticket_category_mandatory"]&&(!isset($input['category'])||empty($input['category']))){
+			addMessageAfterRedirect($LANG["help"][41]);
+			$mandatory_ok=false;
+		}
+		if (isset($input['emailupdates'])&&$input['emailupdates']&&(!isset($input['uemail'])||empty($input['uemail']))){
+			addMessageAfterRedirect($LANG["help"][16]);
+			$mandatory_ok=false;
+		}
+
+		if (!$mandatory_ok){
+			return false;
+		}
+		unset($_SESSION["helpdeskSaved"]);
 		// set new date.
 		$input["date_mod"] = $_SESSION["glpi_currenttime"];
 

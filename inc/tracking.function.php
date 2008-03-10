@@ -692,16 +692,17 @@ function showJobVeryShort($ID) {
 	}
 }
 
-function addFormTracking ($device_type=0,$ID=0,$author,$group,$assign,$assign_group,$target,$error,$searchauthor='') {
+function addFormTracking ($device_type=0,$ID=0, $target, $author, $group=0, $assign=0, $assign_group=0, $name='',$contents='',$category=0, $priority=3,
+		$request_type=1,$hour=0,$minute=0) {
 	// Prints a nice form to add jobs
 
 	global $CFG_GLPI, $LANG,$CFG_GLPI,$REFERER,$DB;
 	if (!haveRight("create_ticket","1")) return false;
 
-	if (!empty($error)) {
+/*	if (!empty($error)) {
 		echo "<div class='center'><strong>$error</strong></div>";
 	}
-
+*/
 	displayTitle("","","",array($REFERER=>$LANG["buttons"][13]));
 
 	echo "<br><form name='form_ticket' method='post' action='$target' enctype=\"multipart/form-data\">";
@@ -761,8 +762,6 @@ function addFormTracking ($device_type=0,$ID=0,$author,$group,$assign,$assign_gr
 
 		echo "<td class='center'>".$LANG["job"][44].":</td>";
 		echo "<td class='center'>";
-		$request_type=1;
-		if (isset($_POST["request_type"])) $request_type=$_POST["request_type"];
 		dropdownRequestType("request_type",$request_type);
 		echo "</td></tr>";
 	}
@@ -774,14 +773,10 @@ function addFormTracking ($device_type=0,$ID=0,$author,$group,$assign,$assign_gr
 		echo "<td class='center'>";
 		echo $LANG["job"][20].":</td>";
 		echo "<td align='center' colspan='3'>";
-		$hour=0;
-		if (isset($_POST["hour"])) $hour=$_POST["hour"];
 		dropdownInteger('hour',$hour,0,100);
 
 		echo $LANG["job"][21]."&nbsp;&nbsp;";
-		$min=0;
-		if (isset($_POST["minute"])) $min=$_POST["minute"];
-		dropdownInteger('minute',$min,0,59);
+		dropdownInteger('minute',$minute,0,59);
 
 		echo $LANG["job"][22]."&nbsp;&nbsp;";
 		echo "</td></tr>";
@@ -792,15 +787,12 @@ function addFormTracking ($device_type=0,$ID=0,$author,$group,$assign,$assign_gr
 
 	echo "<td class='tab_bg_2' align='center'>".$LANG["joblist"][2].":</td>";
 	echo "<td align='center' class='tab_bg_2'>";
-	$priority=3;
-	if (isset($_POST["priority"])) $priority=$_POST["priority"];
+
 	dropdownPriority("priority",$priority);
 	echo "</td>";
 
 	echo "<td>".$LANG["common"][36].":</td>";
 	echo "<td class='center'>";
-	$category=0;
-	if (isset($_POST["category"])) $category=$_POST["category"];
 	dropdownValue("glpi_dropdown_tracking_category","category",$category);
 	echo "</td></tr>";
 
@@ -850,8 +842,7 @@ function addFormTracking ($device_type=0,$ID=0,$author,$group,$assign,$assign_gr
 	echo "</table><br><table class='tab_cadre_fixe'>";
 	echo "<tr><th class='center'>".$LANG["common"][57].":";
 	echo "</th><th colspan='3' class='left'>";
-	$name="";
-	if (isset($_POST["name"])) $name=$_POST["name"];
+
 	echo "<input type='text' size='80' name='name' value='$name'>";
 	echo "</th> </tr>";
 
@@ -859,7 +850,7 @@ function addFormTracking ($device_type=0,$ID=0,$author,$group,$assign,$assign_gr
 	echo "<tr><th colspan='4' align='center'>".$LANG["job"][11].":";
 	echo "</th></tr>";
 
-	echo "<tr class='tab_bg_1'><td colspan='4' align='center'><textarea cols='100' rows='6'  name='contents'></textarea></td></tr>";
+	echo "<tr class='tab_bg_1'><td colspan='4' align='center'><textarea cols='100' rows='6'  name='contents'>$contents</textarea></td></tr>";
 
 	$max_size=return_bytes_from_ini_vars(ini_get("upload_max_filesize"));
 	$max_size/=1024*1024;

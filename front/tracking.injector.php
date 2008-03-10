@@ -46,18 +46,20 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 if(!empty($_POST["type"]) && ($_POST["type"] == "Helpdesk") && ($CFG_GLPI["permit_helpdesk"] == "1"))
 {
-} else checkRight("create_ticket","1");
+} else {
+	checkRight("create_ticket","1");
+}
 
-$status = "new";
+//$status = "new";
 
 // Sauvegarde des donn�s dans le cas de retours avec des navigateurs pourris style IE
-$varstosav = array('emailupdates', 'uemail', 'computer', 'device_type', 'contents','_my_items','category');
+/*$varstosav = array('emailupdates', 'uemail', 'computer', 'device_type', 'contents','_my_items','category');
 
 	foreach ($varstosav as $v){
 		if (isset($_POST[$v]))
 			$_SESSION["helpdeskSaved"][$v] = $_POST[$v];
 	}
-
+*/
 $track=new Job();
 
 // Security check
@@ -65,7 +67,7 @@ if (empty($_POST)||count($_POST)==0){
    glpi_header($CFG_GLPI["root_doc"]."/front/helpdesk.public.php");
 }
 
-if (!empty($_POST["priority"]) && empty($_POST["name"]))
+/*if (!empty($_POST["priority"]) && empty($_POST["name"]))
 {
 	if(!empty($_POST["type"]) && ($_POST["type"] == "Helpdesk")) {
 		nullHeader($LANG["title"][10],$_SERVER['PHP_SELF']);
@@ -136,7 +138,20 @@ elseif (isset($_POST["emailupdates"]) && $_POST["emailupdates"] && isset($_POST[
 	echo "</b></div>";
 	nullFooter();
 	exit;
-} else{
+} else
+*/
+
+
+	if(!empty($_POST["type"]) && ($_POST["type"] == "Helpdesk")) {
+		nullHeader($LANG["title"][10],$_SERVER['PHP_SELF']);
+	}
+	else if ($_POST["_from_helpdesk"]){
+		helpHeader($LANG["title"][1],$_SERVER['PHP_SELF'],$_SESSION["glpiname"]);
+	}
+	else commonHeader($LANG["title"][1],$_SERVER['PHP_SELF'],$_SESSION["glpiname"],"maintain","tracking");
+
+
+{
 	if (isset($_POST["_my_items"])&&!empty($_POST["_my_items"])){
 		$splitter=split("_",$_POST["_my_items"]);
 		if (count($splitter)==2){
@@ -152,56 +167,22 @@ elseif (isset($_POST["emailupdates"]) && $_POST["emailupdates"] && isset($_POST[
 
 	$ci=new CommonItem;
 
-	if ($_POST["device_type"]!=0&&!$ci->getFromDB($_POST["device_type"],$_POST["computer"])){
-		if(!empty($_POST["type"]) && ($_POST["type"] == "Helpdesk")) {
-			nullHeader($LANG["title"][10],$_SERVER['PHP_SELF']);
-		}
-		else if ($_POST["_from_helpdesk"]){
-			helpHeader($LANG["title"][1],$_SERVER['PHP_SELF'],$_SESSION["glpiname"]);
-		}
-		else commonHeader($LANG["title"][1],$_SERVER['PHP_SELF'],$_SESSION["glpiname"],"maintain","tracking");
-
-		echo "<div align='center'><img src=\"".$CFG_GLPI["root_doc"]."/pics/warning.png\" alt=\"warning\"><br><br><b>";
-		echo $LANG["help"][32]."<br>";
-		echo $LANG["help"][33];
-		echo "</b><br><br>";
-		displayBackLink();
-		echo "</div>";
-
-	} else if ($newID=$track->add($_POST))
-	{
+	if ($newID=$track->add($_POST)){
 		if(isset($_POST["type"]) && ($_POST["type"] == "Helpdesk")) {
-			nullHeader($LANG["title"][10],$_SERVER['PHP_SELF']);
+		} else {
+			echo "<div align='center'><img src=\"".$CFG_GLPI["root_doc"]."/pics/ok.png\" alt=\"OK\"><br><br><b>";
+			echo $LANG["help"][18]." (".$LANG["job"][38]." <a class='b' href='helpdesk.public.php?show=user&amp;ID=$newID'>$newID</a>)<br>";
+			echo $LANG["help"][19];
+			echo "</b></div>";
 		}
-		else if ($_POST["_from_helpdesk"]){
-			helpHeader($LANG["title"][1],$_SERVER['PHP_SELF'],$_SESSION["glpiname"]);
-		}
-		else commonHeader($LANG["title"][1],$_SERVER['PHP_SELF'],$_SESSION["glpiname"],"maintain","tracking");
+	} else {
+		echo "<div align='center'><img src=\"".$CFG_GLPI["root_doc"]."/pics/warning.png\" alt=\"warning\"><br></div>";
+		displayMessageAfterRedirect();
+		displayBackLink();
 
-		echo "<div align='center'><img src=\"".$CFG_GLPI["root_doc"]."/pics/ok.png\" alt=\"OK\"><br><br><b>";
-		echo $LANG["help"][18]." (".$LANG["job"][38]." <a class='b' href='helpdesk.public.php?show=user&amp;ID=$newID'>$newID</a>)<br>";
-		echo $LANG["help"][19];
-		echo "</b></div>";
-		nullFooter();
-		// Delete des infos sauvegard�s pour les probl�es de retour
-		unset($_SESSION["helpdeskSaved"]);
 	}
-	else
-	{
-		if(!empty($_POST["type"]) && ($_POST["type"] == "Helpdesk")) {
-			nullHeader($LANG["title"][10],$_SERVER['PHP_SELF']);
-		}
-		else if ($_POST["_from_helpdesk"]){
-			helpHeader($LANG["title"][1],$_SERVER['PHP_SELF'],$_SESSION["glpiname"]);
-		}
-		else commonHeader($LANG["title"][1],$_SERVER['PHP_SELF'],$_SESSION["glpiname"],"maintain","tracking");
+	nullFooter();
 
-		echo "<div align='center'><img src=\"".$CFG_GLPI["root_doc"]."/pics/warning.png\" alt=\"warning\"><br><br><b>";
-		echo $LANG["help"][20]."<br>";
-		echo $LANG["help"][21];
-		echo "</b></div>";
-		nullFooter();
-	}
 }
 
 ?>
