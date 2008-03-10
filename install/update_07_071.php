@@ -288,12 +288,15 @@ function update07to071() {
 			`name` varchar(255) collate utf8_unicode_ci default NULL,
 			`type` int(11) NOT NULL default '0',
 			`FK_users` int(11) NOT NULL default '0',
+			`private` smallint(6) NOT NULL default '1',
 			`FK_entities` int(11) NOT NULL default '-1',
 			`recursive` smallint(6) NOT NULL default '0',
 			`path` varchar(255) collate utf8_unicode_ci default NULL,
 			`query` text collate utf8_unicode_ci,
 			PRIMARY KEY  (`ID`),
 			KEY `FK_users` (`FK_users`),
+			KEY `private` (`private`),
+			KEY `recursive` (`recursive`),
 			KEY `FK_entities` (`FK_entities`),
 			KEY `type` (`type`)
 			) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
