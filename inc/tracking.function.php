@@ -713,7 +713,7 @@ function addFormTracking ($device_type=0,$ID=0, $target, $author, $group=0, $ass
 	//	}	
 	echo "<table class='tab_cadre_fixe'><tr><th colspan='4'>".$LANG["job"][13];
 	if (haveRight("comment_all_ticket","1")){
-		echo "&nbsp:&nbsp;";
+		echo "&nbsp;&nbsp;";
 		dropdownStatus("status",1);		
 	}
 
