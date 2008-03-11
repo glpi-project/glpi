@@ -711,7 +711,7 @@ function addFormTracking ($device_type=0,$ID=0, $target, $author, $group=0, $ass
 	//	if ($device_type!=0){
 	echo "<input type='hidden' name='_referer' value='$REFERER'>";
 	//	}	
-	echo "<table class='tab_cadre_fixe'><tr><th ><th colspan='4'>".$LANG["job"][13];
+	echo "<table class='tab_cadre_fixe'><tr><th colspan='4'>".$LANG["job"][13];
 	if (haveRight("comment_all_ticket","1")){
 		echo "&nbsp:&nbsp;";
 		dropdownStatus("status",1);		
@@ -870,11 +870,11 @@ function addFormTracking ($device_type=0,$ID=0, $target, $author, $group=0, $ass
 
 	echo "<td colspan='2' align='center'><input type='submit' name='add' value=\"".$LANG["buttons"][2]."\" class='submit'>";
 
-	echo "</td></tr>";
+	echo "</td></tr></table>";
 
 	if (haveRight("comment_all_ticket","1")){
 //		echo "<tr><th colspan='4' align='center'>".$LANG["job"][45].":</th></tr>";
-		echo "</table><br>";
+		echo "<br>";
 		echo "<script type='text/javascript' >\n";
 		echo "function showPlan(){\n";
 
