@@ -236,7 +236,7 @@ function showPlanning($who,$who_group,$when,$type){
 				$interv[$data["begin"]."$$".$i]["end"]=$end;
 			else $interv[$data["begin"]."$$".$i]["end"]=$data["end"];
 
-			$interv[$data["begin"]."$$".$i]["title"]=resume_text($data["title"],$CFG_GLPI["cut"]);
+			$interv[$data["begin"]."$$".$i]["name"]=resume_text($data["name"],$CFG_GLPI["cut"]);
 			$interv[$data["begin"]."$$".$i]["text"]=resume_text($data["text"],$CFG_GLPI["cut"]);
 			$interv[$data["begin"]."$$".$i]["author"]=$data["author"];
 			$interv[$data["begin"]."$$".$i]["private"]=$data["private"];
@@ -547,7 +547,7 @@ function displayPlanningItem($val,$who,$type="",$complete=0){
 				break;
 
 		}
-		echo $val["title"];
+		echo $val["name"];
 		echo $author;
 		echo "</a>";
 		if ($complete){
@@ -663,7 +663,7 @@ function showPlanningCentral($who){
 				$interv[$data["begin"]."$$".$i]["private"]=$data["private"];
 				$interv[$data["begin"]."$$".$i]["state"]=$data["state"];
 				$interv[$data["begin"]."$$".$i]["author"]=$data["author"];
-				$interv[$data["begin"]."$$".$i]["title"]=resume_text($remind->fields["title"],$CFG_GLPI["cut"]);
+				$interv[$data["begin"]."$$".$i]["name"]=resume_text($remind->fields["name"],$CFG_GLPI["cut"]);
 				$interv[$data["begin"]."$$".$i]["text"]=resume_text($remind->fields["text"],$CFG_GLPI["cut"]);
 				$i++;
 			}
@@ -869,7 +869,7 @@ function generateIcal($who){
 			$interv[$data["begin"]."$$".$i]["id_reminder"]=$remind->fields["ID"];
 			$interv[$data["begin"]."$$".$i]["begin"]=$data["begin"];
 			$interv[$data["begin"]."$$".$i]["end"]=$data["end"];
-			$interv[$data["begin"]."$$".$i]["title"]=$remind->fields["title"];
+			$interv[$data["begin"]."$$".$i]["name"]=$remind->fields["name"];
 			$interv[$data["begin"]."$$".$i]["content"]=$remind->fields["text"];
 
 			$i++;
@@ -920,8 +920,8 @@ function generateIcal($who){
 
 			if(isset($val["id_tracking"])){
 				$event .= "SUMMARY:".$LANG["planning"][8]." # ".$val["id_tracking"]." ".$LANG["planning"][10]." # ".$val["device"]."\n";
-			}else if (isset($val["title"])){
-				$event .= "SUMMARY:".$val["title"]."\n";
+			}else if (isset($val["name"])){
+				$event .= "SUMMARY:".$val["name"]."\n";
 			}
 
 			if (isset($val["content"])){

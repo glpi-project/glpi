@@ -180,6 +180,8 @@ $LANG["central"][16]="Les tickets en attente de vos groupes";
 
 $LANG["choice"][0]="Non"; 
 $LANG["choice"][1]="Oui"; 
+$LANG["choice"][2]="Si non"; 
+$LANG["choice"][3]="Si oui"; 
 
 $LANG["common"][0]="Sans nom"; 
 $LANG["common"][1]="Matériel"; 
@@ -256,6 +258,7 @@ $LANG["common"][71]="Élément modifié avec succès";
 $LANG["common"][72]="Élément supprimé avec succès";
 $LANG["common"][73]="Élément purgé avec succès";
 $LANG["common"][74]="Élément restauré avec succès";
+$LANG["common"][75]="Pas le droit de rendre cet élément récursif pour cette entité";
 
 $LANG["computers"][9]="OS"; 
 $LANG["computers"][10]="OS Numéro de série"; 
