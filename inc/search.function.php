@@ -947,7 +947,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 			}
 		}
 		if (empty($QUERY)){
-			echo displaySearchError();
+			echo displaySearchError($output_type);
 			return;
 		}
 		$QUERY.=ereg_replace($CFG_GLPI["union_search_type"][$type].".","",$ORDER).$LIMIT;
