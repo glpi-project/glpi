@@ -170,6 +170,10 @@ function update07to071() {
 		$DB->query($query) or die("0.71 drop type in glpi_reminder" . $LANG["update"][90] . $DB->error());
  	}	  	
 
+	if (FieldExists("glpi_reminder", "title")) {
+		$query = "ALTER TABLE `glpi_reminder` CHANGE `title` `name` VARCHAR( 255 ) NULL DEFAULT NULL  ";
+		$DB->query($query) or die("0.71 alter title to namein glpi_reminder" . $LANG["update"][90] . $DB->error());
+	}
 
 	if (!isIndex("glpi_ocs_link", "last_ocs_update")) {
 		$query = "ALTER TABLE `glpi_ocs_link` ADD INDEX `last_ocs_update` ( `ocs_server_id` , `last_ocs_update` )";

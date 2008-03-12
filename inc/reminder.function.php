@@ -86,7 +86,7 @@ function showCentralReminder($entity = -1, $parent = false){
 		$rand=mt_rand(); 
 		while ($data =$DB->fetch_array($result)){ 
 
-			echo "<tr class='tab_bg_2'><td><div class='relative'><div class='reminder_list'><a href=\"".$CFG_GLPI["root_doc"]."/front/reminder.form.php?ID=".$data["ID"]."\">".$data["title"]."</a>";
+			echo "<tr class='tab_bg_2'><td><div class='relative'><div class='reminder_list'><a href=\"".$CFG_GLPI["root_doc"]."/front/reminder.form.php?ID=".$data["ID"]."\">".$data["name"]."</a>";
 			echo "&nbsp;<img alt='' src='".$CFG_GLPI["root_doc"]."/pics/aide.png' onmouseout=\"cleanhide('content_reminder_".$data["ID"].$rand."')\" onmouseover=\"cleandisplay('content_reminder_".$data["ID"].$rand."')\">";
 			echo "<div class='over_link' id='content_reminder_".$data["ID"].$rand."'>".$data["text"]."</div>";
 
@@ -150,7 +150,7 @@ function showListReminder($private=1,$recursive=0){
 			$tabremind[$sort."$$".$i]["entity"]=$remind->fields["FK_entities"];
 			$tabremind[$sort."$$".$i]["begin"]=($data["rv"]==1?"".$data["begin"]."":"".$data["date"]."");
 			$tabremind[$sort."$$".$i]["end"]=($data["rv"]==1?"".$data["end"]."":"");
-			$tabremind[$sort."$$".$i]["title"]=resume_text($remind->fields["title"],$CFG_GLPI["cut"]);
+			$tabremind[$sort."$$".$i]["name"]=resume_text($remind->fields["name"],$CFG_GLPI["cut"]);
 			$tabremind[$sort."$$".$i]["text"]=resume_text($remind->fields["text"],$CFG_GLPI["cut"]);
 		}
 
@@ -180,7 +180,7 @@ function showListReminder($private=1,$recursive=0){
 				echo "<td>" .ereg_replace(" ([[:alnum:]])", "&nbsp;\\1", getdropdownName("glpi_entities", $val["entity"])). "</td>".
 					 "<td>" .getdropdownName("glpi_users", $val["author"]) . "</td>";
 			}
-			echo 	"<td width='60%' class='left'><a href=\"".$CFG_GLPI["root_doc"]."/front/reminder.form.php?ID=".$val["id_reminder"]."\">".$val["title"]."</a>" .
+			echo 	"<td width='60%' class='left'><a href=\"".$CFG_GLPI["root_doc"]."/front/reminder.form.php?ID=".$val["id_reminder"]."\">".$val["name"]."</a>" .
 				"<div class='kb_resume'>".resume_text($val["text"],125);
 				
 			/*
