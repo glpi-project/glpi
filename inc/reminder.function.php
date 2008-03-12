@@ -45,61 +45,50 @@ function showCentralReminder($entity = -1, $parent = false){
 
 	if ($entity < 0) {
 
-		$query = "SELECT * FROM glpi_reminder WHERE author='$author' AND type='private' AND (end>='$today' or rv='0') ";
+		$query = "SELECT * FROM glpi_reminder WHERE author='$author' AND private=1 AND (end>='$today' or rv='0') ";
 		$titre = "<a href=\"".$CFG_GLPI["root_doc"]."/front/reminder.php\">".$LANG["reminder"][0]."</a>";	
-		$type  = "private";
+		$private  = 1;
 
 	} else if ($entity == $_SESSION["glpiactive_entity"]) {
 		
-		$query = "SELECT * FROM glpi_reminder WHERE type!='private' ".getEntitiesRestrictRequest("AND","glpi_reminder","",$entity);
+		$query = "SELECT * FROM glpi_reminder WHERE private=0 ".getEntitiesRestrictRequest("AND","glpi_reminder","",$entity);
 		$titre = "<a href=\"".$CFG_GLPI["root_doc"]."/front/reminder.php\">".$LANG["reminder"][1]."</a> (".getdropdownName("glpi_entities", $entity).")";
 		
 		if (haveRight("reminder_public","w")) {
-			$type = "public";
+			$private  = 0;
 		}
 		
 	} else if ($parent) {
 		
-		$query = "SELECT * FROM glpi_reminder WHERE type='global' ".getEntitiesRestrictRequest("AND","glpi_reminder","",$entity);
+		$query = "SELECT * FROM glpi_reminder WHERE private=0 AND recursive=1 ".getEntitiesRestrictRequest("AND","glpi_reminder","",$entity);
 		$titre = $LANG["reminder"][1]." (".getdropdownName("glpi_entities", $entity).")";		
 		
 	} else { // Filles
 		
-		$query = "SELECT * FROM glpi_reminder WHERE type!='private' ".getEntitiesRestrictRequest("AND","glpi_reminder","",$entity);
+		$query = "SELECT * FROM glpi_reminder WHERE private = 0 ".getEntitiesRestrictRequest("AND","glpi_reminder","",$entity);
 		$titre = $LANG["reminder"][1]." (".getdropdownName("glpi_entities", $entity).")";
 
 	}
-	/*
-	if ($type=="global"){ // show public reminder
-		$query="SELECT * FROM glpi_reminder WHERE type='global' ".getEntitiesRestrictRequest("AND","glpi_reminder","","",true);
-		$titre="<a href=\"".$CFG_GLPI["root_doc"]."/front/reminder.php\">".$LANG["reminder"][16]."</a>";
-
-	} else if ($type=="public"){ // show public reminder
-		$query="SELECT * FROM glpi_reminder WHERE type='public' AND (end>='$today' or rv='0') ".getEntitiesRestrictRequest("AND","glpi_reminder");
-		$titre="<a href=\"".$CFG_GLPI["root_doc"]."/front/reminder.php\">".$LANG["reminder"][1]."</a>";
-
-	} else { // show private reminder
-		$query="SELECT * FROM glpi_reminder WHERE author='$author' AND type='private' AND (end>='$today' or rv='0') ";
-		$titre="<a href=\"".$CFG_GLPI["root_doc"]."/front/reminder.php\">".$LANG["reminder"][0]."</a>";
-	}
-	*/
 
 	$result = $DB->query($query);
 	$nb=$DB->numrows($result);
 
-	if ($nb || isset($type)) {
+	if ($nb || isset($private)) {
 		echo "<br><table class='tab_cadrehov'>";
 	
 		echo "<tr><th><div class='relative'><span>$titre</span>";
-		if (isset($type)){
-			echo "<span class='reminder_right'><a href=\"".$CFG_GLPI["root_doc"]."/front/reminder.form.php?type=$type\"><img src=\"".$CFG_GLPI["root_doc"]."/pics/plus.png\" alt='+' title='".$LANG["buttons"][8]."'></a></span>";
+		if (isset($private)){
+			echo "<span class='reminder_right'><a href=\"".$CFG_GLPI["root_doc"]."/front/reminder.form.php?private=$private\"><img src=\"".$CFG_GLPI["root_doc"]."/pics/plus.png\" alt='+' title='".$LANG["buttons"][8]."'></a></span>";
 		}
 		echo "</div></th></tr>\n";
 	}
 	if ($nb) {
+		$rand=mt_rand(); 
 		while ($data =$DB->fetch_array($result)){ 
 
-			echo "<tr class='tab_bg_2'><td><div class='relative'><div class='reminder_list'><a  href=\"".$CFG_GLPI["root_doc"]."/front/reminder.form.php?ID=".$data["ID"]."\">".$data["title"]."</a>";
+			echo "<tr class='tab_bg_2'><td><div class='relative'><div class='reminder_list'><a href=\"".$CFG_GLPI["root_doc"]."/front/reminder.form.php?ID=".$data["ID"]."\">".$data["title"]."</a>";
+			echo "&nbsp;<img alt='' src='".$CFG_GLPI["root_doc"]."/pics/aide.png' onmouseout=\"cleanhide('content_reminder_".$data["ID"].$rand."')\" onmouseover=\"cleandisplay('content_reminder_".$data["ID"].$rand."')\">";
+			echo "<div class='over_link' id='content_reminder_".$data["ID"].$rand."'>".$data["text"]."</div>";
 
 			if($data["rv"]=="1"){
 
@@ -113,13 +102,13 @@ function showCentralReminder($entity = -1, $parent = false){
 		}
 	}
 
-	if ($nb || isset($type)) {
+	if ($nb || isset($private)) {
 		echo "</table>";
 	}
 }
 
 
-function showListReminder($type="private"){
+function showListReminder($private=1,$recursive=0){
 	// show reminder that are not planned 
 
 	global $DB,$CFG_GLPI, $LANG;
@@ -128,14 +117,14 @@ function showListReminder($type="private"){
 
 	$author=$_SESSION['glpiID'];	
 
-	if($type=="global"){ // show public reminder
-		$query="SELECT * FROM glpi_reminder WHERE type='global' ".getEntitiesRestrictRequest("AND","glpi_reminder","","",true);
+	if(!$private && $recursive){ // show public reminder
+		$query="SELECT * FROM glpi_reminder WHERE private=0 and recursive = 1  ".getEntitiesRestrictRequest("AND","glpi_reminder","","",true);
 		$titre=$LANG["reminder"][16];
-	} else if($type=="public"){ // show public reminder
-		$query="SELECT * FROM glpi_reminder WHERE type='public' ".getEntitiesRestrictRequest("AND","glpi_reminder");
+	} else if(!$private && !$recursive){ // show public reminder
+		$query="SELECT * FROM glpi_reminder WHERE private=0 and recursive = 0 ".getEntitiesRestrictRequest("AND","glpi_reminder");
 		$titre=$LANG["reminder"][1];
 	} else { // show private reminder
-		$query="SELECT * FROM glpi_reminder WHERE author='$author' AND type='private' ";
+		$query="SELECT * FROM glpi_reminder WHERE author='$author' AND private = 1 ";
 		$titre=$LANG["reminder"][0];
 	}
 
@@ -172,7 +161,7 @@ function showListReminder($type="private"){
 
 	
 	echo "<br><table class='tab_cadre_fixehov'>";
-	if ($type == 'private') {
+	if ($private) {
 		echo "<tr><th>"."$titre"."</th><th colspan='2'>".$LANG["common"][27]."</th></tr>";
 	} else {
 		echo "<tr><th colspan='5'>"."$titre"."</th></tr>" .
@@ -186,7 +175,7 @@ function showListReminder($type="private"){
 
 			echo "<tr class='tab_bg_2'>";
 			
-			if ($type != 'private') {
+			if (!$private) {
 				// ereg to split line (if needed) before ">" sign in completename
 				echo "<td>" .ereg_replace(" ([[:alnum:]])", "&nbsp;\\1", getdropdownName("glpi_entities", $val["entity"])). "</td>".
 					 "<td>" .getdropdownName("glpi_users", $val["author"]) . "</td>";

@@ -154,7 +154,22 @@ function update07to071() {
  	if (!FieldExists("glpi_reminder", "recursive")) {
  		$query = "ALTER TABLE `glpi_reminder` ADD `recursive` TINYINT( 1 ) NOT NULL DEFAULT '0' AFTER `type`;";
  		$DB->query($query) or die("0.71 add recursive in glpi_reminder" . $LANG["update"][90] . $DB->error());
+ 		$query = "ALTER TABLE `glpi_reminder` ADD INDEX `recursive` ( `recursive` ); ";
+ 		$DB->query($query) or die("0.71 add recursive index in glpi_reminder" . $LANG["update"][90] . $DB->error());
  	}	  	
+
+ 	if (!FieldExists("glpi_reminder", "private")) {
+ 		$query = "ALTER TABLE `glpi_reminder` ADD `private` TINYINT( 1 ) NOT NULL DEFAULT '1' AFTER `type`;";
+ 		$DB->query($query) or die("0.71 add private in glpi_reminder" . $LANG["update"][90] . $DB->error());
+		$query = "UPDATE `glpi_reminder` SET private = '0' WHERE type='public' ";
+		$DB->query($query) or die("0.71 update private field in glpi_reminder" . $LANG["update"][90] . $DB->error());
+ 		$query = "ALTER TABLE `glpi_reminder` ADD INDEX `private` ( `private` ); ";
+ 		$DB->query($query) or die("0.71 add private index in glpi_reminder" . $LANG["update"][90] . $DB->error());
+		// Drop type
+		$query = "ALTER TABLE `glpi_reminder` DROP `type`;";
+		$DB->query($query) or die("0.71 drop type in glpi_reminder" . $LANG["update"][90] . $DB->error());
+ 	}	  	
+
 
 	if (!isIndex("glpi_ocs_link", "last_ocs_update")) {
 		$query = "ALTER TABLE `glpi_ocs_link` ADD INDEX `last_ocs_update` ( `ocs_server_id` , `last_ocs_update` )";

@@ -60,9 +60,12 @@ class Reminder extends CommonDBTM {
 			$input["begin"] = $input['_plan']["begin_date"]." ".$input['_plan']["begin_hour"].":00";
 			$input["end"] = $input['_plan']["end_date"]." ".$input['_plan']["end_hour"].":00";
 		}	
-		if (isset($input['type']) && $input['type']=="global")
-				$input['recursive']=1;
-		else	$input['recursive']=0;
+
+		switch ($input['type']){
+			case 'private': $input['private']=1;$input['recursive']=0;break;
+			case 'public': $input['private']=0;$input['recursive']=0;break;
+			case 'global': $input['private']=0;$input['recursive']=1;break;
+		}
 
 		// set new date.
 		$input["date"] = $_SESSION["glpi_currenttime"];
@@ -90,9 +93,11 @@ class Reminder extends CommonDBTM {
 			$input["end"] = $input['_plan']["end_date"]." ".$input['_plan']["end_hour"].":00";
 			$input["state"] = $input['_plan']["state"];
 		}	
-		if (isset($input['type']) && $input['type']=="global")
-				$input['recursive']=1;
-		else	$input['recursive']=0;
+		switch ($input['type']){
+			case 'private': $input['private']=1;$input['recursive']=0;break;
+			case 'public': $input['private']=0;$input['recursive']=0;break;
+			case 'global': $input['private']=0;$input['recursive']=1;break;
+		}
 
 		return $input;
 	}
@@ -126,19 +131,17 @@ class Reminder extends CommonDBTM {
 				$isglobaladmin &= haveRecursiveAccessToEntity($this->fields["FK_entities"]);
 
 				// Even if the user is the author, check if its profil is ok. 
-				switch ($this->fields["type"]) {
-					case "private":
-						$remind_edit = true;
-						break;
-					case "public":
-						$remind_edit = $issuperadmin && in_array($this->fields["FK_entities"], $_SESSION["glpiactiveentities"]);
-						break;
-					case "global":
+				if  ($this->fields["private"]) {
+					$remind_edit = true;
+				} else {
+					if ($this->fields["recursive"]){
 						$remind_edit = $isglobaladmin && in_array($this->fields["FK_entities"], $_SESSION["glpiactiveentities"]);
-						break;
+					} else {
+						$remind_edit = $issuperadmin && in_array($this->fields["FK_entities"], $_SESSION["glpiactiveentities"]);
+					}
 				}
 						 
-			} else if($this->fields["type"]!="private") { 
+			} else if(!$this->fields["private"]) { 
 				$remind_show = true;
 			}
 		}
@@ -187,24 +190,39 @@ class Reminder extends CommonDBTM {
 			echo "<td>";
 
 			if($remind_edit) { 
+
+				$private=1;
+				if ((isset($_GET["private"])&&$_GET["private"]==0)||$this->fields["private"]==0){
+					$private=0;
+				}
+				$recursive=0;
+				if ((isset($_GET["recursive"])&&$_GET["recursive"]==1)||$this->fields["recursive"]==1){
+					$recursive=1;
+				}
+				
 				echo "<select name='type' $read>";
 
-				echo "<option value='private' ". (((isset($_GET["type"])&&$_GET["type"]=="private")||$this->fields["type"]=="private")?"selected='selected'":"") .">".
+				echo "<option value='private' ". ($private?"selected='selected'":"") .">".
 					$LANG["reminder"][4]."  (".getUserName($author).")</option>";	
 
 				if($issuperadmin){
 					$name=getDropdownName("glpi_entities", $_SESSION["glpiactive_entity"]);
 					
-					echo "<option value='public' ". ((isset($_GET["type"])&&$_GET["type"]=="public")||($this->fields["type"]=="public")?"selected='selected'":"").">".
+					echo "<option value='public' ". (!$private&&!$recursive?"selected='selected'":"").">".
 					$LANG["reminder"][5]."  ($name)</option>";	
 				}		
 				if($isglobaladmin){
-					echo "<option value='global' ". ((isset($_GET["type"])&&$_GET["type"]=="global")||($this->fields["type"]=="global")?"selected='selected'":"").">".
+					echo "<option value='global' ". (!$private&&$recursive?"selected='selected'":"").">".
 					$LANG["reminder"][17]."  ($name + ".$LANG["entity"][9].")</option>";	
 				}		
 				echo "</select>";
 			}else{
-				echo $this->fields["type"];
+				if ($this->fields["private"]){
+					echo $LANG["reminder"][4];
+				} else {
+					echo $LANG["reminder"][5];
+				}
+				
 			}
 
 			echo "</td></tr>";
