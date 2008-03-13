@@ -2095,4 +2095,46 @@ function dropdownAlertInfocoms($name,$value=0){
 	echo "</select>";
 }
 
+
+function privatePublicSwitch($private,$entity,$recursive){
+	global $LANG,$CFG_GLPI;
+
+	$rand=mt_rand();
+
+	echo "<script type='text/javascript' >\n";
+	echo "function setPrivate$rand(){\n";
+		
+		$params=array(
+			'private'=>1,
+			'recursive'=>$recursive,
+			'FK_entities'=>$entity,
+			'rand'=>$rand,
+		);
+		ajaxUpdateItemJsCode('private_switch'.$rand,$CFG_GLPI["root_doc"]."/ajax/private_public.php",$params,false);
+
+		echo "};";
+	echo "function setPublic$rand(){\n";
+		
+		$params=array(
+			'private'=>0,
+			'recursive'=>$recursive,
+			'FK_entities'=>$entity,
+			'rand'=>$rand,
+		);
+		ajaxUpdateItemJsCode('private_switch'.$rand,$CFG_GLPI["root_doc"]."/ajax/private_public.php",$params,false);
+
+		echo "};";
+	echo "</script>";
+
+
+	echo "<span id='private_switch$rand'>";
+		$_POST['rand']=$rand;
+		$_POST['private']=$private;
+		$_POST['recursive']=$recursive;
+		$_POST['FK_entities']=$entity;
+		include (GLPI_ROOT."/ajax/private_public.php");
+	echo "</span>\n";
+	return $rand;
+}
+
 ?>

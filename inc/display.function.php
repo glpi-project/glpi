@@ -156,7 +156,6 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="")
 	}
 
 	includeCommonHtmlHeader($title);
-
 	if (!($CFG_GLPI["cache"]->start($sector.'_'.$item.$option,"GLPI_HEADER_".$_SESSION["glpiID"]))) {
 		
 	// Body 
@@ -960,7 +959,6 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="")
 			$_SESSION["glpicrontimer"]=time();
 		} 
 	} else $_SESSION["glpicrontimer"]=time();
-
 
 	displayMessageAfterRedirect();
 }

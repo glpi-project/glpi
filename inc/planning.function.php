@@ -205,16 +205,16 @@ function showPlanning($who,$who_group,$when,$type){
 				else $first=false;
 				$groups.=$val;
 			}			
-			$ASSIGN=" AND author IN (SELECT DISTINCT FK_users FROM glpi_users_groups WHERE FK_groups IN ($groups)) ";
+			$ASSIGN=" AND FK_users IN (SELECT DISTINCT FK_users FROM glpi_users_groups WHERE FK_groups IN ($groups)) ";
 		} else { // Only personal ones
-			$ASSIGN=" AND ( author='$who' OR (private=0 ".getEntitiesRestrictRequest("AND","glpi_reminder")."))";
+			$ASSIGN=" AND ( FK_users='$who' OR (private=0 ".getEntitiesRestrictRequest("AND","glpi_reminder")."))";
 		}
 	} else {
 		if ($who>0){
-			$ASSIGN=" AND ( author='$who' OR (private=0 ".getEntitiesRestrictRequest("AND","glpi_reminder")."))";
+			$ASSIGN=" AND ( FK_users='$who' OR (private=0 ".getEntitiesRestrictRequest("AND","glpi_reminder")."))";
 		}
 		if ($who_group>0){
-			$ASSIGN=" AND ( (private=0 ".getEntitiesRestrictRequest("AND","glpi_reminder").") OR author IN (SELECT FK_users FROM glpi_users_groups WHERE FK_groups = '$who_group') )";
+			$ASSIGN=" AND ( (private=0 ".getEntitiesRestrictRequest("AND","glpi_reminder").") OR FK_users IN (SELECT FK_users FROM glpi_users_groups WHERE FK_groups = '$who_group') )";
 		}
 	}
 	
@@ -238,7 +238,7 @@ function showPlanning($who,$who_group,$when,$type){
 
 			$interv[$data["begin"]."$$".$i]["name"]=resume_text($data["name"],$CFG_GLPI["cut"]);
 			$interv[$data["begin"]."$$".$i]["text"]=resume_text($data["text"],$CFG_GLPI["cut"]);
-			$interv[$data["begin"]."$$".$i]["author"]=$data["author"];
+			$interv[$data["begin"]."$$".$i]["FK_users"]=$data["FK_users"];
 			$interv[$data["begin"]."$$".$i]["private"]=$data["private"];
 			$interv[$data["begin"]."$$".$i]["state"]=$data["state"];
 
@@ -523,7 +523,7 @@ function displayPlanningItem($val,$who,$type="",$complete=0){
 
 	}else{  // show Reminder
 		if (!$val["private"]){
-			$author="<br>".$LANG["planning"][9]." : ".getUserName($val["author"]);
+			$author="<br>".$LANG["planning"][9]." : ".getUserName($val["FK_users"]);
 			$img="rdv_public.png";
 		} 
 		echo "<img src='".$CFG_GLPI["root_doc"]."/pics/".$img."' alt='' title='".$LANG["reminder"][2]."'>&nbsp;";
@@ -645,7 +645,7 @@ function showPlanningCentral($who){
 	$read_public="";
 	if (haveRight("reminder_public","r")) $read_public=" OR ( private=0 ".getEntitiesRestrictRequest("AND","glpi_reminder").") ";
 
-	$query2="SELECT * FROM glpi_reminder WHERE rv='1' AND (author='$who' $read_public)    AND (('".$debut."' <= begin AND adddate( '". $debut ."' , INTERVAL $INTERVAL ) >= begin) OR ('".$debut."' < end AND adddate( '". $debut ."' , INTERVAL $INTERVAL ) >= end) OR (begin <= '".$debut."' AND end > '".$debut."') OR (begin <= adddate( '". $debut ."' , INTERVAL $INTERVAL ) AND end > adddate( '". $debut ."' , INTERVAL $INTERVAL ))) ORDER BY begin";
+	$query2="SELECT * FROM glpi_reminder WHERE rv='1' AND (FK_users='$who' $read_public)    AND (('".$debut."' <= begin AND adddate( '". $debut ."' , INTERVAL $INTERVAL ) >= begin) OR ('".$debut."' < end AND adddate( '". $debut ."' , INTERVAL $INTERVAL ) >= end) OR (begin <= '".$debut."' AND end > '".$debut."') OR (begin <= adddate( '". $debut ."' , INTERVAL $INTERVAL ) AND end > adddate( '". $debut ."' , INTERVAL $INTERVAL ))) ORDER BY begin";
 
 	$result2=$DB->query($query2);
 
@@ -662,7 +662,7 @@ function showPlanningCentral($who){
 				$interv[$data["begin"]."$$".$i]["end"]=$data["end"];
 				$interv[$data["begin"]."$$".$i]["private"]=$data["private"];
 				$interv[$data["begin"]."$$".$i]["state"]=$data["state"];
-				$interv[$data["begin"]."$$".$i]["author"]=$data["author"];
+				$interv[$data["begin"]."$$".$i]["FK_users"]=$data["FK_users"];
 				$interv[$data["begin"]."$$".$i]["name"]=resume_text($remind->fields["name"],$CFG_GLPI["cut"]);
 				$interv[$data["begin"]."$$".$i]["text"]=resume_text($remind->fields["text"],$CFG_GLPI["cut"]);
 				$i++;
@@ -853,7 +853,7 @@ function generateIcal($who){
 
 	// reminder 
 
-	$query2="SELECT * FROM glpi_reminder WHERE rv='1' AND (author='$who' OR private=0)";
+	$query2="SELECT * FROM glpi_reminder WHERE rv='1' AND (FK_users='$who' OR private=0)";
 
 	$result2=$DB->query($query2);
 

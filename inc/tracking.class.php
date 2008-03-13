@@ -716,7 +716,7 @@ class Job extends CommonDBTM{
 					$fup=new Followup();
 					while ($data=$DB->fetch_array($result)){
 						$fup->getFromDB($data['ID']);
-						$message .= "<strong>[ ".convDateTime($fup->fields["date"])." ] ".($fup->fields["private"]?"<i>".$LANG["job"][30]."</i>":"")."</strong><br>";
+						$message .= "<strong>[ ".convDateTime($fup->fields["date"])." ] ".($fup->fields["private"]?"<i>".$LANG["common"][77]."</i>":"")."</strong><br>";
 						$message .= "<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$LANG["job"][4].":</span> ".$fup->getAuthorName()."<br>";
 						$message .= "<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$LANG["mailing"][3]."</span>:<br>".nl2br($fup->fields["contents"])."<br>";
 						if ($fup->fields["realtime"]>0)
@@ -742,7 +742,7 @@ class Job extends CommonDBTM{
 					$fup=new Followup();
 					while ($data=$DB->fetch_array($result)){
 						$fup->getFromDB($data['ID']);
-						$message .= "[ ".convDateTime($fup->fields["date"])." ]".($fup->fields["private"]?"\t".$LANG["job"][30]:"")."\n";
+						$message .= "[ ".convDateTime($fup->fields["date"])." ]".($fup->fields["private"]?"\t".$LANG["common"][77]:"")."\n";
 						$message .= $LANG["job"][4].": ".$fup->getAuthorName()."\n";
 						$message .= $LANG["mailing"][3].":\n".$fup->fields["contents"]."\n";
 						if ($fup->fields["realtime"]>0)

@@ -47,6 +47,9 @@ class CommonDBTM {
 	var $entity_assign=false;
 	// Is an item that can be recursivly assign to an entity
 	var $may_be_recursive=false;
+	// Is an item that can be private or assign to an entity
+	var $may_be_private=false;
+
 	// set false to desactivate automatic message on action
 	var $auto_message_on_action=true;
 
@@ -985,32 +988,42 @@ class CommonDBTM {
 //		echo $ID."_".$entity_to_check."_".$recursive_state_to_check.'<br>';
 		switch ($right){
 			case 'r':
-				// Check Global Right
-				if ($this->canView()){
-					// Is an item assign to an entity
-					if ($this->entity_assign){
-						// Can be recursive check 
-						if ($this->may_be_recursive){
-							return haveAccessToEntity($entity_to_check,$recursive_state_to_check);
-						} else { // Non recursive item
-							return haveAccessToEntity($entity_to_check);
+				// Personnal item
+				if ($this->may_be_private && $this->fields['FK_users']==$_SESSION["glpiID"]){
+					return true;
+				} else {
+					// Check Global Right
+					if ($this->canView()){
+						// Is an item assign to an entity
+						if ($this->entity_assign){
+							// Can be recursive check 
+							if ($this->may_be_recursive){
+								return haveAccessToEntity($entity_to_check,$recursive_state_to_check);
+							} else { // Non recursive item
+								return haveAccessToEntity($entity_to_check);
+							}
+						} else { // Global item
+							return true;
 						}
-					} else { // Global item
-						return true;
 					}
 				}
 				break;
 			case 'w':
-				// Check Global Right
-				if ($this->canCreate()){
-					// Is an item assign to an entity
-					if ($this->entity_assign){
-						// Have access to entity
-						return haveAccessToEntity($entity_to_check);
-					} else { // Global item
-						return true;
-					}
-				} 
+				// Personnal item
+				if ($this->may_be_private && $this->fields['FK_users']==$_SESSION["glpiID"]){
+					return true;
+				} else {
+					// Check Global Right
+					if ($this->canCreate()){
+						// Is an item assign to an entity
+						if ($this->entity_assign){
+							// Have access to entity
+							return haveAccessToEntity($entity_to_check);
+						} else { // Global item
+							return true;
+						}
+					} 
+				}
 				break;
 			case 'recursive':
 				if ($this->entity_assign && $this->may_be_recursive){

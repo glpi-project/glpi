@@ -2176,7 +2176,7 @@ function showFollowupsSummary($tID){
 		echo "<table class='tab_cadrehov'>";
 		echo "<tr><th>&nbsp;</th><th>".$LANG["common"][27]."</th><th>".$LANG["joblist"][6]."</th><th>".$LANG["job"][31]."</th><th>".$LANG["job"][35]."</th><th>".$LANG["common"][37]."</th>";
 		if ($showprivate)
-			echo "<th>".$LANG["job"][30]."</th>";
+			echo "<th>".$LANG["common"][77]."</th>";
 		echo "</tr>";
 		while ($data=$DB->fetch_array($result)){
 			$canedit=($caneditall||$data['author']==$_SESSION['glpiID']);
@@ -2313,7 +2313,7 @@ function showAddFollowupForm($tID,$massiveaction=false){
 
 	if ($commentall){
 		echo "<tr>";
-		echo "<td>".$LANG["job"][30].":</td>";
+		echo "<td>".$LANG["common"][77].":</td>";
 		echo "<td>";
 		echo "<select name='".$prefix."private".$postfix."'>";
 		echo "<option value='0'>".$LANG["choice"][0]."</option>";
@@ -2424,7 +2424,7 @@ function showUpdateFollowupForm($ID){
 
 		if ($commentall){
 			echo "<tr>";
-			echo "<td>".$LANG["job"][30].":</td>";
+			echo "<td>".$LANG["common"][77].":</td>";
 			echo "<td>";
 			echo "<select name='private'>";
 			echo "<option value='0' ".(!$fup->fields["private"]?" selected":"").">".$LANG["choice"][0]."</option>";
