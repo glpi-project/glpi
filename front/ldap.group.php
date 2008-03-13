@@ -40,6 +40,7 @@ checkRight("group","w");
 
 commonHeader($LANG["setup"][3],$_SERVER['PHP_SELF'],"admin","group","ldap");
 if (isset($_SESSION["ldap_import"])) unset($_SESSION["ldap_import"]);
+if (isset($_SESSION["ldap_import_entities"])) unset($_SESSION["ldap_import_entities"]);
 if (isset($_SESSION["ldap_server"])) unset($_SESSION["ldap_server"]);
 if (isset($_SESSION["entity"])) unset($_SESSION["entity"]);
 

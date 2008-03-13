@@ -722,6 +722,7 @@ $LANG["ldap"][21]="Serveur principal";
 $LANG["ldap"][22]="Réplicat(s)";
 $LANG["ldap"][23]="Import en masse de groupes depuis un annuaire";
 $LANG["ldap"][24]="Importation de nouveaux groupes";
+$LANG["ldap"][25]="Pas de groupes à importer";
 
 $LANG["ldap"][30]="Traitement des alias LDAP";
 $LANG["ldap"][31]="Jamais déréférencés (défaut)";
