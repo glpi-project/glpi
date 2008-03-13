@@ -54,13 +54,14 @@ if (isset($_SESSION["ldap_import"])){
 		$percent=min(100,round(100*($_SESSION["ldap_import_count"]-$count)/$_SESSION["ldap_import_count"],0));
 
 		displayProgressBar(400,$percent);
+
+		$key=array_pop($_SESSION["ldap_import"]);
 		
-		if (isset($_SESSION["ldap_import"]["FK_entities"][$key]))
-			$entity = $_SESSION["ldap_import"]["FK_entities"][$key];
+		if (isset($_SESSION["ldap_import_entities"][$key]))
+			$entity = $_SESSION["ldap_import_entities"][$key];
 		else
 			$entity = $_SESSION["glpiactive_entity"];
 				
-		$key=array_pop($_SESSION["ldap_import"]);
 		ldapImportGroup($key,$_SESSION["ldap_server"],$entity);
 		glpi_header($_SERVER['PHP_SELF']);
 
@@ -114,7 +115,7 @@ elseif (!isset($_POST["import_ok"])){
 			if ($val=="on")	{
 				$_SESSION["ldap_import"][]=$key;
 				$_SESSION["ldap_import_count"]++;
-				$_SESSION["ldap_import"]["FK_entities"][$key]=$_POST["toimport_entities"][$key];
+				$_SESSION["ldap_import_entities"][$key]=$_POST["toimport_entities"][$key];
 			}
 		}
 	}

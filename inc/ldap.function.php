@@ -220,7 +220,7 @@ function getAllGroups($id_auth,$myfilter,$entity)
 function showLdapGroups($target, $check, $start, $sync = 0,$filter='',$entity) {
 	global $DB, $CFG_GLPI, $LANG;
 
-	displayLdapFilter($target);
+	displayLdapFilter($target,false);
 	echo "<br>";	
 	$ldap_groups = getAllGroups($_SESSION["ldap_server"],$filter,$entity);
 
@@ -269,10 +269,10 @@ function showLdapGroups($target, $check, $start, $sync = 0,$filter='',$entity) {
 			echo "</form></div>";
 			printPager($start, $numrows, $target, $parameters);
 		} else {
-			echo "<div class='center'><strong>" . $LANG["ldap"][3] . "</strong></div>";
+			echo "<div class='center'><strong>" . $LANG["ldap"][25] . "</strong></div>";
 		}
 	} else {
-		echo "<div class='center'><strong>" . $LANG["ldap"][3] . "</strong></div>";
+		echo "<div class='center'><strong>" . $LANG["ldap"][25] . "</strong></div>";
 	}
 }
 
@@ -632,7 +632,7 @@ function computeTimeZoneDelay($first,$second)
 	return ($first - $second) * HOUR_TIMESTAMP; 
 }
 
-function displayLdapFilter($target)
+function displayLdapFilter($target,$users=true)
 {
 	global $LANG;
 
@@ -647,7 +647,7 @@ function displayLdapFilter($target)
 	echo "<div class='center'>";
 	echo "<form method='post' action=\"$target\">";
 	echo "<table class='tab_cadre'>"; 
-	echo "<tr><th colspan='2'>" . $LANG["setup"][263] . "</th></tr>";
+	echo "<tr><th colspan='2'>" . ($users?$LANG["setup"][263]:$LANG["setup"][253]) . "</th></tr>";
 	echo"<tr class='tab_bg_2'><td>";
 	echo "<input type='text' name='ldap_filter' value='" . $_SESSION["ldap_filter"] . "' size='70'>";
 	echo "&nbsp;<input class=submit type='submit' name='change_ldap_filter' value='" . $LANG["buttons"][2] . "'>";
