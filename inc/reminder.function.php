@@ -45,7 +45,7 @@ function showCentralReminder($entity = -1, $parent = false){
 
 	if ($entity < 0) {
 
-		$query = "SELECT * FROM glpi_reminder WHERE author='$author' AND private=1 AND (end>='$today' or rv='0') ";
+		$query = "SELECT * FROM glpi_reminder WHERE FK_users='$author' AND private=1 AND (end>='$today' or rv='0') ";
 		$titre = "<a href=\"".$CFG_GLPI["root_doc"]."/front/reminder.php\">".$LANG["reminder"][0]."</a>";	
 		$private  = 1;
 
@@ -124,7 +124,7 @@ function showListReminder($private=1,$recursive=0){
 		$query="SELECT * FROM glpi_reminder WHERE private=0 and recursive = 0 ".getEntitiesRestrictRequest("AND","glpi_reminder");
 		$titre=$LANG["reminder"][1];
 	} else { // show private reminder
-		$query="SELECT * FROM glpi_reminder WHERE author='$author' AND private = 1 ";
+		$query="SELECT * FROM glpi_reminder WHERE FK_users='$author' AND private = 1 ";
 		$titre=$LANG["reminder"][0];
 	}
 
@@ -146,7 +146,7 @@ function showListReminder($private=1,$recursive=0){
 			}
 
 			$tabremind[$sort."$$".$i]["id_reminder"]=$remind->fields["ID"];
-			$tabremind[$sort."$$".$i]["author"]=$remind->fields["author"];
+			$tabremind[$sort."$$".$i]["FK_users"]=$remind->fields["FK_users"];
 			$tabremind[$sort."$$".$i]["entity"]=$remind->fields["FK_entities"];
 			$tabremind[$sort."$$".$i]["begin"]=($data["rv"]==1?"".$data["begin"]."":"".$data["date"]."");
 			$tabremind[$sort."$$".$i]["end"]=($data["rv"]==1?"".$data["end"]."":"");
@@ -178,7 +178,7 @@ function showListReminder($private=1,$recursive=0){
 			if (!$private) {
 				// ereg to split line (if needed) before ">" sign in completename
 				echo "<td>" .ereg_replace(" ([[:alnum:]])", "&nbsp;\\1", getdropdownName("glpi_entities", $val["entity"])). "</td>".
-					 "<td>" .getdropdownName("glpi_users", $val["author"]) . "</td>";
+					 "<td>" .getdropdownName("glpi_users", $val["FK_users"]) . "</td>";
 			}
 			echo 	"<td width='60%' class='left'><a href=\"".$CFG_GLPI["root_doc"]."/front/reminder.form.php?ID=".$val["id_reminder"]."\">".$val["name"]."</a>" .
 				"<div class='kb_resume'>".resume_text($val["text"],125);
@@ -187,7 +187,7 @@ function showListReminder($private=1,$recursive=0){
 			if ($type != 'private') {
 				echo "<br />&nbsp;<br /><strong>".
 					getdropdownName("glpi_entities", $val["entity"]). "</strong> / ".
-					getdropdownName("glpi_users", $val["author"]);
+					getdropdownName("glpi_users", $val["FK_users"]);
 			} 
 			*/
 			echo "</div></td>";

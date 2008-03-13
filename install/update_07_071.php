@@ -151,6 +151,11 @@ function update07to071() {
 		$DB->query($query) or die("0.71 alter config add config for dbreplicate notif " . $LANG["update"][90] . $DB->error());
 	}
 
+ 	if (!FieldExists("glpi_reminder", "author")) {
+ 		$query = "ALTER TABLE `glpi_reminder` CHANGE `author` `FK_users` INT( 11 ) NOT NULL DEFAULT '0';";
+ 		$DB->query($query) or die("0.71 rename author in glpi_reminder" . $LANG["update"][90] . $DB->error());
+ 	}	  	
+
  	if (!FieldExists("glpi_reminder", "recursive")) {
  		$query = "ALTER TABLE `glpi_reminder` ADD `recursive` TINYINT( 1 ) NOT NULL DEFAULT '0' AFTER `type`;";
  		$DB->query($query) or die("0.71 add recursive in glpi_reminder" . $LANG["update"][90] . $DB->error());
