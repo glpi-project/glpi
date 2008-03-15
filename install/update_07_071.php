@@ -378,6 +378,13 @@ function update07to071() {
 		$DB->query($query) or die("0.71 add licenses_alert to glpi_config " . $LANG["update"][90] . $DB->error());
 	}
 
+	if (!FieldExists("glpi_config", "autoclean_link_contact")) {
+		$query = "ALTER TABLE `glpi_config` ADD `autoclean_link_contact` smallint(6) NOT NULL DEFAULT '0' AFTER `autoupdate_link_location` ," .
+				"ADD `autoclean_link_user` smallint(6) NOT NULL DEFAULT '0' AFTER `autoclean_link_contact` ," .
+				"ADD `autoclean_link_group` smallint(6) NOT NULL DEFAULT '0' AFTER `autoclean_link_user` ," .
+				"ADD `autoclean_link_location` smallint(6) NOT NULL DEFAULT '0' AFTER `autoclean_link_group` ;";
+		$DB->query($query) or die("0.71 add autoclean_link_* to glpi_config " . $LANG["update"][90] . $DB->error());
+	}
 	
 
 } // fin 0.71 #####################################################################################
