@@ -180,6 +180,34 @@ function Disconnect($ID,$dohistory=1,$ocs_server_id=0) {
 			historyLog ($id_elem,$type_elem,$changes,COMPUTER_TYPE,HISTORY_DISCONNECT_DEVICE);
 		}
 
+		if (!$device->getField('is_global')){
+			
+			$updates=array();
+			if ($CFG_GLPI["autoclean_link_location"] && $device->getField('location')){
+				$updates[]="location";
+				$device->obj->fields['location']=0;
+			}
+			if ($CFG_GLPI["autoupdate_link_user"] && $device->getField('FK_users')) {
+				$updates[]="FK_users";
+				$device->obj->fields['FK_users']=0;	
+			}
+			if ($CFG_GLPI["autoclean_link_group"] && $device->getField('FK_groups')){
+				$updates[]="FK_groups";
+				$device->obj->fields['FK_groups']=0;
+			}
+			if ($CFG_GLPI["autoupdate_link_contact"] && $device->getField('contact')){
+				$updates[]="contact";
+				$device->obj->fields['contact']="";
+			}
+			if ($CFG_GLPI["autoupdate_link_contact"] && $device->getField('contact_num')){
+				$updates[]="contact_num";
+				$device->obj->fields['contact_num']="";
+			}
+			if (count($updates)) {
+				$device->obj->updateInDB($updates);
+			}
+		}
+
 		if ($ocs_server_id==0){
 			$ocs_server_id = getOCSServerByMachineID($data["end2"]);
 		}
@@ -224,7 +252,7 @@ function Disconnect($ID,$dohistory=1,$ocs_server_id=0) {
 					}				
 				}			
 			}		
-		}
+		} // $ocs_server_id>0
 	}
 	// Disconnects a direct connection
 	$connect = new Connection;
