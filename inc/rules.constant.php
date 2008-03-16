@@ -210,6 +210,9 @@ $RULES_ACTIONS[RULE_TRACKING_AUTO_ACTION]['assign_group']['type']='dropdown';
 $RULES_ACTIONS[RULE_TRACKING_AUTO_ACTION]['priority']['name']=$LANG["joblist"][2];
 $RULES_ACTIONS[RULE_TRACKING_AUTO_ACTION]['priority']['type']='dropdown_priority';
 
+$RULES_ACTIONS[RULE_TRACKING_AUTO_ACTION]['status']['name']=$LANG["joblist"][0];
+$RULES_ACTIONS[RULE_TRACKING_AUTO_ACTION]['status']['type']='dropdown_status';
+
 //Software categories
 $RULES_CRITERIAS[RULE_SOFTWARE_CATEGORY]['name']['field']='name';
 $RULES_CRITERIAS[RULE_SOFTWARE_CATEGORY]['name']['name']=$LANG["help"][31];
