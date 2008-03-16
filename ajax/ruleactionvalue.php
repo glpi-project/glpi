@@ -72,6 +72,10 @@ if (!defined('GLPI_ROOT')){
 					dropdownPriority("value");
 					$display=true;
 					break;
+				case "dropdown_status":
+					dropdownStatus("value");
+					$display=true;
+					break;
 				case "yesno":
 					dropdownYesNo("value");
 					$display=true;

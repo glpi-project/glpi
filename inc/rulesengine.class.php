@@ -1671,6 +1671,9 @@ class Rule extends CommonDBTM{
 				case "dropdown":
 					return getDropdownName($action["table"],$value);
 					break;
+				case "dropdown_status":
+					return getStatusName($value);
+					break;
 				case "dropdown_assign":
 				case "dropdown_users":
 					return getUserName($value);
