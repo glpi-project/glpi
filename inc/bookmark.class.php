@@ -64,13 +64,14 @@ class Bookmark extends CommonDBTM {
 		return $input;
 	}
 
-	function showSaveBookmarkForm($type,$target,$url) {
+	function showSaveBookmarkForm($type,$target,$url,$device_type=0) {
 		global $LANG;
 
 		echo "<br>";
 		echo "<div class='center'>";
 		echo "<form method='post' name='form_save_query' action=\"$target\">";
 
+		echo "<input type='hidden' name='device_type' value='$device_type'>";
 		echo "<input type='hidden' name='type' value='$type'>";
 		echo "<input type='hidden' name='FK_users' value='" . $_SESSION['glpiID'] . "'>";
 		echo "<input type='hidden' name='url' value='" . urlencode($url) . "'>";

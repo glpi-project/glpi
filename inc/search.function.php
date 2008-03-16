@@ -379,7 +379,7 @@ function searchForm($type,$target,$field="",$contains="",$sort= "",$deleted= 0,$
 	echo "<td align='center'>";
 	echo "<a href='".$CFG_GLPI["root_doc"]."/front/computer.php?reset_search=reset_search&amp;type=$type' ><img title=\"".$LANG["buttons"][16]."\" alt=\"".$LANG["buttons"][16]."\" src='".$CFG_GLPI["root_doc"]."/pics/reset.png' class='calendrier'></a>";
 	echo '<br>';
-	showBookmarkButtons(BOOKMARK_SEARCH);
+	showBookmarkButtons(BOOKMARK_SEARCH,$type);
 
 	echo "</td>";
 	// Display submit button

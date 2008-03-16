@@ -62,7 +62,7 @@ else
 {
 	switch($_GET["action"]){
 		case "save" :
-			$bookmark->showSaveBookmarkForm($_GET["type"],$_SERVER['PHP_SELF'],$_SERVER["HTTP_REFERER"]);	
+			$bookmark->showSaveBookmarkForm($_GET["type"],$_SERVER['PHP_SELF'],$_SERVER["HTTP_REFERER"],$_GET["device_type"]);	
 			break;
 		case "load" :
 			if (isset($_GET["bookmark_id"])){
