@@ -44,35 +44,53 @@ include (GLPI_ROOT . "/inc/includes.php");
 if (!ereg("popup",$_SERVER['PHP_SELF']))
 	commonHeader($LANG["rulesengine"][17],$_SERVER['PHP_SELF'],"admin","dictionnary","cache");
 
+
+if(!isset($_GET["ID"])) {
+	$_GET["ID"] = -1;
+}
+if(!isset($_GET["type"])) {
+	$_GET["type"] = -1;
+}
 $bookmark = new Bookmark;
 
-if (isset($_POST["save"]))
+if (isset($_POST["add"]))
 {
 	$bookmark->add($_POST);
-	$bookmark->showBookmarkSavedForm();	
-
-}elseif (isset($_POST["delete"]))
+	$_GET["action"]="load";
+	
+} elseif (isset($_POST["update"]))
 {
-	foreach ($_POST["bookmark"] as $ID=>$value)
+	$bookmark->update($_POST);
+	$_GET["action"]="load";
+} elseif (isset($_POST["delete"]))
+{
+	$bookmark->delete($_POST);
+	$_GET["action"]="load";
+}elseif (isset($_POST["delete_several"]))
+{
+	foreach ($_POST["bookmark"] as $ID=>$value){
 		$bookmark->delete(array("ID"=>$ID));
-		
-	$bookmark->showLoadBookmarkForm($_SERVER['PHP_SELF'],$_SESSION["glpiID"]);
-}
-else
-{
-	switch($_GET["action"]){
-		case "save" :
-			$bookmark->showSaveBookmarkForm($_GET["type"],$_SERVER['PHP_SELF'],$_SERVER["HTTP_REFERER"],$_GET["device_type"]);	
-			break;
-		case "load" :
-			if (isset($_GET["bookmark_id"])){
-				$bookmark->load($_GET["bookmark_id"]);
-			}
-			$bookmark->showLoadBookmarkForm($_SERVER['PHP_SELF'],$_SESSION["glpiID"]);
-			break;
 	}
+	$_GET["action"]="load";
+}
+
+switch($_GET["action"]){
+	case "edit" :
+		if ($_GET['ID']>0){
+			$bookmark->showForm($_SERVER['PHP_SELF'],$_GET["ID"]);
+		} else {
+			$bookmark->showForm($_SERVER['PHP_SELF'],$_GET["ID"],$_GET["type"],$_SERVER["HTTP_REFERER"],$_GET["device_type"]);	
+		}
+		break;
+	case "load" :
+		if (isset($_GET["bookmark_id"])){
+			$bookmark->load($_GET["bookmark_id"]);
+		}
+		$bookmark->showBookmarkList($_SERVER['PHP_SELF'],$_SESSION["glpiID"]);
+		break;
+}
 		
-	if (!ereg("popup",$_SERVER['PHP_SELF']))
-		commonFooter();
+if (!ereg("popup",$_SERVER['PHP_SELF'])){
+	commonFooter();
 }
 ?>

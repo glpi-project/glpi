@@ -139,28 +139,23 @@ class Reminder extends CommonDBTM {
 			$canedit=$this->can($ID,'w');
 
 
-		if($canedit) {
-			echo "<form method='post' name='remind' action=\"$target\">";
-		}
-
-		echo "<div class='center'><table class='tab_cadre' width='450'>";
-		echo "<tr><th>&nbsp;</th><th>";
-		if (!$ID) {
-			echo $LANG["reminder"][6];
-		} else {
-			echo $LANG["common"][2]." $ID";
-		}		
+			if($canedit) {
+				echo "<form method='post' name='remind' action=\"$target\">";
+			}
+	
+			echo "<div class='center'><table class='tab_cadre' width='450'>";
+			echo "<tr><th>&nbsp;</th><th>";
+			if (!$ID) {
+				echo $LANG["reminder"][6];
+			} else {
+				echo $LANG["common"][2]." $ID";
+			}		
 
 			echo "</th></tr>";
 
 			echo "<tr class='tab_bg_2'><td>".$LANG["common"][57].":		</td>";
 			echo "<td>";
-
-			if($canedit) { 
-				echo "<input type='text' size='80' name='name' value=\"".$this->fields["name"]."\"  ".$onfocus.">";
-			}else{ 
-				echo  $this->fields["name"];
-			}
+			autocompletionTextField("name",$this->table,"name",$this->fields['name'],80,-1,$onfocus);	
 			echo "</td></tr>";
 
 			if(!$canedit) { 
@@ -257,7 +252,7 @@ class Reminder extends CommonDBTM {
 				echo "<div class='center'><input type='submit' name='add' value=\"".$LANG["buttons"][8]."\" class='submit'></div>";
 				echo "</td>";
 				echo "</tr>";
-			} elseif($canedit) { // update / delete uniquement pour l'auteur du message
+			} elseif($canedit) { 
 				echo "<tr>";
 
 				echo "<td class='tab_bg_2' valign='top' colspan='2'>";
@@ -270,10 +265,6 @@ class Reminder extends CommonDBTM {
 
 				echo "</td>";
 				echo "</tr>";
-
-
-
-
 			}
 
 			echo "</table></div>";
