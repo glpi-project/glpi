@@ -38,6 +38,9 @@ class Bookmark extends CommonDBTM {
 	function Bookmark() {
 		global $CFG_GLPI;
 		$this->table = "glpi_bookmark";
+		$this->entity_assign=true;
+		$this->may_be_recursive=true;
+		$this->may_be_private=true;
 	}
 
 
@@ -64,30 +67,107 @@ class Bookmark extends CommonDBTM {
 		return $input;
 	}
 
-	function showSaveBookmarkForm($type,$target,$url,$device_type=0) {
+	function post_getEmpty () {
 		global $LANG;
+		$this->fields["FK_users"]=$_SESSION['glpiID'];
+		$this->fields["private"]=1;
+		$this->fields["FK_entities"]=$_SESSION["glpiactive_entity"];
+	}
 
-		echo "<br>";
-		echo "<div class='center'>";
-		echo "<form method='post' name='form_save_query' action=\"$target\">";
+	function showForm($target,$ID,$type=0,$url='',$device_type=0) {
 
-		echo "<input type='hidden' name='device_type' value='$device_type'>";
-		echo "<input type='hidden' name='type' value='$type'>";
-		echo "<input type='hidden' name='FK_users' value='" . $_SESSION['glpiID'] . "'>";
-		echo "<input type='hidden' name='url' value='" . urlencode($url) . "'>";
 
-//" . (isset($taburl["query"])?urlencode($taburl["query"]."&reset_before"):"reset_before") . "
+		global $CFG_GLPI,$LANG;
 
-		echo "<table class='tab_cadre'>";
-		echo "<tr><th align='center' colspan='2'>".$LANG["buttons"][51]." ".$LANG["bookmark"][1]."</th>";
-		echo "<tr><td class='tab_bg_1'>".$LANG["common"][16]."</td>"; 
-		echo "<td class='tab_bg_1'>";
-		autocompletionTextField("name",$this->table,"name",'',40);				
-		echo "</td></tr>"; 
-		echo "<tr><td class='tab_bg_1' colspan='2' align='center'>";
-		echo "<input type='submit' name='save' value=\"".$LANG["buttons"][2]."\" class='submit'>";
-		echo "</tr>";
-		echo "</table></form></div>";
+		$spotted=false;
+		if ($ID>0) {
+			if($this->can($ID,'r')) {
+				$spotted = true;	
+			}
+		} else {
+			if ($this->can(-1,'w')){
+				$spotted = true;
+			}
+		} 
+
+		if ($spotted){
+			$canedit=$this->can($ID,'w');
+
+			if($canedit) {
+				echo "<form method='post' name='form_save_query' action=\"$target\">";
+			}
+			echo "<div class='center'>";
+			if ($device_type!=0){
+				echo "<input type='hidden' name='device_type' value='$device_type'>";
+			}
+			if ($type!=0){
+				echo "<input type='hidden' name='type' value='$type'>";
+			}
+			if (!empty($url)){
+				echo "<input type='hidden' name='url' value='" . urlencode($url) . "'>";
+			}
+
+	
+	//" . (isset($taburl["query"])?urlencode($taburl["query"]."&reset_before"):"reset_before") . "
+	
+			echo "<table class='tab_cadre' width='500'>";
+			echo "<tr><th>&nbsp;</th><th>";
+			if (!$ID) {
+				echo $LANG["bookmark"][4];
+			} else {
+				echo $LANG["common"][2]." $ID";
+			}		
+
+			echo "</th></tr>";
+
+
+			echo "<tr><td class='tab_bg_1'>".$LANG["common"][16]."</td>"; 
+
+			echo "<td class='tab_bg_1'>";
+			autocompletionTextField("name",$this->table,"name",$this->fields['name'],40);				
+			echo "</td></tr>"; 
+
+			echo "<tr class='tab_bg_2'><td>".$LANG["common"][17].":		</td>";
+			echo "<td>";
+
+			if($canedit) { 
+				privatePublicSwitch($this->fields["private"],$this->fields["FK_entities"],$this->fields["recursive"]);
+			}else{
+				echo getYesNo($this->fields["private"]);				
+			}
+
+
+			if (!$ID) { // add
+				echo "<tr>";
+				echo "<td class='tab_bg_2' valign='top' colspan='2'>";
+				echo "<input type='hidden' name='FK_users' value=\"".$this->fields['FK_users']."\">\n";
+				echo "<div class='center'><input type='submit' name='add' value=\"".$LANG["buttons"][8]."\" class='submit'></div>";
+				echo "</td>";
+				echo "</tr>";
+			} elseif($canedit) { 
+				echo "<tr>";
+
+				echo "<td class='tab_bg_2' valign='top' colspan='2'>";
+				echo "<input type='hidden' name='ID' value=\"$ID\">\n";
+				echo "<div class='center'><input type='submit' name='update' value=\"".$LANG["buttons"][7]."\" class='submit'>";
+
+				echo "<input type='hidden' name='ID' value=\"$ID\">\n";
+
+				echo "<input type='submit' name='delete' value=\"".$LANG["buttons"][6]."\" class='submit'></div>";
+
+				echo "</td>";
+				echo "</tr>";
+			}
+
+			echo "</table>";
+			echo "</div>";
+			if($canedit) {
+				echo "</form>";
+			}
+		} else {
+			echo "<div class='center'><strong>".$LANG["common"][54]."</strong></div>";
+
+		}
 		
 	}
 
@@ -113,17 +193,6 @@ class Bookmark extends CommonDBTM {
 		return $query_tab;
 	}
 
-	function showBookmarkSavedForm()
-	{
-		global $LANG;
-		echo "<div class='center'>"; 
-		echo "<table class='tab_cadrehov'>";
-		echo "<tr class='tab_bg_1'>";
-		echo "<td>".$LANG["bookmark"][2]."</td>";
-		echo "</tr></table></div>";
-	}
-	
-
 	function load($ID){
 		
 		$this->getFromDB($ID);
@@ -138,8 +207,9 @@ class Bookmark extends CommonDBTM {
 		echo "</script>";
 	}
 	
-	function showLoadBookmarkForm($target,$user_id) {
+	function showBookmarkList($target,$user_id) {
 		global $DB,$LANG,$CFG_GLPI;
+
 		$result = $DB->query("SELECT ID, name FROM ".$this->table." WHERE FK_users=$user_id ORDER BY name");
 
 		echo "<br>";
@@ -148,7 +218,7 @@ class Bookmark extends CommonDBTM {
 		echo "<form method='post' name='form_load_bookmark' action=\"$target\">";
 
 		echo "<table class='tab_cadrehov'>";
-		echo "<tr><th align='center' colspan='2'>".$LANG["buttons"][52]." ".$LANG["bookmark"][1]."</th>";
+		echo "<tr><th align='center' colspan='2'>".$LANG["buttons"][52]." ".$LANG["bookmark"][1]."</th><th width='20px'>&nbsp;</th>";
 
 		if( $DB->numrows($result))
 		{
@@ -162,8 +232,9 @@ class Bookmark extends CommonDBTM {
 				echo "<input type='checkbox' name='bookmark[" . $data["ID"] . "]' " . $sel . ">";
 				echo "</td>";
 				echo "<td>";
-				echo "<a href=\"".GLPI_ROOT."/front/popup.php?action=load&bookmark_id=".$data["ID"]."\">".$data["name"]."</a>";
+				echo "<a href=\"".GLPI_ROOT."/front/popup.php?popup=load_bookmark&bookmark_id=".$data["ID"]."\">".$data["name"]."</a>";
 				echo "</td>";
+				echo "<td><a href=\"".GLPI_ROOT."/front/popup.php?popup=edit_bookmark&ID=".$data["ID"]."\"><img src='".$CFG_GLPI["root_doc"]."/pics/edit.png'></a></td>";
 				echo "</tr>";
 			}
 			echo "</table>";
@@ -174,7 +245,7 @@ class Bookmark extends CommonDBTM {
 			echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markAllRows('form_load_bookmark') ) return false;\" href='".$_SERVER['PHP_SELF']."?select=all'>".$LANG["buttons"][18]."</a></td>";
 			echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkAllRows('form_load_bookmark') ) return false;\" href='".$_SERVER['PHP_SELF']."?select=none'>".$LANG["buttons"][19]."</a>";
 			echo "</td><td align='left' width='80%'>";
-			echo "<input type='submit' name='delete' value=\"".$LANG["buttons"][6]."\" class='submit'>";
+			echo "<input type='submit' name='delete_several' value=\"".$LANG["buttons"][6]."\" class='submit'>";
 			echo "</td></tr>";
 			echo "</table>";
 	

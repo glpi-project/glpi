@@ -81,15 +81,15 @@ if (isset($_SESSION["glpipopup"]["name"])){
 			include "rule.cache.php"; 
 			popFooter(); 
 		break;
-		case "save_bookmark": 
-			popHeader($LANG["buttons"][50],$_SERVER['PHP_SELF']);
-			$_GET["action"]="save"; 
-			include "bookmark.php"; 
-			popFooter(); 
-		break;
 		case "load_bookmark": 
 			popHeader($LANG["buttons"][50],$_SERVER['PHP_SELF']); 
 			$_GET["action"]="load";
+			include "bookmark.php"; 
+			popFooter(); 
+		break;
+		case "edit_bookmark": 
+			popHeader($LANG["buttons"][50],$_SERVER['PHP_SELF']); 
+			$_GET["action"]="edit";
 			include "bookmark.php"; 
 			popFooter(); 
 		break;
