@@ -1778,8 +1778,8 @@ function addWhere ($link,$nott,$type,$ID,$val,$meta=0){
 			return $link." $table.$field ".makeTextSearch("",$nott);
 			break;
 		case "glpi_networking_ports.ifmac" :
+			$ADD="";
 			if ($type==COMPUTER_TYPE){
-				$ADD="";
 				if ($nott) {
 					$ADD=" OR $table.$field IS NULL";
 				}
