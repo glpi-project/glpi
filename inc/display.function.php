@@ -914,6 +914,15 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="")
 		echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 		echo "</li>";
 
+		// Bookmark load
+		echo "<li>";
+
+		echo "  <a href='#' onClick=\"window.open('".$CFG_GLPI["root_doc"]."/front/popup.php?popup=load_bookmark' ,'glpipopup', 'height=400, width=600, top=100, left=100, scrollbars=yes' )\">"; 
+		echo "   <img src='".$CFG_GLPI["root_doc"]."/pics/folder-open.png'  value='OK'   title=\"".$LANG["buttons"][52]." ".$LANG["bookmark"][1]."\"  alt=\"".$LANG["buttons"][52]." ".$LANG["bookmark"][1]."\"   class='calendrier' >"; 
+		echo "  </a>";
+		echo "</li>";
+
+
 /*		echo "<li  id='headercalendar'><img  src='".$CFG_GLPI["root_doc"]."/pics/menu_calendar.png'  alt='".$LANG["buttons"][15]."' title='".$LANG["buttons"][15]."'>";
 
 		echo "<script type='text/javascript'>";
