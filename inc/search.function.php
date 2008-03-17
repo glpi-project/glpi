@@ -1047,7 +1047,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 			if ($output_type==HTML_OUTPUT){// HTML display - massive modif
 				$search_config="";
 				if (haveRight("search_config","w")||haveRight("search_config_global","w")){
-					$tmp= " class='pointer'  onClick=\"window.open('".$CFG_GLPI["root_doc"]."/front/popup.php?popup=search_config&amp;type=$type' ,'glpipopup', 'height=400, width=1000, top=100, left=100, scrollbars=yes' )\"";
+					$tmp= " class='pointer'  onClick=\"var w = window.open('".$CFG_GLPI["root_doc"]."/front/popup.php?popup=search_config&amp;type=$type' ,'glpipopup', 'height=400, width=1000, top=100, left=100, scrollbars=yes' ); w.focus();\"";
 
 					$search_config= "<img alt='".$LANG["setup"][252]."' title='".$LANG["setup"][252]."' src='".$CFG_GLPI["root_doc"]."/pics/options_search.png' ";
 					$search_config.=$tmp.">";

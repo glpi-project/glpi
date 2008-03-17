@@ -294,7 +294,7 @@ class RuleCollection {
 			echo "</div>";
 		} 
 		
-		echo "<span class='center'><a href='#' onClick=\"window.open('".$CFG_GLPI["root_doc"]."/front/popup.php?popup=test_all_rules&amp;rule_type=".$this->rule_type."&amp' ,'glpipopup', 'height=400, width=1000, top=100, left=100, scrollbars=yes' )\">".$LANG["rulesengine"][84]."</a></span>"; 
+		echo "<span class='center'><a href='#' onClick=\"var w=window.open('".$CFG_GLPI["root_doc"]."/front/popup.php?popup=test_all_rules&amp;rule_type=".$this->rule_type."&amp' ,'glpipopup', 'height=400, width=1000, top=100, left=100, scrollbars=yes' );w.focus();\">".$LANG["rulesengine"][84]."</a></span>"; 
 		echo "</form>";
 
 
@@ -778,7 +778,7 @@ class Rule extends CommonDBTM{
 				echo "</tr>";
 
 				echo "<tr><td class='tab_bg_2' align='center' colspan='4'>";
-				echo "<a href='#' onClick=\"window.open('".$CFG_GLPI["root_doc"]."/front/popup.php?popup=test_rule&amp;rule_type=".$this->rule_type."&amp;rule_id=".$this->fields["ID"]."' ,'glpipopup', 'height=400, width=1000, top=100, left=100, scrollbars=yes' )\">".$LANG["buttons"][50]."</a>"; 
+				echo "<a href='#' onClick=\"var w=window.open('".$CFG_GLPI["root_doc"]."/front/popup.php?popup=test_rule&amp;rule_type=".$this->rule_type."&amp;rule_id=".$this->fields["ID"]."' ,'glpipopup', 'height=400, width=1000, top=100, left=100, scrollbars=yes' );w.focus();\">".$LANG["buttons"][50]."</a>"; 
 				echo "</td></tr>";
 			}
 		}			
@@ -2082,7 +2082,7 @@ class RuleCachedCollection extends RuleCollection{
 	**/
 	function showAdditionalInformationsInForm($target){
 		global $CFG_GLPI,$LANG;
-		echo "<span class='center'><a href='#' onClick=\"window.open('".$CFG_GLPI["root_doc"]."/front/popup.php?popup=show_cache&amp;rule_type=".$this->rule_type."' ,'glpipopup', 'height=400, width=1000, top=100, left=100, scrollbars=yes' )\">".$LANG["rulesengine"][100]."</a></span>"; 
+		echo "<span class='center'><a href='#' onClick=\"var w = window.open('".$CFG_GLPI["root_doc"]."/front/popup.php?popup=show_cache&amp;rule_type=".$this->rule_type."' ,'glpipopup', 'height=400, width=1000, top=100, left=100, scrollbars=yes' );w.focus();\">".$LANG["rulesengine"][100]."</a></span>"; 
 
 	}	
 
@@ -2134,7 +2134,7 @@ class RuleCachedCollection extends RuleCollection{
 		while ($datas = $DB->fetch_array($res_count)){
 			echo "<tr>";			
 			echo "<td class='tab_bg_2'>";
-			echo "<a href='#' onClick=\"window.open('".$CFG_GLPI["root_doc"]."/front/popup.php?popup=show_cache&amp;rule_type=".$this->rule_type."&rule_id=".$datas["rule_id"]."' ,'glpipopup', 'height=400, width=1000, top=100, left=100, scrollbars=yes' )\">";
+			echo "<a href='#' onClick=\"var w = window.open('".$CFG_GLPI["root_doc"]."/front/popup.php?popup=show_cache&amp;rule_type=".$this->rule_type."&rule_id=".$datas["rule_id"]."' ,'glpipopup', 'height=400, width=1000, top=100, left=100, scrollbars=yes' );w.focus();\">";
 			echo $datas["name"];
 			echo "</a></td>";
 			echo "<td class='tab_bg_2'>".$datas["cpt"]."</td>";
