@@ -40,15 +40,12 @@ if (!defined('GLPI_ROOT')) {
  * @param $type bookmark type to use
  * @param $device_type device type of item where is the bookmark
  **/
-function showBookmarkButtons($type,$device_type=0){
+function showSaveBookmarkButton($type,$device_type=0){
 	global $CFG_GLPI,$LANG;
 
 	echo "  <a href='#' onClick=\"window.open('".$CFG_GLPI["root_doc"]."/front/popup.php?popup=edit_bookmark&amp;type=$type&amp;device_type=$device_type' ,'glpipopup', 'height=400, width=600, top=100, left=100, scrollbars=yes' )\">"; 
 	echo "<img src='".$CFG_GLPI["root_doc"]."/pics/menu_add.png'  value='OK'   title=\"".$LANG["buttons"][51]." ".$LANG["bookmark"][1]."\"  alt=\"".$LANG["buttons"][51]." ".$LANG["bookmark"][1]."\"  class='calendrier' >"; 
 	echo "	</a>";
-	echo "  <a href='#' onClick=\"window.open('".$CFG_GLPI["root_doc"]."/front/popup.php?popup=load_bookmark' ,'glpipopup', 'height=400, width=600, top=100, left=100, scrollbars=yes' )\">"; 
-	echo "   <img src='".$CFG_GLPI["root_doc"]."/pics/folder-open.png'  value='OK'   title=\"".$LANG["buttons"][52]." ".$LANG["bookmark"][1]."\"  alt=\"".$LANG["buttons"][52]." ".$LANG["bookmark"][1]."\"   class='calendrier' >"; 
-	echo "  </a>";
 }
 
 ?>
