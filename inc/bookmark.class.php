@@ -208,7 +208,9 @@ class Bookmark extends CommonDBTM {
 	function showBookmarkList($target,$user_id) {
 		global $DB,$LANG,$CFG_GLPI;
 
-		$result = $DB->query("SELECT ID, name FROM ".$this->table." WHERE FK_users=$user_id ORDER BY name");
+		$result = $DB->query("SELECT ID, private, FK_entities, FK_users, name FROM ".$this->table." WHERE (private=1 AND FK_users=$user_id) OR (private=0  ".
+			getEntitiesRestrictRequest("AND",$this->table,"","",true) . 
+			") ORDER BY name");
 
 		echo "<br>";
 
@@ -221,18 +223,29 @@ class Bookmark extends CommonDBTM {
 		if( $DB->numrows($result))
 		{
 
-			while ($data = $DB->fetch_array($result))
+			while ($data = $DB->fetch_assoc($result))
 			{
+				$canedit=(($data["private"]==1 && $data["FK_users"]==$user_id) ||
+					($data["private"]==0 && in_array($data["FK_entities"],$_SESSION["glpiactiveentities"])));
+					
 				echo "<tr class='tab_bg_1'>";
 				echo "<td width='10'>";
-				$sel="";
-				if (isset($_GET["select"])&&$_GET["select"]=="all") $sel="checked";
-				echo "<input type='checkbox' name='bookmark[" . $data["ID"] . "]' " . $sel . ">";
+				if ($canedit) {
+					$sel="";
+					if (isset($_GET["select"])&&$_GET["select"]=="all") $sel="checked";
+					echo "<input type='checkbox' name='bookmark[" . $data["ID"] . "]' " . $sel . ">";
+				} else {
+					echo "&nbsp;";
+				}
 				echo "</td>";
 				echo "<td>";
 				echo "<a href=\"".GLPI_ROOT."/front/popup.php?popup=load_bookmark&bookmark_id=".$data["ID"]."\">".$data["name"]."</a>";
 				echo "</td>";
-				echo "<td><a href=\"".GLPI_ROOT."/front/popup.php?popup=edit_bookmark&ID=".$data["ID"]."\"><img src='".$CFG_GLPI["root_doc"]."/pics/edit.png'></a></td>";
+				if ($canedit) {
+					echo "<td><a href=\"".GLPI_ROOT."/front/popup.php?popup=edit_bookmark&ID=".$data["ID"]."\"><img src='".$CFG_GLPI["root_doc"]."/pics/edit.png'></a></td>";
+				} else {
+					echo "<td>&nbsp;</td>";					
+				}
 				echo "</tr>";
 			}
 			echo "</table>";
