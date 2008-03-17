@@ -221,8 +221,9 @@ class Bookmark extends CommonDBTM {
 
 		echo "<br>";
 
-		echo "<div class='center'>"; 
 		echo "<form method='post' name='form_load_bookmark' action=\"$target\">";
+
+		echo "<div class='center'>"; 
 
 		echo "<table class='tab_cadrehov'>";
 		echo "<tr><th align='center' colspan='2'>".$LANG["buttons"][52]." ".$LANG["bookmark"][1]."</th><th width='20px'>&nbsp;</th>";
@@ -246,10 +247,10 @@ class Bookmark extends CommonDBTM {
 				}
 				echo "</td>";
 				echo "<td>";
-				echo "<a href=\"".GLPI_ROOT."/front/popup.php?popup=load_bookmark&bookmark_id=".$data["ID"]."\">".$data["name"]."</a>";
+				echo "<a href=\"".GLPI_ROOT."/front/popup.php?popup=load_bookmark&amp;bookmark_id=".$data["ID"]."\">".$data["name"]."</a>";
 				echo "</td>";
 				if ($canedit) {
-					echo "<td><a href=\"".GLPI_ROOT."/front/popup.php?popup=edit_bookmark&ID=".$data["ID"]."\"><img src='".$CFG_GLPI["root_doc"]."/pics/edit.png'></a></td>";
+					echo "<td><a href=\"".GLPI_ROOT."/front/popup.php?popup=edit_bookmark&amp;ID=".$data["ID"]."\"><img src='".$CFG_GLPI["root_doc"]."/pics/edit.png' alt='".$LANG["buttons"][14]."'></a></td>";
 				} else {
 					echo "<td>&nbsp;</td>";					
 				}
@@ -267,13 +268,13 @@ class Bookmark extends CommonDBTM {
 			echo "</td></tr>";
 			echo "</table>";
 	
-			echo "</div>";
-
 		}
-		else
+		else {
 			echo "<tr class='tab_bg_1'><td colspan='2'>".$LANG["bookmark"][3]."</td></tr></table>";
-		
-		echo "</form></div>";
+		}
+			echo "</div>";
+			echo "</form>";
+
 	}
 }
 ?>
