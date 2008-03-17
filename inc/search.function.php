@@ -72,7 +72,7 @@ function cleanSearchOption($type,$action='r'){
  *
  *
  * @param $type item type to manage
- * @param $usesession Use datas save in sesion
+ * @param $usesession Use datas save in session
  * @param $save Save params to session
  * @return nothing
  *
@@ -126,8 +126,21 @@ function manageGetValuesInSearch($type=0,$usesession=true,$save=true){
 		}
 	}
 
-	if (!isset($_SESSION["glpisearchcount"][$type])) $_SESSION["glpisearchcount"][$type]=1;
-	if (!isset($_SESSION["glpisearchcount2"][$type])) $_SESSION["glpisearchcount2"][$type]=0;
+	if (!isset($_SESSION["glpisearchcount"][$type])) {
+		if (isset($_GET["glpisearchcount"])){
+			$_SESSION["glpisearchcount"][$type]=$_GET["glpisearchcount"];
+		} else {
+			$_SESSION["glpisearchcount"][$type]=1;
+		}
+	}
+	if (!isset($_SESSION["glpisearchcount2"][$type])) {
+		// Set in URL for bookmark
+		if (isset($_GET["glpisearchcount2"])){
+			$_SESSION["glpisearchcount2"][$type]=$_GET["glpisearchcount2"];
+		} else {
+			$_SESSION["glpisearchcount2"][$type]=0;
+		}
+	}
 
 }
 
