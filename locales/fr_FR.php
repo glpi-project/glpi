@@ -943,6 +943,7 @@ $LANG["Menu"][36]="Groupes";
 $LANG["Menu"][37]="Entités"; 
 $LANG["Menu"][38]="Inventaire"; 
 $LANG["Menu"][39]="Passerelles Mails"; 
+$LANG["Menu"][40]="Marque-pages"; 
 
 $LANG["monitors"][14]="Microphone"; 
 $LANG["monitors"][15]="Enceintes"; 

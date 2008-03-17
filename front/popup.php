@@ -82,13 +82,13 @@ if (isset($_SESSION["glpipopup"]["name"])){
 			popFooter(); 
 		break;
 		case "load_bookmark": 
-			popHeader($LANG["buttons"][50],$_SERVER['PHP_SELF']); 
+			popHeader($LANG["Menu"][40],$_SERVER['PHP_SELF']); 
 			$_GET["action"]="load";
 			include "bookmark.php"; 
 			popFooter(); 
 		break;
 		case "edit_bookmark": 
-			popHeader($LANG["buttons"][50],$_SERVER['PHP_SELF']); 
+			popHeader($LANG["Menu"][40],$_SERVER['PHP_SELF']); 
 			$_GET["action"]="edit";
 			include "bookmark.php"; 
 			popFooter(); 
