@@ -71,6 +71,7 @@ class Bookmark extends CommonDBTM {
 		global $LANG;
 		$this->fields["FK_users"]=$_SESSION['glpiID'];
 		$this->fields["private"]=1;
+		$this->fields["recursive"]=0;
 		$this->fields["FK_entities"]=$_SESSION["glpiactive_entity"];
 	}
 
@@ -107,9 +108,6 @@ class Bookmark extends CommonDBTM {
 				echo "<input type='hidden' name='url' value='" . urlencode($url) . "'>";
 			}
 
-	
-	//" . (isset($taburl["query"])?urlencode($taburl["query"]."&reset_before"):"reset_before") . "
-	
 			echo "<table class='tab_cadre' width='500'>";
 			echo "<tr><th>&nbsp;</th><th>";
 			if ($ID>0) {
