@@ -112,10 +112,10 @@ class Bookmark extends CommonDBTM {
 	
 			echo "<table class='tab_cadre' width='500'>";
 			echo "<tr><th>&nbsp;</th><th>";
-			if (!$ID) {
-				echo $LANG["bookmark"][4];
-			} else {
+			if ($ID>0) {
 				echo $LANG["common"][2]." $ID";
+			} else {
+				echo $LANG["bookmark"][4];
 			}		
 
 			echo "</th></tr>";
