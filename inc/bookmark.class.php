@@ -185,6 +185,13 @@ class Bookmark extends CommonDBTM {
 		switch ($type){
 			case BOOKMARK_SEARCH :
 				$query_tab['reset_before']=1;
+				
+				if (isset($query_tab['field'])){
+					$query_tab['glpisearchcount']=count($query_tab['field']);
+				}
+				if (isset($query_tab['field2'])){
+					$query_tab['glpisearchcount2']=count($query_tab['field2']);
+				}
 			break;
 		}
 		
