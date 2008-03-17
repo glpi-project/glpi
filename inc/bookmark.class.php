@@ -137,7 +137,7 @@ class Bookmark extends CommonDBTM {
 			}
 
 
-			if (!$ID) { // add
+			if ($ID<=0) { // add
 				echo "<tr>";
 				echo "<td class='tab_bg_2' valign='top' colspan='2'>";
 				echo "<input type='hidden' name='FK_users' value=\"".$this->fields['FK_users']."\">\n";
