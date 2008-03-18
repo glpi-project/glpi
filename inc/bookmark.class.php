@@ -270,7 +270,7 @@ class Bookmark extends CommonDBTM {
 	
 		}
 		else {
-			echo "<tr class='tab_bg_1'><td colspan='2'>".$LANG["bookmark"][3]."</td></tr></table>";
+			echo "<tr class='tab_bg_1'><td colspan='3'>".$LANG["bookmark"][3]."</td></tr></table>";
 		}
 			echo "</div>";
 			echo "</form>";
