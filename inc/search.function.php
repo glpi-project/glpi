@@ -2489,18 +2489,20 @@ function giveItem ($type,$field,$data,$num,$linkfield=""){
 		case "glpi_networking_ports.ifmac" :
 			$out="";
 			if ($type==COMPUTER_TYPE){
+				$displayed=array();
 				if (!empty($data["ITEM_".$num."_2"])){
 					$split=explode("$$$$",$data["ITEM_".$num."_2"]);
 					$count_display=0;
 					for ($k=0;$k<count($split);$k++){
-						if (strlen(trim($split[$k]))>0){	
+						$lowstr=strtolower($split[$k]);
+						if (strlen(trim($split[$k]))>0
+							&&!in_array($lowstr,$displayed)){	
 							if ($count_display) {
 								$out.= "<br>";
-							} else {
-								$out.= "hw=";
-							}
+							} 
 							$count_display++;
 							$out.= $split[$k];
+							$displayed[]=$lowstr;
 						}
 					}
 					if (!empty($data["ITEM_".$num])) $out.= "<br>";
@@ -2510,11 +2512,15 @@ function giveItem ($type,$field,$data,$num,$linkfield=""){
 					$split=explode("$$$$",$data["ITEM_".$num]);
 					$count_display=0;
 					for ($k=0;$k<count($split);$k++){
-						if (strlen(trim($split[$k]))>0){	
-							if ($count_display) $out.= "<br>";
-							else $out.= "port=";
+						$lowstr=strtolower($split[$k]);
+						if (strlen(trim($split[$k]))>0 
+							&&!in_array($lowstr,$displayed)){	
+							if ($count_display) {
+								$out.= "<br>";
+							}
 							$count_display++;
 							$out.= $split[$k];
+							$displayed[]=$lowstr;
 						}
 					}
 				}
