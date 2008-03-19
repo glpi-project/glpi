@@ -668,7 +668,7 @@ function removeConnector($ID, $dohistory=true) {
 			$query = "UPDATE glpi_networking_ports SET ifaddr='', ifmac='',netmask='', subnet='',gateway='' WHERE ID='$npnet'";	
 			$DB->query($query);
 			// Unset netpoint from common device
-			$query = "UPDATE glpi_networking_ports SET netpoint=NULL WHERE ID='$npdev'";	
+			$query = "UPDATE glpi_networking_ports SET netpoint=0 WHERE ID='$npdev'";	
 			$DB->query($query);			
 		}
 
