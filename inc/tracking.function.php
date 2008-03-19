@@ -1005,7 +1005,7 @@ global $CFG_GLPI,  $LANG;
 
 }
 
-function searchFormTracking($extended=0,$target,$start="",$status="new",$tosearch="",$search="",$author=0,$group=0,$showfollowups=0,$category=0,$assign=0,$assign_ent=0,$assign_group=0,$priority=0,$request_type=0,$item=0,$type=0,$field="",$contains="",$date1="",$date2="",$computers_search="",$enddate1="",$enddate2="",$datemod1="",$datemod2="") {
+function searchFormTracking($extended=0,$target,$start="",$status="new",$tosearch="",$search="",$author=0,$group=0,$showfollowups=0,$category=0,$assign=0,$assign_ent=0,$assign_group=0,$priority=0,$request_type=0,$item=0,$type=0,$field="",$contains="",$date1="",$date2="",$computers_search="",$enddate1="",$enddate2="",$datemod1="",$datemod2="",$recipient=0) {
 	// Print Search Form
 
 	global $CFG_GLPI,  $LANG, $DB;
@@ -1138,6 +1138,10 @@ function searchFormTracking($extended=0,$target,$start="",$status="new",$tosearc
 	echo "</tr>";
 
 	if ($extended){
+		echo "<tr class='tab_bg_1'><td  colspan='6' class='center'>".$LANG["job"][3].":";
+		dropdownUsersTracking("recipient",$recipient,"recipient");
+		echo "</td></tr>";
+
 		echo "<tr class='tab_bg_1'>";
 		echo "<td class='center' colspan='6'>";
 		$selected="";
@@ -1242,7 +1246,7 @@ function getCommonLeftJoinForTrackingSearch(){
 }
 
 
-function showTrackingList($target,$start="",$sort="",$order="",$status="new",$tosearch="",$search="",$author=0,$group=0,$showfollowups=0,$category=0,$assign=0,$assign_ent=0,$assign_group=0,$priority=0,$request_type=0,$item=0,$type=0,$field="",$contains="",$date1="",$date2="",$computers_search="",$enddate1="",$enddate2="",$datemod1="",$datemod2="") {
+function showTrackingList($target,$start="",$sort="",$order="",$status="new",$tosearch="",$search="",$author=0,$group=0,$showfollowups=0,$category=0,$assign=0,$assign_ent=0,$assign_group=0,$priority=0,$request_type=0,$item=0,$type=0,$field="",$contains="",$date1="",$date2="",$computers_search="",$enddate1="",$enddate2="",$datemod1="",$datemod2="",$recipient=0) {
 	// Lists all Jobs, needs $show which can have keywords 
 	// (individual, unassigned) and $contains with search terms.
 	// If $item is given, only jobs for a particular machine
@@ -1359,15 +1363,18 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$to
 	if (!empty($datemod1)&&$datemod1!="0000-00-00") $where.=" AND glpi_tracking.date_mod >= '$datemod1'";
 	if (!empty($datemod2)&&$datemod2!="0000-00-00") $where.=" AND glpi_tracking.date_mod <= adddate( '". $datemod2 ."' , INTERVAL 1 DAY ) ";
 
+	if ($recipient!=0)
+		$where.=" AND glpi_tracking.recipient=$recipient";	
+
 
 	if ($type!=0)
-		$where.=" AND glpi_tracking.device_type='$type'";	
+		$where.=" AND glpi_tracking.device_type=$type";	
 
 	if ($item!=0&&$type!=0)
-		$where.=" AND glpi_tracking.computer = '$item'";	
+		$where.=" AND glpi_tracking.computer = $item";	
 
 	$search_author=false;
-	if ($group>0) $where.=" AND glpi_tracking.FK_group = '$group'";
+	if ($group>0) $where.=" AND glpi_tracking.FK_group = $group";
 	else if ($group==-1&&$author!=0&&haveRight("show_group_ticket",1)){
 		// Get Author group's
 		if (count($_SESSION["glpigroups"])){
