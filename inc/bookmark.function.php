@@ -44,7 +44,7 @@ function showSaveBookmarkButton($type,$device_type=0){
 	global $CFG_GLPI,$LANG;
 
 	echo "  <a href='#' onClick=\"var w = window.open('".$CFG_GLPI["root_doc"]."/front/popup.php?popup=edit_bookmark&amp;type=$type&amp;device_type=$device_type' ,'glpipopup', 'height=400, width=600, top=100, left=100, scrollbars=yes' );w.focus();\">"; 
-	echo "<img src='".$CFG_GLPI["root_doc"]."/pics/menu_add.png'  value='OK'   title=\"".$LANG["buttons"][51]." ".$LANG["bookmark"][1]."\"  alt=\"".$LANG["buttons"][51]." ".$LANG["bookmark"][1]."\"  class='calendrier' >"; 
+	echo "<img src='".$CFG_GLPI["root_doc"]."/pics/bookmark_record.png'  value='OK'   title=\"".$LANG["buttons"][51]." ".$LANG["bookmark"][1]."\"  alt=\"".$LANG["buttons"][51]." ".$LANG["bookmark"][1]."\"  class='calendrier' >"; 
 	echo "	</a>";
 }
 

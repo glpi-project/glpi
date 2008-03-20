@@ -40,9 +40,9 @@ define('GLPI_ROOT', '..');
 include (GLPI_ROOT."/inc/includes.php");
 include ("generate_bigdump.function.php");
 
-$entity_number=5;
+$entity_number=600;
 
-$multiplicator=0.2;
+$multiplicator=0.1;
 
 $MAX['locations']=100;
 $MAX['kbcategories']=8;

@@ -917,7 +917,7 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="")
 		// Bookmark load
 		echo "<li>";
 		echo "  <a href='#' onClick=\"var w=window.open('".$CFG_GLPI["root_doc"]."/front/popup.php?popup=load_bookmark' ,'glpibookmarks', 'height=400, width=600, top=100, left=100, scrollbars=yes' );w.focus();\">"; 
-		echo "   <img src='".$CFG_GLPI["root_doc"]."/pics/folder-open.png'  value='OK'   title=\"".$LANG["buttons"][52]." ".$LANG["bookmark"][1]."\"  alt=\"".$LANG["buttons"][52]." ".$LANG["bookmark"][1]."\"   class='calendrier' >"; 
+		echo "   <img src='".$CFG_GLPI["root_doc"]."/pics/bookmark.png'  value='OK'   title=\"".$LANG["buttons"][52]." ".$LANG["bookmark"][1]."\"  alt=\"".$LANG["buttons"][52]." ".$LANG["bookmark"][1]."\"    >"; 
 		echo "  </a>";
 		echo "</li>";
 
