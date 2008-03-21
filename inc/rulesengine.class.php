@@ -1216,6 +1216,7 @@ class Rule extends CommonDBTM{
 		
 		foreach ($this->criterias as $criteria){
 			$result = $this->checkCriteria($criteria,$input,$regex_result);
+			
 			$check_results[$criteria->fields["ID"]]["name"]=$criteria->fields["criteria"];
 			$check_results[$criteria->fields["ID"]]["value"]=$criteria->fields["pattern"];
 			$check_results[$criteria->fields["ID"]]["result"]=((!$result)?0:1);
@@ -1237,11 +1238,11 @@ class Rule extends CommonDBTM{
 		}
 		//If the value is not an array
 		if (!is_array($input[$criteria->fields["criteria"]])){
+
 			$value=$this->getCriteriaValue($criteria->fields["criteria"],$criteria->fields["condition"],$input[$criteria->fields["criteria"]]);
 
 			// TODO Store value in temp array : $criteria->fields["criteria"] / $criteria->fields["condition"] -> value
 			// TODO : Clean on update action
-
 			$res = matchRules($value,$criteria->fields["condition"],$criteria->fields["pattern"],$regex_result);
 		} else	{
 			//If the value if, in fact, an array of values
@@ -1598,8 +1599,9 @@ class Rule extends CommonDBTM{
  	* @param $ID the given criteria
 	* @param $condition condition used
  	* @param $value the pattern
+	* @param $test Is to test rule ?
  	*/
- 	function displayCriteriaSelectPattern($name,$ID,$condition,$value=""){
+ 	function displayCriteriaSelectPattern($name,$ID,$condition,$value="",$test=false){
 		global $CFG_GLPI;
 
 		$crit=$this->getCriteria($ID);
@@ -1608,31 +1610,31 @@ class Rule extends CommonDBTM{
 		if (isset($crit['type'])){
 			switch ($crit['type']){
 				case "dropdown":
-					if ($condition==PATTERN_IS||$condition==PATTERN_IS_NOT){
+					if ($test||$condition==PATTERN_IS||$condition==PATTERN_IS_NOT){
 						dropdownValue($crit['table'],$name,$value);
 						$display=true;
 					}
 					break;
 				case "dropdown_users":
-					if ($condition==PATTERN_IS||$condition==PATTERN_IS_NOT){
+					if ($test||$condition==PATTERN_IS||$condition==PATTERN_IS_NOT){
 						dropdownAllUsers($name,$value);
 						$display=true;
 					}
 					break;
 				case "dropdown_request_type":
-					if ($condition==PATTERN_IS||$condition==PATTERN_IS_NOT){
+					if ($test||$condition==PATTERN_IS||$condition==PATTERN_IS_NOT){
 						dropdownRequestType($name,$value);
 						$display=true;
 					}
 					break;
 				case "dropdown_tracking_device_type":
-					if ($condition==PATTERN_IS||$condition==PATTERN_IS_NOT){
+					if ($test||$condition==PATTERN_IS||$condition==PATTERN_IS_NOT){
 						dropdownDeviceTypes($name,0,$CFG_GLPI["helpdesk_types"]);
 						$display=true;
 					}
 					break;
 				case "dropdown_priority":
-					if ($condition==PATTERN_IS||$condition==PATTERN_IS_NOT){
+					if ($test||$condition==PATTERN_IS||$condition==PATTERN_IS_NOT){
 						dropdownPriority($name,$value);
 						$display=true;
 					} 
@@ -1705,11 +1707,13 @@ class Rule extends CommonDBTM{
 	{
 		global $LANG;
 		$crit=$this->getCriteria($ID);
+		
 		if (!isset($crit['type'])){
 			return $value;
 		} else {
 			switch ($crit['type']){
 				case "dropdown":
+					
 					if ($condition!=PATTERN_IS && $condition!=PATTERN_IS_NOT){
 						return getDropdownName($crit["table"],$value);
 					}
@@ -1791,7 +1795,7 @@ class Rule extends CommonDBTM{
 					if (isset($_POST[$criteria->fields["criteria"]])){
 						$value=$_POST[$criteria->fields["criteria"]];
 					}	
-					$this->displayCriteriaSelectPattern($criteria->fields["criteria"],$criteria->fields['criteria'],$criteria->fields['condition'],$value);
+					$this->displayCriteriaSelectPattern($criteria->fields["criteria"],$criteria->fields['criteria'],$criteria->fields['condition'],$value,true);
 					echo "</td>";
 					echo "</tr>"; 
 				}
