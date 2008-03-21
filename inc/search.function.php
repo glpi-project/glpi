@@ -1939,7 +1939,9 @@ function addWhere ($link,$nott,$type,$ID,$val,$meta=0){
 			} else if (eregi($val,getAmortTypeName(2))) {
 				$val=2;
 			} 
-			if ($val>0){
+
+			
+			if (is_int($val)&&$val>0){
 				if ($nott){
 					return $link." ($table.$field <> $val ".$ADD." ) ";
 				} else {
