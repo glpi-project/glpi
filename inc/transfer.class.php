@@ -1481,6 +1481,8 @@ class Transfer extends CommonDBTM{
 								}
 							} else {
 								// Else delete link
+								
+								// Don't need to call Disconnect for global device (no disconnect behavior, but history ?)
 								$del_query="DELETE FROM glpi_connect_wire 
 									WHERE ID = '".$data['ID']."'";
 								$DB->query($del_query);
@@ -1513,15 +1515,14 @@ class Transfer extends CommonDBTM{
 							if ($keep){
 								$this->transferItem($link_type,$item_ID,$item_ID);
 							} else {
-								// Else delete link
-								$del_query="DELETE FROM glpi_connect_wire 
-									WHERE ID = '".$data['ID']."'";
-								$DB->query($del_query);
+								// Else delete link (apply disconnect behavior)
+								Disconnect($data['ID']);
+
 								//if clean -> delete
 								if ($clean==1){
 									$ci->obj->delete(array('ID'=>$item_ID));
 								}
-								if ($clean==2){ // purge
+								else if ($clean==2){ // purge
 									$ci->obj->delete(array('ID'=>$item_ID),1);
 								}
 								if ($ocs_computer&&!empty($ocs_field)){
