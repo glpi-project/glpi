@@ -79,7 +79,7 @@ function moveUploadedDocument($filename,$old_file=''){
 
 		} else addMessageAfterRedirect($LANG["document"][38].": ".GLPI_DOC_DIR."/_uploads/".$filename);
 
-	} else $addMessageAfterRedirect($LANG["document"][35]);
+	} else addMessageAfterRedirect($LANG["document"][35]);
 
 	return "";	
 }
