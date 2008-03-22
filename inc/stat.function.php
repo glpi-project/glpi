@@ -571,7 +571,23 @@ function constructEntryValues($type,$begin="",$end="",$param="",$value="",$value
 			$WHERE.=" AND glpi_tracking.recipient='$value'";
 		break;
 		case "category":
-			$WHERE.=" AND glpi_tracking.category='$value'";
+			if (!empty($value)){
+				$categories=getSonsOfTreeItem("glpi_dropdown_tracking_category",$value);
+				$condition="";
+				$first=true;
+				foreach ($categories as $ID){
+					if ($first){
+						$first=false;
+					} else {
+						$condition.=",";
+					}
+					$condition.=$ID;
+				}
+	
+				$WHERE.=" AND glpi_tracking.category IN ($condition)";
+			} else {
+				$WHERE.=" AND glpi_tracking.category = '$value' ";
+			}
 		break;
 		case "group":
 			$WHERE.=" AND glpi_tracking.FK_group='$value'";
