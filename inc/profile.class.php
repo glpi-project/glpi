@@ -350,6 +350,12 @@ class Profile extends CommonDBTM{
 		echo "<td>".$LANG["reminder"][1].":</td><td>";
 		dropdownNoneReadWrite("reminder_public",$this->fields["reminder_public"],1,1,1);
 		echo "</td></tr>";
+		echo "<tr class='tab_bg_2'>";
+		echo "<td>".$LANG["bookmark"][5].":</td><td>";
+		dropdownNoneReadWrite("bookmark_public",$this->fields["bookmark_public"],1,1,1);
+		echo "</td>";
+		echo "<td colspan='4'>";
+		echo "</td></tr>";
 		// Gestion / Management
 		echo "<tr><td class='tab_bg_1' colspan='6' align='center'><strong>".$LANG["Menu"][26]."</strong></td></tr>";
 

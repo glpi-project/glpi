@@ -666,6 +666,14 @@ a.icon_nav_move:hover img {
 	padding-bottom:0;
 }
 
+#barre_onglets_percent {
+
+	width:80%;
+	margin-left: auto;
+	margin-right: auto;
+	margin-bottom:0;
+	padding-bottom:0;
+}
 
 ul#onglet {
 	list-style-type: none;

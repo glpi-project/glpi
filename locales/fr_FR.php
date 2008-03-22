@@ -50,6 +50,7 @@ $LANG["bookmark"][1]="marque-page";
 $LANG["bookmark"][2]="La page a été enregistrée, vous pouvez fermer la fenêtre";
 $LANG["bookmark"][3]="Vous n'avez pas encore enregistré de marque-pages.";
 $LANG["bookmark"][4]="Nouveau marque-page";
+$LANG["bookmark"][5]="Marque-page publics";
 
 
 

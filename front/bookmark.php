@@ -48,28 +48,29 @@ if (!ereg("popup",$_SERVER['PHP_SELF']))
 if(!isset($_GET["ID"])) {
 	$_GET["ID"] = -1;
 }
+
+if (!isset($_SESSION['glpi_viewbookmark'])) $_SESSION['glpi_viewbookmark']=1;
+if (isset($_GET['onglet'])) $_SESSION['glpi_viewbookmark']=$_GET['onglet'];
+
 if(!isset($_GET["type"])) {
 	$_GET["type"] = -1;
 }
 $bookmark = new Bookmark;
 
-if (isset($_POST["add"]))
-{
+if (isset($_POST["add"])){
 	$bookmark->add($_POST);
 	$_GET["action"]="load";
-	
-} elseif (isset($_POST["update"]))
-{
+} elseif (isset($_POST["update"])){
 	$bookmark->update($_POST);
 	$_GET["action"]="load";
-} elseif (isset($_POST["delete"]))
-{
+} elseif (isset($_POST["delete"])){
 	$bookmark->delete($_POST);
 	$_GET["action"]="load";
-}elseif (isset($_POST["delete_several"]))
-{
+}elseif (isset($_POST["delete_several"])){
 	foreach ($_POST["bookmark"] as $ID=>$value){
-		$bookmark->delete(array("ID"=>$ID));
+		if ($bookmark->can($ID,'w')){
+			$bookmark->delete(array("ID"=>$ID));
+		}
 	}
 	$_GET["action"]="load";
 }
@@ -86,7 +87,7 @@ switch($_GET["action"]){
 		if (isset($_GET["bookmark_id"])){
 			$bookmark->load($_GET["bookmark_id"]);
 		}
-		$bookmark->showBookmarkList($_SERVER['PHP_SELF'],$_SESSION["glpiID"]);
+		$bookmark->showBookmarkList($_SERVER['PHP_SELF'],$_SESSION["glpi_viewbookmark"]);
 		break;
 }
 		
