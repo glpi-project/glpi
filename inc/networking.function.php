@@ -487,10 +487,11 @@ function showConnection($ID,$withtemplate='',$type=COMPUTER_TYPE) {
  *@param $sport : source port ID
  *@param $dport : destination port ID
  *@param $dohistory : add event in the history
+ *@param $addmsg : display HTML message on success
  * 
  *@return true on success 
 **/
-function makeConnector($sport, $dport, $dohistory=true) {
+function makeConnector($sport, $dport, $dohistory=true, $addmsg=true) {
 
 	global $DB,$CFG_GLPI, $LANG;
 
@@ -625,7 +626,9 @@ function makeConnector($sport, $dport, $dohistory=true) {
 			historyLog ($pd->fields["on_device"],$pd->fields["device_type"],$changes,$ps->fields["device_type"],HISTORY_CONNECT_DEVICE);			
 		}
 					
-		echo "<br><div class='center'><strong>".$LANG["networking"][44]." ".$source->getName()." - ".$ps->fields['logical_number']."  (".$ps->fields['ifaddr']." - ".$ps->fields['ifmac'].") ".$LANG["networking"][45]." ".$dest->getName()." - ".$pd->fields['logical_number']." (".$pd->fields['ifaddr']." - ".$pd->fields['ifmac'].") </strong></div>";
+		if ($addmsg) {
+			echo "<br><div class='center'><strong>".$LANG["networking"][44]." ".$source->getName()." - ".$ps->fields['logical_number']."  (".$ps->fields['ifaddr']." - ".$ps->fields['ifmac'].") ".$LANG["networking"][45]." ".$dest->getName()." - ".$pd->fields['logical_number']." (".$pd->fields['ifaddr']." - ".$pd->fields['ifmac'].") </strong></div>";
+		}
 		return true;
 	} else {
 		return false;
