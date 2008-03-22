@@ -221,7 +221,7 @@ class Bookmark extends CommonDBTM {
 
 		echo "<br>";
 
-		echo "<form method='post' name='form_load_bookmark' action=\"$target\">";
+		echo "<form method='post' id='form_load_bookmark' action=\"$target\">";
 
 		echo "<div class='center'>"; 
 
