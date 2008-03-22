@@ -51,6 +51,10 @@ if (!ereg("popup",$_SERVER['PHP_SELF'])){
 	commonHeader($LANG["common"][12],$_SERVER['PHP_SELF'],"config","display");
 }
 
+// Need for RuleEngines
+foreach ($_POST as $key => $val) {
+	$_POST[$key] = stripslashes($_POST[$key]);
+}
 $input = $rulecollection->showRulesEngineCriteriasForm($_SERVER['PHP_SELF'],$rule_type,$_POST);
 
 if (isset($_POST["test_all_rules"]))
