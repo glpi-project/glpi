@@ -34,12 +34,12 @@
 // ----------------------------------------------------------------------
 
 
-$NEEDED_ITEMS=array("entity","rulesengine","ocsng");
-
 if(!defined('GLPI_ROOT')){
 	define('GLPI_ROOT', '..');
+
+	$NEEDED_ITEMS=array("entity","rulesengine","ocsng");
+	include (GLPI_ROOT . "/inc/includes.php");
 }
-include (GLPI_ROOT . "/inc/includes.php");
 
 if (!ereg("popup",$_SERVER['PHP_SELF']))
 	commonHeader($LANG["rulesengine"][17],$_SERVER['PHP_SELF'],"admin","dictionnary","cache");

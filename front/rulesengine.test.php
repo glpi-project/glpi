@@ -33,13 +33,12 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-$NEEDED_ITEMS=array("rulesengine");
-
 if(!defined('GLPI_ROOT')){
 	define('GLPI_ROOT', '..');
-}
 
-include (GLPI_ROOT . "/inc/includes.php");
+	$NEEDED_ITEMS=array("rulesengine");
+	include (GLPI_ROOT . "/inc/includes.php");
+}
 
 if (isset($_POST["rule_type"]))$rule_type=$_POST["rule_type"];
 elseif (isset($_GET["rule_type"]))$rule_type=$_GET["rule_type"];

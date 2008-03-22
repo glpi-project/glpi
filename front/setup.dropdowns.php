@@ -35,14 +35,14 @@
 
 
 
-$NEEDED_ITEMS=array("setup");
 //,"ocsng","rulesengine","computer","monitor","printer","peripheral","phone","software","networking","computer","monitor","printer","peripheral","phone","software","networking");
 
 if(!defined('GLPI_ROOT')){
 	define('GLPI_ROOT', '..');
-}
 
-include (GLPI_ROOT . "/inc/includes.php");
+	$NEEDED_ITEMS=array("setup");
+	include (GLPI_ROOT . "/inc/includes.php");
+}
 
 checkSeveralRightsOr(array("dropdown"=>"w","entity_dropdown"=>"w"));
 

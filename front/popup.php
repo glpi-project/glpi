@@ -29,6 +29,8 @@
  */
 
 
+$NEEDED_ITEMS=array("bookmark", "setup", "entity", "rulesengine", "ocsng", "search");
+
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
