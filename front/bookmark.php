@@ -33,7 +33,7 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-
+/*
 $NEEDED_ITEMS=array("bookmark");
 
 if(!defined('GLPI_ROOT')){
@@ -43,7 +43,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 if (!ereg("popup",$_SERVER['PHP_SELF']))
 	commonHeader($LANG["rulesengine"][17],$_SERVER['PHP_SELF'],"admin","dictionnary","cache");
-
+*/
 
 if(!isset($_GET["ID"])) {
 	$_GET["ID"] = -1;
