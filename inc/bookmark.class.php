@@ -80,19 +80,19 @@ class Bookmark extends CommonDBTM {
 
 		global $CFG_GLPI,$LANG;
 
-		$spotted=false;
+		$canedit=false;
+		
 		if ($ID>0) {
-			if($this->can($ID,'r')) {
-				$spotted = true;	
+			if($this->can($ID,'w')) {
+				$canedit = true;	
 			}
 		} else {
 			if ($this->can(-1,'w')){
-				$spotted = true;
+				$canedit = true;
 			}
 		} 
-		$canedit=$this->can($ID,'w');
 		echo '<br>';
-		if ($spotted && $canedit){
+		if ( $canedit){
 			echo "<form method='post' name='form_save_query' action=\"$target\">";
 			echo "<div class='center'>";
 			if ($device_type!=0){
@@ -217,7 +217,7 @@ class Bookmark extends CommonDBTM {
 			$query.="(private=0  ".getEntitiesRestrictRequest("AND",$this->table,"","",true) . ")";
 		}
 			
-		$query.=" ORDER BY name";
+		$query.=" ORDER BY device_type,name";
 
 
 		if ($result = $DB->query($query)){
@@ -236,11 +236,17 @@ class Bookmark extends CommonDBTM {
 	
 	
 			echo "<table class='tab_cadrehov'>";
-			echo "<tr><th align='center' colspan='2'>".$LANG["buttons"][52]." ".$LANG["bookmark"][1]."</th><th width='20px'>&nbsp;</th>";
+			echo "<tr><th align='center' colspan='3'>".$LANG["buttons"][52]." ".$LANG["bookmark"][1]."</th><th width='20px'>&nbsp;</th>";
 	
+			
 			if( $DB->numrows($result)){
-	
+				$ci=new CommonItem();
+				$current_type=-1;
+				$current_type_name="&nbsp;";
 				while ($data = $DB->fetch_assoc($result)){
+					if ($current_type!=$data['device_type']){
+						$current_type_name=$ci->getType($current_type);
+					}
 					$canedit=false;
 					if ($data["private"]){
 						$canedit=($data["FK_users"]==$_SESSION['glpiID']);
@@ -258,6 +264,7 @@ class Bookmark extends CommonDBTM {
 						echo "&nbsp;";
 					}
 					echo "</td>";
+					echo "<td>$current_type_name</td>";
 					echo "<td>";
 					echo "<a href=\"".GLPI_ROOT."/front/popup.php?popup=load_bookmark&amp;bookmark_id=".$data["ID"]."\">".$data["name"]."</a>";
 					echo "</td>";
