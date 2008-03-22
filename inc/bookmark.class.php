@@ -90,13 +90,10 @@ class Bookmark extends CommonDBTM {
 				$spotted = true;
 			}
 		} 
-
-		if ($spotted){
-			$canedit=$this->can($ID,'w');
-
-			if($canedit) {
-				echo "<form method='post' name='form_save_query' action=\"$target\">";
-			}
+		$canedit=$this->can($ID,'w');
+		echo '<br>';
+		if ($spotted && $canedit){
+			echo "<form method='post' name='form_save_query' action=\"$target\">";
 			echo "<div class='center'>";
 			if ($device_type!=0){
 				echo "<input type='hidden' name='device_type' value='$device_type'>";
@@ -128,12 +125,7 @@ class Bookmark extends CommonDBTM {
 			echo "<tr class='tab_bg_2'><td>".$LANG["common"][17].":		</td>";
 			echo "<td>";
 
-			if($canedit) { 
-				privatePublicSwitch($this->fields["private"],$this->fields["FK_entities"],$this->fields["recursive"]);
-			}else{
-				echo getYesNo($this->fields["private"]);				
-			}
-
+			privatePublicSwitch($this->fields["private"],$this->fields["FK_entities"],$this->fields["recursive"]);
 
 			if ($ID<=0) { // add
 				echo "<tr>";
@@ -142,7 +134,7 @@ class Bookmark extends CommonDBTM {
 				echo "<div class='center'><input type='submit' name='add' value=\"".$LANG["buttons"][8]."\" class='submit'></div>";
 				echo "</td>";
 				echo "</tr>";
-			} elseif($canedit) { 
+			} else { 
 				echo "<tr>";
 
 				echo "<td class='tab_bg_2' valign='top' colspan='2'>";
@@ -159,9 +151,7 @@ class Bookmark extends CommonDBTM {
 
 			echo "</table>";
 			echo "</div>";
-			if($canedit) {
-				echo "</form>";
-			}
+			echo "</form>";
 		} else {
 			echo "<div class='center'><strong>".$LANG["common"][54]."</strong></div>";
 
@@ -212,69 +202,91 @@ class Bookmark extends CommonDBTM {
 		echo "</script>";
 	}
 	
-	function showBookmarkList($target,$user_id) {
+	function showBookmarkList($target,$private=1) {
 		global $DB,$LANG,$CFG_GLPI;
 
-		$result = $DB->query("SELECT ID, private, FK_entities, FK_users, name FROM ".$this->table." WHERE (private=1 AND FK_users=$user_id) OR (private=0  ".
-			getEntitiesRestrictRequest("AND",$this->table,"","",true) . 
-			") ORDER BY name");
-
-		echo "<br>";
-
-		echo "<form method='post' id='form_load_bookmark' action=\"$target\">";
-
-		echo "<div class='center'>"; 
-
-		echo "<table class='tab_cadrehov'>";
-		echo "<tr><th align='center' colspan='2'>".$LANG["buttons"][52]." ".$LANG["bookmark"][1]."</th><th width='20px'>&nbsp;</th>";
-
-		if( $DB->numrows($result))
-		{
-
-			while ($data = $DB->fetch_assoc($result))
-			{
-				$canedit=(($data["private"]==1 && $data["FK_users"]==$user_id) ||
-					($data["private"]==0 && in_array($data["FK_entities"],$_SESSION["glpiactiveentities"])));
-					
-				echo "<tr class='tab_bg_1'>";
-				echo "<td width='10'>";
-				if ($canedit) {
-					$sel="";
-					if (isset($_GET["select"])&&$_GET["select"]=="all") $sel="checked";
-					echo "<input type='checkbox' name='bookmark[" . $data["ID"] . "]' " . $sel . ">";
-				} else {
-					echo "&nbsp;";
-				}
-				echo "</td>";
-				echo "<td>";
-				echo "<a href=\"".GLPI_ROOT."/front/popup.php?popup=load_bookmark&amp;bookmark_id=".$data["ID"]."\">".$data["name"]."</a>";
-				echo "</td>";
-				if ($canedit) {
-					echo "<td><a href=\"".GLPI_ROOT."/front/popup.php?popup=edit_bookmark&amp;ID=".$data["ID"]."\"><img src='".$CFG_GLPI["root_doc"]."/pics/edit.png' alt='".$LANG["buttons"][14]."'></a></td>";
-				} else {
-					echo "<td>&nbsp;</td>";					
-				}
-				echo "</tr>";
-			}
-			echo "</table>";
-			echo "</div>";
-			
-			echo "<div class='center'>";
-			echo "<table width='80%'>";
-			echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markAllRows('form_load_bookmark') ) return false;\" href='".$_SERVER['PHP_SELF']."?select=all'>".$LANG["buttons"][18]."</a></td>";
-			echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkAllRows('form_load_bookmark') ) return false;\" href='".$_SERVER['PHP_SELF']."?select=none'>".$LANG["buttons"][19]."</a>";
-			echo "</td><td align='left' width='80%'>";
-			echo "<input type='submit' name='delete_several' value=\"".$LANG["buttons"][6]."\" class='submit'>";
-			echo "</td></tr>";
-			echo "</table>";
+		if (!$private && !haveRight('bookmark_public','r')){ 
+			return false;
+		}
 	
+		$query="SELECT ID, private, FK_entities, FK_users, name FROM ".$this->table." WHERE ";
+			
+		if ($private){
+			$query.="(private=1 AND FK_users='".$_SESSION['glpiID']."') ";
+		} else {
+			$query.="(private=0  ".getEntitiesRestrictRequest("AND",$this->table,"","",true) . ")";
 		}
-		else {
-			echo "<tr class='tab_bg_1'><td colspan='3'>".$LANG["bookmark"][3]."</td></tr></table>";
-		}
-			echo "</div>";
-			echo "</form>";
+			
+		$query.=" ORDER BY name";
 
+
+		if ($result = $DB->query($query)){
+			echo "<br>";
+	
+	
+			echo "<div class='center'>";
+			echo "<form method='post' id='form_load_bookmark' action=\"$target\">";
+	
+			echo "<div id='barre_onglets_percent'><ul id='onglet'>";
+			echo "<li ".($private?"class='actif'":"")."><a href='$target?onglet=1&amp;popup=load_bookmark'>".$LANG["common"][77]."</a></li>";
+			if (haveRight('bookmark_public','r')){
+				echo "<li ".(!$private?"class='actif'":"")."><a href='$target?onglet=0&amp;popup=load_bookmark'>".$LANG["common"][76]."</a></li>";
+			}
+			echo "</ul></div>";
+	
+	
+			echo "<table class='tab_cadrehov'>";
+			echo "<tr><th align='center' colspan='2'>".$LANG["buttons"][52]." ".$LANG["bookmark"][1]."</th><th width='20px'>&nbsp;</th>";
+	
+			if( $DB->numrows($result)){
+	
+				while ($data = $DB->fetch_assoc($result)){
+					$canedit=false;
+					if ($data["private"]){
+						$canedit=($data["FK_users"]==$_SESSION['glpiID']);
+					} else {
+						$canedit = haveRight('bookmark_public','w');
+					}
+						
+					echo "<tr class='tab_bg_1'>";
+					echo "<td width='10'>";
+					if ($canedit) {
+						$sel="";
+						if (isset($_GET["select"])&&$_GET["select"]=="all") $sel="checked";
+						echo "<input type='checkbox' name='bookmark[" . $data["ID"] . "]' " . $sel . ">";
+					} else {
+						echo "&nbsp;";
+					}
+					echo "</td>";
+					echo "<td>";
+					echo "<a href=\"".GLPI_ROOT."/front/popup.php?popup=load_bookmark&amp;bookmark_id=".$data["ID"]."\">".$data["name"]."</a>";
+					echo "</td>";
+					if ($canedit) {
+						echo "<td><a href=\"".GLPI_ROOT."/front/popup.php?popup=edit_bookmark&amp;ID=".$data["ID"]."\"><img src='".$CFG_GLPI["root_doc"]."/pics/edit.png' alt='".$LANG["buttons"][14]."'></a></td>";
+					} else {
+						echo "<td>&nbsp;</td>";					
+					}
+					echo "</tr>";
+				}
+				echo "</table>";
+				echo "</div>";
+				
+				echo "<div class='center'>";
+				echo "<table width='80%'>";
+				echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markAllRows('form_load_bookmark') ) return false;\" href='".$_SERVER['PHP_SELF']."?select=all'>".$LANG["buttons"][18]."</a></td>";
+				echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkAllRows('form_load_bookmark') ) return false;\" href='".$_SERVER['PHP_SELF']."?select=none'>".$LANG["buttons"][19]."</a>";
+				echo "</td><td align='left' width='80%'>";
+				echo "<input type='submit' name='delete_several' value=\"".$LANG["buttons"][6]."\" class='submit'>";
+				echo "</td></tr>";
+				echo "</table>";
+		
+			}
+			else {
+				echo "<tr class='tab_bg_1'><td colspan='3'>".$LANG["bookmark"][3]."</td></tr></table>";
+			}
+				echo "</form>";
+			echo '</div>';
+		}
 	}
 }
 ?>

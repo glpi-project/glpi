@@ -392,7 +392,13 @@ function update07to071() {
 				"ADD `autoclean_link_state` smallint(6) NOT NULL DEFAULT '0' AFTER `autoclean_link_location`;";
 		$DB->query($query) or die("0.71 add autoclean_link_state to glpi_config " . $LANG["update"][90] . $DB->error());
 	}
-	
+
+	if (!FieldExists("glpi_profiles", "bookmark_public")) {
+		$query = "ALTER TABLE `glpi_profiles` ADD `bookmark_public` CHAR( 1 ) AFTER `reminder_public` ;";
+		$DB->query($query) or die("0.71 add bookmark_public to glpi_profiles " . $LANG["update"][90] . $DB->error());
+		$query = "UPDATE `glpi_profiles` SET `bookmark_public` = `reminder_public` ;";
+		$DB->query($query) or die("0.71 init bookmark_public value in glpi_profiles " . $LANG["update"][90] . $DB->error());
+	}	
 
 } // fin 0.71 #####################################################################################
 ?>
