@@ -936,12 +936,7 @@ class CommonDBTM {
 	 * @return booleen
 	 **/
 	function canCreate () {
-		// Personnal item
-		if ($this->may_be_private && $this->fields['private'] && $this->fields['FK_users']==$_SESSION["glpiID"]){
-			return true;
-		} else {
-			return haveTypeRight($this->type,"w");
-		}
+		return haveTypeRight($this->type,"w");
 	}
 
 	/**
@@ -952,12 +947,7 @@ class CommonDBTM {
 	 * @return booleen
 	 **/
 	function canView () {
-		// Personnal item
-		if ($this->may_be_private && $this->fields['private'] && $this->fields['FK_users']==$_SESSION["glpiID"]){
-			return true;
-		} else {
-			return haveTypeRight($this->type,"r");
-		}
+		return haveTypeRight($this->type,"r");
 	}
 
 	/**
@@ -998,30 +988,40 @@ class CommonDBTM {
 //		echo $ID."_".$entity_to_check."_".$recursive_state_to_check.'<br>';
 		switch ($right){
 			case 'r':
-				// Check Global Right
-				if ($this->canView()){
-					// Is an item assign to an entity
-					if ($this->entity_assign){
-						// Can be recursive check 
-						if ($this->may_be_recursive){
-							return haveAccessToEntity($entity_to_check,$recursive_state_to_check);
-						} else { // Non recursive item
-							return haveAccessToEntity($entity_to_check);
+				// Personnal item
+				if ($this->may_be_private && $this->fields['private'] && $this->fields['FK_users']==$_SESSION["glpiID"]){
+					return true;
+				} else {
+					// Check Global Right
+					if ($this->canView()){
+						// Is an item assign to an entity
+						if ($this->entity_assign){
+							// Can be recursive check 
+							if ($this->may_be_recursive){
+								return haveAccessToEntity($entity_to_check,$recursive_state_to_check);
+							} else { // Non recursive item
+								return haveAccessToEntity($entity_to_check);
+							}
+						} else { // Global item
+							return true;
 						}
-					} else { // Global item
-						return true;
 					}
 				}
 				break;
 			case 'w':
-				// Check Global Right
-				if ($this->canCreate()){
-					// Is an item assign to an entity
-					if ($this->entity_assign){
-						// Have access to entity
-						return haveAccessToEntity($entity_to_check);
-					} else { // Global item
-						return true;
+				// Personnal item
+				if ($this->may_be_private && $this->fields['private'] && $this->fields['FK_users']==$_SESSION["glpiID"]){
+					return true;
+				} else {
+					// Check Global Right
+					if ($this->canCreate()){
+						// Is an item assign to an entity
+						if ($this->entity_assign){
+							// Have access to entity
+							return haveAccessToEntity($entity_to_check);
+						} else { // Global item
+							return true;
+						}
 					}
 				}
 				break;
