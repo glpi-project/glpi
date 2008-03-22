@@ -224,8 +224,8 @@ class Bookmark extends CommonDBTM {
 			echo "<br>";
 	
 	
-			echo "<div class='center'>";
 			echo "<form method='post' id='form_load_bookmark' action=\"$target\">";
+			echo "<div class='center'>";
 	
 			echo "<div id='barre_onglets_percent'><ul id='onglet'>";
 			echo "<li ".($private?"class='actif'":"")."><a href='$target?onglet=1&amp;popup=load_bookmark'>".$LANG["common"][77]."</a></li>";
@@ -255,7 +255,7 @@ class Bookmark extends CommonDBTM {
 					}
 						
 					echo "<tr class='tab_bg_1'>";
-					echo "<td width='10'>";
+					echo "<td width='10px'>";
 					if ($canedit) {
 						$sel="";
 						if (isset($_GET["select"])&&$_GET["select"]=="all") $sel="checked";
@@ -289,10 +289,10 @@ class Bookmark extends CommonDBTM {
 		
 			}
 			else {
-				echo "<tr class='tab_bg_1'><td colspan='3'>".$LANG["bookmark"][3]."</td></tr></table>";
+				echo "<tr class='tab_bg_1'><td colspan='4'>".$LANG["bookmark"][3]."</td></tr></table>";
 			}
-				echo "</form>";
 			echo '</div>';
+			echo "</form>";
 		}
 	}
 }
