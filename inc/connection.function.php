@@ -187,7 +187,7 @@ function Disconnect($ID,$dohistory=1,$ocs_server_id=0) {
 				$updates[]="location";
 				$device->obj->fields['location']=0;
 			}
-			if ($CFG_GLPI["autoupdate_link_user"] && $device->getField('FK_users')) {
+			if ($CFG_GLPI["autoclean_link_user"] && $device->getField('FK_users')) {
 				$updates[]="FK_users";
 				$device->obj->fields['FK_users']=0;	
 			}
@@ -195,13 +195,21 @@ function Disconnect($ID,$dohistory=1,$ocs_server_id=0) {
 				$updates[]="FK_groups";
 				$device->obj->fields['FK_groups']=0;
 			}
-			if ($CFG_GLPI["autoupdate_link_contact"] && $device->getField('contact')){
+			if ($CFG_GLPI["autoclean_link_contact"] && $device->getField('contact')){
 				$updates[]="contact";
 				$device->obj->fields['contact']="";
 			}
-			if ($CFG_GLPI["autoupdate_link_contact"] && $device->getField('contact_num')){
+			if ($CFG_GLPI["autoclean_link_contact"] && $device->getField('contact_num')){
 				$updates[]="contact_num";
 				$device->obj->fields['contact_num']="";
+			}
+			if ($CFG_GLPI["autoclean_link_state"]<0 && $device->getField('state')) {
+				$updates[]="state";
+				$device->obj->fields['state']=0;	
+			}
+			if ($CFG_GLPI["autoclean_link_state"]>0 && $device->getField('state')!=$CFG_GLPI["autoclean_link_state"]) {
+				$updates[]="state";
+				$device->obj->fields['state']=$CFG_GLPI["autoclean_link_state"];	
 			}
 			if (count($updates)) {
 				$device->obj->updateInDB($updates);
@@ -237,6 +245,7 @@ function Disconnect($ID,$dohistory=1,$ocs_server_id=0) {
 					$device->obj->update($tmp,$dohistory);
 				}
 				//Change status
+				// TODO : this can probably be replaced by general config options
 				else {
 					//get id status
 					$query = "SELECT ID from glpi_dropdown_state WHERE name='$decoConf'";			
@@ -334,6 +343,17 @@ function Connect($sID,$cID,$type,$dohistory=1) {
 			$dev->obj->fields['contact_num']=addslashes($comp->fields['contact_num']);
 			$dev->obj->updateInDB($updates);
 			addMessageAfterRedirect($LANG["computers"][49],true);
+		}
+		if ($CFG_GLPI["autoupdate_link_state"]<0 && $comp->fields['state']!=$dev->getField('state')) {
+			$updates[0]="state";
+			$dev->obj->fields['state']=$comp->fields['state'];
+			$dev->obj->updateInDB($updates);
+			addMessageAfterRedirect($LANG["computers"][56],true);
+		}
+		if ($CFG_GLPI["autoupdate_link_state"]>0 && $dev->getField('state')!=$CFG_GLPI["autoupdate_link_state"]) {
+			$updates[0]="state";
+			$dev->obj->fields['state']=$CFG_GLPI["autoupdate_link_state"];
+			$dev->obj->updateInDB($updates);
 		}
 	}
 	return $newID;	

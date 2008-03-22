@@ -251,6 +251,41 @@ class Computer extends CommonDBTM {
 
 			}
 
+			// Update state of attached items
+			if ($updates[$i]=="state" && $CFG_GLPI["autoupdate_link_state"]<0){
+				$items=array(PRINTER_TYPE,MONITOR_TYPE,PERIPHERAL_TYPE,PHONE_TYPE);
+				$ci=new CommonItem();
+				$update_done=false;
+
+				foreach ($items as $t){
+					$query = "SELECT * from glpi_connect_wire WHERE end2='".$this->fields["ID"]."' AND type='".$t."'";
+
+					if ($result=$DB->query($query)) {
+						$resultnum = $DB->numrows($result);
+
+						if ($resultnum>0) {
+							for ($j=0; $j < $resultnum; $j++) {
+								$tID = $DB->result($result, $j, "end1");
+
+								$ci->getFromDB($t,$tID);
+								if (!$ci->getField('is_global')){
+									if ($ci->getField('state')!=$this->fields["state"]){
+										$tmp["ID"]=$ci->getField('ID');
+										$tmp["state"]=$this->fields["state"];
+										$ci->obj->update($tmp);
+										$update_done=true;
+									}
+								}
+							}
+						}
+					}
+				}
+				if ($update_done) {
+					addMessageAfterRedirect($LANG["computers"][56],true);
+				}
+
+			}
+
 
 			// Update loction of attached items
 			if ($updates[$i]=="location" && $this->fields["location"]!=0 && $CFG_GLPI["autoupdate_link_location"]){

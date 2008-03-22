@@ -514,30 +514,36 @@ class Config extends CommonDBTM {
 
 				echo "<tr><th>&nbsp;</th><th>" . $LANG["setup"][281] . "</th><th>" . $LANG["setup"][282] . "</th><th>&nbsp;</th></tr>";
 
-				echo "<tr class='tab_bg_2'><td class='center'> " . $LANG["common"][18] . " </td><td>";
+				echo "<tr class='tab_bg_2'><td class='center'> " . $LANG["common"][18] . " </td><td>" . $LANG["setup"][283] . ":&nbsp;";
 				dropdownYesNo("autoupdate_link_contact", $CFG_GLPI["autoupdate_link_contact"]);
-				echo "</td><td>";
+				echo "</td><td>" . $LANG["setup"][284] . ":&nbsp;";
 				dropdownYesNo("autoclean_link_contact", $CFG_GLPI["autoclean_link_contact"]);
 				echo "</td><td>&nbsp;</td></tr>";
 				
-				echo "<tr class='tab_bg_2'><td class='center'> " . $LANG["common"][34] . " </td><td>";
+				echo "<tr class='tab_bg_2'><td class='center'> " . $LANG["common"][34] . " </td><td>" . $LANG["setup"][283] . ":&nbsp;";
 				dropdownYesNo("autoupdate_link_user", $CFG_GLPI["autoupdate_link_user"]);
-				echo "</td><td>";
+				echo "</td><td>" . $LANG["setup"][284] . ":&nbsp;";
 				dropdownYesNo("autoclean_link_user", $CFG_GLPI["autoclean_link_user"]);
 				echo " </td><td>&nbsp;</td></tr>";
 
-				echo "<tr class='tab_bg_2'><td class='center'> " . $LANG["common"][35] . " </td><td>";
+				echo "<tr class='tab_bg_2'><td class='center'> " . $LANG["common"][35] . " </td><td>" . $LANG["setup"][283] . ":&nbsp;";
 				dropdownYesNo("autoupdate_link_group", $CFG_GLPI["autoupdate_link_group"]);
-				echo "</td><td>";
+				echo "</td><td>" . $LANG["setup"][284] . ":&nbsp;";
 				dropdownYesNo("autoclean_link_group", $CFG_GLPI["autoclean_link_group"]);
 				echo "</td><td>&nbsp;</td></tr>";
 				
-				echo "<tr class='tab_bg_2'><td class='center'> " . $LANG["common"][15] . " </td><td>";
+				echo "<tr class='tab_bg_2'><td class='center'> " . $LANG["common"][15] . " </td><td>" . $LANG["setup"][283] . ":&nbsp;";
 				dropdownYesNo("autoupdate_link_location", $CFG_GLPI["autoupdate_link_location"]);
-				echo "</td><td>";
+				echo "</td><td>" . $LANG["setup"][284] . ":&nbsp;";
 				dropdownYesNo("autoclean_link_location", $CFG_GLPI["autoclean_link_location"]);
 				echo " </td><td>&nbsp;</td></tr>";
 																	
+				echo "<tr class='tab_bg_2'><td class='center'> " . $LANG["state"][0] . " </td><td>";
+				dropdownStateBehaviour("autoupdate_link_state", $LANG["setup"][197], $CFG_GLPI["autoupdate_link_state"]);
+				echo "</td><td>";
+				dropdownStateBehaviour("autoclean_link_state", $LANG["setup"][196], $CFG_GLPI["autoclean_link_state"]);
+				echo " </td><td>&nbsp;</td></tr>";
+
 			break;
 			// MySQL Replicat
 			case 5 :
