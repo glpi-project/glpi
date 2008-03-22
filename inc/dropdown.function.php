@@ -1985,6 +1985,25 @@ function dropdownArrayValues($name,$elements,$value='',$used=array())
 	return $rand;
 }
 
+function dropdownStateBehaviour ($name, $lib="", $value=0)
+{
+	global $DB, $LANG;
+	
+	$elements=array("0"=>$LANG["setup"][195]);
+	if ($lib) {
+		$elements["-1"]=$lib;	
+	}
+
+	$queryStateList = "SELECT ID,name from glpi_dropdown_state ORDER BY name";
+	$result = $DB->query($queryStateList);
+	if ($DB->numrows($result) > 0) {
+		while (($data = $DB->fetch_assoc($result))) {
+			$elements[$data["ID"]] = $LANG["setup"][198] . ": " . $data["name"];
+		}
+	}
+	dropdownArrayValues($name, $elements, $value);
+}
+
 function adminManagementDropdown($name,$label,$restrict,$software=0)
 {
 	global $LANG;

@@ -289,6 +289,7 @@ $LANG["computers"][52]="OS Version";
 $LANG["computers"][53]="Service Pack"; 
 $LANG["computers"][54]="Pas de téléphone connecté"; 
 $LANG["computers"][55]="Téléphone(s)"; 
+$LANG["computers"][56]="Modification du statut. Les éléments connectés ont été mis à jour avec le statut l'ordinateur."; 
 
 $LANG["connect"][0]="Connexion(s) directe(s)"; 
 $LANG["connect"][1]="Non connecté."; 
@@ -1519,6 +1520,10 @@ $LANG["setup"][191]="Attribut mail pour x509";
 $LANG["setup"][192]="Activé";
 $LANG["setup"][193]="Champ de stockage du login dans la variable _SERVER";
 $LANG["setup"][194]="Récupération d'informations complémentaires via annuaire LDAP";
+$LANG["setup"][195]="Conserver le statut";
+$LANG["setup"][196]="Effacer le statut";
+$LANG["setup"][197]="Prendre le statut de l'ordinateur";
+$LANG["setup"][198]="Prendre le statut ";
 
 
 $LANG["setup"][201]="Configuration de la fonction"; 
@@ -1583,8 +1588,10 @@ $LANG["setup"][275]="Restreindre la gestion des imprimantes";
 $LANG["setup"][276]="Restreindre la gestion des licences"; 
 $LANG["setup"][277]="Déglobalisation possible des licences"; 
 $LANG["setup"][280]="Mise à jour automatique des éléments liés aux ordinateurs";
-$LANG["setup"][281]="Copie sur connexion"; 
-$LANG["setup"][282]="Effacement sur déconnexion"; 
+$LANG["setup"][281]="Comportement sur connexion / mise à jour"; 
+$LANG["setup"][282]="Comportement sur déconnexion";
+$LANG["setup"][283]="Copier ";
+$LANG["setup"][284]="Effacer "; 
 $LANG["setup"][300]="Vérifier si une nouvelle version est disponible"; 
 $LANG["setup"][301]="Une nouvelle version est disponible :"; 
 $LANG["setup"][302]="Vous la trouverez sur le site : <a href='http://glpi-project.org' target='_blank'>http://glpi-project.org</a>"; 
