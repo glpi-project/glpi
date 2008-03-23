@@ -323,14 +323,15 @@ class MailCollect  extends receiveMail {
 						}
 					} else {
 						// Detect a signature if already keep lines
-						if (isset($val[0])&&$val[0]=='-'
+/*						if (isset($val[0])&&$val[0]=='-'
 							&&isset($val[1])&&$val[1]=='-' 
 							&&count($tokeep)){
 							
 							break;
 						} else {
+*/
 							$to_keep[$ID]=$ID;
-						}
+//						}
 					}
 				}
 				foreach($to_keep as $ID ){
