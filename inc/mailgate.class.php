@@ -238,23 +238,25 @@ class MailCollect  extends receiveMail {
 			$j=0;
 			$addtobody="";
 			foreach($ar as $key=>$value) {
-				$size=filesize(GLPI_DOC_DIR."/_tmp/".$value);
-				if ($size>0){
-					if (isValidDoc($value)){
-						if ($size<$CFG_GLPI['mailgate_filesize_max'] ){
-							$_FILES['multiple'] = true;
-							$_FILES[$j]['filename']['size'] = $size;
-							$_FILES[$j]['filename']['name'] = $value;
-							$_FILES[$j]['filename']['tmp_name'] = GLPI_DOC_DIR."/_tmp/".$value;
-							$_FILES[$j]['filename']['type'] = mime_content_type(GLPI_DOC_DIR."/_tmp/".$value);
-							$j++;
+				if (!empty($value)){
+					$size=filesize(GLPI_DOC_DIR."/_tmp/".$value);
+					if ($size>0){
+						if (isValidDoc($value)){
+							if ($size<$CFG_GLPI['mailgate_filesize_max'] ){
+								$_FILES['multiple'] = true;
+								$_FILES[$j]['filename']['size'] = $size;
+								$_FILES[$j]['filename']['name'] = $value;
+								$_FILES[$j]['filename']['tmp_name'] = GLPI_DOC_DIR."/_tmp/".$value;
+								$_FILES[$j]['filename']['type'] = mime_content_type(GLPI_DOC_DIR."/_tmp/".$value);
+								$j++;
+							} else {
+								unlink(GLPI_DOC_DIR."/_tmp/".$value);
+								$addtobody.="<br>".$LANG["mailgate"][6].": ".$value;
+							}
 						} else {
 							unlink(GLPI_DOC_DIR."/_tmp/".$value);
-							$addtobody.="<br>".$LANG["mailgate"][6].": ".$value;
+							$addtobody.="<br>".$LANG["mailgate"][5].": ".$value;
 						}
-					} else {
-						unlink(GLPI_DOC_DIR."/_tmp/".$value);
-						$addtobody.="<br>".$LANG["mailgate"][5].": ".$value;
 					}
 				}
 			}
