@@ -1090,6 +1090,12 @@ class Followup  extends CommonDBTM {
 			if (isset($input["add_close"])) $input['_close']=1;
 			unset($input["add_close"]);
 
+			if (!isset($input["hour"])){
+				$input["hour"]=0;
+			}
+			if (!isset($input["minute"])){
+				$input["minute"]=0;
+			}
 			if ($input["hour"]>0||$input["minute"]>0)
 				$input["realtime"]=$input["hour"]+$input["minute"]/60;
 		}
