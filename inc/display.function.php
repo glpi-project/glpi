@@ -917,7 +917,7 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="")
 		// Bookmark load
 		echo "<li>";
 		echo "  <a href='#' onClick=\"var w=window.open('".$CFG_GLPI["root_doc"]."/front/popup.php?popup=load_bookmark' ,'glpibookmarks', 'height=400, width=600, top=100, left=100, scrollbars=yes' );w.focus();\">"; 
-		echo "   <img src='".$CFG_GLPI["root_doc"]."/pics/bookmark.png'  value='OK'   title=\"".$LANG["buttons"][52]." ".$LANG["bookmark"][1]."\"  alt=\"".$LANG["buttons"][52]." ".$LANG["bookmark"][1]."\"    >"; 
+		echo "   <img src='".$CFG_GLPI["root_doc"]."/pics/bookmark.png' title=\"".$LANG["buttons"][52]." ".$LANG["bookmark"][1]."\"  alt=\"".$LANG["buttons"][52]." ".$LANG["bookmark"][1]."\"    >"; 
 		echo "  </a>";
 		echo "</li>";
 
@@ -2033,8 +2033,8 @@ function showProfileSelecter($target){
 		//echo "<a href='".$CFG_GLPI["root_doc"]."/front/entity.select.php?target=$target' id='modal_entity_selection'>".$_SESSION["glpiactive_entity_name"]."</a>";
 
 
-		echo "<a href='#test_one_contents' id='modal_entity_selection'>".$_SESSION["glpiactive_entity_shortname"]."</a>";
-		echo "<div id='test_one_contents'>";	
+		echo "<a href='#modal_entity_contents' id='modal_entity_selection'>".$_SESSION["glpiactive_entity_shortname"]."</a>";
+		echo "<div id='modal_entity_contents'>";	
 		displayActiveEntities($target,"activeentity");
 		echo "</div>";
 		

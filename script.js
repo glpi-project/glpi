@@ -348,6 +348,11 @@ function getTop(MyObject){
         return (MyObject.offsetTop);
 }
 
+
+// id = id of the dive
+// img_name = name attribut of the img item
+// img_src_close = url of the close img
+// img_src_open = url of the open img
 function showHideDiv(id,img_name,img_src_close,img_src_open) {
 	//safe function to hide an element with a specified id
 	if (document.getElementById) { // DOM3 = IE5, NS6

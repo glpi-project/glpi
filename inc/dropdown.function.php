@@ -1723,12 +1723,12 @@ function dropdownLanguages($myname,$value){
 function displayActiveEntities($target,$myname){
 	global $CFG_GLPI,$LANG;
 	
-
-echo "<a href='".$target."?active_entity=all' title=\"".$LANG["buttons"][40]."\">_&nbsp;".ereg_replace(" ","&nbsp;",$LANG["buttons"][40])."&nbsp;_</a><br>";
-foreach ($_SESSION['glpi_entities_tree'] as $ID => $tree){
-	displayEntityTree($target,$myname,$tree);
-}
-
+	echo "<div class='left'>";
+	echo "<a style='font-size:16px;' href='".$target."?active_entity=all' title=\"".$LANG["buttons"][40]."\">_&nbsp;".ereg_replace(" ","&nbsp;",$LANG["buttons"][40])."&nbsp;_</a><br>";
+	foreach ($_SESSION['glpi_entities_tree'] as $ID => $tree){
+		displayEntityTree($target,$myname,$tree);
+	}
+	echo "</div>";
 /*
 	echo "<table>";
 	echo "<tr><td style='text-align:left;'><a href='".$target."?active_entity=all' title=\"".$LANG["buttons"][40]."\">_&nbsp;".ereg_replace(" ","&nbsp;",$LANG["buttons"][40])."&nbsp;_</a></td></tr>";
@@ -1745,21 +1745,42 @@ function displayEntityTree($target,$myname,$tree,$level=0){
 
 
 	if (count($tree)){
+		// Is multiple items to display ? only one expand it if have subitems
 		foreach ($tree as $ID => $data){
 			if (isset($data['name'])){
 				$class=" class='tree' ";
 				$raquo="&raquo;";
+				$fsize=max(16-2*$level,12);
+
+				// 
+				$subitems=0;
+				if (isset($data['tree'])&&count($data['tree'])){
+					$subitems=count($data['tree']);
+					if ($subitems>1){
+						$raquo="<a href=\"javascript:showHideDiv('entity_subitem_$ID','entity_subitem_icon_$ID','" . GLPI_ROOT . "/pics/expand.gif','" . GLPI_ROOT . "/pics/collapse.gif');\"><img name='entity_subitem_icon_$ID' src=\"".$CFG_GLPI["root_doc"]."/pics/expand.gif\" alt=''></a>";
+					}
+				}
+				
 				if ($level==0){
 					$class=" class='treeroot' ";
 					$raquo="";
 				} 
 
-				echo "<span $class >".str_repeat("&nbsp;&nbsp;&nbsp;", max(1,$level)).$raquo."&nbsp;<a title=\"".$data['name']."\" href='".$target."?active_entity=$ID'>".ereg_replace(" ","&nbsp;",$data['name'])."</a>";
 
-				if (isset($data['tree'])&&count($data['tree'])){
+				echo "<span $class style='font-size:".$fsize."px;'>".str_repeat("&nbsp;&nbsp;&nbsp;", max(1,$level)).$raquo."&nbsp;<a style='font-size:".$fsize."px;' title=\"".$data['name']."\" href='".$target."?active_entity=$ID'>".ereg_replace(" ","&nbsp;",$data['name'])."</a>";
+				
+				if ($subitems){
 					echo "&nbsp;&nbsp;<a title=\"".$LANG["buttons"][40]."\" href='".$target."?active_entity=$ID&amp;recursive=1'><img alt=\"".$LANG["buttons"][40]."\" src='".$CFG_GLPI["root_doc"]."/pics/entity_all.png'></a></span><br>";
-					displayEntityTree($target,$myname,$data['tree'],$level+1);
-				} else echo "&nbsp;</span><br>";
+					if ($level!=0 && $subitems>1){
+						echo "<div id='entity_subitem_$ID' style='display: none;'>";
+						displayEntityTree($target,$myname,$data['tree'],$level+1);
+						echo "</div>";
+					}else {
+						displayEntityTree($target,$myname,$data['tree'],$level+1);
+					}
+				} else {
+					echo "&nbsp;</span><br>";
+				}
 			}
 		}
 	}
