@@ -652,6 +652,12 @@ class Config extends CommonDBTM {
 				echo "<span class='red'>&nbsp;".$LANG["mailing"][110]."</span>";
 			}
 			echo " </td></tr>";
+
+			echo "<tr class='tab_bg_2'><td >" . $LANG["setup"][207] . "</td><td> <input type=\"text\" name=\"admin_reply\" size='40' value=\"" . $CFG_GLPI["admin_reply"] . "\">";
+			if (!isValidEmail($CFG_GLPI["admin_reply"])){
+				echo "<span class='red'>&nbsp;".$LANG["mailing"][110]."</span>";
+			}
+			echo " </td></tr>";
 	
 			echo "<tr class='tab_bg_2'><td >" . $LANG["setup"][204] . "</td><td><textarea   cols='60' rows='3'  name=\"mailing_signature\" >".$CFG_GLPI["mailing_signature"]."</textarea></td></tr>";
 	

@@ -1526,6 +1526,7 @@ $LANG["setup"][203]="Courriel de l'administrateur";
 $LANG["setup"][204]="Signature des messages"; 
 $LANG["setup"][205]="Mail de test envoyé à l'administrateur"; 
 $LANG["setup"][206]="Echec de l'envoi du mail de test à l'administrateur"; 
+$LANG["setup"][207]="Courriel de réponse (si nécessaire)"; 
 $LANG["setup"][211]="A chaque nouveau ticket"; 
 $LANG["setup"][212]="Pour chaque nouveau suivi"; 
 $LANG["setup"][213]="A la fermeture du ticket"; 

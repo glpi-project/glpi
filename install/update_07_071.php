@@ -400,5 +400,13 @@ function update07to071() {
 		$DB->query($query) or die("0.71 init bookmark_public value in glpi_profiles " . $LANG["update"][90] . $DB->error());
 	}	
 
+	if (!FieldExists("glpi_config", "admin_reply")) {
+		$query = "ALTER TABLE `glpi_config` ADD `admin_reply` VARCHAR( 255 ) NULL AFTER `admin_email` ;";
+		$DB->query($query) or die("0.71 add admin_reply to glpi_config " . $LANG["update"][90] . $DB->error());
+	}	
+	if (!FieldExists("glpi_entities_data", "admin_reply")) {
+		$query = "ALTER TABLE `glpi_entities_data` ADD `admin_reply` VARCHAR( 255 ) NULL AFTER `admin_email` ;";
+		$DB->query($query) or die("0.71 add admin_reply to glpi_entities_data " . $LANG["update"][90] . $DB->error());
+	}	
 } // fin 0.71 #####################################################################################
 ?>
