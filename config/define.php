@@ -29,6 +29,7 @@
 		"ru_RU"=>array("Russian","ru_RU.php","ru","ru"),
 		"zh_CN"=>array("Simplified Chinese","zh_CN.php","en","zh_cn_utf8"),
 		"sv_SE"=>array("Swedish","sv_SE.php","sv","sv_utf8"),
+		"tr_TR"=>array("Turkish","tr_TR.php","tr","en"),
 		);
 
 

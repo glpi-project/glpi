@@ -592,7 +592,6 @@ $LANG["install"][59]="tech/tech pour le compte technicien";
 $LANG["install"][60]="normal pour le compte normal"; 
 $LANG["install"][61]="post-only/post-only pour le compte postonly"; 
 $LANG["install"][62]="Vous pouvez supprimer ou modifier ces comptes ainsi que les premières entrées dans la base de données."; 
-$LANG["install"][63]="Attention tout de même NE SUPPRIMEZ PAS dans la base de données l'utilisateur HELPDESK."; 
 $LANG["install"][64]="Utiliser GLPI"; 
 $LANG["install"][65]="Test sur l'extension magic_quotes_sybase"; 
 $LANG["install"][66]="GLPI ne peut pas fonctionner avec l'option magic_quotes_sybase ; Veuillez désactiver cette option et réessayer"; 

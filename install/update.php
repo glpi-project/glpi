@@ -89,7 +89,6 @@ function showContentUpdateForm() {
 	global $LANG;
 	echo "<div align='center'>";
 	echo "<h3>".$LANG["update"][94]."</h3>";
-	echo "<p>".$LANG["install"][63]."</p>";
 	echo "<p>".$LANG["update"][107]."</p></div>";
 	echo "<p class='submit'> <a href=\"update_content.php\"><span class='button'>".$LANG["install"][25]."</span></a>";
 }
