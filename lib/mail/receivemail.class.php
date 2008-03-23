@@ -214,7 +214,7 @@ class receiveMail
 		
 		$struckture = imap_fetchstructure($this->marubox,$mid);
 		$ar="";
-		if (count($struckture->parts)>0){
+		if (isset($struckture->parts)&&count($struckture->parts)>0){
 			foreach($struckture->parts as $key => $value)
 			{
 				$enc=$struckture->parts[$key]->encoding;
