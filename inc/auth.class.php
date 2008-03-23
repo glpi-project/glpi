@@ -144,6 +144,7 @@ class Identification {
 	 * @param $login User Login
 	 * @param $password User Password
 	 * @param $condition Condition used to restrict login
+	 * @param $deref_options Deref option used
 	 *
 	 * @return String : basedn of the user / false if not founded
 	**/

@@ -1431,7 +1431,7 @@ function makeTextSearch($val,$not=0){
  * Get a web page. Use proxy if configured
  * 
  * @param $url to retrieve
- * @param $errmsg set if problem encountered
+ * @param $msgerr set if problem encountered
  * @param $rec internal use only Must be 0
  * 
  * @return content of the page (or empty)

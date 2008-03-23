@@ -217,58 +217,6 @@ function haveTypeRight($type, $right) {
 }
 
 /**
- * Have I the right to "write" an Object
- *
- * @param $type Type of the object
- * @param $ID ID of the object
- *
- * @return Boolean
-**/
-/*
-function canEditItem ($type,$ID=0) {
-	global $CFG_GLPI;
-
-	$can_edit = haveTypeRight($type,"w");
-	
-	if (isset($CFG_GLPI["recursive_type"][$type]) && $ID) {
-		$obj = new CommonItem;
-		if ($obj->getFromDB($type,$ID)) {
-			if ($obj->obj->fields["recursive"]) {
-				$can_edit = $can_edit && haveRecursiveAccessToEntity($obj->obj->fields["FK_entities"]);
-			}	
-		} else {
-			$can_edit = false;
-		}		
-	}
-
-	return $can_edit;
-}
-*/
-
-/**
- * Check if I the right to "write" an Object
- *
- * @param $type Type of the object
- * @param $ID ID of the object
- *
- * @return Nothing : display error if not permit
-**/
-/*
-function checkEditItem ($type,$ID=0) {
-	global $CFG_GLPI;
-
-	if (!canEditItem ($type,$ID)) {
-		// Gestion timeout session
-		if (!isset ($_SESSION["glpiID"])) {
-			glpi_header($CFG_GLPI["root_doc"] . "/index.php");
-			exit ();
-		}
-
-		displayRightError();
-	}
-}
-*/
-/**
  * Display common message for privileges errors
  *
  * @return Nothing
@@ -905,6 +853,7 @@ function getEntitiesRestrictRequest($separator = "AND", $table = "", $field = ""
  * @param $login : login to use
  * @param $password : password to use
  * @param $use_tls : use a tls connection ?
+ * @param $deref_options Deref options used
  * @return link to the LDAP server : false if connection failed
 **/
 function connect_ldap($host, $port, $login = "", $password = "", $use_tls = false,$deref_options) {
