@@ -523,8 +523,27 @@ class Mailing
 	function get_reply_to_address ($sender)
 	{
 		global $CFG_GLPI;
+
 		$replyto=$CFG_GLPI["admin_email"];
 
+		// Entity  conf
+		$query = "SELECT admin_email AS EMAIL, admin_reply AS REPLY FROM glpi_entities_data WHERE (FK_entities = '".$this->job->fields["FK_entities"]."')";
+		if ($result=$DB->query($query)){
+			if ($DB->numrows($result)){
+				$data=$DB->fetch_assoc($result);
+				if (isValidEmail($data["REPLY"])){
+					return $data["REPLY"];
+				} else if (isValidEmail($data["EMAIL"])){
+					$replyto=$data["EMAIL"];
+				} 
+			}
+		}
+		// Global conf
+		if (isValidEmail($CFG_GLPI["admin_reply"])){
+			return $CFG_GLPI["admin_reply"];
+		}
+
+		// No specific config
 		switch ($this->type){
 			case "new":
 				if (isValidEmail($this->job->fields["uemail"])) {

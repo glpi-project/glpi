@@ -205,8 +205,13 @@ class Entity extends CommonDBTM{
 			echo "</td></tr>";
 
 			echo "<tr class='tab_bg_1'>";
-			echo "<td>".$LANG["setup"][14]." ".$LANG["setup"][237].":		</td><td colspan='3'>";
+			echo "<td>".$LANG["setup"][203].":		</td><td colspan='3'>";
 			autocompletionTextField("admin_email","glpi_entities_data","admin_email",$entdata->fields["admin_email"],50);		
+			echo "</td></tr>";
+
+			echo "<tr class='tab_bg_1'>";
+			echo "<td>".$LANG["setup"][207].":		</td><td colspan='3'>";
+			autocompletionTextField("admin_reply","glpi_entities_data","admin_reply",$entdata->fields["admin_reply"],50);		
 			echo "</td></tr>";
 
 
