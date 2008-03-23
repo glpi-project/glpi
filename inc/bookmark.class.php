@@ -209,7 +209,7 @@ class Bookmark extends CommonDBTM {
 			return false;
 		}
 	
-		$query="SELECT ID, private, FK_entities, FK_users, name FROM ".$this->table." WHERE ";
+		$query="SELECT ID, private, device_type, FK_entities, FK_users, name FROM ".$this->table." WHERE ";
 			
 		if ($private){
 			$query.="(private=1 AND FK_users='".$_SESSION['glpiID']."') ";
@@ -245,7 +245,9 @@ class Bookmark extends CommonDBTM {
 				$current_type_name="&nbsp;";
 				while ($data = $DB->fetch_assoc($result)){
 					if ($current_type!=$data['device_type']){
-						$current_type_name=$ci->getType($current_type);
+						$current_type=$data['device_type'];
+						$ci->setType($current_type);
+						$current_type_name=$ci->getType();
 					}
 					$canedit=false;
 					if ($data["private"]){
