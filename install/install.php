@@ -867,7 +867,6 @@ function step4 ($host,$user,$password,$databasename,$newdatabasename)
 		echo "<li>".$LANG["install"][60]."</li>";
 		echo "<li>".$LANG["install"][61]."</li></ul></p>";
 		echo "<p>".$LANG["install"][62]."</p>";
-		echo "<p>".$LANG["install"][63]."</p>";
 		echo "<p class='submit'> <a href=\"../index.php\"><span class='button'>".$LANG["install"][64]."</span></a></p>";
 	}
 
