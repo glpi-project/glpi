@@ -108,7 +108,7 @@ function uploadDocument($FILEDESC,$old_file=''){
 			}
 
 			// Move uploaded file
-			if (move_uploaded_file($FILEDESC['tmp_name'],GLPI_DOC_DIR."/".$new_path)) {
+			if (rename($FILEDESC['tmp_name'],GLPI_DOC_DIR."/".$new_path)) {
 				addMessageAfterRedirect($LANG["document"][26]);
 				return $new_path;
 			} else {

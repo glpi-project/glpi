@@ -155,26 +155,35 @@ class Job extends CommonDBTM{
 			unset($input["device_type"]);
 		}	
 
-		// add Document if exists
-		if (isset($_FILES['filename'])&&count($_FILES['filename'])>0&&$_FILES['filename']["size"]>0){
-			$input2=array();
-			$input2["name"]=$LANG["tracking"][24]." ".$input["ID"];
-			$input2["FK_tracking"]=$input["ID"];
-			$input2["rubrique"]=$CFG_GLPI["default_rubdoc_tracking"];
-			$this->getFromDB($input["ID"]);
-			$input2["FK_entities"]=$this->fields["FK_entities"];
-			$input2["_only_if_upload_succeed"]=1;
-			$doc=new Document();
-			if ($docID=$doc->add($input2)){
-				addDeviceDocument($docID,TRACKING_TYPE,$input["ID"]);
-				// force update date_mod
-				$input["date_mod"]=$_SESSION["glpi_currenttime"];
-				if ($CFG_GLPI["followup_on_update_ticket"]){
-					$input['_doc_added']=$doc->fields["name"];
+
+		if ( isset($_FILES['multiple']) ) {
+			unset($_FILES['multiple']);
+			$TMPFILE = $_FILES;
+		} else {
+			$TMPFILE = array( $_FILES );
+		}
+		foreach ($TMPFILE as $_FILES) {
+			// add Document if exists
+			if (isset($_FILES['filename'])&&count($_FILES['filename'])>0&&$_FILES['filename']["size"]>0){
+				$input2=array();
+				$input2["name"]=$LANG["tracking"][24]." ".$input["ID"];
+				$input2["FK_tracking"]=$input["ID"];
+				$input2["rubrique"]=$CFG_GLPI["default_rubdoc_tracking"];
+				$this->getFromDB($input["ID"]);
+				$input2["FK_entities"]=$this->fields["FK_entities"];
+				$input2["_only_if_upload_succeed"]=1;
+				$doc=new Document();
+				if ($docID=$doc->add($input2)){
+					addDeviceDocument($docID,TRACKING_TYPE,$input["ID"]);
+					// force update date_mod
+					$input["date_mod"]=$_SESSION["glpi_currenttime"];
+					if ($CFG_GLPI["followup_on_update_ticket"]){
+						$input['_doc_added']=$doc->fields["name"];
+					}
 				}
+			} else if (!empty($_FILES['filename']['name'])&&isset($_FILES['filename']['error'])&&$_FILES['filename']['error']){
+				addMessageAfterRedirect($LANG["document"][46]);
 			}
-		} else if (!empty($_FILES['filename']['name'])&&isset($_FILES['filename']['error'])&&$_FILES['filename']['error']){
-			addMessageAfterRedirect($LANG["document"][46]);
 		}
 
 		if (isset($input["document"])&&$input["document"]>0){
@@ -613,16 +622,24 @@ class Job extends CommonDBTM{
 		global $LANG,$CFG_GLPI;
 
 		// add Document if exists
-		if (isset($_FILES['filename'])&&count($_FILES['filename'])>0&&$_FILES['filename']["size"]>0){
-			$input2=array();
-			$input2["name"]=$LANG["tracking"][24]." $newID";
-			$input2["FK_tracking"]=$newID;
-			$input2["FK_entities"]=$input["FK_entities"];
-			$input2["rubrique"]=$CFG_GLPI["default_rubdoc_tracking"];
-			$input2["_only_if_upload_succeed"]=1;
-			$doc=new Document();
-			if ($docID=$doc->add($input2))
-				addDeviceDocument($docID,TRACKING_TYPE,$newID);
+		if (isset($_FILES['multiple']) ) {
+			unset($_FILES['multiple']);
+			$TMPFILE = $_FILES;
+		} else {
+			$TMPFILE = array( $_FILES );
+		}
+		foreach ($TMPFILE as $_FILES) {
+			if (isset($_FILES['filename'])&&count($_FILES['filename'])>0&&$_FILES['filename']["size"]>0){
+				$input2=array();
+				$input2["name"]=$LANG["tracking"][24]." $newID";
+				$input2["FK_tracking"]=$newID;
+				$input2["FK_entities"]=$input["FK_entities"];
+				$input2["rubrique"]=$CFG_GLPI["default_rubdoc_tracking"];
+				$input2["_only_if_upload_succeed"]=1;
+				$doc=new Document();
+				if ($docID=$doc->add($input2))
+					addDeviceDocument($docID,TRACKING_TYPE,$newID);
+			}
 		}
 
 		// Log this event
