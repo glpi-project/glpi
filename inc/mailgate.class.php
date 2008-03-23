@@ -184,12 +184,23 @@ class MailCollect  extends receiveMail {
 					{
 						$tkt= $this->buildTicket($i);
 						
-						$track=new job;
-						if ($track->add($tkt)){
-							$this->deleteMails($i); // Delete Mail from Mail box
-						} else {
-							$error++;
+						// Is a mail responding of an already existgin ticket ?
+						if (array_key_exists('tracking',$tkt) ) {
+							$fup=new Followup();
+							if ($fup->add($tkt)){
+								$this->deleteMails($i); // Delete Mail from Mail box
+							} else {
+								$error++;
+							}
+						} else { // New ticket
+							$track=new job;
+							if ($track->add($tkt)){
+								$this->deleteMails($i); // Delete Mail from Mail box
+							} else {
+								$error++;
+							}
 						}
+
 					}
 					imap_expunge($this->marubox);
 //				}
@@ -269,20 +280,8 @@ class MailCollect  extends receiveMail {
 		if ($result&&$DB->numrows($result)){
 			$tkt['author']=$DB->result($result,0,"ID");
 		}
-		// Mail followup
-		$tkt['uemail']=$head['from'];
-		$tkt['emailupdates']=1;
-		// Which entity ?
-		$tkt['FK_entities']=$this->entity;
-	
-		//$tkt['Subject']= $head['subject'];   // not use for the moment
-		$tkt['name']=$this->textCleaner($this->decodeMimeString($head['subject']));
-		// Medium
-		$tkt['priority']= 3;
-		// No hardware associated
-		$tkt['device_type']=0;
-		// Mail request type
-		$tkt['request_type']=2;
+
+
 		// AUto_import
 		$tkt['_auto_import']=1;
 		$body=$this->getBody($i);
@@ -297,7 +296,61 @@ class MailCollect  extends receiveMail {
 		}else{
 			$tkt['contents']= $body;
 		}
+
+		$exists = false;
+		if ( preg_match('/\[GLPI #(\d+)\]/',$head['subject'],$match) ) {
+			// it's a reply to a previous ticket
+			$ID = (int)$match[1];
+			$tkt['tracking'] = $ID;
+			$job=new Job();
+			$job->getfromDB($ID);
+			// the job exists and the author is the same
+			if ( $job->getFromDB($ID) && ($job->fields["author"] == $tkt['author']) ) {
+		
+				$exists = true;
+				$content=explode("\n",$tkt['contents']);
+				$tkt['contents']="";
+				$first_comment=true;
+				$to_keep=array();
+				foreach($content as $ID => $val){
+					if (isset($val[0])&&$val[0]=='>'){
+						// Delete line at the top of the first comment
+						if ($first_comment){
+							$first_comment=false;
+							if (isset($to_keep[$ID-1])){
+								unset($to_keep[$ID-1]);
+							}
+						}
+					} else {
+						$to_keep[$ID]=$ID;
+					}
+				}
+				foreach($to_keep as $ID ){
+					$tkt['contents'].=$content[$ID]."\n";
+				}
+			}
+		}
+
+                if ( ! $exists ) {
+			unset($tkt['tracking']);
+			// Mail followup
+			$tkt['uemail']=$head['from'];
+			$tkt['emailupdates']=1;
+			// Which entity ?
+			$tkt['FK_entities']=$this->entity;
+	
+			//$tkt['Subject']= $head['subject'];   // not use for the moment
+			$tkt['name']=$this->textCleaner($this->decodeMimeString($head['subject']));
+			// Medium
+			$tkt['priority']= "3";
+			// No hardware associated
+			$tkt['device_type']="0";
+			// Mail request type
+			$tkt['request_type']="2";
+		}
+
 		$tkt['contents']=clean_cross_side_scripting_deep(html_clean($tkt['contents']));
+
 		$tkt=addslashes_deep($tkt);
 		
 		return $tkt;
