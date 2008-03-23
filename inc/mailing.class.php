@@ -522,7 +522,7 @@ class Mailing
 	 */
 	function get_reply_to_address ($sender)
 	{
-		global $CFG_GLPI;
+		global $CFG_GLPI,$DB;
 
 		$replyto=$CFG_GLPI["admin_email"];
 
