@@ -404,6 +404,12 @@ function update07to071() {
 		$query = "ALTER TABLE `glpi_config` ADD `admin_reply` VARCHAR( 255 ) NULL AFTER `admin_email` ;";
 		$DB->query($query) or die("0.71 add admin_reply to glpi_config " . $LANG["update"][90] . $DB->error());
 	}	
+
+	if (!FieldExists("glpi_config", "mailgate_filesize_max")) {
+		$query = "ALTER TABLE `glpi_config` ADD `mailgate_filesize_max` int(11) NOT NULL DEFAULT ".(2*1024*1024)." AFTER `ticket_category_mandatory` ;";
+		$DB->query($query) or die("0.71 add mailgate_filesize_max to glpi_config " . $LANG["update"][90] . $DB->error());
+	}	
+
 	if (!FieldExists("glpi_entities_data", "admin_reply")) {
 		$query = "ALTER TABLE `glpi_entities_data` ADD `admin_reply` VARCHAR( 255 ) NULL AFTER `admin_email` ;";
 		$DB->query($query) or die("0.71 add admin_reply to glpi_entities_data " . $LANG["update"][90] . $DB->error());
