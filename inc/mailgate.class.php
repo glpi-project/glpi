@@ -222,30 +222,41 @@ class MailCollect  extends receiveMail {
 	/* function buildTicket - Builds,and returns, the major structure of the ticket to be entered . */
 	function buildTicket($i)
 	{
-		global $DB,$LANG;
+		global $DB,$LANG,$CFG_GLPI;
 	
 		$head=$this->getHeaders($i);  // Get Header Info Return Array Of Headers **Key Are (subject,to,toOth,toNameOth,from,fromName)
 	
 		$tkt= array ();
 
-
-		if (!is_writable(GLPI_DOC_DIR."/_tmp/")){
-			logInFile('mailgate',GLPI_DOC_DIR."/_tmp/ is not writable");
-		}
-		$str=$this->GetAttech($i,GLPI_DOC_DIR."/_tmp/");
-		$ar=explode(",",$str);
-		$j=0;
-		$addtobody="";
-		foreach($ar as $key=>$value) {
-			if (isValidDoc($value)){
-				$_FILES['multiple'] = true;
-				$_FILES[$j]['filename']['size'] = filesize(GLPI_DOC_DIR."/_tmp/".$value);
-				$_FILES[$j]['filename']['name'] = $value;
-				$_FILES[$j]['filename']['tmp_name'] = GLPI_DOC_DIR."/_tmp/".$value;
-				$_FILES[$j]['filename']['type'] = mime_content_type(GLPI_DOC_DIR."/_tmp/".$value);
-				$j++;
-			} else {
-				$addtobody.="<br>".$LANG["mailgate"][5].": ".$value;
+		// max size = 0 : no import attachments
+		if ($CFG_GLPI['mailgate_filesize_max']>0){
+			if (!is_writable(GLPI_DOC_DIR."/_tmp/")){
+				logInFile('mailgate',GLPI_DOC_DIR."/_tmp/ is not writable");
+			}
+			$str=$this->GetAttech($i,GLPI_DOC_DIR."/_tmp/");
+			$ar=explode(",",$str);
+			$j=0;
+			$addtobody="";
+			foreach($ar as $key=>$value) {
+				$size=filesize(GLPI_DOC_DIR."/_tmp/".$value);
+				if ($size>0){
+					if (isValidDoc($value)){
+						if ($size<$CFG_GLPI['mailgate_filesize_max'] ){
+							$_FILES['multiple'] = true;
+							$_FILES[$j]['filename']['size'] = $size;
+							$_FILES[$j]['filename']['name'] = $value;
+							$_FILES[$j]['filename']['tmp_name'] = GLPI_DOC_DIR."/_tmp/".$value;
+							$_FILES[$j]['filename']['type'] = mime_content_type(GLPI_DOC_DIR."/_tmp/".$value);
+							$j++;
+						} else {
+							unlink(GLPI_DOC_DIR."/_tmp/".$value);
+							$addtobody.="<br>".$LANG["mailgate"][6].": ".$value;
+						}
+					} else {
+						unlink(GLPI_DOC_DIR."/_tmp/".$value);
+						$addtobody.="<br>".$LANG["mailgate"][5].": ".$value;
+					}
+				}
 			}
 		}
 

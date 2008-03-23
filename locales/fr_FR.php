@@ -848,6 +848,9 @@ $LANG["mailgate"][2]="Récupérer maintenant";
 $LANG["mailgate"][3]="Nombre de messages disponibles et récupérés"; 
 $LANG["mailgate"][4]="Extension mbstring indisponible. Attention aux jeux de charactères utilisés.";
 $LANG["mailgate"][5]="Fichier attaché invalide";  
+$LANG["mailgate"][6]="Fichier attaché trop volumineux";  
+$LANG["mailgate"][7]="Taille maximum des fichiers importés via les passerelles mails (0 = pas d'import)";  
+$LANG["mailgate"][8]="octets";  
 
 $LANG["mailing"][0]="----------------------------------------------------------"; 
 $LANG["mailing"][1]="======================================================================"; 
