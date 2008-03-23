@@ -681,14 +681,13 @@ class AuthLDAP extends CommonDBTM {
 			echo"</td></tr>";			
 
 			echo "<tr class='tab_bg_2'>";
-			echo "<td class='center'>" . $LANG["ldap"][30] . "</td><td>";
+			echo "<td class='center'>" . $LANG["ldap"][30] . "</td><td colspan='3'>";
 			$alias_options[LDAP_DEREF_NEVER] = $LANG["ldap"][31];
 			$alias_options[LDAP_DEREF_ALWAYS] = $LANG["ldap"][32];
 			$alias_options[LDAP_DEREF_SEARCHING] = $LANG["ldap"][33];
 			$alias_options[LDAP_DEREF_FINDING] = $LANG["ldap"][34];
 			dropdownArrayValues("ldap_opt_deref",$alias_options,$this->fields["ldap_opt_deref"]);
-			echo"</td>";			
-			echo "<td class='center' colspan='2'></td></tr>";
+			echo"</td></tr>";
 
 
 			echo "<tr class='tab_bg_1'><td align='center' colspan='4'>" . $LANG["setup"][259] . "</td></tr>";
