@@ -79,8 +79,10 @@ switch($_GET["action"]){
 	case "edit" :
 		if ($_GET['ID']>0){
 			$bookmark->showForm($_SERVER['PHP_SELF'],$_GET["ID"]);
-		} else {
-			$bookmark->showForm($_SERVER['PHP_SELF'],$_GET["ID"],$_GET["type"],$_SERVER["HTTP_REFERER"],$_GET["device_type"]);	
+		} else  {
+			$bookmark->showForm($_SERVER['PHP_SELF'],$_GET["ID"],$_GET["type"],
+				(isset($_SERVER["HTTP_REFERER"]) ? $_SERVER["HTTP_REFERER"] : "IE6"),
+				$_GET["device_type"]);	
 		}
 		break;
 	case "load" :
