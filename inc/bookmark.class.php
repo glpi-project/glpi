@@ -102,12 +102,7 @@ class Bookmark extends CommonDBTM {
 				echo "<input type='hidden' name='type' value='$type'>";
 			}
 
-			if ($url=="IE6"){
-				echo "<script type='text/javascript'>\n";
-				echo 'document.write("<input type=\'hidden\' name=\'url\' value=\'"+escape(window.opener.location.href)+"\'>");';
-				echo "</script>\n";
-				
-			} else if (!empty($url)) {
+			if (!empty($url)) {
 				echo "<input type='hidden' name='url' value='" . urlencode($url) . "'>";
 			}
 
