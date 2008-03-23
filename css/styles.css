@@ -795,7 +795,7 @@ ul#onglet span.fake{
 }
 
 /* ################--------------- box (redirect and other)  ---------------#################### */
-.box {margin: 0 auto; width:500px;	text-align:center;}
+.box {margin: 0 auto; width:700px;	text-align:center;}
 .box-tleft{background:transparent url(../pics/corners.gif) no-repeat 0 0;zoom:1;}
 .box-tcenter{height:8px;background:transparent url(../pics/tb.gif) repeat-x 0 0;overflow:hidden;}
 .box-tright{background:transparent url(../pics/corners.gif) no-repeat right -8px;}
@@ -1432,6 +1432,7 @@ margin:0;
 	color:#333;
 	text-align:left;
 }
+
 #modal_overlay {
 	background-color:#000;
 }

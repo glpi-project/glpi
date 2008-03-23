@@ -846,7 +846,8 @@ $LANG["mailgate"][0]="Passerelle Mail";
 $LANG["mailgate"][1]="Ajouter une passerelle mail"; 
 $LANG["mailgate"][2]="Récupérer maintenant"; 
 $LANG["mailgate"][3]="Nombre de messages disponibles et récupérés"; 
-$LANG["mailgate"][4]="Extension mbstring indisponible. Attention aux jeux de charactères utilisés."; 
+$LANG["mailgate"][4]="Extension mbstring indisponible. Attention aux jeux de charactères utilisés.";
+$LANG["mailgate"][5]="Fichier attaché invalide";  
 
 $LANG["mailing"][0]="----------------------------------------------------------"; 
 $LANG["mailing"][1]="======================================================================"; 

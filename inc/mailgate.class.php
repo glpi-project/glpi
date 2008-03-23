@@ -222,25 +222,33 @@ class MailCollect  extends receiveMail {
 	/* function buildTicket - Builds,and returns, the major structure of the ticket to be entered . */
 	function buildTicket($i)
 	{
-		global $DB;
+		global $DB,$LANG;
 	
 		$head=$this->getHeaders($i);  // Get Header Info Return Array Of Headers **Key Are (subject,to,toOth,toNameOth,from,fromName)
-		
-/*		echo "<br>----------------------------------------- Header  -------------------------------------------------<BR>";
-		echo "Subjects :: ".$head['subject']."<br>";
-		echo "From :: ".$head['from']."<br>";
-		echo "<br>----------------------------------------- BODY -------------------------------------------------<BR>";
-		echo $this->getBody($i);  // Get Body Of Mail number Return String Get Mail id in interger
-		/*$str=$obj->GetAttech($i,"./"); // Get attached File from Mail Return name of file in comma separated string  args. (mailid, Path to store file)  !! Not use for the moment !!
-		$ar=explode(",",$str);
-		foreach($ar as $key=>$value)
-			echo ($value=="")?"":"Atteched File :: ".$value."<br>";
-		*/
-		
-	
 	
 		$tkt= array ();
-		
+
+
+		if (!is_writable(GLPI_DOC_DIR."/_tmp/")){
+			logInFile('mailgate',GLPI_DOC_DIR."/_tmp/ is not writable");
+		}
+		$str=$this->GetAttech($i,GLPI_DOC_DIR."/_tmp/");
+		$ar=explode(",",$str);
+		$j=0;
+		$addtobody="";
+		foreach($ar as $key=>$value) {
+			if (isValidDoc($value)){
+				$_FILES['multiple'] = true;
+				$_FILES[$j]['filename']['size'] = filesize(GLPI_DOC_DIR."/_tmp/".$value);
+				$_FILES[$j]['filename']['name'] = $value;
+				$_FILES[$j]['filename']['tmp_name'] = GLPI_DOC_DIR."/_tmp/".$value;
+				$_FILES[$j]['filename']['type'] = mime_content_type(GLPI_DOC_DIR."/_tmp/".$value);
+				$j++;
+			} else {
+				$addtobody.="<br>".$LANG["mailgate"][5].": ".$value;
+			}
+		}
+
 		//  Who is the user ?
 		$tkt['author']=0;
 		$query="SELECT ID from glpi_users WHERE email='".$head['from']."'";
@@ -265,7 +273,9 @@ class MailCollect  extends receiveMail {
 		// AUto_import
 		$tkt['_auto_import']=1;
 		$body=$this->getBody($i);
-		
+
+		$body.=$addtobody;
+
 		if (!empty($this->charset)&&function_exists('mb_convert_encoding')){
 			$body=mb_convert_encoding($body, 'utf-8',$this->charset);
 		}
