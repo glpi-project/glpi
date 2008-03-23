@@ -42,8 +42,7 @@ if (!defined('GLPI_ROOT')) {
  **/
 function showSaveBookmarkButton($type,$device_type=0){
 	global $CFG_GLPI,$LANG;
-
-	echo "  <a href='#' onClick=\"var w = window.open('".$CFG_GLPI["root_doc"]."/front/popup.php?popup=edit_bookmark&amp;type=$type&amp;device_type=$device_type&amp;url=".$_SERVER['PHP_SELF']."' ,'glpipopup', 'height=400, width=600, top=100, left=100, scrollbars=yes' );w.focus();\">"; 
+	echo "  <a href='#' onClick=\"var w = window.open('".$CFG_GLPI["root_doc"]."/front/popup.php?popup=edit_bookmark&amp;type=$type&amp;device_type=$device_type&amp;url=".urlencode($_SERVER["REQUEST_URI"])."' ,'glpipopup', 'height=400, width=600, top=100, left=100, scrollbars=yes' );w.focus();\">"; 
 	echo "<img src='".$CFG_GLPI["root_doc"]."/pics/bookmark_record.png'  value='OK'   title=\"".$LANG["buttons"][51]." ".$LANG["bookmark"][1]."\"  alt=\"".$LANG["buttons"][51]." ".$LANG["bookmark"][1]."\"  class='calendrier' >"; 
 	echo "	</a>";
 }
