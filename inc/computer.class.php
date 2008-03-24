@@ -475,8 +475,15 @@ class Computer extends CommonDBTM {
 
 		$query = "DELETE FROM glpi_networking_ports WHERE (on_device = '$ID' AND device_type = '".COMPUTER_TYPE."')";
 		$result = $DB->query($query);
-		$query = "DELETE FROM glpi_connect_wire WHERE (end2 = '$ID')";
-		$result = $DB->query($query);
+
+
+		$query="SELECT * FROM glpi_connect_wire WHERE (end2='$ID')";
+		if ($result = $DB->query($query)) {
+			if ($DB->numrows($result)>0) {
+				// Disconnect without auto actions
+				Disconnect($DB->result($result,0,"ID"),1,false);
+			}
+		}
 
 
 		$query = "DELETE FROM glpi_registry WHERE (computer_id = '$ID')";
