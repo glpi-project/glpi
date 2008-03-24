@@ -55,16 +55,17 @@ sub read_dir{
 			} else {
 				if (!-d "$dir/$_" && (index($_,".php",0)==length($_)-4)){
 					open(INFO,"$dir/$_") or die("Fichier ".$dir/$_." absent");
+					$file=$_;
 					@lines=<INFO>;
 					close(INFO);
 					#print "Open $dir/$_\n";
 					foreach (@lines){
 						if ($_=~m/^\s*function\s*(\w+)\s*\(/){
-							print "SEARCH $1 : ";
+							print "SEARCH $1 in $file : ";
 							$count=0;
 							do_dir(".",$1);
 							print $count;
-							if ($count==0) {print " <<<<--------------- NOT FOUND";}
+							if ($count<1) {print " <<<<--------------- NOT FOUND";}
 							print "\n";
 						}
 					
@@ -98,8 +99,8 @@ sub do_dir{
 		}
 	}
 	}
-	if ($found_php==1 && ($count_all==1 || $count==0) ){
-		open COUNT, "grep -i \'^\\s*function\\s*".$function."\\s*(\' $dir/*.php | wc -l |";
+	if ($found_php==1 && ($count_all==1 || $count<1) ){
+		open COUNT, "grep -i \'".$function."\\s*(\' $dir/*.php | wc -l |";
 		while(<COUNT>) {
 			$count+=$_;
 			#print $_."\n";
