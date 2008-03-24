@@ -139,15 +139,16 @@ function getUploadFileValidLocationName($dir,$filename,$force){
 				if (!$force){
 					if (is_file(GLPI_DOC_DIR."/".$dir."/".$filename)){
 						$original_split=explode('.',$filename);
+						$where_to_add=count($original_split)-2;
 						$splitted=$original_split;
 						$number=2;
-						$splitted[0].="_".$number;
+						$splitted[$where_to_add].="_".$number;
 						$filename=implode('.',$splitted);
 						// Rename file if exists
 						while (is_file(GLPI_DOC_DIR."/".$dir."/".$filename)){
 							$number++;
 							$splitted=$original_split;
-							$splitted[0].="_".$number;
+							$splitted[$where_to_add].="_".$number;
 							$filename=implode('.',$splitted);
 						}
 					}
