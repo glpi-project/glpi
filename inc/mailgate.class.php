@@ -241,35 +241,10 @@ class MailCollect  extends receiveMail {
 
 		// max size = 0 : no import attachments
 		if ($CFG_GLPI['mailgate_filesize_max']>0){
-			if (!is_writable(GLPI_DOC_DIR."/_tmp/")){
+			if (is_writable(GLPI_DOC_DIR."/_tmp/")){
+				$_FILES=$this->getAttached($i,GLPI_DOC_DIR."/_tmp/",$CFG_GLPI['mailgate_filesize_max']);
+			} else {
 				logInFile('mailgate',GLPI_DOC_DIR."/_tmp/ is not writable");
-			}
-			$str=$this->GetAttech($i,GLPI_DOC_DIR."/_tmp/");
-			$ar=explode(",",$str);
-			$j=0;
-			$addtobody="";
-			foreach($ar as $key=>$value) {
-				if (!empty($value)){
-					$size=filesize(GLPI_DOC_DIR."/_tmp/".$value);
-					if ($size>0){
-						if (isValidDoc($value)){
-							if ($size<$CFG_GLPI['mailgate_filesize_max'] ){
-								$_FILES['multiple'] = true;
-								$_FILES[$j]['filename']['size'] = $size;
-								$_FILES[$j]['filename']['name'] = $value;
-								$_FILES[$j]['filename']['tmp_name'] = GLPI_DOC_DIR."/_tmp/".$value;
-								$_FILES[$j]['filename']['type'] = mime_content_type(GLPI_DOC_DIR."/_tmp/".$value);
-								$j++;
-							} else {
-								unlink(GLPI_DOC_DIR."/_tmp/".$value);
-								$addtobody.="<br>".$LANG["mailgate"][6].": ".$value;
-							}
-						} else {
-							unlink(GLPI_DOC_DIR."/_tmp/".$value);
-							$addtobody.="<br>".$LANG["mailgate"][5].": ".$value;
-						}
-					}
-				}
 			}
 		}
 
@@ -281,12 +256,9 @@ class MailCollect  extends receiveMail {
 			$tkt['author']=$DB->result($result,0,"ID");
 		}
 
-
 		// AUto_import
 		$tkt['_auto_import']=1;
 		$body=$this->getBody($i);
-
-		$body.=$addtobody;
 
 		if (!empty($this->charset)&&function_exists('mb_convert_encoding')){
 			$body=mb_convert_encoding($body, 'utf-8',$this->charset);
@@ -295,6 +267,10 @@ class MailCollect  extends receiveMail {
 			$tkt['contents']= utf8_encode($body);	
 		}else{
 			$tkt['contents']= $body;
+		}
+		// Add message from getAttached
+		if ($this->addtobody) {
+			$tkt['contents'] .= $this->addtobody;
 		}
 
 		$exists = false;
