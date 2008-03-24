@@ -155,17 +155,11 @@ class Mailgate  extends CommonDBTM {
 }
 
 
-// Main ReceiveMail Class File - Version 1.0 (01-03-2006)
 // modif and debug by  INDEPNET Development Team.
 // Merge with collect GLPI system after big modification in it
-/*
- * File: recivemail.class.php
+/* Original class ReceiveMail 1.0 by Mitul Koradia Created: 01-03-2006
  * Description: Reciving mail With Attechment
- * Version: 1.0
- * Created: 01-03-2006
- * Author: Mitul Koradia
  * Email: mitulkoradia@gmail.com
- * Cell : +91 9879697592
  */
 
 class MailCollect {
