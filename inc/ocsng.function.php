@@ -2481,7 +2481,7 @@ function ocsUpdatePeripherals($device_type, $entity, $glpi_id, $ocs_id, $ocs_ser
 										$result_search_id = $DB->query($queryGetConnectionID);
 										if ($DB->numrows($result_search_id) == 1) {
 											$id_conn = $DB->result($result_search_id, 0, "ID");
-											Disconnect($id_conn, $dohistory, $ocs_server_id);
+											Disconnect($id_conn, $dohistory, 1,$ocs_server_id);
 										}
 									}
 									$connID = Connect($id_monitor, $glpi_id, MONITOR_TYPE, $dohistory);

@@ -126,16 +126,19 @@ function showConnect($target,$ID,$type) {
 	}
 }
 
+
+
 /**
  * Disconnects a direct connection
  * 
  *
  * @param $ID the connection ID to disconnect.
  * @param $dohistory make history
+ * @param $doautoactions make auto actions on disconnect
  * @param $ocs_server_id ocs server id of the computer if know
  * @return nothing
  */
-function Disconnect($ID,$dohistory=1,$ocs_server_id=0) {
+function Disconnect($ID,$dohistory=1,$doautoactions=true,$ocs_server_id=0) {
 	global $DB,$LINK_ID_TABLE,$LANG,$CFG_GLPI;
 
 
@@ -179,93 +182,95 @@ function Disconnect($ID,$dohistory=1,$ocs_server_id=0) {
 			$changes[1]=addslashes($computer->fields["name"]);
 			historyLog ($id_elem,$type_elem,$changes,COMPUTER_TYPE,HISTORY_DISCONNECT_DEVICE);
 		}
-
-		if (!$device->getField('is_global')){
-			
-			$updates=array();
-			if ($CFG_GLPI["autoclean_link_location"] && $device->getField('location')){
-				$updates[]="location";
-				$device->obj->fields['location']=0;
-			}
-			if ($CFG_GLPI["autoclean_link_user"] && $device->getField('FK_users')) {
-				$updates[]="FK_users";
-				$device->obj->fields['FK_users']=0;	
-			}
-			if ($CFG_GLPI["autoclean_link_group"] && $device->getField('FK_groups')){
-				$updates[]="FK_groups";
-				$device->obj->fields['FK_groups']=0;
-			}
-			if ($CFG_GLPI["autoclean_link_contact"] && $device->getField('contact')){
-				$updates[]="contact";
-				$device->obj->fields['contact']="";
-			}
-			if ($CFG_GLPI["autoclean_link_contact"] && $device->getField('contact_num')){
-				$updates[]="contact_num";
-				$device->obj->fields['contact_num']="";
-			}
-			if ($CFG_GLPI["autoclean_link_state"]<0 && $device->getField('state')) {
-				$updates[]="state";
-				$device->obj->fields['state']=0;	
-			}
-			if ($CFG_GLPI["autoclean_link_state"]>0 && $device->getField('state')!=$CFG_GLPI["autoclean_link_state"]) {
-				$updates[]="state";
-				$device->obj->fields['state']=$CFG_GLPI["autoclean_link_state"];	
-			}
-			if (count($updates)) {
-				$device->obj->updateInDB($updates);
-			}
-		}
-
-		if ($ocs_server_id==0){
-			$ocs_server_id = getOCSServerByMachineID($data["end2"]);
-		}
-		if ($ocs_server_id>0){
-
-			//Get OCS configuration
-			$ocs_config = getOcsConf($ocs_server_id);
+		if ($doautoactions){
+			if (!$device->getField('is_global')){
 				
-			//Get the management mode for this device
-			$mode = getMaterialManagementMode($ocs_config,$type_elem);
-			$decoConf= $ocs_config["deconnection_behavior"];
-
-			//Change status if : 
-			// 1 : the management mode IS NOT global
-			// 2 : a deconnection's status have been defined 
-			// 3 : unique with serial
-			if($mode >= 2 && strlen($decoConf)>0){
-				//Delete periph from glpi
-				if($decoConf == "delete")
-					$device->obj->delete($id_elem);
-							
-				//Put periph in trash
-				elseif($decoConf == "trash")
-				{
-					$tmp["ID"]=$id_elem;
-					$tmp["deleted"]=1;
-					$device->obj->update($tmp,$dohistory);
+				$updates=array();
+				if ($CFG_GLPI["autoclean_link_location"] && $device->getField('location')){
+					$updates[]="location";
+					$device->obj->fields['location']=0;
 				}
-				//Change status
-				// TODO : this can probably be replaced by general config options
-				else {
-					//get id status
-					$query = "SELECT ID from glpi_dropdown_state WHERE name='$decoConf'";			
-					$result = $DB->query($query );
-					if($DB->numrows($result)>0){
-						$id_res = $DB->fetch_array($result);
-						$id_status= $id_res["ID"]; 
+				if ($CFG_GLPI["autoclean_link_user"] && $device->getField('FK_users')) {
+					$updates[]="FK_users";
+					$device->obj->fields['FK_users']=0;	
+				}
+				if ($CFG_GLPI["autoclean_link_group"] && $device->getField('FK_groups')){
+					$updates[]="FK_groups";
+					$device->obj->fields['FK_groups']=0;
+				}
+				if ($CFG_GLPI["autoclean_link_contact"] && $device->getField('contact')){
+					$updates[]="contact";
+					$device->obj->fields['contact']="";
+				}
+				if ($CFG_GLPI["autoclean_link_contact"] && $device->getField('contact_num')){
+					$updates[]="contact_num";
+					$device->obj->fields['contact_num']="";
+				}
+				if ($CFG_GLPI["autoclean_link_state"]<0 && $device->getField('state')) {
+					$updates[]="state";
+					$device->obj->fields['state']=0;	
+				}
+				if ($CFG_GLPI["autoclean_link_state"]>0 && $device->getField('state')!=$CFG_GLPI["autoclean_link_state"]) {
+					$updates[]="state";
+					$device->obj->fields['state']=$CFG_GLPI["autoclean_link_state"];	
+				}
+				if (count($updates)) {
+					$device->obj->updateInDB($updates);
+				}
+			}
 	
+			if ($ocs_server_id==0){
+				$ocs_server_id = getOCSServerByMachineID($data["end2"]);
+			}
+			if ($ocs_server_id>0){
+	
+				//Get OCS configuration
+				$ocs_config = getOcsConf($ocs_server_id);
+					
+				//Get the management mode for this device
+				$mode = getMaterialManagementMode($ocs_config,$type_elem);
+				$decoConf= $ocs_config["deconnection_behavior"];
+	
+				//Change status if : 
+				// 1 : the management mode IS NOT global
+				// 2 : a deconnection's status have been defined 
+				// 3 : unique with serial
+				if($mode >= 2 && strlen($decoConf)>0){
+					//Delete periph from glpi
+					if($decoConf == "delete")
+						$device->obj->delete($id_elem);
+								
+					//Put periph in trash
+					elseif($decoConf == "trash")
+					{
 						$tmp["ID"]=$id_elem;
-						$tmp["state"]=$id_status;
-						
+						$tmp["deleted"]=1;
 						$device->obj->update($tmp,$dohistory);
-					}				
-				}			
-			}		
-		} // $ocs_server_id>0
+					}
+					//Change status
+					// TODO : this can probably be replaced by general config options
+					else {
+						//get id status
+						$query = "SELECT ID from glpi_dropdown_state WHERE name='$decoConf'";			
+						$result = $DB->query($query );
+						if($DB->numrows($result)>0){
+							$id_res = $DB->fetch_array($result);
+							$id_status= $id_res["ID"]; 
+		
+							$tmp["ID"]=$id_elem;
+							$tmp["state"]=$id_status;
+							
+							$device->obj->update($tmp,$dohistory);
+						}				
+					}			
+				}		
+			} // $ocs_server_id>0
+		}
 	}
 	// Disconnects a direct connection
 	$connect = new Connection;
 	$connect->deletefromDB($ID);
+
 }
 
 
