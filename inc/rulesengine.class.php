@@ -313,6 +313,7 @@ class RuleCollection {
 	/**
 	* Complete reorder the rules
 	**/
+	/* // NOT_USED
 	function completeReorder(){
 		global $DB;
 		$rules = array();
@@ -328,6 +329,7 @@ class RuleCollection {
 			}
 		}
 	}
+	*/
 
 	/**
 	* Modify rule's ranking and automatically reorder all rules
@@ -1651,10 +1653,12 @@ class Rule extends CommonDBTM{
  	* @param $type criteria type
 	* @param $condition condition used
  	*/
+	/*// NOT_USED
  	function displayCriteriaSelectValue($type,$condition){
 		$display=false;
 	}
-
+	*/
+	
 	/**
  	* Return a value associated with a pattern associated to a criteria
  	* @param $ID the given action
@@ -2206,10 +2210,14 @@ class RuleCachedCollection extends RuleCollection{
 		$DB->query($sql);
 	}
 
+	
+/*
+	// NOT_USED
 	function deleteCache(){
 		global $DB;
 		$DB->query("TRUNCATE TABLE ".$this->cache_table);
 	}	
+*/
 	
 }
 

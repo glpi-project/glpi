@@ -1205,6 +1205,7 @@ function getInstallionsForLicense($ID) {
  * @param ID the software's ID
  * @return true if it's in trash, false if not
  */
+/* // NOT_USED
 function isSoftwareDeleted($ID) {
 	global $DB;
 	$query = "SELECT deleted FROM glpi_software WHERE ID =" . $ID;
@@ -1214,7 +1215,7 @@ function isSoftwareDeleted($ID) {
 	else
 		return false;
 }
-
+*/
 /**
  * Create a new software
  * @param name the software's name

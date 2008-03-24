@@ -95,6 +95,8 @@ class Enterprise extends CommonDBTM {
 
 	// SPECIFIC FUNCTION
 
+/*
+	// NOT_USED
 	function countContacts() {
 		global $DB;
 		$query = "SELECT * FROM glpi_contact_enterprise WHERE (FK_enterprise = '".$this->fields["ID"]."')";
@@ -105,7 +107,7 @@ class Enterprise extends CommonDBTM {
 			return false;
 		}
 	}
-
+*/
 	function showForm ($target,$ID,$withtemplate='') {
 		// Show Enterprise or blank form
 

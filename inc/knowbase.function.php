@@ -588,6 +588,7 @@ function KbItemremovefromfaq($ID)
  * 
  * @return $catNumbers
  **/
+/* NOT_USED
 function getFAQCategories()
 {
 
@@ -637,5 +638,6 @@ function getFAQCategories()
 	return($catNumbers);
 
 }
+*/
 	
 ?>
