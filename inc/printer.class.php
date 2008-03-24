@@ -190,8 +190,10 @@ class Printer  extends CommonDBTM {
 		$query="SELECT * FROM glpi_connect_wire WHERE (type='".PRINTER_TYPE."' AND end1='$ID')";
 		if ($result = $DB->query($query)) {
 			if ($DB->numrows($result)>0) {
-				// Disconnect without auto actions
-				Disconnect($DB->result($result,0,"ID"),1,false);
+				while ($data = $DB->fetch_array($result)){
+					// Disconnect without auto actions
+					Disconnect($data["ID"],1,false);
+				}
 			}
 		}
 
