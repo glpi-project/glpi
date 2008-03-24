@@ -453,6 +453,14 @@ function dropdownContractRenewal($name,$value=0){
 	echo "</select>";	
 }
 
+/**
+ * Get the renewal type name
+ *
+ *@param $value integer : HTML select selected value
+ *
+ *@return string
+ *
+ **/
 function getContractRenewalName($value){
 	global $LANG;
 	switch ($value){
@@ -480,7 +488,6 @@ function getContractEnterprises($ID){
 	$out="";
 	while ($data=$DB->fetch_array($result)){
 		$out.= getDropdownName("glpi_enterprises",$data['ID'])."<br>";
-
 	}
 	return $out;
 }
@@ -519,8 +526,7 @@ function dropdownContracts($name,$entity_restrict=-1,$alreadyused=array()){
 	$prev=-1;
 	while ($data=$DB->fetch_array($result)){
 
-		if ($data["device_countmax"]==0||$data["device_countmax"]>countElementsInTable("glpi_contract_device","FK_contract = '".$data['ID']."'" ))
-		{
+		if ($data["device_countmax"]==0||$data["device_countmax"]>countElementsInTable("glpi_contract_device","FK_contract = '".$data['ID']."'" )){
 			if ($data["FK_entities"]!=$prev) {
 				if ($prev>=0) {
 					echo "</optgroup>";
@@ -556,7 +562,6 @@ function dropdownContracts($name,$entity_restrict=-1,$alreadyused=array()){
  *
  **/
 function showContractAssociated($device_type,$ID,$withtemplate=''){
-
 	global $DB,$CFG_GLPI, $LANG;
 
 	if (!haveRight("contract_infocom","r")||!haveTypeRight($device_type,"r"))	return false;
@@ -636,10 +641,9 @@ function showContractAssociated($device_type,$ID,$withtemplate=''){
 			echo "<td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>";
 		}
 	}
-	echo "</table></div>"    ;
+	echo "</table></div>";
 
 	if ($withtemplate!=2) echo "</form>";
-
 }
 
 
@@ -666,7 +670,6 @@ function showContractAssociatedEnterprise($ID){
 		. " WHERE glpi_contract_enterprise.FK_enterprise = '$ID' AND glpi_contract_enterprise.FK_contract=glpi_contracts.ID"
 		. getEntitiesRestrictRequest(" AND","glpi_contracts",'','',true) 
 		. " ORDER BY glpi_entities.completename, glpi_contracts.name";
-		
 
 	$result = $DB->query($query);
 	$number = $DB->numrows($result);
@@ -781,8 +784,6 @@ function cron_contract($display=false){
 			$message[$data["FK_entities"]].=$LANG["mailing"][37]." ".$data["name"].": ".getWarrantyExpir($data["begin_date"],$data["duration"]-$data["notice"])."<br>\n";
 			$items_notice[$data["FK_entities"]][]=$data["ID"];
 		}
-
-
 	}
 
 	// Check end
@@ -844,9 +845,6 @@ function cron_contract($display=false){
 		}
 		return 1;
 	}
-
 	return 0;
-
-
 }
 ?>
