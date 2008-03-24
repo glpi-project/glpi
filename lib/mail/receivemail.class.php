@@ -49,7 +49,12 @@ class receiveMail
 	
 	var $marubox='';					
 	
-	var $email='';			
+	var $email='';		
+
+	var $mid = -1;
+	var $structure = false; 	
+	var $files; 	
+	var $addtobody; 	
 	
 /*
 * constructor
@@ -84,6 +89,7 @@ class receiveMail
 		$this->server			=	$server;
 		$this->username			=	$username;
 		$this->password			=	$password;
+		$this->mid				= -1;
 	}
 
 	function connect() //Connect To the Mail Box
@@ -92,6 +98,21 @@ class receiveMail
 	}
 	
 	
+	/*
+	 * get the message structure if not already retrieved
+	 * 
+	 * @param $mid : Message ID.
+	 * 
+	 */
+	 function getStructure ($mid)
+	 {
+	 	if ($mid != $this->mid || !$this->structure) {
+			$this->structure = imap_fetchstructure($this->marubox,$mid);
+			if ($this->structure) {
+				$this->mid = $mid;
+			}
+	 	}
+	 }
 /*	
 *This function is use full to Get Header info from particular mail
 *
@@ -108,7 +129,7 @@ class receiveMail
 *	fromName  => Form Name of Mail
 */
 	function getHeaders($mid) // Get Header info
-	{
+	{	
 		$mail_header=imap_header($this->marubox,$mid);
 		$sender=$mail_header->from[0];
 		$sender_replyto=$mail_header->reply_to[0];
@@ -141,10 +162,7 @@ class receiveMail
 
 	function get_part($stream, $msg_number, $mime_type, $structure = false, $part_number = false) //Get Part Of Message Internal Private Use
 	{ 
-		if(!$structure) { 
-			$structure = imap_fetchstructure($stream, $msg_number); 
-		} 
-		if($structure) { 
+		if($structure) { 		
 			if($mime_type == $this->get_mime_type($structure))
 			{ 
 				if(!$part_number) 
@@ -168,6 +186,7 @@ class receiveMail
 			if($structure->type == 1) /* multipart */ 
 			{ 
 				$prefix="";
+				reset($structure->parts);
 				while(list($index, $sub_structure) = each($structure->parts))
 				{ 
 					if($part_number)
@@ -185,12 +204,12 @@ class receiveMail
 		return false; 
 	} 
 	
-/*
-*used to get total unread mail from That mailbox
-*
-*Return : 
-*Int Total Mail
-*/	
+	/*
+	 * used to get total unread mail from That mailbox
+	 *
+	 * Return : 
+	 * Int Total Mail
+	 */	
 	function getTotalMails() //Get Total Number off Unread Email In Mailbox
 	{
 		$headers=imap_headers($this->marubox);
@@ -211,7 +230,7 @@ class receiveMail
 */	
 	function GetAttech($mid,$path) // Get Atteced File from Mail
 	{
-		
+			 
 		$struckture = imap_fetchstructure($this->marubox,$mid);
 		$ar="";
 		if (isset($struckture->parts)&&count($struckture->parts)>0){
@@ -245,37 +264,118 @@ class receiveMail
 		return $ar;
 	}
 	
-/*	
-* Get The actual mail content from this mail
-* Arguments 
-* $mid          = Mail id
-* Return String
-*/
+	/*
+	 * Private function : Recursivly get attached documents
+	 * 
+	 * @param $mid : message id
+	 * @param $path : temporary path
+	 * @param $maxsize : of document to be retrieved
+	 * @param $structure : of the message or part
+	 * @param $part : part for recursive
+	 * 
+	 * Result is stored in $this->files
+	 *  
+	 */
+	function getRecursiveAttached ($mid, $path, $maxsize, $structure, $part="")
+	{
+		global $LANG;
+		
+		if ($structure->type == 1) { // multipart
+			reset($structure->parts);
+			while(list($index, $sub) = each($structure->parts)) {
+				$this->getRecursiveAttached($mid, $path, $maxsize, $sub, ($part ? $part.".".($index+1) : ($index+1)));
+			}
+		} else if ($structure->ifdparameters) {
+
+			$name=$structure->dparameters[0]->value;
+			
+			if ($structure->bytes > $maxsize) {
+				$this->addtobody .= "<br>".$LANG["mailgate"][6]." (" . getSize($structure->bytes) . "): ".$name;
+				return false;
+			}
+			if (!isValidDoc($name)){
+				$this->addtobody .= "<br>".$LANG["mailgate"][5]." (" . $this->get_mime_type($structure) . "): ".$name;
+				return false;
+			}
+			if ($message=imap_fetchbody($this->marubox, $mid, $part)) {
+				switch ($structure->encoding)
+				{
+					case 0:	$message = imap_7bit($message); break;
+					case 1:	$message = imap_8bit($message); break;
+					case 2: $message = imap_binary($message); break;
+					case 3: $message = imap_base64($message); break;
+					case 4: $message = quoted_printable($message); break;
+				}	
+				$fp=fopen($path.$name,"w");
+				if ($fp) {
+					fwrite($fp,$message);
+					fclose($fp);	
+					
+					$this->files['multiple'] = true;
+					$j = count($this->files)-1;
+					$this->files[$j]['filename']['size'] = $structure->bytes;
+					$this->files[$j]['filename']['name'] = $name;
+					$this->files[$j]['filename']['tmp_name'] = $path.$name;
+					$this->files[$j]['filename']['type'] = $this->get_mime_type($structure);	
+				}
+			} // fetchbody
+		} // ifdparameters 
+	}
+
+	/*
+	 * Public function : get attached documents in a mail
+	 * 
+	 * @param $mid : message id
+	 * @param $path : temporary path
+	 * @param $maxsize : of document to be retrieved
+	 * @param $structure : of the message or part
+	 * 
+	 * @return array like $_FILES
+	 *  
+	 */
+	function getAttached ($mid, $path, $maxsize)
+	{
+		$this->getStructure($mid);
+		$this->files = array();
+		$this->addtobody="";
+		
+		$this->getRecursiveAttached($mid, $path, $maxsize, $this->structure);
+		
+		return ($this->files);
+	}
+	/*
+	 * Get The actual mail content from this mail
+	 *
+	 * @param $mid : mail Id
+	 */
 	function getBody($mid) // Get Message Body
 	{
-		$body = $this->get_part($this->marubox, $mid, "TEXT/HTML");
-		if ($body == "")
-			$body = $this->get_part($this->marubox, $mid, "TEXT/PLAIN");
+		$this->getStructure($mid);
+
+		$body = $this->get_part($this->marubox, $mid, "TEXT/HTML", $this->structure);
+		if ($body == "") {
+			$body = $this->get_part($this->marubox, $mid, "TEXT/PLAIN", $this->structure);			
+		}
 		if ($body == "") { 
 			return "";
 		}
 		return $body;
 	}
 	
-/*
-* Delete mail from that mail box
-*
-* Arguments :
-*	$mid         = mail Id
-*/
+	/*
+	 * Delete mail from that mail box
+	 *
+	 * @param $mid : mail Id
+	 */
 	function deleteMails($mid) // Delete That Mail
 	{
 		imap_delete($this->marubox,$mid);
 	}
 	
-/*
-* Close The Mail Box
-*/	
+	/*
+	 * Close The Mail Box
+	 *  
+ 	 */	
 	function close_mailbox() //Close Mail Box
 	{
 		imap_close($this->marubox,CL_EXPUNGE);
