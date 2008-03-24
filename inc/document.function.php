@@ -137,29 +137,18 @@ function getUploadFileValidLocationName($dir,$filename,$force){
 			// Copy du fichier upload�si r�ertoire existe
 			if (is_dir(GLPI_DOC_DIR."/".$dir)){
 				if (!$force){
-					// Rename file if exists
-					$NB_CHAR_MORE=10;
-					$i=0;
-					$tmpfilename=$filename;
-					while ($i<$NB_CHAR_MORE&&is_file(GLPI_DOC_DIR."/".$dir."/".$filename)){
-						$filename="_".$filename;
-						$i++;
-					}
-
-					if ($i==$NB_CHAR_MORE){
-						$i=0;
-						$filename=$tmpfilename;
-						while ($i<$NB_CHAR_MORE&&is_file(GLPI_DOC_DIR."/".$dir."/".$filename)){
-							$filename="-".$filename;
-							$i++;
-						}
-						if ($i==$NB_CHAR_MORE){
-							$i=0;
-							$filename=$tmpfilename;
-							while ($i<$NB_CHAR_MORE&&is_file(GLPI_DOC_DIR."/".$dir."/".$filename)){
-								$filename="0".$filename;
-								$i++;
-							}
+					if (is_file(GLPI_DOC_DIR."/".$dir."/".$filename)){
+						$original_split=explode('.',$filename);
+						$splitted=$original_split;
+						$number=2;
+						$splitted[0].="_".$number;
+						$filename=implode('.',$splitted);
+						// Rename file if exists
+						while (is_file(GLPI_DOC_DIR."/".$dir."/".$filename)){
+							$number++;
+							$splitted=$original_split;
+							$splitted[0].="_".$number;
+							$filename=implode('.',$splitted);
 						}
 					}
 				}
