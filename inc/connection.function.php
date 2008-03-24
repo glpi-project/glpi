@@ -241,28 +241,12 @@ function Disconnect($ID,$dohistory=1,$doautoactions=true,$ocs_server_id=0) {
 						$device->obj->delete($id_elem);
 								
 					//Put periph in trash
-					elseif($decoConf == "trash")
+					else if($decoConf == "trash")
 					{
 						$tmp["ID"]=$id_elem;
 						$tmp["deleted"]=1;
 						$device->obj->update($tmp,$dohistory);
 					}
-					//Change status
-					// TODO : this can probably be replaced by general config options
-					else {
-						//get id status
-						$query = "SELECT ID from glpi_dropdown_state WHERE name='$decoConf'";			
-						$result = $DB->query($query );
-						if($DB->numrows($result)>0){
-							$id_res = $DB->fetch_array($result);
-							$id_status= $id_res["ID"]; 
-		
-							$tmp["ID"]=$id_elem;
-							$tmp["state"]=$id_status;
-							
-							$device->obj->update($tmp,$dohistory);
-						}				
-					}			
 				}		
 			} // $ocs_server_id>0
 		}
