@@ -75,6 +75,15 @@ class Bookmark extends CommonDBTM {
 		$this->fields["FK_entities"]=$_SESSION["glpiactive_entity"];
 	}
 
+	/**
+	* Print the bookmark form
+	*
+	* @param $target target for the form
+	* @param $ID ID of the item
+	* @param $type bookmark type when adding a new bookmark
+	* @param $url url when adding a new bookmark
+	* @param $device_type device_type when adding a new bookmark
+	**/
 	function showForm($target,$ID,$type=0,$url='',$device_type=0) {
 
 
@@ -160,6 +169,13 @@ class Bookmark extends CommonDBTM {
 		
 	}
 
+	/**
+	* Prepare query to store depending of the type
+	*
+	* @param $type bookmark type
+	* @param $query_tab parameters array
+	* @return clean query array
+	**/
 	function prepareQueryToStore($type,$query_tab){
 		switch ($type){
 			case BOOKMARK_SEARCH :
@@ -171,7 +187,13 @@ class Bookmark extends CommonDBTM {
 		
 		return $query_tab;
 	}
-
+	/**
+	* Prepare query to use depending of the type
+	*
+	* @param $type bookmark type
+	* @param $query_tab parameters array
+	* @return prepared query array
+	**/
 	function prepareQueryToUse($type,$query_tab){
 		switch ($type){
 			case BOOKMARK_SEARCH :
@@ -189,6 +211,12 @@ class Bookmark extends CommonDBTM {
 		return $query_tab;
 	}
 
+	/**
+	* load a bookmark
+	*
+	* @param $ID ID of the bookmark
+	* @return nothing
+	**/
 	function load($ID){
 		
 		$this->getFromDB($ID);
@@ -203,6 +231,13 @@ class Bookmark extends CommonDBTM {
 		echo "</script>";
 	}
 	
+	/**
+	* Show bookmarks list
+	*
+	* @param $target target to use for links
+	* @param $private show private of public bookmarks ?
+	* @return nothing
+	**/
 	function showBookmarkList($target,$private=1) {
 		global $DB,$LANG,$CFG_GLPI;
 

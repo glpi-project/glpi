@@ -885,6 +885,20 @@ function connect_ldap($host, $port, $login = "", $password = "", $use_tls = fals
 	}
 }
 
+
+/**
+ * Try to connect to a ldap server
+ *
+ * @param $host : LDAP host to connect
+ * @param $port : port to use
+ * @param $rdn : rootdn to use
+ * @param $rpass : rootdn password to use
+ * @param $use_tls : use a tls connection ?
+ * @param $login : user login 
+ * @param $password : user password
+ * @param $deref_options Deref options used
+ * @return link to the LDAP server : false if connection failed
+**/
 function try_connect_ldap($host, $port, $rdn, $rpass, $use_tls,$login, $password,$deref_options){
 	$ds = connect_ldap($host, $port, $rdn, $rpass, $use_tls,$deref_options);
 	// Test with login and password of the user
@@ -895,9 +909,17 @@ function try_connect_ldap($host, $port, $rdn, $rpass, $use_tls,$login, $password
 	return $ds;		
 }
 
+/**
+ * Get infos for groups
+ *
+ * @param $ds : LDAP link
+ * @param $basedn : base dn used to search
+ * @param $group_dn : dn of the group
+ * @param $condition : ldap condition used
+ * @return group infos if found, else false
+**/
 function ldap_search_group_by_dn($ds, $basedn, $group_dn,$condition) {
-	if($result =  @ ldap_read($ds, $group_dn, "objectClass=*", array("cn")))
-	{
+	if($result =  @ ldap_read($ds, $group_dn, "objectClass=*", array("cn"))){
 		$info = ldap_get_entries($ds, $result);
 		if (is_array($info) AND $info['count'] == 1)
 			return $info[0];
@@ -907,7 +929,16 @@ function ldap_search_group_by_dn($ds, $basedn, $group_dn,$condition) {
 	return false;
 }
 
-
+/**
+ * Get dn for a user 
+ *
+ * @param $ds : LDAP link
+ * @param $basedn : base dn used to search
+ * @param $login_attr : attribute to store login
+ * @param $login : user login
+ * @param $condition : ldap condition used
+ * @return dn of the user, else false
+**/
 function ldap_search_user_dn($ds, $basedn, $login_attr, $login, $condition) {
 
 	// Tenter une recherche pour essayer de retrouver le DN
@@ -933,8 +964,13 @@ function ldap_search_user_dn($ds, $basedn, $login_attr, $login, $condition) {
 	}
 }
 
-/*
+/**
  * Try to authentify a user by checking all the directories
+ * @param $identificat : identification object
+ * @param $login : user login
+ * @param $password : user password
+ * @param $id_auth : id_auth already used for the user
+ * @return identification object
 **/
 function try_ldap_auth($identificat,$login,$password, $id_auth = -1) {
 
@@ -947,15 +983,22 @@ function try_ldap_auth($identificat,$login,$password, $id_auth = -1) {
 				break;
 			}
 		}
-	} else if(array_key_exists($id_auth,$identificat->auth_methods["ldap"])){ //Check if the ldap server indicated as the last good one still exists !
+	//Check if the ldap server indicated as the last good one still exists !
+	} else if(array_key_exists($id_auth,$identificat->auth_methods["ldap"])){ 
+		
 		//A specific ldap directory is given, test it and only this one !
 		$identificat = ldap_auth($identificat, $login,$password,$identificat->auth_methods["ldap"][$id_auth]);
 	}
 	return $identificat;
 }
 
-/*
+/**
  * Authentify a user by checking a specific directory
+ * @param $identificat : identification object
+ * @param $login : user login
+ * @param $password : user password
+ * @param $ldap_method : ldap_method array to use
+ * @return identification object
 **/
 function ldap_auth($identificat,$login,$password, $ldap_method) {
 
@@ -973,6 +1016,14 @@ function ldap_auth($identificat,$login,$password, $ldap_method) {
 	return $identificat;
 }
 
+/**
+ * Try to authentify a user by checking all the mail server
+ * @param $identificat : identification object
+ * @param $login : user login
+ * @param $password : user password
+ * @param $id_auth : id_auth already used for the user
+ * @return identification object
+**/
 function try_mail_auth($identificat, $login,$password,$id_auth = -1) {
 	if ($id_auth == -1) {
 		foreach ($identificat->auth_methods["mail"] as $mail_method) {
@@ -989,6 +1040,14 @@ function try_mail_auth($identificat, $login,$password,$id_auth = -1) {
 	return $identificat;
 }
 
+/**
+ * Authentify a user by checking a specific mail server
+ * @param $identificat : identification object
+ * @param $login : user login
+ * @param $password : user password
+ * @param $mail_method : mail_method array to use
+ * @return identification object
+**/
 function mail_auth($identificat, $login,$password,$mail_method) {
 
 	if (isset($mail_method["imap_auth_server"])&&!empty ($mail_method["imap_auth_server"])) {
@@ -1008,9 +1067,14 @@ function mail_auth($identificat, $login,$password,$mail_method) {
 	return $identificat;
 }
 
-//Test a connexion to the IMAP/POP server
+/**
+ * Test a connexion to the IMAP/POP server
+ * @param $imap_auth_server : mail server
+ * @param $login : user login
+ * @param $password : user password
+ * @return authentification succeeded ?
+**/
 function test_auth_mail($imap_auth_server,$login,$password){
-	
 	$identificat = new Identification();
 	return $identificat->connection_imap($imap_auth_server, utf8_decode($login), utf8_decode($password));
 }
@@ -1018,6 +1082,7 @@ function test_auth_mail($imap_auth_server,$login,$password){
 /**
  * Import a user from ldap
  * Check all the directories. When the user is found, then import it
+ * @param $login : user login
 **/
 function import_user_from_ldap_servers($login){
 	global $LANG;
@@ -1045,7 +1110,11 @@ function import_user_from_ldap_servers($login){
 	
 }
 
-
+/**
+ * Is the Mail authentication used ?
+ * 
+ * @return boolean
+**/
 function useAuthMail(){
 	global $DB;	
 
@@ -1058,6 +1127,11 @@ function useAuthMail(){
 	return false;
 }
 
+/**
+ * Is the LDAP authentication used ?
+ * 
+ * @return boolean
+**/
 function useAuthLdap(){
 	global $DB;	
 
@@ -1071,6 +1145,11 @@ function useAuthLdap(){
 }
 
 
+/**
+ * Is an external authentication used ?
+ * 
+ * @return boolean
+**/
 function useAuthExt(){
 	global $DB;	
 
@@ -1085,8 +1164,14 @@ function useAuthExt(){
 	return false;
 }
 
-function showReplicatesList($target,$master_id)
-{
+
+/**
+ * Show replicate list for a ldap server
+ * 
+ * @param $target : target page for add new replicate
+ * @param $master_id : master ldap server ID
+**/
+function showReplicatesList($target,$master_id){
 	global $DB,$LANG,$CFG_GLPI;
 
 	addNewReplicateForm($target, $master_id);
@@ -1137,6 +1222,12 @@ function showReplicatesList($target,$master_id)
 	}
 }
 
+/**
+ * Form to add a replicate to a ldap server
+ * 
+ * @param $target : target page for add new replicate
+ * @param $master_id : master ldap server ID
+**/
 function addNewReplicateForm($target, $master_id){
 	global $LANG;
 	
@@ -1159,7 +1250,12 @@ function addNewReplicateForm($target, $master_id){
 	
 }
 
-
+/**
+ * Get all replicate servers for a master one
+ * 
+ * @param $master_id : master ldap server ID
+ * @return array of the replicate servers
+**/
 function getAllReplicateForAMaster($master_id){
 	global $DB;
 	
@@ -1173,6 +1269,12 @@ function getAllReplicateForAMaster($master_id){
 	return $replicates;
 }
 
+/**
+ * Get all replicate name servers for a master one
+ * 
+ * @param $master_id : master ldap server ID
+ * @return string containing names of the replicate servers
+**/
 function getAllReplicatesNamesForAMaster($master_id){
 	$replicates = getAllReplicateForAMaster($master_id);
 	$str = "";
@@ -1182,7 +1284,12 @@ function getAllReplicatesNamesForAMaster($master_id){
 	return $str;	
 }
 
-// Check if auto login or CAS is activate and redirect to login.php if ok
+/**
+ * Check alternate authentication systems
+ * 
+ * @param $redirect : need to redirect (true) or get type of Auth system which match
+ * @return nothing if redirect is true, else Auth system ID
+**/
 function checkAlternateAuthSystems($redirect=false){
 	global $CFG_GLPI;
 	if (isset($_GET["noAUTO"])||isset($_POST["noAUTO"])){

@@ -39,22 +39,38 @@ if (!defined('GLPI_ROOT')) {
 	die("Sorry. You can't access directly to this file");
 }
 
-   function diff_key() {
-       $argCount  = func_num_args();
-       $diff_arg_prefix = 'diffArg';
-       $diff_arg_names = array();
-       for ($i=0; $i < $argCount; $i++) {
-           $diff_arg_names[$i] = 'diffArg'.$i;
-           $$diff_arg_names[$i] = array_keys((array)func_get_arg($i));
-       }
-       $diffArrString = '';
-       if (!empty($diff_arg_names)) $diffArrString =  '$'.implode(', $', $diff_arg_names);
-       eval("\$result = array_diff(".$diffArrString.");");
-       return $result;
-   }
 
-function ldapImportGroup ($group_dn,$ldap_server,$entity)
-{
+Computes the difference of arrays using keys for comparison
+
+/** Computes the difference of arrays using keys for comparison
+ * parameters are unlimited number of arrays
+ * REPLACE array_diff_key for PHP 4 compatibility
+ * 
+ * @return  Returns an array containing all the entries from first array  that are not present in any of the other arrays.
+ */
+function diff_key() {
+	$argCount  = func_num_args();
+	$diff_arg_prefix = 'diffArg';
+	$diff_arg_names = array();
+	for ($i=0; $i < $argCount; $i++) {
+		$diff_arg_names[$i] = 'diffArg'.$i;
+		$$diff_arg_names[$i] = array_keys((array)func_get_arg($i));
+	}
+	$diffArrString = '';
+	if (!empty($diff_arg_names)) {
+		$diffArrString =  '$'.implode(', $', $diff_arg_names);
+	}
+	eval("\$result = array_diff(".$diffArrString.");");
+	return $result;
+}
+/** Converts an array of parameters into a query string to be appended to a URL.
+ *
+ * @param   $group_dn  dn of the group to import
+ * @param   $ldap_server ID of the LDAP server to use
+ * @param   $entity entity where group must to be imported
+ * @return  nothing
+ */
+function ldapImportGroup ($group_dn,$ldap_server,$entity){
 	$config_ldap = new AuthLDAP();
 	$res = $config_ldap->getFromDB($ldap_server);
 	$ldap_users = array ();
@@ -72,13 +88,25 @@ function ldapImportGroup ($group_dn,$ldap_server,$entity)
 		$group = new Group();
 		$group->add(array("name"=>$group_infos["cn"][0],"ldap_group_dn"=>$group_infos["dn"],"FK_entities"=>$entity));
 	}
-	
-	
 }
-function ldapImportUser ($login,$sync)
-{
+
+/** Import a user from the active ldap server
+ *
+ * @param   $login  dn of the user to import
+ * @param   $sync synchoronise (true) or import (false)
+ * @return  nothing
+ */
+function ldapImportUser ($login,$sync){
 	ldapImportUserByServerId($login, $sync,$_SESSION["ldap_server"]);
 }
+
+/** Import a user from a specific ldap server
+ *
+ * @param   $login  dn of the user to import
+ * @param   $sync synchoronise (true) or import (false)
+ * @param   $ldap_server ID of the LDAP server to use
+ * @return  nothing
+ */
 function ldapImportUserByServerId($login, $sync,$ldap_server) {
 	global $DB, $LANG;
 
@@ -131,9 +159,12 @@ function ldapImportUserByServerId($login, $sync,$ldap_server) {
 	} else {
 		return false;
 	}
-
 }
-
+/** Form to choose a ldap server
+ *
+ * @param   $target target page for the form
+ * @return  nothing
+ */
 function ldapChooseDirectory($target) {
 	global $DB, $LANG;
 
@@ -169,11 +200,14 @@ function ldapChooseDirectory($target) {
 	echo "</table></div></form>";
 }
 
-
-
-
-function getAllGroups($id_auth,$myfilter,$entity)
-{
+/** Get all LDAP groups from a ldap server which are not already in an entity
+ *
+ * @param   $id_auth ID of the server to use
+ * @param   $myfilter ldap filter to use
+ * @param   $entity entity to search
+ * @return  array of the groups
+ */
+function getAllGroups($id_auth,$myfilter,$entity){
 	global $DB, $LANG,$CFG_GLPI;
 	$config_ldap = new AuthLDAP();
 	$res = $config_ldap->getFromDB($id_auth);
@@ -181,13 +215,14 @@ function getAllGroups($id_auth,$myfilter,$entity)
 	
 	$ds = connect_ldap($config_ldap->fields['ldap_host'], $config_ldap->fields['ldap_port'], $config_ldap->fields['ldap_rootdn'], $config_ldap->fields['ldap_pass'], $config_ldap->fields['ldap_use_tls'], $config_ldap->fields['ldap_opt_deref']);
 	if ($ds) {
-			$attrs = array ("dn","cn");
+		$attrs = array ("dn","cn");
 	
 		//Get all groups from LDAP
-		if ($myfilter == '')
+		if ($myfilter == ''){
 			$filter = $config_ldap->fields['ldap_group_condition'];
-		else
+		} else {
 			$filter = $myfilter;
+		}
 		
 		$sr = @ldap_search($ds, $config_ldap->fields['ldap_basedn'],$filter , $attrs);
 
@@ -198,15 +233,14 @@ function getAllGroups($id_auth,$myfilter,$entity)
 
 			$res = $DB->query($sql);
 			//If the group exists in DB -> unset it from the LDAP groups
-			while ($group = $DB->fetch_array($res))
+			while ($group = $DB->fetch_array($res)){
 				$glpi_groups[$group["name"]] = 1;
+			}
 			
 			$info = ldap_get_entries($ds, $sr);
 
-			for ($ligne = 0; $ligne < $info["count"]; $ligne++)
-			{
-				if (!isset($glpi_groups[$info[$ligne]["cn"][0]]))
-				{
+			for ($ligne = 0; $ligne < $info["count"]; $ligne++){
+				if (!isset($glpi_groups[$info[$ligne]["cn"][0]])){
 					$groups[$ligne]["dn"]=$info[$ligne]["dn"];
 					$groups[$ligne]["cn"]=$info[$ligne]["cn"][0];
 				}						
@@ -217,6 +251,16 @@ function getAllGroups($id_auth,$myfilter,$entity)
 	return $groups;		
 }
 
+/** Show LDAP groups to add or synchronise in an entity
+ *
+ * @param   $target target page for the form
+ * @param   $check check all ? -> need to be delete 
+ * @param   $start where to start the list
+ * @param   $sync synchronise or add ?
+ * @param   $filter ldap filter to use
+ * @param   $entity working entity
+ * @return  nothing
+ */
 function showLdapGroups($target, $check, $start, $sync = 0,$filter='',$entity) {
 	global $DB, $CFG_GLPI, $LANG;
 
@@ -277,7 +321,13 @@ function showLdapGroups($target, $check, $start, $sync = 0,$filter='',$entity) {
 }
 
 
-//Get the list of LDAP users to add/synchronize
+/** Get the list of LDAP users to add/synchronize
+ *
+ * @param   $id_auth ID of the server to use
+ * @param   $sync user to synchronise or add ?
+ * @param   $myfilter ldap filter to use
+ * @return  array of the user
+ */
 function getAllLdapUsers($id_auth, $sync = 0,$myfilter='') {
 	global $DB, $LANG,$CFG_GLPI;
 
@@ -375,6 +425,17 @@ function getAllLdapUsers($id_auth, $sync = 0,$myfilter='') {
 		return $glpi_users;
 	
 }
+
+
+/** Show LDAP users to add or synchronise
+ *
+ * @param   $target target page for the form
+ * @param   $check check all ? -> need to be delete 
+ * @param   $start where to start the list
+ * @param   $sync synchronise or add ?
+ * @param   $filter ldap filter to use
+ * @return  nothing
+ */
 function showLdapUsers($target, $check, $start, $sync = 0,$filter='') {
 	global $DB, $CFG_GLPI, $LANG;
 
@@ -451,7 +512,12 @@ function showLdapUsers($target, $check, $start, $sync = 0,$filter='') {
 	}
 }
 
-//Test a connection to the ldap directory
+/** Test a LDAP connection
+ *
+ * @param   $id_auth ID of the LDAP server
+ * @param   $replicate_id use a replicate if > 0
+ * @return  boolean connection succeeded ?
+ */
 function testLDAPConnection($id_auth,$replicate_id=-1) {
 	$config_ldap = new AuthLDAP();
 	$res = $config_ldap->getFromDB($id_auth);
@@ -483,74 +549,82 @@ function testLDAPConnection($id_auth,$replicate_id=-1) {
 		return false;
 }
 
-//Display refresh button in the user page
+/** Display refresh button in the user page
+ *
+ * @param   $target target for the form
+ * @param   $ID ID of the user
+ * @return nothing
+ */
 function showSynchronizationForm($target, $ID) {
 	global $LANG, $DB;
 
-	if (haveRight("user", "w"))
-	{
-	//Look it the user's auth method is LDAP
-	$sql = "SELECT auth_method, id_auth FROM glpi_users WHERE ID=" . $ID;
-	$result = $DB->query($sql);
-	
-	if ($DB->numrows($result) > 0) {
-		$data = $DB->fetch_array($result);
+	if (haveRight("user", "w")){
+		//Look it the user's auth method is LDAP
+		$sql = "SELECT auth_method, id_auth FROM glpi_users WHERE ID=" . $ID;
+		$result = $DB->query($sql);
 		
-		switch($data["auth_method"])
-		{
-			case AUTH_LDAP :
-			$sql = "SELECT name FROM glpi_auth_ldap WHERE ID=" . $data["id_auth"];
-			$result = $DB->query($sql);
-			if ($DB->numrows($result) > 0) {
-				//Look it the auth server still exists !
+		if ($DB->numrows($result) > 0) {
+			$data = $DB->fetch_array($result);
+			
+			switch($data["auth_method"])
+			{
+				case AUTH_LDAP :
+				$sql = "SELECT name FROM glpi_auth_ldap WHERE ID=" . $data["id_auth"];
+				$result = $DB->query($sql);
+				if ($DB->numrows($result) > 0) {
+					//Look it the auth server still exists !
+						echo "<div class='center'>";
+						echo "<form method='post' action=\"$target\">";
+						echo "<table class='tab_cadre'><tr class='tab_bg_2'><td>";
+						echo "<input type='hidden' name='ID' value='" . $ID . "'>";
+						echo "<input class=submit type='submit' name='force_ldap_resynch' value='" . $LANG["ocsng"][24] . "'>";
+						echo "</td></tr></table>";
+	
+						formChangeAuthMethodToDB($ID);
+						echo "<br>";
+						formChangeAuthMethodToMail($ID);
+								
+						echo "</form></div>";
+				}
+				break;	
+				case AUTH_DB_GLPI :
 					echo "<div class='center'>";
 					echo "<form method='post' action=\"$target\">";
-					echo "<table class='tab_cadre'><tr class='tab_bg_2'><td>";
-					echo "<input type='hidden' name='ID' value='" . $ID . "'>";
-					echo "<input class=submit type='submit' name='force_ldap_resynch' value='" . $LANG["ocsng"][24] . "'>";
-					echo "</td></tr></table>";
-
-					formChangeAuthMethodToDB($ID);
+					formChangeAuthMethodToLDAP($ID);
 					echo "<br>";
 					formChangeAuthMethodToMail($ID);
-							
 					echo "</form></div>";
-			}
-			break;	
-			case AUTH_DB_GLPI :
-				echo "<div class='center'>";
-				echo "<form method='post' action=\"$target\">";
-				formChangeAuthMethodToLDAP($ID);
-				echo "<br>";
-				formChangeAuthMethodToMail($ID);
-				echo "</form></div>";
-			break;
-			case AUTH_MAIL :
-				echo "<div class='center'>";
-				echo "<form method='post' action=\"$target\">";
-				formChangeAuthMethodToDB($ID);
-				echo "<br>";
-				formChangeAuthMethodToLDAP($ID);
-				echo "</form></div>";
-			break;
-			case AUTH_EXTERNAL :
-			case AUTH_X509 :
-				echo "<div class='center'>";
-				echo "<form method='post' action=\"$target\">";
-				formChangeAuthMethodToDB($ID);
-				echo "<br>";
-				formChangeAuthMethodToLDAP($ID);
-				echo "<br>";
-				formChangeAuthMethodToMail($ID);
-				echo "</form></div>";
-			break;
-		} 
-	}
+				break;
+				case AUTH_MAIL :
+					echo "<div class='center'>";
+					echo "<form method='post' action=\"$target\">";
+					formChangeAuthMethodToDB($ID);
+					echo "<br>";
+					formChangeAuthMethodToLDAP($ID);
+					echo "</form></div>";
+				break;
+				case AUTH_EXTERNAL :
+				case AUTH_X509 :
+					echo "<div class='center'>";
+					echo "<form method='post' action=\"$target\">";
+					formChangeAuthMethodToDB($ID);
+					echo "<br>";
+					formChangeAuthMethodToLDAP($ID);
+					echo "<br>";
+					formChangeAuthMethodToMail($ID);
+					echo "</form></div>";
+				break;
+			} 
+		}
 	}
 }
 
-function formChangeAuthMethodToDB($ID)
-{
+/** Form part to change auth method of a user
+ *
+ * @param   $ID ID of the user
+ * @return nothing
+ */
+function formChangeAuthMethodToDB($ID){
 	global $LANG;
 	echo "<br><table class='tab_cadre'>";
 	echo "<tr><th colspan='2' colspan='2'>" . $LANG["login"][30]."</th></tr>";
@@ -559,14 +633,18 @@ function formChangeAuthMethodToDB($ID)
 	echo "</td></tr></table>";
 }
 
+/** Form part to change ldap auth method of a user
+ *
+ * @param   $ID ID of the user
+ * @return nothing
+ */
 function formChangeAuthMethodToLDAP($ID)
 {
 	global $LANG,$DB;
 	
 	$sql = "SELECT ID FROM glpi_auth_ldap";
 	$result = $DB->query($sql);
-	if ($DB->numrows($result) > 0)
-	{
+	if ($DB->numrows($result) > 0){
 		echo "<table class='tab_cadre'>";
 		echo "<tr><th colspan='2' colspan='2'>" . $LANG["login"][30]." : ".$LANG["login"][2]."</th></tr>";
 		echo "<tr class='tab_bg_1'><td><input type='hidden' name='ID' value='" . $ID . "'>";
@@ -578,13 +656,16 @@ function formChangeAuthMethodToLDAP($ID)
 	}
 }
 
-function formChangeAuthMethodToMail($ID)
-{
+/** Form part to change mail auth method of a user
+ *
+ * @param   $ID ID of the user
+ * @return nothing
+ */
+function formChangeAuthMethodToMail($ID){
 	global $LANG,$DB;
 	$sql = "SELECT ID FROM glpi_auth_mail";
 	$result = $DB->query($sql);
-	if ($DB->numrows($result) > 0)
-	{
+	if ($DB->numrows($result) > 0){
 		echo "<table class='tab_cadre'>";
 		echo "<tr><th colspan='2' colspan='2'>" . $LANG["login"][30]." : ".$LANG["login"][3]."</th></tr>";
 		echo "<tr class='tab_bg_1'><td><input type='hidden' name='ID' value='" . $ID . "'>";
@@ -610,47 +691,61 @@ function getAuthMethodFromDB($ID) {
 }
 */
 
-//converts LDAP timestamps over to Unix timestamps
+/** Converts LDAP timestamps over to Unix timestamps
+ *
+ * @param   $ldapstamp LDAP timestamp
+ * @param   $timezone timezone used
+ * @param   $addtimezone use timezone ?
+ * @return unix timestamp
+ */
 function ldapStamp2UnixStamp($ldapstamp,$timezone=0,$addtimezone=false) {
-   global $CFG_GLPI;
-   
-   $year=substr($ldapstamp,0,4);
-   $month=substr($ldapstamp,4,2);
-   $day=substr($ldapstamp,6,2);
-   $hour=substr($ldapstamp,8,2);
-   $minute=substr($ldapstamp,10,2);
-   $seconds=substr($ldapstamp,12,2);
-   $stamp=gmmktime($hour,$minute,$seconds,$month,$day,$year);
-   //Add timezone delay
-   if ($addtimezone){
-   		$stamp+= computeTimeZoneDelay($CFG_GLPI["glpi_timezone"],$timezone);
-   }
-   
-   return $stamp;
+	global $CFG_GLPI;
+	
+	$year=substr($ldapstamp,0,4);
+	$month=substr($ldapstamp,4,2);
+	$day=substr($ldapstamp,6,2);
+	$hour=substr($ldapstamp,8,2);
+	$minute=substr($ldapstamp,10,2);
+	$seconds=substr($ldapstamp,12,2);
+	$stamp=gmmktime($hour,$minute,$seconds,$month,$day,$year);
+	//Add timezone delay
+	if ($addtimezone){
+			$stamp+= computeTimeZoneDelay($CFG_GLPI["glpi_timezone"],$timezone);
+	}
+	
+	return $stamp;
 }
 
-function computeTimeZoneDelay($first,$second)
-{
+/** Computer delay between 2 timezones
+ *
+ * @param   $first first timestamp
+ * @param   $second second timestamp
+ * @return timestamp delay
+ */
+function computeTimeZoneDelay($first,$second){
 	return ($first - $second) * HOUR_TIMESTAMP; 
 }
 
-function displayLdapFilter($target,$users=true)
-{
+/** Display LDAP filter
+ *
+ * @param   $target target for the form
+ * @param   $users boolean : for user ?
+ * @return nothing
+ */
+function displayLdapFilter($target,$users=true){
 	global $LANG;
 
-	
-	if (!isset($_SESSION["ldap_filter"]) || $_SESSION["ldap_filter"] == '')
-	{
-			$config_ldap = new AuthLDAP();
-			$res = $config_ldap->getFromDB($_SESSION["ldap_server"]);
-			$_SESSION["ldap_filter"]=$config_ldap->fields['ldap_group_condition'];
+	if (!isset($_SESSION["ldap_filter"]) || $_SESSION["ldap_filter"] == ''){
+		$config_ldap = new AuthLDAP();
+		$res = $config_ldap->getFromDB($_SESSION["ldap_server"]);
+		$_SESSION["ldap_filter"]=$config_ldap->fields['ldap_group_condition'];
 	}
 		
 	echo "<div class='center'>";
 	echo "<form method='post' action=\"$target\">";
 	echo "<table class='tab_cadre'>"; 
 	echo "<tr><th colspan='2'>" . ($users?$LANG["setup"][263]:$LANG["setup"][253]) . "</th></tr>";
-	echo"<tr class='tab_bg_2'><td>";
+	echo "<tr class='tab_bg_2'><td>";
 	echo "<input type='text' name='ldap_filter' value='" . $_SESSION["ldap_filter"] . "' size='70'>";
 	echo "&nbsp;<input class=submit type='submit' name='change_ldap_filter' value='" . $LANG["buttons"][2] . "'>";
 	echo "</td></tr></table>";
