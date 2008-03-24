@@ -224,70 +224,6 @@ function getTreeValueName($table,$ID, $wholename="",$level=0)
 	return array($name,$level);
 }
 
-/**
- * Get the equivalent search query using ID that the search of the string argument
- *
- * @param $table
- * @param $search the search string value
- * @return string the query
- */
-function getRealSearchForTreeItem($table,$search){
-
-	return " ( $table.completename ".makeTextSearch($search)." ) ";
-
-	/*if (empty($search)) return " ( $table.name LIKE '%$search%' ) ";
-
-	  global $DB;
-
-	// IDs to be present in the final query
-	$id_found=array();
-	// current ID found to be added
-	$found=array();
-
-	// First request init the  varriables
-	$query="SELECT ID from $table WHERE name LIKE '%$search%'";
-	if ( ($result=$DB->query($query)) && ($DB->numrows($result)>0) ){
-	while ($row=$DB->fetch_array($result)){
-	array_push($id_found,$row['ID']);
-	array_push($found,$row['ID']);
-	}
-	}else return " ( $table.name LIKE '%$search%') ";
-
-	// Get the leafs of previous founded item
-	while (count($found)>0){
-	// Get next elements
-	$query="SELECT ID from $table WHERE '0'='1' ";
-	foreach ($found as $key => $val)
-	$query.= " OR parentID = '$val' ";
-
-	// CLear the found array
-	unset($found);
-	$found=array();
-
-	$result=$DB->query($query);
-	if ($DB->numrows($result)>0){
-	while ($row=$DB->fetch_array($result)){
-	if (!in_array($row['ID'],$id_found)){
-	array_push($id_found,$row['ID']);
-	array_push($found,$row['ID']);
-	}
-	}		
-	}
-
-	}
-
-	// Construct the final request
-	if (count($id_found)>0){
-	$ret=" ( '0' = '1' ";
-	foreach ($id_found as $key => $val)
-	$ret.=" OR $table.ID = '$val' ";
-	$ret.=") ";
-
-	return $ret;
-	}else return " ( $table.name LIKE '%$search%') ";
-	 */
-}
-
 
 /**
  * Get the ancestors of an entity
@@ -548,6 +484,7 @@ function getRealQueryForTreeItem($table,$IDf,$reallink=""){
  * @param $ID
  * @return int level
  */
+/* // NOT USED
 function getTreeItemLevel($table,$ID){
 	global $DB;
 	$level=0;
@@ -573,6 +510,7 @@ function getTreeItemLevel($table,$ID){
 	return -1;
 
 }
+*/
 
 /**
  * Compute all completenames of Dropdown Tree table
@@ -1012,6 +950,7 @@ function closeDBConnections(){
 }
 
 // Check if the user have an email 
+/* // NOT_USED
 function checkEmailForUser($ID){
 	global $DB;
 	$query="SELECT email FROM glpi_users WHERE ID='$ID'";
@@ -1021,6 +960,7 @@ function checkEmailForUser($ID){
 	}
 	return false;
 }
+*/
 
 function formatOutputWebLink($link){
 	if (!ereg("^https?",$link)){

@@ -961,12 +961,13 @@ function getOcsConf($id) {
  * Get number of OCS configurations
  *
  **/
-
+/* // NOT_USED
 function getNumberOfOcsConfigs() {
 	global $DB, $CACHE_CFG;
 
 	return countElementsInTable("glpi_ocs_config");
 }
+*/
 
 /**
  * Update the computer hardware configuration

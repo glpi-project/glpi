@@ -597,6 +597,7 @@ function formChangeAuthMethodToMail($ID)
 }
 
 //Get authentication method of a user, by looking in database
+/* // NOT_USED
 function getAuthMethodFromDB($ID) {
 	global $DB;
 	$sql = "SELECT auth_method FROM glpi_users WHERE ID=" . $ID;
@@ -607,6 +608,7 @@ function getAuthMethodFromDB($ID) {
 	} else
 		return NOT_YET_AUTHENTIFIED;
 }
+*/
 
 //converts LDAP timestamps over to Unix timestamps
 function ldapStamp2UnixStamp($ldapstamp,$timezone=0,$addtimezone=false) {

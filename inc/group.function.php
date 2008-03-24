@@ -170,6 +170,7 @@ function deleteUserGroup($ID){
 	$result = $DB->query($query);
 }
 
+/* // NOT_USED
 function searchGroupID($name,$FK_entities){
 	global $DB;
 	$query ="SELECT ID from glpi_groups where name='$name' AND FK_entities='$FK_entities'";
@@ -181,4 +182,5 @@ function searchGroupID($name,$FK_entities){
 	} 
 	else return -1;
 }
+*/
 ?>
