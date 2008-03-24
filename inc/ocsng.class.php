@@ -186,7 +186,10 @@ class Ocsng extends CommonDBTM {
 		echo "</td></tr>";
 		
 		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["ocsconfig"][48] . " </td><td>";
-		getListState($ID);
+		//getListState($ID);
+		dropdownArrayValues("deconnection_behavior", 
+			array(''=>$LANG["buttons"][49], "trash"=>$LANG["ocsconfig"][49], "delete"=>$LANG["ocsconfig"][50]), 
+			$this->fields["deconnection_behavior"]);
 		echo "</td></tr>";
 		
 		$import_array = array("0"=>$LANG["ocsconfig"][11],"1"=>$LANG["ocsconfig"][10],"2"=>$LANG["ocsconfig"][12]);

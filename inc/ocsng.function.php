@@ -3552,7 +3552,7 @@ function getColumnListFromAccountInfoTable($ID, $glpi_column) {
 	}
 	return $listColumn;
 }
-
+/*
 function getListState($ocs_server_id) {
 	global $DB, $LANG;
 	$queryStateSelected = "SELECT deconnection_behavior from glpi_ocs_config WHERE ID='$ocs_server_id'";
@@ -3577,7 +3577,7 @@ function getListState($ocs_server_id) {
 	}
 	dropdownArrayValues("deconnection_behavior", $values, $selected);
 }
-
+*/
 function setEntityLock($entity) {
 	global $CFG_GLPI;
 	$fp = fopen(GLPI_LOCK_DIR . "/lock_entity_" . $entity, "w+");

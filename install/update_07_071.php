@@ -391,6 +391,9 @@ function update07to071() {
 		$query = "ALTER TABLE `glpi_config` ADD `autoupdate_link_state` smallint(6) NOT NULL DEFAULT '0' AFTER `autoupdate_link_location` ," .
 				"ADD `autoclean_link_state` smallint(6) NOT NULL DEFAULT '0' AFTER `autoclean_link_location`;";
 		$DB->query($query) or die("0.71 add autoclean_link_state to glpi_config " . $LANG["update"][90] . $DB->error());
+		
+		$query = "UPDATE glpi_ocs_config SET deconnection_behavior = '' WHERE deconnection_behavior != 'trash' AND deconnection_behavior != 'delete';";
+		$DB->query($query);
 	}
 
 	if (!FieldExists("glpi_profiles", "bookmark_public")) {
