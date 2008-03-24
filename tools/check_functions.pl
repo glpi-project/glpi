@@ -65,7 +65,7 @@ sub read_dir{
 							$count=0;
 							do_dir(".",$1);
 							print $count;
-							if ($count<1) {print " <<<<--------------- NOT FOUND";}
+							if ($count <= 1) {print " <<<<--------------- NOT FOUND";}
 							print "\n";
 						}
 					
@@ -87,11 +87,11 @@ sub do_dir{
 	if ($_ ne '..' && $_ ne '.'){
 			
 		if (-d "$dir/$_" && $_!~m/locales/ && $_!~m/files/ && $_!~m/\.svn/ ){
-			if ($count_all==1 || $count==0){
+			if ($count_all==1 || $count<=1){
 				do_dir("$dir/$_",$function);
 			}
 		} else {
-			if ($count_all==1 || $count==0){
+			if ($count_all==1 || $count<=1){
 				if (!-d "$dir/$_" && (index($_,".php",0)==length($_)-4)){
 				$found_php=1;
 				}
@@ -99,7 +99,7 @@ sub do_dir{
 		}
 	}
 	}
-	if ($found_php==1 && ($count_all==1 || $count<1) ){
+	if ($found_php==1 && ($count_all==1 || $count<=1) ){
 		open COUNT, "grep -i \'".$function."\\s*(\' $dir/*.php | wc -l |";
 		while(<COUNT>) {
 			$count+=$_;
