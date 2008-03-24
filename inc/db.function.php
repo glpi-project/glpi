@@ -114,8 +114,7 @@ function getAllDatasFromTable($table,$condition=""){
  * @return string : name of the element
  * @see getTreeValueCompleteName
  */
-function getTreeLeafValueName($table,$ID,$withcomments=0)
-{
+function getTreeLeafValueName($table,$ID,$withcomments=0){
 	global $DB,$LANG;
 
 	$name="";
@@ -152,8 +151,7 @@ function getTreeLeafValueName($table,$ID,$withcomments=0)
  * @return string : completename of the element
  * @see getTreeLeafValueName
  */
-function getTreeValueCompleteName($table,$ID,$withcomments=0)
-{
+function getTreeValueCompleteName($table,$ID,$withcomments=0){
 	global $DB,$LANG;
 	$name="";
 	$comments="";
@@ -184,7 +182,8 @@ function getTreeValueCompleteName($table,$ID,$withcomments=0)
 }
 
 /**
- * show name cat�ory
+ * show name category
+ * DO NOT DELETE THIS FUNCTION : USED IN THE UPDATE
  *
  * @param $table
  * @param $ID
@@ -192,9 +191,7 @@ function getTreeValueCompleteName($table,$ID,$withcomments=0)
  * @param $level
  * @return string name
  */
-// DO NOT DELETE THIS FUNCTION : USED IN THE UPDATE
-function getTreeValueName($table,$ID, $wholename="",$level=0)
-{
+function getTreeValueName($table,$ID, $wholename="",$level=0){
 	global $DB,$LANG;
 
 	$query = "SELECT * 
@@ -351,7 +348,7 @@ function getSonsOfTreeItem($table,$IDf){
 /**
  * Get the sons of an item in a tree dropdown
  *
- * @param $table
+ * @param $table table name
  * @param $IDf The ID of the father
  * @return array of IDs of the sons
  */
@@ -409,7 +406,13 @@ function getTreeForItem($table,$IDf){
 
 }
 
-
+/**
+ * Construct a tree from a list structure
+ *
+ * @param $list the list
+ * @param $root root of the tree
+ * @return list of items in the tree
+ */
 function contructTreeFromList($list,$root){
 	$tree=array();
 	
@@ -425,6 +428,13 @@ function contructTreeFromList($list,$root){
 
 }
 
+/**
+ * Construct a list from a tree structure
+ *
+ * @param $tree the tree
+ * @param $parent root of the tree
+ * @return list of items in the tree
+ */
 function contructListFromTree($tree,$parent=0){
 	$list=array();
 	foreach ($tree as $root => $data){
@@ -445,7 +455,7 @@ function contructListFromTree($tree,$parent=0){
 /**
  * Get the equivalent search query using ID of soons that the search of the father's ID argument
  *
- * @param $table
+ * @param $table table name
  * @param $IDf The ID of the father
  * @param $reallink real field to link ($table.ID if not set)
  * @return string the query
@@ -480,8 +490,8 @@ function getRealQueryForTreeItem($table,$IDf,$reallink=""){
 /**
  * Get the level for an item in a tree structure
  *
- * @param $table
- * @param $ID
+ * @param $table table name
+ * @param $ID ID of the item
  * @return int level
  */
 /* // NOT USED
@@ -705,6 +715,19 @@ function getPreviousItem($table,$ID,$condition="",$nextprev_item=""){
 
 }
 
+/**
+ * Format a user name 
+ *
+ *@param $ID int : ID of the user.
+ *@param $login string : login of the user
+ *@param $realname string : realname of the user
+ *@param $firstname string : firstname of the user
+ *@param $link int : include link (only if $link==1)
+ *@param $cut int : limit string length (0 = no limit)
+ *
+ *@return string : formatted username
+ *
+ **/
 function formatUserName($ID,$login,$realname,$firstname,$link=0,$cut=0){
 	global $CFG_GLPI;
 	$before="";
@@ -831,8 +854,15 @@ function FieldExists($table, $field) {
 	} else return false;
 }
 
-// return true if the field $field of the table $table is a mysql index
-// else return false
+/**
+ * Determine if an index exists in database
+ *
+ * @param $table string : table of the index
+ * @param $field string : name of the index
+ *
+ * @return boolean : index exists ?
+ *
+ **/
 function isIndex($table, $field) {
 
 	global $DB;
@@ -849,6 +879,14 @@ function isIndex($table, $field) {
 }
 
 
+/**
+ * Export an array to be stored in a simple field in the database
+ *
+ * @param $TAB Array to export / encode (one level depth)
+ *
+ * @return string containing encoded array
+ *
+ **/
 function exportArrayToDB($TAB) {
 	$EXPORT = "";
 	while (list($KEY,$VALUE) = each($TAB)) {
@@ -857,6 +895,14 @@ function exportArrayToDB($TAB) {
 	return $EXPORT;
 }
 
+/**
+ * Import an array encoded in a simple field in the database
+ *
+ * @param $DATA data readed in DB to import
+ *
+ * @return array containing datas
+ *
+ **/
 function importArrayFromDB($DATA) {
 	$TAB = array();
 
@@ -869,11 +915,18 @@ function importArrayFromDB($DATA) {
 }
 
 
-//***************************************************************
-// Cr�tion automatique d'un nouveau code �partir du gabarit
-// @object     : objet concern�// @field      : nom de champ du gabarit contenant le format du code
-// @isTemplate : true si template new
-// @type       : type d'objet
+/**
+ * Create a new name using a autoname field defined in a template
+ *
+ * @param $objectName autoname template
+ * @param $field field to autoname
+ * @param $isTemplate true if create an object from a template 
+ * @param $type device type
+ * @param $FK_entities limit generation to an entity
+ *
+ * @return new auto string
+ *
+ **/
 function autoName($objectName, $field, $isTemplate, $type,$FK_entities=-1){
 	global $LINK_ID_TABLE,$DB,$CFG_GLPI;
 
@@ -937,6 +990,12 @@ function autoName($objectName, $field, $isTemplate, $type,$FK_entities=-1){
 	return $objectName;
 }
 
+/**
+ * Close active DB connections
+ *
+ *@return nothing
+ *
+ **/
 function closeDBConnections(){
 	global $DB, $DBocs;
 
@@ -962,6 +1021,14 @@ function checkEmailForUser($ID){
 }
 */
 
+/**
+ * Format a web link adding http:// if missing
+ *
+ *@param $link link to format
+ *
+ *@return formatted link.
+ *
+ **/
 function formatOutputWebLink($link){
 	if (!ereg("^https?",$link)){
 		return "http://".$link;
