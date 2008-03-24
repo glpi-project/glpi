@@ -171,8 +171,6 @@ if (!defined('GLPI_ROOT')){
 	*@param $str string
 	*@param $start start of the result substring
 	*
-	* Can have a third parameters : length
-	* 
 	*@return substring
 	**/
 	function utf8_substr($str,$start){
@@ -187,9 +185,8 @@ if (!defined('GLPI_ROOT')){
 	}
 	/**
 	* strlen function for utf8 string
-	*strlen function for utf8 string
 	*
-	*@return length of the string
+	* @return length of the string
 	**/
 	function utf8_strlen($str){
     	$i = 0;
@@ -214,29 +211,29 @@ if (!defined('GLPI_ROOT')){
 	}
 	/**
 	* html_entity_decode function for utf8 string
-	*@param $string string
+	* @param $string string
 	*
-	*@return converted string
+	* @return converted string
 	**/
 	function utf8_html_entity_decode($string){
-    	static $trans_tbl;
-   
-    	// replace numeric entities
-    	$string = preg_replace('~&#x([0-9a-f]+);~ei', 'code2utf(hexdec("\\1"))', $string);
-    	$string = preg_replace('~&#([0-9]+);~e', 'code2utf(\\1)', $string);
-
-    	// replace literal entities
-    	if (!isset($trans_tbl)){
-        	$trans_tbl = array();
-       
-        	foreach (get_html_translation_table(HTML_ENTITIES) as $val=>$key){
-            	$trans_tbl[$key] = utf8_encode($val);
-    		}
-    	}   
-    	return strtr($string, $trans_tbl);
+		static $trans_tbl;
+	
+		// replace numeric entities
+		$string = preg_replace('~&#x([0-9a-f]+);~ei', 'code2utf(hexdec("\\1"))', $string);
+		$string = preg_replace('~&#([0-9]+);~e', 'code2utf(\\1)', $string);
+	
+		// replace literal entities
+		if (!isset($trans_tbl)){
+			$trans_tbl = array();
+	
+			foreach (get_html_translation_table(HTML_ENTITIES) as $val=>$key){
+			$trans_tbl[$key] = utf8_encode($val);
+			}
+		}   
+		return strtr($string, $trans_tbl);
 	}
 
-	// Returns the utf string corresponding to the unicode value (from php.net, courtesy - romans@void.lv)
+	/// Returns the utf string corresponding to the unicode value (from php.net, courtesy - romans@void.lv)
 	function code2utf($num){
 	    if ($num < 128) return chr($num);
 	    if ($num < 2048) return chr(($num >> 6) + 192) . chr(($num & 63) + 128);
@@ -579,56 +576,53 @@ function commonCheckForUseGLPI(){
 * @return 2 : creation error 1 : delete error 0: OK
 **/
 function checkWriteAccessToDirs(){
-		global $LANG;
-		$dir_to_check=array(
-			GLPI_DUMP_DIR => $LANG["install"][16],
-			GLPI_DOC_DIR => $LANG["install"][21],
-			GLPI_CONFIG_DIR => $LANG["install"][23],
-			GLPI_SESSION_DIR => $LANG["install"][50],
-			GLPI_CRON_DIR => $LANG["install"][52],
-			GLPI_CACHE_DIR => $LANG["install"][99],
-			GLPI_LOG_DIR => $LANG["install"][53]
-		);
-		$error=0;	
-		foreach ($dir_to_check as $dir => $message){
-			echo "<tr class='tab_bg_1'><td><strong>".$message."</strong></td>";
-			$tmperror=testWriteAccessToDirectory($dir);
+	global $LANG;
+	$dir_to_check=array(
+		GLPI_DUMP_DIR => $LANG["install"][16],
+		GLPI_DOC_DIR => $LANG["install"][21],
+		GLPI_CONFIG_DIR => $LANG["install"][23],
+		GLPI_SESSION_DIR => $LANG["install"][50],
+		GLPI_CRON_DIR => $LANG["install"][52],
+		GLPI_CACHE_DIR => $LANG["install"][99],
+		GLPI_LOG_DIR => $LANG["install"][53]
+	);
+	$error=0;	
+	foreach ($dir_to_check as $dir => $message){
+		echo "<tr class='tab_bg_1'><td><strong>".$message."</strong></td>";
+		$tmperror=testWriteAccessToDirectory($dir);
 	
-			switch($tmperror){
-				// Error on creation
-				case 4 :
-					echo "<td><p class='red'>".$LANG["install"][100]."</p> ".$LANG["install"][97]."'".$dir."'. ".$LANG["install"][98]."</td></tr>";
-					$error=2;
-					break;
-				case 3 :
-					echo "<td><p class='red'>".$LANG["install"][101]."</p> ".$LANG["install"][97]."'".$dir."'. ".$LANG["install"][98]."</td></tr>";
-					$error=1;
-					break;
-				// Error on creation
-				case 2 :
-					echo "<td><p class='red'>".$LANG["install"][17]."</p> ".$LANG["install"][97]."'".$dir."'. ".$LANG["install"][98]."</td></tr>";
-					$error=2;
-					break;
-				case 1 :
-					echo "<td><p class='red'>".$LANG["install"][19]."</p> ".$LANG["install"][97]."'".$dir."'. ".$LANG["install"][98]."</td></tr>";
-					$error=1;
-					break;
-				default :
-					echo "<td>".$LANG["install"][20]."</td></tr>";
-					break;
-			}
+		switch($tmperror){
+			// Error on creation
+			case 4 :
+				echo "<td><p class='red'>".$LANG["install"][100]."</p> ".$LANG["install"][97]."'".$dir."'. ".$LANG["install"][98]."</td></tr>";
+				$error=2;
+				break;
+			case 3 :
+				echo "<td><p class='red'>".$LANG["install"][101]."</p> ".$LANG["install"][97]."'".$dir."'. ".$LANG["install"][98]."</td></tr>";
+				$error=1;
+				break;
+			// Error on creation
+			case 2 :
+				echo "<td><p class='red'>".$LANG["install"][17]."</p> ".$LANG["install"][97]."'".$dir."'. ".$LANG["install"][98]."</td></tr>";
+				$error=2;
+				break;
+			case 1 :
+				echo "<td><p class='red'>".$LANG["install"][19]."</p> ".$LANG["install"][97]."'".$dir."'. ".$LANG["install"][98]."</td></tr>";
+				$error=1;
+				break;
+			default :
+				echo "<td>".$LANG["install"][20]."</td></tr>";
+				break;
 		}
+	}
 	return $error;
 }
 
 /**
  * Give name of the device
  *
- *
- *
  * @param $ID ID of the device type
  * @return string name of the device type in the current lang
- *
  */
 function getDeviceTypeName($ID){
 	global $LANG;
@@ -646,17 +640,13 @@ function getDeviceTypeName($ID){
 		case CONTRACT_TYPE : return $LANG["Menu"][25];break;
 		case CONSUMABLE_TYPE : return $LANG["Menu"][32];break;	
 	}
-
 }
 
 /**
  * Strip slash  for variable & array
  *
- *
- *
  * @param $value item to stripslashes (array or string)
  * @return stripslashes item
- *
  */
 function stripslashes_deep($value) {
 	$value = is_array($value) ?
@@ -669,11 +659,8 @@ function stripslashes_deep($value) {
 /**
  *  Add slash for variable & array 
  *
- *
- *
  * @param $value value to add slashes (array or string)
  * @return addslashes value
- *
  */
 function addslashes_deep($value) {
 	$value = is_array($value) ?
@@ -686,10 +673,9 @@ function addslashes_deep($value) {
  * Prevent from XSS
  * Clean code 
  *
- *
  * @param $value item to prevent (array or string)
  * @return clean item
- $
+ *
  * @see unclean_cross_side_scripting_deep*
  */
 function clean_cross_side_scripting_deep($value) {
@@ -701,14 +687,11 @@ function clean_cross_side_scripting_deep($value) {
 	return $value;
 }
 /**
- *  
  *  Invert fonction from clean_cross_side_scripting_deep
- *
  *
  * @param $value item to unclean from clean_cross_side_scripting_deep
  * @return unclean item
  * @see clean_cross_side_scripting_deep
- *
  */
 function unclean_cross_side_scripting_deep($value) {
 	$in=array("<",">");
@@ -721,11 +704,8 @@ function unclean_cross_side_scripting_deep($value) {
 /**
  *  Utf8 decode for variable & array
  *
- *
- *
  * @param $value item to utf8_decode (array or string)
  * @return decoded item
- *
  */
 function utf8_decode_deep($value) {
 	$value = is_array($value) ?
@@ -740,7 +720,6 @@ function utf8_decode_deep($value) {
  * @param $string
  * @param $length
  * @return cut string
- *
  */
 function resume_text($string,$length=255){
 	
@@ -756,7 +735,6 @@ function resume_text($string,$length=255){
  * @param $string
  * @param $value
  * @return string
- *
  */
 
 function mailRow($string,$value){
@@ -774,7 +752,6 @@ function mailRow($string,$value){
  * @param $ps_pad_string
  * @param $pn_pad_type
  * @return string
- *
  */
 function utf8_str_pad($ps_input, $pn_pad_length, $ps_pad_string = " ", $pn_pad_type = STR_PAD_RIGHT) {
 	$ret = "";
@@ -850,11 +827,9 @@ function utf8_str_pad($ps_input, $pn_pad_length, $ps_pad_string = " ", $pn_pad_t
 /**
  * Clean display value deleting html tags
  *
- *
  *@param $value string value
  *
  *@return clean value
- *
  **/
 function html_clean($value){
 //  Inspired from SPIP and http://fr3.php.net/strip-tags
@@ -947,18 +922,14 @@ function html_clean($value){
 	$value = str_replace("&#8217;","'",$value);
 
 	return $value;
-
 }
 
 
 /**
  * Convert a date YY-MM-DD to DD-MM-YY for display in a html table
  *
- *
- *
  * @param $time
  * @return $time or $date
- *
  */
 function convDateTime($time) { 
 	global $CFG_GLPI;
@@ -977,11 +948,8 @@ function convDateTime($time) {
 /**
  * Convert a date YY-MM-DD to DD-MM-YY for calendar
  *
- *
- *
  * @param $time
  * @return $time or $date
- *
  */
 function convDate($time) { 
 	global $CFG_GLPI;
@@ -1003,9 +971,8 @@ function convDate($time) {
  * @param $number Number to display
  * @param $edit display number for edition ?
  * @param $forcedecimal Force decimal number (do not use default value)
-
- * @return formatted number
  *
+ * @return formatted number
  */
 function formatNumber($number,$edit=false,$forcedecimal=-1) { 
 	global $CFG_GLPI;
@@ -1045,8 +1012,6 @@ function sendFile($file,$filename){
 	global $DB;
 
 	// Test securite : document in DOC_DIR
-
-	
 	$tmpfile=ereg_replace(GLPI_DOC_DIR,"",$file);
 	if (ereg("\.\.",$tmpfile)){
 		echo "Security attack !!!";
@@ -1065,7 +1030,6 @@ function sendFile($file,$filename){
 		$mime="application/octetstream";
 		if ($result&&$DB->numrows($result)==1){
 			$mime=$DB->result($result,0,0);
-
 		} else {
 			// fichiers DUMP SQL et XML
 			if ($splitter[count($splitter)-2]=="dump"){
@@ -1113,18 +1077,14 @@ function sendFile($file,$filename){
 
 			if ($mc) @set_magic_quotes_runtime($mc); 
 		}
-
 	}
 }
 
 /**
  * Convert a value in byte, kbyte, megabyte etc...
  *
- *
- *
  * @param $val
  * @return $val
- *
  */
 function return_bytes_from_ini_vars($val) {
 	$val = trim($val);
@@ -1145,11 +1105,8 @@ function return_bytes_from_ini_vars($val) {
 /**
  * Header redirection hack
  *
- *
- *
  * @param $dest Redirection destination 
  * @return nothing
- *
  */
 function glpi_header($dest){
 	$toadd='';
@@ -1170,11 +1127,7 @@ function glpi_header($dest){
 /**
  * Call cron
  *
- *
- *
- * 
  * @return nothing
- *
  */
 function callCron(){
 	if (ereg("front",$_SERVER['PHP_SELF'])){
@@ -1188,11 +1141,8 @@ function callCron(){
 /**
  * Get hour from sql
  *
- *
- *
  * @param $time
  * @return  array
- *
  */
 function get_hour_from_sql($time){
 	$t=explode(" ",$time);
@@ -1203,10 +1153,7 @@ function get_hour_from_sql($time){
 /**
  *  Optimize sql table
  *
- *
- *
  * @return nothing
- *
  */
 function optimize_tables (){
 
@@ -1226,10 +1173,8 @@ function optimize_tables (){
 /**
 * Is a string seems to be UTF-8 one ?
 * 
-* * 
 * @param $Str
 * @return  boolean 
-* 
 **/
 function seems_utf8($Str) {
 	for ($i=0; $i<strlen($Str); $i++) {
@@ -1250,23 +1195,16 @@ function seems_utf8($Str) {
 
 
 
-//*************************************************************************************************************
-// De jolies fonctions pour amï¿½iorer l'affichage du texte de la FAQ/knowledgbase
-// obsolï¿½e since 0.68 but DONT DELETE  THIS SECTION !!
-// USED IN THE UPDATE SCRIPT
-//************************************************************************************************************
-
 /**
- *Met en "ordre" une chaine avant affichage
- * Remplace trï¿½ AVANTAGEUSEMENT nl2br 
+ * NOT USED IN CORE - Used for update process - Clean string for knowbase display
+ * replace nl2br
  * 
- * @param $pee
- * @param $br
+ * @param $pee initial string
+ * @param $br make line breaks
  * 
  * @return $string
  */
 function autop($pee, $br=1) {
-
 	// Thanks  to Matthew Mullenweg
 
 	$pee = preg_replace("/(\r\n|\n|\r)/", "\n", $pee); // cross-platform newlines
@@ -1278,25 +1216,22 @@ function autop($pee, $br=1) {
 
 
 /**
- * Rend une url cliquable htp/https/ftp meme avec une variable Get
+ * NOT USED IN CORE - Used for update process - make url clickable
  *
- * @param $chaine
- * 
- * 
+ * @param $chaine initial string
  * 
  * @return $string
  */
 function clicurl($chaine){
-
 	$text=preg_replace("`((?:https?|ftp)://\S+)(\s|\z)`", '<a href="$1">$1</a>$2', $chaine); 
 
-		return $text;
+	return $text;
 }
 
 /**
- * Split the message into tokens ($inside contains all text inside $start and $end, and $outside contains all text outside)
+ * NOT USED IN CORE - Used for update process - Split the message into tokens ($inside contains all text inside $start and $end, and $outside contains all text outside)
  *
- * @param $text
+ * @param $text initial text
  * @param $start
  * @param $end
  * 
@@ -1313,8 +1248,7 @@ function split_text($text, $start, $end)
 	$outside[] = $tokens[0];
 
 	$num_tokens = count($tokens);
-	for ($i = 1; $i < $num_tokens; ++$i)
-	{
+	for ($i = 1; $i < $num_tokens; ++$i){
 		$temp = explode($end, $tokens[$i]);
 		$inside[] = $temp[0];
 		$outside[] = $temp[1];
@@ -1325,13 +1259,11 @@ function split_text($text, $start, $end)
 
 
 /**
- * Replace bbcode in text by html tag
+ * NOT USED IN CORE - Used for update process - Replace bbcode in text by html tag
  *
- * @param $string
+ * @param $string initial string
  * 
- * 
- * 
- * @return $string 
+ * @return formatted string 
  */
 function rembo($string){
 
@@ -1616,7 +1548,7 @@ function cron_check_update(){
 * @param $from begin date
 * @param $addwarranty period in months
 * 
-* @param $addwarranty period in months
+* @return expiration date string
 **/
 function getWarrantyExpir($from,$addwarranty){
 	global $LANG;
@@ -1651,13 +1583,12 @@ function getExpir($begin,$duration,$notice="0"){
 			return "<span class='red'>".$diff_days." ".$LANG["stats"][31]."</span>";
 		}
 	}
-
 }
+
 /**
 * Manage login redirection 
 * 
 * @param $where where to redirect ? 
-* 
 **/
 function manageRedirect($where){
 	global $CFG_GLPI,$PLUGIN_HOOKS;
@@ -1718,7 +1649,6 @@ function manageRedirect($where){
 * @param $string begin date 
 * 
 * @return clean string
-* 
 **/
 function cleanInputText($string){
 	return preg_replace('/\"/','&quot;',$string);
@@ -1730,7 +1660,6 @@ function cleanInputText($string){
 * @param $length length of the random string 
 * 
 * @return random string
-* 
 **/
 function getRandomString($length) {
 
@@ -1751,7 +1680,6 @@ function getRandomString($length) {
 * @param $display_sec display seconds ? 
 * 
 * @return string 
-* 
 **/
 function timestampToString($sec,$display_sec=1){
 	global $LANG;
@@ -1792,7 +1720,6 @@ function timestampToString($sec,$display_sec=1){
 * Delete a directory and file contains in it
 * 
 * @param $dir directory to delete
-* 
 **/
 function deleteDir($dir) {
 	if (file_exists($dir)){
@@ -1849,11 +1776,11 @@ function canUseImapPop(){
 }
 
 
-/* Converts an array of parameters into a query string to be appended to a URL.
+/** Converts an array of parameters into a query string to be appended to a URL.
  *
- * @return  string              : Query string to append to a URL.
- * @param   array    $array     : Array of parameters to append to the query string.
- * @param   string   $parent    : This should be left blank (it is used internally by the function).
+ * @return  string  : Query string to append to a URL.
+ * @param   $array  Array of parameters to append to the query string.
+ * @param   $parent This should be left blank (it is used internally by the function).
  */
 function append_params($array, $parent='')
 {
@@ -1866,33 +1793,23 @@ function append_params($array, $parent='')
             $params[] = (!empty($parent) ? $parent . '[' . urlencode($k) . ']' : urlencode($k)) . '=' . urlencode($v);
     }
 
-/*    $sessid = session_id();
-    if (!empty($parent) || empty($sessid))
-        return implode('&', $params);
-
-    // Append the session ID to the query string if we have to.
-    $sessname = session_name();
-    if (ini_get('session.use_cookies'))
-    {
-        if (!ini_get('session.use_only_cookies') && (!isset($_COOKIE[$sessname]) || ($_COOKIE[$sessname] != $sessid)))
-            $params[] = $sessname . '=' . urlencode($sessid);
-    }
-    elseif (!ini_get('session.use_only_cookies'))
-        $params[] = $sessname . '=' . urlencode($sessid);
-*/
-
     return implode('&', $params);
 }
 
+/** Format a size passing a size in octet
+ *
+ * @param   $size : Size in octet
+ * @return  formatted size
+ */
 function getSize($size) {
-$bytes = array('B','KB','MB','GB','TB');
-  foreach($bytes as $val) {
-   if($size > 1024){
-    $size = $size / 1024;
-   }else{
-    break;
-   }
-  }
-  return round($size, 2)." ".$val;
+	$bytes = array('B','KB','MB','GB','TB');
+	foreach($bytes as $val) {
+		if($size > 1024){
+			$size = $size / 1024;
+		}else{
+			break;
+		}
+	}
+	return round($size, 2)." ".$val;
 }
 ?>
