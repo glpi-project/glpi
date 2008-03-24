@@ -267,6 +267,9 @@ class User extends CommonDBTM {
 		if (isset ($_SESSION["glpiID"]) && isset ($input["language"]) && $_SESSION["glpiID"] == $input['ID']) {
 			$_SESSION["glpilanguage"] = $input["language"];
 		}
+		if (isset ($_SESSION["glpiID"]) && isset ($input["FK_entities"]) && $_SESSION["glpiID"] == $input['ID']) {
+			$_SESSION["glpidefault_entity"] = $input["FK_entities"];
+		}
 		if (isset ($_SESSION["glpiID"]) && isset ($input["tracking_order"]) && $_SESSION["glpiID"] == $input['ID']) {
 			$_SESSION["glpitracking_order"] = $input["tracking_order"];
 		}
@@ -962,7 +965,7 @@ class User extends CommonDBTM {
 
 			if (count($_SESSION['glpiactiveentities'])>1){
 				echo "<tr class='tab_bg_1'><td class='center'>" . $LANG["profiles"][37] . "</td><td>";
-				dropdownValue("glpi_entities","FK_entities",0,1,$_SESSION['glpiactiveentities']);
+				dropdownValue("glpi_entities","FK_entities",$_SESSION["glpidefault_entity"],1,$_SESSION['glpiactiveentities']);
 				echo "</td></tr>";
 			}
 			
