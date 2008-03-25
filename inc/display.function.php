@@ -2033,7 +2033,7 @@ function showProfileSelecter($target){
 		//echo "<a href='".$CFG_GLPI["root_doc"]."/front/entity.select.php?target=$target' id='modal_entity_selection'>".$_SESSION["glpiactive_entity_name"]."</a>";
 
 
-		echo "<a href='#modal_entity_contents' id='modal_entity_selection'>".$_SESSION["glpiactive_entity_shortname"]."</a>";
+		echo "<a href='#modal_entity_contents' id='modal_entity_selection' title='".$_SESSION["glpiactive_entity_name"]."'>".$_SESSION["glpiactive_entity_shortname"]."</a>";
 		echo "<div id='modal_entity_contents'>";	
 		displayActiveEntities($target,"activeentity");
 		echo "</div>";

@@ -414,6 +414,8 @@ $LANG["entity"][6]="Affectation automatique des utilisateurs";
 $LANG["entity"][7]="arborescence"; 
 $LANG["entity"][8]="Par entité"; 
 $LANG["entity"][9]="Sous-entités"; 
+$LANG["entity"][10]="Sélectionnez l'entité souhaitée"; 
+$LANG["entity"][11]="pour voir l'entité et ses sous-entités"; 
 
 $LANG["event"][0]="Item (ID)"; 
 $LANG["event"][2]="Service"; 
