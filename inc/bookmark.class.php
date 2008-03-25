@@ -62,7 +62,7 @@ class Bookmark extends CommonDBTM {
 			parse_str($taburl["query"],$query_tab);
 		}
 
-		$input['query']=append_params($this->prepareQueryToStore($input['type'],$query_tab));
+		$input['query']=append_params($this->prepareQueryToStore($input['type'],$query_tab,$input['device_type']));
 
 		return $input;
 	}
@@ -174,13 +174,33 @@ class Bookmark extends CommonDBTM {
 	*
 	* @param $type bookmark type
 	* @param $query_tab parameters array
+	* @param $device_type device type
 	* @return clean query array
 	**/
-	function prepareQueryToStore($type,$query_tab){
+	function prepareQueryToStore($type,$query_tab,$device_type=0){
 		switch ($type){
 			case BOOKMARK_SEARCH :
 				if (isset($query_tab['start'])){
 					unset($query_tab['start']);
+				}
+				// Manage glpisearchcount / dclean if needed + store
+				if (isset($query_tab['glpisearchcount'])){
+					unset($query_tab['glpisearchcount']);
+				}
+				if (isset($_SESSION["glpisearchcount"][$device_type])){
+					$query_tab['glpisearchcount']=$_SESSION["glpisearchcount"][$device_type];
+				} else {
+					$query_tab['glpisearchcount']=1;
+				}
+
+				// Manage glpisearchcount2 / dclean if needed + store
+				if (isset($query_tab['glpisearchcount2'])){
+					unset($query_tab['glpisearchcount2']);
+				}
+				if (isset($_SESSION["glpisearchcount2"][$device_type])){
+					$query_tab['glpisearchcount2']=$_SESSION["glpisearchcount2"][$device_type];
+				}else {
+					$query_tab['glpisearchcount2']=0;
 				}
 			break;
 		}
@@ -198,13 +218,6 @@ class Bookmark extends CommonDBTM {
 		switch ($type){
 			case BOOKMARK_SEARCH :
 				$query_tab['reset_before']=1;
-				
-				if (isset($query_tab['field'])){
-					$query_tab['glpisearchcount']=count($query_tab['field']);
-				}
-				if (isset($query_tab['field2'])){
-					$query_tab['glpisearchcount2']=count($query_tab['field2']);
-				}
 			break;
 		}
 		

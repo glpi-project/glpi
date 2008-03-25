@@ -105,8 +105,13 @@ function manageGetValuesInSearch($type=0,$usesession=true,$save=true){
 		if (isset($_SESSION['glpisearchcount2'][$type])){
 			unset($_SESSION['glpisearchcount2'][$type]);
 		}
+		// Bookmark use
 		if (isset($_GET["glpisearchcount"])){
 			$_SESSION["glpisearchcount"][$type]=$_GET["glpisearchcount"];
+		}
+		// Bookmark use
+		if (isset($_GET["glpisearchcount2"])){
+			$_SESSION["glpisearchcount2"][$type]=$_GET["glpisearchcount2"];
 		}
 	}
 
