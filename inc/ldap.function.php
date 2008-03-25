@@ -39,9 +39,6 @@ if (!defined('GLPI_ROOT')) {
 	die("Sorry. You can't access directly to this file");
 }
 
-
-Computes the difference of arrays using keys for comparison
-
 /** Computes the difference of arrays using keys for comparison
  * parameters are unlimited number of arrays
  * REPLACE array_diff_key for PHP 4 compatibility
