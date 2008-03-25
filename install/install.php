@@ -760,7 +760,7 @@ function step4 ($host,$user,$password,$databasename,$newdatabasename)
 		fclose($DBf_handle);
 		foreach ( explode(";\n", "$sql_query") as $sql_line) {
 			if (get_magic_quotes_runtime()) $sql_line=stripslashes_deep($sql_line);
-			$DB->query($sql_line);
+			if (!empty($sql_line)) $DB->query($sql_line);
 		}
 		// Mise a jour de la langue par defaut
 		$query = "UPDATE `glpi_config` SET default_language='".$_SESSION["glpilanguage"]."' ;";
@@ -915,11 +915,6 @@ function step4 ($host,$user,$password,$databasename,$newdatabasename)
 	if(!isset($_SESSION["glpilanguage"])||empty($_SESSION["glpilanguage"])) $_SESSION["glpilanguage"] = "en_GB";
 	if(isset($_POST["language"])) $_SESSION["glpilanguage"] = $_POST["language"];
 
-
-	// If this file exists, it is load, allow to set configdir/dumpdir elsewhere
-	if(file_exists(GLPI_ROOT . "/config/config_path.php")) {
-		include(GLPI_ROOT . "/config/config_path.php");
-	}
 
 	loadLang($_SESSION["glpilanguage"]);
 	if(!isset($_POST["install"])) {
