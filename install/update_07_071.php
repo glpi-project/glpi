@@ -418,8 +418,8 @@ function update07to071() {
 		$DB->query($query) or die("0.71 add admin_reply to glpi_entities_data " . $LANG["update"][90] . $DB->error());
 	}	
 
-	if (!isIndex("glpi_kbitems", "question")) {
-			$query = "ALTER TABLE `glpi_kbitems` ADD FULLTEXT(`question`,`answer`);";
+	if (!isIndex("glpi_kbitems", "fulltext")) {
+			$query = "ALTER TABLE `glpi_kbitems` ADD FULLTEXT `fulltext` (`question`,`answer`);";
 			$DB->query($query) or die("0.71 add fulltext index  glpi_kbitems " . $LANG["update"][90] . $DB->error());
 	}
 } // fin 0.71 #####################################################################################

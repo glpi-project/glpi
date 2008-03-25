@@ -244,7 +244,7 @@ function showKbItemList($target,$field,$phrasetype,$contains,$sort,$order,$start
 	$query = "SELECT  *  FROM glpi_kbitems";
   // $query.= " LEFT JOIN glpi_users  ON (glpi_users.ID = glpi_kbitems.author) ";
 	$query.=" WHERE $where ORDER BY $sort $order";
-	echo $query;
+	//echo $query;
 	
 
 	// Get it from database	
