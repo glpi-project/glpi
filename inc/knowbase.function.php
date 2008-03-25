@@ -219,13 +219,13 @@ function showKbItemList($target,$field,$phrasetype,$contains,$sort,$order,$start
 	
 	
 	if (strlen($contains)) { // il s'agit d'une recherche 
-		
+		$search=unclean_cross_side_scripting_deep($contains);
 		if($field=="all") {
-			$search=makeTextSearch($contains);
-			$where.="(glpi_kbitems.question $search OR glpi_kbitems.answer $search) ";
+			
+			$where.="MATCH(glpi_kbitems.question,glpi_kbitems.answer) AGAINST('$search' IN BOOLEAN MODE) ";
 			
 		} else {
-			$where.= "($field ".makeTextSearch($contains).")";			
+			$where.= "MATCH($field) AGAINST('$search' IN BOOLEAN MODE) ";			
 		}
 		
 	} else { // Il ne s'agit pas d'une recherche, on browse by category
@@ -244,7 +244,7 @@ function showKbItemList($target,$field,$phrasetype,$contains,$sort,$order,$start
 	$query = "SELECT  *  FROM glpi_kbitems";
   // $query.= " LEFT JOIN glpi_users  ON (glpi_users.ID = glpi_kbitems.author) ";
 	$query.=" WHERE $where ORDER BY $sort $order";
-	//echo $query;
+	echo $query;
 	
 
 	// Get it from database	

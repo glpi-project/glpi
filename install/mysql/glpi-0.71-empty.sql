@@ -1524,7 +1524,8 @@ CREATE TABLE `glpi_kbitems` (
   KEY `categoryID` (`categoryID`),
   KEY `author` (`author`),
   KEY `faq` (`faq`),
-  KEY `FK_entities` (`FK_entities`)
+  KEY `FK_entities` (`FK_entities`),
+  FULLTEXT (`question`,`answer`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
