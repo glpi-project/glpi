@@ -3044,17 +3044,17 @@ function ocsUpdateSoftware($glpi_id, $entity, $ocs_id, $ocs_server_id, $cfg_ocs,
 						//First, get the name of the software into GLPI db IF dictionnary is used
 						if ($cfg_ocs["use_soft_dict"])
 						{
-								//First use of the dictionnary OR name changed in the dictionnary
+								//First use of the OCS dictionnary OR name changed in the dictionnary
 								if ($softName != $name)
 								{
 									$input["name"]=$name;
 									$s->update($input);
 								}
 						}
-						//Dictionnary not use anymore : revert to original name
-						elseif ($softName != $initname)
+						// OCS Dictionnary not use anymore : revert to original name
+						else if ($softName != $modified_name)
 						{	
-							$input["name"]=$initname;
+							$input["name"] = $modified_name;
 							$s->update($input);
 						}
 						
