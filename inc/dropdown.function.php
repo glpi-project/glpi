@@ -1723,8 +1723,11 @@ function dropdownLanguages($myname,$value){
 function displayActiveEntities($target,$myname){
 	global $CFG_GLPI,$LANG;
 	
+	echo "<div class='center'>".$LANG["entity"][10]." ( <img src=\"".$CFG_GLPI["root_doc"]."/pics/entity_all.png\" alt=''> ".$LANG["entity"][11].")<br>";
+	echo "<a style='font-size:14px;' href='".$target."?active_entity=all' title=\"".$LANG["buttons"][40]."\">_&nbsp;".ereg_replace(" ","&nbsp;",$LANG["buttons"][40])."&nbsp;_</a></div><br>";
+
 	echo "<div class='left'>";
-	echo "<a style='font-size:16px;' href='".$target."?active_entity=all' title=\"".$LANG["buttons"][40]."\">_&nbsp;".ereg_replace(" ","&nbsp;",$LANG["buttons"][40])."&nbsp;_</a><br>";
+	
 	foreach ($_SESSION['glpi_entities_tree'] as $ID => $tree){
 		displayEntityTree($target,$myname,$tree);
 	}
