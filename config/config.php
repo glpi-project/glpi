@@ -91,7 +91,7 @@
 			$globaldir=preg_replace("/\?.*/","",$globaldir);
 			$CFG_GLPI["root_doc"]=str_replace($glpidir,"",$globaldir);
 			$CFG_GLPI["root_doc"]=preg_replace("/\/$/","",$CFG_GLPI["root_doc"]);
-	
+			$CFG_GLPI["root_doc"]=urldecode($CFG_GLPI["root_doc"]);
 	
 			// Path for icon of document type
 			$CFG_GLPI["typedoc_icon_dir"] = GLPI_ROOT."/pics/icones";
