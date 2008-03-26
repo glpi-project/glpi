@@ -662,7 +662,7 @@ function showContractAssociatedEnterprise($ID){
 	global $DB,$CFG_GLPI, $LANG,$CFG_GLPI;
 	if (!haveRight("contract_infocom","r")||!haveRight("contact_enterprise","r")) return false;
 	$ent=new Enterprise();
-	$canedit=$contract->can($ID,'w');
+	$canedit=$ent->can($ID,'w');
 
 	$query = "SELECT glpi_contracts.*, glpi_contract_enterprise.ID AS assocID, glpi_entities.ID AS entity"
 		. " FROM glpi_contract_enterprise, glpi_contracts "
