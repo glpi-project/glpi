@@ -409,6 +409,8 @@ $LANG["entity"][6]="Benutzer automatisch zuweisen";
 $LANG["entity"][7]="Baumstrukur"; 
 $LANG["entity"][8]="Nach Entität"; 
 $LANG["entity"][9]="Unter-Entitäten"; 
+$LANG["entity"][10]="Select the desired entity"; 
+$LANG["entity"][11]="to see the entity and its sub-entities"; 
 
 $LANG["event"][0]="Eintrag (ID)"; 
 $LANG["event"][2]="Service"; 

@@ -409,6 +409,8 @@ $LANG["entity"][6]="Automatic user assignment";
 $LANG["entity"][7]="tree structure"; 
 $LANG["entity"][8]="By entity"; 
 $LANG["entity"][9]="Child entities"; 
+$LANG["entity"][10]="Select the desired entity"; 
+$LANG["entity"][11]="to see the entity and its sub-entities"; 
 
 $LANG["event"][0]="Елемент (ID)"; 
 $LANG["event"][2]="Услуга"; 

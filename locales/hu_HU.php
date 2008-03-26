@@ -409,6 +409,8 @@ $LANG["entity"][6]="Automatikus felhasználó hozzárendelés";
 $LANG["entity"][7]="fastruktúra"; 
 $LANG["entity"][8]="Cégenként"; 
 $LANG["entity"][9]="Gyermekek"; 
+$LANG["entity"][10]="Select the desired entity"; 
+$LANG["entity"][11]="to see the entity and its sub-entities"; 
 
 $LANG["event"][0]="Tétel azonosító"; 
 $LANG["event"][2]="Szervíz"; 

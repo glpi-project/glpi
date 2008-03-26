@@ -409,6 +409,8 @@ $LANG["entity"][6]="Automatické přiřazení uživatele";
 $LANG["entity"][7]="stromová struktura"; 
 $LANG["entity"][8]="Dle předmětu"; 
 $LANG["entity"][9]="Child entities"; 
+$LANG["entity"][10]="Select the desired entity"; 
+$LANG["entity"][11]="to see the entity and its sub-entities"; 
 
 $LANG["event"][0]="Položka (ID)"; 
 $LANG["event"][2]="Služby"; 

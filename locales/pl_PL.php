@@ -409,6 +409,8 @@ $LANG["entity"][6]="Automatyczne przydzielanie użytkowników";
 $LANG["entity"][7]="drzewo struktury"; 
 $LANG["entity"][8]="Po oddziale"; 
 $LANG["entity"][9]="Oddział podrzędny"; 
+$LANG["entity"][10]="Select the desired entity"; 
+$LANG["entity"][11]="to see the entity and its sub-entities"; 
 
 $LANG["event"][0]="Pozycja (ID)"; 
 $LANG["event"][2]="Serwis"; 

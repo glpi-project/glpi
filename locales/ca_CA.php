@@ -409,6 +409,8 @@ $LANG["entity"][6]="Assignació automàtica d'ordinadors";
 $LANG["entity"][7]="estructura d'arbre"; 
 $LANG["entity"][8]="Per entitat"; 
 $LANG["entity"][9]="Sots-entitats"; 
+$LANG["entity"][10]="Select the desired entity"; 
+$LANG["entity"][11]="to see the entity and its sub-entities"; 
 
 $LANG["event"][0]="Item (ID)"; 
 $LANG["event"][2]="Incidència"; 

@@ -409,6 +409,8 @@ $LANG["entity"][6]="Atribuir usuário automaticamente";
 $LANG["entity"][7]="Estrutura da árvore"; 
 $LANG["entity"][8]="Por entidade"; 
 $LANG["entity"][9]="Entidades subordinadas"; 
+$LANG["entity"][10]="Select the desired entity"; 
+$LANG["entity"][11]="to see the entity and its sub-entities"; 
 
 $LANG["event"][0]="ID do item"; 
 $LANG["event"][2]="Serviço"; 

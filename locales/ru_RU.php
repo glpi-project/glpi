@@ -409,6 +409,8 @@ $LANG["entity"][6]="Автоматическое присвоение";
 $LANG["entity"][7]="структура"; 
 $LANG["entity"][8]="По организациям"; 
 $LANG["entity"][9]="Подчинённые организации"; 
+$LANG["entity"][10]="Select the desired entity"; 
+$LANG["entity"][11]="to see the entity and its sub-entities"; 
 
 $LANG["event"][0]="Элемент (ID)"; 
 $LANG["event"][2]="Служба"; 
