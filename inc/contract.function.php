@@ -141,11 +141,9 @@ function showDeviceContract($instID) {
 	printPagerForm($_SERVER["REQUEST_URI"]);
 	echo "</th><th colspan='".($canedit ? 4 : 3) ."'>".$LANG["financial"][49].":</th></tr>";
 	if ($canedit) {
-		echo "<form method='post' name='contrat_form' id='contract_form' action=\"".$CFG_GLPI["root_doc"]."/front/contract.form.php\">";
 		// massive action checkbox
 		echo "<tr><th>&nbsp;</th>";
-	}
-	else {
+	} else {
 		echo "<tr>";
 	}
 	echo "<th>".$LANG["common"][16]."</th>";
@@ -153,6 +151,11 @@ function showDeviceContract($instID) {
 	echo "<th>".$LANG["common"][17]."</th>";
 	echo "<th>".$LANG["common"][19]."</th>";
 	echo "<th>".$LANG["common"][20]."</th></tr>";
+	echo "</table>";
+	if ($canedit) {
+		echo "<form method='post' name='contract_form' id='contract_form' action=\"".$CFG_GLPI["root_doc"]."/front/contract.form.php\">";
+	}
+	echo "<table class='tab_cadrehov'>";
 	
 	$ci=new CommonItem;
 	while ($i < $number) {
@@ -233,8 +236,8 @@ function showDeviceContract($instID) {
 		echo "<input type='submit' name='deleteitem' value=\"".$LANG["buttons"][6]."\" class='submit'>";
 		echo "</td>";
 		echo "</table>";
-		echo "</div>";
 		echo "</form>";
+		echo "</div>";
 		
 	} else {
 		echo "</table></div>";
