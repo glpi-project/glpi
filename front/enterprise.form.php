@@ -107,7 +107,7 @@ else if (isset($_GET["deletecontact"]))
 }
 else if (isset($_POST["addcontract"]))
 {
-	$ent->check($_POST["conID"],'w');
+	$ent->check($_POST["entID"],'w');
 
 	addEnterpriseContract($_POST["conID"],$_POST["entID"]);
 	logEvent($_POST["conID"], "contracts", 4, "financial", $_SESSION["glpiname"]." ".$LANG["log"][34]);
@@ -115,7 +115,7 @@ else if (isset($_POST["addcontract"]))
 }
 else if (isset($_GET["deletecontract"]))
 {
-	$ent->check($_GET["ID"],'w');
+	$ent->check($_GET["entID"],'w');
 
 	deleteEnterpriseContract($_GET["ID"]);
 	logEvent($_GET["ID"], "contracts", 4, "financial", $_SESSION["glpiname"]." ".$LANG["log"][35]);
