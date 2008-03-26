@@ -144,7 +144,7 @@ else if (isset($_POST["addenterprise"]))
 }
 else if (isset($_GET["deleteenterprise"]))
 {
-	$contract->check($_GET['ID'],'w');
+	$contract->check($_GET['conID'],'w');
 
 	deleteEnterpriseContract($_GET["ID"]);
 	logEvent($_GET["ID"], "contracts", 4, "financial", $_SESSION["glpiname"]." ".$LANG["log"][35]);
