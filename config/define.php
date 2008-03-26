@@ -90,7 +90,7 @@
 	define("MAILGATE_TYPE",35);
 	define("RULE_TYPE",36);
 	define("TRANSFER_TYPE",37);
-	define("DB_REPLICATE_TYPE",11);//
+	define("BOOKMARK_TYPE",38);
 	
 	// GLPI MODE
 	define("NORMAL_MODE",0);
