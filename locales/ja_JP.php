@@ -409,6 +409,8 @@ $LANG["entity"][6]="自動ユーザ割り当て";
 $LANG["entity"][7]="ツリー構造"; 
 $LANG["entity"][8]="エンティティによって"; 
 $LANG["entity"][9]="子エンティティ"; 
+$LANG["entity"][10]="Select the desired entity"; 
+$LANG["entity"][11]="to see the entity and its sub-entities"; 
 
 $LANG["event"][0]="アイテム（ID）"; 
 $LANG["event"][2]="サービス"; 
