@@ -180,6 +180,12 @@ class CommonItem{
 				case INFOCOM_TYPE:
 					$this->obj = new InfoCom;
 					break;				
+				case TRANSFER_TYPE:
+					$this->obj = new Transfer;
+					break;				
+				case BOOKMARK_TYPE:
+					$this->obj = new Bookmark;
+					break;				
 				default :
 					if ($device_type>1000){
 						if (isset($PLUGIN_HOOKS['plugin_classes'][$device_type])){

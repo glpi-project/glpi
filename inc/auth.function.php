@@ -199,6 +199,12 @@ function haveTypeRight($type, $right) {
 		case RULE_TYPE :
 			return haveRight("rule_tracking",$right)||haveRight("rule_ocs",$right)||haveRight("rule_ldap",$right)||haveRight("rule_softwarecategories",$right);
 			break;	
+		case TRANSFER_TYPE :
+			return haveRight("transfer",$right);
+			break;	
+		case BOOKMARK_TYPE :
+			return haveRight("bookmark_public",$right);
+			break;	
 		default :
 			// Plugin case
 			if ($type>1000){

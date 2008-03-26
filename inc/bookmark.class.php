@@ -42,7 +42,7 @@ class Bookmark extends CommonDBTM {
 		$this->may_be_recursive=true;
 		$this->may_be_private=true;
 		// To allow "can" method (canView & canCreate)
-		$this->type = GENERAL_TYPE;
+		$this->type = BOOKMARK_TYPE;
 	}
 
 
@@ -293,31 +293,30 @@ class Bookmark extends CommonDBTM {
 				$ci=new CommonItem();
 				$current_type=-1;
 				$current_type_name="&nbsp;";
-				while ($data = $DB->fetch_assoc($result)){
-					if ($current_type!=$data['device_type']){
-						$current_type=$data['device_type'];
+				while ($this->fields = $DB->fetch_assoc($result)){
+					if ($current_type!=$this->fields['device_type']){
+						$current_type=$this->fields['device_type'];
 						$ci->setType($current_type);
 						$current_type_name=$ci->getType();
 					}
-					
-					$canedit=$this->can($data["ID"],"w");
+					$canedit=$this->can($this->fields["ID"],"w");
 
 					echo "<tr class='tab_bg_1'>";
 					echo "<td width='10px'>";
 					if ($canedit) {
 						$sel="";
 						if (isset($_GET["select"])&&$_GET["select"]=="all") $sel="checked";
-						echo "<input type='checkbox' name='bookmark[" . $data["ID"] . "]' " . $sel . ">";
+						echo "<input type='checkbox' name='bookmark[" . $this->fields["ID"] . "]' " . $sel . ">";
 					} else {
 						echo "&nbsp;";
 					}
 					echo "</td>";
 					echo "<td>$current_type_name</td>";
 					echo "<td>";
-					echo "<a href=\"".GLPI_ROOT."/front/popup.php?popup=load_bookmark&amp;bookmark_id=".$data["ID"]."\">".$data["name"]."</a>";
+					echo "<a href=\"".GLPI_ROOT."/front/popup.php?popup=load_bookmark&amp;bookmark_id=".$this->fields["ID"]."\">".$this->fields["name"]."</a>";
 					echo "</td>";
 					if ($canedit) {
-						echo "<td><a href=\"".GLPI_ROOT."/front/popup.php?popup=edit_bookmark&amp;ID=".$data["ID"]."\"><img src='".$CFG_GLPI["root_doc"]."/pics/edit.png' alt='".$LANG["buttons"][14]."'></a></td>";
+						echo "<td><a href=\"".GLPI_ROOT."/front/popup.php?popup=edit_bookmark&amp;ID=".$this->fields["ID"]."\"><img src='".$CFG_GLPI["root_doc"]."/pics/edit.png' alt='".$LANG["buttons"][14]."'></a></td>";
 					} else {
 						echo "<td>&nbsp;</td>";					
 					}
