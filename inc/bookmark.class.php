@@ -41,6 +41,8 @@ class Bookmark extends CommonDBTM {
 		$this->entity_assign=true;
 		$this->may_be_recursive=true;
 		$this->may_be_private=true;
+		// To allow "can" method (canView & canCreate)
+		$this->type = GENERAL_TYPE;
 	}
 
 
@@ -268,7 +270,6 @@ class Bookmark extends CommonDBTM {
 			
 		$query.=" ORDER BY device_type,name";
 
-
 		if ($result = $DB->query($query)){
 			echo "<br>";
 	
@@ -298,13 +299,9 @@ class Bookmark extends CommonDBTM {
 						$ci->setType($current_type);
 						$current_type_name=$ci->getType();
 					}
-					$canedit=false;
-					if ($data["private"]){
-						$canedit=($data["FK_users"]==$_SESSION['glpiID']);
-					} else {
-						$canedit = haveRight('bookmark_public','w');
-					}
-						
+					
+					$canedit=$this->can($data["ID"],"w");
+
 					echo "<tr class='tab_bg_1'>";
 					echo "<td width='10px'>";
 					if ($canedit) {
