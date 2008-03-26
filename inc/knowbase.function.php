@@ -370,17 +370,16 @@ function showKbRecentPopular($target,$order,$faq=0){
 	}
 		
 
-	if($faq){ // FAQ
-		$faq_limit=" WHERE (glpi_kbitems.faq = '1')";
-	} else {
-		$faq_limit=" WHERE 1";
-	}
 	if (isset($_SESSION["glpiID"])){
-		$faq_limit .= getEntitiesRestrictRequest(" AND ", "glpi_kbitems", "", "", true); 
+		$faq_limit .= getEntitiesRestrictRequest(" WHERE ", "glpi_kbitems", "", "", true); 
 	} else {
 		// Anonymous access
-		$faq_limit .= " AND (glpi_kbitems.FK_entities=0 AND glpi_kbitems.recursive=1)";
+		$faq_limit .= " WHERE (glpi_kbitems.FK_entities=0 AND glpi_kbitems.recursive=1)";
 	}	
+
+	if($faq){ // FAQ
+		$faq_limit=" AND (glpi_kbitems.faq = '1')";
+	} 
 
 	$query = "SELECT  *  FROM glpi_kbitems $faq_limit $orderby LIMIT 10";
 	//echo $query;

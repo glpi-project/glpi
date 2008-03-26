@@ -142,7 +142,10 @@ function showDeviceContract($instID) {
 	echo "</th><th colspan='".($canedit ? 4 : 3) ."'>".$LANG["financial"][49].":</th></tr>";
 	if ($canedit) {
 		echo "</table>";
+		echo "</div>";
+
 		echo "<form method='post' name='contract_form' id='contract_form' action=\"".$CFG_GLPI["root_doc"]."/front/contract.form.php\">";
+		echo "<div class='center'>";
 		echo "<table class='tab_cadrehov'>";
 		// massive action checkbox
 		echo "<tr><th>&nbsp;</th>";
@@ -180,9 +183,9 @@ function showDeviceContract($instID) {
 					echo "<td>&nbsp;</td>";	
 				}
 				echo "<td class='center' colspan='2'><a href='"
-					. $CFG_GLPI["root_doc"]."/".$SEARCH_PAGES["$type"] . "?" . urlencode("contains[0]") . "=" . urlencode('$$$$'.$instID) . "&" . urlencode("field[0]") . "=29&sort=80&order=ASC&deleted=0&start=0"
+					. $CFG_GLPI["root_doc"]."/".$SEARCH_PAGES["$type"] . "?" . urlencode("contains[0]") . "=" . urlencode('$$$$'.$instID) . "&amp;" . urlencode("field[0]") . "=29&amp;sort=80&amp;order=ASC&amp;deleted=0&amp;start=0"
 					. "'>" . $LANG["reports"][57]."</a></td>";
-				echo "<td class='center'>".$ci->getType()."<br />$nb</td>";
+				echo "<td class='center'>".$ci->getType()."<br>$nb</td>";
 				
 				echo "<td class='center'>-</td><td class='center'>-</td></tr>";				
 			} else if ($nb>0){
@@ -204,7 +207,7 @@ function showDeviceContract($instID) {
 					echo "<td>".getDropdownName("glpi_entities",$data['entity'])."</td>";
 					if ($prem) {
 						echo "<td class='center' rowspan='$nb' valign='top'>".$ci->getType().
-							($nb>1?"<br />$nb</td>":"</td>");
+							($nb>1?"<br>$nb</td>":"</td>");
 					}
 					echo "<td class='center'>".(isset($data["serial"])? "".$data["serial"]."" :"-")."</td>";
 					echo "<td class='center'>".(isset($data["otherserial"])? "".$data["otherserial"]."" :"-")."</td>";
@@ -234,8 +237,8 @@ function showDeviceContract($instID) {
 		echo "<input type='submit' name='deleteitem' value=\"".$LANG["buttons"][6]."\" class='submit'>";
 		echo "</td>";
 		echo "</table>";
-		echo "</form>";
 		echo "</div>";
+		echo "</form>";
 		
 	} else {
 		echo "</table></div>";
