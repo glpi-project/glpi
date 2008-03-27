@@ -856,7 +856,7 @@ class User extends CommonDBTM {
 	function showMyForm($target, $ID, $withtemplate = '') {
 
 		// Affiche un formulaire User
-		global $CFG_GLPI, $LANG;
+		global $CFG_GLPI, $LANG,$PLUGIN_HOOKS;
 
 		if ($ID != $_SESSION["glpiID"])
 			return false;
@@ -976,6 +976,27 @@ class User extends CommonDBTM {
 			echo "</tr>";
 
 			echo "</table></form></div>";
+
+			if (isset($PLUGIN_HOOKS['user_preferences'])){
+				echo "<div class='center'>";
+				echo "<table class='tab_cadre'>";
+				echo "<tr><th>" . $LANG["common"][29] . "</th></tr>";
+				
+				foreach ($PLUGIN_HOOKS['user_preferences'] as $plugin => $value)
+				{
+					$function='plugin_user_preferences_'.$plugin;
+					if (function_exists($function)){
+						$function_name = 'plugin_version_'.$plugin;
+						$name = $function_name();
+						echo "<tr><th>" . $name["name"] . "</th></tr>";
+						echo "<tr><td class='tab_bg_2'>";
+						$function($_SERVER["PHP_SELF"],$_SESSION["glpiID"],$_SESSION["glpiactive_entity"],$_POST);
+						echo "</td></tr>";
+					}
+				}
+				echo "</table></div>";				 
+			} 
+
 			return true;
 		}
 		return false;
