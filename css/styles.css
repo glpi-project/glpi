@@ -316,7 +316,7 @@ td { }
 
 
 .tab_bg_1 {
-	background-color: #d3d3ce;
+	background-color: #f2f2f2;
 
 }
 .tab_bg_1_2 {
@@ -325,7 +325,7 @@ td { }
 }
 
 .tab_bg_2 {
-	background-color: #e6e6e6;
+	background-color: #e4e4e2;
 
 }
 
@@ -576,12 +576,19 @@ padding-left: 15px;
 	padding: 3px 20px 3px 25px;
 }
 
+.kb {
+text-align:left;
+padding-top:5px;
+
+}
+
+
 .kb_resume{
 	text-align:left;
 	font-size: 9px;	
 	line-height: 10px; 
 	clear: both;	
-	padding: 5px 0 0 25px;
+	padding: 5px 0 10px 25px;
 
 }
 
@@ -610,16 +617,23 @@ font-size:10px;
 	}
 
 a.knowbase {
+	font-size: 13px;
 	margin-left:8px;
 	}
 
 a.pubfaq {
+	font-size: 13px;
 	margin-left:8px;
 	color: #c9993C;
 	}
+
+
 a.pubfaq:hover {
 	color: black;
 }
+
+
+
 
 a.icon_nav_move img {
 	padding: 4px;
