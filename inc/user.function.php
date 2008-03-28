@@ -541,14 +541,14 @@ function getLDAPSyncFields($auth_method_array){
 
 function showUserPreferencesOnglets($target,$actif) {
 	global $LANG,$PLUGIN_HOOKS;
-	echo "<div id='barre_onglets'><ul id='onglet'>";
-	echo "<li ".($actif=="my"?"class='actif'":"")."><a href='$target?onglet=my'>".$LANG["title"][26]."</a></li>";
 	if (isset($PLUGIN_HOOKS['user_preferences'])&&count($PLUGIN_HOOKS['user_preferences'])){
+		echo "<div id='barre_onglets'><ul id='onglet'>";
+		echo "<li ".($actif=="my"?"class='actif'":"")."><a href='$target?onglet=my'>".$LANG["title"][26]."</a></li>";
 		echo "<li ".($actif=="plugins"?"class='actif'":"")."><a href='$target?onglet=plugins'>".$LANG["common"][29]."</a></li>";
-	}
-	echo "<li class='invisible'>&nbsp;</li>";
-	echo "<li ".($actif=="all"?"class='actif'":"")."><a href='$target?onglet=all'>".$LANG["common"][66]."</a></li>";
+		echo "<li class='invisible'>&nbsp;</li>";
+		echo "<li ".($actif=="all"?"class='actif'":"")."><a href='$target?onglet=all'>".$LANG["common"][66]."</a></li>";
 
-	echo "</ul></div>";
+		echo "</ul></div>";
+	}
 }
 ?>
