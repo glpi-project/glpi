@@ -44,7 +44,7 @@ function cleanSearchOption($type,$action='r'){
 	$options=$SEARCH_OPTION[$type];
 	$todel=array();
 	if (!haveRight('contract_infocom',$action)&&in_array($type,$CFG_GLPI["infocom_types"])){
-		$todel=array_merge($todel,array('financial',25,26,27,28,29,30,37,38,50,51,52,53,54,55,56,57,58,59,120,122));
+		$todel=array_merge($todel,array('financial',25,26,27,28,29,30,37,38,50,51,52,53,54,55,56,57,58,59,120,122,130,131,132,133,134,135,136,137,138));
 	}
 
 	if ($type==COMPUTER_TYPE){
