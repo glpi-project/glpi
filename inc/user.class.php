@@ -853,7 +853,7 @@ class User extends CommonDBTM {
 		}
 	}
 
-	function showMyForm($target, $ID, $withtemplate = '') {
+	function showMyForm($target, $ID, $actif) {
 
 		// Affiche un formulaire User
 		global $CFG_GLPI, $LANG,$PLUGIN_HOOKS;
@@ -869,9 +869,9 @@ class User extends CommonDBTM {
 				|| ($this->fields["auth_method"]==NOT_YET_AUTHENTIFIED 
 						&& (!empty ($this->fields["password"]) || !empty ($this->fields["password_md5"])))
 				);
-			
+			showUserPreferencesOnglets($target,$actif);
 			echo "<div class='center'>";
-			echo "<form method='post' name=\"user_manager\" action=\"$target\"><table class='tab_cadre'>";
+			echo "<form method='post' name=\"user_manager\" action=\"$target\"><table class='tab_cadre_fixe'>";
 			echo "<tr><th colspan='2'>" . $LANG["setup"][57] . " : " . $this->fields["name"] . "</th></tr>";
 
 			echo "<tr class='tab_bg_1'>";
@@ -976,26 +976,6 @@ class User extends CommonDBTM {
 			echo "</tr>";
 
 			echo "</table></form></div>";
-
-			if (isset($PLUGIN_HOOKS['user_preferences'])){
-				echo "<div class='center'>";
-				echo "<table class='tab_cadre'>";
-				echo "<tr><th>" . $LANG["common"][29] . "</th></tr>";
-				
-				foreach ($PLUGIN_HOOKS['user_preferences'] as $plugin => $value)
-				{
-					$function='plugin_user_preferences_'.$plugin;
-					if (function_exists($function)){
-						$function_name = 'plugin_version_'.$plugin;
-						$name = $function_name();
-						echo "<tr><th>" . $name["name"] . "</th></tr>";
-						echo "<tr><td class='tab_bg_2'>";
-						$function($_SERVER["PHP_SELF"],$_SESSION["glpiID"],$_SESSION["glpiactive_entity"],$_POST);
-						echo "</td></tr>";
-					}
-				}
-				echo "</table></div>";				 
-			} 
 
 			return true;
 		}

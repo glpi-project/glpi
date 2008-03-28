@@ -52,12 +52,28 @@ if (isset ($_POST["update"]) && $_POST["ID"] == $_SESSION["glpiID"]) {
 	glpi_header($_SERVER['HTTP_REFERER']);
 } else {
 
+	if (!isset($_SESSION['glpi_viewpreferences'])) $_SESSION['glpi_viewpreferences']="my";
+	if (isset($_GET['onglet'])) $_SESSION['glpi_viewpreferences']=$_GET['onglet'];
+
 	if ($_SESSION["glpiactiveprofile"]["interface"] == "central")
 		commonHeader($LANG["title"][13], $_SERVER['PHP_SELF']);
 	else
 		helpHeader($LANG["title"][13], $_SERVER['PHP_SELF']);
 
-$user->showMyForm($_SERVER['PHP_SELF'], $_SESSION["glpiID"]);
+$user->showMyForm($_SERVER['PHP_SELF'], $_SESSION["glpiID"],$_SESSION['glpi_viewpreferences']);
+switch ($_SESSION['glpi_viewpreferences'])
+{
+	case "plugins":
+	case "all":
+		echo "<table class='tab_cadre_central' ><tr><td>";
+			doHook("user_preferences",$_POST);
+			echo "</td></tr>";
+			echo "</table>";
+	break;
+	default:
+	break;
+}
+
 if ($_SESSION["glpiactiveprofile"]["interface"] == "central")
 	commonFooter();
 else
