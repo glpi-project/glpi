@@ -1960,6 +1960,9 @@ function addWhere ($link,$nott,$type,$ID,$val,$meta=0){
 		case "glpi_auth_tables.name":
 			return $link." (glpi_auth_mail.name $SEARCH OR glpi_auth_ldap.name $SEARCH ) ";
 		break;
+		case "glpi_contracts.renewal":
+			return $table.".".$field."=".getContractRenewalIDByName($val);
+		break;
 		default:
 
 			

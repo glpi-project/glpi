@@ -303,7 +303,7 @@ $SEARCH_OPTION[COMPUTER_TYPE][60]['linkfield']='';
 $SEARCH_OPTION[COMPUTER_TYPE][60]['name']=$LANG["stats"][13];
 $SEARCH_OPTION[COMPUTER_TYPE][60]['meta']=0;
 
-$SEARCH_OPTION[COMPUTER_TYPE]['financial']=$LANG["financial"][3];
+$SEARCH_OPTION[COMPUTER_TYPE]['contract']=$LANG["Menu"][25];
 
 $SEARCH_OPTION[COMPUTER_TYPE][29]['table']='glpi_contracts';
 $SEARCH_OPTION[COMPUTER_TYPE][29]['field']='name';
@@ -316,6 +316,63 @@ $SEARCH_OPTION[COMPUTER_TYPE][30]['field']='num';
 $SEARCH_OPTION[COMPUTER_TYPE][30]['linkfield']='';
 $SEARCH_OPTION[COMPUTER_TYPE][30]['name']=$LANG["financial"][4]." ".$LANG["financial"][1];
 $SEARCH_OPTION[COMPUTER_TYPE][30]['meta']=0;
+
+$SEARCH_OPTION[COMPUTER_TYPE][130]['table']='glpi_contracts';
+$SEARCH_OPTION[COMPUTER_TYPE][130]['field']='duration';
+$SEARCH_OPTION[COMPUTER_TYPE][130]['linkfield']='';
+$SEARCH_OPTION[COMPUTER_TYPE][130]['name']=$LANG["financial"][8]." ".$LANG["financial"][1];
+$SEARCH_OPTION[COMPUTER_TYPE][130]['meta']=0;
+
+$SEARCH_OPTION[COMPUTER_TYPE][131]['table']='glpi_contracts';
+$SEARCH_OPTION[COMPUTER_TYPE][131]['field']='periodicity';
+$SEARCH_OPTION[COMPUTER_TYPE][131]['linkfield']='';
+$SEARCH_OPTION[COMPUTER_TYPE][131]['name']=$LANG["financial"][69];
+$SEARCH_OPTION[COMPUTER_TYPE][131]['meta']=0;
+
+$SEARCH_OPTION[COMPUTER_TYPE][132]['table']='glpi_contracts';
+$SEARCH_OPTION[COMPUTER_TYPE][132]['field']='begin_date';
+$SEARCH_OPTION[COMPUTER_TYPE][132]['linkfield']='';
+$SEARCH_OPTION[COMPUTER_TYPE][132]['name']=$LANG["search"][8]." ".$LANG["financial"][1];
+$SEARCH_OPTION[COMPUTER_TYPE][132]['meta']=0;
+
+$SEARCH_OPTION[COMPUTER_TYPE][133]['table']='glpi_contracts';
+$SEARCH_OPTION[COMPUTER_TYPE][133]['field']='compta_num';
+$SEARCH_OPTION[COMPUTER_TYPE][133]['linkfield']='';
+$SEARCH_OPTION[COMPUTER_TYPE][133]['name']=$LANG["financial"][13]." ".$LANG["financial"][1];
+$SEARCH_OPTION[COMPUTER_TYPE][133]['meta']=0;
+
+$SEARCH_OPTION[COMPUTER_TYPE][134]['table']='glpi_contracts';
+$SEARCH_OPTION[COMPUTER_TYPE][134]['field']='end_date';
+$SEARCH_OPTION[COMPUTER_TYPE][134]['linkfield']='';
+$SEARCH_OPTION[COMPUTER_TYPE][134]['name']=$LANG["search"][9]." ".$LANG["financial"][1];
+$SEARCH_OPTION[COMPUTER_TYPE][134]['meta']=0;
+
+$SEARCH_OPTION[COMPUTER_TYPE][135]['table']='glpi_contracts';
+$SEARCH_OPTION[COMPUTER_TYPE][135]['field']='notice';
+$SEARCH_OPTION[COMPUTER_TYPE][135]['linkfield']='';
+$SEARCH_OPTION[COMPUTER_TYPE][135]['name']=$LANG["financial"][10]." ".$LANG["financial"][1];
+$SEARCH_OPTION[COMPUTER_TYPE][135]['meta']=0;
+
+$SEARCH_OPTION[COMPUTER_TYPE][136]['table']='glpi_contracts';
+$SEARCH_OPTION[COMPUTER_TYPE][136]['field']='cost';
+$SEARCH_OPTION[COMPUTER_TYPE][136]['linkfield']='';
+$SEARCH_OPTION[COMPUTER_TYPE][136]['name']=$LANG["financial"][5]." ".$LANG["financial"][1];
+$SEARCH_OPTION[COMPUTER_TYPE][136]['meta']=0;
+
+$SEARCH_OPTION[COMPUTER_TYPE][137]['table']='glpi_contracts';
+$SEARCH_OPTION[COMPUTER_TYPE][137]['field']='facturation';
+$SEARCH_OPTION[COMPUTER_TYPE][137]['linkfield']='';
+$SEARCH_OPTION[COMPUTER_TYPE][137]['name']=$LANG["financial"][11]." ".$LANG["financial"][1];
+$SEARCH_OPTION[COMPUTER_TYPE][137]['meta']=0;
+
+$SEARCH_OPTION[COMPUTER_TYPE][138]['table']='glpi_contracts';
+$SEARCH_OPTION[COMPUTER_TYPE][138]['field']='renewal';
+$SEARCH_OPTION[COMPUTER_TYPE][138]['linkfield']='';
+$SEARCH_OPTION[COMPUTER_TYPE][138]['name']=$LANG["financial"][107]." ".$LANG["financial"][1];
+$SEARCH_OPTION[COMPUTER_TYPE][138]['meta']=0;
+
+
+$SEARCH_OPTION[COMPUTER_TYPE]['financial']=$LANG["financial"][3];
 
 $SEARCH_OPTION[COMPUTER_TYPE][25]['table']='glpi_infocoms';
 $SEARCH_OPTION[COMPUTER_TYPE][25]['field']='num_immo';
@@ -648,7 +705,7 @@ $SEARCH_OPTION[NETWORKING_TYPE][60]['linkfield']='';
 $SEARCH_OPTION[NETWORKING_TYPE][60]['name']=$LANG["stats"][13];
 $SEARCH_OPTION[NETWORKING_TYPE][60]['meta']=0;
 
-$SEARCH_OPTION[NETWORKING_TYPE]['financial']=$LANG["financial"][3];
+$SEARCH_OPTION[NETWORKING_TYPE]['contract']=$LANG["Menu"][25];
 
 $SEARCH_OPTION[NETWORKING_TYPE][29]['table']='glpi_contracts';
 $SEARCH_OPTION[NETWORKING_TYPE][29]['field']='name';
@@ -661,6 +718,63 @@ $SEARCH_OPTION[NETWORKING_TYPE][30]['field']='num';
 $SEARCH_OPTION[NETWORKING_TYPE][30]['linkfield']='';
 $SEARCH_OPTION[NETWORKING_TYPE][30]['name']=$LANG["financial"][4]." ".$LANG["financial"][1];
 $SEARCH_OPTION[NETWORKING_TYPE][30]['meta']=0;
+
+$SEARCH_OPTION[NETWORKING_TYPE][130]['table']='glpi_contracts';
+$SEARCH_OPTION[NETWORKING_TYPE][130]['field']='duration';
+$SEARCH_OPTION[NETWORKING_TYPE][130]['linkfield']='';
+$SEARCH_OPTION[NETWORKING_TYPE][130]['name']=$LANG["financial"][8]." ".$LANG["financial"][1];
+$SEARCH_OPTION[NETWORKING_TYPE][130]['meta']=0;
+
+$SEARCH_OPTION[NETWORKING_TYPE][131]['table']='glpi_contracts';
+$SEARCH_OPTION[NETWORKING_TYPE][131]['field']='periodicity';
+$SEARCH_OPTION[NETWORKING_TYPE][131]['linkfield']='';
+$SEARCH_OPTION[NETWORKING_TYPE][131]['name']=$LANG["financial"][69];
+$SEARCH_OPTION[NETWORKING_TYPE][131]['meta']=0;
+
+$SEARCH_OPTION[NETWORKING_TYPE][132]['table']='glpi_contracts';
+$SEARCH_OPTION[NETWORKING_TYPE][132]['field']='begin_date';
+$SEARCH_OPTION[NETWORKING_TYPE][132]['linkfield']='';
+$SEARCH_OPTION[NETWORKING_TYPE][132]['name']=$LANG["search"][8]." ".$LANG["financial"][1];
+$SEARCH_OPTION[NETWORKING_TYPE][132]['meta']=0;
+
+$SEARCH_OPTION[NETWORKING_TYPE][133]['table']='glpi_contracts';
+$SEARCH_OPTION[NETWORKING_TYPE][133]['field']='compta_num';
+$SEARCH_OPTION[NETWORKING_TYPE][133]['linkfield']='';
+$SEARCH_OPTION[NETWORKING_TYPE][133]['name']=$LANG["financial"][13]." ".$LANG["financial"][1];
+$SEARCH_OPTION[NETWORKING_TYPE][133]['meta']=0;
+
+$SEARCH_OPTION[NETWORKING_TYPE][134]['table']='glpi_contracts';
+$SEARCH_OPTION[NETWORKING_TYPE][134]['field']='end_date';
+$SEARCH_OPTION[NETWORKING_TYPE][134]['linkfield']='';
+$SEARCH_OPTION[NETWORKING_TYPE][134]['name']=$LANG["search"][9]." ".$LANG["financial"][1];
+$SEARCH_OPTION[NETWORKING_TYPE][134]['meta']=0;
+
+$SEARCH_OPTION[NETWORKING_TYPE][135]['table']='glpi_contracts';
+$SEARCH_OPTION[NETWORKING_TYPE][135]['field']='notice';
+$SEARCH_OPTION[NETWORKING_TYPE][135]['linkfield']='';
+$SEARCH_OPTION[NETWORKING_TYPE][135]['name']=$LANG["financial"][10]." ".$LANG["financial"][1];
+$SEARCH_OPTION[NETWORKING_TYPE][135]['meta']=0;
+
+$SEARCH_OPTION[NETWORKING_TYPE][136]['table']='glpi_contracts';
+$SEARCH_OPTION[NETWORKING_TYPE][136]['field']='cost';
+$SEARCH_OPTION[NETWORKING_TYPE][136]['linkfield']='';
+$SEARCH_OPTION[NETWORKING_TYPE][136]['name']=$LANG["financial"][5]." ".$LANG["financial"][1];
+$SEARCH_OPTION[NETWORKING_TYPE][136]['meta']=0;
+
+$SEARCH_OPTION[NETWORKING_TYPE][137]['table']='glpi_contracts';
+$SEARCH_OPTION[NETWORKING_TYPE][137]['field']='facturation';
+$SEARCH_OPTION[NETWORKING_TYPE][137]['linkfield']='';
+$SEARCH_OPTION[NETWORKING_TYPE][137]['name']=$LANG["financial"][11]." ".$LANG["financial"][1];
+$SEARCH_OPTION[NETWORKING_TYPE][137]['meta']=0;
+
+$SEARCH_OPTION[NETWORKING_TYPE][138]['table']='glpi_contracts';
+$SEARCH_OPTION[NETWORKING_TYPE][138]['field']='renewal';
+$SEARCH_OPTION[NETWORKING_TYPE][138]['linkfield']='';
+$SEARCH_OPTION[NETWORKING_TYPE][138]['name']=$LANG["financial"][107]." ".$LANG["financial"][1];
+$SEARCH_OPTION[NETWORKING_TYPE][138]['meta']=0;
+
+
+$SEARCH_OPTION[NETWORKING_TYPE]['financial']=$LANG["financial"][3];
 
 $SEARCH_OPTION[NETWORKING_TYPE][25]['table']='glpi_infocoms';
 $SEARCH_OPTION[NETWORKING_TYPE][25]['field']='num_immo';
@@ -935,13 +1049,7 @@ $SEARCH_OPTION[PRINTER_TYPE][60]['linkfield']='';
 $SEARCH_OPTION[PRINTER_TYPE][60]['name']=$LANG["stats"][13];
 $SEARCH_OPTION[PRINTER_TYPE][60]['meta']=0;
 
-$SEARCH_OPTION[PRINTER_TYPE]['financial']=$LANG["financial"][3];
-
-$SEARCH_OPTION[PRINTER_TYPE][25]['table']='glpi_infocoms';
-$SEARCH_OPTION[PRINTER_TYPE][25]['field']='num_immo';
-$SEARCH_OPTION[PRINTER_TYPE][25]['linkfield']='';
-$SEARCH_OPTION[PRINTER_TYPE][25]['name']=$LANG["financial"][20];
-$SEARCH_OPTION[PRINTER_TYPE][25]['meta']=0;
+$SEARCH_OPTION[PRINTER_TYPE]['contract']=$LANG["Menu"][25];
 
 $SEARCH_OPTION[PRINTER_TYPE][29]['table']='glpi_contracts';
 $SEARCH_OPTION[PRINTER_TYPE][29]['field']='name';
@@ -954,6 +1062,69 @@ $SEARCH_OPTION[PRINTER_TYPE][30]['field']='num';
 $SEARCH_OPTION[PRINTER_TYPE][30]['linkfield']='';
 $SEARCH_OPTION[PRINTER_TYPE][30]['name']=$LANG["financial"][4]." ".$LANG["financial"][1];
 $SEARCH_OPTION[PRINTER_TYPE][30]['meta']=0;
+
+$SEARCH_OPTION[PRINTER_TYPE][130]['table']='glpi_contracts';
+$SEARCH_OPTION[PRINTER_TYPE][130]['field']='duration';
+$SEARCH_OPTION[PRINTER_TYPE][130]['linkfield']='';
+$SEARCH_OPTION[PRINTER_TYPE][130]['name']=$LANG["financial"][8]." ".$LANG["financial"][1];
+$SEARCH_OPTION[PRINTER_TYPE][130]['meta']=0;
+
+$SEARCH_OPTION[PRINTER_TYPE][131]['table']='glpi_contracts';
+$SEARCH_OPTION[PRINTER_TYPE][131]['field']='periodicity';
+$SEARCH_OPTION[PRINTER_TYPE][131]['linkfield']='';
+$SEARCH_OPTION[PRINTER_TYPE][131]['name']=$LANG["financial"][69];
+$SEARCH_OPTION[PRINTER_TYPE][131]['meta']=0;
+
+$SEARCH_OPTION[PRINTER_TYPE][132]['table']='glpi_contracts';
+$SEARCH_OPTION[PRINTER_TYPE][132]['field']='begin_date';
+$SEARCH_OPTION[PRINTER_TYPE][132]['linkfield']='';
+$SEARCH_OPTION[PRINTER_TYPE][132]['name']=$LANG["search"][8]." ".$LANG["financial"][1];
+$SEARCH_OPTION[PRINTER_TYPE][132]['meta']=0;
+
+$SEARCH_OPTION[PRINTER_TYPE][133]['table']='glpi_contracts';
+$SEARCH_OPTION[PRINTER_TYPE][133]['field']='compta_num';
+$SEARCH_OPTION[PRINTER_TYPE][133]['linkfield']='';
+$SEARCH_OPTION[PRINTER_TYPE][133]['name']=$LANG["financial"][13]." ".$LANG["financial"][1];
+$SEARCH_OPTION[PRINTER_TYPE][133]['meta']=0;
+
+$SEARCH_OPTION[PRINTER_TYPE][134]['table']='glpi_contracts';
+$SEARCH_OPTION[PRINTER_TYPE][134]['field']='end_date';
+$SEARCH_OPTION[PRINTER_TYPE][134]['linkfield']='';
+$SEARCH_OPTION[PRINTER_TYPE][134]['name']=$LANG["search"][9]." ".$LANG["financial"][1];
+$SEARCH_OPTION[PRINTER_TYPE][134]['meta']=0;
+
+$SEARCH_OPTION[PRINTER_TYPE][135]['table']='glpi_contracts';
+$SEARCH_OPTION[PRINTER_TYPE][135]['field']='notice';
+$SEARCH_OPTION[PRINTER_TYPE][135]['linkfield']='';
+$SEARCH_OPTION[PRINTER_TYPE][135]['name']=$LANG["financial"][10]." ".$LANG["financial"][1];
+$SEARCH_OPTION[PRINTER_TYPE][135]['meta']=0;
+
+$SEARCH_OPTION[PRINTER_TYPE][136]['table']='glpi_contracts';
+$SEARCH_OPTION[PRINTER_TYPE][136]['field']='cost';
+$SEARCH_OPTION[PRINTER_TYPE][136]['linkfield']='';
+$SEARCH_OPTION[PRINTER_TYPE][136]['name']=$LANG["financial"][5]." ".$LANG["financial"][1];
+$SEARCH_OPTION[PRINTER_TYPE][136]['meta']=0;
+
+$SEARCH_OPTION[PRINTER_TYPE][137]['table']='glpi_contracts';
+$SEARCH_OPTION[PRINTER_TYPE][137]['field']='facturation';
+$SEARCH_OPTION[PRINTER_TYPE][137]['linkfield']='';
+$SEARCH_OPTION[PRINTER_TYPE][137]['name']=$LANG["financial"][11]." ".$LANG["financial"][1];
+$SEARCH_OPTION[PRINTER_TYPE][137]['meta']=0;
+
+$SEARCH_OPTION[PRINTER_TYPE][138]['table']='glpi_contracts';
+$SEARCH_OPTION[PRINTER_TYPE][138]['field']='renewal';
+$SEARCH_OPTION[PRINTER_TYPE][138]['linkfield']='';
+$SEARCH_OPTION[PRINTER_TYPE][138]['name']=$LANG["financial"][107]." ".$LANG["financial"][1];
+$SEARCH_OPTION[PRINTER_TYPE][138]['meta']=0;
+
+
+$SEARCH_OPTION[PRINTER_TYPE]['financial']=$LANG["financial"][3];
+
+$SEARCH_OPTION[PRINTER_TYPE][25]['table']='glpi_infocoms';
+$SEARCH_OPTION[PRINTER_TYPE][25]['field']='num_immo';
+$SEARCH_OPTION[PRINTER_TYPE][25]['linkfield']='';
+$SEARCH_OPTION[PRINTER_TYPE][25]['name']=$LANG["financial"][20];
+$SEARCH_OPTION[PRINTER_TYPE][25]['meta']=0;
 
 $SEARCH_OPTION[PRINTER_TYPE][26]['table']='glpi_infocoms';
 $SEARCH_OPTION[PRINTER_TYPE][26]['field']='num_commande';
@@ -1177,7 +1348,8 @@ $SEARCH_OPTION[MONITOR_TYPE][60]['linkfield']='';
 $SEARCH_OPTION[MONITOR_TYPE][60]['name']=$LANG["stats"][13];
 $SEARCH_OPTION[MONITOR_TYPE][60]['meta']=0;
 
-$SEARCH_OPTION[MONITOR_TYPE]['financial']=$LANG["financial"][3];
+
+$SEARCH_OPTION[MONITOR_TYPE]['contract']=$LANG["Menu"][25];
 
 $SEARCH_OPTION[MONITOR_TYPE][29]['table']='glpi_contracts';
 $SEARCH_OPTION[MONITOR_TYPE][29]['field']='name';
@@ -1190,6 +1362,62 @@ $SEARCH_OPTION[MONITOR_TYPE][30]['field']='num';
 $SEARCH_OPTION[MONITOR_TYPE][30]['linkfield']='';
 $SEARCH_OPTION[MONITOR_TYPE][30]['name']=$LANG["financial"][4]." ".$LANG["financial"][1];
 $SEARCH_OPTION[MONITOR_TYPE][30]['meta']=0;
+
+$SEARCH_OPTION[MONITOR_TYPE][130]['table']='glpi_contracts';
+$SEARCH_OPTION[MONITOR_TYPE][130]['field']='duration';
+$SEARCH_OPTION[MONITOR_TYPE][130]['linkfield']='';
+$SEARCH_OPTION[MONITOR_TYPE][130]['name']=$LANG["financial"][8]." ".$LANG["financial"][1];
+$SEARCH_OPTION[MONITOR_TYPE][130]['meta']=0;
+
+$SEARCH_OPTION[MONITOR_TYPE][131]['table']='glpi_contracts';
+$SEARCH_OPTION[MONITOR_TYPE][131]['field']='periodicity';
+$SEARCH_OPTION[MONITOR_TYPE][131]['linkfield']='';
+$SEARCH_OPTION[MONITOR_TYPE][131]['name']=$LANG["financial"][69];
+$SEARCH_OPTION[MONITOR_TYPE][131]['meta']=0;
+
+$SEARCH_OPTION[MONITOR_TYPE][132]['table']='glpi_contracts';
+$SEARCH_OPTION[MONITOR_TYPE][132]['field']='begin_date';
+$SEARCH_OPTION[MONITOR_TYPE][132]['linkfield']='';
+$SEARCH_OPTION[MONITOR_TYPE][132]['name']=$LANG["search"][8]." ".$LANG["financial"][1];
+$SEARCH_OPTION[MONITOR_TYPE][132]['meta']=0;
+
+$SEARCH_OPTION[MONITOR_TYPE][133]['table']='glpi_contracts';
+$SEARCH_OPTION[MONITOR_TYPE][133]['field']='compta_num';
+$SEARCH_OPTION[MONITOR_TYPE][133]['linkfield']='';
+$SEARCH_OPTION[MONITOR_TYPE][133]['name']=$LANG["financial"][13]." ".$LANG["financial"][1];
+$SEARCH_OPTION[MONITOR_TYPE][133]['meta']=0;
+
+$SEARCH_OPTION[MONITOR_TYPE][134]['table']='glpi_contracts';
+$SEARCH_OPTION[MONITOR_TYPE][134]['field']='end_date';
+$SEARCH_OPTION[MONITOR_TYPE][134]['linkfield']='';
+$SEARCH_OPTION[MONITOR_TYPE][134]['name']=$LANG["search"][9]." ".$LANG["financial"][1];
+$SEARCH_OPTION[MONITOR_TYPE][134]['meta']=0;
+
+$SEARCH_OPTION[MONITOR_TYPE][135]['table']='glpi_contracts';
+$SEARCH_OPTION[MONITOR_TYPE][135]['field']='notice';
+$SEARCH_OPTION[MONITOR_TYPE][135]['linkfield']='';
+$SEARCH_OPTION[MONITOR_TYPE][135]['name']=$LANG["financial"][10]." ".$LANG["financial"][1];
+$SEARCH_OPTION[MONITOR_TYPE][135]['meta']=0;
+
+$SEARCH_OPTION[MONITOR_TYPE][136]['table']='glpi_contracts';
+$SEARCH_OPTION[MONITOR_TYPE][136]['field']='cost';
+$SEARCH_OPTION[MONITOR_TYPE][136]['linkfield']='';
+$SEARCH_OPTION[MONITOR_TYPE][136]['name']=$LANG["financial"][5]." ".$LANG["financial"][1];
+$SEARCH_OPTION[MONITOR_TYPE][136]['meta']=0;
+
+$SEARCH_OPTION[MONITOR_TYPE][137]['table']='glpi_contracts';
+$SEARCH_OPTION[MONITOR_TYPE][137]['field']='facturation';
+$SEARCH_OPTION[MONITOR_TYPE][137]['linkfield']='';
+$SEARCH_OPTION[MONITOR_TYPE][137]['name']=$LANG["financial"][11]." ".$LANG["financial"][1];
+$SEARCH_OPTION[MONITOR_TYPE][137]['meta']=0;
+
+$SEARCH_OPTION[MONITOR_TYPE][138]['table']='glpi_contracts';
+$SEARCH_OPTION[MONITOR_TYPE][138]['field']='renewal';
+$SEARCH_OPTION[MONITOR_TYPE][138]['linkfield']='';
+$SEARCH_OPTION[MONITOR_TYPE][138]['name']=$LANG["financial"][107]." ".$LANG["financial"][1];
+$SEARCH_OPTION[MONITOR_TYPE][138]['meta']=0;
+
+$SEARCH_OPTION[MONITOR_TYPE]['financial']=$LANG["financial"][3];
 
 $SEARCH_OPTION[MONITOR_TYPE][25]['table']='glpi_infocoms';
 $SEARCH_OPTION[MONITOR_TYPE][25]['field']='num_immo';
@@ -1458,7 +1686,8 @@ $SEARCH_OPTION[PERIPHERAL_TYPE][60]['linkfield']='';
 $SEARCH_OPTION[PERIPHERAL_TYPE][60]['name']=$LANG["stats"][13];
 $SEARCH_OPTION[PERIPHERAL_TYPE][60]['meta']=0;
 
-$SEARCH_OPTION[PERIPHERAL_TYPE]['financial']=$LANG["financial"][3];
+
+$SEARCH_OPTION[PERIPHERAL_TYPE]['contract']=$LANG["Menu"][25];
 
 $SEARCH_OPTION[PERIPHERAL_TYPE][29]['table']='glpi_contracts';
 $SEARCH_OPTION[PERIPHERAL_TYPE][29]['field']='name';
@@ -1471,6 +1700,62 @@ $SEARCH_OPTION[PERIPHERAL_TYPE][30]['field']='num';
 $SEARCH_OPTION[PERIPHERAL_TYPE][30]['linkfield']='';
 $SEARCH_OPTION[PERIPHERAL_TYPE][30]['name']=$LANG["financial"][4]." ".$LANG["financial"][1];
 $SEARCH_OPTION[PERIPHERAL_TYPE][30]['meta']=0;
+
+$SEARCH_OPTION[PERIPHERAL_TYPE][130]['table']='glpi_contracts';
+$SEARCH_OPTION[PERIPHERAL_TYPE][130]['field']='duration';
+$SEARCH_OPTION[PERIPHERAL_TYPE][130]['linkfield']='';
+$SEARCH_OPTION[PERIPHERAL_TYPE][130]['name']=$LANG["financial"][8]." ".$LANG["financial"][1];
+$SEARCH_OPTION[PERIPHERAL_TYPE][130]['meta']=0;
+
+$SEARCH_OPTION[PERIPHERAL_TYPE][131]['table']='glpi_contracts';
+$SEARCH_OPTION[PERIPHERAL_TYPE][131]['field']='periodicity';
+$SEARCH_OPTION[PERIPHERAL_TYPE][131]['linkfield']='';
+$SEARCH_OPTION[PERIPHERAL_TYPE][131]['name']=$LANG["financial"][69];
+$SEARCH_OPTION[PERIPHERAL_TYPE][131]['meta']=0;
+
+$SEARCH_OPTION[PERIPHERAL_TYPE][132]['table']='glpi_contracts';
+$SEARCH_OPTION[PERIPHERAL_TYPE][132]['field']='begin_date';
+$SEARCH_OPTION[PERIPHERAL_TYPE][132]['linkfield']='';
+$SEARCH_OPTION[PERIPHERAL_TYPE][132]['name']=$LANG["search"][8]." ".$LANG["financial"][1];
+$SEARCH_OPTION[PERIPHERAL_TYPE][132]['meta']=0;
+
+$SEARCH_OPTION[PERIPHERAL_TYPE][133]['table']='glpi_contracts';
+$SEARCH_OPTION[PERIPHERAL_TYPE][133]['field']='compta_num';
+$SEARCH_OPTION[PERIPHERAL_TYPE][133]['linkfield']='';
+$SEARCH_OPTION[PERIPHERAL_TYPE][133]['name']=$LANG["financial"][13]." ".$LANG["financial"][1];
+$SEARCH_OPTION[PERIPHERAL_TYPE][133]['meta']=0;
+
+$SEARCH_OPTION[PERIPHERAL_TYPE][134]['table']='glpi_contracts';
+$SEARCH_OPTION[PERIPHERAL_TYPE][134]['field']='end_date';
+$SEARCH_OPTION[PERIPHERAL_TYPE][134]['linkfield']='';
+$SEARCH_OPTION[PERIPHERAL_TYPE][134]['name']=$LANG["search"][9]." ".$LANG["financial"][1];
+$SEARCH_OPTION[PERIPHERAL_TYPE][134]['meta']=0;
+
+$SEARCH_OPTION[PERIPHERAL_TYPE][135]['table']='glpi_contracts';
+$SEARCH_OPTION[PERIPHERAL_TYPE][135]['field']='notice';
+$SEARCH_OPTION[PERIPHERAL_TYPE][135]['linkfield']='';
+$SEARCH_OPTION[PERIPHERAL_TYPE][135]['name']=$LANG["financial"][10]." ".$LANG["financial"][1];
+$SEARCH_OPTION[PERIPHERAL_TYPE][135]['meta']=0;
+
+$SEARCH_OPTION[PERIPHERAL_TYPE][136]['table']='glpi_contracts';
+$SEARCH_OPTION[PERIPHERAL_TYPE][136]['field']='cost';
+$SEARCH_OPTION[PERIPHERAL_TYPE][136]['linkfield']='';
+$SEARCH_OPTION[PERIPHERAL_TYPE][136]['name']=$LANG["financial"][5]." ".$LANG["financial"][1];
+$SEARCH_OPTION[PERIPHERAL_TYPE][136]['meta']=0;
+
+$SEARCH_OPTION[PERIPHERAL_TYPE][137]['table']='glpi_contracts';
+$SEARCH_OPTION[PERIPHERAL_TYPE][137]['field']='facturation';
+$SEARCH_OPTION[PERIPHERAL_TYPE][137]['linkfield']='';
+$SEARCH_OPTION[PERIPHERAL_TYPE][137]['name']=$LANG["financial"][11]." ".$LANG["financial"][1];
+$SEARCH_OPTION[PERIPHERAL_TYPE][137]['meta']=0;
+
+$SEARCH_OPTION[PERIPHERAL_TYPE][138]['table']='glpi_contracts';
+$SEARCH_OPTION[PERIPHERAL_TYPE][138]['field']='renewal';
+$SEARCH_OPTION[PERIPHERAL_TYPE][138]['linkfield']='';
+$SEARCH_OPTION[PERIPHERAL_TYPE][138]['name']=$LANG["financial"][107]." ".$LANG["financial"][1];
+$SEARCH_OPTION[PERIPHERAL_TYPE][138]['meta']=0;
+
+$SEARCH_OPTION[PERIPHERAL_TYPE]['financial']=$LANG["financial"][3];
 
 $SEARCH_OPTION[PERIPHERAL_TYPE][25]['table']='glpi_infocoms';
 $SEARCH_OPTION[PERIPHERAL_TYPE][25]['field']='num_immo';
@@ -1688,7 +1973,7 @@ $SEARCH_OPTION[SOFTWARE_TYPE][60]['linkfield']='';
 $SEARCH_OPTION[SOFTWARE_TYPE][60]['name']=$LANG["stats"][13];
 $SEARCH_OPTION[SOFTWARE_TYPE][60]['meta']=0;
 
-$SEARCH_OPTION[SOFTWARE_TYPE]['financial']=$LANG["financial"][3];
+$SEARCH_OPTION[SOFTWARE_TYPE]['contract']=$LANG["Menu"][25];
 
 $SEARCH_OPTION[SOFTWARE_TYPE][29]['table']='glpi_contracts';
 $SEARCH_OPTION[SOFTWARE_TYPE][29]['field']='name';
@@ -1701,6 +1986,62 @@ $SEARCH_OPTION[SOFTWARE_TYPE][30]['field']='num';
 $SEARCH_OPTION[SOFTWARE_TYPE][30]['linkfield']='';
 $SEARCH_OPTION[SOFTWARE_TYPE][30]['name']=$LANG["financial"][4]." ".$LANG["financial"][1];
 $SEARCH_OPTION[SOFTWARE_TYPE][30]['meta']=0;
+
+$SEARCH_OPTION[SOFTWARE_TYPE][130]['table']='glpi_contracts';
+$SEARCH_OPTION[SOFTWARE_TYPE][130]['field']='duration';
+$SEARCH_OPTION[SOFTWARE_TYPE][130]['linkfield']='';
+$SEARCH_OPTION[SOFTWARE_TYPE][130]['name']=$LANG["financial"][8]." ".$LANG["financial"][1];
+$SEARCH_OPTION[SOFTWARE_TYPE][130]['meta']=0;
+
+$SEARCH_OPTION[SOFTWARE_TYPE][131]['table']='glpi_contracts';
+$SEARCH_OPTION[SOFTWARE_TYPE][131]['field']='periodicity';
+$SEARCH_OPTION[SOFTWARE_TYPE][131]['linkfield']='';
+$SEARCH_OPTION[SOFTWARE_TYPE][131]['name']=$LANG["financial"][69];
+$SEARCH_OPTION[SOFTWARE_TYPE][131]['meta']=0;
+
+$SEARCH_OPTION[SOFTWARE_TYPE][132]['table']='glpi_contracts';
+$SEARCH_OPTION[SOFTWARE_TYPE][132]['field']='begin_date';
+$SEARCH_OPTION[SOFTWARE_TYPE][132]['linkfield']='';
+$SEARCH_OPTION[SOFTWARE_TYPE][132]['name']=$LANG["search"][8]." ".$LANG["financial"][1];
+$SEARCH_OPTION[SOFTWARE_TYPE][132]['meta']=0;
+
+$SEARCH_OPTION[SOFTWARE_TYPE][133]['table']='glpi_contracts';
+$SEARCH_OPTION[SOFTWARE_TYPE][133]['field']='compta_num';
+$SEARCH_OPTION[SOFTWARE_TYPE][133]['linkfield']='';
+$SEARCH_OPTION[SOFTWARE_TYPE][133]['name']=$LANG["financial"][13]." ".$LANG["financial"][1];
+$SEARCH_OPTION[SOFTWARE_TYPE][133]['meta']=0;
+
+$SEARCH_OPTION[SOFTWARE_TYPE][134]['table']='glpi_contracts';
+$SEARCH_OPTION[SOFTWARE_TYPE][134]['field']='end_date';
+$SEARCH_OPTION[SOFTWARE_TYPE][134]['linkfield']='';
+$SEARCH_OPTION[SOFTWARE_TYPE][134]['name']=$LANG["search"][9]." ".$LANG["financial"][1];
+$SEARCH_OPTION[SOFTWARE_TYPE][134]['meta']=0;
+
+$SEARCH_OPTION[SOFTWARE_TYPE][135]['table']='glpi_contracts';
+$SEARCH_OPTION[SOFTWARE_TYPE][135]['field']='notice';
+$SEARCH_OPTION[SOFTWARE_TYPE][135]['linkfield']='';
+$SEARCH_OPTION[SOFTWARE_TYPE][135]['name']=$LANG["financial"][10]." ".$LANG["financial"][1];
+$SEARCH_OPTION[SOFTWARE_TYPE][135]['meta']=0;
+
+$SEARCH_OPTION[SOFTWARE_TYPE][136]['table']='glpi_contracts';
+$SEARCH_OPTION[SOFTWARE_TYPE][136]['field']='cost';
+$SEARCH_OPTION[SOFTWARE_TYPE][136]['linkfield']='';
+$SEARCH_OPTION[SOFTWARE_TYPE][136]['name']=$LANG["financial"][5]." ".$LANG["financial"][1];
+$SEARCH_OPTION[SOFTWARE_TYPE][136]['meta']=0;
+
+$SEARCH_OPTION[SOFTWARE_TYPE][137]['table']='glpi_contracts';
+$SEARCH_OPTION[SOFTWARE_TYPE][137]['field']='facturation';
+$SEARCH_OPTION[SOFTWARE_TYPE][137]['linkfield']='';
+$SEARCH_OPTION[SOFTWARE_TYPE][137]['name']=$LANG["financial"][11]." ".$LANG["financial"][1];
+$SEARCH_OPTION[SOFTWARE_TYPE][137]['meta']=0;
+
+$SEARCH_OPTION[SOFTWARE_TYPE][138]['table']='glpi_contracts';
+$SEARCH_OPTION[SOFTWARE_TYPE][138]['field']='renewal';
+$SEARCH_OPTION[SOFTWARE_TYPE][138]['linkfield']='';
+$SEARCH_OPTION[SOFTWARE_TYPE][138]['name']=$LANG["financial"][107]." ".$LANG["financial"][1];
+$SEARCH_OPTION[SOFTWARE_TYPE][138]['meta']=0;
+
+$SEARCH_OPTION[SOFTWARE_TYPE]['financial']=$LANG["financial"][3];
 
 $SEARCH_OPTION[SOFTWARE_TYPE][25]['table']='glpi_infocoms';
 $SEARCH_OPTION[SOFTWARE_TYPE][25]['field']='num_immo';
@@ -2564,7 +2905,7 @@ $SEARCH_OPTION[PHONE_TYPE][60]['linkfield']='';
 $SEARCH_OPTION[PHONE_TYPE][60]['name']=$LANG["stats"][13];
 $SEARCH_OPTION[PHONE_TYPE][60]['meta']=0;
 
-$SEARCH_OPTION[PHONE_TYPE]['financial']=$LANG["financial"][3];
+$SEARCH_OPTION[PHONE_TYPE]['contract']=$LANG["Menu"][25];
 
 $SEARCH_OPTION[PHONE_TYPE][29]['table']='glpi_contracts';
 $SEARCH_OPTION[PHONE_TYPE][29]['field']='name';
@@ -2577,6 +2918,62 @@ $SEARCH_OPTION[PHONE_TYPE][30]['field']='num';
 $SEARCH_OPTION[PHONE_TYPE][30]['linkfield']='';
 $SEARCH_OPTION[PHONE_TYPE][30]['name']=$LANG["financial"][4]." ".$LANG["financial"][1];
 $SEARCH_OPTION[PHONE_TYPE][30]['meta']=0;
+
+$SEARCH_OPTION[PHONE_TYPE][130]['table']='glpi_contracts';
+$SEARCH_OPTION[PHONE_TYPE][130]['field']='duration';
+$SEARCH_OPTION[PHONE_TYPE][130]['linkfield']='';
+$SEARCH_OPTION[PHONE_TYPE][130]['name']=$LANG["financial"][8]." ".$LANG["financial"][1];
+$SEARCH_OPTION[PHONE_TYPE][130]['meta']=0;
+
+$SEARCH_OPTION[PHONE_TYPE][131]['table']='glpi_contracts';
+$SEARCH_OPTION[PHONE_TYPE][131]['field']='periodicity';
+$SEARCH_OPTION[PHONE_TYPE][131]['linkfield']='';
+$SEARCH_OPTION[PHONE_TYPE][131]['name']=$LANG["financial"][69];
+$SEARCH_OPTION[PHONE_TYPE][131]['meta']=0;
+
+$SEARCH_OPTION[PHONE_TYPE][132]['table']='glpi_contracts';
+$SEARCH_OPTION[PHONE_TYPE][132]['field']='begin_date';
+$SEARCH_OPTION[PHONE_TYPE][132]['linkfield']='';
+$SEARCH_OPTION[PHONE_TYPE][132]['name']=$LANG["search"][8]." ".$LANG["financial"][1];
+$SEARCH_OPTION[PHONE_TYPE][132]['meta']=0;
+
+$SEARCH_OPTION[PHONE_TYPE][133]['table']='glpi_contracts';
+$SEARCH_OPTION[PHONE_TYPE][133]['field']='compta_num';
+$SEARCH_OPTION[PHONE_TYPE][133]['linkfield']='';
+$SEARCH_OPTION[PHONE_TYPE][133]['name']=$LANG["financial"][13]." ".$LANG["financial"][1];
+$SEARCH_OPTION[PHONE_TYPE][133]['meta']=0;
+
+$SEARCH_OPTION[PHONE_TYPE][134]['table']='glpi_contracts';
+$SEARCH_OPTION[PHONE_TYPE][134]['field']='end_date';
+$SEARCH_OPTION[PHONE_TYPE][134]['linkfield']='';
+$SEARCH_OPTION[PHONE_TYPE][134]['name']=$LANG["search"][9]." ".$LANG["financial"][1];
+$SEARCH_OPTION[PHONE_TYPE][134]['meta']=0;
+
+$SEARCH_OPTION[PHONE_TYPE][135]['table']='glpi_contracts';
+$SEARCH_OPTION[PHONE_TYPE][135]['field']='notice';
+$SEARCH_OPTION[PHONE_TYPE][135]['linkfield']='';
+$SEARCH_OPTION[PHONE_TYPE][135]['name']=$LANG["financial"][10]." ".$LANG["financial"][1];
+$SEARCH_OPTION[PHONE_TYPE][135]['meta']=0;
+
+$SEARCH_OPTION[PHONE_TYPE][136]['table']='glpi_contracts';
+$SEARCH_OPTION[PHONE_TYPE][136]['field']='cost';
+$SEARCH_OPTION[PHONE_TYPE][136]['linkfield']='';
+$SEARCH_OPTION[PHONE_TYPE][136]['name']=$LANG["financial"][5]." ".$LANG["financial"][1];
+$SEARCH_OPTION[PHONE_TYPE][136]['meta']=0;
+
+$SEARCH_OPTION[PHONE_TYPE][137]['table']='glpi_contracts';
+$SEARCH_OPTION[PHONE_TYPE][137]['field']='facturation';
+$SEARCH_OPTION[PHONE_TYPE][137]['linkfield']='';
+$SEARCH_OPTION[PHONE_TYPE][137]['name']=$LANG["financial"][11]." ".$LANG["financial"][1];
+$SEARCH_OPTION[PHONE_TYPE][137]['meta']=0;
+
+$SEARCH_OPTION[PHONE_TYPE][138]['table']='glpi_contracts';
+$SEARCH_OPTION[PHONE_TYPE][138]['field']='renewal';
+$SEARCH_OPTION[PHONE_TYPE][138]['linkfield']='';
+$SEARCH_OPTION[PHONE_TYPE][138]['name']=$LANG["financial"][107]." ".$LANG["financial"][1];
+$SEARCH_OPTION[PHONE_TYPE][138]['meta']=0;
+
+$SEARCH_OPTION[PHONE_TYPE]['financial']=$LANG["financial"][3];
 
 $SEARCH_OPTION[PHONE_TYPE][25]['table']='glpi_infocoms';
 $SEARCH_OPTION[PHONE_TYPE][25]['field']='num_immo';

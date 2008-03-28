@@ -473,7 +473,20 @@ function getContractRenewalName($value){
 		default : return "";
 	}
 }
-
+/**
+ * Get renewal ID by name
+ * @param $value the name of the renewal
+ * 
+ * @return the ID of the renewal
+ */
+function getContractRenewalIDByName($value){
+	global $LANG;
+	switch ($value){
+		case $LANG["financial"][105]: return 1;break;
+		case $LANG["financial"][106]: return 2;break;
+		default : return 0;
+	}
+}
 /**
  * Get the entreprise identifier from a contract
  *
