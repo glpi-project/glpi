@@ -853,7 +853,7 @@ class User extends CommonDBTM {
 		}
 	}
 
-	function showMyForm($target, $ID, $actif) {
+	function showMyForm($target, $ID) {
 
 		// Affiche un formulaire User
 		global $CFG_GLPI, $LANG,$PLUGIN_HOOKS;
@@ -869,7 +869,7 @@ class User extends CommonDBTM {
 				|| ($this->fields["auth_method"]==NOT_YET_AUTHENTIFIED 
 						&& (!empty ($this->fields["password"]) || !empty ($this->fields["password_md5"])))
 				);
-			showUserPreferencesOnglets($target,$actif);
+			
 			echo "<div class='center'>";
 			echo "<form method='post' name=\"user_manager\" action=\"$target\"><table class='tab_cadre_fixe'>";
 			echo "<tr><th colspan='2'>" . $LANG["setup"][57] . " : " . $this->fields["name"] . "</th></tr>";
