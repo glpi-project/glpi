@@ -584,9 +584,6 @@ function getDropdownName($table,$id,$withcomments=0) {
 							$name .= " (".getDropdownName("glpi_dropdown_locations",$data["location"]).")";
 							break;
 						case "glpi_software":
-							//$name .= "  (v. ".$data["version"].")";
-							$name .= "  (v)";
-							
 							if ($data["platform"]!=0 && $data["helpdesk_visible"] != 0)
 								$comments.="<br>".$LANG["software"][3].": ".getDropdownName("glpi_dropdown_os",$data["platform"]);
 							break;
