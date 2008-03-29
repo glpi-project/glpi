@@ -147,21 +147,25 @@ function Disconnect($ID,$dohistory=1,$doautoactions=true,$ocs_server_id=0) {
 	$res = $DB->query($query);
 
 	if($DB->numrows($res)>0){
-		$data = $DB->fetch_array($res);
 
-		$decoConf = "";
-		$type_elem= $data["type"]; 
-		$id_elem= $data["end1"]; 
-		$id_parent= $data["end2"]; 
-		$table = $LINK_ID_TABLE[$type_elem];
-
-
-		//Get the computer name
-		$computer = new Computer;
-		$computer->getFromDB($id_parent);
-		//Get device fields
-		$device=new CommonItem();
-		$device->getFromDB($type_elem,$id_elem);
+		// Init 
+		if ($dohistory || $doautoactions){
+			$data = $DB->fetch_array($res);
+	
+			$decoConf = "";
+			$type_elem= $data["type"]; 
+			$id_elem= $data["end1"]; 
+			$id_parent= $data["end2"]; 
+			$table = $LINK_ID_TABLE[$type_elem];
+	
+	
+			//Get the computer name
+			$computer = new Computer;
+			$computer->getFromDB($id_parent);
+			//Get device fields
+			$device=new CommonItem();
+			$device->getFromDB($type_elem,$id_elem);
+		}
 				
 		if ($dohistory){
 
@@ -250,10 +254,12 @@ function Disconnect($ID,$dohistory=1,$doautoactions=true,$ocs_server_id=0) {
 				}		
 			} // $ocs_server_id>0
 		}
+
+		// Disconnects a direct connection
+		$connect = new Connection;
+		$connect->deletefromDB($ID);
+
 	}
-	// Disconnects a direct connection
-	$connect = new Connection;
-	$connect->deletefromDB($ID);
 
 }
 

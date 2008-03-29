@@ -263,7 +263,7 @@ class Transfer extends CommonDBTM{
 		}
 		if (count($DC_CONNECT)&&count($this->needtobe_transfer[COMPUTER_TYPE])>0){
 			foreach ($DC_CONNECT as $type){
-				// Clean DB
+				// Clean DB / Search unexisting links and force disconnect
 				$query="SELECT glpi_connect_wire.ID 
 					FROM glpi_connect_wire 
 					LEFT JOIN ".$LINK_ID_TABLE[$type]." ON (glpi_connect_wire.end1 = ".$LINK_ID_TABLE[$type].".ID ) 
@@ -272,8 +272,7 @@ class Transfer extends CommonDBTM{
 				if ($result = $DB->query($query)) {
 					if ($DB->numrows($result)>0) { 
 						while ($data=$DB->fetch_array($result)){
-							$query="DELETE FROM glpi_connect_wire WHERE ID='".$data['ID']."'";
-							$DB->query($query);
+							Disconnect($data['ID'],0,false);
 						}
 					}
 				}
@@ -1482,10 +1481,9 @@ class Transfer extends CommonDBTM{
 							} else {
 								// Else delete link
 								
-								// Don't need to call Disconnect for global device (no disconnect behavior, but history ?)
-								$del_query="DELETE FROM glpi_connect_wire 
-									WHERE ID = '".$data['ID']."'";
-								$DB->query($del_query);
+								// Call Disconnect for global device (no disconnect behavior, but history )
+								Disconnect($data['ID'],1,false);
+
 								$need_clean_process=true;
 								// OCS clean link
 								if ($ocs_computer&&!empty($ocs_field)){
@@ -1532,10 +1530,8 @@ class Transfer extends CommonDBTM{
 							}
 						}
 					} else {
-						// Unexisting item
-						$del_query="DELETE FROM glpi_connect_wire 
-							WHERE ID = '".$data['ID']."'";
-						$DB->query($del_query);
+						// Unexisting item / Force disconnect
+						Disconnect($data['ID'],0,false);
 					}
 				}
 			}
