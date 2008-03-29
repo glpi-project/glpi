@@ -3201,7 +3201,7 @@ function ocsResetLicenses($glpi_computer_id) {
 		}
 
 		$query = "DELETE FROM glpi_inst_software 
-							WHERE cid = '" . $glpi_computer_id . "'";
+				WHERE cid = '" . $glpi_computer_id . "'";
 		$DB->query($query);
 	}
 
@@ -3232,6 +3232,7 @@ function ocsResetDevices($glpi_computer_id, $device_type) {
  * Delete all old periphs for a computer.
  *
  *@param $glpi_computer_id integer : glpi computer id.
+ *@param $ocs_server_id integer : ocs server id of the computer
  *
  *@return nothing.
  *
@@ -3248,10 +3249,13 @@ function ocsResetPeriphs($glpi_computer_id) {
 	$per = new Peripheral();
 	if ($DB->numrows($result) > 0) {
 		while ($data = $DB->fetch_assoc($result)) {
+
+			Disconnect($data['ID'],1,false);
+
 			$query2 = "SELECT COUNT(*) 
-										FROM glpi_connect_wire 
-										WHERE end1 = '" . $data['end1'] . "' 
-										AND type = '" . PERIPHERAL_TYPE . "'";
+					FROM glpi_connect_wire 
+					WHERE end1 = '" . $data['end1'] . "' 
+					AND type = '" . PERIPHERAL_TYPE . "'";
 			$result2 = $DB->query($query2);
 			if ($DB->result($result2, 0, 0) == 1) {
 				$per->delete(array (
@@ -3259,12 +3263,8 @@ function ocsResetPeriphs($glpi_computer_id) {
 					"_from_ocs" => 1
 				), 1);
 			}
+			
 		}
-
-		$query2 = "DELETE FROM glpi_connect_wire 
-							WHERE end2 = '" . $glpi_computer_id . "' 
-							AND type = '" . PERIPHERAL_TYPE . "'";
-		$DB->query($query2);
 	}
 
 }
@@ -3285,14 +3285,18 @@ function ocsResetMonitors($glpi_computer_id) {
 				FROM glpi_connect_wire 
 				WHERE end2 = '" . $glpi_computer_id . "' 
 				AND type = '" . MONITOR_TYPE . "'";
+
 	$result = $DB->query($query);
 	$mon = new Monitor();
 	if ($DB->numrows($result) > 0) {
 		while ($data = $DB->fetch_assoc($result)) {
+
+			Disconnect($data['ID'],1,false);
+
 			$query2 = "SELECT COUNT(*) 
-										FROM glpi_connect_wire 
-										WHERE end1 = '" . $data['end1'] . "' 
-										AND type = '" . MONITOR_TYPE . "'";
+					FROM glpi_connect_wire 
+					WHERE end1 = '" . $data['end1'] . "' 
+					AND type = '" . MONITOR_TYPE . "'";
 			$result2 = $DB->query($query2);
 			if ($DB->result($result2, 0, 0) == 1) {
 				$mon->delete(array (
@@ -3301,13 +3305,7 @@ function ocsResetMonitors($glpi_computer_id) {
 				), 1);
 			}
 		}
-
-		$query2 = "DELETE FROM glpi_connect_wire 
-							WHERE end2 = '" . $glpi_computer_id . "' 
-							AND type = '" . MONITOR_TYPE . "'";
-		$DB->query($query2);
 	}
-
 }
 /**
  * Delete old printers
@@ -3330,10 +3328,13 @@ function ocsResetPrinters($glpi_computer_id) {
 	$result = $DB->query($query);
 	if ($DB->numrows($result) > 0) {
 		while ($data = $DB->fetch_assoc($result)) {
+
+			Disconnect($data['ID'],1,false);
+
 			$query2 = "SELECT COUNT(*) 
-										FROM glpi_connect_wire 
-										WHERE end1 = '" . $data['end1'] . "' 
-										AND type = '" . PRINTER_TYPE . "'";
+					FROM glpi_connect_wire 
+					WHERE end1 = '" . $data['end1'] . "' 
+					AND type = '" . PRINTER_TYPE . "'";
 			$result2 = $DB->query($query2);
 			$printer = new Printer();
 			if ($DB->result($result2, 0, 0) == 1) {
@@ -3344,10 +3345,6 @@ function ocsResetPrinters($glpi_computer_id) {
 			}
 		}
 
-		$query2 = "DELETE FROM glpi_connect_wire 
-							WHERE end2 = '" . $glpi_computer_id . "' 
-							AND type = '" . PRINTER_TYPE . "'";
-		$DB->query($query2);
 	}
 }
 /**
