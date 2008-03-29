@@ -60,17 +60,18 @@ if (isset ($_POST["update"]) && $_POST["ID"] == $_SESSION["glpiID"]) {
 	else
 		helpHeader($LANG["title"][13], $_SERVER['PHP_SELF']);
 
-$user->showMyForm($_SERVER['PHP_SELF'], $_SESSION["glpiID"],$_SESSION['glpi_viewpreferences']);
+showUserPreferencesOnglets($_SERVER['PHP_SELF'],$_SESSION['glpi_viewpreferences']);
 switch ($_SESSION['glpi_viewpreferences'])
 {
 	case "plugins":
-	case "all":
+//	case "all":
 		echo "<table class='tab_cadre_central' ><tr><td>";
-			doHook("user_preferences",$_POST);
-			echo "</td></tr>";
-			echo "</table>";
+		doHook("user_preferences",$_POST);
+		echo "</td></tr>";
+		echo "</table>";
 	break;
 	default:
+		$user->showMyForm($_SERVER['PHP_SELF'], $_SESSION["glpiID"]);
 	break;
 }
 
