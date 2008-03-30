@@ -1720,10 +1720,10 @@ function dropdownLanguages($myname,$value){
 function displayActiveEntities($target,$myname){
 	global $CFG_GLPI,$LANG;
 	
-	echo "<div class='center'>".$LANG["entity"][10]." ( <img src=\"".$CFG_GLPI["root_doc"]."/pics/entity_all.png\" alt=''> ".$LANG["entity"][11].")<br>";
+	echo "<div class='center' ><span class='b'>".$LANG["entity"][10]." ( <img src=\"".$CFG_GLPI["root_doc"]."/pics/entity_all.png\" alt=''> ".$LANG["entity"][11].")</span><br>";
 	echo "<a style='font-size:14px;' href='".$target."?active_entity=all' title=\"".$LANG["buttons"][40]."\">_&nbsp;".ereg_replace(" ","&nbsp;",$LANG["buttons"][40])."&nbsp;_</a></div><br>";
 
-	echo "<div class='left'>";
+	echo "<div class='left' style='width:100%'>";
 	
 	foreach ($_SESSION['glpi_entities_tree'] as $ID => $tree){
 		displayEntityTree($target,$myname,$tree);
@@ -1767,10 +1767,10 @@ function displayEntityTree($target,$myname,$tree,$level=0){
 				} 
 
 
-				echo "<span $class style='font-size:".$fsize."px;'>".str_repeat("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;", max(1,$level)).$raquo."&nbsp;<a style='font-size:".$fsize."px;' title=\"".$data['name']."\" href='".$target."?active_entity=$ID'>".ereg_replace(" ","&nbsp;",$data['name'])."</a>";
+				echo "<div $class>".str_repeat("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;", max(1,$level)).$raquo."&nbsp;<a style='font-size:".$fsize."px;' title=\"".$data['name']."\" href='".$target."?active_entity=$ID'>".ereg_replace(" ","&nbsp;",$data['name'])."</a>";
 				
 				if ($subitems){
-					echo "&nbsp;&nbsp;<a title=\"".$LANG["buttons"][40]."\" href='".$target."?active_entity=$ID&amp;recursive=1'><img alt=\"".$LANG["buttons"][40]."\" src='".$CFG_GLPI["root_doc"]."/pics/entity_all.png'></a></span><br>";
+					echo "&nbsp;&nbsp;<a title=\"".$LANG["buttons"][40]."\" href='".$target."?active_entity=$ID&amp;recursive=1'><img alt=\"".$LANG["buttons"][40]."\" src='".$CFG_GLPI["root_doc"]."/pics/entity_all.png'></a></div>";
 					if ($level!=0 && $subitems>1){
 						echo "<div id='entity_subitem_$ID' style='display: none;'>";
 						displayEntityTree($target,$myname,$data['tree'],$level+1);
@@ -1779,7 +1779,7 @@ function displayEntityTree($target,$myname,$tree,$level=0){
 						displayEntityTree($target,$myname,$data['tree'],$level+1);
 					}
 				} else {
-					echo "&nbsp;</span><br>";
+					echo "&nbsp;</div>";
 				}
 			}
 		}
