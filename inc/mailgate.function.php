@@ -40,6 +40,7 @@ if (!defined('GLPI_ROOT')){
 function cron_mailgate(){
 	global $DB,$CFG_GLPI;
 	
+	$already_retrieve=0;
 	$query="SELECT * FROM glpi_mailgate";
 	if ($result=$DB->query($query)){
 		if ($DB->numrows($result)>0){
@@ -48,9 +49,15 @@ function cron_mailgate(){
 				logInFile("cron","Collect mails from ".$data["host"]." for entity ".$data["FK_entities"]."\n");
 				$message=$mc->collect($data["host"],$data["login"],$data["password"],$data["FK_entities"]); 
  				logInFile("cron","$message\n");
+
+				$already_retrieve+=$mc->fetch_emails;
+				// Finish mailgate process but mark it to be redone
+				if ($already_retrieve >= MAX_MAILS_RETRIEVED){
+					return -1;
+				}
 			}
 		}
 	}
-
+	return 1;
 }
 ?>

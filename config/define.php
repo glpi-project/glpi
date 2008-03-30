@@ -49,6 +49,8 @@
 	define("CACHE_READCONTROL",true);
 	define("CACHE_WRITECONTROL",true);
 
+	// MAILGATE CONTROL -> IN DB ?
+	define("MAX_MAILS_RETRIEVED",10);
 
 
 	// ITEMS TYPE
