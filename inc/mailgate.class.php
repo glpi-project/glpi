@@ -178,6 +178,7 @@ class MailCollect {
 	var $structure = false; 	
 	var $files; 	
 	var $addtobody; 
+	var $fetch_emails=0;
 
 	/**
 	* Constructor
@@ -191,14 +192,16 @@ class MailCollect {
 			$this->password			=	$password;
 			$this->mid				= -1;
 
+			$this->fetch_emails = 0;
 			//Connect to the Mail Box
 			$this->connect();
+
 			if ($this->marubox){
 				// Get Total Number of Unread Email in mail box
 				$tot=$this->getTotalMails(); //Total Mails in Inbox Return integer value
 				$error=0;
 						
-				for($i=1;$i<=$tot;$i++){
+				for($i=1;$i<=$tot && $i<= MAX_MAILS_RETRIEVED;$i++){
 					$tkt= $this->buildTicket($i);
 					
 					// Is a mail responding of an already existgin ticket ?
@@ -217,14 +220,15 @@ class MailCollect {
 							$error++;
 						}
 					}
+					$this->fetch_emails++;
 				}
 				imap_expunge($this->marubox);
 				$this->close_mailbox();   //Close Mail Box
 
 				if ($display){
-					addMessageAfterRedirect($LANG["mailgate"][3].": $tot ".($error>0?"($error ".$LANG["common"][63].")":""));
+					addMessageAfterRedirect($LANG["mailgate"][3].": ".$this->fetch_emails." ".($error>0?"($error ".$LANG["common"][63].")":""));
 				} else {
-					return $LANG["mailgate"][3].": $tot ".($error>0?"($error ".$LANG["common"][63].")":"");
+					return $LANG["mailgate"][3].": ".$this->fetch_emails." ".($error>0?"($error ".$LANG["common"][63].")":"");
 				}
 				
 			}
