@@ -64,8 +64,7 @@ showUserPreferencesOnglets($_SERVER['PHP_SELF'],$_SESSION['glpi_viewpreferences'
 switch ($_SESSION['glpi_viewpreferences'])
 {
 	case "plugins":
-//	case "all":
-		echo "<table class='tab_cadre_central' ><tr><td>";
+		echo "<table class='tab_cadre_fixe' ><tr><td>";
 		doHook("user_preferences",$_POST);
 		echo "</td></tr>";
 		echo "</table>";
