@@ -69,7 +69,7 @@ small{
 } 
 
 
-b{	font-weight: bold;}
+.b{	font-weight: bold;}
 
 .center{	text-align:center;}
 .left{ text-align:left;}
@@ -178,20 +178,26 @@ input.submit:hover {
 
 
 .tree {
-
+    width:100%;
 	border:0;
 	border-bottom:1px solid #C0CAD4;
 }
 
 .treeroot {
-	
+	width:100%;
 	background: url("../pics/treeroot.png") 0 2px no-repeat;
-	background-color:#eeeeee;
 	border:0;
-	margin-top:5px;
+	/*margin-top:5px;*/
 	font-weight:bold;
 }
 
+.tree:hover{
+	background-color:#eeeeee;
+}
+
+.treeroot:hover{
+	background-color:#eeeeee;
+}
 
 .button {
 	border: 1px solid #888888;
@@ -1434,17 +1440,19 @@ margin:0;
 }
 
 
-/* Modal for entity switch */
+/* ################--------------- Modal for entity switch  ---------------#################### */
+
 
 #modal_container {
-	padding:5px;
-	background-color:#fff;
+	padding:10px;
+	background: url("../pics/fd_hoverlink.png") 0 0 repeat;
 	border:1px solid #666;
 	overflow:auto;
 	font-family:"Lucida Grande",Verdana;
 	font-size:12px;
 	color:#333;
 	text-align:left;
+	
 }
 
 #modal_overlay {
