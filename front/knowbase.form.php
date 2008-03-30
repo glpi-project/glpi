@@ -49,6 +49,7 @@ if(!isset($_GET["removefromfaq"])) $_GET["removefromfaq"] = "";
 
 $kb=new kbItem;
 
+
 if ($_GET["ID"]=="new"){
 	// on affiche le formulaire de saisie de l'item
 	$kb->can(-1,'w');
@@ -65,6 +66,14 @@ if ($_GET["ID"]=="new"){
 	logEvent($newID, "knowbase", 5, "tools", $_SESSION["glpiname"]." ".$LANG["log"][20]);
 	glpi_header($CFG_GLPI["root_doc"]."/front/knowbase.php");
 
+}  else if (isset($_POST["update"])){
+	// actualiser  un item dans la base de connaissances
+	$kb->can($_POST["ID"],'w');
+
+	$kb->update($_POST);
+	logEvent($_POST["ID"], "knowbase", 5, "tools", $_SESSION["glpiname"]." ".$LANG["log"][21]);	
+	glpi_header($CFG_GLPI["root_doc"]."/front/knowbase.form.php?ID=".$_POST['ID']);
+
 } else if (isset($_GET["ID"])  && strcmp($_GET["modify"],"yes") == 0){
 	// modifier un item dans la base de connaissance
 	$kb->can($_GET["ID"],'r');
@@ -72,14 +81,6 @@ if ($_GET["ID"]=="new"){
 	commonHeader($LANG["title"][5],$_SERVER['PHP_SELF'],"utils","knowbase");
 	$kb->showForm($_SERVER['PHP_SELF'],$_GET["ID"]);
 	commonFooter();
-
-} else if (isset($_POST["update"])){
-	// actualiser  un item dans la base de connaissances
-	$kb->can($_POST["ID"],'w');
-
-	$kb->update($_POST);
-	logEvent($_POST["ID"], "knowbase", 5, "tools", $_SESSION["glpiname"]." ".$LANG["log"][21]);	
-	glpi_header($CFG_GLPI["root_doc"]."/front/knowbase.form.php?ID=".$_POST['ID']);
 
 } else if (isset($_GET["ID"])  && strcmp($_GET["delete"],"yes") == 0){
 	// effacer un item dans la base de connaissances
