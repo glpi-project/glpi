@@ -476,7 +476,7 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="")
 			$menu['admin']['content']['entity']['page']='/front/entity.php';
 			$menu['admin']['content']['entity']['links']['search']='/front/entity.php';
 
-			$menu['admin']['content']['entity']['links'][$LANG["entity"][2]]="/front/entity.form.php?ID=0";
+			//$menu['admin']['content']['entity']['links'][$LANG["entity"][2]]="/front/entity.form.php?ID=0"; 
 			$menu['admin']['content']['entity']['links']['add']="/front/entity.tree.php";
 		}
 
