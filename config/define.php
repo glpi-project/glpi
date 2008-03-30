@@ -7,8 +7,8 @@
 	// dictionnaires
 	// 0 Name - 1 lang file -  2calendar dico - 3toolbar dico
 	$CFG_GLPI["languages"]=array(   
-		"pt_BR"=>array("Brazilian","pt_BR.php","br","pt_br"),
-		"bg_BG"=>array("Bulgarian","bg_BG.php","en","en"),
+		"pt_BR"=>array("Brazilian","pt_BR.php","br","pt"),
+		"bg_BG"=>array("Bulgarian","bg_BG.php","bg","bg"),
 		"ca_CA"=>array("Catalan","ca_CA.php","ca","ca"),
 		"cs_CZ"=>array("Czech","cs_CZ.php","cs","cs"),
 		"de_DE"=>array("Deutsch","de_DE.php","de","de"),
@@ -23,13 +23,14 @@
 		"el_EL"=>array("Greek","el_EL.php","el","el"),
 		"hu_HU"=>array("Hungarian","hu_HU.php","hu","hu"),
 		"it_IT"=>array("Italiano","it_IT.php","it","it"),
-		"ja_JP"=>array("Japanese","ja_JP.php","ja","ja_utf-8"),
+		"ja_JP"=>array("Japanese","ja_JP.php","ja","ja"),
+		"lt_LT"=>array("Lithuanian","lt_LT.php","lt","lt"),
 		"pl_PL"=>array("Polish","pl_PL.php","pl","pl"),
-		"pt_PT"=>array("Português","pt_PT.php","br","pt_br"),
-		"ro_RO"=>array("Romanian","ro_RO.php","ro","ro"),
+		"pt_PT"=>array("Português","pt_PT.php","br","pt"),
+		"ro_RO"=>array("Romanian","ro_RO.php","ro","en"),
 		"ru_RU"=>array("Russian","ru_RU.php","ru","ru"),
-		"zh_CN"=>array("Simplified Chinese","zh_CN.php","en","zh_cn_utf8"),
-		"sv_SE"=>array("Swedish","sv_SE.php","sv","sv_utf8"),
+		"zh_CN"=>array("Simplified Chinese","zh_CN.php","en","zh"),
+		"sv_SE"=>array("Swedish","sv_SE.php","sv","sv"),
 		"tr_TR"=>array("Turkish","tr_TR.php","tr","en"),
 		);
 

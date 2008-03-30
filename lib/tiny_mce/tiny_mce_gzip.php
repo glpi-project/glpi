@@ -1,6 +1,6 @@
 <?php
 /**
- * $Id: tiny_mce_gzip.php 158 2006-12-21 14:32:19Z spocke $
+ * $Id: tiny_mce_gzip.php 315 2007-10-25 14:03:43Z spocke $
  *
  * @author Moxiecode
  * @copyright Copyright © 2005-2006, Moxiecode Systems AB, All rights reserved.
@@ -20,6 +20,7 @@
 	$diskCache = getParam("diskcache", "") == "true";
 	$isJS = getParam("js", "") == "true";
 	$compress = getParam("compress", "true") == "true";
+	$core = getParam("core", "true") == "true";
 	$suffix = getParam("suffix", "_src") == "_src" ? "_src" : "";
 	$cachePath = realpath("."); // Cache path, this is where the .gz files will be stored
 	$expiresOffset = 3600 * 24 * 10; // Cache for 10 days in browser cache
@@ -52,7 +53,7 @@
 		if (!$cachePath)
 			die("alert('Real path failed.');");
 
-		$cacheKey = getParam("plugins", "") . getParam("languages", "") . getParam("themes", "");
+		$cacheKey = getParam("plugins", "") . getParam("languages", "") . getParam("themes", "") . $suffix;
 
 		foreach ($custom as $file)
 			$cacheKey .= $file;
@@ -84,10 +85,12 @@
 	}
 
 	// Add core
-	$content .= getFileContents("tiny_mce" . $suffix . ".js");
+	if ($core == "true") {
+		$content .= getFileContents("tiny_mce" . $suffix . ".js");
 
-	// Patch loading functions
-	$content .= "tinyMCE_GZ.start();";
+		// Patch loading functions
+		$content .= "tinyMCE_GZ.start();";
+	}
 
 	// Add core languages
 	foreach ($languages as $lang)
@@ -114,7 +117,8 @@
 		$content .= getFileContents($file);
 
 	// Restore loading functions
-	$content .= "tinyMCE_GZ.end();";
+	if ($core == "true")
+		$content .= "tinyMCE_GZ.end();";
 
 	// Generate GZIP'd content
 	if ($supportsGzip) {
