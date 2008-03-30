@@ -369,7 +369,7 @@ function showKbRecentPopular($target,$order,$faq=0){
 		$title=$LANG["knowbase"][30];
 	}
 		
-
+	$faq_limit="";
 	if (isset($_SESSION["glpiID"])){
 		$faq_limit .= getEntitiesRestrictRequest(" WHERE ", "glpi_kbitems", "", "", true); 
 	} else {
