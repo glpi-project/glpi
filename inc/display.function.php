@@ -1999,7 +1999,7 @@ function displayBackLink(){
 *
 **/
 function showProfileSelecter($target){
-	global $CFG_GLPI;
+	global $CFG_GLPI, $LANG;
 
 	if (count($_SESSION["glpiprofiles"])>1){
 		echo '<li><form name="form" method="post" action="'.$target.'">';
@@ -2033,7 +2033,7 @@ function showProfileSelecter($target){
 		//echo "<a href='".$CFG_GLPI["root_doc"]."/front/entity.select.php?target=$target' id='modal_entity_selection'>".$_SESSION["glpiactive_entity_name"]."</a>";
 
 
-		echo "<a href='#modal_entity_contents' id='modal_entity_selection' title='".$_SESSION["glpiactive_entity_name"]."'>".$_SESSION["glpiactive_entity_shortname"]."</a>";
+		echo "<a href='#modal_entity_contents' id='modal_entity_selection' title='".$_SESSION["glpiactive_entity_name"]."' class='entity_select'>".$_SESSION["glpiactive_entity_shortname"]."</a>";
 		echo "<div id='modal_entity_contents'>";	
 		displayActiveEntities($target,"activeentity");
 		echo "</div>";
@@ -2043,7 +2043,7 @@ function showProfileSelecter($target){
 		echo "new Control.Modal('modal_entity_selection',{";
 		//echo "iframe: true,";
 		//echo "opacity: 0.8, position: 'relative', width:300, height:50";
-		echo "opacity: 0.2, width: 500, height: 500";
+		echo "opacity: 0.2, fadeDuration: 0.35, width: 500, height: 500";
 		echo "});";
 		echo "</script>";
 
