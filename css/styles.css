@@ -177,6 +177,19 @@ input.submit:hover {
 	}
 
 
+.entity_select {
+	border-left: 1px solid #C0CAD4;
+	border-right: 1px solid#C0CAD4;
+	padding:3px;
+	}
+
+.entity_select:hover {
+	border-left: 1px solid #C0CAD4;
+	border-right: 1px solid #C0CAD4;
+	border-bottom: 1px solid #C0CAD4;
+	padding:3px;
+	}
+
 .tree {
     width:100%;
 	border:0;
