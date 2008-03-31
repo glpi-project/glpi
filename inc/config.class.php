@@ -559,9 +559,8 @@ class Config extends CommonDBTM {
 				dropdownYesNo("_dbslave_status", $active);
 				echo " </td><td  colspan='2'></td></tr>";
 		
-				if (!$active)
-					echo "<tr class='tab_bg_2'><td colspan='4' align='center'><input type=\"submit\" name=\"update\" class=\"submit\" value=\"" . $LANG["buttons"][2] . "\" ></td></tr>";
-				else {
+				if ($active){
+					
 					$DBSlave = getDBSlaveConf();
 
 					echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["install"][30] . " </td><td><input type=\"text\" name=\"_dbreplicate_dbhost\" size='40' value=\"" . $DBSlave->dbhost . "\"></td>";
