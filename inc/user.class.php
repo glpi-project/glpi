@@ -295,7 +295,7 @@ class User extends CommonDBTM {
 	// SPECIFIC FUNCTIONS
 	function applyRightRules($input){
 		global $DB;
-		if (isset($input["auth_method"])&&($input["auth_method"] == AUTH_LDAP || $input["auth_method"]== AUTH_MAIL))
+		if (isset($input["auth_method"])&&($input["auth_method"] == AUTH_LDAP || $input["auth_method"]== AUTH_MAIL|| $input["auth_method"]== AUTH_EXTERNAL))
 		if (isset ($input["ID"]) &&$input["ID"]>0&& isset ($input["_ldap_rules"]) && count($input["_ldap_rules"])) {
 
 			//TODO : do not erase all the dynamic rights, but compare it with the ones in DB
