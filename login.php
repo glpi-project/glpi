@@ -85,7 +85,7 @@ if (!isset ($_POST["noAUTO"]) && $auth_method=checkAlternateAuthSystems()) {
 			if (isset($identificat->auth_methods["ldap"][$identificat->user->fields["id_auth"]])) {
 				$ldap_method = $identificat->auth_methods["ldap"][$identificat->user->fields["id_auth"]];
 				
-				$ds = connect_ldap($ldap_method["ldap_host"], $ldap_method["ldap_port"], $ldap_method["ldap_rootdn"], $ldap_method["ldap_pass"], $ldap_method["ldap_use_tls"]);
+				$ds = connect_ldap($ldap_method["ldap_host"], $ldap_method["ldap_port"], $ldap_method["ldap_rootdn"], $ldap_method["ldap_pass"], $ldap_method["ldap_use_tls"],$ldap_method["ldap_opt_deref"]);
 				if ($ds) {
 					$user_dn = ldap_search_user_dn($ds, $ldap_method["ldap_basedn"], $ldap_method["ldap_login"], $user, $ldap_method["ldap_condition"]);
 					if ($user_dn) {
