@@ -1103,6 +1103,7 @@ function showFormExtAuthList($target) {
 				echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["setup"][193] . "</td><td>";
 				echo "<select name='existing_auth_server_field'>";
 				echo "<option value=''>&nbsp;</option>";
+				echo "<option value='HTTP_AUTH_USER' " . ($CFG_GLPI["existing_auth_server_field"]=="HTTP_AUTH_USER" ? " selected " : "") . ">HTTP_AUTH_USER</option>";
 				echo "<option value='REMOTE_USER' " . ($CFG_GLPI["existing_auth_server_field"]=="REMOTE_USER" ? " selected " : "") . ">REMOTE_USER</option>";
 				echo "<option value='PHP_AUTH_USER' " . ($CFG_GLPI["existing_auth_server_field"]=="PHP_AUTH_USER" ? " selected " : "") . ">PHP_AUTH_USER</option>";
 				echo "<option value='USERNAME' " . ($CFG_GLPI["existing_auth_server_field"]=="USERNAME" ? " selected " : "") . ">USERNAME</option>";
