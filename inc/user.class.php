@@ -82,6 +82,8 @@ class User extends CommonDBTM {
 
 	function post_getEmpty () {
 		$this->fields["active"]=1;
+		$this->fields["realname"]='';
+		$this->fields["firstname"]='';
 	}
 
 	function pre_deleteItem($ID){
@@ -175,6 +177,14 @@ class User extends CommonDBTM {
 		}
 		if (!isset($input["deleted"])){
 			$input["deleted"]=0;
+		}
+
+		if (!isset($input["FK_entities"])){
+			$input["FK_entities"]=0;
+		}
+
+		if (!isset($input["FK_profiles"])){
+			$input["FK_profiles"]=0;
 		}
 
 		if (!isset($input["auth_method"])){
