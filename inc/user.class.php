@@ -295,7 +295,7 @@ class User extends CommonDBTM {
 	// SPECIFIC FUNCTIONS
 	function applyRightRules($input){
 		global $DB;
-		if (isset($input["auth_method"])&&($input["auth_method"] == AUTH_LDAP || $input["auth_method"]== AUTH_MAIL|| $input["auth_method"]== AUTH_EXTERNAL))
+		if (isset($input["auth_method"])&&($input["auth_method"] == AUTH_LDAP || $input["auth_method"]== AUTH_MAIL|| externalAuthWithLDAP($input["auth_method"])))
 		if (isset ($input["ID"]) &&$input["ID"]>0&& isset ($input["_ldap_rules"]) && count($input["_ldap_rules"])) {
 
 			//TODO : do not erase all the dynamic rights, but compare it with the ones in DB
@@ -996,7 +996,7 @@ class User extends CommonDBTM {
 				
 				if (isset($this->fields["auth_method"])){
 					// extauth ldap case 
-					if ($_SESSION["glpiextauth"] && $this->fields["auth_method"] == AUTH_LDAP) {
+					if ($_SESSION["glpiextauth"] && ($this->fields["auth_method"] == AUTH_LDAP || externalAuthWithLDAP($this->fields["auth_method"]))) {
 						$auth_method = getAuthMethodsByID($this->fields["auth_method"], $this->fields["id_auth"]);
 						if (count($auth_method)){
 							$fields=getLDAPSyncFields($auth_method);
