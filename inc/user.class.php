@@ -217,7 +217,7 @@ class User extends CommonDBTM {
 
 		// Add default profile
 		if ($input['auth_method']==AUTH_DB_GLPI||$input['auth_method']==AUTH_CAS
-			||$input['auth_method']==AUTH_EXTERNAL||$input['auth_method']==AUTH_X509){
+			|| !externalAuthWithLDAP($input['auth_method']) ||$input['auth_method']==AUTH_X509){
 			$sql_default_profile = "SELECT ID FROM glpi_profiles WHERE is_default=1";
 			$result = $DB->query($sql_default_profile);
 			if ($DB->numrows($result)){
@@ -364,7 +364,7 @@ class User extends CommonDBTM {
 	function syncLdapGroups($input){
 		global $DB;
 
-		if (isset($input["auth_method"])&&$input["auth_method"]==AUTH_LDAP)
+		if (isset($input["auth_method"])&&($input["auth_method"]==AUTH_LDAP || externalAuthWithLDAP($input['auth_method'])))
 		if (isset ($input["ID"]) && $input["ID"]>0) {
 			$auth_method = getAuthMethodsByID($input["auth_method"], $input["id_auth"]);
 			
