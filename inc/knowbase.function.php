@@ -378,7 +378,7 @@ function showKbRecentPopular($target,$order,$faq=0){
 	}	
 
 	if($faq){ // FAQ
-		$faq_limit=" AND (glpi_kbitems.faq = '1')";
+		$faq_limit.=" AND (glpi_kbitems.faq = '1')";
 	} 
 
 	$query = "SELECT  *  FROM glpi_kbitems $faq_limit $orderby LIMIT 10";
