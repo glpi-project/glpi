@@ -189,7 +189,8 @@ $RELATION=array(
 				"glpi_infocoms" =>"FK_enterprise",
 				"glpi_tracking"=>"assign_ent",
 	),
-	"glpi_entities" => array("glpi_cartridges_type"=>"FK_entities", 
+	"glpi_entities" => array("glpi_bookmark"=>"FK_entities", 
+				"glpi_cartridges_type"=>"FK_entities", 
 				"glpi_computers"=>"FK_entities",
 				"glpi_consumables_type"=>"FK_entities",
 				"glpi_contacts"=>"FK_entities",
@@ -212,6 +213,7 @@ $RELATION=array(
 				"glpi_rules_descriptions"=>"FK_entities",
 				"glpi_software"=>"FK_entities",
 				"glpi_tracking"=>"FK_entities",
+				"glpi_users"=>"FK_entities",
 				"glpi_users_profiles"=>"FK_entities"),
 	"glpi_followups" =>array("glpi_tracking_planning"=>"id_followup"),
 
@@ -238,7 +240,9 @@ $RELATION=array(
 
 	"glpi_printers" =>array("glpi_cartridges"=>"FK_glpi_printers"),
 	
-	"glpi_profiles" =>array("glpi_users_profiles"=>"FK_profiles"),
+	"glpi_profiles" =>array("glpi_users"=>"FK_profiles",
+				"glpi_users_profiles"=>"FK_profiles",
+				),
 
 	"glpi_reservation_item" => array("glpi_reservation_resa"=>"id_item"),
 
@@ -261,8 +265,7 @@ $RELATION=array(
 						"glpi_rule_cache_os"=>"rule_id",
 						"glpi_rule_cache_os_sp"=>"rule_id",
 						"glpi_rule_cache_os_version"=>"rule_id"),
-
-	"glpi_software" =>array("glpi_licenses"=>"sID",
+						"glpi_software" =>array("glpi_licenses"=>"sID",
 						"glpi_software"=>"update_software"),
 
 	"glpi_tracking" => array("_glpi_docs"=>"FK_tracking",
@@ -282,7 +285,8 @@ $RELATION=array(
 	
 	"glpi_type_printers"=>array("glpi_printers"=>"type"),
 
-	"glpi_users"=> array("glpi_cartridges_type"=>"tech_num",
+	"glpi_users"=> array("glpi_bookmark"=>"FK_users",
+				"glpi_cartridges_type"=>"tech_num",
 				"glpi_computers"=>array("tech_num","FK_users"),
 				"glpi_consumables"=>"id_user",
 				"glpi_consumables_type"=>"tech_num",
@@ -296,7 +300,7 @@ $RELATION=array(
 				"glpi_peripherals"=>array("tech_num","FK_users"),
 				"glpi_phones"=>array("tech_num","FK_users"),
 				"glpi_printers"=>array("tech_num","FK_users"),
-				"glpi_reminder"=>"author",
+				"glpi_reminder"=>"FK_users",
 				"glpi_reservation_resa"=>"id_user",
 				"glpi_software"=>array("tech_num","FK_users"),
 				"glpi_tracking"=>array("author","assign","recipient"),
