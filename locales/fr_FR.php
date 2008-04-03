@@ -1456,7 +1456,7 @@ $LANG["setup"][118]="Texte au login";
 $LANG["setup"][119]="Configuration Affichage"; 
 $LANG["setup"][120]="Utiliser Ajax"; 
 $LANG["setup"][121]="Joker Ajax"; 
-$LANG["setup"][122]="Ajax - Nombre d'élèments maximum affichés"; 
+$LANG["setup"][122]="Ajax - Nombre d'éléments maximum affichés"; 
 $LANG["setup"][123]="Ne pas utiliser ajax si le nombre d'élèments est inférieur à (0=jamais)"; 
 $LANG["setup"][124]="Ajout automatique des utilisateurs à partir des sources externes d'authentification"; 
 $LANG["setup"][125]="... Depuis une source externe"; 
