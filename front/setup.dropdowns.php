@@ -234,7 +234,7 @@ if (isset($_POST['mass_delete'])){
 			}
 		}
 	}
-
+	
 	if (!ereg("popup",$_SERVER['PHP_SELF'])){
 		echo "<div align='center'><form method='get' action=\"".$_SERVER['PHP_SELF']."\">";
 		echo "<table class='tab_cadre' cellpadding='5'><tr><th colspan='2'>";
@@ -257,24 +257,26 @@ if (isset($_POST['mass_delete'])){
 	}
 
 	if ($which=="glpi_dropdown_netpoint"){
-		$title=$LANG["setup"][73];
-		
-		if (!ereg("popup",$_SERVER['PHP_SELF'])){
-			echo "<div align='center'><form method='get' action=\"".$_SERVER['PHP_SELF']."\">";
-			echo "<table class='tab_cadre' cellpadding='5'><tr><th colspan='2'>";
-			echo $LANG["setup"][77].": </th></tr><tr class='tab_bg_1'><td>";
-			echo "<input type='hidden' name='which' value='glpi_dropdown_netpoint' />";
-			dropdownValue("glpi_dropdown_locations", "value2", $value2, $FK_entities);
-			echo "</td><td><input type='submit' value=\"".$LANG["buttons"][2]."\" class='submit' ></td></tr>";
-			echo "</table></form></div>";
-		}
-		if (strlen($value2) > 0) {
-			if (isset($_GET['mass_deletion'])){
-				showDropdownList($_SERVER['PHP_SELF'],$which,$FK_entities,$value2);
-			} else {
-				showFormNetpoint($_SERVER['PHP_SELF'],$title,$ID,$FK_entities,$value2);
+		if (haveRight("entity_dropdown","w")){
+			$title=$LANG["setup"][73];
+			
+			if (!ereg("popup",$_SERVER['PHP_SELF'])){
+				echo "<div align='center'><form method='get' action=\"".$_SERVER['PHP_SELF']."\">";
+				echo "<table class='tab_cadre' cellpadding='5'><tr><th colspan='2'>";
+				echo $LANG["setup"][77].": </th></tr><tr class='tab_bg_1'><td>";
+				echo "<input type='hidden' name='which' value='glpi_dropdown_netpoint' />";
+				dropdownValue("glpi_dropdown_locations", "value2", $value2, $FK_entities);
+				echo "</td><td><input type='submit' value=\"".$LANG["buttons"][2]."\" class='submit' ></td></tr>";
+				echo "</table></form></div>";
 			}
-		}		
+			if (strlen($value2) > 0) {
+				if (isset($_GET['mass_deletion'])){
+					showDropdownList($_SERVER['PHP_SELF'],$which,$FK_entities,$value2);
+				} else {
+					showFormNetpoint($_SERVER['PHP_SELF'],$title,$ID,$FK_entities,$value2);
+				}
+			}		
+		}
 	} else if ($which){
 		// Search title
 		$title="";
