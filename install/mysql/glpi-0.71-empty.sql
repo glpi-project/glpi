@@ -2070,6 +2070,7 @@ CREATE TABLE `glpi_profiles` (
   `check_update` char(1) collate utf8_unicode_ci default NULL,
   `profile` char(1) collate utf8_unicode_ci default NULL,
   `user` char(1) collate utf8_unicode_ci default NULL,
+  `user_auth_method` char(1) COLLATE utf8_unicode_ci DEFAULT NULL,
   `group` char(1) collate utf8_unicode_ci default NULL,
   `entity` char(1) collate utf8_unicode_ci default NULL,
   `transfer` char(1) collate utf8_unicode_ci default NULL,

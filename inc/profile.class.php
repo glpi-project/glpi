@@ -525,36 +525,38 @@ class Profile extends CommonDBTM{
 		echo "<tr><td class='tab_bg_1' colspan='6' align='center'><strong>".$LANG["Menu"][15]."</strong></td></tr>";
 
 		echo "<tr class='tab_bg_2'>";
+
 		echo "<td>".$LANG["Menu"][14].":</td><td>";
 		dropdownNoneReadWrite("user",$this->fields["user"],1,1,1);
 		echo "</td>";
 		echo "<td>".$LANG["Menu"][36].":</td><td>";
 		dropdownNoneReadWrite("group",$this->fields["group"],1,1,1);
 		echo "</td>";
+		echo "<td>".$LANG["profiles"][43].":</td><td>";
+		dropdownNoneReadWrite("user_auth_method",$this->fields["user_auth_method"],1,1,1);
+		echo "</td>";
+		echo "</tr>";
+
+		echo "<tr class='tab_bg_4'>";	
 		echo "<td class='tab_bg_4'>".$LANG["Menu"][37].":</td><td class='tab_bg_4'>";
 		dropdownNoneReadWrite("entity",$this->fields["entity"],1,1,1);
+		echo "</td>";
+		echo "<td class='tab_bg_4'>".$LANG["transfer"][1].":</td><td>";
+		dropdownNoneReadWrite("transfer",$this->fields["transfer"],1,1,1);
+		echo "</td>";
+		echo "<td class='tab_bg_4'>".$LANG["Menu"][35].":</td><td>";
+		dropdownNoneReadWrite("profile",$this->fields["profile"],1,1,1);
 		echo "</td>";
 		echo "</tr>";
 
 		echo "<tr class='tab_bg_4'>";
-		
-		echo "<td class='tab_bg_4'>".$LANG["transfer"][1].":</td><td>";
-		dropdownNoneReadWrite("transfer",$this->fields["transfer"],1,1,1);
-		echo "</td>";
-
-		echo "<td class='tab_bg_4'>".$LANG["Menu"][35].":</td><td>";
-		dropdownNoneReadWrite("profile",$this->fields["profile"],1,1,1);
-		echo "</td>";
-
 		echo "<td class='tab_bg_4'>".$LANG["Menu"][12].":</td><td>";
 		dropdownNoneReadWrite("backup",$this->fields["backup"],1,0,1);
 		echo "</td>";
-
-		echo "<tr class='tab_bg_4'>";
 		echo "<td class='tab_bg_4'>".$LANG["Menu"][30].":</td><td>";
 		dropdownNoneReadWrite("logs",$this->fields["logs"],1,1,0);
 		echo "</td>";
-		echo "<td colspan='4'></td></tr>";
+		echo "<td colspan='2'></td></tr>";
 
 
 		echo "<tr><td class='tab_bg_1' colspan='6' align='center'><strong>".$LANG["rulesengine"][17].' / '.$LANG["rulesengine"][77]."</strong></td></tr>";
