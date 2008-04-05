@@ -44,7 +44,7 @@ $NEEDED_ITEMS = array (
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-checkRight("user", "w");
+checkSeveralRightsAnd(array("user"=>"w", "user_auth_method"=>"w"));
 
 commonHeader($LANG["setup"][3],$_SERVER['PHP_SELF'],"admin","user","ldap");
 

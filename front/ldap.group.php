@@ -36,7 +36,7 @@
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-checkRight("group","w");
+checkSeveralRightsAnd(array("group"=>"w", "user_auth_method"=>"w"));
 
 commonHeader($LANG["setup"][3],$_SERVER['PHP_SELF'],"admin","group","ldap");
 if (isset($_SESSION["ldap_import"])) unset($_SESSION["ldap_import"]);
