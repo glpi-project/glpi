@@ -226,8 +226,7 @@ class User extends CommonDBTM {
 		$this->applyRightRules($input);
 
 		// Add default profile
-		if ($input['auth_method']==AUTH_DB_GLPI||$input['auth_method']==AUTH_CAS
-			|| !externalAuthWithLDAP($input['auth_method']) ||$input['auth_method']==AUTH_X509){
+		if ($input['auth_method']==AUTH_DB_GLPI || (isAlternateAuthWithLdap($input['auth_method']))){
 			$sql_default_profile = "SELECT ID FROM glpi_profiles WHERE is_default=1";
 			$result = $DB->query($sql_default_profile);
 			if ($DB->numrows($result)){
@@ -305,7 +304,7 @@ class User extends CommonDBTM {
 	// SPECIFIC FUNCTIONS
 	function applyRightRules($input){
 		global $DB;
-		if (isset($input["auth_method"])&&($input["auth_method"] == AUTH_LDAP || $input["auth_method"]== AUTH_MAIL|| externalAuthWithLDAP($input["auth_method"])))
+		if (isset($input["auth_method"])&&($input["auth_method"] == AUTH_LDAP || $input["auth_method"]== AUTH_MAIL|| isAlternateAuthWithLdap($input["auth_method"])))
 		if (isset ($input["ID"]) &&$input["ID"]>0&& isset ($input["_ldap_rules"]) && count($input["_ldap_rules"])) {
 
 			//TODO : do not erase all the dynamic rights, but compare it with the ones in DB
@@ -374,57 +373,58 @@ class User extends CommonDBTM {
 	function syncLdapGroups($input){
 		global $DB;
 
-		if (isset($input["auth_method"])&&($input["auth_method"]==AUTH_LDAP || externalAuthWithLDAP($input['auth_method'])))
-		if (isset ($input["ID"]) && $input["ID"]>0) {
-			$auth_method = getAuthMethodsByID($input["auth_method"], $input["id_auth"]);
-			
-			if (count($auth_method)){
-				if (!isset($input["_groups"])){
-					$input["_groups"]=array();
-				}
-				// Clean groups
-				$input["_groups"] = array_unique ($input["_groups"]);
-
-
-				$WHERE = "";
-				switch ($auth_method["ldap_search_for_groups"]) {
-					case 0 : // user search
-						$WHERE = "AND (glpi_groups.ldap_field <> '' AND glpi_groups.ldap_field IS NOT NULL AND glpi_groups.ldap_value<>'' AND glpi_groups.ldap_value IS NOT NULL )";
-						break;
-					case 1 : // group search
-						$WHERE = "AND (ldap_group_dn<>'' AND ldap_group_dn IS NOT NULL )";
-						break;
-					case 2 : // user+ group search
-						$WHERE = "AND ((glpi_groups.ldap_field <> '' AND glpi_groups.ldap_field IS NOT NULL AND glpi_groups.ldap_value<>'' AND glpi_groups.ldap_value IS NOT NULL) 
-																			OR (ldap_group_dn<>'' AND ldap_group_dn IS NOT NULL) )";
-						break;
-
-				}
-				// Delete not available groups like to LDAP
-				$query = "SELECT glpi_users_groups.ID, glpi_users_groups.FK_groups 
-							FROM glpi_users_groups 
-							LEFT JOIN glpi_groups ON (glpi_groups.ID = glpi_users_groups.FK_groups) 
-							WHERE glpi_users_groups.FK_users='" . $input["ID"] . "' $WHERE";
-
-				$result = $DB->query($query);
-				if ($DB->numrows($result) > 0) {
-					while ($data = $DB->fetch_array($result)){
-						if (!in_array($data["FK_groups"], $input["_groups"])) {
-							deleteUserGroup($data["ID"]);
-						} else {
-							// Delete found item in order not to add it again
-							unset($input["_groups"][array_search($data["FK_groups"], $input["_groups"])]);
+		if (isset($input["auth_method"])&&($input["auth_method"]==AUTH_LDAP || isAlternateAuthWithLdap($input['auth_method']))){
+			if (isset ($input["ID"]) && $input["ID"]>0) {
+				$auth_method = getAuthMethodsByID($input["auth_method"], $input["id_auth"]);
+				
+				if (count($auth_method)){
+					if (!isset($input["_groups"])){
+						$input["_groups"]=array();
+					}
+					// Clean groups
+					$input["_groups"] = array_unique ($input["_groups"]);
+	
+	
+					$WHERE = "";
+					switch ($auth_method["ldap_search_for_groups"]) {
+						case 0 : // user search
+							$WHERE = "AND (glpi_groups.ldap_field <> '' AND glpi_groups.ldap_field IS NOT NULL AND glpi_groups.ldap_value<>'' AND glpi_groups.ldap_value IS NOT NULL )";
+							break;
+						case 1 : // group search
+							$WHERE = "AND (ldap_group_dn<>'' AND ldap_group_dn IS NOT NULL )";
+							break;
+						case 2 : // user+ group search
+							$WHERE = "AND ((glpi_groups.ldap_field <> '' AND glpi_groups.ldap_field IS NOT NULL AND glpi_groups.ldap_value<>'' AND glpi_groups.ldap_value IS NOT NULL) 
+								OR (ldap_group_dn<>'' AND ldap_group_dn IS NOT NULL) )";
+							break;
+	
+					}
+					// Delete not available groups like to LDAP
+					$query = "SELECT glpi_users_groups.ID, glpi_users_groups.FK_groups 
+								FROM glpi_users_groups 
+								LEFT JOIN glpi_groups ON (glpi_groups.ID = glpi_users_groups.FK_groups) 
+								WHERE glpi_users_groups.FK_users='" . $input["ID"] . "' $WHERE";
+	
+					$result = $DB->query($query);
+					if ($DB->numrows($result) > 0) {
+						while ($data = $DB->fetch_array($result)){
+							if (!in_array($data["FK_groups"], $input["_groups"])) {
+								deleteUserGroup($data["ID"]);
+							} else {
+								// Delete found item in order not to add it again
+								unset($input["_groups"][array_search($data["FK_groups"], $input["_groups"])]);
+							}
 						}
 					}
-				}
-				
-				//If the user needs to be added to one group or more
-				if (count($input["_groups"])>0)
-				{
-					foreach ($input["_groups"] as $group) {
-						addUserGroup($input["ID"], $group);
+					
+					//If the user needs to be added to one group or more
+					if (count($input["_groups"])>0)
+					{
+						foreach ($input["_groups"] as $group) {
+							addUserGroup($input["ID"], $group);
+						}
+						unset ($input["_groups"]);
 					}
-					unset ($input["_groups"]);
 				}
 			}
 		}
@@ -1006,7 +1006,7 @@ class User extends CommonDBTM {
 				
 				if (isset($this->fields["auth_method"])){
 					// extauth ldap case 
-					if ($_SESSION["glpiextauth"] && ($this->fields["auth_method"] == AUTH_LDAP || externalAuthWithLDAP($this->fields["auth_method"]))) {
+					if ($_SESSION["glpiextauth"] && ($this->fields["auth_method"] == AUTH_LDAP || isAlternateAuthWithLdap($this->fields["auth_method"]))) {
 						$auth_method = getAuthMethodsByID($this->fields["auth_method"], $this->fields["id_auth"]);
 						if (count($auth_method)){
 							$fields=getLDAPSyncFields($auth_method);

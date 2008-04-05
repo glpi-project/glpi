@@ -1339,12 +1339,13 @@ function checkAlternateAuthSystems($redirect=false){
 	return false;
 }
 
-function externalAuthWithLDAP($auth_method)
-{
+/// Is an alternate auth ?
+function isAlternateAuth($id_auth){
+	return  in_array($id_auth,array(AUTH_X509,AUTH_CAS,AUTH_EXTERNAL));
+}
+
+function isAlternateAuthWithLdap($auth_method){
 	global $CFG_GLPI;
-	if ($auth_method == AUTH_EXTERNAL && $CFG_GLPI["extra_ldap_server"] > 0 )
-		return true;
-	else
-		return false;	
+	return (isAlternateAuth($id_auth) && $CFG_GLPI["extra_ldap_server"] > 0);
 }
 ?>
