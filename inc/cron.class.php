@@ -309,30 +309,4 @@ class Cron {
 
 }
 
-class Alert extends CommonDBTM {
-
-	function Alert () {
-		$this->table="glpi_alerts";
-		$this->type=0;
-	}
-	function getFromDBForDevice ($type,$ID) {
-
-		// Make new database object and fill variables
-		global $DB;
-		if (empty($ID)) return false;
-
-		$query = "SELECT * FROM ".$this->table." WHERE (device_type='$type' AND FK_device = '$ID')";
-
-		if ($result = $DB->query($query)) {
-			if ($DB->numrows($result)==1){
-				$this->fields = $DB->fetch_assoc($result);
-				return true;
-			} else return false;
-		} else {
-			return false;
-		}
-	}
-
-}
-
 ?>

@@ -77,6 +77,48 @@ class Contract extends CommonDBTM {
 		return $ong;
 	}
 
+	function prepareInputForUpdate($input) {
+		// Backup initial values
+		if (isset($input['begin_date'])){
+			$input['_begin_date']=$this->fields['begin_date'];
+		}
+		if (isset($input['duration'])){
+			$input['_duration']=$this->fields['duration'];
+		}
+		if (isset($input['notice'])){
+			$input['_notice']=$this->fields['notice'];
+		}
+		return $input;
+	}
+
+
+	function post_updateItem($input,$updates,$history=1) {
+		// Clean end alert if begin_date is after old one
+		// Or if duration is greater than old one
+		if ((in_array('begin_date',$updates)
+			&& ($input['_begin_date'] < $this->fields['begin_date'] ))
+		|| ( in_array('duration',$updates)
+			&& ($input['_duration'] < $this->fields['duration'] ))
+		){
+			$alert=new Alert();
+			$alert->clear($this->type,$this->fields['ID'],ALERT_END);
+		}
+
+		// Clean notice alert if begin_date is after old one
+		// Or if duration is greater than old one
+		// Or if notice is lesser than old one
+		if ((in_array('begin_date',$updates)
+			&& ($input['_begin_date'] < $this->fields['begin_date'] ))
+		|| ( in_array('duration',$updates)
+			&& ($input['_duration'] < $this->fields['duration'] ))
+		|| ( in_array('notice',$updates)
+			&& ($input['_notice'] > $this->fields['notice'] ))
+		){
+			$alert=new Alert();
+			$alert->clear($this->type,$this->fields['ID'],ALERT_NOTICE);
+		}
+	
+	}
 
 	/**
 	 * Print the contract form

@@ -413,8 +413,23 @@ class License extends CommonDBTM {
 		}
 		if (isset ($input['oem']) && !$input['oem'])
 			$input['oem_computer'] = -1;
+		// Backup initial values
+		if (isset($input['expire'])){
+			$input['_expire']=$this->fields['expire'];
+		}
 
 		return $input;
+	}
+
+
+	function post_updateItem($input,$updates,$history=1) {
+		// Clean end alert if expire is after old one
+		if ((in_array('expire',$updates)
+			&& ($input['_expire'] < $this->fields['expire'] ))
+		){
+			$alert=new Alert();
+			$alert->clear($this->type,$this->fields['ID'],ALERT_END);
+		}
 	}
 
 	function prepareInputForAdd($input) {
