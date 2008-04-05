@@ -82,8 +82,6 @@ class User extends CommonDBTM {
 
 	function post_getEmpty () {
 		$this->fields["active"]=1;
-		$this->fields["realname"]='';
-		$this->fields["firstname"]='';
 	}
 
 	function pre_deleteItem($ID){
@@ -172,24 +170,6 @@ class User extends CommonDBTM {
 		if (!isset($input["language"])){
 			$input["language"]=$CFG_GLPI["default_language"];
 		}
-		if (!isset($input["active"])){
-			$input["active"]=1;
-		}
-		if (!isset($input["deleted"])){
-			$input["deleted"]=0;
-		}
-
-		if (!isset($input["FK_entities"])){
-			$input["FK_entities"]=0;
-		}
-
-		if (!isset($input["FK_profiles"])){
-			$input["FK_profiles"]=0;
-		}
-
-		if (!isset($input["auth_method"])){
-			$input["auth_method"]=-1;
-		}
 
 		if (!isset($input["list_limit"])){
 			$input["list_limit"]=$CFG_GLPI["list_limit"];
@@ -213,6 +193,28 @@ class User extends CommonDBTM {
 			$input["email"] = $input["email_form"];
 			unset ($input["email_form"]);
 		}
+
+		// Force DB default values : not really needed
+		if (!isset($input["active"])){
+			$input["active"]=1;
+		}
+
+		if (!isset($input["deleted"])){
+			$input["deleted"]=0;
+		}
+
+		if (!isset($input["FK_entities"])){
+			$input["FK_entities"]=0;
+		}
+
+		if (!isset($input["FK_profiles"])){
+			$input["FK_profiles"]=0;
+		}
+
+		if (!isset($input["auth_method"])){
+			$input["auth_method"]=-1;
+		}
+
 
 		return $input;
 	}

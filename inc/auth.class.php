@@ -320,14 +320,15 @@ class Identification {
 
 		$this->destroySession();
 		startGlpiSession();
-		if (isset($this->user->fields['ID'])){
+		// Check ID exists and load complete user from DB (plugins...)
+		if (isset($this->user->fields['ID']) && $this->user->getFromDB($this->user->fields['ID'])){
 			if (!$this->user->fields['deleted']&&$this->user->fields['active']){
 				$_SESSION["glpiID"] = $this->user->fields['ID'];
 				$_SESSION["glpiname"] = $this->user->fields['name'];
-				$_SESSION["glpirealname"] = (isset($this->user->fields['realname'])?$this->user->fields['realname']:'');
-				$_SESSION["glpifirstname"] = (isset($this->user->fields['firstname'])?$this->user->fields['firstname']:'');
+				$_SESSION["glpirealname"] = $this->user->fields['realname'];
+				$_SESSION["glpifirstname"] = $this->user->fields['firstname'];
 				$_SESSION["glpilanguage"] = $this->user->fields['language'];
-				$_SESSION["glpidefault_entity"] = (isset($this->user->fields['FK_entities'])?$this->user->fields['FK_entities']:0);
+				$_SESSION["glpidefault_entity"] = $this->user->fields['FK_entities'];
 				loadLanguage();
 				$_SESSION["glpitracking_order"] = $this->user->fields['tracking_order'];
 				$_SESSION["glpiauthorisation"] = true;
@@ -345,7 +346,7 @@ class Identification {
 				initEntityProfiles($_SESSION["glpiID"]);
 				// Use default profile if exist
 				
-				if (isset($this->user->fields['FK_profiles']) && isset($_SESSION['glpiprofiles'][$this->user->fields['FK_profiles']])){
+				if (isset($_SESSION['glpiprofiles'][$this->user->fields['FK_profiles']])){
 					changeProfile($this->user->fields['FK_profiles']);
 				} else { // Else use first
 					changeProfile(key($_SESSION['glpiprofiles']));
