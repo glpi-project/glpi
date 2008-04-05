@@ -73,7 +73,7 @@ class User extends CommonDBTM {
 		if (haveRight("reservation_central", "r")){
 			$ong[11] = $LANG["Menu"][17];
 		}
-		if (haveRight("user", "w")){
+		if (haveRight("user_auth_method", "w")){
 			$ong[12] = $LANG["ldap"][12];
 		}
 
@@ -663,12 +663,15 @@ class User extends CommonDBTM {
 		if (haveRight("user", "w")) {
 			$buttons["user.form.php?new=1"] = $LANG["setup"][2];
 			$title = "";
-			if (useAuthLdap()) {
-				$buttons["user.form.php?new=1&amp;ext_auth=1"] = $LANG["setup"][125];
-				$buttons["ldap.php"] = $LANG["setup"][3];
-				
-			} else if (useAuthExt()) {
-				$buttons["user.form.php?new=1&amp;ext_auth=1"] = $LANG["setup"][125];
+			
+			if (haveRight("user_auth_method", "w")) {
+				if (useAuthLdap()) {
+					$buttons["user.form.php?new=1&amp;ext_auth=1"] = $LANG["setup"][125];
+					$buttons["ldap.php"] = $LANG["setup"][3];
+					
+				} else if (useAuthExt()) {
+					$buttons["user.form.php?new=1&amp;ext_auth=1"] = $LANG["setup"][125];
+				}
 			}
 		}
 
@@ -806,10 +809,19 @@ class User extends CommonDBTM {
 				//Authentications informations : auth method used and server used
 				//don't display is creation of a new user'
 				if (!empty ($ID)) {
-					echo "<tr class='tab_bg_1' align='center'><td>" . $LANG["login"][10] . ":</td><td class='center'>";
+					if (haveRight("user_auth_method", "r")){
+						echo "<tr class='tab_bg_1' align='center'><td>" . $LANG["login"][10] . ":</td><td class='center'>";
 
-					echo getAuthMethodName($this->fields["auth_method"], $this->fields["id_auth"], 1);
+						echo getAuthMethodName($this->fields["auth_method"], $this->fields["id_auth"], 1);
 
+						echo "</td><td align='center' colspan='2'></td>";
+						echo "</tr>";
+					}
+					
+					echo "<tr class='tab_bg_1' align='center'><td>" . $LANG["login"][24] . ":</td><td class='center'>";
+					if ($this->fields["date_mod"] != "0000-00-00 00:00:00"){
+						echo convDateTime($this->fields["date_mod"]);
+					}
 					echo "</td><td>" . $LANG["login"][0] . ":</td><td>";
 
 					if ($this->fields["last_login"] != "0000-00-00 00:00:00"){
@@ -817,13 +829,6 @@ class User extends CommonDBTM {
 					}
 
 					echo "</td>";
-
-					echo "</tr>";
-					echo "<tr class='tab_bg_1' align='center'><td>" . $LANG["login"][24] . ":</td><td class='center'>";
-					if ($this->fields["date_mod"] != "0000-00-00 00:00:00"){
-						echo convDateTime($this->fields["date_mod"]);
-					}
-					echo "</td><td align='center' colspan='2'></td>";
 					echo "</tr>";
 
 				}
