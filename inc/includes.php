@@ -89,6 +89,7 @@ if (!isset($AJAX_INCLUDE)){
 	include_once (GLPI_ROOT . "/inc/export.function.php");
 	include_once (GLPI_ROOT . "/inc/log.function.php");
 	include_once (GLPI_ROOT . "/inc/bookmark.function.php");
+	include_once (GLPI_ROOT . "/inc/alert.class.php");
 }
 
 // Security system
