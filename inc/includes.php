@@ -92,19 +92,38 @@ if (!isset($AJAX_INCLUDE)){
 }
 
 // Security system
-	if (isset($_POST)){
-		if (!get_magic_quotes_gpc()){
-			$_POST = array_map('addslashes_deep', $_POST);
-		}
-		$_POST = array_map('clean_cross_side_scripting_deep', $_POST);
+if (isset($_POST)){
+	if (!get_magic_quotes_gpc()){
+		$_POST = array_map('addslashes_deep', $_POST);
 	}
-	if (isset($_GET)){
-		if (!get_magic_quotes_gpc()){
-			$_GET = array_map('addslashes_deep', $_GET);
-		}
-		$_GET = array_map('clean_cross_side_scripting_deep', $_GET);
+	$_POST = array_map('clean_cross_side_scripting_deep', $_POST);
+}
+if (isset($_GET)){
+	if (!get_magic_quotes_gpc()){
+		$_GET = array_map('addslashes_deep', $_GET);
 	}
+	$_GET = array_map('clean_cross_side_scripting_deep', $_GET);
+}
 
+
+
+// Mark if Header is loaded or not :
+$HEADER_LOADED=false;
+$FOOTER_LOADED=false;
+if (isset($AJAX_INCLUDE)){
+	$HEADER_LOADED=true;
+}
+
+if (isset($NEEDED_ITEMS)&&is_array($NEEDED_ITEMS)){
+	foreach ($NEEDED_ITEMS as $item){
+		if (file_exists(GLPI_ROOT . "/inc/$item.class.php")){
+			include_once (GLPI_ROOT . "/inc/$item.class.php");
+		}
+		if (file_exists(GLPI_ROOT . "/inc/$item.function.php")){
+			include_once (GLPI_ROOT . "/inc/$item.function.php");
+		}
+	}
+}
 
 /* On startup, register all plugins configured for use. */
 if (!isset($AJAX_INCLUDE)&&!isset($PLUGINS_INCLUDED)){
@@ -133,24 +152,6 @@ if (!isset($AJAX_INCLUDE)&&!isset($PLUGINS_INCLUDED)){
 				usePlugin($name);
 
 			}
-		}
-	}
-}
-
-// Mark if Header is loaded or not :
-$HEADER_LOADED=false;
-$FOOTER_LOADED=false;
-if (isset($AJAX_INCLUDE)){
-	$HEADER_LOADED=true;
-}
-
-if (isset($NEEDED_ITEMS)&&is_array($NEEDED_ITEMS)){
-	foreach ($NEEDED_ITEMS as $item){
-		if (file_exists(GLPI_ROOT . "/inc/$item.class.php")){
-			include_once (GLPI_ROOT . "/inc/$item.class.php");
-		}
-		if (file_exists(GLPI_ROOT . "/inc/$item.function.php")){
-			include_once (GLPI_ROOT . "/inc/$item.function.php");
 		}
 	}
 }
