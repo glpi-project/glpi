@@ -1177,6 +1177,7 @@ $LANG["profiles"][39]="Attribution";
 $LANG["profiles"][40]="Edition"; 
 $LANG["profiles"][41]="Création"; 
 $LANG["profiles"][42]="Association"; 
+$LANG["profiles"][43]="Méthode d'authentification et synchronisation des utilisateurs";
 
 $LANG["registry"][1]="Ruche"; 
 $LANG["registry"][2]="Chemin"; 
@@ -1524,7 +1525,6 @@ $LANG["setup"][195]="Conserver le statut";
 $LANG["setup"][196]="Effacer le statut";
 $LANG["setup"][197]="Prendre le statut de l'ordinateur";
 $LANG["setup"][198]="Prendre le statut ";
-
 
 $LANG["setup"][201]="Configuration de la fonction"; 
 $LANG["setup"][202]="Utiliser le suivi par mail"; 

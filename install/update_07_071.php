@@ -422,5 +422,12 @@ function update07to071() {
 			$query = "ALTER TABLE `glpi_kbitems` ADD FULLTEXT `fulltext` (`question`,`answer`);";
 			$DB->query($query) or die("0.71 add fulltext index  glpi_kbitems " . $LANG["update"][90] . $DB->error());
 	}
+	if (!FieldExists("glpi_profiles", "user_auth_method")) {
+		$query = "ALTER TABLE `glpi_profiles` ADD `user_auth_method` CHAR( 1 ) NULL DEFAULT NULL AFTER `user`;";
+		$DB->query($query) or die("0.71 add user_auth_method to glpi_profiles " . $LANG["update"][90] . $DB->error());
+
+		$query = "UPDATE `glpi_profiles` SET `user_auth_method` = `user`;";
+		$DB->query($query) or die("0.71 init user_auth_method value in glpi_profiles " . $LANG["update"][90] . $DB->error());
+	}
 } // fin 0.71 #####################################################################################
 ?>
