@@ -2305,13 +2305,18 @@ function giveItem ($type,$field,$data,$num,$linkfield=""){
 				$split3=explode("$$$$",$data["ITEM_".$num."_3"]);
 
 				$count_display=0;
+				$added=array();
 				for ($k=0;$k<count($split);$k++)
 					if (strlen(trim($split[$k]))>0){
-						if ($count_display) $out.= "<br>";
-						$count_display++;
-						$out.= $split[$k]." - ".$split2[$k];
+						$text=$split[$k]." - ".$split2[$k];
 						if ($split3[$k]){
-							$out.=" (R)";
+							$text.=" (R)";
+						}
+						if (!in_array($text,$added)){
+							if ($count_display) $out.= "<br>";
+							$count_display++;
+							$out.= $text;
+							$added[]=$text;
 						}
 					}
 				return $out;
@@ -2334,15 +2339,19 @@ function giveItem ($type,$field,$data,$num,$linkfield=""){
 				$split=explode("$$$$",$data["ITEM_$num"]);
 				$split2=explode("$$$$",$data["ITEM_".$num."_2"]);
 				$split3=explode("$$$$",$data["ITEM_".$num."_3"]);
-
+				$added=array();
 				$count_display=0;
 				for ($k=0;$k<count($split);$k++)
 					if (strlen(trim($split[$k]))>0){
-						if ($count_display) $out.= "<br>";
-						$count_display++;
-						$out.= $split[$k]." - ".$split2[$k];
+						$text=$split[$k]." - ".$split2[$k];
 						if ($split3[$k]){
-							$out.=" (R)";
+							$text.=" (R)";
+						}
+						if (!in_array($text,$added)){
+							if ($count_display) $out.= "<br>";
+							$count_display++;
+							$out.= $text;
+							$added[]=$text;
 						}
 					}
 				return $out;
