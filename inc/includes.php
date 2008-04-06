@@ -157,6 +157,10 @@ if (!isset($AJAX_INCLUDE)&&!isset($PLUGINS_INCLUDED)){
 	}
 }
 
+// Get search_option array / need to be included after plugin definition
+if (in_array('search', $NEEDED_ITEMS)){
+	$SEARCH_OPTION=getSearchOptions();
+}
 
 if (!isset($_SESSION["MESSAGE_AFTER_REDIRECT"])) $_SESSION["MESSAGE_AFTER_REDIRECT"]="";
 ?>

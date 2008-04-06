@@ -35,8 +35,10 @@ if (!defined('GLPI_ROOT')){
 /** \file search.function.php
  * Generic functions for Search Engine
  */
-// Get search_option array
-$SEARCH_OPTION=getSearchOptions();
+// Get search_option array / Already include in includes.php
+if (!isset($SEARCH_OPTION)){
+	$SEARCH_OPTION=getSearchOptions();
+}
 
 
 function cleanSearchOption($type,$action='r'){
