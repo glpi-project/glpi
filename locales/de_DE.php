@@ -1169,6 +1169,7 @@ $LANG["profiles"][39]="Zuweisung";
 $LANG["profiles"][40]="Edition"; 
 $LANG["profiles"][41]="Erstellung"; 
 $LANG["profiles"][42]="Vereinigung"; 
+$LANG["profiles"][43]="Authentication and synchronization users method"; 
 
 $LANG["registry"][1]="Zweig"; 
 $LANG["registry"][2]="Pfad"; 

@@ -1169,6 +1169,7 @@ $LANG["profiles"][39]="Assignment";
 $LANG["profiles"][40]="Update"; 
 $LANG["profiles"][41]="Creation"; 
 $LANG["profiles"][42]="Association"; 
+$LANG["profiles"][43]="Authentication and synchronization users method"; 
 
 $LANG["registry"][1]="Hive"; 
 $LANG["registry"][2]="Path"; 

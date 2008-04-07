@@ -1169,6 +1169,7 @@ $LANG["profiles"][39]="Εκχώρηση";
 $LANG["profiles"][40]="Ενημέρωση"; 
 $LANG["profiles"][41]="Δημιουργία"; 
 $LANG["profiles"][42]="Συνεργασία"; 
+$LANG["profiles"][43]="Authentication and synchronization users method"; 
 
 $LANG["registry"][1]="Hive"; 
 $LANG["registry"][2]="Διαδρομή"; 

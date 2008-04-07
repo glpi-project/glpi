@@ -1169,6 +1169,7 @@ $LANG["profiles"][39]="Atamak";
 $LANG["profiles"][40]="Güncelle"; 
 $LANG["profiles"][41]="Oluşturma"; 
 $LANG["profiles"][42]="İlişki"; 
+$LANG["profiles"][43]="Authentication and synchronization users method"; 
 
 $LANG["registry"][1]="Hive"; 
 $LANG["registry"][2]="Path"; 
