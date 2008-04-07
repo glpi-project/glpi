@@ -288,8 +288,8 @@ $LANG["computers"][56]="Status updated. The connected items have been updated us
 
 $LANG["connect"][0]="Прямые подключения"; 
 $LANG["connect"][1]="Не подключен."; 
-$LANG["connect"][15]="Automatic update of the following items"; 
-$LANG["connect"][16]="Warning!! The following items of the two hardwares do not match"; 
+$LANG["connect"][15]="Автоматически обновлено"; 
+$LANG["connect"][16]="Внимание! Следующие элементы не совпадают"; 
 
 $LANG["consumables"][0]="Расходный материал"; 
 $LANG["consumables"][1]="На складе"; 
@@ -1169,6 +1169,7 @@ $LANG["profiles"][39]="Назначение";
 $LANG["profiles"][40]="Обновление"; 
 $LANG["profiles"][41]="Создание"; 
 $LANG["profiles"][42]="Связи"; 
+$LANG["profiles"][43]="Authentication and synchronization users method"; 
 
 $LANG["registry"][1]="Hive"; 
 $LANG["registry"][2]="Path"; 

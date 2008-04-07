@@ -1169,6 +1169,7 @@ $LANG["profiles"][39]="Assignació";
 $LANG["profiles"][40]="Update"; 
 $LANG["profiles"][41]="Crear"; 
 $LANG["profiles"][42]="Associació"; 
+$LANG["profiles"][43]="Authentication and synchronization users method"; 
 
 $LANG["registry"][1]="Secció"; 
 $LANG["registry"][2]="Ruta"; 
