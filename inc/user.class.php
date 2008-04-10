@@ -500,6 +500,10 @@ class User extends CommonDBTM {
 						$groups[strtolower($data["ldap_field"])][$data["ID"]] = $data["ldap_value"];
 					}
 					$group_fields = array_unique($group_fields);
+					
+					//Need to sort the array because edirectory don't like it!
+					sort($group_fields);
+
 					// If the groups must be retrieve from the ldap user object
 					$sr = @ ldap_read($ldap_connection, $userdn, "objectClass=*", $group_fields);
 					$v = ldap_get_entries($ldap_connection, $sr);
