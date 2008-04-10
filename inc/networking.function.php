@@ -242,12 +242,12 @@ function showNetportForm($target,$ID,$ondevice,$devtype,$several) {
 
 	displayTitle("","","",array($REFERER=>$LANG["buttons"][13]));
 
-	echo "<br><div class='center'>";
+	echo "<br><div>";
 
 	echo "<form method='post' action=\"$target\">";
 
 	echo "<input type='hidden' name='referer' value='".urlencode($REFERER)."'>";
-	echo "<table class='tab_cadre'><tr>";
+	echo "<table class='tab_cadre_fixe'><tr>";
 
 	echo "<th colspan='4'>".$LANG["networking"][20].":</th>";
 	echo "</tr>";
@@ -338,7 +338,7 @@ function showNetportForm($target,$ID,$ondevice,$devtype,$several) {
 	if ($several!="yes"){
 		echo "<tr class='tab_bg_1'><td>".$LANG["networking"][51].":</td>";
 
-		echo "<td align='center' >";
+		echo "<td >";
 		dropdownNetpoint("netpoint", $netport->fields["netpoint"],$netport->location,1,$netport->FK_entities,
 						($ID?$netport->fields["device_type"]: $devtype));		
 		echo "</td></tr>";
