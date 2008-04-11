@@ -322,8 +322,6 @@ class Computer extends CommonDBTM {
 	 * 
 	**/
 	function prepareInputForAdd($input) {
-		// set new date.
-		$input["date_mod"] = $_SESSION["glpi_currenttime"];
 
 		if (isset($input["ID"])&&$input["ID"]>0){
 			$input["_oldID"]=$input["ID"];
