@@ -692,8 +692,7 @@ function showJobVeryShort($ID) {
 	}
 }
 
-function addFormTracking ($device_type=0,$ID=0, $target, $author, $group=0, $assign=0, $assign_group=0, $name='',$contents='',$category=0, $priority=3,
-		$request_type=1,$hour=0,$minute=0) {
+function addFormTracking ($device_type=0,$ID=0, $target, $author, $group=0, $assign=0, $assign_group=0, $name='',$contents='',$category=0, $priority=3,$request_type=1,$hour=0,$minute=0) {
 	// Prints a nice form to add jobs
 
 	global $CFG_GLPI, $LANG,$CFG_GLPI,$REFERER,$DB;
@@ -703,14 +702,15 @@ function addFormTracking ($device_type=0,$ID=0, $target, $author, $group=0, $ass
 		echo "<div class='center'><strong>$error</strong></div>";
 	}
 */
-	displayTitle("","","",array($REFERER=>$LANG["buttons"][13]));
 
-	echo "<br><form name='form_ticket' method='post' action='$target' enctype=\"multipart/form-data\">";
+	$add_url="";
+	if ($device_type>0){
+		$add_url="?device_type=$device_type&amp;computer=$ID";
+	}
+	echo "<br><form name='form_ticket' method='post' action='$target$add_url' enctype=\"multipart/form-data\">";
 	echo "<div class='center'>";
 	echo "<input type='hidden' name='FK_entities' value='".$_SESSION["glpiactive_entity"]."'>";
-	//	if ($device_type!=0){
-	echo "<input type='hidden' name='_referer' value='$REFERER'>";
-	//	}	
+
 	echo "<table class='tab_cadre_fixe'><tr><th colspan='4'>".$LANG["job"][13];
 	if (haveRight("comment_all_ticket","1")){
 		echo "&nbsp;&nbsp;";
@@ -723,11 +723,12 @@ function addFormTracking ($device_type=0,$ID=0, $target, $author, $group=0, $ass
 
 	echo '<br>';
 
-	if ($device_type!=0){
+	if ($device_type>0){
 		$m=new CommonItem;
 		$m->getFromDB($device_type,$ID);
-		echo $m->getType()." - ".$m->getNameID();
+		echo $m->getType()." - ".$m->getLink();
 	}
+
 	echo "<input type='hidden' name='computer' value=\"$ID\">";
 	echo "<input type='hidden' name='device_type' value=\"$device_type\">";
 
@@ -744,7 +745,9 @@ function addFormTracking ($device_type=0,$ID=0, $target, $author, $group=0, $ass
 		dropdownValue("glpi_groups","FK_group",$group,1,$_SESSION["glpiactive_entity"]);
 		echo "</td></tr>";
 	} 
-	if ($_SESSION["glpiactiveprofile"]["helpdesk_hardware"]!=0){
+
+
+	if ($device_type==0 && $_SESSION["glpiactiveprofile"]["helpdesk_hardware"]!=0){
 		echo "<tr class='tab_bg_2'>";
 		echo "<td class='center'>".$LANG["help"][24].": </td>";
 		echo "<td align='center' colspan='3'>";
