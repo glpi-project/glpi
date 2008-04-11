@@ -791,7 +791,7 @@ class MailingResa{
 							FROM glpi_users_profiles 
 							INNER JOIN glpi_users ON (glpi_users_profiles.FK_users = glpi_users.ID) 
 							WHERE glpi_users_profiles.FK_profiles='".$data["FK_item"]."' 
-							AND glpi_users_profiles.FK_entities='".$FK_entities."'";
+							".getEntitiesRestrictRequest("AND","glpi_users_profiles","FK_entities",$FK_entities,true);
 						if ($result2= $DB->query($query)){
 							if ($DB->numrows($result2))
 								while ($row=$DB->fetch_assoc($result2)){
@@ -1056,7 +1056,8 @@ class MailingAlert
 							FROM glpi_users_profiles 
 							INNER JOIN glpi_users ON (glpi_users_profiles.FK_users = glpi_users.ID) 
 							WHERE glpi_users_profiles.FK_profiles='".$data["FK_item"]."'
-								AND glpi_users_profiles.FK_entities='".$this->entity."'";
+							".getEntitiesRestrictRequest("AND","glpi_users_profiles","FK_entities",$this->entity,true);
+
 						if ($result2= $DB->query($query)){
 							if ($DB->numrows($result2)){
 								while ($row=$DB->fetch_assoc($result2)){
