@@ -97,21 +97,13 @@ if (isset($_SESSION["helpdeskSaved"])&&count($_GET)==0){
 	unset($_SESSION["helpdeskSaved"]);
 }
 
-
-$REFERER="";
-if (isset($_SERVER['HTTP_REFERER']))
-$REFERER=$_SERVER['HTTP_REFERER'];
-if (isset($_POST["_referer"])) $REFERER=$_POST["_referer"];
-$REFERER=preg_replace("/&/","&amp;",$REFERER);
-
-
 $track=new Job();
 
 if (isset($_POST["priority"])){
 	if ($newID=$track->add($_POST)){
 		logEvent($newID, "tracking", 4, "tracking", $_SESSION["glpiname"]." ".$LANG["log"][20]." $newID.");
 	}
-	glpi_header($_SERVER['PHP_SELF']);
+	glpi_header($_SERVER['HTTP_REFERER']);
 
 
 } else {
