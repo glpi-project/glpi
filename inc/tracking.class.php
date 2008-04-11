@@ -191,6 +191,7 @@ class Job extends CommonDBTM{
 			$doc=new Document();
 			$doc->getFromDB($input["document"]);
 			unset($input["document"]);
+			// Force date_mod of tracking
 			$input["date_mod"]=$_SESSION["glpi_currenttime"];
 			$input['_doc_added']=$doc->fields["name"];
 		}
@@ -517,8 +518,6 @@ class Job extends CommonDBTM{
 			}
 		}
 		unset($_SESSION["helpdeskSaved"]);
-		// set new date.
-		$input["date_mod"] = $_SESSION["glpi_currenttime"];
 
 		// Manage helpdesk.html submission type
 		unset($input["type"]);

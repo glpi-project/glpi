@@ -49,14 +49,6 @@ class Typedoc  extends CommonDBTM {
 		$this->type=TYPEDOC_TYPE;
 	}
 
-
-	function prepareInputForAdd($input) {
-		// set new date.
-		$input["date_mod"] = $_SESSION["glpi_currenttime"];
-
-		return $input;
-	}
-
 	function showForm ($target,$ID) {
 
 		global $CFG_GLPI, $LANG;

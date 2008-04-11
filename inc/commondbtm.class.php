@@ -406,11 +406,16 @@ class CommonDBTM {
 		if ($input&&is_array($input)){
 			$this->fields=array();
 			$table_fields=$DB->list_fields($this->table);
+
 			// fill array for udpate
 			foreach ($input as $key => $val) {
 				if ($key[0]!='_'&& isset($table_fields[$key])&&(!isset($this->fields[$key]) || $this->fields[$key] != $input[$key])) {
 					$this->fields[$key] = $input[$key];
 				}
+			}
+			// Auto set date_mod if exsist
+			if (isset($table_fields['date_mod'])){
+				$this->fields['date_mod']=$_SESSION["glpi_currenttime"];
 			}
 
 			if ($newID= $this->addToDB()){

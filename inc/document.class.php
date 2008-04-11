@@ -84,7 +84,7 @@ class Document extends CommonDBTM {
 
 	function prepareInputForAdd($input) {
 		global $LANG;
-		$input["date_mod"] = $_SESSION["glpi_currenttime"];
+
 		$input["FK_users"] = $_SESSION["glpiID"];
 
 		if (isset($_FILES['filename']['type'])&&!empty($_FILES['filename']['type'])){

@@ -90,8 +90,6 @@ class Software extends CommonDBTM {
 	}
 
 	function prepareInputForAdd($input) {
-		// set new date.
-		$input["date_mod"] = $_SESSION["glpi_currenttime"];
 
 		if (isset ($input['is_update']) && !$input['is_update'])
 			$input['update_software'] = -1;

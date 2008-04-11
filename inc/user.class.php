@@ -165,9 +165,6 @@ class User extends CommonDBTM {
 			return false;
 		}
 
-		//We add the user, we set the last modification date
-		$input["date_mod"]=$_SESSION["glpi_currenttime"];
-
 		// Preferences
 		if (!isset($input["language"])){
 			$input["language"]=$CFG_GLPI["default_language"];
