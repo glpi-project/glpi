@@ -132,21 +132,6 @@ class Computer extends CommonDBTM {
 	}
 
 	/**
-	 * Actions done before the UPDATE of the item in the database 
-	 *
-	 *@param $input datas used to update the item
-	 *@param $updates array of the updated fields 
-	 * 
-	 *@return nothing 
-	 * 
-	**/
-	function pre_updateInDB($input,$updates) {
-		$this->fields["date_mod"]=$_SESSION["glpi_currenttime"];
-		$updates[]="date_mod";
-		return array($input,$updates);
-	}
-
-	/**
 	 * Actions done after the UPDATE of the item in the database
 	 *
 	 *@param $input datas used to update the item

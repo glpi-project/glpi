@@ -80,13 +80,6 @@ class Phone extends CommonDBTM {
 		return $ong;
 	}
 
-
-	function pre_updateInDB($input,$updates) {
-		$this->fields["date_mod"]=$_SESSION["glpi_currenttime"];
-		$updates[]="date_mod";
-		return array($input,$updates);
-	}
-
 	function prepareInputForAdd($input) {
 		// set new date.
 		$input["date_mod"] = $_SESSION["glpi_currenttime"];

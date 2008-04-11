@@ -224,8 +224,6 @@ class Job extends CommonDBTM{
 	function pre_updateInDB($input,$updates) {
 		global $LANG;
 
-		$this->fields["date_mod"]=$_SESSION["glpi_currenttime"];
-		$updates[]="date_mod";
 		// Status close : check dates
 		if (ereg("old_",$this->fields["status"])&&(in_array("date",$updates)||in_array("closedate",$updates))){
 			// Invalid dates : no change
