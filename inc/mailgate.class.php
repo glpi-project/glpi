@@ -200,22 +200,26 @@ class MailCollect {
 				// Get Total Number of Unread Email in mail box
 				$tot=$this->getTotalMails(); //Total Mails in Inbox Return integer value
 				$error=0;
-						
+
 				for($i=1;$i<=$tot && $i<= MAX_MAILS_RETRIEVED;$i++){
 					$tkt= $this->buildTicket($i);
-					
+					$this->deleteMails($i); // Delete Mail from Mail box
+					$result=imap_fetchheader($this->marubox,$i);
+
 					// Is a mail responding of an already existgin ticket ?
 					if (array_key_exists('tracking',$tkt) ) {
-						$fup=new Followup();
-						if ($fup->add($tkt)){
-							$this->deleteMails($i); // Delete Mail from Mail box
+						// Deletion of message with sucess
+						if (false === is_array($result)){
+							$fup=new Followup();
+							$fup->add($tkt);
 						} else {
 							$error++;
 						}
 					} else { // New ticket
-						$track=new job;
-						if ($track->add($tkt)){
-							$this->deleteMails($i); // Delete Mail from Mail box
+						// Deletion of message with sucess
+						if (false === is_array($result)){
+							$track=new job;
+							$track->add($tkt);
 						} else {
 							$error++;
 						}
@@ -687,8 +691,7 @@ class MailCollect {
 	 *
 	 * @param $mid : mail Id
 	 */
-	function deleteMails($mid) // Delete That Mail
-	{
+	function deleteMails($mid) {
 		imap_delete($this->marubox,$mid);
 	}
 	
@@ -696,8 +699,7 @@ class MailCollect {
 	 * Close The Mail Box
 	 *  
  	 */	
-	function close_mailbox() //Close Mail Box
-	{
+	function close_mailbox() {
 		imap_close($this->marubox,CL_EXPUNGE);
 	}
 
