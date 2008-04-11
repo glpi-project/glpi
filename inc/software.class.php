@@ -81,13 +81,6 @@ class Software extends CommonDBTM {
 		return $ong;
 	}
 
-	function pre_updateInDB($input, $updates) {
-		$this->fields["date_mod"] = $_SESSION["glpi_currenttime"];
-		$updates[] = "date_mod";
-			
-		return array ($input,$updates);
-	}
-
 	function prepareInputForUpdate($input) {
 
 		if (isset ($input['is_update']) && ! $input['is_update'])

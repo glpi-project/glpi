@@ -50,6 +50,8 @@ class User extends CommonDBTM {
 		$this->table = "glpi_users";
 		$this->type = USER_TYPE;
 
+		$this->date_mod_blacklist = array('last_login');
+
 		$this->fields['tracking_order'] = 0;
 		if (isset ($CFG_GLPI["default_language"])){
 			$this->fields['language'] = $CFG_GLPI["default_language"];
@@ -1043,9 +1045,6 @@ class User extends CommonDBTM {
 			}
 		}
 		
-		
-		$this->fields["date_mod"]=$_SESSION["glpi_currenttime"];
-		$updates[]="date_mod";
 		return array($input,$updates);
 	}
 
