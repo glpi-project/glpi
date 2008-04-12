@@ -1,6 +1,6 @@
 <?php
 /*
- * @version $Id: ldap.php 6217 2008-01-01 01:32:45Z moyo $
+ * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2008 by the INDEPNET Development Team.

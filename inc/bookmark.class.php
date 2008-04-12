@@ -1,7 +1,7 @@
 <?php
 
 /*
- * @version $Id: cron.class.php 6235 2008-01-02 17:57:10Z moyo $
+ * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2008 by the INDEPNET Development Team.
