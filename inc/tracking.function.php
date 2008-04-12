@@ -306,7 +306,8 @@ function showOldJobListForItem($username,$item_type,$item,$sort="",$order="") {
 	}
 
 	$where = "(status = 'old_done' OR status = 'old_notdone')";	
-	$query = "SELECT ".getCommonSelectForTrackingSearch()." FROM glpi_tracking ".getCommonLeftJoinForTrackingSearch()." WHERE $where and (device_type = '$item_type' and computer = '$item') ORDER BY $sort $order";
+
+	$query = "SELECT ".getCommonSelectForTrackingSearch()." FROM glpi_tracking ".getCommonLeftJoinForTrackingSearch()." WHERE $where AND (device_type = '$item_type' and computer = '$item') ORDER BY $sort $order";
 
 
 	$result = $DB->query($query);
@@ -1233,19 +1234,32 @@ function searchFormTracking($extended=0,$target,$start="",$status="new",$tosearc
 
 
 function getCommonSelectForTrackingSearch(){
+	$SELECT="";
+	if (count($_SESSION["glpiactiveentities"])>1){
+		$SELECT.= ", glpi_entities.completename as entityname, glpi_tracking.FK_entities as entityID";
+	}
+
+
 return " DISTINCT glpi_tracking.*,
 		glpi_dropdown_tracking_category.completename AS catname,
-		glpi_groups.name as groupname ";
+		glpi_groups.name as groupname ".$SELECT;
 
 		//, author.name AS authorname, author.realname AS authorrealname, author.firstname AS authorfirstname,	
 		//glpi_tracking.assign as assignID, assign.name AS assignname, assign.realname AS assignrealname, assign.firstname AS assignfirstname,
 }
 
 function getCommonLeftJoinForTrackingSearch(){
+
+	$FROM="";
+
+	if (count($_SESSION["glpiactiveentities"])>1){
+		$FROM.= " LEFT JOIN glpi_entities ON ( glpi_entities.ID = glpi_tracking.FK_entities)";
+	}
+
 	return //" LEFT JOIN glpi_users as author ON ( glpi_tracking.author = author.ID) "
 	//." LEFT JOIN glpi_users as assign ON ( glpi_tracking.assign = assign.ID) "
 	" LEFT JOIN glpi_groups ON ( glpi_tracking.FK_group = glpi_groups.ID) "
-	." LEFT JOIN glpi_dropdown_tracking_category ON ( glpi_tracking.category = glpi_dropdown_tracking_category.ID) ";
+	." LEFT JOIN glpi_dropdown_tracking_category ON ( glpi_tracking.category = glpi_dropdown_tracking_category.ID) ".$FROM;
 }
 
 
@@ -1333,10 +1347,6 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$to
 		$FROM.= " LEFT JOIN glpi_followups ON ( glpi_followups.tracking = glpi_tracking.ID)";
 	}
 
-	if (count($_SESSION["glpiactiveentities"])>1){
-		$SELECT.= ", glpi_entities.completename as entityname, glpi_tracking.FK_entities as entityID";
-		$FROM.= " LEFT JOIN glpi_entities ON ( glpi_entities.ID = glpi_tracking.FK_entities)";
-	}
 
 	$where=" WHERE ";
 
