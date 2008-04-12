@@ -513,9 +513,9 @@ function cron_consumable($display=false){
 
 				} else {
 					if ($display){
-						addMessageAfterRedirect("Entity $entity :  Send consumable alert failed");
+						addMessageAfterRedirect("Entity ".getDropdownName("glpi_entities",$entity).":  Send consumable alert failed");
 					}
-					logInFile("cron","Entity $entity :  Send consumable alert failed\n");
+					logInFile("cron","Entity ".getDropdownName("glpi_entities",$entity).":  Send consumable alert failed\n");
 				}
 
 			}

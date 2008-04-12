@@ -657,9 +657,9 @@ function cron_cartridge($display=false){
 
 				} else {
 					if ($display){
-						addMessageAfterRedirect("Entity $entity :  Send infocom alert failed");
+						addMessageAfterRedirect("Entity ".getDropdownName("glpi_entities",$entity).":  Send infocom alert failed");
 					}
-					logInFile("cron","Entity $entity :  Send cartdridge alert failed");
+					logInFile("cron","Entity ".getDropdownName("glpi_entities",$entity).":  Send cartdridge alert failed");
 				}
 			}
 			return 1;
