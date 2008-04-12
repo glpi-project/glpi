@@ -1415,9 +1415,9 @@ function cron_software($display=false){
 			$mail=new MailingAlert("alertlicense",$msg,$entity);
 			if ($mail->send()){
 				if ($display){
-					addMessageAfterRedirect("Entity $entity :  $msg");
+					addMessageAfterRedirect(getDropdownName("glpi_entities",$entity).":  $msg");
 				}
-				logInFile("cron","Entity $entity :  $msg\n");
+				logInFile("cron",getDropdownName("glpi_entities",$entity).":  $msg\n");
 		
 				// Mark alert as done
 				$alert=new Alert();
@@ -1433,9 +1433,9 @@ function cron_software($display=false){
 				}
 			} else {
 				if ($display){
-					addMessageAfterRedirect("Entity ".getDropdownName("glpi_entities",$entity).":  Send licenses alert failed");
+					addMessageAfterRedirect(getDropdownName("glpi_entities",$entity).":  Send licenses alert failed");
 				}
-				logInFile("cron","Entity ".getDropdownName("glpi_entities",$entity).":  Send licenses alert failed\n");
+				logInFile("cron",getDropdownName("glpi_entities",$entity).":  Send licenses alert failed\n");
 			}
 		}
 		return 1;

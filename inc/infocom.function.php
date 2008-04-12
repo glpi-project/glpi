@@ -551,9 +551,9 @@ function cron_infocom($display=false){
 				$mail=new MailingAlert("alertinfocom",$msg,$entity);
 				if ($mail->send()){
 					if ($display){
-						addMessageAfterRedirect("Entity $entity :  $msg");
+						addMessageAfterRedirect(getDropdownName("glpi_entities",$entity).":  $msg");
 					} 
-					logInFile("cron","Entity $entity :  $msg\n");
+					logInFile("cron",getDropdownName("glpi_entities",$entity).":  $msg\n");
 					
 
 					$input["type"]=ALERT_END;
@@ -568,9 +568,9 @@ function cron_infocom($display=false){
 
 				} else {
 					if ($display){
-						addMessageAfterRedirect("Entity ".getDropdownName("glpi_entities",$entity).":  Send infocom alert failed");
+						addMessageAfterRedirect(getDropdownName("glpi_entities",$entity).":  Send infocom alert failed");
 					}
-					logInFile("cron","Entity ".getDropdownName("glpi_entities",$entity).":  Send infocom alert failed\n");
+					logInFile("cron",getDropdownName("glpi_entities",$entity).":  Send infocom alert failed\n");
 				}
 			}
 			return 1;
