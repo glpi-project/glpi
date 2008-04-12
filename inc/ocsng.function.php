@@ -3475,10 +3475,7 @@ function checkOCSconnection($ocs_server_id) {
 		$DBocs = getDBocs($ocs_server_id);
 	}
 
-	if ($DBocs->error)
-		return false;
-	else
-		return true;
+	return $DBocs->connected;
 }
 /**
  * Get the ocs server id of a machine, by giving the machine id
