@@ -38,7 +38,7 @@ $NEEDED_ITEMS=array("ocsng","user");
 include (GLPI_ROOT . "/inc/includes.php");
 
 // Need to be used using :
-// check_http -H servername -u /glpi/nagios.php -s GLPI_OK
+// check_http -H servername -u /glpi/status.php -s GLPI_OK
 
 
 $ok_master=true;
@@ -67,6 +67,14 @@ if (establishDBConnection(false,true,false)){
 
 // Slave and master ok;
 $ok = $ok_slave && $ok_master;
+
+// Check session dir (usefull when NFS mounted))
+if (is_dir(GLPI_SESSION_DIR) && is_writable(GLPI_SESSION_DIR)) {
+		echo "GLPI_SESSION_DIR_OK<br>";	
+} else {
+		echo "GLPI_SESSION_DIR_PROBLEM<br>";
+		$ok=false;		
+}
 
 // Reestablished DB connection
 if (( $ok_master || $ok_slave ) && establishDBConnection(false,false,false)){
