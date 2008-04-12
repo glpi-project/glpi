@@ -131,9 +131,9 @@ if (( $ok_master || $ok_slave ) && establishDBConnection(false,false,false)){
 		echo "No LDAP server\n";
 	}
 
-	// TODO Check mail server
+	// TODO Check mail server : cannot open a mail connexion / only ping server ?
 
-	// TODO check CAS url 
+	// TODO check CAS url / check url using socket ?
 	
 }
 
