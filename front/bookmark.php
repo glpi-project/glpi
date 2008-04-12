@@ -1,6 +1,6 @@
 <?php
 /*
- * @version $Id: rule.cache.php 6282 2008-01-04 21:28:59Z moyo $
+ * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2008 by the INDEPNET Development Team.

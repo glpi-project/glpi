@@ -1,6 +1,6 @@
 <?php
 /*
- * @version $Id: dropdownValue.php 6433 2008-01-23 20:16:54Z remi $
+ * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2008 by the INDEPNET Development Team.
