@@ -133,7 +133,7 @@ class Identification {
 	 * Find a user in a LDAP and return is BaseDN
 	 * Based on GRR auth system
 	 *
-	 * @param $id
+	 * @param $id ID of the LDAP config (use to find replicate)
 	 * @param $host LDAP host to connect
 	 * @param $port LDAP port
 	 * @param $use_tls use a tls connection
@@ -149,6 +149,8 @@ class Identification {
 	 * @return String : basedn of the user / false if not founded
 	**/
 	function connection_ldap($id,$host, $port, $basedn, $rdn, $rpass, $login_attr, $login, $password, $condition = "", $use_tls = false,$deref_options) {
+		// TODO try to pass array of connection config to minimise parameters
+
 		global $CFG_GLPI, $LANG;
 
 		// we prevent some delay...
@@ -156,17 +158,7 @@ class Identification {
 			return false;
 		}
 
-		$this->ldap_connection = try_connect_ldap($host, $port, $rdn, $rpass, $use_tls,$login, $password,$deref_options);
-
-		//If user is not authentified on this directory, try replicates (if replicates exists)
-		if (!$this->ldap_connection && $id != -1){
-			foreach (getAllReplicateForAMaster($id) as $replicate){
-				$this->ldap_connection = try_connect_ldap($replicate["ldap_host"], $replicate["ldap_port"], $rdn, $rpass, $use_tls,$login, $password,$deref_options);
-				if ($this->ldap_connection){
-					break;
-				}
-			}
-		}
+		$this->ldap_connection = try_connect_ldap($host, $port, $rdn, $rpass, $use_tls,$login, $password,$deref_options,$id);
 
 		if ($this->ldap_connection) {
 			$dn = ldap_search_user_dn($this->ldap_connection, $basedn, $login_attr, $login, $condition);

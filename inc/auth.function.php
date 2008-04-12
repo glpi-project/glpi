@@ -870,8 +870,10 @@ function getEntitiesRestrictRequest($separator = "AND", $table = "", $field = ""
 function connect_ldap($host, $port, $login = "", $password = "", $use_tls = false,$deref_options) {
 	global $CFG_GLPI;
 
-	$ds = @ldap_connect($host, $port);
+	
+	$ds = @ldap_connect($host, intval($port));
 	if ($ds) {
+
 		@ldap_set_option($ds, LDAP_OPT_PROTOCOL_VERSION, 3);
 		@ldap_set_option($ds, LDAP_OPT_REFERRALS, 0);
 		@ldap_set_option($ds, LDAP_OPT_DEREF, $deref_options);
@@ -900,6 +902,7 @@ function connect_ldap($host, $port, $login = "", $password = "", $use_tls = fals
 /**
  * Try to connect to a ldap server
  *
+ * @param $id ID of the LDAP config (use to find replicate)
  * @param $host : LDAP host to connect
  * @param $port : port to use
  * @param $rdn : rootdn to use
@@ -910,13 +913,29 @@ function connect_ldap($host, $port, $login = "", $password = "", $use_tls = fals
  * @param $deref_options Deref options used
  * @return link to the LDAP server : false if connection failed
 **/
-function try_connect_ldap($host, $port, $rdn, $rpass, $use_tls,$login, $password,$deref_options){
+function try_connect_ldap($host, $port, $rdn, $rpass, $use_tls,$login, $password,$deref_options,$id){
+	// TODO try to pass array of connection config to minimise parameters
+
 	$ds = connect_ldap($host, $port, $rdn, $rpass, $use_tls,$deref_options);
-	// Test with login and password of the user
-	if (!$ds) {
+	// Test with login and password of the user if exists
+	if (!$ds && !empty($login)) {
 		$ds = connect_ldap($host, $port, $login, $password, $use_tls,$deref_options);
-		
 	}
+
+	//If connection is not successfull on this directory, try replicates (if replicates exists)
+	if (!$ds && $id>0){
+		foreach (getAllReplicateForAMaster($id) as $replicate){
+			$ds = connect_ldap($replicate["ldap_host"], $replicate["ldap_port"], $rdn, $rpass, $use_tls,$deref_options);
+			// Test with login and password of the user
+			if (!$ds && !empty($login)) {
+				$ds = connect_ldap($replicate["ldap_host"], $replicate["ldap_port"], $login, $password, $use_tls,$deref_options);
+			} 
+			if ($ds){
+				return $ds;
+			}
+		}
+	}
+
 	return $ds;		
 }
 
@@ -958,7 +977,6 @@ function ldap_search_user_dn($ds, $basedn, $login_attr, $login, $condition) {
 	if (!empty ($condition)){
 		$filter = "(& $filter $condition)";
 	}
-
 	if ($result = ldap_search($ds, $basedn, $filter, 
 		array ("dn", $login_attr),0,0)
 	){

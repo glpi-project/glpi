@@ -67,15 +67,16 @@ class DBmysql {
 	 *
 	 * @return nothing 
 	 */
-	function DBmysql()
-	{  // Constructor
+	function DBmysql(){
+		$this->connected=false;
 		$this->dbh = @mysql_connect($this->dbhost, $this->dbuser, urldecode($this->dbpassword)) or $this->error = 1;
 		if ($this->dbh){
 			@mysql_query("SET NAMES '" . (isset($this->dbenc) ? $this->dbenc : "utf8") . "'",$this->dbh);
 			mysql_select_db($this->dbdefault) or $this->error = 1;
 			$this->connected=true;
-		} else 
+		} else {
 			$this->connected=false;
+		}
 	}
 	/**
 	 * Execute a MySQL query

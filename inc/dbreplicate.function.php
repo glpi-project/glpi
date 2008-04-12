@@ -113,45 +113,63 @@ function switchToMaster() {
 }
 
 /**
- * 
+ *  Establish a connection to a mysql server (main or replicate)
+ * @param $use_slave try to connect to slave server first not to main server
+ * @param $required connection to the specified server is required (if connection failed, do not try to connect to the other server)
+ * @param $display display error message
  */
-function establishDBConnection($use_slave, $required) {
+function establishDBConnection($use_slave, $required, $display=true) {
 	global $DB;
 	$DB = null;
 
-	//If no slave database, use master
-	if (!isDBSlaveActive())
-	{
+	$res=false;
+	// First standard config : no use slave : try to connect to master
+	if (!$use_slave){
 		$res = switchToMaster();
-		if (!$res)
-			displayMySQLError();
 	}
-	else
-	{		
-		//Choose with connection to try first
-		if (!$use_slave)
-			$res = switchToMaster();
-		else
-			$res = switchToSlave();
 	
-		//If connection failed but was required -> show error
-		if (!$res) {
-			if ($required == 1)
+	// If not already connected to master due to config or error
+	if (!$res){
+		// No DB slave : first connection to master give error
+		if (!isDBSlaveActive()){
+			if ($display){
 				displayMySQLError();
-			else {
-				//Try to establish the connection
-				if ($use_slave)
-					$res = switchToMaster();
-				else
-					$res = switchToSlave();
-	
-				if (!$res)
-					displayMySQLError();
-				else
-					$DB->first_connection=false;	
 			}
+		// SLave DB configured
+		} else { 
+			// Try to connect to slave if wanted
+			if ($use_slave){
+				$res = switchToSlave();
+			}
+
+			// No connection to wanted server
+			if (!$res) {
+				// If required to this specific server : error
+				if ($required == 1){
+					if ($display){
+						displayMySQLError();
+					}
+				} else {
+					//Try to establish the connection to the other mysql server
+					if ($use_slave){
+						$res = switchToMaster();
+					} else {
+						$res = switchToSlave();
+					}
+		
+					if (!$res) {
+						if ($display){
+							displayMySQLError();
+						}
+					} else {
+						$DB->first_connection=false;	
+					}
+				}
+			}
+
 		}
 	}
+	return $res;
 }
 
 /**
