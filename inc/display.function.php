@@ -428,8 +428,11 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="")
 							foreach ($PLUGIN_HOOKS["submenu_entry"][$key] as $name => $link){
 								 if (is_array($link) && isset($link[$option]))
 								 	$menu['plugins']['content'][$key]['links'][$name]='/plugins/'.$key.'/'.$link[$option];
-								 else	
-									$menu['plugins']['content'][$key]['links'][$name]='/plugins/'.$key.'/'.$link;
+								 else
+								 {	
+									if (!is_array($link))
+										$menu['plugins']['content'][$key]['links'][$name]='/plugins/'.$key.'/'.$link;
+								 }	
 							}
 						}
 					}
