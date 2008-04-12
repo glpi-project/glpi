@@ -37,9 +37,15 @@ define('GLPI_ROOT', '.');
 $NEEDED_ITEMS=array("ocsng","user");
 include (GLPI_ROOT . "/inc/includes.php");
 
+if ($CFG_GLPI["debug"]==DEBUG_MODE){
+	$CFG_GLPI["debug"]=0;
+	restore_error_handler();
+} 
+
 // Need to be used using :
 // check_http -H servername -u /glpi/status.php -s GLPI_OK
 
+header('Content-type: text/plain');
 
 $ok_master=true;
 $ok_slave=true;
@@ -48,20 +54,20 @@ $ok=true;
 // Check slave server connection
 if (isDBSlaveActive()){
 	if (establishDBConnection(true,true,false)){
-		echo "GLPI_DBSLAVE_OK<br>";
+		echo "GLPI_DBSLAVE_OK\n";
 	} else {
-		echo "GLPI_DBSLAVE_PROBLEM<br>";
+		echo "GLPI_DBSLAVE_PROBLEM\n";
 		$ok_slave=false;
 	}
 } else {
-	echo "No slave DB<br>";
+	echo "No slave DB\n";
 }
 
 // Check main server connection
 if (establishDBConnection(false,true,false)){
-	echo "GLPI_DB_OK<br>";
+	echo "GLPI_DB_OK\n";
 } else {
-	echo "GLPI_DB_PROBLEM<br>";
+	echo "GLPI_DB_PROBLEM\n";
 	$ok_master=false;
 }
 
@@ -70,9 +76,9 @@ $ok = $ok_slave && $ok_master;
 
 // Check session dir (usefull when NFS mounted))
 if (is_dir(GLPI_SESSION_DIR) && is_writable(GLPI_SESSION_DIR)) {
-		echo "GLPI_SESSION_DIR_OK<br>";	
+		echo "GLPI_SESSION_DIR_OK\n";	
 } else {
-		echo "GLPI_SESSION_DIR_PROBLEM<br>";
+		echo "GLPI_SESSION_DIR_PROBLEM\n";
 		$ok=false;		
 }
 
@@ -92,10 +98,10 @@ if (( $ok_master || $ok_slave ) && establishDBConnection(false,false,false)){
 					echo "_PROBLEM";
 					$ok=false;
 				}
-				echo '<br>';
+				echo "\n";
 			}
 		} else {
-			echo "No OCS server<br>";
+			echo "No OCS server\n";
 		}
 	}
 	
@@ -116,20 +122,20 @@ if (( $ok_master || $ok_slave ) && establishDBConnection(false,false,false)){
 				echo "_PROBLEM";
 				$ok=false;
 			}
-			echo '<br>';
+			echo "\n";
 		}
 	} else {
-		echo "No LDAP server<br>";
+		echo "No LDAP server\n";
 	}
 
 }
 
-echo "<br>";
+echo "\n";
 
 if ($ok){
-	echo "GLPI_OK<br>";
+	echo "GLPI_OK\n";
 } else {
-	echo "GLPI_PROBLEM<br>";
+	echo "GLPI_PROBLEM\n";
 }
 
 ?>
