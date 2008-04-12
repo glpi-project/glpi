@@ -756,9 +756,9 @@ function cron_contract($display=false){
 			$mail=new MailingAlert("alertcontract",$msg,$entity);
 			if ($mail->send()){
 				if ($display){
-					addMessageAfterRedirect("Entity $entity :  $msg");
+					addMessageAfterRedirect(getDropdownName("glpi_entities",$entity).":  $msg");
 				}
-				logInFile("cron","Entity $entity :  $msg\n");
+				logInFile("cron",getDropdownName("glpi_entities",$entity).":  $msg\n");
 		
 				// Mark alert as done
 				$alert=new Alert();
@@ -782,9 +782,9 @@ function cron_contract($display=false){
 				}
 			} else {
 				if ($display){
-					addMessageAfterRedirect("Entity ".getDropdownName("glpi_entities",$entity).":  Send contract alert failed");
+					addMessageAfterRedirect(getDropdownName("glpi_entities",$entity).":  Send contract alert failed");
 				}
-				logInFile("cron","Entity ".getDropdownName("glpi_entities",$entity).":  Send contract alert failed\n");
+				logInFile("cron",getDropdownName("glpi_entities",$entity).":  Send contract alert failed\n");
 			}
 		}
 		return 1;

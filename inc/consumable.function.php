@@ -497,9 +497,9 @@ function cron_consumable($display=false){
 
 				if ($mail->send()){
 					if ($display){
-						addMessageAfterRedirect("Entity $entity :  $msg");
+						addMessageAfterRedirect(getDropdownName("glpi_entities",$entity).":  $msg");
 					} 
-					logInFile("cron","Entity $entity :  $msg\n");
+					logInFile("cron",getDropdownName("glpi_entities",$entity).":  $msg\n");
 
 					$input["type"]=ALERT_THRESHOLD;
 					$input["device_type"]=CONSUMABLE_TYPE;
@@ -513,9 +513,9 @@ function cron_consumable($display=false){
 
 				} else {
 					if ($display){
-						addMessageAfterRedirect("Entity ".getDropdownName("glpi_entities",$entity).":  Send consumable alert failed");
+						addMessageAfterRedirect(getDropdownName("glpi_entities",$entity).":  Send consumable alert failed");
 					}
-					logInFile("cron","Entity ".getDropdownName("glpi_entities",$entity).":  Send consumable alert failed\n");
+					logInFile("cron",getDropdownName("glpi_entities",$entity).":  Send consumable alert failed\n");
 				}
 
 			}
