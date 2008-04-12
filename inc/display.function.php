@@ -426,13 +426,13 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="")
 					if ($sector=="plugins"&&$item==$key){
 						if (isset($PLUGIN_HOOKS["submenu_entry"][$key])&&is_array($PLUGIN_HOOKS["submenu_entry"][$key])){
 							foreach ($PLUGIN_HOOKS["submenu_entry"][$key] as $name => $link){
-								 if (is_array($link) && isset($link[$option]))
-								 	$menu['plugins']['content'][$key]['links'][$name]='/plugins/'.$key.'/'.$link[$option];
-								 else
-								 {	
-									if (!is_array($link))
-										$menu['plugins']['content'][$key]['links'][$name]='/plugins/'.$key.'/'.$link;
-								 }	
+								if (is_array($link))
+								{
+								 	if (isset($link[$option]))
+								 		$menu['plugins']['content'][$key]['links'][$name]='/plugins/'.$key.'/'.$link[$option];
+								}
+								else
+									$menu['plugins']['content'][$key]['links'][$name]='/plugins/'.$key.'/'.$link;
 							}
 						}
 					}
