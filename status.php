@@ -37,14 +37,17 @@ define('GLPI_ROOT', '.');
 $NEEDED_ITEMS=array("ocsng","user");
 include (GLPI_ROOT . "/inc/includes.php");
 
-if ($CFG_GLPI["debug"]==DEBUG_MODE){
-	$CFG_GLPI["debug"]=0;
+// Force in normal mode
+if ($CFG_GLPI["debug"]!=NORMAL_MODE){
+	$CFG_GLPI["debug"]=NORMAL_MODE;
 	restore_error_handler();
 } 
 
 // Need to be used using :
 // check_http -H servername -u /glpi/status.php -s GLPI_OK
 
+
+// Plain text content
 header('Content-type: text/plain');
 
 $ok_master=true;
@@ -128,6 +131,10 @@ if (( $ok_master || $ok_slave ) && establishDBConnection(false,false,false)){
 		echo "No LDAP server\n";
 	}
 
+	// TODO Check mail server
+
+	// TODO check CAS url 
+	
 }
 
 echo "\n";
