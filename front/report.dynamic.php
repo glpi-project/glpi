@@ -106,6 +106,20 @@ if (isset($_GET["item_type"])&&isset($_GET["display_type"])){
 			}
 			break;
 		default :
+			// Plugin case
+			if ($_GET["item_type"]>1000){
+				if (isset($PLUGIN_HOOKS['plugin_types'][$_GET["item_type"]])){
+					$function='plugin_'.$PLUGIN_HOOKS['plugin_types'][$_GET["item_type"]].'_dynamicReport';
+					if (function_exists($function)){
+						if ($function($_GET)){
+							// If display done exit else do normal display
+							exit();
+						}
+					} 
+				} 
+			}
+
+
 			manageGetValuesInSearch($_GET["item_type"]);
 
 			showList($_GET["item_type"],$_SERVER['PHP_SELF'],$_GET["field"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"],$_GET["deleted"],$_GET["link"],$_GET["distinct"],$_GET["link2"],$_GET["contains2"],$_GET["field2"],$_GET["type2"]);
