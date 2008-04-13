@@ -261,7 +261,7 @@ function showDeviceDocument($instID,$search='') {
 			$types[]=CARTRIDGE_TYPE;
 			$types[]=CONSUMABLE_TYPE;
 			$types[]=CONTRACT_TYPE;
-			$types[]=DOCUMENT_TYPE;
+
 			dropdownAllItems("item",0,0,($doc->fields['recursive']?-1:$doc->fields['FK_entities']),$types);
 			
 			echo "</td>";
@@ -329,41 +329,37 @@ function showDocumentAssociated($device_type,$ID,$withtemplate=''){
 
 	$needed_fields=array('ID','name','filename','mime','rubrique','link','deleted','FK_entities','recursive');
 
-	$query = "SELECT glpi_doc_device.ID as assocID, glpi_entities.ID AS entity";
-	// Add default field SELECT
-	foreach ($needed_fields as $field){
-		$query.=", glpi_docs.$field AS $field";
-	}
-	if ($device_type==DOCUMENT_TYPE){
-		// Add select for second item 
-		foreach ($needed_fields as $field){
-			$query.=", glpi_docs2.$field AS ".$field."2";
-		}
-	}
-	$query.=" FROM glpi_doc_device"
-		." LEFT JOIN glpi_docs ON (glpi_doc_device.FK_doc=glpi_docs.ID)"
-		." LEFT JOIN glpi_entities ON (glpi_docs.FK_entities=glpi_entities.ID)";
-	
-	// Document : search links in both order
-	if ($device_type==DOCUMENT_TYPE){
-		$query.=" LEFT JOIN glpi_docs AS glpi_docs2 ON (glpi_doc_device.FK_device=glpi_docs2.ID) 
-			WHERE (glpi_doc_device.FK_doc = '$ID' OR glpi_doc_device.FK_device = '$ID') 
-			AND glpi_doc_device.device_type = '$device_type' ";
-	} else { // Common case
-		$query.=" WHERE (glpi_doc_device.FK_device = '$ID' AND glpi_doc_device.device_type = '$device_type') ";
-	}
-		
-		
+
+	$query = "SELECT glpi_doc_device.ID AS assocID, glpi_entities.ID AS entity, 
+			glpi_docs.name AS assocName, glpi_docs.* FROM glpi_doc_device
+			LEFT JOIN glpi_docs ON (glpi_doc_device.FK_doc=glpi_docs.ID) 
+			LEFT JOIN glpi_entities ON (glpi_docs.FK_entities=glpi_entities.ID)
+			WHERE glpi_doc_device.FK_device = '$ID' AND glpi_doc_device.device_type = '$device_type' ";
+
 	if (isset($_SESSION["glpiID"])){
 		$query .= getEntitiesRestrictRequest(" AND","glpi_docs",'','',true);
-		// Document : verify both rights
-		if ($device_type==DOCUMENT_TYPE){
-			$query .= getEntitiesRestrictRequest(" AND","glpi_docs2",'','',true);
-		}
 	} else {
 		// Anonymous access from FAQ
 		$query .= " AND glpi_docs.FK_entities=0 ";
 	}
+	
+	// Document : search links in both order using union
+	if ($device_type==DOCUMENT_TYPE){
+		$query .= "UNION 
+			SELECT glpi_doc_device.ID as assocID, glpi_entities.ID AS entity, 
+				glpi_docs.name AS assocName, glpi_docs.* FROM glpi_doc_device
+				LEFT JOIN glpi_docs ON (glpi_doc_device.FK_device=glpi_docs.ID)
+				LEFT JOIN glpi_entities ON (glpi_docs.FK_entities=glpi_entities.ID)
+				WHERE glpi_doc_device.FK_doc = '$ID' AND glpi_doc_device.device_type = '$device_type' ";
+		if (isset($_SESSION["glpiID"])){
+			$query .= getEntitiesRestrictRequest(" AND","glpi_docs",'','',true);
+		} else {
+			// Anonymous access from FAQ
+			$query .= " AND glpi_docs.FK_entities=0 ";
+		}
+	} 
+	$query .= " ORDER BY assocName";
+		
 	//echo $query;
 	
 	$result = $DB->query($query);
@@ -386,15 +382,6 @@ function showDocumentAssociated($device_type,$ID,$withtemplate=''){
 	$used=array();
 	if ($number){
 		while ($data=$DB->fetch_assoc($result)) {
-			// Document type : if linked item is the request doc : copy data from alternate one
-			if ($device_type==DOCUMENT_TYPE){
-				if ($data["ID"]==$ID){
-					foreach ($needed_fields as $field){
-						$data[$field]=$data[$field."2"];
-					}
-				}
-			}
-
 			$docID=$data["ID"];
 			$used[]=$docID;
 			$assocID=$data["assocID"];
@@ -464,6 +451,10 @@ function showDocumentAssociated($device_type,$ID,$withtemplate=''){
 				"<input type='file' name='filename' size='25'>&nbsp;&nbsp;" .
 				"<input type='submit' name='add' value=\"".$LANG["buttons"][8]."\" class='submit'>" .
 				"</td>";
+
+			if ($device_type==DOCUMENT_TYPE){
+				$used[]=$ID;
+			}
 
 			if ($nb>count($used)) {
 				echo "<td align='left' colspan='2'>";
