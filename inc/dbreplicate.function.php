@@ -133,7 +133,7 @@ function establishDBConnection($use_slave, $required, $display=true) {
 	if (!$res){
 		// No DB slave : first connection to master give error
 		if (!isDBSlaveActive()){ 
-			// Slave required but not defined and not required -> use master
+			// Slave wanted but not defined and not required -> use master
 			if ($use_slave && !$required ){
 				$res = switchToMaster();
 			}		
