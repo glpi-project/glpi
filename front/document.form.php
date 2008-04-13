@@ -148,7 +148,11 @@ else
 		switch ($_SESSION['glpi_onglet']){
 			case -1 :
 				showDeviceDocument($_GET["ID"]);
+				showDocumentAssociated(DOCUMENT_TYPE,$_GET["ID"]);
 				displayPluginAction(DOCUMENT_TYPE,$_GET["ID"],$_SESSION['glpi_onglet']);
+				break;
+			case 5 :
+				showDocumentAssociated(DOCUMENT_TYPE,$_GET["ID"]);
 				break;
 			case 10 :
 				showNotesForm($_SERVER['PHP_SELF'],DOCUMENT_TYPE,$_GET["ID"]);
