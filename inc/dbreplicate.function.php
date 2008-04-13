@@ -126,13 +126,19 @@ function establishDBConnection($use_slave, $required, $display=true) {
 	// First standard config : no use slave : try to connect to master
 	if (!$use_slave){
 		$res = switchToMaster();
-	}
+	} 
+	
 	
 	// If not already connected to master due to config or error
 	if (!$res){
 		// No DB slave : first connection to master give error
-		if (!isDBSlaveActive()){
-			if ($display){
+		if (!isDBSlaveActive()){ 
+			// Slave required but not defined and not required -> use master
+			if ($use_slave && !$required ){
+				$res = switchToMaster();
+			}		
+			// Display error if needed		
+			if (!$res && $display){
 				displayMySQLError();
 			}
 		// SLave DB configured
