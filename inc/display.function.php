@@ -1709,9 +1709,7 @@ function printPagerForm ($action) {
  * @param $numrows total items
  * @param $target page would be open when click on the option (last,previous etc)
  * @param $parameters parameters would be passed on the URL.
- * @param $item_type_output item type display - if present display export PDF et Sylk form
- * 		integer : type identifier to pass to report.dynamic.php
- * 		string  : URL to call for export
+ * @param $item_type_output item type display - if >0 display export PDF et Sylk form
  * @param $item_type_output_param item type parameter for export
  * @return nothing (print a pager)
  *
@@ -1766,14 +1764,10 @@ function printPager($start,$numrows,$target,$parameters,$item_type_output=0,$ite
 	printPagerForm("$target?$parameters&amp;start=$start");
 	echo "</td>\n";
 
-	if ($item_type_output&&isset($_SESSION["glpiactiveprofile"])&&$_SESSION["glpiactiveprofile"]["interface"]=="central"){
+	if ($item_type_output>0&&isset($_SESSION["glpiactiveprofile"])&&$_SESSION["glpiactiveprofile"]["interface"]=="central"){
 		echo "<td class='tab_bg_2' width='30%'>" ;
-		if (intval($item_type_output)>0) {
-			echo "<form method='GET' action=\"".$CFG_GLPI["root_doc"]."/front/report.dynamic.php\" target='_blank'>\n";
-			echo "<input type='hidden' name='item_type' value='$item_type_output'>";
-		} else {
-			echo "<form method='GET' action='$item_type_output' target='_blank'>\n";			
-		}
+		echo "<form method='GET' action=\"".$CFG_GLPI["root_doc"]."/front/report.dynamic.php\" target='_blank'>\n";
+		echo "<input type='hidden' name='item_type' value='$item_type_output'>";
 		if ($item_type_output_param!=0)
 			echo "<input type='hidden' name='item_type_param' value='".serialize($item_type_output_param)."'>";
 		$split=split("&amp;",$parameters);
