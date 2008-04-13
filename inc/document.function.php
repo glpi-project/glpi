@@ -176,7 +176,10 @@ function showDeviceDocument($instID,$search='') {
 	if ($doc->getFromDB($instID)){
 		$canedit=$doc->can($instID,'w');
 
-		$query = "SELECT DISTINCT device_type FROM glpi_doc_device WHERE glpi_doc_device.FK_doc = '$instID' order by device_type";
+		// for a document,
+		// don't show here others documents associated to this one,
+		// it's done for both directions in showDocumentAssociated
+		$query = "SELECT DISTINCT device_type FROM glpi_doc_device WHERE glpi_doc_device.FK_doc = '$instID' AND glpi_doc_device.device_type != ".DOCUMENT_TYPE." ORDER BY device_type";
 		
 		$result = $DB->query($query);
 		$number = $DB->numrows($result);
@@ -208,7 +211,6 @@ function showDeviceDocument($instID,$search='') {
 					." LEFT JOIN glpi_entities ON (glpi_entities.ID=".$LINK_ID_TABLE[$type].".FK_entities) "
 					." WHERE ".$LINK_ID_TABLE[$type].".ID = glpi_doc_device.FK_device  AND glpi_doc_device.device_type='$type' AND glpi_doc_device.FK_doc = '$instID' "
 					. getEntitiesRestrictRequest(" AND ",$LINK_ID_TABLE[$type],'','',isset($CFG_GLPI["recursive_type"][$type])); 
-
 				if (in_array($LINK_ID_TABLE[$type],$CFG_GLPI["template_tables"])){
 					$query.=" AND ".$LINK_ID_TABLE[$type].".is_template='0'";
 				}
@@ -259,6 +261,7 @@ function showDeviceDocument($instID,$search='') {
 			$types[]=CARTRIDGE_TYPE;
 			$types[]=CONSUMABLE_TYPE;
 			$types[]=CONTRACT_TYPE;
+			$types[]=DOCUMENT_TYPE;
 			dropdownAllItems("item",0,0,($doc->fields['recursive']?-1:$doc->fields['FK_entities']),$types);
 			
 			echo "</td>";
@@ -292,7 +295,10 @@ function showDeviceDocument($instID,$search='') {
 function addDeviceDocument($conID,$type,$ID){
 	global $DB;
 	if ($conID>0&&$ID>0&&$type>0){
-
+		// Do not insert auto link for document
+		if ($type==DOCUMENT_TYPE && $ID == $conID){
+			return;
+		}
 		$query="INSERT INTO glpi_doc_device (FK_doc,FK_device, device_type) VALUES ('$conID','$ID','$type');";
 		$result = $DB->query($query);
 	}
@@ -321,14 +327,39 @@ function showDocumentAssociated($device_type,$ID,$withtemplate=''){
 	$canread=$ci->obj->can($ID,'r');
 	$canedit=$ci->obj->can($ID,'w');
 
-	$query = "SELECT glpi_doc_device.ID as assocID, glpi_docs.*, glpi_entities.ID AS entity "
-		." FROM glpi_doc_device"
+	$needed_fields=array('ID','name','filename','mime','rubrique','link','deleted','FK_entities','recursive');
+
+	$query = "SELECT glpi_doc_device.ID as assocID, glpi_entities.ID AS entity";
+	// Add default field SELECT
+	foreach ($needed_fields as $field){
+		$query.=", glpi_docs.$field AS $field";
+	}
+	if ($device_type==DOCUMENT_TYPE){
+		// Add select for second item 
+		foreach ($needed_fields as $field){
+			$query.=", glpi_docs2.$field AS ".$field."2";
+		}
+	}
+	$query.=" FROM glpi_doc_device"
 		." LEFT JOIN glpi_docs ON (glpi_doc_device.FK_doc=glpi_docs.ID)"
-		." LEFT JOIN glpi_entities ON (glpi_docs.FK_entities=glpi_entities.ID)" 
-		." WHERE glpi_doc_device.FK_device = '$ID' AND glpi_doc_device.device_type = '$device_type' ";
+		." LEFT JOIN glpi_entities ON (glpi_docs.FK_entities=glpi_entities.ID)";
+	
+	// Document : search links in both order
+	if ($device_type==DOCUMENT_TYPE){
+		$query.=" LEFT JOIN glpi_docs AS glpi_docs2 ON (glpi_doc_device.FK_device=glpi_docs2.ID) 
+			WHERE (glpi_doc_device.FK_doc = '$ID' OR glpi_doc_device.FK_device = '$ID') 
+			AND glpi_doc_device.device_type = '$device_type' ";
+	} else { // Common case
+		$query.=" WHERE (glpi_doc_device.FK_device = '$ID' AND glpi_doc_device.device_type = '$device_type') ";
+	}
+		
 		
 	if (isset($_SESSION["glpiID"])){
 		$query .= getEntitiesRestrictRequest(" AND","glpi_docs",'','',true);
+		// Document : verify both rights
+		if ($device_type==DOCUMENT_TYPE){
+			$query .= getEntitiesRestrictRequest(" AND","glpi_docs2",'','',true);
+		}
 	} else {
 		// Anonymous access from FAQ
 		$query .= " AND glpi_docs.FK_entities=0 ";
@@ -355,12 +386,23 @@ function showDocumentAssociated($device_type,$ID,$withtemplate=''){
 	$used=array();
 	if ($number){
 		while ($data=$DB->fetch_assoc($result)) {
+			// Document type : if linked item is the request doc : copy data from alternate one
+			if ($device_type==DOCUMENT_TYPE){
+				if ($data["ID"]==$ID){
+					foreach ($needed_fields as $field){
+						$data[$field]=$data[$field."2"];
+					}
+				}
+			}
+
 			$docID=$data["ID"];
 			$used[]=$docID;
 			$assocID=$data["assocID"];
 	
 			echo "<tr class='tab_bg_1".($data["deleted"]?"_2":"")."'>";
-			if ($withtemplate!=3 && $canread && (in_array($data['FK_entities'],$_SESSION['glpiactiveentities']) || $data["recursive"])){
+			if ($withtemplate!=3 && $canread 
+				&& (in_array($data['FK_entities'],$_SESSION['glpiactiveentities']) || $data["recursive"])
+			){
 				echo "<td class='center'><a href='".$CFG_GLPI["root_doc"]."/front/document.form.php?ID=$docID'><strong>".$data["name"];
 				if ($CFG_GLPI["view_ID"]) echo " (".$docID.")";
 				echo "</strong></a></td>";
