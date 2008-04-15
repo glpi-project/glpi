@@ -357,7 +357,7 @@ function filesizeDirectory($path){
  **/
 function cleanCache($group=""){
 
-	include_once (GLPI_ROOT."/lib/cache_lite/Lite.php");
+	include_once (GLPI_CACHE_LITE_DIR."/Lite.php");
 
 	$cache_options = array(
 		'cacheDir' => GLPI_CACHE_DIR,
