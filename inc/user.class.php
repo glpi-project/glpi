@@ -616,6 +616,8 @@ class User extends CommonDBTM {
 	// Function that try to load from IMAP the user information... this is
 	// a fake one, as you can see...
 	function getFromIMAP($mail_method, $name) {
+		global $DB;
+		
 		// we prevent some delay..
 		if (empty ($mail_method["imap_host"])) {
 			return false;
