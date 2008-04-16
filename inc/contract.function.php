@@ -183,7 +183,7 @@ function showDeviceContract($instID) {
 					echo "<td>&nbsp;</td>";	
 				}
 				echo "<td class='center' colspan='2'><a href='"
-					. $CFG_GLPI["root_doc"]."/".$SEARCH_PAGES["$type"] . "?" . urlencode("contains[0]") . "=" . urlencode('$$$$'.$instID) . "&amp;" . urlencode("field[0]") . "=29&amp;sort=80&amp;order=ASC&amp;deleted=0&amp;start=0"
+					. $CFG_GLPI["root_doc"]."/".$SEARCH_PAGES["$type"] . "?" . rawurlencode("contains[0]") . "=" . rawurlencode('$$$$'.$instID) . "&amp;" . rawurlencode("field[0]") . "=29&amp;sort=80&amp;order=ASC&amp;deleted=0&amp;start=0"
 					. "'>" . $LANG["reports"][57]."</a></td>";
 				echo "<td class='center'>".$ci->getType()."<br>$nb</td>";
 				

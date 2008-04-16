@@ -90,7 +90,7 @@ function showInfocomEnterprise($instID) {
 				echo "<tr class='tab_bg_1'>";
 				echo "<td class='center'>".$ci->getType()."<br />$nb</td>";
 				echo "<td class='center' colspan='2'><a href='"
-					. $CFG_GLPI["root_doc"]."/".$SEARCH_PAGES["$type"] . "?" . urlencode("contains[0]") . "=" . urlencode('$$$$'.$instID) . "&" . urlencode("field[0]") . "=53&sort=80&order=ASC&deleted=0&start=0"
+					. $CFG_GLPI["root_doc"]."/".$SEARCH_PAGES["$type"] . "?" . rawurlencode("contains[0]") . "=" . rawurlencode('$$$$'.$instID) . "&" . rawurlencode("field[0]") . "=53&sort=80&order=ASC&deleted=0&start=0"
 					. "'>" . $LANG["reports"][57]."</a></td>";
 				
 				echo "<td class='center'>-</td><td class='center'>-</td></tr>";		

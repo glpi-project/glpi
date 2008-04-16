@@ -51,7 +51,7 @@ class Bookmark extends CommonDBTM {
 			return false;
 		}
 
-		$taburl = parse_url(urldecode($input['url']));
+		$taburl = parse_url(rawurldecode($input['url']));
 
 		$index = strpos($taburl["path"],"plugins");
 		if (!$index)
@@ -114,7 +114,7 @@ class Bookmark extends CommonDBTM {
 			}
 
 			if (!empty($url)) {
-				echo "<input type='hidden' name='url' value='" . urlencode($url) . "'>";
+				echo "<input type='hidden' name='url' value='" . rawurlencode($url) . "'>";
 			}
 
 			echo "<table class='tab_cadre' width='500'>";
@@ -235,7 +235,7 @@ class Bookmark extends CommonDBTM {
 	function load($ID){
 		
 		$this->getFromDB($ID);
-		$url = GLPI_ROOT."/".urldecode($this->fields["path"]);
+		$url = GLPI_ROOT."/".rawurldecode($this->fields["path"]);
 		$query_tab=array();
 		parse_str($this->fields["query"],$query_tab);
 		$params=$this->prepareQueryToUse($this->fields["type"],$query_tab);

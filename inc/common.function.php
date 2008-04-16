@@ -1790,9 +1790,9 @@ function append_params($array, $parent='')
     foreach ($array as $k => $v)
     {
         if (is_array($v))
-            $params[] = append_params($v, (empty($parent) ? urlencode($k) : $parent . '[' . urlencode($k) . ']'));
+            $params[] = append_params($v, (empty($parent) ? rawurlencode($k) : $parent . '[' . rawurlencode($k) . ']'));
         else
-            $params[] = (!empty($parent) ? $parent . '[' . urlencode($k) . ']' : urlencode($k)) . '=' . urlencode($v);
+            $params[] = (!empty($parent) ? $parent . '[' . rawurlencode($k) . ']' : rawurlencode($k)) . '=' . rawurlencode($v);
     }
 
     return implode('&', $params);

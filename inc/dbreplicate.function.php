@@ -38,7 +38,7 @@
  */
 function create_slave_conn_file($host, $user, $password, $DBname) {
 	global $CFG_GLPI;
-	$DB_str = "<?php \n class DBSlave extends DBmysql { \n var	\$slave	= true; \n var \$dbhost	= '" . $host . "'; \n var \$dbuser 	= '" . $user . "'; \n var \$dbpassword= '" . urlencode($password) . "'; \n var \$dbdefault	= '" . $DBname . "'; \n } \n ?>";
+	$DB_str = "<?php \n class DBSlave extends DBmysql { \n var	\$slave	= true; \n var \$dbhost	= '" . $host . "'; \n var \$dbuser 	= '" . $user . "'; \n var \$dbpassword= '" . rawurlencode($password) . "'; \n var \$dbdefault	= '" . $DBname . "'; \n } \n ?>";
 	$fp = fopen(GLPI_CONFIG_DIR . "/config_db_slave.php", 'wt');
 	if ($fp) {
 		$fw = fwrite($fp, $DB_str);
