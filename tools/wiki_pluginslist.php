@@ -21,6 +21,7 @@ function ListePlug ($lang, $name, $base, $num) {
 				$id=$regs[4];
 				$liste[$id]["doc"]=$url;
 				$liste[$id]["use"]=$lang.":plugins:".$id."_use";
+				$liste[$id]["faq"]=$lang.":plugins:".$id."_faq";
 				$liste[$id]["des"]=$name;
 				$liste[$id]["ver"]=$regs[5];
 				$liste[$id]["dat"]=$regs[1];
@@ -81,11 +82,11 @@ function Display ($lang) {
 	switch ($lang) {
 		case "fr":
 			echo "Liste des Plugins GLPI\n\n";
-			echo "^ Nom ^ Doc. GLPI ^ Mode d'emploi ^ Description ^ Version ^ Date maj. ^ Glpi ^ Source ^\n";
+			echo "^ Nom ^ Doc. GLPI ^ Mode d'emploi ^ FAQ ^ Description ^ Version ^ Date maj. ^ Glpi ^ Source ^\n";
 			break;
 		case "en":
 			echo "GLPI Plugins list\n\n";
-			echo "^ Name ^ Doc. ^ Manual ^ Description ^ Version ^ Date ^ Glpi ^ Source ^\n";
+			echo "^ Name ^ Doc. ^ Manual ^ FAQ ^ Description ^ Version ^ Date ^ Glpi ^ Source ^\n";
 			break;
 	}
 	ksort($liste);
@@ -94,8 +95,8 @@ function Display ($lang) {
 		$p=strpos($plug["des"], "(");
 		$des= ($p ? substr($plug["des"],0,$p) : $plug["des"]);
 
-		printf ("| **%s** | [[%s|Doc]] | [[%s|Wiki-use]] | %s | %s | %s | %s | [[%s|source]]|\n",
-			$id, $plug["doc"], $plug["use"], $des, $plug["ver"], $plug["dat"], $plug["cpt"], $plug["tgz"]);
+		printf ("| **%s** | [[%s|Doc]] | [[%s|Wiki-use]] | [[%s|Wiki-FAQ]] | %s | %s | %s | %s | [[%s|source]]|\n",
+			$id, $plug["doc"], $plug["use"], $plug["faq"], $des, $plug["ver"], $plug["dat"], $plug["cpt"], $plug["tgz"]);
 	}
 
 	switch ($lang) {
