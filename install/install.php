@@ -689,7 +689,7 @@ function step3($host,$user,$password,$update)
 			echo "&nbsp;<input type=\"text\" name=\"newdatabasename\"></p>";
 			echo "<input type=\"hidden\" name=\"db_host\" value=\"". $host ."\">";
 			echo "<input type=\"hidden\" name=\"db_user\" value=\"". $user ."\">";
-			echo "<input type=\"hidden\" name=\"db_pass\" value=\"". urlencode($password) ."\">";
+			echo "<input type=\"hidden\" name=\"db_pass\" value=\"". rawurlencode($password) ."\">";
 			echo "<input type=\"hidden\" name=\"install\" value=\"Etape_3\">";
 			echo "<p class=\"submit\"><input type=\"submit\" name=\"submit\" class=\"submit\" value=\"".$LANG["install"][26]."\"></p>";
 			mysql_close($link);
@@ -705,7 +705,7 @@ function step3($host,$user,$password,$update)
 			}
 			echo "<input type=\"hidden\" name=\"db_host\" value=\"". $host ."\">";
 			echo "<input type=\"hidden\" name=\"db_user\" value=\"". $user ."\">";
-			echo "<input type=\"hidden\" name=\"db_pass\" value=\"". urlencode($password) ."\">";
+			echo "<input type=\"hidden\" name=\"db_pass\" value=\"". rawurlencode($password) ."\">";
 			echo "<input type=\"hidden\" name=\"install\" value=\"update_1\">";
 			echo "<p class=\"submit\"><input type=\"submit\" name=\"submit\" class=\"submit\" value=\"".$LANG["install"][26]."\"></p>";
 			mysql_close($link);
@@ -728,7 +728,7 @@ function step4 ($host,$user,$password,$databasename,$newdatabasename)
 		echo "<br><form action=\"install.php\" method=\"post\">";
 		echo "<input type=\"hidden\" name=\"db_host\" value=\"". $host ."\">";
 		echo "<input type=\"hidden\" name=\"db_user\" value=\"". $user ."\">";
-		echo " <input type=\"hidden\" name=\"db_pass\" value=\"". urlencode($password) ."\">";
+		echo " <input type=\"hidden\" name=\"db_pass\" value=\"". rawurlencode($password) ."\">";
 		echo "<input type=\"hidden\" name=\"update\" value=\"no\">";
 		echo "<input type=\"hidden\" name=\"install\" value=\"Etape_2\">";
 		echo "<p class=\"submit\"><input type=\"submit\" name=\"submit\" class=\"submit\" value=\"".$LANG["buttons"][13]."\"></p>";
@@ -875,7 +875,7 @@ function step4 ($host,$user,$password,$databasename,$newdatabasename)
 	function create_conn_file($host,$user,$password,$DBname)
 	{
 		global $CFG_GLPI;
-		$DB_str = "<?php \n class DB extends DBmysql { \n var \$dbhost	= '". $host ."'; \n var \$dbuser 	= '". $user ."'; \n var \$dbpassword= '". urlencode($password) ."'; \n var \$dbdefault	= '". $DBname ."'; \n } \n ?>";
+		$DB_str = "<?php \n class DB extends DBmysql { \n var \$dbhost	= '". $host ."'; \n var \$dbuser 	= '". $user ."'; \n var \$dbpassword= '". rawurlencode($password) ."'; \n var \$dbdefault	= '". $DBname ."'; \n } \n ?>";
 		$fp = fopen(GLPI_CONFIG_DIR . "/config_db.php",'wt');
 		if($fp) {
 			$fw = fwrite($fp,$DB_str);
@@ -932,7 +932,7 @@ function step4 ($host,$user,$password,$databasename,$newdatabasename)
 		// DB clean
 		if (isset($_POST["db_pass"])){
 			$_POST["db_pass"]=stripslashes($_POST["db_pass"]);
-			$_POST["db_pass"]=urldecode($_POST["db_pass"]);
+			$_POST["db_pass"]=rawurldecode($_POST["db_pass"]);
 			$_POST["db_pass"]=stripslashes($_POST["db_pass"]);
 		}
 		switch ($_POST["install"]) {

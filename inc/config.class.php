@@ -876,7 +876,7 @@ class ConfigOCS extends CommonDBTM {
 	**/
 	function prepareInputForUpdate($input) {
 		if (isset($input["ocs_db_passwd"])&&!empty($input["ocs_db_passwd"])){
-			$input["ocs_db_passwd"]=urlencode(stripslashes($input["ocs_db_passwd"]));
+			$input["ocs_db_passwd"]=rawurlencode(stripslashes($input["ocs_db_passwd"]));
 		} else {
 			unset($input["ocs_db_passwd"]);
 		}

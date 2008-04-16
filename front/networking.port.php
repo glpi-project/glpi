@@ -48,7 +48,7 @@ $REFERER=$_SERVER['HTTP_REFERER'];
 if (isset($_GET["referer"])) $REFERER=$_GET["referer"];
 else if (isset($_POST["referer"])) $REFERER=$_POST["referer"];
 
-$REFERER=urldecode($REFERER);
+$REFERER=rawurldecode($REFERER);
 
 $REFERER=preg_replace("/&amp;/","&",$REFERER);
 $REFERER=preg_replace("/&/","&amp;",$REFERER);
@@ -99,7 +99,7 @@ else if(isset($_POST["delete"]))
 	checkRight("networking","w");
 	$np->delete($_POST);
 	logEvent(0, "networking", 5, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][73]);
-	glpi_header(preg_replace("/&amp;/","&",urldecode($_POST["referer"])));
+	glpi_header(preg_replace("/&amp;/","&",rawurldecode($_POST["referer"])));
 }
 else if(isset($_POST["delete_several"]))
 {

@@ -246,7 +246,7 @@ function showNetportForm($target,$ID,$ondevice,$devtype,$several) {
 
 	echo "<form method='post' action=\"$target\">";
 
-	echo "<input type='hidden' name='referer' value='".urlencode($REFERER)."'>";
+	echo "<input type='hidden' name='referer' value='".rawurlencode($REFERER)."'>";
 	echo "<table class='tab_cadre_fixe'><tr>";
 
 	echo "<th colspan='4'>".$LANG["networking"][20].":</th>";

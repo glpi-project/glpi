@@ -45,7 +45,7 @@ class DBocs extends DBmysql {
 				$data = getOcsConf($ID);
 				$this->dbhost = $data["ocs_db_host"];
 				$this->dbuser = $data["ocs_db_user"];
-				$this->dbpassword = urldecode($data["ocs_db_passwd"]);
+				$this->dbpassword = rawurldecode($data["ocs_db_passwd"]);
 				$this->dbdefault = $data["ocs_db_name"];
 				$this->dbenc="latin1";
 				$this->DBmysql();
@@ -519,7 +519,7 @@ function showForm($target, $ID,$withtemplate='',$templateid='') {
 	function prepareInputForUpdate($input){
 		
 		if (isset($input["ocs_db_passwd"])&&!empty($input["ocs_db_passwd"])){
-			$input["ocs_db_passwd"]=urlencode(stripslashes($input["ocs_db_passwd"]));
+			$input["ocs_db_passwd"]=rawurlencode(stripslashes($input["ocs_db_passwd"]));
 		} else {
 			unset($input["ocs_db_passwd"]);
 		}
@@ -559,7 +559,7 @@ function showForm($target, $ID,$withtemplate='',$templateid='') {
 	function prepareInputForAdd($input){
 		
 		if (isset($input["ocs_db_passwd"])&&!empty($input["ocs_db_passwd"])){
-			$input["ocs_db_passwd"]=urlencode(stripslashes($input["ocs_db_passwd"]));
+			$input["ocs_db_passwd"]=rawurlencode(stripslashes($input["ocs_db_passwd"]));
 		} else {
 			unset($input["ocs_db_passwd"]);
 		}
