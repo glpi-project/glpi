@@ -50,7 +50,7 @@ if (isset($_POST["add"]))
 		checkRight("reminder_public","w");
 	}
 	$newID=$remind->add($_POST);
-	logEvent($newID, "reminder", 4, "tools", $_SESSION["glpiname"]." added ".$_POST["title"].".");
+	logEvent($newID, "reminder", 4, "tools", $_SESSION["glpiname"]." added ".$_POST["name"].".");
 	glpi_header($_SERVER['HTTP_REFERER']);
 } 
 else if (isset($_POST["delete"]))
