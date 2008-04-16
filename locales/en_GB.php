@@ -1364,7 +1364,7 @@ $LANG["search"][16]="A least";
 $LANG["search"][17]="Add a search criteria"; 
 $LANG["search"][18]="Delete a search criteria"; 
 $LANG["search"][19]="Add a global search criteria"; 
-$LANG["search"][20]="Add a global search criteria"; 
+$LANG["search"][20]="Delete a global search criteria"; 
 
 $LANG["setup"][0]="Dropdowns"; 
 $LANG["setup"][1]="Caution, if these items are used, they will be replaced by null."; 
