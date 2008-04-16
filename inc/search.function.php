@@ -129,6 +129,7 @@ function manageGetValuesInSearch($type=0,$usesession=true,$save=true){
 				$_GET[$key]=$_SESSION['glpisearch'][$type][$key];
 			} else {
 				$_GET[$key] = $val;
+				$_SESSION['glpisearch'][$type][$key] = $val;
 			}
 		}
 	}
@@ -437,7 +438,7 @@ function searchForm($type,$target,$field="",$contains="",$sort= "",$deleted= 0,$
  *
  **/
 function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$link,$distinct,$link2="",$contains2="",$field2="",$type2=""){
-	global $DB,$INFOFORM_PAGES,$SEARCH_OPTION,$LINK_ID_TABLE,$CFG_GLPI,$LANG;
+	global $DB,$INFOFORM_PAGES,$SEARCH_OPTION,$LINK_ID_TABLE,$CFG_GLPI,$LANG,$PLUGIN_HOOKS;
 
 	$limitsearchopt=cleanSearchOption($type);
 
@@ -1006,6 +1007,27 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 
 			// Display pager only for HTML
 			if ($output_type==HTML_OUTPUT){
+
+				// For plugin add new parameter if available
+				if ($type>1000){
+					if (isset($PLUGIN_HOOKS['plugin_types'][$type])){
+
+						$function='plugin_'.$PLUGIN_HOOKS['plugin_types'][$type].'_addParamFordynamicReport';
+
+						if (function_exists($function)){
+							$out=$function($type);
+							if (is_array($out)&&count($out)){
+								foreach ($out as $key => $val){
+									if (is_array($val)){
+										$parameters.=getMultiSearchItemForLink($key,$val);
+									} else {
+										$parameters.="&amp;$key=$val";
+									}
+								}
+							}
+						} 
+					} 
+				}
 				printPager($start,$numrows,$target,$parameters,$type);
 			}
 
