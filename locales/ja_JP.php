@@ -1169,7 +1169,7 @@ $LANG["profiles"][39]="割り当て";
 $LANG["profiles"][40]="更新"; 
 $LANG["profiles"][41]="作成"; 
 $LANG["profiles"][42]="関連付け"; 
-$LANG["profiles"][43]="Authentication and synchronization users method"; 
+$LANG["profiles"][43]="ユーザーの認証及び同期の方法"; 
 
 $LANG["registry"][1]="ハイブ"; 
 $LANG["registry"][2]="パス"; 

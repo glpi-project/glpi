@@ -24,6 +24,7 @@
 		"hu_HU"=>array("Hungarian","hu_HU.php","hu","hu"),
 		"it_IT"=>array("Italiano","it_IT.php","it","it"),
 		"ja_JP"=>array("Japanese","ja_JP.php","ja","ja"),
+		"lv_LV"=>array("Latvian","lv_LV.php","lv","lv"),
 		"lt_LT"=>array("Lithuanian","lt_LT.php","lt","lt"),
 		"pl_PL"=>array("Polish","pl_PL.php","pl","pl"),
 		"pt_PT"=>array("Português","pt_PT.php","br","pt"),
