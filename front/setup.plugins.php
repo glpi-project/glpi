@@ -70,6 +70,7 @@ echo "<tr><th colspan='2'>".$LANG["setup"][701]."</th></tr>";
 foreach ($names as $key => $name) {
 
 	$val = $infos[$key];
+	// Config page if not set if plugin not compatible (usePlugin function unset it)
 	if ($pages[$key]) {
 		echo "<tr class='tab_bg_1'><td align='center'><a href='".$CFG_GLPI["root_doc"]."/plugins/$key/".$pages[$key]."'><strong>".$val["name"]."</strong></a></td>" .
 				"<td><img src='../pics/greenbutton.png' /> #".$val["version"]."</td></tr>";		
