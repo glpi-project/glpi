@@ -132,7 +132,7 @@ function commonTrackingListHeader($output_type=HTML_OUTPUT,$target="",$parameter
 		$link="";
 		if ($sort==$val) $issort=1;
 		$link=$target."?".$parameters."&amp;order=".($order=="ASC"?"DESC":"ASC")."&amp;sort=$val";
-		if (ereg("helpdesk",$target)){
+		if (ereg("helpdesk.public.php",$target)){
 			$link.="&amp;show=user";
 		}
 		echo displaySearchHeaderItem($output_type,$key,$header_num,$link,$issort,$order);
@@ -1563,10 +1563,10 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$to
 			$parameters=$parameters2."&amp;sort=$sort&amp;order=$order";
 			if (ereg("user.form.php",$_SERVER['PHP_SELF'])) $parameters.="&amp;ID=$author";
 			// Manage helpdesk
-			if (ereg("helpdesk",$target)) 
+			if (ereg("helpdesk.public.php",$target)) 
 				$parameters.="&amp;show=user";
 			if ($output_type==HTML_OUTPUT){
-				if (!ereg("helpdesk",$target)) 
+				if (!ereg("helpdesk.public.php",$target)) 
 					printPager($start,$numrows,$target,$parameters,TRACKING_TYPE);
 				else printPager($start,$numrows,$target,$parameters);
 			}
