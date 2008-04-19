@@ -487,14 +487,14 @@ function getRealQueryForTreeItem($table,$IDf,$reallink=""){
 }
 
 
-/**
+/*
  * Get the level for an item in a tree structure
  *
  * @param $table table name
  * @param $ID ID of the item
  * @return int level
- */
-/* // NOT USED
+ 
+ // NOT USED
 function getTreeItemLevel($table,$ID){
 	global $DB;
 	$level=0;

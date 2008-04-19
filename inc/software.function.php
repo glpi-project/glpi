@@ -1200,11 +1200,11 @@ function getInstallionsForLicense($ID) {
 
 }
 
-/**
+/*
  * Indicates if software is in trash or not
  * @param ID the software's ID
  * @return true if it's in trash, false if not
- */
+ 
 /* // NOT_USED
 function isSoftwareDeleted($ID) {
 	global $DB;

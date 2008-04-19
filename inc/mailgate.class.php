@@ -652,7 +652,6 @@ class MailCollect {
 	 * @param $mid : message id
 	 * @param $path : temporary path
 	 * @param $maxsize : of document to be retrieved
-	 * @param $structure : of the message or part
 	 * 
 	 * @return array like $_FILES
 	 *  

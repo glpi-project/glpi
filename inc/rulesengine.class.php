@@ -1648,12 +1648,12 @@ class Rule extends CommonDBTM{
 		}
 	}
 
-	/**
+	/*
  	* Display item to select a value for criteria
  	* @param $type criteria type
 	* @param $condition condition used
- 	*/
-	/*// NOT_USED
+ 	
+	// NOT_USED
  	function displayCriteriaSelectValue($type,$condition){
 		$display=false;
 	}
