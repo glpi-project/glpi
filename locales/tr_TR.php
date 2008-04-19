@@ -795,6 +795,7 @@ $LANG["log"][63]="entity";
 $LANG["log"][64]="Açıklamada değişiklik"; 
 $LANG["log"][65]="rule"; 
 $LANG["log"][66]="Güvenlik"; 
+$LANG["log"][67]="change of notes"; 
 $LANG["log"][70]="network port added"; 
 $LANG["log"][71]="several network ports added"; 
 $LANG["log"][73]="network port deleted"; 

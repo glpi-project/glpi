@@ -795,6 +795,7 @@ $LANG["log"][63]="entitat";
 $LANG["log"][64]="modificació dels comentaris"; 
 $LANG["log"][65]="regla"; 
 $LANG["log"][66]="Seguretat"; 
+$LANG["log"][67]="change of notes"; 
 $LANG["log"][70]="afegit un port de xarxa"; 
 $LANG["log"][71]="afegits varis ports de xarxa"; 
 $LANG["log"][73]="eliminació d'un port de xarxa"; 

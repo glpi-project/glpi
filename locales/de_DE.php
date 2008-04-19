@@ -795,6 +795,7 @@ $LANG["log"][63]="Einheit";
 $LANG["log"][64]="Änderung in Kommentaren"; 
 $LANG["log"][65]="Regel"; 
 $LANG["log"][66]="Sicherheit"; 
+$LANG["log"][67]="change of notes"; 
 $LANG["log"][70]="Netzwerkport hinzugefügt"; 
 $LANG["log"][71]="Mehrere Netzwerkports hinzugefügt"; 
 $LANG["log"][73]="Netzwerkport gelöscht"; 
