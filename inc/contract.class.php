@@ -212,8 +212,9 @@ class Contract extends CommonDBTM {
 				echo "<tr class='tab_bg_1'><td>".$LANG["financial"][8].":		</td><td>";
 				dropdownInteger("duration",$this->fields["duration"],0,120);
 				echo " ".$LANG["financial"][57];
-				if ($this->fields["begin_date"]!=''&&$this->fields["begin_date"]!="0000-00-00")
+				if ($this->fields["begin_date"]!=''&&$this->fields["begin_date"]!="0000-00-00"){
 					echo " -> ".getWarrantyExpir($this->fields["begin_date"],$this->fields["duration"]);
+				}
 				echo "</td>";
 	
 				echo "<td>".$LANG["financial"][13].":		</td><td>";
@@ -229,8 +230,9 @@ class Contract extends CommonDBTM {
 				echo "<td>".$LANG["financial"][10].":		</td><td>";
 				dropdownInteger("notice",$this->fields["notice"],0,120);
 				echo " ".$LANG["financial"][57];
-				if ($this->fields["begin_date"]!=''&&$this->fields["begin_date"]!="0000-00-00")
-					echo " -> ".getWarrantyExpir($this->fields["begin_date"],$this->fields["duration"]-$this->fields["notice"]);
+				if ($this->fields["begin_date"]!=''&&$this->fields["begin_date"]!="0000-00-00"){
+					echo " -> ".getWarrantyExpir($this->fields["begin_date"],$this->fields["duration"],$this->fields["notice"]);
+				}
 				echo "</td></tr>";
 	
 				echo "<tr class='tab_bg_1'><td>".$LANG["financial"][107].":		</td><td>";

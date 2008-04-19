@@ -1549,18 +1549,21 @@ function cron_check_update(){
 * 
 * @param $from begin date
 * @param $addwarranty period in months
+* @param $deletenotice period in months of notice
 * 
 * @return expiration date string
 **/
-function getWarrantyExpir($from,$addwarranty){
+function getWarrantyExpir($from,$addwarranty,$deletenotice=0){
 	global $LANG;
 	// Life warranty
-	if ($addwarranty==-1){
+	if ($addwarranty==-1 && $deletenotice==0){
 		return $LANG["setup"][307];
 	}
 	if ($from==NULL || $from=='0000-00-00')
 		return "";
-	else return convDate(date("Y-m-d", strtotime("$from+$addwarranty month ")));
+	else {
+		return convDate(date("Y-m-d", strtotime("$from+$addwarranty month -$deletenotice month")));
+	}
 
 }
 /**
