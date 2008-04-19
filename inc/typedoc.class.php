@@ -52,6 +52,14 @@ class Typedoc  extends CommonDBTM {
 		$this->type=TYPEDOC_TYPE;
 	}
 
+	/**
+	 * Print the typedoc form
+	 *
+	 *@param $target form target
+	 *@param $ID Integer : Id of the typedoc
+	 *
+	 *@return boolean : typedoc found
+	 **/
 	function showForm ($target,$ID) {
 
 		global $CFG_GLPI, $LANG;

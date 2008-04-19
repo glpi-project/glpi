@@ -69,7 +69,14 @@ class Transfer extends CommonDBTM{
 		$this->type=TRANSFER_TYPE;
 	}
 
-	// Generic function
+	/**
+	 * Transfer items
+	 *
+	 *@param $items items to transfer
+	 *@param $to entity destination ID
+	 *@param $options options used to transfer
+	 *
+	 **/
 	function moveItems($items,$to,$options){
 		global $CFG_GLPI;
 		// unset mailing
@@ -180,7 +187,6 @@ class Transfer extends CommonDBTM{
 	*@param $type of the item
 	*@param $ID of the item
 	*
-	*
 	**/
 	function addToBeTransfer ($type, $ID) {
 		global $LINK_ID_TABLE;
@@ -202,7 +208,6 @@ class Transfer extends CommonDBTM{
 	*@param $type of the item
 	*@param $ID of the item
 	*
-	*
 	**/
 	function addNotToBeTransfer ($type, $ID) {
 		global $LINK_ID_TABLE;
@@ -221,7 +226,6 @@ class Transfer extends CommonDBTM{
 	* simulate the transfer to know which items need to be transfer
 	*
 	*@param $items Array of the items to transfer
-	*
 	*
 	**/
 	function simulateTransfer($items){
@@ -629,6 +633,12 @@ class Transfer extends CommonDBTM{
 		$this->item_search[CARTRIDGE_TYPE]=$this->createSearchConditionUsingArray($this->needtobe_transfer[CARTRIDGE_TYPE]);
 	}
 
+	/**
+	* Create IN condition for SQL requests based on a array if ID
+	*
+	*@param $array array of ID
+	*@return string of the IN condition
+	**/
 	function createSearchConditionUsingArray($array){
 		if (is_array($array)&&count($array)){
 			$condition="";
@@ -775,6 +785,13 @@ class Transfer extends CommonDBTM{
 		}
 	}
 	
+	/**
+	* Add an item to already transfer array
+	*
+	*@param $type item type
+	*@param $ID item original ID
+	*@param $newID item new ID
+	**/
 	function addToAlreadyTransfer($type,$ID,$newID){
 		if (!isset($this->already_transfer[$type])){
 			$this->already_transfer[$type]=array();
@@ -782,6 +799,12 @@ class Transfer extends CommonDBTM{
 		$this->already_transfer[$type][$ID]=$newID;
 	}
 	
+	/**
+	* Transfer document file / copy file 
+	*
+	*@param $filename filename of the document ot copy
+	*@return string new doc path
+	**/
 	function transferDocumentFile($filename){
 		if (is_file(GLPI_DOC_DIR."/".$filename)){
 			$splitter=split("/",$filename);
@@ -801,6 +824,12 @@ class Transfer extends CommonDBTM{
 		return "";
 	}
 
+	/**
+	* Transfer location
+	*
+	*@param $locID location ID
+	*@return new location ID
+	**/
 	function transferDropdownLocation($locID){
 		global $DB;
 
@@ -847,6 +876,12 @@ class Transfer extends CommonDBTM{
 		return 0;
 	}
 	
+	/**
+	* Transfer netpoint
+	*
+	*@param $netID netpoint ID
+	*@return new netpoint ID
+	**/
 	function transferDropdownNetpoint($netID){
 		global $DB;
 
@@ -890,6 +925,12 @@ class Transfer extends CommonDBTM{
 		return 0;
 	}	
 	
+	/**
+	* Transfer cartridges of a printer
+	*
+	*@param $ID original ID of the printer
+	*@param $newID new ID of the printer
+	**/
 	function transferPrinterCartridges($ID,$newID){
 		global $DB;
 		
@@ -988,6 +1029,13 @@ class Transfer extends CommonDBTM{
 	
 	}
 	
+	/**
+	* Transfer softwares of a computer
+	*
+	*@param $type original type of transfered item
+	*@param $ID ID of the computer
+	*@param $ocs_computer ID of the computer in OCS if imported from OCS
+	**/
 	function transferSoftwares($type,$ID,$ocs_computer=false){
 		global $DB;
 		// Get licenses linked
@@ -1152,6 +1200,13 @@ class Transfer extends CommonDBTM{
 		}
 	}
 
+	/**
+	* Transfer contracts
+	*
+	*@param $type original type of transfered item
+	*@param $ID original ID of the contract
+	*@param $newID new ID of the contract
+	**/
 	function transferContracts($type,$ID,$newID){
 		global $DB;
 		$need_clean_process=false;
@@ -1268,6 +1323,13 @@ class Transfer extends CommonDBTM{
 
 	}
 
+	/**
+	* Transfer documents
+	*
+	*@param $type original type of transfered item
+	*@param $ID original ID of the document
+	*@param $newID new ID of the document
+	**/
 	function transferDocuments($type,$ID,$newID){
 		global $DB;
 		$need_clean_process=false;
@@ -1389,6 +1451,14 @@ class Transfer extends CommonDBTM{
 
 	}
 
+	/**
+	* Delete direct connection for a linked item 
+	*
+	*@param $type original type of transfered item
+	*@param $ID ID of the item
+	*@param $link_type type of the linked items to transfer
+	*@param $ocs_computer if computer type OCS ID of the item if available
+	**/
 	function transferDirectConnection($type,$ID,$link_type,$ocs_computer=false){
 		global $DB,$LINK_ID_TABLE;
 		// Only same Item case : no duplication of computers
@@ -1543,6 +1613,12 @@ class Transfer extends CommonDBTM{
 		}	
 	}
 
+	/**
+	* Delete direct connection for a linked item 
+	*
+	*@param $ID ID of the item
+	*@param $type device type
+	**/
 	function deleteDirectConnection($type,$ID){
 		global $DB;
 		// Delete Direct connection to computers for item type 
@@ -1552,6 +1628,13 @@ class Transfer extends CommonDBTM{
 		$result = $DB->query($query);
 	}
 
+	/**
+	* Transfer tickets
+	*
+	*@param $type original type of transfered item
+	*@param $ID original ID of the ticket
+	*@param $newID new ID of the ticket
+	**/
 	function transferTickets($type,$ID,$newID){
 		global $DB;
 		$job= new Job();
@@ -1602,6 +1685,13 @@ class Transfer extends CommonDBTM{
 		}
 	}
 
+	/**
+	* Transfer history
+	*
+	*@param $type original type of transfered item
+	*@param $ID original ID of the history
+	*@param $newID new ID of the history
+	**/
 	function transferHistory($type,$ID,$newID){
 		global $DB;
 
@@ -1641,6 +1731,12 @@ class Transfer extends CommonDBTM{
 				break;
 		}
 	}
+	/**
+	* Transfer compatible printers for a cartridge type
+	*
+	*@param $ID original ID of the cartridge type
+	*@param $newID new ID of the cartridge type
+	**/
 	function transferCompatiblePrinters($ID,$newID){
 		global $DB;
 		if ($ID!=$newID){
@@ -1660,6 +1756,13 @@ class Transfer extends CommonDBTM{
 		}
 	}
 
+	/**
+	* Transfer infocoms of an item
+	*
+	*@param $type type of the item to transfer
+	*@param $ID original ID of the item 
+	*@param $newID new ID of the item
+	**/
 	function transferInfocoms($type,$ID,$newID){
 		global $DB;
 
@@ -1704,6 +1807,11 @@ class Transfer extends CommonDBTM{
 			}
 		}
 	}
+	/**
+	* Transfer an enterprise
+	*
+	*@param $ID ID of the enterprise
+	**/
 	function transferSingleEnterprise($ID){
 		global $DB;
 		// TODO clean system : needed ?
@@ -1770,6 +1878,12 @@ class Transfer extends CommonDBTM{
 		}
 	}
 
+	/**
+	* Transfer contacts of an enterprise
+	*
+	*@param $ID original ID of the enterprise
+	*@param $newID new ID of the enterprise
+	**/
 	function transferEnterpriseContacts($ID,$newID){
 		global $DB;
 		$need_clean_process=false;
@@ -1880,6 +1994,13 @@ class Transfer extends CommonDBTM{
 
 	}
 
+	/**
+	* Transfer reservations of an item
+	*
+	*@param $type original type of transfered item
+	*@param $ID original ID of the item
+	*@param $newID new ID of the item
+	**/
 	function transferReservations($type,$ID,$newID){
 		global $DB;
 
@@ -1912,6 +2033,13 @@ class Transfer extends CommonDBTM{
 		}
 	}
 
+	/**
+	* Transfer devices of a computer
+	*
+	*@param $type original type of transfered item
+	*@param $ID ID of the computer
+	*@param $ocs_computer if computer type OCS ID of the item if available
+	**/
 	function transferDevices($type,$ID,$ocs_computer=false){
 		global $DB;
 		// Only same case because no duplication of computers
@@ -1935,6 +2063,14 @@ class Transfer extends CommonDBTM{
 		}
 	}
 
+	/**
+	* Transfer network links
+	*
+	*@param $type original type of transfered item
+	*@param $ID original ID of the item
+	*@param $newID new ID of the item
+	*@param $ocs_computer if computer type OCS ID of the item if available
+	**/
 	function transferNetworkLink($type,$ID,$newID,$ocs_computer=false){
 		global $DB;
 		$np=new Netport();
@@ -2026,8 +2162,7 @@ class Transfer extends CommonDBTM{
 	 *@param $ID Integer : Id of the contact to print
 	 *@param $withtemplate='' boolean : template or basic item
 	 *
-	 *
-	 *@return Nothing (display)
+	 *@return boolean item found
 	 *
 	 **/
 	function showForm ($target,$ID,$withtemplate='') {
@@ -2275,7 +2410,7 @@ class Transfer extends CommonDBTM{
 		}
 		return true;
 	}
-	// Display items to transfers
+	/// Display items to transfers
 	function showTransferList(){
 		global $LANG,$LINK_ID_TABLE,$DB,$CFG_GLPI;
 		$ci=new CommonItem();

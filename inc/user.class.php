@@ -139,6 +139,13 @@ class User extends CommonDBTM {
 		
 	}
 
+	/**
+	 * Retrieve an item from the database using its login
+	 *
+	 *@param $name login of the user
+	 *@return true if succeed else false
+	 * 
+	**/	
 	function getFromDBbyName($name) {
 		global $DB;
 		$query = "SELECT * FROM glpi_users WHERE (name = '" . $name . "')";
@@ -306,6 +313,11 @@ class User extends CommonDBTM {
 	}
 
 	// SPECIFIC FUNCTIONS
+	/**
+	 * Apply rules to determine dynamic rights of the user
+	 *
+	 *@param $input data used to apply rules
+	**/	
 	function applyRightRules($input){
 		global $DB;
 		if (isset($input["auth_method"])&&($input["auth_method"] == AUTH_LDAP || $input["auth_method"]== AUTH_MAIL|| isAlternateAuthWithLdap($input["auth_method"])))
@@ -374,6 +386,11 @@ class User extends CommonDBTM {
 		}
 
 	}
+	/**
+	 * Synchronise LDAP group of the user
+	 *
+	 *@param $input data used to sync
+	**/	
 	function syncLdapGroups($input){
 		global $DB;
 
@@ -434,12 +451,12 @@ class User extends CommonDBTM {
 		}
 	}
 
+	/**
+	 * Get the name of the current user
+	 * @return string containing name of the user
+	**/	
 	function getName() {
-		if (strlen($this->fields["realname"]) > 0)
-			return $this->fields["realname"] . " " . $this->fields["firstname"];
-		else
-			return $this->fields["name"];
-
+		return formatUserName($this->fields["ID"],$this->fields["name"],$this->fields["realname"],$this->fields["firstname"]);
 	}
 
 	/**
@@ -654,6 +671,10 @@ class User extends CommonDBTM {
 
 	} // getFromIMAP()  	    
 
+	/**
+	 * Blank passwords field of a user in the DB 
+	 * todo for external auth users
+	 **/
 	function blankPassword() {
 		global $DB;
 		if (!empty ($this->fields["name"])) {
@@ -663,6 +684,11 @@ class User extends CommonDBTM {
 		}
 	}
 
+	/**
+	 * Print a good title for user pages
+	 *
+	 *@return nothing (display)
+	 **/
 	function title() {
 		global $LANG, $CFG_GLPI;
 
@@ -686,6 +712,15 @@ class User extends CommonDBTM {
 		displayTitle($CFG_GLPI["root_doc"] . "/pics/users.png", $LANG["Menu"][14], $title, $buttons);
 	}
 
+	/**
+	 * Print the user form
+	 *
+	 *@param $target form target
+	 *@param $ID Integer : Id of the user
+	 *@param $withtemplate boolean : template or basic item
+	 *
+	 *@return boolean : user found
+	 **/
 	function showForm($target, $ID, $withtemplate = '') {
 
 		// Affiche un formulaire User
@@ -1007,7 +1042,7 @@ class User extends CommonDBTM {
 		return false;
 	}
 
-	//Get all the authentication method parameters for the current user
+	///Get all the authentication method parameters for the current user
 	function getAuthMethodsByID() {
 		return getAuthMethodsByID($this->fields["auth_method"], $this->fields["id_auth"]);
 	}
@@ -1050,6 +1085,10 @@ class User extends CommonDBTM {
 		return array($input,$updates);
 	}
 
+
+	/**
+	 * Delete dynamic profiles for the current user
+	 **/
 	function purgeDynamicProfiles()
 	{
 		global $DB;

@@ -77,13 +77,9 @@ class Entity extends CommonDBTM{
 	}
 
 	/**
-	 * Print a good title for coontact pages
+	 * Print a good title for entity pages
 	 *
-	 *
-	 *
-	 *
-	 *@return nothing (diplays)
-	 *
+	 *@return nothing (display)
 	 **/
 	function title(){
 		global  $LANG,$CFG_GLPI;
