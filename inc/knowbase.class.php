@@ -41,6 +41,9 @@ if (!defined('GLPI_ROOT')){
 
 class kbitem extends CommonDBTM {
 
+	/**
+	 * Constructor
+	**/
 	function kbitem () {
 		$this->table="glpi_kbitems";
 		$this->type=KNOWBASE_TYPE;

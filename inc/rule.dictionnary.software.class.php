@@ -39,6 +39,9 @@ if (!defined('GLPI_ROOT')) {
 
 class DictionnarySoftwareCollection extends RuleCachedCollection {
 
+	/**
+	 * Constructor
+	**/
 	function DictionnarySoftwareCollection() {
 		
 		$this->rule_type = RULE_DICTIONNARY_SOFTWARE;
@@ -342,6 +345,9 @@ class DictionnarySoftwareCollection extends RuleCachedCollection {
 **/
 class DictionnarySoftwareRule extends RuleCached {
 
+	/**
+	 * Constructor
+	**/
 	function DictionnarySoftwareRule() {
 		$this->table = "glpi_rules_descriptions";
 		$this->type = -1;

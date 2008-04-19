@@ -42,6 +42,9 @@ if (!defined('GLPI_ROOT')){
 class InfoCom extends CommonDBTM {
 
 
+	/**
+	 * Constructor
+	**/
 	function InfoCom () {
 		$this->table="glpi_infocoms";
 		$this->type=INFOCOM_TYPE;
@@ -55,7 +58,13 @@ class InfoCom extends CommonDBTM {
 	}
 
 
-	// Specific Functions
+	/**
+	 * Retrieve an item from the database for a device
+	 *
+	 *@param $ID ID of the device to retrieve infocom
+	 *@param $device_type type of the device to retrieve infocom
+	 *@return true if succeed else false
+	**/
 	function getFromDBforDevice ($device_type,$ID) {
 
 		global $DB;

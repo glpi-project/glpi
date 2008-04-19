@@ -35,6 +35,10 @@
 
 class RuleDictionnaryDropdown extends RuleCached{
 
+	/**
+	 * Constructor
+	 * @param $type dropdown type
+	**/
 	function RuleDictionnaryDropdown($type){
 		parent::RuleCached();
 		$this->rule_type=$type;
@@ -147,6 +151,10 @@ class DictionnaryDropdownCollection extends RuleCachedCollection{
 	var $item_table="";
 	
 
+	/**
+	 * Constructor
+	 * @param $type dropdown type
+	**/
 	function DictionnaryDropdownCollection($type){
 		$this->rule_type = $type;
 		$this->rule_class_name = 'RuleDictionnaryDropdown';
@@ -287,6 +295,12 @@ class DictionnaryDropdownCollection extends RuleCachedCollection{
 	}
 
 
+	/**
+	 * Replay collection rules on an existing DB
+	 * @param $offset offset used to begin
+	 * @param $maxtime maximum time of process (reload at the end)
+	 * @return -1 on completion else current offset
+	**/
 	function replayRulesOnExistingDB($offset=0,$maxtime=0){
 		global $DB,$LANG;
 
@@ -361,6 +375,12 @@ class DictionnaryDropdownCollection extends RuleCachedCollection{
 	} // function
 
 
+	/**
+	 * Replay collection rules on an existing DB for model dropdowns
+	 * @param $offset offset used to begin
+	 * @param $maxtime maximum time of process (reload at the end)
+	 * @return -1 on completion else current offset
+	**/
 	function replayRulesOnExistingDBForModel($offset=0,$maxtime=0){
 		global $DB,$LANG;
 

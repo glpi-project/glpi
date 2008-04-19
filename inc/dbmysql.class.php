@@ -214,17 +214,31 @@ class DBmysql {
 	 * @param $nb number of column of the field
 	 * @return name of the field
 	 */
-	function field_name($result,$nb)
-	{
+	function field_name($result,$nb){
 		return mysql_field_name($result,$nb);
 	}
-	function field_flags($result,$field)
-	{
+	/**
+	 * Get flags of a field of a mysql result 
+	 * @param $result MySQL result handler
+	 * @param $field field name
+	 * @return flags of the field
+	 */
+	function field_flags($result,$field){
 		return mysql_field_flags($result,$field);
 	}
+	/**
+	 * List tables in database 
+	 * @param $table table name condition (glpi_% as default to retrieve only glpi tables)
+	 * @return list of tables
+	 */
 	function list_tables($table="glpi_%") {
 		return $this->query("SHOW TABLES LIKE '".$table."'");
 	}
+	/**
+	 * List fields of a table
+	 * @param $table table name condition
+	 * @return list of fields
+	 */
 	function list_fields($table) {
 		$result = $this->query("SHOW COLUMNS FROM $table");
 		if ($result) {
@@ -238,28 +252,48 @@ class DBmysql {
 
 
 	}
+	/**
+	 * Get number of affected rows in previous MySQL operation
+	 * @return number of affected rows on success, and -1 if the last query failed.
+	 */
 	function affected_rows() {
 		return mysql_affected_rows($this->dbh);
 	}
+	/**
+	 * Free result memory
+	 * @return Returns TRUE on success or FALSE on failure.
+	 */
 	function free_result($result) {
 		return mysql_free_result($result);
 	}
-	function errno()
-	{
+	/**
+	 * Returns the numerical value of the error message from previous MySQL operation
+	 * @return error number from the last MySQL function, or 0 (zero) if no error occurred.
+	 */
+	function errno(){
 		return mysql_errno($this->dbh);
 	}
 
-	function error()
-	{
+	/**
+	 * Returns the text of the error message from previous MySQL operation
+	 * @return error text from the last MySQL function, or '' (empty string) if no error occurred.
+	 */
+	function error(){
 		return mysql_error($this->dbh);
 	}
-	function close()
-	{
+	/**
+	 * Close MySQL connection
+	 * @return TRUE on success or FALSE on failure.
+	 */
+	function close(){
 		return @mysql_close($this->dbh);
 	}
 	
-	function isSlave()
-	{
+	/**
+	 * is a slave database ?
+	 * @return boolean 
+	 */
+	function isSlave(){
 		return $this->slave;
 	}
 }

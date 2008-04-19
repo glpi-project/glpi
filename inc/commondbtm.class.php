@@ -57,9 +57,6 @@ class CommonDBTM {
 
 	/**
 	 * Constructor
-	 *
-	 *@return nothing
-	 *
 	 **/
 	function CommonDBTM () {
 
@@ -758,15 +755,13 @@ class CommonDBTM {
 	/** 
 	 * Restore an item trashed in the database. 
 	 * 
-     * Restore an item trashed in the database. 
-     * 
-     *@param $input array : the _POST vars returned bye the item form when press restore 
-     *@param $history boolean : do history log ?
-     * 
-     *@return Nothing () 
-     *@todo specific ones : cartridges / consumables 
-     * 
-    **/ 
+	 *@param $input array : the _POST vars returned bye the item form when press restore 
+	 *@param $history boolean : do history log ?
+	 * 
+	 *@return Nothing () 
+	 *@todo specific ones : cartridges / consumables 
+	 * 
+	**/ 
 	// specific ones : cartridges / consumables
 	function restore($input,$history=1) {
 

@@ -44,6 +44,9 @@ if (!defined('GLPI_ROOT')){
 class Typedoc  extends CommonDBTM {
 
 
+	/**
+	 * Constructor
+	**/
 	function Typedoc () {
 		$this->table="glpi_type_docs";
 		$this->type=TYPEDOC_TYPE;

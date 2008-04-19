@@ -41,6 +41,9 @@ if (!defined('GLPI_ROOT')){
 // CLASSES contact
 class Group extends CommonDBTM{
 
+	/**
+	 * Constructor
+	**/
 	function Group () {
 		$this->table="glpi_groups";
 		$this->type=GROUP_TYPE;
@@ -208,6 +211,7 @@ class Group extends CommonDBTM{
 	}
 
 
+	/// Display title header
 	function title() {
 		global $LANG, $CFG_GLPI;
 

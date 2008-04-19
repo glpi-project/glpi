@@ -47,6 +47,9 @@ if (!defined('GLPI_ROOT')){
  */
 class ConsumableType extends CommonDBTM {
 
+	/**
+	 * Constructor
+	 **/
 	function ConsumableType () {
 		$this->table="glpi_consumables_type";
 		$this->type=CONSUMABLE_TYPE;
@@ -226,6 +229,9 @@ class ConsumableType extends CommonDBTM {
  */
 class Consumable extends CommonDBTM {
 
+	/**
+	 * Constructor
+	 **/
 	function Consumable () {
 		$this->table="glpi_consumables";
 		$this->type=CONSUMABLE_ITEM_TYPE;
@@ -255,7 +261,7 @@ class Consumable extends CommonDBTM {
 		}
 	}
 
-	function restore($input){
+	function restore($input,$history=1){
 		global $DB;
 		$query = "UPDATE glpi_consumables SET date_out = NULL WHERE ID='".$input["ID"]."'";
 

@@ -44,14 +44,17 @@ if (!defined('GLPI_ROOT')){
 class Script_Timer {
 	//! Timer value
 	var $timer=0;
-	//! Constructor
-	function Script_Timer ()
-	{
+
+
+	/**
+	 * Constructor
+	**/
+	function Script_Timer (){
 		return true;
 	}
+
 	//! Start the Timer
-	function Start_Timer ()
-	{
+	function Start_Timer (){
 		$this->timer=microtime ();
 
 		return true;

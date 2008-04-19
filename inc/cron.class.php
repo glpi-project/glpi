@@ -95,9 +95,12 @@ if (!defined('GLPI_ROOT')){
 
 class Cron {
 
-
+	/// Array of defined tasks
 	var $taches=array(); 
 
+	/**
+	 * Constructor
+	 **/
 	function Cron($taches=array()){
 		global $CFG_GLPI;
 		if(count($taches)>0){
@@ -150,6 +153,9 @@ class Cron {
 		
 	}
 
+	/**
+	 * Launch cron
+	 **/
 	function launch() {
 
 		global $CFG_GLPI,$LANG;
@@ -240,6 +246,12 @@ class Cron {
 	}
 
 
+	/**
+	 * Touch a file : set time of a file and return if file was last touch before the defined date
+	 * @param $fichier file to touch
+	 * @param $duree delay in past to touch the file (0: now)
+	 * @param $touch do touch action ?
+	 **/
 	function touch($fichier, $duree=0, $touch=true) {
 		if (!($exists = @is_readable($fichier))
 				|| ($duree == 0)
@@ -256,9 +268,11 @@ class Cron {
 
 
 
-	//
-	// timer : on l'appelle deux fois et on a la difference, affichable
-	//
+	/**
+	 * Timer used to computer time of a process
+	 * Launch twice to computer the delay
+	 * @param $t timer name used
+	 **/
 	function timer($t='rien') {
 		static $time;
 		$a=time(); $b=microtime();
@@ -273,9 +287,7 @@ class Cron {
 
 
 
-	//
-	// Poser un verrou local 
-	//
+	/// Set a local lock
 	function get_lock($nom, $timeout = 0) {
 		global $DB, $CFG_GLPI;
 
@@ -292,7 +304,7 @@ class Cron {
 		return $lock_ok;
 	}
 
-
+	/// Unset a local lock
 	function release_lock($nom) {
 		global $DB,$CFG_GLPI;
 

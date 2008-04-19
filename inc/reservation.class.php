@@ -44,6 +44,9 @@ class ReservationItem extends CommonDBTM {
 
 	var $obj = NULL;	
 
+	/**
+	 * Constructor
+	**/
 	function ReservationItem () {
 		$this->table="glpi_reservation_item";
 		$this->type=-1;
@@ -84,6 +87,9 @@ class ReservationItem extends CommonDBTM {
 
 class ReservationResa extends CommonDBTM {
 
+	/**
+	 * Constructor
+	**/
 	function ReservationResa () {
 		$this->table="glpi_reservation_resa";
 		$this->type=-1;

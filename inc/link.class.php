@@ -41,6 +41,9 @@ if (!defined('GLPI_ROOT')){
 // CLASSES link
 class Link extends CommonDBTM {
 
+	/**
+	 * Constructor
+	**/
 	function Link () {
 		$this->table="glpi_links";
 	}

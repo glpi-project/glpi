@@ -45,6 +45,9 @@ if (!defined('GLPI_ROOT')) {
 **/
 class RightAffectRule extends Rule {
 
+	/**
+	 * Constructor
+	**/
 	function RightAffectRule() {
 		global $RULES_CRITERIAS;	
 	
@@ -264,6 +267,9 @@ class RightRuleCollection extends RuleCollection {
 	var $rules_entity = array();
 	var $rules_rights = array();
 
+	/**
+	 * Constructor
+	**/
 	function RightRuleCollection() {
 		global $DB;
 		$this->rule_type = RULE_AFFECT_RIGHTS;

@@ -46,6 +46,9 @@ class Profile extends CommonDBTM{
 	var $common_fields=array("ID","name","interface","is_default");
 	var $noright_fields=array("helpdesk_hardware","helpdesk_hardware_type","show_group_ticket","show_group_hardware","own_ticket");
 
+	/**
+	 * Constructor
+	**/
 	function Profile () {
 		$this->table="glpi_profiles";
 		$this->type=PROFILE_TYPE;

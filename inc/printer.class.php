@@ -42,11 +42,13 @@ if (!defined('GLPI_ROOT')){
 
 class Printer  extends CommonDBTM {
 
+	/**
+	 * Constructor
+	**/
 	function Printer () {
 		$this->table="glpi_printers";
 		$this->type=PRINTER_TYPE;
 		$this->dohistory=true;
-
 	}	
 
 	function defineOnglets($withtemplate){

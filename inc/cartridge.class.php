@@ -40,13 +40,16 @@ if (!defined('GLPI_ROOT')){
 
 
 //!  CartridgeType Class
-/**
+/** CartridgeType Class
   This class is used to manage the various types of cartridges.
   \see Cartridge
   \author Julien Dombre
  */
 class CartridgeType extends CommonDBTM {
 
+	/**
+	 * Constructor
+	 **/
 	function CartridgeType () {
 		$this->table="glpi_cartridges_type";
 		$this->type=CARTRIDGE_TYPE;
@@ -89,6 +92,12 @@ class CartridgeType extends CommonDBTM {
 
 	///// SPECIFIC FUNCTIONS
 
+	/**
+	 * Count cartridge of the cartridge type
+	 *
+	 *@return number of cartridges
+	 *
+	 **/
 	function countCartridges() {
 		global $DB;
 		$query = "SELECT * FROM glpi_cartridges WHERE (FK_glpi_cartridges_type = '".$this->fields["ID"]."')";
@@ -283,6 +292,9 @@ class CartridgeType extends CommonDBTM {
  */
 class Cartridge extends CommonDBTM {
 
+	/**
+	 * Constructor
+	 **/
 	function Cartridge () {
 		$this->table="glpi_cartridges";
 		$this->type=CARTRIDGE_ITEM_TYPE;
@@ -312,7 +324,7 @@ class Cartridge extends CommonDBTM {
 		}
 	}
 
-	function restore($input) {
+	function restore($input,$history=1) {
 
 		global $DB;
 		$query = "UPDATE glpi_cartridges SET date_out = NULL, date_use = NULL , FK_glpi_printers= NULL WHERE ID='".$input["ID"]."'";
@@ -324,6 +336,13 @@ class Cartridge extends CommonDBTM {
 	}
 
 	// SPECIFIC FUNCTIONS
+	/**
+	 * Update count pages value of a cartridge
+	 *
+	 *@param $ID ID of the cartridge
+	 *@param $pages  count pages value
+	 *
+	 **/
 	function updatePages($ID,$pages){
 		global $DB;
 		$query="UPDATE glpi_cartridges SET pages='$pages' WHERE ID='$ID'";

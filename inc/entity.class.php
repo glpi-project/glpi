@@ -38,8 +38,12 @@ if (!defined('GLPI_ROOT')){
 	}
 
 
+/// Entity Data class
 class EntityData extends CommonDBTM{
 
+	/**
+	 * Constructor
+	**/
 	function EntityData () {
 		$this->table="glpi_entities_data";
 		$this->type=-1;
@@ -51,19 +55,24 @@ class EntityData extends CommonDBTM{
 }
 
 
-// CLASSES entity
+/// Entity class
 class Entity extends CommonDBTM{
 
+	/**
+	 * Constructor
+	**/
 	function Entity () {
 		$this->table="glpi_entities";
 		$this->type=ENTITY_TYPE;
 	}
+	
 	function defineOnglets($withtemplate){
 		global $LANG;
 
 		$ong[1]=$LANG["title"][26];
 		$ong[2]=$LANG["Menu"][14];
 		$ong[3]=$LANG["rulesengine"][17];
+
 		return $ong;
 	}
 

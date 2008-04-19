@@ -322,6 +322,11 @@ class CommonItem{
 
 	}
 
+	/**
+	 * Get the value of a field
+	 * @param $field field name
+	 * @return value of the field / false if not exists
+	 */
 	function getField($field){
 		if ($this->obj==NULL) return false;
 		if ($this->device_type==0) {
@@ -403,6 +408,11 @@ class CommonItem{
 
 
 	}
+	/**
+	 * Get comments of the Object
+	 *
+	 * @return String: comments of the object in the current language
+	 */
 	function getComments(){
 		global $LANG,$CFG_GLPI;
 		$comment="";

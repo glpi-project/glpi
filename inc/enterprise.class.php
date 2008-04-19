@@ -41,6 +41,9 @@ if (!defined('GLPI_ROOT')){
 
 class Enterprise extends CommonDBTM {
 
+	/**
+	 * Constructor
+	**/
 	function Enterprise () {
 		$this->table="glpi_enterprises";
 		$this->type=ENTERPRISE_TYPE;
@@ -108,6 +111,15 @@ class Enterprise extends CommonDBTM {
 		}
 	}
 */
+	/**
+	 * Print the enterprise form
+	 *
+	 *@param $target form target
+	 *@param $ID Integer : Id of the computer or the template to print
+	 *@param $withtemplate='' boolean : template or basic computer
+	 *
+	 *@return Nothing (display)
+	 **/
 	function showForm ($target,$ID,$withtemplate='') {
 		// Show Enterprise or blank form
 

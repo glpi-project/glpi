@@ -39,6 +39,9 @@ if (!defined('GLPI_ROOT')) {
 
 class SoftwareCategoriesRuleCollection extends RuleCollection {
 
+	/**
+	 * Constructor
+	**/
 	function SoftwareCategoriesRuleCollection() {
 		$this->rule_type = RULE_SOFTWARE_CATEGORY;
 		$this->rule_class_name = 'SoftwareCategoriesRule';
@@ -73,6 +76,9 @@ class SoftwareCategoriesRuleCollection extends RuleCollection {
 class SoftwareCategoriesRule extends Rule {
 
 
+	/**
+	 * Constructor
+	**/
 	function SoftwareCategoriesRule() {
 		$this->table = "glpi_rules_descriptions";
 		$this->type = -1;
