@@ -41,6 +41,9 @@ if (!defined('GLPI_ROOT')){
 // CLASSES contact
 class Contact extends CommonDBTM{
 
+	/**
+	 * Constructor
+	 **/
 	function Contact () {
 		$this->table="glpi_contacts";
 		$this->type=CONTACT_TYPE;
@@ -68,6 +71,12 @@ class Contact extends CommonDBTM{
 	}
 
 
+	/**
+	 * Get address of the contact (company one)
+	 *
+	 *@return string containing the address
+	 *
+	 **/
 	function GetAddress() {
 		global $DB;
 
@@ -83,6 +92,12 @@ class Contact extends CommonDBTM{
 
 	}
 
+	/**
+	 * Get website of the contact (company one)
+	 *
+	 *@return string containing the website
+	 *
+	 **/
 	function GetWebsite() {
 		global $DB;
 
@@ -98,9 +113,6 @@ class Contact extends CommonDBTM{
 
 	/**
 	 * Print the contact form
-	 *
-	 *
-	 * Print g��al contact form
 	 *
 	 *@param $target filename : where to go when done.
 	 *@param $ID Integer : Id of the contact to print

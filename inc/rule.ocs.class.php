@@ -42,6 +42,10 @@ class OcsRuleCollection extends RuleCollection {
 	//Store the id of the ocs server
 	var $ocs_server_id;
 
+	/**
+	 * Constructor
+	 * @param $ocs_server_id ID of the OCS server
+	**/
 	function OcsRuleCollection($ocs_server_id=-1) {
 		$this->rule_type = RULE_OCS_AFFECT_COMPUTER;
 		$this->rule_class_name = 'OcsAffectEntityRule';
@@ -218,6 +222,10 @@ class OcsRuleCollection extends RuleCollection {
 class OcsAffectEntityRule extends Rule {
 
 
+	/**
+	 * Constructor
+         * @param $ocs_server_id ID of the OCS server
+	**/
 	function OcsAffectEntityRule($ocs_server_id=-1) {
 		$this->table = "glpi_rules_descriptions";
 		$this->type = -1;

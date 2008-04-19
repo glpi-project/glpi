@@ -42,6 +42,9 @@ if (!defined('GLPI_ROOT')){
 
 class Phone extends CommonDBTM {
 
+	/**
+	 * Constructor
+	**/
 	function Phone () {
 		$this->table="glpi_phones";
 		$this->type=PHONE_TYPE;

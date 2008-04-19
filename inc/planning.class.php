@@ -42,6 +42,9 @@ if (!defined('GLPI_ROOT')){
 
 class PlanningTracking extends CommonDBTM {
 
+	/**
+	 * Constructor
+	**/
 	function PlanningTracking () {
 		$this->table="glpi_tracking_planning";
 	}

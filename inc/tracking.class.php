@@ -45,6 +45,9 @@ class Job extends CommonDBTM{
 	var $hardwaredatas	= array();
 	var $computerfound	= 0;
 
+	/**
+	 * Constructor
+	**/
 	function Job(){
 		$this->table="glpi_tracking";
 		$this->type=TRACKING_TYPE;
@@ -970,6 +973,9 @@ class Job extends CommonDBTM{
 
 class Followup  extends CommonDBTM {
 
+	/**
+	 * Constructor
+	**/
 	function Followup () {
 		$this->table="glpi_followups";
 		$this->type=-1;
@@ -1161,6 +1167,12 @@ class Followup  extends CommonDBTM {
 
 	// SPECIFIC FUNCTIONS
 
+	/**
+	 * Get the author name of the followup
+	 * @param $link insert link ?
+	 *
+	 *@return string of the author name
+	**/
 	function getAuthorName($link=0){
 		return getUserName($this->fields["author"],$link);
 	}	

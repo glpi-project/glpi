@@ -35,6 +35,9 @@ if (!defined('GLPI_ROOT')) {
 
 class Bookmark extends CommonDBTM {
 
+	/**
+	 * Constructor
+	 **/
 	function Bookmark() {
 		global $CFG_GLPI;
 		$this->table = "glpi_bookmark";

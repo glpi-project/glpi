@@ -44,6 +44,9 @@ class User extends CommonDBTM {
 
 	var $fields = array ();
 
+	/**
+	 * Constructor
+	**/
 	function User() {
 		global $CFG_GLPI;
 

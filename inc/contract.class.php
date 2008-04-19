@@ -41,7 +41,9 @@ if (!defined('GLPI_ROOT')){
 
 class Contract extends CommonDBTM {
 
-
+	/**
+	 * Constructor
+	 **/
 	function Contract () {
 		$this->table="glpi_contracts";
 		$this->type=CONTRACT_TYPE;

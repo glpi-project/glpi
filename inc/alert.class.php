@@ -39,10 +39,21 @@ if (!defined('GLPI_ROOT')){
 
 class Alert extends CommonDBTM {
 
+	/**
+	 * Constructor
+	 **/
 	function Alert () {
 		$this->table="glpi_alerts";
 		$this->type=0;
 	}
+	/**
+	 * Retrieve an item from the database
+	 *
+	 *@param $ID ID of the item to get
+	 *@param $type ID of the type to get
+	 *@return true if succeed else false
+	 * 
+	**/	
 	function getFromDBForDevice ($type,$ID) {
 
 		// Make new database object and fill variables
@@ -60,6 +71,15 @@ class Alert extends CommonDBTM {
 			return false;
 		}
 	}
+	/**
+	 * Clear all alerts of an alert type for an item
+	 *
+	 *@param $ID ID of the item to clear
+	 *@param $device_type ID of the type to clear
+	 *@param $alert_type ID of the alert type to clear
+	 *@return nothing
+	 * 
+	**/	
 	function clear($device_type,$ID,$alert_type){
 		global $DB;
 

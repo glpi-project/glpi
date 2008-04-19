@@ -43,6 +43,9 @@ if (!defined('GLPI_ROOT')){
 
 class Netdevice extends CommonDBTM {
 
+	/**
+	 * Constructor
+	**/
 	function Netdevice () {
 		$this->table="glpi_networking";
 		$this->type=NETWORKING_TYPE;
@@ -437,6 +440,9 @@ class Netport extends CommonDBTM {
 	var $FK_entities		= -1;
 	var $location		= -1;
 
+	/**
+	 * Constructor
+	**/
 	function Netport () {
 		$this->table="glpi_networking_ports";
 		$this->type=-1;

@@ -49,6 +49,9 @@ class glpi_phpmailer extends phpmailer {
 	var $CharSet ="utf-8";
 
 
+	/**
+	 * Constructor
+	**/
 	function glpi_phpmailer(){
 		global $CFG_GLPI;
 

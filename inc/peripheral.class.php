@@ -42,6 +42,9 @@ if (!defined('GLPI_ROOT')){
 
 class Peripheral  extends CommonDBTM  {
 
+	/**
+	 * Constructor
+	**/
 	function Peripheral () {
 		$this->table="glpi_peripherals";
 		$this->type=PERIPHERAL_TYPE;

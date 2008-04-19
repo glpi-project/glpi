@@ -48,7 +48,6 @@ class Computer extends CommonDBTM {
 
 	/**
 	 * Constructor
-	 *
 	**/
 	function Computer () {
 		$this->table="glpi_computers";
@@ -56,13 +55,6 @@ class Computer extends CommonDBTM {
 		$this->dohistory=true;
 	}
 
-	/**
-	 * Define onglets to display
-	 *
-	 *@param $withtemplate is a template view ? 
-	 * 
-	 *@return array containing the onglets 
-	**/
 	function defineOnglets($withtemplate){
 		global $LANG,$CFG_GLPI;
 
@@ -131,16 +123,6 @@ class Computer extends CommonDBTM {
 		return false;
 	}
 
-	/**
-	 * Actions done after the UPDATE of the item in the database
-	 *
-	 *@param $input datas used to update the item
-	 *@param $updates array of the updated fields
-	 *@param $history store changes history ? 
-	 * 
-	 *@return nothing
-	 * 
-	**/
 	function post_updateItem($input,$updates,$history=1) {
 		global $DB,$LANG,$CFG_GLPI;
 		
@@ -313,14 +295,7 @@ class Computer extends CommonDBTM {
 
 
 	}
-	/**
-	 * Prepare input datas for adding the item
-	 *
-	 *@param $input datas used to add the item
-	 *
-	 *@return the modified $input array
-	 * 
-	**/
+
 	function prepareInputForAdd($input) {
 
 		if (isset($input["ID"])&&$input["ID"]>0){
@@ -331,15 +306,7 @@ class Computer extends CommonDBTM {
 
 		return $input;
 	}
-	/**
-	 * Actions done after the ADD of the item in the database
-	 *
-	 *@param $newID ID of the new item
-	 *@param $input datas used to add the item
-	 * 
-	 *@param $input datas used to add the item
-	 * 
-	**/
+
 	function post_addItem($newID,$input) {
 		global $DB;
 
@@ -417,13 +384,6 @@ class Computer extends CommonDBTM {
 
 	}
 
-	/**
-	 * Actions done when item is deleted from the database
-	 *
-	 *@param $ID ID of the item
-	 * 
-	 *@return nothing 
-	**/
 	function cleanDBonPurge($ID) {
 		global $DB,$CFG_GLPI;
 
@@ -492,10 +452,9 @@ class Computer extends CommonDBTM {
 	/**
 	 * Print the computer form
 	 *
-	 *
 	 * Print general computer form
 	 *
-	 *@param $target filename : where to go when done.
+	 *@param $target form target
 	 *@param $ID Integer : Id of the computer or the template to print
 	 *@param $withtemplate='' boolean : template or basic computer
 	 *

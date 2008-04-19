@@ -39,6 +39,9 @@ if (!defined('GLPI_ROOT')){
 
 class SetupSearchDisplay extends CommonDBTM{
 
+	/**
+	 * Constructor
+	**/
 	function SetupSearchDisplay () {
 		$this->table="glpi_display";
 		$this->type=-1;

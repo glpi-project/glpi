@@ -41,12 +41,21 @@ if (!defined('GLPI_ROOT')){
 
 class Document extends CommonDBTM {
 
+	/**
+	 * Constructor
+	**/
 	function Document () {
 		$this->table="glpi_docs";
 		$this->type=DOCUMENT_TYPE;
 		$this->entity_assign=true;
 		$this->may_be_recursive=true;
 	}
+	/**
+	 * Retrieve an item from the database using the filename
+	 *
+	 *@param $filename filename of the document
+	 *@return true if succeed else false
+	**/	
 	function getFromDBbyFilename($filename){
 		global $DB;
 		$query="SELECT ID FROM glpi_docs WHERE filename='$filename'";
@@ -144,6 +153,15 @@ class Document extends CommonDBTM {
 	}
 
 
+	/**
+	 * Print the document form
+	 *
+	 *@param $target form target
+	 *@param $ID Integer : Id of the computer or the template to print
+	 *@param $withtemplate='' boolean : template or basic computer
+	 *
+	 *@return Nothing (display)
+	 **/
 	function showForm ($target,$ID,$withtemplate='') {
 		global $CFG_GLPI,$LANG;
 

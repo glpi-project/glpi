@@ -39,6 +39,9 @@ if (!defined('GLPI_ROOT')) {
 
 class LdapCriteria extends CommonDBTM {
 
+	/**
+	 * Constructor
+	**/
 	function LdapCriteria() {
 		$this->table = "glpi_rules_ldap_parameters";
 

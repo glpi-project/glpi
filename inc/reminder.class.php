@@ -41,6 +41,9 @@ if (!defined('GLPI_ROOT')){
 
 class Reminder extends CommonDBTM {
 
+	/**
+	 * Constructor
+	**/
 	function Reminder () {
 		$this->table="glpi_reminder";
 		$this->type=REMINDER_TYPE;

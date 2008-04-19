@@ -43,6 +43,9 @@ if (!defined('GLPI_ROOT')){
 class Monitor extends CommonDBTM {
 
 
+	/**
+	 * Constructor
+	**/
 	function Monitor () {
 		$this->table="glpi_monitors";
 		$this->type=MONITOR_TYPE;

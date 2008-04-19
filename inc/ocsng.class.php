@@ -34,9 +34,15 @@ if (!defined('GLPI_ROOT')) {
 	die("Sorry. You can't access directly to this file");
 }
 
+/// DB class to connect to a OCS server
 class DBocs extends DBmysql {
 
 	var $ocs_server_id = -1;
+
+	/**
+	 * Constructor
+	 * @param $ID ID of the ocs server ID
+	**/
 	function DBocs($ID) {
 		global $CFG_GLPI;
 			$this->ocs_server_id = $ID;
@@ -52,6 +58,10 @@ class DBocs extends DBmysql {
 			}
 	}
 	
+	/**
+	 * Get current ocs server ID
+	 * @return ID of the ocs server ID
+	**/
 	function getServerID()
 	{
 		return $this->ocs_server_id;
@@ -60,9 +70,13 @@ class DBocs extends DBmysql {
 
 }
 
+/// OCS config class
 class Ocsng extends CommonDBTM {
 	var $fields = array ();
 
+	/**
+	 * Constructor
+	**/
 	function Ocsng() {
 		global $CFG_GLPI;
 

@@ -37,6 +37,9 @@ if (!defined('GLPI_ROOT')){
 class Device extends CommonDBTM {
 	var $devtype=0;
 
+	/**
+	 * Constructor
+	**/
 	function Device($dev_type) {
 		$this->devtype=$dev_type;
 		$this->table=getDeviceTable($dev_type);
@@ -70,7 +73,14 @@ class Device extends CommonDBTM {
 	}
 
 	// SPECIFIC FUNCTIONS
-
+	/**
+	 * Connect the current device to a computer
+	 *
+	 *@param $compID computer ID
+	 *@param $device_type device type
+	 *@param $specificity value of the specificity
+	 *@return boolean : success ?
+	**/
 	function computer_link($compID,$device_type,$specificity='') {
 		global $DB;
 		$query = "INSERT INTO glpi_computer_device (device_type,FK_device,FK_computers,specificity) values ('".$device_type."','".$this->fields["ID"]."','".$compID."','".$specificity."')";

@@ -38,6 +38,9 @@ if (!defined('GLPI_ROOT')) {
 
 class TrackingBusinessRuleCollection extends RuleCollection {
 
+	/**
+	 * Constructor
+	**/
 	function TrackingBusinessRuleCollection() {
 		$this->rule_type = RULE_TRACKING_AUTO_ACTION;
 		$this->rule_class_name="TrackingBusinessRule";
@@ -54,6 +57,9 @@ class TrackingBusinessRuleCollection extends RuleCollection {
 
 class TrackingBusinessRule extends Rule {
 
+	/**
+	 * Constructor
+	**/
 	function TrackingBusinessRule() {
 		$this->table = "glpi_rules_descriptions";
 		$this->type = -1;

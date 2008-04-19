@@ -66,9 +66,6 @@ class Identification {
 	
 	/**
 	 * Constructor
-	 *
-	 * @return nothing 
-	 *
 	**/
 	function Identification() {
 		$this->err = "";
@@ -448,10 +445,16 @@ class Identification {
 
 }
 
+/**
+ *  Class used to manage Auth mail config
+**/
 class AuthMail extends CommonDBTM {
 
 	var $fields = array ();
 
+	/**
+	 * Constructor
+	 **/
 	function AuthMail() {
 
 		$this->table = "glpi_auth_mail";
@@ -473,6 +476,14 @@ class AuthMail extends CommonDBTM {
 		return $input;
 	}
 
+	/**
+	 * Print the auth mail form
+	 *
+	 *@param $target form target
+	 *@param $ID Integer : ID of the item
+	 *
+	 *@return Nothing (display)
+	 **/
 	function showForm($target, $ID) {
 
 		global $LANG;
@@ -536,10 +547,18 @@ class AuthMail extends CommonDBTM {
 
 
 }
+
+
+/**
+ *  Class used to manage Auth LDAP config
+**/
 class AuthLDAP extends CommonDBTM {
 
 	var $fields = array ();
 
+	/**
+	 * Constructor
+	 **/
 	function AuthLDAP() {
 		global $CFG_GLPI;
 
@@ -567,6 +586,11 @@ class AuthLDAP extends CommonDBTM {
 		$this->fields['use_dn']=0;
 	}
 	
+	/**
+	 * Preconfig datas for standard system
+	 * @param $type type of standard system : AD 
+	 *@return nothing
+	 **/
 	function preconfig($type){
 	
 		switch($type){
@@ -601,6 +625,15 @@ class AuthLDAP extends CommonDBTM {
 		}
 		return $input;
 	}
+
+	/**
+	 * Print the auth ldap form
+	 *
+	 *@param $target form target
+	 *@param $ID Integer : ID of the item
+	 *
+	 *@return Nothing (display)
+	 **/
 	function showForm($target, $ID) {
 
 		global $LANG;
@@ -758,7 +791,13 @@ class AuthLDAP extends CommonDBTM {
 	}
 }
 
+/**
+ *  Class used to manage LDAP replicate config
+**/
 class AuthLdapReplicate extends CommonDBTM{
+	/**
+	 * Constructor
+	 **/
 	function AuthLdapReplicate()
 	{
 		$this->table ="glpi_auth_ldap_replicate";

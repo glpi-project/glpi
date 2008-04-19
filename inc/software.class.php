@@ -39,10 +39,12 @@ if (!defined('GLPI_ROOT')) {
 	die("Sorry. You can't access directly to this file");
 }
 
-// CLASSES Software
-
+/// Software class
 class Software extends CommonDBTM {
 
+	/**
+	 * Constructor
+	**/
 	function Software() {
 		$this->table = "glpi_software";
 		$this->type = SOFTWARE_TYPE;

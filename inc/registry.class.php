@@ -39,6 +39,9 @@ if (!defined('GLPI_ROOT')){
 	
 class Registry extends CommonDBTM{
 
+	/**
+	 * Constructor
+	**/
    function Registry () {
 		$this->table="glpi_registry";		
 		$this->type=REGISTRY_TYPE;

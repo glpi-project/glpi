@@ -41,6 +41,9 @@ class SingletonRuleList {
 	var $list;
 	var $load;	
 	
+	/**
+	 * Constructor
+	**/
 	function SingletonRuleList () {
 		$this->list = array();
 		$this->load = 0;
