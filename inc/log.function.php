@@ -68,7 +68,7 @@ function historyLog ($id_device,$device_type,$changes,$device_internal_type='0',
 			$username="";
 			
 		// Build query
-		$query = "INSERT INTO glpi_history (FK_glpi_device,device_type,device_internal_type,linked_action,user_name,date_mod,id_search_option,old_value,new_value)  VALUES ('$id_device','$device_type','$device_internal_type','$linked_action','". addslashes($username)."','$date_mod','$id_search_option','$old_value','$new_value');";
+		$query = "INSERT INTO glpi_history (FK_glpi_device,device_type,device_internal_type,linked_action,user_name,date_mod,id_search_option,old_value,new_value)  VALUES ('$id_device','$device_type','$device_internal_type','$linked_action','". addslashes($username)."','$date_mod','$id_search_option','".utf8_substr($old_value,0,250)."','".utf8_substr($new_value,0,250)."');";
 		$DB->query($query)  or die($DB->error());
 	}
 
