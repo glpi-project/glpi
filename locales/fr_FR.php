@@ -801,6 +801,7 @@ $LANG["log"][63]="entité";
 $LANG["log"][64]="modification des commentaires"; 
 $LANG["log"][65]="règle"; 
 $LANG["log"][66]="Sécurité"; 
+$LANG["log"][67]="modification des notes"; 
 $LANG["log"][70]="ajout d'un port réseau";
 $LANG["log"][71]="ajout de plusieurs ports réseau";
 $LANG["log"][73]="suppression d'un port réseau";

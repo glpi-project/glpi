@@ -57,6 +57,9 @@ function cleanSearchOption($type,$action='r'){
 			$todel=array_merge($todel,array('ocsng',100,101,102,103));
 		}
 	}
+	if (!haveRight('notes',$action)){
+		$todel[]=90;
+	}
 	if (count($todel)){
 		foreach ($todel as $ID){
 			if (isset($options[$ID])){
