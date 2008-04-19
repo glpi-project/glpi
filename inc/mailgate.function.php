@@ -37,6 +37,10 @@ if (!defined('GLPI_ROOT')){
 	die("Sorry. You can't access directly to this file");
 }
 
+/**
+ * Cron action on mailgate : retrieve mail and create tickets
+ * @return -1 : done but not finish 1 : done with success
+ **/
 function cron_mailgate(){
 	global $DB,$CFG_GLPI;
 	

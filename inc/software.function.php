@@ -38,6 +38,12 @@ if (!defined('GLPI_ROOT')) {
 	die("Sorry. You can't access directly to this file");
 }
 
+/**
+ * Show License add div
+ *
+ * @param $ID ID of the software
+ * @return nothing
+ */
 function showLicensesAdd($ID) {
 
 	global $CFG_GLPI, $LANG;
@@ -53,6 +59,13 @@ function showLicensesAdd($ID) {
 	echo "</table></div><br>";
 }
 
+/**
+ * Show Licenses of a software
+ *
+ * @param $sID ID of the software
+ * @param $show_computers Show computers using the licenses
+ * @return nothing
+ */
 function showLicenses($sID, $show_computers = 0) {
 
 	global $DB, $CFG_GLPI, $LANG;
@@ -414,6 +427,15 @@ function showLicenses($sID, $show_computers = 0) {
 	echo "</form>";
 }
 
+/**
+ * Show Licenses form
+ *
+ * @param $target  target of the form
+ * @param $action Which action to do : add or update 
+ * @param $sID  ID of the software
+ * @param $lID ID of the license of update
+ * @return nothing
+ */
 function showLicenseForm($target, $action, $sID, $lID = "") {
 
 	global $CFG_GLPI, $LANG;
@@ -552,6 +574,14 @@ function showLicenseForm($target, $action, $sID, $lID = "") {
 	echo "</table></form></div>";
 }
 
+/**
+ * Update number of license : create or delete license if needed
+ *
+ * @param $likeID ID of a license used to define the reference
+ * @param $number actual number of license
+ * @param $new_number  new license number
+ * @return nothing
+ */
 function updateNumberLicenses($likeID, $number, $new_number) {
 	global $DB;
 
@@ -607,6 +637,15 @@ function updateNumberLicenses($likeID, $number, $new_number) {
 
 }
 
+/**
+ * Install a software on a computer
+ *
+ * @param $cID ID of the computer where to install a software
+ * @param $lID ID of the license to install
+ * @param $sID ID of the software of the license (used for history)
+ * @param $dohistory Do history ?
+ * @return nothing
+ */
 function installSoftware($cID, $lID, $sID = '', $dohistory = 1) {
 
 	global $DB,$LANG;
@@ -677,6 +716,13 @@ function installSoftware($cID, $lID, $sID = '', $dohistory = 1) {
 		}
 }
 
+/**
+ * Uninstall a software on a computer
+ *
+ * @param $ID ID of the install software link (license/computer)
+ * @param $dohistory Do history ?
+ * @return nothing
+ */
 function uninstallSoftware($ID, $dohistory = 1) {
 
 	global $DB;
@@ -715,6 +761,13 @@ function uninstallSoftware($ID, $dohistory = 1) {
 	}
 }
 
+/**
+ * SHow softwrae installed on a computer
+ *
+ * @param $instID ID of the computer
+ * @param $withtemplate template case of the view process
+ * @return nothing
+ */
 function showSoftwareInstalled($instID, $withtemplate = '') {
 
 	global $DB, $CFG_GLPI, $LANG;
@@ -787,6 +840,13 @@ function showSoftwareInstalled($instID, $withtemplate = '') {
 
 }
 
+/**
+ * Display category header for showSoftwareInstalled function
+ *
+ * @param $data data used to display 
+ * @param $cat current category ID
+ * @return new category ID
+ */
 function displayCategoryHeader($data, $cat) {
 	global $LANG, $CFG_GLPI;
 	$expirecss = '';
@@ -823,6 +883,14 @@ function displayCategoryHeader($data, $cat) {
 	return $cat;
 }
 
+/**
+ * Display a software for a category
+ *
+ * @param $data data used to display 
+ * @param $instID ID of the computer
+ * @param $withtemplate template case of the view process
+ * @return nothing
+ */
 function displaySoftsByCategory($data, $instID, $withtemplate) {
 	global $LANG, $CFG_GLPI;
 	$expirecss = '';
@@ -913,6 +981,12 @@ function displaySoftsByCategory($data, $instID, $withtemplate) {
 	echo "</tr>";
 }
 
+/**
+ * Unglobalize a license
+ *
+ * @param $ID ID of the license
+ * @return nothing
+ */
 function unglobalizeLicense($ID) {
 	global $DB;
 	$license = new License();
@@ -960,6 +1034,13 @@ function unglobalizeLicense($ID) {
 
 }
 
+/**
+ * Count Installations of a software and create string to display
+ *
+ * @param $sID ID of the software
+ * @param $nohtml do not use HTML to highlight ?
+ * @return string contains counts
+ */
 function countInstallations($sID, $nohtml = 0) {
 
 	global $DB, $CFG_GLPI, $LANG;
@@ -1040,6 +1121,13 @@ function countInstallations($sID, $nohtml = 0) {
 	return $out;
 }
 
+/**
+ * Move licenses to another software
+ *
+ * @param $lID ID of the license used to define which licenses need to be moved (all similar ones)
+ * @param $sID ID of the destination software
+ * @return nothing
+ */
 function moveSimilarLicensesToSoftware($lID, $sID) {
 	global $DB;
 	$lic = new License();
@@ -1058,6 +1146,12 @@ function moveSimilarLicensesToSoftware($lID, $sID) {
 	}
 }
 
+/**
+ * Delete similar licenses
+ *
+ * @param $lID ID of the license used to define which licenses need to be deleted (all similar ones)
+ * @return nothing
+ */
 function deleteSimilarLicenses($lID) {
 	global $DB;
 	$lic = new License();
@@ -1085,6 +1179,13 @@ function deleteSimilarLicenses($lID) {
 	}
 }
 
+/**
+ * Move licenses to another license
+ *
+ * @param $lID destination license ID
+ * @param $tomove array of ID of the licenses to move
+ * @return nothing
+ */
 function moveLicensesToLicense($tomove = array (), $lID) {
 	global $DB;
 
@@ -1144,6 +1245,12 @@ function moveLicensesToLicense($tomove = array (), $lID) {
 	}
 }
 
+/**
+ * Get number of installed licenses of a software
+ *
+ * @param $sID software ID
+ * @return number of installed licenses
+ */
 function getInstalledLicence($sID) {
 	global $DB;
 	$query = "SELECT count(*) FROM glpi_licenses INNER JOIN glpi_inst_software ON (glpi_licenses.sID = '$sID' AND glpi_licenses.ID = glpi_inst_software.license ) 
@@ -1157,7 +1264,12 @@ function getInstalledLicence($sID) {
 		return 0;
 
 }
-
+/**
+ * Get number of licenses to buy of a software
+ *
+ * @param $sID software ID
+ * @return number of licenses to buy
+ */
 function getLicenceToBuy($sID) {
 	global $DB;
 	$query = "SELECT ID FROM glpi_licenses WHERE (sID = '$sID' AND buy ='0'  AND serial <> 'free' AND serial <> 'global')";
@@ -1165,13 +1277,24 @@ function getLicenceToBuy($sID) {
 	return $DB->numrows($result);
 }
 
+/**
+ * Get number of licensesof a software
+ *
+ * @param $sID software ID
+ * @return number of licenses
+ */
 function getLicenceNumber($sID) {
 	global $DB;
 	$query = "SELECT ID,serial FROM glpi_licenses WHERE (sID = '$sID')";
 	$result = $DB->query($query);
 	return $DB->numrows($result);
 }
-
+/**
+ * A software have a global license ?
+ *
+ * @param $sID software ID
+ * @return boolean : is the software have a global license
+ */
 function isGlobalSoftware($sID) {
 	global $DB;
 	$query = "SELECT ID,serial FROM glpi_licenses WHERE (sID = '$sID' and serial='global')";
@@ -1180,13 +1303,24 @@ function isGlobalSoftware($sID) {
 	return ($DB->numrows($result) > 0);
 }
 
+/**
+ * A software have a free license ?
+ *
+ * @param $sID software ID
+ * @return boolean : is the software have a free license
+ */
 function isFreeSoftware($sID) {
 	global $DB;
 	$query = "SELECT ID,serial FROM glpi_licenses WHERE (sID = '$sID'  and serial='free')";
 	$result = $DB->query($query);
 	return ($DB->numrows($result) > 0);
 }
-
+/**
+ * Get number of installation of a license
+ *
+ * @param $ID license ID
+ * @return number of installation 
+ */
 function getInstallionsForLicense($ID) {
 	global $DB;
 	$query = "SELECT count(*) FROM glpi_inst_software INNER JOIN glpi_computers ON ( glpi_inst_software.cID=glpi_computers.ID ) WHERE glpi_inst_software.license ='$ID' AND glpi_computers.deleted='0' AND glpi_computers.is_template='0' ";
@@ -1268,9 +1402,9 @@ function addSoftware($name, $manufacturer, $entity, $comments = '', $process_typ
 
 /**
  * Put software in trash because it's been removed by GLPI software dictionnary
- * @param ID  the ID of the software to put in trash
- * @param comments the comments to add to the already existing software's comments
- * @param process_type process which calls the function (IMPORT_TYPE_OCS, IMPORT_TYPE_DICTIONNARY, etc...)
+ * @param $ID  the ID of the software to put in trash
+ * @param $comments the comments to add to the already existing software's comments
+ * @param $process_type process which calls the function (IMPORT_TYPE_OCS, IMPORT_TYPE_DICTIONNARY, etc...)
  */
 function putSoftwareInTrash($ID, $comments = '', $process_type = -1) {
 	global $LANG,$CFG_GLPI;
@@ -1305,8 +1439,8 @@ function putSoftwareInTrash($ID, $comments = '', $process_type = -1) {
 
 /**
  * Restore a software from trash
- * @param ID  the ID of the software to put in trash
- * @param process_type process which calls the function (IMPORT_TYPE_OCS, IMPORT_TYPE_DICTIONNARY, etc...) 
+ * @param $ID  the ID of the software to put in trash
+ * @param $process_type process which calls the function (IMPORT_TYPE_OCS, IMPORT_TYPE_DICTIONNARY, etc...) 
  */
 function removeSoftwareFromTrash($ID, $process_type = -1) {
 	$s = new Software;
@@ -1332,7 +1466,14 @@ function removeSoftwareFromTrash($ID, $process_type = -1) {
 		"ID" => $ID
 	));
 }
-
+/**
+ * Add a Software. If already exist in trash restore it
+ * @param name the software's name
+ * @param manufacturer the software's manufacturer
+ * @param entity the entity in which the software must be added
+ * @param comments comments
+ * @param process_type process which calls the function (IMPORT_TYPE_OCS, IMPORT_TYPE_DICTIONNARY, etc...) 
+ */
 function addSoftwareOrRestoreFromTrash($name,$manufacturer,$entity,$comments='',$process_type=-1) {
 	global $DB;
 	//Look for the software by his name in GLPI for a specific entity
@@ -1360,7 +1501,8 @@ function addSoftwareOrRestoreFromTrash($name,$manufacturer,$entity,$comments='',
 
 /**
  * Cron action on softwares : alert on expired licences
- *
+ * @param $display display informations instead or log in file ?
+ * @return 0 : nothing to do 1 : done with success
  **/
 function cron_software($display=false){
 	global $DB,$CFG_GLPI,$LANG;

@@ -450,7 +450,8 @@ function showConsumableSummary(){
 
 /**
  * Cron action on consumables : alert if a stock is behind the threshold
- *
+ * @param $display display informations instead or log in file ?
+ * @return 0 : nothing to do 1 : done with success
  **/
 function cron_consumable($display=false){
 	global $DB,$CFG_GLPI,$LANG;
