@@ -66,7 +66,7 @@ function historyLog ($id_device,$device_type,$changes,$device_internal_type='0',
 			$username = getUserName($_SESSION["glpiID"],$link=0);
 		else
 			$username="";
-			
+
 		// Build query
 		$query = "INSERT INTO glpi_history (FK_glpi_device,device_type,device_internal_type,linked_action,user_name,date_mod,id_search_option,old_value,new_value)  VALUES ('$id_device','$device_type','$device_internal_type','$linked_action','". addslashes($username)."','$date_mod','$id_search_option','".utf8_substr($old_value,0,250)."','".utf8_substr($new_value,0,250)."');";
 		$DB->query($query)  or die($DB->error());
@@ -100,7 +100,6 @@ function constructHistory($id_device,$device_type,&$oldvalues,&$values) {
 				if ($ic->getFromDB($values['ID'])){
 					$device_type=$ic->fields['device_type'];
 					$id_device=$ic->fields['FK_device'];
-					echo $key."jjj".$oldval;
 					foreach($SEARCH_OPTION[$device_type] as $key2 => $val2){
 						if(($val2["field"]==$key&&ereg('infocoms',$val2['table'])) || 
 						($key=='budget'&&$val2['table']=='glpi_dropdown_budget')){
@@ -119,7 +118,9 @@ function constructHistory($id_device,$device_type,&$oldvalues,&$values) {
 				// Parsing $SEARCH_OPTION, check if an entry exists matching $key
 				foreach($SEARCH_OPTION[$device_type] as $key2 => $val2){
 			
-					if($val2["linkfield"]==$key){
+					// Linkfield or standard field not massive action enable
+					if($val2["linkfield"]==$key 
+						|| ( empty($val2["linkfield"]) && $key == $val2["field"]) ){
 						$id_search_option=$key2; // Give ID of the $SEARCH_OPTION
 			
 						if($val2["table"]==$LINK_ID_TABLE[$device_type]){
@@ -129,6 +130,7 @@ function constructHistory($id_device,$device_type,&$oldvalues,&$values) {
 							// 2nd case ; link field -> get data from dropdown
 							$changes=array($id_search_option,  addslashes(getDropdownName( $val2["table"],$oldval)), addslashes(getDropdownName( $val2["table"],$values[$key])));
 						}
+						break;
 					}
 				} 
 			}
@@ -301,10 +303,16 @@ function showHistory($device_type,$id_device){
 					$fieldname=$val2["field"];
 				}
 			}
-			if ($fieldname=="comments"){
-				$change =$LANG["log"][64];
-			} else {
-				$change = "\"".$data[ "old_value"]."\"&nbsp;<strong>--></strong>&nbsp;\"".$data[ "new_value"]."\"";
+
+			switch ($fieldname){
+				case "comments" : 
+					$change =$LANG["log"][64];
+					break;
+				case "notes" : 
+					$change =$LANG["log"][67];
+					break;
+				default :
+					$change = "\"".$data[ "old_value"]."\"&nbsp;<strong>--></strong>&nbsp;\"".$data[ "new_value"]."\"";
 			}
 		}// fin du else
 
