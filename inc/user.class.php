@@ -462,7 +462,7 @@ class User extends CommonDBTM {
 	/**
 	 * Function that try to load from LDAP the user information...
 	 *
-	 * @param $ldap_connection
+	 * @param $ldap_connection ldap connection descriptor
 	 * @param $ldap_method LDAP method
 	 * @param $userdn Basedn of the user
 	 * @param $login User Login
@@ -602,7 +602,17 @@ class User extends CommonDBTM {
 
 	} // getFromLDAP()
 
-	//Get all the group a user belongs to
+	/**
+	 * Get all the group a user belongs to
+	 *
+	 * @param $ds ldap connection 
+	 * @param $ldap_base_dn Basedn used
+	 * @param $user_dn Basedn of the user
+	 * @param $group_condition group search condition
+	 * @param $group_field_member group field member in a user object
+	 *
+	 * @return String : basedn of the user / false if not founded
+	 */
 	function ldap_get_user_groups($ds, $ldap_base_dn, $user_dn, $group_condition, $group_field_member) {
 
 		$groups = array ();
@@ -633,8 +643,12 @@ class User extends CommonDBTM {
 		return $groups;
 	}
 
-	// Function that try to load from IMAP the user information... this is
-	// a fake one, as you can see...
+	/**
+	 * Function that try to load from IMAP the user information...
+	 *
+	 * @param $mail_method mail method description array
+	 * @param $name login of the user
+	 */
 	function getFromIMAP($mail_method, $name) {
 		global $DB;
 		
@@ -913,6 +927,14 @@ class User extends CommonDBTM {
 		}
 	}
 
+	/**
+	 * Print the user preference form
+	 *
+	 *@param $target form target
+	 *@param $ID Integer : Id of the user
+	 *
+	 *@return boolean : user found
+	 **/
 	function showMyForm($target, $ID) {
 
 		// Affiche un formulaire User

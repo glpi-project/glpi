@@ -42,14 +42,14 @@ class SoftwareCategoriesRuleCollection extends RuleCollection {
 	/**
 	 * Constructor
 	**/
-	function SoftwareCategoriesRuleCollection() {
+	function SoftwareCategoriesRuleCollection(){
 		$this->rule_type = RULE_SOFTWARE_CATEGORY;
 		$this->rule_class_name = 'SoftwareCategoriesRule';
 		$this->stop_on_first_match=true;
 		$this->right="rule_softwarecategories";
 	}
 
-	function getTitle() {
+	function getTitle(){
 		global $LANG;
 		return $LANG["rulesengine"][37];
 	}

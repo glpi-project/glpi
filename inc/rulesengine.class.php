@@ -712,6 +712,10 @@ class Rule extends CommonDBTM{
 	function getTitleRule($target){
 	}
 	
+	/**
+	* Get title used in rule
+	* @return Title of the rule
+	**/	
 	function getTitle(){
 		global $LANG;
 		return $LANG["rulesengine"][8];	

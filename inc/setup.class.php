@@ -93,6 +93,12 @@ class SetupSearchDisplay extends CommonDBTM{
 
 	}
 
+	/**
+	 * Move up an item
+	 *
+	 *@param $input parameter array (ID,type,FK_users)
+	 *
+	 **/
 	function up($input){
 		global $DB;
 		// Get current item
@@ -111,6 +117,12 @@ class SetupSearchDisplay extends CommonDBTM{
 		$DB->query($query);
 	}
 
+	/**
+	 * Move down an item
+	 *
+	 *@param $input parameter array (ID,type,FK_users)
+	 *
+	 **/
 	function down($input){
 		global $DB;
 
@@ -130,106 +142,14 @@ class SetupSearchDisplay extends CommonDBTM{
 		$DB->query($query);
 	}
 
-/*	function title($target,$type){
-		global $LANG,$CFG_GLPI;
-
-		$dp=array();
-		$state=false;
-		if (haveRight("computer","r")){
-			$state=true;
-			$dp[COMPUTER_TYPE]=$LANG["Menu"][0];
-		}
-		if (haveRight("networking","r")){
-			$state=true;
-			$dp[NETWORKING_TYPE]=$LANG["Menu"][1];
-		}
-		if (haveRight("printer","r")){
-			$state=true;
-			$dp[PRINTER_TYPE]=$LANG["Menu"][2];
-		}
-		if (haveRight("monitor","r")){
-			$state=true;
-			$dp[MONITOR_TYPE]=$LANG["Menu"][3];
-		}
-		if (haveRight("peripheral","r")){
-			$state=true;
-			$dp[PERIPHERAL_TYPE]=$LANG["Menu"][16];
-		}
-		if (haveRight("software","r")){
-			$state=true;
-			$dp[SOFTWARE_TYPE]=$LANG["Menu"][4];
-		}
-		if ($state){
-			$dp[STATE_TYPE]=$LANG["Menu"][28];
-		}
-		if (haveRight("reservation_central","r")){
-			$dp[RESERVATION_TYPE]=$LANG["Menu"][17];
-		}
-		if (haveRight("contact_enterprise","r")){
-			$dp[CONTACT_TYPE]=$LANG["Menu"][22];
-			$dp[ENTERPRISE_TYPE]=$LANG["Menu"][23];
-		}
-		if (haveRight("contract_infocom","r")){
-			$dp[CONTRACT_TYPE]=$LANG["Menu"][25];
-		}
-		if (haveRight("typedoc","r")){
-			$dp[TYPEDOC_TYPE]=$LANG["document"][7];
-		}
-		if (haveRight("document","r")){
-			$dp[DOCUMENT_TYPE]=$LANG["Menu"][27];
-		}
-		if (haveRight("user","r")){
-			$dp[USER_TYPE]=$LANG["Menu"][14];
-		}
-		if (haveRight("entity","r")){
-			$dp[ENTITY_TYPE]=$LANG["Menu"][37];
-		}
-		if (haveRight("consumable","r")){
-			$dp[CONSUMABLE_TYPE]=$LANG["Menu"][32];
-		}
-		if (haveRight("cartridge","r")){
-			$dp[CARTRIDGE_TYPE]=$LANG["Menu"][21];
-		}
-		if (haveRight("link","r")){
-			$dp[LINK_TYPE]=$LANG["setup"][87];
-		}
-		if (haveRight("phone","r")){
-			$dp[PHONE_TYPE]=$LANG["Menu"][34];
-		}
-		if (haveRight("group","r")){
-			$dp[GROUP_TYPE]=$LANG["Menu"][36];
-		}
-		if (haveRight("profile","r")){
-			$dp[PROFILE_TYPE]=$LANG["Menu"][35];
-		}
-		if (haveRight("config","r")){
-			$dp[MAILGATE_TYPE]=$LANG["Menu"][39];
-		}
-		if (!$type){
-			$type=key($dp);
-		}
-
-		if (count($dp)){
-			asort($dp);
-			echo "<div class='center'><form method='post' action=\"$target\">";
-			echo "<table class='tab_cadre' cellpadding='5'><tr><th colspan='2'>";
-			echo $LANG["setup"][251].": </th></tr><tr class='tab_bg_1'><td><select name='type'>";
-	
-	
-			foreach ($dp as $key => $val){
-				$sel="";
-				if ($type==$key) $sel="selected";
-				echo "<option value='$key' $sel>".$val."</option>";
-			}
-	
-			echo "</select></td>";
-			echo "<td><input type='submit' value=\"".$LANG["buttons"][2]."\" class='submit' ></td></tr>";
-			echo "</table></form></div>";
-	
-			return $type;
-		} else return false;
-	}
-*/
+	/**
+	 * Print the search config form
+	 *
+	 *@param $target form target
+	 *@param $type item type
+	 *
+	 *@return nothing
+	 **/
 	function showForm($target,$type){
 		global $SEARCH_OPTION,$CFG_GLPI,$LANG,$DB;
 

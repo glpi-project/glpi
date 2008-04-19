@@ -380,6 +380,11 @@ class Software extends CommonDBTM {
 	}
 
 	// SPECIFIC FUNCTIONS
+	/**
+	* Count Installations of a software 
+	*
+	* @return integer installation number
+	*/
 	function countInstallations() {
 		global $DB;
 		$query = "SELECT * FROM glpi_inst_software WHERE (sID = " . $this->fields["ID"] . ")";
