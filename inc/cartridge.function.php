@@ -589,6 +589,8 @@ function getCartridgeStatus($date_use,$date_out){
 }
 /**
  * Cron action on cartridges : alert if a stock is behind the threshold
+ * @param $display display informations instead or log in file ?
+ * @return 0 : nothing to do 1 : done with success
  *
  **/
 function cron_cartridge($display=false){

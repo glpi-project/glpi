@@ -489,6 +489,11 @@ function showDisplayInfocomLink($device_type,$device_id,$update=0){
 }
 
 
+/**
+ * Cron action on infocom : alert on expired warranty
+ * @param $display display informations instead or log in file ?
+ * @return 0 : nothing to do 1 : done with success
+ **/
 function cron_infocom($display=false){
 	global $DB,$CFG_GLPI,$LANG;
 
