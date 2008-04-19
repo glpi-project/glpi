@@ -3232,7 +3232,6 @@ function ocsResetDevices($glpi_computer_id, $device_type) {
  * Delete all old periphs for a computer.
  *
  *@param $glpi_computer_id integer : glpi computer id.
- *@param $ocs_server_id integer : ocs server id of the computer
  *
  *@return nothing.
  *
