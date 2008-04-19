@@ -230,7 +230,7 @@ class Contract extends CommonDBTM {
 				echo "<td>".$LANG["financial"][10].":		</td><td>";
 				dropdownInteger("notice",$this->fields["notice"],0,120);
 				echo " ".$LANG["financial"][57];
-				if ($this->fields["begin_date"]!=''&&$this->fields["begin_date"]!="0000-00-00"){
+				if ($this->fields["begin_date"]!=''&&$this->fields["begin_date"]!="0000-00-00" && $this->fields["notice"]>0){
 					echo " -> ".getWarrantyExpir($this->fields["begin_date"],$this->fields["duration"],$this->fields["notice"]);
 				}
 				echo "</td></tr>";
