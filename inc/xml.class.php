@@ -112,7 +112,9 @@ class XML
 
 
 	 */
-
+	/**
+	 * Constructor
+	**/
 	function XML()
 	{
 		// Initialize the values with DEFAULT value
@@ -123,8 +125,10 @@ class XML
 	}
 
 
-	function DoXML()
-	{
+	/**
+	 * Do XML export
+	**/
+	function DoXML(){
 		global $DB;
 		$fp = fopen($this->FilePath,'wb');
 		fputs($fp, "<?xml version=\"1.0\"?>\n");

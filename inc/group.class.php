@@ -211,7 +211,11 @@ class Group extends CommonDBTM{
 	}
 
 
-	/// Display title header
+	/**
+	 * Print a good title for group pages
+	 *
+	 *@return nothing (display)
+	 **/
 	function title() {
 		global $LANG, $CFG_GLPI;
 
