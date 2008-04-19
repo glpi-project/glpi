@@ -795,6 +795,7 @@ $LANG["log"][63]="instantie";
 $LANG["log"][64]="Verandering in de commentaar"; 
 $LANG["log"][65]="regel"; 
 $LANG["log"][66]="Beveiliging"; 
+$LANG["log"][67]="change of notes"; 
 $LANG["log"][70]="netwerk poort toegevoegd"; 
 $LANG["log"][71]="meerdere netwerk poorten toegevoegd"; 
 $LANG["log"][73]="netwerk poort verwijderd"; 

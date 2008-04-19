@@ -795,6 +795,7 @@ $LANG["log"][63]="Objekt";
 $LANG["log"][64]="změnit komentáře"; 
 $LANG["log"][65]="pravidlo"; 
 $LANG["log"][66]="Bezpečnost"; 
+$LANG["log"][67]="change of notes"; 
 $LANG["log"][70]="network port added"; 
 $LANG["log"][71]="several network ports added"; 
 $LANG["log"][73]="network port deleted"; 
