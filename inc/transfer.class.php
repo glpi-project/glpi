@@ -42,22 +42,29 @@ if (!defined('GLPI_ROOT')){
 
 class Transfer extends CommonDBTM{
 
-	// Already transfer item
+	/// Already transfer item
 	var $already_transfer=array();	
-	// Items simulate to move - non recursive item or recursive item not visible in destination entity
+	/// Items simulate to move - non recursive item or recursive item not visible in destination entity
 	var $needtobe_transfer=array();	
-	// Items simulate to move - recursive item visible in destination entity
+	/// Items simulate to move - recursive item visible in destination entity
 	var $noneedtobe_transfer=array();	
-	// Search in need to be transfer items
+	/// Search in need to be transfer items
 	var $item_search=array();
-	// Search in need to be exclude from transfer
+	/// Search in need to be exclude from transfer
 	var $item_recurs=array();
+	/// Options used to transfer
 	var $options=array();
+	/// Destination entity ID
 	var $to=-1;
+	/// type of initial item transfered
 	var $inittype=0;
+	/// item types which have infocoms
 	var $INFOCOMS_TYPES = array(COMPUTER_TYPE, NETWORKING_TYPE, PRINTER_TYPE, MONITOR_TYPE, PERIPHERAL_TYPE, PHONE_TYPE, SOFTWARE_TYPE);
+	/// item types which have contracts
 	var $CONTRACTS_TYPES = array(COMPUTER_TYPE, NETWORKING_TYPE, PRINTER_TYPE, MONITOR_TYPE, PERIPHERAL_TYPE, PHONE_TYPE, SOFTWARE_TYPE);
+	/// item types which have tickets
 	var $TICKETS_TYPES = array(COMPUTER_TYPE, NETWORKING_TYPE, PRINTER_TYPE, MONITOR_TYPE, PERIPHERAL_TYPE, PHONE_TYPE, SOFTWARE_TYPE);
+	/// item types which have documents
 	var $DOCUMENTS_TYPES=array(ENTERPRISE_TYPE, CONTRACT_TYPE, CONTACT_TYPE, CONSUMABLE_TYPE, CARTRIDGE_TYPE, COMPUTER_TYPE, NETWORKING_TYPE, PRINTER_TYPE, MONITOR_TYPE, PERIPHERAL_TYPE, PHONE_TYPE, SOFTWARE_TYPE);
 
 

@@ -42,14 +42,18 @@ if (!defined('GLPI_ROOT')){
 	}
 
 
-
-class XML 
-{
+/// XML class
+class XML {
+	/// Array of SQL requests to export
 	var $SqlString;
-	var $IsError; 		// 1 there is a problem !!!
-	var $ErrorString; 	// If there is an error, this string explains it
-	var $Type; 		// Which format do you want your XML ?
-	var $FilePath;  //path where the file will be saved.
+	/// 1 there is a problem !!!
+	var $IsError;
+	/// If there is an error, this string explains it
+	var $ErrorString;
+	/// Which format do you want your XML ?
+	var $Type;
+	///path where the file will be saved.	
+	var $FilePath;  
 
 	// HERE I explain $Type
 

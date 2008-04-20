@@ -35,24 +35,24 @@ if (!defined('GLPI_ROOT')){
 /// Common DataBase Table Manager Class
 class CommonDBTM {
 
-	// Data of the Item
+	/// Data of the Item
 	var $fields	= array();
-	// Table name
+	/// Table name
 	var $table="";
-	// GLPI Item type
+	/// GLPI Item type
 	var $type=-1;
-	// Make an history of the changes
+	/// Make an history of the changes
 	var $dohistory=false;
-	// Is an item specific to entity
+	/// Is an item specific to entity
 	var $entity_assign=false;
-	// Is an item that can be recursivly assign to an entity
+	/// Is an item that can be recursivly assign to an entity
 	var $may_be_recursive=false;
-	// Is an item that can be private or assign to an entity
+	/// Is an item that can be private or assign to an entity
 	var $may_be_private=false;
-	// Black list fields for date_mod updates
+	/// Black list fields for date_mod updates
 	var $date_mod_blacklist	= array();
 
-	// set false to desactivate automatic message on action
+	/// set false to desactivate automatic message on action
 	var $auto_message_on_action=true;
 
 	/**
@@ -261,7 +261,6 @@ class CommonDBTM {
 	 *@return true if succeed else false
 	 *
 	 **/
-
 	function deleteFromDB($ID,$force=0) {
 
 		global $DB,$CFG_GLPI;

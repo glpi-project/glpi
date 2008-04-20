@@ -456,7 +456,6 @@ class Computer extends CommonDBTM {
 	 *@param $ID Integer : Id of the computer or the template to print
 	 *@param $withtemplate template or basic computer
 	 *
-	 *
 	 *@return Nothing (display)
 	 *
 	 **/

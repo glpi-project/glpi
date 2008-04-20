@@ -246,7 +246,13 @@ class Identification {
 	} // connection_db()
 
 
-	// Try to get login of external auth method
+	/**
+	 * Try to get login of external auth method
+	 *
+	 * @param $auth_method extenral auth type
+         *
+	 * @return boolean : user login success
+	**/
 	function getAlternateAuthSystemsUserLogin($auth_method=-1){
 		global $CFG_GLPI;
 	

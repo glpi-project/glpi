@@ -160,8 +160,6 @@ else if (isset($_POST["delete_license"])){
 else if (isset($_POST["update"])){
 	checkRight("software","w");
 
-	unset($_POST["search_software"]);
-	
 	$lic->update($_POST);
 	logEvent(0, "software", 4, "inventory", $_SESSION["glpiname"]." update a license.");
 	glpi_header($_SERVER['HTTP_REFERER']);

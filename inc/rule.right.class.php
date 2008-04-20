@@ -36,13 +36,7 @@ if (!defined('GLPI_ROOT')) {
 	die("Sorry. You can't access directly to this file");
 }
 
-/**
-* Rule class store all informations about a GLPI rule :
-*   - description
-*   - criterias
-*   - actions
-* 
-**/
+/// Rule class for Rights management
 class RightAffectRule extends Rule {
 
 	/**
@@ -260,11 +254,14 @@ function getRulesByID($ID, $withcriterias, $withactions) {
 	}
 }
 
-
+/// Rule collection class for Rights management
 class RightRuleCollection extends RuleCollection {
 
+	/// Array containing results : entity + right
 	var $rules_entity_rights = array();
+	/// Array containing results : only entity 
 	var $rules_entity = array();
+	/// Array containing results : only right
 	var $rules_rights = array();
 
 	/**

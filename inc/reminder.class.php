@@ -38,7 +38,7 @@ if (!defined('GLPI_ROOT')){
 	}
 
 
-
+/// Reminder class
 class Reminder extends CommonDBTM {
 
 	/**
@@ -113,6 +113,13 @@ class Reminder extends CommonDBTM {
 		$this->fields["FK_entities"]=$_SESSION["glpiactive_entity"];
 	}
 
+	/**
+	 * Print the reminder form
+	 *
+	 *@param $target filename : where to go when done.
+	 *@param $ID Integer : Id of the item to print
+	 *
+	 **/
 	function showForm ($target,$ID) {
 		// Show Reminder or blank form
 

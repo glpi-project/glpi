@@ -56,6 +56,12 @@ class SetupSearchDisplay extends CommonDBTM{
 		return $input;
 	}
 
+	/**
+	 * Active personal config based on global one
+	 *
+	 *@param $input parameter array (type,FK_users)
+	 *
+	 **/
 	function activatePerso($input){
 		global $DB,$SEARCH_OPTION;
 

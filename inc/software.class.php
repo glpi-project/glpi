@@ -204,7 +204,16 @@ class Software extends CommonDBTM {
 		}
 	}
 
-	function showForm($target, $ID, $search_software = "", $withtemplate = '') {
+	/**
+	 * Print the printer form
+	 *
+	 *@param $target filename : where to go when done.
+	 *@param $ID Integer : Id of the item to print
+	 *@param $withtemplate integer template or basic item
+	 *
+	 *@return boolean item found
+	 **/
+	function showForm($target, $ID, $withtemplate = '') {
 		// Show Software or blank form
 
 		global $CFG_GLPI, $LANG;
