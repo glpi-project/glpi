@@ -38,11 +38,11 @@ if (!defined('GLPI_ROOT')){
 	die("Sorry. You can't access directly to this file");
 	}
 
-// Tracking Classes
-
+/// Tracking class
 class Job extends CommonDBTM{
-
+	/// Hardware datas used by getFromDBwithData
 	var $hardwaredatas	= array();
+	/// Is a hardware found in getHardwareData / getFromDBwithData : hardware link to the job
 	var $computerfound	= 0;
 
 	/**
@@ -53,6 +53,13 @@ class Job extends CommonDBTM{
 		$this->type=TRACKING_TYPE;
 	}
 
+	/**
+	 * Retrieve an item from the database with datas associated (hardwares)
+	 *
+	 *@param $ID ID of the item to get
+	 *@param $purecontent boolean : true : nothing change / false : convert to HTML display
+	 *@return true if succeed else false
+	**/
 	function getFromDBwithData ($ID,$purecontent) {
 
 		global $DB,$LANG;
@@ -70,6 +77,11 @@ class Job extends CommonDBTM{
 		}
 	}
 
+	/**
+	 * Retrieve data of the hardware linked to the ticket if exists
+	 *
+	 *@return nothing : set computerfound to 1 if founded
+	**/
 	function getHardwareData(){
 		$m= new CommonItem;
 		if ($m->getFromDB($this->fields["device_type"],$this->fields["computer"])){
@@ -684,7 +696,12 @@ class Job extends CommonDBTM{
 	}
 
 	// SPECIFIC FUNCTIONS
-
+	/**
+	 * Number of followups of the ticket
+	 *
+	 *@param $with_private boolean : true : all ticket / false : only public ones
+	 *@return followup count
+	**/
 	function numberOfFollowups($with_private=1){
 		global $DB;
 		$RESTRICT="";
@@ -696,6 +713,12 @@ class Job extends CommonDBTM{
 
 	}
 
+	/**
+	 * Update realtime of the ticket based on realtim of the followups
+	 *
+	 *@param $ID ID of the ticket
+	 *@return boolean : success
+	**/
 	function updateRealTime($ID) {
 		// update Status of Job
 
@@ -712,6 +735,11 @@ class Job extends CommonDBTM{
 		}
 	}
 
+	/**
+	 * Update date mod of the ticket
+	 *
+	 *@param $ID ID of the ticket
+	**/
 	function updateDateMod($ID) {
 		global $DB;
 		$query="UPDATE glpi_tracking SET date_mod='".$_SESSION["glpi_currenttime"]."' WHERE ID='$ID'";
@@ -791,6 +819,11 @@ class Job extends CommonDBTM{
 		} else return "";
 	}
 
+	/**
+	 * Get text describing ticket
+	 * 
+	* @param $format text or html
+	 */
 	function textDescription($format="text"){
 		global $DB,$LANG;
 
@@ -944,10 +977,21 @@ class Job extends CommonDBTM{
 	}
 
 
+	/**
+	 * Get author name
+	 * 
+	 * @param $link boolean with link ?
+	 * @return string author name
+	 */
 	function getAuthorName($link=0){
 		return getUserName($this->fields["author"],$link);
 	}
 
+	/**
+	 * Is the current user have right to add followups to the current ticket ?
+	 * 
+	 * @return boolean
+	 */
 	function canAddFollowups(){
 		return ((haveRight("comment_ticket","1")&&$this->fields["author"]==$_SESSION["glpiID"])
 			||haveRight("comment_all_ticket","1")
@@ -955,6 +999,11 @@ class Job extends CommonDBTM{
 			||(isset($_SESSION["glpigroups"])&&in_array($this->fields["assign_group"],$_SESSION['glpigroups']))
 			);
 	}
+	/**
+	 * Is the current user have right to show the current ticket ?
+	 * 
+	 * @return boolean
+	 */
 	function canShowTicket(){
 		return (
 			haveRight("show_all_ticket","1")
@@ -970,7 +1019,7 @@ class Job extends CommonDBTM{
 
 }
 
-
+/// Followup class
 class Followup  extends CommonDBTM {
 
 	/**

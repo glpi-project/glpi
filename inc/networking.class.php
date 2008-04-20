@@ -197,6 +197,15 @@ class Netdevice extends CommonDBTM {
 		}
 	}
 
+	/**
+	 * Print the networking form
+	 *
+	 *@param $target filename : where to go when done.
+	 *@param $ID Integer : Id of the item to print
+	 *@param $withtemplate integer template or basic item
+	 *
+	 *@return boolean item found
+	 **/
 	function showForm ($target,$ID,$withtemplate='') {
 		// Show device or blank form
 
@@ -428,7 +437,7 @@ class Netdevice extends CommonDBTM {
 
 }
 
-
+/// Netport class
 class Netport extends CommonDBTM {
 
 
@@ -488,6 +497,14 @@ class Netport extends CommonDBTM {
 
 	// SPECIFIC FUNCTIONS
 
+	/**
+	 * Retrieve data in the port of the item which belongs to
+	 *
+	 *@param $ID Integer : Id of the item to print
+	 *@param $type item type
+	 *
+	 *@return boolean item found
+	 **/
 	function getDeviceData($ID,$type)
 	{
 		global $DB,$LINK_ID_TABLE;
@@ -512,33 +529,41 @@ class Netport extends CommonDBTM {
 		}
 	}
 
-	function getContact($ID) 
-	{
+	/**
+	 * Get port opposite port ID if linked item
+	 * ID store in contact_id
+	 *@param $ID networking port ID
+	 *
+	 *@return boolean item found
+	 **/
+	function getContact($ID) {
 
 		$wire = new Netwire;
-		if ($this->contact_id = $wire->getOppositeContact($ID))
-		{
+		if ($this->contact_id = $wire->getOppositeContact($ID)){
 			return true;
-		}
-		else
-		{
+		}else{
 			return false;
 		}
-
 	}
 
 
 }
 
-
+/// Netwire class
 class Netwire {
 
 	var $ID		= 0;
 	var $end1	= 0;
 	var $end2	= 0;
 
-	function getOppositeContact ($ID)
-	{
+	/**
+	 * Get port opposite port ID 
+	 * 
+	 *@param $ID networking port ID
+	 *
+	 *@return integer ID of opposite port. false if not found
+	 **/
+	function getOppositeContact ($ID){
 		global $DB;
 		$query = "SELECT * FROM glpi_networking_wire WHERE (end1 = '$ID' OR end2 = '$ID')";
 		if ($result=$DB->query($query))
@@ -549,16 +574,11 @@ class Netwire {
 				$this->end2 = $data["end2"];
 			}
 
-			if ($this->end1 == $ID)
-			{
+			if ($this->end1 == $ID){
 				return $this->end2;
-			} 
-			else if ($this->end2 == $ID)
-			{
+			} else if ($this->end2 == $ID){
 				return $this->end1;
-			} 
-			else 
-			{
+			} else {
 				return false;
 			}
 		}

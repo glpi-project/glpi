@@ -206,6 +206,11 @@ class PlanningTracking extends CommonDBTM {
 
 	// SPECIFIC FUNCTIONS
 
+	/**
+	 * Is the user assigned to the current planning already planned ?
+	 *
+	 *@return boolean
+	 **/
 	function is_alreadyplanned(){
 		global $DB;
 		if (!isset($this->fields["id_assign"])||empty($this->fields["id_assign"]))
@@ -227,10 +232,20 @@ class PlanningTracking extends CommonDBTM {
 		}
 		return true;
 	}
+	/**
+	 * Current dates are valid ? begin before end
+	 *
+	 *@return boolean
+	 **/
 	function test_valid_date(){
 		return (strtotime($this->fields["begin"])<strtotime($this->fields["end"]));
 	}
 
+	/**
+	 * Add error message to message after redirect
+	 * @param $type error type : date / is_res / other
+	 *@return nothing
+	 **/
 	function displayError($type){
 		global $LANG;
 
@@ -239,7 +254,7 @@ class PlanningTracking extends CommonDBTM {
 				addMessageAfterRedirect($LANG["planning"][1]);
 			break;
 			case "is_res":
-				addMessageAfterRedirect(	$LANG["planning"][0]);
+				addMessageAfterRedirect($LANG["planning"][0]);
 			break;
 			default :
 				addMessageAfterRedirect($LANG["common"][61]);

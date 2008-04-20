@@ -610,7 +610,7 @@ function showForm($target, $ID,$withtemplate='',$templateid='') {
 		return $input;
 	}
 
-	function cleanDBOnPurge($ID){
+	function cleanDBOnPurge($ID,$force=0){
 		global $DB;
 
 		$query = "DELETE FROM glpi_ocs_link WHERE (ocs_server_id = '$ID')";
@@ -618,6 +618,11 @@ function showForm($target, $ID,$withtemplate='',$templateid='') {
 	}
 
 		
+	/**
+	 * Update Admin Info retrieve config
+	 *
+	 *@param $tab data array
+	 **/
 	function updateAdminInfo($tab){
 		$adm = new AdminInfo();	
 		$adm->cleanDBonPurge($tab["ID"]);		

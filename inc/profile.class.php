@@ -104,7 +104,9 @@ class Profile extends CommonDBTM{
 		return $input;
 	}
 
-	// Unset unused rights for helpdesk
+	/**
+	 * Unset unused rights for helpdesk
+	 **/
 	function cleanProfile(){
 		if ($this->fields["interface"]=="helpdesk"){
 			foreach($this->fields as $key=>$val){
@@ -114,6 +116,11 @@ class Profile extends CommonDBTM{
 			}
 		}
 	}
+	/**
+	 * Get SQL restrict request to determine profiles with less rights than the active one
+	 * @param $separator Separator used at the beginning of the request
+	 * @return SQL restrict string
+	 **/
 	function getUnderProfileRetrictRequest($separator = "AND"){
 		$query = $separator ." ";
 
@@ -165,7 +172,15 @@ class Profile extends CommonDBTM{
 		$query.=")";
 		return $query;
 	}
-
+	/**
+	 * Print the profile form headers
+	 *
+	 *@param $target filename : where to go when done.
+	 *@param $ID Integer : Id of the item to print
+	 *@param $withtemplate integer template or basic item
+	 *
+	 *@return boolean item found
+	 **/
 	function showForm($target,$ID, $withtemplate=''){
 		global $LANG,$CFG_GLPI;
 
@@ -177,6 +192,13 @@ class Profile extends CommonDBTM{
 	}
 
 
+	/**
+	 * Print the helpdesk form for a profile
+	 *
+	 *@param $ID Integer : Id of the item to print
+	 *
+	 *@return boolean item found
+	 **/	
 	function showHelpdeskForm($ID){
 		global $LANG,$CFG_GLPI;
 
@@ -285,6 +307,13 @@ class Profile extends CommonDBTM{
 	}
 
 
+	/**
+	 * Print the central form for a profile
+	 *
+	 *@param $ID Integer : Id of the item to print
+	 *
+	 *@return boolean item found
+	 **/	
 	function showCentralForm($ID){
 		global $LANG,$CFG_GLPI;
 
