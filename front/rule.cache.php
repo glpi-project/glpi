@@ -51,7 +51,7 @@ if (isset($_GET["rule_type"]))
 	if (haveRight($rulecollection->right,"r"))
 	{
 		if (!isset($_GET["rule_id"]))
-			$rulecollection->showCacheStatusByRuleType();
+			$rulecollection->showCacheStatusForRuleType();
 		else
 		{
 			$rule = $rulecollection->getRuleClass();

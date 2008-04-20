@@ -38,12 +38,8 @@ if (!defined('GLPI_ROOT')){
 	}
 
 
-// CLASSES Reservation_Item and Reservation_Resa
-
+/// Reservation item class
 class ReservationItem extends CommonDBTM {
-
-	var $obj = NULL;	
-
 	/**
 	 * Constructor
 	**/
@@ -52,6 +48,13 @@ class ReservationItem extends CommonDBTM {
 		$this->type=-1;
 	}
 
+	/**
+	 * Retrieve an item from the database for a specific item
+	 *
+	 *@param $ID ID of the item
+	 *@param $type type of the item
+	 *@return true if succeed else false
+	**/	
 	function getFromDBbyItem($type,$ID){
 		global $DB;
 
@@ -85,6 +88,7 @@ class ReservationItem extends CommonDBTM {
 	}
 }
 
+/// Reservation class
 class ReservationResa extends CommonDBTM {
 
 	/**
@@ -208,7 +212,11 @@ class ReservationResa extends CommonDBTM {
 
 
 	// SPECIFIC FUNCTIONS
-
+	/**
+	 * Is the item already reserved ?
+	 *
+	 *@return boolean
+	 **/
 	function is_reserved(){
 		global $DB;
 		if (!isset($this->fields["id_item"])||empty($this->fields["id_item"]))
@@ -227,10 +235,22 @@ class ReservationResa extends CommonDBTM {
 		}
 		return true;
 	}
+	/**
+	 * Current dates are valid ? begin before end
+	 *
+	 *@return boolean
+	 **/
 	function test_valid_date(){
 		return (strtotime($this->fields["begin"])<strtotime($this->fields["end"]));
 	}
 
+	/**
+	 * display error message 
+	 * @param $type error type : date / is_res / other
+	 * @param $ID ID of the item
+	 * @param $target where to go on error
+	 *@return nothing
+	 **/
 	function displayError($type,$ID,$target){
 		global $LANG;
 
@@ -243,12 +263,17 @@ class ReservationResa extends CommonDBTM {
 				echo $LANG["reservation"][18];
 			break;
 			default :
-			echo "Erreur Inconnue";
+			echo "Unknown error";
 			break;
 		}
 		echo "<br><a href='".$target."?show=resa&amp;ID=$ID'>".$LANG["reservation"][20]."</a>";
 		echo "</div>";
 	}
+	/**
+	 * Get text describing reservation
+	 * 
+	* @param $format text or html
+	 */
 	function textDescription($format="text"){
 		global $LANG;
 

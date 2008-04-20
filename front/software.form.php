@@ -45,14 +45,11 @@ if(!isset($_GET["ID"])) $_GET["ID"] = "";
 if(!isset($_GET["sort"])) $_GET["sort"] = "";
 if(!isset($_GET["order"])) $_GET["order"] = "";
 if(!isset($_GET["withtemplate"])) $_GET["withtemplate"] = "";
-if(!isset($_GET["search_software"])) $_GET["search_software"] = "";
 
 $soft=new Software();
 if (isset($_POST["add"]))
 {
 	checkRight("software","w");
-
-	unset($_POST["search_software"]);
 
 	$newID=$soft->add($_POST);
 	logEvent($newID, "software", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][20]." ".$_POST["name"].".");
@@ -97,7 +94,6 @@ else if (isset($_POST["update"]))
 {
 	checkRight("software","w");
 
-	unset($_POST["search_software"]);
 	$soft->update($_POST);
 	logEvent($_POST["ID"], "software", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][21]);
 	glpi_header($_SERVER['HTTP_REFERER']);
@@ -117,7 +113,7 @@ else
 
 	if (!empty($_GET["withtemplate"])) {
 
-		if ($soft->showForm($_SERVER['PHP_SELF'],$_GET["ID"],$_GET['search_software'], $_GET["withtemplate"])){
+		if ($soft->showForm($_SERVER['PHP_SELF'],$_GET["ID"],$_GET["withtemplate"])){
 
 			if ($_GET["ID"]>0){
 				switch($_SESSION['glpi_onglet']){
@@ -138,7 +134,7 @@ else
 
 	} else {
 
-		if ($soft->showForm($_SERVER['PHP_SELF'],$_GET["ID"],$_GET['search_software'])){
+		if ($soft->showForm($_SERVER['PHP_SELF'],$_GET["ID"],$_GET['withtemplate'])){
 			switch($_SESSION['glpi_onglet']){
 				case -1:
 					showLicensesAdd($_GET["ID"]);

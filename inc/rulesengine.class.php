@@ -38,7 +38,9 @@ if (!defined('GLPI_ROOT')){
 
 
 class SingletonRuleList {
+	/// Items list
 	var $list;
+	/// Items loaded ?
 	var $load;	
 	
 	/**
@@ -72,14 +74,22 @@ function &getInstanceOfSingletonRuleList($type) {
 }
 
 class RuleCollection {
+	/// Rule type
 	var $rule_type;
+	/// Name of the class used to rule
 	var $rule_class_name="Rule";
+	/// process collection stop on first matched rule
 	var $stop_on_first_match=false;
+	/// Right needed to use this rule collection
 	var $right="config";
+	/// field used to order rules
 	var $orderby="ranking";
+	/// Processing several rules : use result of the previous one to computer the current one
 	var $use_output_rule_process_as_next_input=false;
 	
+	/// Rule collection can be replay (for dictionnary)
 	var $can_replay_rules=false;
+	/// List of rules of the rule collection
 	var $RuleList=NULL;
 	
 	/**
@@ -373,6 +383,13 @@ class RuleCollection {
 		}
 	}
 	
+	/**
+	 * Update Rule Order when deleting a rule
+	 * 
+	 * @param $ranking rank of the deleted rule
+	 * 
+	 * @return true if all ok
+	**/
 	function deleteRuleOrder($ranking){
 		global $DB;
 		$rules = array();
@@ -482,7 +499,13 @@ class RuleCollection {
 		return $output;
 	}
 
-	function showRulesEngineCriteriasForm($target,$rule_type,$values){
+
+	/**
+	 * Show form displaying results for rule collection preview
+	 * @param $target where to go
+	 * @param $values data array
+	 **/
+	function showRulesEnginePreviewCriteriasForm($target,$values){
 
 		global $DB, $LANG,$RULES_CRITERIAS,$RULES_ACTIONS; 
 
@@ -498,8 +521,8 @@ class RuleCollection {
 			foreach ($input as $criteria){
 				echo "<tr class='tab_bg_1'>"; 
 
-				if (isset($RULES_CRITERIAS[$rule_type][$criteria])){
-					$criteria_constants = $RULES_CRITERIAS[$rule_type][$criteria];
+				if (isset($RULES_CRITERIAS[$this->rule_type][$criteria])){
+					$criteria_constants = $RULES_CRITERIAS[$this->rule_type][$criteria];
 					echo "<td>".$criteria_constants["name"].":</td>";
 				}else{
 					echo "<td>".$criteria.":</td>";
@@ -592,6 +615,11 @@ class RuleCollection {
 		return $input;
 	}	
 
+	/**
+	 * Show form displaying results for rule engine preview
+	 * @param $target where to go
+	 * @param $input data array
+	 **/
 	function showRulesEnginePreviewResultsForm($target,$input){
 		global $LANG,$RULES_ACTIONS;
 		$output = array();
@@ -643,7 +671,9 @@ class RuleCollection {
 	}
 	
 	/**
-	 * Unset criterias from the rule's ouput results
+	 * Unset criterias from the rule's ouput results (begins by _)
+	 * @param $output clean output array to clean
+	 * @return cleaned array
 	 **/
 	function cleanTestOutputCriterias($output){
 		//If output array contains keys begining with _ : drop it
@@ -655,6 +685,13 @@ class RuleCollection {
 		return $output;			
 	}
 	
+	/**
+	 * Show test results for a rule
+	 * @param $rule rule object
+	 * @param $output Output data array
+	 * @param $global_result boolean : global result 
+	 * @return cleaned array
+	 **/
 	function showTestResults($rule,$output,$global_result){
 		global $LANG,$RULES_ACTIONS;
 		echo "<tr><th colspan='4'>" . $LANG["rulesengine"][81] . "</th></tr>";
@@ -683,15 +720,18 @@ class RuleCollection {
 **/
 class Rule extends CommonDBTM{
 
-	//Actions affected to this rule
+	///Actions affected to this rule
 	var $actions = array();
 
-	//Criterias affected to this rule
+	///Criterias affected to this rule
 	var $criterias = array();
-	// Rule type
+	/// Rule type
 	var $rule_type;
+	/// Right needed to use this rule
 	var $right="config";
+	/// Rules can be sorted ?
 	var $can_sort;
+	/// field used to order rules
 	var $orderby="ranking";
 
 	/**
@@ -709,6 +749,10 @@ class Rule extends CommonDBTM{
 		$this->fields['active']=0;
 	}
 
+	/**
+	* Get additional header for rule
+	* @return nothing display
+	**/	
 	function getTitleRule($target){
 	}
 	
@@ -830,9 +874,17 @@ class Rule extends CommonDBTM{
 		return false;
 	}
 	
+	/**
+	 * display title for action form
+	 * @param $target where to go if action
+	**/
 	function getTitleAction($target){
 	}
 
+	/**
+	 * display title for criteria form
+	 * @param $target where to go if action
+	**/
 	function getTitleCriteria($target){
 	}
 
@@ -1435,8 +1487,13 @@ class Rule extends CommonDBTM{
 		echo "</tr>";
 	}
 
-	function showRulePreviewResultsForm($target,$input,$params)
-	{
+	/**
+	 * Show preview result of a rule
+	* @param $target where to go if action
+	* @param $input input data array
+	* @param $params params used (see addSpecificParamsForPreview)
+	 */	
+	function showRulePreviewResultsForm($target,$input,$params){
 		global $LANG,$RULES_ACTIONS;
 		$regex_results = array();
 		$check_results = array();
@@ -1455,12 +1512,13 @@ class Rule extends CommonDBTM{
 		echo "<tr><th colspan='4'>" . $LANG["rulesengine"][82] . "</th></tr>";
 		
 		echo "<tr class='tab_bg_2'>";
-		$criteria->showForm('','',-1,true);			
+		echo "<td class='tab_bg_2'>".$LANG["rulesengine"][16]."</td>";
+		echo "<td class='tab_bg_2'>".$LANG["rulesengine"][14]."</td>";
+		echo "<td class='tab_bg_2'>".$LANG["rulesengine"][15]."</td>";
 		echo "<td class='tab_bg_2'>".$LANG["rulesengine"][41]."</td>";
 		echo "</tr>";
 
-		foreach ($check_results as $ID=>$criteria_result)
-		{
+		foreach ($check_results as $ID=>$criteria_result){
 			echo "<tr  class='tab_bg_2'>";
 			$criteria->getFromDB($criteria_result["ID"]);
 			$this->showMinimalCriteria($criteria->fields);
@@ -1478,13 +1536,14 @@ class Rule extends CommonDBTM{
 		echo "<td class='tab_bg_2' colspan='4' align='center'>".$LANG["rulesengine"][41]." : <strong> ".getYesNo($global_result)."</strong></td>";
 
 		//If output array contains keys begining with _ : drop it
-		foreach($output as $criteria => $value)
-			if ($criteria[0]=='_')
-			unset($output[$criteria]);
+		foreach($output as $criteria => $value){
+			if ($criteria[0]=='_'){
+				unset($output[$criteria]);
+			}
+		}
 			
 		
-		foreach ($output as $criteria => $value)
-		{
+		foreach ($output as $criteria => $value){
 			echo "<tr  class='tab_bg_2'>";
 			echo "<td class='tab_bg_2'>";
 			echo $RULES_ACTIONS[$this->rule_type][$criteria]["name"];
@@ -1561,8 +1620,7 @@ class Rule extends CommonDBTM{
         * @param $condition condition used
  	* @param $pattern the pattern
  	*/
- 	function getCriteriaDisplayPattern($ID,$condition,$pattern)
-	{
+ 	function getCriteriaDisplayPattern($ID,$condition,$pattern){
 		$crit=$this->getCriteria($ID);
 		if (!isset($crit['type'])){
 			return $pattern;
@@ -1712,9 +1770,7 @@ class Rule extends CommonDBTM{
 	 * @param $condition condition used
  	 * @param $value the pattern
  	 */
-	
- 	function getCriteriaValue($ID,$condition,$value)
-	{
+	function getCriteriaValue($ID,$condition,$value){
 		global $LANG;
 		$crit=$this->getCriteria($ID);
 		
@@ -1767,6 +1823,11 @@ class Rule extends CommonDBTM{
 		return $params;
 	}
 	
+	/**
+ 	 * Criteria form used to preview rule
+ 	 * @param $target target of the form
+	 * @param $rule_id ID of the rule
+ 	 */
 	function showRulePreviewCriteriasForm($target,$rule_id){
 
 		global $DB, $LANG,$RULES_CRITERIAS,$RULES_ACTIONS; 
@@ -1827,6 +1888,9 @@ class Rule extends CommonDBTM{
 }
 
 class RuleAction extends CommonDBTM {
+	/**
+	 * Constructor
+	**/
 	function RuleAction() {
 		$this->table = "glpi_rules_actions";
 		$this->type = -1;
@@ -1850,9 +1914,6 @@ class RuleAction extends CommonDBTM {
 		return $rules_actions;
 	}
 
-	function showForm($target,$ID,$ruleid=-1){	
-	}
-
 	
 	/**
 	 * Add an action
@@ -1867,7 +1928,11 @@ class RuleAction extends CommonDBTM {
 	}
 }
 
+/// Criteria Rule class
 class RuleCriteria extends CommonDBTM {
+	/**
+	 * Constructor
+	**/
 	function RuleCriteria() {
 		$this->table = "glpi_rules_criterias";
 		$this->type = -1;
@@ -1890,27 +1955,6 @@ class RuleCriteria extends CommonDBTM {
 			$rules_list[] = $tmp;
 		}
 		return $rules_list;
-	}
-
-	function showForm($target,$ID,$ruleid=-1,$only_td=false){
-		global $LANG,$CFG_GLPI;
-		if (!$only_td){
-			echo "<form name='entityaffectation_form' id='entityaffectation_form' method='post' action=\"$target\">\n";
-			echo "<div class='center'>"; 
-			echo "<table class='tab_cadre_fixe'>";
-			echo "<tr><th colspan='4'>" . $LANG["rulesengine"][6] . "</th></tr>";
-			echo "<tr>";
-			echo "<td class='tab_bg_2'></td>";
-		}
-
-		echo "<td class='tab_bg_2'>".$LANG["rulesengine"][16]."</td>";
-		echo "<td class='tab_bg_2'>".$LANG["rulesengine"][14]."</td>";
-		echo "<td class='tab_bg_2'>".$LANG["rulesengine"][15]."</td>";
-
-		if (!$only_td){
-			echo "</tr>";
-		}
-		
 	}
 	
 	/**
@@ -2002,6 +2046,7 @@ class RuleCriteria extends CommonDBTM {
 
 }
 
+/// Rule cached class
 class RuleCached extends Rule{
 
 	function getTitleAction($target){
@@ -2015,16 +2060,24 @@ class RuleCached extends Rule{
 		echo "</table></div><br>";
 	}
 
+	/**
+	* Delete cache for a rule
+	* @param $ID rule ID
+	**/
 	function deleteCacheByRuleId($ID){
 		global $DB;
 		$DB->query("DELETE FROM ".getCacheTableByRuleType($this->rule_type)." WHERE rule_id=".$ID);
 	}
 
-	function post_updateItem($input,$updates) {
+	function post_updateItem($input,$updates,$history=1) {
 		if(isset($updates['match']))
 			$this->deleteCacheByRuleId($input["ID"]);
 	}
 	
+	/**
+	* Show cache statis for a current rule
+	* @param $target where to go
+	**/
 	function showCacheStatusByRule($target){
 		global $DB,$LANG;
 		echo "<div class='center'>"; 
@@ -2032,11 +2085,12 @@ class RuleCached extends Rule{
 
 		$rulecollection = getRuleCollectionClass($this->rule_type);
 		
-		$res_count=$DB->query("SELECT *
-		FROM ".$rulecollection->cache_table.", glpi_rules_descriptions
-		WHERE ".$rulecollection->cache_table.".rule_id=glpi_rules_descriptions.ID 
-		AND ".$rulecollection->cache_table.".rule_id=".$this->fields["ID"].
-		" ORDER BY name");
+		$query="SELECT *
+			FROM ".$rulecollection->cache_table.", glpi_rules_descriptions
+			WHERE ".$rulecollection->cache_table.".rule_id=glpi_rules_descriptions.ID 
+			AND ".$rulecollection->cache_table.".rule_id=".$this->fields["ID"]." 
+			ORDER BY name"
+		$res_count=$DB->query($query);
 
 		$this->showCacheRuleHeader();
 		
@@ -2053,7 +2107,7 @@ class RuleCached extends Rule{
 		
 	}
 
-	
+	/// Display Header for cache display
 	function showCacheRuleHeader(){
 		global $LANG;
 		echo "<th colspan='2'>".$LANG["rulesengine"][100]." : ".$this->fields["name"]."</th></tr>";
@@ -2063,6 +2117,10 @@ class RuleCached extends Rule{
 		echo "</tr>";
 	}
 
+	/**
+	 * Display a cache item
+	 * @param $fields data array
+	**/
 	function showCacheRuleDetail($fields){
 		global $LANG;
 		echo "<td class='tab_bg_2'>".$fields["old_value"]."</td>";
@@ -2078,9 +2136,18 @@ class RuleCached extends Rule{
 **/
 class RuleCachedCollection extends RuleCollection{
 	
+	/// Cache table used
 	var $cache_table;
+	/// Cache parameters
 	var $cache_params;
 
+	/**
+	* Init a cache rule collection
+	* @param $cache_table cache table used
+	* @param $input_params Input parameters to store
+	* @param $output_params Output parameters to store
+	* @return nothing
+	**/
 	function initCache($cache_table,$input_params=array("name"=>"old_value"),$output_params=array("name"=>"new_value")){
 		$this->can_replay_rules=true;
 		$this->stop_on_first_match=true;
@@ -2091,7 +2158,7 @@ class RuleCachedCollection extends RuleCollection{
 
 	/**
 	* Show the list of rules
-	* @param $target  
+	* @param $target  where to go
 	* @return nothing
 	**/
 	function showAdditionalInformationsInForm($target){
@@ -2128,15 +2195,19 @@ class RuleCachedCollection extends RuleCollection{
 		return $output;
 	}
 
-	function showCacheStatusByRuleType(){
+	/**
+	* Show cache status by rules
+	**/
+	function showCacheStatusForRuleType(){
 		global $DB,$LANG,$CFG_GLPI;
 		echo "<div class='center'>"; 
 		echo "<table  class='tab_cadre_fixe'>";
 
-		$res_count=$DB->query("SELECT name, rule_id, count(rule_id) as cpt
-		FROM ".$this->cache_table.", glpi_rules_descriptions
-		WHERE ".$this->cache_table.".rule_id=glpi_rules_descriptions.ID GROUP BY rule_id
-		ORDER BY name");
+		$query="SELECT name, rule_id, count(rule_id) as cpt
+				FROM ".$this->cache_table.", glpi_rules_descriptions
+				WHERE ".$this->cache_table.".rule_id=glpi_rules_descriptions.ID GROUP BY rule_id
+				ORDER BY name";
+		$res_count=$DB->query($query);
 
 		echo "<th colspan='2'>".$LANG["rulesengine"][100]." : ".$this->getTitle()."</th></tr>";
 		echo "<tr>";
@@ -2163,6 +2234,11 @@ class RuleCachedCollection extends RuleCollection{
 	}
 
 
+	/**
+	* Check if a data is in cache
+	* @param input data array to search
+	* @return boolean : is in cache ?
+	**/
 	function checkDataInCache($input){
 		global $DB;
 		
@@ -2193,6 +2269,11 @@ class RuleCachedCollection extends RuleCollection{
 		return RULE_NOT_IN_CACHE;
 	}
 
+	/**
+	* Insert data in cache
+	* @param input input data array
+	* @param $output output data array
+	**/
 	function insertDataInCache($input,$output){
 		global $DB;
 

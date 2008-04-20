@@ -55,7 +55,7 @@ if (!ereg("popup",$_SERVER['PHP_SELF'])){
 foreach ($_POST as $key => $val) {
 	$_POST[$key] = stripslashes($_POST[$key]);
 }
-$input = $rulecollection->showRulesEngineCriteriasForm($_SERVER['PHP_SELF'],$rule_type,$_POST);
+$input = $rulecollection->showRulesEnginePreviewCriteriasForm($_SERVER['PHP_SELF'],$_POST);
 
 if (isset($_POST["test_all_rules"]))
 {

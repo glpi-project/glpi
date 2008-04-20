@@ -42,8 +42,6 @@ if (!defined('GLPI_ROOT')) {
 
 class User extends CommonDBTM {
 
-	var $fields = array ();
-
 	/**
 	 * Constructor
 	**/
