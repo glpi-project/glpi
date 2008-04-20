@@ -38,12 +38,15 @@ if (!defined('GLPI_ROOT')){
 	}
 
 
-// CLASSES contact
+/// Profile class
 class Profile extends CommonDBTM{
 
+	/// Helpdesk fields of helpdesk profiles
 	var $helpdesk_rights=array("faq","reservation_helpdesk","create_ticket","comment_ticket","observe_ticket","password_update","helpdesk_hardware","helpdesk_hardware_type","show_group_ticket","show_group_hardware");
 
+	/// Common fields used for all profiles type
 	var $common_fields=array("ID","name","interface","is_default");
+	/// Fields not related to a basic right
 	var $noright_fields=array("helpdesk_hardware","helpdesk_hardware_type","show_group_ticket","show_group_hardware","own_ticket");
 
 	/**

@@ -33,8 +33,9 @@ if (!defined('GLPI_ROOT')){
 	}
 
 
-//Class Devices
+///Class Devices
 class Device extends CommonDBTM {
+	/// Current device type
 	var $devtype=0;
 
 	/**

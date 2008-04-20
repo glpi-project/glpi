@@ -39,7 +39,7 @@ if (!defined('GLPI_ROOT')) {
 /// OCS Rules collection class
 class OcsRuleCollection extends RuleCollection {
 
-	//Store the id of the ocs server
+	///Store the id of the ocs server
 	var $ocs_server_id;
 
 	/**

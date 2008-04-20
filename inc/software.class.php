@@ -405,9 +405,12 @@ class Software extends CommonDBTM {
 		}
 	}
 }
-
+/// License class
 class License extends CommonDBTM {
 
+	/**
+	 * Constructor
+	**/
 	function License() {
 		$this->table = "glpi_licenses";
 	}

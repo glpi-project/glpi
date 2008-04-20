@@ -37,6 +37,7 @@ if (!defined('GLPI_ROOT')) {
 	die("Sorry. You can't access directly to this file");
 }
 
+/// LDAP criteria class
 class LdapCriteria extends CommonDBTM {
 
 	/**
@@ -47,14 +48,13 @@ class LdapCriteria extends CommonDBTM {
 
 	}
 
-	function getTitle() {
-		global $LANG;
-
-	}
-
+	/// Get parameters list
 	function getParametersList() {
 		global $DB;
-		$sql = "SELECT * from " . $this->table . " WHERE rule_type=".RULE_AFFECT_RIGHTS." ORDER by name ASC";
+		$sql = "SELECT * 
+			FROM " . $this->table . " 
+			WHERE rule_type=".RULE_AFFECT_RIGHTS." 
+			ORDER BY name ASC";
 		$result = $DB->query($sql);
 		$parameters = array ();
 
@@ -64,6 +64,11 @@ class LdapCriteria extends CommonDBTM {
 		return $parameters;
 	}
 
+	/**
+	 * Print the ldap criteria form
+	 *
+	 *@param $target filename : where to go when done.
+	 **/
 	function showForm($target) {
 		global $LANG,$CFG_GLPI;
 		$canedit = haveRight("config", "w");
@@ -130,10 +135,9 @@ class LdapCriteria extends CommonDBTM {
 		echo "</form>";
 	}
 	
-	//LDAP parameters MUST be in lower case
-	//because the are retieved in lower case  from the directory
-	function prepareInputForAdd($input)
-	{
+	function prepareInputForAdd($input){
+		//LDAP parameters MUST be in lower case
+		//because the are retieved in lower case  from the directory
 		$input["value"] = strtolower($input["value"]);
 		return $input;
 	}

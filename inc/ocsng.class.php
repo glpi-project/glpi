@@ -37,6 +37,7 @@ if (!defined('GLPI_ROOT')) {
 /// DB class to connect to a OCS server
 class DBocs extends DBmysql {
 
+	///Store the id of the ocs server
 	var $ocs_server_id = -1;
 
 	/**
@@ -72,7 +73,6 @@ class DBocs extends DBmysql {
 
 /// OCS config class
 class Ocsng extends CommonDBTM {
-	var $fields = array ();
 
 	/**
 	 * Constructor
@@ -84,6 +84,17 @@ class Ocsng extends CommonDBTM {
 		$this->type = OCSNG_TYPE;
 	}
 
+	/**
+	 * Print ocs config form
+	 *
+	 *@param $target form target
+	 *@param $ID Integer : Id of the ocs config
+	 *@param $withtemplate template or basic computer
+	 *@param $templateid Integer : Id of the template used
+	 *@todo clean template process
+	 *@return Nothing (display)
+	 *
+	 **/
 	function ocsFormConfig($target, $ID,$withtemplate='',$templateid='') {
 		global $DB, $LANG, $CFG_GLPI;
 		
@@ -447,7 +458,18 @@ class Ocsng extends CommonDBTM {
 	echo "</form>";
 	}
 
-function showForm($target, $ID,$withtemplate='',$templateid='') {
+	/**
+	 * Print simple ocs config form (database part)
+	 *
+	 *@param $target form target
+	 *@param $ID Integer : Id of the ocs config
+	 *@param $withtemplate template or basic computer
+	 *@param $templateid Integer : Id of the template used
+	 *@todo clean template process
+	 *@return Nothing (display)
+	 *
+	 **/
+	function showForm($target, $ID,$withtemplate='',$templateid='') {
 
 		global $DB, $DBocs, $LANG, $CFG_GLPI;
 
@@ -610,7 +632,7 @@ function showForm($target, $ID,$withtemplate='',$templateid='') {
 		return $input;
 	}
 
-	function cleanDBOnPurge($ID,$force=0){
+	function cleanDBonPurge($ID) {
 		global $DB;
 
 		$query = "DELETE FROM glpi_ocs_link WHERE (ocs_server_id = '$ID')";
