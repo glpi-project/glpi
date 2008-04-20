@@ -187,6 +187,7 @@ class CommonItem{
 					$this->obj = new Bookmark;
 					break;				
 				default :
+					// Plugin case
 					if ($device_type>1000){
 						if (isset($PLUGIN_HOOKS['plugin_classes'][$device_type])){
 							$class=$PLUGIN_HOOKS['plugin_classes'][$device_type];
@@ -306,20 +307,27 @@ class CommonItem{
 				return $LANG["financial"][3];
 				break;	
 			default :
+				// Plugin case
 				if ($this->device_type>1000){
-					if (isset($PLUGIN_HOOKS['plugin_types'][$this->device_type])){
-						$function="plugin_version_".$PLUGIN_HOOKS['plugin_types'][$this->device_type];
-						if (function_exists($function)){
-							$data=$function();
-							if (isset($data['name'])){
-								return $data['name'];
-							}
+					// Use plugin name if set
+					if (isset($PLUGIN_HOOKS['plugin_typenames'][$this->device_type])
+						!empty($PLUGIN_HOOKS['plugin_typenames'][$this->device_type])){
+						return $PLUGIN_HOOKS['plugin_typenames'][$this->device_type];
+					} else { // Else use pluginname
+						if (isset($PLUGIN_HOOKS['plugin_types'][$this->device_type])){
+							$function="plugin_version_".$PLUGIN_HOOKS['plugin_types'][$this->device_type];
+							if (function_exists($function)){
+								$data=$function();
+								if (isset($data['name'])){
+									return $data['name'];
+								}
+							} 
 						} 
-					} 
+					}
 				}
 				break;
 		}
-
+		return "";
 	}
 
 	/**
