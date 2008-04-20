@@ -50,13 +50,15 @@ class DBmysql {
 	//! Database Error
 	var $error = 0;
 
-	//Slave management
+	/// Slave management
 	var $slave = false;
-	//Indicates if the first connection attempt is successful or not
-	//if first attempt fail -> display a warning which indicates
-	//that glpi is in readonly
+	/** Is it a first connection ?
+	* Indicates if the first connection attempt is successful or not
+	* if first attempt fail -> display a warning which indicates
+	* that glpi is in readonly
+	*/
 	var $first_connection = true;
-	
+	/// Is connected to the DB ?
 	var $connected = false;
 	
 	/**

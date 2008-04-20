@@ -37,6 +37,7 @@ if (!defined('GLPI_ROOT')){
 	die("Sorry. You can't access directly to this file");
 	}
 
+/// Mailgate class
 class Mailgate  extends CommonDBTM {
 
 
@@ -64,6 +65,14 @@ class Mailgate  extends CommonDBTM {
 		return $input;
 	}
 
+	/**
+	 * Print the mailgate form
+	 *
+	 *@param $target filename : where to go when done.
+	 *@param $ID Integer : Id of the item to print
+	 *
+	 *@return boolean item found
+	 **/
 	function showForm ($target,$ID) {
 
 		global $CFG_GLPI, $LANG;
@@ -164,23 +173,32 @@ class Mailgate  extends CommonDBTM {
  * Description: Reciving mail With Attechment
  * Email: mitulkoradia@gmail.com
  */
-
+/// Mailcollect class
 class MailCollect {
+	/// working entity
 	var $entity;
+	/// working charset of the mail
 	var $charset="";
 
+	/// IMAP / POP server
 	var $server='';
+	/// IMAP / POP login
 	var $username='';
+	/// IMAP / POP password
 	var $password='';
 	
+	/// IMAP / POP connection
 	var $marubox='';					
 	
-	var $email='';		
-
+	/// ID of the current message
 	var $mid = -1;
-	var $structure = false; 	
+	/// structure used to store the mail structure
+	var $structure = false;
+	/// structure used to store files attached to a mail
 	var $files; 	
+	/// Message to add to body to build ticket
 	var $addtobody; 
+	/// Number of ferchs emails
 	var $fetch_emails=0;
 
 	/**
@@ -252,11 +270,8 @@ class MailCollect {
 	
 	
 	
-	/* *** Primary Functions ***** *
-	* Functions called directly from the Script Flow portion of the script. */
-	
-	
-	/* function buildTicket - Builds,and returns, the major structure of the ticket to be entered . */
+	/** function buildTicket - Builds,and returns, the major structure of the ticket to be entered . 
+	*/
 	function buildTicket($i)
 	{
 		global $DB,$LANG,$CFG_GLPI;
@@ -368,7 +383,8 @@ class MailCollect {
 	}
 
 
-	/* function textCleaner - Strip out unwanted/unprintable characters from the subject. */
+	/** function textCleaner - Strip out unwanted/unprintable characters from the subject. 
+	*/
 	function textCleaner($text)
 	{
 		//$text= str_replace("'", "", $text);
@@ -377,7 +393,7 @@ class MailCollect {
 	}
 
 
-	//return supported encodings in lowercase.
+	///return supported encodings in lowercase.
 	function mb_list_lowerencodings() { 
 		$r=mb_list_encodings();
 		for ($n=sizeOf($r); $n--; ) { 
@@ -386,11 +402,12 @@ class MailCollect {
 		return $r;
 	}
 	
-	//  Receive a string with a mail header and returns it
+	/**  Receive a string with a mail header and returns it
 	// decoded to a specified charset.
 	// If the charset specified into a piece of text from header
 	// isn't supported by "mb", the "fallbackCharset" will be
 	// used to try to decode it.
+	*/
 	function decodeMimeString($mimeStr, $inputCharset='utf-8', $targetCharset='utf-8', $fallbackCharset='iso-8859-1') {
 		if (function_exists('mb_list_encodings')&&function_exists('mb_convert_encoding')){
 			$encodings=$this->mb_list_lowerencodings();
@@ -534,7 +551,7 @@ class MailCollect {
 		return false; 
 	} 
 	
-	/*
+	/**
 	 * used to get total unread mail from That mailbox
 	 *
 	 * Return : 

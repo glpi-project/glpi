@@ -51,17 +51,17 @@ class Identification {
 	var $user;
 	//! External authentification variable : boolean
 	var $extauth = 0;
-	//External authentifications methods;
+	///External authentifications methods;
 	var $auth_methods;
 
-	//Indicates if the user is authenticated or not
+	///Indicates if the user is authenticated or not
 	var $auth_succeded = 0;
 
-	//Indicates if the user is already present in database
+	///Indicates if the user is already present in database
 	var $user_present = 0;
-	// Really used ??? define twice but never used...
+	/// Really used ??? define twice but never used...
 	var $auth_parameters = array ();
-
+	/// LDAP connection descriptor
 	var $ldap_connection;
 	
 	/**
@@ -456,8 +456,6 @@ class Identification {
 **/
 class AuthMail extends CommonDBTM {
 
-	var $fields = array ();
-
 	/**
 	 * Constructor
 	 **/
@@ -559,8 +557,6 @@ class AuthMail extends CommonDBTM {
  *  Class used to manage Auth LDAP config
 **/
 class AuthLDAP extends CommonDBTM {
-
-	var $fields = array ();
 
 	/**
 	 * Constructor

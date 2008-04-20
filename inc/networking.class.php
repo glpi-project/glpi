@@ -440,13 +440,18 @@ class Netdevice extends CommonDBTM {
 /// Netport class
 class Netport extends CommonDBTM {
 
-
+	/// ID of the port connected to the current one
 	var $contact_id		= 0;
 
+	/// hardare data : name
 	var $device_name	= "";
+	/// hardare data : ID
 	var $device_ID		= 0;
+	/// hardare data : type
 	var $device_type		= 0;
+	/// hardare data : entity
 	var $FK_entities		= -1;
+	/// hardare data : location
 	var $location		= -1;
 
 	/**
@@ -552,8 +557,11 @@ class Netport extends CommonDBTM {
 /// Netwire class
 class Netwire {
 
+	/// ID of the netwire
 	var $ID		= 0;
+	/// first connected port ID
 	var $end1	= 0;
+	/// second connected port ID
 	var $end2	= 0;
 
 	/**

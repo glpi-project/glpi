@@ -178,6 +178,15 @@ class Monitor extends CommonDBTM {
 		$DB->query($query);
 	}
 
+	/**
+	 * Print the monitor form
+	 *
+	 *@param $target filename : where to go when done.
+	 *@param $ID Integer : Id of the item to print
+	 *@param $withtemplate integer template or basic item
+	 *
+	 *@return boolean item found
+	 **/
 	function showForm ($target,$ID,$withtemplate='') {
 
 		global $CFG_GLPI, $LANG;

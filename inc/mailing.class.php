@@ -44,8 +44,9 @@ require_once(GLPI_ROOT . "/lib/phpmailer/class.phpmailer.php");
  */
 class glpi_phpmailer extends phpmailer {
 
-	// Set default variables for all new objects
+	/// Set default variables for all new objects
 	var $WordWrap = 80;
+	/// Defaut charset
 	var $CharSet ="utf-8";
 
 
@@ -992,9 +993,11 @@ class MailingResa{
  */
 class MailingAlert
 {
-	//! mailing type (contract,infocom,cartridge,consumable)
+	/// mailing type (contract,infocom,cartridge,consumable)
 	var $type=NULL;
+	/// message to send
 	var $message="";
+	/// working entity
 	var $entity="";
 
 	/**

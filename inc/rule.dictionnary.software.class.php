@@ -168,15 +168,11 @@ class DictionnarySoftwareCollection extends RuleCachedCollection {
 	}
 
 	/**
-	 * Create a new software
+	 * Replay dictionnary on several softwares
+	 * @param $IDs array of software IDs to replay
+	 * @param $res_rule array of rule results
+	 * @return Query result handler
 	 */
-	function createSoftsInEnty(&$new_softs,$new_name,$manufacturer,$entity)
-	{
-		$new_softs[$entity][$new_name] = addSoftwareOrRestoreFromTrash($new_name,$manufacturer,$entity,'',IMPORT_TYPE_DICTIONNARY);
-		return $new_softs[$entity][$new_name];
-	}
-
-
 	function replayDictionnaryOnSoftwaresByID($IDs, $res_rule=array()) {
 		global $DB;
 		
@@ -188,8 +184,7 @@ class DictionnarySoftwareCollection extends RuleCachedCollection {
 						FROM glpi_software AS gs LEFT JOIN glpi_dropdown_manufacturer AS gm ON gs.FK_glpi_enterprise = gm.ID 
 						WHERE gs.is_template=0 AND gs.ID =" . $ID);
 			
-			if ($DB->numrows($res_soft))
-			{
+			if ($DB->numrows($res_soft)){
 				$soft = $DB->fetch_array($res_soft);
 				
 				//For each software
@@ -203,6 +198,15 @@ class DictionnarySoftwareCollection extends RuleCachedCollection {
 		$this->putOldSoftsInTrash($delete_ids);
 	}
 
+	/**
+	 * Replay dictionnary on one software
+	 * @param $new_softs array containing new softwares already computed
+	 * @param $res_rule array of rule results
+	 * @param $ID ID of the software
+	 * @param $entity working entity ID
+	 * @param $manufacturer manufacturer ID
+	 * @param $soft_ids array containing replay software need to be trashed
+	 */
 	function replayDictionnaryOnOneSoftware(&$new_softs,$res_rule, $ID,$entity, $name, $manufacturer, & $soft_ids) {
 		global $DB;
 
@@ -210,8 +214,7 @@ class DictionnarySoftwareCollection extends RuleCachedCollection {
 		$input["manufacturer"] = $manufacturer;
 		$input=addslashes_deep($input);
 
-		if (empty($res_rule))
-		{
+		if (empty($res_rule)){
 			$res_rule = $this->processAllRules($input, array (), array ());
 			$res_rule=addslashes_deep($res_rule);
 		}
@@ -228,10 +231,13 @@ class DictionnarySoftwareCollection extends RuleCachedCollection {
 				if (isset($res_rule["FK_glpi_enterprise"]))
 					$manufacturer = getDropdownName("glpi_dropdown_manufacturer",$res_rule["FK_glpi_enterprise"]);
 				//New software not already present in this entity
-				if (!isset($new_softs[$entity][$res_rule["name"]]))
-					$new_software_id = $this->createSoftsInEnty($new_softs,$res_rule["name"],$manufacturer,$entity);
-				else
+				if (!isset($new_softs[$entity][$res_rule["name"]])){
+					// create new software or restore it from trash
+					$new_software_id = addSoftwareOrRestoreFromTrash($new_name,$manufacturer,$entity,'',IMPORT_TYPE_DICTIONNARY);
+					$new_softs[$entity][$new_name] = $new_software_id; 
+				} else {
 					$new_software_id = $new_softs[$entity][$res_rule["name"]];
+				}
 			}			 
 			else
 				$new_software_id = $ID;
@@ -246,6 +252,7 @@ class DictionnarySoftwareCollection extends RuleCachedCollection {
 	
 	/**
 	 * Delete a list of softwares
+	 * @param $soft_ids array containing replay software need to be trashed
 	 */
 	function putOldSoftsInTrash($soft_ids) {
 		global $DB,$CFG_GLPI,$LANG;

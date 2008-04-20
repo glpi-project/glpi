@@ -41,7 +41,7 @@ if (!defined('GLPI_ROOT')){
 class Computer extends CommonDBTM {
 
 
-	//Device container - format $device = array(ID,"device type","ID in device table","specificity value")
+	///Device container - format $device = array(ID,"device type","ID in device table","specificity value")
 	var $devices	= array();
 
 	/**
