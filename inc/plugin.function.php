@@ -338,7 +338,7 @@ function pluginNewType($plugin,$name,$ID,$class,$table,$formpage='',$typename=''
 	$LINK_ID_TABLE[$ID]=$table;
 	$INFOFORM_PAGES[$ID]="plugins/$plugin/$formpage";
 	$PLUGIN_HOOKS['plugin_types'][$ID]=$plugin;
-	$PLUGIN_HOOKS['plugin_typenames'][$ID]=$plugin;
+	$PLUGIN_HOOKS['plugin_typenames'][$ID]=$typename;
 	$PLUGIN_HOOKS['plugin_classes'][$ID]=$class;
 }
 ?>
