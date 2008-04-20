@@ -335,7 +335,7 @@ function showEnterpriseContract($instID) {
 		}
 		$entID=$DB->result($result, $i, "entID");
 		$entity=$DB->result($result, $i, "entity");
-		$used[]=$entID;
+		$used[$entID]=$entID;
 		$entname=getDropdownName("glpi_enterprises",$entID);
 		echo "<tr class='tab_bg_1'>";
 		echo "<td class='center'><a href='".$CFG_GLPI["root_doc"]."/front/enterprise.form.php?ID=$entID'>".$entname;
@@ -635,7 +635,7 @@ function showContractAssociatedEnterprise($ID){
 	$used=array();
 	while ($data=$DB->fetch_array($result)) {
 		$cID=$data["ID"];
-		$used[]=$cID;
+		$used[$cID]=$cID;
 		$assocID=$data["assocID"];;
 		echo "<tr class='tab_bg_1".($data["deleted"]?"_2":"")."'>";
 		echo "<td class='center'><a href='".$CFG_GLPI["root_doc"]."/front/contract.form.php?ID=$cID'><strong>".$data["name"];

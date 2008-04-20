@@ -1049,16 +1049,15 @@ class Rule extends CommonDBTM{
 
 		$items=array();
 		foreach ($this->getActions() as $ID => $act){
-				$items[$ID]=$act['name'];
+			$items[$ID]=$act['name'];
 		}
 
 		$rand=dropdownArrayValues("field", $items,'',$used);
-			$params=array('field'=>'__VALUE__',
-					'rule_type'=>$this->rule_type
-			);
-			ajaxUpdateItemOnSelectEvent("dropdown_field$rand","action_span",$CFG_GLPI["root_doc"]."/ajax/ruleaction.php",$params,false);
-			ajaxUpdateItem("action_span",$CFG_GLPI["root_doc"]."/ajax/ruleaction.php",$params,false,"dropdown_field$rand");
-	
+		$params=array('field'=>'__VALUE__',
+				'rule_type'=>$this->rule_type
+		);
+		ajaxUpdateItemOnSelectEvent("dropdown_field$rand","action_span",$CFG_GLPI["root_doc"]."/ajax/ruleaction.php",$params,false);
+		ajaxUpdateItem("action_span",$CFG_GLPI["root_doc"]."/ajax/ruleaction.php",$params,false,"dropdown_field$rand");
 	}
 
 	/**

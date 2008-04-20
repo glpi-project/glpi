@@ -1357,11 +1357,22 @@ function checkAlternateAuthSystems($redirect=false){
 	return false;
 }
 
-/// Is an alternate auth ?
+/**
+ * Is an alternate auth ?
+ * 
+ * @param $id_auth auth type
+ * @return boolean
+**/
 function isAlternateAuth($id_auth){
 	return  in_array($id_auth,array(AUTH_X509,AUTH_CAS,AUTH_EXTERNAL));
 }
 
+/**
+ * Is an alternate auth wich used LDAP extra server?
+ * 
+ * @param $id_auth auth type
+ * @return boolean
+**/
 function isAlternateAuthWithLdap($id_auth){
 	global $CFG_GLPI;
 	return (isAlternateAuth($id_auth) && $CFG_GLPI["extra_ldap_server"] > 0);

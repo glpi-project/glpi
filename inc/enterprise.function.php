@@ -155,7 +155,7 @@ function showAssociatedContact($instID) {
 	$used=array();
 	if ($number) while ($data=$DB->fetch_array($result)) {
 		$ID=$data["ID_ent"];
-		$used[]=$data["ID"];
+		$used[$data["ID"]]=$data["ID"];
 		echo "<tr class='tab_bg_1".($data["deleted"]?"_2":"")."'>";
 		echo "<td class='center'><a href='".$CFG_GLPI["root_doc"]."/front/contact.form.php?ID=".$data["ID"]."'>".$data["name"]." ".$data["firstname"]."</a></td>";
 		echo "<td align='center'  width='100'>".getDropdownName("glpi_entities",$data["entity"])."</td>";

@@ -92,7 +92,7 @@ if (!defined('GLPI_ROOT')){
 	die("Sorry. You can't access directly to this file");
 	}
 
-
+/// Cron class
 class Cron {
 
 	/// Array of defined tasks

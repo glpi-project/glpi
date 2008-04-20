@@ -33,6 +33,7 @@ if (!defined('GLPI_ROOT')) {
 	die("Sorry. You can't access directly to this file");
 }
 
+/// Bookmark class
 class Bookmark extends CommonDBTM {
 
 	/**

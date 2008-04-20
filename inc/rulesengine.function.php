@@ -421,10 +421,9 @@ function getAlreadyUsedActionsByRuleID($rule_id,$rule_type){
 	$res = $DB->query("SELECT field FROM glpi_rules_actions WHERE FK_rules=".$rule_id);
 	while ($action = $DB->fetch_array($res)){
 		if (isset($RULES_ACTIONS[$rule_type][$action["field"]])) {
-			$actions[] = $RULES_ACTIONS[$rule_type][$action["field"]]["name"];
+			$actions[$action["field"]] = $action["field"];
 		}
 	}
-
 	return $actions;	
 }
 

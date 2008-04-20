@@ -102,7 +102,7 @@ function showGroupUser($target,$ID){
 					echo "</td>";
 				}
 	
-				$used[]=$data["ID"];
+				$used[$data["ID"]]=$data["ID"];
 				
 				echo "<td>";
 				echo formatUserName($data["ID"],$data["name"],$data["realname"],$data["firstname"],1);

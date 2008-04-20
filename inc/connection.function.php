@@ -265,10 +265,7 @@ function Disconnect($ID,$dohistory=1,$doautoactions=true,$ocs_server_id=0) {
 
 
 /**
- *
  * Makes a direct connection
- *
- *
  *
  * @param $sID connection source ID.
  * @param $cID computer ID (where the sID would be connected).
@@ -354,6 +351,13 @@ function Connect($sID,$cID,$type,$dohistory=1) {
 	return $newID;	
 }
 
+/**
+ * Get the connection count of an item
+ *
+ * @param $type item type
+ * @param $ID item ID
+ * @return integer connection count
+ */
 function getNumberConnections($type,$ID){
 	global $DB;
 	$query = "SELECT count(*) FROM glpi_connect_wire INNER JOIN glpi_computers ON ( glpi_connect_wire.end2=glpi_computers.ID ) WHERE glpi_connect_wire.end1 = '$ID' AND glpi_connect_wire.type = '$type' AND glpi_computers.deleted='0' AND glpi_computers.is_template='0'";
@@ -366,6 +370,12 @@ function getNumberConnections($type,$ID){
 
 }
 
+/**
+ * Unglobalize an item : duplicate item and connections
+ *
+ * @param $device_type item type
+ * @param $ID item ID
+ */
 function unglobalizeDevice($device_type,$ID){
 	global $DB;
 	$ci=new CommonItem();
