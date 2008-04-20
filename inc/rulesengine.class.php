@@ -2089,7 +2089,8 @@ class RuleCached extends Rule{
 			FROM ".$rulecollection->cache_table.", glpi_rules_descriptions
 			WHERE ".$rulecollection->cache_table.".rule_id=glpi_rules_descriptions.ID 
 			AND ".$rulecollection->cache_table.".rule_id=".$this->fields["ID"]." 
-			ORDER BY name"
+			ORDER BY name";
+
 		$res_count=$DB->query($query);
 
 		$this->showCacheRuleHeader();

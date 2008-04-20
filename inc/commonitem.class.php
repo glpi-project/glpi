@@ -311,7 +311,7 @@ class CommonItem{
 				if ($this->device_type>1000){
 					// Use plugin name if set
 					if (isset($PLUGIN_HOOKS['plugin_typenames'][$this->device_type])
-						!empty($PLUGIN_HOOKS['plugin_typenames'][$this->device_type])){
+						&& !empty($PLUGIN_HOOKS['plugin_typenames'][$this->device_type])){
 						return $PLUGIN_HOOKS['plugin_typenames'][$this->device_type];
 					} else { // Else use pluginname
 						if (isset($PLUGIN_HOOKS['plugin_types'][$this->device_type])){
