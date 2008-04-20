@@ -327,16 +327,18 @@ function getPluginSearchOption(){
  * @param $class class defined for manipulate this device type
  * @param $table table describing the device
  * @param $formpage Form page for the item
+ * @param $typename string defining the name of the new type (used in CommonItem)
  * @return nothing
  */
 
-function pluginNewType($plugin,$name,$ID,$class,$table,$formpage){
+function pluginNewType($plugin,$name,$ID,$class,$table,$formpage='',$typename=''){
 	global $PLUGIN_HOOKS,$LINK_ID_TABLE,$INFOFORM_PAGES; 
 
 	define($name,$ID);
 	$LINK_ID_TABLE[$ID]=$table;
 	$INFOFORM_PAGES[$ID]="plugins/$plugin/$formpage";
 	$PLUGIN_HOOKS['plugin_types'][$ID]=$plugin;
+	$PLUGIN_HOOKS['plugin_typenames'][$ID]=$plugin;
 	$PLUGIN_HOOKS['plugin_classes'][$ID]=$class;
 }
 ?>
