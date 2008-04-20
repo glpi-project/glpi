@@ -36,7 +36,7 @@ if (!defined('GLPI_ROOT')) {
 	die("Sorry. You can't access directly to this file");
 }
 
-
+/// OCS Rules collection class
 class OcsRuleCollection extends RuleCollection {
 
 	//Store the id of the ocs server
@@ -115,10 +115,8 @@ class OcsRuleCollection extends RuleCollection {
 			$fields = $this->getFieldsForQuery(1);
 
 			//May have more than one line : for example in case of multiple network cards
-			if ($DBocs->numrows($result) > 0)
-			{
-				while ($datas = $DBocs->fetch_array($result))
-				{
+			if ($DBocs->numrows($result) > 0){
+				while ($datas = $DBocs->fetch_array($result)){
 					foreach ($fields as $field) {
 						if ($field != "OCS_SERVER" && isset($datas[$field]))
 							$ocs_datas[$field][] = $datas[$field];
@@ -157,8 +155,12 @@ class OcsRuleCollection extends RuleCollection {
 		return $tables;		  
 	}
 	
-	function getFieldsForQuery($withouttable=0)
-	{
+	/**
+	* Get fields needed to process criterias
+	* @param $withouttable fields without tablename ?
+	* @return an array of needed fields
+	*/
+	function getFieldsForQuery($withouttable=0){
 		global $RULES_CRITERIAS;
 
 		$fields = array();
@@ -195,8 +197,11 @@ class OcsRuleCollection extends RuleCollection {
 	}
 	
 	
-	function getFKFieldsForQuery()
-	{
+	/**
+	* Get foreign fields needed to process criterias
+	* @return an array of needed fields
+	*/
+	function getFKFieldsForQuery()	{
 		global $RULES_CRITERIAS;
 
 		$fields = array();
@@ -212,13 +217,7 @@ class OcsRuleCollection extends RuleCollection {
 
 }
 
-/**
-* Rule class store all informations about a GLPI rule :
-*   - description
-*   - criterias
-*   - actions
-* 
-**/
+/// OCS Rules class
 class OcsAffectEntityRule extends Rule {
 
 

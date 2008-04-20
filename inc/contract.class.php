@@ -125,15 +125,11 @@ class Contract extends CommonDBTM {
 	/**
 	 * Print the contract form
 	 *
-	 *
-	 * Print general contract form
-	 *
 	 *@param $target filename : where to go when done.
-	 *@param $ID Integer : Id of the contact to print
-	 *@param $withtemplate='' boolean : template or basic item
+	 *@param $ID Integer : Id of the item to print
+	 *@param $withtemplate integer template or basic item
 	 *
-	 *@return Nothing (display)
-	 *
+	  *@return boolean item found
 	 **/
 	function showForm ($target,$ID,$withtemplate='') {
 		// Show Contract or blank form

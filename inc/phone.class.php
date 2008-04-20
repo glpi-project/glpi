@@ -194,6 +194,15 @@ class Phone extends CommonDBTM {
 		$result = $DB->query($query);
 	}
 
+	/**
+	 * Print the phone form
+	 *
+	 *@param $target filename : where to go when done.
+	 *@param $ID Integer : Id of the item to print
+	 *@param $withtemplate integer template or basic item
+	 *
+	 *@return boolean item found
+	 **/
 	function showForm ($target,$ID,$withtemplate='') {
 
 		global $CFG_GLPI, $LANG;
