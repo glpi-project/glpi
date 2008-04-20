@@ -37,7 +37,7 @@ if (!defined('GLPI_ROOT')){
 	die("Sorry. You can't access directly to this file");
 	}
 
-// Config class 
+/// Config class 
 class Config extends CommonDBTM {
 
 	/**
@@ -855,7 +855,7 @@ class Config extends CommonDBTM {
 
 }
 
-// OCS Config class
+/// OCS Config class
 class ConfigOCS extends CommonDBTM {
 
 	/**

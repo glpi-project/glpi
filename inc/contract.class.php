@@ -38,7 +38,7 @@ if (!defined('GLPI_ROOT')){
 	}
 
 
-
+/// Contract class
 class Contract extends CommonDBTM {
 
 	/**

@@ -37,9 +37,7 @@ if (!defined('GLPI_ROOT')){
 	die("Sorry. You can't access directly to this file");
 	}
 
-// CLASSES Computers
-
-
+/// Computer class
 class Computer extends CommonDBTM {
 
 
@@ -456,7 +454,7 @@ class Computer extends CommonDBTM {
 	 *
 	 *@param $target form target
 	 *@param $ID Integer : Id of the computer or the template to print
-	 *@param $withtemplate='' boolean : template or basic computer
+	 *@param $withtemplate template or basic computer
 	 *
 	 *
 	 *@return Nothing (display)

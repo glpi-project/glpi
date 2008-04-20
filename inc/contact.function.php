@@ -84,7 +84,7 @@ function showEnterpriseContact($instID) {
 	$used=array();
 	while ($data= $DB->fetch_array($result)) {
 		$ID=$data["ID"];
-		$used[]=$data["entID"];
+		$used[$data["entID"]]=$data["entID"];
 		$website=$data["website"];
 		if (!empty($website)){
 			$website=$data["website"];

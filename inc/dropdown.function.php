@@ -112,17 +112,17 @@ function dropdownValue($table,$myname,$value='',$display_comments=1,$entity_rest
 		}
 	}
 	
-        $params=array('searchText'=>'__VALUE__',
-                        'value'=>$value,
-                        'table'=>$table,
-                        'myname'=>$myname,
-                        'limit'=>$limit_length,
-                        'comments'=>$display_comments,
-                        'rand'=>$rand,
-                        'entity_restrict'=>$entity_restrict,
-						'update_item'=>$update_item,
-						'used'=>$used
-                        );
+	$params=array('searchText'=>'__VALUE__',
+			'value'=>$value,
+			'table'=>$table,
+			'myname'=>$myname,
+			'limit'=>$limit_length,
+			'comments'=>$display_comments,
+			'rand'=>$rand,
+			'entity_restrict'=>$entity_restrict,
+			'update_item'=>$update_item,
+			'used'=>$used
+			);
 	$default="<select name='$myname' id='dropdown_".$myname.$rand."'><option value='$value'>$name</option></select>\n";
 	ajaxDropdown($use_ajax,"/ajax/dropdownValue.php",$params,$default,$rand);
 
@@ -828,8 +828,6 @@ function dropdownAllItems($myname,$value_type=0,$value=0,$entity_restrict=-1,$ty
 /**
  * Make a select box for a boolean choice (Yes/No)
  *
- *
- *
  * @param $name select name
  * @param $value preselected value.
  * @return nothing (print out an HTML select box)
@@ -842,6 +840,12 @@ function dropdownYesNo($name,$value=0){
 	echo "</select>\n";	
 }	
 
+/**
+ * Get Yes No string
+ *
+ * @param $value Yes No value
+ * @return string
+ */
 function getYesNo($value){
 	global $LANG;
 	if ($value){
@@ -1066,8 +1070,6 @@ function dropdownMyDevices($userID=0,$entity_restrict=-1){
 /**
  * Make a select box for Tracking All Devices
  *
- *
- *
  * @param $myname select name
  * @param $value preselected value.
  * @param $admin is an admin access ? 
@@ -1139,8 +1141,6 @@ function dropdownTrackingAllDevices($myname,$value,$admin=0,$entity_restrict=-1)
 /**
  * Make a select box for connections
  *
- *
- *
  * @param $type type to connect
  * @param $fromtype from where the connection is
  * @param $myname select name
@@ -1149,8 +1149,6 @@ function dropdownTrackingAllDevices($myname,$value,$admin=0,$entity_restrict=-1)
  * @return nothing (print out an HTML select box)
  */
 function dropdownConnect($type,$fromtype,$myname,$entity_restrict=-1,$onlyglobal=0) {
-
-
 	global $CFG_GLPI,$LINK_ID_TABLE;
 
 	$rand=mt_rand();
@@ -1186,7 +1184,6 @@ function dropdownConnect($type,$fromtype,$myname,$entity_restrict=-1,$onlyglobal
 /**
  * Make a select box for  connected port
  *
- *
  * @param $ID ID of the current port to connect
  * @param $type type of device where to search ports
  * @param $myname select name
@@ -1194,8 +1191,6 @@ function dropdownConnect($type,$fromtype,$myname,$entity_restrict=-1,$onlyglobal
  * @return nothing (print out an HTML select box)
  */
 function dropdownConnectPort($ID,$type,$myname,$entity_restrict=-1) {
-
-
 	global $LANG,$CFG_GLPI;
 
 	$rand=mt_rand();
@@ -1234,8 +1229,6 @@ function dropdownConnectPort($ID,$type,$myname,$entity_restrict=-1) {
  * @return nothing (print out an HTML select box)
  */
 function dropdownDocument($myname,$entity_restrict='',$used=array()) {
-
-
 	global $DB,$LANG,$CFG_GLPI;
 
 	$rand=mt_rand();
@@ -1354,7 +1347,6 @@ function autocompletionTextField($myname,$table,$field,$value='',$size=20,$entit
 /**
  * Make a select box form  for device type 
  *
- *
  * @param $target URL to post the form
  * @param $cID computer ID
  * @param $withtemplate is it a template computer ?
@@ -1412,6 +1404,12 @@ function device_selecter($target,$cID,$withtemplate='') {
 	}
 }
 
+/**
+ * Dropdown of actions for massive action
+ *
+ * @param $device_type item type
+ * @param $deleted massive action for deleted items ?
+ */
 function dropdownMassiveAction($device_type,$deleted=0){
 	global $LANG,$CFG_GLPI,$PLUGIN_HOOKS;
 
@@ -1546,6 +1544,11 @@ function dropdownMassiveAction($device_type,$deleted=0){
 	echo "<span id='show_massiveaction'>&nbsp;</span>\n";
 }
 
+/**
+ * Dropdown of actions for massive action of networking ports
+ *
+ * @param $device_type item type
+ */
 function dropdownMassiveActionPorts($device_type){
 	global $LANG,$CFG_GLPI;
 
@@ -1568,6 +1571,15 @@ function dropdownMassiveActionPorts($device_type){
 	echo "<span id='show_massiveaction'>&nbsp;</span>\n";
 }
 
+/**
+ * Dropdown for global item management
+ *
+ * @param $target target for actions
+ * @param $withtemplate template or basic computer
+ * @param $ID item ID
+ * @param $value value of global state
+ * @param $management_restrict global management restrict mode
+ */
 function globalManagementDropdown($target,$withtemplate,$ID,$value,$management_restrict=0){
 	global $LANG,$CFG_GLPI;	
 	if ($value&&empty($withtemplate)) {
@@ -1595,7 +1607,12 @@ function globalManagementDropdown($target,$withtemplate,$ID,$value,$management_r
 
 	}
 }
-
+/**
+ * Dropdown for alerting of contracts
+ *
+* @param $myname select name
+ * @param $value default value
+ */
 function dropdownContractAlerting($myname,$value){
 	global $LANG;
 	echo "<select name='$myname'>";
@@ -1663,6 +1680,12 @@ function dropdownHours($name,$value,$limit_planning=0){
 	echo "</select>";	
 }	
 
+/**
+ * Dropdown licenses for a software
+ *
+* @param $myname select name
+ * @param $sID software ID
+ */
 function dropdownLicenseOfSoftware($myname,$sID) {
 	global $DB,$LANG;
 
@@ -1687,7 +1710,16 @@ function dropdownLicenseOfSoftware($myname,$sID) {
 
 }
 
-
+/**
+ * Dropdown integers
+ *
+* @param $myname select name
+ * @param $value default value
+ * @param $min min value
+ * @param $max max value
+ * @param $step step used
+ * @param $toadd values to add at the beginning
+ */
 function dropdownInteger($myname,$value,$min=0,$max=100,$step=1,$toadd=array()){
 
 	echo "<select name='$myname'>\n";
@@ -1702,7 +1734,12 @@ function dropdownInteger($myname,$value,$min=0,$max=100,$step=1,$toadd=array()){
 	echo "</select>";
 
 }
-
+/**
+ * Dropdown available languages
+ *
+* @param $myname select name
+ * @param $value default value
+ */
 function dropdownLanguages($myname,$value){
 	global $CFG_GLPI;
 	echo "<select name='$myname'>";
@@ -1717,6 +1754,12 @@ function dropdownLanguages($myname,$value){
 	echo "</select>";
 }
 
+/**
+ * Display entities of the loaded profile
+ *
+* @param $myname select name
+ * @param $target target for entity change action
+ */
 function displayActiveEntities($target,$myname){
 	global $CFG_GLPI,$LANG;
 	
@@ -1739,7 +1782,14 @@ function displayActiveEntities($target,$myname){
 	echo "</table>";
 */
 }
-
+/**
+ * Display entities tree 
+ *
+ * @param $myname select name
+ * @param $target target for entity change action
+ * @param $tree the entity tree structure
+ * @param $level current level displayed
+ */
 function displayEntityTree($target,$myname,$tree,$level=0){
 	global $CFG_GLPI,$LANG;
 
@@ -1809,6 +1859,12 @@ function displayEntityTree($target,$myname,$tree,$level=0){
 
 
 
+/**
+ * Dropdown of ticket status 
+ *
+ * @param $name select name
+ * @param $value default value
+ */
 function dropdownStatus($name,$value=0){
 	global $LANG;
 
@@ -1822,6 +1878,11 @@ function dropdownStatus($name,$value=0){
 	echo "</select>";	
 }
 
+/**
+ * Get ticket status Name
+ *
+ * @param $value status ID
+ */
 function getStatusName($value){
 	global $LANG;
 
@@ -1847,6 +1908,13 @@ function getStatusName($value){
 	}	
 }
 
+/**
+ * Dropdown of ticket priority 
+ *
+ * @param $name select name
+ * @param $value default value
+ * @param $complete see also at least selection
+ */
 function dropdownPriority($name,$value=0,$complete=0){
 	global $LANG;
 
@@ -1868,7 +1936,11 @@ function dropdownPriority($name,$value=0,$complete=0){
 	echo "</select>";	
 }
 
-
+/**
+ * Get ticket priority Name
+ *
+ * @param $value status ID
+ */
 function getPriorityName($value){
 	global $LANG;
 
@@ -1890,7 +1962,11 @@ function getPriorityName($value){
 			break;
 	}	
 }
-
+/**
+ * Get ticket request type name
+ *
+ * @param $value status ID
+ */
 function getRequestTypeName($value){
 	global $LANG;
 
@@ -1916,7 +1992,12 @@ function getRequestTypeName($value){
 		default : return "";
 	}	
 }
-
+/**
+ * Dropdown of ticket request type 
+ *
+ * @param $name select name
+ * @param $value default value
+ */
 function dropdownRequestType($name,$value=0){
 	global $LANG;
 
@@ -1932,6 +2013,12 @@ function dropdownRequestType($name,$value=0){
 	echo "</select>";	
 }
 
+/**
+ * Dropdown of amortissement type for infocoms
+ *
+ * @param $name select name
+ * @param $value default value
+ */
 function dropdownAmortType($name,$value=0){
 	global $LANG;
 
@@ -1941,6 +2028,11 @@ function dropdownAmortType($name,$value=0){
 	echo "<option value='1' ".($value==1?" selected ":"").">".$LANG["financial"][48]."</option>";
 	echo "</select>";	
 }
+/**
+ * Get amortissement type name for infocoms
+ *
+ * @param $value status ID
+ */
 function getAmortTypeName($value){
 	global $LANG;
 
@@ -1957,7 +2049,11 @@ function getAmortTypeName($value){
 
 	}
 }	
-
+/**
+ * Get planninf state name
+ *
+ * @param $value status ID
+ */
 function getPlanningState($value)
 {
 	global $LANG;
@@ -1976,7 +2072,12 @@ function getPlanningState($value)
 	
 }
 
-
+/**
+ * Dropdown of planning state
+ *
+ * @param $name select name
+ * @param $value default value
+ */
 function dropdownPlanningState($name,$value='')
 {
 	global $LANG;
@@ -1990,16 +2091,24 @@ function dropdownPlanningState($name,$value='')
 	echo "</select>";	
 	
 }
-	
+
+/**
+ * Dropdown of values in an array
+ *
+ * @param $name select name
+ * @param $used already used elements key (do not display)
+ * @param $elements array of elements to display
+ * @param $value default value
+ */	
 function dropdownArrayValues($name,$elements,$value='',$used=array())
 {
 	$rand=mt_rand();
 	echo "<select name='$name' id='dropdown_".$name.$rand."'>";
 
 	foreach($elements as $key => $val){
-			if (!in_array($val,$used)) {
-				echo "<option value='".$key."'".($value==$key?" selected ":"").">".$val."</option>";				
-			}
+		if (!isset($used[$key])) {
+			echo "<option value='".$key."'".($value==$key?" selected ":"").">".$val."</option>";				
+		}
 	}
 
 	echo "</select>";	

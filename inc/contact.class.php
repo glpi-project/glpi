@@ -38,7 +38,7 @@ if (!defined('GLPI_ROOT')){
 	}
 
 
-// CLASSES contact
+/// Contact class
 class Contact extends CommonDBTM{
 
 	/**

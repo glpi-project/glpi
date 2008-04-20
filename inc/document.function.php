@@ -383,7 +383,7 @@ function showDocumentAssociated($device_type,$ID,$withtemplate=''){
 	if ($number){
 		while ($data=$DB->fetch_assoc($result)) {
 			$docID=$data["ID"];
-			$used[]=$docID;
+			$used[$docID]=$docID;
 			$assocID=$data["assocID"];
 	
 			echo "<tr class='tab_bg_1".($data["deleted"]?"_2":"")."'>";
@@ -453,7 +453,7 @@ function showDocumentAssociated($device_type,$ID,$withtemplate=''){
 				"</td>";
 
 			if ($device_type==DOCUMENT_TYPE){
-				$used[]=$ID;
+				$used[$ID]=$ID;
 			}
 
 			if ($nb>count($used)) {
