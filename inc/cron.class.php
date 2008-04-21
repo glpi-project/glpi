@@ -100,6 +100,7 @@ class Cron {
 
 	/**
 	 * Constructor
+	 * @param $taches  task array for manual use
 	 **/
 	function Cron($taches=array()){
 		global $CFG_GLPI;
@@ -287,7 +288,10 @@ class Cron {
 
 
 
-	/// Set a local lock
+	/** Set a local lock
+	*@param $nom lock name
+	*@param $timeout lock timeout
+	*/
 	function get_lock($nom, $timeout = 0) {
 		global $DB, $CFG_GLPI;
 
@@ -304,7 +308,9 @@ class Cron {
 		return $lock_ok;
 	}
 
-	/// Unset a local lock
+	/** Unets a local lock
+	*@param $nom lock name
+	*/
 	function release_lock($nom) {
 		global $DB,$CFG_GLPI;
 

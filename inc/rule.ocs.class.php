@@ -59,10 +59,6 @@ class OcsRuleCollection extends RuleCollection {
 		return $LANG["rulesengine"][18];
 	}
 
-	/**
-	 * Get the attributes needed for processing the rules
-	 * @return an array of attributes
-	 */
 	function prepareInputDataForProcess($input,$computer_id){
 		global $DBocs;
 		$tables = $this->getTablesForQuery();

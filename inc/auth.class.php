@@ -74,7 +74,7 @@ class Identification {
 
 	/**
 	 * Is the user exists in the DB
-	 *
+	 * @param $name user login to check
 	 * @return 0 (Not in the DB -> check external auth), 1 ( Exist in the DB with a password -> check first local connection and external after), 2 (Exist in the DB with no password -> check only external auth)
 	 *
 	**/

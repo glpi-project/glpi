@@ -203,77 +203,82 @@ class MailCollect {
 
 	/**
 	* Constructor
+	* @param $server IMAP/POP server address
+	* @param $username IMAP/POP user name
+	* @param $password IMAP/POP password
+	* @param $entity entity ID used
+	* @param $display display messages in MessageAfterRedirect or just return error
+	* @return if $display = false return messages result string
 	*/
 	function collect($server,$username,$password,$entity,$display=0){
-			global $LANG;
-			$this->entity=$entity;
+		global $LANG;
+		$this->entity=$entity;
 
-			$this->server			=	$server;
-			$this->username			=	$username;
-			$this->password			=	$password;
-			$this->mid				= -1;
+		$this->server	=	$server;
+		$this->username	=	$username;
+		$this->password	=	$password;
+		$this->mid	= -1;
 
-			$this->fetch_emails = 0;
-			//Connect to the Mail Box
-			$this->connect();
+		$this->fetch_emails = 0;
+		//Connect to the Mail Box
+		$this->connect();
 
-			if ($this->marubox){
-				// Get Total Number of Unread Email in mail box
-				$tot=$this->getTotalMails(); //Total Mails in Inbox Return integer value
-				$error=0;
+		if ($this->marubox){
+			// Get Total Number of Unread Email in mail box
+			$tot=$this->getTotalMails(); //Total Mails in Inbox Return integer value
+			$error=0;
 
-				for($i=1;$i<=$tot && $i<= MAX_MAILS_RETRIEVED;$i++){
-					$tkt= $this->buildTicket($i);
-					$this->deleteMails($i); // Delete Mail from Mail box
-					$result=imap_fetchheader($this->marubox,$i);
+			for($i=1;$i<=$tot && $i<= MAX_MAILS_RETRIEVED;$i++){
+				$tkt= $this->buildTicket($i);
+				$this->deleteMails($i); // Delete Mail from Mail box
+				$result=imap_fetchheader($this->marubox,$i);
 
-					// Is a mail responding of an already existgin ticket ?
-					if (array_key_exists('tracking',$tkt) ) {
-						// Deletion of message with sucess
-						if (false === is_array($result)){
-							$fup=new Followup();
-							$fup->add($tkt);
-						} else {
-							$error++;
-						}
-					} else { // New ticket
-						// Deletion of message with sucess
-						if (false === is_array($result)){
-							$track=new job;
-							$track->add($tkt);
-						} else {
-							$error++;
-						}
+				// Is a mail responding of an already existgin ticket ?
+				if (array_key_exists('tracking',$tkt) ) {
+					// Deletion of message with sucess
+					if (false === is_array($result)){
+						$fup=new Followup();
+						$fup->add($tkt);
+					} else {
+						$error++;
 					}
-					$this->fetch_emails++;
+				} else { // New ticket
+					// Deletion of message with sucess
+					if (false === is_array($result)){
+						$track=new job;
+						$track->add($tkt);
+					} else {
+						$error++;
+					}
 				}
-				imap_expunge($this->marubox);
-				$this->close_mailbox();   //Close Mail Box
+				$this->fetch_emails++;
+			}
+			imap_expunge($this->marubox);
+			$this->close_mailbox();   //Close Mail Box
 
-				if ($display){
-					addMessageAfterRedirect($LANG["mailgate"][3].": ".$this->fetch_emails." ".($error>0?"($error ".$LANG["common"][63].")":""));
-				} else {
-					return $LANG["mailgate"][3].": ".$this->fetch_emails." ".($error>0?"($error ".$LANG["common"][63].")":"");
-				}
-				
+			if ($display){
+				addMessageAfterRedirect($LANG["mailgate"][3].": ".$this->fetch_emails." ".($error>0?"($error ".$LANG["common"][63].")":""));
+			} else {
+				return $LANG["mailgate"][3].": ".$this->fetch_emails." ".($error>0?"($error ".$LANG["common"][63].")":"");
 			}
-			else
-			{
-				if ($display){
-					addMessageAfterRedirect($LANG["log"][41]);
-				} else {
-					return $LANG["log"][41];
-				}
-//				return 0;
+			
+		}else{
+			if ($display){
+				addMessageAfterRedirect($LANG["log"][41]);
+			} else {
+				return $LANG["log"][41];
 			}
+//			return 0;
+		}
 	} // end function MailCollect
 	
 	
 	
 	/** function buildTicket - Builds,and returns, the major structure of the ticket to be entered . 
+	* @param $i mail ID
+	* @return ticket fields array
 	*/
-	function buildTicket($i)
-	{
+	function buildTicket($i){
 		global $DB,$LANG,$CFG_GLPI;
 	
 		$head=$this->getHeaders($i);  // Get Header Info Return Array Of Headers **Key Are (subject,to,toOth,toNameOth,from,fromName)
@@ -384,6 +389,8 @@ class MailCollect {
 
 
 	/** function textCleaner - Strip out unwanted/unprintable characters from the subject. 
+	* @param $text text to clean
+	* @return clean text
 	*/
 	function textCleaner($text)
 	{
@@ -407,6 +414,11 @@ class MailCollect {
 	// If the charset specified into a piece of text from header
 	// isn't supported by "mb", the "fallbackCharset" will be
 	// used to try to decode it.
+	* @param $mimeStr mime header string
+	* @param $inputCharset input charset
+	* @param $targetCharset target charset
+	* @param $fallbackCharset charset used if input charset not supported by mb
+	* @return decoded string
 	*/
 	function decodeMimeString($mimeStr, $inputCharset='utf-8', $targetCharset='utf-8', $fallbackCharset='iso-8859-1') {
 		if (function_exists('mb_list_encodings')&&function_exists('mb_convert_encoding')){
@@ -465,7 +477,7 @@ class MailCollect {
 	/**
 	*This function is use full to Get Header info from particular mail
 	*
-	* @arg $mid               = Mail Id of a Mailbox
+	* @param $mid               = Mail Id of a Mailbox
 	*
 	* @return Return Associative array with following keys
 	*	subject   => Subject of Mail
@@ -494,9 +506,11 @@ class MailCollect {
 		return $mail_details;
 	}
 
-	///Get Mime type Internal Private Use
-	function get_mime_type(&$structure) 
-	{ 
+	/**Get Mime type Internal Private Use
+	* @param $structure mail structure
+	* @return mime type
+	*/
+	function get_mime_type(&$structure) { 
 		$primary_mime_type = array("TEXT", "MULTIPART", "MESSAGE", "APPLICATION", "AUDIO", "IMAGE", "VIDEO", "OTHER"); 
 		
 		if($structure->subtype) { 
@@ -506,43 +520,38 @@ class MailCollect {
 	}
 	
 	
-	///Get Part Of Message Internal Private Use
-	function get_part($stream, $msg_number, $mime_type, $structure = false, $part_number = false) 
-	{ 
+	/**Get Part Of Message Internal Private Use
+	* @param $stream An IMAP stream returned by imap_open
+	* @param $msg_number The message number
+	* @param $mime_type mime type of the mail
+	* @param $structure struture of the mail
+	* @param $part_number The part number.
+	* @return data of false if error
+	*/
+	function get_part($stream, $msg_number, $mime_type, $structure = false, $part_number = false) { 
 		if($structure) { 		
-			if($mime_type == $this->get_mime_type($structure))
-			{ 
-				if(!$part_number) 
-				{ 
+			if($mime_type == $this->get_mime_type($structure)){ 
+				if(!$part_number) { 
 					$part_number = "1"; 
 				} 
 				$text = imap_fetchbody($stream, $msg_number, $part_number); 
-				if($structure->encoding == 3) 
-				{ 
+				if($structure->encoding == 3) { 
 					return imap_base64($text); 
-				} 
-				else if($structure->encoding == 4) 
-				{ 
+				} else if($structure->encoding == 4) { 
 					return imap_qprint($text); 
-				} 
-				else
-				{ 
+				} else { 
 					return $text; 
 				} 
 			} 
-			if($structure->type == 1) /* multipart */ 
-			{ 
+			if($structure->type == 1){ /* multipart */ 
 				$prefix="";
 				reset($structure->parts);
-				while(list($index, $sub_structure) = each($structure->parts))
-				{ 
-					if($part_number)
-					{ 
+				while(list($index, $sub_structure) = each($structure->parts)){ 
+					if($part_number){ 
 						$prefix = $part_number . '.'; 
 					} 
 					$data = $this->get_part($stream, $msg_number, $mime_type, $sub_structure, $prefix . ($index + 1)); 
-					if($data)
-					{ 
+					if($data){ 
 						return $data; 
 					} 
 				} 
@@ -567,8 +576,8 @@ class MailCollect {
 	*GetAttech($mid,$path) / Prefer use getAttached
 	*Save attached file from mail to given path of a particular location
 	*
-	* @arg $mid mail id
-	* @arg $path path where to save
+	* @param $mid mail id
+	* @param $path path where to save
 	*
 	* @return  String of filename with coma separated
 	*like a.gif,pio.jpg etc

@@ -751,6 +751,7 @@ class Rule extends CommonDBTM{
 
 	/**
 	* Get additional header for rule
+	* @param $target where to go if link needed
 	* @return nothing display
 	**/	
 	function getTitleRule($target){
@@ -840,6 +841,8 @@ class Rule extends CommonDBTM{
 
 	/**
 	* Display a dropdown with all the rule matching
+	* @param $name dropdown name
+	* @param $value default value
 	**/
 	function dropdownRulesMatch($name,$value=''){
 		global $LANG;
@@ -899,8 +902,8 @@ class Rule extends CommonDBTM{
 
 	/**
 	 * Display all rules actions
-	 * @param $target  
-	 * @param $rule_id  
+	 * @param $target  where to go for action
+	 * @param $rule_id  rule ID
 	**/
 	function showActionsList($target,$rule_id){
 		global $CFG_GLPI, $LANG;
@@ -953,6 +956,7 @@ class Rule extends CommonDBTM{
 
 	/**
 	 * Display the add action form
+	 * @param $rule_id rule ID
 	**/
 	function addActionForm($rule_id) {
 		global $LANG,$CFG_GLPI;
@@ -982,6 +986,7 @@ class Rule extends CommonDBTM{
 
 	/**
 	 * Display the add criteria form
+	 * @param $rule_id rule ID
 	 */
 	function addCriteriaForm($rule_id) {
 		global $LANG,$CFG_GLPI,$RULES_CRITERIAS;
@@ -1022,6 +1027,8 @@ class Rule extends CommonDBTM{
 	
 	/**
 	 * Display all rules criterias
+	 * @param $target
+	 * @param $rule_id
 	 */
 	function showCriteriasList($target,$rule_id)
 	{
@@ -1095,6 +1102,7 @@ class Rule extends CommonDBTM{
 
 	/**
 	 * Display the dropdown of the actions for the rule
+	 * @param $used already used actions
 	 */
 	function dropdownActions($used=array()){
 		global $CFG_GLPI;
@@ -1378,16 +1386,13 @@ class Rule extends CommonDBTM{
 	}
 
 	
-	/**
-	 * Delete a rule and all associated criterias and actions
-	 */
-	function cleanDBonPurge($ID)
-	{
+	function cleanDBonPurge($ID){
+		// Delete a rule and all associated criterias and actions
 		global $DB;
-		$sql = "DELETE FROM glpi_rules_actions WHERE FK_Rules=".$ID;
+		$sql = "DELETE FROM glpi_rules_actions WHERE FK_rules=".$ID;
 		$DB->query($sql);
 		
-		$sql = "DELETE FROM glpi_rules_criterias WHERE FK_Rules=".$ID;
+		$sql = "DELETE FROM glpi_rules_criterias WHERE FK_rules=".$ID;
 		$DB->query($sql);
 	}
 
@@ -1438,11 +1443,8 @@ class Rule extends CommonDBTM{
 		echo "</tr>";
 	}
 
-	/**
-	 * Before adding, add the ranking of the new rule
-	 */
-	function prepareInputForAdd($input)
-	{
+	function prepareInputForAdd($input){
+		// Before adding, add the ranking of the new rule	
 		$input["ranking"] = $this->getNextRanking();
 		return $input;
 	}
@@ -1810,14 +1812,16 @@ class Rule extends CommonDBTM{
 
 	/**
 	 * Function used to display type specific criterias during rule's preview
+	 * @param $fields fields values
 	 */
-	function showSpecificCriteriasForPreview($fields)
-	{
+	function showSpecificCriteriasForPreview($fields){
 		
 	}
 	
 	/**
 	 ** Function used to add specific params before rule processing
+	 * @param $fields fields values
+	 * @param $params parameters
 	 */
 	function addSpecificParamsForPreview($fields,$params){
 		return $params;
@@ -1917,6 +1921,10 @@ class RuleAction extends CommonDBTM {
 	
 	/**
 	 * Add an action
+	 * @param $action action type
+	 * @param $ruleid rule ID
+	 * @param $field field name
+	 * @param $value value
 	**/
 	function addActionByAttributes($action,$ruleid,$field,$value){
 		$ruleAction = new RuleAction;

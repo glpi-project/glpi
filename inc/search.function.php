@@ -40,7 +40,13 @@ if (!isset($SEARCH_OPTION)){
 	$SEARCH_OPTION=getSearchOptions();
 }
 
-
+/**
+ * Clean search options depending of user active profile
+ *
+ * @param $type item type to manage
+ * @param $action action which is used to manupulate searchoption (r/w)
+ * @return clean $SEARCH_OPTION array
+ */
 function cleanSearchOption($type,$action='r'){
 	global $CFG_GLPI,$SEARCH_OPTION;
 	$options=$SEARCH_OPTION[$type];
@@ -80,7 +86,6 @@ function cleanSearchOption($type,$action='r'){
  * @param $usesession Use datas save in session
  * @param $save Save params to session
  * @return nothing
- *
  */
 function manageGetValuesInSearch($type=0,$usesession=true,$save=true){
 	global $_GET;
@@ -3160,7 +3165,15 @@ function getMultiSearchItemForLink($name,$array){
 	return $out;
 
 }
-
+/**
+ * Is the search item related to infocoms
+ *
+ *
+ * @param $device_type item type
+ * @param $searchID ID of the element in $SEARCH_OPTION
+ * @return boolean
+ *
+ */
 function isInfocomSearch($device_type,$searchID){
 	global $CFG_GLPI;
 	return (($searchID>=25&&$searchID<=28)
