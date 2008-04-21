@@ -109,7 +109,6 @@ class Job extends CommonDBTM{
 
 	function prepareInputForUpdate($input) {
 		global $LANG,$CFG_GLPI;
-
 		// Security checks
 		if (!haveRight("assign_ticket","1")){
 			if (isset($input["assign"])){
@@ -149,6 +148,7 @@ class Job extends CommonDBTM{
 			$input=$ret;
 		}
 
+		// NEEDED ???? 
 		if (isset($input["type"])&& $input["type"]==0&&!isset($input["item"])){
 			$input["computer"]=0;
 			$input["device_type"]=$input["type"];
@@ -165,6 +165,8 @@ class Job extends CommonDBTM{
 					$input["FK_group"] = $tmp;
 				}
 			}
+		} else if (isset($input["device_type"])&&$input["device_type"]==0){
+			$input["computer"]=0;
 		} else {
 			unset($input["computer"]);
 			unset($input["device_type"]);
