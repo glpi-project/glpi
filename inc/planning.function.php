@@ -836,17 +836,27 @@ function generateIcal($who){
 	if ($DB->numrows($result)>0)
 		while ($data=$DB->fetch_array($result)){
 
-			$fup->getFromDB($data["id_followup"]); 
-			$job->getFromDBwithData($fup->fields["tracking"],0);
+			if ($fup->getFromDB($data["id_followup"])){
+				if ($job->getFromDBwithData($fup->fields["tracking"],0)){
+					$interv[$data["begin"]."$$".$i]["content"]=substr($job->fields['contents'],0,$CFG_GLPI["cut"]);
+					$interv[$data["begin"]."$$".$i]["device"]=$job->hardwaredatas->getName();
+				}
+			}
 
 			$interv[$data["begin"]."$$".$i]["id_tracking"]=$data['id_followup'];
 			$interv[$data["begin"]."$$".$i]["id_assign"]=$data['id_assign'];
 			$interv[$data["begin"]."$$".$i]["ID"]=$data['ID'];
 			$interv[$data["begin"]."$$".$i]["begin"]=$data['begin'];
 			$interv[$data["begin"]."$$".$i]["end"]=$data['end'];
+			$interv[$data["begin"]."$$".$i]["content"]="";
+			$interv[$data["begin"]."$$".$i]["device"]="";
 			//$interv[$i]["content"]=substr($job->contents,0,$CFG_GLPI["cut"]);
-			$interv[$data["begin"]."$$".$i]["content"]=substr($job->fields['contents'],0,$CFG_GLPI["cut"]);
-			$interv[$data["begin"]."$$".$i]["device"]=$job->hardwaredatas->getName();
+			if ($fup->getFromDB($data["id_followup"])){
+				if ($job->getFromDBwithData($fup->fields["tracking"],0)){
+					$interv[$data["begin"]."$$".$i]["content"]=substr($job->fields['contents'],0,$CFG_GLPI["cut"]);
+					$interv[$data["begin"]."$$".$i]["device"]=$job->hardwaredatas->getName();
+				}
+			}
 			$i++;
 		}
 
