@@ -78,7 +78,7 @@ if (isset($_GET["item_type"])&&isset($_GET["display_type"])){
 
 	switch ($_GET["item_type"]){
 		case KNOWBASE_TYPE :
-			showKbItemList($_SERVER['PHP_SELF'],$_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"],$_GET["parentID"],$_GET["faq"]);
+			showKbItemList($_SERVER['PHP_SELF'],$_GET["contains"],$_GET["start"],$_GET["parentID"],$_GET["faq"]);
 			break;
 		case TRACKING_TYPE :
 			showTrackingList($_SERVER['PHP_SELF'],$_GET["start"],$_GET["sort"],$_GET["order"],$_GET["status"],$_GET["tosearch"],$_GET["search"],$_GET["author"],$_GET["group"],$_GET["showfollowups"],$_GET["category"],$_GET["assign"],$_GET["assign_ent"],$_GET["assign_group"],$_GET["priority"],$_GET["request_type"],$_GET["item"],$_GET["type"],$_GET["field"],$_GET["contains"],$_GET["date1"],$_GET["date2"],$_GET["only_computers"],$_GET["enddate1"],$_GET["enddate2"],$_GET["datemod1"],$_GET["datemod2"]);		
