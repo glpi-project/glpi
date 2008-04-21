@@ -64,23 +64,20 @@ if (isset($_GET["redirect"])){
 	}
 	
 	if(!isset($_GET["start"])) $_GET["start"] = 0;
-	if (!isset($_GET["order"])) $_GET["order"] = "ASC";
-	if (!isset($_GET["field"])) $_GET["field"] = "all";
-	if (!isset($_GET["phrasetype"])) $_GET["phrasetype"] = "";
 	if (!isset($_GET["contains"])) $_GET["contains"] = "";
-	if (!isset($_GET["sort"])) $_GET["sort"] = "glpi_kbitems.question";
 	if(!isset($_GET["parentID"])) $_GET["parentID"] = 0;
 
 
 	if (isset($_GET["ID"])){
 
-		if (ShowKbItemFull($_GET["ID"],"no"))
+		if (ShowKbItemFull($_GET["ID"],0)){
 			showDocumentAssociated(KNOWBASE_TYPE,$_GET["ID"],3);
+		}
 
 	} else {
 		searchFormKnowbase($_SERVER['PHP_SELF'],$_GET["contains"],$_GET["parentID"],1);
 		showKbCategoriesFirstLevel($_SERVER['PHP_SELF'],$_GET["parentID"] ,1);
-		showKbItemList($_SERVER['PHP_SELF'],$_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"],$_GET["parentID"],1);
+		showKbItemList($_SERVER['PHP_SELF'],$_GET["contains"],$_GET["start"],$_GET["parentID"],1);
 		if (!$_GET["parentID"]&&!strlen($_GET["contains"])){
 			showKbViewGlobal($_SERVER['PHP_SELF'],1) ;
 		}

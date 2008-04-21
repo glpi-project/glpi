@@ -50,18 +50,14 @@ commonHeader($LANG["title"][5],$_SERVER['PHP_SELF'],"utils","knowbase");
 
 
 if(!isset($_GET["start"])) $_GET["start"] = 0;
-if (!isset($_GET["order"])) $_GET["order"] = "ASC";
-if (!isset($_GET["field"])) $_GET["field"] = "all";
-if (!isset($_GET["phrasetype"])) $_GET["phrasetype"] = "";
 if (!isset($_GET["contains"])) $_GET["contains"] = "";
-if (!isset($_GET["sort"])) $_GET["sort"] = "glpi_kbitems.question";
 if(!isset($_GET["parentID"])) $_GET["parentID"] = "0";
 
 	$faq=!haveRight("knowbase","r");
 
 	searchFormKnowbase($_SERVER['PHP_SELF'],$_GET["contains"],$_GET["parentID"],$faq);
 	showKbCategoriesFirstLevel($_SERVER['PHP_SELF'],$_GET["parentID"],$faq );
-	showKbItemList($CFG_GLPI["root_doc"]."/front/knowbase.form.php",$_GET["field"],$_GET["phrasetype"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"],$_GET["parentID"],$faq);
+	showKbItemList($CFG_GLPI["root_doc"]."/front/knowbase.form.php",$_GET["contains"],$_GET["start"],$_GET["parentID"],$faq);
 	if (!$_GET["parentID"]&&!strlen($_GET["contains"])){
 		showKbViewGlobal($CFG_GLPI["root_doc"]."/front/knowbase.form.php",$faq) ;
 	}

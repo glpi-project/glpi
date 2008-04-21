@@ -45,10 +45,10 @@ if (!defined('GLPI_ROOT')){
 /**
  * Print out an HTML "<form>" for Search knowbase item
  *
- * @param $target 
- * @param $contains 
- * @param $parentID 
- * @param $faq 
+ * @param $target where to go
+ * @param $contains search pattern
+ * @param $parentID category ID
+ * @param $faq display on faq ?
  * @return nothing (display the form)
  **/
 function searchFormKnowbase($target,$contains,$parentID=0,$faq=0){
@@ -95,9 +95,15 @@ function searchFormKnowbase($target,$contains,$parentID=0,$faq=0){
 
 
 
+/**
+ * Show KB categories
+ *
+ * @param $target where to go
+ * @param $parentID category ID
+ * @param $faq display on faq ?
+ * @return nothing (display the form)
+ **/
 function showKbCategoriesFirstLevel($target,$parentID=0,$faq=0){
-	// show kb categories
-	// ok
 
 	global $DB,$LANG,$CFG_GLPI;
 	
@@ -190,10 +196,13 @@ function showKbCategoriesFirstLevel($target,$parentID=0,$faq=0){
 /**
 *Print out list kb item
 *
-*
-*
+* @param $target where to go
+* @param $contains search pattern
+* @param $start where to start
+* @param $parentID category ID
+* @param $faq display on faq ?
 **/
-function showKbItemList($target,$field,$phrasetype,$contains,$sort,$order,$start,$parentID,$faq=0){
+function showKbItemList($target,$contains,$start,$parentID,$faq=0){
 	// Lists kb  Items
 
 	global $DB,$CFG_GLPI, $LANG;
@@ -219,13 +228,7 @@ function showKbItemList($target,$field,$phrasetype,$contains,$sort,$order,$start
 	
 	if (strlen($contains)) { // il s'agit d'une recherche 
 		$search=unclean_cross_side_scripting_deep($contains);
-		if($field=="all") {
-			
-			$where.="MATCH(glpi_kbitems.question,glpi_kbitems.answer) AGAINST('$search' IN BOOLEAN MODE) ";
-			
-		} else {
-			$where.= "MATCH($field) AGAINST('$search' IN BOOLEAN MODE) ";			
-		}
+		$where.="MATCH(glpi_kbitems.question,glpi_kbitems.answer) AGAINST('$search' IN BOOLEAN MODE) ";
 		
 	} else { // Il ne s'agit pas d'une recherche, on browse by category
 	
@@ -236,13 +239,10 @@ function showKbItemList($target,$field,$phrasetype,$contains,$sort,$order,$start
 	if (!$start) {
 		$start = 0;
 	}
-	if (!$order) {
-		$order = "ASC";
-	}
 
 	$query = "SELECT  *  FROM glpi_kbitems";
   // $query.= " LEFT JOIN glpi_users  ON (glpi_users.ID = glpi_kbitems.author) ";
-	$query.=" WHERE $where ORDER BY $sort $order";
+	$query.=" WHERE $where ORDER BY glpi_kbitems.question ASC";
 	//echo $query;
 	
 
@@ -268,7 +268,7 @@ function showKbItemList($target,$field,$phrasetype,$contains,$sort,$order,$start
 				$output_type=$_GET["display_type"];
 
 			// Pager
-			$parameters="start=$start&amp;parentID=$parentID&amp;field=$field&amp;phrasetype=$phrasetype&amp;contains=$contains&amp;sort=$sort&amp;order=$order&amp;faq=$faq";
+			$parameters="start=$start&amp;parentID=$parentID&amp;contains=$contains&amp;faq=$faq";
 			if ($output_type==HTML_OUTPUT){
 				printPager($start,$numrows,$_SERVER['PHP_SELF'],$parameters,KNOWBASE_TYPE);
 			}
@@ -329,13 +329,10 @@ function showKbItemList($target,$field,$phrasetype,$contains,$sort,$order,$start
 
 
 /**
- * Print out list recent popular kb/faq
+ * Print out lists of recent and popular kb/faq
  *
- * 
- * 
- *
- * @param $target 
- * @param $faq
+ * @param $target where to go on action
+ * @param $faq display only faq
  * @return nothing (display table)
  **/
 function showKbViewGlobal($target,$faq=0){
@@ -354,13 +351,20 @@ function showKbViewGlobal($target,$faq=0){
 	echo "</table>";
 	echo "</div>";
 }
-
-function showKbRecentPopular($target,$order,$faq=0){
+/**
+ * Print out list recent or popular kb/faq
+ *
+ * @param $target where to go on action
+ * @param $type type : recent / popular
+ * @param $faq display only faq
+ * @return nothing (display table)
+ **/
+function showKbRecentPopular($target,$type,$faq=0){
 	
 	global $DB,$CFG_GLPI, $LANG;
 	
 	
-	if ($order=="recent"){
+	if ($type=="recent"){
 		$orderby="ORDER BY date DESC";
 		$title=$LANG["knowbase"][29];
 	}else {
@@ -403,9 +407,6 @@ function showKbRecentPopular($target,$order,$faq=0){
 
 /**
  * Print out an HTML Menu for knowbase item
- *
- * 
- * 
  *
  * @param $ID
  * @return nothing (display the form)
@@ -460,20 +461,17 @@ function kbItemMenu($ID)
  * Print out (html) show item : question and answer
  *
  * @param $ID integer
- * @param $linkauthor
- * 
- *
+ * @param $linkauthor display author link
  * 
  * @return nothing (display item : question and answer)
  **/
-function ShowKbItemFull($ID,$linkauthor="yes")
-{
+function ShowKbItemFull($ID,$linkauthor=true){
 	// show item : question and answer
 
 	global $DB,$LANG,$CFG_GLPI;
 
-	if (!haveRight("user","r")) $linkauthor="no";
-
+	if (!haveRight("user","r")) $linkauthor=false;
+	
 	$ki= new kbitem;	
 
 	if ($ki->getFromDB($ID)){
@@ -517,7 +515,15 @@ function ShowKbItemFull($ID,$linkauthor="yes")
 			echo "<tr><th class='tdkb'>";
 			if($ki->fields["author"]){
 				echo $LANG["common"][37]." : ";
-				echo ($linkauthor=="yes") ? "".getUserName($ki->fields["author"],"1")."" : "".getUserName($ki->fields["author"])."";
+				// Integer because true may be 2 and getUserName return array
+				if ($linkauthor){
+					$linkauthor=1;
+				} else {
+					$linkauthor=0;
+				}
+
+				echo getUserName($ki->fields["author"],$linkauthor);
+
 				echo "&nbsp;&nbsp;|&nbsp;&nbsp;  ";
 			}
 			if($ki->fields["date"]){
