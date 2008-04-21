@@ -522,10 +522,10 @@ class Mailing
 
 	/**
 	 * Get reply to address 
+	 * @param $sender sender address
 	 * @return return mail
 	 */
-	function get_reply_to_address ($sender)
-	{
+	function get_reply_to_address ($sender){
 		global $CFG_GLPI,$DB;
 
 		$replyto=$CFG_GLPI["admin_email"];
@@ -861,10 +861,10 @@ class MailingResa{
 
 	/**
 	 * Format the mail body to send
+	* @param $format text or html
 	 * @return mail body string
 	 */
-	function get_mail_body($format="text")
-	{
+	function get_mail_body($format="text"){
 		global $CFG_GLPI;
 
 		// Create message body from Job and type
@@ -904,10 +904,10 @@ class MailingResa{
 
 	/**
 	 * Get reply to address 
+	 * @param $sender sender address
 	 * @return return mail
 	 */
-	function get_reply_to_address ($sender)
-	{
+	function get_reply_to_address ($sender){
 		global $CFG_GLPI;
 		$replyto="";
 
@@ -1098,10 +1098,10 @@ class MailingAlert
 
 	/**
 	 * Format the mail body to send
+	 * @param $format text or html
 	 * @return mail body string
 	 */
-	function get_mail_body($format="text")
-	{
+	function get_mail_body($format="text"){
 		global $CFG_GLPI, $LANG;
 
 		// Create message body from Job and type

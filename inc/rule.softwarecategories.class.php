@@ -56,6 +56,8 @@ class SoftwareCategoriesRuleCollection extends RuleCollection {
 
 	/**
 	 * Get the attributes needed for processing the rules
+	 * @param $input input data
+	 * @param $software software data array
 	 * @return an array of attributes
 	 */
 	function prepareInputDataForProcess($input,$software){

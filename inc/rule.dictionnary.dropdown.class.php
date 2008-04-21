@@ -147,7 +147,7 @@ class RuleDictionnaryDropdown extends RuleCached{
 
 
 class DictionnaryDropdownCollection extends RuleCachedCollection{
-
+	/// dropdown table
 	var $item_table="";
 	
 

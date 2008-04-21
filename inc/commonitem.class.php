@@ -349,7 +349,7 @@ class CommonItem{
 	}
 	/**
 	 * Get The Name of the Object
-	 *
+	 * @param $with_comments add comments to name
 	 * @return String: name of the object in the current language
 	 */
 	function getName($with_comments=0){
@@ -380,7 +380,7 @@ class CommonItem{
 	}
 	/**
 	 * Get The Name of the Object with the ID if the config is set
-	 *
+	 * @param $with_comments add comments to name
 	 * @return String: name of the object in the current language
 	 */
 	function getNameID($with_comments=0){

@@ -263,6 +263,7 @@ class DBmysql {
 	}
 	/**
 	 * Free result memory
+	 * @param $result MySQL result handler
 	 * @return Returns TRUE on success or FALSE on failure.
 	 */
 	function free_result($result) {

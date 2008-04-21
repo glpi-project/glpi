@@ -61,6 +61,8 @@ class RightAffectRule extends Rule {
 	}
 	/**
 	 * Display form to add rules
+	 * @param $target where to post form
+	 * @param $ID entity ID
 	 */
 	function showAndAddRuleForm($target, $ID) {
 		global $LANG, $CFG_GLPI;
@@ -282,16 +284,14 @@ class RightRuleCollection extends RuleCollection {
 	}
 
 
-	function cleanTestOutputCriterias($output)
-	{
+	function cleanTestOutputCriterias($output){
 		if (isset($output["_rule_process"]))
 			unset($output["_rule_process"]);
 			
 		return $output;			
 	}
 
-	function showTestResults($rule,$output,$global_result)
-	{
+	function showTestResults($rule,$output,$global_result){
 		global $LANG,$RULES_ACTIONS;
 
 		echo "<tr><th colspan='4'>" . $LANG["rulesengine"][81] . "</th></tr>";
@@ -353,13 +353,15 @@ class RightRuleCollection extends RuleCollection {
 		}
 		echo "</tr>";
 	}
-	
-	function displayActionByName($name,$value)
-	{
+	/**
+	* Display action using its name
+	* @param $name action name
+	* @param $value default value
+	*/
+	function displayActionByName($name,$value){
 		global $LANG;
 		echo "<tr>"; 
-		switch ($name)
-		{
+		switch ($name){
 			case "entity":
 			 	echo  "<td class='tab_bg_2' align='center'>".$LANG["entity"][0]." </td>\n"; 
 			 	echo  "<td class='tab_bg_2' align='center'>";                                                                         

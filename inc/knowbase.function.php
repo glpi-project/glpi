@@ -95,8 +95,7 @@ function searchFormKnowbase($target,$contains,$parentID=0,$faq=0){
 
 
 
-function showKbCategoriesFirstLevel($target,$parentID=0,$faq=0)
-{
+function showKbCategoriesFirstLevel($target,$parentID=0,$faq=0){
 	// show kb categories
 	// ok
 

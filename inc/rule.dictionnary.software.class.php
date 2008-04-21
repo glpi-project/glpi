@@ -204,6 +204,7 @@ class DictionnarySoftwareCollection extends RuleCachedCollection {
 	 * @param $res_rule array of rule results
 	 * @param $ID ID of the software
 	 * @param $entity working entity ID
+	 * @param $name softwrae name
 	 * @param $manufacturer manufacturer ID
 	 * @param $soft_ids array containing replay software need to be trashed
 	 */
@@ -283,6 +284,12 @@ class DictionnarySoftwareCollection extends RuleCachedCollection {
 
 	/**
 	 * Change software's name, and move licenses if needed
+	 * @param $ID old software ID
+	 * @param $new_software_id new software ID
+	 * @param $license_id license ID to move
+	 * @param $old_version old version 
+	 * @param $new_version new version
+	 * @param $entity entity ID
 	 */
 	function moveLicenses($ID,$new_software_id, $license_id, $old_version, $new_version, $entity) {
 		global $DB;
@@ -290,12 +297,10 @@ class DictionnarySoftwareCollection extends RuleCachedCollection {
 		$new_licenseID = $this->licenseExists($new_software_id, $license_id,$new_version);
 		
 		//A license does not exist
-		if ($new_licenseID == -1)
-		{
+		if ($new_licenseID == -1){
 			//Transfer licenses from old software to new software for a specific version
 			$DB->query("UPDATE glpi_licenses SET version='" . $new_version . "', sID=" . $new_software_id . " WHERE sID=" . $ID." AND version='".$old_version."'");
-		}
-		else {
+		} else {
 			//Change ID of the license in glpi_inst_software
 			$DB->query("UPDATE glpi_inst_software SET license=" . $new_licenseID . " WHERE license=" . $ID);
 	
@@ -307,6 +312,9 @@ class DictionnarySoftwareCollection extends RuleCachedCollection {
 
 	/**
 	 * Check if a license exists
+	 * @param $software_id software ID
+	 * @param $license_id license ID to search
+	 * @param $version license version 
 	 */
 	function licenseExists($software_id, $license_id, $version) {
 		global $DB;
