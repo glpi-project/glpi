@@ -32,6 +32,10 @@ if (!defined('GLPI_ROOT')){
 	die("Sorry. You can't access directly to this file");
 	}
 
+/** Get device table based on device type
+*@param $dev_type device type
+*@return table name string
+*/
 function getDeviceTable($dev_type){
 	switch ($dev_type){
 		case MOBOARD_DEVICE :
@@ -75,6 +79,10 @@ function getDeviceTable($dev_type){
 
 }
 
+/** Get device specifity label based on device type
+*@param $dev_type device type
+*@return specifity label string
+*/
 function getDeviceSpecifityLabel($dev_type){
 	global $LANG;
 	switch ($dev_type){
@@ -117,56 +125,44 @@ function getDeviceSpecifityLabel($dev_type){
 			break;
 
 	}
-
-
 }
 
-function getDeviceTypeLabel($dev_type){
+
+/**
+ * Get device type name based on device type
+ * 
+ * @param $device_num device type
+ * @return if $device_num == -1 return array of names else return device name
+ **/
+function getDictDeviceLabel($device_num=-1) {
+
 	global $LANG;
-	switch ($dev_type){
-		case MOBOARD_DEVICE :
-			return $LANG["devices"][5];
-			break;
-		case PROCESSOR_DEVICE :
-			return $LANG["devices"][4];
-			break;
-		case RAM_DEVICE :
-			return  $LANG["devices"][6];
-			break;
-		case HDD_DEVICE :
-			return $LANG["devices"][1];
-			break;
-		case NETWORK_DEVICE :
-			return $LANG["devices"][3];
-			break;
-		case DRIVE_DEVICE :
-			return $LANG["devices"][19];
-			break;
-		case CONTROL_DEVICE :
-			return $LANG["devices"][20];
-			break;
-		case GFX_DEVICE :
-			return $LANG["devices"][2];
-			break;
-		case SND_DEVICE :
-			return $LANG["devices"][7];
-			break;
-		case PCI_DEVICE :
-			return $LANG["devices"][21];
-			break;
-		case CASE_DEVICE :
-			return $LANG["devices"][22];
-			break;
-		case POWER_DEVICE :
-			return $LANG["devices"][23];
-			break;
-
-	}
-
-
+	$dp=array();
+	$dp[MOBOARD_DEVICE]=$LANG["devices"][5];	
+	$dp[PROCESSOR_DEVICE]=$LANG["devices"][4];
+	$dp[NETWORK_DEVICE]=$LANG["devices"][3];
+	$dp[RAM_DEVICE]=$LANG["devices"][6];	
+	$dp[HDD_DEVICE]=$LANG["devices"][1];	
+	$dp[DRIVE_DEVICE]=$LANG["devices"][19];		
+	$dp[CONTROL_DEVICE]=$LANG["devices"][20];		
+	$dp[GFX_DEVICE]=$LANG["devices"][2];		
+	$dp[SND_DEVICE]=$LANG["devices"][7];		
+	$dp[PCI_DEVICE]=$LANG["devices"][21];		
+	$dp[CASE_DEVICE]=$LANG["devices"][22];		
+	$dp[POWER_DEVICE]=$LANG["devices"][23];
+	if ($device_num==-1)
+		return $dp;
+	else return $dp[$device_num];
 }
 
-//print form/tab for a device linked to a computer
+/** print form/tab for a device linked to a computer
+*@param $device device object
+*@param $quantity quantity of device
+*@param $specif specificity value
+*@param $compID computer ID
+*@param $compDevID computer device ID
+*@param $withtemplate template or basic computer
+*/
 function printDeviceComputer($device,$quantity,$specif,$compID,$compDevID,$withtemplate='') {
 	global $LANG,$CFG_GLPI;
 
@@ -318,12 +314,12 @@ function printDeviceComputer($device,$quantity,$specif,$compID,$compDevID,$witht
 
 
 
-
-
-
-
-//Update an internal device specificity
-// $strict : update based on ID
+/**  Update an internal device specificity
+* @param $newValue new specifity value
+* @param $compDevID computer device ID
+* @param $strict update based on ID
+* @param $checkcoherence check coherence of new value before updating : do not update if it is not coherent
+*/
 function update_device_specif($newValue,$compDevID,$strict=false,$checkcoherence=false) {
 
 	// Check old value for history 
@@ -337,10 +333,8 @@ function update_device_specif($newValue,$compDevID,$strict=false,$checkcoherence
 			$data = addslashes_deep($DB->fetch_array($result));
 			cleanAllItemCache("device_".$data["FK_computers"],"GLPI_".COMPUTER_TYPE);
 
-			if ($checkcoherence)
-			{
-				switch ($data["device_type"])
-				{
+			if ($checkcoherence){
+				switch ($data["device_type"]){
 					case PROCESSOR_DEVICE :
 						//Prevent division by O error if newValue is null or doesn't contains any value
 						if ($newValue == null || $newValue=='')
@@ -403,7 +397,10 @@ function update_device_specif($newValue,$compDevID,$strict=false,$checkcoherence
 
 }
 
-
+/**  Update an internal device quantity
+* @param $newNumber new quantity value
+* @param $compDevID computer device ID
+*/
 function update_device_quantity($newNumber,$compDevID){
 	// Check old value for history 
 	global $DB;
@@ -470,7 +467,16 @@ function unlink_device_computer($compDevID,$dohistory=1){
 
 }
 
-//Link the device to the computer
+/**
+ * Link the device to the computer
+ * 
+ * @param $cID Computer ID
+ * @param $device_type device type
+ * @param $dID device ID
+ * @param $specificity specificity value
+ * @param $dohistory do history log
+ * @returns new computer device ID
+ **/
 function compdevice_add($cID,$device_type,$dID,$specificity='',$dohistory=1) {
 	$device = new Device($device_type);
 	$device->getFromDB($dID);
@@ -487,7 +493,12 @@ function compdevice_add($cID,$device_type,$dID,$specificity='',$dohistory=1) {
 	return $newID;
 }
 
-
+/**
+ * Show Device list of a defined type
+ * 
+ * @param $device_type device type
+ * @param $target wher to go on action
+ **/
 function showDevicesList($device_type,$target) {
 
 	// Lists Device from a device_type
@@ -538,7 +549,11 @@ function showDevicesList($device_type,$target) {
 	}
 }
 
-
+/**
+ * title for Devices
+ * 
+ * @param $device_type device type
+ **/
 function titleDevices($device_type){
 	global  $LANG,$CFG_GLPI;
 
@@ -546,27 +561,14 @@ function titleDevices($device_type){
 
 }
 
-function getDictDeviceLabel($device_num=-1) {
 
-	global $LANG;
-	$dp=array();
-	$dp[MOBOARD_DEVICE]=$LANG["devices"][5];	
-	$dp[PROCESSOR_DEVICE]=$LANG["devices"][4];
-	$dp[NETWORK_DEVICE]=$LANG["devices"][3];
-	$dp[RAM_DEVICE]=$LANG["devices"][6];	
-	$dp[HDD_DEVICE]=$LANG["devices"][1];	
-	$dp[DRIVE_DEVICE]=$LANG["devices"][19];		
-	$dp[CONTROL_DEVICE]=$LANG["devices"][20];		
-	$dp[GFX_DEVICE]=$LANG["devices"][2];		
-	$dp[SND_DEVICE]=$LANG["devices"][7];		
-	$dp[PCI_DEVICE]=$LANG["devices"][21];		
-	$dp[CASE_DEVICE]=$LANG["devices"][22];		
-	$dp[POWER_DEVICE]=$LANG["devices"][23];
-	if ($device_num==-1)
-		return $dp;
-	else return $dp[$device_num];
-}
-
+/**
+ * Show Device Form
+ * 
+ * @param $device_type device type
+ * @param $ID device ID
+ * @param $target where to go on action
+ **/
 function showDevicesForm ($target,$ID,$device_type) {
 
 	global $CFG_GLPI,$LANG,$REFERER;

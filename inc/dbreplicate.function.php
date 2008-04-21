@@ -50,8 +50,7 @@ function create_slave_conn_file($host, $user, $password, $DBname) {
 
 /**
  * Indicates is the DB replicate is active or not
- * @return true if active
- * @return false if not active
+ * @return true if active / false if not active
  */
 function isDBSlaveActive() {
 	return file_exists(GLPI_CONFIG_DIR . "/config_db_slave.php");
@@ -179,7 +178,7 @@ function establishDBConnection($use_slave, $required, $display=true) {
 }
 
 /**
- * 
+ *  Get delay between slave and master
  */
 function getReplicateDelay() {
 	include_once (GLPI_CONFIG_DIR . "/config_db_slave.php");
@@ -187,6 +186,10 @@ function getReplicateDelay() {
 	return (int) (getHistoryMaxDate(new DB) - getHistoryMaxDate(new DBSlave));
 }
 
+/**
+ *  Get history max date of a GLPI DB
+ * @param $DBconnection DB conneciton used
+ */
 function getHistoryMaxDate($DBconnection) {
 	$result = $DBconnection->query("SELECT UNIX_TIMESTAMP(MAX(date_mod)) as max_date FROM glpi_history");
 	if ($DBconnection->numrows($result) > 0)
@@ -194,7 +197,9 @@ function getHistoryMaxDate($DBconnection) {
 	else
 		return "";
 }
-
+/**
+ *  Display a common mysql connection error
+ */
 function displayMySQLError() {
 	nullHeader("Mysql Error", $_SERVER['PHP_SELF']);
 
@@ -209,6 +214,9 @@ function displayMySQLError() {
 	die();
 }
 
+/**
+ *  Cron process to check DB replicate state
+ */
 function cron_dbreplicate() {
 	global $DB, $CFG_GLPI, $LANG;
 

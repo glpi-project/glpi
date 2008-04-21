@@ -44,6 +44,12 @@ if (!defined('GLPI_ROOT')){
 //******************************************************************************************************
 //******************************************************************************************************
 
+/**
+ * Include common HTML headers
+ *
+ * @param $title title used for the page
+ * @return nothing
+ **/
 function includeCommonHtmlHeader($title=''){
 	global $CFG_GLPI,$PLUGIN_HOOKS;
 

@@ -76,7 +76,11 @@ $valeurnettetot=0;
 $valeurnettegraphtot=array();
 $valeurgraphtot=array();
 
-
+/** Display an infocom report for items like consumables
+* @param $device_type item type
+* @param $begin begin date
+* @param $end end date
+*/
 function display_infocoms_report($device_type,$begin,$end){
 	global $DB,$valeurtot,$valeurnettetot, $valeurnettegraphtot, $valeurgraphtot,$LANG,$CFG_GLPI,$LINK_ID_TABLE;
 

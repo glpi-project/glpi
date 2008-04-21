@@ -78,9 +78,11 @@ echo "<option value=\"glpi_dropdown_model\" ".($_POST["dropdown"]=="glpi_dropdow
 echo "<option value=\"glpi_dropdown_os\" ".($_POST["dropdown"]=="glpi_dropdown_os"?"selected":"").">".$LANG["computers"][9]."</option>";
 echo "<option value=\"glpi_dropdown_locations\" ".($_POST["dropdown"]=="glpi_dropdown_locations"?"selected":"").">".$LANG["common"][15]."</option>";
 
+$devices=getDictDeviceLabel(-1);
 
-for ($i=MOBOARD_DEVICE;$i<=POWER_DEVICE;$i++)
-echo "<option value=\"$i\" ".($_POST["dropdown"]==$i?"selected":"").">".getDeviceTypeLabel($i)."</option>";
+foreach ($devices as $i => $name){
+	echo "<option value=\"$i\" ".($_POST["dropdown"]==$i?"selected":"").">$name</option>";
+}
 echo "</select></td>";
 
 

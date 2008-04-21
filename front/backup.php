@@ -101,8 +101,7 @@ $compression = 0;
 if ($compression==1) $filetype = "sql.gz";
 else $filetype = "sql";
 
-// g��e un fichier backup.xml a partir de base dbhost connect�avec l'utilisateur dbuser et le mot de passe
-//dbpassword sur le serveur dbdefault
+/// genere un fichier backup.xml a partir de base dbhost connecte avec l'utilisateur dbuser et le mot de passe dbpassword sur le serveur dbdefault
 function xmlbackup()
 {
 	global $CFG_GLPI,$DB;
@@ -170,8 +169,8 @@ function xmlbackup()
 	//fin de fonction xmlbackup
 }
 ////////////////////////// DUMP SQL FUNCTIONS
-function init_time() 
-{
+/// Init time to computer time spend
+function init_time() {
 	global $TPSDEB,$TPSCOUR;
 
 
@@ -181,8 +180,8 @@ function init_time()
 
 }
 
-function current_time() 
-{
+/// Get current time
+function current_time() {
 	global $TPSDEB,$TPSCOUR;
 	list ($usec,$sec)=explode(" ",microtime());
 	$TPSFIN=$sec;
@@ -192,8 +191,13 @@ function current_time()
 	}
 }
 
-function get_content($DB, $table,$from,$limit)
-{
+/**  Get data of a table
+* @param $DB DB object
+* @param $table table  name
+* @param $from begin from
+* @param $limit limit to 
+*/
+function get_content($DB, $table,$from,$limit){
 	$content="";
 	$result = $DB->query("SELECT * FROM $table LIMIT $from,$limit");
 	if($result)
@@ -212,7 +216,10 @@ function get_content($DB, $table,$from,$limit)
 	return $content;
 }
 
-
+/**  Get structure of a table
+* @param $DB DB object
+* @param $table table  name
+*/
 function get_def($DB, $table) {
 
 
@@ -230,8 +237,12 @@ function get_def($DB, $table) {
 }
 
 
-function restoreMySqlDump($DB,$dumpFile , $duree)
-{
+/**  Restore a mysql dump
+* @param $DB DB object
+* @param $dumpFile dump file
+* @param $duree max delay before refresh
+*/
+function restoreMySqlDump($DB,$dumpFile , $duree){
 	// $dumpFile, fichier source
 	// $duree=timeout pour changement de page (-1 = aucun)
 
@@ -241,8 +252,7 @@ function restoreMySqlDump($DB,$dumpFile , $duree)
 
 	global $DB,$TPSCOUR,$offset,$cpt,$LANG;
 
-	if(!file_exists($dumpFile))
-	{
+	if(!file_exists($dumpFile)){
 		echo $LANG["document"][38].": $dumpFile<br>";
 		return FALSE;
 	}
@@ -305,8 +315,13 @@ function restoreMySqlDump($DB,$dumpFile , $duree)
 	return TRUE;
 }
 
-function backupMySql($DB,$dumpFile, $duree,$rowlimit)
-{
+/**  Backup a glpi DB
+* @param $DB DB object
+* @param $dumpFile dump file
+* @param $duree max delay before refresh
+* @param $rowlimit rowlimit to backup in one time
+*/
+function backupMySql($DB,$dumpFile, $duree,$rowlimit){
 	// $dumpFile, fichier source
 	// $duree=timeout pour changement de page (-1 = aucun)
 

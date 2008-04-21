@@ -33,7 +33,7 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-// Update from 0.5 to 0.51
+/// Update from 0.5 to 0.51
 function update05to051(){
 	global $DB,$LANG;
 

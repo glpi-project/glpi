@@ -33,12 +33,9 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-//update the database to the 0.31 version
-function updateDbTo031()
-{
-
+///update the database to the 0.31 version
+function updateDbTo031(){
 	global $DB,$LANG;
-
 
 	//amSize ramSize
 	$query = "Alter table users drop can_assign_job";
@@ -86,9 +83,5 @@ function updateDbTo031()
 	$query = "ALTER TABLE templates MODIFY date_fin_garantie date NOT NULL default '0000-00-00'";
 
 	echo "<p class='center'>Version 0.3  </p>";
-
-
 }
-
-
 ?>
