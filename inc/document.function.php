@@ -41,7 +41,13 @@ if (!defined('GLPI_ROOT')){
 
 
 
-
+/**
+ * Move an uploadd document (files in GLPI_DOC_DIR."/_uploads" dir)
+ *
+ * @param $filename filename to move
+ * @param $old_file old file name to replace : to unlink it
+ * @return nothing
+ **/
 function moveUploadedDocument($filename,$old_file=''){
 	global $CFG_GLPI,$LANG;
 
@@ -84,6 +90,13 @@ function moveUploadedDocument($filename,$old_file=''){
 	return "";	
 }
 
+/**
+ * Upload a new file
+ *
+ * @param $FILEDESC FILE descriptor
+ * @param $old_file old file name to replace : to unlink it
+ * @return nothing
+ **/
 function uploadDocument($FILEDESC,$old_file=''){
 	global $CFG_GLPI,$LANG;
 
@@ -121,7 +134,14 @@ function uploadDocument($FILEDESC,$old_file=''){
 	return "";	
 }
 
-
+/**
+ * Find a valid path for the new file
+ *
+ * @param $dir dir to search a free path for the file
+ * @param $filename new filename
+ * @param $force may replace an existing doc ?
+ * @return nothing
+ **/
 function getUploadFileValidLocationName($dir,$filename,$force){
 
 	global $CFG_GLPI,$LANG;
@@ -166,8 +186,13 @@ function getUploadFileValidLocationName($dir,$filename,$force){
 	return "";
 }
 
-
-function showDeviceDocument($instID,$search='') {
+/**
+ * Show devices links to a document
+ *
+ * @param $instID document ID
+ * @return nothing
+ **/
+function showDeviceDocument($instID) {
 	global $DB,$CFG_GLPI, $LANG,$INFOFORM_PAGES,$LINK_ID_TABLE;
 
 	if (!haveRight("document","r"))	return false;
@@ -292,18 +317,29 @@ function showDeviceDocument($instID,$search='') {
 
 }
 
-function addDeviceDocument($conID,$type,$ID){
+/**
+ * Add a document to an item
+ *
+ * @param $docID document ID
+ * @param $ID item ID
+ * @param $type item type
+ **/
+function addDeviceDocument($docID,$type,$ID){
 	global $DB;
-	if ($conID>0&&$ID>0&&$type>0){
+	if ($docID>0&&$ID>0&&$type>0){
 		// Do not insert auto link for document
-		if ($type==DOCUMENT_TYPE && $ID == $conID){
+		if ($type==DOCUMENT_TYPE && $ID == $docID){
 			return;
 		}
-		$query="INSERT INTO glpi_doc_device (FK_doc,FK_device, device_type) VALUES ('$conID','$ID','$type');";
+		$query="INSERT INTO glpi_doc_device (FK_doc,FK_device, device_type) VALUES ('$docID','$ID','$type');";
 		$result = $DB->query($query);
 	}
 }
-
+/**
+ * Delete a document to an item
+ *
+ * @param $ID doc_device ID
+ **/
 function deleteDeviceDocument($ID){
 
 	global $DB;
@@ -311,8 +347,13 @@ function deleteDeviceDocument($ID){
 	$result = $DB->query($query);
 }
 
-
-// $withtemplate==3 -> visu via le helpdesk -> plus aucun lien
+/**
+ * Show documents associated to an item
+ *
+ * @param $device_type item type
+ * @param $ID item ID
+ * @param $withtemplate if 3 -> view via helpdesk -> no links
+ **/
 function showDocumentAssociated($device_type,$ID,$withtemplate=''){
 
 	global $DB, $CFG_GLPI, $LANG, $LINK_ID_TABLE;
@@ -477,6 +518,12 @@ function showDocumentAssociated($device_type,$ID,$withtemplate=''){
 
 }
 
+/**
+ * Get download link for a document
+ *
+ * @param filename filename of the document
+ * @param $params additonal parameters to be added to the link
+ **/
 function getDocumentLink($filename,$params=""){
 	global $DB,$CFG_GLPI;	
 	if (empty($filename))
@@ -508,10 +555,20 @@ function getDocumentLink($filename,$params=""){
 	return $out;
 }
 
+/**
+ * Clean a filename to keep alphanum chars + -_.
+ *
+ * @param name filename to clean
+ **/
 function cleanFilenameDocument($name){
 	return preg_replace("/[^a-zA-Z0-9\-_\.]/","_",$name);
 }
 
+/**
+ * Show dropdown of uploaded files
+ *
+ * @param $myname dropdown name
+ **/
 function showUploadedFilesDropdown($myname){
 	global $CFG_GLPI,$LANG;
 
@@ -538,6 +595,11 @@ function showUploadedFilesDropdown($myname){
 	} else echo $LANG["document"][35];
 }
 
+/**
+ * Is this file a valid file ? check based on file extension
+ *
+ * @param $filename filename to clean
+ **/
 function isValidDoc($filename){
 	global $DB;
 	$splitter=split("\.",$filename);

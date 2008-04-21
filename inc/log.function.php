@@ -204,17 +204,17 @@ function showHistory($device_type,$id_device){
 					break;
 
 				case HISTORY_ADD_DEVICE :
-					$field=getDeviceTypeLabel($data["device_internal_type"]);
+					$field=getDictDeviceLabel($data["device_internal_type"]);
 					$change = $LANG["devices"][25]."&nbsp;<strong>:</strong>&nbsp;\"".$data[ "new_value"]."\"";	
 					break;
 
 				case HISTORY_UPDATE_DEVICE :
-					$field=getDeviceTypeLabel($data["device_internal_type"]);
+					$field=getDictDeviceLabel($data["device_internal_type"]);
 					$change = getDeviceSpecifityLabel($data["device_internal_type"])."&nbsp;:&nbsp;\"".$data[ "old_value"]."\"&nbsp;<strong>--></strong>&nbsp;\"".$data[ "new_value"]."\"";	
 					break;
 
 				case HISTORY_DELETE_DEVICE :
-					$field=getDeviceTypeLabel($data["device_internal_type"]);
+					$field=getDictDeviceLabel($data["device_internal_type"]);
 					$change = $LANG["devices"][26]."&nbsp;<strong>:</strong>&nbsp;"."\"".$data["old_value"]."\"";	
 					break;
 				case HISTORY_INSTALL_SOFTWARE :

@@ -35,7 +35,7 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-// Update from 0.7 to 0.71
+/// Update from 0.7 to 0.71
 function update07to071() {
 	global $DB, $CFG_GLPI, $LANG, $LINK_ID_TABLE;
 

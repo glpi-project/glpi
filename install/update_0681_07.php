@@ -35,7 +35,7 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-// Update from 0.68.1 to 0.7
+/// Update from 0.68.1 to 0.7
 function update0681to07() {
 	global $DB, $CFG_GLPI, $LANG, $LINK_ID_TABLE;
 

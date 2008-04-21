@@ -33,7 +33,7 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-// Update from 0.42 to 0.5
+/// Update from 0.42 to 0.5
 function update042to05(){
 	global $DB,$LANG;
 
@@ -1133,7 +1133,7 @@ function update042to05(){
 
 
 }
-
+/// Update to 0.5 : date difference used for update
 function date_diff($from, $to) {
 	$from=strtotime($from);
 	$to=strtotime($to);
@@ -1157,6 +1157,11 @@ function date_diff($from, $to) {
 	return (12*$years+$months);
 }
 
+/** Update to 0.5 : Update maintenance informations
+* @param $table table name
+* @param $type item type
+* @param $ID item ID
+*/
 function updateMaintenanceInfos($table,$type,$ID){
 	global $DB,$LANG;
 	$elements=array();
@@ -1173,6 +1178,10 @@ function updateMaintenanceInfos($table,$type,$ID){
 
 }
 
+/** Update to 0.5 : Update warranty informations
+* @param $table table name
+* @param $type item type
+*/
 function updateWarrantyInfos($table,$type){
 	global $DB,$LANG;
 	$elements=array();
@@ -1198,6 +1207,7 @@ function updateWarrantyInfos($table,$type){
 	$result_drop=$DB->query($query_drop) or die("0.5 drop2 for update warranty ".$LANG["update"][90].$DB->error());
 
 }
+/// Update to 0.5 :Is maintenance used ?
 function isMaintenanceUsed(){
 	global $DB,$LANG;
 	$tables=array("glpi_computers","glpi_printers","glpi_monitors","glpi_peripherals","glpi_networking");
@@ -1210,6 +1220,7 @@ function isMaintenanceUsed(){
 
 }
 
+/// Update to 0.5 :drop maintenance field ?
 function dropMaintenanceField(){
 	global $DB,$LANG;
 	$tables=array("glpi_computers","glpi_printers","glpi_monitors","glpi_peripherals","glpi_networking");
@@ -1220,7 +1231,7 @@ function dropMaintenanceField(){
 }
 
 /**
- * Get data from old dropdowns to new devices
+ * Update to 0.5 : Get data from old dropdowns to new devices
  *
  * This function assure to keep clean data and integrity, during the change from 
  * computers-dropdown to computers devices. Then delete the unused old elements.

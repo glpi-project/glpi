@@ -33,7 +33,7 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-// Update from 0.68 to 0.68.1
+/// Update from 0.68 to 0.68.1
 function update068to0681(){
 	global $DB,$LANG,$CFG_GLPI;
 
