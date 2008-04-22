@@ -88,9 +88,9 @@ if (!defined('GLPI_ROOT')){
 	}
 	/**
 	* Log a message in log file
-	*@param $name name of the log file
-	*@param $text text to log 
-	*@param $force force log in file not seeing use_errorlog config
+	*@param $name string: name of the log file
+	*@param $text string: text to log 
+	*@param $force boolean: force log in file not seeing use_errorlog config
 	* 
 	**/
 	function logInFile($name,$text,$force=false){
@@ -102,11 +102,11 @@ if (!defined('GLPI_ROOT')){
 	
 	/**
 	* Specific error handler
-	*@param $errno level of the error raised, as an integer.
-	*@param $errmsg  error message, as a string.
-	*@param $filename filename that the error was raised in, as a string.
-	*@param $linenum line number the error was raised at, as an integer. 
-	*@param $vars array that points to the active symbol table at the point the error occurred.
+	*@param $errno integer: level of the error raised.
+	*@param $errmsg string: error message.
+	*@param $filename string: filename that the error was raised in.
+	*@param $linenum integer: line number the error was raised at. 
+	*@param $vars array: that points to the active symbol table at the point the error occurred.
 	*
 	**/
 	function userErrorHandler($errno, $errmsg, $filename, $linenum, $vars){
@@ -168,8 +168,8 @@ if (!defined('GLPI_ROOT')){
 
 	/**
 	* substr function for utf8 string
-	*@param $str string
-	*@param $start start of the result substring
+	*@param $str string: string
+	*@param $start integer: start of the result substring
 	*
 	*@return substring
 	**/
@@ -185,7 +185,7 @@ if (!defined('GLPI_ROOT')){
 	}
 	/**
 	* strlen function for utf8 string
-	*
+	* @param $str string: string 
 	* @return length of the string
 	**/
 	function utf8_strlen($str){
@@ -211,7 +211,7 @@ if (!defined('GLPI_ROOT')){
 	}
 	/**
 	* html_entity_decode function for utf8 string
-	* @param $string string
+	* @param $string string: string
 	*
 	* @return converted string
 	**/
@@ -233,7 +233,9 @@ if (!defined('GLPI_ROOT')){
 		return strtr($string, $trans_tbl);
 	}
 
-	/// Returns the utf string corresponding to the unicode value (from php.net, courtesy - romans@void.lv)
+	/** Returns the utf string corresponding to the unicode value (from php.net, courtesy - romans@void.lv)
+	* @param $num integer: character code
+	*/
 	function code2utf($num){
 	    if ($num < 128) return chr($num);
 	    if ($num < 2048) return chr(($num >> 6) + 192) . chr(($num & 63) + 128);
@@ -328,7 +330,7 @@ if (!defined('GLPI_ROOT')){
 /**
  * Get the filesize of a complete directory (from php.net)
  *
- * @param $path directory or file to get size
+ * @param $path string: directory or file to get size
  * @return size of the $path
  **/
 function filesizeDirectory($path){
@@ -352,7 +354,7 @@ function filesizeDirectory($path){
 /**
  * Clean cache function
  *
- * @param $group group to clean (if not set clean all the cache)
+ * @param $group string: group to clean (if not set clean all the cache)
  * @return nothing
  **/
 function cleanCache($group=""){
@@ -379,7 +381,7 @@ function cleanCache($group=""){
 /**
  * Clean cache function for relations using a specific table
  *
- * @param $table table used. Need to clean all cache using this table
+ * @param $table string: table used. Need to clean all cache using this table
  * @return nothing
  **/
 function cleanRelationCache($table){
@@ -399,8 +401,8 @@ function cleanRelationCache($table){
 /**
  * Clean all dict cache
  *
- * @param $group cache group
- * @param $item  remove cache for item
+ * @param $group string: cache group
+ * @param $item  string: remove cache for item
  * @return nothing
  **/
 function cleanAllItemCache($item,$group){
@@ -489,7 +491,7 @@ function getDbRelations(){
 /**
  * Check Write Access to a directory
  *
- * @param $dir directory to check
+ * @param $dir string: directory to check
  * @return 2 : creation error 1 : delete error 0: OK
  **/
 function testWriteAccessToDirectory($dir){
@@ -619,33 +621,9 @@ function checkWriteAccessToDirs(){
 }
 
 /**
- * Give name of the device
- *
- * @param $ID ID of the device type
- * @return string name of the device type in the current lang
- */
-function getDeviceTypeName($ID){
-	global $LANG;
-	switch ($ID){
-		case COMPUTER_TYPE : return $LANG["help"][25];break;
-		case NETWORKING_TYPE : return $LANG["help"][26];break;
-		case PRINTER_TYPE : return $LANG["help"][27];break;
-		case MONITOR_TYPE : return $LANG["help"][28];break;
-		case PERIPHERAL_TYPE : return $LANG["help"][29];break;
-		case PHONE_TYPE : return $LANG["help"][35];break;
-		case SOFTWARE_TYPE : return $LANG["help"][31];break;
-		case CARTRIDGE_TYPE : return $LANG["Menu"][21];break;
-		case CONTACT_TYPE : return $LANG["Menu"][22];break;
-		case ENTERPRISE_TYPE : return $LANG["Menu"][23];break;
-		case CONTRACT_TYPE : return $LANG["Menu"][25];break;
-		case CONSUMABLE_TYPE : return $LANG["Menu"][32];break;	
-	}
-}
-
-/**
  * Strip slash  for variable & array
  *
- * @param $value item to stripslashes (array or string)
+ * @param $value array or string: item to stripslashes (array or string)
  * @return stripslashes item
  */
 function stripslashes_deep($value) {
@@ -659,7 +637,7 @@ function stripslashes_deep($value) {
 /**
  *  Add slash for variable & array 
  *
- * @param $value value to add slashes (array or string)
+ * @param $value array or string: value to add slashes (array or string)
  * @return addslashes value
  */
 function addslashes_deep($value) {
@@ -673,7 +651,7 @@ function addslashes_deep($value) {
  * Prevent from XSS
  * Clean code 
  *
- * @param $value item to prevent (array or string)
+ * @param $value array or string: item to prevent (array or string)
  * @return clean item
  *
  * @see unclean_cross_side_scripting_deep*
@@ -689,7 +667,7 @@ function clean_cross_side_scripting_deep($value) {
 /**
  *  Invert fonction from clean_cross_side_scripting_deep
  *
- * @param $value item to unclean from clean_cross_side_scripting_deep
+ * @param $value array or string: item to unclean from clean_cross_side_scripting_deep
  * @return unclean item
  * @see clean_cross_side_scripting_deep
  */
@@ -704,7 +682,7 @@ function unclean_cross_side_scripting_deep($value) {
 /**
  *  Utf8 decode for variable & array
  *
- * @param $value item to utf8_decode (array or string)
+ * @param $value array or string: item to utf8_decode (array or string)
  * @return decoded item
  */
 function utf8_decode_deep($value) {
@@ -717,8 +695,8 @@ function utf8_decode_deep($value) {
 /**
  *  Resume text for followup
  *
- * @param $string
- * @param $length
+ * @param $string string: string to resume
+ * @param $length integer: resume length
  * @return cut string
  */
 function resume_text($string,$length=255){
@@ -732,8 +710,8 @@ function resume_text($string,$length=255){
 /**
  *  Format mail row
  *
- * @param $string label string
- * @param $value value string
+ * @param $string string: label string
+ * @param $value string: value string
  * @return string
  */
 function mailRow($string,$value){
@@ -746,10 +724,10 @@ function mailRow($string,$value){
  *  Replace str_pad()
  *  who bug with utf8
  *
- * @param $ps_input
- * @param $pn_pad_length
- * @param $ps_pad_string
- * @param $pn_pad_type
+ * @param $ps_input string: input string
+ * @param $pn_pad_length integer: padding length
+ * @param $ps_pad_string string: padding string
+ * @param $pn_pad_type: integer: padding type
  * @return string
  */
 function utf8_str_pad($ps_input, $pn_pad_length, $ps_pad_string = " ", $pn_pad_type = STR_PAD_RIGHT) {
@@ -826,7 +804,7 @@ function utf8_str_pad($ps_input, $pn_pad_length, $ps_pad_string = " ", $pn_pad_t
 /**
  * Clean display value deleting html tags
  *
- *@param $value string value
+ *@param $value string: string value
  *
  *@return clean value
  **/
@@ -927,9 +905,9 @@ function html_clean($value){
 
 
 /**
- * Convert a date YY-MM-DD to DD-MM-YY for display in a html table
+ * Convert a date YY-MM-DD HH:MM to DD-MM-YY HH:MM for display in a html table
  *
- * @param $time
+ * @param $time datetime: datetime to convert 
  * @return $time or $date
  */
 function convDateTime($time) { 
@@ -949,7 +927,7 @@ function convDateTime($time) {
 /**
  * Convert a date YY-MM-DD to DD-MM-YY for calendar
  *
- * @param $time
+ * @param $time date: date to convert 
  * @return $time or $date
  */
 function convDate($time) { 
@@ -969,9 +947,9 @@ function convDate($time) {
 /**
  * Convert a number to correct display
  *
- * @param $number Number to display
- * @param $edit display number for edition ?
- * @param $forcedecimal Force decimal number (do not use default value)
+ * @param $number float: Number to display
+ * @param $edit boolean: display number for edition ? (id edit use . in all case)
+ * @param $forcedecimal integer: Force decimal number (do not use default value)
  *
  * @return formatted number
  */
@@ -1005,8 +983,8 @@ function formatNumber($number,$edit=false,$forcedecimal=-1) {
 /**
  *  Send a file to the navigator
  *
- * @param $file
- * @param $filename
+ * @param $file string: storage filename
+ * @param $filename string: file title
  * @return nothing
  */
 function sendFile($file,$filename){
@@ -1084,7 +1062,7 @@ function sendFile($file,$filename){
 /**
  * Convert a value in byte, kbyte, megabyte etc...
  *
- * @param $val
+ * @param $val string: config value (like 10k, 5M)
  * @return $val
  */
 function return_bytes_from_ini_vars($val) {
@@ -1106,7 +1084,7 @@ function return_bytes_from_ini_vars($val) {
 /**
  * Header redirection hack
  *
- * @param $dest Redirection destination 
+ * @param $dest string: Redirection destination 
  * @return nothing
  */
 function glpi_header($dest){
@@ -1142,7 +1120,7 @@ function callCron(){
 /**
  * Get hour from sql
  *
- * @param $time
+ * @param $time datetime: time
  * @return  array
  */
 function get_hour_from_sql($time){
@@ -1174,7 +1152,7 @@ function optimize_tables (){
 /**
 * Is a string seems to be UTF-8 one ?
 * 
-* @param $Str
+* @param $Str string: string to analyze
 * @return  boolean 
 **/
 function seems_utf8($Str) {
@@ -1200,18 +1178,20 @@ function seems_utf8($Str) {
  * NOT USED IN CORE - Used for update process - Clean string for knowbase display
  * replace nl2br
  * 
- * @param $pee initial string
- * @param $br make line breaks
+ * @param $pee string: initial string
+ * @param $br boolean: make line breaks ?
  * 
  * @return $string
  */
-function autop($pee, $br=1) {
+function autop($pee, $br=true) {
 	// Thanks  to Matthew Mullenweg
 
 	$pee = preg_replace("/(\r\n|\n|\r)/", "\n", $pee); // cross-platform newlines
 	$pee = preg_replace("/\n\n+/", "\n\n", $pee); // take care of duplicates
 	$pee = preg_replace('/\n?(.+?)(\n\n|\z)/s', "<p>$1</p>\n", $pee); // make paragraphs, including one at the end
-	if ($br) $pee = preg_replace('|(?<!</p>)\s*\n|', "<br>\n", $pee); // optionally make line breaks
+	if ($br) {
+		$pee = preg_replace('|(?<!</p>)\s*\n|', "<br>\n", $pee); // optionally make line breaks
+	}
 	return $pee;
 }
 
@@ -1219,7 +1199,7 @@ function autop($pee, $br=1) {
 /**
  * NOT USED IN CORE - Used for update process - make url clickable
  *
- * @param $chaine initial string
+ * @param $chaine string: initial string
  * 
  * @return $string
  */
@@ -1232,14 +1212,13 @@ function clicurl($chaine){
 /**
  * NOT USED IN CORE - Used for update process - Split the message into tokens ($inside contains all text inside $start and $end, and $outside contains all text outside)
  *
- * @param $text initial text
- * @param $start
- * @param $end
+ * @param $text string: initial text
+ * @param $start integer: where to start
+ * @param $end integer: where to stop
  * 
  * @return array 
  */
-function split_text($text, $start, $end)
-{
+function split_text($text, $start, $end){
 
 	// Adaptï¿½de PunBB 
 	//Copyright (C)  Rickard Andersson (rickard@punbb.org)
@@ -1262,7 +1241,7 @@ function split_text($text, $start, $end)
 /**
  * NOT USED IN CORE - Used for update process - Replace bbcode in text by html tag
  *
- * @param $string initial string
+ * @param $string string: initial string
  * 
  * @return formatted string 
  */
@@ -1330,28 +1309,34 @@ function rembo($string){
 /**
 * Create SQL search condition
 * 
-* @param $val value to search
-* @param $not is a negative search ?
+* @param $val string: value to search
+* @param $not boolean: is a negative search ?
 * 
 * @return search string 
 **/ 
-function makeTextSearch($val,$not=0){
+function makeTextSearch($val,$not=false){
 	$NOT="";
-	if ($not) $NOT= " NOT ";
+	if ($not) {
+		$NOT= " NOT ";
+	}
 	// Unclean to permit < and > search
 	$val=unclean_cross_side_scripting_deep($val);
-	if ($val=="NULL"||$val=="null") $SEARCH=" IS $NOT NULL ";
-	else {
+	if ($val=="NULL"||$val=="null") {
+		$SEARCH=" IS $NOT NULL ";
+	} else {
 		$begin=0;
 		$end=0;
 		if (($length=strlen($val))>0){
-			if (($val[0]=='^'))
+			if (($val[0]=='^')){
 				$begin=1;
-			if ($val[$length-1]=='$')
+			}
+			if ($val[$length-1]=='$'){
 				$end=1;
+			}
 		}
-		if ($begin||$end) 
+		if ($begin||$end) {
 			$val=substr($val,$begin,$length-$end-$begin);
+		}
 
 		$SEARCH=" $NOT LIKE '".(!$begin?"%":"").$val.(!$end?"%":"")."' ";
 
@@ -1363,9 +1348,9 @@ function makeTextSearch($val,$not=0){
 /**
  * Get a web page. Use proxy if configured
  * 
- * @param $url to retrieve
- * @param $msgerr set if problem encountered
- * @param $rec internal use only Must be 0
+ * @param $url string: to retrieve
+ * @param $msgerr string: set if problem encountered
+ * @param $rec integer: internal use only Must be 0
  * 
  * @return content of the page (or empty)
  */
@@ -1470,11 +1455,11 @@ function getURLContent ($url, &$msgerr=NULL, $rec=0) {
 /**
 * Check if new version is available 
 * 
-* @param $auto check done autically ? (if not display result)
+* @param $auto boolean: check done autically ? (if not display result)
 * 
 * @return string explaining the result 
 **/
-function checkNewVersionAvailable($auto=1){
+function checkNewVersionAvailable($auto=true){
 	global $DB,$LANG,$CFG_GLPI;
 
 	if (!haveRight("check_update","r")) return false;	
@@ -1546,9 +1531,9 @@ function cron_check_update(){
 /**
 * Get date using a begin date and a period in month
 * 
-* @param $from begin date
-* @param $addwarranty period in months
-* @param $deletenotice period in months of notice
+* @param $from date: begin date
+* @param $addwarranty integer: period in months
+* @param $deletenotice integer: period in months of notice
 * 
 * @return expiration date string
 **/
@@ -1568,9 +1553,9 @@ function getWarrantyExpir($from,$addwarranty,$deletenotice=0){
 /**
 * Get date using a begin date and a period in month and a notice one
 * 
-* @param $begin begin date
-* @param $duration period in months
-* @param $notice notice in months 
+* @param $begin date: begin date
+* @param $duration integer: period in months
+* @param $notice integer: notice in months 
 * 
 * @return expiration string 
 **/
@@ -1592,7 +1577,7 @@ function getExpir($begin,$duration,$notice="0"){
 /**
 * Manage login redirection 
 * 
-* @param $where where to redirect ? 
+* @param $where string: where to redirect ? 
 **/
 function manageRedirect($where){
 	global $CFG_GLPI,$PLUGIN_HOOKS;
@@ -1650,7 +1635,7 @@ function manageRedirect($where){
 /**
 * Clean string for input text field 
 * 
-* @param $string begin date 
+* @param $string string: input text
 * 
 * @return clean string
 **/
@@ -1661,7 +1646,7 @@ function cleanInputText($string){
 /**
 * Get a random string 
 * 
-* @param $length length of the random string 
+* @param $length integer: length of the random string 
 * 
 * @return random string
 **/
@@ -1679,37 +1664,37 @@ function getRandomString($length) {
 /**
 * Make a good string from the unix timestamp $sec
 * 
-* @param $sec timestamp
+* @param $sec integer: timestamp
 * 
-* @param $display_sec display seconds ? 
+* @param $display_sec boolean: display seconds ? 
 * 
 * @return string 
 **/
-function timestampToString($sec,$display_sec=1){
+function timestampToString($sec,$display_sec=true){
 	global $LANG;
 	$sec=floor($sec);
 	if ($sec<0) $sec=0;
 
 	if($sec < MINUTE_TIMESTAMP) {
 		return $sec." ".$LANG["stats"][34];
-	}
-	elseif($sec < HOUR_TIMESTAMP) {
+
+	} else if($sec < HOUR_TIMESTAMP) {
 		$min = floor($sec/MINUTE_TIMESTAMP);
 		$sec = $sec%MINUTE_TIMESTAMP;
 
 		$out=$min." ".$LANG["stats"][33];
 		if ($display_sec) $out.=" ".$sec." ".$LANG["stats"][34];
 		return $out;
-	}
-	elseif($sec <  DAY_TIMESTAMP) {
+
+	} else if($sec <  DAY_TIMESTAMP) {
 		$heure = floor($sec/HOUR_TIMESTAMP);
 		$min = floor(($sec%HOUR_TIMESTAMP)/(MINUTE_TIMESTAMP));
 		$sec = $sec%MINUTE_TIMESTAMP;
 		$out=$heure." ".$LANG["stats"][32]." ".$min." ".$LANG["stats"][33];
 		if ($display_sec) $out.=" ".$sec." ".$LANG["stats"][34];
 		return $out;
-	}
-	else {
+
+	} else {
 		$jour = floor($sec/DAY_TIMESTAMP);
 		$heure = floor(($sec%DAY_TIMESTAMP)/(HOUR_TIMESTAMP));
 		$min = floor(($sec%HOUR_TIMESTAMP)/(MINUTE_TIMESTAMP));
@@ -1723,7 +1708,7 @@ function timestampToString($sec,$display_sec=1){
 /**
 * Delete a directory and file contains in it
 * 
-* @param $dir directory to delete
+* @param $dir string: directory to delete
 **/
 function deleteDir($dir) {
 	if (file_exists($dir)){
@@ -1750,7 +1735,7 @@ function deleteDir($dir) {
 
 /**
  * Determine if a login is valid
- * @param $login login to check
+ * @param $login string: login to check
  * @return boolean 
  */
 function isValidLogin($login="")
@@ -1783,26 +1768,24 @@ function canUseImapPop(){
 /** Converts an array of parameters into a query string to be appended to a URL.
  *
  * @return  string  : Query string to append to a URL.
- * @param   $array  Array of parameters to append to the query string.
+ * @param   $array  array: parameters to append to the query string.
  * @param   $parent This should be left blank (it is used internally by the function).
  */
-function append_params($array, $parent='')
-{
-    $params = array();
-    foreach ($array as $k => $v)
-    {
-        if (is_array($v))
-            $params[] = append_params($v, (empty($parent) ? rawurlencode($k) : $parent . '[' . rawurlencode($k) . ']'));
-        else
-            $params[] = (!empty($parent) ? $parent . '[' . rawurlencode($k) . ']' : rawurlencode($k)) . '=' . rawurlencode($v);
-    }
-
-    return implode('&', $params);
+function append_params($array, $parent=''){
+	$params = array();
+	foreach ($array as $k => $v){
+		if (is_array($v))
+		$params[] = append_params($v, (empty($parent) ? rawurlencode($k) : $parent . '[' . rawurlencode($k) . ']'));
+		else
+		$params[] = (!empty($parent) ? $parent . '[' . rawurlencode($k) . ']' : rawurlencode($k)) . '=' . rawurlencode($v);
+	}
+	
+	return implode('&', $params);
 }
 
 /** Format a size passing a size in octet
  *
- * @param   $size : Size in octet
+ * @param   $size integer: Size in octet
  * @return  formatted size
  */
 function getSize($size) {

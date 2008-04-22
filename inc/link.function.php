@@ -56,7 +56,7 @@ function showLinkDevice($instID) {
 
 	if (!haveRight("link","r")) return false;
 	$canedit= haveRight("link","w");
-
+	$ci = new CommonItem();
 	$query = "SELECT * from glpi_links_device WHERE FK_links='$instID' ORDER BY device_type";
 	$result = $DB->query($query);
 	$number = $DB->numrows($result);
@@ -70,9 +70,9 @@ function showLinkDevice($instID) {
 
 	while ($i < $number) {
 		$ID=$DB->result($result, $i, "ID");
-		$device_type=$DB->result($result, $i, "device_type");
+		$ci->setType($DB->result($result, $i, "device_type"));
 		echo "<tr class='tab_bg_1'>";
-		echo "<td class='center'>".getDeviceTypeName($device_type)."</td>";
+		echo "<td class='center'>".$ci->getType()."</td>";
 		echo "<td align='center' class='tab_bg_2'><a href='".$_SERVER['PHP_SELF']."?deletedevice=deletedevice&amp;ID=$ID'><strong>".$LANG["buttons"][6]."</strong></a></td></tr>";
 		$i++;
 	}

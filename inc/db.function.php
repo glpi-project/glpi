@@ -40,8 +40,8 @@ if (!defined('GLPI_ROOT')){
 /**
  * Count the number of elements in a table.
  *
- * @param $table table name
- * @param $condition condition to use
+ * @param $table string: table name
+ * @param $condition string: condition to use
  *
  * return int nb of elements in table
  */
@@ -60,7 +60,7 @@ function countElementsInTable($table,$condition=""){
 /**
  * Count the number of elements in a table for a specific entity
  *
- * @param $table table name
+ * @param $table string: table name
  *
  * return int nb of elements in table
  */
@@ -71,8 +71,8 @@ function countElementsInTableForMyEntities($table){
 /**
  * Count the number of elements in a table for a specific entity
  *
- * @param $table table name
- * @param $entity the entity ID
+ * @param $table string: table name
+ * @param $entity integer: the entity ID
  *
  * return int nb of elements in table
  */
@@ -83,8 +83,8 @@ function countElementsInTableForEntity($table,$entity){
 /**
  * Get datas from a table in an array : CAUTION TO USE ONLY FOR SMALL TABLES OR USING A STRICT CONDITION
  * 
- * @param $table table name
- * @param $condition condition to use
+ * @param $table string: table name
+ * @param $condition string: condition to use
  *
  * return array containing all the datas
  */
@@ -108,13 +108,13 @@ function getAllDatasFromTable($table,$condition=""){
 /**
  * Get the Name of the element of a Dropdown Tree table
  *
- * @param $table : Dropdown Tree table
- * @param $ID : ID of the element
- * @param $withcomments : 1 if you want to give the array with the comments
+ * @param $table string: Dropdown Tree table
+ * @param $ID integer: ID of the element
+ * @param $withcomments boolean: 1 if you want to give the array with the comments
  * @return string : name of the element
  * @see getTreeValueCompleteName
  */
-function getTreeLeafValueName($table,$ID,$withcomments=0){
+function getTreeLeafValueName($table,$ID,$withcomments=false){
 	global $DB,$LANG;
 
 	$name="";
@@ -137,21 +137,23 @@ function getTreeLeafValueName($table,$ID,$withcomments=0){
 	
 		}
 	}
-	if ($withcomments)
+	if ($withcomments){
 		return array("name"=>$name,"comments"=>$comments);
-	else return $name;
+	} else {
+		return $name;
+	}
 }
 
 /**
  * Get completename of a Dropdown Tree table
  *
- * @param $table : Dropdown Tree table
- * @param $ID : ID of the element
- * @param $withcomments : 1 if you want to give the array with the comments
+ * @param $table string: Dropdown Tree table
+ * @param $ID integer: ID of the element
+ * @param $withcomments boolean: 1 if you want to give the array with the comments
  * @return string : completename of the element
  * @see getTreeLeafValueName
  */
-function getTreeValueCompleteName($table,$ID,$withcomments=0){
+function getTreeValueCompleteName($table,$ID,$withcomments=false){
 	global $DB,$LANG;
 	$name="";
 	$comments="";
@@ -175,20 +177,24 @@ function getTreeValueCompleteName($table,$ID,$withcomments=0){
 	
 		}
 	}
-	if (empty($name)) $name="&nbsp;";
-	if ($withcomments) 
+	if (empty($name)) {
+		$name="&nbsp;";
+	}
+	if ($withcomments) {
 		return array("name"=>$name,"comments"=>$comments);
-	else return $name;
+	} else {
+		return $name;
+	}
 }
 
 /**
  * show name category
  * DO NOT DELETE THIS FUNCTION : USED IN THE UPDATE
  *
- * @param $table
- * @param $ID
- * @param $wholename
- * @param $level
+ * @param $table string: table name
+ * @param $ID integer: value ID
+ * @param $wholename string : current name to complete (use for recursivity)
+ * @param $level integer: current level of recursion
  * @return string name
  */
 function getTreeValueName($table,$ID, $wholename="",$level=0){
@@ -226,7 +232,7 @@ function getTreeValueName($table,$ID, $wholename="",$level=0){
  * Get the ancestors of an entity
  * result is cached in session
  *
- * @param $ID The ID of the entity
+ * @param $ID integer: The ID of the entity
  * @return array of IDs of the ancestors
  */
 function getEntityAncestors ($ID){
@@ -240,7 +246,7 @@ function getEntityAncestors ($ID){
  * Get the sons of an entity
  * result is cached in session
  *
- * @param $ID The ID of the entity
+ * @param $ID integer: The ID of the entity
  * @return array of IDs of the sons (including ID of the searched entity)
  */
 function getEntitySons ($ID){
@@ -253,8 +259,8 @@ function getEntitySons ($ID){
 /**
  * Get the ancestors of an item in a tree dropdown
  *
- * @param $table
- * @param $IDf The ID of the item
+ * @param $table string: table name
+ * @param $IDf integer: The ID of the item
  * @return array of IDs of the ancestors
  */
 function getAncestorsOfTreeItem($table,$IDf){
@@ -289,8 +295,8 @@ function getAncestorsOfTreeItem($table,$IDf){
 /**
  * Get the sons of an item in a tree dropdown
  *
- * @param $table
- * @param $IDf The ID of the father
+ * @param $table string: table name
+ * @param $IDf integer: The ID of the father
  * @return array of IDs of the sons
  */
 function getSonsOfTreeItem($table,$IDf){
@@ -348,8 +354,8 @@ function getSonsOfTreeItem($table,$IDf){
 /**
  * Get the sons of an item in a tree dropdown
  *
- * @param $table table name
- * @param $IDf The ID of the father
+ * @param $table string: table name
+ * @param $IDf integer: The ID of the father
  * @return array of IDs of the sons
  */
 function getTreeForItem($table,$IDf){
@@ -409,8 +415,8 @@ function getTreeForItem($table,$IDf){
 /**
  * Construct a tree from a list structure
  *
- * @param $list the list
- * @param $root root of the tree
+ * @param $list array: the list
+ * @param $root integer: root of the tree
  * @return list of items in the tree
  */
 function contructTreeFromList($list,$root){
@@ -431,8 +437,8 @@ function contructTreeFromList($list,$root){
 /**
  * Construct a list from a tree structure
  *
- * @param $tree the tree
- * @param $parent root of the tree
+ * @param $tree array: the tree
+ * @param $parent integer: root of the tree
  * @return list of items in the tree
  */
 function contructListFromTree($tree,$parent=0){
@@ -455,9 +461,9 @@ function contructListFromTree($tree,$parent=0){
 /**
  * Get the equivalent search query using ID of soons that the search of the father's ID argument
  *
- * @param $table table name
- * @param $IDf The ID of the father
- * @param $reallink real field to link ($table.ID if not set)
+ * @param $table string: table name
+ * @param $IDf integer: The ID of the father
+ * @param $reallink string: real field to link ($table.ID if not set)
  * @return string the query
  */
 function getRealQueryForTreeItem($table,$IDf,$reallink=""){
@@ -487,14 +493,13 @@ function getRealQueryForTreeItem($table,$IDf,$reallink=""){
 }
 
 
-/*
+/*  // NOT USED
  * Get the level for an item in a tree structure
  *
  * @param $table table name
  * @param $ID ID of the item
  * @return int level
- 
- // NOT USED
+ *
 function getTreeItemLevel($table,$ID){
 	global $DB;
 	$level=0;
