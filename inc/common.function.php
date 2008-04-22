@@ -732,11 +732,10 @@ function resume_text($string,$length=255){
 /**
  *  Format mail row
  *
- * @param $string
- * @param $value
+ * @param $string label string
+ * @param $value value string
  * @return string
  */
-
 function mailRow($string,$value){
 	$row=utf8_str_pad( $string . ': ',25,' ', STR_PAD_RIGHT).$value."\n";
 

@@ -646,7 +646,6 @@ function getDropdownArrayNames($table,$ids) {
  * @param $display_comments display the comments near the dropdown
  * @return nothing (print out an HTML select box)
  */
-
 function dropdownUsersTracking($myname,$value,$field,$display_comments=1) {
 	global $CFG_GLPI,$LANG,$DB;
 
@@ -2093,8 +2092,7 @@ function dropdownPlanningState($name,$value='')
  * @param $elements array of elements to display
  * @param $value default value
  */	
-function dropdownArrayValues($name,$elements,$value='',$used=array())
-{
+function dropdownArrayValues($name,$elements,$value='',$used=array()){
 	$rand=mt_rand();
 	echo "<select name='$name' id='dropdown_".$name.$rand."'>";
 
@@ -2108,8 +2106,14 @@ function dropdownArrayValues($name,$elements,$value='',$used=array())
 	return $rand;
 }
 
-function dropdownStateBehaviour ($name, $lib="", $value=0)
-{
+/**
+ * Dropdown of states for behaviour config
+ *
+ * @param $name select name
+ * @param $lib string to add for -1 value
+ * @param $value default value
+ */
+function dropdownStateBehaviour ($name, $lib="", $value=0){
 	global $DB, $LANG;
 	
 	$elements=array("0"=>$LANG["setup"][195]);
@@ -2127,45 +2131,52 @@ function dropdownStateBehaviour ($name, $lib="", $value=0)
 	dropdownArrayValues($name, $elements, $value);
 }
 
-function adminManagementDropdown($name,$label,$restrict,$software=0)
-{
+/**
+ * Dropdown for global management config
+ *
+ * @param $name select name
+ * @param $value default value
+ * @param $software is it for software ?
+ */
+function adminManagementDropdown($name,$value,$software=0){
 	global $LANG;
-	echo "<td class='center'> " . $label . " </td><td><select name=\"".$name."\">";
+	echo "<select name=\"".$name."\">";
 
-	if (!$software)
-	{
+	if (!$software){
 		$yesUnit = $LANG["peripherals"][32];
 		$yesGlobal = $LANG["peripherals"][31];
-	}
-	else
-	{
+	} else {
 		$yesUnit = $LANG["ocsconfig"][46];
 		$yesGlobal = $LANG["ocsconfig"][45];
 	}
 	
 	echo "<option value=\"2\"";
-	if ($restrict == 2) {
+	if ($value == 2) {
 		echo " selected";
 	}
 	echo ">".$LANG["choice"][0]."</option>";
 	
 	echo "<option value=\"0\"";
-	if ($restrict == 0) {
+	if ($value == 0) {
 		echo " selected";
 	}
 	echo ">" . $LANG["choice"][1]." - ". $LANG["setup"][274]. " : ".  $yesUnit . "</option>";
 
 	echo "<option value=\"1\"";
-	if ($restrict == 1) {
+	if ($value == 1) {
 		echo " selected";
 	}
 	echo ">" . $LANG["choice"][1]." - ". $LANG["setup"][274]. " : ". $yesGlobal . " </option>";
 				
-	echo "</select></td>";
+	echo "</select>";
 }
-
-function dropdownGMT($name,$value='')
-{
+/**
+ * Dropdown for GMT selection
+ *
+ * @param $name select name
+ * @param $value default value
+ */
+function dropdownGMT($name,$value=''){
 	global $LANG;
 	$elements = array ( -12, -11, -10, -9, -8, -7, -6, -5, -4, -3.5, -3, -2, -1, 0, 1, 2, 3, 3.5, 4, 4.5, 5, 5.5, 6, 6.5, 7, 8, 9, 9.5, 10, 11, 12, 13);
 	
@@ -2181,8 +2192,13 @@ function dropdownGMT($name,$value='')
 	echo "</select>";	
 }
 
-function dropdownRules ($rule_type, $myname)
-{
+/**
+ * Dropdown rules for a defined rule_type
+ *
+ * @param $myname select name
+ * @param $rule_type rule type
+ */
+function dropdownRules ($rule_type, $myname){
 	global $DB, $CFG_GLPI, $LANG;
 
 	$rand=mt_rand();
@@ -2207,7 +2223,12 @@ function dropdownRules ($rule_type, $myname)
 
 	return $rand;
 }
-
+/**
+ * Dropdown profiles which have rights under the active one
+ *
+ * @param $name select name
+ * @param $value default value
+ */
 function dropdownUnderProfiles($name,$value=''){
 	global $DB;
 
@@ -2229,6 +2250,12 @@ function dropdownUnderProfiles($name,$value=''){
 	dropdownArrayValues($name,$profiles,$value);
 }
 
+/**
+ * Dropdown for infocoms alert config
+ *
+ * @param $name select name
+ * @param $value default value
+ */
 function dropdownAlertInfocoms($name,$value=0){
 	global $LANG;
 	echo "<select name=\"$name\">";
@@ -2238,6 +2265,13 @@ function dropdownAlertInfocoms($name,$value=0){
 }
 
 
+/**
+ * Private / Public switch for items which may be assign to a user and/or an entity
+ *
+ * @param $private default is private ?
+ * @param $entity working entity ID
+ * @param $recursive is the item recursive ?
+ */
 function privatePublicSwitch($private,$entity,$recursive){
 	global $LANG,$CFG_GLPI;
 

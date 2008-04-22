@@ -124,6 +124,11 @@ function showInfocomEnterprise($instID) {
 }
 
 
+/**
+ * Show contacts asociated to an enterprise
+ *
+ * @param $instID enterprise ID
+ */
 function showAssociatedContact($instID) {
 	global $DB,$CFG_GLPI, $LANG;
 
@@ -200,6 +205,12 @@ function showAssociatedContact($instID) {
 
 }
 
+/**
+ * Add a contact to an enterprise
+ *
+ * @param $eID enterprise ID
+ * @param $cID contact ID
+ */
 function addContactEnterprise($eID,$cID){
 	global $DB;
 	if ($eID>0&&$cID>0){
@@ -208,7 +219,11 @@ function addContactEnterprise($eID,$cID){
 		$result = $DB->query($query);
 	}
 }
-
+/**
+ * Delete a contact to an enterprise
+ *
+ * @param $ID contact_enterprise ID
+ */
 function deleteContactEnterprise($ID){
 
 	global $DB;
@@ -216,14 +231,22 @@ function deleteContactEnterprise($ID){
 	$result = $DB->query($query);
 }
 
-function getEnterpriseLinks($value,$withname=0){
+/**
+ * Get links for an enterprise (website / edit)
+ *
+ * @param $value integer : enterprise ID
+ * @param $withname boolean : also display name ?
+ */
+function getEnterpriseLinks($value,$withname=false){
 	global $CFG_GLPI,$LANG;
 	$ret="";
 
 	$ent=new Enterprise();
 	if ($ent->getFromDB($value)){
 
-		if ($withname==1) $ret.=$ent->fields["name"];
+		if ($withname){
+			$ret.=$ent->fields["name"];
+		}
 
 		if (!empty($ent->fields['website'])){
 			$ret.= "&nbsp;&nbsp;";
@@ -234,6 +257,5 @@ function getEnterpriseLinks($value,$withname=0){
 	}
 
 	return $ret;
-
 }
 ?>

@@ -100,7 +100,7 @@ else
 		if (!empty($_GET['ID'])){
 			switch($_SESSION['glpi_onglet']){
 				case -1 :	
-					showGroupUser($_SERVER['PHP_SELF'],$_GET["ID"]);
+					showGroupUsers($_SERVER['PHP_SELF'],$_GET["ID"]);
 					showGroupDevice($_GET["ID"]);
 					displayPluginAction(GROUP_TYPE,$_GET["ID"],$_SESSION['glpi_onglet']);
 					break;
@@ -110,7 +110,7 @@ else
 
 				default :
 					if (!displayPluginAction(GROUP_TYPE,$_GET["ID"],$_SESSION['glpi_onglet'])){
-						showGroupUser($_SERVER['PHP_SELF'],$_GET["ID"]);
+						showGroupUsers($_SERVER['PHP_SELF'],$_GET["ID"]);
 					}
 					break;
 			}

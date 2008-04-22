@@ -322,7 +322,6 @@ function displaySearchHeader($type,$rows,$cols,$fixed=0){
  *@return string to display
  *
  **/
-
 function displaySearchNewLine($type,$odd=false){
 	$out="";
 	switch ($type){

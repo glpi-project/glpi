@@ -37,6 +37,12 @@ if (!defined('GLPI_ROOT')){
 	die("Sorry. You can't access directly to this file");
 	}
 
+
+/**
+ * Show devices of a group
+ *
+ * @param $ID integer : group ID
+ */
 function showGroupDevice($ID){
 	global $DB,$CFG_GLPI, $LANG,$LINK_ID_TABLE,$INFOFORM_PAGES;
 
@@ -61,7 +67,13 @@ function showGroupDevice($ID){
 	echo "</table></div>";
 }
 
-function showGroupUser($target,$ID){
+/**
+ * Show users of a group
+ *
+ * @param $target string : where to go on action
+ * @param $ID integer : group ID
+ */
+function showGroupUsers($target,$ID){
 	global $DB,$CFG_GLPI, $LANG;
 
 	if (!haveRight("user","r")||!haveRight("group","r"))	return false;
@@ -154,6 +166,12 @@ function showGroupUser($target,$ID){
 	}
 }
 
+/**
+ * Add a group to a user 
+ *
+ * @param $uID integer : user ID
+ * @param $gID integer : group ID
+ */
 function addUserGroup($uID,$gID){
 	global $DB;
 	if ($uID>0&&$gID>0){
@@ -163,6 +181,11 @@ function addUserGroup($uID,$gID){
 	}
 }
 
+/**
+ * Delete a group to a user 
+ *
+ * @param $ID integer : glpi_users_groups ID
+ */
 function deleteUserGroup($ID){
 
 	global $DB;
