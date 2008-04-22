@@ -40,7 +40,8 @@ $IP=array(10,0,0,1);
 $MAC=array(8,0,20,30,40,50);
 $NETPOINT=array(0,0,0,0);
 
-/// Generate bigdump : Get next netpoint name
+/** Generate bigdump : Get next netpoint name
+*/
 function getNextNETPOINT(){
 	global $NETPOINT;
 	$type=array("V","D","I");
@@ -57,7 +58,8 @@ function getNextNETPOINT(){
 	return $type[$NETPOINT[3]]."/".$NETPOINT[0]."/".$NETPOINT[1]."/".$NETPOINT[2];
 }
 
-/// Generate bigdump : Get next IP address
+/** Generate bigdump : Get next IP address
+*/
 function getNextIP(){
 	global $IP;
 
@@ -76,7 +78,8 @@ function getNextIP(){
 		"subnet"=>$IP[0].".".$IP[1].".".$IP[2].".0",
 		"netwmask"=>"255.255.255.0");
 }
-/// Generate bigdump :  Get next MAC address
+/** Generate bigdump :  Get next MAC address
+*/
 function getNextMAC(){
 	global $MAC;
 
@@ -211,7 +214,8 @@ function addTracking($type,$ID,$ID_entity){
 
 }
 
-/// Generate bigdump : generate global dropdowns
+/** Generate bigdump : generate global dropdowns
+*/
 function generateGlobalDropdowns(){
 	global $MAX,$DB;
 

@@ -497,8 +497,7 @@ function updateDropdown($input) {
 	}
 }
 
-function getDropdownID($input)
-{
+function getDropdownID($input){
 	global $DB, $CFG_GLPI;
 	// Clean datas
 	$input["value"]=trim($input["value"]);
@@ -702,7 +701,9 @@ function deleteDropdown($input) {
 	cleanRelationCache($input["tablename"]);
 }
 
-//replace all entries for a dropdown in each items
+/** Replace a dropdown item (oldID) by another one (newID) in a dropdown table (tablename) and update all linked fields
+* @param $input array : paramaters : need tablename / oldID / newID
+*/
 function replaceDropDropDown($input) {
 	global $DB,$CFG_GLPI;
 
@@ -857,7 +858,11 @@ function getDropdownNameFromTableForStats($table) {
 	return $name;
 }
 
-//check if the dropdown $ID is used into item tables
+/** Check if the dropdown $ID is used into item tables
+* @param $table string : table name
+* @param $ID integer : value ID
+* @return boolean : is the value used ?
+*/
 function dropdownUsed($table, $ID) {
 
 	global $DB;

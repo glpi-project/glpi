@@ -37,11 +37,14 @@ if (!defined('GLPI_ROOT')){
 	die("Sorry. You can't access directly to this file");
 	}
 
-//return if the $postfromselect if a dropdown or not
-function is_dropdown_stat($postfromselect) {
+/** Determine if a table is a dropdown one for stat
+* @param $table string : table name
+* @return boolean 
+*/
+function is_dropdown_stat($table) {
 	$dropdowns = array ("locations","os","model");
-	if(in_array(str_replace("glpi_dropdown_","",$postfromselect),$dropdowns)) return true;
-	elseif(strcmp("glpi_type_computers",$postfromselect) == 0) return true;
+	if(in_array(str_replace("glpi_dropdown_","",$table),$dropdowns)) return true;
+	elseif(strcmp("glpi_type_computers",$table) == 0) return true;
 	else return false; 
 }
 
@@ -244,10 +247,12 @@ function displayStats($type,$field,$date1,$date2,$start,$value,$value2=""){
 }
 
 
-//return an array from tracking
-//it contains the distinct users witch have any intervention assigned to.
-function getNbIntervTech($date1,$date2)
-{
+/** Get users which have intervention assigned to  between 2 dates
+* @param $date1 date : begin date
+* @param $date2 date : end date
+* @return array contains the distinct users which have any intervention assigned to.
+*/
+function getNbIntervTech($date1,$date2){
 	global $DB;
 	$query = "SELECT distinct glpi_tracking.assign as assign, glpi_users.name as name, glpi_users.realname as realname, glpi_users.firstname as firstname";
 	$query.= " FROM glpi_tracking ";
@@ -270,10 +275,12 @@ function getNbIntervTech($date1,$date2)
 	return $tab;
 }
 
-//return an array from tracking
-//it contains the distinct users witch have any intervention assigned to.
-function getNbIntervTechFollowup($date1,$date2)
-{
+/** Get users which have followup assigned to  between 2 dates
+* @param $date1 date : begin date
+* @param $date2 date : end date
+* @return array contains the distinct users which have any followup assigned to.
+*/
+function getNbIntervTechFollowup($date1,$date2){
 	global $DB;
 	$query = "SELECT DISTINCT glpi_followups.author as author, glpi_users.name as name, glpi_users.realname as realname, glpi_users.firstname as firstname";
 	$query.= " FROM glpi_tracking ";
@@ -299,10 +306,12 @@ function getNbIntervTechFollowup($date1,$date2)
 }
 
 
-//return an array from tracking
-//it contains the distinct users witch have any intervention assigned to.
-function getNbIntervEnterprise($date1,$date2)
-{
+/** Get enterprises which have followup assigned to between 2 dates
+* @param $date1 date : begin date
+* @param $date2 date : end date
+* @return array contains the distinct enterprises which have any tickets assigned to.
+*/
+function getNbIntervEnterprise($date1,$date2){
 	global $DB,$CFG_GLPI;
 	$query = "SELECT distinct glpi_tracking.assign_ent as assign_ent, glpi_enterprises.name as name";
 	$query.= " FROM glpi_tracking ";
@@ -329,10 +338,11 @@ function getNbIntervEnterprise($date1,$date2)
 	return $tab;
 }
 
-//return an array from tracking
-//it contains the distinct location where there is/was an intervention
-function getNbIntervDropdown($dropdown)
-{
+/** Get dropdown values 
+* @param $dropdown string : table name
+* @return array contains the distinct dropdown values
+*/
+function getNbIntervDropdown($dropdown){
 	global $DB,$CFG_GLPI;
 	$field="name";
 
@@ -361,10 +371,12 @@ function getNbIntervDropdown($dropdown)
 
 }
 
-//return an array from tracking
-//it contains the distinct authors of interventions.
-function getNbIntervAuthor($date1,$date2)
-{	
+/** Get authors of tickets between 2 dates
+* @param $date1 date : begin date
+* @param $date2 date : end date
+* @return array contains the distinct authors which have tickets
+*/
+function getNbIntervAuthor($date1,$date2){	
 	global $DB;
 	$query = "SELECT DISTINCT glpi_tracking.author as ID, glpi_users.name as name, glpi_users.realname as realname, glpi_users.firstname as firstname FROM glpi_tracking INNER JOIN glpi_users ON (glpi_users.ID=glpi_tracking.author)";
 	$query.=getEntitiesRestrictRequest("WHERE","glpi_tracking");
@@ -385,10 +397,12 @@ function getNbIntervAuthor($date1,$date2)
 
 }
 
-//return an array from tracking
-//it contains the distinct recipient of interventions.
-function getNbIntervRecipient($date1,$date2)
-{	
+/** Get recipient of tickets between 2 dates
+* @param $date1 date : begin date
+* @param $date2 date : end date
+* @return array contains the distinct recipents which have tickets
+*/
+function getNbIntervRecipient($date1,$date2){	
 	global $DB;
 	$query = "SELECT DISTINCT glpi_tracking.recipient as ID, glpi_users.name as name, glpi_users.realname as realname, glpi_users.firstname as firstname FROM glpi_tracking LEFT JOIN glpi_users ON (glpi_users.ID=glpi_tracking.recipient)";
 	$query.=getEntitiesRestrictRequest("WHERE","glpi_tracking");
@@ -408,10 +422,13 @@ function getNbIntervRecipient($date1,$date2)
 	return $tab;
 
 }
-//return an array from tracking
-//it contains the distinct priority of interventions.
-function getNbIntervPriority($date1,$date2)
-{	
+
+/** Get priorities of tickets between 2 dates
+* @param $date1 date : begin date
+* @param $date2 date : end date
+* @return array contains the distinct priorities of tickets
+*/
+function getNbIntervPriority($date1,$date2){	
 	global $DB;
 
 	$query = "SELECT DISTINCT priority 
@@ -434,8 +451,12 @@ function getNbIntervPriority($date1,$date2)
 
 }
 
-function getNbIntervRequestType($date1,$date2)
-{	
+/** Get request types of tickets between 2 dates
+* @param $date1 date : begin date
+* @param $date2 date : end date
+* @return array contains the distinct request types of tickets
+*/
+function getNbIntervRequestType($date1,$date2){	
 	global $DB;
 	$query = "SELECT DISTINCT request_type 
 		FROM glpi_tracking ".getEntitiesRestrictRequest("WHERE","glpi_tracking");
@@ -455,10 +476,12 @@ function getNbIntervRequestType($date1,$date2)
 	return $tab;
 }
 
-//return an array from tracking
-//it contains the distinct category of interventions.
-function getNbIntervCategory($date1,$date2)
-{	
+/** Get categories of tickets between 2 dates
+* @param $date1 date : begin date
+* @param $date2 date : end date
+* @return array contains the distinct categories of tickets
+*/
+function getNbIntervCategory($date1,$date2){	
 	global $DB;
 	
 	$query = "SELECT DISTINCT glpi_dropdown_tracking_category.ID,   glpi_dropdown_tracking_category.completename AS category
@@ -478,16 +501,17 @@ function getNbIntervCategory($date1,$date2)
 			$tmp['link']=$line["category"];
 			$tab[]=$tmp;
 		}
-
-		
 	}
 	return $tab;
 }
 
-//return an array from tracking
-//it contains the distinct group of interventions.
-function getNbIntervGroup($date1,$date2)
-{	
+
+/** Get groups which have tickets between 2 dates
+* @param $date1 date : begin date
+* @param $date2 date : end date
+* @return array contains the distinct groups of tickets
+*/
+function getNbIntervGroup($date1,$date2){	
 	global $DB;
 	$query = "SELECT DISTINCT glpi_groups.id AS ID,glpi_groups.name FROM glpi_tracking 
 		LEFT JOIN  glpi_groups ON (glpi_tracking.FK_group = glpi_groups.ID)";
@@ -510,10 +534,13 @@ function getNbIntervGroup($date1,$date2)
 	return $tab;
 }
 
-//return an array from tracking
-//it contains the distinct group of interventions.
-function getNbIntervAssignGroup($date1,$date2)
-{	
+
+/** Get groups assigned to tickets between 2 dates
+* @param $date1 date : begin date
+* @param $date2 date : end date
+* @return array contains the distinct groups assigned to a tickets
+*/
+function getNbIntervAssignGroup($date1,$date2){	
 	global $DB;
 	$query = "SELECT DISTINCT glpi_groups.id AS ID,glpi_groups.name FROM glpi_tracking 
 		LEFT JOIN  glpi_groups ON (glpi_tracking.assign_group = glpi_groups.ID)";
@@ -731,8 +758,16 @@ function constructEntryValues($type,$begin="",$end="",$param="",$value="",$value
 }
 
 
-// BASED ON SPIP DISPLAY GRAPH : www.spip.net
-// $type = "month" or "year"
+
+/** Get groups assigned to tickets between 2 dates
+* BASED ON SPIP DISPLAY GRAPH : www.spip.net
+* @param $type string : "month" or "year"
+* @param $entrees array : array containing data to displayed
+* @param $titre string : title 
+* @param $unit string : unit 
+* @param $showtotal boolean : also show total values ?
+* @return array contains the distinct groups assigned to a tickets
+*/
 function graphBy($entrees,$titre="",$unit="",$showtotal=1,$type="month"){
 
 	global $DB,$CFG_GLPI,$LANG;

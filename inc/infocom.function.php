@@ -246,30 +246,21 @@ function showInfocomForm($target,$device_type,$dev_ID,$show_immo=1,$withtemplate
  *
  * 
  *
- *@param $type_amort
- *@param $va
- *@param $duree
- *@param $coef
- *@param $date_achat
- *@param $date_use
- *@param $date_fiscale
- *@param $view
+ *@param $type_amort type d'amortisssment "lineaire=2" ou "degressif=1"
+ *@param $va valeur d'acquisition
+ *@param $duree duree d'amortissement
+ *@param $coef coefficient d'amortissement
+ *@param $date_achat Date d'achat
+ *@param $date_use Date d'utilisation
+ *@param $date_fiscale date du debut de l'annee fiscale
+ *@param $view  "n" pour l'annee en cours ou "all" pour le tableau complet
  *
  *@return float or array
  *
  **/
-
 function TableauAmort($type_amort,$va,$duree,$coef,$date_achat,$date_use,$date_fiscale,$view="n") {
 	// By Jean-Mathieu Doleans qui s'est un peu pris le chou :p
 	global $CFG_GLPI;
-	// $type_amort = "lineaire=2" ou "degressif=1"
-	// $va = valeur d'acquisition
-	// $duree = duree d'amortissement
-	// $coef = coefficient d'amortissement
-	// $date_achat= Date d'achat
-	// $date_use = Date d'utilisation
-	// $date_fiscale= date du debut de l'annee fiscale
-	// $view = "n" pour l'annee en cours ou "all" pour le tableau complet
 
 	// Attention date mise en service/dateachat ->amort lineaire  et $prorata en jour !!
 	// amort degressif au prorata du nombre de mois. Son point de depart est le 1er jour du mois d'acquisition et non date de mise en service

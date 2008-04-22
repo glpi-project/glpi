@@ -252,7 +252,7 @@ elseif(isset($_POST["unlock_field"])){
 					showJobListForItem($_SESSION["glpiname"],COMPUTER_TYPE,$_GET["ID"],$_GET["sort"],$_GET["order"]);
 					showOldJobListForItem($_SESSION["glpiname"],COMPUTER_TYPE,$_GET["ID"],$_GET["sort"],$_GET["order"]);
 					showLinkOnDevice(COMPUTER_TYPE,$_GET["ID"]);
-					showRegistry(REGISTRY_TYPE,$_GET["ID"]);
+					showRegistry($_GET["ID"]);
 					displayPluginAction(COMPUTER_TYPE,$_GET["ID"],$_SESSION['glpi_onglet'],$_GET["withtemplate"]);
 					break;
 				case 2 :
@@ -290,7 +290,7 @@ elseif(isset($_POST["unlock_field"])){
 					ocsEditLock($_SERVER['PHP_SELF'],$_GET["ID"]);
 					break;
 				case 14:					
-					showRegistry(REGISTRY_TYPE,$_GET["ID"]);
+					showRegistry($_GET["ID"]);
 					break;
 				default :
 					if (!displayPluginAction(COMPUTER_TYPE,$_GET["ID"],$_SESSION['glpi_onglet'],$_GET["withtemplate"]))

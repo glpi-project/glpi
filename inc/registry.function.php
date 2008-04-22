@@ -33,8 +33,10 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-// $withtemplate==3 -> visu via le helpdesk -> plus aucun lien
-function showRegistry($device_type,$ID,$withtemplate=''){
+/** Display registry values for a computer
+* @param $ID integer : computer ID
+*/
+function showRegistry($ID){
 	
 	global $DB,$CFG_GLPI, $LANG;
 	

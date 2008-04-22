@@ -100,6 +100,11 @@ function showLinkDevice($instID) {
 
 }
 
+/**
+ * Delete an item type for a link
+ *
+ * @param $ID integer : glpi_links_device ID
+ */
 function deleteLinkDevice($ID){
 
 	global $DB;
@@ -107,6 +112,12 @@ function deleteLinkDevice($ID){
 	$result = $DB->query($query);
 }
 
+/**
+ * Add an item type to a link
+ *
+ * @param $tID integer : item type
+ * @param $lID integer : link ID
+ */
 function addLinkDevice($tID,$lID){
 	global $DB;
 	if ($tID>0&&$lID>0){
@@ -116,6 +127,12 @@ function addLinkDevice($tID,$lID){
 	}
 }
 
+/**
+ * Show Links for an item
+ *
+ * @param $type integer : item type
+ * @param $ID integer : item ID
+ */
 function showLinkOnDevice($type,$ID){
 	global $DB,$LANG,$CFG_GLPI;
 
