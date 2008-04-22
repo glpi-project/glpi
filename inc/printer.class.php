@@ -214,9 +214,9 @@ class Printer  extends CommonDBTM {
 	/**
 	 * Print the printer form
 	 *
-	 *@param $target filename : where to go when done.
-	 *@param $ID Integer : Id of the item to print
-	 *@param $withtemplate integer template or basic item
+	 *@param $target string: where to go when done.
+	 *@param $ID integer: Id of the item to print
+	 *@param $withtemplate integer: template or basic item
 	 *
 	  *@return boolean item found
 	 **/
