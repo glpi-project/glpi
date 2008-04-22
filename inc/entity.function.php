@@ -37,6 +37,12 @@ if (!defined('GLPI_ROOT')){
 	die("Sorry. You can't access directly to this file");
 	}
 
+/**
+ * Show users of an entity
+ *
+ * @param $target string : where to go on action
+ * @param $ID integer : enterprise ID
+ */
 function showEntityUser($target,$ID){
 	global $DB,$CFG_GLPI, $LANG;
 	
@@ -164,6 +170,12 @@ function showEntityUser($target,$ID){
 	}
 }
 
+/**
+ * Add a right to a user 
+ *
+ * @param $input array : parameters : need FK_entities / FK_users / FK_profiles optional : recurisve=0 / dynamic=0
+ * @return new glpi_users_profiles ID
+ */
 function addUserProfileEntity($input){
 	global $DB;
 	if (!isset($input['FK_entities'])||$input['FK_entities']<0
@@ -186,6 +198,11 @@ function addUserProfileEntity($input){
 	return $DB->query($query);
 }
 
+/**
+ * Delete a right to a user 
+ *
+ * @param $ID integer : glpi_users_profiles ID
+ */
 function deleteUserProfileEntity($ID){
 
 	global $DB;
@@ -200,6 +217,12 @@ function deleteUserProfileEntity($ID){
 	$result = $DB->query($query);
 }
 
+/**
+ * Move a right to another entity
+ *
+ * @param $ID integer : glpi_users_profiles ID
+ * @param $FK_entities integer : new entity ID
+ */
 function moveUserProfileEntity($ID,$FK_entities){
 
 	global $DB;

@@ -38,6 +38,9 @@ if (!defined('GLPI_ROOT')){
 	}
 
 
+/**  Simple add user form for external auth
+* @param $target where to go on action
+*/
 function showAddExtAuthUserForm($target){
 	global $LANG;
 
@@ -69,7 +72,9 @@ function showAddExtAuthUserForm($target){
 	echo "</div>\n";
 
 }
-
+/**  Show items of a user
+* @param $ID user ID
+*/
 function showDeviceUser($ID){
 	global $DB,$CFG_GLPI, $LANG, $LINK_ID_TABLE,$INFOFORM_PAGES;
 
@@ -161,6 +166,10 @@ function showDeviceUser($ID){
 	}
 }
 
+/**  Show groups of a user
+* @param $ID user ID
+* @param $target where to go on action
+*/
 function showGroupAssociated($target,$ID){
 	global $DB,$CFG_GLPI, $LANG;
 
@@ -259,6 +268,10 @@ function showGroupAssociated($target,$ID){
 
 }
 
+/**  Show rights of a user
+* @param $ID user ID
+* @param $target where to go on action
+*/
 function showUserRights($target,$ID){
 	global $DB,$CFG_GLPI, $LANG;
 
@@ -373,6 +386,9 @@ function showUserRights($target,$ID){
 
 
 
+/**  Generate vcard for an user
+* @param $ID user ID
+*/
 function generateUserVcard($ID){
 
 	$user = new User;
@@ -411,6 +427,10 @@ function generateUserVcard($ID){
 
 }
 
+/**  Get entities for which a user have a right
+* @param $ID user ID
+* @param $recursive check also using recurisve rights
+*/
 function getUserEntities($ID,$recursive=true){
 	global $DB;
 
@@ -434,9 +454,10 @@ function getUserEntities($ID,$recursive=true){
 	return array();
 }
 
-/* Get all the authentication methods parameters for a specific auth_method and id_auth
-	* and return it as an array 
-	*/
+/** Get all the authentication methods parameters for a specific auth_method and id_auth and return it as an array 
+* @param $auth_method Authentication method
+* @param $id_auth Authentication method ID
+*/
 function getAuthMethodsByID($auth_method, $id_auth) {
 	global $DB;
 
@@ -472,6 +493,12 @@ function getAuthMethodsByID($auth_method, $id_auth) {
 	return $auth_methods;
 }
 
+/** Get name of an authentication method
+* @param $auth_method Authentication method
+* @param $id_auth Authentication method ID
+* @param $link show links to config page ?
+* @param $name override the name if not empty
+*/
 function getAuthMethodName($auth_method, $id_auth, $link=0,$name=''){
 	global $LANG,$CFG_GLPI;
 	switch ($auth_method) {
@@ -517,7 +544,9 @@ function getAuthMethodName($auth_method, $id_auth, $link=0,$name=''){
 	}
 }
 
-// Get LDAP fields to sync to GLPI data from a glpi_auth_ldap array 
+/** Get LDAP fields to sync to GLPI data from a glpi_auth_ldap array 
+* @param $auth_method_array Authentication method config array
+*/
 function getLDAPSyncFields($auth_method_array){ 
 
 	$ret=array(); 
@@ -539,6 +568,10 @@ function getLDAPSyncFields($auth_method_array){
  	return $ret; 
 } 
 
+/** Show onglets for user preferences
+* @param $target where to go on action
+* @param $actif active onglet
+*/
 function showUserPreferencesOnglets($target,$actif) {
 	global $LANG,$PLUGIN_HOOKS;
 	if (isset($PLUGIN_HOOKS['user_preferences'])&&count($PLUGIN_HOOKS['user_preferences'])){

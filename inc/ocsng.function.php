@@ -311,6 +311,7 @@ function ocsCheckConfig($what=1) {
 
 	return true;
 }
+
 function ocsManageDeleted($ocs_server_id) {
 	global $DB, $DBocs;
 
@@ -651,7 +652,7 @@ function ocsProcessComputer($ocs_id, $ocs_server_id, $lock = 0, $defaultentity =
 		return ocsImportComputer($ocs_id, $ocs_server_id, $lock, $defaultentity,$canlink);
 }
 
-// Return array of GLPI computers matching the OCS one using the OCS config 
+/// Return array of GLPI computers matching the OCS one using the OCS config 
 function getMachinesAlreadyInGLPI($ocs_id,$ocs_server_id,$entity)
 {
 	global $DB,$DBocs;
@@ -794,6 +795,7 @@ function getMachinesAlreadyInGLPI($ocs_id,$ocs_server_id,$entity)
 	return $found_computers; 
 		
 }
+
 function ocsUpdateComputer($ID, $ocs_server_id, $dohistory, $force = 0) {
 	global $DB, $DBocs, $CFG_GLPI;
 

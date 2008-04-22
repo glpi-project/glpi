@@ -462,18 +462,22 @@ class Config extends CommonDBTM {
 				echo "<tr><th colspan='4'>" . $LANG["setup"][270] . "</th></tr>";
 			
 				echo "<tr class='tab_bg_2'>";
-				adminManagementDropdown("monitors_management_restrict",$LANG["setup"][271],$CFG_GLPI["monitors_management_restrict"]);											
-				adminManagementDropdown("peripherals_management_restrict",$LANG["setup"][272],$CFG_GLPI["peripherals_management_restrict"]);				
-				echo "</tr>";
+				echo "<td class='center'> " . $LANG["setup"][271] . " </td><td>";	adminManagementDropdown("monitors_management_restrict",$CFG_GLPI["monitors_management_restrict"]);	
+				echo "</td><td class='center'> " . $LANG["setup"][272] . " </td><td>";		
+				adminManagementDropdown("peripherals_management_restrict",$CFG_GLPI["peripherals_management_restrict"]);				
+				echo "</td></tr>";
 				
 				echo "<tr class='tab_bg_2'>";
-				adminManagementDropdown("phones_management_restrict",$LANG["setup"][273],$CFG_GLPI["phones_management_restrict"]);				
-				adminManagementDropdown("printers_management_restrict",$LANG["setup"][275],$CFG_GLPI["printers_management_restrict"]);				
-				echo "</tr>";
+				echo "<td class='center'> " . $LANG["setup"][273] . " </td><td>";
+				adminManagementDropdown("phones_management_restrict",$CFG_GLPI["phones_management_restrict"]);
+				echo "</td><td class='center'> " . $LANG["setup"][275] . " </td><td>";		
+				adminManagementDropdown("printers_management_restrict",$CFG_GLPI["printers_management_restrict"]);
+				echo "</td></tr>";
 
 				echo "<tr class='tab_bg_2'>";
-				adminManagementDropdown("licenses_management_restrict",$LANG["setup"][276],$CFG_GLPI["licenses_management_restrict"],1);				
-				echo "<td >".$LANG["setup"][277]."</td><td>";
+				echo "<td class='center'> " . $LANG["setup"][276] . " </td><td>";
+				adminManagementDropdown("licenses_management_restrict",$CFG_GLPI["licenses_management_restrict"],1);				
+				echo "</td><td class='center'>".$LANG["setup"][277]."</td><td>";
 				dropdownYesNo("license_deglobalisation",$CFG_GLPI["license_deglobalisation"]);
 				echo"</td></tr>";
 

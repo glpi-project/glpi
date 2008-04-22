@@ -40,6 +40,7 @@ $IP=array(10,0,0,1);
 $MAC=array(8,0,20,30,40,50);
 $NETPOINT=array(0,0,0,0);
 
+/// Generate bigdump : Get next netpoint name
 function getNextNETPOINT(){
 	global $NETPOINT;
 	$type=array("V","D","I");
@@ -56,7 +57,7 @@ function getNextNETPOINT(){
 	return $type[$NETPOINT[3]]."/".$NETPOINT[0]."/".$NETPOINT[1]."/".$NETPOINT[2];
 }
 
-
+/// Generate bigdump : Get next IP address
 function getNextIP(){
 	global $IP;
 
@@ -75,7 +76,7 @@ function getNextIP(){
 		"subnet"=>$IP[0].".".$IP[1].".".$IP[2].".0",
 		"netwmask"=>"255.255.255.0");
 }
-
+/// Generate bigdump :  Get next MAC address
 function getNextMAC(){
 	global $MAC;
 
@@ -99,6 +100,10 @@ function getNextMAC(){
 	return dechex($MAC[0]).":".dechex($MAC[1]).":".dechex($MAC[2]).":".dechex($MAC[3]).":".dechex($MAC[4]).":".dechex($MAC[5]);
 }
 
+/**  Generate bigdump : make an item reservable
+* @param $type item type
+* @param $ID item ID
+*/
 function addReservation($type,$ID){
 	global $percent,$DB;
 	if (mt_rand(0,100)<$percent['reservation']){
@@ -109,6 +114,10 @@ function addReservation($type,$ID){
 
 }
 
+/**  Generate bigdump : add documents to an item
+* @param $type item type
+* @param $ID item ID
+*/
 function addDocuments($type,$ID){
 	global $DOC_PER_ITEM,$DB,$MAX,$FIRST,$LAST;
 	$nb=mt_rand(0,$DOC_PER_ITEM);
@@ -121,7 +130,10 @@ function addDocuments($type,$ID){
 		$DB->query($query) or die("PB REQUETE ".$query);
 	}
 }
-
+/**  Generate bigdump : add contracts to an item
+* @param $type item type
+* @param $ID item ID
+*/
 function addContracts($type,$ID){
 	global $CONTRACT_PER_ITEM,$DB,$MAX,$FIRST,$LAST;
 	$nb=mt_rand(0,$CONTRACT_PER_ITEM);
@@ -134,7 +146,11 @@ function addContracts($type,$ID){
 		$DB->query($query) or die("PB REQUETE ".$query);
 	}
 }
-
+/**  Generate bigdump : add tickets to an item
+* @param $type item type
+* @param $ID item ID
+* @param $ID_entity entity ID
+*/
 function addTracking($type,$ID,$ID_entity){
 	global $percent,$DB,$MAX,$current_year,$FIRST,$LAST,$LINK_ID_TABLE;
 
@@ -195,7 +211,7 @@ function addTracking($type,$ID,$ID_entity){
 
 }
 
-// DROPDOWNS
+/// Generate bigdump : generate global dropdowns
 function generateGlobalDropdowns(){
 	global $MAX,$DB;
 
@@ -607,7 +623,9 @@ function generateGlobalDropdowns(){
 
 } // Fin generation global dropdowns
 
-
+/** Generate bigdump : get max ID of a table
+*@param $table table name
+*/
 function getMaxItem($table){
 	global $DB;
 	$query="SELECT MAX(ID) FROM $table";
@@ -615,7 +633,9 @@ function getMaxItem($table){
 	return $DB->result($result,0,0);
 }
 
-
+/** Generate bigdump : generate items for an entity
+*@param $ID_entity entity ID
+*/
 function generate_entity($ID_entity){
 
 	global $MAX,$DB,$MAX_CONTRACT_TYPE,$percent,$FIRST,$LAST,$MAX_KBITEMS_BY_CAT;
