@@ -92,7 +92,7 @@ function showTrackingOnglets($target){
 			// Postonly could post followup in helpdesk area	
 			echo "<li class='actif'><a href=\"".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php?show=user&amp;ID=$ID\">".$LANG["job"][38]." $ID</a></li>";
 
-			if (!ereg("old_",$job->fields["status"])&&$job->fields["author"]==$_SESSION["glpiID"]){
+			if ($job->canAddFollowups()){
 				echo "<li class='invisible'>&nbsp;</li>";
 
 				echo "<li onClick=\"showAddFollowup(); Effect.Appear('viewfollowup');\" id='addfollowup'><a href='#'>".$LANG["job"][29]."</span></a></li>";
