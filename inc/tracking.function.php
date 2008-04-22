@@ -2273,7 +2273,10 @@ function showFollowupsSummary($tID){
 	echo "</div>";
 }
 
-// Formulaire d'ajout de followup
+/** Form to add a followup to a ticket
+* @param $tID integer : ticket ID
+* @param $massiveaction boolean : add followup using massive action
+*/
 function showAddFollowupForm($tID,$massiveaction=false){
 	global $DB,$LANG,$CFG_GLPI;
 
@@ -2399,7 +2402,9 @@ function showAddFollowupForm($tID,$massiveaction=false){
 }
 
 
-// Formulaire d'ajout de followup
+/** Form to update a followup to a ticket
+* @param $ID integer : followup ID
+*/
 function showUpdateFollowupForm($ID){
 	global $DB,$LANG,$CFG_GLPI;
 
@@ -2537,7 +2542,13 @@ function showUpdateFollowupForm($ID){
 	}
 }
 
-// fonction calcul de cout total d'un ticket
+/** Computer total cost of a ticket
+* @param $realtime float : ticket realtime 
+* @param $cost_time float : ticket time cost
+* @param $cost_fixed float : ticket fixed cost
+* @param $cost_material float : ticket material cost 
+* @return total cost formatted string
+*/
 function trackingTotalCost($realtime,$cost_time,$cost_fixed,$cost_material){
 	return formatNumber(($realtime*$cost_time)+$cost_fixed+$cost_material);
 }

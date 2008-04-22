@@ -652,9 +652,13 @@ function ocsProcessComputer($ocs_id, $ocs_server_id, $lock = 0, $defaultentity =
 		return ocsImportComputer($ocs_id, $ocs_server_id, $lock, $defaultentity,$canlink);
 }
 
-/// Return array of GLPI computers matching the OCS one using the OCS config 
-function getMachinesAlreadyInGLPI($ocs_id,$ocs_server_id,$entity)
-{
+/** Return array of GLPI computers matching the OCS one using the OCS config 
+* @param $ocs_id integer : ocs ID of the computer
+* @param $ocs_server_id integer : ocs server ID
+* @param $entity integer : entity ID
+* @return array containing the glpi computer ID 
+*/
+function getMachinesAlreadyInGLPI($ocs_id,$ocs_server_id,$entity){
 	global $DB,$DBocs;
 	$conf = getOcsConf($ocs_server_id);
 	
@@ -668,33 +672,28 @@ function getMachinesAlreadyInGLPI($ocs_id,$ocs_server_id,$entity)
 	if ($conf["glpi_link_enabled"])	{
 		$ok=false;
 		//Build the request against OCS database to get the machine's informations
-		if ( $conf["link_ip"] || $conf["link_mac_address"])
-		{
+		if ( $conf["link_ip"] || $conf["link_mac_address"]){
 			$sql_from.=" LEFT JOIN networks ON (hardware.ID=networks.HARDWARE_ID) ";
 		}	
 
-		if ($conf["link_ip"])
-		{
+		if ($conf["link_ip"]){
 			$sql_fields.=", networks.IPADDRESS";
 			$ocsParams["IPADDRESS"] = array();
 			$ok=true;
 		}
-		if ($conf["link_mac_address"])
-		{
+		if ($conf["link_mac_address"]){
 			$sql_fields.=", networks.MACADDR";
 			$ocsParams["MACADDR"] = array();
 			$ok=true;
 		}
-		if ($conf["link_serial"])
-		{
+		if ($conf["link_serial"]){
 			$sql_from.=" LEFT JOIN bios ON (bios.HARDWARE_ID=hardware.ID) ";
 
 			$sql_fields.=", bios.SSN";
 			$ocsParams["SSN"] = array();
 			$ok=true;
 		}
-		if ($conf["link_name"] > 0)
-		{
+		if ($conf["link_name"] > 0){
 			$sql_fields.=", hardware.NAME";
 			$ocsParams["NAME"] = array();
 			$ok=true;
@@ -711,8 +710,7 @@ function getMachinesAlreadyInGLPI($ocs_id,$ocs_server_id,$entity)
 
 		//Get the list of parameters
 		
-		while ($dataOcs = $DB->fetch_array($result))
-		{
+		while ($dataOcs = $DB->fetch_array($result)){
 			if ($conf["link_ip"])
 				if (!empty($dataOcs["IPADDRESS"]) && !in_array($dataOcs["IPADDRESS"],$ocsParams["IPADDRESS"]))
 					$ocsParams["IPADDRESS"][]= $dataOcs["IPADDRESS"];
@@ -730,12 +728,10 @@ function getMachinesAlreadyInGLPI($ocs_id,$ocs_server_id,$entity)
 		//Build the request to check if the machine exists in GLPI
 		$sql_where = " FK_entities=$entity AND is_template=0 ";
 		$sql_from = "glpi_computers";
-		if ( $conf["link_ip"] || $conf["link_mac_address"])
-		{
+		if ( $conf["link_ip"] || $conf["link_mac_address"]){
 			$sql_from.=" LEFT JOIN glpi_networking_ports ON (glpi_computers.ID=glpi_networking_ports.on_device AND glpi_networking_ports.device_type=".COMPUTER_TYPE.") ";
 		}	
-		if ($conf["link_ip"])
-		{
+		if ($conf["link_ip"]){
 			if (empty($ocsParams["IPADDRESS"]))
 				return -1;
 			else
@@ -746,8 +742,7 @@ function getMachinesAlreadyInGLPI($ocs_id,$ocs_server_id,$entity)
 				$sql_where.=")";
 			}			
 		}
-		if ($conf["link_mac_address"])
-		{
+		if ($conf["link_mac_address"]){
 			if (empty($ocsParams["MACADDR"]))
 				return -1;
 			else
@@ -758,8 +753,7 @@ function getMachinesAlreadyInGLPI($ocs_id,$ocs_server_id,$entity)
 				$sql_where.=")";
 			}
 		}
-		if ($conf["link_name"] > 0)
-		{
+		if ($conf["link_name"] > 0){
 			//Search only computers with blank name
 			if ($conf["link_name"] == 2)
 				$sql_where .= " AND glpi_computers.name=\"\"";
@@ -771,8 +765,7 @@ function getMachinesAlreadyInGLPI($ocs_id,$ocs_server_id,$entity)
 					$sql_where .= " AND glpi_computers.name=\"".$ocsParams["NAME"][0]."\"";
 			}
 		}
-		if ($conf["link_serial"])
-		{
+		if ($conf["link_serial"]){
 			if (empty($ocsParams["SSN"]))
 				return -1;
 			else

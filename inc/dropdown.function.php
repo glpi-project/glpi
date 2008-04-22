@@ -402,7 +402,7 @@ function dropdownUsersSelect ($count=true, $right="all", $entity_restrict=-1, $v
  * @param $myname select name
  * @param $value default value
  * @param $right limit user who have specific right : interface -> central ; ID -> only current user ; all -> all users ; sinon specific right like show_all_ticket, create_ticket....
- * @param $all Nobody or All display for none selected
+ * @param $all Nobody or All display for none selected $all =0 -> Nobody $all=1 -> All $all=-1-> nothing
  * @param $display_comments display comments near the dropdown
  * @param $entity_restrict Restrict to a defined entity
  * @param $helpdesk_ajax use ajax for helpdesk auto update (mail device_type)
@@ -411,7 +411,6 @@ function dropdownUsersSelect ($count=true, $right="all", $entity_restrict=-1, $v
  * @return nothing (print out an HTML select box)
  *
  */
-// $all =0 -> Nobody $all=1 -> All $all=-1-> nothing
 function dropdownUsers($myname,$value,$right,$all=0,$display_comments=1,$entity_restrict=-1,$helpdesk_ajax=0,$used=array()) {
 	// Make a select box with all glpi users
 
