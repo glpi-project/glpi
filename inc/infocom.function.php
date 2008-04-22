@@ -38,7 +38,15 @@ if (!defined('GLPI_ROOT')){
 	}
 
 
-function showInfocomForm($target,$device_type,$dev_ID,$show_immo=1,$withtemplate='') {
+/** Show Infocom form for an item
+* @param $target string: where to go on action
+* @param $device_type integer: item type
+* @param $dev_ID integer: item ID
+* @param $show_immo boolean: show immobilisation infos
+* @param $withtemplate integer: template or basic item
+* @param 
+*/
+function showInfocomForm($target,$device_type,$dev_ID,$show_immo=true,$withtemplate='') {
 	// Show Infocom or blank form
 
 	global $CFG_GLPI,$LANG;
@@ -108,7 +116,7 @@ function showInfocomForm($target,$device_type,$dev_ID,$show_immo=1,$withtemplate
 		echo "</td>";
 		echo "</tr>";
 
-		if ($show_immo==1){
+		if ($show_immo){
 
 			echo "<tr class='tab_bg_1'><td>".$LANG["financial"][15].":	</td><td>";
 			if ($withtemplate==2){
@@ -146,8 +154,8 @@ function showInfocomForm($target,$device_type,$dev_ID,$show_immo=1,$withtemplate
 			echo "</td></tr>";
 		}
 
-		echo "<tr class='tab_bg_1'><td>".$LANG["financial"][21].":		</td><td  ".($show_immo==1?"":" colspan='3'")."><input type='text' name='value' $option value=\"".formatNumber($ic->fields["value"],true)."\" size='16'></td>";
-		if ($show_immo==1){
+		echo "<tr class='tab_bg_1'><td>".$LANG["financial"][21].":		</td><td  ".($show_immo?"":" colspan='3'")."><input type='text' name='value' $option value=\"".formatNumber($ic->fields["value"],true)."\" size='16'></td>";
+		if ($show_immo){
 			echo "<td>".$LANG["financial"][81]." :</td><td>";
 
 			echo  TableauAmort($ic->fields["amort_type"],$ic->fields["value"],$ic->fields["amort_time"],$ic->fields["amort_coeff"],$ic->fields["buy_date"],$ic->fields["use_date"],$date_fiscale,"n");
@@ -156,7 +164,7 @@ function showInfocomForm($target,$device_type,$dev_ID,$show_immo=1,$withtemplate
 		}
 		echo "</tr>";
 
-		if ($show_immo==1){
+		if ($show_immo){
 			echo "<tr class='tab_bg_1'><td>".$LANG["financial"][20]."*:		</td>";
 			echo "<td >";
 			$objectName = autoName($ic->fields["num_immo"], "num_immo", ($withtemplate==2), INFOCOM_TYPE,$ci->getField('FK_entities'));
@@ -460,6 +468,15 @@ function showTco($ticket_tco,$value,$date_achat=""){
 
 
 
+/**
+ * Show infocom link to display popup
+ *
+ *@param $device_type integer: item type
+ *@param $device_id integer:  item ID
+ *@param $update integer: 
+ *
+ *@return float
+ **/
 function showDisplayInfocomLink($device_type,$device_id,$update=0){
 	global $DB,$CFG_GLPI,$LANG;
 
