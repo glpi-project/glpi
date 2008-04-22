@@ -1118,6 +1118,7 @@ class Followup  extends CommonDBTM {
 		if ($input["_job"]->getFromDB($input["tracking"])){
 			// Security to add unauthorized followups
 			if (!isset($input['_changes_to_log'])
+			&&$input["_job"]->fields["author"]!=$_SESSION["glpiID"]
 			&&!$input["_job"]->canAddFollowups()) {
 				return false;
 			}
