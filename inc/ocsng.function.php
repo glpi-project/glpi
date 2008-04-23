@@ -756,7 +756,7 @@ function getMachinesAlreadyInGLPI($ocs_id,$ocs_server_id,$entity){
 		if ($conf["link_name"] > 0){
 			//Search only computers with blank name
 			if ($conf["link_name"] == 2)
-				$sql_where .= " AND glpi_computers.name=\"\"";
+				$sql_where .= " AND (glpi_computers.name='' OR glpi_computers.name IS NULL) ";
 			else
 			{	
 				if (empty($ocsParams["NAME"]))
