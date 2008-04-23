@@ -498,8 +498,8 @@ function displayPlanningItem($val,$who,$type="",$complete=0){
 				break;
 
 		}
-		echo "<br>- #".$val["id_tracking"]." \"";
-		echo  resume_text($val["name"],80). " \"";
+		echo "<br>- #".$val["id_tracking"]." ";
+		echo  resume_text($val["name"],80). " ";
 		if (!empty($val["device"])){
 			echo "<br>- ".$val["device"];
 		}
@@ -949,7 +949,7 @@ function generateIcal($who){
 		$fincal= "END:VCALENDAR\n";	
 	}
 
-	return utf8_decode($debutcal.$event.$fincal);
+	return $debutcal.$event.$fincal;
 
 }
 
