@@ -714,7 +714,7 @@ $LANG["ldap"][15]="Synchronize";
 $LANG["ldap"][16]="Предварительная настройка"; 
 $LANG["ldap"][17]="Active Directory"; 
 $LANG["ldap"][18]="Список дополнительных серверов LDAP"; 
-$LANG["ldap"][19]="Replicate"; 
+$LANG["ldap"][19]="доп.сервер"; 
 $LANG["ldap"][20]="Добавить LDAP сервер этого домена"; 
 $LANG["ldap"][21]="Основной сервер"; 
 $LANG["ldap"][22]="Дополнительно"; 
@@ -942,7 +942,7 @@ $LANG["Menu"][36]="Группы";
 $LANG["Menu"][37]="Организации"; 
 $LANG["Menu"][38]="Оборудование"; 
 $LANG["Menu"][39]="Почтовый парсер"; 
-$LANG["Menu"][40]="Bookmarks"; 
+$LANG["Menu"][40]="Закладки"; 
 
 $LANG["monitors"][14]="Микрофон"; 
 $LANG["monitors"][15]="Колонки"; 
