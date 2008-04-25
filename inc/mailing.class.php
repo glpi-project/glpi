@@ -929,7 +929,7 @@ class MailingResa{
 	 */
 	function send()
 	{
-		global $CFG_GLPI;
+		global $CFG_GLPI,$LANG;
 		if ($CFG_GLPI["mailing"]&&isValidEmail($CFG_GLPI["admin_email"]))
 		{
 			// get users to send mail
@@ -970,10 +970,10 @@ class MailingResa{
 					$mmail->AddAddress($email, "");
 	
 					if(!$mmail->Send()){
-						echo "<div class='center'>There was a problem sending this mail !</div>";
+						echo "<div class='center'>".$LANG["mailing"][47]."</div>";
 						return false;
 					}else{
-						logInFile("mail","Reservation successfull mail sent to : ".$email." subject : ".$subjects[$lang]."\n");
+						logInFile("mail",$LANG["reservation"][40]." ".$email." ".$LANG["reservation"][41]." : ".$subjects[$lang]."\n");
 					}
 	
 					$mmail->ClearAddresses(); 
