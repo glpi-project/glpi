@@ -1257,6 +1257,7 @@ $LANG["reservation"][36]="Past Reservations";
 $LANG["reservation"][37]="No Reservations"; 
 $LANG["reservation"][38]="Are you sure you want do delete this item from the loan items ?"; 
 $LANG["reservation"][39]="That will remove all the reservations in progress."; 
+$LANG["reservation"][40]="Reservation done. Mail sent to"; 
 
 $LANG["ruleldap"][1]="of LDAP criteria"; 
 $LANG["ruleldap"][2]="No criteria defined"; 
@@ -1513,7 +1514,7 @@ $LANG["setup"][201]="Functia configuratiei";
 $LANG["setup"][202]="Folositi urmarire prin email"; 
 $LANG["setup"][203]="Administrator Email"; 
 $LANG["setup"][204]="Semnatura Email-ului"; 
-$LANG["setup"][205]="Mail sent to administrattor"; 
+$LANG["setup"][205]="Mail sent to administrator"; 
 $LANG["setup"][206]="Failed to send mail to administrator"; 
 $LANG["setup"][207]="Administrator reply-to Email (if needed)"; 
 $LANG["setup"][211]="Pentru toate ticketele noi"; 

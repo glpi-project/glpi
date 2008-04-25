@@ -1257,6 +1257,7 @@ $LANG["reservation"][36]="Poslední rezervace";
 $LANG["reservation"][37]="Žádné rezervace"; 
 $LANG["reservation"][38]="Opravdu si přejete smazat tuto položku ze seznamu půjčení?"; 
 $LANG["reservation"][39]="Odstraní všechny rezervace, na kterých se pracuje."; 
+$LANG["reservation"][40]="Reservation done. Mail sent to"; 
 
 $LANG["ruleldap"][1]="kritéria LDAP"; 
 $LANG["ruleldap"][2]="Žádná kritéria nebyla definována"; 

@@ -1257,6 +1257,7 @@ $LANG["reservation"][36]="Frühere Reservierungen";
 $LANG["reservation"][37]="Keine Reservierungen"; 
 $LANG["reservation"][38]="Sind Sie sicher, dass dieses Element aus der Verleihliste genommen werden soll?"; 
 $LANG["reservation"][39]="Das wird alle ausstehenden Reservierungen entfernen."; 
+$LANG["reservation"][40]="Reservation done. Mail sent to"; 
 
 $LANG["ruleldap"][1]="der LDAP-Kriterien"; 
 $LANG["ruleldap"][2]="Keine Kriterien definiert"; 

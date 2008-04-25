@@ -1257,6 +1257,7 @@ $LANG["reservation"][36]="Reservas antigas";
 $LANG["reservation"][37]="Sem reserva"; 
 $LANG["reservation"][38]="Você quer deletar este item dos itens de empréstimo ?"; 
 $LANG["reservation"][39]="Isso removerá todas as reservas em andamento."; 
+$LANG["reservation"][40]="Reservation done. Mail sent to"; 
 
 $LANG["ruleldap"][1]="de critérios LDAP"; 
 $LANG["ruleldap"][2]="Nenhum critério definido"; 

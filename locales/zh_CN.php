@@ -1257,6 +1257,7 @@ $LANG["reservation"][36]="通过预订";
 $LANG["reservation"][37]="没有预订"; 
 $LANG["reservation"][38]="Are you sure you want do delete this item from the loan items ?"; 
 $LANG["reservation"][39]="That will remove all the reservations in progress."; 
+$LANG["reservation"][40]="Reservation done. Mail sent to"; 
 
 $LANG["ruleldap"][1]="of LDAP criteria"; 
 $LANG["ruleldap"][2]="No criteria defined"; 

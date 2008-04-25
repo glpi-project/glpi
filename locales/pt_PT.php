@@ -1257,6 +1257,7 @@ $LANG["reservation"][36]="Reservas passadas";
 $LANG["reservation"][37]="Nenhuma reserva"; 
 $LANG["reservation"][38]="Tem a certeza que deseja eliminar este artigo da lista de empréstimos de artigos?"; 
 $LANG["reservation"][39]="Isto removerá todas as reservas em progresso."; 
+$LANG["reservation"][40]="Reservation done. Mail sent to"; 
 
 $LANG["ruleldap"][1]="de critérios LDAP"; 
 $LANG["ruleldap"][2]="Critérios não definidos"; 
