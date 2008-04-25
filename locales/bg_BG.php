@@ -1257,6 +1257,7 @@ $LANG["reservation"][36]="Предишни резервации";
 $LANG["reservation"][37]="Няма резервации"; 
 $LANG["reservation"][38]="Сигурни ли сте, че искате да изтриете този елемент от наемите ?"; 
 $LANG["reservation"][39]="Това ще премахне всички резервации в процес на изпълнение"; 
+$LANG["reservation"][40]="Reservation done. Mail sent to"; 
 
 $LANG["ruleldap"][1]="of LDAP criteria"; 
 $LANG["ruleldap"][2]="No criteria defined"; 

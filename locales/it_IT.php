@@ -1257,6 +1257,7 @@ $LANG["reservation"][36]="Prenotazioni passate";
 $LANG["reservation"][37]="Nessuna prenotazione"; 
 $LANG["reservation"][38]="Sei sicuro di voler rendere questo dispositivo non prenotabile?"; 
 $LANG["reservation"][39]="Questa operazione eliminerà anche tutte le prenotazioni."; 
+$LANG["reservation"][40]="Reservation done. Mail sent to"; 
 
 $LANG["ruleldap"][1]="dei criteri LDAP"; 
 $LANG["ruleldap"][2]="Nessun criterio definito"; 

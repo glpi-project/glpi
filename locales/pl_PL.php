@@ -1257,6 +1257,7 @@ $LANG["reservation"][36]="Wcześniejsze Rezerwacje";
 $LANG["reservation"][37]="Bez Rezerwacji"; 
 $LANG["reservation"][38]="Czy jesteś pewny że chcesz usunąć tą pozycje z listy wypożyczonych?"; 
 $LANG["reservation"][39]="To spowoduje usunięcie wszystkich aktywnych rezerwacji."; 
+$LANG["reservation"][40]="Reservation done. Mail sent to"; 
 
 $LANG["ruleldap"][1]="Kryteria LDAP"; 
 $LANG["ruleldap"][2]="Nie zdefiniowana kryterii"; 

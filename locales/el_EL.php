@@ -1257,6 +1257,7 @@ $LANG["reservation"][36]="Περασμένες κρατήσεις";
 $LANG["reservation"][37]="Ανύπαρκες κρατήσεις"; 
 $LANG["reservation"][38]="Είσθε σίγουροι ότι θέλετε να διαγράψετε αυτή τη συσκευή από τις δανειζόμενες;"; 
 $LANG["reservation"][39]="Θα αφαιρέσετε όλες τις κρατήσεις υπό εξέλιξη."; 
+$LANG["reservation"][40]="Reservation done. Mail sent to"; 
 
 $LANG["ruleldap"][1]="των κριτηρίων LDAP"; 
 $LANG["ruleldap"][2]="δεν βρέθηκαν κριτήρια"; 

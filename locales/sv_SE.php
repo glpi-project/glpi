@@ -1257,6 +1257,7 @@ $LANG["reservation"][36]="Föregående reservationer";
 $LANG["reservation"][37]="Inga reservationer"; 
 $LANG["reservation"][38]="Är du säker på att du vill radera denna post från utlåningsbara objekt?"; 
 $LANG["reservation"][39]="Denna åtgärd kommer radera alla pågående reservationer!"; 
+$LANG["reservation"][40]="Reservation done. Mail sent to"; 
 
 $LANG["ruleldap"][1]="of LDAP criteria"; 
 $LANG["ruleldap"][2]="No criteria defined"; 

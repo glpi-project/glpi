@@ -1257,6 +1257,7 @@ $LANG["reservation"][36]="Voorbije boekingen";
 $LANG["reservation"][37]="Geen boekingen"; 
 $LANG["reservation"][38]="Weet u zeker dat u deze items wilt verwijderen van de loon items ?"; 
 $LANG["reservation"][39]="That will remove all the reservations in progress."; 
+$LANG["reservation"][40]="Reservation done. Mail sent to"; 
 
 $LANG["ruleldap"][1]="of LDAP criteria"; 
 $LANG["ruleldap"][2]="No criteria defined"; 

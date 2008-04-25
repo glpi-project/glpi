@@ -1257,6 +1257,7 @@ $LANG["reservation"][36]="Indsæt resevationer";
 $LANG["reservation"][37]="Ingen resevationer"; 
 $LANG["reservation"][38]="Er du sikker på du vil slette dette fra de lånte ting."; 
 $LANG["reservation"][39]="Dette vil fjerne alle påbegyndt resevationer"; 
+$LANG["reservation"][40]="Reservation done. Mail sent to"; 
 
 $LANG["ruleldap"][1]="of LDAP criteria"; 
 $LANG["ruleldap"][2]="No criteria defined"; 

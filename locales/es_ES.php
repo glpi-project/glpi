@@ -1257,6 +1257,7 @@ $LANG["reservation"][36]="Reservas pasadas";
 $LANG["reservation"][37]="No hay reservas"; 
 $LANG["reservation"][38]="¿Está seguro de querer volver este elemento no reservable?"; 
 $LANG["reservation"][39]="Esto borrará todas las reservas en curso."; 
+$LANG["reservation"][40]="Reservation done. Mail sent to"; 
 
 $LANG["ruleldap"][1]="de los criterios LDAP"; 
 $LANG["ruleldap"][2]="No se han definido criterios"; 

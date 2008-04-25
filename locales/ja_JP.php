@@ -1257,6 +1257,7 @@ $LANG["reservation"][36]="以前の予約";
 $LANG["reservation"][37]="予約無し"; 
 $LANG["reservation"][38]="貸し出し品一覧からアイテムを削除しますか？"; 
 $LANG["reservation"][39]="アイテムの予約も削除されます"; 
+$LANG["reservation"][40]="Reservation done. Mail sent to"; 
 
 $LANG["ruleldap"][1]="LDAPの範囲内の"; 
 $LANG["ruleldap"][2]="定義された範囲が見つかりません"; 

@@ -1257,6 +1257,7 @@ $LANG["reservation"][36]="Voorbije boekingen";
 $LANG["reservation"][37]="Geen boekingen"; 
 $LANG["reservation"][38]="Weet u het zeker, dat u dit item wilt verwijderen van de leningen items ?"; 
 $LANG["reservation"][39]="Dit zal alle reserveringen verwijderen die bezig zijn"; 
+$LANG["reservation"][40]="Reservation done. Mail sent to"; 
 
 $LANG["ruleldap"][1]="van LDAP criteria"; 
 $LANG["ruleldap"][2]="Geen criterium gedefinieerd"; 
