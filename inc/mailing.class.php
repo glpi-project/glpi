@@ -973,7 +973,7 @@ class MailingResa{
 						echo "<div class='center'>".$LANG["mailing"][47]."</div>";
 						return false;
 					}else{
-						logInFile("mail",$LANG["reservation"][40]." ".$email." ".$LANG["reservation"][41]." : ".$subjects[$lang]."\n");
+						logInFile("mail",$LANG["reservation"][40]." ".$email." : ".$subjects[$lang]."\n");
 					}
 	
 					$mmail->ClearAddresses(); 
