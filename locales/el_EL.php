@@ -905,6 +905,8 @@ $LANG["mailing"][107]="Τίποτα";
 $LANG["mailing"][108]="Κανένας συντάκτης"; 
 $LANG["mailing"][109]="Καμμιά ομάδα"; 
 $LANG["mailing"][110]="Άκυρο Email"; 
+$LANG["mailing"][111]="Alert email sent to"; 
+$LANG["mailing"][112]="Invalid email type"; 
 
 $LANG["Menu"][0]="Υπολογιστές"; 
 $LANG["Menu"][1]="Δίκτυα"; 
@@ -1257,7 +1259,7 @@ $LANG["reservation"][36]="Περασμένες κρατήσεις";
 $LANG["reservation"][37]="Ανύπαρκες κρατήσεις"; 
 $LANG["reservation"][38]="Είσθε σίγουροι ότι θέλετε να διαγράψετε αυτή τη συσκευή από τις δανειζόμενες;"; 
 $LANG["reservation"][39]="Θα αφαιρέσετε όλες τις κρατήσεις υπό εξέλιξη."; 
-$LANG["reservation"][40]="Reservation done. Mail sent to"; 
+$LANG["reservation"][40]="Reservation done. Email sent to"; 
 
 $LANG["ruleldap"][1]="των κριτηρίων LDAP"; 
 $LANG["ruleldap"][2]="δεν βρέθηκαν κριτήρια"; 
@@ -1736,6 +1738,7 @@ $LANG["tracking"][33]="Εκκρεμής";
 $LANG["tracking"][34]="Απευθείας"; 
 $LANG["tracking"][35]="Εγγράφως"; 
 $LANG["tracking"][37]="Κρατήστε τα αιτήματα για την απογραφή"; 
+$LANG["tracking"][38]="An email was sent to"; 
 
 $LANG["transfer"][1]="Μεταβίβαση"; 
 $LANG["transfer"][2]="Προσήκη ρύθμισης μεταβίβασης"; 

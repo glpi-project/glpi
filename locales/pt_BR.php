@@ -905,6 +905,8 @@ $LANG["mailing"][107]="Nada";
 $LANG["mailing"][108]="Sem autor"; 
 $LANG["mailing"][109]="Sem grupo"; 
 $LANG["mailing"][110]="E-mail inválido"; 
+$LANG["mailing"][111]="Alert email sent to"; 
+$LANG["mailing"][112]="Invalid email type"; 
 
 $LANG["Menu"][0]="Computadores"; 
 $LANG["Menu"][1]="Redes"; 
@@ -1257,7 +1259,7 @@ $LANG["reservation"][36]="Reservas antigas";
 $LANG["reservation"][37]="Sem reserva"; 
 $LANG["reservation"][38]="Você quer deletar este item dos itens de empréstimo ?"; 
 $LANG["reservation"][39]="Isso removerá todas as reservas em andamento."; 
-$LANG["reservation"][40]="Reservation done. Mail sent to"; 
+$LANG["reservation"][40]="Reservation done. Email sent to"; 
 
 $LANG["ruleldap"][1]="de critérios LDAP"; 
 $LANG["ruleldap"][2]="Nenhum critério definido"; 
@@ -1736,6 +1738,7 @@ $LANG["tracking"][33]="Pendente";
 $LANG["tracking"][34]="Pessoalmente"; 
 $LANG["tracking"][35]="Escrito"; 
 $LANG["tracking"][37]="Manter os chamados quando eliminar o hardware do inventário"; 
+$LANG["tracking"][38]="An email was sent to"; 
 
 $LANG["transfer"][1]="Transferência"; 
 $LANG["transfer"][2]="Adicionar uma configuração de transferência"; 

@@ -905,6 +905,8 @@ $LANG["mailing"][107]="Ничего";
 $LANG["mailing"][108]="Нет автора"; 
 $LANG["mailing"][109]="Нет"; 
 $LANG["mailing"][110]="Неправильный Email"; 
+$LANG["mailing"][111]="Alert email sent to"; 
+$LANG["mailing"][112]="Invalid email type"; 
 
 $LANG["Menu"][0]="Компьютеры"; 
 $LANG["Menu"][1]="Сети"; 
@@ -1257,7 +1259,7 @@ $LANG["reservation"][36]="Прошлые выдачи";
 $LANG["reservation"][37]="Нет выдач во временное пользование"; 
 $LANG["reservation"][38]="Действительно удалить из списка выдаваемых вещей?"; 
 $LANG["reservation"][39]="Это удалит все текущие выдачи данной вещи."; 
-$LANG["reservation"][40]="Reservation done. Mail sent to"; 
+$LANG["reservation"][40]="Reservation done. Email sent to"; 
 
 $LANG["ruleldap"][1]="критериями LDAP"; 
 $LANG["ruleldap"][2]="No criteria defined"; 
@@ -1502,7 +1504,7 @@ $LANG["setup"][184]="Ограничения";
 $LANG["setup"][185]="Журналы в разные файлы (SQL, mail, cron...)"; 
 $LANG["setup"][186]="Часовой пояс"; 
 $LANG["setup"][190]="x509 certificate"; 
-$LANG["setup"][191]="mail attribute for x509"; 
+$LANG["setup"][191]="email attribute for x509"; 
 $LANG["setup"][192]="Enabled"; 
 $LANG["setup"][193]="Поле содержащее логин в массиве _SERVER"; 
 $LANG["setup"][194]="Дополнительная информация получаемая из LDAP"; 
@@ -1736,6 +1738,7 @@ $LANG["tracking"][33]="В ожидании";
 $LANG["tracking"][34]="Лично"; 
 $LANG["tracking"][35]="Письменно"; 
 $LANG["tracking"][37]="Сохранять заявки при удалении оборудования"; 
+$LANG["tracking"][38]="An email was sent to"; 
 
 $LANG["transfer"][1]="Перенос"; 
 $LANG["transfer"][2]="Add a transfer configuration"; 

@@ -905,6 +905,8 @@ $LANG["mailing"][107]="No hi ha material involucrat";
 $LANG["mailing"][108]="No hi ha autor"; 
 $LANG["mailing"][109]="Sense grup"; 
 $LANG["mailing"][110]="Email no vàlit"; 
+$LANG["mailing"][111]="Alert email sent to"; 
+$LANG["mailing"][112]="Invalid email type"; 
 
 $LANG["Menu"][0]="Ordinadors"; 
 $LANG["Menu"][1]="Elements de xarxa"; 
@@ -1257,7 +1259,7 @@ $LANG["reservation"][36]="Reserves passades";
 $LANG["reservation"][37]="No hi ha reserves"; 
 $LANG["reservation"][38]="Està segur de voler tornar aquest element no reservable?"; 
 $LANG["reservation"][39]="Això eliminarà totes les reserves en curs."; 
-$LANG["reservation"][40]="Reservation done. Mail sent to"; 
+$LANG["reservation"][40]="Reservation done. Email sent to"; 
 
 $LANG["ruleldap"][1]="dels criteris LDAP"; 
 $LANG["ruleldap"][2]="No s'han definit criteris"; 
@@ -1502,7 +1504,7 @@ $LANG["setup"][184]="Restriccions";
 $LANG["setup"][185]="Logs en arxius (SQL, mail, cron...)"; 
 $LANG["setup"][186]="Fus horari"; 
 $LANG["setup"][190]="Certificat x509"; 
-$LANG["setup"][191]="mail attribute for x509"; 
+$LANG["setup"][191]="email attribute for x509"; 
 $LANG["setup"][192]="Activat"; 
 $LANG["setup"][193]="Field holding the login in the _SERVER array"; 
 $LANG["setup"][194]="Additional informations retrieval from LDAP directory"; 
@@ -1736,6 +1738,7 @@ $LANG["tracking"][33]="En espera";
 $LANG["tracking"][34]="Directa"; 
 $LANG["tracking"][35]="Escrita"; 
 $LANG["tracking"][37]="Conservar les incidències al purgar un element de l'inventari"; 
+$LANG["tracking"][38]="An email was sent to"; 
 
 $LANG["transfer"][1]="Transferència"; 
 $LANG["transfer"][2]="Afegir una configuració de transferència"; 
