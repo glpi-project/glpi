@@ -208,7 +208,7 @@ function showLicenses($sID, $show_computers = 0) {
 			$query_lic .= " LEFT JOIN glpi_computers ON (glpi_inst_software.cID= glpi_computers.ID) ";
 			$query_lic .= " LEFT JOIN glpi_infocoms ON (glpi_infocoms.device_type='" . LICENSE_TYPE . "' AND glpi_infocoms.FK_device=glpi_licenses.ID) ";
 			$query_lic .= " WHERE $SEARCH_LICENCE AND glpi_computers.deleted='0' AND glpi_computers.is_template='0' ORDER BY cname";
-			echo $query_lic;
+			//echo $query_lic;
 			$result_lic = $DB->query($query_lic);
 			$num_tot = $DB->numrows($result_lic);
 
