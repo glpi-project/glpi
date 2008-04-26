@@ -913,6 +913,8 @@ $LANG["mailing"][107]="Pas de matériel concerné";
 $LANG["mailing"][108]="Pas d'auteur"; 
 $LANG["mailing"][109]="Pas de groupe"; 
 $LANG["mailing"][110]="Email invalide"; 
+$LANG["mailing"][111]="Mail d'alerte envoyé à"; 
+$LANG["mailing"][112]="Type d'Email invalide"; 
 
 $LANG["Menu"][0]="Ordinateurs"; 
 $LANG["Menu"][1]="Réseaux"; 
@@ -1760,6 +1762,7 @@ $LANG["tracking"][33]="En attente";
 $LANG["tracking"][34]="Directe"; 
 $LANG["tracking"][35]="Ecrite"; 
 $LANG["tracking"][37]="Conserver les tickets à la purge d'un élément de l'inventaire"; 
+$LANG["tracking"][38]="Un mail de suivi a été envoyé à"; 
 
 $LANG["transfer"][1]="Transfert"; 
 $LANG["transfer"][2]="Ajouter une configuration de transfert"; 
