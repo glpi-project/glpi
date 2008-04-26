@@ -905,6 +905,8 @@ $LANG["mailing"][107]="Nichts";
 $LANG["mailing"][108]="Kein Autor"; 
 $LANG["mailing"][109]="Keine Gruppe"; 
 $LANG["mailing"][110]="E-Mail ungültig"; 
+$LANG["mailing"][111]="Alert email sent to"; 
+$LANG["mailing"][112]="Invalid email type"; 
 
 $LANG["Menu"][0]="Computer"; 
 $LANG["Menu"][1]="Netzwerk"; 
@@ -1257,7 +1259,7 @@ $LANG["reservation"][36]="Frühere Reservierungen";
 $LANG["reservation"][37]="Keine Reservierungen"; 
 $LANG["reservation"][38]="Sind Sie sicher, dass dieses Element aus der Verleihliste genommen werden soll?"; 
 $LANG["reservation"][39]="Das wird alle ausstehenden Reservierungen entfernen."; 
-$LANG["reservation"][40]="Reservation done. Mail sent to"; 
+$LANG["reservation"][40]="Reservation done. Email sent to"; 
 
 $LANG["ruleldap"][1]="der LDAP-Kriterien"; 
 $LANG["ruleldap"][2]="Keine Kriterien definiert"; 
@@ -1736,6 +1738,7 @@ $LANG["tracking"][33]="In der Warteschlange";
 $LANG["tracking"][34]="Direkt"; 
 $LANG["tracking"][35]="Geschrieben"; 
 $LANG["tracking"][37]="Tickets erhalten, wenn verknüpftes Gerät aus dem Inventar gelöscht wird."; 
+$LANG["tracking"][38]="An email was sent to"; 
 
 $LANG["transfer"][1]="Übertragen"; 
 $LANG["transfer"][2]="Übertragungs-Konfiguration hinzufügen"; 

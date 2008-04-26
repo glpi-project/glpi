@@ -838,9 +838,9 @@ $LANG["login"][32]="Authentication on GLPI database";
 $LANG["login"][33]="Authentication on IMAP/POP server"; 
 
 $LANG["mailgate"][0]="Mail Gateway"; 
-$LANG["mailgate"][1]="Add a mail gateway"; 
-$LANG["mailgate"][2]="Get mail tickets now"; 
-$LANG["mailgate"][3]="Number of available and retrieved mails"; 
+$LANG["mailgate"][1]="Add a email gateway"; 
+$LANG["mailgate"][2]="Get email tickets now"; 
+$LANG["mailgate"][3]="Number of available and retrieved emails"; 
 $LANG["mailgate"][4]="mbstring extension not found. Warning with charsets used."; 
 $LANG["mailgate"][5]="Invalid attached file"; 
 $LANG["mailgate"][6]="Too large attached file"; 
@@ -873,7 +873,7 @@ $LANG["mailing"][27]="Update of the status of the ticket";
 $LANG["mailing"][28]="Contact"; 
 $LANG["mailing"][29]="Reservation Cancelled"; 
 $LANG["mailing"][30]="Ticket Update"; 
-$LANG["mailing"][31]="This is a test mail to check that the mail system works"; 
+$LANG["mailing"][31]="This is a test email to check that the email system works"; 
 $LANG["mailing"][32]="Mail Test"; 
 $LANG["mailing"][33]="Cartridges Alarm"; 
 $LANG["mailing"][34]="Threshold of alarm reached for the type of cartridge:"; 
@@ -905,6 +905,8 @@ $LANG["mailing"][107]="Nothing";
 $LANG["mailing"][108]="No author"; 
 $LANG["mailing"][109]="No group"; 
 $LANG["mailing"][110]="Invalid Email"; 
+$LANG["mailing"][111]="Alert email sent to"; 
+$LANG["mailing"][112]="Invalid email type"; 
 
 $LANG["Menu"][0]="Computers"; 
 $LANG["Menu"][1]="Tinklo įranga"; 
@@ -1257,7 +1259,7 @@ $LANG["reservation"][36]="Rezervacijos praeityje";
 $LANG["reservation"][37]="Nėra rezervacijų"; 
 $LANG["reservation"][38]="Ar tikrai norite pašalinti elementą iš nuomojamų sąrašo"; 
 $LANG["reservation"][39]="Bus atšauktos vykdomos rezervacijos"; 
-$LANG["reservation"][40]="Reservation done. Mail sent to"; 
+$LANG["reservation"][40]="Reservation done. Email sent to"; 
 
 $LANG["ruleldap"][1]="LDAP kriterijus"; 
 $LANG["ruleldap"][2]="Neapibrėžtas kriterijus"; 
@@ -1736,6 +1738,7 @@ $LANG["tracking"][33]="Eilėje";
 $LANG["tracking"][34]="Tiesioginis"; 
 $LANG["tracking"][35]="Raštu"; 
 $LANG["tracking"][37]="Išsaugoti paraiškas elemento pašalinimui iš inventoriaus"; 
+$LANG["tracking"][38]="An email was sent to"; 
 
 $LANG["transfer"][1]="Perkėlimas"; 
 $LANG["transfer"][2]="Pridėti perkėlimo sąranką"; 

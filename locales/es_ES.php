@@ -905,6 +905,8 @@ $LANG["mailing"][107]="No hay material involucrado";
 $LANG["mailing"][108]="No hay autor"; 
 $LANG["mailing"][109]="Sin grupo"; 
 $LANG["mailing"][110]="Email no válido"; 
+$LANG["mailing"][111]="Alert email sent to"; 
+$LANG["mailing"][112]="Invalid email type"; 
 
 $LANG["Menu"][0]="Ordenadores"; 
 $LANG["Menu"][1]="Electrónica de red"; 
@@ -1257,7 +1259,7 @@ $LANG["reservation"][36]="Reservas pasadas";
 $LANG["reservation"][37]="No hay reservas"; 
 $LANG["reservation"][38]="¿Está seguro de querer volver este elemento no reservable?"; 
 $LANG["reservation"][39]="Esto borrará todas las reservas en curso."; 
-$LANG["reservation"][40]="Reservation done. Mail sent to"; 
+$LANG["reservation"][40]="Reservation done. Email sent to"; 
 
 $LANG["ruleldap"][1]="de los criterios LDAP"; 
 $LANG["ruleldap"][2]="No se han definido criterios"; 
@@ -1736,6 +1738,7 @@ $LANG["tracking"][33]="En espera";
 $LANG["tracking"][34]="Directa"; 
 $LANG["tracking"][35]="Escrita"; 
 $LANG["tracking"][37]="Conservar las incidencias al purgar un elemento del inventario"; 
+$LANG["tracking"][38]="An email was sent to"; 
 
 $LANG["transfer"][1]="Transferencia"; 
 $LANG["transfer"][2]="Añadir una configuración de transferencia"; 

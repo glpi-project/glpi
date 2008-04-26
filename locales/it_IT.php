@@ -905,6 +905,8 @@ $LANG["mailing"][107]="Nessun dispositivo coinvolto";
 $LANG["mailing"][108]="Nessun autore"; 
 $LANG["mailing"][109]="Nessun gruppo"; 
 $LANG["mailing"][110]="Email non valida"; 
+$LANG["mailing"][111]="Alert email sent to"; 
+$LANG["mailing"][112]="Invalid email type"; 
 
 $LANG["Menu"][0]="Computer"; 
 $LANG["Menu"][1]="Apparati di rete"; 
@@ -1257,7 +1259,7 @@ $LANG["reservation"][36]="Prenotazioni passate";
 $LANG["reservation"][37]="Nessuna prenotazione"; 
 $LANG["reservation"][38]="Sei sicuro di voler rendere questo dispositivo non prenotabile?"; 
 $LANG["reservation"][39]="Questa operazione eliminerà anche tutte le prenotazioni."; 
-$LANG["reservation"][40]="Reservation done. Mail sent to"; 
+$LANG["reservation"][40]="Reservation done. Email sent to"; 
 
 $LANG["ruleldap"][1]="dei criteri LDAP"; 
 $LANG["ruleldap"][2]="Nessun criterio definito"; 
@@ -1736,6 +1738,7 @@ $LANG["tracking"][33]="In attesa";
 $LANG["tracking"][34]="Diretto"; 
 $LANG["tracking"][35]="Scritto"; 
 $LANG["tracking"][37]="Preserva chiamate quando vengono eliminati dispositivi dall'inventario"; 
+$LANG["tracking"][38]="An email was sent to"; 
 
 $LANG["transfer"][1]="Trasferimento"; 
 $LANG["transfer"][2]="Aggiungi configurazione di trasferimento"; 

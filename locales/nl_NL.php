@@ -905,6 +905,8 @@ $LANG["mailing"][107]="Niets";
 $LANG["mailing"][108]="Geen auteur"; 
 $LANG["mailing"][109]="Geen groep"; 
 $LANG["mailing"][110]="Verkeerde E-mail"; 
+$LANG["mailing"][111]="Alert email sent to"; 
+$LANG["mailing"][112]="Invalid email type"; 
 
 $LANG["Menu"][0]="Computers"; 
 $LANG["Menu"][1]="Netwerken"; 
@@ -1257,7 +1259,7 @@ $LANG["reservation"][36]="Voorbije boekingen";
 $LANG["reservation"][37]="Geen boekingen"; 
 $LANG["reservation"][38]="Weet u het zeker, dat u dit item wilt verwijderen van de leningen items ?"; 
 $LANG["reservation"][39]="Dit zal alle reserveringen verwijderen die bezig zijn"; 
-$LANG["reservation"][40]="Reservation done. Mail sent to"; 
+$LANG["reservation"][40]="Reservation done. Email sent to"; 
 
 $LANG["ruleldap"][1]="van LDAP criteria"; 
 $LANG["ruleldap"][2]="Geen criterium gedefinieerd"; 
@@ -1736,6 +1738,7 @@ $LANG["tracking"][33]="Wachten";
 $LANG["tracking"][34]="Direct"; 
 $LANG["tracking"][35]="Geschreven"; 
 $LANG["tracking"][37]="Behoud de tickets als de hardware verwijderd wordt uit de inventaris lijst"; 
+$LANG["tracking"][38]="An email was sent to"; 
 
 $LANG["transfer"][1]="Verzending"; 
 $LANG["transfer"][2]="Voeg een verzend configuratie toe"; 

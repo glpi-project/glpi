@@ -905,6 +905,8 @@ $LANG["mailing"][107]="Nic";
 $LANG["mailing"][108]="Brak autora"; 
 $LANG["mailing"][109]="brak grupy"; 
 $LANG["mailing"][110]="Niepoprawny e-mail"; 
+$LANG["mailing"][111]="Alert email sent to"; 
+$LANG["mailing"][112]="Invalid email type"; 
 
 $LANG["Menu"][0]="Komputery"; 
 $LANG["Menu"][1]="Sieci"; 
@@ -1257,7 +1259,7 @@ $LANG["reservation"][36]="Wcześniejsze Rezerwacje";
 $LANG["reservation"][37]="Bez Rezerwacji"; 
 $LANG["reservation"][38]="Czy jesteś pewny że chcesz usunąć tą pozycje z listy wypożyczonych?"; 
 $LANG["reservation"][39]="To spowoduje usunięcie wszystkich aktywnych rezerwacji."; 
-$LANG["reservation"][40]="Reservation done. Mail sent to"; 
+$LANG["reservation"][40]="Reservation done. Email sent to"; 
 
 $LANG["ruleldap"][1]="Kryteria LDAP"; 
 $LANG["ruleldap"][2]="Nie zdefiniowana kryterii"; 
@@ -1736,6 +1738,7 @@ $LANG["tracking"][33]="Oczekiwany";
 $LANG["tracking"][34]="Bezpośredni"; 
 $LANG["tracking"][35]="Napisany"; 
 $LANG["tracking"][37]="Pozostaw zgloszenia kiedy wyczyścisz sprzet z wyposażenia"; 
+$LANG["tracking"][38]="An email was sent to"; 
 
 $LANG["transfer"][1]="Przenoszenie"; 
 $LANG["transfer"][2]="Dodaj konfigurację transferu"; 

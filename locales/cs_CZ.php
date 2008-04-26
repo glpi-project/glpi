@@ -905,6 +905,8 @@ $LANG["mailing"][107]="Nic";
 $LANG["mailing"][108]="Bez podpisu"; 
 $LANG["mailing"][109]="Žádná skupina"; 
 $LANG["mailing"][110]="Neplatný email"; 
+$LANG["mailing"][111]="Alert email sent to"; 
+$LANG["mailing"][112]="Invalid email type"; 
 
 $LANG["Menu"][0]="Počítače"; 
 $LANG["Menu"][1]="Sítě"; 
@@ -1257,7 +1259,7 @@ $LANG["reservation"][36]="Poslední rezervace";
 $LANG["reservation"][37]="Žádné rezervace"; 
 $LANG["reservation"][38]="Opravdu si přejete smazat tuto položku ze seznamu půjčení?"; 
 $LANG["reservation"][39]="Odstraní všechny rezervace, na kterých se pracuje."; 
-$LANG["reservation"][40]="Reservation done. Mail sent to"; 
+$LANG["reservation"][40]="Reservation done. Email sent to"; 
 
 $LANG["ruleldap"][1]="kritéria LDAP"; 
 $LANG["ruleldap"][2]="Žádná kritéria nebyla definována"; 
@@ -1502,7 +1504,7 @@ $LANG["setup"][184]="Omezení";
 $LANG["setup"][185]="Logy v samostatných souborech (SQL, mail, cron...)"; 
 $LANG["setup"][186]="Časová zóna"; 
 $LANG["setup"][190]="x509 certificate"; 
-$LANG["setup"][191]="mail attribute for x509"; 
+$LANG["setup"][191]="email attribute for x509"; 
 $LANG["setup"][192]="Enabled"; 
 $LANG["setup"][193]="Field holding the login in the _SERVER array"; 
 $LANG["setup"][194]="Additional informations retrieval from LDAP directory"; 
@@ -1736,6 +1738,7 @@ $LANG["tracking"][33]="Nevyřízené";
 $LANG["tracking"][34]="Přímo"; 
 $LANG["tracking"][35]="Zapsáno"; 
 $LANG["tracking"][37]="Uchovat požadavky při odstranění hardwaru z inventáře"; 
+$LANG["tracking"][38]="An email was sent to"; 
 
 $LANG["transfer"][1]="Přemístění"; 
 $LANG["transfer"][2]="Přidat nastavení přesunu"; 

@@ -905,6 +905,8 @@ $LANG["mailing"][107]="Nekas";
 $LANG["mailing"][108]="Nav autora"; 
 $LANG["mailing"][109]="Grupa nav norādīta"; 
 $LANG["mailing"][110]="Nederīga epasta adrese"; 
+$LANG["mailing"][111]="Alert email sent to"; 
+$LANG["mailing"][112]="Invalid email type"; 
 
 $LANG["Menu"][0]="Datori"; 
 $LANG["Menu"][1]="Tīkli"; 
@@ -1257,7 +1259,7 @@ $LANG["reservation"][36]="Past Reservations";
 $LANG["reservation"][37]="No Reservations"; 
 $LANG["reservation"][38]="Are you sure you want do delete this item from the loan items ?"; 
 $LANG["reservation"][39]="That will remove all the reservations in progress."; 
-$LANG["reservation"][40]="Reservation done. Mail sent to"; 
+$LANG["reservation"][40]="Reservation done. Email sent to"; 
 
 $LANG["ruleldap"][1]="no LDAP kritērijiem"; 
 $LANG["ruleldap"][2]="Nav definēti kritēriji"; 
@@ -1529,7 +1531,7 @@ $LANG["setup"][225]="Rezervācijām (pievienošana, izmaiņas un dzēšana)";
 $LANG["setup"][226]="Pievienot e-pastos saiti uz GPLI"; 
 $LANG["setup"][227]="Izmantotā pamata URL"; 
 $LANG["setup"][228]="Lietotājvārda lauks"; 
-$LANG["setup"][229]="Test to send a mail to the administrator"; 
+$LANG["setup"][229]="Test to send a email to the administrator"; 
 $LANG["setup"][230]="Labojot darbu"; 
 $LANG["setup"][231]="Lietojiet SMTP serveri lai sūtītu e-pastu"; 
 $LANG["setup"][232]="SMTP Host"; 
@@ -1736,6 +1738,7 @@ $LANG["tracking"][33]="Pending";
 $LANG["tracking"][34]="Direct"; 
 $LANG["tracking"][35]="Written"; 
 $LANG["tracking"][37]="Saglabāt darbus pēc aparatūras norakstīšanas"; 
+$LANG["tracking"][38]="An email was sent to"; 
 
 $LANG["transfer"][1]="Transference"; 
 $LANG["transfer"][2]="Add a transfer configuration"; 

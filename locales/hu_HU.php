@@ -905,6 +905,8 @@ $LANG["mailing"][107]="Üres";
 $LANG["mailing"][108]="Nincs szerző"; 
 $LANG["mailing"][109]="Nincs csoport"; 
 $LANG["mailing"][110]="Érvénytelen emailcím"; 
+$LANG["mailing"][111]="Alert email sent to"; 
+$LANG["mailing"][112]="Invalid email type"; 
 
 $LANG["Menu"][0]="Számítógépek"; 
 $LANG["Menu"][1]="Hálózatok"; 
@@ -1257,7 +1259,7 @@ $LANG["reservation"][36]="Múltbeni foglalások";
 $LANG["reservation"][37]="Nincs foglalás"; 
 $LANG["reservation"][38]="Biztos, hogy törölhető a tétel a kölcsönzésekből ?"; 
 $LANG["reservation"][39]="Ezzel minden folyamatban levő foglalás törölve lesz."; 
-$LANG["reservation"][40]="Reservation done. Mail sent to"; 
+$LANG["reservation"][40]="Reservation done. Email sent to"; 
 
 $LANG["ruleldap"][1]="LDAP feltétel"; 
 $LANG["ruleldap"][2]="Nincsenek kritériumok"; 
@@ -1502,7 +1504,7 @@ $LANG["setup"][184]="Korlátozások";
 $LANG["setup"][185]="Logok több fájlba"; 
 $LANG["setup"][186]="Időzóna"; 
 $LANG["setup"][190]="x509 kulcs"; 
-$LANG["setup"][191]="mail attribute for x509"; 
+$LANG["setup"][191]="email attribute for x509"; 
 $LANG["setup"][192]="Bekapcsolva"; 
 $LANG["setup"][193]="Field holding the login in the _SERVER array"; 
 $LANG["setup"][194]="Bővített információk lekérésée LDAP-ból"; 
@@ -1736,6 +1738,7 @@ $LANG["tracking"][33]="Várakozó";
 $LANG["tracking"][34]="Közvetlen"; 
 $LANG["tracking"][35]="Írásos"; 
 $LANG["tracking"][37]="Bejelentések megtartása hardverek törlésekor"; 
+$LANG["tracking"][38]="An email was sent to"; 
 
 $LANG["transfer"][1]="Áthelyezés"; 
 $LANG["transfer"][2]="Új áthelyezési konfiguráció"; 
