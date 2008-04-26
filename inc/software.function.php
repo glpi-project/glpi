@@ -200,15 +200,15 @@ function showLicenses($sID, $show_computers = 0) {
 			}
 			// Get installed licences
 
-			$query_lic = "SELECT glpi_inst_software.ID AS ID, glpi_licenses.ID AS lID, glpi_computers.deleted as deleted, ";
+			$query_lic = "SELECT glpi_inst_software.ID AS ID, glpi_licenses.ID AS lID, ";
 			$query_lic .= " glpi_infocoms.ID as infocoms, glpi_licenses.comments AS COMMENT, ";
 			$query_lic .= " glpi_inst_software.cID AS cID, glpi_computers.name AS cname FROM glpi_licenses";
 			$query_lic .= " LEFT JOIN glpi_inst_software ";
 			$query_lic .= " ON ( glpi_inst_software.license = glpi_licenses.ID )";
-			$query_lic .= " LEFT JOIN glpi_computers ON (glpi_computers.deleted='0' AND glpi_computers.is_template='0' AND glpi_inst_software.cID= glpi_computers.ID) ";
+			$query_lic .= " LEFT JOIN glpi_computers ON (glpi_inst_software.cID= glpi_computers.ID) ";
 			$query_lic .= " LEFT JOIN glpi_infocoms ON (glpi_infocoms.device_type='" . LICENSE_TYPE . "' AND glpi_infocoms.FK_device=glpi_licenses.ID) ";
-			$query_lic .= " WHERE $SEARCH_LICENCE ORDER BY cname";
-			//echo $query_lic;
+			$query_lic .= " WHERE $SEARCH_LICENCE AND glpi_computers.deleted='0' AND glpi_computers.is_template='0' ORDER BY cname";
+			echo $query_lic;
 			$result_lic = $DB->query($query_lic);
 			$num_tot = $DB->numrows($result_lic);
 
@@ -366,7 +366,7 @@ function showLicenses($sID, $show_computers = 0) {
 			if ($show_computers) {
 				while ($data_inst = $DB->fetch_array($result_lic)) {
 					if ($data_inst['cID'] > 0) {
-						echo "<tr class='tab_bg_1" . (($data["OEM"] && $data["OEM_COMPUTER"] != $data_inst["cID"]) || $data_inst["deleted"] ? "_2" : "") . "'><td class='center'>";
+						echo "<tr class='tab_bg_1" . (($data["OEM"] && $data["OEM_COMPUTER"] != $data_inst["cID"]) ? "_2" : "") . "'><td class='center'>";
 
 						if ($serial != "free" && $serial != "global" && $canedit) {
 							$found_soft = true;
