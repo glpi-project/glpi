@@ -638,7 +638,7 @@ class Mailing
 								$senderror=true;
 								addMessageAfterRedirect($messageerror."<br>".$mmail->ErrorInfo);
 							}else{
-								logInFile("mail","Tracking successfull mail sent to : ".$email." subject : ".$subjects[$lang]."\n");
+								logInFile("mail",$LANG["tracking"][38]." ".$email." ".$LANG["reservation"][41]." : ".$subjects[$lang]."\n");
 							} 
 
 							$mmail->ClearAddresses(); 
@@ -651,7 +651,7 @@ class Mailing
 					return false;
 				}
 			} else {
-				addMessageAfterRedirect("Invalid mail type");
+				addMessageAfterRedirect($LANG["mailing"][112]);
 			}
 		}
 		return true;
@@ -1184,7 +1184,7 @@ class MailingAlert
 	 */
 	function send()
 	{
-		global $CFG_GLPI;
+		global $CFG_GLPI,$LANG;
 		if ($CFG_GLPI["mailing"])
 		{
 			// get users to send mail
@@ -1228,10 +1228,10 @@ class MailingAlert
 					$mmail->AddAddress($email, "");
 
 					if(!$mmail->Send()){
-						addMessageAfterRedirect("There was a problem sending this mail !");
+						addMessageAfterRedirect($LANG["mailing"][47]);
 						return false;
 					}else{
-						logInFile("mail","Alert successfull mail sent to : ".$email." subject : ".$subjects[$lang]."\n");
+						logInFile("mail",$LANG["mailing"][111]." ".$email." ".$LANG["reservation"][41]." : ".$subjects[$lang]."\n");
 					}
 					$mmail->ClearAddresses(); 
 				}
