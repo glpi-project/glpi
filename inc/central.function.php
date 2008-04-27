@@ -124,12 +124,19 @@ function showCentralGlobalView(){
  *
  **/
 function showCentralMyView(){
-
-		$showticket=(haveRight("show_all_ticket","1")||haveRight("show_assign_ticket","1"));
-
+		global $LANG, $DB;
 		
-		echo "<table class='tab_cadre_central' >";
+		$showticket=(haveRight("show_all_ticket","1")||haveRight("show_assign_ticket","1"));
+		
+		echo "<table class='tab_cadre_central' >";	
+
+		if ($DB->isSlave() && !$DB->first_connection){	
+			echo "<tr><th colspan='2'><br>";	
+			displayTitle(GLPI_ROOT."/pics/warning.png", $LANG["setup"][809], $LANG["setup"][809]);
+			echo "</th></tr>";
+		}
 		echo "<tr><td class='top'>";
+				
 		echo "<table>";
 	
 		if ($showticket){
