@@ -127,19 +127,16 @@ function establishDBConnection($use_slave, $required, $display=true) {
 		$res = switchToMaster();
 	} 
 	
-	
 	// If not already connected to master due to config or error
 	if (!$res){
 		// No DB slave : first connection to master give error
 		if (!isDBSlaveActive()){ 
-			// Slave wanted but not defined and not required -> use master
-			if ($use_slave && !$required ){
+
+			// Slave wanted but not defined -> use master
+			// Ignore $required when no slave configured
+			if ($use_slave){
 				$res = switchToMaster();
 			}		
-			// Display error if needed		
-			if (!$res && $display){
-				displayMySQLError();
-			}
 		// SLave DB configured
 		} else { 
 			// Try to connect to slave if wanted
@@ -147,32 +144,24 @@ function establishDBConnection($use_slave, $required, $display=true) {
 				$res = switchToSlave();
 			}
 
-			// No connection to wanted server
-			if (!$res) {
-				// If required to this specific server : error
-				if ($required == 1){
-					if ($display){
-						displayMySQLError();
-					}
+			// No connection to 'mandatory' server
+			if (!$res && !$required){
+				//Try to establish the connection to the other mysql server
+				if ($use_slave){
+					$res = switchToMaster();
 				} else {
-					//Try to establish the connection to the other mysql server
-					if ($use_slave){
-						$res = switchToMaster();
-					} else {
-						$res = switchToSlave();
-					}
-		
-					if (!$res) {
-						if ($display){
-							displayMySQLError();
-						}
-					} else {
-						$DB->first_connection=false;	
-					}
+					$res = switchToSlave();
+				}
+	
+				if ($res) {
+					$DB->first_connection=false;	
 				}
 			}
-
 		}
+	}
+	// Display error if needed		
+	if (!$res && $display){
+		displayMySQLError();
 	}
 	return $res;
 }
