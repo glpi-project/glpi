@@ -56,5 +56,5 @@ $id->destroySession();
 
 // Redirect to the login-page
 
-glpi_header($CFG_GLPI["root_doc"]."/".$noAUTO);
+glpi_header($CFG_GLPI["root_doc"]."/index.php".$noAUTO);
 ?>
