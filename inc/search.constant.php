@@ -35,12 +35,14 @@
 
 // meta = 0 : no meta search 
 // meta = 1 : meta search using GROUP BY HAVING -> field of the table
-// meta = 2 : meta search using WHERE -> field in a liked table
+// meta = 2 : meta search using WHERE -> field in a linked table
 
 // Conventions :
 // ID 80 : FK_entities link -> no massive action
 // ID 90 : notes -> no massive action
 // ID 101 : glpi_ocs_link -> no linkfield but massive action on it
+
+// Empty linkfield -> no massive action for field of main table 
 
 //////COMPUTER_TYPE
 
