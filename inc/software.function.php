@@ -216,18 +216,20 @@ function showLicenses($sID, $show_computers = 0) {
 			$firstID = 0;
 			$freeID = 0;
 
-			while ($data_lic = $DB->fetch_array($result_lic)) {
-				if ($firstID == 0) {
-					$firstID = $data_lic['lID'];
+			if ($num_tot > 0 ){
+				while ($data_lic = $DB->fetch_array($result_lic)) {
+					if ($firstID == 0) {
+						$firstID = $data_lic['lID'];
+					}
+					if ($data_lic['cID'] > 0) {
+						$num_inst++;
+					} else {
+						$freeID = $data_lic['lID'];
+					}
 				}
-				if ($data_lic['cID'] > 0) {
-					$num_inst++;
-				} else {
-					$freeID = $data_lic['lID'];
-				}
+	
+				$DB->data_seek($result_lic, 0);
 			}
-
-			$DB->data_seek($result_lic, 0);
 
 			$restant = $num_tot - $num_inst;
 
