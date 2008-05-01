@@ -2174,7 +2174,7 @@ function ocsUpdateDevices($device_type, $glpi_id, $ocs_id, $ocs_server_id, $cfg_
 				}
 			}
 
-			$query2 = "DELETE FROM glpi_networking_ports WHERE on_device='$glpi_id' AND ifaddr='$val'";
+			$query2 = "DELETE FROM glpi_networking_ports WHERE ID = '$ID'";
 			$DB->query($query2);
 			deleteInOcsArray($glpi_id, $key, "import_ip");
 		}
