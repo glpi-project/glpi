@@ -56,10 +56,10 @@ close(INFO);
 
 foreach (@lines)
 {
-	if ($_=~m/\$LANG\[\"([a-zA-Z]+)\"\]\[([a-zA-Z0-9]+)\]/){
-		print "SEARCH \$LANG\[\"$1\"\]\[$2\] : ";
+	if ($_=~m/(\$LANG[A-Z]*)\[\"([a-zA-Z]+)\"\]\[([a-zA-Z0-9]+)\]/){
+		print "SEARCH $1\[\"$2\"\]\[$3\] : ";
 		$count=0;
-		do_dir(".",$1,$2);
+		do_dir(".",$2,$3);
 		print $count;
 		if ($1=~m/calendarDay/||$1=~m/calendarM/) {print " <- not found but OK - used with key computation";}
  		elsif ($count==0) {print " <<<<--------------- NOT FOUND";}
@@ -92,7 +92,7 @@ if ($_ ne '..' && $_ ne '.'){
 }
 }
 if ($found_php==1 && ($count_all==1 || $count==0) ){
-	open COUNT, "cat $dir/*.php | grep \'\\\$LANG\\\[\\\"$module\\\"\\\]\\\[$i\\\]\' | wc -l |";
+	open COUNT, "cat $dir/*.php | grep \'\\\$LANG\[A-Z\]*\\\[\\\"$module\\\"\\\]\\\[$i\\\]\' | wc -l |";
 	while(<COUNT>) {
            	$count+=$_;
 		#print $_."\n";
