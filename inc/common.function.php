@@ -133,21 +133,28 @@ if (!defined('GLPI_ROOT')){
 		// Les niveaux qui seront enregistrÃ©s
 		$user_errors = array(E_USER_ERROR, E_USER_WARNING, E_USER_NOTICE);
 			
-		$err = "<errorentry>\n";
-		//$err .= "\t<datetime>" . $dt . "</datetime>\n";
-		$err .= "\t<errornum>" . $errno . "</errornum>\n";
-		$err .= "\t<errortype>" . $errortype[$errno] . "</errortype>\n";
-		$err .= "\t<errormsg>" . $errmsg . "</errormsg>\n";
-		$err .= "\t<scriptname>" . $filename . "</scriptname>\n";
-		$err .= "\t<scriptlinenum>" . $linenum . "</scriptlinenum>\n";
-		
+		$err = $errortype[$errno] . "($errno): $errmsg\n";
 		if (in_array($errno, $user_errors)) {
-			$err .= "\t<vartrace>".wddx_serialize_value($vars,"Variables")."</vartrace>\n";
+			$err .= "Variables:".wddx_serialize_value($vars,"Variables")."\n";
 		}
-		$err .= "</errorentry>\n\n";
+		if (function_exists("debug_backtrace")) {
+			$err .= "Backtrace :\n";
+			$traces=debug_backtrace();
+			foreach ($traces as $trace) {
+				if (isset($trace["file"]) && isset($trace["line"])) {
+					$err .= $trace["file"] . ":" . $trace["line"] . "\t\t"
+						. (isset($trace["class"]) ? $trace["class"] : "")
+						. (isset($trace["type"]) ? $trace["type"] : "")
+						. (isset($trace["function"]) ? $trace["function"]."()" : "")
+						. "\n";
+				}
+			}
+		} else {
+			$error .= "Script: $filename, Line: $linenum\n" ; 
+		}
 		
 		// sauvegarde de l'erreur, et mail si c'est critique
-		logInFile("php-errors",$err);
+		logInFile("php-errors",$err."\n");
 		
 		if (!isCommandLine()){
 			echo '<div style="position:fload-left; background-color:red; z-index:10000"><strong>PHP ERROR: </strong>';
