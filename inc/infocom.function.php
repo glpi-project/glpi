@@ -44,7 +44,6 @@ if (!defined('GLPI_ROOT')){
 * @param $dev_ID integer: item ID
 * @param $show_immo boolean: show immobilisation infos
 * @param $withtemplate integer: template or basic item
-* @param 
 */
 function showInfocomForm($target,$device_type,$dev_ID,$show_immo=true,$withtemplate='') {
 	// Show Infocom or blank form
