@@ -59,7 +59,7 @@ foreach (@lines)
 	if ($_=~m/(\$LANG[A-Z]*)\[\"([a-zA-Z]+)\"\]\[([a-zA-Z0-9]+)\]/){
 		print "SEARCH $1\[\"$2\"\]\[$3\] : ";
 		$count=0;
-		do_dir(".",$2,$3);
+		do_dir(".",$1,$2,$3);
 		print $count;
 		if ($1=~m/calendarDay/||$1=~m/calendarM/) {print " <- not found but OK - used with key computation";}
  		elsif ($count==0) {print " <<<<--------------- NOT FOUND";}
@@ -70,36 +70,36 @@ foreach (@lines)
 
 
 sub do_dir{
-local ($dir,$module,$i)=@_;	
-
-#print "Entering $dir\n";
-my $found_php=0;
-opendir(DIRHANDLE,$dir)||die "ERROR: can not read current directory\n"; 
-foreach (readdir(DIRHANDLE)){ 
-if ($_ ne '..' && $_ ne '.'){
-		
-	if (-d "$dir/$_" && $_!~m/locales/ && $_!~m/files/ && $_!~m/\.svn/ ){
-		if ($count_all==1 || $count==0){
-			do_dir("$dir/$_",$module,$i);
-		}
-	} else {
-		if ($count_all==1 || $count==0){
- 			if (!-d "$dir/$_" && (index($_,".php",0)==length($_)-4)){
-			$found_php=1;
+	local ($dir,$varname,$module,$i)=@_;	
+	
+	#print "Entering $dir\n";
+	my $found_php=0;
+	opendir(DIRHANDLE,$dir)||die "ERROR: can not read current directory\n"; 
+	foreach (readdir(DIRHANDLE)){ 
+		if ($_ ne '..' && $_ ne '.'){
+				
+			if (-d "$dir/$_" && $_!~m/locales/ && $_!~m/files/ && $_!~m/\.svn/ ){
+				if ($count_all==1 || $count==0){
+					do_dir("$dir/$_",$varname,$module,$i);
+				}
+			} else {
+				if ($count_all==1 || $count==0){
+					if (!-d "$dir/$_" && (index($_,".php",0)==length($_)-4)){
+					$found_php=1;
+					}
+				}
 			}
 		}
 	}
-}
-}
-if ($found_php==1 && ($count_all==1 || $count==0) ){
-	open COUNT, "cat $dir/*.php | grep \'\\\$LANG\[A-Z\]*\\\[\\\"$module\\\"\\\]\\\[$i\\\]\' | wc -l |";
-	while(<COUNT>) {
-           	$count+=$_;
-		#print $_."\n";
+	if ($found_php==1 && ($count_all==1 || $count==0) ){
+		open COUNT, "cat $dir/*.php | grep \'$varname\\\[\\\"$module\\\"\\\]\\\[$i\\\]\' | wc -l |";
+		while(<COUNT>) {
+			$count+=$_;
+			#print $_."\n";
+		}
 	}
-}
- 
-closedir DIRHANDLE; 
+	
+	closedir DIRHANDLE; 
 	
 }
 
