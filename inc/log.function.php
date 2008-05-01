@@ -238,59 +238,47 @@ function showHistory($device_type,$id_device){
 					$change = $LANG["log"][55]."&nbsp;<strong>:</strong>&nbsp;"."\"".$data["new_value"]."\"";	
 					break;	
 				case HISTORY_OCS_IMPORT:
-					if (haveRight("view_ocsng","r"))
-					{
-						$ci=new CommonItem();
-						$ci->setType($data["device_internal_type"]);
-						$field=$ci->getType();
+					if (haveRight("view_ocsng","r")){
+						$field="";
 						$change = $LANG["ocsng"][7]." ".$LANG["ocsng"][45]."&nbsp;<strong>:</strong>&nbsp;"."\"".$data["new_value"]."\"";	
-					}
-					else
+					} else {
 						$display_history = false;
+					}
 						
 					break;	
 				case HISTORY_OCS_DELETE:
-					if (haveRight("view_ocsng","r"))
-					{
-						$ci=new CommonItem();
-						$ci->setType($data["device_internal_type"]);
-						$field=$ci->getType();
+					if (haveRight("view_ocsng","r")){
+						$field="";
 						$change = $LANG["ocsng"][46]." ".$LANG["ocsng"][45]."&nbsp;<strong>:</strong>&nbsp;"."\"".$data["old_value"]."\"";	
-					}
-					else
+					} else {
 						$display_history = false;
+					}
 
 					break;	
 				case HISTORY_OCS_LINK:
-					if (haveRight("view_ocsng","r"))
-					{
+					if (haveRight("view_ocsng","r")){
 						$ci=new CommonItem();
 						$ci->setType($data["device_internal_type"]);
 						$field=$ci->getType();
 						$change = $LANG["ocsng"][47]." ".$LANG["ocsng"][45]."&nbsp;<strong>:</strong>&nbsp;"."\"".$data["new_value"]."\"";	
-					}
-					else
+					} else {
 						$display_history = false;
+					}
 
 					break;	
 				case HISTORY_OCS_IDCHANGED:
-					if (haveRight("view_ocsng","r"))
-					{
-						$ci=new CommonItem();
-						$ci->setType($data["device_internal_type"]);
-						$field=$ci->getType();
+					if (haveRight("view_ocsng","r")){
+						$field="";
 						$change = $LANG["ocsng"][48]." "."&nbsp;<strong>:</strong>&nbsp;"."\"".$data["old_value"]."\" --> &nbsp;<strong>:</strong>&nbsp;"."\"".$data["new_value"]."\"";	
-					}
-					else
+					} else {
 						$display_history = false;
+					}
 
 					break;	
 					
 				case HISTORY_LOG_SIMPLE_MESSAGE:
-						$ci=new CommonItem();
-						$ci->setType($data["device_internal_type"]);
-						$field=$ci->getType();
-						$change = $data["new_value"];	
+					$field="";
+					$change = $data["new_value"];	
 					break;			
 			}
 		}else{
