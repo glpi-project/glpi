@@ -2165,16 +2165,9 @@ function ocsUpdateDevices($device_type, $glpi_id, $ocs_id, $ocs_server_id, $cfg_
 	if ($do_clean && count($import_ip) && $device_type == NETWORK_DEVICE) {
 		foreach ($import_ip as $key => $val) {
 			// Disconnect wire
-			$query2 = "SELECT ID FROM glpi_networking_wire WHERE end1 = '$key' OR end2 = '$key'";
-			if ($result2=$DB->query($query2)){
-				if ($DB->numrows($result2)){
-					while ($data = $DB->fetch_assoc($result2)){
-						removeConnector($data['ID']);
-					}
-				}
-			}
+			removeConnector($key);
 
-			$query2 = "DELETE FROM glpi_networking_ports WHERE ID = '$ID'";
+			$query2 = "DELETE FROM glpi_networking_ports WHERE ID = '$key'";
 			$DB->query($query2);
 			deleteInOcsArray($glpi_id, $key, "import_ip");
 		}

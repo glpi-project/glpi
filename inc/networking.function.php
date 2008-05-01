@@ -491,7 +491,7 @@ function showConnection($ID,$withtemplate='',$type=COMPUTER_TYPE) {
  * 
  *@return true on success 
 **/
-function makeConnector($sport, $dport, $dohistory=true, $addmsg=true) {
+function makeConnector($sport, $dport, $dohistory=true, $addmsg=false) {
 
 	global $DB,$CFG_GLPI, $LANG;
 
@@ -639,7 +639,7 @@ function makeConnector($sport, $dport, $dohistory=true, $addmsg=true) {
 /**
  * Unwire the Ports
  *
- *@param $ID : ID of the link
+ *@param $ID : ID a network port
  *@param $dohistory : add event in the history
  * 
  *@return true on success 
@@ -651,56 +651,57 @@ function removeConnector($ID, $dohistory=true) {
 	// Update to blank networking item
 	$nw=new Netwire;
 	if ($ID2=$nw->getOppositeContact($ID)){
-
-		$np1=new Netport;
-		$np2=new Netport;
-		$np1->getFromDB($ID);
-		$np2->getFromDB($ID2);
-		$npnet=-1;
-		$npdev=-1;
-		if ($np1->fields["device_type"]!=NETWORKING_TYPE&&$np2->fields["device_type"]==NETWORKING_TYPE){
-			$npnet=$ID2;
-			$npdev=$ID;
-		}
-		if ($np2->fields["device_type"]!=NETWORKING_TYPE&&$np1->fields["device_type"]==NETWORKING_TYPE){
-			$npnet=$ID;
-			$npdev=$ID2;
-		}
-		if ($npnet!=-1&&$npdev!=-1){
-			// Unset MAC and IP from networking device
-			$query = "UPDATE glpi_networking_ports SET ifaddr='', ifmac='',netmask='', subnet='',gateway='' WHERE ID='$npnet'";	
-			$DB->query($query);
-			// Unset netpoint from common device
-			$query = "UPDATE glpi_networking_ports SET netpoint=0 WHERE ID='$npdev'";	
-			$DB->query($query);			
-		}
-
 		$query = "DELETE FROM glpi_networking_wire WHERE (end1 = '$ID' OR end2 = '$ID')";
 		if ($result=$DB->query($query)) {
-			if ($dohistory) {
-				$device=new CommonItem();
 
-				$device->getFromDB($np2->fields["device_type"],$np2->fields["on_device"]);
-				$changes[0]=0;
-				$changes[1]=$device->getName();
-				$changes[2]="";
-				if ($np1->fields["device_type"]==NETWORKING_TYPE) {
-					$changes[1] = "#" . $np1->fields["name"] . " > " . $changes[1];
+			// clean datas of linked ports if network one
+			$np1=new Netport;
+			$np2=new Netport;
+			if ($np1->getFromDB($ID) && $np2->getFromDB($ID2)){
+				$npnet=-1;
+				$npdev=-1;
+				if ($np1->fields["device_type"]!=NETWORKING_TYPE&&$np2->fields["device_type"]==NETWORKING_TYPE){
+					$npnet=$ID2;
+					$npdev=$ID;
 				}
-				if ($np2->fields["device_type"]==NETWORKING_TYPE) {
-					$changes[1] = $changes[1] . " > #" . $np2->fields["name"];
+				if ($np2->fields["device_type"]!=NETWORKING_TYPE&&$np1->fields["device_type"]==NETWORKING_TYPE){
+					$npnet=$ID;
+					$npdev=$ID2;
 				}
-				historyLog ($np1->fields["on_device"],$np1->fields["device_type"],$changes,$np2->fields["device_type"],HISTORY_DISCONNECT_DEVICE);
+				if ($npnet!=-1&&$npdev!=-1){
+					// Unset MAC and IP from networking device
+					$query = "UPDATE glpi_networking_ports SET ifaddr='', ifmac='',netmask='', subnet='',gateway='' WHERE ID='$npnet'";	
+					$DB->query($query);
+					// Unset netpoint from common device
+					$query = "UPDATE glpi_networking_ports SET netpoint=0 WHERE ID='$npdev'";	
+					$DB->query($query);			
+				}
 
-				$device->getFromDB($np1->fields["device_type"],$np1->fields["on_device"]);
-				$changes[1]=$device->getName();
-				if ($np2->fields["device_type"]==NETWORKING_TYPE) {
-					$changes[1] = "#" . $np2->fields["name"] . " > " . $changes[1];
+				if ($dohistory) {
+					$device=new CommonItem();
+	
+					$device->getFromDB($np2->fields["device_type"],$np2->fields["on_device"]);
+					$changes[0]=0;
+					$changes[1]=$device->getName();
+					$changes[2]="";
+					if ($np1->fields["device_type"]==NETWORKING_TYPE) {
+						$changes[1] = "#" . $np1->fields["name"] . " > " . $changes[1];
+					}
+					if ($np2->fields["device_type"]==NETWORKING_TYPE) {
+						$changes[1] = $changes[1] . " > #" . $np2->fields["name"];
+					}
+					historyLog ($np1->fields["on_device"],$np1->fields["device_type"],$changes,$np2->fields["device_type"],HISTORY_DISCONNECT_DEVICE);
+	
+					$device->getFromDB($np1->fields["device_type"],$np1->fields["on_device"]);
+					$changes[1]=$device->getName();
+					if ($np2->fields["device_type"]==NETWORKING_TYPE) {
+						$changes[1] = "#" . $np2->fields["name"] . " > " . $changes[1];
+					}
+					if ($np1->fields["device_type"]==NETWORKING_TYPE) {
+						$changes[1] = $changes[1] . " > #" . $np1->fields["name"];
+					}
+					historyLog ($np2->fields["on_device"],$np2->fields["device_type"],$changes,$np1->fields["device_type"],HISTORY_DISCONNECT_DEVICE);
 				}
-				if ($np1->fields["device_type"]==NETWORKING_TYPE) {
-					$changes[1] = $changes[1] . " > #" . $np1->fields["name"];
-				}
-				historyLog ($np2->fields["on_device"],$np2->fields["device_type"],$changes,$np1->fields["device_type"],HISTORY_DISCONNECT_DEVICE);
 			}
 			
 			return true;
