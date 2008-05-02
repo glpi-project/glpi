@@ -56,7 +56,7 @@ close(INFO);
 
 foreach (@lines)
 {
-	if ($_=~m/(\$LANG[A-Z]*)\[\"([a-zA-Z]+)\"\]\[([a-zA-Z0-9]+)\]/){
+	if ($_=~m/(\$[A-Z_]*LANG[A-Z_]*)\[\"([a-zA-Z]+)\"\]\[([a-zA-Z0-9]+)\]/){
 		print "SEARCH $1\[\"$2\"\]\[$3\] : ";
 		$count=0;
 		do_dir(".",$1,$2,$3);
