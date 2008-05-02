@@ -1115,8 +1115,6 @@ $LANG["planning"][15]="您的计划";
 $LANG["planning"][16]="Information"; 
 $LANG["planning"][17]="To do"; 
 $LANG["planning"][18]="Done"; 
-$LANG["planning"][19]="Beginning"; 
-$LANG["planning"][20]="End"; 
 
 $LANG["printers"][14]="Serial"; 
 $LANG["printers"][15]="Parallel"; 
@@ -1186,7 +1184,6 @@ $LANG["reminder"][1]="公开笔记";
 $LANG["reminder"][2]="Notes"; 
 $LANG["reminder"][6]="添加新笔记"; 
 $LANG["reminder"][9]="文本"; 
-$LANG["reminder"][11]="日历"; 
 $LANG["reminder"][12]="添加到日历"; 
 $LANG["reminder"][15]="没有标题"; 
 $LANG["reminder"][16]="Global notes"; 

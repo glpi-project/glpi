@@ -1115,8 +1115,6 @@ $LANG["planning"][15]="Ваше планирование";
 $LANG["planning"][16]="Инфо"; 
 $LANG["planning"][17]="Сделать"; 
 $LANG["planning"][18]="Готово"; 
-$LANG["planning"][19]="с"; 
-$LANG["planning"][20]="до"; 
 
 $LANG["printers"][14]="Serial"; 
 $LANG["printers"][15]="Parallel"; 
@@ -1186,7 +1184,6 @@ $LANG["reminder"][1]="Публичные заметки";
 $LANG["reminder"][2]="Заметки"; 
 $LANG["reminder"][6]="Новая заметка"; 
 $LANG["reminder"][9]="Текст"; 
-$LANG["reminder"][11]="Календарь"; 
 $LANG["reminder"][12]="Добавить в календарь"; 
 $LANG["reminder"][15]="Without Title"; 
 $LANG["reminder"][16]="Глобальные заметки"; 

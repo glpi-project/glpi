@@ -1115,8 +1115,6 @@ $LANG["planning"][15]="Vaše plánování";
 $LANG["planning"][16]="Informace"; 
 $LANG["planning"][17]="Udělat"; 
 $LANG["planning"][18]="Hotovo"; 
-$LANG["planning"][19]="Začátek"; 
-$LANG["planning"][20]="Konec"; 
 
 $LANG["printers"][14]="Sériová"; 
 $LANG["printers"][15]="Paralelní"; 
@@ -1186,7 +1184,6 @@ $LANG["reminder"][1]="Veřejné poznámky";
 $LANG["reminder"][2]="Poznámky"; 
 $LANG["reminder"][6]="Nová poznámka"; 
 $LANG["reminder"][9]="Text"; 
-$LANG["reminder"][11]="Kalendář"; 
 $LANG["reminder"][12]="Přidat do kalendáře"; 
 $LANG["reminder"][15]="Bez titulu"; 
 $LANG["reminder"][16]="Global notes"; 

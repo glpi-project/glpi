@@ -1115,8 +1115,6 @@ $LANG["planning"][15]="Your planning";
 $LANG["planning"][16]="Bilgilendirme"; 
 $LANG["planning"][17]="To do"; 
 $LANG["planning"][18]="Tamam"; 
-$LANG["planning"][19]="Başlangıç"; 
-$LANG["planning"][20]="Son"; 
 
 $LANG["printers"][14]="Seri"; 
 $LANG["printers"][15]="Paralel"; 
@@ -1186,7 +1184,6 @@ $LANG["reminder"][1]="Genel notlar";
 $LANG["reminder"][2]="Notlar"; 
 $LANG["reminder"][6]="Yeni not"; 
 $LANG["reminder"][9]="Metin"; 
-$LANG["reminder"][11]="Takvim"; 
 $LANG["reminder"][12]="Takvime ekle"; 
 $LANG["reminder"][15]="Without Title"; 
 $LANG["reminder"][16]="Toplu notlar"; 

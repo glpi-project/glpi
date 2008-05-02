@@ -1115,8 +1115,6 @@ $LANG["planning"][15]="Το πλάνο σας";
 $LANG["planning"][16]="Πληροφορίες"; 
 $LANG["planning"][17]="Να γίνει"; 
 $LANG["planning"][18]="Έγινε"; 
-$LANG["planning"][19]="Αρχίζει"; 
-$LANG["planning"][20]="Τέλειωσε"; 
 
 $LANG["printers"][14]="Σειριακή"; 
 $LANG["printers"][15]="Παράλληλη"; 
@@ -1186,7 +1184,6 @@ $LANG["reminder"][1]="Δημόσιες σημειώσεις";
 $LANG["reminder"][2]="Σημειώσεις"; 
 $LANG["reminder"][6]="Νέα σημείωση"; 
 $LANG["reminder"][9]="Κείμενο"; 
-$LANG["reminder"][11]="Ημερολόγιο"; 
 $LANG["reminder"][12]="Προσθήκη στο ημερολόγιο"; 
 $LANG["reminder"][15]="Χωρίς τίτλο"; 
 $LANG["reminder"][16]="Δημόσιες σημειώσεις"; 

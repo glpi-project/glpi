@@ -1115,8 +1115,6 @@ $LANG["planning"][15]="Su planificación";
 $LANG["planning"][16]="Información"; 
 $LANG["planning"][17]="Por hacer"; 
 $LANG["planning"][18]="Hecho"; 
-$LANG["planning"][19]="Beginning"; 
-$LANG["planning"][20]="End"; 
 
 $LANG["printers"][14]="Puerto serial"; 
 $LANG["printers"][15]="Paralelo"; 
@@ -1186,7 +1184,6 @@ $LANG["reminder"][1]="Notas públicas";
 $LANG["reminder"][2]="Notas"; 
 $LANG["reminder"][6]="Nueva nota"; 
 $LANG["reminder"][9]="Texto"; 
-$LANG["reminder"][11]="Calendario"; 
 $LANG["reminder"][12]="Agregar al calendario"; 
 $LANG["reminder"][15]="Sin título"; 
 $LANG["reminder"][16]="Global notes"; 

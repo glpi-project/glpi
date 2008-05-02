@@ -1115,8 +1115,6 @@ $LANG["planning"][15]="Terveid";
 $LANG["planning"][16]="Információ"; 
 $LANG["planning"][17]="Tennivaló"; 
 $LANG["planning"][18]="Kész"; 
-$LANG["planning"][19]="Kezdet"; 
-$LANG["planning"][20]="Vége"; 
 
 $LANG["printers"][14]="Soros interfész"; 
 $LANG["printers"][15]="Párhuzamos interfész"; 
@@ -1186,7 +1184,6 @@ $LANG["reminder"][1]="Nyilvános jegyzetek";
 $LANG["reminder"][2]="Jegyzetek"; 
 $LANG["reminder"][6]="Új jegyzet"; 
 $LANG["reminder"][9]="Szöveg"; 
-$LANG["reminder"][11]="Naptár"; 
 $LANG["reminder"][12]="Hozzáadás a naptárhoz"; 
 $LANG["reminder"][15]="Cím nélkül"; 
 $LANG["reminder"][16]="Globális megjegyzések"; 

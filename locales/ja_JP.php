@@ -1115,8 +1115,6 @@ $LANG["planning"][15]="予定表";
 $LANG["planning"][16]="インフォメーション"; 
 $LANG["planning"][17]="ToDo"; 
 $LANG["planning"][18]="完了"; 
-$LANG["planning"][19]="開始"; 
-$LANG["planning"][20]="終了"; 
 
 $LANG["printers"][14]="シリアル"; 
 $LANG["printers"][15]="パラレル"; 
@@ -1186,7 +1184,6 @@ $LANG["reminder"][1]="共用メモ";
 $LANG["reminder"][2]="注釈"; 
 $LANG["reminder"][6]="新しいメモ"; 
 $LANG["reminder"][9]="本文"; 
-$LANG["reminder"][11]="予定表"; 
 $LANG["reminder"][12]="予定表に追加"; 
 $LANG["reminder"][15]="タイトル無し"; 
 $LANG["reminder"][16]="グローバルノート"; 
