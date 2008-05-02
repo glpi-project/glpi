@@ -1115,8 +1115,6 @@ $LANG["planning"][15]="Din planlægning";
 $LANG["planning"][16]="Information"; 
 $LANG["planning"][17]="To do"; 
 $LANG["planning"][18]="Done"; 
-$LANG["planning"][19]="Beginning"; 
-$LANG["planning"][20]="End"; 
 
 $LANG["printers"][14]="Seriel"; 
 $LANG["printers"][15]="Parallel"; 
@@ -1186,7 +1184,6 @@ $LANG["reminder"][1]="Offentlige noter";
 $LANG["reminder"][2]="Notes"; 
 $LANG["reminder"][6]="Ny note"; 
 $LANG["reminder"][9]="Tekst"; 
-$LANG["reminder"][11]="Kalender"; 
 $LANG["reminder"][12]="Tilføj til en kalender"; 
 $LANG["reminder"][15]="Uden overskrift"; 
 $LANG["reminder"][16]="Global notes"; 

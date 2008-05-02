@@ -1115,8 +1115,6 @@ $LANG["planning"][15]="Uw planning";
 $LANG["planning"][16]="Informatie"; 
 $LANG["planning"][17]="Nog te doen"; 
 $LANG["planning"][18]="Klaar"; 
-$LANG["planning"][19]="Startende op"; 
-$LANG["planning"][20]="Einde"; 
 
 $LANG["printers"][14]="Seriële poort"; 
 $LANG["printers"][15]="Parallelle poort"; 
@@ -1186,7 +1184,6 @@ $LANG["reminder"][1]="Publieke notes";
 $LANG["reminder"][2]="Notitie's"; 
 $LANG["reminder"][6]="Nieuwe notitie"; 
 $LANG["reminder"][9]="Tekst"; 
-$LANG["reminder"][11]="Agenda"; 
 $LANG["reminder"][12]="Toevoegen aan agenda"; 
 $LANG["reminder"][15]="Zonder Titel"; 
 $LANG["reminder"][16]="Global notes"; 

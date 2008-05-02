@@ -1115,8 +1115,6 @@ $LANG["planning"][15]="Your planning";
 $LANG["planning"][16]="Information"; 
 $LANG["planning"][17]="To do"; 
 $LANG["planning"][18]="Done"; 
-$LANG["planning"][19]="Beginning"; 
-$LANG["planning"][20]="End"; 
 
 $LANG["printers"][14]="Serial"; 
 $LANG["printers"][15]="Parallel"; 
@@ -1186,7 +1184,6 @@ $LANG["reminder"][1]="Vieši užrašai";
 $LANG["reminder"][2]="Užrašai"; 
 $LANG["reminder"][6]="Nauja pastaba"; 
 $LANG["reminder"][9]="Tekstas"; 
-$LANG["reminder"][11]="Kalendorius"; 
 $LANG["reminder"][12]="Pridėti prie kalendoriaus"; 
 $LANG["reminder"][15]="Be antraštės"; 
 $LANG["reminder"][16]="Bendros pastabos"; 

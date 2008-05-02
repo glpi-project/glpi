@@ -1115,8 +1115,6 @@ $LANG["planning"][15]="La seva planificació";
 $LANG["planning"][16]="Informació"; 
 $LANG["planning"][17]="Pendent"; 
 $LANG["planning"][18]="Acabat"; 
-$LANG["planning"][19]="a partir de"; 
-$LANG["planning"][20]="fins"; 
 
 $LANG["printers"][14]="Serie"; 
 $LANG["printers"][15]="Paral·lel"; 
@@ -1186,7 +1184,6 @@ $LANG["reminder"][1]="Notes públiques";
 $LANG["reminder"][2]="Notes"; 
 $LANG["reminder"][6]="Nova nota"; 
 $LANG["reminder"][9]="Text"; 
-$LANG["reminder"][11]="Calendari"; 
 $LANG["reminder"][12]="Afegir al Calendari"; 
 $LANG["reminder"][15]="Sense títol"; 
 $LANG["reminder"][16]="Notes globals"; 

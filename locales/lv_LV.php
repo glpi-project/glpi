@@ -1115,8 +1115,6 @@ $LANG["planning"][15]="Jūsu plānojums";
 $LANG["planning"][16]="Informācija"; 
 $LANG["planning"][17]="Darāmais"; 
 $LANG["planning"][18]="Paveikts"; 
-$LANG["planning"][19]="Sākums"; 
-$LANG["planning"][20]="Beigas"; 
 
 $LANG["printers"][14]="Seriālā"; 
 $LANG["printers"][15]="Paralēlā"; 
@@ -1186,7 +1184,6 @@ $LANG["reminder"][1]="Publiskās piezīmes";
 $LANG["reminder"][2]="Piezīmes"; 
 $LANG["reminder"][6]="Jauna piezīme"; 
 $LANG["reminder"][9]="Teksts"; 
-$LANG["reminder"][11]="Kalendārs"; 
 $LANG["reminder"][12]="Pievienot kalendāram"; 
 $LANG["reminder"][15]="Bez virsraksta"; 
 $LANG["reminder"][16]="Globālās piezīmes"; 
