@@ -808,6 +808,21 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 		$GROUPBY=" GROUP BY $itemtable.ID";
 	}
 
+	// GROUP BY plugin case : force group by
+	if (empty($GROUPBY)){
+		if ($type>1000){
+			if (isset($PLUGIN_HOOKS['plugin_types'][$type])){
+				$function='plugin_'.$PLUGIN_HOOKS['plugin_types'][$type].'_forceGroupBy';
+				if (function_exists($function)){
+					if ($function($type)){
+						$GROUPBY=" GROUP BY $itemtable.ID";
+					}
+				}
+			}
+		}
+	}
+
+
 	// Specific case of group by : multiple links with the reference table
 	if (empty($GROUPBY)){
 		foreach ($toview as $key2 => $val2){
