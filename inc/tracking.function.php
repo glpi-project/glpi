@@ -1760,7 +1760,7 @@ function showJobDetails ($target,$ID){
 
 		// OPtional line 
 		if (isMultiEntitiesMode()){
-			echo "<tr><th colspan='4'>";
+			echo "<tr><th colspan='3'>";
 			echo getDropdownName("glpi_entities",$job->fields["FK_entities"]);
 			echo "</th></tr>";
 		}
