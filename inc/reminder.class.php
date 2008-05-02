@@ -191,7 +191,7 @@ class Reminder extends CommonDBTM {
 			echo "</td></tr>";
 
 
-			echo "<tr class='tab_bg_2'><td >".$LANG["reminder"][11].":		</td>";
+			echo "<tr class='tab_bg_2'><td >".$LANG["buttons"][15].":		</td>";
 
 
 

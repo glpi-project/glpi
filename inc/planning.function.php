@@ -491,10 +491,10 @@ function displayPlanningItem($val,$who,$type="",$complete=0){
 			case "through":
 				break;
 			case "begin";
-				echo $LANG["planning"][19]." ".date("H:i",strtotime($val["begin"])).": ";
+				echo $LANG["buttons"][33]." ".date("H:i",strtotime($val["begin"])).": ";
 				break;
 			case "end";
-				echo $LANG["planning"][20]." ".date("H:i",strtotime($val["end"])).": ";
+				echo $LANG["buttons"][32]." ".date("H:i",strtotime($val["end"])).": ";
 				break;
 
 		}
@@ -540,10 +540,10 @@ function displayPlanningItem($val,$who,$type="",$complete=0){
 			case "through":
 				break;
 			case "begin";
-				echo $LANG["planning"][19]." ".date("H:i",strtotime($val["begin"])).": ";
+				echo $LANG["buttons"][33]." ".date("H:i",strtotime($val["begin"])).": ";
 				break;
 			case "end";
-				echo $LANG["planning"][20]." ".date("H:i",strtotime($val["end"])).": ";
+				echo $LANG["buttons"][32]." ".date("H:i",strtotime($val["end"])).": ";
 				break;
 
 		}
