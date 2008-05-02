@@ -429,5 +429,13 @@ function update07to071() {
 		$query = "UPDATE `glpi_profiles` SET `user_auth_method` = `user`;";
 		$DB->query($query) or die("0.71 init user_auth_method value in glpi_profiles " . $LANG["update"][90] . $DB->error());
 	}
+	if (isIndex("glpi_printers", "id")) {
+			$query = "ALTER TABLE `glpi_printers` DROP INDEX `id`;";
+			$DB->query($query) or die("0.71 drop id index in glpi_printers " . $LANG["update"][90] . $DB->error());
+	}
+	if (isIndex("glpi_users", "name_2")) {
+			$query = "ALTER TABLE `glpi_users` DROP INDEX `name_2`;";
+			$DB->query($query) or die("0.71 drop name_2 index in glpi_users " . $LANG["update"][90] . $DB->error());
+	}
 } // fin 0.71 #####################################################################################
 ?>
