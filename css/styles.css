@@ -721,7 +721,7 @@ ul#onglet li {
 	float: left;
 	height: 21px;
 	background-color: #eeeeee;
-	margin: 2px 2px 0 2px;
+	margin: 2px 2px 0 1px;
 	border: 1px solid #CC9900;
 	border-bottom: 1px solid #fff;
 	-moz-border-radius: 4px;
@@ -785,7 +785,7 @@ ul#onglet span.fake{
 	padding: 5px;
 	font-size: 8px;
 	width:100px;
-	background: transparent url("../pics/fondTR.png") repeat; 
+	background: transparent url("../pics/fd_hoverlink.png") repeat; 
 	border: 1px solid gray;	
 	-moz-border-radius: 5px;
 }
