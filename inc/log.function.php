@@ -98,23 +98,29 @@ function constructHistory($id_device,$device_type,&$oldvalues,&$values) {
 			if ($device_type==INFOCOM_TYPE) {
 				$ic=new Infocom();
 				if ($ic->getFromDB($values['ID'])){
-					$device_type=$ic->fields['device_type'];
+					$real_device_type=$ic->fields['device_type'];
 					$id_device=$ic->fields['FK_device'];
-					foreach($SEARCH_OPTION[$device_type] as $key2 => $val2){
+					foreach($SEARCH_OPTION[$real_device_type] as $key2 => $val2){
 						if(($val2["field"]==$key&&ereg('infocoms',$val2['table'])) || 
-						($key=='budget'&&$val2['table']=='glpi_dropdown_budget')){
+							($key=='budget'&&$val2['table']=='glpi_dropdown_budget') ||
+							($key=='FK_enterprise'&&$val2['table']=='glpi_enterprises_infocoms')) {
 							$id_search_option=$key2; // Give ID of the $SEARCH_OPTION
-							if($val2["table"]=="glpi_infocoms"){
+							if ($val2["table"]=="glpi_infocoms"){
 								// 1st case : text field -> keep datas
 								$changes=array($id_search_option, addslashes($oldval),$values[$key]);
-							}else {
-								// 2nd case ; link field -> get data from dropdown
+							} else if ($val2["table"]=="glpi_enterprises_infocoms") {
+								// 2nd case ; link field -> get data from glpi_enterprises
+								$changes=array($id_search_option,  addslashes(getDropdownName("glpi_enterprises",$oldval)), addslashes(getDropdownName("glpi_enterprises",$values[$key])));
+							} else  {
+								// 3rd case ; link field -> get data from dropdown (budget)
 								$changes=array($id_search_option,  addslashes(getDropdownName( $val2["table"],$oldval)), addslashes(getDropdownName( $val2["table"],$values[$key])));
 							}
+						break; // foreach exit
 						}
 					}
 				}
 			} else {
+				$real_device_type=$device_type;
 				// Parsing $SEARCH_OPTION, check if an entry exists matching $key
 				foreach($SEARCH_OPTION[$device_type] as $key2 => $val2){
 			
@@ -136,7 +142,7 @@ function constructHistory($id_device,$device_type,&$oldvalues,&$values) {
 			}
 		
 			if (count($changes)){
-				historyLog ($id_device,$device_type,$changes);
+				historyLog ($id_device,$real_device_type,$changes);
 			}
 
 		}
