@@ -2480,11 +2480,12 @@ CREATE TABLE `glpi_rules_descriptions` (
   `description` text collate utf8_unicode_ci,
   `match` varchar(255) collate utf8_unicode_ci default NULL,
   `active` int(1) NOT NULL default '1',
+  `comments` varchar(255) collate utf8_unicode_ci default NULL,
   PRIMARY KEY  (`ID`)
 ) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-INSERT INTO glpi_rules_descriptions VALUES ('1','-1','0','0','Root','','AND','1');
-INSERT INTO glpi_rules_descriptions VALUES ('2','-1','1','1','Root','','OR','1');
+INSERT INTO glpi_rules_descriptions VALUES ('1','-1','0','0','Root','','AND','1','');
+INSERT INTO glpi_rules_descriptions VALUES ('2','-1','1','1','Root','','OR','1','');
 
 ### Dump table glpi_rules_ldap_parameters
 
