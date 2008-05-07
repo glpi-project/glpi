@@ -437,5 +437,11 @@ function update07to071() {
 			$query = "ALTER TABLE `glpi_users` DROP INDEX `name_2`;";
 			$DB->query($query) or die("0.71 drop name_2 index in glpi_users " . $LANG["update"][90] . $DB->error());
 	}
+	
+	if (!FieldExists("glpi_rules_descriptions","comments"))
+	{
+			$query="ALTER TABLE `glpi_rules_descriptions` ADD `comments` VARCHAR( 255 ) NOT NULL ;";
+			$DB->query($query) or die("0.71 add comments to glpi_rules_descriptions " . $LANG["update"][90] . $DB->error());			
+	}
 } // fin 0.71 #####################################################################################
 ?>

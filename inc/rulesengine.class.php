@@ -814,6 +814,12 @@ class Rule extends CommonDBTM{
 		echo "<td class='tab_bg_2'>";
 		dropdownYesNo("active",$this->fields["active"]);
 		echo"</td></tr>";
+
+		echo "<tr>";
+		echo "<td class='tab_bg_2'>".$LANG["common"][25]."</td>";
+		echo "<td class='tab_bg_2' valign='middle' colspan='3'>";
+		echo "<textarea  cols='50' rows='3' name='comments' >".$this->fields["comments"]."</textarea>";
+		echo"</td></tr>";
 			
 		if ($canedit){
 			if ($new){
