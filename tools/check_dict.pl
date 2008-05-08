@@ -61,7 +61,7 @@ foreach (@lines)
 		$count=0;
 		do_dir(".",$1,$2,$3);
 		print $count;
-		if ($1=~m/calendarDay/||$1=~m/calendarM/) {print " <- not found but OK - used with key computation";}
+		if ($2=~m/calendarDay/||$2=~m/calendarM/) {print " <- not found but OK - used with key computation";}
  		elsif ($count==0) {print " <<<<--------------- NOT FOUND";}
 		print "\n";
 	}

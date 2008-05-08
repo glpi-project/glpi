@@ -909,7 +909,7 @@ class Job extends CommonDBTM{
 			$message.= "<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$LANG["mailing"][8].":</span> ".$assign."<br>";
 			$message.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$LANG["joblist"][2].":</span> ".getPriorityName($this->fields["priority"])."<br>";
 			if ($this->fields["device_type"]!=SOFTWARE_TYPE&&!empty($contact))
-				$message.= "<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$LANG["mailing"][28].":</span> ".$contact."<br>";
+				$message.= "<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$LANG["common"][18].":</span> ".$contact."<br>";
 			if ($this->fields["emailupdates"]){
 				$message.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$LANG["mailing"][103].":</span> ".$LANG["choice"][1]."<br>";
 			} else {
@@ -957,7 +957,7 @@ class Job extends CommonDBTM{
 			$message.= mailRow($LANG["mailing"][8],$assign);
 			$message.= mailRow($LANG["joblist"][2],getPriorityName($this->fields["priority"]));
 			if ($this->fields["device_type"]!=SOFTWARE_TYPE&&!empty($contact))
-				$message.= mailRow($LANG["mailing"][28],$contact);
+				$message.= mailRow($LANG["common"][18],$contact);
 			if ($this->fields["emailupdates"]){
 				$message.=mailRow($LANG["mailing"][103],$LANG["choice"][1]);
 			} else {

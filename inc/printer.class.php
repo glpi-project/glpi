@@ -402,7 +402,7 @@ class Printer  extends CommonDBTM {
 				echo "</td></tr>\n";
 	
 	
-				echo "<tr><td>".$LANG["printers"][35].":</td><td>";
+				echo "<tr><td>".$LANG["peripherals"][33].":</td><td>";
 				globalManagementDropdown($target,$withtemplate,$this->fields["ID"],$this->fields["is_global"],$CFG_GLPI["printers_management_restrict"]);
 				echo "</td></tr>";
 	
