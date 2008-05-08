@@ -69,12 +69,11 @@ find . -name .svn -type d -exec  \rm -rf {} \;
 echo "Delete bigdumps and older sql files";
 \rm install/mysql/*bigdump*;
 \rm install/mysql/updatedb.back;
-\rm install/mysql/glpi-0.3*-*;
-\rm install/mysql/glpi-0.4*-*;
+\rm install/mysql/glpi-0.3*;
+\rm install/mysql/glpi-0.4*;
 \rm install/mysql/glpi-0.5*;
-\rm install/mysql/glpi-0.6-*;
-\rm install/mysql/glpi-0.65-*;
-\rm install/mysql/glpi-0.68*;
+\rm install/mysql/glpi-0.6*;
+\rm install/mysql/glpi-0.7-*;
 \rm install/mysql/glpi-*-default*;
 \rm install/mysql/irm*;
 
