@@ -1705,7 +1705,6 @@ $LANG["title"][40]="Anotações públicas e pessoais";
 $LANG["title"][42]="Modificações em massa"; 
 $LANG["title"][43]="Registro do windows"; 
 
-$LANG["tracking"][0]="Follow-up dos chamados"; 
 $LANG["tracking"][1]="Meus periféricos"; 
 $LANG["tracking"][2]="Ou complete a busca"; 
 $LANG["tracking"][3]="Datas inválidas. Atualização cancelada"; 

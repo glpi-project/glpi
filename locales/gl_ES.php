@@ -1705,7 +1705,6 @@ $LANG["title"][40]="Notas persoais e públicas";
 $LANG["title"][42]="Modificación masiva"; 
 $LANG["title"][43]="Rexistro do sistema"; 
 
-$LANG["tracking"][0]="Seguimento de incidencias"; 
 $LANG["tracking"][1]="Os meus materiais"; 
 $LANG["tracking"][2]="Ou procura completa"; 
 $LANG["tracking"][3]="Datos inválidos. Actualización cancelada"; 

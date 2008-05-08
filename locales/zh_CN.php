@@ -1705,7 +1705,6 @@ $LANG["title"][40]="公开和个人笔记";
 $LANG["title"][42]="重大修改"; 
 $LANG["title"][43]="Registry"; 
 
-$LANG["tracking"][0]="case后续"; 
 $LANG["tracking"][1]="我的设备"; 
 $LANG["tracking"][2]="或完成检索"; 
 $LANG["tracking"][3]="Invalid dates. Update cancelled."; 

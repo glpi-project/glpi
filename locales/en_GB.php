@@ -1705,7 +1705,6 @@ $LANG["title"][40]="Public and Personal notes";
 $LANG["title"][42]="Massive modification"; 
 $LANG["title"][43]="Registry"; 
 
-$LANG["tracking"][0]="Tickets follow-up"; 
 $LANG["tracking"][1]="My devices"; 
 $LANG["tracking"][2]="Or complete search"; 
 $LANG["tracking"][3]="Invalid dates. Update cancelled."; 

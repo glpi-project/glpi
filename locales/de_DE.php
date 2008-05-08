@@ -1705,7 +1705,6 @@ $LANG["title"][40]="Öffentliche und persönliche Notizen";
 $LANG["title"][42]="Batch-Änderung"; 
 $LANG["title"][43]="Registrierung"; 
 
-$LANG["tracking"][0]="Liste der Fälle"; 
 $LANG["tracking"][1]="Meine Geräte"; 
 $LANG["tracking"][2]="Oder vollständige Suche"; 
 $LANG["tracking"][3]="Falsche Daten. Aktualisierung abgebrochen"; 

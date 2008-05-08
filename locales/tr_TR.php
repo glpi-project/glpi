@@ -1705,7 +1705,6 @@ $LANG["title"][40]="Genel ve özel notlar";
 $LANG["title"][42]="Genel değişiklik"; 
 $LANG["title"][43]="Tescil"; 
 
-$LANG["tracking"][0]="Ticket izleme"; 
 $LANG["tracking"][1]="Aygıtlarım"; 
 $LANG["tracking"][2]="Veya tam arama"; 
 $LANG["tracking"][3]="Hatalı tarih. Güncelleme iptal edildi."; 

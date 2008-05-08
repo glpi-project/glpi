@@ -1705,7 +1705,6 @@ $LANG["title"][40]="Veřejné a osobní poznámky";
 $LANG["title"][42]="Hromadná úprava"; 
 $LANG["title"][43]="Registr"; 
 
-$LANG["tracking"][0]="Následující úkol"; 
 $LANG["tracking"][1]="Má zařízení"; 
 $LANG["tracking"][2]="Nebo kompletní vyhledávání"; 
 $LANG["tracking"][3]="Invalid dates. Update cancelled."; 

@@ -265,7 +265,7 @@ function showCentralJobCount(){
 
 	echo "<table class='tab_cadrehov' >";
 
-	echo "<tr><th colspan='2'><a href=\"".$CFG_GLPI["root_doc"]."/front/tracking.php?status=process&amp;reset=reset_before\">".$LANG["tracking"][0]."</a></th></tr>";
+	echo "<tr><th colspan='2'><a href=\"".$CFG_GLPI["root_doc"]."/front/tracking.php?status=process&amp;reset=reset_before\">".$LANG["title"][10]."</a></th></tr>";
 	echo "<tr><th>".$LANG["title"][28]."</th><th>".$LANG["tracking"][29]."</th></tr>";
 	echo "<tr class='tab_bg_2'>";
 	echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/tracking.php?status=new&amp;reset=reset_before\">".$LANG["tracking"][30]."</a> </td>";

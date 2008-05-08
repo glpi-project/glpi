@@ -1705,7 +1705,6 @@ $LANG["title"][40]="Offentlige og personlige notater";
 $LANG["title"][42]="Massive modifikationer"; 
 $LANG["title"][43]="Registry"; 
 
-$LANG["tracking"][0]="Projekt opfølgning"; 
 $LANG["tracking"][1]="Mine enheder"; 
 $LANG["tracking"][2]="Eller komplet søgning"; 
 $LANG["tracking"][3]="Invalid dates. Update cancelled."; 

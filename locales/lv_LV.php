@@ -1705,7 +1705,6 @@ $LANG["title"][40]="Publiskās un Privātās piezīmes";
 $LANG["title"][42]="Liela apjoma modifikācija"; 
 $LANG["title"][43]="Reģistrs"; 
 
-$LANG["tracking"][0]="Darbu papilddarbs"; 
 $LANG["tracking"][1]="My devices"; 
 $LANG["tracking"][2]="Or complete search"; 
 $LANG["tracking"][3]="Invalid dates. Update cancelled."; 
