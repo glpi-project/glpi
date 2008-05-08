@@ -1427,7 +1427,12 @@ class Rule extends CommonDBTM{
 		else
 			echo "<td></td>";
 				
-		echo "<td><a href=\"".ereg_replace(".php",".form.php",$target)."?ID=".$this->fields["ID"]."&amp;onglet=1\">" . $this->fields["name"] . "</a></td>";
+		echo "<td><a href=\"".ereg_replace(".php",".form.php",$target)."?ID=".$this->fields["ID"]."&amp;onglet=1\">" . $this->fields["name"] . "</a> ";
+		if (!empty($this->fields["comments"])) {
+			echo "<img alt='' src='".$CFG_GLPI["root_doc"]."/pics/aide.png' onmouseout=\"cleanhide('comments_rules".$this->fields["ID"]."')\" onmouseover=\"cleandisplay('comments_rules".$this->fields["ID"]."')\" >";
+			echo "<span class='over_link' id='comments_rules".$this->fields["ID"]."'>".nl2br($this->fields["comments"])."</span>";			
+		}
+		echo "</td>";
 					
 		echo "<td>".$this->fields["description"]."</td>";
 		if ($this->fields["active"])
