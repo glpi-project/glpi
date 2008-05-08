@@ -262,7 +262,7 @@ function update07to071() {
 	// Change ldap condition field bigger
 	if (FieldExists("glpi_auth_ldap", "ldap_condition")) {
  	
-		$query="ALTER TABLE `glpi_auth_ldap` CHANGE `ldap_condition` `ldap_condition` TEXT CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL   ";
+		$query="ALTER TABLE `glpi_auth_ldap` CHANGE `ldap_condition` `ldap_condition` TEXT NULL DEFAULT NULL   ";
 		$DB->query($query) or die("0.71 alter change ldap_condition field to be bigger " . $DB->error());		
 	}
 
@@ -317,15 +317,15 @@ function update07to071() {
 	if (!TableExists("glpi_bookmark")){
 	 	$query="CREATE TABLE IF NOT EXISTS `glpi_bookmark` (
 			`ID` int(11) NOT NULL auto_increment,
-			`name` varchar(255) collate utf8_unicode_ci default NULL,
+			`name` varchar(255) default NULL,
 			`type` int(11) NOT NULL default '0',
 			`device_type` int(11) NOT NULL default '0',
 			`FK_users` int(11) NOT NULL default '0',
 			`private` smallint(6) NOT NULL default '1',
 			`FK_entities` int(11) NOT NULL default '-1',
 			`recursive` smallint(6) NOT NULL default '0',
-			`path` varchar(255) collate utf8_unicode_ci default NULL,
-			`query` text collate utf8_unicode_ci,
+			`path` varchar(255) default NULL,
+			`query` text,
 			PRIMARY KEY  (`ID`),
 			KEY `FK_users` (`FK_users`),
 			KEY `private` (`private`),
@@ -440,7 +440,7 @@ function update07to071() {
 	
 	if (!FieldExists("glpi_rules_descriptions","comments"))
 	{
-			$query="ALTER TABLE `glpi_rules_descriptions` ADD `comments` text collate utf8_unicode_ci;";
+			$query="ALTER TABLE `glpi_rules_descriptions` ADD `comments` TEXT NULL DEFAULT NULL;";
 			$DB->query($query) or die("0.71 add comments to glpi_rules_descriptions " . $LANG["update"][90] . $DB->error());			
 	}
 } // fin 0.71 #####################################################################################
