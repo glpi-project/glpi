@@ -526,7 +526,7 @@ function displayPlanningItem($val,$who,$type="",$complete=0){
 			$author="<br>".$LANG["planning"][9]." : ".getUserName($val["FK_users"]);
 			$img="rdv_public.png";
 		} 
-		echo "<img src='".$CFG_GLPI["root_doc"]."/pics/".$img."' alt='' title='".$LANG["reminder"][2]."'>&nbsp;";
+		echo "<img src='".$CFG_GLPI["root_doc"]."/pics/".$img."' alt='' title='".$LANG["title"][37]."'>&nbsp;";
 		echo "<a href='".$CFG_GLPI["root_doc"]."/front/reminder.form.php?ID=".$val["id_reminder"]."'";
 			if (!$complete){
 			echo "onmouseout=\"cleanhide('content_reminder_".$val["id_reminder"].$rand."')\" onmouseover=\"cleandisplay('content_reminder_".$val["id_reminder"].$rand."')\"";

@@ -165,7 +165,7 @@ function showListReminder($private=1,$recursive=0){
 		echo "<tr><th>"."$titre"."</th><th colspan='2'>".$LANG["common"][27]."</th></tr>";
 	} else {
 		echo "<tr><th colspan='5'>"."$titre"."</th></tr>" .
-			 "<tr><th>".$LANG["entity"][0]."</th><th>".$LANG["common"][37]."</th><th>".$LANG["reminder"][2]."</th>" .
+			 "<tr><th>".$LANG["entity"][0]."</th><th>".$LANG["common"][37]."</th><th>".$LANG["title"][37]."</th>" .
 			 "<th colspan='2'>".$LANG["common"][27]."</th></tr>";
 		
 	}

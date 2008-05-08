@@ -62,7 +62,7 @@ echo "<option value='".NETWORKING_TYPE."'>".$LANG["help"][26]."</option>";
 echo "<option value='".MONITOR_TYPE."'>".$LANG["Menu"][3]."</option>";
 echo "<option value='".PERIPHERAL_TYPE."'>".$LANG["Menu"][16]."</option>";
 echo "<option value='".SOFTWARE_TYPE."'>".$LANG["Menu"][4]."</option>";
-echo "<option value='".PHONE_TYPE."'>".$LANG["reports"][64]."</option>";
+echo "<option value='".PHONE_TYPE."'>".$LANG["Menu"][34]."</option>";
 echo "</select></p> </td> ";
 
 echo "<td  align='center'  width='200'>";

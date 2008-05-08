@@ -366,7 +366,7 @@ class Phone extends CommonDBTM {
 				echo "</td></tr>";
 	
 	
-				echo "<tr><td>".$LANG["phones"][37].": </td><td>";
+				echo "<tr><td>".$LANG["monitors"][18].": </td><td>";
 	
 				// micro?
 				echo "<table border='0' cellpadding='2' cellspacing='0'><tr>";

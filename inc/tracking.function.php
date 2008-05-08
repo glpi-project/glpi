@@ -277,7 +277,7 @@ function showCentralJobCount(){
 	echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/tracking.php?status=plan&amp;reset=reset_before\">".$LANG["tracking"][32]."</a></td>";
 	echo "<td>".$status["plan"]."</td></tr>";
 	echo "<tr class='tab_bg_2'>";
-	echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/tracking.php?status=waiting&amp;reset=reset_before\">".$LANG["tracking"][33]."</a></td>";
+	echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/tracking.php?status=waiting&amp;reset=reset_before\">".$LANG["joblist"][26]."</a></td>";
 	echo "<td>".$status["waiting"]."</td></tr>";
 
 
@@ -2075,7 +2075,7 @@ function showJobDetails ($target,$ID){
 		$query2 = "SELECT * FROM glpi_doc_device WHERE glpi_doc_device.FK_device = '".$job->fields["ID"]."' AND glpi_doc_device.device_type = '".TRACKING_TYPE."' ";
 		$result2 = $DB->query($query2);
 		$numfiles=$DB->numrows($result2);
-		echo "<table width='100%'><tr><th colspan='2'>".$LANG["tracking"][25]."</th></tr>";			
+		echo "<table width='100%'><tr><th colspan='2'>".$LANG["document"][21]."</th></tr>";			
 
 		if ($numfiles>0){
 			$doc=new Document;
