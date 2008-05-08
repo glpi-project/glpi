@@ -183,9 +183,9 @@ if (isset($_POST['mass_delete'])){
 
 			$LANG["setup"][145]=>array(
 					"glpi_dropdown_os"=>$LANG["setup"][5],	
-					"glpi_dropdown_os_version"=>$LANG["setup"][500],
-					"glpi_dropdown_os_sp"=>$LANG["setup"][501],
-					"glpi_dropdown_auto_update"=>$LANG["setup"][98],
+					"glpi_dropdown_os_version"=>$LANG["computers"][52],
+					"glpi_dropdown_os_sp"=>$LANG["computers"][53],
+					"glpi_dropdown_auto_update"=>$LANG["computers"][51],
 					),
 
 			$LANG["setup"][146]=>array(

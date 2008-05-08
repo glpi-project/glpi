@@ -139,7 +139,7 @@ function showDeviceContract($instID) {
 	echo "<br><br><div class='center'><table class='tab_cadrehov'>";
 	echo "<tr><th colspan='2'>";
 	printPagerForm($_SERVER["REQUEST_URI"]);
-	echo "</th><th colspan='".($canedit ? 4 : 3) ."'>".$LANG["financial"][49].":</th></tr>";
+	echo "</th><th colspan='".($canedit ? 4 : 3) ."'>".$LANG["document"][19].":</th></tr>";
 	if ($canedit) {
 		echo "</table>";
 		echo "</div>";

@@ -366,7 +366,7 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="")
 		$menu['utils']['title']=$LANG["Menu"][18];
 		$menu['utils']['default']='/front/reminder.php';
 
-		$menu['utils']['content']['reminder']['title']=$LANG["reminder"][2];
+		$menu['utils']['content']['reminder']['title']=$LANG["title"][37];
 		$menu['utils']['content']['reminder']['page']='/front/reminder.php';
 		$menu['utils']['content']['reminder']['links']['search']='/front/reminder.php';
 		$menu['utils']['content']['reminder']['links']['add']='/front/reminder.form.php';

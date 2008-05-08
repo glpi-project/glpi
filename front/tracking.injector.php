@@ -114,7 +114,7 @@ elseif (!empty($_POST["priority"]) && empty($_POST["contents"]))
 	else commonHeader($LANG["title"][1],$_SERVER['PHP_SELF'],$_SESSION["glpiname"],"maintain","tracking");
 
 	echo "<div align='center'><img src=\"".$CFG_GLPI["root_doc"]."/pics/warning.png\" alt=\"warning\"><br><br><b>";
-	echo $LANG["help"][15]."<br><br>";
+	echo $LANG["tracking"][8]."<br><br>";
 	displayBackLink();
 	echo "</b></div>";
 

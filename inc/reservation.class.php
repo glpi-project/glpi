@@ -257,7 +257,7 @@ class ReservationResa extends CommonDBTM {
 		echo "<br><div class='center'>";
 		switch ($type){
 			case "date":
-				echo $LANG["reservation"][19];
+				echo $LANG["planning"][1];
 			break;
 			case "is_res":
 				echo $LANG["reservation"][18];
