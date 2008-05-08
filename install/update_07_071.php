@@ -440,7 +440,7 @@ function update07to071() {
 	
 	if (!FieldExists("glpi_rules_descriptions","comments"))
 	{
-			$query="ALTER TABLE `glpi_rules_descriptions` ADD `comments` VARCHAR( 255 ) NOT NULL ;";
+			$query="ALTER TABLE `glpi_rules_descriptions` ADD `comments` text collate utf8_unicode_ci;";
 			$DB->query($query) or die("0.71 add comments to glpi_rules_descriptions " . $LANG["update"][90] . $DB->error());			
 	}
 } // fin 0.71 #####################################################################################
