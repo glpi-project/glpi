@@ -1705,7 +1705,6 @@ $LANG["title"][40]="Publiczne i osobiste notatki";
 $LANG["title"][42]="Masowa modyfikacja"; 
 $LANG["title"][43]="Rejestr"; 
 
-$LANG["tracking"][0]="Śledzenie zgłoszeń"; 
 $LANG["tracking"][1]="Moje urządzenia"; 
 $LANG["tracking"][2]="lub wyszukiwanie we wszystkich"; 
 $LANG["tracking"][3]="Niepoprawne daty. Uaktualnienie anulowane."; 

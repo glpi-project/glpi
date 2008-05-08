@@ -1705,7 +1705,6 @@ $LANG["title"][40]="Publika och personliga anteckningar";
 $LANG["title"][42]="Massive modification"; 
 $LANG["title"][43]="Registry"; 
 
-$LANG["tracking"][0]="Ärendeuppföljning"; 
 $LANG["tracking"][1]="Mina objekt"; 
 $LANG["tracking"][2]="Komplett sökning"; 
 $LANG["tracking"][3]="Invalid dates. Update cancelled."; 

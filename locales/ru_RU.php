@@ -1705,7 +1705,6 @@ $LANG["title"][40]="Публичные и личные заметки";
 $LANG["title"][42]="Несколько изменений"; 
 $LANG["title"][43]="Registry"; 
 
-$LANG["tracking"][0]="Отслеживание заявок"; 
 $LANG["tracking"][1]="Мои устройства"; 
 $LANG["tracking"][2]="или найти в"; 
 $LANG["tracking"][3]="Invalid dates. Update cancelled."; 

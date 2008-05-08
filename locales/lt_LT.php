@@ -490,7 +490,7 @@ $LANG["financial"][93]="Sutartys, kurioms galioti liko mažiau, nei 30 dienų";
 $LANG["financial"][94]="Sutartys, kurioms liko galioti mažiau nei 7 dienos"; 
 $LANG["financial"][95]="Sutartys, kurių galiojimas baigiasi šį mėnesį"; 
 $LANG["financial"][96]="Šios savaitės pranešimai pagal sutartis"; 
-$LANG["financial"][97]="Šio mėnesio pranešimai pagal sutartis"; 
+$LANG["financial"][97]="Šios mėnesio pranešimai pagal sutartis"; 
 $LANG["financial"][98]="Galiojimo pabaiga"; 
 $LANG["financial"][99]="Termino pabaiga + Įspėjimas"; 
 $LANG["financial"][100]="Pašto indeksas"; 
@@ -1705,7 +1705,6 @@ $LANG["title"][40]="Viešos ir asmeninės pastabos";
 $LANG["title"][42]="Masinis keitimas"; 
 $LANG["title"][43]="Registras"; 
 
-$LANG["tracking"][0]="Paraiškų vykdymas"; 
 $LANG["tracking"][1]="Mano medžiagos"; 
 $LANG["tracking"][2]="Išsami paieška"; 
 $LANG["tracking"][3]="Netinkamos datos. Keitimas atšauktas"; 

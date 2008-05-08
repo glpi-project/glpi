@@ -1705,7 +1705,6 @@ $LANG["title"][40]="Publieke and persoonlijke notities";
 $LANG["title"][42]="Massa-aanpassingen"; 
 $LANG["title"][43]="Register"; 
 
-$LANG["tracking"][0]="Opvolging van tussenkomsten"; 
 $LANG["tracking"][1]="My devices"; 
 $LANG["tracking"][2]="Or complete search"; 
 $LANG["tracking"][3]="Invalid dates. Update cancelled."; 

@@ -490,7 +490,7 @@ $LANG["financial"][93]="Contrato(s) expirado(s) hace menos de 30 días";
 $LANG["financial"][94]="Contrato(s) que expira(n) en menos de 7 días"; 
 $LANG["financial"][95]="Contrato(s) que expira(n) en menos de 30 días"; 
 $LANG["financial"][96]="Contrato(s) cuyo preaviso comienza en menos de 7 días"; 
-$LANG["financial"][97]="Contratos cuyo preaviso comienza en menos de 30 días"; 
+$LANG["financial"][97]="Contrato(s) cuyo preaviso comienza en menos de 30 días"; 
 $LANG["financial"][98]="Expiración"; 
 $LANG["financial"][99]="Expiración+preaviso"; 
 $LANG["financial"][100]="Código postal"; 
@@ -1705,7 +1705,6 @@ $LANG["title"][40]="Notas personales y públicas";
 $LANG["title"][42]="Modificación masiva"; 
 $LANG["title"][43]="Registro"; 
 
-$LANG["tracking"][0]="Seguimiento de servicios"; 
 $LANG["tracking"][1]="Mis materiales"; 
 $LANG["tracking"][2]="O búsqueda completa"; 
 $LANG["tracking"][3]="Invalid dates. Update cancelled."; 

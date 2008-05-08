@@ -490,7 +490,7 @@ $LANG["financial"][93]="Contracte(s) expirat(s) fa menys de 30 dies";
 $LANG["financial"][94]="Contracte(s) que expira(n) en menys de 7 dies"; 
 $LANG["financial"][95]="Contracte(s) que expira(n) en menys de 30 dies"; 
 $LANG["financial"][96]="Contracte(s) el preavís del qual comença en menys de 7 dies"; 
-$LANG["financial"][97]="Contractes el preavís del quals comença en menys de 30 dies"; 
+$LANG["financial"][97]="Contracte(s) el preavís del quals comença en menys de 30 dies"; 
 $LANG["financial"][98]="Expiració"; 
 $LANG["financial"][99]="Expiració + preavís"; 
 $LANG["financial"][100]="Codi postal"; 
@@ -1705,7 +1705,6 @@ $LANG["title"][40]="Notes personals i públiques";
 $LANG["title"][42]="Modificació massiva"; 
 $LANG["title"][43]="Registre del sistema"; 
 
-$LANG["tracking"][0]="Seguiment d'incidències"; 
 $LANG["tracking"][1]="Els meus materials"; 
 $LANG["tracking"][2]="O cerca completa"; 
 $LANG["tracking"][3]="Dades invàlides. Actualització cancel·lada"; 

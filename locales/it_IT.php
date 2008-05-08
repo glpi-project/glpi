@@ -1705,7 +1705,6 @@ $LANG["title"][40]="Note pubbliche e riservate";
 $LANG["title"][42]="Modifica generalizzata"; 
 $LANG["title"][43]="Registro"; 
 
-$LANG["tracking"][0]="Gestione chiamate"; 
 $LANG["tracking"][1]="I miei dispositivi"; 
 $LANG["tracking"][2]="oppure ricerca globale"; 
 $LANG["tracking"][3]="Date errate. Variazione annullata."; 

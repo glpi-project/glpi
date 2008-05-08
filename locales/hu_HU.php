@@ -1705,7 +1705,6 @@ $LANG["title"][40]="Nyilvános és személyes jegyzetek";
 $LANG["title"][42]="Alapos módosítás"; 
 $LANG["title"][43]="Registry"; 
 
-$LANG["tracking"][0]="Bejelentések követése"; 
 $LANG["tracking"][1]="Saját eszközök"; 
 $LANG["tracking"][2]="Vagy teljes keresés"; 
 $LANG["tracking"][3]="Érvénytelen dátum. Frissítés megszakítva."; 
