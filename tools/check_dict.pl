@@ -33,10 +33,10 @@ print "USAGE check_dict.pl dico_file [1=count_all_entries]\n Must to be launch i
 exit();
 }
 
-$badwritten=`grep -r --exclude files "\\\$LANG\\\['" * | wc -l`;
+$badwritten=`grep -r --exclude-dir=files --exclude-dir=.svn "\\\$\[A-Z_\]*LANG\[A-Z_\]*\\\['" * | wc -l`;
 if ($badwritten!=0){
 	print "WRONG dict uses:\n";
-	$badwritten=`grep -r -n "\\\$LANG\\\['" *.php`;
+	$badwritten=`grep -r  --exclude-dir=files --exclude-dir=.svn -n "\\\$\[A-Z_\]*LANG\[A-Z_\]*\\\['" *`;
 	print $badwritten;
 	print "\n\n";
 }

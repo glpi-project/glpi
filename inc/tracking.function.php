@@ -805,13 +805,13 @@ function addFormTracking ($device_type=0,$ID=0, $target, $author, $group=0, $ass
 		echo "<td colspan='3'>";
 
 		if (haveRight("assign_ticket","1")){
-			echo $LANG['job'][6].": ";
+			echo $LANG["job"][6].": ";
 			dropdownUsers("assign",$assign,"own_ticket",0,1,$_SESSION["glpiactive_entity"]);
 			echo "<br>".$LANG["common"][35].": ";
 			dropdownValue("glpi_groups", "assign_group", $assign_group,1,$_SESSION["glpiactive_entity"]);
 
 		} else if (haveRight("steal_ticket","1")) {
-			echo $LANG['job'][6].": ";
+			echo $LANG["job"][6].": ";
 			dropdownUsers("assign",$assign,"ID",0,1,$_SESSION["glpiactive_entity"]);
 		}
 		echo "</td></tr>";
