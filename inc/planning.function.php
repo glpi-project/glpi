@@ -929,7 +929,7 @@ function generateIcal($who){
 			$event .= "DTEND:".date_ical($val["end"])."\n";
 
 			if(isset($val["id_tracking"])){
-				$event .= "SUMMARY:".$LANG["planning"][8]." # ".$val["id_tracking"]." ".$LANG["planning"][10]." # ".$val["device"]."\n";
+				$event .= "SUMMARY:".$LANG["planning"][8]." # ".$val["id_tracking"]." ".$LANG["common"][1]." # ".$val["device"]."\n";
 			}else if (isset($val["name"])){
 				$event .= "SUMMARY:".$val["name"]."\n";
 			}

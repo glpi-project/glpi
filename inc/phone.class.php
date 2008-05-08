@@ -324,7 +324,7 @@ class Phone extends CommonDBTM {
 	
 				echo "<table cellpadding='1' cellspacing='0' border='0'>";
 	
-				echo "<tr><td>".$LANG["phones"][33].":</td><td>";
+				echo "<tr><td>".$LANG["peripherals"][33].":</td><td>";
 				globalManagementDropdown($target,$withtemplate,$this->fields["ID"],$this->fields["is_global"],$CFG_GLPI["phones_management_restrict"]);	
 				echo "</td></tr>";
 	
