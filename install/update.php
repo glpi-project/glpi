@@ -442,8 +442,11 @@ function updatedbUpTo031()
 		case "0.70.2":
 			include("update_07_071.php");
 			update07to071();
-			break;
 		case "0.71":
+			include("update_071_072.php");
+			update071to072();
+			break;
+		case "0.72":
 			break;
 		default:
 			update031to04();
@@ -456,11 +459,12 @@ function updatedbUpTo031()
 			update068to0681();
 			update0681to07();
 			update07to071();
+			update071to072();
 			break;
 	}
 
 	// Update version number and default langage and new version_founded ---- LEAVE AT THE END
-	$query = "UPDATE `glpi_config` SET `version` = ' 0.71', default_language='".$_SESSION["glpilanguage"]."',founded_new_version='' ;";
+	$query = "UPDATE `glpi_config` SET `version` = ' 0.72', default_language='".$_SESSION["glpilanguage"]."',founded_new_version='' ;";
 	$DB->query($query) or die("0.6 ".$LANG["update"][90].$DB->error());
 
 	optimize_tables();
