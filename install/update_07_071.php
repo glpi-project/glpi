@@ -39,9 +39,6 @@
 function update07to071() {
 	global $DB, $CFG_GLPI, $LANG, $LINK_ID_TABLE;
 
-	@mysql_query("SET NAMES 'latin1'",$DB->dbh);
-
-
 	if (!FieldExists("glpi_profiles", "rule_dictionnary_software")) {
 		$query = "ALTER TABLE `glpi_profiles` ADD `rule_dictionnary_software` VARCHAR( 1 ) NULL DEFAULT NULL;";
 		$DB->query($query) or die("0.71 add rule_dictionnary_software in glpi_profiles if not present for compatibility " . $LANG["update"][90] . $DB->error());
