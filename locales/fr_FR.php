@@ -347,7 +347,7 @@ $LANG["device_control"][3]="SATA";
 $LANG["device_control"][4]="SCSI"; 
 $LANG["device_control"][5]="USB"; 
 
-$LANG["device_drive"][0]="Ecriture"; 
+$LANG["device_drive"][0]="Écriture"; 
 $LANG["device_drive"][1]="Vitesse"; 
 
 $LANG["device_gfxcard"][0]="Mémoire"; 
@@ -483,7 +483,7 @@ $LANG["financial"][80]="Expiration garantie";
 $LANG["financial"][81]="Valeur nette comptable"; 
 $LANG["financial"][82]="Numéro de facture"; 
 $LANG["financial"][83]="Nombre max d'éléments (0=illimité)"; 
-$LANG["financial"][84]="Pour ce type d'élément, les informations financières ne sont qu'un modèle pour les élèments que vous ajouterez ensuite."; 
+$LANG["financial"][84]="Pour ce type d'élément, les informations financières ne sont qu'un modèle pour les éléments que vous ajouterez ensuite."; 
 $LANG["financial"][85]="Élément demandé introuvable"; 
 $LANG["financial"][87]="Budget"; 
 $LANG["financial"][88]="Expire le :"; 
