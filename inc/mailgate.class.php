@@ -583,7 +583,6 @@ class MailCollect {
 	*like a.gif,pio.jpg etc
 	*/	
 	function GetAttech($mid,$path) {
-			 
 		$struckture = imap_fetchstructure($this->marubox,$mid);
 		$ar="";
 		if (isset($struckture->parts)&&count($struckture->parts)>0){
@@ -640,14 +639,31 @@ class MailCollect {
 			}
 		} else if ($structure->ifdparameters) {
 
-			$name=$structure->dparameters[0]->value;
-			
+			//get filename of attachment if present
+			$filename='';
+			// if there are any dparameters present in this part
+			if (count($structure->dparameters)>0){
+			foreach ($structure->dparameters as $dparam){
+				if ((strtoupper($dparam->attribute)=='NAME') ||(strtoupper($dparam->attribute)=='FILENAME')) $filename=$dparam->value;
+				}
+			}
+			//if no filename found
+			if ($filename==''){
+				// if there are any parameters present in this part
+				if (count($structure->parameters)>0){
+					foreach ($structure->parameters as $param){
+					if ((strtoupper($param->attribute)=='NAME') ||(strtoupper($param->attribute)=='FILENAME')) $filename=$param->value;
+					}
+				}
+			}
+			$filename=$this->decodeMimeString($filename);
+
 			if ($structure->bytes > $maxsize) {
-				$this->addtobody .= "<br>".$LANG["mailgate"][6]." (" . getSize($structure->bytes) . "): ".$name;
+				$this->addtobody .= "<br>".$LANG["mailgate"][6]." (" . getSize($structure->bytes) . "): ".$filename;
 				return false;
 			}
-			if (!isValidDoc($name)){
-				$this->addtobody .= "<br>".$LANG["mailgate"][5]." (" . $this->get_mime_type($structure) . "): ".$name;
+			if (!isValidDoc($filename)){
+				$this->addtobody .= "<br>".$LANG["mailgate"][5]." (" . $this->get_mime_type($structure) . "): ".$filename;
 				return false;
 			}
 			if ($message=imap_fetchbody($this->marubox, $mid, $part)) {
@@ -659,7 +675,7 @@ class MailCollect {
 					case 3: $message = imap_base64($message); break;
 					case 4: $message = quoted_printable($message); break;
 				}	
-				$fp=fopen($path.$name,"w");
+				$fp=fopen($path.$filename,"w");
 				if ($fp) {
 					fwrite($fp,$message);
 					fclose($fp);	
@@ -667,8 +683,8 @@ class MailCollect {
 					$this->files['multiple'] = true;
 					$j = count($this->files)-1;
 					$this->files[$j]['filename']['size'] = $structure->bytes;
-					$this->files[$j]['filename']['name'] = $name;
-					$this->files[$j]['filename']['tmp_name'] = $path.$name;
+					$this->files[$j]['filename']['name'] = $filename;
+					$this->files[$j]['filename']['tmp_name'] = $path.$filename;
 					$this->files[$j]['filename']['type'] = $this->get_mime_type($structure);	
 				}
 			} // fetchbody
@@ -690,7 +706,6 @@ class MailCollect {
 		$this->getStructure($mid);
 		$this->files = array();
 		$this->addtobody="";
-		
 		$this->getRecursiveAttached($mid, $path, $maxsize, $this->structure);
 		
 		return ($this->files);
