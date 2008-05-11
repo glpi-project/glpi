@@ -116,7 +116,7 @@ function showConsumables ($tID,$show_old=0) {
 	
 	
 				if ($show_old){
-					echo "<th>".$LANG["setup"][57]."</th>";
+					echo "<th>".$LANG["common"][34]."</th>";
 				}
 	
 				echo "<th>".$LANG["financial"][3]."</th>";
@@ -399,7 +399,7 @@ function showConsumableSummary(){
 
 		// Type			
 		echo "<th>";;
-		echo $LANG["setup"][57]."</th>";
+		echo $LANG["common"][34]."</th>";
 
 		foreach ($types as $key => $type){
 			echo "<th>$type</th>";

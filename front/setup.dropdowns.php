@@ -173,7 +173,7 @@ if (isset($_POST['mass_delete'])){
 					"glpi_dropdown_rubdocs"=>$LANG["setup"][81],
 					),
 
-			$LANG["setup"][143]=>array(
+			$LANG["title"][24]=>array(
 					"glpi_dropdown_tracking_category"=>$LANG["setup"][79],
 					),
 
@@ -188,7 +188,7 @@ if (isset($_POST['mass_delete'])){
 					"glpi_dropdown_auto_update"=>$LANG["computers"][51],
 					),
 
-			$LANG["setup"][146]=>array(
+			$LANG["setup"][88]=>array(
 					"glpi_dropdown_iface"=>$LANG["setup"][9],
 					"glpi_dropdown_firmware"=>$LANG["setup"][71],
 					"glpi_dropdown_netpoint"=>$LANG["setup"][73],

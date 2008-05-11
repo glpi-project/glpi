@@ -1697,7 +1697,7 @@ function timestampToString($sec,$display_sec=true){
 		$heure = floor($sec/HOUR_TIMESTAMP);
 		$min = floor(($sec%HOUR_TIMESTAMP)/(MINUTE_TIMESTAMP));
 		$sec = $sec%MINUTE_TIMESTAMP;
-		$out=$heure." ".$LANG["stats"][32]." ".$min." ".$LANG["stats"][33];
+		$out=$heure." ".$LANG["job"][21]." ".$min." ".$LANG["stats"][33];
 		if ($display_sec) $out.=" ".$sec." ".$LANG["stats"][34];
 		return $out;
 
@@ -1706,7 +1706,7 @@ function timestampToString($sec,$display_sec=true){
 		$heure = floor(($sec%DAY_TIMESTAMP)/(HOUR_TIMESTAMP));
 		$min = floor(($sec%HOUR_TIMESTAMP)/(MINUTE_TIMESTAMP));
 		$sec = $sec%MINUTE_TIMESTAMP;
-		$out=$jour." ".$LANG["stats"][31]." ".$heure." ".$LANG["stats"][32]." ".$min." ".$LANG["stats"][33];
+		$out=$jour." ".$LANG["stats"][31]." ".$heure." ".$LANG["job"][21]." ".$min." ".$LANG["stats"][33];
 		if ($display_sec) $out.=" ".$sec." ".$LANG["stats"][34];
 		return $out;
 

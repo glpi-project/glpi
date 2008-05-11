@@ -189,7 +189,7 @@ function showHistory($device_type,$id_device){
 
 	echo "<div class='center'><br><table class='tab_cadre_fixe'>";
 	echo "<tr><th colspan='5'>".$LANG["title"][38]."</th></tr>";
-	echo "<tr><th>".$LANG["common"][2]."</th><th>".$LANG["common"][27]."</th><th>".$LANG["event"][17]."</th><th>".$LANG["event"][18]."</th><th>".$LANG["event"][19]."</th></tr>";
+	echo "<tr><th>".$LANG["common"][2]."</th><th>".$LANG["common"][27]."</th><th>".$LANG["common"][34]."</th><th>".$LANG["event"][18]."</th><th>".$LANG["event"][19]."</th></tr>";
 	while ($data =$DB->fetch_array($result)){ 
 		$display_history = true;
 		$ID = $data["ID"];

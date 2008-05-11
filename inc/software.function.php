@@ -532,7 +532,7 @@ function showLicenseForm($target, $action, $sID, $lID = "") {
 
 	if ($action != "update") {
 		echo "<tr class='tab_bg_1'><td>";
-		echo $LANG["printers"][26] . ":</td><td><select name=number>";
+		echo $LANG["tracking"][29] . ":</td><td><select name=number>";
 		echo "<option value='1' selected>1</option>";
 		for ($i = 2; $i <= 1000; $i++)
 			echo "<option value='$i'>$i</option>";

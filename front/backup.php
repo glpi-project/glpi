@@ -543,7 +543,7 @@ echo " <div align='center'> <table border='0'><tr><td><img src=\"".$CFG_GLPI["ro
 <br>
 <table class='tab_cadre'  cellpadding="5">
 <tr align="center"> 
-<th><u><i><?php echo $LANG["backup"][10]; ?></i></u></th>
+<th><u><i><?php echo $LANG["document"][2]; ?></i></u></th>
 <th><u><i><?php echo $LANG["backup"][11]; ?></i></u></th>
 <th><u><i><?php echo $LANG["common"][27]; ?></i></u></th>
 <th colspan='3'>&nbsp;</th>

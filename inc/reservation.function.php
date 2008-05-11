@@ -444,7 +444,7 @@ function printReservationItem($target,$ID,$date){
 				else $heure_fin=get_hour_from_sql($row['end']);
 
 				if (strcmp($heure_debut,"00:00")==0&&strcmp($heure_fin,"24:00")==0)
-					$display=$LANG["reservation"][15];
+					$display=$LANG["planning"][5];
 				else if (strcmp($heure_debut,"00:00")==0) 
 					$display=$LANG["reservation"][16]."&nbsp;".$heure_fin;
 				else if (strcmp($heure_fin,"24:00")==0) 
