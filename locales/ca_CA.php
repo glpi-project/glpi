@@ -332,15 +332,8 @@ $LANG["devices"][25]="Afegir un component";
 $LANG["devices"][26]="Esborrat d'un component"; 
 
 $LANG["device_case"][0]="format"; 
-$LANG["device_case"][1]="gran"; 
-$LANG["device_case"][2]="mitjà"; 
-$LANG["device_case"][3]="micro"; 
 
 $LANG["device_control"][0]="RAID"; 
-$LANG["device_control"][2]="IDE"; 
-$LANG["device_control"][3]="SATA"; 
-$LANG["device_control"][4]="SCSI"; 
-$LANG["device_control"][5]="USB"; 
 
 $LANG["device_drive"][0]="Gravació"; 
 $LANG["device_drive"][1]="Velocitat"; 

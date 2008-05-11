@@ -332,15 +332,8 @@ $LANG["devices"][25]="Tilføj en komponent";
 $LANG["devices"][26]="Slet en komponent"; 
 
 $LANG["device_case"][0]="Størrelse"; 
-$LANG["device_case"][1]="høj"; 
-$LANG["device_case"][2]="Medium"; 
-$LANG["device_case"][3]="Micro"; 
 
 $LANG["device_control"][0]="RAID"; 
-$LANG["device_control"][2]="IDE"; 
-$LANG["device_control"][3]="SATA"; 
-$LANG["device_control"][4]="SCSI"; 
-$LANG["device_control"][5]="USB"; 
 
 $LANG["device_drive"][0]="Skrive muligheder"; 
 $LANG["device_drive"][1]="Hastighed"; 

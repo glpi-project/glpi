@@ -337,15 +337,8 @@ $LANG["devices"][25]="Ajout d'un composant";
 $LANG["devices"][26]="Suppression d'un composant"; 
 
 $LANG["device_case"][0]="Format"; 
-$LANG["device_case"][1]="Grand"; 
-$LANG["device_case"][2]="Moyen"; 
-$LANG["device_case"][3]="Micro"; 
 
 $LANG["device_control"][0]="RAID"; 
-$LANG["device_control"][2]="IDE"; 
-$LANG["device_control"][3]="SATA"; 
-$LANG["device_control"][4]="SCSI"; 
-$LANG["device_control"][5]="USB"; 
 
 $LANG["device_drive"][0]="Écriture"; 
 $LANG["device_drive"][1]="Vitesse"; 

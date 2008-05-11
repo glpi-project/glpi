@@ -332,15 +332,8 @@ $LANG["devices"][25]="Hardwarekomponente hinzufügen";
 $LANG["devices"][26]="Interne Hardware entfernen"; 
 
 $LANG["device_case"][0]="Größe"; 
-$LANG["device_case"][1]="groß"; 
-$LANG["device_case"][2]="mittel"; 
-$LANG["device_case"][3]="klein"; 
 
 $LANG["device_control"][0]="RAID"; 
-$LANG["device_control"][2]="IDE"; 
-$LANG["device_control"][3]="SATA"; 
-$LANG["device_control"][4]="SCSI"; 
-$LANG["device_control"][5]="USB"; 
 
 $LANG["device_drive"][0]="Schreiben"; 
 $LANG["device_drive"][1]="Geschwindigkeit"; 

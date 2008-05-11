@@ -332,15 +332,8 @@ $LANG["devices"][25]="Προσθήκη στοιχείου";
 $LANG["devices"][26]="Διαγραφή στοιχείου"; 
 
 $LANG["device_case"][0]="Μέγεθος"; 
-$LANG["device_case"][1]="Ψηλό"; 
-$LANG["device_case"][2]="Μεσαίο"; 
-$LANG["device_case"][3]="Μικρό"; 
 
 $LANG["device_control"][0]="RAID"; 
-$LANG["device_control"][2]="IDE"; 
-$LANG["device_control"][3]="SATA"; 
-$LANG["device_control"][4]="SCSI"; 
-$LANG["device_control"][5]="USB"; 
 
 $LANG["device_drive"][0]="Ικανότητα εγγραφής"; 
 $LANG["device_drive"][1]="Ταχύτητα"; 

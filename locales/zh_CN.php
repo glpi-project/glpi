@@ -332,15 +332,8 @@ $LANG["devices"][25]="添加部件";
 $LANG["devices"][26]="删除部件"; 
 
 $LANG["device_case"][0]="大小"; 
-$LANG["device_case"][1]="高"; 
-$LANG["device_case"][2]="媒介"; 
-$LANG["device_case"][3]="微"; 
 
 $LANG["device_control"][0]="RAID"; 
-$LANG["device_control"][2]="IDE"; 
-$LANG["device_control"][3]="SATA"; 
-$LANG["device_control"][4]="SCSI"; 
-$LANG["device_control"][5]="USB"; 
 
 $LANG["device_drive"][0]="写入"; 
 $LANG["device_drive"][1]="速度"; 

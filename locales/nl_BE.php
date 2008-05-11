@@ -332,15 +332,8 @@ $LANG["devices"][25]="Een component toevoegen";
 $LANG["devices"][26]="Een onderdeel verwijderen"; 
 
 $LANG["device_case"][0]="Grootte"; 
-$LANG["device_case"][1]="Groot"; 
-$LANG["device_case"][2]="Gemiddeld"; 
-$LANG["device_case"][3]="Klein"; 
 
 $LANG["device_control"][0]="RAID"; 
-$LANG["device_control"][2]="IDE"; 
-$LANG["device_control"][3]="SATA"; 
-$LANG["device_control"][4]="SCSI"; 
-$LANG["device_control"][5]="USB"; 
 
 $LANG["device_drive"][0]="Schrijven"; 
 $LANG["device_drive"][1]="Snelheid"; 
