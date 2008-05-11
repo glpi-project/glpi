@@ -85,7 +85,7 @@ if (count($entrees_solved)>0)
 	//Temps moyen de resolution d'intervention
 	$entrees_avgtime=constructEntryValues("inter_avgsolvedtime",$_POST["date1"],$_POST["date2"]);
 if (count($entrees_avgtime)>0)
-	graphBy($entrees_avgtime,$LANG["stats"][6],$LANG["stats"][32],0,"month");
+	graphBy($entrees_avgtime,$LANG["stats"][6],$LANG["job"][21],0,"month");
 
 	//Temps moyen d'intervention r�l
 	$entrees_avgtime=constructEntryValues("inter_avgrealtime",$_POST["date1"],$_POST["date2"]);
@@ -95,7 +95,7 @@ if (count($entrees_avgtime)>0)
 	//Temps moyen de prise en compte de l'intervention
 	$entrees_avgtime=constructEntryValues("inter_avgtakeaccount",$_POST["date1"],$_POST["date2"]);
 if (count($entrees_avgtime)>0)
-	graphBy($entrees_avgtime,$LANG["stats"][30],$LANG["stats"][32],0,"month");
+	graphBy($entrees_avgtime,$LANG["stats"][30],$LANG["job"][21],0,"month");
 
 	commonFooter();
 	?>

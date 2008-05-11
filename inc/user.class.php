@@ -779,7 +779,7 @@ class User extends CommonDBTM {
 				echo "<input type='hidden' name='auth_method' value='1'>";
 			}
 			echo "<table class='tab_cadre_fixe'>";
-			echo "<tr><th colspan='4'>" . $LANG["setup"][57] . " : " . $this->fields["name"] . "&nbsp;";
+			echo "<tr><th colspan='4'>" . $LANG["common"][34] . " : " . $this->fields["name"] . "&nbsp;";
 			echo "<a href='" . $CFG_GLPI["root_doc"] . "/front/user.vcard.php?ID=$ID'>" . $LANG["common"][46] . "</a>";
 			echo "</th></tr>";
 			echo "<tr class='tab_bg_1'>";
@@ -952,7 +952,7 @@ class User extends CommonDBTM {
 			
 			echo "<div class='center'>";
 			echo "<form method='post' name=\"user_manager\" action=\"$target\"><table class='tab_cadre_fixe'>";
-			echo "<tr><th colspan='2'>" . $LANG["setup"][57] . " : " . $this->fields["name"] . "</th></tr>";
+			echo "<tr><th colspan='2'>" . $LANG["common"][34] . " : " . $this->fields["name"] . "</th></tr>";
 
 			echo "<tr class='tab_bg_1'>";
 			echo "<td class='center'>" . $LANG["setup"][18] . "</td>";
