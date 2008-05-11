@@ -332,15 +332,8 @@ $LANG["devices"][25]="PC内部パーツを追加";
 $LANG["devices"][26]="PC内部パーツを削除"; 
 
 $LANG["device_case"][0]="サイズ"; 
-$LANG["device_case"][1]="ハイタワー"; 
-$LANG["device_case"][2]="通常タイプ"; 
-$LANG["device_case"][3]="マイクロタワー"; 
 
 $LANG["device_control"][0]="RAID"; 
-$LANG["device_control"][2]="IDE"; 
-$LANG["device_control"][3]="SATA"; 
-$LANG["device_control"][4]="SCSI"; 
-$LANG["device_control"][5]="USB"; 
 
 $LANG["device_drive"][0]="書き込み可能"; 
 $LANG["device_drive"][1]="速度"; 

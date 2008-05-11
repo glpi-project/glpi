@@ -332,15 +332,8 @@ $LANG["devices"][25]="Добавяне на компонент";
 $LANG["devices"][26]="Премахване на компонент"; 
 
 $LANG["device_case"][0]="Размер"; 
-$LANG["device_case"][1]="Голям"; 
-$LANG["device_case"][2]="Среден"; 
-$LANG["device_case"][3]="Микро"; 
 
 $LANG["device_control"][0]="RAID"; 
-$LANG["device_control"][2]="IDE"; 
-$LANG["device_control"][3]="SATA"; 
-$LANG["device_control"][4]="SCSI"; 
-$LANG["device_control"][5]="USB"; 
 
 $LANG["device_drive"][0]="Запис"; 
 $LANG["device_drive"][1]="Скорост"; 

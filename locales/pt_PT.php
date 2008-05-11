@@ -332,15 +332,8 @@ $LANG["devices"][25]="Adicionar um componente";
 $LANG["devices"][26]="Eliminar um componente"; 
 
 $LANG["device_case"][0]="Tamanho"; 
-$LANG["device_case"][1]="Altura"; 
-$LANG["device_case"][2]="Médio"; 
-$LANG["device_case"][3]="Micro"; 
 
 $LANG["device_control"][0]="RAID"; 
-$LANG["device_control"][2]="IDE"; 
-$LANG["device_control"][3]="SATA"; 
-$LANG["device_control"][4]="SCSI"; 
-$LANG["device_control"][5]="USB"; 
 
 $LANG["device_drive"][0]="Escrita"; 
 $LANG["device_drive"][1]="Velocidade"; 

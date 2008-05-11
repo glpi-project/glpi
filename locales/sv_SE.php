@@ -332,15 +332,8 @@ $LANG["devices"][25]="Add a component";
 $LANG["devices"][26]="Delete a component"; 
 
 $LANG["device_case"][0]="Storlek"; 
-$LANG["device_case"][1]="Stor"; 
-$LANG["device_case"][2]="Medium"; 
-$LANG["device_case"][3]="Mikro"; 
 
 $LANG["device_control"][0]="RAID"; 
-$LANG["device_control"][2]="IDE"; 
-$LANG["device_control"][3]="SATA"; 
-$LANG["device_control"][4]="SCSI"; 
-$LANG["device_control"][5]="USB"; 
 
 $LANG["device_drive"][0]="Writing ability"; 
 $LANG["device_drive"][1]="Hastighet"; 
