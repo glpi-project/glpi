@@ -253,7 +253,7 @@ class CommonItem{
 				return $LANG["title"][5];
 				break;	
 			case USER_TYPE : 
-				return $LANG["setup"][57];
+				return $LANG["common"][34];
 				break;	
 			case TRACKING_TYPE : 
 				return $LANG["job"][38];

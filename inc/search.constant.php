@@ -304,7 +304,7 @@ $SEARCH_OPTION[COMPUTER_TYPE][22]['linkfield']='';
 $SEARCH_OPTION[COMPUTER_TYPE][22]['name']=$LANG["networking"][51];
 $SEARCH_OPTION[COMPUTER_TYPE][22]['meta']=0;
 
-$SEARCH_OPTION[COMPUTER_TYPE]['tracking']=$LANG["setup"][143];
+$SEARCH_OPTION[COMPUTER_TYPE]['tracking']=$LANG["title"][24];
 
 $SEARCH_OPTION[COMPUTER_TYPE][60]['table']='glpi_tracking';
 $SEARCH_OPTION[COMPUTER_TYPE][60]['field']='count';
@@ -712,7 +712,7 @@ $SEARCH_OPTION[NETWORKING_TYPE][22]['linkfield']='';
 $SEARCH_OPTION[NETWORKING_TYPE][22]['name']=$LANG["networking"][51];
 $SEARCH_OPTION[NETWORKING_TYPE][22]['meta']=0;
 
-$SEARCH_OPTION[NETWORKING_TYPE]['tracking']=$LANG["setup"][143];
+$SEARCH_OPTION[NETWORKING_TYPE]['tracking']=$LANG["title"][24];
 
 $SEARCH_OPTION[NETWORKING_TYPE][60]['table']='glpi_tracking';
 $SEARCH_OPTION[NETWORKING_TYPE][60]['field']='count';
@@ -1062,7 +1062,7 @@ $SEARCH_OPTION[PRINTER_TYPE][22]['linkfield']='';
 $SEARCH_OPTION[PRINTER_TYPE][22]['name']=$LANG["networking"][51];
 $SEARCH_OPTION[PRINTER_TYPE][22]['meta']=0;
 
-$SEARCH_OPTION[PRINTER_TYPE]['tracking']=$LANG["setup"][143];
+$SEARCH_OPTION[PRINTER_TYPE]['tracking']=$LANG["title"][24];
 
 $SEARCH_OPTION[PRINTER_TYPE][60]['table']='glpi_tracking';
 $SEARCH_OPTION[PRINTER_TYPE][60]['field']='count';
@@ -1367,7 +1367,7 @@ $SEARCH_OPTION[MONITOR_TYPE][80]['linkfield']='FK_entities';
 $SEARCH_OPTION[MONITOR_TYPE][80]['name']=$LANG["entity"][0];
 $SEARCH_OPTION[MONITOR_TYPE][80]['meta']=0;
 
-$SEARCH_OPTION[MONITOR_TYPE]['tracking']=$LANG["setup"][143];
+$SEARCH_OPTION[MONITOR_TYPE]['tracking']=$LANG["title"][24];
 
 $SEARCH_OPTION[MONITOR_TYPE][60]['table']='glpi_tracking';
 $SEARCH_OPTION[MONITOR_TYPE][60]['field']='count';
@@ -1711,7 +1711,7 @@ $SEARCH_OPTION[PERIPHERAL_TYPE][22]['linkfield']='';
 $SEARCH_OPTION[PERIPHERAL_TYPE][22]['name']=$LANG["networking"][51];
 $SEARCH_OPTION[PERIPHERAL_TYPE][22]['meta']=0;
 
-$SEARCH_OPTION[PERIPHERAL_TYPE]['tracking']=$LANG["setup"][143];
+$SEARCH_OPTION[PERIPHERAL_TYPE]['tracking']=$LANG["title"][24];
 
 $SEARCH_OPTION[PERIPHERAL_TYPE][60]['table']='glpi_tracking';
 $SEARCH_OPTION[PERIPHERAL_TYPE][60]['field']='count';
@@ -2004,7 +2004,7 @@ $SEARCH_OPTION[SOFTWARE_TYPE][80]['linkfield']='FK_entities';
 $SEARCH_OPTION[SOFTWARE_TYPE][80]['name']=$LANG["entity"][0];
 $SEARCH_OPTION[SOFTWARE_TYPE][80]['meta']=0;
 
-$SEARCH_OPTION[SOFTWARE_TYPE]['tracking']=$LANG["setup"][143];
+$SEARCH_OPTION[SOFTWARE_TYPE]['tracking']=$LANG["title"][24];
 
 $SEARCH_OPTION[SOFTWARE_TYPE][60]['table']='glpi_tracking';
 $SEARCH_OPTION[SOFTWARE_TYPE][60]['field']='count';
@@ -2978,7 +2978,7 @@ $SEARCH_OPTION[PHONE_TYPE][80]['linkfield']='FK_entities';
 $SEARCH_OPTION[PHONE_TYPE][80]['name']=$LANG["entity"][0];
 $SEARCH_OPTION[PHONE_TYPE][80]['meta']=0;
 
-$SEARCH_OPTION[PHONE_TYPE]['tracking']=$LANG["setup"][143];
+$SEARCH_OPTION[PHONE_TYPE]['tracking']=$LANG["title"][24];
 
 $SEARCH_OPTION[PHONE_TYPE][60]['table']='glpi_tracking';
 $SEARCH_OPTION[PHONE_TYPE][60]['field']='count';

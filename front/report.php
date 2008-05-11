@@ -77,7 +77,7 @@ if (haveRight("networking","r")){
 	$report_list["Rapport prises reseau"]["file"]="report.networking.php";
 }
 if (haveRight("reservation_central","r")){
-	$report_list["reservation"]["name"]=$LANG["reservation"][24];
+	$report_list["reservation"]["name"]=$LANG["financial"][50];
 	$report_list["reservation"]["file"]="report.reservation.php";
 }
 

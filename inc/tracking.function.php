@@ -1831,7 +1831,7 @@ function showJobDetails ($target,$ID){
 		echo $LANG["job"][4].":</strong></td></tr>";
 
 		echo "<tr><td class='left'>";
-		echo $LANG["setup"][57].":</td><td>";
+		echo $LANG["common"][34].":</td><td>";
 		if ($canupdate){
 			dropdownAllUsers("author",$job->fields["author"],1,$job->fields["FK_entities"]);
 		} else {
