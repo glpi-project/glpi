@@ -332,15 +332,8 @@ $LANG["devices"][25]="Alkatrész hozzáadása";
 $LANG["devices"][26]="Alkatrész törlése"; 
 
 $LANG["device_case"][0]="Méret"; 
-$LANG["device_case"][1]="MAgas"; 
-$LANG["device_case"][2]="Közepes"; 
-$LANG["device_case"][3]="Micro"; 
 
 $LANG["device_control"][0]="RAID"; 
-$LANG["device_control"][2]="IDE"; 
-$LANG["device_control"][3]="SATA"; 
-$LANG["device_control"][4]="SCSI"; 
-$LANG["device_control"][5]="USB"; 
 
 $LANG["device_drive"][0]="Írás"; 
 $LANG["device_drive"][1]="Sebesség"; 

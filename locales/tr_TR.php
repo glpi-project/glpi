@@ -190,7 +190,7 @@ $LANG["common"][8]="Şablonları düzenle";
 $LANG["common"][9]="Şablon ekle"; 
 $LANG["common"][10]="Technician in charge"; 
 $LANG["common"][11]="Sınırlı görünüş"; 
-$LANG["common"][12]="Setup"; 
+$LANG["common"][12]="Düzen"; 
 $LANG["common"][13]="Şablon"; 
 $LANG["common"][14]="Sablonlar"; 
 $LANG["common"][15]="Lokasyon"; 
@@ -332,15 +332,8 @@ $LANG["devices"][25]="Parça ekle";
 $LANG["devices"][26]="Parça sil"; 
 
 $LANG["device_case"][0]="Boyut"; 
-$LANG["device_case"][1]="Uzun"; 
-$LANG["device_case"][2]="Orta"; 
-$LANG["device_case"][3]="Mikro"; 
 
 $LANG["device_control"][0]="RAID"; 
-$LANG["device_control"][2]="IDE"; 
-$LANG["device_control"][3]="SATA"; 
-$LANG["device_control"][4]="SCSI"; 
-$LANG["device_control"][5]="USB"; 
 
 $LANG["device_drive"][0]="Yazma Gucu"; 
 $LANG["device_drive"][1]="Hiz"; 
@@ -1092,7 +1085,7 @@ $LANG["phones"][18]="Marka";
 $LANG["phones"][30]="New model based on a template"; 
 $LANG["phones"][35]="Aygıt Yazılımı"; 
 $LANG["phones"][36]="Güç Kaynağı"; 
-$LANG["phones"][38]="Headset"; 
+$LANG["phones"][38]="Kulaklık"; 
 $LANG["phones"][39]="Speaker"; 
 $LANG["phones"][40]="Hat sayısı"; 
 
@@ -1335,7 +1328,7 @@ $LANG["rulesengine"][105]="Modified value";
 $LANG["rulesengine"][106]="Değişmemiş"; 
 $LANG["rulesengine"][107]="Pasif"; 
 $LANG["rulesengine"][108]="original"; 
-$LANG["rulesengine"][110]="Hat atama"; 
+$LANG["rulesengine"][110]="Yetkilendirme"; 
 $LANG["rulesengine"][111]="Entities assignment"; 
 $LANG["rulesengine"][112]="Rights and entities assignment"; 
 $LANG["rulesengine"][120]="The engine stops on the first checked rule."; 
