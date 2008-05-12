@@ -975,7 +975,9 @@ class CommonDBTM {
 		$recursive_state_to_check=0;
 		// Get item if not already loaded
 		if (empty($ID)||$ID<=0){
-			//$this->getEmpty();
+			if (!isset($this->fields["ID"]) || strlen($this->fields["ID"])) {
+				$this->getEmpty();
+			}
 			// No entity define : adding process : use active entity
 			if ($entity==-1){
 				$entity_to_check=$_SESSION["glpiactive_entity"];

@@ -69,10 +69,7 @@ class InfoCom extends CommonDBTM {
 
 		global $DB;
 		$query = "SELECT * FROM glpi_infocoms WHERE (FK_device = '$ID' AND device_type='$device_type')";
-
-		$this->fields["FK_device"]=$ID;
-		$this->fields["device_type"]=$device_type;
-		
+	
 		if ($result = $DB->query($query)) {
 			if ($DB->numrows($result)==1){	
 				$data = $DB->fetch_assoc($result);
@@ -81,7 +78,12 @@ class InfoCom extends CommonDBTM {
 					$this->fields[$key] = $val;
 				}
 				return true;
-			} else return false;
+			} else {
+				$this->getEmpty();
+				$this->fields["FK_device"]=$ID;
+				$this->fields["device_type"]=$device_type;
+				return false;
+			}
 		} else {
 			return false;
 		}
