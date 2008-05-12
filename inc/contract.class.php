@@ -150,6 +150,7 @@ class Contract extends CommonDBTM {
 			$use_cache=false;
 			if ($this->can(-1,'w')){
 				$spotted = true;	
+				$this->getEmpty();
 			}
 		} 
 
