@@ -50,8 +50,6 @@ class InfoCom extends CommonDBTM {
 		$this->type=INFOCOM_TYPE;
 		$this->dohistory=true;
 		$this->auto_message_on_action=false;
-		// TODO : by the device, is it the good solution ?
-		$this->entity_assign=true;
 	}
 
 	function post_getEmpty () {
@@ -72,6 +70,9 @@ class InfoCom extends CommonDBTM {
 		global $DB;
 		$query = "SELECT * FROM glpi_infocoms WHERE (FK_device = '$ID' AND device_type='$device_type')";
 
+		$this->fields["FK_device"]=$ID;
+		$this->fields["device_type"]=$device_type;
+		
 		if ($result = $DB->query($query)) {
 			if ($DB->numrows($result)==1){	
 				$data = $DB->fetch_assoc($result);
@@ -132,6 +133,52 @@ class InfoCom extends CommonDBTM {
 		}
 	}
 
+	/**
+	 * Is the object assigned to an entity
+	 * 
+	 * @return boolean
+	**/
+	function isEntityAssign () {
+		$ci=new CommonItem();
+		$ci->setType($this->fields["device_type"], true);
+		
+		return $ci->obj->isEntityAssign();
+	}
+	/**
+	 * Get the ID of entity assigned to the object
+	 * 
+	 * @return ID of the entity 
+	**/
+	function getEntityID () {
+		$ci=new CommonItem();
+		$ci->getFromDB($this->fields["device_type"], $this->fields["FK_device"]);
+
+		return $ci->obj->getEntityID();
+	}	
+	/**
+	 * Is the object may be recursive
+	 * 
+	 * @return boolean
+	**/
+	function maybeRecursive () {
+		$ci=new CommonItem();
+		$ci->setType($this->fields["device_type"], true);
+		
+		return $ci->obj->maybeRecursive();
+	}
+	/**
+	 * Is the object recursive
+	 * 
+	 * Can be overloaded (ex : infocom)
+	 * 
+	 * @return integer (0/1) 
+	**/
+	function isRecursive () {
+		$ci=new CommonItem();
+		$ci->getFromDB($this->fields["device_type"], $this->fields["FK_device"]);
+
+		return $ci->obj->isRecursive();
+	}	
 }
 
 ?>

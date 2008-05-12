@@ -1912,7 +1912,7 @@ function showNotesForm($target,$type,$id){
 	$ci =new CommonItem;
 	//getFromDB
 	$ci->getFromDB ($type,$id);
-	$canedit=$ci->obj->can($id,"w");
+	$canedit=(haveRight("notes","w") && (!$ci->obj->isEntityAssign() || haveAccessToEntity($ci->obj->getEntityID())));
 
 	if ($canedit) {
 		echo "<form name='form' method='post' action=\"".$target."\">";

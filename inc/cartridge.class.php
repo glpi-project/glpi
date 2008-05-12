@@ -53,6 +53,7 @@ class CartridgeType extends CommonDBTM {
 	function CartridgeType () {
 		$this->table="glpi_cartridges_type";
 		$this->type=CARTRIDGE_TYPE;
+		$this->entity_assign=true;
 	}
 
 	function cleanDBonPurge($ID) {
@@ -298,6 +299,8 @@ class Cartridge extends CommonDBTM {
 	function Cartridge () {
 		$this->table="glpi_cartridges";
 		$this->type=CARTRIDGE_ITEM_TYPE;
+		// by the Cartridge Type
+		$this->entity_assign=true;
 	}
 
 
@@ -401,6 +404,17 @@ class Cartridge extends CommonDBTM {
 		}
 	}
 
+	/**
+	 * Get the ID of entity assigned to the cartdrige
+	 * 
+	 * @return ID of the entity 
+	**/
+	function getEntityID () {
+		$ci=new CartridgeType();
+		$ci->getFromDB($this->fields["FK_glpi_cartridges_type"]);
+
+		return $ci->getEntityID();
+	}	
 
 }
 
