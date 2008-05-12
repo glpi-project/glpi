@@ -277,6 +277,17 @@ class Netdevice extends CommonDBTM {
 				echo "&nbsp;(".getDropdownName("glpi_entities",$this->fields["FK_entities"]).")";
 			}
 
+			if (isMultiEntitiesMode()){
+				echo "&nbsp;-&nbsp;".$LANG["entity"][9].":&nbsp;";
+			
+				if ($this->can($ID,'recursive')) {
+					dropdownYesNo("recursive",$this->fields["recursive"]);					
+				} else {
+					echo getYesNo($this->fields["recursive"]);
+				}
+			} 
+
+
 			echo "</th><th  align='center'>".$datestring.$date;
 			if (!$template&&!empty($this->fields['tplname']))
 				echo "&nbsp;&nbsp;&nbsp;(".$LANG["common"][13].": ".$this->fields['tplname'].")";
@@ -397,15 +408,7 @@ class Netdevice extends CommonDBTM {
 			}
 
 			if ($canedit) {
-				echo "<tr><td  class='tab_bg_2' colspan='2'><table cellpadding='1' cellspacing='0' border='0' width='100%'>\n";
-				echo "<tr><td  class='tab_bg_2' width='33%'>".$LANG["entity"][9].":&nbsp;";
-				if ($canrecu) {
-					dropdownYesNo("recursive",$this->fields["recursive"]);					
-				} else {
-					echo getYesNo($this->fields["recursive"]);
-				}
-				echo "</td>";
-
+				echo "<tr class='tab_bg_2'>\n";
 				if ($template) {
 
 					if (empty($ID)||$withtemplate==2){
@@ -438,7 +441,7 @@ class Netdevice extends CommonDBTM {
 					echo "</div>\n";
 					echo "</td>\n";
 				}
-				echo "</tr></table></td></tr>\n";
+				echo "</tr>\n";
 				echo "</table></form></div>\n";
 			} else { // ! $canedit
 				echo "</table></div>\n";

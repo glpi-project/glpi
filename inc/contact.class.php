@@ -147,7 +147,6 @@ class Contact extends CommonDBTM{
 
 		if ($spotted){
 			$canedit=$this->can($ID,'w');
-			$canrecu=$this->can($ID,'recursive');
 
 			$this->showOnglets($ID, $withtemplate,$_SESSION['glpi_onglet']);
 
@@ -173,11 +172,17 @@ class Contact extends CommonDBTM{
 			}		
 
 			echo "</th>";
-			echo "<th>".$LANG["entity"][9].":&nbsp;";
-			if ($canrecu) {
-				dropdownYesNo("recursive",$this->fields["recursive"]);					
+			echo "<th>";
+			if (isMultiEntitiesMode()){
+				echo $LANG["entity"][9].":&nbsp;";
+			
+				if ($this->can($ID,'recursive')) {
+					dropdownYesNo("recursive",$this->fields["recursive"]);					
+				} else {
+					echo getYesNo($this->fields["recursive"]);
+				}
 			} else {
-				echo getYesNo($this->fields["recursive"]);
+				echo "&nbsp;";
 			}
 			echo "</th>";
 			echo "</tr>";
