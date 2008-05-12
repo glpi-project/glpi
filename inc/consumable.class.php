@@ -53,6 +53,7 @@ class ConsumableType extends CommonDBTM {
 	function ConsumableType () {
 		$this->table="glpi_consumables_type";
 		$this->type=CONSUMABLE_TYPE;
+		$this->entity_assign=true;
 	}
 
 	function cleanDBonPurge($ID) {
@@ -235,6 +236,8 @@ class Consumable extends CommonDBTM {
 	function Consumable () {
 		$this->table="glpi_consumables";
 		$this->type=CONSUMABLE_ITEM_TYPE;
+		// by the Consumable type
+		$this->entity_assign=true;
 	}
 
 
@@ -295,6 +298,17 @@ class Consumable extends CommonDBTM {
 		}
 	}
 
+	/**
+	 * Get the ID of entity assigned to the Consumable
+	 * 
+	 * @return ID of the entity 
+	**/
+	function getEntityID () {
+		$ci=new ConsumableType();
+		$ci->getFromDB($this->fields["FK_glpi_consumables_type"]);
+
+		return $ci->getEntityID();
+	}	
 
 }
 
