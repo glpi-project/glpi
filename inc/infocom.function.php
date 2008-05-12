@@ -65,14 +65,16 @@ function showInfocomForm($target,$device_type,$dev_ID,$show_immo=true,$withtempl
 	echo "<br>";
 	if ($ci->getFromDB($device_type,$dev_ID))
 	if (!$ic->getFromDBforDevice($device_type,$dev_ID)){
-		if (haveRight("contract_infocom","w")&&$withtemplate!=2){
+		if ($ic->can(-1,"w",$ci->obj->fields["FK_entities"]) && $withtemplate!=2){
 			echo "<div class='center'>";
 			echo "<strong><a href='$target?device_type=$device_type&amp;FK_device=$dev_ID&amp;add=add'>".$LANG["financial"][68]."</a></strong>";
 			echo "</div><br>";
 		}
-	} else {
-		if ($withtemplate!=2)
+	} else { // getFromDBforDevice
+		$canedit = ($ic->can($ic->fields['ID'], "w") && $withtemplate!=2); 
+		if ($canedit) {
 			echo "<form name='form_ic' method='post' action=\"$target\">";
+		}
 
 		echo "<div class='center'>";
 		echo "<table class='tab_cadre".(!ereg("infocoms-show",$_SERVER['PHP_SELF'])?"_fixe":"")."'>";
@@ -225,7 +227,8 @@ function showInfocomForm($target,$device_type,$dev_ID,$show_immo=true,$withtempl
 		echo $LANG["common"][25].":	</td>";
 		echo "<td align='center' colspan='3'><textarea cols='80' $option rows='2' name='comments' >".$ic->fields["comments"]."</textarea>";
 		echo "</td></tr>";
-		if (haveRight("contract_infocom","w")&&$withtemplate!=2){
+
+		if ($canedit){
 			echo "<tr>";
 
 			echo "<td class='tab_bg_2' colspan='2' align='center'>";
@@ -237,10 +240,11 @@ function showInfocomForm($target,$device_type,$dev_ID,$show_immo=true,$withtempl
 
 			echo "</td>";
 			echo "</tr>";
+			echo "</table></div></form>";
 		}
-
-		echo "</table></div>";
-		if ($withtemplate!=2) echo "</form>";
+		else {
+			echo "</table></div>";
+		}
 
 	}
 }

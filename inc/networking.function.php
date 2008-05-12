@@ -45,8 +45,10 @@ function showPorts ($device,$device_type,$withtemplate='') {
 
 	global $DB,$CFG_GLPI, $LANG,$LINK_ID_TABLE;
 
-	if (!haveRight("networking","r")) return false;
-	$canedit=haveRight("networking","w");
+	$ci = new CommonItem();
+	$ci->setType($device_type,true);
+	if (!$ci->obj->can($device,'r')) return false;
+	$canedit=$ci->obj->can($device,'w');
 
 	$device_real_table_name = $LINK_ID_TABLE[$device_type];
 
@@ -403,10 +405,11 @@ function showPortsAdd($ID,$devtype) {
 
 	global $DB,$CFG_GLPI, $LANG,$LINK_ID_TABLE;
 
-	if (!haveTypeRight($devtype,"w")) return false;
+	$ci = new CommonItem();
+	$ci->setType($devtype,true);
+	if (!$ci->obj->can($ID,'w')) return false;
 
 	$device_real_table_name = $LINK_ID_TABLE[$devtype];
-
 
 	echo "<div class='center'><table class='tab_cadre_fixe' cellpadding='2'>";
 	echo "<tr>";

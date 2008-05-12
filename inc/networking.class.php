@@ -50,6 +50,8 @@ class Netdevice extends CommonDBTM {
 		$this->table="glpi_networking";
 		$this->type=NETWORKING_TYPE;
 		$this->dohistory=true;
+		$this->entity_assign=true;
+		$this->may_be_recursive=true;
 	}
 
 
@@ -215,14 +217,20 @@ class Netdevice extends CommonDBTM {
 
 		$spotted = false;
 		$use_cache=true;
-		if((empty($ID) && $withtemplate == 1)||$ID==-1) {
-			$use_cache=false;
-			if($this->getEmpty()) $spotted = true;
+		if ($ID>0) {
+			if($this->can($ID,'r')) {
+				$spotted = true;	
+			}
 		} else {
-			if($this->getFromDB($ID)&&haveAccessToEntity($this->fields["FK_entities"])) $spotted = true;
-		}
+			$use_cache=false;
+			if ($this->can(-1,'w')){
+				$spotted = true;	
+			}
+		} 
 
 		if($spotted) {
+			$canedit=$this->can($ID,'w');
+			$canrecu=$this->can($ID,'recursive');
 
 			$this->showOnglets($ID, $withtemplate,$_SESSION['glpi_onglet']);
 
@@ -243,13 +251,14 @@ class Netdevice extends CommonDBTM {
 			}
 
 
-			echo "<div class='center'><form name='form' method='post' action=\"$target\">\n";
-
-			if(strcmp($template,"newtemplate") === 0) {
-				echo "<input type=\"hidden\" name=\"is_template\" value=\"1\" />\n";
+			echo "<div class='center'>";
+			if ($canedit) {
+				echo "<form name='form' method='post' action=\"$target\">\n";
+				if(strcmp($template,"newtemplate") === 0) {
+					echo "<input type=\"hidden\" name=\"is_template\" value=\"1\" />\n";
+				}	
+				echo "<input type='hidden' name='FK_entities' value='".$this->fields["FK_entities"]."'>";
 			}
-
-			echo "<input type='hidden' name='FK_entities' value='".$this->fields["FK_entities"]."'>";
 
 			echo "<table  class='tab_cadre_fixe' cellpadding='2'>\n";
 
@@ -386,8 +395,15 @@ class Netdevice extends CommonDBTM {
 				}
 			}
 
-			if (haveRight("networking","w")) {
-				echo "<tr>\n";
+			if ($canedit) {
+				echo "<tr><td  class='tab_bg_2' colspan='2'><table cellpadding='1' cellspacing='0' border='0' width='100%'>\n";
+				echo "<tr><td  class='tab_bg_2' width='33%'>".$LANG["entity"][9].":&nbsp;";
+				if ($canrecu) {
+					dropdownYesNo("recursive",$this->fields["recursive"]);					
+				} else {
+					echo getYesNo($this->fields["recursive"]);
+				}
+				echo "</td>";
 
 				if ($template) {
 
@@ -405,10 +421,10 @@ class Netdevice extends CommonDBTM {
 
 				} else {
 
-					echo "<td class='tab_bg_2' valign='top'>";
+					echo "<td class='tab_bg_2' valign='top' width='33%'>";
 					echo "<input type='hidden' name='ID' value=\"$ID\">\n";
-					echo "<div class='center'><input type='submit' name='update' value=\"".$LANG["buttons"][7]."\" class='submit'></div>";
-					echo "<td class='tab_bg_2' valign='top'>\n";
+					echo "<div class='center'><input type='submit' name='update' value=\"".$LANG["buttons"][7]."\" class='submit'></div></td>";
+					echo "<td class='tab_bg_2' valign='top' width='33%'>\n";
 
 					echo "<div class='center'>\n";
 					if (!$this->fields["deleted"])
@@ -421,14 +437,15 @@ class Netdevice extends CommonDBTM {
 					echo "</div>\n";
 					echo "</td>\n";
 				}
-				echo "</tr>\n";
+				echo "</tr></table></td></tr>\n";
+				echo "</table></form></div>\n";
+			} else { // ! $canedit
+				echo "</table></div>\n";
 			}
 
-			echo "</table></form></div>\n";
-
 			return true;
-		}
-		else {
+
+		} else { // ! $spotted
 			echo "<div class='center'><strong>".$LANG["common"][54]."</strong></div>";
 			return false;
 		}

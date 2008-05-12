@@ -39,5 +39,10 @@
 function update071to072() {
 	global $DB, $CFG_GLPI, $LANG, $LINK_ID_TABLE;
 
-} // fin 0.71 #####################################################################################
+ 	if (!FieldExists("glpi_networking", "recursive")) {
+ 		$query = "ALTER TABLE `glpi_networking` ADD `recursive` TINYINT( 1 ) NOT NULL DEFAULT '0' AFTER `FK_entities`;";
+ 		$DB->query($query) or die("0.71 add recursive in glpi_networking" . $LANG["update"][90] . $DB->error());
+ 	}	  	
+
+} // fin 0.72 #####################################################################################
 ?>
