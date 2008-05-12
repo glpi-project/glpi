@@ -1912,9 +1912,11 @@ function showNotesForm($target,$type,$id){
 	$ci =new CommonItem;
 	//getFromDB
 	$ci->getFromDB ($type,$id);
+	$canedit=$ci->obj->can($id,"w");
 
-
-	echo "<form name='form' method='post' action=\"".$target."\">";
+	if ($canedit) {
+		echo "<form name='form' method='post' action=\"".$target."\">";
+	}
 	echo "<div class='center'>";
 	echo "<table class='tab_cadre_fixe' >";
 	echo "<tr><th align='center' >";
@@ -1923,10 +1925,14 @@ function showNotesForm($target,$type,$id){
 	echo "<tr><td valign='middle' align='center' class='tab_bg_1' ><textarea class='textarea_notes' cols='100' rows='35' name='notes' >".$ci->getField('notes')."</textarea></td></tr>";
 	echo "<tr><td class='tab_bg_2' align='center' >\n";
 	echo "<input type='hidden' name='ID' value=$id>";
-	if (haveRight("notes","w"))
+	if ($canedit) {
 		echo "<input type='submit' name='update' value=\"".$LANG["buttons"][7]."\" class='submit'>";
+	}
 	echo "</td></tr>\n";
-	echo "</table></div></form>";
+	echo "</table></div>";
+	if ($canedit) {
+		echo "</form>";
+	}
 }
 
 /**

@@ -509,10 +509,10 @@ function showContractAssociated($device_type,$ID,$withtemplate=''){
 	global $DB,$CFG_GLPI, $LANG;
 
 	if (!haveRight("contract_infocom","r")||!haveTypeRight($device_type,"r"))	return false;
-	$canedit=haveRight("contract_infocom","w");
 
 	$ci=new CommonItem();
 	$ci->getFromDB($device_type,$ID);
+	$canedit=$ci->obj->can($ID,"w");
 
 	$query = "SELECT glpi_contract_device.* "
 		." FROM glpi_contract_device, glpi_contracts LEFT JOIN glpi_entities ON (glpi_contracts.FK_entities=glpi_entities.ID)"

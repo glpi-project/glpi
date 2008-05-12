@@ -986,10 +986,20 @@ class CommonDBTM {
 			if (!isset($this->fields['ID'])||$this->fields['ID']!=$ID){
 				$this->getFromDB($ID);
 			}
-			if ($this->entity_assign){
+			if ($this->entity_assign && isset($this->fields["FK_entities"])){
 				$entity_to_check=$this->fields["FK_entities"];
 				if ($this->may_be_recursive){
 					$recursive_state_to_check=$this->fields["recursive"];
+				}
+			} else if ($this->type==INFOCOM_TYPE) {
+				$ci=new CommonItem();
+				$ci->setType($this->fields["device_type"],true);
+				$ci->obj->getFromDB($this->fields["FK_device"]);
+				if ($ci->obj->entity_assign){
+					$entity_to_check=$ci->obj->fields["FK_entities"];
+					if ($ci->obj->may_be_recursive){
+						$recursive_state_to_check=$ci->obj->fields["recursive"];
+					}
 				}
 			}
 

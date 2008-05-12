@@ -50,6 +50,8 @@ class InfoCom extends CommonDBTM {
 		$this->type=INFOCOM_TYPE;
 		$this->dohistory=true;
 		$this->auto_message_on_action=false;
+		// TODO : by the device, is it the good solution ?
+		$this->entity_assign=true;
 	}
 
 	function post_getEmpty () {
