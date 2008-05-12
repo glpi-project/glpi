@@ -144,7 +144,6 @@ class Enterprise extends CommonDBTM {
 
 		if ($spotted){
 			$canedit=$this->can($ID,'w');
-			$canrecu=$this->can($ID,'recursive');
 			
 			$this->showOnglets($ID, $withtemplate,$_SESSION['glpi_onglet']);
 			if ($canedit) {
@@ -155,8 +154,8 @@ class Enterprise extends CommonDBTM {
 			}
 
 			echo "<table class='tab_cadre_fixe'>";
-			echo "<tr><th colspan='4'>";
-			if (!$ID) {
+			echo "<tr><th colspan='2'>";
+			if ($ID<0) {
 				echo $LANG["financial"][25];
 			} else {
 				echo $LANG["common"][2]." ".$this->fields["ID"];
@@ -165,7 +164,23 @@ class Enterprise extends CommonDBTM {
 				echo "&nbsp;(".getDropdownName("glpi_entities",$this->fields["FK_entities"]).")";
 			}
 
-			echo "</th></tr>";
+			echo "</th>";
+
+			echo "<th colspan='2'>";
+			if (isMultiEntitiesMode()){
+				echo $LANG["entity"][9].":&nbsp;";
+			
+				if ($this->can($ID,'recursive')) {
+					dropdownYesNo("recursive",$this->fields["recursive"]);					
+				} else {
+					echo getYesNo($this->fields["recursive"]);
+				}
+			} else {
+				echo "&nbsp;";
+			}
+			echo "</th>";
+
+			echo "</tr>";
 			if (!$use_cache||!($CFG_GLPI["cache"]->start($ID."_".$_SESSION["glpilanguage"],"GLPI_".$this->type))) {
 				echo "<tr class='tab_bg_1'><td>".$LANG["common"][16].":		</td>";
 				echo "<td>";
@@ -233,21 +248,15 @@ class Enterprise extends CommonDBTM {
 			}
 
 			if ($canedit) {
-					echo "<tr><td  class='tab_bg_2'>".$LANG["entity"][9].":&nbsp;";
-					if ($canrecu) {
-						dropdownYesNo("recursive",$this->fields["recursive"]);					
-					} else {
-						echo getYesNo($this->fields["recursive"]);
-					}
-					echo "</td>";
+					echo "<tr>";
 
 				if ($ID>0) {
 
-					echo "<td class='tab_bg_2' valign='top'>";
+					echo "<td class='tab_bg_2' valign='top' colspan='2'>";
 					echo "<input type='hidden' name='ID' value=\"$ID\">\n";
 					echo "<div class='center'><input type='submit' name='update' value=\"".$LANG["buttons"][7]."\" class='submit'></div>";
 					echo "</td>\n\n";
-					echo "<td class='tab_bg_2'>&nbsp;</td><td class='tab_bg_2' valign='top'>\n";
+					echo "<td class='tab_bg_2' valign='top' colspan='2'>\n";
 					echo "<input type='hidden' name='ID' value=\"$ID\">\n";
 					if (!$this->fields["deleted"])
 						echo "<div class='center'><input type='submit' name='delete' value=\"".$LANG["buttons"][6]."\" class='submit'></div>";
@@ -261,7 +270,7 @@ class Enterprise extends CommonDBTM {
 					echo "</tr>";
 
 				} else {
-					echo "<td class='tab_bg_2' valign='top' colspan='3'>";
+					echo "<td class='tab_bg_2' valign='top' colspan='4'>";
 					echo "<div class='center'><input type='submit' name='add' value=\"".$LANG["buttons"][8]."\" class='submit'></div>";
 					echo "</td>";
 					echo "</tr>";

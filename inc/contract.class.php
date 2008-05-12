@@ -155,7 +155,6 @@ class Contract extends CommonDBTM {
 
 		if ($spotted){
 			$can_edit=$this->can($ID,'w');
-			$can_recu=$this->can($ID,'recursive');
 
 			$this->showOnglets($ID, $withtemplate,$_SESSION['glpi_onglet']);
 
@@ -167,8 +166,8 @@ class Contract extends CommonDBTM {
 			}
 			
 			echo "<table class='tab_cadre_fixe'>";
-			echo "<tr><th colspan='4'>";
-			if (!$ID) {
+			echo "<tr><th colspan='2'>";
+			if ($ID<0) {
 				echo $LANG["financial"][36];
 			} else {
 				echo $LANG["common"][2]." $ID";
@@ -177,7 +176,23 @@ class Contract extends CommonDBTM {
 				echo "&nbsp;(".getDropdownName("glpi_entities",$this->fields["FK_entities"]).")";
 			}
 
-			echo "</th></tr>";
+			echo "</th>";
+
+			echo "<th colspan='2'>";
+			if (isMultiEntitiesMode()){
+				echo $LANG["entity"][9].":&nbsp;";
+			
+				if ($this->can($ID,'recursive')) {
+					dropdownYesNo("recursive",$this->fields["recursive"]);					
+				} else {
+					echo getYesNo($this->fields["recursive"]);
+				}
+			} else {
+				echo "&nbsp;";
+			}
+			echo "</th>";
+
+			echo "</tr>";
 
 			if (!$use_cache||!($CFG_GLPI["cache"]->start($ID."_".$_SESSION["glpilanguage"],"GLPI_".$this->type))) {
 
@@ -291,17 +306,10 @@ class Contract extends CommonDBTM {
 
 			if ($can_edit) {
 				echo "<tr>";
-				echo "<td class='tab_bg_2'>".$LANG["entity"][9].":&nbsp;";
-				if ($can_recu) {
-					dropdownYesNo("recursive",$this->fields["recursive"]);					
-				} else {
-					echo getYesNo($this->fields["recursive"]);
-				}
-				echo "</td>";
 
 				if ($ID>0) {
 
-					echo "<td class='tab_bg_2' valign='top'>";
+					echo "<td class='tab_bg_2' valign='top' colspan='2'>";
 					echo "<input type='hidden' name='ID' value=\"$ID\">\n";
 					echo "<div class='center'><input type='submit' name='update' value=\"".$LANG["buttons"][7]."\" class='submit'></div>";
 					echo "</td>\n\n";
@@ -320,7 +328,7 @@ class Contract extends CommonDBTM {
 
 				} else {
 
-					echo "<td class='tab_bg_2' valign='top' colspan='3'>";
+					echo "<td class='tab_bg_2' valign='top' colspan='4'>";
 					echo "<div class='center'><input type='submit' name='add' value=\"".$LANG["buttons"][8]."\" class='submit'></div>";
 					echo "</td>";
 					echo "</tr>";
