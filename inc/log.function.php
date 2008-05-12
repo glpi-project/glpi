@@ -100,7 +100,7 @@ function constructHistory($id_device,$device_type,&$oldvalues,&$values) {
 				if ($ic->getFromDB($values['ID'])){
 					$real_device_type=$ic->fields['device_type'];
 					$id_device=$ic->fields['FK_device'];
-					foreach($SEARCH_OPTION[$real_device_type] as $key2 => $val2){
+					if (isset($SEARCH_OPTION[$real_device_type])) foreach($SEARCH_OPTION[$real_device_type] as $key2 => $val2){
 						if(($val2["field"]==$key&&ereg('infocoms',$val2['table'])) || 
 							($key=='budget'&&$val2['table']=='glpi_dropdown_budget') ||
 							($key=='FK_enterprise'&&$val2['table']=='glpi_enterprises_infocoms')) {
