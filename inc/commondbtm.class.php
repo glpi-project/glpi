@@ -1038,9 +1038,11 @@ class CommonDBTM {
 				}
 				break;
 			case 'recursive':
-				if ($this->canCreate() && $this->isEntityAssign() && $this->maybeRecursive()){
-					// Can make recursive if recursive access to entity
-					return haveRecursiveAccessToEntity($entity_to_check);
+				if ($this->isEntityAssign() && $this->maybeRecursive()){
+					if ($this->canCreate() && haveAccessToEntity($entity_to_check)){
+						// Can make recursive if recursive access to entity
+						return haveRecursiveAccessToEntity($entity_to_check);
+					}
 				}
 				break;
 		}
