@@ -76,7 +76,7 @@ if (!isset ($_POST["noAUTO"]) && $auth_method=checkAlternateAuthSystems()) {
 		$user=$identificat->user->fields['name'];
 		$identificat->auth_succeded = true;
 		$identificat->extauth = 1;
-		$identificat->user_present = $identificat->user->getFromDBbyName($user);
+		$identificat->user_present = $identificat->user->getFromDBbyName(addslashes($user));
 		$identificat->user->fields['auth_method'] = $auth_method; 
 
 		// if LDAP enabled too, get user's infos from LDAP
@@ -115,7 +115,7 @@ if (!isset ($_POST["noAUTO"]) && $auth_method=checkAlternateAuthSystems()) {
 			// exists=0 -> no exist
 			// exists=1 -> exist with password
 			// exists=2 -> exist without password
-			$exists = $identificat->userExists($_POST['login_name']);
+			$exists = $identificat->userExists(addslashes($_POST['login_name']));
 	
 			// Pas en premier car sinon on ne fait pas le blankpassword
 			// First try to connect via le DATABASE
@@ -123,10 +123,10 @@ if (!isset ($_POST["noAUTO"]) && $auth_method=checkAlternateAuthSystems()) {
 				
 				// Without UTF8 decoding
 				if (!$identificat->auth_succeded){
-					$identificat->auth_succeded = $identificat->connection_db($_POST['login_name'], $_POST['login_password']);
+					$identificat->auth_succeded = $identificat->connection_db(addslashes($_POST['login_name']), $_POST['login_password']);
 					if ($identificat->auth_succeded) {
 						$identificat->extauth=0;
-						$identificat->user_present = $identificat->user->getFromDBbyName($_POST['login_name']);
+						$identificat->user_present = $identificat->user->getFromDBbyName(addslashes($_POST['login_name']));
 						$identificat->user->fields["auth_method"] = AUTH_DB_GLPI;
 						$identificat->user->fields["password"] = $_POST['login_password'];
 					} 

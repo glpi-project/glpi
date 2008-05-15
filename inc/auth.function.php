@@ -1035,7 +1035,7 @@ function ldap_auth($identificat,$login,$password, $ldap_method) {
 	if ($user_dn) {
 		$identificat->auth_succeded = true;
 		$identificat->extauth = 1;
-		$identificat->user_present = $identificat->user->getFromDBbyName($login);
+		$identificat->user_present = $identificat->user->getFromDBbyName(addslashes($login));
 		//$identificat->user->getFromLDAP($ldap_method, $user_dn, utf8_decode($login), utf8_decode($password));
 		$identificat->user->getFromLDAP($identificat->ldap_connection,$ldap_method, $user_dn, $login, $password);
 		$identificat->auth_parameters = $ldap_method;
@@ -1083,7 +1083,7 @@ function mail_auth($identificat, $login,$password,$mail_method) {
 		$identificat->auth_succeded = $identificat->connection_imap($mail_method["imap_auth_server"], utf8_decode($login), utf8_decode($password));
 		if ($identificat->auth_succeded) {
 			$identificat->extauth = 1;
-			$identificat->user_present = $identificat->user->getFromDBbyName($login);
+			$identificat->user_present = $identificat->user->getFromDBbyName(addslashes($login));
 			$identificat->auth_parameters = $mail_method;
 		
 			$identificat->user->getFromIMAP($mail_method, utf8_decode($login));
