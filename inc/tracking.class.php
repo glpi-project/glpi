@@ -485,7 +485,7 @@ class Job extends CommonDBTM{
 	
 			if (!$mail_send&&count($updates)>$global_mail_change_count&&$CFG_GLPI["mailing"]){
 				$user=new User;
-				$user->getFromDBbyName($_SESSION["glpiname"]);
+				$user->getFromDB($_SESSION["glpiID"]);
 				$mailtype="update";
 				if ($input["status"]&&in_array("status",$updates)&&ereg("old_",$input["status"])){
 					$mailtype="finish";
@@ -1071,7 +1071,7 @@ class Followup  extends CommonDBTM {
 			if ($CFG_GLPI["mailing"]&&
 			 (in_array("contents",$updates)||isset($input['_need_send_mail']))){
 				$user=new User;
-				$user->getFromDBbyName($_SESSION["glpiname"]);
+				$user->getFromDB($_SESSION["glpiID"]);
 				$mail = new Mailing("followup",$job,$user,(isset($input["private"]) && $input["private"]));
 				$mail->send();
 				$mailsend=true;
@@ -1208,7 +1208,7 @@ class Followup  extends CommonDBTM {
 		if ($CFG_GLPI["mailing"]){
 			if ($input["_close"]) $input["_type"]="finish";
 			$user=new User;
-			$user->getFromDBbyName($_SESSION["glpiname"]);
+			$user->getFromDB($_SESSION["glpiID"]);
 			$mail = new Mailing($input["_type"],$input["_job"],$user,
 						(isset($input["private"])&&$input["private"]));
 			$mail->send();
