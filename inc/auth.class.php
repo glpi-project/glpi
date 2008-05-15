@@ -82,7 +82,7 @@ class Identification {
 	function userExists($name) {
 		global $DB, $LANG;
 
-		$query = "SELECT * FROM glpi_users WHERE name='".addslashes($name)."'";
+		$query = "SELECT * FROM glpi_users WHERE name='$name'";
 		$result = $DB->query($query);
 		if ($DB->numrows($result) == 0) {
 			$this->addToError($LANG["login"][14]);

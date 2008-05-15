@@ -80,7 +80,7 @@ if (!isset ($_POST["noCAS"]) && !empty ($CFG_GLPI["cas_host"])) {
 	$user = $cas->getUser();
 	$identificat->auth_succeded = true;
 	$identificat->extauth = 1;
-	$identificat->user_present = $identificat->user->getFromDBbyName($user);
+	$identificat->user_present = $identificat->user->getFromDBbyName(addslashes($user));
 	$identificat->user->fields['auth_method'] = AUTH_CAS;
 	// if LDAP enabled too, get user's infos from LDAP
 	//If the user is already in database, let's check if he there's a dictory reported in id_auth, to get his personal informations  
@@ -113,7 +113,7 @@ if (isset ($_POST["noCAS"])){
 		// exists=0 -> no exist
 		// exists=1 -> exist with password
 		// exists=2 -> exist without password
-		$exists = $identificat->userExists($_POST['login_name']);
+		$exists = $identificat->userExists(addslashes($_POST['login_name']));
 
 		// Pas en premier car sinon on ne fait pas le blankpassword
 		// First try to connect via le DATABASE
@@ -121,10 +121,10 @@ if (isset ($_POST["noCAS"])){
 			
 			// Without UTF8 decoding
 			if (!$identificat->auth_succeded){
-				$identificat->auth_succeded = $identificat->connection_db($_POST['login_name'], $_POST['login_password']);
+				$identificat->auth_succeded = $identificat->connection_db(addslashes($_POST['login_name']), $_POST['login_password']);
 				if ($identificat->auth_succeded) {
 					$identificat->extauth=0;
-					$identificat->user_present = $identificat->user->getFromDBbyName($_POST['login_name']);
+					$identificat->user_present = $identificat->user->getFromDBbyName(addslashes($_POST['login_name']));
 					$identificat->user->fields["auth_method"] = AUTH_DB_GLPI;
 					$identificat->user->fields["password"] = $_POST['login_password'];
 				} 
