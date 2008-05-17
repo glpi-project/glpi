@@ -52,10 +52,21 @@ if (isset($LINK_ID_TABLE[$_POST["type"]])&&$_POST["type"]>0){
 	$where="WHERE deleted=0 ";
 	$where.=" AND is_template='0' ";		
 
-	if (isset($_POST["entity_restrict"])&&$_POST["entity_restrict"]>=0){
-		$where.= " AND $table.FK_entities='".$_POST["entity_restrict"]."'";
+	if (isset($_POST["entity_restrict"])&&!is_numeric($_POST["entity_restrict"])&&!is_array($_POST["entity_restrict"])){
+		$_POST["entity_restrict"]=unserialize(stripslashes($_POST["entity_restrict"]));
+	}
+	$multi=in_array($table,$CFG_GLPI["recursive_type"]);
+	
+	if (isset($_POST["entity_restrict"]) && !($_POST["entity_restrict"]<0)){
+		$where.=getEntitiesRestrictRequest(" AND ",$table,'',$_POST["entity_restrict"],$multi);
+		if (is_array($_POST["entity_restrict"]) && count($_POST["entity_restrict"])>1) {
+			$multi=true;
+		}	
 	} else {
-		$where.=getEntitiesRestrictRequest("AND",$table);
+		$where.=getEntitiesRestrictRequest(" AND ",$table,'','',$multi);
+		if (count($_SESSION['glpiactiveentities'])>1) {
+			$multi=true;	
+		}
 	}
 
 	if (strlen($_POST['searchText'])>0&&$_POST['searchText']!=$CFG_GLPI["ajax_wildcard"])
@@ -66,7 +77,8 @@ if (isset($LINK_ID_TABLE[$_POST["type"]])&&$_POST["type"]>0){
 	$LIMIT="LIMIT 0,$NBMAX";
 	if ($_POST['searchText']==$CFG_GLPI["ajax_wildcard"]) $LIMIT="";
 
-	$query = "SELECT * FROM ".$table." $where ORDER BY name $LIMIT";
+	$order = ($multi ? "FK_entities,name" : "name");
+	$query = "SELECT * FROM ".$table." $where ORDER BY $order $LIMIT";
 	$result = $DB->query($query);
 
 	echo "<select id='item$rand' name=\"item\" size='1'>";
@@ -76,12 +88,23 @@ if (isset($LINK_ID_TABLE[$_POST["type"]])&&$_POST["type"]>0){
 
 	echo "<option value=\"0\">-----</option>";
 	if ($DB->numrows($result)) {
+		$prev = -1;
 		while ($data = $DB->fetch_array($result)) {
+			if ($multi && $data["FK_entities"]!=$prev) {
+				if ($prev>=0) {
+					echo "</optgroup>";
+				}
+				$prev=$data["FK_entities"];
+				echo "<optgroup label=\"". getDropdownName("glpi_entities", $prev) ."\">";
+			}
 			$output = $data['name'];
 			$ID = $data['ID'];
 			if (empty($output)) $output="($ID)";
 			echo "<option value=\"$ID\" title=\"$output\">".substr($output,0,$CFG_GLPI["dropdown_limit"])."</option>";
 		}
+		if ($multi && $prev>=0) {
+			echo "</optgroup>";
+		}		
 	}
 	echo "</select>";
 

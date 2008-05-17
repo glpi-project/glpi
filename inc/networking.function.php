@@ -474,10 +474,10 @@ function showConnection($ID,$withtemplate='',$type=COMPUTER_TYPE) {
 		if ($canedit){
 			echo "<td class='left'>";
 			if ($withtemplate!=2&&$withtemplate!=1){
-				$netport->getFromDB($ID);
-
-				if ($netport->getDeviceData($netport->fields["on_device"],$netport->fields["device_type"])){
-					dropdownConnectPort($ID,$type,"dport",$netport->FK_entities);
+				if (isset($device->obj->fields["recursive"]) && $device->obj->fields["recursive"]) {
+					dropdownConnectPort($ID,$type,"dport",getEntitySons($device->obj->fields["FK_entities"]));					
+				} else {
+					dropdownConnectPort($ID,$type,"dport",$device->obj->fields["FK_entities"]);					
 				}
 			}
 			else echo "&nbsp;";

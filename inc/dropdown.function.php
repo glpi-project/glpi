@@ -1185,7 +1185,7 @@ function dropdownConnect($type,$fromtype,$myname,$entity_restrict=-1,$onlyglobal
  * @param $ID ID of the current port to connect
  * @param $type type of device where to search ports
  * @param $myname select name
- * @param $entity_restrict Restrict to a defined entity
+ * @param $entity_restrict Restrict to a defined entity (or an array of entities)
  * @return nothing (print out an HTML select box)
  */
 function dropdownConnectPort($ID,$type,$myname,$entity_restrict=-1) {
