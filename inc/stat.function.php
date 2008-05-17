@@ -172,6 +172,7 @@ function displayStats($type,$field,$date1,$date2,$start,$value,$value2=""){
 
 			//le nombre d'intervention
 			//the number of intervention
+
 			$opened=constructEntryValues("inter_total",$date1,$date2,$type,$value[$i]["ID"],$value2);
 			$nb_opened=array_sum($opened);
 			echo displaySearchItem($output_type,$nb_opened,$item_num,$row_num);
@@ -198,8 +199,13 @@ function displayStats($type,$field,$date1,$date2,$start,$value,$value2=""){
 			//Le temps moyen de l'intervention r�lle
 			//The average realtime to resolv
 			$data=constructEntryValues("inter_avgrealtime",$date1,$date2,$type,$value[$i]["ID"],$value2);
+			
 			foreach ($data as $key2 => $val2){
-				$data[$key2]*=$solved[$key2];
+//				if (isset($solved[$key2])){
+					$data[$key2]*=$solved[$key2];
+//				} else {
+//					$data[$key2]=0;
+//				}
 			}
 			$total_realtime=array_sum($data);
 			if ($nb_solved>0)
@@ -259,8 +265,8 @@ function getNbIntervTech($date1,$date2){
 	$query.= " LEFT JOIN glpi_users  ON (glpi_users.ID=glpi_tracking.assign) ";
 
 	$query.=getEntitiesRestrictRequest("WHERE","glpi_tracking");
-	if ($date1!="") $query.= " AND glpi_tracking.date >= '". $date1 ."' ";
-	if ($date2!="") $query.= " AND glpi_tracking.date <= adddate( '". $date2 ."' , INTERVAL 1 DAY ) ";
+	if (!empty($date1)) $query.= " AND glpi_tracking.date >= '". $date1 ."' ";
+	if (!empty($date2)) $query.= " AND glpi_tracking.date <= adddate( '". $date2 ."' , INTERVAL 1 DAY ) ";
 	$query.= " ORDER BY realname, firstname, name";
 	$result = $DB->query($query);
 	$tab=array();
@@ -288,8 +294,8 @@ function getNbIntervTechFollowup($date1,$date2){
 	$query.= " LEFT JOIN glpi_users  ON (glpi_users.ID=glpi_followups.author) ";
 
 	$query.=getEntitiesRestrictRequest("WHERE","glpi_tracking");
-	if ($date1!="") $query.= " AND glpi_tracking.date >= '". $date1 ."' ";
-	if ($date2!="") $query.= " AND glpi_tracking.date <= adddate( '". $date2 ."' , INTERVAL 1 DAY ) ";
+	if (!empty($date1)) $query.= " AND glpi_tracking.date >= '". $date1 ."' ";
+	if (!empty($date2)) $query.= " AND glpi_tracking.date <= adddate( '". $date2 ."' , INTERVAL 1 DAY ) ";
 
 	$query.= " ORDER BY realname,firstname, name";
 	$result = $DB->query($query);
@@ -318,8 +324,8 @@ function getNbIntervEnterprise($date1,$date2){
 	$query.= " LEFT JOIN glpi_enterprises  ON (glpi_enterprises.ID=glpi_tracking.assign_ent) ";
 
 	$query.=getEntitiesRestrictRequest("WHERE","glpi_tracking");
-	if ($date1!="") $query.= " AND glpi_tracking.date >= '". $date1 ."' ";
-	if ($date2!="") $query.= " AND glpi_tracking.date <= adddate( '". $date2 ."' , INTERVAL 1 DAY ) ";
+	if (!empty($date1)) $query.= " AND glpi_tracking.date >= '". $date1 ."' ";
+	if (!empty($date2)) $query.= " AND glpi_tracking.date <= adddate( '". $date2 ."' , INTERVAL 1 DAY ) ";
 
 	$query.= " ORDER BY name";
 	$tab=array();
@@ -380,8 +386,8 @@ function getNbIntervAuthor($date1,$date2){
 	global $DB;
 	$query = "SELECT DISTINCT glpi_tracking.author as ID, glpi_users.name as name, glpi_users.realname as realname, glpi_users.firstname as firstname FROM glpi_tracking INNER JOIN glpi_users ON (glpi_users.ID=glpi_tracking.author)";
 	$query.=getEntitiesRestrictRequest("WHERE","glpi_tracking");
-	if ($date1!="") $query.= " AND glpi_tracking.date >= '". $date1 ."' ";
-	if ($date2!="") $query.= " AND glpi_tracking.date <= adddate( '". $date2 ."' , INTERVAL 1 DAY ) ";
+	if (!empty($date1)) $query.= " AND glpi_tracking.date >= '". $date1 ."' ";
+	if (!empty($date2)) $query.= " AND glpi_tracking.date <= adddate( '". $date2 ."' , INTERVAL 1 DAY ) ";
 
 	$query.= " ORDER BY realname, firstname, name";
 	$result = $DB->query($query);
@@ -406,8 +412,8 @@ function getNbIntervRecipient($date1,$date2){
 	global $DB;
 	$query = "SELECT DISTINCT glpi_tracking.recipient as ID, glpi_users.name as name, glpi_users.realname as realname, glpi_users.firstname as firstname FROM glpi_tracking LEFT JOIN glpi_users ON (glpi_users.ID=glpi_tracking.recipient)";
 	$query.=getEntitiesRestrictRequest("WHERE","glpi_tracking");
-	if ($date1!="") $query.= " AND glpi_tracking.date >= '". $date1 ."' ";
-	if ($date2!="") $query.= " AND glpi_tracking.date <= adddate( '". $date2 ."' , INTERVAL 1 DAY ) ";
+	if (!empty($date1)) $query.= " AND glpi_tracking.date >= '". $date1 ."' ";
+	if (!empty($date2)) $query.= " AND glpi_tracking.date <= adddate( '". $date2 ."' , INTERVAL 1 DAY ) ";
 
 	$query.= " ORDER BY realname, firstname, name";
 	$result = $DB->query($query);
@@ -433,8 +439,8 @@ function getNbIntervPriority($date1,$date2){
 
 	$query = "SELECT DISTINCT priority 
 		FROM glpi_tracking ".getEntitiesRestrictRequest("WHERE","glpi_tracking");
-	if ($date1!="") $query.= " AND glpi_tracking.date >= '". $date1 ."' ";
-	if ($date2!="") $query.= " AND glpi_tracking.date <= adddate( '". $date2 ."' , INTERVAL 1 DAY ) ";
+	if (!empty($date1)) $query.= " AND glpi_tracking.date >= '". $date1 ."' ";
+	if (!empty($date2)) $query.= " AND glpi_tracking.date <= adddate( '". $date2 ."' , INTERVAL 1 DAY ) ";
 	$query.=" ORDER BY priority";
 	
 	$result = $DB->query($query);
@@ -460,8 +466,8 @@ function getNbIntervRequestType($date1,$date2){
 	global $DB;
 	$query = "SELECT DISTINCT request_type 
 		FROM glpi_tracking ".getEntitiesRestrictRequest("WHERE","glpi_tracking");
-	if ($date1!="") $query.= " AND glpi_tracking.date >= '". $date1 ."' ";
-	if ($date2!="") $query.= " AND glpi_tracking.date <= adddate( '". $date2 ."' , INTERVAL 1 DAY ) ";
+	if (!empty($date1)) $query.= " AND glpi_tracking.date >= '". $date1 ."' ";
+	if (!empty($date2)) $query.= " AND glpi_tracking.date <= adddate( '". $date2 ."' , INTERVAL 1 DAY ) ";
 	$query.=" ORDER BY request_type";
 	$result = $DB->query($query);
 	$tab=array();
@@ -488,8 +494,8 @@ function getNbIntervCategory($date1,$date2){
 		FROM glpi_tracking 
 		LEFT JOIN glpi_dropdown_tracking_category ON (glpi_tracking.category = glpi_dropdown_tracking_category.ID) ";
 	$query.=getEntitiesRestrictRequest(" WHERE","glpi_tracking");
-	if ($date1!="") $query.= " AND glpi_tracking.date >= '". $date1 ."' ";
-	if ($date2!="") $query.= " AND glpi_tracking.date <= adddate( '". $date2 ."' , INTERVAL 1 DAY ) ";
+	if (!empty($date1)) $query.= " AND glpi_tracking.date >= '". $date1 ."' ";
+	if (!empty($date2)) $query.= " AND glpi_tracking.date <= adddate( '". $date2 ."' , INTERVAL 1 DAY ) ";
 		
 	$query.=" ORDER BY glpi_dropdown_tracking_category.completename";
 
@@ -516,8 +522,8 @@ function getNbIntervGroup($date1,$date2){
 	$query = "SELECT DISTINCT glpi_groups.id AS ID,glpi_groups.name FROM glpi_tracking 
 		LEFT JOIN  glpi_groups ON (glpi_tracking.FK_group = glpi_groups.ID)";
 	$query.=getEntitiesRestrictRequest(" WHERE","glpi_tracking");
-	if ($date1!="") $query.= " AND glpi_tracking.date >= '". $date1 ."' ";
-	if ($date2!="") $query.= " AND glpi_tracking.date <= adddate( '". $date2 ."' , INTERVAL 1 DAY ) ";
+	if (!empty($date1)) $query.= " AND glpi_tracking.date >= '". $date1 ."' ";
+	if (!empty($date2)) $query.= " AND glpi_tracking.date <= adddate( '". $date2 ."' , INTERVAL 1 DAY ) ";
 	$query.=" ORDER BY glpi_groups.name";
 	
 	$result = $DB->query($query);
@@ -545,8 +551,8 @@ function getNbIntervAssignGroup($date1,$date2){
 	$query = "SELECT DISTINCT glpi_groups.id AS ID,glpi_groups.name FROM glpi_tracking 
 		LEFT JOIN  glpi_groups ON (glpi_tracking.assign_group = glpi_groups.ID)";
 	$query.=getEntitiesRestrictRequest(" WHERE","glpi_tracking");
-	if ($date1!="") $query.= " AND glpi_tracking.date >= '". $date1 ."' ";
-	if ($date2!="") $query.= " AND glpi_tracking.date <= adddate( '". $date2 ."' , INTERVAL 1 DAY ) ";
+	if (!empty($date1)) $query.= " AND glpi_tracking.date >= '". $date1 ."' ";
+	if (!empty($date2)) $query.= " AND glpi_tracking.date <= adddate( '". $date2 ."' , INTERVAL 1 DAY ) ";
 	$query.=" ORDER BY glpi_groups.name";
 	
 	$result = $DB->query($query);
@@ -565,12 +571,6 @@ function getNbIntervAssignGroup($date1,$date2){
 
 function constructEntryValues($type,$begin="",$end="",$param="",$value="",$value2=""){
 	global $DB;
-
-	if (empty($end)) $end=date("Y-m-d");
-	$end.=" 23:59:59";
-	// 1 an par defaut
-	if (empty($begin)) $begin=date("Y-m-d",mktime(0,0,0,date("m"),date("d"),date("Y")-1));
-	$begin.=" 00:00:00";
 
 	$query="";
 
@@ -647,23 +647,23 @@ function constructEntryValues($type,$begin="",$end="",$param="",$value="",$value
 
 		case "inter_total": 
 			if (!empty($begin)) $WHERE.= " AND glpi_tracking.date >= '$begin' ";
-			if (!empty($end)) $WHERE.= " AND glpi_tracking.date <= '$end' ";
+			if (!empty($end)) $WHERE.= " AND glpi_tracking.date <= adddate('$end' , INTERVAL 1 DAY )";
 
 			$query="SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(glpi_tracking.date),'%Y-%m') AS date_unix, COUNT(glpi_tracking.ID) AS total_visites  FROM glpi_tracking ".$LEFTJOIN.$WHERE.
 			" GROUP BY date_unix ORDER BY glpi_tracking.date";
 		break;
 		case "inter_solved": 
-			$WHERE.=" AND ( glpi_tracking.status = 'old_done' OR glpi_tracking.status = 'old_notdone') AND glpi_tracking.closedate <> '0000-00-00 00:00:00' ";
+			$WHERE.=" AND ( glpi_tracking.status = 'old_done' OR glpi_tracking.status = 'old_notdone') AND glpi_tracking.closedate IS NOT NULL ";
 			if (!empty($begin)) $WHERE.= " AND glpi_tracking.closedate >= '$begin' ";
-			if (!empty($end)) $WHERE.= " AND glpi_tracking.closedate <= '$end' ";
+			if (!empty($end)) $WHERE.= " AND glpi_tracking.closedate <= adddate('$end' , INTERVAL 1 DAY ) ";
 
 			$query="SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(glpi_tracking.closedate),'%Y-%m') AS date_unix, COUNT(glpi_tracking.ID) AS total_visites  FROM glpi_tracking ".$LEFTJOIN.$WHERE.
 			" GROUP BY date_unix ORDER BY glpi_tracking.closedate";
 		break;
 		case "inter_avgsolvedtime" :
-			$WHERE.=" AND ( glpi_tracking.status = 'old_done' OR glpi_tracking.status = 'old_notdone') AND glpi_tracking.closedate <> '0000-00-00 00:00:00' ";
+			$WHERE.=" AND ( glpi_tracking.status = 'old_done' OR glpi_tracking.status = 'old_notdone') AND glpi_tracking.closedate IS NOT NULL ";
 		if (!empty($begin)) $WHERE.= " AND glpi_tracking.closedate >= '$begin' ";
-		if (!empty($end)) $WHERE.= " AND glpi_tracking.closedate <= '$end' ";
+		if (!empty($end)) $WHERE.= " AND glpi_tracking.closedate <= adddate('$end' , INTERVAL 1 DAY ) ";
 
 		$query="SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(glpi_tracking.closedate),'%Y-%m') AS date_unix, 24*AVG(TO_DAYS(glpi_tracking.closedate)-TO_DAYS(glpi_tracking.date)) AS total_visites  FROM glpi_tracking ".
 			$LEFTJOIN.$WHERE.
@@ -675,16 +675,16 @@ function constructEntryValues($type,$begin="",$end="",$param="",$value="",$value
 			else $realtime_table="glpi_tracking";
 			$WHERE.=" AND $realtime_table.realtime > '0' ";
 			if (!empty($begin)) $WHERE.= " AND glpi_tracking.closedate >= '$begin' ";
-			if (!empty($end)) $WHERE.= " AND glpi_tracking.closedate <= '$end' ";
+			if (!empty($end)) $WHERE.= " AND glpi_tracking.closedate <= adddate('$end' , INTERVAL 1 DAY ) ";
 
 			$query="SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(glpi_tracking.closedate),'%Y-%m') AS date_unix, ".MINUTE_TIMESTAMP."*AVG($realtime_table.realtime) AS total_visites  FROM glpi_tracking ".
 				$LEFTJOIN.$WHERE.
 				" GROUP BY date_unix ORDER BY glpi_tracking.closedate";
 			break;
 		case "inter_avgtakeaccount" :
-			$WHERE.=" AND ( glpi_tracking.status = 'old_done' OR glpi_tracking.status = 'old_notdone') AND glpi_tracking.closedate <> '0000-00-00 00:00:00' ";
+			$WHERE.=" AND ( glpi_tracking.status = 'old_done' OR glpi_tracking.status = 'old_notdone') AND glpi_tracking.closedate IS NOT NULL ";
 			if (!empty($begin)) $WHERE.= " AND glpi_tracking.closedate >= '$begin' ";
-			if (!empty($end)) $WHERE.= " AND glpi_tracking.closedate <= '$end' ";
+			if (!empty($end)) $WHERE.= " AND glpi_tracking.closedate <= adddate('$end' , INTERVAL 1 DAY ) ";
 
 			$query="SELECT glpi_tracking.ID AS ID, FROM_UNIXTIME(UNIX_TIMESTAMP(glpi_tracking.closedate),'%Y-%m') AS date_unix, MIN(UNIX_TIMESTAMP(glpi_tracking.closedate)-UNIX_TIMESTAMP(glpi_tracking.date)) AS OPEN, MIN(UNIX_TIMESTAMP(glpi_followups.date)-UNIX_TIMESTAMP(glpi_tracking.date)) AS FIRST FROM glpi_tracking LEFT JOIN glpi_followups ON (glpi_followups.tracking = glpi_tracking.ID) ";
 			if (!ereg("glpi_followups",$LEFTJOIN)){
@@ -693,10 +693,9 @@ function constructEntryValues($type,$begin="",$end="",$param="",$value="",$value
 				$query.=$WHERE." GROUP BY glpi_tracking.ID";
 			break;
 
-			//		$query = " from glpi_tracking LEFT JOIN glpi_followups ON (glpi_followups.tracking = glpi_tracking.ID) where glpi_tracking.status ='old'  and closedate != '0000-00-00' and YEAR(glpi_tracking.date) = YEAR(NOW())";	
 
 	}
-	//echo $query."<br><br>";
+
 	$entrees=array();
 	$count=array();
 	if (empty($query)) return array();
@@ -753,7 +752,7 @@ function constructEntryValues($type,$begin="",$end="",$param="",$value="",$value
 
 		$current=mktime(0,0,0,intval($month)+1,1,intval($year));
 	}
-
+	
 	return $entrees;
 }
 
@@ -795,7 +794,7 @@ function graphBy($entrees,$titre="",$unit="",$showtotal=1,$type="month"){
 		if ($largeur > 50) $largeur = 50;
 	}
 
-	echo "<table cellpadding='0' cellspacing='0' border='0' ><tr><td style='background-image:url(".$CFG_GLPI["root_doc"]."/pics/fond-stats.gif)' >";
+	echo "<table cellpadding='0' cellspacing='0' border='0' class='tab_glpi'><tr><td style='background-image:url(".$CFG_GLPI["root_doc"]."/pics/fond-stats.gif)' >";
 	echo "<table cellpadding='0' cellspacing='0' border='0'><tr>";
 	echo "<td bgcolor='black'><img src='".$CFG_GLPI["root_doc"]."/pics/noir.png' width='1' height='200' alt=''></td>";
 

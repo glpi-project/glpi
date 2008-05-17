@@ -90,24 +90,24 @@ if (!isset($_GET["extended"])) $_GET["extended"]=0;
 
 if (!isset($_GET["contains"])||isset($_GET['reset'])) $_GET["contains"]="";
 if (!isset($_GET["contains3"])||isset($_GET['reset'])) $_GET["contains3"]="";
-if (!isset($_GET["date1"])||isset($_GET['reset'])) $_GET["date1"]="0000-00-00";
-if (!isset($_GET["enddate1"])||isset($_GET['reset'])) $_GET["enddate1"]="0000-00-00";
-if (!isset($_GET["datemod1"])||isset($_GET['reset'])) $_GET["datemod1"]="0000-00-00";
-if (!isset($_GET["date2"])||isset($_GET['reset'])) $_GET["date2"]="0000-00-00";
-if (!isset($_GET["enddate2"])||isset($_GET['reset'])) $_GET["enddate2"]="0000-00-00";
-if (!isset($_GET["datemod2"])||isset($_GET['reset'])) $_GET["datemod2"]="0000-00-00";
+if (!isset($_GET["date1"])||isset($_GET['reset'])) $_GET["date1"]="";
+if (!isset($_GET["enddate1"])||isset($_GET['reset'])) $_GET["enddate1"]="";
+if (!isset($_GET["datemod1"])||isset($_GET['reset'])) $_GET["datemod1"]="";
+if (!isset($_GET["date2"])||isset($_GET['reset'])) $_GET["date2"]="";
+if (!isset($_GET["enddate2"])||isset($_GET['reset'])) $_GET["enddate2"]="";
+if (!isset($_GET["datemod2"])||isset($_GET['reset'])) $_GET["datemod2"]="";
 if (!isset($_GET["field"])||isset($_GET['reset'])) $_GET["field"]="";
 if (!isset($_GET["only_computers"])||isset($_GET['reset'])) $_GET["only_computers"] = "";
 if (!isset($_GET["recipient"])||isset($_GET['reset'])) $_GET["recipient"]=0;
 
 
-if ($_GET["date1"]!="0000-00-00"&&$_GET["date2"]!="0000-00-00"&&strcmp($_GET["date2"],$_GET["date1"])<0){
+if (!empty($_GET["date1"])&&!empty($_GET["date2"])&&strcmp($_GET["date2"],$_GET["date1"])<0){
 	$tmp=$_GET["date1"];
 	$_GET["date1"]=$_GET["date2"];
 	$_GET["date2"]=$tmp;
 }
 
-if ($_GET["enddate1"]!="0000-00-00"&&$_GET["enddate2"]!="0000-00-00"&&strcmp($_GET["enddate2"],$_GET["enddate1"])<0){
+if (!empty($_GET["enddate1"])&&!empty($_GET["enddate2"])&&strcmp($_GET["enddate2"],$_GET["enddate1"])<0){
 	$tmp=$_GET["enddate1"];
 	$_GET["enddate1"]=$_GET["enddate2"];
 	$_GET["enddate2"]=$tmp;

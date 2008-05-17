@@ -51,9 +51,8 @@ if(empty($_POST["date1"])&&empty($_POST["date2"])) {
 	$_POST["date2"]=date("Y-m-d");
 }
 
-if(empty($_POST["date1"])) $_POST["date1"] = "";
-if(empty($_POST["date2"])) $_POST["date2"] = "";
-if ($_POST["date1"]!=""&&$_POST["date2"]!=""&&strcmp($_POST["date2"],$_POST["date1"])<0){
+
+if (!empty($_POST["date1"])&&!empty($_POST["date2"])&&strcmp($_POST["date2"],$_POST["date1"])<0){
 	$tmp=$_POST["date1"];
 	$_POST["date1"]=$_POST["date2"];
 	$_POST["date2"]=$tmp;
@@ -63,10 +62,10 @@ if ($_POST["date1"]!=""&&$_POST["date2"]!=""&&strcmp($_POST["date2"],$_POST["dat
 echo "<div align='center'><form method=\"post\" name=\"form\" action=\"stat.global.php\">";
 echo "<table class='tab_cadre'><tr class='tab_bg_2'><td align='right'>";
 echo $LANG["search"][8]." :</td><td>";
-showCalendarForm("form","date1",$_POST["date1"]);
+showDateFormItem("date1",$_POST["date1"]);
 echo "</td><td rowspan='2' align='center'><input type=\"submit\" class='button' name=\"submit\" Value=\"". $LANG["buttons"][7] ."\" /></td></tr>";
 echo "<tr class='tab_bg_2'><td align='right'>".$LANG["search"][9]." :</td><td>";
-showCalendarForm("form","date2",$_POST["date2"]);
+showDateFormItem("date2",$_POST["date2"]);
 echo "</td></tr>";
 echo "</table></form></div>";
 

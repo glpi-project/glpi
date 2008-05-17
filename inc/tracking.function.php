@@ -1171,25 +1171,25 @@ function searchFormTracking($extended=0,$target,$start="",$status="new",$tosearc
 		echo "</td></tr>";
 	}
 	if($extended)	{
-		echo "<tr class='tab_bg_1'><td colspan='2' class='right'>".$LANG["reports"][60].":</td><td class='center' colspan='2'>".$LANG["search"][8].":&nbsp;";
-		showCalendarForm("form","date1",$date1);
-		echo "</td><td class='center' colspan='2'>";
-		echo $LANG["search"][9].":&nbsp;";
-		showCalendarForm("form","date2",$date2);
+		echo "<tr class='tab_bg_1'><td class='right'>".$LANG["reports"][60].":</td><td class='center' colspan='2'>".$LANG["search"][8].":</td><td>";
+		showDateFormItem("date1",$date1);
+		echo "</td><td class='center'>";
+		echo $LANG["search"][9].":</td><td>";
+		showDateFormItem("date2",$date2);
 		echo "</td></tr>";
 
-		echo "<tr class='tab_bg_1'><td colspan='2' class='right'>".$LANG["reports"][61].":</td><td class='center' colspan='2'>".$LANG["search"][8].":&nbsp;";
-		showCalendarForm("form","enddate1",$enddate1);
-		echo "</td><td class='center' colspan='2'>";
-		echo $LANG["search"][9].":&nbsp;";
-		showCalendarForm("form","enddate2",$enddate2);
+		echo "<tr class='tab_bg_1'><td class='right'>".$LANG["reports"][61].":</td><td class='center' colspan='2'>".$LANG["search"][8].":</td><td>";
+		showDateFormItem("enddate1",$enddate1);
+		echo "</td><td class='center'>";
+		echo $LANG["search"][9].":</td><td>";
+		showDateFormItem("enddate2",$enddate2);
 		echo "</td></tr>";
 
-		echo "<tr class='tab_bg_1'><td colspan='2' class='right'>".$LANG["common"][26].":</td><td class='center' colspan='2'>".$LANG["search"][8].":&nbsp;";
-		showCalendarForm("form","datemod1",$datemod1);
-		echo "</td><td class='center' colspan='2'>";
-		echo $LANG["search"][9].":&nbsp;";
-		showCalendarForm("form","datemod2",$datemod2);
+		echo "<tr class='tab_bg_1'><td class='right'>".$LANG["common"][26].":</td><td class='center' colspan='2'>".$LANG["search"][8].":</td><td>";
+		showDateFormItem("datemod1",$datemod1);
+		echo "</td><td class='center'>";
+		echo $LANG["search"][9].":</td><td>";
+		showDateFormItem("datemod2",$datemod2);
 		echo "</td></tr>";
 	}
 	echo "<tr  class='tab_bg_1'>";

@@ -940,6 +940,7 @@ function convDateTime($time) {
 function convDate($time) { 
 	global $CFG_GLPI;
 	if (is_null($time)) return $time;
+
 	if (isset($CFG_GLPI["dateformat"])&&$CFG_GLPI["dateformat"]!=0) {
 		$date = substr($time,8,2)."-";        // jour 
 		$date = $date.substr($time,5,2)."-";  // mois 
@@ -947,6 +948,9 @@ function convDate($time) {
 		//$date = $date.substr($time,11,5);     // heures et minutes 
 		return $date; 
 	}else {
+		if (strlen($time)>10){
+			return substr($time,0,10);
+		}
 		return $time;
 	}
 }

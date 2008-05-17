@@ -468,7 +468,7 @@ function showLicenseForm($target, $action, $sID, $lID = "") {
 	// defaults values :
 	$values['version'] = '';
 	$values['serial'] = '';
-	$values['expire'] = "0000-00-00";
+	$values['expire'] = "";
 	$values['oem'] = 0;
 	$values["oem_computer"] = '';
 	$values["comments"] = '';
@@ -487,9 +487,6 @@ function showLicenseForm($target, $action, $sID, $lID = "") {
 			$lic->getFromDB($lID);
 			$values = $lic->fields;
 		}
-
-	if (empty ($values['expire']))
-		$values['expire'] = "0000-00-00";
 
 	echo "<div class='center'><strong>";
 	echo "<a href=\"" . $CFG_GLPI["root_doc"] . "/front/software.form.php?ID=$sID\">";
@@ -546,7 +543,7 @@ function showLicenseForm($target, $action, $sID, $lID = "") {
 	}
 
 	echo "<tr class='tab_bg_1'><td>" . $LANG["search"][9] . ":</td><td>";
-	showCalendarForm("form", "expire", $values['expire']);
+	showDateFormItem("expire",$values['expire']);
 	echo "</td></tr>";
 
 	// OEM

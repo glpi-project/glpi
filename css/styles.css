@@ -243,6 +243,10 @@ th {  }
 
 td { }
 
+.tab_glpi {
+	margin: 0 auto;
+}
+
 .tab_cadre{
 	margin: 0 auto;
 	-moz-border-radius: 4px;
