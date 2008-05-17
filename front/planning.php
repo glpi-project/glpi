@@ -107,15 +107,10 @@ if (haveRight("show_all_planning","1")){
 
 
 	echo "<script type='text/javascript' >\n";
-	echo "   new Form.Element.Observer('dropdown_uID".$rand_user."', 1, \n";
-	echo "      function(element, value) {\n";
-	echo "window.document.getElementById('radio_user').checked=true;";
-	echo "});\n";
-	echo "   new Form.Element.Observer('dropdown_gID".$rand_group."', 1, \n";
-	echo "      function(element, value) {\n";
-	echo "window.document.getElementById('radio_group').checked=true;";
-	echo "});\n";
-
+	echo "Ext.onReady(function() {";
+	echo "	Ext.get('dropdown_uID".$rand_user."').on('change',function() {window.document.getElementById('radio_user').checked=true;});";
+	echo "	Ext.get('dropdown_gID".$rand_group."').on('change',function() {window.document.getElementById('radio_group').checked=true;});";
+	echo "});";
 	echo "</script>\n";
 } else if (haveRight("show_group_planning","1")){
 	echo "<select name='usertype'>";

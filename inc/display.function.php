@@ -51,7 +51,7 @@ if (!defined('GLPI_ROOT')){
  * @return nothing
  **/
 function includeCommonHtmlHeader($title=''){
-	global $CFG_GLPI,$PLUGIN_HOOKS;
+	global $CFG_GLPI,$PLUGIN_HOOKS,$LANG;
 
 	// Send UTF8 Headers
 	header("Content-Type: text/html; charset=UTF-8");
@@ -71,6 +71,36 @@ function includeCommonHtmlHeader($title=''){
 		echo "<meta http-equiv=\"Pragma\" content=\"no-cache\">\n";
 		echo "<meta http-equiv=\"Cache-Control\" content=\"no-cache\">\n";
 	}
+
+	// AJAX library
+	echo "<script type=\"text/javascript\" src='".$CFG_GLPI["root_doc"]."/lib/extjs/adapter/prototype/prototype.js'></script>\n";
+	echo "<script type=\"text/javascript\" src='".$CFG_GLPI["root_doc"]."/lib/control.modal.js'></script>\n";
+	echo "<script type=\"text/javascript\" src='".$CFG_GLPI["root_doc"]."/lib/extjs/adapter/prototype/scriptaculous.js?load=effects,controls'></script>\n";
+	echo "<script type=\"text/javascript\" src='".$CFG_GLPI["root_doc"]."/lib/extjs/adapter/prototype/ext-prototype-adapter.js'></script>\n";
+	if ($CFG_GLPI["debug"]==DEBUG_MODE){
+		echo "<script type=\"text/javascript\" src='".$CFG_GLPI["root_doc"]."/lib/extjs/ext-all-debug.js'></script>\n";
+	} else {
+		echo "<script type=\"text/javascript\" src='".$CFG_GLPI["root_doc"]."/lib/extjs/ext-all.js'></script>\n";
+	}
+	echo "<link rel='stylesheet' type='text/css' href='".$CFG_GLPI["root_doc"]."/lib/extjs/resources/ext-all.css' media='screen' >\n";
+
+	if (isset($_SESSION["glpilanguage"])){
+		echo "<script type=\"text/javascript\" src='".$CFG_GLPI["root_doc"]."/lib/extjs/locale/ext-lang-".$CFG_GLPI["languages"][$_SESSION["glpilanguage"]][2].".js'></script>\n";
+	}
+	// EXTRA EXTJS 
+	echo "<script type=\"text/javascript\" src='".$CFG_GLPI["root_doc"]."/lib/extrajs/datetime.js'></script>\n";
+	echo "<script type=\"text/javascript\" src='".$CFG_GLPI["root_doc"]."/lib/extrajs/xdatefield.js'></script>\n";
+
+	echo "<script type='text/javascript'>";
+	// DO not get it from extjs website
+	echo "Ext.BLANK_IMAGE_URL = '".$CFG_GLPI["root_doc"]."/lib/extjs/s.gif';";
+	// Loading indicator in span not in div
+	echo "Ext.UpdateManager.defaults.indicatorText = '<span class=\"loading-indicator\">".$LANG["common"][80]."</span>';";
+	echo "</script>\n";
+
+	// Some Javascript-Functions which we may need later
+	echo "<script type=\"text/javascript\" src='".$CFG_GLPI["root_doc"]."/script.js'></script>\n";
+
 	//  CSS link
 	echo "<link rel='stylesheet'  href='".$CFG_GLPI["root_doc"]."/css/styles.css' type='text/css' media='screen' >\n";
 	// surcharge CSS hack for IE
@@ -80,14 +110,6 @@ function includeCommonHtmlHeader($title=''){
 
 	echo "<link rel='stylesheet' type='text/css' media='print' href='".$CFG_GLPI["root_doc"]."/css/print.css' >\n";
 	echo "<link rel='shortcut icon' type='images/x-icon' href='".$CFG_GLPI["root_doc"]."/pics/favicon.ico' >\n";
-
-	// AJAX library
-	echo "<script type=\"text/javascript\" src='".$CFG_GLPI["root_doc"]."/lib/prototype.js'></script>\n";
-	echo "<script type=\"text/javascript\" src='".$CFG_GLPI["root_doc"]."/lib/control.modal.js'></script>\n";
-	echo "<script type=\"text/javascript\" src='".$CFG_GLPI["root_doc"]."/lib/scriptaculous/scriptaculous.js'></script>\n";
-
-	// Some Javascript-Functions which we may need later
-	echo "<script type=\"text/javascript\" src='".$CFG_GLPI["root_doc"]."/script.js'></script>\n";
 	
 	// Calendar scripts 
 	if (isset($_SESSION["glpilanguage"])){

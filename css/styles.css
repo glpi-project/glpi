@@ -233,7 +233,8 @@ input.submit:hover {
 /* ################--------------- Table  ---------------#################### */
 table {   
 	font-size: 11px;
-	margin: 0 auto;
+	/* Probem WIth EXTJS calendar -> to sons*/
+	/*margin: 0 auto;*/
 	border:0;
 }
 
@@ -243,6 +244,7 @@ th {  }
 td { }
 
 .tab_cadre{
+	margin: 0 auto;
 	-moz-border-radius: 4px;
 	border: 1px solid #cccccc;
 	z-index:1;
@@ -253,7 +255,8 @@ td { }
 }
 
 .tab_cadre_central{
--moz-border-radius: 4px;
+	margin: 0 auto;
+	-moz-border-radius: 4px;
 	border: 1px solid #bbbbbb;
 	z-index:1;
 	text-align: left;
@@ -265,6 +268,7 @@ td { }
 
 
 .tab_cadre_navigation {
+	margin: 0 auto;
 	padding: 4px;
 	margin: 1px;
 	border: 1px solid #aaaaaa;
@@ -276,6 +280,7 @@ td { }
 }
 
 .tab_cadre_fixe, .tab_cadre_fixehov{
+	margin: 0 auto;
 	-moz-border-radius: 4px;
 	border: 1px solid #cccccc;
 	z-index:1;
@@ -285,6 +290,7 @@ td { }
 }
 
 .tab_cadrehov, .tab_cadrehov_pointer{
+	margin: 0 auto;
 	-moz-border-radius: 4px;
 	border: 1px solid #cccccc;
 	text-align: left;
@@ -292,6 +298,17 @@ td { }
 	width: 80%;
 	background-color: #ffffff;
 	
+}
+
+.tab_cadre_report {
+	margin: 0 auto;
+	-moz-border-radius: 4px;
+	border: 1px solid #cccccc;
+	z-index:1;
+	text-align: left;
+	font-size: 11px;
+	text-align: center;
+	width:80%;
 }
 
 .tab_cadre th, .tab_cadre_fixe th, .tab_cadre_fixehov th, .tab_cadrehov th, .tab_cadrehov_pointer th , .tab_cadre_report th  {
@@ -321,18 +338,6 @@ td { }
 .tab_cadrehov_pointer tr {
 	cursor: pointer;
 }
-
-.tab_cadre_report {
-
--moz-border-radius: 4px;
-	border: 1px solid #cccccc;
-	z-index:1;
-	text-align: left;
-	font-size: 11px;
-	text-align: center;
-	width:80%;
-}
-
 
 .tab_bg_1 {
 	background-color: #f2f2f2;
@@ -391,6 +396,38 @@ td { }
 
 }
 
+/* ################--------------- Pager  ---------------#################### */
+
+.tab_cadre_pager{
+	margin: 0 auto;
+	text-align:center;
+	-moz-border-radius: 4px;
+	border: 1px solid #cccccc;
+	font-size:10px;
+	width:950px;
+}
+
+
+.tab_cadre_pager select, .tab_cadre_pager span, .tab_cadre_pager form {
+	font-size:10px;
+	margin:0;
+}
+
+.tab_cadre_pager input {
+	vertical-align:middle;
+}
+
+
+.tab_cadre_pager th {
+	font-size: 10px;
+	font-weight: bold;
+	background-color: #fccc6f;
+	text-align: center;
+	background:  url("../pics/fond_th.png") repeat-x; 
+}
+
+
+
 /* ################--------------- Bouton navigation   ---------------#################### */
 /* (obsolète mais encore utilisés)							*/
 
@@ -443,35 +480,6 @@ ul.autocomp   li.selected { background-color: #FFF6CF; }
 	height:16px;
 }
 
-
-/* ################--------------- Pager  ---------------#################### */
-
-.tab_cadre_pager{
-	text-align:center;
-	-moz-border-radius: 4px;
-	border: 1px solid #cccccc;
-	font-size:10px;
-	width:950px;
-}
-
-
-.tab_cadre_pager select, .tab_cadre_pager span, .tab_cadre_pager form {
-	font-size:10px;
-	margin:0;
-}
-
-.tab_cadre_pager input {
-	vertical-align:middle;
-}
-
-
-.tab_cadre_pager th {
-	font-size: 10px;
-	font-weight: bold;
-	background-color: #fccc6f;
-	text-align: center;
-	background:  url("../pics/fond_th.png") repeat-x; 
-}
 
 
 

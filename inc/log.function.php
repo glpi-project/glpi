@@ -122,23 +122,25 @@ function constructHistory($id_device,$device_type,&$oldvalues,&$values) {
 			} else {
 				$real_device_type=$device_type;
 				// Parsing $SEARCH_OPTION, check if an entry exists matching $key
-				foreach($SEARCH_OPTION[$device_type] as $key2 => $val2){
-			
-					// Linkfield or standard field not massive action enable
-					if($val2["linkfield"]==$key 
-						|| ( empty($val2["linkfield"]) && $key == $val2["field"]) ){
-						$id_search_option=$key2; // Give ID of the $SEARCH_OPTION
-			
-						if($val2["table"]==$LINK_ID_TABLE[$device_type]){
-							// 1st case : text field -> keep datas
-							$changes=array($id_search_option, addslashes($oldval),$values[$key]);
-						}else {
-							// 2nd case ; link field -> get data from dropdown
-							$changes=array($id_search_option,  addslashes(getDropdownName( $val2["table"],$oldval)), addslashes(getDropdownName( $val2["table"],$values[$key])));
+				if (isset($SEARCH_OPTION[$device_type])){
+					foreach($SEARCH_OPTION[$device_type] as $key2 => $val2){
+				
+						// Linkfield or standard field not massive action enable
+						if($val2["linkfield"]==$key 
+							|| ( empty($val2["linkfield"]) && $key == $val2["field"]) ){
+							$id_search_option=$key2; // Give ID of the $SEARCH_OPTION
+				
+							if($val2["table"]==$LINK_ID_TABLE[$device_type]){
+								// 1st case : text field -> keep datas
+								$changes=array($id_search_option, addslashes($oldval),$values[$key]);
+							}else {
+								// 2nd case ; link field -> get data from dropdown
+								$changes=array($id_search_option,  addslashes(getDropdownName( $val2["table"],$oldval)), addslashes(getDropdownName( $val2["table"],$values[$key])));
+							}
+							break;
 						}
-						break;
-					}
-				} 
+					} 
+				}
 			}
 		
 			if (count($changes)){

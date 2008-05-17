@@ -154,23 +154,30 @@ class CommonDBTM {
 
 		global $DB,$CFG_GLPI;
 
-		for ($i=0; $i < count($updates); $i++) {
-			$query  = "UPDATE `".$this->table."` SET `";
-			$query .= $updates[$i]."`";
-
-			if ($this->fields[$updates[$i]]=="NULL"){
-				$query .= " = ";
-				$query .= $this->fields[$updates[$i]];
+		foreach ($updates as $field) {
+			if (isset($this->fields[$field])){
+				$query  = "UPDATE `".$this->table."` SET `";
+				$query .= $field."`";
+	
+				if ($this->fields[$field]=="NULL"){
+					$query .= " = ";
+					$query .= $this->fields[$field];
+				} else {
+					$query .= " = '";
+					$query .= $this->fields[$field]."'";
+				}
+				$query .= " WHERE ID ='";
+				$query .= $this->fields["ID"];	
+				$query .= "'";
+				if (!$DB->query($query)){
+					if (isset($oldvalues[$field])){
+						unset($oldvalues[$field]);
+					}
+				}
 			} else {
-				$query .= " = '";
-				$query .= $this->fields[$updates[$i]]."'";
-			}
-			$query .= " WHERE ID ='";
-			$query .= $this->fields["ID"];	
-			$query .= "'";
-			if (!$DB->query($query)){
-				if (isset($oldvalues[$updates[$i]])){
-					unset($oldvalues[$updates[$i]]);
+				// Clean oldvalues
+				if (isset($oldvalues[$field])){
+					unset($oldvalues[$field]);
 				}
 			}
 		}
@@ -523,10 +530,9 @@ class CommonDBTM {
 */
 					if ($this->fields[$key] != stripslashes($input[$key])) {
 						if ($key!="ID"){
-							// Do logs
-							if ($this->dohistory&&$history){
-								$oldvalues[$key]=$this->fields[$key];
-							}
+							// Store old values
+							$oldvalues[$key]=$this->fields[$key];
+
 							$this->fields[$key] = $input[$key];
 							$updates[$x] = $key;
 							$x++;
@@ -544,8 +550,12 @@ class CommonDBTM {
 					}
 				}
 
-				list($input,$updates)=$this->pre_updateInDB($input,$updates);
-				
+				list($input,$updates)=$this->pre_updateInDB($input,$updates,$oldvalues);
+
+				// CLean old_values history not needed
+				if (!$this->dohistory || !$history){
+					$oldvalues=array();
+				}
 
 				if ($this->updateInDB($updates,$oldvalues)){
 					doHook("item_update",array("type"=>$this->type, "ID" => $input["ID"]));
@@ -612,11 +622,12 @@ class CommonDBTM {
 	 *
 	 *@param $input datas used to update the item
 	 *@param $updates array of the updated fields
+	 *@param $oldvalues old values of updated fields
 	 * 
 	 *@return nothing
 	 * 
 	**/
-	function pre_updateInDB($input,$updates) {
+	function pre_updateInDB($input,$updates,$oldvalues=array()) {
 		return array($input,$updates);
 	}
 

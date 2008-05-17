@@ -261,7 +261,7 @@ $LANG["common"][76]="Public";
 $LANG["common"][77]="Privé";
 $LANG["common"][78]="Rendre public";
 $LANG["common"][79]="Rendre privé";
-
+$LANG["common"][80]="En cours de chargement...";
 
 $LANG["computers"][9]="OS"; 
 $LANG["computers"][10]="OS Numéro de série"; 
