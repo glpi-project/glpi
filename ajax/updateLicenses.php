@@ -50,8 +50,11 @@
 			echo "&nbsp;&nbsp;<input type='submit' name='update_buy' value='".$LANG["buttons"][14]."' class='submit'>";
 		break;
 		case "update_expire" :
-			showCalendarForm("lic_form","expire",date("Y-m-d"));
-			echo "&nbsp;&nbsp;<input type='submit' name='update_expire' value='".$LANG["buttons"][14]."' class='submit'>";
+			echo "<table><tr><td>";
+			showDateFormItem("expire");
+			echo "</td></td>";
+			echo "&nbsp;&nbsp;&nbsp;&nbsp;<input type='submit' name='update_expire' value='".$LANG["buttons"][14]."' class='submit'>";
+			echo "</td></tr></table>";
 		break;
 		case "move":
 			dropdownLicenseOfSoftware("lID",$_POST["sID"]);

@@ -416,35 +416,33 @@ class License extends CommonDBTM {
 	}
 
 	function prepareInputForUpdate($input) {
-		if (empty ($input['expire']))
-			unset ($input['expire']);
-		if (!isset ($input['expire']) || $input['expire'] == "0000-00-00"){
+		if (isset($input['expire'])&&empty ($input['expire'])){
 			$input['expire'] = "NULL";
 		}
+
 		if (isset ($input['oem']) && !$input['oem'])
 			$input['oem_computer'] = -1;
-		// Backup initial values
-		if (isset($input['expire'])){
-			$input['_expire']=$this->fields['expire'];
-		}
 
 		return $input;
 	}
 
 
-	function post_updateItem($input,$updates,$history=1) {
+	function pre_updateInDB($input,$updates,$oldvalues) {
 		// Clean end alert if expire is after old one
-		if ((in_array('expire',$updates)
-			&& ($input['_expire'] < $this->fields['expire'] ))
+		if ((isset($oldvalues['expire'])
+			&& ($oldvalues['expire'] < $this->fields['expire'] ))
 		){
 			$alert=new Alert();
 			$alert->clear($this->type,$this->fields['ID'],ALERT_END);
 		}
+		return array($input,$updates);
 	}
 
 	function prepareInputForAdd($input) {
-		if (empty ($input['expire']) || $input['expire'] == "0000-00-00" || $input['expire'] == "NULL")
+		// Unset to set to default using mysql default value
+		if (empty ($input['expire']))
 			unset ($input['expire']);
+
 		if (isset($input['oem']) && !$input['oem']){
 			$input['oem_computer'] = -1;
 		}

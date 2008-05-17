@@ -112,12 +112,13 @@ function includeCommonHtmlHeader($title=''){
 	echo "<link rel='shortcut icon' type='images/x-icon' href='".$CFG_GLPI["root_doc"]."/pics/favicon.ico' >\n";
 	
 	// Calendar scripts 
-	if (isset($_SESSION["glpilanguage"])){
+/*	if (isset($_SESSION["glpilanguage"])){
 		echo "<style type=\"text/css\">@import url(".$CFG_GLPI["root_doc"]."/lib/calendar/aqua/theme.css);</style>\n";
 		echo "<script type=\"text/javascript\" src=\"".$CFG_GLPI["root_doc"]."/lib/calendar/calendar.js\"></script>\n";
 		echo "<script type=\"text/javascript\" src=\"".$CFG_GLPI["root_doc"]."/lib/calendar/lang/calendar-".$CFG_GLPI["languages"][$_SESSION["glpilanguage"]][2].".js\"></script>\n";
 		echo "<script type=\"text/javascript\" src=\"".$CFG_GLPI["root_doc"]."/lib/calendar/calendar-setup.js\"></script>\n";
 	}
+*/
 	
 	// Add specific javascript for plugins
 	if (isset($PLUGIN_HOOKS['add_javascript'])&&count($PLUGIN_HOOKS['add_javascript'])){
@@ -1843,6 +1844,49 @@ function printPager($start,$numrows,$target,$parameters,$item_type_output=0,$ite
 
 
 /**
+ * Display Date form with calendar
+ *
+ * @param $element name of the element
+ * @param $value default value to display
+ * @param $can_edit could not modify element
+ * @return nothing
+ */
+function showDateFormItem($element,$value='',$maybeempty=true,$can_edit=true){
+	global $LANG,$CFG_GLPI;
+
+	$rand=mt_rand();
+	echo "<input id='showdate$rand' type='text' size='10' name='$element'>";
+
+	echo "<script type='text/javascript'>";
+	echo "Ext.onReady(function(){  
+		var md$rand = new Ext.ux.form.XDateField({
+		name: '$element',
+		value: '".convDate($value)."',
+		applyTo: 'showdate$rand',
+		id: '_date$rand',
+		submitFormat:'Y-m-d',";
+
+		if (!$CFG_GLPI["dateformat"]){
+			echo "format: 'Y-m-d',";
+		} else {
+			echo "format: 'd-m-Y',";
+		}
+		if ($maybeempty){
+			echo "allowBlank: true,";
+		} else {
+			echo "allowBlank: false,";
+		}
+		if (!$can_edit){
+			echo "disabled: true,";
+		}
+	echo " });		
+	});";
+		
+	echo "</script>";	
+}
+
+
+/**
  * Display calendar form
  *
  * @param $form form in which the calendar is display
@@ -1853,6 +1897,7 @@ function printPager($start,$numrows,$target,$parameters,$item_type_output=0,$ite
  * @param $with_reset do not display reset button
  * @return nothing
  */
+
 function showCalendarForm($form,$element,$value='',$can_edit=true,$with_time=false,$with_reset=true){
 	global $LANG,$CFG_GLPI;
 	$rand=mt_rand();

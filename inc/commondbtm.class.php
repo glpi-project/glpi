@@ -169,6 +169,7 @@ class CommonDBTM {
 				$query .= " WHERE ID ='";
 				$query .= $this->fields["ID"];	
 				$query .= "'";
+
 				if (!$DB->query($query)){
 					if (isset($oldvalues[$field])){
 						unset($oldvalues[$field]);

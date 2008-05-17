@@ -59,7 +59,7 @@ if(empty($_POST["date1"])&&empty($_POST["date2"])) {
 	$_POST["date2"]=date("Y-m-d");
 }
 
-if ($_POST["date1"]!=""&&$_POST["date2"]!=""&&strcmp($_POST["date2"],$_POST["date1"])<0){
+if (!empty($_POST["date1"])&&!empty($_POST["date2"])&&strcmp($_POST["date2"],$_POST["date1"])<0){
 	$tmp=$_POST["date1"];
 	$_POST["date1"]=$_POST["date2"];
 	$_POST["date2"]=$tmp;
@@ -142,14 +142,14 @@ $items=array(
 	echo "</td>";
 	echo "<td align='right'>";
 	echo $LANG["search"][8]." :</td><td>";
-	showCalendarForm("form","date1",$_POST["date1"]);
+	showDateFormItem("date1",$_POST["date1"]);
 	echo "</td><td rowspan='2' align='center'><input type=\"submit\" class='button' name=\"submit\" Value=\"". $LANG["buttons"][7] ."\" /></td></tr>";
 	echo "<tr class='tab_bg_2'><td align='right'>".$LANG["search"][9]." :</td><td>";
-	showCalendarForm("form","date2",$_POST["date2"]);
+	showDateFormItem("date2",$_POST["date2"]);
 	echo "</td></tr>";
 	echo "</table></form></div>";
 
-
+	
 	$val=getStatsItems($_POST["date1"],$_POST["date2"],$_POST["type"]);
 	$params=array("type"=>$_POST["type"],"field"=>$field,"date1"=>$_POST["date1"],"date2"=>$_POST["date2"],"start"=>$_GET["start"]);
 	printPager($_GET['start'],count($val),$_SERVER['PHP_SELF'],"date1=".$_POST["date1"]."&amp;date2=".$_POST["date2"]."&amp;type=".$_POST["type"],STAT_TYPE,$params);

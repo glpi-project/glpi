@@ -78,7 +78,7 @@ if (isset($_POST["device_type"])&&isset($_POST["id_field"])&&$_POST["id_field"])
 				echo " ".$LANG["financial"][57];
 				break;
 			case "glpi_contracts.begin_date":
-				showCalendarForm("massiveaction_form",$search["field"]);
+				showDateFormItem($search["field"]);
 				break;
 			case "glpi_contracts.alert":
 				dropdownContractAlerting($search["linkfield"],0);
@@ -117,7 +117,7 @@ if (isset($_POST["device_type"])&&isset($_POST["id_field"])&&$_POST["id_field"])
 
 					case "buy_date" :
 					case "use_date" :
-						showCalendarForm("massiveaction_form",$search["field"]);
+						showDateFormItem($search["field"]);
 						echo "&nbsp;&nbsp;";
 					break;
 					case "amort_type" :

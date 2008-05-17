@@ -1,4 +1,4 @@
-#GLPI Dump database on 2008-05-12 23:16
+#GLPI Dump database on 2008-05-17 22:41
 
 ### Dump table glpi_alerts
 
@@ -861,7 +861,7 @@ CREATE TABLE `glpi_docs` (
   `filename` varchar(255) collate utf8_unicode_ci default NULL,
   `rubrique` int(11) NOT NULL default '0',
   `mime` varchar(255) collate utf8_unicode_ci default NULL,
-  `date_mod` datetime NOT NULL default '0000-00-00 00:00:00',
+  `date_mod` datetime default NULL,
   `comments` text collate utf8_unicode_ci,
   `deleted` smallint(6) NOT NULL default '0',
   `link` varchar(255) collate utf8_unicode_ci default NULL,
@@ -1387,7 +1387,7 @@ CREATE TABLE `glpi_event_log` (
   `ID` int(11) NOT NULL auto_increment,
   `item` int(11) NOT NULL default '0',
   `itemtype` varchar(255) collate utf8_unicode_ci default NULL,
-  `date` datetime NOT NULL default '0000-00-00 00:00:00',
+  `date` datetime default NULL,
   `service` varchar(255) collate utf8_unicode_ci default NULL,
   `level` smallint(6) NOT NULL default '0',
   `message` text collate utf8_unicode_ci,
@@ -1399,7 +1399,7 @@ CREATE TABLE `glpi_event_log` (
 
 INSERT INTO glpi_event_log VALUES ('1','-1','system','2007-09-29 15:51:43','login','3','glpi connexion de l\'IP : 127.0.0.1');
 INSERT INTO glpi_event_log VALUES ('2','-1','system','2008-05-08 18:46:08','login','3','glpi connexion de l\'IP : 127.0.0.1');
-INSERT INTO glpi_event_log VALUES ('3','-1','system','2008-05-12 23:16:32','login','3','glpi connexion de l\'IP : 127.0.0.1');
+INSERT INTO glpi_event_log VALUES ('3','-1','system','2008-05-17 22:41:14','login','3','glpi connexion de l\'IP : 127.0.0.1');
 
 ### Dump table glpi_followups
 
@@ -1467,8 +1467,8 @@ CREATE TABLE `glpi_infocoms` (
   `ID` int(11) NOT NULL auto_increment,
   `FK_device` int(11) NOT NULL default '0',
   `device_type` smallint(6) NOT NULL default '0',
-  `buy_date` date NOT NULL default '0000-00-00',
-  `use_date` date NOT NULL default '0000-00-00',
+  `buy_date` datetime default NULL,
+  `use_date` datetime default NULL,
   `warranty_duration` smallint(6) NOT NULL default '0',
   `warranty_info` varchar(255) collate utf8_unicode_ci default NULL,
   `FK_enterprise` int(11) NOT NULL default '0',
@@ -1630,7 +1630,7 @@ CREATE TABLE `glpi_monitors` (
   `ID` int(10) NOT NULL auto_increment,
   `FK_entities` int(11) NOT NULL default '0',
   `name` varchar(255) collate utf8_unicode_ci default NULL,
-  `date_mod` datetime NOT NULL default '0000-00-00 00:00:00',
+  `date_mod` datetime default NULL,
   `contact` varchar(255) collate utf8_unicode_ci default NULL,
   `contact_num` varchar(255) collate utf8_unicode_ci default NULL,
   `tech_num` int(11) NOT NULL default '0',
@@ -1688,7 +1688,7 @@ CREATE TABLE `glpi_networking` (
   `contact` varchar(255) collate utf8_unicode_ci default NULL,
   `contact_num` varchar(255) collate utf8_unicode_ci default NULL,
   `tech_num` int(11) NOT NULL default '0',
-  `date_mod` datetime NOT NULL default '0000-00-00 00:00:00',
+  `date_mod` datetime default NULL,
   `comments` text collate utf8_unicode_ci,
   `location` int(11) NOT NULL default '0',
   `domain` int(11) NOT NULL default '0',
@@ -1860,7 +1860,7 @@ CREATE TABLE `glpi_ocs_link` (
   `ocs_id` int(11) NOT NULL default '0',
   `ocs_deviceid` varchar(255) collate utf8_unicode_ci default NULL,
   `auto_update` int(2) NOT NULL default '1',
-  `last_update` datetime NOT NULL default '0000-00-00 00:00:00',
+  `last_update` datetime default NULL,
   `last_ocs_update` datetime default NULL,
   `computer_update` longtext collate utf8_unicode_ci,
   `import_device` longtext collate utf8_unicode_ci,
@@ -1888,7 +1888,7 @@ CREATE TABLE `glpi_peripherals` (
   `ID` int(11) NOT NULL auto_increment,
   `FK_entities` int(11) NOT NULL default '0',
   `name` varchar(255) collate utf8_unicode_ci default NULL,
-  `date_mod` datetime NOT NULL default '0000-00-00 00:00:00',
+  `date_mod` datetime default NULL,
   `contact` varchar(255) collate utf8_unicode_ci default NULL,
   `contact_num` varchar(255) collate utf8_unicode_ci default NULL,
   `tech_num` int(11) NOT NULL default '0',
@@ -1932,7 +1932,7 @@ CREATE TABLE `glpi_phones` (
   `ID` int(11) NOT NULL auto_increment,
   `FK_entities` int(11) NOT NULL default '0',
   `name` varchar(255) collate utf8_unicode_ci default NULL,
-  `date_mod` datetime NOT NULL default '0000-00-00 00:00:00',
+  `date_mod` datetime default NULL,
   `contact` varchar(255) collate utf8_unicode_ci default NULL,
   `contact_num` varchar(255) collate utf8_unicode_ci default NULL,
   `tech_num` int(11) NOT NULL default '0',
@@ -1982,7 +1982,7 @@ CREATE TABLE `glpi_printers` (
   `ID` int(10) NOT NULL auto_increment,
   `FK_entities` int(11) NOT NULL default '0',
   `name` varchar(255) collate utf8_unicode_ci default NULL,
-  `date_mod` datetime NOT NULL default '0000-00-00 00:00:00',
+  `date_mod` datetime default NULL,
   `contact` varchar(255) collate utf8_unicode_ci default NULL,
   `contact_num` varchar(255) collate utf8_unicode_ci default NULL,
   `tech_num` int(11) NOT NULL default '0',
@@ -2177,8 +2177,8 @@ DROP TABLE IF EXISTS `glpi_reservation_resa`;
 CREATE TABLE `glpi_reservation_resa` (
   `ID` bigint(20) NOT NULL auto_increment,
   `id_item` int(11) NOT NULL default '0',
-  `begin` datetime NOT NULL default '0000-00-00 00:00:00',
-  `end` datetime NOT NULL default '0000-00-00 00:00:00',
+  `begin` datetime default NULL,
+  `end` datetime default NULL,
   `id_user` int(11) NOT NULL default '0',
   `comment` text collate utf8_unicode_ci,
   PRIMARY KEY  (`ID`),
@@ -2563,7 +2563,7 @@ CREATE TABLE `glpi_tracking` (
   `FK_entities` int(11) NOT NULL default '0',
   `name` varchar(255) collate utf8_unicode_ci default NULL,
   `date` datetime default NULL,
-  `closedate` datetime NOT NULL default '0000-00-00 00:00:00',
+  `closedate` datetime default NULL,
   `date_mod` datetime default NULL,
   `status` varchar(255) collate utf8_unicode_ci default 'new',
   `author` int(11) NOT NULL default '0',
@@ -2610,8 +2610,8 @@ CREATE TABLE `glpi_tracking_planning` (
   `ID` bigint(20) NOT NULL auto_increment,
   `id_followup` int(11) NOT NULL default '0',
   `id_assign` int(11) NOT NULL default '0',
-  `begin` datetime NOT NULL default '0000-00-00 00:00:00',
-  `end` datetime NOT NULL default '0000-00-00 00:00:00',
+  `begin` datetime default NULL,
+  `end` datetime default NULL,
   `state` smallint(6) NOT NULL default '1',
   PRIMARY KEY  (`ID`),
   KEY `begin` (`begin`),
@@ -2840,8 +2840,8 @@ CREATE TABLE `glpi_users` (
   `comments` text collate utf8_unicode_ci,
   `id_auth` int(11) NOT NULL default '-1',
   `auth_method` int(11) NOT NULL default '-1',
-  `last_login` datetime NOT NULL default '0000-00-00 00:00:00',
-  `date_mod` datetime NOT NULL default '0000-00-00 00:00:00',
+  `last_login` datetime default NULL,
+  `date_mod` datetime default NULL,
   `deleted` smallint(6) NOT NULL default '0',
   `FK_profiles` int(11) NOT NULL default '0',
   `FK_entities` int(11) NOT NULL default '0',
@@ -2853,10 +2853,10 @@ CREATE TABLE `glpi_users` (
   KEY `deleted` (`deleted`)
 ) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-INSERT INTO glpi_users VALUES ('2','glpi','','41ece51526515624ff89973668497d00','','','','','',NULL,'0','1','fr_FR','20','1',NULL,'-1','1','2008-05-12 23:16:32','2007-09-29 15:51:43','0','0','0');
-INSERT INTO glpi_users VALUES ('3','post-only','*5683D7F638D6598D057638B1957F194E4CA974FB','3177926a7314de24680a9938aaa97703','','','','','',NULL,'0','0','en_GB','20','1',NULL,'-1','-1','0000-00-00 00:00:00','0000-00-00 00:00:00','0','0','0');
-INSERT INTO glpi_users VALUES ('4','tech','*B09F1B2C210DEEA69C662977CC69C6C461965B09','d9f9133fb120cd6096870bc2b496805b','','','','','',NULL,'0','1','fr_FR','20','1',NULL,'-1','-1','0000-00-00 00:00:00','0000-00-00 00:00:00','0','0','0');
-INSERT INTO glpi_users VALUES ('5','normal','*F3F91B23FC1DB728B49B1F22DEE3D7A839E10F0E','fea087517c26fadd409bd4b9dc642555','','','','','',NULL,'0','0','en_GB','20','1',NULL,'-1','-1','0000-00-00 00:00:00','0000-00-00 00:00:00','0','0','0');
+INSERT INTO glpi_users VALUES ('2','glpi','','41ece51526515624ff89973668497d00','','','','','',NULL,'0','1','fr_FR','20','1',NULL,'-1','1','2008-05-17 22:41:14','2007-09-29 15:51:43','0','0','0');
+INSERT INTO glpi_users VALUES ('3','post-only','*5683D7F638D6598D057638B1957F194E4CA974FB','3177926a7314de24680a9938aaa97703','','','','','',NULL,'0','0','en_GB','20','1',NULL,'-1','-1',NULL,NULL,'0','0','0');
+INSERT INTO glpi_users VALUES ('4','tech','*B09F1B2C210DEEA69C662977CC69C6C461965B09','d9f9133fb120cd6096870bc2b496805b','','','','','',NULL,'0','1','fr_FR','20','1',NULL,'-1','-1',NULL,NULL,'0','0','0');
+INSERT INTO glpi_users VALUES ('5','normal','*F3F91B23FC1DB728B49B1F22DEE3D7A839E10F0E','fea087517c26fadd409bd4b9dc642555','','','','','',NULL,'0','0','en_GB','20','1',NULL,'-1','-1',NULL,NULL,'0','0','0');
 
 ### Dump table glpi_users_groups
 

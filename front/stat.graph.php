@@ -49,20 +49,13 @@ if(empty($_POST["date1"])&&empty($_POST["date2"])) {
 
 	if (isset($_GET["date1"])) {
 		$_POST["date1"]=$_GET["date1"];
-	} else {
-		$year=date("Y")-1;
-		$_POST["date1"]=date("Y-m-d",mktime(1,0,0,date("m"),date("d"),$year));
-	}
+	} 
 	if (isset($_GET["date2"])) {
 		$_POST["date2"]=$_GET["date2"];
-	} else {
-		$_POST["date2"]=date("Y-m-d");
-	}
+	} 
 }
 
-if(empty($_POST["date1"])) $_POST["date1"] = "";
-if(empty($_POST["date2"])) $_POST["date2"] = "";
-if ($_POST["date1"]!=""&&$_POST["date2"]!=""&&strcmp($_POST["date2"],$_POST["date1"])<0){
+if (!empty($_POST["date1"])&&!empty($_POST["date2"])&&strcmp($_POST["date2"],$_POST["date1"])<0){
 	$tmp=$_POST["date1"];
 	$_POST["date1"]=$_POST["date2"];
 	$_POST["date2"]=$tmp;
@@ -210,10 +203,10 @@ $target=preg_replace("/&/","&amp;",$_SERVER["REQUEST_URI"]);
 echo "<div align='center'><form method=\"post\" name=\"form\" action=\"".$target."\">";
 echo "<table class='tab_cadre'><tr class='tab_bg_2'><td align='right'>";
 echo $LANG["search"][8]." :</td><td>";
-showCalendarForm("form","date1",$_POST["date1"]);
+showDateFormItem("date1",$_POST["date1"]);
 echo "</td><td rowspan='2' align='center'><input type=\"submit\" class='button' name=\"submit\" value=\"". $LANG["buttons"][7] ."\" /></td></tr>";
 echo "<tr class='tab_bg_2'><td align='right'>".$LANG["search"][9]." :</td><td>";
-showCalendarForm("form","date2",$_POST["date2"]);
+showDateFormItem("date2",$_POST["date2"]);
 echo "</td></tr>";
 echo "</table></form></div>";
 

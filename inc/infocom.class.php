@@ -112,9 +112,11 @@ class InfoCom extends CommonDBTM {
 			$input["ID"]=$this->fields["ID"];
 		}
 
-		// Backup initial values
-		if (isset($input['buy_date'])){
-			$input['_buy_date']=$this->fields['buy_date'];
+		if (isset($input['buy_date'])&&empty($input['buy_date'])){
+			$input['buy_date']='NULL';
+		}
+		if (isset($input['use_date'])&&empty($input['use_date'])){
+			$input['use_date']='NULL';
 		}
 		if (isset($input['warranty_duration'])){
 			$input['_warranty_duration']=$this->fields['warranty_duration'];
@@ -122,17 +124,22 @@ class InfoCom extends CommonDBTM {
 		return $input;
 	}
 
-	function post_updateItem($input,$updates,$history=1) {
+
+	function pre_updateInDB($input,$updates,$oldvalues) {
+
 		// Clean end alert if buy_date is after old one
 		// Or if duration is greater than old one
-		if ((in_array('buy_date',$updates)
-			&& ($input['_buy_date'] < $this->fields['buy_date'] ))
-		|| ( in_array('warranty_duration',$updates)
-			&& ($input['_warranty_duration'] < $this->fields['warranty_duration'] ))
+		if ((isset($oldvalues['buy_date'])
+			&& ($oldvalues['buy_date'] < $this->fields['buy_date'] ))
+		|| ( isset($oldvalues['warranty_duration'])
+			&& ($oldvalues['warranty_duration'] < $this->fields['warranty_duration'] ))
 		){
 			$alert=new Alert();
 			$alert->clear($this->type,$this->fields['ID'],ALERT_END);
+//			exit();
 		}
+
+		return array($input,$updates);
 	}
 
 	/**

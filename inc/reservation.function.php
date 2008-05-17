@@ -329,6 +329,7 @@ function showAddReservationForm($target,$items,$date,$resaID=-1){
 
 
 	echo "<tr class='tab_bg_2'><td>".$LANG["search"][8].":	</td><td>";
+	/// TO DATETIME
 	showCalendarForm("form","begin_date",$begin_date);
 	echo "</td></tr>";
 

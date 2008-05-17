@@ -108,12 +108,12 @@ function showInfocomForm($target,$device_type,$dev_ID,$show_immo=true,$withtempl
 		$editcalendar=($withtemplate!=2);
 		
 		echo "<tr class='tab_bg_1'><td>".$LANG["financial"][14].":	</td><td>";
-		showCalendarForm("form_ic","buy_date",$ic->fields["buy_date"],$editcalendar);	
+		showDateFormItem("buy_date",$ic->fields["buy_date"],true,$editcalendar);
 		echo "</td>";
 
 
 		echo "<td>".$LANG["financial"][76].":	</td><td>";
-		showCalendarForm("form_ic","use_date",$ic->fields["use_date"],$editcalendar);	
+		showDateFormItem("use_date",$ic->fields["use_date"],true,$editcalendar);
 		echo "</td>";
 		echo "</tr>";
 

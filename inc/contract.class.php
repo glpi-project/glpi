@@ -81,26 +81,22 @@ class Contract extends CommonDBTM {
 
 	function prepareInputForUpdate($input) {
 		// Backup initial values
-		if (isset($input['begin_date'])){
-			$input['_begin_date']=$this->fields['begin_date'];
+		if (isset($input['begin_date'])&&empty($input['begin_date'])){
+			$input['begin_date']="NULL";
 		}
-		if (isset($input['duration'])){
-			$input['_duration']=$this->fields['duration'];
-		}
-		if (isset($input['notice'])){
-			$input['_notice']=$this->fields['notice'];
-		}
+
 		return $input;
 	}
 
 
-	function post_updateItem($input,$updates,$history=1) {
+	function pre_updateInDB($input,$updates,$oldvalues) {
+
 		// Clean end alert if begin_date is after old one
 		// Or if duration is greater than old one
-		if ((in_array('begin_date',$updates)
-			&& ($input['_begin_date'] < $this->fields['begin_date'] ))
-		|| ( in_array('duration',$updates)
-			&& ($input['_duration'] < $this->fields['duration'] ))
+		if ((isset($oldvalues['begin_date'])
+			&& ($oldvalues['begin_date'] < $this->fields['begin_date'] ))
+		|| ( isset($oldvalues['duration'])
+			&& ($oldvalues['duration'] < $this->fields['duration'] ))
 		){
 			$alert=new Alert();
 			$alert->clear($this->type,$this->fields['ID'],ALERT_END);
@@ -109,17 +105,17 @@ class Contract extends CommonDBTM {
 		// Clean notice alert if begin_date is after old one
 		// Or if duration is greater than old one
 		// Or if notice is lesser than old one
-		if ((in_array('begin_date',$updates)
-			&& ($input['_begin_date'] < $this->fields['begin_date'] ))
-		|| ( in_array('duration',$updates)
-			&& ($input['_duration'] < $this->fields['duration'] ))
-		|| ( in_array('notice',$updates)
-			&& ($input['_notice'] > $this->fields['notice'] ))
+		if ((isset($oldvalues['begin_date'])
+			&& ($oldvalues['begin_date'] < $this->fields['begin_date'] ))
+		|| ( isset($oldvalues['duration'])
+			&& ($oldvalues['duration'] < $this->fields['duration'] ))
+		|| ( isset($oldvalues['notice'])
+			&& ($oldvalues['notice'] > $this->fields['notice'] ))
 		){
 			$alert=new Alert();
 			$alert->clear($this->type,$this->fields['ID'],ALERT_NOTICE);
 		}
-	
+		return array($input,$updates);
 	}
 
 	/**
@@ -217,14 +213,14 @@ class Contract extends CommonDBTM {
 	
 				echo "<td>".$LANG["search"][8].":	</td>";
 				echo "<td>";
-				showCalendarForm("form","begin_date",$this->fields["begin_date"]);	
+				showDateFormItem("begin_date",$this->fields["begin_date"]);
 				echo "</td></tr>";
 	
 	
 				echo "<tr class='tab_bg_1'><td>".$LANG["financial"][8].":		</td><td>";
 				dropdownInteger("duration",$this->fields["duration"],0,120);
 				echo " ".$LANG["financial"][57];
-				if ($this->fields["begin_date"]!=''&&$this->fields["begin_date"]!="0000-00-00"){
+				if (!empty($this->fields["begin_date"])){
 					echo " -> ".getWarrantyExpir($this->fields["begin_date"],$this->fields["duration"]);
 				}
 				echo "</td>";
@@ -242,7 +238,7 @@ class Contract extends CommonDBTM {
 				echo "<td>".$LANG["financial"][10].":		</td><td>";
 				dropdownInteger("notice",$this->fields["notice"],0,120);
 				echo " ".$LANG["financial"][57];
-				if ($this->fields["begin_date"]!=''&&$this->fields["begin_date"]!="0000-00-00" && $this->fields["notice"]>0){
+				if (!empty($this->fields["begin_date"]) && $this->fields["notice"]>0){
 					echo " -> ".getWarrantyExpir($this->fields["begin_date"],$this->fields["duration"],$this->fields["notice"]);
 				}
 				echo "</td></tr>";

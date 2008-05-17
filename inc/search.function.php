@@ -1299,7 +1299,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 			if ($output_type==HTML_OUTPUT){
 				if ($isadmin){
 					
-					echo "<table width='80%'>";
+					echo "<table width='80%' class='tab_glpi'>";
 					echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markAllRows('massiveaction_form') ) return false;\" href='".$_SERVER['PHP_SELF']."?select=all' >".$LANG["buttons"][18]."</a></td>";
 	
 					echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkAllRows('massiveaction_form') ) return false;\" href='".$_SERVER['PHP_SELF']."?select=none'>".$LANG["buttons"][19]."</a>";
