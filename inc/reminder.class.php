@@ -133,6 +133,7 @@ class Reminder extends CommonDBTM {
 				$spotted = true;	
 			}
 		} else {
+			$this->getEmpty();
 			if ($this->can(-1,'w')){
 				$spotted = true;
 				$onfocus="onfocus=\"this.value=''\"";

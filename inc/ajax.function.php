@@ -43,13 +43,12 @@ function ajaxDropdown($use_ajax,$relativeurl,$params=array(),$default="&nbsp;",$
 	if ($rand==0){
 		$rand=mt_rand();
 	}
+
+	if ($use_ajax){
 		ajaxDisplaySearchTextForDropdown($rand);
 		ajaxUpdateItemOnInputTextEvent("search_$rand","results_$rand",$CFG_GLPI["root_doc"].$relativeurl,$params);
-	if (!$use_ajax){
-		echo "<script type='text/javascript' >\n";
-		echo "\$('search_$rand').hide();";
-		echo "</script>\n";
 	}
+
 	echo "<span id='results_$rand'>\n";
 		if (!$use_ajax){
 			// Save post datas if exists
@@ -78,7 +77,7 @@ function ajaxDropdown($use_ajax,$relativeurl,$params=array(),$default="&nbsp;",$
  **/
 function ajaxDisplaySearchTextForDropdown($id,$size=4){
 	global $CFG_GLPI;
-	echo "<input type='text' ondblclick=\"window.document.getElementById('search_$id').value='".$CFG_GLPI["ajax_wildcard"]."';\" id='search_$id' name='____data_$id' size='$size'>\n";
+	echo "<input type='text' ondblclick=\"this.value='".$CFG_GLPI["ajax_wildcard"]."';\" id='search_$id' name='____data_$id' size='$size'>\n";
 
 }
 
@@ -89,7 +88,7 @@ function ajaxDisplaySearchTextForDropdown($id,$size=4){
  * @param $toupdate id of the item to update
  * @param $url Url to get datas to update the item
  * @param $parameters Parameters to send to ajax URL
- * @param $spinner is a spinner displayed when loading ?
+ * @param $spinner NOT USED : always spinner - is a spinner displayed when loading ?
  **/
 function ajaxUpdateItemOnInputTextEvent($toobserve,$toupdate,$url,$parameters=array(),$spinner=true){
 	ajaxUpdateItemOnEvent($toobserve,$toupdate,$url,$parameters,array("dblclick","keyup"),$spinner);
@@ -102,7 +101,7 @@ function ajaxUpdateItemOnInputTextEvent($toobserve,$toupdate,$url,$parameters=ar
  * @param $toupdate id of the item to update
  * @param $url Url to get datas to update the item
  * @param $parameters Parameters to send to ajax URL
- * @param $spinner is a spinner displayed when loading ?
+ * @param $spinner NOT USED : always spinner - is a spinner displayed when loading ?
  **/
 function ajaxUpdateItemOnSelectEvent($toobserve,$toupdate,$url,$parameters=array(),$spinner=true){
 	ajaxUpdateItemOnEvent($toobserve,$toupdate,$url,$parameters,array("change"),$spinner);
@@ -117,18 +116,13 @@ function ajaxUpdateItemOnSelectEvent($toobserve,$toupdate,$url,$parameters=array
  * @param $url Url to get datas to update the item
  * @param $parameters Parameters to send to ajax URL
  * @param $events array of the observed events 
- * @param $spinner is a spinner displayed when loading ?
+ * @param $spinner NOT USED : always spinner - is a spinner displayed when loading ?
  **/
 function ajaxUpdateItemOnEvent($toobserve,$toupdate,$url,$parameters=array(),$events=array("change"),$spinner=true){
 	global $CFG_GLPI;
 	echo "<script type='text/javascript' >\n";
 	ajaxUpdateItemOnEventJsCode($toobserve,$toupdate,$url,$parameters,$events,$spinner);
 	echo "</script>\n";
-	if ($spinner){
-		echo "<span id='spinner_$toupdate' style=' position:absolute;  filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$CFG_GLPI["root_doc"]."/pics/wait.png\" title='Processing....' alt='Processing....' ></span>\n";
-	}
-
-	
 }
 
 /**
@@ -139,15 +133,21 @@ function ajaxUpdateItemOnEvent($toobserve,$toupdate,$url,$parameters=array(),$ev
  * @param $url Url to get datas to update the item
  * @param $parameters Parameters to send to ajax URL
  * @param $events array of the observed events 
- * @param $spinner is a spinner displayed when loading ?
+ * @param $spinner NOT USED : always spinner - is a spinner displayed when loading ?
  **/
 function ajaxUpdateItemOnEventJsCode($toobserve,$toupdate,$url,$parameters=array(),$events=array("change"),$spinner=true){
 	global $CFG_GLPI;
 
-	echo "   new Form.Element.Observer('$toobserve', 1, \n";
-	echo "      function(element, value) {\n";
-		ajaxUpdateItemJsCode($toupdate,$url,$parameters,$spinner,$toobserve);
-	echo "});\n";
+	echo "Ext.onReady(function() {";
+	foreach ($events as $event){
+		echo "
+			Ext.get('$toobserve').on(
+				'$event',
+				function() {";
+					ajaxUpdateItemJsCode($toupdate,$url,$parameters,$spinner,$toobserve);
+		echo "		});\n";
+	}
+	echo "});";
 }
 
 
@@ -157,7 +157,7 @@ function ajaxUpdateItemOnEventJsCode($toobserve,$toupdate,$url,$parameters=array
  * @param $toupdate id of the item to update
  * @param $url Url to get datas to update the item
  * @param $parameters Parameters to send to ajax URL
- * @param $spinner is a spinner displayed when loading ?
+ * @param $spinner NOT USED : always spinner - is a spinner displayed when loading ?
  * @param $toobserve id of another item used to get value in case of __VALUE__ used
  **/
 function ajaxUpdateItem($toupdate,$url,$parameters=array(),$spinner=true,$toobserve=""){
@@ -165,9 +165,6 @@ function ajaxUpdateItem($toupdate,$url,$parameters=array(),$spinner=true,$toobse
 	echo "<script type='text/javascript' >\n";
 	ajaxUpdateItemJsCode($toupdate,$url,$parameters,$spinner,$toobserve);
 	echo "</script>\n";
-	if ($spinner){
-		echo "<div id='spinner_$toupdate' style=' position:absolute;  filter:alpha(opacity=70); -moz-opacity:0.7; opacity: 0.7; display:none;'><img src=\"".$CFG_GLPI["root_doc"]."/pics/wait.png\" title='Processing....' alt='Processing....' /></div>\n";
-	}
 }
 
 
@@ -178,46 +175,45 @@ function ajaxUpdateItem($toupdate,$url,$parameters=array(),$spinner=true,$toobse
  * @param $toupdate id of the item to update
  * @param $url Url to get datas to update the item
  * @param $parameters Parameters to send to ajax URL
- * @param $spinner is a spinner displayed when loading ?
+ * @param $spinner NOT USED : always spinner - is a spinner displayed when loading ?
  * @param $toobserve id of another item used to get value in case of __VALUE__ used
  **/
 function ajaxUpdateItemJsCode($toupdate,$url,$parameters=array(),$spinner=true,$toobserve=""){
 	global $CFG_GLPI;
 
-	echo "new Ajax.Updater('$toupdate', '$url', {asynchronous:true, evalScripts:true, method:'post' ";
-		if ($spinner){
-		echo "           ,onComplete:function(request)\n";
-		echo "            {Element.hide('spinner_$toupdate');}\n";
-		echo "           ,onLoading:function(request)\n";
-		echo "            {Element.show('spinner_$toupdate');}\n";
-		}
-	if (count($parameters)){
-		echo ",parameters:'";
-		$first=true;
-		foreach ($parameters as $key => $val){
-			if ($first){
-				$first=false;
-			} else {
-				echo "&";
-			}
-			
-			echo $key."=";
-			if ($val==="__VALUE__"){
-				echo "'+\$F('$toobserve')+'";
-			} else {
-				if (is_array($val)){
-					echo serialize($val);
+	// Get it from a Ext.Element object
+	echo "Ext.onReady(function() {";
+		echo "Ext.get('$toupdate').load({
+			url: '$url',
+			scripts: true,
+			";
+	
+		if (count($parameters)){
+			echo "params:'";
+			$first=true;
+			foreach ($parameters as $key => $val){
+				if ($first){
+					$first=false;
 				} else {
-					echo $val;
+					echo "&";
 				}
+				
+				echo $key."=";
+				if ($val==="__VALUE__"){
+					echo "'+Ext.get('$toobserve').getValue()+'";
+				} else {
+					if (is_array($val)){
+						echo serialize($val);
+					} else {
+						echo $val;
+					}
+				}
+	
 			}
-
+			echo "'\n";
 		}
-		echo "'\n";
-	}
-	echo "});\n";
-
-
+		echo "});";
+	echo "});";
 }
 
 ?>

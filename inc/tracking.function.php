@@ -73,7 +73,7 @@ function showTrackingOnglets($target){
 
 			// admin yes  
 			if ($job->canAddFollowups()){
-				echo "<li onClick=\"showAddFollowup(); Effect.Appear('viewfollowup');\" id='addfollowup'><span class='fake'>".$LANG["job"][29]."</span></li>";
+				echo "<li onClick=\"showAddFollowup();\" id='addfollowup'><span class='fake'>".$LANG["job"][29]."</span></li>";
 			}
 
 
@@ -95,7 +95,7 @@ function showTrackingOnglets($target){
 			if (!ereg("old_",$job->fields["status"])&&$job->fields["author"]==$_SESSION["glpiID"]){
 				echo "<li class='invisible'>&nbsp;</li>";
 
-				echo "<li onClick=\"showAddFollowup(); Effect.Appear('viewfollowup');\" id='addfollowup'><a href='#'>".$LANG["job"][29]."</span></a></li>";
+				echo "<li onClick=\"showAddFollowup(); \" id='addfollowup'><a href='#'>".$LANG["job"][29]."</span></a></li>";
 			}
 		}
 
@@ -1766,21 +1766,21 @@ function showJobDetails ($target,$ID){
 		}
 
 		// First line
-		echo "<tr><th colspan='2' style='text-align:left;'><span class='tracking_small'>";
-		echo $LANG["joblist"][11].": ";
+		echo "<tr><th colspan='2' style='text-align:left;'><table><tr><td><span class='tracking_small'>";
+		echo $LANG["joblist"][11].": </span></td><td>";
 		if ($canupdate){
 			showCalendarForm("form_ticket","date",$job->fields["date"],true,true,false);	
 		} else {
 			echo $job->fields["date"];
 		}
-		echo "&nbsp;&nbsp; ".$LANG["job"][2]." &nbsp; ";
+		echo "</td><td><span class='tracking_small'>&nbsp;&nbsp; ".$LANG["job"][2]." &nbsp; </span></td><td>";
 		if ($canupdate){
 			dropdownAllUsers("recipient",$job->fields["recipient"],1,$job->fields["FK_entities"]);
 		} else {
 			echo getUserName($job->fields["recipient"],$showuserlink);
 		}
 
-		echo "</span>";
+		echo "</td></tr></table>";
 
 		if (ereg("old_",$job->fields["status"])){
 			echo "<br><span class='tracking_small'>".$LANG["joblist"][12].": ";
@@ -2139,13 +2139,14 @@ function showJobDetails ($target,$ID){
 			ajaxUpdateItemJsCode('viewplan',$CFG_GLPI["root_doc"]."/ajax/planning.php",$params,false);
 
 		echo "};";
+		
 		echo "function showAddFollowup(){\n";
+			// To do with EXTJS
 			echo "$('viewfollowup').scrollTo();";
-			echo "window.document.getElementById('viewfollowup').style.display='none';";
-			$params=array('tID'=>$ID,
-			);
+			echo "Ext.get('viewfollowup').hide();";
+			$params=array('tID'=>$ID);
 			ajaxUpdateItemJsCode('viewfollowup',$CFG_GLPI["root_doc"]."/ajax/addfollowup.php",$params,false);
-			
+			echo "Ext.get('viewfollowup').fadeIn({ duration: 1.5});";
 		echo "};";
 
 		echo "</script>";
