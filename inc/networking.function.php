@@ -431,7 +431,12 @@ function showConnection($ID,$withtemplate='',$type=COMPUTER_TYPE) {
 	global $CFG_GLPI, $LANG,$INFOFORM_PAGES;
 
 	if (!haveTypeRight($type,"r")) return false;
-	$canedit=haveRight("networking","w");
+
+	// TODO : what permisson need to change connexion...
+	// $canedit=haveRight("networking","w");
+	$device = new CommonItem();
+	$device->getFromDB($type,$ID);
+	$canedit=device->can($ID,'w');
 
 	$contact = new Netport;
 	$netport = new Netport;
