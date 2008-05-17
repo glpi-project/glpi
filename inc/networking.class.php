@@ -547,6 +547,7 @@ class Netport extends CommonDBTM {
 			$this->location = $data["location"];
 			$this->device_ID = $ID;
 			$this->device_type = $type;
+			$this->recursive = (isset($data["recursive"])?$data["recursive"]:0);
 			return true;
 		}
 		else 
