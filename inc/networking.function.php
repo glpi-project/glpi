@@ -432,14 +432,15 @@ function showConnection($ID,$withtemplate='',$type=COMPUTER_TYPE) {
 
 	if (!haveTypeRight($type,"r")) return false;
 
-	// TODO : what permisson need to change connexion...
-	// $canedit=haveRight("networking","w");
-	$device = new CommonItem();
-	$device->getFromDB($type,$ID);
-	$canedit=device->can($ID,'w');
-
 	$contact = new Netport;
 	$netport = new Netport;
+	$device = new CommonItem();
+	// TODO : what permisson need to change connexion...
+	// $canedit=haveRight("networking","w");
+	$netport->getFromDB($ID);
+	$device->getFromDB($netport->fields["device_type"],$netport->fields["on_device"]);
+	$canedit=$device->obj->can($ID,'w');
+
 
 	if ($contact->getContact($ID)) {
 		$netport->getFromDB($contact->contact_id);
