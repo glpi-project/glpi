@@ -74,7 +74,6 @@ function includeCommonHtmlHeader($title=''){
 
 	// AJAX library
 	echo "<script type=\"text/javascript\" src='".$CFG_GLPI["root_doc"]."/lib/extjs/adapter/prototype/prototype.js'></script>\n";
-	echo "<script type=\"text/javascript\" src='".$CFG_GLPI["root_doc"]."/lib/control.modal.js'></script>\n";
 	echo "<script type=\"text/javascript\" src='".$CFG_GLPI["root_doc"]."/lib/extjs/adapter/prototype/scriptaculous.js?load=effects,controls'></script>\n";
 	echo "<script type=\"text/javascript\" src='".$CFG_GLPI["root_doc"]."/lib/extjs/adapter/prototype/ext-prototype-adapter.js'></script>\n";
 	if ($CFG_GLPI["debug"]==DEBUG_MODE){
@@ -2115,32 +2114,28 @@ function showProfileSelecter($target){
 		echo "<li>";
 
 
-		//echo "<a href='".$CFG_GLPI["root_doc"]."/front/entity.select.php?target=$target' id='modal_entity_selection'>".$_SESSION["glpiactive_entity_name"]."</a>";
+		echo "<a onclick=\"entity_window.show();\" href='#modal_entity_contents' title='".$_SESSION["glpiactive_entity_name"]."' class='entity_select' id='global_entity_select'>".$_SESSION["glpiactive_entity_shortname"]."</a>";
 
-
-		echo "<a href='#modal_entity_contents' id='modal_entity_selection' title='".$_SESSION["glpiactive_entity_name"]."' class='entity_select'>".$_SESSION["glpiactive_entity_shortname"]."</a>";
-		echo "<div id='modal_entity_contents'>";	
+		echo "<span id='modal_entity_contents' class='invisible'>";	
 		displayActiveEntities($target,"activeentity");
-		echo "</div>";
+		echo "</span>";
 		
 
 		echo "<script  type='text/javascript'>";
-		echo "new Control.Modal('modal_entity_selection',{";
-		//echo "iframe: true,";
-		//echo "opacity: 0.8, position: 'relative', width:300, height:50";
-		echo "opacity: 0.2, fadeDuration: 0.35, width: 500, height: 500";
-		echo "});";
+		echo "cleanhide('modal_entity_contents');";
+		echo "
+			var entity_window=new Ext.Window({
+				layout:'fit',
+				width:800,
+				height:400,
+				closeAction:'hide',
+				modal: true,
+				title: \"".$LANG["entity"][10]."\",
+			});
+			entity_window.html=Ext.get('modal_entity_contents').dom.innerHTML;
+		";
 		echo "</script>";
 
-/*		echo "<a href='#' title=\"".$_SESSION["glpiactive_entity_name"]."\" onclick=\"completecleandisplay('show_entities$addname');\">";
-		echo $_SESSION["glpiactive_entity_shortname"];
-		echo "</a>";
-		echo "<div id='show_entities$addname' onmouseover=\"completecleandisplay('show_entities$addname');\">";	
-		
-		displayActiveEntities($target,"activeentity");
-		
-		echo "</div>";
-*/
 		echo "</li>";
 	}
 
