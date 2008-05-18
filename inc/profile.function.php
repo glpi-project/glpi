@@ -137,7 +137,7 @@ function showProfileEntityUser($target,$ID,$prof){
 						echo "</table>";
 						if ($canedit){
 							echo "<div class='center'>";
-							echo "<table width='100%'>";
+							echo "<table width='100%' class='tab_glpi'>";
 							echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markAllRows('profileuser_form$temp') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$ID&amp;select=all'>".$LANG["buttons"][18]."</a></td>";
 							
 							echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkAllRows('profileuser_form$temp') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$ID&amp;select=none'>".$LANG["buttons"][19]."</a>";
@@ -221,7 +221,7 @@ function showProfileEntityUser($target,$ID,$prof){
 				echo "</table>";
 				if ($canedit){
 					echo "<div class='center'>";
-					echo "<table width='100%'>";
+					echo "<table width='100%' class='tab_glpi'>";
 					echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markAllRows('profileuser_form$temp') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$ID&amp;select=all'>".$LANG["buttons"][18]."</a></td>";
 					
 					echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkAllRows('profileuser_form$temp') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$ID&amp;select=none'>".$LANG["buttons"][19]."</a>";

@@ -1642,7 +1642,7 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$to
 			// Delete selected item
 			if (($candelete||$canupdate)&&$output_type==HTML_OUTPUT){
 				echo "<div>";
-				echo "<table width='80%'>";
+				echo "<table width='80%' class='tab_glpi'>";
 				echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td><a onclick= \"if ( markAllRows('massiveaction_form') ) return false;\" href='".$_SERVER['PHP_SELF']."?$parameters&amp;select=all&amp;start=$start'>".$LANG["buttons"][18]."</a></td>";
 
 				echo "<td>/</td><td ><a onclick=\"if ( unMarkAllRows('massiveaction_form') ) return false;\" href='".$_SERVER['PHP_SELF']."?$parameters&amp;select=none&amp;start=$start'>".$LANG["buttons"][19]."</a>";
@@ -2137,10 +2137,12 @@ function showJobDetails ($target,$ID){
 		echo "function showAddFollowup(){\n";
 			// To do with EXTJS
 			echo "$('viewfollowup').scrollTo();";
-			echo "Ext.get('viewfollowup').hide();";
+			echo "var vf=Ext.get('viewfollowup');";
+			echo "vf.hide();";
 			$params=array('tID'=>$ID);
 			ajaxUpdateItemJsCode('viewfollowup',$CFG_GLPI["root_doc"]."/ajax/addfollowup.php",$params,false);
-			echo "Ext.get('viewfollowup').fadeIn({ duration: 1.5});";
+			echo "vf.fadeIn({ duration: 1.5});";
+			
 		echo "};";
 
 		echo "</script>";

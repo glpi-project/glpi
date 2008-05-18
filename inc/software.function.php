@@ -418,7 +418,7 @@ function showLicenses($sID, $show_computers = 0) {
 	echo "</table></div>\n\n";
 	if ($found_soft) {
 		echo "<div>";
-		echo "<table width='950px'>";
+		echo "<table width='950px' class='tab_glpi'>";
 		echo "<tr><td><img src=\"" . $CFG_GLPI["root_doc"] . "/pics/arrow-left.png\" alt=''></td><td><a onclick= \"if ( markAllRows('lic_form') ) return false;\" href='" . $_SERVER['PHP_SELF'] . "?ID=$sID&amp;select=all'>" . $LANG["buttons"][18] . "</a></td>";
 
 		echo "<td>/</td><td ><a onclick=\"if ( unMarkAllRows('lic_form') ) return false;\" href='" . $_SERVER['PHP_SELF'] . "?ID=$sID&amp;select=none'>" . $LANG["buttons"][19] . "</a>";

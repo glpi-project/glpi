@@ -330,7 +330,7 @@ class Bookmark extends CommonDBTM {
 				echo "</div>";
 				
 				echo "<div class='center'>";
-				echo "<table width='80%'>";
+				echo "<table width='80%' class='tab_glpi'>";
 				echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markAllRows('form_load_bookmark') ) return false;\" href='".$_SERVER['PHP_SELF']."?select=all'>".$LANG["buttons"][18]."</a></td>";
 				echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkAllRows('form_load_bookmark') ) return false;\" href='".$_SERVER['PHP_SELF']."?select=none'>".$LANG["buttons"][19]."</a>";
 				echo "</td><td align='left' width='80%'>";
