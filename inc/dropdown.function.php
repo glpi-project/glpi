@@ -1324,9 +1324,10 @@ function dropdownSoftwareToInstall($myname,$withtemplate,$entity_restrict,$massi
  * @param $size size of the text field
  * @param $option option of the textfield
  * @param $entity_restrict Restrict to a defined entity
+ * @param $user_restrict Restrict to a specific user
  * @return nothing (print out an HTML div)
  */
-function autocompletionTextField($myname,$table,$field,$value='',$size=40,$entity_restrict=-1,$option=''){
+function autocompletionTextField($myname,$table,$field,$value='',$size=40,$entity_restrict=-1,$user_restrict=-1,$option=''){
 	global $CFG_GLPI;
 
 	if ($CFG_GLPI["use_ajax"]&&$CFG_GLPI["ajax_autocompletion"]){
@@ -1345,6 +1346,9 @@ function autocompletionTextField($myname,$table,$field,$value='',$size=40,$entit
 				
 				if (!empty($entity_restrict)&&$entity_restrict>=0){
 					echo "entity_restrict: $entity_restrict,";
+				}
+				if (!empty($user_restrict)&&$user_restrict>=0){
+					echo "user_restrict: $user_restrict,";
 				}
 				echo "
 				},

@@ -170,7 +170,7 @@ class Reminder extends CommonDBTM {
 
 			echo "<tr class='tab_bg_2'><td>".$LANG["common"][57].":		</td>";
 			echo "<td>";
-			autocompletionTextField("name",$this->table,"name",$this->fields['name'],80,-1,$onfocus);	
+			autocompletionTextField("name",$this->table,"name",$this->fields['name'],80,-1,$this->fields["FK_users"],$onfocus);	
 			echo "</td></tr>";
 
 			if(!$canedit) { 
@@ -196,7 +196,11 @@ class Reminder extends CommonDBTM {
 	
 				privatePublicSwitch($this->fields["private"],$this->fields["FK_entities"],$this->fields["recursive"]);
 			}else{
-				echo getYesNo($this->fields["private"]);				
+				if ($this->fields["private"]){
+					echo $LANG["common"][77];
+				} else {
+					echo $LANG["common"][76];
+				}
 			}
 
 			echo "</td></tr>";
