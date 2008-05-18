@@ -170,19 +170,19 @@ class Entity extends CommonDBTM{
 
 			echo "<tr class='tab_bg_1'><td>".$LANG["help"][35].":		</td>";
 			echo "<td>";
-			autocompletionTextField("phonenumber","glpi_entities_data","phonenumber",$entdata->fields["phonenumber"],25);	
+			autocompletionTextField("phonenumber","glpi_entities_data","phonenumber",$entdata->fields["phonenumber"],40);	
 			echo "</td>";
 			echo "<td>".$LANG["financial"][30].":		</td><td>";
-			autocompletionTextField("fax","glpi_entities_data","fax",$entdata->fields["fax"],25);	
+			autocompletionTextField("fax","glpi_entities_data","fax",$entdata->fields["fax"],40);	
 			echo "</td></tr>";
 	
 			echo "<tr class='tab_bg_1'><td>".$LANG["financial"][45].":		</td>";
 			echo "<td>";
-			autocompletionTextField("website","glpi_entities_data","website",$entdata->fields["website"],25);	
+			autocompletionTextField("website","glpi_entities_data","website",$entdata->fields["website"],40);	
 			echo "</td>";
 	
 			echo "<td>".$LANG["setup"][14].":		</td><td>";
-			autocompletionTextField("email","glpi_entities_data","email",$entdata->fields["email"],25);		
+			autocompletionTextField("email","glpi_entities_data","email",$entdata->fields["email"],40);		
 			echo "</td></tr>";
 	
 	
@@ -190,23 +190,23 @@ class Entity extends CommonDBTM{
 			echo "<td align='center' rowspan='4'><textarea cols='35' rows='4' name='address' >".$entdata->fields["address"]."</textarea>";
 			echo "<td>".$LANG["financial"][100]."</td>";
 			echo "<td>";
-			autocompletionTextField("postcode","glpi_entities_data","postcode",$entdata->fields["postcode"],25);		
+			autocompletionTextField("postcode","glpi_entities_data","postcode",$entdata->fields["postcode"],40);		
 			echo "</td>";
 			echo "</tr>";
 	
 			echo "<tr class='tab_bg_1'>";
 			echo "<td>".$LANG["financial"][101].":		</td><td>";
-			autocompletionTextField("town","glpi_entities_data","town",$entdata->fields["town"],25);		
+			autocompletionTextField("town","glpi_entities_data","town",$entdata->fields["town"],40);		
 			echo "</td></tr>";
 	
 			echo "<tr class='tab_bg_1'>";
 			echo "<td>".$LANG["financial"][102].":		</td><td>";
-			autocompletionTextField("state","glpi_entities_data","state",$entdata->fields["state"],25);		
+			autocompletionTextField("state","glpi_entities_data","state",$entdata->fields["state"],40);		
 			echo "</td></tr>";
 	
 			echo "<tr class='tab_bg_1'>";
 			echo "<td>".$LANG["financial"][103].":		</td><td>";
-			autocompletionTextField("country","glpi_entities_data","country",$entdata->fields["country"],25);		
+			autocompletionTextField("country","glpi_entities_data","country",$entdata->fields["country"],40);		
 			echo "</td></tr>";
 
 			echo "<tr class='tab_bg_1'>";

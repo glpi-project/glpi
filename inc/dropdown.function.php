@@ -1367,6 +1367,7 @@ function autocompletionTextField($myname,$table,$field,$value='',$size=40,$entit
 			displayField:'value',
 			pageSize:20,
 			hideTrigger:true,
+			 resizable:true,
 			applyTo: 'textfield_$myname$rand',
 		});";
 	

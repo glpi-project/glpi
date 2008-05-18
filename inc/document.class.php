@@ -265,7 +265,7 @@ class Document extends CommonDBTM {
 				$max_size=round($max_size,1);
 	
 				echo "<tr class='tab_bg_1'><td colspan='2'>".$LANG["document"][2]." (".$max_size." Mb max):	</td>";
-				echo "<td colspan='2'><input type='file' name='filename' value=\"".$this->fields["filename"]."\" size='25'></td>";
+				echo "<td colspan='2'><input type='file' name='filename' value=\"".$this->fields["filename"]."\" size='40'></td>";
 				echo "</tr>";
 	
 				echo "<tr class='tab_bg_1'><td colspan='2'>".$LANG["document"][36].":		</td>";
@@ -286,7 +286,7 @@ class Document extends CommonDBTM {
 	
 				echo "<tr class='tab_bg_1'><td colspan='2'>".$LANG["document"][4].":		</td>";
 				echo "<td colspan='2'>";
-				autocompletionTextField("mime","glpi_docs","mime",$this->fields["mime"],25,$this->fields["FK_entities"]);
+				autocompletionTextField("mime","glpi_docs","mime",$this->fields["mime"],40,$this->fields["FK_entities"]);
 				echo "</td></tr>";
 	
 				echo "<tr>";

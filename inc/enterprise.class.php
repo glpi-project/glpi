@@ -185,7 +185,7 @@ class Enterprise extends CommonDBTM {
 			if (!$use_cache||!($CFG_GLPI["cache"]->start($ID."_".$_SESSION["glpilanguage"],"GLPI_".$this->type))) {
 				echo "<tr class='tab_bg_1'><td>".$LANG["common"][16].":		</td>";
 				echo "<td>";
-				autocompletionTextField("name","glpi_enterprises","name",$this->fields["name"],25,$this->fields["FK_entities"]);
+				autocompletionTextField("name","glpi_enterprises","name",$this->fields["name"],40,$this->fields["FK_entities"]);
 				echo "</td>";
 	
 				echo "<td>".$LANG["financial"][79].":		</td><td>";
@@ -194,7 +194,7 @@ class Enterprise extends CommonDBTM {
 	
 				echo "<tr class='tab_bg_1'><td>".$LANG["help"][35].":		</td>";
 				echo "<td>";
-				autocompletionTextField("phonenumber","glpi_enterprises","phonenumber",$this->fields["phonenumber"],25,$this->fields["FK_entities"]);	
+				autocompletionTextField("phonenumber","glpi_enterprises","phonenumber",$this->fields["phonenumber"],40,$this->fields["FK_entities"]);	
 				echo "</td>";
 	
 				echo "<td valign='top' rowspan='4'>";
@@ -205,18 +205,18 @@ class Enterprise extends CommonDBTM {
 	
 				echo "<tr class='tab_bg_1'>";
 				echo "<td>".$LANG["financial"][30].":		</td><td>";
-				autocompletionTextField("fax","glpi_enterprises","fax",$this->fields["fax"],25,$this->fields["FK_entities"]);
+				autocompletionTextField("fax","glpi_enterprises","fax",$this->fields["fax"],40,$this->fields["FK_entities"]);
 				echo "</td>";
 				echo "</tr>";
 
 				echo "<tr class='tab_bg_1'><td>".$LANG["financial"][45].":		</td>";
 				echo "<td>";
-				autocompletionTextField("website","glpi_enterprises","website",$this->fields["website"],25,$this->fields["FK_entities"]);	
+				autocompletionTextField("website","glpi_enterprises","website",$this->fields["website"],40,$this->fields["FK_entities"]);	
 				echo "</td></tr>";
 	
 				echo "<tr class='tab_bg_1'>";
 				echo "<td>".$LANG["setup"][14].":		</td><td>";
-				autocompletionTextField("email","glpi_enterprises","email",$this->fields["email"],25,$this->fields["FK_entities"]);
+				autocompletionTextField("email","glpi_enterprises","email",$this->fields["email"],40,$this->fields["FK_entities"]);
 				echo "</td></tr>";
 	
 	
@@ -224,23 +224,23 @@ class Enterprise extends CommonDBTM {
 				echo "<td align='center' rowspan='4'><textarea cols='35' rows='4' name='address' >".$this->fields["address"]."</textarea>";
 				echo "<td>".$LANG["financial"][100]."</td>";
 				echo "<td>";
-				autocompletionTextField("postcode","glpi_enterprises","postcode",$this->fields["postcode"],25,$this->fields["FK_entities"]);
+				autocompletionTextField("postcode","glpi_enterprises","postcode",$this->fields["postcode"],40,$this->fields["FK_entities"]);
 				echo "</td>";
 				echo "</tr>";
 	
 				echo "<tr class='tab_bg_1'>";
 				echo "<td>".$LANG["financial"][101].":		</td><td>";
-				autocompletionTextField("town","glpi_enterprises","town",$this->fields["town"],25,$this->fields["FK_entities"]);
+				autocompletionTextField("town","glpi_enterprises","town",$this->fields["town"],40,$this->fields["FK_entities"]);
 				echo "</td></tr>";
 	
 				echo "<tr class='tab_bg_1'>";
 				echo "<td>".$LANG["financial"][102].":		</td><td>";
-				autocompletionTextField("state","glpi_enterprises","state",$this->fields["state"],25,$this->fields["FK_entities"]);
+				autocompletionTextField("state","glpi_enterprises","state",$this->fields["state"],40,$this->fields["FK_entities"]);
 				echo "</td></tr>";
 	
 				echo "<tr class='tab_bg_1'>";
 				echo "<td>".$LANG["financial"][103].":		</td><td>";
-				autocompletionTextField("country","glpi_enterprises","country",$this->fields["country"],25,$this->fields["FK_entities"]);
+				autocompletionTextField("country","glpi_enterprises","country",$this->fields["country"],40,$this->fields["FK_entities"]);
 				echo "</td></tr>";
 		
 				if ($use_cache){

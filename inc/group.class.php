@@ -130,7 +130,7 @@ class Group extends CommonDBTM{
 
 			echo "<tr><td>".$LANG["common"][16].":	</td>";
 			echo "<td>";
-			autocompletionTextField("name","glpi_groups","name",$this->fields["name"],30,$this->fields["FK_entities"]);	
+			autocompletionTextField("name","glpi_groups","name",$this->fields["name"],40,$this->fields["FK_entities"]);	
 			echo "</td></tr>";
 
 			echo "<tr><td>".$LANG["common"][64].":	</td>";
@@ -144,12 +144,12 @@ class Group extends CommonDBTM{
 
 				echo "<tr><td>".$LANG["setup"][260].":	</td>";
 				echo "<td>";
-				autocompletionTextField("ldap_field","glpi_groups","ldap_field",$this->fields["ldap_field"],30,$this->fields["FK_entities"]);
+				autocompletionTextField("ldap_field","glpi_groups","ldap_field",$this->fields["ldap_field"],40,$this->fields["FK_entities"]);
 				echo "</td></tr>";
 
 				echo "<tr><td>".$LANG["setup"][601].":	</td>";
 				echo "<td>";
-				autocompletionTextField("ldap_value","glpi_groups","ldap_value",$this->fields["ldap_value"],30,$this->fields["FK_entities"]);
+				autocompletionTextField("ldap_value","glpi_groups","ldap_value",$this->fields["ldap_value"],40,$this->fields["FK_entities"]);
 				echo "</td></tr>";
 
 				echo "<tr><td colspan='2' align='center'>".$LANG["setup"][257].":	</td>";
@@ -158,7 +158,7 @@ class Group extends CommonDBTM{
 
 				echo "<tr><td>".$LANG["setup"][261].":	</td>";
 				echo "<td>";
-				autocompletionTextField("ldap_group_dn","glpi_groups","ldap_group_dn",$this->fields["ldap_group_dn"],30,$this->fields["FK_entities"]);
+				autocompletionTextField("ldap_group_dn","glpi_groups","ldap_group_dn",$this->fields["ldap_group_dn"],40,$this->fields["FK_entities"]);
 				echo "</td></tr>";
 			}
 

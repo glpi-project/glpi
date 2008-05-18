@@ -797,11 +797,11 @@ class Rule extends CommonDBTM{
 		echo "<tr>";
 		echo "<td class='tab_bg_2'>".$LANG["common"][16]."</td>";
 		echo "<td class='tab_bg_2'>";
-		autocompletionTextField("name",$this->table,"name",$this->fields["name"] ,25);
+		autocompletionTextField("name",$this->table,"name",$this->fields["name"] ,40);
 		echo "</td>";
 		echo "<td class='tab_bg_2'>".$LANG["joblist"][6]."</td>";
 		echo "<td class='tab_bg_2'>";
-		autocompletionTextField("description",$this->table,"description",$this->fields["description"] ,25);
+		autocompletionTextField("description",$this->table,"description",$this->fields["description"] ,40);
 		echo "</td></tr>";
 
 		echo "<tr>";
@@ -1721,7 +1721,7 @@ class Rule extends CommonDBTM{
 			}
 		} 
 		if (!$display){
-			autocompletionTextField($name, "glpi_rules_criterias", "pattern", $value, 30);
+			autocompletionTextField($name, "glpi_rules_criterias", "pattern", $value, 40);
 		}
 	}
 

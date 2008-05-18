@@ -83,7 +83,7 @@ if (!defined('GLPI_ROOT')){
 			}
 		}
 		if (!$display){
-			autocompletionTextField("value", "glpi_rules_actions", "value", "", 30);
+			autocompletionTextField("value", "glpi_rules_actions", "value", "", 40);
 		}
 		break;
 		case "ignore":

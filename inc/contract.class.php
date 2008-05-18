@@ -194,7 +194,7 @@ class Contract extends CommonDBTM {
 			if (!$use_cache||!($CFG_GLPI["cache"]->start($ID."_".$_SESSION["glpilanguage"],"GLPI_".$this->type))) {
 
 				echo "<tr class='tab_bg_1'><td>".$LANG["common"][16].":		</td><td>";
-				autocompletionTextField("name","glpi_contracts","name",$this->fields["name"],25,$this->fields["FK_entities"]);
+				autocompletionTextField("name","glpi_contracts","name",$this->fields["name"],40,$this->fields["FK_entities"]);
 				echo "</td>";
 
 				echo "<td>".$LANG["financial"][6].":		</td><td >";
@@ -226,7 +226,7 @@ class Contract extends CommonDBTM {
 				echo "</td>";
 	
 				echo "<td>".$LANG["financial"][13].":		</td><td>";
-				autocompletionTextField("compta_num","glpi_contracts","compta_num",$this->fields["compta_num"],25,$this->fields["FK_entities"]);
+				autocompletionTextField("compta_num","glpi_contracts","compta_num",$this->fields["compta_num"],40,$this->fields["FK_entities"]);
 	
 				echo "</td></tr>";
 	
