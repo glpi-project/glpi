@@ -72,6 +72,16 @@ function includeCommonHtmlHeader($title=''){
 		echo "<meta http-equiv=\"Cache-Control\" content=\"no-cache\">\n";
 	}
 
+	//  CSS link
+	echo "<link rel='stylesheet'  href='".$CFG_GLPI["root_doc"]."/css/styles.css' type='text/css' media='screen' >\n";
+	// surcharge CSS hack for IE
+	echo "<!--[if lte IE 6]>" ;
+	echo "<link rel='stylesheet' href='".$CFG_GLPI["root_doc"]."/css/styles_ie.css' type='text/css' media='screen' >\n";
+	echo "<![endif]-->";
+
+	echo "<link rel='stylesheet' type='text/css' media='print' href='".$CFG_GLPI["root_doc"]."/css/print.css' >\n";
+	echo "<link rel='shortcut icon' type='images/x-icon' href='".$CFG_GLPI["root_doc"]."/pics/favicon.ico' >\n";
+
 	// AJAX library
 //	echo "<script type=\"text/javascript\" src='".$CFG_GLPI["root_doc"]."/lib/extjs/adapter/prototype/prototype.js'></script>\n";
 //	echo "<script type=\"text/javascript\" src='".$CFG_GLPI["root_doc"]."/lib/extjs/adapter/prototype/scriptaculous.js?load=effects,controls'></script>\n";
@@ -101,15 +111,6 @@ function includeCommonHtmlHeader($title=''){
 	// Some Javascript-Functions which we may need later
 	echo "<script type=\"text/javascript\" src='".$CFG_GLPI["root_doc"]."/script.js'></script>\n";
 
-	//  CSS link
-	echo "<link rel='stylesheet'  href='".$CFG_GLPI["root_doc"]."/css/styles.css' type='text/css' media='screen' >\n";
-	// surcharge CSS hack for IE
-	echo "<!--[if lte IE 6]>" ;
-	echo "<link rel='stylesheet' href='".$CFG_GLPI["root_doc"]."/css/styles_ie.css' type='text/css' media='screen' >\n";
-	echo "<![endif]-->";
-
-	echo "<link rel='stylesheet' type='text/css' media='print' href='".$CFG_GLPI["root_doc"]."/css/print.css' >\n";
-	echo "<link rel='shortcut icon' type='images/x-icon' href='".$CFG_GLPI["root_doc"]."/pics/favicon.ico' >\n";
 		
 	// Add specific javascript for plugins
 	if (isset($PLUGIN_HOOKS['add_javascript'])&&count($PLUGIN_HOOKS['add_javascript'])){
