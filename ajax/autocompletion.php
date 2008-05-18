@@ -49,13 +49,23 @@ if (isset($_POST['entity_restrict'])&&$_POST['entity_restrict']>=0&&in_array($_P
 	$entity=" AND FK_entities='".$_POST['entity_restrict']."' ";
 }
 
-$query="SELECT DISTINCT ".$_POST['field']." AS VAL FROM ".$_POST['table']." WHERE ".$_POST['field']." LIKE '".$_POST[$_POST['myname']]."%' AND ".$_POST['field']." <> '".$_POST[$_POST['myname']]."' $entity ORDER BY ".$_POST['field']." LIMIT 0,20";
+$query="SELECT COUNT(".$_POST['field'].") FROM ".$_POST['table']." WHERE ".$_POST['field']." LIKE '".$_POST['query']."%' AND ".$_POST['field']." <> '".$_POST['query']."' $entity ";
+$result=$DB->query($query);
+$totnum=$DB->result($result,0,0);
+
+
+$query="SELECT DISTINCT ".$_POST['field']." AS VAL FROM ".$_POST['table']." WHERE ".$_POST['field']." LIKE '".$_POST['query']."%' AND ".$_POST['field']." <> '".$_POST['query']."' $entity ORDER BY ".$_POST['field']." LIMIT ".$_POST['start'].",".$_POST['limit']."";
+
+
 if ($result=$DB->query($query))
+	echo '{"totalCount":"'.$totnum.'","items":[';
 	if ($DB->numrows($result)>0){
-		echo "<ul class='autocomp'>";
+//		echo "<ul class='autocomp'>";
 		while ($data=$DB->fetch_array($result))
-			echo "<li class='autocomp'>".cleanInputText($data["VAL"])."</li>";
-		echo "</ul>";
+			echo '{"value":"'.$data['VAL'].'"},';
+//			echo "<li class='autocomp'>".cleanInputText($data["VAL"])."</li>";
+//		echo "</ul>";
 	}
+	echo ']}';
 
 ?>
