@@ -357,7 +357,7 @@ function searchForm($type,$target,$field="",$contains="",$sort= "",$deleted= 0,$
 			
 			if (is_array($type2)&&isset($type2[$i])&&$type2[$i]>0){
 				echo "<script type='text/javascript' >";
-				echo "window.document.getElementById('type2_".$type."_".$i."_$rand').value='".$type2[$i]."';";
+				echo "Ext.get('type2_".$type."_".$i."_$rand').value='".$type2[$i]."';";
 				echo "</script>\n";
 
 				$params['type']=$type2[$i];

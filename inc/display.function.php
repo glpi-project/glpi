@@ -947,19 +947,6 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="")
 		echo "  </a>";
 		echo "</li>";
 
-
-/*		echo "<li  id='headercalendar'><img  src='".$CFG_GLPI["root_doc"]."/pics/menu_calendar.png'  alt='".$LANG["buttons"][15]."' title='".$LANG["buttons"][15]."'>";
-
-		echo "<script type='text/javascript'>";
-		echo "Calendar.setup(";
-		echo "{";
-		echo "ifFormat : '%Y-%m-%d',"; // the datetime format
-		echo "button : 'headercalendar' "; // ID of the button
-		echo "});";
-		echo "</script>";
-		echo "</li>";
-*/		
-
 		// MENU ALL
 		echo "<li >";
 		echo "<img  alt='' src='".$CFG_GLPI["root_doc"]."/pics/menu_all.png' onclick=\"completecleandisplay('show_all_menu');

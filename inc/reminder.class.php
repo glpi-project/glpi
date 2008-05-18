@@ -213,7 +213,7 @@ class Reminder extends CommonDBTM {
 			if($canedit) { 
 				echo "<script type='text/javascript' >\n";
 				echo "function showPlan(){\n";
-					echo "window.document.getElementById('plan').style.display='none';";
+					echo "Ext.get('plan').setDisplayed('none');";
 					$params=array('form'=>'remind');
 					if ($ID&&$this->fields["rv"]){
 						$params['state']=$this->fields["state"];

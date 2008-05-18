@@ -73,7 +73,7 @@ function showTrackingOnglets($target){
 
 			// admin yes  
 			if ($job->canAddFollowups()){
-				echo "<li onClick=\"showAddFollowup();\" id='addfollowup'><span class='fake'>".$LANG["job"][29]."</span></li>";
+				echo "<li onClick=\"showAddFollowup();\" id='addfollowup'><a href='#viewfollowup' class='fake'>".$LANG["job"][29]."</a></li>";
 			}
 
 
@@ -95,7 +95,7 @@ function showTrackingOnglets($target){
 			if (!ereg("old_",$job->fields["status"])&&$job->fields["author"]==$_SESSION["glpiID"]){
 				echo "<li class='invisible'>&nbsp;</li>";
 
-				echo "<li onClick=\"showAddFollowup(); \" id='addfollowup'><a href='#'>".$LANG["job"][29]."</span></a></li>";
+				echo "<li onClick=\"showAddFollowup();\" id='addfollowup'><a href='#viewfollowup' class='fake'>".$LANG["job"][29]."</a></li>";
 			}
 		}
 
@@ -882,7 +882,7 @@ function addFormTracking ($device_type=0,$ID=0, $target, $author, $group=0, $ass
 		echo "<script type='text/javascript' >\n";
 		echo "function showPlan(){\n";
 
-			echo "window.document.getElementById('plan').style.display='none';";
+			echo "Ext.get('plan').setDisplayed('none');";
 			$params=array('form'=>'followups',
 				'state'=>1,
 				'author'=>$_SESSION['glpiID'],
@@ -1968,7 +1968,7 @@ function showJobDetails ($target,$ID){
 			$rand=mt_rand();
 			echo "<script type='text/javascript' >\n";
 			echo "function showName$rand(){\n";
-				echo "window.document.getElementById('name$rand').style.display='none';";
+				echo "Ext.get('name$rand').setDisplayed('none');";
 				$params=array('maxlength'=>250,
 					'size'=>80,
 					'name'=>'name',
@@ -2004,7 +2004,7 @@ function showJobDetails ($target,$ID){
 			echo "<script type='text/javascript' >\n";
 			echo "function showDesc$rand(){\n";
 
-				echo "window.document.getElementById('desc$rand').style.display='none';";
+				echo "Ext.get('desc$rand').setDisplayed('none');";
 				$params=array('rows'=>6,
 					'cols'=>60,
 					'name'=>'contents',
@@ -2124,7 +2124,7 @@ function showJobDetails ($target,$ID){
 		echo "<script type='text/javascript' >\n";
 		echo "function showPlan(){\n";
 
-			echo "window.document.getElementById('plan').style.display='none';";
+			echo "Ext.get('plan').setDisplayed('none');";
 			$params=array('form'=>'followups',
 				'state'=>1,
 				'author'=>$job->fields["assign"],
@@ -2135,8 +2135,6 @@ function showJobDetails ($target,$ID){
 		echo "};";
 		
 		echo "function showAddFollowup(){\n";
-			// To do with EXTJS
-			echo "$('viewfollowup').scrollTo();";
 			echo "var vf=Ext.get('viewfollowup');";
 			echo "vf.hide();";
 			$params=array('tID'=>$ID);
@@ -2206,7 +2204,6 @@ function showFollowupsSummary($tID){
 			if ($canedit){
 				echo "<script type='text/javascript' >\n";
 				echo "function viewEditFollowup".$data["ID"]."$rand(){\n";
-	
 					//echo "window.document.getElementById('viewfollowup').style.display='none';";
 					$params=array('ID'=>$data["ID"],
 					);
@@ -2236,8 +2233,8 @@ function showFollowupsSummary($tID){
 				$data2=$DB->fetch_array($result2);
 				echo "<script type='text/javascript' >\n";
 				echo "function showPlan".$data['ID']."(){\n";
-
-					echo "window.document.getElementById('plan').style.display='none';";
+					
+					echo "Ext.get('plan').setDisplayed('none');";
 					$params=array('form'=>'followups',
 						'author'=>$data2["id_assign"],
 						'ID'=>$data2["ID"],
