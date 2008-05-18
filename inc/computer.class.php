@@ -512,7 +512,7 @@ class Computer extends CommonDBTM {
 				echo "<input type='hidden' name='tplname' value='".$this->fields["tplname"]."'>";
 			}elseif (strcmp($template,"newtemplate") === 0) {
 				echo $LANG["common"][6]."&nbsp;: ";
-				autocompletionTextField("tplname","glpi_computers","tplname",$this->fields["tplname"],20,$this->fields["FK_entities"]);	
+				autocompletionTextField("tplname","glpi_computers","tplname",$this->fields["tplname"],40,$this->fields["FK_entities"]);	
 			}
 			if (isMultiEntitiesMode()){
 				echo "&nbsp;(".getDropdownName("glpi_entities",$this->fields["FK_entities"]).")";
@@ -534,12 +534,12 @@ class Computer extends CommonDBTM {
 				echo "<td>";
 	
 				$objectName = autoName($this->fields["name"], "name", ($template === "newcomp"), COMPUTER_TYPE,$this->fields["FK_entities"]);
-				autocompletionTextField("name","glpi_computers","name",$objectName,20,$this->fields["FK_entities"]);
+				autocompletionTextField("name","glpi_computers","name",$objectName,40,$this->fields["FK_entities"]);
 
 				echo "</td>";
 	
 				echo "<td>".$LANG["common"][18].":	</td><td>";
-				autocompletionTextField("contact","glpi_computers","contact",$this->fields["contact"],20,$this->fields["FK_entities"]);
+				autocompletionTextField("contact","glpi_computers","contact",$this->fields["contact"],40,$this->fields["FK_entities"]);
 	
 				echo "</td></tr>";
 	
@@ -551,7 +551,7 @@ class Computer extends CommonDBTM {
 	
 	
 				echo "<td>".$LANG["common"][21].":		</td><td>";
-				autocompletionTextField("contact_num","glpi_computers","contact_num",$this->fields["contact_num"],20,$this->fields["FK_entities"]);
+				autocompletionTextField("contact_num","glpi_computers","contact_num",$this->fields["contact_num"],40,$this->fields["FK_entities"]);
 				echo "</td></tr>";
 	
 				echo "<tr class='tab_bg_1'>";
@@ -611,23 +611,23 @@ class Computer extends CommonDBTM {
 				echo "</td>";
 	
 				echo "<td>".$LANG["common"][19].":	</td><td>";
-				autocompletionTextField("serial","glpi_computers","serial",$this->fields["serial"],20,$this->fields["FK_entities"]);
+				autocompletionTextField("serial","glpi_computers","serial",$this->fields["serial"],40,$this->fields["FK_entities"]);
 				echo "</td></tr>";
 	
 				echo "<tr class='tab_bg_1'>";
 				echo "<td>".$LANG["computers"][10]."</td><td>";
-				autocompletionTextField("os_license_number","glpi_computers","os_license_number",$this->fields["os_license_number"],35,$this->fields["FK_entities"]);
+				autocompletionTextField("os_license_number","glpi_computers","os_license_number",$this->fields["os_license_number"],40,$this->fields["FK_entities"]);
 				echo"</td>";
 	
 				echo "<td>".$LANG["common"][20].($template?"*":"").":	</td><td>";
 				$objectName = autoName($this->fields["otherserial"], "otherserial", ($template === "newcomp"), COMPUTER_TYPE,$this->fields["FK_entities"]);
-				autocompletionTextField("otherserial","glpi_computers","otherserial",$objectName,20,$this->fields["FK_entities"]);
+				autocompletionTextField("otherserial","glpi_computers","otherserial",$objectName,40,$this->fields["FK_entities"]);
 
 				echo "</td></tr>";
 	
 				echo "<tr class='tab_bg_1'>";
 				echo "<td>".$LANG["computers"][11]."</td><td>";
-				autocompletionTextField("os_license_id","glpi_computers","os_license_id",$this->fields["os_license_id"],35,$this->fields["FK_entities"]);
+				autocompletionTextField("os_license_id","glpi_computers","os_license_id",$this->fields["os_license_id"],40,$this->fields["FK_entities"]);
 				echo"</td>";
 				
 				echo "<td>".$LANG["state"][0].":</td><td>";
