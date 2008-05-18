@@ -49,6 +49,10 @@ if (isset($_POST['entity_restrict'])&&$_POST['entity_restrict']>=0&&in_array($_P
 	$entity=" AND FK_entities='".$_POST['entity_restrict']."' ";
 }
 
+if (isset($_POST['user_restrict'])&&$_POST['user_restrict']>0){
+	$entity=" AND FK_users='".$_POST['user_restrict']."' ";
+}
+
 $query="SELECT COUNT(".$_POST['field'].") FROM ".$_POST['table']." WHERE ".$_POST['field']." LIKE '".$_POST['query']."%' AND ".$_POST['field']." <> '".$_POST['query']."' $entity ";
 $result=$DB->query($query);
 $totnum=$DB->result($result,0,0);

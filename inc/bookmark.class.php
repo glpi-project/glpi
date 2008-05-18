@@ -102,6 +102,7 @@ class Bookmark extends CommonDBTM {
 				$canedit = true;	
 			}
 		} else {
+			$this->getEmpty();
 			if ($this->can(-1,'w')){
 				$canedit = true;
 			}
@@ -135,7 +136,7 @@ class Bookmark extends CommonDBTM {
 			echo "<tr><td class='tab_bg_1'>".$LANG["common"][16]."</td>"; 
 
 			echo "<td class='tab_bg_1'>";
-			autocompletionTextField("name",$this->table,"name",$this->fields['name'],40);				
+			autocompletionTextField("name",$this->table,"name",$this->fields['name'],40,-1,$this->fields["FK_users"]);				
 			echo "</td></tr>"; 
 
 			echo "<tr class='tab_bg_2'><td>".$LANG["common"][17].":		</td>";
