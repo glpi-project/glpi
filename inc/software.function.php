@@ -499,7 +499,7 @@ function showLicenseForm($target, $action, $sID, $lID = "") {
 
 	echo "<tr class='tab_bg_1'><td>" . $LANG["software"][5] . "</td>";
 	echo "<td>";
-	autocompletionTextField("version", "glpi_licenses", "version", $values["version"], 20);
+	autocompletionTextField("version", "glpi_licenses", "version", $values["version"], 40);
 	echo "</td></tr>";
 
 	echo "<tr class='tab_bg_1'><td>" . $LANG["software"][16] . "</td>";
@@ -524,7 +524,7 @@ function showLicenseForm($target, $action, $sID, $lID = "") {
 	}
 	elseif ($values["serial"] == "free" || $values["serial"] == "global") $readonly = "readonly";
 
-	autocompletionTextField("serial", "glpi_licenses", "serial", $values["serial"], 20, $readonly);
+	autocompletionTextField("serial", "glpi_licenses", "serial", $values["serial"], 40, $readonly);
 	echo "</td></tr>";
 
 	if ($action != "update") {

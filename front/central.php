@@ -88,6 +88,7 @@ include (GLPI_ROOT."/inc/includes.php");
 	echo ", ".$LANG["central"][1]."</span>";
 
 	echo "<br><br>";
+
 	showCentralOnglets($_SERVER['PHP_SELF'],$_SESSION['glpi_viewcentral']);
 
 	switch ($_SESSION['glpi_viewcentral']){

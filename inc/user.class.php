@@ -792,7 +792,7 @@ class User extends CommonDBTM {
 			} else {
 				if (!empty ($this->fields["password_md5"])||$this->fields["auth_method"]==AUTH_DB_GLPI) {
 					echo "<td>";
-					autocompletionTextField("name", "glpi_users", "name", $this->fields["name"], 20);
+					autocompletionTextField("name", "glpi_users", "name", $this->fields["name"], 40);
 				} else {
 					echo "<td class='center'><strong>" . $this->fields["name"] . "</strong>";
 					echo "<input type='hidden' name='name' value=\"" . $this->fields["name"] . "\">";
@@ -815,27 +815,27 @@ class User extends CommonDBTM {
 
 			if (!$use_cache||!($CFG_GLPI["cache"]->start($ID . "_" . $_SESSION["glpilanguage"], "GLPI_" . $this->type))) {
 				echo "<tr class='tab_bg_1'><td class='center'>" . $LANG["common"][48] . ":</td><td>";
-				autocompletionTextField("realname", "glpi_users", "realname", $this->fields["realname"], 20);
+				autocompletionTextField("realname", "glpi_users", "realname", $this->fields["realname"], 40);
 				echo "</td>";
 				echo "<td class='center'>" . $LANG["common"][43] . ":</td><td>";
-				autocompletionTextField("firstname", "glpi_users", "firstname", $this->fields["firstname"], 20);
+				autocompletionTextField("firstname", "glpi_users", "firstname", $this->fields["firstname"], 40);
 				echo "</td></tr>";
 
 				echo "<tr class='tab_bg_1'><td class='center'>" . $LANG["common"][42] . ":</td><td>";
-				autocompletionTextField("mobile", "glpi_users", "mobile", $this->fields["mobile"], 20);
+				autocompletionTextField("mobile", "glpi_users", "mobile", $this->fields["mobile"], 40);
 				echo "</td>";
 				echo "<td class='center'>" . $LANG["setup"][14] . ":</td><td>";
-				autocompletionTextField("email_form", "glpi_users", "email", $this->fields["email"], 30);
+				autocompletionTextField("email_form", "glpi_users", "email", $this->fields["email"], 40);
 				if (!empty($ID)&&!isValidEmail($this->fields["email"])){
 					echo "<span class='red'>&nbsp;".$LANG["mailing"][110]."</span>";
 				}
 				echo "</td></tr>";
 
 				echo "<tr class='tab_bg_1'><td class='center'>" . $LANG["help"][35] . ":</td><td>";
-				autocompletionTextField("phone", "glpi_users", "phone", $this->fields["phone"], 20);
+				autocompletionTextField("phone", "glpi_users", "phone", $this->fields["phone"], 40);
 				echo "</td>";
 				echo "<td class='center'>" . $LANG["help"][35] . " 2:</td><td>";
-				autocompletionTextField("phone2", "glpi_users", "phone2", $this->fields["phone2"], 20);
+				autocompletionTextField("phone2", "glpi_users", "phone2", $this->fields["phone2"], 40);
 				echo "</td></tr>";
 
 				echo "<tr class='tab_bg_1'><td class='center'>" . $LANG["common"][15] . ":</td><td>";
@@ -976,7 +976,7 @@ class User extends CommonDBTM {
 			if ($extauth && isset ($auth_method['ldap_field_email']) && !empty ($auth_method['ldap_field_realname'])) {
 				echo $this->fields["realname"];
 			} else {
-				autocompletionTextField("realname", "glpi_users", "realname", $this->fields["realname"], 30);
+				autocompletionTextField("realname", "glpi_users", "realname", $this->fields["realname"], 40);
 			}
 			echo "</td></tr>";
 
@@ -984,7 +984,7 @@ class User extends CommonDBTM {
 			if ($extauth && isset ($auth_method['ldap_field_firstname']) && !empty ($auth_method['ldap_field_firstname'])) {
 				echo $this->fields["firstname"];
 			} else {
-				autocompletionTextField("firstname", "glpi_users", "firstname", $this->fields["firstname"], 30);
+				autocompletionTextField("firstname", "glpi_users", "firstname", $this->fields["firstname"], 40);
 			}
 			echo "</td></tr>";
 
@@ -992,7 +992,7 @@ class User extends CommonDBTM {
 			if ($extauth && isset ($auth_method['ldap_field_email']) && !empty ($auth_method['ldap_field_email'])) {
 				echo $this->fields["email"];
 			} else {
-				autocompletionTextField("email_form", "glpi_users", "email", $this->fields["email"], 30);
+				autocompletionTextField("email_form", "glpi_users", "email", $this->fields["email"], 40);
 				if (!isValidEmail($this->fields["email"])){
 					echo "<span class='red'>".$LANG["mailing"][110]."</span>";
 				}
@@ -1004,7 +1004,7 @@ class User extends CommonDBTM {
 			if ($extauth && isset ($auth_method['ldap_field_phone']) && !empty ($auth_method['ldap_field_phone'])) {
 				echo $this->fields["phone"];
 			} else {
-				autocompletionTextField("phone", "glpi_users", "phone", $this->fields["phone"], 30);
+				autocompletionTextField("phone", "glpi_users", "phone", $this->fields["phone"], 40);
 			}
 			echo "</td></tr>";
 
@@ -1012,7 +1012,7 @@ class User extends CommonDBTM {
 			if ($extauth && isset ($auth_method['ldap_field_phone2']) && !empty ($auth_method['ldap_field_phone2'])) {
 				echo $this->fields["phone2"];
 			} else {
-				autocompletionTextField("phone2", "glpi_users", "phone2", $this->fields["phone2"], 30);
+				autocompletionTextField("phone2", "glpi_users", "phone2", $this->fields["phone2"], 40);
 			}
 			echo "</td></tr>";
 
@@ -1020,7 +1020,7 @@ class User extends CommonDBTM {
 			if ($extauth && isset ($auth_method['ldap_field_mobile']) && !empty ($auth_method['ldap_field_mobile'])) {
 				echo $this->fields["mobile"];
 			} else {
-				autocompletionTextField("mobile", "glpi_users", "mobile", $this->fields["mobile"], 30);
+				autocompletionTextField("mobile", "glpi_users", "mobile", $this->fields["mobile"], 40);
 			}
 			echo "</td></tr>";
 

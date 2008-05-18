@@ -160,7 +160,7 @@ function showFormTreeDown($target, $tablename, $human, $ID, $value2 = '', $where
 		// on ajoute un input text pour entrer la valeur modifier
 		echo "&nbsp;&nbsp<input type='image' class='calendrier' src=\"" . $CFG_GLPI["root_doc"] . "/pics/puce.gif\" alt='' title='' name='fillright' value='fillright'>&nbsp";
 
-		autocompletionTextField('value',$tablename,'name',$value["name"],20,$entity_restrict,'maxlength=\'100\'');
+		autocompletionTextField('value',$tablename,'name',$value["name"],40,$entity_restrict,'maxlength=\'100\'');
 		echo '<br>'; 
 		echo "<textarea rows='2' cols='50' name='comments' title='" . $LANG["common"][25] . "' >" . $value["comments"] . "</textarea>";
 
@@ -200,7 +200,7 @@ function showFormTreeDown($target, $tablename, $human, $ID, $value2 = '', $where
 
 	echo "<table class='tab_cadre_fixe' cellpadding='1'>\n";
 	echo "<tr><td  align='center'  class='tab_bg_1'>";
-	autocompletionTextField('value',$tablename,'name','',15,$entity_restrict,'maxlength=\'100\'');
+	autocompletionTextField('value',$tablename,'name','',40,$entity_restrict,'maxlength=\'100\'');
 	echo "&nbsp;&nbsp;&nbsp;";
 
 	if ($numberof > 0) {
@@ -284,7 +284,7 @@ function showFormNetpoint($target, $human, $ID, $FK_entities='',$location=0) {
 		dropdownValue("glpi_dropdown_locations", "value2", $location, 0, $entity_restrict);
 		
 		echo $LANG["networking"][52] . ": ";
-		autocompletionTextField('value',$tablename,'name',$value,10,$entity_restrict,'maxlength=\'100\''); 
+		autocompletionTextField('value',$tablename,'name',$value,40,$entity_restrict,'maxlength=\'100\''); 
 		echo "<br>"; 
 		echo "<textarea rows='2' cols='50' name='comments' title='" . $LANG["common"][25] . "' >" . $comments . "</textarea>";
 
@@ -311,7 +311,7 @@ function showFormNetpoint($target, $human, $ID, $FK_entities='',$location=0) {
 	echo "<tr><td align='center'  class='tab_bg_1'>";
 
 	echo $LANG["networking"][52] . ": ";
-	autocompletionTextField('value',$tablename,'name','',10,$entity_restrict,'maxlength=\'100\''); 
+	autocompletionTextField('value',$tablename,'name','',40,$entity_restrict,'maxlength=\'100\''); 
 	echo "<br>"; 
 	echo "<textarea rows='2' cols='50' name='comments' title='" . $LANG["common"][25] . "'></textarea>";
 
@@ -399,7 +399,7 @@ function showFormDropDown($target, $tablename, $human, $ID, $FK_entities='') {
 		echo "&nbsp;&nbsp;<input type='image' class='calendrier'  src=\"" . $CFG_GLPI["root_doc"] . "/pics/puce.gif\" alt='' title='' name='fillright' value='fillright'>&nbsp;";
 
 
-		autocompletionTextField('value',$tablename,'name',$value["name"],20,$entity_restrict,'maxlength=\'100\''); 
+		autocompletionTextField('value',$tablename,'name',$value["name"],40,$entity_restrict,'maxlength=\'100\''); 
 		echo "<br>";
 		echo "<textarea rows='2' cols='50' name='comments' title='" . $LANG["common"][25] . "' >" . $value["comments"] . "</textarea>";
 
@@ -422,7 +422,7 @@ function showFormDropDown($target, $tablename, $human, $ID, $FK_entities='') {
 
 	echo "<table class='tab_cadre_fixe' cellpadding='1'>";
 	echo "<tr><td align='center'  class='tab_bg_1'>";
-	autocompletionTextField('value',$tablename,'name','',20,$entity_restrict,'maxlength=\'100\'');
+	autocompletionTextField('value',$tablename,'name','',40,$entity_restrict,'maxlength=\'100\'');
 	echo "<br>"; 
 	echo "<textarea rows='2' cols='50' name='comments' title='" . $LANG["common"][25] . "'></textarea>";
 

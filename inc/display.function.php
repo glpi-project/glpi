@@ -138,7 +138,7 @@ function includeCommonHtmlHeader($title=''){
  * @return nothing
  **/
 function displayTitle($ref_pic_link="",$ref_pic_text="",$ref_title="",$ref_btts="") {
-        echo "<div class='center'><table border='0'><tr>";
+        echo "<div class='center'><table border='0' class='tab_glpi'><tr>";
         if ($ref_pic_link!="")
                 echo "<td><img src=\"".$ref_pic_link."\" alt=\"".$ref_pic_text."\"
 title=\"".$ref_pic_text."\" ></td>"; 

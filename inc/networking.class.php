@@ -271,7 +271,7 @@ class Netdevice extends CommonDBTM {
 				echo "<input type='hidden' name='tplname' value='".$this->fields["tplname"]."'>";
 			}elseif (strcmp($template,"newtemplate") === 0) {
 				echo $LANG["common"][6].": ";
-				autocompletionTextField("tplname","glpi_networking","tplname",$this->fields["tplname"],20,$this->fields["FK_entities"]);
+				autocompletionTextField("tplname","glpi_networking","tplname",$this->fields["tplname"],40,$this->fields["FK_entities"]);
 			}
 			if (isMultiEntitiesMode()){
 				echo "&nbsp;(".getDropdownName("glpi_entities",$this->fields["FK_entities"]).")";
@@ -301,7 +301,7 @@ class Netdevice extends CommonDBTM {
 				echo "<tr><td>".$LANG["common"][16].($template?"*":"").":	</td>\n";
 				echo "<td>";
 				$objectName = autoName($this->fields["name"], "name", ($template === "newcomp"), NETWORKING_TYPE,$this->fields["FK_entities"]);
-				autocompletionTextField("name","glpi_networking","name",$objectName,20,$this->fields["FK_entities"]);
+				autocompletionTextField("name","glpi_networking","name",$objectName,40,$this->fields["FK_entities"]);
 				echo "</td></tr>\n";
 	
 				echo "<tr class='tab_bg_1'><td>".$LANG["common"][5].": 	</td><td colspan='2'>\n";
@@ -317,11 +317,11 @@ class Netdevice extends CommonDBTM {
 				echo "</td></tr>\n";
 	
 				echo "<tr><td>".$LANG["common"][21].":	</td><td>\n";
-				autocompletionTextField("contact_num","glpi_networking","contact_num",$this->fields["contact_num"],20,$this->fields["FK_entities"]);
+				autocompletionTextField("contact_num","glpi_networking","contact_num",$this->fields["contact_num"],40,$this->fields["FK_entities"]);
 				echo "</td></tr>\n";
 	
 				echo "<tr><td>".$LANG["common"][18].":	</td><td>\n";
-				autocompletionTextField("contact","glpi_networking","contact",$this->fields["contact"],20,$this->fields["FK_entities"]);
+				autocompletionTextField("contact","glpi_networking","contact",$this->fields["contact"],40,$this->fields["FK_entities"]);
 				echo "</td></tr>\n";
 	
 				echo "<tr><td>".$LANG["common"][34].": 	</td><td>";
@@ -360,16 +360,16 @@ class Netdevice extends CommonDBTM {
 				echo "</td></tr>\n";
 	
 				echo "<tr><td>".$LANG["networking"][5].":	</td><td>\n";
-				autocompletionTextField("ram","glpi_networking","ram",$this->fields["ram"],20,$this->fields["FK_entities"]);
+				autocompletionTextField("ram","glpi_networking","ram",$this->fields["ram"],40,$this->fields["FK_entities"]);
 				echo "</td></tr>\n";
 	
 				echo "<tr><td>".$LANG["common"][19].":	</td><td>\n";
-				autocompletionTextField("serial","glpi_networking","serial",$this->fields["serial"],20,$this->fields["FK_entities"]);
+				autocompletionTextField("serial","glpi_networking","serial",$this->fields["serial"],40,$this->fields["FK_entities"]);
 				echo "</td></tr>\n";
 	
 				echo "<tr><td>".$LANG["common"][20].($template?"*":"").":</td><td>\n";
 				$objectName = autoName($this->fields["otherserial"], "otherserial", ($template === "newcomp"), NETWORKING_TYPE,$this->fields["FK_entities"]);
-				autocompletionTextField("otherserial","glpi_networking","otherserial",$objectName,20,$this->fields["FK_entities"]);
+				autocompletionTextField("otherserial","glpi_networking","otherserial",$objectName,40,$this->fields["FK_entities"]);
 				echo "</td></tr>\n";
 	
 				echo "<tr><td>".$LANG["setup"][88].": 	</td><td>\n";
@@ -381,11 +381,11 @@ class Netdevice extends CommonDBTM {
 				echo "</td></tr>\n";
 	
 				echo "<tr><td>".$LANG["networking"][14].":</td><td>\n";
-				autocompletionTextField("ifaddr","glpi_networking","ifaddr",$this->fields["ifaddr"],20,$this->fields["FK_entities"]);
+				autocompletionTextField("ifaddr","glpi_networking","ifaddr",$this->fields["ifaddr"],40,$this->fields["FK_entities"]);
 				echo "</td></tr>\n";
 	
 				echo "<tr><td>".$LANG["networking"][15].":</td><td>\n";
-				autocompletionTextField("ifmac","glpi_networking","ifmac",$this->fields["ifmac"],20,$this->fields["FK_entities"]);
+				autocompletionTextField("ifmac","glpi_networking","ifmac",$this->fields["ifmac"],40,$this->fields["FK_entities"]);
 				echo "</td></tr>\n";
 	
 				echo "</table>\n";

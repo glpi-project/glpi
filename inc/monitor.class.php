@@ -240,7 +240,7 @@ class Monitor extends CommonDBTM {
 				echo "<input type='hidden' name='tplname' value='".$this->fields["tplname"]."'>";
 			}elseif (strcmp($template,"newtemplate") === 0) {
 				echo $LANG["common"][6]."&nbsp;: ";
-				autocompletionTextField("tplname","glpi_monitors","tplname",$this->fields["tplname"],20,$this->fields["FK_entities"]);	
+				autocompletionTextField("tplname","glpi_monitors","tplname",$this->fields["tplname"],40,$this->fields["FK_entities"]);	
 			}
 			if (isMultiEntitiesMode()){
 				echo "&nbsp;(".getDropdownName("glpi_entities",$this->fields["FK_entities"]).")";
@@ -259,7 +259,7 @@ class Monitor extends CommonDBTM {
 				echo "<tr><td>".$LANG["common"][16].($template?"*":"").":	</td>";
 				echo "<td>";
 				$objectName = autoName($this->fields["name"], "name", ($template === "newcomp"), MONITOR_TYPE,$this->fields["FK_entities"]);
-				autocompletionTextField("name","glpi_monitors","name",$objectName,20,$this->fields["FK_entities"]);
+				autocompletionTextField("name","glpi_monitors","name",$objectName,40,$this->fields["FK_entities"]);
 	
 				echo "</td></tr>";
 	
@@ -277,11 +277,11 @@ class Monitor extends CommonDBTM {
 	
 				echo "<tr><td>".$LANG["common"][21].":	</td>";
 				echo "<td>";
-				autocompletionTextField("contact_num","glpi_monitors","contact_num",$this->fields["contact_num"],20,$this->fields["FK_entities"]);	
+				autocompletionTextField("contact_num","glpi_monitors","contact_num",$this->fields["contact_num"],40,$this->fields["FK_entities"]);	
 				echo "</td></tr>";
 	
 				echo "<tr><td>".$LANG["common"][18].":	</td><td>";
-				autocompletionTextField("contact","glpi_monitors","contact",$this->fields["contact"],20,$this->fields["FK_entities"]);	
+				autocompletionTextField("contact","glpi_monitors","contact",$this->fields["contact"],40,$this->fields["FK_entities"]);	
 				echo "</td></tr>";
 	
 				echo "<tr><td>".$LANG["common"][34].": 	</td><td>";
@@ -316,12 +316,12 @@ class Monitor extends CommonDBTM {
 				echo "</td></tr>";
 	
 				echo "<tr><td>".$LANG["common"][19].":	</td><td>";
-				autocompletionTextField("serial","glpi_monitors","serial",$this->fields["serial"],20,$this->fields["FK_entities"]);
+				autocompletionTextField("serial","glpi_monitors","serial",$this->fields["serial"],40,$this->fields["FK_entities"]);
 				echo "</td></tr>";
 	
 				echo "<tr><td>".$LANG["common"][20].($template?"*":"").":</td><td>";
 				$objectName = autoName($this->fields["otherserial"], "otherserial", ($template === "newcomp"), MONITOR_TYPE,$this->fields["FK_entities"]);
-				autocompletionTextField("otherserial","glpi_monitors","otherserial",$objectName,20,$this->fields["FK_entities"]);
+				autocompletionTextField("otherserial","glpi_monitors","otherserial",$objectName,40,$this->fields["FK_entities"]);
 	
 				echo "</td></tr>";
 	

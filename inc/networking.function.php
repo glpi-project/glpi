@@ -282,7 +282,7 @@ function showNetportForm($target,$ID,$ondevice,$devtype,$several) {
 	echo "</td></tr>";
 
 	echo "<tr class='tab_bg_1'><td>".$LANG["networking"][14].":</td><td>";
-	autocompletionTextField("ifaddr","glpi_networking_ports","ifaddr",$netport->fields["ifaddr"],20);	
+	autocompletionTextField("ifaddr","glpi_networking_ports","ifaddr",$netport->fields["ifaddr"],40);	
 	echo "</td></tr>\n";
 
 	// Show device MAC adresses
@@ -322,19 +322,19 @@ function showNetportForm($target,$ID,$ondevice,$devtype,$several) {
 	}
 
 	echo "<tr class='tab_bg_1'><td>".$LANG["networking"][15].":</td><td>";
-	autocompletionTextField("ifmac","glpi_networking_ports","ifmac",$netport->fields["ifmac"],25);	
+	autocompletionTextField("ifmac","glpi_networking_ports","ifmac",$netport->fields["ifmac"],40);	
 	echo "</td></tr>\n";
 
 	echo "<tr class='tab_bg_1'><td>".$LANG["networking"][60].":</td><td>";
-	autocompletionTextField("netmask","glpi_networking_ports","netmask",$netport->fields["netmask"],25);	
+	autocompletionTextField("netmask","glpi_networking_ports","netmask",$netport->fields["netmask"],40);	
 	echo "</td></tr>\n";
 
 	echo "<tr class='tab_bg_1'><td>".$LANG["networking"][59].":</td><td>";
-	autocompletionTextField("gateway","glpi_networking_ports","gateway",$netport->fields["gateway"],25);	
+	autocompletionTextField("gateway","glpi_networking_ports","gateway",$netport->fields["gateway"],40);	
 	echo "</td></tr>\n";
 
 	echo "<tr class='tab_bg_1'><td>".$LANG["networking"][61].":</td><td>";
-	autocompletionTextField("subnet","glpi_networking_ports","subnet",$netport->fields["subnet"],25);	
+	autocompletionTextField("subnet","glpi_networking_ports","subnet",$netport->fields["subnet"],40);	
 	echo "</td></tr>\n";
 
 	if ($several!="yes"){
