@@ -5,7 +5,6 @@ var marked_row = new Array;
 
 var timeoutglobalvar;
 
- 
 //modifier la propri��display d'un �ement
 function setdisplay (objet, statut) {
 	var e = objet;
@@ -395,12 +394,4 @@ function showHideDiv(id,img_name,img_src_close,img_src_open) {
 		}
 	}
 }
-function action_change_progress(pct,msg)
-{
-	document.getElementById('doaction_progress').style.width = pct;
-	document.getElementById('doaction_pourcent').innerHTML = msg;
-}
-function action_change_message(msg)
-{
-	document.getElementById('doaction_message').innerHTML = msg;
-}
+
