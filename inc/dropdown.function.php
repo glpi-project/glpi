@@ -1338,7 +1338,7 @@ function autocompletionTextField($myname,$table,$field,$value='',$size=40,$entit
 		echo "var textfield_$myname$rand = new Ext.data.Store({
 			proxy: new Ext.data.HttpProxy(
 			new Ext.data.Connection ({
-				url: '/glpi/ajax/autocompletion.php',
+				url: '".$CFG_GLPI["root_doc"]."/ajax/autocompletion.php',
 				extraParams : {
 					table: '$table',
 					field: '$field',";
@@ -1372,11 +1372,6 @@ function autocompletionTextField($myname,$table,$field,$value='',$size=40,$entit
 	
 		echo "</script>";
 
-
-/*		echo "<script type='text/javascript' language='javascript' charset='utf-8'>";
-		echo "new Ajax.Autocompleter('textfield_$myname$rand','textfieldupdate_$myname$rand','".$CFG_GLPI["root_doc"]."/ajax/autocompletion.php',{parameters:'table=$table&field=$field&myname=$myname&entity_restrict=".$entity_restrict."'});";
-		echo "</script>";
-*/
 	}	else {
 		echo "<input $option type='text' name='$myname' value=\"".cleanInputText($value)."\" size='$size'>\n";
 	}

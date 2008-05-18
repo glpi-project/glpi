@@ -56,9 +56,7 @@ if (isset($_POST["table"])&&isset($_POST["value"])){
 
 			if (isset($_POST['withlink'])){
 				echo "<script type='text/javascript' >\n";
-				echo "	Ext.onReady(function() {";
 				echo "	Ext.get('".$_POST['withlink']."').dom.href='".$tmpname['link']."';";
-				echo "});";
 				echo "</script>\n";
 			} 
 			break;
