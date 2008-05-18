@@ -1397,9 +1397,6 @@ CREATE TABLE `glpi_event_log` (
   KEY `itemtype` (`itemtype`)
 ) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-INSERT INTO glpi_event_log VALUES ('1','-1','system','2007-09-29 15:51:43','login','3','glpi connexion de l\'IP : 127.0.0.1');
-INSERT INTO glpi_event_log VALUES ('2','-1','system','2008-05-08 18:46:08','login','3','glpi connexion de l\'IP : 127.0.0.1');
-
 ### Dump table glpi_followups
 
 DROP TABLE IF EXISTS `glpi_followups`;

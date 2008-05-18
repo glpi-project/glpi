@@ -68,10 +68,32 @@ function update071to072() {
 		if (FieldExists($table, $field)) {
 			$query = "ALTER TABLE `$table` CHANGE `$field` `$field` DATETIME NULL;";
  			$DB->query($query) or die("0.72 alter $field in $table" . $LANG["update"][90] . $DB->error());
+		}
+	}
+	$date_fields[]="glpi_computers.date_mod";
+	$date_fields[]="glpi_followups.date";
+	$date_fields[]="glpi_history.date_mod";
+	$date_fields[]="glpi_kbitems.date";
+	$date_fields[]="glpi_kbitems.date_mod";
+	$date_fields[]="glpi_ocs_config.date_mod";
+	$date_fields[]="glpi_ocs_link.last_ocs_update";
+	$date_fields[]="glpi_reminder.date";
+	$date_fields[]="glpi_reminder.begin";
+	$date_fields[]="glpi_reminder.end";
+	$date_fields[]="glpi_reminder.date_mod";
+	$date_fields[]="glpi_software.date_mod";
+	$date_fields[]="glpi_tracking.date";
+	$date_fields[]="glpi_tracking.date_mod";
+	$date_fields[]="glpi_type_docs.date_mod";
+
+	foreach ($date_fields as $tablefield){
+		list($table,$field)=explode('.',$tablefield);
+		if (FieldExists($table, $field)) {
 			$query = "UPDATE `$table` SET `$field` = NULL WHERE `$field` ='0000-00-00 00:00:00';";
  			$DB->query($query) or die("0.72 update data of $field in $table" . $LANG["update"][90] . $DB->error());
 		}
 	}
+	
 
 } // fin 0.72 #####################################################################################
 ?>
