@@ -761,7 +761,7 @@ function addFormTracking ($device_type=0,$ID=0, $target, $author, $group=0, $ass
 	if (haveRight("update_ticket","1")){
 		echo "<tr class='tab_bg_2'><td class='center'>".$LANG["common"][27].":</td>";
 		echo "<td align='center' class='tab_bg_2'>";
-		showCalendarForm("form_ticket","date",date("Y-m-d H:i"),true,true);	
+		showDateTimeFormItem("date",date("Y-m-d H:i"),1);
 		echo "</td>";
 
 		echo "<td class='center'>".$LANG["job"][44].":</td>";
@@ -1369,12 +1369,12 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$to
 		$where.=" AND ".getRealQueryForTreeItem("glpi_dropdown_tracking_category",$category,"glpi_tracking.category");
 	}
 
-	if (!empty($date1)&&$date1!="0000-00-00") $where.=" AND glpi_tracking.date >= '$date1'";
-	if (!empty($date2)&&$date2!="0000-00-00") $where.=" AND glpi_tracking.date <= adddate( '". $date2 ."' , INTERVAL 1 DAY ) ";
-	if (!empty($enddate1)&&$enddate1!="0000-00-00") $where.=" AND glpi_tracking.closedate >= '$enddate1'";
-	if (!empty($enddate2)&&$enddate2!="0000-00-00") $where.=" AND glpi_tracking.closedate <= adddate( '". $enddate2 ."' , INTERVAL 1 DAY ) ";
-	if (!empty($datemod1)&&$datemod1!="0000-00-00") $where.=" AND glpi_tracking.date_mod >= '$datemod1'";
-	if (!empty($datemod2)&&$datemod2!="0000-00-00") $where.=" AND glpi_tracking.date_mod <= adddate( '". $datemod2 ."' , INTERVAL 1 DAY ) ";
+	if (!empty($date1)) $where.=" AND glpi_tracking.date >= '$date1'";
+	if (!empty($date2)) $where.=" AND glpi_tracking.date <= adddate( '". $date2 ."' , INTERVAL 1 DAY ) ";
+	if (!empty($enddate1)) $where.=" AND glpi_tracking.closedate >= '$enddate1'";
+	if (!empty($enddate2)) $where.=" AND glpi_tracking.closedate <= adddate( '". $enddate2 ."' , INTERVAL 1 DAY ) ";
+	if (!empty($datemod1)) $where.=" AND glpi_tracking.date_mod >= '$datemod1'";
+	if (!empty($datemod2)) $where.=" AND glpi_tracking.date_mod <= adddate( '". $datemod2 ."' , INTERVAL 1 DAY ) ";
 
 	if ($recipient!=0)
 		$where.=" AND glpi_tracking.recipient=$recipient";	
@@ -1768,11 +1768,8 @@ function showJobDetails ($target,$ID){
 		// First line
 		echo "<tr><th colspan='2' style='text-align:left;'><table><tr><td><span class='tracking_small'>";
 		echo $LANG["joblist"][11].": </span></td><td>";
-		if ($canupdate){
-			showCalendarForm("form_ticket","date",$job->fields["date"],true,true,false);	
-		} else {
-			echo $job->fields["date"];
-		}
+		showDateTimeFormItem("date",$job->fields["date"],1,false,$canupdate);
+
 		echo "</td><td><span class='tracking_small'>&nbsp;&nbsp; ".$LANG["job"][2]." &nbsp; </span></td><td>";
 		if ($canupdate){
 			dropdownAllUsers("recipient",$job->fields["recipient"],1,$job->fields["FK_entities"]);
@@ -1783,14 +1780,11 @@ function showJobDetails ($target,$ID){
 		echo "</td></tr></table>";
 
 		if (ereg("old_",$job->fields["status"])){
-			echo "<br><span class='tracking_small'>".$LANG["joblist"][12].": ";
-
-			if ($canupdate){
-				showCalendarForm("form_ticket","closedate",$job->fields["closedate"],true,true,false);	
-			} else {
-				echo $job->fields["closedate"];
-			}
-			echo "</span>\n";
+			echo "<table><tr><td>";
+			echo "<span class='tracking_small'>".$LANG["joblist"][12].": </td><td>";
+			
+			showDateTimeFormItem("closedate",$job->fields["closedate"],1,false,$canupdate);
+			echo "</span></td></tr></table>\n";
 		}
 
 		echo "</th>";
@@ -2246,8 +2240,8 @@ function showFollowupsSummary($tID){
 						'author'=>$data2["id_assign"],
 						'ID'=>$data2["ID"],
 						'state'=>$data2["state"],
-						'begin_date'=>$data2["begin"],
-						'end_date'=>$data2["end"],
+						'begin'=>$data2["begin"],
+						'end'=>$data2["end"],
 						'entity'=>$job->fields["FK_entities"],
 						);
 					ajaxUpdateItemJsCode('viewplan',$CFG_GLPI["root_doc"]."/ajax/planning.php",$params,false);

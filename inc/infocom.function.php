@@ -277,7 +277,7 @@ function TableauAmort($type_amort,$va,$duree,$coef,$date_achat,$date_use,$date_f
 	// amort degressif au prorata du nombre de mois. Son point de depart est le 1er jour du mois d'acquisition et non date de mise en service
 
 	if ($type_amort=="2"){
-		if ($date_use!="0000-00-00") {
+		if (!empty($date_use)) {
 			$date_achat=$date_use;
 		}
 	}
@@ -299,7 +299,7 @@ function TableauAmort($type_amort,$va,$duree,$coef,$date_achat,$date_use,$date_f
 	switch ($type_amort) {
 		case "2" :
 			########################### Calcul amortissement lineaire ###########################
-			if($va>0 &&$duree>0  &&$date_achat!="0000-00-00") {
+			if($va>0 &&$duree>0  &&!empty($date_achat)) {
 				## calcul du prorata temporis en jour ##	
 				$ecartfinmoiscourant=(30-$date_d); // calcul ecart entre jour  date acquis ou mise en service et fin du mois courant
 				
@@ -346,7 +346,7 @@ function TableauAmort($type_amort,$va,$duree,$coef,$date_achat,$date_use,$date_f
 		case "1" :
 			########################### Calcul amortissement degressif ###########################
 
-			if($va>0 &&$duree>0  &&$coef>1 &&$date_achat!="0000-00-00") {
+			if($va>0 &&$duree>0  &&$coef>1 && !empty($date_achat)) {
 				## calcul du prorata temporis en mois ##
 				// si l'annee fiscale debute au dela de l'annee courante
 				if ($date_m>$date_m2) {	
@@ -525,7 +525,7 @@ function cron_infocom($display=false){
 					AND glpi_alerts.type='".ALERT_END."') 
 		WHERE (glpi_infocoms.alert & ".pow(2,ALERT_END).") >0 
 			AND glpi_infocoms.warranty_duration>0 
-			AND glpi_infocoms.buy_date<>'0000-00-00' 
+			AND glpi_infocoms.buy_date IS NOT NULL 
 			AND DATEDIFF( ADDDATE(glpi_infocoms.buy_date, INTERVAL (glpi_infocoms.warranty_duration) MONTH),CURDATE() )<0 
 			AND glpi_alerts.date IS NULL;";
 

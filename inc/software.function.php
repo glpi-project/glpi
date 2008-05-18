@@ -1524,7 +1524,6 @@ function cron_software($display=false){
 					AND glpi_alerts.type='".ALERT_END."') 
 		LEFT JOIN glpi_software ON (glpi_licenses.sID = glpi_software.ID)
 		WHERE glpi_alerts.date IS NULL
-			AND glpi_licenses.expire <> '0000-00-00' 
 			AND glpi_licenses.expire IS NOT NULL 
 			AND glpi_licenses.expire < CURDATE()
 		";

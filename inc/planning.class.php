@@ -49,20 +49,14 @@ class PlanningTracking extends CommonDBTM {
 		$this->table="glpi_tracking_planning";
 	}
 
+	/// TODO : put in on standard update process
 	function update($input,$history=1){
 		global $LANG,$CFG_GLPI;
 		// Update a Planning Tracking
 
 		$this->getFromDB($input["ID"]);
 
-		list($begin_year,$begin_month,$begin_day)=split("-",$input["begin_date"]);
-		list($end_year,$end_month,$end_day)=split("-",$input["end_date"]);
-
-		list($begin_hour,$begin_min)=split(":",$input["begin_hour"]);
-		list($end_hour,$end_min)=split(":",$input["end_hour"]);
-		$input["begin"]=date("Y-m-d H:i:00",mktime($begin_hour,$begin_min,0,$begin_month,$begin_day,$begin_year));
-		$input["end"]=date("Y-m-d H:i:00",mktime($end_hour,$end_min,0,$end_month,$end_day,$end_year));
-
+		
 		// Fill the update-array with changes
 		$x=0;
 		foreach ($input as $key => $val) {
@@ -123,14 +117,15 @@ class PlanningTracking extends CommonDBTM {
 		return true;
 	}
 
+	/// TODO : put in on standard add process
 	function add($input){
 		global $LANG,$CFG_GLPI;
 		// set new date.
 		$this->fields["id_followup"] = $input["id_followup"];
 		$this->fields["id_assign"] = $input["id_assign"];
 		$this->fields["state"] = $input["state"];
-		$this->fields["begin"] = $input["begin_date"]." ".$input["begin_hour"].":00";
-		$this->fields["end"] = $input["end_date"]." ".$input["end_hour"].":00";
+		$this->fields["begin"] = $input["begin"];
+		$this->fields["end"] = $input["end"];
 
 		//	if (!empty($target)){
 		if (!$this->test_valid_date()){
@@ -238,7 +233,8 @@ class PlanningTracking extends CommonDBTM {
 	 *@return boolean
 	 **/
 	function test_valid_date(){
-		return (strtotime($this->fields["begin"])<strtotime($this->fields["end"]));
+		return (!empty($this->fields["begin"])&&!empty($this->fields["end"])
+			&&strtotime($this->fields["begin"])<strtotime($this->fields["end"]));
 	}
 
 	/**

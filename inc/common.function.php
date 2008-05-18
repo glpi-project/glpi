@@ -927,6 +927,9 @@ function convDateTime($time) {
 		$date = $date.substr($time,11,5);     // heures et minutes 
 		return $date; 
 	}else {
+		if (strlen($time)>16){
+			return substr($time,0,16);
+		}
 		return $time;
 	}
 }
@@ -1554,7 +1557,7 @@ function getWarrantyExpir($from,$addwarranty,$deletenotice=0){
 	if ($addwarranty==-1 && $deletenotice==0){
 		return $LANG["setup"][307];
 	}
-	if ($from==NULL || $from=='0000-00-00')
+	if ($from==NULL || empty($from))
 		return "";
 	else {
 		return convDate(date("Y-m-d", strtotime("$from+$addwarranty month -$deletenotice month")));
@@ -1572,7 +1575,7 @@ function getWarrantyExpir($from,$addwarranty,$deletenotice=0){
 **/
 function getExpir($begin,$duration,$notice="0"){
 	global $LANG;
-	if ($begin==NULL || $begin=='0000-00-00'){
+	if ($begin==NULL || empty($begin)){
 		return "";
 	} else {
 		$diff=strtotime("$begin+$duration month -$notice month")-time();

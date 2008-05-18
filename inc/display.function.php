@@ -110,16 +110,7 @@ function includeCommonHtmlHeader($title=''){
 
 	echo "<link rel='stylesheet' type='text/css' media='print' href='".$CFG_GLPI["root_doc"]."/css/print.css' >\n";
 	echo "<link rel='shortcut icon' type='images/x-icon' href='".$CFG_GLPI["root_doc"]."/pics/favicon.ico' >\n";
-	
-	// Calendar scripts 
-/*	if (isset($_SESSION["glpilanguage"])){
-		echo "<style type=\"text/css\">@import url(".$CFG_GLPI["root_doc"]."/lib/calendar/aqua/theme.css);</style>\n";
-		echo "<script type=\"text/javascript\" src=\"".$CFG_GLPI["root_doc"]."/lib/calendar/calendar.js\"></script>\n";
-		echo "<script type=\"text/javascript\" src=\"".$CFG_GLPI["root_doc"]."/lib/calendar/lang/calendar-".$CFG_GLPI["languages"][$_SESSION["glpilanguage"]][2].".js\"></script>\n";
-		echo "<script type=\"text/javascript\" src=\"".$CFG_GLPI["root_doc"]."/lib/calendar/calendar-setup.js\"></script>\n";
-	}
-*/
-	
+		
 	// Add specific javascript for plugins
 	if (isset($PLUGIN_HOOKS['add_javascript'])&&count($PLUGIN_HOOKS['add_javascript'])){
 		foreach  ($PLUGIN_HOOKS["add_javascript"] as $plugin => $file) {
@@ -1843,17 +1834,97 @@ function printPager($start,$numrows,$target,$parameters,$item_type_output=0,$ite
 }
 
 
+
+/**
+ * Display DateTime form with calendar
+ *
+ * @param $element name of the element
+ * @param $value default value to display
+ * @param $time_step step for time in minute (-1 use default config)
+ * @param $maybeempty may be empty ?
+ * @param $can_edit could not modify element
+ * @return nothing
+ */
+function showDateTimeFormItem($element,$value='',$time_step=-1,$maybeempty=true,$can_edit=true,$minDate='',$maxDate='',$minTime='',$maxTime=''){
+	global $CFG_GLPI;
+
+	if ($time_step<0){
+		$time_step=$CFG_GLPI['time_step'];
+	}
+	
+	$rand=mt_rand();
+	
+	echo "<input type='hidden' id='showdate$rand' value=''>";
+
+	echo "<script type='text/javascript'>";
+				
+	echo "Ext.onReady(function(){  
+		var md$rand = new Ext.ux.form.DateTime({
+		hiddenName: '$element',
+		id: '_date$rand',
+		value: '".convDateTime($value)."',
+		hiddenFormat:'Y-m-d H:i:s',
+		applyTo: 'showdate$rand',
+		timeFormat:'H:i',
+		timeWidth: 60,
+		dateWidth: 100,
+
+		timeConfig: {
+			altFormats:'H:i',
+			increment: $time_step,allowBlank: false,";
+			if (!empty($minTime)){
+				echo "minValue: '$minTime',";
+			}
+			if (!empty($maxTime)){
+				echo "maxValue: '$maxTime',";
+			}
+		echo "},
+		";
+		if ($maybeempty){
+			echo "allowBlank: true,";
+		} else {
+			echo "allowBlank: false,";
+		}
+		if (!$CFG_GLPI["dateformat"]){
+			echo "dateFormat: 'Y-m-d',
+				dateConfig: {
+					altFormats:'Y-m-d|Y-n-d',allowBlank: false,";
+		} else {
+			echo "dateFormat: 'd-m-Y',
+				dateConfig: {
+					altFormats:'d-m-Y|d-n-Y',allowBlank: false,";
+		}
+		if (!empty($minDate)){
+			echo "minValue: '".convDate($minDate)."',";
+		}
+		if (!empty($maxDate)){
+			echo "maxValue: '".convDate($maxDate)."',";
+		}
+
+		echo "},";
+		if (!$can_edit){
+			echo "disabled: true,";
+		}
+
+	echo " });
+	});";
+		
+	echo "</script>";
+
+}
+
+
 /**
  * Display Date form with calendar
  *
  * @param $element name of the element
  * @param $value default value to display
+ * @param $maybeempty may be empty ?
  * @param $can_edit could not modify element
  * @return nothing
  */
-function showDateFormItem($element,$value='',$maybeempty=true,$can_edit=true){
-	global $LANG,$CFG_GLPI;
-
+function showDateFormItem($element,$value='',$maybeempty=true,$can_edit=true,$minDate='',$maxDate=''){
+	global $CFG_GLPI;
 	$rand=mt_rand();
 	echo "<input id='showdate$rand' type='text' size='10' name='$element'>";
 
@@ -1879,89 +1950,18 @@ function showDateFormItem($element,$value='',$maybeempty=true,$can_edit=true){
 		if (!$can_edit){
 			echo "disabled: true,";
 		}
+		if (!empty($minDate)){
+			echo "minValue: '".convDate($minDate)."',";
+		}
+		if (!empty($maxDate)){
+			echo "maxValue: '".convDate($maxDate)."',";
+		}
 	echo " });		
 	});";
 		
 	echo "</script>";	
 }
 
-
-/**
- * Display calendar form
- *
- * @param $form form in which the calendar is display
- * @param $element name of the element
- * @param $value default value to display
- * @param $can_edit could not modify element
- * @param $with_time use datetime format instead of date format ?
- * @param $with_reset do not display reset button
- * @return nothing
- */
-
-function showCalendarForm($form,$element,$value='',$can_edit=true,$with_time=false,$with_reset=true){
-	global $LANG,$CFG_GLPI;
-	$rand=mt_rand();
-	if (empty($value)) {
-		if ($with_time) $value=date("Y-m-d H:i");
-		else 	$value=date("Y-m-d");
-	}
-
-	$size=10;
-	$dvalue=$value;
-	if ($with_time) {
-		$size=18;
-		$dvalue=convDateTime($value);
-	} else {
-		$dvalue=convDate($value);
-	}
-	
-	echo "<input id='show$rand' type='text' name='____".$element."_show' readonly size='$size' value=\"".$dvalue."\">";
-	echo "<input id='data$rand' type='hidden' name='$element' size='$size' value=\"".$value."\">";
-
-	if ($can_edit){
-		echo "&nbsp;<img id='button$rand' src='".$CFG_GLPI["root_doc"]."/pics/calendar.png' class='calendrier' alt='".$LANG["buttons"][15]."' title='".$LANG["buttons"][15]."'>";
-
-		if ($with_reset){
-			echo "&nbsp;<img src='".$CFG_GLPI["root_doc"]."/pics/reset.png' class='calendrier' onclick=\"window.document.getElementById('data$rand').value='0000-00-00".($with_time?" 00:00":"")."';window.document.getElementById('show$rand').value='".($with_time?convDateTime("0000-00-00 00:00"):convDate("0000-00-00"))."'\" alt='Reset' title='Reset'>";	
-		}
-
-		echo "<script type='text/javascript'>";
-		echo "Calendar.setup(";
-		echo "{";
-		echo "inputField : 'data$rand',"; // ID of the input field
-		if ($with_time){
-			echo "ifFormat : '%Y-%m-%d %H:%M',"; // the date format
-			echo "showsTime : true,"; 
-		}
-		else {
-			echo "ifFormat : '%Y-%m-%d',"; // the datetime format
-		}
-		echo "button : 'button$rand'"; // ID of the button
-		echo "});";
-		echo "</script>";
-
-		echo "<script type='text/javascript' >\n";
-		echo "   new Form.Element.Observer('data$rand', 1, \n";
-		echo "      function(element, value) {\n";
-		if (!$CFG_GLPI["dateformat"]){
-			echo "window.document.getElementById('show$rand').value=value;";
-		} else {
-			if ($with_time){
-				echo "if (value!='0000-00-00 00:00'){";
-					echo "var d=Date.parseDate(value,'%Y-%m-%d %H:%M');";
-					echo "window.document.getElementById('show$rand').value=d.print('%d-%m-%Y %H:%M');";
-				echo "}";
-			} else {
-				echo "if (value!='0000-00-00'){";
-					echo "var d=Date.parseDate(value,'%Y-%m-%d');";
-					echo "window.document.getElementById('show$rand').value=d.print('%d-%m-%Y');";
-				echo "}";
-			}
-		}
-		echo "})\n";
-		echo "</script>\n";
-	}
-}
 
 /**
  *  show notes for item

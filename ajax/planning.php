@@ -45,33 +45,29 @@
 	checkCentralAccess();
 	
 	$split=split(":",$CFG_GLPI["planning_begin"]);
-	$global_begin=intval($split[0]);
+	$global_begin=$split[0].":".$split[1];
 	$split=split(":",$CFG_GLPI["planning_end"]);
-	$global_end=intval($split[0]);
+	$global_end=$split[0].":".$split[1];
+	
 	if (isset($_POST["ID"])&&$_POST["ID"]>0){
 		echo "<input type='hidden' name='plan[ID]' value='".$_POST["ID"]."'>";
 	}
 
-	if (isset($_POST["begin_date"])&&!empty($_POST["begin_date"])){
-		$begin=strtotime($_POST["begin_date"]);
+	if (isset($_POST["begin"])&&!empty($_POST["begin"])){
+		$begin=$_POST["begin"];
 	} else {
-		$begin=strtotime(date("Y-m-d")." 12:00:00");
+		$begin=date("Y-m-d")." 12:00:00";
 	}
-	if (isset($_POST["end_date"])&&!empty($_POST["end_date"])){
-		$end=strtotime($_POST["end_date"]);
+	if (isset($_POST["end"])&&!empty($_POST["end"])){
+		$end=$_POST["end"];
 	} else {
-		$end=strtotime(date("Y-m-d")." 13:00:00");
+		$end=date("Y-m-d")." 13:00:00";
 	}
 
 	$state=0;
 	if (isset($_POST["state"])){
 		$state=$_POST["state"];
 	} 
-	
-	$begin_date=date("Y-m-d",$begin);
-	$end_date=date("Y-m-d",$end);
-	$begin_hour=date("H:i",$begin);
-	$end_hour=date("H:i",$end);
 	
 	echo "<table class='tab_cadre' cellpadding='2'>";
 	if (isset($_POST["author"])&&isset($_POST["entity"])){
@@ -82,23 +78,13 @@
 	}
 	
 	echo "<tr class='tab_bg_2'><td>".$LANG["search"][8].":	</td><td>";
-	showCalendarForm($_POST['form'],"plan[begin_date]",$begin_date);
-	echo "</td></tr>";
-	
-	echo "<tr class='tab_bg_2'><td>".$LANG["reservation"][12].":	</td>";
-	echo "<td>";
-	dropdownHours("plan[begin_hour]",$begin_hour,1);
+	showDateTimeFormItem("plan[begin]",$begin,-1,false,true,'','',$global_begin,$global_end);
 	echo "</td></tr>";
 	
 	echo "<tr class='tab_bg_2'><td>".$LANG["search"][9].":	</td><td>";
-	showCalendarForm($_POST['form'],"plan[end_date]",$end_date);
+	showDateTimeFormItem("plan[end]",$end,-1,false,true,'','',$global_begin,$global_end);
 	echo "</td></tr>";
 	
-	echo "<tr class='tab_bg_2'><td>".$LANG["reservation"][13].":	</td>";
-	echo "<td>";
-	dropdownHours("plan[end_hour]",$end_hour,1);
-	echo "</td></tr>";
-
 	echo "<tr class='tab_bg_2'><td>".$LANG["state"][0].":	</td>";
 	echo "<td>";
 	dropdownPlanningState("plan[state]",$state);

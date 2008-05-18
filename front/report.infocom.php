@@ -135,7 +135,7 @@ function display_infocoms_report($device_type,$begin,$end){
 						$valeurnettegraph[$val]+=$tmp["vcnetdeb"][$key];
 					}
 				}
-			if ($line["buy_date"]!="0000-00-00"){
+			if (!empty($line["buy_date"])){
 				$year=substr($line["buy_date"],0,4);
 				if ($line["value"]>0){
 					if (!isset($valeurgraph[$year])) $valeurgraph[$year]=0;

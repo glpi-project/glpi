@@ -2635,20 +2635,20 @@ function giveItem ($type,$field,$data,$num,$linkfield=""){
 			break;
 		case "glpi_infocoms.end_warranty":
 		case "glpi_contracts.end_date":
-			if ($data["ITEM_$num"]!=''&&$data["ITEM_$num"]!="0000-00-00"){
+			if ($data["ITEM_$num"]!='' && !empty($data["ITEM_$num"])){
 				return getWarrantyExpir($data["ITEM_$num"],$data["ITEM_".$num."_2"]);
 			} else {
 				return "&nbsp;"; 
 			}
 		break;
 		case "glpi_contracts.expire_notice": // ajout jmd
-			if ($data["ITEM_$num"]!=''&&$data["ITEM_$num"]!="0000-00-00"){
+			if ($data["ITEM_$num"]!='' && !empty($data["ITEM_$num"])){
 				return getExpir($data["ITEM_$num"],$data["ITEM_".$num."_2"],$data["ITEM_".$num."_3"]);
 			} else {
 				return "&nbsp;"; 
 			}
 		case "glpi_contracts.expire": // ajout jmd
-			if ($data["ITEM_$num"]!=''&&$data["ITEM_$num"]!="0000-00-00"){
+			if ($data["ITEM_$num"]!='' && !empty($data["ITEM_$num"])){
 				return getExpir($data["ITEM_$num"],$data["ITEM_".$num."_2"]);
 			} else {
 				return "&nbsp;"; 

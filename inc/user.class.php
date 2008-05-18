@@ -874,12 +874,12 @@ class User extends CommonDBTM {
 					}
 					
 					echo "<tr class='tab_bg_1' align='center'><td>" . $LANG["login"][24] . ":</td><td class='center'>";
-					if ($this->fields["date_mod"] != "0000-00-00 00:00:00"){
+					if (!empty($this->fields["date_mod"])){
 						echo convDateTime($this->fields["date_mod"]);
 					}
 					echo "</td><td>" . $LANG["login"][0] . ":</td><td>";
 
-					if ($this->fields["last_login"] != "0000-00-00 00:00:00"){
+					if (!empty($this->fields["last_login"])){
 						echo convDateTime($this->fields["last_login"]);
 					}
 
