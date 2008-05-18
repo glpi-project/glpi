@@ -2131,6 +2131,7 @@ function showProfileSelecter($target){
 				height:400,
 				closeAction:'hide',
 				modal: true,
+				autoScroll: true,
 				title: \"".$LANG["entity"][10]."\",
 			});
 			entity_window.html=Ext.get('modal_entity_contents').dom.innerHTML;
@@ -2157,10 +2158,10 @@ function createProgressBar ($msg="&nbsp;") {
 	"</div></div><br />";
 
 	echo "<script type='text/javascript'>";
-	echo "new Ext.ProgressBar({
+	echo "var glpi_progressbar=new Ext.ProgressBar({
 		text:\"$msg\",
 		id:'progress_bar',
-		renderTo:'doaction_progress'
+		applyTo:'doaction_progress'
 	});";
 
 	echo "</script>\n";
@@ -2188,9 +2189,10 @@ function changeProgressBarPosition ($crt, $tot, $msg="") {
 	else
 		$pct = $crt/$tot;
 	//if (empty($msg)) $msg = $pct." %";
-	echo $pct;
-	echo "<script type='text/javascript'>Ext.get('doaction_progress').updateProgess(\"$pct\",\"$msg\")</script>\n";
-	glpi_flush();							
+
+	echo "<script type='text/javascript'>
+	glpi_progressbar.updateProgress(\"$pct\",\"$msg\");</script>\n";
+
 }
 
 /**
@@ -2200,6 +2202,6 @@ function changeProgressBarPosition ($crt, $tot, $msg="") {
  * @return nothing
  **/
 function changeProgressBarMessage ($msg="&nbsp;") {
-	echo "<script type='text/javascript'>Ext.get('doaction_progress').updateText(\"$msg\")</script>\n";	
+	echo "<script type='text/javascript'>glpi_progressbar.updateText(\"$msg\")</script>\n";	
 }
 ?>
