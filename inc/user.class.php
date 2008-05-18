@@ -938,10 +938,6 @@ class User extends CommonDBTM {
 		// Affiche un formulaire User
 		global $CFG_GLPI, $LANG,$PLUGIN_HOOKS;
 
-		// No autocopletion : 
-		$save_autocompletion=$CFG_GLPI["ajax_autocompletion"];
-		$CFG_GLPI["ajax_autocompletion"]=false;
-
 		if ($ID != $_SESSION["glpiID"])
 			return false;
 
@@ -953,6 +949,11 @@ class User extends CommonDBTM {
 				|| ($this->fields["auth_method"]==NOT_YET_AUTHENTIFIED 
 						&& (!empty ($this->fields["password"]) || !empty ($this->fields["password_md5"])))
 				);
+
+
+			// No autocopletion : 
+			$save_autocompletion=$CFG_GLPI["ajax_autocompletion"];
+			$CFG_GLPI["ajax_autocompletion"]=false;
 			
 			echo "<div class='center'>";
 			echo "<form method='post' name=\"user_manager\" action=\"$target\"><table class='tab_cadre_fixe'>";
@@ -1063,7 +1064,7 @@ class User extends CommonDBTM {
 			$CFG_GLPI["ajax_autocompletion"]=$save_autocompletion;
 			return true;
 		}
-		$CFG_GLPI["ajax_autocompletion"]=$save_autocompletion;
+		
 		return false;
 	}
 
