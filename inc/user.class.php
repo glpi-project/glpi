@@ -949,6 +949,11 @@ class User extends CommonDBTM {
 				|| ($this->fields["auth_method"]==NOT_YET_AUTHENTIFIED 
 						&& (!empty ($this->fields["password"]) || !empty ($this->fields["password_md5"])))
 				);
+
+			// No autocopletion : 
+			$save_autocompletion=$CFG_GLPI["ajax_autocompletion"];
+			$CFG_GLPI["ajax_autocompletion"]=false;
+
 			
 			echo "<div class='center'>";
 			echo "<form method='post' name=\"user_manager\" action=\"$target\"><table class='tab_cadre_fixe'>";
@@ -1056,7 +1061,7 @@ class User extends CommonDBTM {
 			echo "</tr>";
 
 			echo "</table></form></div>";
-
+			$CFG_GLPI["ajax_autocompletion"]=$save_autocompletion;
 			return true;
 		}
 		return false;
