@@ -73,9 +73,10 @@ function includeCommonHtmlHeader($title=''){
 	}
 
 	// AJAX library
-	echo "<script type=\"text/javascript\" src='".$CFG_GLPI["root_doc"]."/lib/extjs/adapter/prototype/prototype.js'></script>\n";
-	echo "<script type=\"text/javascript\" src='".$CFG_GLPI["root_doc"]."/lib/extjs/adapter/prototype/scriptaculous.js?load=effects,controls'></script>\n";
-	echo "<script type=\"text/javascript\" src='".$CFG_GLPI["root_doc"]."/lib/extjs/adapter/prototype/ext-prototype-adapter.js'></script>\n";
+//	echo "<script type=\"text/javascript\" src='".$CFG_GLPI["root_doc"]."/lib/extjs/adapter/prototype/prototype.js'></script>\n";
+//	echo "<script type=\"text/javascript\" src='".$CFG_GLPI["root_doc"]."/lib/extjs/adapter/prototype/scriptaculous.js?load=effects,controls'></script>\n";
+//	echo "<script type=\"text/javascript\" src='".$CFG_GLPI["root_doc"]."/lib/extjs/adapter/prototype/ext-prototype-adapter.js'></script>\n";
+	echo "<script type=\"text/javascript\" src='".$CFG_GLPI["root_doc"]."/lib/extjs/adapter/ext/ext-base.js'></script>\n";
 	if ($CFG_GLPI["debug"]==DEBUG_MODE){
 		echo "<script type=\"text/javascript\" src='".$CFG_GLPI["root_doc"]."/lib/extjs/ext-all-debug.js'></script>\n";
 	} else {
