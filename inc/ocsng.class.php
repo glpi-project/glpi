@@ -182,7 +182,7 @@ class Ocsng extends CommonDBTM {
 				echo "<tr><th align='center'  colspan=2>";
 
 				echo $LANG["common"][6]."&nbsp;: ";
-				autocompletionTextField("tplname","glpi_ocs_config","tplname",$this->fields["tplname"],20);
+				autocompletionTextField("tplname","glpi_ocs_config","tplname",$this->fields["tplname"],40);
 				echo "</th></tr>";
 					
 			//Adding a new machine, just display the name, not editable

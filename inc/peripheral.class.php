@@ -255,7 +255,7 @@ class Peripheral  extends CommonDBTM  {
 				echo "<input type='hidden' name='tplname' value='".$this->fields["tplname"]."'>";
 			}elseif (strcmp($template,"newtemplate") === 0) {
 				echo $LANG["common"][6]."&nbsp;: ";
-				autocompletionTextField("tplname","glpi_peripherals","tplname",$this->fields["tplname"],20,$this->fields["FK_entities"]);
+				autocompletionTextField("tplname","glpi_peripherals","tplname",$this->fields["tplname"],40,$this->fields["FK_entities"]);
 			}
 			if (isMultiEntitiesMode()){
 				echo "&nbsp;(".getDropdownName("glpi_entities",$this->fields["FK_entities"]).")";
@@ -274,7 +274,7 @@ class Peripheral  extends CommonDBTM  {
 				echo "<tr><td>".$LANG["common"][16].($template?"*":"").":	</td>";
 				echo "<td>";
 				$objectName = autoName($this->fields["name"], "name", ($template === "newcomp"), PERIPHERAL_TYPE,$this->fields["FK_entities"]);
-				autocompletionTextField("name","glpi_peripherals","name",$objectName,20,$this->fields["FK_entities"]);
+				autocompletionTextField("name","glpi_peripherals","name",$objectName,40,$this->fields["FK_entities"]);
 				echo "</td></tr>";
 	
 				echo "<tr><td>".$LANG["common"][15].": 	</td><td>";
@@ -286,11 +286,11 @@ class Peripheral  extends CommonDBTM  {
 				echo "</td></tr>";
 	
 				echo "<tr><td>".$LANG["common"][21].":	</td><td>";
-				autocompletionTextField("contact_num","glpi_peripherals","contact_num",$this->fields["contact_num"],20,$this->fields["FK_entities"]);		
+				autocompletionTextField("contact_num","glpi_peripherals","contact_num",$this->fields["contact_num"],40,$this->fields["FK_entities"]);		
 				echo "</td></tr>";
 	
 				echo "<tr><td>".$LANG["common"][18].":	</td><td>";
-				autocompletionTextField("contact","glpi_peripherals","contact",$this->fields["contact"],20,$this->fields["FK_entities"]);
+				autocompletionTextField("contact","glpi_peripherals","contact",$this->fields["contact"],40,$this->fields["FK_entities"]);
 				echo "</td></tr>";
 	
 				echo "<tr><td>".$LANG["common"][34].": 	</td><td>";
@@ -327,17 +327,17 @@ class Peripheral  extends CommonDBTM  {
 				echo "</td></tr>";
 	
 				echo "<tr><td>".$LANG["peripherals"][18].":</td><td>";
-				autocompletionTextField("brand","glpi_peripherals","brand",$this->fields["brand"],20,$this->fields["FK_entities"]);
+				autocompletionTextField("brand","glpi_peripherals","brand",$this->fields["brand"],40,$this->fields["FK_entities"]);
 				echo "</td></tr>";
 	
 	
 				echo "<tr><td>".$LANG["common"][19].":	</td><td>";
-				autocompletionTextField("serial","glpi_peripherals","serial",$this->fields["serial"],20,$this->fields["FK_entities"]);
+				autocompletionTextField("serial","glpi_peripherals","serial",$this->fields["serial"],40,$this->fields["FK_entities"]);
 				echo "</td></tr>";
 	
 				echo "<tr><td>".$LANG["common"][20].($template?"*":"").":</td><td>";
 				$objectName = autoName($this->fields["otherserial"], "otherserial", ($template === "newcomp"), PERIPHERAL_TYPE,$this->fields["FK_entities"]);
-				autocompletionTextField("otherserial","glpi_peripherals","otherserial",$objectName,20,$this->fields["FK_entities"]);
+				autocompletionTextField("otherserial","glpi_peripherals","otherserial",$objectName,40,$this->fields["FK_entities"]);
 	
 				echo "</td></tr>";
 	

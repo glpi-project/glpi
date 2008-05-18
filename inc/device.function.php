@@ -623,13 +623,13 @@ function showDevicesForm ($target,$ID,$device_type) {
 			case "glpi_device_moboard" : 
 				echo "<tr><td>".$LANG["device_moboard"][0].":</td>";
 			echo "<td>";
-			autocompletionTextField("chipset",$table,"chipset",$device->fields["chipset"],20);
+			autocompletionTextField("chipset",$table,"chipset",$device->fields["chipset"],40);
 	
 			echo "</td></tr>";
 			break;
 			case "glpi_device_processor" :
 				echo "<tr><td>".$LANG["device_ram"][1].":</td><td>";
-			autocompletionTextField("frequence",$table,"frequence",$device->fields["frequence"],20);
+			autocompletionTextField("frequence",$table,"frequence",$device->fields["frequence"],40);
 			echo "</td></tr>";
 			break;
 			case "glpi_device_ram" :
@@ -639,16 +639,16 @@ function showDevicesForm ($target,$ID,$device_type) {
 			echo "</td>";
 			echo "</tr>";
 			echo "<tr><td>".$LANG["device_ram"][1].":</td><td>";
-			autocompletionTextField("frequence",$table,"frequence",$device->fields["frequence"],20);
+			autocompletionTextField("frequence",$table,"frequence",$device->fields["frequence"],40);
 			echo "</td></tr>";
 			break;
 			case "glpi_device_hdd" :
 				echo "<tr><td>".$LANG["device_hdd"][0].":</td><td>";
-			autocompletionTextField("rpm",$table,"rpm",$device->fields["rpm"],20);
+			autocompletionTextField("rpm",$table,"rpm",$device->fields["rpm"],40);
 	
 			echo "</td></tr>";
 			echo "<tr><td>".$LANG["device_hdd"][1].":</td><td>";
-			autocompletionTextField("cache",$table,"cache",$device->fields["cache"],20);
+			autocompletionTextField("cache",$table,"cache",$device->fields["cache"],40);
 			echo "</td></tr>";
 	
 	
@@ -661,7 +661,7 @@ function showDevicesForm ($target,$ID,$device_type) {
 			break;
 			case "glpi_device_iface" :
 				echo "<tr><td>".$LANG["device_iface"][0].":</td><td>";
-			autocompletionTextField("bandwidth",$table,"bandwidth",$device->fields["bandwidth"],20);
+			autocompletionTextField("bandwidth",$table,"bandwidth",$device->fields["bandwidth"],40);
 			echo "</td></tr>";
 			break;
 			case "glpi_device_drive" :
@@ -679,7 +679,7 @@ function showDevicesForm ($target,$ID,$device_type) {
 			echo "</td>";
 			echo "</tr>";
 			echo "<tr><td>".$LANG["device_drive"][1].":</td><td>";
-			autocompletionTextField("speed",$table,"speed",$device->fields["speed"],20);
+			autocompletionTextField("speed",$table,"speed",$device->fields["speed"],40);
 			echo "</td></tr>";
 	
 	
@@ -700,7 +700,7 @@ function showDevicesForm ($target,$ID,$device_type) {
 			break;
 			case "glpi_device_gfxcard" :
 				echo "<tr><td>".$LANG["device_gfxcard"][0].":</td><td>";
-			autocompletionTextField("specif_default",$table,"specif_default",$device->fields["specif_default"],20);
+			autocompletionTextField("specif_default",$table,"specif_default",$device->fields["specif_default"],40);
 			echo "</td></tr>";
 			echo "<tr><td>".$LANG["common"][65].":</td>";
 			echo "<td><select name='interface'>";
@@ -714,7 +714,7 @@ function showDevicesForm ($target,$ID,$device_type) {
 			break;
 			case "glpi_device_sndcard" :
 				echo "<tr><td>".$LANG["common"][17].":</td><td>";
-			autocompletionTextField("type",$table,"type",$device->fields["type"],20);
+			autocompletionTextField("type",$table,"type",$device->fields["type"],40);
 			echo "</td></tr>";
 			break;
 			case "glpi_device_pci" :
@@ -729,7 +729,7 @@ function showDevicesForm ($target,$ID,$device_type) {
 			break;
 			case "glpi_device_power" :
 				echo "<tr><td>".$LANG["device_power"][0].":</td><td>";
-			autocompletionTextField("power",$table,"power",$device->fields["power"],20);
+			autocompletionTextField("power",$table,"power",$device->fields["power"],40);
 			echo "</td></tr>";
 			echo "<tr><td>".$LANG["device_power"][1].":</td>";
 			echo "<td>";
@@ -750,7 +750,7 @@ function showDevicesForm ($target,$ID,$device_type) {
 		// table commentaires
 		echo "<table width='100%' cellpadding='0' cellspacing='0' border='0'><tr><td valign='top'>";
 		echo $LANG["common"][25].":	</td>";
-		echo "<td class='center'><textarea cols='35' rows='4' name='comment' >".$device->fields["comment"]."</textarea>";
+		echo "<td class='center'><textarea cols='80' rows='4' name='comment' >".$device->fields["comment"]."</textarea>";
 		echo "</td></tr></table>";
 	
 		echo "</td>";

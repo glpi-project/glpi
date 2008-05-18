@@ -268,7 +268,7 @@ class Software extends CommonDBTM {
 				echo "<input type='hidden' name='tplname' value='" . $this->fields["tplname"] . "'>";
 			} elseif (strcmp($template, "newtemplate") === 0) {
 				echo $LANG["common"][6] . "&nbsp;: ";
-				autocompletionTextField("tplname", "glpi_software", "tplname", $this->fields["tplname"], 20,$this->fields["FK_entities"]);
+				autocompletionTextField("tplname", "glpi_software", "tplname", $this->fields["tplname"], 40,$this->fields["FK_entities"]);
 			}
 			if (isMultiEntitiesMode()){
 				echo "&nbsp;(".getDropdownName("glpi_entities",$this->fields["FK_entities"]).")";

@@ -1341,8 +1341,12 @@ function autocompletionTextField($myname,$table,$field,$value='',$size=40,$entit
 				url: '/glpi/ajax/autocompletion.php',
 				extraParams : {
 					table: '$table',
-					field: '$field',
-					entity_restrict: $entity_restrict,
+					field: '$field',";
+				
+				if (!empty($entity_restrict)&&$entity_restrict>=0){
+					echo "entity_restrict: $entity_restrict,";
+				}
+				echo "
 				},
 				method: 'POST'
 				})
