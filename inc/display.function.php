@@ -2117,9 +2117,9 @@ function showProfileSelecter($target){
 
 		echo "<a onclick=\"entity_window.show();\" href='#modal_entity_contents' title='".$_SESSION["glpiactive_entity_name"]."' class='entity_select' id='global_entity_select'>".$_SESSION["glpiactive_entity_shortname"]."</a>";
 
-		echo "<span id='modal_entity_contents' class='invisible'>";	
+		echo "<div id='modal_entity_contents' class='invisible'>";	
 		displayActiveEntities($target,"activeentity");
-		echo "</span>";
+		echo "</div>";
 		
 
 		echo "<script  type='text/javascript'>";
@@ -2134,6 +2134,7 @@ function showProfileSelecter($target){
 				title: \"".$LANG["entity"][10]."\",
 			});
 			entity_window.html=Ext.get('modal_entity_contents').dom.innerHTML;
+			Ext.get('modal_entity_contents').remove();
 		";
 		echo "</script>";
 
@@ -2151,9 +2152,23 @@ function showProfileSelecter($target){
  * @return nothing
  **/
 function createProgressBar ($msg="&nbsp;") {
+
 	echo "<div class='doaction_cadre'><div class='doaction_progress' id='doaction_progress'>".
-		"<div class='doaction_pourcent' id='doaction_pourcent'>&nbsp;</div></div></div><br />".
-		"<div id='doaction_message'>$msg</div>";
+	"</div></div><br />";
+
+	echo "<script type='text/javascript'>";
+	echo "new Ext.ProgressBar({
+		text:\"$msg\",
+		id:'progress_bar',
+		renderTo:'doaction_progress'
+	});";
+
+	echo "</script>\n";
+	
+
+//	echo "<div class='doaction_cadre'><div class='doaction_progress' id='doaction_progress'>".
+//		"<div class='doaction_pourcent' id='doaction_pourcent'>&nbsp;</div></div></div><br />".
+//		"<div id='doaction_message'>$msg</div>";
 }
 
 /**
@@ -2167,14 +2182,14 @@ function createProgressBar ($msg="&nbsp;") {
 function changeProgressBarPosition ($crt, $tot, $msg="") {
 	if (!$tot)
 		$pct=0;
+
 	else if ($crt>$tot)
-		$pct=100;
+		$pct=1;
 	else
-		$pct = floor($crt*100/$tot);
-
-	if (empty($msg)) $msg = $pct." %";
-
-	echo "<script type='text/javascript'>action_change_progress(\"$pct%\",\"$msg\")</script>\n";
+		$pct = $crt/$tot;
+	//if (empty($msg)) $msg = $pct." %";
+	echo $pct;
+	echo "<script type='text/javascript'>Ext.get('doaction_progress').updateProgess(\"$pct\",\"$msg\")</script>\n";
 	glpi_flush();							
 }
 
@@ -2185,6 +2200,6 @@ function changeProgressBarPosition ($crt, $tot, $msg="") {
  * @return nothing
  **/
 function changeProgressBarMessage ($msg="&nbsp;") {
-	echo "<script type='text/javascript'>action_change_message(\"$msg\")</script>\n";	
+	echo "<script type='text/javascript'>Ext.get('doaction_progress').updateText(\"$msg\")</script>\n";	
 }
 ?>
