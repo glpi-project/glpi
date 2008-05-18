@@ -459,7 +459,7 @@ class CommonDBTM {
 		if ($addMessAfterRedirect) {
 			addMessageAfterRedirect($LANG["common"][70] . 
 			": <a href='" . $CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$this->type] . "?ID=" . $this->fields['ID'] . "'>" .
-			(isset($this->fields["name"]) && !empty($this->fields["name"]) ? $this->fields["name"] : "(".$this->fields['ID'].")") . "</a>");
+			(isset($this->fields["name"]) && !empty($this->fields["name"]) ? stripslashes($this->fields["name"]) : "(".$this->fields['ID'].")") . "</a>");
 		} 
 	}
 
@@ -588,7 +588,7 @@ class CommonDBTM {
 		}
 
 		if ($addMessAfterRedirect) {
-			addMessageAfterRedirect($LANG["common"][71].": ".(isset($this->fields["name"]) && !empty($this->fields["name"]) ? $this->fields["name"] : "(".$this->fields['ID'].")"));
+			addMessageAfterRedirect($LANG["common"][71].": ".(isset($this->fields["name"]) && !empty($this->fields["name"]) ? stripslashes($this->fields["name"]) : "(".$this->fields['ID'].")"));
 		} 
 	}
 
@@ -719,7 +719,7 @@ class CommonDBTM {
 		if ($addMessAfterRedirect) {
 			addMessageAfterRedirect($LANG["common"][72] . 
 			": <a href='" . $CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$this->type] . "?ID=" . $this->fields['ID'] . "'>" .
-			(isset($this->fields["name"]) && !empty($this->fields["name"]) ? $this->fields["name"] : "(".$this->fields['ID'].")") . "</a>");
+			(isset($this->fields["name"]) && !empty($this->fields["name"]) ? stripslashes($this->fields["name"]) : "(".$this->fields['ID'].")") . "</a>");
 		} 
 	}
 
@@ -745,7 +745,7 @@ class CommonDBTM {
 		}
 
 		if ($addMessAfterRedirect) {
-			addMessageAfterRedirect($LANG["common"][73].": ".(isset($this->fields["name"]) && !empty($this->fields["name"]) ? $this->fields["name"] : "(".$this->fields['ID'].")"));
+			addMessageAfterRedirect($LANG["common"][73].": ".(isset($this->fields["name"]) && !empty($this->fields["name"]) ? stripslashes($this->fields["name"]) : "(".$this->fields['ID'].")"));
 		} 
 	}
 
@@ -822,7 +822,7 @@ class CommonDBTM {
 		if ($addMessAfterRedirect) {
 			addMessageAfterRedirect($LANG["common"][74] . 
 			": <a href='" . $CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$this->type] . "?ID=" . $this->fields['ID'] . "'>" .
-			(isset($this->fields["name"]) && !empty($this->fields["name"]) ? $this->fields["name"] : "(".$this->fields['ID'].")") . "</a>");
+			(isset($this->fields["name"]) && !empty($this->fields["name"]) ? stripslashes($this->fields["name"]) : "(".$this->fields['ID'].")") . "</a>");
 		} 
 	}
 
