@@ -938,6 +938,10 @@ class User extends CommonDBTM {
 		// Affiche un formulaire User
 		global $CFG_GLPI, $LANG,$PLUGIN_HOOKS;
 
+		// No autocopletion : 
+		$save_autocompletion=$CFG_GLPI["ajax_autocompletion"];
+		$CFG_GLPI["ajax_autocompletion"]=false;
+
 		if ($ID != $_SESSION["glpiID"])
 			return false;
 
@@ -1056,9 +1060,10 @@ class User extends CommonDBTM {
 			echo "</tr>";
 
 			echo "</table></form></div>";
-
+			$CFG_GLPI["ajax_autocompletion"]=$save_autocompletion;
 			return true;
 		}
+		$CFG_GLPI["ajax_autocompletion"]=$save_autocompletion;
 		return false;
 	}
 
