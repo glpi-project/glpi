@@ -44,7 +44,7 @@ commonHeader($LANG["Menu"][29],$_SERVER['PHP_SELF'],"maintain","planning");
 
 checkSeveralRightsOr(array("show_all_planning"=>"1","show_planning"=>"1"));
 
-if (!isset($_GET["date"])||$_GET["date"]=="0000-00-00") $_GET["date"]=strftime("%Y-%m-%d");
+if (!isset($_GET["date"])||empty($_GET["date"])) $_GET["date"]=strftime("%Y-%m-%d");
 if (!isset($_GET["type"])) $_GET["type"]="week";
 if (!isset($_GET["uID"])||!haveRight("show_all_planning","1")) $_GET["uID"]=$_SESSION["glpiID"];
 if (!isset($_GET["gID"])) $_GET["gID"]=0;
@@ -121,7 +121,8 @@ if (haveRight("show_all_planning","1")){
 echo "</td>";
 echo "<td align='right'>";
 echo $LANG["common"][27].":</td><td>";
-echo showCalendarForm("form","date",$_GET["date"]);
+showDateFormItem("date",$_GET["date"],false);
+
 echo "</td>";
 echo "<td><select name='type'>";
 echo "<option value='day' ".($_GET["type"]=="day"?" selected ":"").">".$LANG["planning"][5]."</option>";

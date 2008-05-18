@@ -109,6 +109,14 @@ class Job extends CommonDBTM{
 
 	function prepareInputForUpdate($input) {
 		global $LANG,$CFG_GLPI;
+
+		if (isset($input["date"])&&empty($input["date"])){
+			unset($input["date"]);
+		}
+		if (isset($input["closedate"])&&empty($input["closedate"])){
+			unset($input["closedate"]);
+		}
+
 		// Security checks
 		if (!haveRight("assign_ticket","1")){
 			if (isset($input["assign"])){
@@ -235,7 +243,6 @@ class Job extends CommonDBTM{
 			$input["_old_date"]=$this->fields["date"];
 			$input["_old_closedate"]=$this->fields["closedate"];
 		}
-
 		return $input;
 	}
 
@@ -563,7 +570,7 @@ class Job extends CommonDBTM{
 			$input['author_location']=$user->fields['location'];
 		}
 
-		if (!isset($input["date"])||$input["date"]=='0000-00-00 00:00'){
+		if (!isset($input["date"])||empty($input["date"])){
 			$input["date"] = $_SESSION["glpi_currenttime"];
 		}
 

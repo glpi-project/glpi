@@ -153,7 +153,6 @@ class CommonDBTM {
 	function updateInDB($updates,$oldvalues=array())  {
 
 		global $DB,$CFG_GLPI;
-
 		foreach ($updates as $field) {
 			if (isset($this->fields[$field])){
 				$query  = "UPDATE `".$this->table."` SET `";

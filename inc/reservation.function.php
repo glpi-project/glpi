@@ -134,7 +134,7 @@ function printCalendrier($target,$ID=""){
 	}
 
 
-	echo "<div class='center'><table><tr><td>";
+	echo "<div class='center'><table class='tab_glpi'><tr><td>";
 	echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/reservation.png\" alt='' title=''></td><td><strong><span class='icon_consol'>".$type." - ".$name."</span>";
 	echo "</strong></td></tr><tr><td colspan='2' align ='center'>$all</td></tr></table></div>";
 
@@ -151,10 +151,10 @@ function printCalendrier($target,$ID=""){
 
 	echo "<div class='center'>";
 
-	echo "<table cellpadding='20' ><tr><td><a href=\"".$target.$str_precedent."\"><img src=\"".$CFG_GLPI["root_doc"]."/pics/left.png\" alt='".$LANG["buttons"][12]."' title='".$LANG["buttons"][12]."'></a></td><td><strong>".
+	echo "<table cellpadding='20'  class='tab_glpi'><tr><td><a href=\"".$target.$str_precedent."\"><img src=\"".$CFG_GLPI["root_doc"]."/pics/left.png\" alt='".$LANG["buttons"][12]."' title='".$LANG["buttons"][12]."'></a></td><td><strong>".
 		$LANG["calendarM"][$mois_courant-1]."&nbsp;".$annee_courante."</strong></td><td><a href=\"".$target.$str_suivant."\"><img src=\"".$CFG_GLPI["root_doc"]."/pics/right.png\" alt='".$LANG["buttons"][11]."' title='".$LANG["buttons"][11]."'></a></td></tr></table>";
 	// test
-	echo "<table width='90%'><tr><td class='top'  width='100px'>";
+	echo "<table width='90%' class='tab_glpi'><tr><td class='top'  width='100px'>";
 
 	echo "<table><tr><td width='100px' class='top'>";
 
@@ -203,7 +203,7 @@ function printCalendrier($target,$ID=""){
 	// test 
 
 
-	echo "<table class='tab_cadre' width='100%'><tr>";
+	echo "<table class='tab_cadre' width='100%' class='tab_glpi'><tr>";
 	echo "<th width='14%'>".$LANG["calendarD"][1]."</th>";
 	echo "<th width='14%'>".$LANG["calendarD"][2]."</th>";
 	echo "<th width='14%'>".$LANG["calendarD"][3]."</th>";
@@ -227,7 +227,7 @@ function printCalendrier($target,$ID=""){
 
 		echo "<td  class='top' height='100px'>";
 
-		echo "<table class='center' ><tr><td class='center' ><span class='calendrier_jour'>".$i."</span></td></tr>";
+		echo "<table class='center'  width='100%'><tr><td class='center' ><span class='calendrier_jour'>".$i."</span></td></tr>";
 
 		if (!empty($ID)){
 			echo "<tr><td class='center'><a href=\"".$target."?show=resa&amp;add_resa_on_item=1&amp;add_item[$ID]=$ID&amp;date=".$annee_courante."-".$mois_courant."-".$ii."\"><img  src=\"".$CFG_GLPI["root_doc"]."/pics/addresa.png\" alt='".$LANG["reservation"][8]."' title='".$LANG["reservation"][8]."'></a></td></tr>";
@@ -285,12 +285,7 @@ function showAddReservationForm($target,$items,$date,$resaID=-1){
 		$resa->fields["begin"]=$date." 12:00:00";
 		$resa->fields["end"]=$date." 13:00:00";
 	}
-	$begin=strtotime($resa->fields["begin"]);
-	$end=strtotime($resa->fields["end"]);
-	$begin_date=date("Y-m-d",$begin);
-	$end_date=date("Y-m-d",$end);
-	$begin_hour=date("H:i",$begin);
-	$end_hour=date("H:i",$end);
+
 
 	echo "<div class='center'><form method='post' name=form action=\"$target\">";
 
@@ -329,24 +324,13 @@ function showAddReservationForm($target,$items,$date,$resaID=-1){
 
 
 	echo "<tr class='tab_bg_2'><td>".$LANG["search"][8].":	</td><td>";
-	/// TO DATETIME
-	showCalendarForm("form","begin_date",$begin_date);
-	echo "</td></tr>";
-
-	echo "<tr class='tab_bg_2'><td>".$LANG["reservation"][12].":	</td>";
-	echo "<td>";
-
-	dropdownHours("begin_hour",$begin_hour,1);
+	showDateTimeFormItem("begin",$resa->fields["begin"],-1,false);
 	echo "</td></tr>";
 
 	echo "<tr class='tab_bg_2'><td>".$LANG["search"][9].":	</td><td>";
-	showCalendarForm("form","end_date",$end_date);
+	showDateTimeFormItem("end",$resa->fields["end"],-1,false);
 	echo "</td></tr>";
 
-	echo "<tr class='tab_bg_2'><td>".$LANG["reservation"][13].":	</td>";
-	echo "<td>";
-	dropdownHours("end_hour",$end_hour,1);
-	echo "</td></tr>";
 
 	if ($resaID==-1){
 		echo "<tr class='tab_bg_2'><td>".$LANG["reservation"][27].":	</td>";

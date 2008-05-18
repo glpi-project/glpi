@@ -553,7 +553,9 @@ function showContractAssociated($device_type,$ID,$withtemplate=''){
 		echo "<td class='center'>".getContractEnterprises($cID)."</td>";	
 		echo "<td class='center'>".convDate($con->fields["begin_date"])."</td>";
 		echo "<td class='center'>".$con->fields["duration"]." ".$LANG["financial"][57];
-		if ($con->fields["begin_date"]!=''&&$con->fields["begin_date"]!="0000-00-00") echo " -> ".getWarrantyExpir($con->fields["begin_date"],$con->fields["duration"]);
+		if ($con->fields["begin_date"]!=''&&!empty($con->fields["begin_date"])) {
+			echo " -> ".getWarrantyExpir($con->fields["begin_date"],$con->fields["duration"]);
+		}
 		echo "</td>";
 
 		if ($withtemplate!=2) {
@@ -647,7 +649,9 @@ function showContractAssociatedEnterprise($ID){
 		//echo "<td class='center'>".getContractEnterprises($cID)."</td>";	
 		echo "<td class='center'>".convDate($data["begin_date"])."</td>";
 		echo "<td class='center'>".$data["duration"]." ".$LANG["financial"][57];
-		if ($data["begin_date"]!=''&&$data["begin_date"]!="0000-00-00") echo " -> ".getWarrantyExpir($data["begin_date"],$data["duration"]);
+		if ($data["begin_date"]!=''&&!empty($data["begin_date"])) {
+			echo " -> ".getWarrantyExpir($data["begin_date"],$data["duration"]);
+		}
 		echo "</td>";
 
 		echo "<td align='center' class='tab_bg_2'>";

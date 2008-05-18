@@ -57,14 +57,19 @@ class Reminder extends CommonDBTM {
 
 		if(empty($input["name"])) $input["name"]=$LANG["reminder"][15];
 
-		$input["begin"] = $input["end"] = "0000-00-00 00:00:00";
+		$input["begin"] = $input["end"] = "NULL";
 
 		if (isset($input['plan'])){
-			$input['_plan']=$input['plan'];
-			unset($input['plan']);
-			$input['rv']="1";
-			$input["begin"] = $input['_plan']["begin_date"]." ".$input['_plan']["begin_hour"].":00";
-			$input["end"] = $input['_plan']["end_date"]." ".$input['_plan']["end_hour"].":00";
+			if (!empty($input['plan']["begin"])&&!empty($input['plan']["end"])
+				&&$input['plan']["begin"]<$input['plan']["end"]){
+				$input['_plan']=$input['plan'];
+				unset($input['plan']);
+				$input['rv']="1";
+				$input["begin"] = $input['_plan']["begin"];
+				$input["end"] = $input['_plan']["end"];				
+			}else {
+				addMessageAfterRedirect($LANG["planning"][1]);
+			}
 		}	
 
 		if ($input['recursive']&&!$input['private']){
@@ -87,12 +92,17 @@ class Reminder extends CommonDBTM {
 
 
 		if (isset($input['plan'])){
-			$input['_plan']=$input['plan'];
-			unset($input['plan']);
-			$input['rv']="1";
-			$input["begin"] = $input['_plan']["begin_date"]." ".$input['_plan']["begin_hour"].":00";
-			$input["end"] = $input['_plan']["end_date"]." ".$input['_plan']["end_hour"].":00";
-			$input["state"] = $input['_plan']["state"];
+			if (!empty($input['plan']["begin"])&&!empty($input['plan']["end"])
+				&&$input['plan']["begin"]<$input['plan']["end"]){
+				$input['_plan']=$input['plan'];
+				unset($input['plan']);
+				$input['rv']="1";
+				$input["begin"] = $input['_plan']["begin"];
+				$input["end"] = $input['_plan']["end"];
+				$input["state"] = $input['_plan']["state"];				
+			}else {
+				addMessageAfterRedirect($LANG["planning"][1]);
+			}
 		}	
 		if ($input['recursive']&&!$input['private']){
 			if (!haveRecursiveAccessToEntity($input["FK_entities"])){
@@ -207,8 +217,8 @@ class Reminder extends CommonDBTM {
 					$params=array('form'=>'remind');
 					if ($ID&&$this->fields["rv"]){
 						$params['state']=$this->fields["state"];
-						$params['begin_date']=$this->fields["begin"];
-						$params['end_date']=$this->fields["end"];
+						$params['begin']=$this->fields["begin"];
+						$params['end']=$this->fields["end"];
 					}
 					ajaxUpdateItemJsCode('viewplan',$CFG_GLPI["root_doc"]."/ajax/planning.php",$params,false);
 				echo "}";

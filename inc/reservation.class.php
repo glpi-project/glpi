@@ -129,15 +129,6 @@ class ReservationResa extends CommonDBTM {
 
 		$this->getFromDB($input["ID"]);
 
-		list($begin_year,$begin_month,$begin_day)=split("-",$input["begin_date"]);
-		list($end_year,$end_month,$end_day)=split("-",$input["end_date"]);
-
-		list($begin_hour,$begin_min)=split(":",$input["begin_hour"]);
-		list($end_hour,$end_min)=split(":",$input["end_hour"]);
-		$input["begin"]=date("Y-m-d H:i:00",mktime($begin_hour,$begin_min,0,$begin_month,$begin_day,$begin_year));
-		$input["end"]=date("Y-m-d H:i:00",mktime($end_hour,$end_min,0,$end_month,$end_day,$end_year));
-
-
 		// Fill the update-array with changes
 		$x=0;
 		foreach ($input as $key => $val) {
@@ -170,6 +161,7 @@ class ReservationResa extends CommonDBTM {
 		return true;
 	}
 
+	/// TODO enter in standard add process
 	function add($input){
 		global $CFG_GLPI;
 	       	
@@ -183,8 +175,8 @@ class ReservationResa extends CommonDBTM {
 			$this->fields["id_item"] = $input["id_item"];
 			$this->fields["comment"] = $input["comment"];
 			$this->fields["id_user"] = $input["id_user"];
-			$this->fields["begin"] = $input["begin_date"]." ".$input["begin_hour"].":00";
-			$this->fields["end"] = $input["end_date"]." ".$input["end_hour"].":00";
+			$this->fields["begin"] = $input["begin"];
+			$this->fields["end"] = $input["end"];
 
 			if (!$this->test_valid_date()){
 				$this->displayError("date",$input["id_item"],$target);
@@ -241,7 +233,7 @@ class ReservationResa extends CommonDBTM {
 	 *@return boolean
 	 **/
 	function test_valid_date(){
-		return (strtotime($this->fields["begin"])<strtotime($this->fields["end"]));
+		return (!empty($this->fields["begin"])&&!empty($this->fields["end"])&&strtotime($this->fields["begin"])<strtotime($this->fields["end"]));
 	}
 
 	/**
