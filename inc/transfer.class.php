@@ -2220,7 +2220,7 @@ class Transfer extends CommonDBTM{
 				if ($edit_form){
 					echo "<tr class='tab_bg_1'>";
 					echo "<td colspan='2'>".$LANG["common"][16].":	</td><td colspan='2'>";
-					autocompletionTextField("name","glpi_transfers","name",$this->fields["name"],30);	
+					autocompletionTextField("name","glpi_transfers","name",$this->fields["name"],40);	
 					echo "</td>";
 					echo "</tr>";
 				}

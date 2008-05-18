@@ -257,9 +257,9 @@ class OcsAffectEntityRule extends Rule {
 			echo "<tr class='tab_bg_1'><th colspan='4'>" .  $LANG["rulesengine"][18] . "</tr><tr><td class='tab_bg_2' align='center'>";
 			echo $LANG["common"][16] . ":";
 			echo "</td><td align='center' class='tab_bg_2'>";
-			autocompletionTextField("name", "glpi_rules_descriptions", "name", "", 30);
+			autocompletionTextField("name", "glpi_rules_descriptions", "name", "", 40);
 			echo $LANG["joblist"][6] . ":";
-			autocompletionTextField("description", "glpi_rules_descriptions", "description", "", 30);
+			autocompletionTextField("description", "glpi_rules_descriptions", "description", "", 40);
 			echo "</td><td align='center' class='tab_bg_2'>";
 			echo $LANG["rulesengine"][9] . ":";
 			$this->dropdownRulesMatch("match", "AND");

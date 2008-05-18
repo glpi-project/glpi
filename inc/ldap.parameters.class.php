@@ -83,9 +83,9 @@ class LdapCriteria extends CommonDBTM {
 			echo "<tr class='tab_bg_1'><th colspan='5'>" .$LANG["ruleldap"][3] . "</tr><tr><td class='tab_bg_2' align='center'>";
 			echo "</td><td align='center' class='tab_bg_2'>";
 			echo $LANG["common"][16] . ":";
-			autocompletionTextField("name", $this->table, "name", "", 30);
+			autocompletionTextField("name", $this->table, "name", "", 40);
 			echo $LANG["setup"][601] . ":";
-			autocompletionTextField("value", $this->table, "value", "", 30);
+			autocompletionTextField("value", $this->table, "value", "", 40);
 			echo "<input type=hidden name='rule_type' value=\"" . RULE_AFFECT_RIGHTS . "\">";
 			echo "<input type='submit' name='add' value=\"" . $LANG["buttons"][8] . "\" class='submit'>";
 			echo "</td></tr>";

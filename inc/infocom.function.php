@@ -92,16 +92,16 @@ function showInfocomForm($target,$device_type,$dev_ID,$show_immo=true,$withtempl
 		echo "</td>";
 		echo "<td>".$LANG["financial"][82].":		</td>";
 		echo "<td >";
-		autocompletionTextField("facture","glpi_infocoms","facture",$ic->fields["facture"],25,-1,$option);	
+		autocompletionTextField("facture","glpi_infocoms","facture",$ic->fields["facture"],40,-1,$option);	
 		echo "</td></tr>";
 
 		echo "<tr class='tab_bg_1'><td>".$LANG["financial"][18].":		</td>";
 		echo "<td >";
-		autocompletionTextField("num_commande","glpi_infocoms","num_commande",$ic->fields["num_commande"],25,-1,$option);	
+		autocompletionTextField("num_commande","glpi_infocoms","num_commande",$ic->fields["num_commande"],40,-1,$option);	
 		echo "</td>";
 
 		echo "<td>".$LANG["financial"][19].":		</td><td>";
-		autocompletionTextField("bon_livraison","glpi_infocoms","bon_livraison",$ic->fields["bon_livraison"],25,-1,$option);	
+		autocompletionTextField("bon_livraison","glpi_infocoms","bon_livraison",$ic->fields["bon_livraison"],40,-1,$option);	
 		echo "</td></tr>";
 
 		// Can edit calendar ?
@@ -150,7 +150,7 @@ function showInfocomForm($target,$device_type,$dev_ID,$show_immo=true,$withtempl
 
 			echo "<td>".$LANG["financial"][16].":		</td>";
 			echo "<td >";
-			autocompletionTextField("warranty_info","glpi_infocoms","warranty_info",$ic->fields["warranty_info"],25,-1,$option);	
+			autocompletionTextField("warranty_info","glpi_infocoms","warranty_info",$ic->fields["warranty_info"],40,-1,$option);	
 
 			echo "</td></tr>";
 		}
@@ -169,7 +169,7 @@ function showInfocomForm($target,$device_type,$dev_ID,$show_immo=true,$withtempl
 			echo "<tr class='tab_bg_1'><td>".$LANG["financial"][20]."*:		</td>";
 			echo "<td >";
 			$objectName = autoName($ic->fields["num_immo"], "num_immo", ($withtemplate==2), INFOCOM_TYPE,$ci->getField('FK_entities'));
-			autocompletionTextField("num_immo","glpi_infocoms","num_immo",$objectName,25,-1,$option); 
+			autocompletionTextField("num_immo","glpi_infocoms","num_immo",$objectName,40,-1,$option); 
 
 			echo "</td>";
 

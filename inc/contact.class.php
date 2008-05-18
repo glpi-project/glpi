@@ -195,34 +195,34 @@ class Contact extends CommonDBTM{
 	
 				echo "<tr><td>".$LANG["common"][48].":	</td>";
 				echo "<td>";
-				autocompletionTextField("name","glpi_contacts","name",$this->fields["name"],30,$this->fields["FK_entities"]);	
+				autocompletionTextField("name","glpi_contacts","name",$this->fields["name"],40,$this->fields["FK_entities"]);	
 				echo "</td></tr>";
 	
 				echo "<tr><td>".$LANG["common"][43].":	</td>";
 				echo "<td>";
-				autocompletionTextField("firstname","glpi_contacts","firstname",$this->fields["firstname"],30,$this->fields["FK_entities"]);	
+				autocompletionTextField("firstname","glpi_contacts","firstname",$this->fields["firstname"],40,$this->fields["FK_entities"]);	
 				echo "</td></tr>";
 	
 				echo "<tr><td>".$LANG["help"][35].": 	</td>";
 				echo "<td>";
-				autocompletionTextField("phone","glpi_contacts","phone",$this->fields["phone"],30,$this->fields["FK_entities"]);	
+				autocompletionTextField("phone","glpi_contacts","phone",$this->fields["phone"],40,$this->fields["FK_entities"]);	
 	
 				echo "</td></tr>";
 	
 				echo "<tr><td>".$LANG["help"][35]." 2:	</td><td>";
-				autocompletionTextField("phone2","glpi_contacts","phone2",$this->fields["phone2"],30,$this->fields["FK_entities"]);
+				autocompletionTextField("phone2","glpi_contacts","phone2",$this->fields["phone2"],40,$this->fields["FK_entities"]);
 				echo "</td></tr>";
 	
 				echo "<tr><td>".$LANG["common"][42].":	</td><td>";
-				autocompletionTextField("mobile","glpi_contacts","mobile",$this->fields["mobile"],30,$this->fields["FK_entities"]);
+				autocompletionTextField("mobile","glpi_contacts","mobile",$this->fields["mobile"],40,$this->fields["FK_entities"]);
 				echo "</td></tr>";
 	
 	
 				echo "<tr><td>".$LANG["financial"][30].":	</td><td>";
-				autocompletionTextField("fax","glpi_contacts","fax",$this->fields["fax"],30,$this->fields["FK_entities"]);
+				autocompletionTextField("fax","glpi_contacts","fax",$this->fields["fax"],40,$this->fields["FK_entities"]);
 				echo "</td></tr>";
 				echo "<tr><td>".$LANG["setup"][14].":	</td><td>";
-				autocompletionTextField("email","glpi_contacts","email",$this->fields["email"],30,$this->fields["FK_entities"]);
+				autocompletionTextField("email","glpi_contacts","email",$this->fields["email"],40,$this->fields["FK_entities"]);
 				echo "</td></tr>";
 
 				echo "<tr><td>".$LANG["common"][17].":	</td>";

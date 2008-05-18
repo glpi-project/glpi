@@ -203,12 +203,12 @@ class CartridgeType extends CommonDBTM {
 	
 				echo "<tr class='tab_bg_1'><td>".$LANG["common"][16].":		</td>\n";
 				echo "<td colspan='2'>";
-				autocompletionTextField("name","glpi_cartridges_type","name",$this->fields["name"],25,$this->fields["FK_entities"]);
+				autocompletionTextField("name","glpi_cartridges_type","name",$this->fields["name"],40,$this->fields["FK_entities"]);
 				echo "</td></tr>\n";
 	
 				echo "<tr class='tab_bg_1'><td>".$LANG["consumables"][2].":		</td>\n";
 				echo "<td colspan='2'>";
-				autocompletionTextField("ref","glpi_cartridges_type","ref",$this->fields["ref"],25,$this->fields["FK_entities"]);	
+				autocompletionTextField("ref","glpi_cartridges_type","ref",$this->fields["ref"],40,$this->fields["FK_entities"]);	
 				echo "</td></tr>\n";
 	
 				echo "<tr class='tab_bg_1'><td>".$LANG["common"][17].": 	</td><td colspan='2'>\n";
