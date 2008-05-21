@@ -638,7 +638,7 @@ class Mailing
 								$senderror=true;
 								addMessageAfterRedirect($messageerror."<br>".$mmail->ErrorInfo);
 							}else{
-								logInFile("mail",$LANG["tracking"][38]." ".$email." ".$LANG["reservation"][41]." : ".$subjects[$lang]."\n");
+								logInFile("mail",$LANG["tracking"][38]." ".$email.": ".$subjects[$lang]."\n");
 							} 
 
 							$mmail->ClearAddresses(); 
@@ -973,7 +973,7 @@ class MailingResa{
 						echo "<div class='center'>".$LANG["mailing"][47]."</div>";
 						return false;
 					}else{
-						logInFile("mail",$LANG["reservation"][40]." ".$email." : ".$subjects[$lang]."\n");
+						logInFile("mail",$LANG["reservation"][40]." ".$email.": ".$subjects[$lang]."\n");
 					}
 	
 					$mmail->ClearAddresses(); 
@@ -1231,7 +1231,7 @@ class MailingAlert
 						addMessageAfterRedirect($LANG["mailing"][47]);
 						return false;
 					}else{
-						logInFile("mail",$LANG["mailing"][111]." ".$email." ".$LANG["reservation"][41]." : ".$subjects[$lang]."\n");
+						logInFile("mail",$LANG["mailing"][111]." ".$email.": ".$subjects[$lang]."\n");
 					}
 					$mmail->ClearAddresses(); 
 				}
