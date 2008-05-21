@@ -104,7 +104,7 @@ if (isset($_POST['mass_delete'])){
 	glpi_header($_SERVER['PHP_SELF']."?which=$which&value2=$value2&tomove=$tomove&where=$where&type=$type&FK_entities=$FK_entities");
 
 } else if (isset($_POST["delete"])) {
-	if(!dropdownUsed($_POST["tablename"], $_POST["ID"]) && empty($_POST["forcedelete"])) {
+	if(dropdownUsed($_POST["tablename"], $_POST["ID"]) && empty($_POST["forcedelete"])) {
 		if (!ereg("popup",$_SERVER['PHP_SELF'])){
 			commonHeader($LANG["common"][12],$_SERVER['PHP_SELF'],"config","dropdowns");
 		}

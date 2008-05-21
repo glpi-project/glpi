@@ -868,22 +868,30 @@ function dropdownUsed($table, $ID) {
 	global $DB;
 	$name = getDropdownNameFromTable($table);
 
-	$var1 = true;
-
 	$RELATION = getDbRelations();
 	if (isset ($RELATION[$table])){
-
 		foreach ($RELATION[$table] as $tablename => $field) {
 			if ($tablename[0]!='_'){
-				$query = "SELECT COUNT(*) AS cpt FROM `$tablename` WHERE `$field` = '" . $ID . "'";
-				$result = $DB->query($query);
-				if ($DB->result($result, 0, "cpt") > 0)
-					$var1 = false;
+				if (!is_array($field)){
+					$query = "SELECT COUNT(*) AS cpt FROM `$tablename` WHERE `$field` = '" . $ID . "'";
+					$result = $DB->query($query);
+					if ($DB->result($result, 0, "cpt") > 0){
+						return true;
+					}
+				} else {
+					foreach ($field as $f){
+						$query = "SELECT COUNT(*) AS cpt FROM `$tablename` WHERE `$f` = '" . $ID . "'";
+						$result = $DB->query($query);
+						if ($DB->result($result, 0, "cpt") > 0){
+							return true;
+						}
+					}
+				}
 			}
 		}
 	}
 
-	return $var1;
+	return false;
 
 }
 
