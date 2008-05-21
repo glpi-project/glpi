@@ -60,7 +60,7 @@ class Connection {
 	var $is_template ='0';
 
 	/**
-	 * Getcomputers connected to a item
+	 * Get computers connected to a item
 	 *
 	 * $type must set before
 	 *
@@ -84,30 +84,6 @@ class Connection {
 				}
 			}
 			return $ret;
-		} else {
-			return false;
-		}
-	}
-
-	/**
-	 * Get computer Data
-	 *
-	 * Set device_name, device_ID and deleted 
-	 *
-	 * @param $ID ID of the computer
-	 * @return boolean : computer found
-	 */
-	function getComputerData($ID) {
-		global $DB;
-		$query = "SELECT * FROM glpi_computers WHERE (ID = '$ID')";
-		if ($result=$DB->query($query)) {
-			if ($DB->numrows($result)==0) return false;
-			$data = $DB->fetch_array($result);
-			$this->device_name = $data["name"];
-			$this->deleted = $data["deleted"];
-			$this->is_template = $data["is_template"];
-			$this->device_ID = $ID;
-			return true;
 		} else {
 			return false;
 		}
