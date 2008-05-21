@@ -2954,6 +2954,12 @@ $SEARCH_OPTION[PHONE_TYPE][90]['linkfield']='';
 $SEARCH_OPTION[PHONE_TYPE][90]['name']=$LANG["title"][37];
 $SEARCH_OPTION[PHONE_TYPE][90]['meta']=0;
 
+$SEARCH_OPTION[PHONE_TYPE][11]['table']='glpi_phones';
+$SEARCH_OPTION[PHONE_TYPE][11]['field']='brand';
+$SEARCH_OPTION[PHONE_TYPE][11]['linkfield']='brand';
+$SEARCH_OPTION[PHONE_TYPE][11]['name']=$LANG["peripherals"][18];
+$SEARCH_OPTION[PHONE_TYPE][11]['meta']=2;
+
 $SEARCH_OPTION[PHONE_TYPE][23]['table']='glpi_dropdown_manufacturer';
 $SEARCH_OPTION[PHONE_TYPE][23]['field']='name';
 $SEARCH_OPTION[PHONE_TYPE][23]['linkfield']='FK_glpi_enterprise';
