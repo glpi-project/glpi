@@ -62,7 +62,8 @@ function showConnect($target,$ID,$type) {
 		$ci->getFromDB($type,$ID);
 		$global=$ci->getField('is_global');
 
-		$computers = $connect->getComputerContact($type,$ID);
+		$computers = $connect->getComputersContact($type,$ID);
+
 		if (!$computers) $nb=0;
 		else $nb=count($computers);
 
@@ -72,19 +73,19 @@ function showConnect($target,$ID,$type) {
 
 		if ($computers&&count($computers)>0) {
 			foreach ($computers as $key => $computer){
-				if ($connect->getComputerData($computer)){
-					echo "<tr><td class='tab_bg_1".($connect->deleted?"_2":"")."'><strong>".$LANG["help"][25].": ";
-					echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/computer.form.php?ID=".$connect->device_ID."\">";
-					echo $connect->device_name;
-					if ($CFG_GLPI["view_ID"]||empty($connect->device_name)) echo " (".$connect->device_ID.")";
-					echo "</a>";
-					echo "</strong></td>";
-					echo "<td class='tab_bg_2".($connect->deleted?"_2":"")."' align='center'><strong>";
-					if ($canedit)
-						echo "<a href=\"$target?disconnect=1&amp;cID=".$connect->device_ID."&amp;ID=".$key."\">".$LANG["buttons"][10]."</a>";
-					else echo "&nbsp;";
-					echo "</strong>";
+				echo "<tr><td class='tab_bg_1".($computer['deleted']?"_2":"")."'><strong>".$LANG["help"][25].": ";
+				echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/computer.form.php?ID=".$computer['ID']."\">";
+				echo $computer['name'];
+				if ($CFG_GLPI["view_ID"]||empty($computer['name'])) echo " (".$computer['ID'].")";
+				echo "</a>";
+				echo "</strong></td>";
+				echo "<td class='tab_bg_2".($computer['deleted']?"_2":"")."' align='center'><strong>";
+				if ($canedit){
+					echo "<a href=\"$target?disconnect=1&amp;cID=".$computer['ID']."&amp;ID=".$key."\">".$LANG["buttons"][10]."</a>";
+				} else {
+					echo "&nbsp;";
 				}
+				echo "</strong>";
 			}
 		} else {
 			echo "<tr><td class='tab_bg_1'><strong>".$LANG["help"][25].": </strong>";

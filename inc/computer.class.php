@@ -511,7 +511,7 @@ class Computer extends CommonDBTM {
 				echo $LANG["computers"][12].": ".$this->fields["tplname"];
 				echo "<input type='hidden' name='tplname' value='".$this->fields["tplname"]."'>";
 			}elseif (strcmp($template,"newtemplate") === 0) {
-				echo $LANG["common"][6]."&nbsp;: ";
+				echo $LANG["common"][6].": ";
 				autocompletionTextField("tplname","glpi_computers","tplname",$this->fields["tplname"],20,$this->fields["FK_entities"]);	
 			}
 			if (isMultiEntitiesMode()){

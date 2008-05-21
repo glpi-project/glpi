@@ -56,9 +56,11 @@ class Connection {
 	var $device_ID		= 0;
 	//! Is the computer Deleted
 	var $deleted ='0';
+	//! Is the computer a template
+	var $is_template ='0';
 
 	/**
-	 * Get items connected to a computer
+	 * Get computers connected to a item
 	 *
 	 * $type must set before
 	 *
@@ -66,41 +68,22 @@ class Connection {
          * @param $type type of the items searched
 	 * @return array of ID of connected items
 	 */
-	function getComputerContact ($type,$ID) {
+	function getComputersContact ($type,$ID) {
 		global $DB;
-		$query = "SELECT * FROM glpi_connect_wire WHERE (end1 = '$ID' AND type = '$type')";
+		$query = "SELECT glpi_connect_wire.ID as connectID, glpi_connect_wire.end2 as end2, glpi_computers.* 
+			FROM glpi_connect_wire 
+			INNER JOIN glpi_computers ON (glpi_computers.ID = glpi_connect_wire.end2)
+			 WHERE (glpi_connect_wire.end1 = '$ID' AND glpi_connect_wire.type = '$type' 
+				AND glpi_computers.is_template = '0')";
 		if ($result=$DB->query($query)) {
 			if ($DB->numrows($result)==0) return false;
 			$ret=array();
 			while ($data = $DB->fetch_array($result)){
 				if (isset($data["end2"])) {
-					$ret[$data["ID"]] = $data["end2"];
+					$ret[$data["connectID"]] = $data;
 				}
 			}
 			return $ret;
-		} else {
-			return false;
-		}
-	}
-
-	/**
-	 * Get computer Data
-	 *
-	 * Set device_name, device_ID and deleted 
-	 *
-	 * @param $ID ID of the computer
-	 * @return boolean : computer found
-	 */
-	function getComputerData($ID) {
-		global $DB;
-		$query = "SELECT * FROM glpi_computers WHERE (ID = '$ID')";
-		if ($result=$DB->query($query)) {
-			if ($DB->numrows($result)==0) return false;
-			$data = $DB->fetch_array($result);
-			$this->device_name = $data["name"];
-			$this->deleted = $data["deleted"];
-			$this->device_ID = $ID;
-			return true;
 		} else {
 			return false;
 		}
