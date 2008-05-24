@@ -212,14 +212,16 @@ class kbitem extends CommonDBTM {
 			}
 			echo "<p class='center'>";
 		
-			echo $LANG["entity"][0].": ";
-			dropdownValue("glpi_entities", "FK_entities", $this->fields["FK_entities"],0);
-
-			echo "&nbsp;&nbsp;".$LANG["entity"][9].":	";
-			if ($canrecu) {
-				dropdownYesNo("recursive",$this->fields["recursive"]);					
-			} else {
-				echo getYesNo($this->fields["recursive"]);
+			if (isMultiEntitiesMode()){
+				echo $LANG["entity"][0].": ";
+				dropdownValue("glpi_entities", "FK_entities", $this->fields["FK_entities"],0);
+	
+				echo "&nbsp;&nbsp;".$LANG["entity"][9].":	";
+				if ($canrecu) {
+					dropdownYesNo("recursive",$this->fields["recursive"]);					
+				} else {
+					echo getYesNo($this->fields["recursive"]);
+				}
 			}
 			
 			echo "<br /><br />" . $LANG["knowbase"][5].": ";
