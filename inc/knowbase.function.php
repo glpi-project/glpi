@@ -213,16 +213,16 @@ function showKbItemList($target,$contains,$start,$parentID,$faq=0){
 
 	// Build query
 	if (isset($_SESSION["glpiID"])){
-		$where = getEntitiesRestrictRequest("", "glpi_kbitems", "", "", true); 
+		$where = getEntitiesRestrictRequest("", "glpi_kbitems", "", "", true) . " AND "; 
 	} else {
 		// Anonymous access
-		$where = "(glpi_kbitems.FK_entities=0 AND glpi_kbitems.recursive=1)";
+		if (isMultiEntitiesMode()){
+			$where = "(glpi_kbitems.FK_entities=0 AND glpi_kbitems.recursive=1) AND ";
+		}
 	}	
 
 	if ($faq){ // helpdesk
-		$where .= " AND (glpi_kbitems.faq = '1') AND ";
-	} else {
-		$where .= " AND ";
+		$where .= " (glpi_kbitems.faq = '1') AND ";
 	}
 	
 	
@@ -377,7 +377,11 @@ function showKbRecentPopular($target,$type,$faq=0){
 		$faq_limit .= getEntitiesRestrictRequest(" WHERE ", "glpi_kbitems", "", "", true); 
 	} else {
 		// Anonymous access
-		$faq_limit .= " WHERE (glpi_kbitems.FK_entities=0 AND glpi_kbitems.recursive=1)";
+		if (isMultiEntitiesMode()){
+			$faq_limit .= " WHERE (glpi_kbitems.FK_entities=0 AND glpi_kbitems.recursive=1)";
+		} else {
+			$faq_limit .= " WHERE 1";
+		}
 	}	
 
 	if($faq){ // FAQ
