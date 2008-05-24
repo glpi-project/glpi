@@ -71,9 +71,7 @@ class kbitem extends CommonDBTM {
 	 * @return booleen
 	 **/
 	function canCreate () {
-		return ($this->fields["faq"] ?
-			haveRight("faq", "w") :
-			haveRight("knowbase", "w"));	
+		return (haveRight("faq", "w") || haveRight("knowbase", "w"));	
 	}
 
 	function prepareInputForAdd($input) {
@@ -126,10 +124,8 @@ class kbitem extends CommonDBTM {
 			}
 		} else {
 			$use_cache=false;
-			if ($this->can(-1,'w')){
-				if($this->getEmpty()) {
-					$spotted = true;	
-				}
+			if ($this->getEmpty() && $this->can(-1,'w')){
+				$spotted = true;	
 			}
 		} 
 
