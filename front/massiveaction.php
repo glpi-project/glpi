@@ -261,7 +261,7 @@ if (isset($_POST["device_type"])){
 					if ($val==1) {
 						$comp=new Computer;
 						if ($comp->getFromDB($key)&&$comp->fields["FK_entities"]==$_SESSION["glpiactive_entity"]){
-							installSoftware($key,$_POST["lID"],$_POST["sID"]);
+							installSoftwareVersion($key,$_POST["vID"],$_POST["sID"]);
 						}
 					}
 				}

@@ -471,16 +471,16 @@ class License extends CommonDBTM {
 
 	function post_addItem($newID, $input) {
 		// Add license but not for unglobalize system
-		if (!isset ($input["_duplicate_license"]) && isset($input['oem']) && isset($input['oem_computer']) && $input['oem'] && $input['oem_computer'] > 0){
-			installSoftware($input['oem_computer'], $newID);
-		}
+//		if (!isset ($input["_duplicate_license"]) && isset($input['oem']) && isset($input['oem_computer']) && $input['oem'] && $input['oem_computer'] > 0){
+//			installSoftware($input['oem_computer'], $newID);
+//		}
 
-		$type = SOFTWARE_TYPE;
-		$dupid = $this->fields["sID"];
-		if (isset ($input["_duplicate_license"])) {
-			$type = LICENSE_TYPE;
-			$dupid = $input["_duplicate_license"];
-		}
+//		$type = SOFTWARE_TYPE;
+//		$dupid = $this->fields["sID"];
+//		if (isset ($input["_duplicate_license"])) {
+//			$type = LICENSE_TYPE;
+//			$dupid = $input["_duplicate_license"];
+//		}
 
 		// Add infocoms if exists for the licence
 		$ic = new Infocom();
