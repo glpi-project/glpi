@@ -434,50 +434,66 @@ function showConnection($ID,$withtemplate='',$type=COMPUTER_TYPE) {
 
 	$contact = new Netport;
 	$netport = new Netport;
-	$device = new CommonItem();
-	// TODO : what permisson need to change connexion...
-	// $canedit=haveRight("networking","w");
-	$netport->getFromDB($ID);
-	$device->getFromDB($netport->fields["device_type"],$netport->fields["on_device"]);
-	$canedit=$device->obj->can($ID,'w');
+	$netport = new Netport;
+	$device1 = new CommonItem();
+	$device2 = new CommonItem();
+
+	$canedit = 
+		($netport->getFromDB($ID) &&
+		 $device1->getFromDB($netport->fields["device_type"],$netport->fields["on_device"]) &&
+		 $device1->obj->can($device1->obj->fields["ID"],'w'));
 
 
 	if ($contact->getContact($ID)) {
 		$netport->getFromDB($contact->contact_id);
-		$netport->getDeviceData($netport->fields["on_device"],$netport->fields["device_type"]);
-		echo "\n\n<table border='0' cellspacing='0' width='100%'><tr ".($netport->deleted?"class='tab_bg_2_2'":"").">";
+		$device2->getFromDB($netport->fields["device_type"],$netport->fields["on_device"]);
+
+		echo "\n\n<table border='0' cellspacing='0' width='100%'><tr ".($device2->obj->fields["deleted"]?"class='tab_bg_2_2'":"").">";
 		echo "<td><strong>";
-		echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/networking.port.php?ID=".$netport->fields["ID"]."\">";
-		if (rtrim($netport->fields["name"])!="")
-			echo $netport->fields["name"];
-		else echo $LANG["common"][0];
-		echo "</a></strong>";
-		echo " ".$LANG["networking"][25]." <strong>";
 
-		echo "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$netport->fields["device_type"]]."?ID=".$netport->device_ID."\">";
-
-		echo $netport->device_name;
-		if ($CFG_GLPI["view_ID"]) echo " (".$netport->device_ID.")";
-		echo "</a>";
-		echo "</strong></td>";
-		if ($canedit){
-			echo "<td class='right'><strong>";
-			if ($withtemplate!=2)
-				echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/networking.port.php?disconnect=disconnect&amp;ID=$ID\">".$LANG["buttons"][10]."</a>";
-			else "&nbsp;";
-			echo "</strong></td>";
+		if ($device2->obj->can($device2->obj->fields["ID"],'r')) {
+			echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/networking.port.php?ID=".$netport->fields["ID"]."\">";
+			if (rtrim($netport->fields["name"])!="")
+				echo $netport->fields["name"];
+			else echo $LANG["common"][0];
+			echo "</a></strong> ".$LANG["networking"][25]." <strong>";
+			
+			echo "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$netport->fields["device_type"]]."?ID=".$device2->obj->fields["ID"]."\">";
+	
+			echo $device2->obj->fields["name"];
+			if ($CFG_GLPI["view_ID"]) echo " (".$netport->device_ID.")";
+			echo "</a></strong>";
+			if ($device1->obj->fields["FK_entities"] != $device2->obj->fields["FK_entities"]) {
+				echo " (".getDropdownName("glpi_entities",$device2->obj->fields["FK_entities"]).")";
+			}
+			
+			// 'w' on dev1 + 'r' on dev2 OR 'r' on dev1 + 'w' on dev2
+			if ($canedit || $device2->obj->can($device2->obj->fields["ID"],'w')){
+				echo "</td><td class='right'><strong>";
+				if ($withtemplate!=2)
+					echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/networking.port.php?disconnect=disconnect&amp;ID=$ID\">".$LANG["buttons"][10]."</a>";
+				else "&nbsp;";
+				echo "</strong>";
+			}
+		} else {
+			if (rtrim($netport->fields["name"])!="")
+				echo $netport->fields["name"];
+			else echo $LANG["common"][0];
+			echo "</strong> ".$LANG["networking"][25]." <strong>";
+			echo $device2->obj->fields["name"];
+			echo "</strong> (".getDropdownName("glpi_entities",$device2->obj->fields["FK_entities"]).")";
 		}
-		echo "</tr></table>";
+		echo "</td></tr></table>";
 
 	} else {
 		echo "<table border='0' cellspacing='0' width='100%'><tr>";
 		if ($canedit){
 			echo "<td class='left'>";
 			if ($withtemplate!=2&&$withtemplate!=1){
-				if (isset($device->obj->fields["recursive"]) && $device->obj->fields["recursive"]) {
-					dropdownConnectPort($ID,$type,"dport",getEntitySons($device->obj->fields["FK_entities"]));					
+				if (isset($device1->obj->fields["recursive"]) && $device1->obj->fields["recursive"]) {
+					dropdownConnectPort($ID,$type,"dport",getEntitySons($device1->obj->fields["FK_entities"]));					
 				} else {
-					dropdownConnectPort($ID,$type,"dport",$device->obj->fields["FK_entities"]);					
+					dropdownConnectPort($ID,$type,"dport",$device1->obj->fields["FK_entities"]);					
 				}
 			}
 			else echo "&nbsp;";
