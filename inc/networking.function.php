@@ -114,7 +114,7 @@ function showPorts ($device,$device_type,$withtemplate='') {
 				echo "</td>";
 				echo "<td>".getDropdownName("glpi_dropdown_iface",$netport->fields["iface"])."</td>";
 				echo "<td width='300'>";
-				showConnection($netport->fields["ID"],$withtemplate,$device_type);
+				showConnection($ci,$netport,$withtemplate);
 				echo "</td>";
 				echo "</tr>";
 			}
@@ -426,23 +426,25 @@ function showPortsAdd($ID,$devtype) {
 	echo "</table></div><br>";
 }
 
-function showConnection($ID,$withtemplate='',$type=COMPUTER_TYPE) {
+/**
+ * Display a connection of a networking port 
+ * 
+ * @param $device1 the device of the port
+ * @param $netport to be displayed
+ * @param $withtemplate 
+ * 
+ */
+function showConnection(&$device1,&$netport,$withtemplate='') {
 
 	global $CFG_GLPI, $LANG,$INFOFORM_PAGES;
 
-	if (!haveTypeRight($type,"r")) return false;
+	if (!$device1->obj->can($device1->obj->fields["ID"],'r')) return false;
 
 	$contact = new Netport;
-	$netport = new Netport;
-	$netport = new Netport;
-	$device1 = new CommonItem();
 	$device2 = new CommonItem();
 
-	$canedit = 
-		($netport->getFromDB($ID) &&
-		 $device1->getFromDB($netport->fields["device_type"],$netport->fields["on_device"]) &&
-		 $device1->obj->can($device1->obj->fields["ID"],'w'));
-
+	$canedit = $device1->obj->can($device1->obj->fields["ID"],'w');
+	$ID = $netport->fields["ID"];
 
 	if ($contact->getContact($ID)) {
 		$netport->getFromDB($contact->contact_id);
@@ -491,9 +493,9 @@ function showConnection($ID,$withtemplate='',$type=COMPUTER_TYPE) {
 			echo "<td class='left'>";
 			if ($withtemplate!=2&&$withtemplate!=1){
 				if (isset($device1->obj->fields["recursive"]) && $device1->obj->fields["recursive"]) {
-					dropdownConnectPort($ID,$type,"dport",getEntitySons($device1->obj->fields["FK_entities"]));					
+					dropdownConnectPort($ID,$device1->obj->type,"dport",getEntitySons($device1->obj->fields["FK_entities"]));					
 				} else {
-					dropdownConnectPort($ID,$type,"dport",$device1->obj->fields["FK_entities"]);					
+					dropdownConnectPort($ID,$device1->obj->type,"dport",$device1->obj->fields["FK_entities"]);					
 				}
 			}
 			else echo "&nbsp;";
