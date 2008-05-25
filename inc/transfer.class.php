@@ -1247,12 +1247,16 @@ class Transfer extends CommonDBTM{
 								if ($DB->numrows($result_type)>0) {
 									while ($data_type=$DB->fetch_array($result_type) && $canbetransfer) {
 										$dtype=$data_type['device_type'];
-										// No items to transfer -> exists links
-										$query_search="SELECT count(*) AS CPT 
-												FROM glpi_contract_device 
-												WHERE FK_contract='$item_ID' AND device_type='$dtype' AND FK_device NOT IN ".$this->item_search[$dtype];
-										$result_search = $DB->query($query_search);
-										if ($DB->result($result_search,0,'CPT')>0){
+										if (isset($this->item_search[$dtype])){
+											// No items to transfer -> exists links
+											$query_search="SELECT count(*) AS CPT 
+													FROM glpi_contract_device 
+													WHERE FK_contract='$item_ID' AND device_type='$dtype' AND FK_device NOT IN ".$this->item_search[$dtype];
+											$result_search = $DB->query($query_search);
+											if ($DB->result($result_search,0,'CPT')>0){
+												$canbetransfer=false;
+											}
+										} else {
 											$canbetransfer=false;
 										}
 									}
