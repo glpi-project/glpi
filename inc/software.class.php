@@ -414,19 +414,30 @@ class SoftwareVersion extends CommonDBTM {
 	**/
 	function SoftwareVersion() {
 		$this->table = "glpi_softwareversions";
+		$this->type = SOFTWAREVERSION_TYPE;
 	}
+	function cleanDBonPurge($ID) {
+
+		global $DB;
+
+		// Delete Installations
+		$query2 = "DELETE FROM glpi_inst_software WHERE (vID = '$ID')";
+		$DB->query($query2);
+	}
+
 }
 /// License class
-class License extends CommonDBTM {
+class SoftwareLicense extends CommonDBTM {
 
 	/**
 	 * Constructor
 	**/
 	function License() {
-		$this->table = "glpi_licenses";
+		$this->table = "glpi_softwarelicenses";
+		$this->type = LICENSE_TYPE;
 	}
 
-	function prepareInputForUpdate($input) {
+/*	function prepareInputForUpdate($input) {
 		if (isset($input['expire'])&&empty ($input['expire'])){
 			$input['expire'] = "NULL";
 		}
@@ -436,7 +447,7 @@ class License extends CommonDBTM {
 
 		return $input;
 	}
-
+*/
 
 	function pre_updateInDB($input,$updates,$oldvalues) {
 		// Clean end alert if expire is after old one
@@ -460,27 +471,14 @@ class License extends CommonDBTM {
 		if (!isset($input['oem_computer']) || $input['oem_computer'] == 0){
 			$input['oem_computer'] = -1;
 		}
-		if (!isset($input['version'])){
-			$input['version'] = '';
-		}
-		unset ($input["form"]);
-		unset ($input["withtemplate"]);
-		unset ($input["lID"]);
+
+//		unset ($input["form"]);
+//		unset ($input["withtemplate"]);
+//		unset ($input["lID"]);
 		return $input;
 	}
 
 	function post_addItem($newID, $input) {
-		// Add license but not for unglobalize system
-//		if (!isset ($input["_duplicate_license"]) && isset($input['oem']) && isset($input['oem_computer']) && $input['oem'] && $input['oem_computer'] > 0){
-//			installSoftware($input['oem_computer'], $newID);
-//		}
-
-//		$type = SOFTWARE_TYPE;
-//		$dupid = $this->fields["sID"];
-//		if (isset ($input["_duplicate_license"])) {
-//			$type = LICENSE_TYPE;
-//			$dupid = $input["_duplicate_license"];
-//		}
 
 		// Add infocoms if exists for the licence
 		$ic = new Infocom();
@@ -499,9 +497,6 @@ class License extends CommonDBTM {
 		$query = "DELETE FROM glpi_infocoms WHERE (FK_device = '$ID' AND device_type='" . LICENSE_TYPE . "')";
 		$result = $DB->query($query);
 
-		// Delete Installations
-		$query2 = "DELETE FROM glpi_inst_software WHERE (license = '$ID')";
-		$DB->query($query2);
 	}
 
 }

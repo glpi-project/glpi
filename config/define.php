@@ -95,6 +95,7 @@
 	define("RULE_TYPE",36);
 	define("TRANSFER_TYPE",37);
 	define("BOOKMARK_TYPE",38);
+	define("SOFTWAREVERSION_TYPE",39);
 	
 	// GLPI MODE
 	define("NORMAL_MODE",0);

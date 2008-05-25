@@ -606,7 +606,7 @@ function ocsLinkComputer($ocs_id, $ocs_server_id, $glpi_id) {
 			if ($cfg_ocs["import_device_modems"] || $cfg_ocs["import_device_ports"])
 				ocsResetDevices($glpi_id, PCI_DEVICE);
 			if ($cfg_ocs["import_software"])
-				ocsResetLicenses($glpi_id);
+				ocsResetSoftwares($glpi_id);
 			if ($cfg_ocs["import_periph"])
 				ocsResetPeriphs($glpi_id);
 			if ($cfg_ocs["import_monitor"] == 1) // Only reset monitor as global in unit management try to link monitor with existing
@@ -2874,9 +2874,9 @@ function ocsUpdateSoftware($glpi_id, $entity, $ocs_id, $ocs_server_id, $cfg_ocs,
 			//For each element of the table, add instID=>name.version
 			foreach ($import_software as $key => $value)
 			{
-				$query_softs = "SELECT glpi_licenses.version as VERSION 
-				FROM glpi_inst_software, glpi_licenses 
-				WHERE glpi_inst_software.license=glpi_licenses.ID AND glpi_inst_software.cID=".$glpi_id." AND glpi_inst_software.ID=".$key;
+				$query_softs = "SELECT glpi_softwareversions.name as VERSION 
+				FROM glpi_inst_software, glpi_softwareversions 
+				WHERE glpi_inst_software.vID=glpi_softwareversions.ID AND glpi_inst_software.cID=".$glpi_id." AND glpi_inst_software.ID=".$key;
 				$result_softs = $DB->query($query_softs);
 				$softs = $DB->fetch_array($result_softs);
 				$softs_array[$key] =  $value . '$$$$$'. $softs["VERSION"];
@@ -3028,8 +3028,10 @@ function ocsUpdateSoftware($glpi_id, $entity, $ocs_id, $ocs_server_id, $cfg_ocs,
 	
 						//Get the name of the software in GLPI to know if the software's name have already been changed by the OCS dictionnary
 						$instID = array_search($initname . '$$$$$'. $version, $import_software);
-						$query_soft = "SELECT glpi_software.ID, glpi_software.name FROM glpi_software, glpi_inst_software, glpi_licenses".
-						" WHERE glpi_inst_software.ID=".$instID." AND glpi_inst_software.license=glpi_licenses.ID AND glpi_licenses.sID=glpi_software.ID";
+						$query_soft = "SELECT glpi_software.ID, glpi_software.name 
+								FROM glpi_software, glpi_inst_software, glpi_softwareversions
+								WHERE glpi_inst_software.ID=".$instID." 
+									AND glpi_inst_software.vID=glpi_softwareversions.ID AND glpi_softwareversions.sID=glpi_software.ID";
 	
 						$result_soft = $DB->query($query_soft);
 						$tmpsoft = $DB->fetch_array($result_soft);
@@ -3075,29 +3077,29 @@ function ocsUpdateSoftware($glpi_id, $entity, $ocs_id, $ocs_server_id, $cfg_ocs,
 			foreach ($import_software as $key => $val) {
 
 				$query = "SELECT * 
-									FROM glpi_inst_software 
-									WHERE ID = '" . $key . "'";
+					FROM glpi_inst_software 
+					WHERE ID = '" . $key . "'";
 				$result = $DB->query($query);
 				if ($DB->numrows($result) > 0) {
 					if ($data = $DB->fetch_assoc($result)) {
 						uninstallSoftwareVersion($key, $dohistory);
 
 						$query2 = "SELECT COUNT(*) 
-													FROM glpi_inst_software 
-													WHERE license = '" . $data['license'] . "'";
+							FROM glpi_inst_software 
+							WHERE vID = '" . $data['vID'] . "'";
 						$result2 = $DB->query($query2);
 						if ($DB->result($result2, 0, 0) == 0) {
-							$lic = new License;
-							$lic->getFromDB($data['license']);
+							$vers = new SoftwareVersion;
+							$vers->getFromDB($data['vID']);
 							$query3 = "SELECT COUNT(*) 
-																FROM glpi_licenses 
-																WHERE sID='" . $lic->fields['sID'] . "'";
+								FROM glpi_softwareversions
+								WHERE sID='" . $vers->fields['sID'] . "'";
 							$result3 = $DB->query($query3);
 							if ($DB->result($result3, 0, 0) == 1) 
-								putSoftwareInTrash($lic->fields['sID'],$LANG["ocsng"][54],0);
+								putSoftwareInTrash($vers->fields['sID'],$LANG["ocsng"][54],0);
 							
-							$lic->delete(array (
-								"ID" => $data['license'],
+							$vers->delete(array (
+								"ID" => $data['vID'],
 								"_from_ocs" => 1
 							));
 						}
@@ -3113,12 +3115,12 @@ function ocsUpdateSoftware($glpi_id, $entity, $ocs_id, $ocs_server_id, $cfg_ocs,
 /**
  * Import config of a new version
  *
- * This function create a new license in GLPI with some general datas.
+ * This function create a new software in GLPI with some general datas.
  *
  *@param $software : id of a software.
  *@param $version : version of the software
  *
- *@return integer : inserted license id.
+ *@return integer : inserted version id.
  *
  **/
 function ocsImportVersion($software, $version) {
@@ -3148,44 +3150,44 @@ function ocsImportVersion($software, $version) {
 }
 
 /**
- * Delete old licenses
+ * Delete old softwares
  *
- * Delete all old licenses of a computer.
+ * Delete all old softwares of a computer.
  *
  *@param $glpi_computer_id integer : glpi computer id.
  *
  *@return nothing.
  *
  **/
-function ocsResetLicenses($glpi_computer_id) {
+function ocsResetSoftwares($glpi_computer_id) {
 	global $DB;
 
 	$query = "SELECT * 
-				FROM glpi_inst_software 
-				WHERE cid = '" . $glpi_computer_id . "'";
+		FROM glpi_inst_software 
+		WHERE cid = '" . $glpi_computer_id . "'";
 	$result = $DB->query($query);
 	if ($DB->numrows($result) > 0) {
 		while ($data = $DB->fetch_assoc($result)) {
 			$query2 = "SELECT COUNT(*) 
-										FROM glpi_inst_software 
-										WHERE license = '" . $data['license'] . "'";
+				FROM glpi_inst_software 
+				WHERE vID = '" . $data['vID'] . "'";
 			$result2 = $DB->query($query2);
 			if ($DB->result($result2, 0, 0) == 1) {
-				$lic = new License;
-				$lic->getFromDB($data['license']);
+				$vers = new SoftwareVersion;
+				$vers->getFromDB($data['vID']);
 				$query3 = "SELECT COUNT(*) 
-													FROM glpi_licenses 
-													WHERE sID='" . $lic->fields['sID'] . "'";
+					FROM glpi_softwareversions
+					WHERE sID='" . $vers->fields['sID'] . "'";
 				$result3 = $DB->query($query3);
 				if ($DB->result($result3, 0, 0) == 1) {
 					$soft = new Software();
 					$soft->delete(array (
-						'ID' => $lic->fields['sID'],
+						'ID' => $vers->fields['sID'],
 						"_from_ocs" => 1
 					), 1);
 				}
-				$lic->delete(array (
-					"ID" => $data['license'],
+				$vers->delete(array (
+					"ID" => $data['vID'],
 					"_from_ocs" => 1
 				));
 
@@ -3262,7 +3264,7 @@ function ocsResetPeriphs($glpi_computer_id) {
 /**
  * Delete old monitors
  *
- * Delete all old licenses of a computer.
+ * Delete all old monitors of a computer.
  *
  *@param $glpi_computer_id integer : glpi computer id.
  *
