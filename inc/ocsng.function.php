@@ -3010,11 +3010,11 @@ function ocsUpdateSoftware($glpi_id, $entity, $ocs_id, $ocs_server_id, $cfg_ocs,
 							*/
 							
 							$isNewSoft= addSoftwareOrRestoreFromTrash($modified_name,$manufacturer,$entity,'',IMPORT_TYPE_OCS);
-							//Import license for this software
-							$licenseID = ocsImportLicense($isNewSoft, $modified_version,$import_software_licensetype,$import_software_buy);
+							//Import version for this software
+							$versionID = ocsImportVersion($isNewSoft,$modified_version);
 		
 							//Install license for this machine
-							$instID = installSoftware($glpi_id, $licenseID, '', $dohistory);
+							$instID = installSoftwareVersion($glpi_id, $versionID, $isNewSoft, $dohistory);
 							
 							//Add the software to the table of softwares for this computer to add in database
 							$to_add_to_ocs_array[$instID] = $initname . '$$$$$'. $version;
@@ -3080,7 +3080,7 @@ function ocsUpdateSoftware($glpi_id, $entity, $ocs_id, $ocs_server_id, $cfg_ocs,
 				$result = $DB->query($query);
 				if ($DB->numrows($result) > 0) {
 					if ($data = $DB->fetch_assoc($result)) {
-						uninstallSoftware($key, $dohistory);
+						uninstallSoftwareVersion($key, $dohistory);
 
 						$query2 = "SELECT COUNT(*) 
 													FROM glpi_inst_software 
@@ -3111,46 +3111,40 @@ function ocsUpdateSoftware($glpi_id, $entity, $ocs_id, $ocs_server_id, $cfg_ocs,
 }
 
 /**
- * Import config of a new license
+ * Import config of a new version
  *
  * This function create a new license in GLPI with some general datas.
  *
  *@param $software : id of a software.
  *@param $version : version of the software
- *@param $serial : default serial (used to identify global and freelicenses).
- *@param $buy : is the license buyed ?
  *
  *@return integer : inserted license id.
  *
  **/
-function ocsImportLicense($software, $version, $serial = "global", $buy = "0") {
+function ocsImportVersion($software, $version) {
 	global $DB, $LANGOcs;
 
+	$isNewVers = 0;
+
 	$query = "SELECT ID 
-				FROM glpi_licenses 
-				WHERE sID = '" . $software . "' 
-				AND version='" . $version . "'
-				AND serial='" . $serial . "' 
-				AND buy='" . $buy . "'"; #TODO serial => type
+		FROM glpi_softwareversions 
+		WHERE sID = '" . $software . "' 
+			AND name='" . $version . "'";
 
 	$result = $DB->query($query);
 	if ($DB->numrows($result) > 0) {
 		$data = $DB->fetch_array($result);
-		$isNewLicc = $data["ID"];
-	} else {
-		$isNewLicc = 0;
+		$isNewVers = $data["ID"];
 	}
-	if (!$isNewLicc) {
-		$licc = new License;
+
+	if (!$isNewVers) {
+		$vers = new SoftwareVersion;
 		$input["sID"] = $software;
-		$input["serial"] = $serial;
-		$input["buy"] = $buy;
-		$input["version"] = $version;
-		$input["oem"] = 0;
+		$input["name"] = $version;
 		$input["_from_ocs"] = 1;
-		$isNewLicc = $licc->add($input);
+		$isNewVers = $vers->add($input);
 	}
-	return ($isNewLicc);
+	return ($isNewVers);
 }
 
 /**

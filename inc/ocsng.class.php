@@ -506,7 +506,7 @@ class Ocsng extends CommonDBTM {
 		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["ocsconfig"][3] . " </td><td> <input type=\"password\" name=\"ocs_db_passwd\" value=\"\"></td></tr>";
 		echo "</table></div>";
 
-		echo "<br><div class='center'><table border='0'>";
+		echo "<br><div class='center'><table border='0' class='tab_glpi'>";
 		
 		if ($ID == -1 || $withtemplate == 2)
 			echo "<tr class='tab_bg_2'><td align='center' colspan=2><input type=\"submit\" name=\"add_server\" class=\"submit\" value=\"" . $LANG["buttons"][2] . "\" ></td></tr>";
