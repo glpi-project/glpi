@@ -253,7 +253,17 @@ function update071to072() {
  		$query="ALTER TABLE `glpi_softwareversions` ADD `comments` TEXT NULL ;";
 		$DB->query($query) or die("0.72 add comments to softwareversion table" . $LANG["update"][90] . $DB->error());
 	}	
-	
 
+	if (!TableExists("glpi_dropdown_licensetypes")) {
+ 		$query="CREATE TABLE `glpi_dropdown_licensetypes` (
+  `ID` int(11) NOT NULL auto_increment,
+  `name` varchar(255) collate utf8_unicode_ci default NULL,
+  `comments` text collate utf8_unicode_ci,
+  PRIMARY KEY  (`ID`),
+  KEY `name` (`name`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+		$DB->query($query) or die("0.72 create glpi_dropdown_licensetypes tabme" . $LANG["update"][90] . $DB->error());
+	}	
+	
 } // fin 0.72 #####################################################################################
 ?>

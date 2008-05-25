@@ -55,6 +55,7 @@ class Software extends CommonDBTM {
 		global $LANG, $CFG_GLPI;
 		$ong[1] = $LANG["title"][26];
 		if (empty ($withtemplate)) {
+			$ong[3] = $LANG["software"][11];
 			$ong[2] = $LANG["software"][19];
 		}
 		if (haveRight("contract_infocom","r")){
