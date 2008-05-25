@@ -764,39 +764,40 @@ function showInstallations($sID) {
  * Install a software on a computer
  *
  * @param $cID ID of the computer where to install a software
- * @param $lID ID of the license to install
+ * @param $vID ID of the version to install
  * @param $sID ID of the software of the license (used for history)
  * @param $dohistory Do history ?
  * @return nothing
  */
-/*function installSoftware($cID, $lID, $sID = '', $dohistory = 1) {
+function installSoftwareVersion($cID, $vID, $sID='', $dohistory=1){
+//function installSoftware($cID, $lID, $sID = '', $dohistory = 1) {
 
 	global $DB,$LANG;
 
-	if (!empty ($lID) && $lID > 0) {
+	if (!empty ($vID) && $vID > 0) {
 
-		$query_exists = "SELECT ID FROM glpi_inst_software WHERE cID=" . $cID . " AND license=" . $lID;
+		$query_exists = "SELECT ID FROM glpi_inst_software WHERE cID=" . $cID . " AND vID=" . $vID;
 		$result = $DB->query($query_exists);
-		if ($DB->numrows($result) > 0)
+		if ($DB->numrows($result) > 0){
 			return $DB->result($result, 0, "ID");
-		else {
-			$query = "INSERT INTO glpi_inst_software VALUES (NULL,$cID,$lID)";
+		} else {
+			$query = "INSERT INTO glpi_inst_software (`cID`,`vID`) VALUES ($cID,$vID)";
 			if ($result = $DB->query($query)) {
 				$newID = $DB->insert_id();
 				if ($dohistory) {
-					$lic = new License();
-					$lic->getFromDB($lID);
+					$vers = new SoftwareVersion();
+					$vers->getFromDB($vID);
 					$soft = new Software();
-					if ($soft->getFromDB($lic->fields["sID"])) {
+					if ($soft->getFromDB($vers->fields["sID"])) {
 						$changes[0] = '0';
 						$changes[1] = "";
-						$changes[2] = addslashes($soft->fields["name"] . " (v. " . $lic->fields["version"] . ")");
+						$changes[2] = addslashes($soft->fields["name"] . " (v. " . $vers->fields["name"] . ")");
 						// history log
 						historyLog($cID, COMPUTER_TYPE, $changes, 0, HISTORY_INSTALL_SOFTWARE);
 						$comp = new Computer();
 						$comp->getFromDB($cID);
-						$changes[2] = addslashes($comp->fields["name"] . " (v. " . $lic->fields["version"] . ")");
-						historyLog($lic->fields["sID"], SOFTWARE_TYPE, $changes, 0, HISTORY_INSTALL_SOFTWARE);
+						$changes[2] = addslashes($comp->fields["name"] . " (v. " . $vers->fields["name"] . ")");
+						historyLog($vers->fields["sID"], SOFTWARE_TYPE, $changes, 0, HISTORY_INSTALL_SOFTWARE);
 					}
 				}
 				return $newID;
@@ -804,41 +805,9 @@ function showInstallations($sID) {
 				return false;
 			}
 		}
-	} else
-		if ($lID < 0 && !empty ($sID)) { // Auto Add a license
-			$lic = new License();
-			$newinput = array ();
-			$newinput['buy'] = 0;
-			$newinput['sID'] = $sID;
-			$newinput['serial'] = $LANG["software"][6];
-			$lID = $lic->add($newinput);
-
-			$query = "INSERT INTO glpi_inst_software VALUES (NULL,$cID,$lID)";
-			if ($result = $DB->query($query)) {
-				$newID = $DB->insert_id();
-				if ($dohistory) {
-					$soft = new Software();
-					if ($soft->getFromDB($sID)) {
-						$changes[0] = '0';
-						$changes[1] = "";
-						$changes[2] = addslashes($soft->fields["name"]);
-						// history log
-						historyLog($cID, COMPUTER_TYPE, $changes, 0, HISTORY_INSTALL_SOFTWARE);
-						$comp = new Computer();
-						$comp->getFromDB($cID);
-						$changes[2] = addslashes($comp->fields["name"]);
-						historyLog($sID, SOFTWARE_TYPE, $changes, 0, HISTORY_INSTALL_SOFTWARE);
-					}
-				}
-
-				return $newID;
-			} else {
-				return false;
-			}
-
-		}
+	} 
 }
-*/
+
 /**
  * Uninstall a software on a computer
  *
@@ -846,8 +815,8 @@ function showInstallations($sID) {
  * @param $dohistory Do history ?
  * @return nothing
  */
-/*
-function uninstallSoftware($ID, $dohistory = 1) {
+function uninstallSoftwareVersion($ID, $dohistory = 1) {
+//function uninstallSoftware($ID, $dohistory = 1) {
 
 	global $DB;
 
@@ -856,8 +825,8 @@ function uninstallSoftware($ID, $dohistory = 1) {
 		$query2 = "SELECT * FROM glpi_inst_software WHERE (ID = '$ID')";
 		$result2 = $DB->query($query2);
 		$data = $DB->fetch_array($result2);
-		$lic = new License();
-		$lic->getFromDB($data["license"]);
+		$vers = new SoftwareVersion();
+		$vers->getFromDB($data["vID"]);
 	}
 
 	$query = "DELETE FROM glpi_inst_software WHERE (ID = '$ID')";
@@ -865,16 +834,16 @@ function uninstallSoftware($ID, $dohistory = 1) {
 	if ($result = $DB->query($query)) {
 		if ($dohistory) {
 			$soft = new Software();
-			if ($soft->getFromDB($lic->fields["sID"])) {
+			if ($soft->getFromDB($vers->fields["sID"])) {
 				$changes[0] = '0';
-				$changes[1] = addslashes($soft->fields["name"] . " (v. " . $lic->fields["version"] . ")");
+				$changes[1] = addslashes($soft->fields["name"] . " (v. " . $vers->fields["name"] . ")");
 				$changes[2] = "";
 				// history log
 				historyLog($data["cID"], COMPUTER_TYPE, $changes, 0, HISTORY_UNINSTALL_SOFTWARE);
 				$comp = new Computer();
 				$comp->getFromDB($data["cID"]);
-				$changes[1] = addslashes($comp->fields["name"] . " (v. " . $lic->fields["version"] . ")");
-				historyLog($lic->fields["sID"], SOFTWARE_TYPE, $changes, 0, HISTORY_UNINSTALL_SOFTWARE);
+				$changes[1] = addslashes($comp->fields["name"] . " (v. " . $vers->fields["name"] . ")");
+				historyLog($vers->fields["sID"], SOFTWARE_TYPE, $changes, 0, HISTORY_UNINSTALL_SOFTWARE);
 
 			}
 		}
@@ -884,7 +853,7 @@ function uninstallSoftware($ID, $dohistory = 1) {
 		return false;
 	}
 }
-*/
+
 /**
  * SHow softwrae installed on a computer
  *
@@ -936,7 +905,7 @@ function showSoftwareInstalled($instID, $withtemplate = '') {
 
 		echo "<div class='software-instal'>";
 		echo "<input type='hidden' name='cID' value='$instID'>";
-		dropdownSoftwareToInstall("licenseID", $withtemplate, $FK_entities);
+		dropdownSoftwareToInstall("vID", $FK_entities);
 		echo "<input type='submit' name='install' value=\"" . $LANG["buttons"][4] . "\" class='submit'>";
 		echo "</div>";
 		echo "</form>";

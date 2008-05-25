@@ -1279,12 +1279,11 @@ function dropdownDocument($myname,$entity_restrict='',$used=array()) {
  *
  *
  * @param $myname select name
- * @param $withtemplate is it a template computer ?
  * @param $massiveaction is it a massiveaction select ?
  * @param $entity_restrict Restrict to a defined entity
  * @return nothing (print out an HTML select box)
  */
-function dropdownSoftwareToInstall($myname,$withtemplate,$entity_restrict,$massiveaction=0) {
+function dropdownSoftwareToInstall($myname,$entity_restrict,$massiveaction=0) {
 	global $CFG_GLPI;
 
 	$rand=mt_rand();
@@ -1297,13 +1296,7 @@ function dropdownSoftwareToInstall($myname,$withtemplate,$entity_restrict,$massi
 		}
 	}
 
-        $only_globalfree=0;
-        if ($massiveaction||(!empty($withtemplate)&&$withtemplate>0)){
-                $only_globalfree=1;
-        }
-
         $params=array('searchText'=>'__VALUE__',
-                        'only_globalfree'=>$only_globalfree,
 			'myname'=>$myname,
                         'entity_restrict'=>$entity_restrict,
                         );

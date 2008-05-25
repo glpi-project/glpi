@@ -47,14 +47,10 @@ checkRight("software","w");
 if ($_POST['sID']>0){
 	// Make a select box
 
-	$where="";
-	if (!$_POST["only_globalfree"]){
-		$where=" glpi_inst_software.cID IS NULL OR glpi_inst_software.cID = 0 OR ";
-	}
-	$query = "SELECT DISTINCT glpi_licenses.* from glpi_licenses ";
-	$query.= " LEFT JOIN glpi_inst_software on (glpi_licenses.ID=glpi_inst_software.license)";
-	$query.= " WHERE glpi_licenses.sID='".$_POST['sID']."' AND ($where glpi_licenses.serial='free' OR glpi_licenses.serial='global' ) ";
-	$query.= " GROUP BY version, serial, expire, oem, oem_computer, buy ORDER BY version, serial ASC";
+	$query = "SELECT DISTINCT glpi_softwareversions.* FROM glpi_softwareversions ";
+	$query.= " LEFT JOIN glpi_inst_software on (glpi_softwareversions.ID=glpi_inst_software.vID)";
+	$query.= " WHERE glpi_softwareversions.sID='".$_POST['sID']."' ";
+	$query.= " ORDER BY name";
 
 
 	$result = $DB->query($query);
@@ -64,39 +60,13 @@ if ($_POST['sID']>0){
 
 	echo "<option value=\"0\">-----</option>";
 
-	if ($number==0&&!isGlobalSoftware($_POST["sID"])&&!isFreeSoftware($_POST["sID"]))
-		echo "<option value=\"-1\">--".$LANG["software"][43]."--</option>";
-
 	$today=date("Y-m-d"); 
 	if ($number) {
 		while ($data = $DB->fetch_assoc($result)) {
 
-			$output = $data['version']." ".$data['serial']." - ";
-
-			$expirer=0;
-			if ($data['expire']!=NULL&&$today>$data['expire']) $expirer=1; 
-
-			if ($data['expire']==NULL)
-				$output.= $LANG["software"][26];
-			else {
-				if ($expirer) $output.= $LANG["software"][27];
-				else $output.= $LANG["software"][25]."&nbsp;".$data['expire'];
-			}
-
-			if ($data['buy'])
-				$output.=" - ".$LANG["software"][35];
-			else 
-				$output.=" - ".$LANG["software"][37];
-
-			if ($data['oem']){
-				$comp=new Computer();
-				$comp->getFromDB($data["oem_computer"]);
-				$output.=" - ".$LANG["software"][28]. " ".$comp->fields['name'];
-				if ($CFG_GLPI["view_ID"]) $output.=" (".$comp->fields['ID'].")";
-			}
-
-
+			$output = $data['name'];
 			$ID = $data['ID'];
+
 			if (empty($output)) $output="($ID)";
 			echo "<option value=\"$ID\" title=\"$output\">".$output."</option>";
 		}

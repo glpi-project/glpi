@@ -180,15 +180,14 @@ else if (isset($_GET["delete"])){
 }
 else if (isset($_POST["install"])){
 	checkRight("software","w");
-
-	installSoftware($_POST["cID"],$_POST["licenseID"],$_POST["sID"]);
+	installSoftwareVersion($_POST["cID"],$_POST["vID"],$_POST["sID"]);
 	logEvent($_POST["cID"], "computers", 5, "inventory", $_SESSION["glpiname"]." installed software.");
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($_GET["uninstall"])){
 	checkRight("software","w");
 
-	uninstallSoftware($_GET["ID"]);
+	uninstallSoftwareVersion($_GET["ID"]);
 	logEvent($_GET["cID"], "computers", 5, "inventory", $_SESSION["glpiname"]." uninstalled software.");
 	glpi_header($_SERVER['HTTP_REFERER']);
 }

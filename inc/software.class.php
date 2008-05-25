@@ -406,6 +406,16 @@ class Software extends CommonDBTM {
 		}
 	}
 }
+
+/// Version class
+class SoftwareVersion extends CommonDBTM {
+	/**
+	 * Constructor
+	**/
+	function SoftwareVersion() {
+		$this->table = "glpi_softwareversions";
+	}
+}
 /// License class
 class License extends CommonDBTM {
 
