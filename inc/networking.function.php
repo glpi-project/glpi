@@ -464,7 +464,7 @@ function showConnection($ID,$withtemplate='',$type=COMPUTER_TYPE) {
 			if ($CFG_GLPI["view_ID"]) echo " (".$netport->device_ID.")";
 			echo "</a></strong>";
 			if ($device1->obj->fields["FK_entities"] != $device2->obj->fields["FK_entities"]) {
-				echo " (".getDropdownName("glpi_entities",$device2->obj->fields["FK_entities"]).")";
+				echo "<br>(".getDropdownName("glpi_entities",$device2->obj->fields["FK_entities"]).")";
 			}
 			
 			// 'w' on dev1 + 'r' on dev2 OR 'r' on dev1 + 'w' on dev2
@@ -481,7 +481,7 @@ function showConnection($ID,$withtemplate='',$type=COMPUTER_TYPE) {
 			else echo $LANG["common"][0];
 			echo "</strong> ".$LANG["networking"][25]." <strong>";
 			echo $device2->obj->fields["name"];
-			echo "</strong> (".getDropdownName("glpi_entities",$device2->obj->fields["FK_entities"]).")";
+			echo "</strong><br>(".getDropdownName("glpi_entities",$device2->obj->fields["FK_entities"]).")";
 		}
 		echo "</td></tr></table>";
 
