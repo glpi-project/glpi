@@ -52,11 +52,6 @@ $rand=mt_rand();
 $where="";
 $leftjoin=""; 
 
-// only global and free  
-if ($_POST['only_globalfree']){ 
-        $leftjoin="LEFT JOIN glpi_licenses ON (glpi_licenses.sID = glpi_software.ID )"; 
-        $where="AND (glpi_licenses.serial='global' OR glpi_licenses.serial='free') "; 
-} 
 	 	
 if (strlen($_POST['searchText'])>0&&$_POST['searchText']!=$CFG_GLPI["ajax_wildcard"])
 	$where.=" AND name ".makeTextSearch($_POST['searchText'])." ";
@@ -80,7 +75,6 @@ echo "</select>\n";
 
 $params=array('sID'=>'__VALUE__',
 		'myname'=>$_POST["myname"],
-		'only_globalfree'=>$_POST["only_globalfree"]
 		);
 ajaxUpdateItemOnSelectEvent("item_type$rand","show_".$_POST["myname"].$rand,$CFG_GLPI["root_doc"]."/ajax/dropdownInstallLicense.php",$params,false);
 
