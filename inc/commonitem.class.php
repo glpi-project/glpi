@@ -142,7 +142,7 @@ class CommonItem{
 					$this->obj= new Consumable;	
 					break;					
 				case LICENSE_TYPE : 
-					$this->obj= new License;	
+					$this->obj= new SoftwareLicense;	
 					break;					
 				case LINK_TYPE : 
 					$this->obj= new Link;	
