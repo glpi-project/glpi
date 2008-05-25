@@ -1942,7 +1942,7 @@ $SEARCH_OPTION[SOFTWARE_TYPE][7]['table']='glpi_softwarelicenses';
 $SEARCH_OPTION[SOFTWARE_TYPE][7]['field']='name';
 $SEARCH_OPTION[SOFTWARE_TYPE][7]['linkfield']='';
 $SEARCH_OPTION[SOFTWARE_TYPE][7]['name']=$LANG["common"][19];
-$SEARCH_OPTION[SOFTWARE_TYPE][7]['meta']=2;
+$SEARCH_OPTION[SOFTWARE_TYPE][7]['meta']=0;
 
 $SEARCH_OPTION[SOFTWARE_TYPE][6]['table']='glpi_software';
 $SEARCH_OPTION[SOFTWARE_TYPE][6]['field']='comments';

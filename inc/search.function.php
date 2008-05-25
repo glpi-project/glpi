@@ -1712,20 +1712,20 @@ function addSelect ($type,$ID,$num,$meta=0,$meta_type=0){
 				return $table.$addtable.".".$field." AS ".$NAME."_$num, ";
 			}
 		break;
-/*		case "glpi_softwarelicenses.name" :
+		case "glpi_softwarelicenses.name" :
 			if ($meta){
-				return " GROUP_CONCAT( DISTINCT CONCAT(".$table.$addtable.".name, ' - ',".$table.$addtable.".version) SEPARATOR '$$$$') AS ".$NAME."_".$num.", ";
+				return " GROUP_CONCAT( DISTINCT CONCAT(glpi_software.name, ' - ',".$table.$addtable.".name) SEPARATOR '$$$$') AS ".$NAME."_".$num.", ";
 			} else {
 				return " GROUP_CONCAT( DISTINCT ".$table.$addtable.".".$field." SEPARATOR '$$$$') AS ".$NAME."_".$num.", ";
 			}
 		case "glpi_softwareversions.name" :
 			if ($meta){
-				return " GROUP_CONCAT( DISTINCT CONCAT(".$table.$addtable.".serial, ' - ',".$table.$addtable.".version) SEPARATOR '$$$$') AS ".$NAME."_".$num.", ";
+				return " GROUP_CONCAT( DISTINCT CONCAT(glpi_software.name, ' - ',".$table.$addtable.".name) SEPARATOR '$$$$') AS ".$NAME."_".$num.", ";
 			} else {
 				return " GROUP_CONCAT( DISTINCT ".$table.$addtable.".".$field." SEPARATOR '$$$$') AS ".$NAME."_".$num.", ";
 			}
 		break;
-*/		case "glpi_networking_ports.ifaddr" :
+		case "glpi_networking_ports.ifaddr" :
 		case "glpi_dropdown_netpoint.name" :
 		case "glpi_registry.registry_ocs_name" :
 		case "glpi_registry.registry_value" :
@@ -2256,8 +2256,8 @@ function giveItem ($type,$field,$data,$num,$linkfield=""){
 			$out.= "</a>";
 			return $out;
 		break;
-//		case "glpi_softwarelicenses.name" :
-//		case "glpi_softwareversions.name" :
+		case "glpi_softwarelicenses.name" :
+		case "glpi_softwareversions.name" :
 		case "glpi_networking_ports.ifaddr" :
 		case "glpi_dropdown_netpoint.name" :
 		case "glpi_registry.registry_ocs_name" :
@@ -3102,7 +3102,7 @@ function addMetaLeftJoin($from_type,$to_type,&$already_link_tables2,$null){
 				case SOFTWARE_TYPE :
 					array_push($already_link_tables2,$LINK_ID_TABLE[SOFTWARE_TYPE]);
 					return " $LINK glpi_inst_software as inst_$to_type ON (inst_$to_type.cID = glpi_computers.ID) ".
-						" $LINK glpi_softwareversions as glpi_softwareversions_$to_type ON ( inst_$to_type.license=glpi_softwareversions_$to_type.ID ) ".
+						" $LINK glpi_softwareversions as glpi_softwareversions_$to_type ON ( inst_$to_type.vID=glpi_softwareversions_$to_type.ID ) ".
 						" $LINK glpi_software ON (glpi_softwareversions_$to_type.sID = glpi_software.ID)"; 
 					break;
 			}
@@ -3152,7 +3152,7 @@ function addMetaLeftJoin($from_type,$to_type,&$already_link_tables2,$null){
 				case COMPUTER_TYPE :
 					array_push($already_link_tables2,$LINK_ID_TABLE[COMPUTER_TYPE]);
 					return " $LINK glpi_softwareversions as glpi_softwareversions_$to_type ON ( glpi_softwareversions_$to_type.sID = glpi_software.ID ) ".
-						" $LINK glpi_inst_software as inst_$to_type ON (inst_$to_type.license = glpi_softwareversions_$to_type.ID) ".
+						" $LINK glpi_inst_software as inst_$to_type ON (inst_$to_type.vID = glpi_softwareversions_$to_type.ID) ".
 						" $LINK glpi_computers ON (inst_$to_type.cID = glpi_computers.ID)";
 
 					break;
