@@ -1932,14 +1932,14 @@ $SEARCH_OPTION[SOFTWARE_TYPE][4]['linkfield']='platform';
 $SEARCH_OPTION[SOFTWARE_TYPE][4]['name']=$LANG["software"][3];
 $SEARCH_OPTION[SOFTWARE_TYPE][4]['meta']=2;
 
-$SEARCH_OPTION[SOFTWARE_TYPE][5]['table']='glpi_licenses';
-$SEARCH_OPTION[SOFTWARE_TYPE][5]['field']='version';
+$SEARCH_OPTION[SOFTWARE_TYPE][5]['table']='glpi_softwareversions';
+$SEARCH_OPTION[SOFTWARE_TYPE][5]['field']='name';
 $SEARCH_OPTION[SOFTWARE_TYPE][5]['linkfield']='';
 $SEARCH_OPTION[SOFTWARE_TYPE][5]['name']=$LANG["software"][5];
 $SEARCH_OPTION[SOFTWARE_TYPE][5]['meta']=2;
 
-$SEARCH_OPTION[SOFTWARE_TYPE][7]['table']='glpi_licenses';
-$SEARCH_OPTION[SOFTWARE_TYPE][7]['field']='serial';
+$SEARCH_OPTION[SOFTWARE_TYPE][7]['table']='glpi_softwarelicenses';
+$SEARCH_OPTION[SOFTWARE_TYPE][7]['field']='name';
 $SEARCH_OPTION[SOFTWARE_TYPE][7]['linkfield']='';
 $SEARCH_OPTION[SOFTWARE_TYPE][7]['name']=$LANG["common"][19];
 $SEARCH_OPTION[SOFTWARE_TYPE][7]['meta']=2;

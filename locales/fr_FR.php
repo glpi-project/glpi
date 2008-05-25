@@ -1622,6 +1622,8 @@ $LANG["setup"][808]="Base de données esclave désynchronisée !";
 $LANG["setup"][809]="Réplicat MySQL : lecture seule";
 
 
+$LANG["software"][1]="Version d'achat"; 
+$LANG["software"][2]="Version d'utilisation"; 
 $LANG["software"][3]="Plateforme"; 
 $LANG["software"][5]="Versions"; 
 $LANG["software"][6]="Ajout automatique"; 
@@ -1639,6 +1641,7 @@ $LANG["software"][26]="N'expire jamais";
 $LANG["software"][27]="Licence expirée"; 
 $LANG["software"][28]="OEM"; 
 $LANG["software"][29]="Mise à jour"; 
+$LANG["software"][30]="Type de licences"; 
 $LANG["software"][32]="Expiration"; 
 $LANG["software"][34]="Modifier une licence"; 
 $LANG["software"][35]="Acheté"; 

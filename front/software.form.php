@@ -137,8 +137,9 @@ else
 		if ($soft->showForm($_SERVER['PHP_SELF'],$_GET["ID"],$_GET['withtemplate'])){
 			switch($_SESSION['glpi_onglet']){
 				case -1:
-					showLicensesAdd($_GET["ID"]);
+					showVersions($_GET["ID"]);
 					showLicenses($_GET["ID"]);
+					showInstallations($_GET["ID"]);
 					showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",SOFTWARE_TYPE,$_GET["ID"]);
 					showContractAssociated(SOFTWARE_TYPE,$_GET["ID"]);
 					showDocumentAssociated(SOFTWARE_TYPE,$_GET["ID"]);
@@ -147,9 +148,11 @@ else
 					showLinkOnDevice(SOFTWARE_TYPE,$_GET["ID"]);
 					displayPluginAction(SOFTWARE_TYPE,$_GET["ID"],$_SESSION['glpi_onglet'],$_GET["withtemplate"]);
 					break;
+				case 3 :
+					showLicenses($_GET["ID"]);
+					break;
 				case 2 :
-					showLicensesAdd($_GET["ID"]);
-					showLicenses($_GET["ID"],1);
+					showInstallations($_GET["ID"]);
 					break;
 				case 4 :
 					showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",SOFTWARE_TYPE,$_GET["ID"]);
@@ -176,8 +179,7 @@ else
 					break;
 				default :
 					if (!displayPluginAction(SOFTWARE_TYPE,$_GET["ID"],$_SESSION['glpi_onglet'],$_GET["withtemplate"])){
-						showLicensesAdd($_GET["ID"]);
-						showLicenses($_GET["ID"]);
+						showVersions($_GET["ID"]);
 					}
 					break;
 			}
