@@ -829,7 +829,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 			if (empty($GROUPBY)&&(($val2=="all")
 						||($type==COMPUTER_TYPE&&ereg("glpi_device",$SEARCH_OPTION[$type][$val2]["table"]))
 						||(ereg("glpi_contracts",$SEARCH_OPTION[$type][$val2]["table"]))
-						//||($SEARCH_OPTION[$type][$val2]["table"]=="glpi_licenses")
+						||($SEARCH_OPTION[$type][$val2]["table"]=="glpi_softwareversions")
 						||($SEARCH_OPTION[$type][$val2]["table"]=="glpi_networking_ports")
 						||($SEARCH_OPTION[$type][$val2]["table"]=="glpi_dropdown_netpoint")
 						||($SEARCH_OPTION[$type][$val2]["table"]=="glpi_registry")
