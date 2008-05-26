@@ -100,7 +100,7 @@ if (isset($LINK_ID_TABLE[$_POST["type"]])&&$_POST["type"]>0){
 			$output = $data['name'];
 			$ID = $data['ID'];
 			if (empty($output)) $output="($ID)";
-			echo "<option value=\"$ID\" title=\"$output\">".substr($output,0,$CFG_GLPI["dropdown_limit"])."</option>";
+			echo "<option value=\"$ID\" title=\"".cleanInputText($output)."\">".substr($output,0,$CFG_GLPI["dropdown_limit"])."</option>";
 		}
 		if ($multi && $prev>=0) {
 			echo "</optgroup>";

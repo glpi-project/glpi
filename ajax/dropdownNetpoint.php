@@ -114,7 +114,7 @@ if (!isset($_POST["limit"])) $_POST["limit"]=$CFG_GLPI["dropdown_limit"];
 			$ID = $data['ID'];
 			$addcomment="";
 			if (isset($data["comments"])) $addcomment=" - ".$data["comments"];
-			echo "<option value=\"$ID\" title=\"$output$addcomment\"";
+			echo "<option value=\"$ID\" title=\"".cleanInputText($output.$addcomment)."\"";
 			//if ($ID==$_POST['value']) echo " selected ";
 			echo ">".$output." ($loc)</option>";
 		}

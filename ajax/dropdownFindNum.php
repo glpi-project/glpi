@@ -101,7 +101,7 @@ if ($DB->numrows($result)) {
 			}
 		}
 		if (empty($output)||$CFG_GLPI["view_ID"]) $output.=" (".$data['ID'].")";
-		echo "<option value=\"".$data['ID']."\" title=\"$output\">".substr($output,0,$CFG_GLPI["dropdown_limit"])."</option>";
+		echo "<option value=\"".$data['ID']."\" title=\"".cleanInputText($output)."\">".substr($output,0,$CFG_GLPI["dropdown_limit"])."</option>";
 	}
 }
 echo "</select>";

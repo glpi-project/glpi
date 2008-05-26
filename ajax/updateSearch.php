@@ -67,7 +67,7 @@
 				$newgroup.="<optgroup label=\"$val\">";
 			} else {
 				if ($val["meta"]){
-					$newgroup.= "<option value=\"".$key."\" title=\"".$val["name"]."\""; 
+					$newgroup.= "<option value=\"".$key."\" title=\"".cleanInputText($val["name"])."\""; 
 					if($key == $_POST["field"]) $newgroup.= "selected";
 					$newgroup.= ">". substr($val["name"],0,20) ."</option>\n";
 					$items_in_group++;

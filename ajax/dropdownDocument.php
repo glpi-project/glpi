@@ -95,7 +95,7 @@ if ($DB->numrows($result)) {
 			echo "<optgroup label=\"". getDropdownName("glpi_entities", $prev) ."\">";
 		}
 		$output = $data["name"];
-		echo "<option value=\"".$data["ID"]."\" title=\"$output\">".substr($output,0,$CFG_GLPI["dropdown_limit"])."</option>";
+		echo "<option value=\"".$data["ID"]."\" title=\"".cleanInputText($output)."\">".substr($output,0,$CFG_GLPI["dropdown_limit"])."</option>";
 	}
 	if ($prev>=0) {
 		echo "</optgroup>";
