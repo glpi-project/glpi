@@ -66,7 +66,7 @@ echo "<option value='".SOFTWARE_TYPE."'>".$LANG["Menu"][4]."</option>";
 echo "<option value='".PHONE_TYPE."'>".$LANG["Menu"][34]."</option>";
 echo "</select> </p></td>";
 
-echo "<td width='150' align='center'><p><b>".$LANG["reports"][23]."</b></p> ";
+echo "<td width='150' align='center'><p><b>".$LANG["reports"][13]."</b></p> ";
 echo "<p> <select name='annee[]'  size='8' multiple>";
 echo " <option value='toutes' selected>".$LANG["common"][66]."</option>";
 $y = date("Y");
