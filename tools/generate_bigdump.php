@@ -69,6 +69,7 @@ $MAX['os_sp']=5;
 $MAX['ram_type']=5;
 $MAX['rubdocs']=5;
 $MAX['softwarecategory']=5;
+$MAX['licensetype']=5;
 $MAX['state']=5;
 $MAX['vlan']=5;
 $MAX['type_computers']=3;
@@ -109,6 +110,9 @@ $MAX['cartridges_by_printer']=4;
 $MAX['cartridges_stock']=2;
 $MAX['device']=10;
 $MAX['software']=50;
+$MAX['softwareversions']=5;
+$MAX['softwareinstall']=$MAX['computers'];
+$MAX['softwarelicenses']=2;
 $MAX['global_peripherals']=10;
 // DIRECT PERIPHERALS CONNECTED
 $percent['peripherals']=5;
@@ -117,14 +121,6 @@ $percent['peripherals']=5;
 $percent['printer']=5;
 // PERCENT ELEMENTIN SPECIAL STATE
 $percent['state']=70;
-// LICENSES
-$percent['free_software']=40;
-$percent['global_software']=40;
-$percent['normal_software']=20;
-$MAX['normal_licenses_per_software']=10;
-$MAX['free_licenses_per_software']=300;
-$MAX['global_licenses_per_software']=300;
-$MAX['more_licenses']=1;
 //PERIPHERALS
 $MAX['connect_for_peripherals']=2;
 // TRACKING :

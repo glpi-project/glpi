@@ -439,6 +439,12 @@ function generateGlobalDropdowns(){
 		$query="INSERT INTO glpi_dropdown_software_category VALUES (NULL,'$val','comment $val')";
 		$DB->query($query) or die("PB REQUETE ".$query);
 	}
+
+	for ($i=0;$i<$MAX['licensetype'];$i++){
+		$val="type $i";
+		$query="INSERT INTO glpi_dropdown_licensetypes VALUES (NULL,'$val','comment $val')";
+		$DB->query($query) or die("PB REQUETE ".$query);
+	}
 	
 	$items=array("Reparation","En stock","En fonction","Retour SAV","En attente");
 	for ($i=0;$i<$MAX['state'];$i++){
@@ -1328,57 +1334,38 @@ function generate_entity($ID_entity){
 		// Add trackings
 		addTracking(SOFTWARE_TYPE,$softID,$ID_entity);
 	
-		// Add licenses depending of license type
-		$val=mt_rand(0,100);
-		$j=0;
-		// Free software
-		if ($val<$percent['free_software']){
-			if (isset($items[$i])) $version=$items[$i][mt_rand(1,count($items[$i])-1)];
-			else $version="1.0";
-
-			$query="INSERT INTO glpi_licenses VALUES (NULL,'$softID','$version','free',NULL,'0','-1','1','');";
+		// Add versions
+		$FIRST["version"]=getMaxItem("glpi_softwareversions")+1;
+		if (isset($items[$i])) {
+			$val2=count($items[$i]);
+		} else {
+			$val2=mt_rand(1,$MAX['softwareversions']+1);
+		}
+		for ($j=1;$j<=$val2;$j++){
+			if (isset($items[$i])) {
+				$version=$items[$i][mt_rand(1,count($items[$i])-1)];
+			} else $version="$j.0";
+			$query="INSERT INTO glpi_softwareversions VALUES (NULL,$softID,'$version','comment $version')";
 			$DB->query($query) or die("PB REQUETE ".$query);
-			$licID=$DB->insert_id();
-			$val2=mt_rand(0,$MAX['free_licenses_per_software']);
-			for ($j=0;$j<$val2;$j++){
-				$query="INSERT INTO glpi_inst_software VALUES (NULL,'".mt_rand($FIRST["computers"],$LAST['computers'])."','$licID')";
-				$DB->query($query) or die("PB REQUETE ".$query);
-			}
-		} // Global software
-		else if ($val<$percent['global_software']+$percent['free_software']){
-			if (isset($items[$i])) $version=$items[$i][mt_rand(1,count($items[$i])-1)];
-			else $version="1.0";
-
-			$query="INSERT INTO glpi_licenses VALUES (NULL,'$softID','$version','global',NULL,'0','-1','1','');";
-			$DB->query($query) or die("PB REQUETE ".$query);
-			$licID=$DB->insert_id();
-			$val2=mt_rand(0,$MAX['global_licenses_per_software']);
-			for ($j=0;$j<$val2;$j++){
-				$query="INSERT INTO glpi_inst_software VALUES (NULL,'".mt_rand($FIRST["computers"],$LAST['computers'])."','$licID')";
-				$DB->query($query) or die("PB REQUETE ".$query);
-			}
-		} // Normal software
-		else {
-			$val2=mt_rand(0,$MAX['normal_licenses_per_software']);
-			for ($j=0;$j<$val2;$j++){
-				if (isset($items[$i])) $version=$items[$i][mt_rand(1,count($items[$i])-1)];
-				else {$version=mt_rand(1,2).".0";}
-				$query="INSERT INTO glpi_licenses VALUES (NULL,'$softID','$version','".getRandomString(10)."',NULL,'0','-1','1','');";
-				$DB->query($query) or die("PB REQUETE ".$query);
-				$licID=$DB->insert_id();
-				$query="INSERT INTO glpi_inst_software VALUES (NULL,'".mt_rand($FIRST["computers"],$LAST['computers'])."','$licID')";
-				$DB->query($query) or die("PB REQUETE ".$query);
-			}
-			// Add more licenses
-			$val2=mt_rand(0,$MAX['more_licenses']);
-			for ($j=0;$j<$val2;$j++){
-				if (isset($items[$i])) $version=$items[$i][mt_rand(1,count($items[$i])-1)];
-				else {$version=mt_rand(1,2).".0";}
-				$query="INSERT INTO glpi_licenses VALUES (NULL,'$softID','$version','".getRandomString(10)."',NULL,'0','-1','1','');";
+			$versID=$DB->insert_id();
+			$val3=mt_rand(1,$MAX['softwareinstall']);
+			for ($k=0;$k<$val3;$k++){
+				$query="INSERT INTO glpi_inst_software VALUES (NULL,'".mt_rand($FIRST["computers"],$LAST['computers'])."','$versID')";
 				$DB->query($query) or die("PB REQUETE ".$query);
 			}
 		}
+		$LAST["version"]=getMaxItem("glpi_softwareversions");
+		// Add licenses
+		$val2=mt_rand(1,$MAX['softwarelicenses']);
+		for ($j=0;$j<$val2;$j++){
+			$buy_version=mt_rand($FIRST["version"],$LAST["version"]);
+			$use_version=mt_rand($buy_version,$LAST["version"]);
+			$query="INSERT INTO glpi_softwarelicenses VALUES (NULL,$softID,'".mt_rand(1,$MAX['softwareinstall'])."','".mt_rand(1,$MAX['licensetype'])."','license $j','serial $j','$buy_version','$use_version',NULL,-1,'comment license $j')";
+			$DB->query($query) or die("PB REQUETE ".$query);
+		}
+
 	}
+
 	$LAST["software"]=getMaxItem("glpi_software");
 
 
