@@ -46,7 +46,7 @@ $RELATION=array(
 	"glpi_computers" => array("glpi_computer_device"=>"FK_computers",
 						"glpi_connect_wire"=>"end2",
 						"glpi_inst_software"=>"cID",
-						"glpi_licenses"=>"oem_computer",
+						"glpi_softwarelicenses"=>"oem_computer",
 						"glpi_ocs_link"=>"glpi_id",
 						"glpi_registry"=>"computer_id"),
 
@@ -151,11 +151,11 @@ $RELATION=array(
 	"glpi_dropdown_netpoint" =>array("glpi_networking_ports"=>"netpoint"),
 	
 	"glpi_dropdown_network" =>array("glpi_computers"=>"network",
-								"glpi_printers"=>"network",
-								"glpi_networking"=>"network",),
+					"glpi_printers"=>"network",
+					"glpi_networking"=>"network",),
 	
 	"glpi_dropdown_os" =>array("glpi_computers"=>"os",
-												"glpi_software"=>"platform"),
+				"glpi_software"=>"platform"),
 	
 	"glpi_dropdown_os_sp" =>array("glpi_computers"=>"os_sp"),
 	
@@ -228,7 +228,6 @@ $RELATION=array(
 						"glpi_users_groups"=>"FK_groups",
 	),
 	
-	"glpi_licenses" =>array("glpi_inst_software"=>"license"),
 
 	"glpi_links" =>array("glpi_links_device"=>"FK_links"),
 	
@@ -265,8 +264,12 @@ $RELATION=array(
 						"glpi_rule_cache_os"=>"rule_id",
 						"glpi_rule_cache_os_sp"=>"rule_id",
 						"glpi_rule_cache_os_version"=>"rule_id"),
-						"glpi_software" =>array("glpi_licenses"=>"sID",
-						"glpi_software"=>"update_software"),
+	"glpi_software" =>array("glpi_softwarelicenses"=>"sID",
+				"glpi_softwareversions"=>"sID",
+				"glpi_software"=>"update_software"),
+
+	"glpi_softwareversions" =>array("glpi_inst_software"=>"vID",
+					"glpi_softwarelicenses"=>array("buy_version","use_version")),
 
 	"glpi_tracking" => array("_glpi_docs"=>"FK_tracking",
 				"glpi_followups"=>"tracking"),

@@ -177,24 +177,22 @@ class Software extends CommonDBTM {
 		$query = "DELETE FROM glpi_contract_device WHERE (FK_device = '$ID' AND device_type='" . SOFTWARE_TYPE . "')";
 		$result = $DB->query($query);
 
-		$query = "select * from glpi_reservation_item where (device_type='" . SOFTWARE_TYPE . "' and id_device='$ID')";
+		$query = "SELECT * FROM glpi_reservation_item WHERE (device_type='" . SOFTWARE_TYPE . "' AND id_device='$ID')";
 		if ($result = $DB->query($query)) {
 			if ($DB->numrows($result) > 0) {
 				$rr = new ReservationItem();
 				$rr->delete(array (
-					"ID" => $DB->result($result,
-					0,
-					"ID"
-				)));
+					"ID" => $DB->result($result,0,"ID")
+				));
 			}
 		}
 
-		// Delete all Licenses
-		$query2 = "SELECT ID FROM glpi_licenses WHERE (sID = '$ID')";
+		// Delete all licenses
+		$query2 = "SELECT ID FROM glpi_softwarelicenses WHERE (sID = '$ID')";
 
 		if ($result2 = $DB->query($query2)) {
 			if ($DB->numrows($result2)) {
-				$lic = new License;
+				$lic = new SoftwareLicense;
 
 				while ($data = $DB->fetch_array($result2)) {
 					$lic->delete(array (
@@ -203,6 +201,22 @@ class Software extends CommonDBTM {
 				}
 			}
 		}
+
+		// Delete all versions
+		$query2 = "SELECT ID FROM glpi_softwareversions WHERE (sID = '$ID')";
+
+		if ($result2 = $DB->query($query2)) {
+			if ($DB->numrows($result2)) {
+				$vers = new SoftwareVersion;
+
+				while ($data = $DB->fetch_array($result2)) {
+					$vers->delete(array (
+						"ID" => $data["ID"]
+					));
+				}
+			}
+		}
+
 	}
 
 	/**
@@ -432,7 +446,7 @@ class SoftwareLicense extends CommonDBTM {
 	/**
 	 * Constructor
 	**/
-	function License() {
+	function SoftwareLicense() {
 		$this->table = "glpi_softwarelicenses";
 		$this->type = LICENSE_TYPE;
 	}
