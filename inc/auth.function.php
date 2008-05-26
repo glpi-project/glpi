@@ -1317,19 +1317,25 @@ function getAllReplicatesNamesForAMaster($master_id){
  * Check alternate authentication systems
  * 
  * @param $redirect : need to redirect (true) or get type of Auth system which match
+ * @param $redirect_string : redirect string if exists 
  * @return nothing if redirect is true, else Auth system ID
 **/
-function checkAlternateAuthSystems($redirect=false){
+function checkAlternateAuthSystems($redirect=false,$redirect_string=''){
 	global $CFG_GLPI;
 	if (isset($_GET["noAUTO"])||isset($_POST["noAUTO"])){
 		return false;
 	}
 
+	$redir_string=""; 
+	if (!empty($redirect_string)){ 
+		$redir_string="?redirect=".$redirect_string; 
+	} 
+
 	// Using x509 server
 	if (!empty($CFG_GLPI["x509_email_field"])
 		&&isset($_SERVER['SSL_CLIENT_S_DN'])&&ereg($CFG_GLPI["x509_email_field"],$_SERVER['SSL_CLIENT_S_DN'])) {
 		if ($redirect){
-			glpi_header("login.php");
+			glpi_header("login.php".$redir_string);
 		} else {
 			return AUTH_X509;
 		}
@@ -1339,7 +1345,7 @@ function checkAlternateAuthSystems($redirect=false){
 	if (!empty($CFG_GLPI["existing_auth_server_field"])
 		&&isset($_SERVER[$CFG_GLPI["existing_auth_server_field"]])&&!empty($_SERVER[$CFG_GLPI["existing_auth_server_field"]])) {
 		if ($redirect){
-			glpi_header("login.php");
+			glpi_header("login.php".$redir_string);
 		} else {
 			return AUTH_EXTERNAL;
 		}
@@ -1348,7 +1354,7 @@ function checkAlternateAuthSystems($redirect=false){
 	// Using CAS server
 	if (!empty($CFG_GLPI["cas_host"])) {
 		if ($redirect){
-			glpi_header("login.php");
+			glpi_header("login.php".$redir_string);
 		} else {
 			return AUTH_CAS;
 		}
