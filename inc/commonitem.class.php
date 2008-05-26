@@ -217,7 +217,7 @@ class CommonItem{
 				return $LANG["computers"][44];
 				break;
 			case NETWORKING_TYPE :
-				return $LANG["networking"][12];
+				return $LANG["help"][26];
 				break;
 			case PRINTER_TYPE :
 				return $LANG["help"][27];

@@ -635,13 +635,13 @@ $SEARCH_OPTION[NETWORKING_TYPE][11]['meta']=2;
 $SEARCH_OPTION[NETWORKING_TYPE][12]['table']='glpi_networking';
 $SEARCH_OPTION[NETWORKING_TYPE][12]['field']='ifaddr';
 $SEARCH_OPTION[NETWORKING_TYPE][12]['linkfield']='ifaddr';
-$SEARCH_OPTION[NETWORKING_TYPE][12]['name']=$LANG["networking"][14]." ".$LANG["networking"][12];
+$SEARCH_OPTION[NETWORKING_TYPE][12]['name']=$LANG["networking"][14]." ".$LANG["help"][26];
 $SEARCH_OPTION[NETWORKING_TYPE][12]['meta']=2;
 
 $SEARCH_OPTION[NETWORKING_TYPE][13]['table']='glpi_networking';
 $SEARCH_OPTION[NETWORKING_TYPE][13]['field']='ifmac';
 $SEARCH_OPTION[NETWORKING_TYPE][13]['linkfield']='ifmac';
-$SEARCH_OPTION[NETWORKING_TYPE][13]['name']=$LANG["networking"][15]." ".$LANG["networking"][12];
+$SEARCH_OPTION[NETWORKING_TYPE][13]['name']=$LANG["networking"][15]." ".$LANG["help"][26];
 $SEARCH_OPTION[NETWORKING_TYPE][13]['meta']=2;
 
 $SEARCH_OPTION[NETWORKING_TYPE][32]['table']='glpi_dropdown_network';

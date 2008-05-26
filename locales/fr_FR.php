@@ -954,7 +954,6 @@ $LANG["monitors"][33]="Pivot";
 
 $LANG["networking"][5]="RAM (MB)"; 
 $LANG["networking"][6]="Ports réseaux"; 
-$LANG["networking"][12]="Matériel réseau"; 
 $LANG["networking"][13]="port(s) réseau trouvé(s)"; 
 $LANG["networking"][14]="IP"; 
 $LANG["networking"][15]="MAC"; 
@@ -1185,7 +1184,6 @@ $LANG["reports"][12]="Type(s) de matériel";
 $LANG["reports"][13]="Date(s)"; 
 $LANG["reports"][15]="Afficher rapport"; 
 $LANG["reports"][19]="Nom contact"; 
-$LANG["reports"][23]="Date(s)"; 
 $LANG["reports"][24]="Restreindre aux ordinateurs"; 
 $LANG["reports"][26]="Rapport par défaut"; 
 $LANG["reports"][27]="Par contrats"; 
