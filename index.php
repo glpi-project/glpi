@@ -53,7 +53,7 @@ else
 		$_GET["noAUTO"]=$_GET["noCAS"];
 	}
 	
-	checkAlternateAuthSystems(true);
+	checkAlternateAuthSystems(true,isset($_GET["redirect"])?$_GET["redirect"]:"");
 	
 	// Send UTF8 Headers
 	header("Content-Type: text/html; charset=UTF-8");
