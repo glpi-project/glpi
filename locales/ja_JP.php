@@ -784,7 +784,7 @@ $LANG["log"][63]="エンティティ";
 $LANG["log"][64]="コメントを変更する"; 
 $LANG["log"][65]="ルール"; 
 $LANG["log"][66]="セキュリティ"; 
-$LANG["log"][67]="change of notes"; 
+$LANG["log"][67]="変更記録"; 
 $LANG["log"][70]="ネットワークポートが追加された"; 
 $LANG["log"][71]="数個のネットワークポートが追加された"; 
 $LANG["log"][73]="ネットワークポートが削除された"; 
@@ -893,8 +893,8 @@ $LANG["mailing"][107]="無し";
 $LANG["mailing"][108]="作成者無し"; 
 $LANG["mailing"][109]="グループ無し"; 
 $LANG["mailing"][110]="無効なEメール"; 
-$LANG["mailing"][111]="Alert email sent to"; 
-$LANG["mailing"][112]="Invalid email type"; 
+$LANG["mailing"][111]="警告メールの送信先"; 
+$LANG["mailing"][112]="無効なメール形式"; 
 
 $LANG["Menu"][0]="コンピュータ"; 
 $LANG["Menu"][1]="ネットワーク"; 
@@ -1232,7 +1232,7 @@ $LANG["reservation"][36]="以前の予約";
 $LANG["reservation"][37]="予約無し"; 
 $LANG["reservation"][38]="貸し出し品一覧からアイテムを削除しますか？"; 
 $LANG["reservation"][39]="アイテムの予約も削除されます"; 
-$LANG["reservation"][40]="Reservation done. Email sent to"; 
+$LANG["reservation"][40]="メール送信予約を完了しました"; 
 
 $LANG["ruleldap"][1]="LDAPの範囲内の"; 
 $LANG["ruleldap"][2]="定義された範囲が見つかりません"; 
@@ -1700,7 +1700,7 @@ $LANG["tracking"][32]="対応中（計画済み）";
 $LANG["tracking"][34]="直接"; 
 $LANG["tracking"][35]="書き込まれた"; 
 $LANG["tracking"][37]="ハードウェアを構成管理台帳から除く時にチケットを残す"; 
-$LANG["tracking"][38]="An email was sent to"; 
+$LANG["tracking"][38]="メールが送信されました"; 
 
 $LANG["transfer"][1]="転送"; 
 $LANG["transfer"][2]="転送設定を追加する"; 
