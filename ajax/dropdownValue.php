@@ -191,7 +191,7 @@ if (!isset($_POST["limit"])) $_POST["limit"]=$CFG_GLPI["dropdown_limit"];
 				$addcomment="";
 				if (isset($data["comments"])) $addcomment=" - ".$data["comments"];
 
-				echo "<option value=\"$ID\" $style title=\"".$data['completename']."$addcomment\">".str_repeat("&nbsp;&nbsp;&nbsp;", $level).$raquo.utf8_substr($output,0,$_POST["limit"])."</option>";
+				echo "<option value=\"$ID\" $style title=\"".cleanInputText($data['completename'].$addcomment)."\">".str_repeat("&nbsp;&nbsp;&nbsp;", $level).$raquo.utf8_substr($output,0,$_POST["limit"])."</option>";
 			}
 
 		}
@@ -279,7 +279,7 @@ if (!isset($_POST["limit"])) $_POST["limit"]=$CFG_GLPI["dropdown_limit"];
 					$prev=$data["FK_entities"];
 					echo "<optgroup label=\"". getDropdownName("glpi_entities", $prev) ."\">";
 				}
- 				echo "<option value=\"$ID\" title=\"$output$addcomment\">".utf8_substr($output,0,$_POST["limit"])."</option>";
+ 				echo "<option value=\"$ID\" title=\"".cleanInputText($output.$addcomment)."\">".utf8_substr($output,0,$_POST["limit"])."</option>";
 			}
 			if ($multi) {
 				echo "</optgroup>";
