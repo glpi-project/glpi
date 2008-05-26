@@ -92,7 +92,7 @@ if ($DB->numrows($result)) {
 		$output=formatUserName($data["ID"],$data["name"],$data["realname"],$data["firstname"]);
 		
 	
-		echo "<option value=\"".$data["ID"]."\" title=\"$output - ".$data["name"]."\">".substr($output,0,$CFG_GLPI["dropdown_limit"])."</option>";
+		echo "<option value=\"".$data["ID"]."\" title=\"".cleanInputText($output." - ".$data["name"])."\">".substr($output,0,$CFG_GLPI["dropdown_limit"])."</option>";
 	}
 }
 echo "</select>";

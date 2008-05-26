@@ -72,7 +72,7 @@ if ($DB->numrows($result)) {
 	while ($data=$DB->fetch_array($result)) {
 		$sID = $data["ID"];
 		$output=$data["name"];
-		echo  "<option value='$sID' title=\"$output\">".substr($output,0,$CFG_GLPI["dropdown_limit"])."</option>";
+		echo  "<option value='$sID' title=\"".cleanInputText($output)."\">".substr($output,0,$CFG_GLPI["dropdown_limit"])."</option>";
 	}	
 }
 echo "</select>\n";

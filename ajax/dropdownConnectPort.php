@@ -76,7 +76,7 @@ if (isset($LINK_ID_TABLE[$_POST["type"]])&&isset($_POST["item"])){
 				$output_long="";
 			}
 			if (empty($output)) $output="($ID)";
-			echo "<option value=\"$ID\" title=\"$output$output_long\">".$output."</option>";
+			echo "<option value=\"$ID\" title=\"".cleanInputText($output.$output_long)."\">".$output."</option>";
 		}
 	}
 	echo "</select>";
