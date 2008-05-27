@@ -183,7 +183,7 @@ class Job extends CommonDBTM{
 			// add Document if exists
 			if (isset($_FILES['filename'])&&count($_FILES['filename'])>0&&$_FILES['filename']["size"]>0){
 				$input2=array();
-				$input2["name"]=$LANG["tracking"][24]." ".$input["ID"];
+				$input2["name"]=addslashes(resume_text($LANG["tracking"][24]." ".$input["ID"],200));
 				$input2["FK_tracking"]=$input["ID"];
 				$input2["rubrique"]=$CFG_GLPI["default_rubdoc_tracking"];
 				$this->getFromDB($input["ID"]);
@@ -195,7 +195,7 @@ class Job extends CommonDBTM{
 					// force update date_mod
 					$input["date_mod"]=$_SESSION["glpi_currenttime"];
 					if ($CFG_GLPI["followup_on_update_ticket"]){
-						$input['_doc_added']=$doc->fields["name"];
+						$input['_doc_added']=stripslashes($doc->fields["name"]);
 					}
 				}
 			} else if (!empty($_FILES['filename']['name'])&&isset($_FILES['filename']['error'])&&$_FILES['filename']['error']){

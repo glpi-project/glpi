@@ -104,9 +104,9 @@ class Document extends CommonDBTM {
 		if (isset($input["item"])&&isset($input["type"])&&$input["type"]>0&&$input["item"]>0){
 			$ci=new CommonItem();
 			$ci->getFromDB($input["type"],$input["item"]);
-			$input["name"]=addslashes(resume_text($LANG["document"][18]." ".$ci->getType()." - ".$ci->getNameID(),100));
+			$input["name"]=addslashes(resume_text($LANG["document"][18]." ".$ci->getType()." - ".$ci->getNameID(),200));
 		}
-
+		
 		if (isset($input["upload_file"])&&!empty($input["upload_file"])){
 			$input['filename']=moveUploadedDocument($input["upload_file"]);
 		} else if (isset($_FILES)&&isset($_FILES['filename']))	{
