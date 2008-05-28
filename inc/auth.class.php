@@ -171,7 +171,7 @@ class Identification {
 				}
 			}
 
-			$this->addToError($LANG["login"][15]);
+			$this->addToError($LANG["login"][12]);
 			return false;
 		} else {
 			$this->addToError($LANG["ldap"][6]);
