@@ -39,7 +39,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 //@session_start();
 
-if (!isset($_SESSION["noAUTO"])&&$_SESSION["glpiauth_method"]==AUTH_CAS) {
+if (!isset($_SESSION["noAUTO"])&&isset($_SESSION["glpiauth_method"])&&$_SESSION["glpiauth_method"]==AUTH_CAS) {
 	include (GLPI_ROOT . "/lib/phpcas/CAS.php");
 	$cas=new phpCAS();
 	$cas->client(CAS_VERSION_2_0,$CFG_GLPI["cas_host"],intval($CFG_GLPI["cas_port"]),$CFG_GLPI["cas_uri"]);
