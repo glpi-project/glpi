@@ -1361,7 +1361,9 @@ function makeTextSearch($val,$not=false){
  * 
  * @return content of the page (or empty)
  */
-function getURLContent ($url, &$msgerr=NULL, $rec=0) {
+//Note:  Depuis PHP 5, les valeurs par défaut peuvent être passées par référence.
+//function getURLContent ($url, &$msgerr=NULL, $rec=0) {
+function getURLContent ($url, &$msgerr, $rec=0) {
 
 	global $LANG,$CFG_GLPI;
 	
