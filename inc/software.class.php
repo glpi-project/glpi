@@ -425,6 +425,7 @@ class License extends CommonDBTM {
 			$input['oem_computer'] = -1;
 		// Backup initial values
 		if (isset($input['expire'])){
+			$this->getFromDB($input['ID']);
 			$input['_expire']=$this->fields['expire'];
 		}
 
