@@ -56,7 +56,7 @@ function showGroupDevice($ID){
 			$type_name=$ci->getType();
 			$cansee=haveTypeRight($type,"r");
 			while ($data=$DB->fetch_array($result)){
-				$link=$data["name"];
+				$link=($data["name"] ? $data["name"] : "(".$data["ID"].")");
 				if ($cansee) $link="<a href='".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data["ID"]."'>".$link."</a>";
 				$linktype="";
 				echo "<tr class='tab_bg_1'><td>$type_name</td><td>$link</td></tr>";
@@ -78,22 +78,22 @@ function showGroupUsers($target,$ID){
 
 	if (!haveRight("user","r")||!haveRight("group","r"))	return false;
 
-	$canedit=haveRight("group","w");
-
-	$nb_per_line=3;
-	if ($canedit) $headerspan=$nb_per_line*2;
-	else $headerspan=$nb_per_line;
-
-
 	$group=new Group();
 
 	if ($group->getFromDB($ID)){
+		$canedit=$group->can($ID,"w");
 	
+		$nb_per_line=3;
 		if ($canedit) {
+			$headerspan=$nb_per_line*2;	
 			echo "<form name='groupuser_form' id='groupuser_form' method='post' action=\"$target\">";
+		} else {
+			$headerspan=$nb_per_line;
 		}
+	
 		echo "<div class='center'><table class='tab_cadrehov'><tr><th colspan='$headerspan'>".$LANG["Menu"][14]."</th></tr>";
-		$query="SELECT glpi_users.*,glpi_users_groups.ID as linkID from glpi_users_groups LEFT JOIN glpi_users ON (glpi_users.ID = glpi_users_groups.FK_users) WHERE glpi_users_groups.FK_groups='$ID' ORDER BY glpi_users.name, glpi_users.realname, glpi_users.firstname";
+		$query="SELECT glpi_users.*,glpi_users_groups.ID as linkID from glpi_users_groups LEFT JOIN glpi_users ON (glpi_users.ID = glpi_users_groups.FK_users) WHERE glpi_users_groups.FK_groups='$ID' " .
+				"ORDER BY glpi_users.name, glpi_users.realname, glpi_users.firstname";
 	
 		$used = array();
 
@@ -145,14 +145,22 @@ function showGroupUsers($target,$ID){
 			echo "</table>";
 			echo "</div>";
 
-			$res=dropdownUsersSelect (true, "all", $group->fields["FK_entities"], 0, $used);
+			if ($group->fields["recursive"]) {
+				$res=dropdownUsersSelect (true, "all", getEntitySons($group->fields["FK_entities"]), 0, $used);
+			} else {
+				$res=dropdownUsersSelect (true, "all", $group->fields["FK_entities"], 0, $used);
+			}		
 			$nb=($res ? $DB->result($res,0,"CPT") : 0);
 			
 			if ($nb) {		
 				echo "<div class='center'>";
 				echo "<table  class='tab_cadre_fixe'>";
 				echo "<tr class='tab_bg_1'><th colspan='2'>".$LANG["setup"][603]."</tr><tr><td class='tab_bg_2' align='center'>";
-				dropdownUsers("FK_users",0,"all",-1,1,$group->fields["FK_entities"],0,$used);
+				if ($group->fields["recursive"]) {
+					dropdownUsers("FK_users",0,"all",-1,1,getEntitySons($group->fields["FK_entities"]),0,$used);
+				} else {
+					dropdownUsers("FK_users",0,"all",-1,1,$group->fields["FK_entities"],0,$used);
+				}
 				//dropdownAllUsers("FK_users",0,1,$group->fields["FK_entities"],0,$used);
 				echo "</td><td align='center' class='tab_bg_2'>";
 				echo "<input type='submit' name='adduser' value=\"".$LANG["buttons"][8]."\" class='submit'>";

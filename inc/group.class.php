@@ -47,6 +47,8 @@ class Group extends CommonDBTM{
 	function Group () {
 		$this->table="glpi_groups";
 		$this->type=GROUP_TYPE;
+		$this->entity_assign=true;
+		$this->may_be_recursive=true;
 	}
 
 	function cleanDBonPurge($ID) {
@@ -95,23 +97,25 @@ class Group extends CommonDBTM{
 		$con_spotted=false;
 
 		if (empty($ID)) {
-
-			if($this->getEmpty()) $con_spotted = true;
+			$con_spotted = ($this->getEmpty() && $this->can(-1,'w'));
 		} else {
-			if($this->getFromDB($ID)&&haveAccessToEntity($this->fields["FK_entities"])) $con_spotted = true;
+			$con_spotted = $this->can($ID,'r');
 		}
 
 		if ($con_spotted){
+			$canedit=$this->can($ID,'w');
 
 			$this->showOnglets($ID, $withtemplate,$_SESSION['glpi_onglet']);
 
-			echo "<form method='post' name=form action=\"$target\"><div class='center'>";
-			if (empty($ID)){
-				echo "<input type='hidden' name='FK_entities' value='".$_SESSION["glpiactive_entity"]."'>";
+			if ($canedit) {
+				echo "<form method='post' name=form action=\"$target\"><div class='center'>";
+				if (empty($ID)){
+					echo "<input type='hidden' name='FK_entities' value='".$_SESSION["glpiactive_entity"]."'>";
+				}
 			}
 
 			echo "<table class='tab_cadre_fixe' cellpadding='2' >";
-			echo "<tr><th colspan='2'>";
+			echo "<tr><th>";
 			if (empty($ID)) {
 				echo $LANG["setup"][605];
 
@@ -121,7 +125,18 @@ class Group extends CommonDBTM{
 			if (isMultiEntitiesMode()){
 				echo "&nbsp;(".getDropdownName("glpi_entities",$this->fields["FK_entities"]).")";
 			}
-
+			echo "</th><th>";
+			if (isMultiEntitiesMode()){
+				echo $LANG["entity"][9].":&nbsp;";
+			
+				if ($this->can($ID,'recursive')) {
+					dropdownYesNo("recursive",$this->fields["recursive"]);					
+				} else {
+					echo getYesNo($this->fields["recursive"]);
+				}
+			} else {
+				echo "&nbsp;";
+			}
 			echo "</th></tr>";
 
 			echo "<tr><td class='tab_bg_1' valign='top'>";
@@ -135,6 +150,8 @@ class Group extends CommonDBTM{
 
 			echo "<tr><td>".$LANG["common"][64].":	</td>";
 			echo "<td>";
+			// Manager must be in the same entity
+			// TODO for a recursive group the manager need to have a recursive right ?
 			dropdownUsers('FK_users',$this->fields["FK_users"],'all',0,1,$this->fields["FK_entities"]);
 			echo "</td></tr>";
 
@@ -176,7 +193,7 @@ class Group extends CommonDBTM{
 			echo "</td>";
 			echo "</tr>";
 
-			if (haveRight("group","w")) 
+			if ($canedit) {
 				if ($ID=="") {
 
 					echo "<tr>";
@@ -184,7 +201,6 @@ class Group extends CommonDBTM{
 					echo "<div class='center'><input type='submit' name='add' value=\"".$LANG["buttons"][8]."\" class='submit'></div>";
 					echo "</td>";
 					echo "</tr>";
-
 
 				} else {
 
@@ -200,7 +216,10 @@ class Group extends CommonDBTM{
 					echo "</tr>";
 
 				}
-			echo "</table></div></form>";
+				echo "</table></div></form>";
+			} else {
+				echo "</table></div>";
+			}
 
 		} else {
 			echo "<div class='center'><strong>".$LANG["common"][54]."</strong></div>";

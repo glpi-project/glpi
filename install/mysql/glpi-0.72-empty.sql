@@ -1435,6 +1435,7 @@ DROP TABLE IF EXISTS `glpi_groups`;
 CREATE TABLE `glpi_groups` (
   `ID` int(11) NOT NULL auto_increment,
   `FK_entities` int(11) NOT NULL default '0',
+  `recursive` tinyint(1) NOT NULL default '0',
   `name` varchar(255) collate utf8_unicode_ci default NULL,
   `comments` text collate utf8_unicode_ci,
   `FK_users` int(11) NOT NULL default '0',
