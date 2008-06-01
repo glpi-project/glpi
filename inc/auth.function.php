@@ -830,8 +830,9 @@ function getEntitiesRestrictRequest($separator = "AND", $table = "", $field = ""
 		$ancestors=array();
 		if (is_array($value)){
 			foreach ($value as $val){
-				$ancestors+=getEntityAncestors($val);
+				$ancestors=array_unique(array_merge(getEntityAncestors($val),$ancestors));
 			}
+			$ancestors=array_diff($ancestors,$value);
 		} else {
 			$ancestors=getEntityAncestors($value);
 		}
