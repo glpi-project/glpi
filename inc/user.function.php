@@ -176,51 +176,29 @@ function showGroupAssociated($target,$ID){
 	if (!haveRight("user","r")||!haveRight("group","r"))	return false;
 
 	$canedit=haveRight("user","w");
-	$strict_entities=getUserEntities($ID,false);
+	$strict_entities=getUserEntities($ID,true);
 	if (!haveAccessToOneOfEntities($strict_entities)&&!isViewAllEntities()){
 		$canedit=false;
 	}
 
 	$nb_per_line=3;
-	if ($canedit) $headerspan=$nb_per_line*2;
-	else $headerspan=$nb_per_line;
-
-	echo "<form name='groupuser_form' id='groupuser_form' method='post' action=\"$target\">";
-
-	if ($canedit){
-		echo "<div class='center'>";
-		echo "<table  class='tab_cadre_fixe'>";
-
-		echo "<tr class='tab_bg_1'><th colspan='2'>".$LANG["setup"][604]."</tr><tr><td class='tab_bg_2' align='center'>";
-		echo "<input type='hidden' name='FK_users' value='$ID'>";
-		$query="SELECT glpi_groups.ID, glpi_groups.name, glpi_entities.completename FROM glpi_groups LEFT JOIN glpi_entities ON (glpi_groups.FK_entities=glpi_entities.ID) WHERE glpi_groups.FK_entities IN (SELECT FK_entities FROM glpi_users_profiles WHERE FK_users = '$ID')";
-		$result=$DB->query($query);
-		if ($DB->numrows($result)>0){
-			$groups=array();
-			while ($data=$DB->fetch_array($result)){
-				$groups[$data['ID']]=$data['name'];
-				if (!empty($data['completename'])){
-					$groups[$data['ID']].= ' - '.$data['completename'];
-				}
-			}
-			dropdownArrayValues("FK_groups",$groups);
-
-		}
-		echo "</td><td align='center' class='tab_bg_2'>";
-		echo "<input type='submit' name='addgroup' value=\"".$LANG["buttons"][8]."\" class='submit'>";
-		echo "</td></tr>";
-
-		echo "</table></div><br>";
+	if ($canedit) {
+		$headerspan=$nb_per_line*2;	
+		echo "<form name='groupuser_form' id='groupuser_form' method='post' action=\"$target\">";
+	} else {
+		$headerspan=$nb_per_line;
 	}
 
 	echo "<div class='center'><table class='tab_cadrehov'><tr><th colspan='$headerspan'>".$LANG["Menu"][36]."</th></tr>";
 	$query="SELECT glpi_groups.*, glpi_users_groups.ID AS IDD,glpi_users_groups.ID as linkID from glpi_users_groups LEFT JOIN glpi_groups ON (glpi_groups.ID = glpi_users_groups.FK_groups) WHERE glpi_users_groups.FK_users='$ID' ORDER BY glpi_groups.name";
 
 	$result=$DB->query($query);
+	$used=array();
 	if ($DB->numrows($result)>0){
 		$i=0;
 
 		while ($data=$DB->fetch_array($result)){
+			$used[]=$data["ID"];
 			if ($i%$nb_per_line==0) {
 				if ($i!=0) echo "</tr>";
 				echo "<tr class='tab_bg_1'>";
@@ -245,26 +223,43 @@ function showGroupAssociated($target,$ID){
 			$i++;
 		}
 		echo "</tr>";
+	} else {
+		echo "<tr class='tab_bg_1'><td colspan='$headerspan' class='center'>".$LANG["common"][49]."</td></tr>";
 	}
 
 	echo "</table></div>";
 
 	if ($canedit){
 		echo "<div class='center'>";
-		echo "<table width='80%' class='tab_glpi'>";
-		echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markAllRows('groupuser_form') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$ID&amp;select=all'>".$LANG["buttons"][18]."</a></td>";
+		
+		if (count($used)) {	
+			echo "<table width='80%' class='tab_glpi'>";
+			echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markAllRows('groupuser_form') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$ID&amp;select=all'>".$LANG["buttons"][18]."</a></td>";
+	
+			echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkAllRows('groupuser_form') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$ID&amp;select=none'>".$LANG["buttons"][19]."</a>";
+			echo "</td><td align='left' width='80%'>";
+			echo "<input type='submit' name='deletegroup' value=\"".$LANG["buttons"][6]."\" class='submit'>";
+			echo "</td></tr>";
+			echo "</table>";
+		} else {
+			echo "<br>";
+		}
 
-		echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkAllRows('groupuser_form') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$ID&amp;select=none'>".$LANG["buttons"][19]."</a>";
-		echo "</td><td align='left' width='80%'>";
-		echo "<input type='submit' name='deletegroup' value=\"".$LANG["buttons"][6]."\" class='submit'>";
+		echo "<table  class='tab_cadre_fixe'>";
+		echo "<tr class='tab_bg_1'><th colspan='2'>".$LANG["setup"][604]."</tr><tr><td class='tab_bg_2' align='center'>";
+		echo "<input type='hidden' name='FK_users' value='$ID'>";
+		if (countElementsInTableForEntity("glpi_groups",$strict_entities) > count($used)) {
+			
+			dropdownValue("glpi_groups", "FK_groups", "", 1, $strict_entities, "", $used);	
+			echo "</td><td align='center' class='tab_bg_2'>";
+			echo "<input type='submit' name='addgroup' value=\"".$LANG["buttons"][8]."\" class='submit'>";
+	
+		} else {
+			echo $LANG["common"][49];
+		}
 		echo "</td></tr>";
-		echo "</table>";
-
-		echo "</div>";
-
+		echo "</table></div></form>";
 	}
-
-	echo "</form>";
 
 }
 
@@ -448,7 +443,7 @@ function getUserEntities($ID,$recursive=true){
 				$entities[]=$data['FK_entities'];
 			}
 		}
-		return $entities;
+		return array_unique($entities);
 	} 
 
 	return array();

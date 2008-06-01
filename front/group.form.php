@@ -43,7 +43,7 @@ if(empty($_GET["ID"])) $_GET["ID"] = "";
 $group=new Group;
 if (isset($_POST["add"]))
 {
-	checkRight("group","w");
+	$group->check(-1,'w',$_POST['FK_entities']);
 
 	$newID=$group->add($_POST);
 	logEvent($newID, "groups", 4, "setup", $_SESSION["glpiname"]." ".$LANG["log"][20]." ".$_POST["name"].".");
@@ -51,7 +51,7 @@ if (isset($_POST["add"]))
 }
 else if (isset($_POST["delete"]))
 {
-	checkRight("group","w");
+	$group->check($_POST["ID"],'w');
 
 	$group->delete($_POST);
 	logEvent($_POST["ID"], "groups", 4, "setup", $_SESSION["glpiname"]." ".$LANG["log"][22]);
@@ -59,7 +59,7 @@ else if (isset($_POST["delete"]))
 }
 else if (isset($_POST["update"]))
 {
-	checkRight("group","w");
+	$group->check($_POST["ID"],'w');
 
 	$group->update($_POST);
 	logEvent($_POST["ID"], "groups", 4, "setup", $_SESSION["glpiname"]." ".$LANG["log"][21]);
@@ -67,7 +67,7 @@ else if (isset($_POST["update"]))
 }
 else if (isset($_POST["adduser"]))
 {
-	checkRight("group","w");
+	$group->check($_POST["FK_groups"],'w');
 
 	addUserGroup($_POST["FK_users"],$_POST["FK_groups"]);
 
@@ -76,7 +76,7 @@ else if (isset($_POST["adduser"]))
 }
 else if (isset($_POST["deleteuser"]))
 {
-	checkRight("group","w");
+	$group->check($_POST["FK_groups"],'w');
 
 	if (count($_POST["item"]))
 		foreach ($_POST["item"] as $key => $val)
@@ -87,7 +87,7 @@ else if (isset($_POST["deleteuser"]))
 }
 else
 {
-	checkRight("group","r");
+	$group->check($_GET["ID"],'r');
 
 	if (!isset($_SESSION['glpi_onglet'])) $_SESSION['glpi_onglet']=1;
 	if (isset($_GET['onglet'])) {

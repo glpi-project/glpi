@@ -303,7 +303,7 @@ function dropdownNoValue($table,$myname,$value,$entity_restrict=-1) {
 /**
  * Execute the query to select box with all glpi users where select key = name
  * 
- * Internaly used by dropdownUsersSelect and ajax/dropdownUsers.php
+ * Internaly used by showGroupUsers, dropdownUsers and ajax/dropdownUsers.php
  *
  * @param $count true if execute an count(*), 
  * @param $right limit user who have specific right

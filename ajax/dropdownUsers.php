@@ -65,6 +65,9 @@ if (isset($_POST['used'])) {
 		$used=unserialize(stripslashes($_POST['used']));
 	}
 }
+if (isset($_POST["entity_restrict"])&&!is_numeric($_POST["entity_restrict"])&&!is_array($_POST["entity_restrict"])){
+	$_POST["entity_restrict"]=unserialize(stripslashes($_POST["entity_restrict"]));
+}
 
 $result=dropdownUsersSelect(false, $_POST['right'], $_POST["entity_restrict"], $_POST['value'], $used, $_POST['searchText']);
 

@@ -264,6 +264,11 @@ function update071to072() {
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
 		$DB->query($query) or die("0.72 create glpi_dropdown_licensetypes tabme" . $LANG["update"][90] . $DB->error());
 	}	
+
+ 	if (!FieldExists("glpi_groups", "recursive")) {
+ 		$query = "ALTER TABLE `glpi_groups` ADD `recursive` TINYINT( 1 ) NOT NULL DEFAULT '0' AFTER `FK_entities`;";
+ 		$DB->query($query) or die("0.71 add recursive in glpi_groups" . $LANG["update"][90] . $DB->error());
+ 	}	  	
 	
 } // fin 0.72 #####################################################################################
 ?>
