@@ -138,7 +138,7 @@ function ajaxUpdateItemOnEvent($toobserve,$toupdate,$url,$parameters=array(),$ev
 function ajaxUpdateItemOnEventJsCode($toobserve,$toupdate,$url,$parameters=array(),$events=array("change"),$spinner=true){
 	global $CFG_GLPI;
 
-	//echo "Ext.onReady(function() {";
+	echo "Ext.onReady(function() {";
 	foreach ($events as $event){
 		echo "
 			Ext.get('$toobserve').on(
@@ -147,7 +147,7 @@ function ajaxUpdateItemOnEventJsCode($toobserve,$toupdate,$url,$parameters=array
 					ajaxUpdateItemJsCode($toupdate,$url,$parameters,$spinner,$toobserve);
 		echo "		});\n";
 	}
-	//echo "});";
+	echo "});";
 }
 
 
