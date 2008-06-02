@@ -62,7 +62,7 @@ if (isset($_SESSION["ldap_import"])){
 		else
 			$entity = $_SESSION["glpiactive_entity"];
 				
-		ldapImportGroup($key,$_SESSION["ldap_server"],$entity);
+		ldapImportGroup($key,$_SESSION["ldap_server"],$entity,$_SESSION["ldap_import_type"][$key]);
 		glpi_header($_SERVER['PHP_SELF']);
 
 	} else {
@@ -77,7 +77,7 @@ if (isset($_SESSION["ldap_import"])){
 }
 if (isset($_POST["change_ldap_filter"]))
 {
-	$_SESSION["ldap_filter"] = $_POST["ldap_filter"];
+	$_SESSION["ldap_group_filter"] = $_POST["ldap_filter"];
 	glpi_header($_SERVER['PHP_SELF']);
 }
 elseif (!isset($_POST["import_ok"])){
@@ -102,10 +102,10 @@ elseif (!isset($_POST["import_ok"])){
 	}
 	else
 	{
-			if (!isset($_SESSION["ldap_filter"])){
-				$_SESSION["ldap_filter"]='';
+			if (!isset($_SESSION["ldap_group_filter"])){
+				$_SESSION["ldap_group_filter"]='';
 			}
-			showLdapGroups($_SERVER['PHP_SELF'],$_GET['check'],$_GET['start'],0,$_SESSION["ldap_filter"],$_SESSION["glpiactive_entity"]);
+			showLdapGroups($_SERVER['PHP_SELF'],$_GET['check'],$_GET['start'],0,$_SESSION["ldap_group_filter"],$_SESSION["glpiactive_entity"]);
 	}
 } else {
 
@@ -116,6 +116,7 @@ elseif (!isset($_POST["import_ok"])){
 				$_SESSION["ldap_import"][]=$key;
 				$_SESSION["ldap_import_count"]++;
 				$_SESSION["ldap_import_entities"][$key]=$_POST["toimport_entities"][$key];
+				$_SESSION["ldap_import_type"][$key]=$_POST["toimport_type"][$key];
 			}
 		}
 	}
