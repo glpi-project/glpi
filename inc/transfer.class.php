@@ -65,7 +65,7 @@ class Transfer extends CommonDBTM{
 	/// item types which have tickets
 	var $TICKETS_TYPES = array(COMPUTER_TYPE, NETWORKING_TYPE, PRINTER_TYPE, MONITOR_TYPE, PERIPHERAL_TYPE, PHONE_TYPE, SOFTWARE_TYPE);
 	/// item types which have documents
-	var $DOCUMENTS_TYPES=array(ENTERPRISE_TYPE, CONTRACT_TYPE, CONTACT_TYPE, CONSUMABLE_TYPE, CARTRIDGE_TYPE, COMPUTER_TYPE, NETWORKING_TYPE, PRINTER_TYPE, MONITOR_TYPE, PERIPHERAL_TYPE, PHONE_TYPE, SOFTWARE_TYPE);
+	var $DOCUMENTS_TYPES=array(ENTERPRISE_TYPE, CONTRACT_TYPE, CONTACT_TYPE, CONSUMABLE_TYPE, CARTRIDGE_TYPE, COMPUTER_TYPE, NETWORKING_TYPE, PRINTER_TYPE, MONITOR_TYPE, PERIPHERAL_TYPE, PHONE_TYPE, SOFTWARE_TYPE, DOCUMENT_TYPE);
 
 
 	/**
@@ -1248,7 +1248,7 @@ class Transfer extends CommonDBTM{
 							
 							if ($result_type = $DB->query($query)) {
 								if ($DB->numrows($result_type)>0) {
-									while ($data_type=$DB->fetch_array($result_type) && $canbetransfer) {
+									while (($data_type=$DB->fetch_array($result_type)) && $canbetransfer) {
 										$dtype=$data_type['device_type'];
 										if (isset($this->item_search[$dtype])){
 											// No items to transfer -> exists links
@@ -1374,7 +1374,7 @@ class Transfer extends CommonDBTM{
 							
 							if ($result_type = $DB->query($query)) {
 								if ($DB->numrows($result_type)>0) {
-									while ($data_type=$DB->fetch_array($result_type) && $canbetransfer) {
+									while (($data_type=$DB->fetch_array($result_type)) && $canbetransfer) {
 										$dtype=$data_type['device_type'];
 										if (isset($this->item_search[$dtype])) {
 											// No items to transfer -> exists links
