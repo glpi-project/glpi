@@ -82,6 +82,7 @@ function showLicenses($sID, $show_computers = 0) {
 	if ($result = $DB->query($query)) {
 		if ($DB->result($result, 0, 0) != 0) {
 			$nb_licences = $DB->result($result, 0, "COUNT");
+
 			$result_update = $DB->query($query_update);
 			$nb_updates = $DB->result($result_update, 0, "COUNT");
 			$installed = getInstalledLicence($sID);
@@ -207,8 +208,10 @@ function showLicenses($sID, $show_computers = 0) {
 			$query_lic .= " ON ( glpi_inst_software.license = glpi_licenses.ID )";
 			$query_lic .= " LEFT JOIN glpi_computers ON (glpi_inst_software.cID= glpi_computers.ID) ";
 			$query_lic .= " LEFT JOIN glpi_infocoms ON (glpi_infocoms.device_type='" . LICENSE_TYPE . "' AND glpi_infocoms.FK_device=glpi_licenses.ID) ";
-			$query_lic .= " WHERE $SEARCH_LICENCE AND glpi_computers.deleted='0' AND glpi_computers.is_template='0' ORDER BY cname";
-			//echo $query_lic;
+			$query_lic .= " WHERE $SEARCH_LICENCE ";
+			$query_lic .= "AND (glpi_computers.ID IS NULL OR (glpi_computers.deleted='0' AND glpi_computers.is_template='0'))";
+			$query_lic .= "ORDER BY cname";
+
 			$result_lic = $DB->query($query_lic);
 			$num_tot = $DB->numrows($result_lic);
 
@@ -588,10 +591,10 @@ function updateNumberLicenses($likeID, $number, $new_number) {
 	global $DB;
 
 	$lic = new License();
-
 	// Delete unused licenses
 	if ($number > $new_number) {
 		if ($lic->getFromDB($likeID)) {
+		
 			$SEARCH_LICENCE = "(glpi_licenses.sID = " . $lic->fields["sID"] . " AND glpi_licenses.serial = '" . $lic->fields["serial"] . "'  AND glpi_licenses.oem = '" . $lic->fields["oem"] . "' AND glpi_licenses.oem_computer = '" . $lic->fields["oem_computer"] . "'  AND glpi_licenses.buy = '" . $lic->fields["buy"] . "' ";
 			if ($lic->fields["expire"] == "")
 				$SEARCH_LICENCE .= " AND glpi_licenses.expire IS NULL)";
@@ -622,8 +625,7 @@ function updateNumberLicenses($likeID, $number, $new_number) {
 			}
 		}
 		// Create new licenses
-	} else
-		if ($number < $new_number) {
+	} else if ($number < $new_number) {
 			$lic->getFromDB($likeID);
 			unset ($lic->fields["ID"]);
 
