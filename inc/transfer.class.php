@@ -1409,12 +1409,13 @@ class Transfer extends CommonDBTM{
 									}
 								}
 								// found : use it
-								// not found : copy contract
+								// not found : copy doc
 								if ($newdocID<0){
 									// 1 - create new item
 									unset($document->fields['ID']);
 									$input=$document->fields;
-									$input['FK_entities']=$this->to;
+									// Not set new entity Do by transferItem 
+									//$input['FK_entities']=$this->to;
 									unset($document->fields);
 									$newdocID=$document->add($input);
 									// 2 - transfer as copy
@@ -1434,7 +1435,7 @@ class Transfer extends CommonDBTM{
 							if ($item_ID!=$newdocID){
 								$query="INSERT INTO glpi_doc_device (FK_doc,FK_device,device_type) VALUES ('$newdocID','$newID','$type')";
 								$DB->query($query);
-							} else { // same contract for new item update link
+							} else { // same doc for new item update link
 								$query="UPDATE glpi_doc_device SET FK_device = '$newID' WHERE ID='".$data['ID']."'";
 								$DB->query($query);
 							}
