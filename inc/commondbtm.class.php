@@ -451,7 +451,7 @@ class CommonDBTM {
 
 		if ($addMessAfterRedirect) {
 			addMessageAfterRedirect($LANG["common"][70] . 
-			": <a href='" . $CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$this->type] . "?ID=" . $this->fields['ID'] . "'>" .
+			": <a href='" . $CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$this->type] . "?ID=" . $this->fields['ID'] . (isset($input['is_template'])?"&amp;withtemplate=1":"")."'>" .
 			(isset($this->fields["name"]) && !empty($this->fields["name"]) ? stripslashes($this->fields["name"]) : "(".$this->fields['ID'].")") . "</a>");
 		} 
 	}
