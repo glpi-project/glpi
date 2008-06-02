@@ -67,7 +67,7 @@ function diff_key() {
  * @param   $entity entity where group must to be imported
  * @return  nothing
  */
-function ldapImportGroup ($group_dn,$ldap_server,$entity){
+function ldapImportGroup ($group_dn,$ldap_server,$entity,$type){
 	$config_ldap = new AuthLDAP();
 	$res = $config_ldap->getFromDB($ldap_server);
 	$ldap_users = array ();
@@ -83,7 +83,10 @@ function ldapImportGroup ($group_dn,$ldap_server,$entity){
 	if ($ds) {
 		$group_infos = ldap_search_group_by_dn($ds, $config_ldap->fields['ldap_basedn'], stripslashes($group_dn),$config_ldap->fields["ldap_group_condition"]);
 		$group = new Group();
-		$group->add(array("name"=>$group_infos["cn"][0],"ldap_group_dn"=>$group_infos["dn"],"FK_entities"=>$entity));
+		if ($type == "groups")
+			$group->add(array("name"=>$group_infos["cn"][0],"ldap_group_dn"=>$group_infos["dn"],"FK_entities"=>$entity));
+		else
+			$group->add(array("name"=>$group_infos["cn"][0],"ldap_field"=>$config_ldap->fields["ldap_field_group"], "ldap_value"=>$group_infos["dn"],"FK_entities"=>$entity));
 	}
 }
 
@@ -197,6 +200,57 @@ function ldapChooseDirectory($target) {
 	echo "</table></div></form>";
 }
 
+function getGroupsFromLDAP($ldap_connection,$config_ldap,$filter,$search_in_groups=true,$groups=array())
+{
+		//First look for groups in group objects
+		$extra_attribute = ($search_in_groups?"cn":$config_ldap->fields["ldap_field_group"]);
+		$attrs = array ("dn",$extra_attribute);
+			
+			if ($filter == '')
+				$filter = ($search_in_groups?$config_ldap->fields['ldap_group_condition']:$config_ldap->fields['ldap_condition']);
+			
+			$sr = @ldap_search($ldap_connection, $config_ldap->fields['ldap_basedn'],$filter , $attrs);
+
+			if ($sr){
+				$infos = ldap_get_entries($ldap_connection, $sr);
+		
+				for ($ligne=0; $ligne < $infos["count"];$ligne++)
+				{	
+					if ($search_in_groups)
+					{
+						$cn = $infos[$ligne]["cn"][0];
+						$groups[$infos[$ligne]["dn"]]= (array("cn"=>$infos[$ligne]["cn"][0],"search_type" => "groups"));
+					}
+					else
+					{
+						for ($ligne_extra=0; $ligne_extra < $infos[$ligne][$extra_attribute]["count"];$ligne_extra++)
+						{
+							$cn = getGroupCNByDn($ldap_connection,$infos[$ligne][$extra_attribute][$ligne_extra]);
+							$groups[$infos[$ligne][$extra_attribute][$ligne_extra]]= array("cn"=>getGroupCNByDn($ldap_connection,$infos[$ligne][$extra_attribute][$ligne_extra]),"search_type" => "users"); 
+						}
+					}
+				}
+			}
+		
+		return $groups;	
+			
+}
+
+/**
+ * Get the group's cn by giving his DN
+ * @param dn the group's dn
+ * @return the group cn
+ */
+function getGroupCNByDn($ldap_connection,$group_dn)
+{
+	$sr = @ ldap_read($ldap_connection, $group_dn, "objectClass=*", array("cn"));
+	$v = ldap_get_entries($ldap_connection, $sr);
+	if (!is_array($v) || count($v) == 0 || empty ($v[0]["cn"][0]))
+		return false;
+	else
+		return $v[0]["cn"][0];
+}
+
 /** Get all LDAP groups from a ldap server which are not already in an entity
  *
  * @param   $id_auth ID of the server to use
@@ -208,22 +262,27 @@ function getAllGroups($id_auth,$myfilter,$entity){
 	global $DB, $LANG,$CFG_GLPI;
 	$config_ldap = new AuthLDAP();
 	$res = $config_ldap->getFromDB($id_auth);
+	$infos = array();
 	$groups = array();
 	
 	$ds = connect_ldap($config_ldap->fields['ldap_host'], $config_ldap->fields['ldap_port'], $config_ldap->fields['ldap_rootdn'], $config_ldap->fields['ldap_pass'], $config_ldap->fields['ldap_use_tls'], $config_ldap->fields['ldap_opt_deref']);
 	if ($ds) {
-		$attrs = array ("dn","cn");
-	
-		//Get all groups from LDAP
-		if ($myfilter == ''){
-			$filter = $config_ldap->fields['ldap_group_condition'];
-		} else {
-			$filter = $myfilter;
+		
+		switch ($config_ldap->fields["ldap_search_for_groups"])
+		{
+			case 0:
+				$infos = getGroupsFromLDAP($ds,$config_ldap,$myfilter,false,$infos);
+				break;
+			case 1:
+				$infos = getGroupsFromLDAP($ds,$config_ldap,$myfilter,true,$infos);
+				break;
+			case 2:
+				$infos = getGroupsFromLDAP($ds,$config_ldap,$myfilter,true,$infos);
+				$infos = getGroupsFromLDAP($ds,$config_ldap,$myfilter,false,$infos);
+			break;	
 		}
 		
-		$sr = @ldap_search($ds, $config_ldap->fields['ldap_basedn'],$filter , $attrs);
-
-		if ($sr){
+		if (!empty($infos)){
 			$glpi_groups = array();
 			//Get all groups from GLPI DB for the current entity and the subentities
 			$sql = "SELECT name FROM glpi_groups ".getEntitiesRestrictRequest("WHERE","glpi_groups");
@@ -233,17 +292,20 @@ function getAllGroups($id_auth,$myfilter,$entity){
 			while ($group = $DB->fetch_array($res)){
 				$glpi_groups[$group["name"]] = 1;
 			}
-			
-			$info = ldap_get_entries($ds, $sr);
 
-			for ($ligne = 0; $ligne < $info["count"]; $ligne++){
-				if (!isset($glpi_groups[$info[$ligne]["cn"][0]])){
-					$groups[$ligne]["dn"]=$info[$ligne]["dn"];
-					$groups[$ligne]["cn"]=$info[$ligne]["cn"][0];
-				}						
+			$ligne=0;
+			
+			foreach ($infos as $dn => $info)
+			{
+				if (!isset($glpi_groups[$info["cn"]]))
+				{
+					$groups[$ligne]["dn"]=$dn;
+					$groups[$ligne]["cn"]=$info["cn"];
+					$groups[$ligne]["search_type"]=$info["search_type"];
+					$ligne++;
+				}
 			}
 		}
-		
 	}
 	return $groups;		
 }
@@ -291,6 +353,7 @@ function showLdapGroups($target, $check, $start, $sync = 0,$filter='',$entity) {
 			foreach ($ldap_groups as $groupinfos) {
 				$group = $groupinfos["cn"];
 				$group_dn = $groupinfos["dn"];
+				$search_type = $groupinfos["search_type"];
 					
 				echo "<tr align='center' class='tab_bg_2'>";
 				//Need to use " instead of ' because it doesn't work with names with ' inside !
@@ -300,7 +363,7 @@ function showLdapGroups($target, $check, $start, $sync = 0,$filter='',$entity) {
 				echo "<td>";
 				dropdownValue("glpi_entities", "toimport_entities[" .$group_dn . "]=".$entity, $entity);
 				echo "</td>";
-						
+				echo "<input type='hidden' name='toimport_type[".$group_dn."]' value='".$search_type."'>";		
 				echo "</tr>";
 			}
 			echo "<tr class='tab_bg_1'><td colspan='5' align='center'>";
@@ -732,10 +795,16 @@ function computeTimeZoneDelay($first,$second){
 function displayLdapFilter($target,$users=true){
 	global $LANG;
 
-	if (!isset($_SESSION["ldap_filter"]) || $_SESSION["ldap_filter"] == ''){
-		$config_ldap = new AuthLDAP();
-		$res = $config_ldap->getFromDB($_SESSION["ldap_server"]);
-		$_SESSION["ldap_filter"]=$config_ldap->fields['ldap_group_condition'];
+	$config_ldap = new AuthLDAP();
+	$res = $config_ldap->getFromDB($_SESSION["ldap_server"]);
+
+	if ($users || (!$users && $config_ldap->fields["ldap_search_for_groups"] != 1))
+		$filter_name="ldap_condition";
+	else	
+	$filter_name="ldap_group_condition";
+
+	if (!isset($_SESSION[$filter_name]) || $_SESSION[$filter_name] == ''){
+		$filter_name=$config_ldap->fields[$filter_name];
 	}
 		
 	echo "<div class='center'>";
@@ -743,7 +812,7 @@ function displayLdapFilter($target,$users=true){
 	echo "<table class='tab_cadre'>"; 
 	echo "<tr><th colspan='2'>" . ($users?$LANG["setup"][263]:$LANG["setup"][253]) . "</th></tr>";
 	echo "<tr class='tab_bg_2'><td>";
-	echo "<input type='text' name='ldap_filter' value='" . $_SESSION["ldap_filter"] . "' size='70'>";
+	echo "<input type='text' name='ldap_filter' value='" . $filter_name . "' size='70'>";
 	echo "&nbsp;<input class=submit type='submit' name='change_ldap_filter' value='" . $LANG["buttons"][2] . "'>";
 	echo "</td></tr></table>";
 	echo "</form></div>";	
