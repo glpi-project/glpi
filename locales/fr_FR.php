@@ -282,7 +282,7 @@ $LANG["computers"][46]="Périphérique(s)";
 $LANG["computers"][47]="Pas de périphérique connecté"; 
 $LANG["computers"][48]="Modification de lieu. Les éléments connectés ont été déplacés dans le même lieu que l'ordinateur."; 
 $LANG["computers"][49]="Modification du contact. Les éléments connectés ont pris comme contact celui de l'ordinateur."; 
-$LANG["computers"][50]="Modification de l'utilisateur ou du groupe. Les éléments connectés ont été mis à jour avec les même valeurs que l'ordinateur."; 
+$LANG["computers"][50]="Modification de l'utilisateur ou du groupe. Les éléments connectés ont été mis à jour avec les mêmes valeurs que l'ordinateur."; 
 $LANG["computers"][51]="Source de mise à jour"; 
 $LANG["computers"][52]="OS Version"; 
 $LANG["computers"][53]="Service Pack"; 
@@ -1753,7 +1753,7 @@ $LANG["update"][132]="Si vous utilisiez un caractère de séparation vous pouvez
 $LANG["update"][133]="Vous pouvez aussi spécifier un lieu de base qui inclura tous les lieux générés."; 
 $LANG["update"][134]="Caractère de séparation"; 
 $LANG["update"][135]="Lieu racine"; 
-$LANG["update"][136]="Voici la nouvelle hiérarchie générée. Si elle vous convient ,vous pouvez la valider."; 
+$LANG["update"][136]="Voici la nouvelle hiérarchie générée. Si elle vous convient, vous pouvez la valider."; 
 $LANG["update"][137]="Nouvelle hiérarchie"; 
 $LANG["update"][138]="Lieux actuels"; 
 ?>
