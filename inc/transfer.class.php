@@ -65,7 +65,7 @@ class Transfer extends CommonDBTM{
 	/// item types which have tickets
 	var $TICKETS_TYPES = array(COMPUTER_TYPE, NETWORKING_TYPE, PRINTER_TYPE, MONITOR_TYPE, PERIPHERAL_TYPE, PHONE_TYPE, SOFTWARE_TYPE);
 	/// item types which have documents
-	var $DOCUMENTS_TYPES=array(ENTERPRISE_TYPE, CONTRACT_TYPE, CONTACT_TYPE, CONSUMABLE_TYPE, CARTRIDGE_TYPE, COMPUTER_TYPE, NETWORKING_TYPE, PRINTER_TYPE, MONITOR_TYPE, PERIPHERAL_TYPE, PHONE_TYPE, SOFTWARE_TYPE);
+	var $DOCUMENTS_TYPES=array(ENTERPRISE_TYPE, CONTRACT_TYPE, CONTACT_TYPE, CONSUMABLE_TYPE, CARTRIDGE_TYPE, COMPUTER_TYPE, NETWORKING_TYPE, PRINTER_TYPE, MONITOR_TYPE, PERIPHERAL_TYPE, PHONE_TYPE, SOFTWARE_TYPE,DOCUMENT_TYPE);
 
 
 	/**
@@ -777,10 +777,11 @@ class Transfer extends CommonDBTM{
 				if (isset($cinew->obj->fields['location'])){
 					$input['location']=$this->transferDropdownLocation($cinew->obj->fields['location']);
 				}
-				// Transfer Document file if exists (not to do if same entity) / Only for copy document
-				if ($type==DOCUMENT_TYPE&&$ID!=$newID
-					&&!empty($cinew->obj->fields['filename'])
-					&&$cinew->obj->fields['FK_entities']!=$this->to
+
+				// Transfer Document file if exists / Only for copy document
+				if ($type==DOCUMENT_TYPE && $ID!=$newID
+					&& !empty($cinew->obj->fields['filename'])
+					&& $cinew->obj->fields['FK_entities']!=$this->to
 				){
 					$input['filename']=$this->transferDocumentFile($cinew->obj->fields['filename']);
 				}
@@ -1245,7 +1246,7 @@ class Transfer extends CommonDBTM{
 							
 							if ($result_type = $DB->query($query)) {
 								if ($DB->numrows($result_type)>0) {
-									while ($data_type=$DB->fetch_array($result_type) && $canbetransfer) {
+									while (($data_type=$DB->fetch_array($result_type)) && $canbetransfer) {
 										$dtype=$data_type['device_type'];
 										if (isset($this->item_search[$dtype])){
 											// No items to transfer -> exists links
@@ -1368,10 +1369,9 @@ class Transfer extends CommonDBTM{
 							// Can be transfer without copy ? = all linked items need to be transfer (so not copy)
 							$canbetransfer=true;
 							$query="SELECT DISTINCT device_type FROM glpi_doc_device WHERE FK_doc='$item_ID'";
-							
 							if ($result_type = $DB->query($query)) {
 								if ($DB->numrows($result_type)>0) {
-									while ($data_type=$DB->fetch_array($result_type) && $canbetransfer) {
+									while (($data_type=$DB->fetch_array($result_type)) && $canbetransfer) {
 										$dtype=$data_type['device_type'];
 										if (isset($this->item_search[$dtype])) {
 											// No items to transfer -> exists links
@@ -1382,14 +1382,17 @@ class Transfer extends CommonDBTM{
 											if (isset($this->item_recurs[$dtype])) {
 												$query_search .= " AND FK_device NOT IN ".$this->item_recurs[$dtype];
 											}
+
 											$result_search = $DB->query($query_search);
 											if ($DB->result($result_search,0,'CPT')>0){
 												$canbetransfer=false;
 											}
-										}
+										} 
 									}
 								}
 							}
+
+							
 							// Yes : transfer 
 							if ($canbetransfer){
 								$this->transferItem(DOCUMENT_TYPE,$item_ID,$item_ID);
@@ -1405,13 +1408,15 @@ class Transfer extends CommonDBTM{
 										$this->addToAlreadyTransfer(DOCUMENT_TYPE,$item_ID,$newdocID);
 									}
 								}
+
 								// found : use it
 								// not found : copy contract
 								if ($newdocID<0){
 									// 1 - create new item
 									unset($document->fields['ID']);
 									$input=$document->fields;
-									$input['FK_entities']=$this->to;
+									// Not set new entity Do by transferItem
+									//$input['FK_entities']=$this->to;
 									unset($document->fields);
 									$newdocID=$document->add($input);
 									// 2 - transfer as copy
@@ -1431,7 +1436,7 @@ class Transfer extends CommonDBTM{
 							if ($item_ID!=$newdocID){
 								$query="INSERT INTO glpi_doc_device (FK_doc,FK_device,device_type) VALUES ('$newdocID','$newID','$type')";
 								$DB->query($query);
-							} else { // same contract for new item update link
+							} else { // same doc for new item update link
 								$query="UPDATE glpi_doc_device SET FK_device = '$newID' WHERE ID='".$data['ID']."'";
 								$DB->query($query);
 							}
