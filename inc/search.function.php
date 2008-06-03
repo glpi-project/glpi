@@ -740,16 +740,6 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 		}
 	}
 
-	if (!empty($WHERE)||!empty($COMMONWHERE)){
-		if (!empty($COMMONWHERE)){
-			$WHERE=' WHERE '.$COMMONWHERE.(!empty($WHERE)?' AND ( '.$WHERE.' )':'');
-		} else {
-			$WHERE=' WHERE  '.$WHERE.' ';
-		}
-		$first=false;
-	} else {
-		$WHERE=" WHERE ";
-	}
 
 	//// 4 - ORDER
 	$ORDER="ORDER BY ID";
@@ -863,6 +853,8 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 			}
 	} 
 
+	$first=empty($WHERE);
+
 	// Specific search for others item linked  (META search)
 	if (is_array($type2)){
 		for ($key=0;$key<$_SESSION["glpisearchcount2"][$type];$key++){
@@ -948,8 +940,15 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 	// If export_all reset LIMIT condition
 	if (isset($_GET['export_all'])) $LIMIT="";
 
-	// Reset WHERE if empty
-	if ($WHERE == " WHERE ") $WHERE="";
+
+	if (!empty($WHERE)||!empty($COMMONWHERE)){
+		if (!empty($COMMONWHERE)){
+			$WHERE=' WHERE '.$COMMONWHERE.(!empty($WHERE)?' AND ( '.$WHERE.' )':'');
+		} else {
+			$WHERE=' WHERE  '.$WHERE.' ';
+		}
+		$first=false;
+	}
 
 
 	$DB->query("SET SESSION group_concat_max_len = 9999999;");
