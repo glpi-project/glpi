@@ -221,7 +221,11 @@ class CommonDBTM {
 			}
 			$query .= ") VALUES (";
 			for ($i=0; $i < $nb_fields; $i++) {
-				$query .= "'".$values[$i]."'";
+				if ($values[$i]=='NULL'){
+					$query .= $values[$i];
+				} else {
+					$query .= "'".$values[$i]."'";
+				}
 				if ($i!=$nb_fields-1) {
 					$query .= ",";
 				}
@@ -999,7 +1003,10 @@ class CommonDBTM {
 			}
 		} else {
 			if (!isset($this->fields['ID'])||$this->fields['ID']!=$ID){
-				$this->getFromDB($ID);
+				// Item not found : no right
+				if (!$this->getFromDB($ID)){
+					return false;
+				}
 			}
 			if ($this->isEntityAssign()){
 				$entity_to_check=$this->getEntityID();
