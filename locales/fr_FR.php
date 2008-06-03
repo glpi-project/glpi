@@ -800,6 +800,7 @@ $LANG["log"][77]="assignation d'un vlan à un port réseau";
 $LANG["log"][78]="assignation d'un vlan à plusieurs ports réseau";
 $LANG["log"][79]="désassignation d'un vlan à un port réseau";
 $LANG["log"][80]="désassignation d'un vlan à plusieurs ports réseau";
+$LANG["log"][81]="notes";
 
 
 

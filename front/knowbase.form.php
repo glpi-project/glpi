@@ -87,7 +87,7 @@ if ($_GET["ID"]=="new"){
 	$kb->can($_GET["ID"],'w');
 
 	$kb->delete($_GET);
-	logEvent(0, "knowbase", 5, "tools", $_SESSION["glpiname"]." ".$LANG["log"][22]);	
+	logEvent($_GET["ID"], "knowbase", 5, "tools", $_SESSION["glpiname"]." ".$LANG["log"][22]);	
 	glpi_header($CFG_GLPI["root_doc"]."/front/knowbase.php");
 
 } else if (isset($_GET["ID"])  && strcmp($_GET["addtofaq"],"yes") == 0){
