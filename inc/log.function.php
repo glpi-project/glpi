@@ -383,6 +383,7 @@ function logArray(){
 			"dropdown"=>$LANG["log"][44],
 			"groups"=>$LANG["log"][47],
 			"entity"=>$LANG["log"][63],
+			"reminder"=>$LANG["title"][37],
 			"rules"=>$LANG["log"][65]);
 
 

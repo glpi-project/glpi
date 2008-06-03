@@ -985,7 +985,10 @@ class CommonDBTM {
 			}
 		} else {
 			if (!isset($this->fields['ID'])||$this->fields['ID']!=$ID){
-				$this->getFromDB($ID);
+				// Item not found : no right
+				if (!$this->getFromDB($ID)){
+					return false;
+				}
 			}
 			if ($this->entity_assign){
 				$entity_to_check=$this->fields["FK_entities"];
