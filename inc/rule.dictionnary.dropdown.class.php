@@ -442,7 +442,13 @@ class DictionnaryDropdownCollection extends RuleCachedCollection{
 				if ($data['ID'] != $ID) {
 					$tocheck[$data["ID"]][]=$ID;
 
-					$sql = "UPDATE $model_table SET model=".$ID." WHERE FK_glpi_enterprise=".$data['idmanu']." AND model=".$data['ID'];
+					$sql = "UPDATE $model_table SET model=".$ID." WHERE model=".$data['ID'];
+					if (empty($data['idmanu'])){
+						$sql .= " AND (FK_glpi_enterprise IS NULL OR FK_glpi_enterprise = 0)";
+					} else {
+						$sql .= " AND FK_glpi_enterprise=".$data['idmanu'];
+					}
+
 					$DB->query($sql);
 				}		
 
