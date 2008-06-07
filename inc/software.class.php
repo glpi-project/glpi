@@ -439,6 +439,10 @@ class SoftwareVersion extends CommonDBTM {
 		$DB->query($query2);
 	}
 
+	function showForm(){
+
+	}
+
 }
 /// License class
 class SoftwareLicense extends CommonDBTM {
