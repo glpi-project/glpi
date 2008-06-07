@@ -44,38 +44,38 @@ include (GLPI_ROOT . "/inc/includes.php");
 if(!isset($_GET["ID"])) $_GET["ID"] = "";
 if(!isset($_GET["sID"])) $_GET["sID"] = "";
 
-$version=new SoftwareLicense();
+$license=new SoftwareLicense();
 if (isset($_POST["add"]))
 {
 	checkRight("software","w");
 
-	$newID=$version->add($_POST);
+	$newID=$license->add($_POST);
 	logEvent($_POST['sID'], "software", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][85]." $newID.");
-	glpi_header($CFG_GLPI["root_doc"]."/front/software.form.php?ID=".$version->fields['sID']);
+	glpi_header($CFG_GLPI["root_doc"]."/front/software.form.php?ID=".$license->fields['sID']);
 }
 else if (isset($_POST["delete"]))
 {
 	checkRight("software","w");
 
-	$version->delete($_POST);
+	$license->delete($_POST);
 
-	logEvent($version->fields['sID'], "software", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][87]." ".$_POST["ID"]);
-	glpi_header($CFG_GLPI["root_doc"]."/front/software.form.php?ID=".$version->fields['sID']);
+	logEvent($license->fields['sID'], "software", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][87]." ".$_POST["ID"]);
+	glpi_header($CFG_GLPI["root_doc"]."/front/software.form.php?ID=".$license->fields['sID']);
 }
 else if (isset($_POST["update"]))
 {
 	checkRight("software","w");
 
-	$version->update($_POST);
-	logEvent($version->fields['sID'], "software", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][86]." ".$_POST["ID"]);
-	glpi_header($CFG_GLPI["root_doc"]."/front/software.form.php?ID=".$version->fields['sID']);
+	$license->update($_POST);
+	logEvent($license->fields['sID'], "software", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][86]." ".$_POST["ID"]);
+	glpi_header($CFG_GLPI["root_doc"]."/front/software.form.php?ID=".$license->fields['sID']);
 } 
 else
 {
 	checkRight("software","r");
 
 	commonHeader($LANG["Menu"][4],$_SERVER['PHP_SELF'],"inventory","software");
-	$version->showForm($_SERVER['PHP_SELF'],$_GET["ID"],$_GET["sID"]);
+	$license->showForm($_SERVER['PHP_SELF'],$_GET["ID"],$_GET["sID"]);
 
 	commonFooter();
 }
