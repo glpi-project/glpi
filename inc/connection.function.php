@@ -271,20 +271,31 @@ function Disconnect($ID,$dohistory=1,$doautoactions=true,$ocs_server_id=0) {
  * @param $sID connection source ID.
  * @param $cID computer ID (where the sID would be connected).
  * @param $type connection type.
- * @param $dohistory store chaneg in history ?
+ * @param $dohistory store change in history ?
  */
 function Connect($sID,$cID,$type,$dohistory=1) {
-	global $LANG,$CFG_GLPI;
+	global $LANG,$CFG_GLPI,$DB;
 	// Makes a direct connection
 
+	// Mise a jour lieu du periph si nécessaire
+	$dev=new CommonItem();
+	$dev->getFromDB($type,$sID);
+
+	// Handle case (from OCS) where already used
+	if (!$dev->getField('is_global') ){
+		$query = "SELECT ID FROM glpi_connect_wire WHERE glpi_connect_wire.end1 = '$sID' AND glpi_connect_wire.type = '$type'";
+		$result = $DB->query($query);
+		while ($data=$DB->fetch_assoc($result)){
+			Disconnect($data["ID"],$dohistory);
+		}
+	}
+	
+	// Create the New connexion
 	$connect = new Connection;
 	$connect->end1=$sID;
 	$connect->end2=$cID;
 	$connect->type=$type;
 	$newID=$connect->addtoDB();
-	// Mise a jour lieu du periph si n�essaire
-	$dev=new CommonItem();
-	$dev->getFromDB($type,$sID);
 
 	if ($dohistory){
 		$changes[0]='0';
