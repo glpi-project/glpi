@@ -1487,39 +1487,41 @@ function ocsUnlockItems($glpi_id,$field){
 			FROM glpi_ocs_link 
 			WHERE glpi_id='$glpi_id'";
 	if ($result = $DB->query($query)) {
-		$tab = importArrayFromDB($DB->result($result, 0, 0));
-		$update_done=false;
-		
-		foreach ($tab as $key => $val) {
-			if ($val != "_version_070_") {
-				switch ($field){
-					case "import_monitor":
-					case "import_printers":
-					case "import_peripheral":
-						$querySearchLocked = "SELECT end1 FROM glpi_connect_wire WHERE ID='$key'";
-						break;
-					case "import_software":
-						$querySearchLocked = "SELECT ID FROM glpi_inst_software WHERE ID='$key'";
-						break;
-					case "import_ip":
-						$querySearchLocked = "SELECT * FROM glpi_networking_ports WHERE on_device='$glpi_id' AND device_type='".COMPUTER_TYPE."' AND ifaddr='$val'";
-						break;
-					default :
-						return;
+		if ($DB->numrows($result)){
+			$tab = importArrayFromDB($DB->result($result, 0, 0));
+			$update_done=false;
+			
+			foreach ($tab as $key => $val) {
+				if ($val != "_version_070_") {
+					switch ($field){
+						case "import_monitor":
+						case "import_printers":
+						case "import_peripheral":
+							$querySearchLocked = "SELECT end1 FROM glpi_connect_wire WHERE ID='$key'";
+							break;
+						case "import_software":
+							$querySearchLocked = "SELECT ID FROM glpi_inst_software WHERE ID='$key'";
+							break;
+						case "import_ip":
+							$querySearchLocked = "SELECT * FROM glpi_networking_ports WHERE on_device='$glpi_id' AND device_type='".COMPUTER_TYPE."' AND ifaddr='$val'";
+							break;
+						default :
+							return;
+					}
+					$resultSearch = $DB->query($querySearchLocked);
+					if ($DB->numrows($resultSearch) == 0) {
+						unset($tab[$key]);
+						$update_done=true;
+					}
 				}
-				$resultSearch = $DB->query($querySearchLocked);
-				if ($DB->numrows($resultSearch) == 0) {
-					unset($tab[$key]);
-					$update_done=true;
-				}
+			}		
+			
+			if ($update_done){
+				$query = "UPDATE glpi_ocs_link 
+						SET $field='" . exportArrayToDB($tab) . "' 
+						WHERE glpi_id='$glpi_id'";
+				$DB->query($query);
 			}
-		}		
-		
-		if ($update_done){
-			$query = "UPDATE glpi_ocs_link 
-					SET $field='" . exportArrayToDB($tab) . "' 
-					WHERE glpi_id='$glpi_id'";
-			$DB->query($query);
 		}
 	}
 	
