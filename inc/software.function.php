@@ -77,7 +77,7 @@ function showVersions($sID) {
 	if ($result=$DB->query($query)){
 		if ($DB->numrows($result)){
 			echo "<table class='tab_cadre'><tr>";
-			echo "<th><a href='softwareversion.form.php'><img  src='".$CFG_GLPI["root_doc"]."/pics/plus.png' title='".$LANG["buttons"][8]."' alt='".$LANG["buttons"][8]."'></a>&nbsp;".$LANG["software"][5]."</th>";
+			echo "<th><a href='softwareversion.form.php?sID=$sID'><img  src='".$CFG_GLPI["root_doc"]."/pics/plus.png' title='".$LANG["buttons"][8]."' alt='".$LANG["buttons"][8]."'></a>&nbsp;".$LANG["software"][5]."</th>";
 			echo "<th>".$LANG["software"][19]."</th>";
 			echo "<th>".$LANG["common"][25]."</th>";
 			echo "</tr>";

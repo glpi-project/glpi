@@ -801,6 +801,9 @@ $LANG["log"][78]="assignation d'un vlan à plusieurs ports réseau";
 $LANG["log"][79]="désassignation d'un vlan à un port réseau";
 $LANG["log"][80]="désassignation d'un vlan à plusieurs ports réseau";
 $LANG["log"][81]="notes";
+$LANG["log"][82]="ajout de la version"; 
+$LANG["log"][83]="modification de la version"; 
+$LANG["log"][84]="suppression de la version"; 
 
 
 
@@ -1626,6 +1629,8 @@ $LANG["software"][2]="Version d'utilisation";
 $LANG["software"][3]="Plateforme"; 
 $LANG["software"][5]="Versions"; 
 $LANG["software"][6]="Ajout automatique"; 
+$LANG["software"][7]="Ajouter une version"; 
+$LANG["software"][8]="Ajouter une licence"; 
 $LANG["software"][11]="Licences"; 
 $LANG["software"][12]="Ajouter licence..."; 
 $LANG["software"][13]="licence(s) trouvée(s)"; 
