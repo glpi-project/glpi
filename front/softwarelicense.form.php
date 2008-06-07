@@ -35,7 +35,7 @@
 
 
 
-$NEEDED_ITEMS=array("software");
+$NEEDED_ITEMS=array("software","infocom");
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
@@ -44,13 +44,13 @@ include (GLPI_ROOT . "/inc/includes.php");
 if(!isset($_GET["ID"])) $_GET["ID"] = "";
 if(!isset($_GET["sID"])) $_GET["sID"] = "";
 
-$version=new SoftwareVersion();
+$version=new SoftwareLicense();
 if (isset($_POST["add"]))
 {
 	checkRight("software","w");
 
 	$newID=$version->add($_POST);
-	logEvent($_POST['sID'], "software", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][82]." $newID.");
+	logEvent($_POST['sID'], "software", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][85]." $newID.");
 	glpi_header($CFG_GLPI["root_doc"]."/front/software.form.php?ID=".$version->fields['sID']);
 }
 else if (isset($_POST["delete"]))
@@ -59,7 +59,7 @@ else if (isset($_POST["delete"]))
 
 	$version->delete($_POST);
 
-	logEvent($version->fields['sID'], "software", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][84]." ".$_POST["ID"]);
+	logEvent($version->fields['sID'], "software", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][87]." ".$_POST["ID"]);
 	glpi_header($CFG_GLPI["root_doc"]."/front/software.form.php?ID=".$version->fields['sID']);
 }
 else if (isset($_POST["update"]))
@@ -67,7 +67,7 @@ else if (isset($_POST["update"]))
 	checkRight("software","w");
 
 	$version->update($_POST);
-	logEvent($version->fields['sID'], "software", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][83]." ".$_POST["ID"]);
+	logEvent($version->fields['sID'], "software", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][86]." ".$_POST["ID"]);
 	glpi_header($CFG_GLPI["root_doc"]."/front/software.form.php?ID=".$version->fields['sID']);
 } 
 else

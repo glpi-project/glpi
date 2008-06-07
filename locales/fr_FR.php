@@ -804,6 +804,9 @@ $LANG["log"][81]="notes";
 $LANG["log"][82]="ajout de la version"; 
 $LANG["log"][83]="modification de la version"; 
 $LANG["log"][84]="suppression de la version"; 
+$LANG["log"][85]="ajout de la licence"; 
+$LANG["log"][86]="modification de la licence"; 
+$LANG["log"][87]="suppression de la licence"; 
 
 
 
@@ -1627,6 +1630,7 @@ $LANG["setup"][809]="Réplicat MySQL : lecture seule";
 $LANG["software"][1]="Version d'achat"; 
 $LANG["software"][2]="Version d'utilisation"; 
 $LANG["software"][3]="Plateforme"; 
+$LANG["software"][4]="Illimité"; 
 $LANG["software"][5]="Versions"; 
 $LANG["software"][6]="Ajout automatique"; 
 $LANG["software"][7]="Ajouter une version"; 
