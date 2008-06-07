@@ -1381,9 +1381,8 @@ function mergeOcsArray($glpi_id, $tomerge, $field) {
 	$query = "SELECT $field 
 				FROM glpi_ocs_link 
 				WHERE glpi_id='$glpi_id'";
-	$result = $DB->query($query);
-	if ($DB->numrows($result)){
-		if ($result = $DB->query($query)) {
+	if ($result = $DB->query($query)){
+		if ($DB->numrows($result)){
 			$tab = importArrayFromDB($DB->result($result, 0, 0));
 			$newtab = array_merge($tomerge, $tab);
 			$newtab = array_unique($newtab);
@@ -1400,16 +1399,18 @@ function deleteInOcsArray($glpi_id, $todel, $field,$is_value_to_del=false) {
 	global $DB;
 	$query = "SELECT $field FROM glpi_ocs_link WHERE glpi_id='$glpi_id'";
 	if ($result = $DB->query($query)) {
-		$tab = importArrayFromDB($DB->result($result, 0, 0));
-		if ($is_value_to_del){
-			$todel=array_search($todel,$tab);
-		}
-		if (isset($tab[$todel])){
-			unset ($tab[$todel]);
-			$query = "UPDATE glpi_ocs_link 
-								SET $field='" . exportArrayToDB($tab) . "' 
-								WHERE glpi_id='$glpi_id'";
-			$DB->query($query);
+		if ($DB->numrows($result)){
+			$tab = importArrayFromDB($DB->result($result, 0, 0));
+			if ($is_value_to_del){
+				$todel=array_search($todel,$tab);
+			}
+			if (isset($tab[$todel])){
+				unset ($tab[$todel]);
+				$query = "UPDATE glpi_ocs_link 
+									SET $field='" . exportArrayToDB($tab) . "' 
+									WHERE glpi_id='$glpi_id'";
+				$DB->query($query);
+			}
 		}
 	}
 }
@@ -1420,10 +1421,12 @@ function replaceOcsArray($glpi_id, $newArray, $field) {
 	$newArray = exportArrayToDB($newArray);
 	$query = "SELECT $field FROM glpi_ocs_link WHERE glpi_id=".$glpi_id;
 	if ($result = $DB->query($query)) {
-		$query = "UPDATE glpi_ocs_link 
-							SET $field='" . $newArray . "' 
-							WHERE glpi_id=".$glpi_id;
-		$DB->query($query);
+		if ($DB->numrows($result)){
+			$query = "UPDATE glpi_ocs_link 
+								SET $field='" . $newArray . "' 
+								WHERE glpi_id=".$glpi_id;
+			$DB->query($query);
+		}
 	}
 }
 
@@ -1433,14 +1436,16 @@ function addToOcsArray($glpi_id, $toadd, $field) {
 				FROM glpi_ocs_link 
 				WHERE glpi_id='$glpi_id'";
 	if ($result = $DB->query($query)) {
-		$tab = importArrayFromDB($DB->result($result, 0, 0));
-		foreach ($toadd as $key => $val) {
-			$tab[$key] = $val;
+		if ($DB->numrows($result)){
+			$tab = importArrayFromDB($DB->result($result, 0, 0));
+			foreach ($toadd as $key => $val) {
+				$tab[$key] = $val;
+			}
+			$query = "UPDATE glpi_ocs_link 
+								SET $field='" . exportArrayToDB($tab) . "' 
+								WHERE glpi_id='$glpi_id'";
+			$DB->query($query);
 		}
-		$query = "UPDATE glpi_ocs_link 
-							SET $field='" . exportArrayToDB($tab) . "' 
-							WHERE glpi_id='$glpi_id'";
-		$DB->query($query);
 	}
 
 }

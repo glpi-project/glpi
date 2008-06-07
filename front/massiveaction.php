@@ -100,7 +100,12 @@ if (isset($_POST["device_type"])){
 			}
 		}
 	}
-	$REDIRECT=$_SERVER['HTTP_REFERER'];
+
+	if (isset($_SERVER['HTTP_REFERER'])){
+		$REDIRECT=$_SERVER['HTTP_REFERER'];
+	} else { // Security : not used if no problem
+		$REDIRECT=$CFG_GLPI['root_doc']."/front/central.php";
+	}
 	
 		switch($_POST["action"]){
 			case "connect_to_computer":
