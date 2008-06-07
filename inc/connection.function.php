@@ -281,7 +281,7 @@ function Connect($sID,$cID,$type,$dohistory=1) {
 	$dev=new CommonItem();
 	$dev->getFromDB($type,$sID);
 
-	// Handle case (from OCS) where already used
+	// Handle case where already used, should never happen (except from OCS sync)
 	if (!$dev->getField('is_global') ){
 		$query = "SELECT ID FROM glpi_connect_wire WHERE glpi_connect_wire.end1 = '$sID' AND glpi_connect_wire.type = '$type'";
 		$result = $DB->query($query);
