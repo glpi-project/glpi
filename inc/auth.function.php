@@ -113,6 +113,7 @@ function haveTypeRight($type, $right) {
 			return haveRight("peripheral", $right);
 			break;
 		case SOFTWARE_TYPE :
+		case SOFTWAREVERSION_TYPE :
 			return haveRight("software", $right);
 			break;
 		case CONTACT_TYPE :
