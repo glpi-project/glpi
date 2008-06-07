@@ -45,7 +45,6 @@ include (GLPI_ROOT . "/inc/includes.php");
 header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
-
 if (isset($_GET['multiple_actions'])){
 	if (isset($_SESSION['glpi_massiveaction'])&&isset($_SESSION['glpi_massiveaction']['POST'])){
 		$_POST=$_SESSION['glpi_massiveaction']['POST'];
@@ -100,7 +99,12 @@ if (isset($_POST["device_type"])){
 			}
 		}
 	}
-	$REDIRECT=$_SERVER['HTTP_REFERER'];
+
+	if (isset($_SERVER['HTTP_REFERER'])){
+		$REDIRECT=$_SERVER['HTTP_REFERER'];
+	} else { // Security : not used if no problem
+		$REDIRECT=$CFG_GLPI['root_doc']."/front/central.php";
+	}
 	
 		switch($_POST["action"]){
 			case "connect_to_computer":
