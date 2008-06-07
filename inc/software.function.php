@@ -72,18 +72,20 @@ function showVersions($sID) {
 		return false;
 	$canedit = haveRight("software", "w");
 	
-	echo "TODO : add version form : in popup ?<br>";
-
 	$query = "SELECT * FROM glpi_softwareversions 
 		WHERE (sID = '$sID')";
 	if ($result=$DB->query($query)){
 		if ($DB->numrows($result)){
 			echo "<table class='tab_cadre'><tr>";
-			echo "<th>".$LANG["software"][5]."</th>";
+			echo "<th><a href='softwareversion.form.php'><img  src='".$CFG_GLPI["root_doc"]."/pics/plus.png' title='".$LANG["buttons"][8]."' alt='".$LANG["buttons"][8]."'></a>&nbsp;".$LANG["software"][5]."</th>";
 			echo "<th>".$LANG["software"][19]."</th>";
+			echo "<th>".$LANG["common"][25]."</th>";
 			echo "</tr>";
 			while ($data=$DB->fetch_assoc($result)){
-				echo "<tr class='tab_bg_2'><td>".$data['name']."</td><td>".countInstallationsForVersion($data['ID'])."</td></tr>";
+				echo "<tr class='tab_bg_2'>";
+				echo "<td><a href='softwareversion.form.php?ID=".$data['ID']."'>".$data['name']."</a></td>";
+				echo "<td>".countInstallationsForVersion($data['ID'])."</td>";
+				echo "<td>".$data['comments']."</td></tr>";
 			}
 			echo "</table>";
 		} else {
