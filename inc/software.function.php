@@ -83,7 +83,7 @@ function showVersions($sID) {
 			echo "</tr>";
 			while ($data=$DB->fetch_assoc($result)){
 				echo "<tr class='tab_bg_2'>";
-				echo "<td><a href='softwareversion.form.php?ID=".$data['ID']."'>".$data['name']."</a></td>";
+				echo "<td><a href='softwareversion.form.php?ID=".$data['ID']."'>".$data['name'].(empty($data['name'])?$data['ID']:"")."</a></td>";
 				echo "<td>".countInstallationsForVersion($data['ID'])."</td>";
 				echo "<td>".$data['comments']."</td></tr>";
 			}
@@ -107,8 +107,6 @@ function showLicenses($sID) {
 		return false;
 	$canedit = haveRight("software", "w");
 	
-	echo "TODO : add version form : in popup ?<br>";
-
 	$query = "SELECT glpi_softwarelicenses.*, buyvers.name as buyname, usevers.name AS usename
 		FROM glpi_softwarelicenses
 		LEFT JOIN glpi_softwareversions AS buyvers ON (buyvers.ID = glpi_softwarelicenses.buy_version)
@@ -117,7 +115,7 @@ function showLicenses($sID) {
 	if ($result=$DB->query($query)){
 		if ($DB->numrows($result)){
 			echo "<table class='tab_cadre'><tr>";
-			echo "<th>".$LANG["common"][16]."</th>";
+			echo "<th><a href='softwarelicense.form.php?sID=$sID'><img  src='".$CFG_GLPI["root_doc"]."/pics/plus.png' title='".$LANG["buttons"][8]."' alt='".$LANG["buttons"][8]."'></a>&nbsp;".$LANG["common"][16]."</th>";
 			echo "<th>".$LANG["common"][19]."</th>";
 			echo "<th>".$LANG["tracking"][29]."</th>";
 			echo "<th>".$LANG["common"][17]."</th>";
@@ -128,14 +126,14 @@ function showLicenses($sID) {
 			echo "</tr>";
 			while ($data=$DB->fetch_assoc($result)){
 				echo "<tr class='tab_bg_2'>";
-				echo "<td>".$data['name']."</td>";
+				echo "<td><a href='softwarelicense.form.php?ID=".$data['ID']."'>".$data['name'].(empty($data['name'])?$data['ID']:"")."</a></td>";
 				echo "<td>".$data['serial']."</td>";
-				echo "<td>".$data['number']."</td>";
+				echo "<td>".($data['number']>0?$data['number']:$LANG["software"][4])."</td>";
 				echo "<td>".getDropdownName("glpi_dropdown_licensetypes",$data['type'])."</td>";
 				echo "<td>".$data['buyname']."</td>";
 				echo "<td>".$data['usename']."</td>";
-				echo "<td>".$data['expire']."</td>";
-				echo "<td>".$data['oem_computer']."</td>";
+				echo "<td>".convDate($data['expire'])."</td>";
+				echo "<td>".($data['oem_computer']>0?getDropdownName("glpi_computers",$data['oem_computer']):"")."</td>";
 				echo "</tr>";
 			}
 			echo "</table>";

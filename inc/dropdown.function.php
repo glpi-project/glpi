@@ -1218,6 +1218,9 @@ function dropdownConnectPort($ID,$type,$myname,$entity_restrict=-1) {
 	return $rand;
 }
 
+
+
+
 /**
  * Make a select box for link document
  *
@@ -1303,6 +1306,33 @@ function dropdownSoftwareToInstall($myname,$entity_restrict,$massiveaction=0) {
 	
 	$default="<select name='$myname'><option value='0'>------</option></select>\n";
 	ajaxDropdown($use_ajax,"/ajax/dropdownSelectSoftware.php",$params,$default,$rand);
+
+	return $rand;
+}
+
+
+/**
+ * Make a select box for  software to install
+ *
+ *
+ * @param $myname select name
+ * @param $sID ID of the software
+ * @param $value value of the selected version
+ * @return nothing (print out an HTML select box)
+ */
+function dropdownSoftwareVersions($myname,$sID,$value) {
+	global $CFG_GLPI;
+
+	$rand=mt_rand();
+
+
+	$params=array('sID'=>$sID,
+		'myname'=>$myname,
+		'value'=>$value,
+		);
+
+	$default="<select name='$myname'><option value='0'>------</option></select>\n";
+	ajaxDropdown(false,"/ajax/dropdownInstallVersion.php",$params,$default,$rand);
 
 	return $rand;
 }

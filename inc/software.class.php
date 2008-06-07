@@ -440,13 +440,13 @@ class SoftwareVersion extends CommonDBTM {
 	}
 
 	/**
-	 * Print the document form
+	 * Print the version form
 	 *
 	 *@param $target form target
 	 *@param $ID Integer : Id of the version or the template to print
 	 *@param $sID ID of the software for add process
 	 *
-	 *@return Nothing (display)
+	 *@return true if displayed  false if item not found or not right to display
 	 **/	
 	function showForm($target,$ID,$sID=-1){
 		global $CFG_GLPI,$LANG;
@@ -609,6 +609,131 @@ class SoftwareLicense extends CommonDBTM {
 		$query = "DELETE FROM glpi_infocoms WHERE (FK_device = '$ID' AND device_type='" . LICENSE_TYPE . "')";
 		$result = $DB->query($query);
 
+	}
+
+	/**
+	 * Print the license form
+	 *
+	 *@param $target form target
+	 *@param $ID Integer : Id of the version or the template to print
+	 *@param $sID ID of the software for add process
+	 *
+	 *@return true if displayed  false if item not found or not right to display
+	 **/	
+	function showForm($target,$ID,$sID=-1){
+		global $CFG_GLPI,$LANG;
+
+		if (!haveRight("software","w"))	return false;
+
+		$spotted=false;
+		$use_cache=true;
+		if ($ID>0) {
+			if($this->can($ID,'w')) {
+				$spotted = true;	
+			}
+		} else {
+			$use_cache=false;
+			if ($this->can(-1,'w')){
+				$spotted = true;	
+				$this->getEmpty();
+				$this->fields['sID']=$sID;
+			}
+		} 
+
+		if ($spotted){
+			$soft=new Software();
+			$soft->getFromDB($this->fields['sID']);
+			echo "<form name='form' method='post' action=\"$target\" enctype=\"multipart/form-data\">";
+
+			echo "<div class='center'><table class='tab_cadre_fixe'>";
+			if ($ID>0){
+				echo "<tr><th colspan='2'>".$LANG["common"][2]." $ID";
+				echo " - <a href='software.form.php?ID=".$this->fields["sID"]."'>".getDropdownName("glpi_software",$this->fields["sID"])."</a></th></tr>";
+			} else {
+				echo "<tr><th colspan='2'>".$LANG["software"][8]."</th></tr>";
+				echo "<input type='hidden' name='sID' value='$sID'>";
+			}
+
+			echo "<tr class='tab_bg_1'><td>".$LANG["common"][16].":		</td>";
+			echo "<td>";
+			autocompletionTextField("name","glpi_softwarelicenses","name",$this->fields["name"],80);
+			echo "</td></tr>";
+
+			echo "<tr class='tab_bg_1'><td>".$LANG["common"][19].":		</td>";
+			echo "<td>";
+			autocompletionTextField("serial","glpi_softwarelicenses","serial",$this->fields["serial"],80);
+			echo "</td></tr>";
+
+			echo "<tr class='tab_bg_1'><td>".$LANG["tracking"][29].":		</td>";
+			echo "<td>";
+			dropdownInteger("number",$this->fields["number"],1,1000,1,array(-1=>$LANG["software"][4]));
+			echo "</td></tr>";
+
+			echo "<tr class='tab_bg_1'><td>".$LANG["common"][17].":		</td>";
+			echo "<td>";
+			dropdownValue("glpi_dropdown_licensetypes", "type", $this->fields["type"]);
+			echo "</td></tr>";
+
+
+
+			echo "<tr class='tab_bg_1'><td>".$LANG["software"][1].":		</td>";
+			echo "<td>";
+			dropdownSoftwareVersions("buy_version",$this->fields["sID"],$this->fields["buy_version"]);
+			echo "</td></tr>";
+
+			echo "<tr class='tab_bg_1'><td>".$LANG["software"][2].":		</td>";
+			echo "<td>";
+			dropdownSoftwareVersions("use_version",$this->fields["sID"],$this->fields["use_version"]);
+			echo "</td></tr>";
+
+			echo "<tr class='tab_bg_1'><td>".$LANG["software"][32].":		</td>";
+			echo "<td>";
+			showDateFormItem('expire',$this->fields["expire"]);
+			echo "</td></tr>";
+
+			echo "<tr class='tab_bg_1'><td>".$LANG["software"][28].":		</td>";
+			echo "<td>";
+			dropdownValue('glpi_computers','oem_computer',$this->fields["oem_computer"],1,$soft->fields['FK_entities']);
+			echo "</td></tr>";
+		
+			echo "<tr  class='tab_bg_1'><td valign='top'>";
+	
+			// table commentaires
+			echo $LANG["common"][25].":	</td>";
+			echo "<td class='tab_bg_1'>";
+			echo "<textarea cols='70' rows='4' name='comments' >".$this->fields["comments"]."</textarea>";
+	
+			echo "</td>";
+			echo "</tr>";
+
+			echo "<tr  class='tab_bg_2'>";
+
+			if ($ID>0) {
+
+				echo "<td>";
+				echo "<input type='hidden' name='ID' value=\"$ID\">\n";
+				echo "<div class='center'><input type='submit' name='update' value=\"".$LANG["buttons"][7]."\" class='submit'></div>";
+				echo "</td>\n\n";
+				echo "<td>";
+				echo "<input type='hidden' name='ID' value=\"$ID\">\n";
+				echo "<div class='center'><input type='submit' name='delete' value=\"".$LANG["buttons"][6]."\" class='submit'></div>";
+				echo "</td>\n\n";
+			} else {
+
+				echo "<td colspan='2'>";
+				echo "<div class='center'><input type='submit' name='add' value=\"".$LANG["buttons"][8]."\" class='submit'></div>";
+				echo "</td></tr>";
+	
+			}
+			echo "</table></div></form>";
+				
+		} else {
+			echo "<div class='center'><strong>".$LANG["common"][54]."</strong></div>";
+			return false;
+
+		}
+
+		return true;
 	}
 
 }

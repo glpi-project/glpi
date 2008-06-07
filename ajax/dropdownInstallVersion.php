@@ -34,17 +34,21 @@
 // ----------------------------------------------------------------------
 
 
-define('GLPI_ROOT','..');
-$AJAX_INCLUDE=1;
-$NEEDED_ITEMS=array("software","computer");
-include (GLPI_ROOT."/inc/includes.php");
 
-header("Content-Type: text/html; charset=UTF-8");
-header_nocache();
+if(ereg("dropdownInstallVersion.php",$_SERVER['PHP_SELF'])){
+	define('GLPI_ROOT','..');
+	$AJAX_INCLUDE=1;
+	include (GLPI_ROOT."/inc/includes.php");
+	header("Content-Type: text/html; charset=UTF-8");
+	header_nocache();
+};
 
 checkRight("software","w");
 
 if ($_POST['sID']>0){
+	if (!isset($_POST['value'])){
+		$_POST['value']=0;
+	}
 	// Make a select box
 
 	$query = "SELECT DISTINCT glpi_softwareversions.* FROM glpi_softwareversions ";
@@ -68,7 +72,7 @@ if ($_POST['sID']>0){
 			$ID = $data['ID'];
 
 			if (empty($output)) $output="($ID)";
-			echo "<option value=\"$ID\" title=\"".cleanInputText($output)."\">".$output."</option>";
+			echo "<option ".($ID==$_POST['value']?"selected":"")." value=\"$ID\" title=\"".cleanInputText($output)."\">".$output."</option>";
 		}
 	} 
 	echo "</select>&nbsp;";
