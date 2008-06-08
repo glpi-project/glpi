@@ -123,6 +123,7 @@ function showLicenses($sID) {
 			echo "<th>".$LANG["software"][2]."</th>";
 			echo "<th>".$LANG["software"][32]."</th>";
 			echo "<th>".$LANG["software"][28]."</th>";
+			echo "<th>".$LANG["financial"][3]."</th>";
 			echo "</tr>";
 			while ($data=$DB->fetch_assoc($result)){
 				echo "<tr class='tab_bg_2'>";
@@ -134,6 +135,10 @@ function showLicenses($sID) {
 				echo "<td>".$data['usename']."</td>";
 				echo "<td>".convDate($data['expire'])."</td>";
 				echo "<td>".($data['oem_computer']>0?getDropdownName("glpi_computers",$data['oem_computer']):"")."</td>";
+				
+				echo "<td>";
+				showDisplayInfocomLink(SOFTWARELICENSE_TYPE, $data['ID'], 1);
+				echo "</td>";
 				echo "</tr>";
 			}
 			echo "</table>";
