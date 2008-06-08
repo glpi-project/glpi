@@ -2347,7 +2347,8 @@ function ocsUpdatePeripherals($device_type, $entity, $glpi_id, $ocs_id, $ocs_ser
 					}
 
 					if (!empty ($mon["name"])) {
-						if (!in_array($checkMonitor, $import_periph)) {
+						$id = array_search($checkMonitor, $import_periph);
+						if ($id === false) {
 							// Clean monitor object
 							$m->reset();
 
@@ -2356,7 +2357,7 @@ function ocsUpdatePeripherals($device_type, $entity, $glpi_id, $ocs_id, $ocs_ser
 							if ($cfg_ocs["import_monitor_comments"])
 								$mon["comments"] = $line["DESCRIPTION"];
 							$id_monitor = 0;
-							$found_already_monitor = false;
+
 							if ($cfg_ocs["import_monitor"] == 1) {
 								//Config says : manage monitors as global
 								//check if monitors already exists in GLPI
@@ -2381,133 +2382,51 @@ function ocsUpdatePeripherals($device_type, $entity, $glpi_id, $ocs_id, $ocs_ser
 								//COnfig says : manage monitors as single units
 								//Import all monitors as non global.
 								$mon["is_global"] = 0;
-								// First import - Is there already a monitor ?
-								if ($count_monitor == 0) {
-									$query_search = "SELECT ID FROM glpi_monitors WHERE name = '" . $mon["name"] . 
-										"' AND is_global = '1' AND FK_entities=" . $entity;
-									$result_search = $DB->query($query_search);
+
+								// Try to find a monitor with the same serial.
+								if (!empty ($mon["serial"])) {
+									$query = "SELECT ID FROM glpi_monitors WHERE serial LIKE '%" . $mon["serial"] . "%' AND is_global=0 AND FK_entities=" . $entity;
+									$result_search = $DB->query($query);
 									if ($DB->numrows($result_search) == 1) {
-										$id_monitor = $DB->result($result_search, 0, 0);
-										$found_already_monitor = true;
+										//Monitor founded												
+										$id_monitor = $DB->result($result_search, 0, "ID");
 									}
 								}
-
-								if ($found_already_monitor && $id_monitor) {
-
-									$m->getFromDB($id_monitor);
-									// Found a non global monitor : good
-									if (!$m->fields["is_global"]) {
-										$mon["ID"] = $id_monitor;
-										unset ($mon["comments"]);
-										$mon["_from_ocs"] = 1;
-										$m->update($mon);
-									} else { // Found a global monitor : bad idea. need to add another one
-										$found_already_monitor = false;
-										$id_monitor = 0;
-										// Try to find a monitor with the same serial.
-										if (!empty ($mon["serial"])) {
-											$query = "SELECT ID FROM glpi_monitors WHERE serial LIKE '%" . $mon["serial"] . "%' AND FK_entities=" . $entity;
-											$result_search = $DB->query($query);
-											if ($DB->numrows($result_search) == 1) {
-												//Monitor founded
-												$id_monitor = $DB->result($result_search, 0, "ID");
-											}
-										}
-										//Search by serial failed, search by name
-										if (!$id_monitor) {
-											//Try to find a monitor with the same name.
-											if (!empty ($mon["name"])) {
-												$query = "SELECT ID,serial FROM glpi_monitors WHERE name = '" . $mon["name"] . "' AND FK_entities=" . $entity;
-												$result_search = $DB->query($query);
-												if ($DB->numrows($result_search) == 1) {
-													//Monitor founded
-													$serial_monitor = "";
-													$serial_monitor = $DB->result($result_search, 0, "serial");
-													//Verify if serial are equals (for monitor with the same name and different serial)
-													if ($serial_monitor == $mon['serial'])
-														$id_monitor = $DB->result($result_search, 0, "ID");
-												}
-											}
-										}
-										// Nothing found : add it
-										if (!$id_monitor) {
-											$input = $mon;
-											if ($cfg_ocs["default_state"]>0){
-												$input["state"] = $cfg_ocs["default_state"];
-											}
-											$input["FK_entities"] = $entity;
-											$input["_from_ocs"] = 1;
-											$id_monitor = $m->add($input);
-										}
-									}
-								} else {  // !($found_already_monitor && $id_monitor)
-									// Try to find a monitor with the same serial.
-									if (!empty ($mon["serial"])) {
-										$query = "SELECT ID FROM glpi_monitors WHERE serial LIKE '%" . $mon["serial"] . "%' AND FK_entities=" . $entity;
+								//Search by serial failed, search by name
+								if ($cfg_ocs["import_monitor"]==2 && !$id_monitor) {
+									//Try to find a monitor with no serial, the same name and not already connected.
+									if (!empty ($mon["name"])) {
+										$query = "SELECT glpi_monitors.ID FROM glpi_monitors " .
+												"LEFT JOIN glpi_connect_wire ON (glpi_connect_wire.type=".MONITOR_TYPE." AND glpi_connect_wire.end1=glpi_monitors.ID) " .
+												"WHERE serial='' AND name = '" . $mon["name"] . "' AND is_global=0 AND FK_entities=$entity AND glpi_connect_wire.end2 IS NULL";
 										$result_search = $DB->query($query);
 										if ($DB->numrows($result_search) == 1) {
-											//Monitor founded												
 											$id_monitor = $DB->result($result_search, 0, "ID");
 										}
 									}
-									//Search by serial failed, search by name
-									if (!$id_monitor) {
-										//Try to find a monitor with the same name.
-										if (!empty ($mon["name"])) {
-											$query = "SELECT ID,serial FROM glpi_monitors WHERE name = '" . $mon["name"] . "' AND FK_entities=" . $entity;
-											$result_search = $DB->query($query);
-											if ($DB->numrows($result_search) == 1) {
-												//Monitor founded
-												$serial_monitor = "";
-												$serial_monitor = $DB->result($result_search, 0, "serial");
-												//Verify if serial are equals (for dual monitor with the same name)
-												if ($serial_monitor != "" && !empty ($mon['serial']))
-													if ($serial_monitor == $mon['serial'])
-														$id_monitor = $DB->result($result_search, 0, "ID");
-											}
-										}
-									}
-									if (!$id_monitor) {
-										$input = $mon;
-										if ($cfg_ocs["default_state"]>0){
-											$input["state"] = $cfg_ocs["default_state"];
-										}
-										$input["FK_entities"] = $entity;
-										$input["_from_ocs"] = 1;
-										$id_monitor = $m->add($input);
-									}
 								}
-							} // ($cfg_ocs["import_monitor"] == 2)
+								if (!$id_monitor) {
+									$input = $mon;
+									if ($cfg_ocs["default_state"]>0){
+										$input["state"] = $cfg_ocs["default_state"];
+									}
+									$input["FK_entities"] = $entity;
+									$input["_from_ocs"] = 1;
+									$id_monitor = $m->add($input);
+								}
+							} // ($cfg_ocs["import_monitor"] >= 2)
 							
 							if ($id_monitor) {
-								if (!$found_already_monitor) {
-									//Import unique : Disconnect monitor on other computer
-									if ($cfg_ocs["import_monitor"] == 2) {
-										$queryGetConnectionID = "SELECT * FROM glpi_connect_wire WHERE end1=$id_monitor";
-										$result_search_id = $DB->query($queryGetConnectionID);
-										if ($DB->numrows($result_search_id) == 1) {
-											$id_conn = $DB->result($result_search_id, 0, "ID");
-											Disconnect($id_conn, $dohistory, 1,$ocs_server_id);
-										}
-									}
-									$connID = Connect($id_monitor, $glpi_id, MONITOR_TYPE, $dohistory);
-								}
-								if (!empty ($mon["serial"])) {
-									$addValuetoDB = $mon["name"];
-									$addValuetoDB .= $mon["serial"];
-								} else {
-									$addValuetoDB = $mon["name"];
-								}
+								//Import unique : Disconnect monitor on other computer done in Connect function
+								$connID = Connect($id_monitor, $glpi_id, MONITOR_TYPE, $dohistory);
+
 								if (!in_array($tagVersionInArray, $import_periph)) {
-									addToOcsArray($glpi_id, array (
-										0 => $tagVersionInArray
-									), "import_monitor");
+									addToOcsArray($glpi_id, array (0 => $tagVersionInArray), "import_monitor");
 								}
-								addToOcsArray($glpi_id, array (
-									$connID => $addValuetoDB
-								), "import_monitor");
+								addToOcsArray($glpi_id, array ($connID => $checkMonitor), "import_monitor");
 								$count_monitor++;
-								//Update column "deleted" set value to 0 and set status to default
+
+ 								//Update column "deleted" set value to 0 and set status to default
 								$input = array ();
 								$input["ID"] = $id_monitor;
 								$input["deleted"] = 0;
@@ -2517,14 +2436,7 @@ function ocsUpdatePeripherals($device_type, $entity, $glpi_id, $ocs_id, $ocs_ser
 								$input["_from_ocs"] = 1;
 								$m->update($input);
 							} 
-						} else { // (!$id_monitor) 
-							$searchDBValue = "";
-							if (!empty ($mon["serial"])) {
-								$searchDBValue = $mon["name"];
-								$searchDBValue .= $mon["serial"];
-							} else
-								$searchDBValue = $mon["name"];
-							$id = array_search($searchDBValue, $import_periph);
+						} else { // found in array 
 							unset ($import_periph[$id]);
 						}
 					} // empty name
