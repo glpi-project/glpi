@@ -156,23 +156,32 @@ function showInstallations($sID) {
 		return false;
 	$canedit = haveRight("software", "w");
 	
-	echo "TODO : add version form : in popup ?<br>";
 
 	$query = "SELECT glpi_inst_software.*,glpi_computers.name AS compname, glpi_computers.ID AS cID,
-		glpi_softwareversions.name as version
+		glpi_softwareversions.name as version, glpi_softwareversions.ID as vID
 		FROM glpi_inst_software
 		INNER JOIN glpi_softwareversions ON (glpi_inst_software.vID = glpi_softwareversions.ID)
 		INNER JOIN glpi_computers ON (glpi_inst_software.cID = glpi_computers.ID)
 		WHERE (glpi_softwareversions.sID = '$sID')
-		ORDER BY glpi_computers.name";
+		ORDER BY glpi_softwareversions.name, glpi_computers.name";
 	if ($result=$DB->query($query)){
 		if ($DB->numrows($result)){
 			echo "<table class='tab_cadre'><tr>";
-			echo "<th>".$LANG["computers"][44]."</th>";
 			echo "<th>".$LANG["software"][5]."</th>";
+			echo "<th>".$LANG["computers"][44]."</th>";
 			echo "</tr>";
+			$current_version=-1;
 			while ($data=$DB->fetch_assoc($result)){
-				echo "<tr class='tab_bg_2'><td>".$data['compname']."</td><td>".$data['version']."</td></tr>";
+				// New version
+				if ($data['version']!=$current_version){
+					// Not first one
+					if ($current_version!=-1){
+						echo "</td></tr>";
+					} 
+					echo "<tr class='tab_bg_2'><td><a href='softwareversion.form.php?ID=".$data['vID']."'>".$data['version']."</a></td><td>";
+					$current_version=$data['version'];
+				}
+				echo "<a href='computer.form.php?ID=".$data['cID']."'>".$data['compname']."</a><br>";
 			}
 			echo "</table>";
 		} else {
