@@ -114,6 +114,7 @@ function haveTypeRight($type, $right) {
 			break;
 		case SOFTWARE_TYPE :
 		case SOFTWAREVERSION_TYPE :
+		case SOFTWARELICENSE_TYPE :
 			return haveRight("software", $right);
 			break;
 		case CONTACT_TYPE :
@@ -160,9 +161,6 @@ function haveTypeRight($type, $right) {
 			break;
 		case CONSUMABLE_ITEM_TYPE :
 			return haveRight("consumable", $right);
-			break;
-		case LICENSE_TYPE :
-			return haveRight("software", $right);
 			break;
 		case LINK_TYPE :
 			return haveRight("link", $right);

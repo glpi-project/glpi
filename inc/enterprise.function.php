@@ -74,7 +74,7 @@ function showInfocomEnterprise($instID) {
 	$num=0;
 	while ($i < $number) {
 		$type=$DB->result($result, $i, "device_type");
-		if (haveTypeRight($type,"r")&&$type!=CONSUMABLE_ITEM_TYPE&&$type!=CARTRIDGE_ITEM_TYPE&&$type!=LICENSE_TYPE){
+		if (haveTypeRight($type,"r")&&$type!=CONSUMABLE_ITEM_TYPE&&$type!=CARTRIDGE_ITEM_TYPE&&$type!=SOFTWARELICENSE_TYPE){
 			$query = "SELECT ".$LINK_ID_TABLE[$type].".* "
 				." FROM glpi_infocoms "
 				." INNER JOIN ".$LINK_ID_TABLE[$type]." ON (".$LINK_ID_TABLE[$type].".ID = glpi_infocoms.FK_device) "

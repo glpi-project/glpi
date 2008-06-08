@@ -546,7 +546,7 @@ class SoftwareLicense extends CommonDBTM {
 	**/
 	function SoftwareLicense() {
 		$this->table = "glpi_softwarelicenses";
-		$this->type = LICENSE_TYPE;
+		$this->type = SOFTWARELICENSE_TYPE;
 	}
 
 /*	function prepareInputForUpdate($input) {
@@ -597,7 +597,7 @@ class SoftwareLicense extends CommonDBTM {
 		if ($ic->getFromDBforDevice($type, $dupid)) {
 			unset ($ic->fields["ID"]);
 			$ic->fields["FK_device"] = $newID;
-			$ic->fields["device_type"] = LICENSE_TYPE;
+			$ic->fields["device_type"] = SOFTWARELICENSE_TYPE;
 			$ic->addToDB();
 		}
 	}
@@ -606,7 +606,7 @@ class SoftwareLicense extends CommonDBTM {
 
 		global $DB;
 
-		$query = "DELETE FROM glpi_infocoms WHERE (FK_device = '$ID' AND device_type='" . LICENSE_TYPE . "')";
+		$query = "DELETE FROM glpi_infocoms WHERE (FK_device = '$ID' AND device_type='" . SOFTWARELICENSE_TYPE . "')";
 		$result = $DB->query($query);
 
 	}

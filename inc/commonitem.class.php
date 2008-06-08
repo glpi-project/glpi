@@ -141,7 +141,7 @@ class CommonItem{
 				case CONSUMABLE_ITEM_TYPE : 
 					$this->obj= new Consumable;	
 					break;					
-				case LICENSE_TYPE : 
+				case SOFTWARELICENSE_TYPE : 
 					$this->obj= new SoftwareLicense;	
 					break;					
 				case LINK_TYPE : 
@@ -267,7 +267,7 @@ class CommonItem{
 			case CONSUMABLE_ITEM_TYPE : 
 				return $LANG["consumables"][0];
 				break;					
-			case LICENSE_TYPE : 
+			case SOFTWARELICENSE_TYPE : 
 				return $LANG["software"][11];
 				break;					
 			case LINK_TYPE : 
@@ -365,7 +365,7 @@ class CommonItem{
 
 		if ($this->device_type==KNOWBASE_TYPE&&$this->obj!=NULL&&isset($this->obj->fields["question"])&&$this->obj->fields["question"]!="")
 			return $this->obj->fields["question"];
-		else if ($this->device_type==LICENSE_TYPE&&$this->obj!=NULL&&isset($this->obj->fields["serial"])&&$this->obj->fields["serial"]!="")
+		else if ($this->device_type==SOFTWARELICENSE_TYPE&&$this->obj!=NULL&&isset($this->obj->fields["serial"])&&$this->obj->fields["serial"]!="")
 			return $this->obj->fields["serial"];
 		else if (($this->device_type==CARTRIDGE_TYPE||$this->device_type==CONSUMABLE_TYPE)&&$this->obj!=NULL&&$this->obj->fields["name"]!=""){
 			$name=$this->obj->fields["name"];
@@ -404,7 +404,6 @@ class CommonItem{
 		$ID="";
 		switch ($this->device_type){
 			case GENERAL_TYPE :
-			case LICENSE_TYPE : 
 			case CARTRIDGE_ITEM_TYPE : 
 			case CONSUMABLE_ITEM_TYPE : 
 				return $this->getName($with_comments);

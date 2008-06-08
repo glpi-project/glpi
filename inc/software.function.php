@@ -338,7 +338,7 @@ function showInstallations($sID) {
 			$query_lic .= " LEFT JOIN glpi_inst_software ";
 			$query_lic .= " ON ( glpi_inst_software.license = glpi_licenses.ID )";
 			$query_lic .= " LEFT JOIN glpi_computers ON (glpi_inst_software.cID= glpi_computers.ID) ";
-			$query_lic .= " LEFT JOIN glpi_infocoms ON (glpi_infocoms.device_type='" . LICENSE_TYPE . "' AND glpi_infocoms.FK_device=glpi_licenses.ID) ";
+			$query_lic .= " LEFT JOIN glpi_infocoms ON (glpi_infocoms.device_type='" . SOFTWARELICENSE_TYPE . "' AND glpi_infocoms.FK_device=glpi_licenses.ID) ";
 			$query_lic .= " WHERE $SEARCH_LICENCE AND glpi_computers.deleted='0' AND glpi_computers.is_template='0' ORDER BY cname";
 			//echo $query_lic;
 			$result_lic = $DB->query($query_lic);
@@ -441,7 +441,7 @@ function showInstallations($sID) {
 			if (($serial == "free" || $serial == "global")) {
 				// Display infocoms
 				echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>";
-				showDisplayInfocomLink(LICENSE_TYPE, $firstID, 1);
+				showDisplayInfocomLink(SOFTWARELICENSE_TYPE, $firstID, 1);
 				echo "</strong>";
 			}
 
@@ -533,7 +533,7 @@ function showInstallations($sID) {
 							}
 							// Display infocoms
 							echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>";
-							showDisplayInfocomLink(LICENSE_TYPE, $data_inst["lID"], 1);
+							showDisplayInfocomLink(SOFTWARELICENSE_TYPE, $data_inst["lID"], 1);
 							echo "</strong>";
 						}
 
@@ -1599,7 +1599,7 @@ function cron_software($display=false){
 	$query="SELECT glpi_licenses.*, glpi_software.FK_entities, glpi_software.name as softname
 		FROM glpi_licenses 
 		LEFT JOIN glpi_alerts ON (glpi_licenses.ID = glpi_alerts.FK_device 
-					AND glpi_alerts.device_type='".LICENSE_TYPE."' 
+					AND glpi_alerts.device_type='".SOFTWARELICENSE_TYPE."' 
 					AND glpi_alerts.type='".ALERT_END."') 
 		LEFT JOIN glpi_software ON (glpi_licenses.sID = glpi_software.ID)
 		WHERE glpi_alerts.date IS NULL
@@ -1640,7 +1640,7 @@ function cron_software($display=false){
 		
 				// Mark alert as done
 				$alert=new Alert();
-				$input["device_type"]=LICENSE_TYPE;
+				$input["device_type"]=SOFTWARELICENSE_TYPE;
 
 				$input["type"]=ALERT_END;
 				if (isset($items[$entity])){
