@@ -2348,7 +2348,8 @@ function ocsUpdatePeripherals($device_type, $entity, $glpi_id, $ocs_id, $ocs_ser
 					}
 
 					if (!empty ($mon["name"])) {
-						if (!in_array($checkMonitor, $import_periph)) {
+						$id = array_search($checkMonitor, $import_periph);
+						if ($id === false) {
 							// Clean monitor object
 							$m->reset();
 
@@ -2493,19 +2494,13 @@ function ocsUpdatePeripherals($device_type, $entity, $glpi_id, $ocs_id, $ocs_ser
 									}
 									$connID = Connect($id_monitor, $glpi_id, MONITOR_TYPE, $dohistory);
 								}
-								if (!empty ($mon["serial"])) {
-									$addValuetoDB = $mon["name"];
-									$addValuetoDB .= $mon["serial"];
-								} else {
-									$addValuetoDB = $mon["name"];
-								}
 								if (!in_array($tagVersionInArray, $import_periph)) {
 									addToOcsArray($glpi_id, array (
 										0 => $tagVersionInArray
 									), "import_monitor");
 								}
 								addToOcsArray($glpi_id, array (
-									$connID => $addValuetoDB
+									$connID => $checkMonitor
 								), "import_monitor");
 								$count_monitor++;
 								//Update column "deleted" set value to 0 and set status to default
@@ -2518,14 +2513,7 @@ function ocsUpdatePeripherals($device_type, $entity, $glpi_id, $ocs_id, $ocs_ser
 								$input["_from_ocs"] = 1;
 								$m->update($input);
 							} 
-						} else { // (!$id_monitor) 
-							$searchDBValue = "";
-							if (!empty ($mon["serial"])) {
-								$searchDBValue = $mon["name"];
-								$searchDBValue .= $mon["serial"];
-							} else
-								$searchDBValue = $mon["name"];
-							$id = array_search($searchDBValue, $import_periph);
+						} else { // found in array 
 							unset ($import_periph[$id]);
 						}
 					} // empty name
