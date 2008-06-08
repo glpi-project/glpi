@@ -44,6 +44,10 @@ if (isset($_SESSION["ldap_import_entities"])) unset($_SESSION["ldap_import_entit
 if (isset($_SESSION["ldap_server"])) unset($_SESSION["ldap_server"]);
 if (isset($_SESSION["entity"])) unset($_SESSION["entity"]);
 
+//Reset session variable related to filters
+if (isset($_SESSION["ldap_group_filter"])) unset($_SESSION["ldap_group_filter"]);
+if (isset($_SESSION["ldap_group_filter2"])) unset($_SESSION["ldap_group_filter2"]);
+
 echo "<div align='center'><table class='tab_cadre' cellpadding='5'>";
 echo "<tr><th>".$LANG["ldap"][23]."</th></tr>";
 
