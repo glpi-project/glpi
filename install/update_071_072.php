@@ -269,6 +269,33 @@ function update071to072() {
  		$query = "ALTER TABLE `glpi_groups` ADD `recursive` TINYINT( 1 ) NOT NULL DEFAULT '0' AFTER `FK_entities`;";
  		$DB->query($query) or die("0.71 add recursive in glpi_groups" . $LANG["update"][90] . $DB->error());
  	}	  	
+
+ 	if (!FieldExists("glpi_auth_ldap", "ldap_field_title")) {
+ 		$query = "ALTER TABLE `glpi_auth_ldap` ADD `ldap_field_title` VARCHAR( 255 ) NOT NULL ;";
+ 		$DB->query($query) or die("0.71 add ldap_field_title in glpi_auth_ldap" . $LANG["update"][90] . $DB->error());
+ 	}	  	
+
+	//Add user title retrieval from LDAP 
+	if (!TableExists("glpi_dropdown_user_titles")) {
+ 		$query="CREATE TABLE `glpi_dropdown_user_titles` (
+		`ID` int( 11 ) NOT NULL AUTO_INCREMENT ,
+		`name` varchar( 255 ) COLLATE utf8_unicode_ci default NULL ,
+		`comments` text COLLATE utf8_unicode_ci,
+		PRIMARY KEY ( `ID` ) ,
+		KEY `name` ( `name` )
+		) ENGINE = MYISAM DEFAULT CHARSET = utf8 COLLATE = utf8_unicode_ci;";
+		$DB->query($query) or die("0.72 create glpi_dropdown_user_titles table" . $LANG["update"][90] . $DB->error());
+	}	
+
+ 	if (!FieldExists("glpi_users", "title")) {
+ 		$query = "ALTER TABLE `glpi_users` ADD `title` INT( 11 ) NOT NULL DEFAULT '0';";
+ 		$DB->query($query) or die("0.71 add title in glpi_users" . $LANG["update"][90] . $DB->error());
+ 	}	  	
 	
+	//Add title criteria
+	$result  = $DB->query("SELECT count(*) as cpt FROM glpi_rules_ldap_parameters WHERE value='title' AND rule_type=".RULE_AFFECT_RIGHTS);
+	if (!$DB->result($result,0,"cpt"))
+		$DB->query("INSERT INTO `glpi_rules_ldap_parameters` (`ID` ,`name` ,`value` ,`rule_type`) VALUES (NULL , '(LDAP) Title', 'title', '1');");
+		
 } // fin 0.72 #####################################################################################
 ?>
