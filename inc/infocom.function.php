@@ -63,189 +63,199 @@ function showInfocomForm($target,$device_type,$dev_ID,$show_immo=true,$withtempl
 	}
 
 	echo "<br>";
-	if ($ci->getFromDB($device_type,$dev_ID))
-	if (!$ic->getFromDBforDevice($device_type,$dev_ID)){
-		if ($ic->can(-1,"w",$ci->obj->fields["FK_entities"]) && $withtemplate!=2){
-			echo "<div class='center'>";
-			echo "<strong><a href='$target?device_type=$device_type&amp;FK_device=$dev_ID&amp;add=add'>".$LANG["financial"][68]."</a></strong>";
-			echo "</div><br>";
-		}
-	} else { // getFromDBforDevice
-		$canedit = ($ic->can($ic->fields['ID'], "w") && $withtemplate!=2); 
-		if ($canedit) {
-			echo "<form name='form_ic' method='post' action=\"$target\">";
-		}
+	if ($ci->getFromDB($device_type,$dev_ID)){
+		$entity=-1;
 
-		echo "<div class='center'>";
-		echo "<table class='tab_cadre".(!ereg("infocoms-show",$_SERVER['PHP_SELF'])?"_fixe":"")."'>";
-
-		echo "<tr><th colspan='4'>".$LANG["financial"][3]."</th></tr>";
-
-		echo "<tr class='tab_bg_1'><td>".$LANG["financial"][26].":		</td>";
-		echo "<td class='center'>";
-		if ($withtemplate==2) {
-			echo getDropdownName("glpi_enterprises",$ic->fields["FK_enterprise"]);
+		if ($device_type==SOFTWARELICENSE_TYPE){
+			$soft=new Software();
+			$soft->getFromDB($ci->getField('sID'));
+			$entity=$soft->fields['FK_entities'];
 		} else {
-			dropdownValue("glpi_enterprises","FK_enterprise",$ic->fields["FK_enterprise"],1,$ci->getField('FK_entities'));
+			$entity=$ci->getField["FK_entities"];
 		}
-
-		echo "</td>";
-		echo "<td>".$LANG["financial"][82].":		</td>";
-		echo "<td >";
-		autocompletionTextField("facture","glpi_infocoms","facture",$ic->fields["facture"],40,-1,-1,$option);	
-		echo "</td></tr>";
-
-		echo "<tr class='tab_bg_1'><td>".$LANG["financial"][18].":		</td>";
-		echo "<td >";
-		autocompletionTextField("num_commande","glpi_infocoms","num_commande",$ic->fields["num_commande"],40,-1,-1,$option);	
-		echo "</td>";
-
-		echo "<td>".$LANG["financial"][19].":		</td><td>";
-		autocompletionTextField("bon_livraison","glpi_infocoms","bon_livraison",$ic->fields["bon_livraison"],40,-1,-1,$option);	
-		echo "</td></tr>";
-
-		// Can edit calendar ?
-		$editcalendar=($withtemplate!=2);
-		
-		echo "<tr class='tab_bg_1'><td>".$LANG["financial"][14].":	</td><td>";
-		showDateFormItem("buy_date",$ic->fields["buy_date"],true,$editcalendar);
-		echo "</td>";
-
-
-		echo "<td>".$LANG["financial"][76].":	</td><td>";
-		showDateFormItem("use_date",$ic->fields["use_date"],true,$editcalendar);
-		echo "</td>";
-		echo "</tr>";
-
-		if ($show_immo){
-
-			echo "<tr class='tab_bg_1'><td>".$LANG["financial"][15].":	</td><td>";
-			if ($withtemplate==2){
-				// -1 = life
-				if ($ic->fields["warranty_duration"]==-1){
-					echo $LANG["financial"][2];
-				} else {
-					echo $ic->fields["warranty_duration"];
-				}
-			} else {
-				dropdownInteger("warranty_duration",$ic->fields["warranty_duration"],0,120,1,array(-1=>$LANG["financial"][2]));
+		if (!$ic->getFromDBforDevice($device_type,$dev_ID)){
+			if ($ic->can(-1,"w",$entity) && $withtemplate!=2){
+				echo "<div class='center'>";
+				echo "<strong><a href='$target?device_type=$device_type&amp;FK_device=$dev_ID&amp;add=add'>".$LANG["financial"][68]."</a></strong>";
+				echo "</div><br>";
 			}
-			if ($ic->fields["warranty_duration"]>=0){
-				echo " ".$LANG["financial"][57];
+		} else { // getFromDBforDevice
+			$canedit = ($ic->can($ic->fields['ID'], "w") && $withtemplate!=2); 
+			if ($canedit) {
+				echo "<form name='form_ic' method='post' action=\"$target\">";
 			}
-			echo "&nbsp;&nbsp; &nbsp; &nbsp;&nbsp;&nbsp;".$LANG["financial"][88]."&nbsp;";
-			echo getWarrantyExpir($ic->fields["buy_date"],$ic->fields["warranty_duration"]);
-			echo "</td>";
-
-			echo "<td>".$LANG["financial"][87].":	</td><td >";
-
-			dropdownValue("glpi_dropdown_budget","budget",$ic->fields["budget"]);
-
-			echo "</td></tr>";
-
-
-			echo "<tr class='tab_bg_1'><td>".$LANG["financial"][78].":		</td>";
-			echo "<td ><input type='text' $option name='warranty_value' value=\"".formatNumber($ic->fields["warranty_value"],true)."\" size='16'></td>";
-
-
-			echo "<td>".$LANG["financial"][16].":		</td>";
-			echo "<td >";
-			autocompletionTextField("warranty_info","glpi_infocoms","warranty_info",$ic->fields["warranty_info"],40,-1,-1,$option);	
-
-			echo "</td></tr>";
-		}
-
-		echo "<tr class='tab_bg_1'><td>".$LANG["financial"][21].":		</td><td  ".($show_immo?"":" colspan='3'")."><input type='text' name='value' $option value=\"".formatNumber($ic->fields["value"],true)."\" size='16'></td>";
-		if ($show_immo){
-			echo "<td>".$LANG["financial"][81]." :</td><td>";
-
-			echo  TableauAmort($ic->fields["amort_type"],$ic->fields["value"],$ic->fields["amort_time"],$ic->fields["amort_coeff"],$ic->fields["buy_date"],$ic->fields["use_date"],$date_fiscale,"n");
-
-			echo "</td>";
-		}
-		echo "</tr>";
-
-		if ($show_immo){
-			echo "<tr class='tab_bg_1'><td>".$LANG["financial"][20]."*:		</td>";
-			echo "<td >";
-			$objectName = autoName($ic->fields["num_immo"], "num_immo", ($withtemplate==2), INFOCOM_TYPE,$ci->getField('FK_entities'));
-			autocompletionTextField("num_immo","glpi_infocoms","num_immo",$objectName,40,-1,-1,$option); 
-
-			echo "</td>";
-
-
-
-
-			echo "<td>".$LANG["financial"][22].":		</td><td >";
-			if ($withtemplate==2){
-				echo getAmortTypeName($ic->fields["amort_type"]);
-			} else {
-				dropdownAmortType("amort_type",$ic->fields["amort_type"]);
-			}
-
-			echo "</td></tr>";
-
-			echo "<tr class='tab_bg_1'><td>".$LANG["financial"][23].":		</td><td>";
-			if ($withtemplate==2){
-				echo $ic->fields["amort_time"];
-			} else {
-				dropdownInteger("amort_time",$ic->fields["amort_time"],0,15);
-			}
-			echo " ".$LANG["financial"][9];
-			echo "</td>";
-
-			echo "<td>".$LANG["financial"][77].":		</td>";
-			echo "<td >";
-			autocompletionTextField("amort_coeff","glpi_infocoms","amort_coeff",$ic->fields["amort_coeff"],10,-1,-1,$option);	
-			echo "</td></tr>";
-		}
-		//TCO
-		if ($device_type!=SOFTWARE_TYPE&&$device_type!=CARTRIDGE_TYPE&&$device_type!=CONSUMABLE_TYPE&&$device_type!=CONSUMABLE_ITEM_TYPE&&$device_type!=SOFTWARELICENSE_TYPE&&$device_type!=CARTRIDGE_ITEM_TYPE){
-			echo "<tr class='tab_bg_1'><td>";
-			echo $LANG["financial"][89]." : </td><td>";
-			echo showTco($ci->getField('ticket_tco'),$ic->fields["value"]);
-			echo "</td><td>".$LANG["financial"][90]." : 	</td><td>";
-			echo showTco($ci->getField('ticket_tco'),$ic->fields["value"],$ic->fields["buy_date"]);
-			echo "</td></tr>";
-		}
-
-		if ($CFG_GLPI['mailing']){
-			echo "<tr class='tab_bg_1'><td>".$LANG["setup"][247].":		</td>";
-			echo "<td>";
-			echo dropdownAlertInfocoms("alert",$ic->fields["alert"]);
 	
+			echo "<div class='center'>";
+			echo "<table class='tab_cadre".(!ereg("infocoms-show",$_SERVER['PHP_SELF'])?"_fixe":"")."'>";
+	
+			echo "<tr><th colspan='4'>".$LANG["financial"][3]."</th></tr>";
+	
+			echo "<tr class='tab_bg_1'><td>".$LANG["financial"][26].":		</td>";
+			echo "<td class='center'>";
+			if ($withtemplate==2) {
+				echo getDropdownName("glpi_enterprises",$ic->fields["FK_enterprise"]);
+			} else {
+				dropdownValue("glpi_enterprises","FK_enterprise",$ic->fields["FK_enterprise"],1,$ci->getField('FK_entities'));
+			}
+	
+			echo "</td>";
+			echo "<td>".$LANG["financial"][82].":		</td>";
+			echo "<td >";
+			autocompletionTextField("facture","glpi_infocoms","facture",$ic->fields["facture"],40,-1,-1,$option);	
+			echo "</td></tr>";
+	
+			echo "<tr class='tab_bg_1'><td>".$LANG["financial"][18].":		</td>";
+			echo "<td >";
+			autocompletionTextField("num_commande","glpi_infocoms","num_commande",$ic->fields["num_commande"],40,-1,-1,$option);	
+			echo "</td>";
+	
+			echo "<td>".$LANG["financial"][19].":		</td><td>";
+			autocompletionTextField("bon_livraison","glpi_infocoms","bon_livraison",$ic->fields["bon_livraison"],40,-1,-1,$option);	
+			echo "</td></tr>";
+	
+			// Can edit calendar ?
+			$editcalendar=($withtemplate!=2);
+			
+			echo "<tr class='tab_bg_1'><td>".$LANG["financial"][14].":	</td><td>";
+			showDateFormItem("buy_date",$ic->fields["buy_date"],true,$editcalendar);
 			echo "</td>";
 	
 	
-			echo "<td>&nbsp;</td>";
-			echo "<td >&nbsp;";
-			echo "</td></tr>";
-		}
-
-		// commment
-		echo "<tr class='tab_bg_1'><td valign='top'>";
-		echo $LANG["common"][25].":	</td>";
-		echo "<td align='center' colspan='3'><textarea cols='80' $option rows='2' name='comments' >".$ic->fields["comments"]."</textarea>";
-		echo "</td></tr>";
-
-		if ($canedit){
-			echo "<tr>";
-
-			echo "<td class='tab_bg_2' colspan='2' align='center'>";
-			echo "<input type='hidden' name='ID' value=\"".$ic->fields['ID']."\">\n";
-			echo "<input type='submit' name='update' value=\"".$LANG["buttons"][7]."\" class='submit'>";
-			echo "</td>\n\n";
-			echo "<td class='tab_bg_2' colspan='2' align='center'>\n";
-			echo "<input type='submit' name='delete' value=\"".$LANG["buttons"][6]."\" class='submit'>";
-
+			echo "<td>".$LANG["financial"][76].":	</td><td>";
+			showDateFormItem("use_date",$ic->fields["use_date"],true,$editcalendar);
 			echo "</td>";
 			echo "</tr>";
-			echo "</table></div></form>";
+	
+			if ($show_immo){
+	
+				echo "<tr class='tab_bg_1'><td>".$LANG["financial"][15].":	</td><td>";
+				if ($withtemplate==2){
+					// -1 = life
+					if ($ic->fields["warranty_duration"]==-1){
+						echo $LANG["financial"][2];
+					} else {
+						echo $ic->fields["warranty_duration"];
+					}
+				} else {
+					dropdownInteger("warranty_duration",$ic->fields["warranty_duration"],0,120,1,array(-1=>$LANG["financial"][2]));
+				}
+				if ($ic->fields["warranty_duration"]>=0){
+					echo " ".$LANG["financial"][57];
+				}
+				echo "&nbsp;&nbsp; &nbsp; &nbsp;&nbsp;&nbsp;".$LANG["financial"][88]."&nbsp;";
+				echo getWarrantyExpir($ic->fields["buy_date"],$ic->fields["warranty_duration"]);
+				echo "</td>";
+	
+				echo "<td>".$LANG["financial"][87].":	</td><td >";
+	
+				dropdownValue("glpi_dropdown_budget","budget",$ic->fields["budget"]);
+	
+				echo "</td></tr>";
+	
+	
+				echo "<tr class='tab_bg_1'><td>".$LANG["financial"][78].":		</td>";
+				echo "<td ><input type='text' $option name='warranty_value' value=\"".formatNumber($ic->fields["warranty_value"],true)."\" size='16'></td>";
+	
+	
+				echo "<td>".$LANG["financial"][16].":		</td>";
+				echo "<td >";
+				autocompletionTextField("warranty_info","glpi_infocoms","warranty_info",$ic->fields["warranty_info"],40,-1,-1,$option);	
+	
+				echo "</td></tr>";
+			}
+	
+			echo "<tr class='tab_bg_1'><td>".$LANG["financial"][21].":		</td><td  ".($show_immo?"":" colspan='3'")."><input type='text' name='value' $option value=\"".formatNumber($ic->fields["value"],true)."\" size='16'></td>";
+			if ($show_immo){
+				echo "<td>".$LANG["financial"][81]." :</td><td>";
+	
+				echo  TableauAmort($ic->fields["amort_type"],$ic->fields["value"],$ic->fields["amort_time"],$ic->fields["amort_coeff"],$ic->fields["buy_date"],$ic->fields["use_date"],$date_fiscale,"n");
+	
+				echo "</td>";
+			}
+			echo "</tr>";
+	
+			if ($show_immo){
+				echo "<tr class='tab_bg_1'><td>".$LANG["financial"][20]."*:		</td>";
+				echo "<td >";
+				$objectName = autoName($ic->fields["num_immo"], "num_immo", ($withtemplate==2), INFOCOM_TYPE,$ci->getField('FK_entities'));
+				autocompletionTextField("num_immo","glpi_infocoms","num_immo",$objectName,40,-1,-1,$option); 
+	
+				echo "</td>";
+	
+	
+	
+	
+				echo "<td>".$LANG["financial"][22].":		</td><td >";
+				if ($withtemplate==2){
+					echo getAmortTypeName($ic->fields["amort_type"]);
+				} else {
+					dropdownAmortType("amort_type",$ic->fields["amort_type"]);
+				}
+	
+				echo "</td></tr>";
+	
+				echo "<tr class='tab_bg_1'><td>".$LANG["financial"][23].":		</td><td>";
+				if ($withtemplate==2){
+					echo $ic->fields["amort_time"];
+				} else {
+					dropdownInteger("amort_time",$ic->fields["amort_time"],0,15);
+				}
+				echo " ".$LANG["financial"][9];
+				echo "</td>";
+	
+				echo "<td>".$LANG["financial"][77].":		</td>";
+				echo "<td >";
+				autocompletionTextField("amort_coeff","glpi_infocoms","amort_coeff",$ic->fields["amort_coeff"],10,-1,-1,$option);	
+				echo "</td></tr>";
+			}
+			//TCO
+			if ($device_type!=SOFTWARE_TYPE&&$device_type!=CARTRIDGE_TYPE&&$device_type!=CONSUMABLE_TYPE&&$device_type!=CONSUMABLE_ITEM_TYPE&&$device_type!=SOFTWARELICENSE_TYPE&&$device_type!=CARTRIDGE_ITEM_TYPE){
+				echo "<tr class='tab_bg_1'><td>";
+				echo $LANG["financial"][89]." : </td><td>";
+				echo showTco($ci->getField('ticket_tco'),$ic->fields["value"]);
+				echo "</td><td>".$LANG["financial"][90]." : 	</td><td>";
+				echo showTco($ci->getField('ticket_tco'),$ic->fields["value"],$ic->fields["buy_date"]);
+				echo "</td></tr>";
+			}
+	
+			if ($CFG_GLPI['mailing']){
+				echo "<tr class='tab_bg_1'><td>".$LANG["setup"][247].":		</td>";
+				echo "<td>";
+				echo dropdownAlertInfocoms("alert",$ic->fields["alert"]);
+		
+				echo "</td>";
+		
+		
+				echo "<td>&nbsp;</td>";
+				echo "<td >&nbsp;";
+				echo "</td></tr>";
+			}
+	
+			// commment
+			echo "<tr class='tab_bg_1'><td valign='top'>";
+			echo $LANG["common"][25].":	</td>";
+			echo "<td align='center' colspan='3'><textarea cols='80' $option rows='2' name='comments' >".$ic->fields["comments"]."</textarea>";
+			echo "</td></tr>";
+	
+			if ($canedit){
+				echo "<tr>";
+	
+				echo "<td class='tab_bg_2' colspan='2' align='center'>";
+				echo "<input type='hidden' name='ID' value=\"".$ic->fields['ID']."\">\n";
+				echo "<input type='submit' name='update' value=\"".$LANG["buttons"][7]."\" class='submit'>";
+				echo "</td>\n\n";
+				echo "<td class='tab_bg_2' colspan='2' align='center'>\n";
+				echo "<input type='submit' name='delete' value=\"".$LANG["buttons"][6]."\" class='submit'>";
+	
+				echo "</td>";
+				echo "</tr>";
+				echo "</table></div></form>";
+			}
+			else {
+				echo "</table></div>";
+			}
+	
 		}
-		else {
-			echo "</table></div>";
-		}
-
 	}
 }
 
