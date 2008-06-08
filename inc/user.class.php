@@ -493,10 +493,24 @@ class User extends CommonDBTM {
 				return false;
 
 			foreach ($fields as $k => $e) {
-					if (!empty($v[0][$e][0]))
-					$this->fields[$k] = addslashes($v[0][$e][0]);
+					if (empty($v[0][$e][0]))
+						$this->fields[$k] = "";
 					else
-					$this->fields[$k] = "";
+					{
+							switch ($e)
+							{
+								case "title":
+									$this->fields[$k] = externalImportDropdown("glpi_dropdown_user_titles",addslashes($v[0][$e][0]),-1,'',true);
+									break;
+								break;
+								default:
+								if (!empty($v[0][$e][0]))
+								$this->fields[$k] = addslashes($v[0][$e][0]);
+								else
+								$this->fields[$k] = "";
+								break;						
+							}
+					}	
 			}
 
 			// Get group fields
@@ -858,6 +872,10 @@ class User extends CommonDBTM {
 				dropdownYesNo('active',$this->fields['active']);
 				echo "</td></tr>";
 
+				echo "<tr class='tab_bg_1'><td class='center'>" . $LANG["common"][81] . "</td><td>";
+					dropdownValue("glpi_dropdown_user_titles","title",$this->fields["title"],1,-1);
+				echo "</td><td colspan='2'></td></tr>";
+
 				echo "<tr class='tab_bg_1' align='center'><td>" . $LANG["common"][25] . ":</td><td colspan='3'><textarea  cols='70' rows='3' name='comments' >" . $this->fields["comments"] . "</textarea></td>";
 				echo "</tr>";
 
@@ -1026,6 +1044,14 @@ class User extends CommonDBTM {
 				echo $this->fields["mobile"];
 			} else {
 				autocompletionTextField("mobile", "glpi_users", "mobile", $this->fields["mobile"], 40);
+			}
+			echo "</td></tr>";
+
+			echo "<tr class='tab_bg_1'><td class='center'>" . $LANG["common"][81] . "</td><td>";
+			if ($extauth) {
+				echo getDropdownName("glpi_dropdown_user_titles",$this->fields["title"]);
+			} else {
+				dropdownValue("glpi_dropdown_user_titles","title",$this->fields["title"],1,-1);
 			}
 			echo "</td></tr>";
 

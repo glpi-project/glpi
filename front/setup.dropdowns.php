@@ -200,6 +200,10 @@ if (isset($_POST['mass_delete'])){
 			
 			$LANG["Menu"][4]=>array(
 			"glpi_dropdown_software_category"=>$LANG["softwarecategories"][5],
+			),
+
+			$LANG["common"][34]=>array(
+			"glpi_dropdown_user_titles"=>$LANG["common"][81],
 			)
 			
 			); //end $opt
