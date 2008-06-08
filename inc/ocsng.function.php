@@ -2428,13 +2428,27 @@ function ocsUpdatePeripherals($device_type, $entity, $glpi_id, $ocs_id, $ocs_ser
 
  								//Update column "deleted" set value to 0 and set status to default
 								$input = array ();
-								$input["ID"] = $id_monitor;
-								$input["deleted"] = 0;
-								if ($cfg_ocs["default_state"]>0){
-									$input["state"] = $cfg_ocs["default_state"];
+								
+								$old = new Monitor;
+								if ($old->getFromDB($id_monitor)) {
+									if ($old->fields["deleted"]) {
+										$input["deleted"] = 0;
+									}		
+									if ($cfg_ocs["default_state"]>0 && $old->fields["state"]!=$cfg_ocs["default_state"]) {
+										$input["state"] = $cfg_ocs["default_state"];
+									}
+									if (empty($old->fields["name"]) && !empty($mon["name"])) {
+										$input["name"] = $mon["name"];
+									}
+									if (empty($old->fields["serial"]) && !empty($mon["serial"])) {
+										$input["serial"] = $mon["serial"];
+									}
+									if (count($input)) {
+										$input["ID"] = $id_monitor;
+										$input["_from_ocs"] = 1;
+										$m->update($input);
+									}									
 								}
-								$input["_from_ocs"] = 1;
-								$m->update($input);
 							} 
 						} else { // found in array 
 							unset ($import_periph[$id]);
