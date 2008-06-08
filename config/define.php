@@ -76,7 +76,7 @@
 	define("CONSUMABLE_TYPE",17);//
 	define("CONSUMABLE_ITEM_TYPE",18);
 	define("CARTRIDGE_ITEM_TYPE",19);
-	define("LICENSE_TYPE",20);
+	define("SOFTWARELICENSE_TYPE",20);
 	define("LINK_TYPE",21);
 	define("STATE_TYPE",22);
 	define("PHONE_TYPE",23);//
@@ -217,7 +217,7 @@
 			CONSUMABLE_TYPE => "glpi_consumables_type",
 			CONSUMABLE_ITEM_TYPE => "glpi_consumables",
 			CARTRIDGE_ITEM_TYPE => "glpi_cartridges",
-			LICENSE_TYPE => "glpi_licenses",
+			SOFTWARELICENSE_TYPE => "glpi_softwarelicenses",
 			LINK_TYPE => "glpi_links",
 			STATE_TYPE => "",
 			PHONE_TYPE => "glpi_phones",
@@ -233,6 +233,7 @@
 			MAILGATE_TYPE => "glpi_mailgate",
 			RULE_TYPE => "glpi_rules_descriptions",
 			TRANSFER_TYPE => "glpi_transfers",
+			SOFTWAREVERSION_TYPE => "glpi_softwareversions"
 			);
 
 	$INFOFORM_PAGES=array( 
@@ -255,7 +256,7 @@
 			CONSUMABLE_TYPE => "front/consumable.form.php",
 			CONSUMABLE_ITEM_TYPE => "??",
 			CARTRIDGE_ITEM_TYPE => "??",
-			LICENSE_TYPE => "??",
+			SOFTWARELICENSE_TYPE => "front/softwarelicense.form.php",
 			LINK_TYPE => "front/link.form.php",
 			STATE_TYPE => "??",
 			PHONE_TYPE => "front/phone.form.php",
@@ -271,6 +272,7 @@
 			MAILGATE_TYPE => "front/mailgate.form.php",
 			RULE_TYPE => "???",
 			TRANSFER_TYPE => "front/transfer.form.php",
+			SOFTWAREVERSION_TYPE => "front/softwareversion.form.php",
 			);
 	$SEARCH_PAGES=array( 
 			COMPUTER_TYPE=> "front/computer.php",

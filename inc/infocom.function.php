@@ -200,7 +200,7 @@ function showInfocomForm($target,$device_type,$dev_ID,$show_immo=true,$withtempl
 			echo "</td></tr>";
 		}
 		//TCO
-		if ($device_type!=SOFTWARE_TYPE&&$device_type!=CARTRIDGE_TYPE&&$device_type!=CONSUMABLE_TYPE&&$device_type!=CONSUMABLE_ITEM_TYPE&&$device_type!=LICENSE_TYPE&&$device_type!=CARTRIDGE_ITEM_TYPE){
+		if ($device_type!=SOFTWARE_TYPE&&$device_type!=CARTRIDGE_TYPE&&$device_type!=CONSUMABLE_TYPE&&$device_type!=CONSUMABLE_ITEM_TYPE&&$device_type!=SOFTWARELICENSE_TYPE&&$device_type!=CARTRIDGE_ITEM_TYPE){
 			echo "<tr class='tab_bg_1'><td>";
 			echo $LANG["financial"][89]." : </td><td>";
 			echo showTco($ci->getField('ticket_tco'),$ic->fields["value"]);

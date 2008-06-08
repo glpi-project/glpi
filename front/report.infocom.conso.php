@@ -93,7 +93,7 @@ function display_infocoms_report($device_type,$begin,$end){
 		case CARTRIDGE_ITEM_TYPE :
 			$query.=" INNER JOIN glpi_cartridges_type ON (glpi_cartridges.FK_glpi_cartridges_type = glpi_cartridges_type.ID) ".getEntitiesRestrictRequest("WHERE","glpi_cartridges_type");
 		break;
-		case LICENSE_TYPE :
+		case SOFTWARELICENSE_TYPE :
 			$query.=" INNER JOIN glpi_software ON (glpi_licenses.sID = glpi_software.ID) ".getEntitiesRestrictRequest("WHERE","glpi_software");
 		break;
 	
@@ -118,7 +118,7 @@ function display_infocoms_report($device_type,$begin,$end){
 
 		while ($line=$DB->fetch_array($result)){
 
-			if ($device_type==LICENSE_TYPE){
+			if ($device_type==SOFTWARELICENSE_TYPE){
 				$comp->getFromDB($device_type,$line["FK_device"]);
 				if ($comp->obj->fields["serial"]=="global"){
 					$line["value"]*=getInstallionsForLicense($line["FK_device"]);
@@ -199,7 +199,7 @@ echo "</td><td  align='center' valign='top'>";
 display_infocoms_report(CARTRIDGE_ITEM_TYPE,$_POST["date1"],$_POST["date2"]);
 echo "</td></tr>";
 echo "<tr><td>";
-display_infocoms_report(LICENSE_TYPE,$_POST["date1"],$_POST["date2"]);
+display_infocoms_report(SOFTWARELICENSE_TYPE,$_POST["date1"],$_POST["date2"]);
 echo "</td><td valign='top'>&nbsp;";
 
 echo "</td></tr>";
