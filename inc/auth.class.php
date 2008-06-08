@@ -585,6 +585,7 @@ class AuthLDAP extends CommonDBTM {
 		$this->fields['ldap_field_phone2']='';
 		$this->fields['ldap_field_mobile']='';
 		$this->fields['ldap_field_comments']='';
+		$this->fields['ldap_field_title']='';
 		$this->fields['use_dn']=0;
 	}
 	
@@ -612,6 +613,7 @@ class AuthLDAP extends CommonDBTM {
 			$this->fields['ldap_field_phone2']='othertelephone';
 			$this->fields['ldap_field_mobile']='mobile';
 			$this->fields['ldap_field_comments']='info';
+			$this->fields['ldap_field_title']='title';			
 			$this->fields['use_dn']=1;
 			break;
 			default:
@@ -753,7 +755,7 @@ class AuthLDAP extends CommonDBTM {
 			echo "<td class='center'>" . $LANG["help"][35] . " 2</td><td><input type=\"text\" name=\"ldap_field_phone2\" value=\"" . $this->fields["ldap_field_phone2"] . "\" ></td></tr>";
 
 			echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["common"][42] . "</td><td><input type=\"text\" name=\"ldap_field_mobile\" value=\"" . $this->fields["ldap_field_mobile"] . "\" ></td>";
-			echo "<td class='center'>&nbsp;</td><td>&nbsp;</td></tr>";
+			echo "<td class='center'>" . $LANG["common"][81] . " </td><td><input type=\"text\" name=\"ldap_field_title\" value=\"" . $this->fields["ldap_field_title"] . "\" ></td></tr>";
 
 			if (empty ($ID)){
 				echo "<tr class='tab_bg_2'><td align='center' colspan=4><input type=\"submit\" name=\"add_ldap\" class=\"submit\" value=\"" . $LANG["buttons"][2] . "\" ></td></tr></table>";

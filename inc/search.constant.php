@@ -2767,6 +2767,12 @@ $SEARCH_OPTION[USER_TYPE][80]['linkfield']='FK_entities';
 $SEARCH_OPTION[USER_TYPE][80]['name']=$LANG["entity"][0];
 $SEARCH_OPTION[USER_TYPE][80]['meta']=0;
 
+$SEARCH_OPTION[USER_TYPE][81]['table']='glpi_dropdown_user_titles';
+$SEARCH_OPTION[USER_TYPE][81]['field']='name';
+$SEARCH_OPTION[USER_TYPE][81]['linkfield']='title';
+$SEARCH_OPTION[USER_TYPE][81]['name']=$LANG["common"][81];
+$SEARCH_OPTION[USER_TYPE][81]['meta']=0;
+
 //////CONSUMABLE_TYPE
 
 $SEARCH_OPTION[CONSUMABLE_TYPE]['common']=$LANG["common"][32];

@@ -65,6 +65,7 @@ function diff_key() {
  * @param   $group_dn  dn of the group to import
  * @param   $ldap_server ID of the LDAP server to use
  * @param   $entity entity where group must to be imported
+ * @param 	$type the type of import (groups, users, users & groups)
  * @return  nothing
  */
 function ldapImportGroup ($group_dn,$ldap_server,$entity,$type){
@@ -207,7 +208,12 @@ function getGroupsFromLDAP($ldap_connection,$config_ldap,$filter,$search_in_grou
 		$attrs = array ("dn",$extra_attribute);
 			
 			if ($filter == '')
-				$filter = ($search_in_groups?$config_ldap->fields['ldap_group_condition']:$config_ldap->fields['ldap_condition']);
+			{
+				if ($search_in_groups)
+					$filter = (!empty($config_ldap->fields['ldap_group_condition'])?$config_ldap->fields['ldap_group_condition']:"(objectclass=*)");
+				else
+					$filter = (!empty($config_ldap->fields['ldap_condition'])?$config_ldap->fields['ldap_condition']:"(objectclass=*)");
+			}
 			
 			$sr = @ldap_search($ldap_connection, $config_ldap->fields['ldap_basedn'],$filter , $attrs);
 
@@ -258,7 +264,7 @@ function getGroupCNByDn($ldap_connection,$group_dn)
  * @param   $entity entity to search
  * @return  array of the groups
  */
-function getAllGroups($id_auth,$myfilter,$entity){
+function getAllGroups($id_auth,$filter,$filter2,$entity){
 	global $DB, $LANG,$CFG_GLPI;
 	$config_ldap = new AuthLDAP();
 	$res = $config_ldap->getFromDB($id_auth);
@@ -271,14 +277,14 @@ function getAllGroups($id_auth,$myfilter,$entity){
 		switch ($config_ldap->fields["ldap_search_for_groups"])
 		{
 			case 0:
-				$infos = getGroupsFromLDAP($ds,$config_ldap,$myfilter,false,$infos);
+				$infos = getGroupsFromLDAP($ds,$config_ldap,$filter,false,$infos);
 				break;
 			case 1:
-				$infos = getGroupsFromLDAP($ds,$config_ldap,$myfilter,true,$infos);
+				$infos = getGroupsFromLDAP($ds,$config_ldap,$filter,true,$infos);
 				break;
 			case 2:
-				$infos = getGroupsFromLDAP($ds,$config_ldap,$myfilter,true,$infos);
-				$infos = getGroupsFromLDAP($ds,$config_ldap,$myfilter,false,$infos);
+				$infos = getGroupsFromLDAP($ds,$config_ldap,$filter,true,$infos);
+				$infos = getGroupsFromLDAP($ds,$config_ldap,$filter2,false,$infos);
 			break;	
 		}
 		
@@ -320,12 +326,12 @@ function getAllGroups($id_auth,$myfilter,$entity){
  * @param   $entity working entity
  * @return  nothing
  */
-function showLdapGroups($target, $check, $start, $sync = 0,$filter='',$entity) {
+function showLdapGroups($target, $check, $start, $sync = 0,$filter='',$filter2='',$entity) {
 	global $DB, $CFG_GLPI, $LANG;
 
 	displayLdapFilter($target,false);
 	echo "<br>";	
-	$ldap_groups = getAllGroups($_SESSION["ldap_server"],$filter,$entity);
+	$ldap_groups = getAllGroups($_SESSION["ldap_server"],$filter,$filter2,$entity);
 
 	if (is_array($ldap_groups)){
 		$numrows = count($ldap_groups);
@@ -798,22 +804,54 @@ function displayLdapFilter($target,$users=true){
 	$config_ldap = new AuthLDAP();
 	$res = $config_ldap->getFromDB($_SESSION["ldap_server"]);
 
-	if ($users || (!$users && $config_ldap->fields["ldap_search_for_groups"] != 1))
-		$filter_name="ldap_condition";
-	else	
-	$filter_name="ldap_group_condition";
-
-	if (!isset($_SESSION[$filter_name]) || $_SESSION[$filter_name] == ''){
-		$filter_name=$config_ldap->fields[$filter_name];
+	if ($users)
+	{
+		$filter_name1="ldap_condition";
+		$filter_var = "ldap_filter";		
 	}
+	else
+	{	
+			$filter_var = "ldap_group_filter";
+			switch ($config_ldap->fields["ldap_search_for_groups"])
+			{
+				case 0 :
+					$filter_name1="ldap_condition";
+					break;
+				case 1 : 
+					$filter_name1="ldap_group_condition";
+					break;
+				case 2:
+					$filter_name1="ldap_group_condition";	
+					$filter_name2="ldap_condition";
+				break;	
+			}
+	}
+
+	if (!isset($_SESSION[$filter_var]) || $_SESSION[$filter_var] == '')
+		$_SESSION[$filter_var]=$config_ldap->fields[$filter_name1];
 		
 	echo "<div class='center'>";
 	echo "<form method='post' action=\"$target\">";
 	echo "<table class='tab_cadre'>"; 
 	echo "<tr><th colspan='2'>" . ($users?$LANG["setup"][263]:$LANG["setup"][253]) . "</th></tr>";
 	echo "<tr class='tab_bg_2'><td>";
-	echo "<input type='text' name='ldap_filter' value='" . $filter_name . "' size='70'>";
-	echo "&nbsp;<input class=submit type='submit' name='change_ldap_filter' value='" . $LANG["buttons"][2] . "'>";
+	echo "<input type='text' name='ldap_filter' value='" . $_SESSION[$filter_var] . "' size='70'>";
+	
+	//Only display when looking for groups in users AND groups
+	if (!$users && $config_ldap->fields["ldap_search_for_groups"] == 2)
+	{
+		if (!isset($_SESSION["ldap_group_filter2"]) || $_SESSION["ldap_group_filter2"] == '')
+			$_SESSION["ldap_group_filter2"]=$config_ldap->fields[$filter_name2];
+
+		echo "</td></tr>";
+		echo "<tr><th colspan='2'>" . $LANG["setup"][263] . "</th></tr>";		
+		echo "<tr class='tab_bg_2'><td>";
+		echo "<input type='text' name='ldap_filter2' value='" . $_SESSION["ldap_group_filter2"] . "' size='70'>";
+		echo "</td></tr>";
+	}	
+
+	echo "<tr class='tab_bg_2'><td align='center'>";
+	echo "<input class=submit type='submit' name='change_ldap_filter' value='" . $LANG["buttons"][2] . "'>";
 	echo "</td></tr></table>";
 	echo "</form></div>";	
 }
