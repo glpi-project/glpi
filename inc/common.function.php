@@ -417,7 +417,7 @@ function cleanAllItemCache($item,$group){
 	if ($CFG_GLPI["use_cache"]){
 		foreach ($CFG_GLPI["languages"] as $key => $val){
 			// clean main sheet
-			$CFG_GLPI["cache"]->remove($item."_".$key,$group);
+			$CFG_GLPI["cache"]->remove($item."_".$key,$group,true);
 		}
 	}
 }
