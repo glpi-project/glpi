@@ -229,7 +229,7 @@ if (isset($_POST["device_type"])){
 					} else { // Not infocoms
 						$ci=new CommonItem();
 						$ci->setType($_POST["device_type"],1);
-						$link_entity_type=-1;
+						$link_entity_type=array();
 						// Specific entity item
 						
 						if ($searchopt[$_POST["id_field"]]["table"]!=$LINK_ID_TABLE[$_POST["device_type"]]
@@ -241,7 +241,11 @@ if (isset($_POST["device_type"])){
 		
 							if ($ci2->getFromDB($_POST[$_POST["field"]])){
 								if (isset($ci2->fields["FK_entities"])&&$ci2->fields["FK_entities"]>=0){
-									$link_entity_type=$ci2->fields["FK_entities"];
+									if (isset($ci2->fields["recursive"])&&$ci2->fields["recursive"]){
+										$link_entity_type=getEntitySons($ci2->fields["FK_entities"]);
+									} else {
+										$link_entity_type[]=$ci2->fields["FK_entities"];
+									}
 								}
 		
 							}
@@ -250,11 +254,11 @@ if (isset($_POST["device_type"])){
 						foreach ($_POST["item"] as $key => $val){
 							if ($val==1) {
 								if ($ci->getFromDB($_POST["device_type"],$key)){
-									if ($link_entity_type<0
-									||$link_entity_type==$ci->obj->fields["FK_entities"]){
+									if (count($link_entity_type)==0
+										|| in_array($ci->obj->fields["FK_entities"], $link_entity_type)){
 										$ci->obj->update(array("ID"=>$key,$_POST["field"] => $_POST[$_POST["field"]]));
 									}
-									// else error_log("Access denied for update (not infocom)");
+									// else error_log("Access denied for update (not infocom) ci->obj->fields[FK_entities]=".$ci->obj->fields["FK_entities"]."  link_entity_type=".implode(",", $link_entity_type));
 								} 
 							}
 						}
