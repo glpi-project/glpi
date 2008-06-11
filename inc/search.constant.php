@@ -2773,6 +2773,12 @@ $SEARCH_OPTION[USER_TYPE][81]['linkfield']='title';
 $SEARCH_OPTION[USER_TYPE][81]['name']=$LANG["common"][81];
 $SEARCH_OPTION[USER_TYPE][81]['meta']=0;
 
+$SEARCH_OPTION[USER_TYPE][82]['table']='glpi_dropdown_user_types';
+$SEARCH_OPTION[USER_TYPE][82]['field']='name';
+$SEARCH_OPTION[USER_TYPE][82]['linkfield']='type';
+$SEARCH_OPTION[USER_TYPE][82]['name']=$LANG["common"][17];
+$SEARCH_OPTION[USER_TYPE][82]['meta']=0;
+
 //////CONSUMABLE_TYPE
 
 $SEARCH_OPTION[CONSUMABLE_TYPE]['common']=$LANG["common"][32];
