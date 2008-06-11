@@ -497,10 +497,11 @@ class User extends CommonDBTM {
 						$this->fields[$k] = "";
 					else
 					{
-							switch ($e)
+							switch ($k)
 							{
 								case "title":
-									$this->fields[$k] = externalImportDropdown("glpi_dropdown_user_titles",addslashes($v[0][$e][0]),-1,'',true);
+								case "type":
+									$this->fields[$k] = externalImportDropdown("glpi_dropdown_user_".$k."s",addslashes($v[0][$e][0]),-1,array(),'',true);
 									break;
 								break;
 								default:
@@ -874,7 +875,10 @@ class User extends CommonDBTM {
 
 				echo "<tr class='tab_bg_1'><td class='center'>" . $LANG["common"][81] . "</td><td>";
 					dropdownValue("glpi_dropdown_user_titles","title",$this->fields["title"],1,-1);
-				echo "</td><td colspan='2'></td></tr>";
+
+				echo "<td class='center'>" . $LANG["common"][17] . "</td><td>";
+					dropdownValue("glpi_dropdown_user_types","type",$this->fields["type"],1,-1);
+				echo "</td></tr>";
 
 				echo "<tr class='tab_bg_1' align='center'><td>" . $LANG["common"][25] . ":</td><td colspan='3'><textarea  cols='70' rows='3' name='comments' >" . $this->fields["comments"] . "</textarea></td>";
 				echo "</tr>";
@@ -1052,6 +1056,14 @@ class User extends CommonDBTM {
 				echo getDropdownName("glpi_dropdown_user_titles",$this->fields["title"]);
 			} else {
 				dropdownValue("glpi_dropdown_user_titles","title",$this->fields["title"],1,-1);
+			}
+			echo "</td></tr>";
+
+			echo "<tr class='tab_bg_1'><td class='center'>" . $LANG["common"][17] . "</td><td>";
+			if ($extauth) {
+				echo getDropdownName("glpi_dropdown_user_types",$this->fields["type"]);
+			} else {
+				dropdownValue("glpi_dropdown_user_types","type",$this->fields["type"],1,-1);
 			}
 			echo "</td></tr>";
 
