@@ -49,6 +49,7 @@ CREATE TABLE `glpi_auth_ldap` (
   `ldap_opt_deref` int(1) NOT NULL default '0',
   `ldap_field_title` varchar(255) collate utf8_unicode_ci NOT NULL,
   `ldap_field_type` varchar(255) collate utf8_unicode_ci NOT NULL,
+  `ldap_field_language` varchar(255) collate utf8_unicode_ci NOT NULL,  
   PRIMARY KEY  (`ID`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 

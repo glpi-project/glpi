@@ -319,6 +319,12 @@ function update071to072() {
  		$query = "ALTER TABLE `glpi_users` ADD `type` INT( 11 ) NOT NULL DEFAULT '0';";
  		$DB->query($query) or die("0.71 add type in glpi_users" . $LANG["update"][90] . $DB->error());
  	}	  	
+
+	if (!FieldExists("glpi_auth_ldap", "ldap_field_language"))
+ 	{ 
+ 		$query = "ALTER TABLE `glpi_auth_ldap` ADD `ldap_field_language` VARCHAR( 255 ) NOT NULL ;";
+ 		$DB->query($query) or die("0.71 add ldap_field_language in glpi_auth_ldap" . $LANG["update"][90] . $DB->error());
+ 	}	  	
 		
 } // fin 0.72 #####################################################################################
 ?>

@@ -469,7 +469,7 @@ class User extends CommonDBTM {
 	 * @return String : basedn of the user / false if not founded
 	 */
 	function getFromLDAP($ldap_connection,$ldap_method, $userdn, $login, $password = "") {
-		global $DB;
+		global $DB,$CFG_GLPI;
 
 		// we prevent some delay...
 		if (empty ($ldap_method["ldap_host"])) {
@@ -488,10 +488,10 @@ class User extends CommonDBTM {
 							
 			$sr = @ ldap_read($ldap_connection, $userdn, "objectClass=*", $f);
 			$v = ldap_get_entries($ldap_connection, $sr);
-			
+
 			if (!is_array($v) || count($v) == 0 || empty ($v[0][$fields['name']][0]))
 				return false;
-
+			
 			foreach ($fields as $k => $e) {
 					if (empty($v[0][$e][0]))
 						$this->fields[$k] = "";
@@ -499,6 +499,10 @@ class User extends CommonDBTM {
 					{
 							switch ($k)
 							{
+								case "language":
+									if (file_exists(GLPI_ROOT."/locales/".$v[0][$e][0].".php"))
+										$this->fields[$k]=addslashes($v[0][$e][0]);	
+									break;
 								case "title":
 								case "type":
 									$this->fields[$k] = externalImportDropdown("glpi_dropdown_user_".$k."s",addslashes($v[0][$e][0]),-1,array(),'',true);
