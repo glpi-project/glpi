@@ -555,7 +555,8 @@ function getLDAPSyncFields($auth_method_array){
  			'ldap_field_mobile'=>'mobile', 
  			'ldap_field_comments'=>'comments', 
  			'ldap_field_title'=>'title',
- 			'ldap_field_type'=>'type'  			
+ 			'ldap_field_type'=>'type',
+ 			'ldap_field_language'=>'language'		
  		); 
  	foreach ($fields as $key => $val){ 
  		if (isset($auth_method_array[$key])){ 
