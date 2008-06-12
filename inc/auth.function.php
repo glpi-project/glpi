@@ -674,7 +674,7 @@ function loadGroups() {
 
 	$_SESSION["glpigroups"] = array ();
 
-
+/*
 	$first=true;
 	$entities="";
 	foreach ($_SESSION['glpiactiveentities'] as $val){
@@ -682,9 +682,10 @@ function loadGroups() {
 		else $first=false;
 		$entities.=$val;
 	}			
+*/
 
-
-	$query_gp = "SELECT FK_groups FROM glpi_users_groups LEFT JOIN glpi_groups ON (glpi_users_groups.FK_groups = glpi_groups.ID) WHERE glpi_users_groups.FK_users='" . $_SESSION['glpiID'] . "' AND glpi_groups.FK_entities IN ($entities)";
+	$query_gp = "SELECT FK_groups FROM glpi_users_groups LEFT JOIN glpi_groups ON (glpi_users_groups.FK_groups = glpi_groups.ID) WHERE glpi_users_groups.FK_users='" . $_SESSION['glpiID'] . "' " .
+			getEntitiesRestrictRequest(" AND ","glpi_groups","FK_entities",$_SESSION['glpiactiveentities'],true);
 
 	$result_gp = $DB->query($query_gp);
 	if ($DB->numrows($result_gp)) {
