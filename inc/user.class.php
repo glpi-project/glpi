@@ -623,8 +623,11 @@ class User extends CommonDBTM {
 			"dn"
 		);
 
-		$filter = "(& $group_condition (|($group_field_member=$user_dn)($group_field_member=$login_field=$user_dn)))";
-
+		if (!$use_dn)		
+			$filter = "(& $group_condition (|($group_field_member=$user_dn)($group_field_member=$login_field=$user_dn)))";
+		else
+			$filter = "(& $group_condition ($group_field_member=$user_dn))";
+			
 		//Perform the search
 		$sr = ldap_search($ds, $ldap_base_dn, $filter, $attrs);
 
