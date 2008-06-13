@@ -283,10 +283,26 @@ function Connect($sID,$cID,$type,$dohistory=1) {
 
 	// Handle case where already used, should never happen (except from OCS sync)
 	if (!$dev->getField('is_global') ){
-		$query = "SELECT ID FROM glpi_connect_wire WHERE glpi_connect_wire.end1 = '$sID' AND glpi_connect_wire.type = '$type'";
+		$query = "SELECT ID,end2 FROM glpi_connect_wire WHERE glpi_connect_wire.end1 = '$sID' AND glpi_connect_wire.type = '$type'";
 		$result = $DB->query($query);
 		while ($data=$DB->fetch_assoc($result)){
 			Disconnect($data["ID"],$dohistory);
+
+			// As we come from OCS, do not lock the device
+			switch ($type) {
+				case MONITOR_TYPE:
+					deleteInOcsArray($data["end2"],$data["ID"],"import_monitor");
+					break;
+				case DEVICE_TYPE:
+					deleteInOcsArray($data["end2"],$data["ID"],"import_device");
+					break;
+				case PERIPHERAL_TYPE:
+					deleteInOcsArray($data["end2"],$data["ID"],"import_peripheral");
+					break;
+				case PRINTER_TYPE:
+					deleteInOcsArray($data["end2"],$data["ID"],"import_printers");
+					break;
+			}
 		}
 	}
 	
