@@ -557,9 +557,11 @@ class User extends CommonDBTM {
 					if ($ldap_method["use_dn"])
 						$user_tmp = $userdn;
 					else
-						$user_tmp = $ldap_method["ldap_login"]."=".$login;
+						//$user_tmp = $ldap_method["ldap_login"]."=".$login;
+						//Don't add $ldap_method["ldap_login"]."=", because sometimes it may not work (for example with posixGroup)
+						$user_tmp = $login;
 						
-					$v2 = $this->ldap_get_user_groups($ldap_connection, $ldap_method["ldap_basedn"], $user_tmp, $ldap_method["ldap_group_condition"], $ldap_method["ldap_field_group_member"]);
+					$v2 = $this->ldap_get_user_groups($ldap_connection, $ldap_method["ldap_basedn"], $user_tmp, $ldap_method["ldap_group_condition"], $ldap_method["ldap_field_group_member"],$ldap_method["use_dn"],$ldap_method["ldap_login"]);
 					
 					$v = array_merge($v, $v2);
 				}
@@ -630,7 +632,7 @@ class User extends CommonDBTM {
 	 *
 	 * @return String : basedn of the user / false if not founded
 	 */
-	function ldap_get_user_groups($ds, $ldap_base_dn, $user_dn, $group_condition, $group_field_member) {
+	function ldap_get_user_groups($ds, $ldap_base_dn, $user_dn, $group_condition, $group_field_member,$use_dn,$login_field) {
 
 		$groups = array ();
 		$listgroups = array ();
@@ -640,7 +642,10 @@ class User extends CommonDBTM {
 			"dn"
 		);
 
-		$filter = "(& $group_condition ($group_field_member=$user_dn))";
+		if (!$use_dn)		
+			$filter = "(& $group_condition (|($group_field_member=$user_dn)($group_field_member=$login_field=$user_dn)))";
+		else
+			$filter = "(& $group_condition ($group_field_member=$user_dn))";
 
 		//Perform the search
 		$sr = ldap_search($ds, $ldap_base_dn, $filter, $attrs);
