@@ -473,9 +473,13 @@ class SoftwareVersion extends CommonDBTM {
 			echo "<div class='center'><table class='tab_cadre_fixe'>";
 			if ($ID>0){
 				echo "<tr><th colspan='2'>".$LANG["common"][2]." $ID";
-				echo " - <a href='software.form.php?ID=".$this->fields["sID"]."'>".getDropdownName("glpi_software",$this->fields["sID"])."</a></th></tr>";
+				echo " - <a href='software.form.php?ID=".$this->fields["sID"]."'>".getDropdownName("glpi_software",$this->fields["sID"])."</a>";
+				echo "</th></tr>";
 			} else {
-				echo "<tr><th colspan='2'>".$LANG["software"][7]."</th></tr>";
+				echo "<tr><th colspan='2'>".$LANG["software"][7];
+				echo " - <a href='software.form.php?ID=".$this->fields["sID"]."'>".getDropdownName("glpi_software",$this->fields["sID"])."</a>";
+
+				echo "</th></tr>";
 				echo "<input type='hidden' name='sID' value='$sID'>";
 			}
 
@@ -648,9 +652,13 @@ class SoftwareLicense extends CommonDBTM {
 			echo "<div class='center'><table class='tab_cadre_fixe'>";
 			if ($ID>0){
 				echo "<tr><th colspan='2'>".$LANG["common"][2]." $ID";
-				echo " - <a href='software.form.php?ID=".$this->fields["sID"]."'>".getDropdownName("glpi_software",$this->fields["sID"])."</a></th></tr>";
+				echo " - <a href='software.form.php?ID=".$this->fields["sID"]."'>".getDropdownName("glpi_software",$this->fields["sID"])."</a>";
+				echo "</th></tr>";
 			} else {
-				echo "<tr><th colspan='2'>".$LANG["software"][8]."</th></tr>";
+				echo "<tr><th colspan='2'>".$LANG["software"][8];
+				echo " - <a href='software.form.php?ID=".$this->fields["sID"]."'>".getDropdownName("glpi_software",$this->fields["sID"])."</a>";
+
+				echo "</th></tr>";
 				echo "<input type='hidden' name='sID' value='$sID'>";
 			}
 
