@@ -569,7 +569,7 @@ function commonCheckForUseGLPI(){
 		echo "<td>".$LANG["install"][96]." - ".$LANG["install"][89]."</td></tr>";
 	}
 	else{	
-		if ($mem<32*1024*1024){ // memoire insuffisante
+		if ($mem<64*1024*1024){ // memoire insuffisante
 			echo "<td  class='red'><b>".$LANG["install"][87]." $mem octets</b><br>".$LANG["install"][88]."<br>".$LANG["install"][90]."</td></tr>";
 		}
 		else{ // on a sufisament de mémoire on passe à la suite
