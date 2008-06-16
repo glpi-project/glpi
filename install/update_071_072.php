@@ -196,8 +196,8 @@ function update071to072() {
 							else
 								$query .= " AND expire = '$expire'";
 							if ($result_searchlic = $DB->query($query_search_lic)){
-								if ($DB->numrows($result_searchvers)>0){
-									$found_lic=$DB->result($result_searchvers,0,0);
+								if ($DB->numrows($result_searchlic)>0){
+									$found_lic=$DB->result($result_searchlic,0,0);
 								}
 							}
 
