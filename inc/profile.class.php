@@ -153,19 +153,19 @@ class Profile extends CommonDBTM{
 					default:
 						switch ($val){
 							case '0':
-								$query.=" AND (glpi_profiles.$key = '0' OR glpi_profiles.$key IS NULL ) ";
+								$query.=" AND (glpi_profiles.$key = '0' OR glpi_profiles.$key IS NULL OR glpi_profiles.$key = '') ";
 								break;	
 							case '1':
-								$query.=" AND (glpi_profiles.$key = '1' OR glpi_profiles.$key = '0' OR glpi_profiles.$key IS NULL ) ";
+								$query.=" AND (glpi_profiles.$key = '1' OR glpi_profiles.$key = '0' OR glpi_profiles.$key IS NULL  OR glpi_profiles.$key = '') ";
 								break;	
 							case 'r':
-								$query.=" AND (glpi_profiles.$key = 'r' OR glpi_profiles.$key IS NULL ) ";
+								$query.=" AND (glpi_profiles.$key = 'r' OR glpi_profiles.$key IS NULL  OR glpi_profiles.$key = '') ";
 								break;	
 							case 'w':
-								$query.=" AND (glpi_profiles.$key = 'w' OR glpi_profiles.$key = 'r' OR glpi_profiles.$key IS NULL ) ";
+								$query.=" AND (glpi_profiles.$key = 'w' OR glpi_profiles.$key = 'r' OR glpi_profiles.$key IS NULL  OR glpi_profiles.$key = '') ";
 								break;	
 							default:
-								$query.=" AND glpi_profiles.$key IS NULL ";
+								$query.=" AND glpi_profiles.$key IS NULL  OR glpi_profiles.$key = ''";
 								break;
 						}
 					break;

@@ -642,7 +642,7 @@ $LANG["job"][41]="Fiksētas izmaksas";
 $LANG["job"][42]="Materiālu izmaksas"; 
 $LANG["job"][43]="Kopējās izmaksas"; 
 $LANG["job"][44]="Pieprasījuma avots"; 
-$LANG["job"][45]="Pievienot sekojumu"; 
+$LANG["job"][45]="Pievienot papildus uzdevumu"; 
 
 $LANG["joblist"][0]="Statuss"; 
 $LANG["joblist"][1]="Tikai manus"; 
