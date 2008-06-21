@@ -266,7 +266,13 @@ if (isset($_POST['mass_delete'])){
 		if (haveRight("entity_dropdown","w")){
 			$title=$LANG["setup"][73];
 			
-			if (!ereg("popup",$_SERVER['PHP_SELF'])){
+			if (ereg("popup",$_SERVER['PHP_SELF'])){
+				
+				if ($value2>0) {
+					$title .= " (" . $LANG["common"][15] . ":&nbsp;" . getDropdownName("glpi_dropdown_locations", $value2) . ")";
+				}
+				
+			} else {
 				echo "<div align='center'><form method='get' action=\"".$_SERVER['PHP_SELF']."\">";
 				echo "<table class='tab_cadre' cellpadding='5'><tr><th colspan='2'>";
 				echo $LANG["setup"][77].": </th></tr><tr class='tab_bg_1'><td>";
