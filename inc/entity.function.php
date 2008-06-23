@@ -90,7 +90,8 @@ function showEntityUser($target,$ID){
 		$query="SELECT DISTINCT glpi_profiles.ID, glpi_profiles.name 
 				FROM glpi_users_profiles 
 				LEFT JOIN glpi_profiles ON (glpi_users_profiles.FK_profiles = glpi_profiles.ID)
-				WHERE glpi_users_profiles.FK_entities='$ID';";
+				LEFT JOIN glpi_users ON (glpi_users.ID = glpi_users_profiles.FK_users)
+				WHERE glpi_users_profiles.FK_entities='$ID' AND glpi_users.deleted=0;";
 	
 		$result=$DB->query($query);
 		if ($DB->numrows($result)>0){
@@ -101,7 +102,7 @@ function showEntityUser($target,$ID){
 				$query="SELECT glpi_users.*,glpi_users_profiles.ID as linkID,glpi_users_profiles.recursive,glpi_users_profiles.dynamic
 					FROM glpi_users_profiles 
 					LEFT JOIN glpi_users ON (glpi_users.ID = glpi_users_profiles.FK_users) 
-					WHERE glpi_users_profiles.FK_entities='$ID' AND glpi_users_profiles.FK_profiles='".$data['ID']."'
+					WHERE glpi_users_profiles.FK_entities='$ID' AND glpi_users.deleted=0 AND glpi_users_profiles.FK_profiles='".$data['ID']."'   
 					ORDER BY glpi_users_profiles.FK_profiles, glpi_users.name, glpi_users.realname, glpi_users.firstname";
 				$result2=$DB->query($query);
 				if ($DB->numrows($result2)>0){
