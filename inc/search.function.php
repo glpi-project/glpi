@@ -2851,7 +2851,7 @@ function addLeftJoin ($type,$ref_table,&$already_link_tables,$new_table,$linkfie
 		if (isset($PLUGIN_HOOKS['plugin_types'][$type])){
 			$function='plugin_'.$PLUGIN_HOOKS['plugin_types'][$type].'_addLeftJoin';
 			if (function_exists($function)){
-				$out=$function($type,$ref_table,$new_table,$linkfield,$already_link_tables);
+				$out=$function($type,$ref_table,$new_table,$linkfield);
 				if (!empty($out)){
 					return $out;
 				}
