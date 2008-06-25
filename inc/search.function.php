@@ -1450,6 +1450,20 @@ function addOrderBy($type,$ID,$order,$key=0){
 		return " ORDER BY ITEM_$key $order ";
 	}
 
+	// Plugin can override core definition for its type
+	if ($type>1000){
+		if (isset($PLUGIN_HOOKS['plugin_types'][$type])){
+			$function='plugin_'.$PLUGIN_HOOKS['plugin_types'][$type].'_addOrderBy';
+			if (function_exists($function)){
+				$out=$function($type,$ID,$order,$key);
+				if (!empty($out)){
+					return $out;
+				}
+			} 
+		} 
+	}
+
+
 	switch($table.".".$field){
 		case "glpi_device_hdd.specif_default" :
 		case "glpi_device_ram.specif_default" :
@@ -1487,18 +1501,6 @@ function addOrderBy($type,$ID,$order,$key=0){
             		return " ORDER BY INET_ATON($table.$field) $order ";
             	break;
 		default:
-			// Plugin case
-			if ($type>1000){
-				if (isset($PLUGIN_HOOKS['plugin_types'][$type])){
-					$function='plugin_'.$PLUGIN_HOOKS['plugin_types'][$type].'_addOrderBy';
-					if (function_exists($function)){
-						$out=$function($type,$ID,$order,$key);
-						if (!empty($out)){
-							return $out;
-						}
-					} 
-				} 
-			}
 
 			return " ORDER BY $table.$field $order ";
 		break;
@@ -1592,6 +1594,20 @@ function addSelect ($type,$ID,$num,$meta=0,$meta_type=0){
 		if ($LINK_ID_TABLE[$meta_type]!=$table)
 			$addtable="_".$meta_type;
 	}
+
+	// Plugin can override core definition for its type
+	if ($type>1000){
+		if (isset($PLUGIN_HOOKS['plugin_types'][$type])){
+			$function='plugin_'.$PLUGIN_HOOKS['plugin_types'][$type].'_addSelect';
+			if (function_exists($function)){
+				$out=$function($type,$ID,$num);
+				if (!empty($out)){
+					return $out;
+				}
+			} 
+		} 
+	}
+
 
 	switch ($table.".".$field){
 		case "glpi_software.name" :
@@ -1735,20 +1751,6 @@ function addSelect ($type,$ID,$num,$meta=0,$meta_type=0){
 		break;
 		default:
 
-			// Plugin case
-			if ($type>1000){
-				if (isset($PLUGIN_HOOKS['plugin_types'][$type])){
-					$function='plugin_'.$PLUGIN_HOOKS['plugin_types'][$type].'_addSelect';
-					if (function_exists($function)){
-						$out=$function($type,$ID,$num);
-						if (!empty($out)){
-							return $out;
-						}
-					} 
-				} 
-			}
-
-
 			if ($meta){
 				return " GROUP_CONCAT( DISTINCT ".$table.$addtable.".".$field." SEPARATOR '$$$$') AS ".$NAME."_$num, ";
 			}
@@ -1818,6 +1820,20 @@ function addWhere ($link,$nott,$type,$ID,$val,$meta=0){
  	}
 
 	$SEARCH=makeTextSearch($val,$nott);
+
+	// Plugin can override core definition for its type
+	if ($type>1000){
+		if (isset($PLUGIN_HOOKS['plugin_types'][$type])){
+			$function='plugin_'.$PLUGIN_HOOKS['plugin_types'][$type].'_addWhere';
+			if (function_exists($function)){
+				$out=$function($link,$nott,$type,$ID,$val);
+				if (!empty($out)){
+					return $out;
+				}
+			} 
+		} 
+	}
+
 
 	switch ($inittable.".".$field){
 		case "glpi_users.name" :
@@ -2016,20 +2032,6 @@ function addWhere ($link,$nott,$type,$ID,$val,$meta=0){
 		break;
 		default:
 
-			
-			// Plugin case
-			if ($type>1000){
-				if (isset($PLUGIN_HOOKS['plugin_types'][$type])){
-					$function='plugin_'.$PLUGIN_HOOKS['plugin_types'][$type].'_addWhere';
-					if (function_exists($function)){
-						$out=$function($link,$nott,$type,$ID,$val);
-						if (!empty($out)){
-							return $out;
-						}
-					} 
-				} 
-			}
-
 			$ADD="";	
 			if (($nott&&$val!="NULL")||$val=='^$') {
 				$ADD=" OR $table.$field IS NULL";
@@ -2100,6 +2102,18 @@ function giveItem ($type,$field,$data,$num,$linkfield=""){
 		return giveItem ($data["TYPE"],ereg_replace($CFG_GLPI["union_search_type"][$type],$LINK_ID_TABLE[$data["TYPE"]],$field),$data,$num,$linkfield);
 	}
 
+	// Plugin can override core definition for its type
+	if ($type>1000){
+		if (isset($PLUGIN_HOOKS['plugin_types'][$type])){
+			$function='plugin_'.$PLUGIN_HOOKS['plugin_types'][$type].'_giveItem';
+			if (function_exists($function)){
+				$out=$function($type,$field,$data,$num,$linkfield);
+				if (!empty($out)){
+					return $out;
+				}
+			} 
+		} 
+	}
 
 	switch ($field){
 		case "glpi_computers.name" :
@@ -2724,18 +2738,6 @@ function giveItem ($type,$field,$data,$num,$linkfield=""){
 			}
 			break;
 		default:
-			// Plugin case
-			if ($type>1000){
-				if (isset($PLUGIN_HOOKS['plugin_types'][$type])){
-					$function='plugin_'.$PLUGIN_HOOKS['plugin_types'][$type].'_giveItem';
-					if (function_exists($function)){
-						$out=$function($type,$field,$data,$num,$linkfield);
-						if (!empty($out)){
-							return $out;
-						}
-					} 
-				} 
-			}
 
 			return $data["ITEM_$num"];
 			break;
@@ -2844,6 +2846,20 @@ function addLeftJoin ($type,$ref_table,&$already_link_tables,$new_table,$linkfie
 	
 	if (in_array(translate_table($new_table,$device_type,$meta_type).".".$linkfield,$already_link_tables)) return "";
 	else array_push($already_link_tables,translate_table($new_table,$device_type,$meta_type).".".$linkfield);
+
+	// Plugin can override core definition for its type
+	if ($type>1000){
+		if (isset($PLUGIN_HOOKS['plugin_types'][$type])){
+			$function='plugin_'.$PLUGIN_HOOKS['plugin_types'][$type].'_addLeftJoin';
+			if (function_exists($function)){
+				$out=$function($type,$ref_table,$new_table,$linkfield);
+				if (!empty($out)){
+					return $out;
+				}
+			} 
+		} 
+	}
+
 	
 	switch ($new_table){
 		// No link
@@ -3020,18 +3036,6 @@ function addLeftJoin ($type,$ref_table,&$already_link_tables,$new_table,$linkfie
 			return $out." LEFT JOIN $new_table $AS ON (DEVICE_".HDD_DEVICE.".FK_device = $nt.ID) ";
 		break;
 		default :
-			// Plugin case
-			if ($type>1000){
-				if (isset($PLUGIN_HOOKS['plugin_types'][$type])){
-					$function='plugin_'.$PLUGIN_HOOKS['plugin_types'][$type].'_addLeftJoin';
-					if (function_exists($function)){
-						$out=$function($type,$ref_table,$new_table,$linkfield);
-						if (!empty($out)){
-							return $out;
-						}
-					} 
-				} 
-			}
 			if (!empty($linkfield)){
 				return " LEFT JOIN $new_table $AS ON ($rt.$linkfield = $nt.ID) ";
 			} else {
