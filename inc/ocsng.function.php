@@ -468,7 +468,7 @@ function ocsImportComputer($ocs_id, $ocs_server_id, $lock = 0, $defaultentity = 
 				// machines founded -> try to link
 				if (is_array($found_computers) && count($found_computers)>0){
 					foreach ($found_computers as $glpi_id){
-						if (ocsLinkComputer($ocs_id,$ocs_server_id,$glpi_id)){ 
+						if (ocsLinkComputer($ocs_id,$ocs_server_id,$glpi_id,$canlink)){ 
 							return 3;
 						}
 					}
@@ -519,7 +519,7 @@ function ocsImportComputer($ocs_id, $ocs_server_id, $lock = 0, $defaultentity = 
 			return 2;
 }
 
-function ocsLinkComputer($ocs_id, $ocs_server_id, $glpi_id) {
+function ocsLinkComputer($ocs_id, $ocs_server_id, $glpi_id,$link_auto=0) {
 	global $DB, $DBocs, $LANG;
 	checkOCSconnection($ocs_server_id);
 
@@ -568,7 +568,7 @@ function ocsLinkComputer($ocs_id, $ocs_server_id, $glpi_id) {
 			$input["_from_ocs"] = 1;
 			
 			// Not already import from OCS / mark default state 
-			if (!$comp->fields['ocs_import'] && $ocsConfig["default_state"]>0){
+			if ($link_auto || (!$comp->fields['ocs_import'] && $ocsConfig["default_state"]>0)) {
 				$input["state"] = $ocsConfig["default_state"];
 			}
 	
