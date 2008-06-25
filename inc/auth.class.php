@@ -381,9 +381,12 @@ class Identification {
 	function destroySession() {
 		startGlpiSession();
 		// Unset all of the session variables.
-		$_SESSION = array();
 		
+		
+		session_unset();
 		session_destroy();
+		$_SESSION = array();
+		session_write_close();
 	}
 
 	/**
