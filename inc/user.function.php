@@ -102,6 +102,14 @@ function showDeviceUser($ID){
 	foreach ($CFG_GLPI["linkuser_types"] as $type){
 		if (haveTypeRight($type,'r')){
 			$query="SELECT * FROM ".$LINK_ID_TABLE[$type]." WHERE FK_users='$ID'";
+
+			if (in_array($LINK_ID_TABLE[$type],$CFG_GLPI["template_tables"])){
+				$query.=" AND is_template=0 ";
+			}
+			if (in_array($LINK_ID_TABLE[$type],$CFG_GLPI["deleted_tables"])){
+				$query.=" AND deleted=0 ";
+			}
+
 			$result=$DB->query($query);
 			if ($DB->numrows($result)>0){
 				$ci->setType($type);
@@ -136,6 +144,14 @@ function showDeviceUser($ID){
 	
 		foreach ($CFG_GLPI["linkuser_types"] as $type){
 			$query="SELECT * FROM ".$LINK_ID_TABLE[$type]." WHERE $group_where";
+
+			if (in_array($LINK_ID_TABLE[$type],$CFG_GLPI["template_tables"])){
+				$query.=" AND is_template=0 ";
+			}
+			if (in_array($LINK_ID_TABLE[$type],$CFG_GLPI["deleted_tables"])){
+				$query.=" AND deleted=0 ";
+			}
+
 			$result=$DB->query($query);
 			if ($DB->numrows($result)>0){
 				$ci->setType($type);
