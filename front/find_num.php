@@ -39,11 +39,12 @@ $NEEDED_ITEMS=array("user");
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-if(isset($_GET["name"]) && ($_GET["name"] == "Helpdesk") && ($CFG_GLPI["permit_helpdesk"] == "1"))
-{
+if($CFG_GLPI["permit_helpdesk"]){
 	$id = new Identification();
 	$id->initSession();
-} else exit();
+} else {
+	exit();
+}
 
 // Send UTF8 Headers
 header("Content-Type: text/html; charset=UTF-8");

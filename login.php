@@ -205,10 +205,35 @@ if (!isset ($_POST["noAUTO"]) && $auth_method=checkAlternateAuthSystems()) {
 	// GET THE IP OF THE CLIENT
 	$ip = (getenv("HTTP_X_FORWARDED_FOR") ? getenv("HTTP_X_FORWARDED_FOR") : getenv("REMOTE_ADDR"));
 
+
+	$identificat->initSession();
+
 	// now we can continue with the process...
 	if ($identificat->auth_succeded) {
-		$identificat->initSession();
-	} else { // we have done at least a good login? No, we exit. 
+		// Log Event
+		if ($CFG_GLPI["debug"] == DEMO_MODE){
+			logEvent("-1", "system", 3, "login", $_POST['login_name'] . " logged in." . $LANG["log"][40] . " : " . $ip);
+		} else {
+			logEvent("-1", "system", 3, "login", $_POST['login_name'] . " " . $LANG["log"][40] . " : " . $ip);
+		}
+	
+		// Redirect management
+		$REDIRECT = "";
+		if (isset ($_POST['redirect'])&&strlen($_POST['redirect'])>0){
+			$REDIRECT = "?redirect=" .$_POST['redirect'];
+		} else if (isset ($_GET['redirect'])&&strlen($_GET['redirect'])>0){
+			$REDIRECT = "?redirect=" .$_GET['redirect'];
+		}
+	
+		// Redirect to Command Central if not post-only
+		if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
+			glpi_header($CFG_GLPI['root_doc'] . "/front/helpdesk.public.php$REDIRECT");
+		} else {
+			glpi_header($CFG_GLPI['root_doc'] . "/front/central.php$REDIRECT");
+		}
+
+	} else {
+		// we have done at least a good login? No, we exit. 
 		nullHeader("Login", $_SERVER['PHP_SELF']);
 		echo '<div align="center"><b>' . $identificat->getErr() . '</b><br><br>';
 		echo '<b><a href="' . $CFG_GLPI["root_doc"] . '/logout.php">' . $LANG["login"][1] . '</a></b></div>';
@@ -219,28 +244,5 @@ if (!isset ($_POST["noAUTO"]) && $auth_method=checkAlternateAuthSystems()) {
 		}
 		nullFooter();
 		exit();
-	}
-
-	// Log Event
-	if ($CFG_GLPI["debug"] == DEMO_MODE){
-		logEvent("-1", "system", 3, "login", $_POST['login_name'] . " logged in." . $LANG["log"][40] . " : " . $ip);
-	} else {
-		logEvent("-1", "system", 3, "login", $_POST['login_name'] . " " . $LANG["log"][40] . " : " . $ip);
-	}
-
-	// Redirect management
-	$REDIRECT = "";
-	if (isset ($_POST['redirect'])&&strlen($_POST['redirect'])>0){
-		$REDIRECT = "?redirect=" .$_POST['redirect'];
-	} else if (isset ($_GET['redirect'])&&strlen($_GET['redirect'])>0){
-		$REDIRECT = "?redirect=" .$_GET['redirect'];
-	}
-
-
-	// Redirect to Command Central if not post-only
-	if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk") {
-		glpi_header($CFG_GLPI['root_doc'] . "/front/helpdesk.public.php$REDIRECT");
-	} else {
-		glpi_header($CFG_GLPI['root_doc'] . "/front/central.php$REDIRECT");
-	}
+	} 
 ?>
