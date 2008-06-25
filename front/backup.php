@@ -284,7 +284,7 @@ function restoreMySqlDump($DB,$dumpFile , $duree){
 
 		//    echo $TPSCOUR."<br>";
 
-		// on indique le  length pour la fonction fgets pour compatibilit�avec les versions <=PHP 4.2
+		// specify read length to be able to read long lines
 		$buffer=fgets($fileHandle,102400);
 
 		if(substr($buffer, 0, 1) != "#")
