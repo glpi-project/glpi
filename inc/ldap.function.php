@@ -230,11 +230,9 @@ function getGroupsFromLDAP($ldap_connection,$config_ldap,$filter,$search_in_grou
 					}
 					else
 					{
-						for ($ligne_extra=0; $ligne_extra < $infos[$ligne][$extra_attribute]["count"];$ligne_extra++)
-						{
-							$cn = getGroupCNByDn($ldap_connection,$infos[$ligne][$extra_attribute][$ligne_extra]);
-							$groups[$infos[$ligne][$extra_attribute][$ligne_extra]]= array("cn"=>getGroupCNByDn($ldap_connection,$infos[$ligne][$extra_attribute][$ligne_extra]),"search_type" => "users"); 
-						}
+						if (isset($infos[$ligne][$extra_attribute]))
+							for ($ligne_extra=0; $ligne_extra < $infos[$ligne][$extra_attribute]["count"];$ligne_extra++)
+								$groups[$infos[$ligne][$extra_attribute][$ligne_extra]]= array("cn"=>getGroupCNByDn($ldap_connection,$infos[$ligne][$extra_attribute][$ligne_extra]),"search_type" => "users"); 
 					}
 				}
 			}
