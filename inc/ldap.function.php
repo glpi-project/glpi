@@ -45,7 +45,7 @@ if (!defined('GLPI_ROOT')) {
  * 
  * @return  Returns an array containing all the entries from first array  that are not present in any of the other arrays.
  */
-function diff_key() {
+/*function diff_key() {
 	$argCount  = func_num_args();
 	$diff_arg_prefix = 'diffArg';
 	$diff_arg_names = array();
@@ -60,6 +60,7 @@ function diff_key() {
 	eval("\$result = array_diff(".$diffArrString.");");
 	return $result;
 }
+*/
 /** Converts an array of parameters into a query string to be appended to a URL.
  *
  * @param   $group_dn  dn of the group to import
@@ -479,7 +480,7 @@ function getAllLdapUsers($id_auth, $sync = 0,$myfilter='') {
 	//If add, do the difference between ldap users and glpi users
 	if (!$sync)
 	{
-		$diff = 	diff_key($ldap_users,$glpi_users);
+		$diff = 	array_diff_key($ldap_users,$glpi_users);
 		$list = array();
 		
 		foreach ($diff as $user)
