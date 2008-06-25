@@ -514,16 +514,11 @@ function step1($update)
 	// Parser test
 	echo "<tr class='tab_bg_1'><td><b>".$LANG["install"][8]."</b></td>";
 	// PHP Version  - exclude PHP3
-	if (substr(phpversion(),0,1) == "3") {
+	if (substr(phpversion(),0,1) == "5") {
+		echo "<td>".$LANG["install"][11]."</td></tr>";
+	} else {
 		$error = 2;
 		echo "<td  class='red'>".$LANG["install"][9]."</a>.\n</td>";
-	}
-	elseif (substr(phpversion(),0,3) == "4.0" and ereg("0|1",substr(phpversion(),4,1))) {
-		echo "<td><span class='red'>&nbsp;<td>".$LANG["install"][10]."<td>";
-		if($error != 2) $error = 1;
-	}
-	else {
-		echo "<td>".$LANG["install"][11]."</td></tr>";
 	}
 	// end parser test
 
