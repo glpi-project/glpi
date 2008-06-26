@@ -39,6 +39,35 @@ if (!defined('GLPI_ROOT')) {
 	die("Sorry. You can't access directly to this file");
 }
 
+function ocsGetTagLimit($cfg_ocs){
+
+	$WHERE="";
+	if (!empty ($cfg_ocs["tag_limit"])){
+		$splitter = explode("$", trim($cfg_ocs["tag_limit"]));
+		if (count($splitter)) {
+			$WHERE = "( accountinfo.TAG='" . $splitter[0] . "' ";
+			for ($i = 1; $i < count($splitter); $i++){
+				$WHERE .= " OR accountinfo.TAG='" .$splitter[$i] . "' ";
+			}	
+			$WHERE .= ")";
+		}
+	}
+	if (!empty ($cfg_ocs["tag_exclude"])){
+		$splitter = explode("$", $cfg_ocs["tag_exclude"]);
+		
+		if (count($splitter)) {
+			if (!empty($WHERE)){
+				$WHERE.=" AND ";
+			}
+			$WHERE .= "accountinfo.TAG <> '" . $splitter[0] . "' ";
+			for ($i = 1; $i < count($splitter); $i++){
+				$WHERE .= " AND accountinfo.TAG <> '" .$splitter[$i] . "' ";
+			}	
+		}
+	}
+	return $WHERE;
+}
+
 function ocsShowNewComputer($ocs_server_id, $advanced, $check, $start, $tolinked = false) {
 	global $DB, $DBocs, $LANG, $CFG_GLPI;
 
@@ -47,22 +76,12 @@ function ocsShowNewComputer($ocs_server_id, $advanced, $check, $start, $tolinked
 
 	$cfg_ocs = getOcsConf($ocs_server_id);
 
-	$WHERE = "";
-	if (!empty ($cfg_ocs["tag_limit"])) {
-		$splitter = explode("$", $cfg_ocs["tag_limit"]);
-		if (count($splitter)) {
-			$WHERE = "WHERE TAG='" . $splitter[0] . "' ";
-			for ($i = 1; $i < count($splitter); $i++){
-				$WHERE .= " OR TAG='" .$splitter[$i] . "' ";
-			}	
-		}
-	}
+	$WHERE = ocsGetTagLimit($cfg_ocs);
 
 	$query_ocs = "SELECT hardware.*, accountinfo.TAG AS TAG 
 				FROM hardware 
-				INNER JOIN accountinfo ON (hardware.ID = accountinfo.HARDWARE_ID) 
-				$WHERE 
-				ORDER BY hardware.NAME";
+				INNER JOIN accountinfo ON (hardware.ID = accountinfo.HARDWARE_ID) ".
+				(!empty($WHERE)?"WHERE $WHERE":"")." ORDER BY hardware.NAME";
 	$result_ocs = $DBocs->query($query_ocs);
 
 	// Existing OCS - GLPI link
@@ -1250,16 +1269,9 @@ function cron_ocsng() {
 		// "after" insert in ocsweb.hardware  and "before" insert in ocsweb.deleted_equiv 
 		$query_ocs .= " AND LASTDATE < TIMESTAMPADD(MINUTE,-3,now()) ";
 		
-		
-		if (!empty ($cfg_ocs["tag_limit"])) {
-			$splitter = explode("$", $cfg_ocs["tag_limit"]);
-			if (count($splitter)) {
-				$query_ocs .= " AND (accountinfo.TAG='" . $splitter[0] . "' ";
-				for ($i = 1; $i < count($splitter); $i++){ 
-					$query_ocs .= " OR accountinfo.TAG='" .$splitter[$i] . "' ";
-				}
-				$query_ocs .=")"; 
-			}
+		$tag_limit=ocsGetTagLimit($cfg_ocs);
+		if (!empty($tag_limit)){
+			$query_ocs.= "AND ".$tag_limit;
 		}
 		
 		$query_ocs.=" ORDER BY hardware.LASTDATE ASC LIMIT ".$cfg_ocs["cron_sync_number"]; 

@@ -287,7 +287,8 @@ if (!defined('GLPI_ROOT')){
 		global $CFG_GLPI;
 		$max_recursion=5;
 		$lifetime=DEFAULT_CACHE_LIFETIME;
-		while ($max_recursion>0&&(($size=filesizeDirectory(GLPI_CACHE_DIR))>MAX_CACHE_SIZE)){
+		$max_size=$CFG_GLPI['max_cache_size']*1024*1024;
+		while ($max_recursion>0&&(($size=filesizeDirectory(GLPI_CACHE_DIR))>$max_size)){
 			$cache_options = array(
 				'cacheDir' => GLPI_CACHE_DIR,
 				'lifeTime' => $lifetime,

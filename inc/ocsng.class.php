@@ -206,6 +206,8 @@ class Ocsng extends CommonDBTM {
 
 		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["ocsconfig"][17] . " </td><td> <input type=\"text\" size='30' name=\"tag_limit\" value=\"" . $this->fields["tag_limit"] . "\"></td></tr>";
 
+		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["ocsconfig"][9] . " </td><td> <input type=\"text\" size='30' name=\"tag_exclude\" value=\"" . $this->fields["tag_exclude"] . "\"></td></tr>";
+
 		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["ocsconfig"][16] . " </td><td>";
 		dropdownValue("glpi_dropdown_state", "default_state", $this->fields["default_state"]);
 		echo "</td></tr>";
