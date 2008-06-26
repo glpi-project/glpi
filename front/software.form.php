@@ -148,9 +148,6 @@ else
 					showLinkOnDevice(SOFTWARE_TYPE,$_GET["ID"]);
 					displayPluginAction(SOFTWARE_TYPE,$_GET["ID"],$_SESSION['glpi_onglet'],$_GET["withtemplate"]);
 					break;
-				case 3 :
-					showLicenses($_GET["ID"]);
-					break;
 				case 2 :
 					showInstallations($_GET["ID"]);
 					break;
@@ -180,6 +177,7 @@ else
 				default :
 					if (!displayPluginAction(SOFTWARE_TYPE,$_GET["ID"],$_SESSION['glpi_onglet'],$_GET["withtemplate"])){
 						showVersions($_GET["ID"]);
+						showLicenses($_GET["ID"]);
 					}
 					break;
 			}

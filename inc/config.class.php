@@ -162,10 +162,11 @@ class Config extends CommonDBTM {
 			
 				echo "</td>"; 
 				
-				echo "<td class='center'> " . $LANG["setup"][183] . " </td><td>";
-				dropdownYesNo("use_cache", $CFG_GLPI["use_cache"]);
-				echo "</td>";
-				
+
+				echo "<td class='center'> " . $LANG["setup"][186] . " </td><td>";
+				dropdownGMT("glpi_timezone", $CFG_GLPI["glpi_timezone"]);
+				echo "</td></tr>";								
+
 			
 				echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["setup"][102] . " </td><td><select name=\"event_loglevel\">";
 				$level = $CFG_GLPI["event_loglevel"];
@@ -211,10 +212,17 @@ class Config extends CommonDBTM {
 				dropdownYesNo("use_errorlog", $CFG_GLPI["use_errorlog"]);
 				echo "</td></tr>";								
 	
+
+
 				echo "<tr class='tab_bg_2'>";
-				echo "<td class='center'> " . $LANG["setup"][186] . " </td><td>";
-				dropdownGMT("glpi_timezone", $CFG_GLPI["glpi_timezone"]);
-				echo "</td><td colspan='2'></td></tr>";								
+
+				echo "<td class='center'> " . $LANG["setup"][183] . " </td><td>";
+				dropdownYesNo("use_cache", $CFG_GLPI["use_cache"]);
+				echo " - ".getSize(filesizeDirectory(GLPI_CACHE_DIR));
+				echo "</td><td class='center'>".$LANG["setup"][187]."</td><td>";
+				dropdownInteger('cache_max_size',$CFG_GLPI["cache_max_size"],5,500,5);
+				echo " MB";
+				echo "</td></tr>";
 									
 				echo "<tr class='tab_bg_1'><td colspan='4' align='center'><strong>" . $LANG["setup"][10] . "</strong></td></tr>";
 			

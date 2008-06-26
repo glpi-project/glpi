@@ -45,8 +45,6 @@
 
 	// CACHE CONTROL
 	define("DEFAULT_CACHE_LIFETIME",WEEK_TIMESTAMP);
-	// Max cache size in octet : default 20 Mb
-	define("MAX_CACHE_SIZE",20000000);
 	define("CACHE_FILELOCKINGCONTROL",true);
 	define("CACHE_READCONTROL",true);
 	define("CACHE_WRITECONTROL",true);

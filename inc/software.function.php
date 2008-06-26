@@ -72,7 +72,10 @@ function showVersions($sID) {
 		return false;
 	$canedit = haveRight("software", "w");
 
-	echo "<center><a href='softwareversion.form.php?sID=$sID'>".$LANG["software"][7]."</a></center><br>";
+	echo "<div class='center'>";
+	if ($canedit){
+		echo "<a href='softwareversion.form.php?sID=$sID'>".$LANG["software"][7]."</a><br>";
+	}
 	
 	$query = "SELECT * FROM glpi_softwareversions 
 		WHERE (sID = '$sID')";
@@ -85,7 +88,11 @@ function showVersions($sID) {
 			echo "</tr>";
 			while ($data=$DB->fetch_assoc($result)){
 				echo "<tr class='tab_bg_2'>";
-				echo "<td><a href='softwareversion.form.php?ID=".$data['ID']."'>".$data['name'].(empty($data['name'])?$data['ID']:"")."</a></td>";
+				if ($canedit){
+					echo "<td><a href='softwareversion.form.php?ID=".$data['ID']."'>".$data['name'].(empty($data['name'])?$data['ID']:"")."</a></td>";
+				} else {
+						echo "<td>".$data['name'].(empty($data['name'])?$data['ID']:"")."</td>";
+				}
 				echo "<td>".countInstallationsForVersion($data['ID'])."</td>";
 				echo "<td>".$data['comments']."</td></tr>";
 			}
@@ -95,6 +102,7 @@ function showVersions($sID) {
 		}
 	
 	}
+	echo "</div>";
 }
 
 /**
@@ -109,7 +117,11 @@ function showLicenses($sID) {
 		return false;
 	$canedit = haveRight("software", "w");
 	
-	echo "<center><a href='softwarelicense.form.php?sID=$sID'>".$LANG["software"][8]."</a></center><br>";
+	echo "<br><div class='center'>";
+	
+	if ($canedit){
+		echo "<a href='softwarelicense.form.php?sID=$sID'>".$LANG["software"][8]."</a><br>";
+	}
 
 	$query = "SELECT glpi_softwarelicenses.*, buyvers.name as buyname, usevers.name AS usename
 		FROM glpi_softwarelicenses
@@ -131,7 +143,11 @@ function showLicenses($sID) {
 			echo "</tr>";
 			while ($data=$DB->fetch_assoc($result)){
 				echo "<tr class='tab_bg_2'>";
-				echo "<td><a href='softwarelicense.form.php?ID=".$data['ID']."'>".$data['name'].(empty($data['name'])?$data['ID']:"")."</a></td>";
+				if ($canedit){
+					echo "<td><a href='softwarelicense.form.php?ID=".$data['ID']."'>".$data['name'].(empty($data['name'])?$data['ID']:"")."</a></td>";
+				} else {
+					echo "<td>".$data['name'].(empty($data['name'])?$data['ID']:"")."</td>";
+				}
 				echo "<td>".$data['serial']."</td>";
 				echo "<td>".($data['number']>0?$data['number']:$LANG["software"][4])."</td>";
 				echo "<td>".getDropdownName("glpi_dropdown_licensetypes",$data['type'])."</td>";
@@ -151,6 +167,7 @@ function showLicenses($sID) {
 		}
 	
 	}
+	echo "</div>";
 }
 
 /**
@@ -164,6 +181,7 @@ function showInstallations($sID) {
 	if (!haveRight("software", "r"))
 		return false;
 	$canedit = haveRight("software", "w");
+	$canshowcomputer = haveRight("computer", "r");
 	
 
 	$query = "SELECT glpi_inst_software.*,glpi_computers.name AS compname, glpi_computers.ID AS cID,
@@ -187,10 +205,20 @@ function showInstallations($sID) {
 					if ($current_version!=-1){
 						echo "</td></tr>";
 					} 
-					echo "<tr class='tab_bg_2'><td><a href='softwareversion.form.php?ID=".$data['vID']."'>".$data['version']."</a></td><td>";
+					echo "<tr class='tab_bg_2'><td>";
+					if ($canedit){
+						echo "<a href='softwareversion.form.php?ID=".$data['vID']."'>".$data['version']."</a>";
+					} else {
+						echo $data['version'];
+					}
+					echo "</td><td>";
 					$current_version=$data['version'];
 				}
-				echo "<a href='computer.form.php?ID=".$data['cID']."'>".$data['compname']."</a><br>";
+				if ($canshowcomputer){
+					echo "<a href='computer.form.php?ID=".$data['cID']."'>".$data['compname']."</a><br>";
+				} else {
+					echo "".$data['compname']."<br>";
+				}
 			}
 			echo "</table>";
 		} else {
