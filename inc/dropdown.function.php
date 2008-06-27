@@ -145,11 +145,13 @@ function dropdownValue($table,$myname,$value='',$display_comments=1,$entity_rest
 
 	if ($display_comments){
 		echo "<img alt='' src='".$CFG_GLPI["root_doc"]."/pics/aide.png' onmouseout=\"cleanhide('comments_$myname$rand')\" onmouseover=\"cleandisplay('comments_$myname$rand')\" ";
-		if (is_array($entity_restrict) && count($entity_restrict)==1) {
-			$entity_restrict=$entity_restrict[0];
-		}
-		if ($dropdown_right && !empty($which) && !is_array($entity_restrict)) {
-			echo " style='cursor:pointer;'  onClick=\"var w = window.open('".$CFG_GLPI["root_doc"]."/front/popup.php?popup=dropdown&amp;which=$which"."&amp;rand=$rand&amp;FK_entities=$entity_restrict' ,'glpipopup', 'height=400, width=1000, top=100, left=100, scrollbars=yes' );w.focus();\"";
+		if ($dropdown_right && !empty($which)) {
+			if (is_array($entity_restrict) && count($entity_restrict)==1) {
+				$entity_restrict=array_pop($entity_restrict);
+			}
+			if (!is_array($entity_restrict)) {
+				echo " style='cursor:pointer;'  onClick=\"var w = window.open('".$CFG_GLPI["root_doc"]."/front/popup.php?popup=dropdown&amp;which=$which"."&amp;rand=$rand&amp;FK_entities=$entity_restrict' ,'glpipopup', 'height=400, width=1000, top=100, left=100, scrollbars=yes' );w.focus();\"";
+			}
 		}
 		echo ">";
 		echo "<span class='over_link' id='comments_$myname$rand'>".nl2br($comments)."</span>";
