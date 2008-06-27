@@ -1152,7 +1152,7 @@ $LANG["profiles"][39]="Attribuisci";
 $LANG["profiles"][40]="Modifica"; 
 $LANG["profiles"][41]="Crea"; 
 $LANG["profiles"][42]="Associa"; 
-$LANG["profiles"][43]="Authentication and synchronization users method"; 
+$LANG["profiles"][43]="Metodo di autenticazione e sincronizzazione degli utenti"; 
 
 $LANG["registry"][1]="Hive"; 
 $LANG["registry"][2]="Path"; 
