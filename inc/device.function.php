@@ -453,13 +453,13 @@ function unlink_device_computer($compDevID,$dohistory=1){
 		
 		if ($dohistory){
 			$device = new Device($data["device_type"]);
-			$device->getFromDB($data["FK_device"]);
-
-			$changes[0]='0';
-			$changes[1]=addslashes($device->fields["designation"]);
-			$changes[2]="";
-			// history log
-			historyLog ($data["FK_computers"],COMPUTER_TYPE,$changes,$data["device_type"],HISTORY_DELETE_DEVICE);
+			if ($device->getFromDB($data["FK_device"])){
+				$changes[0]='0';
+				$changes[1]=addslashes($device->fields["designation"]);
+				$changes[2]="";
+				// history log
+				historyLog ($data["FK_computers"],COMPUTER_TYPE,$changes,$data["device_type"],HISTORY_DELETE_DEVICE);
+			}
 		}
 
 		return true;
