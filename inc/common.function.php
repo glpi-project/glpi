@@ -453,8 +453,17 @@ function getSearchOptions(){
 	
 	$plugsearch=getPluginSearchOption();
 	if (count($plugsearch)){
-		$SEARCH_OPTION+=$plugsearch;
+		foreach ($plugsearch as $key => $val){
+			if (!isset($SEARCH_OPTION[$key])){
+				$SEARCH_OPTION[$key]=array();
+			} else {
+				$SEARCH_OPTION[$key]+=array('plugins'=>$LANG["common"][29]);
+			}
+
+			$SEARCH_OPTION[$key]+=$val;
+		}
 	}
+
 	return $SEARCH_OPTION;
 }
 

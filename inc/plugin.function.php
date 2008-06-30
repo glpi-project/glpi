@@ -312,11 +312,18 @@ function getPluginSearchOption(){
 		foreach ($tab as $plug){
 			$function="plugin_".$plug."_getSearchOption";
 			if (function_exists($function)) {
-				$sopt+=$function();
+				$tmp=$function();
+				if (count($tmp)){
+					foreach ($tmp as $key => $val){
+						if (!isset($sopt[$key])){
+							$sopt[$key]=array();
+						}
+						$sopt[$key]+=$val;
+					}
+				}
 			}
 		}
 	}
-
 	return $sopt;
 }
 /**

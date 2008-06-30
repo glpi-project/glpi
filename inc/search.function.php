@@ -2099,7 +2099,6 @@ function giveItem ($type,$field,$data,$num,$linkfield=""){
 		return giveItem ($data["TYPE"],ereg_replace($CFG_GLPI["union_search_type"][$type],$LINK_ID_TABLE[$data["TYPE"]],$field),$data,$num,$linkfield);
 	}
 
-
 	// Plugin can override core definition for its type
 	if ($type>1000){
 		if (isset($PLUGIN_HOOKS['plugin_types'][$type])){
@@ -2112,7 +2111,6 @@ function giveItem ($type,$field,$data,$num,$linkfield=""){
 			} 
 		} 
 	}
-
 
 	switch ($field){
 		case "glpi_computers.name" :
@@ -2737,6 +2735,7 @@ function giveItem ($type,$field,$data,$num,$linkfield=""){
 			}
 			break;
 		default:
+			
 			return $data["ITEM_$num"];
 			break;
 	}
@@ -3033,6 +3032,20 @@ function addLeftJoin ($type,$ref_table,&$already_link_tables,$new_table,$linkfie
 			return $out." LEFT JOIN $new_table $AS ON (DEVICE_".HDD_DEVICE.".FK_device = $nt.ID) ";
 		break;
 		default :
+
+			if (preg_match("/^glpi_plugin_([a-zA-Z]+)/", $new_table, $matches) 
+			 || preg_match("/^glpi_dropdown_plugin_([a-zA-Z]+)/", $new_table, $matches) ){
+				if (count($matches)==2){
+					$plug=$matches[1];
+					$function='plugin_'.$plug.'_addLeftJoin';
+					if (function_exists($function)){
+						$out=$function($type,$ref_table,$new_table,$linkfield);
+						if (!empty($out)){
+							return $out;
+						}
+					} 
+				}
+			} 
 
 			if (!empty($linkfield)){
 				return " LEFT JOIN $new_table $AS ON ($rt.$linkfield = $nt.ID) ";
