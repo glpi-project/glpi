@@ -3033,19 +3033,21 @@ function addLeftJoin ($type,$ref_table,&$already_link_tables,$new_table,$linkfie
 		break;
 		default :
 
-			if (preg_match("/^glpi_plugin_([a-zA-Z]+)/", $new_table, $matches) 
-			 || preg_match("/^glpi_dropdown_plugin_([a-zA-Z]+)/", $new_table, $matches) ){
-				if (count($matches)==2){
-					$plug=$matches[1];
-					$function='plugin_'.$plug.'_addLeftJoin';
-					if (function_exists($function)){
-						$out=$function($type,$ref_table,$new_table,$linkfield);
-						if (!empty($out)){
-							return $out;
-						}
-					} 
-				}
-			} 
+			if ($type<=1000){
+				if (preg_match("/^glpi_plugin_([a-zA-Z]+)/", $new_table, $matches) 
+				|| preg_match("/^glpi_dropdown_plugin_([a-zA-Z]+)/", $new_table, $matches) ){
+					if (count($matches)==2){
+						$plug=$matches[1];
+						$function='plugin_'.$plug.'_addLeftJoin';
+						if (function_exists($function)){
+							$out=$function($type,$ref_table,$new_table,$linkfield);
+							if (!empty($out)){
+								return $out;
+							}
+						} 
+					}
+				} 
+			}
 
 			if (!empty($linkfield)){
 				return " LEFT JOIN $new_table $AS ON ($rt.$linkfield = $nt.ID) ";
