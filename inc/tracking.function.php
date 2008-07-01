@@ -585,11 +585,12 @@ function showJobShort($data, $followups,$output_type=HTML_OUTPUT,$row_num=0) {
 
 		$eigth_column="<strong>".$data["name"]."</strong>&nbsp;";
 
-		$eigth_column.= "<img alt='' src='".$CFG_GLPI["root_doc"]."/pics/aide.png' onmouseout=\"cleanhide('comments_tracking".$data["ID"]."')\" onmouseover=\"cleandisplay('comments_tracking".$data["ID"]."')\" >";
-		$eigth_column.="<span class='over_link' id='comments_tracking".$data["ID"]."'>".nl2br($data['contents'])."</span>";
+		if ($output_type==HTML_OUTPUT)
+			$eigth_column.= "<img alt='' src='".$CFG_GLPI["root_doc"]."/pics/aide.png' onmouseout=\"cleanhide('comments_tracking".$data["ID"]."')\" onmouseover=\"cleandisplay('comments_tracking".$data["ID"]."')\" >";
+			$eigth_column.="<span class='over_link' id='comments_tracking".$data["ID"]."'>".nl2br($data['contents'])."</span>";
+		}
 		
-		if ($followups&&$output_type==HTML_OUTPUT)
-		{
+		if ($followups&&$output_type==HTML_OUTPUT){
 			$eigth_column.=showFollowupsShort($data["ID"]);
 		}
 
@@ -1627,7 +1628,7 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$to
 					if ($assign_ent!=0) $title.=" ".$LANG["financial"][26]." = ".getDropdownName("glpi_enterprises",$assign_ent);
 				}
 				if ($request_type!=0) $title.=" - ".$LANG["job"][44]." = ".getRequestTypeName($request_type);
-				if ($category!=0) $title.=" - ".$LANG["common"][36]." = ".getDropdownName("glpi_dropdown_tracking_category",category);
+				if ($category!=0) $title.=" - ".$LANG["common"][36]." = ".getDropdownName("glpi_dropdown_tracking_category",$category);
 				if ($priority!=0) $title.=" - ".$LANG["joblist"][2]." = ".getPriorityName($priority);
 				if ($type!=0&&$item!=0){
 					$ci=new CommonItem();
