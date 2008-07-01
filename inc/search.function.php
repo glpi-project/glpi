@@ -2959,7 +2959,7 @@ function addLeftJoin ($type,$ref_table,&$already_link_tables,$new_table,$linkfie
 		if (isset($PLUGIN_HOOKS['plugin_types'][$type])){
 			$function='plugin_'.$PLUGIN_HOOKS['plugin_types'][$type].'_addLeftJoin';
 			if (function_exists($function)){
-				$out=$function($type,$ref_table,$new_table,$linkfield);
+				$out=$function($type,$ref_table,$new_table,$linkfield,$already_link_tables);
 				if (!empty($out)){
 					return $out;
 				}
@@ -3149,7 +3149,7 @@ function addLeftJoin ($type,$ref_table,&$already_link_tables,$new_table,$linkfie
 						$plug=$matches[1];
 						$function='plugin_'.$plug.'_addLeftJoin';
 						if (function_exists($function)){
-							$out=$function($type,$ref_table,$new_table,$linkfield);
+							$out=$function($type,$ref_table,$new_table,$linkfield,$already_link_tables);
 							if (!empty($out)){
 								return $out;
 							}
