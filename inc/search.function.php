@@ -769,7 +769,8 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 		for ($i=0;$i<$_SESSION["glpisearchcount2"][$type];$i++)
 			if (isset($type2[$i])&&$type2[$i]>0&&isset($contains2[$i])&&strlen($contains2[$i])) {
 				if (!in_array($LINK_ID_TABLE[$type2[$i]],$already_link_tables2)){
-					$FROM.=addMetaLeftJoin($type,$type2[$i],$already_link_tables2,($contains2[$i]=="NULL"));
+					$FROM.=addMetaLeftJoin($type,$type2[$i],$already_link_tables2,
+						(($contains2[$i]=="NULL")||(strstr($link2[$i],"NOT"))));
 				}
 			}
 		// Link items tables
@@ -862,7 +863,9 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 			{
 				$LINK="";
 				if (isset($link2[$key])) $LINK=$link2[$key];
-				if ($SEARCH_OPTION[$type2[$key]][$field2[$key]]["meta"]==1){		
+
+				// For not statement need to take into account all the group by items
+				if ($SEARCH_OPTION[$type2[$key]][$field2[$key]]["meta"]==1 || ereg("NOT",$link2[$key])){		
 					$GROUPBY=addGroupByHaving($GROUPBY,$SEARCH_OPTION[$type2[$key]][$field2[$key]]["table"].".".$SEARCH_OPTION[$type2[$key]][$field2[$key]]["field"],strtolower($contains2[$key]),$key,1,$LINK);
 				} else { // Meta Where Search
 					$LINK=" ";
@@ -1418,7 +1421,13 @@ function addGroupByHaving($GROUPBY,$field,$val,$num,$meta=0,$link=""){
 			}
 		break;
 		default :
-		$GROUPBY.= $NAME.$num.makeTextSearch($val,$NOT);
+			$ADD="";
+			if (($NOT&&$val!="NULL")||$val=='^$') {
+				$ADD=" OR $NAME$num IS NULL";
+			}
+
+			$GROUPBY.= " ( ".$NAME.$num.makeTextSearch($val,$NOT)." $ADD ) ";
+
 		break;
 	}
 
@@ -3185,18 +3194,17 @@ function addLeftJoin ($type,$ref_table,&$already_link_tables,$new_table,$linkfie
  *@param $from_type reference item type ID 
  *@param $to_type item type to add
  *@param $already_link_tables2 array of tables already joined
- *@param $null Used LEFT JOIN (null generation) or INNER JOIN for strict join
+ *@param $nullornott Used LEFT JOIN (null generation) or INNER JOIN for strict join
  *
  *
  *@return Meta Left join string
  *
  **/
-function addMetaLeftJoin($from_type,$to_type,&$already_link_tables2,$null){
+function addMetaLeftJoin($from_type,$to_type,&$already_link_tables2,$nullornott){
 	global $LINK_ID_TABLE;
 
-
 	$LINK=" INNER JOIN ";
-	if ($null)
+	if ($nullornott)
 		$LINK=" LEFT JOIN ";
 
 	switch ($from_type){
