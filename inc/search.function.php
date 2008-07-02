@@ -864,8 +864,8 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 				$LINK="";
 				if (isset($link2[$key])) $LINK=$link2[$key];
 
-				// For not statement need to take into account all the group by items
-				if ($SEARCH_OPTION[$type2[$key]][$field2[$key]]["meta"]==1 || ereg("NOT",$link2[$key])){		
+				// For AND NOT statement need to take into account all the group by items
+				if ($SEARCH_OPTION[$type2[$key]][$field2[$key]]["meta"]==1 || ereg("AND NOT",$link2[$key])){		
 					$GROUPBY=addGroupByHaving($GROUPBY,$SEARCH_OPTION[$type2[$key]][$field2[$key]]["table"].".".$SEARCH_OPTION[$type2[$key]][$field2[$key]]["field"],strtolower($contains2[$key]),$key,1,$LINK);
 				} else { // Meta Where Search
 					$LINK=" ";
