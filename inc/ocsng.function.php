@@ -397,19 +397,20 @@ function ocsManageDeleted($ocs_server_id) {
 
 					}
 
-					$sql_id = "SELECT glpi_id FROM glpi_ocs_link WHERE ocs_id=".$data["ID"]." AND ocs_server_id=$ocs_server_id";
-					if ($res_id = $DB->query($sql_id)){
-						if ($DB->numrows($res_id)>0){
-							//Add history to indicates that the ocs_id changed
-							$changes[0]='0';
-							//Old ocs_id
-							$changes[1]=$del;
-							//New ocs_id
-							$changes[2]=$data["ID"];
-							historyLog ($DB->result($res_id,0,"glpi_id"),COMPUTER_TYPE,$changes,0,HISTORY_OCS_IDCHANGED);
+					if ($data) {
+						$sql_id = "SELECT glpi_id FROM glpi_ocs_link WHERE ocs_id=".$data["ID"]." AND ocs_server_id=$ocs_server_id";
+						if ($res_id = $DB->query($sql_id)){
+							if ($DB->numrows($res_id)>0){
+								//Add history to indicates that the ocs_id changed
+								$changes[0]='0';
+								//Old ocs_id
+								$changes[1]=$del;
+								//New ocs_id
+								$changes[2]=$data["ID"];
+								historyLog ($DB->result($res_id,0,"glpi_id"),COMPUTER_TYPE,$changes,0,HISTORY_OCS_IDCHANGED);
+							}
 						}
-					}
-					
+					}					
 				} else { // Deleted
 					if (ereg("-", $del))
 						$query = "SELECT * 
