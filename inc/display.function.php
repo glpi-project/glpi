@@ -2103,13 +2103,6 @@ function showProfileSelecter($target){
 		echo "<li>";
 
 
-		echo "<a onclick=\"entity_window.show();\" href='#modal_entity_contents' title='".$_SESSION["glpiactive_entity_name"]."' class='entity_select' id='global_entity_select'>".$_SESSION["glpiactive_entity_shortname"]."</a>";
-
-		echo "<div id='modal_entity_contents' class='invisible'>";	
-		displayActiveEntities($target,"activeentity");
-		echo "</div>";
-		
-
 		echo "<script  type='text/javascript'>";
 		echo "cleanhide('modal_entity_contents');";
 		echo "
@@ -2121,11 +2114,15 @@ function showProfileSelecter($target){
 				modal: true,
 				autoScroll: true,
 				title: \"".$LANG["entity"][10]."\",
+				autoLoad: '".$CFG_GLPI['root_doc']."/ajax/entitytree.php?target=$target'
 			});
-			entity_window.html=Ext.get('modal_entity_contents').dom.innerHTML;
-			Ext.get('modal_entity_contents').remove();
 		";
 		echo "</script>";
+
+		echo "<a onclick=\"entity_window.show();\" href='#modal_entity_contents' title='".$_SESSION["glpiactive_entity_name"]."' class='entity_select' id='global_entity_select'>".$_SESSION["glpiactive_entity_shortname"]."</a>";
+
+		
+
 
 		echo "</li>";
 	}
