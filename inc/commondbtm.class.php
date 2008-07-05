@@ -389,8 +389,6 @@ class CommonDBTM {
 	 *@param $input array : the _POST vars returned bye the item form when press add
 	 *
 	 *@return integer the new ID of the added item
-	 *@todo specific ones : reservationresa , planningtracking
-	 * 
 	**/
 	function add($input) {
 		global $DB;
@@ -414,9 +412,11 @@ class CommonDBTM {
 			$this->fields=array();
 			$table_fields=$DB->list_fields($this->table);
 
-			// fill array for udpate
+			// fill array for add
 			foreach ($input as $key => $val) {
-				if ($key[0]!='_'&& isset($table_fields[$key])&&(!isset($this->fields[$key]) || $this->fields[$key] != $input[$key])) {
+				if ($key[0]!='_'&& isset($table_fields[$key])
+					// TEST -> TO DELETE Not needed for add process : always copy data && (!isset($this->fields[$key]) || $this->fields[$key] != $input[$key])
+				) {
 					$this->fields[$key] = $input[$key];
 				}
 			}
@@ -499,7 +499,6 @@ class CommonDBTM {
 	 *
 	 *
 	 *@return Nothing (call to the class member)
-	 *@todo specific ones : reservationresa, planningtracking
 	 *
 	**/
 	function update($input,$history=1) {
@@ -511,7 +510,6 @@ class CommonDBTM {
 		$input=doHookFunction("pre_item_update",$input);
 
 		$input=$this->prepareInputForUpdate($input);
-
 
 		if (isset($input['update'])){
 			$input['_update']=$input['update'];
@@ -571,6 +569,7 @@ class CommonDBTM {
 		} else {
 			return false;
 		}
+		return true;
 	}
 
 	/**
