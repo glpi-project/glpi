@@ -114,10 +114,7 @@ class ReservationResa extends CommonDBTM {
 	}
 
 
-	function update($input,$history=1){
-		global $LANG,$CFG_GLPI;
-		// Update a printer in the database
-
+	function prepareInputForUpdate($input) {
 		$target="";
 		if (isset($input['_target'])){
 			$target=$input['_target'];
@@ -128,16 +125,11 @@ class ReservationResa extends CommonDBTM {
 		}
 
 		$this->getFromDB($input["ID"]);
-
-		// Fill the update-array with changes
-		$x=0;
-		foreach ($input as $key => $val) {
-			if (array_key_exists($key,$this->fields) && $this->fields[$key] != $input[$key]) {
-				$this->fields[$key] = $input[$key];
-				$updates[$x] = $key;
-				$x++;
-			}
-		}
+		// Save fields
+		$oldfields=$this->fields;
+		// Needed for test already planned
+		$this->fields["begin"] = $input["begin"];
+		$this->fields["end"] = $input["end"];
 
 		if (!$this->test_valid_date()){
 			$this->displayError("date",$item,$target);
@@ -148,60 +140,59 @@ class ReservationResa extends CommonDBTM {
 			$this->displayError("is_res",$item,$target);
 			return false;
 		}
-
-
-		if (isset($updates)){
-			$this->updateInDB($updates);
-			// Processing Email
-			if ($CFG_GLPI["mailing"]){
-				$mail = new MailingResa($this,"update");
-				$mail->send();
-			}
-		}
-		return true;
+		// Restore fields
+		$this->fields=$oldfields;
+		return $input;
 	}
 
-	/// TODO enter in standard add process
-	function add($input){
+
+
+	function post_updateItem($input,$updates,$history=1) {
 		global $CFG_GLPI;
-	       	
-		// Add a Reservation
-		if (!isset($input['_ok'])||$input['_ok']){
-			$target="";
-			if (isset($input['_target'])){
-				$target=$input['_target'];
-			}
-			// set new date.
-			$this->fields["id_item"] = $input["id_item"];
-			$this->fields["comment"] = $input["comment"];
-			$this->fields["id_user"] = $input["id_user"];
-			$this->fields["begin"] = $input["begin"];
-			$this->fields["end"] = $input["end"];
-
-			if (!$this->test_valid_date()){
-				$this->displayError("date",$input["id_item"],$target);
-				return false;
-			}
-
-			if ($this->is_reserved()){
-				$this->displayError("is_res",$input["id_item"],$target);
-				return false;
-			}
-
-			if ($input["id_user"]>0)
-				if ($this->addToDB()){
-					// Processing Email
-					if ($CFG_GLPI["mailing"]){
-						$mail = new MailingResa($this,"new");
-						$mail->send();
-					}
-					return true;
-				} else {
-					return false;
-				}
+		if (count($updates) && $CFG_GLPI["mailing"]){
+			$mail = new MailingResa($this,"update");
+			$mail->send();
 		}
 	}
 
+
+	function prepareInputForAdd($input) {
+
+		// Error on previous added reservation on several add
+		if (isset($input['_ok'])&&!$input['_ok']){
+			return false;
+		}
+
+		$target="";
+		if (isset($input['_target'])){
+			$target=$input['_target'];
+		}
+		// set new date.
+		$this->fields["id_item"] = $input["id_item"];
+		$this->fields["begin"] = $input["begin"];
+		$this->fields["end"] = $input["end"];
+
+		if (!$this->test_valid_date()){
+			$this->displayError("date",$input["id_item"],$target);
+			return false;
+		}
+
+		if ($this->is_reserved()){
+			$this->displayError("is_res",$input["id_item"],$target);
+			return false;
+		}
+
+		return $input;
+	}
+
+	function post_addItem($newID,$input) {
+		global $CFG_GLPI;
+		if ($CFG_GLPI["mailing"]){
+			$mail = new MailingResa($this,"new");
+			$mail->send();
+		}
+	
+	}
 
 	// SPECIFIC FUNCTIONS
 	/**

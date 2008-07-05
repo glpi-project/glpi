@@ -52,6 +52,9 @@ class PlanningTracking extends CommonDBTM {
 
 	function prepareInputForUpdate($input) {
 		$this->getFromDB($input["ID"]);
+		// Save fields
+		$oldfields=$this->fields;
+
 		// Needed for test already planned
 		$this->fields["id_assign"] = $input["id_assign"];
 		$this->fields["begin"] = $input["begin"];
@@ -66,6 +69,8 @@ class PlanningTracking extends CommonDBTM {
 			$this->displayError("is_res");
 			return false;
 		}
+		// Restore fields
+		$this->fields=$oldfields;
 
 		return $input;
 	}
