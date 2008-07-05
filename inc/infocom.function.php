@@ -71,7 +71,7 @@ function showInfocomForm($target,$device_type,$dev_ID,$show_immo=true,$withtempl
 			$soft->getFromDB($ci->getField('sID'));
 			$entity=$soft->fields['FK_entities'];
 		} else {
-			$entity=$ci->getField["FK_entities"];
+			$entity=$ci->getField("FK_entities");
 		}
 		if (!$ic->getFromDBforDevice($device_type,$dev_ID)){
 			if ($ic->can(-1,"w",$entity) && $withtemplate!=2){

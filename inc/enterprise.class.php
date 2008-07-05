@@ -65,8 +65,6 @@ class Enterprise extends CommonDBTM {
 		// Delete all contact enterprise associations
 		$query2 = "DELETE FROM glpi_contact_enterprise WHERE (FK_enterprise = \"$ID\")";
 		$result2 = $DB->query($query2);
-
-		/// TODO : UPDATE ALL FK_manufacturer to NULL
 	}
 
 	function defineOnglets($withtemplate){
