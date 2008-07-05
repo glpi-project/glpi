@@ -49,23 +49,13 @@ class PlanningTracking extends CommonDBTM {
 		$this->table="glpi_tracking_planning";
 	}
 
-	/// TODO : put in on standard update process
-	function update($input,$history=1){
-		global $LANG,$CFG_GLPI;
-		// Update a Planning Tracking
 
+	function prepareInputForUpdate($input) {
 		$this->getFromDB($input["ID"]);
-
-		
-		// Fill the update-array with changes
-		$x=0;
-		foreach ($input as $key => $val) {
-			if (array_key_exists($key,$this->fields) && $this->fields[$key] != $input[$key]) {
-				$this->fields[$key] = $input[$key];
-				$updates[$x] = $key;
-				$x++;
-			}
-		}
+		// Needed for test already planned
+		$this->fields["id_assign"] = $input["id_assign"];
+		$this->fields["begin"] = $input["begin"];
+		$this->fields["end"] = $input["end"];
 
 		if (!$this->test_valid_date()){
 			$this->displayError("date");
@@ -76,6 +66,12 @@ class PlanningTracking extends CommonDBTM {
 			$this->displayError("is_res");
 			return false;
 		}
+
+		return $input;
+	}
+
+	function post_updateItem($input,$updates,$history=1) {
+		global $CFG_GLPI;
 
 		// Auto update Status
 		$job=new Job();
@@ -103,31 +99,23 @@ class PlanningTracking extends CommonDBTM {
 		$fup->updateInDB($updates2);
 		$job->updateRealTime($input["id_tracking"]);
 
-		if (isset($updates)){
-			$this->updateInDB($updates);
-
-			if ((!isset($input["_nomail"])||$input["_nomail"]==0)&&count($updates)>0&&$CFG_GLPI["mailing"]){
-				$user=new User;
-				$user->getFromDB($_SESSION["glpiID"]);
-				$mail = new Mailing("followup",$job,$user,$fup->fields["private"]);
-				$mail->send();
-			}
-
+		if ((!isset($input["_nomail"])||$input["_nomail"]==0)
+		&&count($updates)>0 && $CFG_GLPI["mailing"]){
+			$user=new User;
+			$user->getFromDB($_SESSION["glpiID"]);
+			$mail = new Mailing("followup",$job,$user,$fup->fields["private"]);
+			$mail->send();
 		}
-		return true;
+
 	}
 
-	/// TODO : put in on standard add process
-	function add($input){
-		global $LANG,$CFG_GLPI;
-		// set new date.
-		$this->fields["id_followup"] = $input["id_followup"];
+
+	function prepareInputForAdd($input) {
+		// Needed for test already planned
 		$this->fields["id_assign"] = $input["id_assign"];
-		$this->fields["state"] = $input["state"];
 		$this->fields["begin"] = $input["begin"];
 		$this->fields["end"] = $input["end"];
 
-		//	if (!empty($target)){
 		if (!$this->test_valid_date()){
 			$this->displayError("date");
 			return false;
@@ -137,7 +125,12 @@ class PlanningTracking extends CommonDBTM {
 			$this->displayError("is_res");
 			return false;
 		}
-		
+
+		return $input;
+	}
+
+
+	function post_addItem($newID,$input) {
 		// Auto update Status
 		$job=new Job();
 		$job->getFromDB($input["id_tracking"]);
@@ -167,20 +160,13 @@ class PlanningTracking extends CommonDBTM {
 			$job->updateRealTime($input["id_tracking"]);
 		}
 
-		if ($input["id_tracking"]>0)
-			$return=$this->addToDB();
-		else $return = true;
-
-		if ((!isset($input["_nomail"])||$input["_nomail"]==0)&&$CFG_GLPI["mailing"])
-		{
+		if ((!isset($input["_nomail"])||$input["_nomail"]==0)&&$CFG_GLPI["mailing"]){
 			$user=new User;
 			$user->getFromDB($_SESSION["glpiID"]);
 			$mail = new Mailing("followup",$job,$user,$fup->fields["private"]);
 			$mail->send();
 		}
 
-
-		return $return;
 	}
 
 	function pre_deleteItem($ID) {

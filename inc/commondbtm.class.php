@@ -502,7 +502,7 @@ class CommonDBTM {
 	 *@todo specific ones : reservationresa, planningtracking
 	 *
 	**/
-    function update($input,$history=1) {
+	function update($input,$history=1) {
 		global $DB;
 		if ($DB->isSlave())
 			return false;
@@ -517,8 +517,9 @@ class CommonDBTM {
 			$input['_update']=$input['update'];
 			unset($input['update']);
 		}
-
-		if ($this->getFromDB($input[$this->getIndexName()])){
+		// Valid input
+		if ($input&&is_array($input)
+		&&$this->getFromDB($input[$this->getIndexName()])){
 
 			// Fill the update-array with changes
 			$x=0;
@@ -567,6 +568,8 @@ class CommonDBTM {
 				}
 			} 
 			$this->post_updateItem($input,$updates,$history);
+		} else {
+			return false;
 		}
 	}
 
