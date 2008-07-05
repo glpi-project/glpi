@@ -322,6 +322,7 @@ class User extends CommonDBTM {
 		if (isset ($input["ID"]) &&$input["ID"]>0&& isset ($input["_ldap_rules"]) && count($input["_ldap_rules"])) {
 
 			//TODO : do not erase all the dynamic rights, but compare it with the ones in DB
+			
 			//and add/update/delete only if it's necessary !
 			if (isset($input["_ldap_rules"]["rules_entities_rights"]))
 				$entities_rules = $input["_ldap_rules"]["rules_entities_rights"];
@@ -342,8 +343,7 @@ class User extends CommonDBTM {
 			$this->purgeDynamicProfiles();
 			
 			//For each affectation -> write it in DB		
-			foreach($entities_rules as $entity)
-			{
+			foreach($entities_rules as $entity){
 				$affectation["FK_entities"] = $entity[0];
 				$affectation["FK_profiles"] = $entity[1];
 				$affectation["recursive"] = $entity[2];
@@ -709,7 +709,7 @@ class User extends CommonDBTM {
 
 	/**
 	 * Blank passwords field of a user in the DB 
-	 * todo for external auth users
+	 * needed for external auth users
 	 **/
 	function blankPassword() {
 		global $DB;
