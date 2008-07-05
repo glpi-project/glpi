@@ -82,8 +82,6 @@ class CommonDBTM {
 	 *
 	 *@param $ID ID of the item to get
 	 *@return true if succeed else false
-	 *@todo Specific ones : Reservation Item
-	 * 
 	**/	
 	function getFromDB ($ID) {
 
@@ -525,12 +523,6 @@ class CommonDBTM {
 			$oldvalues=array();
 			foreach ($input as $key => $val) {
 				if (array_key_exists($key,$this->fields)){
-					// Secu for null values on history
-					// TODO : Int with NULL default value in DB -> default value 0
-/*					if (is_null($this->fields[$key])){
-						if (is_int($input[$key])||$input[$key]=='0') 	$this->fields[$key]=0;
-					}
-*/
 					if ($this->fields[$key] != stripslashes($input[$key])) {
 						if ($key!="ID"){
 							// Store old values
@@ -776,7 +768,7 @@ class CommonDBTM {
 	 *@param $history boolean : do history log ?
 	 * 
 	 *@return Nothing () 
-	 *@todo specific ones : cartridges / consumables 
+	 *@todo specific ones : cartridges / consumables : more reuse than restore
 	 * 
 	**/ 
 	// specific ones : cartridges / consumables
