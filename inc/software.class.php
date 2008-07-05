@@ -595,6 +595,13 @@ class SoftwareLicense extends CommonDBTM {
 
 	function post_addItem($newID, $input) {
 
+
+		$type = SOFTWARE_TYPE;
+		$dupid = $this->fields["sID"];
+		if (isset ($input["_duplicate_license"])) {
+			$type = LICENSE_TYPE;
+			$dupid = $input["_duplicate_license"];
+		}
 		// Add infocoms if exists for the licence
 		$ic = new Infocom();
 		if ($ic->getFromDBforDevice($type, $dupid)) {
