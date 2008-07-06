@@ -1689,7 +1689,7 @@ $LANG["title"][42]="Liela apjoma modifikācija";
 $LANG["title"][43]="Reģistrs"; 
 
 $LANG["tracking"][1]="Manas ierīces"; 
-$LANG["tracking"][2]="Vai beigt meklēšanu"; 
+$LANG["tracking"][2]="Veikt meklēšanu"; 
 $LANG["tracking"][3]="Nepareizi datumi, jaunināšana atcelta"; 
 $LANG["tracking"][8]="Nav problēmas apraksta pieteikumam, mēģini vēlreiz."; 
 $LANG["tracking"][24]="Dokumentēt pieteikumu"; 
