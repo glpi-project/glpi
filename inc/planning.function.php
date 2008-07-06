@@ -453,7 +453,7 @@ function displayPlanningItem($val,$who,$type="",$complete=0){
 				$color="#efefe7"; // Information
 				break;
 			case 1:
-				$color="#fbfbfb"; // TODO
+				$color="#fbfbfb"; // To be done
 				break;
 			case 2:
 				$color="#e7e7e2"; // Done
