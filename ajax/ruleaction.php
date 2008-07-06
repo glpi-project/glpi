@@ -61,7 +61,7 @@ if (!defined('GLPI_ROOT')){
 			$_POST["field"]=key($RULES_ACTIONS[$_POST["rule_type"]]);
 		}
 
-		$rand=dropdownRulesActions($_POST["rule_type"],"action_type",$_POST["field"]);
+		$randaction=dropdownRulesActions($_POST["rule_type"],"action_type",$_POST["field"]);
 
 		echo "&nbsp;&nbsp;";
 		echo "<span id='action_type_span'>\n";
@@ -71,8 +71,8 @@ if (!defined('GLPI_ROOT')){
 				'field'=>$_POST["field"],
 				'rule_type'=>$_POST["rule_type"],
 		);
-		ajaxUpdateItemOnSelectEvent("dropdown_action_type$rand","action_type_span",$CFG_GLPI["root_doc"]."/ajax/ruleactionvalue.php",$params,false);
-		ajaxUpdateItem("action_type_span",$CFG_GLPI["root_doc"]."/ajax/ruleactionvalue.php",$params,false,"dropdown_action_type$rand");
+		ajaxUpdateItemOnSelectEvent("dropdown_action_type$randaction","action_type_span",$CFG_GLPI["root_doc"]."/ajax/ruleactionvalue.php",$params,false);
+		ajaxUpdateItem("action_type_span",$CFG_GLPI["root_doc"]."/ajax/ruleactionvalue.php",$params,false,"dropdown_action_type$randaction");
 	}
 
 	
