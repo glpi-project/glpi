@@ -39,28 +39,6 @@ if (!defined('GLPI_ROOT')) {
 	die("Sorry. You can't access directly to this file");
 }
 
-/** Computes the difference of arrays using keys for comparison
- * parameters are unlimited number of arrays
- * REPLACE array_diff_key for PHP 4 compatibility
- * 
- * @return  Returns an array containing all the entries from first array  that are not present in any of the other arrays.
- */
-/*function diff_key() {
-	$argCount  = func_num_args();
-	$diff_arg_prefix = 'diffArg';
-	$diff_arg_names = array();
-	for ($i=0; $i < $argCount; $i++) {
-		$diff_arg_names[$i] = 'diffArg'.$i;
-		$$diff_arg_names[$i] = array_keys((array)func_get_arg($i));
-	}
-	$diffArrString = '';
-	if (!empty($diff_arg_names)) {
-		$diffArrString =  '$'.implode(', $', $diff_arg_names);
-	}
-	eval("\$result = array_diff(".$diffArrString.");");
-	return $result;
-}
-*/
 /** Converts an array of parameters into a query string to be appended to a URL.
  *
  * @param   $group_dn  dn of the group to import

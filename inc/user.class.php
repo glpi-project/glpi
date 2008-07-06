@@ -182,7 +182,6 @@ class User extends CommonDBTM {
 			$input["list_limit"]=$CFG_GLPI["list_limit"];
 		}	
 		
-		// Add User, nasty hack until we get PHP4-array-functions
 		if (isset ($input["password"])) {
 			if (empty ($input["password"])) {
 				unset ($input["password"]);
