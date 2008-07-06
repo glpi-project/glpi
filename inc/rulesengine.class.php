@@ -54,12 +54,10 @@ class SingletonRuleList {
 	/**
 	* get a unique instance of a SingletonRuleList for a type of RuleCollection
 	* 
-	* Not member of SingletonRuleList because PHP 5 need 'static function'
-	* 
 	* @param $type of the Rule listed
 	* @return unique instance of an object
 	*/
-	static function &getInstanceOf($type) {
+	public static  function &getInstance($type) {
 		static $instances = array();
 		
 		if (!isset($instances[$type])) {
@@ -150,7 +148,7 @@ class RuleCollection {
 		global $DB;
 		
 		if ($this->RuleList === NULL)
-			$this->RuleList = SingletonRuleList::getInstanceOf($this->rule_type);
+			$this->RuleList = SingletonRuleList::getInstance($this->rule_type);
 			
 		$need = 1+($retrieve_criteria?2:0)+($retrieve_action?4:0);
 
