@@ -62,7 +62,7 @@ if (!defined('GLPI_ROOT')){
 			if (isset($criterias[$_POST["criteria"]]['type'])){
 				$type=$criterias[$_POST["criteria"]]['type'];
 			}
-			$rand = dropdownRulesConditions($type,"condition");
+			$randcrit = dropdownRulesConditions($type,"condition");
 			echo "&nbsp;&nbsp;";
 
 			echo "<span id='condition_span'>\n";
@@ -72,8 +72,8 @@ if (!defined('GLPI_ROOT')){
 					'criteria'=>$_POST["criteria"],
 					'rule_type'=>$_POST["rule_type"],
 			);
-			ajaxUpdateItemOnSelectEvent("dropdown_condition$rand","condition_span",$CFG_GLPI["root_doc"]."/ajax/rulecriteriavalue.php",$params,false);
-			ajaxUpdateItem("condition_span",$CFG_GLPI["root_doc"]."/ajax/rulecriteriavalue.php",$params,false,"dropdown_condition$rand");
+			ajaxUpdateItemOnSelectEvent("dropdown_condition$randcrit","condition_span",$CFG_GLPI["root_doc"]."/ajax/rulecriteriavalue.php",$params,false);
+			ajaxUpdateItem("condition_span",$CFG_GLPI["root_doc"]."/ajax/rulecriteriavalue.php",$params,false,"dropdown_condition$randcrit");
 		}
 
 	}
