@@ -338,7 +338,7 @@ function ocsManageDeleted($ocs_server_id) {
 		return false;
 	}
 
-	$query = "SELECT * FROM deleted_equiv";
+	$query = "SELECT * FROM deleted_equiv ORDER BY DATE";
 	$result = $DBocs->query($query);
 	if ($DBocs->numrows($result)) {
 		$deleted = array ();
