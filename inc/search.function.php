@@ -2073,7 +2073,7 @@ function addWhere ($link,$nott,$type,$ID,$val,$meta=0){
 			return $link." (glpi_auth_mail.name $SEARCH OR glpi_auth_ldap.name $SEARCH ) ";
 		break;
 		case "glpi_contracts.renewal":
-			return $table.".".$field."=".getContractRenewalIDByName($val);
+			return $link." ".$table.".".$field."=".getContractRenewalIDByName($val);
 		break;
 		default:
 
