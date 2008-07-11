@@ -928,7 +928,6 @@ class Job extends CommonDBTM{
 				$message.= getDropdownName("glpi_dropdown_tracking_category",$this->fields["category"]);
 			} else $message.=$LANG["mailing"][100];
 			$message.= "<br>";
-			$message.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$LANG["common"][57].":</span> ".$this->fields["name"]."<br>";
 			$message.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>". $LANG["mailing"][3].":</span><br>".ereg_replace("\n","<br>",$this->fields["contents"])."<br><br>";	
 
 		}else{ //text format
@@ -976,7 +975,6 @@ class Job extends CommonDBTM{
 				$message.= mailRow($LANG["common"][36],getDropdownName("glpi_dropdown_tracking_category",$this->fields["category"]));
 			} else $message.=mailRow($LANG["common"][36],$LANG["mailing"][100]);
 			$message.= "--\n";
-			$message.= $LANG["common"][57]." : ".$this->fields["name"]."\n";
 			$message.= $LANG["mailing"][3]." : \n".$this->fields["contents"]."\n";	
 			$message.="\n\n";
 
