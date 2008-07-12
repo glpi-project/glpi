@@ -318,7 +318,7 @@ class MailCollect {
 		if ($this->addtobody) {
 			$tkt['contents'] .= $this->addtobody;
 		}
-
+		$head['subject']=$this->decodeMimeString($head['subject']);
 		$exists = false;
 		if ( preg_match('/\[GLPI #(\d+)\]/',$head['subject'],$match) ) {
 			// it's a reply to a previous ticket
@@ -371,7 +371,7 @@ class MailCollect {
 			$tkt['FK_entities']=$this->entity;
 	
 			//$tkt['Subject']= $head['subject'];   // not use for the moment
-			$tkt['name']=$this->textCleaner($this->decodeMimeString($head['subject']));
+			$tkt['name']=$this->textCleaner($head['subject']);
 			// Medium
 			$tkt['priority']= "3";
 			// No hardware associated
