@@ -68,12 +68,12 @@ if (!defined('GLPI_ROOT')){
 			echo "<span id='condition_span'>\n";
 			echo "</span>\n";
 
-			$params=array('condition'=>'__VALUE__',
+			$paramscriteria=array('condition'=>'__VALUE__',
 					'criteria'=>$_POST["criteria"],
 					'rule_type'=>$_POST["rule_type"],
 			);
-			ajaxUpdateItemOnSelectEvent("dropdown_condition$randcrit","condition_span",$CFG_GLPI["root_doc"]."/ajax/rulecriteriavalue.php",$params,false);
-			ajaxUpdateItem("condition_span",$CFG_GLPI["root_doc"]."/ajax/rulecriteriavalue.php",$params,false,"dropdown_condition$randcrit");
+			ajaxUpdateItemOnSelectEvent("dropdown_condition$randcrit","condition_span",$CFG_GLPI["root_doc"]."/ajax/rulecriteriavalue.php",$paramscriteria,false);
+			ajaxUpdateItem("condition_span",$CFG_GLPI["root_doc"]."/ajax/rulecriteriavalue.php",$paramscriteria,false,"dropdown_condition$randcrit");
 		}
 
 	}

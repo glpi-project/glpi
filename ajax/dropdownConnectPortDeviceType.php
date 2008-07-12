@@ -52,7 +52,7 @@ if (isset($LINK_ID_TABLE[$_POST["type"]])&&$_POST["type"]>0){
 	$use_ajax=true;
 
 
-        $params=array('searchText'=>'__VALUE__',
+        $paramsconnectpdt=array('searchText'=>'__VALUE__',
                         'type'=>$_POST['type'],
                         'current'=>$_POST['current'],
                         'myname'=>$_POST["myname"],
@@ -61,7 +61,7 @@ if (isset($LINK_ID_TABLE[$_POST["type"]])&&$_POST["type"]>0){
 
 	
 	$default="<select name='item$rand'><option value='0'>------</option></select>\n";
-	ajaxDropdown($use_ajax,"/ajax/dropdownConnectPortDevice.php",$params,$default,$rand);
+	ajaxDropdown($use_ajax,"/ajax/dropdownConnectPortDevice.php",$paramsconnectpdt,$default,$rand);
 
 }		
 

@@ -109,13 +109,13 @@ if (isset($LINK_ID_TABLE[$_POST["type"]])&&$_POST["type"]>0){
 	echo "</select>";
 
 
-        $params=array('item'=>'__VALUE__',
+        $paramsconnectpd=array('item'=>'__VALUE__',
                         'type'=>$_POST['type'],
                         'current'=>$_POST['current'],
                         'myname'=>$_POST["myname"],
                         );
 
-	ajaxUpdateItemOnSelectEvent("item$rand","results_item_$rand",$CFG_GLPI["root_doc"]."/ajax/dropdownConnectPort.php",$params);
+	ajaxUpdateItemOnSelectEvent("item$rand","results_item_$rand",$CFG_GLPI["root_doc"]."/ajax/dropdownConnectPort.php",$paramsconnectpd);
 
 	echo "<span id='results_item_$rand'>\n";
 	echo "</span>\n";	

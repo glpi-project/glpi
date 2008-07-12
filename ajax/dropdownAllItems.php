@@ -63,7 +63,7 @@ if (isset($LINK_ID_TABLE[$_POST["idtable"]])){
 		$use_ajax=true;
 	}
 
-        $params=array('searchText'=>'__VALUE__',
+        $paramsallitems=array('searchText'=>'__VALUE__',
                         'table'=>$table,
                         'rand'=>$rand,
                         'myname'=>$_POST["myname"],
@@ -72,24 +72,24 @@ if (isset($LINK_ID_TABLE[$_POST["idtable"]])){
                         );
 
 	if(isset($_POST['value'])) {
-		$params['value']=$_POST['value'];
+		$paramsallitems['value']=$_POST['value'];
 	}
 	if(isset($_POST['entity_restrict'])) {
-		$params['entity_restrict']=$_POST['entity_restrict'];
+		$paramsallitems['entity_restrict']=$_POST['entity_restrict'];
 	}
 	if(isset($_POST['onlyglobal'])) {
-		$params['onlyglobal']=$_POST['onlyglobal'];
+		$paramsallitems['onlyglobal']=$_POST['onlyglobal'];
 	}
 	
 	$default="<select name='".$_POST["myname"]."'><option value='0'>------</option></select>";
-	ajaxDropdown($use_ajax,"/ajax/$link",$params,$default,$rand);
+	ajaxDropdown($use_ajax,"/ajax/$link",$paramsallitems,$default,$rand);
 
 	if(isset($_POST['value'])&&$_POST['value']>0){
-		$params['searchText']=$CFG_GLPI["ajax_wildcard"];
+		$paramsallitems['searchText']=$CFG_GLPI["ajax_wildcard"];
 		echo "<script type='text/javascript' >\n";
 		echo "	Ext.get('search_$rand').value='".$CFG_GLPI["ajax_wildcard"]."';";
 		echo "</script>\n";
-		ajaxUpdateItem("results_$rand",$CFG_GLPI["root_doc"]."/ajax/$link",$params);
+		ajaxUpdateItem("results_$rand",$CFG_GLPI["root_doc"]."/ajax/$link",$paramsallitems);
 	}
 
 }		

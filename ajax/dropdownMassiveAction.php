@@ -201,10 +201,10 @@ if (isset($_POST["action"])&&isset($_POST["type"])&&!empty($_POST["type"])){
 			echo "</select>";
 	
 	
-			$params=array('id_field'=>'__VALUE__',
+			$paramsmassaction=array('id_field'=>'__VALUE__',
 				'device_type'=>$_POST["type"],
 				);
-			ajaxUpdateItemOnSelectEvent("massiveaction_field","show_massiveaction_field",$CFG_GLPI["root_doc"]."/ajax/dropdownMassiveActionField.php",$params);
+			ajaxUpdateItemOnSelectEvent("massiveaction_field","show_massiveaction_field",$CFG_GLPI["root_doc"]."/ajax/dropdownMassiveActionField.php",$paramsmassaction);
 	
 			echo "<span id='show_massiveaction_field'>&nbsp;</span>\n";
 
