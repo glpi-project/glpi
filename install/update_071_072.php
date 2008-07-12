@@ -50,8 +50,6 @@ function update071to072() {
 	// Clean datetime fields
 	$date_fields=array('glpi_docs.date_mod',
 			'glpi_event_log.date',
-			'glpi_infocoms.buy_date',
-			'glpi_infocoms.use_date',
 			'glpi_monitors.date_mod',
 			'glpi_networking.date_mod',
 			'glpi_ocs_link.last_update',
@@ -66,6 +64,7 @@ function update071to072() {
 			'glpi_users.last_login',
 			'glpi_users.date_mod',
 	);
+
 	foreach ($date_fields as $tablefield){
 		list($table,$field)=explode('.',$tablefield);
 		if (FieldExists($table, $field)) {
@@ -97,6 +96,33 @@ function update071to072() {
 		}
 	}
 
+	// Clean date fields
+	$date_fields=array('glpi_infocoms.buy_date',
+			'glpi_infocoms.use_date',
+	);
+
+	foreach ($date_fields as $tablefield){
+		list($table,$field)=explode('.',$tablefield);
+		if (FieldExists($table, $field)) {
+			$query = "ALTER TABLE `$table` CHANGE `$field` `$field` DATE NULL;";
+			$DB->query($query) or die("0.72 alter $field in $table" . $LANG["update"][90] . $DB->error());
+		}
+	}
+	$date_fields[]="glpi_cartridges.date_in";
+	$date_fields[]="glpi_cartridges.date_use";
+	$date_fields[]="glpi_cartridges.date_out";
+	$date_fields[]="glpi_consumables.date_in";
+	$date_fields[]="glpi_consumables.date_out";
+	$date_fields[]="glpi_contracts.begin_date";
+	$date_fields[]="glpi_licenses.expire";
+
+	foreach ($date_fields as $tablefield){
+		list($table,$field)=explode('.',$tablefield);
+		if (FieldExists($table, $field)) {
+			$query = "UPDATE `$table` SET `$field` = NULL WHERE `$field` ='0000-00-00';";
+ 			$DB->query($query) or die("0.72 update data of $field in $table" . $LANG["update"][90] . $DB->error());
+		}
+	}
 	
 	// Software Updates
 	// Move licenses to versions
