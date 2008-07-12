@@ -39,7 +39,8 @@
  **/
 function ajaxDropdown($use_ajax,$relativeurl,$params=array(),$default="&nbsp;",$rand=0){
 	global $CFG_GLPI,$DB,$LANG,$LINK_ID_TABLE;
-	
+
+	$initparams=$params;	
 	if ($rand==0){
 		$rand=mt_rand();
 	}
@@ -48,7 +49,6 @@ function ajaxDropdown($use_ajax,$relativeurl,$params=array(),$default="&nbsp;",$
 		ajaxDisplaySearchTextForDropdown($rand);
 		ajaxUpdateItemOnInputTextEvent("search_$rand","results_$rand",$CFG_GLPI["root_doc"].$relativeurl,$params);
 	}
-
 	echo "<span id='results_$rand'>\n";
 		if (!$use_ajax){
 			// Save post datas if exists
@@ -67,6 +67,21 @@ function ajaxDropdown($use_ajax,$relativeurl,$params=array(),$default="&nbsp;",$
 			echo $default;
 		}
 	echo "</span>\n";
+	//print_r($params);
+	echo "<script type='text/javascript' >\n";
+	echo "function update_results_$rand(){";
+	if ($use_ajax){
+		ajaxUpdateItemJsCode("results_$rand",$CFG_GLPI['root_doc'].$relativeurl,$initparams,true,"search_$rand");
+	} else {
+//		if (isset($params['value'])){
+//			unset($params['value']);
+//		}
+		$initparams["searchText"]=$CFG_GLPI["ajax_wildcard"];
+		ajaxUpdateItemJsCode("results_$rand",$CFG_GLPI['root_doc'].$relativeurl,$initparams,true,"");
+	}
+	echo "};";
+
+	echo "</script>\n";
 }
 
 /**

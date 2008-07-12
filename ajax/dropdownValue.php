@@ -289,8 +289,8 @@ if (!isset($_POST["limit"])) $_POST["limit"]=$CFG_GLPI["dropdown_limit"];
 	}
 
 if (isset($_POST["comments"])&&$_POST["comments"]){
-	$params=array('value'=>'__VALUE__','table'=>$_POST["table"]);
-	ajaxUpdateItemOnSelectEvent("dropdown_".$_POST["myname"].$_POST["rand"],"comments_".$_POST["myname"].$_POST["rand"],$CFG_GLPI["root_doc"]."/ajax/comments.php",$params,false);
+	$paramscomments=array('value'=>'__VALUE__','table'=>$_POST["table"]);
+	ajaxUpdateItemOnSelectEvent("dropdown_".$_POST["myname"].$_POST["rand"],"comments_".$_POST["myname"].$_POST["rand"],$CFG_GLPI["root_doc"]."/ajax/comments.php",$paramscomments,false);
 }
 
 if (isset($_POST["update_item"])&&
@@ -300,16 +300,16 @@ if (isset($_POST["update_item"])&&
 	} else $data=$_POST["update_item"];
 	
 	if (is_array($data)&&count($data)){
-		$params=array();
+		$paramsupdate=array();
 		if (isset($data['value_fieldname'])){
-			$params=array($data['value_fieldname']=>'__VALUE__');
+			$paramsupdate=array($data['value_fieldname']=>'__VALUE__');
 		}
 		if (isset($data["moreparams"])&&is_array($data["moreparams"])&&count($data["moreparams"])){
 			foreach ($data["moreparams"] as $key => $val){
-				$params[$key]=$val;
+				$paramsupdate[$key]=$val;
 			}
 		}
-		ajaxUpdateItemOnSelectEvent("dropdown_".$_POST["myname"].$_POST["rand"],$data['to_update'],$data['url'],$params,false);
+		ajaxUpdateItemOnSelectEvent("dropdown_".$_POST["myname"].$_POST["rand"],$data['to_update'],$data['url'],$paramsupdate,false);
 	}
 }
 

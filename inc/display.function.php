@@ -105,7 +105,7 @@ function includeCommonHtmlHeader($title=''){
 	// DO not get it from extjs website
 	echo "Ext.BLANK_IMAGE_URL = '".$CFG_GLPI["root_doc"]."/lib/extjs/s.gif';\n";
 	// TODO : Loading indicator in span not in div : HTML Error if doing that / maybe load a image ?
-	//echo "Ext.UpdateManager.defaults.indicatorText = \"<span class='loading-indicator'>".$LANG["common"][80]."</span>\";\n";
+	echo "Ext.UpdateManager.defaults.indicatorText = \"<span class='loading-indicator'>".$LANG["common"][80]."</span>\";\n";
 	echo "</script>\n";
 
 	// Some Javascript-Functions which we may need later

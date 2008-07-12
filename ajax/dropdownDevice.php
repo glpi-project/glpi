@@ -59,7 +59,7 @@ if (isset($_POST["idtable"])){
 
 
 
-        $params=array('searchText'=>'__VALUE__',
+        $paramsdev=array('searchText'=>'__VALUE__',
                         'table'=>$table,
                         'value'=>0,
                         'myname'=>$_POST["myname"],
@@ -67,6 +67,6 @@ if (isset($_POST["idtable"])){
                         );
 
 	$default="<select name='".$_POST["myname"]."'><option value='0'>------</option></select>";
-	ajaxDropdown($use_ajax,"/ajax/dropdownValue.php",$params,$default,$rand);
+	ajaxDropdown($use_ajax,"/ajax/dropdownValue.php",$paramsdev,$default,$rand);
 }		
 ?>

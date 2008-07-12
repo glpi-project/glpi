@@ -67,12 +67,12 @@ if (!defined('GLPI_ROOT')){
 		echo "<span id='action_type_span'>\n";
 		echo "</span>\n";
 
-		$params=array('action_type'=>'__VALUE__',
+		$paramsaction=array('action_type'=>'__VALUE__',
 				'field'=>$_POST["field"],
 				'rule_type'=>$_POST["rule_type"],
 		);
-		ajaxUpdateItemOnSelectEvent("dropdown_action_type$randaction","action_type_span",$CFG_GLPI["root_doc"]."/ajax/ruleactionvalue.php",$params,false);
-		ajaxUpdateItem("action_type_span",$CFG_GLPI["root_doc"]."/ajax/ruleactionvalue.php",$params,false,"dropdown_action_type$randaction");
+		ajaxUpdateItemOnSelectEvent("dropdown_action_type$randaction","action_type_span",$CFG_GLPI["root_doc"]."/ajax/ruleactionvalue.php",$paramsaction,false);
+		ajaxUpdateItem("action_type_span",$CFG_GLPI["root_doc"]."/ajax/ruleactionvalue.php",$paramsaction,false,"dropdown_action_type$randaction");
 	}
 
 	

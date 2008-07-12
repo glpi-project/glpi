@@ -73,10 +73,10 @@ if ($DB->numrows($result)) {
 echo "</select>\n";
 
 
-$params=array('sID'=>'__VALUE__',
+$paramsselsoft=array('sID'=>'__VALUE__',
 		'myname'=>$_POST["myname"],
 		);
-ajaxUpdateItemOnSelectEvent("item_type$rand","show_".$_POST["myname"].$rand,$CFG_GLPI["root_doc"]."/ajax/dropdownInstallVersion.php",$params,false);
+ajaxUpdateItemOnSelectEvent("item_type$rand","show_".$_POST["myname"].$rand,$CFG_GLPI["root_doc"]."/ajax/dropdownInstallVersion.php",$paramsselsoft,false);
 
 echo "<span id='show_".$_POST["myname"]."$rand'>&nbsp;</span>\n";	
 

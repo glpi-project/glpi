@@ -58,7 +58,7 @@ if (isset($_POST["rubdoc"])){
 	}
 
 
-	$params=array('searchText'=>'__VALUE__',
+	$paramsrubdoc=array('searchText'=>'__VALUE__',
 			'rubdoc'=>$_POST["rubdoc"],
 			'entity_restrict'=>$_POST["entity_restrict"],
 			'rand'=>$_POST['rand'],
@@ -67,7 +67,7 @@ if (isset($_POST["rubdoc"])){
 			);
 	
 	$default="<select name='".$_POST["myname"]."'><option value='0'>------</option></select>";
-	ajaxDropdown($use_ajax,"/ajax/dropdownDocument.php",$params,$default,$rand);
+	ajaxDropdown($use_ajax,"/ajax/dropdownDocument.php",$paramsrubdoc,$default,$rand);
 
 }		
 ?>
