@@ -1059,24 +1059,6 @@ class User extends CommonDBTM {
 			}
 			echo "</td></tr>";
 
-			/* Not to be updated here
-
-			echo "<tr class='tab_bg_1'><td class='center'>" . $LANG["common"][81] . "</td><td>";
-			if ($extauth) {
-				echo getDropdownName("glpi_dropdown_user_titles",$this->fields["title"]);
-			} else {
-				dropdownValue("glpi_dropdown_user_titles","title",$this->fields["title"],1,-1);
-			}
-			echo "</td></tr>";
-
-			echo "<tr class='tab_bg_1'><td class='center'>" . $LANG["common"][17] . "</td><td>";
-			if ($extauth) {
-				echo getDropdownName("glpi_dropdown_user_types",$this->fields["type"]);
-			} else {
-				dropdownValue("glpi_dropdown_user_types","type",$this->fields["type"],1,-1);
-			}
-			echo "</td></tr>";
-			*/
 			echo "<tr class='tab_bg_1'><td class='center'>" . $LANG["setup"][40] . "</td><td>";
 			dropdownYesNo('tracking_order',$_SESSION["glpitracking_order"]);
 			echo "</td></tr>";
