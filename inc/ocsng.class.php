@@ -225,7 +225,6 @@ class Ocsng extends CommonDBTM {
 		$monitor = $this->fields["import_monitor"];
 		$printer = $this->fields["import_printer"];
 		$software = $this->fields["import_software"];
-		$license = $this->fields["import_software_licensetype"];
 		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["Menu"][16] . " </td><td>";
 		dropdownArrayValues("import_periph",$import_array,$periph);
 		echo "</td></tr>";
@@ -243,13 +242,8 @@ class Ocsng extends CommonDBTM {
 		dropdownArrayValues("import_software",$import_array,$software);
 		echo "</td></tr>";
 
-		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["ocsconfig"][44] . " </td><td>";
-		$import_array=array("global"=>$LANG["ocsconfig"][45],"free"=>$LANG["ocsconfig"][46]);
-		dropdownArrayValues("import_software_licensetype",$import_array,$license);
-		echo "</td></tr>";
-
-		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["ocsconfig"][47] . " </td><td>";
-		dropdownYesNo("import_software_buy", $this->fields["import_software_buy"]);
+		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["computers"][8] . " </td><td>";
+		dropdownYesNo("import_disk", $this->fields["import_disk"]);
 		echo "</td></tr>";
 
 		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["ocsconfig"][38] . " </td><td>";
@@ -574,6 +568,7 @@ class Ocsng extends CommonDBTM {
 			if ($input["import_device_iface"]) $input["checksum"]|= pow(2,NETWORKS_FL);
 			if ($input["import_device_hdd"]) $input["checksum"]|= pow(2,STORAGES_FL);
 			if ($input["import_device_memory"]) $input["checksum"]|= pow(2,MEMORIES_FL);
+			if ($input["import_disk"]) $input["checksum"]|= pow(2,DRIVES_FL);
 			if (	$input["import_device_processor"]
 					||$input["import_general_contact"]
 					||$input["import_general_comments"]
@@ -614,6 +609,8 @@ class Ocsng extends CommonDBTM {
 			if ($input["import_device_iface"]) $input["checksum"]|= pow(2,NETWORKS_FL);
 			if ($input["import_device_hdd"]) $input["checksum"]|= pow(2,STORAGES_FL);
 			if ($input["import_device_memory"]) $input["checksum"]|= pow(2,MEMORIES_FL);
+			if ($input["import_disk"]) $input["checksum"]|= pow(2,DRIVES_FL);
+
 			if (	$input["import_device_processor"]
 					||$input["import_general_contact"]
 					||$input["import_general_comments"]

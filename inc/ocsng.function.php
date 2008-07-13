@@ -627,6 +627,8 @@ function ocsLinkComputer($ocs_id, $ocs_server_id, $glpi_id,$link_auto=0) {
 				ocsResetDevices($glpi_id, PCI_DEVICE);
 			if ($cfg_ocs["import_software"])
 				ocsResetSoftwares($glpi_id);
+			if ($cfg_ocs["import_disk"])
+				ocsResetDisks($glpi_id);
 			if ($cfg_ocs["import_periph"])
 				ocsResetPeriphs($glpi_id);
 			if ($cfg_ocs["import_monitor"] == 1) // Only reset monitor as global in unit management try to link monitor with existing
@@ -922,6 +924,11 @@ function ocsUpdateComputer($ID, $ocs_server_id, $dohistory, $force = 0) {
 					// Get import monitors
 					$import_software = importArrayFromDB($line["import_software"]);
 					ocsUpdateSoftware($line['glpi_id'], $comp->fields["FK_entities"], $line['ocs_id'], $ocs_server_id, $cfg_ocs, $import_software, (!$loghistory["history"]?0:$dohistory));
+				}
+				if ($mixed_checksum & pow(2, DRIVES_FL)) {
+					// Get import monitors
+					$import_disk = importArrayFromDB($line["import_disk"]);
+					ocsUpdateDisk($line['glpi_id'], $line['ocs_id'], $ocs_server_id, $cfg_ocs, $import_disk);
 				}
 				if ($mixed_checksum & pow(2, REGISTRY_FL)) {
 					//import registry entries not needed
@@ -2847,21 +2854,18 @@ function ocsUpdateSoftware($glpi_id, $entity, $ocs_id, $ocs_server_id, $cfg_ocs,
 					
 		}
 		
-		$import_software_licensetype = $cfg_ocs["import_software_licensetype"];
-		$import_software_buy = $cfg_ocs["import_software_buy"];
-
 		//---- Get all the softwares for this machine from OCS -----//
 		if ($cfg_ocs["use_soft_dict"]){
 			$query2 = "SELECT softwares.NAME AS INITNAME, dico_soft.FORMATTED AS NAME, 
-							softwares.VERSION AS VERSION, softwares.PUBLISHER AS PUBLISHER, softwares.COMMENTS AS COMMENTS 
-							FROM softwares 
-							INNER JOIN dico_soft ON (softwares.NAME = dico_soft.EXTRACTED) 
-							WHERE softwares.HARDWARE_ID='$ocs_id'";
+				softwares.VERSION AS VERSION, softwares.PUBLISHER AS PUBLISHER, softwares.COMMENTS AS COMMENTS 
+				FROM softwares 
+				INNER JOIN dico_soft ON (softwares.NAME = dico_soft.EXTRACTED) 
+				WHERE softwares.HARDWARE_ID='$ocs_id'";
 		} else {
 			$query2 = "SELECT softwares.NAME AS INITNAME, softwares.NAME AS NAME, 
-								softwares.VERSION AS VERSION, softwares.PUBLISHER AS PUBLISHER, softwares.COMMENTS AS COMMENTS
-								FROM softwares 
-								WHERE softwares.HARDWARE_ID='$ocs_id'";
+				softwares.VERSION AS VERSION, softwares.PUBLISHER AS PUBLISHER, softwares.COMMENTS AS COMMENTS
+				FROM softwares 
+				WHERE softwares.HARDWARE_ID='$ocs_id'";
 		}
 
 		$result2 = $DBocs->query($query2);
@@ -3059,6 +3063,102 @@ function ocsUpdateSoftware($glpi_id, $entity, $ocs_id, $ocs_server_id, $cfg_ocs,
 }
 
 /**
+ * Update config of a new software
+ *
+ * This function create a new software in GLPI with some general datas.
+ *
+ *
+ *@param $glpi_id integer : glpi computer id.
+ *@param $ocs_id integer : ocs computer id (ID).
+ *@param $ocs_server_id integer : ocs server id
+ *@param $cfg_ocs array : ocs config
+ *@param $entity integer : entity of the computer
+ *@param $import_disk array : already imported softwares
+ *
+ *@return Nothing (void).
+ *
+ **/
+function ocsUpdateDisk($glpi_id, $ocs_id, $ocs_server_id, $cfg_ocs, $import_disk) {
+	global $DB, $DBocs, $LANG;
+	checkOCSconnection($ocs_server_id);
+	
+	$query="SELECT * FROM drives WHERE HARDWARE_ID=$ocs_id";
+	$result=$DBocs->query($query);
+	$d=new ComputerDisk();
+	if ($DBocs->numrows($result) > 0){
+		while ($line = $DBocs->fetch_array($result)) {
+			$line = clean_cross_side_scripting_deep(addslashes_deep($line));
+			// Only not empty disk
+			if ($line['TOTAL']>0){
+				$disk['FK_computers']=$glpi_id;
+				// TYPE : vxfs / ufs  : VOLUMN = mount / FILESYSTEM = device
+				if (in_array($line['TYPE'],array("vxfs","ufs")) ){
+					$disk['name']=$line['VOLUMN'];
+					$disk['mount']=$line['VOLUMN'];
+					$disk['device']=$line['FILESYSTEM'];
+					$disk['FK_filesystems']=externalImportDropdown('glpi_dropdown_filesystems', $line["TYPE"]);
+				} else if (in_array($line['FILESYSTEM'],array('ext3','jfs','jfs2','smbfs','nfs')) ){
+					$disk['name']=$line['VOLUMN'];
+					$disk['mount']=$line['VOLUMN'];
+					$disk['device']=$line['TYPE'];
+					$disk['FK_filesystems']=externalImportDropdown('glpi_dropdown_filesystems', $line["FILESYSTEM"]);
+				} else if (in_array($line['FILESYSTEM'],array('FAT32','NTFS','FAT')) ){
+					if (!empty($line['VOLUMN'])){
+						$disk['name']=$line['VOLUMN'];
+					} else {
+						$disk['name']=$line['LETTER'];
+					}
+					$disk['mount']=$line['LETTER'];
+					$disk['FK_filesystems']=externalImportDropdown('glpi_dropdown_filesystems', $line["FILESYSTEM"]);
+				}
+
+				// Ok import disk
+				if (isset($disk['name'])&&!empty ($disk["name"])){
+					$disk['totalsize']=$line['TOTAL'];
+					$disk['freesize']=$line['FREE'];
+
+					if (!in_array($disk["name"], $import_disk)) {
+						$d->reset();
+						$id_disk = $d->add($disk);
+						if ($id_disk){
+							addToOcsArray($glpi_id, array (
+										$id_disk => $disk["name"]
+									), "import_disk");
+						}
+					} else {
+						// Only update sizes if needed
+						$id = array_search($disk["name"], $import_disk);
+						if ($d->getFromDB($id)){
+							// Update on total size change or variation of 5%
+							if ($d->fields['totalsize']!=$disk['totalsize'] 
+							|| (abs($disk['freesize']-$d->fields['freesize'])/$disk['totalsize']) > 0.05){
+								$toupdate['ID']=$id;
+								$toupdate['totalsize']=$disk['totalsize'];
+								$toupdate['freesize']=$disk['freesize'];
+								$d->update($toupdate);
+							}
+							unset ($import_disk[$id]);
+						}
+					}
+				}
+
+			}
+		}
+	}
+
+	// Delete Unexisting Items not found in OCS
+	if (count($import_disk)) {
+		foreach ($import_disk as $key => $val) {
+			$d->delete($key);
+			deleteInOcsArray($glpi_id, $key, "import_device");
+		}
+
+	}
+
+	
+}
+
+/**
  * Import config of a new version
  *
  * This function create a new software in GLPI with some general datas.
@@ -3095,6 +3195,23 @@ function ocsImportVersion($software, $version) {
 	return ($isNewVers);
 }
 
+/**
+ * Delete old disks
+ *
+ * Delete all old disks of a computer.
+ *
+ *@param $glpi_computer_id integer : glpi computer id.
+ *
+ *@return nothing.
+ *
+ **/
+function ocsResetDisks($glpi_computer_id) {
+	global $DB;
+
+	$query = "DELETE FROM glpi_computerdisks
+			WHERE FK_computers = '" . $glpi_computer_id . "'";
+	$DB->query($query);
+}
 /**
  * Delete old softwares
  *
