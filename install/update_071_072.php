@@ -404,6 +404,17 @@ function update071to072() {
 	}	
 
 
+	if (!FieldExists("glpi_ocs_config", "import_disk")){ 
+		$query = "ALTER TABLE `glpi_ocs_config` ADD `import_disk` INT( 2 ) NOT NULL DEFAULT '0' AFTER `import_ip` ;";
+		$DB->query($query) or die("0.72 add import_disk in glpi_ocs_config" . $LANG["update"][90] . $DB->error());
+	}
+
+	if (!FieldExists("glpi_ocs_link", "import_device")){ 
+		$query = "ALTER TABLE `glpi_ocs_link` ADD `import_disk` LONGTEXT NULL AFTER `import_device` ;";
+		$DB->query($query) or die("0.72 add import_device in glpi_ocs_link" . $LANG["update"][90] . $DB->error());
+	}
+	
+
 		
 } // fin 0.72 #####################################################################################
 ?>
