@@ -82,7 +82,7 @@ function showVersions($sID) {
 	if ($result=$DB->query($query)){
 		if ($DB->numrows($result)){
 			echo "<table class='tab_cadre'><tr>";
-			echo "<th>&nbsp;".$LANG["software"][5]."</th>";
+			echo "<th>".$LANG["software"][5]."</th>";
 			echo "<th>".$LANG["software"][19]."</th>";
 			echo "<th>".$LANG["common"][25]."</th>";
 			echo "</tr>";

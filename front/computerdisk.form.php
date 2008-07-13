@@ -35,50 +35,50 @@
 
 
 
-$NEEDED_ITEMS=array("software");
+$NEEDED_ITEMS=array("computer");
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
 
 if(!isset($_GET["ID"])) $_GET["ID"] = "";
-if(!isset($_GET["sID"])) $_GET["sID"] = "";
+if(!isset($_GET["cID"])) $_GET["cID"] = "";
 
-$version=new SoftwareVersion();
+$disk=new ComputerDisk();
 if (isset($_POST["add"]))
 {
-	checkRight("software","w");
+	checkRight("computer","w");
 
-	if ($newID=$version->add($_POST)){
-		logEvent($_POST['sID'], "software", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][82]." $newID.");
-		glpi_header($CFG_GLPI["root_doc"]."/front/software.form.php?ID=".$version->fields['sID']);
+	if ($newID=$disk->add($_POST)){
+		logEvent($_POST['FK_computers'], "computer", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][82]." $newID.");
+		glpi_header($CFG_GLPI["root_doc"]."/front/computer.form.php?ID=".$disk->fields['FK_computers']);
 	} else {
 		glpi_header($_SERVER['HTTP_REFERER']);
-	}
+	}	
 }
 else if (isset($_POST["delete"]))
 {
-	checkRight("software","w");
+	checkRight("computer","w");
 
-	$version->delete($_POST);
+	$disk->delete($_POST);
 
-	logEvent($version->fields['sID'], "software", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][84]." ".$_POST["ID"]);
-	glpi_header($CFG_GLPI["root_doc"]."/front/software.form.php?ID=".$version->fields['sID']);
+	logEvent($disk->fields['FK_computers'], "computer", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][84]." ".$_POST["ID"]);
+	glpi_header($CFG_GLPI["root_doc"]."/front/computer.form.php?ID=".$disk->fields['FK_computers']);
 }
 else if (isset($_POST["update"]))
 {
-	checkRight("software","w");
+	checkRight("computer","w");
 
-	$version->update($_POST);
-	logEvent($version->fields['sID'], "software", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][83]." ".$_POST["ID"]);
-	glpi_header($CFG_GLPI["root_doc"]."/front/software.form.php?ID=".$version->fields['sID']);
+	$disk->update($_POST);
+	logEvent($disk->fields['FK_computers'], "computer", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][83]." ".$_POST["ID"]);
+	glpi_header($CFG_GLPI["root_doc"]."/front/computer.form.php?ID=".$disk->fields['FK_computers']);
 } 
 else
 {
-	checkRight("software","r");
+	checkRight("computer","r");
 
-	commonHeader($LANG["Menu"][4],$_SERVER['PHP_SELF'],"inventory","software");
-	$version->showForm($_SERVER['PHP_SELF'],$_GET["ID"],$_GET["sID"]);
+	commonHeader($LANG["Menu"][0],$_SERVER['PHP_SELF'],"inventory","computer");
+	$disk->showForm($_SERVER['PHP_SELF'],$_GET["ID"],$_GET["cID"]);
 
 	commonFooter();
 }

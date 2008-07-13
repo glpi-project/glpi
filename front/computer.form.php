@@ -229,6 +229,9 @@ elseif(isset($_POST["unlock_field"])){
 					case 5 :
 						showDocumentAssociated(COMPUTER_TYPE,$_GET["ID"],$_GET["withtemplate"]);
 						break;
+					case 20 :			
+						showComputerDisks($_GET["ID"],$_GET["withtemplate"]);
+						break;
 					default :
 						if (!displayPluginAction(COMPUTER_TYPE,$_GET["ID"],$_SESSION['glpi_onglet'], $_GET["withtemplate"]))
 							showDeviceComputerForm($_SERVER['PHP_SELF'],$_GET["ID"], $_GET["withtemplate"]);	
@@ -292,6 +295,10 @@ elseif(isset($_POST["unlock_field"])){
 				case 14:					
 					showRegistry($_GET["ID"]);
 					break;
+				case 20 :			
+					showComputerDisks($_GET["ID"], $_GET["withtemplate"]);
+					break;
+
 				default :
 					if (!displayPluginAction(COMPUTER_TYPE,$_GET["ID"],$_SESSION['glpi_onglet'],$_GET["withtemplate"]))
 						showDeviceComputerForm($_SERVER['PHP_SELF'],$_GET["ID"], $_GET["withtemplate"]);			

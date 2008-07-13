@@ -94,6 +94,7 @@
 	define("TRANSFER_TYPE",37);
 	define("BOOKMARK_TYPE",38);
 	define("SOFTWAREVERSION_TYPE",39);
+	define("COMPUTERDISK_TYPE",39);
 	
 	// GLPI MODE
 	define("NORMAL_MODE",0);
@@ -231,7 +232,8 @@
 			MAILGATE_TYPE => "glpi_mailgate",
 			RULE_TYPE => "glpi_rules_descriptions",
 			TRANSFER_TYPE => "glpi_transfers",
-			SOFTWAREVERSION_TYPE => "glpi_softwareversions"
+			SOFTWAREVERSION_TYPE => "glpi_softwareversions",
+			COMPUTERDISK_TYPE => "glpi_computerdisks"
 			);
 
 	$INFOFORM_PAGES=array( 
@@ -271,6 +273,7 @@
 			RULE_TYPE => "???",
 			TRANSFER_TYPE => "front/transfer.form.php",
 			SOFTWAREVERSION_TYPE => "front/softwareversion.form.php",
+			COMPUTERDISK_TYPE => "front/computerdisk.form.php"
 			);
 	$SEARCH_PAGES=array( 
 			COMPUTER_TYPE=> "front/computer.php",

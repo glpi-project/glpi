@@ -275,7 +275,63 @@ function showConnections($target,$ID,$withtemplate='') {
 	}
 }
 
+/**
+ * Print the computers disks
+ *
+ *@param $ID integer: Computer or template ID
+ *@param $withtemplate=''  boolean : Template or basic item.
+ *
+ *@return Nothing (call to classes members)
+ *
+ **/
+function showComputerDisks($ID,$withtemplate='') {
+	global $DB, $CFG_GLPI, $LANG;
+	if (!haveRight("computer", "r"))
+		return false;
+	$canedit = haveRight("computer", "w");
 
+	echo "<div class='center'>";
+	if ($canedit){
+		echo "<a href='computerdisk.form.php?cID=$ID'>".$LANG["computers"][7]."</a><br>";
+	}
+	
+	$query = "SELECT glpi_dropdown_filesystems.name as fsname, glpi_computerdisks.* FROM glpi_computerdisks
+		LEFT JOIN glpi_dropdown_filesystems ON (glpi_computerdisks.FK_filesystems = glpi_dropdown_filesystems.ID)
+		WHERE (FK_computers = '$ID')";
+
+	if ($result=$DB->query($query)){
+		if ($DB->numrows($result)){
+			echo "<table class='tab_cadre'><tr>";
+			echo "<th>".$LANG["common"][16]."</th>";
+			echo "<th>".$LANG["computers"][6]."</th>";
+			echo "<th>".$LANG["computers"][5]."</th>";
+			echo "<th>".$LANG["computers"][4]."</th>";
+			echo "<th>".$LANG["computers"][3]."</th>";
+			echo "<th>".$LANG["computers"][2]."</th>";
+			echo "</tr>";
+			while ($data=$DB->fetch_assoc($result)){
+				echo "<tr class='tab_bg_2'>";
+				if ($canedit){
+					echo "<td><a href='computerdisk.form.php?ID=".$data['ID']."'>".$data['name'].(empty($data['name'])?$data['ID']:"")."</a></td>";
+				} else {
+						echo "<td>".$data['name'].(empty($data['name'])?$data['ID']:"")."</td>";
+				}
+				echo "<td>".$data['device']."</td>";
+				echo "<td>".$data['mountpoint']."</td>";
+				echo "<td>".$data['fsname']."</td>";
+				echo "<td>".$data['totalsize']."</td>";
+				echo "<td>".$data['freesize']."</td>";
+			}
+			echo "</table>";
+		} else {
+			echo $LANG["search"][15];
+		}
+	
+	}
+	echo "</div>";
+
+	
+}
 
 
 ?>
