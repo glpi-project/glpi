@@ -374,9 +374,9 @@ function update071to072() {
 			) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
 		$DB->query($query) or die("0.72 create glpi_dropdown_filesystems table" . $LANG["update"][90] . $DB->error());
 
-		$fstype=array('ext','ext2','ext3','ext4','FAT','FAT32','VFAT','HFS','HPFS','HTFS','JFS','NTFS','ReiserFS','UDF','UFS','XFS','ZFS','');
+		$fstype=array('ext','ext2','ext3','ext4','FAT','FAT32','VFAT','HFS','HPFS','HTFS','JFS','JFS2','NFS','NTFS','ReiserFS','SMBFS','UDF','UFS','XFS','ZFS');
 		foreach ($fstype as $fs){
-			$query= "INSERT INTO `glpi_dropdown_filesystems` ('name') VALUES ('$fs');";
+			$query= "INSERT INTO `glpi_dropdown_filesystems` (name) VALUES ('$fs');";
 			$DB->query($query) or die("0.72 add filesystems type " . $LANG["update"][90] . $DB->error());
 		}
 	}	
