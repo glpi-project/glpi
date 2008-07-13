@@ -157,6 +157,7 @@ if (isset($_POST['mass_delete'])){
 				"glpi_dropdown_interface"=>$LANG["setup"][93],
 				"glpi_dropdown_case_type"=>$LANG["setup"][45],
 				"glpi_dropdown_phone_power"=>$LANG["setup"][505],
+				"glpi_dropdown_filesystems"=>$LANG["computers"][4],
 				),
 
 			$LANG["common"][22]=>array(

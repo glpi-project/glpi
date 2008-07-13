@@ -285,13 +285,13 @@ function update071to072() {
 
 	if (!TableExists("glpi_dropdown_licensetypes")) {
 		$query="CREATE TABLE `glpi_dropdown_licensetypes` (
-  `ID` int(11) NOT NULL auto_increment,
-  `name` varchar(255) collate utf8_unicode_ci default NULL,
-  `comments` text collate utf8_unicode_ci,
-  PRIMARY KEY  (`ID`),
-  KEY `name` (`name`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
-		$DB->query($query) or die("0.72 create glpi_dropdown_licensetypes tabme" . $LANG["update"][90] . $DB->error());
+			`ID` int(11) NOT NULL auto_increment,
+			`name` varchar(255) collate utf8_unicode_ci default NULL,
+			`comments` text collate utf8_unicode_ci,
+			PRIMARY KEY  (`ID`),
+			KEY `name` (`name`)
+			) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+		$DB->query($query) or die("0.72 create glpi_dropdown_licensetypes table" . $LANG["update"][90] . $DB->error());
 	}	
 
 	if (!FieldExists("glpi_groups", "recursive")) {
@@ -363,6 +363,45 @@ function update071to072() {
 		$query = "ALTER TABLE `glpi_config` ADD `cache_max_size` INT( 11 ) NOT NULL DEFAULT '20' AFTER `use_cache` ;";
 		$DB->query($query) or die("0.72 add cache_max_size in glpi_config" . $LANG["update"][90] . $DB->error());
 	}
+
+	if (!TableExists("glpi_dropdown_filesystems")) {
+		$query="CREATE TABLE `glpi_dropdown_filesystems` (
+			`ID` int(11) NOT NULL auto_increment,
+			`name` varchar(255) collate utf8_unicode_ci default NULL,
+			`comments` text collate utf8_unicode_ci,
+			PRIMARY KEY  (`ID`),
+			KEY `name` (`name`)
+			) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+		$DB->query($query) or die("0.72 create glpi_dropdown_filesystems table" . $LANG["update"][90] . $DB->error());
+
+		$fstype=array('ext','ext2','ext3','ext4','FAT','FAT32','VFAT','HFS','HPFS','HTFS','JFS','NTFS','ReiserFS','UDF','UFS','XFS','ZFS','');
+		foreach ($fstype as $fs){
+			$query= "INSERT INTO `glpi_dropdown_filesystems` ('name') VALUES ('$fs');";
+			$DB->query($query) or die("0.72 add filesystems type " . $LANG["update"][90] . $DB->error());
+		}
+	}	
+
+	if (!TableExists("glpi_computerdisks")) {
+		$query="CREATE TABLE `glpi_computerdisks` (
+			`ID` int(11) NOT NULL auto_increment,
+			`FK_computers` int(11) NOT NULL default 0,
+			`name` varchar(255) collate utf8_unicode_ci default NULL,
+			`device` varchar(255) collate utf8_unicode_ci default NULL,
+			`mountpoint` varchar(255) collate utf8_unicode_ci default NULL,
+			`FK_filesystems` int(11) NOT NULL default 0,
+			`totalsize` int(11) NOT NULL default 0,
+			`freesize` int(11) NOT NULL default 0,
+			PRIMARY KEY  (`ID`),
+			KEY `name` (`name`),
+			KEY `FK_filesystems` (`FK_filesystems`),
+			KEY `FK_computers` (`FK_computers`),
+			KEY `device` (`device`),
+			KEY `mountpoint` (`mountpoint`),
+			KEY `totalsize` (`totalsize`),
+			KEY `freesize` (`freesize`)
+			) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+		$DB->query($query) or die("0.72 create glpi_computerfilesystems table" . $LANG["update"][90] . $DB->error());
+	}	
 
 
 		

@@ -57,6 +57,7 @@ class Computer extends CommonDBTM {
 		global $LANG,$CFG_GLPI;
 
 		$ong[1]=$LANG["title"][26];
+		$ong[20]=$LANG["computers"][8];
 		if (haveRight("software","r"))	{
 			$ong[2]=$LANG["Menu"][4];
 		}
@@ -740,6 +741,144 @@ class Computer extends CommonDBTM {
 			echo "<div class='center'><strong>".$LANG["common"][54]."</strong></div>";
 			return false;
 		}
+	}
+
+}
+
+
+
+/// Disk class
+class ComputerDisk extends CommonDBTM {
+	/**
+	 * Constructor
+	**/
+	function ComputerDisk() {
+		$this->table = "glpi_computerdisks";
+		$this->type = COMPUTERDISK_TYPE;
+	}
+
+	function prepareInputForAdd($input) {
+		// Not attached to software -> not added
+		if (!isset($input['FK_computers']) || $input['FK_computers'] <= 0){
+			return false;
+		}
+		return $input;
+	}
+
+	function post_getEmpty () {
+		$this->fields["totalsize"]='0';
+		$this->fields["freesize"]='0';
+	}
+
+
+	/**
+	 * Print the version form
+	 *
+	 *@param $target form target
+	 *@param $ID Integer : Id of the version or the template to print
+	 *@param $cID ID of the computer for add process
+	 *
+	 *@return true if displayed  false if item not found or not right to display
+	 **/	
+	function showForm($target,$ID,$cID=-1){
+		global $CFG_GLPI,$LANG;
+
+		if (!haveRight("computer","w"))	return false;
+
+		$spotted=false;
+		$use_cache=true;
+		if ($ID>0) {
+			if($this->can($ID,'w')) {
+				$spotted = true;	
+			}
+		} else {
+			$use_cache=false;
+			if ($this->can(-1,'w')){
+				$spotted = true;	
+				$this->getEmpty();
+			}
+		} 
+
+		if ($spotted){
+			echo "<form name='form' method='post' action=\"$target\" enctype=\"multipart/form-data\">";
+
+			echo "<div class='center'><table class='tab_cadre_fixe'>";
+			if ($ID>0){
+				echo "<tr><th colspan='4'>".$LANG["common"][2]." $ID";
+				echo " - <a href='computer.form.php?ID=".$this->fields["FK_computers"]."'>".getDropdownName("glpi_computers",$this->fields["FK_computers"])."</a>";
+				echo "</th></tr>";
+			} else {
+				echo "<tr><th colspan='4'>".$LANG["software"][7];
+				echo " - <a href='computer.form.php?ID=".$cID."'>".getDropdownName("glpi_computers",$cID)."</a>";
+
+				echo "</th></tr>";
+				echo "<input type='hidden' name='FK_computers' value='$cID'>";
+			}
+
+			echo "<tr class='tab_bg_1'><td>".$LANG["common"][16].":		</td>";
+			echo "<td>";
+			autocompletionTextField("name","glpi_computerdisks","name",$this->fields["name"],40);
+			echo "</td>";
+
+			echo "<td>".$LANG["computers"][6].":		</td>";
+			echo "<td>";
+			autocompletionTextField("device","glpi_computerdisks","device",$this->fields["device"],40);
+			echo "</td>";
+			echo "</tr>";
+
+			echo "<tr class='tab_bg_1'><td>".$LANG["computers"][5].":		</td>";
+			echo "<td>";
+			autocompletionTextField("mountpoint","glpi_computerdisks","mountpoint",$this->fields["mountpoint"],40);
+			echo "</td>";
+
+			echo "<td>".$LANG["computers"][4].":		</td>";
+			echo "<td>";
+			dropdownValue("glpi_dropdown_filesystems", "FK_filesystems", $this->fields["FK_filesystems"]);
+			echo "</td>";
+			echo "</tr>";
+
+			echo "<tr class='tab_bg_1'><td>".$LANG["computers"][3].":		</td>";
+			echo "<td>";
+			autocompletionTextField("totalsize","glpi_computerdisks","totalsize",$this->fields["totalsize"],40);
+			echo "</td>";
+
+			echo "<td>".$LANG["computers"][2].":		</td>";
+			echo "<td>";
+			autocompletionTextField("freesize","glpi_computerdisks","freesize",$this->fields["freesize"],40);
+			echo "</td>";
+			echo "</tr>";
+		
+			echo "<tr  class='tab_bg_2'>";
+
+			if ($ID>0) {
+
+				echo "<td colspan='2'>";
+				echo "<input type='hidden' name='ID' value=\"$ID\">\n";
+				echo "<div class='center'><input type='submit' name='update' value=\"".$LANG["buttons"][7]."\" class='submit'></div>";
+				echo "</td>\n\n";
+				echo "<td colspan='2'>";
+				echo "<input type='hidden' name='ID' value=\"$ID\">\n";
+				echo "<div class='center'><input type='submit' name='delete' value=\"".$LANG["buttons"][6]."\" class='submit'></div>";
+				echo "</td>\n\n";
+			} else {
+
+				echo "<td colspan='4'>";
+				echo "<div class='center'><input type='submit' name='add' value=\"".$LANG["buttons"][8]."\" class='submit'></div>";
+				echo "</td></tr>";
+	
+			}
+			echo "</table></div></form>";
+				
+		} else {
+			echo "<div class='center'><strong>".$LANG["common"][54]."</strong></div>";
+			return false;
+
+		}
+
+		return true;
+
+
+
 	}
 
 }

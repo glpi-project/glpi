@@ -438,6 +438,15 @@ class SoftwareVersion extends CommonDBTM {
 		$DB->query($query2);
 	}
 
+	function prepareInputForAdd($input) {
+		// Not attached to software -> not added
+		if (!isset($input['sID']) || $input['sID'] <= 0){
+			return false;
+		}
+		return $input;
+	}
+
+
 	/**
 	 * Print the version form
 	 *
@@ -476,7 +485,7 @@ class SoftwareVersion extends CommonDBTM {
 				echo "</th></tr>";
 			} else {
 				echo "<tr><th colspan='2'>".$LANG["software"][7];
-				echo " - <a href='software.form.php?ID=".$this->fields["sID"]."'>".getDropdownName("glpi_software",$this->fields["sID"])."</a>";
+				echo " - <a href='software.form.php?ID=".$sID."'>".getDropdownName("glpi_software",$sID)."</a>";
 
 				echo "</th></tr>";
 				echo "<input type='hidden' name='sID' value='$sID'>";

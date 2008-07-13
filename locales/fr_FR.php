@@ -263,7 +263,15 @@ $LANG["common"][78]="Rendre public";
 $LANG["common"][79]="Rendre privé";
 $LANG["common"][80]="En cours de chargement...";
 $LANG["common"][81]="Titre";
+$LANG["common"][82]="Mb"; 
 
+$LANG["computers"][2]="Taille libre"; 
+$LANG["computers"][3]="Taille totale"; 
+$LANG["computers"][4]="Système de fichiers"; 
+$LANG["computers"][5]="Point montage"; 
+$LANG["computers"][6]="Chemin physique"; 
+$LANG["computers"][7]="Ajouter un disque"; 
+$LANG["computers"][8]="Disques"; 
 $LANG["computers"][9]="OS"; 
 $LANG["computers"][10]="OS Numéro de série"; 
 $LANG["computers"][11]="OS Product ID"; 
