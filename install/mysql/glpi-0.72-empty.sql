@@ -1,4 +1,4 @@
-#GLPI Dump database on 2008-07-12 14:07
+#GLPI Dump database on 2008-07-13 14:17
 
 ### Dump table glpi_alerts
 
@@ -177,6 +177,29 @@ CREATE TABLE `glpi_computer_device` (
   KEY `FK_computers` (`FK_computers`),
   KEY `FK_device` (`FK_device`),
   KEY `specificity` (`specificity`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+
+### Dump table glpi_computerdisks
+
+DROP TABLE IF EXISTS `glpi_computerdisks`;
+CREATE TABLE `glpi_computerdisks` (
+  `ID` int(11) NOT NULL auto_increment,
+  `FK_computers` int(11) NOT NULL default '0',
+  `name` varchar(255) collate utf8_unicode_ci default NULL,
+  `device` varchar(255) collate utf8_unicode_ci default NULL,
+  `mountpoint` varchar(255) collate utf8_unicode_ci default NULL,
+  `FK_filesystems` int(11) NOT NULL default '0',
+  `totalsize` int(11) NOT NULL default '0',
+  `freesize` int(11) NOT NULL default '0',
+  PRIMARY KEY  (`ID`),
+  KEY `name` (`name`),
+  KEY `FK_filesystems` (`FK_filesystems`),
+  KEY `FK_computers` (`FK_computers`),
+  KEY `device` (`device`),
+  KEY `mountpoint` (`mountpoint`),
+  KEY `totalsize` (`totalsize`),
+  KEY `freesize` (`freesize`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
@@ -1001,6 +1024,38 @@ CREATE TABLE `glpi_dropdown_enttype` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
+### Dump table glpi_dropdown_filesystems
+
+DROP TABLE IF EXISTS `glpi_dropdown_filesystems`;
+CREATE TABLE `glpi_dropdown_filesystems` (
+  `ID` int(11) NOT NULL auto_increment,
+  `name` varchar(255) collate utf8_unicode_ci default NULL,
+  `comments` text collate utf8_unicode_ci,
+  PRIMARY KEY  (`ID`),
+  KEY `name` (`name`)
+) ENGINE=MyISAM AUTO_INCREMENT=21 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+INSERT INTO glpi_dropdown_filesystems VALUES ('1','ext',NULL);
+INSERT INTO glpi_dropdown_filesystems VALUES ('2','ext2',NULL);
+INSERT INTO glpi_dropdown_filesystems VALUES ('3','ext3',NULL);
+INSERT INTO glpi_dropdown_filesystems VALUES ('4','ext4',NULL);
+INSERT INTO glpi_dropdown_filesystems VALUES ('5','FAT',NULL);
+INSERT INTO glpi_dropdown_filesystems VALUES ('6','FAT32',NULL);
+INSERT INTO glpi_dropdown_filesystems VALUES ('7','VFAT',NULL);
+INSERT INTO glpi_dropdown_filesystems VALUES ('8','HFS',NULL);
+INSERT INTO glpi_dropdown_filesystems VALUES ('9','HPFS',NULL);
+INSERT INTO glpi_dropdown_filesystems VALUES ('10','HTFS',NULL);
+INSERT INTO glpi_dropdown_filesystems VALUES ('11','JFS',NULL);
+INSERT INTO glpi_dropdown_filesystems VALUES ('12','JFS2',NULL);
+INSERT INTO glpi_dropdown_filesystems VALUES ('13','NFS',NULL);
+INSERT INTO glpi_dropdown_filesystems VALUES ('14','NTFS',NULL);
+INSERT INTO glpi_dropdown_filesystems VALUES ('15','ReiserFS',NULL);
+INSERT INTO glpi_dropdown_filesystems VALUES ('16','SMBFS',NULL);
+INSERT INTO glpi_dropdown_filesystems VALUES ('17','UDF',NULL);
+INSERT INTO glpi_dropdown_filesystems VALUES ('18','UFS',NULL);
+INSERT INTO glpi_dropdown_filesystems VALUES ('19','XFS',NULL);
+INSERT INTO glpi_dropdown_filesystems VALUES ('20','ZFS',NULL);
+
 ### Dump table glpi_dropdown_firmware
 
 DROP TABLE IF EXISTS `glpi_dropdown_firmware`;
@@ -1437,7 +1492,7 @@ CREATE TABLE `glpi_event_log` (
   KEY `itemtype` (`itemtype`)
 ) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-INSERT INTO glpi_event_log VALUES ('3','-1','system','2008-07-12 14:07:05','login','3','glpi connexion de l\'IP : 127.0.0.1');
+INSERT INTO glpi_event_log VALUES ('3','-1','system','2008-07-13 14:16:51','login','3','glpi connexion de l\'IP : 127.0.0.1');
 
 ### Dump table glpi_followups
 
@@ -2911,7 +2966,7 @@ CREATE TABLE `glpi_users` (
   KEY `deleted` (`deleted`)
 ) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-INSERT INTO glpi_users VALUES ('2','glpi','','41ece51526515624ff89973668497d00','','','','','',NULL,'0','1','fr_FR','20','1',NULL,'-1','1','2008-07-12 14:07:04','2007-09-29 15:51:43','0','0','0','0','0');
+INSERT INTO glpi_users VALUES ('2','glpi','','41ece51526515624ff89973668497d00','','','','','',NULL,'0','1','fr_FR','20','1',NULL,'-1','1','2008-07-13 14:16:51','2007-09-29 15:51:43','0','0','0','0','0');
 INSERT INTO glpi_users VALUES ('3','post-only','*5683D7F638D6598D057638B1957F194E4CA974FB','3177926a7314de24680a9938aaa97703','','','','','',NULL,'0','0','en_GB','20','1',NULL,'-1','-1',NULL,NULL,'0','0','0','0','0');
 INSERT INTO glpi_users VALUES ('4','tech','*B09F1B2C210DEEA69C662977CC69C6C461965B09','d9f9133fb120cd6096870bc2b496805b','','','','','',NULL,'0','1','fr_FR','20','1',NULL,'-1','-1',NULL,NULL,'0','0','0','0','0');
 INSERT INTO glpi_users VALUES ('5','normal','*F3F91B23FC1DB728B49B1F22DEE3D7A839E10F0E','fea087517c26fadd409bd4b9dc642555','','','','','',NULL,'0','0','en_GB','20','1',NULL,'-1','-1',NULL,NULL,'0','0','0','0','0');
