@@ -665,7 +665,7 @@ function getMaxItem($table){
 */
 function generate_entity($ID_entity){
 
-	global $MAX,$DB,$MAX_CONTRACT_TYPE,$percent,$FIRST,$LAST,$MAX_KBITEMS_BY_CAT;
+	global $MAX,$DB,$MAX_CONTRACT_TYPE,$percent,$FIRST,$LAST,$MAX_KBITEMS_BY_CAT,$MAX_DISK;
 	$current_year=date("Y");
 
 
@@ -1134,6 +1134,7 @@ function generate_entity($ID_entity){
 		addTracking(COMPUTER_TYPE,$compID,$ID_entity);
 		// Add reservation
 		addReservation(COMPUTER_TYPE,$compID);
+
 	
 		// AJOUT INFOCOMS
 		$date=mt_rand(2000,$current_year)."-".mt_rand(1,12)."-".mt_rand(1,28);
@@ -1168,6 +1169,15 @@ function generate_entity($ID_entity){
 		$query="INSERT INTO glpi_computer_device VALUES (NULL,'','".POWER_DEVICE."','".mt_rand(1,$MAX['device'])."','$compID')";
 		$DB->query($query) or die("PB REQUETE ".$query);
 	
+		// insert disk
+		$nb_disk=mt_rand(1,$MAX_DISK);
+		for ($j=1;$j<=$nb_disk;$j++){
+			$totalsize=mt_rand(10000,1000000);
+			$freesize=mt_rand(0,$totalsize);
+			$query="INSERT INTO glpi_computerdisks VALUES (NULL,'$compID','disk $j','/dev/disk$j','/mnt/disk$j','".mt_rand(1,10)."','$totalsize','$freesize')";
+			$DB->query($query) or die("PB REQUETE ".$query);	
+		}
+
 		//insert netpoint
 		$query="INSERT INTO glpi_dropdown_netpoint VALUES (NULL,'$ID_entity','$loc','".getNextNETPOINT()."','comment netpoint')";
 		$DB->query($query) or die("PB REQUETE ".$query);

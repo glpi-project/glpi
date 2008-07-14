@@ -356,12 +356,13 @@ function searchForm($type,$target,$field="",$contains="",$sort= "",$deleted= 0,$
 
 			
 			if (is_array($type2)&&isset($type2[$i])&&$type2[$i]>0){
-				echo "<script type='text/javascript' >";
-				echo "Ext.get('type2_".$type."_".$i."_$rand').value='".$type2[$i]."';";
-				echo "</script>\n";
 
 				$params['type']=$type2[$i];
 				ajaxUpdateItem("show_".$type."_".$i."_$rand",$CFG_GLPI["root_doc"]."/ajax/updateSearch.php",$params,false);
+				echo "<script type='text/javascript' >";
+				echo "window.document.getElementById('type2_".$type."_".$i."_$rand').value='".$type2[$i]."';";
+				echo "</script>\n";
+
 			}
 			echo "</td></tr>";
 		}
@@ -824,6 +825,8 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 						||($SEARCH_OPTION[$type][$val2]["table"]=="glpi_networking_ports")
 						||($SEARCH_OPTION[$type][$val2]["table"]=="glpi_dropdown_netpoint")
 						||($SEARCH_OPTION[$type][$val2]["table"]=="glpi_registry")
+						||($SEARCH_OPTION[$type][$val2]["table"]=="glpi_computerdisks")
+						||($SEARCH_OPTION[$type][$val2]["table"]=="glpi_dropdown_filesystems")
 						||($type==USER_TYPE)
 						||($type==CONTACT_TYPE&&$SEARCH_OPTION[$type][$val2]["table"]=="glpi_enterprises")
 						||($type==ENTERPRISE_TYPE&&$SEARCH_OPTION[$type][$val2]["table"]=="glpi_contacts")
@@ -855,7 +858,6 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 	} 
 
 	$first=empty($WHERE);
-
 	// Specific search for others item linked  (META search)
 	if (is_array($type2)){
 		for ($key=0;$key<$_SESSION["glpisearchcount2"][$type];$key++){
@@ -876,13 +878,15 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 							$LINK=" ".ereg_replace(" NOT","",$link2[$key]);
 							$NOT=1;
 						}
-						else if (is_array($link2)&&isset($link2[$key]))
+						else if (is_array($link2)&&isset($link2[$key])){
 							$LINK=" ".$link2[$key];
-						else $LINK=" AND ";
+						} else {
+							$LINK=" AND ";
+						}
 					}
-
 					$WHERE.= addWhere($LINK,$NOT,$type2[$key],$field2[$key],$contains2[$key],1);
 				}
+				$first=false;
 			}
 		}
 	}
@@ -1207,6 +1211,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 
 							// General case
 							if (strpos($data["META_$j"],"$$$$")===false){
+								
 								echo displaySearchItem($output_type,$data["META_$j"],$item_num,$row_num);
 							// Case of GROUP_CONCAT item : split item and multilline display
 							} else {
@@ -1216,6 +1221,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 								for ($k=0;$k<count($split);$k++)
 									if ($contains2[$j]=="NULL"||(strlen($contains2[$j])==0
 										||preg_match('/'.$contains2[$j].'/i',$split[$k])
+										|| $SEARCH_OPTION[$type2[$j]][$field2[$j]]['meta'] == 3
 									)){
 
 										if ($count_display) $out.= "<br>";
@@ -1774,6 +1780,17 @@ function addSelect ($type,$ID,$num,$meta=0,$meta_type=0){
 		case "glpi_registry.registry_value" :
 			return " GROUP_CONCAT( DISTINCT ".$table.$addtable.".".$field." SEPARATOR '$$$$') AS ".$NAME."_".$num.", ";
 		break;
+		case "glpi_computerdisks.name" :
+		case "glpi_computerdisks.device" :
+		case "glpi_computerdisks.mountpoint" :
+		case "glpi_computerdisks.totalsize" :
+		case "glpi_computerdisks.freesize" :
+		case "glpi_dropdown_filesystems.name" :
+			return " GROUP_CONCAT( ".($meta?"DISTINCT":"")." ".$table.$addtable.".".$field." SEPARATOR '$$$$') AS ".$NAME."_".$num.", ";
+		break;
+		case "glpi_computerdisks.freepercent" :
+			return " GROUP_CONCAT( ".($meta?"DISTINCT":"")." ROUND(100*".$table.$addtable.".freesize / ".$table.$addtable.".totalsize) SEPARATOR '$$$$') AS ".$NAME."_".$num.", ";
+		break;
 		case "glpi_tracking.count" :
 			return " COUNT(DISTINCT glpi_tracking.ID) AS ".$NAME."_".$num.", ";
 		break;
@@ -1903,6 +1920,42 @@ function addWhere ($link,$nott,$type,$ID,$val,$meta=0){
 				return $link." ( $table$linkfield.$field $SEARCH OR $table$linkfield.realname $SEARCH OR $table$linkfield.firstname $SEARCH OR CONCAT($table$linkfield.realname,' ',$table$linkfield.firstname) $SEARCH $ADD) ";
 			}
 			break;
+
+		case "glpi_computerdisks.totalsize" :
+		case "glpi_computerdisks.freesize" :
+		case "glpi_computerdisks.freepercent" :
+
+			$compute_size=$table.".".$field;
+			$larg=1000;
+			switch ($inittable.".".$field){
+				case "glpi_computerdisks.freepercent";
+					$larg=2;
+					$compute_size="ROUND(100*$table.freesize/$table.totalsize)";
+				break;
+			}
+			$search=array("/\&lt;/","/\&gt;/");
+			$replace=array("<",">");
+			$val=preg_replace($search,$replace,$val);
+			if (ereg("([<>])([=]*)[[:space:]]*([0-9]*)",$val,$regs)){
+				if ($nott){
+					if ($regs[1]=='<') {
+						$regs[1]='>';
+					} else {
+						$regs[1]='<';
+					}
+				} 
+				$regs[1].=$regs[2];
+				return $link." ( $compute_size ".$regs[1]." ".$regs[3]." ) ";
+			} else {
+				
+
+				if (!$nott){
+					return $link." ( $compute_size < ".(intval($val)+$larg)." AND $compute_size > ".(intval($val)-$larg)." ) ";
+				} else {
+					return $link." ( $compute_size > ".(intval($val)+$larg)." OR $compute_size < ".(intval($val)-$larg)." ) ";
+				}
+			}
+		break;
 		case "glpi_device_hdd.specif_default" :
 		case "glpi_device_ram.specif_default" :
 		case "glpi_device_processor.specif_default" :
@@ -2078,7 +2131,7 @@ function addWhere ($link,$nott,$type,$ID,$val,$meta=0){
 			return $link." ".$table.".".$field."=".getContractRenewalIDByName($val);
 		break;
 		default:
-
+			
 			// Link with plugin tables 
 			if ($type<=1000){
 				if (preg_match("/^glpi_plugin_([a-zA-Z]+)/", $inittable, $matches) 
@@ -2380,6 +2433,12 @@ function giveItem ($type,$field,$data,$num,$linkfield=""){
 		case "glpi_dropdown_netpoint.name" :
 		case "glpi_registry.registry_ocs_name" :
 		case "glpi_registry.registry_value" :
+		case "glpi_computerdisks.name" :
+		case "glpi_computerdisks.device" :
+		case "glpi_computerdisks.mountpoint" :
+		case "glpi_computerdisks.totalsize" :
+		case "glpi_computerdisks.freesize" :
+		case "glpi_dropdown_filesystems.name" :
 		$out="";
 		$split=explode("$$$$",$data["ITEM_$num"]);
 
@@ -2389,6 +2448,20 @@ function giveItem ($type,$field,$data,$num,$linkfield=""){
 				if ($count_display) $out.= "<br>";
 				$count_display++;
 				$out.= $split[$k];
+			}
+		return $out;
+
+		break;
+		case "glpi_computerdisks.freepercent" :
+		$out="";
+		$split=explode("$$$$",$data["ITEM_$num"]);
+
+		$count_display=0;
+		for ($k=0;$k<count($split);$k++)
+			if (strlen(trim($split[$k]))>0){
+				if ($count_display) $out.= "<br>";
+				$count_display++;
+				$out.= $split[$k]." %";
 			}
 		return $out;
 
@@ -2991,6 +3064,17 @@ function addLeftJoin ($type,$ref_table,&$already_link_tables,$new_table,$linkfie
 		break;
 		case "glpi_reservation_item":
 			return "";
+		break;
+		case "glpi_computerdisks":
+			if ($meta){
+				return " INNER JOIN $new_table $AS ON ($rt.ID = $nt.FK_computers) ";
+			} else {
+				return " LEFT JOIN $new_table $AS ON ($rt.ID = $nt.FK_computers) ";
+			}
+		break;
+		case "glpi_dropdown_filesystems":
+			$out=addLeftJoin($type,$ref_table,$already_link_tables,"glpi_computerdisks",$linkfield);
+		return $out." LEFT JOIN $new_table $AS ON (glpi_computerdisks.FK_filesystems = $nt.ID) ";
 		break;
 		case "glpi_entities_data":
 			return " LEFT JOIN $new_table $AS ON ($rt.ID = $nt.FK_entities) ";

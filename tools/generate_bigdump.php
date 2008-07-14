@@ -139,6 +139,9 @@ $DOC_PER_ITEM=2;
 // CONTRACT
 $MAX['contract']=10;
 $CONTRACT_PER_ITEM=1;
+// DISK
+$MAX_DISK=5;
+
 
 foreach ($MAX as $key => $val){
 	$MAX[$key]=$multiplicator*$val;
