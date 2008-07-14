@@ -265,6 +265,8 @@ $LANG["common"][80]="En cours de chargement...";
 $LANG["common"][81]="Titre";
 $LANG["common"][82]="Mb"; 
 
+$LANG["computers"][0]="Disque"; 
+$LANG["computers"][1]="Pourcentage libre"; 
 $LANG["computers"][2]="Taille libre"; 
 $LANG["computers"][3]="Taille totale"; 
 $LANG["computers"][4]="Système de fichiers"; 
