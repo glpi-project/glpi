@@ -222,10 +222,11 @@ function update071to072() {
 									AND oem_computer = '".$vers['oem_computer']."'
 									AND comments = '".$vers['comments']."'
 								";
-							if (empty($vers['expire']))
+							if (empty($vers['expire'])) {
 								$query .= " AND expire IS NULL";
-							else
-								$query .= " AND expire = '$expire'";
+							} else {
+								$query .= " AND expire = '".$vers['expire']."'";
+							}
 							if ($result_searchlic = $DB->query($query_search_lic)){
 								if ($DB->numrows($result_searchlic)>0){
 									$found_lic=$DB->result($result_searchlic,0,0);
