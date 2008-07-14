@@ -833,7 +833,7 @@ function addFormTracking ($device_type=0,$ID=0, $target, $author, $group=0, $ass
 		echo "<tr class='tab_bg_1'>";
 		echo "<td class='center'>".$LANG["help"][8].":</td>";
 		echo "<td class='center'>";
-		dropdownYesNo('emailupdates',1);
+		dropdownYesNo('emailupdates',!empty($email));
 		echo "</td>";
 		echo "<td class='center'>".$LANG["help"][11].":</td>";
 		echo "<td><span id='uemail_result'>";

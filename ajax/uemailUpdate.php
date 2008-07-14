@@ -52,4 +52,11 @@
 	}
 	echo "<input type='text' size='30' name='uemail' value='$email'>";
 
+        echo "<script type='text/javascript' >\n"; 
+	if (!empty($email)){ 
+		echo "window.document.getElementById('dropdownyesno_emailupdates').value='1';"; 
+	} else { 
+		echo "window.document.getElementById('dropdownyesno_emailupdates').value='0';"; 
+	} 
+	echo "</script>\n"; 
 ?>
