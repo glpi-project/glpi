@@ -1125,80 +1125,35 @@ function unglobalizeLicense($ID) {
 function countInstallations($sID, $nohtml = 0) {
 
 	global $DB, $CFG_GLPI, $LANG;
-	return;
-	// Get total
-	$total = getLicenceNumber($sID);
-	$out = "";
-	if ($total != 0) {
+	$installed = countInstallationsForSoftware($sID);
+	$out="";
+	if (!$nohtml)
+		$out .= $LANG["software"][19] . ": <strong>$installed</strong>";
+	else
+		$out .= $LANG["software"][19] . ": $installed";
+	
+	$total=getNumberOfLicences($sID);
 
-		if (isFreeSoftware($sID)) {
-			// Get installed
-			$installed = getInstalledLicence($sID);
-			if (!$nohtml)
-				$out .= "<i>" . $LANG["software"][39] . "</i>&nbsp;&nbsp;" . $LANG["software"][19] . ": <strong>$installed</strong>";
-			else
-				$out .= $LANG["software"][39] . "  " . $LANG["software"][19] . ": $installed";
-		} else
-			if (isGlobalSoftware($sID)) {
-				$installed = getInstalledLicence($sID);
-				if (!$nohtml)
-					$out .= "<i>" . $LANG["software"][38] . "</i>&nbsp;&nbsp;" . $LANG["software"][19] . ": <strong>$installed</strong>";
-				else
-					$out .= $LANG["software"][38] . "  " . $LANG["software"][19] . ": $installed";
-
-			} else {
-
-				// Get installed
-				$i = 0;
-				$installed = getInstalledLicence($sID);
-
-				// Get remaining
-				$remaining = max(0, $total - $installed);
-
-				// Output
-				if (!$nohtml) {
-					$out .= "<table cellpadding='2' cellspacing='0'><tr>";
-					$out .= "<td width='35%'>" . $LANG["software"][19] . ": <strong>$installed</strong></td>";
-				} else
-					$out .= "  " . $LANG["software"][19] . ": $installed";
-
-				$color = "red";
-
-				if ($remaining == 0) {
-					$color = "green";
-				} else {
-					$color = "blue";
-				}
-
-				if (!$nohtml) {
-					$remaining = "<span class='$color'>$remaining";
-					$remaining .= "</span>";
-					$out .= "<td width='20%'>" . $LANG["software"][20] . ": <strong>$remaining</strong></td>";
-					$out .= "<td width='20%'>" . $LANG["common"][33] . ": <strong>" . $total . "</strong></td>";
-				} else {
-					$out .= "  " . $LANG["software"][20] . ": $remaining";
-					$out .= "  " . $LANG["common"][33] . ": " . $total;
-				}
-
-				$tobuy = getLicenceToBuy($sID);
-				if ($tobuy > 0) {
-					if (!$nohtml)
-						$out .= "<td width='25%'>" . $LANG["software"][37] . ": <strong><span class='red'>" . $tobuy . "</span></strong></td>";
-					else
-						$out .= "  " . $LANG["software"][37] . ": " . $tobuy;
-				} else {
-					if (!$nohtml)
-						$out .= "<td width='20%'>&nbsp;</td>";
-				}
-				if (!$nohtml)
-					$out .= "</tr></table>";
-			}
-	} else {
+	if ($total < 0 ){
 		if (!$nohtml)
-			$out .= "<div class='center'><i>" . $LANG["software"][40] . "</i></div>";
+			$out .= "&nbsp;&nbsp;".$LANG["software"][11] . ": <strong>".$LANG["software"][4]."</strong>";
 		else
-			$out .= $LANG["software"][40];
+			$out .= "&nbsp;&nbsp;".$LANG["software"][11] . ": ".$LANG["software"][4];
+	} else {
+		if ($total >=$installed) {
+			$color = "green";
+		} else {
+			$color = "blue";
+		}
+
+		if (!$nohtml){
+			$total = "<span class='$color'>$total";
+			$total .= "</span>";
+			$out .= "&nbsp;&nbsp;".$LANG["software"][11] . ": <strong>$total</strong>";
+		} else
+			$out .= "&nbsp;&nbsp;".$LANG["software"][11] . ": ".$total;
 	}
+
 	return $out;
 }
 
@@ -1339,7 +1294,7 @@ function countInstallationsForSoftware($sID) {
 	global $DB;
 	$query = "SELECT count(glpi_inst_software.ID) 
 			FROM glpi_softwareversions
-			INNER JOIN glpi_inst_software (glpi_softwareversions.ID = glpi_inst_software.vID)
+			INNER JOIN glpi_inst_software ON (glpi_softwareversions.ID = glpi_inst_software.vID)
 			INNER JOIN glpi_computers ON ( glpi_inst_software.cID=glpi_computers.ID)
 			WHERE glpi_softwareversions.sID='$sID'
 				AND glpi_computers.deleted='0' AND glpi_computers.is_template='0'";
@@ -1393,14 +1348,21 @@ function getLicenceToBuy($sID) {
  *
  * @param $sID software ID
  * @return number of licenses
- *//*
-function getLicenceNumber($sID) {
+ */
+function getNumberOfLicences($sID) {
 	global $DB;
-	$query = "SELECT ID,serial FROM glpi_licenses WHERE (sID = '$sID')";
+	
+	$query = "SELECT ID FROM glpi_softwarelicenses WHERE (sID = '$sID' AND number='-1')";
 	$result = $DB->query($query);
-	return $DB->numrows($result);
+	if ($DB->numrows($result)){
+		return -1;
+	} else {
+		$query = "SELECT SUM(number) FROM glpi_softwarelicenses WHERE (sID = '$sID' AND number > 0)";
+		$result = $DB->query($query);
+		return $DB->result($result,0,0);
+	}
 }
-*/
+
 /**
  * A software have a global license ?
  *
