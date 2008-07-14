@@ -54,9 +54,9 @@
 
 	echo "<script type='text/javascript' >\n";
 	if (!empty($email)){
-		echo "window.document.getElementById('emailupdates').value='1';";
+		echo "window.document.getElementById('dropdownyesno_emailupdates').value='1';";
 	} else {
-		echo "window.document.getElementById('emailupdates').value='0';";
+		echo "window.document.getElementById('dropdownyesno_emailupdates').value='0';";
 	}
 	echo "</script>\n";
 
