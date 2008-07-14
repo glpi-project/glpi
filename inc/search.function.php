@@ -883,6 +883,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 
 					$WHERE.= addWhere($LINK,$NOT,$type2[$key],$field2[$key],$contains2[$key],1);
 				}
+				$first=false;
 			}
 		}
 	}
