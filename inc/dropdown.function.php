@@ -839,7 +839,7 @@ function dropdownAllItems($myname,$value_type=0,$value=0,$entity_restrict=-1,$ty
  */
 function dropdownYesNo($name,$value=0){
 	global $LANG;
-	echo "<select name='$name'>\n";
+	echo "<select name='$name' id='$name'>\n";
 	echo "<option value='0' ".(!$value?" selected ":"").">".$LANG["choice"][0]."</option>\n";
 	echo "<option value='1' ".($value?" selected ":"").">".$LANG["choice"][1]."</option>\n";
 	echo "</select>\n";	
