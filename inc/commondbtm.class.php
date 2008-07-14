@@ -584,9 +584,12 @@ class CommonDBTM {
 		if (isset($input['_no_message']) || !$this->auto_message_on_action){
 			$addMessAfterRedirect=false;
 		}
+		
 
 		if ($addMessAfterRedirect) {
-			addMessageAfterRedirect($LANG["common"][71].": ".(isset($this->fields["name"]) && !empty($this->fields["name"]) ? stripslashes($this->fields["name"]) : "(".$this->fields['ID'].")"));
+
+			addMessageAfterRedirect($LANG["common"][71].": <a href='" . $CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$this->type] . "?ID=" . $this->fields['ID'] . "'>" .
+			(isset($this->fields["name"]) && !empty($this->fields["name"]) ? stripslashes($this->fields["name"]) : "(".$this->fields['ID'].")") . "</a>");
 		} 
 	}
 
