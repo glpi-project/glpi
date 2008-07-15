@@ -1558,10 +1558,9 @@ function addDefaultToView ($type){
 	array_push($toview,1);
 	
 	// Add entity view : 
-	if (isset($CFG_GLPI["recursive_type"][$type]) || count($_SESSION["glpiactiveentities"])>1) {
+	if (isMultiEntitiesMode() && (isset($CFG_GLPI["recursive_type"][$type]) || count($_SESSION["glpiactiveentities"])>1)) {
 		array_push($toview,80);  
 	}
-
 	return $toview;
 }
 
