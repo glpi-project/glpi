@@ -914,7 +914,7 @@ function html_clean($value){
 //	$value = preg_replace("/^\n+/", " ", $value);
 //	$value = preg_replace("/\n+$/", " ", $value);
 
-	$value = preg_replace("/\n{2,}/", "\n\n", $value,-1,$count);
+	$value = preg_replace("/\n{2,}/", "\n\n", $value,-1);
 
 	return trim($value);
 }
