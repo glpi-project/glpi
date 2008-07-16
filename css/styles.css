@@ -74,6 +74,8 @@ small{
 .center{	text-align:center;}
 .left{ text-align:left;}
 .right{ text-align:right;}
+
+.center-h{margin:auto;}
 .middle {vertical-align:middle;}
 .bottom {vertical-align:bottom;}
 .top {vertical-align:top;}
