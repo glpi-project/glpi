@@ -56,8 +56,8 @@ function searchFormKnowbase($target,$contains,$parentID=0,$faq=0){
 	
 	if ($CFG_GLPI["public_faq"] == 0&&!haveRight("knowbase","r")&&!haveRight("faq","r")) return false;
 	
-	echo "<div class='center'>";
-	echo "<table border='0'><tr><td>";
+	echo "<div>";
+	echo "<table  class='center-h'><tr><td>";
 	
 	
 	echo "<form method=get action=\"".$target."\">";
@@ -337,8 +337,8 @@ function showKbItemList($target,$contains,$start,$parentID,$faq=0){
  **/
 function showKbViewGlobal($target,$faq=0){
 	
-	echo "<div class='center'>";
-	echo "<table width='950px'><tr><td align='center' valign='middle'>";
+	echo "<div>";
+	echo "<table  class='center-h' width='950px'><tr><td align='center' valign='middle'>";
 			
 	showKbRecentPopular($target,"recent",$faq);
 		
