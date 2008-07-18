@@ -291,6 +291,7 @@ function getNbIntervTechFollowup($date1,$date2){
 	if ($date1!="") $query.= " AND glpi_tracking.date >= '". $date1 ."' ";
 	if ($date2!="") $query.= " AND glpi_tracking.date <= adddate( '". $date2 ."' , INTERVAL 1 DAY ) ";
 
+	$query.=" AND glpi_followups.author <> 0 AND glpi_followups.author IS NOT NULL";
 	$query.= " ORDER BY realname,firstname, name";
 	$result = $DB->query($query);
 	$tab=array();
