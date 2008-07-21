@@ -1137,7 +1137,6 @@ function callCronForce(){
 		$path="cron.php";
 	} else {
 		$path="front/cron.php";
-		echo "<div style=\"background-image: url('front/cron.php');\"></div>";
 	}
 
 	if (is_file($path)) {
