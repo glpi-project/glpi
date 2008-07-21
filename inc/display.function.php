@@ -975,12 +975,7 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="")
 	}
 	
 	// call function callcron() every 5min
-	if (isset($_SESSION["glpicrontimer"])){
-		if (abs(time()-$_SESSION["glpicrontimer"])>300){
-			callCron();
-			$_SESSION["glpicrontimer"]=time();
-		} 
-	} else $_SESSION["glpicrontimer"]=time();
+	callCron();
 
 	displayMessageAfterRedirect();
 }
@@ -1180,12 +1175,7 @@ function helpHeader($title,$url='') {
 	
 
 	// call function callcron() every 5min
-	if (isset($_SESSION["glpicrontimer"])){
-		if (($_SESSION["glpicrontimer"]-time())>300){
-			callCron();
-			$_SESSION["glpicrontimer"]=time();
-		}
-	} else $_SESSION["glpicrontimer"]=time();
+	callCron();
 
 	displayMessageAfterRedirect();
 }
@@ -1269,12 +1259,7 @@ function simpleHeader($title,$links=array()) {
 	echo "<div  id='page' >";
 
 	// call function callcron() every 5min
-	if (isset($_SESSION["glpicrontimer"])){
-		if (($_SESSION["glpicrontimer"]-time())>300){
-			callCron();
-			$_SESSION["glpicrontimer"]=time();
-		}
-	} else $_SESSION["glpicrontimer"]=time();
+	callCron();
 
 //	displayMessageAfterRedirect();
 }

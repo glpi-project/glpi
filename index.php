@@ -182,7 +182,7 @@ else
 }
 // Appel de cron
 if ($CFG_GLPI["debug"]!=DEMO_MODE){
-	callCron();
+	callCronForce();
 }
 
 

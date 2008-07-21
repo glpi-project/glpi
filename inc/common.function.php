@@ -1127,15 +1127,45 @@ function glpi_header($dest){
 }
 
 /**
- * Call cron
+ * Call cron without time check
+ *
+ * @return boolean : true if launched
+ */
+function callCronForce(){
+
+	if (ereg("front",$_SERVER['PHP_SELF'])){
+		$path="cron.php";
+	} else {
+		$path="front/cron.php";
+		echo "<div style=\"background-image: url('front/cron.php');\"></div>";
+	}
+
+	if (is_file($path)) {
+		echo "<div style=\"background-image: url('$path');\"></div>";
+		return true;		
+	}
+	return false;
+}
+
+/**
+ * Call cron if time since last launch elapsed
  *
  * @return nothing
  */
 function callCron(){
-	if (ereg("front",$_SERVER['PHP_SELF'])){
-		echo "<div style=\"background-image: url('cron.php');\"></div>";
+	
+	if (isset($_SESSION["glpicrontimer"])){
+
+		// call function callcron() every 5min
+		if ((time()-$_SESSION["glpicrontimer"])>300){
+			if (callCronForce()) {
+				// Restart timer
+				$_SESSION["glpicrontimer"]=time();			
+			}
+		}
 	} else {
-		echo "<div style=\"background-image: url('front/cron.php');\"></div>";
+		// Start timer
+		$_SESSION["glpicrontimer"]=time();	
 	}
 }
 
