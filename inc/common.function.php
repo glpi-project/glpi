@@ -1133,17 +1133,12 @@ function glpi_header($dest){
  */
 function callCronForce(){
 
-	if (ereg("front",$_SERVER['PHP_SELF'])){
-		$path="cron.php";
-	} else {
-		$path="front/cron.php";
-	}
+	global $CFG_GLPI;
+	
+	$path=$CFG_GLPI['root_doc']."/front/cron.php";
 
-	if (is_file($path)) {
-		echo "<div style=\"background-image: url('$path');\"></div>";
-		return true;		
-	}
-	return false;
+	echo "<div style=\"background-image: url('$path');\"></div>";
+	return true;		
 }
 
 /**
