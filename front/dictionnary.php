@@ -39,6 +39,11 @@ $NEEDED_ITEMS=array("rulesengine");
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
+checkSeveralRightsOr(array(
+	"rule_dictionnary_dropdown"=>"r",
+	"rule_dictionnary_software"=>"r"
+));
+
 commonHeader($LANG["common"][12],$_SERVER['PHP_SELF'],"admin","dictionnary",-1);
 
 	echo "<div align='center'><table class='tab_cadre' cellpadding='5'>";
