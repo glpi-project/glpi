@@ -1589,6 +1589,7 @@ $LANG["setup"][302]="Vous la trouverez sur le site : <a href='http://glpi-projec
 $LANG["setup"][303]="Vous disposez de la dernière version disponible"; 
 $LANG["setup"][304]="Connexion au site impossible. Si vous utilisez un proxy, configurez le."; 
 $LANG["setup"][306]="Vérifier la présence de mises à jour"; 
+$LANG["setup"][305]="Tous les jours"; 
 $LANG["setup"][307]="Jamais"; 
 $LANG["setup"][308]="Toutes les semaines"; 
 $LANG["setup"][309]="Tous les mois"; 
