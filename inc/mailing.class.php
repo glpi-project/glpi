@@ -173,7 +173,7 @@ class Mailing
 									if ($DB->numrows($result2)==1){
 										$row = $DB->fetch_array($result2);
 										if (isValidEmail($row['EMAIL'])&&!isset($emails[$row['EMAIL']])){
-											$emails[$row['EMAIL']]=$CFG_GLPI["admin_email"];
+											$emails[$row['EMAIL']]=$CFG_GLPI["default_language"];
 										}
 									}
 								}
@@ -205,7 +205,7 @@ class Mailing
 										if ($DB->numrows($result2)==1){
 											$row = $DB->fetch_array($result2);
 											if (isValidEmail($row['EMAIL'])&&!isset($emails[$row['EMAIL']])){
-												$emails[$row['EMAIL']]=$CFG_GLPI["admin_email"];
+												$emails[$row['EMAIL']]=$CFG_GLPI["default_language"];
 											}
 										}
 									}
