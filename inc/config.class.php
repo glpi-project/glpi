@@ -706,7 +706,7 @@ class Config extends CommonDBTM {
 			echo "<tr class='tab_bg_2'><td >" . $LANG["setup"][245] . " " . $LANG["setup"][244] . "</td><td>";
 			echo "<select name='cartridges_alert'> ";
 			echo "<option value='0' " . ($CFG_GLPI["cartridges_alert"] == 0 ? "selected" : "") . " >" . $LANG["setup"][307] . "</option>";
-			echo "<option value='" . DAY_TIMESTAMP . "' " . ($CFG_GLPI["cartridges_alert"] == WEEK_TIMESTAMP ? "selected" : "") . " >" . $LANG["setup"][305] . "</option>";
+			echo "<option value='" . DAY_TIMESTAMP . "' " . ($CFG_GLPI["cartridges_alert"] == DAY_TIMESTAMP ? "selected" : "") . " >" . $LANG["setup"][305] . "</option>";
 			echo "<option value='" . WEEK_TIMESTAMP . "' " . ($CFG_GLPI["cartridges_alert"] == WEEK_TIMESTAMP ? "selected" : "") . " >" . $LANG["setup"][308] . "</option>";
 			echo "<option value='" . MONTH_TIMESTAMP . "' " . ($CFG_GLPI["cartridges_alert"] == MONTH_TIMESTAMP ? "selected" : "") . " >" . $LANG["setup"][309] . "</option>";
 			echo "</select>";
@@ -715,7 +715,7 @@ class Config extends CommonDBTM {
 			echo "<tr class='tab_bg_2'><td >" . $LANG["setup"][245] . " " . $LANG["setup"][243] . "</td><td>";
 			echo "<select name='consumables_alert'> ";
 			echo "<option value='0' " . ($CFG_GLPI["consumables_alert"] == 0 ? "selected" : "") . " >" . $LANG["setup"][307] . "</option>";
-			echo "<option value='" . DAY_TIMESTAMP . "' " . ($CFG_GLPI["cartridges_alert"] == WEEK_TIMESTAMP ? "selected" : "") . " >" . $LANG["setup"][305] . "</option>";
+			echo "<option value='" . DAY_TIMESTAMP . "' " . ($CFG_GLPI["cartridges_alert"] == DAY_TIMESTAMP ? "selected" : "") . " >" . $LANG["setup"][305] . "</option>";
 			echo "<option value='" . WEEK_TIMESTAMP . "' " . ($CFG_GLPI["consumables_alert"] == WEEK_TIMESTAMP ? "selected" : "") . " >" . $LANG["setup"][308] . "</option>";
 			echo "<option value='" . MONTH_TIMESTAMP . "' " . ($CFG_GLPI["consumables_alert"] == MONTH_TIMESTAMP ? "selected" : "") . " >" . $LANG["setup"][309] . "</option>";
 			echo "</select>";
