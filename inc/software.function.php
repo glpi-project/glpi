@@ -965,7 +965,7 @@ function displaySoftsByCategory($data, $instID, $withtemplate) {
 			$comp = new Computer();
 			$comp->getFromDB($data["oem_computer"]);
 		}
-		echo "<td align='center' class='tab_bg_1" . ($expirer || ($data["oem"] && $comp->fields['ID'] != $instID) ? "_2" : "") . "'>" . ($data["oem"] ? $LANG["choice"][1] : $LANG["choice"][0]);
+		echo "<td align='center' class='tab_bg_1" . ( ( $expirer || ($data["oem"] && (!isset($comp->fields['ID']) || $comp->fields['ID'] != $instID) ) ) ? "_2" : "") . "'>" . ($data["oem"] ? $LANG["choice"][1] : $LANG["choice"][0]);
 		if ($data["oem"]) {
 			echo "<br><strong>";
 			if (isset ($comp->fields['ID']))
