@@ -53,7 +53,17 @@ function showReservationForm($device_type,$id_device){
 	global $CFG_GLPI,$LANG;
 
 	if (!haveRight("reservation_central","w")) return false;
-
+	
+	// Recursive type case => need entity right
+	if (isset($CFG_GLPI["recursive_type"][$device_type])) {
+		$ci = new CommonItem();
+		if (!$ci->getFromDB($device_type,$id_device)) {
+			return false;
+		}
+		if (!haveAccessToEntity($ci->obj->fields["FK_entities"])) {
+			return false;
+		}
+	}
 
 	if ($resaID=isReservable($device_type,$id_device)) {
 		$ri=new ReservationItem;
