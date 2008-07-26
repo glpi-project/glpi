@@ -126,7 +126,7 @@ function printCalendrier($target,$ID=""){
 		$ci=new CommonItem();
 		$ci->getFromDB($m->fields["device_type"],$m->fields["id_device"]);
 		
-		if (!haveAccessToEntity($ci->getField('FK_entities'))){
+		if (!$ci->obj->can($m->fields["id_device"],"r")){
 			echo "<div class='center'><strong>";
 
 			echo $LANG["common"][54]."<br>";
@@ -399,7 +399,8 @@ function printReservation($target,$ID,$date){
 				$ci=new CommonItem();
 				$ci->getFromDB($m->fields["device_type"],$m->fields["id_device"]);
 				
-				if (in_array($ci->obj->fields["FK_entities"],$_SESSION["glpiactiveentities"])){
+				//if (in_array($ci->obj->fields["FK_entities"],$_SESSION["glpiactiveentities"])){
+				if ($ci->obj->can($m->fields["id_device"],"r")){
 					list($annee,$mois,$jour)=split("-",$date);
 					echo "<tr class='tab_bg_1'><td><a href='$target?show=resa&amp;ID=".$data['ID']."&amp;mois_courant=$mois&amp;annee_courante=$annee'>".$ci->getType()." - ".$ci->getName()."</a></td></tr>";
 					echo "<tr><td>";
