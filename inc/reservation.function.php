@@ -386,7 +386,7 @@ function printReservation($target,$ID,$date){
 		$fin=$date." 23:59:59";
 
 		$query = "SELECT DISTINCT glpi_reservation_item.ID FROM glpi_reservation_item INNER JOIN glpi_reservation_resa ON (glpi_reservation_item.ID = glpi_reservation_resa.id_item )".
-			" WHERE active='1' AND (('".$debut."' < begin AND '".$fin."' > begin) OR ('".$debut."' < end AND '".$fin."' > end) OR (begin < '".$debut."' AND end > '".$debut."') OR (begin < '".$fin."' AND end > '".$fin."')) ORDER BY begin";
+			" WHERE active='1' AND '".$debut."' < end AND '".$fin."' > begin ORDER BY begin";
 //		echo $query;
 		$result=$DB->query($query);
 
@@ -423,7 +423,7 @@ function printReservationItem($target,$ID,$date){
 	$debut=$date." 00:00:00";
 	$fin=$date." 23:59:59";
 	$query = "SELECT * FROM glpi_reservation_resa".
-		" WHERE (('".$debut."' < begin AND '".$fin."' > begin) OR ('".$debut."' < end AND '".$fin."' > end) OR (begin < '".$debut."' AND end > '".$debut."') OR (begin < '".$fin."' AND end > '".$fin."')) AND id_item=$ID ORDER BY begin";
+		" WHERE '".$debut."' < end AND '".$fin."' > begin AND id_item=$ID ORDER BY begin";
 	//		echo $query."<br>";
 	if ($result=$DB->query($query)){
 		if ($DB->numrows($result)>0){
