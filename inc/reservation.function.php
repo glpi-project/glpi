@@ -286,7 +286,7 @@ function showAddReservationForm($target,$items,$date,$resaID=-1){
 		if (!$resa->getFromDB($resaID)){
 			return false;
 		}
-		if (!haveRight("reservation_central","w")&&$resa->fields['id_user']!=$_SESSION['glpiID']) {
+		if (!$resa->can($resaID,"w")) {
 			return false;
 		}
 
@@ -320,7 +320,7 @@ function showAddReservationForm($target,$items,$date,$resaID=-1){
 		echo "<input type='hidden' name='items[$ID]' value='$ID'>";
 	}
 	echo "</td></tr>";
-	if (!haveRight("reservation_central","w"))
+	if (!haveRight("reservation_central","w") || !haveAccessToEntity($ci->obj->fields["FK_entities"]))
 		echo "<input type='hidden' name='id_user' value='".$_SESSION["glpiID"]."'>";
 	else {
 		echo "<tr class='tab_bg_2'><td>".$LANG["reservation"][31].":	</td>";
@@ -419,6 +419,8 @@ function printReservationItem($target,$ID,$date){
 
 	$id_user=$_SESSION["glpiID"];
 
+	$resa = new ReservationResa();
+	
 	$user=new User;
 	list($year,$month,$day)=split("-",$date);
 	$debut=$date." 00:00:00";
@@ -449,7 +451,7 @@ function printReservationItem($target,$ID,$date){
 
 				$rand=mt_rand();		
 				$modif=$modif_end="";
-				if (haveRight("reservation_central","w")||$row['id_user']==$_SESSION['glpiID']) {
+				if ($resa->can($row['ID'],"w")) {
 					$modif="<a onmouseout=\"cleanhide('content_".$ID.$rand."')\" onmouseover=\"cleandisplay('content_".$ID.$rand."')\" href=\"".$target."?show=resa&amp;edit=".$row['ID']."&amp;edit_item[$ID]=$ID&amp;mois_courant=$month&amp;annee_courante=$year\">";
 					$modif_end="</a>";
 				}

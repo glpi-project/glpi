@@ -306,7 +306,35 @@ class ReservationResa extends CommonDBTM {
 
 	}
 
+	function can($ID,$right,$entity=-1){
+
+		if (empty($ID)||$ID<=0){
+			// Add reservation - TODO should also check commonitem->can(r)
+			return haveRight("reservation_helpdesk","1");
+		}
+		if (!isset($this->fields['ID'])||$this->fields['ID']!=$ID){
+			// Item not found : no right
+			if (!$this->getFromDB($ID)){
+				return false;
+			}
+		}
+		// Original user always have right
+		if ($this->fields['id_user']==$_SESSION['glpiID']) {
+			return true;
+		} 
+		if (!haveRight("reservation_central",$right)) {
+			return false;			
+		}
+		$item=new ReservationItem();
+		if (!$item->getFromDB($this->fields["id_item"])) {
+			return false;			
+		}
+		$ci=new CommonItem();
+		if (!$ci->getFromDB($item->fields["device_type"], $item->fields["id_device"])) {
+			return false;			
+		}
+
+		return haveAccessToEntity($ci->obj->fields["FK_entities"]);		
+	}
 }
-
-
 ?>
