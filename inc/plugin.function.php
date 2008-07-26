@@ -335,11 +335,13 @@ function getPluginSearchOption(){
  * @param $table table describing the device
  * @param $formpage Form page for the item
  * @param $typename string defining the name of the new type (used in CommonItem)
+ * @param $recursive boolean
+ * 
  * @return nothing
  */
 
-function pluginNewType($plugin,$name,$ID,$class,$table,$formpage='',$typename=''){
-	global $PLUGIN_HOOKS,$LINK_ID_TABLE,$INFOFORM_PAGES; 
+function pluginNewType($plugin,$name,$ID,$class,$table,$formpage='',$typename='',$recursive=false){
+	global $PLUGIN_HOOKS,$LINK_ID_TABLE,$INFOFORM_PAGES,$CFG_GLPI; 
 
 	define($name,$ID);
 	$LINK_ID_TABLE[$ID]=$table;
@@ -347,5 +349,9 @@ function pluginNewType($plugin,$name,$ID,$class,$table,$formpage='',$typename=''
 	$PLUGIN_HOOKS['plugin_types'][$ID]=$plugin;
 	$PLUGIN_HOOKS['plugin_typenames'][$ID]=$typename;
 	$PLUGIN_HOOKS['plugin_classes'][$ID]=$class;
+	
+	if ($recursive) {
+		 $CFG_GLPI["recursive_type"][$ID]=$table;
+	}
 }
 ?>
