@@ -166,6 +166,12 @@ function showLinkOnDevice($type,$ID){
 					$link=ereg_replace("\[ID\]",$ID,$link);
 				}
 
+				if (ereg("\[LOGIN\]",$link)){
+					if (isset($_SESSION["glpiname"])){
+						$link=ereg_replace("\[LOGIN\]",$_SESSION["glpiname"],$link);
+					}
+				}
+
 				if (ereg("\[SERIAL\]",$link)){
 					if ($tmp=$ci->getField('serial')){
 						$link=ereg_replace("\[SERIAL\]",$tmp,$link);
@@ -253,6 +259,12 @@ function showLinkOnDevice($type,$ID){
 				// Manage Filename
 				if (ereg("\[NAME\]",$link)){
 					$link=ereg_replace("\[NAME\]",$ci->getName(),$link);
+				}
+
+				if (ereg("\[LOGIN\]",$link)){
+					if (isset($_SESSION["glpiname"])){
+						$link=ereg_replace("\[LOGIN\]",$_SESSION["glpiname"],$link);
+					}
 				}
 
 				if (ereg("\[ID\]",$link)){
