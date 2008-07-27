@@ -79,16 +79,6 @@ class Contract extends CommonDBTM {
 		return $ong;
 	}
 
-	function prepareInputForUpdate($input) {
-		// Backup initial values
-		if (isset($input['begin_date'])&&empty($input['begin_date'])){
-			$input['begin_date']="NULL";
-		}
-
-		return $input;
-	}
-
-
 	function pre_updateInDB($input,$updates,$oldvalues) {
 
 		// Clean end alert if begin_date is after old one
