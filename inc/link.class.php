@@ -99,7 +99,7 @@ class Link extends CommonDBTM {
 			echo "</th></tr>";
 
 			echo "<tr class='tab_bg_1'><td>".$LANG["links"][6].":	</td>";
-			echo "<td>[ID], [NAME], [LOCATION], [LOCATIONID], [IP], [MAC], [NETWORK], [DOMAIN], [SERIAL], [OTHERSERIAL]</td>";
+			echo "<td>[LOGIN], [ID], [NAME], [LOCATION], [LOCATIONID], [IP], [MAC], [NETWORK], [DOMAIN], [SERIAL], [OTHERSERIAL]</td>";
 			echo "</tr>";
 
 			echo "<tr class='tab_bg_1'><td>".$LANG["common"][16].":	</td>";
