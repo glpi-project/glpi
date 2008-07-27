@@ -302,16 +302,19 @@ class Config extends CommonDBTM {
 				echo "<tr><th colspan='4'>" . $LANG["setup"][119] . "</th></tr>";
 			
 				echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["setup"][128] . " </td><td><select name=\"dateformat\">";
-				echo "<option value=\"0\"";
-				if ($CFG_GLPI["dateformat"] == 0) {
-					echo " selected";
+
+				$dateformats=array(
+					0 => "YYYY-MM-DD",
+					1 => "DD-MM-YYYY",
+					2 => "MM-DD-YYYY"
+				);
+				foreach ($dateformats as $key => $val){
+					echo "<option value=\"$key\"";
+					if ($CFG_GLPI["dateformat"] == $key) {
+						echo " selected";
+					}
+					echo ">$val</option>";
 				}
-				echo ">YYYY-MM-DD</option>";
-				echo "<option value=\"1\"";
-				if ($CFG_GLPI["dateformat"] == 1) {
-					echo " selected";
-				}
-				echo ">DD-MM-YYYY</option>";
 				echo "</select></td>";
 				
 				echo "<td class='center'>" . $LANG["setup"][150] . " </td><td><select name=\"numberformat\">";

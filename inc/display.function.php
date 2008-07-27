@@ -1840,11 +1840,18 @@ function showDateTimeFormItem($element,$value='',$time_step=-1,$maybeempty=true,
 		applyTo: 'showdate$rand',
 		timeFormat:'H:i',
 		timeWidth: 60,
-		dateWidth: 100,
-
-		timeConfig: {
+		dateWidth: 100,";
+		
+		$empty="";
+		if ($maybeempty){
+			$empty="allowBlank: true,";
+		} else {
+			$empty="allowBlank: false,";
+		}
+		echo $empty;
+		echo "timeConfig: {
 			altFormats:'H:i',
-			increment: $time_step,allowBlank: false,";
+			increment: $time_step,$empty";
 			if (!empty($minTime)){
 				echo "minValue: '$minTime',";
 			}
@@ -1853,19 +1860,23 @@ function showDateTimeFormItem($element,$value='',$time_step=-1,$maybeempty=true,
 			}
 		echo "},
 		";
-		if ($maybeempty){
-			echo "allowBlank: true,";
-		} else {
-			echo "allowBlank: false,";
-		}
-		if (!$CFG_GLPI["dateformat"]){
-			echo "dateFormat: 'Y-m-d',
+
+		switch ($CFG_GLPI["dateformat"]){
+			case 1:
+				echo "dateFormat: 'd-m-Y',
 				dateConfig: {
-					altFormats:'Y-m-d|Y-n-d',allowBlank: false,";
-		} else {
-			echo "dateFormat: 'd-m-Y',
+					altFormats:'d-m-Y|d-n-Y',$empty";
+				break;
+			case 2:
+				echo "dateFormat: 'm-d-Y',
 				dateConfig: {
-					altFormats:'d-m-Y|d-n-Y',allowBlank: false,";
+					altFormats:'m-d-Y|n-d-Y',$empty";
+				break;
+			default:
+				echo "dateFormat: 'Y-m-d',
+				dateConfig: {
+					altFormats:'Y-m-d|Y-n-d',$empty";
+				break;
 		}
 		if (!empty($minDate)){
 			echo "minValue: '".convDate($minDate)."',";
@@ -1902,6 +1913,7 @@ function showDateFormItem($element,$value='',$maybeempty=true,$can_edit=true,$mi
 	echo "<input id='showdate$rand' type='text' size='10' name='$element'>";
 
 	echo "<script type='text/javascript'>";
+
 	echo "Ext.onReady(function(){  
 		var md$rand = new Ext.ux.form.XDateField({
 		name: '$element',
@@ -1910,11 +1922,18 @@ function showDateFormItem($element,$value='',$maybeempty=true,$can_edit=true,$mi
 		id: '_date$rand',
 		submitFormat:'Y-m-d',";
 
-		if (!$CFG_GLPI["dateformat"]){
-			echo "format: 'Y-m-d',";
-		} else {
-			echo "format: 'd-m-Y',";
+		switch ($CFG_GLPI["dateformat"]){
+			case 1:
+				echo "format: 'd-m-Y',";
+				break;
+			case 2:
+				echo "format: 'm-d-Y',";
+				break;
+			default:
+				echo "format: 'Y-m-d',";
+				break;
 		}
+
 		if ($maybeempty){
 			echo "allowBlank: true,";
 		} else {
