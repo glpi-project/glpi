@@ -42,7 +42,6 @@ header_nocache();
 
 if (isset($_POST["action"])&&isset($_POST["type"])&&!empty($_POST["type"])){
 
-
 	switch ($_POST["type"]){
 		case TRACKING_TYPE :
 			checkTypeRight("update_ticket","1");
@@ -200,10 +199,15 @@ if (isset($_POST["action"])&&isset($_POST["type"])&&!empty($_POST["type"])){
 	
 			echo "</select>";
 	
-	
 			$paramsmassaction=array('id_field'=>'__VALUE__',
 				'device_type'=>$_POST["type"],
 				);
+
+			foreach ($_POST as $key => $val){
+				if (ereg("extra_",$key,$regs)){
+					$paramsmassaction[$key]=$val;
+				}
+			}
 			ajaxUpdateItemOnSelectEvent("massiveaction_field","show_massiveaction_field",$CFG_GLPI["root_doc"]."/ajax/dropdownMassiveActionField.php",$paramsmassaction);
 	
 			echo "<span id='show_massiveaction_field'>&nbsp;</span>\n";
