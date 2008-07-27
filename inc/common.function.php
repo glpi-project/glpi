@@ -929,17 +929,32 @@ function html_clean($value){
 function convDateTime($time) { 
 	global $CFG_GLPI;
 	if (is_null($time)) return $time;
-	if (isset($CFG_GLPI["dateformat"])&&$CFG_GLPI["dateformat"]!=0) {
-		$date = substr($time,8,2)."-";        // jour 
-		$date = $date.substr($time,5,2)."-";  // mois 
-		$date = $date.substr($time,0,4). " "; // annÃ©e 
-		$date = $date.substr($time,11,5);     // heures et minutes 
-		return $date; 
-	}else {
-		if (strlen($time)>16){
-			return substr($time,0,16);
-		}
-		return $time;
+
+	if (!isset($CFG_GLPI["dateformat"])){
+		$CFG_GLPI["dateformat"]=0;
+	}
+	
+	switch ($CFG_GLPI["dateformat"]){
+		case 1 : // DD-MM-YYYY
+			$date = substr($time,8,2)."-";        // day 
+			$date .= substr($time,5,2)."-";  // month
+			$date .= substr($time,0,4). " "; // year
+			$date .= substr($time,11,5);     // hours and minutes
+			return $date; 
+			break;
+		case 2 : // MM-DD-YYYY
+			$date = substr($time,5,2)."-";  // month
+			$date .= substr($time,8,2)."-";        // day 
+			$date .= substr($time,0,4). " "; // year
+			$date .= substr($time,11,5);     // hours and minutes
+			return $date; 
+			break;
+		default : // YYYY-MM-DD
+			if (strlen($time)>16){
+				return substr($time,0,16);
+			}
+			return $time;
+			break;
 	}
 }
 
@@ -953,17 +968,30 @@ function convDate($time) {
 	global $CFG_GLPI;
 	if (is_null($time)) return $time;
 
-	if (isset($CFG_GLPI["dateformat"])&&$CFG_GLPI["dateformat"]!=0) {
-		$date = substr($time,8,2)."-";        // jour 
-		$date = $date.substr($time,5,2)."-";  // mois 
-		$date = $date.substr($time,0,4); // annÃ©e 
-		//$date = $date.substr($time,11,5);     // heures et minutes 
-		return $date; 
-	}else {
-		if (strlen($time)>10){
-			return substr($time,0,10);
-		}
-		return $time;
+
+	if (!isset($CFG_GLPI["dateformat"])){
+		$CFG_GLPI["dateformat"]=0;
+	}
+	
+	switch ($CFG_GLPI["dateformat"]){
+		case 1 : // DD-MM-YYYY
+			$date = substr($time,8,2)."-";        // day 
+			$date .= substr($time,5,2)."-";  // month
+			$date .= substr($time,0,4); // year
+			return $date; 
+			break;
+		case 2 : // MM-DD-YYYY
+			$date = substr($time,5,2)."-";  // month
+			$date .= substr($time,8,2)."-";        // day 
+			$date .= substr($time,0,4); // year
+			return $date; 
+			break;
+		default : // YYYY-MM-DD
+			if (strlen($time)>10){
+				return substr($time,0,10);
+			}
+			return $time;
+			break;
 	}
 }
 
