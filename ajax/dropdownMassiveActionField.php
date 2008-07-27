@@ -61,7 +61,6 @@ if (isset($_POST["device_type"])&&isset($_POST["id_field"])&&$_POST["id_field"])
 
 	$FIELDNAME_PRINTED=false;
 
-
 	if ($search["table"]==$LINK_ID_TABLE[$_POST["device_type"]]){ // field type
 		switch ($search["table"].".".$search["linkfield"]){
 			case "glpi_software.helpdesk_visible":
@@ -78,6 +77,7 @@ if (isset($_POST["device_type"])&&isset($_POST["id_field"])&&$_POST["id_field"])
 				echo " ".$LANG["financial"][57];
 				break;
 			case "glpi_contracts.begin_date":
+			case "glpi_softwarelicenses.expire":
 				showDateFormItem($search["field"]);
 				break;
 			case "glpi_contracts.alert":
@@ -162,6 +162,17 @@ if (isset($_POST["device_type"])&&isset($_POST["id_field"])&&$_POST["id_field"])
 				}
 				break;
 			break;
+			case "glpi_softwareversions":
+				
+				switch ($search["linkfield"]){
+					case "use_version":
+					case "buy_version":
+					$_POST['sID']=$_POST['extra_sID'];
+					$_POST['myname']=$search['linkfield'];
+					include("dropdownInstallVersion.php");
+					break;
+				}
+				break;
 
 
 			default : // dropdown case

@@ -130,7 +130,12 @@ function showLicenses($sID) {
 		WHERE (glpi_softwarelicenses.sID = '$sID') ORDER BY buyvers.name";
 	if ($result=$DB->query($query)){
 		if ($DB->numrows($result)){
-			echo "<table class='tab_cadre'><tr>";
+			if ($canedit){
+				echo "<form method='post' name='massiveactionlicense_form' id='massiveactionlicense_form' action=\"".$CFG_GLPI["root_doc"]."/front/massiveaction.php\">";
+			}
+
+			echo "<table class='tab_cadrehov'><tr>";
+			echo "<th>&nbsp;</th>";
 			echo "<th>".$LANG["common"][16]."</th>";
 			echo "<th>".$LANG["common"][19]."</th>";
 			echo "<th>".$LANG["tracking"][29]."</th>";
@@ -143,6 +148,8 @@ function showLicenses($sID) {
 			echo "</tr>";
 			while ($data=$DB->fetch_assoc($result)){
 				echo "<tr class='tab_bg_2'>";
+				echo "<td><input type='checkbox' name='item[".$data["ID"]."]' value='1'></td>";
+
 				if ($canedit){
 					echo "<td><a href='softwarelicense.form.php?ID=".$data['ID']."'>".$data['name'].(empty($data['name'])?$data['ID']:"")."</a></td>";
 				} else {
@@ -162,6 +169,19 @@ function showLicenses($sID) {
 				echo "</tr>";
 			}
 			echo "</table>";
+			
+			if ($canedit){
+				echo "<table width='80%' class='tab_glpi'>";
+				echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td><a onclick= \"if ( markAllRows('massiveactionlicense_form') ) return false;\" href='".$_SERVER['PHP_SELF']."?select=all'>".$LANG["buttons"][18]."</a></td>";
+
+				echo "<td>/</td><td ><a onclick=\"if ( unMarkAllRows('massiveactionlicense_form') ) return false;\" href='".$_SERVER['PHP_SELF']."?select=none'>".$LANG["buttons"][19]."</a>";
+				echo "</td><td class='left' width='80%'>";
+				dropdownMassiveAction(SOFTWARELICENSE_TYPE,0,array('sID'=>$sID));
+				echo "</td></table>";
+				echo "</form>";
+
+			}
+
 		} else {
 			echo $LANG["search"][15];
 		}

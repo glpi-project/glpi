@@ -1472,7 +1472,7 @@ function device_selecter($target,$cID,$withtemplate='') {
  * @param $device_type item type
  * @param $deleted massive action for deleted items ?
  */
-function dropdownMassiveAction($device_type,$deleted=0){
+function dropdownMassiveAction($device_type,$deleted=0,$extraparams=array()){
 	global $LANG,$CFG_GLPI,$PLUGIN_HOOKS;
 
 	$isadmin=haveTypeRight($device_type,"w");
@@ -1600,6 +1600,12 @@ function dropdownMassiveAction($device_type,$deleted=0){
 			'deleted'=>$deleted,
 			'type'=>$device_type,
 			);
+	
+	if (count($extraparams)){
+		foreach ($extraparams as $key => $val){
+			$params['extra_'.$key]=$val;
+		}
+	}
 	
 	ajaxUpdateItemOnSelectEvent("massiveaction","show_massiveaction",$CFG_GLPI["root_doc"]."/ajax/dropdownMassiveAction.php",$params);
 
