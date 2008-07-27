@@ -112,12 +112,6 @@ class InfoCom extends CommonDBTM {
 			$input["ID"]=$this->fields["ID"];
 		}
 
-		if (isset($input['buy_date'])&&empty($input['buy_date'])){
-			$input['buy_date']='NULL';
-		}
-		if (isset($input['use_date'])&&empty($input['use_date'])){
-			$input['use_date']='NULL';
-		}
 		if (isset($input['warranty_duration'])){
 			$input['_warranty_duration']=$this->fields['warranty_duration'];
 		}
