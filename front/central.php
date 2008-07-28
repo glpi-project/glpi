@@ -37,6 +37,7 @@ define('GLPI_ROOT', '..');
 $NEEDED_ITEMS=array("central","tracking","computer","printer","monitor","peripheral","networking","software","user","group","setup","planning","phone","reminder","enterprise","contract");
 include (GLPI_ROOT."/inc/includes.php");
 
+
 	checkCentralAccess();
 	// Change profile system
 	if (isset ($_POST['newprofile'])) {
