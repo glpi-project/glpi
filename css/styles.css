@@ -45,6 +45,11 @@ ul, li, dt, dl, dd, form,img, input{
 	padding: 0;
 }
 
+ul {
+list-style-type: none;
+
+}
+
 span.invisible{
 	visibility: hidden;
 }
