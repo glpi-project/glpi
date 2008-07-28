@@ -946,6 +946,20 @@ class CommonDBTM {
 		if(!empty($withtemplate)){
 			$template="&withtemplate=$withtemplate";
 		}
+
+// TODO	
+		if (empty($withtemplate)&&$ID){
+			$next=getNextItem($this->table,$ID,$nextprevcondition,$nextprev_item);
+			$prev=getPreviousItem($this->table,$ID,$nextprevcondition,$nextprev_item);
+			$cleantarget=preg_replace("/\?ID=([0-9]+)/","",$target);
+			if ($prev>0) {
+				echo "<a href='$cleantarget?ID=$prev$addurlparam'><img src=\"".$CFG_GLPI["root_doc"]."/pics/left.png\" alt='".$LANG["buttons"][12]."' title='".$LANG["buttons"][12]."'></a>&nbsp;";
+			}
+			if ($next>0) {
+				echo "&nbsp;<a href='$cleantarget?ID=$next$addurlparam'><img src=\"".$CFG_GLPI["root_doc"]."/pics/right.png\" alt='".$LANG["buttons"][11]."' title='".$LANG["buttons"][11]."'></a>";
+			}
+		}
+	
 		echo "<div class='center'>";
 		echo "<div id='tabspanel' style='margin:auto'></div>";
 		echo "</div>";
@@ -1021,22 +1035,6 @@ class CommonDBTM {
 			";
 			echo "</script>";
 		}
-		
-	
-// TODO	
-/*		if (empty($withtemplate)&&preg_match("/\?ID=([0-9]+)/",$target,$ereg)){
-			$ID=$ereg[1];
-			$next=getNextItem($this->table,$ID,$nextprevcondition,$nextprev_item);
-			$prev=getPreviousItem($this->table,$ID,$nextprevcondition,$nextprev_item);
-			$cleantarget=preg_replace("/\?ID=([0-9]+)/","",$target);
-			if ($prev>0) {
-				echo "<li><a href='$cleantarget?ID=$prev$addurlparam'><img src=\"".$CFG_GLPI["root_doc"]."/pics/left.png\" alt='".$LANG["buttons"][12]."' title='".$LANG["buttons"][12]."'></a></li>";
-			}
-			if ($next>0) {
-				echo "<li><a href='$cleantarget?ID=$next$addurlparam'><img src=\"".$CFG_GLPI["root_doc"]."/pics/right.png\" alt='".$LANG["buttons"][11]."' title='".$LANG["buttons"][11]."'></a></li>";
-			}
-		}
-*/	
 	} 
 
 	/**
