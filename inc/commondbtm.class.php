@@ -963,10 +963,6 @@ class CommonDBTM {
 			echo "&nbsp;<a href=\"javascript:showHideDiv('tabsbody','tabsbodyimg', '".GLPI_ROOT."/pics/folder.png','".GLPI_ROOT."/pics/folder-open.png');\">";
 			echo "<img alt='' name='tabsbodyimg' src=\"".GLPI_ROOT."/pics/folder-open.png\">";
 			echo "</a>";
-
-
-
-		echo "<script>showHideDiv('tabsbody',img_name,img_src_close,img_src_open)</script>";
 	
 		echo "<div class='center'>";
 		echo "<div id='tabspanel' style='margin:auto'></div>";
