@@ -86,49 +86,31 @@ include (GLPI_ROOT."/inc/includes.php");
 	echo formatUserName($_SESSION["glpiID"],$_SESSION["glpiname"],$_SESSION["glpirealname"],$_SESSION["glpifirstname"]);
 	echo ", ".$LANG["central"][1]."</span>";
 
-	echo "<br><br>";
+echo "<div name='tabs1' id='tabs1'></div>";
 
-	showCentralOnglets($_SERVER['PHP_SELF'],$_SESSION['glpi_viewcentral']);
+echo "<div>lfjdlkjfqsdlfdjqs</div>";
 
-	switch ($_SESSION['glpi_viewcentral']){
-		case "global" :
-			showCentralGlobalView();
-			break;
-		case "group" :
-			showCentralGroupView();
-			break;
-		case "plugins" :
-			echo "<table class='tab_cadre_central' ><tr><td>";
-		
-			doHook("central_action");
-			echo "</td></tr>";
-		
-			echo "</table>";
-			
-			break;
-		case "all":
-			showCentralMyView();
-			echo "<br>";
-			showCentralGroupView();
-			echo "<br>";
-			showCentralGlobalView();
-			echo "<br>";
-			if (isset($PLUGIN_HOOKS['central_action'])&&count($PLUGIN_HOOKS['central_action'])){
-				
-				echo "<table class='tab_cadre_central' ><tr><td>";
-			
-				doHook("central_action");
-				echo "</td></tr>";
-			
-				echo "</table>";
-				
-			}
+echo "<div name='tabs2' id='tabs2'></div>";
+echo "<script >";
+ echo "    var tabs = new Ext.TabPanel({
+	renderTo: 'tabs1',
+        width:450,
+        frame:true,
+        defaults:{autoHeight: true},
 
-			break;
-		default :
-			showCentralMyView();
-			break;
-	}
+        items: [{
+     	   title: 'Tab 1',
+     	   html: 'A simple tab'
+    },{
+        title: 'Tab 2',
+        autoLoad: {url: '../tab2.txt', params: 'foo=bar&wtf=1'}
+    }]
+
+    });
+/// Define view point
+tabs.body='tabs2';
+";
+echo "</script>";
 
 commonFooter();
 

@@ -211,7 +211,8 @@ elseif(isset($_POST["unlock_field"])){
 	if (!empty($_GET["withtemplate"])) {
 	
 		if ($computer->showForm($_SERVER['PHP_SELF'],$_GET["ID"], $_GET["withtemplate"])){
-			if ($_GET["ID"]>0){
+
+/*			if ($_GET["ID"]>0){
 				switch($_SESSION['glpi_onglet']){
 					case 2 :			
 						showSoftwareInstalled($_GET["ID"],$_GET["withtemplate"]);
@@ -238,11 +239,11 @@ elseif(isset($_POST["unlock_field"])){
 						break;
 				}
 			}
-		}
-	} else {
+*/		}
+		} else {
 
 		if ($computer->showForm($_SERVER['PHP_SELF'],$_GET["ID"], $_GET["withtemplate"])) {
-			switch($_SESSION['glpi_onglet']){
+/*			switch($_SESSION['glpi_onglet']){
 				case -1 :
 					showDeviceComputerForm($_SERVER['PHP_SELF'],$_GET["ID"], $_GET["withtemplate"]);			
 					showSoftwareInstalled($_GET["ID"]);
@@ -304,7 +305,7 @@ elseif(isset($_POST["unlock_field"])){
 						showDeviceComputerForm($_SERVER['PHP_SELF'],$_GET["ID"], $_GET["withtemplate"]);			
 					break;
 			}
-
+*/
 		}
 	}
 	commonFooter();

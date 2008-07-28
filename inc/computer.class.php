@@ -53,7 +53,7 @@ class Computer extends CommonDBTM {
 		$this->dohistory=true;
 	}
 
-	function defineOnglets($withtemplate){
+	function defineTabs($withtemplate){
 		global $LANG,$CFG_GLPI;
 
 		$ong[1]=$LANG["title"][26];
@@ -476,7 +476,7 @@ class Computer extends CommonDBTM {
 		
 		if($computer_spotted) {
 
-			$this->showOnglets($ID, $withtemplate,$_SESSION['glpi_onglet']);
+			$this->showTabs($ID, $withtemplate,$_SESSION['glpi_onglet']);
 
 			if(!empty($withtemplate) && $withtemplate == 2) {
 				$use_cache=false;
@@ -733,6 +733,8 @@ class Computer extends CommonDBTM {
 			echo "</table>";
 			echo "</div>";
 			echo "</form>";
+			echo "<div id='tabcontent' name='tabcontent'></div>";
+			echo "<script>loadDefaultTab();</script>";
 
 
 			return true;

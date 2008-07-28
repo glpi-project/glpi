@@ -839,7 +839,7 @@ class CommonDBTM {
 	}
 
 	/**
-	 * Define onglets to display
+	 * Define onglets to display / WILL BE DELETED : use defineTabs instead
 	 *
 	 *@param $withtemplate is a template view ?
 	 * 
@@ -851,7 +851,19 @@ class CommonDBTM {
 	}
 
 	/**
-	 * Show onglets
+	 * Define tabs to display
+	 *
+	 *@param $withtemplate is a template view ?
+	 * 
+	 *@return array containing the onglets
+	 * 
+	**/
+	function defineTabs($withtemplate){
+		return array();
+	}
+
+	/**
+	 * Show onglets / WILL BE DELETED : use showTabs instead
 	 *
 	 *@param $ID ID of the item to display
 	 *@param $withtemplate is a template view ?
@@ -909,6 +921,112 @@ class CommonDBTM {
 		}
 	
 		echo "</ul></div>";
+	} 
+
+
+	/**
+	 * Show onglets / WILL BE DELETED : use showTabs instead
+	 *
+	 *@param $ID ID of the item to display
+	 *@param $withtemplate is a template view ?
+	 *@param $actif active onglet
+	 *@param $nextprevcondition condition used to find next/previous items
+	 *@param $nextprev_item field used to define next/previous items
+	 *@param $addurlparam parameters to add to the URLs 
+	 * 
+	 *@return Nothing () 
+	 *  
+	**/
+	function showTabs($ID,$withtemplate,$actif,$nextprevcondition="",$nextprev_item="",$addurlparam=""){
+		global $LANG,$CFG_GLPI,$INFOFORM_PAGES;
+
+		$target=$_SERVER['PHP_SELF']."?ID=".$ID;
+	
+		$template="";
+		if(!empty($withtemplate)){
+			$template="&withtemplate=$withtemplate";
+		}
+		echo "<div class='center'>";
+		echo "<div id='tabspanel'></div>";
+		echo "</div>";
+		$active=0;
+		if (count($onglets=$this->defineTabs($withtemplate))){
+			//if (empty($withtemplate)&&haveRight("reservation_central","r")&&function_exists("isReservable")){
+			//	$onglets[11]=$LANG["Menu"][17];
+			//	ksort($onglets);
+			//}
+			echo "<script >";
+			echo " var tabpanel = new Ext.TabPanel({
+				applyTo: 'tabspanel',
+				width:700,
+				enableTabScroll: true,
+				resizeTabs: false,
+				plain: true,
+				items: [";
+
+				$patterns[0] = '/front/';
+				$patterns[1] = '/form/';
+				$replacements[0] = 'ajax';
+				$replacements[1] = 'tabs';
+				$tabpage=preg_replace($patterns, $replacements, $INFOFORM_PAGES[$this->type]);
+				$tabid=0;
+				foreach ($onglets as $key => $val ) {
+					if ($actif==$key){
+						$active=$tabid;
+					}
+					echo "{
+					title: \"$val\",
+					autoLoad: {url: '".$CFG_GLPI['root_doc']."/$tabpage',  scripts: true, nocache: true, 
+						params: 'target=$target&type=".$this->type."&tab=$key&ID=$ID$template'}
+					},";
+					$tabid++;
+				}
+				if(empty($withtemplate)){
+					if ($actif==$key){
+						$active=$tabid;
+					}
+
+					echo "{
+					title: \"".$LANG["common"][66]."\",
+					autoLoad: {url: '".$CFG_GLPI['root_doc']."/$tabpage', scripts: true, nocache:true, 
+						params: 'target=$target&type=".$this->type."&tab=-1&ID=$ID$template'}
+					},";
+					$tabid++;
+				}
+				/// TODO 
+				/// displayPluginHeadings($target,$this->type,$withtemplate,$actif);
+
+				echo "],
+			});
+			/// Define view point
+			tabpanel.body='tabcontent';
+			// force first load 
+			function loadDefaultTab(){
+				tabpanel.setActiveTab($active);
+				Ext.get('tabcontent').load({
+					url: '".$CFG_GLPI['root_doc']."/$tabpage',
+					scripts: true,
+					params: 'target=$target&type=".$this->type."&tab=$actif&ID=$ID$template'});
+			}	
+			";
+			echo "</script>";
+		}
+		
+	
+// TODO	
+/*		if (empty($withtemplate)&&preg_match("/\?ID=([0-9]+)/",$target,$ereg)){
+			$ID=$ereg[1];
+			$next=getNextItem($this->table,$ID,$nextprevcondition,$nextprev_item);
+			$prev=getPreviousItem($this->table,$ID,$nextprevcondition,$nextprev_item);
+			$cleantarget=preg_replace("/\?ID=([0-9]+)/","",$target);
+			if ($prev>0) {
+				echo "<li><a href='$cleantarget?ID=$prev$addurlparam'><img src=\"".$CFG_GLPI["root_doc"]."/pics/left.png\" alt='".$LANG["buttons"][12]."' title='".$LANG["buttons"][12]."'></a></li>";
+			}
+			if ($next>0) {
+				echo "<li><a href='$cleantarget?ID=$next$addurlparam'><img src=\"".$CFG_GLPI["root_doc"]."/pics/right.png\" alt='".$LANG["buttons"][11]."' title='".$LANG["buttons"][11]."'></a></li>";
+			}
+		}
+*/	
 	} 
 
 	/**
