@@ -947,7 +947,7 @@ class CommonDBTM {
 			$template="&withtemplate=$withtemplate";
 		}
 		echo "<div class='center'>";
-		echo "<div id='tabspanel'></div>";
+		echo "<div id='tabspanel' style='margin:auto'></div>";
 		echo "</div>";
 		$active=0;
 		if (count($onglets=$this->defineTabs($withtemplate))){
@@ -958,7 +958,7 @@ class CommonDBTM {
 			echo "<script >";
 			echo " var tabpanel = new Ext.TabPanel({
 				applyTo: 'tabspanel',
-				width:700,
+				width:950,
 				enableTabScroll: true,
 				resizeTabs: false,
 				plain: true,
@@ -982,7 +982,7 @@ class CommonDBTM {
 					$tabid++;
 				}
 				if(empty($withtemplate)){
-					if ($actif==$key){
+					if ($actif==-1){
 						$active=$tabid;
 					}
 
