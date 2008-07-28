@@ -330,6 +330,11 @@ function update071to072() {
 		$DB->query($query) or die("0.72 add title in glpi_users" . $LANG["update"][90] . $DB->error());
 	}	  	
 
+	if (!isIndex("glpi_users", "title")) {
+		$query = " ALTER TABLE `glpi_users` ADD INDEX `title` ( `title` ) ;";
+		$DB->query($query) or die("0.72 add index on title in glpi_users" . $LANG["update"][90] . $DB->error());
+	}	  	
+
 	if (!FieldExists("glpi_auth_ldap", "ldap_field_type"))
 	{ 
 		$query = "ALTER TABLE `glpi_auth_ldap` ADD `ldap_field_type` VARCHAR( 255 ) NOT NULL ;";
@@ -356,6 +361,16 @@ function update071to072() {
 	if (!FieldExists("glpi_users", "type")) {
 		$query = "ALTER TABLE `glpi_users` ADD `type` INT( 11 ) NOT NULL DEFAULT '0';";
 		$DB->query($query) or die("0.72 add type in glpi_users" . $LANG["update"][90] . $DB->error());
+	}	  	
+
+	if (!isIndex("glpi_users", "type")) {
+		$query = " ALTER TABLE `glpi_users` ADD INDEX `type` ( `type` ) ;";
+		$DB->query($query) or die("0.72 add index on type in glpi_users" . $LANG["update"][90] . $DB->error());
+	}	  	
+
+	if (!isIndex("glpi_users", "active")) {
+		$query = " ALTER TABLE `glpi_users` ADD INDEX `active` ( `active` ) ;";
+		$DB->query($query) or die("0.72 add index on active in glpi_users" . $LANG["update"][90] . $DB->error());
 	}	  	
 
 	if (!FieldExists("glpi_auth_ldap", "ldap_field_language")){ 
