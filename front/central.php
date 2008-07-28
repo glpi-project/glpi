@@ -37,7 +37,6 @@ define('GLPI_ROOT', '..');
 $NEEDED_ITEMS=array("central","tracking","computer","printer","monitor","peripheral","networking","software","user","group","setup","planning","phone","reminder","enterprise","contract");
 include (GLPI_ROOT."/inc/includes.php");
 
-
 	checkCentralAccess();
 	// Change profile system
 	if (isset ($_POST['newprofile'])) {
@@ -87,31 +86,49 @@ include (GLPI_ROOT."/inc/includes.php");
 	echo formatUserName($_SESSION["glpiID"],$_SESSION["glpiname"],$_SESSION["glpirealname"],$_SESSION["glpifirstname"]);
 	echo ", ".$LANG["central"][1]."</span>";
 
-echo "<div name='tabs1' id='tabs1'></div>";
+	echo "<br><br>";
 
-echo "<div>lfjdlkjfqsdlfdjqs</div>";
+	showCentralOnglets($_SERVER['PHP_SELF'],$_SESSION['glpi_viewcentral']);
 
-echo "<div name='tabs2' id='tabs2'></div>";
-echo "<script >";
- echo "    var tabs = new Ext.TabPanel({
-	renderTo: 'tabs1',
-        width:450,
-        frame:true,
-        defaults:{autoHeight: true},
+	switch ($_SESSION['glpi_viewcentral']){
+		case "global" :
+			showCentralGlobalView();
+			break;
+		case "group" :
+			showCentralGroupView();
+			break;
+		case "plugins" :
+			echo "<table class='tab_cadre_central' ><tr><td>";
+		
+			doHook("central_action");
+			echo "</td></tr>";
+		
+			echo "</table>";
+			
+			break;
+		case "all":
+			showCentralMyView();
+			echo "<br>";
+			showCentralGroupView();
+			echo "<br>";
+			showCentralGlobalView();
+			echo "<br>";
+			if (isset($PLUGIN_HOOKS['central_action'])&&count($PLUGIN_HOOKS['central_action'])){
+				
+				echo "<table class='tab_cadre_central' ><tr><td>";
+			
+				doHook("central_action");
+				echo "</td></tr>";
+			
+				echo "</table>";
+				
+			}
 
-        items: [{
-     	   title: 'Tab 1',
-     	   html: 'A simple tab'
-    },{
-        title: 'Tab 2',
-        autoLoad: {url: '../tab2.txt', params: 'foo=bar&wtf=1'}
-    }]
-
-    });
-/// Define view point
-tabs.body='tabs2';
-";
-echo "</script>";
+			break;
+		default :
+			showCentralMyView();
+			break;
+	}
 
 commonFooter();
 
