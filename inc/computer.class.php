@@ -501,7 +501,7 @@ class Computer extends CommonDBTM {
 
 			echo "<input type='hidden' name='FK_entities' value='".$this->fields["FK_entities"]."'>";
 
-			echo "<div class='center'>";
+			echo "<div class='center' id='tabsbody'>";
 			echo "<table class='tab_cadre_fixe' >";
 
 
