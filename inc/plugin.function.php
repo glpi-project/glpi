@@ -164,7 +164,6 @@ function displayPluginAction($type,$ID,$onglet,$withtemplate=0){
 				if (function_exists($function)){
 
 					$actions=$function($type);
-
 					if (is_array($actions)&&count($actions))
 						foreach ($actions as $key => $action){
 							if (function_exists($action)){
@@ -199,7 +198,7 @@ function displayPluginAction($type,$ID,$onglet,$withtemplate=0){
 	return false;
 }
 /**
- * Display plugin headgsin for a device type
+ * Display plugin headgsin for a device type / WILL BE DELETED : use displayPluginTabs instead
  * @param $target page to link including ID
  * @param $type ID of the device type
  * @param $withtemplate is the item display like a template ?
@@ -240,6 +239,60 @@ function displayPluginHeadings($target,$type,$withtemplate,$actif){
 		}
 
 	} 
+
+}
+
+/**
+ * Display plugin headgsin for a device type
+ * @param $target page to link 
+ * @param $type ID of the device type
+ * @param $ID ID of the device
+ * @param $withtemplate is the item display like a template ?
+ * @param $actif active onglet
+ * @return true if display have been done
+ */
+function displayPluginTabs($target,$type,$ID,$withtemplate,$actif){
+	global $PLUGIN_HOOKS,$LANG,$INFOFORM_PAGES,$CFG_GLPI;
+	$template="";
+	if(!empty($withtemplate)){
+		$template="&withtemplate=$withtemplate";
+	}
+	$display_onglets=array();
+
+	$patterns[0] = '/front/';
+	$patterns[1] = '/form/';
+	$replacements[0] = 'ajax';
+	$replacements[1] = 'tabs';
+	$tabpage=preg_replace($patterns, $replacements, $INFOFORM_PAGES[$type]);
+	$active=false;
+	$tabid=0;
+	if (isset($PLUGIN_HOOKS["headings"]) && is_array($PLUGIN_HOOKS["headings"])) {
+		foreach ($PLUGIN_HOOKS["headings"] as $plug => $function) {
+
+			if (function_exists($function)) {
+				$onglet=$function($type,$withtemplate);
+
+				if (is_array($onglet)&&count($onglet)){
+					foreach ($onglet as $key => $val){
+						$key=$plug."_".$key;
+						if ($actif==$key){
+							$active=$tabid;
+						}
+						
+						echo "{
+						title: \"$val\",
+						autoLoad: {url: '".$CFG_GLPI['root_doc']."/$tabpage',  scripts: true, nocache: true, 
+							params: 'target=$target&type=".$type."&tab=$key&ID=$ID$template'}
+						},";
+
+						$tabid++;
+					}
+				}
+			}
+		}
+	}
+
+	return array('active'=>$active,'number'=>$tabid);
 
 }
 

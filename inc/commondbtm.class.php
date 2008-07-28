@@ -925,7 +925,7 @@ class CommonDBTM {
 
 
 	/**
-	 * Show onglets / WILL BE DELETED : use showTabs instead
+	 * Show onglets 
 	 *
 	 *@param $ID ID of the item to display
 	 *@param $withtemplate is a template view ?
@@ -940,7 +940,7 @@ class CommonDBTM {
 	function showTabs($ID,$withtemplate,$actif,$nextprevcondition="",$nextprev_item="",$addurlparam=""){
 		global $LANG,$CFG_GLPI,$INFOFORM_PAGES;
 
-		$target=$_SERVER['PHP_SELF']."?ID=".$ID;
+		$target=$_SERVER['PHP_SELF'];
 	
 		$template="";
 		if(!empty($withtemplate)){
@@ -970,6 +970,7 @@ class CommonDBTM {
 				$replacements[1] = 'tabs';
 				$tabpage=preg_replace($patterns, $replacements, $INFOFORM_PAGES[$this->type]);
 				$tabid=0;
+
 				foreach ($onglets as $key => $val ) {
 					if ($actif==$key){
 						$active=$tabid;
@@ -981,20 +982,29 @@ class CommonDBTM {
 					},";
 					$tabid++;
 				}
+
+				// Do plugins tabs : return active tabs if selected
+				$tmp=displayPluginTabs($target,$this->type,$ID,$withtemplate,$actif);
+				// Active is plugin
+				if ($tmp['active']!==false){
+					$active=$tabid+$tmp['active'];
+				}
+				// Add number of tabs for plugin
+				$tabid+=$tmp['number'];
+
+
 				if(empty($withtemplate)){
 					if ($actif==-1){
 						$active=$tabid;
 					}
-
 					echo "{
 					title: \"".$LANG["common"][66]."\",
-					autoLoad: {url: '".$CFG_GLPI['root_doc']."/$tabpage', scripts: true, nocache:true, 
+					autoLoad: {url: '".$CFG_GLPI['root_doc']."/$tabpage',  scripts: true, nocache: true, 
 						params: 'target=$target&type=".$this->type."&tab=-1&ID=$ID$template'}
 					},";
 					$tabid++;
 				}
-				/// TODO 
-				/// displayPluginHeadings($target,$this->type,$withtemplate,$actif);
+
 
 				echo "],
 			});
