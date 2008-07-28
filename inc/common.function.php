@@ -1813,13 +1813,8 @@ function deleteDir($dir) {
  * @param $login string: login to check
  * @return boolean 
  */
-function isValidLogin($login="")
-{
-	if( !eregi( "^[a-zA-Z0-9@.-_]+$", $login) )
-	{
-		return false;
-	}
-	else return true;
+function isValidLogin($login=""){
+	return preg_match( "/^[[:alnum:]@.\-_]+$/i", $login);
 }
 
 
