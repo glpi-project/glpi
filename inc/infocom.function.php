@@ -75,9 +75,10 @@ function showInfocomForm($target,$device_type,$dev_ID,$show_immo=true,$withtempl
 		}
 		if (!$ic->getFromDBforDevice($device_type,$dev_ID)){
 			if ($ic->can(-1,"w",$entity) && $withtemplate!=2){
-				echo "<div class='center'>";
-				echo "<strong><a href='$target?device_type=$device_type&amp;FK_device=$dev_ID&amp;add=add'>".$LANG["financial"][68]."</a></strong>";
-				echo "</div><br>";
+				//echo "<div class='center'>";
+				echo "<table class='tab_cadre'><tr><th>";
+				echo "<strong><a href='$target?device_type=$device_type&amp;FK_device=$dev_ID&amp;add=add'>".$LANG["financial"][68]."</a></strong></th></tr></table>";
+				//echo "</div>";
 			}
 		} else { // getFromDBforDevice
 			$canedit = ($ic->can($ic->fields['ID'], "w") && $withtemplate!=2); 
