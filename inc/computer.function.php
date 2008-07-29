@@ -135,7 +135,7 @@ function showDeviceComputerForm($target,$ID,$withtemplate='') {
 		echo "</form>";
 		//ADD a new device form.
 		device_selecter($_SERVER['PHP_SELF'],$comp->fields["ID"],$withtemplate);
-		echo "</div>";
+		echo "</div><br>";
 	}	
 
 
@@ -171,7 +171,7 @@ function showConnections($target,$ID,$withtemplate='') {
 	
 		}
 		if (count($items)){
-			echo "&nbsp;<div class='center'><table class='tab_cadre_fixe'>";
+			echo "<div class='center'><table class='tab_cadre_fixe'>";
 	
 			echo "<tr><th colspan='".max(2,count($items))."'>".$LANG["connect"][0].":</th></tr>";
 	
@@ -330,7 +330,7 @@ function showComputerDisks($ID,$withtemplate='') {
 	}
 	
 	}
-	echo "</div>";
+	echo "</div><br>";
 
 	
 }
