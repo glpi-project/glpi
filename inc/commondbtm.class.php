@@ -953,16 +953,16 @@ class CommonDBTM {
 			$prev=getPreviousItem($this->table,$ID,$nextprevcondition,$nextprev_item);
 			$cleantarget=preg_replace("/\?ID=([0-9]+)/","",$target);
 			if ($prev>0) {
-				echo "<a href='$cleantarget?ID=$prev$addurlparam'><img src=\"".$CFG_GLPI["root_doc"]."/pics/left.png\" alt='".$LANG["buttons"][12]."' title='".$LANG["buttons"][12]."'></a>&nbsp;";
-			}
-			
-			if ($next>0) {
-				echo "&nbsp;<a href='$cleantarget?ID=$next$addurlparam'><img src=\"".$CFG_GLPI["root_doc"]."/pics/right.png\" alt='".$LANG["buttons"][11]."' title='".$LANG["buttons"][11]."'></a>";
+				echo "<a href='$cleantarget?ID=$prev$addurlparam'><img src=\"".$CFG_GLPI["root_doc"]."/pics/left.png\" alt='".$LANG["buttons"][12]."' title='".$LANG["buttons"][12]."'></a>";
 			}
 
-			echo "&nbsp;<a href=\"javascript:showHideDiv('tabsbody','tabsbodyimg', '".GLPI_ROOT."/pics/folder.png','".GLPI_ROOT."/pics/folder-open.png');\">";
-			echo "<img alt='' name='tabsbodyimg' src=\"".GLPI_ROOT."/pics/folder-open.png\">";
+			echo "&nbsp;&nbsp;<a href=\"javascript:showHideDiv('tabsbody','tabsbodyimg', '".GLPI_ROOT."/pics/deplier_up.png','".GLPI_ROOT."/pics/deplier_down.png');\">";
+			echo "<img alt='' name='tabsbodyimg' src=\"".GLPI_ROOT."/pics/deplier_down.png\">";
 			echo "</a>";
+			
+			if ($next>0) {
+				echo "&nbsp;&nbsp;<a href='$cleantarget?ID=$next$addurlparam'><img src=\"".$CFG_GLPI["root_doc"]."/pics/right.png\" alt='".$LANG["buttons"][11]."' title='".$LANG["buttons"][11]."'></a>";
+			}
 
 		}
 	
