@@ -975,7 +975,7 @@ class CommonDBTM {
 			//	$onglets[11]=$LANG["Menu"][17];
 			//	ksort($onglets);
 			//}
-			echo "<script >";
+			echo "<script type='text/javascript'>";
 			echo " var tabpanel = new Ext.TabPanel({
 				applyTo: 'tabspanel',
 				width:950,

@@ -504,7 +504,6 @@ class Computer extends CommonDBTM {
 			echo "<div class='center' id='tabsbody'>";
 			echo "<table class='tab_cadre_fixe' >";
 
-
 			echo "<tr><th colspan ='2' align='center' >";
 			if(!$template) {
 				echo $LANG["common"][2]." ".$this->fields["ID"];
@@ -529,7 +528,6 @@ class Computer extends CommonDBTM {
 	
 				echo "</th></tr>";
 
-
 				echo "<tr class='tab_bg_1'><td>".$LANG["common"][16].($template?"*":"").":		</td>";
 	
 				echo "<td>";
@@ -538,12 +536,13 @@ class Computer extends CommonDBTM {
 				autocompletionTextField("name","glpi_computers","name",$objectName,40,$this->fields["FK_entities"]);
 
 				echo "</td>";
-	
+					
 				echo "<td>".$LANG["common"][18].":	</td><td>";
 				autocompletionTextField("contact","glpi_computers","contact",$this->fields["contact"],40,$this->fields["FK_entities"]);
 	
 				echo "</td></tr>";
-	
+
+
 				echo "<tr class='tab_bg_1'>";
 				echo "<td >".$LANG["common"][17].": 	</td>";
 				echo "<td >";
@@ -729,12 +728,11 @@ class Computer extends CommonDBTM {
 				echo "</tr>\n";
 			}
 
-
 			echo "</table>";
 			echo "</div>";
 			echo "</form>";
-			echo "<div id='tabcontent' name='tabcontent'></div>";
-			echo "<script>loadDefaultTab();</script>";
+			echo "<div id='tabcontent'></div>";
+			echo "<script type='text/javascript'>loadDefaultTab();</script>";
 
 
 			return true;
