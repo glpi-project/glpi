@@ -594,7 +594,10 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 		$LINK= " AND " ;
 		if ($first) {$LINK=" ";$first=false;}
 
-		if (in_array($itemtable, $CFG_GLPI["recursive_type"])) {
+		if (isset($CFG_GLPI["union_search_type"][$type])) {
+			// Will be replace below in Union/Recursivity Hack 
+			$COMMONWHERE.=$LINK." ENTITYRESTRICT ";
+		} else if (in_array($itemtable, $CFG_GLPI["recursive_type"])) {
 			$COMMONWHERE.=getEntitiesRestrictRequest($LINK,$itemtable,'','',true);
 		} else {
 			$COMMONWHERE.=getEntitiesRestrictRequest($LINK,$itemtable);
@@ -930,6 +933,12 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 						$query_num=ereg_replace("FROM ".$CFG_GLPI["union_search_type"][$type],$replace,$tmpquery);
 						$query_num=ereg_replace($CFG_GLPI["union_search_type"][$type],$LINK_ID_TABLE[$ctype],$query_num);
 					}
+					// Union/Recursivity Hack
+					if (isset($CFG_GLPI["recursive_type"][$ctype])) {
+						$query_num=ereg_replace("ENTITYRESTRICT",getEntitiesRestrictRequest('',$LINK_ID_TABLE[$ctype],'','',true),$query_num);
+					} else {
+						$query_num=ereg_replace("ENTITYRESTRICT",getEntitiesRestrictRequest('',$LINK_ID_TABLE[$ctype]),$query_num);
+					}
 					$result_num = $DB->query($query_num);
 					$numrows+= $DB->result($result_num,0,0);
 				}
@@ -953,7 +962,6 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 		}
 		$first=false;
 	}
-
 
 	$DB->query("SET SESSION group_concat_max_len = 9999999;");
 
@@ -982,6 +990,12 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 						$replace="FROM ".$LINK_ID_TABLE[$type]." INNER JOIN ".$LINK_ID_TABLE[$ctype]." ON (".$LINK_ID_TABLE[$type].".id_device = ".$LINK_ID_TABLE[$ctype].".ID AND ".$LINK_ID_TABLE[$type].".device_type='$ctype')";
 						$tmpquery=ereg_replace("FROM ".$CFG_GLPI["union_search_type"][$type],$replace,$tmpquery);
 						$tmpquery=ereg_replace($CFG_GLPI["union_search_type"][$type],$LINK_ID_TABLE[$ctype],$tmpquery);
+				}
+				// Union/Recursivity Hack
+				if (isset($CFG_GLPI["recursive_type"][$ctype])) {
+					$tmpquery=ereg_replace("ENTITYRESTRICT",getEntitiesRestrictRequest('',$LINK_ID_TABLE[$ctype],'','',true),$tmpquery);
+				} else {
+					$tmpquery=ereg_replace("ENTITYRESTRICT",getEntitiesRestrictRequest('',$LINK_ID_TABLE[$ctype]),$tmpquery);
 				}
 				// SOFTWARE HACK
 				if ($ctype==SOFTWARE_TYPE){
@@ -1558,7 +1572,7 @@ function addDefaultToView ($type){
 	array_push($toview,1);
 	
 	// Add entity view : 
-	if (isMultiEntitiesMode() && (isset($CFG_GLPI["recursive_type"][$type]) || count($_SESSION["glpiactiveentities"])>1)) {
+	if (isMultiEntitiesMode() && (isset($CFG_GLPI["union_search_type"][$type]) || isset($CFG_GLPI["recursive_type"][$type]) || count($_SESSION["glpiactiveentities"])>1)) {
 		array_push($toview,80);  
 	}
 	return $toview;
