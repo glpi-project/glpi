@@ -65,3 +65,9 @@ ul.x-tab-strip li.x-tab-edge{float:left;margin:0!important;padding:0!important;b
 .x-tab-scrolling{position:relative;}
 .x-tab-panel-bbar .x-toolbar{border:1px solid #99bbe8;border-top:0 none;overflow:hidden;padding:2px;}
 .x-tab-panel-tbar .x-toolbar{border:1px solid #99bbe8;border-top:0 none;overflow:hidden;padding:2px;}
+
+
+/* Combobox inline type*/
+.x-form-field-wrap{position:relative;zoom:1;white-space:nowrap;display: inline;}
+.x-form-text,textarea.x-form-field{padding:0px;background-color:#FAFAFA;border: 1px solid #888888;}
+
