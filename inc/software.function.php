@@ -961,7 +961,7 @@ function showSoftwareInstalled($instID, $withtemplate = '') {
 	$result = $DB->query($query);
 	$i = 0;
 
-	echo "<br><br><div class='center'><table class='tab_cadre_fixe'>";
+	echo "<div class='center'><table class='tab_cadre_fixe'>";
 
 	if ((empty ($withtemplate) || $withtemplate != 2) && haveRight("software", "w")) {
 		echo "<tr class='tab_bg_1'><td align='center' colspan='5'>";
@@ -997,7 +997,7 @@ function showSoftwareInstalled($instID, $withtemplate = '') {
 
 	}
 
-	echo "</table></div>";
+	echo "</table></div><br>";
 
 }
 
