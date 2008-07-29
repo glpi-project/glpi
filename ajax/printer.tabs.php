@@ -47,6 +47,7 @@ if(!isset($_POST["order"])) $_POST["order"] = "";
 
 if(!isset($_POST["withtemplate"])) $_POST["withtemplate"] = "";
 
+checkRight("printer","r");
 
 	if (isset($_POST['tab'])) {
 		$_SESSION['glpi_onglet']=$_POST['tab'];
