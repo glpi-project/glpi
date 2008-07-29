@@ -101,7 +101,7 @@ function includeCommonHtmlHeader($title=''){
 	// EXTRA EXTJS 
 	echo "<script type=\"text/javascript\" src='".$CFG_GLPI["root_doc"]."/lib/extrajs/datetime.js'></script>\n";
 	echo "<script type=\"text/javascript\" src='".$CFG_GLPI["root_doc"]."/lib/extrajs/xdatefield.js'></script>\n";
-	echo "<script type=\"text/javascript\" src='".$CFG_GLPI["root_doc"]."/lib/extrajs/rowlayout.js'></script>\n";
+	echo "<script type=\"text/javascript\" src='".$CFG_GLPI["root_doc"]."/lib/extrajs/spancombobox.js'></script>\n";
 
 	echo "<script type='text/javascript'>";
 	// DO not get it from extjs website

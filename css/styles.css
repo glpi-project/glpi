@@ -164,9 +164,9 @@ select {
 
 
 textarea, input {
-background-color:#FAFAFA;
-border: 1px solid #888888;
-font-size: 11px;
+	background-color:#FAFAFA;
+	border: 1px solid #888888;
+	font-size: 11px;
 }
 
 input.submit {
