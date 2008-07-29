@@ -108,79 +108,8 @@ else
 
 	commonHeader($LANG["title"][6],$_SERVER['PHP_SELF'],"inventory","networking");
 
-	if (!empty($_GET["withtemplate"])) {
+	$netdevice->showForm($_SERVER['PHP_SELF'],$_GET["ID"], $_GET["withtemplate"]);
 
-		if ($netdevice->showForm($_SERVER['PHP_SELF'],$_GET["ID"], $_GET["withtemplate"])){
-			if ($_GET["ID"]>0){
-				switch($_SESSION['glpi_onglet']){
-					case 4 :
-						showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",NETWORKING_TYPE,$_GET["ID"],1,$_GET["withtemplate"]);
-						showContractAssociated(NETWORKING_TYPE,$_GET["ID"],$_GET["withtemplate"]);
-						break;
-					case 5 :
-						showDocumentAssociated(NETWORKING_TYPE,$_GET["ID"],$_GET["withtemplate"]);		
-						break;
-
-					default :
-						if (!displayPluginAction(NETWORKING_TYPE,$_GET["ID"],$_SESSION['glpi_onglet'],$_GET["withtemplate"])){
-							showPorts($_GET["ID"], NETWORKING_TYPE,$_GET["withtemplate"]);
-							if ($_GET["withtemplate"]!=2) showPortsAdd($_GET["ID"],NETWORKING_TYPE);
-						}
-						break;
-				}
-
-
-
-			}
-		}
-
-	} else {
-
-		if ($netdevice->showForm ($_SERVER['PHP_SELF'],$_GET["ID"])){
-			switch($_SESSION['glpi_onglet']){
-				case -1:
-					showPortsAdd($_GET["ID"],NETWORKING_TYPE);
-					showPorts($_GET["ID"],NETWORKING_TYPE);
-					showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",NETWORKING_TYPE,$_GET["ID"]);
-					showContractAssociated(NETWORKING_TYPE,$_GET["ID"]);
-					showDocumentAssociated(NETWORKING_TYPE,$_GET["ID"],$_GET["withtemplate"]);
-					showJobListForItem($_SESSION["glpiname"],NETWORKING_TYPE,$_GET["ID"],$_GET["sort"],$_GET["order"]);
-					showOldJobListForItem($_SESSION["glpiname"],NETWORKING_TYPE,$_GET["ID"],$_GET["sort"],$_GET["order"]);
-					showLinkOnDevice(NETWORKING_TYPE,$_GET["ID"]);
-					displayPluginAction(NETWORKING_TYPE,$_GET["ID"],$_SESSION['glpi_onglet'],$_GET["withtemplate"]);
-					break;
-				case 4 :
-					showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",NETWORKING_TYPE,$_GET["ID"]);
-					showContractAssociated(NETWORKING_TYPE,$_GET["ID"]);
-					break;
-				case 5 :
-					showDocumentAssociated(NETWORKING_TYPE,$_GET["ID"],$_GET["withtemplate"]);
-					break;
-				case 6 :
-					showJobListForItem($_SESSION["glpiname"],NETWORKING_TYPE,$_GET["ID"],$_GET["sort"],$_GET["order"]);
-					showOldJobListForItem($_SESSION["glpiname"],NETWORKING_TYPE,$_GET["ID"],$_GET["sort"],$_GET["order"]);
-					break;
-				case 7 :
-					showLinkOnDevice(NETWORKING_TYPE,$_GET["ID"]);
-					break;	
-				case 10 :
-					showNotesForm($_SERVER['PHP_SELF'],NETWORKING_TYPE,$_GET["ID"]);
-					break;			
-				case 11 :
-					showDeviceReservations($_SERVER['PHP_SELF'],NETWORKING_TYPE,$_GET["ID"]);
-					break;
-				case 12 :
-					showHistory(NETWORKING_TYPE,$_GET["ID"]);
-					break;
-				default :
-					if (!displayPluginAction(NETWORKING_TYPE,$_GET["ID"],$_SESSION['glpi_onglet'],$_GET["withtemplate"])){
-						showPortsAdd($_GET["ID"],NETWORKING_TYPE);
-						showPorts($_GET["ID"],NETWORKING_TYPE);
-					}
-					break;
-			}
-		}
-	}
 	commonFooter();
 }
 

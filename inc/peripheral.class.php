@@ -51,7 +51,7 @@ class Peripheral  extends CommonDBTM  {
 		$this->dohistory=true;
 	}
 
-	function defineOnglets($withtemplate){
+	function defineTabs($withtemplate){
 		global $LANG;
 		$ong=array();
 		if (haveRight("computer","r")){
@@ -216,7 +216,7 @@ class Peripheral  extends CommonDBTM  {
 		}
 
 		if($mon_spotted) {
-			$this->showOnglets($ID, $withtemplate,$_SESSION['glpi_onglet']);
+			$this->showTabs($ID, $withtemplate,$_SESSION['glpi_onglet']);
 			if(!empty($withtemplate) && $withtemplate == 2) {
 				$use_cache=false;
 				$template = "newcomp";
@@ -234,7 +234,7 @@ class Peripheral  extends CommonDBTM  {
 			}
 
 
-			echo "<div class='center'>";
+			echo "<div class='center' id='tabsbody'>";
 			echo "<form method='post' name=form action=\"$target\">";
 			if(strcmp($template,"newtemplate") === 0) {
 				echo "<input type=\"hidden\" name=\"is_template\" value=\"1\" />";
@@ -404,6 +404,8 @@ class Peripheral  extends CommonDBTM  {
 				echo "</tr>";
 			}
 			echo "</table></form></div>";
+			echo "<div id='tabcontent'></div>";
+			echo "<script type='text/javascript'>loadDefaultTab();</script>";
 
 			return true;	
 		}
