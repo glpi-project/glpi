@@ -89,7 +89,8 @@ if(!isset($_POST["withtemplate"])) $_POST["withtemplate"] = "";
 
 		switch($_POST['tab']){
 			case -1 :
-				showDeviceComputerForm($_POST['target'],$_POST["ID"], $_POST["withtemplate"]);			
+				showDeviceComputerForm($_POST['target'],$_POST["ID"], $_POST["withtemplate"]);	
+				showComputerDisks($_POST["ID"],$_POST["withtemplate"]);
 				showSoftwareInstalled($_POST["ID"]);
 				showConnections($_POST['target'],$_POST["ID"]);
 				showPortsAdd($_POST["ID"],COMPUTER_TYPE);
