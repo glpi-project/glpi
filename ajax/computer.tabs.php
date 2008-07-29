@@ -39,7 +39,9 @@ $NEEDED_ITEMS=array("computer","rulesengine","device","networking","monitor","pr
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-if(!isset($_POST["ID"])) $_POST["ID"] = "";
+if(!isset($_POST["ID"])) {
+	exit();
+}
 if(!isset($_POST["sort"])) $_POST["sort"] = "";
 if(!isset($_POST["order"])) $_POST["order"] = "";
 if(!isset($_POST["withtemplate"])) $_POST["withtemplate"] = "";

@@ -959,10 +959,12 @@ class CommonDBTM {
 			if ($next>0) {
 				echo "&nbsp;<a href='$cleantarget?ID=$next$addurlparam'><img src=\"".$CFG_GLPI["root_doc"]."/pics/right.png\" alt='".$LANG["buttons"][11]."' title='".$LANG["buttons"][11]."'></a>";
 			}
-		}
+
 			echo "&nbsp;<a href=\"javascript:showHideDiv('tabsbody','tabsbodyimg', '".GLPI_ROOT."/pics/folder.png','".GLPI_ROOT."/pics/folder-open.png');\">";
 			echo "<img alt='' name='tabsbodyimg' src=\"".GLPI_ROOT."/pics/folder-open.png\">";
 			echo "</a>";
+
+		}
 	
 		echo "<div class='center'>";
 		echo "<div id='tabspanel' style='margin:auto'></div>";
