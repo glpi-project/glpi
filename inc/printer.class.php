@@ -468,8 +468,8 @@ class Printer  extends CommonDBTM {
 			}
 			echo "</table></form></div>";
 
-			echo "<div id='tabcontent' name='tabcontent'></div>";
-			echo "<script>loadDefaultTab();</script>";
+			echo "<div id='tabcontent'></div>";
+			echo "<script type='javascript'>loadDefaultTab();</script>";
 
 			return true;	
 		}
