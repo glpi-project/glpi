@@ -131,69 +131,8 @@ else
 
 	commonHeader($LANG["Menu"][3],$_SERVER['PHP_SELF'],"inventory","monitor");
 
-	if (!empty($_GET["withtemplate"])) {
+	$monitor->showForm($_SERVER['PHP_SELF'],$_GET["ID"], $_GET["withtemplate"]);
 
-		if ($monitor->showForm($_SERVER['PHP_SELF'],$_GET["ID"], $_GET["withtemplate"])){
-			if ($_GET["ID"]>0){
-				switch($_SESSION['glpi_onglet']){
-					case 4 :
-						showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",MONITOR_TYPE,$_GET["ID"],1,$_GET["withtemplate"]);
-						showContractAssociated(MONITOR_TYPE,$_GET["ID"],$_GET["withtemplate"]);
-						break;
-					case 5 :			
-						showDocumentAssociated(MONITOR_TYPE,$_GET["ID"],$_GET["withtemplate"]);
-						break;
-					default :
-						displayPluginAction(MONITOR_TYPE,$_GET["ID"],$_SESSION['glpi_onglet'],$_GET["withtemplate"]);
-						break;
-				}
-			}
-		}
-
-	} else {
-
-		if ($monitor->showForm($_SERVER['PHP_SELF'],$_GET["ID"])){
-			switch($_SESSION['glpi_onglet']){
-				case -1:
-					showConnect($_SERVER['PHP_SELF'],$_GET['ID'],MONITOR_TYPE);
-					showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",MONITOR_TYPE,$_GET["ID"]);
-					showContractAssociated(MONITOR_TYPE,$_GET["ID"]);			
-					showDocumentAssociated(MONITOR_TYPE,$_GET["ID"]);	
-					showJobListForItem($_SESSION["glpiname"],MONITOR_TYPE,$_GET["ID"],$_GET["sort"],$_GET["order"]);
-					showOldJobListForItem($_SESSION["glpiname"],MONITOR_TYPE,$_GET["ID"],$_GET["sort"],$_GET["order"]);	
-					showLinkOnDevice(MONITOR_TYPE,$_GET["ID"]);
-					displayPluginAction(MONITOR_TYPE,$_GET["ID"],$_SESSION['glpi_onglet'],$_GET["withtemplate"]);
-					break;
-				case 4 :			
-					showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",MONITOR_TYPE,$_GET["ID"]);
-					showContractAssociated(MONITOR_TYPE,$_GET["ID"]);			
-					break;
-				case 5 :			
-					showDocumentAssociated(MONITOR_TYPE,$_GET["ID"]);	
-					break;
-				case 6 :			
-					showJobListForItem($_SESSION["glpiname"],MONITOR_TYPE,$_GET["ID"],$_GET["sort"],$_GET["order"]);
-					showOldJobListForItem($_SESSION["glpiname"],MONITOR_TYPE,$_GET["ID"],$_GET["sort"],$_GET["order"]);	
-					break;
-				case 7 :
-					showLinkOnDevice(MONITOR_TYPE,$_GET["ID"]);
-					break;	
-				case 10 :
-					showNotesForm($_SERVER['PHP_SELF'],MONITOR_TYPE,$_GET["ID"]);
-					break;	
-				case 11 :
-					showDeviceReservations($_SERVER['PHP_SELF'],MONITOR_TYPE,$_GET["ID"]);
-					break;
-				case 12 :
-					showHistory(MONITOR_TYPE,$_GET["ID"]);
-					break;	
-				default :
-					if (!displayPluginAction(MONITOR_TYPE,$_GET["ID"],$_SESSION['glpi_onglet'],$_GET["withtemplate"]))
-						showConnect($_SERVER['PHP_SELF'],$_GET['ID'],MONITOR_TYPE);
-					break;	
-			}
-		}
-	}
 	commonFooter();
 }
 

@@ -52,7 +52,7 @@ class Monitor extends CommonDBTM {
 		$this->dohistory=true;
 	}	
 
-	function defineOnglets($withtemplate){
+	function defineTabs($withtemplate){
 		global $LANG,$CFG_GLPI;
 
 		$ong=array();
@@ -205,7 +205,7 @@ class Monitor extends CommonDBTM {
 		}
 
 		if($mon_spotted) {
-			$this->showOnglets($ID, $withtemplate,$_SESSION['glpi_onglet']);
+			$this->showTabs($ID, $withtemplate,$_SESSION['glpi_onglet']);
 	
 			if(!empty($withtemplate) && $withtemplate == 2) {
 				$use_cache=false;
@@ -223,7 +223,7 @@ class Monitor extends CommonDBTM {
 				$template = false;
 			}
 
-			echo "<div class='center'><form method='post' name=form action=\"$target\">";
+			echo "<div class='center' id='tabsbody'><form method='post' name=form action=\"$target\">";
 			if(strcmp($template,"newtemplate") === 0) {
 				echo "<input type=\"hidden\" name=\"is_template\" value=\"1\" />";
 			}
@@ -433,6 +433,8 @@ class Monitor extends CommonDBTM {
 			}
 
 			echo "</table></form></div>";
+			echo "<div id='tabcontent'></div>";
+			echo "<script type='text/javascript'>loadDefaultTab();</script>";
 
 			return true;
 		}
