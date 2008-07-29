@@ -1363,7 +1363,6 @@ function autocompletionTextField($myname,$table,$field,$value='',$size=40,$entit
 	if ($CFG_GLPI["use_ajax"]&&$CFG_GLPI["ajax_autocompletion"]){
 		$rand=mt_rand();
 		echo "<input $option id='textfield_$myname$rand' type='text' name='$myname' value=\"".cleanInputText($value)."\" size='$size'>\n";
-
 		echo "<script type='text/javascript' >\n";
 
 		echo "var textfield_$myname$rand = new Ext.data.Store({
@@ -1392,16 +1391,17 @@ function autocompletionTextField($myname,$table,$field,$value='',$size=40,$entit
 			}, [
 			{name: 'value', mapping: 'value'},
 			])
-		});";
+		});
+";
 		
 		
 	
-		echo "var searchfield_$myname$rand = new Ext.form.ComboBox({
+		echo "var searchfield_$myname$rand = new Ext.ux.form.SpanComboBox({
 			store: textfield_$myname$rand,
 			displayField:'value',
 			pageSize:20,
 			hideTrigger:true,
-			 resizable:true,
+			resizable:true,
 			applyTo: 'textfield_$myname$rand',
 		});";
 	
