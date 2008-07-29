@@ -21,9 +21,9 @@ ul.x-tab-strip li.x-tab-edge{float:left;margin:0!important;padding:0!important;b
 .x-tab-strip .x-tab-with-icon .x-tab-right{padding-left:6px;}
 .x-tab-strip .x-tab-with-icon span.x-tab-strip-text{padding-left:20px;background-position:0 3px;background-repeat:no-repeat;}
 .x-tab-strip-over span.x-tab-strip-text{color:#659900;}
-.x-tab-strip-active{cursor:glpi;}
-.x-tab-strip-active span.x-tab-strip-text{cursor:glpi;color:#659900;font-weight:bold;}
-.x-tab-strip-disabled .x-tabs-text{cursor:glpi;color:#aaa;}
+.x-tab-strip-active{cursor:default;}
+.x-tab-strip-active span.x-tab-strip-text{cursor:default;color:#659900;font-weight:bold;}
+.x-tab-strip-disabled .x-tabs-text{cursor:default;color:#aaa;}
 .x-tab-panel-body{overflow:hidden;}
 .x-tab-panel-bwrap{overflow:hidden;}
 .ext-ie .x-tab-strip .x-tab-right{position:relative;}
@@ -57,10 +57,10 @@ ul.x-tab-strip li.x-tab-edge{float:left;margin:0!important;padding:0!important;b
 .x-tab-panel-body-bottom{border-bottom:0 none;}
 .x-tab-scroller-left{background:transparent url(./images/glpi/tabs/scroll-left.gif) no-repeat -18px 0;border-bottom:1px solid #8db2e3;width:18px;position:absolute;left:0;top:0;z-index:10;cursor:pointer;}
 .x-tab-scroller-left-over{background-position:0 0;}
-.x-tab-scroller-left-disabled{background-position:-18px 0;opacity:.5;-moz-opacity:.5;filter:alpha(opacity=50);cursor:glpi;}
+.x-tab-scroller-left-disabled{background-position:-18px 0;opacity:.5;-moz-opacity:.5;filter:alpha(opacity=50);cursor:default;}
 .x-tab-scroller-right{background:transparent url(./images/glpi/tabs/scroll-right.gif) no-repeat 0 0;border-bottom:1px solid #8db2e3;width:18px;position:absolute;right:0;top:0;z-index:10;cursor:pointer;}
 .x-tab-scroller-right-over{background-position:-18px 0;}
-.x-tab-scroller-right-disabled{background-position:0 0;opacity:.5;-moz-opacity:.5;filter:alpha(opacity=50);cursor:glpi;}
+.x-tab-scroller-right-disabled{background-position:0 0;opacity:.5;-moz-opacity:.5;filter:alpha(opacity=50);cursor:default;}
 .x-tab-scrolling .x-tab-strip-wrap{margin-left:18px;margin-right:18px;}
 .x-tab-scrolling{position:relative;}
 .x-tab-panel-bbar .x-toolbar{border:1px solid #99bbe8;border-top:0 none;overflow:hidden;padding:2px;}
