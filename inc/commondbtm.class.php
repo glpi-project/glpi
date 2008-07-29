@@ -1027,6 +1027,7 @@ class CommonDBTM {
 				echo "],
 			});
 			/// Define view point
+			Ext.destroy(tabpanel.body);
 			tabpanel.body='tabcontent';
 			// force first load 
 			function loadDefaultTab(){
