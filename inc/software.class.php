@@ -51,7 +51,7 @@ class Software extends CommonDBTM {
 		$this->dohistory = true;
 	}
 
-	function defineOnglets($withtemplate) {
+	function defineTabs($withtemplate) {
 		global $LANG, $CFG_GLPI;
 		$ong[1] = $LANG["title"][26];
 		if (empty ($withtemplate)) {
@@ -249,7 +249,7 @@ class Software extends CommonDBTM {
 		}
 
 		if ($sw_spotted) {
-			$this->showOnglets($ID, $withtemplate, $_SESSION['glpi_onglet']);
+			$this->showTabs($ID, $withtemplate, $_SESSION['glpi_onglet']);
 			if (!empty ($withtemplate) && $withtemplate == 2) {
 				$template = "newcomp";
 				$datestring = $LANG["computers"][14] . ": ";
@@ -265,7 +265,7 @@ class Software extends CommonDBTM {
 				$template = false;
 			}
 
-			echo "<div class='center'><form method='post' action=\"$target\">";
+			echo "<div class='center' id='tabsbody'><form method='post' action=\"$target\">";
 			if (strcmp($template, "newtemplate") === 0) {
 				echo "<input type=\"hidden\" name=\"is_template\" value=\"1\" />";
 			}
@@ -393,6 +393,9 @@ class Software extends CommonDBTM {
 				echo "</tr>";
 			}
 			echo "</table></form></div>";
+			echo "<div id='tabcontent'></div>";
+			echo "<script type='text/javascript'>loadDefaultTab();</script>";
+
 
 			return true;
 		} else {
