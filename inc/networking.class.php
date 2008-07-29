@@ -55,7 +55,7 @@ class Netdevice extends CommonDBTM {
 	}
 
 
-	function defineOnglets($withtemplate){
+	function defineTabs($withtemplate){
 		global $LANG;
 
 		$ong[1]=$LANG["title"][26];
@@ -233,7 +233,7 @@ class Netdevice extends CommonDBTM {
 			$canedit=$this->can($ID,'w');
 			$canrecu=$this->can($ID,'recursive');
 
-			$this->showOnglets($ID, $withtemplate,$_SESSION['glpi_onglet']);
+			$this->showTabs($ID, $withtemplate,$_SESSION['glpi_onglet']);
 
 			if(!empty($withtemplate) && $withtemplate == 2) {
 				$use_cache=false;
@@ -263,7 +263,7 @@ class Netdevice extends CommonDBTM {
 
 			echo "<table  class='tab_cadre_fixe' cellpadding='2'>\n";
 
-			echo "<tr><th align='center' >\n";
+			echo "<tr><th align='center' id='tabsbody'>\n";
 			if(!$template) {
 				echo $LANG["common"][2]." ".$this->fields["ID"];
 			}elseif (strcmp($template,"newcomp") === 0) {
@@ -443,9 +443,12 @@ class Netdevice extends CommonDBTM {
 				}
 				echo "</tr>\n";
 				echo "</table></form></div>\n";
+
 			} else { // ! $canedit
 				echo "</table></div>\n";
 			}
+			echo "<div id='tabcontent'></div>";
+			echo "<script type='text/javascript'>loadDefaultTab();</script>";
 
 			return true;
 
