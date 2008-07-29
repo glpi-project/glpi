@@ -93,6 +93,7 @@ function includeCommonHtmlHeader($title=''){
 		echo "<script type=\"text/javascript\" src='".$CFG_GLPI["root_doc"]."/lib/extjs/ext-all.js'></script>\n";
 	}
 	echo "<link rel='stylesheet' type='text/css' href='".$CFG_GLPI["root_doc"]."/lib/extjs/resources/ext-all.css' media='screen' >\n";
+	echo "<link rel='stylesheet' type='text/css' href='".$CFG_GLPI["root_doc"]."/lib/extjs/resources/ext-all-glpi.css' media='screen' >\n";
 
 	if (isset($_SESSION["glpilanguage"])){
 		echo "<script type=\"text/javascript\" src='".$CFG_GLPI["root_doc"]."/lib/extjs/locale/ext-lang-".$CFG_GLPI["languages"][$_SESSION["glpilanguage"]][2].".js'></script>\n";
