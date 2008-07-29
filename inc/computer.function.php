@@ -291,18 +291,17 @@ function showComputerDisks($ID,$withtemplate='') {
 	$canedit = haveRight("computer", "w");
 
 	echo "<div class='center'>";
-	if ($canedit){
-		echo "<a href='computerdisk.form.php?cID=$ID'>".$LANG["computers"][7]."</a><br>";
-	}
 	
 	$query = "SELECT glpi_dropdown_filesystems.name as fsname, glpi_computerdisks.* FROM glpi_computerdisks
 		LEFT JOIN glpi_dropdown_filesystems ON (glpi_computerdisks.FK_filesystems = glpi_dropdown_filesystems.ID)
 		WHERE (FK_computers = '$ID')";
 
 	if ($result=$DB->query($query)){
+		echo "<table class='tab_cadre_fixe'><tr>";
+		echo "<th colspan='6'>".$LANG["computers"][8]."</th></tr>";
 		if ($DB->numrows($result)){
-			echo "<table class='tab_cadre'><tr>";
-			echo "<th>".$LANG["common"][16]."</th>";
+			//echo "<th colspan='6'>".$LANG["computers"][8]."</th></tr>";
+			echo "<tr><th>".$LANG["common"][16]."</th>";
 			echo "<th>".$LANG["computers"][6]."</th>";
 			echo "<th>".$LANG["computers"][5]."</th>";
 			echo "<th>".$LANG["computers"][4]."</th>";
@@ -322,10 +321,13 @@ function showComputerDisks($ID,$withtemplate='') {
 				echo "<td>".$data['totalsize']."</td>";
 				echo "<td>".$data['freesize']."</td>";
 			}
-			echo "</table>";
+			//echo "</table>";
 		} else {
-			echo $LANG["search"][15];
+			echo "<th colspan='6'>".$LANG["search"][15]."</th></tr>";
 		}
+	if ($canedit){
+		echo "<tr class='tab_bg_2'><th colspan='6''><a href='computerdisk.form.php?cID=$ID'>".$LANG["computers"][7]."</a></th></tr></table>";
+	}
 	
 	}
 	echo "</div>";
