@@ -966,8 +966,8 @@ class CommonDBTM {
 
 		}
 	
-		echo "<div class='center'>";
-		echo "<div id='tabspanel' style='margin:auto'></div>";
+		echo "<div class='center-h'>";
+		echo "<div id='tabspanel'></div>";
 		echo "</div>";
 		$active=0;
 		if (count($onglets=$this->defineTabs($withtemplate))){
