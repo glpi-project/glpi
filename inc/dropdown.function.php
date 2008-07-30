@@ -1044,8 +1044,8 @@ function dropdownMyDevices($userID=0,$entity_restrict=-1){
 				
 			// Software
 			if ($_SESSION["glpiactiveprofile"]["helpdesk_hardware_type"]&pow(2,SOFTWARE_TYPE)){
-				$query = "SELECT DISTINCT glpi_licenses.version as version, glpi_software.name as name, glpi_software.ID as ID FROM glpi_inst_software, glpi_software,glpi_licenses ";
-				$query.= "WHERE glpi_inst_software.license = glpi_licenses.ID AND glpi_licenses.sID = glpi_software.ID AND ".ereg_replace("XXXX","glpi_inst_software.cID",$search_computer)." AND  glpi_software.helpdesk_visible=1 ";
+				$query = "SELECT DISTINCT glpi_softwareversions.name as version, glpi_software.name as name, glpi_software.ID as ID FROM glpi_inst_software, glpi_software,glpi_softwareversions ";
+				$query.= "WHERE glpi_inst_software.vID = glpi_softwareversions.ID AND glpi_softwareversions.sID = glpi_software.ID AND ".ereg_replace("XXXX","glpi_inst_software.cID",$search_computer)." AND  glpi_software.helpdesk_visible=1 ";
 				$query.=getEntitiesRestrictRequest("AND","glpi_software","",$entity_restrict);
 				$query.=" ORDER BY glpi_software.name";
 
