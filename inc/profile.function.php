@@ -62,13 +62,14 @@ function showProfileConfig($target,$ID,$prof){
 	echo "<option value='central' ".($prof->fields["interface"]=="central"?"selected":"").">".$LANG["title"][0]."</option>";
 	echo "</select></th>";
 	echo "</tr></table>";
+	
+	echo "<div align='center' id='profile_form'>";
 
 	$params=array('interface'=>'__VALUE__','ID'=>$ID,);
 	
 	ajaxUpdateItemOnSelectEvent("profile_interface","profile_form",$CFG_GLPI["root_doc"]."/ajax/profiles.php",$params,false);
 	ajaxUpdateItem("profile_form",$CFG_GLPI["root_doc"]."/ajax/profiles.php",$params,false,'profile_interface');
 
-	echo "<div align='center' id='profile_form'>";
 	echo "</div>";
 	echo "</div>";
 	showLegend();
