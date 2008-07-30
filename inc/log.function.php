@@ -179,7 +179,7 @@ function showHistory($device_type,$id_device){
 
 	// No Events in database
 	if ($number < 1) {
-		echo "<br><div class='center'>";
+		echo "<div class='center'>";
 		echo "<table class='tab_cadre_fixe'>";
 		echo "<tr><th>".$LANG["event"][20]."</th></tr>";
 		echo "</table>";

@@ -335,7 +335,7 @@ function showOldJobListForItem($username,$item_type,$item,$sort="",$order="") {
 	} 
 	else
 	{
-		echo "<br><div class='center'>";
+		echo "<div class='center'>";
 		echo "<table class='tab_cadre_fixe'>";
 		echo "<tr><th>".$LANG["joblist"][22]."</th></tr>";
 		echo "</table>";
@@ -370,7 +370,7 @@ function showJobListForItem($username,$item_type,$item,$sort="",$order="") {
 
 	if ($number > 0)
 	{
-		echo "<div class='center'>&nbsp;<table class='tab_cadre_fixe'>";
+		echo "<div class='center'><table class='tab_cadre_fixe'>";
 		echo "<tr><th colspan='10'>".$number." ".$LANG["job"][17]."";
 		//if ($number > 1) { echo "s"; }
 		echo " ".$LANG["job"][16].":&nbsp;";
@@ -395,7 +395,7 @@ function showJobListForItem($username,$item_type,$item,$sort="",$order="") {
 	} 
 	else
 	{
-		echo "<br><div class='center'>";
+		echo "<div class='center'>";
 		echo "<table class='tab_cadre_fixe'>";
 		echo "<tr><th>".$LANG["joblist"][8]."</th></tr>";
 

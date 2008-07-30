@@ -62,7 +62,7 @@ function showInfocomForm($target,$device_type,$dev_ID,$show_immo=true,$withtempl
 		echo "<div class='center'>".$LANG["financial"][84]."</div>";
 	}
 
-	echo "<br>";
+	//echo "<br>";
 	if ($ci->getFromDB($device_type,$dev_ID)){
 		$entity=-1;
 
