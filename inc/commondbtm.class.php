@@ -966,9 +966,9 @@ class CommonDBTM {
 
 		}
 	
-		echo "<div class='center-h'>";
-		echo "<div id='tabspanel'></div>";
-		echo "</div>";
+		
+		echo "<div id='tabspanel' class='center-h'></div>";
+		
 		$active=0;
 		if (count($onglets=$this->defineTabs($withtemplate))){
 			//if (empty($withtemplate)&&haveRight("reservation_central","r")&&function_exists("isReservable")){
