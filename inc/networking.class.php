@@ -233,7 +233,7 @@ class Netdevice extends CommonDBTM {
 			$canedit=$this->can($ID,'w');
 			$canrecu=$this->can($ID,'recursive');
 
-			$this->showTabs($ID, $withtemplate,$_SESSION['glpi_onglet']);
+			$this->showTabs($ID, $withtemplate,$_SESSION['glpi_tab']);
 
 			if(!empty($withtemplate) && $withtemplate == 2) {
 				$use_cache=false;

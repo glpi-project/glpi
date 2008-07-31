@@ -249,7 +249,7 @@ class Software extends CommonDBTM {
 		}
 
 		if ($sw_spotted) {
-			$this->showTabs($ID, $withtemplate, $_SESSION['glpi_onglet']);
+			$this->showTabs($ID, $withtemplate, $_SESSION['glpi_tab']);
 			if (!empty ($withtemplate) && $withtemplate == 2) {
 				$template = "newcomp";
 				$datestring = $LANG["computers"][14] . ": ";

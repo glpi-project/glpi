@@ -221,7 +221,7 @@ class Phone extends CommonDBTM {
 		}
 
 		if($mon_spotted) {
-			$this->showOnglets($ID, $withtemplate,$_SESSION['glpi_onglet']);
+			$this->showOnglets($ID, $withtemplate,$_SESSION['glpi_tab']);
 
 			if(!empty($withtemplate) && $withtemplate == 2) {
 				$use_cache=false;

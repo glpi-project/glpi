@@ -143,7 +143,7 @@ class Contract extends CommonDBTM {
 		if ($spotted){
 			$can_edit=$this->can($ID,'w');
 
-			$this->showOnglets($ID, $withtemplate,$_SESSION['glpi_onglet']);
+			$this->showOnglets($ID, $withtemplate,$_SESSION['glpi_tab']);
 
 			if ($can_edit) { 
 				echo "<form name='form' method='post' action=\"$target\"><div class='center'>";

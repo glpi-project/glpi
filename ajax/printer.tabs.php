@@ -70,7 +70,7 @@ checkRight("printer","r");
 					showDocumentAssociated(PRINTER_TYPE,$_POST["ID"],$_POST["withtemplate"]);	
 					break;
 				default :
-					displayPluginAction(PRINTER_TYPE,$_POST["ID"],$_SESSION['glpi_onglet'],$_POST["withtemplate"]);
+					displayPluginAction(PRINTER_TYPE,$_POST["ID"],$_SESSION['glpi_tab'],$_POST["withtemplate"]);
 					break;
 			}	
 		}
@@ -88,7 +88,7 @@ checkRight("printer","r");
 				showJobListForItem($_SESSION["glpiname"],PRINTER_TYPE,$_POST["ID"],$_POST["sort"],$_POST["order"]);
 				showOldJobListForItem($_SESSION["glpiname"],PRINTER_TYPE,$_POST["ID"],$_POST["sort"],$_POST["order"]);		
 				showLinkOnDevice(PRINTER_TYPE,$_POST["ID"]);
-				displayPluginAction(PRINTER_TYPE,$_POST["ID"],$_SESSION['glpi_onglet'],$_POST["withtemplate"]);
+				displayPluginAction(PRINTER_TYPE,$_POST["ID"],$_SESSION['glpi_tab'],$_POST["withtemplate"]);
 				break;
 			case 3 :			
 				showConnect($_POST['target'],$_POST["ID"],PRINTER_TYPE);
@@ -119,7 +119,7 @@ checkRight("printer","r");
 				showHistory(PRINTER_TYPE,$_POST["ID"]);
 				break;
 			default :
-				if (!displayPluginAction(PRINTER_TYPE,$_POST["ID"],$_SESSION['glpi_onglet'],$_POST["withtemplate"])){
+				if (!displayPluginAction(PRINTER_TYPE,$_POST["ID"],$_SESSION['glpi_tab'],$_POST["withtemplate"])){
 					showCartridgeInstalled($_POST["ID"]);		
 					showCartridgeInstalled($_POST["ID"],1);
 				}

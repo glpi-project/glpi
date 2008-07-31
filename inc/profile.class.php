@@ -189,7 +189,7 @@ class Profile extends CommonDBTM{
 
 		if (!haveRight("profile","r")) return false;
 
-		$this->showOnglets($ID, $withtemplate,$_SESSION['glpi_onglet']);
+		$this->showOnglets($ID, $withtemplate,$_SESSION['glpi_tab']);
 		
 		return true;
 	}

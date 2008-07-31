@@ -115,7 +115,7 @@ class ConsumableType extends CommonDBTM {
 
 		if ($ct_spotted){
 
-			$this->showTabs($ID, $withtemplate,$_SESSION['glpi_onglet']);
+			$this->showTabs($ID, $withtemplate,$_SESSION['glpi_tab']);
 
 			echo "<div class='center' id='tabsbody'><form method='post' action=\"$target\">\n";
 			if (empty($ID)){

@@ -141,7 +141,7 @@ class Entity extends CommonDBTM{
 		
 		if ($con_spotted){
 			
-			$this->showOnglets($ID, $withtemplate,$_SESSION['glpi_onglet']);
+			$this->showOnglets($ID, $withtemplate,$_SESSION['glpi_tab']);
 
 			echo "<form method='post' name=form action=\"$target\"><div class='center'>";
 

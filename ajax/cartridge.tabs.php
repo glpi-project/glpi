@@ -46,7 +46,7 @@ if(!isset($_POST["ID"])) {
 checkRight("cartridge","r");
 
 	if (isset($_POST['tab'])) {
-		$_SESSION['glpi_onglet']=$_POST['tab'];
+		$_SESSION['glpi_tab']=$_POST['tab'];
 	}
 
 	
@@ -75,7 +75,7 @@ checkRight("cartridge","r");
 					showNotesForm($_POST['target'],CARTRIDGE_TYPE,$_POST["ID"]);
 					break;
 				default :
-					if (!displayPluginAction(CARTRIDGE_TYPE,$_POST["ID"],$_SESSION['glpi_onglet'])){
+					if (!displayPluginAction(CARTRIDGE_TYPE,$_POST["ID"],$_SESSION['glpi_tab'])){
 						showCompatiblePrinters($_POST["ID"]);
 						showCartridgesAdd($_POST["ID"]);
 						showCartridges($_POST["ID"]);

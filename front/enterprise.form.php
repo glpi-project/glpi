@@ -125,9 +125,9 @@ else
 {
 	$ent->check($_GET["ID"],'r');
 
-	if (!isset($_SESSION['glpi_onglet'])) $_SESSION['glpi_onglet']=1;
+	if (!isset($_SESSION['glpi_tab'])) $_SESSION['glpi_tab']=1;
 	if (isset($_GET['onglet'])) {
-		$_SESSION['glpi_onglet']=$_GET['onglet'];
+		$_SESSION['glpi_tab']=$_GET['onglet'];
 	}
 
 
@@ -136,14 +136,14 @@ else
 
 	if ($ent->showForm($_SERVER['PHP_SELF'],$_GET["ID"])){
 		if ($_GET["ID"]>0){
-			switch($_SESSION['glpi_onglet']){
+			switch($_SESSION['glpi_tab']){
 				case -1:
 					showAssociatedContact($_GET["ID"]);
 					showContractAssociatedEnterprise($_GET["ID"]);
 					showDocumentAssociated(ENTERPRISE_TYPE,$_GET["ID"]);
 					showTrackingList($_SERVER['PHP_SELF'],$_GET["start"],$_GET["sort"],$_GET["order"],"all",'','',0,0,0,0,0,$_GET["ID"]);
 					showLinkOnDevice(ENTERPRISE_TYPE,$_GET["ID"]);
-					displayPluginAction(ENTERPRISE_TYPE,$_GET["ID"],$_SESSION['glpi_onglet']);
+					displayPluginAction(ENTERPRISE_TYPE,$_GET["ID"],$_SESSION['glpi_tab']);
 					break;
 				case 1 :
 					showAssociatedContact($_GET["ID"]);
@@ -167,7 +167,7 @@ else
 					showInfocomEnterprise($_GET["ID"]);
 					break;	
 				default : 
-					if (!displayPluginAction(ENTERPRISE_TYPE,$_GET["ID"],$_SESSION['glpi_onglet'])){
+					if (!displayPluginAction(ENTERPRISE_TYPE,$_GET["ID"],$_SESSION['glpi_tab'])){
 						showAssociatedContact($_GET["ID"]);
 					}
 					break;

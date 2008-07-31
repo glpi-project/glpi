@@ -187,7 +187,7 @@ class Document extends CommonDBTM {
 
 			$canrecu=$this->can($ID,'recursive');
 
-			$this->showOnglets($ID, $withtemplate,$_SESSION['glpi_onglet']);
+			$this->showOnglets($ID, $withtemplate,$_SESSION['glpi_tab']);
 
 			if ($canedit) {
 				echo "<form name='form' method='post' action=\"$target\" enctype=\"multipart/form-data\">";
