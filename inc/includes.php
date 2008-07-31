@@ -165,8 +165,8 @@ if (isset($NEEDED_ITEMS)&&in_array('search', $NEEDED_ITEMS)){
 if (!isset($_SESSION["MESSAGE_AFTER_REDIRECT"])) $_SESSION["MESSAGE_AFTER_REDIRECT"]="";
 
 // Manage tabs
-if (isset($_GET['glpi_tab'])) {
-	$_SESSION['glpi_tab']=$_GET['glpi_tab'];
+if (isset($_REQUEST['glpi_tab'])) {
+	$_SESSION['glpi_tab']=$_REQUEST['glpi_tab'];
 }
 
 ?>

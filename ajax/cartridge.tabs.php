@@ -45,12 +45,8 @@ if(!isset($_POST["ID"])) {
 
 checkRight("cartridge","r");
 
-	if (isset($_POST['tab'])) {
-		$_SESSION['glpi_tab']=$_POST['tab'];
-	}
-
 	
-	switch($_POST['tab']){
+	switch($_POST['glpi_tab']){
 		case -1 :	
 					showCompatiblePrinters($_POST["ID"]);
 					showCartridgesAdd($_POST["ID"]);
@@ -59,7 +55,7 @@ checkRight("cartridge","r");
 					showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",CARTRIDGE_TYPE,$_POST["ID"],1);
 					showDocumentAssociated(CARTRIDGE_TYPE,$_POST["ID"]);
 					showLinkOnDevice(CARTRIDGE_TYPE,$_POST["ID"]);
-					displayPluginAction(CARTRIDGE_TYPE,$_POST["ID"],$_POST['tab']);
+					displayPluginAction(CARTRIDGE_TYPE,$_POST["ID"],$_POST['glpi_tab']);
 					break;
 				case 4 :
 					showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",CARTRIDGE_TYPE,$_POST["ID"],1);
