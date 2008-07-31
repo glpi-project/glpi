@@ -339,6 +339,8 @@ class Identification {
 					$_SESSION["glpiroot"] = $CFG_GLPI["root_doc"];
 					$_SESSION["glpilist_limit"] = $this->user->fields['list_limit'];
 					$_SESSION["glpicrontimer"] = time();
+					// Default tab
+					$_SESSION['glpi_tab']=1;
 								
 					// glpiprofiles -> other available profile with link to the associated entities
 					doHook("init_session");

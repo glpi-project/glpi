@@ -983,7 +983,7 @@ class CommonDBTM {
 						'params'=>"target=$target&type=".$this->type."&tab=$key&ID=$ID$template");
 			}
 			$plug_tabs=getPluginTabs($target,$this->type,$ID,$withtemplate,$actif);
-			$tabs=array_merge($tabs,$plug_tabs);
+			$tabs+=$plug_tabs;
 
 			createAjaxTabs('tabspanel','tabcontent',$tabs,$actif);
 
