@@ -29,7 +29,7 @@
  */
 
 
-$NEEDED_ITEMS=array("bookmark", "setup", "entity", "rulesengine", "ocsng", "search","network");
+$NEEDED_ITEMS=array("bookmark", "setup", "entity", "rulesengine", "ocsng", "search","networking");
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");

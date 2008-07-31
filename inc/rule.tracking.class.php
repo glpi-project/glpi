@@ -74,6 +74,13 @@ class TrackingBusinessRule extends Rule {
 		return count($RULES_ACTIONS[RULE_TRACKING_AUTO_ACTION]);
 	}
 
+	function addSpecificParamsForPreview($input,$params)
+	{
+		if (!isset($input["FK_entities"]))
+			$params["FK_entities"] = $_SESSION["glpiactive_entity"];
+		return $params;
+	}
+
 	function executeActions($output,$params,$regex_results)
 	{
 		if (count($this->actions)){
@@ -84,6 +91,8 @@ class TrackingBusinessRule extends Rule {
 					break;
 					case "affectbyip":
 					case "affectbyfqdn":
+						if (!isset($output["FK_entities"]))
+							$output["FK_entities"]=$params["FK_entities"];
 						$regexvalue = getRegexResultById($action->fields["value"],$regex_results);
 						switch ($action->fields["action_type"])
 						{

@@ -747,13 +747,13 @@ function removeConnector($ID, $dohistory=true) {
 function getUniqueObjectIDByIPAddress($ip,$entity)
 {
 		global $DB;
-		//Try to get all the object with a network port having the specified IP, in a given entity
-		$query="SELECT gnp.on_device as ID, gnp.device_type as device_type FROM `glpi_networking_ports` as gnp
-				LEFT JOIN  `glpi_computers` as gc ON (gnp.on_device=gc.ID AND gc.FK_entities=$entity AND device_type=".COMPUTER_TYPE.") 
-				LEFT JOIN  `glpi_printers` as gp ON (gnp.on_device=gp.ID AND gp.FK_entities=$entity AND device_type=".PRINTER_TYPE.")
-				LEFT JOIN  `glpi_networking` as gn ON (gnp.on_device=gn.ID AND gn.FK_entities=$entity AND device_type=".NETWORKING_TYPE.")  
-				LEFT JOIN  `glpi_phones` as gph ON (gnp.on_device=gph.ID AND gph.FK_entities=$entity AND device_type=".PHONE_TYPE.") 
-				LEFT JOIN  `glpi_peripherals` as gpe ON (gnp.on_device=gpe.ID AND gpe.FK_entities=$entity AND device_type=".PERIPHERAL_TYPE.") 
+		//Try to get all the object (not deleted, and not template) with a network port having the specified IP, in a given entity
+		$query="SELECT gnp.on_device as ID, gnp.ID as portID, gnp.device_type as device_type FROM `glpi_networking_ports` as gnp
+				LEFT JOIN  `glpi_computers` as gc ON (gnp.on_device=gc.ID AND gc.FK_entities=$entity AND gc.deleted=0 AND gc.is_template=0 AND device_type=".COMPUTER_TYPE.") 
+				LEFT JOIN  `glpi_printers` as gp ON (gnp.on_device=gp.ID AND gp.FK_entities=$entity AND gp.deleted=0 AND gp.is_template=0 AND device_type=".PRINTER_TYPE.")
+				LEFT JOIN  `glpi_networking` as gn ON (gnp.on_device=gn.ID AND gn.FK_entities=$entity AND gn.deleted=0 AND gn.is_template=0 AND device_type=".NETWORKING_TYPE.")  
+				LEFT JOIN  `glpi_phones` as gph ON (gnp.on_device=gph.ID AND gph.FK_entities=$entity AND gph.deleted=0 AND gph.is_template=0 AND device_type=".PHONE_TYPE.") 
+				LEFT JOIN  `glpi_peripherals` as gpe ON (gnp.on_device=gpe.ID AND gpe.FK_entities=$entity AND gpe.deleted=0 AND gpe.is_template=0 AND device_type=".PERIPHERAL_TYPE.") 
 				WHERE gnp.ifaddr='".$ip."'";
 
 		$result = $DB->query($query);
@@ -773,10 +773,35 @@ function getUniqueObjectIDByIPAddress($ip,$entity)
 				else
 					return array();
 			case 1 :
-				return $DB->fetch_array($result);
+				$port = $DB->fetch_array($result);
+				return array("ID"=>$port["ID"],"device_type"=>$port["device_type"]);
+				
 			case 2:
-				while ($port = $DB->fetch_array($result))
-					return ($port["device_type"] != NETWORKING_TYPE?$port:array());
+				//2 ports found with the same IP
+				//We can face different configurations :
+				//the 2 ports aren't linked -> can do nothing (how to know which one is the good one)
+				//the 2 ports are linked but no ports are connected on a network device (for example 2 computers connected)-> can do nothin (how to know which one is the good one)
+				//thez 2 ports are linked and one port in connected on a network device -> use the port not connected on the network device as the good one 
+				$port1 = $DB->fetch_array($result);
+				$port2 = $DB->fetch_array($result);
+				
+				//Get the 2 ports informations and try to see if one port is connected on a network device
+				$network_port = -1;
+				if ($port1["device_type"]==NETWORKING_TYPE)
+					$network_port=1;
+				elseif($port2["device_type"]==NETWORKING_TYPE)
+					$network_port=2;
+				
+				//If one port is connected on a network device
+				if ($network_port!=-1)
+				{
+					//If the 2 ports are linked each others
+					$query = "SELECT ID FROM glpi_networking_wire WHERE (end1=".$port1["portID"]." AND end2=".$port2["portID"].") OR (end1=".$port2["portID"]." AND end2=".$port1["portID"].")";
+					$query =$DB->query($query);
+					if ($DB->numrows($query) == 1)
+						return array("ID"=>($network_port==1?$port2["ID"]:$port1["ID"]),"device_type"=>($network_port==1?$port2["device_type"]:$port1["device_type"]));				
+				}
+				return array();
 			default:
 				return array();
 					

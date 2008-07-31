@@ -1555,7 +1555,6 @@ class Rule extends CommonDBTM{
 			}
 		}
 			
-		
 		foreach ($output as $criteria => $value){
 			echo "<tr  class='tab_bg_2'>";
 			echo "<td class='tab_bg_2'>";
@@ -1638,6 +1637,7 @@ class Rule extends CommonDBTM{
 		if (!isset($crit['type'])){
 			return $pattern;
 		} else {
+
 			switch ($crit['type']){
 				case "dropdown":
 					if ($condition==PATTERN_IS||$condition==PATTERN_IS_NOT){
@@ -1745,7 +1745,7 @@ class Rule extends CommonDBTM{
 	{
 		global $LANG;
 		$action=$this->getAction($ID);
-
+	print_r($action);
 		if (!isset($action['type'])){
 			return $value;
 		} else {
