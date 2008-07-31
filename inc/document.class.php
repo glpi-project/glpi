@@ -83,7 +83,7 @@ class Document extends CommonDBTM {
 			}
 	}
 
-	function defineOnglets($withtemplate){
+	function defineTabs($withtemplate){
 		global $LANG;
 		$ong[1]=$LANG["title"][26];
 		$ong[5]=$LANG["Menu"][27];
@@ -187,7 +187,7 @@ class Document extends CommonDBTM {
 
 			$canrecu=$this->can($ID,'recursive');
 
-			$this->showOnglets($ID, $withtemplate,$_SESSION['glpi_tab']);
+			$this->showTabs($ID, $withtemplate,$_SESSION['glpi_tab']);
 
 			if ($canedit) {
 				echo "<form name='form' method='post' action=\"$target\" enctype=\"multipart/form-data\">";
@@ -196,7 +196,7 @@ class Document extends CommonDBTM {
 				}
 			}
 
-			echo "<div class='center'><table class='tab_cadre_fixe'>";
+			echo "<div class='center' id='tabsbody'><table class='tab_cadre_fixe'>";
 			echo "<tr>";
 			if ($ID>0) {
 				echo "<th>";
@@ -336,6 +336,10 @@ class Document extends CommonDBTM {
 			} else { //  can't edit
 				echo "</table></div>";			
 			} 
+			
+			echo "<div id='tabcontent'></div>";
+			echo "<script type='text/javascript'>loadDefaultTab();</script>";
+			
 		} else {
 			echo "<div class='center'><strong>".$LANG["common"][54]."</strong></div>";
 			return false;
