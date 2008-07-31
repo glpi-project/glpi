@@ -102,11 +102,6 @@ else
 {
 	checkRight("cartridge","r");
 
-	if (!isset($_SESSION['glpi_tab'])) $_SESSION['glpi_tab']=1;
-	if (isset($_GET['onglet'])) {
-		$_SESSION['glpi_tab']=$_GET['onglet'];
-	}
-
 	commonHeader($LANG["Menu"][21],$_SERVER['PHP_SELF'],"inventory","cartridge");
 	$cartype->showForm($_SERVER['PHP_SELF'],$_GET["ID"]);
 	commonFooter();

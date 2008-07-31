@@ -87,12 +87,6 @@ else
 {
 	checkRight("consumable","r");
 
-	if (!isset($_SESSION['glpi_tab'])) $_SESSION['glpi_tab']=1;
-	if (isset($_GET['onglet'])) {
-		$_SESSION['glpi_tab']=$_GET['onglet'];
-		//	glpi_header($_SERVER['HTTP_REFERER']);
-	}
-
 	commonHeader($LANG["Menu"][32],$_SERVER['PHP_SELF'],"inventory","consumable");
 
      $constype->showForm($_SERVER['PHP_SELF'],$_GET["ID"]);
