@@ -58,7 +58,7 @@ class Contact extends CommonDBTM{
 		$DB->query($query);
 	}
 
-	function defineOnglets($withtemplate){
+	function defineTabs($withtemplate){
 		global $LANG;
 		$ong[1]=$LANG["title"][26];
 		if (haveRight("document","r"))	
@@ -148,10 +148,10 @@ class Contact extends CommonDBTM{
 		if ($spotted){
 			$canedit=$this->can($ID,'w');
 
-			$this->showOnglets($ID, $withtemplate,$_SESSION['glpi_tab']);
+			$this->showTabs($ID, $withtemplate,$_SESSION['glpi_tab']);
 
 			if ($canedit) {
-				echo "<form method='post' name=form action=\"$target\"><div class='center'>";
+				echo "<div class='center' id='tabsbody'><form method='post' name=form action=\"$target\">";
 				if (empty($ID)||$ID<0){
 					echo "<input type='hidden' name='FK_entities' value='".$_SESSION["glpiactive_entity"]."'>";
 				}
@@ -275,7 +275,11 @@ class Contact extends CommonDBTM{
 					echo "</td>";
 					echo "</tr>";
 				}
-				echo "</table></div></form>";
+				echo "</table></form></div>";
+				
+				echo "<div id='tabcontent'></div>";
+				echo "<script type='text/javascript'>loadDefaultTab();</script>";
+				
 			} else { // canedit
 				echo "</table></div>";
 			}
