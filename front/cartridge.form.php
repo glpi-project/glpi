@@ -108,45 +108,7 @@ else
 	}
 
 	commonHeader($LANG["Menu"][21],$_SERVER['PHP_SELF'],"inventory","cartridge");
-
-
-	if ($cartype->showForm($_SERVER['PHP_SELF'],$_GET["ID"])) {
-		if (!empty($_GET['ID']))
-			switch($_SESSION['glpi_onglet']){
-				case -1 :	
-					showCompatiblePrinters($_GET["ID"]);
-					showCartridgesAdd($_GET["ID"]);
-					showCartridges($_GET["ID"]);
-					showCartridges($_GET["ID"],1);
-					showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",CARTRIDGE_TYPE,$_GET["ID"],1);
-					showDocumentAssociated(CARTRIDGE_TYPE,$_GET["ID"]);
-					showLinkOnDevice(CARTRIDGE_TYPE,$_GET["ID"]);
-					displayPluginAction(CARTRIDGE_TYPE,$_GET["ID"],$_SESSION['glpi_onglet']);
-					break;
-				case 4 :
-					showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",CARTRIDGE_TYPE,$_GET["ID"],1);
-					break;
-
-				case 5 :
-					showDocumentAssociated(CARTRIDGE_TYPE,$_GET["ID"]);
-					break;			
-				case 7 : 
-					showLinkOnDevice(CARTRIDGE_TYPE,$_GET["ID"]);
-					break;
-				case 10 :
-					showNotesForm($_SERVER['PHP_SELF'],CARTRIDGE_TYPE,$_GET["ID"]);
-					break;
-				default :
-					if (!displayPluginAction(CARTRIDGE_TYPE,$_GET["ID"],$_SESSION['glpi_onglet'])){
-						showCompatiblePrinters($_GET["ID"]);
-						showCartridgesAdd($_GET["ID"]);
-						showCartridges($_GET["ID"]);
-						showCartridges($_GET["ID"],1);
-					}
-					break;
-			}
-	}
-
+	$cartype->showForm($_SERVER['PHP_SELF'],$_GET["ID"]);
 	commonFooter();
 }
 
