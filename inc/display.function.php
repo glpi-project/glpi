@@ -1958,6 +1958,68 @@ function showDateFormItem($element,$value='',$maybeempty=true,$can_edit=true,$mi
 
 
 /**
+ *  Create Ajax Tabs apply to 'tabspanel' div. Content is displayed in 'tabcontent'
+ *
+ * @param $tabdiv_id ID of the div containing the tabs
+ * @param $tabdivcontent_id ID of the div containing the content loaded by tabs
+ * @param $tabs array of tabs to create : tabs is array( 'key' => array('title'=>'x',url=>'url_toload',params='url_params')...
+ * @param $active_tabs active tab key
+ * @return nothing
+ */
+function createAjaxTabs($tabdiv_id='tabspanel',$tabdivcontent_id='tabcontent',$tabs=array(),$active_tabs=''){
+
+
+	if (count($tabs)>0){
+		echo "<script type='text/javascript'>";
+			echo " var tabpanel = new Ext.TabPanel({
+				applyTo: '$tabdiv_id',
+				width:950,
+				enableTabScroll: true,
+				resizeTabs: false,
+				plain: true,
+				items: [";
+				$active=0;
+				$active_key="";
+				$tabid=0;
+				foreach ($tabs as $key => $val){
+					if ($active_tabs==$key){
+						$active=$tabid;
+						$active_key=$key;
+					}
+					echo "{
+					title: \"".$val['title']."\",
+					autoLoad: {url: '".$val['url']."',  scripts: true, nocache: true, ";
+					if (isset($val['params'])){
+						echo "params: '".$val['params']."'";
+					}
+					echo "}},";
+					$tabid++;
+				}
+			echo "],
+				});";
+	
+			echo "/// Define view point";
+			echo "Ext.destroy(tabpanel.body);
+				tabpanel.body='$tabdivcontent_id';";
+			
+			echo "	// force first load 
+				function loadDefaultTab(){
+					tabpanel.setActiveTab($active);";
+				if (!empty($active_key)){
+					echo "Ext.get('$tabdivcontent_id').load({
+						url: '".$tabs[$active_key]['url']."',
+						scripts: true,
+						params: '".$tabs[$active_key]['params']."'});";
+				};
+			echo "}";
+	
+			echo "</script>";		
+	
+	}
+
+}
+
+/**
  *  show notes for item
  *
  * @param $target target page to update item
