@@ -100,40 +100,10 @@ else
 {
 	$contact->check($_GET["ID"],'r');
 
-	if (!isset($_SESSION['glpi_tab'])) $_SESSION['glpi_tab']=1;
-	if (isset($_GET['onglet'])) {
-		$_SESSION['glpi_tab']=$_GET['onglet'];
-	}
-
 	commonHeader($LANG["Menu"][22],$_SERVER['PHP_SELF'],"financial","contact");
 
-	if ($contact->showForm($_SERVER['PHP_SELF'],$_GET["ID"],'')) {
-		if ($_GET['ID']>0){
-			switch($_SESSION['glpi_tab']){
-				case -1 :	
-					showEnterpriseContact($_GET["ID"]);
-					showDocumentAssociated(CONTACT_TYPE,$_GET["ID"]);
-					showLinkOnDevice(CONTACT_TYPE,$_GET["ID"]);
-					displayPluginAction(CONTACT_TYPE,$_GET["ID"],$_SESSION['glpi_tab']);
-					break;
-				case 5 : 
-					showDocumentAssociated(CONTACT_TYPE,$_GET["ID"]);
-					break;
-				case 7 : 
-					showLinkOnDevice(CONTACT_TYPE,$_GET["ID"]);
-					break;
-				case 10 :
-					showNotesForm($_SERVER['PHP_SELF'],CONTACT_TYPE,$_GET["ID"]);
-					break;
-				default :
-					if (!displayPluginAction(CONTACT_TYPE,$_GET["ID"],$_SESSION['glpi_tab'])){
-						showEnterpriseContact($_GET["ID"]);
-					}
-					break;
-			}
-		}
-	}	
-
+	$contact->showForm($_SERVER['PHP_SELF'],$_GET["ID"],'');
+		
 	commonFooter();
 }
 
