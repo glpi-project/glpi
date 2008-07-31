@@ -52,11 +52,10 @@ function showRegistry($ID){
 
 	$query = "SELECT ID FROM glpi_registry WHERE computer_id='".$ID."'";
 	
-	echo "<br>";
 	if ($result = $DB->query($query)) {
 		if ($DB->numrows($result)!=0) { 
 			
-			echo "<br><br><div class='center'><table class='tab_cadre_fixe'>";
+			echo "<div class='center'><table class='tab_cadre_fixe'>";
 			echo "<tr>";
 			echo "<th colspan='4'>";
 			echo $DB->numrows($result)." ";

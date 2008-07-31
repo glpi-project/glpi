@@ -63,7 +63,7 @@ function showLinkDevice($instID) {
 	$i = 0;
 
 	echo "<form method='post' action=\"".$CFG_GLPI["root_doc"]."/front/link.form.php\">";
-	echo "<br><br><div class='center'><table class='tab_cadre_fixe'>";
+	echo "<div class='center'><table class='tab_cadre_fixe'>";
 	echo "<tr><th colspan='2'>".$LANG["links"][4].":</th></tr>";
 	echo "<tr><th>".$LANG["common"][17]."</th>";
 	echo "<th>&nbsp;</th></tr>";
@@ -141,8 +141,6 @@ function showLinkOnDevice($type,$ID){
 	$query="SELECT glpi_links.ID as ID, glpi_links.link as link, glpi_links.name as name , glpi_links.data as data from glpi_links INNER JOIN glpi_links_device ON glpi_links.ID= glpi_links_device.FK_links WHERE glpi_links_device.device_type='$type' ORDER BY glpi_links.name";
 
 	$result=$DB->query($query);
-
-	echo "<br>";
 
 	$ci=new CommonItem;
 	if ($DB->numrows($result)>0){

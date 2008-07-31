@@ -808,7 +808,7 @@ class ComputerDisk extends CommonDBTM {
 				echo " - <a href='computer.form.php?ID=".$this->fields["FK_computers"]."'>".getDropdownName("glpi_computers",$this->fields["FK_computers"])."</a>";
 				echo "</th></tr>";
 			} else {
-				echo "<tr><th colspan='4'>".$LANG["software"][7];
+				echo "<tr><th colspan='4'>".$LANG["computers"][7];
 				echo " - <a href='computer.form.php?ID=".$cID."'>".getDropdownName("glpi_computers",$cID)."</a>";
 
 				echo "</th></tr>";
