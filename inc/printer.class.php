@@ -236,7 +236,7 @@ class Printer  extends CommonDBTM {
 
 		if($printer_spotted) {
 
-			$this->showTabs($ID, $withtemplate,$_SESSION['glpi_onglet']);
+			$this->showTabs($ID, $withtemplate,$_SESSION['glpi_tab']);
 
 			if(!empty($withtemplate) && $withtemplate == 2) {
 				$use_cache=false;

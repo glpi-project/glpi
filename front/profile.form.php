@@ -88,17 +88,17 @@ else  if (isset($_POST["update"])){
 
 commonHeader($LANG["Menu"][35],$_SERVER['PHP_SELF'],"admin","profile");
 
-if (!isset($_SESSION['glpi_onglet'])) $_SESSION['glpi_onglet']=1;
+if (!isset($_SESSION['glpi_tab'])) $_SESSION['glpi_tab']=1;
 if (isset($_GET['onglet'])) {
-	$_SESSION['glpi_onglet']=$_GET['onglet'];
+	$_SESSION['glpi_tab']=$_GET['onglet'];
 }	
 
 if ($prof->showForm($_SERVER['PHP_SELF'],$_GET["ID"])){
-	switch($_SESSION['glpi_onglet']){
+	switch($_SESSION['glpi_tab']){
 		case -1 :	
 			showProfileConfig($_SERVER['PHP_SELF'],$_GET["ID"],$prof);
 			showProfileEntityUser($_SERVER['PHP_SELF'],$_GET["ID"],$prof);
-			displayPluginAction(PROFILE_TYPE,$_GET["ID"],$_SESSION['glpi_onglet']);
+			displayPluginAction(PROFILE_TYPE,$_GET["ID"],$_SESSION['glpi_tab']);
 		break;
 		case 1:
 			showProfileConfig($_SERVER['PHP_SELF'],$_GET["ID"],$prof);
@@ -107,7 +107,7 @@ if ($prof->showForm($_SERVER['PHP_SELF'],$_GET["ID"])){
 			showProfileEntityUser($_SERVER['PHP_SELF'],$_GET["ID"],$prof);
 		break;
 		default :
-			if (!displayPluginAction(PROFILE_TYPE,$_GET["ID"],$_SESSION['glpi_onglet'])){
+			if (!displayPluginAction(PROFILE_TYPE,$_GET["ID"],$_SESSION['glpi_tab'])){
 				showProfileConfig($_SERVER['PHP_SELF'],$_GET["ID"],$prof);
 			}
 		break;

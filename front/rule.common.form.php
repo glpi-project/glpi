@@ -44,9 +44,9 @@ checkRight($rule->right,"r");
 
 if(!isset($_GET["ID"])) $_GET["ID"] = "";
 
-if (!isset($_SESSION['glpi_onglet'])) $_SESSION['glpi_onglet']=1;
+if (!isset($_SESSION['glpi_tab'])) $_SESSION['glpi_tab']=1;
 if (isset($_GET['onglet'])) {
-	$_SESSION['glpi_onglet']=$_GET['onglet'];
+	$_SESSION['glpi_tab']=$_GET['onglet'];
 }	
 
 $rulecriteria = new RuleCriteria();

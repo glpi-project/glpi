@@ -148,7 +148,7 @@ class Contact extends CommonDBTM{
 		if ($spotted){
 			$canedit=$this->can($ID,'w');
 
-			$this->showOnglets($ID, $withtemplate,$_SESSION['glpi_onglet']);
+			$this->showOnglets($ID, $withtemplate,$_SESSION['glpi_tab']);
 
 			if ($canedit) {
 				echo "<form method='post' name=form action=\"$target\"><div class='center'>";

@@ -89,27 +89,27 @@ else
 {
 	$group->check($_GET["ID"],'r');
 
-	if (!isset($_SESSION['glpi_onglet'])) $_SESSION['glpi_onglet']=1;
+	if (!isset($_SESSION['glpi_tab'])) $_SESSION['glpi_tab']=1;
 	if (isset($_GET['onglet'])) {
-		$_SESSION['glpi_onglet']=$_GET['onglet'];
+		$_SESSION['glpi_tab']=$_GET['onglet'];
 	}
 
 	commonHeader($LANG["Menu"][36],$_SERVER['PHP_SELF'],"admin","group");
 
 	if ($group->showForm($_SERVER['PHP_SELF'],$_GET["ID"])) {
 		if (!empty($_GET['ID'])){
-			switch($_SESSION['glpi_onglet']){
+			switch($_SESSION['glpi_tab']){
 				case -1 :	
 					showGroupUsers($_SERVER['PHP_SELF'],$_GET["ID"]);
 					showGroupDevice($_GET["ID"]);
-					displayPluginAction(GROUP_TYPE,$_GET["ID"],$_SESSION['glpi_onglet']);
+					displayPluginAction(GROUP_TYPE,$_GET["ID"],$_SESSION['glpi_tab']);
 					break;
 				case 2 : 
 					showGroupDevice($_GET["ID"]);
 					break;
 
 				default :
-					if (!displayPluginAction(GROUP_TYPE,$_GET["ID"],$_SESSION['glpi_onglet'])){
+					if (!displayPluginAction(GROUP_TYPE,$_GET["ID"],$_SESSION['glpi_tab'])){
 						showGroupUsers($_SERVER['PHP_SELF'],$_GET["ID"]);
 					}
 					break;

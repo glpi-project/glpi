@@ -131,9 +131,9 @@ if (isset($_POST["update"]))
 
 commonHeader($LANG["Menu"][37],$_SERVER['PHP_SELF'],"admin","entity");
 
-if (!isset($_SESSION['glpi_onglet'])) $_SESSION['glpi_onglet']=1;
+if (!isset($_SESSION['glpi_tab'])) $_SESSION['glpi_tab']=1;
 if (isset($_GET['onglet'])) {
-	$_SESSION['glpi_onglet']=$_GET['onglet'];
+	$_SESSION['glpi_tab']=$_GET['onglet'];
 }	
 
 
@@ -141,10 +141,10 @@ $ocsrule = new OcsAffectEntityRule;
 $ldaprule = new RightAffectRule;
 
 if ($entity->showForm($_SERVER['PHP_SELF'],$_GET["ID"])){
-	switch($_SESSION['glpi_onglet']){
+	switch($_SESSION['glpi_tab']){
 		case -1 :	
 			showEntityUser($_SERVER['PHP_SELF'],$_GET["ID"]);
-			displayPluginAction(ENTITY_TYPE,$_GET["ID"],$_SESSION['glpi_onglet']);
+			displayPluginAction(ENTITY_TYPE,$_GET["ID"],$_SESSION['glpi_tab']);
 			if ($CFG_GLPI["ocs_mode"])
 				$ocsrule->showAndAddRuleForm($_SERVER['PHP_SELF'],$_GET["ID"]);
 			$ldaprule->showAndAddRuleForm($_SERVER['PHP_SELF'],$_GET["ID"]);
@@ -158,7 +158,7 @@ if ($entity->showForm($_SERVER['PHP_SELF'],$_GET["ID"])){
 				$ocsrule->showAndAddRuleForm($_SERVER['PHP_SELF'],$_GET["ID"]);
 			break;
 		default :
-			if (!displayPluginAction(ENTITY_TYPE,$_GET["ID"],$_SESSION['glpi_onglet'])){
+			if (!displayPluginAction(ENTITY_TYPE,$_GET["ID"],$_SESSION['glpi_tab'])){
 				
 			}
 		break;

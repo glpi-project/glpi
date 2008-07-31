@@ -136,20 +136,20 @@ else
 {
 	$doc->check($_GET["ID"],'r');
 
-	if (!isset($_SESSION['glpi_onglet'])) $_SESSION['glpi_onglet']=1;
+	if (!isset($_SESSION['glpi_tab'])) $_SESSION['glpi_tab']=1;
 	if (isset($_GET['onglet'])) {
-		$_SESSION['glpi_onglet']=$_GET['onglet'];
+		$_SESSION['glpi_tab']=$_GET['onglet'];
 		//		glpi_header($_SERVER['HTTP_REFERER']);
 	}
 
 	commonHeader($LANG["Menu"][27],$_SERVER['PHP_SELF'],"financial","document");
 
 	if ($doc->showForm($_SERVER['PHP_SELF'],$_GET["ID"])){
-		switch ($_SESSION['glpi_onglet']){
+		switch ($_SESSION['glpi_tab']){
 			case -1 :
 				showDeviceDocument($_GET["ID"]);
 				showDocumentAssociated(DOCUMENT_TYPE,$_GET["ID"]);
-				displayPluginAction(DOCUMENT_TYPE,$_GET["ID"],$_SESSION['glpi_onglet']);
+				displayPluginAction(DOCUMENT_TYPE,$_GET["ID"],$_SESSION['glpi_tab']);
 				break;
 			case 5 :
 				showDocumentAssociated(DOCUMENT_TYPE,$_GET["ID"]);
@@ -159,7 +159,7 @@ else
 				break;
 			default :
 				if ($_GET["ID"]){
-					if (!displayPluginAction(DOCUMENT_TYPE,$_GET["ID"],$_SESSION['glpi_onglet'])){
+					if (!displayPluginAction(DOCUMENT_TYPE,$_GET["ID"],$_SESSION['glpi_tab'])){
 						showDeviceDocument($_GET["ID"]);
 					}
 				}

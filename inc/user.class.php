@@ -794,7 +794,7 @@ class User extends CommonDBTM {
 						&& (!empty ($this->fields["password"]) || !empty ($this->fields["password_md5"])))
 				);
 		
-			$this->showOnglets($ID, $withtemplate, $_SESSION['glpi_onglet']);
+			$this->showOnglets($ID, $withtemplate, $_SESSION['glpi_tab']);
 			echo "<div class='center'>";
 			echo "<form method='post' name=\"user_manager\" action=\"$target\">";
 			if (empty ($ID)) {
@@ -972,7 +972,7 @@ class User extends CommonDBTM {
 			return false;
 
 		if ($this->getFromDB($ID)) {
-			//$this->showOnglets($ID, $withtemplate,$_SESSION['glpi_onglet']);
+			//$this->showOnglets($ID, $withtemplate,$_SESSION['glpi_tab']);
 			$auth_method = $this->getAuthMethodsByID();
 
 			$extauth = ! ($this->fields["auth_method"]==AUTH_DB_GLPI 

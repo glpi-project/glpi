@@ -129,9 +129,9 @@ else
 {
 	checkRight("phone","r");
 
-	if (!isset($_SESSION['glpi_onglet'])) $_SESSION['glpi_onglet']=1;
+	if (!isset($_SESSION['glpi_tab'])) $_SESSION['glpi_tab']=1;
 	if (isset($_GET['onglet'])) {
-		$_SESSION['glpi_onglet']=$_GET['onglet'];
+		$_SESSION['glpi_tab']=$_GET['onglet'];
 		//		glpi_header($_SERVER['HTTP_REFERER']);
 	}
 
@@ -143,7 +143,7 @@ else
 		if ($phone->showForm($_SERVER['PHP_SELF'],$_GET["ID"], $_GET["withtemplate"])){
 			if ($_GET["ID"]>0){
 
-				switch($_SESSION['glpi_onglet']){
+				switch($_SESSION['glpi_tab']){
 					case 4 :
 						showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",PHONE_TYPE,$_GET["ID"],1,$_GET["withtemplate"]);
 						showContractAssociated(PHONE_TYPE,$_GET["ID"],$_GET["withtemplate"]);
@@ -153,7 +153,7 @@ else
 						break;
 
 					default :
-						if (!displayPluginAction(PHONE_TYPE,$_GET["ID"],$_SESSION['glpi_onglet'],$_GET["withtemplate"])){
+						if (!displayPluginAction(PHONE_TYPE,$_GET["ID"],$_SESSION['glpi_tab'],$_GET["withtemplate"])){
 							if ($_GET["withtemplate"]!=2)	{
 								showPortsAdd($_GET["ID"],PHONE_TYPE);
 							}
@@ -168,7 +168,7 @@ else
 	} else {
 
 		if ($phone->showForm($_SERVER['PHP_SELF'],$_GET["ID"])){
-			switch($_SESSION['glpi_onglet']){
+			switch($_SESSION['glpi_tab']){
 				case -1:
 					showConnect($_SERVER['PHP_SELF'],$_GET["ID"],PHONE_TYPE);
 					showPortsAdd($_GET["ID"],PHONE_TYPE);
@@ -179,7 +179,7 @@ else
 					showJobListForItem($_SESSION["glpiname"],PHONE_TYPE,$_GET["ID"],$_GET["sort"],$_GET["order"]);
 					showOldJobListForItem($_SESSION["glpiname"],PHONE_TYPE,$_GET["ID"],$_GET["sort"],$_GET["order"]);
 					showLinkOnDevice(PHONE_TYPE,$_GET["ID"]);
-					displayPluginAction(PHONE_TYPE,$_GET["ID"],$_SESSION['glpi_onglet'],$_GET["withtemplate"]);
+					displayPluginAction(PHONE_TYPE,$_GET["ID"],$_SESSION['glpi_tab'],$_GET["withtemplate"]);
 					break;
 				case 4 :
 					showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",PHONE_TYPE,$_GET["ID"]);
@@ -205,7 +205,7 @@ else
 					showHistory(PHONE_TYPE,$_GET["ID"]);
 					break;		
 				default :
-					if (!displayPluginAction(PHONE_TYPE,$_GET["ID"],$_SESSION['glpi_onglet'],$_GET["withtemplate"])){
+					if (!displayPluginAction(PHONE_TYPE,$_GET["ID"],$_SESSION['glpi_tab'],$_GET["withtemplate"])){
 						showConnect($_SERVER['PHP_SELF'],$_GET["ID"],PHONE_TYPE);
 						showPortsAdd($_GET["ID"],PHONE_TYPE);
 						showPorts($_GET["ID"], PHONE_TYPE,$_GET["withtemplate"]);

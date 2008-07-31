@@ -74,15 +74,15 @@ if (isset($_POST['update'])){
 }
 
 // Manage All case which does not exist
-if (!isset($_SESSION['glpi_onglet'])||$_SESSION['glpi_onglet']==-1) $_SESSION['glpi_onglet']=1;
+if (!isset($_SESSION['glpi_tab'])||$_SESSION['glpi_tab']==-1) $_SESSION['glpi_tab']=1;
 if (isset($_GET['onglet'])) {
-	$_SESSION['glpi_onglet']=$_GET['onglet'];
+	$_SESSION['glpi_tab']=$_GET['onglet'];
 }
 if (isset($_GET["ID"]))
 if (showJobDetails($_SERVER['PHP_SELF'],$_GET["ID"])){
-	switch($_SESSION['glpi_onglet']){
+	switch($_SESSION['glpi_tab']){
 		default :
-			if (!displayPluginAction(TRACKING_TYPE,$_GET["ID"],$_SESSION['glpi_onglet'])){
+			if (!displayPluginAction(TRACKING_TYPE,$_GET["ID"],$_SESSION['glpi_tab'])){
 				showFollowupsSummary($_GET["ID"]);
 			}
 	}

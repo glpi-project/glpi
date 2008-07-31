@@ -125,9 +125,9 @@ else
 
 	commonHeader($LANG["Menu"][2],$_SERVER['PHP_SELF'],"inventory","printer");
 
-	if (!isset($_SESSION['glpi_onglet'])) $_SESSION['glpi_onglet']=1;
+	if (!isset($_SESSION['glpi_tab'])) $_SESSION['glpi_tab']=1;
 	if (isset($_GET['onglet'])) {
-		$_SESSION['glpi_onglet']=$_GET['onglet'];
+		$_SESSION['glpi_tab']=$_GET['onglet'];
 	}	
 
 	$print->showForm($_SERVER['PHP_SELF'],$_GET["ID"], $_GET["withtemplate"]);
