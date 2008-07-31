@@ -75,7 +75,7 @@ class CartridgeType extends CommonDBTM {
 		$this->fields["alarm"]=$CFG_GLPI["cartridges_alarm"];
 	}
 
-	function defineOnglets($withtemplate){
+	function defineTabs($withtemplate){
 		global $LANG;
 
 		$ong[1]=$LANG["title"][26];
@@ -180,14 +180,14 @@ class CartridgeType extends CommonDBTM {
 		}		
 
 		if ($ct_spotted){
-			$this->showOnglets($ID, $withtemplate,$_SESSION['glpi_onglet']);
-			echo "<form method='post' action=\"$target\"><div class='center'>\n";
+			$this->showTabs($ID, $withtemplate,$_SESSION['glpi_onglet']);
+			echo "<div class='center' id='tabsbody' ><form method='post' action=\"$target\">\n";
 			if (empty($ID)){
 				echo "<input type='hidden' name='FK_entities' value='".$_SESSION["glpiactive_entity"]."'>";
 			}
 
 			if (!$use_cache||!($CFG_GLPI["cache"]->start($ID."_".$_SESSION["glpilanguage"],"GLPI_".$this->type))) {
-				echo "<table class='tab_cadre_fixe'>\n";
+				echo "<table class='tab_cadre_fixe' >\n";
 				echo "<tr><th colspan='3'>\n";
 				if (!$ID) {
 					echo $LANG["cartridges"][6];
@@ -271,7 +271,9 @@ class CartridgeType extends CommonDBTM {
 					echo "</tr>\n";
 				}
 
-			echo "</table></div></form>";
+			echo "</table></form></div>";
+			echo "<div id='tabcontent'></div>";
+			echo "<script type='javascript'>loadDefaultTab();</script>";
 
 		}
 		else {
