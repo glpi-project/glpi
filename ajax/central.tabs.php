@@ -1,5 +1,4 @@
 <?php
-
 /*
  * @version $Id$
  -------------------------------------------------------------------------
@@ -34,52 +33,44 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-$NEEDED_ITEMS = array (
-	"user",
-	"profile",
-	"group"
-);
-
 define('GLPI_ROOT', '..');
-include (GLPI_ROOT . "/inc/includes.php");
+$NEEDED_ITEMS=array("central","tracking","computer","printer","monitor","peripheral","networking","software","user","group","setup","planning","phone","reminder","enterprise","contract");
+include (GLPI_ROOT."/inc/includes.php");
 
-checkLoginUser();
-$user = new User();
+	checkCentralAccess();
 
-if (isset ($_POST["update"]) && $_POST["ID"] == $_SESSION["glpiID"]) {
-	$user->update($_POST);
-	logEvent(0, "users", 5, "setup", $_SESSION["glpiname"] . "  " . $LANG["log"][21] . "  " . $_POST["name"] . ".");
-	glpi_header($_SERVER['HTTP_REFERER']);
-} else {
+	// show "my view" in first
+	if (isset($_POST['tab'])) $_SESSION['glpi_centraltab']=$_POST['tab'];
+
+	if (!isset($_GET['start'])) $_GET['start']=0;
+	if(empty($_GET["start"])) $_GET["start"] = 0;
+
+	if (!isset($_GET["sort"])) $_GET["sort"]="";
+	if (!isset($_GET["order"])) $_GET["order"]="";
+
+	switch ($_POST['tab']){
+		case "my" :
+			showCentralMyView();
+			break;
+		case "global" :
+			showCentralGlobalView();
+			break;
+		case "group" :
+			showCentralGroupView();
+			break;
+		case "all":
+			showCentralMyView();
+			echo "<br>";
+			showCentralGroupView();
+			echo "<br>";
+			showCentralGlobalView();
+			echo "<br>";
+			break;
+		default :
+			if (!displayPluginAction("central","",$_POST['tab'],""))
+				showCentralMyView();		
+			break;
+	}
 
 
-	if (!isset($_SESSION['glpi_preftab'])) $_SESSION['glpi_preftab']="my";
-
-	if (isset($_GET['glpi_tab'])) $_SESSION['glpi_preftab']=$_GET['glpi_tab'];
-
-	if ($_SESSION["glpiactiveprofile"]["interface"] == "central")
-		commonHeader($LANG["title"][13], $_SERVER['PHP_SELF']);
-	else
-		helpHeader($LANG["title"][13], $_SERVER['PHP_SELF']);
-
-
-	//forea
-	$tabs['my']=array('title'=>$LANG["title"][26],
-		'url'=>$CFG_GLPI['root_doc']."/ajax/preference.tabs.php",
-		'params'=>"target=".$_SERVER['PHP_SELF']."&type=prefs&tab=my");
-
-	$plug_tabs=getPluginTabs($_SERVER['PHP_SELF'],"prefs","","");
-	$tabs+=$plug_tabs;
-
-	echo "<div id='tabspanel' class='center-h'></div>";
-	createAjaxTabs('tabspanel','tabcontent',$tabs,$_SESSION['glpi_centraltab']);
-	echo "<div id='tabcontent'></div>";
-	echo "<script type='text/javascript'>loadDefaultTab();</script>";
-
-
-if ($_SESSION["glpiactiveprofile"]["interface"] == "central")
-	commonFooter();
-else
-	helpFooter();
-}
 ?>

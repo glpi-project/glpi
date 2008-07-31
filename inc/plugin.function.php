@@ -162,7 +162,6 @@ function displayPluginAction($type,$ID,$onglet,$withtemplate=0){
 		if (isset($PLUGIN_HOOKS["headings_action"])&&is_array($PLUGIN_HOOKS["headings_action"])&&count($PLUGIN_HOOKS["headings_action"]))	
 			foreach ($PLUGIN_HOOKS["headings_action"] as $plug => $function)
 				if (function_exists($function)){
-
 					$actions=$function($type);
 					if (is_array($actions)&&count($actions))
 						foreach ($actions as $key => $action){
@@ -182,7 +181,6 @@ function displayPluginAction($type,$ID,$onglet,$withtemplate=0){
 			if (isset($PLUGIN_HOOKS["headings_action"][$plug])){
 				$function=$PLUGIN_HOOKS["headings_action"][$plug];
 				if (function_exists($function)){
-
 					$actions=$function($type);
 
 					if (isset($actions[$ID_onglet])&&function_exists($actions[$ID_onglet])){
@@ -245,13 +243,12 @@ function displayPluginHeadings($target,$type,$withtemplate,$actif){
 /**
  * Display plugin headgsin for a device type
  * @param $target page to link 
- * @param $type ID of the device type
+ * @param $type ID of the device type or "central" or "prefs"
  * @param $ID ID of the device
  * @param $withtemplate is the item display like a template ?
- * @param $actif active onglet
  * @return true if display have been done
  */
-function getPluginTabs($target,$type,$ID,$withtemplate,$actif){
+function getPluginTabs($target,$type,$ID,$withtemplate){
 	global $PLUGIN_HOOKS,$LANG,$INFOFORM_PAGES,$CFG_GLPI;
 	$template="";
 	if(!empty($withtemplate)){
@@ -259,11 +256,24 @@ function getPluginTabs($target,$type,$ID,$withtemplate,$actif){
 	}
 	$display_onglets=array();
 
-	$patterns[0] = '/front/';
-	$patterns[1] = '/form/';
-	$replacements[0] = 'ajax';
-	$replacements[1] = 'tabs';
-	$tabpage=preg_replace($patterns, $replacements, $INFOFORM_PAGES[$type]);
+	$tabname="glpi_tab";
+	switch ($type){
+		case "central":
+			$tabpage="/ajax/central.tabs.php";
+			$tabname="tab";
+		break;
+		case "prefs":
+			$tabpage="/ajax/preference.tabs.php";
+			$tabname="tab";
+		break;
+		default:
+			$patterns[0] = '/front/';
+			$patterns[1] = '/form/';
+			$replacements[0] = 'ajax';
+			$replacements[1] = 'tabs';
+			$tabpage=preg_replace($patterns, $replacements, $INFOFORM_PAGES[$type]);
+		break;
+	}
 	$active=false;
 	$tabid=0;
 	$tabs=array();
@@ -279,7 +289,7 @@ function getPluginTabs($target,$type,$ID,$withtemplate,$actif){
 
 						$tabs[$key]=array('title'=>$val,
 						'url'=>$CFG_GLPI['root_doc']."/$tabpage",
-						'params'=>"target=$target&type=".$type."&glpi_tab=$key&ID=$ID$template");
+						'params'=>"target=$target&type=".$type."&$tabname=$key&ID=$ID$template");
 					}
 				}
 			}

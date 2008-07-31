@@ -34,29 +34,6 @@
 // ----------------------------------------------------------------------
 
 /**
- *  Show onglet for central
- *
- * @param $target target URL
- * @param $actif which onglet is active ? (my, global or plugins)
- * @return nothing
- */
-function showCentralOnglets($target,$actif) {
-	global $LANG,$PLUGIN_HOOKS;
-	echo "<div id='barre_onglets'><ul id='onglet'>";
-	echo "<li ".($actif=="my"?"class='actif'":"")."><a href='$target?onglet=my'>".$LANG["central"][12]."</a></li>";
-	echo "<li ".($actif=="group"?"class='actif'":"")."><a href='$target?onglet=group'>".$LANG["central"][14]."</a></li>";
-	if (haveRight("show_all_ticket","1")||haveRight("logs","r")||haveRight("contract_infocom","r"))
-		echo "<li ".($actif=="global"?"class='actif'":"")."><a href='$target?onglet=global'>".$LANG["central"][13]."</a></li>";
-	if (isset($PLUGIN_HOOKS['central_action'])&&count($PLUGIN_HOOKS['central_action'])){
-		echo "<li ".($actif=="plugins"?"class='actif'":"")."><a href='$target?onglet=plugins'>".$LANG["common"][29]."</a></li>";
-	}
-	echo "<li class='invisible'>&nbsp;</li>";
-	echo "<li ".($actif=="all"?"class='actif'":"")."><a href='$target?onglet=all'>".$LANG["common"][66]."</a></li>";
-
-	echo "</ul></div>";
-}
-
-/**
  * Show the central global view
  *
  *
