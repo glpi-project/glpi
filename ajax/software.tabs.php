@@ -41,7 +41,9 @@ define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
 
-if (!isset($_POST['ID'])) exit();
+if (!isset($_POST['ID'])) {
+	exit();
+}
 
 if(!isset($_POST["sort"])) $_POST["sort"] = "";
 if(!isset($_POST["order"])) $_POST["order"] = "";
@@ -49,7 +51,9 @@ if(!isset($_POST["withtemplate"])) $_POST["withtemplate"] = "";
 
 	checkRight("software","r");
 
-	if (isset($_POST['tab'])) { $_SESSION['glpi_onglet']=$_POST['tab']; } 
+	if (isset($_POST['tab'])) { 
+		$_SESSION['glpi_tab']=$_POST['tab']; 
+	} 
 
 
 	if (!empty($_POST["withtemplate"])) {

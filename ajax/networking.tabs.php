@@ -48,7 +48,7 @@ $netdevice=new Netdevice();
 $netdevice->check($_POST["ID"],'r');
 
 	if (isset($_POST['tab'])) { 
-		$_SESSION['glpi_onglet']=$_POST['tab']; 
+		$_SESSION['glpi_tab']=$_POST['tab']; 
 	} 
 
 	if (!empty($_POST["withtemplate"])) {

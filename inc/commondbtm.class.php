@@ -948,6 +948,7 @@ class CommonDBTM {
 		}
 
 		if (empty($withtemplate)&&$ID){
+			echo "<div>";
 			$next=getNextItem($this->table,$ID,$nextprevcondition,$nextprev_item);
 			$prev=getPreviousItem($this->table,$ID,$nextprevcondition,$nextprev_item);
 			$cleantarget=preg_replace("/\?ID=([0-9]+)/","",$target);
@@ -962,7 +963,7 @@ class CommonDBTM {
 			if ($next>0) {
 				echo "&nbsp;&nbsp;<a href='$cleantarget?ID=$next$addurlparam'><img src=\"".$CFG_GLPI["root_doc"]."/pics/right.png\" alt='".$LANG["buttons"][11]."' title='".$LANG["buttons"][11]."'></a>";
 			}
-
+			echo "</div>";
 		}
 	
 		
