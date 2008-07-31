@@ -129,96 +129,10 @@ else
 {
 	checkRight("phone","r");
 
-	if (!isset($_SESSION['glpi_tab'])) $_SESSION['glpi_tab']=1;
-	if (isset($_GET['onglet'])) {
-		$_SESSION['glpi_tab']=$_GET['onglet'];
-		//		glpi_header($_SERVER['HTTP_REFERER']);
-	}
-
-
 	commonHeader($LANG["help"][35],$_SERVER['PHP_SELF'],"inventory","phone");
 
-	if (!empty($_GET["withtemplate"])) {
-
-		if ($phone->showForm($_SERVER['PHP_SELF'],$_GET["ID"], $_GET["withtemplate"])){
-			if ($_GET["ID"]>0){
-
-				switch($_SESSION['glpi_tab']){
-					case 4 :
-						showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",PHONE_TYPE,$_GET["ID"],1,$_GET["withtemplate"]);
-						showContractAssociated(PHONE_TYPE,$_GET["ID"],$_GET["withtemplate"]);
-						break;
-					case 5 :
-						showDocumentAssociated(PHONE_TYPE,$_GET["ID"],$_GET["withtemplate"]);
-						break;
-
-					default :
-						if (!displayPluginAction(PHONE_TYPE,$_GET["ID"],$_SESSION['glpi_tab'],$_GET["withtemplate"])){
-							if ($_GET["withtemplate"]!=2)	{
-								showPortsAdd($_GET["ID"],PHONE_TYPE);
-							}
-							showPorts($_GET["ID"], PHONE_TYPE,$_GET["withtemplate"]);
-						}
-
-						break;
-				}
-			}
-		}
-
-	} else {
-
-		if ($phone->showForm($_SERVER['PHP_SELF'],$_GET["ID"])){
-			switch($_SESSION['glpi_tab']){
-				case -1:
-					showConnect($_SERVER['PHP_SELF'],$_GET["ID"],PHONE_TYPE);
-					showPortsAdd($_GET["ID"],PHONE_TYPE);
-					showPorts($_GET["ID"], PHONE_TYPE,$_GET["withtemplate"]);
-					showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",PHONE_TYPE,$_GET["ID"]);
-					showContractAssociated(PHONE_TYPE,$_GET["ID"]);
-					showDocumentAssociated(PHONE_TYPE,$_GET["ID"]);
-					showJobListForItem($_SESSION["glpiname"],PHONE_TYPE,$_GET["ID"],$_GET["sort"],$_GET["order"]);
-					showOldJobListForItem($_SESSION["glpiname"],PHONE_TYPE,$_GET["ID"],$_GET["sort"],$_GET["order"]);
-					showLinkOnDevice(PHONE_TYPE,$_GET["ID"]);
-					displayPluginAction(PHONE_TYPE,$_GET["ID"],$_SESSION['glpi_tab'],$_GET["withtemplate"]);
-					break;
-				case 4 :
-					showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",PHONE_TYPE,$_GET["ID"]);
-					showContractAssociated(PHONE_TYPE,$_GET["ID"]);
-					break;
-				case 5 :
-					showDocumentAssociated(PHONE_TYPE,$_GET["ID"]);
-					break;
-				case 6 :
-					showJobListForItem($_SESSION["glpiname"],PHONE_TYPE,$_GET["ID"],$_GET["sort"],$_GET["order"]);
-					showOldJobListForItem($_SESSION["glpiname"],PHONE_TYPE,$_GET["ID"],$_GET["sort"],$_GET["order"]);
-					break;
-				case 7 :
-					showLinkOnDevice(PHONE_TYPE,$_GET["ID"]);
-					break;	
-				case 10 :
-					showNotesForm($_SERVER['PHP_SELF'],PHONE_TYPE,$_GET["ID"]);
-					break;	
-				case 11 :
-					showDeviceReservations($_SERVER['PHP_SELF'],PHONE_TYPE,$_GET["ID"]);
-					break;
-				case 12 :
-					showHistory(PHONE_TYPE,$_GET["ID"]);
-					break;		
-				default :
-					if (!displayPluginAction(PHONE_TYPE,$_GET["ID"],$_SESSION['glpi_tab'],$_GET["withtemplate"])){
-						showConnect($_SERVER['PHP_SELF'],$_GET["ID"],PHONE_TYPE);
-						showPortsAdd($_GET["ID"],PHONE_TYPE);
-						showPorts($_GET["ID"], PHONE_TYPE,$_GET["withtemplate"]);
-					}
-					break;
-			}
-
-
-
-
-
-		}
-	}
+			$phone->showForm($_SERVER['PHP_SELF'],$_GET["ID"], $_GET["withtemplate"]);
+	
 	commonFooter();
 }
 
