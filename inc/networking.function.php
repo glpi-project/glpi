@@ -748,12 +748,12 @@ function getObjectIDByIPAddress($ip,$entity)
 {
 		global $DB;
 		$result = $DB->query(
-				"SELECT gc.ID as ID, gnp.device_type as device_type FROM `glpi_networking_ports` as gnp
-				LEFT JOIN  `glpi_computers` as gc ON (gnp.on_device=gc.ID AND gc.FK_entities=$entity) 
-				LEFT JOIN  `glpi_printers` as gp ON (gnp.on_device=gp.ID AND gc.FK_entities=$entity)
-				LEFT JOIN  `glpi_networking` as gn ON (gnp.on_device=gn.ID AND gc.FK_entities=$entity)  
-				LEFT JOIN  `glpi_phones` as gph ON (gnp.on_device=gph.ID AND gc.FK_entities=$entity) 
-				LEFT JOIN  `glpi_peripherals` as gpe ON (gnp.on_device=gpe.ID AND gc.FK_entities=$entity) 
+				"SELECT gnp.on_device as ID, gnp.device_type as device_type FROM `glpi_networking_ports` as gnp
+				LEFT JOIN  `glpi_computers` as gc ON (gnp.on_device=gc.ID AND gc.FK_entities=$entity AND device_type=".COMPUTER_TYPE.") 
+				LEFT JOIN  `glpi_printers` as gp ON (gnp.on_device=gp.ID AND gc.FK_entities=$entity AND device_type=".PRINTER_TYPE.")
+				LEFT JOIN  `glpi_networking` as gn ON (gnp.on_device=gn.ID AND gc.FK_entities=$entity AND device_type=".NETWORKING_TYPE.")  
+				LEFT JOIN  `glpi_phones` as gph ON (gnp.on_device=gph.ID AND gc.FK_entities=$entity AND device_type=".PHONE_TYPE.") 
+				LEFT JOIN  `glpi_peripherals` as gpe ON (gnp.on_device=gpe.ID AND gc.FK_entities=$entity AND device_type=".PERIPHERAL_TYPE.") 
 				WHERE gnp.ifaddr='".$ip."'");
 		if ($DB->numrows($result) == 1)
 			return $DB->fetch_array($result);
