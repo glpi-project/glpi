@@ -447,6 +447,12 @@ function update071to072() {
 		$query = " ALTER TABLE `glpi_ocs_config` DROP `import_software_licensetype` ;";
 		$DB->query($query) or die("0.72 drop import_software_licensetype in glpi_ocs_config" . $LANG["update"][90] . $DB->error());
 	}
-		
+
+	// Update default value		
+	if (FieldExists("glpi_device_gfxcard", "interface")){ 
+		$query = "ALTER TABLE `glpi_device_gfxcard` CHANGE `interface` `interface` VARCHAR( 255 ) NULL DEFAULT 'AGP';";
+		$DB->query($query) or die("0.72 alter defautl value glpi_device_gfxcard.interface" . $LANG["update"][90] . $DB->error());
+	}
+
 } // fin 0.72 #####################################################################################
 ?>
