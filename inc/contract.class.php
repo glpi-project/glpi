@@ -67,7 +67,7 @@ class Contract extends CommonDBTM {
 		$DB->query($query3);
 	}
 
-	function defineOnglets($withtemplate){
+	function defineTabs($withtemplate){
 		global $LANG;
 		$ong[1]=$LANG["title"][26];
 		if (haveRight("document","r"))	
@@ -143,10 +143,10 @@ class Contract extends CommonDBTM {
 		if ($spotted){
 			$can_edit=$this->can($ID,'w');
 
-			$this->showOnglets($ID, $withtemplate,$_SESSION['glpi_tab']);
+			$this->showTabs($ID, $withtemplate,$_SESSION['glpi_tab']);
 
 			if ($can_edit) { 
-				echo "<form name='form' method='post' action=\"$target\"><div class='center'>";
+				echo "<form name='form' method='post' action=\"$target\"><div class='center' id='tabsbody'>";
 				if (empty($ID)||$ID<0){
 					echo "<input type='hidden' name='FK_entities' value='".$_SESSION["glpiactive_entity"]."'>";
 				}
@@ -325,6 +325,9 @@ class Contract extends CommonDBTM {
 			} else { // can't edit
 				echo "</table></div>";
 			}
+		
+			echo "<div id='tabcontent'></div>";
+			echo "<script type='text/javascript'>loadDefaultTab();</script>";
 
 		} else { // con_spotted
 			echo "<div class='center'><strong>".$LANG["common"][54]."</strong></div>";
