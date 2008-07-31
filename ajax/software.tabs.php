@@ -51,15 +51,10 @@ if(!isset($_POST["withtemplate"])) $_POST["withtemplate"] = "";
 
 	checkRight("software","r");
 
-	if (isset($_POST['tab'])) { 
-		$_SESSION['glpi_tab']=$_POST['tab']; 
-	} 
-
-
 	if (!empty($_POST["withtemplate"])) {
 
 			if ($_POST["ID"]>0){
-				switch($_POST['tab']){
+				switch($_POST['glpi_tab']){
 					case 4 :
 						showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",SOFTWARE_TYPE,$_POST["ID"],1,$_POST["withtemplate"]);
 						showContractAssociated(SOFTWARE_TYPE,$_POST["ID"],$_POST["withtemplate"]);
@@ -68,14 +63,14 @@ if(!isset($_POST["withtemplate"])) $_POST["withtemplate"] = "";
 						showDocumentAssociated(SOFTWARE_TYPE,$_POST["ID"],$_POST["withtemplate"]);
 						break;
 					default :
-						displayPluginAction(SOFTWARE_TYPE,$_POST["ID"],$_POST['tab'], $_POST["withtemplate"]);
+						displayPluginAction(SOFTWARE_TYPE,$_POST["ID"],$_POST['glpi_tab'], $_POST["withtemplate"]);
 						break;
 				}
 			}
 
 	} else {
 
-			switch($_POST['tab']){
+			switch($_POST['glpi_tab']){
 				case -1:
 					showVersions($_POST["ID"]);
 					showLicenses($_POST["ID"]);
@@ -86,7 +81,7 @@ if(!isset($_POST["withtemplate"])) $_POST["withtemplate"] = "";
 					showJobListForItem($_SESSION["glpiname"],SOFTWARE_TYPE,$_POST["ID"],$_POST["sort"],$_POST["order"]);
 					showOldJobListForItem($_SESSION["glpiname"],SOFTWARE_TYPE,$_POST["ID"],$_POST["sort"],$_POST["order"]);
 					showLinkOnDevice(SOFTWARE_TYPE,$_POST["ID"]);
-					displayPluginAction(SOFTWARE_TYPE,$_POST["ID"],$_POST['tab'],$_POST["withtemplate"]);
+					displayPluginAction(SOFTWARE_TYPE,$_POST["ID"],$_POST['glpi_tab'],$_POST["withtemplate"]);
 					break;
 				case 2 :
 					showInstallations($_POST["ID"]);
@@ -115,7 +110,7 @@ if(!isset($_POST["withtemplate"])) $_POST["withtemplate"] = "";
 					showHistory(SOFTWARE_TYPE,$_POST["ID"]);
 					break;
 				default :
-					if (!displayPluginAction(SOFTWARE_TYPE,$_POST["ID"],$_POST['tab'],$_POST["withtemplate"])){
+					if (!displayPluginAction(SOFTWARE_TYPE,$_POST["ID"],$_POST['glpi_tab'],$_POST["withtemplate"])){
 						showVersions($_POST["ID"]);
 						showLicenses($_POST["ID"]);
 					}

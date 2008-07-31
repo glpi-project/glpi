@@ -985,6 +985,10 @@ class CommonDBTM {
 			$plug_tabs=getPluginTabs($target,$this->type,$ID,$withtemplate);
 			$tabs+=$plug_tabs;
 
+			$tabs[-1]=array('title'=>$LANG["common"][66],
+					'url'=>$CFG_GLPI['root_doc']."/$tabpage",
+					'params'=>"target=$target&type=".$this->type."&glpi_tab=-1&ID=$ID$template");
+
 			createAjaxTabs('tabspanel','tabcontent',$tabs,$actif);
 
 		}
