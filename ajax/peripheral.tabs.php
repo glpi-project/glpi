@@ -47,15 +47,11 @@ if(!isset($_POST["withtemplate"])) $_POST["withtemplate"] = "";
 
 	checkRight("peripheral","r");
 
-	if (isset($_POST['tab'])) { 
-		$_SESSION['glpi_tab']=$_POST['tab']; 
-	} 
-
 	if (!empty($_POST["withtemplate"])) {
 
 			if ($_POST["ID"]>0){
 
-				switch($_POST['tab']){
+				switch($_POST['glpi_tab']){
 					case 4 :
 						showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",PERIPHERAL_TYPE,$_POST["ID"],1,$_POST["withtemplate"]);
 						showContractAssociated(PERIPHERAL_TYPE,$_POST["ID"],$_POST["withtemplate"]);
@@ -65,7 +61,7 @@ if(!isset($_POST["withtemplate"])) $_POST["withtemplate"] = "";
 						break;
 
 					default :
-						if (!displayPluginAction(PERIPHERAL_TYPE,$_POST["ID"],$_POST['tab'],$_POST["withtemplate"])){
+						if (!displayPluginAction(PERIPHERAL_TYPE,$_POST["ID"],$_POST['glpi_tab'],$_POST["withtemplate"])){
 							if ($_POST["withtemplate"]!=2)	showPortsAdd($_POST["ID"],PERIPHERAL_TYPE);
 							showPorts($_POST["ID"], PERIPHERAL_TYPE,$_POST["withtemplate"]);
 						}
@@ -76,7 +72,7 @@ if(!isset($_POST["withtemplate"])) $_POST["withtemplate"] = "";
 
 	} else {
 
-			switch($_POST['tab']){
+			switch($_POST['glpi_tab']){
 				case -1:
 					showConnect($_POST['target'],$_POST["ID"],PERIPHERAL_TYPE);
 					showPortsAdd($_POST["ID"],PERIPHERAL_TYPE);
@@ -87,7 +83,7 @@ if(!isset($_POST["withtemplate"])) $_POST["withtemplate"] = "";
 					showJobListForItem($_SESSION["glpiname"],PERIPHERAL_TYPE,$_POST["ID"],$_POST["sort"],$_POST["order"]);
 					showOldJobListForItem($_SESSION["glpiname"],PERIPHERAL_TYPE,$_POST["ID"],$_POST["sort"],$_POST["order"]);
 					showLinkOnDevice(PERIPHERAL_TYPE,$_POST["ID"]);
-					displayPluginAction(PERIPHERAL_TYPE,$_POST["ID"],$_POST['tab'],$_POST["withtemplate"]);
+					displayPluginAction(PERIPHERAL_TYPE,$_POST["ID"],$_POST['glpi_tab'],$_POST["withtemplate"]);
 					break;
 				case 4 :
 					showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",PERIPHERAL_TYPE,$_POST["ID"]);
@@ -113,7 +109,7 @@ if(!isset($_POST["withtemplate"])) $_POST["withtemplate"] = "";
 					showHistory(PERIPHERAL_TYPE,$_POST["ID"]);
 					break;		
 				default :
-					if (!displayPluginAction(PERIPHERAL_TYPE,$_POST["ID"],$_POST['tab'],$_POST["withtemplate"])){
+					if (!displayPluginAction(PERIPHERAL_TYPE,$_POST["ID"],$_POST['glpi_tab'],$_POST["withtemplate"])){
 						showConnect($_POST['target'],$_POST["ID"],PERIPHERAL_TYPE);
 						showPortsAdd($_POST["ID"],PERIPHERAL_TYPE);
 						showPorts($_POST["ID"], PERIPHERAL_TYPE,$_POST["withtemplate"]);

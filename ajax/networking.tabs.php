@@ -47,14 +47,10 @@ if(!isset($_POST["withtemplate"])) $_POST["withtemplate"] = "";
 $netdevice=new Netdevice();
 $netdevice->check($_POST["ID"],'r');
 
-	if (isset($_POST['tab'])) { 
-		$_SESSION['glpi_tab']=$_POST['tab']; 
-	} 
-
 	if (!empty($_POST["withtemplate"])) {
 
 			if ($_POST["ID"]>0){
-				switch($_POST['tab']){
+				switch($_POST['glpi_tab']){
 					case 4 :
 						showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",NETWORKING_TYPE,$_POST["ID"],1,$_POST["withtemplate"]);
 						showContractAssociated(NETWORKING_TYPE,$_POST["ID"],$_POST["withtemplate"]);
@@ -64,7 +60,7 @@ $netdevice->check($_POST["ID"],'r');
 						break;
 
 					default :
-						if (!displayPluginAction(NETWORKING_TYPE,$_POST["ID"],$_POST['tab'],$_POST["withtemplate"])){
+						if (!displayPluginAction(NETWORKING_TYPE,$_POST["ID"],$_POST['glpi_tab'],$_POST["withtemplate"])){
 							showPorts($_POST["ID"], NETWORKING_TYPE,$_POST["withtemplate"]);
 							if ($_POST["withtemplate"]!=2) showPortsAdd($_POST["ID"],NETWORKING_TYPE);
 						}
@@ -77,7 +73,7 @@ $netdevice->check($_POST["ID"],'r');
 
 	} else {
 
-			switch($_POST['tab']){
+			switch($_POST['glpi_tab']){
 				case -1:
 					showPortsAdd($_POST["ID"],NETWORKING_TYPE);
 					showPorts($_POST["ID"],NETWORKING_TYPE);
@@ -87,7 +83,7 @@ $netdevice->check($_POST["ID"],'r');
 					showJobListForItem($_SESSION["glpiname"],NETWORKING_TYPE,$_POST["ID"],$_POST["sort"],$_POST["order"]);
 					showOldJobListForItem($_SESSION["glpiname"],NETWORKING_TYPE,$_POST["ID"],$_POST["sort"],$_POST["order"]);
 					showLinkOnDevice(NETWORKING_TYPE,$_POST["ID"]);
-					displayPluginAction(NETWORKING_TYPE,$_POST["ID"],$_POST['tab'],$_POST["withtemplate"]);
+					displayPluginAction(NETWORKING_TYPE,$_POST["ID"],$_POST['glpi_tab'],$_POST["withtemplate"]);
 					break;
 				case 4 :
 					showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",NETWORKING_TYPE,$_POST["ID"]);
@@ -113,7 +109,7 @@ $netdevice->check($_POST["ID"],'r');
 					showHistory(NETWORKING_TYPE,$_POST["ID"]);
 					break;
 				default :
-					if (!displayPluginAction(NETWORKING_TYPE,$_POST["ID"],$_POST['tab'],$_POST["withtemplate"])){
+					if (!displayPluginAction(NETWORKING_TYPE,$_POST["ID"],$_POST['glpi_tab'],$_POST["withtemplate"])){
 						showPortsAdd($_POST["ID"],NETWORKING_TYPE);
 						showPorts($_POST["ID"],NETWORKING_TYPE);
 					}

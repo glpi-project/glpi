@@ -51,15 +51,11 @@ if(!isset($_POST["withtemplate"])) $_POST["withtemplate"] = "";
 
 	checkRight("computer","r");
 
-	if (isset($_POST['tab'])) {
-		$_SESSION['glpi_tab']=$_POST['tab'];
-	}
-
 	//show computer form to add
 	if (!empty($_POST["withtemplate"])) {
 	
 		if ($_POST["ID"]>0){
-			switch($_POST['tab']){
+			switch($_POST['glpi_tab']){
 				case 2 :			
 					showSoftwareInstalled($_POST["ID"],$_POST["withtemplate"]);
 					break;
@@ -80,14 +76,14 @@ if(!isset($_POST["withtemplate"])) $_POST["withtemplate"] = "";
 					showComputerDisks($_POST["ID"],$_POST["withtemplate"]);
 					break;
 				default :
-					if (!displayPluginAction(COMPUTER_TYPE,$_POST["ID"],$_POST['tab'], $_POST["withtemplate"]))
+					if (!displayPluginAction(COMPUTER_TYPE,$_POST["ID"],$_POST['glpi_tab'], $_POST["withtemplate"]))
 						showDeviceComputerForm($_POST['target'],$_POST["ID"], $_POST["withtemplate"]);	
 					break;
 			}
 		}
 	} else {
 
-		switch($_POST['tab']){
+		switch($_POST['glpi_tab']){
 			case -1 :
 				showDeviceComputerForm($_POST['target'],$_POST["ID"], $_POST["withtemplate"]);	
 				showComputerDisks($_POST["ID"],$_POST["withtemplate"]);
@@ -102,7 +98,7 @@ if(!isset($_POST["withtemplate"])) $_POST["withtemplate"] = "";
 				showOldJobListForItem($_SESSION["glpiname"],COMPUTER_TYPE,$_POST["ID"],$_POST["sort"],$_POST["order"]);
 				showLinkOnDevice(COMPUTER_TYPE,$_POST["ID"]);
 				showRegistry($_POST["ID"]);
-				displayPluginAction(COMPUTER_TYPE,$_POST["ID"],$_POST['tab'],$_POST["withtemplate"]);
+				displayPluginAction(COMPUTER_TYPE,$_POST["ID"],$_POST['glpi_tab'],$_POST["withtemplate"]);
 				break;
 			case 2 :
 				showSoftwareInstalled($_POST["ID"]);
@@ -145,7 +141,7 @@ if(!isset($_POST["withtemplate"])) $_POST["withtemplate"] = "";
 				showComputerDisks($_POST["ID"], $_POST["withtemplate"]);
 				break;
 			default :
-				if (!displayPluginAction(COMPUTER_TYPE,$_POST["ID"],$_POST['tab'],$_POST["withtemplate"]))
+				if (!displayPluginAction(COMPUTER_TYPE,$_POST["ID"],$_POST['glpi_tab'],$_POST["withtemplate"]))
 					showDeviceComputerForm($_POST['target'],$_POST["ID"], $_POST["withtemplate"]);			
 				break;
 		}

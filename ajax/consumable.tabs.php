@@ -45,11 +45,6 @@ if(!isset($_POST["ID"])) {
 
 checkRight("consumable","r");
 
-	if (isset($_POST['tab'])) {
-		$_SESSION['glpi_tab']=$_POST['tab'];
-	}
-
-
 	switch($_SESSION['glpi_tab']){
 				case -1 :	
 					showConsumableAdd($_POST["ID"]);
