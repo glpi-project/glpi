@@ -704,6 +704,7 @@ function showDevicesForm ($target,$ID,$device_type) {
 			echo "</td></tr>";
 			echo "<tr><td>".$LANG["common"][65].":</td>";
 			echo "<td><select name='interface'>";
+			echo "<option value='' ".($device->fields["interface"]==""?"selected":"").">&nbsp;</option>";
 			echo "<option value='AGP' ".($device->fields["interface"]=="AGP"?"selected":"").">AGP</option>";
 			echo "<option value='PCI' ".($device->fields["interface"]=="PCI"?"selected":"").">PCI</option>";
 			echo "<option value='PCIe' ".($device->fields["interface"]=="PCIe"?"selected":"").">PCIe</option>";
