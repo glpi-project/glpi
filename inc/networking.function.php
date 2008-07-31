@@ -744,46 +744,83 @@ function removeConnector($ID, $dohistory=true) {
  * @param entity the entity to look for
  * @return an array containing the object ID or an empty array is no value of serverals ID where found
  */
-function getObjectIDByIPAddress($ip,$entity)
+function getUniqueObjectIDByIPAddress($ip,$entity)
 {
 		global $DB;
-		$result = $DB->query(
-				"SELECT gnp.on_device as ID, gnp.device_type as device_type FROM `glpi_networking_ports` as gnp
+		//Try to get all the object with a network port having the specified IP, in a given entity
+		$query="SELECT gnp.on_device as ID, gnp.device_type as device_type FROM `glpi_networking_ports` as gnp
 				LEFT JOIN  `glpi_computers` as gc ON (gnp.on_device=gc.ID AND gc.FK_entities=$entity AND device_type=".COMPUTER_TYPE.") 
-				LEFT JOIN  `glpi_printers` as gp ON (gnp.on_device=gp.ID AND gc.FK_entities=$entity AND device_type=".PRINTER_TYPE.")
-				LEFT JOIN  `glpi_networking` as gn ON (gnp.on_device=gn.ID AND gc.FK_entities=$entity AND device_type=".NETWORKING_TYPE.")  
-				LEFT JOIN  `glpi_phones` as gph ON (gnp.on_device=gph.ID AND gc.FK_entities=$entity AND device_type=".PHONE_TYPE.") 
-				LEFT JOIN  `glpi_peripherals` as gpe ON (gnp.on_device=gpe.ID AND gc.FK_entities=$entity AND device_type=".PERIPHERAL_TYPE.") 
-				WHERE gnp.ifaddr='".$ip."'");
-		if ($DB->numrows($result) == 1)
-			return $DB->fetch_array($result);
-		else
-			return array();		
+				LEFT JOIN  `glpi_printers` as gp ON (gnp.on_device=gp.ID AND gp.FK_entities=$entity AND device_type=".PRINTER_TYPE.")
+				LEFT JOIN  `glpi_networking` as gn ON (gnp.on_device=gn.ID AND gn.FK_entities=$entity AND device_type=".NETWORKING_TYPE.")  
+				LEFT JOIN  `glpi_phones` as gph ON (gnp.on_device=gph.ID AND gph.FK_entities=$entity AND device_type=".PHONE_TYPE.") 
+				LEFT JOIN  `glpi_peripherals` as gpe ON (gnp.on_device=gpe.ID AND gpe.FK_entities=$entity AND device_type=".PERIPHERAL_TYPE.") 
+				WHERE gnp.ifaddr='".$ip."'";
+
+		$result = $DB->query($query);
+		
+		//3 possibilities :
+		//0 found : no object with a network port have this ip. Look into networkings object to see if,maybe, one have it
+		//1 found : one object have a network port with the ip -> good, possible to link
+		//2 found : one object have a network port with this ip, and the port is link to another one -> get the object by removing the port connected to a network device
+		switch ($DB->numrows($result))
+		{
+			case 0:
+				//No result found with the previous request. Try to look for IP in the glpi_networking table directly
+				$query="SELECT ID FROM glpi_networking WHERE ifaddr='$ip' AND FK_entities=$entity";
+				$result = $DB->query($query);
+				if ($DB->numrows($result) == 1)
+					return array("ID"=>$DB->result($result,0,"ID"),"device_type"=>NETWORKING_TYPE);
+				else
+					return array();
+			case 1 :
+				return $DB->fetch_array($result);
+			case 2:
+				while ($port = $DB->fetch_array($result))
+					return ($port["device_type"] != NETWORKING_TYPE?$port:array());
+			default:
+				return array();
+					
+		}
 }
 
-function getObjectIDByFQDN($fqdn,$entity)
+/**
+ * Look for a computer or a network device with a fully qualified domain name in an entity
+ * @param fqdn fully qualified domain name
+ * @param entity the entity
+ * @return an array with the ID and device_type or an empty array if no unique object is found
+ */
+function getUniqueObjectIDByFQDN($fqdn,$entity)
 {
 	$types = array(COMPUTER_TYPE,NETWORKING_TYPE);
 	foreach($types as $type)
 	{
-		$result =getObjectByFDQNAndType($fqdn,$type,$entity);
+		$result =getUniqueObjectByFDQNAndType($fqdn,$type,$entity);
 		if (!empty($result))
 			return $result;
 	}
 	return array();
 }
 
-function getObjectByFDQNAndType($fqdn,$type,$entity)
+/**
+ * Look for a specific type of device with a fully qualified domain name in an entity
+ * @param fqdn fully qualified domain name
+ * @param type the type of object to look for
+ * @param entity the entity
+ * @return an array with the ID and device_type or an empty array if no unique object is found
+ */
+
+function getUniqueObjectByFDQNAndType($fqdn,$type,$entity)
 {
 		global $DB;
 		$commonitem = new CommonItem;
 		$commonitem->setType($type,true);
 		
-		$result = $DB->query(
-			"SELECT obj.ID AS ID
+		$query = "SELECT obj.ID AS ID
 			FROM ".$commonitem->obj->table." AS obj, glpi_dropdown_domain AS gdd
 			WHERE obj.FK_entities=$entity AND obj.domain = gdd.ID
-			AND LOWER( '$fqdn' ) = ( CONCAT( LOWER( obj.name ) , '.', LOWER( gdd.name ) ) )");
+			AND LOWER( '$fqdn' ) = ( CONCAT( LOWER( obj.name ) , '.', LOWER( gdd.name ) ) )";
+			
+		$result = $DB->query($query);
 		if ($DB->numrows($result) == 1)
 		{
 			$datas = $DB->fetch_array($result);

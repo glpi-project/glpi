@@ -88,10 +88,10 @@ class TrackingBusinessRule extends Rule {
 						switch ($action->fields["action_type"])
 						{
 							case "affectbyip":
-								$result = getObjectIDByIPAddress($regexvalue,$output["FK_entities"]);
+								$result = getUniqueObjectIDByIPAddress($regexvalue,$output["FK_entities"]);
 								break;
 							case "affectbyfqdn":
-								$result= getObjectIDByFQDN($regexvalue,$output["FK_entities"]);	
+								$result= getUniqueObjectIDByFQDN($regexvalue,$output["FK_entities"]);	
 								break;
 							default:
 								$result=array();	
