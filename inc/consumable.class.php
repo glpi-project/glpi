@@ -68,7 +68,7 @@ class ConsumableType extends CommonDBTM {
 		$this->fields["alarm"]=$CFG_GLPI["cartridges_alarm"];
 	}
 
-	function defineOnglets($withtemplate){
+	function defineTabs($withtemplate){
 		global $LANG;
 		$ong[1]=$LANG["title"][26];
 		if (haveRight("contract_infocom","r"))	
@@ -115,9 +115,9 @@ class ConsumableType extends CommonDBTM {
 
 		if ($ct_spotted){
 
-			$this->showOnglets($ID, $withtemplate,$_SESSION['glpi_onglet']);
+			$this->showTabs($ID, $withtemplate,$_SESSION['glpi_onglet']);
 
-			echo "<form method='post' action=\"$target\"><div class='center'>\n";
+			echo "<div class='center' id='tabsbody'><form method='post' action=\"$target\">\n";
 			if (empty($ID)){
 				echo "<input type='hidden' name='FK_entities' value='".$_SESSION["glpiactive_entity"]."'>";
 			}
@@ -210,7 +210,10 @@ class ConsumableType extends CommonDBTM {
 
 
 				}
-			echo "</table></div></form>";
+			echo "</table></form></div>";
+			echo "<div id='tabcontent'></div>";
+			echo "<script type='text/javascript'>loadDefaultTab();</script>";
+
 
 		} else {
 
