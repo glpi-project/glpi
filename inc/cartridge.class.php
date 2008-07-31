@@ -273,7 +273,7 @@ class CartridgeType extends CommonDBTM {
 
 			echo "</table></form></div>";
 			echo "<div id='tabcontent'></div>";
-			echo "<script type='javascript'>loadDefaultTab();</script>";
+			echo "<script type='text/javascript'>loadDefaultTab();</script>";
 
 		}
 		else {
