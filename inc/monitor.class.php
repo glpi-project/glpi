@@ -91,6 +91,10 @@ class Monitor extends CommonDBTM {
 		if (isset($input["ID"])&&$input["ID"]>0){
 			$input["_oldID"]=$input["ID"];
 		}
+		
+		if (isset($input["size"]) && $input["size"] == '')
+			unset($input["size"]);
+			
 		unset($input['ID']);
 		unset($input['withtemplate']);
 
