@@ -279,7 +279,7 @@ function getPluginTabs($target,$type,$ID,$withtemplate,$actif){
 
 						$tabs[$key]=array('title'=>$val,
 						'url'=>$CFG_GLPI['root_doc']."/$tabpage",
-						'params'=>"target=$target&type=".$type."&tab=$key&ID=$ID$template");
+						'params'=>"target=$target&type=".$type."&glpi_tab=$key&ID=$ID$template");
 					}
 				}
 			}
