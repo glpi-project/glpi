@@ -46,12 +46,11 @@ if(!isset($_POST["withtemplate"])) $_POST["withtemplate"] = "";
 
 checkRight("monitor","r");
 
- if (isset($_POST['tab'])) { $_SESSION['glpi_tab']=$_POST['tab']; } 
-
+ 
 	if (!empty($_POST["withtemplate"])) {
 
 		if ($_POST["ID"]>0){
-			switch($_POST['tab']){
+			switch($_POST['glpi_tab']){
 				case 4 :
 					showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",MONITOR_TYPE,$_POST["ID"],1,$_POST["withtemplate"]);
 					showContractAssociated(MONITOR_TYPE,$_POST["ID"],$_POST["withtemplate"]);
@@ -60,13 +59,13 @@ checkRight("monitor","r");
 					showDocumentAssociated(MONITOR_TYPE,$_POST["ID"],$_POST["withtemplate"]);
 					break;
 				default :
-					displayPluginAction(MONITOR_TYPE,$_POST["ID"],$_POST['tab'],$_POST["withtemplate"]);
+					displayPluginAction(MONITOR_TYPE,$_POST["ID"],$_POST['glpi_tab'],$_POST["withtemplate"]);
 					break;
 			}
 		}
 	} else {
 
-		switch($_POST['tab']){
+		switch($_POST['glpi_tab']){
 			case -1:
 				showConnect($_POST['target'],$_POST['ID'],MONITOR_TYPE);
 				showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",MONITOR_TYPE,$_POST["ID"]);
@@ -75,7 +74,7 @@ checkRight("monitor","r");
 				showJobListForItem($_SESSION["glpiname"],MONITOR_TYPE,$_POST["ID"],$_POST["sort"],$_POST["order"]);
 				showOldJobListForItem($_SESSION["glpiname"],MONITOR_TYPE,$_POST["ID"],$_POST["sort"],$_POST["order"]);	
 				showLinkOnDevice(MONITOR_TYPE,$_POST["ID"]);
-				displayPluginAction(MONITOR_TYPE,$_POST["ID"],$_POST['tab'],$_POST["withtemplate"]);
+				displayPluginAction(MONITOR_TYPE,$_POST["ID"],$_POST['glpi_tab'],$_POST["withtemplate"]);
 				break;
 			case 4 :			
 				showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",MONITOR_TYPE,$_POST["ID"]);
@@ -101,7 +100,7 @@ checkRight("monitor","r");
 				showHistory(MONITOR_TYPE,$_POST["ID"]);
 				break;	
 			default :
-				if (!displayPluginAction(MONITOR_TYPE,$_POST["ID"],$_POST['tab'],$_POST["withtemplate"]))
+				if (!displayPluginAction(MONITOR_TYPE,$_POST["ID"],$_POST['glpi_tab'],$_POST["withtemplate"]))
 					showConnect($_POST['target'],$_POST['ID'],MONITOR_TYPE);
 				break;	
 		}
