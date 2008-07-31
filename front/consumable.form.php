@@ -95,44 +95,8 @@ else
 
 	commonHeader($LANG["Menu"][32],$_SERVER['PHP_SELF'],"inventory","consumable");
 
-
-
-	if ($constype->showForm($_SERVER['PHP_SELF'],$_GET["ID"])) {
-		if (!empty($_GET['ID'])){
-			switch($_SESSION['glpi_tab']){
-				case -1 :	
-					showConsumableAdd($_GET["ID"]);
-					showConsumables($_GET["ID"]);
-					showConsumables($_GET["ID"],1);
-					showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",CONSUMABLE_TYPE,$_GET["ID"],1);
-					showDocumentAssociated(CONSUMABLE_TYPE,$_GET["ID"]);
-					showLinkOnDevice(CONSUMABLE_TYPE,$_GET["ID"]);
-					displayPluginAction(CONSUMABLE_TYPE,$_GET["ID"],$_SESSION['glpi_tab']);
-					break;
-				case 4 :
-					showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",CONSUMABLE_TYPE,$_GET["ID"],1);
-					break;
-				case 5 :
-					showDocumentAssociated(CONSUMABLE_TYPE,$_GET["ID"]);
-					break;
-
-				case 7 : 
-					showLinkOnDevice(CONSUMABLE_TYPE,$_GET["ID"]);
-					break;
-
-				case 10 :
-					showNotesForm($_SERVER['PHP_SELF'],CONSUMABLE_TYPE,$_GET["ID"]);
-					break;
-				default :
-					if (!displayPluginAction(CONSUMABLE_TYPE,$_GET["ID"],$_SESSION['glpi_tab'])){
-						showConsumableAdd($_GET["ID"]);
-						showConsumables($_GET["ID"]);
-						showConsumables($_GET["ID"],1);
-					}
-					break;
-			}
-		}
-	}
+     $constype->showForm($_SERVER['PHP_SELF'],$_GET["ID"]);
+		
 	commonFooter();
 }
 
