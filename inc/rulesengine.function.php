@@ -179,8 +179,10 @@ function dropdownRulesConditions($type,$name,$value=''){
 function dropdownRulesActions($rule_type,$name,$value=''){
 	global $LANG,$CFG_GLPI,$RULES_ACTIONS;
 
-	//All the elements have assign as default action
-	$elements["assign"] = $LANG["rulesengine"][22];
+	//Look if action assign needs to be displayed or not
+	if (!isset($RULES_ACTIONS[$rule_type][$value]['optional_actions']) ||
+		in_array($value,$RULES_ACTIONS[$rule_type][$value]['exclude_actions']))
+		$elements["assign"] = $LANG["rulesengine"][22];
 
 	if (isset($RULES_ACTIONS[$rule_type][$value]['optional_actions'])){
 		$actions = $RULES_ACTIONS[$rule_type][$value]['optional_actions'];
@@ -192,6 +194,12 @@ function dropdownRulesActions($rule_type,$name,$value=''){
 		}
 		if(in_array("ignore",$actions)){
 			$elements["ignore"] = $LANG["rulesengine"][39];
+		}
+		if(in_array("affectbyip",$actions)){
+			$elements["affectbyip"] = $LANG["rulesengine"][46];
+		}
+		if(in_array("affectbyfqdn",$actions)){
+			$elements["affectbyfqdn"] = $LANG["rulesengine"][47];
 		}
 	}
 	
@@ -209,7 +217,12 @@ function getActionByID($ID){
 		case "regex_result":
 			return $LANG["rulesengine"][45];
 		case "append_regex_result":
-			return $LANG["rulesengine"][79];			
+			return $LANG["rulesengine"][79];
+		case "affectbyip":
+			return $LANG["rulesengine"][46];
+		case "affectbyfqdn":
+			return $LANG["rulesengine"][47];
+						
 	}
 }
 

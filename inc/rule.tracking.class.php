@@ -73,6 +73,43 @@ class TrackingBusinessRule extends Rule {
 		global $RULES_ACTIONS;
 		return count($RULES_ACTIONS[RULE_TRACKING_AUTO_ACTION]);
 	}
+
+	function executeActions($output,$params,$regex_results)
+	{
+		if (count($this->actions)){
+			foreach ($this->actions as $action){
+				switch ($action->fields["action_type"]){
+					case "assign" :
+						$output[$action->fields["field"]] = $action->fields["value"];
+					break;
+					case "affectbyip":
+					case "affectbyfqdn":
+						$regexvalue = getRegexResultById($action->fields["value"],$regex_results);
+						switch ($action->fields["action_type"])
+						{
+							case "affectbyip":
+								$result = getObjectIDByIPAddress($regexvalue,$output["FK_entities"]);
+								break;
+							case "affectbyfqdn":
+								$result= getObjectIDByFQDN($regexvalue,$output["FK_entities"]);	
+								break;
+							default:
+								$result=array();	
+								break;
+						}
+					
+						if (!empty($result))
+						{
+							$output["device_type"]=$result["device_type"];
+							$output["computer"]=$result["ID"];
+						}
+					break;
+				}
+			}
+		}
+		return $output;
+	}
+
 }
 
 

@@ -213,6 +213,11 @@ $RULES_ACTIONS[RULE_TRACKING_AUTO_ACTION]['priority']['type']='dropdown_priority
 $RULES_ACTIONS[RULE_TRACKING_AUTO_ACTION]['status']['name']=$LANG["joblist"][0];
 $RULES_ACTIONS[RULE_TRACKING_AUTO_ACTION]['status']['type']='dropdown_status';
 
+$RULES_ACTIONS[RULE_TRACKING_AUTO_ACTION]['affectobject']['name']= $LANG["common"][1];
+$RULES_ACTIONS[RULE_TRACKING_AUTO_ACTION]['affectobject']['type']='text';
+$RULES_ACTIONS[RULE_TRACKING_AUTO_ACTION]['affectobject']['optional_actions']=array("affectbyip","affectbyfqdn");
+$RULES_ACTIONS[RULE_TRACKING_AUTO_ACTION]['affectobject']['exclude_actions']=array("assign");
+
 //Software categories
 $RULES_CRITERIAS[RULE_SOFTWARE_CATEGORY]['name']['field']='name';
 $RULES_CRITERIAS[RULE_SOFTWARE_CATEGORY]['name']['name']=$LANG["help"][31];
@@ -285,6 +290,7 @@ $RULES_CRITERIAS[RULE_DICTIONNARY_MODEL_PRINTER]['name']['table']='glpi_dropdown
 $RULES_CRITERIAS[RULE_DICTIONNARY_MODEL_PRINTER]['manufacturer']['field']='name';
 $RULES_CRITERIAS[RULE_DICTIONNARY_MODEL_PRINTER]['manufacturer']['name']=$LANG["common"][5];
 $RULES_CRITERIAS[RULE_DICTIONNARY_MODEL_PRINTER]['manufacturer']['table']='glpi_dropdown_manufacturer';
+
 
 $RULES_ACTIONS[RULE_DICTIONNARY_MODEL_PRINTER]['name']['name']=$LANG["common"][22];
 $RULES_ACTIONS[RULE_DICTIONNARY_MODEL_PRINTER]['name']['optional_actions']=array("regex_result","append_regex_result");
