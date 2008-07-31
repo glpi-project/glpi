@@ -154,41 +154,10 @@ else
 {
 	$contract->check($_GET["ID"],'r');
 
-	if (!isset($_SESSION['glpi_tab'])) $_SESSION['glpi_tab']=1;
-	if (isset($_GET['onglet'])) {
-		$_SESSION['glpi_tab']=$_GET['onglet'];
-	}
-
 	commonHeader($LANG["Menu"][25],$_SERVER['PHP_SELF'],"financial","contract");
 
-	if ($contract->showForm($_SERVER['PHP_SELF'],$_GET["ID"])) {
-		if ($_GET['ID']>0){
-			switch($_SESSION['glpi_tab']){
-				case -1 :	
-					showEnterpriseContract($_GET["ID"]);
-					showDeviceContract($_GET["ID"]);
-					showDocumentAssociated(CONTRACT_TYPE,$_GET["ID"]);
-					showLinkOnDevice(CONTACT_TYPE,$_GET["ID"]);
-					displayPluginAction(CONTRACT_TYPE,$_GET["ID"],$_SESSION['glpi_tab']);
-					break;
-				case 5 : 
-					showDocumentAssociated(CONTRACT_TYPE,$_GET["ID"]);
-					break;
-				case 7 : 
-					showLinkOnDevice(CONTRACT_TYPE,$_GET["ID"]);
-					break;
-				case 10 :
-					showNotesForm($_SERVER['PHP_SELF'],CONTRACT_TYPE,$_GET["ID"]);
-					break;
-				default :
-					if (!displayPluginAction(CONTRACT_TYPE,$_GET["ID"],$_SESSION['glpi_tab'])){
-						showEnterpriseContract($_GET["ID"]);
-						showDeviceContract($_GET["ID"]);
-					}
-					break;
-			}
-		}
-	}	
+	$contract->showForm($_SERVER['PHP_SELF'],$_GET["ID"]);
+		
 	commonFooter();
 }
 
