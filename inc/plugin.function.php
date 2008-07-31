@@ -251,7 +251,7 @@ function displayPluginHeadings($target,$type,$withtemplate,$actif){
  * @param $actif active onglet
  * @return true if display have been done
  */
-function displayPluginTabs($target,$type,$ID,$withtemplate,$actif){
+function getPluginTabs($target,$type,$ID,$withtemplate,$actif){
 	global $PLUGIN_HOOKS,$LANG,$INFOFORM_PAGES,$CFG_GLPI;
 	$template="";
 	if(!empty($withtemplate)){
@@ -266,6 +266,7 @@ function displayPluginTabs($target,$type,$ID,$withtemplate,$actif){
 	$tabpage=preg_replace($patterns, $replacements, $INFOFORM_PAGES[$type]);
 	$active=false;
 	$tabid=0;
+	$tabs=array();
 	if (isset($PLUGIN_HOOKS["headings"]) && is_array($PLUGIN_HOOKS["headings"])) {
 		foreach ($PLUGIN_HOOKS["headings"] as $plug => $function) {
 
@@ -275,24 +276,17 @@ function displayPluginTabs($target,$type,$ID,$withtemplate,$actif){
 				if (is_array($onglet)&&count($onglet)){
 					foreach ($onglet as $key => $val){
 						$key=$plug."_".$key;
-						if ($actif==$key){
-							$active=$tabid;
-						}
-						
-						echo "{
-						title: \"$val\",
-						autoLoad: {url: '".$CFG_GLPI['root_doc']."/$tabpage',  scripts: true, nocache: true, 
-							params: 'target=$target&type=".$type."&tab=$key&ID=$ID$template'}
-						},";
 
-						$tabid++;
+						$tabs[$key]=array('title'=>$val,
+						'url'=>$CFG_GLPI['root_doc']."/$tabpage",
+						'params'=>"target=$target&type=".$type."&tab=$key&ID=$ID$template");
 					}
 				}
 			}
 		}
 	}
 
-	return array('active'=>$active,'number'=>$tabid);
+	return $tabs;
 
 }
 

@@ -947,7 +947,6 @@ class CommonDBTM {
 			$template="&withtemplate=$withtemplate";
 		}
 
-// TODO	
 		if (empty($withtemplate)&&$ID){
 			$next=getNextItem($this->table,$ID,$nextprevcondition,$nextprev_item);
 			$prev=getPreviousItem($this->table,$ID,$nextprevcondition,$nextprev_item);
@@ -971,76 +970,22 @@ class CommonDBTM {
 		
 		$active=0;
 		if (count($onglets=$this->defineTabs($withtemplate))){
-			//if (empty($withtemplate)&&haveRight("reservation_central","r")&&function_exists("isReservable")){
-			//	$onglets[11]=$LANG["Menu"][17];
-			//	ksort($onglets);
-			//}
-			echo "<script type='text/javascript'>";
-			echo " var tabpanel = new Ext.TabPanel({
-				applyTo: 'tabspanel',
-				width:950,
-				enableTabScroll: true,
-				resizeTabs: false,
-				plain: true,
-				items: [";
+			$patterns[0] = '/front/';
+			$patterns[1] = '/form/';
+			$replacements[0] = 'ajax';
+			$replacements[1] = 'tabs';
+			$tabpage=preg_replace($patterns, $replacements, $INFOFORM_PAGES[$this->type]);
+			$tabs=array();
+			foreach ($onglets as $key => $val ) {
+				$tabs[$key]=array('title'=>$val,
+						'url'=>$CFG_GLPI['root_doc']."/$tabpage",
+						'params'=>"target=$target&type=".$this->type."&tab=$key&ID=$ID$template");
+			}
+			$plug_tabs=getPluginTabs($target,$this->type,$ID,$withtemplate,$actif);
+			$tabs=array_merge($tabs,$plug_tabs);
 
-				$patterns[0] = '/front/';
-				$patterns[1] = '/form/';
-				$replacements[0] = 'ajax';
-				$replacements[1] = 'tabs';
-				$tabpage=preg_replace($patterns, $replacements, $INFOFORM_PAGES[$this->type]);
-				$tabid=0;
+			createAjaxTabs('tabspanel','tabcontent',$tabs,$actif);
 
-				foreach ($onglets as $key => $val ) {
-					if ($actif==$key){
-						$active=$tabid;
-					}
-					echo "{
-					title: \"$val\",
-					autoLoad: {url: '".$CFG_GLPI['root_doc']."/$tabpage',  scripts: true, nocache: true, 
-						params: 'target=$target&type=".$this->type."&tab=$key&ID=$ID$template'}
-					},";
-					$tabid++;
-				}
-
-				// Do plugins tabs : return active tabs if selected
-				$tmp=displayPluginTabs($target,$this->type,$ID,$withtemplate,$actif);
-				// Active is plugin
-				if ($tmp['active']!==false){
-					$active=$tabid+$tmp['active'];
-				}
-				// Add number of tabs for plugin
-				$tabid+=$tmp['number'];
-
-
-				if(empty($withtemplate)){
-					if ($actif==-1){
-						$active=$tabid;
-					}
-					echo "{
-					title: \"".$LANG["common"][66]."\",
-					autoLoad: {url: '".$CFG_GLPI['root_doc']."/$tabpage',  scripts: true, nocache: true, 
-						params: 'target=$target&type=".$this->type."&tab=-1&ID=$ID$template'}
-					},";
-					$tabid++;
-				}
-
-
-				echo "],
-			});
-			/// Define view point
-			Ext.destroy(tabpanel.body);
-			tabpanel.body='tabcontent';
-			// force first load 
-			function loadDefaultTab(){
-				tabpanel.setActiveTab($active);
-				Ext.get('tabcontent').load({
-					url: '".$CFG_GLPI['root_doc']."/$tabpage',
-					scripts: true,
-					params: 'target=$target&type=".$this->type."&tab=$actif&ID=$ID$template'});
-			}	
-			";
-			echo "</script>";
 		}
 	} 
 
