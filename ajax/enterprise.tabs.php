@@ -44,6 +44,7 @@ if(!isset($_POST["ID"])) {
 	exit();
 }
 
+$ent=new Enterprise();
 
 if (!isset($POST["start"])) {
 	$POST["start"]=0;
