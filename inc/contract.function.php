@@ -517,7 +517,7 @@ function showContractAssociated($device_type,$ID,$withtemplate=''){
 	$query = "SELECT glpi_contract_device.* "
 		." FROM glpi_contract_device, glpi_contracts LEFT JOIN glpi_entities ON (glpi_contracts.FK_entities=glpi_entities.ID)"
 		." WHERE glpi_contracts.ID=glpi_contract_device.FK_contract AND glpi_contract_device.FK_device = '$ID' AND glpi_contract_device.device_type = '$device_type' "
-		.getEntitiesRestrictRequest(" AND","glpi_contracts",'','',true);
+		.getEntitiesRestrictRequest(" AND","glpi_contracts",'','',true)." ORDER BY glpi_contracts.name";
 
 	$result = $DB->query($query);
 	$number = $DB->numrows($result);
