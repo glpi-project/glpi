@@ -125,55 +125,10 @@ else
 {
 	$ent->check($_GET["ID"],'r');
 
-	if (!isset($_SESSION['glpi_tab'])) $_SESSION['glpi_tab']=1;
-	if (isset($_GET['onglet'])) {
-		$_SESSION['glpi_tab']=$_GET['onglet'];
-	}
-
-
 	commonHeader($LANG["Menu"][23],$_SERVER['PHP_SELF'],"financial","enterprise");
 
-
-	if ($ent->showForm($_SERVER['PHP_SELF'],$_GET["ID"])){
-		if ($_GET["ID"]>0){
-			switch($_SESSION['glpi_tab']){
-				case -1:
-					showAssociatedContact($_GET["ID"]);
-					showContractAssociatedEnterprise($_GET["ID"]);
-					showDocumentAssociated(ENTERPRISE_TYPE,$_GET["ID"]);
-					showTrackingList($_SERVER['PHP_SELF'],$_GET["start"],$_GET["sort"],$_GET["order"],"all",'','',0,0,0,0,0,$_GET["ID"]);
-					showLinkOnDevice(ENTERPRISE_TYPE,$_GET["ID"]);
-					displayPluginAction(ENTERPRISE_TYPE,$_GET["ID"],$_SESSION['glpi_tab']);
-					break;
-				case 1 :
-					showAssociatedContact($_GET["ID"]);
-					break;
-				case 4 :
-					showContractAssociatedEnterprise($_GET["ID"]);
-					break;
-				case 5 :
-					showDocumentAssociated(ENTERPRISE_TYPE,$_GET["ID"],0);
-					break;
-				case 6 :
-					showTrackingList($_SERVER['PHP_SELF']."?ID=".$_GET["ID"],$_GET["start"],$_GET["sort"],$_GET["order"],"all",'','',0,0,0,0,0,$_GET["ID"]);
-					break;
-				case 7 : 
-					showLinkOnDevice(ENTERPRISE_TYPE,$_GET["ID"]);
-					break;
-				case 10 :
-					showNotesForm($_SERVER['PHP_SELF'],ENTERPRISE_TYPE,$_GET["ID"]);
-					break;	
-				case 15 :
-					showInfocomEnterprise($_GET["ID"]);
-					break;	
-				default : 
-					if (!displayPluginAction(ENTERPRISE_TYPE,$_GET["ID"],$_SESSION['glpi_tab'])){
-						showAssociatedContact($_GET["ID"]);
-					}
-					break;
-			}
-		}
-	}
+	$ent->showForm($_SERVER['PHP_SELF'],$_GET["ID"]);
+		
 	commonFooter();
 }
 
