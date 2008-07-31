@@ -70,15 +70,10 @@ include (GLPI_ROOT."/inc/includes.php");
 	}
 
 	// show "my view" in first
-	if (!isset($_SESSION['glpi_viewcentral'])) $_SESSION['glpi_viewcentral']="my";
-	if (isset($_GET['onglet'])) $_SESSION['glpi_viewcentral']=$_GET['onglet'];
+	if (!isset($_SESSION['glpi_centraltab'])) $_SESSION['glpi_centraltab']="my";
+
+	if (isset($_GET['glpi_tab'])) $_SESSION['glpi_centraltab']=$_GET['glpi_tab'];
 	
-	if (!isset($_GET['start'])) $_GET['start']=0;
-	if(empty($_GET["start"])) $_GET["start"] = 0;
-
-	if (!isset($_GET["sort"])) $_GET["sort"]="";
-	if (!isset($_GET["order"])) $_GET["order"]="";
-
 	// Greet the user
 
 	echo "<br><span class='icon_consol'>".$LANG["central"][0]." ";
@@ -88,47 +83,31 @@ include (GLPI_ROOT."/inc/includes.php");
 
 	echo "<br><br>";
 
-	showCentralOnglets($_SERVER['PHP_SELF'],$_SESSION['glpi_viewcentral']);
 
-	switch ($_SESSION['glpi_viewcentral']){
-		case "global" :
-			showCentralGlobalView();
-			break;
-		case "group" :
-			showCentralGroupView();
-			break;
-		case "plugins" :
-			echo "<table class='tab_cadre_central' ><tr><td>";
-		
-			doHook("central_action");
-			echo "</td></tr>";
-		
-			echo "</table>";
-			
-			break;
-		case "all":
-			showCentralMyView();
-			echo "<br>";
-			showCentralGroupView();
-			echo "<br>";
-			showCentralGlobalView();
-			echo "<br>";
-			if (isset($PLUGIN_HOOKS['central_action'])&&count($PLUGIN_HOOKS['central_action'])){
-				
-				echo "<table class='tab_cadre_central' ><tr><td>";
-			
-				doHook("central_action");
-				echo "</td></tr>";
-			
-				echo "</table>";
-				
-			}
+	
+	//forea
+	$tabs['my']=array('title'=>$LANG["central"][12],
+		'url'=>$CFG_GLPI['root_doc']."/ajax/central.tabs.php",
+		'params'=>"target=".$_SERVER['PHP_SELF']."&type=central&tab=my");
+	$tabs['global']=array('title'=>$LANG["central"][13],
+		'url'=>$CFG_GLPI['root_doc']."/ajax/central.tabs.php",
+		'params'=>"target=".$_SERVER['PHP_SELF']."&type=central&tab=global");
+	$tabs['group']=array('title'=>$LANG["central"][14],
+		'url'=>$CFG_GLPI['root_doc']."/ajax/central.tabs.php",
+		'params'=>"target=".$_SERVER['PHP_SELF']."&type=central&tab=group");
 
-			break;
-		default :
-			showCentralMyView();
-			break;
-	}
+	$plug_tabs=getPluginTabs($_SERVER['PHP_SELF'],"central","","");
+	$tabs+=$plug_tabs;
+
+	$tabs['all']=array('title'=>$LANG["common"][66],
+		'url'=>$CFG_GLPI['root_doc']."/ajax/central.tabs.php",
+		'params'=>"target=".$_SERVER['PHP_SELF']."&type=central&tab=all");
+
+	echo "<div id='tabspanel' class='center-h'></div>";
+	createAjaxTabs('tabspanel','tabcontent',$tabs,$_SESSION['glpi_centraltab']);
+	echo "<div id='tabcontent'></div>";
+	echo "<script type='text/javascript'>loadDefaultTab();</script>";
+
 
 commonFooter();
 

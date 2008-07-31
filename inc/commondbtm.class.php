@@ -982,7 +982,7 @@ class CommonDBTM {
 						'url'=>$CFG_GLPI['root_doc']."/$tabpage",
 						'params'=>"target=$target&type=".$this->type."&glpi_tab=$key&ID=$ID$template");
 			}
-			$plug_tabs=getPluginTabs($target,$this->type,$ID,$withtemplate,$actif);
+			$plug_tabs=getPluginTabs($target,$this->type,$ID,$withtemplate);
 			$tabs+=$plug_tabs;
 
 			createAjaxTabs('tabspanel','tabcontent',$tabs,$actif);
