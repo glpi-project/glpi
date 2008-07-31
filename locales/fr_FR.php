@@ -1302,6 +1302,8 @@ $LANG["rulesengine"][41]="Validation";
 $LANG["rulesengine"][42]="ET";
 $LANG["rulesengine"][43]="OU";
 $LANG["rulesengine"][45]="Assigner valeur depuis regex";
+$LANG["rulesengine"][46]="Assigner : matériel sur IP";
+$LANG["rulesengine"][47]="Assigner : matériel sur nom + domaine";
 
 $LANG["rulesengine"][50]="Dictionnaire des modèles d'ordinateurs";
 $LANG["rulesengine"][51]="Dictionnaire des modèles de moniteurs";
