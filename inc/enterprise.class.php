@@ -67,7 +67,7 @@ class Enterprise extends CommonDBTM {
 		$result2 = $DB->query($query2);
 	}
 
-	function defineOnglets($withtemplate){
+	function defineTabs($withtemplate){
 		global $LANG,$CFG_GLPI;
 
 		if(haveRight("contact_enterprise","r")){
@@ -144,9 +144,9 @@ class Enterprise extends CommonDBTM {
 		if ($spotted){
 			$canedit=$this->can($ID,'w');
 			
-			$this->showOnglets($ID, $withtemplate,$_SESSION['glpi_tab']);
+			$this->showTabs($ID, $withtemplate,$_SESSION['glpi_tab']);
 			if ($canedit) {
-				echo "<form method='post' action=\"$target\"><div class='center'>";
+				echo "<div class='center' id='tabsbody' ><form method='post' action=\"$target\">";
 				if (empty($ID)||$ID<0){
 					echo "<input type='hidden' name='FK_entities' value='".$_SESSION["glpiactive_entity"]."'>";
 				}
@@ -276,10 +276,14 @@ class Enterprise extends CommonDBTM {
 
 				}
 				echo "</table></div></form>";
+				
+					
 			} else { // canedit
 				echo "</table></div>";				
 			}
-
+			
+			echo "<div id='tabcontent'></div>";
+			echo "<script type='text/javascript'>loadDefaultTab();</script>";
 
 		} else {
 			echo "<div class='center'><strong>".$LANG["common"][54]."</strong></div>";
