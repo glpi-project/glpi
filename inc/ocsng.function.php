@@ -2127,6 +2127,7 @@ function ocsUpdateDevices($device_type, $glpi_id, $ocs_id, $ocs_server_id, $cfg_
 						$video["designation"] = $line2["NAME"];
 						if (!in_array(GFX_DEVICE . '$$$$$' . $video["designation"], $import_device)) {
 							$video["specif_default"] = "";
+							 $video["interface"] = "AGP"; 
 							if (!empty ($line2["MEMORY"]))
 								$video["specif_default"] = $line2["MEMORY"];
 							$video_id = ocsAddDevice(GFX_DEVICE, $video);
