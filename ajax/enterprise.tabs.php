@@ -46,49 +46,49 @@ if(!isset($_POST["ID"])) {
 
 $ent=new Enterprise();
 
-if (!isset($POST["start"])) {
-	$POST["start"]=0;
+if (!isset($_POST["start"])) {
+	$_POST["start"]=0;
 }
 
-if (!isset($POST["sort"])) $POST["sort"]="";
-if (!isset($POST["order"])) $POST["order"]="";
+if (!isset($_POST["sort"])) $_POST["sort"]="";
+if (!isset($_POST["order"])) $_POST["order"]="";
 
-	$ent->check($POST["ID"],'r');
+	$ent->check($_POST["ID"],'r');
 
-		if ($POST["ID"]>0){
+		if ($_POST["ID"]>0){
 			switch($_POST['glpi_tab']){
 				case -1:
-					showAssociatedContact($POST["ID"]);
-					showContractAssociatedEnterprise($POST["ID"]);
-					showDocumentAssociated(ENTERPRISE_TYPE,$POST["ID"]);
-					showTrackingList($_POST['target'],$POST["start"],$POST["sort"],$POST["order"],"all",'','',0,0,0,0,0,$POST["ID"]);
-					showLinkOnDevice(ENTERPRISE_TYPE,$POST["ID"]);
-					displayPluginAction(ENTERPRISE_TYPE,$POST["ID"],$_POST['glpi_tab']);
+					showAssociatedContact($_POST["ID"]);
+					showContractAssociatedEnterprise($_POST["ID"]);
+					showDocumentAssociated(ENTERPRISE_TYPE,$_POST["ID"]);
+					showTrackingList($_POST['target'],$_POST["start"],$_POST["sort"],$POST["order"],"all",'','',0,0,0,0,0,$_POST["ID"]);
+					showLinkOnDevice(ENTERPRISE_TYPE,$_POST["ID"]);
+					displayPluginAction(ENTERPRISE_TYPE,$_POST["ID"],$_POST['glpi_tab']);
 					break;
 				case 1 :
-					showAssociatedContact($POST["ID"]);
+					showAssociatedContact($_POST["ID"]);
 					break;
 				case 4 :
-					showContractAssociatedEnterprise($POST["ID"]);
+					showContractAssociatedEnterprise($_POST["ID"]);
 					break;
 				case 5 :
-					showDocumentAssociated(ENTERPRISE_TYPE,$POST["ID"],0);
+					showDocumentAssociated(ENTERPRISE_TYPE,$_POST["ID"],0);
 					break;
 				case 6 :
-					showTrackingList($_POST['target']."?ID=".$POST["ID"],$POST["start"],$POST["sort"],$POST["order"],"all",'','',0,0,0,0,0,$POST["ID"]);
+					showTrackingList($_POST['target']."?ID=".$_POST["ID"],$_POST["start"],$_POST["sort"],$_POST["order"],"all",'','',0,0,0,0,0,$_POST["ID"]);
 					break;
 				case 7 : 
-					showLinkOnDevice(ENTERPRISE_TYPE,$POST["ID"]);
+					showLinkOnDevice(ENTERPRISE_TYPE,$_POST["ID"]);
 					break;
 				case 10 :
-					showNotesForm($_POST['target'],ENTERPRISE_TYPE,$POST["ID"]);
+					showNotesForm($_POST['target'],ENTERPRISE_TYPE,$_POST["ID"]);
 					break;	
 				case 15 :
-					showInfocomEnterprise($POST["ID"]);
+					showInfocomEnterprise($_POST["ID"]);
 					break;	
 				default : 
-					if (!displayPluginAction(ENTERPRISE_TYPE,$POST["ID"],$_POST['glpi_tab'])){
-						showAssociatedContact($POST["ID"]);
+					if (!displayPluginAction(ENTERPRISE_TYPE,$_POST["ID"],$_POST['glpi_tab'])){
+						showAssociatedContact($_POST["ID"]);
 					}
 					break;
 			}
