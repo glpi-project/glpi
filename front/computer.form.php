@@ -198,13 +198,6 @@ elseif(isset($_POST["unlock_field"])){
 
 	checkRight("computer","r");
 
-
-	if (!isset($_SESSION['glpi_onglet'])) $_SESSION['glpi_onglet']=1;
-	if (isset($_GET['onglet'])) {
-		$_SESSION['glpi_onglet']=$_GET['onglet'];
-	}
-
-
 	commonHeader($LANG["Menu"][0],$_SERVER['PHP_SELF'],"inventory","computer");
 	//show computer form to add
 	$computer->showForm($_SERVER['PHP_SELF'],$_GET["ID"], $_GET["withtemplate"]);

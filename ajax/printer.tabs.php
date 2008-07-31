@@ -50,13 +50,13 @@ if(!isset($_POST["withtemplate"])) $_POST["withtemplate"] = "";
 checkRight("printer","r");
 
 	if (isset($_POST['tab'])) {
-		$_SESSION['glpi_onglet']=$_POST['tab'];
+		$_SESSION['glpi_tab']=$_POST['tab'];
 	}
 
 	if (!empty($_POST["withtemplate"])) {
 
 		if ($_POST["ID"]>0){
-			switch($_SESSION['glpi_onglet']){
+			switch($_POST['tab']){
 				case 3 :
 					if ($_POST["withtemplate"]!=2)	showPortsAdd($_POST["ID"],PRINTER_TYPE);
 					showPorts($_POST["ID"], PRINTER_TYPE,$_POST["withtemplate"]);
@@ -75,7 +75,7 @@ checkRight("printer","r");
 			}	
 		}
 	} else {
-		switch($_SESSION['glpi_onglet']){
+		switch($_POST['tab']){
 			case -1:
 				showCartridgeInstalled($_POST["ID"]);
 				showCartridgeInstalled($_POST["ID"],1);		

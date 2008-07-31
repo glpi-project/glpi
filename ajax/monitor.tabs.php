@@ -46,7 +46,7 @@ if(!isset($_POST["withtemplate"])) $_POST["withtemplate"] = "";
 
 checkRight("monitor","r");
 
- if (isset($_POST['tab'])) { $_SESSION['glpi_onglet']=$_POST['tab']; } 
+ if (isset($_POST['tab'])) { $_SESSION['glpi_tab']=$_POST['tab']; } 
 
 	if (!empty($_POST["withtemplate"])) {
 

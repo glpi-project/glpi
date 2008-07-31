@@ -45,7 +45,7 @@ if(!isset($_POST["ID"])) {
 
 checkRight("cartridge","r");
 
-		if (isset($_POST['tab'])) {
+	if (isset($_POST['tab'])) {
 		$_SESSION['glpi_onglet']=$_POST['tab'];
 	}
 
