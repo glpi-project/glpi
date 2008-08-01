@@ -124,9 +124,31 @@ function showPorts ($device,$device_type,$withtemplate='') {
 			if ($canedit&&$withtemplate!=2){
 				echo "<div class='center'>";
 				echo "<table width='80%' class='tab_glpi'>";
-				echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markAllRows('networking_ports') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$device&amp;select=all'>".$LANG["buttons"][18]."</a></td>";
+				//echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markAllRows('networking_ports') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$device&amp;select=all'>".$LANG["buttons"][18]."</a></td>";
 
-				echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkAllRows('networking_ports') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$device&amp;select=none'>".$LANG["buttons"][19]."</a>";
+				//echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkAllRows('networking_ports') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$device&amp;select=none'>".$LANG["buttons"][19]."</a>";
+
+
+				echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td class='center'><span class='pointer' id='networking_ports_markall'>".$LANG["buttons"][18]."</span></td>";
+
+				echo "<td>/</td><td class='center'><span class='pointer' id='networking_ports_unmarkall'>".$LANG["buttons"][19]."</span>";
+
+				echo "<script type='text/javascript' language='javascript'>";
+				echo "Ext.onReady(function(){";
+				//echo "alert('toto')";
+				echo "Ext.get('networking_ports_markall').on(
+				'click',
+				function() {
+					if ( markAllRows('networking_ports') ) return false;
+				});\n";
+				echo "Ext.get('networking_ports_unmarkall').on(
+				'click',
+				function() {
+					if ( unMarkAllRows('networking_ports') ) return false;
+				});\n";
+				echo "});\n";
+				echo "</script>";
+
 				echo "</td>";
 				echo "<td width='80%' align='left'>";
 				dropdownMassiveActionPorts($device_type);
