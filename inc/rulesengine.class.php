@@ -586,6 +586,7 @@ class RuleCollection {
 				}
 			}
 		}
+
 		return $output;
 	}
 
@@ -624,7 +625,7 @@ class RuleCollection {
 		global $LANG,$RULES_ACTIONS;
 		$output = array();
 
-		$output = $this->testAllRules($input,array(),array());
+		$output = $this->testAllRules($input,array(),$input);
 		$rule = getRuleClass($this->rule_type);
 
 		echo "<div class='center'>"; 
@@ -698,6 +699,8 @@ class RuleCollection {
 		echo "<tr  class='tab_bg_2'>";
 		echo "<td class='tab_bg_2' colspan='4' align='center'>".$LANG["rulesengine"][41]." : <strong> ".getYesNo($global_result)."</strong></td>";
 
+		$output = $this->preProcessPreviewResults($output);
+		
 		foreach ($output as $criteria => $value){
 			echo "<tr  class='tab_bg_2'>";
 			echo "<td class='tab_bg_2'>";
@@ -710,6 +713,11 @@ class RuleCollection {
 		}
 		echo "</tr>";
 	}
+	
+	function preProcessPreviewResults($output)
+	{
+		return $output;
+	}	
 }
 
 /**
@@ -1500,6 +1508,11 @@ class Rule extends CommonDBTM{
 		echo "</tr>";
 	}
 
+	function preProcessResults($results)
+	{
+		return $results;
+	}
+	
 	/**
 	 * Show preview result of a rule
 	* @param $target where to go if action
@@ -1554,6 +1567,8 @@ class Rule extends CommonDBTM{
 				unset($output[$criteria]);
 			}
 		}
+
+		$output = $this->preProcessPreviewResults($output);
 			
 		foreach ($output as $criteria => $value){
 			echo "<tr  class='tab_bg_2'>";
@@ -1745,7 +1760,7 @@ class Rule extends CommonDBTM{
 	{
 		global $LANG;
 		$action=$this->getAction($ID);
-	print_r($action);
+	
 		if (!isset($action['type'])){
 			return $value;
 		} else {
