@@ -53,6 +53,10 @@ class TrackingBusinessRuleCollection extends RuleCollection {
 		return $LANG["rulesengine"][28];
 	}
 
+	function preProcessPreviewResults($output)
+	{
+		return showPreviewAssignAction($output);
+	}
 }
 
 class TrackingBusinessRule extends Rule {
@@ -76,9 +80,18 @@ class TrackingBusinessRule extends Rule {
 
 	function addSpecificParamsForPreview($input,$params)
 	{
-		if (!isset($input["FK_entities"]))
+		if (!isset($params["FK_entities"]))
 			$params["FK_entities"] = $_SESSION["glpiactive_entity"];
 		return $params;
+	}
+
+	/**
+	 * Function used to display type specific criterias during rule's preview
+	 * @param $fields fields values
+	 */
+	function showSpecificCriteriasForPreview($fields){
+		if (!isset($fields["FK_entities"]))
+			echo "<input type='hidden' name='FK_entities' value='".$_SESSION["glpiactive_entity"]."'>";
 	}
 
 	function executeActions($output,$params,$regex_results)
@@ -119,6 +132,10 @@ class TrackingBusinessRule extends Rule {
 		return $output;
 	}
 
+	function preProcessPreviewResults($output)
+	{
+		return showPreviewAssignAction($output);
+	}
 }
 
 

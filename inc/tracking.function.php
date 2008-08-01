@@ -2581,4 +2581,29 @@ function computeTicketTco($item_type,$item){
 	return $totalcost;
 }
 
+	function showPreviewAssignAction($output)
+	{
+		global $LANG,$INFOFORM_PAGES,$CFG_GLPI;
+		
+		//If ticket is assign to an object, display this information first
+		if (isset($output["FK_entities"]) && isset($output["computer"]) && isset($output["device_type"]))
+		{
+			echo "<tr  class='tab_bg_2'>";
+			echo "<td class='tab_bg_2'>".$LANG["rulesengine"][48]."</td>";
+
+			$commonitem = new CommonItem;
+			$commonitem->getFromDB($output["device_type"],$output["computer"]);
+			echo "<td class='tab_bg_2'>";
+			echo "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$output["device_type"]]."?ID=".$output["computer"]."\">".$commonitem->obj->fields["name"]."</a>";				
+			echo "</td>";
+			echo "</tr>";
+			
+			//Clean output of unnecessary fields (already processed)
+			unset($output["FK_entities"]);
+			unset($output["computer"]);
+			unset($output["device_type"]);
+		}
+
+		return $output;
+	}
 ?>
