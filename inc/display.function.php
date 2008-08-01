@@ -106,6 +106,7 @@ function includeCommonHtmlHeader($title=''){
 	echo "<script type='text/javascript'>";
 	// DO not get it from extjs website
 	echo "Ext.BLANK_IMAGE_URL = '".$CFG_GLPI["root_doc"]."/lib/extjs/s.gif';\n";
+	echo " Ext.Updater.defaults.loadScripts = true;";
 	// TODO : Loading indicator in span not in div : HTML Error if doing that / maybe load a image ?
 	echo "Ext.UpdateManager.defaults.indicatorText = \"<span class='loading-indicator'>".$LANG["common"][80]."</span>\";\n";
 	echo "</script>\n";
@@ -1971,6 +1972,7 @@ function createAjaxTabs($tabdiv_id='tabspanel',$tabdivcontent_id='tabcontent',$t
 
 	if (count($tabs)>0){
 		echo "<script type='text/javascript'>";
+
 			echo " var tabpanel = new Ext.TabPanel({
 				applyTo: '$tabdiv_id',
 				width:950,
@@ -1988,7 +1990,8 @@ function createAjaxTabs($tabdiv_id='tabspanel',$tabdivcontent_id='tabcontent',$t
 					}
 					echo "{
 					title: \"".$val['title']."\",
-					autoLoad: {url: '".$val['url']."',  scripts: true, nocache: true, ";
+					autoLoad: {url: '".$val['url']."',  
+					scripts: true, nocache:true,";
 					if (isset($val['params'])){
 						echo "params: '".$val['params']."'";
 					}
@@ -2001,19 +2004,18 @@ function createAjaxTabs($tabdiv_id='tabspanel',$tabdivcontent_id='tabcontent',$t
 			echo "/// Define view point";
 			echo "Ext.destroy(tabpanel.body);
 				tabpanel.body='$tabdivcontent_id';";
-			
+
 			echo "	// force first load 
 				function loadDefaultTab(){
 					tabpanel.setActiveTab($active);";
 				if (!empty($active_key)){
 					echo "Ext.get('$tabdivcontent_id').load({
 						url: '".$tabs[$active_key]['url']."',
-						scripts: true,
+						scripts: true,  nocache:true,
 						params: '".$tabs[$active_key]['params']."'});";
 				};
 			echo "}";
-	
-			echo "</script>";		
+		echo "</script>";		
 	
 	}
 
