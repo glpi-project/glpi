@@ -252,7 +252,7 @@ class Netdevice extends CommonDBTM {
 			}
 
 
-			echo "<div class='center'>";
+			echo "<div class='center'  id='tabsbody'>";
 			if ($canedit) {
 				echo "<form name='form' method='post' action=\"$target\">\n";
 				if(strcmp($template,"newtemplate") === 0) {
@@ -263,7 +263,7 @@ class Netdevice extends CommonDBTM {
 
 			echo "<table  class='tab_cadre_fixe' cellpadding='2'>\n";
 
-			echo "<tr><th align='center' id='tabsbody'>\n";
+			echo "<tr><th align='center'>\n";
 			if(!$template) {
 				echo $LANG["common"][2]." ".$this->fields["ID"];
 			}elseif (strcmp($template,"newcomp") === 0) {
