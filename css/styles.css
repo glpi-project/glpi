@@ -1232,7 +1232,7 @@ div#c_ssmenu1{
 div#c_ssmenu1 ul{
 	position: relative;
 	top: 4px;
-	left: 5px;
+	left: 0px;
 	list-style: none;
 	
 }
@@ -1264,7 +1264,7 @@ div#c_ssmenu2{
 div#c_ssmenu2 ul{
 	position: relative;
 	top: 5px;
-	left: 20px;
+	left: 0px;
 	list-style: none;
 }
 
