@@ -1081,7 +1081,7 @@ div#c_menu{
 	position: absolute;
 	top: 0px;
 	z-index: 10;
-	margin-left: 45px;
+	left: 45px;
 }
 
 div#c_menu ul#menu{
