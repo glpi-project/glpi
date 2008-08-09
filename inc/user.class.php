@@ -187,7 +187,7 @@ class User extends CommonDBTM {
 			if (empty ($input["password"])) {
 				unset ($input["password"]);
 			} else {
-				$input["password_md5"] = md5(unclean_cross_side_scripting_deep($input["password"]));
+				$input["password_md5"] = md5(unclean_cross_side_scripting_deep(stripslashes($input["password"])));
 				$input["password"] = "";
 			}
 		}
@@ -266,7 +266,7 @@ class User extends CommonDBTM {
 
 
 		if (isset ($input["password"])) {
-			$input["password_md5"] = md5(unclean_cross_side_scripting_deep($input["password"]));
+			$input["password_md5"] = md5(unclean_cross_side_scripting_deep(stripslashes($input["password"])));
 			$input["password"] = "";
 		}
 
