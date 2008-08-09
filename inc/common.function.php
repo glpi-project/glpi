@@ -639,7 +639,7 @@ function checkWriteAccessToDirs(){
 	// Only write test for GLPI_LOG as SElinux prevent removing log file.
 	echo "<tr class='tab_bg_1'><td><strong>".$LANG["install"][53]."</strong></td>";
 	if (error_log("Test\n", 3, GLPI_LOG_DIR."/php-errors.log")) {
-		echo "<td>".$LANG["install"][20]."</td></tr>";
+		echo "<td>".$LANG["install"][22]."</td></tr>";
 	} else {
 		echo "<td><p class='red'>".$LANG["install"][19]."</p> ".$LANG["install"][97]."'".GLPI_LOG_DIR."'. ".$LANG["install"][98]."</td></tr>";
 		$error=1;

@@ -561,6 +561,7 @@ $LANG["install"][17]="Le fichier n'a pas pu être créé.";
 $LANG["install"][19]="Le fichier a été créé mais n'a pas pu être supprimé."; 
 $LANG["install"][20]="Un fichier et un dossier ont été créés et supprimés - Parfait !"; 
 $LANG["install"][21]="Test d'écriture de fichiers documents"; 
+$LANG["install"][22]="Un fichier a été créé - Parfait !"; 
 $LANG["install"][23]="Test d'écriture du fichier de configuration"; 
 $LANG["install"][25]="Continuer ?"; 
 $LANG["install"][26]="Continuer"; 
