@@ -604,8 +604,7 @@ function checkWriteAccessToDirs(){
 		GLPI_CONFIG_DIR => $LANG["install"][23],
 		GLPI_SESSION_DIR => $LANG["install"][50],
 		GLPI_CRON_DIR => $LANG["install"][52],
-		GLPI_CACHE_DIR => $LANG["install"][99],
-		GLPI_LOG_DIR => $LANG["install"][53]
+		GLPI_CACHE_DIR => $LANG["install"][99]
 	);
 	$error=0;	
 	foreach ($dir_to_check as $dir => $message){
@@ -635,6 +634,15 @@ function checkWriteAccessToDirs(){
 				echo "<td>".$LANG["install"][20]."</td></tr>";
 				break;
 		}
+	}
+	
+	// Only write test for GLPI_LOG as SElinux prevent removing log file.
+	echo "<tr class='tab_bg_1'><td><strong>".$LANG["install"][53]."</strong></td>";
+	if (error_log("Test\n", 3, GLPI_LOG_DIR."/php-errors.log")) {
+		echo "<td>".$LANG["install"][20]."</td></tr>";
+	} else {
+		echo "<td><p class='red'>".$LANG["install"][19]."</p> ".$LANG["install"][97]."'".GLPI_LOG_DIR."'. ".$LANG["install"][98]."</td></tr>";
+		$error=1;
 	}
 	return $error;
 }
