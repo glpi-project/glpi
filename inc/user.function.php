@@ -333,7 +333,8 @@ function showUserRights($target,$ID){
 			FROM glpi_users_profiles 
 			LEFT JOIN glpi_profiles ON (glpi_users_profiles.FK_profiles = glpi_profiles.ID)
 			LEFT JOIN glpi_entities ON (glpi_users_profiles.FK_entities = glpi_entities.ID)
-			WHERE glpi_users_profiles.FK_users='$ID';";
+			WHERE glpi_users_profiles.FK_users='$ID'
+			ORDER BY glpi_profiles.name, glpi_entities.completename;";
 
 	$result=$DB->query($query);
 	if ($DB->numrows($result)>0){
