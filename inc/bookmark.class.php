@@ -152,7 +152,17 @@ class Bookmark extends CommonDBTM {
 			echo "<tr class='tab_bg_2'><td>".$LANG["common"][17].":		</td>";
 			echo "<td>";
 
-			privatePublicSwitch($this->fields["private"],$this->fields["FK_entities"],$this->fields["recursive"]);
+			if(haveRight("bookmark_public","w")) { 
+				privatePublicSwitch($this->fields["private"],$this->fields["FK_entities"],$this->fields["recursive"]);
+			}else{
+				if ($this->fields["private"]){
+					echo $LANG["common"][77];
+				} else {
+					echo $LANG["common"][76];
+				}
+			}
+
+			echo "</td></tr>";
 
 			if ($ID<=0) { // add
 				echo "<tr>";
