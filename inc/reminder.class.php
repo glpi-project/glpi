@@ -114,6 +114,15 @@ class Reminder extends CommonDBTM {
 		return $input;
 	}
 
+	function pre_updateInDB($input,$updates) {
+		// Set new user if initial user have been deleted 
+		if ($this->fields['FK_users']==0){
+			$input['FK_users']=$_SESSION["glpiID"];
+			$this->fields['FK_users']=$_SESSION["glpiID"];
+			$updates[]="FK_users";
+		}
+		return array($input,$updates);
+	}
 
 	function post_getEmpty () {
 		global $LANG;
