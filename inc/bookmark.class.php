@@ -73,6 +73,15 @@ class Bookmark extends CommonDBTM {
 		return $input;
 	}
 
+	function pre_updateInDB($input,$updates) {
+		if ($this->fields['FK_users']==0){
+			$input['FK_users']=$_SESSION["glpiID"];
+			$this->fields['FK_users']=$_SESSION["glpiID"];
+			$updates[]="FK_users";
+		}
+		return array($input,$updates);
+	}
+
 	function post_getEmpty () {
 		global $LANG;
 		$this->fields["FK_users"]=$_SESSION['glpiID'];
