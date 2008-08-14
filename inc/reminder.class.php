@@ -194,7 +194,11 @@ class Reminder extends CommonDBTM {
 	
 				privatePublicSwitch($this->fields["private"],$this->fields["FK_entities"],$this->fields["recursive"]);
 			}else{
-				echo getYesNo($this->fields["private"]);				
+				if ($this->fields["private"]){
+					echo $LANG["common"][77];
+				} else {
+					echo $LANG["common"][76];
+				}
 			}
 
 			echo "</td></tr>";
