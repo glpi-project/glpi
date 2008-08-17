@@ -491,6 +491,9 @@ function showLicenseForm($target, $action, $sID, $lID = "") {
 			$values = $lic->fields;
 		}
 
+	$soft=new Software();
+	$soft->getFromDB($sID);
+
 	if (empty ($values['expire']))
 		$values['expire'] = "0000-00-00";
 
@@ -555,8 +558,7 @@ function showLicenseForm($target, $action, $sID, $lID = "") {
 	// OEM
 	echo "<tr class='tab_bg_1'><td>" . $LANG["software"][28] . "</td><td>";
 	dropdownYesNo("oem", $values['oem']);
-	dropdownValue("glpi_computers", "oem_computer", $values["oem_computer"]);
-
+	dropdownValue("glpi_computers", "oem_computer", $values["oem_computer"],1,$soft->fields['FK_entities']);
 	echo "</td></tr>";
 	// BUY
 	echo "<tr class='tab_bg_1'><td>" . $LANG["software"][35] . "</td><td>";

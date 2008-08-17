@@ -712,7 +712,13 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="")
 		
 		// Les préférences + lien déconnexion 
 		echo "<div id='c_preference' >";
-		echo" <ul><li id='deconnexion'><a href=\"".$CFG_GLPI["root_doc"]."/logout.php\"  title=\"".$LANG["central"][6]."\">".$LANG["central"][6]."  </a>";
+		echo "<ul><li id='deconnexion'><a href=\"".$CFG_GLPI["root_doc"]."/logout.php";
+		// logout witour noAuto login for extauth
+		if (isset($_SESSION['glpiextauth'])&&$_SESSION['glpiextauth']){
+			echo "?noAUTO=1";
+		}
+		echo "\"  title=\"".$LANG["central"][6]."\">".$LANG["central"][6]."  </a>";
+
 		echo "(";
 		echo formatUserName (0,$_SESSION["glpiname"],$_SESSION["glpirealname"],$_SESSION["glpifirstname"],0,20);
 		echo ")</li>\n"; 

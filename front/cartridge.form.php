@@ -95,7 +95,7 @@ else if (isset($_GET["deletetype"])){
 	checkRight("cartridge","w");
 
 	$cartype->deleteCompatibleType($_GET["ID"]);
-	logEvent($_POST["ID"], "cartridges", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][31]);
+	logEvent($_GET["tID"], "cartridges", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][31]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else

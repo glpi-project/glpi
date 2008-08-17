@@ -60,7 +60,7 @@ else if (isset($_GET["delete"]))
 	checkRight("consumable","w");
 
 	$con->delete($_GET);
-	logEvent(0, "consumables", 4, "inventory", $_SESSION["glpiname"]." deleted a consumable.");
+	logEvent($_GET['tID'], "consumables", 4, "inventory", $_SESSION["glpiname"]." deleted a consumable.");
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($_POST["give"]))

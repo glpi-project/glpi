@@ -69,7 +69,7 @@ else if (isset($_GET["delete"]))
 {
 	checkRight("cartridge","w");
 	$cart->delete($_GET);
-	logEvent(0, "cartridges", 4, "inventory", $_SESSION["glpiname"]." deleted a cartridge.");
+	logEvent($_GET['tID'], "cartridges", 4, "inventory", $_SESSION["glpiname"]." deleted a cartridge.");
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($_GET["restore"]))
@@ -91,7 +91,7 @@ else if (isset($_GET["uninstall"]))
 {
 	checkRight("cartridge","w");
 	$cart->uninstall($_GET["ID"]);
-	logEvent(0, "cartridges", 5, "inventory", $_SESSION["glpiname"]." uninstalled cartridge.");
+	logEvent($_GET['tID'], "cartridges", 5, "inventory", $_SESSION["glpiname"]." uninstalled cartridge.");
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 glpi_header($_SERVER['HTTP_REFERER']);

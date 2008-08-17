@@ -633,23 +633,25 @@ function showSynchronizationForm($target, $ID) {
 			switch($data["auth_method"])
 			{
 				case AUTH_LDAP :
-				$sql = "SELECT name FROM glpi_auth_ldap WHERE ID=" . $data["id_auth"];
-				$result = $DB->query($sql);
-				if ($DB->numrows($result) > 0) {
-					//Look it the auth server still exists !
-						echo "<div class='center'>";
-						echo "<form method='post' action=\"$target\">";
+					echo "<div class='center'>";
+					echo "<form method='post' action=\"$target\">";
+
+					$sql = "SELECT name FROM glpi_auth_ldap WHERE ID=" . $data["id_auth"];
+					$result = $DB->query($sql);
+					if ($DB->numrows($result) > 0) {
+						//Look it the auth server still exists !
+
 						echo "<table class='tab_cadre'><tr class='tab_bg_2'><td>";
 						echo "<input type='hidden' name='ID' value='" . $ID . "'>";
 						echo "<input class=submit type='submit' name='force_ldap_resynch' value='" . $LANG["ocsng"][24] . "'>";
 						echo "</td></tr></table>";
+					}
 	
-						formChangeAuthMethodToDB($ID);
-						echo "<br>";
-						formChangeAuthMethodToMail($ID);
-								
-						echo "</form></div>";
-				}
+					formChangeAuthMethodToDB($ID);
+					echo "<br>";
+					formChangeAuthMethodToMail($ID);
+							
+					echo "</form></div>";
 				break;	
 				case AUTH_DB_GLPI :
 					echo "<div class='center'>";
