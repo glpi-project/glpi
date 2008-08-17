@@ -2127,7 +2127,6 @@ function ocsUpdateDevices($device_type, $glpi_id, $ocs_id, $ocs_server_id, $cfg_
 						$video["designation"] = $line2["NAME"];
 						if (!in_array(GFX_DEVICE . '$$$$$' . $video["designation"], $import_device)) {
 							$video["specif_default"] = "";
-							 $video["interface"] = "AGP"; 
 							if (!empty ($line2["MEMORY"]))
 								$video["specif_default"] = $line2["MEMORY"];
 							$video_id = ocsAddDevice(GFX_DEVICE, $video);
@@ -2965,7 +2964,7 @@ function ocsUpdateSoftware($glpi_id, $entity, $ocs_id, $ocs_server_id, $cfg_ocs,
 							$versionID = ocsImportVersion($isNewSoft,$modified_version);
 		
 							//Install license for this machine
-							$instID = installSoftwareVersion($glpi_id, $versionID, $isNewSoft, $dohistory);
+							$instID = installSoftwareVersion($glpi_id, $versionID, $dohistory);
 							
 							//Add the software to the table of softwares for this computer to add in database
 							$to_add_to_ocs_array[$instID] = $initname . '$$$$$'. $version;

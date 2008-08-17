@@ -46,7 +46,7 @@ $transfer=new Transfer();
 
 if (isset($_POST["add"]))
 {
-	checkRight("transfer","w");
+	$transfer->check(-1,'w');
 
 	$newID=$transfer->add($_POST);
 	logEvent($newID, "transfers", 4, "setup", $_SESSION["glpiname"]." ".$LANG["log"][20]." ".$_POST["name"].".");
@@ -54,14 +54,14 @@ if (isset($_POST["add"]))
 }
 else if (isset($_POST["delete"]))
 {
-	checkRight("transfer","w");
+	$transfer->check($_POST["ID"],'w');
 
 	$transfer->delete($_POST);
 	logEvent($_POST["ID"], "transfers", 4, "setup", $_SESSION["glpiname"]." ".$LANG["log"][22]);
 	glpi_header($CFG_GLPI["root_doc"]."/front/transfer.php");
 }else if (isset($_POST["update"]))
 {
-	checkRight("transfer","w");
+	$transfer->check($_POST["ID"],'w');
 
 	$transfer->update($_POST);
 	logEvent($_POST["ID"], "transfers", 4, "setup", $_SESSION["glpiname"]." ".$LANG["log"][21]);

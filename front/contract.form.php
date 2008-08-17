@@ -84,13 +84,7 @@ else if (isset($_POST["update"]))
 } 
 else if (isset($_POST["additem"]))
 {
-	if (strstr($_SERVER['HTTP_REFERER'], $_SERVER['SCRIPT_NAME'])) {
-		// error_log("update from contract form");
-		$contract->check($_POST['conID'],'w');
-	} else {
-		// error_log("update from infocom form of an equipement");
-		checkRight("contract_infocom","w");
-	}
+	$contract->check($_POST['conID'],'w');
 
 	if ($_POST['type']>0&&$_POST['item']>0){
 		addDeviceContract($_POST["conID"],$_POST['type'],$_POST['item']);
@@ -101,14 +95,7 @@ else if (isset($_POST["additem"]))
 else if (isset($_POST["deleteitem"]))
 {
 	// delete item from massive action menu
-	
-	if (strstr($_SERVER['HTTP_REFERER'], $_SERVER['SCRIPT_NAME'])) {
-		// error_log("update from contract form");
-		$contract->check($_POST['conID'],'w');
-	} else {
-		// error_log("update from infocom form of an equipement");
-		checkRight("contract_infocom","w");
-	}
+	$contract->check($_POST['conID'],'w');
 
 	if (count($_POST["item"]))
 		foreach ($_POST["item"] as $key => $val)
@@ -121,13 +108,7 @@ else if (isset($_GET["deleteitem"]))
 {
 	// delete single item from url on list
 	
-	if (strstr($_SERVER['HTTP_REFERER'], $_SERVER['SCRIPT_NAME'])) {
-		// error_log("update from contract form");
-		$contract->check($_GET['conID'],'w');
-	} else {
-		// error_log("update from infocom form of an equipement");
-		checkRight("contract_infocom","w");
-	}
+	$contract->check($_GET['conID'],'w');
 
 	deleteDeviceContract($_GET["ID"]);
 
@@ -152,8 +133,6 @@ else if (isset($_GET["deleteenterprise"]))
 }
 else
 {
-	$contract->check($_GET["ID"],'r');
-
 	commonHeader($LANG["Menu"][25],$_SERVER['PHP_SELF'],"financial","contract");
 
 	$contract->showForm($_SERVER['PHP_SELF'],$_GET["ID"]);

@@ -128,170 +128,157 @@ class Contact extends CommonDBTM{
 
 		if (!haveRight("contact_enterprise","r")) return false;
 
-		$spotted = false;
+
 		$use_cache=true;
 
-
-		if ($ID>0) {
-			if($this->can($ID,'r')) {
-				$spotted = true;	
-			}
+		if ($ID > 0){
+			$this->check($ID,'r');
 		} else {
+			// Create item 
+			$this->check(-1,'w');
 			$use_cache=false;
-			if ($this->can(-1,'w')){
-				$spotted = true;	
-				$this->getEmpty();
-			}
+			$this->getEmpty();
 		} 
 
+		$canedit=$this->can($ID,'w');
 
-		if ($spotted){
-			$canedit=$this->can($ID,'w');
+		$this->showTabs($ID, $withtemplate,$_SESSION['glpi_tab']);
 
-			$this->showTabs($ID, $withtemplate,$_SESSION['glpi_tab']);
-
-			if ($canedit) {
-				echo "<form method='post' name=form action=\"$target\"><div class='center' id='tabsbody'>";
-				if (empty($ID)||$ID<0){
-					echo "<input type='hidden' name='FK_entities' value='".$_SESSION["glpiactive_entity"]."'>";
-				}
-			}
-
-			echo "<table class='tab_cadre_fixe' cellpadding='2' >";
-			echo "<tr><th>";
+		if ($canedit) {
+			echo "<form method='post' name=form action=\"$target\"><div class='center' id='tabsbody'>";
 			if (empty($ID)||$ID<0){
-				echo $LANG["financial"][33];
-			} else {
-				echo $LANG["common"][2]." $ID";
+				echo "<input type='hidden' name='FK_entities' value='".$_SESSION["glpiactive_entity"]."'>";
 			}
-			if (isMultiEntitiesMode()){
-				echo "&nbsp;(".getDropdownName("glpi_entities",$this->fields["FK_entities"]).")";
-			}
-			if ($ID) {				
-				echo "&nbsp;<a href='".$CFG_GLPI["root_doc"]."/front/contact.vcard.php?ID=$ID'>".$LANG["common"][46]."</a>";
-			}		
+		}
 
-			echo "</th>";
-			echo "<th>";
-			if (isMultiEntitiesMode()){
-				echo $LANG["entity"][9].":&nbsp;";
-			
-				if ($this->can($ID,'recursive')) {
-					dropdownYesNo("recursive",$this->fields["recursive"]);					
-				} else {
-					echo getYesNo($this->fields["recursive"]);
-				}
+		echo "<table class='tab_cadre_fixe' cellpadding='2' >";
+		echo "<tr><th>";
+		if (empty($ID)||$ID<0){
+			echo $LANG["financial"][33];
+		} else {
+			echo $LANG["common"][2]." $ID";
+		}
+		if (isMultiEntitiesMode()){
+			echo "&nbsp;(".getDropdownName("glpi_entities",$this->fields["FK_entities"]).")";
+		}
+		if ($ID) {				
+			echo "&nbsp;<a href='".$CFG_GLPI["root_doc"]."/front/contact.vcard.php?ID=$ID'>".$LANG["common"][46]."</a>";
+		}		
+
+		echo "</th>";
+		echo "<th>";
+		if (isMultiEntitiesMode()){
+			echo $LANG["entity"][9].":&nbsp;";
+		
+			if ($this->can($ID,'recursive')) {
+				dropdownYesNo("recursive",$this->fields["recursive"]);					
 			} else {
-				echo "&nbsp;";
+				echo getYesNo($this->fields["recursive"]);
 			}
-			echo "</th>";
+		} else {
+			echo "&nbsp;";
+		}
+		echo "</th>";
+		echo "</tr>";
+
+		
+		if (!$use_cache||!($CFG_GLPI["cache"]->start($ID."_".$_SESSION["glpilanguage"],"GLPI_".$this->type))) {
+			echo "<tr><td class='tab_bg_1' valign='top'>";
+
+			echo "<table cellpadding='1' cellspacing='0' border='0'>\n";
+
+			echo "<tr><td>".$LANG["common"][48].":	</td>";
+			echo "<td>";
+			autocompletionTextField("name","glpi_contacts","name",$this->fields["name"],40,$this->fields["FK_entities"]);	
+			echo "</td></tr>";
+
+			echo "<tr><td>".$LANG["common"][43].":	</td>";
+			echo "<td>";
+			autocompletionTextField("firstname","glpi_contacts","firstname",$this->fields["firstname"],40,$this->fields["FK_entities"]);	
+			echo "</td></tr>";
+
+			echo "<tr><td>".$LANG["help"][35].": 	</td>";
+			echo "<td>";
+			autocompletionTextField("phone","glpi_contacts","phone",$this->fields["phone"],40,$this->fields["FK_entities"]);	
+
+			echo "</td></tr>";
+
+			echo "<tr><td>".$LANG["help"][35]." 2:	</td><td>";
+			autocompletionTextField("phone2","glpi_contacts","phone2",$this->fields["phone2"],40,$this->fields["FK_entities"]);
+			echo "</td></tr>";
+
+			echo "<tr><td>".$LANG["common"][42].":	</td><td>";
+			autocompletionTextField("mobile","glpi_contacts","mobile",$this->fields["mobile"],40,$this->fields["FK_entities"]);
+			echo "</td></tr>";
+
+
+			echo "<tr><td>".$LANG["financial"][30].":	</td><td>";
+			autocompletionTextField("fax","glpi_contacts","fax",$this->fields["fax"],40,$this->fields["FK_entities"]);
+			echo "</td></tr>";
+			echo "<tr><td>".$LANG["setup"][14].":	</td><td>";
+			autocompletionTextField("email","glpi_contacts","email",$this->fields["email"],40,$this->fields["FK_entities"]);
+			echo "</td></tr>";
+
+			echo "<tr><td>".$LANG["common"][17].":	</td>";
+			echo "<td>";
+			dropdownValue("glpi_dropdown_contact_type","type",$this->fields["type"]);
+			echo "</td>";
 			echo "</tr>";
 
-			
-			if (!$use_cache||!($CFG_GLPI["cache"]->start($ID."_".$_SESSION["glpilanguage"],"GLPI_".$this->type))) {
-				echo "<tr><td class='tab_bg_1' valign='top'>";
-	
-				echo "<table cellpadding='1' cellspacing='0' border='0'>\n";
-	
-				echo "<tr><td>".$LANG["common"][48].":	</td>";
-				echo "<td>";
-				autocompletionTextField("name","glpi_contacts","name",$this->fields["name"],40,$this->fields["FK_entities"]);	
-				echo "</td></tr>";
-	
-				echo "<tr><td>".$LANG["common"][43].":	</td>";
-				echo "<td>";
-				autocompletionTextField("firstname","glpi_contacts","firstname",$this->fields["firstname"],40,$this->fields["FK_entities"]);	
-				echo "</td></tr>";
-	
-				echo "<tr><td>".$LANG["help"][35].": 	</td>";
-				echo "<td>";
-				autocompletionTextField("phone","glpi_contacts","phone",$this->fields["phone"],40,$this->fields["FK_entities"]);	
-	
-				echo "</td></tr>";
-	
-				echo "<tr><td>".$LANG["help"][35]." 2:	</td><td>";
-				autocompletionTextField("phone2","glpi_contacts","phone2",$this->fields["phone2"],40,$this->fields["FK_entities"]);
-				echo "</td></tr>";
-	
-				echo "<tr><td>".$LANG["common"][42].":	</td><td>";
-				autocompletionTextField("mobile","glpi_contacts","mobile",$this->fields["mobile"],40,$this->fields["FK_entities"]);
-				echo "</td></tr>";
-	
-	
-				echo "<tr><td>".$LANG["financial"][30].":	</td><td>";
-				autocompletionTextField("fax","glpi_contacts","fax",$this->fields["fax"],40,$this->fields["FK_entities"]);
-				echo "</td></tr>";
-				echo "<tr><td>".$LANG["setup"][14].":	</td><td>";
-				autocompletionTextField("email","glpi_contacts","email",$this->fields["email"],40,$this->fields["FK_entities"]);
-				echo "</td></tr>";
+			echo "</table>";
 
-				echo "<tr><td>".$LANG["common"][17].":	</td>";
-				echo "<td>";
-				dropdownValue("glpi_dropdown_contact_type","type",$this->fields["type"]);
-				echo "</td>";
-				echo "</tr>";
-	
-				echo "</table>";
-	
-				echo "</td>\n";	
-	
-				echo "<td class='tab_bg_1' valign='top'>";
-	
-				echo "<table cellpadding='1' cellspacing='0' border='0'><tr><td>";
-				echo $LANG["common"][25].":	</td></tr>";
-				echo "<tr><td class='center'><textarea cols='45' rows='4' name='comments' >".$this->fields["comments"]."</textarea>";
-				echo "</td></tr></table>";
-	
-				echo "</td>";
-				echo "</tr>";
-				if ($use_cache){
-					$CFG_GLPI["cache"]->end();
-				}
+			echo "</td>\n";	
+
+			echo "<td class='tab_bg_1' valign='top'>";
+
+			echo "<table cellpadding='1' cellspacing='0' border='0'><tr><td>";
+			echo $LANG["common"][25].":	</td></tr>";
+			echo "<tr><td class='center'><textarea cols='45' rows='4' name='comments' >".$this->fields["comments"]."</textarea>";
+			echo "</td></tr></table>";
+
+			echo "</td>";
+			echo "</tr>";
+			if ($use_cache){
+				$CFG_GLPI["cache"]->end();
 			}
-
-			if ($canedit) {
-				if ($ID>0){
-					echo "<tr>";
-					echo "<td class='tab_bg_2' valign='top'>";
-					echo "<input type='hidden' name='ID' value=\"$ID\">\n";
-					echo "<div class='center'><input type='submit' name='update' value=\"".$LANG["buttons"][7]."\" class='submit' ></div>";
-					echo "</td>\n\n";
-					echo "<td class='tab_bg_2' valign='top'>\n";
-					if (!$this->fields["deleted"])
-						echo "<div class='center'><input type='submit' name='delete' value=\"".$LANG["buttons"][6]."\" class='submit'></div>";
-					else {
-						echo "<div class='center'><input type='submit' name='restore' value=\"".$LANG["buttons"][21]."\" class='submit'>";
-
-						echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='submit' name='purge' value=\"".$LANG["buttons"][22]."\" class='submit'></div>";
-					}
-					echo "</td>";
-					echo "</tr>";
-
-				} else {
-
-					echo "<tr>";
-					echo "<td class='tab_bg_2' valign='top' colspan='2'>";
-					echo "<div class='center'><input type='submit' name='add' value=\"".$LANG["buttons"][8]."\" class='submit'></div>";
-					echo "</td>";
-					echo "</tr>";
-				}
-				echo "</table></div></form>";
-				
-				
-			} else { // canedit
-				echo "</table></div>";
-			}
-			
-			echo "<div id='tabcontent'></div>";
-			echo "<script type='text/javascript'>loadDefaultTab();</script>";
-				
-
-
-		} else { // con_spotted
-			echo "<div class='center'><strong>".$LANG["common"][54]."</strong></div>";
-			return false;
-
 		}
+
+		if ($canedit) {
+			if ($ID>0){
+				echo "<tr>";
+				echo "<td class='tab_bg_2' valign='top'>";
+				echo "<input type='hidden' name='ID' value=\"$ID\">\n";
+				echo "<div class='center'><input type='submit' name='update' value=\"".$LANG["buttons"][7]."\" class='submit' ></div>";
+				echo "</td>\n\n";
+				echo "<td class='tab_bg_2' valign='top'>\n";
+				if (!$this->fields["deleted"])
+					echo "<div class='center'><input type='submit' name='delete' value=\"".$LANG["buttons"][6]."\" class='submit'></div>";
+				else {
+					echo "<div class='center'><input type='submit' name='restore' value=\"".$LANG["buttons"][21]."\" class='submit'>";
+
+					echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='submit' name='purge' value=\"".$LANG["buttons"][22]."\" class='submit'></div>";
+				}
+				echo "</td>";
+				echo "</tr>";
+
+			} else {
+
+				echo "<tr>";
+				echo "<td class='tab_bg_2' valign='top' colspan='2'>";
+				echo "<div class='center'><input type='submit' name='add' value=\"".$LANG["buttons"][8]."\" class='submit'></div>";
+				echo "</td>";
+				echo "</tr>";
+			}
+			echo "</table></div></form>";
+			
+			
+		} else { // canedit
+			echo "</table></div>";
+		}
+		
+		echo "<div id='tabcontent'></div>";
+		echo "<script type='text/javascript'>loadDefaultTab();</script>";
+			
 		return true;
 	}
 

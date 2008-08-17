@@ -124,10 +124,10 @@ function haveTypeRight($type, $right) {
 			return haveRight("contact_enterprise", $right);
 			break;
 		case INFOCOM_TYPE :
-			return haveRight("contract_infocom", $right);
+			return haveRight("infocom", $right);
 			break;
 		case CONTRACT_TYPE :
-			return haveRight("contract_infocom", $right);
+			return haveRight("contract", $right);
 			break;
 		case CARTRIDGE_TYPE :
 			return haveRight("cartridge", $right);
@@ -242,7 +242,33 @@ function displayRightError() {
 		}
 	}
 	echo "<div class='center'><br><br><img src=\"" . $CFG_GLPI["root_doc"] . "/pics/warning.png\" alt=\"warning\"><br><br>";
-	echo "<strong>" . $LANG["login"][5] . "</strong></div>";
+	echo "<strong>" . $LANG["common"][83] . "</strong></div>";
+	nullFooter();
+	exit ();
+}
+
+/**
+ * Display common message for item not found
+ *
+ * @return Nothing
+**/
+function displayNotFoundError() {
+	global $LANG, $CFG_GLPI, $HEADER_LOADED;
+	if (!$HEADER_LOADED) {
+		if (!isset ($_SESSION["glpiactiveprofile"]["interface"])){
+			nullHeader($LANG["login"][5], $_SERVER['PHP_SELF']);
+		} else {
+			if ($_SESSION["glpiactiveprofile"]["interface"] == "central"){
+				commonHeader($LANG["login"][5], $_SERVER['PHP_SELF']);
+			} else {
+				if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk"){
+					helpHeader($LANG["login"][5], $_SERVER['PHP_SELF']);
+				}
+			}
+		}
+	}
+	echo "<div class='center'><br><br><img src=\"" . $CFG_GLPI["root_doc"] . "/pics/warning.png\" alt=\"warning\"><br><br>";
+	echo "<strong>" . $LANG["common"][54] . "</strong></div>";
 	nullFooter();
 	exit ();
 }

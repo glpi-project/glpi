@@ -98,8 +98,6 @@ else if (isset($_GET["deleteenterprise"]))
 
 else
 {
-	$contact->check($_GET["ID"],'r');
-
 	commonHeader($LANG["Menu"][22],$_SERVER['PHP_SELF'],"financial","contact");
 
 	$contact->showForm($_SERVER['PHP_SELF'],$_GET["ID"],'');

@@ -47,18 +47,22 @@ if(!isset($_GET["cID"])) $_GET["cID"] = "";
 $disk=new ComputerDisk();
 if (isset($_POST["add"]))
 {
-	checkRight("computer","w");
+	$computer=new Computer();
+	if ($computer->getFromDB($_POST['FK_computers'])){
 
-	if ($newID=$disk->add($_POST)){
-		logEvent($_POST['FK_computers'], "computer", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][82]." $newID.");
-		glpi_header($CFG_GLPI["root_doc"]."/front/computer.form.php?ID=".$disk->fields['FK_computers']);
-	} else {
-		glpi_header($_SERVER['HTTP_REFERER']);
-	}	
+		$disk->check(-1,'w',$computer->fields['FK_entities']);
+	
+		if ($newID=$disk->add($_POST)){
+			logEvent($_POST['FK_computers'], "computer", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][82]." $newID.");
+			glpi_header($CFG_GLPI["root_doc"]."/front/computer.form.php?ID=".$disk->fields['FK_computers']);
+		} else {
+			glpi_header($_SERVER['HTTP_REFERER']);
+		}	
+	}
 }
 else if (isset($_POST["delete"]))
 {
-	checkRight("computer","w");
+	$disk->check($_POST["ID"],'w');
 
 	$disk->delete($_POST);
 
@@ -67,7 +71,7 @@ else if (isset($_POST["delete"]))
 }
 else if (isset($_POST["update"]))
 {
-	checkRight("computer","w");
+	$disk->check($_POST["ID"],'w');
 
 	$disk->update($_POST);
 	logEvent($disk->fields['FK_computers'], "computer", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][83]." ".$_POST["ID"]);
@@ -75,7 +79,6 @@ else if (isset($_POST["update"]))
 } 
 else
 {
-	checkRight("computer","r");
 
 	commonHeader($LANG["Menu"][0],$_SERVER['PHP_SELF'],"inventory","computer");
 	$disk->showForm($_SERVER['PHP_SELF'],$_GET["ID"],$_GET["cID"]);

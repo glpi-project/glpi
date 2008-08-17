@@ -50,7 +50,7 @@ $phone=new Phone();
 
 if (isset($_POST["add"]))
 {
-	checkRight("phone","w");
+	$phone->check(-1,'w',$_POST['FK_entities']);
 
 	$newID=$phone->add($_POST);
 	logEvent($newID, "phones", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][20]." ".$_POST["name"].".");
@@ -58,7 +58,7 @@ if (isset($_POST["add"]))
 }
 else if (isset($_POST["delete"]))
 {
-	checkRight("phone","w");
+	$phone->check($_POST["ID"],'w');
 
 	if (!empty($_POST["withtemplate"]))
 		$phone->delete($_POST,1);
@@ -72,7 +72,7 @@ else if (isset($_POST["delete"]))
 }
 else if (isset($_POST["restore"]))
 {
-	checkRight("phone","w");
+	$phone->check($_POST["ID"],'w');
 
 	$phone->restore($_POST);
 	logEvent($_POST["ID"], "phones", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][23]);
@@ -80,7 +80,7 @@ else if (isset($_POST["restore"]))
 }
 else if (isset($_POST["purge"]) || isset($_GET["purge"]))
 {
-	checkRight("phone","w");
+	$phone->check($_POST["ID"],'w');
 		
 	if (isset($_POST["purge"]))
 		$input["ID"]=$_POST["ID"];
@@ -93,7 +93,7 @@ else if (isset($_POST["purge"]) || isset($_GET["purge"]))
 }
 else if (isset($_POST["update"]))
 {
-	checkRight("phone","w");
+	$phone->check($_POST["ID"],'w');
 
 	$phone->update($_POST);
 	logEvent($_POST["ID"], "phones", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][21]);
@@ -101,7 +101,7 @@ else if (isset($_POST["update"]))
 }
 else if (isset($_GET["unglobalize"]))
 {
-	checkRight("phone","w");
+	$phone->check($_GET["ID"],'w');
 
 	unglobalizeDevice(PHONE_TYPE,$_GET["ID"]);
 	logEvent($_GET["ID"], "phones", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][60]);
@@ -109,6 +109,7 @@ else if (isset($_GET["unglobalize"]))
 }
 else if (isset($_GET["disconnect"]))
 {
+	/// TODO : which right on connect / disconnect ?
 	checkRight("phone","w");
 	Disconnect($_GET["ID"]);
 	logEvent(0, "phones", 5, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][27]);
@@ -116,7 +117,7 @@ else if (isset($_GET["disconnect"]))
 }
 else if(isset($_POST["connect"])&&isset($_POST["item"])&&$_POST["item"]>0)
 {
-
+	/// TODO : which right on connect / disconnect ?
 	checkRight("phone","w");
 
 	Connect($_POST["sID"],$_POST["item"],PHONE_TYPE);
@@ -127,11 +128,9 @@ else if(isset($_POST["connect"])&&isset($_POST["item"])&&$_POST["item"]>0)
 }
 else
 {
-	checkRight("phone","r");
-
 	commonHeader($LANG["help"][35],$_SERVER['PHP_SELF'],"inventory","phone");
 
-			$phone->showForm($_SERVER['PHP_SELF'],$_GET["ID"], $_GET["withtemplate"]);
+	$phone->showForm($_SERVER['PHP_SELF'],$_GET["ID"], $_GET["withtemplate"]);
 	
 	commonFooter();
 }

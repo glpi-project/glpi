@@ -105,95 +105,88 @@ class Bookmark extends CommonDBTM {
 
 		global $CFG_GLPI,$LANG;
 
-		$canedit=false;
-		
-		if ($ID>0) {
-			if($this->can($ID,'w')) {
-				$canedit = true;	
-			}
+
+		// Only an edit form : always check w right
+		if ($ID > 0){
+			$this->check($ID,'w');
 		} else {
+			// Create item : do getempty before check right to set default values
 			$this->getEmpty();
-			if ($this->can(-1,'w')){
-				$canedit = true;
-			}
+			$this->check(-1,'w');
 		} 
-		echo '<br>';
-		if ( $canedit){
-			echo "<form method='post' name='form_save_query' action=\"$target\">";
-			echo "<div class='center'>";
-			if ($device_type!=0){
-				echo "<input type='hidden' name='device_type' value='$device_type'>";
-			}
-			if ($type!=0){
-				echo "<input type='hidden' name='type' value='$type'>";
-			}
 
-			if (!empty($url)) {
-				echo "<input type='hidden' name='url' value='" . rawurlencode($url) . "'>";
-			}
-
-			echo "<table class='tab_cadre' width='500'>";
-			echo "<tr><th>&nbsp;</th><th>";
-			if ($ID>0) {
-				echo $LANG["common"][2]." $ID";
-			} else {
-				echo $LANG["bookmark"][4];
-			}		
-
-			echo "</th></tr>";
-
-
-			echo "<tr><td class='tab_bg_1'>".$LANG["common"][16]."</td>"; 
-
-			echo "<td class='tab_bg_1'>";
-			autocompletionTextField("name",$this->table,"name",$this->fields['name'],40,-1,$this->fields["FK_users"]);				
-			echo "</td></tr>"; 
-
-			echo "<tr class='tab_bg_2'><td>".$LANG["common"][17].":		</td>";
-			echo "<td>";
-
-			if(haveRight("bookmark_public","w")) { 
-				privatePublicSwitch($this->fields["private"],$this->fields["FK_entities"],$this->fields["recursive"]);
-			}else{
-				if ($this->fields["private"]){
-					echo $LANG["common"][77];
-				} else {
-					echo $LANG["common"][76];
-				}
-			}
-
-			echo "</td></tr>";
-
-			if ($ID<=0) { // add
-				echo "<tr>";
-				echo "<td class='tab_bg_2' valign='top' colspan='2'>";
-				echo "<input type='hidden' name='FK_users' value=\"".$this->fields['FK_users']."\">\n";
-				echo "<div class='center'><input type='submit' name='add' value=\"".$LANG["buttons"][8]."\" class='submit'></div>";
-				echo "</td>";
-				echo "</tr>";
-			} else { 
-				echo "<tr>";
-
-				echo "<td class='tab_bg_2' valign='top' colspan='2'>";
-				echo "<input type='hidden' name='ID' value=\"$ID\">\n";
-				echo "<div class='center'><input type='submit' name='update' value=\"".$LANG["buttons"][7]."\" class='submit'>";
-
-				echo "<input type='hidden' name='ID' value=\"$ID\">\n";
-
-				echo "<input type='submit' name='delete' value=\"".$LANG["buttons"][6]."\" class='submit'></div>";
-
-				echo "</td>";
-				echo "</tr>";
-			}
-
-			echo "</table>";
-			echo "</div>";
-			echo "</form>";
-		} else {
-			echo "<div class='center'><strong>".$LANG["common"][54]."</strong></div>";
-
-		}
 		
+		echo '<br>';
+		echo "<form method='post' name='form_save_query' action=\"$target\">";
+		echo "<div class='center'>";
+		if ($device_type!=0){
+			echo "<input type='hidden' name='device_type' value='$device_type'>";
+		}
+		if ($type!=0){
+			echo "<input type='hidden' name='type' value='$type'>";
+		}
+
+		if (!empty($url)) {
+			echo "<input type='hidden' name='url' value='" . rawurlencode($url) . "'>";
+		}
+
+		echo "<table class='tab_cadre' width='500'>";
+		echo "<tr><th>&nbsp;</th><th>";
+		if ($ID>0) {
+			echo $LANG["common"][2]." $ID";
+		} else {
+			echo $LANG["bookmark"][4];
+		}		
+
+		echo "</th></tr>";
+
+
+		echo "<tr><td class='tab_bg_1'>".$LANG["common"][16]."</td>"; 
+
+		echo "<td class='tab_bg_1'>";
+		autocompletionTextField("name",$this->table,"name",$this->fields['name'],40,-1,$this->fields["FK_users"]);				
+		echo "</td></tr>"; 
+
+		echo "<tr class='tab_bg_2'><td>".$LANG["common"][17].":		</td>";
+		echo "<td>";
+
+		if(haveRight("bookmark_public","w")) { 
+			privatePublicSwitch($this->fields["private"],$this->fields["FK_entities"],$this->fields["recursive"]);
+		}else{
+			if ($this->fields["private"]){
+				echo $LANG["common"][77];
+			} else {
+				echo $LANG["common"][76];
+			}
+		}
+
+		echo "</td></tr>";
+
+		if ($ID<=0) { // add
+			echo "<tr>";
+			echo "<td class='tab_bg_2' valign='top' colspan='2'>";
+			echo "<input type='hidden' name='FK_users' value=\"".$this->fields['FK_users']."\">\n";
+			echo "<div class='center'><input type='submit' name='add' value=\"".$LANG["buttons"][8]."\" class='submit'></div>";
+			echo "</td>";
+			echo "</tr>";
+		} else { 
+			echo "<tr>";
+
+			echo "<td class='tab_bg_2' valign='top' colspan='2'>";
+			echo "<input type='hidden' name='ID' value=\"$ID\">\n";
+			echo "<div class='center'><input type='submit' name='update' value=\"".$LANG["buttons"][7]."\" class='submit'>";
+
+			echo "<input type='hidden' name='ID' value=\"$ID\">\n";
+
+			echo "<input type='submit' name='delete' value=\"".$LANG["buttons"][6]."\" class='submit'></div>";
+
+			echo "</td>";
+			echo "</tr>";
+		}
+
+		echo "</table>";
+		echo "</div>";
+		echo "</form>";		
 	}
 
 	/**

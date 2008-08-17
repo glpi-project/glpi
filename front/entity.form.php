@@ -45,13 +45,15 @@ $entitydata=new EntityData();
 
 if (isset($_POST["update"]))
 {
-	checkRight("entity","w");
+	$entity->check($_POST["ID"],'w');
+
 	$entitydata->update($_POST);
+
 	logEvent($_POST["ID"], "entity", 4, "setup", $_SESSION["glpiname"]." ".$LANG["log"][21]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 } else if (isset($_POST["adduser"]))
 {
-	checkRight("entity","w");
+	$entity->check($_POST["FK_entities"],'w');
 
 	addUserProfileEntity($_POST);
 
@@ -59,7 +61,7 @@ if (isset($_POST["update"]))
 	glpi_header($_SERVER['HTTP_REFERER']);
 } else if (isset($_POST["add_rule"]))
 {
-	checkRight("entity","w");
+	$entity->check($_POST["affectentity"],'w');
 
 
 	$rule = new OcsAffectEntityRule;
@@ -77,7 +79,7 @@ if (isset($_POST["update"]))
 	glpi_header($_SERVER['HTTP_REFERER']);
 } else if (isset($_POST["add_user_rule"]))
 {
-	checkRight("entity","w");
+	$entity->check($_POST["affectentity"],'w');
 
 
 	$rule = new RightAffectRule;
@@ -100,7 +102,7 @@ if (isset($_POST["update"]))
 
 } else if (isset($_POST["deleteuser"]))
 {
-	checkRight("entity","w");
+	$entity->check($_POST["FK_entities"],'w');
 
 	if (count($_POST["item"])){
 		foreach ($_POST["item"] as $key => $val){
@@ -112,7 +114,8 @@ if (isset($_POST["update"]))
 	glpi_header($_SERVER['HTTP_REFERER']);
 }elseif (isset($_POST["delete_computer_rule"]) || isset($_POST["delete_user_rule"]))
 {
-	checkRight("entity","w");
+	$entity->check($_POST["affectentity"],'w');
+
 	if (isset($_POST["delete_computer_rule"])){
 		$rule = new OcsAffectEntityRule;		
 	} else {

@@ -1,4 +1,4 @@
-#GLPI Dump database on 2008-07-13 18:46
+#GLPI Dump database on 2008-08-17 17:41
 
 ### Dump table glpi_alerts
 
@@ -295,6 +295,7 @@ CREATE TABLE `glpi_config` (
   `cas_logout` varchar(255) collate utf8_unicode_ci default NULL,
   `extra_ldap_server` int(11) NOT NULL default '1',
   `existing_auth_server_field` varchar(255) collate utf8_unicode_ci default NULL,
+  `existing_auth_server_field_clean_domain` smallint(6) NOT NULL default '0',
   `planning_begin` time NOT NULL default '08:00:00',
   `planning_end` time NOT NULL default '20:00:00',
   `utf8_conv` int(11) NOT NULL default '0',
@@ -376,7 +377,7 @@ CREATE TABLE `glpi_config` (
   PRIMARY KEY  (`ID`)
 ) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-INSERT INTO glpi_config VALUES ('1','10','0','1','255','30','15','50',' 0.72','GLPI powered by indepnet','5','0','admsys@xxxxx.fr',NULL,'SIGNATURE','','fr_FR','#fff2f2','#ffe0e0','#ffcece','#ffbfbf','#ffadad','2005-12-31','10','','','',NULL,'1',NULL,'08:00:00','20:00:00','1','0','0','http://localhost/glpi/','0','','0','','100','*','0','50','1','1','0','0','name','0','50','0','0','1','20','0',NULL,'25',NULL,NULL,NULL,'8080',NULL,NULL,'1','0','0','0','0','0','0','0','5','2',NULL,NULL,'0','2','2','2','2','2','1','0','0','1','1','1','1','0','0','0','0','0','0','0','1','1','1','0',NULL,'3600','1',NULL,'0','1','0','2097152');
+INSERT INTO glpi_config VALUES ('1','10','0','1','255','30','15','50',' 0.72','GLPI powered by indepnet','5','0','admsys@xxxxx.fr',NULL,'SIGNATURE','','fr_FR','#fff2f2','#ffe0e0','#ffcece','#ffbfbf','#ffadad','2005-12-31','10','','','',NULL,'1',NULL,'0','08:00:00','20:00:00','1','0','0','http://localhost/glpi/','0','','0','','100','*','0','50','1','1','0','0','name','0','50','0','0','1','20','0',NULL,'25',NULL,NULL,NULL,'8080',NULL,NULL,'1','0','0','0','0','0','0','0','5','2',NULL,NULL,'0','2','2','2','2','2','1','0','0','1','1','1','1','0','0','0','0','0','0','0','1','1','1','0',NULL,'3600','1',NULL,'0','1','0','2097152');
 
 ### Dump table glpi_connect_wire
 
@@ -610,7 +611,7 @@ DROP TABLE IF EXISTS `glpi_device_gfxcard`;
 CREATE TABLE `glpi_device_gfxcard` (
   `ID` int(11) NOT NULL auto_increment,
   `designation` varchar(255) collate utf8_unicode_ci default NULL,
-  `interface` varchar(255) collate utf8_unicode_ci default 'PCI-X',
+  `FK_interface` int(11) NOT NULL default '0',
   `comment` text collate utf8_unicode_ci,
   `FK_glpi_enterprise` int(11) NOT NULL default '0',
   `specif_default` varchar(255) collate utf8_unicode_ci default NULL,
@@ -1089,12 +1090,16 @@ CREATE TABLE `glpi_dropdown_interface` (
   `comments` text collate utf8_unicode_ci,
   PRIMARY KEY  (`ID`),
   KEY `name` (`name`)
-) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=9 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 INSERT INTO glpi_dropdown_interface VALUES ('1','IDE',NULL);
 INSERT INTO glpi_dropdown_interface VALUES ('2','SATA',NULL);
 INSERT INTO glpi_dropdown_interface VALUES ('3','SCSI',NULL);
 INSERT INTO glpi_dropdown_interface VALUES ('4','USB',NULL);
+INSERT INTO glpi_dropdown_interface VALUES ('5','AGP','');
+INSERT INTO glpi_dropdown_interface VALUES ('6','PCI','');
+INSERT INTO glpi_dropdown_interface VALUES ('7','PCIe','');
+INSERT INTO glpi_dropdown_interface VALUES ('8','PCI-X','');
 
 ### Dump table glpi_dropdown_kbcategories
 
@@ -1492,7 +1497,7 @@ CREATE TABLE `glpi_event_log` (
   KEY `itemtype` (`itemtype`)
 ) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-INSERT INTO glpi_event_log VALUES ('3','-1','system','2008-07-13 18:46:26','login','3','glpi connexion de l\'IP : 127.0.0.1');
+INSERT INTO glpi_event_log VALUES ('3','-1','system','2008-08-17 17:41:26','login','3','glpi connexion de l\'IP : 127.0.0.1');
 
 ### Dump table glpi_followups
 
@@ -2119,7 +2124,8 @@ CREATE TABLE `glpi_profiles` (
   `notes` char(1) collate utf8_unicode_ci default NULL,
   `contact_enterprise` char(1) collate utf8_unicode_ci default NULL,
   `document` char(1) collate utf8_unicode_ci default NULL,
-  `contract_infocom` char(1) collate utf8_unicode_ci default NULL,
+  `contract` char(1) collate utf8_unicode_ci default NULL,
+  `infocom` char(1) collate utf8_unicode_ci default NULL,
   `knowbase` char(1) collate utf8_unicode_ci default NULL,
   `faq` char(1) collate utf8_unicode_ci default NULL,
   `reservation_helpdesk` char(1) collate utf8_unicode_ci default NULL,
@@ -2179,10 +2185,10 @@ CREATE TABLE `glpi_profiles` (
   KEY `interface` (`interface`)
 ) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-INSERT INTO glpi_profiles VALUES ('1','post-only','helpdesk','1',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'r','1',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'1',NULL,'1',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'1',NULL,NULL,NULL,NULL,NULL,'1','1','8388674','0','0',NULL,NULL);
-INSERT INTO glpi_profiles VALUES ('2','normal','central','0','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','1','r','r',NULL,'r',NULL,NULL,NULL,NULL,'r','r',NULL,NULL,NULL,NULL,NULL,'w',NULL,'r',NULL,'r','r','r',NULL,NULL,NULL,NULL,NULL,NULL,'1','1','1','0','0','1','0','0','1','1','0','1','0','1','0','0','1','1','1','8388674','0','0',NULL,NULL);
-INSERT INTO glpi_profiles VALUES ('3','admin','central','0','w','w','w','w','w','w','w','w','w','w','w','w','w','w','w','1','w','r','w','r','w','w','w','w','w','w',NULL,NULL,NULL,NULL,NULL,'w','w','r','r','w','w','w',NULL,NULL,NULL,NULL,NULL,NULL,'1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','3','8388674','0','0',NULL,NULL);
-INSERT INTO glpi_profiles VALUES ('4','super-admin','central','0','w','w','w','w','w','w','w','w','w','w','w','w','w','w','w','1','w','r','w','r','w','w','w','w','w','w','w','w','w','w','w','w','w','r','w','w','w','w','w','w','r','w','w','w','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','3','8388674','0','0','w','w');
+INSERT INTO glpi_profiles VALUES ('1','post-only','helpdesk','1',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'r','1',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'1',NULL,'1',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,'1',NULL,NULL,NULL,NULL,NULL,'1','1','8388674','0','0',NULL,NULL);
+INSERT INTO glpi_profiles VALUES ('2','normal','central','0','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','r','1','r','r',NULL,'r',NULL,NULL,NULL,NULL,'r','r',NULL,NULL,NULL,NULL,NULL,'w',NULL,'r',NULL,'r','r','r',NULL,NULL,NULL,NULL,NULL,NULL,'1','1','1','0','0','1','0','0','1','1','0','1','0','1','0','0','1','1','1','8388674','0','0',NULL,NULL);
+INSERT INTO glpi_profiles VALUES ('3','admin','central','0','w','w','w','w','w','w','w','w','w','w','w','w','w','w','w','w','1','w','r','w','r','w','w','w','w','w','w',NULL,NULL,NULL,NULL,NULL,'w','w','r','r','w','w','w',NULL,NULL,NULL,NULL,NULL,NULL,'1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','3','8388674','0','0',NULL,NULL);
+INSERT INTO glpi_profiles VALUES ('4','super-admin','central','0','w','w','w','w','w','w','w','w','w','w','w','w','w','w','w','w','1','w','r','w','r','w','w','w','w','w','w','w','w','w','w','w','w','w','r','w','w','w','w','w','w','r','w','w','w','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','3','8388674','0','0','w','w');
 
 ### Dump table glpi_registry
 
@@ -2963,10 +2969,13 @@ CREATE TABLE `glpi_users` (
   KEY `location` (`location`),
   KEY `firstname` (`firstname`),
   KEY `realname` (`realname`),
-  KEY `deleted` (`deleted`)
+  KEY `deleted` (`deleted`),
+  KEY `title` (`title`),
+  KEY `type` (`type`),
+  KEY `active` (`active`)
 ) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-INSERT INTO glpi_users VALUES ('2','glpi','','41ece51526515624ff89973668497d00','','','','','',NULL,'0','1','fr_FR','20','1',NULL,'-1','1','2008-07-13 18:46:26','2007-09-29 15:51:43','0','0','0','0','0');
+INSERT INTO glpi_users VALUES ('2','glpi','','41ece51526515624ff89973668497d00','','','','','',NULL,'0','1','fr_FR','20','1',NULL,'-1','1','2008-08-17 17:41:26','2007-09-29 15:51:43','0','0','0','0','0');
 INSERT INTO glpi_users VALUES ('3','post-only','*5683D7F638D6598D057638B1957F194E4CA974FB','3177926a7314de24680a9938aaa97703','','','','','',NULL,'0','0','en_GB','20','1',NULL,'-1','-1',NULL,NULL,'0','0','0','0','0');
 INSERT INTO glpi_users VALUES ('4','tech','*B09F1B2C210DEEA69C662977CC69C6C461965B09','d9f9133fb120cd6096870bc2b496805b','','','','','',NULL,'0','1','fr_FR','20','1',NULL,'-1','-1',NULL,NULL,'0','0','0','0','0');
 INSERT INTO glpi_users VALUES ('5','normal','*F3F91B23FC1DB728B49B1F22DEE3D7A839E10F0E','fea087517c26fadd409bd4b9dc642555','','','','','',NULL,'0','0','en_GB','20','1',NULL,'-1','-1',NULL,NULL,'0','0','0','0','0');

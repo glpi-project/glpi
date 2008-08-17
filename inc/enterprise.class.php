@@ -73,7 +73,7 @@ class Enterprise extends CommonDBTM {
 		if(haveRight("contact_enterprise","r")){
 			$ong[1] = $LANG["title"][26];
 		}
-		if (haveRight("contract_infocom","r")){
+		if (haveRight("contract","r")){
 			$ong[4] = $LANG["Menu"][26];
 		}
 		$ong[15] = $LANG["financial"][104];
@@ -125,170 +125,159 @@ class Enterprise extends CommonDBTM {
 
 		if (!haveRight("contact_enterprise","r")) return false;
 
-		$spotted=false;
 		$use_cache=true;
 
-
-		if ($ID>0) {
-			if($this->can($ID,'r')) {
-				$spotted = true;	
-			}
+		if ($ID > 0){
+			$this->check($ID,'r');
 		} else {
+			// Create item 
+			$this->check(-1,'w');
 			$use_cache=false;
-			if ($this->can(-1,'w')){
-				$spotted = true;	
-				$this->getEmpty();
-			}
+			$this->getEmpty();
 		} 
 
-		if ($spotted){
-			$canedit=$this->can($ID,'w');
-			
-			$this->showTabs($ID, $withtemplate,$_SESSION['glpi_tab']);
-			if ($canedit) {
-				echo "<div class='center' id='tabsbody' ><form method='post' action=\"$target\">";
-				if (empty($ID)||$ID<0){
-					echo "<input type='hidden' name='FK_entities' value='".$_SESSION["glpiactive_entity"]."'>";
-				}
-			}
-
-			echo "<table class='tab_cadre_fixe'>";
-			echo "<tr><th colspan='2'>";
-			if ($ID<0) {
-				echo $LANG["financial"][25];
-			} else {
-				echo $LANG["common"][2]." ".$this->fields["ID"];
-			}		
-			if (isMultiEntitiesMode()){
-				echo "&nbsp;(".getDropdownName("glpi_entities",$this->fields["FK_entities"]).")";
-			}
-
-			echo "</th>";
-
-			echo "<th colspan='2'>";
-			if (isMultiEntitiesMode()){
-				echo $LANG["entity"][9].":&nbsp;";
-			
-				if ($this->can($ID,'recursive')) {
-					dropdownYesNo("recursive",$this->fields["recursive"]);					
-				} else {
-					echo getYesNo($this->fields["recursive"]);
-				}
-			} else {
-				echo "&nbsp;";
-			}
-			echo "</th>";
-
-			echo "</tr>";
-			if (!$use_cache||!($CFG_GLPI["cache"]->start($ID."_".$_SESSION["glpilanguage"],"GLPI_".$this->type))) {
-				echo "<tr class='tab_bg_1'><td>".$LANG["common"][16].":		</td>";
-				echo "<td>";
-				autocompletionTextField("name","glpi_enterprises","name",$this->fields["name"],40,$this->fields["FK_entities"]);
-				echo "</td>";
-	
-				echo "<td>".$LANG["financial"][79].":		</td><td>";
-				dropdownValue("glpi_dropdown_enttype", "type", $this->fields["type"]);
-				echo "</td></tr>";
-	
-				echo "<tr class='tab_bg_1'><td>".$LANG["help"][35].":		</td>";
-				echo "<td>";
-				autocompletionTextField("phonenumber","glpi_enterprises","phonenumber",$this->fields["phonenumber"],40,$this->fields["FK_entities"]);	
-				echo "</td>";
-	
-				echo "<td valign='top' rowspan='4'>";
-				echo $LANG["common"][25].":	</td>";
-				echo "<td align='center'  rowspan='4'><textarea cols='35' rows='4' name='comments' >".$this->fields["comments"]."</textarea>";
-				echo "</td></tr>";
-
-	
-				echo "<tr class='tab_bg_1'>";
-				echo "<td>".$LANG["financial"][30].":		</td><td>";
-				autocompletionTextField("fax","glpi_enterprises","fax",$this->fields["fax"],40,$this->fields["FK_entities"]);
-				echo "</td>";
-				echo "</tr>";
-
-				echo "<tr class='tab_bg_1'><td>".$LANG["financial"][45].":		</td>";
-				echo "<td>";
-				autocompletionTextField("website","glpi_enterprises","website",$this->fields["website"],40,$this->fields["FK_entities"]);	
-				echo "</td></tr>";
-	
-				echo "<tr class='tab_bg_1'>";
-				echo "<td>".$LANG["setup"][14].":		</td><td>";
-				autocompletionTextField("email","glpi_enterprises","email",$this->fields["email"],40,$this->fields["FK_entities"]);
-				echo "</td></tr>";
-	
-	
-				echo "<tr class='tab_bg_1'><td  rowspan='4'>".$LANG["financial"][44].":		</td>";
-				echo "<td align='center' rowspan='4'><textarea cols='35' rows='4' name='address' >".$this->fields["address"]."</textarea>";
-				echo "<td>".$LANG["financial"][100]."</td>";
-				echo "<td>";
-				autocompletionTextField("postcode","glpi_enterprises","postcode",$this->fields["postcode"],40,$this->fields["FK_entities"]);
-				echo "</td>";
-				echo "</tr>";
-	
-				echo "<tr class='tab_bg_1'>";
-				echo "<td>".$LANG["financial"][101].":		</td><td>";
-				autocompletionTextField("town","glpi_enterprises","town",$this->fields["town"],40,$this->fields["FK_entities"]);
-				echo "</td></tr>";
-	
-				echo "<tr class='tab_bg_1'>";
-				echo "<td>".$LANG["financial"][102].":		</td><td>";
-				autocompletionTextField("state","glpi_enterprises","state",$this->fields["state"],40,$this->fields["FK_entities"]);
-				echo "</td></tr>";
-	
-				echo "<tr class='tab_bg_1'>";
-				echo "<td>".$LANG["financial"][103].":		</td><td>";
-				autocompletionTextField("country","glpi_enterprises","country",$this->fields["country"],40,$this->fields["FK_entities"]);
-				echo "</td></tr>";
+		$canedit=$this->can($ID,'w');
 		
-				if ($use_cache){
-					$CFG_GLPI["cache"]->end();
-				}
+		$this->showTabs($ID, $withtemplate,$_SESSION['glpi_tab']);
+		if ($canedit) {
+			echo "<div class='center' id='tabsbody' ><form method='post' action=\"$target\">";
+			if (empty($ID)||$ID<0){
+				echo "<input type='hidden' name='FK_entities' value='".$_SESSION["glpiactive_entity"]."'>";
 			}
-
-			if ($canedit) {
-					echo "<tr>";
-
-				if ($ID>0) {
-
-					echo "<td class='tab_bg_2' valign='top' colspan='2'>";
-					echo "<input type='hidden' name='ID' value=\"$ID\">\n";
-					echo "<div class='center'><input type='submit' name='update' value=\"".$LANG["buttons"][7]."\" class='submit'></div>";
-					echo "</td>\n\n";
-					echo "<td class='tab_bg_2' valign='top' colspan='2'>\n";
-					echo "<input type='hidden' name='ID' value=\"$ID\">\n";
-					if (!$this->fields["deleted"])
-						echo "<div class='center'><input type='submit' name='delete' value=\"".$LANG["buttons"][6]."\" class='submit'></div>";
-					else {
-						echo "<div class='center'><input type='submit' name='restore' value=\"".$LANG["buttons"][21]."\" class='submit'>";
-
-						echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='submit' name='purge' value=\"".$LANG["buttons"][22]."\" class='submit'></div>";
-					}
-
-					echo "</td>";
-					echo "</tr>";
-
-				} else {
-					echo "<td class='tab_bg_2' valign='top' colspan='4'>";
-					echo "<div class='center'><input type='submit' name='add' value=\"".$LANG["buttons"][8]."\" class='submit'></div>";
-					echo "</td>";
-					echo "</tr>";
-
-				}
-				echo "</table></div></form>";
-				
-					
-			} else { // canedit
-				echo "</table></div>";				
-			}
-			
-			echo "<div id='tabcontent'></div>";
-			echo "<script type='text/javascript'>loadDefaultTab();</script>";
-
-		} else {
-			echo "<div class='center'><strong>".$LANG["common"][54]."</strong></div>";
-			return false;
 		}
+
+		echo "<table class='tab_cadre_fixe'>";
+		echo "<tr><th colspan='2'>";
+		if ($ID<0) {
+			echo $LANG["financial"][25];
+		} else {
+			echo $LANG["common"][2]." ".$this->fields["ID"];
+		}		
+		if (isMultiEntitiesMode()){
+			echo "&nbsp;(".getDropdownName("glpi_entities",$this->fields["FK_entities"]).")";
+		}
+
+		echo "</th>";
+
+		echo "<th colspan='2'>";
+		if (isMultiEntitiesMode()){
+			echo $LANG["entity"][9].":&nbsp;";
+		
+			if ($this->can($ID,'recursive')) {
+				dropdownYesNo("recursive",$this->fields["recursive"]);					
+			} else {
+				echo getYesNo($this->fields["recursive"]);
+			}
+		} else {
+			echo "&nbsp;";
+		}
+		echo "</th>";
+
+		echo "</tr>";
+		if (!$use_cache||!($CFG_GLPI["cache"]->start($ID."_".$_SESSION["glpilanguage"],"GLPI_".$this->type))) {
+			echo "<tr class='tab_bg_1'><td>".$LANG["common"][16].":		</td>";
+			echo "<td>";
+			autocompletionTextField("name","glpi_enterprises","name",$this->fields["name"],40,$this->fields["FK_entities"]);
+			echo "</td>";
+
+			echo "<td>".$LANG["financial"][79].":		</td><td>";
+			dropdownValue("glpi_dropdown_enttype", "type", $this->fields["type"]);
+			echo "</td></tr>";
+
+			echo "<tr class='tab_bg_1'><td>".$LANG["help"][35].":		</td>";
+			echo "<td>";
+			autocompletionTextField("phonenumber","glpi_enterprises","phonenumber",$this->fields["phonenumber"],40,$this->fields["FK_entities"]);	
+			echo "</td>";
+
+			echo "<td valign='top' rowspan='4'>";
+			echo $LANG["common"][25].":	</td>";
+			echo "<td align='center'  rowspan='4'><textarea cols='35' rows='4' name='comments' >".$this->fields["comments"]."</textarea>";
+			echo "</td></tr>";
+
+
+			echo "<tr class='tab_bg_1'>";
+			echo "<td>".$LANG["financial"][30].":		</td><td>";
+			autocompletionTextField("fax","glpi_enterprises","fax",$this->fields["fax"],40,$this->fields["FK_entities"]);
+			echo "</td>";
+			echo "</tr>";
+
+			echo "<tr class='tab_bg_1'><td>".$LANG["financial"][45].":		</td>";
+			echo "<td>";
+			autocompletionTextField("website","glpi_enterprises","website",$this->fields["website"],40,$this->fields["FK_entities"]);	
+			echo "</td></tr>";
+
+			echo "<tr class='tab_bg_1'>";
+			echo "<td>".$LANG["setup"][14].":		</td><td>";
+			autocompletionTextField("email","glpi_enterprises","email",$this->fields["email"],40,$this->fields["FK_entities"]);
+			echo "</td></tr>";
+
+
+			echo "<tr class='tab_bg_1'><td  rowspan='4'>".$LANG["financial"][44].":		</td>";
+			echo "<td align='center' rowspan='4'><textarea cols='35' rows='4' name='address' >".$this->fields["address"]."</textarea>";
+			echo "<td>".$LANG["financial"][100]."</td>";
+			echo "<td>";
+			autocompletionTextField("postcode","glpi_enterprises","postcode",$this->fields["postcode"],40,$this->fields["FK_entities"]);
+			echo "</td>";
+			echo "</tr>";
+
+			echo "<tr class='tab_bg_1'>";
+			echo "<td>".$LANG["financial"][101].":		</td><td>";
+			autocompletionTextField("town","glpi_enterprises","town",$this->fields["town"],40,$this->fields["FK_entities"]);
+			echo "</td></tr>";
+
+			echo "<tr class='tab_bg_1'>";
+			echo "<td>".$LANG["financial"][102].":		</td><td>";
+			autocompletionTextField("state","glpi_enterprises","state",$this->fields["state"],40,$this->fields["FK_entities"]);
+			echo "</td></tr>";
+
+			echo "<tr class='tab_bg_1'>";
+			echo "<td>".$LANG["financial"][103].":		</td><td>";
+			autocompletionTextField("country","glpi_enterprises","country",$this->fields["country"],40,$this->fields["FK_entities"]);
+			echo "</td></tr>";
+	
+			if ($use_cache){
+				$CFG_GLPI["cache"]->end();
+			}
+		}
+
+		if ($canedit) {
+				echo "<tr>";
+
+			if ($ID>0) {
+
+				echo "<td class='tab_bg_2' valign='top' colspan='2'>";
+				echo "<input type='hidden' name='ID' value=\"$ID\">\n";
+				echo "<div class='center'><input type='submit' name='update' value=\"".$LANG["buttons"][7]."\" class='submit'></div>";
+				echo "</td>\n\n";
+				echo "<td class='tab_bg_2' valign='top' colspan='2'>\n";
+				echo "<input type='hidden' name='ID' value=\"$ID\">\n";
+				if (!$this->fields["deleted"])
+					echo "<div class='center'><input type='submit' name='delete' value=\"".$LANG["buttons"][6]."\" class='submit'></div>";
+				else {
+					echo "<div class='center'><input type='submit' name='restore' value=\"".$LANG["buttons"][21]."\" class='submit'>";
+
+					echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='submit' name='purge' value=\"".$LANG["buttons"][22]."\" class='submit'></div>";
+				}
+
+				echo "</td>";
+				echo "</tr>";
+
+			} else {
+				echo "<td class='tab_bg_2' valign='top' colspan='4'>";
+				echo "<div class='center'><input type='submit' name='add' value=\"".$LANG["buttons"][8]."\" class='submit'></div>";
+				echo "</td>";
+				echo "</tr>";
+
+			}
+			echo "</table></div></form>";
+			
+				
+		} else { // canedit
+			echo "</table></div>";				
+		}
+		
+		echo "<div id='tabcontent'></div>";
+		echo "<script type='text/javascript'>loadDefaultTab();</script>";
 
 		return true;
 

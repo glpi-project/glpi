@@ -36,6 +36,9 @@
 // ----------------------------------------------------------------------
 
 /// Update from 0.71 to 0.72
+include_once (GLPI_ROOT . "/inc/setup.function.php");
+include_once (GLPI_ROOT . "/inc/rulesengine.function.php");
+
 function update071to072() {
 	global $DB, $CFG_GLPI, $LANG, $LINK_ID_TABLE;
 
@@ -448,11 +451,58 @@ function update071to072() {
 		$DB->query($query) or die("0.72 drop import_software_licensetype in glpi_ocs_config" . $LANG["update"][90] . $DB->error());
 	}
 
-	// Update default value		
-	if (FieldExists("glpi_device_gfxcard", "interface")){ 
-		$query = "ALTER TABLE `glpi_device_gfxcard` CHANGE `interface` `interface` VARCHAR( 255 ) NULL DEFAULT 'AGP';";
-		$DB->query($query) or die("0.72 alter defautl value glpi_device_gfxcard.interface" . $LANG["update"][90] . $DB->error());
+	//// Clean interface use for GFX card
+	// Insert default values
+	externalImportDropdown("glpi_dropdown_interface", "AGP");
+	externalImportDropdown("glpi_dropdown_interface", "PCI");
+	externalImportDropdown("glpi_dropdown_interface", "PCIe");
+	externalImportDropdown("glpi_dropdown_interface", "PCI-X");	
+
+	if (!FieldExists("glpi_device_gfxcard", "FK_interface")) {
+
+		$query = "ALTER TABLE `glpi_device_gfxcard` ADD `FK_interface` INT NOT NULL DEFAULT '0' AFTER `interface` ";
+		$DB->query($query) or die("0.72 alter glpi_device_gfxcard add new field interface " . $LANG["update"][90] . $DB->error());
+
+		// Get all data from interface_old / Insert in glpi_dropdown_interface if needed
+		$query="SELECT DISTINCT interface AS OLDNAME FROM glpi_device_gfxcard;";
+		if ($result=$DB->query($query)){
+			if ($DB->numrows($result)>0){
+				while ($data=$DB->fetch_assoc($result)){
+					$data = addslashes_deep($data);
+					$newID=externalImportDropdown("glpi_dropdown_interface", $data['OLDNAME']);
+
+					// Update datas
+					$query2="UPDATE glpi_device_gfxcard SET FK_interface='$newID' WHERE interface='".$data['OLDNAME']."'";
+					$DB->query($query2) or die("0.72 update glpi_device_gfxcard set new interface value " . $LANG["update"][90] . $DB->error());
+				}
+			}
+		}
+		
+		$query = "ALTER TABLE `glpi_device_gfxcard` DROP `interface` ";
+		$DB->query($query) or die("0.7 alter $table drop tmp enum field " . $LANG["update"][90] . $DB->error());
 	}
+
+	if (!FieldExists("glpi_config","existing_auth_server_field_clean_domain")) {
+		$query = "ALTER TABLE `glpi_config` ADD `existing_auth_server_field_clean_domain` SMALLINT NOT NULL DEFAULT '0' AFTER `existing_auth_server_field`;";
+
+		$DB->query($query) or die("0.71 alter config add existing_auth_server_field_clean_domain " . $LANG["update"][90] . $DB->error());
+	}
+
+	if (FieldExists("glpi_profiles","contract_infocom")){
+		$query = "ALTER TABLE `glpi_profiles` CHANGE `contract_infocom` `contract` CHAR( 1 ) NULL DEFAULT NULL ;";
+		$DB->query($query) or die("0.71 alter profiles rename contract_infocom to contract " . $LANG["update"][90] . $DB->error());
+
+		$query = "ALTER TABLE `glpi_profiles` ADD `infocom` CHAR( 1 ) NULL DEFAULT NULL AFTER `contract` ;";
+		$DB->query($query) or die("0.71 alter profiles create infocom " . $LANG["update"][90] . $DB->error());
+
+		$query = "UPDATE glpi_profiles SET `infocom`=`contract`;";
+		$DB->query($query) or die("0.71 update data for infocom in profiles " . $LANG["update"][90] . $DB->error());
+	}
+
+
+		 
+
+
 
 } // fin 0.72 #####################################################################################
 ?>

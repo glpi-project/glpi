@@ -47,7 +47,7 @@ if (!isset($_SESSION["noAUTO"])&&isset($_SESSION["glpiauth_method"])&&$_SESSION[
 }
 
 $noAUTO="";
-if (isset($_SESSION["noAUTO"])) {
+if (isset($_SESSION["noAUTO"]) || isset($_GET['noAUTO'])) {
 	$noAUTO="?noAUTO=1";
 }
 

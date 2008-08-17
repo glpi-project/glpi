@@ -49,6 +49,7 @@ class Printer  extends CommonDBTM {
 		$this->table="glpi_printers";
 		$this->type=PRINTER_TYPE;
 		$this->dohistory=true;
+		$this->entity_assign=true;
 	}	
 
 	function defineTabs($withtemplate){
@@ -60,7 +61,7 @@ class Printer  extends CommonDBTM {
 		if (haveRight("networking","r")||haveRight("computer","r")){
 			$ong[3]=$LANG["title"][27];
 		}
-		if (haveRight("contract_infocom","r")){
+		if (haveRight("contract","r") || haveRight("infocom","r")){
 			$ong[4]=$LANG["Menu"][26];
 		}
 		if (haveRight("document","r")){
@@ -225,258 +226,253 @@ class Printer  extends CommonDBTM {
 		global $CFG_GLPI, $LANG;
 		if (!haveRight("printer","r")) return false;
 
-		$printer_spotted = false;
 		$use_cache=true;
-		if((empty($ID) && $withtemplate == 1)||$ID==-1) {
-			$use_cache=false;
-			if($this->getEmpty()) $printer_spotted = true;
+
+		if ($ID > 0){
+			$this->check($ID,'r');
 		} else {
-			if($this->getFromDB($ID)&&haveAccessToEntity($this->fields["FK_entities"])) $printer_spotted = true;
+			// Create item 
+			$this->check(-1,'w');
+			$use_cache=false;
+			$this->getEmpty();
+		} 
+
+		$this->showTabs($ID, $withtemplate,$_SESSION['glpi_tab']);
+
+		if(!empty($withtemplate) && $withtemplate == 2) {
+			$use_cache=false;
+			$template = "newcomp";
+			$datestring = $LANG["computers"][14].": ";
+			$date = convDateTime($_SESSION["glpi_currenttime"]);
+		} elseif(!empty($withtemplate) && $withtemplate == 1) { 
+			$use_cache=false;
+			$template = "newtemplate";
+			$datestring = $LANG["computers"][14].": ";
+			$date = convDateTime($_SESSION["glpi_currenttime"]);
+		} else {
+			$datestring = $LANG["common"][26].": ";
+			$date = convDateTime($this->fields["date_mod"]);
+			$template = false;
 		}
 
-		if($printer_spotted) {
 
-			$this->showTabs($ID, $withtemplate,$_SESSION['glpi_tab']);
+		echo "<div align='center' id='tabsbody'><form method='post' name='form' action=\"$target\">\n";
+		if(strcmp($template,"newtemplate") === 0) {
+			echo "<input type=\"hidden\" name=\"is_template\" value=\"1\" />\n";
+		}
+		
+		echo "<input type='hidden' name='FK_entities' value='".$this->fields["FK_entities"]."'>";
 
-			if(!empty($withtemplate) && $withtemplate == 2) {
-				$use_cache=false;
-				$template = "newcomp";
-				$datestring = $LANG["computers"][14].": ";
-				$date = convDateTime($_SESSION["glpi_currenttime"]);
-			} elseif(!empty($withtemplate) && $withtemplate == 1) { 
-				$use_cache=false;
-				$template = "newtemplate";
-				$datestring = $LANG["computers"][14].": ";
-				$date = convDateTime($_SESSION["glpi_currenttime"]);
-			} else {
-				$datestring = $LANG["common"][26].": ";
-				$date = convDateTime($this->fields["date_mod"]);
-				$template = false;
-			}
+		echo "<table class='tab_cadre_fixe' cellpadding='2'>\n";
+
+		echo "<tr><th align='center' >\n";
+		if(!$template) {
+			echo $LANG["common"][2]." ".$this->fields["ID"];
+		}elseif (strcmp($template,"newcomp") === 0) {
+			echo $LANG["printers"][28].": ".$this->fields["tplname"];
+			echo "<input type='hidden' name='tplname' value='".$this->fields["tplname"]."'>";
+		}elseif (strcmp($template,"newtemplate") === 0) {
+			echo $LANG["common"][6]."&nbsp;: ";
+			autocompletionTextField("tplname","glpi_printers","tplname",$this->fields["tplname"],40,$this->fields["FK_entities"]);
+		}
+		if (isMultiEntitiesMode()){
+			echo "&nbsp;(".getDropdownName("glpi_entities",$this->fields["FK_entities"]).")";
+		}
+
+		echo "</th><th  align='center'>".$datestring.$date;
+		if (!$template&&!empty($this->fields['tplname']))
+			echo "&nbsp;&nbsp;&nbsp;(".$LANG["common"][13].": ".$this->fields['tplname'].")";
+		echo "</th></tr>\n";
+
+		if (!$use_cache||!($CFG_GLPI["cache"]->start($ID."_".$_SESSION["glpilanguage"],"GLPI_".$this->type))) {
+			echo "<tr><td class='tab_bg_1' valign='top'>\n";
+
+			// table identification
+			echo "<table cellpadding='1' cellspacing='0' border='0'>\n";
+			echo "<tr><td>".$LANG["common"][16].($template?"*":"").":	</td>\n";
+			echo "<td>";
+			$objectName = autoName($this->fields["name"], "name", ($template === "newcomp"), PRINTER_TYPE,$this->fields["FK_entities"]);
+			autocompletionTextField("name","glpi_printers","name",$objectName,40,$this->fields["FK_entities"]);
+			echo "</td></tr>\n";
+
+			echo "<tr><td>".$LANG["common"][15].": 	</td><td>\n";
+			dropdownValue("glpi_dropdown_locations", "location", $this->fields["location"],1,$this->fields["FK_entities"]);
+			echo "</td></tr>\n";
+
+			echo "<tr class='tab_bg_1'><td>".$LANG["common"][5].": 	</td><td colspan='2'>\n";
+			dropdownValue("glpi_dropdown_manufacturer","FK_glpi_enterprise",$this->fields["FK_glpi_enterprise"]);
+			echo "</td></tr>\n";
+
+			echo "<tr class='tab_bg_1'><td>".$LANG["common"][10].": 	</td><td colspan='2'>\n";
+			dropdownUsersID("tech_num", $this->fields["tech_num"],"interface",1,$this->fields["FK_entities"]);
+			echo "</td></tr>\n";
+
+			echo "<tr><td>".$LANG["common"][18].":	</td><td>\n";
+			autocompletionTextField("contact","glpi_printers","contact",$this->fields["contact"],40,$this->fields["FK_entities"]);
+			echo "</td></tr>\n";
+
+			echo "<tr><td>".$LANG["common"][21].":	</td><td>\n";
+			autocompletionTextField("contact_num","glpi_printers","contact_num",$this->fields["contact_num"],40,$this->fields["FK_entities"]);
+			echo "</td></tr>\n";
 
 
-			echo "<div align='center' id='tabsbody'><form method='post' name='form' action=\"$target\">\n";
-			if(strcmp($template,"newtemplate") === 0) {
-				echo "<input type=\"hidden\" name=\"is_template\" value=\"1\" />\n";
-			}
+			echo "<tr><td>".$LANG["common"][34].": 	</td><td>";
+			dropdownAllUsers("FK_users", $this->fields["FK_users"],1,$this->fields["FK_entities"]);
+			echo "</td></tr>";
+
+			echo "<tr><td>".$LANG["common"][35].": 	</td><td>";
+			dropdownValue("glpi_groups", "FK_groups", $this->fields["FK_groups"],1,$this->fields["FK_entities"]);
+			echo "</td></tr>";
+
+
 			
-			echo "<input type='hidden' name='FK_entities' value='".$this->fields["FK_entities"]."'>";
 
-			echo "<table class='tab_cadre_fixe' cellpadding='2'>\n";
+			echo "<tr><td>".$LANG["setup"][88].": 	</td><td>\n";
+			dropdownValue("glpi_dropdown_network", "network", $this->fields["network"]);
+			echo "</td></tr>\n";
 
-			echo "<tr><th align='center' >\n";
-			if(!$template) {
-				echo $LANG["common"][2]." ".$this->fields["ID"];
-			}elseif (strcmp($template,"newcomp") === 0) {
-				echo $LANG["printers"][28].": ".$this->fields["tplname"];
-				echo "<input type='hidden' name='tplname' value='".$this->fields["tplname"]."'>";
-			}elseif (strcmp($template,"newtemplate") === 0) {
-				echo $LANG["common"][6]."&nbsp;: ";
-				autocompletionTextField("tplname","glpi_printers","tplname",$this->fields["tplname"],40,$this->fields["FK_entities"]);
+			echo "<tr><td>".$LANG["setup"][89].": 	</td><td>\n";
+			dropdownValue("glpi_dropdown_domain", "domain", $this->fields["domain"]);
+			echo "</td></tr>\n";
+
+
+			echo "</table>"; // fin table indentification
+
+			echo "</td>\n";	
+			echo "<td class='tab_bg_1' valign='top'>\n";
+
+			// table type,serial..
+			echo "<table cellpadding='1' cellspacing='0' border='0'>\n";
+
+			echo "<tr><td>".$LANG["state"][0].":</td><td>\n";
+			dropdownValue("glpi_dropdown_state", "state",$this->fields["state"]);
+			echo "</td></tr>\n";
+
+			echo "<tr><td>".$LANG["common"][17].": 	</td><td>\n";
+			dropdownValue("glpi_type_printers", "type", $this->fields["type"]);
+			echo "</td></tr>\n";
+
+			echo "<tr><td>".$LANG["common"][22].": 	</td><td>";
+			dropdownValue("glpi_dropdown_model_printers", "model", $this->fields["model"]);
+			echo "</td></tr>";
+
+			echo "<tr><td>".$LANG["common"][19].":	</td><td>\n";
+			autocompletionTextField("serial","glpi_printers","serial",$this->fields["serial"],40,$this->fields["FK_entities"]);	
+			echo "</td></tr>\n";
+
+			echo "<tr><td>".$LANG["common"][20].($template?"*":"").":</td><td>\n";
+			$objectName = autoName($this->fields["otherserial"], "otherserial", ($template === "newcomp"), PRINTER_TYPE,$this->fields["FK_entities"]);
+			autocompletionTextField("otherserial","glpi_printers","otherserial",$objectName,40,$this->fields["FK_entities"]);
+			echo "</td></tr>\n";
+
+			echo "<tr><td>".$LANG["printers"][18].": </td><td>\n";
+
+			// serial interface?
+			echo "<table border='0' cellpadding='2' cellspacing='0'><tr>\n";
+			echo "<td>".$LANG["printers"][14]."</td>\n";
+			echo "<td>";
+			dropdownYesNo("flags_serial",$this->fields["flags_serial"]);
+			echo "</td>";
+			echo "</tr></table>\n";
+
+			// parallel interface?
+			echo "<table border='0' cellpadding='2' cellspacing='0'><tr>\n";
+			echo "<td>".$LANG["printers"][15]."</td>\n";
+			echo "<td>";
+			dropdownYesNo("flags_par",$this->fields["flags_par"]);
+			echo "</td>";
+
+			echo "</tr></table>\n";
+
+			// USB ?
+			echo "<table border='0' cellpadding='2' cellspacing='0'><tr>\n";
+			echo "<td>".$LANG["printers"][27]."</td>\n";
+			echo "<td>";
+			dropdownYesNo("flags_usb",$this->fields["flags_usb"]);
+			echo "</td>";
+
+			echo "</tr></table>\n";
+
+			// Ram ?
+			echo "<tr><td>".$LANG["devices"][6].":</td><td>\n";
+			autocompletionTextField("ramSize","glpi_printers","ramSize",$this->fields["ramSize"],40,$this->fields["FK_entities"]);
+			echo "</td></tr>\n";
+			// Initial count pages ?
+			echo "<tr><td>".$LANG["printers"][30].":</td><td>\n";
+			autocompletionTextField("initial_pages","glpi_printers","initial_pages",$this->fields["initial_pages"],40,$this->fields["FK_entities"]);		
+			echo "</td></tr>\n";
+
+
+			echo "<tr><td>".$LANG["peripherals"][33].":</td><td>";
+			globalManagementDropdown($target,$withtemplate,$this->fields["ID"],$this->fields["is_global"],$CFG_GLPI["printers_management_restrict"]);
+			echo "</td></tr>";
+
+			echo "</table>\n";
+			echo "</td>\n";	
+			echo "</tr>\n";
+
+			echo "<tr>\n";
+			echo "<td class='tab_bg_1' valign='top' colspan='2'>\n";
+
+			// table commentaires
+			echo "<table width='100%' cellpadding='0' cellspacing='0' border='0'><tr><td valign='top'>\n";
+			echo $LANG["common"][25].":	</td>\n";
+			echo "<td class='center'><textarea cols='35' rows='4' name='comments' >".$this->fields["comments"]."</textarea>\n";
+			echo "</td></tr></table>\n";
+
+			echo "</td>\n";
+			echo "</tr>\n";
+			if ($use_cache){
+				$CFG_GLPI["cache"]->end();
 			}
-			if (isMultiEntitiesMode()){
-				echo "&nbsp;(".getDropdownName("glpi_entities",$this->fields["FK_entities"]).")";
-			}
-
-			echo "</th><th  align='center'>".$datestring.$date;
-			if (!$template&&!empty($this->fields['tplname']))
-				echo "&nbsp;&nbsp;&nbsp;(".$LANG["common"][13].": ".$this->fields['tplname'].")";
-			echo "</th></tr>\n";
-
-			if (!$use_cache||!($CFG_GLPI["cache"]->start($ID."_".$_SESSION["glpilanguage"],"GLPI_".$this->type))) {
-				echo "<tr><td class='tab_bg_1' valign='top'>\n";
-	
-				// table identification
-				echo "<table cellpadding='1' cellspacing='0' border='0'>\n";
-				echo "<tr><td>".$LANG["common"][16].($template?"*":"").":	</td>\n";
-				echo "<td>";
-				$objectName = autoName($this->fields["name"], "name", ($template === "newcomp"), PRINTER_TYPE,$this->fields["FK_entities"]);
-				autocompletionTextField("name","glpi_printers","name",$objectName,40,$this->fields["FK_entities"]);
-				echo "</td></tr>\n";
-	
-				echo "<tr><td>".$LANG["common"][15].": 	</td><td>\n";
-				dropdownValue("glpi_dropdown_locations", "location", $this->fields["location"],1,$this->fields["FK_entities"]);
-				echo "</td></tr>\n";
-	
-				echo "<tr class='tab_bg_1'><td>".$LANG["common"][5].": 	</td><td colspan='2'>\n";
-				dropdownValue("glpi_dropdown_manufacturer","FK_glpi_enterprise",$this->fields["FK_glpi_enterprise"]);
-				echo "</td></tr>\n";
-	
-				echo "<tr class='tab_bg_1'><td>".$LANG["common"][10].": 	</td><td colspan='2'>\n";
-				dropdownUsersID("tech_num", $this->fields["tech_num"],"interface",1,$this->fields["FK_entities"]);
-				echo "</td></tr>\n";
-	
-				echo "<tr><td>".$LANG["common"][18].":	</td><td>\n";
-				autocompletionTextField("contact","glpi_printers","contact",$this->fields["contact"],40,$this->fields["FK_entities"]);
-				echo "</td></tr>\n";
-
-				echo "<tr><td>".$LANG["common"][21].":	</td><td>\n";
-				autocompletionTextField("contact_num","glpi_printers","contact_num",$this->fields["contact_num"],40,$this->fields["FK_entities"]);
-				echo "</td></tr>\n";
-	
-	
-				echo "<tr><td>".$LANG["common"][34].": 	</td><td>";
-				dropdownAllUsers("FK_users", $this->fields["FK_users"],1,$this->fields["FK_entities"]);
-				echo "</td></tr>";
-	
-				echo "<tr><td>".$LANG["common"][35].": 	</td><td>";
-				dropdownValue("glpi_groups", "FK_groups", $this->fields["FK_groups"],1,$this->fields["FK_entities"]);
-				echo "</td></tr>";
-	
-	
-				
-	
-				echo "<tr><td>".$LANG["setup"][88].": 	</td><td>\n";
-				dropdownValue("glpi_dropdown_network", "network", $this->fields["network"]);
-				echo "</td></tr>\n";
-	
-				echo "<tr><td>".$LANG["setup"][89].": 	</td><td>\n";
-				dropdownValue("glpi_dropdown_domain", "domain", $this->fields["domain"]);
-				echo "</td></tr>\n";
-	
-	
-				echo "</table>"; // fin table indentification
-	
-				echo "</td>\n";	
-				echo "<td class='tab_bg_1' valign='top'>\n";
-	
-				// table type,serial..
-				echo "<table cellpadding='1' cellspacing='0' border='0'>\n";
-	
-				echo "<tr><td>".$LANG["state"][0].":</td><td>\n";
-				dropdownValue("glpi_dropdown_state", "state",$this->fields["state"]);
-				echo "</td></tr>\n";
-	
-				echo "<tr><td>".$LANG["common"][17].": 	</td><td>\n";
-				dropdownValue("glpi_type_printers", "type", $this->fields["type"]);
-				echo "</td></tr>\n";
-	
-				echo "<tr><td>".$LANG["common"][22].": 	</td><td>";
-				dropdownValue("glpi_dropdown_model_printers", "model", $this->fields["model"]);
-				echo "</td></tr>";
-	
-				echo "<tr><td>".$LANG["common"][19].":	</td><td>\n";
-				autocompletionTextField("serial","glpi_printers","serial",$this->fields["serial"],40,$this->fields["FK_entities"]);	
-				echo "</td></tr>\n";
-	
-				echo "<tr><td>".$LANG["common"][20].($template?"*":"").":</td><td>\n";
-				$objectName = autoName($this->fields["otherserial"], "otherserial", ($template === "newcomp"), PRINTER_TYPE,$this->fields["FK_entities"]);
-				autocompletionTextField("otherserial","glpi_printers","otherserial",$objectName,40,$this->fields["FK_entities"]);
-				echo "</td></tr>\n";
-	
-				echo "<tr><td>".$LANG["printers"][18].": </td><td>\n";
-	
-				// serial interface?
-				echo "<table border='0' cellpadding='2' cellspacing='0'><tr>\n";
-				echo "<td>".$LANG["printers"][14]."</td>\n";
-				echo "<td>";
-				dropdownYesNo("flags_serial",$this->fields["flags_serial"]);
-				echo "</td>";
-				echo "</tr></table>\n";
-	
-				// parallel interface?
-				echo "<table border='0' cellpadding='2' cellspacing='0'><tr>\n";
-				echo "<td>".$LANG["printers"][15]."</td>\n";
-				echo "<td>";
-				dropdownYesNo("flags_par",$this->fields["flags_par"]);
-				echo "</td>";
-	
-				echo "</tr></table>\n";
-	
-				// USB ?
-				echo "<table border='0' cellpadding='2' cellspacing='0'><tr>\n";
-				echo "<td>".$LANG["printers"][27]."</td>\n";
-				echo "<td>";
-				dropdownYesNo("flags_usb",$this->fields["flags_usb"]);
-				echo "</td>";
-	
-				echo "</tr></table>\n";
-	
-				// Ram ?
-				echo "<tr><td>".$LANG["devices"][6].":</td><td>\n";
-				autocompletionTextField("ramSize","glpi_printers","ramSize",$this->fields["ramSize"],40,$this->fields["FK_entities"]);
-				echo "</td></tr>\n";
-				// Initial count pages ?
-				echo "<tr><td>".$LANG["printers"][30].":</td><td>\n";
-				autocompletionTextField("initial_pages","glpi_printers","initial_pages",$this->fields["initial_pages"],40,$this->fields["FK_entities"]);		
-				echo "</td></tr>\n";
-	
-	
-				echo "<tr><td>".$LANG["peripherals"][33].":</td><td>";
-				globalManagementDropdown($target,$withtemplate,$this->fields["ID"],$this->fields["is_global"],$CFG_GLPI["printers_management_restrict"]);
-				echo "</td></tr>";
-	
-				echo "</table>\n";
-				echo "</td>\n";	
-				echo "</tr>\n";
-	
-				echo "<tr>\n";
-				echo "<td class='tab_bg_1' valign='top' colspan='2'>\n";
-	
-				// table commentaires
-				echo "<table width='100%' cellpadding='0' cellspacing='0' border='0'><tr><td valign='top'>\n";
-				echo $LANG["common"][25].":	</td>\n";
-				echo "<td class='center'><textarea cols='35' rows='4' name='comments' >".$this->fields["comments"]."</textarea>\n";
-				echo "</td></tr></table>\n";
-	
-				echo "</td>\n";
-				echo "</tr>\n";
-				if ($use_cache){
-					$CFG_GLPI["cache"]->end();
-				}
-			}
+		}
 
 
 
-			if (haveRight("printer","w")){
-				echo "<tr>\n";
+		if (haveRight("printer","w")){
+			echo "<tr>\n";
 
-				if ($template) {
+			if ($template) {
 
-					if (empty($ID)||$withtemplate==2){
-						echo "<td class='tab_bg_2' align='center' colspan='2'>\n";
-						echo "<input type='hidden' name='ID' value=$ID>";
-						echo "<input type='submit' name='add' value=\"".$LANG["buttons"][8]."\" class='submit'>";
-						echo "</td>\n";
-					} else {
-						echo "<td class='tab_bg_2' align='center' colspan='2'>\n";
-						echo "<input type='hidden' name='ID' value=$ID>";
-						echo "<input type='submit' name='update' value=\"".$LANG["buttons"][7]."\" class='submit'>";
-						echo "</td>\n";
-					}
-
+				if (empty($ID)||$withtemplate==2){
+					echo "<td class='tab_bg_2' align='center' colspan='2'>\n";
+					echo "<input type='hidden' name='ID' value=$ID>";
+					echo "<input type='submit' name='add' value=\"".$LANG["buttons"][8]."\" class='submit'>";
+					echo "</td>\n";
 				} else {
-
-					echo "<td class='tab_bg_2' valign='top' align='center'>";
-					echo "<input type='hidden' name='ID' value=\"$ID\">\n";
+					echo "<td class='tab_bg_2' align='center' colspan='2'>\n";
+					echo "<input type='hidden' name='ID' value=$ID>";
 					echo "<input type='submit' name='update' value=\"".$LANG["buttons"][7]."\" class='submit'>";
-					echo "</td>\n\n";
-					echo "<td class='tab_bg_2' valign='top' align='center'>\n";
-					echo "<div class='center'>";
-					if (!$this->fields["deleted"])
-						echo "<input type='submit' name='delete' value=\"".$LANG["buttons"][6]."\" class='submit'>";
-					else {
-						echo "<input type='submit' name='restore' value=\"".$LANG["buttons"][21]."\" class='submit'>";
-
-						echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='submit' name='purge' value=\"".$LANG["buttons"][22]."\" class='submit'>";
-					}
-					echo "</div>";
-					echo "</td>";
-
+					echo "</td>\n";
 				}
-				echo "</tr>";
+
+			} else {
+
+				echo "<td class='tab_bg_2' valign='top' align='center'>";
+				echo "<input type='hidden' name='ID' value=\"$ID\">\n";
+				echo "<input type='submit' name='update' value=\"".$LANG["buttons"][7]."\" class='submit'>";
+				echo "</td>\n\n";
+				echo "<td class='tab_bg_2' valign='top' align='center'>\n";
+				echo "<div class='center'>";
+				if (!$this->fields["deleted"])
+					echo "<input type='submit' name='delete' value=\"".$LANG["buttons"][6]."\" class='submit'>";
+				else {
+					echo "<input type='submit' name='restore' value=\"".$LANG["buttons"][21]."\" class='submit'>";
+
+					echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='submit' name='purge' value=\"".$LANG["buttons"][22]."\" class='submit'>";
+				}
+				echo "</div>";
+				echo "</td>";
+
 			}
-			echo "</table></form></div>";
-
-			echo "<div id='tabcontent'></div>";
-			echo "<script type='javascript'>loadDefaultTab();</script>";
-
-			return true;	
+			echo "</tr>";
 		}
-		else {
-			echo "<div class='center'><strong>".$LANG["common"][54]."</strong></div>";
-			return false;
-		}
+		echo "</table></form></div>";
+
+		echo "<div id='tabcontent'></div>";
+		echo "<script type='text/javascript'>loadDefaultTab();</script>";
+
+		return true;	
 
 	}
 

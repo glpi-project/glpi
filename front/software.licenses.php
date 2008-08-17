@@ -185,7 +185,7 @@ else
 */
 if (isset($_POST["install"])){
 	checkRight("software","w");
-	installSoftwareVersion($_POST["cID"],$_POST["vID"],$_POST["sID"]);
+	installSoftwareVersion($_POST["cID"],$_POST["vID"]);
 	logEvent($_POST["cID"], "computers", 5, "inventory", $_SESSION["glpiname"]." installed software.");
 	glpi_header($_SERVER['HTTP_REFERER']);
 }

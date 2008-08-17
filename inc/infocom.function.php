@@ -49,7 +49,7 @@ function showInfocomForm($target,$device_type,$dev_ID,$show_immo=true,$withtempl
 	// Show Infocom or blank form
 
 	global $CFG_GLPI,$LANG;
-	if (!haveRight("contract_infocom","r")) return false;
+	if (!haveRight("infocom","r")) return false;
 	$date_fiscale=$CFG_GLPI["date_fiscale"];
 
 	$ic = new Infocom;
@@ -495,7 +495,7 @@ function showTco($ticket_tco,$value,$date_achat=""){
 function showDisplayInfocomLink($device_type,$device_id,$update=0){
 	global $DB,$CFG_GLPI,$LANG;
 
-	if (!haveRight("contract_infocom","r")) return false;
+	if (!haveRight("infocom","r")) return false;
 
 	$query="SELECT COUNT(*) FROM glpi_infocoms WHERE FK_device='$device_id' AND device_type='$device_type'";
 

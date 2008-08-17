@@ -275,6 +275,12 @@ class Identification {
 				if (!$pos === false) {
 					$login = substr($login_string, $pos + 1);
 				} 
+				if ($CFG_GLPI['existing_auth_server_field_clean_domain']){
+					$pos = stripos($login,"@");
+					if (!$pos === false) {
+						$login = substr($login, 0,$pos);
+					} 
+				}
 				if (isValidLogin($login)){
 					$this->user->fields['name'] = $login;
 					return true;

@@ -1928,7 +1928,7 @@ function showJobDetails ($target,$ID){
 		echo "<strong>".getRealtime($job->fields["realtime"])."</strong>";
 		echo "</td></tr>";
 
-		if(haveRight("contract_infocom","r")){  // admin = oui on affiche les couts liés à l'interventions
+		if(haveRight("contract","r")){  // admin = oui on affiche les couts liés à l'interventions
 
 			echo "<tr><td class='left'>";
 			// cout

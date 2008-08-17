@@ -74,6 +74,13 @@ class Device extends CommonDBTM {
 		}
 	}
 
+	function canView () {
+		return haveRight("device","r");
+	}
+
+	function canCreate () {
+		return haveRight("device","w");
+	}
 	// SPECIFIC FUNCTIONS
 	/**
 	 * Connect the current device to a computer
@@ -92,5 +99,6 @@ class Device extends CommonDBTM {
 			return false;
 		}
 	}
+
 }
 ?>

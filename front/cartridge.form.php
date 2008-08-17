@@ -45,7 +45,7 @@ $cartype=new CartridgeType();
 
 if (isset($_POST["add"]))
 {
-	checkRight("cartridge","w");
+	$cartype->check(-1,'w',$_POST['FK_entities']);
 
 	$newID=$cartype->add($_POST);
 	logEvent($newID, "cartridges", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][20]." ".$_POST["name"].".");
@@ -53,7 +53,7 @@ if (isset($_POST["add"]))
 } 
 else if (isset($_POST["delete"]))
 {
-	checkRight("cartridge","w");
+	$cartype->check($_POST["ID"],'w');
 
 	$cartype->delete($_POST);
 	logEvent($_POST["ID"], "cartridges", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][22]);
@@ -61,15 +61,14 @@ else if (isset($_POST["delete"]))
 }
 else if (isset($_POST["restore"]))
 {
-	checkRight("cartridge","w");
+	$cartype->check($_POST["ID"],'w');
 
 	$cartype->restore($_POST);
 	logEvent($_POST["ID"], "cartridges", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][23]);
 	glpi_header($CFG_GLPI["root_doc"]."/front/cartridge.php");
 }
-else if (isset($_POST["purge"]))
-{
-	checkRight("cartridge","w");
+else if (isset($_POST["purge"])){
+	$cartype->check($_POST["ID"],'w');
 
 	$cartype->delete($_POST,1);
 	logEvent($_POST["ID"], "cartridges", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][24]);
@@ -77,30 +76,29 @@ else if (isset($_POST["purge"]))
 }
 else if (isset($_POST["update"]))
 {
-	checkRight("cartridge","w");
+	$cartype->check($_POST["ID"],'w');
+
 
 	$cartype->update($_POST);
 	logEvent($_POST["ID"], "cartridges", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][21]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 } else if (isset($_POST["addtype"])){
 
-	checkRight("cartridge","w");
+	$cartype->check($_POST["tID"],'w');
 
 	$cartype->addCompatibleType($_POST["tID"],$_POST["model"]);
 	logEvent($_POST["tID"], "cartridges", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][30]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($_GET["deletetype"])){
-
-	checkRight("cartridge","w");
+	$cartype->check($_GET["tID"],'w');
 
 	$cartype->deleteCompatibleType($_GET["ID"]);
-	logEvent($_POST["ID"], "cartridges", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][31]);
+	logEvent($_GET["tID"], "cartridges", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][31]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else
 {
-	checkRight("cartridge","r");
 
 	commonHeader($LANG["Menu"][21],$_SERVER['PHP_SELF'],"inventory","cartridge");
 	$cartype->showForm($_SERVER['PHP_SELF'],$_GET["ID"]);

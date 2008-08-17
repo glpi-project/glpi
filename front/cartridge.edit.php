@@ -45,18 +45,23 @@ if(!isset($_GET["cID"])) $_GET["cID"] = "";
 //print_r($_POST);
 
 $cart= new Cartridge();
+$cartype=new CartridgeType();
+
 if (isset($_POST["update_pages"])||isset($_POST["update_pages_x"]))
 {
-	checkRight("cartridge","w");
-	$cart->updatePages($_POST["cID"],$_POST['pages']);
+	/// TODO : maybe right on printer and not on cartridge type for such a thing ?
+	$cart->check($_POST["cID"],'w');
 
+	$cart->updatePages($_POST["cID"],$_POST['pages']);
+	
 	logEvent(0, "cartridges", 4, "inventory", $_SESSION["glpiname"]." update a cartridge.");
 
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($_POST["add_several"]))
 {
-	checkRight("cartridge","w");
+	$cartype->check($_POST["tID"],'w');
+
 	for ($i=0;$i<$_POST["to_add"];$i++){
 		unset($cart->fields["ID"]);
 		$cart->add($_POST);
@@ -67,21 +72,23 @@ else if (isset($_POST["add_several"]))
 }
 else if (isset($_GET["delete"]))
 {
+	$cartype->check($_GET["tID"],'w');
+
 	checkRight("cartridge","w");
 	$cart->delete($_GET);
-	logEvent(0, "cartridges", 4, "inventory", $_SESSION["glpiname"]." deleted a cartridge.");
+	logEvent($_GET["tID"], "cartridges", 4, "inventory", $_SESSION["glpiname"]." deleted a cartridge.");
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($_GET["restore"]))
 {
-	checkRight("cartridge","w");
+	$cartype->check($_GET["tID"],'w');
 	$cart->restore($_GET);
 	logEvent($_GET["tID"], "cartridges", 5, "inventory", $_SESSION["glpiname"]." restore cartridge.");
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($_POST["install"]))
 {
-	checkRight("cartridge","w");
+	$cartype->check($_POST["tID"],'w');
 	$cart->install($_POST["pID"],$_POST["tID"]);
 	logEvent($_POST["tID"], "cartridges", 5, "inventory", $_SESSION["glpiname"]." installed cartridge.");
 
@@ -89,9 +96,9 @@ else if (isset($_POST["install"]))
 }
 else if (isset($_GET["uninstall"]))
 {
-	checkRight("cartridge","w");
+	$cartype->check($_GET["tID"],'w');
 	$cart->uninstall($_GET["ID"]);
-	logEvent(0, "cartridges", 5, "inventory", $_SESSION["glpiname"]." uninstalled cartridge.");
+	logEvent($_GET["tID"], "cartridges", 5, "inventory", $_SESSION["glpiname"]." uninstalled cartridge.");
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 glpi_header($_SERVER['HTTP_REFERER']);

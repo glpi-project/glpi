@@ -34,7 +34,6 @@
 // Original Author of file:
 // Purpose of file:
 // ----------------------------------------------------------------------
-
 define('GLPI_ROOT', '.');
 $NEEDED_ITEMS = array (
 	"user",

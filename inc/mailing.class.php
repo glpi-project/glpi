@@ -435,7 +435,7 @@ class Mailing
 
 			$body.="<br>-- <br>".$CFG_GLPI["mailing_signature"];
 			$body.="</body></html>";
-			$body=ereg_replace("\n","<br>",$body);
+			$body=ereg_replace("\n","<br>\n",$body);
 
 		}else{ // text format
 

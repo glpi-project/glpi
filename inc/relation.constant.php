@@ -44,11 +44,13 @@ $RELATION=array(
 				"glpi_cartridges_assoc"=>"FK_glpi_cartridges_type"),
 
 	"glpi_computers" => array("glpi_computer_device"=>"FK_computers",
+						"glpi_computerdisks"=>"FK_computers",
 						"glpi_connect_wire"=>"end2",
 						"glpi_inst_software"=>"cID",
 						"glpi_softwarelicenses"=>"oem_computer",
 						"glpi_ocs_link"=>"glpi_id",
-						"glpi_registry"=>"computer_id"),
+						"glpi_registry"=>"computer_id",
+						),
 
 	"glpi_consumables_type" => array("glpi_consumables"=>"FK_glpi_consumables_type"),
 
@@ -78,17 +80,22 @@ $RELATION=array(
 						"glpi_networking"=>"domain"),
 	
 	"glpi_dropdown_enttype" =>array("glpi_enterprises"=>"type"),
+
+	"glpi_dropdown_filesystems" =>array("glpi_computerdisks"=>"FK_filesystems"),
 	
 	"glpi_dropdown_firmware" =>array("glpi_networking"=>"firmware"),
 	
 	"glpi_dropdown_iface" =>array("glpi_networking_ports"=>"iface"),
 	
 	"glpi_dropdown_interface" =>array("glpi_device_hdd"=>"interface",
-						"glpi_device_drive"=>"interface",
-						"glpi_device_control"=>"interface"),
+					"glpi_device_drive"=>"interface",
+					"glpi_device_gfxcard"=>"FK_interface",
+					"glpi_device_control"=>"interface"),
 	
 	"glpi_dropdown_kbcategories" =>array("glpi_dropdown_kbcategories"=>"parentID",
 					"glpi_kbitems" =>"categoryID"),
+
+	"glpi_dropdown_licensetypes" =>array("glpi_softwarelicenses"=>"type"),
 	
 	"glpi_dropdown_locations" =>array(
 					"glpi_cartridges_type"=>"location",
@@ -181,6 +188,10 @@ $RELATION=array(
 				),
 	
 	"glpi_dropdown_tracking_category" =>array("glpi_tracking"=>"category"),
+
+	"glpi_dropdown_user_titles" =>array("glpi_users"=>"title"),
+	
+	"glpi_dropdown_user_types" =>array("glpi_users"=>"type"),
 	
 	"glpi_dropdown_vlan" =>array("glpi_networking_vlan"=>"FK_vlan"),
 	

@@ -49,7 +49,7 @@ $peripheral=new Peripheral();
 
 if (isset($_POST["add"]))
 {
-	checkRight("peripheral","w");
+	$peripheral->check(-1,'w',$_POST['FK_entities']);
 
 	$newID=$peripheral->add($_POST);
 	logEvent($newID, "peripherals", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][20]." ".$_POST["name"].".");
@@ -57,7 +57,7 @@ if (isset($_POST["add"]))
 }
 else if (isset($_POST["delete"]))
 {
-	checkRight("peripheral","w");
+	$peripheral->check($_POST["ID"],'w');
 
 	if (!empty($_POST["withtemplate"]))
 		$peripheral->delete($_POST,1);
@@ -71,7 +71,7 @@ else if (isset($_POST["delete"]))
 }
 else if (isset($_POST["restore"]))
 {
-	checkRight("peripheral","w");
+	$peripheral->check($_POST["ID"],'w');
 
 	$peripheral->restore($_POST);
 	logEvent($_POST["ID"], "peripherals", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][23]);
@@ -79,12 +79,13 @@ else if (isset($_POST["restore"]))
 }
 else if (isset($_POST["purge"]) || isset($_GET["purge"]))
 {
-	checkRight("peripheral","w");
 
 	if (isset($_POST["purge"]))
 		$input["ID"]=$_POST["ID"];
 	else
 		$input["ID"] = $_GET["ID"];	
+
+	$peripheral->check($input["ID"],'w');
 
 	$peripheral->delete($input,1);
 	logEvent($input["ID"], "peripherals", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][24]);
@@ -92,7 +93,8 @@ else if (isset($_POST["purge"]) || isset($_GET["purge"]))
 }
 else if (isset($_POST["update"]))
 {
-	checkRight("peripheral","w");
+	$peripheral->check($_POST["ID"],'w');
+
 
 	$peripheral->update($_POST);
 	logEvent($_POST["ID"], "peripherals", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][21]);
@@ -100,7 +102,7 @@ else if (isset($_POST["update"]))
 }
 else if (isset($_GET["unglobalize"]))
 {
-	checkRight("peripheral","w");
+	$peripheral->check($_GET["ID"],'w');
 
 	unglobalizeDevice(PERIPHERAL_TYPE,$_GET["ID"]);
 	logEvent($_GET["ID"], "peripherals", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][60]);
@@ -108,14 +110,17 @@ else if (isset($_GET["unglobalize"]))
 }
 else if (isset($_GET["disconnect"]))
 {
+	/// TODO : which right on connect / disconnect ?
 	checkRight("peripheral","w");
+
 	Disconnect($_GET["ID"]);
+
 	logEvent(0, "peripherals", 5, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][27]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if(isset($_POST["connect"])&&isset($_POST["item"])&&$_POST["item"]>0)
 {
-
+	/// TODO : which right on connect / disconnect ?
 	checkRight("peripheral","w");
 
 	Connect($_POST["sID"],$_POST["item"],PERIPHERAL_TYPE);
@@ -124,15 +129,6 @@ else if(isset($_POST["connect"])&&isset($_POST["item"])&&$_POST["item"]>0)
 }
 else
 {
-	checkRight("peripheral","r");
-
-	if (!isset($_SESSION['glpi_tab'])) $_SESSION['glpi_tab']=1;
-	if (isset($_GET['onglet'])) {
-		$_SESSION['glpi_tab']=$_GET['onglet'];
-		//		glpi_header($_SERVER['HTTP_REFERER']);
-	}
-
-
 	commonHeader($LANG["Menu"][16],$_SERVER['PHP_SELF'],"inventory","peripheral");
 
 	$peripheral->showForm($_SERVER['PHP_SELF'],$_GET["ID"], $_GET["withtemplate"]);

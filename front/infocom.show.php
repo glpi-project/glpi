@@ -40,7 +40,7 @@ define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
 
-checkRight("contract_infocom","r");
+checkRight("infocom","r");
 
 popHeader($LANG["financial"][3],$_SERVER['PHP_SELF']);
 
