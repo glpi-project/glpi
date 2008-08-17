@@ -51,6 +51,8 @@ class Job extends CommonDBTM{
 	function Job(){
 		$this->table="glpi_tracking";
 		$this->type=TRACKING_TYPE;
+		$this->entity_assign=true;
+
 	}
 
 	/**
@@ -770,29 +772,29 @@ class Job extends CommonDBTM{
 			$result=$DB->query($query);
 			$nbfollow=$DB->numrows($result);
 			if($format=="html"){
-				$message = "<div class='description'><strong>".$LANG["mailing"][4]." : $nbfollow<br></strong></div><br>";
+				$message = "<div class='description'><strong>".$LANG["mailing"][4]." : $nbfollow<br></strong></div>\n";
 
 				if ($nbfollow>0){
 					$fup=new Followup();
 					while ($data=$DB->fetch_array($result)){
 						$fup->getFromDB($data['ID']);
-						$message .= "<strong>[ ".convDateTime($fup->fields["date"])." ] ".($fup->fields["private"]?"<i>".$LANG["common"][77]."</i>":"")."</strong><br>";
-						$message .= "<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$LANG["job"][4].":</span> ".$fup->getAuthorName()."<br>";
-						$message .= "<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$LANG["mailing"][3]."</span>:<br>".ereg_replace("\n","<br>",$fup->fields["contents"])."<br>";
+						$message .= "<strong>[ ".convDateTime($fup->fields["date"])." ] ".($fup->fields["private"]?"<i>".$LANG["common"][77]."</i>":"")."</strong>\n";
+						$message .= "<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$LANG["job"][4].":</span> ".$fup->getAuthorName()."\n";
+						$message .= "<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$LANG["mailing"][3]."</span>:<br>".ereg_replace("\n","<br>",$fup->fields["contents"])."\n";
 						if ($fup->fields["realtime"]>0)
-							$message .= "<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$LANG["mailing"][104].":</span> ".getRealtime($fup->fields["realtime"])."<br>";
+							$message .= "<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$LANG["mailing"][104].":</span> ".getRealtime($fup->fields["realtime"])."\n";
 
 						$message.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$LANG["mailing"][25]."</span> ";
 						$query2="SELECT * from glpi_tracking_planning WHERE id_followup='".$data['ID']."'";
 						$result2=$DB->query($query2);
 						if ($DB->numrows($result2)==0)
-							$message.=$LANG["job"][32]."<br>";
+							$message.=$LANG["job"][32]."\n";
 						else {
 							$data2=$DB->fetch_array($result2);
-							$message.=convDateTime($data2["begin"])." -> ".convDateTime($data2["end"])."<br>";
+							$message.=convDateTime($data2["begin"])." -> ".convDateTime($data2["end"])."\n";
 						}
 
-						$message.=$LANG["mailing"][0]."<br>";	
+						$message.=$LANG["mailing"][0]."\n";	
 					}	
 				}
 			}else{ // text format
@@ -886,17 +888,17 @@ class Job extends CommonDBTM{
 			$message.=".description{ color: inherit; background: #ebebeb; border-style: solid; border-color: #8d8d8d; border-width: 0px 1px 1px 0px; }";
 			$message.=" </style></head><body>";
 
-			$message.="<div class='description'><strong>".$LANG["mailing"][5]."</strong></div><br>";
-			$message.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$LANG["common"][57].":</span> ".$this->fields["name"]."<br>";
+			$message.="<div class='description'><strong>".$LANG["mailing"][5]."</strong></div>\n";
+			$message.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$LANG["common"][57].":</span> ".$this->fields["name"]."\n";
 			$author=$this->getAuthorName();
 			if (empty($author)) $author=$LANG["mailing"][108];
-			$message.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$LANG["job"][4].":</span> ".$author."<br>";
-			$message.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>". $LANG["search"][8].":</span> ".convDateTime($this->fields["date"])."<br>";
-			$message.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>". $LANG["job"][44].":</span> ".getRequestTypeName($this->fields["request_type"])."<br>";
-			$message.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>". $LANG["mailing"][7].":</span> ".$name."<br>";
+			$message.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$LANG["job"][4].":</span> ".$author."\n";
+			$message.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>". $LANG["search"][8].":</span> ".convDateTime($this->fields["date"])."\n";
+			$message.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>". $LANG["job"][44].":</span> ".getRequestTypeName($this->fields["request_type"])."\n";
+			$message.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>". $LANG["mailing"][7].":</span> ".$name."\n";
 			if (!empty($tech))
-				$message.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>". $LANG["common"][10].":</span> ".$tech."<br>";
-			$message.= "<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$LANG["joblist"][0].":</span> ".getStatusName($this->fields["status"])."<br>";
+				$message.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>". $LANG["common"][10].":</span> ".$tech."\n";
+			$message.= "<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$LANG["joblist"][0].":</span> ".getStatusName($this->fields["status"])."\n";
 			$assign=getAssignName($this->fields["assign"],USER_TYPE);
 			$assign_group="";
 			if (isset($this->fields["assign_group"])){
@@ -913,22 +915,22 @@ class Job extends CommonDBTM{
 					$assign.=" / ".$assign_group;
 				}
 			}
-			$message.= "<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$LANG["mailing"][8].":</span> ".$assign."<br>";
-			$message.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$LANG["joblist"][2].":</span> ".getPriorityName($this->fields["priority"])."<br>";
+			$message.= "<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$LANG["mailing"][8].":</span> ".$assign."\n";
+			$message.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$LANG["joblist"][2].":</span> ".getPriorityName($this->fields["priority"])."\n";
 			if ($this->fields["device_type"]!=SOFTWARE_TYPE&&!empty($contact))
-				$message.= "<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$LANG["common"][18].":</span> ".$contact."<br>";
+				$message.= "<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$LANG["common"][18].":</span> ".$contact."\n";
 			if ($this->fields["emailupdates"]){
-				$message.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$LANG["mailing"][103].":</span> ".$LANG["choice"][1]."<br>";
+				$message.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$LANG["mailing"][103].":</span> ".$LANG["choice"][1]."\n";
 			} else {
-				$message.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$LANG["mailing"][103].":</span> ".$LANG["choice"][0]."<br>";
+				$message.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$LANG["mailing"][103].":</span> ".$LANG["choice"][0]."\n";
 			}
 
 			$message.= "<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$LANG["common"][36].":</span> ";
 			if (isset($this->fields["category"])&&$this->fields["category"]){
 				$message.= getDropdownName("glpi_dropdown_tracking_category",$this->fields["category"]);
 			} else $message.=$LANG["mailing"][100];
-			$message.= "<br>";
-			$message.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>". $LANG["mailing"][3].":</span><br>".ereg_replace("\n","<br>",$this->fields["contents"])."<br><br>";	
+			$message.= "\n";
+			$message.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>". $LANG["mailing"][3].":</span><br>".ereg_replace("\n","<br>",$this->fields["contents"])."<br>\n";	
 
 		}else{ //text format
 			$message = $LANG["mailing"][1]."\n*".$LANG["mailing"][5]."*\n".$LANG["mailing"][1]."\n";

@@ -45,7 +45,7 @@ if(empty($_GET["ID"])) $_GET["ID"] = "";
 $typedoc=new TypeDoc();
 if (isset($_POST["add"]))
 {
-	checkRight("typedoc","w");
+	$typedoc->check(-1,'w');
 
 	if ($newID=$typedoc->add($_POST))
 	logEvent($newID, "typedocs", 4, "setup", $_SESSION["glpiname"]." added ".$_POST["name"].".");
@@ -53,7 +53,7 @@ if (isset($_POST["add"]))
 }
 else if (isset($_POST["delete"]))
 {
-	checkRight("typedoc","w");
+	$typedoc->check($_POST["ID"],'w');
 
 	$typedoc->delete($_POST,1);
 
@@ -63,7 +63,7 @@ else if (isset($_POST["delete"]))
 }
 else if (isset($_POST["update"]))
 {
-	checkRight("typedoc","w");
+	$typedoc->check($_POST["ID"],'w');
 
 	$typedoc->update($_POST);
 	logEvent($_POST["ID"], "typedocs", 4, "setup", $_SESSION["glpiname"]." ".$LANG["log"][21]);
@@ -71,8 +71,6 @@ else if (isset($_POST["update"]))
 }
 else
 {
-	checkRight("typedoc","r");
-
 	commonHeader($LANG["common"][12],$_SERVER['PHP_SELF'],"config","typedoc");
 	$typedoc->showForm($_SERVER['PHP_SELF'],$_GET["ID"]);
 	commonFooter();

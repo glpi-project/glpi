@@ -48,7 +48,7 @@ if (isset($_POST["action"])&&isset($_POST["type"])&&!empty($_POST["type"])){
 			break;
 		default :
 			if (in_array($_POST["type"],$CFG_GLPI["infocom_types"])){
-				checkSeveralRightsOr(array($_POST["type"]=>"w","contract_infocom"=>"w"));
+				checkSeveralRightsOr(array($_POST["type"]=>"w","infocom"=>"w"));
 			} else {
 				checkTypeRight($_POST["type"],"w");
 			}

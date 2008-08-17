@@ -401,9 +401,16 @@ class Profile extends CommonDBTM{
 		echo "<td>".$LANG["Menu"][27].":</td><td>";
 		dropdownNoneReadWrite("document",$this->fields["document"],1,1,1);
 		echo "</td>";
-		echo "<td>".$LANG["Menu"][24]." / ".$LANG["Menu"][25].":</td><td>";
-		dropdownNoneReadWrite("contract_infocom",$this->fields["contract_infocom"],1,1,1);
+		echo "<td>".$LANG["Menu"][24].":</td><td>";
+		dropdownNoneReadWrite("contract",$this->fields["contract"],1,1,1);
 		echo "</td></tr>";
+
+		echo "<tr class='tab_bg_2'>";
+		echo "<td>".$LANG["Menu"][25].":</td><td>";
+		dropdownNoneReadWrite("infocom",$this->fields["infocom"],1,1,1);
+		echo "</td>";
+		echo "<td colspan='4'>&nbsp;</td>";
+		echo "</tr>";
 
 		// Assistance / Tracking-helpdesk
 		echo "<tr><td class='tab_bg_1' colspan='6' align='center'><strong>".$LANG["title"][24]."</strong></td></tr>";

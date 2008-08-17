@@ -73,7 +73,7 @@ function showLinkDevice($instID) {
 		$ci->setType($DB->result($result, $i, "device_type"));
 		echo "<tr class='tab_bg_1'>";
 		echo "<td class='center'>".$ci->getType()."</td>";
-		echo "<td align='center' class='tab_bg_2'><a href='".$_SERVER['PHP_SELF']."?deletedevice=deletedevice&amp;ID=$ID'><strong>".$LANG["buttons"][6]."</strong></a></td></tr>";
+		echo "<td align='center' class='tab_bg_2'><a href='".$_SERVER['PHP_SELF']."?deletedevice=deletedevice&amp;ID=$ID&amp;lID=$instID'><strong>".$LANG["buttons"][6]."</strong></a></td></tr>";
 		$i++;
 	}
 	if ($canedit){

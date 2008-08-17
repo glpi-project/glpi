@@ -1162,13 +1162,25 @@ class CommonDBTM {
 	function check($ID,$right,$entity=-1) {
 		global $CFG_GLPI;
 	
-		if (!$this->can($ID,$right,$entity)) {
+		// Check item exists
+		if ($ID>0 && !$this->getFromDB($ID)){
 			// Gestion timeout session
 			if (!isset ($_SESSION["glpiID"])) {
 				glpi_header($CFG_GLPI["root_doc"] . "/index.php");
 				exit ();
 			}
-			displayRightError();
+
+			displayNotFoundError();			
+	
+		} else {
+			if (!$this->can($ID,$right,$entity)) {
+				// Gestion timeout session
+				if (!isset ($_SESSION["glpiID"])) {
+					glpi_header($CFG_GLPI["root_doc"] . "/index.php");
+					exit ();
+				}
+				displayRightError();
+			}
 		}
 	}
 	/**
@@ -1187,7 +1199,7 @@ class CommonDBTM {
 	 * @return ID of the entity 
 	**/
 	function getEntityID () {
-		if ($this->entity_assign) {
+		if ($this->entity_assign && isset($this->fields["FK_entities"])) {
 			return $this->fields["FK_entities"];		
 		} 
 		return  -1;

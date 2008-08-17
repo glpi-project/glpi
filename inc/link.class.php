@@ -46,6 +46,7 @@ class Link extends CommonDBTM {
 	**/
 	function Link () {
 		$this->table="glpi_links";
+		$this->type=LINK_TYPE;
 	}
 
 
@@ -76,78 +77,74 @@ class Link extends CommonDBTM {
 
 		if (!haveRight("link","r")) return false;
 
-		$spotted=false;
-		if (!$ID) {
-
-			if($this->getEmpty()) $spotted = true;
+		if ($ID > 0){
+			$this->check($ID,'r');
 		} else {
-			if($this->getFromDB($ID)) $spotted = true;
-		}
+			// Create item 
+			$this->check(-1,'w');
+			$use_cache=false;
+			$this->getEmpty();
+		} 
 
-		if ($spotted){
-			echo "<form method='post' name=form action=\"$target\"><div class='center'>";
 
-			echo "<table class='tab_cadre_fixe' cellpadding='2' >";
-			echo "<tr><th colspan='2'>";
-			if (empty($ID)) {
-				echo $LANG["links"][3].":";
+		echo "<form method='post' name=form action=\"$target\"><div class='center'>";
+
+		echo "<table class='tab_cadre_fixe' cellpadding='2' >";
+		echo "<tr><th colspan='2'>";
+		if (empty($ID)) {
+			echo $LANG["links"][3].":";
+
+		} else {
+
+			echo $LANG["links"][1]." ID $ID:";
+		}		
+		echo "</th></tr>";
+
+		echo "<tr class='tab_bg_1'><td>".$LANG["links"][6].":	</td>";
+		echo "<td>[LOGIN], [ID], [NAME], [LOCATION], [LOCATIONID], [IP], [MAC], [NETWORK], [DOMAIN], [SERIAL], [OTHERSERIAL]</td>";
+		echo "</tr>";
+
+		echo "<tr class='tab_bg_1'><td>".$LANG["common"][16].":	</td>";
+		echo "<td>";
+		autocompletionTextField("name","glpi_links","name",$this->fields["name"],80);		
+		echo "</td></tr>";
+
+		echo "<tr class='tab_bg_1'><td>".$LANG["links"][1].":	</td>";
+		echo "<td>";
+		autocompletionTextField("link","glpi_links","link",$this->fields["link"],80);		
+		echo "</td></tr>";
+
+		echo "<tr class='tab_bg_1'><td>".$LANG["links"][9].":	</td>";
+		echo "<td>";
+		echo "<textarea name='data' rows='10' cols='80'>".$this->fields["data"]."</textarea>";
+		echo "</td></tr>";
+
+		if (haveRight("link","w"))
+			if ($ID=="") {
+
+				echo "<tr>";
+				echo "<td class='tab_bg_2' valign='top' colspan='2'>";
+				echo "<div class='center'><input type='submit' name='add' value=\"".$LANG["buttons"][8]."\" class='submit'></div>";
+				echo "</td>";
+				echo "</tr>";
 
 			} else {
 
-				echo $LANG["links"][1]." ID $ID:";
-			}		
-			echo "</th></tr>";
-
-			echo "<tr class='tab_bg_1'><td>".$LANG["links"][6].":	</td>";
-			echo "<td>[LOGIN], [ID], [NAME], [LOCATION], [LOCATIONID], [IP], [MAC], [NETWORK], [DOMAIN], [SERIAL], [OTHERSERIAL]</td>";
-			echo "</tr>";
-
-			echo "<tr class='tab_bg_1'><td>".$LANG["common"][16].":	</td>";
-			echo "<td>";
-			autocompletionTextField("name","glpi_links","name",$this->fields["name"],80);		
-			echo "</td></tr>";
-
-			echo "<tr class='tab_bg_1'><td>".$LANG["links"][1].":	</td>";
-			echo "<td>";
-			autocompletionTextField("link","glpi_links","link",$this->fields["link"],80);		
-			echo "</td></tr>";
-
-			echo "<tr class='tab_bg_1'><td>".$LANG["links"][9].":	</td>";
-			echo "<td>";
-			echo "<textarea name='data' rows='10' cols='80'>".$this->fields["data"]."</textarea>";
-			echo "</td></tr>";
-
-			if (haveRight("link","w"))
-				if ($ID=="") {
-
-					echo "<tr>";
-					echo "<td class='tab_bg_2' valign='top' colspan='2'>";
-					echo "<div class='center'><input type='submit' name='add' value=\"".$LANG["buttons"][8]."\" class='submit'></div>";
-					echo "</td>";
-					echo "</tr>";
-
-				} else {
-
-					echo "<tr>";
-					echo "<td class='tab_bg_2' valign='top'>";
-					echo "<input type='hidden' name='ID' value=\"$ID\">\n";
-					echo "<div class='center'><input type='submit' name='update' value=\"".$LANG["buttons"][7]."\" class='submit' ></div>";
-					echo "</td>\n\n";
-					echo "<td class='tab_bg_2' valign='top'>\n";
-					echo "<input type='hidden' name='ID' value=\"$ID\">\n";
-					echo "<div class='center'><input type='submit' name='delete' value=\"".$LANG["buttons"][6]."\" class='submit' ></div>";
-					echo "</td>";
-					echo "</tr>";
+				echo "<tr>";
+				echo "<td class='tab_bg_2' valign='top'>";
+				echo "<input type='hidden' name='ID' value=\"$ID\">\n";
+				echo "<div class='center'><input type='submit' name='update' value=\"".$LANG["buttons"][7]."\" class='submit' ></div>";
+				echo "</td>\n\n";
+				echo "<td class='tab_bg_2' valign='top'>\n";
+				echo "<input type='hidden' name='ID' value=\"$ID\">\n";
+				echo "<div class='center'><input type='submit' name='delete' value=\"".$LANG["buttons"][6]."\" class='submit' ></div>";
+				echo "</td>";
+				echo "</tr>";
 
 
 
-				}
-			echo "</table></div></form>";
-		}else {
-			echo "<div class='center'><strong>".$LANG["common"][54]."</strong></div>";
-			return false;
-
-		}
+			}
+		echo "</table></div></form>";
 		return true;
 	}
 

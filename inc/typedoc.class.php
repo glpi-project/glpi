@@ -66,83 +66,77 @@ class Typedoc  extends CommonDBTM {
 
 		if (!haveRight("typedoc","r")) return false;
 
-		$spotted = false;
-
-		if(empty($ID)) {
-			if($this->getEmpty()) $spotted = true;
+		if ($ID > 0){
+			$this->check($ID,'r');
 		} else {
-			if($this->getFromDB($ID)) $spotted = true;
+			// Create item 
+			$this->check(-1,'w');
+			$use_cache=false;
+			$this->getEmpty();
+		} 
+
+		echo "<div class='center'><form method='post' name=form action=\"$target\">";
+
+		echo "<table class='tab_cadre' cellpadding='2'>";
+
+		echo "<tr><th align='center' >";
+		if (empty($ID)){
+			echo $LANG["document"][17];
+		} else {
+			echo $LANG["common"][2]." ".$this->fields["ID"];
 		}
 
-		if ($spotted){
+		echo "</th><th  align='center'>".$LANG["common"][26]." : ".convDateTime($this->fields["date_mod"]);
+		echo "</th></tr>";
 
-			echo "<div class='center'><form method='post' name=form action=\"$target\">";
+		echo "<tr class='tab_bg_1'><td>".$LANG["common"][16].":	</td><td>";
+		autocompletionTextField("name","glpi_type_docs","name",$this->fields["name"],40);
+		echo "</td></tr>";
 
-			echo "<table class='tab_cadre' cellpadding='2'>";
+		echo "<tr class='tab_bg_1'><td>".$LANG["document"][9].":	</td><td>";
+		autocompletionTextField("ext","glpi_type_docs","ext",$this->fields["ext"],40);
 
-			echo "<tr><th align='center' >";
-			if (empty($ID)){
-				echo $LANG["document"][17];
+		echo "</td></tr>";
+
+		echo "<tr class='tab_bg_1'><td>".$LANG["document"][10].":	</td><td>";
+		dropdownIcons("icon",$this->fields["icon"],$CFG_GLPI["typedoc_icon_dir"]);
+		if (!empty($this->fields["icon"])) echo "&nbsp;<img style='vertical-align:middle;' alt='' src='".$CFG_GLPI["typedoc_icon_dir"]."/".$this->fields["icon"]."'>";
+		echo "</td></tr>";
+
+		echo "<tr class='tab_bg_1'><td>".$LANG["document"][4].":	</td><td>";
+		autocompletionTextField("mime","glpi_type_docs","mime",$this->fields["mime"],40);
+		echo "</td></tr>";
+
+		echo "<tr class='tab_bg_1'><td>".$LANG["document"][11].":	</td><td>";
+		dropdownYesNo("upload",$this->fields["upload"]);
+		echo "</td></tr>";
+
+		if (haveRight("typedoc","w")) {
+			echo "<tr>";
+			if(empty($ID)){
+
+				echo "<td class='tab_bg_2' valign='top' colspan='3'>";
+				echo "<div class='center'><input type='submit' name='add' value=\"".$LANG["buttons"][8]."\" class='submit'></div>";
+				echo "</td>";
+
 			} else {
-				echo $LANG["common"][2]." ".$this->fields["ID"];
+
+				echo "<td class='tab_bg_2' valign='top' align='center'>";
+				echo "<input type='hidden' name='ID' value=\"$ID\">\n";
+				echo "<input type='submit' name='update' value=\"".$LANG["buttons"][7]."\" class='submit'>";
+				echo "</td>";
+				echo "<td class='tab_bg_2' valign='top'>\n";
+				echo "<div class='center'>";
+				echo "<input type='submit' name='delete' value=\"".$LANG["buttons"][6]."\" class='submit'>";
+				echo "</div>";
+				echo "</td>";
 			}
-
-			echo "</th><th  align='center'>".$LANG["common"][26]." : ".convDateTime($this->fields["date_mod"]);
-			echo "</th></tr>";
-
-			echo "<tr class='tab_bg_1'><td>".$LANG["common"][16].":	</td><td>";
-			autocompletionTextField("name","glpi_type_docs","name",$this->fields["name"],40);
-			echo "</td></tr>";
-
-			echo "<tr class='tab_bg_1'><td>".$LANG["document"][9].":	</td><td>";
-			autocompletionTextField("ext","glpi_type_docs","ext",$this->fields["ext"],40);
-
-			echo "</td></tr>";
-
-			echo "<tr class='tab_bg_1'><td>".$LANG["document"][10].":	</td><td>";
-			dropdownIcons("icon",$this->fields["icon"],$CFG_GLPI["typedoc_icon_dir"]);
-			if (!empty($this->fields["icon"])) echo "&nbsp;<img style='vertical-align:middle;' alt='' src='".$CFG_GLPI["typedoc_icon_dir"]."/".$this->fields["icon"]."'>";
-			echo "</td></tr>";
-
-			echo "<tr class='tab_bg_1'><td>".$LANG["document"][4].":	</td><td>";
-			autocompletionTextField("mime","glpi_type_docs","mime",$this->fields["mime"],40);
-			echo "</td></tr>";
-
-			echo "<tr class='tab_bg_1'><td>".$LANG["document"][11].":	</td><td>";
-			dropdownYesNo("upload",$this->fields["upload"]);
-			echo "</td></tr>";
-
-			if (haveRight("typedoc","w")) {
-				echo "<tr>";
-				if(empty($ID)){
-
-					echo "<td class='tab_bg_2' valign='top' colspan='3'>";
-					echo "<div class='center'><input type='submit' name='add' value=\"".$LANG["buttons"][8]."\" class='submit'></div>";
-					echo "</td>";
-
-				} else {
-
-					echo "<td class='tab_bg_2' valign='top' align='center'>";
-					echo "<input type='hidden' name='ID' value=\"$ID\">\n";
-					echo "<input type='submit' name='update' value=\"".$LANG["buttons"][7]."\" class='submit'>";
-					echo "</td>";
-					echo "<td class='tab_bg_2' valign='top'>\n";
-					echo "<div class='center'>";
-					echo "<input type='submit' name='delete' value=\"".$LANG["buttons"][6]."\" class='submit'>";
-					echo "</div>";
-					echo "</td>";
-				}
-				echo "</tr>";
-			}
-
-			echo "</table></form></div>";
-
-			return true;	
+			echo "</tr>";
 		}
-		else {
-			echo "<div class='center'><strong>".$LANG["common"][54]."</strong></div>";
-			return false;
-		}
+
+		echo "</table></form></div>";
+
+		return true;	
 
 	}
 

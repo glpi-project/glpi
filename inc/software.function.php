@@ -831,11 +831,10 @@ function showInstallations($sID) {
  *
  * @param $cID ID of the computer where to install a software
  * @param $vID ID of the version to install
- * @param $sID ID of the software of the license (used for history)
  * @param $dohistory Do history ?
  * @return nothing
  */
-function installSoftwareVersion($cID, $vID, $sID='', $dohistory=1){
+function installSoftwareVersion($cID, $vID, $dohistory=1){
 //function installSoftware($cID, $lID, $sID = '', $dohistory = 1) {
 
 	global $DB,$LANG;

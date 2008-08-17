@@ -45,7 +45,7 @@ $constype=new ConsumableType();
 
 if (isset($_POST["add"]))
 {
-	checkRight("consumable","w");
+	$constype->check(-1,'w',$_POST['FK_entities']);
 
 	$newID=$constype->add($_POST);
 	logEvent($newID, "consumables", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][20]." ".$_POST["name"].".");
@@ -53,7 +53,7 @@ if (isset($_POST["add"]))
 } 
 else if (isset($_POST["delete"]))
 {
-	checkRight("consumable","w");
+	$constype->check($_POST["ID"],'w');
 
 	$constype->delete($_POST);
 	logEvent($_POST["ID"], "consumables", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][22]);
@@ -61,7 +61,7 @@ else if (isset($_POST["delete"]))
 }
 else if (isset($_POST["restore"]))
 {
-	checkRight("consumable","w");
+	$constype->check($_POST["ID"],'w');
 
 	$constype->restore($_POST);
 	logEvent($_POST["ID"], "consumables", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][23]);
@@ -69,7 +69,7 @@ else if (isset($_POST["restore"]))
 }
 else if (isset($_POST["purge"]))
 {
-	checkRight("consumable","w");
+	$constype->check($_POST["ID"],'w');
 
 	$constype->delete($_POST,1);
 	logEvent($_POST["ID"], "consumables", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][24]);
@@ -77,7 +77,7 @@ else if (isset($_POST["purge"]))
 }
 else if (isset($_POST["update"]))
 {
-	checkRight("consumable","w");
+	$constype->check($_POST["ID"],'w');
 
 	$constype->update($_POST);
 	logEvent($_POST["ID"], "consumables", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][21]);
@@ -85,12 +85,8 @@ else if (isset($_POST["update"]))
 } 
 else
 {
-	checkRight("consumable","r");
-
 	commonHeader($LANG["Menu"][32],$_SERVER['PHP_SELF'],"inventory","consumable");
-
-     $constype->showForm($_SERVER['PHP_SELF'],$_GET["ID"]);
-		
+	$constype->showForm($_SERVER['PHP_SELF'],$_GET["ID"]);
 	commonFooter();
 }
 

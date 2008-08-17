@@ -49,7 +49,7 @@ if(!isset($_GET["withtemplate"])) $_GET["withtemplate"] = "";
 $soft=new Software();
 if (isset($_POST["add"]))
 {
-	checkRight("software","w");
+	$soft->check(-1,'w',$_POST['FK_entities']);
 
 	$newID=$soft->add($_POST);
 	logEvent($newID, "software", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][20]." ".$_POST["name"].".");
@@ -57,7 +57,7 @@ if (isset($_POST["add"]))
 }
 else if (isset($_POST["delete"]))
 {
-	checkRight("software","w");
+	$soft->check($_POST["ID"],'w');
 
 	if (!empty($_POST["withtemplate"]))
 		$soft->delete($_POST,1);
@@ -71,7 +71,7 @@ else if (isset($_POST["delete"]))
 }
 else if (isset($_POST["restore"]))
 {
-	checkRight("software","w");
+	$soft->check($_POST["ID"],'w');
 
 	$soft->restore($_POST);
 	logEvent($_POST["ID"], "software", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][23]);
@@ -79,12 +79,12 @@ else if (isset($_POST["restore"]))
 }
 else if (isset($_POST["purge"]) || isset($_GET["purge"]))
 {
-	checkRight("software","w");
-
 	if (isset($_POST["purge"]))
 		$input["ID"]=$_POST["ID"];
 	else
 		$input["ID"] = $_GET["ID"];	
+
+	$soft->check($input["ID"],'w');
 
 	$soft->delete($input,1);
 	logEvent($input["ID"], "software", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][24]);
@@ -92,7 +92,7 @@ else if (isset($_POST["purge"]) || isset($_GET["purge"]))
 }
 else if (isset($_POST["update"]))
 {
-	checkRight("software","w");
+	$soft->check($_POST["ID"],'w');
 
 	$soft->update($_POST);
 	logEvent($_POST["ID"], "software", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][21]);
@@ -100,13 +100,7 @@ else if (isset($_POST["update"]))
 } 
 else
 {
-	checkRight("software","r");
 
-	if (!isset($_SESSION['glpi_tab'])) $_SESSION['glpi_tab']=1;
-	if (isset($_GET['onglet'])) {
-		$_SESSION['glpi_tab']=$_GET['onglet'];
-		//glpi_header($_SERVER['HTTP_REFERER']);
-	}
 
 	commonHeader($LANG["Menu"][4],$_SERVER['PHP_SELF'],"inventory","software");
 

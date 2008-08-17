@@ -42,10 +42,11 @@ if(!isset($_GET["tID"])) $_GET["tID"] = "";
 if(!isset($_GET["cID"])) $_GET["cID"] = "";
 
 $con=new Consumable();
+$constype=new ConsumableType();
 
 if (isset($_POST["add_several"]))
 {
-	checkRight("consumable","w");
+	$constype->check($_POST["tID"],'w');
 
 	for ($i=0;$i<$_POST["to_add"];$i++){
 		unset($con->fields["ID"]);
@@ -57,15 +58,16 @@ if (isset($_POST["add_several"]))
 }
 else if (isset($_GET["delete"]))
 {
-	checkRight("consumable","w");
+	$constype->check($_GET["tID"],'w');
 
 	$con->delete($_GET);
-	logEvent(0, "consumables", 4, "inventory", $_SESSION["glpiname"]." deleted a consumable.");
+	logEvent($_GET["tID"], "consumables", 4, "inventory", $_SESSION["glpiname"]." deleted a consumable.");
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($_POST["give"]))
 {	
-	checkRight("consumable","w");
+	$constype->check($_POST["tID"],'w');
+
 	if ($_POST["id_user"]>0){
 		if (isset($_POST["out"]))
 			foreach ($_POST["out"] as $key => $val)
@@ -77,7 +79,7 @@ else if (isset($_POST["give"]))
 }
 else if (isset($_GET["restore"]))
 {
-	checkRight("consumable","w");
+	$constype->check($_GET["tID"],'w');
 
 	$con->restore($_GET);
 	logEvent($_GET["tID"], "consumables", 5, "inventory", $_SESSION["glpiname"]." restore a consummable.");

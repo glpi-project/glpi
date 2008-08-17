@@ -57,7 +57,8 @@ if (isset($_GET['onglet'])) {
 }
 
 
-checkRight("device","w");
+$device = new Device(-1);
+$device->check(-1,"w");
 
 if (isset($_POST["add"])) {
 	$device=new Device($_POST["device_type"]);	

@@ -46,27 +46,25 @@ $remind=new Reminder();
 checkCentralAccess();
 if (isset($_POST["add"]))
 {
-	if (isset($_POST["add"])&&isset($_POST["public"])){
-		checkRight("reminder_public","w");
-	}
+	/// TODO : Not do a getEmpty / check to do in add process : set fields and check rights to add (private case ...) 
+	$remind->getEmpty();
+	$remind->check(-1,'w',$_POST['FK_entities']);
+
 	$newID=$remind->add($_POST);
 	logEvent($newID, "reminder", 4, "tools", $_SESSION["glpiname"]." added ".$_POST["name"].".");
 	glpi_header($_SERVER['HTTP_REFERER']);
 } 
 else if (isset($_POST["delete"]))
 {
-	if (isset($_POST["delete"])&&isset($_POST["public"])){
-		checkRight("reminder_public","w");
-	}
+	$remind->check($_POST["ID"],'w');	
+
 	$remind->delete($_POST);
 	logEvent($_POST["ID"], "reminder", 4, "tools", $_SESSION["glpiname"]." ".$LANG["log"][22]);
 	glpi_header($CFG_GLPI["root_doc"]."/front/reminder.php");
 }
 else if (isset($_POST["update"]))
 {
-	if (isset($_POST["update"])&&isset($_POST["public"])){
-		checkRight("reminder_public","w");
-	}
+	$remind->check($_POST["ID"],'w');	
 
 	$remind->update($_POST);
 	logEvent($_POST["ID"], "reminder", 4, "tools", $_SESSION["glpiname"]." ".$LANG["log"][21]);

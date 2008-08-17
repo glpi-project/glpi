@@ -77,12 +77,13 @@ else if (isset($_POST["restore"]))
 }
 else if (isset($_POST["purge"]) || isset($_GET["purge"]))
 {
-	$netdevice->check($_POST["ID"],'w');
 
 	if (isset($_POST["purge"]))
 		$input["ID"]=$_POST["ID"];
 	else
 		$input["ID"] = $_GET["ID"];	
+
+	$netdevice->check($input["ID"],'w');
 	
 	$netdevice->delete($input,1);
 	logEvent($input["ID"], "networking", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][24]);
@@ -98,14 +99,6 @@ else if (isset($_POST["update"]))
 }
 else
 {
-	$netdevice->check($_GET["ID"],'r');
-
-	if (!isset($_SESSION['glpi_tab'])) $_SESSION['glpi_tab']=1;
-	if (isset($_GET['onglet'])) {
-		$_SESSION['glpi_tab']=$_GET['onglet'];
-		//		glpi_header($_SERVER['HTTP_REFERER']);
-	}
-
 	commonHeader($LANG["title"][6],$_SERVER['PHP_SELF'],"inventory","networking");
 
 	$netdevice->showForm($_SERVER['PHP_SELF'],$_GET["ID"], $_GET["withtemplate"]);

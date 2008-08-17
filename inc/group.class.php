@@ -94,138 +94,135 @@ class Group extends CommonDBTM{
 
 		if (!haveRight("group","r")) return false;
 
-		$con_spotted=false;
 
-		if (empty($ID)) {
-			$con_spotted = ($this->getEmpty() && $this->can(-1,'w'));
+		if ($ID > 0){
+			$this->check($ID,'r');
 		} else {
-			$con_spotted = $this->can($ID,'r');
+			// Create item 
+			$this->check(-1,'w');
+			$use_cache=false;
+			$this->getEmpty();
+		} 
+
+
+		$canedit=$this->can($ID,'w');
+
+		$this->showOnglets($ID, $withtemplate,$_SESSION['glpi_tab']);
+
+		if ($canedit) {
+			echo "<form method='post' name=form action=\"$target\"><div class='center'>";
+			if (empty($ID)){
+				echo "<input type='hidden' name='FK_entities' value='".$_SESSION["glpiactive_entity"]."'>";
+			}
 		}
 
-		if ($con_spotted){
-			$canedit=$this->can($ID,'w');
+		echo "<table class='tab_cadre_fixe' cellpadding='2' >";
+		echo "<tr><th>";
+		if (empty($ID)) {
+			echo $LANG["setup"][605];
 
-			$this->showOnglets($ID, $withtemplate,$_SESSION['glpi_tab']);
-
-			if ($canedit) {
-				echo "<form method='post' name=form action=\"$target\"><div class='center'>";
-				if (empty($ID)){
-					echo "<input type='hidden' name='FK_entities' value='".$_SESSION["glpiactive_entity"]."'>";
-				}
-			}
-
-			echo "<table class='tab_cadre_fixe' cellpadding='2' >";
-			echo "<tr><th>";
-			if (empty($ID)) {
-				echo $LANG["setup"][605];
-
+		} else {
+			echo $LANG["common"][2]." ".$this->fields["ID"];
+		}		
+		if (isMultiEntitiesMode()){
+			echo "&nbsp;(".getDropdownName("glpi_entities",$this->fields["FK_entities"]).")";
+		}
+		echo "</th><th>";
+		if (isMultiEntitiesMode()){
+			echo $LANG["entity"][9].":&nbsp;";
+		
+			if ($this->can($ID,'recursive')) {
+				dropdownYesNo("recursive",$this->fields["recursive"]);					
 			} else {
-				echo $LANG["common"][2]." ".$this->fields["ID"];
-			}		
-			if (isMultiEntitiesMode()){
-				echo "&nbsp;(".getDropdownName("glpi_entities",$this->fields["FK_entities"]).")";
+				echo getYesNo($this->fields["recursive"]);
 			}
-			echo "</th><th>";
-			if (isMultiEntitiesMode()){
-				echo $LANG["entity"][9].":&nbsp;";
-			
-				if ($this->can($ID,'recursive')) {
-					dropdownYesNo("recursive",$this->fields["recursive"]);					
-				} else {
-					echo getYesNo($this->fields["recursive"]);
-				}
-			} else {
-				echo "&nbsp;";
-			}
-			echo "</th></tr>";
+		} else {
+			echo "&nbsp;";
+		}
+		echo "</th></tr>";
 
-			echo "<tr><td class='tab_bg_1' valign='top'>";
+		echo "<tr><td class='tab_bg_1' valign='top'>";
 
-			echo "<table cellpadding='1' cellspacing='0' border='0'>\n";
+		echo "<table cellpadding='1' cellspacing='0' border='0'>\n";
 
-			echo "<tr><td>".$LANG["common"][16].":	</td>";
-			echo "<td>";
-			autocompletionTextField("name","glpi_groups","name",$this->fields["name"],40,$this->fields["FK_entities"]);	
-			echo "</td></tr>";
+		echo "<tr><td>".$LANG["common"][16].":	</td>";
+		echo "<td>";
+		autocompletionTextField("name","glpi_groups","name",$this->fields["name"],40,$this->fields["FK_entities"]);	
+		echo "</td></tr>";
 
-			echo "<tr><td>".$LANG["common"][64].":	</td>";
-			echo "<td>";
-			// Manager must be in the same entity
-			// TODO for a recursive group the manager need to have a recursive right ?
-			dropdownUsers('FK_users',$this->fields["FK_users"],'all',0,1,$this->fields["FK_entities"]);
-			echo "</td></tr>";
+		echo "<tr><td>".$LANG["common"][64].":	</td>";
+		echo "<td>";
+		// Manager must be in the same entity
+		// TODO for a recursive group the manager need to have a recursive right ?
+		dropdownUsers('FK_users',$this->fields["FK_users"],'all',0,1,$this->fields["FK_entities"]);
+		echo "</td></tr>";
 
-			if(useAuthLdap()){
-				echo "<tr><td colspan='2' align='center'>".$LANG["setup"][256].":	</td>";
-				echo "</tr>";
-
-				echo "<tr><td>".$LANG["setup"][260].":	</td>";
-				echo "<td>";
-				autocompletionTextField("ldap_field","glpi_groups","ldap_field",$this->fields["ldap_field"],40,$this->fields["FK_entities"]);
-				echo "</td></tr>";
-
-				echo "<tr><td>".$LANG["setup"][601].":	</td>";
-				echo "<td>";
-				autocompletionTextField("ldap_value","glpi_groups","ldap_value",$this->fields["ldap_value"],40,$this->fields["FK_entities"]);
-				echo "</td></tr>";
-
-				echo "<tr><td colspan='2' align='center'>".$LANG["setup"][257].":	</td>";
-				echo "</tr>";
-
-
-				echo "<tr><td>".$LANG["setup"][261].":	</td>";
-				echo "<td>";
-				autocompletionTextField("ldap_group_dn","glpi_groups","ldap_group_dn",$this->fields["ldap_group_dn"],40,$this->fields["FK_entities"]);
-				echo "</td></tr>";
-			}
-
-			echo "</table>";
-
-			echo "</td>\n";	
-
-			echo "<td class='tab_bg_1' valign='top'>";
-
-			echo "<table cellpadding='1' cellspacing='0' border='0'><tr><td>";
-			echo $LANG["common"][25].":	</td></tr>";
-			echo "<tr><td class='center'><textarea cols='45' rows='4' name='comments' >".$this->fields["comments"]."</textarea>";
-			echo "</td></tr></table>";
-
-			echo "</td>";
+		if(useAuthLdap()){
+			echo "<tr><td colspan='2' align='center'>".$LANG["setup"][256].":	</td>";
 			echo "</tr>";
 
-			if ($canedit) {
-				if ($ID=="") {
+			echo "<tr><td>".$LANG["setup"][260].":	</td>";
+			echo "<td>";
+			autocompletionTextField("ldap_field","glpi_groups","ldap_field",$this->fields["ldap_field"],40,$this->fields["FK_entities"]);
+			echo "</td></tr>";
 
-					echo "<tr>";
-					echo "<td class='tab_bg_2' valign='top' colspan='2'>";
-					echo "<div class='center'><input type='submit' name='add' value=\"".$LANG["buttons"][8]."\" class='submit'></div>";
-					echo "</td>";
-					echo "</tr>";
+			echo "<tr><td>".$LANG["setup"][601].":	</td>";
+			echo "<td>";
+			autocompletionTextField("ldap_value","glpi_groups","ldap_value",$this->fields["ldap_value"],40,$this->fields["FK_entities"]);
+			echo "</td></tr>";
 
-				} else {
+			echo "<tr><td colspan='2' align='center'>".$LANG["setup"][257].":	</td>";
+			echo "</tr>";
 
-					echo "<tr>";
-					echo "<td class='tab_bg_2' valign='top'>";
-					echo "<input type='hidden' name='ID' value=\"$ID\">\n";
-					echo "<div class='center'><input type='submit' name='update' value=\"".$LANG["buttons"][7]."\" class='submit' ></div>";
-					echo "</td>\n\n";
-					echo "<td class='tab_bg_2' valign='top'>\n";
-					echo "<div class='center'><input type='submit' name='delete' value=\"".$LANG["buttons"][6]."\" class='submit'></div>";
 
-					echo "</td>";
-					echo "</tr>";
-
-				}
-				echo "</table></div></form>";
-			} else {
-				echo "</table></div>";
-			}
-
-		} else {
-			echo "<div class='center'><strong>".$LANG["common"][54]."</strong></div>";
-			return false;
-
+			echo "<tr><td>".$LANG["setup"][261].":	</td>";
+			echo "<td>";
+			autocompletionTextField("ldap_group_dn","glpi_groups","ldap_group_dn",$this->fields["ldap_group_dn"],40,$this->fields["FK_entities"]);
+			echo "</td></tr>";
 		}
+
+		echo "</table>";
+
+		echo "</td>\n";	
+
+		echo "<td class='tab_bg_1' valign='top'>";
+
+		echo "<table cellpadding='1' cellspacing='0' border='0'><tr><td>";
+		echo $LANG["common"][25].":	</td></tr>";
+		echo "<tr><td class='center'><textarea cols='45' rows='4' name='comments' >".$this->fields["comments"]."</textarea>";
+		echo "</td></tr></table>";
+
+		echo "</td>";
+		echo "</tr>";
+
+		if ($canedit) {
+			if ($ID=="") {
+
+				echo "<tr>";
+				echo "<td class='tab_bg_2' valign='top' colspan='2'>";
+				echo "<div class='center'><input type='submit' name='add' value=\"".$LANG["buttons"][8]."\" class='submit'></div>";
+				echo "</td>";
+				echo "</tr>";
+
+			} else {
+
+				echo "<tr>";
+				echo "<td class='tab_bg_2' valign='top'>";
+				echo "<input type='hidden' name='ID' value=\"$ID\">\n";
+				echo "<div class='center'><input type='submit' name='update' value=\"".$LANG["buttons"][7]."\" class='submit' ></div>";
+				echo "</td>\n\n";
+				echo "<td class='tab_bg_2' valign='top'>\n";
+				echo "<div class='center'><input type='submit' name='delete' value=\"".$LANG["buttons"][6]."\" class='submit'></div>";
+
+				echo "</td>";
+				echo "</tr>";
+
+			}
+			echo "</table></div></form>";
+		} else {
+			echo "</table></div>";
+		}
+
 		return true;
 	}
 

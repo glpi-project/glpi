@@ -190,7 +190,7 @@ function printDeviceComputer($device,$quantity,$specif,$compID,$compDevID,$witht
 //			if (!empty($device->fields["ram"])) $entry[$LANG["device_gfxcard"][0]]=$device->fields["ram"];
 //			if (!empty($device->fields["interface"])) 		$entry[$LANG["common"][65]]=getDropdownName("glpi_dropdown_interface",$device->fields["interface"]);
 
-			$entry[$LANG["common"][65]]=$device->fields["interface"];
+			$entry[$LANG["common"][65]]=getDropdownName("glpi_dropdown_interface",$device->fields["FK_interface"]);
 			$specificity_size = 10;
 			break;
 		case NETWORK_DEVICE :
@@ -575,65 +575,65 @@ function showDevicesForm ($target,$ID,$device_type) {
 
 	$device = new Device($device_type);
 
-	$device_spotted = false;
-
-	if(empty($ID)) {
-		if($device->getEmpty()) $device_spotted = true;
+	if ($ID > 0){
+		$device->check($ID,'r');
 	} else {
-		if($device->getFromDB($ID)) $device_spotted = true;
+		// Create item 
+		$device->check(-1,'w');
+		$use_cache=false;
+		$device->getEmpty();
+	} 
+
+
+	$table=getDeviceTable($device_type);
+
+	echo "<div class='center'>";
+	echo "<a href='$REFERER'>".$LANG["buttons"][13]."</a>";
+
+	$device->showOnglets($ID, "",$_SESSION['glpi_tab'],"","designation","&amp;device_type=$device_type&amp;referer=$REFERER");
+	echo "<form method='post' name='form' action=\"$target\">";
+	echo "<input type='hidden' name='referer' value='$REFERER'>";
+	echo "<table class='tab_cadre_fixe' cellpadding='2'>";
+	echo "<tr><th align='center' colspan='1'>";
+	echo getDictDeviceLabel($device_type)."</th><th align='center' colspan='1'> ID : ".$ID;
+	echo "<tr><td class='tab_bg_1' colspan='1'>";
+	// table commune
+	echo "<table cellpadding='1' cellspacing='0' border='0'>\n";
+	echo "<tr><td>".$LANG["common"][16].":	</td>";
+	echo "<td>";
+	autocompletionTextField("designation",$table,"designation",$device->fields["designation"],50);
+
+	echo "</td></tr>";
+	echo "<tr class='tab_bg_1'><td>".$LANG["common"][5].": 	</td><td colspan='2'>";
+	dropdownValue("glpi_dropdown_manufacturer","FK_glpi_enterprise",$device->fields["FK_glpi_enterprise"]);
+	echo "</td></tr>";
+	if (getDeviceSpecifityLabel($device_type)!=""){
+		echo "<tr><td>".getDeviceSpecifityLabel($device_type)." ".$LANG["devices"][24]."</td>";
+		echo "<td><input type='text' name='specif_default' value=\"".$device->fields["specif_default"]."\" size='20'></td>";
+		echo "</tr>";
 	}
-	
-	if ($device_spotted){
+	echo "</table>";
+	// fin table Commune
+	echo "</td>\n";	
+	echo "<td class='tab_bg_1' valign='top'>";
 
-		$table=getDeviceTable($device_type);
-	
-		echo "<div class='center'>";
-		echo "<a href='$REFERER'>".$LANG["buttons"][13]."</a>";
-
-		$device->showOnglets($ID, "",$_SESSION['glpi_tab'],"","designation","&amp;device_type=$device_type&amp;referer=$REFERER");
-		echo "<form method='post' name='form' action=\"$target\">";
-		echo "<input type='hidden' name='referer' value='$REFERER'>";
-		echo "<table class='tab_cadre_fixe' cellpadding='2'>";
-		echo "<tr><th align='center' colspan='1'>";
-		echo getDictDeviceLabel($device_type)."</th><th align='center' colspan='1'> ID : ".$ID;
-		echo "<tr><td class='tab_bg_1' colspan='1'>";
-		// table commune
-		echo "<table cellpadding='1' cellspacing='0' border='0'>\n";
-		echo "<tr><td>".$LANG["common"][16].":	</td>";
-		echo "<td>";
-		autocompletionTextField("designation",$table,"designation",$device->fields["designation"],50);
-	
-		echo "</td></tr>";
-		echo "<tr class='tab_bg_1'><td>".$LANG["common"][5].": 	</td><td colspan='2'>";
-		dropdownValue("glpi_dropdown_manufacturer","FK_glpi_enterprise",$device->fields["FK_glpi_enterprise"]);
-		echo "</td></tr>";
-		if (getDeviceSpecifityLabel($device_type)!=""){
-			echo "<tr><td>".getDeviceSpecifityLabel($device_type)." ".$LANG["devices"][24]."</td>";
-			echo "<td><input type='text' name='specif_default' value=\"".$device->fields["specif_default"]."\" size='20'></td>";
-			echo "</tr>";
-		}
-		echo "</table>";
-		// fin table Commune
-		echo "</td>\n";	
-		echo "<td class='tab_bg_1' valign='top'>";
-	
-		// table particuliere
-		echo "<table cellpadding='1' cellspacing='0' border='0'>";
-		switch($table) {
-			case "glpi_device_moboard" : 
-				echo "<tr><td>".$LANG["device_moboard"][0].":</td>";
+	// table particuliere
+	echo "<table cellpadding='1' cellspacing='0' border='0'>";
+	switch($table) {
+		case "glpi_device_moboard" : 
+			echo "<tr><td>".$LANG["device_moboard"][0].":</td>";
 			echo "<td>";
 			autocompletionTextField("chipset",$table,"chipset",$device->fields["chipset"],40);
-	
+
 			echo "</td></tr>";
-			break;
-			case "glpi_device_processor" :
-				echo "<tr><td>".$LANG["device_ram"][1].":</td><td>";
+		break;
+		case "glpi_device_processor" :
+			echo "<tr><td>".$LANG["device_ram"][1].":</td><td>";
 			autocompletionTextField("frequence",$table,"frequence",$device->fields["frequence"],40);
 			echo "</td></tr>";
-			break;
-			case "glpi_device_ram" :
-				echo "<tr><td>".$LANG["common"][17].":</td>";
+		break;
+		case "glpi_device_ram" :
+			echo "<tr><td>".$LANG["common"][17].":</td>";
 			echo "<td>";
 			dropdownValue("glpi_dropdown_ram_type","type",$device->fields["type"]);
 			echo "</td>";
@@ -641,9 +641,9 @@ function showDevicesForm ($target,$ID,$device_type) {
 			echo "<tr><td>".$LANG["device_ram"][1].":</td><td>";
 			autocompletionTextField("frequence",$table,"frequence",$device->fields["frequence"],40);
 			echo "</td></tr>";
-			break;
-			case "glpi_device_hdd" :
-				echo "<tr><td>".$LANG["device_hdd"][0].":</td><td>";
+		break;
+		case "glpi_device_hdd" :
+			echo "<tr><td>".$LANG["device_hdd"][0].":</td><td>";
 			autocompletionTextField("rpm",$table,"rpm",$device->fields["rpm"],40);
 	
 			echo "</td></tr>";
@@ -658,14 +658,14 @@ function showDevicesForm ($target,$ID,$device_type) {
 			echo "</td>";
 	
 			echo "</tr>";
-			break;
-			case "glpi_device_iface" :
-				echo "<tr><td>".$LANG["device_iface"][0].":</td><td>";
+		break;
+		case "glpi_device_iface" :
+			echo "<tr><td>".$LANG["device_iface"][0].":</td><td>";
 			autocompletionTextField("bandwidth",$table,"bandwidth",$device->fields["bandwidth"],40);
 			echo "</td></tr>";
-			break;
-			case "glpi_device_drive" :
-				echo "</tr>";
+		break;
+		case "glpi_device_drive" :
+			echo "</tr>";
 			echo "<tr><td>".$LANG["device_drive"][0].":</td>";
 			echo "<td>";
 			dropdownYesNo("is_writer",$device->fields["is_writer"]);
@@ -681,11 +681,11 @@ function showDevicesForm ($target,$ID,$device_type) {
 			echo "<tr><td>".$LANG["device_drive"][1].":</td><td>";
 			autocompletionTextField("speed",$table,"speed",$device->fields["speed"],40);
 			echo "</td></tr>";
-	
-	
-			break;
-			case  "glpi_device_control" :
-				echo "</tr>";
+
+
+		break;
+		case  "glpi_device_control" :
+			echo "</tr>";
 			echo "<tr><td>".$LANG["device_control"][0].":</td>";
 			echo "<td>";
 			dropdownYesNo("raid",$device->fields["raid"]);
@@ -696,40 +696,36 @@ function showDevicesForm ($target,$ID,$device_type) {
 			dropdownValue("glpi_dropdown_interface","interface",$device->fields["interface"]);
 			echo "</td>";
 			echo "</tr>";
-	
-			break;
-			case "glpi_device_gfxcard" :
-				echo "<tr><td>".$LANG["device_gfxcard"][0].":</td><td>";
+
+		break;
+		case "glpi_device_gfxcard" :
+
+			echo "<tr><td>".$LANG["device_gfxcard"][0].":</td><td>";
 			autocompletionTextField("specif_default",$table,"specif_default",$device->fields["specif_default"],40);
 			echo "</td></tr>";
 			echo "<tr><td>".$LANG["common"][65].":</td>";
-			echo "<td><select name='interface'>";
-			echo "<option value='AGP' ".($device->fields["interface"]=="AGP"?"selected":"").">AGP</option>";
-			echo "<option value='PCI' ".($device->fields["interface"]=="PCI"?"selected":"").">PCI</option>";
-			echo "<option value='PCIe' ".($device->fields["interface"]=="PCIe"?"selected":"").">PCIe</option>"; 
-			echo "<option value='PCI-X' ".($device->fields["interface"]=="PCI-X"?"selected":"").">PCI-X</option>";
-			echo "<option value='Other' ".($device->fields["interface"]=="Other"?"selected":"").">Other</option>";
-			echo "</select>";
+			echo "<td>";
+			dropdownValue("glpi_dropdown_interface","FK_interface",$device->fields["FK_interface"]);
 			echo "</td>";
 			echo "</tr>";
-			break;
-			case "glpi_device_sndcard" :
-				echo "<tr><td>".$LANG["common"][17].":</td><td>";
+		break;
+		case "glpi_device_sndcard" :
+			echo "<tr><td>".$LANG["common"][17].":</td><td>";
 			autocompletionTextField("type",$table,"type",$device->fields["type"],40);
 			echo "</td></tr>";
+		break;
+		case "glpi_device_pci" :
 			break;
-			case "glpi_device_pci" :
-				break;
-			case "glpi_device_case" :
-				echo "<tr><td>".$LANG["device_case"][0].":</td>";
+		case "glpi_device_case" :
+			echo "<tr><td>".$LANG["device_case"][0].":</td>";
 			echo "<td>";
 			dropdownValue("glpi_dropdown_case_type","type",$device->fields["type"]);
 			echo "</td>";
 			echo "</tr>";
-	
-			break;
-			case "glpi_device_power" :
-				echo "<tr><td>".$LANG["device_power"][0].":</td><td>";
+
+		break;
+		case "glpi_device_power" :
+			echo "<tr><td>".$LANG["device_power"][0].":</td><td>";
 			autocompletionTextField("power",$table,"power",$device->fields["power"],40);
 			echo "</td></tr>";
 			echo "<tr><td>".$LANG["device_power"][1].":</td>";
@@ -737,50 +733,46 @@ function showDevicesForm ($target,$ID,$device_type) {
 			dropdownYesNo("atx",$device->fields["atx"]);
 			echo "</td>";
 			echo "</tr>";
-	
-			break;	
-	
-		}
-		echo "</table>";
-		echo "</td>\n";	
-		echo "</tr>";
-	
-		echo "<tr>";
-		echo "<td class='tab_bg_1' valign='top' colspan='2'>";
-	
-		// table commentaires
-		echo "<table width='100%' cellpadding='0' cellspacing='0' border='0'><tr><td valign='top'>";
-		echo $LANG["common"][25].":	</td>";
-		echo "<td class='center'><textarea cols='80' rows='4' name='comment' >".$device->fields["comment"]."</textarea>";
-		echo "</td></tr></table>";
-	
+
+		break;	
+
+	}
+	echo "</table>";
+	echo "</td>\n";	
+	echo "</tr>";
+
+	echo "<tr>";
+	echo "<td class='tab_bg_1' valign='top' colspan='2'>";
+
+	// table commentaires
+	echo "<table width='100%' cellpadding='0' cellspacing='0' border='0'><tr><td valign='top'>";
+	echo $LANG["common"][25].":	</td>";
+	echo "<td class='center'><textarea cols='80' rows='4' name='comment' >".$device->fields["comment"]."</textarea>";
+	echo "</td></tr></table>";
+
+	echo "</td>";
+	echo "</tr>";
+	echo "<tr>";
+	if(!empty($ID)) {
+		echo "<td class='tab_bg_2' valign='top' align='center'>";
+		echo "<input type='hidden' name='ID' value=\"$ID\">\n";
+		echo "<input type='hidden' name='device_type' value=\"$device_type\">\n";
+		echo "<input type='submit' name='update' value=\"".$LANG["buttons"][7]."\" class='submit'>";
+		echo "</td>";
+		echo "<td class='tab_bg_2' valign='top' align='center'>\n";
+		echo "<div class='center'>";
+		echo "<input type='submit' name='delete' value=\"".$LANG["buttons"][6]."\" class='submit'>";
+		echo "</div>";
 		echo "</td>";
 		echo "</tr>";
-		echo "<tr>";
-		if(!empty($ID)) {
-			echo "<td class='tab_bg_2' valign='top' align='center'>";
-			echo "<input type='hidden' name='ID' value=\"$ID\">\n";
-			echo "<input type='hidden' name='device_type' value=\"$device_type\">\n";
-			echo "<input type='submit' name='update' value=\"".$LANG["buttons"][7]."\" class='submit'>";
-			echo "</td>";
-			echo "<td class='tab_bg_2' valign='top' align='center'>\n";
-			echo "<div class='center'>";
-			echo "<input type='submit' name='delete' value=\"".$LANG["buttons"][6]."\" class='submit'>";
-			echo "</div>";
-			echo "</td>";
-			echo "</tr>";
-		}
-		else {
-			echo "<td class='tab_bg_2' valign='top' align='center' colspan='2'>";
-			echo "<input type='hidden' name='device_type' value=\"$device_type\">\n";
-			echo "<input type='submit' name='add' value=\"".$LANG["buttons"][8]."\" class='submit'>";
-			echo "</td>";
-		}
-		echo "</table></form></div>";
-	} else {
-		echo "<div class='center'><strong>".$LANG["common"][54]."</strong></div>";
-		return false;
-	}	
+	}
+	else {
+		echo "<td class='tab_bg_2' valign='top' align='center' colspan='2'>";
+		echo "<input type='hidden' name='device_type' value=\"$device_type\">\n";
+		echo "<input type='submit' name='add' value=\"".$LANG["buttons"][8]."\" class='submit'>";
+		echo "</td>";
+	}
+	echo "</table></form></div>";
 }
 
 ?>

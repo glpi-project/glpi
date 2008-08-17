@@ -57,13 +57,21 @@ if(!isset($_GET["type"])) {
 }
 $bookmark = new Bookmark;
 
+/// TODO : check rights for actions
+
 if (isset($_POST["add"])){
+	$bookmark->getEmpty();
+	$bookmark->check(-1,'w',$_POST['FK_entities']);
+
 	$bookmark->add($_POST);
 	$_GET["action"]="load";
 } elseif (isset($_POST["update"])){
+	$bookmark->check($_POST["ID"],'w');	
+
 	$bookmark->update($_POST);
 	$_GET["action"]="load";
 } elseif (isset($_POST["delete"])){
+	$bookmark->check($_POST["ID"],'w');	
 	$bookmark->delete($_POST);
 	$_GET["action"]="load";
 }elseif (isset($_POST["delete_several"])){

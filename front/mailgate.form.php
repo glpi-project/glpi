@@ -43,29 +43,32 @@ include (GLPI_ROOT . "/inc/includes.php");
 if(!isset($_GET["ID"])) $_GET["ID"] = "";
 
 $mailgate=new Mailgate();
-checkRight("config", "w");
+
+
 if (isset($_POST["add"]))
 {
-
+	$mailgate->check(-1,'w');
 	$newID=$mailgate->add($_POST);
 	logEvent($newID, "mailgate", 4, "setup", $_SESSION["glpiname"]." added ".$_POST["name"].".");
 	glpi_header($_SERVER['HTTP_REFERER']);
 } 
 else if (isset($_POST["delete"]))
 {
-	$mailgate->delete($_POST);
+	$mailgate->check($_POST['ID'],'w');
 	logEvent($_POST["ID"], "mailgate", 4, "setup", $_SESSION["glpiname"]." ".$LANG["log"][22]);
 	glpi_header($CFG_GLPI["root_doc"]."/front/mailgate.php");
 }
 else if (isset($_POST["update"]))
 {
-
+	$mailgate->check($_POST['ID'],'w');
 	$mailgate->update($_POST);
 	logEvent($_POST["ID"], "mailgate", 4, "setup", $_SESSION["glpiname"]." ".$LANG["log"][21]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($_POST["get_mails"]))
 {
+	$mailgate->check($_POST['ID'],'w');
+
 	$mc=new MailCollect();
 	if ($mailgate->getFromDB($_POST["ID"])){
 		$mc->collect($mailgate->fields["host"],$mailgate->fields["login"],$mailgate->fields["password"],$mailgate->fields["FK_entities"],1);

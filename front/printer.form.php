@@ -50,7 +50,7 @@ if(!isset($_GET["withtemplate"])) $_GET["withtemplate"] = "";
 $print=new Printer();
 if (isset($_POST["add"]))
 {
-	checkRight("printer","w");
+	$print->check(-1,'w',$_POST['FK_entities']);
 
 	$newID=$print->add($_POST);
 	logEvent($newID, "printers", 4, "inventory", $_SESSION["glpiname"]."  ".$LANG["log"][20]."  ".$_POST["name"].".");
@@ -58,7 +58,7 @@ if (isset($_POST["add"]))
 }
 else if (isset($_POST["delete"]))
 {
-	checkRight("printer","w");
+	$print->check($_POST["ID"],'w');
 
 	if (!empty($_POST["withtemplate"]))
 		$print->delete($_POST,1);
@@ -78,12 +78,12 @@ else if (isset($_POST["restore"]))
 }
 else if (isset($_POST["purge"]) || isset($_GET["purge"]))
 {
-	checkRight("printer","w");
-
 	if (isset($_POST["purge"]))
 		$input["ID"]=$_POST["ID"];
 	else
 		$input["ID"] = $_GET["ID"];	
+
+	$print->check($input["ID"],'w');
 
 	$print->delete($input,1);
 	logEvent($input["ID"], "printers", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][24]);
@@ -91,7 +91,7 @@ else if (isset($_POST["purge"]) || isset($_GET["purge"]))
 }
 else if (isset($_POST["update"]))
 {
-	checkRight("printer","w");
+	$print->check($_POST["ID"],'w');
 
 	$print->update($_POST);
 	logEvent($_POST["ID"], "printers", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][21]);
@@ -99,7 +99,7 @@ else if (isset($_POST["update"]))
 }
 else if (isset($_GET["unglobalize"]))
 {
-	checkRight("printer","w");
+	$print->check($_GET["ID"],'w');
 
 	unglobalizeDevice(PRINTER_TYPE,$_GET["ID"]);
 	logEvent($_GET["ID"], "printers", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][60]);
@@ -107,6 +107,7 @@ else if (isset($_GET["unglobalize"]))
 }
 else if (isset($_GET["disconnect"]))
 {
+	/// TODO : which right on connect / disconnect ?
 	checkRight("printer","w");
 	Disconnect($_GET["ID"]);
 	logEvent(0, "printers", 5, "inventory", $_SESSION["glpiname"]."  ".$LANG["log"][26]);
@@ -114,6 +115,7 @@ else if (isset($_GET["disconnect"]))
 }
 else if(isset($_POST["connect"])&&isset($_POST["item"])&&$_POST["item"]>0)
 {
+	/// TODO : which right on connect / disconnect ?
 	checkRight("printer","w");
 	Connect($_POST["sID"],$_POST["item"],PRINTER_TYPE);
 	logEvent($_POST["sID"], "printers", 4, "inventory", $_SESSION["glpiname"]."  ".$LANG["log"][27]);
@@ -121,14 +123,7 @@ else if(isset($_POST["connect"])&&isset($_POST["item"])&&$_POST["item"]>0)
 }
 else
 {
-	checkRight("printer","r");
-
 	commonHeader($LANG["Menu"][2],$_SERVER['PHP_SELF'],"inventory","printer");
-
-	if (!isset($_SESSION['glpi_tab'])) $_SESSION['glpi_tab']=1;
-	if (isset($_GET['onglet'])) {
-		$_SESSION['glpi_tab']=$_GET['onglet'];
-	}	
 
 	$print->showForm($_SERVER['PHP_SELF'],$_GET["ID"], $_GET["withtemplate"]);
 

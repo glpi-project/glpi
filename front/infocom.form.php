@@ -43,7 +43,7 @@ $ic=new Infocom();
 
 if (isset($_GET["add"]))
 {
-	checkRight("contract_infocom","w");
+	checkRight("infocom","w");
 	
 	$newID=$ic->add($_GET, false);
 	logEvent($newID, "infocom", 4, "financial", $_SESSION["glpiname"]." ".$LANG["log"][20]);
@@ -51,7 +51,7 @@ if (isset($_GET["add"]))
 } 
 else if (isset($_POST["delete"]))
 {
-	checkRight("contract_infocom","w");
+	checkRight("infocom","w");
 
 	$ic->delete($_POST);
 	logEvent($_POST["ID"], "infocom", 4, "financial", $_SESSION["glpiname"]." ".$LANG["log"][22]);
@@ -59,7 +59,7 @@ else if (isset($_POST["delete"]))
 }
 else if (isset($_POST["update"]))
 {
-	checkRight("contract_infocom","w");
+	checkRight("infocom","w");
 
 	$ic->update($_POST);
 	logEvent($_POST["ID"], "infocom", 4, "financial", $_SESSION["glpiname"]." ".$LANG["log"][21]);

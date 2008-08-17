@@ -38,7 +38,7 @@ $NEEDED_ITEMS=array("contract","infocom","search");
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-checkRight("contract_infocom","r");
+checkRight("contract","r");
 
 commonHeader($LANG["Menu"][25],$_SERVER['PHP_SELF'],"financial","contract");
 

@@ -134,8 +134,6 @@ else if (isset($_GET["deleteitem"]) && isset($_GET["docid"]) && isset($_GET["dev
 }
 else
 {
-	$doc->check($_GET["ID"],'r');
-
 	commonHeader($LANG["Menu"][27],$_SERVER['PHP_SELF'],"financial","document");
 	$doc->showForm($_SERVER['PHP_SELF'],$_GET["ID"]);
 	commonFooter();

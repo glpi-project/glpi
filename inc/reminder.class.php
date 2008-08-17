@@ -146,164 +146,155 @@ class Reminder extends CommonDBTM {
 
 		$onfocus="";
 
-		$spotted=false;
-		if ($ID>0) {
-			if($this->can($ID,'r')) {
-				$spotted = true;	
-			}
+		if ($ID > 0){
+			$this->check($ID,'r');
 		} else {
+			// Create item : do getempty before check right to set default values
 			$this->getEmpty();
-			if ($this->can(-1,'w')){
-				$spotted = true;
-				$onfocus="onfocus=\"this.value=''\"";
-			}
+			$this->check(-1,'w');
+			$onfocus="onfocus=\"this.value=''\"";
 		} 
 
-		if ($spotted){
-			$canedit=$this->can($ID,'w');
+
+		$canedit=$this->can($ID,'w');
 
 
-			if($canedit) {
-				echo "<form method='post' name='remind' action=\"$target\">";
-			}
-	
-			echo "<div class='center'><table class='tab_cadre' width='450'>";
-			echo "<tr><th>&nbsp;</th><th>";
-			if (!$ID) {
-				echo $LANG["reminder"][6];
-			} else {
-				echo $LANG["common"][2]." $ID";
-			}		
-
-			echo "</th></tr>";
-
-			echo "<tr class='tab_bg_2'><td>".$LANG["common"][57].":		</td>";
-			echo "<td>";
-			autocompletionTextField("name",$this->table,"name",$this->fields['name'],80,-1,$this->fields["FK_users"],$onfocus);	
-			echo "</td></tr>";
-
-			if(!$canedit) { 
-				echo "<tr class='tab_bg_2'><td>".$LANG["planning"][9].":		</td>";
-				echo "<td>";
-				echo getUserName($this->fields["FK_users"]);
-				echo "</td></tr>";
-			}
-
-			echo "<tr class='tab_bg_2'><td>".$LANG["common"][17].":		</td>";
-			echo "<td>";
-
-			if($canedit&&haveRight("reminder_public","w")) { 
-
-				if (!$ID){
-					if (isset($_GET["private"])){
-						$this->fields["private"]=$_GET["private"];
-					}
-					if (isset($_GET["recursive"])){
-						$this->fields["recursive"]=$_GET["recursive"];
-					}
-				}
-	
-				privatePublicSwitch($this->fields["private"],$this->fields["FK_entities"],$this->fields["recursive"]);
-			}else{
-				if ($this->fields["private"]){
-					echo $LANG["common"][77];
-				} else {
-					echo $LANG["common"][76];
-				}
-			}
-
-			echo "</td></tr>";
-
-
-			echo "<tr class='tab_bg_2'><td >".$LANG["buttons"][15].":		</td>";
-
-
-
-
-
-			echo "<td class='center'>";
-
-			if($canedit) { 
-				echo "<script type='text/javascript' >\n";
-				echo "function showPlan(){\n";
-					echo "Ext.get('plan').setDisplayed('none');";
-					$params=array('form'=>'remind');
-					if ($ID&&$this->fields["rv"]){
-						$params['state']=$this->fields["state"];
-						$params['begin']=$this->fields["begin"];
-						$params['end']=$this->fields["end"];
-					}
-					ajaxUpdateItemJsCode('viewplan',$CFG_GLPI["root_doc"]."/ajax/planning.php",$params,false);
-				echo "}";
-				
-				echo "</script>\n";
-			}
-			
-			if(!$ID||$this->fields["rv"]==0){
-				if($canedit) { 
-					echo "<div id='plan'  onClick='showPlan()'>\n";
-					echo "<span class='showplan'>".$LANG["reminder"][12]."</span>";
-				}
-			}else{
-				if($canedit) {
-					echo "<div id='plan'  onClick='showPlan()'>\n";
-					echo "<span class='showplan'>";
-				}
-				echo getPlanningState($this->fields["state"]).": ".convDateTime($this->fields["begin"])."->".convDateTime($this->fields["end"]);
-				if($canedit){
-					echo "</span>";
-				}
-			}	
-			
-			if($canedit) { 
-				echo "</div>\n";
-				echo "<div id='viewplan'>\n";
-				echo "</div>\n";	
-			}
-			echo "</td>";
-
-
-			echo "</tr>";
-
-			echo "<tr class='tab_bg_2'><td>".$LANG["reminder"][9].":		</td><td>";
-			if($canedit) { 
-				echo "<textarea cols='80' rows='15' name='text'>".$this->fields["text"]."</textarea>";
-			}else{
-				echo nl2br($this->fields["text"]);
-			}
-			echo "</td></tr>";
-
-			if (!$ID) { // add
-				echo "<tr>";
-				echo "<td class='tab_bg_2' valign='top' colspan='2'>";
-				echo "<input type='hidden' name='FK_users' value=\"".$this->fields['FK_users']."\">\n";
-				echo "<div class='center'><input type='submit' name='add' value=\"".$LANG["buttons"][8]."\" class='submit'></div>";
-				echo "</td>";
-				echo "</tr>";
-			} elseif($canedit) { 
-				echo "<tr>";
-
-				echo "<td class='tab_bg_2' valign='top' colspan='2'>";
-				echo "<input type='hidden' name='ID' value=\"$ID\">\n";
-				echo "<div class='center'><input type='submit' name='update' value=\"".$LANG["buttons"][7]."\" class='submit'>";
-
-				echo "<input type='hidden' name='ID' value=\"$ID\">\n";
-
-				echo "<input type='submit' name='delete' value=\"".$LANG["buttons"][6]."\" class='submit'></div>";
-
-				echo "</td>";
-				echo "</tr>";
-			}
-
-			echo "</table></div>";
-			if($canedit){
-				echo "</form>";
-			}
-		} else {
-			echo "<div class='center'><strong>".$LANG["common"][54]."</strong></div>";
-
+		if($canedit) {
+			echo "<form method='post' name='remind' action=\"$target\">";
 		}
 
+		echo "<div class='center'><table class='tab_cadre' width='450'>";
+		echo "<tr><th>&nbsp;</th><th>";
+		if (!$ID) {
+			echo $LANG["reminder"][6];
+		} else {
+			echo $LANG["common"][2]." $ID";
+		}		
+
+		echo "</th></tr>";
+
+		echo "<tr class='tab_bg_2'><td>".$LANG["common"][57].":		</td>";
+		echo "<td>";
+		autocompletionTextField("name",$this->table,"name",$this->fields['name'],80,-1,$this->fields["FK_users"],$onfocus);	
+		echo "</td></tr>";
+
+		if(!$canedit) { 
+			echo "<tr class='tab_bg_2'><td>".$LANG["planning"][9].":		</td>";
+			echo "<td>";
+			echo getUserName($this->fields["FK_users"]);
+			echo "</td></tr>";
+		}
+
+		echo "<tr class='tab_bg_2'><td>".$LANG["common"][17].":		</td>";
+		echo "<td>";
+
+		if($canedit&&haveRight("reminder_public","w")) { 
+
+			if (!$ID){
+				if (isset($_GET["private"])){
+					$this->fields["private"]=$_GET["private"];
+				}
+				if (isset($_GET["recursive"])){
+					$this->fields["recursive"]=$_GET["recursive"];
+				}
+			}
+
+			privatePublicSwitch($this->fields["private"],$this->fields["FK_entities"],$this->fields["recursive"]);
+		}else{
+			if ($this->fields["private"]){
+				echo $LANG["common"][77];
+			} else {
+				echo $LANG["common"][76];
+			}
+		}
+
+		echo "</td></tr>";
+
+
+		echo "<tr class='tab_bg_2'><td >".$LANG["buttons"][15].":		</td>";
+
+
+
+
+
+		echo "<td class='center'>";
+
+		if($canedit) { 
+			echo "<script type='text/javascript' >\n";
+			echo "function showPlan(){\n";
+				echo "Ext.get('plan').setDisplayed('none');";
+				$params=array('form'=>'remind');
+				if ($ID&&$this->fields["rv"]){
+					$params['state']=$this->fields["state"];
+					$params['begin']=$this->fields["begin"];
+					$params['end']=$this->fields["end"];
+				}
+				ajaxUpdateItemJsCode('viewplan',$CFG_GLPI["root_doc"]."/ajax/planning.php",$params,false);
+			echo "}";
+			
+			echo "</script>\n";
+		}
+		
+		if(!$ID||$this->fields["rv"]==0){
+			if($canedit) { 
+				echo "<div id='plan'  onClick='showPlan()'>\n";
+				echo "<span class='showplan'>".$LANG["reminder"][12]."</span>";
+			}
+		}else{
+			if($canedit) {
+				echo "<div id='plan'  onClick='showPlan()'>\n";
+				echo "<span class='showplan'>";
+			}
+			echo getPlanningState($this->fields["state"]).": ".convDateTime($this->fields["begin"])."->".convDateTime($this->fields["end"]);
+			if($canedit){
+				echo "</span>";
+			}
+		}	
+		
+		if($canedit) { 
+			echo "</div>\n";
+			echo "<div id='viewplan'>\n";
+			echo "</div>\n";	
+		}
+		echo "</td>";
+
+
+		echo "</tr>";
+
+		echo "<tr class='tab_bg_2'><td>".$LANG["reminder"][9].":		</td><td>";
+		if($canedit) { 
+			echo "<textarea cols='80' rows='15' name='text'>".$this->fields["text"]."</textarea>";
+		}else{
+			echo nl2br($this->fields["text"]);
+		}
+		echo "</td></tr>";
+
+		if (!$ID) { // add
+			echo "<tr>";
+			echo "<td class='tab_bg_2' valign='top' colspan='2'>";
+			echo "<input type='hidden' name='FK_users' value=\"".$this->fields['FK_users']."\">\n";
+			echo "<div class='center'><input type='submit' name='add' value=\"".$LANG["buttons"][8]."\" class='submit'></div>";
+			echo "</td>";
+			echo "</tr>";
+		} elseif($canedit) { 
+			echo "<tr>";
+
+			echo "<td class='tab_bg_2' valign='top' colspan='2'>";
+			echo "<input type='hidden' name='ID' value=\"$ID\">\n";
+			echo "<div class='center'><input type='submit' name='update' value=\"".$LANG["buttons"][7]."\" class='submit'>";
+
+			echo "<input type='hidden' name='ID' value=\"$ID\">\n";
+
+			echo "<input type='submit' name='delete' value=\"".$LANG["buttons"][6]."\" class='submit'></div>";
+
+			echo "</td>";
+			echo "</tr>";
+		}
+
+		echo "</table></div>";
+		if($canedit){
+			echo "</form>";
+		}
 		return true;
 
 	}

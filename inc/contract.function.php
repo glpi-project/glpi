@@ -52,7 +52,7 @@ function showCentralContract(){
 
 	global $DB,$CFG_GLPI, $LANG;
 
-	if (!haveRight("contract_infocom","r")) return false;
+	if (!haveRight("contract","r")) return false;
 
 	// No recursive contract, not in local management 
 	
@@ -127,7 +127,7 @@ function showCentralContract(){
 function showDeviceContract($instID) {
 	global $DB,$CFG_GLPI, $LANG,$INFOFORM_PAGES,$LINK_ID_TABLE,$SEARCH_PAGES;
 
-	if (!haveRight("contract_infocom","r")) return false;
+	if (!haveRight("contract","r")) return false;
 	$contract=new Contract();
 	$canedit=$contract->can($instID,'w');
 	$query = "SELECT DISTINCT device_type FROM glpi_contract_device WHERE glpi_contract_device.FK_contract = '$instID' order by device_type";
@@ -298,7 +298,7 @@ function deleteDeviceContract($ID){
 function showEnterpriseContract($instID) {
 	global $DB,$CFG_GLPI, $LANG,$CFG_GLPI;
 
-	if (!haveRight("contract_infocom","r")||!haveRight("contact_enterprise","r"))	return false;
+	if (!haveRight("contract","r")||!haveRight("contact_enterprise","r"))	return false;
 	$contract=new Contract();
 	$canedit=$contract->can($instID,'w');
 	
@@ -508,7 +508,7 @@ function dropdownContracts($name,$entity_restrict=-1,$alreadyused=array()){
 function showContractAssociated($device_type,$ID,$withtemplate=''){
 	global $DB,$CFG_GLPI, $LANG;
 
-	if (!haveRight("contract_infocom","r")||!haveTypeRight($device_type,"r"))	return false;
+	if (!haveRight("contract","r")||!haveTypeRight($device_type,"r"))	return false;
 
 	$ci=new CommonItem();
 	$ci->getFromDB($device_type,$ID);
@@ -606,7 +606,7 @@ function showContractAssociated($device_type,$ID,$withtemplate=''){
 function showContractAssociatedEnterprise($ID){
 
 	global $DB,$CFG_GLPI, $LANG,$CFG_GLPI;
-	if (!haveRight("contract_infocom","r")||!haveRight("contact_enterprise","r")) return false;
+	if (!haveRight("contract","r")||!haveRight("contact_enterprise","r")) return false;
 	$ent=new Enterprise();
 	$canedit=$ent->can($ID,'w');
 

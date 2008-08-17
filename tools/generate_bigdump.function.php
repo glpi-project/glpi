@@ -587,7 +587,7 @@ function generateGlobalDropdowns(){
 	for ($i=0;$i<$MAX['device'];$i++){
 		if (isset($items[$i])) $val=$items[$i];
 		else $val="gfxcard $i";
-		$query="INSERT INTO glpi_device_gfxcard VALUES (NULL,'$val','".mt_rand(0,3)."','comment $i','".mt_rand(1,$MAX['manufacturer'])."','".mt_rand(0,128)."')";
+		$query="INSERT INTO glpi_device_gfxcard VALUES (NULL,'$val','".mt_rand(1,$MAX['interface'])."','comment $i','".mt_rand(1,$MAX['manufacturer'])."','".mt_rand(0,128)."')";
 		$DB->query($query) or die("PB REQUETE ".$query);
 	}
 	$items=array("Deskstar 7K500","Deskstar T7K250","Atlas 15K II","DiamondMax Plus","SpinPoint P - SP2514N","Barracuda 7200.9","WD2500JS","WD1600JB","WD1200JD");
@@ -1156,7 +1156,7 @@ function generate_entity($ID_entity){
 		$DB->query($query) or die("PB REQUETE ".$query);
 		$query="INSERT INTO glpi_computer_device VALUES (NULL,'','".CONTROL_DEVICE."','".mt_rand(1,$MAX['device'])."','$compID')";
 		$DB->query($query) or die("PB REQUETE ".$query);
-		$query="INSERT INTO glpi_computer_device VALUES (NULL,'','".GFX_DEVICE."','".mt_rand(1,$MAX['device'])."','$compID')";
+		$query="INSERT INTO glpi_computer_device VALUES (NULL,'".mt_rand(0,1024)."','".GFX_DEVICE."','".mt_rand(1,$MAX['device'])."','$compID')";
 		$DB->query($query) or die("PB REQUETE ".$query);
 		$query="INSERT INTO glpi_computer_device VALUES (NULL,'','".SND_DEVICE."','".mt_rand(1,$MAX['device'])."','$compID')";
 		$DB->query($query) or die("PB REQUETE ".$query);

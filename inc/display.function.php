@@ -358,13 +358,13 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="")
 			}
 
 		}
-		if (haveRight("contract_infocom","r")){
+		if (haveRight("contract","r")){
 			$menu['financial']['content']['contract']['title']=$LANG["Menu"][25];
 			$menu['financial']['content']['contract']['shortcut']='n';
 			$menu['financial']['content']['contract']['page']='/front/contract.php';
 			$menu['financial']['content']['contract']['links']['search']='/front/contract.php';
 
-			if (haveRight("contract_infocom","w")){
+			if (haveRight("contract","w")){
 				$menu['financial']['content']['contract']['links']['add']='/front/contract.form.php';
 			}
 
@@ -730,7 +730,12 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="")
 		
 		// Les préférences + lien déconnexion 
 		echo "<div id='c_preference' >";
-		echo" <ul><li id='deconnexion'><a href=\"".$CFG_GLPI["root_doc"]."/logout.php\"  title=\"".$LANG["central"][6]."\">".$LANG["central"][6]."  </a>";
+		echo "<ul><li id='deconnexion'><a href=\"".$CFG_GLPI["root_doc"]."/logout.php";
+		// logout witour noAuto login for extauth
+		if (isset($_SESSION['glpiextauth'])&&$_SESSION['glpiextauth']){
+			echo "?noAUTO=1";
+		}
+		echo "\"  title=\"".$LANG["central"][6]."\">".$LANG["central"][6]."  </a>";
 		echo "(";
 		echo formatUserName (0,$_SESSION["glpiname"],$_SESSION["glpirealname"],$_SESSION["glpifirstname"],0,20);
 		echo ")</li>\n"; 

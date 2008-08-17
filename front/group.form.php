@@ -87,8 +87,6 @@ else if (isset($_POST["deleteuser"]))
 }
 else
 {
-	$group->check($_GET["ID"],'r');
-
 	if (!isset($_SESSION['glpi_tab'])) $_SESSION['glpi_tab']=1;
 	if (isset($_GET['onglet'])) {
 		$_SESSION['glpi_tab']=$_GET['onglet'];

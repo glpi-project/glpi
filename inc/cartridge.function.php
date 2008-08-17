@@ -264,7 +264,7 @@ function showCompatiblePrinters($instID) {
 		$type=$DB->result($result, $i, "type");
 		echo "<tr class='tab_bg_1'><td class='center'>$ID</td>";
 		echo "<td class='center'>$type</td>";
-		echo "<td align='center' class='tab_bg_2'><a href='".$_SERVER['PHP_SELF']."?deletetype=deletetype&amp;ID=$ID'><strong>".$LANG["buttons"][6]."</strong></a></td></tr>";
+		echo "<td align='center' class='tab_bg_2'><a href='".$CFG_GLPI['root_doc']."/front/cartridge.form.php?deletetype=deletetype&amp;ID=$ID&amp;tID=$instID'><strong>".$LANG["buttons"][6]."</strong></a></td></tr>";
 		$i++;
 	}
 	if (haveRight("cartridge","w")){
@@ -384,8 +384,8 @@ function showCartridgeInstalled($instID,$old=0) {
 		}
 		if ($canedit)
 			if (is_null($date_out))
-				echo "&nbsp;&nbsp;&nbsp;<a href='".$CFG_GLPI["root_doc"]."/front/cartridge.edit.php?uninstall=uninstall&amp;ID=".$data["ID"]."'>".$LANG["cartridges"][29]."</a>";
-			else echo "&nbsp;&nbsp;&nbsp;<a href='".$CFG_GLPI["root_doc"]."/front/cartridge.edit.php?delete=delete&amp;ID=".$data["ID"]."'>".$LANG["buttons"][6]."</a>";
+				echo "&nbsp;&nbsp;&nbsp;<a href='".$CFG_GLPI["root_doc"]."/front/cartridge.edit.php?uninstall=uninstall&amp;ID=".$data["ID"]."&amp;tID=".$data["tID"]."'>".$LANG["cartridges"][29]."</a>";
+			else echo "&nbsp;&nbsp;&nbsp;<a href='".$CFG_GLPI["root_doc"]."/front/cartridge.edit.php?delete=delete&amp;ID=".$data["ID"]."&amp;tID=".$data["tID"]."'>".$LANG["buttons"][6]."</a>";
 			echo "</td></tr>";
 
 	}	

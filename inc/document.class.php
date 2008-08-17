@@ -167,186 +167,173 @@ class Document extends CommonDBTM {
 
 		if (!haveRight("document","r"))	return false;
 
-
-		$spotted=false;
 		$use_cache=true;
-		if ($ID>0) {
-			if($this->can($ID,'r')) {
-				$spotted = true;	
-			}
+
+		if ($ID > 0){
+			$this->check($ID,'r');
 		} else {
+			// Create item 
+			$this->check(-1,'w');
 			$use_cache=false;
-			if ($this->can(-1,'w')){
-				$spotted = true;	
-				$this->getEmpty();
-			}
+			$this->getEmpty();
 		} 
 
-		if ($spotted){
-			$canedit=$this->can($ID,'w');
+		$canedit=$this->can($ID,'w');
+		$canrecu=$this->can($ID,'recursive');
 
-			$canrecu=$this->can($ID,'recursive');
+		$this->showTabs($ID, $withtemplate,$_SESSION['glpi_tab']);
 
-			$this->showTabs($ID, $withtemplate,$_SESSION['glpi_tab']);
-
-			if ($canedit) {
-				echo "<form name='form' method='post' action=\"$target\" enctype=\"multipart/form-data\">";
-				if (empty($ID)||$ID<0){
-					echo "<input type='hidden' name='FK_entities' value='".$_SESSION["glpiactive_entity"]."'>";
-				}
+		if ($canedit) {
+			echo "<form name='form' method='post' action=\"$target\" enctype=\"multipart/form-data\">";
+			if (empty($ID)||$ID<0){
+				echo "<input type='hidden' name='FK_entities' value='".$_SESSION["glpiactive_entity"]."'>";
 			}
-
-			echo "<div class='center' id='tabsbody'><table class='tab_cadre_fixe'>";
-			echo "<tr>";
-			if ($ID>0) {
-				echo "<th>";
-				echo $LANG["common"][2]." $ID";
-				if (isMultiEntitiesMode()){
-					echo "&nbsp;(".getDropdownName("glpi_entities",$this->fields["FK_entities"]).")";
-				}
-				echo "</th>";
-				echo "<th>";
-				if ($this->fields["FK_users"]>0){
-					echo $LANG["document"][42]." ".getUserName($this->fields["FK_users"],1);
-				} else {
-					echo "&nbsp;";
-				}
-				echo "</th>";
-				echo "<th>".$LANG["common"][26].": ".convDateTime($this->fields["date_mod"])."</th>";
-				echo "<th>";
-				if (isMultiEntitiesMode()){
-					echo $LANG["entity"][9].":&nbsp;";
-				
-					if ($this->can($ID,'recursive')) {
-						dropdownYesNo("recursive",$this->fields["recursive"]);					
-					} else {
-						echo getYesNo($this->fields["recursive"]);
-					}
-				} else {
-					echo "&nbsp;";
-				}
-				echo "</th>";
-			} else {
-				echo "<th colspan='2'>";
-				echo $LANG["document"][16];
-				if (isMultiEntitiesMode()){
-					echo "&nbsp;(".getDropdownName("glpi_entities",$this->fields["FK_entities"]).")";
-				}
-				echo "</th>";
-				echo "<th colspan='2'>";
-				if (isMultiEntitiesMode()){
-					echo $LANG["entity"][9].":&nbsp;";
-				
-					if ($this->can($ID,'recursive')) {
-						dropdownYesNo("recursive",$this->fields["recursive"]);					
-					} else {
-						echo getYesNo($this->fields["recursive"]);
-					}
-				} else {
-					echo "&nbsp;";
-				}
-				echo "</th>";
-			} 
-			echo "</tr>";
-			if (!$use_cache||!($CFG_GLPI["cache"]->start($ID."_".$_SESSION["glpilanguage"],"GLPI_".$this->type))) {
-				echo "<tr class='tab_bg_1'><td colspan='2'>".$LANG["common"][16].":		</td>";
-				echo "<td colspan='2'>";
-				autocompletionTextField("name","glpi_docs","name",$this->fields["name"],80,$this->fields["FK_entities"]);
-				echo "</td></tr>";
-	
-				if (!empty($ID)){
-					echo "<tr class='tab_bg_1'><td colspan='2'>".$LANG["document"][22].":		</td>";
-					echo "<td colspan='2'>".getDocumentLink($this->fields["filename"])."";
-					echo "<input type='hidden' name='current_filename' value='".$this->fields["filename"]."'>";
-					echo "</td></tr>";
-				}
-				$max_size=return_bytes_from_ini_vars(ini_get("upload_max_filesize"));
-				$max_size/=1024*1024;
-				$max_size=round($max_size,1);
-	
-				echo "<tr class='tab_bg_1'><td colspan='2'>".$LANG["document"][2]." (".$max_size." Mb max):	</td>";
-				echo "<td colspan='2'><input type='file' name='filename' value=\"".$this->fields["filename"]."\" size='40'></td>";
-				echo "</tr>";
-	
-				echo "<tr class='tab_bg_1'><td colspan='2'>".$LANG["document"][36].":		</td>";
-				echo "<td colspan='2'>";
-				showUploadedFilesDropdown("upload_file");
-				echo "</td></tr>";
-	
-	
-				echo "<tr class='tab_bg_1'><td colspan='2'>".$LANG["document"][33].":		</td>";
-				echo "<td colspan='2'>";
-				autocompletionTextField("link","glpi_docs","link",$this->fields["link"],40,$this->fields["FK_entities"]);
-				echo "</td></tr>";
-	
-				echo "<tr class='tab_bg_1'><td colspan='2'>".$LANG["document"][3].":		</td>";
-				echo "<td colspan='2'>";
-				dropdownValue("glpi_dropdown_rubdocs","rubrique",$this->fields["rubrique"]);
-				echo "</td></tr>";
-	
-				echo "<tr class='tab_bg_1'><td colspan='2'>".$LANG["document"][4].":		</td>";
-				echo "<td colspan='2'>";
-				autocompletionTextField("mime","glpi_docs","mime",$this->fields["mime"],40,$this->fields["FK_entities"]);
-				echo "</td></tr>";
-	
-				echo "<tr>";
-				echo "<td class='tab_bg_1' valign='top' colspan='2'>";
-	
-				// table commentaires
-				echo $LANG["common"][25].":	</td>";
-				echo "<td colspan='2'  class='tab_bg_1'><textarea cols='70' rows='4' name='comments' >".$this->fields["comments"]."</textarea>";
-	
-				echo "</td>";
-				echo "</tr>";
-				if ($use_cache){
-					$CFG_GLPI["cache"]->end();
-				}
-			}
-
-			if ($canedit){
-				echo "<tr>";
-
-				if ($ID>0) {
-
-					echo "<td class='tab_bg_2' valign='top' colspan='2'>";
-					echo "<input type='hidden' name='ID' value=\"$ID\">\n";
-					echo "<div class='center'><input type='submit' name='update' value=\"".$LANG["buttons"][7]."\" class='submit'></div>";
-					echo "</td>\n\n";
-		
-					echo "<td class='tab_bg_2' valign='top'  colspan='2'>\n";
-					echo "<input type='hidden' name='ID' value=\"$ID\">\n";
-					if (!$this->fields["deleted"])
-						echo "<div class='center'><input type='submit' name='delete' value=\"".$LANG["buttons"][6]."\" class='submit'></div>";
-					else {
-						echo "<div class='center'><input type='submit' name='restore' value=\"".$LANG["buttons"][21]."\" class='submit'>";
-		
-						echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='submit' name='purge' value=\"".$LANG["buttons"][22]."\" class='submit'></div>";
-					}
-		
-					echo "</td></tr>";
-				} else {
-
-					echo "<td class='tab_bg_2' valign='top' colspan='4'>";
-					echo "<div class='center'><input type='submit' name='add' value=\"".$LANG["buttons"][8]."\" class='submit'></div>";
-					echo "</td></tr>";
-		
-				}
-				echo "</table></div></form>";
-				
-			} else { //  can't edit
-				echo "</table></div>";			
-			} 
-			
-			echo "<div id='tabcontent'></div>";
-			echo "<script type='text/javascript'>loadDefaultTab();</script>";
-			
-		} else {
-			echo "<div class='center'><strong>".$LANG["common"][54]."</strong></div>";
-			return false;
-
 		}
 
-		return true;
+		echo "<div class='center' id='tabsbody'><table class='tab_cadre_fixe'>";
+		echo "<tr>";
+		if ($ID>0) {
+			echo "<th>";
+			echo $LANG["common"][2]." $ID";
+			if (isMultiEntitiesMode()){
+				echo "&nbsp;(".getDropdownName("glpi_entities",$this->fields["FK_entities"]).")";
+			}
+			echo "</th>";
+			echo "<th>";
+			if ($this->fields["FK_users"]>0){
+				echo $LANG["document"][42]." ".getUserName($this->fields["FK_users"],1);
+			} else {
+				echo "&nbsp;";
+			}
+			echo "</th>";
+			echo "<th>".$LANG["common"][26].": ".convDateTime($this->fields["date_mod"])."</th>";
+			echo "<th>";
+			if (isMultiEntitiesMode()){
+				echo $LANG["entity"][9].":&nbsp;";
+				
+				if ($this->can($ID,'recursive')) {
+					dropdownYesNo("recursive",$this->fields["recursive"]);					
+				} else {
+					echo getYesNo($this->fields["recursive"]);
+				}
+			} else {
+				echo "&nbsp;";
+			}
+			echo "</th>";
+		} else {
+			echo "<th colspan='2'>";
+			echo $LANG["document"][16];
+			if (isMultiEntitiesMode()){
+				echo "&nbsp;(".getDropdownName("glpi_entities",$this->fields["FK_entities"]).")";
+			}
+			echo "</th>";
+			echo "<th colspan='2'>";
+			if (isMultiEntitiesMode()){
+				echo $LANG["entity"][9].":&nbsp;";
+			
+				if ($this->can($ID,'recursive')) {
+					dropdownYesNo("recursive",$this->fields["recursive"]);					
+				} else {
+					echo getYesNo($this->fields["recursive"]);
+				}
+			} else {
+				echo "&nbsp;";
+			}
+			echo "</th>";
+		} 
+		echo "</tr>";
+		if (!$use_cache||!($CFG_GLPI["cache"]->start($ID."_".$_SESSION["glpilanguage"],"GLPI_".$this->type))) {
+			echo "<tr class='tab_bg_1'><td colspan='2'>".$LANG["common"][16].":		</td>";
+			echo "<td colspan='2'>";
+			autocompletionTextField("name","glpi_docs","name",$this->fields["name"],80,$this->fields["FK_entities"]);
+			echo "</td></tr>";
+	
+			if (!empty($ID)){
+				echo "<tr class='tab_bg_1'><td colspan='2'>".$LANG["document"][22].":		</td>";
+				echo "<td colspan='2'>".getDocumentLink($this->fields["filename"])."";
+				echo "<input type='hidden' name='current_filename' value='".$this->fields["filename"]."'>";
+				echo "</td></tr>";
+			}
+			$max_size=return_bytes_from_ini_vars(ini_get("upload_max_filesize"));
+			$max_size/=1024*1024;
+			$max_size=round($max_size,1);
+	
+			echo "<tr class='tab_bg_1'><td colspan='2'>".$LANG["document"][2]." (".$max_size." Mb max):	</td>";
+			echo "<td colspan='2'><input type='file' name='filename' value=\"".$this->fields["filename"]."\" size='40'></td>";
+			echo "</tr>";
+	
+			echo "<tr class='tab_bg_1'><td colspan='2'>".$LANG["document"][36].":		</td>";
+			echo "<td colspan='2'>";
+			showUploadedFilesDropdown("upload_file");
+			echo "</td></tr>";
+	
+	
+			echo "<tr class='tab_bg_1'><td colspan='2'>".$LANG["document"][33].":		</td>";
+			echo "<td colspan='2'>";
+			autocompletionTextField("link","glpi_docs","link",$this->fields["link"],40,$this->fields["FK_entities"]);
+			echo "</td></tr>";
+	
+			echo "<tr class='tab_bg_1'><td colspan='2'>".$LANG["document"][3].":		</td>";
+			echo "<td colspan='2'>";
+			dropdownValue("glpi_dropdown_rubdocs","rubrique",$this->fields["rubrique"]);
+			echo "</td></tr>";
+	
+			echo "<tr class='tab_bg_1'><td colspan='2'>".$LANG["document"][4].":		</td>";
+			echo "<td colspan='2'>";
+			autocompletionTextField("mime","glpi_docs","mime",$this->fields["mime"],40,$this->fields["FK_entities"]);
+			echo "</td></tr>";
+	
+			echo "<tr>";
+			echo "<td class='tab_bg_1' valign='top' colspan='2'>";
+	
+			// table commentaires
+			echo $LANG["common"][25].":	</td>";
+			echo "<td colspan='2'  class='tab_bg_1'><textarea cols='70' rows='4' name='comments' >".$this->fields["comments"]."</textarea>";
+	
+			echo "</td>";
+			echo "</tr>";
+			if ($use_cache){
+				$CFG_GLPI["cache"]->end();
+			}
+		}
+
+		if ($canedit){
+			echo "<tr>";
+
+			if ($ID>0) {
+
+				echo "<td class='tab_bg_2' valign='top' colspan='2'>";
+				echo "<input type='hidden' name='ID' value=\"$ID\">\n";
+				echo "<div class='center'><input type='submit' name='update' value=\"".$LANG["buttons"][7]."\" class='submit'></div>";
+				echo "</td>\n\n";
+		
+				echo "<td class='tab_bg_2' valign='top'  colspan='2'>\n";
+				echo "<input type='hidden' name='ID' value=\"$ID\">\n";
+				if (!$this->fields["deleted"])
+					echo "<div class='center'><input type='submit' name='delete' value=\"".$LANG["buttons"][6]."\" class='submit'></div>";
+				else {
+					echo "<div class='center'><input type='submit' name='restore' value=\"".$LANG["buttons"][21]."\" class='submit'>";
+		
+					echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='submit' name='purge' value=\"".$LANG["buttons"][22]."\" class='submit'></div>";
+				}
+		
+				echo "</td></tr>";
+			} else {
+				echo "<td class='tab_bg_2' valign='top' colspan='4'>";
+				echo "<div class='center'><input type='submit' name='add' value=\"".$LANG["buttons"][8]."\" class='submit'></div>";
+				echo "</td></tr>";
+		
+			}
+			echo "</table></div></form>";
+				
+		} else { //  can't edit
+			echo "</table></div>";			
+		} 
+			
+		echo "<div id='tabcontent'></div>";
+		echo "<script type='text/javascript'>loadDefaultTab();</script>";
+			
+	return true;
 
 	}
 

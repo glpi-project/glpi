@@ -61,10 +61,12 @@ $report_list["default"]["file"] = "report.default.php";
 
 
 
-if (haveRight("contract_infocom","r")){
+if (haveRight("contract","r")){
 	// Rapport ajout� par GLPI V0.2
 	$report_list["Contrats"]["name"] = $LANG["reports"][27];
 	$report_list["Contrats"]["file"] = "report.contract.php";
+}
+if (haveRight("infocom","r")){
 	$report_list["Par_annee"]["name"] = $LANG["reports"][28];
 	$report_list["Par_annee"]["file"] = "report.year.php";
 	$report_list["Infocoms"]["name"]=$LANG["reports"][62];

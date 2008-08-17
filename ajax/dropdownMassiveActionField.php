@@ -46,7 +46,7 @@ header_nocache();
 			break;
 		default :
 			if (in_array($_POST["device_type"],$CFG_GLPI["infocom_types"])){
-				checkSeveralRightsOr(array($_POST["device_type"]=>"w","contract_infocom"=>"w"));
+				checkSeveralRightsOr(array($_POST["device_type"]=>"w","infocom"=>"w"));
 			} else {
 				checkTypeRight($_POST["device_type"],"w");
 			}

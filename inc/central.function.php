@@ -54,7 +54,7 @@ function showCentralGlobalView(){
 		showCentralJobCount();
 		echo "</td></tr>";
 	}
-	if (haveRight("contract_infocom","r")){
+	if (haveRight("contract","r")){
 		echo "<tr>";
 		echo "<td class='top'  width='450px'>";
 		showCentralContract();

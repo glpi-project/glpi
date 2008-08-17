@@ -264,6 +264,7 @@ $LANG["common"][79]="Rendre privé";
 $LANG["common"][80]="En cours de chargement...";
 $LANG["common"][81]="Titre";
 $LANG["common"][82]="Mb"; 
+$LANG["common"][83]="Vous n'avez pas les droits suffisants pour réaliser cette action."; 
 
 $LANG["computers"][0]="Volume"; 
 $LANG["computers"][1]="Pourcentage libre"; 
@@ -1520,6 +1521,7 @@ $LANG["setup"][195]="Conserver le statut";
 $LANG["setup"][196]="Effacer le statut";
 $LANG["setup"][197]="Prendre le statut de l'ordinateur";
 $LANG["setup"][198]="Prendre le statut ";
+$LANG["setup"][199]="Supprimer le domaine des logins de la forme login@domaine";
 
 $LANG["setup"][201]="Configuration de la fonction"; 
 $LANG["setup"][202]="Utiliser le suivi par mail"; 

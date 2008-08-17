@@ -79,88 +79,83 @@ class Mailgate  extends CommonDBTM {
 
 		if (!haveRight("config","r")) return false;
 
-		$spotted = false;
-
-		if(empty($ID)) {
-			if($this->getEmpty()) $spotted = true;
+		if ($ID > 0){
+			$this->check($ID,'r');
 		} else {
-			if($this->getFromDB($ID)) $spotted = true;
+			// Create item 
+			$this->check(-1,'w');
+			$use_cache=false;
+			$this->getEmpty();
+		} 
+
+
+		echo "<div class='center'><form method='post' name=form action=\"$target\">";
+
+		echo "<table class='tab_cadre' cellpadding='2'>";
+
+		echo "<tr><th align='center' colspan='2'>";
+		if (empty($ID)){
+			echo $LANG["mailgate"][1];
+		} else {
+			echo $LANG["mailgate"][0].": ".$this->fields["ID"];
 		}
 
-		if ($spotted){
+		echo "</th></tr>";
+		if (!function_exists('mb_list_encodings')||!function_exists('mb_convert_encoding')){
+			echo "<tr class='tab_bg_1'><td align='center' colspan='2'>";
+			echo $LANG["mailgate"][4];
+			echo "</td></tr>";
+		}
+		echo "<tr class='tab_bg_2'><td>".$LANG["common"][16].":	</td><td>";
+		autocompletionTextField("name","glpi_mailgate","name",$this->fields["name"],40);
+		echo "</td></tr>";
 
-			echo "<div class='center'><form method='post' name=form action=\"$target\">";
+		echo "<tr class='tab_bg_2'><td>".$LANG["entity"][0].":	</td><td>";
+		dropdownValue("glpi_entities", "FK_entities",$this->fields["FK_entities"],1,$_SESSION['glpiactiveentities']);
+		echo "</td></tr>";
 
-			echo "<table class='tab_cadre' cellpadding='2'>";
+		showMailServerConfig($this->fields["host"]);
 
-			echo "<tr><th align='center' colspan='2'>";
-			if (empty($ID)){
-				echo $LANG["mailgate"][1];
+		echo "<tr class='tab_bg_2'><td>".$LANG["login"][6].":	</td><td>";
+		autocompletionTextField("login","glpi_mailgate","login",$this->fields["login"],40);
+		echo "</td></tr>";
+
+		echo "<tr class='tab_bg_2'><td>".$LANG["login"][7].":	</td><td>";
+		echo "<input type='password' name='password' value='' size='20'>";
+		echo "</td></tr>";
+
+
+		if (haveRight("config","w")) {
+
+			echo "<tr class='tab_bg_1'>";
+			if(empty($ID)){
+
+				echo "<td valign='top' colspan='2'>";
+				echo "<div class='center'><input type='submit' name='add' value=\"".$LANG["buttons"][8]."\" class='submit'></div>";
+				echo "</td>";
+				echo "</tr>";
 			} else {
-				echo $LANG["mailgate"][0].": ".$this->fields["ID"];
-			}
 
-			echo "</th></tr>";
-			if (!function_exists('mb_list_encodings')||!function_exists('mb_convert_encoding')){
-				echo "<tr class='tab_bg_1'><td align='center' colspan='2'>";
-				echo $LANG["mailgate"][4];
+				echo "<td valign='top' align='center'>";
+				echo "<input type='hidden' name='ID' value=\"$ID\">\n";
+				echo "<input type='submit' name='update' value=\"".$LANG["buttons"][7]."\" class='submit'>";
+				echo "</td>";
+				echo "<td valign='top'>\n";
+				echo "<div class='center'>";
+				echo "<input type='submit' name='delete' value=\"".$LANG["buttons"][6]."\" class='submit'>";
+				echo "</div>";
+				echo "</td>";
+				echo "</tr>";
+				echo "<tr class='tab_bg_1'><td colspan='2' align='center'><input type='submit' name='get_mails' value=\"".$LANG["mailgate"][2]."\" class='submit'>";
 				echo "</td></tr>";
 			}
-			echo "<tr class='tab_bg_2'><td>".$LANG["common"][16].":	</td><td>";
-			autocompletionTextField("name","glpi_mailgate","name",$this->fields["name"],40);
-			echo "</td></tr>";
-
-			echo "<tr class='tab_bg_2'><td>".$LANG["entity"][0].":	</td><td>";
-			dropdownValue("glpi_entities", "FK_entities",$this->fields["FK_entities"],1,$_SESSION['glpiactiveentities']);
-			echo "</td></tr>";
-
-			showMailServerConfig($this->fields["host"]);
-
-			echo "<tr class='tab_bg_2'><td>".$LANG["login"][6].":	</td><td>";
-			autocompletionTextField("login","glpi_mailgate","login",$this->fields["login"],40);
-			echo "</td></tr>";
-
-			echo "<tr class='tab_bg_2'><td>".$LANG["login"][7].":	</td><td>";
-			echo "<input type='password' name='password' value='' size='20'>";
-			echo "</td></tr>";
 
 
-			if (haveRight("config","w")) {
-
-				echo "<tr class='tab_bg_1'>";
-				if(empty($ID)){
-
-					echo "<td valign='top' colspan='2'>";
-					echo "<div class='center'><input type='submit' name='add' value=\"".$LANG["buttons"][8]."\" class='submit'></div>";
-					echo "</td>";
-					echo "</tr>";
-				} else {
-
-					echo "<td valign='top' align='center'>";
-					echo "<input type='hidden' name='ID' value=\"$ID\">\n";
-					echo "<input type='submit' name='update' value=\"".$LANG["buttons"][7]."\" class='submit'>";
-					echo "</td>";
-					echo "<td valign='top'>\n";
-					echo "<div class='center'>";
-					echo "<input type='submit' name='delete' value=\"".$LANG["buttons"][6]."\" class='submit'>";
-					echo "</div>";
-					echo "</td>";
-					echo "</tr>";
-					echo "<tr class='tab_bg_1'><td colspan='2' align='center'><input type='submit' name='get_mails' value=\"".$LANG["mailgate"][2]."\" class='submit'>";
-					echo "</td></tr>";
-				}
-
-
-			}
-
-			echo "</table></form></div>";
-
-			return true;	
 		}
-		else {
-			echo "<div class='center'><strong>".$LANG["common"][54]."</strong></div>";
-			return false;
-		}
+
+		echo "</table></form></div>";
+
+		return true;	
 
 	}
 	

@@ -1123,6 +1123,11 @@ function showFormExtAuthList($target) {
 				
 				echo "</td></tr>";
 
+				echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["setup"][199] . "</td><td>";
+
+				dropdownYesNo('existing_auth_server_field_clean_domain',$CFG_GLPI['existing_auth_server_field_clean_domain']);		
+				echo "</td></tr>";
+
 				echo "<tr><th colspan='2'>" . $LANG["setup"][194]."</th></tr>";
 				echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["ldap"][4] . "</td><td>";
 				dropdownValue("glpi_auth_ldap","extra_ldap_server",$CFG_GLPI["extra_ldap_server"]);

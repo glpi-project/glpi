@@ -71,7 +71,7 @@ if (isset($_POST["device_type"])){
 			break;
 		default :
 			if (in_array($_POST["device_type"],$CFG_GLPI["infocom_types"])){
-				checkSeveralRightsOr(array($_POST["device_type"]=>"w","contract_infocom"=>"w"));
+				checkSeveralRightsOr(array($_POST["device_type"]=>"w","infocom"=>"w"));
 			} else {
 				checkTypeRight($_POST["device_type"],"w");
 			}
@@ -270,7 +270,7 @@ if (isset($_POST["device_type"])){
 					if ($val==1) {
 						$comp=new Computer;
 						if ($comp->getFromDB($key)&&$comp->fields["FK_entities"]==$_SESSION["glpiactive_entity"]){
-							installSoftwareVersion($key,$_POST["vID"],$_POST["sID"]);
+							installSoftwareVersion($key,$_POST["vID"]);
 						}
 					}
 				}

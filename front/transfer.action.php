@@ -38,12 +38,13 @@ $NEEDED_ITEMS=array("transfer","user","tracking","reservation","document","compu
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-$transfer=new Transfer();
+
 
 
 commonHeader($LANG["transfer"][1],$_SERVER['PHP_SELF'],"admin","transfer");
-checkRight("transfer","w");
 
+$transfer=new Transfer();
+$transfer->check(-1,"w");
 
 
 if (isset($_POST['transfer'])){
