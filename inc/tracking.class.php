@@ -466,7 +466,7 @@ class Job extends CommonDBTM{
 				$newinput["hour"]=$newinput["minute"]=0;
 				$newinput["tracking"]=$this->fields["ID"];
 				$newinput["type"]="update";
-				$newinput["_changes_to_log"]=true;
+				$newinput["_do_not_check_author"]=true;
 				// pass _old_assign if assig changed
 				if (isset($input["_old_assign"])){
 					$newinput["_old_assign"]=$input["_old_assign"];
@@ -1115,7 +1115,7 @@ class Followup  extends CommonDBTM {
 		$input["_job"]=new Job;
 		if ($input["_job"]->getFromDB($input["tracking"])){
 			// Security to add unauthorized followups
-			if (!isset($input['_changes_to_log'])
+			if (!isset($input['_do_not_check_author'])
 			&&$input["_job"]->fields["author"]!=$_SESSION["glpiID"]
 			&&!$input["_job"]->canAddFollowups()) {
 				return false;

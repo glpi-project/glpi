@@ -304,6 +304,7 @@ class MailCollect {
 
 		// AUto_import
 		$tkt['_auto_import']=1;
+		$tkt['_do_not_check_author']=1;
 		$body=$this->getBody($i);
 
 		if (!empty($this->charset)&&function_exists('mb_convert_encoding')){
