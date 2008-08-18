@@ -154,40 +154,45 @@
 
 		if ((!isset($CFG_GLPI["version"])||trim($CFG_GLPI["version"])!=GLPI_VERSION)&&!isset($_GET["donotcheckversion"])){
 			loadLanguage();
-			nullHeader("UPDATE NEEDED",$_SERVER['PHP_SELF']);
-			echo "<div align='center'>";
-	
-	
-			echo "<table class='tab_cadre' style='width:700px'>";
-			echo "<tr><th>".$LANG["install"][6]."</th><th >".$LANG["install"][7]."</th></tr>";
-	
-			$error=commonCheckForUseGLPI();
-	
-			echo "</table><br>";
-	
-			if (!$error){
-				if (!isset($CFG_GLPI["version"])||trim($CFG_GLPI["version"])<GLPI_VERSION){
-					echo "<form method='post' action='".$CFG_GLPI["root_doc"]."/install/update.php'>";
-					echo "<table class='tab_cadre' style='width:500px'><tr><th>";
-					echo $LANG["update"][88];
-					echo "</th></tr>";
-					echo "<tr class='tab_bg_1'><td align='center'>";
-					echo "<input type='submit' name='from_update' value='".$LANG["install"][4]."' class='submit'>";
-					echo "</td></tr>";
-					echo "</table></form>";
-				} else if (trim($CFG_GLPI["version"])>GLPI_VERSION){
-					echo "<table class='tab_cadre' style='width:500px'><tr><th>";
-					echo $LANG["update"][89];
-					echo "</th></tr>";
-					echo "</table>";
+			
+			if (isCommandLine()){
+				echo $LANG["update"][88] . "\n";
+			} else {			
+				nullHeader("UPDATE NEEDED",$_SERVER['PHP_SELF']);
+				echo "<div align='center'>";
+		
+		
+				echo "<table class='tab_cadre' style='width:700px'>";
+				echo "<tr><th>".$LANG["install"][6]."</th><th >".$LANG["install"][7]."</th></tr>";
+		
+				$error=commonCheckForUseGLPI();
+		
+				echo "</table><br>";
+		
+				if (!$error){
+					if (!isset($CFG_GLPI["version"])||trim($CFG_GLPI["version"])<GLPI_VERSION){
+						echo "<form method='post' action='".$CFG_GLPI["root_doc"]."/install/update.php'>";
+						echo "<table class='tab_cadre' style='width:500px'><tr><th>";
+						echo $LANG["update"][88];
+						echo "</th></tr>";
+						echo "<tr class='tab_bg_1'><td align='center'>";
+						echo "<input type='submit' name='from_update' value='".$LANG["install"][4]."' class='submit'>";
+						echo "</td></tr>";
+						echo "</table></form>";
+					} else if (trim($CFG_GLPI["version"])>GLPI_VERSION){
+						echo "<table class='tab_cadre' style='width:500px'><tr><th>";
+						echo $LANG["update"][89];
+						echo "</th></tr>";
+						echo "</table>";
+					}
+				} else {
+					echo "<form action=\"".$_SERVER['PHP_SELF']."\" method=\"post\">";
+					echo "<input type=\"submit\" name=\"submit\" class=\"submit\" value=\"".$LANG["install"][27]."\" />";
+					echo "</form>";
 				}
-			} else {
-				echo "<form action=\"".$_SERVER['PHP_SELF']."\" method=\"post\">";
-				echo "<input type=\"submit\" name=\"submit\" class=\"submit\" value=\"".$LANG["install"][27]."\" />";
-				echo "</form>";
+				echo "</div>";
+				nullFooter();
 			}
-			echo "</div>";
-			nullFooter();
 			exit();
 		} 
 	}
