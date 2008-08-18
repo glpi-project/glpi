@@ -1206,7 +1206,7 @@ class Followup  extends CommonDBTM {
 		if ($CFG_GLPI["mailing"]){
 			if ($input["_close"]) $input["_type"]="finish";
 			$user=new User;
-			if (isset($_SESSION["glpiID"])){
+			if (!isset($input['_auto_import'])&&isset($_SESSION["glpiID"])){
 				$user->getFromDB($_SESSION["glpiID"]);
 			}
 			$mail = new Mailing($input["_type"],$input["_job"],$user,
