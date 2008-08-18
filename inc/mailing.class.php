@@ -558,7 +558,7 @@ class Mailing
 				break;
 			case "followup":
 			case "update":
-				if (isValidEmail($this->user->fields["email"])) {
+				if (isset($this->user->fields["email"]) && isValidEmail($this->user->fields["email"])) {
 					$replyto=$this->user->fields["email"];
 				} else {
 					$replyto=$sender;
@@ -579,7 +579,7 @@ class Mailing
 		global $CFG_GLPI,$LANG;
 		if ($CFG_GLPI["mailing"])
 		{	
-			if (!is_null($this->job)&&!is_null($this->user)&&in_array($this->type,array("new","update","followup","finish")))
+			if (!is_null($this->job)&&in_array($this->type,array("new","update","followup","finish")))
 			{
 				$senderror=false;
 				// get users to send mail
