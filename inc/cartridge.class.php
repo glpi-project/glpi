@@ -329,7 +329,7 @@ class Cartridge extends CommonDBTM {
 	function restore($input,$history=1) {
 
 		global $DB;
-		$query = "UPDATE glpi_cartridges SET date_out = NULL, date_use = NULL , FK_glpi_printers= NULL WHERE ID='".$input["ID"]."'";
+		$query = "UPDATE glpi_cartridges SET date_out = NULL, date_use = NULL , FK_glpi_printers= 0 WHERE ID='".$input["ID"]."'";
 		if ($result = $DB->query($query)) {
 			return true;
 		} else {
