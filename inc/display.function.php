@@ -1982,13 +1982,20 @@ function createAjaxTabs($tabdiv_id='tabspanel',$tabdivcontent_id='tabcontent',$t
 				applyTo: '$tabdiv_id',
 				width:950,
 				enableTabScroll: true,
+				deferredRender: false,
 				resizeTabs: false,
 				plain: true,
 				items: [";
 				$active=0;
 				$active_key="";
 				$tabid=0;
+				$first=true;
 				foreach ($tabs as $key => $val){
+					if ($first){
+						$first=false;
+					} else {
+						echo ",";
+					}
 					if ($active_tabs==$key){
 						$active=$tabid;
 						$active_key=$key;
@@ -2000,10 +2007,10 @@ function createAjaxTabs($tabdiv_id='tabspanel',$tabdivcontent_id='tabcontent',$t
 					if (isset($val['params'])){
 						echo "params: '".$val['params']."'";
 					}
-					echo "}},";
+					echo "}}";
 					$tabid++;
 				}
-			echo "],
+			echo "]
 				});";
 	
 			echo "/// Define view point";
