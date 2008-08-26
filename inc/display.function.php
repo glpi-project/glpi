@@ -1982,7 +1982,6 @@ function createAjaxTabs($tabdiv_id='tabspanel',$tabdivcontent_id='tabcontent',$t
 				applyTo: '$tabdiv_id',
 				width:950,
 				enableTabScroll: true,
-				deferredRender: false,
 				resizeTabs: false,
 				plain: true,
 				items: [";
