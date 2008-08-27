@@ -45,9 +45,8 @@ include (GLPI_ROOT . "/inc/includes.php");
 checkLoginUser();
 $user = new User();
 
-
 if (!displayPluginAction("prefs","",$_POST['tab'],"")){
-	$user->showMyForm($_SERVER['PHP_SELF'], $_SESSION["glpiID"]);
+	$user->showMyForm($CFG_GLPI['root_doc']."/front/user.form.my.php", $_SESSION["glpiID"]);
 }
 
 ?>
