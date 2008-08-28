@@ -200,12 +200,12 @@ function dropdownRulesActions($rule_type,$name,$value=''){
 
 function getActionByID($ID){
 	global $LANG;
-	
+	echo $ID;
 	switch ($ID){
 		case "assign" : 
 			return $LANG["rulesengine"][22];
 		case "ignore":
-			return $LANG["rulesengine"][43];
+			return $LANG["rulesengine"][39];
 		case "regex_result":
 			return $LANG["rulesengine"][45];
 		case "append_regex_result":
