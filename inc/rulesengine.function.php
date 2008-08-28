@@ -181,8 +181,12 @@ function dropdownRulesActions($rule_type,$name,$value=''){
 
 	//Look if action assign needs to be displayed or not
 	if (!isset($RULES_ACTIONS[$rule_type][$value]['optional_actions']) ||
-		in_array($value,$RULES_ACTIONS[$rule_type][$value]['exclude_actions']))
+		( isset($RULES_ACTIONS[$rule_type][$value]['exclude_actions']) &&
+		in_array("asign",$RULES_ACTIONS[$rule_type][$value]['exclude_actions'])
+		)
+	){
 		$elements["assign"] = $LANG["rulesengine"][22];
+	}
 
 	if (isset($RULES_ACTIONS[$rule_type][$value]['optional_actions'])){
 		$actions = $RULES_ACTIONS[$rule_type][$value]['optional_actions'];
