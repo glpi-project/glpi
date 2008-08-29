@@ -35,11 +35,11 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-/// Update from 0.71 to 0.72
+/// Update from 0.71.2 to 0.72
 include_once (GLPI_ROOT . "/inc/setup.function.php");
 include_once (GLPI_ROOT . "/inc/rulesengine.function.php");
 
-function update071to072() {
+function update0712to072() {
 	global $DB, $CFG_GLPI, $LANG, $LINK_ID_TABLE;
 
 	// TO TRY for software update
