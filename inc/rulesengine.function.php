@@ -196,9 +196,6 @@ function dropdownRulesActions($rule_type,$name,$value=''){
 		if(in_array("append_regex_result",$actions)){
 			$elements["append_regex_result"] = $LANG["rulesengine"][79];
 		}
-		if(in_array("ignore",$actions)){
-			$elements["ignore"] = $LANG["rulesengine"][39];
-		}
 		if(in_array("affectbyip",$actions)){
 			$elements["affectbyip"] = $LANG["rulesengine"][46];
 		}
@@ -216,8 +213,6 @@ function getActionByID($ID){
 	switch ($ID){
 		case "assign" : 
 			return $LANG["rulesengine"][22];
-		case "ignore":
-			return $LANG["rulesengine"][39];
 		case "regex_result":
 			return $LANG["rulesengine"][45];
 		case "append_regex_result":

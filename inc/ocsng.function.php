@@ -2904,7 +2904,7 @@ function ocsUpdateSoftware($glpi_id, $entity, $ocs_id, $ocs_server_id, $cfg_ocs,
 				}
 				
 				//Ignore this software
-				if (!isset($res_rule["ignore"]) || !$res_rule["ignore"])
+				if (!isset($res_rule["_ignore_ocs_import"]) || !$res_rule["_ignore_ocs_import"])
 				{	
 	
 					// Clean software object

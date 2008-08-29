@@ -1006,6 +1006,7 @@ $LANG["ocsconfig"][2]="Hote OCSweb";
 $LANG["ocsconfig"][3]="Mot de passe de l'utilisateur OCSweb"; 
 $LANG["ocsconfig"][4]="Nom de la base de données OCS"; 
 $LANG["ocsconfig"][5]="Options d'importation"; 
+$LANG["ocsconfig"][6]="Ignorer lors de l'import OCS"; 
 $LANG["ocsconfig"][9]="Exclure les tags suivants (séparateur $, rien pour aucun)"; 
 $LANG["ocsconfig"][10]="Import global"; 
 $LANG["ocsconfig"][11]="Pas d'import"; 

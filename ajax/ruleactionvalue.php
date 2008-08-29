@@ -86,8 +86,5 @@ if (!defined('GLPI_ROOT')){
 			autocompletionTextField("value", "glpi_rules_actions", "value", "", 40);
 		}
 		break;
-		case "ignore":
-		dropdownYesNo("value");
-		break;
 	}
 ?>
