@@ -1378,8 +1378,6 @@ class Rule extends CommonDBTM{
 					case "assign" :
 						$output[$action->fields["field"]] = $action->fields["value"];
 					break;
-					case "ignore":
-						$output["ignore"] = $action->fields["value"];
 					case "regex_result":
 					case "append_regex_result":
 						//Regex result : assign value from the regex
