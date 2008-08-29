@@ -442,12 +442,10 @@ function updatedbUpTo031()
 		case "0.70.2":
 			include("update_07_071.php");
 			update07to071();
-			break;
 		case "0.71":
 		case "0.71.1":
 			include("update_071_0712.php");
 			update071to0712();
-			break;
 		case "0.71.2":
 			break;
 		default:
