@@ -477,7 +477,7 @@ class RuleCollection {
 		// Get Collection datas
 		$this->getCollectionDatas(1,1);
 		$input=$this->prepareInputDataForProcess($input,$params);
-		
+
 		if (count($this->RuleList->list)){
 
 			foreach ($this->RuleList->list as $rule){
@@ -1368,10 +1368,9 @@ class Rule extends CommonDBTM{
 			foreach ($this->actions as $action){
 				switch ($action->fields["action_type"]){
 					case "assign" :
+						
 						$output[$action->fields["field"]] = $action->fields["value"];
 					break;
-					case "ignore":
-						$output["ignore"] = $action->fields["value"];
 					case "regex_result":
 					case "append_regex_result":
 						//Regex result : assign value from the regex

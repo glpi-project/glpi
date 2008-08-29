@@ -236,7 +236,11 @@ $RULES_CRITERIAS[RULE_DICTIONNARY_SOFTWARE]['manufacturer']['name']=$LANG["commo
 $RULES_CRITERIAS[RULE_DICTIONNARY_SOFTWARE]['manufacturer']['table']='glpi_dropdown_manufacturer';
 
 $RULES_ACTIONS[RULE_DICTIONNARY_SOFTWARE]['name']['name']=$LANG["help"][31];
-$RULES_ACTIONS[RULE_DICTIONNARY_SOFTWARE]['name']['optional_actions']=array("ignore","regex_result");
+$RULES_ACTIONS[RULE_DICTIONNARY_SOFTWARE]['name']['optional_actions']=array("regex_result");
+
+
+$RULES_ACTIONS[RULE_DICTIONNARY_SOFTWARE]['_ignore_ocs_import']['name']=$LANG["rulesengine"][39]." ".$LANG["ocsng"][7];
+$RULES_ACTIONS[RULE_DICTIONNARY_SOFTWARE]['_ignore_ocs_import']['type']="yesno";
 
 $RULES_ACTIONS[RULE_DICTIONNARY_SOFTWARE]['version']['name']=$LANG["rulesengine"][78];
 $RULES_ACTIONS[RULE_DICTIONNARY_SOFTWARE]['version']['optional_actions']=array("regex_result","append_regex_result");
