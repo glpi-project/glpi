@@ -668,7 +668,7 @@ function constructEntryValues($type,$begin="",$end="",$param="",$value="",$value
 		if (!empty($end)) $WHERE.= " AND glpi_tracking.closedate <= adddate('$end' , INTERVAL 1 DAY ) ";
 
 		$query="SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(glpi_tracking.closedate),'%Y-%m') AS date_unix,
- 			AVG(HOUR( TIMEDIFF(glpi_tracking.closedate,glpi_tracking.date))) AS total_visites  FROM glpi_tracking ".
+ 			AVG(TIME_TO_SEC( TIMEDIFF(glpi_tracking.closedate,glpi_tracking.date))/".HOUR_TIMESTAMP.") AS total_visites  FROM glpi_tracking ".
 			$LEFTJOIN.$WHERE.
 			" GROUP BY date_unix ORDER BY glpi_tracking.closedate";
 		break;
