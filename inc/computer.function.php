@@ -318,8 +318,8 @@ function showComputerDisks($ID,$withtemplate='') {
 				echo "<td>".$data['device']."</td>";
 				echo "<td>".$data['mountpoint']."</td>";
 				echo "<td>".$data['fsname']."</td>";
-				echo "<td>".number_format($data['totalsize'], 0, '.', ' ')."&nbsp;".$LANG["common"][82]."</td>";
-				echo "<td>".number_format($data['freesize'], 0, '.', ' ')."&nbsp;".$LANG["common"][82]."</td>";
+				echo "<td>".formatNumber($data['totalsize'], false, 0)."&nbsp;".$LANG["common"][82]."</td>";
+				echo "<td>".formatNumber($data['freesize'], false, 0)."&nbsp;".$LANG["common"][82]."</td>";
 			}
 			//echo "</table>";
 		} else {
