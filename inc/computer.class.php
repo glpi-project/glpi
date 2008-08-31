@@ -842,12 +842,12 @@ class ComputerDisk extends CommonDBTM {
 		echo "<tr class='tab_bg_1'><td>".$LANG["computers"][3].":		</td>";
 		echo "<td>";
 		autocompletionTextField("totalsize","glpi_computerdisks","totalsize",$this->fields["totalsize"],40);
-		echo "</td>";
+		echo "&nbsp;".$LANG["common"][82]."</td>";
 
 		echo "<td>".$LANG["computers"][2].":		</td>";
 		echo "<td>";
 		autocompletionTextField("freesize","glpi_computerdisks","freesize",$this->fields["freesize"],40);
-		echo "</td>";
+		echo "&nbsp;".$LANG["common"][82]."</td>";
 		echo "</tr>";
 	
 		echo "<tr  class='tab_bg_2'>";
