@@ -1027,7 +1027,7 @@ function searchFormTracking($extended=0,$target,$start="",$status="new",$tosearc
 			}
 	}
 
-	if ($extended==1){
+	if ($extended){
 		$option["comp.ID"]				= $LANG["common"][2];
 		$option["comp.name"]				= $LANG["common"][16];
 		$option["glpi_dropdown_locations.name"]		= $LANG["common"][15];
@@ -1222,7 +1222,12 @@ function searchFormTracking($extended=0,$target,$start="",$status="new",$tosearc
 
 
 	echo "<td class='center' colspan='1'><input type='submit' value=\"".$LANG["buttons"][0]."\" class='submit'></td>";
-	echo "<td class='center'  colspan='1'><input type='submit' name='reset' value=\"".$LANG["buttons"][16]."\" class='submit'></td>";
+	
+	echo "<td class='center'  colspan='1'><input type='submit' name='reset' value=\"".$LANG["buttons"][16]."\" class='submit'>&nbsp;";
+	showSaveBookmarkButton(BOOKMARK_SEARCH,TRACKING_TYPE);
+	// Needed for bookmark
+	echo "<input type='hidden' name=\"extended\" value=\"$extended\">";
+	echo "</td>";
 
 	echo "</tr>";
 
