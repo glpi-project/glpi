@@ -52,7 +52,7 @@ if (isset($_POST["add_several"]))
 		unset($con->fields["ID"]);
 		$con->add($_POST);
 	}
-	logEvent($_POST["tID"], "consumables", 4, "inventory", $_SESSION["glpiname"]." added ".$_POST["to_add"]." consumable.");
+	logEvent($_POST["tID"], "consumables", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][89].": ".$_POST["to_add"]);
 
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
@@ -61,7 +61,7 @@ else if (isset($_GET["delete"]))
 	$constype->check($_GET["tID"],'w');
 
 	$con->delete($_GET);
-	logEvent($_GET["tID"], "consumables", 4, "inventory", $_SESSION["glpiname"]." deleted a consumable.");
+	logEvent($_GET["tID"], "consumables", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][91]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($_POST["give"]))
@@ -73,7 +73,7 @@ else if (isset($_POST["give"]))
 			foreach ($_POST["out"] as $key => $val)
 				$con->out($key,$_POST["id_user"]);
 	
-		logEvent($_POST["tID"], "consumables", 5, "inventory", $_SESSION["glpiname"]." user ".$_POST["id_user"]." take out a consummable.");
+		logEvent($_POST["tID"], "consumables", 5, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][97]." ".$_POST["id_user"]);
 	}
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
@@ -82,7 +82,7 @@ else if (isset($_GET["restore"]))
 	$constype->check($_GET["tID"],'w');
 
 	$con->restore($_GET);
-	logEvent($_GET["tID"], "consumables", 5, "inventory", $_SESSION["glpiname"]." restore a consummable.");
+	logEvent($_GET["tID"], "consumables", 5, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][92]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 
