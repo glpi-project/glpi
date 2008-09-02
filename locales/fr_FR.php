@@ -820,6 +820,16 @@ $LANG["log"][84]="suppression de la version";
 $LANG["log"][85]="ajout de la licence"; 
 $LANG["log"][86]="modification de la licence"; 
 $LANG["log"][87]="suppression de la licence"; 
+$LANG["log"][88]="ajout de cartouches"; 
+$LANG["log"][89]="ajout de consommables"; 
+$LANG["log"][90]="suppression d'une cartouche"; 
+$LANG["log"][91]="suppression d'un consommable"; 
+$LANG["log"][92]="restauration une cartouche"; 
+$LANG["log"][93]="restauration d'un consommable"; 
+$LANG["log"][94]="mise à jour d'une cartouche"; 
+$LANG["log"][95]="installation d'une cartouche"; 
+$LANG["log"][96]="désinstallation d'une cartouche";
+$LANG["log"][97]="sortie d'un consommable pour l'utilisateur"; 
 
 
 
