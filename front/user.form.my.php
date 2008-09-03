@@ -55,8 +55,6 @@ if (isset ($_POST["update"]) && $_POST["ID"] == $_SESSION["glpiID"]) {
 
 	if (!isset($_SESSION['glpi_preftab'])) $_SESSION['glpi_preftab']="my";
 
-	if (isset($_GET['glpi_tab'])) $_SESSION['glpi_preftab']=$_GET['glpi_tab'];
-
 	if ($_SESSION["glpiactiveprofile"]["interface"] == "central")
 		commonHeader($LANG["title"][13], $_SERVER['PHP_SELF']);
 	else
@@ -70,9 +68,9 @@ if (isset ($_POST["update"]) && $_POST["ID"] == $_SESSION["glpiID"]) {
 
 	$plug_tabs=getPluginTabs($_SERVER['PHP_SELF'],"prefs","","");
 	$tabs+=$plug_tabs;
-
+	
 	echo "<div id='tabspanel' class='center-h'></div>";
-	createAjaxTabs('tabspanel','tabcontent',$tabs,$_SESSION['glpi_centraltab']);
+	createAjaxTabs('tabspanel','tabcontent',$tabs,$_SESSION['glpi_preftab']);
 	echo "<div id='tabcontent'></div>";
 	echo "<script type='text/javascript'>loadDefaultTab();</script>";
 

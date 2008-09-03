@@ -45,6 +45,8 @@ include (GLPI_ROOT . "/inc/includes.php");
 checkLoginUser();
 $user = new User();
 
+if (isset($_POST['tab'])) $_SESSION['glpi_preftab']=$_POST['tab'];
+
 if (!displayPluginAction("prefs","",$_POST['tab'],"")){
 	$user->showMyForm($CFG_GLPI['root_doc']."/front/user.form.my.php", $_SESSION["glpiID"]);
 }

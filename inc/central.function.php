@@ -91,7 +91,7 @@ function showCentralGlobalView(){
 		echo $LANG["central"][10];
 		echo "</strong></div>";
 
-		showTrackingList($_SERVER['PHP_SELF'],$_GET["start"],$_GET["sort"],$_GET["order"],"new");
+		showTrackingList($_SERVER['PHP_SELF'],0,"","","new");
 	}
 
 }
@@ -118,10 +118,10 @@ function showCentralMyView(){
 	
 		if ($showticket){
 			echo "<tr><td class='top'  width='450px'><br>";
-			showCentralJobList($_SERVER['PHP_SELF'],$_GET['start'],"process",false);
+			showCentralJobList($_SERVER['PHP_SELF'],0,"process",false);
 			echo "</td></tr>";
 			echo "<tr><td   class='top' width='450px'>";
-			showCentralJobList($_SERVER['PHP_SELF'],$_GET['start'],"waiting",false);
+			showCentralJobList($_SERVER['PHP_SELF'],0,"waiting",false);
 			echo "</td></tr>";
 		}
 	
@@ -178,7 +178,7 @@ function showCentralGroupView(){
 	
 		if ($showticket){
 			echo "<tr><td class='top'  width='450px'><br>";
-			showCentralJobList($_SERVER['PHP_SELF'],$_GET['start'],"process",true);
+			showCentralJobList($_SERVER['PHP_SELF'],0,"process",true);
 			echo "</td></tr>";
 		}
 	
@@ -186,7 +186,7 @@ function showCentralGroupView(){
 
 		if ($showticket){
 			echo "<tr><td   class='top' width='450px'><br>";
-			showCentralJobList($_SERVER['PHP_SELF'],$_GET['start'],"waiting",true);
+			showCentralJobList($_SERVER['PHP_SELF'],0,"waiting",true);
 			echo "</td></tr>";
 		}
 
