@@ -44,7 +44,7 @@ if (!defined('GLPI_ROOT')){
 function showPorts ($device,$device_type,$withtemplate='') {
 
 	global $DB,$CFG_GLPI, $LANG,$LINK_ID_TABLE;
-
+	$rand=mt_rand();
 	$ci = new CommonItem();
 	$ci->setType($device_type,true);
 	if (!$ci->obj->can($device,'r')) return false;
@@ -57,7 +57,7 @@ function showPorts ($device,$device_type,$withtemplate='') {
 		if ($DB->numrows($result)!=0) { 
 			$colspan=8;
 			if ($withtemplate!=2){
-				echo "<form id='networking_ports' name='networking_ports' method='post' action=\"".$CFG_GLPI["root_doc"]."/front/networking.port.php\">";
+				echo "<form id='networking_ports$rand' name='networking_ports$rand' method='post' action=\"".$CFG_GLPI["root_doc"]."/front/networking.port.php\">";
 				if ($canedit)
 					$colspan++;
 			}
@@ -129,22 +129,22 @@ function showPorts ($device,$device_type,$withtemplate='') {
 				//echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkAllRows('networking_ports') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$device&amp;select=none'>".$LANG["buttons"][19]."</a>";
 
 
-				echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td class='center'><span class='pointer' id='networking_ports_markall'>".$LANG["buttons"][18]."</span></td>";
+				echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td class='center'><span class='pointer' id='networking_ports_markall$rand'>".$LANG["buttons"][18]."</span></td>";
 
-				echo "<td>/</td><td class='center'><span class='pointer' id='networking_ports_unmarkall'>".$LANG["buttons"][19]."</span>";
+				echo "<td>/</td><td class='center'><span class='pointer' id='networking_ports_unmarkall$rand'>".$LANG["buttons"][19]."</span>";
 
 				echo "<script type='text/javascript' language='javascript'>";
 				echo "Ext.onReady(function(){";
 				//echo "alert('toto')";
-				echo "Ext.get('networking_ports_markall').on(
+				echo "Ext.get('networking_ports_markall$rand').on(
 				'click',
 				function() {
-					if ( markAllRows('networking_ports') ) return false;
+					if ( markAllRows('networking_ports$rand') ) return false;
 				});\n";
-				echo "Ext.get('networking_ports_unmarkall').on(
+				echo "Ext.get('networking_ports_unmarkall$rand').on(
 				'click',
 				function() {
-					if ( unMarkAllRows('networking_ports') ) return false;
+					if ( unMarkAllRows('networking_ports$rand') ) return false;
 				});\n";
 				echo "});\n";
 				echo "</script>";
