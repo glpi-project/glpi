@@ -58,13 +58,14 @@ include (GLPI_ROOT."/inc/includes.php");
 		case "group" :
 			showCentralGroupView();
 			break;
-		case "all":
+		case -1 : // all
 			showCentralMyView();
 			echo "<br>";
 			showCentralGroupView();
 			echo "<br>";
 			showCentralGlobalView();
 			echo "<br>";
+			displayPluginAction("central","",$_POST['tab'],"");
 			break;
 		default :
 			if (!displayPluginAction("central","",$_POST['tab'],""))

@@ -99,9 +99,9 @@ include (GLPI_ROOT."/inc/includes.php");
 	$plug_tabs=getPluginTabs($_SERVER['PHP_SELF'],"central","","");
 	$tabs+=$plug_tabs;
 
-	$tabs['all']=array('title'=>$LANG["common"][66],
+	$tabs[-1]=array('title'=>$LANG["common"][66],
 		'url'=>$CFG_GLPI['root_doc']."/ajax/central.tabs.php",
-		'params'=>"target=".$_SERVER['PHP_SELF']."&type=central&tab=all");
+		'params'=>"target=".$_SERVER['PHP_SELF']."&type=central&tab=-1");
 
 	echo "<div id='tabspanel' class='center-h'></div>";
 	createAjaxTabs('tabspanel','tabcontent',$tabs,$_SESSION['glpi_centraltab']);
