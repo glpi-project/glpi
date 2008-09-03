@@ -256,15 +256,12 @@ function getPluginTabs($target,$type,$ID,$withtemplate){
 	}
 	$display_onglets=array();
 
-	$tabname="glpi_tab";
 	switch ($type){
 		case "central":
 			$tabpage="/ajax/central.tabs.php";
-			$tabname="tab";
 		break;
 		case "prefs":
 			$tabpage="/ajax/preference.tabs.php";
-			$tabname="tab";
 		break;
 		default:
 			$patterns[0] = '/front/';
@@ -289,7 +286,7 @@ function getPluginTabs($target,$type,$ID,$withtemplate){
 
 						$tabs[$key]=array('title'=>$val,
 						'url'=>$CFG_GLPI['root_doc']."/$tabpage",
-						'params'=>"target=$target&type=".$type."&$tabname=$key&ID=$ID$template");
+						'params'=>"target=$target&type=".$type."&glpi_tab=$key&ID=$ID$template");
 					}
 				}
 			}

@@ -39,9 +39,7 @@ include (GLPI_ROOT."/inc/includes.php");
 
 	checkCentralAccess();
 
-	if (isset($_POST['tab'])) $_SESSION['glpi_centraltab']=$_POST['tab'];
-
-	switch ($_POST['tab']){
+	switch ($_POST['glpi_tab']){
 		case "my" :
 			showCentralMyView();
 			break;
@@ -58,10 +56,10 @@ include (GLPI_ROOT."/inc/includes.php");
 			echo "<br>";
 			showCentralGlobalView();
 			echo "<br>";
-			displayPluginAction("central","",$_POST['tab'],"");
+			displayPluginAction("central","",$_POST['glpi_tab'],"");
 			break;
 		default :
-			if (!displayPluginAction("central","",$_POST['tab'],""))
+			if (!displayPluginAction("central","",$_POST['glpi_tab'],""))
 				showCentralMyView();		
 			break;
 	}
