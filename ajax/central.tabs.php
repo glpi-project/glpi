@@ -39,14 +39,7 @@ include (GLPI_ROOT."/inc/includes.php");
 
 	checkCentralAccess();
 
-	// show "my view" in first
 	if (isset($_POST['tab'])) $_SESSION['glpi_centraltab']=$_POST['tab'];
-
-	if (!isset($_GET['start'])) $_GET['start']=0;
-	if(empty($_GET["start"])) $_GET["start"] = 0;
-
-	if (!isset($_GET["sort"])) $_GET["sort"]="";
-	if (!isset($_GET["order"])) $_GET["order"]="";
 
 	switch ($_POST['tab']){
 		case "my" :
