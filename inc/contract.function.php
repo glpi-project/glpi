@@ -128,6 +128,7 @@ function showDeviceContract($instID) {
 	global $DB,$CFG_GLPI, $LANG,$INFOFORM_PAGES,$LINK_ID_TABLE,$SEARCH_PAGES;
 
 	if (!haveRight("contract","r")) return false;
+	$rand=mt_rand();
 	$contract=new Contract();
 	$canedit=$contract->can($instID,'w');
 	$query = "SELECT DISTINCT device_type FROM glpi_contract_device WHERE glpi_contract_device.FK_contract = '$instID' order by device_type";
@@ -144,7 +145,7 @@ function showDeviceContract($instID) {
 		echo "</table>";
 		echo "</div>";
 
-		echo "<form method='post' name='contract_form' id='contract_form' action=\"".$CFG_GLPI["root_doc"]."/front/contract.form.php\">";
+		echo "<form method='post' name='contract_form$rand' id='contract_form$rand' action=\"".$CFG_GLPI["root_doc"]."/front/contract.form.php\">";
 		echo "<div class='center'>";
 		echo "<table class='tab_cadrehov'>";
 		// massive action checkbox
@@ -230,9 +231,9 @@ function showDeviceContract($instID) {
 		
 		echo "<div class='center'>";
 		echo "<table width='950px' class='tab_glpi'>";
-		echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markAllRows('contract_form') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$instID&amp;select=all'>".$LANG["buttons"][18]."</a></td>";
+		echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markAllRows('contract_form$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$instID&amp;select=all'>".$LANG["buttons"][18]."</a></td>";
 	
-		echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkAllRows('contract_form') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$instID&amp;select=none'>".$LANG["buttons"][19]."</a>";
+		echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkAllRows('contract_form$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$instID&amp;select=none'>".$LANG["buttons"][19]."</a>";
 		echo "</td><td align='left' width='80%'>";
 		echo "<input type='submit' name='deleteitem' value=\"".$LANG["buttons"][6]."\" class='submit'>";
 		echo "</td>";
