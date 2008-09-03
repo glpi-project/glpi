@@ -197,10 +197,11 @@ function showGroupAssociated($target,$ID){
 		$canedit=false;
 	}
 
+	$rand=mt_rand();
 	$nb_per_line=3;
 	if ($canedit) {
 		$headerspan=$nb_per_line*2;	
-		echo "<form name='groupuser_form' id='groupuser_form' method='post' action=\"$target\">";
+		echo "<form name='groupuser_form$rand' id='groupuser_form$rand' method='post' action=\"$target\">";
 	} else {
 		$headerspan=$nb_per_line;
 	}
@@ -250,9 +251,9 @@ function showGroupAssociated($target,$ID){
 		
 		if (count($used)) {	
 			echo "<table width='80%' class='tab_glpi'>";
-			echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markAllRows('groupuser_form') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$ID&amp;select=all'>".$LANG["buttons"][18]."</a></td>";
+			echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markAllRows('groupuser_form$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$ID&amp;select=all'>".$LANG["buttons"][18]."</a></td>";
 	
-			echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkAllRows('groupuser_form') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$ID&amp;select=none'>".$LANG["buttons"][19]."</a>";
+			echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkAllRows('groupuser_form$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$ID&amp;select=none'>".$LANG["buttons"][19]."</a>";
 			echo "</td><td align='left' width='80%'>";
 			echo "<input type='submit' name='deletegroup' value=\"".$LANG["buttons"][6]."\" class='submit'>";
 			echo "</td></tr>";
@@ -297,7 +298,8 @@ function showUserRights($target,$ID){
 
 	$canshowentity=haveRight("entity","r");
 
-	echo "<form name='entityuser_form' id='entityuser_form' method='post' action=\"$target\">";
+	$rand=mt_rand();
+	echo "<form name='entityuser_form$rand' id='entityuser_form$rand' method='post' action=\"$target\">";
 
 	if ($canedit){
 		echo "<div class='center'>";
@@ -380,9 +382,9 @@ function showUserRights($target,$ID){
 	if ($canedit){
 		echo "<div class='center'>";
 		echo "<table width='80%' class='tab_glpi'>";
-		echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markAllRows('entityuser_form') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$ID&amp;select=all'>".$LANG["buttons"][18]."</a></td>";
+		echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markAllRows('entityuser_form$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$ID&amp;select=all'>".$LANG["buttons"][18]."</a></td>";
 
-		echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkAllRows('entityuser_form') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$ID&amp;select=none'>".$LANG["buttons"][19]."</a>";
+		echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkAllRows('entityuser_form$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$ID&amp;select=none'>".$LANG["buttons"][19]."</a>";
 		echo "</td><td align='left' width='80%'>";
 		echo "<input type='submit' name='deleteright' value=\"".$LANG["buttons"][6]."\" class='submit'>";
 		echo "</td></tr>";

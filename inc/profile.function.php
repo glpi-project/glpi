@@ -119,7 +119,7 @@ function showProfileEntityUser($target,$ID,$prof){
  	{ 
  		if ($DB->numrows($result)!=0)
 	 	{
-	 		
+
 	 		$temp=-1;
 	 		while ($data=$DB->fetch_array($result)) 
 			{	
@@ -139,9 +139,9 @@ function showProfileEntityUser($target,$ID,$prof){
 						if ($canedit){
 							echo "<div class='center'>";
 							echo "<table width='100%' class='tab_glpi'>";
-							echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markAllRows('profileuser_form$temp') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$ID&amp;select=all'>".$LANG["buttons"][18]."</a></td>";
+							echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markAllRows('profileuser_form".$rand."_$temp') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$ID&amp;select=all'>".$LANG["buttons"][18]."</a></td>";
 							
-							echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkAllRows('profileuser_form$temp') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$ID&amp;select=none'>".$LANG["buttons"][19]."</a>";
+							echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkAllRows('profileuser_form".$rand."_$temp') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$ID&amp;select=none'>".$LANG["buttons"][19]."</a>";
 							echo "</td><td align='left' width='80%'>";
 							dropdownValue("glpi_entities","FK_entities",0,1,$_SESSION['glpiactiveentities']);
 							echo "&nbsp;<input type='submit' name='moveentity' value=\"".$LANG["buttons"][20]."\"
@@ -169,8 +169,8 @@ function showProfileEntityUser($target,$ID,$prof){
 					echo "</td>"; 
 					echo "</tr>"; 
 					echo "<tr><td>";
-
-					echo "<form name='profileuser_form$temp' id='profileuser_form$temp' method='post' action=\"$target\">";
+	 				$rand=mt_rand();
+					echo "<form name='profileuser_form".$rand."_$temp' id='profileuser_form".$rand."_$temp' method='post' action=\"$target\">";
 					echo "<div align='center' id='entity$temp' style=\"display:none;\">\n"; 
 					echo "<table class='tab_cadre_fixe'>\n";
 				}
@@ -223,9 +223,9 @@ function showProfileEntityUser($target,$ID,$prof){
 				if ($canedit){
 					echo "<div class='center'>";
 					echo "<table width='100%' class='tab_glpi'>";
-					echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markAllRows('profileuser_form$temp') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$ID&amp;select=all'>".$LANG["buttons"][18]."</a></td>";
+					echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markAllRows('profileuser_form".$rand."_$temp') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$ID&amp;select=all'>".$LANG["buttons"][18]."</a></td>";
 					
-					echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkAllRows('profileuser_form$temp') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$ID&amp;select=none'>".$LANG["buttons"][19]."</a>";
+					echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkAllRows('profileuser_form".$rand."_$temp') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$ID&amp;select=none'>".$LANG["buttons"][19]."</a>";
 					echo "</td><td align='left' width='80%'>";
 					dropdownValue("glpi_entities","FK_entities",0,1,$_SESSION['glpiactiveentities']);
 					echo "&nbsp;<input type='submit' name='moveentity' value=\"".$LANG["buttons"][20]."\" class='submit'>";

@@ -209,8 +209,8 @@ function showDeviceDocument($instID) {
 		$result = $DB->query($query);
 		$number = $DB->numrows($result);
 		$i = 0;
-	
-		echo "<form method='post' name='document_form' id='document_form'  action=\"".$CFG_GLPI["root_doc"]."/front/document.form.php\">";
+		$rand=mt_rand();
+		echo "<form method='post' name='document_form$rand' id='document_form$rand'  action=\"".$CFG_GLPI["root_doc"]."/front/document.form.php\">";
 	
 		echo "<br><br><div class='center'><table class='tab_cadre_fixe'>";
 		echo "<tr><th colspan='".($canedit?6:5)."'>".$LANG["document"][19].":</th></tr><tr>";
@@ -297,9 +297,9 @@ function showDeviceDocument($instID) {
 			
 			echo "<div class='center'>";
 			echo "<table width='950px' class='tab_glpi'>";
-			echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markAllRows('document_form') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$instID&amp;select=all'>".$LANG["buttons"][18]."</a></td>";
+			echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markAllRows('document_form$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$instID&amp;select=all'>".$LANG["buttons"][18]."</a></td>";
 		
-			echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkAllRows('document_form') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$instID&amp;select=none'>".$LANG["buttons"][19]."</a>";
+			echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkAllRows('document_form$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$instID&amp;select=none'>".$LANG["buttons"][19]."</a>";
 			echo "</td><td align='left' width='80%'>";
 			echo "<input type='submit' name='deleteitem' value=\"".$LANG["buttons"][6]."\" class='submit'>";
 			echo "</td>";

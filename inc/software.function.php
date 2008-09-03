@@ -106,7 +106,7 @@ function showVersions($sID) {
 }
 
 /**
- * Show Versions of a software
+ * Show Licenses of a software
  *
  * @param $sID ID of the software
  * @return nothing
@@ -122,7 +122,7 @@ function showLicenses($sID) {
 	if ($canedit){
 		echo "<a href='softwarelicense.form.php?sID=$sID'>".$LANG["software"][8]."</a><br>";
 	}
-
+	$rand=mt_rand();
 	$query = "SELECT glpi_softwarelicenses.*, buyvers.name as buyname, usevers.name AS usename
 		FROM glpi_softwarelicenses
 		LEFT JOIN glpi_softwareversions AS buyvers ON (buyvers.ID = glpi_softwarelicenses.buy_version)
@@ -131,7 +131,8 @@ function showLicenses($sID) {
 	if ($result=$DB->query($query)){
 		if ($DB->numrows($result)){
 			if ($canedit){
-				echo "<form method='post' name='massiveactionlicense_form' id='massiveactionlicense_form' action=\"".$CFG_GLPI["root_doc"]."/front/massiveaction.php\">";
+				
+				echo "<form method='post' name='massiveactionlicense_form$rand' id='massiveactionlicense_form$rand' action=\"".$CFG_GLPI["root_doc"]."/front/massiveaction.php\">";
 			}
 
 			echo "<table class='tab_cadrehov'><tr>";
@@ -172,9 +173,9 @@ function showLicenses($sID) {
 			
 			if ($canedit){
 				echo "<table width='80%' class='tab_glpi'>";
-				echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td><a onclick= \"if ( markAllRows('massiveactionlicense_form') ) return false;\" href='".$_SERVER['PHP_SELF']."?select=all'>".$LANG["buttons"][18]."</a></td>";
+				echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td><a onclick= \"if ( markAllRows('massiveactionlicense_form$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?select=all'>".$LANG["buttons"][18]."</a></td>";
 
-				echo "<td>/</td><td ><a onclick=\"if ( unMarkAllRows('massiveactionlicense_form') ) return false;\" href='".$_SERVER['PHP_SELF']."?select=none'>".$LANG["buttons"][19]."</a>";
+				echo "<td>/</td><td ><a onclick=\"if ( unMarkAllRows('massiveactionlicense_form$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?select=none'>".$LANG["buttons"][19]."</a>";
 				echo "</td><td class='left' width='80%'>";
 				dropdownMassiveAction(SOFTWARELICENSE_TYPE,0,array('sID'=>$sID));
 				echo "</td></table>";
