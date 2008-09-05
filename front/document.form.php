@@ -96,7 +96,7 @@ else if (isset($_POST["update"]))
 else if (isset($_POST["additem"])){
 
 	if ($_POST["right"]=="doc") {
-		$doc->check($_POST["ID"],'w');
+		$doc->check($_POST["conID"],'w');
 	} else { // $_POST["right"]=="item"
 		$ci=new CommonItem();
 		$ci->getFromDB($_POST['type'], $_POST['item']);
