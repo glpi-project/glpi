@@ -818,7 +818,14 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 					}
 				}
 			}
+		} else { // CORE type : display a plugin item needed forcegroupby ?
+			foreach ($toview as $key2 => $val2){
+				if ($val2>1000 && isset($SEARCH_OPTION[$type][$val2]["forcegroupby"])){
+					$GROUPBY=" GROUP BY $itemtable.ID";
+				}
+			}
 		}
+
 	}
 
 
