@@ -473,9 +473,11 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 
 	$entity_restrict=in_array($itemtable,$CFG_GLPI["specif_entities_tables"]);
 
+	/// TODO : clean it
 	// Define meta table where search must be done in HAVING clause
 	$META_SPECIF_TABLE=array("glpi_device_ram","glpi_device_hdd","glpi_device_processor","glpi_tracking");
 
+	/// TODO : Use commonItem ?
 	$names=array(
 			COMPUTER_TYPE => $LANG["Menu"][0],
 			//		NETWORKING_TYPE => $LANG["Menu"][1],
@@ -514,6 +516,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 	if (!in_array($sort,$toview))
 		array_push($toview,$sort);
 
+	/// TODO to delete see after OR use to_view / to_search arrays to manage left join
 	// Manage search on all item
 	$SEARCH_ALL=array();
 	if (in_array("all",$field)){
@@ -563,6 +566,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 	}
 
 
+	/// TODO to delete : manage Left Join when need of search or display
 	// Search all case :
 	if (count($SEARCH_ALL)>0)
 		foreach ($SEARCH_OPTION[$type] as $key => $val){
@@ -609,6 +613,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 		}
 	}
 	$first=true;
+	/// TODO do also having here / simplify view - all cases : duplicates
 	// Add search conditions
 	// If there is search items
 	if ($_SESSION["glpisearchcount"][$type]>0&&count($contains)>0) {
@@ -807,6 +812,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 		$GROUPBY=" GROUP BY $itemtable.ID";
 	}
 
+	/// TODO to review Manage it using forceGroupBy
 	// GROUP BY plugin case : force group by
 	if (empty($GROUPBY)){
 		if ($type>1000){
@@ -828,7 +834,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 
 	}
 
-
+	/// TODO to delete Manage it using forceGroupBy
 	// Specific case of group by : multiple links with the reference table
 	if (empty($GROUPBY)){
 		foreach ($toview as $key2 => $val2){
@@ -850,6 +856,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 		}
 	}
 
+	/// TODO need to be managed with where statements 
 	// Specific search define in META_SPECIF_TABLE : only for computer search (not meta search)
 	if ($type==COMPUTER_TYPE){
 		// For each real search item 
