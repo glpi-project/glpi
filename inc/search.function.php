@@ -356,13 +356,13 @@ function searchForm($type,$target,$field="",$contains="",$sort= "",$deleted= 0,$
 					'val'=>(is_array($contains2)&&isset($contains2[$i])?$contains2[$i]:""),
 	
 			);
-			ajaxUpdateItemOnSelectEvent("type2_".$type."_".$i."_$rand","show_".$type."_".$i."_$rand",$CFG_GLPI["root_doc"]."/ajax/updateSearch.php",$params,false);
+			ajaxUpdateItemOnSelectEvent("type2_".$type."_".$i."_$rand","show_".$type."_".$i."_$rand",$CFG_GLPI["root_doc"]."/ajax/updateMetaSearch.php",$params,false);
 
 			
 			if (is_array($type2)&&isset($type2[$i])&&$type2[$i]>0){
 
 				$params['type']=$type2[$i];
-				ajaxUpdateItem("show_".$type."_".$i."_$rand",$CFG_GLPI["root_doc"]."/ajax/updateSearch.php",$params,false);
+				ajaxUpdateItem("show_".$type."_".$i."_$rand",$CFG_GLPI["root_doc"]."/ajax/updateMetaSearch.php",$params,false);
 				echo "<script type='text/javascript' >";
 				echo "window.document.getElementById('type2_".$type."_".$i."_$rand').value='".$type2[$i]."';";
 				echo "</script>\n";
