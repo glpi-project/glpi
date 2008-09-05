@@ -801,7 +801,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 	if ($_SESSION["glpisearchcount2"][$type]>0||count($SEARCH_ALL)>0||in_array(60,$toview)){
 		$GROUPBY=" GROUP BY $itemtable.ID";
 	}
-
+	
 	// GROUP BY plugin case : force group by
 	if (empty($GROUPBY)){
 		if ($type>1000){
@@ -811,6 +811,12 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 					if ($function($type)){
 						$GROUPBY=" GROUP BY $itemtable.ID";
 					}
+				}
+			}
+		} else { // CORE type : display a plugin item needed forcegroupby ?
+			foreach ($toview as $key2 => $val2){
+				if ($val2>1000 && isset($SEARCH_OPTION[$type][$val2]["forcegroupby"])){
+					$GROUPBY=" GROUP BY $itemtable.ID";
 				}
 			}
 		}
