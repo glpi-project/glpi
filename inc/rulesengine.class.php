@@ -2081,6 +2081,14 @@ class RuleCriteria extends CommonDBTM {
 /// Rule cached class
 class RuleCached extends Rule{
 
+	/**
+	* Constructor
+	* @param rule_type the rule type used for the collection
+	**/
+	function RuleCached($rule_type=0) {
+		parent::Rule($rule_type);
+	}
+
 	function getTitleAction($target){
 		global $LANG,$CFG_GLPI;
 		echo "<div class='center'>"; 
