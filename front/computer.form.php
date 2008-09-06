@@ -168,6 +168,15 @@ elseif(isset($_POST["unlock_soft"])){
 	}
 	glpi_header($_SERVER['HTTP_REFERER']);	
 }
+elseif(isset($_POST["unlock_disk"])){
+	$computer->check($_POST['ID'],'w');
+
+	if (isset($_POST["lockdisk"])&&count($_POST["lockdisk"])){
+		foreach ($_POST["lockdisk"] as $key => $val)
+			deleteInOcsArray($_POST["ID"],$key,"import_disk");
+	}
+	glpi_header($_SERVER['HTTP_REFERER']);	
+}
 elseif(isset($_POST["unlock_periph"])){
 	$computer->check($_POST['ID'],'w');
 

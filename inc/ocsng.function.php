@@ -1747,6 +1747,35 @@ function ocsEditLock($target, $ID) {
 			echo "<strong>" . $LANG["ocsng"][53] . "</strong>";
 		echo "</div>";			
 
+		// Search locked computerdisks
+		$header = false;
+		echo "<br>";
+		echo "<div class='center'>";
+		$locked = importArrayFromDB($data["import_disk"]);
+		foreach ($locked as $key => $val) {
+			$querySearchLocked = "SELECT ID FROM glpi_computerdisks WHERE ID='$key'";
+			$resultSearch = $DB->query($querySearchLocked);
+			if ($DB->numrows($resultSearch) == 0) {
+				//$header = true;
+				if (!($header)) {
+					$header = true;
+					echo "<form method='post' action=\"$target\">";
+					echo "<input type='hidden' name='ID' value='$ID'>";
+					echo "<table class='tab_cadre'>";
+					echo "<tr><th colspan='2'>" . $LANG["ocsng"][55] . "</th></tr>";
+				}
+				
+				echo "<tr class='tab_bg_1'><td>$val</td><td><input type='checkbox' name='lockdisk[" . $key . "]'></td></tr>";
+			}
+		}
+		if ($header) {
+			echo "<tr class='tab_bg_2'><td align='center' colspan='2'><input class='submit' type='submit' name='unlock_disk' value='" . $LANG["buttons"][38] . "'></td></tr>";
+			echo "</table>";
+			echo "</form>";
+		} else
+			echo "<strong>" . $LANG["ocsng"][56] . "</strong>";
+		echo "</div>";			
+
 	}
 
 }

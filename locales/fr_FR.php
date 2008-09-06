@@ -1105,6 +1105,8 @@ $LANG["ocsng"][51]="Aucune IP verrouillée";
 $LANG["ocsng"][52]="Logiciel(s) verrouillé(s)"; 
 $LANG["ocsng"][53]="Aucun Logiciel verrouillé"; 
 $LANG["ocsng"][54]="Logiciel mis dans la corbeille par la synchro OCS";
+$LANG["ocsng"][55]="Volume(s) verrouillé(s)"; 
+$LANG["ocsng"][56]="Aucun volume verrouillé"; 
 
 $LANG["pager"][1]="à"; 
 $LANG["pager"][2]="de"; 
