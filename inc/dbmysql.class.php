@@ -74,8 +74,12 @@ class DBmysql {
 		$this->dbh = @mysql_connect($this->dbhost, $this->dbuser, rawurldecode($this->dbpassword)) or $this->error = 1;
 		if ($this->dbh){
 			@mysql_query("SET NAMES '" . (isset($this->dbenc) ? $this->dbenc : "utf8") . "'",$this->dbh);
-			mysql_select_db($this->dbdefault) or $this->error = 1;
-			$this->connected=true;
+			$select= mysql_select_db($this->dbdefault) or $this->error = 1;
+			if ($select){ // select ok
+				$this->connected=true;
+			}else{ // select wrong
+				$this->connected=false;
+			}
 		} else {
 			$this->connected=false;
 		}
