@@ -3090,16 +3090,17 @@ function ocsUpdateDisk($glpi_id, $ocs_id, $ocs_server_id, $cfg_ocs, $import_disk
 			$line = clean_cross_side_scripting_deep(addslashes_deep($line));
 			// Only not empty disk
 			if ($line['TOTAL']>0){
+				$disk=array();
 				$disk['FK_computers']=$glpi_id;
 				// TYPE : vxfs / ufs  : VOLUMN = mount / FILESYSTEM = device
 				if (in_array($line['TYPE'],array("vxfs","ufs")) ){
 					$disk['name']=$line['VOLUMN'];
-					$disk['mount']=$line['VOLUMN'];
+					$disk['mountpoint']=$line['VOLUMN'];
 					$disk['device']=$line['FILESYSTEM'];
 					$disk['FK_filesystems']=externalImportDropdown('glpi_dropdown_filesystems', $line["TYPE"]);
 				} else if (in_array($line['FILESYSTEM'],array('ext3','jfs','jfs2','smbfs','nfs')) ){
 					$disk['name']=$line['VOLUMN'];
-					$disk['mount']=$line['VOLUMN'];
+					$disk['mountpoint']=$line['VOLUMN'];
 					$disk['device']=$line['TYPE'];
 					$disk['FK_filesystems']=externalImportDropdown('glpi_dropdown_filesystems', $line["FILESYSTEM"]);
 				} else if (in_array($line['FILESYSTEM'],array('FAT32','NTFS','FAT')) ){
@@ -3108,7 +3109,7 @@ function ocsUpdateDisk($glpi_id, $ocs_id, $ocs_server_id, $cfg_ocs, $import_disk
 					} else {
 						$disk['name']=$line['LETTER'];
 					}
-					$disk['mount']=$line['LETTER'];
+					$disk['mountpoint']=$line['LETTER'];
 					$disk['FK_filesystems']=externalImportDropdown('glpi_dropdown_filesystems', $line["FILESYSTEM"]);
 				}
 
@@ -3149,7 +3150,7 @@ function ocsUpdateDisk($glpi_id, $ocs_id, $ocs_server_id, $cfg_ocs, $import_disk
 	// Delete Unexisting Items not found in OCS
 	if (count($import_disk)) {
 		foreach ($import_disk as $key => $val) {
-			$d->delete($key);
+			$d->delete(array("ID"=>$key));
 			deleteInOcsArray($glpi_id, $key, "import_device");
 		}
 
