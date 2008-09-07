@@ -103,12 +103,15 @@ function includeCommonHtmlHeader($title=''){
 	echo "<script type=\"text/javascript\" src='".$CFG_GLPI["root_doc"]."/lib/extrajs/xdatefield.js'></script>\n";
 	echo "<script type=\"text/javascript\" src='".$CFG_GLPI["root_doc"]."/lib/extrajs/spancombobox.js'></script>\n";
 
-	echo "<script type='text/javascript'>";
+	echo "<script type=\"text/javascript\">\n";
+	echo "//<![CDATA[ \n";
 	// DO not get it from extjs website
 	echo "Ext.BLANK_IMAGE_URL = '".$CFG_GLPI["root_doc"]."/lib/extjs/s.gif';\n";
-	echo " Ext.Updater.defaults.loadScripts = true;";
+	echo " Ext.Updater.defaults.loadScripts = true;\n";
 	// TODO : Loading indicator in span not in div : HTML Error if doing that / maybe load a image ?
-	echo "Ext.UpdateManager.defaults.indicatorText = \"<span class='loading-indicator'>".$LANG["common"][80]."</span>\";\n";
+	// JMD : validator doesn't accept html in script , must escape html element to validate
+	echo "Ext.UpdateManager.defaults.indicatorText='<\span class=\"loading-indicator\">".$LANG["common"][80]."<\/span>';\n";
+	echo "//]]> \n";
 	echo "</script>\n";
 
 	// Some Javascript-Functions which we may need later
