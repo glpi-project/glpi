@@ -281,6 +281,8 @@ function getPluginTabs($target,$type,$ID,$withtemplate){
 				$onglet=$function($type,$withtemplate);
 
 				if (is_array($onglet)&&count($onglet)){
+					// Sort by plugin name
+					asort($onglet);
 					foreach ($onglet as $key => $val){
 						$key=$plug."_".$key;
 
