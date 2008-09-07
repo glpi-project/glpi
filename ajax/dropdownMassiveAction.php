@@ -96,6 +96,7 @@ if (isset($_POST["action"])&&isset($_POST["type"])&&!empty($_POST["type"])){
 		case "unlock_ocsng_peripheral";
 		case "unlock_ocsng_software";
 		case "unlock_ocsng_printer";
+		case "unlock_ocsng_disk";
 		case "unlock_ocsng_ip";
 			echo "<input type=\"submit\" name=\"massiveaction\" class=\"submit\" value=\"".$LANG["buttons"][2]."\" >";
 			break;

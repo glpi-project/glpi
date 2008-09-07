@@ -389,6 +389,7 @@ if (isset($_POST["device_type"])){
 			case "unlock_ocsng_peripheral":
 			case "unlock_ocsng_software":
 			case "unlock_ocsng_ip":
+			case "unlock_ocsng_disk":
 				foreach ($_POST["item"] as $key => $val){
 					if ($val==1) {
 						switch ($_POST["action"]){
@@ -406,6 +407,9 @@ if (isset($_POST["device_type"])){
 								break;
 							case "unlock_ocsng_ip":
 								ocsUnlockItems($key,"import_ip");
+								break;
+							case "unlock_ocsng_disk":
+								ocsUnlockItems($key,"import_disk");
 								break;
 						}
 					}

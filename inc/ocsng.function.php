@@ -1498,8 +1498,7 @@ function getOcsLockableFields(){
 
 function ocsUnlockItems($glpi_id,$field){
 	global $DB;
-	
-	if (!in_array($field,array("import_monitor","import_printers","import_peripheral","import_ip","import_software"))){
+	if (!in_array($field,array("import_monitor","import_printers","import_peripheral","import_ip","import_software","import_disk"))){
 		return false;
 	}
 	$query = "SELECT $field 
@@ -1523,6 +1522,9 @@ function ocsUnlockItems($glpi_id,$field){
 							break;
 						case "import_ip":
 							$querySearchLocked = "SELECT * FROM glpi_networking_ports WHERE on_device='$glpi_id' AND device_type='".COMPUTER_TYPE."' AND ifaddr='$val'";
+							break;
+						case "import_disk":
+							$querySearchLocked = "SELECT ID FROM glpi_computerdisks WHERE ID='$key'";
 							break;
 						default :
 							return;
