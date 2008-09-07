@@ -179,28 +179,29 @@ function dropdownRulesConditions($type,$name,$value=''){
 function dropdownRulesActions($rule_type,$name,$value=''){
 	global $LANG,$CFG_GLPI,$RULES_ACTIONS;
 
-	//Look if action assign needs to be displayed or not
-	if (!isset($RULES_ACTIONS[$rule_type][$value]['optional_actions']) ||
-		( isset($RULES_ACTIONS[$rule_type][$value]['exclude_actions']) &&
-		in_array("asign",$RULES_ACTIONS[$rule_type][$value]['exclude_actions'])
-		)
-	){
-		$elements["assign"] = $LANG["rulesengine"][22];
+	$actions=array("assign");
+	if (isset($RULES_ACTIONS[$rule_type][$value]['force_actions'])){
+		$actions=$RULES_ACTIONS[$rule_type][$value]['force_actions'];
 	}
 
-	if (isset($RULES_ACTIONS[$rule_type][$value]['optional_actions'])){
-		$actions = $RULES_ACTIONS[$rule_type][$value]['optional_actions'];
-		if(in_array("regex_result",$actions)){
-			$elements["regex_result"] = $LANG["rulesengine"][45];
-		}
-		if(in_array("append_regex_result",$actions)){
-			$elements["append_regex_result"] = $LANG["rulesengine"][79];
-		}
-		if(in_array("affectbyip",$actions)){
-			$elements["affectbyip"] = $LANG["rulesengine"][46];
-		}
-		if(in_array("affectbyfqdn",$actions)){
-			$elements["affectbyfqdn"] = $LANG["rulesengine"][47];
+	$elements=array();
+	foreach ($actions as $action){
+		switch ($action){
+			case "assign":
+				$elements["assign"] = $LANG["rulesengine"][22];
+				break;
+			case "regex_result":
+				$elements["regex_result"] = $LANG["rulesengine"][45];
+				break;
+			case "append_regex_result":
+				$elements["append_regex_result"] = $LANG["rulesengine"][79];
+				break;
+			case "affectbyip":
+				$elements["affectbyip"] = $LANG["rulesengine"][46];
+				break;
+			case "affectbyfqdn":
+				$elements["affectbyfqdn"] = $LANG["rulesengine"][47];
+				break;
 		}
 	}
 	
