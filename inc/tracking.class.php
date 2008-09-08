@@ -408,6 +408,12 @@ class Job extends CommonDBTM{
 					break;
 					case "computer" :
 					case "device_type":
+						if (isset($already_done_computer_device_type_update)){
+							break;
+						} else {
+							$already_done_computer_device_type_update=true;
+						}
+
 						$ci=new CommonItem;
 						$ci->getFromDB($input["_old_item_type"],$input["_old_item"]);
 						$old_item_name=$ci->getName();
