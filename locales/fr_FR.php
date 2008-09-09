@@ -1352,7 +1352,7 @@ $LANG["rulesengine"][84]="Tester le moteur de règles";
 $LANG["rulesengine"][85]="Résultat de l'expression régulière";
 $LANG["rulesengine"][86]="Catégorie du logiciel si suppression par le dictionnaire";
 $LANG["rulesengine"][87]="Logiciel mis dans la corbeille par le dictionnaire GLPI";
-$LANG["rulesengine"][88]="Logiciel crée par le dictionnaire GLPI";
+$LANG["rulesengine"][88]="Logiciel créé par le dictionnaire GLPI";
 
 
 $LANG["rulesengine"][90]="Traitement en cours...";
