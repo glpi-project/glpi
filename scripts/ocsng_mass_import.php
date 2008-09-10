@@ -51,8 +51,8 @@ if ($argv) {
 
 define('GLPI_ROOT', '..');
 
-$NEEDED_ITEMS=array("ocsng","computer","device","printer","networking","peripheral","monitor","software","infocom","phone","tracking","enterprise","reservation","setup","group","entity","rulesengine","rule.ocs","registry","rule.softwarecategories");
-include (GLPI_ROOT."/inc/includes.php");
+$NEEDED_ITEMS=array("ocsng","computer","device","printer","networking","peripheral","monitor","software","infocom","phone","tracking","enterprise","reservation","setup","group","entity","rulesengine","rule.ocs","registry","rule.softwarecategories","rule.dictionnary.software");
+includhttp://faq.accedo-web.com/entry/5/e (GLPI_ROOT."/inc/includes.php");
 
 //// PARAMETERS
 // Just import these tags : separeted by $
