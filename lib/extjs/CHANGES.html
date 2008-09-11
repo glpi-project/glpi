@@ -1,303 +1,363 @@
 <html>
+<head>
+	<title>Ext Release Notes for 2.2.0</title>
+	<style>
+		* {
+			font-family: 'helvetica', tahoma, verdana, sans-serif;
+			font-size: 12px;
+		}
+		body { padding: 20px; }
+		h1 { font-size: 18px; }
+		h2 { font-size: 16px; }
+		h3 { font-size: 14px; }
+		li { padding: 2px 0; }
+	</style>
+</head>
+
 <body>
-<h2>Release Notes for 2.1.0</h2>
+
+<h1>Release Notes for Ext 2.2.0</h1>
+
 <p>
-Release Date: April 20, 2008<br/>
-Current Version: 2.1.0 (rev 2042) <br/>
-Previous Version: 2.0.2 (rev 1688)
+	Release Date: August 4, 2008<br/>
+	Current Version: 2.2.0 (rev 2547) <br/>
+	Previous Version: 2.1.0 (rev 2042)
 </p>
 
-<h3>General Changes</h3>
+<h2>Overview</h2>
 <ul>
-	<li>Full REST support</li>
-	<li>Added Ext.StatusBar Component and Samples</li>
-	<li>Added Ext.Slider Component and Samples</li>
-	<li>Added Example to demonstrate Remote Loading of Component Configs</li>
-	<li>Added Grid Filtering Sample</li>
-	<li>Added Layout Browser Sample</li>
-	<li>Added Spotlight Sample</li>	
+	<li>Full Firefox 3.0 support</li>
+	<li>Added Ext.History component and sample</li>
+	<li>Completely refactored Checkbox and Radio controls</li>
+	<li>Added CheckboxGroup and RadioGroup components and sample</li>
+	<li>Added MultiSelect and ItemSelector extensions and sample</li>
+	<li>Added FileUploadField extension and sample</li>
+	<li>Added XMLTreeLoader extension and sample</li>
+	<li>Added several new Drag-and-Drop samples</li>
+	<li>Added GMapPanel extension and sample</li>
+	<li>Grid performance improvements</li>
+	<li>Many general improvements and bug fixes</li>
+	<li>Extensive documentation improvements</li>
+	<li>Various locale file updates</li>
 </ul>
 
-<h3>Bug Fixes and Enhancements</h3>
+<h2>Change Log</h2>
 <ul>
-	<li>Adapters</li>
+	<li><strong>Adapters</strong></li>
 	<ul>
-		<li>Changes to provide full REST support</li>
-		<li>Added checks for existing content-type header in adapter request methods</li>
-		<li>Updated to use isArray</li>
+		<li>Ext Base</li>
+		<ul>
+			<li>Added UTF-8 to defaultPostHeader to support international char sets properly</li>
+		</ul>
 	</ul>
-	<li>Core Classes</li>
+
+	<li><strong>Ext.core</strong></li>
 	<ul>
 		<li>Ext</li>
 		<ul>
-			<li>Updated Ext.version</li>
-			<li>Updated to use isArray</li>
+			<li>New properties for isGecko2 and isGecko3</li>
+			<li>Updated useShims property to be Gecko2-only on Mac</li>
+			<li>Fix for isArray and array check fix in Ext.each</li>
 		</ul>
 		<li>Ext.Element</li>
 		<ul>
-			<li>Removed deprecated preventFlicker argument to addClassOnOver</li>
+			<li>Event registration improvements</li>
+			<li>Updated Gecko/Mac overflow auto fix to be scoped to Gecko2 only</li>
+			<li>Shim border fix for IE8</li>
 		</ul>
 		<li>Ext.EventManager</li>
 		<ul>
-			<li>Changed getTarget to use returnEl correctly when selector is not specified</li>
+			<li>Event handler registration logic refactored to fix DOM leak issues</li>
 		</ul>
 		<li>Ext.Updater</li>
 		<ul>
-			<li>Removed backwards compatability support for Ext.Updater.update</li>
-			<li>Removed private method prepareUrl</li>
+			<li>Now extends Ext.util.Observable</li>
+			<li>New overrideable getDefaultRenderer method</li>
+			<li>Fix in update method to preserve passed in config options correctly</li>
 		</ul>
 	</ul>
-	
-	<li>Ext.util Package</li>
-	<ul>
-		<li>Ext.util.Observable</li>
-		<ul>
-			<li>Fix to add events to a class</li>
-		</ul>
-		<li>Ext.util.JSON</li>
-		<ul>
-			<li>Exposed encodeDate as a function Ext.util.JSON.encodeDate</li>
-		</ul>
-		<li>Ext.util.TextMetrics</li>
-		<ul>
-			<li>Added support to account for text-transform and letter-spacing styles when measuring</li>
-		</ul>
-		<li>Ext.util.KeyNav</li>
-		<ul>
-			<li>Support recent keypress changes in Safari 3.1</li>
-		</ul>
-	</ul>
-	<li>Ext.data Package</li>
+
+	<li><strong>Ext.data</strong></li>
 	<ul>
 		<li>Ext.data.Connection</li>
 		<ul>
-			<li>Fixed sending undefined param with jsonData or xmlData when no params are present</li>
+			<li>New disableCachingParam config</li>
 		</ul>
-		<li>Ext.data.JsonReader</li>
+		<li>Ext.data.Record</li>
 		<ul>
-			<li>Added support for using metaData with a JsonReader for proxies other than HttpProxy such as ScriptTagProxy</li>
+			<li>Fixed type coercion bug in isModified</li>
+		</ul>
+		<li>Ext.data.Tree</li>
+		<ul>
+			<li>New Node.isExpandable method</li>
 		</ul>
 	</ul>
-	<li>Date</li>
+
+	<li><strong>Ext.util</strong></li>
 	<ul>
-		<li>Refactoring and performance enhancements of formatting functions</li>
+		<li>Ext.util.ClickRepeater</li>
+		<ul>
+			<li>Fixed scope issue when unregistering interal event handlers</li>
+		</ul>
+		<li>Ext.util.Date</li>
+		<ul>
+			<li>Various date format fixes</li>
+		</ul>
+		<li>Ext.util.Format</li>
+		<ul>
+			<li>Fix in htmlDecode to handle ampersands correctly</li>
+			<li>New nl2br (newline to BR) function</li>
+		</ul>
+		<li>Ext.util.History</li>
+		<ul>
+			<li>New component</li>
+		</ul>
+		<li>Ext.util.KeyMap</li>
+		<ul>
+			<li>Added stopEvent as a valid config option for the addBinding method</li>
+		</ul>
 	</ul>
-	
-	<li>Widgets</li>
+
+	<li><strong>Ext.widgets</strong></li>
 	<ul>
+		<li>Ext.Button</li>
+		<ul>
+			<li>Fixes to minimize mouse handlers created on buttons</li>
+		</ul>
 		<li>Ext.Component</li>
 		<ul>
-			<li>All components now support an overCls config option</li>
+			<li>New initPlugin method for more flexible plugin initialization</li>
+			<li>Fix to ignore state events if stateful=false</li>
 		</ul>
 		<li>Ext.Container</li>
 		<ul>
-			<li>Documentation Updates &amp; Best Practices</li>
-		</ul>		
-		<li>Ext.DataView</li>
-		<ul>
-			<li>Removed extraneous selectionchange events on initial load</li>
-			<li>Fixed issue where selectionchange was not firing at all when selecting multiple nodes using Shift key</li>
-			<li>Assign same id to DataView component and el if el is auto-generated</li>
-			<li>Optimization to private onAdd function</li>
+			<li>Updated onDestroy to call destroy on the container's layout if available</li>
+			<li>Fixed default scope passed to the cascaded function in Container.cascade</li>
 		</ul>
 		<li>Ext.DatePicker</li>
 		<ul>
-			<li>Fixed JS rolling date conversion in month chooser when current day's date is greater than the last day in the new month selected</li>
-			<li>Fixed null error on destroy on unrendered DatePicker</li>
-		</ul>		
-		<li>Ext.form Package</li>
-		<ul>
-			<li>Ext.form.Action</li>
-			<ul>
-				<li>Added support for options.headers in form actions (additional REST support)</li>
-			</ul>
-			<li>Ext.form.BasicForm</li>
-			<ul>
-				<li>Added support for options.headers in form actions (additional REST support)</li>
-			</ul>
-			<li>Ext.form.ComboBox</li>
-			<ul>
-				<li>Added support for passing array data directly as the store config for combos without requiring a SimpleStore to be created first.</li>
-			</ul>
-			<li>Ext.form.Field</li>
-			<ul>
-				<li>Update for tag = 'textarea'</li>
-				<li>Fixed runtime error when using msgTarget: 'side' or 'under' and rendering a field directly, outside of a form layout</li>
-			</ul>						
-			<li>Ext.form.HtmlEditor</li>
-			<ul>
-				<li>Force toolbar to layout after rendering its items</li>
-				<li>Check if QuickTips are init'ed before adding tooltips to buttons</li>
-			</ul>
-			<li>Ext.form.Label</li>
-			<ul>
-				<li>Add id to &lt;label&gt; element</li>
-			</ul>
-			<li>Ext.form.TextField</li>
-			<ul>
-				<li>keyup, keydown, keypress handlers</li>
-			</ul>
+			<li>Marked constrainToViewport config as deprecated (it's not currently used)</li>
+			<li>Changed disabledDaysText and disabledDatesText to default to "Disabled" instead of ""</li>
+			<li>New configs for minDate, maxDate, disabledDays, disabledDaysRE and disabledDates</li>
+			<li>New methods setDisabledDates, setDisabledDays, setMinDate and setMaxDate</li>
+			<li>New showToday config to show/hide the Today button and footer</li>
+			<li>Fixed selectToday to check for disabled Today button before changing the date</li>
 		</ul>
-		<li>Ext.grid Package</li>
+		<li>Ext.DataView</li>
 		<ul>
-			<li>Ext.grid.GroupingView</li>
-			<ul>
-				<li>Fix for column grouping menu</li>
-			</ul>
-			<li>Ext.grid.CellSelectionModel</li>
-			<ul>
-				<li>Safari key fixes</li>
-			</ul>
-			<li>Ext.grid.PropertyGrid</li>
-			<ul>
-				<li>Registered 'propertygrid' component type</li>
-			</ul>
-			<li>Ext.grid.EditorGrid</li>
-			<ul>
-				<li>Minor fix to 'bodyscroll' event</li>
-				<li>Fix to stop editing if no selection exists</li>
-				<li>Addition of an argument for stopEditing function to cancel or complete an edit</li>
-			</ul>
-			<li>Ext.grid.GridView</li>
-			<ul>
-				<li>Grid's DragZone is now stored as a property called dragZone</li>
-				<li>DragZone will now be unregistered in destroy</li>
-			</ul>
-		</ul>		
-		<li>Ext.layout Package</li>
-		<ul>
-			<li>Documentation Updates &amp; Additions</li>
-			<li>Added check to see if panel is already collapsed before trying to collapse it</li>
-		</ul>		
-		<li>Ext.menu.Menu</li>
-		<ul>
-			<li>Fixed issue in removeAll when this.items = null</li>
+			<li>New mouseenter and mouseleave events</li>
+			<li>New trackOver config to enable mouse events</li>
+			<li>Fix in getNodes to calculate the end node correctly</li>
 		</ul>
-		<li>Ext.MessageBox</li>
+		<li>Ext.Editor</li>
 		<ul>
-			<li>Added support for standard Window iconCls config on MessageBox</li>
-			<li>Fix for MessageBox button processing after close</li>
-			<li>Added value param to Msg.prompt</li>
+			<li>New canceledit event</li>
+			<li>Fixed issue with TriggerField editors not blurring correctly on key navigation</li>
+			<li>Fixed editor wrapper element scrollbar issue in FF2/Opera</li>
+		</ul>
+		<li>Ext.PagingToolbar</li>
+		<ul>
+			<li>Added beforechange and change events and changePage method</li>
+			<li>Fixed handling of 0 entered into the page field</li>
 		</ul>
 		<li>Ext.Panel</li>
 		<ul>
-			<li>When a toolbar is used in a Panel it will have a reference to that Panel via ownerCt</li>			
-			<li>D&amp;D - Fix to allow draggable:true with no header element</li>			
+			<li>Change to set ownerCt on buttons added to panels</li>
+			<li>Fix for FF2/Mac scroll bar issue on contained items</li>
+			<li>Fix panel disabling support in IE</li>
+			<li>Fixed in destruction order of internal components</li>
 		</ul>
 		<li>Ext.ProgressBar</li>
 		<ul>
-			<li>Moved value init logic into afterRender to support displaying the initial progress value correctly.</li>
-		</ul>		
+			<li>Fix to only attempt progress updates if rendered</li>
+			<li>Added support for the text config in the wait method</li>
+			<li>Fix for preserving the proper progress width in ratio to the value on resize</li>
+		</ul>
 		<li>Ext.QuickTips</li>
 		<ul>
-			<li>Fixed isEnabled returning undefined instead of false when tip is undefined</li>
-			<li>Tip positioning fixes</li>
-		</ul>		
+			<li>Added autoRender support to fix initial display issues</li>
+		</ul>
+		<li>Ext.Resizable</li>
+		<ul>
+			<li>Change to render the resize proxy to the document body instead of as a sibling to its element so it doesn't interfere with Component position calculations</li>
+		</ul>
 		<li>Ext.Slider</li>
 		<ul>
-			<li>New Slider Widget complete with documentation and examples</li>
+			<li>New dragging property and changecomplete event</li>
+			<li>Fixes for slider with minValue != 0</li>
+			<li>Fix for preserving the proper thumb position in ratio to the value on resize</li>
 		</ul>
 		<li>Ext.StatusBar</li>
 		<ul>
-			<li>New StatusBar Widget complete with documentation and examples</li>
-		</ul>		
+			<li>Fix for setting the proper default icon on clear</li>
+		</ul>
 		<li>Ext.TabPanel</li>
 		<ul>
-			<li>Fix to remove built in events on tab removal</li>
-		</ul>		
-		<li>Ext.tree Package</li>
+			<li>Fix to position the tab strip spacer element correctly for tabPosition bottom</li>
+			<li>Fix for FF3 to raise the contextmenu event correctly on tab strip right-click</li>
+		</ul>
+		<li>Ext.Tip</li>
 		<ul>
-			<li>Fix for expanded:true and preloadChildren</li>
-			<li>Added support on TreeEditor for a separate editor config in addition to the current field config.</li>
-			<li>Added support for defaulting the load method to Ext.Ajax.method.</li>
-			<li>Fix for IE6 TreeNode checkboxes, Resolves an issue where checkbox would become unchecked after parent was collapsed</li>
-			<li>Fix for IE6 where CSS classes would not be applied if rootVisible was false</li>			
-			<li>Fix for checkbox not raising checkchange event</li>
-		</ul>		
+			<li>Fixed IE7 repaint bug on initial show</li>
+		</ul>
+		<li>Ext.Toolbar</li>
+		<ul>
+			<li>Fix in addField to add the fields to the items collection rather than the Toolbar items</li>
+		</ul>
 		<li>Ext.Window</li>
 		<ul>
-			<li>Fixed an issue when calling maximize when the maximize tool button is not present</li>
+			<li>Added doLayout call on resize</li>
 		</ul>
-		
-	</ul>
-</ul>
-
-<h3>Documentation Fixes and Enhancements</h3>
-<ul>
-	<li>Core Components</li>
-	<ul>
-		<li>Ext</li>		
-		<li>Ext.DomQuery</li>
-		<li>Ext.Element</li>
-		<li>Ext.EventManager</li>		
-		<li>Ext.Updater</li>
-	</ul>
-	<li>Ext.data package</li>
-	<ul>
-		<li>Ext.data.DataProxy</li>
-		<li>Ext.data.HttpProxy</li>
-		<li>Ext.data.JsonStore</li>
-		<li>Ext.data.MemoryProxy</li>
-		<li>Ext.data.Record</li>
-		<li>Ext.data.ScriptTagProxy</li>
-		<li>Ext.data.Store</li>
-		<li>Ext.data.StoreMgr</li>
-		<li>Ext.data.XmlReader</li>
-	</ul>	
-	<li>Ext.dd Package</li>
-	<ul>
 		<li>Ext.dd.DDCore</li>
-	</ul>	
-	<li>Ext.util Package</li>
-	<ul>
-		<li>Ext.util.MixedCollection</li>
+		<ul>
+			<li>Fixed null error in isValidHandleChild</li>
+		</ul>
+		<li>Ext.dd.ScrollManager</li>
+		<ul>
+			<li>Fix to enable overriding scroll frequency in the scroll config object</li>
+		</ul>
+		<li>Ext.dd.StatusProxy</li>
+		<ul>
+			<li>Fix to remove float style from ghost elements when adding them to the proxy to prevent proxy box collapse</li>
+		</ul>
+		<li>Ext.form.Checkbox</li>
+		<ul>
+			<li>Completely refactored to support new visual styles</li>
+		</ul>
+		<li>Ext.form.CheckboxGroup</li>
+		<ul>
+			<li>New component</li>
+		</ul>
+		<li>Ext.form.DateField</li>
+		<ul>
+			<li>New showToday config to show/hide the Today button and footer on the associated DatePicker</li>
+			<li>New methods setDisabledDates, setDisabledDays, setMinValue and setMaxValue</li>
+		</ul>
+		<li>Ext.form.Field</li>
+		<ul>
+			<li>Fix to prevent initializing the data value to emptyText</li>
+			<li>Fix to preserve the originalValue on init</li>
+			<li>Fix for odd FF/Win issue when changing OS window focus that disabled editing</li>
+			<li>Change to default error messages to basic tooltips if no field container el is available</li>
+		</ul>
+		<li>Ext.form.FormPanel</li>
+		<ul>
+			<li>Change to make the form tag into the panel's body element</li>
+		</ul>
+		<li>Ext.form.HtmlEditor</li>
+		<ul>
+			<li>Scoped disabling the font, link, lists and source edit buttons to Safari2 only (Safari3 is OK)</li>
+			<li>Various fixes to improve initialization</li>
+			<li>Fix to prevent multiple event handlers from being setup (resolved double line break issue in IE)</li>
+			<li>Fixed issue of IE allowing toolbar commands to apply to content outside the editor body</li>
+		</ul>
+		<li>Ext.form.Label</li>
+		<ul>
+			<li>Added setText method</li>
+		</ul>
+		<li>Ext.form.TextArea</li>
+		<ul>
+			<li>Fixed onKeyUp not calling its superclass method</li>
+		</ul>
+		<li>Ext.form.TimeField</li>
+		<ul>
+			<li>Fix for broken field on DST boundary dates</li>
+		</ul>
+		<li>Ext.form.TriggerField</li>
+		<ul>
+			<li>Fix for trigger icon alignment to field in IE</li>
+			<li>Fixed missing scope to properly remove the document mousedown handler after mimicing blur</li>
+		</ul>
+		<li>Ext.form.Radio</li>
+		<ul>
+			<li>Completely refactored to support new visual styles</li>
+		</ul>
+		<li>Ext.form.RadioGroup</li>
+		<ul>
+			<li>New component</li>
+		</ul>
+		<li>Ext.form.TextField</li>
+		<ul>
+			<li>Fix for selectOnFocus support</li>
+			<li>Fixed broken key filtering when using maskRe in non-FF browsers</li>
+		</ul>
+		<li>Ext.grid.ColumnModel</li>
+		<ul>
+			<li>Fixed configchange event declaration name typo</li>
+		</ul>
+		<li>Ext.grid.EditorGrid</li>
+		<ul>
+			<li>Fix to align editors correctly with mixed-height row content</li>
+			<li>Fixed bug in preEditValue that prevented html decoding when needed</li>
+			<li>Added onDestroy method to clean up column model's editors on destroy</li>
+		</ul>
+		<li>Ext.grid.GridPanel</li>
+		<ul>
+			<li>New deferRowRender config</li>
+		</ul>
+		<li>Ext.grid.GridView</li>
+		<ul>
+			<li>New configs for controlling cell and row selector class and depth</li>
+			<li>Fixes to sync the invisible focus element on row add/remove actions</li>
+			<li>Moved some rendering logic to afterRender (improved performance)</li>
+		</ul>
+		<li>Ext.layout.BorderLayout</li>
+		<ul>
+			<li>Added destroy method to clean up splitbars created by layout</li>
+		</ul>
+		<li>Ext.layout.ColumnLayout</li>
+		<ul>
+			<li>Target size calculation fix for IE</li>
+		</ul>
+		<li>Ext.layoutContainerLayout</li>
+		<ul>
+			<li>Added support for subclass destroy functions</li>
+		</ul>
+		<li>Ext.menu.Item</li>
+		<ul>
+			<li>Improved tolerance for mousing from a menu to its submenu without dismissing the submenu too quickly while passing over other menu items</li>
+		</ul>
+		<li>Ext.menu.Menu</li>
+		<ul>
+			<li>New ignoreParentClicks config to ignore clicks on menu items with child menus</li>
+		</ul>
+		<li>Ext.menu.TextItem</li>
+		<ul>
+			<li>Updated constructor to support config object in addition to just text</li>
+		</ul>
+		<li>Ext.tree.TreeDragZone</li>
+		<ul>
+			<li>Fix to honor the hlDrop config on invalid drop repair</li>
+		</ul>
+		<li>Ext.tree.TreeDropZone</li>
+		<ul>
+			<li>Fixed highlight calls to check enableFx first to avoid possible errors</li>
+		</ul>
+		<li>Ext.tree.TreeEditor</li>
+		<ul>
+			<li>Fixed editor alignment to node when autoScroll is on and the node is outside the scroll area</li>
+		</ul>
+		<li>Ext.tree.TreeLoader</li>
+		<ul>
+			<li>Fixed type coercion bug in isLoading</li>
+			<li>Updated createNode to support new TreePanel.nodeTypes</li>
+		</ul>
+		<li>Ext.tree.TreeNode</li>
+		<ul>
+			<li>New getLoader method</li>
+			<li>Fixed null error in destroy when no child nodes present</li>
+		</ul>
+		<li>Ext.tree.TreeNodeUI</li>
+		<ul>
+			<li>Refactored internal support for Ext.data.Node.isExpandable</li>
+		</ul>
+		<li>Ext.tree.TreePanel</li>
+		<ul>
+			<li>Ability to specify dataUrl or a TreeLoader config in addition to a TreeLoader instance</li>
+			<li>New nodeTypes support for more flexible node declaration and creation</li>
+		</ul>
 	</ul>
-	<li>Widgets</li>
-	<ul>
-		<li>Ext.Button</li>
-		<li>Ext.ComponentMgr</li>
-		<li>Ext.CycleButton</li>
-		<li>Ext.ColorPalette</li>
-		<li>Ext.DataView</li>
-		<li>Ext.DateField</li>
-		<li>Ext.DomQuery</li>
-		<li>Ext.Editor</li>
-		<li>Ext.form package</li>
-		<ul>
-			<li>Ext.form.Action</li>
-			<li>Ext.form.BasicForm</li>
-			<li>Ext.form.Field</li>
-			<li>Ext.form.HtmlEditor</li>
-			<li>Ext.form.Label</li>		
-			<li>Ext.form.TextField</li>			
-		</ul>
-		<li>Ext.grid package</li>
-		<ul>
-			<li>Ext.grid.ColumnModel</li>
-			<li>Ext.grid.GridPanel</li>
-			<li>Ext.grid.GridView</li>
-			<li>Ext.grid.RowSelectionModel</li>
-		</ul>
-		<li>Ext.menu package</li>
-		<ul>
-			<li>Ext.menu.Item</li>
-			<li>Ext.menu.Menu</li>
-		</ul>
-		<li>Ext.MessageBox</li>
-		<li>Ext.PagingToolbar</li>
-		<li>Ext.Panel</li>
-		<li>Ext.Resizable</li>
-		<li>Ext.Slider *new*</li>
-		<li>Ext.StatusBar *new*</li>
-		<li>Ext.tree package</li>
-		<ul>
-			<li>Ext.tree.TreeNodeUI</li>
-			<li>Ext.tree.TreeSorter</li>
-		</ul>
-		<li>Ext.Window</li>
-		<li>Ext.XTemplate</li>		
-	</ul>
-	
+
 </ul>
 </body>
 </html>
