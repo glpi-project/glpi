@@ -746,7 +746,7 @@ function generate_entity($ID_entity){
 	// glpi_users
 	$FIRST["users_sadmin"]=getMaxItem("glpi_users")+1;
 	for ($i=0;$i<$MAX['users_sadmin'];$i++){
-		$query="INSERT INTO glpi_users VALUES (NULL,'sadmin$i-$ID_entity','',MD5('sadmin$i'),'sadmin$i-$ID_entity@tutu.com','tel $i','tel2 $i','mobile $i','sadmin$i name','sadmin$i firstname','0','0','fr_FR','20','1','comments $i','-1','-1',NOW(),NOW(),'0','0','0','".mt_rand(1,$MAX['user_title'])."','".mt_rand(1,$MAX['user_title'])."')";
+		$query="INSERT INTO glpi_users VALUES (NULL,'sadmin$i-$ID_entity','',MD5('sadmin$i'),'sadmin$i-$ID_entity@tutu.com','tel $i','tel2 $i','mobile $i','sadmin$i name','sadmin$i firstname','0','0','fr_FR','0','20','1','comments $i','-1','-1',NOW(),NOW(),'0','0','0','".mt_rand(1,$MAX['user_title'])."','".mt_rand(1,$MAX['user_title'])."')";
 		$DB->query($query) or die("PB REQUETE ".$query);
 		$user_id=$DB->insert_id();
 		$query="INSERT INTO glpi_users_profiles VALUES (NULL,'$user_id','4','$ID_entity','1','0');";
@@ -757,7 +757,7 @@ function generate_entity($ID_entity){
 	$LAST["users_sadmin"]=getMaxItem("glpi_users");
 	$FIRST["users_admin"]=getMaxItem("glpi_users")+1;
 	for ($i=0;$i<$MAX['users_admin'];$i++){
-		$query="INSERT INTO glpi_users VALUES (NULL,'admin$i-$ID_entity','',MD5('admin$i'),'admin$i-$ID_entity@tutu.com','tel $i','tel2 $i','mobile $i','admin$i name','admin$i firstname','0','0','fr_FR','20','1','comments $i','-1','-1',NOW(),NOW(),'0','0','0','".mt_rand(1,$MAX['user_title'])."','".mt_rand(1,$MAX['user_title'])."')";
+		$query="INSERT INTO glpi_users VALUES (NULL,'admin$i-$ID_entity','',MD5('admin$i'),'admin$i-$ID_entity@tutu.com','tel $i','tel2 $i','mobile $i','admin$i name','admin$i firstname','0','0','fr_FR','0','20','1','comments $i','-1','-1',NOW(),NOW(),'0','0','0','".mt_rand(1,$MAX['user_title'])."','".mt_rand(1,$MAX['user_title'])."')";
 		$DB->query($query) or die("PB REQUETE ".$query);
 		$user_id=$DB->insert_id();
 		$query="INSERT INTO glpi_users_profiles VALUES (NULL,'$user_id','3','$ID_entity','1','0');";
@@ -771,7 +771,7 @@ function generate_entity($ID_entity){
 	$LAST["users_admin"]=getMaxItem("glpi_users");
 	$FIRST["users_normal"]=getMaxItem("glpi_users")+1;
 	for ($i=0;$i<$MAX['users_normal'];$i++){
-		$query="INSERT INTO glpi_users VALUES (NULL,'normal$i-$ID_entity','',MD5('normal$i'),'normal$i-$ID_entity@tutu.com','tel $i','tel2 $i','mobile $i','normal$i name','normal$i firstname','0','0','fr_FR','20','1','comments $i','-1','-1',NOW(),NOW(),'0','0','0','".mt_rand(1,$MAX['user_title'])."','".mt_rand(1,$MAX['user_title'])."')";
+		$query="INSERT INTO glpi_users VALUES (NULL,'normal$i-$ID_entity','',MD5('normal$i'),'normal$i-$ID_entity@tutu.com','tel $i','tel2 $i','mobile $i','normal$i name','normal$i firstname','0','0','fr_FR','0','20','1','comments $i','-1','-1',NOW(),NOW(),'0','0','0','".mt_rand(1,$MAX['user_title'])."','".mt_rand(1,$MAX['user_title'])."')";
 		$DB->query($query) or die("PB REQUETE ".$query);
 		$user_id=$DB->insert_id();
 		$LAST["users_normal"]=$user_id;
@@ -783,7 +783,7 @@ function generate_entity($ID_entity){
 	$LAST["users_normal"]=getMaxItem("glpi_users");
 	$FIRST["users_postonly"]=getMaxItem("glpi_users")+1;
 	for ($i=0;$i<$MAX['users_postonly'];$i++){
-		$query="INSERT INTO glpi_users VALUES (NULL,'postonly$i-$ID_entity','',MD5('postonly$i'),'postonly$i-$ID_entity@tutu.com','tel $i','tel2 $i','mobile $i','postonly$i name','postonly$i firstname','0','0','fr_FR','20','1','comments $i','-1','-1',NOW(),NOW(),'0','0','0','".mt_rand(1,$MAX['user_title'])."','".mt_rand(1,$MAX['user_title'])."')";
+		$query="INSERT INTO glpi_users VALUES (NULL,'postonly$i-$ID_entity','',MD5('postonly$i'),'postonly$i-$ID_entity@tutu.com','tel $i','tel2 $i','mobile $i','postonly$i name','postonly$i firstname','0','0','fr_FR','0','20','1','comments $i','-1','-1',NOW(),NOW(),'0','0','0','".mt_rand(1,$MAX['user_title'])."','".mt_rand(1,$MAX['user_title'])."')";
 		$DB->query($query) or die("PB REQUETE ".$query);
 		$user_id=$DB->insert_id();
 		$LAST["users_postonly"]=$user_id;
