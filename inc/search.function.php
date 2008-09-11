@@ -92,7 +92,7 @@ function cleanSearchOption($type,$action='r'){
  * @return nothing
  */
 function manageGetValuesInSearch($type=0,$usesession=true,$save=true){
-	global $_GET;
+	global $_GET,$DB;
 	$tab=array();
 
 
@@ -108,6 +108,23 @@ function manageGetValuesInSearch($type=0,$usesession=true,$save=true){
 	$default_values["contains2"]=array(0=>"");
 	$default_values["type2"]="";
 	$default_values["sort"]=1;
+
+	// First view of the page : try to load a bookmark
+	if ($usesession && !isset($_SESSION['glpisearch'][$type])){
+		$query="SELECT FK_bookmark FROM glpi_display_default 
+				WHERE FK_users='".$_SESSION['glpiID']."'
+					AND device_type='$type';";
+		if ($result=$DB->query($query)){
+			if ($DB->numrows($result)>0){
+				$IDtoload=$DB->result($result,0,0);
+				// Set session variable
+				$_SESSION['glpisearch'][$type]=array();
+				// Load bookmark on main window
+				$bookmark=new Bookmark();
+				$bookmark->load($IDtoload,false);
+			}
+		}
+	}
 
 	if ($usesession&&isset($_GET["reset_before"])){
 		if (isset($_SESSION['glpisearch'][$type])){

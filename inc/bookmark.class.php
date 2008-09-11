@@ -33,6 +33,19 @@ if (!defined('GLPI_ROOT')) {
 	die("Sorry. You can't access directly to this file");
 }
 
+
+class SetupDefaultDisplay extends CommonDBTM{
+
+	/**
+	 * Constructor
+	**/
+	function SetupDefaultDisplay () {
+		$this->table="glpi_display_default";
+		$this->type=-1;
+	}
+
+}
+
 /// Bookmark class
 class Bookmark extends CommonDBTM {
 
@@ -248,9 +261,10 @@ class Bookmark extends CommonDBTM {
 	* load a bookmark
 	*
 	* @param $ID ID of the bookmark
+	* @param $opener boolean load bookmark in opener window ? false -> current window
 	* @return nothing
 	**/
-	function load($ID){
+	function load($ID,$opener=true){
 		
 		$this->getFromDB($ID);
 		$url = GLPI_ROOT."/".rawurldecode($this->fields["path"]);
@@ -258,12 +272,73 @@ class Bookmark extends CommonDBTM {
 		parse_str($this->fields["query"],$query_tab);
 		$params=$this->prepareQueryToUse($this->fields["type"],$query_tab);
 		$url.="?".append_params($params);
-		echo "<script type='text/javascript' >\n";
-			echo "window.opener.location.href='$url';";
-			//echo "window.close();";
-		echo "</script>";
+		if ($opener){
+			echo "<script type='text/javascript' >\n";
+				echo "window.opener.location.href='$url';";
+				//echo "window.close();";
+			echo "</script>";
+		} else {
+			glpi_header($url);
+		}
 	}
 	
+	/**
+	* Mark bookmark as default view for the currect user
+	*
+	* @param $ID ID of the bookmark
+	* @return nothing
+	**/	
+	function mark_default($ID){
+		global $DB;
+		
+		// Get bookmark / Only search bookmark
+		if ($this->getFromDB($ID) && $this->fields['type']=BOOKMARK_SEARCH){
+			$dd=new SetupDefaultDisplay();
+			// Is default view for this device_type already exists ?
+			$query="SELECT ID FROM glpi_display_default 
+				WHERE FK_users='".$_SESSION['glpiID']."'
+					AND device_type='".$this->fields['device_type']."'";
+			if ($result=$DB->query($query)){
+				if ($DB->numrows($result) > 0){
+					// already exists update it
+					$updateID=$DB->result($result,0,0);
+					$dd->update(array('ID'=>$updateID,'FK_bookmark'=>$ID));
+				} else {
+					$dd->add(array('FK_bookmark'=>$ID,'FK_users'=>$_SESSION['glpiID'],'device_type'=>$this->fields['device_type']));
+				}
+			}
+			
+		}
+	}
+
+	/**
+	* Mark bookmark as default view for the currect user
+	*
+	* @param $ID ID of the bookmark
+	* @return nothing
+	**/	
+	function unmark_default($ID){
+		global $DB;
+		
+		// Get bookmark / Only search bookmark
+		if ($this->getFromDB($ID) && $this->fields['type']=BOOKMARK_SEARCH){
+			$dd=new SetupDefaultDisplay();
+			// Is default view for this device_type already exists ?
+			$query="SELECT ID FROM glpi_display_default 
+				WHERE FK_users='".$_SESSION['glpiID']."'
+					AND FK_bookmark='$ID'
+					AND device_type='".$this->fields['device_type']."'";
+			if ($result=$DB->query($query)){
+				if ($DB->numrows($result) > 0){
+					// already exists delete it
+					$deleteID=$DB->result($result,0,0);
+					$dd->delete(array('ID'=>$deleteID));
+				} 
+			}
+			
+		}
+	}
+
 	/**
 	* Show bookmarks list
 	*
@@ -278,12 +353,15 @@ class Bookmark extends CommonDBTM {
 			return false;
 		}
 	
-		$query="SELECT * FROM ".$this->table." WHERE ";
+		$query="SELECT ".$this->table.".*, glpi_display_default.ID AS IS_DEFAULT FROM ".$this->table." 
+			LEFT JOIN glpi_display_default 
+				ON (".$this->table.".device_type = glpi_display_default.device_type AND ".$this->table.".ID = glpi_display_default.FK_bookmark) 
+			WHERE ";
 			
 		if ($private){
-			$query.="(private=1 AND FK_users='".$_SESSION['glpiID']."') ";
+			$query.="(".$this->table.".private=1 AND ".$this->table.".FK_users='".$_SESSION['glpiID']."') ";
 		} else {
-			$query.="(private=0  ".getEntitiesRestrictRequest("AND",$this->table,"","",true) . ")";
+			$query.="(".$this->table.".private=0  ".getEntitiesRestrictRequest("AND",$this->table,"","",true) . ")";
 		}
 			
 		$query.=" ORDER BY device_type,name";
@@ -304,8 +382,10 @@ class Bookmark extends CommonDBTM {
 	
 	
 			echo "<table class='tab_cadrehov'>";
-			echo "<tr><th align='center' colspan='3'>".$LANG["buttons"][52]." ".$LANG["bookmark"][1]."</th><th width='20px'>&nbsp;</th>";
-	
+			echo "<tr><th align='center' colspan='3'>".$LANG["buttons"][52]." ".$LANG["bookmark"][1]."</th>";
+			echo "<th width='20px'>&nbsp;</th>";
+			echo "<th>".$LANG["bookmark"][6]."</th>";
+			echo "</tr>";
 			
 			if( $DB->numrows($result)){
 				$ci=new CommonItem();
@@ -338,6 +418,16 @@ class Bookmark extends CommonDBTM {
 					} else {
 						echo "<td>&nbsp;</td>";					
 					}
+					echo "<td align='center'>";
+					if ($this->fields['type']==BOOKMARK_SEARCH){
+						if (is_null($this->fields['IS_DEFAULT'])){
+							echo "<a href=\"".GLPI_ROOT."/front/popup.php?popup=edit_bookmark&amp;mark_default=1&amp;ID=".$this->fields["ID"]."\">".$LANG["choice"][0]."</a>";;
+						} else {
+							echo "<a href=\"".GLPI_ROOT."/front/popup.php?popup=edit_bookmark&amp;mark_default=0&amp;ID=".$this->fields["ID"]."\">".$LANG["choice"][1]."</a>";;
+						}
+					}
+					echo "</td>";
+
 					echo "</tr>";
 				}
 				echo "</table>";

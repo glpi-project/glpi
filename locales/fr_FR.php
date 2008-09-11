@@ -49,6 +49,7 @@ $LANG["bookmark"][1]="marque-page";
 $LANG["bookmark"][3]="Vous n'avez pas encore enregistré de marque-pages.";
 $LANG["bookmark"][4]="Nouveau marque-page";
 $LANG["bookmark"][5]="Marque-page publics";
+$LANG["bookmark"][6]="Vue principale";
 
 
 

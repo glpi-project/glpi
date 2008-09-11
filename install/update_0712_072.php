@@ -499,6 +499,7 @@ function update0712to072() {
 		$DB->query($query) or die("0.72 update data for infocom in profiles " . $LANG["update"][90] . $DB->error());
 	}
 
+	// Debug mode in user pref to allow debug in production environment
 	if (FieldExists("glpi_config","debug")){
 		$query="ALTER TABLE `glpi_config` DROP `debug`";
 		$DB->query($query) or die("0.72 drop debug mode in config " . $LANG["update"][90] . $DB->error());
@@ -508,6 +509,20 @@ function update0712to072() {
 		$DB->query($query) or die("0.72 create use_mode in glpi_users " . $LANG["update"][90] . $DB->error());
 	}
 
+	// Default bookmark as default view
+	if (!TableExists("glpi_display_default")) {
+
+		$query="CREATE TABLE IF NOT EXISTS `glpi_display_default` (
+				`ID` int(11) NOT NULL auto_increment,
+				`FK_users` int(11) NOT NULL,
+				`device_type` int(11) NOT NULL,
+				`FK_bookmark` int(11) NOT NULL,
+				PRIMARY KEY  (`ID`),
+				UNIQUE KEY `FK_users` (`FK_users`,`device_type`)
+				) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci ;";
+		
+		$DB->query($query) or die("0.72 create table glpi_display_default " . $LANG["update"][90] . $DB->error());
+	}
 
 } // fin 0.72 #####################################################################################
 ?>

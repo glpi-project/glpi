@@ -86,7 +86,16 @@ if (isset($_POST["add"])){
 switch($_GET["action"]){
 	case "edit" :
 		if ($_GET['ID']>0){
-			$bookmark->showForm($_SERVER['PHP_SELF'],$_GET["ID"]);
+			if (isset($_GET['mark_default'])){
+				if ($_GET['mark_default']){
+					$bookmark->mark_default($_GET["ID"]);
+				} else {
+					$bookmark->unmark_default($_GET["ID"]);
+				}
+				$bookmark->showBookmarkList($_SERVER['PHP_SELF'],$_SESSION["glpi_viewbookmark"]);
+			} else {
+				$bookmark->showForm($_SERVER['PHP_SELF'],$_GET["ID"]);
+			}
 		} else  {
 			$bookmark->showForm($_SERVER['PHP_SELF'],$_GET["ID"],$_GET["type"],rawurldecode($_GET["url"]),$_GET["device_type"]);	
 		}
