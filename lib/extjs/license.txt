@@ -11,11 +11,23 @@ Ext is licensed under the terms of the Open Source GPL 3.0 license.
 
 http://www.gnu.org/licenses/gpl.html
 
+There are several FLOSS exceptions available for use with this release for
+open source applications that are distributed under a license other than the GPL.
+
+* Open Source License Exception for Applications
+
+  http://extjs.com/products/floss-exception.php
+
+* Open Source License Exception for Development
+
+  http://extjs.com/products/ux-exception.php
+
 
 Commercial License
 ------------------------------------------------------------------------------------------
-If you are using this library for commercial purposes, we encourage you to purchase
-a commercial license. Please visit http://extjs.com/license for more details.
+This is the appropriate option if you are creating proprietary applications and you are 
+not prepared to distribute and share the source code of your application under the 
+GPL v3 license. Please visit http://extjs.com/license for more details.
 
 
 OEM / Reseller License
