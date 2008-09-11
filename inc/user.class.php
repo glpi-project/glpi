@@ -313,6 +313,11 @@ class User extends CommonDBTM {
 		if (in_array("language", $updates) && isset ($input["ID"])) {
 			cleanCache("GLPI_HEADER_".$input["ID"]);
 		}
+		if ($_SESSION["glpiID"] == $input['ID']
+			&& in_array('use_mode',$updates)) {
+			$_SESSION['glpi_use_mode']=$input['use_mode'];
+		} 
+
 	}
 
 	// SPECIFIC FUNCTIONS
@@ -1007,7 +1012,7 @@ class User extends CommonDBTM {
 				echo "<tr class='tab_bg_1'><td class='center'>" . $LANG["setup"][19] . "</td><td><input type='password' name='password' value='' size='30' /></td></tr>";
 			}
 
-			if ($CFG_GLPI["debug"] != DEMO_MODE || haveRight("config", 1)) {
+			if (! GLPI_DEMO_MODE || haveRight("config", 1)) {
 				echo "<tr class='tab_bg_1'><td class='center'>" . $LANG["setup"][41] . "</td><td>";
 				dropdownLanguages("language", $_SESSION["glpilanguage"]);
 				echo "</td></tr>";
@@ -1090,6 +1095,17 @@ class User extends CommonDBTM {
 				echo "</td></tr>";
 			}
 			
+			if (haveRight("config", "w")){
+				echo "<tr class='tab_bg_1'>";
+			
+				echo "<td class='center'>" . $LANG["setup"][138] . " </td><td><select name=\"use_mode\">";
+				echo "<option value=\"" . NORMAL_MODE . "\" " . ($this->fields["use_mode"] == NORMAL_MODE ? " selected " : "") . " >" . $LANG["setup"][135] . " </option>";
+				echo "<option value=\"" . TRANSLATION_MODE . "\" " . ($this->fields["use_mode"] == TRANSLATION_MODE ? " selected " : "") . " >" . $LANG["setup"][136] . " </option>";
+				echo "<option value=\"" . DEBUG_MODE . "\" " . ($this->fields["use_mode"] == DEBUG_MODE ? " selected " : "") . " >" . $LANG["setup"][137] . " </option>";
+				echo "</select></td>";
+				echo "</tr>";
+			}
+
 			echo "<tr>";
 			echo "<td class='tab_bg_2' valign='top' align='center' colspan='2'>";
 			echo "<input type='submit' name='update' value=\"" . $LANG["buttons"][7] . "\" class='submit' >";
@@ -1108,6 +1124,7 @@ class User extends CommonDBTM {
 	function getAuthMethodsByID() {
 		return getAuthMethodsByID($this->fields["auth_method"], $this->fields["id_auth"]);
 	}
+
 
 	function pre_updateInDB($input,$updates) {
 		

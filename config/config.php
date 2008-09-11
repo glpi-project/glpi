@@ -71,9 +71,11 @@
 		// ********************options d'installation statiques*********************
 		// ***********************************************************************		
 
-		//Options gerees dynamiquement, ne pas toucher cette partie.
 		//Options from DB, do not touch this part.
-		$CFG_GLPI["debug"]=$CFG_GLPI["debug_sql"]=$CFG_GLPI["debug_vars"]=$CFG_GLPI["debug_profile"]=$CFG_GLPI["debug_lang"]=0;
+		if (!isset($_SESSION['glpi_use_mode'])){
+			$_SESSION['glpi_use_mode']=NORMAL_MODE;
+		}
+
 		$config_object=new Config();
 	
 		if($config_object->getFromDB(1)){
@@ -98,16 +100,6 @@
 			$CFG_GLPI["typedoc_icon_dir"] = GLPI_ROOT."/pics/icones";
 
 
-			// *************************** Mode NORMAL / TRALATION /DEBUG  **********************
-			// *********************************************************************************
-	
-			// Mode debug ou traduction
-			//$CFG_GLPI["debug"]=DEBUG_MODE;
-			$CFG_GLPI["debug_sql"]=($CFG_GLPI["debug"]==DEBUG_MODE?1:0); // affiche les requetes
-			$CFG_GLPI["debug_vars"]=($CFG_GLPI["debug"]==DEBUG_MODE?1:0); // affiche les variables
-			$CFG_GLPI["debug_profile"]=($CFG_GLPI["debug"]==DEBUG_MODE?1:0); // Profile les requetes
-			$CFG_GLPI["debug_lang"]=($CFG_GLPI["debug"]==TRANSLATION_MODE?1:0); // affiche les variables de trads
-	
 		} else {
 			echo "Error accessing config table";
 			exit();
@@ -131,8 +123,8 @@
 		$CFG_GLPI["cache"]=$GLPI_CACHE;
 
 	
-		// Mode debug activé on affiche un certains nombres d'informations
-		if ($CFG_GLPI["debug"]==DEBUG_MODE){
+		// If debug mode activated : display some informations
+		if ($_SESSION['glpi_use_mode']==DEBUG_MODE){
 			ini_set('display_errors','On'); 
 			error_reporting(E_ALL); 
 			//ini_set('error_prepend_string','<div style="position:fload-left; background-color:red; z-index:10000">PHP ERROR : '); 

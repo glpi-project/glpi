@@ -67,15 +67,11 @@ include_once (GLPI_ROOT . "/inc/plugin.function.php");
 // Load Language file
 loadLanguage();
 
-if ($CFG_GLPI["debug"]){
-	if ($CFG_GLPI["debug_profile"]){		
-		$SQL_TOTAL_REQUEST=0;
-	}
-	if ($CFG_GLPI["debug_sql"]){		
-		$DEBUG_SQL["queries"]=array();
-		$DEBUG_SQL["errors"]=array();
-		$DEBUG_SQL["times"]=array();
-	}
+if ($_SESSION['glpi_use_mode']==DEBUG_MODE){
+	$SQL_TOTAL_REQUEST=0;
+	$DEBUG_SQL["queries"]=array();
+	$DEBUG_SQL["errors"]=array();
+	$DEBUG_SQL["times"]=array();
 }
 
 

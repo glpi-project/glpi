@@ -38,10 +38,7 @@ $NEEDED_ITEMS=array("ocsng","user");
 include (GLPI_ROOT . "/inc/includes.php");
 
 // Force in normal mode
-if ($CFG_GLPI["debug"]!=NORMAL_MODE){
-	$CFG_GLPI["debug"]=NORMAL_MODE;
-	restore_error_handler();
-} 
+$_SESSION['glpi_use_mode']=NORMAL_MODE;
 
 // Need to be used using :
 // check_http -H servername -u /glpi/status.php -s GLPI_OK

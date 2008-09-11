@@ -87,7 +87,7 @@ function includeCommonHtmlHeader($title=''){
 //	echo "<script type=\"text/javascript\" src='".$CFG_GLPI["root_doc"]."/lib/extjs/adapter/prototype/scriptaculous.js?load=effects,controls'></script>\n";
 //	echo "<script type=\"text/javascript\" src='".$CFG_GLPI["root_doc"]."/lib/extjs/adapter/prototype/ext-prototype-adapter.js'></script>\n";
 	echo "<script type=\"text/javascript\" src='".$CFG_GLPI["root_doc"]."/lib/extjs/adapter/ext/ext-base.js'></script>\n";
-	if ($CFG_GLPI["debug"]==DEBUG_MODE){
+	if ($_SESSION['glpi_use_mode']==DEBUG_MODE){
 		echo "<script type=\"text/javascript\" src='".$CFG_GLPI["root_doc"]."/lib/extjs/ext-all-debug.js'></script>\n";
 	} else {
 		echo "<script type=\"text/javascript\" src='".$CFG_GLPI["root_doc"]."/lib/extjs/ext-all.js'></script>\n";
@@ -1427,14 +1427,14 @@ function commonFooter($keepDB=false) {
 
 
 
-	if ($CFG_GLPI["debug"]==1){ // debug mode traduction
+	if ($_SESSION['glpi_use_mode']==TRANSLATION_MODE){ // debug mode traduction
 
 		echo "<div id='debug-float'>";		
 		echo "<a href='#see_debug'>GLPI MODE TRANSLATION</a>";
 		echo "</div>";
 	}
 
-	if ($CFG_GLPI["debug"]==2){ // mode debug 
+	if ($_SESSION['glpi_use_mode']==DEBUG_MODE){ // mode debug 
 
 		echo "<div id='debug-float'>";		
 		echo "<a href='#see_debug'>GLPI MODE DEBUG</a>";
@@ -1445,45 +1445,43 @@ function commonFooter($keepDB=false) {
 		echo "<div id='debug'>";
 		echo "<h1><a id='see_debug' name='see_debug'>GLPI MODE DEBUG</a></h1>";
 		
-		if ($CFG_GLPI["debug_sql"]){	
-			echo "<h2>SQL REQUEST : ";
+		echo "<h2>SQL REQUEST : ";
 			
-			echo $SQL_TOTAL_REQUEST." Queries ";
-			if ($CFG_GLPI["debug_profile"]){
-				echo "took  ".array_sum($DEBUG_SQL['times'])."s  </h2>";
-			}
+		echo $SQL_TOTAL_REQUEST." Queries ";
+		echo "took  ".array_sum($DEBUG_SQL['times'])."s  </h2>";
 
-			echo "<table class='tab_cadre' ><tr><th>N&#176; </th><th>Queries</th><th>Time</th><th>Errors</th></tr>";
+		echo "<table class='tab_cadre' ><tr><th>N&#176; </th><th>Queries</th><th>Time</th><th>Errors</th></tr>";
 
-			foreach ($DEBUG_SQL['queries'] as $num => $query){
-				echo "<tr class='tab_bg_".(($num%2)+1)."'><td>$num</td><td>";
-				echo eregi_replace("ORDER BY","<br>ORDER BY",eregi_replace("SORT","<br>SORT",eregi_replace("LEFT JOIN","<br>LEFT JOIN",eregi_replace("INNER JOIN","<br>INNER JOIN",eregi_replace("WHERE","<br>WHERE",eregi_replace("FROM","<br>FROM",eregi_replace("UNION","<br>UNION<br>",eregi_replace(">","&gt;",eregi_replace("<","&lt;",$query)))))))));
-				echo "</td><td>";
-				echo $DEBUG_SQL['times'][$num];
-				echo "</td><td>";
-				if (isset($DEBUG_SQL['errors'][$num])){
-					echo $DEBUG_SQL['errors'][$num];
-				} else {
-					echo "&nbsp;";
-				}
-				echo "</td></tr>";
+		foreach ($DEBUG_SQL['queries'] as $num => $query){
+			echo "<tr class='tab_bg_".(($num%2)+1)."'><td>$num</td><td>";
+			echo eregi_replace("ORDER BY","<br>ORDER BY",
+				eregi_replace("SORT","<br>SORT",
+				eregi_replace("LEFT JOIN","<br>LEFT JOIN",
+				eregi_replace("INNER JOIN","<br>INNER JOIN",
+				eregi_replace("WHERE","<br>WHERE",
+				eregi_replace("FROM","<br>FROM",
+				eregi_replace("UNION","<br>UNION<br>",
+				eregi_replace(">","&gt;",
+				eregi_replace("<","&lt;",$query)))))))));
+			echo "</td><td>";
+			echo $DEBUG_SQL['times'][$num];
+			echo "</td><td>";
+			if (isset($DEBUG_SQL['errors'][$num])){
+				echo $DEBUG_SQL['errors'][$num];
+			} else {
+				echo "&nbsp;";
 			}
-			echo "</table>";
-			
-			// Reset, as further request will not be displayed
-			$CFG_GLPI["debug_sql"]=false;
+			echo "</td></tr>";
 		}
+		echo "</table>";		
 		
 		
-		
-		if ($CFG_GLPI["debug_vars"]){
-			echo "<h2>POST VARIABLE</h2>";
-			printCleanArray($_POST);
-			echo "<h2>GET VARIABLE</h2>";
-			printCleanArray($_GET);
-			echo "<h2>SESSION VARIABLE</h2>";
-			printCleanArray($_SESSION);
-		}
+		echo "<h2>POST VARIABLE</h2>";
+		printCleanArray($_POST);
+		echo "<h2>GET VARIABLE</h2>";
+		printCleanArray($_GET);
+		echo "<h2>SESSION VARIABLE</h2>";
+		printCleanArray($_SESSION);
 		
 		
 		

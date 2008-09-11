@@ -68,10 +68,6 @@ class glpi_phpmailer extends phpmailer {
 				$this->Password  =  $CFG_GLPI['smtp_password'];
 			}
 
-			/*if($CFG_GLPI['debug']=="2"){
-				$this->SMTPDebug    = TRUE;
-			}*/
-
 			$this->Mailer = "smtp";
 		}
 
