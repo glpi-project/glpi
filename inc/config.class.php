@@ -201,12 +201,7 @@ class Config extends CommonDBTM {
 			
 				echo "<tr class='tab_bg_2'>";
 			
-				echo "<td class='center'>" . $LANG["setup"][138] . " </td><td><select name=\"debug\">";
-				echo "<option value=\"" . NORMAL_MODE . "\" " . ($CFG_GLPI["debug"] == NORMAL_MODE ? " selected " : "") . " >" . $LANG["setup"][135] . " </option>";
-				echo "<option value=\"" . TRANSLATION_MODE . "\" " . ($CFG_GLPI["debug"] == TRANSLATION_MODE ? " selected " : "") . " >" . $LANG["setup"][136] . " </option>";
-				echo "<option value=\"" . DEBUG_MODE . "\" " . ($CFG_GLPI["debug"] == DEBUG_MODE ? " selected " : "") . " >" . $LANG["setup"][137] . " </option>";
-				echo "<option value=\"" . DEMO_MODE . "\" " . ($CFG_GLPI["debug"] == DEMO_MODE ? " selected " : "") . " >" . $LANG["setup"][141] . " </option>";
-				echo "</select></td>";
+				echo "<td class='center' colspan='2'>&nbsp;</td>";
 	
 				echo "<td class='center'> " . $LANG["setup"][185] . " </td><td>";
 				dropdownYesNo("use_errorlog", $CFG_GLPI["use_errorlog"]);

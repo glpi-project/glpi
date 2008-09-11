@@ -2,6 +2,7 @@
 
 	// Current version of GLPI
 	define("GLPI_VERSION","0.72");
+	define("GLPI_DEMO_MODE","0");
 
 	// dicts
 	// dictionnaires
@@ -100,7 +101,6 @@
 	define("NORMAL_MODE",0);
 	define("TRANSLATION_MODE",1);
 	define("DEBUG_MODE",2);
-	define("DEMO_MODE",3);
 
 	// DEVICE TYPE
 	define("MOBOARD_DEVICE",1);

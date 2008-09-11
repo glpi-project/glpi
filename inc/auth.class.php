@@ -344,6 +344,7 @@ class Identification {
 					$_SESSION["glpisearchcount2"] = array ();
 					$_SESSION["glpiroot"] = $CFG_GLPI["root_doc"];
 					$_SESSION["glpilist_limit"] = $this->user->fields['list_limit'];
+					$_SESSION["glpi_use_mode"] = $this->user->fields['use_mode'];
 					$_SESSION["glpicrontimer"] = time();
 					// Default tab
 					$_SESSION['glpi_tab']=1;

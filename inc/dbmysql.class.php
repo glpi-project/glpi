@@ -92,16 +92,12 @@ class DBmysql {
 	function query($query) {
 		global $CFG_GLPI,$DEBUG_SQL,$SQL_TOTAL_REQUEST;
 
-		if ($CFG_GLPI["debug"]) {
-			if ($CFG_GLPI["debug_sql"]){		
-				$SQL_TOTAL_REQUEST++;
-				$DEBUG_SQL["queries"][$SQL_TOTAL_REQUEST]=$query;
+		if ($_SESSION['glpi_use_mode']==DEBUG_MODE) {
+			$SQL_TOTAL_REQUEST++;
+			$DEBUG_SQL["queries"][$SQL_TOTAL_REQUEST]=$query;
 
-				if ($CFG_GLPI["debug_profile"]){		
-					$TIMER=new Script_Timer;
-					$TIMER->Start_Timer();
-				}
-			}
+			$TIMER=new Script_Timer;
+			$TIMER->Start_Timer();
 		}
 
 		//mysql_ping($this->dbh);
@@ -128,18 +124,16 @@ class DBmysql {
 				}
 				$error .= $_SERVER["SCRIPT_FILENAME"]. "\n";
 				logInFile("sql-errors",$error);
-		
-				if ($CFG_GLPI["debug"]&&$CFG_GLPI["debug_sql"]){
+				
+				if ($_SESSION['glpi_use_mode']==DEBUG_MODE){
 					$DEBUG_SQL["errors"][$SQL_TOTAL_REQUEST]=$this->error();
 				}
 			}
 		}
 
-		if ($CFG_GLPI["debug"]) {
-			if ($CFG_GLPI["debug_profile"]&&$CFG_GLPI["debug_sql"]){		
-				$TIME=$TIMER->Get_Time();
-				$DEBUG_SQL["times"][$SQL_TOTAL_REQUEST]=$TIME;
-			}
+		if ($_SESSION['glpi_use_mode']==DEBUG_MODE) {
+			$TIME=$TIMER->Get_Time();
+			$DEBUG_SQL["times"][$SQL_TOTAL_REQUEST]=$TIME;
 		}
 
 		return $res;

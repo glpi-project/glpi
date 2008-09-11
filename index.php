@@ -148,7 +148,7 @@ else
 
 	echo "</div>"; // fin contenu login
 
-	if ($CFG_GLPI["debug"]==DEMO_MODE){
+	if (GLPI_DEMO_MODE){
 		echo "<div align='center'";
 
 		$query="SELECT count(*) 
@@ -180,7 +180,7 @@ else
 
 }
 // Appel de cron
-if ($CFG_GLPI["debug"]!=DEMO_MODE){
+if (! GLPI_DEMO_MODE){
 	callCronForce();
 }
 

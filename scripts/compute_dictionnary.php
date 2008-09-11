@@ -59,7 +59,8 @@ $NEEDED_ITEMS=array(
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-$CFG_GLPI["debug"]=0;
+// No debug mode
+$_SESSION['glpi_use_mode']==NORMAL_MODE;
 
 if (isset($_GET["dictionnary"]))
 {

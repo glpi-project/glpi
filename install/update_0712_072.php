@@ -485,23 +485,28 @@ function update0712to072() {
 	if (!FieldExists("glpi_config","existing_auth_server_field_clean_domain")) {
 		$query = "ALTER TABLE `glpi_config` ADD `existing_auth_server_field_clean_domain` SMALLINT NOT NULL DEFAULT '0' AFTER `existing_auth_server_field`;";
 
-		$DB->query($query) or die("0.71 alter config add existing_auth_server_field_clean_domain " . $LANG["update"][90] . $DB->error());
+		$DB->query($query) or die("0.72 alter config add existing_auth_server_field_clean_domain " . $LANG["update"][90] . $DB->error());
 	}
 
 	if (FieldExists("glpi_profiles","contract_infocom")){
 		$query = "ALTER TABLE `glpi_profiles` CHANGE `contract_infocom` `contract` CHAR( 1 ) NULL DEFAULT NULL ;";
-		$DB->query($query) or die("0.71 alter profiles rename contract_infocom to contract " . $LANG["update"][90] . $DB->error());
+		$DB->query($query) or die("0.72 alter profiles rename contract_infocom to contract " . $LANG["update"][90] . $DB->error());
 
 		$query = "ALTER TABLE `glpi_profiles` ADD `infocom` CHAR( 1 ) NULL DEFAULT NULL AFTER `contract` ;";
-		$DB->query($query) or die("0.71 alter profiles create infocom " . $LANG["update"][90] . $DB->error());
+		$DB->query($query) or die("0.72 alter profiles create infocom " . $LANG["update"][90] . $DB->error());
 
 		$query = "UPDATE glpi_profiles SET `infocom`=`contract`;";
-		$DB->query($query) or die("0.71 update data for infocom in profiles " . $LANG["update"][90] . $DB->error());
+		$DB->query($query) or die("0.72 update data for infocom in profiles " . $LANG["update"][90] . $DB->error());
 	}
 
-
-		 
-
+	if (FieldExists("glpi_config","debug")){
+		$query="ALTER TABLE `glpi_config` DROP `debug`";
+		$DB->query($query) or die("0.72 drop debug mode in config " . $LANG["update"][90] . $DB->error());
+	}
+	if (!FieldExists("glpi_users","use_mode")){
+		$query="ALTER TABLE `glpi_users` ADD `use_mode` SMALLINT NOT NULL DEFAULT '0' AFTER `language` ;";
+		$DB->query($query) or die("0.72 create use_mode in glpi_users " . $LANG["update"][90] . $DB->error());
+	}
 
 
 } // fin 0.72 #####################################################################################

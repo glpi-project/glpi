@@ -210,7 +210,7 @@ if (!isset ($_POST["noAUTO"]) && $auth_method=checkAlternateAuthSystems()) {
 	// now we can continue with the process...
 	if ($identificat->auth_succeded) {
 		// Log Event
-		if ($CFG_GLPI["debug"] == DEMO_MODE){
+		if (GLPI_DEMO_MODE){
 			logEvent("-1", "system", 3, "login", $_POST['login_name'] . " logged in." . $LANG["log"][40] . " : " . $ip);
 		} else {
 			logEvent("-1", "system", 3, "login", $_POST['login_name'] . " " . $LANG["log"][40] . " : " . $ip);
@@ -236,7 +236,7 @@ if (!isset ($_POST["noAUTO"]) && $auth_method=checkAlternateAuthSystems()) {
 		nullHeader("Login", $_SERVER['PHP_SELF']);
 		echo '<div align="center"><b>' . $identificat->getErr() . '</b><br><br>';
 		echo '<b><a href="' . $CFG_GLPI["root_doc"] . '/logout.php">' . $LANG["login"][1] . '</a></b></div>';
-		if ($CFG_GLPI["debug"] == DEMO_MODE){
+		if (GLPI_DEMO_MODE){
 			logEvent(-1, "system", 1, "login", "failed login: " . $_POST['login_name'] . "  ($ip)");
 		} else {
 			logEvent(-1, "system", 1, "login", $LANG["log"][41] . ": " . $_POST['login_name'] . " ($ip)");
