@@ -313,7 +313,7 @@ class User extends CommonDBTM {
 		if (in_array("language", $updates) && isset ($input["ID"])) {
 			cleanCache("GLPI_HEADER_".$input["ID"]);
 		}
-		if ($_SESSION["glpiID"] == $input['ID']
+		if (isset($_SESSION["glpiID"]) && $_SESSION["glpiID"] == $input['ID']
 			&& in_array('use_mode',$updates)) {
 			$_SESSION['glpi_use_mode']=$input['use_mode'];
 		} 
