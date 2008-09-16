@@ -367,4 +367,8 @@
 
 	$CFG_GLPI["recursive_type"]=array(CONTACT_TYPE=>"glpi_contacts", ENTERPRISE_TYPE=>"glpi_enterprises", CONTRACT_TYPE=>"glpi_contracts", 
 		DOCUMENT_TYPE=>"glpi_docs", KNOWBASE_TYPE=>"glpi_kbitems", NETWORKING_TYPE => "glpi_networking", GROUP_TYPE => "glpi_groups");
+		
+	// New config options which can be missing during migration
+	$CFG_GLPI["numberformat"]=0;
+	$CFG_GLPI["decimal_number"]=2;
 ?>
