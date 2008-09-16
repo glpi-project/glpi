@@ -494,7 +494,6 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 	// Define meta table where search must be done in HAVING clause
 	$META_SPECIF_TABLE=array("glpi_device_ram","glpi_device_hdd","glpi_device_processor","glpi_tracking");
 
-	/// TODO : Use commonItem ?
 	$names=array(
 			COMPUTER_TYPE => $LANG["Menu"][0],
 			//		NETWORKING_TYPE => $LANG["Menu"][1],
@@ -825,51 +824,18 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 	//// 7 - Manage GROUP BY
 	$GROUPBY="";
 	// Meta Search / Search All / Count tickets
-	if ($_SESSION["glpisearchcount2"][$type]>0||count($SEARCH_ALL)>0||in_array(60,$toview)){
+	if ($_SESSION["glpisearchcount2"][$type]>0){
 		$GROUPBY=" GROUP BY $itemtable.ID";
 	}
 
-	/// TODO to review Manage it using forceGroupBy
-	// GROUP BY plugin case : force group by
-	if (empty($GROUPBY)){
-		if ($type>1000){
-			if (isset($PLUGIN_HOOKS['plugin_types'][$type])){
-				$function='plugin_'.$PLUGIN_HOOKS['plugin_types'][$type].'_forceGroupBy';
-				if (function_exists($function)){
-					if ($function($type)){
-						$GROUPBY=" GROUP BY $itemtable.ID";
-					}
-				}
-			}
-		} else { // CORE type : display a plugin item needed forcegroupby ?
-			foreach ($toview as $key2 => $val2){
-				if ($val2>1000 && isset($SEARCH_OPTION[$type][$val2]["forcegroupby"])){
-					$GROUPBY=" GROUP BY $itemtable.ID";
-				}
-			}
-		}
-
-	}
-
-	/// TODO to delete Manage it using forceGroupBy
-	// Specific case of group by : multiple links with the reference table
 	if (empty($GROUPBY)){
 		foreach ($toview as $key2 => $val2){
-			if (empty($GROUPBY)&&(($val2=="all")
-						||($type==COMPUTER_TYPE&&ereg("glpi_device",$SEARCH_OPTION[$type][$val2]["table"]))
-						||(ereg("glpi_contracts",$SEARCH_OPTION[$type][$val2]["table"]))
-						||($SEARCH_OPTION[$type][$val2]["table"]=="glpi_softwareversions")
-						||($SEARCH_OPTION[$type][$val2]["table"]=="glpi_networking_ports")
-						||($SEARCH_OPTION[$type][$val2]["table"]=="glpi_dropdown_netpoint")
-						||($SEARCH_OPTION[$type][$val2]["table"]=="glpi_registry")
-						||($SEARCH_OPTION[$type][$val2]["table"]=="glpi_computerdisks")
-						||($SEARCH_OPTION[$type][$val2]["table"]=="glpi_dropdown_filesystems")
-						||($type==USER_TYPE)
-						||($type==CONTACT_TYPE&&$SEARCH_OPTION[$type][$val2]["table"]=="glpi_enterprises")
-						||($type==ENTERPRISE_TYPE&&$SEARCH_OPTION[$type][$val2]["table"]=="glpi_contacts")
-					     )) 
-
-				$GROUPBY=" GROUP BY $itemtable.ID ";
+			if (!empty($GROUPBY)){
+				break;
+			}
+			if (isset($SEARCH_OPTION[$type][$val2]["forcegroupby"]) && $SEARCH_OPTION[$type][$val2]["forcegroupby"]){
+				$GROUPBY=" GROUP BY $itemtable.ID";
+			}
 		}
 	}
 
@@ -1409,6 +1375,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
  *@return select string
  *
  **/
+/// TODO make addGroupByHaving function with type and ID params
 function addGroupByHaving($GROUPBY,$field,$val,$num,$meta=0,$link=""){
 
 	$NOT=0;
@@ -1422,7 +1389,8 @@ function addGroupByHaving($GROUPBY,$field,$val,$num,$meta=0,$link=""){
 	$NAME="ITEM_";
 	if ($meta) $NAME="META_";
 
-	if (!ereg("GROUP BY ID",$GROUPBY)) $GROUPBY=" GROUP BY ID ";
+	// Not to be done here
+//	if (!ereg("GROUP BY ID",$GROUPBY)) $GROUPBY=" GROUP BY ID ";
 
 	if (ereg("HAVING",$GROUPBY)) $GROUPBY.=" ".$link." ";
 	else $GROUPBY.=" HAVING ";
