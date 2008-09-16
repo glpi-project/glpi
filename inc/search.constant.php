@@ -212,60 +212,70 @@ $SEARCH_OPTION[COMPUTER_TYPE][7]['field']='designation';
 $SEARCH_OPTION[COMPUTER_TYPE][7]['linkfield']='';
 $SEARCH_OPTION[COMPUTER_TYPE][7]['name']=$LANG["computers"][21];
 $SEARCH_OPTION[COMPUTER_TYPE][7]['meta']=1;
+$SEARCH_OPTION[COMPUTER_TYPE][7]['forcegroupby']=true;
 
 $SEARCH_OPTION[COMPUTER_TYPE][36]['table']='glpi_device_processor';
 $SEARCH_OPTION[COMPUTER_TYPE][36]['field']='specif_default';
 $SEARCH_OPTION[COMPUTER_TYPE][36]['linkfield']='';
 $SEARCH_OPTION[COMPUTER_TYPE][36]['name']=$LANG["computers"][21]." ".$LANG["setup"][35];
 $SEARCH_OPTION[COMPUTER_TYPE][36]['meta']=1;
+$SEARCH_OPTION[COMPUTER_TYPE][36]['forcegroupby']=true;
 
 $SEARCH_OPTION[COMPUTER_TYPE][10]['table']='glpi_device_ram';
 $SEARCH_OPTION[COMPUTER_TYPE][10]['field']='designation';
 $SEARCH_OPTION[COMPUTER_TYPE][10]['linkfield']='';
 $SEARCH_OPTION[COMPUTER_TYPE][10]['name']=$LANG["computers"][23];
 $SEARCH_OPTION[COMPUTER_TYPE][10]['meta']=1;
+$SEARCH_OPTION[COMPUTER_TYPE][10]['forcegroupby']=true;
 
 $SEARCH_OPTION[COMPUTER_TYPE][35]['table']='glpi_device_ram';
 $SEARCH_OPTION[COMPUTER_TYPE][35]['field']='specif_default';
 $SEARCH_OPTION[COMPUTER_TYPE][35]['linkfield']='';
 $SEARCH_OPTION[COMPUTER_TYPE][35]['name']=$LANG["computers"][24];
 $SEARCH_OPTION[COMPUTER_TYPE][35]['meta']=1;
+$SEARCH_OPTION[COMPUTER_TYPE][35]['forcegroupby']=true;
 
 $SEARCH_OPTION[COMPUTER_TYPE][11]['table']='glpi_device_iface';
 $SEARCH_OPTION[COMPUTER_TYPE][11]['field']='designation';
 $SEARCH_OPTION[COMPUTER_TYPE][11]['linkfield']='';
 $SEARCH_OPTION[COMPUTER_TYPE][11]['name']=$LANG["setup"][9];
 $SEARCH_OPTION[COMPUTER_TYPE][11]['meta']=1;
+$SEARCH_OPTION[COMPUTER_TYPE][11]['forcegroupby']=true;
 
 $SEARCH_OPTION[COMPUTER_TYPE][12]['table']='glpi_device_sndcard';
 $SEARCH_OPTION[COMPUTER_TYPE][12]['field']='designation';
 $SEARCH_OPTION[COMPUTER_TYPE][12]['linkfield']='';
 $SEARCH_OPTION[COMPUTER_TYPE][12]['name']=$LANG["devices"][7];
 $SEARCH_OPTION[COMPUTER_TYPE][12]['meta']=1;
+$SEARCH_OPTION[COMPUTER_TYPE][12]['forcegroupby']=true;
 
 $SEARCH_OPTION[COMPUTER_TYPE][13]['table']='glpi_device_gfxcard';
 $SEARCH_OPTION[COMPUTER_TYPE][13]['field']='designation';
 $SEARCH_OPTION[COMPUTER_TYPE][13]['linkfield']='';
 $SEARCH_OPTION[COMPUTER_TYPE][13]['name']=$LANG["devices"][2];
 $SEARCH_OPTION[COMPUTER_TYPE][13]['meta']=1;
+$SEARCH_OPTION[COMPUTER_TYPE][13]['forcegroupby']=true;
 
 $SEARCH_OPTION[COMPUTER_TYPE][14]['table']='glpi_device_moboard';
 $SEARCH_OPTION[COMPUTER_TYPE][14]['field']='designation';
 $SEARCH_OPTION[COMPUTER_TYPE][14]['linkfield']='';
 $SEARCH_OPTION[COMPUTER_TYPE][14]['name']=$LANG["devices"][5];
 $SEARCH_OPTION[COMPUTER_TYPE][14]['meta']=1;
+$SEARCH_OPTION[COMPUTER_TYPE][14]['forcegroupby']=true;
 
 $SEARCH_OPTION[COMPUTER_TYPE][15]['table']='glpi_device_hdd';
 $SEARCH_OPTION[COMPUTER_TYPE][15]['field']='designation';
 $SEARCH_OPTION[COMPUTER_TYPE][15]['linkfield']='';
 $SEARCH_OPTION[COMPUTER_TYPE][15]['name']=$LANG["computers"][36];
 $SEARCH_OPTION[COMPUTER_TYPE][15]['meta']=1;
+$SEARCH_OPTION[COMPUTER_TYPE][15]['forcegroupby']=true;
 
 $SEARCH_OPTION[COMPUTER_TYPE][34]['table']='glpi_device_hdd';
 $SEARCH_OPTION[COMPUTER_TYPE][34]['field']='specif_default';
 $SEARCH_OPTION[COMPUTER_TYPE][34]['linkfield']='';
 $SEARCH_OPTION[COMPUTER_TYPE][34]['name']=$LANG["computers"][25];
 $SEARCH_OPTION[COMPUTER_TYPE][34]['meta']=1;
+$SEARCH_OPTION[COMPUTER_TYPE][34]['forcegroupby']=true;
 
 $SEARCH_OPTION[COMPUTER_TYPE]['disk']=$LANG["computers"][8];
 
@@ -274,42 +284,49 @@ $SEARCH_OPTION[COMPUTER_TYPE][156]['field']='name';
 $SEARCH_OPTION[COMPUTER_TYPE][156]['linkfield']='';
 $SEARCH_OPTION[COMPUTER_TYPE][156]['name']=$LANG["common"][16]." ".$LANG["computers"][0];
 $SEARCH_OPTION[COMPUTER_TYPE][156]['meta']=0;
+$SEARCH_OPTION[COMPUTER_TYPE][156]['forcegrouby']=true;
 
 $SEARCH_OPTION[COMPUTER_TYPE][150]['table']='glpi_computerdisks';
 $SEARCH_OPTION[COMPUTER_TYPE][150]['field']='totalsize';
 $SEARCH_OPTION[COMPUTER_TYPE][150]['linkfield']='';
 $SEARCH_OPTION[COMPUTER_TYPE][150]['name']=$LANG["computers"][3];
 $SEARCH_OPTION[COMPUTER_TYPE][150]['meta']=3;
+$SEARCH_OPTION[COMPUTER_TYPE][150]['forcegrouby']=true;
 
 $SEARCH_OPTION[COMPUTER_TYPE][151]['table']='glpi_computerdisks';
 $SEARCH_OPTION[COMPUTER_TYPE][151]['field']='freesize';
 $SEARCH_OPTION[COMPUTER_TYPE][151]['linkfield']='';
 $SEARCH_OPTION[COMPUTER_TYPE][151]['name']=$LANG["computers"][2];
 $SEARCH_OPTION[COMPUTER_TYPE][151]['meta']=3;
+$SEARCH_OPTION[COMPUTER_TYPE][151]['forcegrouby']=true;
 
 $SEARCH_OPTION[COMPUTER_TYPE][152]['table']='glpi_computerdisks';
 $SEARCH_OPTION[COMPUTER_TYPE][152]['field']='freepercent';
 $SEARCH_OPTION[COMPUTER_TYPE][152]['linkfield']='';
 $SEARCH_OPTION[COMPUTER_TYPE][152]['name']=$LANG["computers"][1];
 $SEARCH_OPTION[COMPUTER_TYPE][152]['meta']=3;
+$SEARCH_OPTION[COMPUTER_TYPE][152]['forcegrouby']=true;
 
 $SEARCH_OPTION[COMPUTER_TYPE][153]['table']='glpi_computerdisks';
 $SEARCH_OPTION[COMPUTER_TYPE][153]['field']='mountpoint';
 $SEARCH_OPTION[COMPUTER_TYPE][153]['linkfield']='';
 $SEARCH_OPTION[COMPUTER_TYPE][153]['name']=$LANG["computers"][5];
 $SEARCH_OPTION[COMPUTER_TYPE][153]['meta']=3;
+$SEARCH_OPTION[COMPUTER_TYPE][153]['forcegrouby']=true;
 
 $SEARCH_OPTION[COMPUTER_TYPE][154]['table']='glpi_computerdisks';
 $SEARCH_OPTION[COMPUTER_TYPE][154]['field']='device';
 $SEARCH_OPTION[COMPUTER_TYPE][154]['linkfield']='';
 $SEARCH_OPTION[COMPUTER_TYPE][154]['name']=$LANG["computers"][6];
 $SEARCH_OPTION[COMPUTER_TYPE][154]['meta']=3;
+$SEARCH_OPTION[COMPUTER_TYPE][154]['forcegrouby']=true;
 
 $SEARCH_OPTION[COMPUTER_TYPE][155]['table']='glpi_dropdown_filesystems';
 $SEARCH_OPTION[COMPUTER_TYPE][155]['field']='name';
 $SEARCH_OPTION[COMPUTER_TYPE][155]['linkfield']='';
 $SEARCH_OPTION[COMPUTER_TYPE][155]['name']=$LANG["computers"][4];
 $SEARCH_OPTION[COMPUTER_TYPE][155]['meta']=3;
+$SEARCH_OPTION[COMPUTER_TYPE][155]['forcegrouby']=true;
 
 $SEARCH_OPTION[COMPUTER_TYPE]['network']=$LANG["setup"][88];
 
@@ -318,36 +335,42 @@ $SEARCH_OPTION[COMPUTER_TYPE][20]['field']='ifaddr';
 $SEARCH_OPTION[COMPUTER_TYPE][20]['linkfield']='';
 $SEARCH_OPTION[COMPUTER_TYPE][20]['name']=$LANG["networking"][14];
 $SEARCH_OPTION[COMPUTER_TYPE][20]['meta']=2;
+$SEARCH_OPTION[COMPUTER_TYPE][20]['forcegrouby']=true;
 
 $SEARCH_OPTION[COMPUTER_TYPE][21]['table']='glpi_networking_ports';
 $SEARCH_OPTION[COMPUTER_TYPE][21]['field']='ifmac';
 $SEARCH_OPTION[COMPUTER_TYPE][21]['linkfield']='';
 $SEARCH_OPTION[COMPUTER_TYPE][21]['name']=$LANG["networking"][15];
 $SEARCH_OPTION[COMPUTER_TYPE][21]['meta']=0;
+$SEARCH_OPTION[COMPUTER_TYPE][21]['forcegrouby']=true;
 
 $SEARCH_OPTION[COMPUTER_TYPE][83]['table']='glpi_networking_ports';
 $SEARCH_OPTION[COMPUTER_TYPE][83]['field']='netmask';
 $SEARCH_OPTION[COMPUTER_TYPE][83]['linkfield']='';
 $SEARCH_OPTION[COMPUTER_TYPE][83]['name']=$LANG["networking"][60];
 $SEARCH_OPTION[COMPUTER_TYPE][83]['meta']=0;
+$SEARCH_OPTION[COMPUTER_TYPE][83]['forcegrouby']=true;
 
 $SEARCH_OPTION[COMPUTER_TYPE][84]['table']='glpi_networking_ports';
 $SEARCH_OPTION[COMPUTER_TYPE][84]['field']='subnet';
 $SEARCH_OPTION[COMPUTER_TYPE][84]['linkfield']='';
 $SEARCH_OPTION[COMPUTER_TYPE][84]['name']=$LANG["networking"][61];
 $SEARCH_OPTION[COMPUTER_TYPE][84]['meta']=2;
+$SEARCH_OPTION[COMPUTER_TYPE][84]['forcegrouby']=true;
 
 $SEARCH_OPTION[COMPUTER_TYPE][85]['table']='glpi_networking_ports';
 $SEARCH_OPTION[COMPUTER_TYPE][85]['field']='gateway';
 $SEARCH_OPTION[COMPUTER_TYPE][85]['linkfield']='';
 $SEARCH_OPTION[COMPUTER_TYPE][85]['name']=$LANG["networking"][59];
 $SEARCH_OPTION[COMPUTER_TYPE][85]['meta']=0;
+$SEARCH_OPTION[COMPUTER_TYPE][85]['forcegrouby']=true;
 
 $SEARCH_OPTION[COMPUTER_TYPE][22]['table']='glpi_dropdown_netpoint';
 $SEARCH_OPTION[COMPUTER_TYPE][22]['field']='name';
 $SEARCH_OPTION[COMPUTER_TYPE][22]['linkfield']='';
 $SEARCH_OPTION[COMPUTER_TYPE][22]['name']=$LANG["networking"][51];
 $SEARCH_OPTION[COMPUTER_TYPE][22]['meta']=0;
+$SEARCH_OPTION[COMPUTER_TYPE][22]['forcegrouby']=true;
 
 $SEARCH_OPTION[COMPUTER_TYPE]['tracking']=$LANG["title"][24];
 
@@ -364,66 +387,77 @@ $SEARCH_OPTION[COMPUTER_TYPE][29]['field']='name';
 $SEARCH_OPTION[COMPUTER_TYPE][29]['linkfield']='';
 $SEARCH_OPTION[COMPUTER_TYPE][29]['name']=$LANG["common"][16]." ".$LANG["financial"][1];
 $SEARCH_OPTION[COMPUTER_TYPE][29]['meta']=0;
+$SEARCH_OPTION[COMPUTER_TYPE][29]['forcegroupby']=true;
 
 $SEARCH_OPTION[COMPUTER_TYPE][30]['table']='glpi_contracts';
 $SEARCH_OPTION[COMPUTER_TYPE][30]['field']='num';
 $SEARCH_OPTION[COMPUTER_TYPE][30]['linkfield']='';
 $SEARCH_OPTION[COMPUTER_TYPE][30]['name']=$LANG["financial"][4]." ".$LANG["financial"][1];
 $SEARCH_OPTION[COMPUTER_TYPE][30]['meta']=0;
+$SEARCH_OPTION[COMPUTER_TYPE][30]['forcegroupby']=true;
 
 $SEARCH_OPTION[COMPUTER_TYPE][130]['table']='glpi_contracts';
 $SEARCH_OPTION[COMPUTER_TYPE][130]['field']='duration';
 $SEARCH_OPTION[COMPUTER_TYPE][130]['linkfield']='';
 $SEARCH_OPTION[COMPUTER_TYPE][130]['name']=$LANG["financial"][8]." ".$LANG["financial"][1];
 $SEARCH_OPTION[COMPUTER_TYPE][130]['meta']=0;
+$SEARCH_OPTION[COMPUTER_TYPE][130]['forcegroupby']=true;
 
 $SEARCH_OPTION[COMPUTER_TYPE][131]['table']='glpi_contracts';
 $SEARCH_OPTION[COMPUTER_TYPE][131]['field']='periodicity';
 $SEARCH_OPTION[COMPUTER_TYPE][131]['linkfield']='';
 $SEARCH_OPTION[COMPUTER_TYPE][131]['name']=$LANG["financial"][69];
 $SEARCH_OPTION[COMPUTER_TYPE][131]['meta']=0;
+$SEARCH_OPTION[COMPUTER_TYPE][131]['forcegroupby']=true;
 
 $SEARCH_OPTION[COMPUTER_TYPE][132]['table']='glpi_contracts';
 $SEARCH_OPTION[COMPUTER_TYPE][132]['field']='begin_date';
 $SEARCH_OPTION[COMPUTER_TYPE][132]['linkfield']='';
 $SEARCH_OPTION[COMPUTER_TYPE][132]['name']=$LANG["search"][8]." ".$LANG["financial"][1];
 $SEARCH_OPTION[COMPUTER_TYPE][132]['meta']=0;
+$SEARCH_OPTION[COMPUTER_TYPE][132]['forcegroupby']=true;
 
 $SEARCH_OPTION[COMPUTER_TYPE][133]['table']='glpi_contracts';
 $SEARCH_OPTION[COMPUTER_TYPE][133]['field']='compta_num';
 $SEARCH_OPTION[COMPUTER_TYPE][133]['linkfield']='';
 $SEARCH_OPTION[COMPUTER_TYPE][133]['name']=$LANG["financial"][13]." ".$LANG["financial"][1];
 $SEARCH_OPTION[COMPUTER_TYPE][133]['meta']=0;
+$SEARCH_OPTION[COMPUTER_TYPE][133]['forcegroupby']=true;
 
 $SEARCH_OPTION[COMPUTER_TYPE][134]['table']='glpi_contracts';
 $SEARCH_OPTION[COMPUTER_TYPE][134]['field']='end_date';
 $SEARCH_OPTION[COMPUTER_TYPE][134]['linkfield']='';
 $SEARCH_OPTION[COMPUTER_TYPE][134]['name']=$LANG["search"][9]." ".$LANG["financial"][1];
 $SEARCH_OPTION[COMPUTER_TYPE][134]['meta']=0;
+$SEARCH_OPTION[COMPUTER_TYPE][134]['forcegroupby']=true;
 
 $SEARCH_OPTION[COMPUTER_TYPE][135]['table']='glpi_contracts';
 $SEARCH_OPTION[COMPUTER_TYPE][135]['field']='notice';
 $SEARCH_OPTION[COMPUTER_TYPE][135]['linkfield']='';
 $SEARCH_OPTION[COMPUTER_TYPE][135]['name']=$LANG["financial"][10]." ".$LANG["financial"][1];
 $SEARCH_OPTION[COMPUTER_TYPE][135]['meta']=0;
+$SEARCH_OPTION[COMPUTER_TYPE][135]['forcegroupby']=true;
 
 $SEARCH_OPTION[COMPUTER_TYPE][136]['table']='glpi_contracts';
 $SEARCH_OPTION[COMPUTER_TYPE][136]['field']='cost';
 $SEARCH_OPTION[COMPUTER_TYPE][136]['linkfield']='';
 $SEARCH_OPTION[COMPUTER_TYPE][136]['name']=$LANG["financial"][5]." ".$LANG["financial"][1];
 $SEARCH_OPTION[COMPUTER_TYPE][136]['meta']=0;
+$SEARCH_OPTION[COMPUTER_TYPE][136]['forcegroupby']=true;
 
 $SEARCH_OPTION[COMPUTER_TYPE][137]['table']='glpi_contracts';
 $SEARCH_OPTION[COMPUTER_TYPE][137]['field']='facturation';
 $SEARCH_OPTION[COMPUTER_TYPE][137]['linkfield']='';
 $SEARCH_OPTION[COMPUTER_TYPE][137]['name']=$LANG["financial"][11]." ".$LANG["financial"][1];
 $SEARCH_OPTION[COMPUTER_TYPE][137]['meta']=0;
+$SEARCH_OPTION[COMPUTER_TYPE][137]['forcegroupby']=true;
 
 $SEARCH_OPTION[COMPUTER_TYPE][138]['table']='glpi_contracts';
 $SEARCH_OPTION[COMPUTER_TYPE][138]['field']='renewal';
 $SEARCH_OPTION[COMPUTER_TYPE][138]['linkfield']='';
 $SEARCH_OPTION[COMPUTER_TYPE][138]['name']=$LANG["financial"][107]." ".$LANG["financial"][1];
 $SEARCH_OPTION[COMPUTER_TYPE][138]['meta']=0;
+$SEARCH_OPTION[COMPUTER_TYPE][138]['forcegroupby']=true;
 
 
 $SEARCH_OPTION[COMPUTER_TYPE]['financial']=$LANG["financial"][3];
@@ -571,12 +605,14 @@ $SEARCH_OPTION[COMPUTER_TYPE][110]['field']='registry_value';
 $SEARCH_OPTION[COMPUTER_TYPE][110]['linkfield']='';
 $SEARCH_OPTION[COMPUTER_TYPE][110]['name']=$LANG["title"][43]." : ".$LANG["registry"][3];
 $SEARCH_OPTION[COMPUTER_TYPE][110]['meta']=0;
+$SEARCH_OPTION[COMPUTER_TYPE][110]['forcegrouby']=true;
 
 $SEARCH_OPTION[COMPUTER_TYPE][111]['table']='glpi_registry';
 $SEARCH_OPTION[COMPUTER_TYPE][111]['field']='registry_ocs_name';
 $SEARCH_OPTION[COMPUTER_TYPE][111]['linkfield']='';
 $SEARCH_OPTION[COMPUTER_TYPE][111]['name']=$LANG["title"][43]." : ".$LANG["registry"][6];
 $SEARCH_OPTION[COMPUTER_TYPE][111]['meta']=0;
+$SEARCH_OPTION[COMPUTER_TYPE][111]['forcegrouby']=true;
 
 //////NETWORKING_TYPE
 $SEARCH_OPTION[NETWORKING_TYPE]['common']=$LANG["common"][32];
@@ -726,36 +762,42 @@ $SEARCH_OPTION[NETWORKING_TYPE][20]['field']='ifaddr';
 $SEARCH_OPTION[NETWORKING_TYPE][20]['linkfield']='';
 $SEARCH_OPTION[NETWORKING_TYPE][20]['name']=$LANG["networking"][14];
 $SEARCH_OPTION[NETWORKING_TYPE][20]['meta']=2;
+$SEARCH_OPTION[NETWORKING_TYPE][20]['forcegrouby']=true;
 
 $SEARCH_OPTION[NETWORKING_TYPE][21]['table']='glpi_networking_ports';
 $SEARCH_OPTION[NETWORKING_TYPE][21]['field']='ifmac';
 $SEARCH_OPTION[NETWORKING_TYPE][21]['linkfield']='';
 $SEARCH_OPTION[NETWORKING_TYPE][21]['name']=$LANG["networking"][15];
 $SEARCH_OPTION[NETWORKING_TYPE][21]['meta']=0;
+$SEARCH_OPTION[NETWORKING_TYPE][21]['forcegrouby']=true;
 
 $SEARCH_OPTION[NETWORKING_TYPE][83]['table']='glpi_networking_ports';
 $SEARCH_OPTION[NETWORKING_TYPE][83]['field']='netmask';
 $SEARCH_OPTION[NETWORKING_TYPE][83]['linkfield']='';
 $SEARCH_OPTION[NETWORKING_TYPE][83]['name']=$LANG["networking"][60];
 $SEARCH_OPTION[NETWORKING_TYPE][83]['meta']=0;
+$SEARCH_OPTION[NETWORKING_TYPE][83]['forcegrouby']=true;
 
 $SEARCH_OPTION[NETWORKING_TYPE][84]['table']='glpi_networking_ports';
 $SEARCH_OPTION[NETWORKING_TYPE][84]['field']='subnet';
 $SEARCH_OPTION[NETWORKING_TYPE][84]['linkfield']='';
 $SEARCH_OPTION[NETWORKING_TYPE][84]['name']=$LANG["networking"][61];
 $SEARCH_OPTION[NETWORKING_TYPE][84]['meta']=2;
+$SEARCH_OPTION[NETWORKING_TYPE][84]['forcegrouby']=true;
 
 $SEARCH_OPTION[NETWORKING_TYPE][85]['table']='glpi_networking_ports';
 $SEARCH_OPTION[NETWORKING_TYPE][85]['field']='gateway';
 $SEARCH_OPTION[NETWORKING_TYPE][85]['linkfield']='';
 $SEARCH_OPTION[NETWORKING_TYPE][85]['name']=$LANG["networking"][59];
 $SEARCH_OPTION[NETWORKING_TYPE][85]['meta']=0;
+$SEARCH_OPTION[NETWORKING_TYPE][85]['forcegrouby']=true;
 
 $SEARCH_OPTION[NETWORKING_TYPE][22]['table']='glpi_dropdown_netpoint';
 $SEARCH_OPTION[NETWORKING_TYPE][22]['field']='name';
 $SEARCH_OPTION[NETWORKING_TYPE][22]['linkfield']='';
 $SEARCH_OPTION[NETWORKING_TYPE][22]['name']=$LANG["networking"][51];
 $SEARCH_OPTION[NETWORKING_TYPE][22]['meta']=0;
+$SEARCH_OPTION[NETWORKING_TYPE][22]['forcegrouby']=true;
 
 $SEARCH_OPTION[NETWORKING_TYPE]['tracking']=$LANG["title"][24];
 
@@ -772,66 +814,77 @@ $SEARCH_OPTION[NETWORKING_TYPE][29]['field']='name';
 $SEARCH_OPTION[NETWORKING_TYPE][29]['linkfield']='';
 $SEARCH_OPTION[NETWORKING_TYPE][29]['name']=$LANG["common"][16]." ".$LANG["financial"][1];
 $SEARCH_OPTION[NETWORKING_TYPE][29]['meta']=0;
+$SEARCH_OPTION[NETWORKING_TYPE][29]['forcegroupby']=true;
 
 $SEARCH_OPTION[NETWORKING_TYPE][30]['table']='glpi_contracts';
 $SEARCH_OPTION[NETWORKING_TYPE][30]['field']='num';
 $SEARCH_OPTION[NETWORKING_TYPE][30]['linkfield']='';
 $SEARCH_OPTION[NETWORKING_TYPE][30]['name']=$LANG["financial"][4]." ".$LANG["financial"][1];
 $SEARCH_OPTION[NETWORKING_TYPE][30]['meta']=0;
+$SEARCH_OPTION[NETWORKING_TYPE][30]['forcegroupby']=true;
 
 $SEARCH_OPTION[NETWORKING_TYPE][130]['table']='glpi_contracts';
 $SEARCH_OPTION[NETWORKING_TYPE][130]['field']='duration';
 $SEARCH_OPTION[NETWORKING_TYPE][130]['linkfield']='';
 $SEARCH_OPTION[NETWORKING_TYPE][130]['name']=$LANG["financial"][8]." ".$LANG["financial"][1];
 $SEARCH_OPTION[NETWORKING_TYPE][130]['meta']=0;
+$SEARCH_OPTION[NETWORKING_TYPE][130]['forcegroupby']=true;
 
 $SEARCH_OPTION[NETWORKING_TYPE][131]['table']='glpi_contracts';
 $SEARCH_OPTION[NETWORKING_TYPE][131]['field']='periodicity';
 $SEARCH_OPTION[NETWORKING_TYPE][131]['linkfield']='';
 $SEARCH_OPTION[NETWORKING_TYPE][131]['name']=$LANG["financial"][69];
 $SEARCH_OPTION[NETWORKING_TYPE][131]['meta']=0;
+$SEARCH_OPTION[NETWORKING_TYPE][131]['forcegroupby']=true;
 
 $SEARCH_OPTION[NETWORKING_TYPE][132]['table']='glpi_contracts';
 $SEARCH_OPTION[NETWORKING_TYPE][132]['field']='begin_date';
 $SEARCH_OPTION[NETWORKING_TYPE][132]['linkfield']='';
 $SEARCH_OPTION[NETWORKING_TYPE][132]['name']=$LANG["search"][8]." ".$LANG["financial"][1];
 $SEARCH_OPTION[NETWORKING_TYPE][132]['meta']=0;
+$SEARCH_OPTION[NETWORKING_TYPE][132]['forcegroupby']=true;
 
 $SEARCH_OPTION[NETWORKING_TYPE][133]['table']='glpi_contracts';
 $SEARCH_OPTION[NETWORKING_TYPE][133]['field']='compta_num';
 $SEARCH_OPTION[NETWORKING_TYPE][133]['linkfield']='';
 $SEARCH_OPTION[NETWORKING_TYPE][133]['name']=$LANG["financial"][13]." ".$LANG["financial"][1];
 $SEARCH_OPTION[NETWORKING_TYPE][133]['meta']=0;
+$SEARCH_OPTION[NETWORKING_TYPE][133]['forcegroupby']=true;
 
 $SEARCH_OPTION[NETWORKING_TYPE][134]['table']='glpi_contracts';
 $SEARCH_OPTION[NETWORKING_TYPE][134]['field']='end_date';
 $SEARCH_OPTION[NETWORKING_TYPE][134]['linkfield']='';
 $SEARCH_OPTION[NETWORKING_TYPE][134]['name']=$LANG["search"][9]." ".$LANG["financial"][1];
 $SEARCH_OPTION[NETWORKING_TYPE][134]['meta']=0;
+$SEARCH_OPTION[NETWORKING_TYPE][134]['forcegroupby']=true;
 
 $SEARCH_OPTION[NETWORKING_TYPE][135]['table']='glpi_contracts';
 $SEARCH_OPTION[NETWORKING_TYPE][135]['field']='notice';
 $SEARCH_OPTION[NETWORKING_TYPE][135]['linkfield']='';
 $SEARCH_OPTION[NETWORKING_TYPE][135]['name']=$LANG["financial"][10]." ".$LANG["financial"][1];
 $SEARCH_OPTION[NETWORKING_TYPE][135]['meta']=0;
+$SEARCH_OPTION[NETWORKING_TYPE][135]['forcegroupby']=true;
 
 $SEARCH_OPTION[NETWORKING_TYPE][136]['table']='glpi_contracts';
 $SEARCH_OPTION[NETWORKING_TYPE][136]['field']='cost';
 $SEARCH_OPTION[NETWORKING_TYPE][136]['linkfield']='';
 $SEARCH_OPTION[NETWORKING_TYPE][136]['name']=$LANG["financial"][5]." ".$LANG["financial"][1];
 $SEARCH_OPTION[NETWORKING_TYPE][136]['meta']=0;
+$SEARCH_OPTION[NETWORKING_TYPE][136]['forcegroupby']=true;
 
 $SEARCH_OPTION[NETWORKING_TYPE][137]['table']='glpi_contracts';
 $SEARCH_OPTION[NETWORKING_TYPE][137]['field']='facturation';
 $SEARCH_OPTION[NETWORKING_TYPE][137]['linkfield']='';
 $SEARCH_OPTION[NETWORKING_TYPE][137]['name']=$LANG["financial"][11]." ".$LANG["financial"][1];
 $SEARCH_OPTION[NETWORKING_TYPE][137]['meta']=0;
+$SEARCH_OPTION[NETWORKING_TYPE][137]['forcegroupby']=true;
 
 $SEARCH_OPTION[NETWORKING_TYPE][138]['table']='glpi_contracts';
 $SEARCH_OPTION[NETWORKING_TYPE][138]['field']='renewal';
 $SEARCH_OPTION[NETWORKING_TYPE][138]['linkfield']='';
 $SEARCH_OPTION[NETWORKING_TYPE][138]['name']=$LANG["financial"][107]." ".$LANG["financial"][1];
 $SEARCH_OPTION[NETWORKING_TYPE][138]['meta']=0;
+$SEARCH_OPTION[NETWORKING_TYPE][138]['forcegroupby']=true;
 
 
 $SEARCH_OPTION[NETWORKING_TYPE]['financial']=$LANG["financial"][3];
@@ -1076,36 +1129,42 @@ $SEARCH_OPTION[PRINTER_TYPE][20]['field']='ifaddr';
 $SEARCH_OPTION[PRINTER_TYPE][20]['linkfield']='';
 $SEARCH_OPTION[PRINTER_TYPE][20]['name']=$LANG["networking"][14];
 $SEARCH_OPTION[PRINTER_TYPE][20]['meta']=2;
+$SEARCH_OPTION[PRINTER_TYPE][20]['forcegrouby']=true;
 
 $SEARCH_OPTION[PRINTER_TYPE][21]['table']='glpi_networking_ports';
 $SEARCH_OPTION[PRINTER_TYPE][21]['field']='ifmac';
 $SEARCH_OPTION[PRINTER_TYPE][21]['linkfield']='';
 $SEARCH_OPTION[PRINTER_TYPE][21]['name']=$LANG["networking"][15];
 $SEARCH_OPTION[PRINTER_TYPE][21]['meta']=0;
+$SEARCH_OPTION[PRINTER_TYPE][21]['forcegrouby']=true;
 
 $SEARCH_OPTION[PRINTER_TYPE][83]['table']='glpi_networking_ports';
 $SEARCH_OPTION[PRINTER_TYPE][83]['field']='netmask';
 $SEARCH_OPTION[PRINTER_TYPE][83]['linkfield']='';
 $SEARCH_OPTION[PRINTER_TYPE][83]['name']=$LANG["networking"][60];
 $SEARCH_OPTION[PRINTER_TYPE][83]['meta']=0;
+$SEARCH_OPTION[PRINTER_TYPE][83]['forcegrouby']=true;
 
 $SEARCH_OPTION[PRINTER_TYPE][84]['table']='glpi_networking_ports';
 $SEARCH_OPTION[PRINTER_TYPE][84]['field']='subnet';
 $SEARCH_OPTION[PRINTER_TYPE][84]['linkfield']='';
 $SEARCH_OPTION[PRINTER_TYPE][84]['name']=$LANG["networking"][61];
 $SEARCH_OPTION[PRINTER_TYPE][84]['meta']=2;
+$SEARCH_OPTION[PRINTER_TYPE][84]['forcegrouby']=true;
 
 $SEARCH_OPTION[PRINTER_TYPE][85]['table']='glpi_networking_ports';
 $SEARCH_OPTION[PRINTER_TYPE][85]['field']='gateway';
 $SEARCH_OPTION[PRINTER_TYPE][85]['linkfield']='';
 $SEARCH_OPTION[PRINTER_TYPE][85]['name']=$LANG["networking"][59];
 $SEARCH_OPTION[PRINTER_TYPE][85]['meta']=0;
+$SEARCH_OPTION[PRINTER_TYPE][85]['forcegrouby']=true;
 
 $SEARCH_OPTION[PRINTER_TYPE][22]['table']='glpi_dropdown_netpoint';
 $SEARCH_OPTION[PRINTER_TYPE][22]['field']='name';
 $SEARCH_OPTION[PRINTER_TYPE][22]['linkfield']='';
 $SEARCH_OPTION[PRINTER_TYPE][22]['name']=$LANG["networking"][51];
 $SEARCH_OPTION[PRINTER_TYPE][22]['meta']=0;
+$SEARCH_OPTION[PRINTER_TYPE][22]['forcegrouby']=true;
 
 $SEARCH_OPTION[PRINTER_TYPE]['tracking']=$LANG["title"][24];
 
@@ -1122,66 +1181,77 @@ $SEARCH_OPTION[PRINTER_TYPE][29]['field']='name';
 $SEARCH_OPTION[PRINTER_TYPE][29]['linkfield']='';
 $SEARCH_OPTION[PRINTER_TYPE][29]['name']=$LANG["common"][16]." ".$LANG["financial"][1];
 $SEARCH_OPTION[PRINTER_TYPE][29]['meta']=0;
+$SEARCH_OPTION[PRINTER_TYPE][29]['forcegroupby']=true;
 
 $SEARCH_OPTION[PRINTER_TYPE][30]['table']='glpi_contracts';
 $SEARCH_OPTION[PRINTER_TYPE][30]['field']='num';
 $SEARCH_OPTION[PRINTER_TYPE][30]['linkfield']='';
 $SEARCH_OPTION[PRINTER_TYPE][30]['name']=$LANG["financial"][4]." ".$LANG["financial"][1];
 $SEARCH_OPTION[PRINTER_TYPE][30]['meta']=0;
+$SEARCH_OPTION[PRINTER_TYPE][30]['forcegroupby']=true;
 
 $SEARCH_OPTION[PRINTER_TYPE][130]['table']='glpi_contracts';
 $SEARCH_OPTION[PRINTER_TYPE][130]['field']='duration';
 $SEARCH_OPTION[PRINTER_TYPE][130]['linkfield']='';
 $SEARCH_OPTION[PRINTER_TYPE][130]['name']=$LANG["financial"][8]." ".$LANG["financial"][1];
 $SEARCH_OPTION[PRINTER_TYPE][130]['meta']=0;
+$SEARCH_OPTION[PRINTER_TYPE][130]['forcegroupby']=true;
 
 $SEARCH_OPTION[PRINTER_TYPE][131]['table']='glpi_contracts';
 $SEARCH_OPTION[PRINTER_TYPE][131]['field']='periodicity';
 $SEARCH_OPTION[PRINTER_TYPE][131]['linkfield']='';
 $SEARCH_OPTION[PRINTER_TYPE][131]['name']=$LANG["financial"][69];
 $SEARCH_OPTION[PRINTER_TYPE][131]['meta']=0;
+$SEARCH_OPTION[PRINTER_TYPE][131]['forcegroupby']=true;
 
 $SEARCH_OPTION[PRINTER_TYPE][132]['table']='glpi_contracts';
 $SEARCH_OPTION[PRINTER_TYPE][132]['field']='begin_date';
 $SEARCH_OPTION[PRINTER_TYPE][132]['linkfield']='';
 $SEARCH_OPTION[PRINTER_TYPE][132]['name']=$LANG["search"][8]." ".$LANG["financial"][1];
 $SEARCH_OPTION[PRINTER_TYPE][132]['meta']=0;
+$SEARCH_OPTION[PRINTER_TYPE][132]['forcegroupby']=true;
 
 $SEARCH_OPTION[PRINTER_TYPE][133]['table']='glpi_contracts';
 $SEARCH_OPTION[PRINTER_TYPE][133]['field']='compta_num';
 $SEARCH_OPTION[PRINTER_TYPE][133]['linkfield']='';
 $SEARCH_OPTION[PRINTER_TYPE][133]['name']=$LANG["financial"][13]." ".$LANG["financial"][1];
 $SEARCH_OPTION[PRINTER_TYPE][133]['meta']=0;
+$SEARCH_OPTION[PRINTER_TYPE][133]['forcegroupby']=true;
 
 $SEARCH_OPTION[PRINTER_TYPE][134]['table']='glpi_contracts';
 $SEARCH_OPTION[PRINTER_TYPE][134]['field']='end_date';
 $SEARCH_OPTION[PRINTER_TYPE][134]['linkfield']='';
 $SEARCH_OPTION[PRINTER_TYPE][134]['name']=$LANG["search"][9]." ".$LANG["financial"][1];
 $SEARCH_OPTION[PRINTER_TYPE][134]['meta']=0;
+$SEARCH_OPTION[PRINTER_TYPE][134]['forcegroupby']=true;
 
 $SEARCH_OPTION[PRINTER_TYPE][135]['table']='glpi_contracts';
 $SEARCH_OPTION[PRINTER_TYPE][135]['field']='notice';
 $SEARCH_OPTION[PRINTER_TYPE][135]['linkfield']='';
 $SEARCH_OPTION[PRINTER_TYPE][135]['name']=$LANG["financial"][10]." ".$LANG["financial"][1];
 $SEARCH_OPTION[PRINTER_TYPE][135]['meta']=0;
+$SEARCH_OPTION[PRINTER_TYPE][135]['forcegroupby']=true;
 
 $SEARCH_OPTION[PRINTER_TYPE][136]['table']='glpi_contracts';
 $SEARCH_OPTION[PRINTER_TYPE][136]['field']='cost';
 $SEARCH_OPTION[PRINTER_TYPE][136]['linkfield']='';
 $SEARCH_OPTION[PRINTER_TYPE][136]['name']=$LANG["financial"][5]." ".$LANG["financial"][1];
 $SEARCH_OPTION[PRINTER_TYPE][136]['meta']=0;
+$SEARCH_OPTION[PRINTER_TYPE][136]['forcegroupby']=true;
 
 $SEARCH_OPTION[PRINTER_TYPE][137]['table']='glpi_contracts';
 $SEARCH_OPTION[PRINTER_TYPE][137]['field']='facturation';
 $SEARCH_OPTION[PRINTER_TYPE][137]['linkfield']='';
 $SEARCH_OPTION[PRINTER_TYPE][137]['name']=$LANG["financial"][11]." ".$LANG["financial"][1];
 $SEARCH_OPTION[PRINTER_TYPE][137]['meta']=0;
+$SEARCH_OPTION[PRINTER_TYPE][137]['forcegroupby']=true;
 
 $SEARCH_OPTION[PRINTER_TYPE][138]['table']='glpi_contracts';
 $SEARCH_OPTION[PRINTER_TYPE][138]['field']='renewal';
 $SEARCH_OPTION[PRINTER_TYPE][138]['linkfield']='';
 $SEARCH_OPTION[PRINTER_TYPE][138]['name']=$LANG["financial"][107]." ".$LANG["financial"][1];
 $SEARCH_OPTION[PRINTER_TYPE][138]['meta']=0;
+$SEARCH_OPTION[PRINTER_TYPE][138]['forcegroupby']=true;
 
 
 $SEARCH_OPTION[PRINTER_TYPE]['financial']=$LANG["financial"][3];
@@ -1428,66 +1498,77 @@ $SEARCH_OPTION[MONITOR_TYPE][29]['field']='name';
 $SEARCH_OPTION[MONITOR_TYPE][29]['linkfield']='';
 $SEARCH_OPTION[MONITOR_TYPE][29]['name']=$LANG["common"][16]." ".$LANG["financial"][1];
 $SEARCH_OPTION[MONITOR_TYPE][29]['meta']=0;
+$SEARCH_OPTION[MONITOR_TYPE][29]['forcegroupby']=true;
 
 $SEARCH_OPTION[MONITOR_TYPE][30]['table']='glpi_contracts';
 $SEARCH_OPTION[MONITOR_TYPE][30]['field']='num';
 $SEARCH_OPTION[MONITOR_TYPE][30]['linkfield']='';
 $SEARCH_OPTION[MONITOR_TYPE][30]['name']=$LANG["financial"][4]." ".$LANG["financial"][1];
 $SEARCH_OPTION[MONITOR_TYPE][30]['meta']=0;
+$SEARCH_OPTION[MONITOR_TYPE][30]['forcegroupby']=true;
 
 $SEARCH_OPTION[MONITOR_TYPE][130]['table']='glpi_contracts';
 $SEARCH_OPTION[MONITOR_TYPE][130]['field']='duration';
 $SEARCH_OPTION[MONITOR_TYPE][130]['linkfield']='';
 $SEARCH_OPTION[MONITOR_TYPE][130]['name']=$LANG["financial"][8]." ".$LANG["financial"][1];
 $SEARCH_OPTION[MONITOR_TYPE][130]['meta']=0;
+$SEARCH_OPTION[MONITOR_TYPE][130]['forcegroupby']=true;
 
 $SEARCH_OPTION[MONITOR_TYPE][131]['table']='glpi_contracts';
 $SEARCH_OPTION[MONITOR_TYPE][131]['field']='periodicity';
 $SEARCH_OPTION[MONITOR_TYPE][131]['linkfield']='';
 $SEARCH_OPTION[MONITOR_TYPE][131]['name']=$LANG["financial"][69];
 $SEARCH_OPTION[MONITOR_TYPE][131]['meta']=0;
+$SEARCH_OPTION[MONITOR_TYPE][131]['forcegroupby']=true;
 
 $SEARCH_OPTION[MONITOR_TYPE][132]['table']='glpi_contracts';
 $SEARCH_OPTION[MONITOR_TYPE][132]['field']='begin_date';
 $SEARCH_OPTION[MONITOR_TYPE][132]['linkfield']='';
 $SEARCH_OPTION[MONITOR_TYPE][132]['name']=$LANG["search"][8]." ".$LANG["financial"][1];
 $SEARCH_OPTION[MONITOR_TYPE][132]['meta']=0;
+$SEARCH_OPTION[MONITOR_TYPE][132]['forcegroupby']=true;
 
 $SEARCH_OPTION[MONITOR_TYPE][133]['table']='glpi_contracts';
 $SEARCH_OPTION[MONITOR_TYPE][133]['field']='compta_num';
 $SEARCH_OPTION[MONITOR_TYPE][133]['linkfield']='';
 $SEARCH_OPTION[MONITOR_TYPE][133]['name']=$LANG["financial"][13]." ".$LANG["financial"][1];
 $SEARCH_OPTION[MONITOR_TYPE][133]['meta']=0;
+$SEARCH_OPTION[MONITOR_TYPE][133]['forcegroupby']=true;
 
 $SEARCH_OPTION[MONITOR_TYPE][134]['table']='glpi_contracts';
 $SEARCH_OPTION[MONITOR_TYPE][134]['field']='end_date';
 $SEARCH_OPTION[MONITOR_TYPE][134]['linkfield']='';
 $SEARCH_OPTION[MONITOR_TYPE][134]['name']=$LANG["search"][9]." ".$LANG["financial"][1];
 $SEARCH_OPTION[MONITOR_TYPE][134]['meta']=0;
+$SEARCH_OPTION[MONITOR_TYPE][134]['forcegroupby']=true;
 
 $SEARCH_OPTION[MONITOR_TYPE][135]['table']='glpi_contracts';
 $SEARCH_OPTION[MONITOR_TYPE][135]['field']='notice';
 $SEARCH_OPTION[MONITOR_TYPE][135]['linkfield']='';
 $SEARCH_OPTION[MONITOR_TYPE][135]['name']=$LANG["financial"][10]." ".$LANG["financial"][1];
 $SEARCH_OPTION[MONITOR_TYPE][135]['meta']=0;
+$SEARCH_OPTION[MONITOR_TYPE][135]['forcegroupby']=true;
 
 $SEARCH_OPTION[MONITOR_TYPE][136]['table']='glpi_contracts';
 $SEARCH_OPTION[MONITOR_TYPE][136]['field']='cost';
 $SEARCH_OPTION[MONITOR_TYPE][136]['linkfield']='';
 $SEARCH_OPTION[MONITOR_TYPE][136]['name']=$LANG["financial"][5]." ".$LANG["financial"][1];
 $SEARCH_OPTION[MONITOR_TYPE][136]['meta']=0;
+$SEARCH_OPTION[MONITOR_TYPE][136]['forcegroupby']=true;
 
 $SEARCH_OPTION[MONITOR_TYPE][137]['table']='glpi_contracts';
 $SEARCH_OPTION[MONITOR_TYPE][137]['field']='facturation';
 $SEARCH_OPTION[MONITOR_TYPE][137]['linkfield']='';
 $SEARCH_OPTION[MONITOR_TYPE][137]['name']=$LANG["financial"][11]." ".$LANG["financial"][1];
 $SEARCH_OPTION[MONITOR_TYPE][137]['meta']=0;
+$SEARCH_OPTION[MONITOR_TYPE][137]['forcegroupby']=true;
 
 $SEARCH_OPTION[MONITOR_TYPE][138]['table']='glpi_contracts';
 $SEARCH_OPTION[MONITOR_TYPE][138]['field']='renewal';
 $SEARCH_OPTION[MONITOR_TYPE][138]['linkfield']='';
 $SEARCH_OPTION[MONITOR_TYPE][138]['name']=$LANG["financial"][107]." ".$LANG["financial"][1];
 $SEARCH_OPTION[MONITOR_TYPE][138]['meta']=0;
+$SEARCH_OPTION[MONITOR_TYPE][138]['forcegroupby']=true;
 
 $SEARCH_OPTION[MONITOR_TYPE]['financial']=$LANG["financial"][3];
 
@@ -1724,37 +1805,42 @@ $SEARCH_OPTION[PERIPHERAL_TYPE][20]['field']='ifaddr';
 $SEARCH_OPTION[PERIPHERAL_TYPE][20]['linkfield']='';
 $SEARCH_OPTION[PERIPHERAL_TYPE][20]['name']=$LANG["networking"][14];
 $SEARCH_OPTION[PERIPHERAL_TYPE][20]['meta']=0;
+$SEARCH_OPTION[PERIPHERAL_TYPE][20]['forcegrouby']=true;
 
 $SEARCH_OPTION[PERIPHERAL_TYPE][21]['table']='glpi_networking_ports';
 $SEARCH_OPTION[PERIPHERAL_TYPE][21]['field']='ifmac';
 $SEARCH_OPTION[PERIPHERAL_TYPE][21]['linkfield']='';
 $SEARCH_OPTION[PERIPHERAL_TYPE][21]['name']=$LANG["networking"][15];
 $SEARCH_OPTION[PERIPHERAL_TYPE][21]['meta']=0;
+$SEARCH_OPTION[PERIPHERAL_TYPE][21]['forcegrouby']=true;
 
 $SEARCH_OPTION[PERIPHERAL_TYPE][83]['table']='glpi_networking_ports';
 $SEARCH_OPTION[PERIPHERAL_TYPE][83]['field']='netmask';
 $SEARCH_OPTION[PERIPHERAL_TYPE][83]['linkfield']='';
 $SEARCH_OPTION[PERIPHERAL_TYPE][83]['name']=$LANG["networking"][60];
 $SEARCH_OPTION[PERIPHERAL_TYPE][83]['meta']=0;
+$SEARCH_OPTION[PERIPHERAL_TYPE][83]['forcegrouby']=true;
 
 $SEARCH_OPTION[PERIPHERAL_TYPE][84]['table']='glpi_networking_ports';
 $SEARCH_OPTION[PERIPHERAL_TYPE][84]['field']='subnet';
 $SEARCH_OPTION[PERIPHERAL_TYPE][84]['linkfield']='';
 $SEARCH_OPTION[PERIPHERAL_TYPE][84]['name']=$LANG["networking"][61];
 $SEARCH_OPTION[PERIPHERAL_TYPE][84]['meta']=0;
+$SEARCH_OPTION[PERIPHERAL_TYPE][84]['forcegrouby']=true;
 
 $SEARCH_OPTION[PERIPHERAL_TYPE][85]['table']='glpi_networking_ports';
 $SEARCH_OPTION[PERIPHERAL_TYPE][85]['field']='gateway';
 $SEARCH_OPTION[PERIPHERAL_TYPE][85]['linkfield']='';
 $SEARCH_OPTION[PERIPHERAL_TYPE][85]['name']=$LANG["networking"][59];
 $SEARCH_OPTION[PERIPHERAL_TYPE][85]['meta']=0;
-
+$SEARCH_OPTION[PERIPHERAL_TYPE][85]['forcegrouby']=true;
 
 $SEARCH_OPTION[PERIPHERAL_TYPE][22]['table']='glpi_dropdown_netpoint';
 $SEARCH_OPTION[PERIPHERAL_TYPE][22]['field']='name';
 $SEARCH_OPTION[PERIPHERAL_TYPE][22]['linkfield']='';
 $SEARCH_OPTION[PERIPHERAL_TYPE][22]['name']=$LANG["networking"][51];
 $SEARCH_OPTION[PERIPHERAL_TYPE][22]['meta']=0;
+$SEARCH_OPTION[PERIPHERAL_TYPE][22]['forcegrouby']=true;
 
 $SEARCH_OPTION[PERIPHERAL_TYPE]['tracking']=$LANG["title"][24];
 
@@ -1772,66 +1858,77 @@ $SEARCH_OPTION[PERIPHERAL_TYPE][29]['field']='name';
 $SEARCH_OPTION[PERIPHERAL_TYPE][29]['linkfield']='';
 $SEARCH_OPTION[PERIPHERAL_TYPE][29]['name']=$LANG["common"][16]." ".$LANG["financial"][1];
 $SEARCH_OPTION[PERIPHERAL_TYPE][29]['meta']=0;
+$SEARCH_OPTION[PERIPHERAL_TYPE][29]['forcegroupby']=true;
 
 $SEARCH_OPTION[PERIPHERAL_TYPE][30]['table']='glpi_contracts';
 $SEARCH_OPTION[PERIPHERAL_TYPE][30]['field']='num';
 $SEARCH_OPTION[PERIPHERAL_TYPE][30]['linkfield']='';
 $SEARCH_OPTION[PERIPHERAL_TYPE][30]['name']=$LANG["financial"][4]." ".$LANG["financial"][1];
 $SEARCH_OPTION[PERIPHERAL_TYPE][30]['meta']=0;
+$SEARCH_OPTION[PERIPHERAL_TYPE][30]['forcegroupby']=true;
 
 $SEARCH_OPTION[PERIPHERAL_TYPE][130]['table']='glpi_contracts';
 $SEARCH_OPTION[PERIPHERAL_TYPE][130]['field']='duration';
 $SEARCH_OPTION[PERIPHERAL_TYPE][130]['linkfield']='';
 $SEARCH_OPTION[PERIPHERAL_TYPE][130]['name']=$LANG["financial"][8]." ".$LANG["financial"][1];
 $SEARCH_OPTION[PERIPHERAL_TYPE][130]['meta']=0;
+$SEARCH_OPTION[PERIPHERAL_TYPE][130]['forcegroupby']=true;
 
 $SEARCH_OPTION[PERIPHERAL_TYPE][131]['table']='glpi_contracts';
 $SEARCH_OPTION[PERIPHERAL_TYPE][131]['field']='periodicity';
 $SEARCH_OPTION[PERIPHERAL_TYPE][131]['linkfield']='';
 $SEARCH_OPTION[PERIPHERAL_TYPE][131]['name']=$LANG["financial"][69];
 $SEARCH_OPTION[PERIPHERAL_TYPE][131]['meta']=0;
+$SEARCH_OPTION[PERIPHERAL_TYPE][131]['forcegroupby']=true;
 
 $SEARCH_OPTION[PERIPHERAL_TYPE][132]['table']='glpi_contracts';
 $SEARCH_OPTION[PERIPHERAL_TYPE][132]['field']='begin_date';
 $SEARCH_OPTION[PERIPHERAL_TYPE][132]['linkfield']='';
 $SEARCH_OPTION[PERIPHERAL_TYPE][132]['name']=$LANG["search"][8]." ".$LANG["financial"][1];
 $SEARCH_OPTION[PERIPHERAL_TYPE][132]['meta']=0;
+$SEARCH_OPTION[PERIPHERAL_TYPE][132]['forcegroupby']=true;
 
 $SEARCH_OPTION[PERIPHERAL_TYPE][133]['table']='glpi_contracts';
 $SEARCH_OPTION[PERIPHERAL_TYPE][133]['field']='compta_num';
 $SEARCH_OPTION[PERIPHERAL_TYPE][133]['linkfield']='';
 $SEARCH_OPTION[PERIPHERAL_TYPE][133]['name']=$LANG["financial"][13]." ".$LANG["financial"][1];
 $SEARCH_OPTION[PERIPHERAL_TYPE][133]['meta']=0;
+$SEARCH_OPTION[PERIPHERAL_TYPE][133]['forcegroupby']=true;
 
 $SEARCH_OPTION[PERIPHERAL_TYPE][134]['table']='glpi_contracts';
 $SEARCH_OPTION[PERIPHERAL_TYPE][134]['field']='end_date';
 $SEARCH_OPTION[PERIPHERAL_TYPE][134]['linkfield']='';
 $SEARCH_OPTION[PERIPHERAL_TYPE][134]['name']=$LANG["search"][9]." ".$LANG["financial"][1];
 $SEARCH_OPTION[PERIPHERAL_TYPE][134]['meta']=0;
+$SEARCH_OPTION[PERIPHERAL_TYPE][134]['forcegroupby']=true;
 
 $SEARCH_OPTION[PERIPHERAL_TYPE][135]['table']='glpi_contracts';
 $SEARCH_OPTION[PERIPHERAL_TYPE][135]['field']='notice';
 $SEARCH_OPTION[PERIPHERAL_TYPE][135]['linkfield']='';
 $SEARCH_OPTION[PERIPHERAL_TYPE][135]['name']=$LANG["financial"][10]." ".$LANG["financial"][1];
 $SEARCH_OPTION[PERIPHERAL_TYPE][135]['meta']=0;
+$SEARCH_OPTION[PERIPHERAL_TYPE][135]['forcegroupby']=true;
 
 $SEARCH_OPTION[PERIPHERAL_TYPE][136]['table']='glpi_contracts';
 $SEARCH_OPTION[PERIPHERAL_TYPE][136]['field']='cost';
 $SEARCH_OPTION[PERIPHERAL_TYPE][136]['linkfield']='';
 $SEARCH_OPTION[PERIPHERAL_TYPE][136]['name']=$LANG["financial"][5]." ".$LANG["financial"][1];
 $SEARCH_OPTION[PERIPHERAL_TYPE][136]['meta']=0;
+$SEARCH_OPTION[PERIPHERAL_TYPE][136]['forcegroupby']=true;
 
 $SEARCH_OPTION[PERIPHERAL_TYPE][137]['table']='glpi_contracts';
 $SEARCH_OPTION[PERIPHERAL_TYPE][137]['field']='facturation';
 $SEARCH_OPTION[PERIPHERAL_TYPE][137]['linkfield']='';
 $SEARCH_OPTION[PERIPHERAL_TYPE][137]['name']=$LANG["financial"][11]." ".$LANG["financial"][1];
 $SEARCH_OPTION[PERIPHERAL_TYPE][137]['meta']=0;
+$SEARCH_OPTION[PERIPHERAL_TYPE][137]['forcegroupby']=true;
 
 $SEARCH_OPTION[PERIPHERAL_TYPE][138]['table']='glpi_contracts';
 $SEARCH_OPTION[PERIPHERAL_TYPE][138]['field']='renewal';
 $SEARCH_OPTION[PERIPHERAL_TYPE][138]['linkfield']='';
 $SEARCH_OPTION[PERIPHERAL_TYPE][138]['name']=$LANG["financial"][107]." ".$LANG["financial"][1];
 $SEARCH_OPTION[PERIPHERAL_TYPE][138]['meta']=0;
+$SEARCH_OPTION[PERIPHERAL_TYPE][138]['forcegroupby']=true;
 
 $SEARCH_OPTION[PERIPHERAL_TYPE]['financial']=$LANG["financial"][3];
 
@@ -1982,6 +2079,7 @@ $SEARCH_OPTION[SOFTWARE_TYPE][5]['field']='name';
 $SEARCH_OPTION[SOFTWARE_TYPE][5]['linkfield']='';
 $SEARCH_OPTION[SOFTWARE_TYPE][5]['name']=$LANG["software"][5];
 $SEARCH_OPTION[SOFTWARE_TYPE][5]['meta']=2;
+$SEARCH_OPTION[SOFTWARE_TYPE][5]['forcegroupby']=true;
 
 $SEARCH_OPTION[SOFTWARE_TYPE][7]['table']='glpi_softwarelicenses';
 $SEARCH_OPTION[SOFTWARE_TYPE][7]['field']='name';
@@ -2064,66 +2162,77 @@ $SEARCH_OPTION[SOFTWARE_TYPE][29]['field']='name';
 $SEARCH_OPTION[SOFTWARE_TYPE][29]['linkfield']='';
 $SEARCH_OPTION[SOFTWARE_TYPE][29]['name']=$LANG["common"][16]." ".$LANG["financial"][1];
 $SEARCH_OPTION[SOFTWARE_TYPE][29]['meta']=0;
+$SEARCH_OPTION[SOFTWARE_TYPE][29]['forcegroupby']=true;
 
 $SEARCH_OPTION[SOFTWARE_TYPE][30]['table']='glpi_contracts';
 $SEARCH_OPTION[SOFTWARE_TYPE][30]['field']='num';
 $SEARCH_OPTION[SOFTWARE_TYPE][30]['linkfield']='';
 $SEARCH_OPTION[SOFTWARE_TYPE][30]['name']=$LANG["financial"][4]." ".$LANG["financial"][1];
 $SEARCH_OPTION[SOFTWARE_TYPE][30]['meta']=0;
+$SEARCH_OPTION[SOFTWARE_TYPE][30]['forcegroupby']=true;
 
 $SEARCH_OPTION[SOFTWARE_TYPE][130]['table']='glpi_contracts';
 $SEARCH_OPTION[SOFTWARE_TYPE][130]['field']='duration';
 $SEARCH_OPTION[SOFTWARE_TYPE][130]['linkfield']='';
 $SEARCH_OPTION[SOFTWARE_TYPE][130]['name']=$LANG["financial"][8]." ".$LANG["financial"][1];
 $SEARCH_OPTION[SOFTWARE_TYPE][130]['meta']=0;
+$SEARCH_OPTION[SOFTWARE_TYPE][130]['forcegroupby']=true;
 
 $SEARCH_OPTION[SOFTWARE_TYPE][131]['table']='glpi_contracts';
 $SEARCH_OPTION[SOFTWARE_TYPE][131]['field']='periodicity';
 $SEARCH_OPTION[SOFTWARE_TYPE][131]['linkfield']='';
 $SEARCH_OPTION[SOFTWARE_TYPE][131]['name']=$LANG["financial"][69];
 $SEARCH_OPTION[SOFTWARE_TYPE][131]['meta']=0;
+$SEARCH_OPTION[SOFTWARE_TYPE][131]['forcegroupby']=true;
 
 $SEARCH_OPTION[SOFTWARE_TYPE][132]['table']='glpi_contracts';
 $SEARCH_OPTION[SOFTWARE_TYPE][132]['field']='begin_date';
 $SEARCH_OPTION[SOFTWARE_TYPE][132]['linkfield']='';
 $SEARCH_OPTION[SOFTWARE_TYPE][132]['name']=$LANG["search"][8]." ".$LANG["financial"][1];
 $SEARCH_OPTION[SOFTWARE_TYPE][132]['meta']=0;
+$SEARCH_OPTION[SOFTWARE_TYPE][132]['forcegroupby']=true;
 
 $SEARCH_OPTION[SOFTWARE_TYPE][133]['table']='glpi_contracts';
 $SEARCH_OPTION[SOFTWARE_TYPE][133]['field']='compta_num';
 $SEARCH_OPTION[SOFTWARE_TYPE][133]['linkfield']='';
 $SEARCH_OPTION[SOFTWARE_TYPE][133]['name']=$LANG["financial"][13]." ".$LANG["financial"][1];
 $SEARCH_OPTION[SOFTWARE_TYPE][133]['meta']=0;
+$SEARCH_OPTION[SOFTWARE_TYPE][133]['forcegroupby']=true;
 
 $SEARCH_OPTION[SOFTWARE_TYPE][134]['table']='glpi_contracts';
 $SEARCH_OPTION[SOFTWARE_TYPE][134]['field']='end_date';
 $SEARCH_OPTION[SOFTWARE_TYPE][134]['linkfield']='';
 $SEARCH_OPTION[SOFTWARE_TYPE][134]['name']=$LANG["search"][9]." ".$LANG["financial"][1];
 $SEARCH_OPTION[SOFTWARE_TYPE][134]['meta']=0;
+$SEARCH_OPTION[SOFTWARE_TYPE][134]['forcegroupby']=true;
 
 $SEARCH_OPTION[SOFTWARE_TYPE][135]['table']='glpi_contracts';
 $SEARCH_OPTION[SOFTWARE_TYPE][135]['field']='notice';
 $SEARCH_OPTION[SOFTWARE_TYPE][135]['linkfield']='';
 $SEARCH_OPTION[SOFTWARE_TYPE][135]['name']=$LANG["financial"][10]." ".$LANG["financial"][1];
 $SEARCH_OPTION[SOFTWARE_TYPE][135]['meta']=0;
+$SEARCH_OPTION[SOFTWARE_TYPE][135]['forcegroupby']=true;
 
 $SEARCH_OPTION[SOFTWARE_TYPE][136]['table']='glpi_contracts';
 $SEARCH_OPTION[SOFTWARE_TYPE][136]['field']='cost';
 $SEARCH_OPTION[SOFTWARE_TYPE][136]['linkfield']='';
 $SEARCH_OPTION[SOFTWARE_TYPE][136]['name']=$LANG["financial"][5]." ".$LANG["financial"][1];
 $SEARCH_OPTION[SOFTWARE_TYPE][136]['meta']=0;
+$SEARCH_OPTION[SOFTWARE_TYPE][136]['forcegroupby']=true;
 
 $SEARCH_OPTION[SOFTWARE_TYPE][137]['table']='glpi_contracts';
 $SEARCH_OPTION[SOFTWARE_TYPE][137]['field']='facturation';
 $SEARCH_OPTION[SOFTWARE_TYPE][137]['linkfield']='';
 $SEARCH_OPTION[SOFTWARE_TYPE][137]['name']=$LANG["financial"][11]." ".$LANG["financial"][1];
 $SEARCH_OPTION[SOFTWARE_TYPE][137]['meta']=0;
+$SEARCH_OPTION[SOFTWARE_TYPE][137]['forcegroupby']=true;
 
 $SEARCH_OPTION[SOFTWARE_TYPE][138]['table']='glpi_contracts';
 $SEARCH_OPTION[SOFTWARE_TYPE][138]['field']='renewal';
 $SEARCH_OPTION[SOFTWARE_TYPE][138]['linkfield']='';
 $SEARCH_OPTION[SOFTWARE_TYPE][138]['name']=$LANG["financial"][107]." ".$LANG["financial"][1];
 $SEARCH_OPTION[SOFTWARE_TYPE][138]['meta']=0;
+$SEARCH_OPTION[SOFTWARE_TYPE][138]['forcegroupby']=true;
 
 $SEARCH_OPTION[SOFTWARE_TYPE]['financial']=$LANG["financial"][3];
 
@@ -2266,7 +2375,8 @@ $SEARCH_OPTION[SOFTWARELICENSE_TYPE][6]['table']='glpi_softwareversions';
 $SEARCH_OPTION[SOFTWARELICENSE_TYPE][6]['field']='name'; 
 $SEARCH_OPTION[SOFTWARELICENSE_TYPE][6]['linkfield']='buy_version'; 
 $SEARCH_OPTION[SOFTWARELICENSE_TYPE][6]['name']=$LANG["software"][1]; 
-$SEARCH_OPTION[SOFTWARELICENSE_TYPE][6]['meta']=0; 
+$SEARCH_OPTION[SOFTWARELICENSE_TYPE][6]['meta']=0;
+
 
 $SEARCH_OPTION[SOFTWARELICENSE_TYPE][7]['table']='glpi_softwareversions'; 
 $SEARCH_OPTION[SOFTWARELICENSE_TYPE][7]['field']='name'; 
@@ -2350,6 +2460,7 @@ $SEARCH_OPTION[CONTACT_TYPE][8]['field']='name';
 $SEARCH_OPTION[CONTACT_TYPE][8]['linkfield']='';
 $SEARCH_OPTION[CONTACT_TYPE][8]['name']=$LANG["financial"][65];
 $SEARCH_OPTION[CONTACT_TYPE][8]['meta']=0;
+$SEARCH_OPTION[CONTACT_TYPE][8]['forcegroupby']=true;
 
 $SEARCH_OPTION[CONTACT_TYPE][7]['table']='glpi_contacts';
 $SEARCH_OPTION[CONTACT_TYPE][7]['field']='comments';
@@ -2444,6 +2555,7 @@ $SEARCH_OPTION[ENTERPRISE_TYPE][8]['field']='completename';
 $SEARCH_OPTION[ENTERPRISE_TYPE][8]['linkfield']='';
 $SEARCH_OPTION[ENTERPRISE_TYPE][8]['name']=$LANG["financial"][46];
 $SEARCH_OPTION[ENTERPRISE_TYPE][8]['meta']=0;
+$SEARCH_OPTION[ENTERPRISE_TYPE][8]['forcegroupby']=true;
 
 $SEARCH_OPTION[ENTERPRISE_TYPE][7]['table']='glpi_enterprises';
 $SEARCH_OPTION[ENTERPRISE_TYPE][7]['field']='comments';
@@ -2759,6 +2871,7 @@ $SEARCH_OPTION[DOCUMENT_TYPE][19]['meta']=0;
 
 
 //////USER_TYPE
+// forcegroup by on name set force group by for all items
 
 $SEARCH_OPTION[USER_TYPE]['common']=$LANG["common"][32];
 
@@ -2767,6 +2880,7 @@ $SEARCH_OPTION[USER_TYPE][1]['field']='name';
 $SEARCH_OPTION[USER_TYPE][1]['linkfield']='';
 $SEARCH_OPTION[USER_TYPE][1]['name']=$LANG["setup"][18];
 $SEARCH_OPTION[USER_TYPE][1]['meta']=0;
+$SEARCH_OPTION[USER_TYPE][1]['forcegroupby']=true;
 
 $SEARCH_OPTION[USER_TYPE][2]['table']='glpi_users';
 $SEARCH_OPTION[USER_TYPE][2]['field']='ID';
@@ -3100,6 +3214,7 @@ $SEARCH_OPTION[PHONE_TYPE][60]['field']='count';
 $SEARCH_OPTION[PHONE_TYPE][60]['linkfield']='';
 $SEARCH_OPTION[PHONE_TYPE][60]['name']=$LANG["stats"][13];
 $SEARCH_OPTION[PHONE_TYPE][60]['meta']=0;
+$SEARCH_OPTION[PHONE_TYPE][60]['forcegroupby']=true;
 
 $SEARCH_OPTION[PHONE_TYPE]['contract']=$LANG["Menu"][25];
 
@@ -3108,66 +3223,77 @@ $SEARCH_OPTION[PHONE_TYPE][29]['field']='name';
 $SEARCH_OPTION[PHONE_TYPE][29]['linkfield']='';
 $SEARCH_OPTION[PHONE_TYPE][29]['name']=$LANG["common"][16]." ".$LANG["financial"][1];
 $SEARCH_OPTION[PHONE_TYPE][29]['meta']=0;
+$SEARCH_OPTION[PHONE_TYPE][29]['forcegroupby']=true;
 
 $SEARCH_OPTION[PHONE_TYPE][30]['table']='glpi_contracts';
 $SEARCH_OPTION[PHONE_TYPE][30]['field']='num';
 $SEARCH_OPTION[PHONE_TYPE][30]['linkfield']='';
 $SEARCH_OPTION[PHONE_TYPE][30]['name']=$LANG["financial"][4]." ".$LANG["financial"][1];
 $SEARCH_OPTION[PHONE_TYPE][30]['meta']=0;
+$SEARCH_OPTION[PHONE_TYPE][30]['forcegroupby']=true;
 
 $SEARCH_OPTION[PHONE_TYPE][130]['table']='glpi_contracts';
 $SEARCH_OPTION[PHONE_TYPE][130]['field']='duration';
 $SEARCH_OPTION[PHONE_TYPE][130]['linkfield']='';
 $SEARCH_OPTION[PHONE_TYPE][130]['name']=$LANG["financial"][8]." ".$LANG["financial"][1];
 $SEARCH_OPTION[PHONE_TYPE][130]['meta']=0;
+$SEARCH_OPTION[PHONE_TYPE][130]['forcegroupby']=true;
 
 $SEARCH_OPTION[PHONE_TYPE][131]['table']='glpi_contracts';
 $SEARCH_OPTION[PHONE_TYPE][131]['field']='periodicity';
 $SEARCH_OPTION[PHONE_TYPE][131]['linkfield']='';
 $SEARCH_OPTION[PHONE_TYPE][131]['name']=$LANG["financial"][69];
 $SEARCH_OPTION[PHONE_TYPE][131]['meta']=0;
+$SEARCH_OPTION[PHONE_TYPE][131]['forcegroupby']=true;
 
 $SEARCH_OPTION[PHONE_TYPE][132]['table']='glpi_contracts';
 $SEARCH_OPTION[PHONE_TYPE][132]['field']='begin_date';
 $SEARCH_OPTION[PHONE_TYPE][132]['linkfield']='';
 $SEARCH_OPTION[PHONE_TYPE][132]['name']=$LANG["search"][8]." ".$LANG["financial"][1];
 $SEARCH_OPTION[PHONE_TYPE][132]['meta']=0;
+$SEARCH_OPTION[PHONE_TYPE][132]['forcegroupby']=true;
 
 $SEARCH_OPTION[PHONE_TYPE][133]['table']='glpi_contracts';
 $SEARCH_OPTION[PHONE_TYPE][133]['field']='compta_num';
 $SEARCH_OPTION[PHONE_TYPE][133]['linkfield']='';
 $SEARCH_OPTION[PHONE_TYPE][133]['name']=$LANG["financial"][13]." ".$LANG["financial"][1];
 $SEARCH_OPTION[PHONE_TYPE][133]['meta']=0;
+$SEARCH_OPTION[PHONE_TYPE][133]['forcegroupby']=true;
 
 $SEARCH_OPTION[PHONE_TYPE][134]['table']='glpi_contracts';
 $SEARCH_OPTION[PHONE_TYPE][134]['field']='end_date';
 $SEARCH_OPTION[PHONE_TYPE][134]['linkfield']='';
 $SEARCH_OPTION[PHONE_TYPE][134]['name']=$LANG["search"][9]." ".$LANG["financial"][1];
 $SEARCH_OPTION[PHONE_TYPE][134]['meta']=0;
+$SEARCH_OPTION[PHONE_TYPE][134]['forcegroupby']=true;
 
 $SEARCH_OPTION[PHONE_TYPE][135]['table']='glpi_contracts';
 $SEARCH_OPTION[PHONE_TYPE][135]['field']='notice';
 $SEARCH_OPTION[PHONE_TYPE][135]['linkfield']='';
 $SEARCH_OPTION[PHONE_TYPE][135]['name']=$LANG["financial"][10]." ".$LANG["financial"][1];
 $SEARCH_OPTION[PHONE_TYPE][135]['meta']=0;
+$SEARCH_OPTION[PHONE_TYPE][135]['forcegroupby']=true;
 
 $SEARCH_OPTION[PHONE_TYPE][136]['table']='glpi_contracts';
 $SEARCH_OPTION[PHONE_TYPE][136]['field']='cost';
 $SEARCH_OPTION[PHONE_TYPE][136]['linkfield']='';
 $SEARCH_OPTION[PHONE_TYPE][136]['name']=$LANG["financial"][5]." ".$LANG["financial"][1];
 $SEARCH_OPTION[PHONE_TYPE][136]['meta']=0;
+$SEARCH_OPTION[PHONE_TYPE][136]['forcegroupby']=true;
 
 $SEARCH_OPTION[PHONE_TYPE][137]['table']='glpi_contracts';
 $SEARCH_OPTION[PHONE_TYPE][137]['field']='facturation';
 $SEARCH_OPTION[PHONE_TYPE][137]['linkfield']='';
 $SEARCH_OPTION[PHONE_TYPE][137]['name']=$LANG["financial"][11]." ".$LANG["financial"][1];
 $SEARCH_OPTION[PHONE_TYPE][137]['meta']=0;
+$SEARCH_OPTION[PHONE_TYPE][137]['forcegroupby']=true;
 
 $SEARCH_OPTION[PHONE_TYPE][138]['table']='glpi_contracts';
 $SEARCH_OPTION[PHONE_TYPE][138]['field']='renewal';
 $SEARCH_OPTION[PHONE_TYPE][138]['linkfield']='';
 $SEARCH_OPTION[PHONE_TYPE][138]['name']=$LANG["financial"][107]." ".$LANG["financial"][1];
 $SEARCH_OPTION[PHONE_TYPE][138]['meta']=0;
+$SEARCH_OPTION[PHONE_TYPE][138]['forcegroupby']=true;
 
 $SEARCH_OPTION[PHONE_TYPE]['financial']=$LANG["financial"][3];
 
@@ -3286,36 +3412,42 @@ $SEARCH_OPTION[PHONE_TYPE][20]['field']='ifaddr';
 $SEARCH_OPTION[PHONE_TYPE][20]['linkfield']='';
 $SEARCH_OPTION[PHONE_TYPE][20]['name']=$LANG["networking"][14];
 $SEARCH_OPTION[PHONE_TYPE][20]['meta']=0;
+$SEARCH_OPTION[PHONE_TYPE][20]['forcegrouby']=true;
 
 $SEARCH_OPTION[PHONE_TYPE][21]['table']='glpi_networking_ports';
 $SEARCH_OPTION[PHONE_TYPE][21]['field']='ifmac';
 $SEARCH_OPTION[PHONE_TYPE][21]['linkfield']='';
 $SEARCH_OPTION[PHONE_TYPE][21]['name']=$LANG["networking"][15];
 $SEARCH_OPTION[PHONE_TYPE][21]['meta']=0;
+$SEARCH_OPTION[PHONE_TYPE][21]['forcegrouby']=true;
 
 $SEARCH_OPTION[PHONE_TYPE][83]['table']='glpi_networking_ports';
 $SEARCH_OPTION[PHONE_TYPE][83]['field']='netmask';
 $SEARCH_OPTION[PHONE_TYPE][83]['linkfield']='';
 $SEARCH_OPTION[PHONE_TYPE][83]['name']=$LANG["networking"][60];
 $SEARCH_OPTION[PHONE_TYPE][83]['meta']=0;
+$SEARCH_OPTION[PHONE_TYPE][83]['forcegrouby']=true;
 
 $SEARCH_OPTION[PHONE_TYPE][84]['table']='glpi_networking_ports';
 $SEARCH_OPTION[PHONE_TYPE][84]['field']='subnet';
 $SEARCH_OPTION[PHONE_TYPE][84]['linkfield']='';
 $SEARCH_OPTION[PHONE_TYPE][84]['name']=$LANG["networking"][61];
 $SEARCH_OPTION[PHONE_TYPE][84]['meta']=0;
+$SEARCH_OPTION[PHONE_TYPE][84]['forcegrouby']=true;
 
 $SEARCH_OPTION[PHONE_TYPE][85]['table']='glpi_networking_ports';
 $SEARCH_OPTION[PHONE_TYPE][85]['field']='gateway';
 $SEARCH_OPTION[PHONE_TYPE][85]['linkfield']='';
 $SEARCH_OPTION[PHONE_TYPE][85]['name']=$LANG["networking"][59];
 $SEARCH_OPTION[PHONE_TYPE][85]['meta']=0;
+$SEARCH_OPTION[PHONE_TYPE][85]['forcegrouby']=true;
 
 $SEARCH_OPTION[PHONE_TYPE][22]['table']='glpi_dropdown_netpoint';
 $SEARCH_OPTION[PHONE_TYPE][22]['field']='name';
 $SEARCH_OPTION[PHONE_TYPE][22]['linkfield']='';
 $SEARCH_OPTION[PHONE_TYPE][22]['name']=$LANG["networking"][51];
 $SEARCH_OPTION[PHONE_TYPE][22]['meta']=0;
+$SEARCH_OPTION[PHONE_TYPE][22]['forcegrouby']=true;
 
 //////GROUP_TYPE
 
