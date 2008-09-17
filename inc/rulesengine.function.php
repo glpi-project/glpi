@@ -197,7 +197,7 @@ function dropdownRulesActions($rule_type,$name,$value=''){
 
 function getActionByID($ID){
 	global $LANG;
-	echo $ID;
+	
 	switch ($ID){
 		case "assign" : 
 			return $LANG["rulesengine"][22];
