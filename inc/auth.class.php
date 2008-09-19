@@ -326,6 +326,8 @@ class Identification {
 			$this->destroySession();
 			startGlpiSession();
 
+			// Normal mode for this request
+			$_SESSION["glpi_use_mode"] = NORMAL_MODE;
 			// Check ID exists and load complete user from DB (plugins...)
 			if (isset($this->user->fields['ID']) && $this->user->getFromDB($this->user->fields['ID'])){
 				if (!$this->user->fields['deleted']&&$this->user->fields['active']){
