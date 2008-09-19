@@ -32,10 +32,10 @@
 		"ro_RO"=>array("Romanian","ro_RO.php","ro","en"),
 		"ru_RU"=>array("Russian","ru_RU.php","ru","ru"),
 		"zh_CN"=>array("Simplified Chinese","zh_CN.php","en","zh"),
+		"sl_SL"=>array("Slovenian","sl_SI.php","sl","sl"),
 		"sv_SE"=>array("Swedish","sv_SE.php","sv_SE","sv"),
 		"tr_TR"=>array("Turkish","tr_TR.php","tr","en"),
 		);
-
 
 	// TIMES
 	define("MINUTE_TIMESTAMP",60);
