@@ -265,10 +265,11 @@ class DictionnarySoftwareCollection extends RuleCachedCollection {
 			} else {
 				$new_version_name= $version["name"];
 			}
-			
-			if ($ID != $new_software_id && $new_version_name != $old_version_name){
+
+			if ($ID != $new_software_id || $new_version_name != $old_version_name){
 				$this->moveVersions($ID, $new_software_id, $version["ID"], $old_version_name, $new_version_name, $entity);
 			}
+
 		}
 	}
 	
@@ -317,7 +318,7 @@ class DictionnarySoftwareCollection extends RuleCachedCollection {
 		global $DB;
 		
 		$new_versionID = $this->versionExists($new_software_id, $version_id,$new_version);
-		
+
 		// Do something if it is not the same version
 		if ($new_versionID != $version_id){
 			//A version does not exist : update existing one
