@@ -86,8 +86,9 @@ class DictionnarySoftwareCollection extends RuleCachedCollection {
 		if (isCommandLine()){
 			echo "replayRulesOnExistingDB started : " . date("r") . "\n";
 		}
+		$nb=0;
+		$i  = $offset;
 
-		
 		if (count($items) == 0) {
 			//Select all the differents software
 			$sql = "SELECT DISTINCT glpi_software.name, glpi_dropdown_manufacturer.name AS manufacturer," .
@@ -104,7 +105,7 @@ class DictionnarySoftwareCollection extends RuleCachedCollection {
 				
 			$res = $DB->query($sql);
 			$nb = $DB->numrows($res)+$offset;
-			$i  = $offset;
+
 			$step=($nb>1000 ? 50 : ($nb>20 ? floor($DB->numrows($res)/20) : 1));
 
 			while ($input = $DB->fetch_array($res)) {
