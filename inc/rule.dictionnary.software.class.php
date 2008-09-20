@@ -320,7 +320,7 @@ class DictionnarySoftwareCollection extends RuleCachedCollection {
 		global $DB;
 
 		//Check if the version exists
-		$sql = "SELECT * FROM glpi_softwareversions WHERE sID=" . $software_id . " AND version='" . $version . "'";
+		$sql = "SELECT * FROM glpi_softwareversions WHERE sID=" . $software_id . " AND name='" . $version . "'";
 
 		$res_version = $DB->query($sql);
 		return (!$DB->numrows($res_version)?-1:$DB->result($res_version, 0, "ID"));
