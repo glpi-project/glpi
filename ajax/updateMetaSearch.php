@@ -66,7 +66,7 @@
 				if (!$first_group) $newgroup.="</optgroup>";
 				$newgroup.="<optgroup label=\"$val\">";
 			} else {
-				if ($val["meta"]){
+				if (!isset($val["nometa"])){
 					$newgroup.= "<option value=\"".$key."\" title=\"".cleanInputText($val["name"])."\""; 
 					if($key == $_POST["field"]) $newgroup.= "selected";
 					$newgroup.= ">". substr($val["name"],0,20) ."</option>\n";

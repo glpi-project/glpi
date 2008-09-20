@@ -490,9 +490,6 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 
 	$entity_restrict=in_array($itemtable,$CFG_GLPI["specif_entities_tables"]);
 
-	/// TODO : clean it
-	// Define meta table where search must be done in HAVING clause
-	$META_SPECIF_TABLE=array("glpi_device_ram","glpi_device_hdd","glpi_device_processor","glpi_tracking");
 
 	$names=array(
 			COMPUTER_TYPE => $LANG["Menu"][0],
@@ -596,7 +593,6 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 	//// 3 - WHERE
 
 	// default string
-	$WHERE="";
 	$COMMONWHERE = addDefaultWhere($type);
 	$first=empty($COMMONWHERE);
 	
@@ -628,12 +624,13 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 			$COMMONWHERE.=getEntitiesRestrictRequest($LINK,$itemtable);
 		}
 	}
-	$first=true;
+	$WHERE="";
+	$HAVING="";
+
 	/// TODO do also having here / simplify view - all cases : duplicates
 	// Add search conditions
 	// If there is search items
 	if ($_SESSION["glpisearchcount"][$type]>0&&count($contains)>0) {
-		$i=0;
 		for ($key=0;$key<$_SESSION["glpisearchcount"][$type];$key++){
 			// if real search (strlen >0) and not all and view search
 			if (isset($contains[$key])&&strlen($contains[$key])>0&&$field[$key]!="all"&&$field[$key]!="view"){
@@ -651,14 +648,21 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 					$tmplink=" AND ";
 				}
 			
-				// Manage Link if not first item
-				if (!$first||$i>0) {
-					$LINK=$tmplink;
-				}
-				// Add Where clause if not to be done ine HAVING CLAUSE
-				if (!in_array($SEARCH_OPTION[$type][$field[$key]]["table"],$META_SPECIF_TABLE)){
+				if (isset($SEARCH_OPTION[$type][$field[$key]]["usehaving"])){
+					// Manage Link if not first item
+					if (!empty($HAVING)) {
+						$LINK=$tmplink;
+					} 
+					// Find key
+					$item_num=array_search($field[$key],$toview);
+
+					$HAVING.=addHaving($LINK,$NOT,$type,$field[$key],$contains[$key],0,$item_num);
+				} else {
+					// Manage Link if not first item
+					if (!empty($WHERE)) {
+						$LINK=$tmplink;
+					}
 					$WHERE.= addWhere($LINK,$NOT,$type,$field[$key],$contains[$key]);
-					$i++;
 				}
 				// if real search (strlen >0) and view search
 			} else if (isset($contains[$key])&&strlen($contains[$key])>0&&$field[$key]=="view"){
@@ -691,15 +695,15 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 				}
 
 				// Manage Link if not first item
-				if (!$first||$i>0) {
+				if (!empty($WHERE)) {
 					$WHERE.=$globallink;
 				}
 
 				$WHERE.= " ( ";
 				$first2=true;
 				foreach ($toview as $key2 => $val2){
-					// Add Where clause if not to be done ine HAVING CLAUSE
-					if (!in_array($SEARCH_OPTION[$type][$val2]["table"],$META_SPECIF_TABLE)){
+					// Add Where clause if not to be done in HAVING CLAUSE
+					if (!isset($SEARCH_OPTION[$type][$val2]["usehaving"])){
 						$tmplink=$LINK;
 						if ($first2) {
 							$tmplink=" ";
@@ -709,7 +713,6 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 					}
 				}
 				$WHERE.=" ) ";
-				$i++;
 				// if real search (strlen >0) and all search
 			} else if (isset($contains[$key])&&strlen($contains[$key])>0&&$field[$key]=="all"){
 
@@ -742,7 +745,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 				}
 
 				// Manage Link if not first item
-				if (!$first||$i>0) {
+				if (!empty($WHERE)) {
 					$WHERE.=$globallink;
 				}
 
@@ -753,7 +756,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 				foreach ($SEARCH_OPTION[$type] as $key2 => $val2)
 					if (is_array($val2)){
 						// Add Where clause if not to be done ine HAVING CLAUSE
-						if (!in_array($val2["table"],$META_SPECIF_TABLE)){
+					if (!isset($val2["usehaving"])){
 							$tmplink=$LINK;
 							if ($first2) {
 								$tmplink=" ";
@@ -764,7 +767,6 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 					}
 
 				$WHERE.=")";
-				$i++;
 			} 
 		}
 	}
@@ -824,7 +826,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 	//// 7 - Manage GROUP BY
 	$GROUPBY="";
 	// Meta Search / Search All / Count tickets
-	if ($_SESSION["glpisearchcount2"][$type]>0){
+	if ($_SESSION["glpisearchcount2"][$type]>0 || !empty($HAVING)){
 		$GROUPBY=" GROUP BY $itemtable.ID";
 	}
 
@@ -833,64 +835,52 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 			if (!empty($GROUPBY)){
 				break;
 			}
-			if (isset($SEARCH_OPTION[$type][$val2]["forcegroupby"]) && $SEARCH_OPTION[$type][$val2]["forcegroupby"]){
+			if (isset($SEARCH_OPTION[$type][$val2]["forcegroupby"])){
 				$GROUPBY=" GROUP BY $itemtable.ID";
 			}
 		}
 	}
 
-	/// TODO need to be managed with where statements 
-	// Specific search define in META_SPECIF_TABLE : only for computer search (not meta search)
-	if ($type==COMPUTER_TYPE){
-		// For each real search item 
-		foreach($contains as $key => $val)
-			if (strlen($val)>0){
-				// If not all and view search
-				if ($field[$key]!="all"&&$field[$key]!="view"){
-					foreach ($toview as $key2 => $val2){
-
-						if (($val2==$field[$key])&&in_array($SEARCH_OPTION[$type][$val2]["table"],$META_SPECIF_TABLE)){
-							if (!isset($link[$key])) {
-								$link[$key]="AND";
-							}
-							
-							$GROUPBY=addGroupByHaving($GROUPBY,$SEARCH_OPTION[$type][$field[$key]]["table"].".".$SEARCH_OPTION[$type][$field[$key]]["field"],strtolower($contains[$key]),$key2,0,$link[$key]);
-						}
-					}
-				}
-			}
-	} 
-
-	$first=empty($WHERE);
 	// Specific search for others item linked  (META search)
 	if (is_array($type2)){
 		for ($key=0;$key<$_SESSION["glpisearchcount2"][$type];$key++){
 			if (isset($type2[$key])&&$type2[$key]>0&&isset($contains2[$key])&&strlen($contains2[$key]))
 			{
 				$LINK="";
-				if (isset($link2[$key])) $LINK=$link2[$key];
 
 				// For AND NOT statement need to take into account all the group by items
-				if ($SEARCH_OPTION[$type2[$key]][$field2[$key]]["meta"]==1 || ereg("AND NOT",$link2[$key])){		
-					$GROUPBY=addGroupByHaving($GROUPBY,$SEARCH_OPTION[$type2[$key]][$field2[$key]]["table"].".".$SEARCH_OPTION[$type2[$key]][$field2[$key]]["field"],strtolower($contains2[$key]),$key,1,$LINK);
+				if (ereg("AND NOT",$link2[$key])
+					|| isset($SEARCH_OPTION[$type2[$key]][$field2[$key]]["usehaving"])
+				){
+					$NOT=0;
+					if (ereg("NOT",$link2[$key])){
+						$tmplink=" ".ereg_replace(" NOT","",$link2[$key]);
+						$NOT=1;
+					} else {
+						$tmplink=" ".$link2[$key];
+					}
+					if (!empty($HAVING)) {
+						$LINK=$tmplink;
+					}
+					$HAVING.=addHaving($LINK,$NOT,$type2[$key],$field2[$key],$contains2[$key],1,$key);
 				} else { // Meta Where Search
 					$LINK=" ";
 					$NOT=0;
 					// Manage Link if not first item
-					if (!$first) {
-						if (is_array($link2)&&isset($link2[$key])&&ereg("NOT",$link2[$key])){
-							$LINK=" ".ereg_replace(" NOT","",$link2[$key]);
-							$NOT=1;
-						}
-						else if (is_array($link2)&&isset($link2[$key])){
-							$LINK=" ".$link2[$key];
-						} else {
-							$LINK=" AND ";
-						}
+					if (is_array($link2)&&isset($link2[$key])&&ereg("NOT",$link2[$key])){
+						$tmplink=" ".ereg_replace(" NOT","",$link2[$key]);
+						$NOT=1;
+					}
+					else if (is_array($link2)&&isset($link2[$key])){
+						$tmplink=" ".$link2[$key];
+					} else {
+						$tmplink=" AND ";
+					}
+					if (!empty($WHERE)) {
+						$LINK=$tmplink;
 					}
 					$WHERE.= addWhere($LINK,$NOT,$type2[$key],$field2[$key],$contains2[$key],1);
 				}
-				$first=false;
 			}
 		}
 	}
@@ -967,6 +957,10 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 		$first=false;
 	}
 
+	if (!empty($HAVING)){
+		$HAVING=' HAVING '.$HAVING;
+	}
+
 	$DB->query("SET SESSION group_concat_max_len = 9999999;");
 
 	// Create QUERY
@@ -1016,7 +1010,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 		}
 		$QUERY.=ereg_replace($CFG_GLPI["union_search_type"][$type].".","",$ORDER).$LIMIT;
 	} else {
-		$QUERY=$SELECT.$FROM.$WHERE.$GROUPBY.$ORDER.$LIMIT;
+		$QUERY=$SELECT.$FROM.$WHERE.$GROUPBY.$HAVING.$ORDER.$LIMIT;
 	}
 
 //	echo $QUERY."<br>\n";
@@ -1236,7 +1230,7 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
 								for ($k=0;$k<count($split);$k++)
 									if ($contains2[$j]=="NULL"||(strlen($contains2[$j])==0
 										||preg_match('/'.$contains2[$j].'/i',$split[$k])
-										|| $SEARCH_OPTION[$type2[$j]][$field2[$j]]['meta'] == 3
+										|| isset($SEARCH_OPTION[$type2[$j]][$field2[$j]]['forcegroupby'])
 									)){
 
 										if ($count_display) $out.= "<br>";
@@ -1364,38 +1358,28 @@ function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$
  * Generic Function to add GROUP BY to a request
  *
  *
- *@param $field field to add
- *@param $GROUPBY group by strign to complete
+ *@param $LINK link to use 
+ *@param $NOT is is a negative search ?
+ *@param $type item type
+ *@param $ID ID of the item to search
  *@param $val value search
- *@param $num item number 
  *@param $meta is it a meta item ?
- *@param $link link to use 
+ *@param $num item number 
  *
  *
  *@return select string
  *
  **/
-/// TODO make addGroupByHaving function with type and ID params
-function addGroupByHaving($GROUPBY,$field,$val,$num,$meta=0,$link=""){
+function addHaving($LINK,$NOT,$type,$ID,$val,$meta,$num){
+	global $SEARCH_OPTION;
 
-	$NOT=0;
-	if (ereg("NOT",$link)){
-		$NOT=1;
-		$link=ereg_replace(" NOT","",$link);
-	}
-
-	if (empty($link)) $link="AND";
+	$table=$SEARCH_OPTION[$type][$ID]["table"];
+	$field=$SEARCH_OPTION[$type][$ID]["field"];
 
 	$NAME="ITEM_";
 	if ($meta) $NAME="META_";
 
-	// Not to be done here
-//	if (!ereg("GROUP BY ID",$GROUPBY)) $GROUPBY=" GROUP BY ID ";
-
-	if (ereg("HAVING",$GROUPBY)) $GROUPBY.=" ".$link." ";
-	else $GROUPBY.=" HAVING ";
-
-	switch ($field){
+	switch ($table.".".$field){
 		case "glpi_tracking.count" :
 			$search=array("/\&lt;/","/\&gt;/");
 			$replace=array("<",">");
@@ -1410,12 +1394,12 @@ function addGroupByHaving($GROUPBY,$field,$val,$num,$meta=0,$link=""){
 					}
 				} 
 				$regs[1].=$regs[2];
-				$GROUPBY.= " ($NAME$num ".$regs[1]." ".$regs[3]." ) ";
+				return " $LINK ($NAME$num ".$regs[1]." ".$regs[3]." ) ";
 			} else {
 				if (!$NOT){
-					$GROUPBY.=" ( $NAME$num = ".(intval($val)).") ";
+					return " $LINK ( $NAME$num = ".(intval($val)).") ";
 				} else {
-					$GROUPBY.=" ( $NAME$num <> ".(intval($val)).") ";
+					return " $LINK ( $NAME$num <> ".(intval($val)).") ";
 				}
 			}
 		break;
@@ -1434,7 +1418,7 @@ function addGroupByHaving($GROUPBY,$field,$val,$num,$meta=0,$link=""){
 					}
 				} 
 				$regs[1].=$regs[2];
-				$GROUPBY.= " ($NAME$num ".$regs[1]." ".$regs[3]." ) ";
+				return " $LINK ($NAME$num ".$regs[1]." ".$regs[3]." ) ";
 			} else {
 				if ($field=="glpi_device_hdd.specif_default"){
 					$larg=1000;
@@ -1442,9 +1426,9 @@ function addGroupByHaving($GROUPBY,$field,$val,$num,$meta=0,$link=""){
 					$larg=100;
 				}
 				if (!$NOT){
-					$GROUPBY.=" ( $NAME$num < ".(intval($val)+$larg)." AND $NAME$num > ".(intval($val)-$larg)." ) ";
+					return " $LINK ( $NAME$num < ".(intval($val)+$larg)." AND $NAME$num > ".(intval($val)-$larg)." ) ";
 				} else {
-					$GROUPBY.=" ( $NAME$num > ".(intval($val)+$larg)." OR $NAME$num < ".(intval($val)-$larg)." ) ";
+					return " $LINK ( $NAME$num > ".(intval($val)+$larg)." OR $NAME$num < ".(intval($val)-$larg)." ) ";
 				}
 			}
 		break;
@@ -1454,12 +1438,12 @@ function addGroupByHaving($GROUPBY,$field,$val,$num,$meta=0,$link=""){
 				$ADD=" OR $NAME$num IS NULL";
 			}
 
-			$GROUPBY.= " ( ".$NAME.$num.makeTextSearch($val,$NOT)." $ADD ) ";
+			return " $LINK ( ".$NAME.$num.makeTextSearch($val,$NOT)." $ADD ) ";
 
 		break;
 	}
 
-	return $GROUPBY;
+	return "";
 }
 
 /**
@@ -1813,7 +1797,7 @@ function addSelect ($type,$ID,$num,$meta=0,$meta_type=0){
 			return " GROUP_CONCAT( ".($meta?"DISTINCT":"")." ROUND(100*".$table.$addtable.".freesize / ".$table.$addtable.".totalsize) SEPARATOR '$$$$') AS ".$NAME."_".$num.", ";
 		break;
 		case "glpi_tracking.count" :
-			return " COUNT(DISTINCT glpi_tracking.ID) AS ".$NAME."_".$num.", ";
+			return " COUNT(DISTINCT glpi_tracking$addtable.ID) AS ".$NAME."_".$num.", ";
 		break;
 		default:
 
@@ -3052,7 +3036,8 @@ function addLeftJoin ($type,$ref_table,&$already_link_tables,$new_table,$linkfie
 	$addmetanum="";
 	$rt=$ref_table;
 	if ($meta) {
-		$AS= " AS ".$nt."_".$meta_type;
+		$addmetanum="_".$meta_type;
+		$AS= " AS ".$nt.$addmetanum;
 		$nt=$nt."_".$meta_type;
 		//$rt.="_".$meta_type;
 	}
@@ -3207,17 +3192,17 @@ function addLeftJoin ($type,$ref_table,&$already_link_tables,$new_table,$linkfie
 		case "glpi_groups":
 			if (empty($linkfield)){
 				// Link to glpi_users_group before
-				$out=addLeftJoin($type,$rt,$already_link_tables,"glpi_users_groups",$linkfield);
+				$out=addLeftJoin($type,$rt,$already_link_tables,"glpi_users_groups",$linkfield,$device_type,$meta,$meta_type);
 
-				return $out." LEFT JOIN $new_table $AS ON (glpi_users_groups.FK_groups = $nt.ID) ";
+				return $out." LEFT JOIN $new_table $AS ON (glpi_users_groups$addmetanum.FK_groups = $nt.ID) ";
 			} else {
 				return " LEFT JOIN $new_table $AS ON ($rt.$linkfield = $nt.ID) ";
 			}
 
 		break;
 		case "glpi_contracts":
-			$out=addLeftJoin($type,$rt,$already_link_tables,"glpi_contract_device",$linkfield);
-		return $out." LEFT JOIN $new_table $AS ON (glpi_contract_device.FK_contract = $nt.ID) ";
+			$out=addLeftJoin($type,$rt,$already_link_tables,"glpi_contract_device",$linkfield,$device_type,$meta,$meta_type);
+		return $out." LEFT JOIN $new_table $AS ON (glpi_contract_device$addmetanum.FK_contract = $nt.ID) ";
 		break;
 		case "glpi_softwarelicenses":
 		case "glpi_softwareversions":
