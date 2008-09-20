@@ -224,34 +224,52 @@ class DictionnarySoftwareCollection extends RuleCachedCollection {
 			$res_rule = $this->processAllRules($input, array (), array ());
 			$res_rule=addslashes_deep($res_rule);
 		}
+
+		//Software's name has changed
+		if (isset($res_rule["name"]) && $res_rule["name"] != $name){	
+			if (isset($res_rule["FK_glpi_enterprise"]))
+				$manufacturer = getDropdownName("glpi_dropdown_manufacturer",$res_rule["FK_glpi_enterprise"]);
+			//New software not already present in this entity
+			if (!isset($new_softs[$entity][$res_rule["name"]])){
+				// create new software or restore it from trash
+				$new_software_id = addSoftwareOrRestoreFromTrash($res_rule["name"],$manufacturer,$entity,'',IMPORT_TYPE_DICTIONNARY);
+				$new_softs[$entity][$res_rule["name"]] = $new_software_id; 
+			} else {
+				$new_software_id = $new_softs[$entity][$res_rule["name"]];
+			}
+
+			// Move licenses to new software
+			$this->moveLicenses($ID,$new_software_id);
+
+		} else	{
+			$new_software_id = $ID;
+		}
+
+		// Add to software to deleted list
+		if ($new_software_id != $ID){
+			$soft_ids[] = $ID;
+		}
+
+
 		//Get all the different versions for a software
 		$result = $DB->query("SELECT * FROM glpi_softwareversions WHERE sID=" . $ID);
 		while ($version = $DB->fetch_array($result)) {
 			$input["version"]=addslashes($version["name"]);
-			//Replay software dictionnary rules
 			
-			//Software's name has changed
-			if (isset($res_rule["name"]) && $res_rule["name"] != $name){	
-				if (isset($res_rule["FK_glpi_enterprise"]))
-					$manufacturer = getDropdownName("glpi_dropdown_manufacturer",$res_rule["FK_glpi_enterprise"]);
-				//New software not already present in this entity
-				if (!isset($new_softs[$entity][$res_rule["name"]])){
-					// create new software or restore it from trash
-					$new_software_id = addSoftwareOrRestoreFromTrash($res_rule["name"],$manufacturer,$entity,'',IMPORT_TYPE_DICTIONNARY);
-					$new_softs[$entity][$res_rule["name"]] = $new_software_id; 
-				} else {
-					$new_software_id = $new_softs[$entity][$res_rule["name"]];
-				}
-			} else	{
-				$new_software_id = $ID;
-			}
-
 			//if (isCommandLine())
 			//	echo "replayDictionnaryOnOneSoftware".$ID."/".$entity."/".$name."/".(isset($res_rule["version"]) && $res_rule["version"] != '')."/".$manufacturer."\n";
 			
-			$this->moveVersionsAndLicenses($ID, $new_software_id, $version["ID"], $input["version"], ((isset($res_rule["version"]) && $res_rule["version"] != '') ? $res_rule["version"] : $version["name"]), $entity);
+			$old_version_name=$input["version"];
+			if (isset($res_rule["version"]) && $res_rule["version"] != ''){
+				$new_version_name= $res_rule["version"];
+			} else {
+				$new_version_name= $version["name"];
+			}
+			
+			if ($ID != $new_software_id && $new_version_name != $old_version_name){
+				$this->moveVersions($ID, $new_software_id, $version["ID"], $old_version_name, $new_version_name, $entity);
+			}
 		}
-		$soft_ids[] = $ID;
 	}
 	
 	/**
@@ -291,28 +309,49 @@ class DictionnarySoftwareCollection extends RuleCachedCollection {
 	 * @param $ID old software ID
 	 * @param $new_software_id new software ID
 	 * @param $version_id version ID to move
-	 * @param $old_version old version 
-	 * @param $new_version new version
+	 * @param $old_version old version name
+	 * @param $new_version new version name
 	 * @param $entity entity ID
 	 */
-	function moveVersionsAndLicenses($ID,$new_software_id, $version_id, $old_version, $new_version, $entity) {
+	function moveVersions($ID,$new_software_id, $version_id, $old_version, $new_version, $entity) {
 		global $DB;
 		
 		$new_versionID = $this->versionExists($new_software_id, $version_id,$new_version);
 		
-		//A version does not exist
-		if ($new_versionID == -1){
-			//Transfer versions from old software to new software for a specific version
-			$DB->query("UPDATE glpi_softwareversions SET name='" . $new_version . "', sID=" . $new_software_id . " WHERE sID=" . $ID." AND name='".$old_version."'");
-		} else {
-			//Change ID of the version in glpi_inst_software
-			$DB->query("UPDATE glpi_inst_software SET vID=" . $new_versionID . " WHERE vID=" . $ID);
-	
-			//Delete old version
-			$old_version = new SoftwareVersion;
-			$old_version->delete(array("ID"=>$version_id));
-		}
+		// Do something if it is not the same version
+		if ($new_versionID != $version_id){
+			//A version does not exist : update existing one
+			if ($new_versionID == -1){
+				//Transfer versions from old software to new software for a specific version
+				$DB->query("UPDATE glpi_softwareversions SET name='" . $new_version . "', sID=" . $new_software_id . " WHERE ID=" . $version_id.";");
+			} else {
+				//Change ID of the version in glpi_inst_software
+				$DB->query("UPDATE glpi_inst_software SET vID=" . $new_versionID . " WHERE vID=" . $version_id);
+		
+				// Update licenses version link
+				$DB->query("UPDATE glpi_softwarelicenses SET buy_version=" . $new_versionID . " WHERE buy_version=" . $version_id);
+				$DB->query("UPDATE glpi_softwarelicenses SET use_version=" . $new_versionID . " WHERE use_version=" . $version_id);
 
+				//Delete old version
+				$old_version = new SoftwareVersion;
+				$old_version->delete(array("ID"=>$version_id));
+			}
+
+		}
+	}
+
+	/**
+	 * Move licenses from a software to another
+	 * @param $ID old software ID
+	 * @param $new_software_id new software ID
+	 * @param $version_id version ID to move
+	 * @param $old_version old version 
+	 * @param $new_version new version
+	 * @param $entity entity ID
+	 */
+	function moveLicenses($ID,$new_software_id) {
+		global $DB;
+		
 		//Transfer licenses to new software if needed
 		if ($ID!=$new_software_id){
 			$DB->query("UPDATE glpi_softwarelicenses SET sID=" . $new_software_id . " WHERE sID=" . $ID.";");
