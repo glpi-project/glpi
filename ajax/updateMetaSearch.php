@@ -66,7 +66,8 @@
 				if (!$first_group) $newgroup.="</optgroup>";
 				$newgroup.="<optgroup label=\"$val\">";
 			} else {
-				if (!isset($val["nometa"])){
+				// No search on plugins
+				if ($key < 1000 && !isset($val["nometa"])){
 					$newgroup.= "<option value=\"".$key."\" title=\"".cleanInputText($val["name"])."\""; 
 					if($key == $_POST["field"]) $newgroup.= "selected";
 					$newgroup.= ">". substr($val["name"],0,20) ."</option>\n";
