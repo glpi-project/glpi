@@ -245,7 +245,7 @@ class DictionnarySoftwareCollection extends RuleCachedCollection {
 			//if (isCommandLine())
 			//	echo "replayDictionnaryOnOneSoftware".$ID."/".$entity."/".$name."/".(isset($res_rule["version"]) && $res_rule["version"] != '')."/".$manufacturer."\n";
 			
-			$this->moveVersions($ID, $new_software_id, $version["ID"], $input["version"], ((isset($res_rule["version"]) && $res_rule["version"] != '') ? $res_rule["version"] : $version["version"]), $entity);
+			$this->moveVersions($ID, $new_software_id, $version["ID"], $input["version"], ((isset($res_rule["version"]) && $res_rule["version"] != '') ? $res_rule["version"] : $version["name"]), $entity);
 		}
 		$soft_ids[] = $ID;
 	}
