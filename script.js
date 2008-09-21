@@ -358,12 +358,16 @@ function showHideDiv(id,img_name,img_src_close,img_src_open) {
 		if (document.getElementById(id).style.display == 'none')
 		{
 			document.getElementById(id).style.display = 'block';
-			document[img_name].src=img_src_open;
+			if (img_name!=''){
+				document[img_name].src=img_src_open;
+			}
 		}
 		else
 		{
 			document.getElementById(id).style.display = 'none';
-			document[img_name].src=img_src_close;
+			if (img_name!=''){
+				document[img_name].src=img_src_close;
+			}
 		}
 			
 	}
@@ -372,24 +376,32 @@ function showHideDiv(id,img_name,img_src_close,img_src_open) {
 			if (document.id.display == 'none')
 			{
 				document.id.display = 'block';
-				document[img_name].src=img_src_open;
+				if (img_name!=''){
+					document[img_name].src=img_src_open;
+				}
 			}
 			else	
 			{
 				document.id.display = 'none';
-				document[img_name].src=img_src_close;
+				if (img_name!=''){
+					document[img_name].src=img_src_close;
+				}
 			}
 		}
 		else { // IE 4
 			if (document.all.id.style.display == 'none')
 			{
 				document.all.id.style.display = 'block';
-				document[img_name].src=img_src_close;
+				if (img_name!=''){
+					document[img_name].src=img_src_close;
+				}
 			}
 			else
 			{
 				document.all.id.style.display = 'none';	
-				document[img_name].src=img_src_close;
+				if (img_name!=''){
+					document[img_name].src=img_src_close;
+				}
 			}
 		}
 	}

@@ -46,4 +46,5 @@
 		showUpdateFollowupForm($_POST["ID"]);
 	}
 
+	ajaxFooter();
 ?>

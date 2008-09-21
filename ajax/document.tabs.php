@@ -71,6 +71,6 @@ $doc->check($_POST["ID"],'r');
 				}
 				break;
 		}
-
+	ajaxFooter();
 
 ?>

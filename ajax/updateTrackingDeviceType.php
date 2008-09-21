@@ -44,4 +44,5 @@
 	
 	checkRight("update_ticket","1");
 	dropdownMyDevices($_POST["userID"],$_POST["entity_restrict"]);
+	ajaxFooter();
 ?>

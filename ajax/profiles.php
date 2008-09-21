@@ -49,4 +49,6 @@
 	$prof->showHelpdeskForm($_POST["ID"]);
 	else if ($_POST["interface"]=="central")
 	$prof->showCentralForm($_POST["ID"]);
+
+	ajaxFooter();
 ?>

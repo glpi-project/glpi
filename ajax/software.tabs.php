@@ -118,5 +118,5 @@ if(!isset($_POST["withtemplate"])) $_POST["withtemplate"] = "";
 			}
 	}
 
-
+	ajaxFooter();
 ?>

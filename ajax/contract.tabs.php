@@ -75,5 +75,5 @@ $contract=new Contract();
 			}
 		}
 		
-
+	ajaxFooter();
 ?>

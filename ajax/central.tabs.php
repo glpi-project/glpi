@@ -67,6 +67,6 @@ include (GLPI_ROOT."/inc/includes.php");
 				showCentralMyView();		
 			break;
 	}
-
+	ajaxFooter();
 
 ?>

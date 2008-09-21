@@ -48,4 +48,5 @@
 		$transfer=new Transfer();
 		$transfer->showForm($CFG_GLPI["root_doc"]."/front/transfer.action.php",$_POST["ID"]);
 	}
+	ajaxFooter();
 ?>

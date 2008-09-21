@@ -118,5 +118,5 @@ $netdevice->check($_POST["ID"],'r');
 	}
 
 
-
+	ajaxFooter();
 ?>

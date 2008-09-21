@@ -92,5 +92,5 @@
 	
 	echo "</table>";
 
-
+	ajaxFooter();
 ?>

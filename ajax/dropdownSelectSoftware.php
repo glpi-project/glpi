@@ -81,5 +81,3 @@ ajaxUpdateItemOnSelectEvent("item_type$rand","show_".$_POST["myname"].$rand,$CFG
 echo "<span id='show_".$_POST["myname"]."$rand'>&nbsp;</span>\n";	
 
 ?>
-
-	

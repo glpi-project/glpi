@@ -1427,20 +1427,25 @@ div#show_all_menu{
 
 }
 
+#debugajax{
+	margin: auto;
+	text-align:center;
+}
 
-#debug h1{
+
+#debug h1, #debugajax h1{
 	font-size:14px; text-align:center; background-color:#efefe7;
 	padding: 5px;
 
 }
 
-#debug h2{
+#debug h2, #debugajax h2{
 	font-size:14px; 
 	padding-left: 10px;
 	border-left: 4px solid #FFC65D;
 	border-bottom: 2px solid #FFC65D;
 }
 
-#debug table{
+#debug table, #debugajax table{
 margin:0;
 }
