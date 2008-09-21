@@ -73,7 +73,7 @@ ul.x-tab-strip li.x-tab-edge{float:left;margin:0!important;padding:0!important;b
 /*font-size:11px;*/
 background-image:url(./images/default/grid/loading.gif);
 background-repeat:no-repeat;
-/*background-position:left;*/
+background-position:left;
 padding-left:20px;
 /*line-height:16px;*/
 margin:3px;
