@@ -42,7 +42,7 @@ class RightAffectRule extends Rule {
 	/**
 	 * Constructor
 	**/
-	function RightAffectRule() {
+	function __construct() {
 		global $RULES_CRITERIAS;	
 	
 		$this->table = "glpi_rules_descriptions";
@@ -266,7 +266,7 @@ class RightRuleCollection extends RuleCollection {
 	/**
 	 * Constructor
 	**/
-	function RightRuleCollection() {
+	function __construct() {
 		global $DB;
 		$this->rule_type = RULE_AFFECT_RIGHTS;
 		$this->rule_class_name = 'RightAffectRule';

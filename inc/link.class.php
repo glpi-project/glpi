@@ -44,7 +44,7 @@ class Link extends CommonDBTM {
 	/**
 	 * Constructor
 	**/
-	function Link () {
+	function __construct () {
 		$this->table="glpi_links";
 		$this->type=LINK_TYPE;
 	}

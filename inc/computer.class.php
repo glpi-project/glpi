@@ -47,7 +47,7 @@ class Computer extends CommonDBTM {
 	/**
 	 * Constructor
 	**/
-	function Computer () {
+	function __construct () {
 		$this->table="glpi_computers";
 		$this->type=COMPUTER_TYPE;
 		$this->dohistory=true;
@@ -749,7 +749,7 @@ class ComputerDisk extends CommonDBTM {
 	/**
 	 * Constructor
 	**/
-	function ComputerDisk() {
+	function __construct() {
 		$this->table = "glpi_computerdisks";
 		$this->type = COMPUTERDISK_TYPE;
 		$this->entity_assign=true;

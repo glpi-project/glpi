@@ -45,7 +45,7 @@ class Software extends CommonDBTM {
 	/**
 	 * Constructor
 	**/
-	function Software() {
+	function __construct() {
 		$this->table = "glpi_software";
 		$this->type = SOFTWARE_TYPE;
 		$this->dohistory = true;
@@ -422,7 +422,7 @@ class SoftwareVersion extends CommonDBTM {
 	/**
 	 * Constructor
 	**/
-	function SoftwareVersion() {
+	function __construct() {
 		$this->table = "glpi_softwareversions";
 		$this->type = SOFTWAREVERSION_TYPE;
 		$this->entity_assign=true;
@@ -550,7 +550,7 @@ class SoftwareLicense extends CommonDBTM {
 	/**
 	 * Constructor
 	**/
-	function SoftwareLicense() {
+	function __construct() {
 		$this->table = "glpi_softwarelicenses";
 		$this->type = SOFTWARELICENSE_TYPE;
 		$this->entity_assign=true;

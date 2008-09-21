@@ -39,7 +39,7 @@ class SetupDefaultDisplay extends CommonDBTM{
 	/**
 	 * Constructor
 	**/
-	function SetupDefaultDisplay () {
+	function __construct () {
 		$this->table="glpi_display_default";
 		$this->type=-1;
 	}
@@ -52,7 +52,7 @@ class Bookmark extends CommonDBTM {
 	/**
 	 * Constructor
 	 **/
-	function Bookmark() {
+	function __construct() {
 		global $CFG_GLPI;
 		$this->table = "glpi_bookmark";
 		$this->entity_assign=true;

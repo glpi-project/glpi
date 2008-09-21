@@ -45,7 +45,7 @@ class Phone extends CommonDBTM {
 	/**
 	 * Constructor
 	**/
-	function Phone () {
+	function __construct () {
 		$this->table="glpi_phones";
 		$this->type=PHONE_TYPE;
 		$this->dohistory=true;

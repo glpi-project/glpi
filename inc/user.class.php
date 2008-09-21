@@ -45,7 +45,7 @@ class User extends CommonDBTM {
 	/**
 	 * Constructor
 	**/
-	function User() {
+	function __construct() {
 		global $CFG_GLPI;
 
 		$this->table = "glpi_users";

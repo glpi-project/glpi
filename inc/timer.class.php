@@ -49,7 +49,7 @@ class Script_Timer {
 	/**
 	 * Constructor
 	**/
-	function Script_Timer (){
+	function __construct (){
 		return true;
 	}
 

@@ -45,7 +45,7 @@ class Printer  extends CommonDBTM {
 	/**
 	 * Constructor
 	**/
-	function Printer () {
+	function __construct () {
 		$this->table="glpi_printers";
 		$this->type=PRINTER_TYPE;
 		$this->dohistory=true;

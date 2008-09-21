@@ -45,7 +45,7 @@ class InfoCom extends CommonDBTM {
 	/**
 	 * Constructor
 	**/
-	function InfoCom () {
+	function __construct () {
 		$this->table="glpi_infocoms";
 		$this->type=INFOCOM_TYPE;
 		$this->dohistory=true;

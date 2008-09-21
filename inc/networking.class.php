@@ -46,7 +46,7 @@ class Netdevice extends CommonDBTM {
 	/**
 	 * Constructor
 	**/
-	function Netdevice () {
+	function __construct () {
 		$this->table="glpi_networking";
 		$this->type=NETWORKING_TYPE;
 		$this->dohistory=true;
@@ -472,7 +472,7 @@ class Netport extends CommonDBTM {
 	/**
 	 * Constructor
 	**/
-	function Netport () {
+	function __construct () {
 		$this->table="glpi_networking_ports";
 		$this->type=-1;
 	}

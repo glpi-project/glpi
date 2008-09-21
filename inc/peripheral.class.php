@@ -45,7 +45,7 @@ class Peripheral  extends CommonDBTM  {
 	/**
 	 * Constructor
 	**/
-	function Peripheral () {
+	function __construct () {
 		$this->table="glpi_peripherals";
 		$this->type=PERIPHERAL_TYPE;
 		$this->dohistory=true;

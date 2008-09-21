@@ -71,7 +71,7 @@ class Transfer extends CommonDBTM{
 	/**
 	 * Constructor
 	**/
-	function Transfer(){
+	function __construct(){
 		$this->table="glpi_transfers";
 		$this->type=TRANSFER_TYPE;
 	}

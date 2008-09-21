@@ -44,7 +44,7 @@ class DBocs extends DBmysql {
 	 * Constructor
 	 * @param $ID ID of the ocs server ID
 	**/
-	function DBocs($ID) {
+	function __construct($ID) {
 		global $CFG_GLPI;
 			$this->ocs_server_id = $ID;
 			
@@ -77,7 +77,7 @@ class Ocsng extends CommonDBTM {
 	/**
 	 * Constructor
 	**/
-	function Ocsng() {
+	function __construct() {
 		global $CFG_GLPI;
 
 		$this->table = "glpi_ocs_config";

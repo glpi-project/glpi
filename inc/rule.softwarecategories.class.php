@@ -42,7 +42,7 @@ class SoftwareCategoriesRuleCollection extends RuleCollection {
 	/**
 	 * Constructor
 	**/
-	function SoftwareCategoriesRuleCollection(){
+	function __construct(){
 		$this->rule_type = RULE_SOFTWARE_CATEGORY;
 		$this->rule_class_name = 'SoftwareCategoriesRule';
 		$this->stop_on_first_match=true;
@@ -81,7 +81,7 @@ class SoftwareCategoriesRule extends Rule {
 	/**
 	 * Constructor
 	**/
-	function SoftwareCategoriesRule() {
+	function __construct() {
 		$this->table = "glpi_rules_descriptions";
 		$this->type = -1;
 		$this->rule_type = RULE_SOFTWARE_CATEGORY;

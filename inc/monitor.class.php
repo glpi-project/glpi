@@ -46,7 +46,7 @@ class Monitor extends CommonDBTM {
 	/**
 	 * Constructor
 	**/
-	function Monitor () {
+	function __construct () {
 		$this->table="glpi_monitors";
 		$this->type=MONITOR_TYPE;
 		$this->dohistory=true;

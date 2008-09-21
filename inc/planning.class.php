@@ -45,7 +45,7 @@ class PlanningTracking extends CommonDBTM {
 	/**
 	 * Constructor
 	**/
-	function PlanningTracking () {
+	function __construct () {
 		$this->table="glpi_tracking_planning";
 	}
 

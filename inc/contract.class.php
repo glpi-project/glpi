@@ -44,7 +44,7 @@ class Contract extends CommonDBTM {
 	/**
 	 * Constructor
 	 **/
-	function Contract () {
+	function __construct () {
 		$this->table="glpi_contracts";
 		$this->type=CONTRACT_TYPE;
 		$this->entity_assign=true;

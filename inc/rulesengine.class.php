@@ -46,7 +46,7 @@ class SingletonRuleList {
 	/**
 	 * Constructor
 	**/
-	function SingletonRuleList () {
+	function __construct () {
 		$this->list = array();
 		$this->load = 0;
 	}
@@ -96,7 +96,7 @@ class RuleCollection {
 	* Constructor
 	* @param rule_type the rule type used for the collection
 	**/
-	function RuleCollection($rule_type){
+	function __construct($rule_type){
 		$this->rule_type = $rule_type;
 	}
 
@@ -746,7 +746,7 @@ class Rule extends CommonDBTM{
 	* Constructor
 	* @param rule_type the rule type used for the collection
 	**/
-	function Rule($rule_type=0) {
+	function __construct($rule_type=0) {
 		$this->table = "glpi_rules_descriptions";
 		$this->type = -1;
 		$this->rule_type=$rule_type;
@@ -1919,7 +1919,7 @@ class RuleAction extends CommonDBTM {
 	/**
 	 * Constructor
 	**/
-	function RuleAction() {
+	function __construct() {
 		$this->table = "glpi_rules_actions";
 		$this->type = -1;
 	}
@@ -1965,7 +1965,7 @@ class RuleCriteria extends CommonDBTM {
 	/**
 	 * Constructor
 	**/
-	function RuleCriteria() {
+	function __construct() {
 		$this->table = "glpi_rules_criterias";
 		$this->type = -1;
 	}
@@ -2087,8 +2087,8 @@ class RuleCached extends Rule{
 	**/
 	// Dummy constructor required for php 5.3.0 (regression ?)
 	// TODO : switch to __construct ?
-	function RuleCached($rule_type=0) {
-		parent::Rule($rule_type);
+	function __construct($rule_type=0) {
+		parent::__construct($rule_type);
 	}
 
 	function getTitleAction($target){

@@ -53,7 +53,7 @@ class glpi_phpmailer extends phpmailer {
 	/**
 	 * Constructor
 	**/
-	function glpi_phpmailer(){
+	function __construct(){
 		global $CFG_GLPI;
 
 		// Comes from config
@@ -106,7 +106,7 @@ class Mailing
 	 * @param $followupisprivate true if the currently added/modified followup is private
 	 * @return nothing 
 	 */
-	function Mailing ($type="",$job=NULL,$user=NULL,$followupisprivate=false)
+	function __construct ($type="",$job=NULL,$user=NULL,$followupisprivate=false)
 	{
 		$this->type=$type;
 		if (!isset($job->hardwaredatas)||!count($job->hardwaredatas)){
@@ -671,7 +671,7 @@ class MailingResa{
 	 * @param $resa ReservationResa to mail
 	 * @return nothing 
 	 */
-	function MailingResa ($resa,$type="new")
+	function __construct ($resa,$type="new")
 	{
 		$this->resa=$resa;
 		$this->type=$type;
@@ -1003,7 +1003,7 @@ class MailingAlert
 	 * @param $entity Restrict to a defined entity
 	 * @return nothing 
 	 */
-	function MailingAlert ($type,$message,$entity=-1)
+	function __construct ($type,$message,$entity=-1)
 	{
 		$this->type=$type;
 		$this->message=$message;

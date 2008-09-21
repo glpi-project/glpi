@@ -44,7 +44,7 @@ class Group extends CommonDBTM{
 	/**
 	 * Constructor
 	**/
-	function Group () {
+	function __construct () {
 		$this->table="glpi_groups";
 		$this->type=GROUP_TYPE;
 		$this->entity_assign=true;

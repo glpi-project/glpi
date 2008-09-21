@@ -50,7 +50,7 @@ class CartridgeType extends CommonDBTM {
 	/**
 	 * Constructor
 	 **/
-	function CartridgeType () {
+	function __construct () {
 		$this->table="glpi_cartridges_type";
 		$this->type=CARTRIDGE_TYPE;
 		$this->entity_assign=true;
@@ -295,7 +295,7 @@ class Cartridge extends CommonDBTM {
 	/**
 	 * Constructor
 	 **/
-	function Cartridge () {
+	function __construct () {
 		$this->table="glpi_cartridges";
 		$this->type=CARTRIDGE_ITEM_TYPE;
 		// by the Cartridge Type

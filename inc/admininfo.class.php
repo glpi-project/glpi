@@ -46,7 +46,7 @@ class AdminInfo extends CommonDBTM{
 	 *@return nothing
 	 *
 	**/
-	function AdminInfo () {
+	function __construct () {
 		$this->table="glpi_ocs_admin_link";		
 		
 	}

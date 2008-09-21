@@ -41,7 +41,7 @@ class TrackingBusinessRuleCollection extends RuleCollection {
 	/**
 	 * Constructor
 	**/
-	function TrackingBusinessRuleCollection() {
+	function __construct() {
 		$this->rule_type = RULE_TRACKING_AUTO_ACTION;
 		$this->rule_class_name="TrackingBusinessRule";
 		$this->right="rule_tracking";
@@ -64,7 +64,7 @@ class TrackingBusinessRule extends Rule {
 	/**
 	 * Constructor
 	**/
-	function TrackingBusinessRule() {
+	function __construct() {
 		$this->table = "glpi_rules_descriptions";
 		$this->type = -1;
 		$this->rule_type = RULE_TRACKING_AUTO_ACTION;

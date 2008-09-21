@@ -69,7 +69,7 @@ class DBmysql {
 	 *
 	 * @return nothing 
 	 */
-	function DBmysql(){
+	function __construct(){
 		$this->connected=false;
 		$this->dbh = @mysql_connect($this->dbhost, $this->dbuser, rawurldecode($this->dbpassword)) or $this->error = 1;
 		if ($this->dbh){ // connexion ok
