@@ -114,6 +114,13 @@ function includeCommonHtmlHeader($title=''){
 	echo "//]]> \n";
 	echo "</script>\n";
 
+	echo "<!--[if IE]>" ;
+	echo "<script type=\"text/javascript\">\n";
+	echo "Ext.UpdateManager.defaults.indicatorText='<\span class=\"loading-indicator-ie\">".$LANG["common"][80]."<\/span>';\n";
+	echo "</script>\n";
+	echo "<![endif]-->";
+
+
 	// Some Javascript-Functions which we may need later
 	echo "<script type=\"text/javascript\" src='".$CFG_GLPI["root_doc"]."/script.js'></script>\n";
 

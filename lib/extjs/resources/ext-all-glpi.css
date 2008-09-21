@@ -68,9 +68,15 @@ ul.x-tab-strip li.x-tab-edge{float:left;margin:0!important;padding:0!important;b
 
 .x-form-text,textarea.x-form-field{padding:1px 1px;background:#fff;border: 1px solid #888888;background-color:#FAFAFA;}
 
-/* IE do not love loading aimated gif*/
-.loading-indicator{font-size:11px;background-repeat:no-repeat;background-position:left;padding-left:20px;line-height:16px;margin:3px;
+
+.loading-indicator-ie{
+/*font-size:11px;*/
 background-image:url(./images/default/grid/loading.gif);
-//background-image:none; /* Only for IE*/
-}  
+background-repeat:no-repeat;
+/*background-position:left;*/
+padding-left:20px;
+/*line-height:16px;*/
+margin:3px;
+}
+  
 
