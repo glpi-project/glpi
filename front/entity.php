@@ -48,9 +48,9 @@ $entity->title();
 
 manageGetValuesInSearch(ENTITY_TYPE);
 
-searchForm(ENTITY_TYPE,$_SERVER['PHP_SELF'],$_GET["field"],$_GET["contains"],$_GET["sort"],$_GET["deleted"],$_GET["link"],$_GET["distinct"]);
+searchForm(ENTITY_TYPE,$_GET);
 
-showList(ENTITY_TYPE,$_SERVER['PHP_SELF'],$_GET["field"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"],$_GET["deleted"],$_GET["link"],$_GET["distinct"]);
+showList(ENTITY_TYPE,$_GET);
 
 commonFooter();
 ?>

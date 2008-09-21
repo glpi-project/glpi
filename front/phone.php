@@ -46,9 +46,9 @@ commonHeader($LANG["help"][35],$_SERVER['PHP_SELF'],"inventory","phone");
 
 manageGetValuesInSearch(PHONE_TYPE);
 
-searchForm(PHONE_TYPE,$_SERVER['PHP_SELF'],$_GET["field"],$_GET["contains"],$_GET["sort"],$_GET["deleted"],$_GET["link"],$_GET["distinct"],$_GET["link2"],$_GET["contains2"],$_GET["field2"],$_GET["type2"]);
+searchForm(PHONE_TYPE,$_GET);
 
-showList(PHONE_TYPE,$_SERVER['PHP_SELF'],$_GET["field"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"],$_GET["deleted"],$_GET["link"],$_GET["distinct"],$_GET["link2"],$_GET["contains2"],$_GET["field2"],$_GET["type2"]);
+showList(PHONE_TYPE,$_GET);
 
 commonFooter();
 ?>

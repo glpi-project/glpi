@@ -44,9 +44,9 @@ commonHeader($LANG["Menu"][21],$_SERVER['PHP_SELF'],"inventory","cartridge");
 
 manageGetValuesInSearch(CARTRIDGE_TYPE);
 
-searchForm(CARTRIDGE_TYPE,$_SERVER['PHP_SELF'],$_GET["field"],$_GET["contains"],$_GET["sort"],$_GET["deleted"],$_GET["link"],$_GET["distinct"]);
+searchForm(CARTRIDGE_TYPE,$_GET);
 
-showList(CARTRIDGE_TYPE,$_SERVER['PHP_SELF'],$_GET["field"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"],$_GET["deleted"],$_GET["link"],$_GET["distinct"]);
+showList(CARTRIDGE_TYPE,$_GET);
 
 commonFooter();
 

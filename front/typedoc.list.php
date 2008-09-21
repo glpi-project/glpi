@@ -39,7 +39,7 @@ checkLoginUser();
 popHeader($LANG["common"][12],$_SERVER['PHP_SELF']);
 
 manageGetValuesInSearch(TYPEDOC_TYPE);
-showList(TYPEDOC_TYPE,$_SERVER['PHP_SELF'],$_GET["field"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"],$_GET["deleted"],$_GET["link"],$_GET["distinct"]);
+showList(TYPEDOC_TYPE,$_GET);
 
 popFooter();
 

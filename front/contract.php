@@ -44,9 +44,9 @@ commonHeader($LANG["Menu"][25],$_SERVER['PHP_SELF'],"financial","contract");
 
 manageGetValuesInSearch(CONTRACT_TYPE);
 
-searchForm(CONTRACT_TYPE,$_SERVER['PHP_SELF'],$_GET["field"],$_GET["contains"],$_GET["sort"],$_GET["deleted"],$_GET["link"],$_GET["distinct"]);
+searchForm(CONTRACT_TYPE,$_GET);
 
-showList(CONTRACT_TYPE,$_SERVER['PHP_SELF'],$_GET["field"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"],$_GET["deleted"],$_GET["link"],$_GET["distinct"]);
+showList(CONTRACT_TYPE,$_GET);
 
 commonFooter();
 

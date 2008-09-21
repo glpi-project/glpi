@@ -52,11 +52,9 @@ if (isset($_GET["globalsearch"])){
 	
 	foreach($types as $type){
 		if (haveTypeRight($type,'r')){
-			$page=ereg_replace('front/','',ereg_replace('.form','',$INFOFORM_PAGES[$type]));
-
 			manageGetValuesInSearch($type,false,false);
 			$_GET["contains"][0]=$_GET["globalsearch"];
-			showList($type,$page,$_GET["field"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"],$_GET["deleted"],$_GET["link"],$_GET["distinct"],$_GET["link2"],$_GET["contains2"],$_GET["field2"],$_GET["type2"]);
+			showList($type,$_GET);
 			echo "<hr>";
 		}
 	}

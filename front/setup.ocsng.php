@@ -46,8 +46,8 @@ checkRight("config", "w");
 commonHeader($LANG["ocsng"][0], $_SERVER['PHP_SELF'], "config","ocsng");
 	
 manageGetValuesInSearch(OCSNG_TYPE);
-searchForm(OCSNG_TYPE,$_SERVER['PHP_SELF'],$_GET["field"],$_GET["contains"],$_GET["sort"],$_GET["deleted"],$_GET["link"],$_GET["distinct"]);
-showList(OCSNG_TYPE,$_SERVER['PHP_SELF'],$_GET["field"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"],$_GET["deleted"],$_GET["link"],$_GET["distinct"]);
+searchForm(OCSNG_TYPE,$_GET);
+showList(OCSNG_TYPE,$_GET);
 	
 commonFooter();
 ?>
