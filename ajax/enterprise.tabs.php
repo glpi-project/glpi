@@ -94,5 +94,5 @@ if (!isset($_POST["order"])) $_POST["order"]="";
 			}
 		}
 	
-
+	ajaxFooter();
 ?>

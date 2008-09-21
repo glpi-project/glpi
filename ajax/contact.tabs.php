@@ -68,6 +68,6 @@ if(empty($_POST["ID"])) $_POST["ID"] = -1;
 			}
 	
 }
-
+	ajaxFooter();
 
 ?>

@@ -46,6 +46,6 @@ checkLoginUser();
 if (isset($_POST["tID"])){
 	showAddFollowupForm($_POST["tID"]);
 }
-
+ajaxFooter();
 
 ?>

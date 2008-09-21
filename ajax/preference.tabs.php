@@ -49,4 +49,5 @@ if (!displayPluginAction("prefs","",$_POST['glpi_tab'],"")){
 	$user->showMyForm($CFG_GLPI['root_doc']."/front/user.form.my.php", $_SESSION["glpiID"]);
 }
 
+ajaxFooter();
 ?>

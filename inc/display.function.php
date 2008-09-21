@@ -1501,6 +1501,66 @@ function commonFooter($keepDB=false) {
 	}
 }
 
+
+/**
+ * Display Ajax Footer for debug
+ *
+ *
+ **/
+function ajaxFooter(){
+
+	if ($_SESSION['glpi_use_mode']==DEBUG_MODE){ // mode debug 
+
+		global $LANG,$CFG_GLPI,$DEBUG_SQL,$TIMER_DEBUG,$SQL_TOTAL_TIMER,$SQL_TOTAL_REQUEST,$FOOTER_LOADED;
+
+		echo "<span id='debugajax'>";
+		echo "<a class='debug-float' href=\"javascript:showHideDiv('see_ajaxdebug','','','');\" >AJAX DEBUG</a>";
+		echo "<div id='see_ajaxdebug' name='see_ajaxdebug' style=\"display:none;\">";
+		echo "<h2>POST VARIABLE</h2>";
+		printCleanArray($_POST);
+		echo "<h2>GET VARIABLE</h2>";
+		printCleanArray($_GET);
+
+		
+		echo "<h2>SQL REQUEST : ";
+			
+		echo $SQL_TOTAL_REQUEST." Queries ";
+		echo "took  ".array_sum($DEBUG_SQL['times'])."s  </h2>";
+
+		echo "<table class='tab_cadre' ><tr><th>N&#176; </th><th>Queries</th><th>Time</th><th>Errors</th></tr>";
+
+		foreach ($DEBUG_SQL['queries'] as $num => $query){
+			echo "<tr class='tab_bg_".(($num%2)+1)."'><td>$num</td><td>";
+			echo eregi_replace("ORDER BY","<br>ORDER BY",
+				eregi_replace("SORT","<br>SORT",
+				eregi_replace("LEFT JOIN","<br>LEFT JOIN",
+				eregi_replace("INNER JOIN","<br>INNER JOIN",
+				eregi_replace("WHERE","<br>WHERE",
+				eregi_replace("FROM","<br>FROM",
+				eregi_replace("UNION","<br>UNION<br>",
+				eregi_replace(">","&gt;",
+				eregi_replace("<","&lt;",$query)))))))));
+			echo "</td><td>";
+			echo $DEBUG_SQL['times'][$num];
+			echo "</td><td>";
+			if (isset($DEBUG_SQL['errors'][$num])){
+				echo $DEBUG_SQL['errors'][$num];
+			} else {
+				echo "&nbsp;";
+			}
+			echo "</td></tr>";
+		}
+		echo "</table>";		
+		echo "</span>";
+		
+		
+		echo "</div></div>";
+	}
+	echo "</body></html>";
+
+
+}
+
 /**
  * Print footer for help page
  *

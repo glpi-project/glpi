@@ -48,5 +48,5 @@
 		$_GET['target']=$CFG_GLPI['root_doc']."/front/central.php";
 	}
 	displayActiveEntities($_GET['target'],"activeentity");
-
+	ajaxFooter();
 ?>

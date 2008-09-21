@@ -46,36 +46,34 @@ if(!isset($_POST["ID"])) {
 checkRight("consumable","r");
 
 	switch($_SESSION['glpi_tab']){
-				case -1 :	
-					showConsumableAdd($_POST["ID"]);
-					showConsumables($_POST["ID"]);
-					showConsumables($_POST["ID"],1);
-					showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",CONSUMABLE_TYPE,$_POST["ID"],1);
-					showDocumentAssociated(CONSUMABLE_TYPE,$_POST["ID"]);
-					showLinkOnDevice(CONSUMABLE_TYPE,$_POST["ID"]);
-					displayPluginAction(CONSUMABLE_TYPE,$_POST["ID"],$_SESSION['glpi_tab']);
-					break;
-				case 4 :
-					showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",CONSUMABLE_TYPE,$_POST["ID"],1);
-					break;
-				case 5 :
-					showDocumentAssociated(CONSUMABLE_TYPE,$_POST["ID"]);
-					break;
-
-				case 7 : 
-					showLinkOnDevice(CONSUMABLE_TYPE,$_POST["ID"]);
-					break;
-
-				case 10 :
-					showNotesForm($_POST['target'],CONSUMABLE_TYPE,$_POST["ID"]);
-					break;
-				default :
-					if (!displayPluginAction(CONSUMABLE_TYPE,$_POST["ID"],$_SESSION['glpi_tab'])){
-						showConsumableAdd($_POST["ID"]);
-						showConsumables($_POST["ID"]);
-						showConsumables($_POST["ID"],1);
-					}
-					break;
+		case -1 :	
+			showConsumableAdd($_POST["ID"]);
+			showConsumables($_POST["ID"]);
+			showConsumables($_POST["ID"],1);
+			showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",CONSUMABLE_TYPE,$_POST["ID"],1);
+			showDocumentAssociated(CONSUMABLE_TYPE,$_POST["ID"]);
+			showLinkOnDevice(CONSUMABLE_TYPE,$_POST["ID"]);
+			displayPluginAction(CONSUMABLE_TYPE,$_POST["ID"],$_SESSION['glpi_tab']);
+			break;
+		case 4 :
+			showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",CONSUMABLE_TYPE,$_POST["ID"],1);
+			break;
+		case 5 :
+			showDocumentAssociated(CONSUMABLE_TYPE,$_POST["ID"]);
+			break;
+		case 7 : 
+			showLinkOnDevice(CONSUMABLE_TYPE,$_POST["ID"]);
+			break;
+		case 10 :
+			showNotesForm($_POST['target'],CONSUMABLE_TYPE,$_POST["ID"]);
+			break;
+		default :
+			if (!displayPluginAction(CONSUMABLE_TYPE,$_POST["ID"],$_SESSION['glpi_tab'])){
+				showConsumableAdd($_POST["ID"]);
+				showConsumables($_POST["ID"]);
+				showConsumables($_POST["ID"],1);
 			}
-	
+			break;
+	}
+	ajaxFooter();	
 ?>

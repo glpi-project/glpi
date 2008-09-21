@@ -123,5 +123,5 @@ checkRight("printer","r");
 		}		
 	}
 
-
+	ajaxFooter();
 ?>

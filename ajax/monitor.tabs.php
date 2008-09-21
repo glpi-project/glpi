@@ -106,5 +106,5 @@ checkRight("monitor","r");
 		}
 	}
 
-
+	ajaxFooter();
 ?>

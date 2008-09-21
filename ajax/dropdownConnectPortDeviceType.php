@@ -66,4 +66,3 @@ if (isset($LINK_ID_TABLE[$_POST["type"]])&&$_POST["type"]>0){
 }		
 
 ?>
-
