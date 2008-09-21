@@ -45,9 +45,9 @@ commonHeader($LANG["Menu"][3],$_SERVER['PHP_SELF'],"inventory","monitor");
 
 manageGetValuesInSearch(MONITOR_TYPE);
 
-searchForm(MONITOR_TYPE,$_SERVER['PHP_SELF'],$_GET["field"],$_GET["contains"],$_GET["sort"],$_GET["deleted"],$_GET["link"],$_GET["distinct"],$_GET["link2"],$_GET["contains2"],$_GET["field2"],$_GET["type2"]);
+searchForm(MONITOR_TYPE,$_GET);
 
-showList(MONITOR_TYPE,$_SERVER['PHP_SELF'],$_GET["field"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"],$_GET["deleted"],$_GET["link"],$_GET["distinct"],$_GET["link2"],$_GET["contains2"],$_GET["field2"],$_GET["type2"]);
+showList(MONITOR_TYPE,$_GET);
 
 commonFooter();
 ?>

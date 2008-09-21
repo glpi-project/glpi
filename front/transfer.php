@@ -46,9 +46,9 @@ commonHeader($LANG["transfer"][1],$_SERVER['PHP_SELF'],"admin","transfer");
 
 manageGetValuesInSearch(TRANSFER_TYPE);
 
-searchForm(TRANSFER_TYPE,$_SERVER['PHP_SELF'],$_GET["field"],$_GET["contains"],$_GET["sort"],$_GET["deleted"],$_GET["link"],$_GET["distinct"],$_GET["link2"],$_GET["contains2"],$_GET["field2"],$_GET["type2"]);
+searchForm(TRANSFER_TYPE,$_GET);
 
-showList(TRANSFER_TYPE,$_SERVER['PHP_SELF'],$_GET["field"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"],$_GET["deleted"],$_GET["link"],$_GET["distinct"],$_GET["link2"],$_GET["contains2"],$_GET["field2"],$_GET["type2"]);
+showList(TRANSFER_TYPE,$_GET);
 
 commonFooter();
 

@@ -44,9 +44,9 @@ commonHeader($LANG["title"][33],$_SERVER['PHP_SELF'],"config","link");
 
 manageGetValuesInSearch(LINK_TYPE);
 
-searchForm(LINK_TYPE,$_SERVER['PHP_SELF'],$_GET["field"],$_GET["contains"],$_GET["sort"],$_GET["deleted"],$_GET["link"],$_GET["distinct"]);
+searchForm(LINK_TYPE,$_GET);
 
-showList(LINK_TYPE,$_SERVER['PHP_SELF'],$_GET["field"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"],$_GET["deleted"],$_GET["link"],$_GET["distinct"]);
+showList(LINK_TYPE,$_GET);
 
 commonFooter();
 ?>

@@ -187,23 +187,34 @@ function manageGetValuesInSearch($type=0,$usesession=true,$save=true){
  * 
  *
  *@param $type type to display the form
- *@param $target url to post the form
- *@param $field array of the fields selected in the search form
- *@param $contains array of the search strings
- *@param $sort the "sort by" field value
- *@param $deleted the deleted value 
- *@param $link array of the link between each search.
- *@param $distinct only display distinct items
- *@param $contains2 array of the search strings for meta items
- *@param $field2 array of the fields selected in the search form for meta items
- *@param $type2 type to display the form for meta items
- *@param $link2 array of the link between each search. for meta items
+ *@param $params parameters array may include field, contains, sort, deleted, link, link2, contains2, field2, type2
  *
  *@return nothing (diplays)
  *
  **/
-function searchForm($type,$target,$field="",$contains="",$sort= "",$deleted= 0,$link="",$distinct="Y",$link2="",$contains2="",$field2="",$type2=""){
-	global $LANG,$SEARCH_OPTION,$CFG_GLPI,$LINK_ID_TABLE;
+function searchForm($type,$params){
+	global $LANG,$SEARCH_OPTION,$CFG_GLPI,$LINK_ID_TABLE,$INFOFORM_PAGES;
+
+	// Default values of parameters
+	$default_values["link"]="";
+	$default_values["field"]="";
+	$default_values["contains"]="";
+	$default_values["sort"]="";
+	$default_values["deleted"]=0;
+	$default_values["link2"]="";
+	$default_values["contains2"]="";
+	$default_values["field2"]="";
+	$default_values["type2"]="";
+
+	foreach ($default_values as $key => $val){
+		if (isset($params[$key])){
+			$$key=$params[$key];
+		} else {
+			$$key=$default_values[$key];
+		}
+	}
+
+	$target=ereg_replace('front/','',ereg_replace('.form','',$INFOFORM_PAGES[$type]));
 
 	$options=cleanSearchOption($type);
 
@@ -449,26 +460,39 @@ function searchForm($type,$target,$field="",$contains="",$sort= "",$deleted= 0,$
  * Build the query, make the search and list items after a search.
  *
  *@param $target filename where to go when done.
- *@param $field array of fields in witch the search would be done
- *@param $type type to display the form
- *@param $contains array of the search strings
- *@param $distinct display only distinct items
- *@param $sort the "sort by" field value
- *@param $order ASC or DSC (for mysql query)
- *@param $start row number from witch we start the query (limit $start,xxx)
- *@param $deleted Query on deleted items or not.
- *@param $link array of the link between each search.
- *@param $contains2 array of the search strings for meta items
- *@param $field2 array of the fields selected in the search form for meta items
- *@param $type2 type to display the form for meta items
- *@param $link2 array of the link between each search. for meta items
+ *@param $params parameters array may include field, contains, sort, order, start, deleted, link, link2, contains2, field2, type2
  *
  *
  *@return Nothing (display)
  *
  **/
-function showList ($type,$target,$field,$contains,$sort,$order,$start,$deleted,$link,$distinct,$link2="",$contains2="",$field2="",$type2=""){
+function showList ($type,$params){
 	global $DB,$INFOFORM_PAGES,$SEARCH_OPTION,$LINK_ID_TABLE,$CFG_GLPI,$LANG,$PLUGIN_HOOKS;
+
+	// Default values of parameters
+	$default_values["link"]=array();
+	$default_values["field"]=array();
+	$default_values["contains"]=array();
+	$default_values["sort"]="1";
+	$default_values["order"]="ASC";
+	$default_values["start"]=0;
+	$default_values["deleted"]=0;
+	$default_values["link2"]="";
+	$default_values["contains2"]="";
+	$default_values["field2"]="";
+	$default_values["type2"]="";
+
+	foreach ($default_values as $key => $val){
+		if (isset($params[$key])){
+			$$key=$params[$key];
+		} else {
+			$$key=$default_values[$key];
+		}
+	}
+
+
+
+	$target=ereg_replace('front/','',ereg_replace('.form','',$INFOFORM_PAGES[$type]));
 
 	$limitsearchopt=cleanSearchOption($type);
 

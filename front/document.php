@@ -44,9 +44,9 @@ commonHeader($LANG["Menu"][27],$_SERVER['PHP_SELF'],"financial","document");
 
 manageGetValuesInSearch(DOCUMENT_TYPE);
 
-searchForm(DOCUMENT_TYPE,$_SERVER['PHP_SELF'],$_GET["field"],$_GET["contains"],$_GET["sort"],$_GET["deleted"],$_GET["link"],$_GET["distinct"]);
+searchForm(DOCUMENT_TYPE,$_GET);
 
-showList(DOCUMENT_TYPE,$_SERVER['PHP_SELF'],$_GET["field"],$_GET["contains"],$_GET["sort"],$_GET["order"],$_GET["start"],$_GET["deleted"],$_GET["link"],$_GET["distinct"]);
+showList(DOCUMENT_TYPE,$_GET);
 
 commonFooter();
 
