@@ -50,7 +50,7 @@ class ConsumableType extends CommonDBTM {
 	/**
 	 * Constructor
 	 **/
-	function ConsumableType () {
+	function __construct () {
 		$this->table="glpi_consumables_type";
 		$this->type=CONSUMABLE_TYPE;
 		$this->entity_assign=true;
@@ -236,7 +236,7 @@ class Consumable extends CommonDBTM {
 	/**
 	 * Constructor
 	 **/
-	function Consumable () {
+	function __construct () {
 		$this->table="glpi_consumables";
 		$this->type=CONSUMABLE_ITEM_TYPE;
 		// by the Consumable type

@@ -43,7 +43,7 @@ class Alert extends CommonDBTM {
 	/**
 	 * Constructor
 	 **/
-	function Alert () {
+	function  __construct () {
 		$this->table="glpi_alerts";
 		$this->type=0;
 	}

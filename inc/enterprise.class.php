@@ -44,7 +44,7 @@ class Enterprise extends CommonDBTM {
 	/**
 	 * Constructor
 	**/
-	function Enterprise () {
+	function __construct () {
 		$this->table="glpi_enterprises";
 		$this->type=ENTERPRISE_TYPE;
 		$this->entity_assign=true;

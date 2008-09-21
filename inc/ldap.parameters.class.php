@@ -43,7 +43,7 @@ class LdapCriteria extends CommonDBTM {
 	/**
 	 * Constructor
 	**/
-	function LdapCriteria() {
+	function __construct() {
 		$this->table = "glpi_rules_ldap_parameters";
 
 	}

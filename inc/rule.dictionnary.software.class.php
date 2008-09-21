@@ -42,7 +42,7 @@ class DictionnarySoftwareCollection extends RuleCachedCollection {
 	/**
 	 * Constructor
 	**/
-	function DictionnarySoftwareCollection() {
+	function __construct() {
 		
 		$this->rule_type = RULE_DICTIONNARY_SOFTWARE;
 		$this->rule_class_name = 'DictionnarySoftwareRule';
@@ -400,7 +400,7 @@ class DictionnarySoftwareRule extends RuleCached {
 	/**
 	 * Constructor
 	**/
-	function DictionnarySoftwareRule() {
+	function __construct() {
 		$this->table = "glpi_rules_descriptions";
 		$this->type = -1;
 		$this->rule_type = RULE_DICTIONNARY_SOFTWARE;

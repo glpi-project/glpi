@@ -58,7 +58,7 @@ class CommonDBTM {
 	/**
 	 * Constructor
 	 **/
-	function CommonDBTM () {
+	function __construct () {
 
 	}
 

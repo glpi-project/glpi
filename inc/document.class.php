@@ -44,7 +44,7 @@ class Document extends CommonDBTM {
 	/**
 	 * Constructor
 	**/
-	function Document () {
+	function __construct () {
 		$this->table="glpi_docs";
 		$this->type=DOCUMENT_TYPE;
 		$this->entity_assign=true;

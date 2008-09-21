@@ -43,7 +43,7 @@ class Config extends CommonDBTM {
 	/**
 	 * Constructor 
 	**/
-	function Config () {
+	function __construct () {
 		$this->table="glpi_config";
 		$this->type=-1;
 	}
@@ -873,7 +873,7 @@ class ConfigOCS extends CommonDBTM {
 	/**
 	 * Constructor
 	**/
-	function ConfigOCS () {
+	function __construct () {
 		$this->table="glpi_ocs_config";
 		$this->type=-1;
 	}

@@ -44,7 +44,7 @@ class kbitem extends CommonDBTM {
 	/**
 	 * Constructor
 	**/
-	function kbitem () {
+	function __construct () {
 		$this->table="glpi_kbitems";
 		$this->type=KNOWBASE_TYPE;
 		$this->entity_assign=true;
@@ -247,6 +247,6 @@ class kbitem extends CommonDBTM {
 	} // function showForm
 
 
-} // class kbitem
+}
 
 ?>

@@ -67,7 +67,7 @@ class Identification {
 	/**
 	 * Constructor
 	**/
-	function Identification() {
+	function __construct() {
 		$this->err = "";
 		$this->user = new User();
 	}
@@ -481,7 +481,7 @@ class AuthMail extends CommonDBTM {
 	/**
 	 * Constructor
 	 **/
-	function AuthMail() {
+	function __construct() {
 
 		$this->table = "glpi_auth_mail";
 		$this->type = AUTH_MAIL_TYPE;
@@ -583,7 +583,7 @@ class AuthLDAP extends CommonDBTM {
 	/**
 	 * Constructor
 	 **/
-	function AuthLDAP() {
+	function __construct() {
 		global $CFG_GLPI;
 
 		$this->table = "glpi_auth_ldap";
@@ -829,7 +829,7 @@ class AuthLdapReplicate extends CommonDBTM{
 	/**
 	 * Constructor
 	 **/
-	function AuthLdapReplicate()
+	function __construct()
 	{
 		$this->table ="glpi_auth_ldap_replicate";
 	}

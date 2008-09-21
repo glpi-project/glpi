@@ -42,7 +42,7 @@ class Registry extends CommonDBTM{
 	/**
 	 * Constructor
 	**/
-   function Registry () {
+	function __construct () {
 		$this->table="glpi_registry";		
 		$this->type=REGISTRY_TYPE;
 	}

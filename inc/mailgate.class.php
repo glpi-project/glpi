@@ -44,7 +44,7 @@ class Mailgate  extends CommonDBTM {
 	/**
 	 * Constructor
 	**/
-	function Mailgate () {
+	function __construct () {
 		$this->table="glpi_mailgate";
 		$this->type=MAILGATE_TYPE;
 	}

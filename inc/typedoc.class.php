@@ -47,7 +47,7 @@ class Typedoc  extends CommonDBTM {
 	/**
 	 * Constructor
 	**/
-	function Typedoc () {
+	function __construct () {
 		$this->table="glpi_type_docs";
 		$this->type=TYPEDOC_TYPE;
 	}

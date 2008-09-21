@@ -44,7 +44,7 @@ class Contact extends CommonDBTM{
 	/**
 	 * Constructor
 	 **/
-	function Contact () {
+	function __construct () {
 		$this->table="glpi_contacts";
 		$this->type=CONTACT_TYPE;
 		$this->entity_assign=true;

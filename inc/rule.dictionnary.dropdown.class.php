@@ -39,8 +39,8 @@ class RuleDictionnaryDropdown extends RuleCached{
 	 * Constructor
 	 * @param $type dropdown type
 	**/
-	function RuleDictionnaryDropdown($type){
-		parent::RuleCached($type);
+	function __construct($type){
+		parent::__construct($type);
 		$this->can_sort=true;
 		$this->right="rule_dictionnary_dropdown";
 	}
@@ -154,7 +154,7 @@ class DictionnaryDropdownCollection extends RuleCachedCollection{
 	 * Constructor
 	 * @param $type dropdown type
 	**/
-	function DictionnaryDropdownCollection($type){
+	function __construct($type){
 		$this->rule_type = $type;
 		$this->rule_class_name = 'RuleDictionnaryDropdown';
 		$this->right="rule_dictionnary_dropdown";

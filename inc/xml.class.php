@@ -119,7 +119,7 @@ class XML {
 	/**
 	 * Constructor
 	**/
-	function XML()
+	function __construct()
 	{
 		// Initialize the values with DEFAULT value
 		$this->IsError=0;

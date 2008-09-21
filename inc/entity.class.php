@@ -44,7 +44,7 @@ class EntityData extends CommonDBTM{
 	/**
 	 * Constructor
 	**/
-	function EntityData () {
+	function __construct () {
 		$this->table="glpi_entities_data";
 		$this->type=-1;
 	}
@@ -61,7 +61,7 @@ class Entity extends CommonDBTM{
 	/**
 	 * Constructor
 	**/
-	function Entity () {
+	function __construct () {
 		$this->table="glpi_entities";
 		$this->type=ENTITY_TYPE;
 	}

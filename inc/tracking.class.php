@@ -48,7 +48,7 @@ class Job extends CommonDBTM{
 	/**
 	 * Constructor
 	**/
-	function Job(){
+	function __construct(){
 		$this->table="glpi_tracking";
 		$this->type=TRACKING_TYPE;
 		$this->entity_assign=true;
@@ -1040,7 +1040,7 @@ class Followup  extends CommonDBTM {
 	/**
 	 * Constructor
 	**/
-	function Followup () {
+	function __construct () {
 		$this->table="glpi_followups";
 		$this->type=-1;
 	}

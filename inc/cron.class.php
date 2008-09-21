@@ -102,7 +102,7 @@ class Cron {
 	 * Constructor
 	 * @param $taches  task array for manual use
 	 **/
-	function Cron($taches=array()){
+	function __construct($taches=array()){
 		global $CFG_GLPI;
 		if(count($taches)>0){
 			$this->taches=$taches;

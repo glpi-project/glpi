@@ -52,7 +52,7 @@ class Profile extends CommonDBTM{
 	/**
 	 * Constructor
 	**/
-	function Profile () {
+	function __construct () {
 		$this->table="glpi_profiles";
 		$this->type=PROFILE_TYPE;
 	}

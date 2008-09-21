@@ -42,7 +42,7 @@ class SetupSearchDisplay extends CommonDBTM{
 	/**
 	 * Constructor
 	**/
-	function SetupSearchDisplay () {
+	function __construct () {
 		$this->table="glpi_display";
 		$this->type=-1;
 	}
