@@ -205,6 +205,11 @@ function searchForm($type,$params){
 	$default_values["contains2"]="";
 	$default_values["field2"]="";
 	$default_values["type2"]="";
+	if (isset($INFOFORM_PAGES[$type])){
+		$default_values["target"]=ereg_replace('front/','',ereg_replace('.form','',$INFOFORM_PAGES[$type]));
+	} else {
+		$default_values["target"]=$_SERVER['PHP_SELF'];
+	}
 
 	foreach ($default_values as $key => $val){
 		if (isset($params[$key])){
@@ -214,7 +219,6 @@ function searchForm($type,$params){
 		}
 	}
 
-	$target=ereg_replace('front/','',ereg_replace('.form','',$INFOFORM_PAGES[$type]));
 
 	$options=cleanSearchOption($type);
 
@@ -481,6 +485,11 @@ function showList ($type,$params){
 	$default_values["contains2"]="";
 	$default_values["field2"]="";
 	$default_values["type2"]="";
+	if (isset($INFOFORM_PAGES[$type])){
+		$default_values["target"]=ereg_replace('front/','',ereg_replace('.form','',$INFOFORM_PAGES[$type]));
+	} else {
+		$default_values["target"]=$_SERVER['PHP_SELF'];
+	}
 
 	foreach ($default_values as $key => $val){
 		if (isset($params[$key])){
@@ -490,9 +499,6 @@ function showList ($type,$params){
 		}
 	}
 
-
-
-	$target=ereg_replace('front/','',ereg_replace('.form','',$INFOFORM_PAGES[$type]));
 
 	$limitsearchopt=cleanSearchOption($type);
 
