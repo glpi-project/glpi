@@ -1984,6 +1984,7 @@ function createAjaxTabs($tabdiv_id='tabspanel',$tabdivcontent_id='tabcontent',$t
 				width:950,
 				enableTabScroll: true,
 				resizeTabs: false,
+				collapsed: true,
 				plain: true,
 				items: [";
 				$active=0;
@@ -2001,32 +2002,38 @@ function createAjaxTabs($tabdiv_id='tabspanel',$tabdivcontent_id='tabcontent',$t
 						$active_key=$key;
 					}
 					echo "{
-					title: \"".$val['title']."\",
-					autoLoad: {url: '".$val['url']."',  
-					scripts: true, nocache:true,";
-					if (isset($val['params'])){
-						echo "params: '".$val['params']."'";
-					}
-					echo "}}";
+						title: \"".$val['title']."\",
+						autoLoad: {url: '".$val['url']."',  
+							scripts: true, 
+							nocache:true,";
+							if (isset($val['params'])){
+								echo "params: '".$val['params']."'";
+							}
+							echo "}";
+					echo "}";
 					$tabid++;
 				}
 			echo "]
 				});";
-	
+
 			echo "/// Define view point";
+			echo "tabpanel.expand();";
 			echo "Ext.destroy(tabpanel.body);
 				tabpanel.body='$tabdivcontent_id';";
-
+	
 			echo "	// force first load 
 				function loadDefaultTab(){
 					tabpanel.setActiveTab($active);";
-				if (!empty($active_key)){
+/*				if (!empty($active_key)){
 					echo "Ext.get('$tabdivcontent_id').load({
 						url: '".$tabs[$active_key]['url']."',
 						scripts: true,  nocache:true,
 						params: '".$tabs[$active_key]['params']."'});";
 				};
+*/
 			echo "}";
+
+
 		echo "</script>";		
 	
 	}
