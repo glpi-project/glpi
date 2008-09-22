@@ -796,10 +796,10 @@ class Rule extends CommonDBTM{
 			
 		$this->getTitleRule($target);
 
-		$this->showOnglets($ID, $new,$_SESSION['glpi_tab'],"rule_type='".$this->rule_type."'",$this->orderby);
+		$this->showTabs($ID, $new,$_SESSION['glpi_tab'],"rule_type='".$this->rule_type."'",$this->orderby);
 		echo "<form name='rule_form'  method='post' action=\"$target\">\n";
 
-		echo "<div class='center'>"; 
+		echo "<div class='center' id='tabsbody' >";
 		echo "<table class='tab_cadre_fixe'>";
 		echo "<tr><th colspan='4'>" . $this->getTitle() . "</th></tr>";
 		echo "<tr>";
@@ -851,6 +851,9 @@ class Rule extends CommonDBTM{
 			}
 		}			
 		echo "</table></div></form>";
+		
+		echo "<div id='tabcontent'></div>";
+		echo "<script type='text/javascript'>loadDefaultTab();</script>";
 	}
 
 	/**
