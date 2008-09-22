@@ -1513,9 +1513,11 @@ function ajaxFooter(){
 
 		global $LANG,$CFG_GLPI,$DEBUG_SQL,$TIMER_DEBUG,$SQL_TOTAL_TIMER,$SQL_TOTAL_REQUEST,$FOOTER_LOADED;
 
+		$rand=mt_rand();
+
 		echo "<span id='debugajax'>";
-		echo "<a class='debug-float' href=\"javascript:showHideDiv('see_ajaxdebug','','','');\" >AJAX DEBUG</a>";
-		echo "<div id='see_ajaxdebug' name='see_ajaxdebug' style=\"display:none;\">";
+		echo "<a class='debug-float' href=\"javascript:showHideDiv('see_ajaxdebug$rand','','','');\" >AJAX DEBUG</a>";
+		echo "<div id='see_ajaxdebug$rand' name='see_ajaxdebug$rand' style=\"display:none;\">";
 		echo "<h2>POST VARIABLE</h2>";
 		printCleanArray($_POST);
 		echo "<h2>GET VARIABLE</h2>";
