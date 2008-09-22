@@ -66,7 +66,7 @@ class Entity extends CommonDBTM{
 		$this->type=ENTITY_TYPE;
 	}
 	
-	function defineOnglets($withtemplate){
+	function defineTabs($withtemplate){
 		global $LANG;
 
 		$ong[1]=$LANG["title"][26];
@@ -143,9 +143,9 @@ class Entity extends CommonDBTM{
 		}
 		
 		
-		$this->showOnglets($ID, $withtemplate,$_SESSION['glpi_tab']);
-
-		echo "<form method='post' name=form action=\"$target\"><div class='center'>";
+		$this->showTabs($ID, $withtemplate,$_SESSION['glpi_tab']);
+		echo "<div class='center' id='tabsbody' >";
+		echo "<form method='post' name=form action=\"$target\">";
 
 		echo "<table class='tab_cadre_fixe' cellpadding='2' >";
 		echo "<tr><th colspan='4'>";
@@ -234,6 +234,9 @@ class Entity extends CommonDBTM{
 		}
 
 		echo "</table></div></form>";
+		
+		echo "<div id='tabcontent'></div>";
+		echo "<script type='text/javascript'>loadDefaultTab();</script>";
 
 		return true;
 	}
