@@ -58,23 +58,27 @@ class glpi_phpmailer extends phpmailer {
 
 		// Comes from config
 		$this->SetLanguage("en", GLPI_ROOT . "/lib/phpmailer/language/");
-		if($CFG_GLPI['smtp_mode'] == '1') {
-			$this->Host = $CFG_GLPI['smtp_host'];
-			$this->Port = $CFG_GLPI['smtp_port'];
 
+		if ($CFG_GLPI['smtp_mode'] != MAIL_MAIL){
+			$this->Mailer = "smtp";
+			$this->Host = $CFG_GLPI['smtp_host'];
 			if($CFG_GLPI['smtp_username'] != '') {
 				$this->SMTPAuth  = true;
 				$this->Username  = $CFG_GLPI['smtp_username'];
 				$this->Password  =  $CFG_GLPI['smtp_password'];
 			}
-
-			$this->Mailer = "smtp";
+			if ($CFG_GLPI['smtp_mode'] == MAIL_SMTPSSL){
+				$this->SMTPSecure = "ssl";
+			}
+			if ($CFG_GLPI['smtp_mode'] == MAIL_SMTPTLS){
+				$this->SMTPSecure = "tls";
+			}
+			
 		}
-
+		if ($_SESSION['glpi_use_mode']==DEBUG_MODE){ 
+			$this->do_debug = 3;
+		}
 	} 
-
-
-
 
 }
 
