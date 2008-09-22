@@ -988,7 +988,7 @@ class User extends CommonDBTM {
 			return false;
 
 		if ($this->getFromDB($ID)) {
-			//$this->showOnglets($ID, $withtemplate,$_SESSION['glpi_tab']);
+
 			$auth_method = $this->getAuthMethodsByID();
 
 			$extauth = ! ($this->fields["auth_method"]==AUTH_DB_GLPI 
