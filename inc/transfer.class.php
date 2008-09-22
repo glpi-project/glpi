@@ -2204,7 +2204,7 @@ class Transfer extends CommonDBTM{
 
 
 		echo "<form method='post' name=form action=\"$target\"><div class='center'>";
-
+		echo "<div class='center' id='tabsbody' >";
 		echo "<table class='tab_cadre_fixe' cellpadding='2' >";
 		if ($edit_form){
 			echo "<tr><th colspan='4'>";
@@ -2418,7 +2418,8 @@ class Transfer extends CommonDBTM{
 			} 
 		}
 		echo "</table></div></form>";
-
+		echo "<div id='tabcontent'></div>";
+		echo "<script type='text/javascript'>loadDefaultTab();</script>";
 		return true;
 	}
 	/// Display items to transfers
