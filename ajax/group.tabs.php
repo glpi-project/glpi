@@ -46,10 +46,6 @@ if(!isset($_POST["ID"])) {
 
 $group=new Group;
 
-if (!isset($_POST["start"])) {
-	$_POST["start"]=0;
-}
-
 	checkRight("group","r");
 
 		if ($_POST["ID"]>0){
