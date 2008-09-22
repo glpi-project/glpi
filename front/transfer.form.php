@@ -75,7 +75,7 @@ if (isset($_GET['onglet'])) {
 	$_SESSION['glpi_tab']=$_GET['onglet'];
 }
 
-$transfer->showOnglets($_GET["ID"], '',$_SESSION['glpi_tab']);
+$transfer->showTabs($_GET["ID"], '',$_SESSION['glpi_tab']);
 $transfer->showForm($_SERVER['PHP_SELF'],$_GET["ID"]);
 
 commonFooter();
