@@ -2203,7 +2203,7 @@ class Transfer extends CommonDBTM{
 		} 
 
 
-		echo "<form method='post' name=form action=\"$target\"><div class='center'>";
+		echo "<form method='post' name=form action=\"$target\">";
 		echo "<div class='center' id='tabsbody' >";
 		echo "<table class='tab_cadre_fixe' cellpadding='2' >";
 		if ($edit_form){
