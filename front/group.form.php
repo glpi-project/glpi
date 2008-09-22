@@ -94,26 +94,7 @@ else
 
 	commonHeader($LANG["Menu"][36],$_SERVER['PHP_SELF'],"admin","group");
 
-	if ($group->showForm($_SERVER['PHP_SELF'],$_GET["ID"])) {
-		if (!empty($_GET['ID'])){
-			switch($_SESSION['glpi_tab']){
-				case -1 :	
-					showGroupUsers($_SERVER['PHP_SELF'],$_GET["ID"]);
-					showGroupDevice($_GET["ID"]);
-					displayPluginAction(GROUP_TYPE,$_GET["ID"],$_SESSION['glpi_tab']);
-					break;
-				case 2 : 
-					showGroupDevice($_GET["ID"]);
-					break;
-
-				default :
-					if (!displayPluginAction(GROUP_TYPE,$_GET["ID"],$_SESSION['glpi_tab'])){
-						showGroupUsers($_SERVER['PHP_SELF'],$_GET["ID"]);
-					}
-					break;
-			}
-		}
-	}	
+	$group->showForm($_SERVER['PHP_SELF'],$_GET["ID"]);	
 
 	commonFooter();
 }

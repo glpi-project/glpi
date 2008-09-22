@@ -140,12 +140,12 @@ class Enterprise extends CommonDBTM {
 		
 		$this->showTabs($ID, $withtemplate,$_SESSION['glpi_tab']);
 		if ($canedit) {
-			echo "<div class='center' id='tabsbody' ><form method='post' action=\"$target\">";
+			echo "<form method='post' action=\"$target\">";
 			if (empty($ID)||$ID<0){
 				echo "<input type='hidden' name='FK_entities' value='".$_SESSION["glpiactive_entity"]."'>";
 			}
 		}
-
+		echo "<div class='center' id='tabsbody' >";
 		echo "<table class='tab_cadre_fixe'>";
 		echo "<tr><th colspan='2'>";
 		if ($ID<0) {
