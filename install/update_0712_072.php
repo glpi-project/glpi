@@ -524,5 +524,13 @@ function update0712to072() {
 		$DB->query($query) or die("0.72 create table glpi_display_default " . $LANG["update"][90] . $DB->error());
 	}
 
+	// Correct cost contract data type
+	if (FieldExists("glpi_contracts","cost")){
+		$query=" ALTER TABLE `glpi_contracts` CHANGE `cost` `cost` DECIMAL( 20, 4 ) NOT NULL DEFAULT '0.0000'";
+		$DB->query($query) or die("0.72 alter contract cost data type" . $LANG["update"][90] . $DB->error());
+	}
+
+  
+
 } // fin 0.72 #####################################################################################
 ?>
