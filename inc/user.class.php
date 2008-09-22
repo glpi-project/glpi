@@ -61,7 +61,7 @@ class User extends CommonDBTM {
 		}
 
 	}
-	function defineOnglets($withtemplate) {
+	function defineTabs($withtemplate) {
 		global $LANG;
 
 
@@ -805,8 +805,8 @@ class User extends CommonDBTM {
 						&& (!empty ($this->fields["password"]) || !empty ($this->fields["password_md5"])))
 				);
 		
-			$this->showOnglets($ID, $withtemplate, $_SESSION['glpi_tab']);
-			echo "<div class='center'>";
+			$this->showTabs($ID, $withtemplate,$_SESSION['glpi_tab']);
+			echo "<div class='center' id='tabsbody' >";
 			echo "<form method='post' name=\"user_manager\" action=\"$target\">";
 			if (empty ($ID)) {
 				echo "<input type='hidden' name='FK_entities' value='" . $_SESSION["glpiactive_entity"] . "'>";
@@ -959,6 +959,8 @@ class User extends CommonDBTM {
 				}
 			}
 			echo "</table></form></div>";
+			echo "<div id='tabcontent'></div>";
+			echo "<script type='text/javascript'>loadDefaultTab();</script>";
 			return true;
 		} else {
 			echo "<div class='center'><strong>".$LANG["common"][54]."</strong></div>";

@@ -185,44 +185,8 @@ else if (isset($_POST["deletegroup"]))
 
 		commonHeader($LANG["title"][13],$_SERVER['PHP_SELF'],"admin","user");
 
-		if ($user->showForm($_SERVER['PHP_SELF'],$_GET["ID"])){
-			if (!empty($_GET["ID"]))
-			switch($_SESSION['glpi_tab']){
-				case -1:
-					showUserRights($_SERVER['PHP_SELF'],$_GET["ID"]);
-					showGroupAssociated($_SERVER['PHP_SELF'],$_GET["ID"]);
-					showDeviceUser($_GET["ID"]);
-					showUserReservations($_SERVER['PHP_SELF'],$_GET["ID"]);
-					if (haveRight("show_all_ticket", "1")){
-						showTrackingList($_SERVER['PHP_SELF'],$_GET["start"],$_GET["sort"],$_GET["order"],"all",'','',$_GET["ID"],0);
-					}
-					displayPluginAction(USER_TYPE,$_GET["ID"],$_SESSION['glpi_tab']);
-					break;
-				case 1 :
-					showUserRights($_SERVER['PHP_SELF'],$_GET["ID"]);
-					break;
-				case 2 :
-					showDeviceUser($_GET["ID"]);
-					break;
-				case 3 :
-					showTrackingList($_SERVER['PHP_SELF'],$_GET["start"],$_GET["sort"],$_GET["order"],"all",'','',$_GET["ID"],0);
-					break;
-				case 4 :
-					showGroupAssociated($_SERVER['PHP_SELF'],$_GET["ID"]);
-					break;
-				case 11 :
-					showUserReservations($_SERVER['PHP_SELF'],$_GET["ID"]);
-					break;
-				case 12:
-					showSynchronizationForm($_SERVER['PHP_SELF'],$_GET["ID"]);
-					break;
-				default : 
-					if (!displayPluginAction(USER_TYPE,$_GET["ID"],$_SESSION['glpi_tab']))
-						showGroupAssociated($_SERVER['PHP_SELF'],$_GET["ID"]);
-					break;
-			}
-			
-		}
+		$user->showForm($_SERVER['PHP_SELF'],$_GET["ID"]);
+
 		commonFooter();
 	} else {
 		checkRight("user","w");
