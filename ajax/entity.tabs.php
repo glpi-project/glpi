@@ -52,9 +52,6 @@ if (!isset($_POST["start"])) {
 	$_POST["start"]=0;
 }
 
-if (!isset($_POST["sort"])) $_POST["sort"]="";
-if (!isset($_POST["order"])) $_POST["order"]="";
-
 	$entity->check($_POST["ID"],'r');
 
 		if ($_POST["ID"]>0){
