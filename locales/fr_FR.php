@@ -1558,11 +1558,10 @@ $LANG["setup"][227]="URL de base utilisée";
 $LANG["setup"][228]="Champ de login"; 
 $LANG["setup"][229]="Tester l'envoi de mail vers l'administrateur"; 
 $LANG["setup"][230]="A la mise à jour du ticket"; 
-$LANG["setup"][231]="Utiliser un serveur SMTP pour l'envoi des mails"; 
-$LANG["setup"][232]="Hôte SMTP"; 
-$LANG["setup"][233]="Port du serveur SMTP"; 
-$LANG["setup"][234]="Login SMTP"; 
-$LANG["setup"][235]="Mot de passe SMTP"; 
+$LANG["setup"][231]="Mode d'envoi des mails"; 
+$LANG["setup"][232]="Hôte(s) SMTP[:Port] (séparateur ;)"; 
+$LANG["setup"][234]="Login SMTP (optionnel)"; 
+$LANG["setup"][235]="Mot de passe SMTP (optionnel)"; 
 $LANG["setup"][236]="Ancien technicien chargé du ticket"; 
 $LANG["setup"][237]="Administrateur"; 
 $LANG["setup"][239]="Technicien chargé du ticket"; 
@@ -1642,6 +1641,12 @@ $LANG["setup"][607]="Associer à un profil";
 $LANG["setup"][610]="Titre du ticket obligatoire"; 
 $LANG["setup"][611]="Contenu du ticket obligatoire"; 
 $LANG["setup"][612]="Catégorie du ticket obligatoire"; 
+
+$LANG["setup"][650]="PHP"; 
+$LANG["setup"][651]="SMTP"; 
+$LANG["setup"][652]="SMTP+SSL"; 
+$LANG["setup"][653]="SMTP+TLS"; 
+
  
 $LANG["setup"][701]="Sélectionnez le plugin à configurer"; 
 $LANG["setup"][702]="plugin incompatible avec cette version"; 

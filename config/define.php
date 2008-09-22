@@ -296,6 +296,14 @@
 	define("AUTH_X509",6);
 	define("NOT_YET_AUTHENTIFIED",-1);
 
+	//Mail send methods
+	define("MAIL_MAIL",0);
+	define("MAIL_SMTP",1);
+	define("MAIL_SMTPSSL",2);
+	define("MAIL_SMTPTLS",3);
+	
+
+
 	//Generic rules engine
 	define("PATTERN_IS",0);
 	define("PATTERN_IS_NOT",1);

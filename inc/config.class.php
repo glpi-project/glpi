@@ -683,24 +683,7 @@ class Config extends CommonDBTM {
 			if (!function_exists('mail')) {
 				echo "<tr class='tab_bg_2'><td align='center' colspan='2'><span class='red'>" . $LANG["setup"][217] . " : </span><span>" . $LANG["setup"][218] . "</span></td></tr>";
 			}
-	
-			echo "<tr class='tab_bg_2'><td >" . $LANG["setup"][231] . "</td><td>&nbsp; ";
-	
-			if (!function_exists('mail')) { // if mail php disabled we forced SMTP usage 
-				echo $LANG["choice"][1] . "  &nbsp;<input type=\"radio\" name=\"smtp_mode\" value=\"1\" checked >";
-			} else {
-				dropdownYesNo("smtp_mode", $CFG_GLPI["smtp_mode"]);
-			}
-			echo "</td></tr>";
-	
-			echo "<tr class='tab_bg_2'><td >" . $LANG["setup"][232] . "</td><td> <input type=\"text\" name=\"smtp_host\" size='40' value=\"" . $CFG_GLPI["smtp_host"] . "\"> </td></tr>";
-	
-			echo "<tr class='tab_bg_2'><td >" . $LANG["setup"][233] . "</td><td> <input type=\"text\" name=\"smtp_port\" size='40' value=\"" . $CFG_GLPI["smtp_port"] . "\"> </td></tr>";
-	
-			echo "<tr class='tab_bg_2'><td >" . $LANG["setup"][234] . "</td><td> <input type=\"text\" name=\"smtp_username\" size='40' value=\"" . $CFG_GLPI["smtp_username"] . "\"> </td></tr>";
-	
-			echo "<tr class='tab_bg_2'><td >" . $LANG["setup"][235] . "</td><td> <input type=\"password\" name=\"smtp_password\" size='40' value=\"\"> </td></tr>";
-	
+		
 			echo "<tr class='tab_bg_2'><td >" . $LANG["setup"][245] . " " . $LANG["setup"][244] . "</td><td>";
 			echo "<select name='cartridges_alert'> ";
 			echo "<option value='0' " . ($CFG_GLPI["cartridges_alert"] == 0 ? "selected" : "") . " >" . $LANG["setup"][307] . "</option>";
@@ -722,6 +705,27 @@ class Config extends CommonDBTM {
 			echo "<tr class='tab_bg_2'><td >" . $LANG["setup"][264] . "</td><td>";
 			dropdownYesNo("licenses_alert", $CFG_GLPI["licenses_alert"]);
 			echo "</td></tr>";
+
+			echo "<tr class='tab_bg_1'><td colspan='2'>&nbsp;</td></tr>";
+
+			echo "<tr class='tab_bg_2'><td >" . $LANG["setup"][231] . "</td><td>&nbsp; ";
+
+
+			$mail_methods=array(MAIL_MAIL=>$LANG["setup"][650],
+					MAIL_SMTP=>$LANG["setup"][651],
+					MAIL_SMTPSSL=>$LANG["setup"][652],
+					MAIL_SMTPTLS=>$LANG["setup"][653]);
+	
+			dropdownArrayValues("smtp_mode",$mail_methods,$CFG_GLPI["smtp_mode"]);
+
+			echo "</td></tr>";
+	
+			echo "<tr class='tab_bg_2'><td >" . $LANG["setup"][232] . "</td><td> <input type=\"text\" name=\"smtp_host\" size='40' value=\"" . $CFG_GLPI["smtp_host"] . "\"> </td></tr>";
+		
+			echo "<tr class='tab_bg_2'><td >" . $LANG["setup"][234] . "</td><td> <input type=\"text\" name=\"smtp_username\" size='40' value=\"" . $CFG_GLPI["smtp_username"] . "\"> </td></tr>";
+	
+			echo "<tr class='tab_bg_2'><td >" . $LANG["setup"][235] . "</td><td> <input type=\"password\" name=\"smtp_password\" size='40' value=\"\"> </td></tr>";
+
 	
 			echo "<tr class='tab_bg_2'><td align='center' colspan='2'>";
 			echo "<input type=\"submit\" name=\"update_mailing\" class=\"submit\" value=\"" . $LANG["buttons"][2] . "\" >";
