@@ -587,11 +587,11 @@ function showDevicesForm ($target,$ID,$device_type) {
 
 	$table=getDeviceTable($device_type);
 
-	echo "<div class='center'>";
-	echo "<a href='$REFERER'>".$LANG["buttons"][13]."</a>";
 
-	$device->showOnglets($ID, "",$_SESSION['glpi_tab'],"","designation","&amp;device_type=$device_type&amp;referer=$REFERER");
+	echo "<a href='$REFERER'>".$LANG["buttons"][13]."</a>";
+	$device->showTabs($ID, "",$_SESSION['glpi_tab'],"","designation","&amp;device_type=$device_type&amp;referer=$REFERER");
 	echo "<form method='post' name='form' action=\"$target\">";
+	echo "<div class='center' id='tabsbody'>";
 	echo "<input type='hidden' name='referer' value='$REFERER'>";
 	echo "<table class='tab_cadre_fixe' cellpadding='2'>";
 	echo "<tr><th align='center' colspan='1'>";
@@ -772,7 +772,9 @@ function showDevicesForm ($target,$ID,$device_type) {
 		echo "<input type='submit' name='add' value=\"".$LANG["buttons"][8]."\" class='submit'>";
 		echo "</td>";
 	}
-	echo "</table></form></div>";
+	echo "</table></div></form>";
+	echo "<div id='tabcontent'></div>";
+	echo "<script type='text/javascript'>loadDefaultTab();</script>";
 }
 
 ?>
