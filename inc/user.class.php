@@ -806,8 +806,10 @@ class User extends CommonDBTM {
 				);
 		
 			$this->showTabs($ID, $withtemplate,$_SESSION['glpi_tab']);
-			echo "<div class='center' id='tabsbody' >";
+			
 			echo "<form method='post' name=\"user_manager\" action=\"$target\">";
+			echo "<div class='center' id='tabsbody' >";
+			
 			if (empty ($ID)) {
 				echo "<input type='hidden' name='FK_entities' value='" . $_SESSION["glpiactive_entity"] . "'>";
 				echo "<input type='hidden' name='auth_method' value='1'>";
@@ -958,7 +960,8 @@ class User extends CommonDBTM {
 					echo "</tr>";
 				}
 			}
-			echo "</table></form></div>";
+			echo "</table></div></form>";
+			
 			echo "<div id='tabcontent'></div>";
 			echo "<script type='text/javascript'>loadDefaultTab();</script>";
 			return true;

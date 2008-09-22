@@ -65,7 +65,7 @@ class Group extends CommonDBTM{
 	}
 
 
-	function defineOnglets($withtemplate){
+	function defineTabs($withtemplate){
 		global $LANG;
 		if (haveRight("user","r"))	
 			$ong[1]=$LANG["Menu"][14];
@@ -107,15 +107,16 @@ class Group extends CommonDBTM{
 
 		$canedit=$this->can($ID,'w');
 
-		$this->showOnglets($ID, $withtemplate,$_SESSION['glpi_tab']);
+		$this->showTabs($ID, $withtemplate,$_SESSION['glpi_tab']);
 
 		if ($canedit) {
-			echo "<form method='post' name=form action=\"$target\"><div class='center'>";
+			
+			echo "<form method='post' name=form action=\"$target\">";
 			if (empty($ID)){
 				echo "<input type='hidden' name='FK_entities' value='".$_SESSION["glpiactive_entity"]."'>";
 			}
 		}
-
+		echo "<div class='center' id='tabsbody' >";
 		echo "<table class='tab_cadre_fixe' cellpadding='2' >";
 		echo "<tr><th>";
 		if (empty($ID)) {
@@ -222,7 +223,9 @@ class Group extends CommonDBTM{
 		} else {
 			echo "</table></div>";
 		}
-
+		echo "<div id='tabcontent'></div>";
+		echo "<script type='text/javascript'>loadDefaultTab();</script>";
+		
 		return true;
 	}
 

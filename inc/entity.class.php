@@ -144,9 +144,9 @@ class Entity extends CommonDBTM{
 		
 		
 		$this->showTabs($ID, $withtemplate,$_SESSION['glpi_tab']);
-		echo "<div class='center' id='tabsbody' >";
+		
 		echo "<form method='post' name=form action=\"$target\">";
-
+		echo "<div class='center' id='tabsbody' >";
 		echo "<table class='tab_cadre_fixe' cellpadding='2' >";
 		echo "<tr><th colspan='4'>";
 		echo $LANG["entity"][0]." ID $ID:";
