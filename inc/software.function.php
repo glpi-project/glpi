@@ -1016,7 +1016,7 @@ function displayCategoryHeader($data, $cat) {
 	if ($cat != -1) {
 		echo "</table></div></td></tr>";
 	}
-
+	$rand=mt_rand();
 	$display = "none";
 
 	$cat = $data["category_id"];
@@ -1029,14 +1029,14 @@ function displayCategoryHeader($data, $cat) {
 
 	echo "	<tr class='tab_bg_2$expirecss'>";
 	echo "  	<td align='center' colspan='5'>";
-	echo "			<a  href=\"javascript:showHideDiv('softcat$cat','imgcat$cat','" . GLPI_ROOT . "/pics/folder.png','" . GLPI_ROOT . "/pics/folder-open.png');\">";
+	echo "			<a  href=\"javascript:showHideDiv('softcat$cat$rand','imgcat$cat','" . GLPI_ROOT . "/pics/folder.png','" . GLPI_ROOT . "/pics/folder-open.png');\">";
 	echo "				<img alt='' name='imgcat$cat' src=\"" . GLPI_ROOT . "/pics/folder" . (!$display ? '' : "-open") . ".png\">&nbsp;<strong>" . $catname . "</strong>";
 	echo "			</a>";
 	echo "		</td>";
 	echo "	</tr>";
 	echo "<tr class='tab_bg_2$expirecss'>";
 	echo "		<td colspan='5'>
-				     <div align='center' id='softcat$cat' " . (!$display ? "style=\"display:none;\"" : '') . ">";
+				     <div align='center' id='softcat$cat$rand' " . (!$display ? "style=\"display:none;\"" : '') . ">";
 	echo "			<table class='tab_cadre_fixe'>";
 	echo "				<tr>";
 	echo "					<th>" . $LANG["common"][16] . "</th><th>" . $LANG["software"][5] . "</th>";
