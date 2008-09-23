@@ -607,19 +607,7 @@ class Config extends CommonDBTM {
 		echo "<form action=\"$target\" method=\"post\">";
 		echo "<input type='hidden' name='ID' value='" . $CFG_GLPI["ID"] . "'>";
 	
-		echo "<div id='barre_onglets'><ul id='onglet'>";
-
-		$onglets=array(1=>$LANG["common"][12],
-				2=>$LANG["setup"][240],
-				3=>$LANG["setup"][242]);
-		foreach ($onglets as $key => $val){
-			echo "<li ";
-			if ($_SESSION['glpi_mailconfig'] == $key) {
-				echo "class='actif'";
-			}
-			echo "><a href='$target?onglet=$key'>$val</a></li>";
-		}
-		echo "</ul></div>";
+		echo "<div class='center' id='tabsbody'>";
 	
 		switch ($_SESSION['glpi_mailconfig']){
 			case 1:

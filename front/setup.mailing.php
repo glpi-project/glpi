@@ -99,10 +99,24 @@ elseif (!empty ($_POST["update_notifications"])) {
 }
 
 
-
-
 commonHeader($LANG["title"][15], $_SERVER['PHP_SELF'],"config","mailing");
-$config->showFormMailing($_SERVER['PHP_SELF']);
+
+$tabs[1]=array('title'=>$LANG["common"][12],
+'url'=>$CFG_GLPI['root_doc']."/ajax/mailing.tabs.php",
+'params'=>"target=".$_SERVER['PHP_SELF']."&ID=-1&mailing_tab=1");
+	
+$tabs[2]=array('title'=>$LANG["setup"][240],
+'url'=>$CFG_GLPI['root_doc']."/ajax/mailing.tabs.php",
+'params'=>"target=".$_SERVER['PHP_SELF']."&ID=-1&mailing_tab=2");
+
+$tabs[3]=array('title'=>$LANG["setup"][242],
+'url'=>$CFG_GLPI['root_doc']."/ajax/mailing.tabs.php",
+'params'=>"target=".$_SERVER['PHP_SELF']."&ID=-1&mailing_tab=3");
+				
+echo "<div id='tabspanel' class='center-h'></div>";
+createAjaxTabs('tabspanel','tabcontent',$tabs,$_SESSION['glpi_mailconfig']);
+echo "<div id='tabcontent'></div>";
+echo "<script type='text/javascript'>loadDefaultTab();</script>";
 
 commonFooter();
 ?>
