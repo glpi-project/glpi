@@ -168,14 +168,7 @@ class SetupSearchDisplay extends CommonDBTM{
 
 		$global_write=haveRight("search_config_global","w");
 
-		echo "<div id='barre_onglets'><ul id='onglet'>";
-		echo "<li "; if ($_SESSION['glpi_searchconfig']==1){ echo "class='actif'";} echo  "><a href='$target?onglet=1&amp;type=$type'>".$LANG["central"][13]."</a></li>";
-		if (haveRight("search_config","w")){
-			echo "<li "; if ($_SESSION['glpi_searchconfig']==2){ echo "class='actif'";} echo  "><a href='$target?onglet=2&amp;type=$type'>".$LANG["central"][12]."</a></li>";
-		}
-		echo "</ul></div>";
-
-		echo "<div class='center'>";
+		echo "<div class='center' id='tabsbody' >";
 		// Defined items
 		$query="SELECT * from glpi_display WHERE type='$type' AND FK_users='$IDuser' order by rank";
 

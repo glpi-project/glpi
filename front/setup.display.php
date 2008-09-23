@@ -68,7 +68,19 @@ if (isset($_POST["activate"])) {
 	$setupdisplay->down($_POST);
 }
 if ((ereg("popup",$_SERVER['PHP_SELF'])&&$type>0)/*||$type=$setupdisplay->title($_SERVER['PHP_SELF'],$type)*/){
-	$setupdisplay->showForm($_SERVER['PHP_SELF'],$type);
+	
+	$tabs[1]=array('title'=>$LANG["central"][13],
+	'url'=>$CFG_GLPI['root_doc']."/ajax/display.tabs.php",
+	'params'=>"target=".$_SERVER['PHP_SELF']."&ID=-1&display_tab=1&type=$type");
+		
+	$tabs[2]=array('title'=>$LANG["central"][12],
+	'url'=>$CFG_GLPI['root_doc']."/ajax/display.tabs.php",
+	'params'=>"target=".$_SERVER['PHP_SELF']."&ID=-1&display_tab=2&type=$type");
+						
+	echo "<div id='tabspanel' class='center-h'></div>";
+	createAjaxTabs('tabspanel','tabcontent',$tabs,$_SESSION['glpi_searchconfig']);
+	echo "<div id='tabcontent'></div>";
+	echo "<script type='text/javascript'>loadDefaultTab();</script>";
 }
 if (!ereg("popup",$_SERVER['PHP_SELF'])){
 	commonFooter();
