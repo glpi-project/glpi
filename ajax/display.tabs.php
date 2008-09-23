@@ -54,7 +54,6 @@ $setupdisplay=new SetupSearchDisplay();
 					$setupdisplay->showFormGlobal($_POST['target'],$_POST["type"]);
 				break;
 				case 2 :
-					$_SESSION['glpi_searchconfig']=2;
 					$setupdisplay->showFormPerso($_POST['target'],$_POST["type"]);
 				break;
 			}
