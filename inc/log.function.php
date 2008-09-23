@@ -386,7 +386,8 @@ function logArray(){
 			"groups"=>$LANG["log"][47],
 			"entity"=>$LANG["log"][63],
 			"rules"=>$LANG["log"][65],
-			"reminder"=>$LANG["log"][81]);
+			"reminder"=>$LANG["log"][81],
+			"transfers"=>$LANG["transfer"][1]);
 
 
 	$logService=array("inventory"=>$LANG["log"][50],
