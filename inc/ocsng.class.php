@@ -55,7 +55,7 @@ class DBocs extends DBmysql {
 				$this->dbpassword = rawurldecode($data["ocs_db_passwd"]);
 				$this->dbdefault = $data["ocs_db_name"];
 				$this->dbenc="latin1";
-				$this->DBmysql();
+				parent::__construct();
 			}
 	}
 	
