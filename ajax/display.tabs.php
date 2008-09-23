@@ -49,10 +49,6 @@ else $type=0;
 
 $setupdisplay=new SetupSearchDisplay();
 
-if (!isset($_POST["start"])) {
-	$_POST["start"]=0;
-}
-
 	checkSeveralRightsOr(array("search_config_global"=>"w","search_config"=>"w"));
 
 		if ($_POST["ID"]<0){
