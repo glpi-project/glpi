@@ -40,26 +40,22 @@ define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
 
-if(!isset($_POST["ID"])) {
+if(!isset($_POST["ID"]) || !isset($_POST["type"])) {
 	exit();
 }
-
-if (isset($_POST["type"]))$type=$_POST["type"];
-else $type=0;
 
 $setupdisplay=new SetupSearchDisplay();
 
 	checkSeveralRightsOr(array("search_config_global"=>"w","search_config"=>"w"));
 
 		if ($_POST["ID"]<0){
-			switch($_POST['display_tab']){
+			switch($_POST['glpi_tab']){
 				case 1 :
-					$_SESSION['glpi_searchconfig']=1;
-					$setupdisplay->showForm($_POST['target'],$type);
+					$setupdisplay->showFormGlobal($_POST['target'],$_POST["type"]);
 				break;
 				case 2 :
 					$_SESSION['glpi_searchconfig']=2;
-					$setupdisplay->showForm($_POST['target'],$type);
+					$setupdisplay->showFormPerso($_POST['target'],$_POST["type"]);
 				break;
 			}
 		}
