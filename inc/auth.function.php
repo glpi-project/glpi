@@ -1264,7 +1264,7 @@ function showReplicatesList($target,$master_id){
 		}
 				
 		echo "<div class='center'>";
-		echo "<table width='950px'>";
+		echo "<table width='950px' class='tab_glpi'>";
 				
 		echo "<tr><td><img src=\"" . $CFG_GLPI["root_doc"] . "/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markAllRows('ldap_replicates_form') ) return false;\" href='" . $_SERVER['PHP_SELF'] . "?next=extauth_ldap&ID=$master_id&select=all'>" . $LANG["buttons"][18] . "</a></td>";
 		echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkAllRows('ldap_replicates_form') ) return false;\" href='" . $_SERVER['PHP_SELF'] . "?next=extauth_ldap&ID=$master_id&select=none'>" . $LANG["buttons"][19] . "</a>";
