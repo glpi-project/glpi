@@ -62,7 +62,32 @@ if (!empty ($_POST["update"])) {
 }
 
 commonHeader($LANG["common"][12], $_SERVER['PHP_SELF'],"config","config");
-$config->showForm($_SERVER['PHP_SELF']);
+
+$tabs[1]=array('title'=>$LANG["setup"][70],
+'url'=>$CFG_GLPI['root_doc']."/ajax/config.tabs.php",
+'params'=>"target=".$_SERVER['PHP_SELF']."&ID=-1&config_tab=1");
+	
+$tabs[2]=array('title'=>$LANG["setup"][119],
+'url'=>$CFG_GLPI['root_doc']."/ajax/config.tabs.php",
+'params'=>"target=".$_SERVER['PHP_SELF']."&ID=-1&config_tab=2");
+
+$tabs[3]=array('title'=>$LANG["setup"][184],
+'url'=>$CFG_GLPI['root_doc']."/ajax/config.tabs.php",
+'params'=>"target=".$_SERVER['PHP_SELF']."&ID=-1&config_tab=3");
+
+$tabs[4]=array('title'=>$LANG["connect"][0],
+'url'=>$CFG_GLPI['root_doc']."/ajax/config.tabs.php",
+'params'=>"target=".$_SERVER['PHP_SELF']."&ID=-1&config_tab=4");
+
+$tabs[5]=array('title'=>$LANG["setup"][800],
+'url'=>$CFG_GLPI['root_doc']."/ajax/config.tabs.php",
+'params'=>"target=".$_SERVER['PHP_SELF']."&ID=-1&config_tab=5");
+				
+echo "<div id='tabspanel' class='center-h'></div>";
+createAjaxTabs('tabspanel','tabcontent',$tabs,$_SESSION['glpi_configgen']);
+echo "<div id='tabcontent'></div>";
+echo "<script type='text/javascript'>loadDefaultTab();</script>";
 
 commonFooter();
+
 ?>

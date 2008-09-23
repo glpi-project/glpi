@@ -113,43 +113,12 @@ class Config extends CommonDBTM {
 	
 		if (!haveRight("config", "w"))
 			return false;
-
+		
 		echo "<form name='form' action=\"$target\" method=\"post\">";
+		echo "<div class='center' id='tabsbody'>";
 		echo "<input type='hidden' name='ID' value='" . $CFG_GLPI["ID"] . "'>";
-	
-		echo "<div id='barre_onglets'><ul id='onglet'>";
-		echo "<li ";
-		if ($_SESSION['glpi_configgen'] == 1) {
-			echo "class='actif'";
-		}
-		echo "><a href='$target?onglet=1'>" . $LANG["setup"][70] . "</a></li>";
-		echo "<li ";
-		if ($_SESSION['glpi_configgen'] == 2) {
-			echo "class='actif'";
-		}
-		echo "><a href='$target?onglet=2'>" . $LANG["setup"][119] . "</a></li>";
 
-		echo "<li ";
-		if ($_SESSION['glpi_configgen'] == 3) {
-			echo "class='actif'";
-		}
-		echo "><a href='$target?onglet=3'>" . $LANG["setup"][184] . "</a></li>";
-
-		echo "<li ";
-		if ($_SESSION['glpi_configgen'] == 4) {
-			echo "class='actif'";
-		}
-		echo "><a href='$target?onglet=4'>" . $LANG["connect"][0] . "</a></li>";
-
-		echo "<li ";
-		if ($_SESSION['glpi_configgen'] == 5) {
-			echo "class='actif'";
-		}
-		echo "><a href='$target?onglet=5'>" . $LANG["setup"][800] . "</a></li>";
-
-		echo "</ul></div>";
-
-		echo "<div class='center'><table class='tab_cadre_fixe'>";
+		echo "<table class='tab_cadre_fixe'>";
 		switch ($_SESSION['glpi_configgen']){
 			// MAIN CONFIG
 			case 1 :
