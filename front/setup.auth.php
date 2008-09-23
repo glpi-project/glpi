@@ -71,7 +71,8 @@ elseif (isset ($_POST["add_mail"])) {
 }
 elseif (isset ($_POST["delete_mail"])) {
 	$config_mail->delete($_POST);
-	glpi_header($CFG_GLPI["root_doc"] . "/front/setup.auth.php?onglet=2");
+	$_SESSION['glpi_authconfig']=2;
+	glpi_header($CFG_GLPI["root_doc"] . "/front/setup.auth.php");
 }
 
 //LDAP Server add/update/delete
@@ -95,7 +96,8 @@ elseif (isset ($_POST["add_ldap"])) {
 }
 elseif (isset ($_POST["delete_ldap"])) {
 	$config_ldap->delete($_POST);
-	glpi_header($CFG_GLPI["root_doc"] . "/front/setup.auth.php?onglet=1");
+	$_SESSION['glpi_authconfig']=1;
+	glpi_header($CFG_GLPI["root_doc"] . "/front/setup.auth.php");
 }
 elseif (isset ($_POST["test_ldap"])) {
 	$ldap = new AuthLDAP;
@@ -153,24 +155,36 @@ if (isset ($_GET['onglet'])){
 	$_SESSION['glpi_authconfig'] = $_GET['onglet'];
 }
 
-if (!isset($_GET["next"])){
-	$_GET["next"] = '';
-}
 if (!isset($_GET["ID"])){
 	$_GET["ID"]="";	
 }
-commonHeader($LANG["title"][14], $_SERVER['PHP_SELF'],"config","extauth",$_SESSION['glpi_authconfig']);
-switch ($_GET["next"]) {
-	case "extauth_mail" :
-		$config_mail->showForm($_SERVER['PHP_SELF'], $_GET["ID"]);
-		break;
-	case "extauth_ldap" :
-		$config_ldap->showForm($_SERVER['PHP_SELF'], $_GET["ID"]);
-		break;
-	default :
-		showFormExtAuthList($_SERVER['PHP_SELF']);
-		break;
+
+if (!isset($_GET["next"])){
+	$_GET["next"]="";	
 }
+
+if (!isset($_GET["preconfig"])){
+	$_GET["preconfig"]="";	
+}
+
+commonHeader($LANG["title"][14], $_SERVER['PHP_SELF'],"config","extauth",$_SESSION['glpi_authconfig']);
+
+$tabs[1]=array('title'=>$LANG["login"][2],
+'url'=>$CFG_GLPI['root_doc']."/ajax/auth.tabs.php",
+'params'=>"target=".$_SERVER['PHP_SELF']."&ID=".$_GET["ID"]."&next=".$_GET["next"]."&preconfig=".$_GET["preconfig"]."&auth_tab=1");
+	
+$tabs[2]=array('title'=>$LANG["login"][3],
+'url'=>$CFG_GLPI['root_doc']."/ajax/auth.tabs.php",
+'params'=>"target=".$_SERVER['PHP_SELF']."&ID=".$_GET["ID"]."&next=".$_GET["next"]."&preconfig=".$_GET["preconfig"]."&auth_tab=2");
+
+$tabs[3]=array('title'=>$LANG["common"][67],
+'url'=>$CFG_GLPI['root_doc']."/ajax/auth.tabs.php",
+'params'=>"target=".$_SERVER['PHP_SELF']."&ID=".$_GET["ID"]."&next=".$_GET["next"]."&preconfig=".$_GET["preconfig"]."&auth_tab=3");
+			
+echo "<div id='tabspanel' class='center-h'></div>";
+createAjaxTabs('tabspanel','tabcontent',$tabs,$_SESSION['glpi_authconfig']);
+echo "<div id='tabcontent'></div>";
+echo "<script type='text/javascript'>loadDefaultTab();</script>";
 
 commonFooter();
 ?>

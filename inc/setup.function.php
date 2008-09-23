@@ -996,31 +996,12 @@ function showFormExtAuthList($target) {
 
 	if (!haveRight("config", "w"))
 		return false;
-	echo "<div class='center'>";
+		
 	echo "<form name=cas action=\"$target\" method=\"post\">";
 	echo "<input type='hidden' name='ID' value='" . $CFG_GLPI["ID"] . "'>";
 
-
-
-
-	echo "<div id='barre_onglets'><ul id='onglet'>";
-
-	$onglets=array(
-		1 => $LANG["login"][2],
-		2 => $LANG["login"][3],
-		3 => $LANG["common"][67]
-	);
-
-	foreach($onglets as $key => $val){
-		echo "<li ";
-		if ($_SESSION['glpi_authconfig'] == $key) {
-			echo "class='actif'";
-		}
-		echo "><a href='$target?onglet=$key'>$val</a></li>";
-	}
-	echo "</ul></div>";
-
-
+	echo "<div class='center' id='tabsbody'>";
+	
 	switch ($_SESSION['glpi_authconfig']){
 		case 2 :
 			if (canUseImapPop()) {
@@ -1139,9 +1120,9 @@ function showFormExtAuthList($target) {
 		break;
 	}
 
-
-	echo "</form>";
 	echo "</div>";
+	echo "</form>";
+	
 }
 
 
