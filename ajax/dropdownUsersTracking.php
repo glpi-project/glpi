@@ -64,6 +64,16 @@ $query.=" ORDER BY glpi_users.realname,glpi_users.firstname,glpi_users.name $LIM
 
 $result = $DB->query($query);
 
+$users=array(); 
+if ($DB->numrows($result)) { 
+	while ($data=$DB->fetch_array($result)) { 
+		$users[$data["ID"]]=formatUserName($data["ID"],$data["name"],$data["realname"],$data["firstname"]); 
+		$logins[$data["ID"]]=$data["name"]; 
+	} 
+}        
+	 
+asort($users); 
+
 echo "<select id='dropdown_".$_POST["myname"].$_POST["rand"]."' name=\"".$_POST['myname']."\">";
 
 if ($_POST['searchText']!=$CFG_GLPI["ajax_wildcard"]&&$DB->numrows($result)==$NBMAX)
@@ -77,12 +87,10 @@ if (isset($_POST['value'])){
 		echo "<option selected value='".$_POST['value']."' title=\"".cleanInputText($output)."\">".substr($output,0,$CFG_GLPI["dropdown_limit"])."</option>";
 }	
 
-if ($DB->numrows($result)) {
-	while ($data=$DB->fetch_assoc($result)) {
-		$output=formatUserName($data["ID"],$data["name"],$data["realname"],$data["firstname"]);
+if (count($users)) {
+	foreach ($users as $ID => $output){ 
 
-
-		echo "<option value=\"".$data["ID"]."\" ".($data["ID"] == $_POST['value']?"selected":"")." title=\"".cleanInputText($output)."\">".substr($output,0,$CFG_GLPI["dropdown_limit"])."</option>";
+		echo "<option value=\"".$ID."\" ".($ID == $_POST['value']?"selected":"")." title=\"".cleanInputText($output)."\">".substr($output,0,$CFG_GLPI["dropdown_limit"])."</option>";
 	}
 }
 echo "</select>";

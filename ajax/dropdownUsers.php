@@ -68,6 +68,17 @@ if (isset($_POST['used'])) {
 
 $result=dropdownUsersSelect(false, $_POST['right'], $_POST["entity_restrict"], $_POST['value'], $used, $_POST['searchText']);
 
+
+$users=array(); 
+if ($DB->numrows($result)) { 
+	while ($data=$DB->fetch_array($result)) { 
+		$users[$data["ID"]]=formatUserName($data["ID"],$data["name"],$data["realname"],$data["firstname"]); 
+		$logins[$data["ID"]]=$data["name"]; 
+	} 
+}        
+	 
+asort($users); 
+
 echo "<select id='dropdown_".$_POST["myname"].$_POST["rand"]."' name=\"".$_POST['myname']."\">";
 
 if ($_POST['searchText']!=$CFG_GLPI["ajax_wildcard"] && $DB->numrows($result)==$CFG_GLPI["dropdown_max"])
@@ -86,13 +97,10 @@ if (isset($_POST['value'])){
 		echo "<option selected value='".$_POST['value']."'>".$output."</option>";
 }		
 
-if ($DB->numrows($result)) {
-	while ($data=$DB->fetch_array($result)) {
+if (count($users)) {
+	foreach ($users as $ID => $output){ 
 			
-		$output=formatUserName($data["ID"],$data["name"],$data["realname"],$data["firstname"]);
-		
-	
-		echo "<option value=\"".$data["ID"]."\" title=\"".cleanInputText($output." - ".$data["name"])."\">".substr($output,0,$CFG_GLPI["dropdown_limit"])."</option>";
+		echo "<option value=\"".$ID."\" title=\"".cleanInputText($output." - ".$logins[$ID])."\">".substr($output,0,$CFG_GLPI["dropdown_limit"])."</option>";
 	}
 }
 echo "</select>";
