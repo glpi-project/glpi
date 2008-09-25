@@ -355,9 +355,9 @@ function showEnterpriseContract($instID) {
 	}
 	if ($canedit){
 		if ($contract->fields["recursive"]) {
-			$nb=countElementsInTableForEntity("glpi_contacts",getEntitySons($contract->fields["FK_entities"]));
+			$nb=countElementsInTableForEntity("glpi_enterprises",getEntitySons($contract->fields["FK_entities"]));
 		} else {
-			$nb=countElementsInTableForEntity("glpi_contacts",$contract->fields["FK_entities"]);
+			$nb=countElementsInTableForEntity("glpi_enterprises",$contract->fields["FK_entities"]);
 		}
 		if ($nb>count($used)) {
 			echo "<tr class='tab_bg_1'><td align='right' colspan='2'>";
