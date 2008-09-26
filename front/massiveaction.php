@@ -480,7 +480,7 @@ if (isset($_POST["device_type"])){
 					if ($val==1)
 					{
 						$user->getFromDB($key);
-						if ($user->fields["auth_method"] == AUTH_LDAP)
+						if (($user->fields["auth_method"] == AUTH_LDAP) || ($user->fields["auth_method"] == AUTH_EXTERNAL)) 
 							ldapImportUserByServerId($user->fields["name"],1,$user->fields["id_auth"]);
 					} 
 				}
