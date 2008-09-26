@@ -140,6 +140,7 @@ if (!isset ($_POST["noAUTO"]) && $auth_method=checkAlternateAuthSystems()) {
 				//If the user has already been logged, the method_auth and id_auth are already set
 				//so we test this connection first
 				switch ($identificat->user->fields["auth_method"]) {
+					case AUTH_EXTERNAL:
 					case AUTH_LDAP :
 						if (canUseLdap()){
 							error_reporting(0);
