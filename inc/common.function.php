@@ -1018,6 +1018,11 @@ function convDate($time) {
 function formatNumber($number,$edit=false,$forcedecimal=-1) { 
 	global $CFG_GLPI;
 
+	// Php 5.3 : number_format() expects parameter 1 to be double,
+	if ($number=="") {
+		$number=0;	
+	}
+	
 	$decimal=$CFG_GLPI["decimal_number"];
 	if ($forcedecimal>=0){
 		$decimal=$forcedecimal;
