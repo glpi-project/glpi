@@ -1275,7 +1275,7 @@ function cron_ocsng() {
 			
 		// workaround to avoid duplicate when synchro occurs during an inventory 
 		// "after" insert in ocsweb.hardware  and "before" insert in ocsweb.deleted_equiv 
-		$query_ocs .= " AND LASTDATE < TIMESTAMPADD(MINUTE,-3,now()) ";
+		$query_ocs .= " AND TIMESTAMP(LASTDATE) < (NOW()-180) ";
 		
 		$tag_limit=ocsGetTagLimit($cfg_ocs);
 		if (!empty($tag_limit)){
