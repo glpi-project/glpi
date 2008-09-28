@@ -67,7 +67,7 @@ $bookmark = new Bookmark;
 						switch($_POST['action']){
 							case "edit" :
 								if ($_POST['ID']>0){
-									if (isset($_POST['mark_default']) && $_POST["mark_default"]>0){
+									if (isset($_POST['mark_default'])){
 										if ($_POST["mark_default"]>0){
 											$bookmark->mark_default($_POST["ID"]);
 										}elseif ($_POST["mark_default"]==0){
