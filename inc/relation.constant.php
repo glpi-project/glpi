@@ -39,6 +39,7 @@ $RELATION=array(
 
 	"glpi_auth_ldap" => array("glpi_config"=>"extra_ldap_server",
 				"glpi_auth_ldap_replicate"=>"server_id"),
+	"glpi_bookmark" => array("glpi_display_default"=>"FK_bookmark"),
 
 	"glpi_cartridges_type" => array("glpi_cartridges"=>"FK_glpi_cartridges_type",
 				"glpi_cartridges_assoc"=>"FK_glpi_cartridges_type"),
@@ -305,6 +306,7 @@ $RELATION=array(
 				"glpi_consumables"=>"id_user",
 				"glpi_consumables_type"=>"tech_num",
 				"glpi_display"=>"FK_users",
+				"glpi_display_default"=>"FK_users",
 				"glpi_docs"=>"FK_users",
 				"glpi_followups"=>"author",
 				"glpi_groups"=>"FK_users",

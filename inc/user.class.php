@@ -128,6 +128,8 @@ class User extends CommonDBTM {
 
 		$query = "DELETE FROM glpi_display WHERE FK_users = '$ID'";
 		$DB->query($query);
+		$query = "DELETE FROM glpi_display_default WHERE FK_users = '$ID'";
+		$DB->query($query);
 
 		// Delete private reminder
 		$query = "DELETE FROM glpi_reminder WHERE FK_users = '$ID' AND private=1";
