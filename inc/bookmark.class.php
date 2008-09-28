@@ -104,6 +104,14 @@ class Bookmark extends CommonDBTM {
 		$this->fields["FK_entities"]=$_SESSION["glpiactive_entity"];
 	}
 
+        function cleanDBonPurge($ID) {
+		global $DB;
+		$query="DELETE FROM glpi_display_default WHERE FK_bookmark=$ID";
+		$DB->query($query);
+        }
+	
+
+
 	/**
 	* Print the bookmark form
 	*
@@ -266,19 +274,20 @@ class Bookmark extends CommonDBTM {
 	**/
 	function load($ID,$opener=true){
 		
-		$this->getFromDB($ID);
-		$url = GLPI_ROOT."/".rawurldecode($this->fields["path"]);
-		$query_tab=array();
-		parse_str($this->fields["query"],$query_tab);
-		$params=$this->prepareQueryToUse($this->fields["type"],$query_tab);
-		$url.="?".append_params($params);
-		if ($opener){
-			echo "<script type='text/javascript' >\n";
-				echo "window.opener.location.href='$url';";
-				//echo "window.close();";
-			echo "</script>";
-		} else {
-			glpi_header($url);
+		if ($this->getFromDB($ID)){
+			$url = GLPI_ROOT."/".rawurldecode($this->fields["path"]);
+			$query_tab=array();
+			parse_str($this->fields["query"],$query_tab);
+			$params=$this->prepareQueryToUse($this->fields["type"],$query_tab);
+			$url.="?".append_params($params);
+			if ($opener){
+				echo "<script type='text/javascript' >\n";
+					echo "window.opener.location.href='$url';";
+					//echo "window.close();";
+				echo "</script>";
+			} else {
+				glpi_header($url);
+			}
 		}
 	}
 	
