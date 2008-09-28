@@ -380,14 +380,7 @@ class Bookmark extends CommonDBTM {
 	
 			$rand=mt_rand();
 			echo "<form method='post' id='form_load_bookmark$rand' action=\"$target\">";
-			echo "<div class='center'>";
-	
-			echo "<div id='barre_onglets_percent'><ul id='onglet'>";
-			echo "<li ".($private?"class='actif'":"")."><a href='$target?onglet=1&amp;popup=load_bookmark'>".$LANG["common"][77]."</a></li>";
-			if (haveRight('bookmark_public','r')){
-				echo "<li ".(!$private?"class='actif'":"")."><a href='$target?onglet=0&amp;popup=load_bookmark'>".$LANG["common"][76]."</a></li>";
-			}
-			echo "</ul></div>";
+			echo "<div class='center' id='tabsbody' >";
 	
 	
 			echo "<table class='tab_cadrehov'>";
@@ -420,7 +413,7 @@ class Bookmark extends CommonDBTM {
 					echo "</td>";
 					echo "<td>$current_type_name</td>";
 					echo "<td>";
-					echo "<a href=\"".GLPI_ROOT."/front/popup.php?popup=load_bookmark&amp;bookmark_id=".$this->fields["ID"]."\">".$this->fields["name"]."</a>";
+					echo "<a href=\"".GLPI_ROOT."/front/popup.php?popup=load_bookmark&amp;ID=".$this->fields["ID"]."\">".$this->fields["name"]."</a>";
 					echo "</td>";
 					if ($canedit) {
 						echo "<td><a href=\"".GLPI_ROOT."/front/popup.php?popup=edit_bookmark&amp;ID=".$this->fields["ID"]."\"><img src='".$CFG_GLPI["root_doc"]."/pics/edit.png' alt='".$LANG["buttons"][14]."'></a></td>";

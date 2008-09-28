@@ -55,6 +55,19 @@ if (isset($_GET['onglet'])) $_SESSION['glpi_viewbookmark']=$_GET['onglet'];
 if(!isset($_GET["type"])) {
 	$_GET["type"] = -1;
 }
+
+if(!isset($_GET["device_type"])) {
+	$_GET["device_type"] = -1;
+}
+
+if(!isset($_GET["mark_default"])) {
+	$_GET["mark_default"] = -1;
+}
+
+if(!isset($_GET["url"])) {
+	$_GET["url"] = "";
+}
+
 $bookmark = new Bookmark;
 
 /// TODO : check rights for actions
@@ -83,30 +96,18 @@ if (isset($_POST["add"])){
 	$_GET["action"]="load";
 }
 
-switch($_GET["action"]){
-	case "edit" :
-		if ($_GET['ID']>0){
-			if (isset($_GET['mark_default'])){
-				if ($_GET['mark_default']){
-					$bookmark->mark_default($_GET["ID"]);
-				} else {
-					$bookmark->unmark_default($_GET["ID"]);
-				}
-				$bookmark->showBookmarkList($_SERVER['PHP_SELF'],$_SESSION["glpi_viewbookmark"]);
-			} else {
-				$bookmark->showForm($_SERVER['PHP_SELF'],$_GET["ID"]);
-			}
-		} else  {
-			$bookmark->showForm($_SERVER['PHP_SELF'],$_GET["ID"],$_GET["type"],rawurldecode($_GET["url"]),$_GET["device_type"]);	
-		}
-		break;
-	case "load" :
-		if (isset($_GET["bookmark_id"])){
-			$bookmark->load($_GET["bookmark_id"]);
-		}
-		$bookmark->showBookmarkList($_SERVER['PHP_SELF'],$_SESSION["glpi_viewbookmark"]);
-		break;
-}
+$tabs[1]=array('title'=>$LANG["common"][77],
+'url'=>$CFG_GLPI['root_doc']."/ajax/bookmark.tabs.php",
+'params'=>"target=".$_SERVER['PHP_SELF']."&ID=".$_GET["ID"]."&action=".$_GET["action"]."&url=".$_GET["url"]."&device_type=".$_GET["device_type"]."&mark_default=".$_GET["mark_default"]."&glpi_tab=1");
+	
+$tabs[0]=array('title'=>$LANG["common"][76],
+'url'=>$CFG_GLPI['root_doc']."/ajax/bookmark.tabs.php",
+'params'=>"target=".$_SERVER['PHP_SELF']."&ID=".$_GET["ID"]."&action=".$_GET["action"]."&url=".$_GET["url"]."&device_type=".$_GET["device_type"]."&mark_default=".$_GET["mark_default"]."&glpi_tab=0");
+			
+echo "<div id='tabspanel' class='center-h'></div>";
+createAjaxTabs('tabspanel','tabcontent',$tabs,$_SESSION['glpi_viewbookmark']);
+echo "<div id='tabcontent'></div>";
+echo "<script type='text/javascript'>loadDefaultTab();</script>";
 		
 if (!ereg("popup",$_SERVER['PHP_SELF'])){
 	commonFooter();
