@@ -207,13 +207,4 @@ function showProfileEntityUser($target,$ID,$prof){
 
   }
 
-function showLegend(){
-	global $LANG;
-	
-	echo "<table class='tab_cadre_fixe'>";
-	echo "<tr class='tab_bg_2'><td width='70' style='text-decoration:underline'><strong>".$LANG["profiles"][34]." : </strong></td><td class='tab_bg_4' width='15' style='border:1px solid black'></td><td><strong>".$LANG["profiles"][0]."</strong></td></tr>";
-	echo "<tr class='tab_bg_2'><td></td><td class='tab_bg_2' width='15' style='border:1px solid black'></td><td><strong>".$LANG["profiles"][1]."</strong></td></tr>";
-	echo "</table>";
-}
-
 ?>

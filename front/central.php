@@ -80,7 +80,6 @@ include (GLPI_ROOT."/inc/includes.php");
 
 
 	
-	//forea
 	$tabs['my']=array('title'=>$LANG["central"][12],
 		'url'=>$CFG_GLPI['root_doc']."/ajax/central.tabs.php",
 		'params'=>"target=".$_SERVER['PHP_SELF']."&type=central&glpi_tab=my");

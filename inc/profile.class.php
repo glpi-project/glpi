@@ -57,16 +57,6 @@ class Profile extends CommonDBTM{
 		$this->type=PROFILE_TYPE;
 	}
 	
-	function defineTabs($withtemplate){
-		global $LANG,$CFG_GLPI;
-
-		$ong[1]=$LANG["common"][12];
-		if (haveRight("user","r")){
-			$ong[2]=$LANG["Menu"][14];
-		}
-		
-		return $ong;
-	}
 	
 	function post_updateItem($input,$updates,$history=1) {
 		global $DB;
@@ -181,20 +171,28 @@ class Profile extends CommonDBTM{
 	 *
 	 *@param $target filename : where to go when done.
 	 *@param $ID Integer : Id of the item to print
-	 *
+	 *@param $rand integer : rand in order form is unique
 	 *@return boolean item found
 	 **/
-	function showProfileConfig($target,$ID){
+	function showProfileConfig($target,$ID,$rand){
 		global $LANG,$CFG_GLPI;
 		
-		echo "<div align='center' id='profile_form'>";
-		$params=array('interface'=>'__VALUE__','ID'=>$ID,);
-		$rand=mt_rand();
-		ajaxUpdateItemOnSelectEvent("profile_interface","profile_form",$CFG_GLPI["root_doc"]."/ajax/profiles.php",$params,false);
-		ajaxUpdateItem("profile_form",$CFG_GLPI["root_doc"]."/ajax/profiles.php",$params,false,'profile_interface');
+		echo "<div align='center' id='profile_form$rand'>";
+		$params=array('interface'=>'__VALUE__','ID'=>$ID);
+		ajaxUpdateItemOnSelectEvent("profile_interface$rand","profile_form$rand",$CFG_GLPI["root_doc"]."/ajax/profiles.php",$params,false);
+		ajaxUpdateItem("profile_form$rand",$CFG_GLPI["root_doc"]."/ajax/profiles.php",$params,false,"profile_interface$rand");
 		echo "</div>";
-		showLegend();
+		$this->showLegend();
 	}
+	function showLegend(){
+		global $LANG;
+		
+		echo "<table class='tab_cadre_fixe'>";
+		echo "<tr class='tab_bg_2'><td width='70' style='text-decoration:underline'><strong>".$LANG["profiles"][34]." : </strong></td><td class='tab_bg_4' width='15' style='border:1px solid black'></td><td><strong>".$LANG["profiles"][0]."</strong></td></tr>";
+		echo "<tr class='tab_bg_2'><td></td><td class='tab_bg_2' width='15' style='border:1px solid black'></td><td><strong>".$LANG["profiles"][1]."</strong></td></tr>";
+		echo "</table>";
+	}
+
 	/**
 	 * Print the profile form headers
 	 *
@@ -217,25 +215,24 @@ class Profile extends CommonDBTM{
 				$onfocus="onfocus=\"this.value=''\"";
 			}
 		
-		$this->showTabs($ID, $withtemplate,$_SESSION['glpi_tab']);
-		
 		if (empty($this->fields["interface"])) $this->fields["interface"]="helpdesk";
 		if (empty($this->fields["name"])) $this->fields["name"]=$LANG["common"][0];
-		
+		$rand=mt_rand();
 		echo "<form name='form' method='post' action=\"$target\">";
 		echo "<div class='center' id='tabsbody' >";
 		echo "<table class='tab_cadre_fixe'><tr>";
 		echo "<th>".$LANG["common"][16]." :&nbsp;&nbsp;&nbsp;&nbsp;";
 		echo "<input type='text' name='name' value=\"".$this->fields["name"]."\" $onfocus></th>";
 		echo "<th>".$LANG["profiles"][2]." :&nbsp;&nbsp;&nbsp;&nbsp;";
-		echo "<select name='interface' id='profile_interface'>";
+		echo "<select name='interface' id='profile_interface$rand'>";
 		echo "<option value='helpdesk' ".($this->fields["interface"]=="helpdesk"?"selected":"").">".$LANG["Menu"][31]."</option>";
 		echo "<option value='central' ".($this->fields["interface"]=="central"?"selected":"").">".$LANG["title"][0]."</option>";
 		echo "</select></th>";
-		echo "</tr></table></div></form>";
-		echo "<div id='tabcontent'></div>";
+		echo "</tr></table></div>";
+		$this->showProfileConfig($target,$ID,$rand);
+//		echo "<div id='tabcontent'></div>";
 
-		echo "<script type='text/javascript'>loadDefaultTab();</script>";
+//		echo "<script type='text/javascript'>loadDefaultTab();</script>";
 		
 		return true;
 	}
@@ -258,7 +255,6 @@ class Profile extends CommonDBTM{
 		} else {
 			$this->getEmpty();
 		}
-		echo "<form name='form' method='post' action=\"$target\">";
 		echo "<table class='tab_cadre_fixe'><tr>";
 		echo "<th colspan='4'>".$LANG["profiles"][3].":&nbsp;&nbsp;".$LANG["profiles"][13].":&nbsp;&nbsp;";
 		dropdownYesNo("is_default",$this->fields["is_default"]);
@@ -352,7 +348,7 @@ class Profile extends CommonDBTM{
 			}
 			echo "</td></tr>";
 		}
-		echo "</table></form>";
+		echo "</table>";
 	}
 
 
@@ -375,7 +371,6 @@ class Profile extends CommonDBTM{
 			$this->getEmpty();
 		}
 		
-		echo "<form name='form' method='post' action=\"$target\">";
 		echo "<table class='tab_cadre_fixe'>";
 		echo "<tr>";
 		echo "<th colspan='6'>".$LANG["profiles"][4].":&nbsp;&nbsp;".$LANG["profiles"][13].":&nbsp;&nbsp;";
@@ -730,7 +725,7 @@ class Profile extends CommonDBTM{
 			}
 			echo "</td></tr>";
 		}
-		echo "</table></form>";
+		echo "</table>";
 	}
 
 

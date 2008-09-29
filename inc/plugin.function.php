@@ -263,6 +263,9 @@ function getPluginTabs($target,$type,$ID,$withtemplate){
 		case "prefs":
 			$tabpage="/ajax/preference.tabs.php";
 		break;
+		case "profile":
+			$tabpage="/ajax/profile.tabs.php";
+		break;
 		default:
 			$patterns[0] = '/front/';
 			$patterns[1] = '/form/';
