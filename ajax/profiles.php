@@ -46,9 +46,9 @@
 	checkRight("profile","r");
 	$prof=new Profile();
 	if ($_POST["interface"]=="helpdesk")
-	$prof->showHelpdeskForm($_POST["ID"]);
+	$prof->showHelpdeskForm($CFG_GLPI["root_doc"]."/front/profile.form.php",$_POST["ID"]);
 	else if ($_POST["interface"]=="central")
-	$prof->showCentralForm($_POST["ID"]);
+	$prof->showCentralForm($CFG_GLPI["root_doc"]."/front/profile.form.php",$_POST["ID"]);
 
 	ajaxFooter();
 ?>
