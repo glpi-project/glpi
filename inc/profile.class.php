@@ -57,7 +57,7 @@ class Profile extends CommonDBTM{
 		$this->type=PROFILE_TYPE;
 	}
 	
-	function defineOnglets($withtemplate){
+	function defineTabs($withtemplate){
 		global $LANG,$CFG_GLPI;
 
 		$ong[1]=$LANG["common"][12];
@@ -175,6 +175,27 @@ class Profile extends CommonDBTM{
 		$query.=")";
 		return $query;
 	}
+	
+	/**
+	 * Print the profile form configuration
+	 *
+	 *@param $target filename : where to go when done.
+	 *@param $ID Integer : Id of the item to print
+	 *
+	 *@return boolean item found
+	 **/
+	function showProfileConfig($target,$ID){
+		global $LANG,$CFG_GLPI;
+		
+		echo "<div align='center' id='profile_form'>";
+		$params=array('interface'=>'__VALUE__','ID'=>$ID,);
+		$rand=mt_rand();
+		ajaxUpdateItemOnSelectEvent("profile_interface","profile_form",$CFG_GLPI["root_doc"]."/ajax/profiles.php",$params,false);
+		ajaxUpdateItem("profile_form",$CFG_GLPI["root_doc"]."/ajax/profiles.php",$params,false,'profile_interface');
+	
+		echo "</div>";
+		showLegend();
+	}
 	/**
 	 * Print the profile form headers
 	 *
@@ -189,8 +210,33 @@ class Profile extends CommonDBTM{
 
 		if (!haveRight("profile","r")) return false;
 
-		$this->showOnglets($ID, $withtemplate,$_SESSION['glpi_tab']);
+		$onfocus="";
+			if (!empty($ID)&&$ID){
+				$this->getFromDB($ID);
+			} else {
+				$this->getEmpty();
+				$onfocus="onfocus=\"this.value=''\"";
+			}
 		
+		$this->showTabs($ID, $withtemplate,$_SESSION['glpi_tab']);
+		
+		if (empty($this->fields["interface"])) $this->fields["interface"]="helpdesk";
+		if (empty($this->fields["name"])) $this->fields["name"]=$LANG["common"][0];
+		
+		echo "<form name='form' method='post' action=\"$target\">";
+		echo "<div class='center' id='tabsbody' >";
+		echo "<table class='tab_cadre_fixe'><tr>";
+		echo "<th>".$LANG["common"][16]." :&nbsp;&nbsp;&nbsp;&nbsp;";
+		echo "<input type='text' name='name' value=\"".$this->fields["name"]."\" $onfocus></th>";
+		echo "<th>".$LANG["profiles"][2]." :&nbsp;&nbsp;&nbsp;&nbsp;";
+		echo "<select name='interface' id='profile_interface'>";
+		echo "<option value='helpdesk' ".($this->fields["interface"]=="helpdesk"?"selected":"").">".$LANG["Menu"][31]."</option>";
+		echo "<option value='central' ".($this->fields["interface"]=="central"?"selected":"").">".$LANG["title"][0]."</option>";
+		echo "</select></th>";
+		echo "</tr></table></div>";
+		echo "<div id='tabcontent'></div>";
+		echo "<script type='text/javascript'>loadDefaultTab();</script>";
+		echo "</form>";
 		return true;
 	}
 
