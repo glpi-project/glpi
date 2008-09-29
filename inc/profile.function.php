@@ -37,46 +37,6 @@ if (!defined('GLPI_ROOT')){
 	die("Sorry. You can't access directly to this file");
 	}
 
-function showProfileConfig($target,$ID,$prof){
-	global $LANG,$CFG_GLPI;
-	
-	$onfocus="";
-		if (!empty($ID)&&$ID){
-			$prof->getFromDB($ID);
-		} else {
-			$prof->getEmpty();
-			$onfocus="onfocus=\"this.value=''\"";
-		}
-	
-	if (empty($prof->fields["interface"])) $prof->fields["interface"]="helpdesk";
-	if (empty($prof->fields["name"])) $prof->fields["name"]=$LANG["common"][0];
-	
-	echo "<form name='form' method='post' action=\"$target\">";
-	echo "<div class='center'>";
-	echo "<table class='tab_cadre_fixe'><tr>";
-	echo "<th>".$LANG["common"][16]." :&nbsp;&nbsp;&nbsp;&nbsp;";
-	echo "<input type='text' name='name' value=\"".$prof->fields["name"]."\" $onfocus></th>";
-	echo "<th>".$LANG["profiles"][2]." :&nbsp;&nbsp;&nbsp;&nbsp;";
-	echo "<select name='interface' id='profile_interface'>";
-	echo "<option value='helpdesk' ".($prof->fields["interface"]=="helpdesk"?"selected":"").">".$LANG["Menu"][31]."</option>";
-	echo "<option value='central' ".($prof->fields["interface"]=="central"?"selected":"").">".$LANG["title"][0]."</option>";
-	echo "</select></th>";
-	echo "</tr></table>";
-	
-	echo "<div align='center' id='profile_form'>";
-
-	$params=array('interface'=>'__VALUE__','ID'=>$ID,);
-	
-	ajaxUpdateItemOnSelectEvent("profile_interface","profile_form",$CFG_GLPI["root_doc"]."/ajax/profiles.php",$params,false);
-	ajaxUpdateItem("profile_form",$CFG_GLPI["root_doc"]."/ajax/profiles.php",$params,false,'profile_interface');
-
-	echo "</div>";
-	echo "</div>";
-	showLegend();
-	echo "</form>";
-}
-
-	
 function showProfileEntityUser($target,$ID,$prof){	
  	
  	global $DB,$LANG,$CFG_GLPI;
@@ -160,18 +120,18 @@ function showProfileEntityUser($target,$ID,$prof){
 		 			$i=0;
 		 			$temp=$data["entity"];		
 
-					
+					$rand=mt_rand();
 					echo "<tr class='tab_bg_2'>";
 					echo "<td align='left'>"; 
-					echo "<a href=\"javascript:showHideDiv('entity$temp','imgcat$temp', '".GLPI_ROOT."/pics/folder.png','".GLPI_ROOT."/pics/folder-open.png');\">";
+					echo "<a href=\"javascript:showHideDiv('entity$temp$rand','imgcat$temp', '".GLPI_ROOT."/pics/folder.png','".GLPI_ROOT."/pics/folder-open.png');\">";
 					echo "<img alt='' name='imgcat$temp' src=\"".GLPI_ROOT."/pics/folder.png\">&nbsp; <strong>".getDropdownName('glpi_entities',$data["entity"])."</strong>";
 					echo "</a>"; 
 					echo "</td>"; 
 					echo "</tr>"; 
 					echo "<tr><td>";
-	 				$rand=mt_rand();
+	 				
 					echo "<form name='profileuser_form".$rand."_$temp' id='profileuser_form".$rand."_$temp' method='post' action=\"$target\">";
-					echo "<div align='center' id='entity$temp' style=\"display:none;\">\n"; 
+					echo "<div align='center' id='entity$temp$rand' style=\"display:none;\">\n"; 
 					echo "<table class='tab_cadre_fixe'>\n";
 				}
 

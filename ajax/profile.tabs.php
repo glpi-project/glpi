@@ -1,6 +1,6 @@
 <?php
 /*
- * @version $Id$
+ * @version $Id: enterprise.form.php 7178 2008-07-31 12:30:25Z moyo $
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2008 by the INDEPNET Development Team.
@@ -34,68 +34,40 @@
 // ----------------------------------------------------------------------
 
 
-
 $NEEDED_ITEMS=array("profile","search","entity","user");
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-checkRight("profile","r");
 
-if (!isset($_GET['ID'])) {
-	$_GET['ID']="";
+if(!isset($_POST["ID"])) {
+	exit();
 }
-
 
 $prof=new Profile();
 
-if (isset($_POST["add"])){
-
-	checkRight("profile","w");
-	$ID=$prof->add($_POST);
-	glpi_header($_SERVER['HTTP_REFERER']);
-}else  if (isset($_POST["delete"])){
-	checkRight("profile","w");
-
-	$prof->delete($_POST);
-	glpi_header($CFG_GLPI["root_doc"]."/front/profile.php");
-}
-else  if (isset($_POST["update"])){
-	checkRight("profile","w");
-
-	$prof->update($_POST);
-	glpi_header($_SERVER['HTTP_REFERER']);
-} else if (isset($_POST["moveentity"])){
-	checkRight("user","w");
-	if (isset($_POST['FK_entities'])&&$_POST['FK_entities']>=0){
-		foreach ($_POST["item"] as $key => $val){
-			if ($val==1) {
-				moveUserProfileEntity($key,$_POST['FK_entities']);
+checkRight("profile","r");
+	
+		if ($_POST["ID"]>0){
+			switch($_POST['glpi_tab']){
+				case -1 :	
+					$prof->showProfileConfig($_POST['target'],$_POST["ID"]);
+					showProfileEntityUser($_POST['target'],$_POST["ID"],$prof);
+					displayPluginAction(PROFILE_TYPE,$_POST["ID"],$_SESSION['glpi_tab']);
+					break;
+				case 1:
+					$prof->showProfileConfig($_POST['target'],$_POST["ID"]);
+					break;
+				case 2 : 
+					showProfileEntityUser($_POST['target'],$_POST["ID"],$prof);
+					break;
+				default :
+					if (!displayPluginAction(PROFILE_TYPE,$_POST["ID"],$_SESSION['glpi_tab'])){
+						$prof->showProfileConfig($_POST['target'],$_POST["ID"]);
+					}
+					break;
 			}
 		}
-	}
-	glpi_header($_SERVER['HTTP_REFERER']);
-} else if (isset($_POST["deleteuser"])){
-	checkRight("user","w");
-	foreach ($_POST["item"] as $key => $val){
-		if ($val==1) {
-			deleteUserProfileEntity($key);
-		}
-	}
-	glpi_header($_SERVER['HTTP_REFERER']);
-}
-
-
-commonHeader($LANG["Menu"][35],$_SERVER['PHP_SELF'],"admin","profile");
-
-if (!isset($_SESSION['glpi_tab'])) $_SESSION['glpi_tab']=1;
-if (isset($_GET['onglet'])) {
-	$_SESSION['glpi_tab']=$_GET['onglet'];
-}	
-
-$prof->showForm($_SERVER['PHP_SELF'],$_GET["ID"]);
-
-commonFooter();
-
-
+	
+	ajaxFooter();
 ?>
