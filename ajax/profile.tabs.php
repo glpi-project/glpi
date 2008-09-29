@@ -39,7 +39,6 @@ $NEEDED_ITEMS=array("profile","search","entity","user");
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-
 if(!isset($_POST["ID"])) {
 	exit();
 }
@@ -51,19 +50,19 @@ checkRight("profile","r");
 		if ($_POST["ID"]>0){
 			switch($_POST['glpi_tab']){
 				case -1 :	
-					$prof->showProfileConfig($_POST['target'],$_POST["ID"]);
+					$prof->showForm($_POST['target'],$_POST["ID"]);
 					showProfileEntityUser($_POST['target'],$_POST["ID"],$prof);
 					displayPluginAction(PROFILE_TYPE,$_POST["ID"],$_SESSION['glpi_tab']);
 					break;
 				case 1:
-					$prof->showProfileConfig($_POST['target'],$_POST["ID"]);
+					$prof->showForm($_POST['target'],$_POST["ID"]);
 					break;
 				case 2 : 
 					showProfileEntityUser($_POST['target'],$_POST["ID"],$prof);
 					break;
 				default :
 					if (!displayPluginAction(PROFILE_TYPE,$_POST["ID"],$_SESSION['glpi_tab'])){
-						$prof->showProfileConfig($_POST['target'],$_POST["ID"]);
+						$prof->showForm($_POST['target'],$_POST["ID"]);
 					}
 					break;
 			}
