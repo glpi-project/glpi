@@ -94,27 +94,11 @@ if (isset($_GET['onglet'])) {
 }	
 
 
-	$tabs[1]=array('title'=>$LANG["common"][12],
-		'url'=>$CFG_GLPI['root_doc']."/ajax/profile.tabs.php",
-		'params'=>"target=".$_SERVER['PHP_SELF']."&type=profile&glpi_tab=1&ID=".$_GET['ID']);
-	$tabs[2]=array('title'=>$LANG["Menu"][14],
-		'url'=>$CFG_GLPI['root_doc']."/ajax/profile.tabs.php",
-		'params'=>"target=".$_SERVER['PHP_SELF']."&type=profile&glpi_tab=2&ID=".$_GET['ID']);
-	
-	$plug_tabs=getPluginTabs($_SERVER['PHP_SELF'],PROFILE_TYPE,$_GET['ID'],"");
-
-	$tabs+=$plug_tabs;
-	
-	$tabs[-1]=array('title'=>$LANG["common"][66],
-		'url'=>$CFG_GLPI['root_doc']."/ajax/profile.tabs.php",
-		'params'=>"target=".$_SERVER['PHP_SELF']."&type=profile&glpi_tab=-1&ID=".$_GET['ID']);
-
-	echo "<div id='tabspanel' class='center-h'></div>";
-	createAjaxTabs('tabspanel','tabcontent',$tabs,$_SESSION['glpi_tab']);
+	$prof->showTabs($_GET["ID"],'',$_SESSION['glpi_tab']); 
 	echo "<div id='tabcontent'></div>";
+
 	echo "<script type='text/javascript'>loadDefaultTab();</script>";
 
-//$prof->showForm($_SERVER['PHP_SELF'],$_GET["ID"]);
 
 commonFooter();
 

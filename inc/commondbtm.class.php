@@ -930,21 +930,31 @@ class CommonDBTM {
 	 *@param $ID ID of the item to display
 	 *@param $withtemplate is a template view ?
 	 *@param $actif active onglet
+	 *@param $addparams array of parameters to add to URLs and ajax
 	 *@param $nextprevcondition condition used to find next/previous items
 	 *@param $nextprev_item field used to define next/previous items
-	 *@param $addurlparam parameters to add to the URLs 
 	 * 
 	 *@return Nothing () 
 	 *  
 	**/
-	function showTabs($ID,$withtemplate,$actif,$nextprevcondition="",$nextprev_item="",$addurlparam=""){
+	function showTabs($ID,$withtemplate,$actif,$addparams=array(),$nextprevcondition="",$nextprev_item=""){
 		global $LANG,$CFG_GLPI,$INFOFORM_PAGES;
 
 		$target=$_SERVER['PHP_SELF'];
 	
 		$template="";
+		$templatehtml="";
 		if(!empty($withtemplate)){
-			$template="&withtemplate=$withtemplate";
+			$template="withtemplate=$withtemplate";
+			$templatehtml="&amp;withtemplate=$withtemplate";
+		}
+		$extraparamhtml="";
+		$extraparam="";
+		if (is_array($addparams)&&count($addparams)){
+			foreach ($addparams as $key => $val){
+				$extraparamhtml.="&amp;$key=$val";
+				$extraparam.="&$key=$val";
+			}
 		}
 
 		if (empty($withtemplate)&&$ID){
@@ -953,7 +963,7 @@ class CommonDBTM {
 			$prev=getPreviousItem($this->table,$ID,$nextprevcondition,$nextprev_item);
 			$cleantarget=preg_replace("/\?ID=([0-9]+)/","",$target);
 			if ($prev>0) {
-				echo "<a href='$cleantarget?ID=$prev$addurlparam'><img src=\"".$CFG_GLPI["root_doc"]."/pics/left.png\" alt='".$LANG["buttons"][12]."' title='".$LANG["buttons"][12]."'></a>";
+				echo "<a href='$cleantarget?ID=$prev$extraparamhtml'><img src=\"".$CFG_GLPI["root_doc"]."/pics/left.png\" alt='".$LANG["buttons"][12]."' title='".$LANG["buttons"][12]."'></a>";
 			}
 
 			echo "&nbsp;&nbsp;<a href=\"javascript:showHideDiv('tabsbody','tabsbodyimg', '".GLPI_ROOT."/pics/deplier_down.png','".GLPI_ROOT."/pics/deplier_up.png');\">";
@@ -961,7 +971,7 @@ class CommonDBTM {
 			echo "</a>";
 			
 			if ($next>0) {
-				echo "&nbsp;&nbsp;<a href='$cleantarget?ID=$next$addurlparam'><img src=\"".$CFG_GLPI["root_doc"]."/pics/right.png\" alt='".$LANG["buttons"][11]."' title='".$LANG["buttons"][11]."'></a>";
+				echo "&nbsp;&nbsp;<a href='$cleantarget?ID=$next$extraparamhtml'><img src=\"".$CFG_GLPI["root_doc"]."/pics/right.png\" alt='".$LANG["buttons"][11]."' title='".$LANG["buttons"][11]."'></a>";
 			}
 			echo "</div>";
 		}
@@ -980,7 +990,7 @@ class CommonDBTM {
 			foreach ($onglets as $key => $val ) {
 				$tabs[$key]=array('title'=>$val,
 						'url'=>$CFG_GLPI['root_doc']."/$tabpage",
-						'params'=>"target=$target&type=".$this->type."&glpi_tab=$key&ID=$ID$template");
+						'params'=>"target=$target&type=".$this->type."&glpi_tab=$key&ID=$ID$template$extraparam");
 			}
 			$plug_tabs=getPluginTabs($target,$this->type,$ID,$withtemplate);
 			$tabs+=$plug_tabs;
@@ -988,7 +998,7 @@ class CommonDBTM {
 			if(empty($withtemplate)){
 				$tabs[-1]=array('title'=>$LANG["common"][66],
 						'url'=>$CFG_GLPI['root_doc']."/$tabpage",
-						'params'=>"target=$target&type=".$this->type."&glpi_tab=-1&ID=$ID$template");
+						'params'=>"target=$target&type=".$this->type."&glpi_tab=-1&ID=$ID$template$extraparam");
 			}
 
 			createAjaxTabs('tabspanel','tabcontent',$tabs,$actif);

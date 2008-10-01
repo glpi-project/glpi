@@ -796,7 +796,7 @@ class Rule extends CommonDBTM{
 			
 		$this->getTitleRule($target);
 
-		$this->showTabs($ID, $new,$_SESSION['glpi_tab'],"rule_type='".$this->rule_type."'",$this->orderby);
+		$this->showTabs($ID, $new,$_SESSION['glpi_tab'],array(),"rule_type='".$this->rule_type."'",$this->orderby);
 		echo "<form name='rule_form'  method='post' action=\"$target\">\n";
 
 		echo "<div class='center' id='tabsbody' >";

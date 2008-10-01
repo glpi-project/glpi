@@ -56,7 +56,17 @@ class Profile extends CommonDBTM{
 		$this->table="glpi_profiles";
 		$this->type=PROFILE_TYPE;
 	}
-	
+
+	function defineTabs($withtemplate){ 
+		global $LANG,$CFG_GLPI; 
+			
+		$ong[1]=$LANG["common"][12]; 
+		if (haveRight("user","r")){ 
+			$ong[2]=$LANG["Menu"][14]; 
+		} 
+		
+		return $ong; 
+	} 	
 	
 	function post_updateItem($input,$updates,$history=1) {
 		global $DB;
@@ -176,7 +186,7 @@ class Profile extends CommonDBTM{
 	 **/
 	function showProfileConfig($target,$ID,$rand){
 		global $LANG,$CFG_GLPI;
-		
+
 		echo "<div align='center' id='profile_form$rand'>";
 		$params=array('interface'=>'__VALUE__','ID'=>$ID);
 		ajaxUpdateItemOnSelectEvent("profile_interface$rand","profile_form$rand",$CFG_GLPI["root_doc"]."/ajax/profiles.php",$params,false);
@@ -214,10 +224,12 @@ class Profile extends CommonDBTM{
 				$this->getEmpty();
 				$onfocus="onfocus=\"this.value=''\"";
 			}
-		
+
+		$rand=mt_rand();
+
 		if (empty($this->fields["interface"])) $this->fields["interface"]="helpdesk";
 		if (empty($this->fields["name"])) $this->fields["name"]=$LANG["common"][0];
-		$rand=mt_rand();
+
 		echo "<form name='form' method='post' action=\"$target\">";
 		echo "<div class='center' id='tabsbody' >";
 		echo "<table class='tab_cadre_fixe'><tr>";
@@ -230,9 +242,6 @@ class Profile extends CommonDBTM{
 		echo "</select></th>";
 		echo "</tr></table></div>";
 		$this->showProfileConfig($target,$ID,$rand);
-//		echo "<div id='tabcontent'></div>";
-
-//		echo "<script type='text/javascript'>loadDefaultTab();</script>";
 		
 		return true;
 	}
