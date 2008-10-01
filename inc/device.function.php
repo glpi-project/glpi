@@ -589,7 +589,7 @@ function showDevicesForm ($target,$ID,$device_type) {
 
 
 	echo "<a href='$REFERER'>".$LANG["buttons"][13]."</a>";
-	$device->showTabs($ID, "",$_SESSION['glpi_tab'],"","designation","&amp;device_type=$device_type&amp;referer=$REFERER");
+	$device->showTabs($ID, "",$_SESSION['glpi_tab'],array("device_type"=>$device_type,"referer"=>$REFERER),"","designation");
 	echo "<form method='post' name='form' action=\"$target\">";
 	echo "<div class='center' id='tabsbody'>";
 	echo "<input type='hidden' name='referer' value='$REFERER'>";
