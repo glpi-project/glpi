@@ -108,7 +108,7 @@ function showProfileEntityUser($target,$ID,$prof){
  class='submit'>";
 							echo "&nbsp;<input type='submit' name='deleteuser' value=\"".$LANG["buttons"][6]."\" class='submit'>";
 
-							echo "</td>";
+							echo "</td></tr>";
 							echo "</table>";
 							echo "</div>";
 						}
@@ -145,7 +145,7 @@ function showProfileEntityUser($target,$ID,$prof){
 					echo "<td width='10'>";
 					$sel="";
 					if (isset($_GET["select"])&&$_GET["select"]=="all") $sel="checked";
-					echo "<input type='checkbox' name='item[".$data["linkID"]."]' value='1' $sel>";
+					echo "<input type='checkbox' name='item[".$data["ID"]."]' value='1' $sel>";
 					echo "</td>";
 				}
 
