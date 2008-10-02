@@ -212,8 +212,15 @@ function showInstallations($sID) {
 		INNER JOIN glpi_computers ON (glpi_inst_software.cID = glpi_computers.ID)
 		WHERE (glpi_softwareversions.sID = '$sID')
 		ORDER BY glpi_softwareversions.name, glpi_computers.name";
+	
+	$nb_per_line=6;
+	$num=0;
+	$rand=mt_rand();
+
 	if ($result=$DB->query($query)){
 		if ($DB->numrows($result)){
+			echo "<form name='softinstall".$rand."' id='softinstall".$rand."' method='post' action=\"".$CFG_GLPI["root_doc"]."/front/software.licenses.php\">";
+			echo "<input type='hidden' name='sID' value='$sID'>";
 			echo "<table class='tab_cadre'><tr>";
 			echo "<th>".$LANG["software"][5]."</th>";
 			echo "<th>".$LANG["computers"][44]."</th>";
@@ -222,8 +229,20 @@ function showInstallations($sID) {
 			while ($data=$DB->fetch_assoc($result)){
 				// New version
 				if ($data['version']!=$current_version){
+					
 					// Not first one
 					if ($current_version!=-1){
+						// Complete last line
+						for ($i=$num;$i<$nb_per_line;$i++){
+							echo "<td>&nbsp;</td>";
+							if ($canedit){
+								echo "<td>&nbsp;</td>";
+							}
+						}
+
+						// end table for version
+						echo "</tr></table>";
+						// end line
 						echo "</td></tr>";
 					} 
 					echo "<tr class='tab_bg_2'><td>";
@@ -232,19 +251,65 @@ function showInstallations($sID) {
 					} else {
 						echo $data['version'];
 					}
-					echo "</td><td>";
+					echo "</td><td colspan='5'><table class='tab_cadre'><tr class='tab_bg_1'>";
 					$current_version=$data['version'];
+					$num=0;
 				}
-				if ($canshowcomputer){
-					echo "<a href='computer.form.php?ID=".$data['cID']."'>".$data['compname']."</a><br>";
+
+				if ($num>=$nb_per_line){
+					$num=1;
+					echo "</tr><tr class='tab_bg_1'>";
 				} else {
-					echo "".$data['compname']."<br>";
+					$num++;
+				}
+
+				if ($canshowcomputer){
+					echo "<td>";
+					if ($canedit){
+						echo "<input type='checkbox' name='item[".$data["ID"]."]' value='1'>";
+						echo "</td><td>";
+					}
+					echo "<a href='computer.form.php?ID=".$data['cID']."'>".$data['compname']."</a></td>";
+				} else {
+					echo "<td>";
+					if ($canedit){
+						echo "<input type='checkbox' name='item[".$data["ID"]."]' value='1'>";
+						echo "</td><td>";
+					}
+					echo $data['compname']."</td>";
+				}
+				
+			}
+			// Complete last line
+			for ($i=$num;$i<$nb_per_line;$i++){
+				echo "<td>&nbsp;</td>";
+				if ($canedit){
+					echo "<td>&nbsp;</td>";
 				}
 			}
+			// end table for version
+			echo "</tr></table>";
+			// end line
+			echo "</td></tr>";
+
+			if ($canedit){
+				echo "<tr class='tab_bg_1'><td>&nbsp;</td><td><a onclick= \"if ( markAllRows('softinstall".$rand."') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$sID&amp;select=all'>".$LANG["buttons"][18]."</a>";
+								
+				echo "&nbsp;/&nbsp;<a onclick= \"if ( unMarkAllRows('softinstall".$rand."') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$sID&amp;select=none'>".$LANG["buttons"][19]."</a>";
+				echo "&nbsp;<input type='submit' name='deleteinstalls' value=\"".$LANG["buttons"][6]."\" class='submit'>";
+	
+				echo "</td>";
+			}
+
 			echo "</table>";
+			
+			echo "</form>";
+
 		} else {
 			echo $LANG["search"][15];
 		}
+
+
 	
 	}
 }

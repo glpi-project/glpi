@@ -183,6 +183,7 @@ else if (isset($_GET["delete"])){
 }
 else 
 */
+
 if (isset($_POST["install"])){
 	checkRight("software","w");
 	installSoftwareVersion($_POST["cID"],$_POST["vID"]);
@@ -194,6 +195,17 @@ else if (isset($_GET["uninstall"])){
 
 	uninstallSoftwareVersion($_GET["ID"]);
 	logEvent($_GET["cID"], "computers", 5, "inventory", $_SESSION["glpiname"]." uninstalled software.");
+	glpi_header($_SERVER['HTTP_REFERER']);
+}
+else if (isset($_POST["deleteinstalls"])){
+	checkRight("software","w");
+
+	foreach ($_POST["item"] as $key => $val){
+		if ($val==1) {
+			uninstallSoftwareVersion($key);
+			logEvent($_POST["sID"], "software", 5, "inventory", $_SESSION["glpiname"]." uninstalled software for several computers.");
+		}
+	}
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 /*
