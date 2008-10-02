@@ -211,7 +211,7 @@ function showInstallations($sID) {
 		INNER JOIN glpi_softwareversions ON (glpi_inst_software.vID = glpi_softwareversions.ID)
 		INNER JOIN glpi_computers ON (glpi_inst_software.cID = glpi_computers.ID)
 		WHERE (glpi_softwareversions.sID = '$sID')
-		ORDER BY glpi_softwareversions.name, glpi_computers.name";
+		ORDER BY glpi_softwareversions.name, glpi_softwareversions.ID, glpi_computers.name";
 	
 	$nb_per_line=6;
 	$num=0;
@@ -228,7 +228,7 @@ function showInstallations($sID) {
 			$current_version=-1;
 			while ($data=$DB->fetch_assoc($result)){
 				// New version
-				if ($data['version']!=$current_version){
+				if ($data['vID']!=$current_version){
 					
 					// Not first one
 					if ($current_version!=-1){
@@ -252,7 +252,7 @@ function showInstallations($sID) {
 						echo $data['version'];
 					}
 					echo "</td><td colspan='5'><table class='tab_cadre'><tr class='tab_bg_1'>";
-					$current_version=$data['version'];
+					$current_version=$data['vID'];
 					$num=0;
 				}
 
@@ -296,6 +296,11 @@ function showInstallations($sID) {
 				echo "<tr class='tab_bg_1'><td>&nbsp;</td><td><a onclick= \"if ( markAllRows('softinstall".$rand."') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$sID&amp;select=all'>".$LANG["buttons"][18]."</a>";
 								
 				echo "&nbsp;/&nbsp;<a onclick= \"if ( unMarkAllRows('softinstall".$rand."') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$sID&amp;select=none'>".$LANG["buttons"][19]."</a>";
+
+				dropdownSoftwareVersions("versionID",$sID);
+				echo "&nbsp;<input type='submit' name='moveinstalls' value=\"".$LANG["buttons"][20]."\"
+ class='submit'>";
+
 				echo "&nbsp;<input type='submit' name='deleteinstalls' value=\"".$LANG["buttons"][6]."\" class='submit'>";
 	
 				echo "</td>";
@@ -938,6 +943,30 @@ function installSoftwareVersion($cID, $vID, $dohistory=1){
 		}
 	} 
 }
+
+/**
+ * Update version installed on a computer
+ *
+ * @param $instID ID of the install software lienk
+ * @param $newvID ID of the new version 
+ * @param $dohistory Do history ?
+ * @return nothing
+ */
+function updateInstalledVersion($instID, $newvID, $dohistory=1) {
+	global $DB;
+	
+	$query_exists = "SELECT * FROM glpi_inst_software WHERE ID=" . $instID;
+	$result = $DB->query($query_exists);
+	if ($DB->numrows($result) > 0){
+		$cID=$DB->result($result, 0, "cID");
+		$vID=$DB->result($result, 0, "vID");
+		if ($vID!=$newvID){
+			uninstallSoftwareVersion($instID, $dohistory);
+			installSoftwareVersion($cID, $newvID, $dohistory);
+		}
+	} 
+}
+
 
 /**
  * Uninstall a software on a computer

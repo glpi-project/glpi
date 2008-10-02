@@ -208,6 +208,16 @@ else if (isset($_POST["deleteinstalls"])){
 	}
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
+else if (isset($_POST["moveinstalls"])){
+	checkRight("software","w");
+	foreach ($_POST["item"] as $key => $val){
+		if ($val==1) {
+			updateInstalledVersion($key, $_POST['versionID']);
+			logEvent($_POST["sID"], "software", 5, "inventory", $_SESSION["glpiname"]." change version of versions installed on computers.");
+		}
+	}
+	glpi_header($_SERVER['HTTP_REFERER']);
+}
 /*
 else if (isset($_GET["unglobalize"])&&isset($_GET["ID"])){
 	unglobalizeLicense($_GET["ID"]);

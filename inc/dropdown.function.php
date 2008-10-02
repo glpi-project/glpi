@@ -1327,7 +1327,7 @@ function dropdownSoftwareToInstall($myname,$entity_restrict,$massiveaction=0) {
  * @param $value value of the selected version
  * @return nothing (print out an HTML select box)
  */
-function dropdownSoftwareVersions($myname,$sID,$value) {
+function dropdownSoftwareVersions($myname,$sID,$value=0) {
 	global $CFG_GLPI;
 
 	$rand=mt_rand();
