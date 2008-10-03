@@ -78,6 +78,7 @@ class Plugin extends CommonDBTM {
 	 *
 	**/	
 	function checkStates(){
+		global $LANG;
 		//// Get all plugins 
 		// Get all from DBs
 		$pluglist=$this->find("","name, directory");
@@ -97,6 +98,8 @@ class Plugin extends CommonDBTM {
 			if ($filename!=".svn"&&$filename!="."&&$filename!=".."&&is_dir($dirplug."/".$filename)){
 				// Find version
 				if (file_exists($dirplug."/".$filename."/setup.php")){
+					loadPluginLang($filename);
+
 					include_once($dirplug."/".$filename."/setup.php");
 					$function="plugin_version_$filename";
 					if (function_exists($function)){
@@ -179,9 +182,7 @@ class Plugin extends CommonDBTM {
 		$pluglist=$this->find("","name, directory");
 		$i=0;
 		foreach ($pluglist as $ID => $plug){
-			$function="plugin_init_".$plug['directory'];
-			$function();
-
+			usePlugin($plug['directory']);
 			$i++;
 			$class='tab_bg_1';
 			if ($i%2==0){
@@ -246,7 +247,7 @@ class Plugin extends CommonDBTM {
 				case PLUGIN_NOTINSTALLED :
 					echo "<td>";
 					if (function_exists("plugin_".$plug['directory']."_install")){
-						$function = 'plugin_' . $this->fields['directory'] . '_check_prerequisites';
+						$function = 'plugin_' . $plug['directory'] . '_check_prerequisites';
 						$do_install=true;
 						if (function_exists($function)) {
 							$do_install=$function();
@@ -318,6 +319,7 @@ class Plugin extends CommonDBTM {
 	function uninstall($ID){
 		if ($this->getFromDB($ID)){
 			include_once(GLPI_ROOT."/plugins/".$this->fields['directory']."/setup.php");
+			usePlugin($this->fields['directory']);
 			// Run the Plugin's Uninstall Function first
 			$function = 'plugin_' . $this->fields['directory'] . '_uninstall';
 			if (function_exists($function)) {
@@ -335,6 +337,7 @@ class Plugin extends CommonDBTM {
 	function install($ID){
 		if ($this->getFromDB($ID)){
 			include_once(GLPI_ROOT."/plugins/".$this->fields['directory']."/setup.php");
+			usePlugin($this->fields['directory']);
 			$function = 'plugin_' . $this->fields['directory'] . '_install';
 			$install_ok=false;
 			if (function_exists($function)) {
@@ -360,6 +363,7 @@ class Plugin extends CommonDBTM {
 	function activate($ID){
 		if ($this->getFromDB($ID)){
 			include_once(GLPI_ROOT."/plugins/".$this->fields['directory']."/setup.php");
+			usePlugin($this->fields['directory']);
 			$function = 'plugin_' . $this->fields['directory'] . 'check_prerequisites';
 			if (function_exists($function)) {
 				if (!$function()){

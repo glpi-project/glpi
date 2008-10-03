@@ -1027,7 +1027,7 @@ class CommonDBTM {
 				$tabs[$key]=array('title'=>$val,
 						'url'=>$CFG_GLPI['root_doc']."/$tabpage",
 						'params'=>"target=$target&type=".$this->type."&glpi_tab=$key&ID=$ID$template$extraparam");
-			}
+			}			
 			$plug_tabs=getPluginTabs($target,$this->type,$ID,$withtemplate);
 			$tabs+=$plug_tabs;
 			// Not all tab for templates

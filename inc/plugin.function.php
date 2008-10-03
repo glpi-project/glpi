@@ -73,31 +73,21 @@ function initPlugins(){
  * @return nothing
  */
 function usePlugin ($name) {
-	global $CFG_GLPI, $PLUGIN_HOOKS;
+	global $CFG_GLPI, $PLUGIN_HOOKS,$LANG,$LOADED_PLUGINS;
 
 	if (file_exists(GLPI_ROOT . "/plugins/$name/setup.php")) {
 		include_once(GLPI_ROOT . "/plugins/$name/setup.php");
+		if (!isset($LOADED_PLUGINS[$name])){
+			loadPluginLang($name);
 
-/*		$function = "plugin_version_$name";
-		if (function_exists($function)) {
-			$info=$function();
-			
-			if ((isset($info["minGlpiVersion"]) && $info["minGlpiVersion"]>GLPI_VERSION) ||
-				(isset($info["maxGlpiVersion"]) && $info["maxGlpiVersion"]<GLPI_VERSION)) {
-				
-				// Note this to have the plugin listed (as incompatible) on config page.
-				$PLUGIN_HOOKS["config_page"][$name]=false;
-				
-				return false;
+			$function = "plugin_init_$name";
+	
+			if (function_exists($function)) {
+				$function();
+				$LOADED_PLUGINS[$name]=$name;
 			}
-			
 		}
-*/
-		$function = "plugin_init_$name";
 
-		if (function_exists($function)) {
-			$function();
-		}
 	}
 }
 
@@ -438,15 +428,33 @@ function getPluginSearchOption(){
 function pluginNewType($plugin,$name,$ID,$class,$table,$formpage='',$typename='',$recursive=false){
 	global $PLUGIN_HOOKS,$LINK_ID_TABLE,$INFOFORM_PAGES,$CFG_GLPI; 
 
-	define($name,$ID);
-	$LINK_ID_TABLE[$ID]=$table;
-	$INFOFORM_PAGES[$ID]="plugins/$plugin/$formpage";
-	$PLUGIN_HOOKS['plugin_types'][$ID]=$plugin;
-	$PLUGIN_HOOKS['plugin_typenames'][$ID]=$typename;
-	$PLUGIN_HOOKS['plugin_classes'][$ID]=$class;
-	
-	if ($recursive) {
-		 $CFG_GLPI["recursive_type"][$ID]=$table;
+	if (!defined($name)) {
+		define($name,$ID);
+		$LINK_ID_TABLE[$ID]=$table;
+		$INFOFORM_PAGES[$ID]="plugins/$plugin/$formpage";
+		$PLUGIN_HOOKS['plugin_types'][$ID]=$plugin;
+		$PLUGIN_HOOKS['plugin_typenames'][$ID]=$typename;
+		$PLUGIN_HOOKS['plugin_classes'][$ID]=$class;
+		
+		if ($recursive) {
+			$CFG_GLPI["recursive_type"][$ID]=$table;
+		}
 	}
 }
+
+function loadPluginLang($name){
+	global $CFG_GLPI,$LANG
+;
+	if (isset($_SESSION["glpilanguage"])
+		&&file_exists(GLPI_ROOT . "/plugins/$name/locales/".$CFG_GLPI["languages"][$_SESSION["glpilanguage"]][1])){
+		include_once (GLPI_ROOT . "/plugins/$name/locales/".$CFG_GLPI["languages"][$_SESSION["glpilanguage"]][1]);
+	} else if (file_exists(GLPI_ROOT . "/plugins/$name/locales/".$CFG_GLPI["languages"][$CFG_GLPI["default_language"]][1])){
+		include_once (GLPI_ROOT . "/plugins/$name/locales/".$CFG_GLPI["languages"][$CFG_GLPI["default_language"]][1]);
+	} else if (file_exists(GLPI_ROOT . "/plugins/$name/locales/en_GB.php")){
+		include_once (GLPI_ROOT . "/plugins/$name/locales/en_GB.php");
+	} else if (file_exists(GLPI_ROOT . "/plugins/$name/locales/fr_FR.php")){
+		include_once (GLPI_ROOT . "/plugins/$name/locales/fr_FR.php");
+	}
+}
+
 ?>
