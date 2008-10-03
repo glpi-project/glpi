@@ -102,9 +102,8 @@ class DBmysql {
 
 		//mysql_ping($this->dbh);
 		$res=@mysql_query($query,$this->dbh);
-		
 		if (!$res) {
-			$this->DBmysql();
+			$this->__construct();
 			$res=mysql_query($query,$this->dbh);
 			
 			if (!$res) {

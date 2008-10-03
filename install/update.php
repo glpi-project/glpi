@@ -44,6 +44,8 @@ include_once (GLPI_ROOT . "/inc/dbmysql.class.php");
 include_once (GLPI_ROOT . "/inc/common.function.php");
 include_once (GLPI_ROOT . "/inc/db.function.php");
 include_once (GLPI_ROOT . "/inc/display.function.php");
+include_once (GLPI_ROOT . "/inc/commondbtm.class.php");
+include_once (GLPI_ROOT . "/inc/plugin.class.php");
 include_once (GLPI_ROOT . "/config/based_config.php");
 include_once (GLPI_CONFIG_DIR . "/config_db.php");
 
@@ -404,6 +406,7 @@ function updatedbUpTo031()
 	$result=$DB->query($query) or die("get current version".$DB->error());
 	$current_version=trim($DB->result($result,0,0));
 
+
 	switch ($current_version){
 		case "0.31": 
 			include("update_031_04.php");
@@ -482,6 +485,10 @@ function updatedbUpTo031()
 	// Update version number and default langage and new version_founded ---- LEAVE AT THE END
 	$query = "UPDATE `glpi_config` SET `version` = ' 0.72', default_language='".$_SESSION["glpilanguage"]."',founded_new_version='' ;";
 	$DB->query($query) or die("0.6 ".$LANG["update"][90].$DB->error());
+
+	// Update process desactivate all plugins
+	$plugin=new Plugin();
+	$plugin->unactivateAll();
 
 	optimize_tables();
 

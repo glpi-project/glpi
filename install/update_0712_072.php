@@ -298,8 +298,8 @@ function update0712to072() {
 	if (!TableExists("glpi_dropdown_licensetypes")) {
 		$query="CREATE TABLE `glpi_dropdown_licensetypes` (
 			`ID` int(11) NOT NULL auto_increment,
-			`name` varchar(255) collate utf8_unicode_ci default NULL,
-			`comments` text collate utf8_unicode_ci,
+			`name` varchar(255) default NULL,
+			`comments` text,
 			PRIMARY KEY  (`ID`),
 			KEY `name` (`name`)
 			) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
@@ -320,8 +320,8 @@ function update0712to072() {
 	if (!TableExists("glpi_dropdown_user_titles")) {
 		$query="CREATE TABLE `glpi_dropdown_user_titles` (
 		`ID` int( 11 ) NOT NULL AUTO_INCREMENT ,
-		`name` varchar( 255 ) COLLATE utf8_unicode_ci default NULL ,
-		`comments` text COLLATE utf8_unicode_ci,
+		`name` varchar( 255 ) default NULL ,
+		`comments` text ,
 		PRIMARY KEY ( `ID` ) ,
 		KEY `name` ( `name` )
 		) ENGINE = MYISAM DEFAULT CHARSET = utf8 COLLATE = utf8_unicode_ci;";
@@ -353,8 +353,8 @@ function update0712to072() {
 	if (!TableExists("glpi_dropdown_user_types")) {
 		$query="CREATE TABLE `glpi_dropdown_user_types` (
 		`ID` int( 11 ) NOT NULL AUTO_INCREMENT ,
-		`name` varchar( 255 ) COLLATE utf8_unicode_ci default NULL ,
-		`comments` text COLLATE utf8_unicode_ci,
+		`name` varchar( 255 ) default NULL ,
+		`comments` text ,
 		PRIMARY KEY ( `ID` ) ,
 		KEY `name` ( `name` )
 		) ENGINE = MYISAM DEFAULT CHARSET = utf8 COLLATE = utf8_unicode_ci;";
@@ -394,8 +394,8 @@ function update0712to072() {
 	if (!TableExists("glpi_dropdown_filesystems")) {
 		$query="CREATE TABLE `glpi_dropdown_filesystems` (
 			`ID` int(11) NOT NULL auto_increment,
-			`name` varchar(255) collate utf8_unicode_ci default NULL,
-			`comments` text collate utf8_unicode_ci,
+			`name` varchar(255) default NULL,
+			`comments` text ,
 			PRIMARY KEY  (`ID`),
 			KEY `name` (`name`)
 			) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
@@ -412,9 +412,9 @@ function update0712to072() {
 		$query="CREATE TABLE `glpi_computerdisks` (
 			`ID` int(11) NOT NULL auto_increment,
 			`FK_computers` int(11) NOT NULL default 0,
-			`name` varchar(255) collate utf8_unicode_ci default NULL,
-			`device` varchar(255) collate utf8_unicode_ci default NULL,
-			`mountpoint` varchar(255) collate utf8_unicode_ci default NULL,
+			`name` varchar(255)  default NULL,
+			`device` varchar(255) default NULL,
+			`mountpoint` varchar(255)  default NULL,
 			`FK_filesystems` int(11) NOT NULL default 0,
 			`totalsize` int(11) NOT NULL default 0,
 			`freesize` int(11) NOT NULL default 0,
@@ -529,6 +529,25 @@ function update0712to072() {
 		$query=" ALTER TABLE `glpi_contracts` CHANGE `cost` `cost` DECIMAL( 20, 4 ) NOT NULL DEFAULT '0.0000'";
 		$DB->query($query) or die("0.72 alter contract cost data type" . $LANG["update"][90] . $DB->error());
 	}
+
+	// Plugins table
+	if (!TableExists("glpi_plugins")) {
+
+		$query="CREATE TABLE IF NOT EXISTS `glpi_plugins` (
+			`ID` int(11) NOT NULL auto_increment,
+			`directory` varchar(255) NOT NULL,
+			`name` varchar(255) NOT NULL,
+			`version` varchar(255)  NOT NULL,
+			`state` tinyint(4) NOT NULL default '0',
+			`author` varchar(255)default NULL,
+			`homepage` varchar(255) default NULL,
+			PRIMARY KEY  (`ID`),
+			UNIQUE KEY `name` (`directory`)
+			) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+		
+		$DB->query($query) or die("0.72 create table glpi_plugins " . $LANG["update"][90] . $DB->error());
+	}
+
 
   
 

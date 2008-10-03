@@ -86,7 +86,7 @@ class CommonDBTM {
 	function getFromDB ($ID) {
 
 		// Make new database object and fill variables
-		global $DB,$CFG_GLPI;
+		global $DB;
 		// != 0 because 0 is consider as empty
 		if (strlen($ID)==0) return false;
 		
@@ -99,8 +99,44 @@ class CommonDBTM {
 			} 
 		} 
 		return false;;
+	}
+	/**
+	 * Retrieve all items from the database
+	 *
+	 *@param $condition condition used to search if needed (empty get all)
+	 *@param $order order field if needed
+	 *@param $limit limit retrieved datas if needed
+	 *@return true if succeed else false
+	**/	
+	function find ($condition="", $order="", $limit="") {
+
+		// Make new database object and fill variables
+		global $DB;
+		
+		$query = "SELECT * FROM ".$this->table;
+		if (!empty($condition)){
+			$query.=" WHERE $condition";
+		}
+
+		if (!empty($order)){
+			$query.=" ORDER BY $order";
+		}
+		if (!empty($limit)){
+			$query.=" LIMIT $limit";
+		}
+	
+		$data=array();
+		if ($result = $DB->query($query)) {
+			if ($DB->numrows($result)){
+				while ($line = $DB->fetch_assoc($result)){
+					$data[$line['ID']]=$line;
+				}
+			} 
+		} 
+		return $data;
 
 	}
+
 	/**
 	 * Get the name of the index field
 	 *

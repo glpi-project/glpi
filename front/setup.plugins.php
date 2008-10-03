@@ -35,53 +35,28 @@
 
 
 
-$NEEDED_ITEMS=array("setup");
+$NEEDED_ITEMS=array();
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
+checkRight("config", "w");
 
-
-
-$NEEDED_ITEMS=array("setup");
-include (GLPI_ROOT . "/inc/includes.php");
-
+$plugin=new Plugin();
 
 commonHeader($LANG["common"][12],$_SERVER['PHP_SELF'],"config","plugins");
-$names=array();
-if (isset($PLUGIN_HOOKS["config_page"]) && is_array($PLUGIN_HOOKS["config_page"])) {
-	foreach ($PLUGIN_HOOKS["config_page"] as $plug => $page){
-		$function="plugin_version_$plug";
-		$infos[$plug]=$function();
-		$names[$plug]=$infos[$plug]["name"];
-		$pages[$plug]=$page;
-	}
-	asort($names);
-}
 
-
-
-
-echo "<div align='center'><table class='tab_cadre' cellpadding='5'>";
-
-// ligne a modifier en fonction de la modification des fichiers de langues
-echo "<tr><th colspan='2'>".$LANG["setup"][701]."</th></tr>";
-
-foreach ($names as $key => $name) {
-
-	$val = $infos[$key];
-	// Config page if not set if plugin not compatible (usePlugin function unset it)
-	if ($pages[$key]) {
-		echo "<tr class='tab_bg_1'><td align='center'><a href='".$CFG_GLPI["root_doc"]."/plugins/$key/".$pages[$key]."'><strong>".$val["name"]."</strong></a></td>" .
-				"<td><img src='../pics/greenbutton.png' /> #".$val["version"]."</td></tr>";		
+if (isset($_GET['action'])&& isset($_GET['ID'])){
+	if (method_exists($plugin,$_GET['action'])){
+		$plugin->$_GET['action']($_GET['ID']);
 	} else {
-		echo "<tr class='tab_bg_2'><td align='center'>".$val["name"]."</td><td><img src='../pics/redbutton.png' /> #".$val["version"]." : ".$LANG["setup"][702].
-			(isset($val["minGlpiVersion"]) ? "<br />GPLI >= " . $val["minGlpiVersion"] : "") .
-			(isset($val["maxGlpiVersion"]) ? "<br />GLPI <= " . $val["maxGlpiVersion"] : "") . "</td></tr>";
+		echo "Action ".$_GET['action']." undefined";
 	}
+
 }
 
-echo "</table></div>";
+$plugin->listPlugins();
+
 
 commonFooter();
 

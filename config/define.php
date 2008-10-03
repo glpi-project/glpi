@@ -96,6 +96,7 @@
 	define("BOOKMARK_TYPE",38);
 	define("SOFTWAREVERSION_TYPE",39);
 	define("COMPUTERDISK_TYPE",39);
+	define("PLUGIN_TYPE",40);
 	
 	// GLPI MODE
 	define("NORMAL_MODE",0);
@@ -349,7 +350,15 @@
 	define("BOOKMARK_SEARCH",1); //SEARCH SYSTEM bookmark
 
 
-		//DEVICE ARRAY.
+	// PLUGIN states
+	define("PLUGIN_NEW",0);
+	define("PLUGIN_ACTIVATED",1);
+	define("PLUGIN_NOTINSTALLED",2);
+	define("PLUGIN_TOBECONFIGURED",3);
+	define("PLUGIN_NOTACTIVATED",4);
+	define("PLUGIN_TOBECLEANED",5);
+
+	//DEVICE ARRAY.
 	$CFG_GLPI["devices_tables"] =array("moboard","processor","ram","hdd","iface","drive","control","gfxcard","sndcard","pci","case","power");
 	$CFG_GLPI["deleted_tables"]=array("glpi_computers","glpi_networking","glpi_printers","glpi_monitors","glpi_peripherals",
 		"glpi_software","glpi_cartridges_type","glpi_contracts","glpi_contacts","glpi_enterprises","glpi_docs","glpi_phones",
