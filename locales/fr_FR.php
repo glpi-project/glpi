@@ -104,6 +104,7 @@ $LANG["buttons"][49]="Conserver";
 $LANG["buttons"][50]="Tester";
 $LANG["buttons"][51]="Enregistrer";
 $LANG["buttons"][52]="Charger";  
+$LANG["buttons"][53]="Nettoyer";  
 
 $LANG["calendarD"][0]="D"; 
 $LANG["calendarD"][1]="L"; 
@@ -1142,6 +1143,14 @@ $LANG["planning"][15]="Votre planning";
 $LANG["planning"][16]="Information"; 
 $LANG["planning"][17]="A faire"; 
 $LANG["planning"][18]="Fait"; 
+
+$LANG["plugins"][0]="Liste des plugins"; 
+$LANG["plugins"][1]="Non installé"; 
+$LANG["plugins"][2]="Installé / non configuré"; 
+$LANG["plugins"][3]="Installé / non activé"; 
+$LANG["plugins"][4]="Erreur / à nettoyer"; 
+$LANG["plugins"][5]="Fonction inexistante"; 
+
 
 $LANG["printers"][14]="Série"; 
 $LANG["printers"][15]="Parallèle"; 

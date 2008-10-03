@@ -51,16 +51,19 @@ $CFG_GLPI_PLUGINS = array();
  * @return nothing
  */
 function initPlugins(){
+	//return;
+	$plugin=new Plugin();
 
+	$plugin->checkStates();
+	$plugins=$plugin->find('state='.PLUGIN_ACTIVATED);
+	
 	$_SESSION["glpi_plugins"]=array();
-	$dirplug=GLPI_ROOT."/plugins";
-	$dh  = opendir($dirplug);
-	while (false !== ($filename = readdir($dh))) {
-		if ($filename!=".svn"&&$filename!="."&&$filename!=".."&&is_dir($dirplug."/".$filename)){
-			$_SESSION["glpi_plugins"][]=$filename;
+
+	if (count($plugins)){
+		foreach ($plugins as $ID => $plug){
+			$_SESSION["glpi_plugins"][$ID]=$plug['directory'];
 		}
 	}
-
 }
 /**
  * Init a plugin including setup.php file 
@@ -75,7 +78,7 @@ function usePlugin ($name) {
 	if (file_exists(GLPI_ROOT . "/plugins/$name/setup.php")) {
 		include_once(GLPI_ROOT . "/plugins/$name/setup.php");
 
-		$function = "plugin_version_$name";
+/*		$function = "plugin_version_$name";
 		if (function_exists($function)) {
 			$info=$function();
 			
@@ -89,6 +92,7 @@ function usePlugin ($name) {
 			}
 			
 		}
+*/
 		$function = "plugin_init_$name";
 
 		if (function_exists($function)) {
@@ -110,9 +114,12 @@ function doHook ($name,$param=NULL) {
 	} else {
 		$data=$param;
 	}
-
+	
 	if (isset($PLUGIN_HOOKS[$name]) && is_array($PLUGIN_HOOKS[$name])) {
 		foreach ($PLUGIN_HOOKS[$name] as $function) {
+			if (file_exists(GLPI_ROOT . "/plugins/$name/hook.php")) {
+				include_once(GLPI_ROOT . "/plugins/$name/hook.php");
+			}
 			if (function_exists($function)) {
 				$function($data);
 			}
@@ -135,6 +142,11 @@ function doHookFunction($name,$parm=NULL) {
 
 	if (isset($PLUGIN_HOOKS[$name])
 			&& is_array($PLUGIN_HOOKS[$name])) {
+
+		if (file_exists(GLPI_ROOT . "/plugins/$name/hook.php")) {
+			include_once(GLPI_ROOT . "/plugins/$name/hook.php");
+		}
+
 		foreach ($PLUGIN_HOOKS[$name] as $function) {
 			if (function_exists($function)) {
 				$ret = $function($ret);
@@ -161,6 +173,10 @@ function displayPluginAction($type,$ID,$onglet,$withtemplate=0){
 	if ($onglet==-1){
 		if (isset($PLUGIN_HOOKS["headings_action"])&&is_array($PLUGIN_HOOKS["headings_action"])&&count($PLUGIN_HOOKS["headings_action"]))	
 			foreach ($PLUGIN_HOOKS["headings_action"] as $plug => $function)
+				if (file_exists(GLPI_ROOT . "/plugins/$plug/hook.php")) {
+					include_once(GLPI_ROOT . "/plugins/$plug/hook.php");
+				}
+
 				if (function_exists($function)){
 					$actions=$function($type);
 					if (is_array($actions)&&count($actions))
@@ -178,7 +194,12 @@ function displayPluginAction($type,$ID,$onglet,$withtemplate=0){
 		$split=split("_",$onglet);
 		if (count($split)==2){
 			list($plug,$ID_onglet)=$split;
+
 			if (isset($PLUGIN_HOOKS["headings_action"][$plug])){
+				if (file_exists(GLPI_ROOT . "/plugins/$plug/hook.php")) {
+					include_once(GLPI_ROOT . "/plugins/$plug/hook.php");
+				}
+
 				$function=$PLUGIN_HOOKS["headings_action"][$plug];
 				if (function_exists($function)){
 					$actions=$function($type);
@@ -212,6 +233,9 @@ function displayPluginHeadings($target,$type,$withtemplate,$actif){
 	$display_onglets=array();
 	if (isset($PLUGIN_HOOKS["headings"]) && is_array($PLUGIN_HOOKS["headings"])) {
 		foreach ($PLUGIN_HOOKS["headings"] as $plug => $function) {
+			if (file_exists(GLPI_ROOT . "/plugins/$plug/hook.php")) {
+				include_once(GLPI_ROOT . "/plugins/$plug/hook.php");
+			}
 
 			if (function_exists($function)) {
 				$onglet=$function($type,$withtemplate);
@@ -279,6 +303,9 @@ function getPluginTabs($target,$type,$ID,$withtemplate){
 	$tabs=array();
 	if (isset($PLUGIN_HOOKS["headings"]) && is_array($PLUGIN_HOOKS["headings"])) {
 		foreach ($PLUGIN_HOOKS["headings"] as $plug => $function) {
+			if (file_exists(GLPI_ROOT . "/plugins/$plug/hook.php")) {
+				include_once(GLPI_ROOT . "/plugins/$plug/hook.php");
+			}
 
 			if (function_exists($function)) {
 				$onglet=$function($type,$withtemplate);
@@ -327,6 +354,7 @@ function getPluginsDropdowns(){
 	$dps=array();
 	if (isset($_SESSION["glpi_plugins"]) && is_array($_SESSION["glpi_plugins"])) { 
 		foreach ($_SESSION["glpi_plugins"] as  $plug) { 
+
 			$function="plugin_version_$plug";
 			$function2="plugin_".$plug."_getDropdown";
 			if (function_exists($function2)) {
@@ -349,6 +377,10 @@ function getPluginsDatabaseRelations(){
 	$dps=array();
 	if (isset($_SESSION["glpi_plugins"]) && is_array($_SESSION["glpi_plugins"])) { 
 		foreach ($_SESSION["glpi_plugins"] as $plug) { 
+			if (file_exists(GLPI_ROOT . "/plugins/$plug/hook.php")) {
+				include_once(GLPI_ROOT . "/plugins/$plug/hook.php");
+			}
+
 			$function2="plugin_".$plug."_getDatabaseRelations";
 			if (function_exists($function2)) {
 				$dps=array_merge($dps,$function2());
@@ -369,6 +401,10 @@ function getPluginSearchOption(){
 	if (isset($PLUGIN_HOOKS['plugin_types'])&&count($PLUGIN_HOOKS['plugin_types'])){
 		$tab=array_unique($PLUGIN_HOOKS['plugin_types']);
 		foreach ($tab as $plug){
+			if (file_exists(GLPI_ROOT . "/plugins/$plug/hook.php")) {
+				include_once(GLPI_ROOT . "/plugins/$plug/hook.php");
+			}
+
 			$function="plugin_".$plug."_getSearchOption";
 			if (function_exists($function)) {
 				$tmp=$function();

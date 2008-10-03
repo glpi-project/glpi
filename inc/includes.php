@@ -63,6 +63,7 @@ include_once (GLPI_ROOT . "/inc/dropdown.function.php");
 include_once (GLPI_ROOT . "/inc/config.class.php");
 include_once (GLPI_ROOT . "/config/config.php");
 include_once (GLPI_ROOT . "/inc/plugin.function.php");
+include_once (GLPI_ROOT . "/inc/plugin.class.php");
 
 // Load Language file
 loadLanguage();
@@ -148,7 +149,6 @@ if (!isset($AJAX_INCLUDE)&&!isset($PLUGINS_INCLUDED)){
 					include_once (GLPI_ROOT . "/plugins/$name/locales/fr_FR.php");
 
 				usePlugin($name);
-
 			}
 		}
 	}

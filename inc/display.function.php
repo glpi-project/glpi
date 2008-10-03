@@ -731,7 +731,7 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="")
 		}	
 
 
-		if (isset($PLUGIN_HOOKS['config_page'])&&is_array($PLUGIN_HOOKS['config_page'])&&count($PLUGIN_HOOKS['config_page']))	{
+		if (haveRight("config","w")){
 			$menu['config']['content']['plugins']['title']=$LANG["common"][29];
 			$menu['config']['content']['plugins']['page']='/front/setup.plugins.php';
 		}
