@@ -52,11 +52,10 @@ if (isset($_GET['action'])&& isset($_GET['ID'])){
 	} else {
 		echo "Action ".$_GET['action']." undefined";
 	}
-
+	glpi_header($_SERVER['HTTP_REFERER']);
 }
 
 $plugin->listPlugins();
-
 
 commonFooter();
 

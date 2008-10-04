@@ -326,6 +326,7 @@ class Plugin extends CommonDBTM {
 				$function();
 			}
 			$this->update(array('ID'=>$ID,'state'=>PLUGIN_NOTINSTALLED,'version'=>''));
+			$this->removeFromSession($this->fields['directory']);
 		}
 	}
 
@@ -375,6 +376,10 @@ class Plugin extends CommonDBTM {
 			if (function_exists($function)) {
 				if ($function()){
 					$this->update(array('ID'=>$ID,'state'=>PLUGIN_ACTIVATED));
+					$_SESSION['glpi_plugins'][]=$this->fields['directory'];
+					if (isset($_SESSION["glpiID"])){
+						cleanCache("GLPI_HEADER_".$_SESSION["glpiID"]);
+					}
 				} 
 			}
 		}
@@ -387,6 +392,7 @@ class Plugin extends CommonDBTM {
 	function unactivate($ID){
 		if ($this->getFromDB($ID)){
 			$this->update(array('ID'=>$ID,'state'=>PLUGIN_NOTACTIVATED));
+			$this->removeFromSession($this->fields['directory']);
 		}
 	}
 
@@ -398,6 +404,12 @@ class Plugin extends CommonDBTM {
 		global$DB;
 		$query="UPDATE glpi_plugins SET state=".PLUGIN_NOTACTIVATED." WHERE state=".PLUGIN_ACTIVATED.";";
 		$DB->query($query);
+
+		$_SESSION['glpi_plugins']=array();
+		if (isset($_SESSION["glpiID"])){
+			cleanCache("GLPI_HEADER_".$_SESSION["glpiID"]);
+		}
+
 	}
 	/**
 	 * clean a plugin
@@ -407,6 +419,21 @@ class Plugin extends CommonDBTM {
 	function clean($ID){
 		if ($this->getFromDB($ID)){
 			$this->delete(array('ID'=>$ID));
+			$this->removeFromSession($this->fields['directory']);
+		}
+	}
+	/**
+	 * remove plugin from session variable
+	 *
+	 *@param $plugin plugin directory
+	**/	
+	function removeFromSession($plugin){
+		$key=array_search($plugin,$_SESSION['glpi_plugins']);
+		if ($key!==false){
+			unset($_SESSION['glpi_plugins'][$key]);
+			if (isset($_SESSION["glpiID"])){
+				cleanCache("GLPI_HEADER_".$_SESSION["glpiID"]);
+			}
 		}
 	}
 
