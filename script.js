@@ -321,6 +321,38 @@ function unMarkAllRows( container_id ) {
 	return true;
 }
 
+function toggleAllRows( container_id ) {
+	var rows = document.getElementById(container_id).getElementsByTagName('tr');
+	var unique_id;
+	var checkbox;
+	var done = new Array;
+
+	for ( var i = 0; i < rows.length; i++ ) {
+
+		checkboxes = rows[i].getElementsByTagName( 'input' );
+
+		for ( var j = 0; j < checkboxes.length; j++ ) {
+			checkbox=checkboxes[j];
+			if ( checkbox && checkbox.type == 'checkbox' ) {
+				unique_id = checkbox.name;
+				if ( checkbox.disabled == false) {
+					if ( typeof(done[unique_id]) == 'undefined' || !done[unique_id] ) {
+						done[unique_id] = true;
+						if (checkbox.checked == false){
+							checkbox.checked = true;
+						} else {
+							checkbox.checked = false;
+						}
+					}
+				}
+			}
+		}
+	}
+
+	return true;
+}
+
+
 function confirmAction(text,where){
 	if (confirm(text)) {
 		window.location = where;
