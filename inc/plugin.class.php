@@ -181,6 +181,7 @@ class Plugin extends CommonDBTM {
 		echo "<tr><th>".$LANG["common"][16]."</th><th>".$LANG["rulesengine"][78]."</th><th>".$LANG["state"][0]."</th><th>".$LANG["common"][37]."</th><th>".$LANG["financial"][45]."</th><th colspan='2'>&nbsp;</th></tr>";
 		$pluglist=$this->find("","name, directory");
 		$i=0;
+		$PLUGIN_HOOKS_SAVE=$PLUGIN_HOOKS;
 		foreach ($pluglist as $ID => $plug){
 			usePlugin($plug['directory']);
 			$i++;
@@ -191,7 +192,9 @@ class Plugin extends CommonDBTM {
 			echo "<tr class='$class'>";
 			echo "<td>";
 
-			if (isset($PLUGIN_HOOKS['config_page'][$plug['directory']])) {
+			// Only config for install plugins
+			if (in_array($plug['state'],array(PLUGIN_ACTIVATED,PLUGIN_TOBECONFIGURED,PLUGIN_NOTACTIVATED)) 
+				&& isset($PLUGIN_HOOKS['config_page'][$plug['directory']])) {
 				echo "<a href='".$CFG_GLPI["root_doc"]."/plugins/".$plug['directory']."/".$PLUGIN_HOOKS['config_page'][$plug['directory']]."'><strong>".$plug['name']."</strong></a>";		
 			} else {
 				echo $plug['name'];
@@ -309,6 +312,7 @@ class Plugin extends CommonDBTM {
 			echo "</tr>";
 		}
 		echo "</table></div>";
+		$PLUGIN_HOOKS=$PLUGIN_HOOKS_SAVE;
 	}
 
 	/**
