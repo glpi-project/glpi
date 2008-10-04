@@ -233,11 +233,12 @@ function showInstallations($sID) {
 					// Not first one
 					if ($current_version!=-1){
 						// Complete last line
-						for ($i=$num;$i<$nb_per_line;$i++){
-							echo "<td>&nbsp;</td>";
-							if ($canedit){
-								echo "<td>&nbsp;</td>";
-							}
+						$nbtoadd=$nb_per_line-$num;
+						if ($canedit){
+							$nbtoadd*=2;
+						}
+						if ($nbtoadd>0){
+							echo "<td colspan='$nbtoadd'>&nbsp;</td>";
 						}
 
 						// end table for version
@@ -281,12 +282,14 @@ function showInstallations($sID) {
 				
 			}
 			// Complete last line
-			for ($i=$num;$i<$nb_per_line;$i++){
-				echo "<td>&nbsp;</td>";
-				if ($canedit){
-					echo "<td>&nbsp;</td>";
-				}
+			$nbtoadd=$nb_per_line-$num;
+			if ($canedit){
+				$nbtoadd*=2;
 			}
+			if ($nbtoadd>0){
+				echo "<td colspan='$nbtoadd'>&nbsp;</td>";
+			}
+
 			// end table for version
 			echo "</tr></table>";
 			// end line
