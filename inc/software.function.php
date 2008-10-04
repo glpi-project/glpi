@@ -252,7 +252,11 @@ function showInstallations($sID) {
 					} else {
 						echo $data['version'];
 					}
-					echo "</td><td colspan='5'><table class='tab_cadre'><tr class='tab_bg_1'>";
+					echo "<br>";
+					
+					echo "<input type='checkbox' onclick= \"if ( toggleAllRows('version".$data['vID'].$rand."') ) return false;\">";
+					echo "</td><td colspan='5'><table id='version".$data['vID'].$rand."' class='tab_cadre'><tr class='tab_bg_1'>";
+
 					$current_version=$data['vID'];
 					$num=0;
 				}

@@ -69,6 +69,7 @@ $LANG["buttons"][13]="Retour";
 $LANG["buttons"][14]="Modifier"; 
 $LANG["buttons"][15]="Calendrier"; 
 $LANG["buttons"][16]="Raz"; 
+$LANG["buttons"][17]="Inverser la sélection"; 
 $LANG["buttons"][18]="Tout cocher"; 
 $LANG["buttons"][19]="Tout décocher"; 
 $LANG["buttons"][20]="Déplacer"; 
