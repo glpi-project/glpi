@@ -191,6 +191,11 @@ class Plugin extends CommonDBTM {
 			}
 			echo "<tr class='$class'>";
 			echo "<td>";
+			$name=trim($plug['name']);
+			if (empty($name)){
+				$plug['name']=$plug['directory'];
+			}
+
 
 			// Only config for install plugins
 			if (in_array($plug['state'],array(PLUGIN_ACTIVATED,PLUGIN_TOBECONFIGURED,PLUGIN_NOTACTIVATED)) 
@@ -225,10 +230,10 @@ class Plugin extends CommonDBTM {
 			}
 			echo "</td>";
 			echo "<td>".$plug['author']."</td>";
-			$weblink=formatOutputWebLink(trim($plug['homepage']));
+			$weblink=trim($plug['homepage']);
 			echo "<td>";
 			if (!empty($weblink)){
-				echo "<a href='$weblink' target='_blank'><img src='".$CFG_GLPI["root_doc"]."/pics/web.png' class='middle' alt='".$LANG["common"][4]."' title='".$LANG["common"][4]."' ></a>";
+				echo "<a href='".formatOutputWebLink($weblink)."' target='_blank'><img src='".$CFG_GLPI["root_doc"]."/pics/web.png' class='middle' alt='".$LANG["common"][4]."' title='".$LANG["common"][4]."' ></a>";
 			} else {
 				echo "&nbsp;";
 			}
