@@ -8,7 +8,6 @@
  http://indepnet.net/   http://glpi-project.org
  -------------------------------------------------------------------------
 
- LICENSE
 
  This file is part of GLPI.
 
@@ -151,7 +150,7 @@ function doHookFunction($name,$parm=NULL) {
 /**
  * This function executes a hook for 1 plugin.
  * @param $plugname Name of the plugin
- * @param $function to be called
+ * @param $suffixe_of_function to be called
  * @param other params passed to the function
  * 
  * @return mixed $data
@@ -160,8 +159,8 @@ function doOneHook() {
 	
 	$args=func_get_args();
 	$plugname = array_shift($args);
-	$function = array_shift($args);
-	
+	$function = "plugin_" . $plugname . "_" . array_shift($args);
+
 	if (file_exists(GLPI_ROOT . "/plugins/$plugname/hook.php")) {
 		include_once(GLPI_ROOT . "/plugins/$plugname/hook.php");
 	}

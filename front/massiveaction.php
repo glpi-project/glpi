@@ -525,7 +525,7 @@ if (isset($_POST["device_type"])){
 				if ($_POST["device_type"]>1000){
 					if (isset($PLUGIN_HOOKS['plugin_types'][$_POST["device_type"]])){
 						doOneHook($PLUGIN_HOOKS['plugin_types'][$_POST["device_type"]],
-							'plugin_'.$PLUGIN_HOOKS['plugin_types'][$_POST["device_type"]].'_MassiveActionsProcess',
+							'MassiveActionsProcess',
 							$_POST);
 					} 
 				} else {
@@ -533,7 +533,7 @@ if (isset($_POST["device_type"])){
 					$split=split('_',$_POST["action"]);
 					if (isset($split[1])){
 						doOneHook($split[1], 
-							'plugin_'.$split[1].'_MassiveActionsProcess',
+							'MassiveActionsProcess',
 							$_POST);
 					}
 				}

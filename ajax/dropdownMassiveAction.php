@@ -219,7 +219,7 @@ if (isset($_POST["action"])&&isset($_POST["type"])&&!empty($_POST["type"])){
 			if ($_POST["type"]>1000){
 				if (isset($PLUGIN_HOOKS['plugin_types'][$_POST["type"]])){
 					doOneHook($PLUGIN_HOOKS['plugin_types'][$_POST["type"]],
-						'plugin_'.$PLUGIN_HOOKS['plugin_types'][$_POST["type"]].'_MassiveActionsDisplay',
+						'MassiveActionsDisplay',
 						$_POST["type"],$_POST["action"]);
 				} 
 			} else {
@@ -227,7 +227,7 @@ if (isset($_POST["action"])&&isset($_POST["type"])&&!empty($_POST["type"])){
 				$split=split('_',$_POST["action"]);
 				if (isset($split[1])){
 					doOneHook($split[1],
-						'plugin_'.$split[1].'_MassiveActionsDisplay',
+						'MassiveActionsDisplay',
 						$_POST["type"],$_POST["action"]);
 				}
 			}
