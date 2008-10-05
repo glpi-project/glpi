@@ -264,7 +264,7 @@ function fillidfield(Type,Id){
  *
  * @param    container_id    DOM element
  */
-function markAllRows( container_id ) {
+function markCheckboxes( container_id ) {
 	var checkboxes = document.getElementById(container_id).getElementsByTagName('input');
 	for ( var j = 0; j < checkboxes.length; j++ ) {
 		checkbox=checkboxes[j];
@@ -285,7 +285,7 @@ function markAllRows( container_id ) {
  *
  * @param    container_id    DOM element
  */
-function unMarkAllRows( container_id ) {
+function unMarkCheckboxes( container_id ) {
 	var checkboxes = document.getElementById(container_id).getElementsByTagName('input');
 	for ( var j = 0; j < checkboxes.length; j++ ) {
 		checkbox=checkboxes[j];
@@ -302,7 +302,7 @@ function unMarkAllRows( container_id ) {
  *
  * @param    container    DOM element
  */
-function toggleAllRows( container_id ) {
+function toggleCheckboxes( container_id ) {
 	var checkboxes = document.getElementById(container_id).getElementsByTagName('input');
 		for ( var j = 0; j < checkboxes.length; j++ ) {
 			checkbox=checkboxes[j];

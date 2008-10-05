@@ -124,9 +124,9 @@ function showPorts ($device,$device_type,$withtemplate='') {
 			if ($canedit&&$withtemplate!=2){
 				echo "<div class='center'>";
 				echo "<table width='80%' class='tab_glpi'>";
-				echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markAllRows('networking_ports$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$device&amp;select=all'>".$LANG["buttons"][18]."</a></td>";
+				echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markCheckboxes('networking_ports$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$device&amp;select=all'>".$LANG["buttons"][18]."</a></td>";
 
-				echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkAllRows('networking_ports$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$device&amp;select=none'>".$LANG["buttons"][19]."</a>";
+				echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkCheckboxes('networking_ports$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$device&amp;select=none'>".$LANG["buttons"][19]."</a>";
 
 
 //				echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td class='center'><span class='pointer' id='networking_ports_markall$rand'>".$LANG["buttons"][18]."</span></td>";

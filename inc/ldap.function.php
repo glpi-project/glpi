@@ -328,7 +328,7 @@ function showLdapGroups($target, $check, $start, $sync = 0,$filter='',$filter2='
 	
 			echo "<div class='center'>";
 			echo "<form method='post' name='ldap_form' action='" . $target . "'>";
-			echo "<a href='" . $target . "?check=all' onclick= \"if ( markAllRows('ldap_form') ) return false;\">" . $LANG["buttons"][18] . "</a>&nbsp;/&nbsp;<a href='" . $target . "?check=none' onclick= \"if ( unMarkAllRows('ldap_form') ) return false;\">" . $LANG["buttons"][19] . "</a>";
+			echo "<a href='" . $target . "?check=all' onclick= \"if ( markCheckboxes('ldap_form') ) return false;\">" . $LANG["buttons"][18] . "</a>&nbsp;/&nbsp;<a href='" . $target . "?check=none' onclick= \"if ( unMarkCheckboxes('ldap_form') ) return false;\">" . $LANG["buttons"][19] . "</a>";
 			echo "<table class='tab_cadre'>";
 			echo "<tr><th>" . $LANG["buttons"][37]. "</th><th colspan='2'>" . $LANG["common"][35] . "</th><th>".$LANG["setup"][261]."</th>"; 
 			echo"<th>".$LANG["ocsng"][36]."</th></tr>";
@@ -509,7 +509,7 @@ function showLdapUsers($target, $check, $start, $sync = 0,$filter='') {
 	
 			echo "<div class='center'>";
 			echo "<form method='post' name='ldap_form' action='" . $target . "'>";
-			echo "<a href='" . $target . "?check=all' onclick= \"if ( markAllRows('ldap_form') ) return false;\">" . $LANG["buttons"][18] . "</a>&nbsp;/&nbsp;<a href='" . $target . "?check=none' onclick= \"if ( unMarkAllRows('ldap_form') ) return false;\">" . $LANG["buttons"][19] . "</a>";
+			echo "<a href='" . $target . "?check=all' onclick= \"if ( markCheckboxes('ldap_form') ) return false;\">" . $LANG["buttons"][18] . "</a>&nbsp;/&nbsp;<a href='" . $target . "?check=none' onclick= \"if ( unMarkCheckboxes('ldap_form') ) return false;\">" . $LANG["buttons"][19] . "</a>";
 			echo "<table class='tab_cadre'>";
 			echo "<tr><th>" . (!$sync?$LANG["buttons"][37]:$LANG["ldap"][15]) . "</th><th colspan='2'>" . $LANG["Menu"][14] . "</th><th>".$LANG["common"][26]." ".$LANG["ldap"][13]."</th><th>".$LANG["common"][26]." ".$LANG["ldap"][14]."</th></tr>";
 	
