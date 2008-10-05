@@ -51,26 +51,24 @@ if(!isset($_POST["ID"])) {
 	$config = new Config();
 	
 	if ($_POST["ID"]<0){
-			switch($_POST['config_tab']){
+			switch($_POST['glpi_tab']){
 				case 1 :
-					$_SESSION['glpi_configgen']=1;
-					$config->showForm($_POST['target']);
+					$config->showFormMain($_POST['target']);
 					break;
 				case 2 :
-					$_SESSION['glpi_configgen']=2;
-					$config->showForm($_POST['target']);
+					$config->showFormDisplay($_POST['target']);
 					break;
 				case 3 :
-					$_SESSION['glpi_configgen']=3;
-					$config->showForm($_POST['target']);
+					$config->showFormRestrict($_POST['target']);
 					break;
 				case 4 :
-					$_SESSION['glpi_configgen']=4;
-					$config->showForm($_POST['target']);
+					$config->showFormConnection($_POST['target']);
 					break;
 				case 5 :
-					$_SESSION['glpi_configgen']=5;
-					$config->showForm($_POST['target']);
+					$config->showFormDBSlave($_POST['target']);
+					break;
+				case 6 :
+					$config->showFormPrefs($_POST['target']);
 					break;
 				default :
 					break;

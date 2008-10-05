@@ -40,7 +40,7 @@ include (GLPI_ROOT."/inc/includes.php");
 	checkCentralAccess();
 
 	if (!isset($_POST['glpi_tab'])){
-	$_POST['glpi_tab']="my";
+		$_POST['glpi_tab']="my";
 	}
 
 	switch ($_POST['glpi_tab']){

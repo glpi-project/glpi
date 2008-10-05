@@ -1412,6 +1412,7 @@ $LANG["setup"][2]="Ajouter utilisateur...";
 $LANG["setup"][3]="Liaison LDAP"; 
 $LANG["setup"][4]="Types d'ordinateurs"; 
 $LANG["setup"][5]="Système d'exploitation"; 
+$LANG["setup"][6]="Personnalisation"; 
 $LANG["setup"][9]="Interface réseau"; 
 $LANG["setup"][10]="Inventaire"; 
 $LANG["setup"][14]="E-Mail"; 
