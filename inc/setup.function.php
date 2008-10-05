@@ -101,9 +101,9 @@ function showDropdownList($target, $tablename,$FK_entities='',$location=-1){
 			echo "<div>";
 			echo "<table width='950' class='tab_glpi'>";
 			$parameters="which=$tablename&amp;mass_deletion=1&amp;FK_entities=$FK_entities";
-			echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td><a onclick= \"if ( markAllRows('massiveaction_form') ) return false;\" href='".$_SERVER['PHP_SELF']."?$parameters&amp;select=all'>".$LANG["buttons"][18]."</a></td>";
+			echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td><a onclick= \"if ( markCheckboxes('massiveaction_form') ) return false;\" href='".$_SERVER['PHP_SELF']."?$parameters&amp;select=all'>".$LANG["buttons"][18]."</a></td>";
 
-			echo "<td>/</td><td ><a onclick=\"if ( unMarkAllRows('massiveaction_form') ) return false;\" href='".$_SERVER['PHP_SELF']."?$parameters&amp;select=none'>".$LANG["buttons"][19]."</a>";
+			echo "<td>/</td><td ><a onclick=\"if ( unMarkCheckboxes('massiveaction_form') ) return false;\" href='".$_SERVER['PHP_SELF']."?$parameters&amp;select=none'>".$LANG["buttons"][19]."</a>";
 			echo "</td><td class='left' width='80%'>";
 			echo "<input type='submit' class='submit' name='mass_delete' value='".$LANG["buttons"][6]."'>";
 			echo "&nbsp;<strong>".$LANG["setup"][1]."</strong>";

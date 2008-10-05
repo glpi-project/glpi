@@ -437,8 +437,8 @@ class Bookmark extends CommonDBTM {
 				
 				echo "<div class='center'>";
 				echo "<table width='80%' class='tab_glpi'>";
-				echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markAllRows('form_load_bookmark$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?select=all'>".$LANG["buttons"][18]."</a></td>";
-				echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkAllRows('form_load_bookmark$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?select=none'>".$LANG["buttons"][19]."</a>";
+				echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markCheckboxes('form_load_bookmark$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?select=all'>".$LANG["buttons"][18]."</a></td>";
+				echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkCheckboxes('form_load_bookmark$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?select=none'>".$LANG["buttons"][19]."</a>";
 				echo "</td><td align='left' width='80%'>";
 				echo "<input type='submit' name='delete_several' value=\"".$LANG["buttons"][6]."\" class='submit'>";
 				echo "</td></tr>";

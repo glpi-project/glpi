@@ -173,9 +173,9 @@ function showLicenses($sID) {
 			
 			if ($canedit){
 				echo "<table width='80%' class='tab_glpi'>";
-				echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td><a onclick= \"if ( markAllRows('massiveactionlicense_form$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?select=all'>".$LANG["buttons"][18]."</a></td>";
+				echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td><a onclick= \"if ( markCheckboxes('massiveactionlicense_form$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?select=all'>".$LANG["buttons"][18]."</a></td>";
 
-				echo "<td>/</td><td ><a onclick=\"if ( unMarkAllRows('massiveactionlicense_form$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?select=none'>".$LANG["buttons"][19]."</a>";
+				echo "<td>/</td><td ><a onclick=\"if ( unMarkCheckboxes('massiveactionlicense_form$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?select=none'>".$LANG["buttons"][19]."</a>";
 				echo "</td><td class='left' width='80%'>";
 				dropdownMassiveAction(SOFTWARELICENSE_TYPE,0,array('sID'=>$sID));
 				echo "</td></table>";
@@ -254,8 +254,8 @@ function showInstallations($sID) {
 					}
 					echo "<br>";
 					
-					echo "<input type='checkbox' checked onclick= \"if ( markAllRows('version".$data['vID'].$rand."') ) return false;\">";
-					echo "<input type='checkbox' onclick= \"if ( unMarkAllRows('version".$data['vID'].$rand."') ) return false;\">";
+					echo "<input type='checkbox' checked onclick= \"if ( markCheckboxes('version".$data['vID'].$rand."') ) return false;\"> / ";
+					echo "<input type='checkbox' onclick= \"if ( unMarkCheckboxes('version".$data['vID'].$rand."') ) return false;\">";
 
 					echo "</td><td colspan='5'><table id='version".$data['vID'].$rand."' class='tab_cadre'><tr class='tab_bg_1'>";
 
@@ -302,9 +302,9 @@ function showInstallations($sID) {
 			echo "</td></tr>";
 
 			if ($canedit){
-				echo "<tr class='tab_bg_1'><td>&nbsp;</td><td><a onclick= \"if ( markAllRows('softinstall".$rand."') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$sID&amp;select=all'>".$LANG["buttons"][18]."</a>";
+				echo "<tr class='tab_bg_1'><td>&nbsp;</td><td><a onclick= \"if ( markCheckboxes('softinstall".$rand."') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$sID&amp;select=all'>".$LANG["buttons"][18]."</a>";
 								
-				echo "&nbsp;/&nbsp;<a onclick= \"if ( unMarkAllRows('softinstall".$rand."') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$sID&amp;select=none'>".$LANG["buttons"][19]."</a>";
+				echo "&nbsp;/&nbsp;<a onclick= \"if ( unMarkCheckboxes('softinstall".$rand."') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$sID&amp;select=none'>".$LANG["buttons"][19]."</a>";
 
 				dropdownSoftwareVersions("versionID",$sID);
 				echo "&nbsp;<input type='submit' name='moveinstalls' value=\"".$LANG["buttons"][20]."\"
@@ -688,9 +688,9 @@ function showInstallations($sID) {
 	if ($found_soft) {
 		echo "<div>";
 		echo "<table width='950px' class='tab_glpi'>";
-		echo "<tr><td><img src=\"" . $CFG_GLPI["root_doc"] . "/pics/arrow-left.png\" alt=''></td><td><a onclick= \"if ( markAllRows('lic_form') ) return false;\" href='" . $_SERVER['PHP_SELF'] . "?ID=$sID&amp;select=all'>" . $LANG["buttons"][18] . "</a></td>";
+		echo "<tr><td><img src=\"" . $CFG_GLPI["root_doc"] . "/pics/arrow-left.png\" alt=''></td><td><a onclick= \"if ( markCheckboxes('lic_form') ) return false;\" href='" . $_SERVER['PHP_SELF'] . "?ID=$sID&amp;select=all'>" . $LANG["buttons"][18] . "</a></td>";
 
-		echo "<td>/</td><td ><a onclick=\"if ( unMarkAllRows('lic_form') ) return false;\" href='" . $_SERVER['PHP_SELF'] . "?ID=$sID&amp;select=none'>" . $LANG["buttons"][19] . "</a>";
+		echo "<td>/</td><td ><a onclick=\"if ( unMarkCheckboxes('lic_form') ) return false;\" href='" . $_SERVER['PHP_SELF'] . "?ID=$sID&amp;select=none'>" . $LANG["buttons"][19] . "</a>";
 		echo "</td><td class='left' width='80%'>&nbsp;";
 		echo "</td></table></div>";
 	}
