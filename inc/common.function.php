@@ -938,14 +938,13 @@ function html_clean($value){
  * @return $time or $date
  */
 function convDateTime($time) { 
-	global $CFG_GLPI;
 	if (is_null($time)) return $time;
 
-	if (!isset($CFG_GLPI["dateformat"])){
-		$CFG_GLPI["dateformat"]=0;
+	if (!isset($_SESSION["glpidateformat"])){
+		$_SESSION["glpidateformat"]=0;
 	}
 	
-	switch ($CFG_GLPI["dateformat"]){
+	switch ($_SESSION["glpidateformat"]){
 		case 1 : // DD-MM-YYYY
 			$date = substr($time,8,2)."-";        // day 
 			$date .= substr($time,5,2)."-";  // month
@@ -980,11 +979,11 @@ function convDate($time) {
 	if (is_null($time)) return $time;
 
 
-	if (!isset($CFG_GLPI["dateformat"])){
-		$CFG_GLPI["dateformat"]=0;
+	if (!isset($_SESSION["glpidateformat"])){
+		$_SESSION["glpidateformat"]=0;
 	}
-	
-	switch ($CFG_GLPI["dateformat"]){
+
+	switch ($_SESSION["glpidateformat"]){
 		case 1 : // DD-MM-YYYY
 			$date = substr($time,8,2)."-";        // day 
 			$date .= substr($time,5,2)."-";  // month
@@ -1034,7 +1033,7 @@ function formatNumber($number,$edit=false,$forcedecimal=-1) {
 	}
 
 	// Display : clean display
-	switch ($CFG_GLPI["numberformat"]){
+	switch ($_SESSION["glpinumberformat"]){
 		case 2: // Other French
 			return number_format($number,$decimal,',',' ');
 			break;

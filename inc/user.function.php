@@ -117,7 +117,7 @@ function showDeviceUser($ID){
 				$cansee=haveTypeRight($type,"r");
 				while ($data=$DB->fetch_array($result)){
 					$link=$data["name"];
-					if ($cansee) $link="<a href='".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data["ID"]."'>".$link.(($CFG_GLPI["view_ID"]||empty($link))?" (".$data["ID"].")":"")."</a>";
+					if ($cansee) $link="<a href='".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data["ID"]."'>".$link.(($_SESSION["glpiview_ID"]||empty($link))?" (".$data["ID"].")":"")."</a>";
 					$linktype="";
 					if ($data["FK_users"]==$ID){
 						$linktype=$LANG["common"][34];
@@ -159,7 +159,7 @@ function showDeviceUser($ID){
 				$cansee=haveTypeRight($type,"r");
 				while ($data=$DB->fetch_array($result)){
 					$link=$data["name"];
-					if ($cansee) $link="<a href='".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data["ID"]."'>".$link.(($CFG_GLPI["view_ID"]||empty($link))?" (".$data["ID"].")":"")."</a>";
+					if ($cansee) $link="<a href='".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data["ID"]."'>".$link.(($_SESSION["glpiview_ID"]||empty($link))?" (".$data["ID"].")":"")."</a>";
 					$linktype="";
 					if (isset($groups[$data["FK_groups"]])){
 						$linktype=$LANG["common"][35]." ".$groups[$data["FK_groups"]];
@@ -229,7 +229,7 @@ function showGroupAssociated($target,$ID){
 				echo "</td>";
 			}
 
-			echo "<td><a href='".$CFG_GLPI["root_doc"]."/front/group.form.php?ID=".$data["ID"]."'>".$data["name"].($CFG_GLPI["view_ID"]?" (".$data["ID"].")":"")."</a>";
+			echo "<td><a href='".$CFG_GLPI["root_doc"]."/front/group.form.php?ID=".$data["ID"]."'>".$data["name"].($_SESSION["glpiview_ID"]?" (".$data["ID"].")":"")."</a>";
 			echo "&nbsp;";
 
 			echo "</td>";
@@ -357,7 +357,7 @@ function showUserRights($target,$ID){
 			if ($canshowentity){
 				echo "<a href='".$CFG_GLPI["root_doc"]."/front/entity.form.php?ID=".$data["FK_entities"]."'>";
 			}
-			echo $data["completename"].($CFG_GLPI["view_ID"]?" (".$data["FK_entities"].")":"");
+			echo $data["completename"].($_SESSION["glpiview_ID"]?" (".$data["FK_entities"].")":"");
 			if ($canshowentity){
 				echo "</a>";
 			}

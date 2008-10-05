@@ -437,7 +437,7 @@ function showJobShort($data, $followups,$output_type=HTML_OUTPUT,$row_num=0) {
 	if ($data["ID"])
 	{
 		$item_num=1;
-		$bgcolor=$CFG_GLPI["priority_".$data["priority"]];
+		$bgcolor=$_SESSION["glpipriority_".$data["priority"]];
 
 		echo displaySearchNewLine($output_type,$row_num%2);
 
@@ -628,7 +628,7 @@ function showJobVeryShort($ID) {
 	$viewusers=haveRight("user","r");
 	if ($job->getFromDBwithData($ID,0))
 	{
-		$bgcolor=$CFG_GLPI["priority_".$job->fields["priority"]];
+		$bgcolor=$_SESSION["glpipriority_".$job->fields["priority"]];
 		
 		echo "<tr class='tab_bg_2'>";
 		echo "<td align='center' bgcolor='$bgcolor' >ID: ".$job->fields["ID"]."</td>";

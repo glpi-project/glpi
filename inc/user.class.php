@@ -54,8 +54,8 @@ class User extends CommonDBTM {
 		$this->date_mod_blacklist = array('last_login');
 
 		$this->fields['tracking_order'] = 0;
-		if (isset ($CFG_GLPI["default_language"])){
-			$this->fields['language'] = $CFG_GLPI["default_language"];
+		if (isset ($CFG_GLPI["language"])){
+			$this->fields['language'] = $CFG_GLPI["language"];
 		} else {
 			$this->fields['language'] = "en_GB";
 		}
@@ -181,14 +181,11 @@ class User extends CommonDBTM {
 			return false;
 		}
 
-		// Preferences
-		if (!isset($input["language"])){
-			$input["language"]=$CFG_GLPI["default_language"];
+		foreach ($CFG_GLPI['user_pref_field'] as $field){
+			if (!isset($input[$field]) && isset($CFG_GLPI[$field])){
+				$input[$field]=$CFG_GLPI[$field];
+			}
 		}
-
-		if (!isset($input["list_limit"])){
-			$input["list_limit"]=$CFG_GLPI["list_limit"];
-		}	
 		
 		if (isset ($input["password"])) {
 			if (empty ($input["password"])) {
@@ -295,12 +292,6 @@ class User extends CommonDBTM {
 		if (isset ($_SESSION["glpiID"]) && isset ($input["FK_entities"]) && $_SESSION["glpiID"] == $input['ID']) {
 			$_SESSION["glpidefault_entity"] = $input["FK_entities"];
 		}
-		if (isset ($_SESSION["glpiID"]) && isset ($input["tracking_order"]) && $_SESSION["glpiID"] == $input['ID']) {
-			$_SESSION["glpitracking_order"] = $input["tracking_order"];
-		}
-		if (isset ($_SESSION["glpiID"]) && isset ($input["list_limit"]) && $_SESSION["glpiID"] == $input['ID']) {
-			$_SESSION["glpilist_limit"] = $input["list_limit"];
-		}
 
 		$this->syncLdapGroups($input);
 
@@ -311,14 +302,21 @@ class User extends CommonDBTM {
 
 
 	function post_updateItem($input, $updates, $history=1) {
+		global $CFG_GLPI;
 		// Clean header cache for the user
 		if (in_array("language", $updates) && isset ($input["ID"])) {
 			cleanCache("GLPI_HEADER_".$input["ID"]);
 		}
-		if (isset($_SESSION["glpiID"]) && $_SESSION["glpiID"] == $input['ID']
-			&& in_array('use_mode',$updates)) {
-			$_SESSION['glpi_use_mode']=$input['use_mode'];
-		} 
+		if (isset($_SESSION["glpiID"]) && $_SESSION["glpiID"] == $input['ID']) {
+			if (in_array('use_mode',$updates)){
+				$_SESSION['glpi_use_mode']=$input['use_mode'];
+			}
+			foreach ($CFG_GLPI['user_pref_field'] as $field){
+				if (in_array($field,$updates)){
+					$_SESSION["glpi$field"]=$input[$field];	
+				}
+			}
+		}
 
 	}
 
@@ -1000,8 +998,8 @@ class User extends CommonDBTM {
 
 
 			// No autocopletion : 
-			$save_autocompletion=$CFG_GLPI["ajax_autocompletion"];
-			$CFG_GLPI["ajax_autocompletion"]=false;
+			$save_autocompletion=$_SESSION["glpiajax_autocompletion"];
+			$_SESSION["glpiajax_autocompletion"]=false;
 			
 			echo "<div class='center'>";
 			echo "<form method='post' name=\"user_manager\" action=\"$target\"><table class='tab_cadre_fixe'>";
@@ -1017,12 +1015,6 @@ class User extends CommonDBTM {
 			//do some rights verification
 			if (!$extauth && haveRight("password_update", "1")) {
 				echo "<tr class='tab_bg_1'><td class='center'>" . $LANG["setup"][19] . "</td><td><input type='password' name='password' value='' size='30' /></td></tr>";
-			}
-
-			if (! GLPI_DEMO_MODE || haveRight("config", 1)) {
-				echo "<tr class='tab_bg_1'><td class='center'>" . $LANG["setup"][41] . "</td><td>";
-				dropdownLanguages("language", $_SESSION["glpilanguage"]);
-				echo "</td></tr>";
 			}
 
 			echo "<tr class='tab_bg_1'><td class='center'>" . $LANG["common"][48] . "</td><td>";
@@ -1077,14 +1069,6 @@ class User extends CommonDBTM {
 			}
 			echo "</td></tr>";
 
-			echo "<tr class='tab_bg_1'><td class='center'>" . $LANG["setup"][40] . "</td><td>";
-			dropdownYesNo('tracking_order',$_SESSION["glpitracking_order"]);
-			echo "</td></tr>";
-
-			echo "<tr class='tab_bg_1'><td class='center'>" . $LANG["setup"][111] . "</td><td>";
-			dropdownInteger("list_limit", $this->fields["list_limit"],5,$CFG_GLPI['list_limit_max'],5);
-			echo "</td></tr>";
-
 			if (count($_SESSION['glpiprofiles'])>1){
 				echo "<tr class='tab_bg_1'><td class='center'>" . $LANG["profiles"][13] . "</td><td>";
 				$options=array(0=>'----');
@@ -1120,7 +1104,7 @@ class User extends CommonDBTM {
 			echo "</tr>";
 
 			echo "</table></form></div>";
-			$CFG_GLPI["ajax_autocompletion"]=$save_autocompletion;
+			$_SESSION["glpiajax_autocompletion"]=$save_autocompletion;
 			return true;
 		}
 		

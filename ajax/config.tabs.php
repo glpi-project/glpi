@@ -68,7 +68,7 @@ if(!isset($_POST["ID"])) {
 					$config->showFormDBSlave($_POST['target']);
 					break;
 				case 6 :
-					$config->showFormPrefs($_POST['target']);
+					$config->showFormUserPrefs($_POST['target'],$CFG_GLPI);
 					break;
 				default :
 					break;

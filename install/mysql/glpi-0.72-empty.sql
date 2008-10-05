@@ -1,4 +1,4 @@
-#GLPI Dump database on 2008-10-03 16:13
+#GLPI Dump database on 2008-10-05 18:21
 
 ### Dump table glpi_alerts
 
@@ -266,22 +266,22 @@ CREATE TABLE `glpi_computers` (
 DROP TABLE IF EXISTS `glpi_config`;
 CREATE TABLE `glpi_config` (
   `ID` int(11) NOT NULL auto_increment,
-  `num_of_events` varchar(255) collate utf8_unicode_ci default NULL,
-  `jobs_at_login` varchar(255) collate utf8_unicode_ci default NULL,
+  `num_of_events` int(11) NOT NULL default '10',
+  `jobs_at_login` smallint(6) NOT NULL default '0',
   `sendexpire` varchar(255) collate utf8_unicode_ci default NULL,
-  `cut` varchar(255) collate utf8_unicode_ci default NULL,
-  `expire_events` varchar(255) collate utf8_unicode_ci default NULL,
-  `list_limit` int(11) default '20',
+  `cut` int(11) NOT NULL default '255',
+  `expire_events` int(11) NOT NULL default '30',
+  `list_limit` int(11) NOT NULL default '20',
   `list_limit_max` int(11) NOT NULL default '50',
   `version` varchar(255) collate utf8_unicode_ci default NULL,
   `logotxt` varchar(255) collate utf8_unicode_ci default NULL,
-  `event_loglevel` varchar(255) collate utf8_unicode_ci default NULL,
+  `event_loglevel` smallint(6) NOT NULL default '5',
   `mailing` varchar(255) collate utf8_unicode_ci default NULL,
   `admin_email` varchar(255) collate utf8_unicode_ci default NULL,
   `admin_reply` varchar(255) collate utf8_unicode_ci default NULL,
   `mailing_signature` text collate utf8_unicode_ci,
-  `permit_helpdesk` varchar(255) collate utf8_unicode_ci default NULL,
-  `default_language` varchar(255) collate utf8_unicode_ci default 'en_GB',
+  `permit_helpdesk` smallint(6) NOT NULL default '0',
+  `language` varchar(255) collate utf8_unicode_ci default 'en_GB',
   `priority_1` varchar(255) collate utf8_unicode_ci default '#fff2f2',
   `priority_2` varchar(255) collate utf8_unicode_ci default '#ffe0e0',
   `priority_3` varchar(255) collate utf8_unicode_ci default '#ffcece',
@@ -373,10 +373,11 @@ CREATE TABLE `glpi_config` (
   `ticket_content_mandatory` int(1) NOT NULL default '1',
   `ticket_category_mandatory` int(1) NOT NULL default '0',
   `mailgate_filesize_max` int(11) NOT NULL default '2097152',
+  `tracking_order` smallint(6) NOT NULL default '0',
   PRIMARY KEY  (`ID`)
 ) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-INSERT INTO glpi_config VALUES ('1','10','0','1','255','30','15','50',' 0.72','GLPI powered by indepnet','5','0','admsys@xxxxx.fr',NULL,'SIGNATURE','','fr_FR','#fff2f2','#ffe0e0','#ffcece','#ffbfbf','#ffadad','2005-12-31','10','','','',NULL,'1',NULL,'0','08:00:00','20:00:00','1','0','0','http://localhost/glpi/','0','','0','','100','*','0','50','1','1','0','0','name','0','50','0','1','20','0',NULL,'25',NULL,NULL,NULL,'8080',NULL,NULL,'1','0','0','0','0','0','0','0','5','2',NULL,NULL,'0','2','2','2','2','2','1','0','0','1','1','1','1','0','0','0','0','0','0','0','1','1','1','0',NULL,'3600','1',NULL,'0','1','0','2097152');
+INSERT INTO glpi_config VALUES ('1','10','0','1','250','30','15','50',' 0.72','GLPI powered by indepnet','5','0','admsys@xxxxx.fr',NULL,'SIGNATURE','0','fr_FR','#fff2f2','#ffe0e0','#ffcece','#ffbfbf','#ffadad','2005-12-31','10','','','',NULL,'1',NULL,'0','08:00:00','20:00:00','1','0','0','http://localhost/glpi/','0','','0','','100','*','0','50','1','1','0','0','name','0','50','0','1','20','0',NULL,'25',NULL,NULL,NULL,'8080',NULL,NULL,'1','0','0','0','0','0','0','0','5','2',NULL,NULL,'0','2','2','2','2','2','1','0','0','1','1','1','1','0','0','0','0','0','0','0','1','1','1','0',NULL,'3600','1',NULL,'0','1','0','2097152','0');
 
 ### Dump table glpi_connect_wire
 
@@ -1509,7 +1510,7 @@ CREATE TABLE `glpi_event_log` (
   KEY `itemtype` (`itemtype`)
 ) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-INSERT INTO glpi_event_log VALUES ('3','-1','system','2008-10-03 16:12:58','login','3','glpi connexion de l\'IP : 127.0.0.1');
+INSERT INTO glpi_event_log VALUES ('3','-1','system','2008-10-05 18:21:38','login','3','glpi connexion de l\'IP : 127.0.0.1');
 
 ### Dump table glpi_followups
 
@@ -2077,9 +2078,10 @@ CREATE TABLE `glpi_plugins` (
   `homepage` varchar(255) collate utf8_unicode_ci default NULL,
   PRIMARY KEY  (`ID`),
   UNIQUE KEY `name` (`directory`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-INSERT INTO glpi_plugins VALUES ('1','example','Plugin Example','0.1.0','2','Julien Dombre','http://glpi-project.org');
+INSERT INTO glpi_plugins VALUES ('1','room','Salles','2.0','2','Julien Dombre','http://glpi-project.org');
+INSERT INTO glpi_plugins VALUES ('2','example','Plugin Example','0.1.0','2','Julien Dombre','http://glpi-project.org');
 
 ### Dump table glpi_printers
 
@@ -2994,6 +2996,26 @@ CREATE TABLE `glpi_users` (
   `FK_entities` int(11) NOT NULL default '0',
   `title` int(11) NOT NULL default '0',
   `type` int(11) NOT NULL default '0',
+  `dateformat` smallint(6) NOT NULL default '0',
+  `numberformat` smallint(6) NOT NULL default '0',
+  `view_ID` smallint(6) NOT NULL default '0',
+  `dropdown_limit` int(11) NOT NULL default '50',
+  `flat_dropdowntree` smallint(6) NOT NULL default '0',
+  `num_of_events` int(11) NOT NULL default '10',
+  `nextprev_item` varchar(255) collate utf8_unicode_ci default 'name',
+  `jobs_at_login` smallint(6) NOT NULL default '0',
+  `priority_1` varchar(255) collate utf8_unicode_ci default '#fff2f2',
+  `priority_2` varchar(255) collate utf8_unicode_ci default '#ffe0e0',
+  `priority_3` varchar(255) collate utf8_unicode_ci default '#ffcece',
+  `priority_4` varchar(255) collate utf8_unicode_ci default '#ffbfbf',
+  `priority_5` varchar(255) collate utf8_unicode_ci default '#ffadad',
+  `use_ajax` smallint(6) NOT NULL default '0',
+  `ajax_autocompletion` smallint(6) NOT NULL default '1',
+  `ajax_wildcard` char(1) collate utf8_unicode_ci default '*',
+  `dropdown_max` int(11) NOT NULL default '100',
+  `ajax_limit_count` int(11) NOT NULL default '50',
+  `expand_soft_categorized` int(1) NOT NULL default '1',
+  `expand_soft_not_categorized` int(1) NOT NULL default '1',
   PRIMARY KEY  (`ID`),
   UNIQUE KEY `name` (`name`),
   KEY `location` (`location`),
@@ -3005,10 +3027,10 @@ CREATE TABLE `glpi_users` (
   KEY `active` (`active`)
 ) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-INSERT INTO glpi_users VALUES ('2','glpi','','41ece51526515624ff89973668497d00','','','','','',NULL,'0','1','fr_FR','0','20','1',NULL,'-1','1','2008-10-03 16:12:57','2007-09-29 15:51:43','0','0','0','0','0');
-INSERT INTO glpi_users VALUES ('3','post-only','*5683D7F638D6598D057638B1957F194E4CA974FB','3177926a7314de24680a9938aaa97703','','','','','',NULL,'0','0','en_GB','0','20','1',NULL,'-1','-1',NULL,NULL,'0','0','0','0','0');
-INSERT INTO glpi_users VALUES ('4','tech','*B09F1B2C210DEEA69C662977CC69C6C461965B09','d9f9133fb120cd6096870bc2b496805b','','','','','',NULL,'0','1','fr_FR','0','20','1',NULL,'-1','-1',NULL,NULL,'0','0','0','0','0');
-INSERT INTO glpi_users VALUES ('5','normal','*F3F91B23FC1DB728B49B1F22DEE3D7A839E10F0E','fea087517c26fadd409bd4b9dc642555','','','','','',NULL,'0','0','en_GB','0','20','1',NULL,'-1','-1',NULL,NULL,'0','0','0','0','0');
+INSERT INTO glpi_users VALUES ('2','glpi','','41ece51526515624ff89973668497d00','','','','','',NULL,'0','1','fr_FR','0','20','1',NULL,'-1','1','2008-10-05 18:21:38','2007-09-29 15:51:43','0','0','0','0','0','0','0','0','50','0','10','name','0','#fff2f2','#ffe0e0','#ffcece','#ffbfbf','#ffadad','0','1','*','100','50','1','1');
+INSERT INTO glpi_users VALUES ('3','post-only','*5683D7F638D6598D057638B1957F194E4CA974FB','3177926a7314de24680a9938aaa97703','','','','','',NULL,'0','0','en_GB','0','20','1',NULL,'-1','-1',NULL,NULL,'0','0','0','0','0','0','0','0','50','0','10','name','0','#fff2f2','#ffe0e0','#ffcece','#ffbfbf','#ffadad','0','1','*','100','50','1','1');
+INSERT INTO glpi_users VALUES ('4','tech','*B09F1B2C210DEEA69C662977CC69C6C461965B09','d9f9133fb120cd6096870bc2b496805b','','','','','',NULL,'0','1','fr_FR','0','20','1',NULL,'-1','-1',NULL,NULL,'0','0','0','0','0','0','0','0','50','0','10','name','0','#fff2f2','#ffe0e0','#ffcece','#ffbfbf','#ffadad','0','1','*','100','50','1','1');
+INSERT INTO glpi_users VALUES ('5','normal','*F3F91B23FC1DB728B49B1F22DEE3D7A839E10F0E','fea087517c26fadd409bd4b9dc642555','','','','','',NULL,'0','0','en_GB','0','20','1',NULL,'-1','-1',NULL,NULL,'0','0','0','0','0','0','0','0','50','0','10','name','0','#fff2f2','#ffe0e0','#ffcece','#ffbfbf','#ffadad','0','1','*','100','50','1','1');
 
 ### Dump table glpi_users_groups
 

@@ -97,7 +97,7 @@ function showInfocomEnterprise($instID) {
 			} else if ($nb){
 				for ($prem=true;$data=$DB->fetch_assoc($result_linked);$prem=false){
 					$ID="";
-					if($CFG_GLPI["view_ID"]||empty($data["name"])) $ID= " (".$data["ID"].")";
+					if($_SESSION["glpiview_ID"]||empty($data["name"])) $ID= " (".$data["ID"].")";
 					$name= "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data["ID"]."\">".$data["name"]."$ID</a>";
 
 					echo "<tr class='tab_bg_1'>";

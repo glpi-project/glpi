@@ -335,21 +335,23 @@ class Identification {
 					$_SESSION["glpiname"] = $this->user->fields['name'];
 					$_SESSION["glpirealname"] = $this->user->fields['realname'];
 					$_SESSION["glpifirstname"] = $this->user->fields['firstname'];
-					$_SESSION["glpilanguage"] = $this->user->fields['language'];
 					$_SESSION["glpidefault_entity"] = $this->user->fields['FK_entities'];
 					loadLanguage();
-					$_SESSION["glpitracking_order"] = $this->user->fields['tracking_order'];
 					$_SESSION["glpiauthorisation"] = true;
 					$_SESSION["glpiextauth"] = $this->extauth;
 					$_SESSION["glpiauth_method"] = $this->user->fields['auth_method'];
 					$_SESSION["glpisearchcount"] = array ();
 					$_SESSION["glpisearchcount2"] = array ();
 					$_SESSION["glpiroot"] = $CFG_GLPI["root_doc"];
-					$_SESSION["glpilist_limit"] = $this->user->fields['list_limit'];
 					$_SESSION["glpi_use_mode"] = $this->user->fields['use_mode'];
 					$_SESSION["glpicrontimer"] = time();
 					// Default tab
 					$_SESSION['glpi_tab']=1;
+					foreach ($CFG_GLPI['user_pref_field'] as $field){
+						if (isset($this->user->fields[$field])){
+							$_SESSION["glpi$field"] = $this->user->fields[$field];
+						}
+					}
 								
 					// glpiprofiles -> other available profile with link to the associated entities
 					doHook("init_session");

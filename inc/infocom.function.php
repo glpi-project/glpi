@@ -524,7 +524,7 @@ function cron_infocom($display=false){
 		return false;
 	}
 
-	loadLanguage($CFG_GLPI["default_language"]);
+	loadLanguage($CFG_GLPI["language"]);
 
 	$message=array();
 	$items=array();

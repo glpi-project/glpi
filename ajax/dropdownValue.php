@@ -56,7 +56,7 @@ if (isset($_POST["entity_restrict"])&&!is_numeric($_POST["entity_restrict"])&&!i
 	$_POST["entity_restrict"]=unserialize(stripslashes($_POST["entity_restrict"]));
 }
 // Make a select box with preselected values
-if (!isset($_POST["limit"])) $_POST["limit"]=$CFG_GLPI["dropdown_limit"];
+if (!isset($_POST["limit"])) $_POST["limit"]=$_SESSION["glpidropdown_limit"];
 
 	$where="WHERE 1 ";
 	
@@ -71,12 +71,12 @@ if (!isset($_POST["limit"])) $_POST["limit"]=$CFG_GLPI["dropdown_limit"];
 		$where.=" AND is_global=1 ";
 	}
 
-	$NBMAX=$CFG_GLPI["dropdown_max"];
+	$NBMAX=$_SESSION["glpidropdown_max"];
 	$LIMIT="LIMIT 0,$NBMAX";
-	if ($_POST['searchText']==$CFG_GLPI["ajax_wildcard"]) $LIMIT="";
+	if ($_POST['searchText']==$_SESSION["glpiajax_wildcard"]) $LIMIT="";
 
 	if (in_array($_POST['table'],$CFG_GLPI["dropdowntree_tables"])){
-		if ($_POST['searchText']!=$CFG_GLPI["ajax_wildcard"]){
+		if ($_POST['searchText']!=$_SESSION["glpiajax_wildcard"]){
 			$where.=" AND completename ".makeTextSearch($_POST['searchText']);
 		}
 
@@ -119,7 +119,7 @@ if (!isset($_POST["limit"])) $_POST["limit"]=$CFG_GLPI["dropdown_limit"];
 
 		echo "<select id='dropdown_".$_POST["myname"].$_POST["rand"]."' name=\"".$_POST['myname']."\" size='1'>";
 
-		if ($_POST['searchText']!=$CFG_GLPI["ajax_wildcard"]&&$DB->numrows($result)==$NBMAX)
+		if ($_POST['searchText']!=$_SESSION["glpiajax_wildcard"]&&$DB->numrows($result)==$NBMAX)
 			echo "<option class='tree' value=\"0\">--".$LANG["common"][11]."--</option>";
 		$display_selected=true;
 		switch ($_POST["table"]){
@@ -174,7 +174,7 @@ if (!isset($_POST["limit"])) $_POST["limit"]=$CFG_GLPI["dropdown_limit"];
 					$raquo="";
 				}
 
-				if ($CFG_GLPI['flat_dropdowntree']){
+				if ($_SESSION['glpiflat_dropdowntree']){
 					$output=$data['completename'];
 					if ($level>1){
 						$class="";
@@ -230,7 +230,7 @@ if (!isset($_POST["limit"])) $_POST["limit"]=$CFG_GLPI["dropdown_limit"];
 		$field="name";
 		if (ereg("glpi_device",$_POST['table'])) $field="designation";
 
-		if ($_POST['searchText']!=$CFG_GLPI["ajax_wildcard"])
+		if ($_POST['searchText']!=$_SESSION["glpiajax_wildcard"])
 			$where.=" AND $field ".makeTextSearch($_POST['searchText']);
 
 		switch ($_POST['table']){
@@ -251,7 +251,7 @@ if (!isset($_POST["limit"])) $_POST["limit"]=$CFG_GLPI["dropdown_limit"];
 
 		echo "<select id='dropdown_".$_POST["myname"].$_POST["rand"]."' name=\"".$_POST['myname']."\" size='1'>";
 
-		if ($_POST['searchText']!=$CFG_GLPI["ajax_wildcard"]&&$DB->numrows($result)==$NBMAX)
+		if ($_POST['searchText']!=$_SESSION["glpiajax_wildcard"]&&$DB->numrows($result)==$NBMAX)
 			echo "<option value=\"0\">--".$LANG["common"][11]."--</option>";
 
 		echo "<option value=\"0\">-----</option>";

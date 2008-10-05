@@ -466,7 +466,7 @@ function loadLanguage($forcelang='') {
 	$file = "";
 
 	if (!isset($_SESSION["glpilanguage"])){
-		$_SESSION["glpilanguage"]=$CFG_GLPI["default_language"];
+		$_SESSION["glpilanguage"]=$CFG_GLPI["language"];
 	}
 
 	$trytoload=$_SESSION["glpilanguage"];
@@ -476,7 +476,7 @@ function loadLanguage($forcelang='') {
 	}
 	// If not set try default lang file
 	if (empty($trytoload)){
-		$trytoload=$CFG_GLPI["default_language"];
+		$trytoload=$CFG_GLPI["language"];
 	}
 
 	if (isset ($CFG_GLPI["languages"][$trytoload][1])) {

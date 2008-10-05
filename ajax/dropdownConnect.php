@@ -58,7 +58,7 @@ $where.=" AND $table.deleted=0 ";
 if (in_array($table,$CFG_GLPI["template_tables"]))
 $where.=" AND $table.is_template='0' ";		
 
-if (strlen($_POST['searchText'])>0&&$_POST['searchText']!=$CFG_GLPI["ajax_wildcard"])
+if (strlen($_POST['searchText'])>0&&$_POST['searchText']!=$_SESSION["glpiajax_wildcard"])
 $where.=" AND ( $table.name ".makeTextSearch($_POST['searchText'])." OR $table.serial ".makeTextSearch($_POST['searchText'])." )";
 
 
@@ -69,10 +69,10 @@ if (isset($_POST["entity_restrict"])&&$_POST["entity_restrict"]>=0){
 }
 
 
-$NBMAX=$CFG_GLPI["dropdown_max"];
+$NBMAX=$_SESSION["glpidropdown_max"];
 $LIMIT="LIMIT 0,$NBMAX";
 
-if ($_POST['searchText']==$CFG_GLPI["ajax_wildcard"]) $LIMIT="";
+if ($_POST['searchText']==$_SESSION["glpiajax_wildcard"]) $LIMIT="";
 
 
 if ($_POST["onlyglobal"]&&$_POST["idtable"]!=COMPUTER_TYPE){
@@ -96,7 +96,7 @@ $query = "SELECT DISTINCT $table.ID AS ID,$table.name AS name,$table.serial AS s
 $result = $DB->query($query);
 echo "<select name=\"".$_POST['myname']."\" size='1'>";
 
-if ($_POST['searchText']!=$CFG_GLPI["ajax_wildcard"]&&$DB->numrows($result)==$NBMAX)
+if ($_POST['searchText']!=$_SESSION["glpiajax_wildcard"]&&$DB->numrows($result)==$NBMAX)
 echo "<option value=\"0\">--".$LANG["common"][11]."--</option>";
 
 echo "<option value=\"0\">-----</option>";
@@ -108,7 +108,7 @@ if ($DB->numrows($result)) {
 		$ID = $data['ID'];
 		if (empty($output)) $output="($ID)";
 
-		echo "<option value=\"$ID\" title=\"".cleanInputText($output)."\">".substr($output,0,$CFG_GLPI["dropdown_limit"])."</option>";
+		echo "<option value=\"$ID\" title=\"".cleanInputText($output)."\">".substr($output,0,$_SESSION["glpidropdown_limit"])."</option>";
 	}
 }
 echo "</select>";

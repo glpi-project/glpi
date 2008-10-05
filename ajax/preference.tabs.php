@@ -36,7 +36,8 @@
 $NEEDED_ITEMS = array (
 	"user",
 	"profile",
-	"group"
+	"group",
+	"setup"
 );
 
 define('GLPI_ROOT', '..');
@@ -45,9 +46,25 @@ include (GLPI_ROOT . "/inc/includes.php");
 checkLoginUser();
 $user = new User();
 
-if (!displayPluginAction("prefs","",$_POST['glpi_tab'],"")){
-	$user->showMyForm($CFG_GLPI['root_doc']."/front/user.form.my.php", $_SESSION["glpiID"]);
-}
+
+	switch ($_POST['glpi_tab']){
+		case 1 : 
+			$user->showMyForm($CFG_GLPI['root_doc']."/front/user.form.my.php", $_SESSION["glpiID"]);
+			break;
+		case 2 : 
+
+			$config = new Config();
+			$user->getFromDB($_SESSION["glpiID"]);
+			$config->showFormUserPrefs($_POST['target'],$user->fields);
+			break;
+		default :
+			if (!displayPluginAction("prefs","",$_POST['glpi_tab'],"")){
+				$user->showMyForm($CFG_GLPI['root_doc']."/front/user.form.my.php", $_SESSION["glpiID"]);
+			}
+			break;
+
+	}
+
 
 ajaxFooter();
 ?>

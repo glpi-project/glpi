@@ -50,15 +50,15 @@ checkLoginUser();
 
 // Make a select box with preselected values
 if (!isset($_POST["limit"])) {
-	$_POST["limit"]=$CFG_GLPI["dropdown_limit"];	
+	$_POST["limit"]=$_SESSION["glpidropdown_limit"];	
 }
 
-$NBMAX=$CFG_GLPI["dropdown_max"];
+$NBMAX=$_SESSION["glpidropdown_max"];
 $LIMIT="LIMIT 0,$NBMAX";
 
 $sql = "SELECT ID,name,ranking	FROM glpi_rules_descriptions WHERE rule_type=".$_POST["type"];
 
-if ($_POST['searchText']==$CFG_GLPI["ajax_wildcard"]) {
+if ($_POST['searchText']==$_SESSION["glpiajax_wildcard"]) {
 	$LIMIT="";	
 } else {
 	$sql .= " AND name ".makeTextSearch($_POST['searchText']);	
@@ -69,7 +69,7 @@ $result = $DB->query($sql);
 
 echo "<select id='dropdown_".$_POST["myname"].$_POST["rand"]."' name=\"".$_POST['myname']."\" size='1'>";
 
-if ($_POST['searchText']!=$CFG_GLPI["ajax_wildcard"] && $DB->numrows($result)==$NBMAX) {
+if ($_POST['searchText']!=$_SESSION["glpiajax_wildcard"] && $DB->numrows($result)==$NBMAX) {
 	echo "<option value='0'>--".$LANG["common"][11]."--</option>";
 } else {
 	echo "<option value='0'>-----</option>";
