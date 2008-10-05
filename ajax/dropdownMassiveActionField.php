@@ -179,10 +179,9 @@ if (isset($_POST["device_type"])&&isset($_POST["id_field"])&&$_POST["id_field"])
 				$plugdisplay=false;
 				if ($_POST["device_type"]>1000){
 					if (isset($PLUGIN_HOOKS['plugin_types'][$_POST["device_type"]])){
-						$function='plugin_'.$PLUGIN_HOOKS['plugin_types'][$_POST["device_type"]].'_MassiveActionsFieldsDisplay';
-						if (function_exists($function)){
-							$plugdisplay=$function($_POST["device_type"],$search["table"],$search["field"],$search["linkfield"]);
-						} 
+						$plugdisplay=doOneHook($PLUGIN_HOOKS['plugin_types'][$_POST["device_type"]],
+							'plugin_'.$PLUGIN_HOOKS['plugin_types'][$_POST["device_type"]].'_MassiveActionsFieldsDisplay',
+							$_POST["device_type"],$search["table"],$search["field"],$search["linkfield"]);
 					} 
 				} 
 				if (!$plugdisplay){
