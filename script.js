@@ -259,32 +259,18 @@ function fillidfield(Type,Id){
 }
 
 /**
- * marks all rows and selects its first checkbox inside the given element
+ * marks all checkboxes inside the given element
  * the given element is usaly a table or a div containing the table or tables
- * From phpMyAdmin
  *
- * @param    container    DOM element
+ * @param    container_id    DOM element
  */
 function markAllRows( container_id ) {
-	var rows = document.getElementById(container_id).getElementsByTagName('tr');
-	var unique_id;
-	var checkbox;
-
-	for ( var i = 0; i < rows.length; i++ ) {
-
-		checkboxes = rows[i].getElementsByTagName( 'input' );
-
-		for ( var j = 0; j < checkboxes.length; j++ ) {
-			checkbox=checkboxes[j];
-			if ( checkbox && checkbox.type == 'checkbox' ) {
-				unique_id = checkbox.name + checkbox.value;
-				if ( checkbox.disabled == false ) {
-					checkbox.checked = true;
-					if ( typeof(marked_row[unique_id]) == 'undefined' || !marked_row[unique_id] ) {
-						rows[i].className += ' marked';
-						marked_row[unique_id] = true;
-					}
-				}
+	var checkboxes = document.getElementById(container_id).getElementsByTagName('input');
+	for ( var j = 0; j < checkboxes.length; j++ ) {
+		checkbox=checkboxes[j];
+		if ( checkbox && checkbox.type == 'checkbox' ) {
+			if ( checkbox.disabled == false ) {
+				checkbox.checked = true;
 			}
 		}
 	}
@@ -294,60 +280,42 @@ function markAllRows( container_id ) {
 
 
 /**
- * marks all rows and selects its first checkbox inside the given element
+ * marks all checkboxes inside the given element
  * the given element is usaly a table or a div containing the table or tables
- * From phpMyAdmin 
+ *
+ * @param    container_id    DOM element
+ */
+function unMarkAllRows( container_id ) {
+	var checkboxes = document.getElementById(container_id).getElementsByTagName('input');
+	for ( var j = 0; j < checkboxes.length; j++ ) {
+		checkbox=checkboxes[j];
+		if ( checkbox && checkbox.type == 'checkbox' ) {
+			checkbox.checked = false;
+		}
+	}
+
+	return true;
+}
+/**
+ * toggle all checkboxes inside the given element
+ * the given element is usaly a table or a div containing the table or tables
  *
  * @param    container    DOM element
  */
-function unMarkAllRows( container_id ) {
-	var rows = document.getElementById(container_id).getElementsByTagName('tr');
-	var unique_id;
-	var checkbox;
-
-	for ( var i = 0; i < rows.length; i++ ) {
-		checkboxes = rows[i].getElementsByTagName( 'input' );
-
-		for ( var j = 0; j < checkboxes.length; j++ ) {
-			checkbox=checkboxes[j];
-			if ( checkbox && checkbox.type == 'checkbox' ) {
-				unique_id = checkbox.name + checkbox.value;
-				checkbox.checked = false;
-				rows[i].className = rows[i].className.replace(' marked', '');
-				marked_row[unique_id] = false;
-			}
-		}
-	}
-	return true;
-}
-
 function toggleAllRows( container_id ) {
-	var rows = document.getElementById(container_id).getElementsByTagName('tr');
-	var unique_id;
-	var checkbox;
-	var done = new Array;
-
-	for ( var i = 0; i < rows.length; i++ ) {
-
-		checkboxes = rows[i].getElementsByTagName( 'input' );
-
+	var checkboxes = document.getElementById(container_id).getElementsByTagName('input');
 		for ( var j = 0; j < checkboxes.length; j++ ) {
 			checkbox=checkboxes[j];
 			if ( checkbox && checkbox.type == 'checkbox' ) {
-				unique_id = checkbox.name;
 				if ( checkbox.disabled == false) {
-					if ( typeof(done[unique_id]) == 'undefined' || !done[unique_id] ) {
-						done[unique_id] = true;
-						if (checkbox.checked == false){
-							checkbox.checked = true;
-						} else {
-							checkbox.checked = false;
-						}
+					if (checkbox.checked == false){
+						checkbox.checked = true;
+					} else {
+						checkbox.checked = false;
 					}
 				}
 			}
 		}
-	}
 
 	return true;
 }

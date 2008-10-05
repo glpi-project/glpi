@@ -254,7 +254,9 @@ function showInstallations($sID) {
 					}
 					echo "<br>";
 					
-					echo "<input type='checkbox' onclick= \"if ( toggleAllRows('version".$data['vID'].$rand."') ) return false;\">";
+					echo "<input type='checkbox' checked onclick= \"if ( markAllRows('version".$data['vID'].$rand."') ) return false;\">";
+					echo "<input type='checkbox' onclick= \"if ( unMarkAllRows('version".$data['vID'].$rand."') ) return false;\">";
+
 					echo "</td><td colspan='5'><table id='version".$data['vID'].$rand."' class='tab_cadre'><tr class='tab_bg_1'>";
 
 					$current_version=$data['vID'];
