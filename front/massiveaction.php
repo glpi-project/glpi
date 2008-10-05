@@ -524,19 +524,17 @@ if (isset($_POST["device_type"])){
 				// Plugin specific actions
 				if ($_POST["device_type"]>1000){
 					if (isset($PLUGIN_HOOKS['plugin_types'][$_POST["device_type"]])){
-						$function='plugin_'.$PLUGIN_HOOKS['plugin_types'][$_POST["device_type"]].'_MassiveActionsProcess';
-						if (function_exists($function)){
-							$function($_POST);
-						} 
+						doOneHook($PLUGIN_HOOKS['plugin_types'][$_POST["device_type"]],
+							'plugin_'.$PLUGIN_HOOKS['plugin_types'][$_POST["device_type"]].'_MassiveActionsProcess',
+							$_POST);
 					} 
 				} else {
 					// Need to search display item over plugins
 					$split=split('_',$_POST["action"]);
 					if (isset($split[1])){
-						$function='plugin_'.$split[1].'_MassiveActionsProcess';
-							if (function_exists($function)){
-								$function($_POST);
-							} 
+						doOneHook($split[1], 
+							'plugin_'.$split[1].'_MassiveActionsProcess',
+							$_POST);
 					}
 				}
 	

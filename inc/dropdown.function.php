@@ -1581,15 +1581,12 @@ function dropdownMassiveAction($device_type,$deleted=0,$extraparams=array()){
 		// Plugin Specific actions
 		if (isset($PLUGIN_HOOKS['use_massive_action'])){
 			foreach ($PLUGIN_HOOKS['use_massive_action'] as $plugin => $val){
-				$function='plugin_'.$plugin.'_MassiveActions';
-				if (function_exists($function)){
-					$actions=$function($device_type);
-					if (count($actions)){
-						foreach ($actions as $key => $val){
-							echo "<option value=\"$key\">$val</option>";
-						}
+				$actions=doOneHook($plugin,'plugin_'.$plugin.'_MassiveActions',$device_type);
+				if (count($actions)){
+					foreach ($actions as $key => $val){
+						echo "<option value=\"$key\">$val</option>";
 					}
-				} 
+				}
 			}
 		} 
 
