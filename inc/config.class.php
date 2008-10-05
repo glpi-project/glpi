@@ -747,7 +747,7 @@ class Config extends CommonDBTM {
 	 *@return Nothing (display) 
 	 * 
 	**/
-	function showFormMailing($target) {
+	function showFormMailing($target,$tabs) {
 	
 		global $DB, $LANG, $CFG_GLPI;
 	
@@ -756,10 +756,8 @@ class Config extends CommonDBTM {
 	
 		echo "<form action=\"$target\" method=\"post\">";
 		echo "<input type='hidden' name='ID' value='" . $CFG_GLPI["ID"] . "'>";
-	
-		echo "<div class='center' id='tabsbody'>";
-	
-		switch ($_SESSION['glpi_mailconfig']){
+
+		switch ($tabs){
 			case 1:
 			echo "<div class='center'><table class='tab_cadre_fixe'><tr><th colspan='2'>" . $LANG["setup"][201] . "</th></tr>";
 	

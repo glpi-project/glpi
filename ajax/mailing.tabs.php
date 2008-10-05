@@ -48,31 +48,17 @@ $NEEDED_ITEMS = array (
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-if(!isset($_POST["ID"])) {
-	exit();
-}
-
 	checkRight("config", "r");
 	
 	$config = new Config();
-	
-	if ($_POST["ID"]<0){
-			switch($_POST['mailing_tab']){
-				case 1 :
-					$_SESSION['glpi_mailconfig']=1;
-					$config->showFormMailing($_POST['target']);
-					break;
-				case 2 :
-					$_SESSION['glpi_mailconfig']=2;
-					$config->showFormMailing($_POST['target']);
-					break;
-				case 3 :
-					$_SESSION['glpi_mailconfig']=3;
-					$config->showFormMailing($_POST['target']);
-					break;
-				default :
-					break;
-		}
+
+	switch($_POST['glpi_tab']){
+		default :
+			if (!displayPluginAction("mailing","",$_POST['glpi_tab'],"")){
+				$config->showFormMailing($_POST['target'],$_POST['glpi_tab']);
+			}
+			break;
+		
 	}
 
 ?>
