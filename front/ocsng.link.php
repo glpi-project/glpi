@@ -43,7 +43,7 @@ checkRight("ocsng","w");
 
 commonHeader($LANG["ocsng"][0],$_SERVER['PHP_SELF'],"utils","ocsng");
 
-$CFG_GLPI["use_ajax"] = 1; 
+$_SESSION["glpiuse_ajax"] = 1; 
 
 //First time this screen is displayed : set the import mode to 'basic'
 if (!isset($_SESSION["change_import_mode"])){

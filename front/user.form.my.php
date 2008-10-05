@@ -48,7 +48,7 @@ $user = new User();
 
 if (isset ($_POST["update"]) && $_POST["ID"] == $_SESSION["glpiID"]) {
 	$user->update($_POST);
-	logEvent(0, "users", 5, "setup", $_SESSION["glpiname"] . "  " . $LANG["log"][21] . "  " . $_POST["name"] . ".");
+	logEvent(0, "users", 5, "setup", $_SESSION["glpiname"] . "  " . $LANG["log"][21] . "  " . $_SESSION["glpiname"] . ".");
 	glpi_header($_SERVER['HTTP_REFERER']);
 } else {
 
@@ -60,9 +60,13 @@ if (isset ($_POST["update"]) && $_POST["ID"] == $_SESSION["glpiID"]) {
 
 
 	//forea
-	$tabs['my']=array('title'=>$LANG["title"][26],
+	$tabs[1]=array('title'=>$LANG["title"][26],
 		'url'=>$CFG_GLPI['root_doc']."/ajax/preference.tabs.php",
-		'params'=>"target=".$_SERVER['PHP_SELF']."&type=prefs&glpi_tab=my");
+		'params'=>"target=".$_SERVER['PHP_SELF']."&type=prefs&glpi_tab=1");
+
+	$tabs[2]=array('title'=>$LANG["setup"][6],
+		'url'=>$CFG_GLPI['root_doc']."/ajax/preference.tabs.php",
+		'params'=>"target=".$_SERVER['PHP_SELF']."&type=prefs&glpi_tab=2");
 
 	$plug_tabs=getPluginTabs($_SERVER['PHP_SELF'],"prefs","","");
 

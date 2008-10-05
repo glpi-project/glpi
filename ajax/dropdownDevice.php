@@ -51,8 +51,8 @@ if (isset($_POST["idtable"])){
 	$rand=mt_rand();
 
 	$use_ajax=false;
-	if ($CFG_GLPI["use_ajax"]){
-		if(countElementsInTable($table)>$CFG_GLPI["ajax_limit_count"]){
+	if ($_SESSION["glpiuse_ajax"]){
+		if(countElementsInTable($table)>$_SESSION["glpiajax_limit_count"]){
 			$use_ajax=true;
 		}
 	}

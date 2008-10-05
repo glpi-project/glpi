@@ -58,7 +58,7 @@ if (isset($_GET["redirect"])){
 	if (isset($_SESSION["glpiID"])){
 		helpHeader($LANG["Menu"][20],$_SERVER['PHP_SELF'],$_SESSION["glpiname"]);
 	} else {
-		$_SESSION["glpilanguage"]=$CFG_GLPI['default_language'];
+		$_SESSION["glpilanguage"]=$CFG_GLPI['language'];
 		// Anonymous FAQ
 		simpleHeader($LANG["Menu"][20],array($LANG["Menu"][20]=>$_SERVER['PHP_SELF']));
 	}

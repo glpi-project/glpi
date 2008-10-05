@@ -142,7 +142,11 @@
 	
 	
 		// Override cfg_features by session value
-		if (!isset($_SESSION['glpilist_limit'])||$_SESSION['glpilist_limit']<5) $_SESSION["glpilist_limit"]=$CFG_GLPI['list_limit'];
+		foreach ($CFG_GLPI['user_pref_field'] as $field){
+			if (!isset($_SESSION["glpi$field"]) && isset($CFG_GLPI[$field])){
+				$_SESSION["glpi$field"]=$CFG_GLPI[$field];
+			}
+		}
 
 		if ((!isset($CFG_GLPI["version"])||trim($CFG_GLPI["version"])!=GLPI_VERSION)&&!isset($_GET["donotcheckversion"])){
 			loadLanguage();

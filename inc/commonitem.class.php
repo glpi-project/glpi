@@ -385,7 +385,7 @@ class CommonItem{
 		global $CFG_GLPI;
 		$toadd="";
 		if ($with_comments) $toadd="&nbsp;".$this->getComments();
-		if ($CFG_GLPI["view_ID"]){
+		if ($_SESSION["glpiview_ID"]){
 			if ($this->device_type==0)
 				return $this->getName().$toadd;
 			else return $this->getName()." (".$this->id_device.")".$toadd;

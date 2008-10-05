@@ -1126,9 +1126,9 @@ function displayCategoryHeader($data, $cat) {
 	$catname = $data["category"];
 	if (!$cat) {
 		$catname = $LANG["softwarecategories"][3];
-		$display = $CFG_GLPI["expand_soft_not_categorized"];
+		$display = $_SESSION["glpiexpand_soft_not_categorized"];
 	} else
-		$display = $CFG_GLPI["expand_soft_categorized"];
+		$display = $_SESSION["glpiexpand_soft_categorized"];
 
 	echo "	<tr class='tab_bg_2$expirecss'>";
 	echo "  	<td align='center' colspan='5'>";
@@ -1170,7 +1170,7 @@ function displaySoftsByCategory($data, $instID, $withtemplate) {
 
 	echo "<tr class='tab_bg_1'>";
 	echo "<td class='center'><strong><a href=\"" . $CFG_GLPI["root_doc"] . "/front/software.form.php?ID=" . $data['sID'] . "\">";
-	echo $data["softname"] . ($CFG_GLPI["view_ID"] ? " (" . $data['ID'] . ")" : "") . "</a>";
+	echo $data["softname"] . ($_SESSION["glpiview_ID"] ? " (" . $data['ID'] . ")" : "") . "</a>";
 	echo "</strong>";
 	echo "</td>";
 	echo "<td>";
@@ -1711,7 +1711,7 @@ function cron_software($display=false){
 		return false;
 	}
 
-	loadLanguage($CFG_GLPI["default_language"]);
+	loadLanguage($CFG_GLPI["language"]);
 
 	$message=array();
 	$items_notice=array();

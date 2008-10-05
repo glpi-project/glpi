@@ -590,7 +590,7 @@ function getNextItem($table,$ID,$condition="",$nextprev_item=""){
 	global $DB,$CFG_GLPI;
 
 	if (empty($nextprev_item)){
-		$nextprev_item=$CFG_GLPI["nextprev_item"];
+		$nextprev_item=$_SESSION["glpinextprev_item"];
 	}
 
 	$search=$ID;
@@ -662,7 +662,7 @@ function getPreviousItem($table,$ID,$condition="",$nextprev_item=""){
 	global $DB,$CFG_GLPI;
 
 	if (empty($nextprev_item)){
-		$nextprev_item=$CFG_GLPI["nextprev_item"];
+		$nextprev_item=$_SESSION["glpinextprev_item"];
 	}
 
 	$search=$ID;
@@ -752,7 +752,7 @@ function formatUserName($ID,$login,$realname,$firstname,$link=0,$cut=0){
 		$temp=$login;
 	}
 
-	if ($ID>0&&(strlen($temp)==0||$CFG_GLPI["view_ID"])){
+	if ($ID>0&&(strlen($temp)==0||$_SESSION["glpiview_ID"])){
 		$viewID="&nbsp;($ID)";
 	}
 

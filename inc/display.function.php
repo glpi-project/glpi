@@ -55,22 +55,18 @@ function includeCommonHtmlHeader($title=''){
 
 	// Send UTF8 Headers
 	header("Content-Type: text/html; charset=UTF-8");
-	// Send extra expires header if configured
-	if ($CFG_GLPI["sendexpire"]) {
-		header_nocache();
-	}
+	// Send extra expires header 
+	header_nocache();
 
 	// Start the page
 	echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">";
 	 // echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\"  \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">";
 	echo "\n<html><head><title>GLPI - ".$title."</title>";
 	echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8 \" >";
-	// Send extra expires header if configured
-	if ($CFG_GLPI["sendexpire"]) {
-		echo "<meta http-equiv=\"Expires\" content=\"Fri, Jun 12 1981 08:20:00 GMT\" >\n";
-		echo "<meta http-equiv=\"Pragma\" content=\"no-cache\">\n";
-		echo "<meta http-equiv=\"Cache-Control\" content=\"no-cache\">\n";
-	}
+	// Send extra expires header 
+	echo "<meta http-equiv=\"Expires\" content=\"Fri, Jun 12 1981 08:20:00 GMT\" >\n";
+	echo "<meta http-equiv=\"Pragma\" content=\"no-cache\">\n";
+	echo "<meta http-equiv=\"Cache-Control\" content=\"no-cache\">\n";
 
 	//  CSS link
 	echo "<link rel='stylesheet'  href='".$CFG_GLPI["root_doc"]."/css/styles.css' type='text/css' media='screen' >\n";
@@ -1322,9 +1318,7 @@ function nullHeader($title,$url='') {
 	}
 
 	// Send extra expires header if configured
-	if (!empty($CFG_GLPI["sendexpire"])) {
-		header_nocache();
-	}
+	header_nocache();
 
 	if (isCommandLine()){
 		return true;
@@ -1939,7 +1933,7 @@ function showDateTimeFormItem($element,$value='',$time_step=-1,$maybeempty=true,
 		echo "},
 		";
 
-		switch ($CFG_GLPI["dateformat"]){
+		switch ($_SESSION["glpidateformat"]){
 			case 1:
 				echo "dateFormat: 'd-m-Y',
 				dateConfig: {
@@ -2000,7 +1994,7 @@ function showDateFormItem($element,$value='',$maybeempty=true,$can_edit=true,$mi
 		id: '_date$rand',
 		submitFormat:'Y-m-d',";
 
-		switch ($CFG_GLPI["dateformat"]){
+		switch ($_SESSION["glpidateformat"]){
 			case 1:
 				echo "format: 'd-m-Y',";
 				break;

@@ -249,7 +249,7 @@ function showDeviceDocument($instID) {
 							if ($type==TRACKING_TYPE) $data["name"]=$LANG["job"][38]." ".$data["ID"];
 							if ($type==KNOWBASE_TYPE) $data["name"]=$data["question"];
 							
-							if($CFG_GLPI["view_ID"]||empty($data["name"])) $ID= " (".$data["ID"].")";
+							if($_SESSION["glpiview_ID"]||empty($data["name"])) $ID= " (".$data["ID"].")";
 							$name= "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data["ID"]."\">"
 								.$data["name"]."$ID</a>";
 	
@@ -432,11 +432,11 @@ function showDocumentAssociated($device_type,$ID,$withtemplate=''){
 				&& (in_array($data['FK_entities'],$_SESSION['glpiactiveentities']) || $data["recursive"])
 			){
 				echo "<td class='center'><a href='".$CFG_GLPI["root_doc"]."/front/document.form.php?ID=$docID'><strong>".$data["name"];
-				if ($CFG_GLPI["view_ID"]) echo " (".$docID.")";
+				if ($_SESSION["glpiview_ID"]) echo " (".$docID.")";
 				echo "</strong></a></td>";
 			} else {
 				echo "<td class='center'><strong>".$data["name"];
-				if ($CFG_GLPI["view_ID"]) echo " (".$docID.")";
+				if ($_SESSION["glpiview_ID"]) echo " (".$docID.")";
 				echo "</strong></td>";
 			}
 			echo "<td class='center'>".getDropdownName("glpi_entities",$data['entity'])."</td>";

@@ -51,8 +51,8 @@ if (isset($_POST["rubdoc"])){
 	$rand=$_POST['rand'];
 
 	$use_ajax=false;
-	if ($CFG_GLPI["use_ajax"] && 
-		countElementsInTable('glpi_docs',"glpi_docs.rubrique='".$_POST["rubdoc"]."' ".getEntitiesRestrictRequest("AND", "glpi_docs","",$_POST["entity_restrict"],true) )>$CFG_GLPI["ajax_limit_count"]
+	if ($_SESSION["glpiuse_ajax"] && 
+		countElementsInTable('glpi_docs',"glpi_docs.rubrique='".$_POST["rubdoc"]."' ".getEntitiesRestrictRequest("AND", "glpi_docs","",$_POST["entity_restrict"],true) )>$_SESSION["glpiajax_limit_count"]
 	){
 		$use_ajax=true;
 	}

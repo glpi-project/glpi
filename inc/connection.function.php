@@ -75,7 +75,7 @@ function showConnect($target,$ID,$type) {
 				echo "<tr><td class='tab_bg_1".($computer['deleted']?"_2":"")."'><strong>".$LANG["help"][25].": ";
 				echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/computer.form.php?ID=".$computer['ID']."\">";
 				echo $computer['name'];
-				if ($CFG_GLPI["view_ID"]||empty($computer['name'])) echo " (".$computer['ID'].")";
+				if ($_SESSION["glpiview_ID"]||empty($computer['name'])) echo " (".$computer['ID'].")";
 				echo "</a>";
 				echo "</strong></td>";
 				echo "<td class='tab_bg_2".($computer['deleted']?"_2":"")."' align='center'><strong>";

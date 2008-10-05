@@ -193,7 +193,7 @@ function showDeviceContract($instID) {
 				$ci->setType($type);
 				for ($prem=true ; $data=$DB->fetch_assoc($result_linked) ; $prem=false){
 					$ID="";
-					if($CFG_GLPI["view_ID"]||empty($data["name"])) $ID= " (".$data["ID"].")";
+					if($_SESSION["glpiview_ID"]||empty($data["name"])) $ID= " (".$data["ID"].")";
 					$name= "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data["ID"]."\">".$data["name"]."$ID</a>";
 
 					echo "<tr class='tab_bg_1'>";
@@ -340,7 +340,7 @@ function showEnterpriseContract($instID) {
 		$entname=getDropdownName("glpi_enterprises",$entID);
 		echo "<tr class='tab_bg_1'>";
 		echo "<td class='center'><a href='".$CFG_GLPI["root_doc"]."/front/enterprise.form.php?ID=$entID'>".$entname;
-		if ($CFG_GLPI["view_ID"]||empty($entname)) echo " ($entID)";
+		if ($_SESSION["glpiview_ID"]||empty($entname)) echo " ($entID)";
 		echo "</a></td>";
 		echo "<td class='center'>".getDropdownName("glpi_entities",$entity)."</td>";
 		echo "<td class='center'>".getDropdownName("glpi_dropdown_enttype",$DB->result($result, $i, "type"))."</td>";
@@ -546,7 +546,7 @@ function showContractAssociated($device_type,$ID,$withtemplate=''){
 		$con->getFromDB($cID);
 		echo "<tr class='tab_bg_1".($con->fields["deleted"]?"_2":"")."'>";
 		echo "<td class='center'><a href='".$CFG_GLPI["root_doc"]."/front/contract.form.php?ID=$cID'><strong>".$con->fields["name"];
-		if ($CFG_GLPI["view_ID"]||empty($con->fields["name"])) echo " (".$con->fields["ID"].")";
+		if ($_SESSION["glpiview_ID"]||empty($con->fields["name"])) echo " (".$con->fields["ID"].")";
 		echo "</strong></a></td>";
 		echo "<td class='center'>".getDropdownName("glpi_entities",$con->fields["FK_entities"])."</td>";
 		echo "<td class='center'>".$con->fields["num"]."</td>";
@@ -642,7 +642,7 @@ function showContractAssociatedEnterprise($ID){
 		$assocID=$data["assocID"];;
 		echo "<tr class='tab_bg_1".($data["deleted"]?"_2":"")."'>";
 		echo "<td class='center'><a href='".$CFG_GLPI["root_doc"]."/front/contract.form.php?ID=$cID'><strong>".$data["name"];
-		if ($CFG_GLPI["view_ID"]||empty($data["name"])) echo " (".$data["ID"].")";
+		if ($_SESSION["glpiview_ID"]||empty($data["name"])) echo " (".$data["ID"].")";
 		echo "</strong></a></td>";
 		echo "<td class='center'>".getDropdownName("glpi_entities",$data["entity"])."</td>";
 		echo "<td class='center'>".$data["num"]."</td>";
@@ -699,7 +699,7 @@ function cron_contract($display=false){
 		return false;
 	}
 
-	loadLanguage($CFG_GLPI["default_language"]);
+	loadLanguage($CFG_GLPI["language"]);
 
 	$message=array();
 	$items_notice=array();

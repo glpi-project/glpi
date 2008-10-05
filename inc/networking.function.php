@@ -469,7 +469,7 @@ function showConnection(&$device1,&$netport,$withtemplate='') {
 			echo "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$netport->fields["device_type"]]."?ID=".$device2->obj->fields["ID"]."\">";
 	
 			echo $device2->obj->fields["name"];
-			if ($CFG_GLPI["view_ID"]) echo " (".$netport->device_ID.")";
+			if ($_SESSION["glpiview_ID"]) echo " (".$netport->device_ID.")";
 			echo "</a></strong>";
 			if ($device1->obj->fields["FK_entities"] != $device2->obj->fields["FK_entities"]) {
 				echo "<br>(".getDropdownName("glpi_entities",$device2->obj->fields["FK_entities"]).")";

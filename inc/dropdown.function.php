@@ -79,7 +79,7 @@ function dropdownValue($table,$myname,$value='',$display_comments=1,$entity_rest
 
 	$name="------";
 	$comments="";
-	$limit_length=$CFG_GLPI["dropdown_limit"];
+	$limit_length=$_SESSION["glpidropdown_limit"];
 	
 
 	if (strlen($value)==0) $value=-1;
@@ -90,12 +90,12 @@ function dropdownValue($table,$myname,$value='',$display_comments=1,$entity_rest
 		if ($tmpname["name"]!="&nbsp;"){
 			$name=$tmpname["name"];
 			$comments=$tmpname["comments"];
-			$limit_length=max(strlen($name),$CFG_GLPI["dropdown_limit"]);
+			$limit_length=max(strlen($name),$_SESSION["glpidropdown_limit"]);
 		}
 	}
 
 	$use_ajax=false;
-	if ($CFG_GLPI["use_ajax"]){
+	if ($_SESSION["glpiuse_ajax"]){
 		$nb=0;
 		if ($table=='glpi_entities' || in_array($table,$CFG_GLPI["specif_entities_tables"])){
 			if (!($entity_restrict<0)){
@@ -107,7 +107,7 @@ function dropdownValue($table,$myname,$value='',$display_comments=1,$entity_rest
 			$nb=countElementsInTable($table);
 		}
 		$nb -= count($used);
-		if ($nb>$CFG_GLPI["ajax_limit_count"]){
+		if ($nb>$_SESSION["glpiajax_limit_count"]){
 			$use_ajax=true;
 		}
 	}
@@ -185,19 +185,19 @@ function dropdownNetpoint($myname,$value=0,$location=-1,$display_comments=1,$ent
 
 	$name="------";
 	$comments="";
-	$limit_length=$CFG_GLPI["dropdown_limit"];
+	$limit_length=$_SESSION["glpidropdown_limit"];
 	if (empty($value)) $value=0;
 	if ($value>0){
 		$tmpname=getDropdownName("glpi_dropdown_netpoint",$value,1);
 		if ($tmpname["name"]!="&nbsp;"){
 			$name=$tmpname["name"];
 			$comments=$tmpname["comments"];
-			$limit_length=max(strlen($name),$CFG_GLPI["dropdown_limit"]);
+			$limit_length=max(strlen($name),$_SESSION["glpidropdown_limit"]);
 		}
 	}
 	
 	$use_ajax=false;	
-	if ($CFG_GLPI["use_ajax"]){
+	if ($_SESSION["glpiuse_ajax"]){
 		if ($location < 0 || $devtype==NETWORKING_TYPE) {
 			$nb=countElementsInTableForEntity("glpi_dropdown_netpoint",$entity_restrict);
 		} else if ($location > 0) {
@@ -205,7 +205,7 @@ function dropdownNetpoint($myname,$value=0,$location=-1,$display_comments=1,$ent
 		} else {
 			$nb=countElementsInTable("glpi_dropdown_netpoint", "location=0 ".getEntitiesRestrictRequest(" AND ","glpi_dropdown_netpoint",'',$entity_restrict));
 		}
-		if ($nb>$CFG_GLPI["ajax_limit_count"]){
+		if ($nb>$_SESSION["glpiajax_limit_count"]){
 			$use_ajax=true;
 		}
 	}
@@ -388,13 +388,13 @@ function dropdownUsersSelect ($count=true, $right="all", $entity_restrict=-1, $v
 	if ($count) {
 		$query.= " WHERE $where ";
 	} else {
-		if (strlen($search)>0 && $search!=$CFG_GLPI["ajax_wildcard"]){
+		if (strlen($search)>0 && $search!=$_SESSION["glpiajax_wildcard"]){
 			$where.=" AND (glpi_users.name ".makeTextSearch($search)." OR glpi_users.realname ".makeTextSearch($search).
 				"  OR glpi_users.firstname ".makeTextSearch($search)." OR CONCAT(glpi_users.realname,' ',glpi_users.firstname) ".makeTextSearch($search).")";
 		}
 		$query .= " WHERE $where ORDER BY glpi_users.realname,glpi_users.firstname, glpi_users.name ";
-		if ($search != $CFG_GLPI["ajax_wildcard"]) {
-			$query .= " LIMIT 0,".$CFG_GLPI["dropdown_max"];
+		if ($search != $_SESSION["glpiajax_wildcard"]) {
+			$query .= " LIMIT 0,".$_SESSION["glpidropdown_max"];
 		}
 	}
 
@@ -426,17 +426,17 @@ function dropdownUsers($myname,$value,$right,$all=0,$display_comments=1,$entity_
 	$rand=mt_rand();
 
 	$use_ajax=false;
-	if ($CFG_GLPI["use_ajax"]){
+	if ($_SESSION["glpiuse_ajax"]){
 		$res=dropdownUsersSelect (true, $right, $entity_restrict, $value, $used);
 		$nb=($res ? $DB->result($res,0,"CPT") : 0);
-		if ($nb > $CFG_GLPI["ajax_limit_count"]) {
+		if ($nb > $_SESSION["glpiajax_limit_count"]) {
 			$use_ajax=true;
 		}
 	}
 	$user=getUserName($value,2);
 	$default_display="";
 
-	$default_display="<select id='dropdown_".$myname.$rand."' name='$myname'><option value='$value'>".substr($user["name"],0,$CFG_GLPI["dropdown_limit"])."</option></select>\n";
+	$default_display="<select id='dropdown_".$myname.$rand."' name='$myname'><option value='$value'>".substr($user["name"],0,$_SESSION["glpidropdown_limit"])."</option></select>\n";
 
 	$view_users=(haveRight("user","r"));
 
@@ -658,14 +658,14 @@ function dropdownUsersTracking($myname,$value,$field,$display_comments=1) {
 	$rand=mt_rand();
 
 	$use_ajax=false;
-	if ($CFG_GLPI["use_ajax"]){
-		if ($CFG_GLPI["ajax_limit_count"]==0){
+	if ($_SESSION["glpiuse_ajax"]){
+		if ($_SESSION["glpiajax_limit_count"]==0){
 			$use_ajax=true;
 		} else {
 			$query="SELECT COUNT(".$field.") FROM glpi_tracking ".getEntitiesRestrictRequest("WHERE","glpi_tracking");
 			$result=$DB->query($query);
 			$nb=$DB->result($result,0,0);
-			if ($nb>$CFG_GLPI["ajax_limit_count"]){
+			if ($nb>$_SESSION["glpiajax_limit_count"]){
 				$use_ajax=true;
 			}
 		}
@@ -673,7 +673,7 @@ function dropdownUsersTracking($myname,$value,$field,$display_comments=1) {
 
 	$default="";
 	$user=getUserName($value,2);
-	$default="<select name='$myname'><option value='$value'>".substr($user["name"],0,$CFG_GLPI["dropdown_limit"])."</option></select>\n";
+	$default="<select name='$myname'><option value='$value'>".substr($user["name"],0,$_SESSION["glpidropdown_limit"])."</option></select>\n";
 	if (empty($value)||$value==0){
 			$default= "<select name='$myname'><option value='0'>[ ".$LANG["common"][66]." ]</option></select>\n";
 	}
@@ -928,9 +928,9 @@ function dropdownMyDevices($userID=0,$entity_restrict=-1){
 						if ($type!=SOFTWARE_TYPE){
 						$output.=" - ".$data['serial']." - ".$data['otherserial'];
 						}
-						if (empty($output)||$CFG_GLPI["view_ID"]) $output.=" (".$data['ID'].")";
+						if (empty($output)||$_SESSION["glpiview_ID"]) $output.=" (".$data['ID'].")";
 						$my_devices.="<option title=\"$output\" value='".$type."_".$data["ID"]."' ".($my_item==$type."_".$data["ID"]?"selected":"").">";
-						$my_devices.="$type_name - ".substr($output,0,$CFG_GLPI["dropdown_limit"]);
+						$my_devices.="$type_name - ".substr($output,0,$_SESSION["glpidropdown_limit"]);
 						$my_devices.="</option>";
 
 						$already_add[$type][]=$data["ID"];
@@ -977,9 +977,9 @@ function dropdownMyDevices($userID=0,$entity_restrict=-1){
 										$output.=" - ".$data['serial']." - ".$data['otherserial'];
 									}
 
-									if (empty($output)||$CFG_GLPI["view_ID"]) $output.=" (".$data['ID'].")";
+									if (empty($output)||$_SESSION["glpiview_ID"]) $output.=" (".$data['ID'].")";
 									$tmp_device.="<option title=\"$output\" value='".$type."_".$data["ID"]."' ".($my_item==$type."_".$data["ID"]?"selected":"").">";
-									$tmp_device.="$type_name - ".substr($output,0,$CFG_GLPI["dropdown_limit"]);
+									$tmp_device.="$type_name - ".substr($output,0,$_SESSION["glpidropdown_limit"]);
 									$tmp_device.="</option>";
 									$already_add[$type][]=$data["ID"];
 								}
@@ -1027,9 +1027,9 @@ function dropdownMyDevices($userID=0,$entity_restrict=-1){
 								if ($type!=SOFTWARE_TYPE){
 									$output.=" - ".$data['serial']." - ".$data['otherserial'];
 								}
-								if (empty($output)||$CFG_GLPI["view_ID"]) $output.=" (".$data['ID'].")";
+								if (empty($output)||$_SESSION["glpiview_ID"]) $output.=" (".$data['ID'].")";
 								$tmp_device.="<option title=\"$output\" value='".$type."_".$data["ID"]."' ".($my_item==$type."_".$data["ID"]?"selected":"").">";
-								$tmp_device.="$type_name - ".substr($output,0,$CFG_GLPI["dropdown_limit"]);
+								$tmp_device.="$type_name - ".substr($output,0,$_SESSION["glpidropdown_limit"]);
 								$tmp_device.="</option>";
 
 								$already_add[$type][]=$data["ID"];
@@ -1057,7 +1057,7 @@ function dropdownMyDevices($userID=0,$entity_restrict=-1){
 					if (!isset($already_add[SOFTWARE_TYPE])) $already_add[SOFTWARE_TYPE]=array();
 					while ($data=$DB->fetch_array($result)){
 						if (!in_array($data["ID"],$already_add[SOFTWARE_TYPE])){
-							$tmp_device.="<option value='".SOFTWARE_TYPE."_".$data["ID"]."' ".($my_item==SOFTWARE_TYPE."_".$data["ID"]?"selected":"").">$type_name - ".$data["name"]." (v. ".$data["version"].")".($CFG_GLPI["view_ID"]?" (".$data["ID"].")":"")."</option>";
+							$tmp_device.="<option value='".SOFTWARE_TYPE."_".$data["ID"]."' ".($my_item==SOFTWARE_TYPE."_".$data["ID"]?"selected":"").">$type_name - ".$data["name"]." (v. ".$data["version"].")".($_SESSION["glpiview_ID"]?" (".$data["ID"].")":"")."</option>";
 							$already_add[SOFTWARE_TYPE][]=$data["ID"];
 						}
 					}
@@ -1159,14 +1159,14 @@ function dropdownConnect($type,$fromtype,$myname,$entity_restrict=-1,$onlyglobal
 	$rand=mt_rand();
 
 	$use_ajax=false;
-	if ($CFG_GLPI["use_ajax"]){
+	if ($_SESSION["glpiuse_ajax"]){
 		$nb=0;
 		if ($entity_restrict>=0){
 			$nb=countElementsInTableForEntity($LINK_ID_TABLE[$type],$entity_restrict);
 		} else {
 			$nb=countElementsInTableForMyEntities($LINK_ID_TABLE[$type]);
 		}
-		if ($nb>$CFG_GLPI["ajax_limit_count"]){
+		if ($nb>$_SESSION["glpiajax_limit_count"]){
 			$use_ajax=true;
 		}
 	}
@@ -1300,8 +1300,8 @@ function dropdownSoftwareToInstall($myname,$entity_restrict,$massiveaction=0) {
 
 	$use_ajax=false;
 
-	if ($CFG_GLPI["use_ajax"]){
-		if(countElementsInTableForEntity("glpi_software",$entity_restrict)>$CFG_GLPI["ajax_limit_count"]){
+	if ($_SESSION["glpiuse_ajax"]){
+		if(countElementsInTableForEntity("glpi_software",$entity_restrict)>$_SESSION["glpiajax_limit_count"]){
 			$use_ajax=true;
 		}
 	}
@@ -1360,7 +1360,7 @@ function dropdownSoftwareVersions($myname,$sID,$value=0) {
 function autocompletionTextField($myname,$table,$field,$value='',$size=40,$entity_restrict=-1,$user_restrict=-1,$option=''){
 	global $CFG_GLPI;
 
-	if ($CFG_GLPI["use_ajax"]&&$CFG_GLPI["ajax_autocompletion"]){
+	if ($_SESSION["glpiuse_ajax"]&&$_SESSION["glpiajax_autocompletion"]){
 		$rand=mt_rand();
 		echo "<input $option id='textfield_$myname$rand' type='text' name='$myname' value=\"".cleanInputText($value)."\" size='$size'>\n";
 		echo "<script type='text/javascript' >\n";
@@ -2276,13 +2276,13 @@ function dropdownRules ($rule_type, $myname){
 	global $DB, $CFG_GLPI, $LANG;
 
 	$rand=mt_rand();
-	$limit_length=$CFG_GLPI["dropdown_limit"];
+	$limit_length=$_SESSION["glpidropdown_limit"];
 
 	$use_ajax=false;
-	if ($CFG_GLPI["use_ajax"]){
+	if ($_SESSION["glpiuse_ajax"]){
 		$nb=countElementsInTable("glpi_rules_descriptions", "rule_type=".$rule_type);
 		
-		if ($nb>$CFG_GLPI["ajax_limit_count"]){
+		if ($nb>$_SESSION["glpiajax_limit_count"]){
 			$use_ajax=true;
 		}
 	}

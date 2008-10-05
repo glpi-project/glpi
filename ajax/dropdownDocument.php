@@ -68,12 +68,12 @@ if (isset($_POST['used'])) {
 	$where .= ") ";
 }
 
-if ($_POST['searchText']!=$CFG_GLPI["ajax_wildcard"])
+if ($_POST['searchText']!=$_SESSION["glpiajax_wildcard"])
 	$where.=" AND glpi_docs.name ".makeTextSearch($_POST['searchText']);
 
-$NBMAX=$CFG_GLPI["dropdown_max"];
+$NBMAX=$_SESSION["glpidropdown_max"];
 $LIMIT="LIMIT 0,$NBMAX";
-if ($_POST['searchText']==$CFG_GLPI["ajax_wildcard"]) $LIMIT="";
+if ($_POST['searchText']==$_SESSION["glpiajax_wildcard"]) $LIMIT="";
 
 
 $query = "SELECT * FROM glpi_docs $where ORDER BY FK_entities, name $LIMIT";
@@ -95,7 +95,7 @@ if ($DB->numrows($result)) {
 			echo "<optgroup label=\"". getDropdownName("glpi_entities", $prev) ."\">";
 		}
 		$output = $data["name"];
-		echo "<option value=\"".$data["ID"]."\" title=\"".cleanInputText($output)."\">".substr($output,0,$CFG_GLPI["dropdown_limit"])."</option>";
+		echo "<option value=\"".$data["ID"]."\" title=\"".cleanInputText($output)."\">".substr($output,0,$_SESSION["glpidropdown_limit"])."</option>";
 	}
 	if ($prev>=0) {
 		echo "</optgroup>";

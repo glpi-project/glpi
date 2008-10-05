@@ -2274,7 +2274,7 @@ function giveItem ($type,$field,$data,$num,$linkfield=""){
 			if (!empty($data["ITEM_".$num."_2"])){
 				$out= "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[COMPUTER_TYPE]."?ID=".$data["ITEM_".$num."_2"]."\">";
 				$out.= $data["ITEM_$num"];
-				if ($CFG_GLPI["view_ID"]||empty($data["ITEM_$num"])) {
+				if ($_SESSION["glpiview_ID"]||empty($data["ITEM_$num"])) {
 					$out.= " (".$data["ITEM_".$num."_2"].")";
 				}
 				$out.= "</a>";
@@ -2285,7 +2285,7 @@ function giveItem ($type,$field,$data,$num,$linkfield=""){
 			if (!empty($data["ITEM_".$num."_2"])){
 				$out= "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[PRINTER_TYPE]."?ID=".$data["ITEM_".$num."_2"]."\">";
 				$out.= $data["ITEM_$num"];
-				if ($CFG_GLPI["view_ID"]||empty($data["ITEM_$num"])) {
+				if ($_SESSION["glpiview_ID"]||empty($data["ITEM_$num"])) {
 					$out.= " (".$data["ITEM_".$num."_2"].")";
 				}
 				$out.= "</a>";
@@ -2296,7 +2296,7 @@ function giveItem ($type,$field,$data,$num,$linkfield=""){
 			if (!empty($data["ITEM_".$num."_2"])){
 				$out= "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[NETWORKING_TYPE]."?ID=".$data["ITEM_".$num."_2"]."\">";
 				$out.= $data["ITEM_$num"];
-				if ($CFG_GLPI["view_ID"]||empty($data["ITEM_$num"])) {
+				if ($_SESSION["glpiview_ID"]||empty($data["ITEM_$num"])) {
 					$out.= " (".$data["ITEM_".$num."_2"].")";
 				}
 				$out.= "</a>";
@@ -2308,7 +2308,7 @@ function giveItem ($type,$field,$data,$num,$linkfield=""){
 			if (!empty($data["ITEM_".$num."_2"])){
 				$out= "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[PHONE_TYPE]."?ID=".$data["ITEM_".$num."_2"]."\">";
 				$out.= $data["ITEM_$num"];
-				if ($CFG_GLPI["view_ID"]||empty($data["ITEM_$num"])) {
+				if ($_SESSION["glpiview_ID"]||empty($data["ITEM_$num"])) {
 					$out.= " (".$data["ITEM_".$num."_2"].")";
 				}
 				$out.= "</a>";
@@ -2320,7 +2320,7 @@ function giveItem ($type,$field,$data,$num,$linkfield=""){
 			if (!empty($data["ITEM_".$num."_2"])){
 				$out= "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[MONITOR_TYPE]."?ID=".$data["ITEM_".$num."_2"]."\">";
 				$out.= $data["ITEM_$num"];
-				if ($CFG_GLPI["view_ID"]||empty($data["ITEM_$num"])) {
+				if ($_SESSION["glpiview_ID"]||empty($data["ITEM_$num"])) {
 					$out.= " (".$data["ITEM_".$num."_2"].")";
 				}
 				$out.= "</a>";
@@ -2332,7 +2332,7 @@ function giveItem ($type,$field,$data,$num,$linkfield=""){
 			if (!empty($data["ITEM_".$num."_2"])){
 				$out= "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[SOFTWARE_TYPE]."?ID=".$data["ITEM_".$num."_2"]."\">";
 				$out.= $data["ITEM_$num"];
-				if ($CFG_GLPI["view_ID"]||empty($data["ITEM_$num"])) {
+				if ($_SESSION["glpiview_ID"]||empty($data["ITEM_$num"])) {
 					$out.= " (".$data["ITEM_".$num."_2"].")";
 				}
 				$out.= "</a>";
@@ -2343,7 +2343,7 @@ function giveItem ($type,$field,$data,$num,$linkfield=""){
 			if (!empty($data["ITEM_".$num."_2"])){
 				$out= "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[PERIPHERAL_TYPE]."?ID=".$data["ITEM_".$num."_2"]."\">";
 				$out.= $data["ITEM_$num"];
-				if ($CFG_GLPI["view_ID"]||empty($data["ITEM_$num"])) {
+				if ($_SESSION["glpiview_ID"]||empty($data["ITEM_$num"])) {
 					$out.= " (".$data["ITEM_".$num."_2"].")";
 				}
 				$out.= "</a>";
@@ -2354,7 +2354,7 @@ function giveItem ($type,$field,$data,$num,$linkfield=""){
 			if (!empty($data["ITEM_".$num."_2"])){
 				$out= "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[CARTRIDGE_TYPE]."?ID=".$data["ITEM_".$num."_2"]."\">";
 				$out.= $data["ITEM_$num"];
-				if ($CFG_GLPI["view_ID"]||empty($data["ITEM_$num"])) {
+				if ($_SESSION["glpiview_ID"]||empty($data["ITEM_$num"])) {
 					$out.= " (".$data["ITEM_".$num."_2"].")";
 				}
 				$out.= "</a>";
@@ -2366,7 +2366,7 @@ function giveItem ($type,$field,$data,$num,$linkfield=""){
 			if (!empty($data["ITEM_".$num."_2"])){
 				$out= "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[CONSUMABLE_TYPE]."?ID=".$data["ITEM_".$num."_2"]."\">";
 				$out.= $data["ITEM_$num"];
-				if ($CFG_GLPI["view_ID"]||empty($data["ITEM_$num"])) {
+				if ($_SESSION["glpiview_ID"]||empty($data["ITEM_$num"])) {
 					$out.= " (".$data["ITEM_".$num."_2"].")";
 				}
 				$out.= "</a>";
@@ -2377,7 +2377,7 @@ function giveItem ($type,$field,$data,$num,$linkfield=""){
 			if (!empty($data["ITEM_".$num."_2"])){
 				$out= "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[CONTACT_TYPE]."?ID=".$data["ITEM_".$num."_2"]."\">";
 				$out.= $data["ITEM_$num"];
-				if ($CFG_GLPI["view_ID"]||empty($data["ITEM_$num"])) {
+				if ($_SESSION["glpiview_ID"]||empty($data["ITEM_$num"])) {
 					$out.= " (".$data["ITEM_".$num."_2"].")";
 				}
 				$out.= "</a>";
@@ -2388,7 +2388,7 @@ function giveItem ($type,$field,$data,$num,$linkfield=""){
 			if (!empty($data["ITEM_".$num."_2"])){
 				$out= "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[TYPEDOC_TYPE]."?ID=".$data["ITEM_".$num."_2"]."\">";
 				$out.= $data["ITEM_$num"];
-				if ($CFG_GLPI["view_ID"]||empty($data["ITEM_$num"])) {
+				if ($_SESSION["glpiview_ID"]||empty($data["ITEM_$num"])) {
 					$out.= " (".$data["ITEM_".$num."_2"].")";
 				}
 				$out.= "</a>";
@@ -2399,7 +2399,7 @@ function giveItem ($type,$field,$data,$num,$linkfield=""){
 			if (!empty($data["ITEM_".$num."_2"])){
 				$out= "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[LINK_TYPE]."?ID=".$data["ITEM_".$num."_2"]."\">";
 				$out.= $data["ITEM_$num"];
-				if ($CFG_GLPI["view_ID"]||empty($data["ITEM_$num"])) {
+				if ($_SESSION["glpiview_ID"]||empty($data["ITEM_$num"])) {
 					$out.= " (".$data["ITEM_".$num."_2"].")";
 				}
 				$out.= "</a>";
@@ -2410,7 +2410,7 @@ function giveItem ($type,$field,$data,$num,$linkfield=""){
 			if (!empty($data["ITEM_".$num."_2"])){
 				$out= "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[DOCUMENT_TYPE]."?ID=".$data["ITEM_".$num."_2"]."\">";
 				$out.= $data["ITEM_$num"];
-				if ($CFG_GLPI["view_ID"]||empty($data["ITEM_$num"])) {
+				if ($_SESSION["glpiview_ID"]||empty($data["ITEM_$num"])) {
 					$out.= " (".$data["ITEM_".$num."_2"].")";
 				}
 				$out.= "</a>";
@@ -2421,7 +2421,7 @@ function giveItem ($type,$field,$data,$num,$linkfield=""){
 			if (!empty($data["ITEM_".$num."_2"])){
 				$out= "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[OCSNG_TYPE]."?ID=".$data["ITEM_".$num."_2"]."\">";
 				$out.= $data["ITEM_$num"];
-				if ($CFG_GLPI["view_ID"]||empty($data["ITEM_$num"])) {
+				if ($_SESSION["glpiview_ID"]||empty($data["ITEM_$num"])) {
 					$out.= " (".$data["ITEM_".$num."_2"].")";
 				}
 				$out.= "</a>";
@@ -2432,7 +2432,7 @@ function giveItem ($type,$field,$data,$num,$linkfield=""){
 			if (!empty($data["ITEM_".$num."_2"])){
 				$out= "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[ENTITY_TYPE]."?ID=".$data["ITEM_".$num."_2"]."\">";
 				$out.= $data["ITEM_$num"];
-				if ($CFG_GLPI["view_ID"]||empty($data["ITEM_$num"])) {
+				if ($_SESSION["glpiview_ID"]||empty($data["ITEM_$num"])) {
 					$out.= " (".$data["ITEM_".$num."_2"].")";
 				}
 				$out.= "</a>";
@@ -2444,7 +2444,7 @@ function giveItem ($type,$field,$data,$num,$linkfield=""){
 			if (!empty($data["ITEM_".$num."_2"])){
 				$out= "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[MAILGATE_TYPE]."?ID=".$data["ITEM_".$num."_2"]."\">";
 				$out.= $data["ITEM_$num"];
-				if ($CFG_GLPI["view_ID"]||empty($data["ITEM_$num"])) {
+				if ($_SESSION["glpiview_ID"]||empty($data["ITEM_$num"])) {
 					$out.= " (".$data["ITEM_".$num."_2"].")";
 				}
 				$out.= "</a>";
@@ -2455,7 +2455,7 @@ function giveItem ($type,$field,$data,$num,$linkfield=""){
 			if (!empty($data["ITEM_".$num."_2"])){
 				$out= "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[TRANSFER_TYPE]."?ID=".$data["ITEM_".$num."_2"]."\">";
 				$out.= $data["ITEM_$num"];
-				if ($CFG_GLPI["view_ID"]||empty($data["ITEM_$num"])) {
+				if ($_SESSION["glpiview_ID"]||empty($data["ITEM_$num"])) {
 					$out.= " (".$data["ITEM_".$num."_2"].")";
 				}
 				$out.= "</a>";
@@ -2506,7 +2506,7 @@ function giveItem ($type,$field,$data,$num,$linkfield=""){
 			if (empty($linkfield)){
 				$out= "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data['ID']."\">";
 				$out.= $data["ITEM_$num"];
-				if ($CFG_GLPI["view_ID"]||empty($data["ITEM_$num"])) $out.= " (".$data["ID"].")";
+				if ($_SESSION["glpiview_ID"]||empty($data["ITEM_$num"])) $out.= " (".$data["ID"].")";
 				$out.= "</a>";
 			} else {
 				$type=USER_TYPE;
@@ -2518,7 +2518,7 @@ function giveItem ($type,$field,$data,$num,$linkfield=""){
 					$out .= $data["ITEM_".$num."_2"]." ".$data["ITEM_".$num."_4"];
 				else $out .= $data["ITEM_$num"];
 
-				if ($data["ITEM_".$num."_3"]>0&&($CFG_GLPI["view_ID"]||(empty($data["ITEM_$num"])))) $out.= " (".$data["ITEM_".$num."_3"].")";
+				if ($data["ITEM_".$num."_3"]>0&&($_SESSION["glpiview_ID"]||(empty($data["ITEM_$num"])))) $out.= " (".$data["ITEM_".$num."_3"].")";
 
 				if ($data["ITEM_".$num."_3"]>0)
 					$out.= "</a>";
@@ -2542,7 +2542,7 @@ function giveItem ($type,$field,$data,$num,$linkfield=""){
 				if ($type==GROUP_TYPE){
 					$out= "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data['ID']."\">";
 					$out.= $data["ITEM_$num"];
-					if ($CFG_GLPI["view_ID"]||empty($data["ITEM_$num"])) $out.= " (".$data["ID"].")";
+					if ($_SESSION["glpiview_ID"]||empty($data["ITEM_$num"])) $out.= " (".$data["ID"].")";
 					$out.= "</a>";
 				} else {
 					$out= $data["ITEM_$num"];
@@ -2571,7 +2571,7 @@ function giveItem ($type,$field,$data,$num,$linkfield=""){
 			if ($type==PROFILE_TYPE){
 				$out= "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data['ID']."\">";
 				$out.= $data["ITEM_$num"];
-				if ($CFG_GLPI["view_ID"]||empty($data["ITEM_$num"])) {
+				if ($_SESSION["glpiview_ID"]||empty($data["ITEM_$num"])) {
 					$out.= " (".$data["ID"].")";
 				}
 				$out.= "</a>";
@@ -2607,7 +2607,7 @@ function giveItem ($type,$field,$data,$num,$linkfield=""){
 			if ($type==ENTITY_TYPE){
 				$out= "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data['ID']."\">";
 				$out.= $data["ITEM_$num"];
-				if ($CFG_GLPI["view_ID"]||empty($data["ITEM_$num"])) {
+				if ($_SESSION["glpiview_ID"]||empty($data["ITEM_$num"])) {
 					$out.= " (".$data["ID"].")";
 				}
 				$out.= "</a>";
@@ -2658,7 +2658,7 @@ function giveItem ($type,$field,$data,$num,$linkfield=""){
 				if ($type==CONTRACT_TYPE){
 					$out= "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data['ID']."\">";
 					$out.= $data["ITEM_$num"];
-					if ($CFG_GLPI["view_ID"]||empty($data["ITEM_$num"])) $out.= " (".$data["ID"].")";
+					if ($_SESSION["glpiview_ID"]||empty($data["ITEM_$num"])) $out.= " (".$data["ID"].")";
 					$out.= "</a>";
 				} else {
 					$out= $data["ITEM_$num"];
@@ -2714,7 +2714,7 @@ function giveItem ($type,$field,$data,$num,$linkfield=""){
 				} else {
 					$out= "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data['ID']."\">";
 					$out.= $data["ITEM_$num"];
-					if ($CFG_GLPI["view_ID"]||empty($data["ITEM_$num"])) $out.= " (".$data["ID"].")";
+					if ($_SESSION["glpiview_ID"]||empty($data["ITEM_$num"])) $out.= " (".$data["ID"].")";
 					$out.= "</a>";
 					if (!empty($data["ITEM_".$num."_2"])){
 						$out.= "<a href='".formatOutputWebLink($data["ITEM_".$num."_2"])."' target='_blank'><img src='".$CFG_GLPI["root_doc"]."/pics/web.png' alt='website'></a>";
@@ -2726,7 +2726,7 @@ function giveItem ($type,$field,$data,$num,$linkfield=""){
 				if ($data["ITEM_".$num."_3"]>0)
 					$out= "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data["ITEM_".$num."_3"]."\">";
 				$out.= $data["ITEM_$num"];
-				if ($data["ITEM_".$num."_3"]>0&&($CFG_GLPI["view_ID"]||(empty($data["ITEM_$num"])))) $out.= " (".$data["ITEM_".$num."_3"].")";
+				if ($data["ITEM_".$num."_3"]>0&&($_SESSION["glpiview_ID"]||(empty($data["ITEM_$num"])))) $out.= " (".$data["ITEM_".$num."_3"].")";
 				if ($data["ITEM_".$num."_3"]>0)
 					$out.= "</a>";
 				if (!empty($data["ITEM_".$num."_2"])){
@@ -2741,7 +2741,7 @@ function giveItem ($type,$field,$data,$num,$linkfield=""){
 			if (!empty($data["ITEM_".$num."_3"])){
 				$out.= "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data["ITEM_".$num."_3"]."\">";
 				$out.= $data["ITEM_$num"];
-				if ($CFG_GLPI["view_ID"]||empty($data["ITEM_$num"])) 
+				if ($_SESSION["glpiview_ID"]||empty($data["ITEM_$num"])) 
 					$out.= " (".$data["ITEM_".$num."_3"].")";
 				$out.= "</a>";
 			}

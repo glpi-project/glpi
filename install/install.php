@@ -758,7 +758,7 @@ function step4 ($host,$user,$password,$databasename,$newdatabasename)
 			if (!empty($sql_line)) $DB->query($sql_line);
 		}
 		// Mise a jour de la langue par defaut
-		$query = "UPDATE `glpi_config` SET default_language='".$_SESSION["glpilanguage"]."' ;";
+		$query = "UPDATE `glpi_config` SET language='".$_SESSION["glpilanguage"]."' ;";
 		$DB->query($query) or die("4203 ".$LANG["update"][90].$DB->error());
 		$query = "UPDATE `glpi_users` SET language='".$_SESSION["glpilanguage"]."' ;";
 		$DB->query($query) or die("4203 ".$LANG["update"][90].$DB->error());

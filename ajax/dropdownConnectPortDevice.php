@@ -69,13 +69,13 @@ if (isset($LINK_ID_TABLE[$_POST["type"]])&&$_POST["type"]>0){
 		}
 	}
 
-	if (strlen($_POST['searchText'])>0&&$_POST['searchText']!=$CFG_GLPI["ajax_wildcard"])
+	if (strlen($_POST['searchText'])>0&&$_POST['searchText']!=$_SESSION["glpiajax_wildcard"])
 		$where.=" AND name ".makeTextSearch($_POST['searchText'])." ";
 
-	$NBMAX=$CFG_GLPI["dropdown_max"];
+	$NBMAX=$_SESSION["glpidropdown_max"];
 
 	$LIMIT="LIMIT 0,$NBMAX";
-	if ($_POST['searchText']==$CFG_GLPI["ajax_wildcard"]) $LIMIT="";
+	if ($_POST['searchText']==$_SESSION["glpiajax_wildcard"]) $LIMIT="";
 
 	$order = ($multi ? "FK_entities,name" : "name");
 	$query = "SELECT * FROM ".$table." $where ORDER BY $order $LIMIT";
@@ -83,7 +83,7 @@ if (isset($LINK_ID_TABLE[$_POST["type"]])&&$_POST["type"]>0){
 
 	echo "<select id='item$rand' name=\"item\" size='1'>";
 
-	if ($_POST['searchText']!=$CFG_GLPI["ajax_wildcard"]&&$DB->numrows($result)==$NBMAX)
+	if ($_POST['searchText']!=$_SESSION["glpiajax_wildcard"]&&$DB->numrows($result)==$NBMAX)
 		echo "<option value=\"0\">--".$LANG["common"][11]."--</option>";
 
 	echo "<option value=\"0\">-----</option>";
@@ -100,7 +100,7 @@ if (isset($LINK_ID_TABLE[$_POST["type"]])&&$_POST["type"]>0){
 			$output = $data['name'];
 			$ID = $data['ID'];
 			if (empty($output)) $output="($ID)";
-			echo "<option value=\"$ID\" title=\"".cleanInputText($output)."\">".substr($output,0,$CFG_GLPI["dropdown_limit"])."</option>";
+			echo "<option value=\"$ID\" title=\"".cleanInputText($output)."\">".substr($output,0,$_SESSION["glpidropdown_limit"])."</option>";
 		}
 		if ($multi && $prev>=0) {
 			echo "</optgroup>";

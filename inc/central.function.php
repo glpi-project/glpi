@@ -67,7 +67,7 @@ function showCentralGlobalView(){
 	if (haveRight("logs","r")){
 		echo "<td class='top' width='450px'>";
 		
-		if ($CFG_GLPI["num_of_events"]>0){
+		if ($_SESSION["glpinum_of_events"]>0){
 
 			//Show last add events
 			showAddEvents($_SERVER['PHP_SELF'],"","",$_SESSION["glpiname"]);
@@ -84,7 +84,7 @@ function showCentralGlobalView(){
 	echo "</div>";
 
 
-	if ($CFG_GLPI["jobs_at_login"]&&$showticket){
+	if ($_SESSION["glpijobs_at_login"]&&$showticket){
 		echo "<br>";
 
 		echo "<div class='center'><strong>";

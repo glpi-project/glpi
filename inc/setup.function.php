@@ -957,7 +957,7 @@ function listTemplates($type, $target, $add = 0) {
 		while ($data = $DB->fetch_array($result)) {
 
 			$templname = $data["tplname"];
-			if ($CFG_GLPI["view_ID"]||empty($data["tplname"])){
+			if ($_SESSION["glpiview_ID"]||empty($data["tplname"])){
             			$templname.= "(".$data["ID"].")";
 			}
 			echo "<tr>";

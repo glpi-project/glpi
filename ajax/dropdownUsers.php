@@ -84,7 +84,7 @@ asort($users);
 
 echo "<select id='dropdown_".$_POST["myname"].$_POST["rand"]."' name=\"".$_POST['myname']."\">";
 
-if ($_POST['searchText']!=$CFG_GLPI["ajax_wildcard"] && $DB->numrows($result)==$CFG_GLPI["dropdown_max"])
+if ($_POST['searchText']!=$_SESSION["glpiajax_wildcard"] && $DB->numrows($result)==$_SESSION["glpidropdown_max"])
 echo "<option value=\"0\">--".$LANG["common"][11]."--</option>";
 
 
@@ -103,7 +103,7 @@ if (isset($_POST['value'])){
 if (count($users)) {
 	foreach ($users as $ID => $output){
 			
-		echo "<option value=\"".$ID."\" title=\"".cleanInputText($output." - ".$logins[$ID])."\">".substr($output,0,$CFG_GLPI["dropdown_limit"])."</option>";
+		echo "<option value=\"".$ID."\" title=\"".cleanInputText($output." - ".$logins[$ID])."\">".substr($output,0,$_SESSION["glpidropdown_limit"])."</option>";
 	}
 }
 echo "</select>";

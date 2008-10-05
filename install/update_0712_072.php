@@ -547,9 +547,136 @@ function update0712to072() {
 		
 		$DB->query($query) or die("0.72 create table glpi_plugins " . $LANG["update"][90] . $DB->error());
 	}
+	
+	//// CORRECT glpi_config field type
+	if (FieldExists("glpi_config","num_of_events")){
+		$query="ALTER TABLE `glpi_config` CHANGE `num_of_events` `num_of_events` INT( 11 ) NOT NULL DEFAULT '10';";
+		$DB->query($query) or die("0.72 alter config num_of_events" . $LANG["update"][90] . $DB->error());
+	}
+	if (FieldExists("glpi_config","jobs_at_login")){
+		$query="ALTER TABLE `glpi_config` CHANGE `jobs_at_login` `jobs_at_login` SMALLINT( 6 ) NOT NULL DEFAULT '0' ;";
+		$DB->query($query) or die("0.72 alter config jobs_at_login" . $LANG["update"][90] . $DB->error());
+	}
+	if (FieldExists("glpi_config","cut")){
+		$query="UPDATE glpi_config SET cut=ROUND(cut/50)*50;";
+		$DB->query($query) or die("0.72 update config cut value to prepare update" . $LANG["update"][90] . $DB->error());
+		$query="ALTER TABLE `glpi_config` CHANGE `cut` `cut` INT( 11 ) NOT NULL DEFAULT '255' ;";
+		$DB->query($query) or die("0.72 alter config cut" . $LANG["update"][90] . $DB->error());
+	}
+	if (FieldExists("glpi_config","list_limit")){
+		$query="ALTER TABLE `glpi_config` CHANGE `list_limit` `list_limit` INT( 11 ) NOT NULL DEFAULT '20' ;";
+		$DB->query($query) or die("0.72 alter config list_limit" . $LANG["update"][90] . $DB->error());
+	}
+	if (FieldExists("glpi_config","expire_events")){
+		$query="ALTER TABLE `glpi_config` CHANGE `expire_events` `expire_events` INT( 11 ) NOT NULL DEFAULT '30' ;";
+		$DB->query($query) or die("0.72 alter config expire_events" . $LANG["update"][90] . $DB->error());
+	}
+	if (FieldExists("glpi_config","event_loglevel")){
+		$query="ALTER TABLE `glpi_config` CHANGE `event_loglevel` `event_loglevel` SMALLINT( 6 ) NOT NULL DEFAULT '5' ;";
+		$DB->query($query) or die("0.72 alter config event_loglevel" . $LANG["update"][90] . $DB->error());
+	}
+	if (FieldExists("glpi_config","permit_helpdesk")){
+		$query="UPDATE `glpi_config` SET `permit_helpdesk`=0 WHERE `permit_helpdesk`='';";
+		$DB->query($query) or die("0.72 update config permit_helpdesk value to prepare update" . $LANG["update"][90] . $DB->error());
+		$query="ALTER TABLE `glpi_config` CHANGE `permit_helpdesk` `permit_helpdesk` SMALLINT NOT NULL DEFAULT '0';";
+		$DB->query($query) or die("0.72 alter config permit_helpdesk" . $LANG["update"][90] . $DB->error());
+	}
 
+	if (!FieldExists("glpi_config","language")){
+		$query="ALTER TABLE `glpi_config` CHANGE `default_language` `language` VARCHAR( 255 ) NULL DEFAULT 'en_GB' ;";
+		$DB->query($query) or die("0.72 alter config default_language" . $LANG["update"][90] . $DB->error());
+	}
 
-  
+	if (!FieldExists("glpi_config","tracking_order")){
+		$query="ALTER TABLE `glpi_config` ADD `tracking_order` SMALLINT NOT NULL DEFAULT '0';";
+		$DB->query($query) or die("0.72 alter config add tracking_order" . $LANG["update"][90] . $DB->error());
+	}
+
+	if (!FieldExists("glpi_users","dateformat")){
+		$query="ALTER TABLE `glpi_users` ADD `dateformat` SMALLINT NOT NULL DEFAULT '0';";
+		$DB->query($query) or die("0.72 add dateformat in users" . $LANG["update"][90] . $DB->error());
+	}
+	
+	if (!FieldExists("glpi_users","numberformat")){
+		$query="ALTER TABLE `glpi_users`ADD `numberformat` SMALLINT NOT NULL DEFAULT '0';";
+		$DB->query($query) or die("0.72 add numberformat in users" . $LANG["update"][90] . $DB->error());
+	}
+
+	if (!FieldExists("glpi_users","view_ID")){
+		$query="ALTER TABLE `glpi_users`ADD `view_ID` SMALLINT NOT NULL DEFAULT '0';";
+		$DB->query($query) or die("0.72 add view_ID in users" . $LANG["update"][90] . $DB->error());
+	}
+
+	if (!FieldExists("glpi_users","dropdown_limit")){
+		$query="ALTER TABLE `glpi_users`ADD `dropdown_limit` INT NOT NULL DEFAULT '50';";
+		$DB->query($query) or die("0.72 add dropdown_limit in users" . $LANG["update"][90] . $DB->error());
+	}
+
+	if (!FieldExists("glpi_users","flat_dropdowntree")){
+		$query="ALTER TABLE `glpi_users` ADD `flat_dropdowntree` SMALLINT NOT NULL DEFAULT '0';";
+		$DB->query($query) or die("0.72 add flat_dropdowntree in users" . $LANG["update"][90] . $DB->error());
+	}
+
+	if (!FieldExists("glpi_users","num_of_events")){
+		$query="ALTER TABLE `glpi_users`ADD `num_of_events` INT NOT NULL DEFAULT '10';	";
+		$DB->query($query) or die("0.72 add num_of_events in users" . $LANG["update"][90] . $DB->error());
+	}
+
+	if (!FieldExists("glpi_users","nextprev_item")){
+		$query="ALTER TABLE `glpi_users` ADD `nextprev_item` VARCHAR( 255 ) NULL DEFAULT 'name';";
+		$DB->query($query) or die("0.72 add nextprev_item in users" . $LANG["update"][90] . $DB->error());
+	}
+
+	if (!FieldExists("glpi_users","jobs_at_login")){
+		$query="ALTER TABLE `glpi_users` ADD `jobs_at_login` SMALLINT NOT NULL DEFAULT '0';";
+		$DB->query($query) or die("0.72 add jobs_at_login in users" . $LANG["update"][90] . $DB->error());
+	}
+
+	if (!FieldExists("glpi_users","priority_1")){
+		$query="ALTER TABLE `glpi_users` ADD `priority_1` VARCHAR( 255 ) NULL DEFAULT '#fff2f2',
+		ADD `priority_2` VARCHAR( 255 ) NULL DEFAULT '#ffe0e0',
+		ADD `priority_3` VARCHAR( 255 ) NULL DEFAULT '#ffcece',
+		ADD `priority_4` VARCHAR( 255 ) NULL DEFAULT '#ffbfbf',
+		ADD `priority_5` VARCHAR( 255 ) NULL DEFAULT '#ffadad';";
+		$DB->query($query) or die("0.72 add priority_X in users" . $LANG["update"][90] . $DB->error());
+	}
+
+	if (!FieldExists("glpi_users","use_ajax")){
+		$query="ALTER TABLE `glpi_users` ADD `use_ajax` SMALLINT NOT NULL DEFAULT '0';";
+		$DB->query($query) or die("0.72 add use_ajax in users" . $LANG["update"][90] . $DB->error());
+	}
+
+	if (!FieldExists("glpi_users","ajax_autocompletion")){
+		$query="ALTER TABLE `glpi_users` ADD `ajax_autocompletion` SMALLINT NOT NULL DEFAULT '1';";
+		$DB->query($query) or die("0.72 add ajax_autocompletion in users" . $LANG["update"][90] . $DB->error());
+	}
+
+	if (!FieldExists("glpi_users","ajax_wildcard")){
+		$query="ALTER TABLE `glpi_users` ADD `ajax_wildcard` CHAR( 1 ) NULL DEFAULT '*';";
+		$DB->query($query) or die("0.72 add ajax_wildcard in users" . $LANG["update"][90] . $DB->error());
+	}
+
+	if (!FieldExists("glpi_users","dropdown_max")){
+		$query="ALTER TABLE `glpi_users` ADD `dropdown_max` INT NOT NULL DEFAULT '100';";
+		$DB->query($query) or die("0.72 add dropdown_max in users" . $LANG["update"][90] . $DB->error());
+	}
+
+	if (!FieldExists("glpi_users","ajax_limit_count")){
+		$query="ALTER TABLE `glpi_users` ADD `ajax_limit_count` INT NOT NULL DEFAULT '50';";
+		$DB->query($query) or die("0.72 add ajax_limit_count in users" . $LANG["update"][90] . $DB->error());
+	}
+
+	if (!FieldExists("glpi_users","expand_soft_categorized")){
+		$query="ALTER TABLE `glpi_users` ADD `expand_soft_categorized` INT( 1 ) NOT NULL DEFAULT '1';";
+		$DB->query($query) or die("0.72 add expand_soft_categorized in users" . $LANG["update"][90] . $DB->error());
+	}
+
+	if (!FieldExists("glpi_users","expand_soft_not_categorized")){
+		$query="ALTER TABLE `glpi_users` ADD `expand_soft_not_categorized` INT( 1 ) NOT NULL DEFAULT '1';";
+		$DB->query($query) or die("0.72 add expand_soft_not_categorized in users" . $LANG["update"][90] . $DB->error());
+	}
+		 
+	 
 
 } // fin 0.72 #####################################################################################
 ?>

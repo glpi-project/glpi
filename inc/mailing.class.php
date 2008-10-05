@@ -161,7 +161,7 @@ class Mailing
 							// ADMIN SEND
 							case ADMIN_MAILING :
 								if (isValidEmail($CFG_GLPI["admin_email"])&&!isset($emails[$CFG_GLPI["admin_email"]])){
-									$emails[$CFG_GLPI["admin_email"]]=$CFG_GLPI["default_language"];
+									$emails[$CFG_GLPI["admin_email"]]=$CFG_GLPI["language"];
 								}
 								break;
 							// ADMIN ENTITY SEND
@@ -173,7 +173,7 @@ class Mailing
 									if ($DB->numrows($result2)==1){
 										$row = $DB->fetch_array($result2);
 										if (isValidEmail($row['EMAIL'])&&!isset($emails[$row['EMAIL']])){
-											$emails[$row['EMAIL']]=$CFG_GLPI["default_language"];
+											$emails[$row['EMAIL']]=$CFG_GLPI["language"];
 										}
 									}
 								}
@@ -205,7 +205,7 @@ class Mailing
 										if ($DB->numrows($result2)==1){
 											$row = $DB->fetch_array($result2);
 											if (isValidEmail($row['EMAIL'])&&!isset($emails[$row['EMAIL']])){
-												$emails[$row['EMAIL']]=$CFG_GLPI["default_language"];
+												$emails[$row['EMAIL']]=$CFG_GLPI["language"];
 											}
 										}
 									}
@@ -272,7 +272,7 @@ class Mailing
 									// Uemail = mail of the author ? -> use right of the author to see private followups
 									// Else not see private
 									$authorsend=false;
-									$authorlang=$CFG_GLPI["default_language"];
+									$authorlang=$CFG_GLPI["language"];
 									if (!$sendprivate){
 										$authorsend=true;
 									} 
@@ -705,7 +705,7 @@ class MailingResa{
 							// ADMIN SEND
 							case ADMIN_MAILING :
 								if (isValidEmail($CFG_GLPI["admin_email"])&&!isset($emails[$CFG_GLPI["admin_email"]]))
-									$emails[$CFG_GLPI["admin_email"]]=$CFG_GLPI["default_language"];
+									$emails[$CFG_GLPI["admin_email"]]=$CFG_GLPI["language"];
 								break;
 							// ADMIN ENTITY SEND
 							case ADMIN_ENTITY_MAILING :
@@ -725,7 +725,7 @@ class MailingResa{
 										if ($DB->numrows($result2)==1){
 											$row = $DB->fetch_array($result2);
 											if (isValidEmail($CFG_GLPI["admin_email"])&&!isset($emails[$CFG_GLPI["admin_email"]])){
-												$emails[$row['EMAIL']]=$CFG_GLPI["default_language"];
+												$emails[$row['EMAIL']]=$CFG_GLPI["language"];
 											}
 										}
 									}
@@ -1038,7 +1038,7 @@ class MailingAlert
 							// ADMIN SEND
 							case ADMIN_MAILING :
 								if (isValidEmail($CFG_GLPI["admin_email"])&&!isset($emails[$CFG_GLPI["admin_email"]]))
-									$emails[$CFG_GLPI["admin_email"]]=$CFG_GLPI["default_language"];
+									$emails[$CFG_GLPI["admin_email"]]=$CFG_GLPI["language"];
 								break;
 							// ADMIN ENTITY SEND
 							case ADMIN_ENTITY_MAILING :
@@ -1049,7 +1049,7 @@ class MailingAlert
 									if ($DB->numrows($result2)==1){
 										$row = $DB->fetch_array($result2);
 										if (isValidEmail($row['EMAIL'])&&!isset($emails[$row['EMAIL']])){
-											$emails[$row['EMAIL']]=$CFG_GLPI["default_language"];
+											$emails[$row['EMAIL']]=$CFG_GLPI["language"];
 										}
 									}
 								}

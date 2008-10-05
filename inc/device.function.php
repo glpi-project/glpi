@@ -276,10 +276,10 @@ function printDeviceComputer($device,$quantity,$specif,$compID,$compDevID,$witht
 
 	if (haveRight("device","w")) {
 		echo "<td class='center'><a href='".$CFG_GLPI["root_doc"]."/front/device.php?device_type=".$device->devtype."'>$type</a></td>";
-		echo "<td class='center'><a href='".$CFG_GLPI["root_doc"]."/front/device.form.php?ID=".$device->fields['ID']."&amp;device_type=".$device->devtype."'>&nbsp;$name&nbsp;".($CFG_GLPI["view_ID"]?" (".$device->fields['ID'].")":"")."</a></td>";
+		echo "<td class='center'><a href='".$CFG_GLPI["root_doc"]."/front/device.form.php?ID=".$device->fields['ID']."&amp;device_type=".$device->devtype."'>&nbsp;$name&nbsp;".($_SESSION["glpiview_ID"]?" (".$device->fields['ID'].")":"")."</a></td>";
 	}  else {
 		echo "<td class='center'>$type</td>";
-		echo "<td class='center'>&nbsp;$name&nbsp;".($CFG_GLPI["view_ID"]?" (".$device->fields['ID'].")":"")."</td>";
+		echo "<td class='center'>&nbsp;$name&nbsp;".($_SESSION["glpiview_ID"]?" (".$device->fields['ID'].")":"")."</td>";
 	}
 
 	if (count($entry)>0){
@@ -535,7 +535,7 @@ function showDevicesList($device_type,$target) {
 				echo "<td><strong>";
 				echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/device.form.php?ID=$ID&amp;device_type=$device_type\">";
 				echo $data["designation"];
-				if ($CFG_GLPI["view_ID"]) echo " (".$data["ID"].")";
+				if ($_SESSION["glpiview_ID"]) echo " (".$data["ID"].")";
 				echo "</a></strong></td>";
 				echo "<td>". $data["manufacturer"]."</td>";
 				echo "</tr>";
