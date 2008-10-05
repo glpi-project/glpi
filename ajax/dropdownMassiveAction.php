@@ -218,19 +218,17 @@ if (isset($_POST["action"])&&isset($_POST["type"])&&!empty($_POST["type"])){
 			// Plugin specific actions
 			if ($_POST["type"]>1000){
 				if (isset($PLUGIN_HOOKS['plugin_types'][$_POST["type"]])){
-					$function='plugin_'.$PLUGIN_HOOKS['plugin_types'][$_POST["type"]].'_MassiveActionsDisplay';
-					if (function_exists($function)){
-						$function($_POST["type"],$_POST["action"]);
-					} 
+					doOneHook($PLUGIN_HOOKS['plugin_types'][$_POST["type"]],
+						'plugin_'.$PLUGIN_HOOKS['plugin_types'][$_POST["type"]].'_MassiveActionsDisplay',
+						$_POST["type"],$_POST["action"]);
 				} 
 			} else {
 				// Need to search display item over plugins
 				$split=split('_',$_POST["action"]);
 				if (isset($split[1])){
-					$function='plugin_'.$split[1].'_MassiveActionsDisplay';
-						if (function_exists($function)){
-							$function($_POST["type"],$_POST["action"]);
-						} 
+					doOneHook($split[1],
+						'plugin_'.$split[1].'_MassiveActionsDisplay',
+						$_POST["type"],$_POST["action"]);
 				}
 			}
 			break;

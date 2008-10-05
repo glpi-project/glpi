@@ -149,6 +149,27 @@ function doHookFunction($name,$parm=NULL) {
 }
 
 /**
+ * This function executes a hook for 1 plugin.
+ * @param $plugname Name of the plugin
+ * @param $function to be called
+ * @param other params passed to the function
+ * 
+ * @return mixed $data
+ */
+function doOneHook() {
+	
+	$args=func_get_args();
+	$plugname = array_shift($args);
+	$function = array_shift($args);
+	
+	if (file_exists(GLPI_ROOT . "/plugins/$plugname/hook.php")) {
+		include_once(GLPI_ROOT . "/plugins/$plugname/hook.php");
+	}
+	if (function_exists($function)) {
+		return call_user_func_array($function,$args);
+	}	
+}
+/**
  * Display plugin actions for a device type
  * @param $type ID of the device type
  * @param $ID ID of the item
