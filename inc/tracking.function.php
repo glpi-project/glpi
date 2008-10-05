@@ -2339,8 +2339,8 @@ function showAddFollowupForm($tID,$massiveaction=false){
 		echo "<td>".$LANG["common"][77].":</td>";
 		echo "<td>";
 		echo "<select name='".$prefix."private".$postfix."'>";
-		echo "<option value='0'>".$LANG["choice"][0]."</option>";
-		echo "<option value='1'>".$LANG["choice"][1]."</option>";
+		echo "<option value='0' ".(!$_SESSION['glpifollowup_private']?"selected":"").">".$LANG["choice"][0]."</option>";
+		echo "<option value='1' ".($_SESSION['glpifollowup_private']?"selected":"").">".$LANG["choice"][1]."</option>";
 		echo "</select>";
 		echo "</td>";
 		echo "</tr>";

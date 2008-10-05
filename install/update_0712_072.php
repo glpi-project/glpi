@@ -675,8 +675,24 @@ function update0712to072() {
 		$query="ALTER TABLE `glpi_users` ADD `expand_soft_not_categorized` INT( 1 ) NOT NULL DEFAULT '1';";
 		$DB->query($query) or die("0.72 add expand_soft_not_categorized in users" . $LANG["update"][90] . $DB->error());
 	}
+
+	if (!FieldExists("glpi_users","expand_soft_not_categorized")){
+		$query="ALTER TABLE `glpi_users` ADD `expand_soft_not_categorized` INT( 1 ) NOT NULL DEFAULT '1';";
+		$DB->query($query) or die("0.72 add expand_soft_not_categorized in users" . $LANG["update"][90] . $DB->error());
+	}
+
+	if (!FieldExists("glpi_users","followup_private")){
+		$query="ALTER TABLE `glpi_users` ADD `followup_private` SMALLINT NOT NULL DEFAULT '0';";
+		$DB->query($query) or die("0.72 add followup_private in users" . $LANG["update"][90] . $DB->error());
+	}
 		 
-	 
+	if (!FieldExists("glpi_config","followup_private")){
+		$query="ALTER TABLE `glpi_config` ADD `followup_private` SMALLINT NOT NULL DEFAULT '0';";
+		$DB->query($query) or die("0.72 add followup_private in config" . $LANG["update"][90] . $DB->error());
+	}
+
+
+		 
 
 } // fin 0.72 #####################################################################################
 ?>
