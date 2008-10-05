@@ -106,9 +106,9 @@ function doHook ($name,$param=NULL) {
 	}
 	
 	if (isset($PLUGIN_HOOKS[$name]) && is_array($PLUGIN_HOOKS[$name])) {
-		foreach ($PLUGIN_HOOKS[$name] as $function) {
-			if (file_exists(GLPI_ROOT . "/plugins/$name/hook.php")) {
-				include_once(GLPI_ROOT . "/plugins/$name/hook.php");
+		foreach ($PLUGIN_HOOKS[$name] as $plug => $function) {
+			if (file_exists(GLPI_ROOT . "/plugins/$plug/hook.php")) {
+				include_once(GLPI_ROOT . "/plugins/$plug/hook.php");
 			}
 			if (function_exists($function)) {
 				$function($data);
@@ -133,11 +133,10 @@ function doHookFunction($name,$parm=NULL) {
 	if (isset($PLUGIN_HOOKS[$name])
 			&& is_array($PLUGIN_HOOKS[$name])) {
 
-		if (file_exists(GLPI_ROOT . "/plugins/$name/hook.php")) {
-			include_once(GLPI_ROOT . "/plugins/$name/hook.php");
-		}
-
-		foreach ($PLUGIN_HOOKS[$name] as $function) {
+		foreach ($PLUGIN_HOOKS[$name] as $plug => $function) {
+			if (file_exists(GLPI_ROOT . "/plugins/$plug/hook.php")) {
+				include_once(GLPI_ROOT . "/plugins/$plug/hook.php");
+			}
 			if (function_exists($function)) {
 				$ret = $function($ret);
 			}
