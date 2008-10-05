@@ -679,6 +679,12 @@ class Config extends CommonDBTM {
 
 
 		}
+
+		if ($oncentral){
+			echo "<tr class='tab_bg_2'><td class='center'> " . $LANG["setup"][39] . " </td><td>";
+			dropdownYesNo("followup_private", $data["followup_private"]);
+			echo "</td><td colspan='2'>&nbsp;</td></tr>";
+		}
 	
 		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["setup"][114] . "</td><td colspan='3'>";
 		echo "<table><tr>";

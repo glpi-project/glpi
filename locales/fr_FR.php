@@ -1419,6 +1419,7 @@ $LANG["setup"][14]="E-Mail";
 $LANG["setup"][18]="Login"; 
 $LANG["setup"][19]="Password"; 
 $LANG["setup"][35]="MHZ"; 
+$LANG["setup"][39]="Suivis privés par défaut"; 
 $LANG["setup"][40]="Montrer les nouveaux tickets d'abord ?"; 
 $LANG["setup"][41]="Langue"; 
 $LANG["setup"][42]="Types de matériels réseau"; 
