@@ -237,7 +237,7 @@ function getRulesByID($ID, $withcriterias, $withactions) {
 		echo "<table class='tab_cadrehov'>";
 		echo "<tr  class='tab_bg_2'>";
 		echo "<td width='100%'>";
-		echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ldap.parameters.php\">".$LANG["setup"][142]." ".$LANG["ruleldap"][1]."</a>";
+		echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ldap.parameters.php\">".$LANG["Menu"][26]." ".$LANG["ruleldap"][1]."</a>";
 		echo "</td></tr>";
 		echo "</table></div><br>";
 

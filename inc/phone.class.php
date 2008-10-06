@@ -351,7 +351,7 @@ class Phone extends CommonDBTM {
 			echo "</td></tr>";
 
 
-			echo "<tr><td>".$LANG["phones"][35].":	</td><td>";
+			echo "<tr><td>".$LANG["setup"][71].":	</td><td>";
 			autocompletionTextField("firmware","glpi_phones","firmware",$this->fields["firmware"],40,$this->fields["FK_entities"]);
 			echo "</td></tr>";
 

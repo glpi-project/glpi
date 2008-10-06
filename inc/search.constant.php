@@ -613,7 +613,7 @@ $SEARCH_OPTION[NETWORKING_TYPE][90]['name']=$LANG["title"][37];
 $SEARCH_OPTION[NETWORKING_TYPE][11]['table']='glpi_dropdown_firmware';
 $SEARCH_OPTION[NETWORKING_TYPE][11]['field']='name';
 $SEARCH_OPTION[NETWORKING_TYPE][11]['linkfield']='firmware';
-$SEARCH_OPTION[NETWORKING_TYPE][11]['name']=$LANG["networking"][49];
+$SEARCH_OPTION[NETWORKING_TYPE][11]['name']=$LANG["setup"][71];
 
 $SEARCH_OPTION[NETWORKING_TYPE][12]['table']='glpi_networking';
 $SEARCH_OPTION[NETWORKING_TYPE][12]['field']='ifaddr';
