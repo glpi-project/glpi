@@ -136,7 +136,7 @@ function printCalendrier($target,$ID=""){
 		}
 		$type=$ci->getType();
 		$name=$ci->getName();
-		$all="<a href='$target?show=resa&amp;ID=&amp;mois_courant=$mois_courant&amp;annee_courante=$annee_courante'>".$LANG["reservation"][26]."</a>";
+		$all="<a href='$target?show=resa&amp;ID=&amp;mois_courant=$mois_courant&amp;annee_courante=$annee_courante'>".$LANG["buttons"][40]."</a>";
 	} else {
 		$type="";
 		$name=$LANG["reservation"][25];
