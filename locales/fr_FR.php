@@ -1264,7 +1264,6 @@ $LANG["reservation"][20]="Retour au calendrier";
 $LANG["reservation"][21]="Voir les réservations"; 
 $LANG["reservation"][22]="Modifier le commentaire"; 
 $LANG["reservation"][25]="Tous les matériels en prêt"; 
-$LANG["reservation"][26]="Voir tous"; 
 $LANG["reservation"][27]="Répétition"; 
 $LANG["reservation"][28]="Par semaine"; 
 $LANG["reservation"][29]="Par jour"; 
