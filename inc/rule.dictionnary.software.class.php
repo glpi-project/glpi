@@ -59,6 +59,16 @@ class DictionnarySoftwareCollection extends RuleCachedCollection {
 		global $LANG;
 		return $LANG["rulesengine"][35];
 	}
+        function cleanTestOutputCriterias($output){
+
+                //If output array contains keys begining with _ : drop it
+                foreach($output as $criteria => $value){
+                        if ($criteria[0]=='_' && $criteria != '_ignore_ocs_import' ){
+                                unset($output[$criteria]);
+                        } 
+                }
+                return $output;
+        }
 
 	function warningBeforeReplayRulesOnExistingDB($target){
 		global $LANG,$CFG_GLPI;
