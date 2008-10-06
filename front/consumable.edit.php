@@ -82,7 +82,7 @@ else if (isset($_GET["restore"]))
 	$constype->check($_GET["tID"],'w');
 
 	$con->restore($_GET);
-	logEvent($_GET["tID"], "consumables", 5, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][92]);
+	logEvent($_GET["tID"], "consumables", 5, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][93]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 
