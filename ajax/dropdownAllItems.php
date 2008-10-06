@@ -46,7 +46,6 @@ checkCentralAccess();
 
 // Make a select box
 
-
 if (isset($LINK_ID_TABLE[$_POST["idtable"]])){
 	$table=$LINK_ID_TABLE[$_POST["idtable"]];
 
@@ -84,13 +83,13 @@ if (isset($LINK_ID_TABLE[$_POST["idtable"]])){
 	$default="<select name='".$_POST["myname"]."'><option value='0'>------</option></select>";
 	ajaxDropdown($use_ajax,"/ajax/$link",$paramsallitems,$default,$rand);
 
-	if(isset($_POST['value'])&&$_POST['value']>0){
-		$paramsallitems['searchText']=$_SESSION["glpiajax_wildcard"];
-		echo "<script type='text/javascript' >\n";
-		echo "	Ext.get('search_$rand').value='".$_SESSION["glpiajax_wildcard"]."';";
-		echo "</script>\n";
-		ajaxUpdateItem("results_$rand",$CFG_GLPI["root_doc"]."/ajax/$link",$paramsallitems);
-	}
+//	if(isset($_POST['value'])&&$_POST['value']>0){
+//		$paramsallitems['searchText']=$_SESSION["glpiajax_wildcard"];
+//		echo "<script type='text/javascript' >\n";
+//		echo "	Ext.get('search_$rand').value='".$_SESSION["glpiajax_wildcard"]."';";
+//		echo "</script>\n";
+//		ajaxUpdateItem("results_$rand",$CFG_GLPI["root_doc"]."/ajax/$link",$paramsallitems);
+//	}
 
 }		
 ?>
