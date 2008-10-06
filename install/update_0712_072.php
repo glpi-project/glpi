@@ -598,17 +598,17 @@ function update0712to072() {
 	}
 	
 	if (!FieldExists("glpi_users","numberformat")){
-		$query="ALTER TABLE `glpi_users`ADD `numberformat` SMALLINT NOT NULL DEFAULT '0';";
+		$query="ALTER TABLE `glpi_users` ADD `numberformat` SMALLINT NOT NULL DEFAULT '0';";
 		$DB->query($query) or die("0.72 add numberformat in users" . $LANG["update"][90] . $DB->error());
 	}
 
 	if (!FieldExists("glpi_users","view_ID")){
-		$query="ALTER TABLE `glpi_users`ADD `view_ID` SMALLINT NOT NULL DEFAULT '0';";
+		$query="ALTER TABLE `glpi_users` ADD `view_ID` SMALLINT NOT NULL DEFAULT '0';";
 		$DB->query($query) or die("0.72 add view_ID in users" . $LANG["update"][90] . $DB->error());
 	}
 
 	if (!FieldExists("glpi_users","dropdown_limit")){
-		$query="ALTER TABLE `glpi_users`ADD `dropdown_limit` INT NOT NULL DEFAULT '50';";
+		$query="ALTER TABLE `glpi_users` ADD `dropdown_limit` INT NOT NULL DEFAULT '50';";
 		$DB->query($query) or die("0.72 add dropdown_limit in users" . $LANG["update"][90] . $DB->error());
 	}
 
@@ -618,7 +618,7 @@ function update0712to072() {
 	}
 
 	if (!FieldExists("glpi_users","num_of_events")){
-		$query="ALTER TABLE `glpi_users`ADD `num_of_events` INT NOT NULL DEFAULT '10';	";
+		$query="ALTER TABLE `glpi_users` ADD `num_of_events` INT NOT NULL DEFAULT '10';	";
 		$DB->query($query) or die("0.72 add num_of_events in users" . $LANG["update"][90] . $DB->error());
 	}
 
@@ -669,11 +669,6 @@ function update0712to072() {
 	if (!FieldExists("glpi_users","expand_soft_categorized")){
 		$query="ALTER TABLE `glpi_users` ADD `expand_soft_categorized` INT( 1 ) NOT NULL DEFAULT '1';";
 		$DB->query($query) or die("0.72 add expand_soft_categorized in users" . $LANG["update"][90] . $DB->error());
-	}
-
-	if (!FieldExists("glpi_users","expand_soft_not_categorized")){
-		$query="ALTER TABLE `glpi_users` ADD `expand_soft_not_categorized` INT( 1 ) NOT NULL DEFAULT '1';";
-		$DB->query($query) or die("0.72 add expand_soft_not_categorized in users" . $LANG["update"][90] . $DB->error());
 	}
 
 	if (!FieldExists("glpi_users","expand_soft_not_categorized")){
