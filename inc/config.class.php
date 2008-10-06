@@ -181,7 +181,7 @@ class Config extends CommonDBTM {
 		echo " MB";
 		echo "</td></tr>";
 							
-		echo "<tr class='tab_bg_1'><td colspan='4' align='center'><strong>" . $LANG["setup"][10] . "</strong></td></tr>";
+		echo "<tr class='tab_bg_1'><td colspan='4' align='center'><strong>" . $LANG["Menu"][38] . "</strong></td></tr>";
 	
 		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["setup"][115] . "</td><td>";
 		dropdownInteger('cartridges_alarm', $CFG_GLPI["cartridges_alarm"], -1, 100);
@@ -322,7 +322,7 @@ class Config extends CommonDBTM {
 		echo "</td><td class='center'>&nbsp;</td><td>&nbsp;";
 		echo "</td></tr>";
 		
-		echo "<tr class='tab_bg_1'><td colspan='4' align='center'><strong>" . $LANG["setup"][406] . "</strong></td></tr>";
+		echo "<tr class='tab_bg_1'><td colspan='4' align='center'><strong>" . $LANG["setup"][6] . "</strong></td></tr>";
 
 		echo "<tr class='tab_bg_2'><td class='center'> " . $LANG["setup"][118] . " </td><td colspan='3' align='center'>";
 		echo "<textarea cols='70' rows='4' name='text_login' >";

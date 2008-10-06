@@ -915,9 +915,9 @@ global $CFG_GLPI,  $LANG;
 		echo "<td class='center' colspan='2'>";
 		$elts=array("name"=>$LANG["common"][57],
 			"contents"=>$LANG["joblist"][6],
-			"followup"=>$LANG["job"][7],
+			"followup"=>$LANG["Menu"][5],
 			"name_contents"=>$LANG["common"][57]." / ".$LANG["joblist"][6],
-			"name_contents_followup"=>$LANG["common"][57]." / ".$LANG["joblist"][6]." / ".$LANG["job"][7],
+			"name_contents_followup"=>$LANG["common"][57]." / ".$LANG["joblist"][6]." / ".$LANG["Menu"][5],
 			"ID"=>"ID");
 		echo "<select name='tosearch'>";
 		foreach ($elts as $key => $val){
@@ -1139,9 +1139,9 @@ function searchFormTracking($extended=0,$target,$start="",$status="new",$tosearc
 	echo "<td class='center' colspan='2'>";
 	$elts=array("name"=>$LANG["common"][57],
 		    "contents"=>$LANG["joblist"][6],
-		    "followup"=>$LANG["job"][7],
+		    "followup"=>$LANG["Menu"][5],
 		    "name_contents"=>$LANG["common"][57]." / ".$LANG["joblist"][6],
-		    "name_contents_followup"=>$LANG["common"][57]." / ".$LANG["joblist"][6]." / ".$LANG["job"][7],
+		    "name_contents_followup"=>$LANG["common"][57]." / ".$LANG["joblist"][6]." / ".$LANG["Menu"][5],
 		    "ID"=>"ID");
 	echo "<select name='tosearch'>";
 	foreach ($elts as $key => $val){

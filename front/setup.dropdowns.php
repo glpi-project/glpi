@@ -170,7 +170,7 @@ if (isset($_POST['mass_delete'])){
 
 					),
 
-			$LANG["setup"][142]=>array(
+			$LANG["Menu"][26]=>array(
 					"glpi_dropdown_budget"=>$LANG["financial"][87],
 					"glpi_dropdown_rubdocs"=>$LANG["setup"][81],
 					),
@@ -179,7 +179,7 @@ if (isset($_POST['mass_delete'])){
 					"glpi_dropdown_tracking_category"=>$LANG["setup"][79],
 					),
 
-			$LANG["setup"][144]=>array(
+			$LANG["Menu"][18]=>array(
 					"glpi_dropdown_kbcategories"=>$LANG["title"][5],	
 					),
 

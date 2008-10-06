@@ -386,7 +386,7 @@ class Profile extends CommonDBTM{
 		dropdownYesNo("is_default",$this->fields["is_default"]);
 		echo "</th></tr>";
 		// Inventory
-		echo "<tr><td class='tab_bg_1' colspan='6' align='center'><strong>".$LANG["setup"][10]."</strong></td></tr>";
+		echo "<tr><td class='tab_bg_1' colspan='6' align='center'><strong>".$LANG["Menu"][38]."</strong></td></tr>";
 
 		echo "<tr class='tab_bg_2'>";
 		echo "<td>".$LANG["Menu"][0].":</td><td>";

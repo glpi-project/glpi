@@ -390,11 +390,11 @@ function logArray(){
 			"transfers"=>$LANG["transfer"][1]);
 
 
-	$logService=array("inventory"=>$LANG["log"][50],
-			"tracking"=>$LANG["log"][51],
+	$logService=array("inventory"=>$LANG["Menu"][38],
+			"tracking"=>$LANG["Menu"][5],
 			"planning"=>$LANG["Menu"][29],
-			"tools"=>$LANG["log"][53],
-			"financial"=>$LANG["log"][54],
+			"tools"=>$LANG["Menu"][18],
+			"financial"=>$LANG["Menu"][26],
 			"login"=>$LANG["log"][55],
 			"setup"=>$LANG["common"][12],
 			"security"=>$LANG["log"][66],

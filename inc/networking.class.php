@@ -351,7 +351,7 @@ class Netdevice extends CommonDBTM {
 			dropdownValue("glpi_dropdown_model_networking", "model", $this->fields["model"]);
 			echo "</td></tr>";
 
-			echo "<tr><td>".$LANG["networking"][49].": 	</td><td>\n";
+			echo "<tr><td>".$LANG["setup"][71].": 	</td><td>\n";
 			dropdownValue("glpi_dropdown_firmware", "firmware", $this->fields["firmware"]);
 			echo "</td></tr>\n";
 
