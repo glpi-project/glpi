@@ -71,8 +71,7 @@ checkRight("monitor","r");
 				showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",MONITOR_TYPE,$_POST["ID"]);
 				showContractAssociated(MONITOR_TYPE,$_POST["ID"]);			
 				showDocumentAssociated(MONITOR_TYPE,$_POST["ID"]);	
-				showJobListForItem($_SESSION["glpiname"],MONITOR_TYPE,$_POST["ID"],$_POST["sort"],$_POST["order"]);
-				showOldJobListForItem($_SESSION["glpiname"],MONITOR_TYPE,$_POST["ID"],$_POST["sort"],$_POST["order"]);	
+				showJobListForItem(MONITOR_TYPE,$_POST["ID"]);
 				showLinkOnDevice(MONITOR_TYPE,$_POST["ID"]);
 				displayPluginAction(MONITOR_TYPE,$_POST["ID"],$_POST['glpi_tab'],$_POST["withtemplate"]);
 				break;
@@ -84,8 +83,7 @@ checkRight("monitor","r");
 				showDocumentAssociated(MONITOR_TYPE,$_POST["ID"]);	
 				break;
 			case 6 :			
-				showJobListForItem($_SESSION["glpiname"],MONITOR_TYPE,$_POST["ID"],$_POST["sort"],$_POST["order"]);
-				showOldJobListForItem($_SESSION["glpiname"],MONITOR_TYPE,$_POST["ID"],$_POST["sort"],$_POST["order"]);	
+				showJobListForItem(MONITOR_TYPE,$_POST["ID"]);
 				break;
 			case 7 :
 				showLinkOnDevice(MONITOR_TYPE,$_POST["ID"]);

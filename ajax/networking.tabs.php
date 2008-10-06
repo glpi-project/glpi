@@ -80,8 +80,7 @@ $netdevice->check($_POST["ID"],'r');
 					showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",NETWORKING_TYPE,$_POST["ID"]);
 					showContractAssociated(NETWORKING_TYPE,$_POST["ID"]);
 					showDocumentAssociated(NETWORKING_TYPE,$_POST["ID"],$_POST["withtemplate"]);
-					showJobListForItem($_SESSION["glpiname"],NETWORKING_TYPE,$_POST["ID"],$_POST["sort"],$_POST["order"]);
-					showOldJobListForItem($_SESSION["glpiname"],NETWORKING_TYPE,$_POST["ID"],$_POST["sort"],$_POST["order"]);
+					showJobListForItem(NETWORKING_TYPE,$_POST["ID"]);
 					showLinkOnDevice(NETWORKING_TYPE,$_POST["ID"]);
 					displayPluginAction(NETWORKING_TYPE,$_POST["ID"],$_POST['glpi_tab'],$_POST["withtemplate"]);
 					break;
@@ -93,8 +92,7 @@ $netdevice->check($_POST["ID"],'r');
 					showDocumentAssociated(NETWORKING_TYPE,$_POST["ID"],$_POST["withtemplate"]);
 					break;
 				case 6 :
-					showJobListForItem($_SESSION["glpiname"],NETWORKING_TYPE,$_POST["ID"],$_POST["sort"],$_POST["order"]);
-					showOldJobListForItem($_SESSION["glpiname"],NETWORKING_TYPE,$_POST["ID"],$_POST["sort"],$_POST["order"]);
+					showJobListForItem(NETWORKING_TYPE,$_POST["ID"]);
 					break;
 				case 7 :
 					showLinkOnDevice(NETWORKING_TYPE,$_POST["ID"]);

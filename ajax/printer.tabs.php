@@ -81,8 +81,7 @@ checkRight("printer","r");
 				showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",PRINTER_TYPE,$_POST["ID"]);
 				showContractAssociated(PRINTER_TYPE,$_POST["ID"]);
 				showDocumentAssociated(PRINTER_TYPE,$_POST["ID"]);
-				showJobListForItem($_SESSION["glpiname"],PRINTER_TYPE,$_POST["ID"],$_POST["sort"],$_POST["order"]);
-				showOldJobListForItem($_SESSION["glpiname"],PRINTER_TYPE,$_POST["ID"],$_POST["sort"],$_POST["order"]);		
+				showJobListForItem(PRINTER_TYPE,$_POST["ID"]);
 				showLinkOnDevice(PRINTER_TYPE,$_POST["ID"]);
 				displayPluginAction(PRINTER_TYPE,$_POST["ID"],$_SESSION['glpi_tab'],$_POST["withtemplate"]);
 				break;
@@ -99,8 +98,7 @@ checkRight("printer","r");
 				showDocumentAssociated(PRINTER_TYPE,$_POST["ID"]);
 				break;
 			case 6 :	
-				showJobListForItem($_SESSION["glpiname"],PRINTER_TYPE,$_POST["ID"],$_POST["sort"],$_POST["order"]);
-				showOldJobListForItem($_SESSION["glpiname"],PRINTER_TYPE,$_POST["ID"],$_POST["sort"],$_POST["order"]);	
+				showJobListForItem(PRINTER_TYPE,$_POST["ID"]);
 				break;
 			case 7 :
 				showLinkOnDevice(PRINTER_TYPE,$_POST["ID"]);

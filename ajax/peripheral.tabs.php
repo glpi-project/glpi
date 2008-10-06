@@ -80,8 +80,7 @@ if(!isset($_POST["withtemplate"])) $_POST["withtemplate"] = "";
 					showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",PERIPHERAL_TYPE,$_POST["ID"]);
 					showContractAssociated(PERIPHERAL_TYPE,$_POST["ID"]);
 					showDocumentAssociated(PERIPHERAL_TYPE,$_POST["ID"]);
-					showJobListForItem($_SESSION["glpiname"],PERIPHERAL_TYPE,$_POST["ID"],$_POST["sort"],$_POST["order"]);
-					showOldJobListForItem($_SESSION["glpiname"],PERIPHERAL_TYPE,$_POST["ID"],$_POST["sort"],$_POST["order"]);
+					showJobListForItem(PERIPHERAL_TYPE,$_POST["ID"]);
 					showLinkOnDevice(PERIPHERAL_TYPE,$_POST["ID"]);
 					displayPluginAction(PERIPHERAL_TYPE,$_POST["ID"],$_POST['glpi_tab'],$_POST["withtemplate"]);
 					break;
@@ -93,8 +92,7 @@ if(!isset($_POST["withtemplate"])) $_POST["withtemplate"] = "";
 					showDocumentAssociated(PERIPHERAL_TYPE,$_POST["ID"]);
 					break;
 				case 6 :
-					showJobListForItem($_SESSION["glpiname"],PERIPHERAL_TYPE,$_POST["ID"],$_POST["sort"],$_POST["order"]);
-					showOldJobListForItem($_SESSION["glpiname"],PERIPHERAL_TYPE,$_POST["ID"],$_POST["sort"],$_POST["order"]);
+					showJobListForItem(PERIPHERAL_TYPE,$_POST["ID"]);
 					break;
 				case 7 :
 					showLinkOnDevice(PERIPHERAL_TYPE,$_POST["ID"]);
