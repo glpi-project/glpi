@@ -78,8 +78,7 @@ if(!isset($_POST["withtemplate"])) $_POST["withtemplate"] = "";
 					showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",SOFTWARE_TYPE,$_POST["ID"]);
 					showContractAssociated(SOFTWARE_TYPE,$_POST["ID"]);
 					showDocumentAssociated(SOFTWARE_TYPE,$_POST["ID"]);
-					showJobListForItem($_SESSION["glpiname"],SOFTWARE_TYPE,$_POST["ID"],$_POST["sort"],$_POST["order"]);
-					showOldJobListForItem($_SESSION["glpiname"],SOFTWARE_TYPE,$_POST["ID"],$_POST["sort"],$_POST["order"]);
+					showJobListForItem(SOFTWARE_TYPE,$_POST["ID"]);
 					showLinkOnDevice(SOFTWARE_TYPE,$_POST["ID"]);
 					displayPluginAction(SOFTWARE_TYPE,$_POST["ID"],$_POST['glpi_tab'],$_POST["withtemplate"]);
 					break;
@@ -94,8 +93,7 @@ if(!isset($_POST["withtemplate"])) $_POST["withtemplate"] = "";
 					showDocumentAssociated(SOFTWARE_TYPE,$_POST["ID"]);
 					break;
 				case 6 :
-					showJobListForItem($_SESSION["glpiname"],SOFTWARE_TYPE,$_POST["ID"],$_POST["sort"],$_POST["order"]);
-					showOldJobListForItem($_SESSION["glpiname"],SOFTWARE_TYPE,$_POST["ID"],$_POST["sort"],$_POST["order"]);
+					showJobListForItem(SOFTWARE_TYPE,$_POST["ID"]);
 					break;
 				case 7 :
 					showLinkOnDevice(SOFTWARE_TYPE,$_POST["ID"]);

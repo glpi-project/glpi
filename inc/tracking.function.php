@@ -106,7 +106,7 @@ function showTrackingOnglets($target){
 }
 
 
-function commonTrackingListHeader($output_type=HTML_OUTPUT,$target="",$parameters="",$sort="",$order=""){
+function commonTrackingListHeader($output_type=HTML_OUTPUT,$target="",$parameters="",$sort="",$order="",$nolink=false){
 	global $LANG,$CFG_GLPI;
 
 	// New Line for Header Items Line
@@ -130,11 +130,14 @@ function commonTrackingListHeader($output_type=HTML_OUTPUT,$target="",$parameter
 	foreach ($items as $key => $val){
 		$issort=0;
 		$link="";
-		if ($sort==$val) $issort=1;
-		$link=$target."?".$parameters."&amp;order=".($order=="ASC"?"DESC":"ASC")."&amp;sort=$val";
-		if (ereg("helpdesk.public.php",$target)){
-			$link.="&amp;show=user";
+		if (!$nolink){
+			if ($sort==$val) $issort=1;
+			$link=$target."?".$parameters."&amp;order=".($order=="ASC"?"DESC":"ASC")."&amp;sort=$val";
+			if (ereg("helpdesk.public.php",$target)){
+				$link.="&amp;show=user";
+			}
 		}
+		
 		echo displaySearchHeaderItem($output_type,$key,$header_num,$link,$issort,$order);
 	}
 
@@ -289,62 +292,7 @@ function showCentralJobCount(){
 
 
 
-function showOldJobListForItem($username,$item_type,$item,$sort="",$order="") {
-	// $item is required
-	// affiche toutes les vielles intervention pour un $item donn� 
-
-
-	global $DB,$CFG_GLPI, $LANG;
-
-	if (!haveRight("show_all_ticket","1")) return false;
-
-	if ($sort==""){
-		$sort="glpi_tracking.date_mod";
-	}
-	if ($order==""){
-		$order=getTrackingOrderPrefs($_SESSION["glpiID"]);
-	}
-
-	$where = "(status = 'old_done' OR status = 'old_notdone')";	
-
-	$query = "SELECT ".getCommonSelectForTrackingSearch()." FROM glpi_tracking ".getCommonLeftJoinForTrackingSearch()." WHERE $where AND (device_type = '$item_type' and computer = '$item') ORDER BY $sort $order";
-
-
-	$result = $DB->query($query);
-
-	$i = 0;
-	$number = $DB->numrows($result);
-
-	if ($number > 0)
-	{
-		echo "<div class='center'>&nbsp;<table class='tab_cadre_fixe'>";
-		echo "<tr><th colspan='10'>".$number." ".$LANG["job"][18]."  ".$LANG["job"][17];
-		echo " ".$LANG["job"][16].":&nbsp;";
-		echo "<a href='".$CFG_GLPI["root_doc"]."/front/tracking.php?reset=reset_before&amp;status=all&amp;item=$item&amp;type=$item_type'>".$LANG["buttons"][23]."</a>";
-
-		echo "</th></tr>";
-
-		commonTrackingListHeader(HTML_OUTPUT,$_SERVER['PHP_SELF'],"ID=$item",$sort,$order);
-
-		while ($data=$DB->fetch_assoc($result)){
-			showJobShort($data, 0);
-			$i++;
-		}
-
-		echo "</table></div>";
-	} 
-	else
-	{
-		echo "<div class='center'>";
-		echo "<table class='tab_cadre_fixe'>";
-		echo "<tr><th>".$LANG["joblist"][22]."</th></tr>";
-		echo "</table>";
-		echo "</div><br>";
-	}
-
-}
-
-function showJobListForItem($username,$item_type,$item,$sort="",$order="") {
+function showJobListForItem($item_type,$item) {
 	// $item is required
 	//affiche toutes les vielles intervention pour un $item donn� 
 
@@ -352,17 +300,12 @@ function showJobListForItem($username,$item_type,$item,$sort="",$order="") {
 
 	if (!haveRight("show_all_ticket","1")) return false;
 
-	if ($sort==""){
-		$sort="glpi_tracking.date_mod";
-	}
-	if ($order==""){
-		$order=getTrackingOrderPrefs($_SESSION["glpiID"]);
-	}
+	$where = "";	
 
-
-	$where = "(status = 'new' OR status= 'assign' OR status='plan' OR status='waiting')";	
-
-	$query = "SELECT ".getCommonSelectForTrackingSearch()." FROM glpi_tracking ".getCommonLeftJoinForTrackingSearch()." WHERE $where and (computer = '$item' and device_type= '$item_type') ORDER BY $sort $order";
+	$query = "SELECT ".getCommonSelectForTrackingSearch()." 
+			FROM glpi_tracking ".getCommonLeftJoinForTrackingSearch()." 
+			WHERE (computer = '$item' and device_type= '$item_type') 
+				ORDER BY glpi_tracking.date_mod DESC LIMIT ".$_SESSION['glpilist_limit'];
 
 	$result = $DB->query($query);
 
@@ -371,10 +314,8 @@ function showJobListForItem($username,$item_type,$item,$sort="",$order="") {
 	if ($number > 0)
 	{
 		echo "<div class='center'><table class='tab_cadre_fixe'>";
-		echo "<tr><th colspan='10'>".$number." ".$LANG["job"][17]."";
-		//if ($number > 1) { echo "s"; }
-		echo " ".$LANG["job"][16].":&nbsp;";
-		echo "<a href='".$CFG_GLPI["root_doc"]."/front/tracking.php?reset=reset_before&amp;status=all&amp;item=$item&amp;type=$item_type'>".$LANG["buttons"][23]."</a>";
+		echo "<tr><th colspan='10'>".$number." ".$LANG["job"][8].": &nbsp;";
+		echo "<a href='".$CFG_GLPI["root_doc"]."/front/tracking.php?reset=reset_before&amp;status=all&amp;item=$item&amp;type=$item_type'>".$LANG["buttons"][40]."</a>";
 		echo "</th></tr>";
 
 		if ($item)
@@ -386,7 +327,7 @@ function showJobListForItem($username,$item_type,$item,$sort="",$order="") {
 			echo "</td></tr>";
 		}
 		
-		commonTrackingListHeader(HTML_OUTPUT,$_SERVER['PHP_SELF'],"ID=$item",$sort,$order);
+		commonTrackingListHeader(HTML_OUTPUT,$_SERVER['PHP_SELF'],"ID=$item","","",true);
 
 		while ($data=$DB->fetch_assoc($result)){
 			showJobShort($data, 0);
