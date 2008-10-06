@@ -43,7 +43,7 @@ foreach (@lines)
 {
 	if ($_=~m/(\$[A-Z_]*LANG[A-Z_]*)\[\"([a-zA-Z]+)\"\]\[([a-zA-Z0-9]+)\]\s*=\s*"(.*)";\s$/){
 		$search_string=$4;
-		$founded= `grep -i \"\\\"$search_string\\\"\" $file | wc -l`;
+		$founded= `grep -i \"=\s*\\\"$search_string\\\"\" $file | wc -l`;
 		if ($founded > 1){
 			print "SEARCH $4 ";
 			print $founded;
