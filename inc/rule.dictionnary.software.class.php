@@ -60,6 +60,18 @@ class DictionnarySoftwareCollection extends RuleCachedCollection {
 		return $LANG["rulesengine"][35];
 	}
 
+        function cleanTestOutputCriterias($output){
+
+                //If output array contains keys begining with _ : drop it
+                foreach($output as $criteria => $value){
+                        if ($criteria[0]=='_' && $criteria != '_ignore_ocs_import' ){
+                                unset($output[$criteria]);
+                        } 
+                }
+                return $output;
+        }
+
+
 	function warningBeforeReplayRulesOnExistingDB($target){
 		global $LANG,$CFG_GLPI;
 		echo "<form name='testrule_form' id='softdictionnary_confirmation' method='post' action=\"".$target."\">\n";
