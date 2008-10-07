@@ -78,9 +78,10 @@ function ocsShowNewComputer($ocs_server_id, $advanced, $check, $start, $tolinked
 
 	$WHERE = ocsGetTagLimit($cfg_ocs);
 
-	$query_ocs = "SELECT hardware.*, accountinfo.TAG AS TAG 
+	$query_ocs = "SELECT hardware.*, accountinfo.TAG AS TAG, bios.SSN as SERIAL 
 				FROM hardware 
-				INNER JOIN accountinfo ON (hardware.ID = accountinfo.HARDWARE_ID) ".
+				INNER JOIN accountinfo ON (hardware.ID = accountinfo.HARDWARE_ID)
+				INNER JOIN bios ON (hardware.ID = bios.HARDWARE_ID)". 
 				(!empty($WHERE)?"WHERE $WHERE":"")." ORDER BY hardware.NAME";
 	$result_ocs = $DBocs->query($query_ocs);
 
@@ -107,6 +108,7 @@ function ocsShowNewComputer($ocs_server_id, $advanced, $check, $start, $tolinked
 			$hardware[$data["ID"]]["name"] = $data["NAME"];
 			$hardware[$data["ID"]]["TAG"] = $data["TAG"];
 			$hardware[$data["ID"]]["ID"] = $data["ID"];
+			$hardware[$data["ID"]]["serial"] = $data["SERIAL"];
 		}
 
 		// Get all links between glpi and OCS
@@ -181,14 +183,14 @@ function ocsShowNewComputer($ocs_server_id, $advanced, $check, $start, $tolinked
 
 			echo "<table class='tab_cadre'>";
 
-			echo "<tr><th>" . $LANG["ocsng"][5] . "</th><th>" . $LANG["common"][27] . "</th><th>TAG</th>";
+			echo "<tr><th>" . $LANG["ocsng"][5] . "</th><th>".$LANG["common"][19]."</th><th>" . $LANG["common"][27] . "</th><th>TAG</th>";
 			if ($advanced && !$tolinked) {
 				echo "<th>" . $LANG["ocsng"][40] . "</th>";
 				echo "<th>" . $LANG["ocsng"][36] . "</th>";
 			}
 			echo "<th>&nbsp;</th></tr>";
 
-			echo "<tr class='tab_bg_1'><td colspan='" . ($advanced ? 6 : 4) . "' align='center'>";
+			echo "<tr class='tab_bg_1'><td colspan='" . ($advanced ? 7 : 5) . "' align='center'>";
 			echo "<input class='submit' type='submit' name='import_ok' value='" . $LANG["buttons"][37] . "'>";
 			echo "</td></tr>";
 
@@ -202,7 +204,7 @@ function ocsShowNewComputer($ocs_server_id, $advanced, $check, $start, $tolinked
 				if ($advanced && !$tolinked)
 					$data = $rule->processAllRules(array (), array (), $tab["ID"]);
 
-				echo "<tr class='tab_bg_2'><td>" . $tab["name"] . "</td><td>" . convDateTime($tab["date"]) . "</td><td>" . $tab["TAG"] . "</td>";
+				echo "<tr class='tab_bg_2'><td>" . $tab["name"] . "</td><td>".$tab["serial"]."</td><td>" . convDateTime($tab["date"]) . "</td><td>" . $tab["TAG"] . "</td>";
 
 				if ($advanced && !$tolinked) {
 					if (!isset ($data['FK_entities'])) {
@@ -232,7 +234,7 @@ function ocsShowNewComputer($ocs_server_id, $advanced, $check, $start, $tolinked
 
 				echo "</tr>";
 			}
-			echo "<tr class='tab_bg_1'><td colspan='" . ($advanced ? 6 : 4) . "' align='center'>";
+			echo "<tr class='tab_bg_1'><td colspan='" . ($advanced ? 7 : 5) . "' align='center'>";
 			echo "<input class='submit' type='submit' name='import_ok' value='" . $LANG["buttons"][37] . "'>";
 			echo "<input type=hidden name='ocs_server_id' value='" . $ocs_server_id . "'>";
 			echo "</td></tr>";
