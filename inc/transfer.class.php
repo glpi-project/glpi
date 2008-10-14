@@ -2441,7 +2441,7 @@ class Transfer extends CommonDBTM{
 			foreach ($_SESSION['glpitransfer_list'] as $type => $tab){
 				if (count($tab)){
 					$table=$LINK_ID_TABLE[$type];
-					$query="SELECT $table.name, glpi_entities.completename AS locname, glpi_entities.ID AS entID 
+					$query="SELECT $table.ID, $table.name, glpi_entities.completename AS locname, glpi_entities.ID AS entID 
 						FROM $table LEFT JOIN glpi_entities ON ($table.FK_entities = glpi_entities.ID) 
 						WHERE $table.ID IN ".$this->createSearchConditionUsingArray($tab)."
 						ORDER BY locname, $table.name";
@@ -2462,7 +2462,7 @@ class Transfer extends CommonDBTM{
 										echo '<strong>'.$LANG["entity"][2].'</strong><br>';
 									}
 								}
-								echo $data['name']."<br>";
+								echo ($data['name'] ? $data['name']."<br>" : "(".$data['ID'].")<br>");
 							}
 						}
 					}
