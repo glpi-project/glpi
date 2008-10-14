@@ -44,7 +44,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 commonHeader($LANG["transfer"][1],$_SERVER['PHP_SELF'],"admin","transfer");
 
 $transfer=new Transfer();
-$transfer->check(-1,"w");
+$transfer->check(-1,"r");
 
 
 if (isset($_POST['transfer'])){
