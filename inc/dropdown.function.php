@@ -1451,7 +1451,7 @@ function dropdownMassiveAction($device_type,$deleted=0){
 		if (haveTypeRight(CONTRACT_TYPE,"w") &&in_array($device_type,$CFG_GLPI["state_types"])){
 			echo "<option value=\"add_contract\">".$LANG["financial"][36]."</option>";
 		}
-		if (haveRight('transfer','w') && isMultiEntitiesMode() && 
+		if (haveRight('transfer','r') && isMultiEntitiesMode() && 
 				in_array($device_type, 	array(CARTRIDGE_TYPE,COMPUTER_TYPE,CONSUMABLE_TYPE,CONTACT_TYPE,CONTRACT_TYPE,ENTERPRISE_TYPE,
 				MONITOR_TYPE,NETWORKING_TYPE,PERIPHERAL_TYPE,PHONE_TYPE,PRINTER_TYPE,SOFTWARE_TYPE,TRACKING_TYPE,DOCUMENT_TYPE,GROUP_TYPE))
 				&& $isadmin

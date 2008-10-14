@@ -42,7 +42,7 @@ $transfer=new Transfer();
 
 
 commonHeader($LANG["transfer"][1],$_SERVER['PHP_SELF'],"admin","transfer");
-checkRight("transfer","w");
+checkRight("transfer","r");
 
 
 
