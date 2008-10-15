@@ -107,7 +107,7 @@ function showGroupUsers($target,$ID){
 			while ($data=$DB->fetch_array($result)){
 				if ($i%$nb_per_line==0) {
 					if ($i!=0) echo "</tr>";
-					echo "<tr class='tab_bg_1".($data["deleted"]=='1'?"_2":"")."'>";
+					echo "<tr class='tab_bg_1'>";
 				}
 				if ($canedit){
 					echo "<td width='10'>";
@@ -119,7 +119,7 @@ function showGroupUsers($target,$ID){
 	
 				$used[$data["ID"]]=$data["ID"];
 				
-				echo "<td>";
+				echo "<td class='tab_bg_1".($data["deleted"]=='1'?"_2":"")."'>";
 				echo formatUserName($data["ID"],$data["name"],$data["realname"],$data["firstname"],1);
 				echo "</td>";
 				$i++;
