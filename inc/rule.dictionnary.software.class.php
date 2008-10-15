@@ -170,6 +170,7 @@ class DictionnarySoftwareCollection extends RuleCachedCollection {
 						
 		} else {
 			$this->replayDictionnaryOnSoftwaresByID($items);
+			return true;
 		}
 		if (isCommandLine())
 			echo "replayRulesOnExistingDB ended : " . date("r") . "\n";
