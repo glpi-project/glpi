@@ -568,7 +568,6 @@ class CommonDBTM {
 						if ($key!="ID"){
 							// Store old values
 							$oldvalues[$key]=$this->fields[$key];
-							echo $this->fields[$key]."--".$input[$key].'<br>';
 							$this->fields[$key] = $input[$key];
 							$updates[$x] = $key;
 							$x++;
@@ -576,7 +575,6 @@ class CommonDBTM {
 					}
 				}
 			}
-							exit();
 
 			if(count($updates)){
 				if (isset($this->fields['date_mod'])){
