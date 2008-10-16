@@ -431,6 +431,32 @@ class Plugin extends CommonDBTM {
 			$this->removeFromSession($this->fields['directory']);
 		}
 	}
+
+	/**
+	 * is a plugin activated
+	 *
+	 *@param $plugin plugin directory
+	**/	
+	function isActivated($plugin){
+		if ($this->getFromDBbyName($plugin)){
+			return ($this->fields['state']==PLUGIN_ACTIVATED);
+		}
+	}
+
+	/**
+	 * is a plugin installed
+	 *
+	 *@param $plugin plugin directory
+	**/	
+	function isInstalled($plugin){
+		if ($this->getFromDBbyName($plugin)){
+			return ($this->fields['state']==PLUGIN_ACTIVATED 
+				|| $this->fields['state']==PLUGIN_TOBECONFIGURED
+				|| $this->fields['state']==PLUGIN_NOTACTIVATED
+			);
+		}
+	}
+
 	/**
 	 * remove plugin from session variable
 	 *
