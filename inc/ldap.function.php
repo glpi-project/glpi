@@ -649,6 +649,29 @@ function showSynchronizationForm($target, $ID) {
 					echo "</form></div>";
 				break;
 				case AUTH_EXTERNAL :
+					echo "<div class='center'>";
+					echo "<form method='post' action=\"$target\">";
+
+					if ($data["id_auth"]){
+						//Look it the auth server still exists ! <- Bad idea : id not exists unable to change anything
+						$sql = "SELECT name FROM glpi_auth_ldap WHERE ID=" . $data["id_auth"];
+						$result = $DB->query($sql);
+	
+						if ($DB->numrows($result) > 0) {
+							echo "<table class='tab_cadre'><tr class='tab_bg_2'><td>";
+							echo "<input type='hidden' name='ID' value='" . $ID . "'>";
+							echo "<input class=submit type='submit' name='force_ldap_resynch' value='" . $LANG["ocsng"][24] . "'>";
+							echo "</td></tr></table>";
+						}
+					}
+					echo "<br>";
+					formChangeAuthMethodToDB($ID);
+					echo "<br>";
+					formChangeAuthMethodToLDAP($ID);
+					echo "<br>";
+					formChangeAuthMethodToMail($ID);
+					echo "</form></div>";
+					
 				case AUTH_X509 :
 					echo "<div class='center'>";
 					echo "<form method='post' action=\"$target\">";
