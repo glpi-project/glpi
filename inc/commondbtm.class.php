@@ -981,7 +981,7 @@ class CommonDBTM {
 		$template="";
 		$templatehtml="";
 		if(!empty($withtemplate)){
-			$template="withtemplate=$withtemplate";
+			$template="&withtemplate=$withtemplate";
 			$templatehtml="&amp;withtemplate=$withtemplate";
 		}
 		$extraparamhtml="";
