@@ -35,7 +35,7 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-$NEEDED_ITEMS=array("computer","search","software");
+$NEEDED_ITEMS=array("computer","search","software","document");
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
