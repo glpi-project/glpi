@@ -559,11 +559,16 @@ class CommonDBTM {
 			$oldvalues=array();
 			foreach ($input as $key => $val) {
 				if (array_key_exists($key,$this->fields)){
-					if ($this->fields[$key] != stripslashes($input[$key])) {
+					// Prevent history for date statement (for date for example)
+					if ( is_null($this->fields[$key]) && $input[$key]=='NULL'){
+						$this->fields[$key]='NULL';
+					}
+											
+					if ( $this->fields[$key] != stripslashes($input[$key])) {
 						if ($key!="ID"){
 							// Store old values
 							$oldvalues[$key]=$this->fields[$key];
-
+							echo $this->fields[$key]."--".$input[$key].'<br>';
 							$this->fields[$key] = $input[$key];
 							$updates[$x] = $key;
 							$x++;
@@ -571,6 +576,7 @@ class CommonDBTM {
 					}
 				}
 			}
+							exit();
 
 			if(count($updates)){
 				if (isset($this->fields['date_mod'])){
