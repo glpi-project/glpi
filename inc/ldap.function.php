@@ -671,7 +671,7 @@ function showSynchronizationForm($target, $ID) {
 					echo "<br>";
 					formChangeAuthMethodToMail($ID);
 					echo "</form></div>";
-					
+					break;
 				case AUTH_X509 :
 					echo "<div class='center'>";
 					echo "<form method='post' action=\"$target\">";
