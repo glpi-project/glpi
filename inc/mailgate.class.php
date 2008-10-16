@@ -596,7 +596,7 @@ class MailCollect {
 					$name=$struckture->parts[$key]->dparameters[0]->value;
 					$message = imap_fetchbody($this->marubox,$mid,$key+1);
 					if ($enc == 0)
-						$message = imap_8bit($message);
+						$message = imap_7bit($message);
 					if ($enc == 1)
 						$message = imap_8bit ($message);
 					if ($enc == 2)
@@ -675,7 +675,7 @@ class MailCollect {
 					case 1:	$message = imap_8bit($message); break;
 					case 2: $message = imap_binary($message); break;
 					case 3: $message = imap_base64($message); break;
-					case 4: $message = quoted_printable($message); break;
+					case 4: $message = quoted_printable_decode($message); break;
 				}	
 				$fp=fopen($path.$filename,"w");
 				if ($fp) {
