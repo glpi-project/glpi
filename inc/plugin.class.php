@@ -50,15 +50,15 @@ class Plugin extends CommonDBTM {
 	}
 	
 	/**
-	 * Retrieve an item from the database using its name
+	 * Retrieve an item from the database using its directory
 	 *
 	 *@param $name name of the plugin
 	 *@return true if succeed else false
 	 * 
 	**/	
-	function getFromDBbyName($name) {
+	function getFromDBbyDir($dir) {
 		global $DB;
-		$query = "SELECT * FROM ".$this->table." WHERE (name = '" . $name . "')";
+		$query = "SELECT * FROM ".$this->table." WHERE (directory = '" . $dir . "')";
 		if ($result = $DB->query($query)) {
 			if ($DB->numrows($result) != 1) {
 				return false;
@@ -438,7 +438,7 @@ class Plugin extends CommonDBTM {
 	 *@param $plugin plugin directory
 	**/	
 	function isActivated($plugin){
-		if ($this->getFromDBbyName($plugin)){
+		if ($this->getFromDBbyDir($plugin)){
 			return ($this->fields['state']==PLUGIN_ACTIVATED);
 		}
 	}
@@ -449,7 +449,7 @@ class Plugin extends CommonDBTM {
 	 *@param $plugin plugin directory
 	**/	
 	function isInstalled($plugin){
-		if ($this->getFromDBbyName($plugin)){
+		if ($this->getFromDBbyDir($plugin)){
 			return ($this->fields['state']==PLUGIN_ACTIVATED 
 				|| $this->fields['state']==PLUGIN_TOBECONFIGURED
 				|| $this->fields['state']==PLUGIN_NOTACTIVATED
