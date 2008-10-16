@@ -191,6 +191,11 @@ class CommonItem{
 					if ($device_type>1000){
 						if (isset($PLUGIN_HOOKS['plugin_classes'][$device_type])){
 							$class=$PLUGIN_HOOKS['plugin_classes'][$device_type];
+							$plug=$PLUGIN_HOOKS['plugin_types'][$device_type];
+							if (file_exists(GLPI_ROOT . "/plugins/$plug/hook.php")) {
+								include_once(GLPI_ROOT . "/plugins/$plug/hook.php");
+							}
+
 							if (class_exists($class)){
 								$this->obj = new $class();
 							} 
