@@ -233,7 +233,9 @@ class Cron {
 //						logEvent("-1", "system", 3, "cron", $tache." (" . $this->timer('tache') . ") ".$LANG["log"][45] );
 						logInFile("cron","$tache Successfull (" . $this->timer('tache') . ")\n");
 					}
-				}# else log("cron $tache a reprendre");
+				} else {
+					logInFile("cron","$tache Nothing to do (" . $this->timer('tache') . ")\n");
+				} 
 
 			} else {echo "Erreur fonction manquante";}
 
