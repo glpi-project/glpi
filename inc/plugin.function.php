@@ -313,6 +313,7 @@ function getPluginTabs($target,$type,$ID,$withtemplate){
 	$active=false;
 	$tabid=0;
 	$tabs=array();
+	$order=array();
 	if (isset($PLUGIN_HOOKS["headings"]) && is_array($PLUGIN_HOOKS["headings"])) {
 		foreach ($PLUGIN_HOOKS["headings"] as $plug => $function) {
 			if (file_exists(GLPI_ROOT . "/plugins/$plug/hook.php")) {
@@ -323,21 +324,27 @@ function getPluginTabs($target,$type,$ID,$withtemplate){
 				$onglet=$function($type,$withtemplate);
 
 				if (is_array($onglet)&&count($onglet)){
-					// Sort by plugin name
-					asort($onglet);
 					foreach ($onglet as $key => $val){
 						$key=$plug."_".$key;
 
 						$tabs[$key]=array('title'=>$val,
 						'url'=>$CFG_GLPI['root_doc']."/$tabpage",
 						'params'=>"target=$target&type=".$type."&glpi_tab=$key&ID=$ID$template");
+						$order[$key]=$val;
 					}
 				}
 			}
 		}
+		// Order plugin tab
+		if (count($tabs)){
+			asort($order);
+			foreach ($order as $key => $val){
+				$order[$key]=$tabs[$key];
+			}
+		}
 	}
 
-	return $tabs;
+	return $order;
 
 }
 
