@@ -268,6 +268,9 @@ $LANG["common"][80]="En cours de chargement...";
 $LANG["common"][81]="Titre";
 $LANG["common"][82]="Mb"; 
 $LANG["common"][83]="Vous n'avez pas les droits suffisants pour réaliser cette action."; 
+$LANG["common"][84]="La présence d'éléments liés interdit la modification de cet attribut";
+$LANG["common"][85]="Modifier la visibilité dans les sous-entités";
+$LANG["common"][86]="Vous n'avez pas les droits suffisants pour modifier la visibilité dans les sous-entités."; 
 
 $LANG["computers"][0]="Volume"; 
 $LANG["computers"][1]="Pourcentage libre"; 

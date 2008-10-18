@@ -1110,6 +1110,109 @@ class CommonDBTM {
 	}
 
 	/**
+	 * Can I change recusvive flag to false
+	 * check if there is "linked" object in another entity
+	 * 
+	 * May be overloaded if needed
+	 *
+	 * @return booleen
+	 **/
+	function canUnrecurs () {
+
+		global $CFG_GLPI;
+		
+		$RELATION=getDbRelations();
+		
+		$ID  = $this->fields['ID'];
+		$ent = $this->fields['FK_entities'];
+		
+		if ($this->fields['ID']<0 || !$this->fields['recursive']) {
+			return true;
+		}
+		if (isset($RELATION[$this->table])){
+			foreach ($RELATION[$this->table] as $tablename => $field){
+				if (in_array($tablename,$CFG_GLPI["specif_entities_tables"])) {
+					// 1->N Relation
+					//error_log("canUnrecurs 1/N for $tablename.$field");
+					if (is_array($field)) foreach ($field as $f) {
+						if (countElementsInTable($tablename, "$f=$ID AND FK_entities!=$ent")>0) {
+							return false;
+						}
+					} else {
+						if (countElementsInTable($tablename, "$field=$ID AND FK_entities!=$ent")>0) {
+							return false;
+						}
+					}
+				} else {
+					// Search for a N->N Relation
+					foreach ($RELATION as $othertable => $rel) if ($othertable != $this->table && isset($rel[$tablename])) {
+						if (is_array($rel[$tablename])) foreach ($rel[$tablename] as $otherfield){
+							//error_log("canUnrecurs N/N for $tablename.$field, $tablename.$otherfield, $othertable.ID");
+							if (countElementsInTable("$tablename, $othertable", "$tablename.$field=$ID AND $tablename.$otherfield=$othertable.ID AND $othertable.FK_entities!=$ent")>0) {
+								return false;
+							}
+						} else {
+							$otherfield = $rel[$tablename];							
+							//error_log("canUnrecurs N/N for $tablename.$field, $tablename.$otherfield, $othertable.ID");
+							if (countElementsInTable("$tablename, $othertable", "$tablename.$field=$ID AND $tablename.$otherfield=$othertable.ID AND $othertable.FK_entities!=$ent")>0) {
+								return false;
+							}
+						}						
+					}
+				}
+			}
+		}
+		
+		return true;
+	}
+
+	/**
+	 * 
+	 * Display a 2 columns Header 1 for ID, 1 for recursivity menu
+	 * 
+	 */
+	 function showFormHeader ($ID) {
+	 	
+	 	global $LANG, $CFG_GLPI;
+	 	
+		echo "<tr><th>";
+		if (empty($ID)||$ID<0){
+			echo $LANG["buttons"][8];
+		} else {
+			echo $LANG["common"][2]." $ID";
+		}
+		if (isMultiEntitiesMode()){
+			echo "&nbsp;(".getDropdownName("glpi_entities",$this->fields["FK_entities"]).")";
+		}
+		echo "</th>";
+		
+		
+		echo "<th>";
+		if ($this->may_be_recursive && isMultiEntitiesMode()){
+			echo $LANG["entity"][9].":&nbsp;";
+		
+			if (!$this->can($ID,'recursive')) {
+				echo getYesNo($this->fields["recursive"]);
+				$comment=$LANG["common"][86];
+			} else if (!$this->canUnrecurs()) {
+				echo getYesNo($this->fields["recursive"]);
+				$comment=$LANG["common"][84];
+			} else {
+				dropdownYesNo("recursive",$this->fields["recursive"]);
+				$comment=$LANG["common"][85];
+			}
+			$rand=mt_rand();
+			echo "&nbsp;<img alt='' src='".$CFG_GLPI["root_doc"]."/pics/aide.png' onmouseout=\"cleanhide('comments_recursive$rand')\" onmouseover=\"cleandisplay('comments_recursive$rand')\">";
+			echo "<span class='over_link' id='comments_recursive$rand'>$comment</span>";
+			
+		} else {
+			echo "&nbsp;";
+		}
+		echo "</th>";
+		echo "</tr>";
+	 }
+	 
+	/**
 	 * Check right on an item
 	 *
 	 * @param $ID ID of the item (-1 if new item)
