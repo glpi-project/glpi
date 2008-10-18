@@ -1204,7 +1204,7 @@ class CommonDBTM {
 				$comment=$LANG["common"][85];
 			}
 			$rand=mt_rand();
-			echo "&nbsp;<img alt='' src='".$CFG_GLPI["root_doc"]."/pics/aide.png' onmouseout=\"cleanhide('comments_recursive$rand')\" onmouseover=\"cleandisplay('comments_recursive$rand')\">";
+			echo "&nbsp;<img alt='' src='".$CFG_GLPI["root_doc"]."/pics/lock2.png' onmouseout=\"cleanhide('comments_recursive$rand')\" onmouseover=\"cleandisplay('comments_recursive$rand')\">";
 			echo "<span class='over_link' id='comments_recursive$rand'>$comment</span>";
 			
 		} else {
