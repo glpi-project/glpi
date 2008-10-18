@@ -480,7 +480,7 @@ function dropdownContracts($name,$entity_restrict=-1,$alreadyused=array()){
 				echo "<optgroup label=\"". getDropdownName("glpi_entities", $prev) ."\">";
 			}
 			echo "<option value='".$data["ID"]."'>";
-			echo "#".$data["num"]." - ".convDateTime($data["begin_date"])." - ".$data["name"];
+			echo substr("#".$data["num"]." - ".convDateTime($data["begin_date"])." - ".$data["name"],0,$_SESSION["glpidropdown_limit"]);
 			echo "</option>";
 		}
 	}

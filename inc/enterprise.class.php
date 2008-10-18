@@ -147,33 +147,9 @@ class Enterprise extends CommonDBTM {
 		}
 		echo "<div class='center' id='tabsbody' >";
 		echo "<table class='tab_cadre_fixe'>";
-		echo "<tr><th colspan='2'>";
-		if ($ID<0) {
-			echo $LANG["financial"][25];
-		} else {
-			echo $LANG["common"][2]." ".$this->fields["ID"];
-		}		
-		if (isMultiEntitiesMode()){
-			echo "&nbsp;(".getDropdownName("glpi_entities",$this->fields["FK_entities"]).")";
-		}
 
-		echo "</th>";
+		$this->showFormHeader($ID,2);
 
-		echo "<th colspan='2'>";
-		if (isMultiEntitiesMode()){
-			echo $LANG["entity"][9].":&nbsp;";
-		
-			if ($this->can($ID,'recursive')) {
-				dropdownYesNo("recursive",$this->fields["recursive"]);					
-			} else {
-				echo getYesNo($this->fields["recursive"]);
-			}
-		} else {
-			echo "&nbsp;";
-		}
-		echo "</th>";
-
-		echo "</tr>";
 		if (!$use_cache||!($CFG_GLPI["cache"]->start($ID."_".$_SESSION["glpilanguage"],"GLPI_".$this->type))) {
 			echo "<tr class='tab_bg_1'><td>".$LANG["common"][16].":		</td>";
 			echo "<td>";

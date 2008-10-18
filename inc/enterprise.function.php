@@ -172,7 +172,7 @@ function showAssociatedContact($instID) {
 		echo "<td class='center'>".getDropdownName("glpi_dropdown_contact_type",$data["type"])."</td>";
 		echo "<td align='center' class='tab_bg_2'>";
 		if ($canedit)
-			echo "<a href='".$_SERVER['PHP_SELF']."?deletecontact=deletecontact&amp;ID=$ID&amp;eID=$instID'><strong>".$LANG["buttons"][6]."</strong></a>";
+			echo "<a href='".$CFG_GLPI["root_doc"]."/front/enterprise.form.php?deletecontact=deletecontact&amp;ID=$ID&amp;eID=$instID'><strong>".$LANG["buttons"][6]."</strong></a>";
 		else echo "&nbsp;";
 		echo "</td></tr>";
 		$i++;

@@ -1145,7 +1145,7 @@ class CommonDBTM {
 					}
 				} else {
 					// Search for a N->N Relation
-					foreach ($RELATION as $othertable => $rel) if ($othertable != $this->table && isset($rel[$tablename])) {
+					foreach ($RELATION as $othertable => $rel) if ($othertable != $this->table && isset($rel[$tablename]) && in_array($othertable,$CFG_GLPI["specif_entities_tables"])) {
 						if (is_array($rel[$tablename])) foreach ($rel[$tablename] as $otherfield){
 							//error_log("canUnrecurs N/N for $tablename.$field, $tablename.$otherfield, $othertable.ID");
 							if (countElementsInTable("$tablename, $othertable", "$tablename.$field=$ID AND $tablename.$otherfield=$othertable.ID AND $othertable.FK_entities!=$ent")>0) {
@@ -1170,12 +1170,15 @@ class CommonDBTM {
 	 * 
 	 * Display a 2 columns Header 1 for ID, 1 for recursivity menu
 	 * 
+	 * @param $ID ID of the item (-1 if new item)
+	 * @param $colspan for each column
+	 * 
 	 */
-	 function showFormHeader ($ID) {
+	 function showFormHeader ($ID, $colspan=1) {
 	 	
 	 	global $LANG, $CFG_GLPI;
 	 	
-		echo "<tr><th>";
+		echo "<tr><th colspan='$colspan'>";
 		if (empty($ID)||$ID<0){
 			echo $LANG["buttons"][8];
 		} else {
@@ -1184,10 +1187,9 @@ class CommonDBTM {
 		if (isMultiEntitiesMode()){
 			echo "&nbsp;(".getDropdownName("glpi_entities",$this->fields["FK_entities"]).")";
 		}
-		echo "</th>";
 		
-		
-		echo "<th>";
+		echo "</th><th colspan='$colspan'>";
+
 		if ($this->may_be_recursive && isMultiEntitiesMode()){
 			echo $LANG["entity"][9].":&nbsp;";
 		
@@ -1208,8 +1210,7 @@ class CommonDBTM {
 		} else {
 			echo "&nbsp;";
 		}
-		echo "</th>";
-		echo "</tr>";
+		echo "</th></tr>\n";
 	 }
 	 
 	/**
