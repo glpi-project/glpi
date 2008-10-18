@@ -147,34 +147,8 @@ class Contract extends CommonDBTM {
 		}
 			
 		echo "<table class='tab_cadre_fixe'>";
-		echo "<tr><th colspan='2'>";
-		if ($ID<0) {
-			echo $LANG["financial"][36];
-		} else {
-			echo $LANG["common"][2]." $ID";
-		}		
 
-		if (isMultiEntitiesMode()){
-			echo "&nbsp;(".getDropdownName("glpi_entities",$this->fields["FK_entities"]).")";
-		}
-
-		echo "</th>";
-
-		echo "<th colspan='2'>";
-		if (isMultiEntitiesMode()){
-			echo $LANG["entity"][9].":&nbsp;";
-			
-			if ($this->can($ID,'recursive')) {
-				dropdownYesNo("recursive",$this->fields["recursive"]);					
-			} else {
-				echo getYesNo($this->fields["recursive"]);
-			}
-		} else {
-			echo "&nbsp;";
-		}
-		echo "</th>";
-
-		echo "</tr>";
+		$this->showFormHeader($ID);
 
 		if (!$use_cache||!($CFG_GLPI["cache"]->start($ID."_".$_SESSION["glpilanguage"],"GLPI_".$this->type))) {
 
