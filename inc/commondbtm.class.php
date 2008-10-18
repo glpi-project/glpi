@@ -1196,15 +1196,18 @@ class CommonDBTM {
 			if (!$this->can($ID,'recursive')) {
 				echo getYesNo($this->fields["recursive"]);
 				$comment=$LANG["common"][86];
+				$image="/pics/lock.png";
 			} else if (!$this->canUnrecurs()) {
 				echo getYesNo($this->fields["recursive"]);
 				$comment=$LANG["common"][84];
+				$image="/pics/lock.png";
 			} else {
 				dropdownYesNo("recursive",$this->fields["recursive"]);
 				$comment=$LANG["common"][85];
+				$image="/pics/aide.png";
 			}
 			$rand=mt_rand();
-			echo "&nbsp;<img alt='' src='".$CFG_GLPI["root_doc"]."/pics/lock2.png' onmouseout=\"cleanhide('comments_recursive$rand')\" onmouseover=\"cleandisplay('comments_recursive$rand')\">";
+			echo "&nbsp;<img alt='' src='".$CFG_GLPI["root_doc"].$image."' onmouseout=\"cleanhide('comments_recursive$rand')\" onmouseover=\"cleandisplay('comments_recursive$rand')\">";
 			echo "<span class='over_link' id='comments_recursive$rand'>$comment</span>";
 			
 		} else {

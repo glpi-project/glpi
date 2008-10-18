@@ -348,7 +348,7 @@ function showEnterpriseContract($instID) {
 		echo "<td class='center'>".$website."</td>";
 		echo "<td align='center' class='tab_bg_2'>";
 		if ($canedit)
-			echo "<a href='".$_SERVER['PHP_SELF']."?deleteenterprise=deleteenterprise&amp;ID=$ID&amp;conID=$instID'><strong>".$LANG["buttons"][6]."</strong></a>";
+			echo "<a href='".$CFG_GLPI["root_doc"]."/front/contract.form.php?deleteenterprise=deleteenterprise&amp;ID=$ID&amp;conID=$instID'><strong>".$LANG["buttons"][6]."</strong></a>";
 		else echo "&nbsp;";
 		echo "</td></tr>";
 		$i++;
