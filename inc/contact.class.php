@@ -152,35 +152,8 @@ class Contact extends CommonDBTM{
 		}
 
 		echo "<table class='tab_cadre_fixe' cellpadding='2' >";
-		echo "<tr><th>";
-		if (empty($ID)||$ID<0){
-			echo $LANG["financial"][33];
-		} else {
-			echo $LANG["common"][2]." $ID";
-		}
-		if (isMultiEntitiesMode()){
-			echo "&nbsp;(".getDropdownName("glpi_entities",$this->fields["FK_entities"]).")";
-		}
-		if ($ID) {				
-			echo "&nbsp;<a href='".$CFG_GLPI["root_doc"]."/front/contact.vcard.php?ID=$ID'>".$LANG["common"][46]."</a>";
-		}		
 
-		echo "</th>";
-		echo "<th>";
-		if (isMultiEntitiesMode()){
-			echo $LANG["entity"][9].":&nbsp;";
-		
-			if ($this->can($ID,'recursive')) {
-				dropdownYesNo("recursive",$this->fields["recursive"]);					
-			} else {
-				echo getYesNo($this->fields["recursive"]);
-			}
-		} else {
-			echo "&nbsp;";
-		}
-		echo "</th>";
-		echo "</tr>";
-
+		$this->showFormHeader($ID);
 		
 		if (!$use_cache||!($CFG_GLPI["cache"]->start($ID."_".$_SESSION["glpilanguage"],"GLPI_".$this->type))) {
 			echo "<tr><td class='tab_bg_1' valign='top'>";
@@ -234,6 +207,10 @@ class Contact extends CommonDBTM{
 			echo "<table cellpadding='1' cellspacing='0' border='0'><tr><td>";
 			echo $LANG["common"][25].":	</td></tr>";
 			echo "<tr><td class='center'><textarea cols='45' rows='4' name='comments' >".$this->fields["comments"]."</textarea>";
+
+			if ($ID>0) {				
+				echo "</td></tr><tr><td><a href='".$CFG_GLPI["root_doc"]."/front/contact.vcard.php?ID=$ID'>".$LANG["common"][46]."</a>";
+			}		
 			echo "</td></tr></table>";
 
 			echo "</td>";
