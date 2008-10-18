@@ -118,29 +118,8 @@ class Group extends CommonDBTM{
 		}
 		echo "<div class='center' id='tabsbody' >";
 		echo "<table class='tab_cadre_fixe' cellpadding='2' >";
-		echo "<tr><th>";
-		if (empty($ID)) {
-			echo $LANG["setup"][605];
 
-		} else {
-			echo $LANG["common"][2]." ".$this->fields["ID"];
-		}		
-		if (isMultiEntitiesMode()){
-			echo "&nbsp;(".getDropdownName("glpi_entities",$this->fields["FK_entities"]).")";
-		}
-		echo "</th><th>";
-		if (isMultiEntitiesMode()){
-			echo $LANG["entity"][9].":&nbsp;";
-		
-			if ($this->can($ID,'recursive')) {
-				dropdownYesNo("recursive",$this->fields["recursive"]);					
-			} else {
-				echo getYesNo($this->fields["recursive"]);
-			}
-		} else {
-			echo "&nbsp;";
-		}
-		echo "</th></tr>";
+		$this->showFormHeader($ID);
 
 		echo "<tr><td class='tab_bg_1' valign='top'>";
 
