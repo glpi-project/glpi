@@ -191,15 +191,10 @@ class Document extends CommonDBTM {
 		}
 
 		echo "<div class='center' id='tabsbody'><table class='tab_cadre_fixe'>";
-		echo "<tr>";
+		
+		$this->showFormHeader($ID);
 		if ($ID>0) {
-			echo "<th>";
-			echo $LANG["common"][2]." $ID";
-			if (isMultiEntitiesMode()){
-				echo "&nbsp;(".getDropdownName("glpi_entities",$this->fields["FK_entities"]).")";
-			}
-			echo "</th>";
-			echo "<th>";
+			echo "<tr><th>";
 			if ($this->fields["FK_users"]>0){
 				echo $LANG["document"][42]." ".getUserName($this->fields["FK_users"],1);
 			} else {
@@ -207,50 +202,18 @@ class Document extends CommonDBTM {
 			}
 			echo "</th>";
 			echo "<th>".$LANG["common"][26].": ".convDateTime($this->fields["date_mod"])."</th>";
-			echo "<th>";
-			if (isMultiEntitiesMode()){
-				echo $LANG["entity"][9].":&nbsp;";
-				
-				if ($this->can($ID,'recursive')) {
-					dropdownYesNo("recursive",$this->fields["recursive"]);					
-				} else {
-					echo getYesNo($this->fields["recursive"]);
-				}
-			} else {
-				echo "&nbsp;";
-			}
-			echo "</th>";
-		} else {
-			echo "<th colspan='2'>";
-			echo $LANG["document"][16];
-			if (isMultiEntitiesMode()){
-				echo "&nbsp;(".getDropdownName("glpi_entities",$this->fields["FK_entities"]).")";
-			}
-			echo "</th>";
-			echo "<th colspan='2'>";
-			if (isMultiEntitiesMode()){
-				echo $LANG["entity"][9].":&nbsp;";
-			
-				if ($this->can($ID,'recursive')) {
-					dropdownYesNo("recursive",$this->fields["recursive"]);					
-				} else {
-					echo getYesNo($this->fields["recursive"]);
-				}
-			} else {
-				echo "&nbsp;";
-			}
-			echo "</th>";
-		} 
-		echo "</tr>";
+			echo "</tr>\n";
+		}
+
 		if (!$use_cache||!($CFG_GLPI["cache"]->start($ID."_".$_SESSION["glpilanguage"],"GLPI_".$this->type))) {
-			echo "<tr class='tab_bg_1'><td colspan='2'>".$LANG["common"][16].":		</td>";
-			echo "<td colspan='2'>";
+			echo "<tr class='tab_bg_1'><td>".$LANG["common"][16].":		</td>";
+			echo "<td>";
 			autocompletionTextField("name","glpi_docs","name",$this->fields["name"],80,$this->fields["FK_entities"]);
 			echo "</td></tr>";
 	
 			if (!empty($ID)){
-				echo "<tr class='tab_bg_1'><td colspan='2'>".$LANG["document"][22].":		</td>";
-				echo "<td colspan='2'>".getDocumentLink($this->fields["filename"])."";
+				echo "<tr class='tab_bg_1'><td>".$LANG["document"][22].":		</td>";
+				echo "<td>".getDocumentLink($this->fields["filename"])."";
 				echo "<input type='hidden' name='current_filename' value='".$this->fields["filename"]."'>";
 				echo "</td></tr>";
 			}
@@ -258,37 +221,37 @@ class Document extends CommonDBTM {
 			$max_size/=1024*1024;
 			$max_size=round($max_size,1);
 	
-			echo "<tr class='tab_bg_1'><td colspan='2'>".$LANG["document"][2]." (".$max_size." Mb max):	</td>";
-			echo "<td colspan='2'><input type='file' name='filename' value=\"".$this->fields["filename"]."\" size='40'></td>";
+			echo "<tr class='tab_bg_1'><td>".$LANG["document"][2]." (".$max_size." Mb max):	</td>";
+			echo "<td><input type='file' name='filename' value=\"".$this->fields["filename"]."\" size='40'></td>";
 			echo "</tr>";
 	
-			echo "<tr class='tab_bg_1'><td colspan='2'>".$LANG["document"][36].":		</td>";
-			echo "<td colspan='2'>";
+			echo "<tr class='tab_bg_1'><td>".$LANG["document"][36].":		</td>";
+			echo "<td>";
 			showUploadedFilesDropdown("upload_file");
 			echo "</td></tr>";
 	
 	
-			echo "<tr class='tab_bg_1'><td colspan='2'>".$LANG["document"][33].":		</td>";
-			echo "<td colspan='2'>";
+			echo "<tr class='tab_bg_1'><td>".$LANG["document"][33].":		</td>";
+			echo "<td>";
 			autocompletionTextField("link","glpi_docs","link",$this->fields["link"],40,$this->fields["FK_entities"]);
 			echo "</td></tr>";
 	
-			echo "<tr class='tab_bg_1'><td colspan='2'>".$LANG["document"][3].":		</td>";
-			echo "<td colspan='2'>";
+			echo "<tr class='tab_bg_1'><td>".$LANG["document"][3].":		</td>";
+			echo "<td>";
 			dropdownValue("glpi_dropdown_rubdocs","rubrique",$this->fields["rubrique"]);
 			echo "</td></tr>";
 	
-			echo "<tr class='tab_bg_1'><td colspan='2'>".$LANG["document"][4].":		</td>";
-			echo "<td colspan='2'>";
+			echo "<tr class='tab_bg_1'><td>".$LANG["document"][4].":		</td>";
+			echo "<td>";
 			autocompletionTextField("mime","glpi_docs","mime",$this->fields["mime"],40,$this->fields["FK_entities"]);
 			echo "</td></tr>";
 	
 			echo "<tr>";
-			echo "<td class='tab_bg_1' valign='top' colspan='2'>";
+			echo "<td class='tab_bg_1' valign='top'>";
 	
 			// table commentaires
 			echo $LANG["common"][25].":	</td>";
-			echo "<td colspan='2'  class='tab_bg_1'><textarea cols='70' rows='4' name='comments' >".$this->fields["comments"]."</textarea>";
+			echo "<td class='tab_bg_1'><textarea cols='70' rows='4' name='comments' >".$this->fields["comments"]."</textarea>";
 	
 			echo "</td>";
 			echo "</tr>";
@@ -302,12 +265,12 @@ class Document extends CommonDBTM {
 
 			if ($ID>0) {
 
-				echo "<td class='tab_bg_2' valign='top' colspan='2'>";
+				echo "<td class='tab_bg_2' valign='top'>";
 				echo "<input type='hidden' name='ID' value=\"$ID\">\n";
 				echo "<div class='center'><input type='submit' name='update' value=\"".$LANG["buttons"][7]."\" class='submit'></div>";
 				echo "</td>\n\n";
 		
-				echo "<td class='tab_bg_2' valign='top'  colspan='2'>\n";
+				echo "<td class='tab_bg_2' valign='top'>\n";
 				echo "<input type='hidden' name='ID' value=\"$ID\">\n";
 				if (!$this->fields["deleted"])
 					echo "<div class='center'><input type='submit' name='delete' value=\"".$LANG["buttons"][6]."\" class='submit'></div>";
@@ -319,7 +282,7 @@ class Document extends CommonDBTM {
 		
 				echo "</td></tr>";
 			} else {
-				echo "<td class='tab_bg_2' valign='top' colspan='4'>";
+				echo "<td class='tab_bg_2' valign='top' colspan='2'>";
 				echo "<div class='center'><input type='submit' name='add' value=\"".$LANG["buttons"][8]."\" class='submit'></div>";
 				echo "</td></tr>";
 		
@@ -337,6 +300,41 @@ class Document extends CommonDBTM {
 
 	}
 
+	/**
+	 * Can I change recusvive flag to false
+	 * check if there is "linked" object in another entity
+	 * 
+	 * overloaded from CommonDBTM
+	 *
+	 * @return booleen
+	 **/
+	function canUnrecurs () {
+		global $DB, $LINK_ID_TABLE, $CFG_GLPI;
+		
+		$ID  = $this->fields['ID'];
+		$ent = $this->fields['FK_entities'];
+
+		$sql = "SELECT DISTINCT device_type FROM glpi_doc_device WHERE FK_doc=$ID";
+		$res = $DB->query($sql);
+		
+		if ($res) while ($data=$DB->fetch_assoc($res)) {
+			if (isset($LINK_ID_TABLE[$data["device_type"]]) && 
+				in_array($table=$LINK_ID_TABLE[$data["device_type"]], $CFG_GLPI["specif_entities_tables"])) {
+
+				if (countElementsInTable("glpi_doc_device, $table", 
+					"glpi_doc_device.FK_doc=$ID AND glpi_doc_device.device_type=".$data["device_type"]." AND glpi_doc_device.FK_device=$table.ID AND $table.FK_entities!=$ent")>0) {
+						return false;						
+				}
+			}
+		}
+		// Other Doc link to this one
+		if (countElementsInTable("glpi_doc_device, glpi_docs", 
+			"glpi_doc_device.FK_device=$ID AND glpi_doc_device.device_type=".DOCUMENT_TYPE." AND glpi_doc_device.FK_doc=glpi_docs.ID AND glpi_docs.FK_entities!=$ent")>0) {
+				return false;						
+		}
+		
+		return true;
+	}
 }
 
 ?>
