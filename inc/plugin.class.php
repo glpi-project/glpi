@@ -104,6 +104,7 @@ class Plugin extends CommonDBTM {
 					$function="plugin_version_$filename";
 					if (function_exists($function)){
 						$file_plugins[$filename]=$function();	
+						$file_plugins[$filename]=addslashes_deep($file_plugins[$filename]);
 					}
 				} 
 			}
@@ -156,6 +157,7 @@ class Plugin extends CommonDBTM {
 
 		if (count($file_plugins)){
 			foreach ($file_plugins as $plug => $data){
+				$data=$data;
 				$data['state']=PLUGIN_NOTINSTALLED;
 				$data['directory']=$plug;
 				$this->add($data);
