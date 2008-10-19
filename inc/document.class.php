@@ -312,7 +312,6 @@ class Document extends CommonDBTM {
 		global $DB, $LINK_ID_TABLE, $CFG_GLPI;
 		
 		$ID  = $this->fields['ID'];
-		$ent = $this->fields['FK_entities'];
 
 		if ($ID<0 || !$this->fields['recursive']) {
 			return true;
@@ -321,6 +320,11 @@ class Document extends CommonDBTM {
 		if (!parent::canUnrecurs()) {
 			return false;
 		}
+		$entities = "(".$this->fields['FK_entities'];
+		foreach (getEntityAncestors($this->fields['FK_entities']) as $papa) {
+			$entities .= ",$papa";
+		}
+		$entities .= ")";
 		
 		$sql = "SELECT DISTINCT device_type FROM glpi_doc_device WHERE FK_doc=$ID";
 		$res = $DB->query($sql);
@@ -330,7 +334,7 @@ class Document extends CommonDBTM {
 				in_array($table=$LINK_ID_TABLE[$data["device_type"]], $CFG_GLPI["specif_entities_tables"])) {
 
 				if (countElementsInTable("glpi_doc_device, $table", 
-					"glpi_doc_device.FK_doc=$ID AND glpi_doc_device.device_type=".$data["device_type"]." AND glpi_doc_device.FK_device=$table.ID AND $table.FK_entities!=$ent")>0) {
+					"glpi_doc_device.FK_doc=$ID AND glpi_doc_device.device_type=".$data["device_type"]." AND glpi_doc_device.FK_device=$table.ID AND $table.FK_entities NOT IN $entities")>0) {
 						return false;						
 				}
 			}
