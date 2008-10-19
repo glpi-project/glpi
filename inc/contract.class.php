@@ -49,6 +49,7 @@ class Contract extends CommonDBTM {
 		$this->type=CONTRACT_TYPE;
 		$this->entity_assign=true;
 		$this->may_be_recursive=true;
+		$this->device_link = array("table"=>"glpi_contract_device", "field"=>"FK_contract");
 	}
 
 	function post_getEmpty () {
@@ -300,52 +301,6 @@ class Contract extends CommonDBTM {
 		return true;
 	}
 	
-	/**
-	 * Can I change recusvive flag to false
-	 * check if there is "linked" object in another entity
-	 * 
-	 * Overloaded from CommonDBTM
-	 *
-	 * @return booleen
-	 **/
-	function canUnrecurs () {
-
-		global $DB, $CFG_GLPI, $LINK_ID_TABLE;
-		
-		$ID  = $this->fields['ID'];
-
-		if ($ID<0 || !$this->fields['recursive']) {
-			return true;
-		}
-
-		if (!parent::canUnrecurs()) {
-			return false;
-		}
-		$entities = "(".$this->fields['FK_entities'];
-		foreach (getEntityAncestors($this->fields['FK_entities']) as $papa) {
-			$entities .= ",$papa";
-		}
-		$entities .= ")";
-		
-		// Search linked device infocom
-		$sql = "SELECT DISTINCT device_type FROM glpi_contract_device WHERE FK_contract=$ID";
-		$res = $DB->query($sql);
-		
-		if ($res) while ($data = $DB->fetch_assoc($res)) {
-			if (isset($LINK_ID_TABLE[$data["device_type"]]) && 
-				in_array($table=$LINK_ID_TABLE[$data["device_type"]], $CFG_GLPI["specif_entities_tables"])) {
-
-				error_log("Contract::canUnrecurs for $table");
-				if (countElementsInTable("glpi_contract_device, $table", 
-					"glpi_contract_device.FK_contract=$ID AND glpi_contract_device.device_type=".$data["device_type"]." AND glpi_contract_device.FK_device=$table.ID AND $table.FK_entities NOT IN $entities")>0) {
-						return false;						
-				}
-			}			
-		}
-		
-		return true;
-	}
-
 }
 
 ?>

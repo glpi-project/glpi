@@ -51,6 +51,8 @@ class CommonDBTM {
 	var $may_be_private=false;
 	/// Black list fields for date_mod updates
 	var $date_mod_blacklist	= array();
+	/// Describe how item is linked to device = array("table"=>"glpi_xxx", "field"=>"FK_xxx")
+	protected $device_link = array();
 
 	/// set false to desactivate automatic message on action
 	var $auto_message_on_action=true;
@@ -1119,7 +1121,7 @@ class CommonDBTM {
 	 **/
 	function canUnrecurs () {
 
-		global $CFG_GLPI;
+		global $DB, $LINK_ID_TABLE, $CFG_GLPI;
 			
 		$ID  = $this->fields['ID'];	
 		
@@ -1171,6 +1173,27 @@ class CommonDBTM {
 		if ($this->type>0 && countElementsInTable("glpi_doc_device, glpi_docs", 
 			"glpi_doc_device.FK_device=$ID AND glpi_doc_device.device_type=".$this->type." AND glpi_doc_device.FK_doc=glpi_docs.ID AND glpi_docs.FK_entities NOT IN $entities")>0) {
 				return false;						
+		}
+
+		// Search linked device infocom
+		if (isset($this->device_link["table"]) && isset($this->device_link["field"])) {
+			$table = $this->device_link["table"];
+			$field = $this->device_link["field"];
+			
+			$sql = "SELECT DISTINCT device_type FROM $table WHERE $field=$ID";
+			$res = $DB->query($sql);
+			
+			if ($res) while ($data = $DB->fetch_assoc($res)) {
+				if (isset($LINK_ID_TABLE[$data["device_type"]]) && 
+					in_array($device=$LINK_ID_TABLE[$data["device_type"]], $CFG_GLPI["specif_entities_tables"])) {
+	
+					//error_log("canUnrecurs for $device");
+					if (countElementsInTable("$table, $device", 
+						"$table.$field=$ID AND $table.device_type=".$data["device_type"]." AND $table.FK_device=$device.ID AND $device.FK_entities NOT IN $entities")>0) {
+							return false;						
+					}
+				}			
+			}
 		}
 		
 		return true;
