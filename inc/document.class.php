@@ -49,6 +49,7 @@ class Document extends CommonDBTM {
 		$this->type=DOCUMENT_TYPE;
 		$this->entity_assign=true;
 		$this->may_be_recursive=true;
+		$this->device_link = array("table"=>"glpi_doc_device", "field"=>"FK_doc");
 	}
 	/**
 	 * Retrieve an item from the database using the filename
@@ -300,48 +301,6 @@ class Document extends CommonDBTM {
 
 	}
 
-	/**
-	 * Can I change recusvive flag to false
-	 * check if there is "linked" object in another entity
-	 * 
-	 * overloaded from CommonDBTM
-	 *
-	 * @return booleen
-	 **/
-	function canUnrecurs () {
-		global $DB, $LINK_ID_TABLE, $CFG_GLPI;
-		
-		$ID  = $this->fields['ID'];
-
-		if ($ID<0 || !$this->fields['recursive']) {
-			return true;
-		}
-
-		if (!parent::canUnrecurs()) {
-			return false;
-		}
-		$entities = "(".$this->fields['FK_entities'];
-		foreach (getEntityAncestors($this->fields['FK_entities']) as $papa) {
-			$entities .= ",$papa";
-		}
-		$entities .= ")";
-		
-		$sql = "SELECT DISTINCT device_type FROM glpi_doc_device WHERE FK_doc=$ID";
-		$res = $DB->query($sql);
-		
-		if ($res) while ($data=$DB->fetch_assoc($res)) {
-			if (isset($LINK_ID_TABLE[$data["device_type"]]) && 
-				in_array($table=$LINK_ID_TABLE[$data["device_type"]], $CFG_GLPI["specif_entities_tables"])) {
-
-				if (countElementsInTable("glpi_doc_device, $table", 
-					"glpi_doc_device.FK_doc=$ID AND glpi_doc_device.device_type=".$data["device_type"]." AND glpi_doc_device.FK_device=$table.ID AND $table.FK_entities NOT IN $entities")>0) {
-						return false;						
-				}
-			}
-		}
-		
-		return true;
-	}
 }
 
 ?>
