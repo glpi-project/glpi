@@ -696,5 +696,14 @@ function update0712to072() {
 		$DB->query($query) or die("0.72 add index FK_contract_device in glpi_contract_device" . $LANG["update"][90] . $DB->error());
 	}	  			 
 
+	if (isIndex("glpi_doc_device", "FK_doc")) {
+		$query = "ALTER TABLE `glpi_doc_device` DROP INDEX `FK_doc`";
+		$DB->query($query) or die("0.7 drop index FK_doc on glpi_doc_device " . $LANG["update"][90] . $DB->error());
+	}
+	if (!isIndex("glpi_doc_device", "FK_doc_device")) {
+		$query = "ALTER TABLE `glpi_doc_device` ADD UNIQUE INDEX `FK_doc_device` (`FK_doc` , `device_type`, `FK_device` ) ;";
+		$DB->query($query) or die("0.72 add index FK_doc_device in glpi_doc_device" . $LANG["update"][90] . $DB->error());
+	}	  			 
+
 } // fin 0.72 #####################################################################################
 ?>
