@@ -1121,12 +1121,16 @@ class CommonDBTM {
 
 		global $CFG_GLPI;
 			
-		$ID  = $this->fields['ID'];
-		$ent = $this->fields['FK_entities'];
+		$ID  = $this->fields['ID'];	
 		
 		if ($ID<0 || !$this->fields['recursive']) {
 			return true;
 		}
+		$entities = "(".$this->fields['FK_entities'];
+		foreach (getEntityAncestors($this->fields['FK_entities']) as $papa) {
+			$entities .= ",$papa";
+		}
+		$entities .= ")";
 
 		$RELATION=getDbRelations();
 
@@ -1136,11 +1140,11 @@ class CommonDBTM {
 					// 1->N Relation
 					//error_log("canUnrecurs 1/N for $tablename.$field");
 					if (is_array($field)) foreach ($field as $f) {
-						if (countElementsInTable($tablename, "$f=$ID AND FK_entities!=$ent")>0) {
+						if (countElementsInTable($tablename, "$f=$ID AND FK_entities NOT IN $entities")>0) {
 							return false;
 						}
 					} else {
-						if (countElementsInTable($tablename, "$field=$ID AND FK_entities!=$ent")>0) {
+						if (countElementsInTable($tablename, "$field=$ID AND FK_entities NOT IN $entities")>0) {
 							return false;
 						}
 					}
@@ -1149,13 +1153,13 @@ class CommonDBTM {
 					foreach ($RELATION as $othertable => $rel) if ($othertable != $this->table && isset($rel[$tablename]) && in_array($othertable,$CFG_GLPI["specif_entities_tables"])) {
 						if (is_array($rel[$tablename])) foreach ($rel[$tablename] as $otherfield){
 							//error_log("canUnrecurs N/N for $tablename.$field, $tablename.$otherfield, $othertable.ID");
-							if (countElementsInTable("$tablename, $othertable", "$tablename.$field=$ID AND $tablename.$otherfield=$othertable.ID AND $othertable.FK_entities!=$ent")>0) {
+							if (countElementsInTable("$tablename, $othertable", "$tablename.$field=$ID AND $tablename.$otherfield=$othertable.ID AND $othertable.FK_entities NOT IN $entities")>0) {
 								return false;
 							}
 						} else {
 							$otherfield = $rel[$tablename];							
 							//error_log("canUnrecurs N/N for $tablename.$field, $tablename.$otherfield, $othertable.ID");
-							if (countElementsInTable("$tablename, $othertable", "$tablename.$field=$ID AND $tablename.$otherfield=$othertable.ID AND $othertable.FK_entities!=$ent")>0) {
+							if (countElementsInTable("$tablename, $othertable", "$tablename.$field=$ID AND $tablename.$otherfield=$othertable.ID AND $othertable.FK_entities NOT IN $entities")>0) {
 								return false;
 							}
 						}						
@@ -1165,7 +1169,7 @@ class CommonDBTM {
 		}
 		// Other Doc link to this one
 		if ($this->type>0 && countElementsInTable("glpi_doc_device, glpi_docs", 
-			"glpi_doc_device.FK_device=$ID AND glpi_doc_device.device_type=".$this->type." AND glpi_doc_device.FK_doc=glpi_docs.ID AND glpi_docs.FK_entities!=$ent")>0) {
+			"glpi_doc_device.FK_device=$ID AND glpi_doc_device.device_type=".$this->type." AND glpi_doc_device.FK_doc=glpi_docs.ID AND glpi_docs.FK_entities NOT IN $entities")>0) {
 				return false;						
 		}
 		

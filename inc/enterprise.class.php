@@ -272,7 +272,6 @@ class Enterprise extends CommonDBTM {
 		global $DB, $CFG_GLPI, $LINK_ID_TABLE;
 		
 		$ID  = $this->fields['ID'];
-		$ent = $this->fields['FK_entities'];
 
 		if ($ID<0 || !$this->fields['recursive']) {
 			return true;
@@ -281,6 +280,11 @@ class Enterprise extends CommonDBTM {
 		if (!parent::canUnrecurs()) {
 			return false;
 		}
+		$entities = "(".$this->fields['FK_entities'];
+		foreach (getEntityAncestors($this->fields['FK_entities']) as $papa) {
+			$entities .= ",$papa";
+		}
+		$entities .= ")";
 		
 		// Search linked device infocom
 		$sql = "SELECT DISTINCT device_type FROM glpi_infocoms WHERE FK_enterprise=$ID";
@@ -291,7 +295,7 @@ class Enterprise extends CommonDBTM {
 				in_array($table=$LINK_ID_TABLE[$data["device_type"]], $CFG_GLPI["specif_entities_tables"])) {
 
 				if (countElementsInTable("glpi_infocoms, $table", 
-					"glpi_infocoms.FK_enterprise=$ID AND glpi_infocoms.device_type=".$data["device_type"]." AND glpi_infocoms.FK_device=$table.ID AND $table.FK_entities!=$ent")>0) {
+					"glpi_infocoms.FK_enterprise=$ID AND glpi_infocoms.device_type=".$data["device_type"]." AND glpi_infocoms.FK_device=$table.ID AND $table.FK_entities NOT IN $entities")>0) {
 						return false;						
 				}
 			}			
