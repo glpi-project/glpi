@@ -314,6 +314,10 @@ class Document extends CommonDBTM {
 		$ID  = $this->fields['ID'];
 		$ent = $this->fields['FK_entities'];
 
+		if ($this->fields['ID']<0 || !$this->fields['recursive']) {
+			return true;
+		}
+
 		$sql = "SELECT DISTINCT device_type FROM glpi_doc_device WHERE FK_doc=$ID";
 		$res = $DB->query($sql);
 		
