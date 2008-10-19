@@ -314,10 +314,14 @@ class Document extends CommonDBTM {
 		$ID  = $this->fields['ID'];
 		$ent = $this->fields['FK_entities'];
 
-		if ($this->fields['ID']<0 || !$this->fields['recursive']) {
+		if ($ID<0 || !$this->fields['recursive']) {
 			return true;
 		}
 
+		if (!parent::canUnrecurs()) {
+			return false;
+		}
+		
 		$sql = "SELECT DISTINCT device_type FROM glpi_doc_device WHERE FK_doc=$ID";
 		$res = $DB->query($sql);
 		
@@ -330,11 +334,6 @@ class Document extends CommonDBTM {
 						return false;						
 				}
 			}
-		}
-		// Other Doc link to this one
-		if (countElementsInTable("glpi_doc_device, glpi_docs", 
-			"glpi_doc_device.FK_device=$ID AND glpi_doc_device.device_type=".DOCUMENT_TYPE." AND glpi_doc_device.FK_doc=glpi_docs.ID AND glpi_docs.FK_entities!=$ent")>0) {
-				return false;						
 		}
 		
 		return true;
