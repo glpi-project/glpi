@@ -1141,9 +1141,11 @@ class CommonDBTM {
 				if (in_array($tablename,$CFG_GLPI["specif_entities_tables"])) {
 					// 1->N Relation
 					//error_log("canUnrecurs 1/N for $tablename.$field");
-					if (is_array($field)) foreach ($field as $f) {
-						if (countElementsInTable($tablename, "$f=$ID AND FK_entities NOT IN $entities")>0) {
-							return false;
+					if (is_array($field)) {
+						foreach ($field as $f) {
+							if (countElementsInTable($tablename, "$f=$ID AND FK_entities NOT IN $entities")>0) {
+								return false;
+							}
 						}
 					} else {
 						if (countElementsInTable($tablename, "$field=$ID AND FK_entities NOT IN $entities")>0) {
@@ -1152,23 +1154,30 @@ class CommonDBTM {
 					}
 				} else {
 					// Search for a N->N Relation
-					foreach ($RELATION as $othertable => $rel) if ($othertable != $this->table && isset($rel[$tablename]) && in_array($othertable,$CFG_GLPI["specif_entities_tables"])) {
-						if (is_array($rel[$tablename])) foreach ($rel[$tablename] as $otherfield){
-							//error_log("canUnrecurs N/N for $tablename.$field, $tablename.$otherfield, $othertable.ID");
-							if (countElementsInTable("$tablename, $othertable", "$tablename.$field=$ID AND $tablename.$otherfield=$othertable.ID AND $othertable.FK_entities NOT IN $entities")>0) {
-								return false;
-							}
-						} else {
-							$otherfield = $rel[$tablename];							
-							//error_log("canUnrecurs N/N for $tablename.$field, $tablename.$otherfield, $othertable.ID");
-							if (countElementsInTable("$tablename, $othertable", "$tablename.$field=$ID AND $tablename.$otherfield=$othertable.ID AND $othertable.FK_entities NOT IN $entities")>0) {
-								return false;
-							}
-						}						
+					foreach ($RELATION as $othertable => $rel) {						
+						if ($othertable != $this->table 
+								&& isset($rel[$tablename]) 
+								&& in_array($othertable,$CFG_GLPI["specif_entities_tables"])) {
+							if (is_array($rel[$tablename])) {
+								foreach ($rel[$tablename] as $otherfield){
+									//error_log("canUnrecurs N/N for $tablename.$field, $tablename.$otherfield, $othertable.ID");
+									if (countElementsInTable("$tablename, $othertable", "$tablename.$field=$ID AND $tablename.$otherfield=$othertable.ID AND $othertable.FK_entities NOT IN $entities")>0) {
+										return false;
+									}
+								}
+							} else {
+								$otherfield = $rel[$tablename];							
+								//error_log("canUnrecurs N/N for $tablename.$field, $tablename.$otherfield, $othertable.ID");
+								if (countElementsInTable("$tablename, $othertable", "$tablename.$field=$ID AND $tablename.$otherfield=$othertable.ID AND $othertable.FK_entities NOT IN $entities")>0) {
+									return false;
+								}
+							}						
+						}
 					}
 				}
 			}
 		}
+		
 		// Other Doc link to this one
 		if ($this->type>0 && countElementsInTable("glpi_doc_device, glpi_docs", 
 			"glpi_doc_device.FK_device=$ID AND glpi_doc_device.device_type=".$this->type." AND glpi_doc_device.FK_doc=glpi_docs.ID AND glpi_docs.FK_entities NOT IN $entities")>0) {
@@ -1186,7 +1195,6 @@ class CommonDBTM {
 			if ($res) while ($data = $DB->fetch_assoc($res)) {
 				if (isset($LINK_ID_TABLE[$data["device_type"]]) && 
 					in_array($device=$LINK_ID_TABLE[$data["device_type"]], $CFG_GLPI["specif_entities_tables"])) {
-	
 					//error_log("canUnrecurs for $device");
 					if (countElementsInTable("$table, $device", 
 						"$table.$field=$ID AND $table.device_type=".$data["device_type"]." AND $table.FK_device=$device.ID AND $device.FK_entities NOT IN $entities")>0) {
