@@ -885,7 +885,7 @@ CREATE TABLE `glpi_doc_device` (
   `FK_device` int(11) NOT NULL default '0',
   `device_type` smallint(6) NOT NULL default '0',
   PRIMARY KEY  (`ID`),
-  UNIQUE KEY `FK_doc` (`FK_doc`,`FK_device`,`device_type`),
+  UNIQUE KEY `FK_doc_device` (`FK_doc`,`device_type`,`FK_device`),
   KEY `FK_doc_2` (`FK_doc`),
   KEY `FK_device` (`FK_device`,`device_type`),
   KEY `device_type` (`device_type`)
