@@ -1184,7 +1184,7 @@ class CommonDBTM {
 				return false;						
 		}
 
-		// Search linked device infocom
+		// Search linked device type
 		if (isset($this->device_link["table"]) && isset($this->device_link["field"])) {
 			$table = $this->device_link["table"];
 			$field = $this->device_link["field"];
@@ -1192,6 +1192,7 @@ class CommonDBTM {
 			$sql = "SELECT DISTINCT device_type FROM $table WHERE $field=$ID";
 			$res = $DB->query($sql);
 			
+			// Search linked device of each type
 			if ($res) while ($data = $DB->fetch_assoc($res)) {
 				if (isset($LINK_ID_TABLE[$data["device_type"]]) && 
 					in_array($device=$LINK_ID_TABLE[$data["device_type"]], $CFG_GLPI["specif_entities_tables"])) {
