@@ -684,8 +684,17 @@ function update0712to072() {
 	if (!FieldExists("glpi_config","followup_private")){ 	 	 
 		$query="ALTER TABLE `glpi_config` ADD `followup_private` SMALLINT NOT NULL DEFAULT '0';"; 	 	 
 		$DB->query($query) or die("0.72 add followup_private in config" . $LANG["update"][90] . $DB->error()); 	 	 
-	} 
-		 
+	}
+	
+	// INDEX key order change 
+	if (isIndex("glpi_contract_device", "FK_contract")) {
+		$query = "ALTER TABLE `glpi_contract_device` DROP INDEX `FK_contract`";
+		$DB->query($query) or die("0.7 drop index FK_contract on glpi_contract_device " . $LANG["update"][90] . $DB->error());
+	}
+	if (!isIndex("glpi_contract_device", "FK_contract_device")) {
+		$query = "ALTER TABLE `glpi_contract_device` ADD UNIQUE INDEX `FK_contract_device` (`FK_contract` , `device_type`, `FK_device` ) ;";
+		$DB->query($query) or die("0.72 add index on type in glpi_contract_device" . $LANG["update"][90] . $DB->error());
+	}	  			 
 
 } // fin 0.72 #####################################################################################
 ?>
