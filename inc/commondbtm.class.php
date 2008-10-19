@@ -1120,15 +1120,16 @@ class CommonDBTM {
 	function canUnrecurs () {
 
 		global $CFG_GLPI;
-		
-		$RELATION=getDbRelations();
-		
+			
 		$ID  = $this->fields['ID'];
 		$ent = $this->fields['FK_entities'];
 		
-		if ($this->fields['ID']<0 || !$this->fields['recursive']) {
+		if ($ID<0 || !$this->fields['recursive']) {
 			return true;
 		}
+
+		$RELATION=getDbRelations();
+
 		if (isset($RELATION[$this->table])){
 			foreach ($RELATION[$this->table] as $tablename => $field){
 				if (in_array($tablename,$CFG_GLPI["specif_entities_tables"])) {
@@ -1161,6 +1162,11 @@ class CommonDBTM {
 					}
 				}
 			}
+		}
+		// Other Doc link to this one
+		if ($this->type>0 && countElementsInTable("glpi_doc_device, glpi_docs", 
+			"glpi_doc_device.FK_device=$ID AND glpi_doc_device.device_type=".$this->type." AND glpi_doc_device.FK_doc=glpi_docs.ID AND glpi_docs.FK_entities!=$ent")>0) {
+				return false;						
 		}
 		
 		return true;

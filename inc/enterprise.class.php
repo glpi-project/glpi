@@ -259,7 +259,46 @@ class Enterprise extends CommonDBTM {
 
 	}
 
+	/**
+	 * Can I change recusvive flag to false
+	 * check if there is "linked" object in another entity
+	 * 
+	 * Overloaded from CommonDBTM
+	 *
+	 * @return booleen
+	 **/
+	function canUnrecurs () {
 
+		global $DB, $CFG_GLPI, $LINK_ID_TABLE;
+		
+		$ID  = $this->fields['ID'];
+		$ent = $this->fields['FK_entities'];
+
+		if ($ID<0 || !$this->fields['recursive']) {
+			return true;
+		}
+
+		if (!parent::canUnrecurs()) {
+			return false;
+		}
+		
+		// Search linked device infocom
+		$sql = "SELECT DISTINCT device_type FROM glpi_infocoms WHERE FK_enterprise=$ID";
+		$res = $DB->query($sql);
+		
+		if ($res) while ($data = $DB->fetch_assoc($res)) {
+			if (isset($LINK_ID_TABLE[$data["device_type"]]) && 
+				in_array($table=$LINK_ID_TABLE[$data["device_type"]], $CFG_GLPI["specif_entities_tables"])) {
+
+				if (countElementsInTable("glpi_infocoms, $table", 
+					"glpi_infocoms.FK_enterprise=$ID AND glpi_infocoms.device_type=".$data["device_type"]." AND glpi_infocoms.FK_device=$table.ID AND $table.FK_entities!=$ent")>0) {
+						return false;						
+				}
+			}			
+		}
+		
+		return true;
+	}
 
 }
 
