@@ -693,7 +693,7 @@ function update0712to072() {
 	}
 	if (!isIndex("glpi_contract_device", "FK_contract_device")) {
 		$query = "ALTER TABLE `glpi_contract_device` ADD UNIQUE INDEX `FK_contract_device` (`FK_contract` , `device_type`, `FK_device` ) ;";
-		$DB->query($query) or die("0.72 add index on type in glpi_contract_device" . $LANG["update"][90] . $DB->error());
+		$DB->query($query) or die("0.72 add index FK_contract_device in glpi_contract_device" . $LANG["update"][90] . $DB->error());
 	}	  			 
 
 } // fin 0.72 #####################################################################################
