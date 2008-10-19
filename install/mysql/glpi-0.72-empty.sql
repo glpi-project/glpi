@@ -490,7 +490,7 @@ CREATE TABLE `glpi_contract_device` (
   `FK_device` int(11) NOT NULL default '0',
   `device_type` smallint(6) NOT NULL default '0',
   PRIMARY KEY  (`ID`),
-  UNIQUE KEY `FK_contract` (`FK_contract`,`FK_device`,`device_type`),
+  UNIQUE KEY `FK_contract_device` (`FK_contract`,`device_type`,`FK_device`),
   KEY `FK_contract_2` (`FK_contract`),
   KEY `FK_device` (`FK_device`,`device_type`),
   KEY `device_type` (`device_type`)
