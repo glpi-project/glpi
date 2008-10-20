@@ -309,13 +309,13 @@ function getSonsOfTreeItem($table,$IDf){
 	// First request init the  varriables
 	$query="SELECT ID 
 		FROM $table 
-		WHERE parentID = '$IDf'
-		ORDER BY name";
+		WHERE parentID = '$IDf'";
+		//ORDER BY name";
 
 	if ( ($result=$DB->query($query)) && ($DB->numrows($result)>0) ){
 		while ($row=$DB->fetch_array($result)){
-			array_push($id_found,$row['ID']);
-			array_push($found,$row['ID']);
+			$id_found[$row['ID']]=$row['ID'];
+			$found[$row['ID']]=$row['ID'];
 		}
 	} else return $id_found;
 
@@ -325,13 +325,13 @@ function getSonsOfTreeItem($table,$IDf){
 		// Get next elements
 		$query="SELECT ID 
 			FROM $table 
-			WHERE ";
+			WHERE parentID IN (";
 		foreach ($found as $key => $val){
-			if (!$first) $query.=" OR ";
+			if (!$first) $query.=",";
 			else $first=false;
-			$query.= " parentID = '$val' ";
+			$query.= $val;
 		}
-			
+		$query.=")";	
 
 		// CLear the found array
 		unset($found);
@@ -340,9 +340,9 @@ function getSonsOfTreeItem($table,$IDf){
 		$result=$DB->query($query);
 		if ($DB->numrows($result)>0){
 			while ($row=$DB->fetch_array($result)){
-				if (!in_array($row['ID'],$id_found)){
-					array_push($id_found,$row['ID']);
-					array_push($found,$row['ID']);
+				if (!isset($id_found[$row['ID']])){
+					$id_found[$row['ID']]=$row['ID'];
+					$found[$row['ID']]=$row['ID'];
 				}
 			}		
 		}
@@ -369,12 +369,12 @@ function getTreeForItem($table,$IDf){
 	// First request init the  varriables
 	$query="SELECT * 
 		FROM $table 
-		WHERE parentID = '$IDf' ORDER BY name";
+		WHERE parentID = '$IDf' ";//ORDER BY name";
 	if ( ($result=$DB->query($query)) && ($DB->numrows($result)>0) ){
 		while ($row=$DB->fetch_array($result)){
 			$id_found[$row['ID']]['parent']=$IDf;
 			$id_found[$row['ID']]['name']=$row['name'];
-			array_push($found,$row['ID']);
+			$found[$row['ID']]=$row['ID'];
 		}
 	} 
 
@@ -384,13 +384,16 @@ function getTreeForItem($table,$IDf){
 		// Get next elements
 		$query="SELECT * 
 			FROM $table 
-			WHERE ";
+			WHERE parentID IN (";
 		foreach ($found as $key => $val){
-			if (!$first) $query.=" OR ";
-			else $first=false;
-			$query.= " parentID = '$val' ";
+			if (!$first) $query.=",";
+			else {
+				$first=false;
+			}
+			$query.= $val;
 		}
-		$query.=" ORDER BY name";
+		$query.=" ) ";
+		//$query.=" ORDER BY name";
 		// CLear the found array
 		unset($found);
 		$found=array();
@@ -398,10 +401,10 @@ function getTreeForItem($table,$IDf){
 		$result=$DB->query($query);
 		if ($DB->numrows($result)>0){
 			while ($row=$DB->fetch_array($result)){
-				if (!in_array($row['ID'],$id_found)){
+				if (!isset($id_found[$row['ID']])){
 					$id_found[$row['ID']]['parent']=$row['parentID'];
 					$id_found[$row['ID']]['name']=$row['name'];
-					array_push($found,$row['ID']);
+					$found[$row['ID']]=$row['ID'];
 				}
 			}		
 		}
