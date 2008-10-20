@@ -49,7 +49,6 @@ class Enterprise extends CommonDBTM {
 		$this->type=ENTERPRISE_TYPE;
 		$this->entity_assign=true;
 		$this->may_be_recursive=true;
-		$this->device_link = array("table"=>"glpi_infocoms", "field"=>"FK_enterprise");
 	}
 
 

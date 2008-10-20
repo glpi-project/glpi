@@ -49,7 +49,6 @@ class Document extends CommonDBTM {
 		$this->type=DOCUMENT_TYPE;
 		$this->entity_assign=true;
 		$this->may_be_recursive=true;
-		$this->device_link = array("table"=>"glpi_doc_device", "field"=>"FK_doc");
 	}
 	/**
 	 * Retrieve an item from the database using the filename

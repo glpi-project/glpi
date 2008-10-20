@@ -325,5 +325,12 @@ $RELATION=array(
 				"glpi_users_profiles"=>"FK_users",
 
 	),
+
+	// link from devices tables (computers, software, ...)
+	"_virtual_device" => array (
+		"glpi_contract_device" 	=> array("FK_device","device_type"),
+		"glpi_doc_device"		=> array("FK_device","device_type"),
+		"glpi_infocoms"			=> array("FK_device","device_type"),
+		),
 	
 );

@@ -51,8 +51,6 @@ class CommonDBTM {
 	var $may_be_private=false;
 	/// Black list fields for date_mod updates
 	var $date_mod_blacklist	= array();
-	/// Describe how item is linked to device = array("table"=>"glpi_xxx", "field"=>"FK_xxx")
-	protected $device_link = array();
 
 	/// set false to desactivate automatic message on action
 	var $auto_message_on_action=true;
@@ -1135,12 +1133,11 @@ class CommonDBTM {
 		$entities .= ")";
 
 		$RELATION=getDbRelations();
-
+	
 		if (isset($RELATION[$this->table])){
 			foreach ($RELATION[$this->table] as $tablename => $field){
 				if (in_array($tablename,$CFG_GLPI["specif_entities_tables"])) {
 					// 1->N Relation
-					//error_log("canUnrecurs 1/N for $tablename.$field");
 					if (is_array($field)) {
 						foreach ($field as $f) {
 							if (countElementsInTable($tablename, "$f=$ID AND FK_entities NOT IN $entities")>0) {
@@ -1153,21 +1150,44 @@ class CommonDBTM {
 						}
 					}
 				} else {
-					// Search for a N->N Relation
-					foreach ($RELATION as $othertable => $rel) {						
-						if ($othertable != $this->table 
+					foreach ($RELATION as $othertable => $rel) {	
+
+						// Search for a N->N Relation with devices
+						if ($othertable == "_virtual_device"					
+							&& isset($rel[$tablename])) {
+
+							$devfield  = $rel[$tablename][0]; // FK_device, on_device, end1...
+							$typefield = $rel[$tablename][1]; // device_type, type, ...
+							
+							$sql = "SELECT DISTINCT $typefield AS type FROM $tablename WHERE $field=$ID";
+							$res = $DB->query($sql);
+							
+							// Search linked device of each type
+							if ($res) while ($data = $DB->fetch_assoc($res)) {
+								$type=$data["type"];
+								if (isset($LINK_ID_TABLE[$type]) && 
+									in_array($device=$LINK_ID_TABLE[$type], $CFG_GLPI["specif_entities_tables"])) {
+
+									if (countElementsInTable("$tablename, $device", 
+										"$tablename.$field=$ID AND $tablename.$typefield=$type AND $tablename.$devfield=$device.ID AND $device.FK_entities NOT IN $entities")>0) {
+											return false;											
+									}
+								}			
+							}
+							
+						// Search for another N->N Relation 			
+						} else if ($othertable != $this->table 
 								&& isset($rel[$tablename]) 
 								&& in_array($othertable,$CFG_GLPI["specif_entities_tables"])) {
+
 							if (is_array($rel[$tablename])) {
 								foreach ($rel[$tablename] as $otherfield){
-									//error_log("canUnrecurs N/N for $tablename.$field, $tablename.$otherfield, $othertable.ID");
 									if (countElementsInTable("$tablename, $othertable", "$tablename.$field=$ID AND $tablename.$otherfield=$othertable.ID AND $othertable.FK_entities NOT IN $entities")>0) {
 										return false;
 									}
 								}
 							} else {
 								$otherfield = $rel[$tablename];							
-								//error_log("canUnrecurs N/N for $tablename.$field, $tablename.$otherfield, $othertable.ID");
 								if (countElementsInTable("$tablename, $othertable", "$tablename.$field=$ID AND $tablename.$otherfield=$othertable.ID AND $othertable.FK_entities NOT IN $entities")>0) {
 									return false;
 								}
@@ -1178,33 +1198,14 @@ class CommonDBTM {
 			}
 		}
 		
-		// Other Doc link to this one
-		if ($this->type>0 && countElementsInTable("glpi_doc_device, glpi_docs", 
-			"glpi_doc_device.FK_device=$ID AND glpi_doc_device.device_type=".$this->type." AND glpi_doc_device.FK_doc=glpi_docs.ID AND glpi_docs.FK_entities NOT IN $entities")>0) {
-				return false;						
-		}
+		// Doc links to this item
+		if ($this->type > 0
+			&& countElementsInTable("glpi_doc_device, glpi_docs",
+				"glpi_doc_device.FK_device=$ID AND glpi_doc_device.device_type=".$this->type." AND glpi_doc_device.FK_doc=glpi_docs.ID AND glpi_docs.FK_entities NOT IN $entities")>0) {
+					return false;                       
+		} 
+		// TODO : do we need to check all relations in $RELATION["_virtual_device"] for this item
 
-		// Search linked device type
-		if (isset($this->device_link["table"]) && isset($this->device_link["field"])) {
-			$table = $this->device_link["table"];
-			$field = $this->device_link["field"];
-			
-			$sql = "SELECT DISTINCT device_type FROM $table WHERE $field=$ID";
-			$res = $DB->query($sql);
-			
-			// Search linked device of each type
-			if ($res) while ($data = $DB->fetch_assoc($res)) {
-				if (isset($LINK_ID_TABLE[$data["device_type"]]) && 
-					in_array($device=$LINK_ID_TABLE[$data["device_type"]], $CFG_GLPI["specif_entities_tables"])) {
-					//error_log("canUnrecurs for $device");
-					if (countElementsInTable("$table, $device", 
-						"$table.$field=$ID AND $table.device_type=".$data["device_type"]." AND $table.FK_device=$device.ID AND $device.FK_entities NOT IN $entities")>0) {
-							return false;						
-					}
-				}			
-			}
-		}
-		
 		return true;
 	}
 
