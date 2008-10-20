@@ -49,7 +49,6 @@ class Contract extends CommonDBTM {
 		$this->type=CONTRACT_TYPE;
 		$this->entity_assign=true;
 		$this->may_be_recursive=true;
-		$this->device_link = array("table"=>"glpi_contract_device", "field"=>"FK_contract");
 	}
 
 	function post_getEmpty () {
