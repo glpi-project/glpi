@@ -192,9 +192,9 @@ if (!isset($_POST["limit"])) $_POST["limit"]=$_SESSION["glpidropdown_limit"];
 					$output="($ID)";
 				} else if (strlen($output)>$_POST["limit"]) {
 					if ($_SESSION['glpiflat_dropdowntree']){
-						$output=utf8_substr($output,0,$_POST["limit"])."&hellip;";
-					} else {
 						$output="&hellip;".utf8_substr($output,-$_POST["limit"]);
+					} else {
+						$output=utf8_substr($output,0,$_POST["limit"])."&hellip;";
 					}
 				}
 				
