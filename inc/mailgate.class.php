@@ -307,6 +307,9 @@ class MailCollect {
 		$tkt['_do_not_check_author']=1;
 		$body=$this->getBody($i);
 
+		// Do it before using charset variable
+		$head['subject']=$this->decodeMimeString($head['subject']);
+
 		if (!empty($this->charset)&&function_exists('mb_convert_encoding')){
 			$body=mb_convert_encoding($body, 'utf-8',$this->charset);
 		}
@@ -319,7 +322,6 @@ class MailCollect {
 		if ($this->addtobody) {
 			$tkt['contents'] .= $this->addtobody;
 		}
-		$head['subject']=$this->decodeMimeString($head['subject']);
 
 		$exists = false;
 		if ( preg_match('/\[GLPI #(\d+)\]/',$head['subject'],$match) ) {
