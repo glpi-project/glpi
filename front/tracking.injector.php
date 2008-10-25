@@ -169,6 +169,11 @@ elseif (isset($_POST["emailupdates"]) && $_POST["emailupdates"] && isset($_POST[
 
 	if ($newID=$track->add($_POST)){
 		if(isset($_POST["type"]) && ($_POST["type"] == "Helpdesk")) {
+			echo "<div align='center'>";
+			echo $LANG["help"][18]."<br><br>";
+			displayBackLink();
+			echo "</div>";
+
 		} else {
 			echo "<div align='center'><img src=\"".$CFG_GLPI["root_doc"]."/pics/ok.png\" alt=\"OK\"><br><br><b>";
 			echo $LANG["help"][18]." (".$LANG["job"][38]." <a class='b' href='helpdesk.public.php?show=user&amp;ID=$newID'>$newID</a>)<br>";
