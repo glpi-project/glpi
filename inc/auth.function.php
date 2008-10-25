@@ -612,6 +612,10 @@ function changeProfile($ID) {
 		doHook("change_profile");
 	}
 	cleanCache("GLPI_HEADER_".$_SESSION["glpiID"]);
+	// Clean specific datas 
+	if (isset($_SESSION['glpi_faqcategories'])){
+		unset($_SESSION['glpi_faqcategories']);
+	}
 }
 
 
