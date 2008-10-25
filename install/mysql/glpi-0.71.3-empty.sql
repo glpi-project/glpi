@@ -1,4 +1,4 @@
-#GLPI Dump database on 2008-10-25 22:24
+#GLPI Dump database on 2008-10-25 22:41
 
 ### Dump table glpi_alerts
 
@@ -2341,7 +2341,7 @@ CREATE TABLE `glpi_rule_cache_software` (
   `new_value` varchar(255) collate utf8_unicode_ci default NULL,
   `version` varchar(255) collate utf8_unicode_ci default NULL,
   `new_manufacturer` varchar(255) collate utf8_unicode_ci NOT NULL,
-  `ignore_ocs_import` tinyint(4) NOT NULL default '0',
+  `ignore_ocs_import` varchar(255) collate utf8_unicode_ci default NULL,
   PRIMARY KEY  (`ID`),
   KEY `rule_id` (`rule_id`),
   KEY `old_value` (`old_value`)
@@ -2849,7 +2849,7 @@ CREATE TABLE `glpi_users` (
   KEY `deleted` (`deleted`)
 ) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-INSERT INTO glpi_users VALUES ('2','glpi','','41ece51526515624ff89973668497d00','','','','','',NULL,'0','1','fr_FR','20','1',NULL,'-1','1','2008-10-25 22:24:46','2007-09-29 15:51:43','0','0','0');
+INSERT INTO glpi_users VALUES ('2','glpi','','41ece51526515624ff89973668497d00','','','','','',NULL,'0','1','fr_FR','20','1',NULL,'-1','1','2008-10-25 22:41:42','2007-09-29 15:51:43','0','0','0');
 INSERT INTO glpi_users VALUES ('3','post-only','*5683D7F638D6598D057638B1957F194E4CA974FB','3177926a7314de24680a9938aaa97703','','','','','',NULL,'0','0','en_GB','20','1',NULL,'-1','-1','0000-00-00 00:00:00','0000-00-00 00:00:00','0','0','0');
 INSERT INTO glpi_users VALUES ('4','tech','*B09F1B2C210DEEA69C662977CC69C6C461965B09','d9f9133fb120cd6096870bc2b496805b','','','','','',NULL,'0','1','fr_FR','20','1',NULL,'-1','-1','0000-00-00 00:00:00','0000-00-00 00:00:00','0','0','0');
 INSERT INTO glpi_users VALUES ('5','normal','*F3F91B23FC1DB728B49B1F22DEE3D7A839E10F0E','fea087517c26fadd409bd4b9dc642555','','','','','',NULL,'0','0','en_GB','20','1',NULL,'-1','-1','0000-00-00 00:00:00','0000-00-00 00:00:00','0','0','0');
