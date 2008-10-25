@@ -259,35 +259,7 @@ class Netdevice extends CommonDBTM {
 
 		echo "<table  class='tab_cadre_fixe' cellpadding='2'>\n";
 
-		echo "<tr><th align='center'>\n";
-		if(!$template) {
-			echo $LANG["common"][2]." ".$this->fields["ID"];
-		}elseif (strcmp($template,"newcomp") === 0) {
-			echo $LANG["networking"][53].": ".$this->fields["tplname"];
-			echo "<input type='hidden' name='tplname' value='".$this->fields["tplname"]."'>";
-		}elseif (strcmp($template,"newtemplate") === 0) {
-			echo $LANG["common"][6].": ";
-			autocompletionTextField("tplname","glpi_networking","tplname",$this->fields["tplname"],40,$this->fields["FK_entities"]);
-		}
-		if (isMultiEntitiesMode()){
-			echo "&nbsp;(".getDropdownName("glpi_entities",$this->fields["FK_entities"]).")";
-		}
-
-		if (isMultiEntitiesMode()){
-			echo "&nbsp;-&nbsp;".$LANG["entity"][9].":&nbsp;";
-		
-			if ($this->can($ID,'recursive')) {
-				dropdownYesNo("recursive",$this->fields["recursive"]);					
-			} else {
-				echo getYesNo($this->fields["recursive"]);
-			}
-		} 
-
-
-		echo "</th><th  align='center'>".$datestring.$date;
-		if (!$template&&!empty($this->fields['tplname']))
-			echo "&nbsp;&nbsp;&nbsp;(".$LANG["common"][13].": ".$this->fields['tplname'].")";
-		echo "</th></tr>\n";
+		$this->showFormHeader($ID);
 
 		if (!$use_cache||!($CFG_GLPI["cache"]->start($ID."_".$_SESSION["glpilanguage"],"GLPI_".$this->type))) {
 			echo "<tr><td class='tab_bg_1' valign='top'>\n";
