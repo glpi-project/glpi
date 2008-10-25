@@ -1,7 +1,7 @@
 <?php
 
 	// Current version of GLPI
-	define("GLPI_VERSION","0.71.2");
+	define("GLPI_VERSION","0.71.3");
 
 	// dicts
 	// dictionnaires
