@@ -146,8 +146,13 @@ if (!isset($_POST["limit"])) $_POST["limit"]=$_SESSION["glpidropdown_limit"];
 
 		if ($display_selected){
 			$outputval=getDropdownName($_POST['table'],$_POST['value']);
-			if (!empty($outputval)&&$outputval!="&nbsp;")
+			if (!empty($outputval)&&$outputval!="&nbsp;") {
+				if (strlen($outputval)>$_POST["limit"]) {
+					// Completename for tree dropdown : keep right
+					$outputval = "&hellip;".utf8_substr($outputval,-$_POST["limit"]);
+				}
 				echo "<option class='tree' selected value='".$_POST['value']."'>".$outputval."</option>";
+			}
 		}
 
 		if ($DB->numrows($result)) {
@@ -185,13 +190,20 @@ if (!isset($_POST["limit"])) $_POST["limit"]=$_SESSION["glpidropdown_limit"];
 				
 				if (empty($output)) {
 					$output="($ID)";
+				} else if (strlen($output)>$_POST["limit"]) {
+					if ($_SESSION['glpiflat_dropdowntree']){
+						$output=utf8_substr($output,0,$_POST["limit"])."&hellip;";
+					} else {
+						$output="&hellip;".utf8_substr($output,-$_POST["limit"]);
+					}
 				}
+				
 
 				$style=$class;
 				$addcomment="";
 				if (isset($data["comments"])) $addcomment=" - ".$data["comments"];
 
-				echo "<option value=\"$ID\" $style title=\"".cleanInputText($data['completename'].$addcomment)."\">".str_repeat("&nbsp;&nbsp;&nbsp;", $level).$raquo.utf8_substr($output,0,$_POST["limit"])."</option>";
+				echo "<option value=\"$ID\" $style title=\"".cleanInputText($data['completename'].$addcomment)."\">".str_repeat("&nbsp;&nbsp;&nbsp;", $level).$raquo.$output."</option>";
 			}
 
 		}
