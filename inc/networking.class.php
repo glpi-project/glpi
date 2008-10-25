@@ -335,6 +335,11 @@ class Netdevice extends CommonDBTM {
 			dropdownValue("glpi_dropdown_state", "state",$this->fields["state"]);
 			echo "</td></tr>\n";
 
+			echo "<tr><td>$datestring</td><td>$date\n";
+			if (!$template&&!empty($this->fields['tplname'])) {
+				echo "&nbsp;&nbsp;&nbsp;(".$LANG["common"][13].": ".$this->fields['tplname'].")";
+			}
+			echo "</td></tr>\n";
 
 			echo "</table>\n";
 
@@ -393,7 +398,7 @@ class Netdevice extends CommonDBTM {
 
 			echo "<table width='100%' cellpadding='0' cellspacing='0' border='0'><tr><td valign='top'>\n";
 			echo $LANG["common"][25].":	</td>\n";
-			echo "<td class='center'><textarea cols='35' rows='4' name='comments' >".$this->fields["comments"]."</textarea>\n";
+			echo "<td class='center'><textarea cols='80' rows='4' name='comments' >".$this->fields["comments"]."</textarea>\n";
 			echo "</td></tr></table>\n";
 
 			echo "</td>";
