@@ -90,7 +90,20 @@ function dropdownValue($table,$myname,$value='',$display_comments=1,$entity_rest
 		if ($tmpname["name"]!="&nbsp;"){
 			$name=$tmpname["name"];
 			$comments=$tmpname["comments"];
-			$limit_length=max(strlen($name),$_SESSION["glpidropdown_limit"]);
+			//$limit_length=max(strlen($name),$_SESSION["glpidropdown_limit"]);
+			if (strlen($name) > $_SESSION["glpidropdown_limit"]) {
+				if (in_array($table,$CFG_GLPI["dropdowntree_tables"])) {
+					$pos = strrpos($name,">");
+					$limit_length=max(strlen($name)-$pos,$_SESSION["glpidropdown_limit"]);
+					if (strlen($name)>$limit_length) {
+						$name = "&hellip;".utf8_substr($name,-$limit_length);
+					}
+				} else {
+					$limit_length = strlen($name);
+				}
+			} else {
+				$limit_length = $_SESSION["glpidropdown_limit"];
+			}
 		}
 	}
 
