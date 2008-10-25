@@ -1886,7 +1886,7 @@ function displayEntityTree($target,$myname,$tree,$level=0){
 				if (isset($data['tree'])&&count($data['tree'])){
 					$subitems=count($data['tree']);
 					if ($subitems>1){
-						$raquo="<a href=\"javascript:showHideDiv('entity_subitem_$ID','entity_subitem_icon_$ID','" . GLPI_ROOT . "/pics/expand.gif','" . GLPI_ROOT . "/pics/collapse.gif');\"><img name='entity_subitem_icon_$ID' src=\"".$CFG_GLPI["root_doc"]."/pics/expand.gif\" alt=''></a>";
+						$raquo="<a href=\"javascript:showHideDiv('entity_subitem_$ID','entity_subitem_icon_$ID','" . $CFG_GLPI["root_doc"] . "/pics/expand.gif','" . $CFG_GLPI["root_doc"] . "/pics/collapse.gif');\"><img name='entity_subitem_icon_$ID' src=\"".$CFG_GLPI["root_doc"]."/pics/expand.gif\" alt=''></a>";
 					}
 				}
 				
