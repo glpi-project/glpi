@@ -403,7 +403,7 @@ class DictionnarySoftwareRule extends RuleCached {
 		echo "<td class='tab_bg_2'>".($fields["version"]!=''?$fields["version"]:$LANG["rulesengine"][106])."</td>";		
 		echo "<td class='tab_bg_2'>".((isset($fields["new_manufacturer"]) && $fields["new_manufacturer"]!='')?getDropdownName("glpi_dropdown_manufacturer",$fields["new_manufacturer"]):$LANG["rulesengine"][106])."</td>";
 		echo "<td class='tab_bg_2'>";
-		if (!isset($fields["ignore_ocs_import"])){
+		if ($fields["ignore_ocs_import"]==''){
 			echo "&nbsp;";
 		} else {
 			echo getYesNo($fields["ignore_ocs_import"]);
