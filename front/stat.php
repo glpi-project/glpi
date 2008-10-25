@@ -57,7 +57,23 @@ echo  "<tr class='tab_bg_1'><td align='center'><a href=\"stat.location.php\"><b>
 .", ".$LANG["devices"][2].", ".$LANG["devices"][5].")</td></tr>";
 echo  "<tr class='tab_bg_1'><td align='center'><a href=\"stat.item.php\"><b>".$LANG["stats"][45]."</b></a></td></tr>";
 
+$names=array();
+if (isset($PLUGIN_HOOKS["stats"]) && is_array($PLUGIN_HOOKS["stats"])) {
+	foreach ($PLUGIN_HOOKS["stats"] as $plug => $pages){
+		$function="plugin_version_$plug";
+		$plugname=$function();
+		if (is_array($pages)&&count($pages)){
+			foreach ($pages as $page => $name){
+				$names[$plug.'/'.$page]=$plugname['name'].' - '.$name;
+			}
+		}
+	}
+	asort($names);
+}
 
+foreach ($names as $key => $val) {
+	echo "<tr class='tab_bg_1'><td align='center'><a href='".$CFG_GLPI["root_doc"]."/plugins/$key'><strong>".$val."</strong></a></td></tr>";
+}
 echo "</table>";
 
 commonFooter();
