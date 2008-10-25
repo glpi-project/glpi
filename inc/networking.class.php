@@ -200,6 +200,61 @@ class Netdevice extends CommonDBTM {
 	}
 
 	/**
+	 * Can I change recusvive flag to false
+	 * check if there is "linked" object in another entity
+	 * 
+	 * Overloaded from CommonDBTM
+	 *
+	 * @return booleen
+	 **/
+	function canUnrecurs () {
+
+		global $DB, $CFG_GLPI, $LINK_ID_TABLE;
+		
+		$ID  = $this->fields['ID'];
+
+		if ($ID<0 || !$this->fields['recursive']) {
+			return true;
+		}
+
+		if (!parent::canUnrecurs()) {
+			return false;
+		}
+		$entities = "(".$this->fields['FK_entities'];
+		foreach (getEntityAncestors($this->fields['FK_entities']) as $papa) {
+			$entities .= ",$papa";
+		}
+		$entities .= ")";
+
+		// RELATION : networking -> _port -> _wire -> _port -> device
+
+		// Evaluate connection in the 2 ways
+		for ($tabend=array("end1"=>"end2","end2"=>"end1");list($enda,$endb)=each($tabend);) {
+			
+			$sql="SELECT device_type, GROUP_CONCAT(DISTINCT on_device) AS ids " .
+				"FROM glpi_networking_wire, glpi_networking_ports " .
+				"WHERE glpi_networking_wire.$endb = glpi_networking_ports.ID " .
+				"AND   glpi_networking_wire.$enda IN (SELECT ID from glpi_networking_ports WHERE device_type=".NETWORKING_TYPE." AND on_device=$ID) " .
+				"GROUP BY device_type;";
+
+			$res = $DB->query($sql);
+			if ($res) while ($data = $DB->fetch_assoc($res)) {
+
+				// For each device_type which are entity dependant
+				if (isset($LINK_ID_TABLE[$data["device_type"]]) && 
+					in_array($table=$LINK_ID_TABLE[$data["device_type"]], $CFG_GLPI["specif_entities_tables"])) {
+	
+					if (countElementsInTable("$table", "ID IN (".$data["ids"].") AND FK_entities NOT IN $entities")>0) {
+							return false;						
+					}
+				}			
+			}
+		}
+		
+		return true;
+	}
+
+	/**
 	 * Print the networking form
 	 *
 	 *@param $target filename : where to go when done.
