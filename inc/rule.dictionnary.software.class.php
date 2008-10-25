@@ -52,7 +52,7 @@ class DictionnarySoftwareCollection extends RuleCachedCollection {
 		//Init cache system values
 		$this->initCache("glpi_rule_cache_software",  
 		array ("name" => "old_value","manufacturer" => "manufacturer"),
-		array ("name" => "new_value","version" => "version","manufacturer" => "new_manufacturer"));
+		array ("name" => "new_value","version" => "version","manufacturer" => "new_manufacturer","_ignore_ocs_import"=>"ignore_ocs_import"));
 	}
 
 	function getTitle() {
@@ -388,17 +388,6 @@ class DictionnarySoftwareCollection extends RuleCachedCollection {
 		return (!$DB->numrows($res_version)?-1:$DB->result($res_version, 0, "ID"));
 	}
 
-	function insertDataInCache($old_values, $output) {
-		global $DB;
-
-		$sql = "INSERT INTO " . $this->cache_table . " (`old_value`,`manufacturer`,`rule_id`,`new_value`,`version`,`new_manufacturer`) " .
-		"VALUES (\"" . $old_values["name"] . "\",\"" . $old_values["manufacturer"] . "\"," . $output["_ruleid"] . ", \""
-		 . (isset($output["name"])?$output["name"]:$old_values["name"]) . "\", \"" .
-		  (isset($output["version"])?$output["version"]:'') . "\", \"" .
-		  (isset($output["manufacturer"])?$output["manufacturer"]:'') . "\")";
-		$DB->query($sql);
-	}
-
 }
 
 /**
@@ -433,13 +422,14 @@ class DictionnarySoftwareRule extends RuleCached {
 	function showCacheRuleHeader()
 	{
 		global $LANG;
-		echo "<th colspan='5'>".$LANG["rulesengine"][100]." : ".$this->fields["name"]."</th></tr>";
+		echo "<th colspan='6'>".$LANG["rulesengine"][100]." : ".$this->fields["name"]."</th></tr>";
 		echo "<tr>";
 		echo "<td class='tab_bg_1'>".$LANG["rulesengine"][104]."</td>";
 		echo "<td class='tab_bg_1'>".$LANG["common"][5]." ".$LANG["rulesengine"][108]."</td>";
 		echo "<td class='tab_bg_1'>".$LANG["rulesengine"][105]."</td>";
 		echo "<td class='tab_bg_1'>".$LANG["rulesengine"][78]."</td>";		
 		echo "<td class='tab_bg_1'>".$LANG["common"][5]."</td>";
+		echo "<td class='tab_bg_1'>".$LANG["rulesengine"][39]." ".$LANG["ocsng"][7]."</td>"; 
 		echo "</tr>";
 	}
 
@@ -451,6 +441,13 @@ class DictionnarySoftwareRule extends RuleCached {
 		echo "<td class='tab_bg_2'>".($fields["new_value"]!=''?$fields["new_value"]:$LANG["rulesengine"][106])."</td>";
 		echo "<td class='tab_bg_2'>".($fields["version"]!=''?$fields["version"]:$LANG["rulesengine"][106])."</td>";		
 		echo "<td class='tab_bg_2'>".((isset($fields["new_manufacturer"]) && $fields["new_manufacturer"]!='')?getDropdownName("glpi_dropdown_manufacturer",$fields["new_manufacturer"]):$LANG["rulesengine"][106])."</td>";
+		echo "<td class='tab_bg_2'>"; 
+ 	 	if (!isset($fields["ignore_ocs_import"])){ 
+ 	 		echo "&nbsp;"; 
+ 	 	} else { 
+ 	 		echo getYesNo($fields["ignore_ocs_import"]); 
+ 	 	}  
+ 	 	echo "</td>"; 
 	}	
 }
 
