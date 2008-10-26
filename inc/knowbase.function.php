@@ -494,11 +494,12 @@ function ShowKbItemFull($ID,$linkauthor=true){
 		$categoryID = $ki->fields["categoryID"];
 		$fullcategoryname = getTreeValueCompleteName("glpi_dropdown_kbcategories",$categoryID);
 	
+
+		echo "<table class='tab_cadre_fixe' cellpadding='10' ><tr><th colspan='2'>";
+		
+		echo $LANG["common"][36].": <a href='".$CFG_GLPI["root_doc"]."/front/".(isset($_SESSION['glpiactiveprofile'])&&$_SESSION['glpiactiveprofile']['interface']=="central"?"knowbase.php":"helpdesk.faq.php")."?parentID=$categoryID'>".$fullcategoryname."</a></th></tr>";
 	
 		if (!($CFG_GLPI["cache"]->start($ID."_".$_SESSION["glpilanguage"],"GLPI_".$ki->type))) {
-			echo "<table class='tab_cadre_fixe' cellpadding='10' ><tr><th colspan='2'>";
-		
-			echo $LANG["common"][36].": <a href='".$CFG_GLPI["root_doc"]."/front/".(isset($_SESSION['glpiactiveprofile'])&&$_SESSION['glpiactiveprofile']['interface']=="central"?"knowbase.php":"helpdesk.faq.php")."?parentID=$categoryID'>".$fullcategoryname."</a></th></tr>";
 		
 			echo "<tr class='tab_bg_3'><td class='left' colspan='2'><h2>";
 			echo ($ki->fields["faq"]) ? "".$LANG["knowbase"][3]."" : "".$LANG["knowbase"][14]."";
