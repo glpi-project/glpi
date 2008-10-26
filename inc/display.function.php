@@ -1664,14 +1664,14 @@ function printHelpDesk ($ID,$from_helpdesk) {
 	echo "<input type='hidden' name='FK_entities' value='".$_SESSION["glpiactive_entity"]."'>";
 	echo "<div class='center'><table  class='tab_cadre'>";
 
-	echo "<tr><th colspan='2'>".$LANG["help"][1].": ";
+	echo "<tr><th colspan='2'>".$LANG["job"][11].": ";
 	if (isMultiEntitiesMode()){
 		echo "&nbsp;(".getDropdownName("glpi_entities",$_SESSION["glpiactive_entity"]).")";
 	}
 
 	echo "</th></tr>";
 	echo "<tr class='tab_bg_1'>";
-	echo "<td>".$LANG["help"][2].": </td>";
+	echo "<td>".$LANG["joblist"][2].": </td>";
 	echo "<td>";
 	dropdownPriority("priority",$priority);
 	echo "</td></tr>";
@@ -1704,9 +1704,6 @@ function printHelpDesk ($ID,$from_helpdesk) {
 	echo "</td>";
 	echo "</tr>";
 
-	echo "<tr class='tab_bg_1'>";
-	echo "<td colspan='2' align='center'>".$LANG["help"][13].":</td>";
-	echo "</tr>";
 	echo "<tr class='tab_bg_1'>";
 	echo "<td class='center'>".$LANG["common"][57].":</td>";
 	echo "<td class='center'><input type='text' maxlength='250' size='80' name='name' value=\"$title\"></td>";
