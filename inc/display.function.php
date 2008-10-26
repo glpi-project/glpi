@@ -1706,7 +1706,7 @@ function printHelpDesk ($ID,$from_helpdesk) {
 
 	echo "<tr class='tab_bg_1'>";
 	echo "<td class='center'>".$LANG["common"][57].":</td>";
-	echo "<td class='center'><input type='text' maxlength='250' size='80' name='name' value=\"$title\"></td>";
+	echo "<td class='center'><input type='text' maxlength='250' size='60' name='name' value=\"$title\"></td>";
 	echo "</tr>";
 
 	echo "<tr class='tab_bg_1'>";
