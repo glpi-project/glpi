@@ -306,9 +306,6 @@ class Netdevice extends CommonDBTM {
 		echo "<div class='center'  id='tabsbody'>";
 		if ($canedit) {
 			echo "<form name='form' method='post' action=\"$target\">\n";
-			if(strcmp($template,"newtemplate") === 0) {
-				echo "<input type=\"hidden\" name=\"is_template\" value=\"1\" />\n";
-			}	
 			echo "<input type='hidden' name='FK_entities' value='".$this->fields["FK_entities"]."'>";
 		}
 
