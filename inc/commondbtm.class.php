@@ -1214,19 +1214,36 @@ class CommonDBTM {
 	 * Display a 2 columns Header 1 for ID, 1 for recursivity menu
 	 * 
 	 * @param $ID ID of the item (-1 if new item)
+	 * @param $withtemplate empty or 1 for newtemplate, 2 for newobject from template
 	 * @param $colspan for each column
 	 * 
 	 */
-	 function showFormHeader ($ID, $colspan=1) {
+	 function showFormHeader ($ID, $withtemplate='', $colspan=1) {
 	 	
 	 	global $LANG, $CFG_GLPI;
 	 	
 		echo "<tr><th colspan='$colspan'>";
-		if (empty($ID)||$ID<0){
+
+		if (!empty($withtemplate) && $withtemplate == 2 && $ID>0) {
+			
+			echo "<input type='hidden' name='tplname' value='".$this->fields["tplname"]."'>";
+			echo $LANG["buttons"][8] . " - " . $LANG["common"][13] . ": " . $this->fields["tplname"];
+			
+		} else if (!empty($withtemplate) && $withtemplate == 1) {
+			
+			echo "<input type='hidden' name='is_template' value='1' />\n";
+			echo $LANG["common"][6].": "; 
+			autocompletionTextField("tplname",$this->table,"tplname",$this->fields["tplname"],25,$this->fields["FK_entities"]); 			
+		
+		} else if (empty($ID)||$ID<0){
+
 			echo $LANG["buttons"][8];
+
 		} else {
+
 			echo $LANG["common"][2]." $ID";
 		}
+		
 		if (isMultiEntitiesMode()){
 			echo "&nbsp;(".getDropdownName("glpi_entities",$this->fields["FK_entities"]).")";
 		}

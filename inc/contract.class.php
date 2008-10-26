@@ -148,7 +148,7 @@ class Contract extends CommonDBTM {
 			
 		echo "<table class='tab_cadre_fixe'>";
 
-		$this->showFormHeader($ID,2);
+		$this->showFormHeader($ID,'',2);
 
 		if (!$use_cache||!($CFG_GLPI["cache"]->start($ID."_".$_SESSION["glpilanguage"],"GLPI_".$this->type))) {
 
