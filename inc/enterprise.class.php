@@ -148,7 +148,7 @@ class Enterprise extends CommonDBTM {
 		echo "<div class='center' id='tabsbody' >";
 		echo "<table class='tab_cadre_fixe'>";
 
-		$this->showFormHeader($ID,2);
+		$this->showFormHeader($ID,'',2);
 
 		if (!$use_cache||!($CFG_GLPI["cache"]->start($ID."_".$_SESSION["glpilanguage"],"GLPI_".$this->type))) {
 			echo "<tr class='tab_bg_1'><td>".$LANG["common"][16].":		</td>";
