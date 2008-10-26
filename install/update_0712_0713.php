@@ -43,6 +43,7 @@ function update0712to0713() {
 		$DB->query($query) or die("0.71.3 add ignore _from_ocs field in dictionnary cache " . $LANG["update"][90] . $DB->error());
 		
 	}
+	cleanCache("GLPI_".KNOWBASE_TYPE);
 	
 
 } 
