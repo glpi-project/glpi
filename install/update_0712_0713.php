@@ -44,6 +44,6 @@ function update0712to0713() {
 		
 	}
 	
-
+	cleanCache("GLPI_".KNOWBASE_TYPE);
 } 
 ?>
