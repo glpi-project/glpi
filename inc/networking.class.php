@@ -311,7 +311,7 @@ class Netdevice extends CommonDBTM {
 
 		echo "<table  class='tab_cadre_fixe' cellpadding='2'>\n";
 
-		$this->showFormHeader($ID, $withtemplate);
+		$this->showFormHeader($ID, $LANG["networking"][53], $withtemplate);
 
 		if (!$use_cache||!($CFG_GLPI["cache"]->start($ID."_".$_SESSION["glpilanguage"],"GLPI_".$this->type))) {
 			echo "<tr><td class='tab_bg_1' valign='top'>\n";

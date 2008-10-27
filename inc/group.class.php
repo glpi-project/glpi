@@ -119,7 +119,7 @@ class Group extends CommonDBTM{
 		echo "<div class='center' id='tabsbody' >";
 		echo "<table class='tab_cadre_fixe' cellpadding='2' >";
 
-		$this->showFormHeader($ID);
+		$this->showFormHeader($ID,$LANG["setup"][605]);
 
 		echo "<tr><td class='tab_bg_1' valign='top'>";
 

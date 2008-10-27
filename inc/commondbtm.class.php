@@ -1214,11 +1214,12 @@ class CommonDBTM {
 	 * Display a 2 columns Header 1 for ID, 1 for recursivity menu
 	 * 
 	 * @param $ID ID of the item (-1 if new item)
+	 * @param $newmsg : message displayed when adding a new item
 	 * @param $withtemplate empty or 1 for newtemplate, 2 for newobject from template
 	 * @param $colspan for each column
 	 * 
 	 */
-	 function showFormHeader ($ID, $withtemplate='', $colspan=1) {
+	 function showFormHeader ($ID, $newmsg='', $withtemplate='', $colspan=1) {
 	 	
 	 	global $LANG, $CFG_GLPI;
 	 	
@@ -1237,7 +1238,7 @@ class CommonDBTM {
 		
 		} else if (empty($ID)||$ID<0){
 
-			echo $LANG["buttons"][8];
+			echo (empty($newmsg) ? $LANG["buttons"][8] : $newmsg);
 
 		} else {
 
