@@ -528,7 +528,7 @@ function loadLanguage($forcelang='') {
 function initEntityProfiles($userID) {
 	global $DB;
 
-	$profile = new Profile;
+//	$profile = new Profile;
 
 	$query = "SELECT DISTINCT glpi_profiles.* FROM glpi_users_profiles INNER JOIN glpi_profiles ON (glpi_users_profiles.FK_profiles = glpi_profiles.ID)
 					WHERE glpi_users_profiles.FK_users='$userID' ORDER BY glpi_profiles.name";
@@ -536,10 +536,10 @@ function initEntityProfiles($userID) {
 	$_SESSION['glpiprofiles'] = array ();
 	if ($DB->numrows($result)) {
 		while ($data = $DB->fetch_assoc($result)) {
-			$profile->fields = array ();
-			$profile->getFromDB($data['ID']);
-			$profile->cleanProfile();
-			$_SESSION['glpiprofiles'][$data['ID']] = $profile->fields;
+//			$profile->fields = array ();
+//			$profile->getFromDB($data['ID']);
+//			$profile->cleanProfile();
+			$_SESSION['glpiprofiles'][$data['ID']]['name'] = $data['name'];
 		}
 
 		foreach ($_SESSION['glpiprofiles'] as $key => $tab) {
@@ -550,7 +550,7 @@ function initEntityProfiles($userID) {
 				while ($data = $DB->fetch_array($result2)) {
 					$_SESSION['glpiprofiles'][$key]['entities'][$data['kID']]['ID'] = $data['eID'];
 					$_SESSION['glpiprofiles'][$key]['entities'][$data['kID']]['name'] = $data['name'];
-					$_SESSION['glpiprofiles'][$key]['entities'][$data['kID']]['completename'] = $data['completename'];
+//					$_SESSION['glpiprofiles'][$key]['entities'][$data['kID']]['completename'] = $data['completename'];
 					$_SESSION['glpiprofiles'][$key]['entities'][$data['kID']]['recursive'] = $data['recursive'];
 				}
 			}
@@ -567,50 +567,25 @@ function initEntityProfiles($userID) {
 function changeProfile($ID) {
 	global $CFG_GLPI,$LANG;
 	if (isset ($_SESSION['glpiprofiles'][$ID]) && count($_SESSION['glpiprofiles'][$ID]['entities'])) {
+		$profile=new Profile();
 		// glpiactiveprofile -> active profile
-		$_SESSION['glpiactiveprofile'] = $_SESSION['glpiprofiles'][$ID];
-		$_SESSION['glpi_entities_tree']=array();
-		$_SESSION['glpiactiveentities'] = array ();
-		// Init ancestors if needed
-		if (!isset($_SESSION['glpi_entities_ancestors'])){
-			$_SESSION['glpi_entities_ancestors']=array();
-		}
-		// glpiactiveentities -> active entities
-		foreach ($_SESSION['glpiactiveprofile']['entities'] as $key => $val) {
-			if (!$val['recursive']) {
-				if (!array_search($val["ID"], $_SESSION['glpiactiveentities'])) {
-					$_SESSION['glpiactiveentities'][$val['ID']] = $val['ID'];
-					$entity=array();
-					$entity[$val['ID']]['tree']=array();
-					
-					if ($val['ID']==0){
-						$entity[$val['ID']]['name'] = $LANG["entity"][2];
-					} else {
-						$entity[$val['ID']]['name'] = $val['name'];
-					}
-					$_SESSION['glpi_entities_tree'][] = $entity;
-				}
-			} else {
-				$entitytree = getTreeForItem("glpi_entities", $val['ID']);
-				$_SESSION['glpi_entities_tree'][]=$entitytree;
-				$entities = contructListFromTree($entitytree);
+		if ($profile->getFromDB($ID)){
+			$profile->cleanProfile();
+			$data = $profile->fields;
+			$data['entities']=$_SESSION['glpiprofiles'][$ID]['entities'];
 
-				if (count($entities)) {
-					foreach ($entities as $key2 => $val2) {
-						$_SESSION['glpiactiveentities'][$key2] = $key2;
-					}
-				}
-			}
-		}
-		if (isset($_SESSION['glpiactiveentities'][$_SESSION["glpidefault_entity"]])){
-			changeActiveEntities($_SESSION["glpidefault_entity"],true);
-		} else {
+			$_SESSION['glpiactiveprofile'] = $data;
+			$_SESSION['glpiactiveentities'] = array ();
+	
 			changeActiveEntities("all");
+			
+			if (isset($_SESSION['glpiactiveentities'][$_SESSION["glpidefault_entity"]])){
+				changeActiveEntities($_SESSION["glpidefault_entity"],true);
+			} 
+			doHook("change_profile");
 		}
-
-		
-		doHook("change_profile");
 	}
+
 	cleanCache("GLPI_HEADER_".$_SESSION["glpiID"]);
 	// Clean specific datas 
 	if (isset($_SESSION['glpi_faqcategories'])){
@@ -630,37 +605,48 @@ function changeProfile($ID) {
 function changeActiveEntities($ID="all",$recursive=false) {
 	global $LANG;
 	$newentities=array();
+	$_SESSION['glpiactiveentities_root']=array();
+	
 	if ($ID=="all"){
-		foreach ($_SESSION['glpi_entities_tree'] as $key => $tree){
-			$entities = contructListFromTree($tree);
+		
+		foreach ($_SESSION['glpiactiveprofile']['entities'] as $key => $val) {
+			$_SESSION['glpiactiveentities_root'][$val['ID']]=$val['recursive'];
+			$newentities[$val['ID']] = $val['ID'];
+			if ($val['recursive']) {
+				$entities = getSonsOfTreeItem("glpi_entities", $val['ID']);
+				if (count($entities)) {
+					foreach ($entities as $key2 => $val2) {
+						$newentities[$key2] = $key2;
+					}
+				}
+			}
+		}
+	} else {
+		$_SESSION['glpiactiveentities_root'][$ID]=$recursive;
+		$newentities[$ID] = $ID;
+		if ($recursive){
+			$entities = getSonsOfTreeItem("glpi_entities", $ID);
 			if (count($entities)) {
 				foreach ($entities as $key2 => $val2) {
 					$newentities[$key2] = $key2;
 				}
-			}		
-		}
-	} else {
-		$newentities[$ID] = $ID;
-		if ($recursive){
-			foreach ($_SESSION['glpi_entities_tree'] as $key => $tree){
-				$entities = contructListFromTree($tree);
-				$tofind=array($ID);
-				while (count($tofind)){
-					$founded=array();
-					foreach ($entities as $key2 => $val2){
-						if (in_array($val2,$tofind)){
-							$newentities[$key2] = $key2;
-							$founded[]=$key2;
-							unset($entities[$key2]);
-						}
-					}
-					$tofind=$founded;
-				}
 			}
+
 		}
 	}
+
 	if (count($newentities)>0){
 		$_SESSION['glpiactiveentities']=$newentities;
+		$_SESSION['glpiactiveentities_string']='';
+		$first=true;
+		foreach ($_SESSION['glpiactiveentities'] as $key => $val){
+			if ($first){
+				$first=false;
+			} else {
+				$_SESSION['glpiactiveentities_string'].=' ,';
+			}
+			$_SESSION['glpiactiveentities_string'].=$key;
+		}
 		// Active entity loading
 		$active=key($_SESSION['glpiactiveentities']);
 		$_SESSION["glpiactive_entity"] = $active;

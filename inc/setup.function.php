@@ -485,9 +485,12 @@ function updateDropdown($input) {
 		if (in_array($input["tablename"], $CFG_GLPI["dropdowntree_tables"])) {
 			regenerateTreeCompleteNameUnderID($input["tablename"], $input["ID"]);
 			if ($input["tablename"]=="glpi_entities"&&isset($_SESSION["glpiID"])){
+				
 				$activeprof=$_SESSION['glpiactiveprofile']['ID'];
 				initEntityProfiles($_SESSION["glpiID"]);
 				changeProfile($activeprof);
+				cleanCache("GLPI_entities_ancestors");
+				cleanCache("GLPI_entities_sons");
 			}
 		}
 		cleanRelationCache($input["tablename"]);
@@ -679,6 +682,9 @@ function addDropdown($input) {
 				$activeprof=$_SESSION['glpiactiveprofile']['ID'];
 				initEntityProfiles($_SESSION["glpiID"]);
 				changeProfile($activeprof);
+				cleanCache("GLPI_entities_ancestors");
+				cleanCache("GLPI_entities_sons");
+
 			}
 
 			cleanRelationCache($input["tablename"]);
@@ -760,6 +766,9 @@ function replaceDropDropDown($input) {
 			initEntityProfiles($_SESSION["glpiID"]);
 			changeProfile($activeprof);
 		}
+		cleanCache("GLPI_entities_ancestors");
+		cleanCache("GLPI_entities_sons");
+
 	}
 	cleanRelationCache($input["tablename"]);
 }

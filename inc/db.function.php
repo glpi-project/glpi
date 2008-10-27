@@ -236,10 +236,14 @@ function getTreeValueName($table,$ID, $wholename="",$level=0){
  * @return array of IDs of the ancestors
  */
 function getEntityAncestors ($ID){
-	if (!isset($_SESSION['glpi_entities_ancestors'][$ID])){
-		$_SESSION['glpi_entities_ancestors'][$ID]=getAncestorsOfTreeItem("glpi_entities",$ID);
+	global $CFG_GLPI;
+
+	if (!($ancestors = $CFG_GLPI['cache']->get($ID,"GLPI_entities_ancestors"))) {
+		// Cache miss !
+		$ancestors=getAncestorsOfTreeItem("glpi_entities",$ID);
+		$CFG_GLPI['cache']->save($ancestors,$ID,"GLPI_entities_ancestors");
 	}
-	return $_SESSION['glpi_entities_ancestors'][$ID];
+	return $ancestors;
 }
 
 /**
@@ -250,10 +254,14 @@ function getEntityAncestors ($ID){
  * @return array of IDs of the sons (including ID of the searched entity)
  */
 function getEntitySons ($ID){
-	if (!isset($_SESSION['glpi_entities_sons'][$ID])){
-		$_SESSION['glpi_entities_sons'][$ID]=getSonsOfTreeItem("glpi_entities",$ID);
+	global $CFG_GLPI;
+
+	if (!($sons = $CFG_GLPI['cache']->get($ID,"GLPI_entities_sons"))) {
+		// Cache miss !
+		$sons=getSonsOfTreeItem("glpi_entities",$ID);
+		$CFG_GLPI['cache']->save($sons,$ID,"GLPI_entities_sons");
 	}
-	return $_SESSION['glpi_entities_sons'][$ID];
+	return $sons;
 }
 
 /**
@@ -282,8 +290,8 @@ function getAncestorsOfTreeItem($table,$IDf){
 		} else {
 			$IDf=0;
 		}
-		if ($IDf>=0&&!in_array($IDf,$id_found)){
-			$id_found[]=$IDf;
+		if (!isset($id_found[$IDf])){
+			$id_found[$IDf]=$IDf;
 		} else {
 			$IDf=0;
 		}
@@ -303,7 +311,7 @@ function getSonsOfTreeItem($table,$IDf){
 	global $DB;
 
 	// IDs to be present in the final array
-	$id_found=array($IDf);
+	$id_found[$IDf]=$IDf;
 	// current ID found to be added
 	$found=array();
 	// First request init the  varriables
@@ -311,7 +319,6 @@ function getSonsOfTreeItem($table,$IDf){
 		FROM $table 
 		WHERE parentID = '$IDf'
 		ORDER BY name";
-
 	if ( ($result=$DB->query($query)) && ($DB->numrows($result)>0) ){
 		while ($row=$DB->fetch_array($result)){
 			$id_found[$row['ID']]=$row['ID'];
