@@ -1841,35 +1841,86 @@ function dropdownLanguages($myname,$value){
  */
 function displayActiveEntities($target,$myname){
 	global $CFG_GLPI,$LANG;
+	$rand=mt_rand();
 	
 	echo "<div class='center' ><span class='b'>".$LANG["entity"][10]." ( <img src=\"".$CFG_GLPI["root_doc"]."/pics/entity_all.png\" alt=''> ".$LANG["entity"][11].")</span><br>";
-	echo "<a style='font-size:14px;' href='".$target."?active_entity=all' title=\"".$LANG["buttons"][40]."\">_&nbsp;".ereg_replace(" ","&nbsp;",$LANG["buttons"][40])."&nbsp;_</a></div><br>";
+	echo "<a style='font-size:14px;' href='".$target."?active_entity=all' title=\"".$LANG["buttons"][40]."\">_&nbsp;".ereg_replace(" ","&nbsp;",$LANG["buttons"][40])."&nbsp;_</a></div>";
 
 	echo "<div class='left' style='width:100%'>";
 	
-	foreach ($_SESSION['glpi_entities_tree'] as $ID => $tree){
-		displayEntityTree($target,$myname,$tree);
-	}
-	echo "</div>";
-/*
-	echo "<table>";
-	echo "<tr><td style='text-align:left;'><a href='".$target."?active_entity=all' title=\"".$LANG["buttons"][40]."\">_&nbsp;".ereg_replace(" ","&nbsp;",$LANG["buttons"][40])."&nbsp;_</a></td></tr>";
 
-	foreach ($_SESSION['glpi_entities_tree'] as $ID => $tree){
-		displayEntityTree($target,$myname,$tree);
-	}
-	echo "</table>";
+	echo "<script type='javascript'>";
+	echo "var Tree_Category_Loader = new Ext.tree.TreeLoader({
+		dataUrl   :'".$CFG_GLPI["root_doc"]."/ajax/entitytreesons.php'
+	});";
+
+	echo "var Tree_Category = new Ext.tree.TreePanel({
+		collapsible      : false,
+		animCollapse     : false,
+		border           : false,
+		id               : 'tree_projectcategory$rand',
+		el               : 'tree_projectcategory$rand',
+		autoScroll       : true,
+		animate          : false,
+		enableDD         : true,
+		containerScroll  : true,
+		height           : 320,
+		width            : 770,
+		loader           : Tree_Category_Loader,
+		rootVisible 	 : false,
+	});";
+	
+	// SET the root node.
+	echo "var Tree_Category_Root = new Ext.tree.AsyncTreeNode({
+		text		: '',
+		draggable	: false,
+		id		: '-1'                  // this IS the id of the startnode
+	});
+		
+	Tree_Category.setRootNode(Tree_Category_Root);";
+
+	echo "// Render the tree.
+		Tree_Category.render();
+		Tree_Category_Root.expand();";
+
+		echo "</script>";
+	
+
+		echo "<div id='tree_projectcategory$rand' ></div>";
+
+
+/*		$class=" class='tree' ";
+		$raquo="&raquo;";
+		$fsize=16;
+		$level=0;
+		$havesons=false;
+		if ($recursive && count(getEntitySons($ID))){
+			$class=" class='treeroot' ";
+			$raquo="<a href=\"javascript:showHideDiv('entity_subitem_$ID','entity_subitem_icon_$ID','" . $CFG_GLPI["root_doc"] . "/pics/expand.gif','" . $CFG_GLPI["root_doc"] . "/pics/collapse.gif');\"><img name='entity_subitem_icon_$ID' src=\"".$CFG_GLPI["root_doc"]."/pics/expand.gif\" alt=''></a>";
+			$havesons=true;
+		}
+		$name=getDropdownName('glpi_entities',$ID);
+		echo "<div $class>".str_repeat("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;", max(1,$level)),$raquo."&nbsp;<a style='font-size:".$fsize."px;' title=\"$name\" href='".$target."?active_entity=$ID'>".ereg_replace(" ","&nbsp;",$name)."</a>";
+
+			echo "<div id='entity_subitem_$ID'>uuu";
+			//displayEntityTree($target,$myname,$data['tree'],$level+1);
+			echo "</div>";
+		
+		echo "</div>";
+
+		//displayEntityTree($target,$myname,$ID,$recursive);
 */
+	echo "</div>";
 }
 /**
  * Display entities tree 
  *
  * @param $myname select name
  * @param $target target for entity change action
- * @param $tree the entity tree structure
+ * @param $ID ID of the root entity
  * @param $level current level displayed
  */
-function displayEntityTree($target,$myname,$tree,$level=0){
+function displayEntityTree($target,$myname,$ID,$recursive,$level=0){
 	global $CFG_GLPI,$LANG;
 
 
@@ -1913,27 +1964,6 @@ function displayEntityTree($target,$myname,$tree,$level=0){
 			}
 		}
 	}
-
-/*	if (count($tree)){
-		foreach ($tree as $ID => $data){
-			if (isset($data['name'])){
-				$class=" class='tree' ";
-				$raquo="&raquo;";
-				if ($level==0){
-					$class=" class='treeroot' ";
-					$raquo="";
-				}
-
-				echo "<tr><td $class>".str_repeat("&nbsp;&nbsp;&nbsp;", $level+1).$raquo."&nbsp;<a title=\"".$data['name']."\" href='".$target."?active_entity=$ID'>".ereg_replace(" ","&nbsp;",$data['name'])."</a>";
-
-				if (isset($data['tree'])&&count($data['tree'])){
-					echo "&nbsp;&nbsp;<a title=\"".$LANG["buttons"][40]."\" href='".$target."?active_entity=$ID&amp;recursive=1'><img alt=\"".$LANG["buttons"][40]."\" src='".$CFG_GLPI["root_doc"]."/pics/entity_all.png'></a></td></tr>";
-					displayEntityTree($target,$myname,$data['tree'],$level+1);
-				} else echo "&nbsp;</td></tr>";
-			}
-		}
-	}
-	*/
 }
 
 

@@ -2237,20 +2237,7 @@ function showProfileSelecter($target){
 	} //else echo "only one profile -> no select to print";
 
 	if (isMultiEntitiesMode()){
-		$cpt=0;
-		
-		foreach ($_SESSION['glpi_entities_tree'] as $key => $tree){
-			$entities = contructListFromTree($tree);
-			$cpt+=count($entities);
-		}
-	
-		$addname="";
-		if ($cpt>15){
-			$addname="_long";
-		}
-		
 		echo "<li>";
-
 
 		echo "<script  type='text/javascript'>";
 		echo "cleanhide('modal_entity_contents');";

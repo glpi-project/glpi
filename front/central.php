@@ -34,10 +34,11 @@
 // ----------------------------------------------------------------------
 
 define('GLPI_ROOT', '..');
-$NEEDED_ITEMS=array("central","tracking","computer","printer","monitor","peripheral","networking","software","user","group","setup","planning","phone","reminder","enterprise","contract");
+$NEEDED_ITEMS=array("central","tracking","computer","printer","monitor","peripheral","networking","software","user","group","setup","planning","phone","reminder","enterprise","contract","profile");
 include (GLPI_ROOT."/inc/includes.php");
 
 	checkCentralAccess();
+
 	// Change profile system
 	if (isset ($_POST['newprofile'])) {
 		if (isset ($_SESSION["glpiprofiles"][$_POST['newprofile']])) {
@@ -69,6 +70,7 @@ include (GLPI_ROOT."/inc/includes.php");
 		manageRedirect($_GET["redirect"]);
 	}
 
+
 	// Greet the user
 
 	echo "<br><span class='icon_consol'>".$LANG["central"][0]." ";
@@ -77,7 +79,6 @@ include (GLPI_ROOT."/inc/includes.php");
 	echo ", ".$LANG["central"][1]."</span>";
 
 	echo "<br><br>";
-
 
 	
 	$tabs['my']=array('title'=>$LANG["central"][12],
