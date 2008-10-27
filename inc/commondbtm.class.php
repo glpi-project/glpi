@@ -1237,7 +1237,7 @@ class CommonDBTM {
 		
 		} else if (empty($ID)||$ID<0){
 
-			echo $LANG["buttons"][8];
+			echo $LANG["common"][87];
 
 		} else {
 
