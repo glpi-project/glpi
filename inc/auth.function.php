@@ -807,10 +807,6 @@ function getEntitiesRestrictRequest($separator = "AND", $table = "", $field = ""
 		}
 	}
 
-	if (!is_array($value)&&strlen($value)==0){
-		$value=$_SESSION['glpiactiveentities'];
-	}
-
 
 	if (!empty ($table)) {
 		$query .= $table . ".";
@@ -839,7 +835,12 @@ function getEntitiesRestrictRequest($separator = "AND", $table = "", $field = ""
 		}
 		$query.=") ";
 	} else {
-		$query.= " = '$value' ";
+
+		if (strlen($value)==0){
+			$query.=" IN (".$_SESSION['glpiactiveentities_string'].") ";
+		} else {
+			$query.= " = '$value' ";
+		}
 	}
 
 	if ($recursive){
