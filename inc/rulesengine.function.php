@@ -383,9 +383,8 @@ function getCacheTableByRuleType($type){
 function getRegexResultById($action,$regex_results){
 	
 	if (count($regex_results)>0){
-		if (preg_match("/^.*#([0-9]).*$/",$action,$results)>0){
-			unset($results[0]);
-			foreach($results as $result){
+		if (preg_match_all("/#([0-9])/",$action,$results)>0){
+			foreach($results[1] as $result){
 				$action=str_replace("#$result",(isset($regex_results[$result])?$regex_results[$result]:''),$action);
 			}
 		}	
