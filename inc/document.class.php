@@ -192,7 +192,7 @@ class Document extends CommonDBTM {
 
 		echo "<div class='center' id='tabsbody'><table class='tab_cadre_fixe'>";
 		
-		$this->showFormHeader($ID);
+		$this->showFormHeader($ID,$LANG["document"][16]);
 		if ($ID>0) {
 			echo "<tr><th>";
 			if ($this->fields["FK_users"]>0){
