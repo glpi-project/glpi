@@ -153,7 +153,7 @@ class Contact extends CommonDBTM{
 
 		echo "<table class='tab_cadre_fixe' cellpadding='2' >";
 
-		$this->showFormHeader($ID, $LANG["financial"][33]);
+		$this->showFormHeader($ID);
 		
 		if (!$use_cache||!($CFG_GLPI["cache"]->start($ID."_".$_SESSION["glpilanguage"],"GLPI_".$this->type))) {
 			echo "<tr><td class='tab_bg_1' valign='top'>";
