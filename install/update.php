@@ -49,9 +49,14 @@ include_once (GLPI_ROOT . "/inc/plugin.class.php");
 include_once (GLPI_ROOT . "/config/based_config.php");
 include_once (GLPI_CONFIG_DIR . "/config_db.php");
 
-setGlpiSessionPath();
-
-cleanCache();
+// Clean cache if directory is writable
+if (is_writable(GLPI_CACHE_DIR)){
+	cleanCache();
+}
+// Use default session dir if not writable
+if (is_writable(GLPI_SESSION_DIR)){
+	setGlpiSessionPath();
+}
 
 // Init debug variable
 $_SESSION['glpi_use_mode']=DEBUG_MODE;
@@ -527,7 +532,9 @@ $HEADER_LOADED=true;
 
 startGlpiSession();
 
-if(!isset($_SESSION["glpilanguage"])||empty($_SESSION["glpilanguage"])) $_SESSION["glpilanguage"] = "en_GB";
+if(!isset($_SESSION["glpilanguage"])||empty($_SESSION["glpilanguage"])) {
+	$_SESSION["glpilanguage"] = "en_GB";
+}
 
 
 loadLang($_SESSION["glpilanguage"]);
