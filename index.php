@@ -135,8 +135,15 @@ else
 	echo "<noscript><p>";
 	echo $LANG["login"][26];
 	echo "</p></noscript>";
-	if (isset($_GET['cookie_error'])){
-		echo $LANG["login"][27];
+	if (isset($_GET['error'])){
+		switch ($_GET['error']){
+			case 1 : // cookie error
+				echo $LANG["login"][27];
+				break;
+			case 2 : // GLPI_SESSION_DIR not writable
+				echo $LANG["install"][50].": ".GLPI_SESSION_DIR;
+				break;
+		}
 	}
 	echo "</div>";
 
