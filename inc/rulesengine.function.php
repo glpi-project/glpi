@@ -48,6 +48,10 @@ function matchRules($field, $condition, $pattern,&$regex_result) {
 	if ($pattern == RULE_WILDCARD){
 		return true;
 	}
+
+	// Trim for remove kayboard errors
+	$field=trim($field);
+	$pattern=trim($pattern);
 	if ($condition != REGEX_MATCH && $condition != REGEX_NOT_MATCH){
 		//Perform comparison with fields in lower case
 		$field = strtolower($field);
