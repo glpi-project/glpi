@@ -42,9 +42,15 @@ include_once (GLPI_ROOT . "/inc/db.function.php");
 include_once (GLPI_ROOT . "/inc/display.function.php");
 include_once (GLPI_ROOT . "/inc/dropdown.function.php");
 
-setGlpiSessionPath();
+// Clean cache if directory is writable
+if (is_writable(GLPI_CACHE_DIR)){
+	cleanCache();
+}
+// Use default session dir if not writable
+if (is_writable(GLPI_SESSION_DIR)){
+	setGlpiSessionPath();
+}
 
-cleanCache();
 
 $CFG_GLPI["debug"]=DEBUG_MODE;
 $CFG_GLPI["debug_sql"]=$CFG_GLPI["debug_vars"]=$CFG_GLPI["debug_profile"]=$CFG_GLPI["debug_lang"]=0;
