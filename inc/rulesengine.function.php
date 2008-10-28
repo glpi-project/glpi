@@ -49,7 +49,7 @@ function matchRules($field, $condition, $pattern,&$regex_result) {
 		return true;
 	}
 
-	// Trim for remove kayboard errors
+	// Trim for remove keyboard errors
 	$field=trim($field);
 	$pattern=trim($pattern);
 	if ($condition != REGEX_MATCH && $condition != REGEX_NOT_MATCH){
