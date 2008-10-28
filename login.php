@@ -48,8 +48,12 @@ $NEEDED_ITEMS = array (
 include (GLPI_ROOT . "/inc/includes.php");
 
 if (!isset($_SESSION["glpitest"])||$_SESSION["glpitest"]!='testcookie'){
-	echo $LANG["login"][27];
-	glpi_header($CFG_GLPI['root_doc'] . "/index.php?cookie_error=1");
+	if (!is_writable(GLPI_SESSION_DIR)){
+		glpi_header($CFG_GLPI['root_doc'] . "/index.php?error=2");
+	} else {
+		glpi_header($CFG_GLPI['root_doc'] . "/index.php?error=1");
+	}
+	
 }
 
 $_POST = array_map('stripslashes', $_POST);
