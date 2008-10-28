@@ -38,13 +38,24 @@
 /// Update from 0.71.2 to 0.71.3
 function update0712to0713() {
 	global $DB, $CFG_GLPI, $LANG;
+
 	if (!FieldExists("glpi_rule_cache_software", "ignore_ocs_import")) {
 		$query = "ALTER TABLE `glpi_rule_cache_software` ADD `ignore_ocs_import` VARCHAR( 255 ) NULL ;";
 		$DB->query($query) or die("0.71.3 add ignore _from_ocs field in dictionnary cache " . $LANG["update"][90] . $DB->error());
-		
 	}
+	// Clean KB cache because error on datas stored
 	cleanCache("GLPI_".KNOWBASE_TYPE);
 	
-
+	// Update to longtext for fields which may be very long
+	if (FieldExists("glpi_kbitems", "answer")) {
+		$query = "ALTER TABLE `glpi_kbitems` CHANGE `answer` `answer` LONGTEXT NULL DEFAULT NULL  ";
+		$DB->query($query) or die("0.71.3 alter kbitem answer field to longtext " . $LANG["update"][90] . $DB->error());
+	}
+	if (FieldExists("glpi_tracking", "contents")) {
+		$query = "ALTER TABLE `glpi_tracking` CHANGE `contents` `contents` LONGTEXT NULL DEFAULT NULL  ";
+		$DB->query($query) or die("0.71.3 alter tracking contents field to longtext " . $LANG["update"][90] . $DB->error());
+	}
+		
+	
 } 
 ?>
