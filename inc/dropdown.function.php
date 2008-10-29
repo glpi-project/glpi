@@ -2094,9 +2094,10 @@ function dropdownPlanningState($name,$value='')
  * Dropdown of values in an array
  *
  * @param $name select name
- * @param $used already used elements key (do not display)
  * @param $elements array of elements to display
  * @param $value default value
+ * @param $used already used elements key (do not display)
+ *  
  */	
 function dropdownArrayValues($name,$elements,$value='',$used=array()){
 	$rand=mt_rand();
@@ -2110,6 +2111,25 @@ function dropdownArrayValues($name,$elements,$value='',$used=array()){
 
 	echo "</select>";	
 	return $rand;
+}
+
+/**
+ * Remplace an dropdown by an hidden input field 
+ * and display the value.
+ *
+ * @param $name select name
+ * @param $elements array of elements to display
+ * @param $value default value
+ * @param $used already used elements key (do not display)
+ *  
+ */	
+function dropdownArrayValuesReadonly($name,$elements,$value='',$used=array()){
+
+	echo "<input type='hidden' name='$name' value='$value'>";
+
+	if (isset($elements[$value])) {
+		echo $elements[$value]; 
+	}
 }
 
 /**

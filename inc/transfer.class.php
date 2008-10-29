@@ -2202,7 +2202,8 @@ class Transfer extends CommonDBTM{
 		}
 
 		if ($con_spotted){
-
+			$fctdropdown = (haveRight("transfer","w") ? "dropdownArrayValues" : "dropdownArrayValuesReadOnly");
+				
 			echo "<form method='post' name=form action=\"$target\"><div class='center'>";
 
 			echo "<table class='tab_cadre_fixe' cellpadding='2' >";
@@ -2242,7 +2243,7 @@ class Transfer extends CommonDBTM{
 
 				echo "<tr class='tab_bg_1'>";
 				echo "<td>".$LANG["common"][66]." -> ".$LANG["title"][38].":	</td><td>";
-				dropdownArrayValues('keep_history',$keep,$this->fields['keep_history']);
+				$fctdropdown('keep_history',$keep,$this->fields['keep_history']);
 				echo "</td>";
 				echo "<td colspan='2'>&nbsp;</td>";
 				echo "</tr>";
@@ -2255,13 +2256,13 @@ class Transfer extends CommonDBTM{
 				$options=array(0=>$LANG["buttons"][6],
 						1=>$LANG["buttons"][49]." - ".$LANG["buttons"][10] ,
 						2=>$LANG["buttons"][49]." - ".$LANG["buttons"][9] );
-				dropdownArrayValues('keep_networklinks',$options,$this->fields['keep_networklinks']);
+				$fctdropdown('keep_networklinks',$options,$this->fields['keep_networklinks']);
 				echo "</td>";
 				echo "<td>".$LANG["common"][66]." -> ".$LANG["title"][28].":	</td><td>";
 				$options=array(0=>$LANG["buttons"][6],
 						1=>$LANG["buttons"][49]." - ".$LANG["buttons"][10] ,
 						2=>$LANG["buttons"][49]." - ".$LANG["buttons"][48] );
-				dropdownArrayValues('keep_tickets',$options,$this->fields['keep_tickets']);
+				$fctdropdown('keep_tickets',$options,$this->fields['keep_tickets']);
 				echo "</td>";
 				echo "</tr>";
 
@@ -2269,43 +2270,43 @@ class Transfer extends CommonDBTM{
 
 				echo "<tr class='tab_bg_1'>";
 				echo "<td>".$LANG["Menu"][0]." -> ".$LANG["Menu"][4].":	</td><td>";
-				dropdownArrayValues('keep_softwares',$keep,$this->fields['keep_softwares']);
+				$fctdropdown('keep_softwares',$keep,$this->fields['keep_softwares']);
 				echo "</td>";
 				echo "<td>".$LANG["Menu"][4].": ".$LANG["transfer"][3]."	</td><td>";
-				dropdownArrayValues('clean_softwares',$clean,$this->fields['clean_softwares']);
+				$fctdropdown('clean_softwares',$clean,$this->fields['clean_softwares']);
 				echo "</td>";
 				echo "</tr>";
 
 				echo "<tr class='tab_bg_1'>";
 				echo "<td>".$LANG["common"][66]." -> ".$LANG["Menu"][17].":	</td><td>";	
-				dropdownArrayValues('keep_reservations',$keep,$this->fields['keep_reservations']);
+				$fctdropdown('keep_reservations',$keep,$this->fields['keep_reservations']);
 				echo "</td>";
 				echo "<td>".$LANG["Menu"][0]." -> ".$LANG["title"][30].":	</td><td>";
-				dropdownArrayValues('keep_devices',$keep,$this->fields['keep_devices']);
+				$fctdropdown('keep_devices',$keep,$this->fields['keep_devices']);
 				echo "</td>";
 				echo "</tr>";
 
 				echo "<tr class='tab_bg_1'>";
 				echo "<td>".$LANG["Menu"][2]." -> ".$LANG["Menu"][21]." / ".$LANG["cartridges"][12].":	</td><td>";
-				dropdownArrayValues('keep_cartridges_type',$keep,$this->fields['keep_cartridges_type']);
+				$fctdropdown('keep_cartridges_type',$keep,$this->fields['keep_cartridges_type']);
 				echo "</td>";
 				echo "<td>".$LANG["cartridges"][12].": ".$LANG["transfer"][3]."	</td><td>";
-				dropdownArrayValues('clean_cartridges_type',$clean,$this->fields['clean_cartridges_type']);
+				$fctdropdown('clean_cartridges_type',$clean,$this->fields['clean_cartridges_type']);
 				echo "</td>";
 				echo "</tr>";
 
 				echo "<tr class='tab_bg_1'>";
 				echo "<td>".$LANG["cartridges"][12]." -> ".$LANG["Menu"][21].":	</td><td>";
-				dropdownArrayValues('keep_cartridges',$keep,$this->fields['keep_cartridges']);
+				$fctdropdown('keep_cartridges',$keep,$this->fields['keep_cartridges']);
 				echo "</td>";				
 				echo "<td>".$LANG["common"][66]." -> ".$LANG["financial"][3].":	</td><td>";
-				dropdownArrayValues('keep_infocoms',$keep,$this->fields['keep_infocoms']);
+				$fctdropdown('keep_infocoms',$keep,$this->fields['keep_infocoms']);
 				echo "</td>";
 				echo "</tr>";
 
 				echo "<tr class='tab_bg_1'>";
 				echo "<td>".$LANG["setup"][92]." -> ".$LANG["Menu"][32].":	</td><td>";
-				dropdownArrayValues('keep_consumables',$keep,$this->fields['keep_consumables']);
+				$fctdropdown('keep_consumables',$keep,$this->fields['keep_consumables']);
 				echo "</td>";
 				echo "<td colspan='2'>&nbsp;</td>";
 				echo "</tr>";
@@ -2315,37 +2316,37 @@ class Transfer extends CommonDBTM{
 
 				echo "<tr class='tab_bg_1'>";
 				echo "<td>".$LANG["Menu"][3].":	</td><td>";
-				dropdownArrayValues('keep_dc_monitor',$keep,$this->fields['keep_dc_monitor']);
+				$fctdropdown('keep_dc_monitor',$keep,$this->fields['keep_dc_monitor']);
 				echo "</td>";
 				echo "<td>".$LANG["Menu"][3].": ".$LANG["transfer"][3]."	</td><td>";
-				dropdownArrayValues('clean_dc_monitor',$clean,$this->fields['clean_dc_monitor']);
+				$fctdropdown('clean_dc_monitor',$clean,$this->fields['clean_dc_monitor']);
 				echo "</td>";
 				echo "</tr>";
 
 				echo "<tr class='tab_bg_1'>";
 				echo "<td>".$LANG["Menu"][2].":	</td><td>";
-				dropdownArrayValues('keep_dc_printer',$keep,$this->fields['keep_dc_printer']);
+				$fctdropdown('keep_dc_printer',$keep,$this->fields['keep_dc_printer']);
 				echo "</td>";
 				echo "<td>".$LANG["Menu"][2].": ".$LANG["transfer"][3]."	</td><td>";
-				dropdownArrayValues('clean_dc_printer',$clean,$this->fields['clean_dc_printer']);
+				$fctdropdown('clean_dc_printer',$clean,$this->fields['clean_dc_printer']);
 				echo "</td>";
 				echo "</tr>";
 
 				echo "<tr class='tab_bg_1'>";
 				echo "<td>".$LANG["Menu"][16].":	</td><td>";
-				dropdownArrayValues('keep_dc_peripheral',$keep,$this->fields['keep_dc_peripheral']);
+				$fctdropdown('keep_dc_peripheral',$keep,$this->fields['keep_dc_peripheral']);
 				echo "</td>";
 				echo "<td>".$LANG["Menu"][16].": ".$LANG["transfer"][3]."	</td><td>";
-				dropdownArrayValues('clean_dc_peripheral',$clean,$this->fields['clean_dc_peripheral']);
+				$fctdropdown('clean_dc_peripheral',$clean,$this->fields['clean_dc_peripheral']);
 				echo "</td>";
 				echo "</tr>";
 
 				echo "<tr class='tab_bg_1'>";
 				echo "<td>".$LANG["Menu"][34].":	</td><td>";
-				dropdownArrayValues('keep_dc_phone',$keep,$this->fields['keep_dc_phone']);
+				$fctdropdown('keep_dc_phone',$keep,$this->fields['keep_dc_phone']);
 				echo "</td>";
 				echo "<td>".$LANG["Menu"][34].": ".$LANG["transfer"][3]."	</td><td>";
-				dropdownArrayValues('clean_dc_phone',$clean,$this->fields['clean_dc_phone']);
+				$fctdropdown('clean_dc_phone',$clean,$this->fields['clean_dc_phone']);
 				echo "</td>";
 				echo "</tr>";
 
@@ -2356,37 +2357,37 @@ class Transfer extends CommonDBTM{
 
 				echo "<tr class='tab_bg_1'>";
 				echo "<td>".$LANG["common"][66]." -> ".$LANG["Menu"][23].":	</td><td>";
-				dropdownArrayValues('keep_enterprises',$keep,$this->fields['keep_enterprises']);
+				$fctdropdown('keep_enterprises',$keep,$this->fields['keep_enterprises']);
 				echo "</td>";
 				echo "<td>".$LANG["Menu"][23].": ".$LANG["transfer"][3]."	</td><td>";
-				dropdownArrayValues('clean_enterprises',$clean,$this->fields['clean_enterprises']);
+				$fctdropdown('clean_enterprises',$clean,$this->fields['clean_enterprises']);
 				echo "</td>";
 				echo "</tr>";
 
 				echo "<tr class='tab_bg_1'>";
 				echo "<td>".$LANG["Menu"][23]." -> ".$LANG["Menu"][22].":	</td><td>";
-				dropdownArrayValues('keep_contacts',$keep,$this->fields['keep_contacts']);
+				$fctdropdown('keep_contacts',$keep,$this->fields['keep_contacts']);
 				echo "</td>";
 				echo "<td>".$LANG["Menu"][22].": ".$LANG["transfer"][3]."	</td><td>";
-				dropdownArrayValues('clean_contacts',$clean,$this->fields['clean_contacts']);
+				$fctdropdown('clean_contacts',$clean,$this->fields['clean_contacts']);
 				echo "</td>";
 				echo "</tr>";
 
 				echo "<tr class='tab_bg_1'>";
 				echo "<td>".$LANG["common"][66]." -> ".$LANG["Menu"][27].":	</td><td>";
-				dropdownArrayValues('keep_documents',$keep,$this->fields['keep_documents']);
+				$fctdropdown('keep_documents',$keep,$this->fields['keep_documents']);
 				echo "</td>";
 				echo "<td>".$LANG["Menu"][27].": ".$LANG["transfer"][3]."	</td><td>";
-				dropdownArrayValues('clean_documents',$clean,$this->fields['clean_documents']);
+				$fctdropdown('clean_documents',$clean,$this->fields['clean_documents']);
 				echo "</td>";
 				echo "</tr>";
 
 				echo "<tr class='tab_bg_1'>";
 				echo "<td>".$LANG["common"][66]." -> ".$LANG["Menu"][25].":	</td><td>";
-				dropdownArrayValues('keep_contracts',$keep,$this->fields['keep_contracts']);
+				$fctdropdown('keep_contracts',$keep,$this->fields['keep_contracts']);
 				echo "</td>";
 				echo "<td>".$LANG["Menu"][25].": ".$LANG["transfer"][3]."	</td><td>";
-				dropdownArrayValues('clean_contracts',$clean,$this->fields['clean_contracts']);
+				$fctdropdown('clean_contracts',$clean,$this->fields['clean_contracts']);
 				echo "</td>";
 				echo "</tr>";
 
