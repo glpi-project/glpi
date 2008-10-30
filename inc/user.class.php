@@ -1072,9 +1072,9 @@ class User extends CommonDBTM {
 			if (count($_SESSION['glpiprofiles'])>1){
 				echo "<tr class='tab_bg_1'><td class='center'>" . $LANG["profiles"][13] . "</td><td>";
 				$options=array(0=>'----');
-		
-				foreach ($_SESSION['glpiprofiles'] as $prof){
-					$options[$prof['ID']]=$prof['name'];
+				
+				foreach ($_SESSION['glpiprofiles'] as $ID => $prof){
+					$options[$ID]=$prof['name'];
 				}
 				dropdownArrayValues("FK_profiles",$options,$this->fields["FK_profiles"]);
 				echo "</td></tr>";
