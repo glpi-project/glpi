@@ -371,7 +371,7 @@ function getRuleCollectionClassByTableName($tablename){
 			return getRuleCollectionClass(RULE_DICTIONNARY_MODEL_PERIPHERAL);
 		case "glpi_dropdown_model_networking":
 			return getRuleCollectionClass(RULE_DICTIONNARY_MODEL_NETWORKING);
-		case "glpi_dropdown_model_phone":
+		case "glpi_dropdown_model_phones":
 			return getRuleCollectionClass(RULE_DICTIONNARY_MODEL_PHONE);
 		case "glpi_type_computers":
 			return getRuleCollectionClass(RULE_DICTIONNARY_TYPE_COMPUTER);
