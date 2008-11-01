@@ -605,12 +605,12 @@ function changeProfile($ID) {
 function changeActiveEntities($ID="all",$recursive=false) {
 	global $LANG;
 	$newentities=array();
-	$_SESSION['glpiactiveentities_root']=array();
+	$newroots=array();
 	
 	if ($ID=="all"){
 		
 		foreach ($_SESSION['glpiactiveprofile']['entities'] as $key => $val) {
-			$_SESSION['glpiactiveentities_root'][$val['ID']]=$val['recursive'];
+			$newroots[$val['ID']]=$val['recursive'];
 			$newentities[$val['ID']] = $val['ID'];
 			if ($val['recursive']) {
 				$entities = getSonsOfTreeItem("glpi_entities", $val['ID']);
@@ -622,7 +622,8 @@ function changeActiveEntities($ID="all",$recursive=false) {
 			}
 		}
 	} else {
-		$_SESSION['glpiactiveentities_root'][$ID]=$recursive;
+
+		$newroots[$ID]=$recursive;
 		$newentities[$ID] = $ID;
 		if ($recursive){
 			$entities = getSonsOfTreeItem("glpi_entities", $ID);
@@ -636,19 +637,20 @@ function changeActiveEntities($ID="all",$recursive=false) {
 	}
 
 	if (count($newentities)>0){
+		$_SESSION['glpiactiveentities_root']=$newroots;
 		$_SESSION['glpiactiveentities']=$newentities;
 		$_SESSION['glpiactiveentities_string']='';
-		$first=true;
+		$active=-1;
 		foreach ($_SESSION['glpiactiveentities'] as $key => $val){
-			if ($first){
-				$first=false;
+			if ($active<0){
+				$active=$key;
 			} else {
 				$_SESSION['glpiactiveentities_string'].=' ,';
 			}
 			$_SESSION['glpiactiveentities_string'].=$key;
 		}
 		// Active entity loading
-		$active=key($_SESSION['glpiactiveentities']);
+		
 		$_SESSION["glpiactive_entity"] = $active;
 		$_SESSION["glpiactive_entity_name"] = getDropdownName("glpi_entities",$active);
 		$_SESSION["glpiactive_entity_shortname"] = getTreeLeafValueName("glpi_entities",$active);
