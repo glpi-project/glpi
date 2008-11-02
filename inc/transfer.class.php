@@ -2191,7 +2191,9 @@ class Transfer extends CommonDBTM{
 			$edit_form=false;
 		}
 
-		$use_cache=true;
+
+		// TODO : Force do not use cache for this item due to right problem : need to split into 2 fonctions
+		$use_cache=false;
 
 		if ($ID > 0){
 			$this->check($ID,'r');
