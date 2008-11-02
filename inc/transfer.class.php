@@ -2193,7 +2193,8 @@ class Transfer extends CommonDBTM{
 		}
 
 		$con_spotted=false;
-		$use_cache=true;
+		// TODO : Force do not use cache for this item due to right problem : need to split into 2 fonctions
+		$use_cache=false;
 		if (empty($ID)) {
 			if($this->getEmpty()) $con_spotted = true;
 			$use_cache=false;
@@ -2203,7 +2204,6 @@ class Transfer extends CommonDBTM{
 
 		if ($con_spotted){
 			$fctdropdown = (haveRight("transfer","w") ? "dropdownArrayValues" : "dropdownArrayValuesReadOnly");
-				
 			echo "<form method='post' name=form action=\"$target\"><div class='center'>";
 
 			echo "<table class='tab_cadre_fixe' cellpadding='2' >";
