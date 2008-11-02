@@ -52,7 +52,9 @@
 		// Root node
 		if ($_REQUEST['node']== -1){
 			$pos=0;
-			foreach ($_SESSION['glpiactiveentities_root'] as $ID => $recursive){
+			foreach ($_SESSION['glpiactiveprofile']['entities'] as $entity){
+				$ID=$entity['ID'];
+				$recursive=$entity['recursive'];
 				$path['text']		= getDropdownName("glpi_entities",$ID);;
 				$path['id']		= $ID;
 				$path['position']	= $pos;
