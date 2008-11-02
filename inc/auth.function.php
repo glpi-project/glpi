@@ -637,7 +637,6 @@ function changeActiveEntities($ID="all",$recursive=false) {
 	}
 
 	if (count($newentities)>0){
-		$_SESSION['glpiactiveentities_root']=$newroots;
 		$_SESSION['glpiactiveentities']=$newentities;
 		$_SESSION['glpiactiveentities_string']='';
 		$active=-1;
