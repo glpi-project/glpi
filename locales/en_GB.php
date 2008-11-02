@@ -267,6 +267,7 @@ $LANG["common"][83]="You don't have permission to perform this action.";
 $LANG["common"][84]="Flag change forbidden. Linked items found."; 
 $LANG["common"][85]="Change visibility in the child entities"; 
 $LANG["common"][86]="You are not allowed to change the visibility flag for child entities."; 
+$LANG["common"][87]="Nouvelle fiche"; 
 
 $LANG["computers"][0]="Volume"; 
 $LANG["computers"][1]="Free percentage"; 
@@ -515,8 +516,6 @@ $LANG["financial"][107]="Renewal";
 $LANG["gmt"][0]="GMT"; 
 $LANG["gmt"][1]="hour(s)"; 
 
-$LANG["help"][1]="Please describe your problem"; 
-$LANG["help"][2]="Priority"; 
 $LANG["help"][3]="Very High"; 
 $LANG["help"][4]="High"; 
 $LANG["help"][5]="Medium"; 
@@ -524,7 +523,6 @@ $LANG["help"][6]="Low";
 $LANG["help"][7]="Very Low"; 
 $LANG["help"][8]="Inform me about the action(s) taken"; 
 $LANG["help"][11]="My E-Mail"; 
-$LANG["help"][13]="The Problem"; 
 $LANG["help"][14]="Submit Message"; 
 $LANG["help"][16]="If you want be notified about the action(s) taken, you must enter your e-mail!"; 
 $LANG["help"][18]="Your message has been sent successfully, your request is on file."; 
