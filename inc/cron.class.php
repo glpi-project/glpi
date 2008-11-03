@@ -231,7 +231,7 @@ class Cron {
 						@touch($lock, (0 - $code_de_retour));
 					} else {// Log Event 
 //						logEvent("-1", "system", 3, "cron", $tache." (" . $this->timer('tache') . ") ".$LANG["log"][45] );
-						logInFile("cron","$tache Successfull (" . $this->timer('tache') . ")\n");
+						logInFile("cron","$tache task was done (" . $this->timer('tache') . ")\n");
 					}
 				} else {
 					logInFile("cron","$tache Nothing to do (" . $this->timer('tache') . ")\n");
