@@ -254,14 +254,14 @@ class MailCollect {
 			if ($display){
 				addMessageAfterRedirect($LANG["mailgate"][3].": ".$this->fetch_emails." ".($error>0?"($error ".$LANG["common"][63].")":""));
 			} else {
-				return $LANG["mailgate"][3].": ".$this->fetch_emails." ".($error>0?"($error ".$LANG["common"][63].")":"");
+				return "Number of messages available and collected : ".$this->fetch_emails." ".($error>0?"($error error(s))":"");
 			}
 			
 		}else{
 			if ($display){
 				addMessageAfterRedirect($LANG["log"][41]);
 			} else {
-				return $LANG["log"][41];
+				return "Could not connect to mailgate server";
 			}
 //			return 0;
 		}
@@ -457,7 +457,7 @@ class MailCollect {
 	 ///Connect To the Mail Box
 	function connect()
 	{
-		$this->marubox=imap_open($this->server,$this->username,$this->password);
+		$this->marubox=imap_open($this->server,$this->username,$this->password, 1);
 	}
 
 	/**
