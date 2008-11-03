@@ -577,11 +577,22 @@ function changeProfile($ID) {
 			$_SESSION['glpiactiveprofile'] = $data;
 			$_SESSION['glpiactiveentities'] = array ();
 	
-			changeActiveEntities("all");
-			
-			if (isset($_SESSION['glpiactiveentities'][$_SESSION["glpidefault_entity"]])){
-				changeActiveEntities($_SESSION["glpidefault_entity"],true);
-			} 
+			$active_entity_done=false;
+			// Try to load default entity if it is a root entity
+			foreach ($data['entities'] as $key => $val){
+				if ($val['ID']==$_SESSION["glpidefault_entity"]){
+					if (changeActiveEntities($val['ID'],$val['recursive'])){
+						$active_entity_done=true;
+					}
+				}
+			}
+			if (!$active_entity_done){
+				// Try to load default entity 
+				if (!changeActiveEntities($_SESSION["glpidefault_entity"],true)){
+					// Load all entities
+					changeActiveEntities("all");
+				} 
+			}
 			doHook("change_profile");
 		}
 	}
@@ -606,9 +617,7 @@ function changeActiveEntities($ID="all",$recursive=false) {
 	global $LANG;
 	$newentities=array();
 	$newroots=array();
-	
 	if ($ID=="all"){
-		
 		foreach ($_SESSION['glpiactiveprofile']['entities'] as $key => $val) {
 			$newroots[$val['ID']]=$val['recursive'];
 			$newentities[$val['ID']] = $val['ID'];
@@ -622,6 +631,22 @@ function changeActiveEntities($ID="all",$recursive=false) {
 			}
 		}
 	} else {
+
+		// Check entity validity
+		$ancestors=getEntityAncestors($ID);
+		$ok=false;
+		foreach ($_SESSION['glpiactiveprofile']['entities'] as $key => $val) {
+			
+			if ($val['ID']== $ID || in_array($val['ID'], $ancestors)){
+				// Not recursive or recursive and root entity is recursive
+				if (! $recursive || $val['recursive']){
+					$ok=true;
+				}
+			}
+		}
+		if (!$ok){
+			return false;
+		}
 
 		$newroots[$ID]=$recursive;
 		$newentities[$ID] = $ID;
@@ -679,7 +704,9 @@ function changeActiveEntities($ID="all",$recursive=false) {
 		loadGroups();
 		doHook("change_entity");
 		cleanCache("GLPI_HEADER_".$_SESSION["glpiID"]);
+		return true;
 	}
+	return false;
 }
 
 /**
