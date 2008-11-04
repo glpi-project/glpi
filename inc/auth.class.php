@@ -623,11 +623,11 @@ class AuthLDAP extends CommonDBTM {
 		switch($type){
 			case 'AD':
 			$this->fields['ldap_port']="389";
-			$this->fields['ldap_condition']='(objectClass=user)';
+			$this->fields['ldap_condition']='(&(objectClass=user)(objectCategory=person)(!(userAccountControl:1.2.840.113556.1.4.803:=2)))';
 			$this->fields['ldap_login']='samaccountname';
 			$this->fields['ldap_use_tls']=0;
 			$this->fields['ldap_field_group']='memberof';
-			$this->fields['ldap_group_condition']='(objectClass=user)';
+			$this->fields['ldap_group_condition']='(&(objectClass=user)(objectCategory=person)(!(userAccountControl:1.2.840.113556.1.4.803:=2)))';
 			$this->fields['ldap_search_for_groups']=0;
 			$this->fields['ldap_field_group_member']='';
 			$this->fields['ldap_field_email']='mail';
@@ -638,6 +638,7 @@ class AuthLDAP extends CommonDBTM {
 			$this->fields['ldap_field_mobile']='mobile';
 			$this->fields['ldap_field_comments']='info';
 			$this->fields['ldap_field_title']='title';			
+			$this->fields['ldap_field_language']='preferredlanguage';
 			$this->fields['use_dn']=1;
 			break;
 			default:
