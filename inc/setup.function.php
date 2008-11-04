@@ -1206,7 +1206,7 @@ function showFormExtAuthList($target) {
 			$out .= $input['server_type'];
 		if (isset ($input['server_ssl']))
 			$out .= $input['server_ssl'];
-		if (isset ($input['server_cert'])&&  ( !empty($input['server_ssl']) | !empty($input['server_tls'])))
+		if (isset ($input['server_cert'])&&  ( !empty($input['server_ssl']) || !empty($input['server_tls'])))
 			$out .= $input['server_cert'];
 		if (isset ($input['server_tls']))
 			$out .= $input['server_tls'];
