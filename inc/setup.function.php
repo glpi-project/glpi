@@ -1170,16 +1170,19 @@ function showFormExtAuthList($target) {
 		echo "<option value=''>&nbsp;</option>";
 		echo "<option value='/ssl' " . (ereg("/ssl", $value) ? " selected " : "") . ">SSL</option>";
 		echo "</select>";
-		echo "<select name='server_cert'>";
-		echo "<option value=''>&nbsp;</option>";
-		echo "<option value='/novalidate-cert' " . (ereg("/novalidate-cert", $value) ? " selected " : "") . ">NO-VALIDATE-CERT</option>";
-		echo "<option value='/validate-cert' " . (ereg("/validate-cert", $value) ? " selected " : "") . ">VALIDATE-CERT</option>";
-		echo "</select>";
+		
 		echo "<select name='server_tls'>";
 		echo "<option value=''>&nbsp;</option>";
 		echo "<option value='/tls' " . (ereg("/tls", $value) ? " selected " : "") . ">TLS</option>";
 		echo "<option value='/notls' " . (ereg("/notls", $value) ? " selected " : "") . ">NO-TLS</option>";
 		echo "</select>";
+
+		echo "<select name='server_cert'>";
+		echo "<option value=''>&nbsp;</option>";
+		echo "<option value='/novalidate-cert' " . (ereg("/novalidate-cert", $value) ? " selected " : "") . ">NO-VALIDATE-CERT</option>";
+		echo "<option value='/validate-cert' " . (ereg("/validate-cert", $value) ? " selected " : "") . ">VALIDATE-CERT</option>";
+		echo "</select>";
+
 		echo "<input type=hidden name=imap_string value='".$value."'>";
 		echo "</td></tr>";
 
@@ -1203,7 +1206,7 @@ function showFormExtAuthList($target) {
 			$out .= $input['server_type'];
 		if (isset ($input['server_ssl']))
 			$out .= $input['server_ssl'];
-		if (isset ($input['server_cert']))
+		if (isset ($input['server_cert'])&&  ( !empty($input['server_ssl']) | !empty($input['server_tls'])))
 			$out .= $input['server_cert'];
 		if (isset ($input['server_tls']))
 			$out .= $input['server_tls'];
