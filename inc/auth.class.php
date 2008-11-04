@@ -688,11 +688,7 @@ class AuthLDAP extends CommonDBTM {
 
 		if (canUseLdap()) {
 
-			if (empty($ID)){
-				echo $LANG["ldap"][16].": ";
-				echo "<a href='$target?next=extauth_ldap&amp;preconfig=AD'>".$LANG["ldap"][17]."</a>&nbsp;&nbsp;";
-				echo "<a href='$target?next=extauth_ldap&amp;preconfig=default'>".$LANG["common"][44]."</a>";
-			}
+			
 
 			echo "<form action=\"$target\" method=\"post\">";
 			if (!empty($ID)){
@@ -703,7 +699,11 @@ class AuthLDAP extends CommonDBTM {
 
 			echo "<table class='tab_cadre_fixe'>";
 			echo "<tr><th colspan='4'>" . $LANG["login"][2] . "</th></tr>";
-
+			if (empty($ID)){
+			echo "<tr class='tab_bg_2'><th class='center' >".$LANG["ldap"][16].":</td> ";
+			echo "<td colspan='3'><a  href='$target?next=extauth_ldap&amp;preconfig=AD'>".$LANG["ldap"][17]."</a>&nbsp;&nbsp;/&nbsp;&nbsp;";
+			echo "<a  href='$target?next=extauth_ldap&amp;preconfig=default'>".$LANG["common"][44]."</a></td></tr>";
+			}
 			echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["common"][16] . "</td><td><input type=\"text\" name=\"name\" value=\"" . $this->fields["name"] . "\"></td>";
 			echo "<td align='center' colspan=2></tr>";
 
@@ -746,7 +746,7 @@ class AuthLDAP extends CommonDBTM {
 			echo"</td></tr>";
 
 
-			echo "<tr class='tab_bg_1'><td align='center' colspan='4'>" . $LANG["setup"][259] . "</td></tr>";
+			echo "<tr class='tab_bg_1'><th class='center' colspan='4'>" . $LANG["setup"][259] . "</td></tr>";
 
 			echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["setup"][254] . "</td><td>";
 			$ldap_search_for_groups = $this->fields["ldap_search_for_groups"];
@@ -769,7 +769,7 @@ class AuthLDAP extends CommonDBTM {
 			echo"</td>";
 			echo "<td align='center' colspan='2'></td></tr>";
 
-			echo "<tr class='tab_bg_1'><td align='center' colspan='4'>" . $LANG["setup"][167] . "</td></tr>";
+			echo "<tr class='tab_bg_1'><th class='center' colspan='4'>" . $LANG["setup"][167] . "</td></tr>";
 
 			echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["common"][48] . "</td><td><input type=\"text\" name=\"ldap_field_realname\" value=\"" . $this->fields["ldap_field_realname"] . "\" ></td>";
 			echo "<td class='center'>" . $LANG["common"][43] . "</td><td><input type=\"text\" name=\"ldap_field_firstname\" value=\"" . $this->fields["ldap_field_firstname"] . "\" ></td></tr>";
@@ -786,13 +786,15 @@ class AuthLDAP extends CommonDBTM {
 			echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["common"][17] . "</td><td><input type=\"text\" name=\"ldap_field_type\" value=\"" . $this->fields["ldap_field_type"] . "\" ></td>";
 			echo "<td class='center'>" . $LANG["setup"][41] . " </td><td><input type=\"text\" name=\"ldap_field_language\" value=\"" . $this->fields["ldap_field_language"] . "\" ></td></tr>";			
 			
-			echo "<td colspan='2'></td></tr>";
+			//echo "<td colspan='2'></td></tr>";
 
 			if (empty ($ID)){
-				echo "<tr class='tab_bg_2'><td align='center' colspan=4><input type=\"submit\" name=\"add_ldap\" class=\"submit\" value=\"" . $LANG["buttons"][2] . "\" ></td></tr></table>";
+				
+				echo "<tr class='tab_bg_2'><td class='center' colspan=4><input type=\"submit\" name=\"add_ldap\" class=\"submit\" value=\"" . $LANG["buttons"][2] . "\" ></td></tr></table>";
+
 			} else {
-				echo "<tr class='tab_bg_2'><td align='center' colspan=2><input type=\"submit\" name=\"update_ldap\" class=\"submit\" value=\"" . $LANG["buttons"][2] . "\" ></td>";
-				echo "<td align='center' colspan=2><input type=\"submit\" name=\"delete_ldap\" class=\"submit\" value=\"" . $LANG["buttons"][6] . "\" ></td></tr>";
+				echo "<tr class='tab_bg_2'><td class='center' colspan=2><input type=\"submit\" name=\"update_ldap\" class=\"submit\" value=\"" . $LANG["buttons"][2] . "\" ></td>";
+				echo "<td class='center' colspan=2><input type=\"submit\" name=\"delete_ldap\" class=\"submit\" value=\"" . $LANG["buttons"][6] . "\" ></td></tr>";
 				echo "</table>";
 				echo "<br><table class='tab_cadre_fixe'>";
 				echo "<tr><th colspan='4'>" . $LANG["ldap"][9] . "</th></tr>";
@@ -804,7 +806,7 @@ class AuthLDAP extends CommonDBTM {
 					unset($_SESSION["LDAP_TEST_MESSAGE"]);
 				}
 				
-				echo "<tr class='tab_bg_2'><td align='center' colspan=4><input type=\"submit\" name=\"test_ldap\" class=\"submit\" value=\"" . $LANG["buttons"][2] . "\" ></td></tr>";
+				echo "<tr class='tab_bg_2'><td class='center' colspan=4><input type=\"submit\" name=\"test_ldap\" class=\"submit\" value=\"" . $LANG["buttons"][2] . "\" ></td></tr>";
 				echo "</table>&nbsp;";
 
 			}
