@@ -595,7 +595,7 @@ function getUserLanguage($lang)
 {
 	global $CFG_GLPI;
 	foreach ($CFG_GLPI["languages"] as $ID => $language)
-		if ($lang == $language[0] || $lang == $language[2] || $lang == $language[3])
+		if ($lang==$ID || $lang == $language[0] || $lang == $language[2] || $lang == $language[3])
 			return $ID;
 
 	return ""; 
