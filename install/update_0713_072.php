@@ -712,15 +712,21 @@ function update0713to072() {
 	//If (AD) DistinguishedName criteria is still present
 	if ($DB->numrows($result) == 1)
 	{
-		//Update rules to replace distinguishedname by dn
-		$query="UPDATE glpi_rules_criterias SET criteria='dn' WHERE criteria='distinguishedname'";
+		$query="SELECT COUNT(ID) as cpt FROM glpi_rules_criterias WHERE criteria='distinguishedname'";
 		$result = $DB->query($query);
-		
-		//Delete If (AD) DistinguishedName criteria
-		$query = "DELETE FROM glpi_rules_ldap_parameters WHERE value='distinguishedname'";
-		$result = $DB->query($query);
+		if ($DB->result($result,0,"cpt") > 0)
+		{
+			echo "<div align='center'>";
+			echo "<span class='red'>LDAP Criteria (AD)Distinguishedname must be removed.<br>As it is used in one or more LDAP rules, you need to remove it manually</span>";
+			echo "</div><br><br>";			
+		}
+		else
+		{
+			//Delete If (AD) DistinguishedName criteria
+			$query = "DELETE FROM glpi_rules_ldap_parameters WHERE value='distinguishedname'";
+			$result = $DB->query($query);
+		}
 	}
-	
 	
 } // fin 0.72 #####################################################################################
 ?>
