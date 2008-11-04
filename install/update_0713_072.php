@@ -705,5 +705,22 @@ function update0713to072() {
 		$DB->query($query) or die("0.72 add index FK_doc_device in glpi_doc_device" . $LANG["update"][90] . $DB->error());
 	}	  			 
 
+	//(AD) DistinguishedName criteria is wrong. DN in AD is not distinguishedName but DN.
+	$query = "SELECT ID FROM glpi_rules_ldap_parameters WHERE value='distinguishedname'";
+	$result = $DB->query($query);
+	
+	//If (AD) DistinguishedName criteria is still present
+	if ($DB->numrows($result) == 1)
+	{
+		//Update rules to replace distinguishedname by dn
+		$query="UPDATE glpi_rules_criterias SET criteria='dn' WHERE criteria='distinguishedname'";
+		$result = $DB->query($query);
+		
+		//Delete If (AD) DistinguishedName criteria
+		$query = "DELETE FROM glpi_rules_ldap_parameters WHERE value='distinguishedname'";
+		$result = $DB->query($query);
+	}
+	
+	
 } // fin 0.72 #####################################################################################
 ?>

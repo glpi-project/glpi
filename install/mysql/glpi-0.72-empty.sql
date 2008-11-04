@@ -2621,9 +2621,8 @@ INSERT INTO glpi_rules_ldap_parameters VALUES ('7','(LDAP)Telephone Number','pho
 INSERT INTO glpi_rules_ldap_parameters VALUES ('8','(LDAP)Employee Number','employeenumber','1');
 INSERT INTO glpi_rules_ldap_parameters VALUES ('9','(LDAP)Manager','manager','1');
 INSERT INTO glpi_rules_ldap_parameters VALUES ('10','(LDAP)DistinguishedName','dn','1');
-INSERT INTO glpi_rules_ldap_parameters VALUES ('11','(AD)DistinguishedName','distinguishedname','1');
-INSERT INTO glpi_rules_ldap_parameters VALUES ('12','(AD)User ID','samaccountname','1');
-INSERT INTO glpi_rules_ldap_parameters VALUES ('13','(LDAP) Title','title','1');
+INSERT INTO glpi_rules_ldap_parameters VALUES ('11','(AD)User ID','samaccountname','1');
+INSERT INTO glpi_rules_ldap_parameters VALUES ('12','(LDAP) Title','title','1');
 
 ### Dump table glpi_software
 
