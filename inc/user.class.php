@@ -510,8 +510,9 @@ class User extends CommonDBTM {
 							switch ($k)
 							{
 								case "language":
-									if (file_exists(GLPI_ROOT."/locales/".$v[0][$e][0].".php"))
-										$this->fields[$k]=addslashes($v[0][$e][0]);	
+									$language = getUserLanguage($v[0][$e][0]);
+									if ($language != '')
+										$this->fields[$k]=$language;	
 									break;
 								case "title":
 								case "type":
