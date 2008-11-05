@@ -128,9 +128,12 @@ if (!defined('GLPI_ROOT')){
 			// Need php 5.0
 			2048 	/*E_STRICT*/             => 'Runtime Notice',
 			// Need php 5.2.0
-			4096 /*E_RECOVERABLE_ERROR*/  => 'Catchable Fatal Error'
+			4096 /*E_RECOVERABLE_ERROR*/  => 'Catchable Fatal Error',
+			// Need php 5.3.0
+			8192 /* E_DEPRECATED */ => 'Deprecated function',
+			16384 /* E_USER_DEPRECATED */ => 'User deprecated function'
 			);			
-		// Les niveaux qui seront enregistrÃ©s
+		// Les niveaux qui seront enregistrés
 		$user_errors = array(E_USER_ERROR, E_USER_WARNING, E_USER_NOTICE);
 			
 		$err = $errortype[$errno] . "($errno): $errmsg\n";
@@ -972,6 +975,10 @@ function convDate($time) {
 function formatNumber($number,$edit=false,$forcedecimal=-1) { 
 	global $CFG_GLPI;
 
+	// Php 5.3 : number_format() expects parameter 1 to be double,
+	if ($number=="") {
+		$number=0;	
+	}
 	$decimal=$CFG_GLPI["decimal_number"];
 	if ($forcedecimal>=0){
 		$decimal=$forcedecimal;

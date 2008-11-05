@@ -2067,6 +2067,11 @@ class RuleCriteria extends CommonDBTM {
 /// Rule cached class
 class RuleCached extends Rule{
 
+	// Dummy constructor required for php 5.3.0 
+	function RuleCached($rule_type=0) {
+		parent::Rule($rule_type);
+	}
+
 	function getTitleAction($target){
 		global $LANG,$CFG_GLPI;
 		echo "<div class='center'>"; 
