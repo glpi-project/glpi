@@ -481,6 +481,7 @@ function showList ($type,$params){
 	$default_values["order"]="ASC";
 	$default_values["start"]=0;
 	$default_values["deleted"]=0;
+	$default_values["export_all"]=0;
 	$default_values["link2"]="";
 	$default_values["contains2"]="";
 	$default_values["field2"]="";
@@ -498,7 +499,9 @@ function showList ($type,$params){
 			$$key=$default_values[$key];
 		}
 	}
-
+	if ($export_all){
+		$start=0;
+	}
 
 	$limitsearchopt=cleanSearchOption($type);
 
@@ -975,7 +978,7 @@ function showList ($type,$params){
 	}
 	
 	// If export_all reset LIMIT condition
-	if (isset($_GET['export_all'])) $LIMIT="";
+	if ($export_all) $LIMIT="";
 
 
 	if (!empty($WHERE)||!empty($COMMONWHERE)){
@@ -1049,7 +1052,7 @@ function showList ($type,$params){
 	if ($result = $DB->query($QUERY)) {
 
 		// if real search or complete export : get numrows from request 
-		if (!$nosearch||isset($_GET['export_all'])) 
+		if (!$nosearch||$export_all) 
 			$numrows= $DB->numrows($result);
 
 		// Contruct Pager parameters
@@ -1129,7 +1132,7 @@ function showList ($type,$params){
 				$end_display=min($numrows-$start,$LIST_LIMIT);
 			}
 			// Export All case
-			if (isset($_GET['export_all'])) {
+			if ($export_all) {
 				$begin_display=0;
 				$end_display=$numrows;
 			}

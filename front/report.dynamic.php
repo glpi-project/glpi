@@ -65,7 +65,6 @@ checkCentralAccess();
 
 if (isset($_GET["item_type"])&&isset($_GET["display_type"])){
 
-
 	if ($_GET["display_type"]<0) {
 		$_GET["display_type"]=-$_GET["display_type"];
 		$_GET["export_all"]=1;
@@ -122,7 +121,7 @@ if (isset($_GET["item_type"])&&isset($_GET["display_type"])){
 
 			manageGetValuesInSearch($_GET["item_type"]);
 
-			showList($_GET["item_type"],$GET);
+			showList($_GET["item_type"],$_GET);
 			break;
 	}
 }
