@@ -90,8 +90,7 @@ class TrackingBusinessRule extends Rule {
 	 * @param $fields fields values
 	 */
 	function showSpecificCriteriasForPreview($fields){
-		if (!isset($fields["FK_entities"]))
-			echo "<input type='hidden' name='FK_entities' value='".$_SESSION["glpiactive_entity"]."'>";
+		echo "<input type='hidden' name='FK_entities' value='".$_SESSION["glpiactive_entity"]."'>";
 	}
 
 	function executeActions($output,$params,$regex_results)
