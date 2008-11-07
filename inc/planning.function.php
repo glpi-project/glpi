@@ -121,13 +121,7 @@ function showPlanning($who,$who_group,$when,$type){
 
 	if ($who_group=="mine"){
 		if (count($_SESSION["glpigroups"])){
-			$first=true;
-			$groups="";
-			foreach ($_SESSION['glpigroups'] as $val){
-				if (!$first) $groups.=",";
-				else $first=false;
-				$groups.=$val;
-			}			
+			$groups=implode(",",$_SESSION['glpigroups']);
 			$ASSIGN="id_assign IN (SELECT DISTINCT FK_users FROM glpi_users_groups WHERE FK_groups IN ($groups)) AND";
 		} else { // Only personal ones
 			$ASSIGN="id_assign='$who' AND ";
@@ -198,13 +192,7 @@ function showPlanning($who,$who_group,$when,$type){
 
 	if ($who_group=="mine"){
 		if (count($_SESSION["glpigroups"])){
-			$first=true;
-			$groups="";
-			foreach ($_SESSION['glpigroups'] as $val){
-				if (!$first) $groups.=",";
-				else $first=false;
-				$groups.=$val;
-			}			
+			$groups=implode(",",$_SESSION['glpigroups']);
 			$ASSIGN=" AND FK_users IN (SELECT DISTINCT FK_users FROM glpi_users_groups WHERE FK_groups IN ($groups)) ";
 		} else { // Only personal ones
 			$ASSIGN=" AND ( FK_users='$who' OR (private=0 ".getEntitiesRestrictRequest("AND","glpi_reminder")."))";

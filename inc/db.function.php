@@ -332,13 +332,7 @@ function getSonsOfTreeItem($table,$IDf){
 		// Get next elements
 		$query="SELECT ID 
 			FROM $table 
-			WHERE parentID IN (";
-		foreach ($found as $key => $val){
-			if (!$first) $query.=",";
-			else $first=false;
-			$query.= $val;
-		}
-		$query.=")";	
+			WHERE parentID IN (" . implode(",",$found) . ")";
 
 		// CLear the found array
 		unset($found);
@@ -391,16 +385,7 @@ function getTreeForItem($table,$IDf){
 		// Get next elements
 		$query="SELECT * 
 			FROM $table 
-			WHERE parentID IN (";
-		foreach ($found as $key => $val){
-			if (!$first) $query.=",";
-			else {
-				$first=false;
-			}
-			$query.= $val;
-		}
-		$query.=" ) ";
-		$query.=" ORDER BY name";
+			WHERE parentID IN (" . implode(",",$found)." ) ORDER BY name";
 		// CLear the found array
 		unset($found);
 		$found=array();

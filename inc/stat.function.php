@@ -602,16 +602,7 @@ function constructEntryValues($type,$begin="",$end="",$param="",$value="",$value
 		case "category":
 			if (!empty($value)){
 				$categories=getSonsOfTreeItem("glpi_dropdown_tracking_category",$value);
-				$condition="";
-				$first=true;
-				foreach ($categories as $ID){
-					if ($first){
-						$first=false;
-					} else {
-						$condition.=",";
-					}
-					$condition.=$ID;
-				}
+				$condition=implode(",",$categories);
 	
 				$WHERE.=" AND glpi_tracking.category IN ($condition)";
 			} else {

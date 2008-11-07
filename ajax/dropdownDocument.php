@@ -57,15 +57,12 @@ if (isset($_POST["entity_restrict"])){
 }
 
 if (isset($_POST['used'])) {
-	$where .=" AND ID NOT IN (0";
 	if (is_array($_POST['used'])) {
 			$used=$_POST['used'];
 		} else {
 			$used=unserialize(stripslashes($_POST['used']));
 		}
-	foreach($used as $val)
-		$where .= ",$val";
-	$where .= ") ";
+	$where .=" AND ID NOT IN (0,".implode(",",$used).") ";
 }
 
 if ($_POST['searchText']!=$_SESSION["glpiajax_wildcard"])

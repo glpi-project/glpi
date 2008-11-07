@@ -217,8 +217,7 @@ if (!isset($_POST["limit"])) $_POST["limit"]=$_SESSION["glpidropdown_limit"];
 			} else {
 				$used=unserialize(stripslashes($_POST['used']));
 			}
-			foreach($used as $val)
-				$where .= ", $val";
+			$where .= ",".implode(",",$used);
 		}
 		$where .= ") ";
 

@@ -171,13 +171,7 @@ function showCentralJobList($target,$start,$status="process",$showgrouptickets=t
 	$search_assign="assign = '".$_SESSION["glpiID"]."'";
 	if ($showgrouptickets){
 		if (count($_SESSION['glpigroups'])){
-			$first=true;
-			$groups="";
-			foreach ($_SESSION['glpigroups'] as $val){
-				if (!$first) $groups.=",";
-				else $first=false;
-				$groups.=$val;
-			}
+			$groups=implode(",",$_SESSION['glpigroups']);
 			$search_assign.= " OR assign_group IN ($groups) ";
 		}
 	}
@@ -1338,13 +1332,7 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$to
 	else if ($group==-1&&$author!=0&&haveRight("show_group_ticket",1)){
 		// Get Author group's
 		if (count($_SESSION["glpigroups"])){
-			$first=true;
-			$groups="";
-			foreach ($_SESSION['glpigroups'] as $val){
-				if (!$first) $groups.=",";
-				else $first=false;
-				$groups.=$val;
-			}			
+			$groups=implode(",",$_SESSION['glpigroups']);
 			$where.=" AND ( glpi_tracking.FK_group IN ($groups) ";
 
 			if ($author!=0) {
@@ -1370,13 +1358,7 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$to
 			if ($assign_group>0){
 				$search_assign.= " OR glpi_tracking.assign_group = $assign_group ";
 			} else {
-				$first=true;
-				$groups="";
-				foreach ($_SESSION['glpigroups'] as $val){
-					if (!$first) $groups.=",";
-					else $first=false;
-					$groups.=$val;
-				}
+				$groups=implode(",",$_SESSION['glpigroups']);
 				$search_assign.= " OR glpi_tracking.assign_group IN ($groups) ";
 			}
 		}
@@ -1388,13 +1370,7 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$to
 
 			// Get Author group's
 			if (haveRight("show_group_ticket",1)&&count($_SESSION["glpigroups"])){
-				$first=true;
-				$groups="";
-				foreach ($_SESSION['glpigroups'] as $val){
-					if (!$first) $groups.=",";
-					else $first=false;
-					$groups.=$val;
-				}			
+				$groups=implode(",",$_SESSION['glpigroups']);
 				$author_part.=" OR glpi_tracking.FK_group IN ($groups) ";
 	
 			}
