@@ -298,12 +298,7 @@ class DictionnarySoftwareCollection extends RuleCachedCollection {
 		}
 		if (count($soft_ids) > 0) {
 			
-			$first = true;
-			$ids = "";
-			foreach ($soft_ids as $soft_id) {
-				$ids .= (!$first ? "," : "") . $soft_id;
-				$first = false;
-			}
+			$ids = implode(",",$soft_ids);
 
 			//Try to delete all the software that are not used anymore (which means that don't have version associated anymore)
 			$res_countsoftinstall = $DB->query("SELECT glpi_software.ID as ID, count( glpi_softwareversions.sID ) AS cpt " .
