@@ -618,7 +618,9 @@ function changeActiveEntities($ID="all",$recursive=false) {
 	$newentities=array();
 	$newroots=array();
 	if ($ID=="all"){
+		$ancestors=array();
 		foreach ($_SESSION['glpiactiveprofile']['entities'] as $key => $val) {
+			$ancestors=array_unique(array_merge(getEntityAncestors($val['ID']),$ancestors));
 			$newroots[$val['ID']]=$val['recursive'];
 			$newentities[$val['ID']] = $val['ID'];
 			if ($val['recursive']) {
@@ -663,16 +665,10 @@ function changeActiveEntities($ID="all",$recursive=false) {
 
 	if (count($newentities)>0){
 		$_SESSION['glpiactiveentities']=$newentities;
-		$_SESSION['glpiactiveentities_string']='';
-		$active=-1;
-		foreach ($_SESSION['glpiactiveentities'] as $key => $val){
-			if ($active<0){
-				$active=$key;
-			} else {
-				$_SESSION['glpiactiveentities_string'].=' ,';
-			}
-			$_SESSION['glpiactiveentities_string'].=$key;
-		}
+		$_SESSION['glpiactiveentities_string']=implode(',',$newentities);
+		$active = reset($newentities);
+		$_SESSION['glpiparententities']=$ancestors;
+		$_SESSION['glpiparententities_string']=implode(',',$ancestors);
 		// Active entity loading
 		
 		$_SESSION["glpiactive_entity"] = $active;
@@ -840,20 +836,8 @@ function getEntitiesRestrictRequest($separator = "AND", $table = "", $field = ""
 	$query.=$field;
 
 	if (is_array($value)){
-		$query.=" IN (";
-		$first=true;
-		
-		foreach ($value as $val){
-			if (!$first){
-				$query.=",";
-			} else {
-				$first=false;
-			}
-			$query.=$val;
-		}
-		$query.=") ";
+		$query .= " IN (" . implode(",",$value) . ") ";
 	} else {
-
 		if (strlen($value)==0){
 			$query.=" IN (".$_SESSION['glpiactiveentities_string'].") ";
 		} else {
@@ -868,22 +852,14 @@ function getEntitiesRestrictRequest($separator = "AND", $table = "", $field = ""
 				$ancestors=array_unique(array_merge(getEntityAncestors($val),$ancestors));
 			}
 			$ancestors=array_diff($ancestors,$value);
+		} else if (strlen($value)==0){
+			$ancestors=$_SESSION['glpiparententities'];
 		} else {
 			$ancestors=getEntityAncestors($value);
 		}
 		
 		if (count($ancestors)){
-			$query.=" OR ( $table.recursive='1' AND $table.$field IN (";
-			$first=true;
-			foreach ($ancestors as $val){
-				if (!$first){
-					$query.=",";
-				} else {
-					$first=false;
-				}
-				$query.=$val;
-			}
-			$query.="))";
+			$query.=" OR ( $table.recursive='1' AND $table.$field IN (" . implode(",",$ancestors) . "))";
 		}
 	}
 
