@@ -485,7 +485,7 @@ class phpCAS
   function traceBegin()
     {
       global $PHPCAS_DEBUG;
-
+	 if ( $PHPCAS_DEBUG['filename'] ) {
       $dbg = $this->backtrace();
       $str = '=> ';
       if ( !empty($dbg[2]['class']) ) {
@@ -503,6 +503,7 @@ class phpCAS
       $str .= ') ['.basename($dbg[2]['file']).':'.$dbg[2]['line'].']';
       $this->log($str);
       $PHPCAS_DEBUG['indent'] ++;
+	}
     }
 
   /**
@@ -513,12 +514,13 @@ class phpCAS
   function traceEnd($res='')
     {
       global $PHPCAS_DEBUG;
-
+	 if ( $PHPCAS_DEBUG['filename'] ) {
       $PHPCAS_DEBUG['indent'] --;
       $dbg = $this->backtrace();
       $str = '';
       $str .= '<= '.str_replace("\n","",var_export($res,TRUE));
       $this->log($str);
+	}
     }
 
   /**
