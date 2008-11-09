@@ -62,7 +62,9 @@ if (isset($_POST['used'])) {
 		} else {
 			$used=unserialize(stripslashes($_POST['used']));
 		}
-	$where .=" AND ID NOT IN (0,".implode(",",$used).") ";
+	if (count($used)) {
+		$where .=" AND ID NOT IN (".implode(",",$used).") ";	
+	}
 }
 
 if ($_POST['searchText']!=$_SESSION["glpiajax_wildcard"])
