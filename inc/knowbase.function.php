@@ -210,6 +210,8 @@ function showKbItemList($target,$contains,$start,$parentID,$faq=0){
 	
 	
 	$where="";
+	$order="";
+	$score="";
 
 	// Build query
 	if (isset($_SESSION["glpiID"])){
@@ -228,11 +230,14 @@ function showKbItemList($target,$contains,$start,$parentID,$faq=0){
 	
 	if (strlen($contains)) { // il s'agit d'une recherche 
 		$search=unclean_cross_side_scripting_deep($contains);
+		$score=" ,MATCH(glpi_kbitems.question,glpi_kbitems.answer) AGAINST('$search' IN BOOLEAN MODE) as SCORE ";
 		$where.="MATCH(glpi_kbitems.question,glpi_kbitems.answer) AGAINST('$search' IN BOOLEAN MODE) ";
-		
+		$order="order by SCORE DESC";
 	} else { // Il ne s'agit pas d'une recherche, on browse by category
 	
 		$where.="(glpi_kbitems.categoryID = $parentID) ";
+		$order="ORDER BY glpi_kbitems.question ASC";
+		
 	}
 	
 	
@@ -240,9 +245,9 @@ function showKbItemList($target,$contains,$start,$parentID,$faq=0){
 		$start = 0;
 	}
 
-	$query = "SELECT  *  FROM glpi_kbitems";
+	$query = "SELECT  * $score FROM glpi_kbitems";
   // $query.= " LEFT JOIN glpi_users  ON (glpi_users.ID = glpi_kbitems.author) ";
-	$query.=" WHERE $where ORDER BY glpi_kbitems.question ASC";
+	$query.=" WHERE $where $order";
 	//echo $query;
 	
 
