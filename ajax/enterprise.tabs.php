@@ -39,8 +39,6 @@ $NEEDED_ITEMS=array("enterprise","contact","document","contract","tracking","use
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-ajaxHeader();
-
 if(!isset($_POST["ID"])) {
 	exit();
 }

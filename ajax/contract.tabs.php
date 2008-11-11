@@ -38,8 +38,6 @@ $NEEDED_ITEMS=array("contract","enterprise","computer","printer","monitor","peri
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-ajaxHeader();
-
 if(!isset($_POST["ID"])) {
 	exit();
 }
