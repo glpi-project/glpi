@@ -550,7 +550,7 @@ class Mailing
 		// No specific config
 		switch ($this->type){
 			case "new":
-				if (isValidEmail($this->job->fields["uemail"])) {
+				if (isset($this->job->fields["uemail"]) && isValidEmail($this->job->fields["uemail"])) {
 					$replyto=$this->job->fields["uemail"];
 				} else {
 					$replyto=$sender;
