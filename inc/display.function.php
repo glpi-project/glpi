@@ -1496,7 +1496,7 @@ function commonFooter($keepDB=false) {
 }
 
 /**
- * Display Ajax Footer for debug
+ * Display Ajax Header (no output)
  *
  *
  **/
