@@ -1505,6 +1505,7 @@ function ajaxHeader() {
 		$_SESSION['glpilist_limit']=$_POST['list_limit'];
 	}	
 }
+
 /**
  * Display Ajax Footer for debug
  *
