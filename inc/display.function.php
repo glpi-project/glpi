@@ -1495,7 +1495,16 @@ function commonFooter($keepDB=false) {
 	}
 }
 
-
+/**
+ * Display Ajax Footer for debug
+ *
+ *
+ **/
+function ajaxHeader() {
+	if (isset($_POST['list_limit'])) {
+		$_SESSION['glpilist_limit']=$_POST['list_limit'];
+	}	
+}
 /**
  * Display Ajax Footer for debug
  *
@@ -1747,6 +1756,34 @@ function printPagerForm ($action) {
 	echo "<form method='POST' action=\"$action\">\n";
 	echo "<span>".$LANG["pager"][4]."&nbsp;</span>";
 	echo "<select name='list_limit' onChange='submit()'>";
+
+	for ($i=5;$i<20;$i+=5) echo "<option value='$i' ".((isset($_SESSION["glpilist_limit"])&&$_SESSION["glpilist_limit"]==$i)?" selected ":"").">$i</option>\n";
+	for ($i=20;$i<50;$i+=10) echo "<option value='$i' ".((isset($_SESSION["glpilist_limit"])&&$_SESSION["glpilist_limit"]==$i)?" selected ":"").">$i</option>\n";
+	for ($i=50;$i<250;$i+=50) echo "<option value='$i' ".((isset($_SESSION["glpilist_limit"])&&$_SESSION["glpilist_limit"]==$i)?" selected ":"").">$i</option>\n";
+	for ($i=250;$i<1000;$i+=250) echo "<option value='$i' ".((isset($_SESSION["glpilist_limit"])&&$_SESSION["glpilist_limit"]==$i)?" selected ":"").">$i</option>\n";
+	for ($i=1000;$i<5000;$i+=1000) echo "<option value='$i' ".((isset($_SESSION["glpilist_limit"])&&$_SESSION["glpilist_limit"]==$i)?" selected ":"").">$i</option>\n";
+	for ($i=5000;$i<=10000;$i+=5000) echo "<option value='$i' ".((isset($_SESSION["glpilist_limit"])&&$_SESSION["glpilist_limit"]==$i)?" selected ":"").">$i</option>\n";
+	echo "<option value='9999999' ".((isset($_SESSION["glpilist_limit"])&&$_SESSION["glpilist_limit"]==9999999)?" selected ":"").">9999999</option>\n";	
+
+	echo "</select><span>&nbsp;";
+	echo $LANG["pager"][5];
+	echo "</span>";
+	echo "</form>\n";
+}
+
+/**
+ * Display the list_limit combo choice
+ * Will force a refresh of the current tab
+ * 
+ * @return nothing (print a combo)
+ * 
+ */
+function ajaxPagerForm () {
+	global $LANG;
+	
+	echo "<form method='POST'>\n";
+	echo "<span>".$LANG["pager"][4]."&nbsp;</span>";
+	echo "<select name='list_limit' onChange='reloadTab(\"list_limit=\"+this.value)'>";
 
 	for ($i=5;$i<20;$i+=5) echo "<option value='$i' ".((isset($_SESSION["glpilist_limit"])&&$_SESSION["glpilist_limit"]==$i)?" selected ":"").">$i</option>\n";
 	for ($i=20;$i<50;$i+=10) echo "<option value='$i' ".((isset($_SESSION["glpilist_limit"])&&$_SESSION["glpilist_limit"]==$i)?" selected ":"").">$i</option>\n";
@@ -2065,9 +2102,9 @@ function createAjaxTabs($tabdiv_id='tabspanel',$tabdivcontent_id='tabcontent',$t
 						title: \"".$val['title']."\",
 						autoLoad: {url: '".$val['url']."',  
 							scripts: true, 
-							nocache:true,";
+							nocache: true";
 							if (isset($val['params'])){
-								echo "params: '".$val['params']."'";
+								echo ", params: '".$val['params']."'";
 							}
 							echo "}";
 					echo "}";
@@ -2093,6 +2130,18 @@ function createAjaxTabs($tabdiv_id='tabspanel',$tabdivcontent_id='tabcontent',$t
 */
 			echo "}";
 
+			echo "	// force reload 
+				function reloadTab(add){
+					var tab = tabpanel.getActiveTab();
+					var opt = tab.autoLoad;
+					if (add) {
+						if (opt.params) 
+							opt.params = opt.params + '&' + add;
+						else
+							opt.params = add; 
+					}
+					tab.getUpdater().update(opt);";
+			echo "}";
 
 		echo "</script>";		
 	
