@@ -154,5 +154,9 @@ if (!isset($_SESSION["MESSAGE_AFTER_REDIRECT"])) $_SESSION["MESSAGE_AFTER_REDIRE
 if (isset($_REQUEST['glpi_tab'])) {
 	$_SESSION['glpi_tab']=$_REQUEST['glpi_tab'];
 }
+// Override list-limit if choosen
+if (isset($_REQUEST['glpilist_limit'])) {
+	$_SESSION['glpilist_limit']=$_REQUEST['glpilist_limit'];
+}
 
 ?>

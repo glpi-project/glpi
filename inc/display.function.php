@@ -180,10 +180,6 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="")
 
 	if ($HEADER_LOADED) return;
 	$HEADER_LOADED=true;
-	// Override list-limit if choosen
-	if (isset($_POST['list_limit'])) {
-		$_SESSION['glpilist_limit']=$_POST['list_limit'];
-	}
 
 	includeCommonHtmlHeader($title);
 	if (!($CFG_GLPI["cache"]->start($sector.'_'.$item.$option,"GLPI_HEADER_".$_SESSION["glpiID"]))) {
@@ -1047,11 +1043,6 @@ function helpHeader($title,$url='') {
 	if ($HEADER_LOADED) return;
 	$HEADER_LOADED=true;
 
-	// Override list-limit if choosen
-	if (isset($_POST['list_limit'])) {
-		$_SESSION['glpilist_limit']=$_POST['list_limit'];
-	}
-
 
 	includeCommonHtmlHeader($title);
 
@@ -1210,11 +1201,6 @@ function simpleHeader($title,$links=array()) {
 	if ($HEADER_LOADED) return;
 	$HEADER_LOADED=true;
 
-	// Override list-limit if choosen
-	if (isset($_POST['list_limit'])) {
-		$_SESSION['glpilist_limit']=$_POST['list_limit'];
-	}
-
 	includeCommonHtmlHeader($title);
 
 	// Body 
@@ -1312,11 +1298,6 @@ function nullHeader($title,$url='') {
 	// Send UTF8 Headers
 	header("Content-Type: text/html; charset=UTF-8");
 
-	// Override list-limit if choosen
-	if (isset($_POST['list_limit'])) {
-		$_SESSION['glpilist_limit']=$_POST['list_limit'];
-	}
-
 	// Send extra expires header if configured
 	header_nocache();
 
@@ -1352,11 +1333,6 @@ function popHeader($title,$url='')
 	if ($HEADER_LOADED) return;
 	$HEADER_LOADED=true;
 
-
-	// Override list-limit if choosen
-	if (isset($_POST['list_limit'])) {
-		$_SESSION['glpilist_limit']=$_POST['list_limit'];
-	}
 
 	includeCommonHtmlHeader($title);	// Body 
 
@@ -1493,17 +1469,6 @@ function commonFooter($keepDB=false) {
 	if (!$keepDB) {
 		closeDBConnections();
 	}
-}
-
-/**
- * Display Ajax Header (no output)
- *
- *
- **/
-function ajaxHeader() {
-	if (isset($_POST['list_limit'])) {
-		$_SESSION['glpilist_limit']=$_POST['list_limit'];
-	}	
 }
 
 /**
@@ -1756,7 +1721,7 @@ function printPagerForm ($action) {
 	
 	echo "<form method='POST' action=\"$action\">\n";
 	echo "<span>".$LANG["pager"][4]."&nbsp;</span>";
-	echo "<select name='list_limit' onChange='submit()'>";
+	echo "<select name='glpilist_limit' onChange='submit()'>";
 
 	for ($i=5;$i<20;$i+=5) echo "<option value='$i' ".((isset($_SESSION["glpilist_limit"])&&$_SESSION["glpilist_limit"]==$i)?" selected ":"").">$i</option>\n";
 	for ($i=20;$i<50;$i+=10) echo "<option value='$i' ".((isset($_SESSION["glpilist_limit"])&&$_SESSION["glpilist_limit"]==$i)?" selected ":"").">$i</option>\n";
@@ -1784,7 +1749,7 @@ function ajaxPagerForm () {
 	
 	echo "<form method='POST'>\n";
 	echo "<span>".$LANG["pager"][4]."&nbsp;</span>";
-	echo "<select name='list_limit' onChange='reloadTab(\"list_limit=\"+this.value)'>";
+	echo "<select name='glpilist_limit' onChange='reloadTab(\"glpilist_limit=\"+this.value)'>";
 
 	for ($i=5;$i<20;$i+=5) echo "<option value='$i' ".((isset($_SESSION["glpilist_limit"])&&$_SESSION["glpilist_limit"]==$i)?" selected ":"").">$i</option>\n";
 	for ($i=20;$i<50;$i+=10) echo "<option value='$i' ".((isset($_SESSION["glpilist_limit"])&&$_SESSION["glpilist_limit"]==$i)?" selected ":"").">$i</option>\n";
