@@ -139,7 +139,7 @@ function showDeviceContract($instID) {
 
 	echo "<br><br><div class='center'><table class='tab_cadrehov'>";
 	echo "<tr><th colspan='2'>";
-	printPagerForm($_SERVER["REQUEST_URI"]);
+	printPagerForm($CFG_GLPI['root_doc'].'/front/contract.form.php?ID='.$instID);
 	echo "</th><th colspan='".($canedit ? 4 : 3) ."'>".$LANG["document"][19].":</th></tr>";
 	if ($canedit) {
 		echo "</table>";
