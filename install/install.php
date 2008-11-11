@@ -519,17 +519,27 @@ function step1($update)
 	echo "<tr><th>".$LANG["install"][6]."</th><th >".$LANG["install"][7]."</th></tr>";
 	// Parser test
 	echo "<tr class='tab_bg_1'><td><b>".$LANG["install"][8]."</b></td>";
-	// PHP Version  - exclude PHP3
+	// PHP Version  - exclude PHP3, PHP 4 and zend.ze1 compatibility
 	if (substr(phpversion(),0,1) == "5") {
-		echo "<td>".$LANG["install"][11]."</td></tr>";
-	} else {
+		// PHP > 5 ok, now check PHP zend.ze1_compatibility_mode
+		if(ini_get("zend.ze1_compatibility_mode") == 1) {
+			$error = 2;
+			echo "<td  class='red'>".$LANG["install"][10]."</td></tr>";
+		}else{
+			echo "<td>".$LANG["install"][11]."</td></tr>";
+		}
+	} else { // PHP <5
 		$error = 2;
-		echo "<td  class='red'>".$LANG["install"][9]."</a>.\n</td>";
+		echo "<td  class='red'>".$LANG["install"][9]."</td></tr>";
 	}
+	
+		
+	
+	
 	// end parser test
 
 	// Check for mysql extension ni php
-	echo "<tr><td><b>".$LANG["install"][71]."</b></td>";
+	echo "<tr class='tab_bg_1'><td><b>".$LANG["install"][71]."</b></td>";
 	if(!function_exists("mysql_query")) {
 		echo "<td  class='red'>".$LANG["install"][72]."</td></tr>";
 		$error = 2;
