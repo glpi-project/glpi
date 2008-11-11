@@ -140,13 +140,13 @@ class Contract extends CommonDBTM {
 		$this->showTabs($ID, $withtemplate,$_SESSION['glpi_tab']);
 
 		if ($can_edit) { 
-			echo "<form name='form' method='post' action=\"$target\"><div class='center' id='tabsbody'>";
+			echo "<form name='form' method='post' action=\"$target\">";
 			if (empty($ID)||$ID<0){
 				echo "<input type='hidden' name='FK_entities' value='".$_SESSION["glpiactive_entity"]."'>";
 			}
 		}
 			
-		echo "<table class='tab_cadre_fixe'>";
+		echo "<div class='center' id='tabsbody'><table class='tab_cadre_fixe'>";
 
 		$this->showFormHeader($ID,'',2);
 
@@ -294,7 +294,7 @@ class Contract extends CommonDBTM {
 			echo "</table></div>";
 		}
 	
-		echo "<div id='tabcontent'></div>";
+		echo "<div class='center' id='tabcontent'></div>";
 		echo "<script type='text/javascript'>loadDefaultTab();</script>";
 
 		return true;
