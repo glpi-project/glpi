@@ -1906,13 +1906,11 @@ function printAjaxPager($title,$start,$numrows) {
 
 	// Back and fast backward button
 	if (!$start==0) {
-		echo "<th class='left'>";
-		echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/first.png\" alt='".$LANG["buttons"][33]."' title='".$LANG["buttons"][33]
-			. " style='cursor:pointer;' onClick='reloadTab(\"start=0\")'></th>";
-
-		echo "<th class='left'>";
-		echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/left.png\" alt='".$LANG["buttons"][12]."' title='".$LANG["buttons"][12]
-			. " style='cursor:pointer;' onClick='reloadTab(\"start=$back\")'></th>";
+		echo "<th class='left'><a href='javascript:reloadTab(\"start=0\");' >"
+			. "<img src=\"".$CFG_GLPI["root_doc"]."/pics/first.png\" alt='".$LANG["buttons"][33]."' title='".$LANG["buttons"][33] . "'>"
+			. "</a></th><th class='left'><a href='javascript:reloadTab(\"start=$back\");' >"
+			. "<img src=\"".$CFG_GLPI["root_doc"]."/pics/left.png\" alt='".$LANG["buttons"][12]."' title='".$LANG["buttons"][12] . "'>"
+			. "</th>";
 	}
 
 	echo "<td width='50%'  class='tab_bg_2'>";
@@ -1927,12 +1925,11 @@ function printAjaxPager($title,$start,$numrows) {
 
 	// Forward and fast forward button
 	if ($forward<$numrows) {
-		echo "<th class='right'>";
-		echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/right.png\" alt='".$LANG["buttons"][11]."' title='".$LANG["buttons"][11]
-			. " style='cursor:pointer;' onClick='reloadTab(\"start=$forward\")'></th>";
-		echo "<th class='right'>";
-		echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/last.png\" alt='".$LANG["buttons"][32]."' title='".$LANG["buttons"][32]
-			. " style='cursor:pointer;' onClick='reloadTab(\"start=$end\")'></th>";
+		echo "<th class='right'><a href='javascript:reloadTab(\"start=$forward\");' >"
+			. "<img src=\"".$CFG_GLPI["root_doc"]."/pics/right.png\" alt='".$LANG["buttons"][11]."' title='".$LANG["buttons"][11] . "'>"
+			. "</a></th><th class='right'><a href='javascript:reloadTab(\"start=$end\");' >"
+			. "<img src=\"".$CFG_GLPI["root_doc"]."/pics/last.png\" alt='".$LANG["buttons"][32]."' title='".$LANG["buttons"][32] . "'>"
+			. "</th>";
 	}
 
 	// End pager
