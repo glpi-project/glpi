@@ -78,7 +78,7 @@ function showVersions($sID) {
 	}
 	
 	$query = "SELECT * FROM glpi_softwareversions 
-		WHERE (sID = '$sID')";
+		WHERE (sID = '$sID') ORDER BY name";
 	if ($result=$DB->query($query)){
 		if ($DB->numrows($result)){
 			echo "<table class='tab_cadre'><tr>";
