@@ -1713,15 +1713,23 @@ function printHelpDesk ($ID,$from_helpdesk) {
  * 
  * 
  * @param $action page would be posted when change the value (URL + param)
+ * 		ajax Pager will be displayed if empty
+ * 
  * @return nothing (print a combo)
  * 
  */
-function printPagerForm ($action) {
+function printPagerForm ($action="") {
 	global $LANG;
 	
-	echo "<form method='POST' action=\"$action\">\n";
-	echo "<span>".$LANG["pager"][4]."&nbsp;</span>";
-	echo "<select name='glpilist_limit' onChange='submit()'>";
+	if ($action) {
+		echo "<form method='POST' action=\"$action\">\n";
+		echo "<span>".$LANG["pager"][4]."&nbsp;</span>";
+		echo "<select name='glpilist_limit' onChange='submit()'>";
+	} else {
+		echo "<form method='POST'>\n";
+		echo "<span>".$LANG["pager"][4]."&nbsp;</span>";
+		echo "<select name='glpilist_limit' onChange='reloadTab(\"glpilist_limit=\"+this.value)'>";		
+	}
 
 	for ($i=5;$i<20;$i+=5) echo "<option value='$i' ".((isset($_SESSION["glpilist_limit"])&&$_SESSION["glpilist_limit"]==$i)?" selected ":"").">$i</option>\n";
 	for ($i=20;$i<50;$i+=10) echo "<option value='$i' ".((isset($_SESSION["glpilist_limit"])&&$_SESSION["glpilist_limit"]==$i)?" selected ":"").">$i</option>\n";
@@ -1737,33 +1745,6 @@ function printPagerForm ($action) {
 	echo "</form>\n";
 }
 
-/**
- * Display the list_limit combo choice
- * Will force a refresh of the current tab
- * 
- * @return nothing (print a combo)
- * 
- */
-function ajaxPagerForm () {
-	global $LANG;
-	
-	echo "<form method='POST'>\n";
-	echo "<span>".$LANG["pager"][4]."&nbsp;</span>";
-	echo "<select name='glpilist_limit' onChange='reloadTab(\"glpilist_limit=\"+this.value)'>";
-
-	for ($i=5;$i<20;$i+=5) echo "<option value='$i' ".((isset($_SESSION["glpilist_limit"])&&$_SESSION["glpilist_limit"]==$i)?" selected ":"").">$i</option>\n";
-	for ($i=20;$i<50;$i+=10) echo "<option value='$i' ".((isset($_SESSION["glpilist_limit"])&&$_SESSION["glpilist_limit"]==$i)?" selected ":"").">$i</option>\n";
-	for ($i=50;$i<250;$i+=50) echo "<option value='$i' ".((isset($_SESSION["glpilist_limit"])&&$_SESSION["glpilist_limit"]==$i)?" selected ":"").">$i</option>\n";
-	for ($i=250;$i<1000;$i+=250) echo "<option value='$i' ".((isset($_SESSION["glpilist_limit"])&&$_SESSION["glpilist_limit"]==$i)?" selected ":"").">$i</option>\n";
-	for ($i=1000;$i<5000;$i+=1000) echo "<option value='$i' ".((isset($_SESSION["glpilist_limit"])&&$_SESSION["glpilist_limit"]==$i)?" selected ":"").">$i</option>\n";
-	for ($i=5000;$i<=10000;$i+=5000) echo "<option value='$i' ".((isset($_SESSION["glpilist_limit"])&&$_SESSION["glpilist_limit"]==$i)?" selected ":"").">$i</option>\n";
-	echo "<option value='9999999' ".((isset($_SESSION["glpilist_limit"])&&$_SESSION["glpilist_limit"]==9999999)?" selected ":"").">9999999</option>\n";	
-
-	echo "</select><span>&nbsp;";
-	echo $LANG["pager"][5];
-	echo "</span>";
-	echo "</form>\n";
-}
 
 /**
  * Print pager for search option (first/previous/next/last)
@@ -1781,7 +1762,7 @@ function ajaxPagerForm () {
  */
 function printPager($start,$numrows,$target,$parameters,$item_type_output=0,$item_type_output_param=0) {
 
-	global $CFG_GLPI, $LANG,$CFG_GLPI;
+	global $CFG_GLPI, $LANG;
 
 	// Forward is the next step forward
 	$forward = $start+$_SESSION["glpilist_limit"];
@@ -1878,6 +1859,87 @@ function printPager($start,$numrows,$target,$parameters,$item_type_output=0,$ite
 
 }
 
+/**
+ * Print Ajax pager for list in tab panel
+ *
+ * @param $title displayed above
+ * @param $start from witch item we start
+ * @param $numrows total items
+ * 
+ * @return nothing (print a pager)
+ *
+ */
+function printAjaxPager($title,$start,$numrows) {
+
+	global $CFG_GLPI, $LANG;
+
+	// Forward is the next step forward
+	$forward = $start+$_SESSION["glpilist_limit"];
+
+	// This is the end, my friend	
+	$end = $numrows-$_SESSION["glpilist_limit"];
+
+	// Human readable count starts here
+	$current_start=$start+1;
+
+	// And the human is viewing from start to end
+	$current_end = $current_start+$_SESSION["glpilist_limit"]-1;
+	if ($current_end>$numrows) {
+		$current_end = $numrows;
+	}
+
+	// Backward browsing 
+	if ($current_start-$_SESSION["glpilist_limit"]<=0) {
+		$back=0;
+	} else {
+		$back=$start-$_SESSION["glpilist_limit"];
+	}
+
+	// Print it
+
+	echo "<table class='tab_cadre_pager'>\n";
+	
+	if ($title) {
+		echo "<tr><th colspan='6'>$title</th></tr>\n";		
+	}
+	echo "<tr>\n";
+
+	// Back and fast backward button
+	if (!$start==0) {
+		echo "<th class='left'>";
+		echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/first.png\" alt='".$LANG["buttons"][33]."' title='".$LANG["buttons"][33]
+			. " style='cursor:pointer;' onClick='reloadTab(\"start=0\")'></th>";
+
+		echo "<th class='left'>";
+		echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/left.png\" alt='".$LANG["buttons"][12]."' title='".$LANG["buttons"][12]
+			. " style='cursor:pointer;' onClick='reloadTab(\"start=$back\")'></th>";
+	}
+
+	echo "<td width='50%'  class='tab_bg_2'>";
+	printPagerForm();
+	echo "</td>\n";
+
+
+	// Print the "where am I?" 
+	echo "<td  width='50%'  class='tab_bg_2'><strong>";
+	echo $LANG["pager"][2]."&nbsp;".$current_start."&nbsp;".$LANG["pager"][1]."&nbsp;".$current_end."&nbsp;".$LANG["pager"][3]."&nbsp;".$numrows."&nbsp;";
+	echo "</strong></td>\n";
+
+	// Forward and fast forward button
+	if ($forward<$numrows) {
+		echo "<th class='right'>";
+		echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/right.png\" alt='".$LANG["buttons"][11]."' title='".$LANG["buttons"][11]
+			. " style='cursor:pointer;' onClick='reloadTab(\"start=$forward\")'></th>";
+		echo "<th class='right'>";
+		echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/last.png\" alt='".$LANG["buttons"][32]."' title='".$LANG["buttons"][32]
+			. " style='cursor:pointer;' onClick='reloadTab(\"start=$end\")'></th>";
+	}
+
+	// End pager
+	echo "</tr>\n";
+	echo "</table>\n";
+
+}
 
 
 /**

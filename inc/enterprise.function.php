@@ -62,7 +62,7 @@ function showInfocomEnterprise($instID) {
 
 	echo "<br><br><div class='center'><table class='tab_cadrehov'>";
 	echo "<tr><th colspan='2'>";
-	ajaxPagerForm();
+	printPagerForm();
 	echo "</th><th colspan='3'>".$LANG["document"][19].":</th></tr>";
 	echo "<tr><th>".$LANG["common"][17]."</th>";
 	echo "<th>".$LANG["entity"][0]."</th>";
