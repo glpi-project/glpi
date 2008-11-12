@@ -590,18 +590,26 @@ function showJobShort($data, $followups,$output_type=HTML_OUTPUT,$row_num=0) {
 			$eigth_column.="<span class='over_link' id='comments_tracking".$data["ID"]."'>".nl2br($data['contents'])."</span>";
 		}
 		
-		if ($followups&&$output_type==HTML_OUTPUT){
-			$eigth_column.=showFollowupsShort($data["ID"]);
-		}
-
 		// Add link
 		if ($_SESSION["glpiactiveprofile"]["interface"]=="central"){
 			if ($job->canShowTicket()) {
-				$eigth_column="<a href=\"".$CFG_GLPI["root_doc"]."/front/tracking.form.php?ID=".$data["ID"]."\">$eigth_column</a>&nbsp;(".$job->numberOfFollowups().")";
+				$eigth_column="<a href=\"".$CFG_GLPI["root_doc"]."/front/tracking.form.php?ID=".$data["ID"]."\">$eigth_column</a>";
+				if ($followups&&$output_type==HTML_OUTPUT){
+					$eigth_column.=showFollowupsShort($data["ID"]);
+				} else {
+					$eigth_column.="&nbsp;(".$job->numberOfFollowups(haveRight("show_full_ticket","1")).")";
+				}
+	
 			}
 		}
 		else {
-			$eigth_column="<a href=\"".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php?show=user&amp;ID=".$data["ID"]."\">$eigth_column</a>&nbsp;(".$job->numberOfFollowups(haveRight("show_full_ticket","1")).")";
+			$eigth_column="<a href=\"".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php?show=user&amp;ID=".$data["ID"]."\">$eigth_column</a>";
+			if ($followups&&$output_type==HTML_OUTPUT){
+				$eigth_column.=showFollowupsShort($data["ID"]);
+			} else {
+				$eigth_column.="&nbsp;(".$job->numberOfFollowups(haveRight("show_full_ticket","1")).")";
+			}
+
 		}
 
 
