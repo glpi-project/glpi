@@ -164,18 +164,17 @@ function constructHistory($id_device,$device_type,&$oldvalues,&$values) {
 function showHistory($device_type,$id_device){
 
 	global $DB, $LINK_ID_TABLE,$LANG;	
-
+	
 	$SEARCH_OPTION=getSearchOptions();
+	
+	if (isset($_REQUEST["start"])) {
+		$start = $_REQUEST["start"];
+	} else {
+		$start = 0;
+	}
 
-	$query="SELECT * FROM glpi_history WHERE FK_glpi_device='".$id_device."' AND device_type='".$device_type."' ORDER BY  ID DESC;";
-
-	//echo $query;
-
-	// Get results
-	$result = $DB->query($query);
-
-	// Number of results
-	$number = $DB->numrows($result);
+	// Total Number of events
+	$number = countElementsInTable("glpi_history", "FK_glpi_device=$id_device AND device_type=$device_type");
 
 	// No Events in database
 	if ($number < 1) {
@@ -187,10 +186,20 @@ function showHistory($device_type,$id_device){
 		return;
 	}
 
-	// Output events
+	// Display the pager
+	printAjaxPager($LANG["title"][38],$start,$number);
 
+	$query="SELECT * FROM glpi_history WHERE FK_glpi_device='".$id_device."' AND device_type='".$device_type.
+		"' ORDER BY  ID DESC LIMIT $start," . $_SESSION["glpilist_limit"];
+
+	//echo $query;
+
+	// Get results
+	$result = $DB->query($query);
+
+	// Output events
 	echo "<div class='center'><table class='tab_cadre_fixe'>";
-	echo "<tr><th colspan='5'>".$LANG["title"][38]."</th></tr>";
+	//echo "<tr><th colspan='5'>".$LANG["title"][38]."</th></tr>";
 	echo "<tr><th>".$LANG["common"][2]."</th><th>".$LANG["common"][27]."</th><th>".$LANG["common"][34]."</th><th>".$LANG["event"][18]."</th><th>".$LANG["event"][19]."</th></tr>";
 	while ($data =$DB->fetch_array($result)){ 
 		$display_history = true;
