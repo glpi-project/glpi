@@ -376,7 +376,7 @@ class DBIterator  implements Iterator {
 	}
 	
   	public function current() {
-    	return $this->row;
+		return $this->row;
   	}
 
   	public function key() {
@@ -397,7 +397,7 @@ class DBIterator  implements Iterator {
   	}
 
   	public function valid() {
-    	return $this->res && $this->row;
+		return $this->res && $this->row;
   	}
 }
 ?>
