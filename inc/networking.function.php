@@ -703,8 +703,14 @@ function removeConnector($ID, $dohistory=true) {
 				}
 				if ($npnet!=-1&&$npdev!=-1){
 					// Unset MAC and IP from networking device
-					$query = "UPDATE glpi_networking_ports SET ifaddr='', ifmac='',netmask='', subnet='',gateway='' WHERE ID='$npnet'";	
-					$DB->query($query);
+					if ($np1->fields["ifmac"] == $np2->fields["ifmac"]){
+						$query = "UPDATE glpi_networking_ports SET ifmac='' WHERE ID='$npnet'";	
+						$DB->query($query);
+					}
+					if ($np1->fields["ifaddr"] == $np2->fields["ifaddr"]){
+						$query = "UPDATE glpi_networking_ports SET ifaddr='',netmask='', subnet='',gateway='' WHERE ID='$npnet'";	
+						$DB->query($query);
+					}
 					// Unset netpoint from common device
 					$query = "UPDATE glpi_networking_ports SET netpoint=0 WHERE ID='$npdev'";	
 					$DB->query($query);			
