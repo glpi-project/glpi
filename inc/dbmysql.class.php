@@ -296,5 +296,108 @@ class DBmysql {
 	function isSlave(){
 		return $this->slave;
 	}
+	
+	/**
+	 * Instanciate a Simple DBIterator
+	 * 
+	 * Examples =
+	 *  foreach ($DB->request("glpi_dropdown_state") as $ID => $data) { ... }
+	 *  foreach ($DB->request("glpi_dropdown_state", "ID=1") as $ID => $data) { ... }
+	 *  foreach ($DB->request("glpi_dropdown_state", "", "name") as $ID => $data) { ... }
+	 *  foreach ($DB->request("glpi_computers",array("name"=>"SBEI003W","FK_entities"=>1),array("serial","otherserial")) { ... }
+	 * 
+	 * @param $table name or array of names
+	 * @param $crit string or array of filed/values, ex array("ID"=>1), if empty => all rows
+	 * @param $field
+	 *
+	 * @return DBIterator
+	 **/
+	public function request ($table, $crit="", $field="") {
+		return new DBIterator($this, $table, $crit, $field);
+	}
+}
+
+/*
+ * Helper for simple query => see $DBmysql->requete
+ */
+class DBIterator  implements Iterator {
+	/// DBmysql object
+	private $con;
+	/// Current SQL query
+	private $sql;
+	/// Current result
+	private $res = false;
+	/// Current row
+	private $row;
+	
+	/**
+	 * Constructor
+	 * 
+	 * @param $dbconnexion, Database Connnexion (must be a CommonDBTM object)
+	 * @param $table name or array of names
+	 * @param $crit string or array of filed/values, ex array("ID"=>1), if empty => all rows
+	 * @param $field
+	 *
+	 **/
+	function __construct ($dbconnexion, $table, $crit="", $field="") {
+		$this->conn = $dbconnexion;
+		
+		// SELECT field list
+		if (is_array($field)) {
+			if (!in_array("ID",$field)) $field[]="ID";
+			$this->sql = "SELECT " . implode(",",$field);
+		} else if (empty($field)) {
+			$this->sql = "SELECT *";
+		} else {
+			$this->sql = "SELECT ID," . $field;
+		}
+		// FROM table list
+		if (is_array($table)) {
+			$this->sql .= " FROM " . implode(",",$table);
+		} else {
+			$this->sql .= " FROM " . $table;			
+		}
+		// WHERE criteria list
+		if (is_array($crit)) {
+			$first = true;
+			foreach ($crit as $name => $value) {
+				$this->sql .= ($first ? " WHERE " : " AND ") . "$name = '$value'"; 
+				$first = false;
+			}			
+		} else if (!empty($crit)) {
+			$this->sql .= " WHERE " . $crit;			
+		}
+		//error_log("Launch SQL: ".$this->sql);
+	}
+	
+	public function rewind () {
+		$this->res = $this->conn->query($this->sql);
+		return $this->next();
+	}
+	
+  	public function current() {
+    	return $this->row;
+  	}
+
+  	public function key() {
+  		return (isset($this->row["ID"]) ? $this->row["ID"] : 0);
+  	}
+
+  	public function next() {
+  		if (!$this->res) return false;
+  		
+  		$this->row = $this->conn->fetch_assoc($this->res);
+  		if ($this->row === false) {
+  			// EOF
+  			$this->conn->free_result($this->res);
+  			$this->res = false;
+  			//error_log("Close query");
+  		}
+  		return $this->row;
+  	}
+
+  	public function valid() {
+    	return $this->res && $this->row;
+  	}
 }
 ?>
