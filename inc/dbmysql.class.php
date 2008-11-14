@@ -351,7 +351,7 @@ class DBmysqlIterator  implements Iterator {
 	function __construct ($dbconnexion, $table, $crit="") {
 		$this->conn = $dbconnexion;
 		
-		if (strpos($table, " ")) {
+		if (is_string($table) && strpos($table, " ")) {
 			$this->sql = $table; 
 		} else {
 				
@@ -367,15 +367,15 @@ class DBmysqlIterator  implements Iterator {
 						$field=$val;
 						unset($crit[$key]);
 					}
-					if ($key==="ORDER"){
+					else if ($key==="ORDER"){
 						$orderby=$val;
 						unset($crit[$key]);
 					}
-					if ($key==="LIMIT"){
+					else if ($key==="LIMIT"){
 						$limit=$val;
 						unset($crit[$key]);
 					}
-					if ($key==="START"){
+					else if ($key==="START"){
 						$start=$val;
 						unset($crit[$key]);
 					}
@@ -384,12 +384,20 @@ class DBmysqlIterator  implements Iterator {
 			}
 			// SELECT field list
 			if (is_array($field)) {
-				if (!in_array("ID",$field)) $field[]="ID";
-				$this->sql = "SELECT " . implode(",",$field);
+				$this->sql = "";
+				foreach ($field as $t => $f) {
+					if (is_numeric($t)) {
+						$this->sql .= (empty($this->sql) ? "SELECT " : ",") . $f;  
+					} else if (is_array($f)) {
+						$this->sql .= (empty($this->sql) ? "SELECT $t." : ",$t.") . implode(",$t.",$f);  
+					} else {
+						$this->sql .= (empty($this->sql) ? "SELECT " : ",") . "$t.$f";  						
+					}
+				}
 			} else if (empty($field)) {
 				$this->sql = "SELECT *";
 			} else {
-				$this->sql = "SELECT ID," . $field;
+				$this->sql = "SELECT " . $field;
 			}
 			// FROM table list
 			if (is_array($table)) {
@@ -416,7 +424,7 @@ class DBmysqlIterator  implements Iterator {
 			}
 		}
 		$this->res = $this->conn->query($this->sql);
-		//if ($this->res) error_log("Launch SQL: ".$this->sql);
+		if ($this->res) error_log("Launch SQL: ".$this->sql);
 	}
 
 	function __destruct () {
@@ -449,6 +457,17 @@ class DBmysqlIterator  implements Iterator {
 				// Uninary logicial operator
 				$ret .= " NOT (" . $this->analyseCrit($value, "AND") . ")";
 				
+			} else if ($name==="FKEY") {
+				// Foreign Key condition
+				if (is_array($value) && count($value)==2) {
+					reset($value);
+					list($t1,$f1)=each($value);				
+					list($t2,$f2)=each($value);	
+					$ret .= (is_numeric($t1) ? "$f1" : "$t1.$f1") . "=" . (is_numeric($t2) ? "$f2" : "$t2.$f2");			
+				} else {
+					// TODO : find a better way to fail
+					$ret .= "BAD FOREIGN KEY";
+				}
 			} else if (is_array($value)) {
 				// Array of Value
 				$ret .= "$name IN ('". implode("','",$value)."')";
@@ -470,7 +489,7 @@ class DBmysqlIterator  implements Iterator {
 	}
 
 	public function rewind () {
-  		if ($this->res) {
+  		if ($this->res && $this->conn->numrows($this->res)) {
 			$this->conn->data_seek($this->res,0);
   		}
 		return $this->next();
