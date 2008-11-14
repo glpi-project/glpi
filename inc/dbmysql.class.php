@@ -316,11 +316,14 @@ class DBmysql {
 	 *   array("AND"=>array("ID"=>1, array("NOT"=>array("state"=>array(3,4,5),"toto"=>2))))
 	 * 
 	 * @param $field name or array of field names
+	 * @param $orderby filed name or array of field names
+	 * @param $limit max of row to retrieve
+	 * @param $start first rox to retrieve
 	 * 
 	 * @return DBIterator
 	 **/
-	public function request ($tableorsql, $crit="", $field="") {
-		return new DBIterator($this, $tableorsql, $crit, $field);
+	public function request ($tableorsql, $crit="", $field="", $orderby="", $limit=0, $start=0) {
+		return new DBIterator($this, $tableorsql, $crit, $field, $orderby, $limit, $start);
 	}
 }
 
@@ -344,9 +347,12 @@ class DBIterator  implements Iterator {
 	 * @param $tableorsql table name, array of names or SQL query
 	 * @param $crit string or array of filed/values, ex array("ID"=>1), if empty => all rows
 	 * @param $field name or array of field names
+	 * @param $orderby filed name or array of field names
+	 * @param $limit max of row to retrieve
+	 * @param $start first rox to retrieve
 	 *
 	 **/
-	function __construct ($dbconnexion, $table, $crit="", $field="") {
+	function __construct ($dbconnexion, $table, $crit="", $field="", $orderby="", $limit=0, $start=0) {
 		$this->conn = $dbconnexion;
 		
 		if (strpos($table, " ")) {
@@ -364,13 +370,26 @@ class DBIterator  implements Iterator {
 			}
 			// FROM table list
 			if (is_array($table)) {
-				$this->sql .= " FROM " . implode(",",$table);
+				$this->sql .= " FROM " . implode(", ",$table);
 			} else {
 				$this->sql .= " FROM " . $table;			
 			}
 			// WHERE criteria list
 			if (!empty($crit)) {
 				$this->sql .= " WHERE " . $this->analyseCrit($crit);			
+			}
+			// ORDER BY
+			if (is_array($orderby)) {
+				$this->sql .= " ORDER BY " . implode(", ",$orderby);
+			} else if (!empty($orderby)) {
+				$this->sql .= " ORDER BY " . $orderby;			
+			}
+			if (is_numeric($limit) && $limit>0) {
+				$this->sql .= " LIMIT $limit";			
+				
+				if (is_numeric($start) && $start>0) {
+					$this->sql .= " OFFSET $start";
+				}			
 			}
 		}
 		$this->res = $this->conn->query($this->sql);
