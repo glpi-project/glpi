@@ -309,8 +309,14 @@ class DBmysql {
 	 * 
 	 * @param $tableorsql table name, array of names or SQL query
 	 * @param $crit string or array of filed/values, ex array("ID"=>1), if empty => all rows
-	 * @param $field
-	 *
+	 * 
+	 * Examples =
+	 *   array("ID"=>NULL)
+	 *   array("OR"=>array("ID"=>1, "NOT"=>array("state"=>3)));
+	 *   array("AND"=>array("ID"=>1, array("NOT"=>array("state"=>array(3,4,5),"toto"=>2))))
+	 * 
+	 * @param $field name or array of field names
+	 * 
 	 * @return DBIterator
 	 **/
 	public function request ($tableorsql, $crit="", $field="") {
@@ -337,7 +343,7 @@ class DBIterator  implements Iterator {
 	 * @param $dbconnexion, Database Connnexion (must be a CommonDBTM object)
 	 * @param $tableorsql table name, array of names or SQL query
 	 * @param $crit string or array of filed/values, ex array("ID"=>1), if empty => all rows
-	 * @param $field
+	 * @param $field name or array of field names
 	 *
 	 **/
 	function __construct ($dbconnexion, $table, $crit="", $field="") {
@@ -363,14 +369,8 @@ class DBIterator  implements Iterator {
 				$this->sql .= " FROM " . $table;			
 			}
 			// WHERE criteria list
-			if (is_array($crit)) {
-				$first = true;
-				foreach ($crit as $name => $value) {
-					$this->sql .= ($first ? " WHERE " : " AND ") . "$name = '$value'"; 
-					$first = false;
-				}			
-			} else if (!empty($crit)) {
-				$this->sql .= " WHERE " . $crit;			
+			if (!empty($crit)) {
+				$this->sql .= " WHERE " . $this->analyseCrit($crit);			
 			}
 		}
 		$this->res = $this->conn->query($this->sql);
@@ -384,6 +384,49 @@ class DBIterator  implements Iterator {
   		}
 	}
 	
+	private function analyseCrit ($crit, $bool="AND") {
+	
+		//error_log("Criteria: ".print_r($crit,true));
+			
+		if (!is_array($crit)) {
+			return $crit;
+		}			
+		$ret = "";
+		foreach ($crit as $name => $value) {
+			if (!empty($ret)) $ret .= " $bool ";
+	
+			if (is_numeric($name)) { 
+				// No Key case => recurse.
+				$ret .= "(" . $this->analyseCrit($value, $bool) . ")";
+				
+			} else if ($name==="OR" || $name==="AND") {
+				// Binary logical operator
+				$ret .= "(" . $this->analyseCrit($value, $name) . ")";
+				
+			} else if ($name==="NOT") {
+				// Uninary logicial operator
+				$ret .= " NOT (" . $this->analyseCrit($value, "AND") . ")";
+				
+			} else if (is_array($value)) {
+				// Array of Value
+				$ret .= "$name IN ('". implode("','",$value)."')";
+				
+			} else if (is_null($value)) {
+				// NULL condition
+				$ret .= "$name IS NULL";
+				
+			} else if (is_numeric($value)) {
+				// Integer
+				$ret .= "$name=$value";
+				
+			} else {
+				// String
+				$ret .= "$name='$value'";
+			}
+		}	
+		return $ret;				
+	}
+
 	public function rewind () {
   		if ($this->res) {
 			$this->conn->data_seek($this->res,0);
