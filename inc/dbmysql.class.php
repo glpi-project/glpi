@@ -301,19 +301,20 @@ class DBmysql {
 	 * Instanciate a Simple DBIterator
 	 * 
 	 * Examples =
+	 *  foreach ($DB->request("select * from glpi_dropdown_state") as $data) { ... }
 	 *  foreach ($DB->request("glpi_dropdown_state") as $ID => $data) { ... }
 	 *  foreach ($DB->request("glpi_dropdown_state", "ID=1") as $ID => $data) { ... }
 	 *  foreach ($DB->request("glpi_dropdown_state", "", "name") as $ID => $data) { ... }
 	 *  foreach ($DB->request("glpi_computers",array("name"=>"SBEI003W","FK_entities"=>1),array("serial","otherserial")) { ... }
 	 * 
-	 * @param $table name or array of names
+	 * @param $tableorsql table name, array of names or SQL query
 	 * @param $crit string or array of filed/values, ex array("ID"=>1), if empty => all rows
 	 * @param $field
 	 *
 	 * @return DBIterator
 	 **/
-	public function request ($table, $crit="", $field="") {
-		return new DBIterator($this, $table, $crit, $field);
+	public function request ($tableorsql, $crit="", $field="") {
+		return new DBIterator($this, $tableorsql, $crit, $field);
 	}
 }
 
@@ -334,7 +335,7 @@ class DBIterator  implements Iterator {
 	 * Constructor
 	 * 
 	 * @param $dbconnexion, Database Connnexion (must be a CommonDBTM object)
-	 * @param $table name or array of names
+	 * @param $tableorsql table name, array of names or SQL query
 	 * @param $crit string or array of filed/values, ex array("ID"=>1), if empty => all rows
 	 * @param $field
 	 *
@@ -342,36 +343,51 @@ class DBIterator  implements Iterator {
 	function __construct ($dbconnexion, $table, $crit="", $field="") {
 		$this->conn = $dbconnexion;
 		
-		// SELECT field list
-		if (is_array($field)) {
-			if (!in_array("ID",$field)) $field[]="ID";
-			$this->sql = "SELECT " . implode(",",$field);
-		} else if (empty($field)) {
-			$this->sql = "SELECT *";
+		if (strpos($table, " ")) {
+			$this->sql = $table; 
 		} else {
-			$this->sql = "SELECT ID," . $field;
+				
+			// SELECT field list
+			if (is_array($field)) {
+				if (!in_array("ID",$field)) $field[]="ID";
+				$this->sql = "SELECT " . implode(",",$field);
+			} else if (empty($field)) {
+				$this->sql = "SELECT *";
+			} else {
+				$this->sql = "SELECT ID," . $field;
+			}
+			// FROM table list
+			if (is_array($table)) {
+				$this->sql .= " FROM " . implode(",",$table);
+			} else {
+				$this->sql .= " FROM " . $table;			
+			}
+			// WHERE criteria list
+			if (is_array($crit)) {
+				$first = true;
+				foreach ($crit as $name => $value) {
+					$this->sql .= ($first ? " WHERE " : " AND ") . "$name = '$value'"; 
+					$first = false;
+				}			
+			} else if (!empty($crit)) {
+				$this->sql .= " WHERE " . $crit;			
+			}
 		}
-		// FROM table list
-		if (is_array($table)) {
-			$this->sql .= " FROM " . implode(",",$table);
-		} else {
-			$this->sql .= " FROM " . $table;			
-		}
-		// WHERE criteria list
-		if (is_array($crit)) {
-			$first = true;
-			foreach ($crit as $name => $value) {
-				$this->sql .= ($first ? " WHERE " : " AND ") . "$name = '$value'"; 
-				$first = false;
-			}			
-		} else if (!empty($crit)) {
-			$this->sql .= " WHERE " . $crit;			
-		}
-		//error_log("Launch SQL: ".$this->sql);
+		$this->res = $this->conn->query($this->sql);
+		//if ($this->res) error_log("Launch SQL: ".$this->sql);
+	}
+
+	function __destruct () {
+  		if ($this->res) {
+  			$this->conn->free_result($this->res);
+  			//error_log("Close query");
+  		}
 	}
 	
 	public function rewind () {
-		$this->res = $this->conn->query($this->sql);
+  		if ($this->res) {
+			$this->conn->data_seek($this->res,0);
+  		}
 		return $this->next();
 	}
 	
@@ -384,15 +400,8 @@ class DBIterator  implements Iterator {
   	}
 
   	public function next() {
-  		if (!$this->res) return false;
-  		
+  		if (!$this->res) return false; 		
   		$this->row = $this->conn->fetch_assoc($this->res);
-  		if ($this->row === false) {
-  			// EOF
-  			$this->conn->free_result($this->res);
-  			$this->res = false;
-  			//error_log("Close query");
-  		}
   		return $this->row;
   	}
 
