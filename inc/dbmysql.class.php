@@ -322,8 +322,8 @@ class DBmysql {
 	 * 
 	 * @return DBIterator
 	 **/
-	public function request ($tableorsql, $crit="", $field="", $orderby="", $limit=0, $start=0) {
-		return new DBmysqlIterator ($this, $tableorsql, $crit, $field, $orderby, $limit, $start);
+	public function request ($tableorsql, $crit="") {
+		return new DBmysqlIterator ($this, $tableorsql, $crit);
 	}
 }
 
@@ -346,19 +346,42 @@ class DBmysqlIterator  implements Iterator {
 	 * @param $dbconnexion, Database Connnexion (must be a CommonDBTM object)
 	 * @param $tableorsql table name, array of names or SQL query
 	 * @param $crit string or array of filed/values, ex array("ID"=>1), if empty => all rows
-	 * @param $field name or array of field names
-	 * @param $orderby filed name or array of field names
-	 * @param $limit max of row to retrieve
-	 * @param $start first rox to retrieve
 	 *
 	 **/
-	function __construct ($dbconnexion, $table, $crit="", $field="", $orderby="", $limit=0, $start=0) {
+	function __construct ($dbconnexion, $table, $crit="") {
 		$this->conn = $dbconnexion;
 		
 		if (strpos($table, " ")) {
 			$this->sql = $table; 
 		} else {
 				
+
+			// Check field, orderby, limit, start in criterias
+			$field="";
+			$orderby="";
+			$limit=0;
+			$start=0;
+			if (is_array($crit) && count($crit)){
+				foreach ($crit as $key => $val){
+					if ($key==="FIELDS"){
+						$field=$val;
+						unset($crit[$key]);
+					}
+					if ($key==="ORDER"){
+						$orderby=$val;
+						unset($crit[$key]);
+					}
+					if ($key==="LIMIT"){
+						$limit=$val;
+						unset($crit[$key]);
+					}
+					if ($key==="START"){
+						$start=$val;
+						unset($crit[$key]);
+					}
+				}
+
+			}
 			// SELECT field list
 			if (is_array($field)) {
 				if (!in_array("ID",$field)) $field[]="ID";
