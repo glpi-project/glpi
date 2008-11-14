@@ -323,14 +323,14 @@ class DBmysql {
 	 * @return DBIterator
 	 **/
 	public function request ($tableorsql, $crit="", $field="", $orderby="", $limit=0, $start=0) {
-		return new DBIterator($this, $tableorsql, $crit, $field, $orderby, $limit, $start);
+		return new DBmysqlIterator ($this, $tableorsql, $crit, $field, $orderby, $limit, $start);
 	}
 }
 
 /*
  * Helper for simple query => see $DBmysql->requete
  */
-class DBIterator  implements Iterator {
+class DBmysqlIterator  implements Iterator {
 	/// DBmysql object
 	private $con;
 	/// Current SQL query
