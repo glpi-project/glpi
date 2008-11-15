@@ -85,14 +85,21 @@ if(!function_exists('loadLang')) {
 
 /*---------------------------------------------------------------------*/
 
-function displayMigrationMessage ($id, $msg) {
+function displayMigrationMessage ($id, $msg="") {
+	global $LANG;
 	static $created=0;
+	static $deb;
 	
 	if ($created != $id) {
+		if (empty($msg)) $msg=$LANG["rulesengine"][90];
 		echo "<div id='migration_message_$id'><p align='center'>$msg</p></div>";
 		$created = $id;
+		$deb = time();
 	} else {
-		echo "<script type='text/javascript'>document.getElementById('migration_message_$id').innerHTML = '<p align=\"center\">$msg</p>';</script>\n";	
+		if (empty($msg)) $msg=$LANG["rulesengine"][91];
+		$fin = time();
+		$tps = timestampToString($fin-$deb);
+		echo "<script type='text/javascript'>document.getElementById('migration_message_$id').innerHTML = '<p align=\"center\">$msg ($tps)</p>';</script>\n";	
 	}	
 	glpi_flush();								
 }
