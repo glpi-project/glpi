@@ -521,7 +521,7 @@ function showList ($type,$params){
 		}
 	}
 
-	$entity_restrict=in_array($itemtable,$CFG_GLPI["specif_entities_tables"]);
+	$entity_restrict= ($type==ENTITY_TYPE || in_array($itemtable,$CFG_GLPI["specif_entities_tables"]));
 
 
 	$names=array(
@@ -648,7 +648,9 @@ function showList ($type,$params){
 		$LINK= " AND " ;
 		if ($first) {$LINK=" ";$first=false;}
 
-		if (isset($CFG_GLPI["union_search_type"][$type])) {
+		if ($type==ENTITY_TYPE) {
+			$COMMONWHERE.=getEntitiesRestrictRequest($LINK,$itemtable,'ID','',true);
+		} else if (isset($CFG_GLPI["union_search_type"][$type])) {
 			// Will be replace below in Union/Recursivity Hack 
 			$COMMONWHERE.=$LINK." ENTITYRESTRICT ";
 		} else if (in_array($itemtable, $CFG_GLPI["recursive_type"])) {

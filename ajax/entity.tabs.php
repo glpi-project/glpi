@@ -59,9 +59,9 @@ if (!isset($_POST["start"])) {
 				case -1 :	
 					showEntityUser($_POST['target'],$_POST["ID"]);
 					displayPluginAction(ENTITY_TYPE,$_POST["ID"],$_SESSION['glpi_tab']);
+					$ldaprule->showAndAddRuleForm($_POST['target'],$_POST["ID"]);
 					if ($CFG_GLPI["ocs_mode"])
 						$ocsrule->showAndAddRuleForm($_POST['target'],$_POST["ID"]);
-					$ldaprule->showAndAddRuleForm($_POST['target'],$_POST["ID"]);
 				break;
 				case 2 : 
 					showEntityUser($_POST['target'],$_POST["ID"]);
