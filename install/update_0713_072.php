@@ -47,7 +47,7 @@ function update0713to072() {
 	$_SESSION['glpi_use_mode']=NORMAL_MODE; // for memory usage
 
 	echo "<h3>".$LANG["install"][4]." -&gt; 0.72</h3>";
-	displayMigrationMessage("072", $LANG["rulesengine"][90]);
+	displayMigrationMessage("072"); // Start
 
 	if (!FieldExists("glpi_networking", "recursive")) {
 		$query = "ALTER TABLE `glpi_networking` ADD `recursive` TINYINT( 1 ) NOT NULL DEFAULT '0' AFTER `FK_entities`;";
@@ -73,7 +73,7 @@ function update0713to072() {
 	);
 
 	foreach ($date_fields as $tablefield){
-		displayMigrationMessage("072", $LANG["setup"][128]."  ($tablefield)");
+		displayMigrationMessage("072", $LANG["setup"][128]." (1) ($tablefield)");
 		
 	   	list($table,$field)=explode('.',$tablefield);
 		if (FieldExists($table, $field)) {
@@ -99,6 +99,8 @@ function update0713to072() {
 	$date_fields[]="glpi_type_docs.date_mod";
 
 	foreach ($date_fields as $tablefield){
+		displayMigrationMessage("072", $LANG["setup"][128]." (2) ($tablefield)");
+		
 		list($table,$field)=explode('.',$tablefield);
 		if (FieldExists($table, $field)) {
 			$query = "UPDATE `$table` SET `$field` = NULL WHERE `$field` ='0000-00-00 00:00:00';";
@@ -186,8 +188,7 @@ function update0713to072() {
 		  
 		    // To avoid navigator timeout on by DB 
 		    if (!($numsoft % $step)) {
-		    	$mem = (function_exists("memory_get_usage") ? memory_get_usage() : "???"); 
-				displayMigrationMessage("072", $LANG["software"][11] . " : $numsoft / $nbsoft ($mem)");
+				displayMigrationMessage("072", $LANG["software"][11] . " : $numsoft / $nbsoft");
 		    }	
 			// Foreach lics
 			$query_versions="SELECT glpi_softwareversions.*, glpi_infocoms.ID AS infocomID FROM glpi_softwareversions 
@@ -300,6 +301,8 @@ function update0713to072() {
 		}
 	} // TableExists("glpi_softwarelicenses")
 	
+	displayMigrationMessage("072", $LANG["Menu"][4]); // Software
+	
 	// ALTER softwareversions
 	if (FieldExists("glpi_softwareversions", "buy")) {
 		$query="ALTER TABLE `glpi_softwareversions` DROP `serial`, DROP `expire`, DROP `oem`, DROP `oem_computer`, DROP `buy`, DROP `comments`;";
@@ -324,6 +327,8 @@ function update0713to072() {
 			) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
 		$DB->query($query) or die("0.72 create glpi_dropdown_licensetypes table" . $LANG["update"][90] . $DB->error());
 	}	
+
+	displayMigrationMessage("072", $LANG["Menu"][14]); // User
 
 	if (!FieldExists("glpi_groups", "recursive")) {
 		$query = "ALTER TABLE `glpi_groups` ADD `recursive` TINYINT( 1 ) NOT NULL DEFAULT '0' AFTER `FK_entities`;";
@@ -409,6 +414,8 @@ function update0713to072() {
 		$query = "ALTER TABLE `glpi_config` ADD `cache_max_size` INT( 11 ) NOT NULL DEFAULT '20' AFTER `use_cache` ;";
 		$DB->query($query) or die("0.72 add cache_max_size in glpi_config" . $LANG["update"][90] . $DB->error());
 	}
+
+	displayMigrationMessage("072", $LANG["computers"][8]); // Volumes
 
 	if (!TableExists("glpi_dropdown_filesystems")) {
 		$query="CREATE TABLE `glpi_dropdown_filesystems` (
@@ -746,7 +753,7 @@ function update0713to072() {
 			$result = $DB->query($query);
 		}
 	}
-	displayMigrationMessage("072", $LANG["rulesengine"][91]);
+	displayMigrationMessage("072"); // End
 	
 } // fin 0.72 #####################################################################################
 ?>
