@@ -44,6 +44,10 @@ function update0713to072() {
 
 	// TO TRY for software update
 	ini_set("max_execution_time", "0");
+	$_SESSION['glpi_use_mode']=NORMAL_MODE; // for memory usage
+
+	echo "<h3>".$LANG["install"][4]." -&gt; 0.72</h3>";
+	displayMigrationMessage("072", $LANG["rulesengine"][90]);
 
 	if (!FieldExists("glpi_networking", "recursive")) {
 		$query = "ALTER TABLE `glpi_networking` ADD `recursive` TINYINT( 1 ) NOT NULL DEFAULT '0' AFTER `FK_entities`;";
@@ -69,12 +73,15 @@ function update0713to072() {
 	);
 
 	foreach ($date_fields as $tablefield){
-		list($table,$field)=explode('.',$tablefield);
+		displayMigrationMessage("072", $LANG["setup"][128]."  ($tablefield)");
+		
+	   	list($table,$field)=explode('.',$tablefield);
 		if (FieldExists($table, $field)) {
 			$query = "ALTER TABLE `$table` CHANGE `$field` `$field` DATETIME NULL;";
 			$DB->query($query) or die("0.72 alter $field in $table" . $LANG["update"][90] . $DB->error());
 		}
 	}
+
 	$date_fields[]="glpi_computers.date_mod";
 	$date_fields[]="glpi_followups.date";
 	$date_fields[]="glpi_history.date_mod";
@@ -168,9 +175,20 @@ function update0713to072() {
 		// Foreach software
 		$query_softs = " SELECT * FROM glpi_software 
 				ORDER BY FK_entities;";
-
+	
 		if ($result_softs = $DB->query($query_softs)){
-		  while ($soft = $DB->fetch_assoc($result_softs)){
+		  $nbsoft=$DB->numrows($result_softs);
+		  $step = round($nbsoft/100);
+		  if (!$step) $step=1;
+		  if ($step>500) $step=500;
+			
+		  for ($numsoft=0 ; $soft = $DB->fetch_assoc($result_softs) ; $numsoft++){
+		  
+		    // To avoid navigator timeout on by DB 
+		    if (!($numsoft % $step)) {
+		    	$mem = (function_exists("memory_get_usage") ? memory_get_usage() : "???"); 
+				displayMigrationMessage("072", $LANG["software"][11] . " : $numsoft / $nbsoft ($mem)");
+		    }	
 			// Foreach lics
 			$query_versions="SELECT glpi_softwareversions.*, glpi_infocoms.ID AS infocomID FROM glpi_softwareversions 
 					LEFT JOIN glpi_infocoms ON (glpi_infocoms.device_type=9999 AND glpi_infocoms.FK_device=glpi_softwareversions.ID)
@@ -185,6 +203,7 @@ function update0713to072() {
 					$query_count="SELECT COUNT(*) FROM glpi_inst_software WHERE vID=".$vers['ID'].";";
 					if ($result_count=$DB->query($query_count)){
 						$install_count=$DB->result($result_count,0,0);
+						$DB->free_result($result_count);
 					}
 
 					// 1 - Is version already exists ?
@@ -206,6 +225,7 @@ function update0713to072() {
 							$query="DELETE FROM glpi_softwareversions WHERE ID=".$vers['ID'];
 							$DB->query($query);
 						}
+						$DB->free_result($result_searchvers);
 					}
 					// 2 - Create glpi_licenses
 					if ($vers['buy'] // Buy license
@@ -233,6 +253,7 @@ function update0713to072() {
 							if ($result_searchlic = $DB->query($query_search_lic)){
 								if ($DB->numrows($result_searchlic)>0){
 									$found_lic=$DB->result($result_searchlic,0,0);
+									$DB->free_result($result_searchlic);
 								}
 							}
 
@@ -271,8 +292,6 @@ function update0713to072() {
 						}
 						
 					} // Create licence
-
-					$DB->free_result($result_searchvers);
 
 				} // Each liv
 				$DB->free_result($result_vers);
@@ -727,6 +746,7 @@ function update0713to072() {
 			$result = $DB->query($query);
 		}
 	}
+	displayMigrationMessage("072", $LANG["rulesengine"][91]);
 	
 } // fin 0.72 #####################################################################################
 ?>

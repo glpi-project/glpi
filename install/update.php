@@ -84,6 +84,18 @@ if(!function_exists('loadLang')) {
 /* ----------------------------------------------------------------- */
 
 /*---------------------------------------------------------------------*/
+
+function displayMigrationMessage ($id, $msg) {
+	static $created=0;
+	
+	if ($created != $id) {
+		echo "<div id='migration_message_$id'><p align='center'>$msg</p></div>";
+		$created = $id;
+	} else {
+		echo "<script type='text/javascript'>document.getElementById('migration_message_$id').innerHTML = '<p align=\"center\">$msg</p>';</script>\n";	
+	}	
+	glpi_flush();								
+}
 /**
  * Display the form of content update (addslashes compatibility (V0.4))
  *
