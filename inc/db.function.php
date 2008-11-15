@@ -628,7 +628,9 @@ function getNextItem($table,$ID,$condition="",$nextprev_item=""){
 		$query.=" AND $table.is_template='0' ";	
 
 	// Restrict to active entities
-	if (in_array($table,$CFG_GLPI["specif_entities_tables"])){
+	if ($table=="glpi_entities") {
+		$query.=getEntitiesRestrictRequest("AND",$table,'','',true);
+	} else if (in_array($table,$CFG_GLPI["specif_entities_tables"])){
 		$query.=getEntitiesRestrictRequest("AND",$table,'','',in_array($table,$CFG_GLPI["recursive_type"]));
 	} else if ($table=="glpi_users"){
 		$query.=getEntitiesRestrictRequest("AND","glpi_users_profiles");
@@ -700,7 +702,9 @@ function getPreviousItem($table,$ID,$condition="",$nextprev_item=""){
 		$query.="AND $table.is_template='0'";	
 
 	// Restrict to active entities
-	if (in_array($table,$CFG_GLPI["specif_entities_tables"])){
+	if ($table=="glpi_entities") {
+		$query.=getEntitiesRestrictRequest("AND",$table,'','',true);
+	} else if (in_array($table,$CFG_GLPI["specif_entities_tables"])){
 		$query.=getEntitiesRestrictRequest("AND",$table,'','',in_array($table,$CFG_GLPI["recursive_type"]));
 	} else if ($table=="glpi_users"){
 		$query.=getEntitiesRestrictRequest("AND","glpi_users_profiles");
