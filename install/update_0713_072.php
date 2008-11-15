@@ -479,6 +479,7 @@ function update0713to072() {
 
 	//// Clean interface use for GFX card
 	// Insert default values
+	$CFG_GLPI["use_cache"]=0; // this is used during externalImportDropdown
 	externalImportDropdown("glpi_dropdown_interface", "AGP");
 	externalImportDropdown("glpi_dropdown_interface", "PCI");
 	externalImportDropdown("glpi_dropdown_interface", "PCIe");
