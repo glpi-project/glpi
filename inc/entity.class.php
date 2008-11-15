@@ -64,6 +64,8 @@ class Entity extends CommonDBTM{
 	function __construct () {
 		$this->table="glpi_entities";
 		$this->type=ENTITY_TYPE;
+		$this->entity_assign=true;
+		$this->may_be_recursive=true;
 	}
 	
 	function defineTabs($withtemplate){
@@ -142,10 +144,13 @@ class Entity extends CommonDBTM{
 			}
 		}
 		
+		$canedit=$this->can($ID,'w');
 		
 		$this->showTabs($ID, $withtemplate,$_SESSION['glpi_tab']);
 		
-		echo "<form method='post' name=form action=\"$target\">";
+		if ($canedit) {
+			echo "<form method='post' name=form action=\"$target\">";
+		}
 		echo "<div class='center' id='tabsbody' >";
 		echo "<table class='tab_cadre_fixe' cellpadding='2' >";
 		echo "<tr><th colspan='4'>";
@@ -222,7 +227,7 @@ class Entity extends CommonDBTM{
 		echo "</td></tr>";
 
 
-		if (haveRight("entity","w")) {
+		if ($canedit) {
 			echo "<tr>";
 			echo "<td class='tab_bg_2' colspan='4' valign='top' align='center'>";
 			echo "<input type='hidden' name='FK_entities' value=\"$ID\">\n";
@@ -231,9 +236,11 @@ class Entity extends CommonDBTM{
 			echo "</td>\n\n";
 			echo "</tr>";
 
+			echo "</table></div></form>";
+		} else {
+			echo "</table></div>";			
 		}
 
-		echo "</table></div></form>";
 		
 		echo "<div id='tabcontent'></div>";
 		echo "<script type='text/javascript'>loadDefaultTab();</script>";
@@ -241,7 +248,29 @@ class Entity extends CommonDBTM{
 		return true;
 	}
 
-
+	/**
+	 * Get the ID of entity assigned to the object
+	 * 
+	 * simply return ID
+	 * 
+	 * @return ID of the entity 
+	**/
+	function getEntityID () {
+		if (isset($this->fields["ID"])) {
+			return $this->fields["ID"];		
+		} 
+		return  -1;
+	}	
+	/**
+	 * Is the object recursive
+	 * 
+	 * Entity are always recursive
+	 * 
+	 * @return integer (0/1) 
+	**/
+	function isRecursive () {
+		return true;
+	}	
 }
 
 ?>

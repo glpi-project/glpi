@@ -859,7 +859,11 @@ function getEntitiesRestrictRequest($separator = "AND", $table = "", $field = ""
 		}
 		
 		if (count($ancestors)){
-			$query.=" OR ( $table.recursive='1' AND $table.$field IN (" . implode(",",$ancestors) . "))";
+			if ($table=='glpi_entities') {
+				$query.=" OR $table.$field IN (" . implode(",",$ancestors) . ")";
+			} else {
+				$query.=" OR ( $table.recursive='1' AND $table.$field IN (" . implode(",",$ancestors) . "))";
+			}
 		}
 	}
 

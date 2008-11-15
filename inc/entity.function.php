@@ -41,14 +41,17 @@ if (!defined('GLPI_ROOT')){
  * Show users of an entity
  *
  * @param $target string : where to go on action
- * @param $ID integer : enterprise ID
+ * @param $ID integer : entity ID
  */
 function showEntityUser($target,$ID){
 	global $DB,$CFG_GLPI, $LANG;
 	
 	if (!haveRight("entity","r")||!haveRight("user","r"))	return false;
 
-	$canedit=haveRight("entity","w");
+	$entity=new Entity();
+
+	//$canedit=haveRight("entity","w");
+	$canedit = $entity->can($ID,"w");
 	$canshowuser=haveRight("user","r");
 	$nb_per_line=3;
 	if ($canedit) $headerspan=$nb_per_line*2;
@@ -56,8 +59,6 @@ function showEntityUser($target,$ID){
 	$rand=mt_rand();
 	echo "<form name='entityuser_form$rand' id='entityuser_form$rand' method='post' action=\"$target\">";
 
-	$entity=new Entity();
-	
 	if ($entity->getFromDB($ID)||$ID==0){
 		if ($canedit){
 	
