@@ -1220,7 +1220,9 @@ function showList ($type,$params){
 				if ($output_type==HTML_OUTPUT){// HTML display - massive modif
 					$tmpcheck="";
 					if ($isadmin){
-						if (isset($CFG_GLPI["recursive_type"][$type]) && !in_array($data["FK_entities"],$_SESSION["glpiactiveentities"])) {
+						if ($type==ENTITY_TYPE && !in_array($data["ID"],$_SESSION["glpiactiveentities"])) {							
+							echo "&nbsp;";
+						} else if (isset($CFG_GLPI["recursive_type"][$type]) && !in_array($data["FK_entities"],$_SESSION["glpiactiveentities"])) {
 							echo "&nbsp;";
 						} else {
 							$sel="";
