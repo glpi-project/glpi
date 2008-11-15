@@ -430,6 +430,8 @@ function updatedbUpTo031()
 	$result=$DB->query($query) or die("get current version".$DB->error());
 	$current_version=trim($DB->result($result,0,0));
 
+	// Save if problem with session during update
+	$glpilanguage=$_SESSION["glpilanguage"];
 
 	switch ($current_version){
 		case "0.31": 
@@ -510,7 +512,7 @@ function updatedbUpTo031()
 	}
 
 	// Update version number and default langage and new version_founded ---- LEAVE AT THE END
-	$query = "UPDATE `glpi_config` SET `version` = ' 0.72', language='".$_SESSION["glpilanguage"]."',founded_new_version='' ;";
+	$query = "UPDATE `glpi_config` SET `version` = ' 0.72', language='".$glpilanguage."',founded_new_version='' ;";
 	$DB->query($query) or die("0.6 ".$LANG["update"][90].$DB->error());
 
 	// Update process desactivate all plugins
