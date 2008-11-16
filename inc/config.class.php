@@ -332,6 +332,27 @@ class Config extends CommonDBTM {
 		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["setup"][407] . "</td><td> <input size='30' type=\"text\" name=\"helpdeskhelp_url\" value=\"" . $CFG_GLPI["helpdeskhelp_url"] . "\"></td>";
 		echo "<td class='center'>" . $LANG["setup"][408] . "</td><td> <input size='30' type=\"text\" name=\"centralhelp_url\" value=\"" . $CFG_GLPI["centralhelp_url"] . "\"></td></tr>";
 
+		echo "<tr class='tab_bg_1'><td colspan='4' align='center'><strong>" . $LANG["setup"][147] . "</strong></td></tr>";
+		
+		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["setup"][120] . " </td><td>";
+		dropdownYesNo("use_ajax", $CFG_GLPI["use_ajax"]);
+		echo "</td>";
+		
+		echo "<td class='center'>" . $LANG["setup"][127] . " </td><td>";
+		dropdownYesNo("ajax_autocompletion", $CFG_GLPI["ajax_autocompletion"]);
+		echo "</td></tr>";
+		
+		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["setup"][121] . "</td><td><input type=\"text\" size='1' name=\"ajax_wildcard\" value=\"" . $CFG_GLPI["ajax_wildcard"] . "\"></td>";
+		
+		echo "<td class='center'>" . $LANG["setup"][122] . "</td><td>";
+		dropdownInteger('dropdown_max', $CFG_GLPI["dropdown_max"], 0, 200);
+		echo "</td></tr>";
+		
+		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["setup"][123] . "</td><td>";
+		dropdownInteger('ajax_limit_count', $CFG_GLPI["ajax_limit_count"], 0, 200);
+		echo "</td><td colspan='2'>&nbsp;</td></tr>";
+
+
 		echo "<tr class='tab_bg_2'><td colspan='4' align='center'><input type=\"submit\" name=\"update\" class=\"submit\" value=\"" . $LANG["buttons"][2] . "\" ></td></tr>";
 		echo "</table></div>";
 		echo "</form>";
@@ -613,25 +634,23 @@ class Config extends CommonDBTM {
 		}
 		echo ">1 234,56</option>";
 		echo "</select></td></tr>";
+
+		if ($oncentral){			
+			echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["setup"][129] . " </td><td>";
+			dropdownYesNo("view_ID", $data["view_ID"]);
+			echo "</td>";
 			
-		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["setup"][129] . " </td><td>";
-		dropdownYesNo("view_ID", $data["view_ID"]);
-		echo "</td>";
-		
-		echo "<td class='center'>" . $LANG["setup"][131] . "</td><td>";
-		dropdownInteger('dropdown_limit', $data["dropdown_limit"], 20, 100);
-		echo "</td></tr>";
+			echo "<td class='center'>" . $LANG["setup"][131] . "</td><td>";
+			dropdownInteger('dropdown_limit', $data["dropdown_limit"], 20, 100);
+			echo "</td></tr>";
+
+			echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["setup"][132] . "</td><td>";
+			dropdownYesNo('flat_dropdowntree', $data["flat_dropdowntree"]);
+			echo "</td><td class='center'>&nbsp;</td><td>&nbsp;";
+			echo "</td></tr>";
+
+		}
 	
-	
-		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["setup"][132] . "</td><td>";
-		dropdownYesNo('flat_dropdowntree', $data["flat_dropdowntree"]);
-		echo "</td>";
-
-		echo "<td class='center'>" . $LANG["setup"][113] . " </td><td>";
-		dropdownLanguages("language", $data["language"]);
-
-		echo "</td></tr>";		
-
 		if ($oncentral){
 
 			$nextprev_item = $data["nextprev_item"];
@@ -660,8 +679,11 @@ class Config extends CommonDBTM {
 		echo "<td class='center'>" . $LANG["setup"][111]."</td><td>";
 		dropdownInteger("list_limit",$data["list_limit"],5,200,5);
 		
-		echo "</td><td class='center'>&nbsp;</td><td>&nbsp;";
-		echo "</td></tr>";
+		echo "</td>";
+		echo "<td class='center'>" . $LANG["setup"][113] . " </td><td>";
+		dropdownLanguages("language", $data["language"]);
+
+		echo "</td></tr>";		
 
 		echo "<tr class='tab_bg_1'><td colspan='4' align='center'><strong>" . $LANG["title"][24] . "</strong></td></tr>";
 	
@@ -684,40 +706,16 @@ class Config extends CommonDBTM {
 			echo "<tr class='tab_bg_2'><td class='center'> " . $LANG["setup"][39] . " </td><td>";
 			dropdownYesNo("followup_private", $data["followup_private"]);
 			echo "</td><td colspan='2'>&nbsp;</td></tr>";
-		}
 	
-		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["setup"][114] . "</td><td colspan='3'>";
-		echo "<table><tr>";
-		echo "<td bgcolor='" . $data["priority_1"] . "'>1:<input type=\"text\" name=\"priority_1\" size='7' value=\"" . $data["priority_1"] . "\"></td>";
-		echo "<td bgcolor='" . $data["priority_2"] . "'>2:<input type=\"text\" name=\"priority_2\" size='7' value=\"" . $data["priority_2"] . "\"></td>";
-		echo "<td bgcolor='" . $data["priority_3"] . "'>3:<input type=\"text\" name=\"priority_3\" size='7' value=\"" . $data["priority_3"] . "\"></td>";
-		echo "<td bgcolor='" . $data["priority_4"] . "'>4:<input type=\"text\" name=\"priority_4\" size='7' value=\"" . $data["priority_4"] . "\"></td>";
-		echo "<td bgcolor='" . $data["priority_5"] . "'>5:<input type=\"text\" name=\"priority_5\" size='7' value=\"" . $data["priority_5"] . "\"></td>";
-		echo "</tr></table>";
-		echo "</td></tr>";
-
-		if ($oncentral){
-
-	
-			echo "<tr class='tab_bg_1'><td colspan='4' align='center'><strong>" . $LANG["setup"][147] . "</strong></td></tr>";
-		
-			echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["setup"][120] . " </td><td>";
-			dropdownYesNo("use_ajax", $data["use_ajax"]);
-			echo "</td>";
-		
-			echo "<td class='center'>" . $LANG["setup"][127] . " </td><td>";
-			dropdownYesNo("ajax_autocompletion", $data["ajax_autocompletion"]);
+			echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["setup"][114] . "</td><td colspan='3'>";
+			echo "<table><tr>";
+			echo "<td bgcolor='" . $data["priority_1"] . "'>1:<input type=\"text\" name=\"priority_1\" size='7' value=\"" . $data["priority_1"] . "\"></td>";
+			echo "<td bgcolor='" . $data["priority_2"] . "'>2:<input type=\"text\" name=\"priority_2\" size='7' value=\"" . $data["priority_2"] . "\"></td>";
+			echo "<td bgcolor='" . $data["priority_3"] . "'>3:<input type=\"text\" name=\"priority_3\" size='7' value=\"" . $data["priority_3"] . "\"></td>";
+			echo "<td bgcolor='" . $data["priority_4"] . "'>4:<input type=\"text\" name=\"priority_4\" size='7' value=\"" . $data["priority_4"] . "\"></td>";
+			echo "<td bgcolor='" . $data["priority_5"] . "'>5:<input type=\"text\" name=\"priority_5\" size='7' value=\"" . $data["priority_5"] . "\"></td>";
+			echo "</tr></table>";
 			echo "</td></tr>";
-		
-			echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["setup"][121] . "</td><td><input type=\"text\" size='1' name=\"ajax_wildcard\" value=\"" . $data["ajax_wildcard"] . "\"></td>";
-		
-			echo "<td class='center'>" . $LANG["setup"][122] . "</td><td>";
-			dropdownInteger('dropdown_max', $data["dropdown_max"], 0, 200);
-			echo "</td></tr>";
-		
-			echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["setup"][123] . "</td><td>";
-			dropdownInteger('ajax_limit_count', $data["ajax_limit_count"], 0, 200);
-			echo "</td><td colspan='2'>&nbsp;</td></tr>";
 	
 			echo "<tr class='tab_bg_1'><td colspan='4' align='center'><strong>" . $LANG["softwarecategories"][5] . "</strong></td></tr>";
 			echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["softwarecategories"][4]."</td><td>";

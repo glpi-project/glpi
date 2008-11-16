@@ -2228,7 +2228,7 @@ class Transfer extends CommonDBTM{
 				echo "</tr>";
 		}
 
-		if (!$use_cache||!($CFG_GLPI["cache"]->start($ID."_".$_SESSION["glpilanguage"],"GLPI_".$this->type))) {
+		if (!$use_cache||!($CFG_GLPI["cache"]->start($ID."_".$_SESSION['glpilanguage'],"GLPI_".$this->type))) {
 			if ($edit_form){
 				echo "<tr class='tab_bg_1'>";
 				echo "<td colspan='2'>".$LANG["common"][16].":	</td><td colspan='2'>";

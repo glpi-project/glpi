@@ -447,11 +447,11 @@ function getSearchOptions(){
 	$cache = new Cache_Lite_File($options);
 
 	// Set a id for this cache : $file
-	if (!($SEARCH_OPTION = $cache->get("OPTIONS","GLPI_SEARCH_".$_SESSION["glpilanguage"]))) {
+	if (!($SEARCH_OPTION = $cache->get("OPTIONS","GLPI_SEARCH_".$_SESSION['glpilanguage']))) {
 		// Cache miss !
 		// Put in $SEARCH_OPTION datas to put in cache
 		include (GLPI_ROOT . "/inc/search.constant.php");
-		$cache->save($SEARCH_OPTION,"OPTIONS","GLPI_SEARCH_".$_SESSION["glpilanguage"]);
+		$cache->save($SEARCH_OPTION,"OPTIONS","GLPI_SEARCH_".$_SESSION['glpilanguage']);
 	}
 	
 	$plugsearch=getPluginSearchOption();
@@ -943,8 +943,9 @@ function convDateTime($time) {
 	if (!isset($_SESSION["glpidateformat"])){
 		$_SESSION["glpidateformat"]=0;
 	}
+
 	
-	switch ($_SESSION["glpidateformat"]){
+	switch ($_SESSION['glpidateformat']){
 		case 1 : // DD-MM-YYYY
 			$date = substr($time,8,2)."-";        // day 
 			$date .= substr($time,5,2)."-";  // month
@@ -978,12 +979,11 @@ function convDate($time) {
 	global $CFG_GLPI;
 	if (is_null($time)) return $time;
 
-
 	if (!isset($_SESSION["glpidateformat"])){
 		$_SESSION["glpidateformat"]=0;
 	}
 
-	switch ($_SESSION["glpidateformat"]){
+	switch ($_SESSION['glpidateformat']){
 		case 1 : // DD-MM-YYYY
 			$date = substr($time,8,2)."-";        // day 
 			$date .= substr($time,5,2)."-";  // month
@@ -1033,7 +1033,7 @@ function formatNumber($number,$edit=false,$forcedecimal=-1) {
 	}
 
 	// Display : clean display
-	switch ($_SESSION["glpinumberformat"]){
+	switch ($_SESSION['glpinumberformat']){
 		case 2: // Other French
 			return number_format($number,$decimal,',',' ');
 			break;

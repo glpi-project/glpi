@@ -108,7 +108,7 @@ function dropdownValue($table,$myname,$value='',$display_comments=1,$entity_rest
 	}
 
 	$use_ajax=false;
-	if ($_SESSION["glpiuse_ajax"]){
+	if ($CFG_GLPI["use_ajax"]){
 		$nb=0;
 		if ($table=='glpi_entities' || in_array($table,$CFG_GLPI["specif_entities_tables"])){
 			if (!($entity_restrict<0)){
@@ -120,7 +120,7 @@ function dropdownValue($table,$myname,$value='',$display_comments=1,$entity_rest
 			$nb=countElementsInTable($table);
 		}
 		$nb -= count($used);
-		if ($nb>$_SESSION["glpiajax_limit_count"]){
+		if ($nb>$CFG_GLPI["ajax_limit_count"]){
 			$use_ajax=true;
 		}
 	}
@@ -210,7 +210,7 @@ function dropdownNetpoint($myname,$value=0,$location=-1,$display_comments=1,$ent
 	}
 	
 	$use_ajax=false;	
-	if ($_SESSION["glpiuse_ajax"]){
+	if ($CFG_GLPI["use_ajax"]){
 		if ($location < 0 || $devtype==NETWORKING_TYPE) {
 			$nb=countElementsInTableForEntity("glpi_dropdown_netpoint",$entity_restrict);
 		} else if ($location > 0) {
@@ -218,7 +218,7 @@ function dropdownNetpoint($myname,$value=0,$location=-1,$display_comments=1,$ent
 		} else {
 			$nb=countElementsInTable("glpi_dropdown_netpoint", "location=0 ".getEntitiesRestrictRequest(" AND ","glpi_dropdown_netpoint",'',$entity_restrict));
 		}
-		if ($nb>$_SESSION["glpiajax_limit_count"]){
+		if ($nb>$CFG_GLPI["ajax_limit_count"]){
 			$use_ajax=true;
 		}
 	}
@@ -401,13 +401,13 @@ function dropdownUsersSelect ($count=true, $right="all", $entity_restrict=-1, $v
 	if ($count) {
 		$query.= " WHERE $where ";
 	} else {
-		if (strlen($search)>0 && $search!=$_SESSION["glpiajax_wildcard"]){
+		if (strlen($search)>0 && $search!=$CFG_GLPI["ajax_wildcard"]){
 			$where.=" AND (glpi_users.name ".makeTextSearch($search)." OR glpi_users.realname ".makeTextSearch($search).
 				"  OR glpi_users.firstname ".makeTextSearch($search)." OR CONCAT(glpi_users.realname,' ',glpi_users.firstname) ".makeTextSearch($search).")";
 		}
 		$query .= " WHERE $where ORDER BY glpi_users.realname,glpi_users.firstname, glpi_users.name ";
-		if ($search != $_SESSION["glpiajax_wildcard"]) {
-			$query .= " LIMIT 0,".$_SESSION["glpidropdown_max"];
+		if ($search != $CFG_GLPI["ajax_wildcard"]) {
+			$query .= " LIMIT 0,".$CFG_GLPI["dropdown_max"];
 		}
 	}
 
@@ -439,10 +439,10 @@ function dropdownUsers($myname,$value,$right,$all=0,$display_comments=1,$entity_
 	$rand=mt_rand();
 
 	$use_ajax=false;
-	if ($_SESSION["glpiuse_ajax"]){
+	if ($CFG_GLPI["use_ajax"]){
 		$res=dropdownUsersSelect (true, $right, $entity_restrict, $value, $used);
 		$nb=($res ? $DB->result($res,0,"CPT") : 0);
-		if ($nb > $_SESSION["glpiajax_limit_count"]) {
+		if ($nb > $CFG_GLPI["ajax_limit_count"]) {
 			$use_ajax=true;
 		}
 	}
@@ -671,14 +671,14 @@ function dropdownUsersTracking($myname,$value,$field,$display_comments=1) {
 	$rand=mt_rand();
 
 	$use_ajax=false;
-	if ($_SESSION["glpiuse_ajax"]){
-		if ($_SESSION["glpiajax_limit_count"]==0){
+	if ($CFG_GLPI["use_ajax"]){
+		if ($CFG_GLPI["ajax_limit_count"]==0){
 			$use_ajax=true;
 		} else {
 			$query="SELECT COUNT(".$field.") FROM glpi_tracking ".getEntitiesRestrictRequest("WHERE","glpi_tracking");
 			$result=$DB->query($query);
 			$nb=$DB->result($result,0,0);
-			if ($nb>$_SESSION["glpiajax_limit_count"]){
+			if ($nb>$CFG_GLPI["ajax_limit_count"]){
 				$use_ajax=true;
 			}
 		}
@@ -1172,14 +1172,14 @@ function dropdownConnect($type,$fromtype,$myname,$entity_restrict=-1,$onlyglobal
 	$rand=mt_rand();
 
 	$use_ajax=false;
-	if ($_SESSION["glpiuse_ajax"]){
+	if ($CFG_GLPI["use_ajax"]){
 		$nb=0;
 		if ($entity_restrict>=0){
 			$nb=countElementsInTableForEntity($LINK_ID_TABLE[$type],$entity_restrict);
 		} else {
 			$nb=countElementsInTableForMyEntities($LINK_ID_TABLE[$type]);
 		}
-		if ($nb>$_SESSION["glpiajax_limit_count"]){
+		if ($nb>$CFG_GLPI["ajax_limit_count"]){
 			$use_ajax=true;
 		}
 	}
@@ -1313,8 +1313,8 @@ function dropdownSoftwareToInstall($myname,$entity_restrict,$massiveaction=0) {
 
 	$use_ajax=false;
 
-	if ($_SESSION["glpiuse_ajax"]){
-		if(countElementsInTableForEntity("glpi_software",$entity_restrict)>$_SESSION["glpiajax_limit_count"]){
+	if ($CFG_GLPI["use_ajax"]){
+		if(countElementsInTableForEntity("glpi_software",$entity_restrict)>$CFG_GLPI["ajax_limit_count"]){
 			$use_ajax=true;
 		}
 	}
@@ -1373,7 +1373,7 @@ function dropdownSoftwareVersions($myname,$sID,$value=0) {
 function autocompletionTextField($myname,$table,$field,$value='',$size=40,$entity_restrict=-1,$user_restrict=-1,$option=''){
 	global $CFG_GLPI;
 
-	if ($_SESSION["glpiuse_ajax"]&&$_SESSION["glpiajax_autocompletion"]){
+	if ($CFG_GLPI["use_ajax"]&&$CFG_GLPI["ajax_autocompletion"]){
 		$rand=mt_rand();
 		echo "<input $option id='textfield_$myname$rand' type='text' name='$myname' value=\"".cleanInputText($value)."\" size='$size'>\n";
 		echo "<script type='text/javascript' >\n";
@@ -2342,10 +2342,10 @@ function dropdownRules ($rule_type, $myname){
 	$limit_length=$_SESSION["glpidropdown_limit"];
 
 	$use_ajax=false;
-	if ($_SESSION["glpiuse_ajax"]){
+	if ($CFG_GLPI["use_ajax"]){
 		$nb=countElementsInTable("glpi_rules_descriptions", "rule_type=".$rule_type);
 		
-		if ($nb>$_SESSION["glpiajax_limit_count"]){
+		if ($nb>$CFG_GLPI["ajax_limit_count"]){
 			$use_ajax=true;
 		}
 	}

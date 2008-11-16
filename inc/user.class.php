@@ -43,6 +43,20 @@ if (!defined('GLPI_ROOT')) {
 class User extends CommonDBTM {
 
 	/**
+	* Compute preferences for the current user mixing config and user data
+	**/
+	function computePreferences (){
+		global $CFG_GLPI;
+		if (isset($this->fields['ID'])){
+			foreach ($CFG_GLPI['user_pref_field'] as $f){
+				if (is_null($this->fields[$f]) ){
+					$this->fields[$f]=$CFG_GLPI[$f];
+				}
+			}
+		}
+	}
+
+	/**
 	 * Constructor
 	**/
 	function __construct() {
@@ -180,12 +194,6 @@ class User extends CommonDBTM {
 			addMessageAfterRedirect($LANG["setup"][606]);
 			return false;
 		}
-
-		foreach ($CFG_GLPI['user_pref_field'] as $field){
-			if (!isset($input[$field]) && isset($CFG_GLPI[$field])){
-				$input[$field]=$CFG_GLPI[$field];
-			}
-		}
 		
 		if (isset ($input["password"])) {
 			if (empty ($input["password"])) {
@@ -261,7 +269,7 @@ class User extends CommonDBTM {
 	}
 
 	function prepareInputForUpdate($input) {
-		global  $LANG;
+		global  $LANG,$CFG_GLPI;
 
 
 		if (isset ($input["password"])&&empty($input["password"])) {
@@ -286,11 +294,19 @@ class User extends CommonDBTM {
 				$input["ID"] = $this->fields["ID"];
 		}
 
-		if (isset ($_SESSION["glpiID"]) && isset ($input["language"]) && $_SESSION["glpiID"] == $input['ID']) {
-			$_SESSION["glpilanguage"] = $input["language"];
-		}
+		
 		if (isset ($_SESSION["glpiID"]) && isset ($input["FK_entities"]) && $_SESSION["glpiID"] == $input['ID']) {
 			$_SESSION["glpidefault_entity"] = $input["FK_entities"];
+		}
+
+		// Manage preferences fields
+		if (isset ($_SESSION["glpiID"]) && isset ($input["language"]) && $_SESSION["glpiID"] == $input['ID']) {
+			foreach ($CFG_GLPI['user_pref_field'] as $f){
+				$_SESSION["glpi$f"] = $input[$f];
+				if (isset($input[$f]) && $input[$f] == $CFG_GLPI[$f]){
+					$input[$f]="NULL";
+				}
+			}
 		}
 
 		$this->syncLdapGroups($input);
@@ -310,11 +326,6 @@ class User extends CommonDBTM {
 		if (isset($_SESSION["glpiID"]) && $_SESSION["glpiID"] == $input['ID']) {
 			if (in_array('use_mode',$updates)){
 				$_SESSION['glpi_use_mode']=$input['use_mode'];
-			}
-			foreach ($CFG_GLPI['user_pref_field'] as $field){
-				if (in_array($field,$updates)){
-					$_SESSION["glpi$field"]=$input[$field];	
-				}
 			}
 		}
 
@@ -850,7 +861,7 @@ class User extends CommonDBTM {
 			} else
 				echo "<td colspan='2'>&nbsp;</td></tr>";
 
-			if (!$use_cache||!($CFG_GLPI["cache"]->start($ID . "_" . $_SESSION["glpilanguage"], "GLPI_" . $this->type))) {
+			if (!$use_cache||!($CFG_GLPI["cache"]->start($ID . "_" . $_SESSION['glpilanguage'], "GLPI_" . $this->type))) {
 				echo "<tr class='tab_bg_1'><td class='center'>" . $LANG["common"][48] . ":</td><td>";
 				autocompletionTextField("realname", "glpi_users", "realname", $this->fields["realname"], 40);
 				echo "</td>";
@@ -999,8 +1010,8 @@ class User extends CommonDBTM {
 
 
 			// No autocopletion : 
-			$save_autocompletion=$_SESSION["glpiajax_autocompletion"];
-			$_SESSION["glpiajax_autocompletion"]=false;
+			$save_autocompletion=$CFG_GLPI["ajax_autocompletion"];
+			$CFG_GLPI["ajax_autocompletion"]=false;
 			
 			echo "<div class='center'>";
 			echo "<form method='post' name=\"user_manager\" action=\"$target\"><table class='tab_cadre_fixe'>";
@@ -1105,7 +1116,7 @@ class User extends CommonDBTM {
 			echo "</tr>";
 
 			echo "</table></form></div>";
-			$_SESSION["glpiajax_autocompletion"]=$save_autocompletion;
+			$CFG_GLPI["ajax_autocompletion"]=$save_autocompletion;
 			return true;
 		}
 		

@@ -390,7 +390,7 @@ class CommonItem{
 		global $CFG_GLPI;
 		$toadd="";
 		if ($with_comments) $toadd="&nbsp;".$this->getComments();
-		if ($_SESSION["glpiview_ID"]){
+		if ($_SESSION['glpiview_ID']){
 			if ($this->device_type==0)
 				return $this->getName().$toadd;
 			else return $this->getName()." (".$this->id_device.")".$toadd;
@@ -427,7 +427,7 @@ class CommonItem{
 		global $LANG,$CFG_GLPI;
 		$comment="";
 
-		if (!($comment = $CFG_GLPI["cache"]->get("comments_".$this->id_device."_".$_SESSION["glpilanguage"],"GLPI_".$this->device_type))) {
+		if (!($comment = $CFG_GLPI["cache"]->get("comments_".$this->id_device."_".$_SESSION['glpilanguage'],"GLPI_".$this->device_type))) {
 			if ($tmp=$this->getField('serial')){
 				$comment.="<strong>".$LANG["common"][19].": "."</strong>".$tmp."<br>";
 			}
@@ -465,7 +465,7 @@ class CommonItem{
 			if ($tmp=$this->getField('contact_num')){
 				$comment.="<strong>".$LANG["common"][21].": "."</strong>".$tmp."<br>";
 			}
-			$CFG_GLPI["cache"]->save($comment,"comments_".$this->id_device."_".$_SESSION["glpilanguage"],"GLPI_".$this->device_type);
+			$CFG_GLPI["cache"]->save($comment,"comments_".$this->id_device."_".$_SESSION['glpilanguage'],"GLPI_".$this->device_type);
 		}
 
 		if (!empty($comment)){

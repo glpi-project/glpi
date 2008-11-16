@@ -347,12 +347,13 @@ class Identification {
 					$_SESSION["glpicrontimer"] = time();
 					// Default tab
 					$_SESSION['glpi_tab']=1;
+					$this->user->computePreferences();
 					foreach ($CFG_GLPI['user_pref_field'] as $field){
 						if (isset($this->user->fields[$field])){
 							$_SESSION["glpi$field"] = $this->user->fields[$field];
 						}
 					}
-								
+						
 					// glpiprofiles -> other available profile with link to the associated entities
 					doHook("init_session");
 		

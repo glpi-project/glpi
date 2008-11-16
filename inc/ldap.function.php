@@ -321,7 +321,7 @@ function showLdapGroups($target, $check, $start, $sync = 0,$filter='',$filter2='
 			printPager($start, $numrows, $target, $parameters);
 	
 			// delete end 
-			array_splice($ldap_groups, $start + $_SESSION["glpilist_limit"]);
+			array_splice($ldap_groups, $start + $_SESSION['glpilist_limit']);
 			// delete begin
 			if ($start > 0)
 				array_splice($ldap_groups, 0, $start);
@@ -502,7 +502,7 @@ function showLdapUsers($target, $check, $start, $sync = 0,$filter='') {
 			printPager($start, $numrows, $target, $parameters);
 	
 			// delete end 
-			array_splice($ldap_users, $start + $_SESSION["glpilist_limit"]);
+			array_splice($ldap_users, $start + $_SESSION['glpilist_limit']);
 			// delete begin
 			if ($start > 0)
 				array_splice($ldap_users, 0, $start);

@@ -57,7 +57,7 @@ function ajaxDropdown($use_ajax,$relativeurl,$params=array(),$default="&nbsp;",$
 				$oldpost=$_POST;
 			}
 			$_POST=$params;
-			$_POST["searchText"]=$_SESSION["glpiajax_wildcard"];
+			$_POST["searchText"]=$CFG_GLPI["ajax_wildcard"];
 			include (GLPI_ROOT.$relativeurl);
 			// Restore $_POST datas
 			if (count($oldpost)){
@@ -76,7 +76,7 @@ function ajaxDropdown($use_ajax,$relativeurl,$params=array(),$default="&nbsp;",$
 //		if (isset($params['value'])){
 //			unset($params['value']);
 //		}
-		$initparams["searchText"]=$_SESSION["glpiajax_wildcard"];
+		$initparams["searchText"]=$CFG_GLPI["ajax_wildcard"];
 		ajaxUpdateItemJsCode("results_$rand",$CFG_GLPI['root_doc'].$relativeurl,$initparams,true,"");
 	}
 	echo "};";
@@ -92,7 +92,7 @@ function ajaxDropdown($use_ajax,$relativeurl,$params=array(),$default="&nbsp;",$
  **/
 function ajaxDisplaySearchTextForDropdown($id,$size=4){
 	global $CFG_GLPI;
-	echo "<input type='text' ondblclick=\"this.value='".$_SESSION["glpiajax_wildcard"]."';\" id='search_$id' name='____data_$id' size='$size'>\n";
+	echo "<input type='text' ondblclick=\"this.value='".$CFG_GLPI["ajax_wildcard"]."';\" id='search_$id' name='____data_$id' size='$size'>\n";
 
 }
 

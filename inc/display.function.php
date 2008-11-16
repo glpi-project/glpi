@@ -91,8 +91,8 @@ function includeCommonHtmlHeader($title=''){
 	echo "<link rel='stylesheet' type='text/css' href='".$CFG_GLPI["root_doc"]."/lib/extjs/resources/ext-all.css' media='screen' >\n";
 	echo "<link rel='stylesheet' type='text/css' href='".$CFG_GLPI["root_doc"]."/lib/extjs/resources/ext-all-glpi.css' media='screen' >\n";
 
-	if (isset($_SESSION["glpilanguage"])){
-		echo "<script type=\"text/javascript\" src='".$CFG_GLPI["root_doc"]."/lib/extjs/locale/ext-lang-".$CFG_GLPI["languages"][$_SESSION["glpilanguage"]][2].".js'></script>\n";
+	if (isset($_SESSION['glpilanguage'])){
+		echo "<script type=\"text/javascript\" src='".$CFG_GLPI["root_doc"]."/lib/extjs/locale/ext-lang-".$CFG_GLPI["languages"][$_SESSION['glpilanguage']][2].".js'></script>\n";
 	}
 	// EXTRA EXTJS 
 	echo "<script type=\"text/javascript\" src='".$CFG_GLPI["root_doc"]."/lib/extrajs/datetime.js'></script>\n";
@@ -1730,14 +1730,19 @@ function printPagerForm ($action="") {
 		echo "<span>".$LANG["pager"][4]."&nbsp;</span>";
 		echo "<select name='glpilist_limit' onChange='reloadTab(\"glpilist_limit=\"+this.value)'>";		
 	}
+	if (isset($_SESSION['glpilist_limit'])){
+		$list_limit=$_SESSION['glpilist_limit'];
+	} else {
+		$list_limit=$CFG_GLPI['list_limit'];
+	}
 
-	for ($i=5;$i<20;$i+=5) echo "<option value='$i' ".((isset($_SESSION["glpilist_limit"])&&$_SESSION["glpilist_limit"]==$i)?" selected ":"").">$i</option>\n";
-	for ($i=20;$i<50;$i+=10) echo "<option value='$i' ".((isset($_SESSION["glpilist_limit"])&&$_SESSION["glpilist_limit"]==$i)?" selected ":"").">$i</option>\n";
-	for ($i=50;$i<250;$i+=50) echo "<option value='$i' ".((isset($_SESSION["glpilist_limit"])&&$_SESSION["glpilist_limit"]==$i)?" selected ":"").">$i</option>\n";
-	for ($i=250;$i<1000;$i+=250) echo "<option value='$i' ".((isset($_SESSION["glpilist_limit"])&&$_SESSION["glpilist_limit"]==$i)?" selected ":"").">$i</option>\n";
-	for ($i=1000;$i<5000;$i+=1000) echo "<option value='$i' ".((isset($_SESSION["glpilist_limit"])&&$_SESSION["glpilist_limit"]==$i)?" selected ":"").">$i</option>\n";
-	for ($i=5000;$i<=10000;$i+=5000) echo "<option value='$i' ".((isset($_SESSION["glpilist_limit"])&&$_SESSION["glpilist_limit"]==$i)?" selected ":"").">$i</option>\n";
-	echo "<option value='9999999' ".((isset($_SESSION["glpilist_limit"])&&$_SESSION["glpilist_limit"]==9999999)?" selected ":"").">9999999</option>\n";	
+	for ($i=5;$i<20;$i+=5) echo "<option value='$i' ".(($list_limit==$i)?" selected ":"").">$i</option>\n";
+	for ($i=20;$i<50;$i+=10) echo "<option value='$i' ".(($list_limit==$i)?" selected ":"").">$i</option>\n";
+	for ($i=50;$i<250;$i+=50) echo "<option value='$i' ".(($list_limit==$i)?" selected ":"").">$i</option>\n";
+	for ($i=250;$i<1000;$i+=250) echo "<option value='$i' ".(($list_limit==$i)?" selected ":"").">$i</option>\n";
+	for ($i=1000;$i<5000;$i+=1000) echo "<option value='$i' ".(($list_limit==$i)?" selected ":"").">$i</option>\n";
+	for ($i=5000;$i<=10000;$i+=5000) echo "<option value='$i' ".(($list_limit==$i)?" selected ":"").">$i</option>\n";
+	echo "<option value='9999999' ".(($list_limit==9999999)?" selected ":"").">9999999</option>\n";	
 
 	echo "</select><span>&nbsp;";
 	echo $LANG["pager"][5];
@@ -1764,26 +1769,27 @@ function printPager($start,$numrows,$target,$parameters,$item_type_output=0,$ite
 
 	global $CFG_GLPI, $LANG;
 
+	$list_limit=$_SESSION['glpilist_limit'];
 	// Forward is the next step forward
-	$forward = $start+$_SESSION["glpilist_limit"];
+	$forward = $start+$list_limit;
 
 	// This is the end, my friend	
-	$end = $numrows-$_SESSION["glpilist_limit"];
+	$end = $numrows-$list_limit;
 
 	// Human readable count starts here
 	$current_start=$start+1;
 
 	// And the human is viewing from start to end
-	$current_end = $current_start+$_SESSION["glpilist_limit"]-1;
+	$current_end = $current_start+$list_limit-1;
 	if ($current_end>$numrows) {
 		$current_end = $numrows;
 	}
 
 	// Backward browsing 
-	if ($current_start-$_SESSION["glpilist_limit"]<=0) {
+	if ($current_start-$list_limit<=0) {
 		$back=0;
 	} else {
-		$back=$start-$_SESSION["glpilist_limit"];
+		$back=$start-$list_limit;
 	}
 
 	// Print it
@@ -1873,26 +1879,27 @@ function printAjaxPager($title,$start,$numrows) {
 
 	global $CFG_GLPI, $LANG;
 
+	$list_limit=$_SESSION['glpilist_limit'];
 	// Forward is the next step forward
-	$forward = $start+$_SESSION["glpilist_limit"];
+	$forward = $start+$list_limit;
 
 	// This is the end, my friend	
-	$end = $numrows-$_SESSION["glpilist_limit"];
+	$end = $numrows-$list_limit;
 
 	// Human readable count starts here
 	$current_start=$start+1;
 
 	// And the human is viewing from start to end
-	$current_end = $current_start+$_SESSION["glpilist_limit"]-1;
+	$current_end = $current_start+$list_limit-1;
 	if ($current_end>$numrows) {
 		$current_end = $numrows;
 	}
 
 	// Backward browsing 
-	if ($current_start-$_SESSION["glpilist_limit"]<=0) {
+	if ($current_start-$list_limit<=0) {
 		$back=0;
 	} else {
-		$back=$start-$_SESSION["glpilist_limit"];
+		$back=$start-$list_limit;
 	}
 
 	// Print it
@@ -1992,7 +1999,7 @@ function showDateTimeFormItem($element,$value='',$time_step=-1,$maybeempty=true,
 		echo "},
 		";
 
-		switch ($_SESSION["glpidateformat"]){
+		switch ($_SESSION['glpidateformat']){
 			case 1:
 				echo "dateFormat: 'd-m-Y',
 				dateConfig: {
@@ -2053,7 +2060,7 @@ function showDateFormItem($element,$value='',$maybeempty=true,$can_edit=true,$mi
 		id: '_date$rand',
 		submitFormat:'Y-m-d',";
 
-		switch ($_SESSION["glpidateformat"]){
+		switch ($_SESSION['glpidateformat']){
 			case 1:
 				echo "format: 'd-m-Y',";
 				break;

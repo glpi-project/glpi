@@ -51,15 +51,15 @@ checkLoginUser();
 // Make a select box with preselected values
 if (!isset($_POST["limit"])) $_POST["limit"]=$_SESSION["glpidropdown_limit"];
 
-	if (strlen($_POST['searchText'])>0&&$_POST['searchText']!=$_SESSION["glpiajax_wildcard"]){
+	if (strlen($_POST['searchText'])>0&&$_POST['searchText']!=$CFG_GLPI["ajax_wildcard"]){
 		$where=" WHERE (glpi_dropdown_netpoint.name ".makeTextSearch($_POST['searchText'])." OR glpi_dropdown_locations.completename ".makeTextSearch($_POST['searchText']).")";
 	} else {
 		$where=" WHERE 1 ";		
 	}
 
-	$NBMAX=$_SESSION["glpidropdown_max"];
+	$NBMAX=$CFG_GLPI["dropdown_max"];
 	$LIMIT="LIMIT 0,$NBMAX";
-	if ($_POST['searchText']==$_SESSION["glpiajax_wildcard"]) $LIMIT="";
+	if ($_POST['searchText']==$CFG_GLPI["ajax_wildcard"]) $LIMIT="";
 
 	if (!(isset($_POST["devtype"]) && $_POST["devtype"]!=NETWORKING_TYPE && isset($_POST["location"]) && $_POST["location"]>0)) {
 		if (isset($_POST["entity_restrict"])&&$_POST["entity_restrict"]>=0){
@@ -98,7 +98,7 @@ if (!isset($_POST["limit"])) $_POST["limit"]=$_SESSION["glpidropdown_limit"];
 
 	echo "<select id='dropdown_".$_POST["myname"].$_POST["rand"]."' name=\"".$_POST['myname']."\" size='1'>";
 
-	if ($_POST['searchText']!=$_SESSION["glpiajax_wildcard"]&&$DB->numrows($result)==$NBMAX)
+	if ($_POST['searchText']!=$CFG_GLPI["ajax_wildcard"]&&$DB->numrows($result)==$NBMAX)
 		echo "<option value=\"0\">--".$LANG["common"][11]."--</option>";
 	else echo "<option value=\"0\">-----</option>";
 

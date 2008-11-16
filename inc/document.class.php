@@ -205,7 +205,7 @@ class Document extends CommonDBTM {
 			echo "</tr>\n";
 		}
 
-		if (!$use_cache||!($CFG_GLPI["cache"]->start($ID."_".$_SESSION["glpilanguage"],"GLPI_".$this->type))) {
+		if (!$use_cache||!($CFG_GLPI["cache"]->start($ID."_".$_SESSION['glpilanguage'],"GLPI_".$this->type))) {
 			echo "<tr class='tab_bg_1'><td>".$LANG["common"][16].":		</td>";
 			echo "<td>";
 			autocompletionTextField("name","glpi_docs","name",$this->fields["name"],80,$this->fields["FK_entities"]);

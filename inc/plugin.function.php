@@ -472,11 +472,11 @@ function pluginNewType($plugin,$name,$ID,$class,$table,$formpage='',$typename=''
 }
 
 function loadPluginLang($name){
-	global $CFG_GLPI,$LANG
-;
-	if (isset($_SESSION["glpilanguage"])
-		&&file_exists(GLPI_ROOT . "/plugins/$name/locales/".$CFG_GLPI["languages"][$_SESSION["glpilanguage"]][1])){
-		include_once (GLPI_ROOT . "/plugins/$name/locales/".$CFG_GLPI["languages"][$_SESSION["glpilanguage"]][1]);
+	global $CFG_GLPI,$LANG;
+
+	if (isset($_SESSION['glpilanguage']) 
+		&&file_exists(GLPI_ROOT . "/plugins/$name/locales/".$CFG_GLPI["languages"][$_SESSION['glpilanguage']][1])){
+		include_once (GLPI_ROOT . "/plugins/$name/locales/".$CFG_GLPI["languages"][$_SESSION['glpilanguage']][1]);
 	} else if (file_exists(GLPI_ROOT . "/plugins/$name/locales/".$CFG_GLPI["languages"][$CFG_GLPI["language"]][1])){
 		include_once (GLPI_ROOT . "/plugins/$name/locales/".$CFG_GLPI["languages"][$CFG_GLPI["language"]][1]);
 	} else if (file_exists(GLPI_ROOT . "/plugins/$name/locales/en_GB.php")){

@@ -292,7 +292,7 @@ class Software extends CommonDBTM {
 			echo "&nbsp;&nbsp;&nbsp;(" . $LANG["common"][13] . ": " . $this->fields['tplname'] . ")";
 		echo "</th></tr>";
 
-		if (!$use_cache||!($CFG_GLPI["cache"]->start($ID . "_" . $_SESSION["glpilanguage"], "GLPI_" . $this->type))) {
+		if (!$use_cache||!($CFG_GLPI["cache"]->start($ID . "_" . $_SESSION['glpilanguage'], "GLPI_" . $this->type))) {
 			echo "<tr class='tab_bg_1'><td>" . $LANG["common"][16] . ":		</td>";
 			echo "<td>";
 			autocompletionTextField("name", "glpi_software", "name", $this->fields["name"], 40,$this->fields["FK_entities"]);

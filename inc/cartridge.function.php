@@ -143,6 +143,7 @@ function showCartridges ($tID,$show_old=0) {
 	$query = "SELECT glpi_cartridges.*, glpi_printers.ID as printID, glpi_printers.name as printname, glpi_printers.initial_pages as initial_pages FROM glpi_cartridges LEFT JOIN glpi_printers ON (glpi_cartridges.FK_glpi_printers = glpi_printers.ID) WHERE (glpi_cartridges.FK_glpi_cartridges_type = '$tID') $where ORDER BY $ORDER";
 
 	$pages=array();
+
 	if ($result = $DB->query($query)) {			
 		$number=$DB->numrows($result);
 		while ($data=$DB->fetch_array($result)) {
@@ -164,7 +165,7 @@ function showCartridges ($tID,$show_old=0) {
 			if (!is_null($date_use)){
 				if ($data["printID"]>0){
 				echo "<a href='".$CFG_GLPI["root_doc"]."/front/printer.form.php?ID=".$data["printID"]."'><strong>".$data["printname"];
-				if ($_SESSION["glpiview_ID"]){
+				if ($_SESSION['glpiview_ID']){
 					echo " (".$data["printID"].")";
 				}
 				echo "</strong></a>";

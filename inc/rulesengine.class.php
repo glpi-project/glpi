@@ -241,7 +241,7 @@ class RuleCollection {
 		if ($start >= $nb) {
 			$start = 0;
 		}
-		$limit = $_SESSION["glpilist_limit"];
+		$limit = $_SESSION['glpilist_limit'];
 
 		$this->getCollectionPart($start,$limit);
 		

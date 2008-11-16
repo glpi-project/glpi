@@ -254,10 +254,10 @@ function showKbItemList($target,$contains,$start,$parentID,$faq=0){
 	// Get it from database	
 	if ($result = $DB->query($query)) {
 		$numrows =  $DB->numrows($result);
-
+		$list_limit=$_SESSION['glpilist_limit'];
 		// Limit the result, if no limit applies, use prior result
-		if ($numrows > $_SESSION["glpilist_limit"]&&!isset($_GET['export_all'])) {
-			$query_limit = $query ." LIMIT $start,".$_SESSION["glpilist_limit"]." ";
+		if ($numrows > $list_limit&&!isset($_GET['export_all'])) {
+			$query_limit = $query ." LIMIT $start,".$list_limit." ";
 			$result_limit = $DB->query($query_limit);
 			$numrows_limit = $DB->numrows($result_limit);
 		} else {
@@ -503,7 +503,7 @@ function ShowKbItemFull($ID,$linkauthor=true){
 		
 		echo $LANG["common"][36].": <a href='".$CFG_GLPI["root_doc"]."/front/".(isset($_SESSION['glpiactiveprofile'])&&$_SESSION['glpiactiveprofile']['interface']=="central"?"knowbase.php":"helpdesk.faq.php")."?parentID=$categoryID'>".$fullcategoryname."</a></th></tr>";
 	
-		if (!($CFG_GLPI["cache"]->start($ID."_".$_SESSION["glpilanguage"],"GLPI_".$ki->type))) {
+		if (!($CFG_GLPI["cache"]->start($ID."_".$_SESSION['glpilanguage'],"GLPI_".$ki->type))) {
 		
 			echo "<tr class='tab_bg_3'><td class='left' colspan='2'><h2>";
 			echo ($ki->fields["faq"]) ? "".$LANG["knowbase"][3]."" : "".$LANG["knowbase"][14]."";

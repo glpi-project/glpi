@@ -284,7 +284,7 @@ class Printer  extends CommonDBTM {
 			echo "&nbsp;&nbsp;&nbsp;(".$LANG["common"][13].": ".$this->fields['tplname'].")";
 		echo "</th></tr>\n";
 
-		if (!$use_cache||!($CFG_GLPI["cache"]->start($ID."_".$_SESSION["glpilanguage"],"GLPI_".$this->type))) {
+		if (!$use_cache||!($CFG_GLPI["cache"]->start($ID."_".$_SESSION['glpilanguage'],"GLPI_".$this->type))) {
 			echo "<tr><td class='tab_bg_1' valign='top'>\n";
 
 			// table identification

@@ -67,12 +67,12 @@ if (isset($_POST['used'])) {
 	}
 }
 
-if ($_POST['searchText']!=$_SESSION["glpiajax_wildcard"])
+if ($_POST['searchText']!=$CFG_GLPI["ajax_wildcard"])
 	$where.=" AND glpi_docs.name ".makeTextSearch($_POST['searchText']);
 
-$NBMAX=$_SESSION["glpidropdown_max"];
+$NBMAX=$CFG_GLPI["dropdown_max"];
 $LIMIT="LIMIT 0,$NBMAX";
-if ($_POST['searchText']==$_SESSION["glpiajax_wildcard"]) $LIMIT="";
+if ($_POST['searchText']==$CFG_GLPI["ajax_wildcard"]) $LIMIT="";
 
 
 $query = "SELECT * FROM glpi_docs $where ORDER BY FK_entities, name $LIMIT";

@@ -55,6 +55,7 @@ $user = new User();
 
 			$config = new Config();
 			$user->getFromDB($_SESSION["glpiID"]);
+			$user->computePreferences();
 			$config->showFormUserPrefs($_POST['target'],$user->fields);
 			break;
 		default :

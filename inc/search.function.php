@@ -509,7 +509,7 @@ function showList ($type,$params){
 	if (isset($CFG_GLPI["union_search_type"][$type])){
 		$itemtable=$CFG_GLPI["union_search_type"][$type];
 	}
-	$LIST_LIMIT=$_SESSION["glpilist_limit"];
+	$LIST_LIMIT=$_SESSION['glpilist_limit'];
 
 	// Set display type for export if define
 	$output_type=HTML_OUTPUT;
