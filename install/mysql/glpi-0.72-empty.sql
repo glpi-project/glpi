@@ -1,4 +1,4 @@
-#GLPI Dump database on 2008-10-28 22:22
+#GLPI Dump database on 2008-11-16 17:14
 
 ### Dump table glpi_alerts
 
@@ -1511,7 +1511,7 @@ CREATE TABLE `glpi_event_log` (
   KEY `itemtype` (`itemtype`)
 ) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-INSERT INTO glpi_event_log VALUES ('3','-1','system','2008-10-28 22:22:45','login','3','glpi IP connection : 127.0.0.1');
+INSERT INTO glpi_event_log VALUES ('3','-1','system','2008-11-16 17:14:46','login','3','glpi IP connection : 127.0.0.1');
 
 ### Dump table glpi_followups
 
@@ -2079,10 +2079,8 @@ CREATE TABLE `glpi_plugins` (
   `homepage` varchar(255) collate utf8_unicode_ci default NULL,
   PRIMARY KEY  (`ID`),
   UNIQUE KEY `name` (`directory`)
-) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-INSERT INTO glpi_plugins VALUES ('1','room','Salles','2.0','2','Julien Dombre','http://glpi-projedct.org');
-INSERT INTO glpi_plugins VALUES ('2','example','Plugin Example','0.1.0','2','Julien Dombre','http://glpi-project.org');
 
 ### Dump table glpi_printers
 
@@ -2621,8 +2619,8 @@ INSERT INTO glpi_rules_ldap_parameters VALUES ('7','(LDAP)Telephone Number','pho
 INSERT INTO glpi_rules_ldap_parameters VALUES ('8','(LDAP)Employee Number','employeenumber','1');
 INSERT INTO glpi_rules_ldap_parameters VALUES ('9','(LDAP)Manager','manager','1');
 INSERT INTO glpi_rules_ldap_parameters VALUES ('10','(LDAP)DistinguishedName','dn','1');
-INSERT INTO glpi_rules_ldap_parameters VALUES ('11','(AD)User ID','samaccountname','1');
-INSERT INTO glpi_rules_ldap_parameters VALUES ('12','(LDAP) Title','title','1');
+INSERT INTO glpi_rules_ldap_parameters VALUES ('12','(AD)User ID','samaccountname','1');
+INSERT INTO glpi_rules_ldap_parameters VALUES ('13','(LDAP) Title','title','1');
 
 ### Dump table glpi_software
 
@@ -2682,6 +2680,8 @@ CREATE TABLE `glpi_softwarelicenses` (
   `oem_computer` int(11) NOT NULL default '0',
   `comments` text collate utf8_unicode_ci,
   PRIMARY KEY  (`ID`),
+  KEY `name` (`name`),
+  KEY `type` (`type`),
   KEY `sID` (`sID`),
   KEY `buy_version` (`buy_version`),
   KEY `use_version` (`use_version`),
@@ -2700,7 +2700,8 @@ CREATE TABLE `glpi_softwareversions` (
   `name` varchar(255) collate utf8_unicode_ci default NULL,
   `comments` text collate utf8_unicode_ci,
   PRIMARY KEY  (`ID`),
-  KEY `sID` (`sID`)
+  KEY `sID` (`sID`),
+  KEY `name` (`name`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
@@ -3029,7 +3030,7 @@ CREATE TABLE `glpi_users` (
   KEY `active` (`active`)
 ) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-INSERT INTO glpi_users VALUES ('2','glpi','','41ece51526515624ff89973668497d00','','','','','',NULL,'0','1','fr_FR','0','20','1',NULL,'-1','1','2008-10-28 22:22:45','2007-09-29 15:51:43','0','0','0','0','0','0','0','0','50','0','10','name','0','#fff2f2','#ffe0e0','#ffcece','#ffbfbf','#ffadad','0','1','*','100','50','1','1','0');
+INSERT INTO glpi_users VALUES ('2','glpi','','41ece51526515624ff89973668497d00','','','','','',NULL,'0','1','fr_FR','0','20','1',NULL,'-1','1','2008-11-16 17:14:46','2007-09-29 15:51:43','0','0','0','0','0','0','0','0','50','0','10','name','0','#fff2f2','#ffe0e0','#ffcece','#ffbfbf','#ffadad','0','1','*','100','50','1','1','0');
 INSERT INTO glpi_users VALUES ('3','post-only','*5683D7F638D6598D057638B1957F194E4CA974FB','3177926a7314de24680a9938aaa97703','','','','','',NULL,'0','0','en_GB','0','20','1',NULL,'-1','-1',NULL,NULL,'0','0','0','0','0','0','0','0','50','0','10','name','0','#fff2f2','#ffe0e0','#ffcece','#ffbfbf','#ffadad','0','1','*','100','50','1','1','0');
 INSERT INTO glpi_users VALUES ('4','tech','*B09F1B2C210DEEA69C662977CC69C6C461965B09','d9f9133fb120cd6096870bc2b496805b','','','','','',NULL,'0','1','fr_FR','0','20','1',NULL,'-1','-1',NULL,NULL,'0','0','0','0','0','0','0','0','50','0','10','name','0','#fff2f2','#ffe0e0','#ffcece','#ffbfbf','#ffadad','0','1','*','100','50','1','1','0');
 INSERT INTO glpi_users VALUES ('5','normal','*F3F91B23FC1DB728B49B1F22DEE3D7A839E10F0E','fea087517c26fadd409bd4b9dc642555','','','','','',NULL,'0','0','en_GB','0','20','1',NULL,'-1','-1',NULL,NULL,'0','0','0','0','0','0','0','0','50','0','10','name','0','#fff2f2','#ffe0e0','#ffcece','#ffbfbf','#ffadad','0','1','*','100','50','1','1','0');
