@@ -514,7 +514,7 @@ function update0713to072() {
 		}
 		
 		$query = "ALTER TABLE `glpi_device_gfxcard` DROP `interface` ";
-		$DB->query($query) or die("0.7 alter $table drop tmp enum field " . $LANG["update"][90] . $DB->error());
+		$DB->query($query) or die("0.72 alter $table drop tmp enum field " . $LANG["update"][90] . $DB->error());
 	}
 
 	if (!FieldExists("glpi_config","existing_auth_server_field_clean_domain")) {
@@ -724,7 +724,7 @@ function update0713to072() {
 	// INDEX key order change 
 	if (isIndex("glpi_contract_device", "FK_contract")) {
 		$query = "ALTER TABLE `glpi_contract_device` DROP INDEX `FK_contract`";
-		$DB->query($query) or die("0.7 drop index FK_contract on glpi_contract_device " . $LANG["update"][90] . $DB->error());
+		$DB->query($query) or die("0.72 drop index FK_contract on glpi_contract_device " . $LANG["update"][90] . $DB->error());
 	}
 	if (!isIndex("glpi_contract_device", "FK_contract_device")) {
 		$query = "ALTER TABLE `glpi_contract_device` ADD UNIQUE INDEX `FK_contract_device` (`FK_contract` , `device_type`, `FK_device` ) ;";
@@ -733,7 +733,7 @@ function update0713to072() {
 
 	if (isIndex("glpi_doc_device", "FK_doc")) {
 		$query = "ALTER TABLE `glpi_doc_device` DROP INDEX `FK_doc`";
-		$DB->query($query) or die("0.7 drop index FK_doc on glpi_doc_device " . $LANG["update"][90] . $DB->error());
+		$DB->query($query) or die("0.72 drop index FK_doc on glpi_doc_device " . $LANG["update"][90] . $DB->error());
 	}
 	if (!isIndex("glpi_doc_device", "FK_doc_device")) {
 		$query = "ALTER TABLE `glpi_doc_device` ADD UNIQUE INDEX `FK_doc_device` (`FK_doc` , `device_type`, `FK_device` ) ;";
@@ -764,5 +764,126 @@ function update0713to072() {
 	}
 	displayMigrationMessage("072"); // End
 	
+
+	//// Clean DB
+	if (isIndex("glpi_alerts", "item") && isIndex("glpi_alerts", "alert")) {
+		$query = "ALTER TABLE `glpi_alerts` DROP INDEX `item`";
+		$DB->query($query) or die("0.72 drop item index on glpi_alerts " . $LANG["update"][90] . $DB->error());
+	}
+	if (isIndex("glpi_alerts", "device_type") && isIndex("glpi_alerts", "alert")) {
+		$query = "ALTER TABLE `glpi_alerts` DROP INDEX `device_type`";
+		$DB->query($query) or die("0.72 drop device_type index on glpi_alerts " . $LANG["update"][90] . $DB->error());
+	}
+
+
+	if (isIndex("glpi_cartridges_assoc", "FK_glpi_type_printer_2") && isIndex("glpi_cartridges_assoc", "FK_glpi_type_printer")) {
+		$query = "ALTER TABLE `glpi_cartridges_assoc` DROP INDEX `FK_glpi_type_printer_2`";
+		$DB->query($query) or die("0.72 drop FK_glpi_type_printer_2 index on glpi_cartridges_assoc " . $LANG["update"][90] . $DB->error());
+	}
+	if (isIndex("glpi_computer_device", "device_type") && isIndex("glpi_computer_device", "device_type_2")) {
+		$query = "ALTER TABLE `glpi_computer_device` DROP INDEX `device_type`";
+		$DB->query($query) or die("0.72 drop device_type index on glpi_computer_device " . $LANG["update"][90] . $DB->error());
+
+		$query = "ALTER TABLE `glpi_computer_device` DROP INDEX `device_type_2` ,
+					ADD INDEX `device_type` ( `device_type` , `FK_device` ) ";
+		$DB->query($query) or die("0.72 rename device_type_2 index on glpi_computer_device " . $LANG["update"][90] . $DB->error());
+	}
+
+	if (isIndex("glpi_connect_wire", "end1") && isIndex("glpi_connect_wire", "end1_1")) {
+		$query = "ALTER TABLE `glpi_connect_wire` DROP INDEX `end1`";
+		$DB->query($query) or die("0.72 drop end1 index on glpi_connect_wire " . $LANG["update"][90] . $DB->error());
+
+		$query = "ALTER TABLE `glpi_connect_wire` DROP INDEX `end1_1` ,
+					ADD UNIQUE `connect` ( `end1` , `end2` , `type` )  ";
+		$DB->query($query) or die("0.72 rename end1_1 index on glpi_connect_wire " . $LANG["update"][90] . $DB->error());
+	}
+
+	if (isIndex("glpi_contract_enterprise", "FK_enterprise") && isIndex("glpi_contract_enterprise", "FK_enterprise_2")) {
+		$query = "ALTER TABLE `glpi_contract_enterprise` DROP INDEX `FK_enterprise_2`";
+		$DB->query($query) or die("0.72 drop FK_enterprise_2 index on glpi_contract_enterprise " . $LANG["update"][90] . $DB->error());
+	}
+	if (isIndex("glpi_contact_enterprise", "FK_enterprise") && isIndex("glpi_contact_enterprise", "FK_enterprise_2")) {
+		$query = "ALTER TABLE `glpi_contact_enterprise` DROP INDEX `FK_enterprise_2`";
+		$DB->query($query) or die("0.72 drop FK_enterprise_2 index on glpi_contact_enterprise " . $LANG["update"][90] . $DB->error());
+	}	
+	if (isIndex("glpi_contract_device", "FK_contract_2") && isIndex("glpi_contract_device", "FK_contract_device")) {
+		$query = "ALTER TABLE `glpi_contract_device` DROP INDEX `FK_contract_2`  ";
+		$DB->query($query) or die("0.72 drop FK_contract_2 index on glpi_contract_device " . $LANG["update"][90] . $DB->error());
+	}	
+
+	if (isIndex("glpi_display", "type") && isIndex("glpi_display", "type_2")) {
+		$query = "ALTER TABLE `glpi_display` DROP INDEX `type`  ";
+		$DB->query($query) or die("0.72 drop type index on glpi_display " . $LANG["update"][90] . $DB->error());
+
+		$query = " ALTER TABLE `glpi_display` DROP INDEX `type_2` ,
+				ADD UNIQUE `display` ( `type` , `num` , `FK_users` ) ";
+		$DB->query($query) or die("0.72 rename type_2 index on glpi_display " . $LANG["update"][90] . $DB->error());
+	} 
+	if (isIndex("glpi_doc_device", "FK_doc_2") && isIndex("glpi_doc_device", "FK_doc_device")) {
+		$query = "ALTER TABLE `glpi_doc_device` DROP INDEX `FK_doc_2`";
+		$DB->query($query) or die("0.72 drop FK_doc_2 index on glpi_doc_device " . $LANG["update"][90] . $DB->error());
+	}
+	if (isIndex("glpi_links_device", "device_type") && isIndex("glpi_links_device", "device_type_2")) {
+		$query = "ALTER TABLE `glpi_links_device` DROP INDEX `device_type`";
+		$DB->query($query) or die("0.72 drop device_type index on glpi_links_device " . $LANG["update"][90] . $DB->error());
+
+		$query = "ALTER TABLE `glpi_links_device` DROP INDEX `device_type_2` ,
+				ADD UNIQUE `link` ( `device_type` , `FK_links` ) ";
+		$DB->query($query) or die("0.72 rename device_type_2 index on glpi_links_device " . $LANG["update"][90] . $DB->error());
+	}  	 
+	if (isIndex("glpi_mailing", "item_type") && isIndex("glpi_mailing", "items")) {
+		$query = "ALTER TABLE `glpi_mailing` DROP INDEX `item_type`";
+		$DB->query($query) or die("0.72 drop item_type index on glpi_mailing " . $LANG["update"][90] . $DB->error());
+	}	
+
+	if (isIndex("glpi_mailing", "type") && isIndex("glpi_mailing", "mailings")) {
+		$query = "ALTER TABLE `glpi_mailing` DROP INDEX `type`";
+		$DB->query($query) or die("0.72 drop type index on glpi_mailing " . $LANG["update"][90] . $DB->error());
+	}	
+
+	if (isIndex("glpi_networking_ports", "on_device_2") && isIndex("glpi_networking_ports", "on_device")) {
+		$query = "ALTER TABLE `glpi_networking_ports` DROP INDEX `on_device_2`";
+		$DB->query($query) or die("0.72 drop on_device_2 index on glpi_networking_ports " . $LANG["update"][90] . $DB->error());
+	}
+	if (isIndex("glpi_networking_vlan", "FK_port") && isIndex("glpi_networking_vlan", "FK_port_2")) {
+		$query = "ALTER TABLE `glpi_networking_vlan` DROP INDEX `FK_port`";
+		$DB->query($query) or die("0.72 drop FK_port index on glpi_networking_vlan " . $LANG["update"][90] . $DB->error());
+
+		$query = " ALTER TABLE `glpi_networking_vlan` DROP INDEX `FK_port_2` ,
+				ADD UNIQUE `portvlan` ( `FK_port` , `FK_vlan` ) ";
+		$DB->query($query) or die("0.72 rename FK_port_2 index on glpi_networking_vlan " . $LANG["update"][90] . $DB->error());
+	} 	 
+	if (isIndex("glpi_networking_wire", "end1") && isIndex("glpi_networking_wire", "end1_1")) {
+		$query = "ALTER TABLE `glpi_networking_wire` DROP INDEX `end1`";
+		$DB->query($query) or die("0.72 drop end1 index on glpi_networking_wire " . $LANG["update"][90] . $DB->error());
+
+		$query = " ALTER TABLE `glpi_networking_wire` DROP INDEX `end1_1` ,
+				ADD UNIQUE `netwire` ( `end1` , `end2` ) ";
+		$DB->query($query) or die("0.72 rename end1_1 index on glpi_networking_wire " . $LANG["update"][90] . $DB->error());
+	}
+	if (isIndex("glpi_reservation_item", "device_type") && isIndex("glpi_reservation_item", "device_type_2")) {
+		$query = "ALTER TABLE `glpi_reservation_item` DROP INDEX `device_type`";
+		$DB->query($query) or die("0.72 drop device_type index on glpi_reservation_item " . $LANG["update"][90] . $DB->error());
+
+		$query = " ALTER TABLE `glpi_reservation_item` DROP INDEX `device_type_2` ,
+				ADD INDEX `reservationitem` ( `device_type` , `id_device` )";
+		$DB->query($query) or die("0.72 rename device_type_2 index on glpi_reservation_item " . $LANG["update"][90] . $DB->error());
+	}	
+
+	if (isIndex("glpi_users_groups", "FK_users") && isIndex("glpi_users_groups", "FK_users_2")) {
+		$query = "ALTER TABLE `glpi_users_groups` DROP INDEX `FK_users_2`";
+		$DB->query($query) or die("0.72 drop FK_users_2 index on glpi_users_groups " . $LANG["update"][90] . $DB->error());
+
+		$query = "ALTER TABLE `glpi_users_groups` DROP INDEX `FK_users` ,
+				ADD UNIQUE `usergroup` ( `FK_users` , `FK_groups` )";
+		$DB->query($query) or die("0.72 rename FK_users index on glpi_users_groups " . $LANG["update"][90] . $DB->error());
+	}	
+
+	
+  
+ 
+
+	
+
 } // fin 0.72 #####################################################################################
 ?>
