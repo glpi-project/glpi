@@ -631,6 +631,18 @@ function update0713to072() {
 		$query="ALTER TABLE `glpi_users` ADD `dateformat` SMALLINT NULL DEFAULT NULL;";
 		$DB->query($query) or die("0.72 add dateformat in users" . $LANG["update"][90] . $DB->error());
 	}
+
+	if (FieldExists("glpi_users","list_limit")){
+		$query=" ALTER TABLE `glpi_users` CHANGE `list_limit` `list_limit` INT( 11 ) NULL DEFAULT NULL;";
+		$DB->query($query) or die("0.72 alter list_limit in users" . $LANG["update"][90] . $DB->error());
+	}
+
+	if (FieldExists("glpi_users","tracking_order")){
+		$query=" ALTER TABLE `glpi_users` CHANGE `tracking_order` `tracking_order` SMALLINT( 6 ) NULL DEFAULT NULL;";
+		$DB->query($query) or die("0.72 alter tracking_order in users" . $LANG["update"][90] . $DB->error());
+	}
+  
+
 	
 	if (!FieldExists("glpi_users","numberformat")){
 		$query="ALTER TABLE `glpi_users` ADD `numberformat` SMALLINT NULL DEFAULT NULL;";
