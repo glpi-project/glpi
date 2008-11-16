@@ -161,6 +161,8 @@ function update0713to072() {
 				`oem_computer` int(11) NOT NULL default '0',
 				`comments` text,
 				PRIMARY KEY  (`ID`),
+				KEY `name` (`name`),
+				KEY `type` (`type`),
 				KEY `sID` (`sID`),
 				KEY `buy_version` (`buy_version`),
 				KEY `use_version` (`use_version`),
@@ -316,6 +318,12 @@ function update0713to072() {
 		$query="ALTER TABLE `glpi_softwareversions` ADD `comments` TEXT NULL ;";
 		$DB->query($query) or die("0.72 add comments to softwareversion table" . $LANG["update"][90] . $DB->error());
 	}	
+
+	if (!isIndex("glpi_softwareversions", "name")) {
+		$query="ALTER TABLE `glpi_softwareversions` ADD INDEX `name` ( `name` )  ";
+		$DB->query($query) or die("0.72 add index on name to softwareversion table" . $LANG["update"][90] . $DB->error());
+	}	
+ 	
 
 	if (!TableExists("glpi_dropdown_licensetypes")) {
 		$query="CREATE TABLE `glpi_dropdown_licensetypes` (
