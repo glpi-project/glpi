@@ -85,7 +85,7 @@ function showInfocomEnterprise($instID) {
 			$result_linked=$DB->query($query);
 			$nb=$DB->numrows($result_linked);
 			$ci->setType($type);
-			if ($nb>$_SESSION["glpilist_limit"] && isset($SEARCH_PAGES["$type"])) {
+			if ($nb>$_SESSION['glpilist_limit'] && isset($SEARCH_PAGES["$type"])) {
 				
 				echo "<tr class='tab_bg_1'>";
 				echo "<td class='center'>".$ci->getType()."<br />$nb</td>";

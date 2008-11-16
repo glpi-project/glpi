@@ -176,7 +176,7 @@ function showDeviceContract($instID) {
 
 			$result_linked=$DB->query($query);
 			$nb=$DB->numrows($result_linked);
-			if ($nb>$_SESSION["glpilist_limit"] && isset($SEARCH_PAGES["$type"])) {
+				if ($nb>$_SESSION['glpilist_limit'] && isset($SEARCH_PAGES["$type"])) {
 				$ci->setType($type);
 				
 				echo "<tr class='tab_bg_1'>";

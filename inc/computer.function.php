@@ -113,7 +113,7 @@ function showDeviceComputerForm($target,$ID,$withtemplate='') {
 
 	if (!empty($ID)){
 		//print devices.
-		if (!($CFG_GLPI["cache"]->start("device_".$ID."_".$_SESSION["glpilanguage"],"GLPI_".COMPUTER_TYPE))) {
+		if (!($CFG_GLPI["cache"]->start("device_".$ID."_".$_SESSION['glpilanguage'],"GLPI_".COMPUTER_TYPE))) {
 			echo "<div class='center'>";
 			echo "<form name='form_device_action' action=\"$target\" method=\"post\" >";
 			echo "<input type='hidden' name='ID' value='$ID'>";	

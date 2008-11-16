@@ -139,7 +139,7 @@ class kbitem extends CommonDBTM {
 			echo "<script type=\"text/javascript\" src=\"".$CFG_GLPI["root_doc"]."/lib/tiny_mce/tiny_mce.js\"></script>";
 			echo "<script language=\"javascript\" type=\"text/javascript\">";
 			echo "tinyMCE.init({	
-				language : \"".$CFG_GLPI["languages"][$_SESSION["glpilanguage"]][3]."\",  
+				language : \"".$CFG_GLPI["languages"][$_SESSION['glpilanguage']][3]."\",  
 				mode : \"exact\",  
 				elements: \"answer\", 
 				plugins : \"table\", 

@@ -190,7 +190,7 @@ function showHistory($device_type,$id_device){
 	printAjaxPager($LANG["title"][38],$start,$number);
 
 	$query="SELECT * FROM glpi_history WHERE FK_glpi_device='".$id_device."' AND device_type='".$device_type.
-		"' ORDER BY  ID DESC LIMIT $start," . $_SESSION["glpilist_limit"];
+		"' ORDER BY  ID DESC LIMIT $start," . $_SESSION['glpilist_limit'];
 
 	//echo $query;
 
@@ -592,7 +592,7 @@ function showEvents($target,$order,$sort,$start=0) {
 	// Query Database
 	$query = "SELECT * FROM glpi_event_log ORDER BY $sort $order";
 
-	$query_limit = "SELECT * FROM glpi_event_log ORDER BY $sort $order LIMIT $start,".$_SESSION["glpilist_limit"];
+	$query_limit = "SELECT * FROM glpi_event_log ORDER BY $sort $order LIMIT $start,".$_SESSION['glpilist_limit'];
 	// Get results
 	$result = $DB->query($query);
 

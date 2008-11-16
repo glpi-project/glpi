@@ -197,7 +197,7 @@ function showCentralJobList($target,$start,$status="process",$showgrouptickets=t
 		}
 	}
 
-	$lim_query = " LIMIT ".$start.",".$_SESSION["glpilist_limit"]."";	
+	$lim_query = " LIMIT ".$start.",".$_SESSION['glpilist_limit'];	
 
 	$result = $DB->query($query);
 	$numrows = $DB->numrows($result);
@@ -1520,7 +1520,7 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$to
 				$DB->data_seek($result,$i);
 			}
 
-			$end_display=$start+$_SESSION["glpilist_limit"];
+			$end_display=$start+$_SESSION['glpilist_limit'];
 			if (isset($_GET['export_all'])){
 				$end_display=$numrows;
 			}

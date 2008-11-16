@@ -53,7 +53,7 @@ $where="";
 $leftjoin=""; 
 
 	 	
-if (strlen($_POST['searchText'])>0&&$_POST['searchText']!=$_SESSION["glpiajax_wildcard"])
+if (strlen($_POST['searchText'])>0&&$_POST['searchText']!=$CFG_GLPI["ajax_wildcard"])
 	$where.=" AND name ".makeTextSearch($_POST['searchText'])." ";
 
 $where.=" AND FK_entities='".$_POST["entity_restrict"]."' ";

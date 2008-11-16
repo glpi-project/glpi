@@ -520,7 +520,7 @@ class Computer extends CommonDBTM {
 			echo "&nbsp;(".getDropdownName("glpi_entities",$this->fields["FK_entities"]).")";
 		}
 
-		if (!$use_cache||!($CFG_GLPI["cache"]->start($ID."_".$_SESSION["glpilanguage"],"GLPI_".$this->type))) {
+		if (!$use_cache||!($CFG_GLPI["cache"]->start($ID."_".$_SESSION['glpilanguage'],"GLPI_".$this->type))) {
 
 			echo "</th><th  colspan ='2' align='center'>".$datestring.$date;
 			if (!$template&&!empty($this->fields['tplname']))

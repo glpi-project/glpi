@@ -58,7 +58,7 @@ if (isset($LINK_ID_TABLE[$_POST["idtable"]])){
 	$rand=mt_rand();
 
 	$use_ajax=false;
-	if ($_SESSION["glpiuse_ajax"]&&countElementsInTable($table)>$_SESSION["glpiajax_limit_count"]){
+	if ($CFG_GLPI["use_ajax"]&&countElementsInTable($table)>$CFG_GLPI["ajax_limit_count"]){
 		$use_ajax=true;
 	}
 
@@ -84,9 +84,9 @@ if (isset($LINK_ID_TABLE[$_POST["idtable"]])){
 	ajaxDropdown($use_ajax,"/ajax/$link",$paramsallitems,$default,$rand);
 
 //	if(isset($_POST['value'])&&$_POST['value']>0){
-//		$paramsallitems['searchText']=$_SESSION["glpiajax_wildcard"];
+//		$paramsallitems['searchText']=$CFG_GLPI["ajax_wildcard"];
 //		echo "<script type='text/javascript' >\n";
-//		echo "	Ext.get('search_$rand').value='".$_SESSION["glpiajax_wildcard"]."';";
+//		echo "	Ext.get('search_$rand').value='".$CFG_GLPI["ajax_wildcard"]."';";
 //		echo "</script>\n";
 //		ajaxUpdateItem("results_$rand",$CFG_GLPI["root_doc"]."/ajax/$link",$paramsallitems);
 //	}
