@@ -194,10 +194,11 @@ function showLicenses($sID) {
 /**
  * Show installtions of a software
  *
- * @param $sID ID of the software
+ * @param $searchID valeur to the ID to search
+ * @param $crit to search : sID (software) or ID (version)
  * @return nothing
  */
-function showInstallations($sID) {
+function showInstallations($searchID, $crit="sID") {
 	global $DB, $CFG_GLPI, $LANG;
 	if (!haveRight("software", "r"))
 		return false;
@@ -206,11 +207,11 @@ function showInstallations($sID) {
 	
 
 	$query = "SELECT glpi_inst_software.*,glpi_computers.name AS compname, glpi_computers.ID AS cID,
-		glpi_softwareversions.name as version, glpi_softwareversions.ID as vID
+		glpi_softwareversions.name as version, glpi_softwareversions.ID as vID, glpi_softwareversions.sID as sID
 		FROM glpi_inst_software
 		INNER JOIN glpi_softwareversions ON (glpi_inst_software.vID = glpi_softwareversions.ID)
 		INNER JOIN glpi_computers ON (glpi_inst_software.cID = glpi_computers.ID)
-		WHERE (glpi_softwareversions.sID = '$sID')
+		WHERE (glpi_softwareversions.$crit = '$searchID')
 		ORDER BY glpi_softwareversions.name, glpi_softwareversions.ID, glpi_computers.name";
 	
 	$nb_per_line=6;
@@ -218,7 +219,8 @@ function showInstallations($sID) {
 	$rand=mt_rand();
 
 	if ($result=$DB->query($query)){
-		if ($DB->numrows($result)){
+		if ($data=$DB->fetch_assoc($result)){
+			$sID = $data['sID'];
 			echo "<form name='softinstall".$rand."' id='softinstall".$rand."' method='post' action=\"".$CFG_GLPI["root_doc"]."/front/software.licenses.php\">";
 			echo "<input type='hidden' name='sID' value='$sID'>";
 			echo "<table class='tab_cadre'><tr>";
@@ -226,7 +228,7 @@ function showInstallations($sID) {
 			echo "<th>".$LANG["computers"][44]."</th>";
 			echo "</tr>";
 			$current_version=-1;
-			while ($data=$DB->fetch_assoc($result)){
+			do {
 				// New version
 				if ($data['vID']!=$current_version){
 					
@@ -286,7 +288,8 @@ function showInstallations($sID) {
 					echo $data['compname']."</td>";
 				}
 				
-			}
+			} while ($data=$DB->fetch_assoc($result));
+			
 			// Complete last line
 			$nbtoadd=$nb_per_line-$num;
 			if ($canedit){
