@@ -1120,6 +1120,7 @@ function showFormExtAuthList($target) {
 				echo "<option value='REMOTE_USER' " . ($CFG_GLPI["existing_auth_server_field"]=="REMOTE_USER" ? " selected " : "") . ">REMOTE_USER</option>";
 				echo "<option value='PHP_AUTH_USER' " . ($CFG_GLPI["existing_auth_server_field"]=="PHP_AUTH_USER" ? " selected " : "") . ">PHP_AUTH_USER</option>";
 				echo "<option value='USERNAME' " . ($CFG_GLPI["existing_auth_server_field"]=="USERNAME" ? " selected " : "") . ">USERNAME</option>";
+				echo "<option value='REDIRECT_REMOTE_USER' " . ($CFG_GLPI["existing_auth_server_field"]=="REDIRECT_REMOTE_USER" ? " selected " : "") . ">REDIRECT_REMOTE_USER</option>"; 
 				echo "</select>";
 				
 				echo "</td></tr>";
