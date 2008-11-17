@@ -68,16 +68,16 @@ class DBmysql {
 	 * @return nothing 
 	 */
 	function __construct(){
-		$this->reconnect();
+		$this->connect();
 	}
 	/**
-	 * Reconnect using current database settings
+	 * Connect using current database settings
 	 *
 	 * Use dbhost, dbuser, dbpassword and dbdefault
 	 *
 	 * @return nothing 
 	 */
-	function reconnect(){
+	function connect(){
 		$this->connected=false;
 		$this->dbh = @mysql_connect($this->dbhost, $this->dbuser, rawurldecode($this->dbpassword)) or $this->error = 1;
 		if ($this->dbh){ // connexion ok
@@ -111,7 +111,7 @@ class DBmysql {
 		//mysql_ping($this->dbh);
 		$res=@mysql_query($query,$this->dbh);
 		if (!$res) {
-			$this->reconnect();
+			$this->connect();
 			$res=mysql_query($query,$this->dbh);
 			
 			if (!$res) {
