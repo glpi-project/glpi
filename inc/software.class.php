@@ -490,7 +490,7 @@ class SoftwareVersion extends CommonDBTM {
 		$this->showTabs($ID, false, $_SESSION['glpi_tab'],array(),"sID=".$this->fields['sID']);
 		echo "<form name='form' method='post' action=\"$target\" enctype=\"multipart/form-data\">";
 
-		echo "<div class='center'><table class='tab_cadre_fixe'>";
+		echo "<div class='center' id='tabsbody'><table class='tab_cadre_fixe'>";
 		if ($ID>0){
 			echo "<tr><th colspan='2'>".$LANG["common"][2]." $ID";
 			echo " - <a href='software.form.php?ID=".$this->fields["sID"]."'>".getDropdownName("glpi_software",$this->fields["sID"])."</a>";
@@ -688,7 +688,7 @@ class SoftwareLicense extends CommonDBTM {
 		$this->showTabs($ID, false, $_SESSION['glpi_tab'],array(),"sID=".$this->fields['sID']);
 		echo "<form name='form' method='post' action=\"$target\" enctype=\"multipart/form-data\">";
 
-		echo "<div class='center'><table class='tab_cadre_fixe'>";
+		echo "<div class='center' id='tabsbody'><table class='tab_cadre_fixe'>";
 		if ($ID>0){
 			echo "<tr><th colspan='2'>".$LANG["common"][2]." $ID";
 			echo " - <a href='software.form.php?ID=".$this->fields["sID"]."'>".getDropdownName("glpi_software",$this->fields["sID"])."</a>";
