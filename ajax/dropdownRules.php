@@ -58,7 +58,7 @@ $LIMIT="LIMIT 0,$NBMAX";
 
 $sql = "SELECT ID,name,ranking	FROM glpi_rules_descriptions WHERE rule_type=".$_POST["type"];
 
-if ($_POST['searchText']==$CFG_GLPI["ajax_wildcard"]]) {
+if ($_POST['searchText']==$CFG_GLPI["ajax_wildcard"]) {
 	$LIMIT="";	
 } else {
 	$sql .= " AND name ".makeTextSearch($_POST['searchText']);	
