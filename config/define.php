@@ -95,8 +95,8 @@
 	define("TRANSFER_TYPE",37);
 	define("BOOKMARK_TYPE",38);
 	define("SOFTWAREVERSION_TYPE",39);
-	define("COMPUTERDISK_TYPE",39);
 	define("PLUGIN_TYPE",40);
+	define("COMPUTERDISK_TYPE",41);
 	
 	// GLPI MODE
 	define("NORMAL_MODE",0);
