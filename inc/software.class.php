@@ -221,7 +221,7 @@ class Software extends CommonDBTM {
 	}
 
 	/**
-	 * Print the printer form
+	 * Print the Software form
 	 *
 	 *@param $target filename : where to go when done.
 	 *@param $ID Integer : Id of the item to print
@@ -452,8 +452,17 @@ class SoftwareVersion extends CommonDBTM {
 
 	}	
 
+	function defineTabs($withtemplate) {
+		global $LANG, $CFG_GLPI;
+
+		$ong[1] = $LANG["title"][26];
+		$ong[2] = $LANG["software"][19];
+
+		return $ong;
+	}
+
 	/**
-	 * Print the version form
+	 * Print the Software / version form
 	 *
 	 *@param $target form target
 	 *@param $ID Integer : Id of the version or the template to print
@@ -478,6 +487,7 @@ class SoftwareVersion extends CommonDBTM {
 		} 
 
 
+		$this->showTabs($ID, false, $_SESSION['glpi_tab'],array(),"sID=".$this->fields['sID']);
 		echo "<form name='form' method='post' action=\"$target\" enctype=\"multipart/form-data\">";
 
 		echo "<div class='center'><table class='tab_cadre_fixe'>";
@@ -538,6 +548,8 @@ class SoftwareVersion extends CommonDBTM {
 
 		}
 		echo "</table></div></form>";
+		echo "<div id='tabcontent'></div>";
+		echo "<script type='text/javascript'>loadDefaultTab();</script>";
 				
 		return true;
 
@@ -632,8 +644,20 @@ class SoftwareLicense extends CommonDBTM {
 
 	}	
 
+	function defineTabs($withtemplate) {
+		global $LANG, $CFG_GLPI;
+
+		$ong[1] = $LANG["title"][26];
+
+		if (haveRight("infocom","r")){
+			$ong[4] = $LANG["Menu"][26];
+		}
+
+		return $ong;
+	}
+
 	/**
-	 * Print the license form
+	 * Print the Software / license form
 	 *
 	 *@param $target form target
 	 *@param $ID Integer : Id of the version or the template to print
@@ -660,6 +684,8 @@ class SoftwareLicense extends CommonDBTM {
 
 		$soft=new Software();
 		$soft->getFromDB($this->fields['sID']);
+
+		$this->showTabs($ID, false, $_SESSION['glpi_tab'],array(),"sID=".$this->fields['sID']);
 		echo "<form name='form' method='post' action=\"$target\" enctype=\"multipart/form-data\">";
 
 		echo "<div class='center'><table class='tab_cadre_fixe'>";
@@ -747,6 +773,8 @@ class SoftwareLicense extends CommonDBTM {
 
 		}
 		echo "</table></div></form>";
+		echo "<div id='tabcontent'></div>";
+		echo "<script type='text/javascript'>loadDefaultTab();</script>";
 				
 		return true;
 	}
