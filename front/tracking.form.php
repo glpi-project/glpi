@@ -43,6 +43,10 @@ checkCentralAccess();
 $fup=new Followup();
 $track=new Job();
 
+if (!isset($_GET['ID'])) {
+	$_GET['ID']="";
+}
+
 commonHeader($LANG["title"][10],$_SERVER['PHP_SELF'],"maintain","tracking");
 if (isset($_POST['update'])){
 	checkSeveralRightsOr(array("update_ticket"=>"1","assign_ticket"=>"1","steal_ticket"=>"1","comment_ticket"=>"1","comment_all_ticket"=>"1"));
@@ -74,18 +78,16 @@ if (isset($_POST['update'])){
 }
 
 // Manage All case which does not exist
-if (!isset($_SESSION['glpi_tab'])||$_SESSION['glpi_tab']==-1) $_SESSION['glpi_tab']=1;
+if (!isset($_SESSION['glpi_tab'])) $_SESSION['glpi_tab']=1;
 if (isset($_GET['onglet'])) {
 	$_SESSION['glpi_tab']=$_GET['onglet'];
-}
-if (isset($_GET["ID"]))
-if (showJobDetails($_SERVER['PHP_SELF'],$_GET["ID"])){
-	switch($_SESSION['glpi_tab']){
-		default :
-			if (!displayPluginAction(TRACKING_TYPE,$_GET["ID"],$_SESSION['glpi_tab'])){
-				showFollowupsSummary($_GET["ID"]);
-			}
-	}
-}
+}	
+
+
+	$track->showTabs($_GET["ID"],'',$_SESSION['glpi_tab']); 
+	echo "<div id='tabcontent'></div>";
+
+	echo "<script type='text/javascript'>loadDefaultTab();</script>";
+	
 commonFooter();
 ?>
