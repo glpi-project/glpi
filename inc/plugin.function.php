@@ -180,8 +180,8 @@ function displayPluginAction($type,$ID,$onglet,$withtemplate=0){
 	global $PLUGIN_HOOKS;
 	// Show all Case
 	if ($onglet==-1){
-		if (isset($PLUGIN_HOOKS["headings_action"])&&is_array($PLUGIN_HOOKS["headings_action"])&&count($PLUGIN_HOOKS["headings_action"]))	
-			foreach ($PLUGIN_HOOKS["headings_action"] as $plug => $function)
+		if (isset($PLUGIN_HOOKS["headings_action"])&&is_array($PLUGIN_HOOKS["headings_action"])&&count($PLUGIN_HOOKS["headings_action"])){
+			foreach ($PLUGIN_HOOKS["headings_action"] as $plug => $function){
 				if (file_exists(GLPI_ROOT . "/plugins/$plug/hook.php")) {
 					include_once(GLPI_ROOT . "/plugins/$plug/hook.php");
 				}
@@ -197,6 +197,8 @@ function displayPluginAction($type,$ID,$onglet,$withtemplate=0){
 
 						}
 				}
+			}
+		}
 		return true;
 
 	} else {
