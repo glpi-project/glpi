@@ -1066,22 +1066,24 @@ class Followup  extends CommonDBTM {
 		global $CFG_GLPI;
 
 		$job=new Job;
-		$job->updateDateMod($input["tracking"]);
-		
 		$mailsend=false;
-		if (count($updates)){
-	
-			if ($CFG_GLPI["mailing"]&&
-			 (in_array("contents",$updates)||isset($input['_need_send_mail']))){
-				$user=new User;
-				$user->getFromDB($_SESSION["glpiID"]);
-				$mail = new Mailing("followup",$job,$user,(isset($input["private"]) && $input["private"]));
-				$mail->send();
-				$mailsend=true;
-			}
-	
-			if (in_array("realtime",$updates)) {
-				$job->updateRealTime($input["tracking"]);
+		if ($job->getFromDB($input["tracking"])){
+			$job->updateDateMod($input["tracking"]);
+			
+			if (count($updates)){
+		
+				if ($CFG_GLPI["mailing"]&&
+				(in_array("contents",$updates)||isset($input['_need_send_mail']))){
+					$user=new User;
+					$user->getFromDB($_SESSION["glpiID"]);
+					$mail = new Mailing("followup",$job,$user,(isset($input["private"]) && $input["private"]));
+					$mail->send();
+					$mailsend=true;
+				}
+		
+				if (in_array("realtime",$updates)) {
+					$job->updateRealTime($input["tracking"]);
+				}
 			}
 		}
 		
