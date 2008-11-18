@@ -1035,7 +1035,7 @@ class CommonDBTM {
 			$plug_tabs=getPluginTabs($target,$this->type,$ID,$withtemplate);
 			$tabs+=$plug_tabs;
 			// Not all tab for templates
-			if(empty($withtemplate)){
+			if(empty($withtemplate) && $this->type!=TRACKING_TYPE){
 				$tabs[-1]=array('title'=>$LANG["common"][66],
 						'url'=>$CFG_GLPI['root_doc']."/$tabpage",
 						'params'=>"target=$target&type=".$this->type."&glpi_tab=-1&ID=$ID$template$extraparam");
