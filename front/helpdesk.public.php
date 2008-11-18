@@ -111,8 +111,11 @@ if (isset($_GET["show"]) && strcmp($_GET["show"],"user") == 0)
 			glpi_header($_SERVER['PHP_SELF']."?show=user&ID=".$_POST["ID"]);
 		}
 
-		if (showJobDetails($_SERVER['PHP_SELF']."?show=user&ID=".$_GET["ID"],$_GET["ID"]))
-			showFollowupsSummary($_GET["ID"]);
+		$track=new Job();	
+		$track->showTabs($_GET["ID"],'',$_SESSION['glpi_tab']); 
+		echo "<div id='tabcontent'></div>";
+	
+		echo "<script type='text/javascript'>loadDefaultTab();</script>";
 	}
 }
 
