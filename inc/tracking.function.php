@@ -1684,10 +1684,9 @@ function showJobDetails ($target,$ID){
 		$item=new CommonItem();
 		$item->getFromDB($job->fields["device_type"],$job->fields["computer"]);
 
-		showTrackingOnglets($_SERVER['PHP_SELF']."?ID=".$ID);
-
 		//echo "<div class='center'>";
 		echo "<form method='post' name='form_ticket' action='$target'  enctype=\"multipart/form-data\">\n";
+		echo "<div class='center' id='tabsbody'>";
 		echo "<table class='tab_cadre_fixe' cellpadding='5'>";
 
 		// OPtional line 
@@ -2050,8 +2049,9 @@ function showJobDetails ($target,$ID){
 
 		echo "</table>";
 		echo "<input type='hidden' name='ID' value='$ID'>";
+		echo "</div>";
 		echo "</form>";
-//		echo "</div>";
+
 
 		echo "<script type='text/javascript' >\n";
 		echo "function showPlan(){\n";

@@ -54,7 +54,27 @@ class Job extends CommonDBTM{
 		$this->entity_assign=true;
 
 	}
-
+	
+	function defineTabs($ID,$withtemplate){ 
+		global $LANG,$CFG_GLPI; 
+		
+		$job=new Job();
+		$job->getFromDB($ID);
+		
+		$ong[1]=$LANG["job"][38]." ".$ID;
+		if ($_SESSION["glpiactiveprofile"]["interface"]=="central"){
+			if ($job->canAddFollowups()){
+				$ong[2]=$LANG["job"][29];
+			}
+		}elseif (haveRight("comment_ticket","1")){
+			$ong[1]=$LANG["job"][38]." ".$ID;
+			if (!ereg("old_",$job->fields["status"])&&$job->fields["author"]==$_SESSION["glpiID"]){
+				$ong[2]=$LANG["job"][29];
+			}
+		}
+		
+		return $ong; 
+	}
 	/**
 	 * Retrieve an item from the database with datas associated (hardwares)
 	 *
