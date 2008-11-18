@@ -52,7 +52,7 @@ class Phone extends CommonDBTM {
 		$this->entity_assign=true;
 	}
 
-	function defineTabs($withtemplate){
+	function defineTabs($ID,$withtemplate){
 		global $LANG,$CFG_GLPI;
 		$ong=array();
 

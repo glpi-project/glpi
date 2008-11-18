@@ -75,7 +75,7 @@ class User extends CommonDBTM {
 		}
 
 	}
-	function defineTabs($withtemplate) {
+	function defineTabs($ID,$withtemplate) {
 		global $LANG;
 
 

@@ -68,7 +68,7 @@ class ConsumableType extends CommonDBTM {
 		$this->fields["alarm"]=$CFG_GLPI["cartridges_alarm"];
 	}
 
-	function defineTabs($withtemplate){
+	function defineTabs($ID,$withtemplate){
 		global $LANG;
 		$ong[1]=$LANG["title"][26];
 		if (haveRight("contract","r") || haveRight("infocom","r"))

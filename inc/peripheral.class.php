@@ -53,7 +53,7 @@ class Peripheral  extends CommonDBTM  {
 
 	}
 
-	function defineTabs($withtemplate){
+	function defineTabs($ID,$withtemplate){
 		global $LANG;
 		$ong=array();
 		if (haveRight("computer","r")){

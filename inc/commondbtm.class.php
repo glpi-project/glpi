@@ -898,7 +898,7 @@ class CommonDBTM {
 	 *@return array containing the onglets
 	 * 
 	**/
-	function defineTabs($withtemplate){
+	function defineTabs($ID,$withtemplate){
 		return array();
 	}
 
@@ -1020,7 +1020,7 @@ class CommonDBTM {
 		echo "<div id='tabspanel' class='center-h'></div>";
 		
 		$active=0;
-		if (count($onglets=$this->defineTabs($withtemplate))){
+		if (count($onglets=$this->defineTabs($ID,$withtemplate))){
 			$patterns[0] = '/front/';
 			$patterns[1] = '/form/';
 			$replacements[0] = 'ajax';

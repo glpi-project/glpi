@@ -67,7 +67,7 @@ class Contract extends CommonDBTM {
 		$DB->query($query3);
 	}
 
-	function defineTabs($withtemplate){
+	function defineTabs($ID,$withtemplate){
 		global $LANG;
 		$ong[1]=$LANG["title"][26];
 		if (haveRight("document","r"))	

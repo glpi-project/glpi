@@ -67,7 +67,7 @@ class Enterprise extends CommonDBTM {
 		$result2 = $DB->query($query2);
 	}
 
-	function defineTabs($withtemplate){
+	function defineTabs($ID,$withtemplate){
 		global $LANG,$CFG_GLPI;
 
 		if(haveRight("contact_enterprise","r")){

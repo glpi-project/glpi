@@ -53,7 +53,7 @@ class Software extends CommonDBTM {
 
 	}
 
-	function defineTabs($withtemplate) {
+	function defineTabs($ID,$withtemplate) {
 		global $LANG, $CFG_GLPI;
 		$ong[1] = $LANG["title"][26];
 		if (empty ($withtemplate)) {
@@ -452,7 +452,7 @@ class SoftwareVersion extends CommonDBTM {
 
 	}	
 
-	function defineTabs($withtemplate) {
+	function defineTabs($ID,$withtemplate) {
 		global $LANG, $CFG_GLPI;
 
 		$ong[1] = $LANG["title"][26];
@@ -644,7 +644,7 @@ class SoftwareLicense extends CommonDBTM {
 
 	}	
 
-	function defineTabs($withtemplate) {
+	function defineTabs($ID,$withtemplate) {
 		global $LANG, $CFG_GLPI;
 
 		$ong[1] = $LANG["title"][26];
