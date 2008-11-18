@@ -42,22 +42,20 @@ include (GLPI_ROOT . "/inc/includes.php");
 if(!isset($_POST["ID"])) {
 	exit();
 }
-
-checkCentralAccess();
 	
 		if ($_POST["ID"]>0){
 			switch($_POST['glpi_tab']){
 				case -1 :	
-					showJobDetails($_POST['target'],$_POST["ID"]);
+					showJobDetails($_POST['target']."?show=user&ID=".$_POST["ID"],$_POST["ID"]);
 					showFollowupsSummary($_POST["ID"]);
 					displayPluginAction(TRACKING_TYPE,$_POST["ID"],$_SESSION['glpi_tab']);
 					break;
 				case 1:
-					showJobDetails($_POST['target'],$_POST["ID"]);
+					showJobDetails($_POST['target']."?show=user&ID=".$_POST["ID"],$_POST["ID"]);
 					showFollowupsSummary($_POST["ID"]);
 					break;
 				case 2 : 
-					showJobDetails($_POST['target'],$_POST["ID"]);
+					showJobDetails($_POST['target']."?show=user&ID=".$_POST["ID"],$_POST["ID"]);
 					showAddFollowupForm($_POST["ID"]);
 					break;
 				default :
