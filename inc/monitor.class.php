@@ -54,7 +54,7 @@ class Monitor extends CommonDBTM {
 
 	}	
 
-	function defineTabs($withtemplate){
+	function defineTabs($ID,$withtemplate){
 		global $LANG,$CFG_GLPI;
 
 		$ong=array();

@@ -83,7 +83,7 @@ class Document extends CommonDBTM {
 			}
 	}
 
-	function defineTabs($withtemplate){
+	function defineTabs($ID,$withtemplate){
 		global $LANG;
 		$ong[1]=$LANG["title"][26];
 		$ong[5]=$LANG["Menu"][27];

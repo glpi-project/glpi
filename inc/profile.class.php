@@ -57,7 +57,7 @@ class Profile extends CommonDBTM{
 		$this->type=PROFILE_TYPE;
 	}
 
-	function defineTabs($withtemplate){ 
+	function defineTabs($ID,$withtemplate){ 
 		global $LANG,$CFG_GLPI; 
 			
 		$ong[1]=$LANG["common"][12]; 

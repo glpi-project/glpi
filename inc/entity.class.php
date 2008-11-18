@@ -68,7 +68,7 @@ class Entity extends CommonDBTM{
 		$this->may_be_recursive=true;
 	}
 	
-	function defineTabs($withtemplate){
+	function defineTabs($ID,$withtemplate){
 		global $LANG;
 
 		$ong[1]=$LANG["title"][26];
