@@ -1076,6 +1076,7 @@ class Followup  extends CommonDBTM {
 		global $CFG_GLPI;
 
 		$job=new Job;
+		$job->getFromDB($input["tracking"]);
 		$job->updateDateMod($input["tracking"]);
 		
 		$mailsend=false;
