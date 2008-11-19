@@ -2611,6 +2611,7 @@ DROP TABLE IF EXISTS `glpi_software`;
 CREATE TABLE `glpi_software` (
   `ID` int(11) NOT NULL auto_increment,
   `FK_entities` int(11) NOT NULL default '0',
+  `recursive` tinyint(1) NOT NULL DEFAULT '0',
   `name` varchar(255) collate utf8_unicode_ci default NULL,
   `comments` text collate utf8_unicode_ci,
   `location` int(11) NOT NULL default '0',
@@ -2653,10 +2654,13 @@ DROP TABLE IF EXISTS `glpi_softwarelicenses`;
 CREATE TABLE `glpi_softwarelicenses` (
   `ID` int(15) NOT NULL auto_increment,
   `sID` int(15) NOT NULL default '0',
+  `FK_entities` int(11) NOT NULL default '0',
+  `recursive` tinyint(1) NOT NULL DEFAULT '0',
   `number` int(15) NOT NULL default '0',
   `type` int(15) NOT NULL default '0',
   `name` varchar(255) collate utf8_unicode_ci default NULL,
   `serial` varchar(255) collate utf8_unicode_ci default NULL,
+  `otherserial` varchar(255) collate utf8_unicode_ci default NULL,
   `buy_version` int(15) NOT NULL default '0',
   `use_version` int(15) NOT NULL default '0',
   `expire` date default NULL,
@@ -2666,10 +2670,12 @@ CREATE TABLE `glpi_softwarelicenses` (
   KEY `name` (`name`),
   KEY `type` (`type`),
   KEY `sID` (`sID`),
+  KEY `FK_entities` (`FK_entities`),
   KEY `buy_version` (`buy_version`),
   KEY `use_version` (`use_version`),
   KEY `oem_computer` (`oem_computer`),
   KEY `serial` (`serial`),
+  KEY `otherserial` (`otherserial`),
   KEY `expire` (`expire`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
