@@ -137,6 +137,13 @@ function update0713to072() {
 	}
 	
 	// Software Updates
+	displayMigrationMessage("072", $LANG["Menu"][4]); // Software
+
+	// Male software recursive
+	if (!FieldExists("glpi_software", "recursive")) {
+		$query = "ALTER TABLE `glpi_software` ADD `recursive` TINYINT( 1 ) NOT NULL DEFAULT '0' AFTER `FK_entities`;";
+		$DB->query($query) or die("0.72 add recursive in glpi_software" . $LANG["update"][90] . $DB->error());
+	}
 	// Move licenses to versions
 	if (!TableExists("glpi_softwareversions") && TableExists('glpi_licenses')) {
 		$query = "RENAME TABLE `glpi_licenses`  TO `glpi_softwareversions` ;";
@@ -151,10 +158,13 @@ function update0713to072() {
 		$query = "CREATE TABLE `glpi_softwarelicenses` (
 				`ID` int(15) NOT NULL auto_increment,
 				`sID` int(15) NOT NULL default '0',
+				`FK_entities` int(11) NOT NULL default '0',
+				`recursive` tinyint(1) NOT NULL DEFAULT '0',
 				`number` int(15) NOT NULL default '0',
 				`type` int(15) NOT NULL default '0',
 				`name` varchar(255) NULL default NULL,
 				`serial` varchar(255) NULL default NULL,
+				`otherserial` varchar(255) NULL default NULL,
 				`buy_version` int(15) NOT NULL default '0',
 				`use_version` int(15) NOT NULL default '0',
 				`expire` date default NULL,
@@ -164,10 +174,12 @@ function update0713to072() {
 				KEY `name` (`name`),
 				KEY `type` (`type`),
 				KEY `sID` (`sID`),
+				KEY `FK_entities` (`FK_entities`),
 				KEY `buy_version` (`buy_version`),
 				KEY `use_version` (`use_version`),
 				KEY `oem_computer` (`oem_computer`),
 				KEY `serial` (`serial`),
+				KEY `otherserial` (`otherserial`),
 				KEY `expire` (`expire`)
 				) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
 		$DB->query($query) or die("0.72 create glpi_softwarelicenses" . $LANG["update"][90] . $DB->error());
@@ -192,6 +204,7 @@ function update0713to072() {
 		    if (!($numsoft % $step)) {
 				displayMigrationMessage("072", $LANG["software"][11] . " : $numsoft / $nbsoft");
 		    }	
+		    
 			// Foreach lics
 			$query_versions="SELECT glpi_softwareversions.*, glpi_infocoms.ID AS infocomID FROM glpi_softwareversions 
 					LEFT JOIN glpi_infocoms ON (glpi_infocoms.device_type=9999 AND glpi_infocoms.FK_device=glpi_softwareversions.ID)
@@ -277,10 +290,13 @@ function update0713to072() {
 							} else {
 								$vers['expire']="'".$vers['expire']."'";
 							}
-							$query="INSERT INTO `glpi_softwarelicenses` 
-							(`sID` ,`number` ,`type` ,`name` ,`serial` ,`buy_version`, `use_version`, `expire`, `oem_computer` ,`comments`)
-							VALUES 
-							(".$soft['ID']." , $install_count, 0, '".$vers['serial']."', '".$vers['serial']."' , $vers_ID, $vers_ID, ".$vers['expire'].", '".$vers['oem_computer']."', '".$vers['comments']."');";
+							$query="INSERT INTO `glpi_softwarelicenses` SET 
+								`sID`=".$soft['ID'].", `number`=$install_count ,
+								`FK_entities`=".$soft["FK_entities"].",
+							   	`name`='".$vers['serial']."',
+							   	`serial`='".$vers['serial']."',
+							   	`buy_version`=$vers_ID, `use_version`=$vers_ID, `expire`=".$vers['expire'].",
+							   	`oem_computer`='".$vers['oem_computer']."' ,`comments`='".addslashes($vers['comments'])."'";
 							
 							if ($DB->query($query)) {
 								$lic_ID=$DB->insert_id();
