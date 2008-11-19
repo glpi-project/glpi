@@ -247,7 +247,6 @@ class Software extends CommonDBTM {
 			$this->getEmpty();
 		} 
 		$canedit=$this->can($ID,'w');
-		$canrecu=$this->can($ID,'recursive');
 
 		$this->showTabs($ID, $withtemplate, $_SESSION['glpi_tab']);
 		if (!empty ($withtemplate) && $withtemplate == 2) {
@@ -558,6 +557,7 @@ class SoftwareLicense extends CommonDBTM {
 		$this->table = "glpi_softwarelicenses";
 		$this->type = SOFTWARELICENSE_TYPE;
 		$this->entity_assign=true;
+		$this->may_be_recursive=true;
 	}
 
 /*	function prepareInputForUpdate($input) {
@@ -629,13 +629,14 @@ class SoftwareLicense extends CommonDBTM {
 
 	}
 
+/*
 	function getEntityID () {
 		$soft=new Software();
 		$soft->getFromDB($this->fields["sID"]);
 		return $soft->getEntityID();
 
 	}	
-
+*/
 	function defineTabs($ID,$withtemplate) {
 		global $LANG, $CFG_GLPI;
 
