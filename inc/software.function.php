@@ -86,7 +86,7 @@ function showVersions($sID) {
 			echo "<th>".$LANG["software"][19]."</th>";
 			echo "<th>".$LANG["common"][25]."</th>";
 			echo "</tr>";
-			for ($tot=0;$data=$DB->fetch_assoc($result);$tot+=$nb){
+			for ($tot=$nb=0;$data=$DB->fetch_assoc($result);$tot+=$nb){
 				echo "<tr class='tab_bg_2'>";
 				if ($canedit){
 					echo "<td><a href='softwareversion.form.php?ID=".$data['ID']."'>".$data['name'].(empty($data['name'])?$data['ID']:"")."</a></td>";
@@ -135,7 +135,9 @@ function showLicenses($sID) {
 		FROM glpi_softwarelicenses
 		LEFT JOIN glpi_softwareversions AS buyvers ON (buyvers.ID = glpi_softwarelicenses.buy_version)
 		LEFT JOIN glpi_softwareversions AS usevers ON (usevers.ID = glpi_softwarelicenses.use_version)
-		WHERE (glpi_softwarelicenses.sID = '$sID') ORDER BY glpi_softwarelicenses.FK_entities, glpi_softwarelicenses.name, buyvers.name";
+		WHERE (glpi_softwarelicenses.sID = '$sID') " .
+			getEntitiesRestrictRequest('AND', 'glpi_softwarelicenses', '', '', true) .
+		"ORDER BY glpi_softwarelicenses.FK_entities, glpi_softwarelicenses.name, buyvers.name";
 		
 	if ($result=$DB->query($query)){
 		if ($DB->numrows($result)){
