@@ -1687,6 +1687,7 @@ $LANG["software"][42]="Nouveau logiciel à partir d'un modèle";
 $LANG["software"][44]="Installation d'un logiciel"; 
 $LANG["software"][45]="Désinstallation d'un logiciel"; 
 $LANG["software"][46]="Visible dans le Helpdesk"; 
+$LANG["software"][47]="Regroupement"; 
 
 $LANG["softwarecategories"][1]="Repliés"; 
 $LANG["softwarecategories"][2]="Dépliés"; 

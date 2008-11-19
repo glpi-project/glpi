@@ -107,6 +107,9 @@ if(!isset($_POST["withtemplate"])) $_POST["withtemplate"] = "";
 				case 12 :
 					showHistory(SOFTWARE_TYPE,$_POST["ID"]);
 					break;
+				case 21:
+					echo "<p>TODO: ".$LANG["software"][47]."</p>";
+					break;
 				default :
 					if (!displayPluginAction(SOFTWARE_TYPE,$_POST["ID"],$_POST['glpi_tab'],$_POST["withtemplate"])){
 						showVersions($_POST["ID"]);
@@ -118,3 +121,4 @@ if(!isset($_POST["withtemplate"])) $_POST["withtemplate"] = "";
 
 	ajaxFooter();
 ?>
+;
