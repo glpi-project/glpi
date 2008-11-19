@@ -290,13 +290,10 @@ function update0713to072() {
 							} else {
 								$vers['expire']="'".$vers['expire']."'";
 							}
-							$query="INSERT INTO `glpi_softwarelicenses` SET 
-								`sID`=".$soft['ID'].", `number`=$install_count ,
-								`FK_entities`=".$soft["FK_entities"].",
-							   	`name`='".$vers['serial']."',
-							   	`serial`='".$vers['serial']."',
-							   	`buy_version`=$vers_ID, `use_version`=$vers_ID, `expire`=".$vers['expire'].",
-							   	`oem_computer`='".$vers['oem_computer']."' ,`comments`='".addslashes($vers['comments'])."'";
+							$query="INSERT INTO `glpi_softwarelicenses` 
+							(`sID` ,`FK_entities`, `number` ,`type` ,`name` ,`serial` ,`buy_version`, `use_version`, `expire`, `oem_computer` ,`comments`)
+							VALUES 
+							(".$soft['ID']." , ".$soft["FK_entities"].",$install_count, 0, '".$vers['serial']."', '".$vers['serial']."' , $vers_ID, $vers_ID, ".$vers['expire'].", '".$vers['oem_computer']."', '".addslashes($vers['comments'])."');";
 							
 							if ($DB->query($query)) {
 								$lic_ID=$DB->insert_id();
