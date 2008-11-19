@@ -50,7 +50,7 @@ class Software extends CommonDBTM {
 		$this->type = SOFTWARE_TYPE;
 		$this->dohistory = true;
 		$this->entity_assign=true;
-
+		$this->may_be_recursive=true;
 	}
 
 	function defineTabs($ID,$withtemplate) {
@@ -246,7 +246,8 @@ class Software extends CommonDBTM {
 			$use_cache=false;
 			$this->getEmpty();
 		} 
-
+		$canedit=$this->can($ID,'w');
+		$canrecu=$this->can($ID,'recursive');
 
 		$this->showTabs($ID, $withtemplate, $_SESSION['glpi_tab']);
 		if (!empty ($withtemplate) && $withtemplate == 2) {
@@ -264,7 +265,10 @@ class Software extends CommonDBTM {
 			$template = false;
 		}
 
-		echo "<div class='center' id='tabsbody'><form method='post' action=\"$target\">";
+		echo "<div class='center' id='tabsbody'>";
+		if ($canedit) {
+			echo "<form method='post' action=\"$target\">";
+		}
 		if (strcmp($template, "newtemplate") === 0) {
 			echo "<input type=\"hidden\" name=\"is_template\" value=\"1\" />";
 		}
@@ -272,25 +276,8 @@ class Software extends CommonDBTM {
 		echo "<input type='hidden' name='FK_entities' value='".$this->fields["FK_entities"]."'>";
 
 		echo "<table class='tab_cadre_fixe'>";
-
-		echo "<tr><th align='center' colspan='2' >";
-		if (!$template) {
-			echo $LANG["common"][2]." ".$this->fields["ID"];
-		} elseif (strcmp($template, "newcomp") === 0) {
-			echo $LANG["software"][42] . ": " . $this->fields["tplname"];
-			echo "<input type='hidden' name='tplname' value='" . $this->fields["tplname"] . "'>";
-		} elseif (strcmp($template, "newtemplate") === 0) {
-			echo $LANG["common"][6] . "&nbsp;: ";
-			autocompletionTextField("tplname", "glpi_software", "tplname", $this->fields["tplname"], 40,$this->fields["FK_entities"]);
-		}
-		if (isMultiEntitiesMode()){
-			echo "&nbsp;(".getDropdownName("glpi_entities",$this->fields["FK_entities"]).")";
-		}
-
-		echo "</th><th colspan='2' align='center'>" . $datestring . $date;
-		if (!$template && !empty ($this->fields['tplname']))
-			echo "&nbsp;&nbsp;&nbsp;(" . $LANG["common"][13] . ": " . $this->fields['tplname'] . ")";
-		echo "</th></tr>";
+	
+		$this->showFormHeader($ID, $withtemplate, 2);
 
 		if (!$use_cache||!($CFG_GLPI["cache"]->start($ID . "_" . $_SESSION['glpilanguage'], "GLPI_" . $this->type))) {
 			echo "<tr class='tab_bg_1'><td>" . $LANG["common"][16] . ":		</td>";
@@ -343,7 +330,10 @@ class Software extends CommonDBTM {
 			echo "<tr class='tab_bg_1'><td>" . $LANG["software"][46] . ":</td><td>";
 			dropdownYesNo('helpdesk_visible',$this->fields['helpdesk_visible']);
 			echo "</td>";
-			echo "<td colspan='2'></td></tr>";
+			echo "<td>$datestring</td><td>$date";
+			if (!$template && !empty ($this->fields['tplname']))
+				echo "&nbsp;&nbsp;&nbsp;(" . $LANG["common"][13] . ": " . $this->fields['tplname'] . ")";
+			echo "</td></tr>";
 
 			echo "<tr class='tab_bg_1'><td valign='top'>";
 			echo $LANG["common"][25] . ":	</td>";
@@ -354,7 +344,7 @@ class Software extends CommonDBTM {
 			}
 		}
 
-		if (haveRight("software", "w")) {
+		if ($canedit) {
 			echo "<tr>";
 
 			if ($template) {
@@ -390,8 +380,10 @@ class Software extends CommonDBTM {
 
 			}
 			echo "</tr>";
+			echo "</table></form></div>";
+		} else {
+			echo "</table></div>";
 		}
-		echo "</table></form></div>";
 		echo "<div id='tabcontent'></div>";
 		echo "<script type='text/javascript'>loadDefaultTab();</script>";
 

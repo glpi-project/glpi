@@ -86,16 +86,18 @@ function showVersions($sID) {
 			echo "<th>".$LANG["software"][19]."</th>";
 			echo "<th>".$LANG["common"][25]."</th>";
 			echo "</tr>";
-			while ($data=$DB->fetch_assoc($result)){
+			for ($tot=0;$data=$DB->fetch_assoc($result);$tot+=$nb){
 				echo "<tr class='tab_bg_2'>";
 				if ($canedit){
 					echo "<td><a href='softwareversion.form.php?ID=".$data['ID']."'>".$data['name'].(empty($data['name'])?$data['ID']:"")."</a></td>";
 				} else {
 						echo "<td>".$data['name'].(empty($data['name'])?$data['ID']:"")."</td>";
 				}
-				echo "<td>".countInstallationsForVersion($data['ID'])."</td>";
+				$nb=countInstallationsForVersion($data['ID']);
+				echo "<td align='right'>$nb</td>";
 				echo "<td>".$data['comments']."</td></tr>";
 			}
+			echo "<tr class='tab_bg_1'><td align='right'>".$LANG["common"][33]."</td><td align='right'>$tot</td><td></td></tr>";
 			echo "</table>";
 		} else {
 			echo $LANG["search"][15];
@@ -113,12 +115,18 @@ function showVersions($sID) {
  */
 function showLicenses($sID) {
 	global $DB, $CFG_GLPI, $LANG;
-	if (!haveRight("software", "r"))
+
+	$software = new Software;
+	$license = new SoftwareLicense;
+	
+	if (!$software->getFromDB($sID) || !$software->can($sID,"r")) {
 		return false;
-	$canedit = haveRight("software", "w");
+	}
 	
 	echo "<br><div class='center'>";
 	
+	// Righ type is enough. Can add a License on a software we have Read access
+	$canedit = haveRight("software", "w");
 	if ($canedit){
 		echo "<a href='softwarelicense.form.php?sID=$sID'>".$LANG["software"][8]."</a><br>";
 	}
@@ -127,7 +135,8 @@ function showLicenses($sID) {
 		FROM glpi_softwarelicenses
 		LEFT JOIN glpi_softwareversions AS buyvers ON (buyvers.ID = glpi_softwarelicenses.buy_version)
 		LEFT JOIN glpi_softwareversions AS usevers ON (usevers.ID = glpi_softwarelicenses.use_version)
-		WHERE (glpi_softwarelicenses.sID = '$sID') ORDER BY buyvers.name";
+		WHERE (glpi_softwarelicenses.sID = '$sID') ORDER BY glpi_softwarelicenses.FK_entities, glpi_softwarelicenses.name, buyvers.name";
+		
 	if ($result=$DB->query($query)){
 		if ($DB->numrows($result)){
 			if ($canedit){
@@ -138,6 +147,9 @@ function showLicenses($sID) {
 			echo "<table class='tab_cadrehov'><tr>";
 			echo "<th>&nbsp;</th>";
 			echo "<th>".$LANG["common"][16]."</th>";
+			if ($software->isRecursive()) {
+				echo "<th>".$LANG["entity"][0]."</th>";
+			}
 			echo "<th>".$LANG["common"][19]."</th>";
 			echo "<th>".$LANG["tracking"][29]."</th>";
 			echo "<th>".$LANG["common"][17]."</th>";
@@ -145,30 +157,36 @@ function showLicenses($sID) {
 			echo "<th>".$LANG["software"][2]."</th>";
 			echo "<th>".$LANG["software"][32]."</th>";
 			echo "<th>".$LANG["software"][28]."</th>";
-			echo "<th>".$LANG["financial"][3]."</th>";
+			//echo "<th>".$LANG["financial"][3]."</th>";
 			echo "</tr>";
-			while ($data=$DB->fetch_assoc($result)){
+			for ($tot=0;$data=$DB->fetch_assoc($result);$tot+=$data['number']){
 				echo "<tr class='tab_bg_2'>";
-				echo "<td><input type='checkbox' name='item[".$data["ID"]."]' value='1'></td>";
 
-				if ($canedit){
+				if ($license->can($data['ID'],"w")){
+					echo "<td><input type='checkbox' name='item[".$data["ID"]."]' value='1'></td>";
 					echo "<td><a href='softwarelicense.form.php?ID=".$data['ID']."'>".$data['name'].(empty($data['name'])?$data['ID']:"")."</a></td>";
 				} else {
+					echo "<td>&nbsp;</td>";
 					echo "<td>".$data['name'].(empty($data['name'])?$data['ID']:"")."</td>";
 				}
+				if ($software->isRecursive()) {
+					echo "<td>".getDropdownName("glpi_entities",$data["FK_entities"])."</td>";
+				}
 				echo "<td>".$data['serial']."</td>";
-				echo "<td>".($data['number']>0?$data['number']:$LANG["software"][4])."</td>";
+				echo "<td align='right'>".($data['number']>0?$data['number']:$LANG["software"][4])."</td>";
 				echo "<td>".getDropdownName("glpi_dropdown_licensetypes",$data['type'])."</td>";
 				echo "<td>".$data['buyname']."</td>";
 				echo "<td>".$data['usename']."</td>";
 				echo "<td>".convDate($data['expire'])."</td>";
 				echo "<td>".($data['oem_computer']>0?getDropdownName("glpi_computers",$data['oem_computer']):"")."</td>";
 				
-				echo "<td>";
+				/*echo "<td>";
 				showDisplayInfocomLink(SOFTWARELICENSE_TYPE, $data['ID'], 1);
-				echo "</td>";
+				echo "</td>";*/
 				echo "</tr>";
 			}
+			echo "<tr class='tab_bg_1'><td colspan='".($software->isRecursive()?4:3)."' align='right'>".$LANG["common"][33].
+				"</td><td align='right'>$tot</td><td colspan='5'></td></tr>";
 			echo "</table>";
 			
 			if ($canedit){
