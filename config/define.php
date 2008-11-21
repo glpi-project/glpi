@@ -53,6 +53,7 @@
 	// MAILGATE CONTROL -> IN DB ?
 	define("MAX_MAILS_RETRIEVED",10);
 
+	define("OCS_FIELD_SEPARATOR",'$$$$$');
 
 	// ITEMS TYPE
 	define("GENERAL_TYPE",0);//
