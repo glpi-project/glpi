@@ -244,7 +244,7 @@ class Config extends CommonDBTM {
 		echo "<td class='center'>" . $LANG["setup"][402] . " </td><td><input type=\"text\" name=\"proxy_port\" value=\"" . $CFG_GLPI["proxy_port"] . "\"></td></tr>";
 	
 		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["setup"][403] . " </td><td><input type=\"text\" name=\"proxy_user\" value=\"" . $CFG_GLPI["proxy_user"] . "\"></td>";
-		echo "<td class='center'>" . $LANG["setup"][404] . " </td><td><input type=\"text\" name=\"proxy_password\" value=\"\"></td></tr>";
+		echo "<td class='center'>" . $LANG["setup"][404] . " </td><td><input type=\"password\" name=\"proxy_password\" value=\"\"></td></tr>";
 
 		echo "<tr class='tab_bg_1'><td colspan='4' align='center'><strong>" . $LANG["rulesengine"][77] . "</strong></td></tr>";
 		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["rulesengine"][86] . " </td><td>";
