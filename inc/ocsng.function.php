@@ -1697,18 +1697,23 @@ function ocsEditLock($target, $ID) {
 		echo "<div class='center'>";
 		$locked_ip = importArrayFromDB($data["import_ip"]);
 		foreach ($locked_ip as $key => $val) {
-			$querySearchLockedIP = "SELECT * FROM glpi_networking_ports WHERE on_device='$ID' AND device_type='".COMPUTER_TYPE."' AND ifaddr='$val'";
-			$resultSearchIP = $DB->query($querySearchLockedIP);
-			if ($DB->numrows($resultSearchIP) == 0) {
-		
-				if (!($header)) {
-					$header = true;
-					echo "<form method='post' action=\"$target\">";
-					echo "<input type='hidden' name='ID' value='$ID'>";
-					echo "<table class='tab_cadre'>";
-					echo "<tr><th colspan='2'>" . $LANG["ocsng"][50] . "</th></tr>";
+			if ($key>0)
+			{
+				$tmp = explode(OCS_FIELD_SEPARATOR,$val);
+				
+				$querySearchLockedIP = "SELECT * FROM glpi_networking_ports WHERE on_device='$ID' AND device_type='".COMPUTER_TYPE."' AND ifaddr='".$tmp[0]."' AND ifmac='".$tmp[1]."'";
+				$resultSearchIP = $DB->query($querySearchLockedIP);
+				if ($DB->numrows($resultSearchIP) == 0) {
+			
+					if (!($header)) {
+						$header = true;
+						echo "<form method='post' action=\"$target\">";
+						echo "<input type='hidden' name='ID' value='$ID'>";
+						echo "<table class='tab_cadre'>";
+						echo "<tr><th colspan='2'>" . $LANG["ocsng"][50] . "</th></tr>";
+					}
+					echo "<tr class='tab_bg_1'><td>" . $val . "</td><td><input type='checkbox' name='lockip[" . $key . "]'></td></tr>";
 				}
-				echo "<tr class='tab_bg_1'><td>" . $val . "</td><td><input type='checkbox' name='lockip[" . $key . "]'></td></tr>";
 			}
 		}
 		if ($header) {
@@ -1827,18 +1832,18 @@ function ocsUpdateDevices($device_type, $glpi_id, $ocs_id, $ocs_server_id, $cfg_
 							else
 								$ram["designation"] = "Unknown";
 							$ram["specif_default"] = $line2["CAPACITY"];
-							if (!in_array(RAM_DEVICE . '$$$$$' . $ram["designation"], $import_device)) {
+							if (!in_array(RAM_DEVICE . OCS_FIELD_SEPARATOR . $ram["designation"], $import_device)) {
 								$ram["frequence"] = $line2["SPEED"];
 								$ram["type"] = externalImportDropdown("glpi_dropdown_ram_type", $line2["TYPE"]);
 								$ram_id = ocsAddDevice(RAM_DEVICE, $ram);
 								if ($ram_id) {
 									$devID = compdevice_add($glpi_id, RAM_DEVICE, $ram_id, $line2["CAPACITY"], $dohistory);
 									addToOcsArray($glpi_id, array (
-										$devID => RAM_DEVICE . '$$$$$' . $ram["designation"]
+										$devID => RAM_DEVICE . OCS_FIELD_SEPARATOR . $ram["designation"]
 									), "import_device");
 								}
 							} else {
-								$id = array_search(RAM_DEVICE . '$$$$$' . $ram["designation"], $import_device);
+								$id = array_search(RAM_DEVICE . OCS_FIELD_SEPARATOR . $ram["designation"], $import_device);
 								update_device_specif($line2["CAPACITY"], $id, 1,true);
 								unset ($import_device[$id]);
 							}
@@ -1870,17 +1875,17 @@ function ocsUpdateDevices($device_type, $glpi_id, $ocs_id, $ocs_server_id, $cfg_
 								else
 									$dd["designation"] = "Unknown";
 
-							if (!in_array(HDD_DEVICE . '$$$$$' . $dd["designation"], $import_device)) {
+							if (!in_array(HDD_DEVICE . OCS_FIELD_SEPARATOR . $dd["designation"], $import_device)) {
 								$dd["specif_default"] = $line2["DISKSIZE"];
 								$dd_id = ocsAddDevice(HDD_DEVICE, $dd);
 								if ($dd_id) {
 									$devID = compdevice_add($glpi_id, HDD_DEVICE, $dd_id, $line2["DISKSIZE"], $dohistory);
 									addToOcsArray($glpi_id, array (
-										$devID => HDD_DEVICE . '$$$$$' . $dd["designation"]
+										$devID => HDD_DEVICE . OCS_FIELD_SEPARATOR . $dd["designation"]
 									), "import_device");
 								}
 							} else {
-								$id = array_search(HDD_DEVICE . '$$$$$' . $dd["designation"], $import_device);
+								$id = array_search(HDD_DEVICE . OCS_FIELD_SEPARATOR . $dd["designation"], $import_device);
 								update_device_specif($line2["DISKSIZE"], $id, 1,true);
 								unset ($import_device[$id]);
 							}
@@ -1911,17 +1916,17 @@ function ocsUpdateDevices($device_type, $glpi_id, $ocs_id, $ocs_server_id, $cfg_
 									$stor["designation"] = $line2["MODEL"];
 								else
 									$stor["designation"] = "Unknown";
-							if (!in_array(DRIVE_DEVICE . '$$$$$' . $stor["designation"], $import_device)) {
+							if (!in_array(DRIVE_DEVICE . OCS_FIELD_SEPARATOR . $stor["designation"], $import_device)) {
 								$stor["specif_default"] = $line2["DISKSIZE"];
 								$stor_id = ocsAddDevice(DRIVE_DEVICE, $stor);
 								if ($stor_id) {
 									$devID = compdevice_add($glpi_id, DRIVE_DEVICE, $stor_id, "", $dohistory);
 									addToOcsArray($glpi_id, array (
-										$devID => DRIVE_DEVICE . '$$$$$' . $stor["designation"]
+										$devID => DRIVE_DEVICE . OCS_FIELD_SEPARATOR . $stor["designation"]
 									), "import_device");
 								}
 							} else {
-								$id = array_search(DRIVE_DEVICE . '$$$$$' . $stor["designation"], $import_device);
+								$id = array_search(DRIVE_DEVICE . OCS_FIELD_SEPARATOR . $stor["designation"], $import_device);
 								unset ($import_device[$id]);
 							}
 
@@ -1944,18 +1949,18 @@ function ocsUpdateDevices($device_type, $glpi_id, $ocs_id, $ocs_server_id, $cfg_
 					while ($line2 = $DBocs->fetch_array($result2)) {
 						$line2 = clean_cross_side_scripting_deep(addslashes_deep($line2));
 						$mdm["designation"] = $line2["NAME"];
-						if (!in_array(PCI_DEVICE . '$$$$$' . $mdm["designation"], $import_device)) {
+						if (!in_array(PCI_DEVICE . OCS_FIELD_SEPARATOR . $mdm["designation"], $import_device)) {
 							if (!empty ($line2["DESCRIPTION"]))
 								$mdm["comment"] = $line2["TYPE"] . "\r\n" . $line2["DESCRIPTION"];
 							$mdm_id = ocsAddDevice(PCI_DEVICE, $mdm);
 							if ($mdm_id) {
 								$devID = compdevice_add($glpi_id, PCI_DEVICE, $mdm_id, "", $dohistory);
 								addToOcsArray($glpi_id, array (
-									$devID => PCI_DEVICE . '$$$$$' . $mdm["designation"]
+									$devID => PCI_DEVICE . OCS_FIELD_SEPARATOR . $mdm["designation"]
 								), "import_device");
 							}
 						} else {
-							$id = array_search(PCI_DEVICE . '$$$$$' . $mdm["designation"], $import_device);
+							$id = array_search(PCI_DEVICE . OCS_FIELD_SEPARATOR . $mdm["designation"], $import_device);
 							unset ($import_device[$id]);
 						}
 
@@ -1982,18 +1987,18 @@ function ocsUpdateDevices($device_type, $glpi_id, $ocs_id, $ocs_server_id, $cfg_
 							if ($line2["CAPTION"] != "None")
 								$port["designation"] .= " " . $line2["CAPTION"];
 						if (!empty ($port["designation"]))
-							if (!in_array(PCI_DEVICE . '$$$$$' . $port["designation"], $import_device)) {
+							if (!in_array(PCI_DEVICE . OCS_FIELD_SEPARATOR . $port["designation"], $import_device)) {
 								if (!empty ($line2["DESCRIPTION"]) && $line2["DESCRIPTION"] != "None")
 									$port["comment"] = $line2["DESCRIPTION"];
 								$port_id = ocsAddDevice(PCI_DEVICE, $port);
 								if ($port_id) {
 									$devID = compdevice_add($glpi_id, PCI_DEVICE, $port_id, "", $dohistory);
 									addToOcsArray($glpi_id, array (
-										$devID => PCI_DEVICE . '$$$$$' . $port["designation"]
+										$devID => PCI_DEVICE . OCS_FIELD_SEPARATOR . $port["designation"]
 									), "import_device");
 								}
 							} else {
-								$id = array_search(PCI_DEVICE . '$$$$$' . $port["designation"], $import_device);
+								$id = array_search(PCI_DEVICE . OCS_FIELD_SEPARATOR . $port["designation"], $import_device);
 								unset ($import_device[$id]);
 							}
 					}
@@ -2016,16 +2021,16 @@ function ocsUpdateDevices($device_type, $glpi_id, $ocs_id, $ocs_server_id, $cfg_
 						$processor = array ();
 						$processor["designation"] = $line["PROCESSORT"];
 						$processor["specif_default"] = $line["PROCESSORS"];
-						if (!in_array(PROCESSOR_DEVICE . '$$$$$' . $processor["designation"], $import_device)) {
+						if (!in_array(PROCESSOR_DEVICE . OCS_FIELD_SEPARATOR . $processor["designation"], $import_device)) {
 							$proc_id = ocsAddDevice(PROCESSOR_DEVICE, $processor);
 							if ($proc_id) {
 								$devID = compdevice_add($glpi_id, PROCESSOR_DEVICE, $proc_id, $line["PROCESSORS"], $dohistory);
 								addToOcsArray($glpi_id, array (
-									$devID => PROCESSOR_DEVICE . '$$$$$' . $processor["designation"]
+									$devID => PROCESSOR_DEVICE . OCS_FIELD_SEPARATOR . $processor["designation"]
 								), "import_device");
 							}
 						} else {
-							$id = array_search(PROCESSOR_DEVICE . '$$$$$' . $processor["designation"], $import_device);
+							$id = array_search(PROCESSOR_DEVICE . OCS_FIELD_SEPARATOR . $processor["designation"], $import_device);
 							update_device_specif($line["PROCESSORS"], $id, 1,true);
 							unset ($import_device[$id]);
 						}
@@ -2034,10 +2039,42 @@ function ocsUpdateDevices($device_type, $glpi_id, $ocs_id, $ocs_server_id, $cfg_
 			}
 			break;
 		case NETWORK_DEVICE :
+			$tagVersionInArray = "_VERSION_072_";
 
 			//Carte reseau
 			if ($cfg_ocs["import_device_iface"] || $cfg_ocs["import_ip"]) {
+				
+				//If import_ip doesn't contain _VERSION_072_, then migrate it to the new architecture
+				if (!in_array($tagVersionInArray,$import_ip))
+				{
+					//Add the new tag as the first occurence in the array
+					addToOcsArray($glpi_id,array(0=>$tagVersionInArray),"import_ip");
+					$import_ip[0]=$tagVersionInArray;
 
+					//If import_ip is empty : machine comes from pre 0.70 version or new machine to be imported in glpi
+					if (count($import_ip) > 1)
+					{
+						foreach($import_ip as $importip_ID => $value)
+						{
+							if ($importip_ID > 0)
+							{
+								//Delete old value in the array (ID => IP)
+								deleteInOcsArray($glpi_id,$importip_ID,"import_ip");
+								unset($import_ip[$importip_ID]);
+								$query="SELECT ifmac, ifaddr FROM glpi_networking_ports WHERE ID=$importip_ID";
+								$result = $DB->query($query);
+								$datas = $DB->fetch_array($result);
+								$new_ip = (isset($datas["ifaddr"])?$datas["ifaddr"]:"");
+								$new_mac = (isset($datas["ifmac"])?$datas["ifmac"]:"");
+								
+								//Add new value (ID => IP.$$$$$.MAC)
+								addToOcsArray($glpi_id,array($importip_ID=>$new_ip.OCS_FIELD_SEPARATOR.$new_mac),"import_ip");
+								$import_ip[$importip_ID]=$new_ip.OCS_FIELD_SEPARATOR.$new_mac;
+								}
+						}
+					}
+				}
+				
 				$query2 = "SELECT * 
 													FROM networks 
 													WHERE HARDWARE_ID = '" . $ocs_id . "' 
@@ -2056,7 +2093,7 @@ function ocsUpdateDevices($device_type, $glpi_id, $ocs_id, $ocs_server_id, $cfg_
 						if ($cfg_ocs["import_device_iface"]) {
 							$do_clean = true;
 							$network["designation"] = $line2["DESCRIPTION"];
-							if (!in_array(NETWORK_DEVICE . '$$$$$' . $network["designation"], $import_device)) {
+							if (!in_array(NETWORK_DEVICE . OCS_FIELD_SEPARATOR . $network["designation"], $import_device)) {
 								
 								if (!empty ($line2["SPEED"]))
 									$network["bandwidth"] = $line2["SPEED"];
@@ -2064,11 +2101,11 @@ function ocsUpdateDevices($device_type, $glpi_id, $ocs_id, $ocs_server_id, $cfg_
 								if ($net_id) {
 									$devID = compdevice_add($glpi_id, NETWORK_DEVICE, $net_id, $line2["MACADDR"], $dohistory);
 									addToOcsArray($glpi_id, array (
-										$devID => NETWORK_DEVICE . '$$$$$' . $network["designation"]
+										$devID => NETWORK_DEVICE . OCS_FIELD_SEPARATOR . $network["designation"]
 									), "import_device");
 								}
 							} else {
-								$id = array_search(NETWORK_DEVICE . '$$$$$' . $network["designation"], $import_device);
+								$id = array_search(NETWORK_DEVICE . OCS_FIELD_SEPARATOR . $network["designation"], $import_device);
 								update_device_specif($line2["MACADDR"], $id, 1,true);
 								unset ($import_device[$id]);
 							}
@@ -2081,7 +2118,7 @@ function ocsUpdateDevices($device_type, $glpi_id, $ocs_id, $ocs_server_id, $cfg_
 							sort($ocs_ips);
 
 							//if never imported in 0.70, insert id in the array
-							if ($count_ip == 0) {
+							if ($count_ip == 1) {
 								//get old IP in DB							
 								$querySelectIDandIP = "SELECT ID,ifaddr FROM glpi_networking_ports
 											WHERE device_type='" . COMPUTER_TYPE . "' 
@@ -2093,7 +2130,7 @@ function ocsUpdateDevices($device_type, $glpi_id, $ocs_id, $ocs_server_id, $cfg_
 									while ($data = $DB->fetch_array($result)) {
 										//Upate import_ip column and import_ip array										
 										addToOcsArray($glpi_id, array (
-											$data["ID"] => $data["ifaddr"]
+											$data["ID"] => $data["ifaddr"].OCS_FIELD_SEPARATOR.$line2["MACADDR"]
 										), "import_ip");
 										$import_ip[$data["ID"]] = $data["ifaddr"];
 									}
@@ -2112,7 +2149,34 @@ function ocsUpdateDevices($device_type, $glpi_id, $ocs_id, $ocs_server_id, $cfg_
 							$np = new Netport();
 
 							for ($j = 0; $j < count($ocs_ips); $j++) {
-								$id_ip = array_search($ocs_ips[$j], $import_ip);
+								
+								//First search : look for the same port (same IP and same MAC)
+								$id_ip = array_search($ocs_ips[$j].OCS_FIELD_SEPARATOR.$line2["MACADDR"], $import_ip);
+								
+								//Second search : IP may have change, so look only for mac address
+								if(!$id_ip)
+								{
+									//Browse the whole import_ip array
+									foreach($import_ip as $ID => $ip)
+									{
+										if ($ID > 0)
+										{
+											$tmp = explode(OCS_FIELD_SEPARATOR,$ip);
+											
+											//Port was found by looking at the mac address
+											if (isset($tmp[1]) && $tmp[1] == $line2["MACADDR"])
+											{
+												//Remove port in import_ip										
+												deleteInOcsArray($glpi_id,$ID,"import_ip");
+												addToOcsArray($glpi_id,array($ID=>$ocs_ips[$j].OCS_FIELD_SEPARATOR.$line2["MACADDR"]),"import_ip");
+												$import_ip[$ID]= $ocs_ips[$j].OCS_FIELD_SEPARATOR.$line2["MACADDR"];
+												$id_ip = $ID;
+											}
+											break;
+										}
+									}
+								}
+								
 								//Update already in DB
 								if ($id_ip>0) {
 									$netport["ifaddr"] = $ocs_ips[$j];
@@ -2134,7 +2198,7 @@ function ocsUpdateDevices($device_type, $glpi_id, $ocs_id, $ocs_server_id, $cfg_
 									$newID = $np->add($netport);
 									//ADD to array
 									addToOcsArray($glpi_id, array (
-										$newID => $ocs_ips[$j]
+										$newID => $ocs_ips[$j].OCS_FIELD_SEPARATOR.$line2["MACADDR"]
 									), "import_ip");
 									$count_ip++;
 								}
@@ -2158,7 +2222,7 @@ function ocsUpdateDevices($device_type, $glpi_id, $ocs_id, $ocs_server_id, $cfg_
 					while ($line2 = $DBocs->fetch_array($result2)) {
 						$line2 = clean_cross_side_scripting_deep(addslashes_deep($line2));
 						$video["designation"] = $line2["NAME"];
-						if (!in_array(GFX_DEVICE . '$$$$$' . $video["designation"], $import_device)) {
+						if (!in_array(GFX_DEVICE . OCS_FIELD_SEPARATOR . $video["designation"], $import_device)) {
 							$video["specif_default"] = "";
 							if (!empty ($line2["MEMORY"]))
 								$video["specif_default"] = $line2["MEMORY"];
@@ -2166,11 +2230,11 @@ function ocsUpdateDevices($device_type, $glpi_id, $ocs_id, $ocs_server_id, $cfg_
 							if ($video_id) {
 								$devID = compdevice_add($glpi_id, GFX_DEVICE, $video_id, $video["specif_default"], $dohistory);
 								addToOcsArray($glpi_id, array (
-									$devID => GFX_DEVICE . '$$$$$' . $video["designation"]
+									$devID => GFX_DEVICE . OCS_FIELD_SEPARATOR . $video["designation"]
 								), "import_device");
 							}
 						} else {
-							$id = array_search(GFX_DEVICE . '$$$$$' . $video["designation"], $import_device);
+							$id = array_search(GFX_DEVICE . OCS_FIELD_SEPARATOR . $video["designation"], $import_device);
 							update_device_specif($line2["MEMORY"], $id, 1,true);
 							unset ($import_device[$id]);
 						}
@@ -2192,18 +2256,18 @@ function ocsUpdateDevices($device_type, $glpi_id, $ocs_id, $ocs_server_id, $cfg_
 					while ($line2 = $DBocs->fetch_array($result2)) {
 						$line2 = clean_cross_side_scripting_deep(addslashes_deep($line2));
 						$snd["designation"] = $line2["NAME"];
-						if (!in_array(SND_DEVICE . '$$$$$' . $snd["designation"], $import_device)) {
+						if (!in_array(SND_DEVICE . OCS_FIELD_SEPARATOR . $snd["designation"], $import_device)) {
 							if (!empty ($line2["DESCRIPTION"]))
 								$snd["comment"] = $line2["DESCRIPTION"];
 							$snd_id = ocsAddDevice(SND_DEVICE, $snd);
 							if ($snd_id) {
 								$devID = compdevice_add($glpi_id, SND_DEVICE, $snd_id, "", $dohistory);
 								addToOcsArray($glpi_id, array (
-									$devID => SND_DEVICE . '$$$$$' . $snd["designation"]
+									$devID => SND_DEVICE . OCS_FIELD_SEPARATOR . $snd["designation"]
 								), "import_device");
 							}
 						} else {
-							$id = array_search(SND_DEVICE . '$$$$$' . $snd["designation"], $import_device);
+							$id = array_search(SND_DEVICE . OCS_FIELD_SEPARATOR . $snd["designation"], $import_device);
 							unset ($import_device[$id]);
 						}
 					}
@@ -2224,12 +2288,15 @@ function ocsUpdateDevices($device_type, $glpi_id, $ocs_id, $ocs_server_id, $cfg_
 	}
 	if ($do_clean && count($import_ip) && $device_type == NETWORK_DEVICE) {
 		foreach ($import_ip as $key => $val) {
-			// Disconnect wire
-			removeConnector($key);
-
-			$query2 = "DELETE FROM glpi_networking_ports WHERE ID = '$key'";
-			$DB->query($query2);
-			deleteInOcsArray($glpi_id, $key, "import_ip");
+			if ($key>0)
+			{
+				// Disconnect wire
+				removeConnector($key);
+	
+				$query2 = "DELETE FROM glpi_networking_ports WHERE ID = '$key'";
+				$DB->query($query2);
+				deleteInOcsArray($glpi_id, $key, "import_ip");
+			}
 		}
 	}
 	//Alimentation
@@ -2766,11 +2833,6 @@ function ocsUpdateAdministrativeInfo($glpi_id, $ocs_id, $ocs_server_id, $cfg_ocs
 			}
 		}
 	}
-	//if column in OCS has been deleted, we delete the rules in GLPI
-	/*			else{
-					$queryDelete ="DELETE from glpi_ocs_admin_link where ocs_server_id='$ocs_server_id' and ocs_column='$ocs_column'";
-					$DB->query($queryDelete);  
-				}*/
 
 }
 
@@ -2865,7 +2927,7 @@ function ocsUpdateSoftware($glpi_id, $entity, $ocs_id, $ocs_server_id, $cfg_ocs,
 				WHERE glpi_inst_software.vID=glpi_softwareversions.ID AND glpi_inst_software.cID=".$glpi_id." AND glpi_inst_software.ID=".$key;
 				$result_softs = $DB->query($query_softs);
 				$softs = $DB->fetch_array($result_softs);
-				$softs_array[$key] =  $value . '$$$$$'. $softs["VERSION"];
+				$softs_array[$key] =  $value . OCS_FIELD_SEPARATOR. $softs["VERSION"];
 			}
 			
 			//Replace in GLPI database the import_software by the new one
@@ -2944,53 +3006,11 @@ function ocsUpdateSoftware($glpi_id, $entity, $ocs_id, $ocs_server_id, $cfg_ocs,
 					$soft->reset();
 	
 					//If name+version not in present for this computer in glpi, add it 
-					if (!in_array($initname . '$$$$$'. $version, $import_software)) 
+					if (!in_array($initname . OCS_FIELD_SEPARATOR. $version, $import_software)) 
 					{
 							//------------------------------------------------------------------------------------------------------------------//
 							//---- The software doesn't exists in this version for this computer -----//
 							//----------------------------------------------------------------------------------------------------------------//
-	
-							/*
-							//Look for the software by his name in GLPI for a specific entity
-							$query_search = "SELECT glpi_software.ID as ID, glpi_software.deleted as deleted  
-													FROM glpi_software 
-													WHERE name = '" . $modified_name . "' AND is_template='0' AND FK_entities=" . $entity;
-							$result_search = $DB->query($query_search);
-							if ($DB->numrows($result_search) > 0) {
-								//Software already exists for this entity, get his ID
-								$data = $DB->fetch_array($result_search);
-								$isNewSoft = $data["ID"];
-								
-								// restore software
-								if ($data['deleted']){
-									
-									$s = new Software;
-									$s->restore($data);
-								}
-								
-								
-							} else {
-								$isNewSoft = 0;
-							}
-							
-							if (!$isNewSoft) {
-								
-								$input = array ();
-								$input["name"] = $modified_name;
-								
-								if ($cfg_ocs["import_software_comments"])
-									$input["comments"] = $data2["COMMENTS"];
-									
-								$input["FK_entities"] = $entity;
-		
-								if (!empty ($data2["PUBLISHER"])) {
-									$input["FK_glpi_enterprise"] = externalImportDropdown("glpi_dropdown_manufacturer", $manufacturer);
-								}
-								$input["_from_ocs"] = 1;
-								$isNewSoft = $soft->add($input);
-							
-							}
-							*/
 							
 							$isNewSoft= addSoftwareOrRestoreFromTrash($modified_name,$manufacturer,$entity,'',IMPORT_TYPE_OCS);
 							//Import version for this software
@@ -3000,7 +3020,7 @@ function ocsUpdateSoftware($glpi_id, $entity, $ocs_id, $ocs_server_id, $cfg_ocs,
 							$instID = installSoftwareVersion($glpi_id, $versionID, $dohistory);
 							
 							//Add the software to the table of softwares for this computer to add in database
-							$to_add_to_ocs_array[$instID] = $initname . '$$$$$'. $version;
+							$to_add_to_ocs_array[$instID] = $initname . OCS_FIELD_SEPARATOR. $version;
 	
 					} else {
 						$instID = -1;
@@ -3010,7 +3030,7 @@ function ocsUpdateSoftware($glpi_id, $entity, $ocs_id, $ocs_server_id, $cfg_ocs,
 						//----------------------------------------------------------------------------------------------------------------//
 	
 						//Get the name of the software in GLPI to know if the software's name have already been changed by the OCS dictionnary
-						$instID = array_search($initname . '$$$$$'. $version, $import_software);
+						$instID = array_search($initname . OCS_FIELD_SEPARATOR. $version, $import_software);
 						$query_soft = "SELECT glpi_software.ID, glpi_software.name 
 								FROM glpi_software, glpi_inst_software, glpi_softwareversions
 								WHERE glpi_inst_software.ID=".$instID." 
