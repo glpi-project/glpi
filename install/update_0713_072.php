@@ -879,11 +879,11 @@ function update0713to072() {
 		$DB->query($query) or die("0.72 rename FK_users index on glpi_users_groups " . $LANG["update"][90] . $DB->error());
 	}	
 
-	
-  
- 
 
-	
+	if (!FieldExists("glpi_config","software_helpdesk_visible")){
+		$query=" ALTER TABLE `glpi_config` ADD `software_helpdesk_visible` INT( 1 ) NOT NULL DEFAULT '1';";
+		$DB->query($query) or die("0.72 add software_helpdesk_visible in config" . $LANG["update"][90] . $DB->error());
+	}
 
 } // fin 0.72 #####################################################################################
 ?>
