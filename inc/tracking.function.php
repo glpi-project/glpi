@@ -2307,10 +2307,7 @@ function showAddFollowupForm($tID,$massiveaction=false){
 		echo "</td>";
 		if ($commentall&&$tID>0){
 			echo "<td class='center'>";
-			if ($job->fields["status"]!="old_done")
-				echo "<input type='submit' name='add_close' value='".$LANG["buttons"][26]."' class='submit'>";
-			else
-				echo "<input type='submit' name='add_open' value='".$LANG["buttons"][54]."' class='submit'>";				
+echo "<input type='submit' name='add_close' value='".$LANG["buttons"][26]."' class='submit'>";
 			echo "</td>";
 		}
 		echo "</tr>";
