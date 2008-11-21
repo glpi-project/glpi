@@ -1582,7 +1582,7 @@ function isSoftwareDeleted($ID) {
  * @return the software's ID
  */
 function addSoftware($name, $manufacturer, $entity, $comments = '', $process_type = -1) {
-	global $LANG, $DB;
+	global $LANG, $DB,$CFG_GLPI;
 	$software = new Software;
 
 	$manufacturer_id = 0;
@@ -1599,7 +1599,8 @@ function addSoftware($name, $manufacturer, $entity, $comments = '', $process_typ
 		$input["FK_glpi_enterprise"] = $manufacturer_id;
 		$input["FK_entities"] = $entity;
 		$input["comments"] = $LANG["rulesengine"][88];
-
+		$input["helpdesk_visible"] = $CFG_GLPI["software_helpdesk_visible"];
+		
 		//Process software's category rules
 		$softcatrule = new SoftwareCategoriesRuleCollection;
 		$result = $softcatrule->processAllRules(null, null, $input);

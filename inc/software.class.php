@@ -410,6 +410,12 @@ class Software extends CommonDBTM {
 			return false;
 		}
 	}
+	
+	function getEmpty()
+	{
+		global $CFG_GLPI;
+		$this->fields["helpdesk_visible"]= $CFG_GLPI["software_helpdesk_visible"];
+	}
 }
 
 /// Version class
