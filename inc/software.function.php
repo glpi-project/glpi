@@ -1064,9 +1064,10 @@ function showSoftwareInstalled($instID, $withtemplate = '') {
 
 	$query_cat = "SELECT 1 as TYPE, glpi_dropdown_software_category.name as category, glpi_software.category as category_id, 
 		glpi_software.name as softname, glpi_inst_software.ID as ID, glpi_software.deleted,
-		glpi_softwareversions.sID, glpi_softwareversions.name AS version
+		glpi_softwareversions.sID, glpi_softwareversions.name AS version,glpi_softwarelicenses.oem_computer AS oem_computer
 		FROM glpi_inst_software 
 		LEFT JOIN glpi_softwareversions ON ( glpi_inst_software.vID = glpi_softwareversions.ID )
+		LEFT JOIN glpi_softwarelicenses ON ( glpi_softwareversions.sID = glpi_softwarelicenses.sID )
 		LEFT JOIN glpi_software ON (glpi_softwareversions.sID = glpi_software.ID) 
 		LEFT JOIN glpi_dropdown_software_category ON (glpi_dropdown_software_category.ID = glpi_software.category)";
 
@@ -1074,11 +1075,12 @@ function showSoftwareInstalled($instID, $withtemplate = '') {
 
 	$query_nocat = "SELECT 2 as TYPE, glpi_dropdown_software_category.name as category, glpi_software.category as category_id,
 		glpi_software.name as softname, glpi_inst_software.ID as ID, glpi_software.deleted,
-		glpi_softwareversions.sID,glpi_softwareversions.name AS version
-	        FROM glpi_inst_software 
+		glpi_softwareversions.sID,glpi_softwareversions.name AS version,glpi_softwarelicenses.oem_computer AS oem_computer
+	    FROM glpi_inst_software 
 		LEFT JOIN glpi_softwareversions ON ( glpi_inst_software.vID = glpi_softwareversions.ID ) 
-	        LEFT JOIN glpi_software ON (glpi_softwareversions.sID = glpi_software.ID)  
-	        LEFT JOIN glpi_dropdown_software_category ON (glpi_dropdown_software_category.ID = glpi_software.category)";
+		LEFT JOIN glpi_softwarelicenses ON ( glpi_softwareversions.sID = glpi_softwarelicenses.sID )
+	    LEFT JOIN glpi_software ON (glpi_softwareversions.sID = glpi_software.ID)  
+	    LEFT JOIN glpi_dropdown_software_category ON (glpi_dropdown_software_category.ID = glpi_software.category)";
 	$query_nocat .= " WHERE glpi_inst_software.cID = '$instID' AND (glpi_software.category <= 0 OR glpi_software.category IS NULL )";
 	$query = "( $query_cat ) UNION ($query_nocat) ORDER BY TYPE, category, softname, version";
 
@@ -1199,6 +1201,8 @@ function displaySoftsByCategory($data, $instID, $withtemplate) {
 	echo "<td>";
 
 	echo $data["version"];
+	if ($data["oem_computer"]==$instID)
+		echo " - ".$LANG["software"][28];
 	if (empty ($withtemplate) || $withtemplate != 2) {
 		echo " - <a href=\"" . $CFG_GLPI["root_doc"] . "/front/software.licenses.php?uninstall=uninstall&amp;ID=$ID&amp;cID=$instID\">";
 		echo "<strong>" . $LANG["buttons"][5] . "</strong></a>";
