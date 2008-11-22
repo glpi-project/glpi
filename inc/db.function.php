@@ -620,7 +620,7 @@ function getNextItem($table,$ID,$condition="",$nextprev_item=""){
 	$query.=" ) ";
 
 	if (!empty($condition)){
-		$query.=" AND $condition";
+		$query.=" AND $condition ";
 	}
 	if (in_array($table,$CFG_GLPI["deleted_tables"]))
 		$query.=" AND $table.deleted='0' ";
@@ -693,7 +693,7 @@ function getPreviousItem($table,$ID,$condition="",$nextprev_item=""){
 
 
 	if (!empty($condition)){
-		$query.=" AND $condition";
+		$query.=" AND $condition ";
 	}
 
 	if (in_array($table,$CFG_GLPI["deleted_tables"]))
