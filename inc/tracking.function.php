@@ -2052,35 +2052,6 @@ function showJobDetails ($target,$ID){
 		echo "</div>";
 		echo "</form>";
 
-
-		echo "<script type='text/javascript' >\n";
-		echo "function showPlan(){\n";
-
-			echo "Ext.get('plan').setDisplayed('none');";
-			$params=array('form'=>'followups',
-				'state'=>1,
-				'author'=>$job->fields["assign"],
-				'entity'=>$job->fields["FK_entities"],
-			);
-			ajaxUpdateItemJsCode('viewplan',$CFG_GLPI["root_doc"]."/ajax/planning.php",$params,false);
-
-		echo "};";
-		
-		echo "function showAddFollowup(){\n";
-			echo "var vf=Ext.get('viewfollowup');";
-			echo "vf.hide();";
-			$params=array('tID'=>$ID);
-			ajaxUpdateItemJsCode('viewfollowup',$CFG_GLPI["root_doc"]."/ajax/addfollowup.php",$params,false);
-			echo "vf.fadeIn({ duration: 1.5});";
-			
-		echo "};";
-
-		echo "</script>";
-
-		echo "<div id='viewfollowup'>\n";
-		echo "</div>\n";	
-
-
 		return true;
 	} else {
 		echo "<div class='center'><strong>".$LANG["common"][54]."</strong></div>";
@@ -2105,11 +2076,11 @@ function showFollowupsSummary($tID){
 
 	$query = "SELECT * FROM glpi_followups WHERE (tracking = $tID) $RESTRICT ORDER BY date DESC";
 	$result=$DB->query($query);
-
 	
-
 	$rand=mt_rand();
-
+	
+	echo "<div id='viewfollowup".$tID."$rand'>\n";
+	echo "</div>\n";
 
 	echo "<div class='center'>";
 	echo "<h3>".$LANG["job"][37]."</h3>";
@@ -2128,18 +2099,18 @@ function showFollowupsSummary($tID){
 		while ($data=$DB->fetch_array($result)){
 			$canedit=($caneditall||$data['author']==$_SESSION['glpiID']);
 
-			echo "<tr class='tab_bg_2' ".($canedit?"style='cursor:pointer' onClick=\"viewEditFollowup".$data["ID"]."$rand();\"":"style='cursor:none'")
-				." id='viewfollowup".$data["ID"]."$rand'>";
-			echo "<td>".$data["ID"]."</td>";
+			echo "<tr class='tab_bg_2' ".($canedit?"style='cursor:pointer' onClick=\"viewEditFollowup".$tID.$data["ID"]."$rand();\"":"style='cursor:none'")
+				." id='viewfollowup".$tID.$data["ID"]."$rand'>";
+			echo "<td>viewfollowup".$tID.$rand." ".$data["ID"]."</td>";
 
 			echo "<td>";
 			if ($canedit){
 				echo "<script type='text/javascript' >\n";
-				echo "function viewEditFollowup".$data["ID"]."$rand(){\n";
+				echo "function viewEditFollowup".$tID.$data["ID"]."$rand(){\n";
 					//echo "window.document.getElementById('viewfollowup').style.display='none';";
 					$params=array('ID'=>$data["ID"],
 					);
-					ajaxUpdateItemJsCode("viewfollowup",$CFG_GLPI["root_doc"]."/ajax/viewfollowup.php",$params,false);
+					ajaxUpdateItemJsCode("viewfollowup".$tID."$rand",$CFG_GLPI["root_doc"]."/ajax/viewfollowup.php",$params,false);
 				echo "};";
 	
 				echo "</script>\n";
