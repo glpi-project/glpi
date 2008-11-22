@@ -98,6 +98,15 @@ else if (isset($_POST["update"]))
 	logEvent($_POST["ID"], "software", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][21]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 } 
+else if (isset($_POST["mergesoftware"]))
+{
+	$soft->check($_POST["ID"],'w');
+
+	echo "<pre>"; print_r($_POST); echo "</pre>";
+
+	die ("Not yet implemented");	
+	glpi_header($_SERVER['HTTP_REFERER']);
+} 
 else
 {
 

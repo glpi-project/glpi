@@ -108,6 +108,60 @@ function showVersions($sID) {
 }
 
 /**
+ * Show softwares candidates to be merged
+ *
+ * @param $ID ID of the software
+ * @return nothing
+ */
+function showSoftwareMergeCandidates($ID) {
+	global $DB, $CFG_GLPI, $LANG, $INFOFORM_PAGES;
+
+	$soft = new Software();
+	$soft->check($ID,"w");
+	$rand=mt_rand();
+		
+	$sql = "SELECT glpi_software.ID, glpi_software.name, glpi_entities.completename AS entity " .
+			"FROM glpi_software " .
+			"LEFT JOIN glpi_entities ON (glpi_software.FK_entities=glpi_entities.ID) " .
+			"WHERE glpi_software.ID!=$ID AND glpi_software.name='".$soft->fields["name"]."'".getEntitiesRestrictRequest('AND', 'glpi_software').
+			"ORDER BY glpi_entities.completename";
+	$req = $DB->request($sql);
+
+	if ($req->numrows()) {
+		echo "<form method='post' name='mergesoftware_form$rand' id='mergesoftware_form$rand' action='".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[SOFTWARE_TYPE]."'>";
+		echo "<table class='tab_cadrehov'><tr><th>&nbsp;</th>";
+		echo "<th>".$LANG["common"][16]."</th>";
+		echo "<th>".$LANG["entity"][0]."</th>";
+		echo "<th>".$LANG["software"][19]."</th>";
+		echo "<th>".$LANG["software"][11]."</th></tr>";
+		
+		foreach($req as $data) {
+			echo "<tr class='tab_bg_2'>";
+			echo "<td><input type='checkbox' name='item[".$data["ID"]."]' value='1'></td>";
+			echo "<td<a href='".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[SOFTWARE_TYPE]."?ID=".$data["ID"]."'>".$data["name"]."</a></td>";
+			echo "<td>".$data["entity"]."</td>";
+			echo "<td align='right'>".countInstallationsForSoftware($data["ID"])."</td>";
+			echo "<td align='right'>".getNumberOfLicences($data["ID"])."</td></tr>\n";
+		}
+				
+		echo "</table>";
+
+		echo "<table width='80%' class='tab_glpi'>";
+		echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td><a onclick= \"if ( markCheckboxes('mergesoftware_form$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?select=all'>".$LANG["buttons"][18]."</a></td>";
+		echo "<td>/</td><td ><a onclick=\"if ( unMarkCheckboxes('mergesoftware_form$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?select=none'>".$LANG["buttons"][19]."</a>";
+		echo "</td><td class='left' width='80%'>";
+		echo "<input type='hidden' name='ID'=$ID><input type='submit' name='mergesoftware' value=\"".$LANG["software"][48]."\" class='submit'>";
+		echo "</td></table>";
+		echo "</form>";
+	} else {
+		echo $LANG["search"][15];
+	}		
+	echo "<div class='center'>";
+	
+	echo "</div>";
+}
+
+/**
  * Show Licenses of a software
  *
  * @param $sID ID of the software
