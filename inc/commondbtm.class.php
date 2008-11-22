@@ -1001,6 +1001,12 @@ class CommonDBTM {
 			echo "<div>";
 			$next=getNextItem($this->table,$ID,$nextprevcondition,$nextprev_item);
 			$prev=getPreviousItem($this->table,$ID,$nextprevcondition,$nextprev_item);
+			
+			if ($this->type==TRACKING_TYPE && !haveRight("show_all_ticket","1")){
+				$next=0;
+				$prev=0;
+			}
+			
 			$cleantarget=preg_replace("/\?ID=([0-9]+)/","",$target);
 			if ($prev>0) {
 				echo "<a href='$cleantarget?ID=$prev$extraparamhtml'><img src=\"".$CFG_GLPI["root_doc"]."/pics/left.png\" alt='".$LANG["buttons"][12]."' title='".$LANG["buttons"][12]."'></a>";
@@ -1035,7 +1041,7 @@ class CommonDBTM {
 			$plug_tabs=getPluginTabs($target,$this->type,$ID,$withtemplate);
 			$tabs+=$plug_tabs;
 			// Not all tab for templates
-			if(empty($withtemplate)){
+			if(empty($withtemplate) && $this->type!=TRACKING_TYPE){
 				$tabs[-1]=array('title'=>$LANG["common"][66],
 						'url'=>$CFG_GLPI['root_doc']."/$tabpage",
 						'params'=>"target=$target&type=".$this->type."&glpi_tab=-1&ID=$ID$template$extraparam");
