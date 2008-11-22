@@ -49,8 +49,7 @@ if(!isset($_POST["ID"])) {
 					showJobDetails($_POST['target']."?show=user&ID=".$_POST["ID"],$_POST["ID"]);
 					showFollowupsSummary($_POST["ID"]);
 					break;
-				case 2 : 
-					showJobDetails($_POST['target']."?show=user&ID=".$_POST["ID"],$_POST["ID"]);
+				case 2 :
 					showAddFollowupForm($_POST["ID"]);
 					break;
 				default :
