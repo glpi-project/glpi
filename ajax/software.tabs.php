@@ -108,7 +108,7 @@ if(!isset($_POST["withtemplate"])) $_POST["withtemplate"] = "";
 					showHistory(SOFTWARE_TYPE,$_POST["ID"]);
 					break;
 				case 21:
-					echo "<p>TODO: ".$LANG["software"][47]."</p>";
+					showSoftwareMergeCandidates($_POST["ID"]);
 					break;
 				default :
 					if (!displayPluginAction(SOFTWARE_TYPE,$_POST["ID"],$_POST['glpi_tab'],$_POST["withtemplate"])){
