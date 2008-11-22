@@ -2101,7 +2101,7 @@ function showFollowupsSummary($tID){
 
 			echo "<tr class='tab_bg_2' ".($canedit?"style='cursor:pointer' onClick=\"viewEditFollowup".$tID.$data["ID"]."$rand();\"":"style='cursor:none'")
 				." id='viewfollowup".$tID.$data["ID"]."$rand'>";
-			echo "<td>viewfollowup".$tID.$rand." ".$data["ID"]."</td>";
+			echo "<td>".$data["ID"]."</td>";
 
 			echo "<td>";
 			if ($canedit){
