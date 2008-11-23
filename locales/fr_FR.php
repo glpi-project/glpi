@@ -1690,6 +1690,7 @@ $LANG["software"][45]="Désinstallation d'un logiciel";
 $LANG["software"][46]="Visible dans le Helpdesk"; 
 $LANG["software"][47]="Regroupement"; 
 $LANG["software"][48]="Regrouper"; 
+$LANG["software"][49]="Logiciel mis dans la corbeille après regroupement";
 
 $LANG["softwarecategories"][1]="Repliés"; 
 $LANG["softwarecategories"][2]="Dépliés"; 
