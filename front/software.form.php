@@ -102,9 +102,11 @@ else if (isset($_POST["mergesoftware"]))
 {
 	$soft->check($_POST["ID"],'w');
 
-	echo "<pre>"; print_r($_POST); echo "</pre>";
+	popHeader($LANG["Menu"][4]);
 
-	die ("Not yet implemented");	
+	if (isset($_POST["ID"]) && isset($_POST["item"]) && is_array($_POST["item"]) && count($_POST["item"])) {
+		mergeSoftware($_POST["ID"], $_POST["item"]);		
+	}
 	glpi_header($_SERVER['HTTP_REFERER']);
 } 
 else

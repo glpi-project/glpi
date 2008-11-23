@@ -432,7 +432,7 @@ class DBmysqlIterator  implements Iterator {
 			}
 		}
 		$this->res = $this->conn->query($this->sql);
-		if ($this->res) error_log("Launch SQL: ".$this->sql);
+		//if ($this->res) error_log("Launch SQL: ".$this->sql);
 	}
 
 	function __destruct () {
