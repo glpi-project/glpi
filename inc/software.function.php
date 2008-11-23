@@ -1079,24 +1079,29 @@ function installSoftwareVersion($cID, $vID, $dohistory=1){
 			return $DB->result($result, 0, "ID");
 		} else {
 			$query = "INSERT INTO glpi_inst_software (`cID`,`vID`) VALUES ($cID,$vID)";
+
 			if ($result = $DB->query($query)) {
 				$newID = $DB->insert_id();
-				if ($dohistory) {
-					$vers = new SoftwareVersion();
-					$vers->getFromDB($vID);
-					$soft = new Software();
-					if ($soft->getFromDB($vers->fields["sID"])) {
-						$changes[0] = '0';
-						$changes[1] = "";
-						$changes[2] = addslashes($soft->fields["name"] . " " . $vers->fields["name"]);
-						// history log
-						historyLog($cID, COMPUTER_TYPE, $changes, 0, HISTORY_INSTALL_SOFTWARE);
-						$comp = new Computer();
-						$comp->getFromDB($cID);
-						$changes[2] = addslashes($comp->fields["name"] . " " . $vers->fields["name"]);
-						historyLog($vers->fields["sID"], SOFTWARE_TYPE, $changes, 0, HISTORY_INSTALL_SOFTWARE);
+				$vers = new SoftwareVersion();
+				if ($vers->getFromDB($vID)) {
+					// Update use_version for OEM License
+					$DB->query("UPDATE glpi_softwarelicenses SET use_version=$vID WHERE sID=".$vers->fields["sID"]." AND oem_computer=$cID");
+
+					if ($dohistory) {
+						$soft = new Software();
+						if ($soft->getFromDB($vers->fields["sID"])) {
+							$changes[0] = '0';
+							$changes[1] = "";
+							$changes[2] = addslashes($soft->fields["name"] . " " . $vers->fields["name"]);
+							// history log
+							historyLog($cID, COMPUTER_TYPE, $changes, 0, HISTORY_INSTALL_SOFTWARE);
+							$comp = new Computer();
+							$comp->getFromDB($cID);
+							$changes[2] = addslashes($comp->fields["name"] . " " . $vers->fields["name"]);
+							historyLog($vers->fields["sID"], SOFTWARE_TYPE, $changes, 0, HISTORY_INSTALL_SOFTWARE);
+						}
 					}
-				}
+				}				
 				return $newID;
 			} else {
 				return false;
@@ -1141,34 +1146,36 @@ function uninstallSoftwareVersion($ID, $dohistory = 1) {
 
 	global $DB;
 
-	// license data for history
-	if ($dohistory) {
-		$query2 = "SELECT * FROM glpi_inst_software WHERE (ID = '$ID')";
-		$result2 = $DB->query($query2);
-		$data = $DB->fetch_array($result2);
-		$vers = new SoftwareVersion();
-		$vers->getFromDB($data["vID"]);
-	}
-
+	$query2 = "SELECT * FROM glpi_inst_software WHERE (ID = '$ID')";
+	$result2 = $DB->query($query2);
+	$data = $DB->fetch_array($result2);
+	// Not found => nothing to do
+	if (!$data) return false;
+	
 	$query = "DELETE FROM glpi_inst_software WHERE (ID = '$ID')";
 
 	if ($result = $DB->query($query)) {
-		if ($dohistory) {
-			$soft = new Software();
-			if ($soft->getFromDB($vers->fields["sID"])) {
-				$changes[0] = '0';
-				$changes[1] = addslashes($soft->fields["name"] . " " . $vers->fields["name"]);
-				$changes[2] = "";
-				// history log
-				historyLog($data["cID"], COMPUTER_TYPE, $changes, 0, HISTORY_UNINSTALL_SOFTWARE);
-				$comp = new Computer();
-				$comp->getFromDB($data["cID"]);
-				$changes[1] = addslashes($comp->fields["name"] . " " . $vers->fields["name"]);
-				historyLog($vers->fields["sID"], SOFTWARE_TYPE, $changes, 0, HISTORY_UNINSTALL_SOFTWARE);
-
+		$vers = new SoftwareVersion();
+		if ($vers->getFromDB($data["vID"])) {
+			// Update use_version for OEM License
+			$DB->query("UPDATE glpi_softwarelicenses SET use_version=0 WHERE sID=".$vers->fields["sID"]." AND oem_computer=".$data["cID"]);
+			
+			if ($dohistory) {
+				$soft = new Software();
+				if ($soft->getFromDB($vers->fields["sID"])) {
+					$changes[0] = '0';
+					$changes[1] = addslashes($soft->fields["name"] . " " . $vers->fields["name"]);
+					$changes[2] = "";
+					// history log
+					historyLog($data["cID"], COMPUTER_TYPE, $changes, 0, HISTORY_UNINSTALL_SOFTWARE);
+					$comp = new Computer();
+					$comp->getFromDB($data["cID"]);
+					$changes[1] = addslashes($comp->fields["name"] . " " . $vers->fields["name"]);
+					historyLog($vers->fields["sID"], SOFTWARE_TYPE, $changes, 0, HISTORY_UNINSTALL_SOFTWARE);
+	
+				}
 			}
 		}
-
 		return true;
 	} else {
 		return false;
