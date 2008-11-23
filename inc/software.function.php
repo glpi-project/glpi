@@ -76,9 +76,6 @@ function showVersions($sID) {
 	$canedit = $soft->can($sID,"w");
 
 	echo "<div class='center'>";
-	if ($canedit){
-		echo "<a href='softwareversion.form.php?sID=$sID'>".$LANG["software"][7]."</a><br>";
-	}
 	
 	$query = "SELECT * FROM glpi_softwareversions 
 		WHERE (sID = '$sID') ORDER BY name";
@@ -102,10 +99,19 @@ function showVersions($sID) {
 				echo "<td>".$data['comments']."</td></tr>";
 				}
 			}
-			echo "<tr class='tab_bg_1'><td align='right'>".$LANG["common"][33]."</td><td align='right'>$tot</td><td></td></tr>";
+			echo "<tr class='tab_bg_1'><td align='right'>".$LANG["common"][33]."</td><td align='right'>$tot</td><td>";
+			if ($canedit){
+				echo "<a href='softwareversion.form.php?sID=$sID'>".$LANG["software"][7]."</a>";
+			}
+			echo "</td></tr>";
 			echo "</table>";
 		} else {
-			echo $LANG["search"][15];
+			echo "<table class='tab_cadre_fixe'>";
+			echo "<tr><th>".$LANG["search"][15]."</th></tr>";
+			if ($canedit){
+				echo "<tr class='tab_bg_2'><td align='center'><a href='softwareversion.form.php?sID=$sID'>".$LANG["software"][7]."</a></td></tr>";
+			}
+			echo "</table>";
 		}
 	
 	}
@@ -250,14 +256,34 @@ function showLicenses($sID) {
 	if (!$software->getFromDB($sID) || !$software->can($sID,"r")) {
 		return false;
 	}
-	
-	echo "<br><div class='center'>";
-	
+
+	if (isset($_REQUEST["start"])) {
+		$start = $_REQUEST["start"];
+	} else {
+		$start = 0;
+	}
+
 	// Righ type is enough. Can add a License on a software we have Read access
 	$canedit = haveRight("software", "w");
-	if ($canedit){
-		echo "<a href='softwarelicense.form.php?sID=$sID'>".$LANG["software"][8]."</a><br>";
+
+	// Total Number of events
+	$number = countElementsInTable("glpi_softwarelicenses", "glpi_softwarelicenses.sID = $sID " . getEntitiesRestrictRequest('AND', 'glpi_softwarelicenses', '', '', true));
+	echo "<br><div class='center'>";
+	if ($number < 1) {
+		echo "<table class='tab_cadre_fixe'>";
+		echo "<tr><th>".$LANG["search"][15]."</th></tr>";
+		if ($canedit){
+			echo "<tr class='tab_bg_2'><td align='center'><a href='softwarelicense.form.php?sID=$sID'>".$LANG["software"][8]."</a></td></tr>";
+		}
+		echo "</table>";
+		echo "</div>";
+		return;
 	}
+
+	// Display the pager
+	printAjaxPager($LANG["software"][11],$start,$number);
+	
+	
 	$rand=mt_rand();
 	$query = "SELECT glpi_softwarelicenses.*, buyvers.name as buyname, usevers.name AS usename
 		FROM glpi_softwarelicenses
@@ -265,7 +291,8 @@ function showLicenses($sID) {
 		LEFT JOIN glpi_softwareversions AS usevers ON (usevers.ID = glpi_softwarelicenses.use_version)
 		WHERE (glpi_softwarelicenses.sID = '$sID') " .
 			getEntitiesRestrictRequest('AND', 'glpi_softwarelicenses', '', '', true) .
-		"ORDER BY glpi_softwarelicenses.FK_entities, glpi_softwarelicenses.name, buyvers.name";
+		"ORDER BY glpi_softwarelicenses.FK_entities, glpi_softwarelicenses.name, buyvers.name " .
+		"LIMIT $start," . $_SESSION['glpilist_limit'];
 		
 	if ($result=$DB->query($query)){
 		if ($DB->numrows($result)){
@@ -316,7 +343,11 @@ function showLicenses($sID) {
 				echo "</tr>";
 			}
 			echo "<tr class='tab_bg_1'><td colspan='".($software->isRecursive()?4:3)."' align='right'>".$LANG["common"][33].
-				"</td><td align='right'>$tot</td><td colspan='5'></td></tr>";
+				"</td><td align='right'>$tot</td><td colspan='5' align='center'>";
+			if ($canedit){
+				echo "<a href='softwarelicense.form.php?sID=$sID'>".$LANG["software"][8]."</a>";
+			}
+			echo "</td></tr>";
 			echo "</table>";
 			
 			if ($canedit){
