@@ -2394,6 +2394,7 @@ function changeProgressBarPosition ($crt, $tot, $msg="") {
 
 	echo "<script type='text/javascript'>
 	glpi_progressbar.updateProgress(\"$pct\",\"$msg\");</script>\n";
+	glpi_flush();
 
 }
 
