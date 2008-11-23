@@ -68,9 +68,12 @@ if (!defined('GLPI_ROOT')) {
  */
 function showVersions($sID) {
 	global $DB, $CFG_GLPI, $LANG;
+
 	if (!haveRight("software", "r"))
 		return false;
-	$canedit = haveRight("software", "w");
+		
+	$soft = new Software;		
+	$canedit = $soft->can($sID,"w");
 
 	echo "<div class='center'>";
 	if ($canedit){
@@ -87,15 +90,17 @@ function showVersions($sID) {
 			echo "<th>".$LANG["common"][25]."</th>";
 			echo "</tr>";
 			for ($tot=$nb=0;$data=$DB->fetch_assoc($result);$tot+=$nb){
-				echo "<tr class='tab_bg_2'>";
-				if ($canedit){
-					echo "<td><a href='softwareversion.form.php?ID=".$data['ID']."'>".$data['name'].(empty($data['name'])?$data['ID']:"")."</a></td>";
-				} else {
-						echo "<td>".$data['name'].(empty($data['name'])?$data['ID']:"")."</td>";
-				}
 				$nb=countInstallationsForVersion($data['ID']);
-				echo "<td align='right'>$nb</td>";
+				if ($canedit || $nb) {				
+					echo "<tr class='tab_bg_2'>";
+					if ($canedit){
+						echo "<td><a href='softwareversion.form.php?ID=".$data['ID']."'>".$data['name'].(empty($data['name'])?$data['ID']:"")."</a></td>";
+					} else {
+							echo "<td>".$data['name'].(empty($data['name'])?$data['ID']:"")."</td>";
+					}
+					echo "<td align='right'>$nb</td>";
 				echo "<td>".$data['comments']."</td></tr>";
+				}
 			}
 			echo "<tr class='tab_bg_1'><td align='right'>".$LANG["common"][33]."</td><td align='right'>$tot</td><td></td></tr>";
 			echo "</table>";
@@ -354,8 +359,9 @@ function showInstallations($searchID, $crit="sID") {
 		FROM glpi_inst_software
 		INNER JOIN glpi_softwareversions ON (glpi_inst_software.vID = glpi_softwareversions.ID)
 		INNER JOIN glpi_computers ON (glpi_inst_software.cID = glpi_computers.ID)
-		WHERE (glpi_softwareversions.$crit = '$searchID')
-		ORDER BY glpi_softwareversions.name, glpi_softwareversions.ID, glpi_computers.name";
+		WHERE (glpi_softwareversions.$crit = '$searchID')" .
+			getEntitiesRestrictRequest('AND', 'glpi_computers') .		
+		"ORDER BY glpi_softwareversions.name, glpi_softwareversions.ID, glpi_computers.name";
 	
 	$nb_per_line=6;
 	$num=0;
@@ -1190,7 +1196,7 @@ function showSoftwareInstalled($instID, $withtemplate = '') {
 		glpi_softwareversions.sID, glpi_softwareversions.name AS version,glpi_softwarelicenses.oem_computer AS oem_computer
 		FROM glpi_inst_software 
 		LEFT JOIN glpi_softwareversions ON ( glpi_inst_software.vID = glpi_softwareversions.ID )
-		LEFT JOIN glpi_softwarelicenses ON ( glpi_softwareversions.sID = glpi_softwarelicenses.sID )
+		LEFT JOIN glpi_softwarelicenses ON ( glpi_softwareversions.sID = glpi_softwarelicenses.sID AND glpi_softwarelicenses.oem_computer = $instID)
 		LEFT JOIN glpi_software ON (glpi_softwareversions.sID = glpi_software.ID) 
 		LEFT JOIN glpi_dropdown_software_category ON (glpi_dropdown_software_category.ID = glpi_software.category)";
 
@@ -1201,7 +1207,7 @@ function showSoftwareInstalled($instID, $withtemplate = '') {
 		glpi_softwareversions.sID,glpi_softwareversions.name AS version,glpi_softwarelicenses.oem_computer AS oem_computer
 	    FROM glpi_inst_software 
 		LEFT JOIN glpi_softwareversions ON ( glpi_inst_software.vID = glpi_softwareversions.ID ) 
-		LEFT JOIN glpi_softwarelicenses ON ( glpi_softwareversions.sID = glpi_softwarelicenses.sID )
+		LEFT JOIN glpi_softwarelicenses ON ( glpi_softwareversions.sID = glpi_softwarelicenses.sID AND glpi_softwarelicenses.oem_computer = $instID)
 	    LEFT JOIN glpi_software ON (glpi_softwareversions.sID = glpi_software.ID)  
 	    LEFT JOIN glpi_dropdown_software_category ON (glpi_dropdown_software_category.ID = glpi_software.category)";
 	$query_nocat .= " WHERE glpi_inst_software.cID = '$instID' AND (glpi_software.category <= 0 OR glpi_software.category IS NULL )";
@@ -1570,7 +1576,8 @@ function countInstallationsForSoftware($sID) {
 			INNER JOIN glpi_inst_software ON (glpi_softwareversions.ID = glpi_inst_software.vID)
 			INNER JOIN glpi_computers ON ( glpi_inst_software.cID=glpi_computers.ID)
 			WHERE glpi_softwareversions.sID='$sID'
-				AND glpi_computers.deleted='0' AND glpi_computers.is_template='0'";
+				AND glpi_computers.deleted=0 AND glpi_computers.is_template=0 " .
+				getEntitiesRestrictRequest('AND', 'glpi_computers');
 
 	$result = $DB->query($query);
 
@@ -1591,7 +1598,8 @@ function countInstallationsForVersion($vID) {
 			FROM glpi_inst_software
 			INNER JOIN glpi_computers ON ( glpi_inst_software.cID=glpi_computers.ID)
 			WHERE glpi_inst_software.vID='$vID'
-				AND glpi_computers.deleted='0' AND glpi_computers.is_template='0'";
+				AND glpi_computers.deleted=0 AND glpi_computers.is_template=0 " .
+				getEntitiesRestrictRequest('AND', 'glpi_computers');
 
 	$result = $DB->query($query);
 
@@ -1625,12 +1633,14 @@ function getLicenceToBuy($sID) {
 function getNumberOfLicences($sID) {
 	global $DB;
 	
-	$query = "SELECT ID FROM glpi_softwarelicenses WHERE (sID = '$sID' AND number='-1')";
+	$query = "SELECT ID FROM glpi_softwarelicenses WHERE (sID = '$sID' AND number='-1') " .
+		getEntitiesRestrictRequest('AND', 'glpi_softwarelicenses', '', '', true);
 	$result = $DB->query($query);
 	if ($DB->numrows($result)){
 		return -1;
 	} else {
-		$query = "SELECT SUM(number) FROM glpi_softwarelicenses WHERE (sID = '$sID' AND number > 0)";
+		$query = "SELECT SUM(number) FROM glpi_softwarelicenses WHERE (sID = '$sID' AND number > 0) " .
+			getEntitiesRestrictRequest('AND', 'glpi_softwarelicenses', '', '', true);
 		$result = $DB->query($query);
 		return $DB->result($result,0,0);
 	}

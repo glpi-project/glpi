@@ -414,6 +414,8 @@ class Software extends CommonDBTM {
 	function getEmpty()
 	{
 		global $CFG_GLPI;
+		
+		parent::getEmpty();
 		$this->fields["helpdesk_visible"]= $CFG_GLPI["software_helpdesk_visible"];
 	}
 }
@@ -477,7 +479,7 @@ class SoftwareVersion extends CommonDBTM {
 		if (!haveRight("software","w"))	return false;
 
 		$use_cache=true;
-
+error_log("before check");
 		if ($ID > 0){
 			$this->check($ID,'r');
 		} else {
@@ -486,6 +488,7 @@ class SoftwareVersion extends CommonDBTM {
 			$use_cache=false;
 			$this->getEmpty();
 		} 
+error_log("after check");
 
 
 		$this->showTabs($ID, false, $_SESSION['glpi_tab'],array(),"sID=".$this->fields['sID']);
@@ -685,8 +688,8 @@ class SoftwareLicense extends CommonDBTM {
 			$this->fields['sID']=$sID;
 		} 
 
-		$soft=new Software();
-		$soft->getFromDB($this->fields['sID']);
+		//$soft=new Software();
+		//$soft->getFromDB($this->fields['sID']);
 
 		$this->showTabs($ID, false, $_SESSION['glpi_tab'],array(),"sID=".$this->fields['sID']);
 		echo "<form name='form' method='post' action=\"$target\" enctype=\"multipart/form-data\">";
@@ -712,6 +715,11 @@ class SoftwareLicense extends CommonDBTM {
 		echo "<tr class='tab_bg_1'><td>".$LANG["common"][19].":		</td>";
 		echo "<td>";
 		autocompletionTextField("serial","glpi_softwarelicenses","serial",$this->fields["serial"],80);
+		echo "</td></tr>";
+
+		echo "<tr class='tab_bg_1'><td>".$LANG["common"][20].":		</td>";
+		echo "<td>";
+		autocompletionTextField("otherserial","glpi_softwarelicenses","otherserial",$this->fields["otherserial"],80);
 		echo "</td></tr>";
 
 		echo "<tr class='tab_bg_1'><td>".$LANG["tracking"][29].":		</td>";
@@ -743,7 +751,7 @@ class SoftwareLicense extends CommonDBTM {
 
 		echo "<tr class='tab_bg_1'><td>".$LANG["software"][28].":		</td>";
 		echo "<td>";
-		dropdownValue('glpi_computers','oem_computer',$this->fields["oem_computer"],1,$soft->fields['FK_entities']);
+		dropdownValue('glpi_computers','oem_computer',$this->fields["oem_computer"],1,$this->fields['FK_entities']);
 		echo "</td></tr>";
 	
 		echo "<tr  class='tab_bg_1'><td valign='top'>";
