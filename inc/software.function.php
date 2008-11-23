@@ -262,6 +262,11 @@ function showLicenses($sID) {
 	} else {
 		$start = 0;
 	}
+	if (isset($_REQUEST["order"]) && !empty($_REQUEST["order"])) {
+		$order = $_REQUEST["order"];
+	} else {
+		$order = "entity";
+	}
 
 	// Righ type is enough. Can add a License on a software we have Read access
 	$canedit = haveRight("software", "w");
@@ -285,14 +290,15 @@ function showLicenses($sID) {
 	
 	
 	$rand=mt_rand();
-	$query = "SELECT glpi_softwarelicenses.*, buyvers.name as buyname, usevers.name AS usename
+	$query = "SELECT glpi_softwarelicenses.*, buyvers.name as buyname, usevers.name AS usename, glpi_entities.completename AS entity, glpi_dropdown_licensetypes.name AS typename
 		FROM glpi_softwarelicenses
 		LEFT JOIN glpi_softwareversions AS buyvers ON (buyvers.ID = glpi_softwarelicenses.buy_version)
 		LEFT JOIN glpi_softwareversions AS usevers ON (usevers.ID = glpi_softwarelicenses.use_version)
+		LEFT JOIN glpi_entities ON (glpi_entities.ID = glpi_softwarelicenses.FK_entities)
+		LEFT JOIN glpi_dropdown_licensetypes ON (glpi_dropdown_licensetypes.ID = glpi_softwarelicenses.type)
 		WHERE (glpi_softwarelicenses.sID = '$sID') " .
 			getEntitiesRestrictRequest('AND', 'glpi_softwarelicenses', '', '', true) .
-		"ORDER BY glpi_softwarelicenses.FK_entities, glpi_softwarelicenses.name, buyvers.name " .
-		"LIMIT $start," . $_SESSION['glpilist_limit'];
+		"ORDER BY " . $order . " LIMIT $start," . $_SESSION['glpilist_limit'];
 		
 	if ($result=$DB->query($query)){
 		if ($DB->numrows($result)){
@@ -303,16 +309,16 @@ function showLicenses($sID) {
 
 			echo "<table class='tab_cadrehov'><tr>";
 			echo "<th>&nbsp;</th>";
-			echo "<th>".$LANG["common"][16]."</th>";
+			echo "<th><a href='javascript:reloadTab(\"order=name&start=0\");'>".$LANG["common"][16]."</a></th>";
 			if ($software->isRecursive()) {
-				echo "<th>".$LANG["entity"][0]."</th>";
+				echo "<th><a href='javascript:reloadTab(\"order=entity&start=0\");'>".$LANG["entity"][0]."</a></th>";
 			}
-			echo "<th>".$LANG["common"][19]."</th>";
+			echo "<th><a href='javascript:reloadTab(\"order=serial&start=0\");'>".$LANG["common"][19]."</a></th>";
 			echo "<th>".$LANG["tracking"][29]."</th>";
-			echo "<th>".$LANG["common"][17]."</th>";
-			echo "<th>".$LANG["software"][1]."</th>";
-			echo "<th>".$LANG["software"][2]."</th>";
-			echo "<th>".$LANG["software"][32]."</th>";
+			echo "<th><a href='javascript:reloadTab(\"order=typename&start=0\");'>".$LANG["common"][17]."</a></th>";
+			echo "<th><a href='javascript:reloadTab(\"order=buyname&start=0\");'>".$LANG["software"][1]."</a></th>";
+			echo "<th><a href='javascript:reloadTab(\"order=usename&start=0\");'>".$LANG["software"][2]."</a></th>";
+			echo "<th><a href='javascript:reloadTab(\"order=expire&start=0\");'>".$LANG["software"][32]."</a></th>";
 			echo "<th>".$LANG["software"][28]."</th>";
 			//echo "<th>".$LANG["financial"][3]."</th>";
 			echo "</tr>";
@@ -327,11 +333,11 @@ function showLicenses($sID) {
 					echo "<td>".$data['name'].(empty($data['name'])?$data['ID']:"")."</td>";
 				}
 				if ($software->isRecursive()) {
-					echo "<td>".getDropdownName("glpi_entities",$data["FK_entities"])."</td>";
+					echo "<td>".$data['entity']."</td>";
 				}
 				echo "<td>".$data['serial']."</td>";
 				echo "<td align='right'>".($data['number']>0?$data['number']:$LANG["software"][4])."</td>";
-				echo "<td>".getDropdownName("glpi_dropdown_licensetypes",$data['type'])."</td>";
+				echo "<td>".$data['typename']."</td>";
 				echo "<td>".$data['buyname']."</td>";
 				echo "<td>".$data['usename']."</td>";
 				echo "<td>".convDate($data['expire'])."</td>";
