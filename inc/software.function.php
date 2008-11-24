@@ -520,6 +520,150 @@ function showInstallations($searchID, $crit="sID") {
 }
 
 /**
+ * Show installtions of a software
+ *
+ * @param $searchID valeur to the ID to search
+ * @param $crit to search : sID (software) or ID (version)
+ * @return nothing
+ */
+function showInstallationsMockup1($searchID, $crit="sID") {
+	global $DB, $CFG_GLPI, $LANG;
+	if (!haveRight("software", "r"))
+		return false;
+
+	$canedit = haveRight("software", "w");
+	$canshowcomputer = haveRight("computer", "r");
+	
+	if (isset($_REQUEST["start"])) {
+		$start = $_REQUEST["start"];
+	} else {
+		$start = 0;
+	}
+	if (isset($_REQUEST["order"]) && !empty($_REQUEST["order"])) {
+		$order = $_REQUEST["order"];
+	} else {
+		$order = "entity,compname";
+	}
+
+	// Total Number of events
+	if ($crit=="sID") {
+		// Software ID
+		$number = countElementsInTable("glpi_inst_software,glpi_computers,glpi_softwareversions", 
+			"glpi_inst_software.cID = glpi_computers.ID AND glpi_inst_software.vID = glpi_softwareversions.ID AND glpi_softwareversions.sID=$searchID" . 
+			getEntitiesRestrictRequest(' AND', 'glpi_computers'));
+	} else {
+		//SoftwareVersion ID
+		$number = countElementsInTable("glpi_inst_software,glpi_computers", 
+			"glpi_inst_software.cID = glpi_computers.ID AND glpi_inst_software.vID = $searchID" . 
+			getEntitiesRestrictRequest(' AND', 'glpi_computers'));
+	}
+
+	echo "<br><div class='center'>";
+	if ($number < 1) {
+		echo "<table class='tab_cadre_fixe'>";
+		echo "<tr><th>".$LANG["search"][15]."</th></tr>";
+		echo "</table>";
+		echo "</div>";
+		return;
+	}
+
+	// Display the pager
+	printAjaxPager($LANG["software"][19],$start,$number);
+	
+	$query = "SELECT glpi_inst_software.*,glpi_computers.name AS compname, glpi_computers.ID AS cID,
+			glpi_computers.name AS compname, glpi_computers.serial, glpi_computers.otherserial, glpi_computers.contact,
+			glpi_softwareversions.name as version, glpi_softwareversions.ID as vID, glpi_softwareversions.sID as sID, glpi_softwareversions.name as vername,
+			glpi_entities.completename AS entity, glpi_dropdown_locations.completename AS location, glpi_groups.name AS groupe
+		FROM glpi_inst_software
+		INNER JOIN glpi_softwareversions ON (glpi_inst_software.vID = glpi_softwareversions.ID)
+		INNER JOIN glpi_computers ON (glpi_inst_software.cID = glpi_computers.ID)
+		LEFT JOIN glpi_entities ON (glpi_computers.FK_entities=glpi_entities.ID)
+		LEFT JOIN glpi_dropdown_locations ON (glpi_computers.location=glpi_dropdown_locations.ID)
+		LEFT JOIN glpi_groups ON (glpi_computers.FK_groups=glpi_groups.ID)
+		WHERE (glpi_softwareversions.$crit = '$searchID') " .
+			getEntitiesRestrictRequest('AND', 'glpi_computers') .		
+		"ORDER BY " . $order . " LIMIT $start," . $_SESSION['glpilist_limit'];
+	
+	$rand=mt_rand();
+
+	if ($result=$DB->query($query)){
+		if ($data=$DB->fetch_assoc($result)){
+			$sID = $data['sID'];
+			$sort_img="<img src=\"".$CFG_GLPI["root_doc"]."/pics/puce-up.png\" alt='' title=''>";
+			if ($canedit) {
+				echo "<form name='softinstall".$rand."' id='softinstall".$rand."' method='post' action=\"".$CFG_GLPI["root_doc"]."/front/software.licenses.php\">";
+				echo "<input type='hidden' name='sID' value='$sID'>";
+				echo "<table class='tab_cadrehov'><tr>";
+				echo "<th>&nbsp;</th>";
+			} else {
+				echo "<table class='tab_cadrehov'><tr>";				
+			}
+			
+			if ($crit=="sID") {
+				echo "<th>".($order=="vername"?$sort_img:"")."<a href='javascript:reloadTab(\"order=vername&start=0\");'>".$LANG["software"][5]."</a></th>";
+			}
+			echo "<th>".($order=="compname"?$sort_img:"")."<a href='javascript:reloadTab(\"order=compname&start=0\");'>".$LANG["common"][16]."</a></th>";
+			echo "<th>".(ereg("entity",$order)?$sort_img:"")."<a href='javascript:reloadTab(\"order=entity,compname&start=0\");'>".$LANG["entity"][0]."</a></th>";
+			echo "<th>".($order=="serial"?$sort_img:"")."<a href='javascript:reloadTab(\"order=serial&start=0\");'>".$LANG["common"][19]."</a></th>";
+			echo "<th>".($order=="otherserial"?$sort_img:"")."<a href='javascript:reloadTab(\"order=otherserial&start=0\");'>".$LANG["common"][20]."</a></th>";
+			echo "<th>".(ereg("location",$order)?$sort_img:"")."<a href='javascript:reloadTab(\"order=location,compname&start=0\");'>".$LANG["common"][15]."</a></th>";
+			echo "<th>".(ereg("groupe",$order)?$sort_img:"")."<a href='javascript:reloadTab(\"order=groupe,compname&start=0\");'>".$LANG["common"][35]."</a></th>";
+			echo "<th>".(ereg("contact",$order)?$sort_img:"")."<a href='javascript:reloadTab(\"order=contact,compname&start=0\");'>".$LANG["common"][18]."</a></th>";
+			echo "</tr>\n";
+
+			do {
+				echo "<tr class='tab_bg_2'>";
+				if ($canedit){
+					echo "<td><input type='checkbox' name='item[".$data["ID"]."]' value='1'></td>";
+				}
+				if ($crit=="sID") {
+					echo "<td><a href='softwareversion.form.php?ID=".$data['vID']."'>".$data['version']."</a></td>";
+				}
+				$compname=$data['compname'];
+				if (empty($compname) || $_SESSION['glpiview_ID']) {
+					$compname .= " (".$data['cID'].")";
+				}
+				if ($canshowcomputer){
+					echo "<td><a href='computer.form.php?ID=".$data['cID']."'>$compname</a></td>";
+				} else {
+					echo "<td>".$compname."</td>";
+				}
+				echo "<td>".$data['entity']."</td>";
+				echo "<td>".$data['serial']."</td>";
+				echo "<td>".$data['otherserial']."</td>";
+				echo "<td>".$data['location']."</td>";
+				echo "<td>".$data['groupe']."</td>";
+				echo "<td>".$data['contact']."</td></tr>\n";
+				
+			} while ($data=$DB->fetch_assoc($result));
+
+			echo "</table>";			
+
+			if ($canedit){
+				echo "<table width='80%' class='tab_glpi'>";
+				echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td>";
+				echo "<td class='left' width='100%'><a onclick= \"if ( markCheckboxes('softinstall".$rand."') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$sID&amp;select=all'>".$LANG["buttons"][18]."</a>";							
+				echo "&nbsp;/&nbsp;<a onclick= \"if ( unMarkCheckboxes('softinstall".$rand."') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$sID&amp;select=none'>".$LANG["buttons"][19]."</a>";
+
+				dropdownSoftwareVersions("versionID",$sID);
+				echo "&nbsp;<input type='submit' name='moveinstalls' value=\"".$LANG["buttons"][20]."\"
+ class='submit'>";
+
+				echo "&nbsp;<input type='submit' name='deleteinstalls' value=\"".$LANG["buttons"][6]."\" class='submit'>";
+	
+				echo "</td></tr>\n";
+				echo "</table>";
+				echo "</form>";
+			}
+			
+		} else { // Not found
+			echo $LANG["search"][15];
+		}
+	} // Query
+	echo "</div>";
+}
+
+/**
  * Show Licenses of a software
  *
  * @param $sID ID of the software
