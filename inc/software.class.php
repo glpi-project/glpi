@@ -429,7 +429,7 @@ class SoftwareVersion extends CommonDBTM {
 		$this->table = "glpi_softwareversions";
 		$this->type = SOFTWAREVERSION_TYPE;
 		$this->entity_assign=true;
-
+		$this->may_be_recursive=true;
 	}
 	function cleanDBonPurge($ID) {
 
@@ -452,7 +452,12 @@ class SoftwareVersion extends CommonDBTM {
 		$soft=new Software();
 		$soft->getFromDB($this->fields["sID"]);
 		return $soft->getEntityID();
+	}	
 
+	function isRecursive () {
+		$soft=new Software();
+		$soft->getFromDB($this->fields["sID"]);
+		return $soft->isRecursive();
 	}	
 
 	function defineTabs($ID,$withtemplate) {
@@ -476,10 +481,9 @@ class SoftwareVersion extends CommonDBTM {
 	function showForm($target,$ID,$sID=-1){
 		global $CFG_GLPI,$LANG;
 
-		if (!haveRight("software","w"))	return false;
+		if (!haveRight("software","r"))	return false;
 
 		$use_cache=true;
-error_log("before check");
 		if ($ID > 0){
 			$this->check($ID,'r');
 		} else {
@@ -488,7 +492,7 @@ error_log("before check");
 			$use_cache=false;
 			$this->getEmpty();
 		} 
-error_log("after check");
+		$canedit=$this->can($ID,'w');
 
 
 		$this->showTabs($ID, false, $_SESSION['glpi_tab'],array(),"sID=".$this->fields['sID']);
@@ -522,34 +526,36 @@ error_log("after check");
 		echo "</td>";
 		echo "</tr>";
 
-		echo "<tr  class='tab_bg_2'>";
+		if ($canedit) {			
+			echo "<tr  class='tab_bg_2'>";
 
-		if ($ID>0) {
-
-			if (countInstallationsForVersion($ID)>0){
-				echo "<td  colspan='2'>";
-				echo "<input type='hidden' name='ID' value=\"$ID\">\n";
-				echo "<div class='center'><input type='submit' name='update' value=\"".$LANG["buttons"][7]."\" class='submit'></div>";
-				echo "</td>\n\n";
-			} else {
-				echo "<td>";
-				echo "<input type='hidden' name='ID' value=\"$ID\">\n";
-				echo "<div class='center'><input type='submit' name='update' value=\"".$LANG["buttons"][7]."\" class='submit'></div>";
-				echo "</td>\n\n";
-				echo "<td>";
-				echo "<input type='hidden' name='ID' value=\"$ID\">\n";
-				echo "<div class='center'><input type='submit' name='delete' value=\"".$LANG["buttons"][6]."\" class='submit'></div>";
-				echo "</td>\n\n";
-
-			}
+			if ($ID>0) {
 	
-
-		} else {
-
-			echo "<td colspan='2'>";
-			echo "<div class='center'><input type='submit' name='add' value=\"".$LANG["buttons"][8]."\" class='submit'></div>";
-			echo "</td></tr>";
-
+				if (countInstallationsForVersion($ID)>0){
+					echo "<td  colspan='2'>";
+					echo "<input type='hidden' name='ID' value=\"$ID\">\n";
+					echo "<div class='center'><input type='submit' name='update' value=\"".$LANG["buttons"][7]."\" class='submit'></div>";
+					echo "</td>\n\n";
+				} else {
+					echo "<td>";
+					echo "<input type='hidden' name='ID' value=\"$ID\">\n";
+					echo "<div class='center'><input type='submit' name='update' value=\"".$LANG["buttons"][7]."\" class='submit'></div>";
+					echo "</td>\n\n";
+					echo "<td>";
+					echo "<input type='hidden' name='ID' value=\"$ID\">\n";
+					echo "<div class='center'><input type='submit' name='delete' value=\"".$LANG["buttons"][6]."\" class='submit'></div>";
+					echo "</td>\n\n";
+	
+				}
+		
+	
+			} else {
+	
+				echo "<td colspan='2'>";
+				echo "<div class='center'><input type='submit' name='add' value=\"".$LANG["buttons"][8]."\" class='submit'></div>";
+				echo "</td></tr>";
+	
+			}
 		}
 		echo "</table></div></form>";
 		echo "<div id='tabcontent'></div>";
