@@ -265,7 +265,7 @@ function showLicenses($sID) {
 	if (isset($_REQUEST["order"]) && !empty($_REQUEST["order"])) {
 		$order = $_REQUEST["order"];
 	} else {
-		$order = "entity";
+		$order = "entity, name";
 	}
 
 	// Righ type is enough. Can add a License on a software we have Read access
@@ -307,18 +307,22 @@ function showLicenses($sID) {
 				echo "<form method='post' name='massiveactionlicense_form$rand' id='massiveactionlicense_form$rand' action=\"".$CFG_GLPI["root_doc"]."/front/massiveaction.php\">";
 			}
 
+			$sort_img="<img src=\"".$CFG_GLPI["root_doc"]."/pics/puce-up.png\" alt='' title=''>";
 			echo "<table class='tab_cadrehov'><tr>";
 			echo "<th>&nbsp;</th>";
-			echo "<th><a href='javascript:reloadTab(\"order=name&start=0\");'>".$LANG["common"][16]."</a></th>";
+				
+			echo "<th>".($order=="name"?$sort_img:"")."<a href='javascript:reloadTab(\"order=name&start=0\");'>".$LANG["common"][16]."</a></th>";
+			
 			if ($software->isRecursive()) {
-				echo "<th><a href='javascript:reloadTab(\"order=entity&start=0\");'>".$LANG["entity"][0]."</a></th>";
+				// Ereg to search entity in string for match default order
+				echo "<th>".(ereg("entity",$order)?$sort_img:"")."<a href='javascript:reloadTab(\"order=entity&start=0\");'>".$LANG["entity"][0]."</a></th>";
 			}
-			echo "<th><a href='javascript:reloadTab(\"order=serial&start=0\");'>".$LANG["common"][19]."</a></th>";
+			echo "<th>".($order=="serial"?$sort_img:"")."<a href='javascript:reloadTab(\"order=serial&start=0\");'>".$LANG["common"][19]."</a></th>";
 			echo "<th>".$LANG["tracking"][29]."</th>";
-			echo "<th><a href='javascript:reloadTab(\"order=typename&start=0\");'>".$LANG["common"][17]."</a></th>";
-			echo "<th><a href='javascript:reloadTab(\"order=buyname&start=0\");'>".$LANG["software"][1]."</a></th>";
-			echo "<th><a href='javascript:reloadTab(\"order=usename&start=0\");'>".$LANG["software"][2]."</a></th>";
-			echo "<th><a href='javascript:reloadTab(\"order=expire&start=0\");'>".$LANG["software"][32]."</a></th>";
+			echo "<th>".($order=="typename"?$sort_img:"")."<a href='javascript:reloadTab(\"order=typename&start=0\");'>".$LANG["common"][17]."</a></th>";
+			echo "<th>".($order=="buyname"?$sort_img:"")."<a href='javascript:reloadTab(\"order=buyname&start=0\");'>".$LANG["software"][1]."</a></th>";
+			echo "<th>".($order=="usename"?$sort_img:"")."<a href='javascript:reloadTab(\"order=usename&start=0\");'>".$LANG["software"][2]."</a></th>";
+			echo "<th>".($order=="expire"?$sort_img:"")."<a href='javascript:reloadTab(\"order=expire&start=0\");'>".$LANG["software"][32]."</a></th>";
 			echo "<th>".$LANG["software"][28]."</th>";
 			//echo "<th>".$LANG["financial"][3]."</th>";
 			echo "</tr>";
