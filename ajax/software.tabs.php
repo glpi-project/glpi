@@ -33,7 +33,7 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-
+//error_log("REQUEST".print_r($_REQUEST,true));
 
 $NEEDED_ITEMS=array("computer","software","rulesengine","tracking","document","user","group","link","reservation","infocom","contract","enterprise","rule.softwarecategories");
 
@@ -84,6 +84,9 @@ if(!isset($_POST["withtemplate"])) $_POST["withtemplate"] = "";
 					break;
 				case 2 :
 					showInstallations($_POST["ID"]);
+					break;
+				case 901 :
+					showInstallationsMockup1($_POST["ID"]);
 					break;
 				case 4 :
 					showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",SOFTWARE_TYPE,$_POST["ID"]);
