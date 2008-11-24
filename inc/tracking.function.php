@@ -2210,7 +2210,7 @@ function showAddFollowupForm($tID,$massiveaction=false){
 	echo "<tr class='tab_bg_2'><td width='$width_left'>";
 	echo "<table width='100%'>";
 	echo "<tr><td>".$LANG["joblist"][6]."</td>";
-	echo "<td><textarea name='".$prefix."contents".$postfix."' rows='8' cols='$cols'></textarea>";
+	echo "<td><textarea name='".$prefix."contents".$postfix."' rows='12' cols='$cols'></textarea>";
 	echo "</td></tr>";
 	echo "</table>";
 	echo "</td>";
