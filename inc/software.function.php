@@ -88,15 +88,13 @@ function showVersions($sID) {
 			echo "</tr>";
 			for ($tot=$nb=0;$data=$DB->fetch_assoc($result);$tot+=$nb){
 				$nb=countInstallationsForVersion($data['ID']);
+
+				// Show version if canedit (to update/delete) or if nb (to see installations)
 				if ($canedit || $nb) {				
 					echo "<tr class='tab_bg_2'>";
-					if ($canedit){
-						echo "<td><a href='softwareversion.form.php?ID=".$data['ID']."'>".$data['name'].(empty($data['name'])?$data['ID']:"")."</a></td>";
-					} else {
-							echo "<td>".$data['name'].(empty($data['name'])?$data['ID']:"")."</td>";
-					}
+					echo "<td><a href='softwareversion.form.php?ID=".$data['ID']."'>".$data['name'].(empty($data['name'])?$data['ID']:"")."</a></td>";
 					echo "<td align='right'>$nb</td>";
-				echo "<td>".$data['comments']."</td></tr>";
+					echo "<td>".$data['comments']."</td></tr>";
 				}
 			}
 			echo "<tr class='tab_bg_1'><td align='right'>".$LANG["common"][33]."</td><td align='right'>$tot</td><td>";
