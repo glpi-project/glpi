@@ -228,6 +228,14 @@ function step1($update)
 		}
 	}
 
+	//Test for session auto_start
+	if(ini_get('session.auto_start')==1) {
+		echo "<tr class='tab_bg_1'><td><b>".$LANG["install"][68]."</b></td>";
+		echo "<td class='red'>".$LANG["install"][69]."</td></tr>";
+		$error = 2;
+	}
+
+
 	//Test for option session use trans_id loaded or not.
 	echo "<tr class='tab_bg_1'><td><b>".$LANG["install"][74]."</b></td>";
 	//if(ini_get('session.use_trans_sid')) {
