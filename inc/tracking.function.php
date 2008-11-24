@@ -824,19 +824,6 @@ function addFormTracking ($device_type=0,$ID=0, $target, $author, $group=0, $ass
 	if (haveRight("comment_all_ticket","1")){
 //		echo "<tr><th colspan='4' align='center'>".$LANG["job"][45].":</th></tr>";
 		echo "<br>";
-		echo "<script type='text/javascript' >\n";
-		echo "function showPlan(){\n";
-
-			echo "Ext.get('plan').setDisplayed('none');";
-			$params=array('form'=>'followups',
-				'state'=>1,
-				'author'=>$_SESSION['glpiID'],
-				'entity'=>$_SESSION["glpiactive_entity"],
-			);
-			ajaxUpdateItemJsCode('viewplan',$CFG_GLPI["root_doc"]."/ajax/planning.php",$params,false);
-
-		echo "};";
-		echo "</script>";
 
 		showAddFollowupForm(-1);
 		//echo "</td></tr></table>";
@@ -2257,8 +2244,21 @@ function showAddFollowupForm($tID,$massiveaction=false){
 
 			echo "<td>";
 
+			echo "<script type='text/javascript' >\n";
+			echo "function showPlanAdd(){\n";
+		
+				echo "Ext.get('plan').setDisplayed('none');";
+				$params=array('form'=>'followups',
+					'state'=>1,
+					'author'=>$_SESSION['glpiID'],
+					'entity'=>$_SESSION["glpiactive_entity"],
+				);
+				ajaxUpdateItemJsCode('viewplan',$CFG_GLPI["root_doc"]."/ajax/planning.php",$params,false);
+		
+			echo "};";
+			echo "</script>";
 
-			echo "<div id='plan'  onClick='showPlan()'>\n";
+			echo "<div id='plan'  onClick='showPlanAdd()'>\n";
 			echo "<span class='showplan'>".$LANG["job"][34]."</span>";
 			echo "</div>\n";	
 
@@ -2384,7 +2384,22 @@ function showUpdateFollowupForm($ID){
 		if ($DB->numrows($result2)==0){
 			if ($commentall){
 
-				echo "<div id='plan'  onClick='showPlan()'>\n";
+				echo "<script type='text/javascript' >\n";
+				echo "function showPlanUpdate(){\n";
+		
+					echo "Ext.get('plan').setDisplayed('none');";
+					$params=array('form'=>'followups',
+						'state'=>1,
+						'author'=>$_SESSION['glpiID'],
+						'entity'=>$_SESSION["glpiactive_entity"],
+					);
+					ajaxUpdateItemJsCode('viewplan',$CFG_GLPI["root_doc"]."/ajax/planning.php",$params,false);
+		
+				echo "};";
+				echo "</script>";
+
+
+				echo "<div id='plan'  onClick='showPlanUpdate()'>\n";
 				echo "<span class='showplan'>".$LANG["job"][34]."</span>";
 				echo "</div>\n";	
 				echo "<div id='viewplan'></div>\n";

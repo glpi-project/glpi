@@ -62,7 +62,7 @@ if (isset($_POST['update'])){
 	$newID=$fup->add($_POST);
 
 	logEvent($_POST["tracking"], "tracking", 4, "tracking", $_SESSION["glpiname"]." ".$LANG["log"][20]." $newID.");
-	glpi_header($CFG_GLPI["root_doc"]."/front/tracking.form.php?ID=".$_POST["tracking"]);
+	glpi_header($CFG_GLPI["root_doc"]."/front/tracking.form.php?ID=".$_POST["tracking"]."&glpi_tab=1");
 
 } else if (isset($_POST["update_followup"])){
 	checkRight("comment_all_ticket","1");
