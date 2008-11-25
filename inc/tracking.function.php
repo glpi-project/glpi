@@ -2510,7 +2510,7 @@ function computeTicketTco($item_type,$item){
 	function showPreviewAssignAction($output)
 	{
 		global $LANG,$INFOFORM_PAGES,$CFG_GLPI;
-		
+		print_r($output);
 		//If ticket is assign to an object, display this information first
 		if (isset($output["FK_entities"]) && isset($output["computer"]) && isset($output["device_type"]))
 		{
@@ -2525,11 +2525,12 @@ function computeTicketTco($item_type,$item){
 			echo "</tr>";
 			
 			//Clean output of unnecessary fields (already processed)
-			unset($output["FK_entities"]);
+			
 			unset($output["computer"]);
 			unset($output["device_type"]);
 		}
-
+		
+		unset($output["FK_entities"]);
 		return $output;
 	}
 ?>
