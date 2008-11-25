@@ -119,16 +119,20 @@ if (isset($_POST["comments"])&&$_POST["comments"]){
 // Manage updates others dropdown for helpdesk
 if (isset($_POST["helpdesk_ajax"])&&$_POST["helpdesk_ajax"]){
 
-	$paramscomments=array('userID'=>'__VALUE__',
-			'entity_restrict'=>$_POST["entity_restrict"],
-			'device_type'=>0
-	);
-	ajaxUpdateItemOnSelectEvent("dropdown_author".$_POST["rand"],"tracking_my_devices",$CFG_GLPI["root_doc"]."/ajax/updateTrackingDeviceType.php",$paramscomments,false);
+		$paramscomments=array('userID'=>'__VALUE__',
+				'entity_restrict'=>$_POST["entity_restrict"],
+				'device_type'=>0,
+				'author_field'=>"dropdown_author".$_POST["rand"]
+		);
+	
+	if (isMultiEntitiesMode())
+		ajaxUpdateItemOnSelectEvent("dropdown_author".$_POST["rand"],"list_entities",$CFG_GLPI["root_doc"]."/ajax/dropdownUsersEntities.php",$paramscomments,false);
+	else
+		ajaxUpdateItemOnSelectEvent("dropdown_author".$_POST["rand"],"tracking_my_devices",$CFG_GLPI["root_doc"]."/ajax/updateTrackingDeviceType.php",$paramscomments,false);
 
 	$paramscomments=array('value'=>'__VALUE__'
 	);
 	ajaxUpdateItemOnSelectEvent("dropdown_author".$_POST["rand"],"uemail_result",$CFG_GLPI["root_doc"]."/ajax/uemailUpdate.php",$paramscomments,false);
-
 }
 
 
