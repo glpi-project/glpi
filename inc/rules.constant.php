@@ -215,7 +215,7 @@ $RULES_ACTIONS[RULE_TRACKING_AUTO_ACTION]['status']['type']='dropdown_status';
 
 $RULES_ACTIONS[RULE_TRACKING_AUTO_ACTION]['affectobject']['name']= $LANG["common"][1];
 $RULES_ACTIONS[RULE_TRACKING_AUTO_ACTION]['affectobject']['type']='text';
-$RULES_ACTIONS[RULE_TRACKING_AUTO_ACTION]['affectobject']['force_actions']=array("affectbyip","affectbyfqdn");
+$RULES_ACTIONS[RULE_TRACKING_AUTO_ACTION]['affectobject']['force_actions']=array("affectbyip","affectbyfqdn","affectbymac");
 
 //Software categories
 $RULES_CRITERIAS[RULE_SOFTWARE_CATEGORY]['name']['field']='name';

@@ -103,16 +103,21 @@ class TrackingBusinessRule extends Rule {
 					break;
 					case "affectbyip":
 					case "affectbyfqdn":
+					case "affectbymac":
 						if (!isset($output["FK_entities"]))
 							$output["FK_entities"]=$params["FK_entities"];
 						$regexvalue = getRegexResultById($action->fields["value"],$regex_results);
+						
 						switch ($action->fields["action_type"])
 						{
 							case "affectbyip":
-								$result = getUniqueObjectIDByIPAddress($regexvalue,$output["FK_entities"]);
+								$result = getUniqueObjectIDByIPAddressOrMac($regexvalue,"IP",$output["FK_entities"]);
 								break;
 							case "affectbyfqdn":
 								$result= getUniqueObjectIDByFQDN($regexvalue,$output["FK_entities"]);	
+								break;
+							case "affectbymac":
+								$result = getUniqueObjectIDByIPAddressOrMac($regexvalue,"MAC",$output["FK_entities"]);
 								break;
 							default:
 								$result=array();	

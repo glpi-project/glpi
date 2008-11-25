@@ -206,6 +206,9 @@ function dropdownRulesActions($rule_type,$name,$value=''){
 			case "affectbyfqdn":
 				$elements["affectbyfqdn"] = $LANG["rulesengine"][47];
 				break;
+			case "affectbymac":
+				$elements["affectbymac"] = $LANG["rulesengine"][49];
+				break;
 		}
 	}
 	
@@ -226,6 +229,8 @@ function getActionByID($ID){
 			return $LANG["rulesengine"][46];
 		case "affectbyfqdn":
 			return $LANG["rulesengine"][47];
+		case "affectbymac":
+			return $LANG["rulesengine"][49];
 						
 	}
 }
