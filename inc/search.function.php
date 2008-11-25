@@ -1417,6 +1417,7 @@ function addHaving($LINK,$NOT,$type,$ID,$val,$meta,$num){
 	if ($meta) $NAME="META_";
 
 	switch ($table.".".$field){
+		case "glpi_softwarelicenses.number":
 		case "glpi_tracking.count" :
 			$search=array("/\&lt;/","/\&gt;/");
 			$replace=array("<",">");
@@ -1523,6 +1524,7 @@ function addOrderBy($type,$ID,$order,$key=0){
 
 
 	switch($table.".".$field){
+		case "glpi_softwarelicenses.number":
 		case "glpi_device_hdd.specif_default" :
 		case "glpi_device_ram.specif_default" :
 		case "glpi_device_processor.specif_default" :
@@ -1802,6 +1804,9 @@ function addSelect ($type,$ID,$num,$meta=0,$meta_type=0){
 			} else {
 				return $table.$addtable.".".$field." AS ".$NAME."_$num, ";
 			}
+		break;
+		case "glpi_softwarelicenses.number":
+			return " SUM($table$addtable.$field) AS ".$NAME."_".$num.", ";
 		break;
 		case "glpi_softwarelicenses.name" :
 		case "glpi_softwarelicenses.serial" :
@@ -3252,6 +3257,12 @@ function addLeftJoin ($type,$ref_table,&$already_link_tables,$new_table,$linkfie
 		return $out." LEFT JOIN $new_table $AS ON (glpi_contract_device$addmetanum.FK_contract = $nt.ID) ";
 		break;
 		case "glpi_softwarelicenses":
+			if (!$meta){
+				return " LEFT JOIN $new_table $AS ON ($rt.ID = $nt.sID ".getEntitiesRestrictRequest("AND",$nt,'','',true).") ";
+			} else {
+				return "";
+			}
+		break;
 		case "glpi_softwareversions":
 			if (!$meta){
 				return " LEFT JOIN $new_table $AS ON ($rt.ID = $nt.sID) ";
