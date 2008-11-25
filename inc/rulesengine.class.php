@@ -156,7 +156,8 @@ class RuleCollection {
 		if (($need & $this->RuleList->load) != $need) {
 
 			//Select all the rules of a different type
-			$sql = "SELECT ID FROM glpi_rules_descriptions WHERE rule_type=".$this->rule_type." ORDER by ".$this->orderby." ASC";
+			$sql = "SELECT ID FROM glpi_rules_descriptions WHERE active=1 AND rule_type=".$this->rule_type." ORDER by ".$this->orderby." ASC";
+			
 			 $result = $DB->query($sql);
 			if ($result){
 				$this->RuleList->list = array();
@@ -610,7 +611,7 @@ class RuleCollection {
 		global $DB;
 		$input = array();
 		
-		$res = $DB->query("SELECT DISTINCT grc.criteria as criteria FROM glpi_rules_criterias as grc, glpi_rules_descriptions grd WHERE grc.FK_rules=grd.ID AND grd.rule_type=".$this->rule_type);
+		$res = $DB->query("SELECT DISTINCT grc.criteria as criteria FROM glpi_rules_criterias as grc, glpi_rules_descriptions grd WHERE grd.active=1 AND grc.FK_rules=grd.ID AND grd.rule_type=".$this->rule_type);
 		while ($data = $DB->fetch_array($res))
 			$input[]=$data["criteria"];
 		return $input;
