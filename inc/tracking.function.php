@@ -655,7 +655,7 @@ function addFormTracking ($device_type=0,$ID=0, $target, $author, $group=0, $ass
 	}
 	echo "<br><form name='form_ticket' method='post' action='$target$add_url' enctype=\"multipart/form-data\">";
 	echo "<div class='center'>";
-	echo "<input type='hidden' name='FK_entities' value='".$_SESSION["glpiactive_entity"]."'>";
+	
 
 	echo "<table class='tab_cadre_fixe'><tr><th colspan='4'>".$LANG["job"][13];
 	if (haveRight("comment_all_ticket","1")){
@@ -664,8 +664,11 @@ function addFormTracking ($device_type=0,$ID=0, $target, $author, $group=0, $ass
 	}
 
 	if (isMultiEntitiesMode()){
-		echo "&nbsp;(".getDropdownName("glpi_entities",$_SESSION["glpiactive_entity"]).")";
+		echo "<span id='entity_name'>&nbsp;(".getDropdownName("glpi_entities",$_SESSION["glpiactive_entity"]).")";
+		echo "<input type='hidden' name='FK_entities' value='".$_SESSION["glpiactive_entity"]."'></span>";
 	}
+	else
+		echo "<input type='hidden' name='FK_entities' value='".$_SESSION["glpiactive_entity"]."'>";
 
 	echo '<br>';
 
@@ -684,12 +687,18 @@ function addFormTracking ($device_type=0,$ID=0, $target, $author, $group=0, $ass
 	if (haveRight("update_ticket","1")){
 		echo "<tr class='tab_bg_2' align='center'><td>".$LANG["job"][4].":</td>";
 		echo "<td align='center'>";
-		$author_rand=dropdownAllUsers("author",$author,1,$_SESSION["glpiactive_entity"],1);
-
+		//$author_rand=dropdownAllUsers("author",$author,1,$_SESSION["glpiactive_entity"],1);
+		
+		//List all users, no entity restriction
+		$author_rand=dropdownAllUsers("author",$author,1,'',1);
+		echo "<td colspan='2' align='center'><div id='list_entities'></div></td>";
+		
+		echo "<tr class='tab_bg_2' align='center'>";
 		echo "</td><td>".$LANG["common"][35].":</td>";
-		echo "<td align='center'>";
+		
+		echo "<td align='center' colspan='3'><span id='span_group'>";
 		dropdownValue("glpi_groups","FK_group",$group,1,$_SESSION["glpiactive_entity"]);
-		echo "</td></tr>";
+		echo "</span></td></tr>";
 	} 
 
 
@@ -752,11 +761,11 @@ function addFormTracking ($device_type=0,$ID=0, $target, $author, $group=0, $ass
 		if (haveRight("assign_ticket","1")){
 			echo $LANG["job"][6].": ";
 			dropdownUsers("assign",$assign,"own_ticket",0,1,$_SESSION["glpiactive_entity"]);
-			echo "<br>".$LANG["common"][35].": ";
+			echo "<br>".$LANG["common"][35].": <span id='span_group_assign'>";
 			dropdownValue("glpi_groups", "assign_group", $assign_group,1,$_SESSION["glpiactive_entity"]);
-
+			echo "</span>";
 		} else if (haveRight("steal_ticket","1")) {
-			echo $LANG["job"][6].": ";
+			echo $LANG["job"][6].":";
 			dropdownUsers("assign",$assign,"ID",0,1,$_SESSION["glpiactive_entity"]);
 		}
 		echo "</td></tr>";

@@ -1,6 +1,6 @@
 <?php
 /*
- * @version $Id$
+ * @version $Id: uemailUpdate.php 7079 2008-07-14 13:41:00Z moyo $
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2008 by the INDEPNET Development Team.
@@ -33,15 +33,15 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-
 	define('GLPI_ROOT','..');
-
 	$AJAX_INCLUDE=1;
 	include (GLPI_ROOT."/inc/includes.php");
+	
+	// Send UTF8 Headers
 	header("Content-Type: text/html; charset=UTF-8");
 	header_nocache();
 	
-	checkRight("update_ticket","1");
-	dropdownMyDevices($_POST["userID"],$_POST["entity_restrict"]);
-	ajaxFooter();
+	checkCentralAccess();
+	
+	dropdownValue("glpi_groups",$_POST["group"],'',1,$_POST["entity_restrict"]);		
 ?>
