@@ -3187,7 +3187,13 @@ function addLeftJoin ($type,$ref_table,&$already_link_tables,$new_table,$linkfie
 		return $out." LEFT JOIN $new_table $AS ON (glpi_infocoms.budget = $nt.ID) ";
 		break;
 		case "glpi_infocoms":
-			return " LEFT JOIN $new_table $AS ON ($rt.ID = $nt.FK_device AND $nt.device_type='$type') ";
+			if ($type == SOFTWARE_TYPE) {
+				// Return the infocom linked to the license, not the template linked to the software
+				return addLeftJoin($type,$ref_table,$already_link_tables,"glpi_softwarelicenses",$linkfield) .
+					" LEFT JOIN $new_table $AS ON (glpi_softwarelicenses.ID = $nt.FK_device AND $nt.device_type = ".SOFTWARELICENSE_TYPE.") ";	
+			} else {
+				return " LEFT JOIN $new_table $AS ON ($rt.ID = $nt.FK_device AND $nt.device_type='$type') ";
+			}
 		break;
 		case "glpi_contract_device":
 			return " LEFT JOIN $new_table $AS ON ($rt.ID = $nt.FK_device AND $nt.device_type='$type') ";
