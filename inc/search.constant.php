@@ -1934,6 +1934,13 @@ $SEARCH_OPTION[SOFTWARE_TYPE][162]['linkfield']='';
 $SEARCH_OPTION[SOFTWARE_TYPE][162]['name']=$LANG["common"][20]; 
 $SEARCH_OPTION[SOFTWARE_TYPE][162]['forcegroupby']=true;
 
+$SEARCH_OPTION[SOFTWARE_TYPE][163]['table']='glpi_softwarelicenses'; 
+$SEARCH_OPTION[SOFTWARE_TYPE][163]['field']='number'; 
+$SEARCH_OPTION[SOFTWARE_TYPE][163]['linkfield']=''; 
+$SEARCH_OPTION[SOFTWARE_TYPE][163]['name']=$LANG["tracking"][29]; 
+$SEARCH_OPTION[SOFTWARE_TYPE][163]['forcegroupby']=true;
+$SEARCH_OPTION[SOFTWARE_TYPE][163]['usehaving']=true;
+
 $SEARCH_OPTION[SOFTWARE_TYPE]['financial']=$LANG["financial"][3];
 
 $SEARCH_OPTION[SOFTWARE_TYPE][25]['table']='glpi_infocoms';
