@@ -1914,6 +1914,26 @@ $SEARCH_OPTION[SOFTWARE_TYPE][138]['linkfield']='';
 $SEARCH_OPTION[SOFTWARE_TYPE][138]['name']=$LANG["financial"][107]." ".$LANG["financial"][1];
 $SEARCH_OPTION[SOFTWARE_TYPE][138]['forcegroupby']=true;
 
+$SEARCH_OPTION[SOFTWARE_TYPE]['license']=$LANG["software"][11];
+
+$SEARCH_OPTION[SOFTWARE_TYPE][160]['table']='glpi_softwarelicenses'; 
+$SEARCH_OPTION[SOFTWARE_TYPE][160]['field']='name'; 
+$SEARCH_OPTION[SOFTWARE_TYPE][160]['linkfield']=''; 
+$SEARCH_OPTION[SOFTWARE_TYPE][160]['name']=$LANG["common"][16]." - ".$LANG["software"][11]; 
+$SEARCH_OPTION[SOFTWARE_TYPE][160]['forcegroupby']=true;
+
+$SEARCH_OPTION[SOFTWARE_TYPE][161]['table']='glpi_softwarelicenses'; 
+$SEARCH_OPTION[SOFTWARE_TYPE][161]['field']='serial'; 
+$SEARCH_OPTION[SOFTWARE_TYPE][161]['linkfield']=''; 
+$SEARCH_OPTION[SOFTWARE_TYPE][161]['name']=$LANG["common"][19]; 
+$SEARCH_OPTION[SOFTWARE_TYPE][161]['forcegroupby']=true;
+
+$SEARCH_OPTION[SOFTWARE_TYPE][162]['table']='glpi_softwarelicenses'; 
+$SEARCH_OPTION[SOFTWARE_TYPE][162]['field']='otherserial'; 
+$SEARCH_OPTION[SOFTWARE_TYPE][162]['linkfield']=''; 
+$SEARCH_OPTION[SOFTWARE_TYPE][162]['name']=$LANG["common"][20]; 
+$SEARCH_OPTION[SOFTWARE_TYPE][162]['forcegroupby']=true;
+
 $SEARCH_OPTION[SOFTWARE_TYPE]['financial']=$LANG["financial"][3];
 
 $SEARCH_OPTION[SOFTWARE_TYPE][25]['table']='glpi_infocoms';
@@ -2006,8 +2026,10 @@ $SEARCH_OPTION[SOFTWARE_TYPE][122]['field']='comments';
 $SEARCH_OPTION[SOFTWARE_TYPE][122]['linkfield']=''; 
 $SEARCH_OPTION[SOFTWARE_TYPE][122]['name']=$LANG["common"][25]." - ".$LANG["financial"][3]; 
 
+
 /////// LICENSE_TYPE
 
+//TODO is this needed ?
 
 $SEARCH_OPTION[SOFTWARELICENSE_TYPE][2]['table']='glpi_softwarelicenses'; 
 $SEARCH_OPTION[SOFTWARELICENSE_TYPE][2]['field']='name'; 
