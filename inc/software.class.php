@@ -701,6 +701,7 @@ class SoftwareLicense extends CommonDBTM {
 
 		$this->showTabs($ID, false, $_SESSION['glpi_tab'],array(),"sID=".$this->fields['sID']);
 		echo "<form name='form' method='post' action=\"$target\" enctype=\"multipart/form-data\">";
+		echo "<input type='hidden' name='FK_entities' value='".$this->fields["FK_entities"]."'>";
 
 		echo "<div class='center' id='tabsbody'><table class='tab_cadre_fixe'>";
 		if ($ID>0){
