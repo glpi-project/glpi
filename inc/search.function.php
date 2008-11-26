@@ -1806,7 +1806,7 @@ function addSelect ($type,$ID,$num,$meta=0,$meta_type=0){
 			}
 		break;
 		case "glpi_softwarelicenses.number":
-			return " SUM($table$addtable.$field) AS ".$NAME."_".$num.", ";
+			return " FLOOR( SUM($table$addtable.$field) * COUNT(DISTINCT $table$addtable.ID) / COUNT($table$addtable.ID) ) AS ".$NAME."_".$num.", ";
 		break;
 		case "glpi_softwarelicenses.name" :
 		case "glpi_softwarelicenses.serial" :
