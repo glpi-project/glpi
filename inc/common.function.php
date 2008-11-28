@@ -561,16 +561,19 @@ function commonCheckForUseGLPI(){
 
 	preg_match("/([0-9]+)([KMG]*)/",$mem,$matches);
 
-	// no K M or G 
-	if (!isset($matches[2])&&isset($matches[1])){
-		$mem=$matches[1];
-	} else {
-		$mem=$matches[1];
-		switch ($matches[2]){
-			case "G" : $mem*=1024;
-			case "M" : $mem*=1024;
-			case "K" : $mem*=1024;
-			break;
+	$mem="";
+	// no K M or G
+	if (isset($matches[1])){ 
+		if (!isset($matches[2])){
+			$mem=$matches[1];
+		} else {
+			$mem=$matches[1];
+			switch ($matches[2]){
+				case "G" : $mem*=1024;
+				case "M" : $mem*=1024;
+				case "K" : $mem*=1024;
+				break;
+			}
 		}
 	}
 
