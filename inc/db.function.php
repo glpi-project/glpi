@@ -804,6 +804,8 @@ function getUserName($ID,$link=0){
 					$user["comments"].=$LANG["setup"][14].": ".$data["email"]."<br>";
 				if (!empty($data["phone"]))
 					$user["comments"].=$LANG["help"][35].": ".$data["phone"]."<br>";
+				if (!empty($data["mobile"]))
+					$user["comments"].=$LANG["common"][42].": ".$data["mobile"]."<br>";
 				if ($data["location"]>0){
 					$user["comments"].=$LANG["common"][15].": ".getDropdownName("glpi_dropdown_locations",$data["location"])."<br>";
 				}
