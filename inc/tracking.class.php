@@ -1186,6 +1186,9 @@ class Followup  extends CommonDBTM {
 			if (isset($input["add_close"])) $input['_close']=1;
 			unset($input["add_close"]);
 
+			if (isset($input["add_reopen"])) $input['_reopen']=1;
+			unset($input["add_reopen"]);
+
 			if (!isset($input["hour"])){
 				$input["hour"]=0;
 			}
@@ -1207,13 +1210,10 @@ class Followup  extends CommonDBTM {
 	function post_addItem($newID,$input) {
 		global $CFG_GLPI;
 
-		$job=new Job();
-		$job->getFromDB($input["tracking"]);
-
-		$job->updateDateMod($input["tracking"]);
+		$input["_job"]->updateDateMod($input["tracking"]);
 
 		if (isset($input["realtime"])&&$input["realtime"]>0) {
-			$job->updateRealTime($input["tracking"]);
+			$input["_job"]->updateRealTime($input["tracking"]);
 		}
 
 
@@ -1236,6 +1236,17 @@ class Followup  extends CommonDBTM {
 				$updates[]="closedate";
 				$input["_job"]->fields["status"]="old_done";
 				$input["_job"]->fields["closedate"] = $_SESSION["glpi_currenttime"];
+				$input["_job"]->updateInDB($updates);
+			}
+
+			if (isset($input["_reopen"])&&$input["_reopen"]){
+				$updates[]="status";
+				if ($input["_job"]->fields["assign"]>0 || $input["_job"]->fields["assign_group"]>0 
+					|| $input["_job"]->fields["assign_ent"]>0){
+					$input["_job"]->fields["status"]="assign";
+				} else {
+					$input["_job"]->fields["status"]="new";
+				}
 				$input["_job"]->updateInDB($updates);
 			}
 

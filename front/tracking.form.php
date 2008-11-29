@@ -57,7 +57,7 @@ if (isset($_POST['update'])){
 	glpi_header($CFG_GLPI["root_doc"]."/front/tracking.form.php?ID=".$_POST["ID"]);
 
 
-}else if (isset($_POST['add'])||isset($_POST['add_close'])) {
+}else if (isset($_POST['add'])||isset($_POST['add_close'])||isset($_POST['add_reopen'])) {
 	checkSeveralRightsOr(array("comment_ticket"=>"1","comment_all_ticket"=>"1","show_assign_ticket"=>"1"));
 	$newID=$fup->add($_POST);
 
