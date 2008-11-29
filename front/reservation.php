@@ -162,13 +162,13 @@ else {
 			checkRight("reservation_central","w");
 			$ri->delete($_GET);
 			logEvent($_GET['ID'], "reservation", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][22]);
-			glpi_header($_SERVER['HTTP_REFERER']);
+			glpi_header($CFG_GLPI["root_doc"] . "/front/reservation.php");
 		} else if (isset($_GET["active"]))
 		{
 			checkRight("reservation_central","w");
 			$ri->update($_GET);
 			logEvent($_GET['ID'], "reservation", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][21]);
-			glpi_header($_SERVER['HTTP_REFERER']);
+			glpi_header($CFG_GLPI["root_doc"] . "/front/reservation.php");
 		}
 
 		if (isset($_POST["updatecomment"]))
