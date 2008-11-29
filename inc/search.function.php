@@ -3256,6 +3256,11 @@ function addLeftJoin ($type,$ref_table,&$already_link_tables,$new_table,$linkfie
 			$out=addLeftJoin($type,$rt,$already_link_tables,"glpi_contract_device",$linkfield,$device_type,$meta,$meta_type);
 		return $out." LEFT JOIN $new_table $AS ON (glpi_contract_device$addmetanum.FK_contract = $nt.ID) ";
 		break;
+		case "glpi_dropdown_licensetypes":
+			$rt=translate_table("glpi_softwarelicenses",$meta,$meta_type);
+			return addLeftJoin($type,$ref_table,$already_link_tables,"glpi_softwarelicenses",$linkfield,$device_type,$meta,$meta_type) .
+				" LEFT JOIN $new_table $AS ON ($rt.type = $nt.ID)";
+			break;
 		case "glpi_softwarelicenses":
 			if (!$meta){
 				return " LEFT JOIN $new_table $AS ON ($rt.ID = $nt.sID ".getEntitiesRestrictRequest("AND",$nt,'','',true).") ";
