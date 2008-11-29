@@ -3393,7 +3393,9 @@ function addMetaLeftJoin($from_type,$to_type,&$already_link_tables2,$nullornott)
 					array_push($already_link_tables2,$LINK_ID_TABLE[SOFTWARE_TYPE]);
 					return " $LINK glpi_inst_software as inst_$to_type ON (inst_$to_type.cID = glpi_computers.ID) ".
 						" $LINK glpi_softwareversions as glpi_softwareversions_$to_type ON ( inst_$to_type.vID=glpi_softwareversions_$to_type.ID ) ".
-						" $LINK glpi_software ON (glpi_softwareversions_$to_type.sID = glpi_software.ID)"; 
+						" $LINK glpi_software ON (glpi_softwareversions_$to_type.sID = glpi_software.ID)".
+						" $LINK glpi_softwarelicenses AS glpi_softwarelicenses_$to_type ON (glpi_software.ID=glpi_softwarelicenses_$to_type.sID " .
+							getEntitiesRestrictRequest(' AND',"glpi_softwarelicenses_$to_type",'','',true).")";
 					break;
 			}
 			break;
