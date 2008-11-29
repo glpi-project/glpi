@@ -2287,7 +2287,12 @@ function showAddFollowupForm($tID,$massiveaction=false){
 		echo "</td>";
 		if ($commentall&&$tID>0){
 			echo "<td class='center'>";
-echo "<input type='submit' name='add_close' value='".$LANG["buttons"][26]."' class='submit'>";
+			// closed ticket 
+			if (ereg('old_',$job->fields['status'])){
+				echo "<input type='submit' name='add_reopen' value='".$LANG["buttons"][54]."' class='submit'>";
+			}else { // not closed ticket
+				echo "<input type='submit' name='add_close' value='".$LANG["buttons"][26]."' class='submit'>";
+			}
 			echo "</td>";
 		}
 		echo "</tr>";

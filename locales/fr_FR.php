@@ -106,6 +106,7 @@ $LANG["buttons"][50]="Tester";
 $LANG["buttons"][51]="Enregistrer";
 $LANG["buttons"][52]="Charger";  
 $LANG["buttons"][53]="Nettoyer";  
+$LANG["buttons"][54]="Ajouter et Réouvrir"; 
 
 $LANG["calendarD"][0]="D"; 
 $LANG["calendarD"][1]="L"; 
