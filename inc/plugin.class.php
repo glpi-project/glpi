@@ -268,10 +268,10 @@ class Plugin extends CommonDBTM {
 						}
 					} else {
 						echo $LANG["plugins"][5].":";
-						if (function_exists("plugin_".$plug['directory']."_install"){
+						if (function_exists("plugin_".$plug['directory']."_install")){
 							echo " plugin_".$plug['directory']."_install";
 						} 
-						if (function_exists("plugin_".$plug['directory']."_check_config"){
+						if (function_exists("plugin_".$plug['directory']."_check_config")){
 							echo " plugin_".$plug['directory']."_check_config";
 						} 
 					}
