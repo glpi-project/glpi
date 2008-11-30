@@ -142,10 +142,12 @@ class kbitem extends CommonDBTM {
 				language : \"".$CFG_GLPI["languages"][$_SESSION['glpilanguage']][3]."\",  
 				mode : \"exact\",  
 				elements: \"answer\", 
-				plugins : \"table\", 
+				plugins : \"table,directionality,paste,safari,searchreplace\", 
 				theme : \"advanced\", 
-				entity_encoding : \"numeric\", 
-				theme_advanced_toolbar_location : \"top\", 
+				entity_encoding : \"numeric\", ";
+			// directionality + search replace plugin
+			echo "	theme_advanced_buttons1_add : \"ltr,rtl,search,replace\",";
+			echo "	theme_advanced_toolbar_location : \"top\", 
 				theme_advanced_toolbar_align : \"left\",   
 				theme_advanced_buttons1 : \"bold,italic,underline,strikethrough,fontsizeselect,formatselect,separator,justifyleft,justifycenter,justifyright,justifyfull,bullist,numlist,outdent,indent\", 
 				theme_advanced_buttons2 : \"forecolor,backcolor,separator,hr,separator,link,unlink,anchor,separator,tablecontrols,undo,redo,cleanup,code,separator\",  
