@@ -241,7 +241,24 @@ function showKbItemList($target,$contains,$start,$parentID,$faq=0){
 		$numrows_1 =  $DB->result($result_1,0,0);
 
 		if ($numrows_1<=0) {// not result this fulltext try with alternate search
-			$contains = str_replace('\"','',$contains);		
+			//$contains = str_replace('\"','',$contains);	
+
+			$search1 = array(
+			/* 1 */		"/\"/",
+			/* 2 */		"/\+/",
+			/* 3 */		"/\*/",
+			/* 4 */		"/~/",
+		 	/* 5 */		"/</",
+			/* 6 */		"/>/",
+			/* 7 */		"/\(/",
+			/* 8 */		"/\)/",
+			/* 9 */		"/\-/"
+					);
+  			
+
+ 			$contains = preg_replace($search1,"", $contains);
+
+	
 			$where.= " (glpi_kbitems.question ".makeTextSearch($contains)." OR glpi_kbitems.answer ".makeTextSearch($contains).")"  ; 
 		 } else {
 			$where=$where_1;
