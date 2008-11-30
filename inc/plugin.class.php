@@ -256,7 +256,8 @@ class Plugin extends CommonDBTM {
 				case PLUGIN_NEW :
 				case PLUGIN_NOTINSTALLED :
 					echo "<td>";
-					if (function_exists("plugin_".$plug['directory']."_install")){
+					if (function_exists("plugin_".$plug['directory']."_install") 
+						&& function_exists("plugin_".$plug['directory']."_check_config")){
 						$function = 'plugin_' . $plug['directory'] . '_check_prerequisites';
 						$do_install=true;
 						if (function_exists($function)) {
@@ -266,7 +267,13 @@ class Plugin extends CommonDBTM {
 							echo "<a href='".$_SERVER['PHP_SELF']."?ID=$ID&amp;action=install'>".$LANG["buttons"][4]."<a>";
 						}
 					} else {
-						echo $LANG["plugins"][5].": "."plugin_".$plug['directory']."_install";
+						echo $LANG["plugins"][5].":";
+						if (function_exists("plugin_".$plug['directory']."_install"){
+							echo " plugin_".$plug['directory']."_install";
+						} 
+						if (function_exists("plugin_".$plug['directory']."_check_config"){
+							echo " plugin_".$plug['directory']."_check_config";
+						} 
 					}
 					echo "</td><td>";
 					if (function_exists("plugin_".$plug['directory']."_uninstall")){
