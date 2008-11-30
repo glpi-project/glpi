@@ -227,17 +227,27 @@ function showKbItemList($target,$contains,$start,$parentID,$faq=0){
 		$where .= " (glpi_kbitems.faq = '1') AND ";
 	}
 	
-	
-	if (strlen($contains)) { // il s'agit d'une recherche 
+	// a search with $contains
+	if (strlen($contains)) { 
 		$search=unclean_cross_side_scripting_deep($contains);
 		$score=" ,MATCH(glpi_kbitems.question,glpi_kbitems.answer) AGAINST('$search' IN BOOLEAN MODE) as SCORE ";
 		$where.="MATCH(glpi_kbitems.question,glpi_kbitems.answer) AGAINST('$search' IN BOOLEAN MODE) ";
 		$order="order by SCORE DESC";
-	} else { // Il ne s'agit pas d'une recherche, on browse by category
-	
+
+		// preliminar query to allow alternate search if no result with fulltext
+		$query_1 = "SELECT  * $score FROM glpi_kbitems";
+ 		$query_1.=" WHERE $where $order";
+		$result_1 = $DB->query($query_1);
+		$numrows_1 =  $DB->numrows($result_1);
+
+		if ($numrows_1<=0) {// not result this fulltext try with alternate search
+			$contains = str_replace('\"','',$contains);		
+			$where.= "OR (glpi_kbitems.question ".makeTextSearch($contains)." OR glpi_kbitems.answer ".makeTextSearch($contains).")"  ; 		
+		 }
+
+	} else { // no search -> browse by category
 		$where.="(glpi_kbitems.categoryID = $parentID) ";
 		$order="ORDER BY glpi_kbitems.question ASC";
-		
 	}
 	
 	
@@ -246,9 +256,8 @@ function showKbItemList($target,$contains,$start,$parentID,$faq=0){
 	}
 
 	$query = "SELECT  * $score FROM glpi_kbitems";
-  // $query.= " LEFT JOIN glpi_users  ON (glpi_users.ID = glpi_kbitems.author) ";
-	$query.=" WHERE $where $order";
-	//echo $query;
+ 	$query.=" WHERE $where $order";
+	
 	
 
 	// Get it from database	
