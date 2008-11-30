@@ -231,25 +231,26 @@ function showKbItemList($target,$contains,$start,$parentID,$faq=0){
 	if (strlen($contains)) { 
 		$search=unclean_cross_side_scripting_deep($contains);
 		$score=" ,MATCH(glpi_kbitems.question,glpi_kbitems.answer) AGAINST('$search' IN BOOLEAN MODE) as SCORE ";
-		$where.="MATCH(glpi_kbitems.question,glpi_kbitems.answer) AGAINST('$search' IN BOOLEAN MODE) ";
+		$where_1=$where." MATCH(glpi_kbitems.question,glpi_kbitems.answer) AGAINST('$search' IN BOOLEAN MODE) ";
 		$order="order by SCORE DESC";
 
 		// preliminar query to allow alternate search if no result with fulltext
-		$query_1 = "SELECT  * $score FROM glpi_kbitems";
- 		$query_1.=" WHERE $where $order";
+		$query_1 = "SELECT count(ID) FROM glpi_kbitems";
+ 		$query_1.=" WHERE $where_1";
 		$result_1 = $DB->query($query_1);
-		$numrows_1 =  $DB->numrows($result_1);
+		$numrows_1 =  $DB->result($result_1,0,0);
 
 		if ($numrows_1<=0) {// not result this fulltext try with alternate search
 			$contains = str_replace('\"','',$contains);		
-			$where.= "OR (glpi_kbitems.question ".makeTextSearch($contains)." OR glpi_kbitems.answer ".makeTextSearch($contains).")"  ; 		
-		 }
+			$where.= " (glpi_kbitems.question ".makeTextSearch($contains)." OR glpi_kbitems.answer ".makeTextSearch($contains).")"  ; 
+		 } else {
+			$where=$where_1;
+		}
 
 	} else { // no search -> browse by category
 		$where.="(glpi_kbitems.categoryID = $parentID) ";
 		$order="ORDER BY glpi_kbitems.question ASC";
 	}
-	
 	
 	if (!$start) {
 		$start = 0;
