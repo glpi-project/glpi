@@ -1142,7 +1142,7 @@ $LANG["plugins"][1]="Non installé";
 $LANG["plugins"][2]="Installé / non configuré"; 
 $LANG["plugins"][3]="Installé / non activé"; 
 $LANG["plugins"][4]="Erreur / à nettoyer"; 
-$LANG["plugins"][5]="Fonction inexistante"; 
+$LANG["plugins"][5]="Fonction(s) inexistante(s)"; 
 
 
 $LANG["printers"][14]="Série"; 
