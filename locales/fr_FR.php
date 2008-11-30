@@ -1602,7 +1602,7 @@ $LANG["setup"][283]="Copier ";
 $LANG["setup"][284]="Effacer "; 
 $LANG["setup"][300]="Vérifier si une nouvelle version est disponible"; 
 $LANG["setup"][301]="Une nouvelle version est disponible :"; 
-$LANG["setup"][302]="Vous la trouverez sur le site : <a href='http://glpi-project.org' target='_blank'>http://glpi-project.org</a>"; 
+$LANG["setup"][302]="Vous la trouverez sur le site GLPI-PROJECT.org"; 
 $LANG["setup"][303]="Vous disposez de la dernière version disponible"; 
 $LANG["setup"][304]="Connexion au site impossible. Si vous utilisez un proxy, configurez le."; 
 $LANG["setup"][306]="Vérifier la présence de mises à jour"; 
