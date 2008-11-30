@@ -241,10 +241,9 @@ function showKbItemList($target,$contains,$start,$parentID,$faq=0){
 		$numrows_1 =  $DB->result($result_1,0,0);
 
 		if ($numrows_1<=0) {// not result this fulltext try with alternate search
-			//$contains = str_replace('\"','',$contains);	
-
+			
 			$search1 = array(
-			/* 1 */		"/\"/",
+			/* 1 */		'/\\\"/',
 			/* 2 */		"/\+/",
 			/* 3 */		"/\*/",
 			/* 4 */		"/~/",
