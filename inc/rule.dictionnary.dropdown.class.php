@@ -99,7 +99,7 @@ class RuleDictionnaryDropdown extends RuleCached{
 				return $LANG["rulesengine"][68];
 			break;
 			case RULE_DICTIONNARY_OS_VERSION :
-				return $LANG["rulesengine"][68];
+				return $LANG["rulesengine"][69];
 			break;
 		}
 	}
