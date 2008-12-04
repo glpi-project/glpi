@@ -60,7 +60,7 @@ if (!isset($_POST["order"])) $_POST["order"]="";
 					showAssociatedContact($_POST["ID"]);
 					showContractAssociatedEnterprise($_POST["ID"]);
 					showDocumentAssociated(ENTERPRISE_TYPE,$_POST["ID"]);
-					showTrackingList($_POST['target'],$_POST["start"],$_POST["sort"],$_POST["order"],"all",'','',0,0,0,0,0,$_POST["ID"]);
+					showJobListForEnterprise($_POST["ID"]);
 					showLinkOnDevice(ENTERPRISE_TYPE,$_POST["ID"]);
 					displayPluginAction(ENTERPRISE_TYPE,$_POST["ID"],$_POST['glpi_tab']);
 					break;
@@ -74,7 +74,7 @@ if (!isset($_POST["order"])) $_POST["order"]="";
 					showDocumentAssociated(ENTERPRISE_TYPE,$_POST["ID"],0);
 					break;
 				case 6 :
-					showTrackingList($_POST['target']."?ID=".$_POST["ID"],$_POST["start"],$_POST["sort"],$_POST["order"],"all",'','',0,0,0,0,0,$_POST["ID"]);
+					showJobListForEnterprise($_POST["ID"]);
 					break;
 				case 7 : 
 					showLinkOnDevice(ENTERPRISE_TYPE,$_POST["ID"]);
