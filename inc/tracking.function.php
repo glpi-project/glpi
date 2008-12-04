@@ -348,6 +348,51 @@ function showJobListForItem($item_type,$item) {
 	}
 }
 
+function showJobListForEnterprise($entID) {
+	// $item is required
+	//affiche toutes les vielles intervention pour un $item donn� 
+
+	global $DB,$CFG_GLPI, $LANG;
+
+	if (!haveRight("show_all_ticket","1")) return false;
+
+	$where = "";	
+
+	$query = "SELECT ".getCommonSelectForTrackingSearch()." 
+			FROM glpi_tracking ".getCommonLeftJoinForTrackingSearch()." 
+			WHERE (assign_ent = '$entID') 
+				ORDER BY glpi_tracking.date_mod DESC LIMIT ".$_SESSION['glpilist_limit'];
+
+	$result = $DB->query($query);
+
+	$number = $DB->numrows($result);
+
+	if ($number > 0)
+	{
+		echo "<div class='center'><table class='tab_cadre_fixe'>";
+		echo "<tr><th colspan='10'>".$number." ".$LANG["job"][8].": &nbsp;";
+		echo "<a href='".$CFG_GLPI["root_doc"]."/front/tracking.php?reset=reset_before&amp;status=all&amp;assign_ent=$entID'>".$LANG["buttons"][40]."</a>";
+		echo "</th></tr>";
+
+		
+		commonTrackingListHeader(HTML_OUTPUT,$_SERVER['PHP_SELF'],"","","",true);
+
+		while ($data=$DB->fetch_assoc($result)){
+			showJobShort($data, 0);
+		}
+		echo "</table></div>";
+	} 
+	else
+	{
+		echo "<div class='center'>";
+		echo "<table class='tab_cadre_fixe'>";
+		echo "<tr><th>".$LANG["joblist"][8]."</th></tr>";
+
+		echo "</table>";
+		echo "</div><br>";
+	}
+}
+
 
 function showJobShort($data, $followups,$output_type=HTML_OUTPUT,$row_num=0) {
 	// Prints a job in short form
