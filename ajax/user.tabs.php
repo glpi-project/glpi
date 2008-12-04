@@ -69,7 +69,7 @@ if(empty($_POST["name"])) $_POST["name"] = "";
 					showDeviceUser($_POST["ID"]);
 					showUserReservations($_POST['target'],$_POST["ID"]);
 					if (haveRight("show_all_ticket", "1")){
-						showTrackingList($_POST['target'],$_POST["start"],$_POST["sort"],$_POST["order"],"all",'','',$_POST["ID"],0);
+						showJobListForUser($_POST["ID"]);
 					}
 					displayPluginAction(USER_TYPE,$_POST["ID"],$_SESSION['glpi_tab']);
 					break;
@@ -80,7 +80,7 @@ if(empty($_POST["name"])) $_POST["name"] = "";
 					showDeviceUser($_POST["ID"]);
 					break;
 				case 3 :
-					showTrackingList($_POST['target'],$_POST["start"],$_POST["sort"],$_POST["order"],"all",'','',$_POST["ID"],0);
+					showJobListForUser($_POST["ID"]);
 					break;
 				case 4 :
 					showGroupAssociated($_POST['target'],$_POST["ID"]);
