@@ -927,7 +927,7 @@ $LANG["mailing"][111]="Opozorilni email poslan k";
 $LANG["mailing"][112]="Nepravilen tip emaila"; 
 
 $LANG["Menu"][0]="Računalniki"; 
-$LANG["Menu"][1]="Omrežja"; 
+$LANG["Menu"][1]="Omrežna oprema"; 
 $LANG["Menu"][2]="Tiskalniki"; 
 $LANG["Menu"][3]="Monitorji"; 
 $LANG["Menu"][4]="Programska oprema"; 
@@ -1096,9 +1096,9 @@ $LANG["ocsng"][54]="Programska oprema izbrisana z OCS sinhronizacijo";
 $LANG["ocsng"][55]="Volume(s) locked(s)"; 
 $LANG["ocsng"][56]="No volume blocked"; 
 
-$LANG["pager"][1]="K"; 
-$LANG["pager"][2]="Od"; 
-$LANG["pager"][3]="V"; 
+$LANG["pager"][1]="do"; 
+$LANG["pager"][2]="od"; 
+$LANG["pager"][3]="od"; 
 $LANG["pager"][4]="Pokaži"; 
 $LANG["pager"][5]="Predmetov"; 
 
