@@ -509,7 +509,7 @@ function loadLanguage($forcelang='') {
 	}
 
 	// Debug display lang element with item
-	if ($_SESSION['glpi_use_mode']==TRANSLATION_MODE) {
+	if ($_SESSION['glpi_use_mode']==TRANSLATION_MODE && $CFG_GLPI["debug_lang"]) {
 		foreach ($LANG as $module => $tab) {
 			foreach ($tab as $num => $val) {
 				$LANG[$module][$num] = "".$LANG[$module][$num]."/<span style='font-size:12px; color:red;'>$module/$num</span>";

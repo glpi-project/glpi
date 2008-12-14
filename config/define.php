@@ -390,6 +390,10 @@
 	// New config options which can be missing during migration
 	$CFG_GLPI["numberformat"]=0;
 	$CFG_GLPI["decimal_number"]=2;
+
+	// Default debug options : may be locally overriden
+	$CFG_GLPI["debug_sql"]=$CFG_GLPI["debug_vars"]=$CFG_GLPI["debug_lang"]=1; 
+
 	
 	// User Prefs fields which override $CFG_GLPI config
 	$CFG_GLPI['user_pref_field']=array("language","list_limit","dateformat","numberformat","view_ID","dropdown_limit","flat_dropdowntree","num_of_events","nextprev_item","jobs_at_login","priority_1","priority_2","priority_3","priority_4","priority_5","expand_soft_categorized","expand_soft_not_categorized","tracking_order","followup_private");

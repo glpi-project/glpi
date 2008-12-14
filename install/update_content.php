@@ -50,7 +50,12 @@ startGlpiSession();
 
 // Init debug variable
 $_SESSION['glpi_use_mode']=DEBUG_MODE;
+$CFG_GLPI["debug_sql"]=$CFG_GLPI["debug_vars"]=0; 
 $CFG_GLPI["use_errorlog"]=1;
+ini_set('display_errors','On'); 
+error_reporting(E_ALL); 
+set_error_handler("userErrorHandler"); 
+
 //################################ Functions ################################
 
 function loadLang() {
