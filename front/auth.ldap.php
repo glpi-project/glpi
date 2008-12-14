@@ -114,12 +114,6 @@ elseif (isset($_POST["add_replicate"]))
 	glpi_header($_SERVER['HTTP_REFERER']);	
 }
 
-if (!isset ($_SESSION['glpi_authconfig'])){
-	$_SESSION['glpi_authconfig'] = 1;
-}
-if (isset ($_GET['onglet'])){
-	$_SESSION['glpi_authconfig'] = $_GET['onglet'];
-}
 
 if (!isset($_GET["ID"])){
 	$_GET["ID"]="";	
@@ -137,12 +131,10 @@ commonHeader($LANG["title"][14], $_SERVER['PHP_SELF'],"config","extauth","ldap")
 
 switch($_GET['next']){
 	case "extauth_ldap" :
-		$_SESSION['glpi_authconfig']=1;
 		$config_ldap->showForm($_SERVER['PHP_SELF'], $_GET["ID"]);
 		break;
 	default :
-		$_SESSION['glpi_authconfig']=1;
-		showFormExtAuthList($_SERVER['PHP_SELF']);
+		showLdapAuthList($_SERVER['PHP_SELF']);
 		break;
 }
 

@@ -999,7 +999,50 @@ function listTemplates($type, $target, $add = 0) {
 
 }
 
-function showFormExtAuthList($target) {
+function showLdapAuthList($target) {
+
+	global $DB, $LANG, $CFG_GLPI;
+
+	if (!haveRight("config", "w"))
+		return false;
+		
+	echo "<div class='center'>";
+	
+	if (canUseLdap()) {
+		
+		echo "<table class='tab_cadre_fixe' cellpadding='5'>";
+		echo "<tr><th colspan='2'>";
+		echo "<strong>" . $LANG["login"][2] . "</strong>";
+		echo "</th></tr>";
+		echo "<tr class='tab_bg_1'><td class='center'>" . $LANG["common"][16] . "</td><td class='center'>" . $LANG["common"][52] . "</td></tr>";
+
+		$sql = "SELECT * from glpi_auth_ldap";
+		$result = $DB->query($sql);
+		if ($DB->numrows($result)) {
+			while ($ldap_method = $DB->fetch_array($result)){
+				echo "<tr class='tab_bg_2'><td class='center'><a href='$target?next=extauth_ldap&amp;ID=" . $ldap_method["ID"] . "' >" . $ldap_method["name"] . "</a>" .
+				"</td><td class='center'>" . $LANG["ldap"][21]." : ".$ldap_method["ldap_host"].":".$ldap_method["ldap_port"];
+				$replicates=getAllReplicatesNamesForAMaster($ldap_method["ID"]);
+				if (!empty($replicates)){
+					echo "<br>".$LANG["ldap"][22]." : ".$replicates. "</td>";
+				}
+				echo '</tr>';
+			}
+		}
+		echo "</table>";
+	} else {
+		echo "<input type=\"hidden\" name=\"LDAP_Test\" value=\"1\" >";
+		echo "<table class='tab_cadre_fixe'>";
+		echo "<tr><th colspan='2'>" . $LANG["setup"][152] . "</th></tr>";
+		echo "<tr class='tab_bg_2'><td class='center'><p class='red'>" . $LANG["setup"][157] . "</p><p>" . $LANG["setup"][158] . "</p></td></tr></table>";
+	}
+
+
+	echo "</div>";
+	
+}
+
+function showOtherAuthList($target) {
 
 	global $DB, $LANG, $CFG_GLPI;
 
@@ -1011,130 +1054,104 @@ function showFormExtAuthList($target) {
 
 	echo "<div class='center'>";
 	
-	switch ($_SESSION['glpi_authconfig']){
-		case 2 :
-			if (canUseImapPop()) {
-				echo "<table class='tab_cadre_fixe' cellpadding='5'>";
-				echo "<tr><th colspan='2'>";
-				echo "<strong>" . $LANG["login"][3] . "</strong>";
+	echo "<table class='tab_cadre_fixe' cellpadding='5'>";
 
-				echo "</th></tr>";
-				echo "<tr class='tab_bg_1'><td class='center'>" . $LANG["common"][16] . "</td><td class='center'>" . $LANG["common"][52] . "</td></tr>";
-				$sql = "SELECT * from glpi_auth_mail";
-				$result = $DB->query($sql);
-				if ($DB->numrows($result)) {
-					
-		
-					while ($mail_method = $DB->fetch_array($result)){
-						echo "<tr class='tab_bg_2'><td class='center'><a href='$target?next=extauth_mail&amp;ID=" . $mail_method["ID"] . "' >" . $mail_method["name"] . "</a>" .
-						"</td><td class='center'>" . $mail_method["imap_host"] . "</td></tr>";
-					}
-				}
-				echo "</table>";
-			} else {
-				echo "<input type=\"hidden\" name=\"IMAP_Test\" value=\"1\" >";
-		
-				echo "<table class='tab_cadre_fixe'>";
-				echo "<tr><th colspan='2'>" . $LANG["setup"][162] . "</th></tr>";
-				echo "<tr class='tab_bg_2'><td class='center'><p class='red'>" . $LANG["setup"][165] . "</p><p>" . $LANG["setup"][166] . "</p></td></tr></table>";
-			}
-		break;
-		case 1 :
-			if (canUseLdap()) {
-				
-				echo "<table class='tab_cadre_fixe' cellpadding='5'>";
-				echo "<tr><th colspan='2'>";
-				echo "<strong>" . $LANG["login"][2] . "</strong>";
-				echo "</th></tr>";
-				echo "<tr class='tab_bg_1'><td class='center'>" . $LANG["common"][16] . "</td><td class='center'>" . $LANG["common"][52] . "</td></tr>";
-		
-				$sql = "SELECT * from glpi_auth_ldap";
-				$result = $DB->query($sql);
-				if ($DB->numrows($result)) {
-					while ($ldap_method = $DB->fetch_array($result)){
-						echo "<tr class='tab_bg_2'><td class='center'><a href='$target?next=extauth_ldap&amp;ID=" . $ldap_method["ID"] . "' >" . $ldap_method["name"] . "</a>" .
-						"</td><td class='center'>" . $LANG["ldap"][21]." : ".$ldap_method["ldap_host"].":".$ldap_method["ldap_port"];
-						$replicates=getAllReplicatesNamesForAMaster($ldap_method["ID"]);
-						if (!empty($replicates)){
-							echo "<br>".$LANG["ldap"][22]." : ".$replicates. "</td>";
-						}
-						echo '</tr>';
-					}
-				}
-				echo "</table>";
-			} else {
-				echo "<input type=\"hidden\" name=\"LDAP_Test\" value=\"1\" >";
-				echo "<table class='tab_cadre_fixe'>";
-				echo "<tr><th colspan='2'>" . $LANG["setup"][152] . "</th></tr>";
-				echo "<tr class='tab_bg_2'><td class='center'><p class='red'>" . $LANG["setup"][157] . "</p><p>" . $LANG["setup"][158] . "</p></td></tr></table>";
-			}
-		break;
-
-		case 3 :
-				echo "<table class='tab_cadre_fixe' cellpadding='5'>";
-
-				// CAS config
-				echo "<tr><th colspan='2'>" . $LANG["setup"][177];
-				if (!empty($CFG_GLPI["cas_host"])){
-					echo " - ".$LANG["setup"][192];
-				}
-				echo "</th></tr>";
-
-				if (function_exists('curl_init') && (version_compare(PHP_VERSION, '5', '>=') || (function_exists("domxml_open_mem") && function_exists("utf8_decode")))) {		
-					echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["setup"][174] . "</td><td><input type=\"text\" name=\"cas_host\" value=\"" . $CFG_GLPI["cas_host"] . "\"></td></tr>";
-					echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["setup"][175] . "</td><td><input type=\"text\" name=\"cas_port\" value=\"" . $CFG_GLPI["cas_port"] . "\"></td></tr>";
-					echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["setup"][176] . "</td><td><input type=\"text\" name=\"cas_uri\" value=\"" . $CFG_GLPI["cas_uri"] . "\" ></td></tr>";
-					echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["setup"][182] . "</td><td><input type=\"text\" name=\"cas_logout\" value=\"" . $CFG_GLPI["cas_logout"] . "\" ></td></tr>";
-				} else {
-					echo "<tr class='tab_bg_2'><td class='center' colspan='2'><p class='red'>" . $LANG["setup"][178] . "</p><p>" . $LANG["setup"][179] . "</p></td></tr>";
-				}
-				// X509 config
-				echo "<tr><th colspan='2'>" . $LANG["setup"][190];
-				if (!empty($CFG_GLPI["x509_email_field"])){
-					echo " - ".$LANG["setup"][192];
-				}
-				echo "</th></tr>";
-				echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["setup"][191] . "</td><td><input type=\"text\" name=\"x509_email_field\" value=\"" . $CFG_GLPI["x509_email_field"] . "\"></td></tr>";
-
-				// X509 config
-				echo "<tr><th colspan='2'>" . $LANG["common"][67];
-				if (!empty($CFG_GLPI["existing_auth_server_field"])){
-					echo " - ".$LANG["setup"][192];
-				}
-				echo "</th></tr>";
-				echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["setup"][193] . "</td><td>";
-				echo "<select name='existing_auth_server_field'>";
-				echo "<option value=''>&nbsp;</option>";
-				echo "<option value='HTTP_AUTH_USER' " . ($CFG_GLPI["existing_auth_server_field"]=="HTTP_AUTH_USER" ? " selected " : "") . ">HTTP_AUTH_USER</option>";
-				echo "<option value='REMOTE_USER' " . ($CFG_GLPI["existing_auth_server_field"]=="REMOTE_USER" ? " selected " : "") . ">REMOTE_USER</option>";
-				echo "<option value='PHP_AUTH_USER' " . ($CFG_GLPI["existing_auth_server_field"]=="PHP_AUTH_USER" ? " selected " : "") . ">PHP_AUTH_USER</option>";
-				echo "<option value='USERNAME' " . ($CFG_GLPI["existing_auth_server_field"]=="USERNAME" ? " selected " : "") . ">USERNAME</option>";
-				echo "<option value='REDIRECT_REMOTE_USER' " . ($CFG_GLPI["existing_auth_server_field"]=="REDIRECT_REMOTE_USER" ? " selected " : "") . ">REDIRECT_REMOTE_USER</option>";
-				echo "</select>";
-				
-				echo "</td></tr>";
-
-				echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["setup"][199] . "</td><td>";
-
-				dropdownYesNo('existing_auth_server_field_clean_domain',$CFG_GLPI['existing_auth_server_field_clean_domain']);		
-				echo "</td></tr>";
-
-				echo "<tr><th colspan='2'>" . $LANG["setup"][194]."</th></tr>";
-				echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["ldap"][4] . "</td><td>";
-				dropdownValue("glpi_auth_ldap","extra_ldap_server",$CFG_GLPI["extra_ldap_server"]);
-				echo "</td></tr>";
-
-				echo "<tr class='tab_bg_1'><td align='center' colspan='2'><input type=\"submit\" name=\"update\" class=\"submit\" value=\"" . $LANG["buttons"][7] . "\" ></td></tr>";
-		
-				echo "</table>";
-		break;
+	// CAS config
+	echo "<tr><th colspan='2'>" . $LANG["setup"][177];
+	if (!empty($CFG_GLPI["cas_host"])){
+		echo " - ".$LANG["setup"][192];
 	}
+	echo "</th></tr>";
+
+	if (function_exists('curl_init') && (version_compare(PHP_VERSION, '5', '>=') || (function_exists("domxml_open_mem") && function_exists("utf8_decode")))) {		
+		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["setup"][174] . "</td><td><input type=\"text\" name=\"cas_host\" value=\"" . $CFG_GLPI["cas_host"] . "\"></td></tr>";
+		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["setup"][175] . "</td><td><input type=\"text\" name=\"cas_port\" value=\"" . $CFG_GLPI["cas_port"] . "\"></td></tr>";
+		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["setup"][176] . "</td><td><input type=\"text\" name=\"cas_uri\" value=\"" . $CFG_GLPI["cas_uri"] . "\" ></td></tr>";
+		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["setup"][182] . "</td><td><input type=\"text\" name=\"cas_logout\" value=\"" . $CFG_GLPI["cas_logout"] . "\" ></td></tr>";
+	} else {
+		echo "<tr class='tab_bg_2'><td class='center' colspan='2'><p class='red'>" . $LANG["setup"][178] . "</p><p>" . $LANG["setup"][179] . "</p></td></tr>";
+	}
+	// X509 config
+	echo "<tr><th colspan='2'>" . $LANG["setup"][190];
+	if (!empty($CFG_GLPI["x509_email_field"])){
+		echo " - ".$LANG["setup"][192];
+	}
+	echo "</th></tr>";
+	echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["setup"][191] . "</td><td><input type=\"text\" name=\"x509_email_field\" value=\"" . $CFG_GLPI["x509_email_field"] . "\"></td></tr>";
+
+	// X509 config
+	echo "<tr><th colspan='2'>" . $LANG["common"][67];
+	if (!empty($CFG_GLPI["existing_auth_server_field"])){
+		echo " - ".$LANG["setup"][192];
+	}
+	echo "</th></tr>";
+	echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["setup"][193] . "</td><td>";
+	echo "<select name='existing_auth_server_field'>";
+	echo "<option value=''>&nbsp;</option>";
+	echo "<option value='HTTP_AUTH_USER' " . ($CFG_GLPI["existing_auth_server_field"]=="HTTP_AUTH_USER" ? " selected " : "") . ">HTTP_AUTH_USER</option>";
+	echo "<option value='REMOTE_USER' " . ($CFG_GLPI["existing_auth_server_field"]=="REMOTE_USER" ? " selected " : "") . ">REMOTE_USER</option>";
+	echo "<option value='PHP_AUTH_USER' " . ($CFG_GLPI["existing_auth_server_field"]=="PHP_AUTH_USER" ? " selected " : "") . ">PHP_AUTH_USER</option>";
+	echo "<option value='USERNAME' " . ($CFG_GLPI["existing_auth_server_field"]=="USERNAME" ? " selected " : "") . ">USERNAME</option>";
+	echo "<option value='REDIRECT_REMOTE_USER' " . ($CFG_GLPI["existing_auth_server_field"]=="REDIRECT_REMOTE_USER" ? " selected " : "") . ">REDIRECT_REMOTE_USER</option>";
+	echo "</select>";
+	
+	echo "</td></tr>";
+
+	echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["setup"][199] . "</td><td>";
+
+	dropdownYesNo('existing_auth_server_field_clean_domain',$CFG_GLPI['existing_auth_server_field_clean_domain']);		
+	echo "</td></tr>";
+
+	echo "<tr><th colspan='2'>" . $LANG["setup"][194]."</th></tr>";
+	echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["ldap"][4] . "</td><td>";
+	dropdownValue("glpi_auth_ldap","extra_ldap_server",$CFG_GLPI["extra_ldap_server"]);
+	echo "</td></tr>";
+
+	echo "<tr class='tab_bg_1'><td align='center' colspan='2'><input type=\"submit\" name=\"update\" class=\"submit\" value=\"" . $LANG["buttons"][7] . "\" ></td></tr>";
+
+	echo "</table>";
 
 	echo "</div>";
 	echo "</form>";
 	
 }
 
+function showImapAuthList($target) {
+
+	global $DB, $LANG, $CFG_GLPI;
+
+	if (!haveRight("config", "w"))
+		return false;
+		
+	echo "<div class='center'>";
+	
+	if (canUseImapPop()) {
+		echo "<table class='tab_cadre_fixe' cellpadding='5'>";
+		echo "<tr><th colspan='2'>";
+		echo "<strong>" . $LANG["login"][3] . "</strong>";
+
+		echo "</th></tr>";
+		echo "<tr class='tab_bg_1'><td class='center'>" . $LANG["common"][16] . "</td><td class='center'>" . $LANG["common"][52] . "</td></tr>";
+		$sql = "SELECT * from glpi_auth_mail";
+		$result = $DB->query($sql);
+		if ($DB->numrows($result)) {
+					
+			while ($mail_method = $DB->fetch_array($result)){
+				echo "<tr class='tab_bg_2'><td class='center'><a href='$target?next=extauth_mail&amp;ID=" . $mail_method["ID"] . "' >" . $mail_method["name"] . "</a>" .
+				"</td><td class='center'>" . $mail_method["imap_host"] . "</td></tr>";
+			}
+		}
+		echo "</table>";
+	} else {
+		echo "<input type=\"hidden\" name=\"IMAP_Test\" value=\"1\" >";
+		
+		echo "<table class='tab_cadre_fixe'>";
+		echo "<tr><th colspan='2'>" . $LANG["setup"][162] . "</th></tr>";
+		echo "<tr class='tab_bg_2'><td class='center'><p class='red'>" . $LANG["setup"][165] . "</p><p>" . $LANG["setup"][166] . "</p></td></tr></table>";
+	}
+	echo "</div>";
+	
+}
 
 	function showMailServerConfig($value) {
 		global $LANG;

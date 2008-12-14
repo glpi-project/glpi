@@ -54,12 +54,6 @@ if (isset ($_POST["update"])) {
 	glpi_header($CFG_GLPI["root_doc"] . "/front/auth.others.php");
 }
 
-if (!isset ($_SESSION['glpi_authconfig'])){
-	$_SESSION['glpi_authconfig'] = 3;
-}
-if (isset ($_GET['onglet'])){
-	$_SESSION['glpi_authconfig'] = $_GET['onglet'];
-}
 
 if (!isset($_GET["ID"])){
 	$_GET["ID"]="";	
@@ -67,8 +61,7 @@ if (!isset($_GET["ID"])){
 
 commonHeader($LANG["title"][14], $_SERVER['PHP_SELF'],"config","extauth","others");
 
-$_SESSION['glpi_authconfig']=3;
-showFormExtAuthList($_SERVER['PHP_SELF']);
+showOtherAuthList($_SERVER['PHP_SELF']);
 
 commonFooter();
 ?>
