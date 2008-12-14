@@ -55,7 +55,7 @@ if (isset ($_POST["update"])) {
 }
 
 if (!isset ($_SESSION['glpi_authconfig'])){
-	$_SESSION['glpi_authconfig'] = 1;
+	$_SESSION['glpi_authconfig'] = 3;
 }
 if (isset ($_GET['onglet'])){
 	$_SESSION['glpi_authconfig'] = $_GET['onglet'];
@@ -65,24 +65,10 @@ if (!isset($_GET["ID"])){
 	$_GET["ID"]="";	
 }
 
-if (!isset($_GET["next"])){
-	$_GET["next"]="";	
-}
-
-if (!isset($_GET["preconfig"])){
-	$_GET["preconfig"]="";	
-}
-
 commonHeader($LANG["title"][14], $_SERVER['PHP_SELF'],"config","extauth","others");
 
-$tabs[3]=array('title'=>$LANG["common"][67],
-'url'=>$CFG_GLPI['root_doc']."/ajax/auth.tabs.php",
-'params'=>"target=".$_SERVER['PHP_SELF']."&ID=".$_GET["ID"]."&next=".$_GET["next"]."&preconfig=".$_GET["preconfig"]."&auth_tab=3");
-			
-echo "<div id='tabspanel' class='center-h'></div>";
-createAjaxTabs('tabspanel','tabcontent',$tabs,$_SESSION['glpi_authconfig']);
-echo "<div id='tabcontent'></div>";
-echo "<script type='text/javascript'>loadDefaultTab();</script>";
+$_SESSION['glpi_authconfig']=3;
+showFormExtAuthList($_SERVER['PHP_SELF']);
 
 commonFooter();
 ?>
