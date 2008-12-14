@@ -34,6 +34,16 @@ if (!defined('GLPI_ROOT')){
 	die("Sorry. You can't access directly to this file");
 	}
 
+// Notice problem  for date function :
+if (function_exists('date_default_timezone_set')){
+	$tz=ini_get('date.timezone');
+	if (!empty($tz)){
+		date_default_timezone_set($tz);
+	} else {
+		date_default_timezone_set(@date_default_timezone_get());
+	}
+}
+
 // If this file exists, it is load, allow to set configdir/dumpdir elsewhere
 if(file_exists(GLPI_ROOT ."/config/config_path.php")) {
 	include(GLPI_ROOT ."/config/config_path.php");

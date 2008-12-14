@@ -44,7 +44,6 @@ function update0713to072() {
 
 	// TO TRY for software update
 	ini_set("max_execution_time", "0");
-	$_SESSION['glpi_use_mode']=NORMAL_MODE; // for memory usage
 
 	echo "<h3>".$LANG["install"][4]." -&gt; 0.72</h3>";
 	displayMigrationMessage("072"); // Start

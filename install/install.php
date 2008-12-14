@@ -35,8 +35,9 @@
 
 
 define('GLPI_ROOT', '..');
-include_once (GLPI_ROOT . "/config/based_config.php");
+
 include_once (GLPI_ROOT . "/config/define.php");
+include_once (GLPI_ROOT . "/config/based_config.php");
 include_once (GLPI_ROOT . "/inc/timer.class.php");
 include_once (GLPI_ROOT . "/inc/common.function.php");
 include_once (GLPI_ROOT . "/inc/db.function.php");
@@ -53,8 +54,12 @@ if (is_writable(GLPI_SESSION_DIR)){
 }
 
 $_SESSION['glpi_use_mode']==DEBUG_MODE;
+$CFG_GLPI["debug_sql"]=$CFG_GLPI["debug_vars"]=0; 
 
 $CFG_GLPI["use_errorlog"]=1;
+ini_set('display_errors','On'); 
+error_reporting(E_ALL); 
+set_error_handler("userErrorHandler"); 
 
 //Print a correct  Html header for application
 function header_html($etape)

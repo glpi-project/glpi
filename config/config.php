@@ -72,6 +72,9 @@
 		// ***********************************************************************		
 
 		//Options from DB, do not touch this part.
+
+
+		// Default Use mode
 		if (!isset($_SESSION['glpi_use_mode'])){
 			$_SESSION['glpi_use_mode']=NORMAL_MODE;
 		}
