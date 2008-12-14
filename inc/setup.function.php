@@ -1009,7 +1009,7 @@ function showFormExtAuthList($target) {
 	echo "<form name=cas action=\"$target\" method=\"post\">";
 	echo "<input type='hidden' name='ID' value='" . $CFG_GLPI["ID"] . "'>";
 
-	echo "<div class='center' id='tabsbody'>";
+	echo "<div class='center'>";
 	
 	switch ($_SESSION['glpi_authconfig']){
 		case 2 :

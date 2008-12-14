@@ -93,20 +93,18 @@ if (!isset($_GET["next"])){
 	$_GET["next"]="";	
 }
 
-if (!isset($_GET["preconfig"])){
-	$_GET["preconfig"]="";	
-}
-
 commonHeader($LANG["title"][14], $_SERVER['PHP_SELF'],"config","extauth","imap");
 	
-$tabs[2]=array('title'=>$LANG["login"][3],
-'url'=>$CFG_GLPI['root_doc']."/ajax/auth.tabs.php",
-'params'=>"target=".$_SERVER['PHP_SELF']."&ID=".$_GET["ID"]."&next=".$_GET["next"]."&preconfig=".$_GET["preconfig"]."&auth_tab=2");
-			
-echo "<div id='tabspanel' class='center-h'></div>";
-createAjaxTabs('tabspanel','tabcontent',$tabs,$_SESSION['glpi_authconfig']);
-echo "<div id='tabcontent'></div>";
-echo "<script type='text/javascript'>loadDefaultTab();</script>";
+switch($_GET['next']){
+	case "extauth_mail" :
+		$_SESSION['glpi_authconfig']=2;
+		$config_mail->showForm($_SERVER['PHP_SELF'], $_GET["ID"]);
+		break;
+	default :
+		$_SESSION['glpi_authconfig']=2;
+		showFormExtAuthList($_SERVER['PHP_SELF']);
+		break;
+}
 
 commonFooter();
 ?>

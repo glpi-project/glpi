@@ -540,7 +540,7 @@ class AuthMail extends CommonDBTM {
 				echo "<input type='hidden' name='ID' value='" . $ID . "'>";
 			}
 
-			echo "<div class='center' id='tabsbody'>";
+			echo "<div class='center'>";
 			echo "<table class='tab_cadre_fixe'>";
 			echo "<tr><th colspan='2'>" . $LANG["login"][3] . "</th></tr>";
 			echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["common"][16] . "</td><td><input size='30' type=\"text\" name=\"name\" value=\"" . $this->fields["name"] . "\" ></td></tr>";
@@ -678,8 +678,8 @@ class AuthLDAP extends CommonDBTM {
 			if ($this->getEmpty()){
 				$spotted = true;
 			}
-			if (isset($_POST['preconfig'])){
-				$this->preconfig($_POST['preconfig']);
+			if (isset($_GET['preconfig'])){
+				$this->preconfig($_GET['preconfig']);
 			}
 		} else {
 			if ($this->getFromDB($ID)){
@@ -696,7 +696,7 @@ class AuthLDAP extends CommonDBTM {
 				echo "<input type='hidden' name='ID' value='" . $ID . "'>";
 			}
 
-			echo "<div class='center' id='tabsbody'>";
+			echo "<div class='center'>";
 
 			echo "<table class='tab_cadre_fixe'>";
 			echo "<tr><th colspan='4'>" . $LANG["login"][2] . "</th></tr>";
