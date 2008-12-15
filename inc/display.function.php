@@ -783,7 +783,7 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="")
 				if (isset($data['default'])&&!empty($data['default'])){
 					$link=$CFG_GLPI["root_doc"].$data['default'];
 				}
-				if (strlen($data['title'])>14){
+				if (utf8_strlen($data['title'])>14){
 					$data['title']=utf8_substr($data['title'],0,14)."...";
 				}
 
