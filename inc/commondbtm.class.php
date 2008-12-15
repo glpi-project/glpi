@@ -999,12 +999,26 @@ class CommonDBTM {
 
 		if (empty($withtemplate)&&$ID){
 			echo "<div>";
-			$next=getNextItem($this->table,$ID,$nextprevcondition,$nextprev_item);
-			$prev=getPreviousItem($this->table,$ID,$nextprevcondition,$nextprev_item);
-			
-			if ($this->type==TRACKING_TYPE && !haveRight("show_all_ticket","1")){
-				$next=0;
-				$prev=0;
+			//$next=getNextItem($this->table,$ID,$nextprevcondition,$nextprev_item);
+			//$prev=getPreviousItem($this->table,$ID,$nextprevcondition,$nextprev_item);
+
+//			if ($this->type==TRACKING_TYPE && !haveRight("show_all_ticket","1")){
+//				$next=0;
+//				$prev=0;
+//			}
+			$next=$prev=0;
+			if (isset($_SESSION['glpilistitems'][$this->type]) && is_array($_SESSION['glpilistitems'][$this->type])){
+				$current=array_search($ID,$_SESSION['glpilistitems'][$this->type]);
+				
+				if ($current!==false){
+					if (isset($_SESSION['glpilistitems'][$this->type][$current+1])){
+						$next=$_SESSION['glpilistitems'][$this->type][$current+1];
+					}
+					if (isset($_SESSION['glpilistitems'][$this->type][$current-1])){
+						$prev=$_SESSION['glpilistitems'][$this->type][$current-1];
+					}
+					
+				}
 			}
 			
 			$cleantarget=preg_replace("/\?ID=([0-9]+)/","",$target);
