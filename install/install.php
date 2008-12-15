@@ -44,23 +44,6 @@ include_once (GLPI_ROOT . "/inc/db.function.php");
 include_once (GLPI_ROOT . "/inc/display.function.php");
 include_once (GLPI_ROOT . "/inc/dropdown.function.php");
 
-// Clean cache if directory is writable
-if (is_writable(GLPI_CACHE_DIR)){
-	cleanCache();
-}
-// Use default session dir if not writable
-if (is_writable(GLPI_SESSION_DIR)){
-	setGlpiSessionPath();
-}
-
-$_SESSION['glpi_use_mode']=DEBUG_MODE;
-$CFG_GLPI["debug_sql"]=$CFG_GLPI["debug_vars"]=0; 
-
-$CFG_GLPI["use_errorlog"]=1;
-ini_set('display_errors','On'); 
-error_reporting(E_ALL); 
-set_error_handler("userErrorHandler"); 
-
 //Print a correct  Html header for application
 function header_html($etape)
 {
@@ -595,7 +578,24 @@ function step4 ($host,$user,$password,$databasename,$newdatabasename)
 
 
 	//------------Start of install script---------------------------
+
+	// Clean cache if directory is writable
+	if (is_writable(GLPI_CACHE_DIR)){
+		cleanCache();
+	}
+	// Use default session dir if not writable
+	if (is_writable(GLPI_SESSION_DIR)){
+		setGlpiSessionPath();
+	}
 	startGlpiSession();
+
+	$_SESSION['glpi_use_mode']=DEBUG_MODE;
+	$CFG_GLPI["debug_sql"]=$CFG_GLPI["debug_vars"]=0; 
+
+	$CFG_GLPI["use_errorlog"]=1;
+	ini_set('display_errors','On'); 
+	error_reporting(E_ALL); 
+	set_error_handler("userErrorHandler"); 
 
 	if(!isset($_SESSION["glpilanguage"])||empty($_SESSION["glpilanguage"])) $_SESSION["glpilanguage"] = "en_GB";
 	if(isset($_POST["language"])) $_SESSION["glpilanguage"] = $_POST["language"];
