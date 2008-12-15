@@ -102,7 +102,7 @@ if (haveRight("show_all_planning","1")){
 	echo "<input type='radio' id='radio_group' name='usertype' value='group' ".($_GET["usertype"]=="group"?"checked":"").">";
 	$rand_group=dropdownValue("glpi_groups","gID",$_GET['gID'],1,$_SESSION["glpiactive_entity"]);
 	echo "<hr>";
-	echo "<input type='radio' id='radio_group' name='usertype' value='user_group' ".($_GET["usertype"]=="user_group"?"checked":"").">";
+	echo "<input type='radio' id='radio_user_group' name='usertype' value='user_group' ".($_GET["usertype"]=="user_group"?"checked":"").">";
 	echo $LANG["joblist"][3];
 
 
