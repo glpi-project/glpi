@@ -218,6 +218,18 @@ else if (isset($_POST["moveinstalls"])){
 	}
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
+else if (isset($_POST["uninstall_license"])){
+	checkRight("software","w");
+	foreach ($_POST as $key => $val)
+		if (ereg("license_([0-9]+)",$key,$ereg)){
+			$input["ID"]=$ereg[1];
+			uninstallSoftwareVersion($input["ID"]);
+		}
+	
+	glpi_header($_SERVER['HTTP_REFERER']);
+	
+	
+}
 /*
 else if (isset($_GET["unglobalize"])&&isset($_GET["ID"])){
 	unglobalizeLicense($_GET["ID"]);
