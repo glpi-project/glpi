@@ -2157,7 +2157,7 @@ class RuleCached extends Rule{
 	/// Display Header for cache display
 	function showCacheRuleHeader(){
 		global $LANG;
-		echo "<th colspan='2'>".$LANG["rulesengine"][100]." : ".$this->fields["name"]."</th></tr>";
+		echo "<tr><th colspan='2'>".$LANG["rulesengine"][100]." : ".$this->fields["name"]."</th></tr>";
 		echo "<tr>";
 		echo "<td class='tab_bg_1'>".$LANG["rulesengine"][104]."</td>";
 		echo "<td class='tab_bg_1'>".$LANG["rulesengine"][105]."</td>";
@@ -2256,7 +2256,7 @@ class RuleCachedCollection extends RuleCollection{
 				ORDER BY name";
 		$res_count=$DB->query($query);
 
-		echo "<th colspan='2'>".$LANG["rulesengine"][100]." : ".$this->getTitle()."</th></tr>";
+		echo "<tr><th colspan='2'>".$LANG["rulesengine"][100]." : ".$this->getTitle()."</th></tr>";
 		echo "<tr>";
 		echo "<td class='tab_bg_1'>".$LANG["rulesengine"][102]."</td>";
 		echo "<td class='tab_bg_1'>".$LANG["rulesengine"][103]."</td>";

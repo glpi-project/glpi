@@ -701,12 +701,12 @@ class AuthLDAP extends CommonDBTM {
 			echo "<table class='tab_cadre_fixe'>";
 			echo "<tr><th colspan='4'>" . $LANG["login"][2] . "</th></tr>";
 			if (empty($ID)){
-			echo "<tr class='tab_bg_2'><th class='center' >".$LANG["ldap"][16].":</td> ";
+			echo "<tr class='tab_bg_2'><td class='center' >".$LANG["ldap"][16].":</td> ";
 			echo "<td colspan='3'><a  href='$target?next=extauth_ldap&amp;preconfig=AD'>".$LANG["ldap"][17]."</a>&nbsp;&nbsp;/&nbsp;&nbsp;";
 			echo "<a  href='$target?next=extauth_ldap&amp;preconfig=default'>".$LANG["common"][44]."</a></td></tr>";
 			}
 			echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["common"][16] . "</td><td><input type=\"text\" name=\"name\" value=\"" . $this->fields["name"] . "\"></td>";
-			echo "<td align='center' colspan=2></tr>";
+			echo "<td align='center' colspan=2>&nbsp;</td></tr>";
 
 			echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["common"][52] . "</td><td><input type=\"text\" name=\"ldap_host\" value=\"" . $this->fields["ldap_host"] . "\"></td>";
 			echo "<td class='center'>" . $LANG["setup"][172] . "</td><td><input id='ldap_port' type=\"text\" name=\"ldap_port\" value=\"" . $this->fields["ldap_port"] . "\"></td></tr>";
@@ -747,7 +747,7 @@ class AuthLDAP extends CommonDBTM {
 			echo"</td></tr>";
 
 
-			echo "<tr class='tab_bg_1'><th class='center' colspan='4'>" . $LANG["setup"][259] . "</td></tr>";
+			echo "<tr class='tab_bg_1'><th class='center' colspan='4'>" . $LANG["setup"][259] . "</th></tr>";
 
 			echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["setup"][254] . "</td><td>";
 			$ldap_search_for_groups = $this->fields["ldap_search_for_groups"];
@@ -770,7 +770,7 @@ class AuthLDAP extends CommonDBTM {
 			echo"</td>";
 			echo "<td align='center' colspan='2'></td></tr>";
 
-			echo "<tr class='tab_bg_1'><th class='center' colspan='4'>" . $LANG["setup"][167] . "</td></tr>";
+			echo "<tr class='tab_bg_1'><th class='center' colspan='4'>" . $LANG["setup"][167] . "</th></tr>";
 
 			echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["common"][48] . "</td><td><input type=\"text\" name=\"ldap_field_realname\" value=\"" . $this->fields["ldap_field_realname"] . "\" ></td>";
 			echo "<td class='center'>" . $LANG["common"][43] . "</td><td><input type=\"text\" name=\"ldap_field_firstname\" value=\"" . $this->fields["ldap_field_firstname"] . "\" ></td></tr>";

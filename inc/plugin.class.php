@@ -244,10 +244,10 @@ class Plugin extends CommonDBTM {
 			switch ($plug['state']){
 				case PLUGIN_ACTIVATED :
 					echo "<td>";
-					echo "<a href='".$_SERVER['PHP_SELF']."?ID=$ID&amp;action=unactivate'>".$LANG["buttons"][42]."<a>";
+					echo "<a href='".$_SERVER['PHP_SELF']."?ID=$ID&amp;action=unactivate'>".$LANG["buttons"][42]."</a>";
 					echo "</td><td>";
 					if (function_exists("plugin_".$plug['directory']."_uninstall")){
-						echo "<a href='".$_SERVER['PHP_SELF']."?ID=$ID&amp;action=uninstall'>".$LANG["buttons"][5]."<a>";
+						echo "<a href='".$_SERVER['PHP_SELF']."?ID=$ID&amp;action=uninstall'>".$LANG["buttons"][5]."</a>";
 					} else {
 						echo $LANG["plugins"][5].": "."plugin_".$plug['directory']."_uninstall";
 					}
@@ -264,7 +264,7 @@ class Plugin extends CommonDBTM {
 							$do_install=$function();
 						}
 						if ($do_install){
-							echo "<a href='".$_SERVER['PHP_SELF']."?ID=$ID&amp;action=install'>".$LANG["buttons"][4]."<a>";
+							echo "<a href='".$_SERVER['PHP_SELF']."?ID=$ID&amp;action=install'>".$LANG["buttons"][4]."</a>";
 						}
 					} else {
 						echo $LANG["plugins"][5].":";
@@ -277,7 +277,7 @@ class Plugin extends CommonDBTM {
 					}
 					echo "</td><td>";
 					if (function_exists("plugin_".$plug['directory']."_uninstall")){
-						echo "<a href='".$_SERVER['PHP_SELF']."?ID=$ID&amp;action=uninstall'>".$LANG["buttons"][5]."<a>";
+						echo "<a href='".$_SERVER['PHP_SELF']."?ID=$ID&amp;action=uninstall'>".$LANG["buttons"][5]."</a>";
 					} else {
 						echo $LANG["plugins"][5].": "."plugin_".$plug['directory']."_uninstall";
 					}
@@ -297,7 +297,7 @@ class Plugin extends CommonDBTM {
 
 					echo "</td><td>";
 					if (function_exists("plugin_".$plug['directory']."_uninstall")){
-						echo "<a href='".$_SERVER['PHP_SELF']."?ID=$ID&amp;action=uninstall'>".$LANG["buttons"][5]."<a>";
+						echo "<a href='".$_SERVER['PHP_SELF']."?ID=$ID&amp;action=uninstall'>".$LANG["buttons"][5]."</a>";
 					} else {
 						echo $LANG["plugins"][5].": "."plugin_".$plug['directory']."_uninstall";
 					}
@@ -305,10 +305,10 @@ class Plugin extends CommonDBTM {
 					break;
 				case PLUGIN_NOTACTIVATED :
 					echo "<td>";
-						echo "<a href='".$_SERVER['PHP_SELF']."?ID=$ID&amp;action=activate'>".$LANG["buttons"][41]."<a>";
+						echo "<a href='".$_SERVER['PHP_SELF']."?ID=$ID&amp;action=activate'>".$LANG["buttons"][41]."</a>";
 					echo "</td><td>";
 					if (function_exists("plugin_".$plug['directory']."_uninstall")){
-						echo "<a href='".$_SERVER['PHP_SELF']."?ID=$ID&amp;action=uninstall'>".$LANG["buttons"][5]."<a>";
+						echo "<a href='".$_SERVER['PHP_SELF']."?ID=$ID&amp;action=uninstall'>".$LANG["buttons"][5]."</a>";
 					} else {
 						echo $LANG["plugins"][5].": "."plugin_".$plug['directory']."_uninstall";
 					}
@@ -318,7 +318,7 @@ class Plugin extends CommonDBTM {
 				case PLUGIN_TOBECLEANED :
 				default:
 					echo "<td colspan='2'>";
-						echo "<a href='".$_SERVER['PHP_SELF']."?ID=$ID&amp;action=clean'>".$LANG["buttons"][53]."<a>";
+						echo "<a href='".$_SERVER['PHP_SELF']."?ID=$ID&amp;action=clean'>".$LANG["buttons"][53]."</a>";
 					echo "</td>";
 					break;
 			}
