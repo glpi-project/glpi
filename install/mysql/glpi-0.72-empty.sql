@@ -2073,6 +2073,7 @@ DROP TABLE IF EXISTS `glpi_printers`;
 CREATE TABLE `glpi_printers` (
   `ID` int(10) NOT NULL auto_increment,
   `FK_entities` int(11) NOT NULL default '0',
+  `recursive` tinyint(1) NOT NULL default '0',
   `name` varchar(255) collate utf8_unicode_ci default NULL,
   `date_mod` datetime default NULL,
   `contact` varchar(255) collate utf8_unicode_ci default NULL,

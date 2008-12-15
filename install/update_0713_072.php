@@ -43,6 +43,7 @@ function update0713to072() {
 	global $DB, $CFG_GLPI, $LANG, $LINK_ID_TABLE;
 
 	// TO TRY for software update
+	
 	ini_set("max_execution_time", "0");
 
 	echo "<h3>".$LANG["install"][4]." -&gt; 0.72</h3>";
@@ -51,6 +52,11 @@ function update0713to072() {
 	if (!FieldExists("glpi_networking", "recursive")) {
 		$query = "ALTER TABLE `glpi_networking` ADD `recursive` TINYINT( 1 ) NOT NULL DEFAULT '0' AFTER `FK_entities`;";
 		$DB->query($query) or die("0.72 add recursive in glpi_networking" . $LANG["update"][90] . $DB->error());
+	}	  	
+
+	if (!FieldExists("glpi_printers", "recursive")) {
+		$query = "ALTER TABLE `glpi_printers` ADD `recursive` TINYINT( 1 ) NOT NULL DEFAULT '0' AFTER `FK_entities`;";
+		$DB->query($query) or die("0.72 add recursive in glpi_printers" . $LANG["update"][90] . $DB->error());
 	}	  	
 
 	// Clean datetime fields
