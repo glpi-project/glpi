@@ -56,7 +56,7 @@ function showPorts($device, $device_type, $withtemplate = '') {
 	$query = "SELECT ID FROM glpi_networking_ports WHERE (on_device = $device AND device_type = $device_type) ORDER BY name, logical_number";
 	if ($result = $DB->query($query)) {
 		if ($DB->numrows($result) != 0) {
-			$colspan = 8;
+			$colspan = 9;
 			if ($withtemplate != 2) {
 				echo "<form id='networking_ports$rand' name='networking_ports$rand' method='post' action=\"" . $CFG_GLPI["root_doc"] . "/front/networking.port.php\">";
 				if ($canedit)
@@ -88,7 +88,9 @@ function showPorts($device, $device_type, $withtemplate = '') {
 			echo "<th>" . $LANG["networking"][56] . "</th>";
 			echo "<th>" . $LANG["common"][65] . "</th>";
 
-			echo "<th>" . $LANG["networking"][17] . ":</th></tr>\n";
+			echo "<th>" . $LANG["networking"][17] . ":</th>\n";
+			echo "<th>" . $LANG["networking"][14] . "<br>" . $LANG["networking"][15] . "</th></tr>";
+
 			$i = 0;
 			while ($devid = $DB->fetch_row($result)) {
 				$netport = new Netport;
@@ -119,7 +121,15 @@ function showPorts($device, $device_type, $withtemplate = '') {
 				echo "<td width='300'>";
 				showConnection($ci, $netport, $withtemplate);
 				echo "</td>";
-				echo "</tr>";
+				
+				echo "<td>";
+				
+				if ($netport->getContact($netport->fields["ID"])) {
+					echo $netport->fields["ifaddr"] . "<br>";
+					echo $netport->fields["ifmac"];
+				}
+				
+				echo "</td></tr>";
 			}
 			echo "</table>";
 			echo "</div>\n\n";
@@ -253,6 +263,7 @@ function showNetportForm($target, $ID, $ondevice, $devtype, $several) {
 
 	echo "<br><div>";
 
+	
 	echo "<form method='post' action=\"$target\">";
 
 	echo "<input type='hidden' name='referer' value='" . rawurlencode($REFERER) . "'>";
@@ -569,6 +580,8 @@ function makeConnector($sport, $dport, $dohistory = true, $addmsg = false) {
 				}
 				break;
 		}
+		
+		/*
 		// Update Item
 		$updates[0] = $item;
 		if (empty ($source) && !empty ($destination)) {
@@ -584,7 +597,9 @@ function makeConnector($sport, $dport, $dohistory = true, $addmsg = false) {
 				if ($source != $destination) {
 					$conflict_items[] = $item;
 				}
+	*/
 	}
+	/*
 	if (count($update_items)) {
 		$message = $LANG["connect"][15] . ": ";
 		$first = true;
@@ -609,7 +624,8 @@ function makeConnector($sport, $dport, $dohistory = true, $addmsg = false) {
 		}
 		addMessageAfterRedirect($message);
 	}
-
+	*/
+	
 	// Manage VLAN : use networkings one as defaults
 	$npnet = -1;
 	$npdev = -1;
@@ -710,6 +726,8 @@ function removeConnector($ID, $dohistory = true) {
 					$npnet = $ID;
 					$npdev = $ID2;
 				}
+				
+				/*
 				if ($npnet != -1 && $npdev != -1) {
 					// Unset MAC and IP from networking device
 					if ($np1->fields["ifmac"] == $np2->fields["ifmac"]) {
@@ -724,7 +742,8 @@ function removeConnector($ID, $dohistory = true) {
 					$query = "UPDATE glpi_networking_ports SET netpoint=0 WHERE ID='$npdev'";
 					$DB->query($query);
 				}
-
+				*/
+				
 				if ($dohistory) {
 					$device = new CommonItem();
 
@@ -855,7 +874,8 @@ function getUniqueObjectIDByIPAddressOrMac($value, $type = 'IP', $entity) {
 function getUniqueObjectIDByFQDN($fqdn, $entity) {
 	$types = array (
 		COMPUTER_TYPE,
-		NETWORKING_TYPE
+		NETWORKING_TYPE,
+		PRINTER_TYPE
 	);
 	foreach ($types as $type) {
 		$result = getUniqueObjectByFDQNAndType($fqdn, $type, $entity);
