@@ -547,7 +547,7 @@ function makeConnector($sport, $dport, $dohistory = true, $addmsg = false) {
 		return false;
 	}
 
-	$items_to_check = array (
+/*	$items_to_check = array (
 		'ifmac' => $LANG["networking"][15],
 		'ifaddr' => $LANG["networking"][14],
 		'netpoint' => $LANG["networking"][51],
@@ -581,7 +581,6 @@ function makeConnector($sport, $dport, $dohistory = true, $addmsg = false) {
 				break;
 		}
 		
-		/*
 		// Update Item
 		$updates[0] = $item;
 		if (empty ($source) && !empty ($destination)) {
@@ -597,9 +596,7 @@ function makeConnector($sport, $dport, $dohistory = true, $addmsg = false) {
 				if ($source != $destination) {
 					$conflict_items[] = $item;
 				}
-	*/
 	}
-	/*
 	if (count($update_items)) {
 		$message = $LANG["connect"][15] . ": ";
 		$first = true;
@@ -624,7 +621,7 @@ function makeConnector($sport, $dport, $dohistory = true, $addmsg = false) {
 		}
 		addMessageAfterRedirect($message);
 	}
-	*/
+*/
 	
 	// Manage VLAN : use networkings one as defaults
 	$npnet = -1;
