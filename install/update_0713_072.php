@@ -150,14 +150,27 @@ function update0713to072() {
 		$DB->query($query) or die("0.72 add recursive in glpi_software" . $LANG["update"][90] . $DB->error());
 	}
 	// Move licenses to versions
-	if (!TableExists("glpi_softwareversions") && TableExists('glpi_licenses')) {
-		$query = "RENAME TABLE `glpi_licenses`  TO `glpi_softwareversions` ;";
-		$DB->query($query) or die("0.72 rename licenses to version" . $LANG["update"][90] . $DB->error());
-	}	  	
+//	if (!TableExists("glpi_softwareversions") && TableExists('glpi_licenses')) {
+//		$query = "RENAME TABLE `glpi_licenses`  TO `glpi_softwareversions` ;";
+//		$DB->query($query) or die("0.72 rename licenses to version" . $LANG["update"][90] . $DB->error());
+//	}	  	
 	if (!FieldExists("glpi_inst_software", "vID")) {
 		$query="ALTER TABLE `glpi_inst_software` CHANGE `license` `vID` INT( 11 ) NOT NULL DEFAULT '0';";
 		$DB->query($query) or die("0.72 alter inst_software rename license to vID" . $LANG["update"][90] . $DB->error());
 	}
+
+	if (TableExists("glpi_softwarelicenses")){
+		if (TableExists("glpi_softwarelicenses_backup")){
+			$query="DROP TABLE `glpi_softwarelicenses_backup`";
+			$DB->query($query) or die("0.72 drop backup table glpi_softwarelicenses_backup" . $LANG["update"][90] . $DB->error());
+		} 
+			$query="RENAME TABLE `glpi_softwarelicenses` TO `glpi_softwarelicenses_backup`";
+			$DB->query($query) or die("0.72 backup table glpi_softwareversions" . $LANG["update"][90] . $DB->error());
+		echo "<strong>glpi_softwarelicenses table already exists. A backup have been done to glpi_softwarelicenses_backup.<br>
+			You can delete it if you have no need of it.<br></strong>";
+
+	}
+
 	// Create licenses
 	if (!TableExists("glpi_softwarelicenses")){
 		$query = "CREATE TABLE `glpi_softwarelicenses` (
@@ -189,6 +202,42 @@ function update0713to072() {
 				) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
 		$DB->query($query) or die("0.72 create glpi_softwarelicenses" . $LANG["update"][90] . $DB->error());
 
+	}
+	if (TableExists("glpi_softwareversions")){
+		if (TableExists("glpi_softwareversions_backup")){
+			$query="DROP TABLE `glpi_softwareversions_backup`";
+			$DB->query($query) or die("0.72 drop backup table glpi_softwareversions_backup" . $LANG["update"][90] . $DB->error());
+		} 
+			$query="RENAME TABLE `glpi_softwareversions` TO `glpi_softwareversions_backup`";
+			$DB->query($query) or die("0.72 backup table glpi_softwareversions" . $LANG["update"][90] . $DB->error());
+		echo "<strong>glpi_softwareversions table already exists. A backup have been done to glpi_softwareversions_backup.<br>
+			You can delete it if you have no need of it.<br></strong>";
+
+	}
+
+	if (!TableExists("glpi_softwareversions")){
+		$query = "CREATE TABLE `glpi_softwareversions` (
+		`ID` int(15) NOT NULL auto_increment,
+		`sID` int(15) NOT NULL default '0',
+		`version` varchar(255) collate utf8_unicode_ci default NULL,
+		`serial` varchar(255) collate utf8_unicode_ci default NULL,
+		`expire` date default NULL,
+		`oem` smallint(6) NOT NULL default '0',
+		`oem_computer` int(11) NOT NULL default '0',
+		`buy` smallint(6) NOT NULL default '1',
+		`comments` text collate utf8_unicode_ci,
+		PRIMARY KEY  (`ID`),
+		KEY `sID` (`sID`),
+		KEY `oem_computer` (`oem_computer`),
+		KEY `serial` (`serial`),
+		KEY `expire` (`expire`),
+		KEY `oem` (`oem`),
+		KEY `buy` (`buy`)
+		) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
+		$DB->query($query) or die("0.72 create glpi_softwareversions" . $LANG["update"][90] . $DB->error());
+	}
+
+	if (TableExists("glpi_licenses")){
 		// Update Infocoms to device_type 9999
 		$query="UPDATE `glpi_infocoms` SET device_type=9999 WHERE device_type='".SOFTWARELICENSE_TYPE."';";
 		$DB->query($query) or die("0.72 prepare infocoms for update softwares" . $LANG["update"][90] . $DB->error());
@@ -211,8 +260,8 @@ function update0713to072() {
 		    }	
 		    
 			// Foreach lics
-			$query_versions="SELECT glpi_softwareversions.*, glpi_infocoms.ID AS infocomID FROM glpi_softwareversions 
-					LEFT JOIN glpi_infocoms ON (glpi_infocoms.device_type=9999 AND glpi_infocoms.FK_device=glpi_softwareversions.ID)
+			$query_versions="SELECT glpi_licenses.*, glpi_infocoms.ID AS infocomID FROM glpi_licenses 
+					LEFT JOIN glpi_infocoms ON (glpi_infocoms.device_type=9999 AND glpi_infocoms.FK_device=glpi_licenses.ID)
 					WHERE sID=".$soft['ID']." 
 					ORDER BY ID;";
 			if ($result_vers = $DB->query($query_versions)){
@@ -230,8 +279,7 @@ function update0713to072() {
 					// 1 - Is version already exists ?
 					$query_search_version="SELECT * FROM glpi_softwareversions 
 								WHERE sID=".$soft['ID']." 
-									AND version='".$vers['version']."'
-									AND ID < ".$vers['ID'].";";
+									AND version='".$vers['version']."';";
 					if ($result_searchvers = $DB->query($query_search_version)){
 						// Version already exists : update inst_software
 						if ($DB->numrows($result_searchvers)==1){
@@ -243,7 +291,11 @@ function update0713to072() {
 								WHERE vID = ".$vers['ID'].";";
 							$DB->query($query);
 							
-							$query="DELETE FROM glpi_softwareversions WHERE ID=".$vers['ID'];
+							//$query="DELETE FROM glpi_licenses WHERE ID=".$vers['ID'];
+							//$DB->query($query);
+						} else {
+							// Re Create new entry
+							$query="INSERT INTO glpi_softwareversions SELECT * FROM glpi_licenses WHERE ID=".$vers_ID;
 							$DB->query($query);
 						}
 						$DB->free_result($result_searchvers);
@@ -319,7 +371,9 @@ function update0713to072() {
 			}
 		  }
 		}
-	} // TableExists("glpi_softwarelicenses")
+		$query="DROP TABLE `glpi_licenses`";
+		$DB->query($query) or die("0.72 drop table glpi_licenses" . $LANG["update"][90] . $DB->error());
+	} // TableExists("glpi_licenses")
 	
 	displayMigrationMessage("072", $LANG["Menu"][4]); // Software
 	
@@ -522,11 +576,11 @@ function update0713to072() {
 			if ($DB->numrows($result)>0){
 				while ($data=$DB->fetch_assoc($result)){
 					$data = addslashes_deep($data);
-					$newID=externalImportDropdown("glpi_dropdown_interface", $data['OLDNAME']);
-
 					// Update datas
-					$query2="UPDATE glpi_device_gfxcard SET FK_interface='$newID' WHERE interface='".$data['OLDNAME']."'";
-					$DB->query($query2) or die("0.72 update glpi_device_gfxcard set new interface value " . $LANG["update"][90] . $DB->error());
+					if ($newID=externalImportDropdown("glpi_dropdown_interface", $data['OLDNAME'])){
+						$query2="UPDATE glpi_device_gfxcard SET FK_interface='$newID' WHERE interface='".$data['OLDNAME']."'";
+						$DB->query($query2) or die("0.72 update glpi_device_gfxcard set new interface value " . $LANG["update"][90] . $DB->error());
+					}
 				}
 			}
 		}
