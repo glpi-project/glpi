@@ -1203,6 +1203,11 @@ function showList ($type,$params){
 			// Search case
 			$i=$begin_display;			
 
+			// Init list of items displayed
+			if ($output_type==HTML_OUTPUT){
+				$_SESSION['glpilistitems'][$type]=array();
+			}
+
 			// Num of the row (1=header_line)
 			$row_num=1;
 			// Display Loop
@@ -1216,6 +1221,8 @@ function showList ($type,$params){
 				// New line
 				echo displaySearchNewLine($output_type,($i%2));
 
+				// Add item in item list
+				$_SESSION['glpilistitems'][$type][]=$data["ID"];
 
 				if ($output_type==HTML_OUTPUT){// HTML display - massive modif
 					$tmpcheck="";
