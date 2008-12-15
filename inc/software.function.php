@@ -1392,8 +1392,12 @@ function uninstallSoftwareVersion($ID, $dohistory = 1) {
 function showSoftwareInstalled($instID, $withtemplate = '') {
 
 	global $DB, $CFG_GLPI, $LANG;
+	
+	
 	if (!haveRight("software", "r"))
 		return false;
+	
+	$rand=mt_rand();
 	$comp = new Computer();
 	$comp->getFromDB($instID);
 	$FK_entities = $comp->fields["FK_entities"];
@@ -1447,13 +1451,35 @@ function showSoftwareInstalled($instID, $withtemplate = '') {
 	if ($DB->numrows($result)) {
 		while ($data = $DB->fetch_array($result)) {
 			if ($data["category_id"] != $cat) {
-				$cat = displayCategoryHeader($data, $cat);
+				$cat = displayCategoryHeader($data, $cat,$rand);
 			}
 
 			displaySoftsByCategory($data, $instID, $withtemplate);
 		}
 
-		echo "</table></div></td></tr>";
+		echo "</table>";
+		
+		echo "<table width='950px'>";
+		echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td><a onclick= \"if ( markCheckboxes('lic_form$cat$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=".$cat."&amp;select=all'>".$LANG["buttons"][18]."</a></td>";
+		echo "<td>/</td><td ><a onclick=\"if ( unMarkCheckboxes ('lic_form$cat$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=".$cat."&amp;select=none'>".$LANG["buttons"][19]."</a>";
+		echo "</td><td class='left' width='80%'>";
+
+		echo "<select name='update_licenses$cat$rand' id='update_licenses_choice$cat$rand'>";
+		echo "<option value=''>-----</option>";
+		echo "<option value='uninstall_license'>".$LANG["buttons"][5]."</option>";
+		echo "</select>";
+
+		$params=array('type'=>'__VALUE__',
+							'sID'=>$data["sID"],
+					);
+					ajaxUpdateItemOnSelectEvent("update_licenses_choice$cat$rand","update_licenses_view$cat$rand",$CFG_GLPI["root_doc"]."/ajax/updateLicenses.php",$params,false);
+
+		echo "<span id='update_licenses_view$cat$rand'>\n";
+		echo "&nbsp;";
+		echo "</span>\n";
+		echo "</td></tr></table>";
+		echo "</form>";
+		echo "</div></td></tr>";
 
 		$q = "SELECT count(*) FROM glpi_software WHERE deleted='0' AND is_template='0'";
 		$result = $DB->query($q);
@@ -1472,15 +1498,37 @@ function showSoftwareInstalled($instID, $withtemplate = '') {
  * @param $cat current category ID
  * @return new category ID
  */
-function displayCategoryHeader($data, $cat) {
+function displayCategoryHeader($data, $cat,$rand) {
 	global $LANG, $CFG_GLPI;
 	$expirecss = '';
-
+	
 	// Close old one
 	if ($cat != -1) {
-		echo "</table></div></td></tr>";
+		echo "</table>";
+
+		echo "<table width='950px'>";
+		echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td><a onclick= \"if ( markCheckboxes('lic_form$cat$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=".$cat."&amp;select=all'>".$LANG["buttons"][18]."</a></td>";
+		echo "<td>/</td><td ><a onclick=\"if ( unMarkCheckboxes('lic_form$cat$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=".$cat."&amp;select=none'>".$LANG["buttons"][19]."</a>";
+		echo "</td><td class='left' width='80%'>";
+
+		echo "<select name='update_licenses$cat$rand' id='update_licenses_choice$cat$rand'>";
+		echo "<option value=''>-----</option>";
+		echo "<option value='uninstall_license'>".$LANG["buttons"][5]."</option>";
+		echo "</select>";
+
+		$params=array('type'=>'__VALUE__',
+		'sID'=>$data["sID"],
+		);
+		ajaxUpdateItemOnSelectEvent("update_licenses_choice$cat$rand","update_licenses_view$cat$rand",$CFG_GLPI["root_doc"]."/ajax/updateLicenses.php",$params,false);
+
+		echo "<span id='update_licenses_view$cat$rand'>\n";
+		echo "&nbsp;";
+		echo "</span>\n";
+		echo "</td></tr></table>";
+		echo "</form>";
+		echo "</div></td></tr>";
 	}
-	$rand=mt_rand();
+	
 	$display = "none";
 
 	$cat = $data["category_id"];
@@ -1501,8 +1549,10 @@ function displayCategoryHeader($data, $cat) {
 	echo "<tr class='tab_bg_2$expirecss'>";
 	echo "		<td colspan='5'>
 				     <div align='center' id='softcat$cat$rand' " . (!$display ? "style=\"display:none;\"" : '') . ">";
+	echo "<form id='lic_form$cat$rand' name='lic_form$cat$rand' method='post' action=\"".$CFG_GLPI["root_doc"]."/front/software.licenses.php\">";
 	echo "			<table class='tab_cadre_fixe'>";
 	echo "				<tr>";
+	echo "<th>&nbsp;</th>";
 	echo "					<th>" . $LANG["common"][16] . "</th><th>" . $LANG["software"][5] . "</th>";
 	echo "				</tr>";
 	return $cat;
@@ -1530,6 +1580,7 @@ function displaySoftsByCategory($data, $instID, $withtemplate) {
 	}
 
 	echo "<tr class='tab_bg_1'>";
+	echo "<td><input type='checkbox' name='license_".$data['ID']."'></td>";
 	echo "<td class='center'><strong><a href=\"" . $CFG_GLPI["root_doc"] . "/front/software.form.php?ID=" . $data['sID'] . "\">";
 	echo $data["softname"] . ($_SESSION["glpiview_ID"] ? " (" . $data['ID'] . ")" : "") . "</a>";
 	echo "</strong>";
