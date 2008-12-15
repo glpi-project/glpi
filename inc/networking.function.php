@@ -118,11 +118,11 @@ function showPorts($device, $device_type, $withtemplate = '') {
 				showPortVLAN($netport->fields["ID"], $withtemplate);
 				echo "</td>";
 				echo "<td>" . getDropdownName("glpi_dropdown_iface", $netport->fields["iface"]) . "</td>";
-				echo "<td width='300'>";
+				echo "<td width='300' class='tab_bg_2'>";
 				showConnection($ci, $netport, $withtemplate);
 				echo "</td>";
 				
-				echo "<td>";
+				echo "<td class='tab_bg_2'>";
 				
 				if ($netport->getContact($netport->fields["ID"])) {
 					echo $netport->fields["ifaddr"] . "<br>";
