@@ -1026,8 +1026,8 @@ class CommonDBTM {
 				echo "<a href='$cleantarget?ID=$prev$extraparamhtml'><img src=\"".$CFG_GLPI["root_doc"]."/pics/left.png\" alt='".$LANG["buttons"][12]."' title='".$LANG["buttons"][12]."'></a>";
 			}
 
-			echo "&nbsp;&nbsp;<a href=\"javascript:showHideDiv('tabsbody','tabsbodyimg', '".GLPI_ROOT."/pics/deplier_down.png','".GLPI_ROOT."/pics/deplier_up.png');\">";
-			echo "<img alt='' name='tabsbodyimg' src=\"".GLPI_ROOT."/pics/deplier_up.png\">";
+			echo "&nbsp;&nbsp;<a href=\"javascript:showHideDiv('tabsbody','tabsbodyimg','".$CFG_GLPI["root_doc"]."/pics/deplier_down.png','".$CFG_GLPI["root_doc"]."/pics/deplier_up.png');\">";
+			echo "<img alt='' name='tabsbodyimg' src=\"".$CFG_GLPI["root_doc"]."/pics/deplier_up.png\">";
 			echo "</a>";
 			
 			if ($next>0) {

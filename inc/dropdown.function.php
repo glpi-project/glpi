@@ -704,6 +704,9 @@ function dropdownUsersTracking($myname,$value,$field,$display_comments=1) {
 	// Display comments 
 
 	if ($display_comments) {
+		if (empty($user["link"])){
+			$user["link"]='#';
+		}
 		echo "<a href='".$user["link"]."'>";
 		echo "<img alt='' src='".$CFG_GLPI["root_doc"]."/pics/aide.png' onmouseout=\"cleanhide('comments_$myname$rand')\" onmouseover=\"cleandisplay('comments_$myname$rand')\">";
 		echo "</a>";

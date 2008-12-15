@@ -784,7 +784,7 @@ function addFormTracking ($device_type=0,$ID=0, $target, $author, $group=0, $ass
 		echo "<td colspan='2' align='center'><div id='list_entities'></div></td>";
 		
 		echo "<tr class='tab_bg_2' align='center'>";
-		echo "</td><td>".$LANG["common"][35].":</td>";
+		echo "<td>".$LANG["common"][35].":</td>";
 		
 		echo "<td align='center' colspan='3'><span id='span_group'>";
 		dropdownValue("glpi_groups","FK_group",$group,1,$_SESSION["glpiactive_entity"]);
@@ -1614,8 +1614,12 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$to
 			echo displaySearchHeader($output_type,$end_display-$start+1,$nbcols);
 			
 			commonTrackingListHeader($output_type,$target,$parameters2,$sort,$order);
+			if ($output_type==HTML_OUTPUT){
+				$_SESSION['glpilistitems'][TRACKING_TYPE]=array();
+			}
 
 			while ($i < $numrows && $i<$end_display&&$data=$DB->fetch_array($result)){
+				$_SESSION['glpilistitems'][TRACKING_TYPE][]=$data['ID'];
 //				$ID = $DB->result($result, $i, "ID");
 				showJobShort($data, $showfollowups,$output_type,$i-$start+1);
 				$i++;
