@@ -53,7 +53,7 @@ if (is_writable(GLPI_SESSION_DIR)){
 	setGlpiSessionPath();
 }
 
-$_SESSION['glpi_use_mode']==DEBUG_MODE;
+$_SESSION['glpi_use_mode']=DEBUG_MODE;
 $CFG_GLPI["debug_sql"]=$CFG_GLPI["debug_vars"]=0; 
 
 $CFG_GLPI["use_errorlog"]=1;
