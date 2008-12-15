@@ -50,6 +50,7 @@ class Printer  extends CommonDBTM {
 		$this->type=PRINTER_TYPE;
 		$this->dohistory=true;
 		$this->entity_assign=true;
+		$this->may_be_recursive=true;
 	}	
 
 	function defineTabs($ID,$withtemplate){
@@ -87,6 +88,62 @@ class Printer  extends CommonDBTM {
 		}	
 		return $ong;
 	}
+
+	/**
+	 * Can I change recusvive flag to false
+	 * check if there is "linked" object in another entity
+	 * 
+	 * Overloaded from CommonDBTM
+	 *
+	 * @return booleen
+	 **/
+	function canUnrecurs () {
+
+		global $DB, $CFG_GLPI, $LINK_ID_TABLE;
+		
+		$ID  = $this->fields['ID'];
+
+		if ($ID<0 || !$this->fields['recursive']) {
+			return true;
+		}
+
+		if (!parent::canUnrecurs()) {
+			return false;
+		}
+		$entities = "(".$this->fields['FK_entities'];
+		foreach (getEntityAncestors($this->fields['FK_entities']) as $papa) {
+			$entities .= ",$papa";
+		}
+		$entities .= ")";
+
+		// RELATION : printers -> _port -> _wire -> _port -> device
+
+		// Evaluate connection in the 2 ways
+		for ($tabend=array("end1"=>"end2","end2"=>"end1");list($enda,$endb)=each($tabend);) {
+			
+			$sql="SELECT device_type, GROUP_CONCAT(DISTINCT on_device) AS ids " .
+				"FROM glpi_networking_wire, glpi_networking_ports " .
+				"WHERE glpi_networking_wire.$endb = glpi_networking_ports.ID " .
+				"AND   glpi_networking_wire.$enda IN (SELECT ID from glpi_networking_ports WHERE device_type=".PRINTER_TYPE." AND on_device=$ID) " .
+				"GROUP BY device_type;";
+
+			$res = $DB->query($sql);
+			if ($res) while ($data = $DB->fetch_assoc($res)) {
+
+				// For each device_type which are entity dependant
+				if (isset($LINK_ID_TABLE[$data["device_type"]]) && 
+					in_array($table=$LINK_ID_TABLE[$data["device_type"]], $CFG_GLPI["specif_entities_tables"])) {
+	
+					if (countElementsInTable("$table", "ID IN (".$data["ids"].") AND FK_entities NOT IN $entities")>0) {
+							return false;						
+					}
+				}			
+			}
+		}
+		
+		return true;
+	}
+
 
 	function prepareInputForAdd($input) {
 
@@ -262,10 +319,11 @@ class Printer  extends CommonDBTM {
 		}
 		
 		echo "<input type='hidden' name='FK_entities' value='".$this->fields["FK_entities"]."'>";
-
+		
 		echo "<table class='tab_cadre_fixe' cellpadding='2'>\n";
-
-		echo "<tr><th align='center' >\n";
+		$this->showFormHeader($ID,$withtemplate);
+		/*
+		 echo "<tr><th align='center' >\n";
 		if(!$template) {
 			echo $LANG["common"][2]." ".$this->fields["ID"];
 		}elseif (strcmp($template,"newcomp") === 0) {
@@ -283,7 +341,7 @@ class Printer  extends CommonDBTM {
 		if (!$template&&!empty($this->fields['tplname']))
 			echo "&nbsp;&nbsp;&nbsp;(".$LANG["common"][13].": ".$this->fields['tplname'].")";
 		echo "</th></tr>\n";
-
+		*/
 		if (!$use_cache||!($CFG_GLPI["cache"]->start($ID."_".$_SESSION['glpilanguage'],"GLPI_".$this->type))) {
 			echo "<tr><td class='tab_bg_1' valign='top'>\n";
 
