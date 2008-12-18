@@ -135,6 +135,9 @@ if (!defined('GLPI_ROOT')){
 			);			
 		// Les niveaux qui seront enregistrés
 		$user_errors = array(E_USER_ERROR, E_USER_WARNING, E_USER_NOTICE);
+
+		// In PHP 5.3 a lot of fonction are deprecated. Will be fixed in 0.72 
+		if ($errno==8192) return;			
 			
 		$err = $errortype[$errno] . "($errno): $errmsg\n";
 		if (in_array($errno, $user_errors)) {
