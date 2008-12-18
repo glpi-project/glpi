@@ -840,5 +840,19 @@ class AuthLdapReplicate extends CommonDBTM{
 	{
 		$this->table ="glpi_auth_ldap_replicate";
 	}
+	
+	function prepareInputForAdd($input){
+		if (isset($input["ldap_port"])&&intval($input["ldap_port"])==0){
+			$input["ldap_port"]=389;
+		}
+		return $input;
+	}
+	
+	function prepareInputForUpdate($input){
+		if (isset($input["ldap_port"])&&intval($input["ldap_port"])==0){
+			$input["ldap_port"]=389;
+		}
+		return $input;
+	}
 }
 ?>
