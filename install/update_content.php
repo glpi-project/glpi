@@ -128,7 +128,7 @@ function get_update_content($DB, $table,$from,$limit,$conv_utf8)
 					}
 					else $insert .= "'',";
 				}
-				$insert = ereg_replace(",$","",$insert);
+				$insert = preg_replace("/,$/","",$insert);
 				$insert.=" WHERE ID = '".$row["ID"]."' ";
 				$insert .= ";\n";
 				$content .= $insert;

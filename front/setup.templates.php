@@ -47,8 +47,8 @@ $type="inventory";
 if ($_GET["type"]==OCSNG_TYPE){
 	$type="config";
 }
-$item=ereg_replace(".form.php","",$INFOFORM_PAGES[$_GET["type"]]);
-$item=ereg_replace("front/","",$item);
+$item=str_replace(".form.php","",$INFOFORM_PAGES[$_GET["type"]]);
+$item=str_replace("front/","",$item);
 commonHeader($LANG["common"][12],$_SERVER['PHP_SELF'],$type,$item);
 
 listTemplates($_GET["type"],$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$_GET["type"]],$_GET["add"]);

@@ -1744,7 +1744,7 @@ function ocsEditLock($target, $ID) {
 						echo "<tr><th colspan='2'>" . $LANG["ocsng"][52] . "</th></tr>";
 					}
 					
-					echo "<tr class='tab_bg_1'><td>" . ereg_replace('\$\$\$\$\$',' v. ',$val) . "</td><td><input type='checkbox' name='locksoft[" . $key . "]'></td></tr>";
+					echo "<tr class='tab_bg_1'><td>" . str_replace('$$$$$',' v. ',$val) . "</td><td><input type='checkbox' name='locksoft[" . $key . "]'></td></tr>";
 				}
 			}
 		}

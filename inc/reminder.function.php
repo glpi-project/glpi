@@ -177,7 +177,7 @@ function showListReminder($private=1,$recursive=0){
 			
 			if (!$private) {
 				// ereg to split line (if needed) before ">" sign in completename
-				echo "<td>" .ereg_replace(" ([[:alnum:]])", "&nbsp;\\1", getdropdownName("glpi_entities", $val["entity"])). "</td>".
+				echo "<td>" .preg_replace("/ ([[:alnum:]])/", "&nbsp;\\1", getdropdownName("glpi_entities", $val["entity"])). "</td>".
 					 "<td>" .getdropdownName("glpi_users", $val["FK_users"]) . "</td>";
 			}
 			echo 	"<td width='60%' class='left'><a href=\"".$CFG_GLPI["root_doc"]."/front/reminder.form.php?ID=".$val["id_reminder"]."\">".$val["name"]."</a>" .

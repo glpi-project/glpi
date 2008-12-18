@@ -151,7 +151,7 @@ elseif (isset($_POST["update_rule"]))
 		$rule->deleteCacheByRuleId($_POST["ID"]);
 	}
 
-	glpi_header(ereg_replace('.form','',$_SERVER['PHP_SELF']));
+	glpi_header(str_replace('.form','',$_SERVER['PHP_SELF']));
 }
 
 commonHeader($LANG["common"][12],$_SERVER['PHP_SELF'],"admin",getCategoryNameToDisplay($rulecollection->rule_type),$rulecollection->rule_type);

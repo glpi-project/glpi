@@ -254,7 +254,7 @@ class RuleCollection {
 
 		echo "<tr><th colspan='6'><div class='relative'><span><strong>" . $this->getTitle() . "</strong></span>";
 		if ($canedit){
-			echo "<span style='  position:absolute; right:0; margin-right:5px; font-size:10px;'><a href=\"".ereg_replace(".php",".form.php",$target)."\"><img src=\"".$CFG_GLPI["root_doc"]."/pics/plus.png\" alt='+' title='".$LANG["buttons"][8]."'></a></span>";
+			echo "<span style='  position:absolute; right:0; margin-right:5px; font-size:10px;'><a href=\"".str_replace(".php",".form.php",$target)."\"><img src=\"".$CFG_GLPI["root_doc"]."/pics/plus.png\" alt='+' title='".$LANG["buttons"][8]."'></a></span>";
 		}
 
 		echo "</div></th></tr>";
@@ -1437,7 +1437,7 @@ class Rule extends CommonDBTM{
 		else
 			echo "<td></td>";
 				
-		echo "<td><a href=\"".ereg_replace(".php",".form.php",$target)."?ID=".$this->fields["ID"]."&amp;onglet=1\">" . $this->fields["name"] . "</a> ";
+		echo "<td><a href=\"".str_replace(".php",".form.php",$target)."?ID=".$this->fields["ID"]."&amp;onglet=1\">" . $this->fields["name"] . "</a> ";
 		if (!empty($this->fields["comments"])) {
 			echo "<img alt='' src='".$CFG_GLPI["root_doc"]."/pics/aide.png' onmouseout=\"cleanhide('comments_rules".$this->fields["ID"]."')\" onmouseover=\"cleandisplay('comments_rules".$this->fields["ID"]."')\" >";
 			echo "<span class='over_link' id='comments_rules".$this->fields["ID"]."'>".nl2br($this->fields["comments"])."</span>";			

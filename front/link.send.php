@@ -50,49 +50,49 @@ if (isset($_GET["lID"])){
 
 		// Manage Filename
 		if (ereg("\[NAME\]",$link)){
-			$link=ereg_replace("\[NAME\]",$ci->getName(),$link);
+			$link=str_replace("[NAME]",$ci->getName(),$link);
 		}
 
 		if (ereg("\[ID\]",$link)){
-			$link=ereg_replace("\[ID\]",$_GET["ID"],$link);
+			$link=str_replace("[ID]",$_GET["ID"],$link);
 		}
 
 
 		// Manage File Content
 
 		if (ereg("\[NAME\]",$file)){
-			$file=ereg_replace("\[NAME\]",$ci->getName(),$file);
+			$file=str_replace("[NAME]",$ci->getName(),$file);
 		}
 
 		if (ereg("\[ID\]",$file)){
-			$file=ereg_replace("\[ID\]",$_GET["ID"],$file);
+			$file=str_replace("[ID]",$_GET["ID"],$file);
 		}
 
 		if (ereg("\[SERIAL\]",$file)){
 			if (isset($ci->obj->fields["serial"]))
-				$file=ereg_replace("\[SERIAL\]",$ci->obj->fields["serial"],$file);
+				$file=str_replace("[SERIAL]",$ci->obj->fields["serial"],$file);
 		}
 		if (ereg("\[OTHERSERIAL\]",$file)){
 			if (isset($ci->obj->fields["otherserial"]))
-				$file=ereg_replace("\[OTHERSERIAL\]",$ci->obj->fields["otherserial"],$file);
+				$file=str_replace("[OTHERSERIAL]",$ci->obj->fields["otherserial"],$file);
 		}
 
 
 		if (ereg("\[LOCATIONID\]",$file)){
 			if (isset($ci->obj->fields["location"]))
-				$file=ereg_replace("\[LOCATIONID\]",$ci->obj->fields["location"],$file);
+				$file=str_replace("[LOCATIONID]",$ci->obj->fields["location"],$file);
 		}
 		if (ereg("\[LOCATION\]",$file)){
 			if (isset($ci->obj->fields["location"]))
-				$file=ereg_replace("\[LOCATION\]",getDropdownName("glpi_dropdown_locations",$ci->obj->fields["location"]),$file);
+				$file=str_replace("[LOCATION]",getDropdownName("glpi_dropdown_locations",$ci->obj->fields["location"]),$file);
 		}
 		if (ereg("\[NETWORK\]",$file)){
 			if (isset($ci->obj->fields["network"]))
-				$file=ereg_replace("\[NETWORK\]",getDropdownName("glpi_dropdown_network",$ci->obj->fields["network"]),$file);
+				$file=str_replace("[NETWORK]",getDropdownName("glpi_dropdown_network",$ci->obj->fields["network"]),$file);
 		}
 		if (ereg("\[DOMAIN\]",$file)){
 			if (isset($ci->obj->fields["domain"]))
-				$file=ereg_replace("\[DOMAIN\]",getDropdownName("glpi_dropdown_domain",$ci->obj->fields["domain"]),$file);
+				$file=str_replace("[DOMAIN]",getDropdownName("glpi_dropdown_domain",$ci->obj->fields["domain"]),$file);
 		}
 		$ipmac=array();
 		$i=0;
@@ -110,8 +110,8 @@ if (isset($_GET["lID"])){
 
 			if (count($ipmac)>0){
 				foreach ($ipmac as $key => $val){
-					$file=ereg_replace("\[IP\]",$val['ifaddr'],$file);
-					$file=ereg_replace("\[MAC\]",$val['ifmac'],$file);
+					$file=str_replace("[IP]",$val['ifaddr'],$file);
+					$file=str_replace("[MAC]",$val['ifmac'],$file);
 				}
 			}
 		}

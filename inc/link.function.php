@@ -158,48 +158,48 @@ function showLinkOnDevice($type,$ID){
 
 				$ci->getFromDB($type,$ID);
 				if (ereg("\[NAME\]",$link)){
-					$link=ereg_replace("\[NAME\]",$ci->getName(),$link);
+					$link=str_replace("[NAME]",$ci->getName(),$link);
 				}
 				if (ereg("\[ID\]",$link)){
-					$link=ereg_replace("\[ID\]",$ID,$link);
+					$link=str_replace("[ID]",$ID,$link);
 				}
 
 				if (ereg("\[LOGIN\]",$link)){
 					if (isset($_SESSION["glpiname"])){
-						$link=ereg_replace("\[LOGIN\]",$_SESSION["glpiname"],$link);
+						$link=str_replace("[LOGIN]",$_SESSION["glpiname"],$link);
 					}
 				}
 
 				if (ereg("\[SERIAL\]",$link)){
 					if ($tmp=$ci->getField('serial')){
-						$link=ereg_replace("\[SERIAL\]",$tmp,$link);
+						$link=str_replace("[SERIAL]",$tmp,$link);
 					}
 				}
 				if (ereg("\[OTHERSERIAL\]",$link)){
 					if ($tmp=$ci->getField('otherserial')){
-						$link=ereg_replace("\[OTHERSERIAL\]",$tmp,$link);
+						$link=str_replace("[OTHERSERIAL]",$tmp,$link);
 					}
 				}
 
 				if (ereg("\[LOCATIONID\]",$link)){
 					if ($tmp=$ci->getField('location')){
-						$link=ereg_replace("\[LOCATIONID\]",$tmp,$link);
+						$link=str_replace("[LOCATIONID]",$tmp,$link);
 					}
 				}
 
 				if (ereg("\[LOCATION\]",$link)){
 					if ($tmp=$ci->getField('location')){
-						$link=ereg_replace("\[LOCATION\]",getDropdownName("glpi_dropdown_locations",$tmp),$link);
+						$link=str_replace("[LOCATION]",getDropdownName("glpi_dropdown_locations",$tmp),$link);
 					}
 				}
 				if (ereg("\[NETWORK\]",$link)){
 					if ($tmp=$ci->getField('network')){
-						$link=ereg_replace("\[NETWORK\]",getDropdownName("glpi_dropdown_network",$tmp),$link);
+						$link=str_replace("[NETWORK]",getDropdownName("glpi_dropdown_network",$tmp),$link);
 					}
 				}
 				if (ereg("\[DOMAIN\]",$link)){
 					if ($tmp=$ci->getField('domain'))
-						$link=ereg_replace("\[DOMAIN\]",getDropdownName("glpi_dropdown_domain",$tmp),$link);
+						$link=str_replace("[DOMAIN]",getDropdownName("glpi_dropdown_domain",$tmp),$link);
 				}
 				$ipmac=array();
 				$i=0;
@@ -219,8 +219,8 @@ function showLinkOnDevice($type,$ID){
 					// Add IP/MAC internal switch
 					if ($type==NETWORKING_TYPE){
 						$tmplink=$link;
-						$tmplink=ereg_replace("\[IP\]",$ci->getField('ifaddr'),$tmplink);
-						$tmplink=ereg_replace("\[MAC\]",$ci->getField('ifmac'),$tmplink);
+						$tmplink=str_replace("[IP]",$ci->getField('ifaddr'),$tmplink);
+						$tmplink=str_replace("[MAC]",$ci->getField('ifmac'),$tmplink);
 						echo "<tr class='tab_bg_2'><td><a target='_blank' href='$tmplink'>$name - $tmplink</a></td></tr>";
 					}
 
@@ -232,14 +232,14 @@ function showLinkOnDevice($type,$ID){
 								if (empty($val['ifaddr'])) {
 									$disp=0;
 								} else {
-									$tmplink=ereg_replace("\[IP\]",$val['ifaddr'],$tmplink);
+									$tmplink=str_replace("[IP]",$val['ifaddr'],$tmplink);
 								}
 							}
 							if (ereg("\[MAC\]",$link)) {
 								if (empty($val['ifmac'])) {
 									$disp=0;
 								} else {
-									$tmplink=ereg_replace("\[MAC\]",$val['ifmac'],$tmplink);
+									$tmplink=str_replace("[MAC]",$val['ifmac'],$tmplink);
 								}
 							}
 							if ($disp) {
@@ -256,17 +256,17 @@ function showLinkOnDevice($type,$ID){
 
 				// Manage Filename
 				if (ereg("\[NAME\]",$link)){
-					$link=ereg_replace("\[NAME\]",$ci->getName(),$link);
+					$link=str_replace("[NAME]",$ci->getName(),$link);
 				}
 
 				if (ereg("\[LOGIN\]",$link)){
 					if (isset($_SESSION["glpiname"])){
-						$link=ereg_replace("\[LOGIN\]",$_SESSION["glpiname"],$link);
+						$link=str_replace("[LOGIN]",$_SESSION["glpiname"],$link);
 					}
 				}
 
 				if (ereg("\[ID\]",$link)){
-					$link=ereg_replace("\[ID\]",$_GET["ID"],$link);
+					$link=str_replace("[ID]",$_GET["ID"],$link);
 				}
 
 				echo "<tr class='tab_bg_2'><td><a href='".$CFG_GLPI["root_doc"]."/front/link.send.php?lID=".$data['ID']."&amp;type=$type&amp;ID=$ID' target='_blank'>".$name."</a></td></tr>";
