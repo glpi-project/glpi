@@ -401,7 +401,7 @@ function printReservation($target,$ID,$date){
 				
 				//if (in_array($ci->obj->fields["FK_entities"],$_SESSION["glpiactiveentities"])){
 				if ($ci->obj->can($m->fields["id_device"],"r")){
-					list($annee,$mois,$jour)=split("-",$date);
+					list($annee,$mois,$jour)=explode("-",$date);
 					echo "<tr class='tab_bg_1'><td><a href='$target?show=resa&amp;ID=".$data['ID']."&amp;mois_courant=$mois&amp;annee_courante=$annee'>".$ci->getType()." - ".$ci->getName()."</a></td></tr>";
 					echo "<tr><td>";
 					printReservationItem($target,$data['ID'],$date);
@@ -422,7 +422,7 @@ function printReservationItem($target,$ID,$date){
 	$resa = new ReservationResa();
 	
 	$user=new User;
-	list($year,$month,$day)=split("-",$date);
+	list($year,$month,$day)=explode("-",$date);
 	$debut=$date." 00:00:00";
 	$fin=$date." 23:59:59";
 	$query = "SELECT * FROM glpi_reservation_resa".
@@ -610,7 +610,7 @@ function showDeviceReservations($target,$type,$ID){
 				echo "<td class='center'>".nl2br($data["comment"])."</td>";
 				echo "<td class='center'>";
 				
-				list($annee,$mois,$jour)=split("-",$data["begin"]);
+				list($annee,$mois,$jour)=explode("-",$data["begin"]);
 				echo "<a  href='".$CFG_GLPI["root_doc"]."/front/reservation.php?show=resa&amp;ID=".$resaID."&amp;mois_courant=$mois&amp;annee_courante=$annee' title='".$LANG["reservation"][21]."'><img src=\"".$CFG_GLPI["root_doc"]."/pics/reservation-3.png\" alt='' title=''></a>";
 				
 				
@@ -646,7 +646,7 @@ function showDeviceReservations($target,$type,$ID){
 				echo "<td class='center'>".nl2br($data["comment"])."</td>";
 				echo "<td class='center'>";
 				
-				list($annee,$mois,$jour)=split("-",$data["begin"]);
+				list($annee,$mois,$jour)=explode("-",$data["begin"]);
 				echo "<a  href='".$CFG_GLPI["root_doc"]."/front/reservation.php?show=resa&amp;ID=".$resaID."&amp;mois_courant=$mois&amp;annee_courante=$annee' title='".$LANG["reservation"][21]."'><img src=\"".$CFG_GLPI["root_doc"]."/pics/reservation-3.png\" alt='' title=''></a>";
 				
 				echo "</td>";
@@ -697,7 +697,7 @@ function showUserReservations($target,$ID){
 			echo "<td class='center'>".nl2br($data["comment"])."</td>";
 			echo "<td class='center'>";
 				
-				list($annee,$mois,$jour)=split("-",$data["begin"]);
+				list($annee,$mois,$jour)=explode("-",$data["begin"]);
 				echo "<a  href='".$CFG_GLPI["root_doc"]."/front/reservation.php?show=resa&amp;ID=".$data["id_item"]."&amp;mois_courant=$mois&amp;annee_courante=$annee' title='".$LANG["reservation"][21]."'><img src=\"".$CFG_GLPI["root_doc"]."/pics/reservation-3.png\" alt='' title=''></a>";
 				
 				echo "</td>";
@@ -730,7 +730,7 @@ function showUserReservations($target,$ID){
 			echo "<td class='center'>".nl2br($data["comment"])."</td>";
 			echo "<td class='center'>";
 				
-				list($annee,$mois,$jour)=split("-",$data["begin"]);
+				list($annee,$mois,$jour)=explode("-",$data["begin"]);
 				echo "<a  href='".$CFG_GLPI["root_doc"]."/front/reservation.php?show=resa&amp;ID=".$data["id_item"]."&amp;mois_courant=$mois&amp;annee_courante=$annee' title='".$LANG["reservation"][21]."'><img src=\"".$CFG_GLPI["root_doc"]."/pics/reservation-3.png\" alt='' title=''></a>";
 				
 				echo "</td>";

@@ -50,7 +50,7 @@ if (isset($_GET["redirect"])){
 	checkRight("reservation_helpdesk","1");
 	$rr=new ReservationResa();
 	if (isset($_POST["edit_resa"])){
-		list($begin_year,$begin_month,$begin_day)=split("-",$_POST["begin_date"]);
+		list($begin_year,$begin_month,$begin_day)=explode("-",$_POST["begin_date"]);
 		$id_item=key($_POST["items"]);
 		if ($_SESSION["glpiID"]==$_POST["id_user"]){
 			$_POST['_target']=$_SERVER['PHP_SELF'];
@@ -71,7 +71,7 @@ if (isset($_GET["redirect"])){
 		if ($rr->delete($_POST)){ // delete() need an array !
 			logEvent($_POST["ID"], "reservation", 4, "inventory", $_SESSION["glpiname"]." delete a reservation.");
 		}
-		list($begin_year,$begin_month,$begin_day)=split("-",$_POST["begin_date"]);
+		list($begin_year,$begin_month,$begin_day)=explode("-",$_POST["begin_date"]);
 		$_GET["mois_courant"]=$begin_month;
 		$_GET["annee_courant"]=$begin_year;
 		printCalendrier($_SERVER['PHP_SELF'],$id_item);
@@ -95,8 +95,8 @@ if (isset($_GET["redirect"])){
 			$_POST['id_item']=$id_item;
 			$ok=true;
 			$times=$_POST["periodicity_times"];
-			list($begin_year,$begin_month,$begin_day)=split("-",$_POST["begin_date"]);
-			list($end_year,$end_month,$end_day)=split("-",$_POST["end_date"]);
+			list($begin_year,$begin_month,$begin_day)=explode("-",$_POST["begin_date"]);
+			list($end_year,$end_month,$end_day)=explode("-",$_POST["end_date"]);
 			$to_add=1;
 			if ($_POST["periodicity"]=="week") {
 				$to_add=7;

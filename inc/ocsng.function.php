@@ -2113,7 +2113,7 @@ function ocsUpdateDevices($device_type, $glpi_id, $ocs_id, $ocs_server_id, $cfg_
 
 						if (!empty ($line2["IPADDRESS"]) && $cfg_ocs["import_ip"]) {
 							$do_clean = true;
-							$ocs_ips = split(",", $line2["IPADDRESS"]);
+							$ocs_ips = explode(",", $line2["IPADDRESS"]);
 							$ocs_ips = array_unique($ocs_ips);
 							sort($ocs_ips);
 

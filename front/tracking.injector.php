@@ -153,7 +153,7 @@ elseif (isset($_POST["emailupdates"]) && $_POST["emailupdates"] && isset($_POST[
 
 {
 	if (isset($_POST["_my_items"])&&!empty($_POST["_my_items"])){
-		$splitter=split("_",$_POST["_my_items"]);
+		$splitter=explode("_",$_POST["_my_items"]);
 		if (count($splitter)==2){
 			$_POST["device_type"]=$splitter[0];
 			$_POST["computer"]=$splitter[1];

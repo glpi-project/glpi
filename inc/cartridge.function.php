@@ -172,8 +172,8 @@ function showCartridges ($tID,$show_old=0) {
 				} else {
 					echo "N/A";
 				}
-				$tmp_dbeg=split("-",$data["date_in"]);
-				$tmp_dend=split("-",$data["date_use"]);
+				$tmp_dbeg=explode("-",$data["date_in"]);
+				$tmp_dend=explode("-",$data["date_use"]);
 				$stock_time_tmp= mktime(0,0,0,$tmp_dend[1],$tmp_dend[2],$tmp_dend[0]) 
 					- mktime(0,0,0,$tmp_dbeg[1],$tmp_dbeg[2],$tmp_dbeg[0]);		
 				$stock_time+=$stock_time_tmp;
@@ -181,8 +181,8 @@ function showCartridges ($tID,$show_old=0) {
 			echo "</td><td class='center'>";
 			echo $date_out;		
 			if ($show_old){
-				$tmp_dbeg=split("-",$data["date_use"]);
-				$tmp_dend=split("-",$data["date_out"]);
+				$tmp_dbeg=explode("-",$data["date_use"]);
+				$tmp_dend=explode("-",$data["date_out"]);
 
 				$use_time_tmp= mktime(0,0,0,$tmp_dend[1],$tmp_dend[2],$tmp_dend[0]) 
 					- mktime(0,0,0,$tmp_dbeg[1],$tmp_dbeg[2],$tmp_dbeg[0]);		
@@ -345,8 +345,8 @@ function showCartridgeInstalled($instID,$old=0) {
 		echo "</td><td class='center'>";
 		echo $date_use;
 
-		$tmp_dbeg=split("-",$date_in);
-		$tmp_dend=split("-",$date_use);
+		$tmp_dbeg=explode("-",$date_in);
+		$tmp_dend=explode("-",$date_use);
 
 		$stock_time_tmp= mktime(0,0,0,$tmp_dend[1],$tmp_dend[2],$tmp_dend[0]) 
 			- mktime(0,0,0,$tmp_dbeg[1],$tmp_dbeg[2],$tmp_dbeg[0]);
@@ -356,8 +356,8 @@ function showCartridgeInstalled($instID,$old=0) {
 		echo $date_out;		
 
 		if ($old!=0){
-			$tmp_dbeg=split("-",$date_use);
-			$tmp_dend=split("-",$date_out);
+			$tmp_dbeg=explode("-",$date_use);
+			$tmp_dend=explode("-",$date_out);
 
 			$use_time_tmp= mktime(0,0,0,$tmp_dend[1],$tmp_dend[2],$tmp_dend[0]) 
 				- mktime(0,0,0,$tmp_dbeg[1],$tmp_dbeg[2],$tmp_dbeg[0]);		

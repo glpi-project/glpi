@@ -90,12 +90,12 @@ class PlanningTracking extends CommonDBTM {
 		// Auto update realtime
 		$fup=new Followup();
 		$fup->getFromDB($input["id_followup"]);
-		$tmp_beg=split(" ",$input["begin"]);
-		$tmp_end=split(" ",$input["end"]);
-		$tmp_dbeg=split("-",$tmp_beg[0]);
-		$tmp_dend=split("-",$tmp_end[0]);
-		$tmp_hbeg=split(":",$tmp_beg[1]);
-		$tmp_hend=split(":",$tmp_end[1]);
+		$tmp_beg=explode(" ",$input["begin"]);
+		$tmp_end=explode(" ",$input["end"]);
+		$tmp_dbeg=explode("-",$tmp_beg[0]);
+		$tmp_dend=explode("-",$tmp_end[0]);
+		$tmp_hbeg=explode(":",$tmp_beg[1]);
+		$tmp_hend=explode(":",$tmp_end[1]);
 
 		$dateDiff = mktime($tmp_hend[0],$tmp_hend[1],$tmp_hend[2],$tmp_dend[1],$tmp_dend[2],$tmp_dend[0]) 
 			- mktime($tmp_hbeg[0],$tmp_hbeg[1],$tmp_hbeg[2],$tmp_dbeg[1],$tmp_dbeg[2],$tmp_dbeg[0]);		
@@ -150,12 +150,12 @@ class PlanningTracking extends CommonDBTM {
 		$fup->getFromDB($input["id_followup"]);
 
 		if ($fup->fields["realtime"]==0){
-			$tmp_beg=split(" ",$this->fields["begin"]);
-			$tmp_end=split(" ",$this->fields["end"]);
-			$tmp_dbeg=split("-",$tmp_beg[0]);
-			$tmp_dend=split("-",$tmp_end[0]);
-			$tmp_hbeg=split(":",$tmp_beg[1]);
-			$tmp_hend=split(":",$tmp_end[1]);
+			$tmp_beg=explode(" ",$this->fields["begin"]);
+			$tmp_end=explode(" ",$this->fields["end"]);
+			$tmp_dbeg=explode("-",$tmp_beg[0]);
+			$tmp_dend=explode("-",$tmp_end[0]);
+			$tmp_hbeg=explode(":",$tmp_beg[1]);
+			$tmp_hend=explode(":",$tmp_end[1]);
 
 			$dateDiff = mktime($tmp_hend[0],$tmp_hend[1],$tmp_hend[2],$tmp_dend[1],$tmp_dend[2],$tmp_dend[0]) 
 				- mktime($tmp_hbeg[0],$tmp_hbeg[1],$tmp_hbeg[2],$tmp_dbeg[1],$tmp_dbeg[2],$tmp_dbeg[0]);		

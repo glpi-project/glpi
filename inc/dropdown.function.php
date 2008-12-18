@@ -1726,7 +1726,7 @@ function dropdownHours($name,$value,$limit_planning=0){
 	$end=24;
 	$step=$CFG_GLPI["time_step"];
 	// Check if the $step is Ok for the $value field
-	$split=split(":",$value);
+	$split=explode(":",$value);
 	// Valid value XX:YY ou XX:YY:ZZ
 	if (count($split)==2||count($split)==3){
 		$min=$split[1];
@@ -1738,8 +1738,8 @@ function dropdownHours($name,$value,$limit_planning=0){
 	}
 
 	if ($limit_planning){
-		$plan_begin=split(":",$CFG_GLPI["planning_begin"]);
-		$plan_end=split(":",$CFG_GLPI["planning_end"]);
+		$plan_begin=explode(":",$CFG_GLPI["planning_begin"]);
+		$plan_end=explode(":",$CFG_GLPI["planning_end"]);
 		$begin=(int) $plan_begin[0];
 		$end=(int) $plan_end[0];
 	}

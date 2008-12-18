@@ -44,7 +44,7 @@ checkLoginUser();
 
 if (isset($_GET["file"])){
 
-	$splitter=split("/",$_GET["file"]);
+	$splitter=explode("/",$_GET["file"]);
 
 	if (count($splitter)==2){
 		$send=false;

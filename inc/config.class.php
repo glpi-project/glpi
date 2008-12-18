@@ -313,8 +313,8 @@ class Config extends CommonDBTM {
 		//<input size='10' type=\"text\" name=\"cut\" value=\"" . $CFG_GLPI["cut"] . "\">
 		echo "</td>";
 		
-		$plan_begin = split(":", $CFG_GLPI["planning_begin"]);
-		$plan_end = split(":", $CFG_GLPI["planning_end"]);
+		$plan_begin = explode(":", $CFG_GLPI["planning_begin"]);
+		$plan_end = explode(":", $CFG_GLPI["planning_end"]);
 		echo "<td class='center'>" . $LANG["setup"][223] . "</td><td>";
 		dropdownInteger('planning_begin', $plan_begin[0], 0, 24);
 		echo "&nbsp;->&nbsp;";

@@ -69,7 +69,7 @@ if ($_GET["type"]!="month"){
 	$next=strftime("%Y-%m-%d",$next);
 	$prev=strftime("%Y-%m-%d",$prev);
 } else {
-	$split=split("-",$_GET["date"]);
+	$split=explode("-",$_GET["date"]);
 	$year_next=$split[0];
 	$month_next=$split[1]+1;
 	if ($month_next>12) {

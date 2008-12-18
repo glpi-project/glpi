@@ -144,7 +144,7 @@ function testMail(){
 			echo "<select name='mailing_to_add_" . $type . "[]' multiple size='5'>";
 		
 			foreach ($profiles as $key => $val) {
-				list ($item_type, $item) = split("_", $key);
+				list ($item_type, $item) = explode("_", $key);
 				echo "<option value='$key'>" . $val . "</option>\n";
 			}
 			echo "</select>";			
@@ -189,7 +189,7 @@ function testMail(){
 			foreach ($input["mailing_to_" . $action . "_" . $type] as $val) {
 				switch ($action) {
 					case "add" :
-						list ($item_type, $item) = split("_", $val);
+						list ($item_type, $item) = explode("_", $val);
 						$query = "INSERT INTO glpi_mailing (type,FK_item,item_type) VALUES ('$type','$item','$item_type')";
 						$DB->query($query);
 						break;

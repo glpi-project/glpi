@@ -530,7 +530,7 @@ if (isset($_POST["device_type"])){
 					} 
 				} else {
 					// Need to search display item over plugins
-					$split=split('_',$_POST["action"]);
+					$split=explode('_',$_POST["action"]);
 					if (isset($split[1])){
 						doOneHook($split[1], 
 							'MassiveActionsProcess',

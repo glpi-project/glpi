@@ -235,7 +235,7 @@ function location_create_new($split_char,$add_first){
 	while ($data =  $DB->fetch_array($result)){
 
 		if (!empty($split_char))
-			$splitter=split($split_char,$data['name']);
+			$splitter=explode($split_char,$data['name']);
 		else $splitter=array($data['name']);
 
 		$up_ID=$root_ID;

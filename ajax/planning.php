@@ -44,9 +44,9 @@
 	
 	checkCentralAccess();
 	
-	$split=split(":",$CFG_GLPI["planning_begin"]);
+	$split=explode(":",$CFG_GLPI["planning_begin"]);
 	$global_begin=$split[0].":".$split[1];
-	$split=split(":",$CFG_GLPI["planning_end"]);
+	$split=explode(":",$CFG_GLPI["planning_end"]);
 	$global_end=$split[0].":".$split[1];
 	
 	if (isset($_POST["ID"])&&$_POST["ID"]>0){

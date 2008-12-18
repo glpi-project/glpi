@@ -202,7 +202,7 @@ function displayPluginAction($type,$ID,$onglet,$withtemplate=0){
 		return true;
 
 	} else {
-		$split=split("_",$onglet);
+		$split=explode("_",$onglet);
 		if (count($split)==2){
 			list($plug,$ID_onglet)=$split;
 

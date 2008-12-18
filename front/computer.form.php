@@ -114,7 +114,7 @@ elseif(isset($_POST["update_device"])) {
 
 	// Update quantity
 	foreach ($_POST as $key => $val){
-		$data=split("_",$key);
+		$data=explode("_",$key);
 		if (count($data)==2)
 			if ($data[0]=="quantity"){
 				update_device_quantity($val,$data[1]);
@@ -123,7 +123,7 @@ elseif(isset($_POST["update_device"])) {
 
 	// Update specificity
 	foreach ($_POST as $key => $val){
-		$data=split("_",$key);
+		$data=explode("_",$key);
 		if (count($data)==2)
 			if ($data[0]=="devicevalue"){
 				update_device_specif($val,$data[1]);
