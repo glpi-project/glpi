@@ -92,7 +92,7 @@ function showCentralReminder($entity = -1, $parent = false){
 
 			if($data["rv"]=="1"){
 
-				$tab=split(" ",$data["begin"]);
+				$tab=explode(" ",$data["begin"]);
 				$date_url=$tab[0];
 
 				echo "<span class='reminder_right'><a href=\"".$CFG_GLPI["root_doc"]."/front/planning.php?date=".$date_url."&amp;type=day\"><img src=\"".$CFG_GLPI["root_doc"]."/pics/rdv.png\" alt='".$LANG["Menu"][29]."' title='".convDateTime($data["begin"])."=>".convDateTime($data["end"])."'></a></span>";
@@ -195,7 +195,7 @@ function showListReminder($private=1,$recursive=0){
 			if($val["end"]!=""){	
 				echo "<td class='center'>";
 
-				$tab=split(" ",$val["begin"]);
+				$tab=explode(" ",$val["begin"]);
 				$date_url=$tab[0];
 				if ($planningRight){
 					echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/planning.php?date=".$date_url."&amp;type=day\">";

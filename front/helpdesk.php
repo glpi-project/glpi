@@ -43,7 +43,7 @@ checkRight("create_ticket","1");
 commonHeader("Helpdesk",$_SERVER['PHP_SELF'],"maintain","helpdesk");
 
 if (isset($_POST["_my_items"])&&!empty($_POST["_my_items"])){
-	$splitter=split("_",$_POST["_my_items"]);
+	$splitter=explode("_",$_POST["_my_items"]);
 	if (count($splitter)==2){
 		$_POST["device_type"]=$splitter[0];
 		$_POST["computer"]=$splitter[1];

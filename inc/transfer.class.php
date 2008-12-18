@@ -815,7 +815,7 @@ class Transfer extends CommonDBTM{
 	**/
 	function transferDocumentFile($filename){
 		if (is_file(GLPI_DOC_DIR."/".$filename)){
-			$splitter=split("/",$filename);
+			$splitter=explode("/",$filename);
 			if (count($splitter)==2){
 				$dir=$splitter[0];
 				$file=$splitter[1];

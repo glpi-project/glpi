@@ -59,11 +59,11 @@ function showPlanning($who,$who_group,$when,$type){
 
 	// Define some constants
 
-	$date=split("-",$when);
+	$date=explode("-",$when);
 	$time=mktime(0,0,0,$date[1],$date[2],$date[0]);
 
 	// Check bisextile years
-	list($current_year,$current_month,$current_day)=split("-",$when);
+	list($current_year,$current_month,$current_day)=explode("-",$when);
 	if (($current_year%4)==0) $feb=29; else $feb=28;
 	$nb_days= array(31,$feb,31,30,31,30,31,31,30,31,30,31);
 	// Begin of the month
@@ -242,9 +242,9 @@ function showPlanning($who,$who_group,$when,$type){
 	ksort($interv);
 	
 	// Display Items
-	$tmp=split(":",$CFG_GLPI["planning_begin"]);
+	$tmp=explode(":",$CFG_GLPI["planning_begin"]);
 	$hour_begin=$tmp[0];
-	$tmp=split(":",$CFG_GLPI["planning_end"]);
+	$tmp=explode(":",$CFG_GLPI["planning_end"]);
 	$hour_end=$tmp[0];
 
 	switch ($type){
@@ -658,7 +658,7 @@ function showPlanningCentral($who){
 		}
 
 	// Get begin and duration
-	$date=split("-",$when);
+	$date=explode("-",$when);
 	$time=mktime(0,0,0,$date[1],$date[2],$date[0]);
 	$begin=$time;
 	$end=$begin+DAY_TIMESTAMP;

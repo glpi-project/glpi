@@ -1829,7 +1829,7 @@ function printPager($start,$numrows,$target,$parameters,$item_type_output=0,$ite
 		echo "<input type='hidden' name='item_type' value='$item_type_output'>";
 		if ($item_type_output_param!=0)
 			echo "<input type='hidden' name='item_type_param' value='".serialize($item_type_output_param)."'>";
-		$split=split("&amp;",$parameters);
+		$split=explode("&amp;",$parameters);
 		for ($i=0;$i<count($split);$i++){
 			$pos=strpos($split[$i],'=');
 			echo "<input type='hidden' name=\"".substr($split[$i],0,$pos)."\" value=\"".substr($split[$i],$pos+1)."\">";

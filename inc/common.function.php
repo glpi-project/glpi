@@ -1071,7 +1071,7 @@ function sendFile($file,$filename){
 		echo "Error file $file does not exist";
 		return;
 	} else {
-		$splitter=split("/",$file);
+		$splitter=explode("/",$file);
 		$filedb=$splitter[count($splitter)-2]."/".$splitter[count($splitter)-1];
 		$query="SELECT mime from glpi_docs WHERE filename LIKE '$filedb'";
 		$result=$DB->query($query);
@@ -1081,7 +1081,7 @@ function sendFile($file,$filename){
 		} else {
 			// fichiers DUMP SQL et XML
 			if ($splitter[count($splitter)-2]=="dump"){
-				$splitter2=split("\.",$file);
+				$splitter2=explode(".",$file);
 				switch ($splitter2[count($splitter2)-1]) {
 					case "sql" : 
 						$mime="text/x-sql";
@@ -1569,7 +1569,7 @@ function checkNewVersionAvailable($auto=true){
 			return $error;
 		}
 	} else {			
-		$splitted=split("\.",trim($CFG_GLPI["version"]));
+		$splitted=explode(".",trim($CFG_GLPI["version"]));
 
 		if ($splitted[0]<10) $splitted[0].="0";
 		if ($splitted[1]<10) $splitted[1].="0";
@@ -1579,7 +1579,7 @@ function checkNewVersionAvailable($auto=true){
 			$cur_version+=$splitted[2];
 		}
 
-		$splitted=split("\.",trim($latest_version));
+		$splitted=explode(".",trim($latest_version));
 
 		if ($splitted[0]<10) $splitted[0].="0";
 		if ($splitted[1]<10) $splitted[1].="0";
@@ -1675,7 +1675,7 @@ function getExpir($begin,$duration,$notice="0"){
 function manageRedirect($where){
 	global $CFG_GLPI,$PLUGIN_HOOKS;
 	if (!empty($where)){
-		$data=split("_",$where);
+		$data=explode("_",$where);
 		if (count($data)>=2&&isset($_SESSION["glpiactiveprofile"]["interface"])&&!empty($_SESSION["glpiactiveprofile"]["interface"])){
 			switch ($_SESSION["glpiactiveprofile"]["interface"]){
 				case "helpdesk" :

@@ -529,7 +529,7 @@ function getDocumentLink($filename,$params=""){
 	if (empty($filename))
 		return "&nbsp;";
 	$out="";
-	$splitter=split("/",$filename);
+	$splitter=explode("/",$filename);
 	if (count($splitter)==2)
 		$fileout=$splitter[1];
 	else $fileout=$filename;
@@ -602,7 +602,7 @@ function showUploadedFilesDropdown($myname){
  **/
 function isValidDoc($filename){
 	global $DB;
-	$splitter=split("\.",$filename);
+	$splitter=explode(".",$filename);
 	$ext=end($splitter);
 
 	$query="SELECT * from glpi_type_docs where ext LIKE '$ext' AND upload='1'";

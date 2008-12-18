@@ -52,7 +52,7 @@ if (isset($_POST["clear_resa"])||isset($_POST["add_resa"])||isset($_POST["edit_r
 	checkRight("reservation_helpdesk","1");
 
 	if (isset($_POST["edit_resa"])){
-		list($begin_year,$begin_month,$begin_day)=split("-",$_POST["begin"]);
+		list($begin_year,$begin_month,$begin_day)=explode("-",$_POST["begin"]);
 		if (haveRight("reservation_central","w")||$_SESSION["glpiID"]==$_POST["id_user"]){
 			$_POST['_target']=$_SERVER['PHP_SELF'];
 			$_POST['_item']=key($_POST["items"]);
@@ -70,7 +70,7 @@ if (isset($_POST["clear_resa"])||isset($_POST["add_resa"])||isset($_POST["edit_r
 			logEvent($_POST["ID"], "reservation", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][22]);
 		}
 
-		list($begin_year,$begin_month,$begin_day)=split("-",$_POST["begin"]);
+		list($begin_year,$begin_month,$begin_day)=explode("-",$_POST["begin"]);
 		$_GET["mois_courant"]=$begin_month;
 		$_GET["annee_courant"]=$begin_year;
 		printCalendrier($_SERVER['PHP_SELF'],$id_item);
@@ -93,7 +93,7 @@ if (isset($_POST["clear_resa"])||isset($_POST["add_resa"])||isset($_POST["edit_r
 
 			$times=$_POST["periodicity_times"];
 			$begin=$_POST["begin"];
-			list($begin_year,$begin_month,$begin_day)=split("-",$_POST["begin"]);
+			list($begin_year,$begin_month,$begin_day)=explode("-",$_POST["begin"]);
 			$end=$_POST["end"];
 			$to_add=1;
 	
