@@ -1438,15 +1438,15 @@ function commonFooter($keepDB=false) {
 	
 			foreach ($DEBUG_SQL['queries'] as $num => $query){
 				echo "<tr class='tab_bg_".(($num%2)+1)."'><td>$num</td><td>";
-				echo eregi_replace("ORDER BY","<br>ORDER BY",
-					eregi_replace("SORT","<br>SORT",
-					eregi_replace("LEFT JOIN","<br>LEFT JOIN",
-					eregi_replace("INNER JOIN","<br>INNER JOIN",
-					eregi_replace("WHERE","<br>WHERE",
-					eregi_replace("FROM","<br>FROM",
-					eregi_replace("UNION","<br>UNION<br>",
-					eregi_replace(">","&gt;",
-					eregi_replace("<","&lt;",$query)))))))));
+				echo preg_replace("/ORDER BY/i","<br>ORDER BY",
+					preg_replace("/SORT/i","<br>SORT",
+					preg_replace("/LEFT JOIN/i","<br>LEFT JOIN",
+					preg_replace("/INNER JOIN/i","<br>INNER JOIN",
+					preg_replace("/WHERE/i","<br>WHERE",
+					preg_replace("/FROM/i","<br>FROM",
+					preg_replace("/UNION/i","<br>UNION<br>",
+					preg_replace(">","&gt;",
+					preg_replace("<","&lt;",$query)))))))));
 				echo "</td><td>";
 				echo $DEBUG_SQL['times'][$num];
 				echo "</td><td>";
@@ -1509,15 +1509,15 @@ function ajaxFooter(){
 
 		foreach ($DEBUG_SQL['queries'] as $num => $query){
 			echo "<tr class='tab_bg_".(($num%2)+1)."'><td>$num</td><td>";
-			echo eregi_replace("ORDER BY","<br>ORDER BY",
-				eregi_replace("SORT","<br>SORT",
-				eregi_replace("LEFT JOIN","<br>LEFT JOIN",
-				eregi_replace("INNER JOIN","<br>INNER JOIN",
-				eregi_replace("WHERE","<br>WHERE",
-				eregi_replace("FROM","<br>FROM",
-				eregi_replace("UNION","<br>UNION<br>",
-				eregi_replace(">","&gt;",
-				eregi_replace("<","&lt;",$query)))))))));
+			echo preg_replace("/ORDER BY/i","<br>ORDER BY",
+				preg_replace("/SORT/i","<br>SORT",
+				preg_replace("/LEFT JOIN/i","<br>LEFT JOIN",
+				preg_replace("/INNER JOIN/i","<br>INNER JOIN",
+				preg_replace("/WHERE/i","<br>WHERE",
+				preg_replace("/FROM/i","<br>FROM",
+				preg_replace("/UNION/i","<br>UNION<br>",
+				preg_replace("/>/","&gt;",
+				preg_replace("/</","&lt;",$query)))))))));
 			echo "</td><td>";
 			echo $DEBUG_SQL['times'][$num];
 			echo "</td><td>";
