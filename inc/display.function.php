@@ -1438,15 +1438,15 @@ function commonFooter($keepDB=false) {
 	
 			foreach ($DEBUG_SQL['queries'] as $num => $query){
 				echo "<tr class='tab_bg_".(($num%2)+1)."'><td>$num</td><td>";
-				echo preg_replace("/ORDER BY/i","<br>ORDER BY",
-					preg_replace("/SORT/i","<br>SORT",
-					preg_replace("/LEFT JOIN/i","<br>LEFT JOIN",
-					preg_replace("/INNER JOIN/i","<br>INNER JOIN",
-					preg_replace("/WHERE/i","<br>WHERE",
-					preg_replace("/FROM/i","<br>FROM",
-					preg_replace("/UNION/i","<br>UNION<br>",
-					preg_replace(">","&gt;",
-					preg_replace("<","&lt;",$query)))))))));
+				echo str_ireplace("ORDER BY","<br>ORDER BY",
+					str_ireplace("SORT","<br>SORT",
+					str_ireplace("LEFT JOIN","<br>LEFT JOIN",
+					str_ireplace("INNER JOIN","<br>INNER JOIN",
+					str_ireplace("WHERE","<br>WHERE",
+					str_ireplace("FROM","<br>FROM",
+					str_ireplace("UNION","<br>UNION<br>",
+					str_replace(">","&gt;",
+					str_replace("<","&lt;",$query)))))))));
 				echo "</td><td>";
 				echo $DEBUG_SQL['times'][$num];
 				echo "</td><td>";
@@ -1509,15 +1509,15 @@ function ajaxFooter(){
 
 		foreach ($DEBUG_SQL['queries'] as $num => $query){
 			echo "<tr class='tab_bg_".(($num%2)+1)."'><td>$num</td><td>";
-			echo preg_replace("/ORDER BY/i","<br>ORDER BY",
-				preg_replace("/SORT/i","<br>SORT",
-				preg_replace("/LEFT JOIN/i","<br>LEFT JOIN",
-				preg_replace("/INNER JOIN/i","<br>INNER JOIN",
-				preg_replace("/WHERE/i","<br>WHERE",
-				preg_replace("/FROM/i","<br>FROM",
-				preg_replace("/UNION/i","<br>UNION<br>",
-				preg_replace("/>/","&gt;",
-				preg_replace("/</","&lt;",$query)))))))));
+			echo str_ireplace("ORDER BY","<br>ORDER BY",
+				str_ireplace("SORT","<br>SORT",
+				str_ireplace("LEFT JOIN","<br>LEFT JOIN",
+				str_ireplace("INNER JOIN","<br>INNER JOIN",
+				str_ireplace("WHERE","<br>WHERE",
+				str_ireplace("FROM","<br>FROM",
+				str_ireplace("UNION","<br>UNION<br>",
+				str_replace(">","&gt;",
+				str_replace("<","&lt;",$query)))))))));
 			echo "</td><td>";
 			echo $DEBUG_SQL['times'][$num];
 			echo "</td><td>";
