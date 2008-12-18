@@ -1026,7 +1026,7 @@ function dropdownMyDevices($userID=0,$entity_restrict=-1){
 			foreach ($types as $type){
 				if ($_SESSION["glpiactiveprofile"]["helpdesk_hardware_type"]&pow(2,$type)){
 					if (!isset($already_add[$type])) $already_add[$type]=array();
-					$query="SELECT DISTINCT ".$LINK_ID_TABLE[$type].".* FROM glpi_connect_wire LEFT JOIN ".$LINK_ID_TABLE[$type]." ON (glpi_connect_wire.end1=".$LINK_ID_TABLE[$type].".ID) WHERE glpi_connect_wire.type='$type' AND  ".ereg_replace("XXXX","glpi_connect_wire.end2",$search_computer)." AND ".$LINK_ID_TABLE[$type].".deleted='0' ";
+					$query="SELECT DISTINCT ".$LINK_ID_TABLE[$type].".* FROM glpi_connect_wire LEFT JOIN ".$LINK_ID_TABLE[$type]." ON (glpi_connect_wire.end1=".$LINK_ID_TABLE[$type].".ID) WHERE glpi_connect_wire.type='$type' AND  ".str_replace("XXXX","glpi_connect_wire.end2",$search_computer)." AND ".$LINK_ID_TABLE[$type].".deleted='0' ";
 					if (in_array($LINK_ID_TABLE[$type],$CFG_GLPI["template_tables"])){
 						$query.=" AND is_template='0' ";
 					}
@@ -1061,7 +1061,7 @@ function dropdownMyDevices($userID=0,$entity_restrict=-1){
 			// Software
 			if ($_SESSION["glpiactiveprofile"]["helpdesk_hardware_type"]&pow(2,SOFTWARE_TYPE)){
 				$query = "SELECT DISTINCT glpi_softwareversions.name as version, glpi_software.name as name, glpi_software.ID as ID FROM glpi_inst_software, glpi_software,glpi_softwareversions ";
-				$query.= "WHERE glpi_inst_software.vID = glpi_softwareversions.ID AND glpi_softwareversions.sID = glpi_software.ID AND ".ereg_replace("XXXX","glpi_inst_software.cID",$search_computer)." AND  glpi_software.helpdesk_visible=1 ";
+				$query.= "WHERE glpi_inst_software.vID = glpi_softwareversions.ID AND glpi_softwareversions.sID = glpi_software.ID AND ".str_replace("XXXX","glpi_inst_software.cID",$search_computer)." AND  glpi_software.helpdesk_visible=1 ";
 				$query.=getEntitiesRestrictRequest("AND","glpi_software","",$entity_restrict);
 				$query.=" ORDER BY glpi_software.name";
 
@@ -1847,7 +1847,7 @@ function displayActiveEntities($target,$myname){
 	$rand=mt_rand();
 	
 	echo "<div class='center' ><span class='b'>".$LANG["entity"][10]." ( <img src=\"".$CFG_GLPI["root_doc"]."/pics/entity_all.png\" alt=''> ".$LANG["entity"][11].")</span><br>";
-	echo "<a style='font-size:14px;' href='".$target."?active_entity=all' title=\"".$LANG["buttons"][40]."\">".ereg_replace(" ","&nbsp;",$LANG["buttons"][40])."</a></div>";
+	echo "<a style='font-size:14px;' href='".$target."?active_entity=all' title=\"".$LANG["buttons"][40]."\">".str_replace(" ","&nbsp;",$LANG["buttons"][40])."</a></div>";
 
 	echo "<div class='left' style='width:100%'>";
 	
@@ -1903,7 +1903,7 @@ function displayActiveEntities($target,$myname){
 			$havesons=true;
 		}
 		$name=getDropdownName('glpi_entities',$ID);
-		echo "<div $class>".str_repeat("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;", max(1,$level)),$raquo."&nbsp;<a style='font-size:".$fsize."px;' title=\"$name\" href='".$target."?active_entity=$ID'>".ereg_replace(" ","&nbsp;",$name)."</a>";
+		echo "<div $class>".str_repeat("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;", max(1,$level)),$raquo."&nbsp;<a style='font-size:".$fsize."px;' title=\"$name\" href='".$target."?active_entity=$ID'>".str_replace(" ","&nbsp;",$name)."</a>";
 
 			echo "<div id='entity_subitem_$ID'>uuu";
 			//displayEntityTree($target,$myname,$data['tree'],$level+1);
@@ -1950,7 +1950,7 @@ function displayEntityTree($target,$myname,$ID,$recursive,$level=0){
 				} 
 
 
-				echo "<div $class>".str_repeat("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;", max(1,$level)).$raquo."&nbsp;<a style='font-size:".$fsize."px;' title=\"".$data['name']."\" href='".$target."?active_entity=$ID'>".ereg_replace(" ","&nbsp;",$data['name'])."</a>";
+				echo "<div $class>".str_repeat("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;", max(1,$level)).$raquo."&nbsp;<a style='font-size:".$fsize."px;' title=\"".$data['name']."\" href='".$target."?active_entity=$ID'>".str_replace(" ","&nbsp;",$data['name'])."</a>";
 				
 				if ($subitems){
 					echo "&nbsp;&nbsp;<a title=\"".$LANG["buttons"][40]."\" href='".$target."?active_entity=$ID&amp;recursive=1'><img alt=\"".$LANG["buttons"][40]."\" src='".$CFG_GLPI["root_doc"]."/pics/entity_all.png'></a></div>";

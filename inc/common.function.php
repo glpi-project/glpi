@@ -1060,7 +1060,7 @@ function sendFile($file,$filename){
 	global $DB;
 
 	// Test securite : document in DOC_DIR
-	$tmpfile=ereg_replace(GLPI_DOC_DIR,"",$file);
+	$tmpfile=str_replace(GLPI_DOC_DIR,"",$file);
 	if (ereg("\.\.",$tmpfile)){
 		echo "Security attack !!!";
 		logEvent($file, "sendFile", 1, "security", $_SESSION["glpiname"]." try to get a non standard file.");

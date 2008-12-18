@@ -209,7 +209,7 @@ function get_content($DB, $table,$from,$limit){
 				else if($row[$j] != "") $insert .= "'".addslashes($row[$j])."',";
 				else $insert .= "'',";
 			}
-			$insert = ereg_replace(",$","",$insert);
+			$insert = preg_replace("/,$/","",$insert);
 			$insert .= ");\n";
 			$content .= $insert;
 		}

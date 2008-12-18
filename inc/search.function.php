@@ -206,7 +206,7 @@ function searchForm($type,$params){
 	$default_values["field2"]="";
 	$default_values["type2"]="";
 	if (isset($INFOFORM_PAGES[$type])){
-		$default_values["target"]=ereg_replace('front/','',ereg_replace('.form','',$INFOFORM_PAGES[$type]));
+		$default_values["target"]=str_replace('front/','',str_replace('.form','',$INFOFORM_PAGES[$type]));
 	} else {
 		$default_values["target"]=$_SERVER['PHP_SELF'];
 	}
@@ -487,7 +487,7 @@ function showList ($type,$params){
 	$default_values["field2"]="";
 	$default_values["type2"]="";
 	if (isset($INFOFORM_PAGES[$type])){
-		$default_values["target"]=ereg_replace('front/','',ereg_replace('.form','',$INFOFORM_PAGES[$type]));
+		$default_values["target"]=str_replace('front/','',str_replace('.form','',$INFOFORM_PAGES[$type]));
 	} else {
 		$default_values["target"]=$_SERVER['PHP_SELF'];
 	}
@@ -674,7 +674,7 @@ function showList ($type,$params){
 				$tmplink="";
 				if (is_array($link)&&isset($link[$key])){
 					if (ereg("NOT",$link[$key])){
-						$tmplink=" ".ereg_replace(" NOT","",$link[$key]);
+						$tmplink=" ".str_replace(" NOT","",$link[$key]);
 						$NOT=1;
 					} else {
 						$tmplink=" ".$link[$key];
@@ -889,7 +889,7 @@ function showList ($type,$params){
 				){
 					$NOT=0;
 					if (ereg("NOT",$link2[$key])){
-						$tmplink=" ".ereg_replace(" NOT","",$link2[$key]);
+						$tmplink=" ".str_replace(" NOT","",$link2[$key]);
 						$NOT=1;
 					} else {
 						$tmplink=" ".$link2[$key];
@@ -903,7 +903,7 @@ function showList ($type,$params){
 					$NOT=0;
 					// Manage Link if not first item
 					if (is_array($link2)&&isset($link2[$key])&&ereg("NOT",$link2[$key])){
-						$tmplink=" ".ereg_replace(" NOT","",$link2[$key]);
+						$tmplink=" ".str_replace(" NOT","",$link2[$key]);
 						$NOT=1;
 					}
 					else if (is_array($link2)&&isset($link2[$key])){
@@ -952,21 +952,21 @@ function showList ($type,$params){
 				if (haveTypeRight($ctype,'r')){
 					// No ref table case
 					if (empty($LINK_ID_TABLE[$type])){
-						$query_num=ereg_replace($CFG_GLPI["union_search_type"][$type],$LINK_ID_TABLE[$ctype],$tmpquery);
+						$query_num=str_replace($CFG_GLPI["union_search_type"][$type],$LINK_ID_TABLE[$ctype],$tmpquery);
 						// State case :
 						if ($type==STATE_TYPE){
 							$query_num.=" AND ".$LINK_ID_TABLE[$ctype].".state > 0 ";
 						}
 					} else {// Ref table case
 						$replace="FROM ".$LINK_ID_TABLE[$type]." INNER JOIN ".$LINK_ID_TABLE[$ctype]." ON (".$LINK_ID_TABLE[$type].".id_device = ".$LINK_ID_TABLE[$ctype].".ID AND ".$LINK_ID_TABLE[$type].".device_type='$ctype')";
-						$query_num=ereg_replace("FROM ".$CFG_GLPI["union_search_type"][$type],$replace,$tmpquery);
-						$query_num=ereg_replace($CFG_GLPI["union_search_type"][$type],$LINK_ID_TABLE[$ctype],$query_num);
+						$query_num=str_replace("FROM ".$CFG_GLPI["union_search_type"][$type],$replace,$tmpquery);
+						$query_num=str_replace($CFG_GLPI["union_search_type"][$type],$LINK_ID_TABLE[$ctype],$query_num);
 					}
 					// Union/Recursivity Hack
 					if (isset($CFG_GLPI["recursive_type"][$ctype])) {
-						$query_num=ereg_replace("ENTITYRESTRICT",getEntitiesRestrictRequest('',$LINK_ID_TABLE[$ctype],'','',true),$query_num);
+						$query_num=str_replace("ENTITYRESTRICT",getEntitiesRestrictRequest('',$LINK_ID_TABLE[$ctype],'','',true),$query_num);
 					} else {
-						$query_num=ereg_replace("ENTITYRESTRICT",getEntitiesRestrictRequest('',$LINK_ID_TABLE[$ctype]),$query_num);
+						$query_num=str_replace("ENTITYRESTRICT",getEntitiesRestrictRequest('',$LINK_ID_TABLE[$ctype]),$query_num);
 					}
 					$result_num = $DB->query($query_num);
 					$numrows+= $DB->result($result_num,0,0);
@@ -1013,7 +1013,7 @@ function showList ($type,$params){
 				// No ref table case
 				if (empty($LINK_ID_TABLE[$type])){
 						$tmpquery=$SELECT.", $ctype AS TYPE ".$FROM.$WHERE;
-						$tmpquery=ereg_replace($CFG_GLPI["union_search_type"][$type],$LINK_ID_TABLE[$ctype],$tmpquery);
+						$tmpquery=str_replace($CFG_GLPI["union_search_type"][$type],$LINK_ID_TABLE[$ctype],$tmpquery);
 						// State case :
 						if ($type==STATE_TYPE){
 							$tmpquery.=" AND ".$LINK_ID_TABLE[$ctype].".state > 0 ";
@@ -1021,19 +1021,19 @@ function showList ($type,$params){
 				} else {// Ref table case
 						$tmpquery=$SELECT.", $ctype AS TYPE, ".$LINK_ID_TABLE[$type].".ID AS refID, ".$LINK_ID_TABLE[$ctype].".FK_entities AS ENTITY ".$FROM.$WHERE;
 						$replace="FROM ".$LINK_ID_TABLE[$type]." INNER JOIN ".$LINK_ID_TABLE[$ctype]." ON (".$LINK_ID_TABLE[$type].".id_device = ".$LINK_ID_TABLE[$ctype].".ID AND ".$LINK_ID_TABLE[$type].".device_type='$ctype')";
-						$tmpquery=ereg_replace("FROM ".$CFG_GLPI["union_search_type"][$type],$replace,$tmpquery);
-						$tmpquery=ereg_replace($CFG_GLPI["union_search_type"][$type],$LINK_ID_TABLE[$ctype],$tmpquery);
+						$tmpquery=str_replace("FROM ".$CFG_GLPI["union_search_type"][$type],$replace,$tmpquery);
+						$tmpquery=str_replace($CFG_GLPI["union_search_type"][$type],$LINK_ID_TABLE[$ctype],$tmpquery);
 				}
 				// Union/Recursivity Hack
 				if (isset($CFG_GLPI["recursive_type"][$ctype])) {
-					$tmpquery=ereg_replace("ENTITYRESTRICT",getEntitiesRestrictRequest('',$LINK_ID_TABLE[$ctype],'','',true),$tmpquery);
+					$tmpquery=str_replace("ENTITYRESTRICT",getEntitiesRestrictRequest('',$LINK_ID_TABLE[$ctype],'','',true),$tmpquery);
 				} else {
-					$tmpquery=ereg_replace("ENTITYRESTRICT",getEntitiesRestrictRequest('',$LINK_ID_TABLE[$ctype]),$tmpquery);
+					$tmpquery=str_replace("ENTITYRESTRICT",getEntitiesRestrictRequest('',$LINK_ID_TABLE[$ctype]),$tmpquery);
 				}
 				// SOFTWARE HACK
 				if ($ctype==SOFTWARE_TYPE){
-					$tmpquery=ereg_replace("glpi_software.serial","''",$tmpquery);
-					$tmpquery=ereg_replace("glpi_software.otherserial","''",$tmpquery);
+					$tmpquery=str_replace("glpi_software.serial","''",$tmpquery);
+					$tmpquery=str_replace("glpi_software.otherserial","''",$tmpquery);
 				}
 
 				$QUERY.=$tmpquery;
@@ -1043,7 +1043,7 @@ function showList ($type,$params){
 			echo displaySearchError($output_type);
 			return;
 		}
-		$QUERY.=ereg_replace($CFG_GLPI["union_search_type"][$type].".","",$ORDER).$LIMIT;
+		$QUERY.=str_replace($CFG_GLPI["union_search_type"][$type].".","",$ORDER).$LIMIT;
 	} else {
 		$QUERY=$SELECT.$FROM.$WHERE.$GROUPBY.$HAVING.$ORDER.$LIMIT;
 	}
@@ -2274,7 +2274,7 @@ function giveItem ($type,$field,$data,$num,$linkfield=""){
 
 
 	if (isset($CFG_GLPI["union_search_type"][$type])){
-		return giveItem ($data["TYPE"],ereg_replace($CFG_GLPI["union_search_type"][$type],$LINK_ID_TABLE[$data["TYPE"]],$field),$data,$num,$linkfield);
+		return giveItem ($data["TYPE"],str_replace($CFG_GLPI["union_search_type"][$type],$LINK_ID_TABLE[$data["TYPE"]],$field),$data,$num,$linkfield);
 	}
 
 	// Plugin can override core definition for its type

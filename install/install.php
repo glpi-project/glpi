@@ -524,7 +524,7 @@ function step4 ($host,$user,$password,$databasename,$newdatabasename)
 			$_SERVER['REQUEST_URI'] = $_SERVER['PHP_SELF'];
 		}
 
-		$query="UPDATE glpi_config SET url_base='".ereg_replace("/install/install.php","",$_SERVER['HTTP_REFERER'])."' WHERE ID='1'";
+		$query="UPDATE glpi_config SET url_base='".str_replace("/install/install.php","",$_SERVER['HTTP_REFERER'])."' WHERE ID='1'";
 		$DB->query($query);
 
 

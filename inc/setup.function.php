@@ -841,12 +841,12 @@ function showDeleteConfirmForm($target, $table, $ID,$FK_entities) {
 function getDropdownNameFromTable($table) {
 	$name="";
 	if (ereg("glpi_type_", $table)) {
-		$name = ereg_replace("glpi_type_", "", $table);
+		$name = str_replace("glpi_type_", "", $table);
 	} else {
 		if ($table == "glpi_dropdown_locations")
 			$name = "location";
 		else {
-			$name = ereg_replace("glpi_dropdown_", "", $table);
+			$name = str_replace("glpi_dropdown_", "", $table);
 		}
 	}
 	return $name;
@@ -860,7 +860,7 @@ function getDropdownNameFromTableForStats($table) {
 		if ($table == "glpi_dropdown_locations")
 			$name = "location";
 		else {
-			$name = ereg_replace("glpi_dropdown_", "", $table);
+			$name = str_replace("glpi_dropdown_", "", $table);
 		}
 	}
 	return $name;
@@ -1160,13 +1160,13 @@ function showImapAuthList($target) {
 			return false;
 
 		if (ereg(":", $value)) {
-			$addr = ereg_replace("{", "", preg_replace("/:.*/", "", $value));
+			$addr = str_replace("{", "", preg_replace("/:.*/", "", $value));
 			$port = preg_replace("/.*:/", "", preg_replace("/\/.*/", "", $value));
 		} else {
 			if (ereg("/", $value))
-				$addr = ereg_replace("{", "", preg_replace("/\/.*/", "", $value));
+				$addr = str_replace("{", "", preg_replace("/\/.*/", "", $value));
 			else
-				$addr = ereg_replace("{", "", preg_replace("/}.*/", "", $value));
+				$addr = str_replace("{", "", preg_replace("/}.*/", "", $value));
 			$port = "";
 		}
 		$mailbox = preg_replace("/.*}/", "", $value);

@@ -435,7 +435,7 @@ class Mailing
 
 			$body.="<br>-- <br>".$CFG_GLPI["mailing_signature"];
 			$body.="</body></html>";
-			$body=ereg_replace("\n","<br>\n",$body);
+			$body=str_replace("\n","<br>\n",$body);
 
 		}else{ // text format
 
@@ -448,8 +448,8 @@ class Mailing
 			$body.=$this->job->textFollowups($format, $sendprivate);
 
 			$body.="\n-- \n".$CFG_GLPI["mailing_signature"];
-			$body=ereg_replace("<br />","\n",$body);
-			$body=ereg_replace("<br>","\n",$body);
+			$body=str_replace("<br />","\n",$body);
+			$body=str_replace("<br>","\n",$body);
 		}
 
 		return $body;
@@ -875,13 +875,13 @@ class MailingResa{
 			$body.=$this->resa->textDescription("html");
 			$body.="<br>-- <br>".$CFG_GLPI["mailing_signature"];
 			$body.="</body></html>";
-			$body=ereg_replace("\n","<br>",$body);
+			$body=str_replace("\n","<br>",$body);
 		}else{ // text format
 
 			$body.=$this->resa->textDescription();
 			$body.="\n-- \n".$CFG_GLPI["mailing_signature"];
-			$body=ereg_replace("<br />","\n",$body);
-			$body=ereg_replace("<br>","\n",$body);
+			$body=str_replace("<br />","\n",$body);
+			$body=str_replace("<br>","\n",$body);
 		}
 		return $body;
 	}
@@ -1112,13 +1112,13 @@ class MailingAlert
 			$body.=$this->message;
 			$body.="<br>-- <br>".$CFG_GLPI["mailing_signature"];
 			$body.="</body></html>";
-			$body=ereg_replace("\n","<br>",$body);
+			$body=str_replace("\n","<br>",$body);
 		}else{ // text format
 
 			$body.=$this->message;
 			$body.="\n-- \n".$CFG_GLPI["mailing_signature"];
-			$body=ereg_replace("<br />","\n",$body);
-			$body=ereg_replace("<br>","\n",$body);
+			$body=str_replace("<br />","\n",$body);
+			$body=str_replace("<br>","\n",$body);
 		}
 		return $body;
 	}

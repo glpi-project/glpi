@@ -385,7 +385,7 @@ function csv_clean($value){
 	if (get_magic_quotes_runtime()) $value=stripslashes($value);
 //	$value=preg_replace('/\x0A/',' ',$value);
 //	$value=preg_replace('/\x0D/',NULL,$value);
-	$value=ereg_replace("\"","''",$value);
+	$value=str_replace("\"","''",$value);
 //	$value=str_replace(';', ',', $value);
 	$value=html_clean($value);
 
@@ -407,7 +407,7 @@ function sylk_clean($value){
 	if (get_magic_quotes_runtime()) $value=stripslashes($value);
 	$value=preg_replace('/\x0A/',' ',$value);
 	$value=preg_replace('/\x0D/',NULL,$value);
-	$value=ereg_replace("\"","''",$value);
+	$value=str_replace("\"","''",$value);
 	$value=str_replace(';', ';;', $value);
 	$value=html_clean($value);
 

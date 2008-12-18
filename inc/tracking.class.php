@@ -402,8 +402,8 @@ class Job extends CommonDBTM{
 					break;
 					case "FK_group" :
 						$new_group=$this->fields["FK_group"];
-						$old_group_name=ereg_replace("&nbsp;",$LANG["mailing"][109],getDropdownName("glpi_groups",$input["_old_group"]));
-						$new_group_name=ereg_replace("&nbsp;",$LANG["mailing"][109],getDropdownName("glpi_groups",$new_group));
+						$old_group_name=str_replace("&nbsp;",$LANG["mailing"][109],getDropdownName("glpi_groups",$input["_old_group"]));
+						$new_group_name=str_replace("&nbsp;",$LANG["mailing"][109],getDropdownName("glpi_groups",$new_group));
 						$change_followup_content.=$LANG["mailing"][20].": ".$old_group_name." -> ".$new_group_name."\n";
 						$global_mail_change_count++;
 					break;
@@ -414,8 +414,8 @@ class Job extends CommonDBTM{
 					break;
 					case "category":
 						$new_category=$this->fields["category"];
-						$old_category_name=ereg_replace("&nbsp;",$LANG["mailing"][100],getDropdownName("glpi_dropdown_tracking_category",$input["_old_category"]));
-						$new_category_name=ereg_replace("&nbsp;",$LANG["mailing"][100],getDropdownName("glpi_dropdown_tracking_category",$new_category));
+						$old_category_name=str_replace("&nbsp;",$LANG["mailing"][100],getDropdownName("glpi_dropdown_tracking_category",$input["_old_category"]));
+						$new_category_name=str_replace("&nbsp;",$LANG["mailing"][100],getDropdownName("glpi_dropdown_tracking_category",$new_category));
 						$change_followup_content.=$LANG["mailing"][14].": ".$old_category_name." -> ".$new_category_name."\n";
 						$global_mail_change_count++;
 					break;
@@ -806,7 +806,7 @@ class Job extends CommonDBTM{
 						$fup->getFromDB($data['ID']);
 						$message .= "<strong>[ ".convDateTime($fup->fields["date"])." ] ".($fup->fields["private"]?"<i>".$LANG["common"][77]."</i>":"")."</strong>\n";
 						$message .= "<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$LANG["job"][4].":</span> ".$fup->getAuthorName()."\n";
-						$message .= "<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$LANG["mailing"][3]."</span>:<br>".ereg_replace("\n","<br>",$fup->fields["contents"])."\n";
+						$message .= "<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$LANG["mailing"][3]."</span>:<br>".str_replace("\n","<br>",$fup->fields["contents"])."\n";
 						if ($fup->fields["realtime"]>0)
 							$message .= "<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$LANG["mailing"][104].":</span> ".getRealtime($fup->fields["realtime"])."\n";
 
@@ -956,7 +956,7 @@ class Job extends CommonDBTM{
 				$message.= getDropdownName("glpi_dropdown_tracking_category",$this->fields["category"]);
 			} else $message.=$LANG["mailing"][100];
 			$message.= "\n";
-			$message.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>". $LANG["mailing"][3].":</span><br>".ereg_replace("\n","<br>",$this->fields["contents"])."<br>\n";	
+			$message.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>". $LANG["mailing"][3].":</span><br>".str_replace("\n","<br>",$this->fields["contents"])."<br>\n";	
 
 		}else{ //text format
 			$message = $LANG["mailing"][1]."\n*".$LANG["mailing"][5]."*\n".$LANG["mailing"][1]."\n";

@@ -187,7 +187,7 @@ function update06to065(){
 		$query="ALTER TABLE `glpi_config` ADD `url_in_mail` ENUM( '0', '1' ) NOT NULL ;";
 		$DB->query($query) or die("0.65 add url_in_mail in config".$LANG["update"][90].$DB->error());
 
-		$query="UPDATE glpi_config SET url_base='".ereg_replace("/install.php","",$_SERVER['HTTP_REFERER'])."' WHERE ID='1'";
+		$query="UPDATE glpi_config SET url_base='".str_replace("/install.php","",$_SERVER['HTTP_REFERER'])."' WHERE ID='1'";
 		$DB->query($query) or die(" url ".$LANG["update"][90].$DB->error());
 	}
 
