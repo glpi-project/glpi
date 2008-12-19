@@ -98,11 +98,11 @@ if (isset($_POST["add"])){
 
 $tabs[1]=array('title'=>$LANG["common"][77],
 'url'=>$CFG_GLPI['root_doc']."/ajax/bookmark.tabs.php",
-'params'=>"target=".$_SERVER['PHP_SELF']."&ID=".$_GET["ID"]."&action=".$_GET["action"]."&url=".rawurlencode($_GET["url"])."&device_type=".$_GET["device_type"]."&mark_default=".$_GET["mark_default"]."&glpi_tab=1");
+'params'=>"target=".$_SERVER['PHP_SELF']."&ID=".$_GET["ID"]."&action=".$_GET["action"]."&url=".rawurlencode($_GET["url"])."&device_type=".$_GET["device_type"]."&type=".$_GET["type"]."&mark_default=".$_GET["mark_default"]."&glpi_tab=1");
 	
 $tabs[0]=array('title'=>$LANG["common"][76],
 'url'=>$CFG_GLPI['root_doc']."/ajax/bookmark.tabs.php",
-'params'=>"target=".$_SERVER['PHP_SELF']."&ID=".$_GET["ID"]."&action=".$_GET["action"]."&url=".rawurlencode($_GET["url"])."&device_type=".$_GET["device_type"]."&mark_default=".$_GET["mark_default"]."&glpi_tab=0");
+'params'=>"target=".$_SERVER['PHP_SELF']."&ID=".$_GET["ID"]."&action=".$_GET["action"]."&url=".rawurlencode($_GET["url"])."&device_type=".$_GET["device_type"]."&type=".$_GET["type"]."&mark_default=".$_GET["mark_default"]."&glpi_tab=0");
 			
 echo "<div id='tabspanel' class='center-h'></div>";
 createAjaxTabs('tabspanel','tabcontent',$tabs,$_SESSION['glpi_viewbookmark']);
