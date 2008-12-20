@@ -176,7 +176,7 @@ function showListReminder($private=1,$recursive=0){
 			echo "<tr class='tab_bg_2'>";
 			
 			if (!$private) {
-				// ereg to split line (if needed) before ">" sign in completename
+				// preg to split line (if needed) before ">" sign in completename
 				echo "<td>" .preg_replace("/ ([[:alnum:]])/", "&nbsp;\\1", getdropdownName("glpi_entities", $val["entity"])). "</td>".
 					 "<td>" .getdropdownName("glpi_users", $val["FK_users"]) . "</td>";
 			}

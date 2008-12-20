@@ -354,7 +354,7 @@ function ocsManageDeleted($ocs_server_id) {
 
 
 					// Get hardware due to bug of duplicates management of OCS
-					if (ereg("-", $equiv)) {
+					if (strstr($equiv,"-")) {
 						$query_ocs = "SELECT * 
 								FROM hardware 
 								WHERE DEVICEID='$equiv'";
@@ -414,7 +414,7 @@ function ocsManageDeleted($ocs_server_id) {
 						}
 					}					
 				} else { // Deleted
-					if (ereg("-", $del))
+					if (strstr($del,"-"))
 						$query = "SELECT * 
 														FROM glpi_ocs_link 
 														WHERE ocs_deviceid='$del' AND ocs_server_id='$ocs_server_id'";
@@ -1056,7 +1056,7 @@ function ocsUpdateHardware($glpi_id, $ocs_id, $ocs_server_id, $cfg_ocs, $compute
 			if (!in_array("os_version", $computer_updates)) {
 				$compupdate["os_version"] = externalImportDropdown('glpi_dropdown_os_version', $line["OSVERSION"]);
 			}
-			if (!ereg("CEST", $line["OSCOMMENTS"]) && !in_array("os_sp", $computer_updates)) // Not linux comment
+			if (!strpos($line["OSCOMMENTS"],"CEST") && !in_array("os_sp", $computer_updates)) // Not linux comment
 				$compupdate["os_sp"] = externalImportDropdown('glpi_dropdown_os_sp', $line["OSCOMMENTS"]);
 		}
 

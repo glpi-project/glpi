@@ -673,7 +673,7 @@ function showList ($type,$params){
 				$NOT=0;
 				$tmplink="";
 				if (is_array($link)&&isset($link[$key])){
-					if (ereg("NOT",$link[$key])){
+					if (strstr($link[$key],"NOT")){
 						$tmplink=" ".str_replace(" NOT","",$link[$key]);
 						$NOT=1;
 					} else {
@@ -884,11 +884,11 @@ function showList ($type,$params){
 				$LINK="";
 
 				// For AND NOT statement need to take into account all the group by items
-				if (ereg("AND NOT",$link2[$key])
+				if (strstr($link2[$key],"AND NOT")
 					|| isset($SEARCH_OPTION[$type2[$key]][$field2[$key]]["usehaving"])
 				){
 					$NOT=0;
-					if (ereg("NOT",$link2[$key])){
+					if (strstr($link2[$key],"NOT")){
 						$tmplink=" ".str_replace(" NOT","",$link2[$key]);
 						$NOT=1;
 					} else {
@@ -902,7 +902,7 @@ function showList ($type,$params){
 					$LINK=" ";
 					$NOT=0;
 					// Manage Link if not first item
-					if (is_array($link2)&&isset($link2[$key])&&ereg("NOT",$link2[$key])){
+					if (is_array($link2)&&isset($link2[$key])&&strstr($link2[$key],"NOT")){
 						$tmplink=" ".str_replace(" NOT","",$link2[$key]);
 						$NOT=1;
 					}
@@ -1117,7 +1117,7 @@ function showList ($type,$params){
 			// Add meta search elements if real search (strlen>0) or only NOT search
 			if ($_SESSION["glpisearchcount2"][$type]>0&&is_array($type2))
 				for ($i=0;$i<$_SESSION["glpisearchcount2"][$type];$i++)
-					if (isset($type2[$i])&&isset($contains2[$i])&&strlen($contains2[$i])>0&&$type2[$i]>0&&(!isset($link2[$i])||!ereg("NOT",$link2[$i]))) {
+					if (isset($type2[$i])&&isset($contains2[$i])&&strlen($contains2[$i])>0&&$type2[$i]>0&&(!isset($link2[$i])||!strstr($link2[$i],"NOT"))) {
 						$nbcols++;
 					}
 
@@ -1170,7 +1170,7 @@ function showList ($type,$params){
 			if ($_SESSION["glpisearchcount2"][$type]>0&&is_array($type2))
 				for ($i=0;$i<$_SESSION["glpisearchcount2"][$type];$i++)
 					if (isset($type2[$i])&&$type2[$i]>0&&isset($contains2[$i])&&strlen($contains2[$i])&&(!isset($link2[$i])
-								||(!ereg("NOT",$link2[$i]) || $contains2[$i]=="NULL"))) {
+								||(!strstr($link2[$i],"NOT") || $contains2[$i]=="NULL"))) {
 						echo displaySearchHeaderItem($output_type,$names[$type2[$i]]." - ".$SEARCH_OPTION[$type2[$i]][$field2[$i]]["name"],$header_num);
 					}
 			// Add specific column Header
@@ -1260,7 +1260,7 @@ function showList ($type,$params){
 				if ($_SESSION["glpisearchcount2"][$type]>0&&is_array($type2))
 					for ($j=0;$j<$_SESSION["glpisearchcount2"][$type];$j++)
 						if (isset($type2[$j])&&$type2[$j]>0&&isset($contains2[$j])&&strlen($contains2[$j])&&(!isset($link2[$j])
-									||(!ereg("NOT",$link2[$j]) || $contains2[$j]=="NULL"))){
+									||(!strstr($link2[$j],"NOT") || $contains2[$j]=="NULL"))){
 
 							// General case
 							if (strpos($data["META_$j"],"$$$$")===false){
@@ -1430,7 +1430,7 @@ function addHaving($LINK,$NOT,$type,$ID,$val,$meta,$num){
 			$replace=array("<",">");
 			$val=preg_replace($search,$replace,$val);
 	
-			if (ereg("([<>])([=]*)[[:space:]]*([0-9]*)",$val,$regs)){
+			if (preg_match("/([<>])([=]*)[[:space:]]*([0-9]*)/",$val,$regs)){
 				if ($NOT){
 					if ($regs[1]=='<') {
 						$regs[1]='>';
@@ -1454,7 +1454,7 @@ function addHaving($LINK,$NOT,$type,$ID,$val,$meta,$num){
 			$search=array("/\&lt;/","/\&gt;/");
 			$replace=array("<",">");
 			$val=preg_replace($search,$replace,$val);
-			if (ereg("([<>])([=]*)[[:space:]]*([0-9]*)",$val,$regs)){
+			if (preg_match("/([<>])([=]*)[[:space:]]*([0-9]*)/",$val,$regs)){
 				if ($NOT){
 					if ($regs[1]=='<') {
 						$regs[1]='>';
@@ -1992,7 +1992,7 @@ function addWhere ($link,$nott,$type,$ID,$val,$meta=0){
 			$search=array("/\&lt;/","/\&gt;/");
 			$replace=array("<",">");
 			$val=preg_replace($search,$replace,$val);
-			if (ereg("([<>])([=]*)[[:space:]]*([0-9]*)",$val,$regs)){
+			if (preg_match("/([<>])([=]*)[[:space:]]*([0-9]*)/",$val,$regs)){
 				if ($nott){
 					if ($regs[1]=='<') {
 						$regs[1]='>';
@@ -2067,13 +2067,13 @@ function addWhere ($link,$nott,$type,$ID,$val,$meta=0){
 			$search=array("/\&lt;/","/\&gt;/");
 			$replace=array("<",">");
 			$val=preg_replace($search,$replace,$val);
-			if (ereg("([<>=])(.*)",$val,$regs)){
+			if (preg_match("/([<>=])(.*)/",$val,$regs)){
 				if (is_numeric($regs[2])){
 					return $link." NOW() ".$regs[1]." ADDDATE($date_computation, INTERVAL ".$regs[2]." $interval_search) ";	
 				} else {
 					// Reformat date if needed
 					$regs[2]=preg_replace('/(\d{1,2})-(\d{1,2})-(\d{4})/','\3-\2-\1',$regs[2]);
-					if (ereg('[0-9]{2,4}-[0-9]{1,2}-[0-9]{1,2}',$regs[2])){
+					if (preg_match('/[0-9]{2,4}-[0-9]{1,2}-[0-9]{1,2}/',$regs[2])){
 						return $link." $date_computation ".$regs[1]." '".$regs[2]."'";
 					} else {
 						return "";
@@ -2094,7 +2094,7 @@ function addWhere ($link,$nott,$type,$ID,$val,$meta=0){
 			$search=array("/\&lt;/","/\&gt;/");
 			$replace=array("<",">");
 			$val=preg_replace($search,$replace,$val);
-			if (ereg("([<>=])(.*)",$val,$regs)){
+			if (preg_match("/([<>=])(.*)/",$val,$regs)){
 				return $link." DATEDIFF(ADDDATE($table.begin_date, INTERVAL $table.duration MONTH),CURDATE() )".$regs[1].$regs[2]." ";
 				} else {
 				return $link." ADDDATE($table.begin_date, INTERVAL $table.duration MONTH) $SEARCH ";		
@@ -2105,7 +2105,7 @@ function addWhere ($link,$nott,$type,$ID,$val,$meta=0){
 			$search=array("/\&lt;/","/\&gt;/");
 			$replace=array("<",">");
 			$val=preg_replace($search,$replace,$val);
-			if (ereg("([<>])(.*)",$val,$regs)){
+			if (preg_match("/([<>])(.*)/",$val,$regs)){
 				return $link." $table.notice<>0 AND DATEDIFF(ADDDATE($table.begin_date, INTERVAL ($table.duration - $table.notice) MONTH),CURDATE() )".$regs[1].$regs[2]." ";
 			} else {
 				return $link." ADDDATE($table.begin_date, INTERVAL ($table.duration - $table.notice) MONTH) $SEARCH ";		
@@ -2118,7 +2118,7 @@ function addWhere ($link,$nott,$type,$ID,$val,$meta=0){
 				$search=array("/\&lt;/","/\&gt;/");
 				$replace=array("<",">");
 				$val=preg_replace($search,$replace,$val);
-				if (ereg("([<>])([=]*)[[:space:]]*([0-9]*)",$val,$regs)){
+				if (preg_match("/([<>])([=]*)[[:space:]]*([0-9]*)/",$val,$regs)){
 					if ($nott){
 						if ($regs[1]=='<') {
 							$regs[1]='>';
