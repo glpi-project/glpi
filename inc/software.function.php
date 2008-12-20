@@ -369,7 +369,7 @@ function showLicenses($sID) {
 			echo "<th>".$LANG["software"][28]."</th>";
 			//echo "<th>".$LANG["financial"][3]."</th>";
 			echo "</tr>";
-			for ($tot=0;$data=$DB->fetch_assoc($result);$tot+=$data['number']){
+			for ($tot=0;$data=$DB->fetch_assoc($result);){
 				echo "<tr class='tab_bg_2'>";
 
 				if ($license->can($data['ID'],"w")){
@@ -394,9 +394,17 @@ function showLicenses($sID) {
 				showDisplayInfocomLink(SOFTWARELICENSE_TYPE, $data['ID'], 1);
 				echo "</td>";*/
 				echo "</tr>";
+				
+				if ($data['number']<0) {
+					// One illimited license, total is illimited
+					$tot = -1;
+				} else if ($tot>=0) {
+					// Not illimited, add the current number
+					$tot += $data['number'];
+				}
 			}
 			echo "<tr class='tab_bg_1'><td colspan='".($software->isRecursive()?4:3)."' align='right'>".$LANG["common"][33].
-				"</td><td align='right'>$tot</td><td colspan='5' align='center'>";
+				"</td><td align='right'>".($tot>0?$tot:$LANG["software"][4])."</td><td colspan='5' align='center'>";
 			if ($canedit){
 				echo "<a href='softwarelicense.form.php?sID=$sID'>".$LANG["software"][8]."</a>";
 			}

@@ -704,14 +704,13 @@ class SoftwareLicense extends CommonDBTM {
 		echo "<input type='hidden' name='FK_entities' value='".$this->fields["FK_entities"]."'>";
 
 		echo "<div class='center' id='tabsbody'><table class='tab_cadre_fixe'>";
+		
+		$this->showFormHeader($ID);
 		if ($ID>0){
-			echo "<tr><th colspan='2'>".$LANG["common"][2]." $ID";
 			$sID=$this->fields["sID"];
 		} else {
-			echo "<tr><th colspan='2'>".$LANG["software"][8];
 			echo "<input type='hidden' name='sID' value='$sID'>";
 		}
-		echo "</th></tr>";
 
 		echo "<tr class='tab_bg_1'><td>".$LANG["help"][31].":		</td>";
 		echo "<td>";
@@ -801,5 +800,18 @@ class SoftwareLicense extends CommonDBTM {
 		return true;
 	}
 
+	/**
+	 * Is the license may be recursive
+	 * 
+	 * @return boolean
+	**/
+	function maybeRecursive () {
+		$soft=new Software();
+		
+		if (isset($this->fields["sID"]) && $soft->getFromDB($this->fields["sID"]))
+			return $soft->isRecursive();
+		
+		return false;
+	}
 }
 ?>
