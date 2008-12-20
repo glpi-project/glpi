@@ -1866,7 +1866,7 @@ function ocsUpdateDevices($device_type, $glpi_id, $ocs_id, $ocs_server_id, $cfg_
 				if ($DBocs->numrows($result2) > 0) {
 					while ($line2 = $DBocs->fetch_array($result2)) {
 						$line2 = clean_cross_side_scripting_deep(addslashes_deep($line2));
-						if (!empty ($line2["DISKSIZE"]) && eregi("disk", $line2["TYPE"])) {
+						if (!empty ($line2["DISKSIZE"]) && preg_match("/disk/i", $line2["TYPE"])) {
 							if ($line2["NAME"])
 								$dd["designation"] = $line2["NAME"];
 							else
@@ -1908,7 +1908,7 @@ function ocsUpdateDevices($device_type, $glpi_id, $ocs_id, $ocs_server_id, $cfg_
 				if ($DBocs->numrows($result2) > 0) {
 					while ($line2 = $DBocs->fetch_array($result2)) {
 						$line2 = clean_cross_side_scripting_deep(addslashes_deep($line2));
-						if (empty ($line2["DISKSIZE"]) || !eregi("disk", $line2["TYPE"])) {
+						if (empty ($line2["DISKSIZE"]) || !preg_match("/disk/i", $line2["TYPE"])) {
 							if ($line2["NAME"])
 								$stor["designation"] = $line2["NAME"];
 							else

@@ -174,24 +174,24 @@ function UpdateContent($DB, $duree,$rowlimit,$conv_utf8,$complete_utf8)
 //					echo "<br>".$key."<br>";
 //					print_r($val);
 
-					if (eregi("^char",$val["Type"])){
+					if (preg_match("/^char/i",$val["Type"])){
 						$default="NULL";
 						if (!empty($val["Default"])&&!is_null($val["Default"])){
 							$default="'".$val["Default"]."'";
 						}
 
 						$DB->query("ALTER TABLE `".$tables[$offsettable]."` CHANGE `".$val["Field"]."` `".$val["Field"]."` ".$val["Type"]." CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT $default");
-					} else if (eregi("^varchar",$val["Type"])){
+					} else if (preg_match("/^varchar/i",$val["Type"])){
 						$default="NULL";
 						if (!empty($val["Default"])&&!is_null($val["Default"])){
 							$default="'".$val["Default"]."'";
 						}
 						$DB->query("ALTER TABLE `".$tables[$offsettable]."` CHANGE `".$val["Field"]."` `".$val["Field"]."` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT $default");
-					} else if (eregi("^longtext",$val["Type"])){
+					} else if (preg_match("/^longtext/i",$val["Type"])){
 						$DB->query("ALTER TABLE `".$tables[$offsettable]."` CHANGE `".$val["Field"]."` `".$val["Field"]."` LONGTEXT CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL");
-					} else if (eregi("^text",$val["Type"])){
+					} else if (preg_match("/^text/i",$val["Type"])){
 						$DB->query("ALTER TABLE `".$tables[$offsettable]."` CHANGE `".$val["Field"]."` `".$val["Field"]."` TEXT CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL");
-					} else if (eregi("^tinyint",$val["Type"])){
+					} else if (preg_match("/^tinyint/i",$val["Type"])){
 						$DB->query("ALTER TABLE `".$tables[$offsettable]."` CHANGE `".$val["Field"]."` `".$val["Field"]."` SMALLINT NOT NULL DEFAULT '".$val["Default"]."'");
 					}
 	

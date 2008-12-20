@@ -211,12 +211,12 @@ function testMail(){
  */
 function isValidEmail($email="")
 {
-	if( !eregi( "^" .
+	if( !preg_match( "/^" .
 				"[a-zA-Z0-9]+([_\\.-][a-zA-Z0-9]+)*" .    //user
 				"@" .
 				"([a-zA-Z0-9]+([\.-][a-zA-Z0-9]+)*)+" .   //domain
 				"\\.[a-zA-Z0-9]{2,}" .                    //sld, tld 
-				"$", $email)
+				"$/i", $email)
 	  )
 	{
 		//echo "Erreur: '$email' n'est pas une adresse mail valide!<br>";

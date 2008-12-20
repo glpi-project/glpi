@@ -739,7 +739,7 @@ function dropdownIcons($myname,$value,$store_path){
 			echo "<select name=\"$myname\">";
 			echo "<option value=''>-----</option>";
 			foreach ($files as $file){
-				if (eregi(".png$",$file)){
+				if (preg_match("/\.png$/i",$file)){
 					if ($file == $value) {
 						echo "<option value=\"$file\" selected>".$file;
 					} else {
@@ -2521,9 +2521,9 @@ function getContractRenewalName($value){
  */
 function getContractRenewalIDByName($value){
 	global $LANG;
-	if (eregi($value,$LANG["financial"][105])){
+	if (preg_match("/$value/i",$LANG["financial"][105])){
 		return 1;
-	} else if (eregi($value,$LANG["financial"][106])){
+	} else if (preg_match("/$value/i",$LANG["financial"][106])){
 		return 2;
 	} 
 	return 0;

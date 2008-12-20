@@ -552,7 +552,7 @@ echo " <div align='center'> <table border='0'><tr><td><img src=\"".$CFG_GLPI["ro
 $dir=opendir($path); 
 $files=array();
 while ($file = readdir ($dir)) { 
-	if ($file != "." && $file != ".." && eregi("\.sql",$file)) { 
+	if ($file != "." && $file != ".." && preg_match("/\.sql$/i",$file)) { 
 		$files[$file]=filemtime($path."/".$file);
 	}
 }
@@ -575,7 +575,7 @@ $dir=opendir($path);
 unset($files);
 $files=array();
 while ($file = readdir ($dir)) {
-	if ($file != "." && $file != ".." && eregi("\.xml",$file)) {
+	if ($file != "." && $file != ".." && preg_match("/\.xml$/i",$file)) {
 		$files[$file]=filemtime($path."/".$file);
 	}
 }
