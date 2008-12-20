@@ -2410,7 +2410,7 @@ function getContractRenewalIDByName($value){
 	if (eregi($value,$LANG["financial"][105])){
 		return 1;
 	} else if (eregi($value,$LANG["financial"][106])){
-
+		return 2;
 	} 
 	return 0;
 }
