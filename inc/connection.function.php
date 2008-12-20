@@ -97,7 +97,7 @@ function showConnect($target,$ID,$type) {
 				echo "<input type='hidden' name='connect' value='connect'>";
 				echo "<input type='hidden' name='sID' value='$ID'>";
 				echo "<input type='hidden' name='device_type' value='$type'>";
-				dropdownConnect(COMPUTER_TYPE,$type,"item",$ci->getField('FK_entities'));
+				dropdownConnect(COMPUTER_TYPE,$type,"item",$ci->getField('FK_entities'),0,$ci->getField('recursive'));
 				echo "<input type='submit' value=\"".$LANG["buttons"][9]."\" class='submit'>";
 				echo "</form>";
 			} else echo "&nbsp;";
