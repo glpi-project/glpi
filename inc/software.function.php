@@ -117,6 +117,51 @@ function showVersions($sID) {
 }
 
 /**
+ * Show number of installation per entity
+ *
+ * @param $vID ID of the version
+ * 
+ * @return nothing
+ */
+function showInstallationsByEntity($vID) {
+	global $DB, $CFG_GLPI, $LANG;
+
+	if (!haveRight("software", "r"))
+		return false;
+		
+	echo "<div class='center'>";
+	echo "<table class='tab_cadre'><tr>";
+	echo "<th>".$LANG["entity"][0]."</th>";
+	echo "<th>".$LANG["software"][19]."</th>";
+	echo "</tr>";
+
+	$tot=0;
+	if (in_array(0,$_SESSION["glpiactiveentities"])) {
+		$nb = countInstallationsForVersion($vID,0);
+		if ($nb>0) {
+			echo "<tr class='tab_bg_2'><td>" . $LANG["entity"][1] . "</td><td>" . $nb . "</td></tr>\n";
+			$tot+=$nb;
+		}
+	}	
+	$sql = "SELECT ID,completename FROM glpi_entities " . 
+		getEntitiesRestrictRequest('WHERE', 'glpi_entities') .
+		" ORDER BY completename";	
+	foreach ($DB->request($sql) as $ID => $data) {
+		$nb = countInstallationsForVersion($vID,$ID);
+		if ($nb>0) {
+			echo "<tr class='tab_bg_2'><td>" . $data["completename"] . "</td><td>" . $nb . "</td></tr>\n";
+			$tot+=$nb;
+		}
+	}
+	if ($tot>0) {
+		echo "<tr class='tab_bg_1'><td>" . $LANG["common"][33] . "</td><td><strong>" . $tot . "</strong></td></tr>\n";
+	} else {
+		echo "<tr class='tab_bg_1'><td colspan='2'>" . $LANG["search"][15] . "</strong></td></tr>\n";
+	}
+	echo "</table></div>";
+}
+
+/**
  * Show softwares candidates to be merged
  *
  * @param $ID ID of the software
@@ -551,12 +596,14 @@ function showInstallations($searchID, $crit="sID") {
 		// Software ID
 		$number = countElementsInTable("glpi_inst_software,glpi_computers,glpi_softwareversions", 
 			"glpi_inst_software.cID = glpi_computers.ID AND glpi_inst_software.vID = glpi_softwareversions.ID AND glpi_softwareversions.sID=$searchID" . 
-			getEntitiesRestrictRequest(' AND', 'glpi_computers'));
+			getEntitiesRestrictRequest(' AND', 'glpi_computers') .
+			" AND glpi_computers.deleted=0 AND glpi_computers.is_template=0");
 	} else {
 		//SoftwareVersion ID
 		$number = countElementsInTable("glpi_inst_software,glpi_computers", 
 			"glpi_inst_software.cID = glpi_computers.ID AND glpi_inst_software.vID = $searchID" . 
-			getEntitiesRestrictRequest(' AND', 'glpi_computers'));
+			getEntitiesRestrictRequest(' AND', 'glpi_computers') .
+			" AND glpi_computers.deleted=0 AND glpi_computers.is_template=0");
 	}
 
 	echo "<br><div class='center'>";
@@ -572,7 +619,7 @@ function showInstallations($searchID, $crit="sID") {
 	printAjaxPager($LANG["software"][19],$start,$number);
 	
 	$query = "SELECT glpi_inst_software.*,glpi_computers.name AS compname, glpi_computers.ID AS cID,
-			glpi_computers.name AS compname, glpi_computers.serial, glpi_computers.otherserial, glpi_computers.contact,
+			glpi_computers.name AS compname, glpi_computers.serial, glpi_computers.otherserial, glpi_users.name AS username,
 			glpi_softwareversions.name as version, glpi_softwareversions.ID as vID, glpi_softwareversions.sID as sID, glpi_softwareversions.name as vername,
 			glpi_entities.completename AS entity, glpi_dropdown_locations.completename AS location, glpi_groups.name AS groupe,
 			glpi_softwarelicenses.name AS lname, glpi_softwarelicenses.ID AS lID 
@@ -582,9 +629,11 @@ function showInstallations($searchID, $crit="sID") {
 		LEFT JOIN glpi_entities ON (glpi_computers.FK_entities=glpi_entities.ID)
 		LEFT JOIN glpi_dropdown_locations ON (glpi_computers.location=glpi_dropdown_locations.ID)
 		LEFT JOIN glpi_groups ON (glpi_computers.FK_groups=glpi_groups.ID)
+		LEFT JOIN glpi_users ON (glpi_computers.FK_users=glpi_users.ID)
 		LEFT JOIN glpi_softwarelicenses ON (glpi_softwarelicenses.sID=glpi_softwareversions.sID AND glpi_softwarelicenses.oem_computer=glpi_computers.ID)
 		WHERE (glpi_softwareversions.$crit = '$searchID') " .
-			getEntitiesRestrictRequest('AND', 'glpi_computers') .		
+			getEntitiesRestrictRequest(' AND', 'glpi_computers') .
+			" AND glpi_computers.deleted=0 AND glpi_computers.is_template=0 " .
 		"ORDER BY " . $order . " LIMIT $start," . $_SESSION['glpilist_limit'];
 	
 	$rand=mt_rand();
@@ -617,7 +666,7 @@ function showInstallations($searchID, $crit="sID") {
 			echo "<th>".($order=="otherserial"?$sort_img:"")."<a href='javascript:reloadTab(\"order=otherserial&start=0\");'>".$LANG["common"][20]."</a></th>";
 			echo "<th>".(strstr($order,"location")?$sort_img:"")."<a href='javascript:reloadTab(\"order=location,compname&start=0\");'>".$LANG["common"][15]."</a></th>";
 			echo "<th>".(strstr($order,"groupe")?$sort_img:"")."<a href='javascript:reloadTab(\"order=groupe,compname&start=0\");'>".$LANG["common"][35]."</a></th>";
-			echo "<th>".(strstr($order,"contact")?$sort_img:"")."<a href='javascript:reloadTab(\"order=contact,compname&start=0\");'>".$LANG["common"][18]."</a></th>";
+			echo "<th>".(strstr($order,"username")?$sort_img:"")."<a href='javascript:reloadTab(\"order=username,compname&start=0\");'>".$LANG["common"][34]."</a></th>";
 			echo "<th>".($order=="lname"?$sort_img:"")."<a href='javascript:reloadTab(\"order=lname&start=0\");'>".$LANG["software"][28]."</a></th>";
 			echo "</tr>\n";
 
@@ -639,13 +688,13 @@ function showInstallations($searchID, $crit="sID") {
 					echo "<td>".$compname."</td>";
 				}
 				if ($showEntity) {
-					echo "<td>".$data['entity']."</td>";
+					echo "<td>".(empty($data['entity']) ? $LANG["entity"][2] : $data['entity'])."</td>";
 				}
 				echo "<td>".$data['serial']."</td>";
 				echo "<td>".$data['otherserial']."</td>";
 				echo "<td>".$data['location']."</td>";
 				echo "<td>".$data['groupe']."</td>";
-				echo "<td>".$data['contact']."</td>";
+				echo "<td>".$data['username']."</td>";
 				if ($data['lID']>0) {
 					echo "<td><a href='softwarelicense.form.php?ID=".$data['lID']."'>".$data['lname']."</a></td>";
 				} else {
@@ -1849,16 +1898,18 @@ function countInstallationsForSoftware($sID) {
  * Get number of installed licenses of a version
  *
  * @param $vID version ID
+ * @param $entity to search for computer in (default = all active entities)
+ * 
  * @return number of installations
  */
-function countInstallationsForVersion($vID) {
+function countInstallationsForVersion($vID, $entity='') {
 	global $DB;
 	$query = "SELECT count(glpi_inst_software.ID) 
 			FROM glpi_inst_software
 			INNER JOIN glpi_computers ON ( glpi_inst_software.cID=glpi_computers.ID)
 			WHERE glpi_inst_software.vID='$vID'
 				AND glpi_computers.deleted=0 AND glpi_computers.is_template=0 " .
-				getEntitiesRestrictRequest('AND', 'glpi_computers');
+				getEntitiesRestrictRequest('AND', 'glpi_computers','',$entity);
 
 	$result = $DB->query($query);
 
