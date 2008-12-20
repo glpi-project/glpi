@@ -2162,9 +2162,9 @@ function addWhere ($link,$nott,$type,$ID,$val,$meta=0){
 			if ($nott&&$val!="NULL") {
 				$ADD=" OR $table.$field IS NULL";
 			}
-			if (eregi($val,getAmortTypeName(1))) {
+			if (preg_match("/$val/i",getAmortTypeName(1))) {
 				$val=1;
-			} else if (eregi($val,getAmortTypeName(2))) {
+			} else if (preg_match("/$val/i",getAmortTypeName(2))) {
 				$val=2;
 			} 
 
