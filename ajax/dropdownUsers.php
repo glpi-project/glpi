@@ -34,7 +34,7 @@
 // ----------------------------------------------------------------------
 
 // Direct access to file
-if(ereg("dropdownUsers.php",$_SERVER['PHP_SELF'])){
+if(strpos($_SERVER['PHP_SELF'],"dropdownUsers.php")){
 	define('GLPI_ROOT','..');
 	$AJAX_INCLUDE=1;
 	include (GLPI_ROOT."/inc/includes.php");

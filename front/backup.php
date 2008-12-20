@@ -116,7 +116,7 @@ function xmlbackup()
 
 
 		// on se  limite aux tables pr�ix�s _glpi
-		if (ereg("glpi_",$line[0])){
+		if (strstr($line[0],"glpi_")){
 
 			$table = $line[0];
 
@@ -349,7 +349,7 @@ function backupMySql($DB,$dumpFile, $duree,$rowlimit){
 	while ($t=$DB->fetch_array($result)){
 
 		// on se  limite aux tables pr�ix�s _glpi
-		if (ereg("glpi_",$t[0])){
+		if (strstr($t[0],"glpi_")){
 			$tables[$numtab]=$t[0];
 			$numtab++;
 		}

@@ -331,7 +331,7 @@ function showEnterpriseContract($instID) {
 		$website=$DB->result($result, $i, "glpi_enterprises.website");
 		if (!empty($website)){
 			$website=$DB->result($result, $i, "website");
-			if (!ereg("https*://",$website)) $website="http://".$website;
+			if (!preg_match("?https*://?",$website)) $website="http://".$website;
 			$website="<a target=_blank href='$website'>".$DB->result($result, $i, "website")."</a>";
 		}
 		$entID=$DB->result($result, $i, "entID");

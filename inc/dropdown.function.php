@@ -144,7 +144,7 @@ function dropdownValue($table,$myname,$value='',$display_comments=1,$entity_rest
 
 	$dropdown_right=false;
 
-	if (ereg("glpi_dropdown_",$table)||ereg("glpi_type_",$table)){
+	if (strstr($table,"glpi_dropdown_")||strstr($table,"glpi_type_")){
 		if (!in_array($table,$CFG_GLPI["specif_entities_tables"])){
 			$dropdown_right=haveRight("dropdown","w");
 		} else {

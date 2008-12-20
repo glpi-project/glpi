@@ -157,53 +157,53 @@ function showLinkOnDevice($type,$ID){
 			if (empty($file)){
 
 				$ci->getFromDB($type,$ID);
-				if (ereg("\[NAME\]",$link)){
+				if (strstr($link,"[NAME]")){
 					$link=str_replace("[NAME]",$ci->getName(),$link);
 				}
-				if (ereg("\[ID\]",$link)){
+				if (strstr($link,"[ID]")){
 					$link=str_replace("[ID]",$ID,$link);
 				}
 
-				if (ereg("\[LOGIN\]",$link)){
+				if (strstr($link,"[LOGIN]")){
 					if (isset($_SESSION["glpiname"])){
 						$link=str_replace("[LOGIN]",$_SESSION["glpiname"],$link);
 					}
 				}
 
-				if (ereg("\[SERIAL\]",$link)){
+				if (strstr($link,"[SERIAL]")){
 					if ($tmp=$ci->getField('serial')){
 						$link=str_replace("[SERIAL]",$tmp,$link);
 					}
 				}
-				if (ereg("\[OTHERSERIAL\]",$link)){
+				if (strstr($link,"[OTHERSERIAL]")){
 					if ($tmp=$ci->getField('otherserial')){
 						$link=str_replace("[OTHERSERIAL]",$tmp,$link);
 					}
 				}
 
-				if (ereg("\[LOCATIONID\]",$link)){
+				if (strstr($link,"[LOCATIONID]")){
 					if ($tmp=$ci->getField('location')){
 						$link=str_replace("[LOCATIONID]",$tmp,$link);
 					}
 				}
 
-				if (ereg("\[LOCATION\]",$link)){
+				if (strstr($link,"[LOCATION]")){
 					if ($tmp=$ci->getField('location')){
 						$link=str_replace("[LOCATION]",getDropdownName("glpi_dropdown_locations",$tmp),$link);
 					}
 				}
-				if (ereg("\[NETWORK\]",$link)){
+				if (strstr($link,"[NETWORK]")){
 					if ($tmp=$ci->getField('network')){
 						$link=str_replace("[NETWORK]",getDropdownName("glpi_dropdown_network",$tmp),$link);
 					}
 				}
-				if (ereg("\[DOMAIN\]",$link)){
+				if (strstr($link,"[DOMAIN]")){
 					if ($tmp=$ci->getField('domain'))
 						$link=str_replace("[DOMAIN]",getDropdownName("glpi_dropdown_domain",$tmp),$link);
 				}
 				$ipmac=array();
 				$i=0;
-				if (ereg("\[IP\]",$link)||ereg("\[MAC\]",$link)){
+				if (strstr($link,"[IP]")||strstr($link,"[MAC]")){
 					$query2 = "SELECT ifaddr,ifmac,logical_number FROM glpi_networking_ports WHERE (on_device = $ID AND device_type = $type) ORDER BY logical_number";
 					$result2=$DB->query($query2);
 					if ($DB->numrows($result2)>0)
@@ -215,7 +215,7 @@ function showLinkOnDevice($type,$ID){
 						}
 				}
 
-				if (ereg("\[IP\]",$link)||ereg("\[MAC\]",$link)){
+				if (strstr($link,"[IP]")||strstr($link,"[MAC]")){
 					// Add IP/MAC internal switch
 					if ($type==NETWORKING_TYPE){
 						$tmplink=$link;
@@ -228,14 +228,14 @@ function showLinkOnDevice($type,$ID){
 						foreach ($ipmac as $key => $val){
 							$tmplink=$link;
 							$disp=1;
-							if (ereg("\[IP\]",$link)) {
+							if (strstr($link,"[IP]")) {
 								if (empty($val['ifaddr'])) {
 									$disp=0;
 								} else {
 									$tmplink=str_replace("[IP]",$val['ifaddr'],$tmplink);
 								}
 							}
-							if (ereg("\[MAC\]",$link)) {
+							if (strstr($link,"[MAC]")) {
 								if (empty($val['ifmac'])) {
 									$disp=0;
 								} else {
@@ -255,17 +255,17 @@ function showLinkOnDevice($type,$ID){
 				$ci->getFromDB($type,$ID);
 
 				// Manage Filename
-				if (ereg("\[NAME\]",$link)){
+				if (strstr($link,"[NAME]")){
 					$link=str_replace("[NAME]",$ci->getName(),$link);
 				}
 
-				if (ereg("\[LOGIN\]",$link)){
+				if (strstr($link,"[LOGIN]")){
 					if (isset($_SESSION["glpiname"])){
 						$link=str_replace("[LOGIN]",$_SESSION["glpiname"],$link);
 					}
 				}
 
-				if (ereg("\[ID\]",$link)){
+				if (strstr($link,"[ID]")){
 					$link=str_replace("[ID]",$_GET["ID"],$link);
 				}
 

@@ -105,11 +105,11 @@ if (isset($_POST['mass_delete'])){
 
 } else if (isset($_POST["delete"])) {
 	if(dropdownUsed($_POST["tablename"], $_POST["ID"]) && empty($_POST["forcedelete"])) {
-		if (!ereg("popup",$_SERVER['PHP_SELF'])){
+		if (!strpos($_SERVER['PHP_SELF'],"popup")){
 			commonHeader($LANG["common"][12],$_SERVER['PHP_SELF'],"config","dropdowns");
 		}
 		showDeleteConfirmForm($_SERVER['PHP_SELF'],$_POST["tablename"], $_POST["ID"],$_POST["FK_entities"]);
-		if (!ereg("popup",$_SERVER['PHP_SELF'])){
+		if (!strpos($_SERVER['PHP_SELF'],"popup")){
 			commonFooter();
 		}
 	} else {
@@ -129,7 +129,7 @@ if (isset($_POST['mass_delete'])){
 	glpi_header($_SERVER['PHP_SELF']."?which=$which&value2=$value2&FK_entities=$FK_entities");
 
 } else {
-	if (!ereg("popup",$_SERVER['PHP_SELF'])){
+	if (!strpos($_SERVER['PHP_SELF'],"popup")){
 		commonHeader($LANG["common"][12],$_SERVER['PHP_SELF'],"config","dropdowns");
 	}
 
@@ -242,7 +242,7 @@ if (isset($_POST['mass_delete'])){
 		}
 	}
 	
-	if (!ereg("popup",$_SERVER['PHP_SELF'])){
+	if (!strpos($_SERVER['PHP_SELF'],"popup")){
 		echo "<div align='center'><form method='get' action=\"".$_SERVER['PHP_SELF']."\">";
 		echo "<table class='tab_cadre' cellpadding='5'><tr><th colspan='2'>";
 		echo $LANG["setup"][72].": </th></tr><tr class='tab_bg_1'><td><select name='which'>";
@@ -267,7 +267,7 @@ if (isset($_POST['mass_delete'])){
 		if (haveRight("entity_dropdown","w")){
 			$title=$LANG["setup"][73];
 			
-			if (ereg("popup",$_SERVER['PHP_SELF'])){
+			if (strpos($_SERVER['PHP_SELF'],"popup")){
 				
 				if ($value2>0) {
 					$title .= " (" . $LANG["common"][15] . ":&nbsp;" . getDropdownName("glpi_dropdown_locations", $value2) . ")";
@@ -311,7 +311,7 @@ if (isset($_POST['mass_delete'])){
 		}
 	}
 
-	if (!ereg("popup",$_SERVER['PHP_SELF'])){
+	if (!strpos($_SERVER['PHP_SELF'],"popup")){
 		commonFooter();
 	}
 }

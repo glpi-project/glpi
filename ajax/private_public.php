@@ -34,7 +34,7 @@
 // ----------------------------------------------------------------------
 
 
-if(ereg("private_public.php",$_SERVER['PHP_SELF'])){
+if(strpos($_SERVER['PHP_SELF'],"private_public.php")){
 	define('GLPI_ROOT','..');
 	$AJAX_INCLUDE=1;
 	include (GLPI_ROOT."/inc/includes.php");

@@ -48,7 +48,7 @@ else $type=0;
 if (!isset($_SESSION['glpi_searchconfig'])) $_SESSION['glpi_searchconfig']=1;
 if (isset($_GET['onglet'])) $_SESSION['glpi_searchconfig']=$_GET['onglet'];
 
-if (!ereg("popup",$_SERVER['PHP_SELF'])){
+if (!strpos($_SERVER['PHP_SELF'],"popup")){
 	commonHeader($LANG["common"][12],$_SERVER['PHP_SELF'],"config","display");
 }
 
@@ -67,7 +67,7 @@ if (isset($_POST["activate"])) {
 } else if (isset($_POST["down"])||isset($_POST["down_x"])) {
 	$setupdisplay->down($_POST);
 }
-if ((ereg("popup",$_SERVER['PHP_SELF'])&&$type>0)/*||$type=$setupdisplay->title($_SERVER['PHP_SELF'],$type)*/){
+if ((strpos($_SERVER['PHP_SELF'],"popup")&&$type>0)/*||$type=$setupdisplay->title($_SERVER['PHP_SELF'],$type)*/){
 	
 	$tabs[1]=array('title'=>$LANG["central"][13],
 	'url'=>$CFG_GLPI['root_doc']."/ajax/display.tabs.php",
@@ -82,7 +82,7 @@ if ((ereg("popup",$_SERVER['PHP_SELF'])&&$type>0)/*||$type=$setupdisplay->title(
 	echo "<div id='tabcontent'></div>";
 	echo "<script type='text/javascript'>loadDefaultTab();</script>";
 }
-if (!ereg("popup",$_SERVER['PHP_SELF'])){
+if (!strpos($_SERVER['PHP_SELF'],"popup")){
 	commonFooter();
 }
 ?>

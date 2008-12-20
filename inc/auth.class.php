@@ -469,7 +469,7 @@ class Identification {
 	 * @return nothing
 	**/
 	function addToError($message){
-		if (!ereg($message,$this->err)){
+		if (!strstr($this->err,$message)){
 			$this->err.=$message."<br>\n";
 		}
 	}

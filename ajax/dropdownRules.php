@@ -34,7 +34,7 @@
 // ----------------------------------------------------------------------
 
 // Direct access to file
-if(ereg("dropdownRules.php",$_SERVER['PHP_SELF'])){
+if(strpos($_SERVER['PHP_SELF'],"dropdownRules.php")){
 	define('GLPI_ROOT','..');
 	include (GLPI_ROOT."/inc/includes.php");
 	header("Content-Type: text/html; charset=UTF-8");

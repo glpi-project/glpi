@@ -1061,7 +1061,7 @@ function sendFile($file,$filename){
 
 	// Test securite : document in DOC_DIR
 	$tmpfile=str_replace(GLPI_DOC_DIR,"",$file);
-	if (ereg("\.\.",$tmpfile)){
+	if (strstr($tmpfile,"..")){
 		echo "Security attack !!!";
 		logEvent($file, "sendFile", 1, "security", $_SESSION["glpiname"]." try to get a non standard file.");
 		return;
@@ -1158,7 +1158,7 @@ function return_bytes_from_ini_vars($val) {
  */
 function glpi_header($dest){
 	$toadd='';
-	if (!ereg("\?",$dest)){
+	if (!strpos($dest,"?")){
 		$toadd='?tokonq='.getRandomString(5);
 	} 	
 	echo "<script language=javascript>
@@ -1233,7 +1233,7 @@ function optimize_tables (){
 	$result=$DB->list_tables();
 	while ($line = $DB->fetch_array($result))
 	{
-		if (ereg("glpi_",$line[0])){
+		if (strstr($line[0],"glpi_")){
 			$table = $line[0];
 			$query = "OPTIMIZE TABLE ".$table." ;";
 			$DB->query($query);
@@ -1506,19 +1506,19 @@ function getURLContent ($url, &$msgerr=NULL, $rec=0) {
 				if (strlen(trim($buf))==0) {
 					// Empty line = end of header
 					$header=false;
-				} else if ($redir && ereg("^Location: (.*)$", $buf, $rep)) {
+				} else if ($redir && preg_match("/^Location: (.*)$/", $buf, $rep)) {
 					if ($rec<9) {
 						return (getURLContent(trim($rep[1]),$errstr,$rec+1));						
 					} else {
 						$errstr="Too deep";
 						break;
 					}
-				} else if (ereg("^HTTP.*200.*OK", $buf)) {
+				} else if (preg_match("/^HTTP.*200.*OK/", $buf)) {
 					// HTTP 200 = OK
-				} else if (ereg("^HTTP.*302", $buf)) {
+				} else if (preg_match("/^HTTP.*302/", $buf)) {
 					// HTTP 302 = Moved Temporarily
 					$redir=true;
-				} else if (ereg("^HTTP", $buf)) {
+				} else if (preg_match("/^HTTP/", $buf)) {
 					// Other HTTP status = error
 					$errstr=trim($buf);
 					break;
