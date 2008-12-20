@@ -501,16 +501,18 @@ class SoftwareVersion extends CommonDBTM {
 		echo "<div class='center' id='tabsbody'><table class='tab_cadre_fixe'>";
 		if ($ID>0){
 			echo "<tr><th colspan='2'>".$LANG["common"][2]." $ID";
-			echo " - <a href='software.form.php?ID=".$this->fields["sID"]."'>".getDropdownName("glpi_software",$this->fields["sID"])."</a>";
-			echo "</th></tr>";
+			$sID=$this->fields["sID"];
 		} else {
 			echo "<tr><th colspan='2'>".$LANG["software"][7];
-			echo " - <a href='software.form.php?ID=".$sID."'>".getDropdownName("glpi_software",$sID)."</a>";
-
-			echo "</th></tr>";
 			echo "<input type='hidden' name='sID' value='$sID'>";
 		}
+		echo "</th></tr>";
 
+		echo "<tr class='tab_bg_1'><td>".$LANG["help"][31].":		</td>";
+		echo "<td>";
+		echo "<a href='software.form.php?ID=".$sID."'>".getDropdownName("glpi_software",$sID)."</a>";
+		echo "</td></tr>";
+	
 		echo "<tr class='tab_bg_1'><td>".$LANG["common"][16].":		</td>";
 		echo "<td>";
 		autocompletionTextField("name","glpi_softwareversions","name",$this->fields["name"],80);
@@ -704,15 +706,17 @@ class SoftwareLicense extends CommonDBTM {
 		echo "<div class='center' id='tabsbody'><table class='tab_cadre_fixe'>";
 		if ($ID>0){
 			echo "<tr><th colspan='2'>".$LANG["common"][2]." $ID";
-			echo " - <a href='software.form.php?ID=".$this->fields["sID"]."'>".getDropdownName("glpi_software",$this->fields["sID"])."</a>";
-			echo "</th></tr>";
+			$sID=$this->fields["sID"];
 		} else {
 			echo "<tr><th colspan='2'>".$LANG["software"][8];
-			echo " - <a href='software.form.php?ID=".$this->fields["sID"]."'>".getDropdownName("glpi_software",$this->fields["sID"])."</a>";
-
-			echo "</th></tr>";
 			echo "<input type='hidden' name='sID' value='$sID'>";
 		}
+		echo "</th></tr>";
+
+		echo "<tr class='tab_bg_1'><td>".$LANG["help"][31].":		</td>";
+		echo "<td>";
+		echo "<a href='software.form.php?ID=".$sID."'>".getDropdownName("glpi_software",$sID)."</a>";
+		echo "</td></tr>";
 
 		echo "<tr class='tab_bg_1'><td>".$LANG["common"][16].":		</td>";
 		echo "<td>";
