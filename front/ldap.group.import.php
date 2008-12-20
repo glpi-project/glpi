@@ -77,8 +77,11 @@ if (isset($_SESSION["ldap_import"])){
 }
 if (isset($_POST["change_ldap_filter"]))
 {
-	$_SESSION["ldap_group_filter"] = $_POST["ldap_filter"];
-	$_SESSION["ldap_group_filter2"] = $_POST["ldap_filter2"];
+	if (isset($_POST["ldap_filter"]))
+		$_SESSION["ldap_group_filter"] = $_POST["ldap_filter"];
+	if (isset($_POST["ldap_filter2"]))	
+		$_SESSION["ldap_group_filter2"] = $_POST["ldap_filter2"];
+	
 	glpi_header($_SERVER['PHP_SELF']);
 }
 elseif (!isset($_POST["import_ok"])){
