@@ -92,7 +92,7 @@ function showTrackingOnglets($target){
 			// Postonly could post followup in helpdesk area	
 			echo "<li class='actif'><a href=\"".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php?show=user&amp;ID=$ID\">".$LANG["job"][38]." $ID</a></li>";
 
-			if (!ereg("old_",$job->fields["status"])&&$job->fields["author"]==$_SESSION["glpiID"]){
+			if (!strstr($job->fields["status"],"old_")&&$job->fields["author"]==$_SESSION["glpiID"]){
 				echo "<li class='invisible'>&nbsp;</li>";
 
 				echo "<li onClick=\"showAddFollowup();\" id='addfollowup'><a href='#viewfollowup' class='fake'>".$LANG["job"][29]."</a></li>";
@@ -133,7 +133,7 @@ function commonTrackingListHeader($output_type=HTML_OUTPUT,$target="",$parameter
 		if (!$nolink){
 			if ($sort==$val) $issort=1;
 			$link=$target."?".$parameters."&amp;order=".($order=="ASC"?"DESC":"ASC")."&amp;sort=$val";
-			if (ereg("helpdesk.public.php",$target)){
+			if (strpos($target,"helpdesk.public.php")){
 				$link.="&amp;show=user";
 			}
 		}
@@ -489,7 +489,7 @@ function showJobShort($data, $followups,$output_type=HTML_OUTPUT,$row_num=0) {
 
 		// Second column
 		$second_col="";	
-		if (!ereg("old_",$data["status"]))
+		if (!strstr($data["status"],"old_"))
 		{
 			$second_col.="<span class='tracking_open'>".$LANG["joblist"][11].":";
 			if ($output_type==HTML_OUTPUT) $second_col.="<br>";
@@ -1032,7 +1032,7 @@ global $CFG_GLPI,  $LANG;
 	echo "<input type='hidden' name='start' value='0'>";
 	echo "<input type='hidden' name='extended' value='$extended'>";
 	// helpdesk case
-	if (ereg("helpdesk.public.php",$target)){
+	if (strpos($target,"helpdesk.public.php")){
 		echo "<input type='hidden' name='show' value='user'>";
 	}
 	echo "</form>";
@@ -1579,12 +1579,12 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$to
 			}
 
 			$parameters=$parameters2."&amp;sort=$sort&amp;order=$order";
-			if (ereg("user.form.php",$_SERVER['PHP_SELF'])) $parameters.="&amp;ID=$author";
+			if (strpos($_SERVER['PHP_SELF'],"user.form.php")) $parameters.="&amp;ID=$author";
 			// Manage helpdesk
-			if (ereg("helpdesk.public.php",$target)) 
+			if (strpos($target,"helpdesk.public.php")) 
 				$parameters.="&amp;show=user";
 			if ($output_type==HTML_OUTPUT){
-				if (!ereg("helpdesk.public.php",$target)) 
+				if (!strpos($target,"helpdesk.public.php")) 
 					printPager($start,$numrows,$target,$parameters,TRACKING_TYPE);
 				else printPager($start,$numrows,$target,$parameters);
 			}
@@ -1800,7 +1800,7 @@ function showJobDetails ($target,$ID){
 
 		echo "</td></tr></table>";
 
-		if (ereg("old_",$job->fields["status"])){
+		if (strstr($job->fields["status"],"old_")){
 			echo "<table><tr><td>";
 			echo "<span class='tracking_small'>".$LANG["joblist"][12].": </td><td>";
 			
@@ -2114,7 +2114,7 @@ function showJobDetails ($target,$ID){
 			}
 		}
 		if ($canupdate||haveRight("comment_all_ticket","1")
-			||(haveRight("comment_ticket","1")&&!ereg('old_',$job->fields["status"]))
+			||(haveRight("comment_ticket","1")&&!strstr($job->fields["status"],'old_'))
 		){
 			echo "<tr><td colspan='2'>";
 			echo "<input type='file' name='filename' size='20'>";
@@ -2129,7 +2129,7 @@ function showJobDetails ($target,$ID){
 		echo "</td></tr>";
 		// Troisi�e Ligne
 		if ($canupdate||$canupdate_descr||haveRight("comment_all_ticket","1")
-			||(haveRight("comment_ticket","1")&&!ereg('old_',$job->fields["status"]))
+			||(haveRight("comment_ticket","1")&&!strstr($job->fields["status"],'old_'))
 			||haveRight("assign_ticket","1")||haveRight("steal_ticket","1")
 			
 			){
@@ -2382,7 +2382,7 @@ function showAddFollowupForm($tID,$massiveaction=false){
 		if ($commentall&&$tID>0){
 			echo "<td class='center'>";
 			// closed ticket 
-			if (ereg('old_',$job->fields['status'])){
+			if (strstr($job->fields['status'],'old_')){
 				echo "<input type='submit' name='add_reopen' value='".$LANG["buttons"][54]."' class='submit'>";
 			}else { // not closed ticket
 				echo "<input type='submit' name='add_close' value='".$LANG["buttons"][26]."' class='submit'>";

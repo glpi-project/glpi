@@ -704,7 +704,7 @@ class User extends CommonDBTM {
 		// some defaults...
 		$this->fields['password'] = "";
 		$this->fields['password_md5'] = "";
-		if (ereg("@", $name)){
+		if (strpos($name,"@")){
 			$this->fields['email'] = $name;
 		} else {
 			$this->fields['email'] = $name . "@" . $mail_method["imap_host"];
@@ -1132,7 +1132,7 @@ class User extends CommonDBTM {
 	function pre_updateInDB($input,$updates) {
 		
 		// Security system except for login update
-		if (isset ($_SESSION["glpiID"]) && !haveRight("user", "w") && !ereg("login.php", $_SERVER['PHP_SELF'])) { 
+		if (isset ($_SESSION["glpiID"]) && !haveRight("user", "w") && !strpos($_SERVER['PHP_SELF'],"login.php")) { 
 			if ($_SESSION["glpiID"] == $input['ID']) { 
 				$ret = $updates;
 				

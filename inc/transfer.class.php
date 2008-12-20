@@ -2187,7 +2187,7 @@ class Transfer extends CommonDBTM{
 		if (!haveRight("transfer","r")) return false;
 
 		$edit_form=true;
-		if (!ereg("transfer.form.php",$_SERVER['PHP_SELF'])){
+		if (!strpos($_SERVER['PHP_SELF'],"transfer.form.php")){
 			$edit_form=false;
 		}
 

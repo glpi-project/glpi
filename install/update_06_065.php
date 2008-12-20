@@ -208,7 +208,7 @@ function update06to065(){
 		$already_done=false;
 		if ($result = $DB->query("show fields from glpi_tracking"))
 			while ($data=$DB->fetch_array($result)){
-				if ($data["Field"]=="status"&&ereg("done",$data["Type"]))
+				if ($data["Field"]=="status"&&strstr($data["Type"],"done"))
 					$already_done=true;
 			}
 
@@ -992,7 +992,7 @@ function update06to065(){
 
 	$result=$DB->list_tables();
 	while ($line = $DB->fetch_array($result))
-		if (ereg("glpi_dropdown",$line[0])||ereg("glpi_type",$line[0])){
+		if (strstr($line[0],"glpi_dropdown")||strstr($line[0],"glpi_type")){
 			if(!isIndex($line[0],"name")) {	
 				$query="ALTER TABLE `".$line[0]."` ADD INDEX ( `name` ) ";
 				$DB->query($query) or die("0.65 add index in name field ".$line[0]." ".$LANG["update"][90].$DB->error());
@@ -1107,7 +1107,7 @@ function update06to065(){
 
 	$result=$DB->list_tables();
 	while ($line = $DB->fetch_array($result))
-		if (ereg("glpi_dropdown",$line[0])||ereg("glpi_type",$line[0])){
+		if (strstr($line[0],"glpi_dropdown")||strstr($line[0],"glpi_type")){
 			if ($line[0]!="glpi_type_docs"){
 				if(!FieldExists($line[0],"comments")) {
 					$query="ALTER TABLE `".$line[0]."` ADD `comments` TEXT NULL ";

@@ -68,7 +68,7 @@ class Job extends CommonDBTM{
 			}
 		}elseif (haveRight("comment_ticket","1")){
 			$ong[1]=$LANG["job"][38]." ".$ID;
-			if (!ereg("old_",$job->fields["status"])&&$job->fields["author"]==$_SESSION["glpiID"]){
+			if (!strstr($job->fields["status"],"old_")&&$job->fields["author"]==$_SESSION["glpiID"]){
 				$ong[2]=$LANG["job"][29];
 			}
 		}
@@ -272,7 +272,7 @@ class Job extends CommonDBTM{
 		global $LANG;
 
 		// Status close : check dates
-		if (ereg("old_",$this->fields["status"])&&(in_array("date",$updates)||in_array("closedate",$updates))){
+		if (strstr($this->fields["status"],"old_")&&(in_array("date",$updates)||in_array("closedate",$updates))){
 			// Invalid dates : no change
 			if ($this->fields["closedate"]<$this->fields["date"]){
 				addMessageAfterRedirect($LANG["tracking"][3]);
@@ -298,7 +298,7 @@ class Job extends CommonDBTM{
 				$this->fields["status"]="new";
 			}
 
-			if (in_array("status",$updates)&&ereg("old_",$input["status"])){
+			if (in_array("status",$updates)&&strstr($input["status"],"old_")){
 				$updates[]="closedate";
 				$this->fields["closedate"]=$_SESSION["glpi_currenttime"];
 				// If invalid date : set open date
@@ -362,7 +362,7 @@ class Job extends CommonDBTM{
 					break;
 					case "closedate":
 						// if update status from an not closed status : no mail for change closedate
-						if (!in_array("status",$updates)||!ereg("old_",$input["status"])){
+						if (!in_array("status",$updates)||!strstr($input["status"],"old_")){
 							$change_followup_content.=$LANG["mailing"][49].": ".$input["_old_closedate"]." -> ".$this->fields["closedate"]."\n";
 			
 							$global_mail_change_count++;
@@ -372,7 +372,7 @@ class Job extends CommonDBTM{
 						$new_status=$this->fields["status"];
 						$change_followup_content.=$LANG["mailing"][27].": ".getStatusName($input["_old_status"])." -> ".getStatusName($new_status)."\n";
 		
-						if (ereg("old_",$new_status))
+						if (strstr($new_status,"old_"))
 							$newinput["add_close"]="add_close";
 
 						if (in_array("closedate",$updates))	
@@ -506,7 +506,7 @@ class Job extends CommonDBTM{
 				if (isset($input["_old_assign"])){
 					$newinput["_old_assign"]=$input["_old_assign"];
 				} 
-				if (isset($input["status"])&&in_array("status",$updates)&&ereg("old_",$input["status"])){
+				if (isset($input["status"])&&in_array("status",$updates)&&strstr($input["status"],"old_")){
 					$newinput["type"]="finish";
 				}
 				$fup=new Followup();
@@ -522,7 +522,7 @@ class Job extends CommonDBTM{
 				$user=new User;
 				$user->getFromDB($_SESSION["glpiID"]);
 				$mailtype="update";
-				if ($input["status"]&&in_array("status",$updates)&&ereg("old_",$input["status"])){
+				if ($input["status"]&&in_array("status",$updates)&&strstr($input["status"],"old_")){
 					$mailtype="finish";
 				} 
 				if (isset($input["_old_assign"])){
@@ -706,7 +706,7 @@ class Job extends CommonDBTM{
 
 			$fup=new Followup();
 			$type="new";
-			if (isset($this->fields["status"])&&ereg("old_",$this->fields["status"])) $type="finish";
+			if (isset($this->fields["status"])&&strstr($this->fields["status"],"old_")) $type="finish";
 			$toadd=array("type"=>$type,"tracking"=>$newID);
 			if (isset($input["_hour"])) $toadd["hour"]=$input["_hour"];
 			if (isset($input["_minute"])) $toadd["minute"]=$input["_minute"];
@@ -725,7 +725,7 @@ class Job extends CommonDBTM{
 
 			$this->fields=stripslashes_deep($this->fields);
 			$type="new";
-			if (isset($this->fields["status"])&&ereg("old_",$this->fields["status"])) $type="finish";
+			if (isset($this->fields["status"])&&strstr($this->fields["status"],"old_")) $type="finish";
 			$mail = new Mailing($type,$this,$user);
 			$mail->send();
 		}
