@@ -62,7 +62,7 @@ if (strlen($_POST['searchText'])>0&&$_POST['searchText']!=$CFG_GLPI["ajax_wildca
 $where.=" AND ( $table.name ".makeTextSearch($_POST['searchText'])." OR $table.serial ".makeTextSearch($_POST['searchText'])." )";
 
 
-if (isset($_POST["entity_restrict"])&&$_POST["entity_restrict"]>=0){
+if (isset($_POST["entity_restrict"])&&$_POST["entity_restrict"]>=0 && !$_POST["recursive"]) {
 	$where.= " AND $table.FK_entities='".$_POST["entity_restrict"]."'";
 } else {
 	$where.=getEntitiesRestrictRequest("AND",$table);
@@ -89,7 +89,7 @@ $LEFTJOINCONNECT="";
 if ($_POST["idtable"]!=COMPUTER_TYPE&&!$_POST["onlyglobal"]){
 	$LEFTJOINCONNECT="LEFT JOIN glpi_connect_wire on ($table.ID = glpi_connect_wire.end1 AND glpi_connect_wire.type = '".$_POST['idtable']."')";
 }
-$query = "SELECT DISTINCT $table.ID AS ID,$table.name AS name,$table.serial AS serial,$table.otherserial AS otherserial FROM $table $LEFTJOINCONNECT $CONNECT_SEARCH $where ORDER BY name ASC";
+$query = "SELECT DISTINCT $table.ID AS ID,$table.name AS name,$table.serial AS serial,$table.otherserial AS otherserial, $table.FK_entities as FK_entities FROM $table $LEFTJOINCONNECT $CONNECT_SEARCH $where ORDER BY FK_entities, name ASC";
 
 
 
@@ -101,7 +101,16 @@ echo "<option value=\"0\">--".$LANG["common"][11]."--</option>";
 
 echo "<option value=\"0\">-----</option>";
 if ($DB->numrows($result)) {
+	$prev=-1;
 	while ($data = $DB->fetch_array($result)) {
+		if ($data["FK_entities"]!=$prev) {
+			if ($prev>=0) {
+				echo "</optgroup>";
+			}
+			$prev=$data["FK_entities"];
+			echo "<optgroup label=\"". getDropdownName("glpi_entities", $prev) ."\">";
+		}
+		
 		$output = $data['name'];
 		if (!empty($data['serial'])) $output.=" - ".$data["serial"];
 		if (!empty($data['otherserial'])) $output.=" - ".$data["otherserial"];
@@ -110,6 +119,11 @@ if ($DB->numrows($result)) {
 
 		echo "<option value=\"$ID\" title=\"".cleanInputText($output)."\">".substr($output,0,$_SESSION["glpidropdown_limit"])."</option>";
 	}
+
+	if ($prev>=0) {
+		echo "</optgroup>";
+	}
+		
 }
 echo "</select>";
 

@@ -1169,7 +1169,7 @@ function dropdownTrackingAllDevices($myname,$value,$admin=0,$entity_restrict=-1)
  * @param $entity_restrict Restrict to a defined entity
  * @return nothing (print out an HTML select box)
  */
-function dropdownConnect($type,$fromtype,$myname,$entity_restrict=-1,$onlyglobal=0) {
+function dropdownConnect($type,$fromtype,$myname,$entity_restrict=-1,$onlyglobal=0,$recursive=0) {
 	global $CFG_GLPI,$LINK_ID_TABLE;
 
 	$rand=mt_rand();
@@ -1193,6 +1193,7 @@ function dropdownConnect($type,$fromtype,$myname,$entity_restrict=-1,$onlyglobal
                         'myname'=>$myname,
                         'onlyglobal'=>$onlyglobal,
                         'entity_restrict'=>$entity_restrict,
+                        'recursive'=>$recursive,
                         );
 	
 	$default="<select name='$myname'><option value='0'>------</option></select>\n";

@@ -259,7 +259,7 @@ function showConnections($target,$ID,$withtemplate='') {
 							} else { // No history for template
 								echo "<input type='hidden' name='dohistory' value='0'>";
 							}
-							dropdownConnect($type,COMPUTER_TYPE,"item",$comp->fields["FK_entities"],$withtemplate);
+							dropdownConnect($type,COMPUTER_TYPE,"item",$comp->fields["FK_entities"],$withtemplate,($type==PRINTER_TYPE?true:false));
 							echo "<input type='submit' value=\"".$LANG["buttons"][9]."\" class='submit'>";
 							echo "</form>";
 						}
