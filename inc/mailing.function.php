@@ -177,7 +177,7 @@ function testMail(){
 		$action = "";
 	
 		foreach ($input as $key => $val) {
-			if (!ereg("mailing_to_", $key) && ereg("mailing_", $key)) {
+			if (!strstr($key,"mailing_to_") && strstr($key,"mailing_")) {
 				if (preg_match("/mailing_([a-z]+)_([a-z]+)/", $key, $matches)) {
 					$type = $matches[2];
 					$action = $matches[1];

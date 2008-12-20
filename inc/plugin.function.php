@@ -260,7 +260,7 @@ function displayPluginHeadings($target,$type,$withtemplate,$actif){
 		if (count($display_onglets)){
 			echo "<li class='invisible'>&nbsp;</li>";
 
-			echo "<li".(ereg($plug,$actif)?" class='actif'":"")." style='position:relative;'  onmouseout=\"cleanhide('onglet_plugins')\" onmouseover=\"cleandisplay('onglet_plugins')\"><a href='#'>".$LANG["common"][29]."</a>";
+			echo "<li".(strstr($actif,$plug)?" class='actif'":"")." style='position:relative;'  onmouseout=\"cleanhide('onglet_plugins')\" onmouseover=\"cleandisplay('onglet_plugins')\"><a href='#'>".$LANG["common"][29]."</a>";
 
 			echo "<div  id='onglet_plugins' ><dl>";
 			foreach ($display_onglets as $key => $val){
