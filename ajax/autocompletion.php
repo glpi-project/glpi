@@ -36,7 +36,7 @@
 
 define('GLPI_ROOT','..');
 // Include plugin if it is a plugin table
-if (!ereg("plugin",$_POST['table'])){
+if (!strstr($_POST['table'],"plugin")){
 	$AJAX_INCLUDE=1;
 }
 include (GLPI_ROOT."/inc/includes.php");

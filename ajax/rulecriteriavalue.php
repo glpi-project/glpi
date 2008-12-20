@@ -34,7 +34,7 @@
 // ----------------------------------------------------------------------
 
 // Direct access to file
-if(ereg("rulecriteriavalue.php",$_SERVER['PHP_SELF'])){
+if(strstr($_SERVER['PHP_SELF'],"rulecriteriavalue.php")){
 	define('GLPI_ROOT','..');
 	$AJAX_INCLUDE=1;
 	include (GLPI_ROOT."/inc/includes.php");

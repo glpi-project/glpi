@@ -73,12 +73,12 @@ if (isset($_POST["move"])) {
 	glpi_header($_SERVER['PHP_SELF']."?which=$which&value2=$value2&tomove=$tomove&where=$where&type=$type");
 } else if (isset($_POST["delete"])) {
 	if(dropdownUsed($_POST["tablename"], $_POST["ID"]) && empty($_POST["forcedelete"])) {
-		if (ereg("popup",$_SERVER['PHP_SELF']))
+		if (strstr($_SERVER['PHP_SELF'],"popup"))
 			popHeader($LANG["common"][12],$_SERVER['PHP_SELF']);
 		else 	
 			commonHeader($LANG["common"][12],$_SERVER['PHP_SELF']);
 		showDeleteConfirmForm($_SERVER['PHP_SELF'],$_POST["tablename"], $_POST["ID"],$_POST["FK_entities"]);
-		if (ereg("popup",$_SERVER['PHP_SELF']))
+		if (strstr($_SERVER['PHP_SELF'],"popup"))
 			popFooter();
 		else 
 			commonFooter();

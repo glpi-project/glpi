@@ -1349,7 +1349,8 @@ function checkAlternateAuthSystems($redirect=false,$redirect_string=''){
 
 	// Using x509 server
 	if (!empty($CFG_GLPI["x509_email_field"])
-		&&isset($_SERVER['SSL_CLIENT_S_DN'])&&ereg($CFG_GLPI["x509_email_field"],$_SERVER['SSL_CLIENT_S_DN'])) {
+		&&isset($_SERVER['SSL_CLIENT_S_DN'])
+		&&strstr($_SERVER['SSL_CLIENT_S_DN'],$CFG_GLPI["x509_email_field"])) {
 		if ($redirect){
 			glpi_header("login.php".$redir_string);
 		} else {

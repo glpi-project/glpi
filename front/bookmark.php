@@ -41,7 +41,7 @@ if(!defined('GLPI_ROOT')){
 }
 include (GLPI_ROOT . "/inc/includes.php");
 
-if (!ereg("popup",$_SERVER['PHP_SELF']))
+if (!strstr($_SERVER['PHP_SELF'],"popup"))
 	commonHeader($LANG["rulesengine"][17],$_SERVER['PHP_SELF'],"admin","dictionnary","cache");
 */
 
@@ -109,7 +109,7 @@ createAjaxTabs('tabspanel','tabcontent',$tabs,$_SESSION['glpi_viewbookmark']);
 echo "<div id='tabcontent'></div>";
 echo "<script type='text/javascript'>loadDefaultTab();</script>";
 		
-if (!ereg("popup",$_SERVER['PHP_SELF'])){
+if (!strstr($_SERVER['PHP_SELF'],"popup")){
 	commonFooter();
 }
 ?>

@@ -34,7 +34,7 @@
 // ----------------------------------------------------------------------
 
 // Direct access to file
-if(ereg("dropdownNetpoint.php",$_SERVER['PHP_SELF'])){
+if(strpos($_SERVER['PHP_SELF'],"dropdownNetpoint.php")){
 	define('GLPI_ROOT','..');
 	$AJAX_INCLUDE=1;
 	include (GLPI_ROOT."/inc/includes.php");

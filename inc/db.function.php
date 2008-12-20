@@ -1036,7 +1036,7 @@ function checkEmailForUser($ID){
  *
  **/
 function formatOutputWebLink($link){
-	if (!ereg("^https?",$link)){
+	if (!preg_match("/^https?/",$link)){
 		return "http://".$link;
 	} 
 	return $link;

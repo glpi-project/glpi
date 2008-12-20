@@ -34,10 +34,10 @@
 // ----------------------------------------------------------------------
 
 // Direct access to file
-if(ereg("dropdownValue.php",$_SERVER['PHP_SELF'])){
+if(strpos($_SERVER['PHP_SELF'],"dropdownValue.php")){
 	define('GLPI_ROOT','..');
 	// Include plugin if it is a plugin table
-	if (!ereg("plugin",$_POST['table'])){
+	if (!strstr($_POST['table'],"plugin")){
 		$AJAX_INCLUDE=1;
 	}
 	include (GLPI_ROOT."/inc/includes.php");
@@ -241,7 +241,7 @@ if (!isset($_POST["limit"])) $_POST["limit"]=$_SESSION["glpidropdown_limit"];
 		}
 
 		$field="name";
-		if (ereg("glpi_device",$_POST['table'])) $field="designation";
+		if (strstr($_POST['table'],"glpi_device")) $field="designation";
 
 		if ($_POST['searchText']!=$CFG_GLPI["ajax_wildcard"])
 			$where.=" AND $field ".makeTextSearch($_POST['searchText']);

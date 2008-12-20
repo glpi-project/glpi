@@ -34,7 +34,7 @@
 // ----------------------------------------------------------------------
 
 
-if(ereg("dropdownRubDocument.php",$_SERVER['PHP_SELF'])){
+if(strpos($_SERVER['PHP_SELF'],"dropdownRubDocument.php")){
 	define('GLPI_ROOT','..');
 	$AJAX_INCLUDE=1;
 	include (GLPI_ROOT."/inc/includes.php");

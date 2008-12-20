@@ -88,7 +88,7 @@ function showEnterpriseContact($instID) {
 		$website=$data["website"];
 		if (!empty($website)){
 			$website=$data["website"];
-			if (!ereg("https*://",$website)) $website="http://".$website;
+			if (!preg_match("?https*://?",$website)) $website="http://".$website;
 			$website="<a target=_blank href='$website'>".$data["website"]."</a>";
 		}
 		echo "<tr class='tab_bg_1".($data["deleted"]?"_2":"")."'>";

@@ -205,7 +205,7 @@ if (isset($_POST["action"])&&isset($_POST["type"])&&!empty($_POST["type"])){
 				);
 
 			foreach ($_POST as $key => $val){
-				if (ereg("extra_",$key,$regs)){
+				if (preg_match("/extra_/",$key,$regs)){
 					$paramsmassaction[$key]=$val;
 				}
 			}

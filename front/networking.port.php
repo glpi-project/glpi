@@ -54,7 +54,7 @@ $REFERER=preg_replace("/&amp;/","&",$REFERER);
 $REFERER=preg_replace("/&/","&amp;",$REFERER);
 
 $ADDREFERER="";
-if (!ereg("&referer=",$_SERVER['HTTP_REFERER']))$ADDREFERER="&referer=".urlencode($REFERER);
+if (!strpos($_SERVER['HTTP_REFERER'],"&referer="))$ADDREFERER="&referer=".urlencode($REFERER);
 
 $np=new Netport();
 if(isset($_POST["add"])){	

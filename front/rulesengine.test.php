@@ -47,7 +47,7 @@ else $rule_type=0;
 $rulecollection = getRuleCollectionClass($rule_type);
 checkRight($rulecollection->right,"r");
 
-if (!ereg("popup",$_SERVER['PHP_SELF'])){
+if (!strpos($_SERVER['PHP_SELF'],"popup")){
 	commonHeader($LANG["common"][12],$_SERVER['PHP_SELF'],"config","display");
 }
 
@@ -68,11 +68,7 @@ if (isset($_POST["test_all_rules"]))
 }
 
 
-if (!ereg("popup",$_SERVER['PHP_SELF'])){
-	commonFooter();
-}
-
-if (!ereg("popup",$_SERVER['PHP_SELF'])){
+if (!strpos($_SERVER['PHP_SELF'],"popup")){
 	commonFooter();
 }
 

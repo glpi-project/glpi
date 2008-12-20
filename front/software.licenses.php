@@ -221,7 +221,7 @@ else if (isset($_POST["moveinstalls"])){
 else if (isset($_POST["uninstall_license"])){
 	checkRight("software","w");
 	foreach ($_POST as $key => $val)
-		if (ereg("license_([0-9]+)",$key,$ereg)){
+		if (preg_match("/license_([0-9]+)/",$key,$ereg)){
 			$input["ID"]=$ereg[1];
 			uninstallSoftwareVersion($input["ID"]);
 		}

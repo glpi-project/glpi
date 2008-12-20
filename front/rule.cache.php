@@ -41,7 +41,7 @@ if(!defined('GLPI_ROOT')){
 	include (GLPI_ROOT . "/inc/includes.php");
 }
 
-if (!ereg("popup",$_SERVER['PHP_SELF']))
+if (!strpos($_SERVER['PHP_SELF'],"popup"))
 	commonHeader($LANG["rulesengine"][17],$_SERVER['PHP_SELF'],"admin","dictionnary","cache");
 
 if (isset($_GET["rule_type"]))	
@@ -61,6 +61,6 @@ if (isset($_GET["rule_type"]))
 	}
 }
 
-if (!ereg("popup",$_SERVER['PHP_SELF']))
+if (!strpos($_SERVER['PHP_SELF'],"popup"))
 	commonFooter();
 ?>

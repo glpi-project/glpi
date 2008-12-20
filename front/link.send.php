@@ -49,54 +49,54 @@ if (isset($_GET["lID"])){
 		$ci->getFromDB($_GET["type"],$_GET["ID"]);
 
 		// Manage Filename
-		if (ereg("\[NAME\]",$link)){
+		if (strstr($link,"[NAME]")){
 			$link=str_replace("[NAME]",$ci->getName(),$link);
 		}
 
-		if (ereg("\[ID\]",$link)){
+		if (strstr($link,"[ID]")){
 			$link=str_replace("[ID]",$_GET["ID"],$link);
 		}
 
 
 		// Manage File Content
 
-		if (ereg("\[NAME\]",$file)){
+		if (strstr($file,"[NAME]")){
 			$file=str_replace("[NAME]",$ci->getName(),$file);
 		}
 
-		if (ereg("\[ID\]",$file)){
+		if (strstr($file,"[ID]")){
 			$file=str_replace("[ID]",$_GET["ID"],$file);
 		}
 
-		if (ereg("\[SERIAL\]",$file)){
+		if (strstr($file,"[SERIAL]")){
 			if (isset($ci->obj->fields["serial"]))
 				$file=str_replace("[SERIAL]",$ci->obj->fields["serial"],$file);
 		}
-		if (ereg("\[OTHERSERIAL\]",$file)){
+		if (strstr($file,"[OTHERSERIAL]")){
 			if (isset($ci->obj->fields["otherserial"]))
 				$file=str_replace("[OTHERSERIAL]",$ci->obj->fields["otherserial"],$file);
 		}
 
 
-		if (ereg("\[LOCATIONID\]",$file)){
+		if (strstr($file,"[LOCATIONID]")){
 			if (isset($ci->obj->fields["location"]))
 				$file=str_replace("[LOCATIONID]",$ci->obj->fields["location"],$file);
 		}
-		if (ereg("\[LOCATION\]",$file)){
+		if (strstr($file,"[LOCATION]")){
 			if (isset($ci->obj->fields["location"]))
 				$file=str_replace("[LOCATION]",getDropdownName("glpi_dropdown_locations",$ci->obj->fields["location"]),$file);
 		}
-		if (ereg("\[NETWORK\]",$file)){
+		if (strstr($file,"[NETWORK]")){
 			if (isset($ci->obj->fields["network"]))
 				$file=str_replace("[NETWORK]",getDropdownName("glpi_dropdown_network",$ci->obj->fields["network"]),$file);
 		}
-		if (ereg("\[DOMAIN\]",$file)){
+		if (strstr($file,"[DOMAIN]")){
 			if (isset($ci->obj->fields["domain"]))
 				$file=str_replace("[DOMAIN]",getDropdownName("glpi_dropdown_domain",$ci->obj->fields["domain"]),$file);
 		}
 		$ipmac=array();
 		$i=0;
-		if (ereg("\[IP\]",$file)||ereg("\[MAC\]",$file)){
+		if (strstr($file,"[IP]")||strstr($file,"[MAC]")){
 			$query2 = "SELECT ifaddr,ifmac FROM glpi_networking_ports WHERE (on_device = ".$_GET["ID"]." AND device_type = ".$_GET["type"].") ORDER BY logical_number";
 			$result2=$DB->query($query2);
 			if ($DB->numrows($result2)>0){
@@ -106,7 +106,7 @@ if (isset($_GET["lID"])){
 			}
 		}
 
-		if (ereg("\[IP\]",$file)||ereg("\[MAC\]",$file)){
+		if (strstr($file,"[IP]")||strstr($file,"[MAC]")){
 
 			if (count($ipmac)>0){
 				foreach ($ipmac as $key => $val){
