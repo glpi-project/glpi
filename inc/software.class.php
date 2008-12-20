@@ -58,7 +58,6 @@ class Software extends CommonDBTM {
 		$ong[1] = $LANG["title"][26];
 		if (empty ($withtemplate)) {
 			$ong[2] = $LANG["software"][19];
-			$ong[901] = "Mockup #1";
 		}
 		if (haveRight("contract","r") || haveRight("infocom","r")){
 			$ong[4] = $LANG["Menu"][26];
@@ -466,7 +465,6 @@ class SoftwareVersion extends CommonDBTM {
 
 		$ong[1] = $LANG["title"][26];
 		$ong[2] = $LANG["software"][19];
-		$ong[901] = "Mockup #1";
 
 		return $ong;
 	}

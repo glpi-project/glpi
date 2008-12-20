@@ -385,6 +385,7 @@ function showLicenses($sID) {
  * @param $crit to search : sID (software) or ID (version)
  * @return nothing
  */
+/*
 function showInstallations($searchID, $crit="sID") {
 	global $DB, $CFG_GLPI, $LANG;
 	if (!haveRight("software", "r"))
@@ -518,7 +519,7 @@ function showInstallations($searchID, $crit="sID") {
 	
 	}
 }
-
+*/
 /**
  * Show installtions of a software
  *
@@ -526,7 +527,7 @@ function showInstallations($searchID, $crit="sID") {
  * @param $crit to search : sID (software) or ID (version)
  * @return nothing
  */
-function showInstallationsMockup1($searchID, $crit="sID") {
+function showInstallations($searchID, $crit="sID") {
 	global $DB, $CFG_GLPI, $LANG;
 	if (!haveRight("software", "r"))
 		return false;
