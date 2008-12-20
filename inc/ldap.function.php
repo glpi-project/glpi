@@ -85,9 +85,9 @@ function ldapImportGroup ($group_dn,$ldap_server,$entity,$type){
 		$group_infos = ldap_search_group_by_dn($ds, $config_ldap->fields['ldap_basedn'], stripslashes($group_dn),$config_ldap->fields["ldap_group_condition"]);
 		$group = new Group();
 		if ($type == "groups")
-			$group->add(array("name"=>$group_infos["cn"][0],"ldap_group_dn"=>$group_infos["dn"],"FK_entities"=>$entity));
+			$group->add(array("name"=>addslashes($group_infos["cn"][0]),"ldap_group_dn"=>addslashes($group_infos["dn"]),"FK_entities"=>$entity));
 		else
-			$group->add(array("name"=>$group_infos["cn"][0],"ldap_field"=>$config_ldap->fields["ldap_field_group"], "ldap_value"=>$group_infos["dn"],"FK_entities"=>$entity));
+			$group->add(array("name"=>addslashes($group_infos["cn"][0]),"ldap_field"=>$config_ldap->fields["ldap_field_group"], "ldap_value"=>addslashes($group_infos["dn"]),"FK_entities"=>$entity));
 	}
 }
 
@@ -367,7 +367,7 @@ function showLdapGroups($target, $check, $start, $sync = 0,$filter='',$filter2='
 				echo "<td>";
 				dropdownValue("glpi_entities", "toimport_entities[" .$group_dn . "]=".$entity, $entity);
 				echo "</td>";
-				echo "<input type='hidden' name='toimport_type[".$group_dn."]' value='".$search_type."'>";		
+				echo "<input type='hidden' name=\"toimport_type[".$group_dn."]\" value=\"".$search_type."\">";		
 				echo "</tr>";
 			}
 			echo "<tr class='tab_bg_1'><td colspan='5' align='center'>";
