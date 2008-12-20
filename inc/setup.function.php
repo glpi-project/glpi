@@ -222,7 +222,7 @@ function showFormTreeDown($target, $tablename, $human, $ID, $value2 = '', $where
 
 	echo "</table></form>";
 	
-	if (ereg('setup.dropdowns.php',$target) && $numberof>0){
+	if (strpos($target,'setup.dropdowns.php') && $numberof>0){
 		echo "<a href='$target?which=$tablename&amp;mass_deletion=1&amp;FK_entities=$FK_entities'>".$LANG["title"][42]."</a>";
 	}
 	
@@ -347,7 +347,7 @@ function showFormNetpoint($target, $human, $ID, $FK_entities='',$location=0) {
 
 	echo "</table></form>";
 	
-	if (ereg('setup.dropdowns.php',$target) && $numberof>0){
+	if (strpos($target,'setup.dropdowns.php') && $numberof>0){
 		echo "<a href='$target?which=$tablename&amp;mass_deletion=1&amp;FK_entities=$FK_entities&amp;value2=$location'>".$LANG["title"][42]."</a>";
 	}
 	
@@ -435,7 +435,7 @@ function showFormDropDown($target, $tablename, $human, $ID, $FK_entities='') {
 
 	echo "</table></form>";
 	
-	if (ereg('setup.dropdowns.php',$target) && $numberof>0){
+	if (strpos($target,'setup.dropdowns.php') && $numberof>0){
 		echo "<a href='$target?which=$tablename&amp;mass_deletion=1&amp;FK_entities=$FK_entities'>".$LANG["title"][42]."</a>";
 	}
 	
@@ -840,7 +840,7 @@ function showDeleteConfirmForm($target, $table, $ID,$FK_entities) {
 
 function getDropdownNameFromTable($table) {
 	$name="";
-	if (ereg("glpi_type_", $table)) {
+	if (strstr($table,"glpi_type_")) {
 		$name = str_replace("glpi_type_", "", $table);
 	} else {
 		if ($table == "glpi_dropdown_locations")
@@ -854,7 +854,7 @@ function getDropdownNameFromTable($table) {
 
 function getDropdownNameFromTableForStats($table) {
 
-	if (ereg("glpi_type_", $table)) {
+	if (strstr($table,"glpi_type_")) {
 		$name = "type";
 	} else {
 		if ($table == "glpi_dropdown_locations")
@@ -1159,11 +1159,11 @@ function showImapAuthList($target) {
 		if (!haveRight("config", "w"))
 			return false;
 
-		if (ereg(":", $value)) {
+		if (strstr($value,":")) {
 			$addr = str_replace("{", "", preg_replace("/:.*/", "", $value));
 			$port = preg_replace("/.*:/", "", preg_replace("/\/.*/", "", $value));
 		} else {
-			if (ereg("/", $value))
+			if (strstr($value,"/"))
 				$addr = str_replace("{", "", preg_replace("/\/.*/", "", $value));
 			else
 				$addr = str_replace("{", "", preg_replace("/}.*/", "", $value));
@@ -1175,24 +1175,24 @@ function showImapAuthList($target) {
 		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["setup"][168] . "</td><td>";
 		echo "<select name='server_type'>";
 		echo "<option value=''>&nbsp;</option>";
-		echo "<option value='/imap' " . (ereg("/imap", $value) ? " selected " : "") . ">IMAP</option>";
-		echo "<option value='/pop' " . (ereg("/pop", $value) ? " selected " : "") . ">POP</option>";
+		echo "<option value='/imap' " . (strstr($value,"/imap") ? " selected " : "") . ">IMAP</option>";
+		echo "<option value='/pop' " . (strstr($value,"/pop") ? " selected " : "") . ">POP</option>";
 		echo "</select>";
 		echo "<select name='server_ssl'>";
 		echo "<option value=''>&nbsp;</option>";
-		echo "<option value='/ssl' " . (ereg("/ssl", $value) ? " selected " : "") . ">SSL</option>";
+		echo "<option value='/ssl' " . (strstr($value,"/ssl") ? " selected " : "") . ">SSL</option>";
 		echo "</select>";
 		
 		echo "<select name='server_tls'>";
 		echo "<option value=''>&nbsp;</option>";
-		echo "<option value='/tls' " . (ereg("/tls", $value) ? " selected " : "") . ">TLS</option>";
-		echo "<option value='/notls' " . (ereg("/notls", $value) ? " selected " : "") . ">NO-TLS</option>";
+		echo "<option value='/tls' " . (strstr($value,"/tls") ? " selected " : "") . ">TLS</option>";
+		echo "<option value='/notls' " . (strstr($value,"/notls") ? " selected " : "") . ">NO-TLS</option>";
 		echo "</select>";
 
 		echo "<select name='server_cert'>";
 		echo "<option value=''>&nbsp;</option>";
-		echo "<option value='/novalidate-cert' " . (ereg("/novalidate-cert", $value) ? " selected " : "") . ">NO-VALIDATE-CERT</option>";
-		echo "<option value='/validate-cert' " . (ereg("/validate-cert", $value) ? " selected " : "") . ">VALIDATE-CERT</option>";
+		echo "<option value='/novalidate-cert' " . (strstr($value,"/novalidate-cert") ? " selected " : "") . ">NO-VALIDATE-CERT</option>";
+		echo "<option value='/validate-cert' " . (strstr($value,"/validate-cert") ? " selected " : "") . ">VALIDATE-CERT</option>";
 		echo "</select>";
 
 		echo "<input type=hidden name=imap_string value='".$value."'>";

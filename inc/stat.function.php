@@ -681,7 +681,7 @@ function constructEntryValues($type,$begin="",$end="",$param="",$value="",$value
 			if (!empty($end)) $WHERE.= " AND glpi_tracking.closedate <= adddate('$end' , INTERVAL 1 DAY ) ";
 
 			$query="SELECT glpi_tracking.ID AS ID, FROM_UNIXTIME(UNIX_TIMESTAMP(glpi_tracking.closedate),'%Y-%m') AS date_unix, MIN(UNIX_TIMESTAMP(glpi_tracking.closedate)-UNIX_TIMESTAMP(glpi_tracking.date)) AS OPEN, MIN(UNIX_TIMESTAMP(glpi_followups.date)-UNIX_TIMESTAMP(glpi_tracking.date)) AS FIRST FROM glpi_tracking LEFT JOIN glpi_followups ON (glpi_followups.tracking = glpi_tracking.ID) ";
-			if (!ereg("glpi_followups",$LEFTJOIN)){
+			if (!strstr($LEFTJOIN,"glpi_followups")){
 				$query.=$LEFTJOIN;
 			}
 				$query.=$WHERE." GROUP BY glpi_tracking.ID";
@@ -822,7 +822,7 @@ function graphBy($entrees,$titre="",$unit="",$showtotal=1,$type="month"){
 				echo "<img alt=\"$key: $value\" title=\"$key: $value\"  src='".$CFG_GLPI["root_doc"]."/pics/moyenne.png' width=".$largeur." height='1' >";
 				echo "<img alt=\"$key: $value\" title=\"$key: $value\"  src='".$CFG_GLPI["root_doc"]."/pics/rien.gif' width=".$largeur." height=".$difference." >";
 				echo "<img alt=\"$key: $value\" title=\"$key: $value\"  src='".$CFG_GLPI["root_doc"]."/pics/noir.png' width=".$largeur." height='1' >";
-				if (ereg("-01",$key)){ // janvier en couleur foncee
+				if (strstr($key,"-01")){ // janvier en couleur foncee
 					echo "<img alt=\"$key: $value\" title=\"$key: $value\"  src='".$CFG_GLPI["root_doc"]."/pics/fondgraph1.png' width=".$largeur." height=".$hauteur." >";
 				} 
 				else {
@@ -832,7 +832,7 @@ function graphBy($entrees,$titre="",$unit="",$showtotal=1,$type="month"){
 			else if ($hauteur_moyenne < $hauteur) {
 				$difference = ($hauteur - $hauteur_moyenne) -1;
 				echo "<img alt=\"$key: $value\" title=\"$key: $value\"  src='".$CFG_GLPI["root_doc"]."/pics/noir.png' width=".$largeur." height='1'>";
-				if (ereg("-01",$key)){ // janvier en couleur foncee
+				if (strstr($key,"-01")){ // janvier en couleur foncee
 					$couleur =  "1";
 					$couleur2 =  "2";
 				} 
@@ -846,7 +846,7 @@ function graphBy($entrees,$titre="",$unit="",$showtotal=1,$type="month"){
 			}
 			else {
 				echo "<img alt=\"$key: $value\" title=\"$key: $value\"  src='".$CFG_GLPI["root_doc"]."/pics/noir.png' width=".$largeur." height='1'>";
-				if (ereg("-01",$key)){ // janvier en couleur foncee
+				if (strstr($key,"-01")){ // janvier en couleur foncee
 					echo "<img alt=\"$key: $val_tab\" title=\"$key: $value\" src='".$CFG_GLPI["root_doc"]."/pics/fondgraph1.png' width=".$largeur." height=".$hauteur.">";
 				} 
 				else {

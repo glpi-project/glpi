@@ -313,7 +313,7 @@ function showLicenses($sID) {
 			
 			if ($software->isRecursive()) {
 				// Ereg to search entity in string for match default order
-				echo "<th>".(ereg("entity",$order)?$sort_img:"")."<a href='javascript:reloadTab(\"order=entity&start=0\");'>".$LANG["entity"][0]."</a></th>";
+				echo "<th>".(strstr($order,"entity")?$sort_img:"")."<a href='javascript:reloadTab(\"order=entity&start=0\");'>".$LANG["entity"][0]."</a></th>";
 			}
 			echo "<th>".($order=="serial"?$sort_img:"")."<a href='javascript:reloadTab(\"order=serial&start=0\");'>".$LANG["common"][19]."</a></th>";
 			echo "<th>".$LANG["tracking"][29]."</th>";
@@ -610,13 +610,13 @@ function showInstallationsMockup1($searchID, $crit="sID") {
 			}
 			echo "<th>".($order=="compname"?$sort_img:"")."<a href='javascript:reloadTab(\"order=compname&start=0\");'>".$LANG["common"][16]."</a></th>";
 			if ($showEntity) {
-				echo "<th>".(ereg("entity",$order)?$sort_img:"")."<a href='javascript:reloadTab(\"order=entity,compname&start=0\");'>".$LANG["entity"][0]."</a></th>";
+				echo "<th>".(strstr($order,"entity")?$sort_img:"")."<a href='javascript:reloadTab(\"order=entity,compname&start=0\");'>".$LANG["entity"][0]."</a></th>";
 			}
 			echo "<th>".($order=="serial"?$sort_img:"")."<a href='javascript:reloadTab(\"order=serial&start=0\");'>".$LANG["common"][19]."</a></th>";
 			echo "<th>".($order=="otherserial"?$sort_img:"")."<a href='javascript:reloadTab(\"order=otherserial&start=0\");'>".$LANG["common"][20]."</a></th>";
-			echo "<th>".(ereg("location",$order)?$sort_img:"")."<a href='javascript:reloadTab(\"order=location,compname&start=0\");'>".$LANG["common"][15]."</a></th>";
-			echo "<th>".(ereg("groupe",$order)?$sort_img:"")."<a href='javascript:reloadTab(\"order=groupe,compname&start=0\");'>".$LANG["common"][35]."</a></th>";
-			echo "<th>".(ereg("contact",$order)?$sort_img:"")."<a href='javascript:reloadTab(\"order=contact,compname&start=0\");'>".$LANG["common"][18]."</a></th>";
+			echo "<th>".(strstr($order,"location")?$sort_img:"")."<a href='javascript:reloadTab(\"order=location,compname&start=0\");'>".$LANG["common"][15]."</a></th>";
+			echo "<th>".(strstr($order,"groupe")?$sort_img:"")."<a href='javascript:reloadTab(\"order=groupe,compname&start=0\");'>".$LANG["common"][35]."</a></th>";
+			echo "<th>".(strstr($order,"contact")?$sort_img:"")."<a href='javascript:reloadTab(\"order=contact,compname&start=0\");'>".$LANG["common"][18]."</a></th>";
 			echo "<th>".($order=="lname"?$sort_img:"")."<a href='javascript:reloadTab(\"order=lname&start=0\");'>".$LANG["software"][28]."</a></th>";
 			echo "</tr>\n";
 
