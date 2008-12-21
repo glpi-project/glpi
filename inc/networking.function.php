@@ -58,9 +58,10 @@ function showPorts($device, $device_type, $withtemplate = '') {
 		if ($DB->numrows($result) != 0) {
 			$colspan = 9;
 			if ($withtemplate != 2) {
-				echo "<form id='networking_ports$rand' name='networking_ports$rand' method='post' action=\"" . $CFG_GLPI["root_doc"] . "/front/networking.port.php\">";
-				if ($canedit)
+				if ($canedit) {					
 					$colspan++;
+					echo "<form id='networking_ports$rand' name='networking_ports$rand' method='post' action=\"" . $CFG_GLPI["root_doc"] . "/front/networking.port.php\">";				
+				}	
 			}
 
 			echo "<div class='center'><table class='tab_cadrehov'>";
@@ -100,10 +101,10 @@ function showPorts($device, $device_type, $withtemplate = '') {
 					echo "<td align='center' width='20'><input type='checkbox' name='del_port[" . $netport->fields["ID"] . "]' value='1'></td>";
 				}
 				echo "<td class='center'><strong>";
-				if ($withtemplate != 2)
+				if ($canedit && $withtemplate != 2)
 					echo "<a href=\"" . $CFG_GLPI["root_doc"] . "/front/networking.port.php?ID=" . $netport->fields["ID"] . "\">";
 				echo $netport->fields["logical_number"];
-				if ($withtemplate != 2)
+				if ($canedit && $withtemplate != 2)
 					echo "</a>";
 				echo "</strong></td>";
 				echo "<td>" . $netport->fields["name"] . "</td>";
@@ -155,7 +156,7 @@ function showPorts($device, $device_type, $withtemplate = '') {
 			} else {
 				echo "<br>";
 			}
-			if ($withtemplate != 2) {
+			if ($canedit && $withtemplate != 2) {
 				echo "</form>";
 			}
 		}
