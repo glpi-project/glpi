@@ -294,6 +294,8 @@ class Printer  extends CommonDBTM {
 			$this->getEmpty();
 		} 
 
+		$canedit=$this->can($ID,'w');
+
 		$this->showTabs($ID, $withtemplate,$_SESSION['glpi_tab']);
 
 		if(!empty($withtemplate) && $withtemplate == 2) {
@@ -313,12 +315,12 @@ class Printer  extends CommonDBTM {
 		}
 
 
-		echo "<div align='center' id='tabsbody'><form method='post' name='form' action=\"$target\">\n";
-		if(strcmp($template,"newtemplate") === 0) {
-			echo "<input type=\"hidden\" name=\"is_template\" value=\"1\" />\n";
-		}
-		
-		echo "<input type='hidden' name='FK_entities' value='".$this->fields["FK_entities"]."'>";
+		echo "<div align='center' id='tabsbody'>";
+
+		if ($canedit) {
+			echo "<form method='post' name='form' action=\"$target\">\n";
+			echo "<input type='hidden' name='FK_entities' value='".$this->fields["FK_entities"]."'>";
+		}		
 		
 		echo "<table class='tab_cadre_fixe' cellpadding='2'>\n";
 		$this->showFormHeader($ID,$withtemplate);
@@ -393,6 +395,11 @@ class Printer  extends CommonDBTM {
 			dropdownValue("glpi_dropdown_domain", "domain", $this->fields["domain"]);
 			echo "</td></tr>\n";
 
+			echo "<tr><td>$datestring</td><td>$date\n";
+			if (!$template&&!empty($this->fields['tplname'])) {
+				echo "&nbsp;&nbsp;&nbsp;(".$LANG["common"][13].": ".$this->fields['tplname'].")";
+			}
+			echo "</td></tr>\n";
 
 			echo "</table>"; // fin table indentification
 
@@ -462,7 +469,12 @@ class Printer  extends CommonDBTM {
 
 
 			echo "<tr><td>".$LANG["peripherals"][33].":</td><td>";
-			globalManagementDropdown($target,$withtemplate,$this->fields["ID"],$this->fields["is_global"],$CFG_GLPI["printers_management_restrict"]);
+			if ($canedit) {
+				globalManagementDropdown($target,$withtemplate,$this->fields["ID"],$this->fields["is_global"],$CFG_GLPI["printers_management_restrict"]);
+			} else {
+				// Use printers_management_restrict to disallow change this
+				globalManagementDropdown($target,$withtemplate,$this->fields["ID"],$this->fields["is_global"],$this->fields["is_global"]);				
+			}
 			echo "</td></tr>";
 
 			echo "</table>\n";
@@ -487,7 +499,7 @@ class Printer  extends CommonDBTM {
 
 
 
-		if (haveRight("printer","w")){
+		if ($canedit){
 			echo "<tr>\n";
 
 			if ($template) {
@@ -523,9 +535,10 @@ class Printer  extends CommonDBTM {
 				echo "</td>";
 
 			}
-			echo "</tr>";
+			echo "</tr></table></form></div>";
+		} else { // Can't edit
+			echo "</table></div>";
 		}
-		echo "</table></form></div>";
 
 		echo "<div id='tabcontent'></div>";
 		echo "<script type='text/javascript'>loadDefaultTab();</script>";
