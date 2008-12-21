@@ -64,19 +64,18 @@ $where.=" AND $table.is_template='0' ";
 if (strlen($_POST['searchText'])>0&&$_POST['searchText']!=$CFG_GLPI["ajax_wildcard"])
 $where.=" AND ( $table.name ".makeTextSearch($_POST['searchText'])." OR $table.serial ".makeTextSearch($_POST['searchText'])." )";
 
-$multi=false;
+$multi=in_array($table,$CFG_GLPI["recursive_type"]);
 if (isset($_POST["entity_restrict"]) && !($_POST["entity_restrict"]<0)){
-	$where.=getEntitiesRestrictRequest(" AND ",$table,'',$_POST["entity_restrict"]);
+	$where.=getEntitiesRestrictRequest(" AND ",$table,'',$_POST["entity_restrict"],$multi);
 	if (is_array($_POST["entity_restrict"]) && count($_POST["entity_restrict"])>1) {
 		$multi=true;	
 	}
 } else {
-	$where.=getEntitiesRestrictRequest(" AND ",$table);
+	$where.=getEntitiesRestrictRequest(" AND ",$table,'',$_SESSION['glpiactiveentities'],$multi);
 	if (count($_SESSION['glpiactiveentities'])>1) {
 		$multi=true;	
 	}
 }
-
 
 $NBMAX=$CFG_GLPI["dropdown_max"];
 $LIMIT="LIMIT 0,$NBMAX";
