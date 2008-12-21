@@ -1668,9 +1668,10 @@ function globalManagementDropdown($target,$withtemplate,$ID,$value,$management_r
 	if ($value&&empty($withtemplate)) {
 		echo $LANG["peripherals"][31];
 
-		echo "&nbsp;<a title=\"".$LANG["common"][39]."\" href=\"javascript:confirmAction('".addslashes($LANG["common"][40])."\\n".addslashes($LANG["common"][39])."','$target?unglobalize=unglobalize&amp;ID=$ID')\">".$LANG["common"][38]."</a>&nbsp;";	
-
-		echo "<img alt=\"".$LANG["common"][39]."\" title=\"".$LANG["common"][39]."\" src=\"".$CFG_GLPI["root_doc"]."/pics/aide.png\">";
+		if ($management_restrict == 2){
+			echo "&nbsp;<a title=\"".$LANG["common"][39]."\" href=\"javascript:confirmAction('".addslashes($LANG["common"][40])."\\n".addslashes($LANG["common"][39])."','$target?unglobalize=unglobalize&amp;ID=$ID')\">".$LANG["common"][38]."</a>&nbsp;";	
+			echo "<img alt=\"".$LANG["common"][39]."\" title=\"".$LANG["common"][39]."\" src=\"".$CFG_GLPI["root_doc"]."/pics/aide.png\">";
+		}
 	} else {
 
 		if ($management_restrict == 2){
