@@ -56,10 +56,11 @@ function showConnect($target,$ID,$type) {
 	// Is global connection ?
 	$global=0;
 	$ci=new CommonItem();
-	if (haveTypeRight($type,"r")){
-		$canedit=haveTypeRight($type,"w");
+	if (!$ci->getFromDB($type,$ID)) return false;
+	
+	if ($ci->obj->can($ID,"r")){
+		$canedit=$ci->obj->can($ID,"w");
 
-		$ci->getFromDB($type,$ID);
 		$global=$ci->getField('is_global');
 
 		$computers = $connect->getComputersContact($type,$ID);
@@ -96,8 +97,12 @@ function showConnect($target,$ID,$type) {
 				echo "<form method='post' action=\"$target\">";
 				echo "<input type='hidden' name='connect' value='connect'>";
 				echo "<input type='hidden' name='sID' value='$ID'>";
-				echo "<input type='hidden' name='device_type' value='$type'>";
-				dropdownConnect(COMPUTER_TYPE,$type,"item",$ci->getField('FK_entities'),0,$ci->getField('recursive'));
+				echo "<input type='hidden' name='device_type' value='$type'>";				
+				if ($ci->getField('recursive')) {
+					dropdownConnect(COMPUTER_TYPE,$type,"item",getEntitySons($ci->getField('FK_entities')),0);
+				} else {
+					dropdownConnect(COMPUTER_TYPE,$type,"item",$ci->getField('FK_entities'),0);
+				}
 				echo "<input type='submit' value=\"".$LANG["buttons"][9]."\" class='submit'>";
 				echo "</form>";
 			} else echo "&nbsp;";
@@ -110,15 +115,19 @@ function showConnect($target,$ID,$type) {
 			echo "<tr><td class='tab_bg_1'>&nbsp;";
 			echo "</td>";
 			echo "<td class='tab_bg_2' align='center'>";
-			echo "<form method='post' action=\"$target\">";
-			echo "<input type='hidden' name='connect' value='connect'>";
-			echo "<input type='hidden' name='sID' value='$ID'>";
-			echo "<input type='hidden' name='device_type' value='$type'>";
-			dropdownConnect(COMPUTER_TYPE,$type,"item",$ci->getField('FK_entities'));
-			echo "<input type='submit' value=\"".$LANG["buttons"][9]."\" class='submit'>";
-
-			echo "</form>";
-
+			if ($canedit){
+				echo "<form method='post' action=\"$target\">";
+				echo "<input type='hidden' name='connect' value='connect'>";
+				echo "<input type='hidden' name='sID' value='$ID'>";
+				echo "<input type='hidden' name='device_type' value='$type'>";
+				if ($ci->getField('recursive')) {
+					dropdownConnect(COMPUTER_TYPE,$type,"item",getEntitySons($ci->getField('FK_entities')),0);
+				} else {
+					dropdownConnect(COMPUTER_TYPE,$type,"item",$ci->getField('FK_entities'),0);
+				}
+				echo "<input type='submit' value=\"".$LANG["buttons"][9]."\" class='submit'>";
+				echo "</form>";
+			} else echo "&nbsp;";
 		}
 
 		echo "</td>";
