@@ -48,6 +48,9 @@ if (!defined('GLPI_ROOT')){
 
 checkTypeRight($_POST["fromtype"],"w");
 
+if (isset($_POST["entity_restrict"])&&!is_numeric($_POST["entity_restrict"])&&!is_array($_POST["entity_restrict"])){
+	$_POST["entity_restrict"]=unserialize(stripslashes($_POST["entity_restrict"]));
+}
 // Make a select box
 
 $table=$LINK_ID_TABLE[$_POST["idtable"]];
@@ -61,11 +64,17 @@ $where.=" AND $table.is_template='0' ";
 if (strlen($_POST['searchText'])>0&&$_POST['searchText']!=$CFG_GLPI["ajax_wildcard"])
 $where.=" AND ( $table.name ".makeTextSearch($_POST['searchText'])." OR $table.serial ".makeTextSearch($_POST['searchText'])." )";
 
-
-if (isset($_POST["entity_restrict"])&&$_POST["entity_restrict"]>=0 && !$_POST["recursive"]) {
-	$where.= " AND $table.FK_entities='".$_POST["entity_restrict"]."'";
+$multi=false;
+if (isset($_POST["entity_restrict"]) && !($_POST["entity_restrict"]<0)){
+	$where.=getEntitiesRestrictRequest(" AND ",$table,'',$_POST["entity_restrict"]);
+	if (is_array($_POST["entity_restrict"]) && count($_POST["entity_restrict"])>1) {
+		$multi=true;	
+	}
 } else {
-	$where.=getEntitiesRestrictRequest("AND",$table);
+	$where.=getEntitiesRestrictRequest(" AND ",$table);
+	if (count($_SESSION['glpiactiveentities'])>1) {
+		$multi=true;	
+	}
 }
 
 
@@ -103,7 +112,7 @@ echo "<option value=\"0\">-----</option>";
 if ($DB->numrows($result)) {
 	$prev=-1;
 	while ($data = $DB->fetch_array($result)) {
-		if ($data["FK_entities"]!=$prev) {
+		if ($multi && $data["FK_entities"]!=$prev) {
 			if ($prev>=0) {
 				echo "</optgroup>";
 			}
@@ -120,7 +129,7 @@ if ($DB->numrows($result)) {
 		echo "<option value=\"$ID\" title=\"".cleanInputText($output)."\">".substr($output,0,$_SESSION["glpidropdown_limit"])."</option>";
 	}
 
-	if ($prev>=0) {
+	if ($multi && $prev>=0) {
 		echo "</optgroup>";
 	}
 		

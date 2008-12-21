@@ -74,7 +74,9 @@ class Connection {
 			FROM glpi_connect_wire 
 			INNER JOIN glpi_computers ON (glpi_computers.ID = glpi_connect_wire.end2)
 			 WHERE (glpi_connect_wire.end1 = '$ID' AND glpi_connect_wire.type = '$type' 
-				AND glpi_computers.is_template = '0')";
+				AND glpi_computers.is_template = '0')" .
+				getEntitiesRestrictRequest(" AND", "glpi_computers");
+				
 		if ($result=$DB->query($query)) {
 			if ($DB->numrows($result)==0) return false;
 			$ret=array();
