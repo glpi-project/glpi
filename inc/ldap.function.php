@@ -241,7 +241,7 @@ function getGroupCNByDn($ldap_connection,$group_dn)
  * @param   $entity entity to search
  * @return  array of the groups
  */
-function getAllGroups($id_auth,$filter,$filter2,$entity){
+function getAllGroups($id_auth,$filter,$filter2,$entity,$order='DESC'){
 	global $DB, $LANG,$CFG_GLPI;
 	$config_ldap = new AuthLDAP();
 	$res = $config_ldap->getFromDB($id_auth);
@@ -288,6 +288,11 @@ function getAllGroups($id_auth,$filter,$filter2,$entity){
 					$ligne++;
 				}
 			}
+		if ($order=='DESC')
+			ksort($groups);
+		else
+			sort($groups);	
+			
 		}
 	}
 	return $groups;		
@@ -301,14 +306,15 @@ function getAllGroups($id_auth,$filter,$filter2,$entity){
  * @param   $sync synchronise or add ?
  * @param   $filter ldap filter to use
  * @param   $entity working entity
+ * @param   $order display order 
  * @return  nothing
  */
-function showLdapGroups($target, $check, $start, $sync = 0,$filter='',$filter2='',$entity) {
+function showLdapGroups($target, $check, $start, $sync = 0,$filter='',$filter2='',$entity,$order='DESC') {
 	global $DB, $CFG_GLPI, $LANG;
 
 	displayLdapFilter($target,false);
 	echo "<br>";	
-	$ldap_groups = getAllGroups($_SESSION["ldap_server"],$filter,$filter2,$entity);
+	$ldap_groups = getAllGroups($_SESSION["ldap_server"],$filter,$filter2,$entity,$order);
 
 	if (is_array($ldap_groups)){
 		$numrows = count($ldap_groups);
@@ -330,7 +336,10 @@ function showLdapGroups($target, $check, $start, $sync = 0,$filter='',$filter2='
 			echo "<form method='post' id='ldap_form' name='ldap_form'  action='" . $target . "'>";
 			echo "<a href='" . $target . "?check=all' onclick= \"if ( markCheckboxes('ldap_form') ) return false;\">" . $LANG["buttons"][18] . "</a>&nbsp;/&nbsp;<a href='" . $target . "?check=none' onclick= \"if ( unMarkCheckboxes('ldap_form') ) return false;\">" . $LANG["buttons"][19] . "</a>";
 			echo "<table class='tab_cadre'>";
-			echo "<tr><th>" . $LANG["buttons"][37]. "</th><th colspan='2'>" . $LANG["common"][35] . "</th><th>".$LANG["setup"][261]."</th>"; 
+			echo "<tr><th>" . $LANG["buttons"][37]. "</th>"; 
+			//echo"<th colspan='2'>" . $LANG["common"][35] . "</th>";
+			echo displaySearchHeaderItem(0,$LANG["common"][35],$header_num,$target."?order=".($order=="DESC"?"ASC":"DESC"),1,$order);
+			echo "<th>".$LANG["setup"][261]."</th>"; 
 			echo"<th>".$LANG["ocsng"][36]."</th></tr>";
 	
 			foreach ($ldap_groups as $groupinfos) {
@@ -341,7 +350,7 @@ function showLdapGroups($target, $check, $start, $sync = 0,$filter='',$filter2='
 				echo "<tr align='center' class='tab_bg_2'>";
 				//Need to use " instead of ' because it doesn't work with names with ' inside !
 				echo "<td><input type='checkbox' name=\"" . $action . "[" .$group_dn . "]\" " . ($check == "all" ? "checked" : "") ."></td>";
-				echo "<td colspan='2'>" . $group . "</td>";
+				echo "<td>" . $group . "</td>";
 				echo "<td>" .$group_dn. "</td>";
 				echo "<td>";
 				dropdownValue("glpi_entities", "toimport_entities[" .$group_dn . "]=".$entity, $entity);
@@ -349,7 +358,7 @@ function showLdapGroups($target, $check, $start, $sync = 0,$filter='',$filter2='
 				echo "<input type='hidden' name=\"toimport_type[".$group_dn."]\" value=\"".$search_type."\">";		
 				echo "</tr>";
 			}
-			echo "<tr class='tab_bg_1'><td colspan='5' align='center'>";
+			echo "<tr class='tab_bg_1'><td colspan='4' align='center'>";
 			echo "<input class='submit' type='submit' name='" . $form_action . "' value='" . $LANG["buttons"][37] . "'>";
 			echo "</td></tr>";
 			echo "</table>";
@@ -371,7 +380,7 @@ function showLdapGroups($target, $check, $start, $sync = 0,$filter='',$filter2='
  * @param   $myfilter ldap filter to use
  * @return  array of the user
  */
-function getAllLdapUsers($id_auth, $sync = 0,$myfilter='') {
+function getAllLdapUsers($id_auth, $sync = 0,$myfilter='',$order='DESC') {
 	global $DB, $LANG,$CFG_GLPI;
 
 	$config_ldap = new AuthLDAP();
@@ -433,6 +442,8 @@ function getAllLdapUsers($id_auth, $sync = 0,$myfilter='') {
 	if ($sync){
 		$sql.=" WHERE auth_method IN (-1,".AUTH_LDAP.") ";
 	}
+	$sql.="ORDER BY name ".$order;
+	
 	$result = $DB->query($sql);
 	if ($DB->numrows($result) > 0)
 		while ($user = $DB->fetch_array($result))
@@ -462,6 +473,11 @@ function getAllLdapUsers($id_auth, $sync = 0,$myfilter='') {
 		foreach ($diff as $user)
 			$list[] = array("user" => $user, "timestamp" => $user_infos[$user]["timestamp"], "date_mod"=> "-----");
 		
+		if ($order=='DESC')
+			rsort($list);
+		else
+			sort($list);
+			
 		return $list;	
 	}
 	else
@@ -479,12 +495,12 @@ function getAllLdapUsers($id_auth, $sync = 0,$myfilter='') {
  * @param   $filter ldap filter to use
  * @return  nothing
  */
-function showLdapUsers($target, $check, $start, $sync = 0,$filter='') {
+function showLdapUsers($target, $check, $start, $sync = 0,$filter='',$order='DESC') {
 	global $DB, $CFG_GLPI, $LANG;
 
 	displayLdapFilter($target);
 	echo "<br>";	
-	$ldap_users = getAllLdapUsers($_SESSION["ldap_server"], $sync,$filter);
+	$ldap_users = getAllLdapUsers($_SESSION["ldap_server"], $sync,$filter,$order);
 
 	if (is_array($ldap_users)){
 		$numrows = count($ldap_users);
@@ -511,7 +527,12 @@ function showLdapUsers($target, $check, $start, $sync = 0,$filter='') {
 			echo "<form method='post' id='ldap_form' name='ldap_form' action='" . $target . "'>";
 			echo "<a href='" . $target . "?check=all' onclick= \"if ( markCheckboxes('ldap_form') ) return false;\">" . $LANG["buttons"][18] . "</a>&nbsp;/&nbsp;<a href='" . $target . "?check=none' onclick= \"if ( unMarkCheckboxes('ldap_form') ) return false;\">" . $LANG["buttons"][19] . "</a>";
 			echo "<table class='tab_cadre'>";
-			echo "<tr><th>" . (!$sync?$LANG["buttons"][37]:$LANG["ldap"][15]) . "</th><th colspan='2'>" . $LANG["Menu"][14] . "</th><th>".$LANG["common"][26]." ".$LANG["ldap"][13]."</th><th>".$LANG["common"][26]." ".$LANG["ldap"][14]."</th></tr>";
+			echo "<tr>"; 
+			echo"<th>" . (!$sync?$LANG["buttons"][37]:$LANG["ldap"][15]) . "</th>"; 
+			echo displaySearchHeaderItem(0,$LANG["Menu"][14],$header_num,$target."?order=".($order=="DESC"?"ASC":"DESC"),1,$order);
+			echo"<th>".$LANG["common"][26]." ".$LANG["ldap"][13]."</th>"; 
+			echo"<th>".$LANG["common"][26]." ".$LANG["ldap"][14]."</th>";
+			echo"</tr>";
 	
 			foreach ($ldap_users as $userinfos) {
 				$user = $userinfos["user"];
@@ -528,7 +549,7 @@ function showLdapUsers($target, $check, $start, $sync = 0,$filter='') {
 				echo "<tr align='center' class='tab_bg_2'>";
 				//Need to use " instead of ' because it doesn't work with names with ' inside !
 				echo "<td><input type='checkbox' name=\"" . $action . "[" . $user . "]\" " . ($check == "all" ? "checked" : "") ."></td>";
-				echo "<td colspan='2'>" . $user . "</td>";
+				echo "<td>" . $user . "</td>";
 				
 				if ($stamp != '')
 					echo "<td>" .convDateTime(date("Y-m-d H:i:s",$stamp)). "</td>";
@@ -546,6 +567,7 @@ function showLdapUsers($target, $check, $start, $sync = 0,$filter='') {
 			echo "</td></tr>";
 			echo "</table>";
 			echo "</form></div>";
+			echo "<a href='" . $target . "?check=all' onclick= \"if ( markCheckboxes('ldap_form') ) return false;\">" . $LANG["buttons"][18] . "</a>&nbsp;/&nbsp;<a href='" . $target . "?check=none' onclick= \"if ( unMarkCheckboxes('ldap_form') ) return false;\">" . $LANG["buttons"][19] . "</a>";
 			printPager($start, $numrows, $target, $parameters);
 		} else {
 			echo "<div class='center'><strong>" . $LANG["ldap"][3] . "</strong></div>";
