@@ -99,7 +99,13 @@ elseif (!isset($_POST["import_ok"])){
 			if (!isset($_SESSION["ldap_filter"])){
 				$_SESSION["ldap_filter"]='';
 			}
-			showLdapUsers($_SERVER['PHP_SELF'],$_GET['check'],$_GET['start'],0,$_SESSION["ldap_filter"]);
+
+			if (!isset($_SESSION["ldap_sortorder"]))
+				$_SESSION["ldap_sortorder"]="DESC";
+			else
+				$_SESSION["ldap_sortorder"]=(!isset($_GET["order"])?"DESC":$_GET["order"]);
+					
+			showLdapUsers($_SERVER['PHP_SELF'],$_GET['check'],$_GET['start'],0,$_SESSION["ldap_filter"],$_SESSION["ldap_sortorder"]);
 	}
 } else {
 
