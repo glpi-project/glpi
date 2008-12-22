@@ -59,6 +59,16 @@ function update0713to072() {
 		$DB->query($query) or die("0.72 add recursive in glpi_printers" . $LANG["update"][90] . $DB->error());
 	}	  	
 
+	if (!FieldExists("glpi_links", "FK_entities")) {
+		$query = "ALTER TABLE `glpi_links` ADD `FK_entities` INT( 11 ) NOT NULL DEFAULT '0' AFTER `ID`;";
+		$DB->query($query) or die("0.72 add FK_entities in glpi_links" . $LANG["update"][90] . $DB->error());
+	}	  	
+
+	if (!FieldExists("glpi_links", "recursive")) {
+		$query = "ALTER TABLE `glpi_links` ADD `recursive` INT( 1 ) NOT NULL DEFAULT '1' AFTER `FK_entities` ;";
+		$DB->query($query) or die("0.72 add recursive in glpi_links" . $LANG["update"][90] . $DB->error());
+	}	  	
+
 	// Clean datetime fields
 	$date_fields=array('glpi_docs.date_mod',
 			'glpi_event_log.date',

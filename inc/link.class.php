@@ -47,8 +47,17 @@ class Link extends CommonDBTM {
 	function __construct () {
 		$this->table="glpi_links";
 		$this->type=LINK_TYPE;
+		$this->may_be_recursive=true;
+		$this->entity_assign=true;
 	}
 
+
+	function defineTabs($ID,$withtemplate){
+		global $LANG;
+
+		$ong=array();
+		return $ong;
+	}
 
 	function cleanDBonPurge($ID) {
 
@@ -77,6 +86,16 @@ class Link extends CommonDBTM {
 
 		if (!haveRight("link","r")) return false;
 
+/*
+		if ($ID > 0){
+			$this->check($ID,'r');
+		} else {
+			// Create item 
+			$this->check(-1,'w');
+			$use_cache=false;
+			$this->getEmpty();
+		} 
+*/
 		if ($ID > 0){
 			$this->check($ID,'r');
 		} else {
@@ -86,19 +105,16 @@ class Link extends CommonDBTM {
 			$this->getEmpty();
 		} 
 
+		$canedit=$this->can($ID,'w');
+		$canrecu=$this->can($ID,'recursive');
 
+		$this->showTabs($ID, '',$_SESSION['glpi_tab']);
+		
 		echo "<form method='post' name=form action=\"$target\"><div class='center'>";
 
 		echo "<table class='tab_cadre_fixe' cellpadding='2' >";
-		echo "<tr><th colspan='2'>";
-		if (empty($ID)) {
-			echo $LANG["links"][3].":";
-
-		} else {
-
-			echo $LANG["links"][1]." ID $ID:";
-		}		
-		echo "</th></tr>";
+		
+		$this->showFormHeader($ID, '');
 
 		echo "<tr class='tab_bg_1'><td>".$LANG["links"][6].":	</td>";
 		echo "<td>[LOGIN], [ID], [NAME], [LOCATION], [LOCATIONID], [IP], [MAC], [NETWORK], [DOMAIN], [SERIAL], [OTHERSERIAL]</td>";
@@ -119,7 +135,10 @@ class Link extends CommonDBTM {
 		echo "<textarea name='data' rows='10' cols='80'>".$this->fields["data"]."</textarea>";
 		echo "</td></tr>";
 
-		if (haveRight("link","w"))
+		echo "<input type='hidden' name='FK_entities' value='".$this->fields["FK_entities"]."'>";
+
+
+		if ($canedit)
 			if ($ID=="") {
 
 				echo "<tr>";

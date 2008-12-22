@@ -379,13 +379,13 @@
 		"glpi_contacts","glpi_contracts","glpi_docs",
 		"glpi_dropdown_locations","glpi_dropdown_netpoint","glpi_enterprises","glpi_groups",
 		"glpi_mailgate","glpi_monitors","glpi_networking","glpi_peripherals","glpi_phones","glpi_printers","glpi_software",
-		"glpi_softwarelicenses", "glpi_tracking","state_types","reservation_types");
+		"glpi_softwarelicenses", "glpi_tracking","state_types","reservation_types","glpi_links");
 
 	$CFG_GLPI["union_search_type"]=array(RESERVATION_TYPE=>"reservation_types",STATE_TYPE=>"state_types");
 
 	$CFG_GLPI["recursive_type"]=array(CONTACT_TYPE=>"glpi_contacts", ENTERPRISE_TYPE=>"glpi_enterprises", CONTRACT_TYPE=>"glpi_contracts", 
 		DOCUMENT_TYPE=>"glpi_docs", KNOWBASE_TYPE=>"glpi_kbitems", NETWORKING_TYPE => "glpi_networking", GROUP_TYPE => "glpi_groups",
-		SOFTWARE_TYPE => "glpi_software", SOFTWARELICENSE_TYPE => "glpi_softwarelicenses", PRINTER_TYPE => "glpi_printers");
+		SOFTWARE_TYPE => "glpi_software", SOFTWARELICENSE_TYPE => "glpi_softwarelicenses", PRINTER_TYPE => "glpi_printers",LINK_TYPE=>"glpi_links");
 		
 	// New config options which can be missing during migration
 	$CFG_GLPI["numberformat"]=0;
