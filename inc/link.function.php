@@ -54,13 +54,27 @@ if (!defined('GLPI_ROOT')){
 function showLinkDevice($instID) {
 	global $DB,$CFG_GLPI, $LANG;
 
+	$link = new Link();
+	if ($instID > 0){
+		$link->check($instID,'r');
+	} else {
+		// Create item 
+		$link->check(-1,'w');
+		$use_cache=false;
+		$link->getEmpty();
+	} 
+
+	$canedit=$link->can($instID,'w');
+	$canrecu=$link->can($instID,'recursive');
+
 	if (!haveRight("link","r")) return false;
-	$canedit= haveRight("link","w");
+	//$canedit= haveRight("link","w");
 	$ci = new CommonItem();
 	$query = "SELECT * from glpi_links_device WHERE FK_links='$instID' ORDER BY device_type";
 	$result = $DB->query($query);
 	$number = $DB->numrows($result);
 	$i = 0;
+
 
 	echo "<form method='post' action=\"".$CFG_GLPI["root_doc"]."/front/link.form.php\">";
 	echo "<div class='center'><table class='tab_cadre_fixe'>";
@@ -136,12 +150,18 @@ function addLinkDevice($tID,$lID){
 function showLinkOnDevice($type,$ID){
 	global $DB,$LANG,$CFG_GLPI;
 
+	$commonitem = new CommonItem;
+	$commonitem->getFromDB($type,$ID);
+	
 	if (!haveRight("link","r")) return false;
 
-	$query="SELECT glpi_links.ID as ID, glpi_links.link as link, glpi_links.name as name , glpi_links.data as data from glpi_links INNER JOIN glpi_links_device ON glpi_links.ID= glpi_links_device.FK_links WHERE glpi_links_device.device_type='$type' ORDER BY glpi_links.name";
+	$query="SELECT glpi_links.ID as ID, glpi_links.link as link, glpi_links.name as name , glpi_links.data as data from glpi_links INNER JOIN glpi_links_device ON glpi_links.ID= glpi_links_device.FK_links " .
+			"WHERE glpi_links_device.device_type='$type' " .
+			getEntitiesRestrictRequest(" AND","glpi_links","FK_entities",$commonitem->obj->fields["FK_entities"],true).
+			" ORDER BY glpi_links.name";
 
 	$result=$DB->query($query);
-
+	
 	$ci=new CommonItem;
 	if ($DB->numrows($result)>0){
 		echo "<div class='center'><table class='tab_cadre'><tr><th>".$LANG["title"][33]."</th></tr>";

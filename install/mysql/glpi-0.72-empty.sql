@@ -1639,6 +1639,8 @@ CREATE TABLE `glpi_kbitems` (
 DROP TABLE IF EXISTS `glpi_links`;
 CREATE TABLE `glpi_links` (
   `ID` int(11) NOT NULL auto_increment,
+  `FK_entities` int(11) NOT NULL default '0',
+  `recursive` tinyint(1) NOT NULL default '0',
   `name` varchar(255) collate utf8_unicode_ci default NULL,
   `link` varchar(255) collate utf8_unicode_ci default NULL,
   `data` text collate utf8_unicode_ci,
