@@ -48,6 +48,12 @@ if (!defined('GLPI_ROOT')){
 
 checkTypeRight($_POST["fromtype"],"w");
 
+
+if (isset($_POST["used"])&&!is_numeric($_POST["used"])&&!is_array($_POST["used"]))
+	$used = unserialize(stripslashes($_POST["used"]));
+else
+	$used = $_POST["used"];
+
 if (isset($_POST["entity_restrict"])&&!is_numeric($_POST["entity_restrict"])&&!is_array($_POST["entity_restrict"])){
 	$_POST["entity_restrict"]=unserialize(stripslashes($_POST["entity_restrict"]));
 }
@@ -100,7 +106,6 @@ if ($_POST["idtable"]!=COMPUTER_TYPE&&!$_POST["onlyglobal"]){
 $query = "SELECT DISTINCT $table.ID AS ID,$table.name AS name,$table.serial AS serial,$table.otherserial AS otherserial, $table.FK_entities as FK_entities FROM $table $LEFTJOINCONNECT $CONNECT_SEARCH $where ORDER BY FK_entities, name ASC";
 
 
-
 $result = $DB->query($query);
 echo "<select name=\"".$_POST['myname']."\" size='1'>";
 
@@ -111,7 +116,7 @@ echo "<option value=\"0\">-----</option>";
 if ($DB->numrows($result)) {
 	$prev=-1;
 	while ($data = $DB->fetch_array($result)) {
-		if ($multi && $data["FK_entities"]!=$prev) {
+		if ($multi && $data["FK_entities"]!=$prev && !in_array($data["ID"],$used)) {
 			if ($prev>=0) {
 				echo "</optgroup>";
 			}
@@ -119,13 +124,16 @@ if ($DB->numrows($result)) {
 			echo "<optgroup label=\"". getDropdownName("glpi_entities", $prev) ."\">";
 		}
 		
-		$output = $data['name'];
-		if (!empty($data['serial'])) $output.=" - ".$data["serial"];
-		if (!empty($data['otherserial'])) $output.=" - ".$data["otherserial"];
-		$ID = $data['ID'];
-		if (empty($output)) $output="($ID)";
-
-		echo "<option value=\"$ID\" title=\"".cleanInputText($output)."\">".substr($output,0,$_SESSION["glpidropdown_limit"])."</option>";
+		if(!in_array($data["ID"],$used))
+		{
+			$output = $data['name'];
+			if (!empty($data['serial'])) $output.=" - ".$data["serial"];
+			if (!empty($data['otherserial'])) $output.=" - ".$data["otherserial"];
+			$ID = $data['ID'];
+			if (empty($output)) $output="($ID)";
+	
+			echo "<option value=\"$ID\" title=\"".cleanInputText($output)."\">".substr($output,0,$_SESSION["glpidropdown_limit"])."</option>";
+		}
 	}
 
 	if ($multi && $prev>=0) {

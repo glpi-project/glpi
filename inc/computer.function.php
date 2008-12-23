@@ -159,7 +159,8 @@ function showConnections($target,$ID,$withtemplate='') {
 
 
 	$ci=new CommonItem;
-
+	$used = array();
+	
 	$items=array(PRINTER_TYPE=>$LANG["computers"][39],MONITOR_TYPE=>$LANG["computers"][40],PERIPHERAL_TYPE=>$LANG["computers"][46],PHONE_TYPE=>$LANG["computers"][55]);
 	$comp=new Computer();
 	$canedit=haveTypeRight(COMPUTER_TYPE,"w");
@@ -214,6 +215,8 @@ function showConnections($target,$ID,$withtemplate='') {
 							$connID = $DB->result($result, $i, "ID");
 							$ci->getFromDB($type,$tID);
 	
+							$used[] = $tID;
+							
 							echo "<tr ".($ci->getField('deleted')?"class='tab_bg_2_2'":"").">";
 							echo "<td class='center'><strong>";
 							echo $ci->getLink();
@@ -259,7 +262,7 @@ function showConnections($target,$ID,$withtemplate='') {
 							} else { // No history for template
 								echo "<input type='hidden' name='dohistory' value='0'>";
 							}
-							dropdownConnect($type,COMPUTER_TYPE,"item",$comp->fields["FK_entities"],$withtemplate);
+							dropdownConnect($type,COMPUTER_TYPE,"item",$comp->fields["FK_entities"],$withtemplate,$used);
 							echo "<input type='submit' value=\"".$LANG["buttons"][9]."\" class='submit'>";
 							echo "</form>";
 						}
