@@ -52,7 +52,8 @@ function showConnect($target,$ID,$type) {
 	global $LANG, $CFG_GLPI;
 
 	$connect = new Connection;
-
+	$used = array();
+	
 	// Is global connection ?
 	$global=0;
 	$ci=new CommonItem();
@@ -86,7 +87,7 @@ function showConnect($target,$ID,$type) {
 					echo "&nbsp;";
 				}
 				echo "</strong>";
-
+				$used[] = $computer['ID'];
 			}
 		} else {
 			echo "<tr><td class='tab_bg_1'><strong>".$LANG["help"][25].": </strong>";
@@ -99,9 +100,9 @@ function showConnect($target,$ID,$type) {
 				echo "<input type='hidden' name='sID' value='$ID'>";
 				echo "<input type='hidden' name='device_type' value='$type'>";				
 				if ($ci->getField('recursive')) {
-					dropdownConnect(COMPUTER_TYPE,$type,"item",getEntitySons($ci->getField('FK_entities')),0);
+					dropdownConnect(COMPUTER_TYPE,$type,"item",getEntitySons($ci->getField('FK_entities')),0,$used);
 				} else {
-					dropdownConnect(COMPUTER_TYPE,$type,"item",$ci->getField('FK_entities'),0);
+					dropdownConnect(COMPUTER_TYPE,$type,"item",$ci->getField('FK_entities'),0,$used);
 				}
 				echo "<input type='submit' value=\"".$LANG["buttons"][9]."\" class='submit'>";
 				echo "</form>";
@@ -121,9 +122,9 @@ function showConnect($target,$ID,$type) {
 				echo "<input type='hidden' name='sID' value='$ID'>";
 				echo "<input type='hidden' name='device_type' value='$type'>";
 				if ($ci->getField('recursive')) {
-					dropdownConnect(COMPUTER_TYPE,$type,"item",getEntitySons($ci->getField('FK_entities')),0);
+					dropdownConnect(COMPUTER_TYPE,$type,"item",getEntitySons($ci->getField('FK_entities')),0,$used);
 				} else {
-					dropdownConnect(COMPUTER_TYPE,$type,"item",$ci->getField('FK_entities'),0);
+					dropdownConnect(COMPUTER_TYPE,$type,"item",$ci->getField('FK_entities'),0,$used);
 				}
 				echo "<input type='submit' value=\"".$LANG["buttons"][9]."\" class='submit'>";
 				echo "</form>";
