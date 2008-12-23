@@ -107,16 +107,14 @@ else if (isset($_GET["unglobalize"]))
 }
 else if (isset($_GET["disconnect"]))
 {
-	/// TODO : which right on connect / disconnect ?
-	checkRight("printer","w");
+	$print->check($_GET["ID"],"w");
 	Disconnect($_GET["ID"]);
 	logEvent(0, "printers", 5, "inventory", $_SESSION["glpiname"]."  ".$LANG["log"][26]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if(isset($_POST["connect"])&&isset($_POST["item"])&&$_POST["item"]>0)
 {
-	/// TODO : which right on connect / disconnect ?
-	checkRight("printer","w");
+	$print->check($_GET["ID"],"w");
 	Connect($_POST["sID"],$_POST["item"],PRINTER_TYPE);
 	logEvent($_POST["sID"], "printers", 4, "inventory", $_SESSION["glpiname"]."  ".$LANG["log"][27]);
 	glpi_header($CFG_GLPI["root_doc"]."/front/printer.form.php?ID=".$_POST["sID"]);
