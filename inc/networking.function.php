@@ -53,6 +53,8 @@ function showPorts($device, $device_type, $withtemplate = '') {
 
 	$device_real_table_name = $LINK_ID_TABLE[$device_type];
 
+	$_SESSION['glpilistitems'][NETWORKING_PORT_TYPE]=array();
+	
 	$query = "SELECT ID FROM glpi_networking_ports WHERE (on_device = $device AND device_type = $device_type) ORDER BY name, logical_number";
 	if ($result = $DB->query($query)) {
 		if ($DB->numrows($result) != 0) {
@@ -96,6 +98,7 @@ function showPorts($device, $device_type, $withtemplate = '') {
 			while ($devid = $DB->fetch_row($result)) {
 				$netport = new Netport;
 				$netport->getFromDB(current($devid));
+				$_SESSION['glpilistitems'][NETWORKING_PORT_TYPE][]=$netport->fields["ID"];
 				echo "<tr class='tab_bg_1'>";
 				if ($withtemplate != 2 && $canedit) {
 					echo "<td align='center' width='20'><input type='checkbox' name='del_port[" . $netport->fields["ID"] . "]' value='1'></td>";
@@ -163,20 +166,23 @@ function showPorts($device, $device_type, $withtemplate = '') {
 	}
 }
 
-function showPortVLAN($ID, $withtemplate, $referer = '') {
+function showPortVLAN($ID, $withtemplate) {
 	global $DB, $CFG_GLPI, $LANG;
 
 	$canedit = haveRight("networking", "w");
 
+	$used = array();
+	
 	$query = "SELECT * from glpi_networking_vlan WHERE FK_port='$ID'";
 	$result = $DB->query($query);
 	if ($DB->numrows($result) > 0) {
 		echo "<table cellpadding='0' cellspacing='0'>";
 		while ($line = $DB->fetch_array($result)) {
+			$used[]=$line["FK_vlan"];
 			echo "<tr><td>" . getDropdownName("glpi_dropdown_vlan", $line["FK_vlan"]);
 			echo "</td><td>";
 			if ($canedit) {
-				echo "<a href='" . $CFG_GLPI["root_doc"] . "/front/networking.port.php?unassign_vlan=unassigned&amp;ID=" . $line["ID"] . "&amp;referer=$referer'>";
+				echo "<a href='" . $CFG_GLPI["root_doc"] . "/front/networking.port.php?unassign_vlan=unassigned&amp;ID=" . $line["ID"] . "'>";
 				echo "<img src=\"" . $CFG_GLPI["root_doc"] . "/pics/delete2.png\" alt='" . $LANG["buttons"][6] . "' title='" . $LANG["buttons"][6] . "'></a>";
 			} else
 				echo "&nbsp;";
@@ -186,6 +192,37 @@ function showPortVLAN($ID, $withtemplate, $referer = '') {
 	} else
 		echo "&nbsp;";
 
+	return $used;
+}
+
+function showPortVLANForm ($ID) {
+	global $DB, $CFG_GLPI, $LANG;
+
+	if ($ID) {
+		echo "<div class='center'>";
+		echo "<form method='post' action='" . $CFG_GLPI["root_doc"] . "/front/networking.port.php'>";
+		//echo "<input type='hidden' name='referer' value='$REFERER'>";
+		echo "<input type='hidden' name='ID' value='$ID'>";
+
+		echo "<table class='tab_cadre'>";
+		echo "<tr><th>" . $LANG["setup"][90] . "</th></tr>";
+		echo "<tr class='tab_bg_2'><td>";
+		$used=showPortVLAN($ID, 0);
+		echo "</td></tr>";
+
+		echo "<tr  class='tab_bg_2'><td>";
+		echo $LANG["networking"][55] . ":&nbsp;";
+		dropdown("glpi_dropdown_vlan", "vlan",1,-1,$used);
+		echo "&nbsp;<input type='submit' name='assign_vlan' value='" . $LANG["buttons"][3] . "' class='submit'>";
+		echo "</td></tr>";
+
+		echo "</table>";
+
+		echo "</form>";
+
+		echo "</div>";
+
+	}	
 }
 
 function assignVlan($port, $vlan) {
@@ -237,7 +274,7 @@ function unassignVlan($portID, $vlanID) {
 
 function showNetportForm($target, $ID, $ondevice, $devtype, $several) {
 
-	global $CFG_GLPI, $LANG, $REFERER;
+	global $CFG_GLPI, $LANG;
 
 	if (!haveRight("networking", "r"))
 		return false;
@@ -245,7 +282,7 @@ function showNetportForm($target, $ID, $ondevice, $devtype, $several) {
 	$netport = new Netport;
 	if ($ID) {
 		$netport->getFromDB($ID);
-		$netport->getDeviceData($netport->fields["on_device"], $netport->fields["device_type"]);
+		$netport->getDeviceData($ondevice=$netport->fields["on_device"], $devtype=$netport->fields["device_type"]);
 	} else {
 		$netport->getDeviceData($ondevice, $devtype);
 		$netport->getEmpty();
@@ -258,31 +295,32 @@ function showNetportForm($target, $ID, $ondevice, $devtype, $several) {
 				$netport->fields[$key] = $_POST[$key];
 	}
 
-	displayTitle("", "", "", array (
-		$REFERER => $LANG["buttons"][13]
-	));
-
-	echo "<br><div>";
-
 	
-	echo "<form method='post' action=\"$target\">";
+	$netport->showTabs($ID, false, $_SESSION['glpi_tab'],array(),"device_type=$devtype AND on_device=$ondevice");
+	
+	echo "<div class='center' id='tabsbody'><form method='post' action=\"$target\">";
 
-	echo "<input type='hidden' name='referer' value='" . rawurlencode($REFERER) . "'>";
 	echo "<table class='tab_cadre_fixe'><tr>";
 
 	echo "<th colspan='4'>" . $LANG["networking"][20] . ":</th>";
 	echo "</tr>";
+	
+	$ci=new CommonItem();
+	if ($ci->getFromDB($netport->device_type,$netport->device_ID)) {
+		echo "<tr class='tab_bg_1'><td>" . $ci->getType() . ":</td><td colspan='2'>";
+		echo $ci->getLink(). "</td></tr>\n";
+	}
 
 	if ($several != "yes") {
 		echo "<tr class='tab_bg_1'><td>" . $LANG["networking"][21] . ":</td>";
-		echo "<td>";
+		echo "<td colspan='2'>";
 		autocompletionTextField("logical_number", "glpi_networking_ports", "logical_number", $netport->fields["logical_number"], 5);
 		echo "</td></tr>";
 	} else {
 		echo "<tr class='tab_bg_1'><td>" . $LANG["networking"][21] . ":</td>";
 		echo "<input type='hidden' name='several' value='yes'>";
 		echo "<input type='hidden' name='logical_number' value=''>";
-		echo "<td>";
+		echo "<td colspan='2'>";
 		echo $LANG["networking"][47] . ":&nbsp;";
 		dropdownInteger('from_logical_number', 0, 0, 100);
 		echo $LANG["networking"][48] . ":&nbsp;";
@@ -291,15 +329,15 @@ function showNetportForm($target, $ID, $ondevice, $devtype, $several) {
 	}
 
 	echo "<tr class='tab_bg_1'><td>" . $LANG["common"][16] . ":</td>";
-	echo "<td>";
+	echo "<td colspan='2'>";
 	autocompletionTextField("name", "glpi_networking_ports", "name", $netport->fields["name"], 80);
 	echo "</td></tr>";
 
-	echo "<tr class='tab_bg_1'><td>" . $LANG["common"][65] . ":</td><td>";
+	echo "<tr class='tab_bg_1'><td>" . $LANG["common"][65] . ":</td><td colspan='2'>";
 	dropdownValue("glpi_dropdown_iface", "iface", $netport->fields["iface"]);
 	echo "</td></tr>";
 
-	echo "<tr class='tab_bg_1'><td>" . $LANG["networking"][14] . ":</td><td>";
+	echo "<tr class='tab_bg_1'><td>" . $LANG["networking"][14] . ":</td><td colspan='2'>";
 	autocompletionTextField("ifaddr", "glpi_networking_ports", "ifaddr", $netport->fields["ifaddr"], 40);
 	echo "</td></tr>\n";
 
@@ -339,44 +377,47 @@ function showNetportForm($target, $ID, $ondevice, $devtype, $several) {
 		}
 	}
 
-	echo "<tr class='tab_bg_1'><td>" . $LANG["networking"][15] . ":</td><td>";
+	echo "<tr class='tab_bg_1'><td>" . $LANG["networking"][15] . ":</td><td colspan='2'>";
 	autocompletionTextField("ifmac", "glpi_networking_ports", "ifmac", $netport->fields["ifmac"], 40);
 	echo "</td></tr>\n";
 
-	echo "<tr class='tab_bg_1'><td>" . $LANG["networking"][60] . ":</td><td>";
+	echo "<tr class='tab_bg_1'><td>" . $LANG["networking"][60] . ":</td><td colspan='2'>";
 	autocompletionTextField("netmask", "glpi_networking_ports", "netmask", $netport->fields["netmask"], 40);
 	echo "</td></tr>\n";
 
-	echo "<tr class='tab_bg_1'><td>" . $LANG["networking"][59] . ":</td><td>";
+	echo "<tr class='tab_bg_1'><td>" . $LANG["networking"][59] . ":</td><td colspan='2'>";
 	autocompletionTextField("gateway", "glpi_networking_ports", "gateway", $netport->fields["gateway"], 40);
 	echo "</td></tr>\n";
 
-	echo "<tr class='tab_bg_1'><td>" . $LANG["networking"][61] . ":</td><td>";
+	echo "<tr class='tab_bg_1'><td>" . $LANG["networking"][61] . ":</td><td colspan='2'>";
 	autocompletionTextField("subnet", "glpi_networking_ports", "subnet", $netport->fields["subnet"], 40);
 	echo "</td></tr>\n";
 
 	if ($several != "yes") {
 		echo "<tr class='tab_bg_1'><td>" . $LANG["networking"][51] . ":</td>";
 
-		echo "<td >";
+		echo "<td  colspan='2'>";
 		dropdownNetpoint("netpoint", $netport->fields["netpoint"], $netport->location, 1, $netport->FK_entities, ($ID ? $netport->fields["device_type"] : $devtype));
 		echo "</td></tr>";
 	}
 	if ($ID) {
 		echo "<tr class='tab_bg_2'>";
+
+		echo "<td class='center'>&nbsp;</td>";
+		echo "<td class='center'>";
+		echo "<input type='submit' name='update' value=\"" . $LANG["buttons"][7] . "\" class='submit'>";
+		echo "</td>";
+
 		echo "<td class='center'>";
 		echo "<input type='hidden' name='ID' value=" . $netport->fields["ID"] . ">";
 		echo "<input type='submit' name='delete' value=\"" . $LANG["buttons"][6] . "\" class='submit' " .
 		"OnClick='return window.confirm(\"" . $LANG["common"][50] . "\");'>";
-		echo "</td>";
+		echo "</td></tr>\n";
 
-		echo "<td class='center'>";
-		echo "<input type='submit' name='update' value=\"" . $LANG["buttons"][7] . "\" class='submit'>";
-		echo "</td></tr>";
 	} else {
 
 		echo "<tr class='tab_bg_2'>";
-		echo "<td align='center' colspan='2'>";
+		echo "<td align='center' colspan='3'>";
 		echo "<input type='hidden' name='on_device' value='$ondevice'>";
 		echo "<input type='hidden' name='device_type' value='$devtype'>";
 		echo "<input type='submit' name='add' value=\"" . $LANG["buttons"][8] . "\" class='submit'>";
@@ -384,32 +425,9 @@ function showNetportForm($target, $ID, $ondevice, $devtype, $several) {
 	}
 
 	echo "</table></form></div>";
-	// SHOW VLAN 
-	if ($ID) {
-		echo "<div class='center'>";
-		echo "<form method='post' action=\"$target\">";
-		echo "<input type='hidden' name='referer' value='$REFERER'>";
-		echo "<input type='hidden' name='ID' value='$ID'>";
-
-		echo "<table class='tab_cadre'>";
-		echo "<tr><th>" . $LANG["setup"][90] . "</th></tr>";
-		echo "<tr class='tab_bg_2'><td>";
-		showPortVLAN($netport->fields["ID"], 0, $REFERER);
-		echo "</td></tr>";
-
-		echo "<tr  class='tab_bg_2'><td>";
-		echo $LANG["networking"][55] . ":&nbsp;";
-		dropdown("glpi_dropdown_vlan", "vlan");
-		echo "&nbsp;<input type='submit' name='assign_vlan' value='" . $LANG["buttons"][3] . "' class='submit'>";
-		echo "</td></tr>";
-
-		echo "</table>";
-
-		echo "</form>";
-
-		echo "</div>";
-
-	}
+	
+	echo "<div id='tabcontent'></div>";
+	echo "<script type='text/javascript'>loadDefaultTab();</script>";
 }
 
 function showPortsAdd($ID, $devtype) {

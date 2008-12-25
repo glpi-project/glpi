@@ -503,7 +503,7 @@ class Netport extends CommonDBTM {
 	**/
 	function __construct () {
 		$this->table="glpi_networking_ports";
-		$this->type=-1;
+		$this->type = NETWORKING_PORT_TYPE;
 	}
 
 	function post_updateItem($input,$updates,$history=1){
@@ -596,7 +596,13 @@ class Netport extends CommonDBTM {
 		}
 	}
 
+	function defineTabs($ID,$withtemplate) {
+		global $LANG, $CFG_GLPI;
 
+		$ong[1] = $LANG["title"][26];
+
+		return $ong;
+	}
 }
 
 /// Netwire class

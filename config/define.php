@@ -98,6 +98,7 @@
 	define("SOFTWAREVERSION_TYPE",39);
 	define("PLUGIN_TYPE",40);
 	define("COMPUTERDISK_TYPE",41);
+	define("NETWORKING_PORT_TYPE",42);
 	
 	// GLPI MODE
 	define("NORMAL_MODE",0);
@@ -235,7 +236,8 @@
 			RULE_TYPE => "glpi_rules_descriptions",
 			TRANSFER_TYPE => "glpi_transfers",
 			SOFTWAREVERSION_TYPE => "glpi_softwareversions",
-			COMPUTERDISK_TYPE => "glpi_computerdisks"
+			COMPUTERDISK_TYPE => "glpi_computerdisks",
+			NETWORKING_PORT_TYPE => "glpi_networking_ports"
 			);
 
 	$INFOFORM_PAGES=array( 
@@ -275,7 +277,8 @@
 			RULE_TYPE => "???",
 			TRANSFER_TYPE => "front/transfer.form.php",
 			SOFTWAREVERSION_TYPE => "front/softwareversion.form.php",
-			COMPUTERDISK_TYPE => "front/computerdisk.form.php"
+			COMPUTERDISK_TYPE => "front/computerdisk.form.php",
+			NETWORKING_PORT_TYPE => "/front/networking.port.php"
 			);
 	$SEARCH_PAGES=array( 
 			COMPUTER_TYPE=> "front/computer.php",
