@@ -2631,7 +2631,6 @@ CREATE TABLE `glpi_software` (
   `notes` longtext collate utf8_unicode_ci,
   `FK_users` int(11) NOT NULL default '0',
   `FK_groups` int(11) NOT NULL default '0',
-  `state` int(11) NOT NULL default '0',
   `ticket_tco` decimal(20,4) default '0.0000',
   `helpdesk_visible` int(11) NOT NULL default '1',
   `category` int(11) NOT NULL default '0',
@@ -2690,6 +2689,7 @@ DROP TABLE IF EXISTS `glpi_softwareversions`;
 CREATE TABLE `glpi_softwareversions` (
   `ID` int(15) NOT NULL auto_increment,
   `sID` int(15) NOT NULL default '0',
+  `state` int(11) NOT NULL default '0',
   `name` varchar(255) collate utf8_unicode_ci default NULL,
   `comments` text collate utf8_unicode_ci,
   PRIMARY KEY  (`ID`),

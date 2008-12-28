@@ -320,15 +320,15 @@ class Software extends CommonDBTM {
 			echo "</td></tr>";
 
 			// UPDATE
-			echo "<tr class='tab_bg_1'><td>" . $LANG["software"][29] . ":</td><td>";
+			echo "<tr class='tab_bg_1'><td>" . $LANG["software"][29] . ":</td><td colspan='3'>";
 			dropdownYesNo("is_update",$this->fields['is_update']);
 			echo "&nbsp;" . $LANG["pager"][2] . "&nbsp;";
 			dropdownValue("glpi_software", "update_software", $this->fields["update_software"]);
 			echo "</td>";
 
-			echo "<td>" . $LANG["state"][0] . ":</td><td>";
+			/*echo "<td>" . $LANG["state"][0] . ":</td><td>";
 			dropdownValue("glpi_dropdown_state", "state", $this->fields["state"]);
-			echo "</td></tr>";
+			echo "</td></tr>";*/
 
 			echo "<tr class='tab_bg_1'><td>" . $LANG["software"][46] . ":</td><td>";
 			dropdownYesNo('helpdesk_visible',$this->fields['helpdesk_visible']);
@@ -518,6 +518,10 @@ class SoftwareVersion extends CommonDBTM {
 		autocompletionTextField("name","glpi_softwareversions","name",$this->fields["name"],80);
 		echo "</td></tr>";
 	
+		echo "<td>" . $LANG["state"][0] . ":</td><td>";
+		dropdownValue("glpi_dropdown_state", "state", $this->fields["state"]);
+		echo "</td></tr>";
+
 		echo "<tr  class='tab_bg_1'><td valign='top'>";
 
 		// table commentaires
