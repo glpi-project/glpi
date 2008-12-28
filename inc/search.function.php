@@ -1826,7 +1826,6 @@ function addSelect ($type,$ID,$num,$meta=0,$meta_type=0){
 			}
 		break;
 		case "glpi_dropdown_state.name":
-			error_log("glpi_dropdown_state $meta / $meta_type");
 			if ($meta && $meta_type==SOFTWARE_TYPE) {
 				return " GROUP_CONCAT( DISTINCT CONCAT(glpi_software.name, ' - ', glpi_softwareversions$addtable.name, ' - ', ".$table.$addtable.".$field) SEPARATOR '$$$$') AS ".$NAME."_".$num.", ";				
 			} else if ($type==SOFTWARE_TYPE) {
