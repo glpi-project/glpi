@@ -48,7 +48,7 @@ $RELATION=array(
 						"glpi_computerdisks"=>"FK_computers",
 						"glpi_connect_wire"=>"end2",
 						"glpi_inst_software"=>"cID",
-						"glpi_softwarelicenses"=>"oem_computer",
+						"glpi_softwarelicenses"=>"FK_computers",
 						"glpi_ocs_link"=>"glpi_id",
 						"glpi_registry"=>"computer_id",
 						),

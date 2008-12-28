@@ -196,7 +196,7 @@ function update0713to072() {
 				`buy_version` int(15) NOT NULL default '0',
 				`use_version` int(15) NOT NULL default '0',
 				`expire` date default NULL,
-				`oem_computer` int(11) NOT NULL default '0',
+				`FK_computers` int(11) NOT NULL default '0',
 				`comments` text,
 				PRIMARY KEY  (`ID`),
 				KEY `name` (`name`),
@@ -205,7 +205,7 @@ function update0713to072() {
 				KEY `FK_entities` (`FK_entities`),
 				KEY `buy_version` (`buy_version`),
 				KEY `use_version` (`use_version`),
-				KEY `oem_computer` (`oem_computer`),
+				KEY `FK_computers` (`FK_computers`),
 				KEY `serial` (`serial`),
 				KEY `otherserial` (`otherserial`),
 				KEY `expire` (`expire`)
@@ -226,6 +226,7 @@ function update0713to072() {
 	}
 
 	if (!TableExists("glpi_softwareversions")){
+		// TODO : Why not use final schema
 		$query = "CREATE TABLE `glpi_softwareversions` (
 		`ID` int(15) NOT NULL auto_increment,
 		`sID` int(15) NOT NULL default '0',
@@ -307,6 +308,7 @@ function update0713to072() {
 							// Re Create new entry
 							$query="INSERT INTO glpi_softwareversions SELECT * FROM glpi_licenses WHERE ID=".$vers_ID;
 							$DB->query($query);
+							// TODO Why not (final schema): "INSERT INTO glpi_softwareversions SELECT ID,sID,version,'' FROM glpi_licenses WHERE ID=".$vers_ID
 						}
 						$DB->free_result($result_searchvers);
 					}
@@ -325,7 +327,7 @@ function update0713to072() {
 								FROM  glpi_softwarelicenses 
 								WHERE buy_version = $vers_ID
 									AND serial = '".$vers['serial']."'
-									AND oem_computer = '".$vers['oem_computer']."'
+									AND FK_computers = '".$vers['oem_computer']."'
 									AND comments = '".$vers['comments']."'
 								";
 							if (empty($vers['expire'])) {
@@ -358,7 +360,7 @@ function update0713to072() {
 								$vers['expire']="'".$vers['expire']."'";
 							}
 							$query="INSERT INTO `glpi_softwarelicenses` 
-							(`sID` ,`FK_entities`, `number` ,`type` ,`name` ,`serial` ,`buy_version`, `use_version`, `expire`, `oem_computer` ,`comments`)
+							(`sID` ,`FK_entities`, `number` ,`type` ,`name` ,`serial` ,`buy_version`, `use_version`, `expire`, `FK_computers` ,`comments`)
 							VALUES 
 							(".$soft['ID']." , ".$soft["FK_entities"].",$install_count, 0, '".$vers['serial']."', '".$vers['serial']."' , $vers_ID, $vers_ID, ".$vers['expire'].", '".$vers['oem_computer']."', '".addslashes($vers['comments'])."');";
 							
@@ -388,6 +390,7 @@ function update0713to072() {
 	displayMigrationMessage("072", $LANG["Menu"][4]); // Software
 	
 	// ALTER softwareversions
+	// TODO to be removed if final schema used above
 	if (FieldExists("glpi_softwareversions", "buy")) {
 		$query="ALTER TABLE `glpi_softwareversions` DROP `serial`, DROP `expire`, DROP `oem`, DROP `oem_computer`, DROP `buy`, DROP `comments`;";
 		$DB->query($query) or die("0.72 alter clean softwareversion table" . $LANG["update"][90] . $DB->error());
@@ -416,6 +419,12 @@ function update0713to072() {
 			KEY `name` (`name`)
 			) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
 		$DB->query($query) or die("0.72 create glpi_dropdown_licensetypes table" . $LANG["update"][90] . $DB->error());
+
+		$CFG_GLPI["use_cache"]=0; // this is used during externalImportDropdown
+		$oemtype=externalImportDropdown("glpi_dropdown_licensetypes", $LANG["software"][28]); // Add OEM as type of license
+
+		$query="UPDATE `glpi_softwarelicenses` SET type=$oemtype WHERE FK_computers>0";
+		$DB->query($query) or die("0.72 affect OEM as licensetype" . $LANG["update"][90] . $DB->error());
 	}	
 
 	displayMigrationMessage("072", $LANG["Menu"][14]); // User

@@ -609,11 +609,11 @@ class SoftwareLicense extends CommonDBTM {
 		if (empty ($input['expire']))
 			unset ($input['expire']);
 
-		if (isset($input['oem']) && !$input['oem']){
+		/*if (isset($input['oem']) && !$input['oem']){
 			$input['oem_computer'] = -1;
-		}
-		if (!isset($input['oem_computer']) || $input['oem_computer'] == 0){
-			$input['oem_computer'] = -1;
+		}*/
+		if (!isset($input['FK_computers']) || $input['FK_computers'] == 0){
+			$input['FK_computers'] = -1;
 		}
 
 //		unset ($input["form"]);
@@ -759,9 +759,9 @@ class SoftwareLicense extends CommonDBTM {
 		showDateFormItem('expire',$this->fields["expire"]);
 		echo "</td></tr>";
 
-		echo "<tr class='tab_bg_1'><td>".$LANG["software"][28].":		</td>";
+		echo "<tr class='tab_bg_1'><td>".$LANG["software"][50].":		</td>";
 		echo "<td>";
-		dropdownValue('glpi_computers','oem_computer',$this->fields["oem_computer"],1,$this->fields['FK_entities']);
+		dropdownValue('glpi_computers','FK_computers',$this->fields["FK_computers"],1,$this->fields['FK_entities']);
 		echo "</td></tr>";
 	
 		echo "<tr  class='tab_bg_1'><td valign='top'>";

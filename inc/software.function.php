@@ -370,7 +370,7 @@ function showLicenses($sID) {
 			echo "<th>".($order=="buyname"?$sort_img:"")."<a href='javascript:reloadTab(\"order=buyname&start=0\");'>".$LANG["software"][1]."</a></th>";
 			echo "<th>".($order=="usename"?$sort_img:"")."<a href='javascript:reloadTab(\"order=usename&start=0\");'>".$LANG["software"][2]."</a></th>";
 			echo "<th>".($order=="expire"?$sort_img:"")."<a href='javascript:reloadTab(\"order=expire&start=0\");'>".$LANG["software"][32]."</a></th>";
-			echo "<th>".$LANG["software"][28]."</th>";
+			echo "<th>".$LANG["help"][25]."</th>"; // "Computer" rather than "Affected To computer" ($LANG["software"][50] is too long) ?? 
 			//echo "<th>".$LANG["financial"][3]."</th>";
 			echo "</tr>";
 			for ($tot=0;$data=$DB->fetch_assoc($result);){
@@ -393,7 +393,7 @@ function showLicenses($sID) {
 				echo "<td>".$data['buyname']."</td>";
 				echo "<td>".$data['usename']."</td>";
 				echo "<td>".convDate($data['expire'])."</td>";
-				echo "<td>".($data['oem_computer']>0?getDropdownName("glpi_computers",$data['oem_computer']):"")."</td>";
+				echo "<td>".($data['FK_computers']>0?getDropdownName("glpi_computers",$data['FK_computers']):"")."</td>";
 				
 				/*echo "<td>";
 				showDisplayInfocomLink(SOFTWARELICENSE_TYPE, $data['ID'], 1);
@@ -643,7 +643,7 @@ function showInstallations($searchID, $crit="sID") {
 		LEFT JOIN glpi_dropdown_locations ON (glpi_computers.location=glpi_dropdown_locations.ID)
 		LEFT JOIN glpi_groups ON (glpi_computers.FK_groups=glpi_groups.ID)
 		LEFT JOIN glpi_users ON (glpi_computers.FK_users=glpi_users.ID)
-		LEFT JOIN glpi_softwarelicenses ON (glpi_softwarelicenses.sID=glpi_softwareversions.sID AND glpi_softwarelicenses.oem_computer=glpi_computers.ID)
+		LEFT JOIN glpi_softwarelicenses ON (glpi_softwarelicenses.sID=glpi_softwareversions.sID AND glpi_softwarelicenses.FK_computers=glpi_computers.ID)
 		WHERE (glpi_softwareversions.$crit = '$searchID') " .
 			getEntitiesRestrictRequest(' AND', 'glpi_computers') .
 			" AND glpi_computers.deleted=0 AND glpi_computers.is_template=0 " .
@@ -681,7 +681,7 @@ function showInstallations($searchID, $crit="sID") {
 			echo "<th>".(strstr($order,"location")?$sort_img:"")."<a href='javascript:reloadTab(\"order=location,compname&start=0\");'>".$LANG["common"][15]."</a></th>";
 			echo "<th>".(strstr($order,"groupe")?$sort_img:"")."<a href='javascript:reloadTab(\"order=groupe,compname&start=0\");'>".$LANG["common"][35]."</a></th>";
 			echo "<th>".(strstr($order,"username")?$sort_img:"")."<a href='javascript:reloadTab(\"order=username,compname&start=0\");'>".$LANG["common"][34]."</a></th>";
-			echo "<th>".($order=="lname"?$sort_img:"")."<a href='javascript:reloadTab(\"order=lname&start=0\");'>".$LANG["software"][28]."</a></th>";
+			echo "<th>".($order=="lname"?$sort_img:"")."<a href='javascript:reloadTab(\"order=lname&start=0\");'>".$LANG["software"][50]."</a></th>";
 			echo "</tr>\n";
 
 			do {
@@ -1469,10 +1469,10 @@ function showSoftwareInstalled($instID, $withtemplate = '') {
 
 	$query_cat = "SELECT 1 as TYPE, glpi_dropdown_software_category.name as category, glpi_software.category as category_id, 
 		glpi_software.name as softname, glpi_inst_software.ID as ID, glpi_software.deleted,
-		glpi_softwareversions.sID, glpi_softwareversions.name AS version,glpi_softwarelicenses.oem_computer AS oem_computer
+		glpi_softwareversions.sID, glpi_softwareversions.name AS version,glpi_softwarelicenses.FK_computers AS FK_computers,glpi_softwarelicenses.type AS lictype
 		FROM glpi_inst_software 
 		LEFT JOIN glpi_softwareversions ON ( glpi_inst_software.vID = glpi_softwareversions.ID )
-		LEFT JOIN glpi_softwarelicenses ON ( glpi_softwareversions.sID = glpi_softwarelicenses.sID AND glpi_softwarelicenses.oem_computer = $instID)
+		LEFT JOIN glpi_softwarelicenses ON ( glpi_softwareversions.sID = glpi_softwarelicenses.sID AND glpi_softwarelicenses.FK_computers = $instID)
 		LEFT JOIN glpi_software ON (glpi_softwareversions.sID = glpi_software.ID) 
 		LEFT JOIN glpi_dropdown_software_category ON (glpi_dropdown_software_category.ID = glpi_software.category)";
 
@@ -1480,10 +1480,10 @@ function showSoftwareInstalled($instID, $withtemplate = '') {
 
 	$query_nocat = "SELECT 2 as TYPE, glpi_dropdown_software_category.name as category, glpi_software.category as category_id,
 		glpi_software.name as softname, glpi_inst_software.ID as ID, glpi_software.deleted,
-		glpi_softwareversions.sID,glpi_softwareversions.name AS version,glpi_softwarelicenses.oem_computer AS oem_computer
+		glpi_softwareversions.sID, glpi_softwareversions.name AS version,glpi_softwarelicenses.FK_computers AS FK_computers,glpi_softwarelicenses.type AS lictype
 	    FROM glpi_inst_software 
 		LEFT JOIN glpi_softwareversions ON ( glpi_inst_software.vID = glpi_softwareversions.ID ) 
-		LEFT JOIN glpi_softwarelicenses ON ( glpi_softwareversions.sID = glpi_softwarelicenses.sID AND glpi_softwarelicenses.oem_computer = $instID)
+		LEFT JOIN glpi_softwarelicenses ON ( glpi_softwareversions.sID = glpi_softwarelicenses.sID AND glpi_softwarelicenses.FK_computers = $instID)
 	    LEFT JOIN glpi_software ON (glpi_softwareversions.sID = glpi_software.ID)  
 	    LEFT JOIN glpi_dropdown_software_category ON (glpi_dropdown_software_category.ID = glpi_software.category)";
 	$query_nocat .= " WHERE glpi_inst_software.cID = '$instID' AND (glpi_software.category <= 0 OR glpi_software.category IS NULL )";
@@ -1655,8 +1655,8 @@ function displaySoftsByCategory($data, $instID, $withtemplate) {
 	echo "<td>";
 
 	echo $data["version"];
-	if ($data["oem_computer"]==$instID)
-		echo " - ".$LANG["software"][28];
+	if ($data["FK_computers"]==$instID)
+		echo " - <strong>". getDropdownName("glpi_dropdown_licensetypes",$data["lictype"]) . "</strong>";
 	if (empty ($withtemplate) || $withtemplate != 2) {
 		echo " - <a href=\"" . $CFG_GLPI["root_doc"] . "/front/software.licenses.php?uninstall=uninstall&amp;ID=$ID&amp;cID=$instID\">";
 		echo "<strong>" . $LANG["buttons"][5] . "</strong></a>";

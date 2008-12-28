@@ -2668,7 +2668,7 @@ CREATE TABLE `glpi_softwarelicenses` (
   `buy_version` int(15) NOT NULL default '0',
   `use_version` int(15) NOT NULL default '0',
   `expire` date default NULL,
-  `oem_computer` int(11) NOT NULL default '0',
+  `FK_computers` int(11) NOT NULL default '0',
   `comments` text collate utf8_unicode_ci,
   PRIMARY KEY  (`ID`),
   KEY `name` (`name`),
@@ -2677,7 +2677,7 @@ CREATE TABLE `glpi_softwarelicenses` (
   KEY `FK_entities` (`FK_entities`),
   KEY `buy_version` (`buy_version`),
   KEY `use_version` (`use_version`),
-  KEY `oem_computer` (`oem_computer`),
+  KEY `FK_computers` (`FK_computers`),
   KEY `serial` (`serial`),
   KEY `otherserial` (`otherserial`),
   KEY `expire` (`expire`)

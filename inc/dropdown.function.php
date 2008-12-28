@@ -1774,6 +1774,8 @@ function dropdownHours($name,$value,$limit_planning=0){
 function dropdownLicenseOfSoftware($myname,$sID) {
 	global $DB,$LANG;
 
+// TODO : this function is probably no more used (no more glpi_licenses)
+
 	$query="SELECT * FROM glpi_licenses 
 		WHERE sID='$sID' 
 		GROUP BY version, serial, expire, oem, oem_computer, buy 

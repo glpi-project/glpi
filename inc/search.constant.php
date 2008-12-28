@@ -2083,8 +2083,8 @@ $SEARCH_OPTION[SOFTWARELICENSE_TYPE][8]['name']=$LANG["software"][32];
 
 $SEARCH_OPTION[SOFTWARELICENSE_TYPE][9]['table']='glpi_computers'; 
 $SEARCH_OPTION[SOFTWARELICENSE_TYPE][9]['field']='name'; 
-$SEARCH_OPTION[SOFTWARELICENSE_TYPE][9]['linkfield']='oem_computer'; 
-$SEARCH_OPTION[SOFTWARELICENSE_TYPE][9]['name']=$LANG["software"][28]; 
+$SEARCH_OPTION[SOFTWARELICENSE_TYPE][9]['linkfield']='FK_computers'; 
+$SEARCH_OPTION[SOFTWARELICENSE_TYPE][9]['name']=$LANG["software"][50]; 
 
 	 
 //////CONTACT_TYPE
