@@ -77,14 +77,16 @@ function showVersions($sID) {
 
 	echo "<div class='center'>";
 	
-	$query = "SELECT * FROM glpi_softwareversions 
-		WHERE (sID = '$sID') ORDER BY name";
+	$query = "SELECT glpi_softwareversions.*,glpi_dropdown_state.name AS sname FROM glpi_softwareversions 
+				LEFT JOIN glpi_dropdown_state ON (glpi_dropdown_state.ID=glpi_softwareversions.state)
+				WHERE (sID = '$sID') ORDER BY name";
 		
 	$_SESSION['glpilistitems'][SOFTWAREVERSION_TYPE]=array();
 	if ($result=$DB->query($query)){
 		if ($DB->numrows($result)){
 			echo "<table class='tab_cadre'><tr>";
 			echo "<th>".$LANG["software"][5]."</th>";
+			echo "<th>".$LANG["state"][0]."</th>";
 			echo "<th>".$LANG["software"][19]."</th>";
 			echo "<th>".$LANG["common"][25]."</th>";
 			echo "</tr>";
@@ -96,6 +98,7 @@ function showVersions($sID) {
 				if ($canedit || $nb) {				
 					echo "<tr class='tab_bg_2'>";
 					echo "<td><a href='softwareversion.form.php?ID=".$data['ID']."'>".$data['name'].(empty($data['name'])?$data['ID']:"")."</a></td>";
+					echo "<td align='right'>".$data['sname']."</td>";
 					echo "<td align='right'>$nb</td>";
 					echo "<td>".$data['comments']."</td></tr>";
 				}

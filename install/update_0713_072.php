@@ -226,24 +226,16 @@ function update0713to072() {
 	}
 
 	if (!TableExists("glpi_softwareversions")){
-		// TODO : Why not use final schema
 		$query = "CREATE TABLE `glpi_softwareversions` (
 		`ID` int(15) NOT NULL auto_increment,
 		`sID` int(15) NOT NULL default '0',
-		`version` varchar(255) collate utf8_unicode_ci default NULL,
+	  	`state` int(11) NOT NULL default '0',
+		`name` varchar(255) collate utf8_unicode_ci default NULL,
 		`serial` varchar(255) collate utf8_unicode_ci default NULL,
-		`expire` date default NULL,
-		`oem` smallint(6) NOT NULL default '0',
-		`oem_computer` int(11) NOT NULL default '0',
-		`buy` smallint(6) NOT NULL default '1',
 		`comments` text collate utf8_unicode_ci,
 		PRIMARY KEY  (`ID`),
 		KEY `sID` (`sID`),
-		KEY `oem_computer` (`oem_computer`),
-		KEY `serial` (`serial`),
-		KEY `expire` (`expire`),
-		KEY `oem` (`oem`),
-		KEY `buy` (`buy`)
+		KEY `name` (`name`)
 		) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
 		$DB->query($query) or die("0.72 create glpi_softwareversions" . $LANG["update"][90] . $DB->error());
 	}
@@ -270,6 +262,9 @@ function update0713to072() {
 				displayMigrationMessage("072", $LANG["software"][11] . " : $numsoft / $nbsoft");
 		    }	
 		    
+		    // oldstate present if migration run more than once
+		    if (isset($soft["oldstate"])) $soft["state"] = $soft["oldstate"]; 
+			
 			// Foreach lics
 			$query_versions="SELECT glpi_licenses.*, glpi_infocoms.ID AS infocomID FROM glpi_licenses 
 					LEFT JOIN glpi_infocoms ON (glpi_infocoms.device_type=9999 AND glpi_infocoms.FK_device=glpi_licenses.ID)
@@ -290,7 +285,7 @@ function update0713to072() {
 					// 1 - Is version already exists ?
 					$query_search_version="SELECT * FROM glpi_softwareversions 
 								WHERE sID=".$soft['ID']." 
-									AND version='".$vers['version']."';";
+									AND name='".$vers['version']."';";
 					if ($result_searchvers = $DB->query($query_search_version)){
 						// Version already exists : update inst_software
 						if ($DB->numrows($result_searchvers)==1){
@@ -306,9 +301,9 @@ function update0713to072() {
 							//$DB->query($query);
 						} else {
 							// Re Create new entry
-							$query="INSERT INTO glpi_softwareversions SELECT * FROM glpi_licenses WHERE ID=".$vers_ID;
+							//$query="INSERT INTO glpi_softwareversions SELECT * FROM glpi_licenses WHERE ID=".$vers_ID;
+							$query="INSERT INTO glpi_softwareversions SELECT ID,sID,".$soft["state"].",version,'' FROM glpi_licenses WHERE ID=".$vers_ID;
 							$DB->query($query);
-							// TODO Why not (final schema): "INSERT INTO glpi_softwareversions SELECT ID,sID,version,'' FROM glpi_licenses WHERE ID=".$vers_ID
 						}
 						$DB->free_result($result_searchvers);
 					}
@@ -389,7 +384,7 @@ function update0713to072() {
 	
 	displayMigrationMessage("072", $LANG["Menu"][4]); // Software
 	
-	// ALTER softwareversions
+/*	// ALTER softwareversions
 	// TODO to be removed if final schema used above
 	if (FieldExists("glpi_softwareversions", "buy")) {
 		$query="ALTER TABLE `glpi_softwareversions` DROP `serial`, DROP `expire`, DROP `oem`, DROP `oem_computer`, DROP `buy`, DROP `comments`;";
@@ -408,7 +403,20 @@ function update0713to072() {
 		$query="ALTER TABLE `glpi_softwareversions` ADD INDEX `name` ( `name` )  ";
 		$DB->query($query) or die("0.72 add index on name to softwareversion table" . $LANG["update"][90] . $DB->error());
 	}	
- 	
+*/ 	
+
+	// If migration run more than once
+	if (!FieldExists("glpi_softwareversions", "state")) {
+		$query="ALTER TABLE `glpi_softwareversions` ADD `state` INT NOT NULL DEFAULT '0' AFTER `sID`";
+		$DB->query($query) or die("0.72 add state to softwareversion table" . $LANG["update"][90] . $DB->error());
+	}	
+	// TODO : to be removed on final 0.72 version ?
+	// To allow migration to be run more than once
+	if (FieldExists("glpi_software", "state")) {
+		$query="ALTER TABLE `glpi_software` CHANGE `state` `oldstate` INT( 11 ) NOT NULL DEFAULT '0'";
+		$DB->query($query) or die("0.72 change state to to oldtsate in softwareversion table" . $LANG["update"][90] . $DB->error());
+	}	
+
 
 	if (!TableExists("glpi_dropdown_licensetypes")) {
 		$query="CREATE TABLE `glpi_dropdown_licensetypes` (

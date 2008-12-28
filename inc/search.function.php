@@ -1818,17 +1818,24 @@ function addSelect ($type,$ID,$num,$meta=0,$meta_type=0){
 		case "glpi_softwarelicenses.name" :
 		case "glpi_softwarelicenses.serial" :
 		case "glpi_softwarelicenses.otherserial" :
+		case "glpi_softwareversions.name" :
 			if ($meta){
 				return " GROUP_CONCAT( DISTINCT CONCAT(glpi_software.name, ' - ',".$table.$addtable.".$field) SEPARATOR '$$$$') AS ".$NAME."_".$num.", ";
 			} else {
 				return " GROUP_CONCAT( DISTINCT ".$table.$addtable.".".$field." SEPARATOR '$$$$') AS ".$NAME."_".$num.", ";
 			}
-		case "glpi_softwareversions.name" :
-			if ($meta){
-				return " GROUP_CONCAT( DISTINCT CONCAT(glpi_software.name, ' - ',".$table.$addtable.".name) SEPARATOR '$$$$') AS ".$NAME."_".$num.", ";
+		break;
+		case "glpi_dropdown_state.name":
+			error_log("glpi_dropdown_state $meta / $meta_type");
+			if ($meta && $meta_type==SOFTWARE_TYPE) {
+				return " GROUP_CONCAT( DISTINCT CONCAT(glpi_software.name, ' - ', glpi_softwareversions$addtable.name, ' - ', ".$table.$addtable.".$field) SEPARATOR '$$$$') AS ".$NAME."_".$num.", ";				
+			} else if ($type==SOFTWARE_TYPE) {
+				return " GROUP_CONCAT( DISTINCT CONCAT(glpi_softwareversions.name, ' - ', ".$table.$addtable.".$field) SEPARATOR '$$$$') AS ".$NAME."_".$num.", ";								
+			} else if ($meta){
+				return " GROUP_CONCAT( DISTINCT ".$table.$addtable.".".$field." SEPARATOR '$$$$') AS ".$NAME."_$num, ";
 			} else {
-				return " GROUP_CONCAT( DISTINCT ".$table.$addtable.".".$field." SEPARATOR '$$$$') AS ".$NAME."_".$num.", ";
-			}
+				return $table.$addtable.".".$field." AS ".$NAME."_$num, ";
+			}			
 		break;
 		case "glpi_networking_ports.ifaddr" :
 		case "glpi_dropdown_netpoint.name" :
@@ -2483,6 +2490,7 @@ function giveItem ($type,$field,$data,$num,$linkfield=""){
 				return $out;
 			}
 		break;
+		case "glpi_dropdown_state.name" :
 		case "glpi_softwarelicenses.name" :
 		case "glpi_softwarelicenses.serial" :
 		case "glpi_softwarelicenses.otherserial" :
@@ -3098,8 +3106,11 @@ function addLeftJoin ($type,$ref_table,&$already_link_tables,$new_table,$linkfie
 	// Auto link
 	if ($ref_table==$new_table) return "";
 	
-	if (in_array(translate_table($new_table,$device_type,$meta_type).".".$linkfield,$already_link_tables)) return "";
-	else array_push($already_link_tables,translate_table($new_table,$device_type,$meta_type).".".$linkfield);
+	if (in_array(translate_table($new_table,$device_type,$meta_type).".".$linkfield,$already_link_tables)) {
+		return "";
+	} else {
+		array_push($already_link_tables,translate_table($new_table,$device_type,$meta_type).".".$linkfield); 
+	}
 
 	// Plugin can override core definition for its type
 	if ($type>1000){
@@ -3210,6 +3221,16 @@ function addLeftJoin ($type,$ref_table,&$already_link_tables,$new_table,$linkfie
 			} else {
 				return " LEFT JOIN $new_table $AS ON ($rt.ID = $nt.FK_device AND $nt.device_type='$type') ";
 			}
+		break;
+		case "glpi_dropdown_state":
+			if ($type == SOFTWARE_TYPE) {
+				// Return the state of the version of the software
+				$rt=translate_table("glpi_softwareversions",$meta,$meta_type);
+				return addLeftJoin($type,$ref_table,$already_link_tables,"glpi_softwareversions",$linkfield,$device_type,$meta,$meta_type) .
+					" LEFT JOIN $new_table $AS ON ($rt.state = $nt.ID)";
+			} else {
+				return " LEFT JOIN $new_table $AS ON ($rt.state = $nt.ID) ";				
+			}		
 		break;
 		case "glpi_contract_device":
 			return " LEFT JOIN $new_table $AS ON ($rt.ID = $nt.FK_device AND $nt.device_type='$type') ";
