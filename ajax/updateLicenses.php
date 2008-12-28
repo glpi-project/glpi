@@ -57,6 +57,7 @@
 			echo "</td></tr></table>";
 		break;
 		case "move":
+			// TODO : check this ? obsoleted function call
 			dropdownLicenseOfSoftware("lID",$_POST["sID"]);
 			echo "&nbsp;&nbsp;<input type='submit' name='move' value='".$LANG["buttons"][14]."' class='submit'>";
 		break;
