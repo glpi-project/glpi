@@ -117,7 +117,7 @@ class Link extends CommonDBTM {
 		$this->showFormHeader($ID, '');
 
 		echo "<tr class='tab_bg_1'><td>".$LANG["links"][6].":	</td>";
-		echo "<td>[LOGIN], [ID], [NAME], [LOCATION], [LOCATIONID], [IP], [MAC], [NETWORK], [DOMAIN], [SERIAL], [OTHERSERIAL], [LOGIN]</td>";
+		echo "<td>[LOGIN], [ID], [NAME], [LOCATION], [LOCATIONID], [IP], [MAC], [NETWORK], [DOMAIN], [SERIAL], [OTHERSERIAL], [USER]</td>";
 		echo "</tr>";
 
 		echo "<tr class='tab_bg_1'><td>".$LANG["common"][16].":	</td>";
