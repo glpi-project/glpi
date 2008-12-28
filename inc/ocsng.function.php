@@ -3241,6 +3241,7 @@ function ocsImportVersion($software, $version) {
 
 	if (!$isNewVers) {
 		$vers = new SoftwareVersion;
+		// TODO : define a default state ? Need a new option in config
 		$input["sID"] = $software;
 		$input["name"] = $version;
 		$input["_from_ocs"] = 1;
