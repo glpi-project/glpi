@@ -1471,10 +1471,11 @@ function showSoftwareInstalled($instID, $withtemplate = '') {
 	$FK_entities = $comp->fields["FK_entities"];
 
 	$query_cat = "SELECT 1 as TYPE, glpi_dropdown_software_category.name as category, glpi_software.category as category_id, 
-		glpi_software.name as softname, glpi_inst_software.ID as ID, glpi_software.deleted,
+		glpi_software.name as softname, glpi_inst_software.ID as ID, glpi_software.deleted, glpi_dropdown_state.name AS state,
 		glpi_softwareversions.sID, glpi_softwareversions.name AS version,glpi_softwarelicenses.FK_computers AS FK_computers,glpi_softwarelicenses.type AS lictype
 		FROM glpi_inst_software 
 		LEFT JOIN glpi_softwareversions ON ( glpi_inst_software.vID = glpi_softwareversions.ID )
+		LEFT JOIN glpi_dropdown_state ON ( glpi_dropdown_state.ID = glpi_softwareversions.state )
 		LEFT JOIN glpi_softwarelicenses ON ( glpi_softwareversions.sID = glpi_softwarelicenses.sID AND glpi_softwarelicenses.FK_computers = $instID)
 		LEFT JOIN glpi_software ON (glpi_softwareversions.sID = glpi_software.ID) 
 		LEFT JOIN glpi_dropdown_software_category ON (glpi_dropdown_software_category.ID = glpi_software.category)";
@@ -1482,10 +1483,11 @@ function showSoftwareInstalled($instID, $withtemplate = '') {
 	$query_cat .= " WHERE glpi_inst_software.cID = '$instID' AND glpi_software.category > 0";
 
 	$query_nocat = "SELECT 2 as TYPE, glpi_dropdown_software_category.name as category, glpi_software.category as category_id,
-		glpi_software.name as softname, glpi_inst_software.ID as ID, glpi_software.deleted,
+		glpi_software.name as softname, glpi_inst_software.ID as ID, glpi_software.deleted, glpi_dropdown_state.name AS state,
 		glpi_softwareversions.sID, glpi_softwareversions.name AS version,glpi_softwarelicenses.FK_computers AS FK_computers,glpi_softwarelicenses.type AS lictype
 	    FROM glpi_inst_software 
 		LEFT JOIN glpi_softwareversions ON ( glpi_inst_software.vID = glpi_softwareversions.ID ) 
+		LEFT JOIN glpi_dropdown_state ON ( glpi_dropdown_state.ID = glpi_softwareversions.state )
 		LEFT JOIN glpi_softwarelicenses ON ( glpi_softwareversions.sID = glpi_softwarelicenses.sID AND glpi_softwarelicenses.FK_computers = $instID)
 	    LEFT JOIN glpi_software ON (glpi_softwareversions.sID = glpi_software.ID)  
 	    LEFT JOIN glpi_dropdown_software_category ON (glpi_dropdown_software_category.ID = glpi_software.category)";
@@ -1623,7 +1625,7 @@ function displayCategoryHeader($data, $cat,$rand) {
 	echo "			<table class='tab_cadre_fixe'>";
 	echo "				<tr>";
 	echo "<th>&nbsp;</th>";
-	echo "					<th>" . $LANG["common"][16] . "</th><th>" . $LANG["software"][5] . "</th>";
+	echo "					<th>" . $LANG["common"][16] . "</th><th>" . $LANG["state"][0] . "</th><th>" . $LANG["software"][5] . "</th>";
 	echo "				</tr>";
 	return $cat;
 }
@@ -1653,11 +1655,10 @@ function displaySoftsByCategory($data, $instID, $withtemplate) {
 	echo "<td><input type='checkbox' name='license_".$data['ID']."'></td>";
 	echo "<td class='center'><strong><a href=\"" . $CFG_GLPI["root_doc"] . "/front/software.form.php?ID=" . $data['sID'] . "\">";
 	echo $data["softname"] . ($_SESSION["glpiview_ID"] ? " (" . $data['ID'] . ")" : "") . "</a>";
-	echo "</strong>";
-	echo "</td>";
-	echo "<td>";
+	echo "</strong></td>";
+	echo "<td>" . $data["state"] . "</td>";
 
-	echo $data["version"];
+	echo "<td>" . $data["version"];
 	if ($data["FK_computers"]==$instID)
 		echo " - <strong>". getDropdownName("glpi_dropdown_licensetypes",$data["lictype"]) . "</strong>";
 	if (empty ($withtemplate) || $withtemplate != 2) {
