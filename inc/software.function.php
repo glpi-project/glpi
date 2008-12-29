@@ -1352,8 +1352,8 @@ function installSoftwareVersion($cID, $vID, $dohistory=1){
 				$newID = $DB->insert_id();
 				$vers = new SoftwareVersion();
 				if ($vers->getFromDB($vID)) {
-					// Update use_version for OEM License
-					$DB->query("UPDATE glpi_softwarelicenses SET use_version=$vID WHERE sID=".$vers->fields["sID"]." AND oem_computer=$cID");
+					// Update use_version for Affected License
+					$DB->query("UPDATE glpi_softwarelicenses SET use_version=$vID WHERE sID=".$vers->fields["sID"]." AND FK_computers=$cID");
 
 					if ($dohistory) {
 						$soft = new Software();
@@ -1425,8 +1425,8 @@ function uninstallSoftwareVersion($ID, $dohistory = 1) {
 	if ($result = $DB->query($query)) {
 		$vers = new SoftwareVersion();
 		if ($vers->getFromDB($data["vID"])) {
-			// Update use_version for OEM License
-			$DB->query("UPDATE glpi_softwarelicenses SET use_version=0 WHERE sID=".$vers->fields["sID"]." AND oem_computer=".$data["cID"]);
+			// Update use_version for Affected License
+			$DB->query("UPDATE glpi_softwarelicenses SET use_version=0 WHERE sID=".$vers->fields["sID"]." AND FK_computers=".$data["cID"]);
 			
 			if ($dohistory) {
 				$soft = new Software();
