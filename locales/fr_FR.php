@@ -1394,6 +1394,7 @@ $LANG["search"][17]="Ajouter un critère de recherche";
 $LANG["search"][18]="Supprimer un critère de recherche"; 
 $LANG["search"][19]="Ajouter un critère global de recherche"; 
 $LANG["search"][20]="Supprimer un critère global de recherche";
+$LANG["search"][21]="Résultat de la recherche";
 
 $LANG["setup"][0]="Intitulés"; 
 $LANG["setup"][1]="Attention si ces éléments sont utilisés, ils seront remplacés par une valeur nulle."; 
