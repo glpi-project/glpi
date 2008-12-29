@@ -1816,13 +1816,20 @@ function addSelect ($type,$ID,$num,$meta=0,$meta_type=0){
 			return " FLOOR( SUM($table$addtable.$field) * COUNT(DISTINCT $table$addtable.ID) / COUNT($table$addtable.ID) ) AS ".$NAME."_".$num.", ";
 		break;
 		case "glpi_softwarelicenses.name" :
-		case "glpi_softwarelicenses.serial" :
-		case "glpi_softwarelicenses.otherserial" :
 		case "glpi_softwareversions.name" :
 			if ($meta){
 				return " GROUP_CONCAT( DISTINCT CONCAT(glpi_software.name, ' - ',".$table.$addtable.".$field) SEPARATOR '$$$$') AS ".$NAME."_".$num.", ";
 			} else {
 				return " GROUP_CONCAT( DISTINCT ".$table.$addtable.".".$field." SEPARATOR '$$$$') AS ".$NAME."_".$num.", ";
+			}
+		break;
+		case "glpi_softwarelicenses.serial" :
+		case "glpi_softwarelicenses.otherserial" :
+		case "glpi_softwarelicenses.expire" :
+			if ($meta){
+				return " GROUP_CONCAT( DISTINCT CONCAT(glpi_software.name, ' - ',".$table.$addtable.".$field) SEPARATOR '$$$$') AS ".$NAME."_".$num.", ";
+			} else {
+				return " GROUP_CONCAT( DISTINCT CONCAT($table$addtable.name, ' - ', $table$addtable.$field) SEPARATOR '$$$$') AS ".$NAME."_".$num.", ";
 			}
 		break;
 		case "glpi_dropdown_state.name":
@@ -2059,6 +2066,7 @@ function addWhere ($link,$nott,$type,$ID,$val,$meta=0){
 		case "reservation_types.date_mod":
 		case "glpi_users.last_login":
 		case "glpi_users.date_mod":
+		case "glpi_softwarelicenses.expire":
 			$date_computation=$table.".".$field;
 			$interval_search=" MONTH ";
 			switch ($table.".".$field){
@@ -2078,7 +2086,7 @@ function addWhere ($link,$nott,$type,$ID,$val,$meta=0){
 					return $link." NOW() ".$regs[1]." ADDDATE($date_computation, INTERVAL ".$regs[2]." $interval_search) ";	
 				} else {
 					// Reformat date if needed
-					$regs[2]=preg_replace('/(\d{1,2})-(\d{1,2})-(\d{4})/','\3-\2-\1',$regs[2]);
+					$regs[2]=preg_replace('@(\d{1,2})(-|/)(\d{1,2})(-|/)(\d{4})@','\5-\3-\1',$regs[2]);
 					if (preg_match('/[0-9]{2,4}-[0-9]{1,2}-[0-9]{1,2}/',$regs[2])){
 						return $link." $date_computation ".$regs[1]." '".$regs[2]."'";
 					} else {
@@ -2087,7 +2095,7 @@ function addWhere ($link,$nott,$type,$ID,$val,$meta=0){
 				}
 			} else { // standard search
 				// Date format modification if needed
-				$val=preg_replace('/(\d{1,2})-(\d{1,2})-(\d{4})/','\3-\2-\1',$val);
+				$val=preg_replace('@(\d{1,2})(-|/)(\d{1,2})(-|/)(\d{4})@','\5-\3-\1',$val);
 				$SEARCH=makeTextSearch($val,$nott);
 				$ADD="";	
 				if ($nott) {
@@ -2493,6 +2501,7 @@ function giveItem ($type,$field,$data,$num,$linkfield=""){
 		case "glpi_softwarelicenses.name" :
 		case "glpi_softwarelicenses.serial" :
 		case "glpi_softwarelicenses.otherserial" :
+		case "glpi_softwarelicenses.expire" :
 		case "glpi_softwareversions.name" :
 		case "glpi_networking_ports.ifaddr" :
 		case "glpi_dropdown_netpoint.name" :
@@ -2512,7 +2521,13 @@ function giveItem ($type,$field,$data,$num,$linkfield=""){
 			if (strlen(trim($split[$k]))>0){
 				if ($count_display) $out.= "<br>";
 				$count_display++;
-				$out.= $split[$k];
+				
+				// Line end with a date
+				if (preg_match("/(\d{4}-\d{2}-\d{2})$/",$split[$k],$reg)) {
+					$out .= preg_replace("/".$reg[0]."$/",convDateTime($reg[0]),$split[$k]); 
+				} else {
+					$out .= $split[$k];
+				}
 			}
 		return $out;
 
