@@ -53,6 +53,7 @@ function showPorts($device, $device_type, $withtemplate = '') {
 
 	$device_real_table_name = $LINK_ID_TABLE[$device_type];
 
+	$_SESSION['glpilisttitle'][NETWORKING_PORT_TYPE] = $ci->getType() . " = " . $ci->getName(); 
 	$_SESSION['glpilistitems'][NETWORKING_PORT_TYPE]=array();
 	
 	$query = "SELECT ID FROM glpi_networking_ports WHERE (on_device = $device AND device_type = $device_type) ORDER BY name, logical_number";

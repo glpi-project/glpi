@@ -81,6 +81,7 @@ function showVersions($sID) {
 				LEFT JOIN glpi_dropdown_state ON (glpi_dropdown_state.ID=glpi_softwareversions.state)
 				WHERE (sID = '$sID') ORDER BY name";
 		
+	$_SESSION['glpilisttitle'][SOFTWAREVERSION_TYPE]=$LANG["help"][31] ." = ". $soft->fields["name"];
 	$_SESSION['glpilistitems'][SOFTWAREVERSION_TYPE]=array();
 	if ($result=$DB->query($query)){
 		if ($DB->numrows($result)){
@@ -349,6 +350,7 @@ function showLicenses($sID) {
 			getEntitiesRestrictRequest('AND', 'glpi_softwarelicenses', '', '', true) .
 		"ORDER BY " . $order . " LIMIT $start," . $_SESSION['glpilist_limit'];
 		
+	$_SESSION['glpilisttitle'][SOFTWARELICENSE_TYPE]=$LANG["help"][31] ." = ". $software->fields["name"];
 	$_SESSION['glpilistitems'][SOFTWARELICENSE_TYPE]=array();
 	if ($result=$DB->query($query)){
 		if ($DB->numrows($result)){
@@ -662,6 +664,11 @@ function showInstallations($searchID, $crit="sID") {
 			
 			$soft = new Software;
 			$showEntity = ($soft->getFromDB($sID) && $soft->isRecursive());
+
+			$_SESSION['glpilisttitle'][COMPUTER_TYPE]=$LANG["help"][31] ." = ". $soft->fields["name"];
+			if ($crit=="ID") {
+				$_SESSION['glpilisttitle'][COMPUTER_TYPE] .= " - " . $data["vername"];
+			}
 			
 			$sort_img="<img src=\"".$CFG_GLPI["root_doc"]."/pics/puce-up.png\" alt='' title=''>";
 			if ($canedit) {
@@ -1520,6 +1527,7 @@ function showSoftwareInstalled($instID, $withtemplate = '') {
 
 	$cat = -1;
 
+	$_SESSION['glpilisttitle'][SOFTWARE_TYPE]=$LANG["help"][25]." = ".(empty($comp->fields["name"]) ? "(".$comp->fields["ID"].")" : $comp->fields["name"]);
 	$_SESSION['glpilistitems'][SOFTWARE_TYPE]=array();
 	if ($DB->numrows($result)) {
 		while ($data = $DB->fetch_array($result)) {

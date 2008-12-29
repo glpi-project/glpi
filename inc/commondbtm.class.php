@@ -1007,6 +1007,7 @@ class CommonDBTM {
 //				$prev=0;
 //			}
 			$next=$prev=0;
+			$current=false;
 			if (isset($_SESSION['glpilistitems'][$this->type]) && is_array($_SESSION['glpilistitems'][$this->type])){
 				$current=array_search($ID,$_SESSION['glpilistitems'][$this->type]);
 				
@@ -1030,6 +1031,14 @@ class CommonDBTM {
 			echo "<img alt='' name='tabsbodyimg' src=\"".$CFG_GLPI["root_doc"]."/pics/deplier_up.png\">";
 			echo "</a>";
 			
+			if ($current!==false){
+				echo "&nbsp;&nbsp;" . ($current+1) . "/" . count($_SESSION['glpilistitems'][$this->type]);
+
+				if (isset($_SESSION['glpilisttitle'][$this->type])){
+					echo "&nbsp;<img title='".str_replace("'","`",$_SESSION['glpilisttitle'][$this->type])."' src='".$CFG_GLPI["root_doc"]."/pics/aide.png' >";
+				}
+			}
+						
 			if ($next>0) {
 				echo "&nbsp;&nbsp;<a href='$cleantarget?ID=$next$extraparamhtml'><img src=\"".$CFG_GLPI["root_doc"]."/pics/right.png\" alt='".$LANG["buttons"][11]."' title='".$LANG["buttons"][11]."'></a>";
 			}

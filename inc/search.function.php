@@ -1205,6 +1205,7 @@ function showList ($type,$params){
 
 			// Init list of items displayed
 			if ($output_type==HTML_OUTPUT){
+				$_SESSION['glpilisttitle'][$type]=$LANG["search"][21];
 				$_SESSION['glpilistitems'][$type]=array();
 			}
 
