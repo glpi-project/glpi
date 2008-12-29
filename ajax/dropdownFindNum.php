@@ -30,7 +30,7 @@
 
 // ----------------------------------------------------------------------
 // Original Author of file:
-// Purpose of file:
+// Purpose of file: List of device for tracking.
 // ----------------------------------------------------------------------
 
 define('GLPI_ROOT','..');
@@ -44,10 +44,13 @@ checkRight("create_ticket","1");
 $where="";
 
 if (isset($_POST["entity_restrict"])&&$_POST["entity_restrict"]>=0){
-	$where.= "WHERE ".$_POST['table'].".FK_entities='".$_POST["entity_restrict"]."'";
+	$entity = $_POST["entity_restrict"];
 } else {
-	$where.=getEntitiesRestrictRequest("WHERE",$_POST['table']);
+	$entity = '';
 }
+// allow opening ticket on recursive object (printer, software, ...)
+$recursive = in_array($_POST['table'],$CFG_GLPI["recursive_type"]);
+$where.=getEntitiesRestrictRequest("WHERE",$_POST['table'],'',$entity,$recursive);
 
 if (empty($where)){
 	$where="WHERE 1 ";
