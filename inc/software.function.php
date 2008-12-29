@@ -132,7 +132,7 @@ function showVersions($sID) {
 function showInstallationsByEntity($vID) {
 	global $DB, $CFG_GLPI, $LANG;
 
-	if (!haveRight("software", "r"))
+	if (!haveRight("software", "r") || !$vID)
 		return false;
 		
 	echo "<div class='center'>";
@@ -590,8 +590,9 @@ function showInstallations($searchID, $crit="sID") {
  */
 function showInstallations($searchID, $crit="sID") {
 	global $DB, $CFG_GLPI, $LANG;
-	if (!haveRight("software", "r"))
+	if (!haveRight("software", "r") || !$searchID) {
 		return false;
+	}
 
 	$canedit = haveRight("software", "w");
 	$canshowcomputer = haveRight("computer", "r");

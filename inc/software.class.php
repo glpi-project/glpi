@@ -464,7 +464,10 @@ class SoftwareVersion extends CommonDBTM {
 		global $LANG, $CFG_GLPI;
 
 		$ong[1] = $LANG["title"][26];
-		$ong[2] = $LANG["software"][19];
+		
+		if ($ID) {
+			$ong[2] = $LANG["software"][19];
+		}
 
 		return $ong;
 	}
@@ -667,7 +670,7 @@ class SoftwareLicense extends CommonDBTM {
 
 		$ong[1] = $LANG["title"][26];
 
-		if (haveRight("infocom","r")){
+		if ($ID && haveRight("infocom","r")){
 			$ong[4] = $LANG["Menu"][26];
 		}
 
