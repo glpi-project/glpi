@@ -47,11 +47,14 @@ if (!isset($_POST['ID'])) {
 
 if ($_POST["ID"]>0){
 	switch($_POST['glpi_tab']){
-		case 1: 
+		case -1: // All
 			showPortVLANForm($_POST["ID"]);
+			displayPluginAction(NETWORKING_PORT_TYPE,$_POST["ID"],$_POST['glpi_tab'], false);
 			break;
 		default :
-			displayPluginAction(NETWORKING_PORT_TYPE,$_POST["ID"],$_POST['glpi_tab'], false);
+			if (!displayPluginAction(NETWORKING_PORT_TYPE,$_POST["ID"],$_POST['glpi_tab'], false)) {
+				showPortVLANForm($_POST["ID"]);
+			}
 			break;
 	}
 }
