@@ -39,9 +39,7 @@ $NEEDED_ITEMS=array("profile","search","entity","user");
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-if(!isset($_POST["ID"])) {
-	exit();
-}
+if(!isset($_POST["ID"])) $_POST["ID"] = "";
 
 $prof=new Profile();
 
@@ -67,6 +65,23 @@ checkRight("profile","r");
 					break;
 			}
 		}
+	else
+	{
+		switch($_POST['glpi_tab']){
+				case -1 :	
+					$prof->showForm($_POST['target'],$_POST["ID"]);
+					displayPluginAction(PROFILE_TYPE,$_POST["ID"],$_SESSION['glpi_tab']);
+					break;
+				case 1:
+					$prof->showForm($_POST['target'],$_POST["ID"]);
+					break;
+				default :
+					if (!displayPluginAction(PROFILE_TYPE,$_POST["ID"],$_SESSION['glpi_tab'])){
+						$prof->showForm($_POST['target'],$_POST["ID"]);
+					}
+					break;
+			}
+	}
 	
 	ajaxFooter();
 ?>
