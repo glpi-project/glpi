@@ -51,11 +51,18 @@ if ($_POST['sID']>0){
 	}
 	// Make a select box
 
+// TODO : Why JOIN with glpi_inst_software ??
+/*
 	$query = "SELECT DISTINCT glpi_softwareversions.* FROM glpi_softwareversions ";
 	$query.= " LEFT JOIN glpi_inst_software on (glpi_softwareversions.ID=glpi_inst_software.vID)";
 	$query.= " WHERE glpi_softwareversions.sID='".$_POST['sID']."' ";
 	$query.= " ORDER BY name";
+*/
 
+	$query = "SELECT DISTINCT glpi_softwareversions.*, glpi_dropdown_state.name AS sname FROM glpi_softwareversions "
+			." LEFT JOIN glpi_dropdown_state on (glpi_softwareversions.state=glpi_dropdown_state.ID) "
+			." WHERE glpi_softwareversions.sID=".$_POST['sID']
+			." ORDER BY name";
 
 	$result = $DB->query($query);
 	$number=$DB->numrows($result);
@@ -68,10 +75,14 @@ if ($_POST['sID']>0){
 	if ($number) {
 		while ($data = $DB->fetch_assoc($result)) {
 
-			$output = $data['name'];
 			$ID = $data['ID'];
-
-			if (empty($output)) $output="($ID)";
+			$output = $data['name'];
+			if (empty($output)) {
+				$output="($ID)";	
+			}
+			if (!empty($data['sname'])) {
+				$output .= " - " . $data['sname'];
+			}
 			echo "<option ".($ID==$_POST['value']?"selected":"")." value=\"$ID\" title=\"".cleanInputText($output)."\">".$output."</option>";
 		}
 	} 
