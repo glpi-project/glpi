@@ -1826,6 +1826,8 @@ function addSelect ($type,$ID,$num,$meta=0,$meta_type=0){
 		case "glpi_softwarelicenses.serial" :
 		case "glpi_softwarelicenses.otherserial" :
 		case "glpi_softwarelicenses.expire" :
+		case "glpi_softwarelicenses.comments" :
+		case "glpi_softwareversions.comments" :
 			if ($meta){
 				return " GROUP_CONCAT( DISTINCT CONCAT(glpi_software.name, ' - ',".$table.$addtable.".$field) SEPARATOR '$$$$') AS ".$NAME."_".$num.", ";
 			} else {
@@ -2502,7 +2504,9 @@ function giveItem ($type,$field,$data,$num,$linkfield=""){
 		case "glpi_softwarelicenses.serial" :
 		case "glpi_softwarelicenses.otherserial" :
 		case "glpi_softwarelicenses.expire" :
+		case "glpi_softwarelicenses.comments" :
 		case "glpi_softwareversions.name" :
+		case "glpi_softwareversions.comments" :
 		case "glpi_networking_ports.ifaddr" :
 		case "glpi_dropdown_netpoint.name" :
 		case "glpi_registry.registry_ocs_name" :
