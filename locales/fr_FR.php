@@ -1695,6 +1695,7 @@ $LANG["software"][47]="Regroupement";
 $LANG["software"][48]="Regrouper"; 
 $LANG["software"][49]="Logiciel mis dans la corbeille après regroupement";
 $LANG["software"][50]="Affectée à l'ordinateur";
+$LANG["software"][51]="Le nombre doit être 1 pour pouvoir affecter";
 
 $LANG["softwarecategories"][1]="Repliés"; 
 $LANG["softwarecategories"][2]="Dépliés"; 
