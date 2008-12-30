@@ -569,6 +569,11 @@ function getDropdownName($table,$id,$withcomments=0) {
 						$comments = $data["comments"];
 					}
 					switch ($table){
+						case "glpi_computers":
+							if (empty($name)) {
+								$name="($id)";
+							}
+							break;
 						case "glpi_contacts" :
 							$name .= " ".$data["firstname"];
 							if (!empty($data["phone"])){
