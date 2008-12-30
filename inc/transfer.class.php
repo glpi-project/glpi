@@ -277,6 +277,7 @@ class Transfer extends CommonDBTM{
 		if ($this->options['keep_dc_printer']){
 			$DC_CONNECT[]=PRINTER_TYPE;
 		}
+		$ci = new CommonItem();
 		if (count($DC_CONNECT)&&count($this->needtobe_transfer[COMPUTER_TYPE])>0){
 			foreach ($DC_CONNECT as $type){
 				// Clean DB / Search unexisting links and force disconnect
@@ -300,16 +301,20 @@ class Transfer extends CommonDBTM{
 				if ($result = $DB->query($query)) {
 					if ($DB->numrows($result)>0) { 
 						while ($data=$DB->fetch_array($result)){
-							$this->addToBeTransfer($type,$data['end1']);
+							if (isset($CFG_GLPI["recursive_type"][$type]) && $ci->getFromDB($type,$data['end1']) && $ci->obj->isRecursive() && in_array($ci->obj->getEntityID(), getEntityAncestors($this->to))) {
+								$this->addNotToBeTransfer($type,$data['end1']);
+							} else {
+								$this->addToBeTransfer($type,$data['end1']);
+							}
 						}
 					}
 				}
 			}
+			$this->item_search[$type]=$this->createSearchConditionUsingArray($this->needtobe_transfer[$type]);
+			if (isset($CFG_GLPI["recursive_type"][$type])) {
+				$this->item_recurs[$type]=$this->createSearchConditionUsingArray($this->noneedtobe_transfer[$type]);				
+			}
 		}	
-		$this->item_search[MONITOR_TYPE]=$this->createSearchConditionUsingArray($this->needtobe_transfer[MONITOR_TYPE]);
-		$this->item_search[PHONE_TYPE]=$this->createSearchConditionUsingArray($this->needtobe_transfer[PHONE_TYPE]);
-		$this->item_search[PERIPHERAL_TYPE]=$this->createSearchConditionUsingArray($this->needtobe_transfer[PERIPHERAL_TYPE]);
-		$this->item_search[PRINTER_TYPE]=$this->createSearchConditionUsingArray($this->needtobe_transfer[PRINTER_TYPE]);
 
 		// Licence / Software :  keep / delete + clean unused / keep unused 
 		if ($this->options['keep_softwares']){
@@ -358,21 +363,26 @@ class Transfer extends CommonDBTM{
 				}
 			}
 
-			$query = "SELECT glpi_softwareversions.sID
+			$query = "SELECT glpi_software.ID, glpi_software.FK_entities, glpi_software.recursive
 				FROM glpi_inst_software 
-				INNER  JOIN glpi_softwareversions ON (glpi_inst_software.vID = glpi_softwareversions.ID)
+				INNER JOIN glpi_softwareversions ON (glpi_inst_software.vID = glpi_softwareversions.ID)
+				INNER JOIN glpi_software ON (glpi_software.ID = glpi_softwareversions.sID)
 				WHERE glpi_inst_software.cID IN ".$this->item_search[COMPUTER_TYPE];
 			if ($result = $DB->query($query)) {
 				if ($DB->numrows($result)>0) { 
 					while ($data=$DB->fetch_array($result)){
-						$this->addToBeTransfer(SOFTWARE_TYPE,$data['sID']);
+						if ($data['recursive'] && in_array($data['FK_entities'], getEntityAncestors($this->to))) {
+							$this->addNotToBeTransfer(SOFTWARE_TYPE,$data['ID']);
+						} else {
+							$this->addToBeTransfer(SOFTWARE_TYPE,$data['ID']);
+						}
 					}
 				}
 			}
 		}
 
 		$this->item_search[SOFTWARE_TYPE]=$this->createSearchConditionUsingArray($this->needtobe_transfer[SOFTWARE_TYPE]);
-		$this->item_search[SOFTWARE_TYPE]=$this->createSearchConditionUsingArray($this->needtobe_transfer[SOFTWARE_TYPE]);
+		$this->item_recurs[SOFTWARE_TYPE]=$this->createSearchConditionUsingArray($this->noneedtobe_transfer[SOFTWARE_TYPE]);
 
 		$this->item_search[NETWORKING_TYPE]=$this->createSearchConditionUsingArray($this->needtobe_transfer[NETWORKING_TYPE]);
 
@@ -649,17 +659,7 @@ class Transfer extends CommonDBTM{
 	**/
 	function createSearchConditionUsingArray($array){
 		if (is_array($array)&&count($array)){
-			$condition="";
-			$first=true;
-			foreach ($array as $ID){
-				if ($first){
-					$first=false;
-				} else {
-					$condition.=",";
-				}
-				$condition.=$ID;
-			}
-			return "(".$condition.")";
+			return "(".implode(",",$array).")";
 		} else {
 			return "(-1)";
 		}
@@ -1050,7 +1050,8 @@ class Transfer extends CommonDBTM{
 		$query = "SELECT glpi_softwareversions.sID as softID, glpi_softwareversions.ID as versID, glpi_inst_software.ID as instID
 			FROM glpi_inst_software 
 			LEFT JOIN glpi_softwareversions ON (glpi_inst_software.vID = glpi_softwareversions.ID)
-			WHERE glpi_inst_software.cID = '$ID'";
+			WHERE glpi_inst_software.cID = '$ID' AND glpi_softwareversions.sID NOT IN ".$this->item_recurs[SOFTWARE_TYPE];
+			
 		if ($result = $DB->query($query)) {
 			if ($DB->numrows($result)>0) { 
 				$vers=new SoftwareVersion();
@@ -1509,6 +1510,10 @@ class Transfer extends CommonDBTM{
 		$query = "SELECT * 
 			FROM glpi_connect_wire 
 			WHERE end2='$ID' AND type='".$link_type."'";
+		if (isset($CFG_GLPI["recursive_type"][$link_type])){
+			$query .= " AND end1 NOT IN ".$this->item_recurs[$link_type];
+		}	
+		
 		if ($result = $DB->query($query)) {
 			if ($DB->numrows($result)!=0) { 
 				// Foreach get item 
