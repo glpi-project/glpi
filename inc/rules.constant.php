@@ -110,7 +110,12 @@ $RULES_ACTIONS[RULE_OCS_AFFECT_COMPUTER]['FK_entities']['table']='glpi_entities'
 $RULES_ACTIONS[RULE_AFFECT_RIGHTS]['FK_entities']['name']=$LANG["entity"][0];
 $RULES_ACTIONS[RULE_AFFECT_RIGHTS]['FK_entities']['type']='dropdown';
 $RULES_ACTIONS[RULE_AFFECT_RIGHTS]['FK_entities']['table']='glpi_entities';
-$RULES_ACTIONS[RULE_AFFECT_RIGHTS]['FK_entities']['force_actions']=array("assign","assign_entity_by_dn","assign_entity_by_tag");
+
+$RULES_ACTIONS[RULE_AFFECT_RIGHTS]['_affect_entity_by_dn']['name']=$LANG["rulesengine"][130];
+$RULES_ACTIONS[RULE_AFFECT_RIGHTS]['_affect_entity_by_dn']['type']='text';
+
+$RULES_ACTIONS[RULE_AFFECT_RIGHTS]['_affect_entity_by_tag']['name']=$LANG["rulesengine"][131];
+$RULES_ACTIONS[RULE_AFFECT_RIGHTS]['_affect_entity_by_tag']['type']='text';
 
 $RULES_ACTIONS[RULE_AFFECT_RIGHTS]['FK_profiles']['name']=$LANG["Menu"][35];
 $RULES_ACTIONS[RULE_AFFECT_RIGHTS]['FK_profiles']['type']='dropdown';

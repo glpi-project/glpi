@@ -1569,9 +1569,9 @@ class Rule extends CommonDBTM{
 				unset($output[$criteria]);
 			}
 		}
-
+	
 		$output = $this->preProcessPreviewResults($output);
-			
+		
 		foreach ($output as $criteria => $value){
 			echo "<tr  class='tab_bg_2'>";
 			echo "<td class='tab_bg_2'>";
@@ -1757,20 +1757,12 @@ class Rule extends CommonDBTM{
  	* Return a value associated with a pattern associated to a criteria
  	* @param $ID the given action
  	* @param $value the value
- 	* @param $action_type the action's type 
  	*/
- 	function getActionValue($ID,$value,$action_type)
+ 	function getActionValue($ID,$value)
 	{
 		global $LANG;
 		$action=$this->getAction($ID);
 		
-		switch ($action_type)
-		{
-			case "assign_entity_by_dn":
-			case "assign_entity_by_tag":
-				return $value;
-				break;
-			default:
 			if (!isset($action['type'])){
 				return $value;
 			} else {
@@ -1800,10 +1792,6 @@ class Rule extends CommonDBTM{
 						break;
 				}
 			}
-			break;
-		}
-		
-		
 	}
 
 	/**
