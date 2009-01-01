@@ -175,7 +175,7 @@ class Transfer extends CommonDBTM{
 				}
 			}
 			// Tickets
-			$OTHER_TYPES = array(TRACKING_TYPE,GROUP_TYPE);
+			$OTHER_TYPES = array(TRACKING_TYPE,GROUP_TYPE,LINK_TYPE);
 			foreach ($OTHER_TYPES as $type){
 				$this->inittype=$type;
 				if (isset($items[$type])&&count($items[$type])){
@@ -239,7 +239,7 @@ class Transfer extends CommonDBTM{
 		global $DB,$LINK_ID_TABLE,$CFG_GLPI;
 
 		// Init types :
-		$types=array(COMPUTER_TYPE,NETWORKING_TYPE,PRINTER_TYPE,MONITOR_TYPE,PERIPHERAL_TYPE,PHONE_TYPE,SOFTWARE_TYPE,CONTRACT_TYPE,ENTERPRISE_TYPE,CONTACT_TYPE,TRACKING_TYPE,DOCUMENT_TYPE,CARTRIDGE_TYPE, CONSUMABLE_TYPE);
+		$types=array(COMPUTER_TYPE,NETWORKING_TYPE,PRINTER_TYPE,MONITOR_TYPE,PERIPHERAL_TYPE,PHONE_TYPE,SOFTWARE_TYPE,CONTRACT_TYPE,ENTERPRISE_TYPE,CONTACT_TYPE,TRACKING_TYPE,DOCUMENT_TYPE,CARTRIDGE_TYPE, CONSUMABLE_TYPE,LINK_TYPE);
 		foreach ($types as $t){
 			if (!isset($this->needtobe_transfer[$t])){
 					$this->needtobe_transfer[$t]=array();
