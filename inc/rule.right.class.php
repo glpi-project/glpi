@@ -55,6 +55,11 @@ class RightAffectRule extends Rule {
 		$this->orderby="name";
 	}
 
+	function preProcessPreviewResults($output)
+	{
+		return $output;
+	}
+	
 	function maxActionsCount(){
 		// Unlimited
 		return 4;
@@ -181,18 +186,40 @@ class RightAffectRule extends Rule {
 		
 		if (count($this->actions)){
 			foreach ($this->actions as $action){
+				
 				switch ($action->fields["action_type"]){
 					case "assign" :
+						switch ($action->fields["field"])
+						{
+							case "FK_entities":
+								$entity = $action->fields["value"];
+							break;
+							case "FK_profiles":
+								$right = $action->fields["value"];
+							break;
+							case "recursive":
+								$recursive = $action->fields["value"];
+							break;
+							case "active":
+								$output["active"] = $action->fields["value"];
+							break;
+							case "_affect_entity_by_dn":
+								$res = getRegexResultById($action->fields["value"],$regex_results);
+								if ($res != null) 
+									$entity=getEntityIDByDn($res);
+							break;
+							case "_affect_entity_by_tag":
+								$res = getRegexResultById($action->fields["value"],$regex_results);
+								if ($res != null) 
+									$entity=getEntityIDByTag($res);
+							break;								
+						}
+						/*
 						if ($action->fields["field"] == "FK_entities") $entity = $action->fields["value"]; 
 						elseif ($action->fields["field"] == "FK_profiles") $right = $action->fields["value"];
 						elseif ($action->fields["field"] == "recursive") $recursive = $action->fields["value"];
 						elseif ($action->fields["field"] == "active") $output["active"] = $action->fields["value"];
-					break;
-					case "assign_entity_by_dn":
-					case "assign_entity_by_tag":
-						$res = getRegexResultById($action->fields["value"],$regex_results);
-						if ($res != null) 
-							$entity=getEntityByDnOrTAG(($action->fields["action_type"]=="assign_entity_by_dn")?true:false,$res);
+						*/
 					break;
 				}
 			}
@@ -301,7 +328,6 @@ class RightRuleCollection extends RuleCollection {
 		echo "<tr  class='tab_bg_2'>";
 		echo "<td class='tab_bg_2' colspan='4' align='center'>".$LANG["rulesengine"][41]." : <strong> ".getYesNo($global_result)."</strong></td>";
 
-		
 		if (isset($output["_ldap_rules"]["rules_entities"]))
 		{
 			echo "<tr  class='tab_bg_2'>";
