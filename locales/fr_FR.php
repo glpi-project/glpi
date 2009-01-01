@@ -428,6 +428,9 @@ $LANG["entity"][8]="Par entité";
 $LANG["entity"][9]="Sous-entités"; 
 $LANG["entity"][10]="Sélectionnez l'entité souhaitée"; 
 $LANG["entity"][11]="pour voir l'entité et ses sous-entités"; 
+$LANG["entity"][12]="DN de l'entité"; 
+$LANG["entity"][13]="TAG de l'entité"; 
+
 
 $LANG["event"][0]="Item (ID)"; 
 $LANG["event"][2]="Service"; 
@@ -1320,7 +1323,6 @@ $LANG["rulesengine"][47]="Assigner : matériel sur nom + domaine";
 $LANG["rulesengine"][48]="Assigner matériel";
 $LANG["rulesengine"][49]="Assigner : matériel sur adresse MAC";
 
-
 $LANG["rulesengine"][50]="Dictionnaire des modèles d'ordinateurs";
 $LANG["rulesengine"][51]="Dictionnaire des modèles de moniteurs";
 $LANG["rulesengine"][52]="Dictionnaire des modèles de téléphones";
@@ -1380,6 +1382,9 @@ $LANG["rulesengine"][112]="Affectation de droits et d'entités";
 $LANG["rulesengine"][120]="Le moteur s'arrête à la première règle vérifiée.";
 $LANG["rulesengine"][121]="Le moteur traite toutes les règles.";
 $LANG["rulesengine"][122]="Le moteur passe le résultat d'une règle aux suivantes.";
+
+$LANG["rulesengine"][130]="Assigner : entité depuis LDAP";
+$LANG["rulesengine"][131]="Assigner : entité depuis TAG";
 
 $LANG["search"][0]="Recherche"; 
 $LANG["search"][2]="contient"; 

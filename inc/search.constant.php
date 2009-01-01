@@ -3110,6 +3110,16 @@ $SEARCH_OPTION[ENTITY_TYPE][6]['field']='email';
 $SEARCH_OPTION[ENTITY_TYPE][6]['linkfield']='';
 $SEARCH_OPTION[ENTITY_TYPE][6]['name']=$LANG["setup"][14];
 
+$SEARCH_OPTION[ENTITY_TYPE][7]['table']='glpi_entities_data';
+$SEARCH_OPTION[ENTITY_TYPE][7]['field']='ldap_dn';
+$SEARCH_OPTION[ENTITY_TYPE][7]['linkfield']='';
+$SEARCH_OPTION[ENTITY_TYPE][7]['name']=$LANG["entity"][12];
+
+$SEARCH_OPTION[ENTITY_TYPE][8]['table']='glpi_entities_data';
+$SEARCH_OPTION[ENTITY_TYPE][8]['field']='tag';
+$SEARCH_OPTION[ENTITY_TYPE][8]['linkfield']='';
+$SEARCH_OPTION[ENTITY_TYPE][8]['name']=$LANG["entity"][13];
+
 //////STATE_TYPE
 
 $SEARCH_OPTION[STATE_TYPE]['common']=$LANG["common"][32];

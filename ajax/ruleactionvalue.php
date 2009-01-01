@@ -51,8 +51,13 @@ if (!defined('GLPI_ROOT')){
 	
 	checkLoginUser();
 	$display=false;
+	
 	switch ($_POST["action_type"])
 	{
+		case "assign_entity_by_dn":
+		case "assign_entity_by_tag":
+			autocompletionTextField("value", "glpi_rules_actions", "value", "", 40);
+			break;
 		default:
 		if (isset($RULES_ACTIONS[$_POST["rule_type"]][$_POST["field"]]['type'])){
 			switch($RULES_ACTIONS[$_POST["rule_type"]][$_POST["field"]]['type']){

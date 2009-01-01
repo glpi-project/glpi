@@ -1480,6 +1480,8 @@ CREATE TABLE `glpi_entities_data` (
   `admin_email` varchar(255) collate utf8_unicode_ci default NULL,
   `admin_reply` varchar(255) collate utf8_unicode_ci default NULL,
   `notes` longtext collate utf8_unicode_ci,
+  `ldap_dn` varchar(255) collate utf8_unicode_ci default NULL,
+  `tag` varchar(255) collate utf8_unicode_ci default NULL,
   PRIMARY KEY  (`ID`),
   UNIQUE KEY `FK_entities` (`FK_entities`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;

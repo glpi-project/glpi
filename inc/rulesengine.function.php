@@ -209,6 +209,13 @@ function dropdownRulesActions($rule_type,$name,$value=''){
 			case "affectbymac":
 				$elements["affectbymac"] = $LANG["rulesengine"][49];
 				break;
+			case "assign_entity_by_dn":
+				$elements["assign_entity_by_dn"] = $LANG["rulesengine"][130];
+				break;
+			case "assign_entity_by_tag":
+				$elements["assign_entity_by_tag"] = $LANG["rulesengine"][131];
+				break;
+
 		}
 	}
 	
@@ -231,7 +238,10 @@ function getActionByID($ID){
 			return $LANG["rulesengine"][47];
 		case "affectbymac":
 			return $LANG["rulesengine"][49];
-						
+		case "assign_entity_by_dn":
+			return $LANG["rulesengine"][130];
+		case "assign_entity_by_tag":
+			return $LANG["rulesengine"][131];
 	}
 }
 
