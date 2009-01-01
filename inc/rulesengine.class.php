@@ -1639,7 +1639,7 @@ class Rule extends CommonDBTM{
 	function showMinimalAction($fields,$canedit){
 		echo "<td>" . $this->getActionName($fields["field"]) . "</td>";
 		echo "<td>" . getActionByID($fields["action_type"]) . "</td>";
-		echo "<td>" . stripslashes($this->getActionValue($fields["field"],$fields["value"],$fields["action_type"])) . "</td>";
+		echo "<td>" . stripslashes($this->getActionValue($fields["field"],$fields["value"])) . "</td>";
 		
 	}	
 	
