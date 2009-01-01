@@ -54,10 +54,11 @@ if (!defined('GLPI_ROOT')){
 	
 	switch ($_POST["action_type"])
 	{
-		case "assign_entity_by_dn":
-		case "assign_entity_by_tag":
+		//If a regex value is used, then always display an autocompletiontextfield
+		case "regex_result":
+		case "append_regex_result":
 			autocompletionTextField("value", "glpi_rules_actions", "value", "", 40);
-			break;
+		break;	
 		default:
 		if (isset($RULES_ACTIONS[$_POST["rule_type"]][$_POST["field"]]['type'])){
 			switch($RULES_ACTIONS[$_POST["rule_type"]][$_POST["field"]]['type']){

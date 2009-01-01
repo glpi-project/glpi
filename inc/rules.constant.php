@@ -113,13 +113,16 @@ $RULES_ACTIONS[RULE_AFFECT_RIGHTS]['FK_entities']['table']='glpi_entities';
 
 $RULES_ACTIONS[RULE_AFFECT_RIGHTS]['_affect_entity_by_dn']['name']=$LANG["rulesengine"][130];
 $RULES_ACTIONS[RULE_AFFECT_RIGHTS]['_affect_entity_by_dn']['type']='text';
+$RULES_ACTIONS[RULE_AFFECT_RIGHTS]['_affect_entity_by_dn']['force_actions']=array("regex_result");
 
 $RULES_ACTIONS[RULE_AFFECT_RIGHTS]['_affect_entity_by_tag']['name']=$LANG["rulesengine"][131];
 $RULES_ACTIONS[RULE_AFFECT_RIGHTS]['_affect_entity_by_tag']['type']='text';
+$RULES_ACTIONS[RULE_AFFECT_RIGHTS]['_affect_entity_by_tag']['force_actions']=array("regex_result");
 
 $RULES_ACTIONS[RULE_AFFECT_RIGHTS]['FK_profiles']['name']=$LANG["Menu"][35];
 $RULES_ACTIONS[RULE_AFFECT_RIGHTS]['FK_profiles']['type']='dropdown';
 $RULES_ACTIONS[RULE_AFFECT_RIGHTS]['FK_profiles']['table']='glpi_profiles';
+//$RULES_ACTIONS[RULE_AFFECT_RIGHTS]['FK_profiles']['force_actions']=array("assign","regex_result");
 
 $RULES_ACTIONS[RULE_AFFECT_RIGHTS]['recursive']['name']=$LANG["profiles"][28];
 $RULES_ACTIONS[RULE_AFFECT_RIGHTS]['recursive']['type']='yesno';
