@@ -226,6 +226,16 @@ class Entity extends CommonDBTM{
 		autocompletionTextField("admin_reply","glpi_entities_data","admin_reply",$entdata->fields["admin_reply"],50);		
 		echo "</td></tr>";
 
+		echo "<tr class='tab_bg_1'>";
+		echo "<td>".$LANG["entity"][12].":		</td>";
+		echo "<td>";
+		autocompletionTextField("ldap_dn","glpi_entities_data","ldap_dn",$entdata->fields["ldap_dn"],50);		
+		echo "</td>";
+
+		echo "<td>".$LANG["entity"][13].":		</td>";
+		echo "<td>";
+		autocompletionTextField("tag","glpi_entities_data","tag",$entdata->fields["tag"],50);		
+		echo "</td></tr>";
 
 		if ($canedit) {
 			echo "<tr>";

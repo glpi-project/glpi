@@ -173,7 +173,7 @@ class RightAffectRule extends Rule {
 	* @param $params the parameters
 	* @return the fields modified
 	*/
-	function executeActions($output,$params)
+	function executeActions($output,$params,$regex_results)
 	{
 		$entity='';
 		$right='';
@@ -187,6 +187,12 @@ class RightAffectRule extends Rule {
 						elseif ($action->fields["field"] == "FK_profiles") $right = $action->fields["value"];
 						elseif ($action->fields["field"] == "recursive") $recursive = $action->fields["value"];
 						elseif ($action->fields["field"] == "active") $output["active"] = $action->fields["value"];
+					break;
+					case "assign_entity_by_dn":
+					case "assign_entity_by_tag":
+						$res = getRegexResultById($action->fields["value"],$regex_results);
+						if ($res != null) 
+							$entity=getEntityByDnOrTAG(($action->fields["action_type"]=="assign_entity_by_dn")?true:false,$res);
 					break;
 				}
 			}

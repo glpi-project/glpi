@@ -971,5 +971,15 @@ function update0713to072() {
 		$DB->query($query) or die("0.72 add software_helpdesk_visible in config" . $LANG["update"][90] . $DB->error());
 	}
 
+	if (!FieldExists("glpi_entities_data","ldap_dn")){
+		$query="ALTER TABLE `glpi_entities_data` ADD `ldap_dn` VARCHAR( 255 ) NOT NULL";
+		$DB->query($query) or die("0.72 add ldap_dn in config" . $LANG["update"][90] . $DB->error());
+	}
+
+	if (!FieldExists("glpi_entities_data","tag")){
+		$query="ALTER TABLE `glpi_entities_data` ADD `tag` VARCHAR( 255 ) NOT NULL";
+		$DB->query($query) or die("0.72 add tag in config" . $LANG["update"][90] . $DB->error());
+	}
+
 } // fin 0.72 #####################################################################################
 ?>

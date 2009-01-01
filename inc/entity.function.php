@@ -232,4 +232,15 @@ function moveUserProfileEntity($ID,$FK_entities){
 	return $DB->query($query);
 }
 
+function getEntityByDnOrTAG($dn=true,$value)
+{
+	global $DB;
+	$sql = "SELECT FK_entities FROM glpi_entities_data WHERE ".($dn?"ldap_dn":"tag")."='".$value."'";
+	
+	$result = $DB->query($sql);
+	if ($DB->numrows($result)==1)
+		return $DB->result($result,0,"FK_entities");
+	else
+		return "";	
+}
 ?>

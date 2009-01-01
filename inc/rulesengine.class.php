@@ -1639,7 +1639,7 @@ class Rule extends CommonDBTM{
 	function showMinimalAction($fields,$canedit){
 		echo "<td>" . $this->getActionName($fields["field"]) . "</td>";
 		echo "<td>" . getActionByID($fields["action_type"]) . "</td>";
-		echo "<td>" . stripslashes($this->getActionValue($fields["field"],$fields["value"])) . "</td>";
+		echo "<td>" . stripslashes($this->getActionValue($fields["field"],$fields["value"],$fields["action_type"])) . "</td>";
 		
 	}	
 	
@@ -1757,41 +1757,53 @@ class Rule extends CommonDBTM{
  	* Return a value associated with a pattern associated to a criteria
  	* @param $ID the given action
  	* @param $value the value
+ 	* @param $action_type the action's type 
  	*/
- 	function getActionValue($ID,$value)
+ 	function getActionValue($ID,$value,$action_type)
 	{
 		global $LANG;
 		$action=$this->getAction($ID);
-	
-		if (!isset($action['type'])){
-			return $value;
-		} else {
-			switch ($action['type'])
-			{
-				case "dropdown":
-					return getDropdownName($action["table"],$value);
-					break;
-				case "dropdown_status":
-					return getStatusName($value);
-					break;
-				case "dropdown_assign":
-				case "dropdown_users":
-					return getUserName($value);
-					break;
-				case "yesno":
-					if ($value) 
-						return $LANG["choice"][1];
-					else
-						return $LANG["choice"][0];	
-					break;
-				case "dropdown_priority":
-					return getPriorityName($value);
-					break;
-				default :
-					return $value;
-					break;
+		
+		switch ($action_type)
+		{
+			case "assign_entity_by_dn":
+			case "assign_entity_by_tag":
+				return $value;
+				break;
+			default:
+			if (!isset($action['type'])){
+				return $value;
+			} else {
+				switch ($action['type'])
+				{
+					case "dropdown":
+						return getDropdownName($action["table"],$value);
+						break;
+					case "dropdown_status":
+						return getStatusName($value);
+						break;
+					case "dropdown_assign":
+					case "dropdown_users":
+						return getUserName($value);
+						break;
+					case "yesno":
+						if ($value) 
+							return $LANG["choice"][1];
+						else
+							return $LANG["choice"][0];	
+						break;
+					case "dropdown_priority":
+						return getPriorityName($value);
+						break;
+					default :
+						return $value;
+						break;
+				}
 			}
+			break;
 		}
+		
+		
 	}
 
 	/**
