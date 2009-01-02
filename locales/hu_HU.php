@@ -424,6 +424,8 @@ $LANG["entity"][8]="Cégenként";
 $LANG["entity"][9]="Gyermekek"; 
 $LANG["entity"][10]="Select the desired entity"; 
 $LANG["entity"][11]="to see the entity and its sub-entities"; 
+$LANG["entity"][12]="Entity DN"; 
+$LANG["entity"][13]="Entity TAG"; 
 
 $LANG["event"][0]="Tétel azonosító"; 
 $LANG["event"][2]="Szervíz"; 
@@ -1362,6 +1364,8 @@ $LANG["rulesengine"][112]="Jogok és elemek összrendelése";
 $LANG["rulesengine"][120]="A motor megáll az első szabály után"; 
 $LANG["rulesengine"][121]="A motor minden szabályt feldolgoz"; 
 $LANG["rulesengine"][122]="A motor átadja egy szabály eredményét a következőknek"; 
+$LANG["rulesengine"][130]="Entity from LDAP"; 
+$LANG["rulesengine"][131]="Entity from TAG"; 
 
 $LANG["search"][0]="Keresés"; 
 $LANG["search"][2]="tartalmaz"; 
@@ -1376,6 +1380,7 @@ $LANG["search"][17]="Új keresési feltétel";
 $LANG["search"][18]="Keresési feltétel törlése"; 
 $LANG["search"][19]="Új keresési feltétel"; 
 $LANG["search"][20]="Keresési feltétel törlése"; 
+$LANG["search"][21]="Search results"; 
 
 $LANG["setup"][0]="Legördülő listák"; 
 $LANG["setup"][1]="Figyelem, ha ezek az elemek lesznek használva, nullára lesznek cserélve."; 
@@ -1666,6 +1671,8 @@ $LANG["software"][46]="Látható a Helpdesk-ben";
 $LANG["software"][47]="Merging"; 
 $LANG["software"][48]="Merge"; 
 $LANG["software"][49]="Software put in the trash after merging"; 
+$LANG["software"][50]="Assigned to the computer"; 
+$LANG["software"][51]="The number must be 1 to be able to affect"; 
 
 $LANG["softwarecategories"][1]="Gyűjtve"; 
 $LANG["softwarecategories"][2]="Gyűjtés nélkül"; 

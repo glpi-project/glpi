@@ -424,6 +424,8 @@ $LANG["entity"][8]="Pagal padalinius";
 $LANG["entity"][9]="Pavaldūs padaliniai"; 
 $LANG["entity"][10]="Select the desired entity"; 
 $LANG["entity"][11]="to see the entity and its sub-entities"; 
+$LANG["entity"][12]="Entity DN"; 
+$LANG["entity"][13]="Entity TAG"; 
 
 $LANG["event"][0]="Elementas (ID)"; 
 $LANG["event"][2]="Tarnyba"; 
@@ -1362,6 +1364,8 @@ $LANG["rulesengine"][112]="Teisių ir elementų priskyrimas";
 $LANG["rulesengine"][120]="Modulis sustos ties pirmąja taisyklės sąlyga"; 
 $LANG["rulesengine"][121]="Modulis įtrauks visa taisyklių rinkinį"; 
 $LANG["rulesengine"][122]="Modulis perduos taisyklės rezultatą šiems elementams"; 
+$LANG["rulesengine"][130]="Entity from LDAP"; 
+$LANG["rulesengine"][131]="Entity from TAG"; 
 
 $LANG["search"][0]="Paieška"; 
 $LANG["search"][2]="talpina"; 
@@ -1376,6 +1380,7 @@ $LANG["search"][17]="Pridėti paieškos kriterijų";
 $LANG["search"][18]="Pašalinti paieškos kriterijų"; 
 $LANG["search"][19]="Pridėti visuotinės paieškos kriterijų"; 
 $LANG["search"][20]="Pridėti visuotinės paieškos kriterijų"; 
+$LANG["search"][21]="Search results"; 
 
 $LANG["setup"][0]="Sudedamosios"; 
 $LANG["setup"][1]="Jei šie elementai yra naudojami, jie bus pakeisti null reikšmėmis"; 
@@ -1666,6 +1671,8 @@ $LANG["software"][46]="Prieinamas Pagalbos skydelyje";
 $LANG["software"][47]="Merging"; 
 $LANG["software"][48]="Merge"; 
 $LANG["software"][49]="Software put in the trash after merging"; 
+$LANG["software"][50]="Assigned to the computer"; 
+$LANG["software"][51]="The number must be 1 to be able to affect"; 
 
 $LANG["softwarecategories"][1]="Supakuotas"; 
 $LANG["softwarecategories"][2]="Išpakuotas"; 

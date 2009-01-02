@@ -424,6 +424,8 @@ $LANG["entity"][8]="bij instantie";
 $LANG["entity"][9]="Child entities"; 
 $LANG["entity"][10]="Select the desired entity"; 
 $LANG["entity"][11]="to see the entity and its sub-entities"; 
+$LANG["entity"][12]="Entity DN"; 
+$LANG["entity"][13]="Entity TAG"; 
 
 $LANG["event"][0]="Item (ID)"; 
 $LANG["event"][2]="Dienst"; 
@@ -1332,7 +1334,7 @@ $LANG["rulesengine"][77]="Woordenboeken";
 $LANG["rulesengine"][78]="Versie"; 
 $LANG["rulesengine"][79]="'regex' resultaat toevoegen"; 
 $LANG["rulesengine"][80]="Global dictionnary"; 
-$LANG["rulesengine"][81]="Rule result"; 
+$LANG["rulesengine"][81]="Rule results"; 
 $LANG["rulesengine"][82]="Resultaten in detail"; 
 $LANG["rulesengine"][83]="You can affect the result of a regular expression using the string #0"; 
 $LANG["rulesengine"][84]="Test rules engine"; 
@@ -1362,6 +1364,8 @@ $LANG["rulesengine"][112]="Rechten en Instantie's toewijzing";
 $LANG["rulesengine"][120]="De engine stopt op de eerst gecontroleerde regel."; 
 $LANG["rulesengine"][121]="De engine behandeld alle regels."; 
 $LANG["rulesengine"][122]="De engine geeft her resultaat van een regel door aan de daar opvolgende."; 
+$LANG["rulesengine"][130]="Entity from LDAP"; 
+$LANG["rulesengine"][131]="Entity from TAG"; 
 
 $LANG["search"][0]="Zoeken op"; 
 $LANG["search"][2]="bevat"; 
@@ -1376,6 +1380,7 @@ $LANG["search"][17]="Een zoekcriterium toevoegen";
 $LANG["search"][18]="Een zoekcriterium verwijderen"; 
 $LANG["search"][19]="Een globaal zoekcriterium toevoegen"; 
 $LANG["search"][20]="Een globaal zoekcriterium verwijderen"; 
+$LANG["search"][21]="Search results"; 
 
 $LANG["setup"][0]="Drop-downs"; 
 $LANG["setup"][1]="Opgelet!, als deze items worden gebruikt, dan worden ze vervangen door 'null'"; 
@@ -1666,6 +1671,8 @@ $LANG["software"][46]="Zichtbaar in de Helpdesk";
 $LANG["software"][47]="Merging"; 
 $LANG["software"][48]="Merge"; 
 $LANG["software"][49]="Software put in the trash after merging"; 
+$LANG["software"][50]="Assigned to the computer"; 
+$LANG["software"][51]="The number must be 1 to be able to affect"; 
 
 $LANG["softwarecategories"][1]="Ingeklapt"; 
 $LANG["softwarecategories"][2]="Uitgeklapt"; 

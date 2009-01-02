@@ -424,6 +424,8 @@ $LANG["entity"][8]="Por entidade";
 $LANG["entity"][9]="Entidades fillas"; 
 $LANG["entity"][10]="Escoller a entidade desexada"; 
 $LANG["entity"][11]="para ver a entidade e as súas sub-entidades"; 
+$LANG["entity"][12]="Entity DN"; 
+$LANG["entity"][13]="Entity TAG"; 
 
 $LANG["event"][0]="Item (ID)"; 
 $LANG["event"][2]="Incidencia"; 
@@ -1362,6 +1364,8 @@ $LANG["rulesengine"][112]="Dereitos e asignación de entidades";
 $LANG["rulesengine"][120]="O motor párase cando se verifique unha das regras."; 
 $LANG["rulesengine"][121]="O motor executa todas as regras."; 
 $LANG["rulesengine"][122]="O motor pasa o resultado dunha regra ás seguintes."; 
+$LANG["rulesengine"][130]="Entity from LDAP"; 
+$LANG["rulesengine"][131]="Entity from TAG"; 
 
 $LANG["search"][0]="Buscar"; 
 $LANG["search"][2]="contén"; 
@@ -1376,6 +1380,7 @@ $LANG["search"][17]="Engadir un criterio de procura";
 $LANG["search"][18]="Borrar un criterio de procura"; 
 $LANG["search"][19]="Engadir un criterio global de procura"; 
 $LANG["search"][20]="Borrar un criterio global de procura"; 
+$LANG["search"][21]="Search results"; 
 
 $LANG["setup"][0]="Títulos"; 
 $LANG["setup"][1]="Coidado, se utiliza estes elementos serán substituídos por un valor nulo."; 
@@ -1666,6 +1671,8 @@ $LANG["software"][46]="Visible no CAU";
 $LANG["software"][47]="Merging"; 
 $LANG["software"][48]="Merge"; 
 $LANG["software"][49]="Software put in the trash after merging"; 
+$LANG["software"][50]="Assigned to the computer"; 
+$LANG["software"][51]="The number must be 1 to be able to affect"; 
 
 $LANG["softwarecategories"][1]="Pregados"; 
 $LANG["softwarecategories"][2]="Despregados"; 

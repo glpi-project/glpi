@@ -424,6 +424,8 @@ $LANG["entity"][8]="Per entità";
 $LANG["entity"][9]="Sotto-entità"; 
 $LANG["entity"][10]="Seleziona entità desiderata"; 
 $LANG["entity"][11]="mostra entità e sotto-entità"; 
+$LANG["entity"][12]="Entity DN"; 
+$LANG["entity"][13]="Entity TAG"; 
 
 $LANG["event"][0]="Elemento (ID)"; 
 $LANG["event"][2]="Servizio"; 
@@ -1362,6 +1364,8 @@ $LANG["rulesengine"][112]="Assegnazione entità e diritti";
 $LANG["rulesengine"][120]="Il gestore termina alla prima regola soddisfatta."; 
 $LANG["rulesengine"][121]="Il gestore convalida tutte le regole."; 
 $LANG["rulesengine"][122]="Il gestore passa l'esito di una regola alla successiva."; 
+$LANG["rulesengine"][130]="Entity from LDAP"; 
+$LANG["rulesengine"][131]="Entity from TAG"; 
 
 $LANG["search"][0]="Cerca"; 
 $LANG["search"][2]="contiene"; 
@@ -1376,6 +1380,7 @@ $LANG["search"][17]="Aggiungi criterio di ricerca";
 $LANG["search"][18]="Rimuovi un criterio di ricerca"; 
 $LANG["search"][19]="Aggiungi criterio di ricerca globale"; 
 $LANG["search"][20]="Rimuovi un criterio globale di ricerca"; 
+$LANG["search"][21]="Search results"; 
 
 $LANG["setup"][0]="Configurazione elenchi"; 
 $LANG["setup"][1]="Attenzione, se questi oggetti sono in uso, saranno sostituiti da un valore nullo."; 
@@ -1666,6 +1671,8 @@ $LANG["software"][46]="Visibile in Helpdesk";
 $LANG["software"][47]="Raggruppamento"; 
 $LANG["software"][48]="Consolidare"; 
 $LANG["software"][49]="Software messo nel cestino dopo la riunificazione"; 
+$LANG["software"][50]="Assigned to the computer"; 
+$LANG["software"][51]="The number must be 1 to be able to affect"; 
 
 $LANG["softwarecategories"][1]="Compatte"; 
 $LANG["softwarecategories"][2]="Estese"; 

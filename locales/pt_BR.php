@@ -424,6 +424,8 @@ $LANG["entity"][8]="Por entidade";
 $LANG["entity"][9]="Entidades subordinadas"; 
 $LANG["entity"][10]="Selecione a entidade desejada"; 
 $LANG["entity"][11]="para ver a entidade e suas sub-entidades"; 
+$LANG["entity"][12]="Entity DN"; 
+$LANG["entity"][13]="Entity TAG"; 
 
 $LANG["event"][0]="ID do item"; 
 $LANG["event"][2]="Serviço"; 
@@ -1362,6 +1364,8 @@ $LANG["rulesengine"][112]="Designação de permissões e entidades";
 $LANG["rulesengine"][120]="A engine parou na primeira regra verificada."; 
 $LANG["rulesengine"][121]="A engine tratou todas as regras"; 
 $LANG["rulesengine"][122]="A engine repassou o resultado de uma regra para a regra seguinte."; 
+$LANG["rulesengine"][130]="Entity from LDAP"; 
+$LANG["rulesengine"][131]="Entity from TAG"; 
 
 $LANG["search"][0]="Pesquisar"; 
 $LANG["search"][2]="contém"; 
@@ -1376,6 +1380,7 @@ $LANG["search"][17]="Adicionar critério de busca";
 $LANG["search"][18]="Deleta um critério de busca"; 
 $LANG["search"][19]="Adicionar critério de busca geral"; 
 $LANG["search"][20]="Adicionar um critério de busca geral"; 
+$LANG["search"][21]="Search results"; 
 
 $LANG["setup"][0]="Dropdowns"; 
 $LANG["setup"][1]="Atenção, se estes itens forem utilizados, eles serão substituídos por vazio."; 
@@ -1666,6 +1671,8 @@ $LANG["software"][46]="Visível no Helpdesk";
 $LANG["software"][47]="Mesclando"; 
 $LANG["software"][48]="Mesclar"; 
 $LANG["software"][49]="Software colocado no lixo após ser mesclado"; 
+$LANG["software"][50]="Assigned to the computer"; 
+$LANG["software"][51]="The number must be 1 to be able to affect"; 
 
 $LANG["softwarecategories"][1]="Embrulhar"; 
 $LANG["softwarecategories"][2]="Revelar"; 

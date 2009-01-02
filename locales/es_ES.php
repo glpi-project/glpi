@@ -424,6 +424,8 @@ $LANG["entity"][8]="Por entidad";
 $LANG["entity"][9]="Subentidades"; 
 $LANG["entity"][10]="Seleccionar la entidad deseada"; 
 $LANG["entity"][11]="para ver la entidad y sus subentidades"; 
+$LANG["entity"][12]="Entity DN"; 
+$LANG["entity"][13]="Entity TAG"; 
 
 $LANG["event"][0]="Item (ID)"; 
 $LANG["event"][2]="Incidencia"; 
@@ -1362,6 +1364,8 @@ $LANG["rulesengine"][112]="Derechos y asignación de entidades";
 $LANG["rulesengine"][120]="El motor se para cuando se verifique una de las reglas."; 
 $LANG["rulesengine"][121]="El motor ejecuta todas las reglas."; 
 $LANG["rulesengine"][122]="El motor pasa el resultado de una regla a las siguientes."; 
+$LANG["rulesengine"][130]="Entity from LDAP"; 
+$LANG["rulesengine"][131]="Entity from TAG"; 
 
 $LANG["search"][0]="Buscar"; 
 $LANG["search"][2]="contiene"; 
@@ -1376,6 +1380,7 @@ $LANG["search"][17]="Añadir un criterio de búsqueda";
 $LANG["search"][18]="Borrar un criterio de búsqueda"; 
 $LANG["search"][19]="Añadir un criterio global de búsqueda"; 
 $LANG["search"][20]="Borrar un criterio global de búsqueda"; 
+$LANG["search"][21]="Search results"; 
 
 $LANG["setup"][0]="Títulos"; 
 $LANG["setup"][1]="Cuidado, si utiliza estos elementos serán sustituidos por un valor nulo."; 
@@ -1666,6 +1671,8 @@ $LANG["software"][46]="Visible en el CAU";
 $LANG["software"][47]="Agrupación"; 
 $LANG["software"][48]="Reagrupar"; 
 $LANG["software"][49]="Programas enviados a la papelera después de reagrupar"; 
+$LANG["software"][50]="Assigned to the computer"; 
+$LANG["software"][51]="The number must be 1 to be able to affect"; 
 
 $LANG["softwarecategories"][1]="Plegados"; 
 $LANG["softwarecategories"][2]="Desplegados"; 

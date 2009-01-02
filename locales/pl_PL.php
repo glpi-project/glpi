@@ -424,6 +424,8 @@ $LANG["entity"][8]="Po oddziale";
 $LANG["entity"][9]="Oddział podrzędny"; 
 $LANG["entity"][10]="Wybierz żądany oddział"; 
 $LANG["entity"][11]="Zobacz oddziały i ich pododdziały"; 
+$LANG["entity"][12]="Entity DN"; 
+$LANG["entity"][13]="Entity TAG"; 
 
 $LANG["event"][0]="Pozycja (ID)"; 
 $LANG["event"][2]="Serwis"; 
@@ -1362,6 +1364,8 @@ $LANG["rulesengine"][112]="Prawa i przydzielanie oddziałów";
 $LANG["rulesengine"][120]="Silnik zatrzymuje się na pierwszej regule."; 
 $LANG["rulesengine"][121]="Silnik traktuje wszystkie reguły."; 
 $LANG["rulesengine"][122]="Silnik przekazuje rezultat reguły dalej."; 
+$LANG["rulesengine"][130]="Entity from LDAP"; 
+$LANG["rulesengine"][131]="Entity from TAG"; 
 
 $LANG["search"][0]="Szukaj"; 
 $LANG["search"][2]="zawiera"; 
@@ -1376,6 +1380,7 @@ $LANG["search"][17]="Dodaj kryterium wyszukiwania";
 $LANG["search"][18]="Skasuj kryterium wyszukiwania"; 
 $LANG["search"][19]="Dodaj globalne kryteria wyszukiwania"; 
 $LANG["search"][20]="Dodaj globalne kryteria wyszukiwania"; 
+$LANG["search"][21]="Search results"; 
 
 $LANG["setup"][0]="Listy rozwijalne"; 
 $LANG["setup"][1]="UWAGA! jeżeli elementy są używane, zostaną zamienione na puste."; 
@@ -1666,6 +1671,8 @@ $LANG["software"][46]="Widoczny dla Helpdesk-u";
 $LANG["software"][47]="Merging"; 
 $LANG["software"][48]="Merge"; 
 $LANG["software"][49]="Software put in the trash after merging"; 
+$LANG["software"][50]="Assigned to the computer"; 
+$LANG["software"][51]="The number must be 1 to be able to affect"; 
 
 $LANG["softwarecategories"][1]="Zwinięte"; 
 $LANG["softwarecategories"][2]="Rozwinięte"; 

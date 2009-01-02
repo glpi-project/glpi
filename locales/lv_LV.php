@@ -424,6 +424,8 @@ $LANG["entity"][8]="Pēc nodaļas";
 $LANG["entity"][9]="Apakšnodaļas"; 
 $LANG["entity"][10]="Izvēlieties vēlamo apakšnodaļu"; 
 $LANG["entity"][11]="skatīt nodaļu un tās apakšnodaļas"; 
+$LANG["entity"][12]="Entity DN"; 
+$LANG["entity"][13]="Entity TAG"; 
 
 $LANG["event"][0]="Objekts (ID)"; 
 $LANG["event"][2]="Serviss"; 
@@ -1362,6 +1364,8 @@ $LANG["rulesengine"][112]="Tiesību un nodaļu piešķiršana";
 $LANG["rulesengine"][120]="Nosacījumu izpilde apstājās pēc pirmā nosacījuma."; 
 $LANG["rulesengine"][121]="Visi nosacījumi tiek izpildīti."; 
 $LANG["rulesengine"][122]="Nosacījumu izpildes rezutāts tiek nodots sekojošiem"; 
+$LANG["rulesengine"][130]="Entity from LDAP"; 
+$LANG["rulesengine"][131]="Entity from TAG"; 
 
 $LANG["search"][0]="Meklēt"; 
 $LANG["search"][2]="satur"; 
@@ -1376,6 +1380,7 @@ $LANG["search"][17]="Pievienot meklēšanas kritēriju";
 $LANG["search"][18]="Dzēst meklēšanas kritēriju"; 
 $LANG["search"][19]="Pievienot globālu meklēšanas kritēriju"; 
 $LANG["search"][20]="Dzēst globālu meklēšanas kritēriju"; 
+$LANG["search"][21]="Search results"; 
 
 $LANG["setup"][0]="Izkrītošās izvēlnes"; 
 $LANG["setup"][1]="Uzmanību, ja šie ieraksti tiks izmantoti, tie tiks aizvietoti ar neko."; 
@@ -1666,6 +1671,8 @@ $LANG["software"][46]="Redzama iesniedzot pieteikumu";
 $LANG["software"][47]="Merging"; 
 $LANG["software"][48]="Merge"; 
 $LANG["software"][49]="Software put in the trash after merging"; 
+$LANG["software"][50]="Assigned to the computer"; 
+$LANG["software"][51]="The number must be 1 to be able to affect"; 
 
 $LANG["softwarecategories"][1]="Pievienota(Folded up)"; 
 $LANG["softwarecategories"][2]="Nepievienota (Unfolded)"; 
