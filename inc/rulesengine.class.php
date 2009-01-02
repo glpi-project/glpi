@@ -1126,7 +1126,7 @@ class Rule extends CommonDBTM{
 		global $CFG_GLPI;
 
 		$items=array();
-		foreach ($this->getActions() as $ID => $act){
+		foreach ($this->getActions(true) as $ID => $act){
 			$items[$ID]=$act['name'];
 		}
 
@@ -1139,10 +1139,20 @@ class Rule extends CommonDBTM{
 	}
 
 	/**
+	 * Filter actions if needed
+	 *  @param $actions the actions array
+	 *  @param $new_action indicates if the function is called when adding a new action
+	 *  or when displaying an already added action
+	 * @return the filtered actions array
+	 */
+	function filterActions($actions,$new_action=false){
+		return $actions;
+	}
+
+	/**
 	 * Get the criterias array definition
 	 * @return the criterias array
 	**/
-	
 	function getCriterias(){
 		global $RULES_CRITERIAS;
 
@@ -1157,23 +1167,16 @@ class Rule extends CommonDBTM{
 	 * Get the actions array definition
 	 * @return the actions array
 	 */
-	function getActions(){
+	function getActions($new_action=false){
 		global $RULES_ACTIONS;
 		if (isset($RULES_ACTIONS[$this->rule_type])){
-			return $this->filterActions($RULES_ACTIONS[$this->rule_type]);
+			return $this->filterActions($RULES_ACTIONS[$this->rule_type],$new_action);
 		} else {
 			return array();
 		}
 	}
 
-	/**
-	 * Filter actions if needed
-	*  @param $actions the actions array
-	 * @return the filtered actions array
-	 */
-	function filterActions($actions){
-		return $actions;
-	}
+
 	/**
 	 * Get a criteria description by his ID
 	 * @param $ID the criteria's ID

@@ -173,6 +173,47 @@ class RightAffectRule extends Rule {
 	}
 
 	/**
+	 * Filter actions if needed
+	*  @param $actions the actions array
+	*  @param $new_action indicates if the function is called when adding a new action
+	*  or when displaying an already added action
+	 * @return the filtered actions array
+	 */
+	function filterActions($actions,$new_action=false){
+		if ($new_action)
+		{
+			$RuleAction = new RuleAction;
+			$this->actions = $RuleAction->getRuleActions($this->fields["ID"]);
+			
+			foreach($this->actions as $action)
+			{
+				switch ($action->fields["field"])
+				{
+					case "_affect_entity_by_dn":
+						unset($actions["_affect_entity_by_tag"]);
+						unset($actions["FK_entities"]);
+					break;
+					case "_affect_entity_by_tag":
+						unset($actions["_affect_entity_by_dn"]);
+						unset($actions["FK_entities"]);
+					break;
+					case "assign":
+						if($action->fields["field"] == "FK_entities")
+						{
+							unset($actions["_affect_entity_by_tag"]);
+							unset($actions["_affect_entity_by_dn"]);
+						}
+					break;
+					default:
+					break;	
+				}
+			}
+		}
+		
+		return $actions;
+	}
+
+	/**
 	* Execute the actions as defined in the rule
 	* @param $output the result of the actions
 	* @param $params the parameters
@@ -183,10 +224,12 @@ class RightAffectRule extends Rule {
 		$entity='';
 		$right='';
 		$recursive = 0;
+		$continue = true;
+		$output_src = $output;
 		
 		if (count($this->actions)){
 			foreach ($this->actions as $action){
-				
+					
 				switch ($action->fields["action_type"]){
 					case "assign" :
 						switch ($action->fields["field"])
@@ -207,12 +250,18 @@ class RightAffectRule extends Rule {
 								$res = getRegexResultById($action->fields["value"],$regex_results);
 								if ($res != null) 
 									$entity=getEntityIDByDn($res);
+								//Not entity assigned : action processing must be stopped for this rule 
+								else
+									$continue=false;	
 							break;
 							case "_affect_entity_by_tag":
 								$res = getRegexResultById($action->fields["value"],$regex_results);
 								if ($res != null) 
 									$entity=getEntityIDByTag($res);
-							break;								
+								//Not entity assigned : action processing must be stopped for this rule
+								else
+									$continue=false;
+								break;								
 						}
 						/*
 						if ($action->fields["field"] == "FK_entities") $entity = $action->fields["value"]; 
@@ -225,16 +274,22 @@ class RightAffectRule extends Rule {
 			}
 		}
 
-		//Nothing to be returned by the function :
-		//Store in session the entity and/or right
-		if ($entity != '' && $right != '')
-			$output["_ldap_rules"]["rules_entities_rights"][]=array($entity,$right,$recursive);
-		elseif ($entity != '') 
-			$output["_ldap_rules"]["rules_entities"][]=array($entity,$recursive);
-		elseif ($right != '') 
-			$output["_ldap_rules"]["rules_rights"][]=$right;
+		if ($continue)
+		{
+			//Nothing to be returned by the function :
+			//Store in session the entity and/or right
+			if ($entity != '' && $right != '')
+				$output["_ldap_rules"]["rules_entities_rights"][]=array($entity,$right,$recursive);
+			elseif ($entity != '') 
+				$output["_ldap_rules"]["rules_entities"][]=array($entity,$recursive);
+			elseif ($right != '') 
+				$output["_ldap_rules"]["rules_rights"][]=$right;
+
+			return $output;
+		}
+		else
+			return $output_src;
 			
-		return $output;
 	}
 
 
