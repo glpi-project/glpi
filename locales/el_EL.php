@@ -424,6 +424,8 @@ $LANG["entity"][8]="Ανά οντότητα";
 $LANG["entity"][9]="Υποσύνολο οντοτήτων"; 
 $LANG["entity"][10]="Επέλεξε την επιθυμητή οντότητα"; 
 $LANG["entity"][11]="για να δείτε την οντότητα και τις υποοντότητές του"; 
+$LANG["entity"][12]="Entity DN"; 
+$LANG["entity"][13]="Entity TAG"; 
 
 $LANG["event"][0]="Στοιχείο"; 
 $LANG["event"][2]="Υπηρεσίες"; 
@@ -1362,6 +1364,8 @@ $LANG["rulesengine"][112]="Ανάθεση δικαιωμάτων και οντο
 $LANG["rulesengine"][120]="Η μηχανή σταματά στον πρώτο επιλεγμένο κανόνα."; 
 $LANG["rulesengine"][121]="Η μηχανή συνδυάζει όλους τους κανόνες."; 
 $LANG["rulesengine"][122]="Η μηχανή περνά το αποτέλεσμα ενός κανόνα στους επόμενους."; 
+$LANG["rulesengine"][130]="Entity from LDAP"; 
+$LANG["rulesengine"][131]="Entity from TAG"; 
 
 $LANG["search"][0]="Αναζήτηση"; 
 $LANG["search"][2]="περιεχόμενα"; 
@@ -1376,6 +1380,7 @@ $LANG["search"][17]="Προσθήκη κριτιρίων αναζήτησης";
 $LANG["search"][18]="Διαγραφή κριτιρίων αναζήτησης"; 
 $LANG["search"][19]="Προσθήκη γενικών κριτιρίων αναζήτησης"; 
 $LANG["search"][20]="Προσθήκη γενικών κριτιρίων αναζήτησης"; 
+$LANG["search"][21]="Search results"; 
 
 $LANG["setup"][0]="Λίστες"; 
 $LANG["setup"][1]="Προσοχή, εάν αυτά τα στοιχεία χρησιμοποιούνται, θα αντικατασταθούν από κενό."; 
@@ -1666,6 +1671,8 @@ $LANG["software"][46]="Ορατό στο Helpdesk";
 $LANG["software"][47]="Merging"; 
 $LANG["software"][48]="Merge"; 
 $LANG["software"][49]="Software put in the trash after merging"; 
+$LANG["software"][50]="Assigned to the computer"; 
+$LANG["software"][51]="The number must be 1 to be able to affect"; 
 
 $LANG["softwarecategories"][1]="Σε αναμονή"; 
 $LANG["softwarecategories"][2]="Σε εξέλιξη"; 

@@ -424,6 +424,8 @@ $LANG["entity"][8]="Dupa entitate";
 $LANG["entity"][9]="Entitatea copil"; 
 $LANG["entity"][10]="Selectati entitatea dorita"; 
 $LANG["entity"][11]="pentru a vedea entitatea si diviziunile ei"; 
+$LANG["entity"][12]="Entity DN"; 
+$LANG["entity"][13]="Entity TAG"; 
 
 $LANG["event"][0]="Obiect (ID)"; 
 $LANG["event"][2]="Service"; 
@@ -1362,6 +1364,8 @@ $LANG["rulesengine"][112]="Desemnarea drepturile si entitatilor";
 $LANG["rulesengine"][120]="Motorul se opreste la prima regula verificata."; 
 $LANG["rulesengine"][121]="Motorul trateaza toate criteriile."; 
 $LANG["rulesengine"][122]="Motorul trece rezultatul unei actiuni, urmatorului criteriu."; 
+$LANG["rulesengine"][130]="Entity from LDAP"; 
+$LANG["rulesengine"][131]="Entity from TAG"; 
 
 $LANG["search"][0]="Cauta"; 
 $LANG["search"][2]="contine"; 
@@ -1376,6 +1380,7 @@ $LANG["search"][17]="Adauga un criteriu de cautare";
 $LANG["search"][18]="Sterge un criteriu de cautare"; 
 $LANG["search"][19]="Adauga un criteriu de cautare global"; 
 $LANG["search"][20]="Sterge un criteriu de cautare global"; 
+$LANG["search"][21]="Search results"; 
 
 $LANG["setup"][0]="Casete derulante"; 
 $LANG["setup"][1]="Atentie, daca aceste elemente sunt folosite, ele vor fi inlocuite cu valoarea Null."; 
@@ -1666,6 +1671,8 @@ $LANG["software"][46]="Vizibil in Helpdesk";
 $LANG["software"][47]="Merging"; 
 $LANG["software"][48]="Merge"; 
 $LANG["software"][49]="Software put in the trash after merging"; 
+$LANG["software"][50]="Assigned to the computer"; 
+$LANG["software"][51]="The number must be 1 to be able to affect"; 
 
 $LANG["softwarecategories"][1]="Restrans"; 
 $LANG["softwarecategories"][2]="Desfasurare"; 

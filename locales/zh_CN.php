@@ -424,6 +424,8 @@ $LANG["entity"][8]="By entity";
 $LANG["entity"][9]="Child entities"; 
 $LANG["entity"][10]="Select the desired entity"; 
 $LANG["entity"][11]="to see the entity and its sub-entities"; 
+$LANG["entity"][12]="Entity DN"; 
+$LANG["entity"][13]="Entity TAG"; 
 
 $LANG["event"][0]="项目(ID)"; 
 $LANG["event"][2]="服务"; 
@@ -1332,7 +1334,7 @@ $LANG["rulesengine"][77]="Dictionnaries";
 $LANG["rulesengine"][78]="Version"; 
 $LANG["rulesengine"][79]="Add regex result"; 
 $LANG["rulesengine"][80]="Global dictionnary"; 
-$LANG["rulesengine"][81]="Rule result"; 
+$LANG["rulesengine"][81]="Rule results"; 
 $LANG["rulesengine"][82]="Result details"; 
 $LANG["rulesengine"][83]="You can affect the result of a regular expression using the string #0"; 
 $LANG["rulesengine"][84]="Test rules engine"; 
@@ -1362,6 +1364,8 @@ $LANG["rulesengine"][112]="Rights and entities assignment";
 $LANG["rulesengine"][120]="The engine stops on the first checked rule."; 
 $LANG["rulesengine"][121]="The engine treats all the rules."; 
 $LANG["rulesengine"][122]="The engine passes the result of a rule to the following ones."; 
+$LANG["rulesengine"][130]="Entity from LDAP"; 
+$LANG["rulesengine"][131]="Entity from TAG"; 
 
 $LANG["search"][0]="检索"; 
 $LANG["search"][2]="包含"; 
@@ -1376,6 +1380,7 @@ $LANG["search"][17]="添加检索标准";
 $LANG["search"][18]="删除检索标准"; 
 $LANG["search"][19]="添加全局检索标准"; 
 $LANG["search"][20]="添加全局检索标准"; 
+$LANG["search"][21]="Search results"; 
 
 $LANG["setup"][0]="下拉列表"; 
 $LANG["setup"][1]="Caution, if these items are used, they will be replaced by null."; 
@@ -1666,6 +1671,8 @@ $LANG["software"][46]="Visible in Helpdesk";
 $LANG["software"][47]="Merging"; 
 $LANG["software"][48]="Merge"; 
 $LANG["software"][49]="Software put in the trash after merging"; 
+$LANG["software"][50]="Assigned to the computer"; 
+$LANG["software"][51]="The number must be 1 to be able to affect"; 
 
 $LANG["softwarecategories"][1]="Folded up"; 
 $LANG["softwarecategories"][2]="Unfolded"; 

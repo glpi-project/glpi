@@ -424,6 +424,8 @@ $LANG["entity"][8]="По организациям";
 $LANG["entity"][9]="Подчинённые организации"; 
 $LANG["entity"][10]="Выберете нужную организацию"; 
 $LANG["entity"][11]="показать организацию и её подчинённые"; 
+$LANG["entity"][12]="Entity DN"; 
+$LANG["entity"][13]="Entity TAG"; 
 
 $LANG["event"][0]="Элемент (ID)"; 
 $LANG["event"][2]="Служба"; 
@@ -1362,6 +1364,8 @@ $LANG["rulesengine"][112]="Rights and entities assignment";
 $LANG["rulesengine"][120]="Обработка закончится на первом сработавшем условии."; 
 $LANG["rulesengine"][121]="Обрабатываются все правила."; 
 $LANG["rulesengine"][122]="Выполняется первое подходящее правило из списка."; 
+$LANG["rulesengine"][130]="Entity from LDAP"; 
+$LANG["rulesengine"][131]="Entity from TAG"; 
 
 $LANG["search"][0]="Параметры отбора"; 
 $LANG["search"][2]="содержит"; 
@@ -1376,6 +1380,7 @@ $LANG["search"][17]="Добавить критерий поиска";
 $LANG["search"][18]="Удалить критерий поиска"; 
 $LANG["search"][19]="Добавить глобальный критерий поиска"; 
 $LANG["search"][20]="Добавить глобальный критерий поиска"; 
+$LANG["search"][21]="Search results"; 
 
 $LANG["setup"][0]="Раскрываемые списки"; 
 $LANG["setup"][1]="Внимание! Везде где были использованы, будет заменено на 'пусто'"; 
@@ -1666,6 +1671,8 @@ $LANG["software"][46]="Показывать в Helpdesk";
 $LANG["software"][47]="Merging"; 
 $LANG["software"][48]="Merge"; 
 $LANG["software"][49]="Software put in the trash after merging"; 
+$LANG["software"][50]="Assigned to the computer"; 
+$LANG["software"][51]="The number must be 1 to be able to affect"; 
 
 $LANG["softwarecategories"][1]="Сортировать"; 
 $LANG["softwarecategories"][2]="Не сортировать"; 

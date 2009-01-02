@@ -424,6 +424,8 @@ $LANG["entity"][8]="Per entitat";
 $LANG["entity"][9]="Sots-entitats"; 
 $LANG["entity"][10]="Seleccionar l'entitat desitjada"; 
 $LANG["entity"][11]="per a veure l'entitat i les seves subentitats"; 
+$LANG["entity"][12]="Entity DN"; 
+$LANG["entity"][13]="Entity TAG"; 
 
 $LANG["event"][0]="Item (ID)"; 
 $LANG["event"][2]="Incidència"; 
@@ -1362,6 +1364,8 @@ $LANG["rulesengine"][112]="Drets i assignació d'entitats";
 $LANG["rulesengine"][120]="El motor es para quan es verifiqui una de les regles."; 
 $LANG["rulesengine"][121]="El motor executa totes les regles."; 
 $LANG["rulesengine"][122]="El motor passa el resultat d'una regla a les següents."; 
+$LANG["rulesengine"][130]="Entity from LDAP"; 
+$LANG["rulesengine"][131]="Entity from TAG"; 
 
 $LANG["search"][0]="Buscar"; 
 $LANG["search"][2]="conté"; 
@@ -1376,6 +1380,7 @@ $LANG["search"][17]="Afegir un criteri de recerca";
 $LANG["search"][18]="Esborrar un criteri de recerca"; 
 $LANG["search"][19]="Afegir un criteri global de recerca"; 
 $LANG["search"][20]="Esborrar un criteri global de recerca"; 
+$LANG["search"][21]="Search results"; 
 
 $LANG["setup"][0]="Títols"; 
 $LANG["setup"][1]="Compte! Si utilitzes aquests elements han de ser substituïts per un valor nul."; 
@@ -1666,6 +1671,8 @@ $LANG["software"][46]="Visible al CAU";
 $LANG["software"][47]="Merging"; 
 $LANG["software"][48]="Merge"; 
 $LANG["software"][49]="Software put in the trash after merging"; 
+$LANG["software"][50]="Assigned to the computer"; 
+$LANG["software"][51]="The number must be 1 to be able to affect"; 
 
 $LANG["softwarecategories"][1]="Plegats"; 
 $LANG["softwarecategories"][2]="Desplegats"; 
