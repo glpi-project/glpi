@@ -231,7 +231,6 @@ function update0713to072() {
 		`sID` int(15) NOT NULL default '0',
 	  	`state` int(11) NOT NULL default '0',
 		`name` varchar(255) collate utf8_unicode_ci default NULL,
-		`serial` varchar(255) collate utf8_unicode_ci default NULL,
 		`comments` text collate utf8_unicode_ci,
 		PRIMARY KEY  (`ID`),
 		KEY `sID` (`sID`),
