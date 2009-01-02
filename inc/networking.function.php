@@ -361,7 +361,7 @@ function showNetportForm($target, $ID, $ondevice, $devtype, $several) {
 					$i++;
 				}
 		if (count($macs) > 0) {
-			echo "<tr class='tab_bg_1'><td>" . $LANG["networking"][15] . ":</td><td>";
+			echo "<tr class='tab_bg_1'><td>" . $LANG["networking"][15] . ":</td><td colspan='2'>";
 			echo "<select name='pre_mac'>";
 			echo "<option value=''>------</option>";
 			foreach ($macs as $key => $val) {
@@ -372,7 +372,7 @@ function showNetportForm($target, $ID, $ondevice, $devtype, $several) {
 			echo "</td></tr>\n";
 
 			echo "<tr class='tab_bg_2'><td>&nbsp;</td>";
-			echo "<td>" . $LANG["networking"][57];
+			echo "<td colspan='2'>" . $LANG["networking"][57];
 			echo "</td></tr>\n";
 
 		}
