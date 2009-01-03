@@ -692,8 +692,7 @@ function showInstallations($searchID, $crit="sID") {
 			echo "<th>".(strstr($order,"location")?$sort_img:"")."<a href='javascript:reloadTab(\"order=location,compname&start=0\");'>".$LANG["common"][15]."</a></th>";
 			echo "<th>".(strstr($order,"groupe")?$sort_img:"")."<a href='javascript:reloadTab(\"order=groupe,compname&start=0\");'>".$LANG["common"][35]."</a></th>";
 			echo "<th>".(strstr($order,"username")?$sort_img:"")."<a href='javascript:reloadTab(\"order=username,compname&start=0\");'>".$LANG["common"][34]."</a></th>";
-			// $LANG["help"][25] = "Computer" rather than "Affected To computer" ($LANG["software"][50] is too long) ??
-			echo "<th>".($order=="lname"?$sort_img:"")."<a href='javascript:reloadTab(\"order=lname&start=0\");'>".$LANG["help"][25]."</a></th>";
+			echo "<th>".($order=="lname"?$sort_img:"")."<a href='javascript:reloadTab(\"order=lname&start=0\");'>".$LANG["software"][11]."</a></th>";
 			echo "</tr>\n";
 
 			do {
