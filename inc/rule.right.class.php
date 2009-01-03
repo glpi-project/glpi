@@ -179,15 +179,12 @@ class RightAffectRule extends Rule {
 	*  or when displaying an already added action
 	 * @return the filtered actions array
 	 */
-	function filterActions($actions,$new_action=false){
-		if ($new_action)
-		{
+	function filterActions($actions){
 			$RuleAction = new RuleAction;
 			$this->actions = $RuleAction->getRuleActions($this->fields["ID"]);
-			
 			foreach($this->actions as $action)
 			{
-				switch ($action->fields["field"])
+				switch ($action->fields["action_type"])
 				{
 					case "_affect_entity_by_dn":
 						unset($actions["_affect_entity_by_tag"]);
@@ -208,8 +205,7 @@ class RightAffectRule extends Rule {
 					break;	
 				}
 			}
-		}
-		
+
 		return $actions;
 	}
 
