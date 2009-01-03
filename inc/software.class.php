@@ -638,7 +638,7 @@ class SoftwareLicense extends CommonDBTM {
 			$input['FK_computers'] = -1;
 		}
 		if ((isset($input['FK_computers']) && $input['FK_computers'] > 0) 
-		 	|| (!isset($input['FK_computers']) && $this->fields['FK_computers']>0)){
+		 	|| (!isset($input['FK_computers']) && isset($this->fields['FK_computers']) && $this->fields['FK_computers']>0)){
 			// Number is 1 for affected license
 			$input['number']=1;
 		}
