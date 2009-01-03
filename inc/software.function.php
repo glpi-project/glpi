@@ -1369,12 +1369,21 @@ function installSoftwareVersion($cID, $vID, $dohistory=1){
 							$changes[0] = '0';
 							$changes[1] = "";
 							$changes[2] = addslashes($soft->fields["name"] . " " . $vers->fields["name"]);
-							// history log
+							// Log on Computer history
 							historyLog($cID, COMPUTER_TYPE, $changes, 0, HISTORY_INSTALL_SOFTWARE);
-							$comp = new Computer();
-							$comp->getFromDB($cID);
+						}
+						$comp = new Computer();
+						if ($comp->getFromDB($cID)) {
+							$changes[0] = '0';
+							$changes[1] = "";
+							$changes[2] = addslashes($comp->fields["name"]);
+							// Log on SoftwareVersion history
+							historyLog($vID, SOFTWAREVERSION_TYPE, $changes, 0, HISTORY_INSTALL_SOFTWARE);
+							
+							/* Log on Software history
 							$changes[2] = addslashes($comp->fields["name"] . " " . $vers->fields["name"]);
 							historyLog($vers->fields["sID"], SOFTWARE_TYPE, $changes, 0, HISTORY_INSTALL_SOFTWARE);
+							*/
 						}
 					}
 				}				
@@ -1442,13 +1451,21 @@ function uninstallSoftwareVersion($ID, $dohistory = 1) {
 					$changes[0] = '0';
 					$changes[1] = addslashes($soft->fields["name"] . " " . $vers->fields["name"]);
 					$changes[2] = "";
-					// history log
+					// Log on Computer history
 					historyLog($data["cID"], COMPUTER_TYPE, $changes, 0, HISTORY_UNINSTALL_SOFTWARE);
-					$comp = new Computer();
-					$comp->getFromDB($data["cID"]);
+				}
+				$comp = new Computer();
+				if ($comp->getFromDB($data["cID"])) {				
+					$changes[0] = '0';
+					$changes[1] = addslashes($comp->fields["name"]);
+					$changes[2] = "";
+					// Log on SoftwareVersion history
+					historyLog($data["vID"], SOFTWAREVERSION_TYPE, $changes, 0, HISTORY_UNINSTALL_SOFTWARE);
+
+					/* Log on Software history
 					$changes[1] = addslashes($comp->fields["name"] . " " . $vers->fields["name"]);
 					historyLog($vers->fields["sID"], SOFTWARE_TYPE, $changes, 0, HISTORY_UNINSTALL_SOFTWARE);
-	
+					*/
 				}
 			}
 		}
