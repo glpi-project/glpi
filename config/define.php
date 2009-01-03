@@ -53,7 +53,11 @@
 	// MAILGATE CONTROL -> IN DB ?
 	define("MAX_MAILS_RETRIEVED",10);
 
+	//OCSNG IMPORT VARIABLES
 	define("OCS_FIELD_SEPARATOR",'$$$$$');
+	define("OCS_IMPORT_TAG_070","_version_070_");
+	define("OCS_IMPORT_TAG_072","_version_072_");
+
 
 	// ITEMS TYPE
 	define("GENERAL_TYPE",0);//

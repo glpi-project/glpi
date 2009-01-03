@@ -1696,11 +1696,14 @@ function ocsEditLock($target, $ID) {
 		echo "<br>";
 		echo "<div class='center'>";
 		$locked_ip = importArrayFromDB($data["import_ip"]);
+		
+		if (!in_array(OCS_IMPORT_TAG_072,$locked_ip))
+				$locked_ip=migrateImportIP($ID,$locked_ip);
+		
 		foreach ($locked_ip as $key => $val) {
 			if ($key>0)
 			{
 				$tmp = explode(OCS_FIELD_SEPARATOR,$val);
-				
 				$querySearchLockedIP = "SELECT * FROM glpi_networking_ports WHERE on_device='$ID' AND device_type='".COMPUTER_TYPE."' AND ifaddr='".$tmp[0]."' AND ifmac='".$tmp[1]."'";
 				$resultSearchIP = $DB->query($querySearchLockedIP);
 				if ($DB->numrows($resultSearchIP) == 0) {
@@ -2039,41 +2042,13 @@ function ocsUpdateDevices($device_type, $glpi_id, $ocs_id, $ocs_server_id, $cfg_
 			}
 			break;
 		case NETWORK_DEVICE :
-			$tagVersionInArray = "_VERSION_072_";
+			
 
 			//Carte reseau
 			if ($cfg_ocs["import_device_iface"] || $cfg_ocs["import_ip"]) {
-				
 				//If import_ip doesn't contain _VERSION_072_, then migrate it to the new architecture
-				if (!in_array($tagVersionInArray,$import_ip))
-				{
-					//Add the new tag as the first occurence in the array
-					addToOcsArray($glpi_id,array(0=>$tagVersionInArray),"import_ip");
-					$import_ip[0]=$tagVersionInArray;
-
-					//If import_ip is empty : machine comes from pre 0.70 version or new machine to be imported in glpi
-					if (count($import_ip) > 1)
-					{
-						foreach($import_ip as $importip_ID => $value)
-						{
-							if ($importip_ID > 0)
-							{
-								//Delete old value in the array (ID => IP)
-								deleteInOcsArray($glpi_id,$importip_ID,"import_ip");
-								unset($import_ip[$importip_ID]);
-								$query="SELECT ifmac, ifaddr FROM glpi_networking_ports WHERE ID=$importip_ID";
-								$result = $DB->query($query);
-								$datas = $DB->fetch_array($result);
-								$new_ip = (isset($datas["ifaddr"])?$datas["ifaddr"]:"");
-								$new_mac = (isset($datas["ifmac"])?$datas["ifmac"]:"");
-								
-								//Add new value (ID => IP.$$$$$.MAC)
-								addToOcsArray($glpi_id,array($importip_ID=>$new_ip.OCS_FIELD_SEPARATOR.$new_mac),"import_ip");
-								$import_ip[$importip_ID]=$new_ip.OCS_FIELD_SEPARATOR.$new_mac;
-								}
-						}
-					}
-				}
+				if (!in_array(OCS_IMPORT_TAG_072,$import_ip))
+					$import_ip=migrateImportIP($glpi_id,$import_ip);
 				
 				$query2 = "SELECT * 
 													FROM networks 
@@ -2376,7 +2351,6 @@ function ocsUpdatePeripherals($device_type, $entity, $glpi_id, $ocs_id, $ocs_ser
 	$do_clean = false;
 	$connID = 0;
 	//Tag for data since 0.70 for the import_monitor array.
-	$tagVersionInArray = "_version_070_";
 
 	$count_monitor = count($import_periph);
 	switch ($device_type) {
@@ -2384,7 +2358,7 @@ function ocsUpdatePeripherals($device_type, $entity, $glpi_id, $ocs_id, $ocs_ser
 			if ($cfg_ocs["import_monitor"]) {
 
 				//Update data in import_monitor array for 0.70
-				if (!in_array($tagVersionInArray, $import_periph)) {
+				if (!in_array(OCS_IMPORT_TAG_070, $import_periph)) {
 					foreach ($import_periph as $key => $val) {
 						$monitor_tag = $val;
 						//delete old value									
@@ -2414,7 +2388,7 @@ function ocsUpdatePeripherals($device_type, $entity, $glpi_id, $ocs_id, $ocs_ser
 					}
 					//add the tag for the array version's
 					addToOcsArray($glpi_id, array (
-						0 => $tagVersionInArray
+						0 => OCS_IMPORT_TAG_070
 					), "import_monitor");
 
 				}
@@ -2540,8 +2514,8 @@ function ocsUpdatePeripherals($device_type, $entity, $glpi_id, $ocs_id, $ocs_ser
 								//Import unique : Disconnect monitor on other computer done in Connect function
 								$connID = Connect($id_monitor, $glpi_id, MONITOR_TYPE, $dohistory);
 
-								if (!in_array($tagVersionInArray, $import_periph)) {
-									addToOcsArray($glpi_id, array (0 => $tagVersionInArray), "import_monitor");
+								if (!in_array(OCS_IMPORT_TAG_070, $import_periph)) {
+									addToOcsArray($glpi_id, array (0 => OCS_IMPORT_TAG_070), "import_monitor");
 								}
 								addToOcsArray($glpi_id, array ($connID => $checkMonitor), "import_monitor");
 								$count_monitor++;
@@ -2575,7 +2549,7 @@ function ocsUpdatePeripherals($device_type, $entity, $glpi_id, $ocs_id, $ocs_ser
 						}
 					} // empty name
 				} // while fetch
-				if (in_array($tagVersionInArray, $import_periph)) {
+				if (in_array(OCS_IMPORT_TAG_070, $import_periph)) {
 					//unset the version Tag
 					unset ($import_periph[0]);
 				}
@@ -2906,18 +2880,15 @@ function ocsUpdateSoftware($glpi_id, $entity, $ocs_id, $ocs_server_id, $cfg_ocs,
 
 	checkOCSconnection($ocs_server_id);
 
-	//Tag for data since 0.70 for the import_software array.
-	$tagVersionInArray = "_version_070_";
-
 	if ($cfg_ocs["import_software"]) {
 
 		//------------------------------------------------------------------------------------------------------------------//
 		//---- Import_software array is not in the new form ( ID => name+version) -----//
 		//----------------------------------------------------------------------------------------------------------------//
-		if (!in_array($tagVersionInArray, $import_software)) {
+		if (!in_array(OCS_IMPORT_TAG_070, $import_software)) {
 			
 			//Add the tag of the version at the beginning of the array
-			$softs_array[0] = $tagVersionInArray;
+			$softs_array[0] = OCS_IMPORT_TAG_070;
 			
 			//For each element of the table, add instID=>name.version
 			foreach ($import_software as $key => $value)
@@ -3736,5 +3707,37 @@ function getOcsGeneralIpAddress($ocs_server_id,$computer_id)
 		return $DBocs->result($res,0,"IPADDR");
 	else
 		return '';	
+}
+
+function migrateImportIP($glpi_id,$import_ip)
+{
+	global $DB;
+	
+	//Add the new tag as the first occurence in the array
+	addToOcsArray($glpi_id,array(0=>OCS_IMPORT_TAG_072),"import_ip");
+	$import_ip[0]=OCS_IMPORT_TAG_072;
+	//If import_ip is empty : machine comes from pre 0.70 version or new machine to be imported in glpi
+	if (count($import_ip) > 1)
+	{
+		foreach($import_ip as $importip_ID => $value)
+		{
+			if ($importip_ID > 0)
+			{
+				//Delete old value in the array (ID => IP)
+				deleteInOcsArray($glpi_id,$importip_ID,"import_ip");
+				unset($import_ip[$importip_ID]);
+				$query="SELECT ifmac, ifaddr FROM glpi_networking_ports WHERE ID=$importip_ID";
+				$result = $DB->query($query);
+				$datas = $DB->fetch_array($result);
+				$new_ip = (isset($datas["ifaddr"])?$datas["ifaddr"]:"");
+				$new_mac = (isset($datas["ifmac"])?$datas["ifmac"]:"");
+							
+				//Add new value (ID => IP.$$$$$.MAC)
+				addToOcsArray($glpi_id,array($importip_ID=>$new_ip.OCS_FIELD_SEPARATOR.$new_mac),"import_ip");
+				$import_ip[$importip_ID]=$new_ip.OCS_FIELD_SEPARATOR.$new_mac;
+				}
+		}
+	}
+	return $import_ip;
 }
 ?>
