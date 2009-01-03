@@ -430,6 +430,7 @@ class SoftwareVersion extends CommonDBTM {
 		$this->type = SOFTWAREVERSION_TYPE;
 		$this->entity_assign=true;
 		$this->may_be_recursive=true;
+		$this->dohistory = true;
 	}
 	function cleanDBonPurge($ID) {
 
@@ -467,6 +468,7 @@ class SoftwareVersion extends CommonDBTM {
 		
 		if ($ID) {
 			$ong[2] = $LANG["software"][19];
+			$ong[12] = $LANG["title"][38];
 		}
 
 		return $ong;

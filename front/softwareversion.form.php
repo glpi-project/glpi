@@ -71,7 +71,8 @@ else if (isset($_POST["update"]))
 
 	$version->update($_POST);
 	logEvent($version->fields['sID'], "software", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][83]." ".$_POST["ID"]);
-	glpi_header($CFG_GLPI["root_doc"]."/front/software.form.php?ID=".$version->fields['sID']);
+	//glpi_header($CFG_GLPI["root_doc"]."/front/software.form.php?ID=".$version->fields['sID']);
+	glpi_header($_SERVER['HTTP_REFERER']);
 } 
 else
 {
