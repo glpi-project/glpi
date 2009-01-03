@@ -2121,6 +2121,11 @@ $SEARCH_OPTION[SOFTWARELICENSE_TYPE][9]['field']='name';
 $SEARCH_OPTION[SOFTWARELICENSE_TYPE][9]['linkfield']='FK_computers'; 
 $SEARCH_OPTION[SOFTWARELICENSE_TYPE][9]['name']=$LANG["software"][50]; 
 
+$SEARCH_OPTION[SOFTWARELICENSE_TYPE][16]['table']='glpi_softwarelicenses';
+$SEARCH_OPTION[SOFTWARELICENSE_TYPE][16]['field']='comments';
+$SEARCH_OPTION[SOFTWARELICENSE_TYPE][16]['linkfield']='comments';
+$SEARCH_OPTION[SOFTWARELICENSE_TYPE][16]['name']=$LANG["common"][25];
+
 $SEARCH_OPTION[SOFTWARELICENSE_TYPE][25]['table']='glpi_infocoms';
 $SEARCH_OPTION[SOFTWARELICENSE_TYPE][25]['field']='num_immo';
 $SEARCH_OPTION[SOFTWARELICENSE_TYPE][25]['linkfield']='';
@@ -2210,6 +2215,26 @@ $SEARCH_OPTION[SOFTWARELICENSE_TYPE][122]['table']='glpi_infocoms';
 $SEARCH_OPTION[SOFTWARELICENSE_TYPE][122]['field']='comments'; 
 $SEARCH_OPTION[SOFTWARELICENSE_TYPE][122]['linkfield']=''; 
 $SEARCH_OPTION[SOFTWARELICENSE_TYPE][122]['name']=$LANG["common"][25]." - ".$LANG["financial"][3]; 
+
+
+//////SOFTWAREVERSION_TYPE
+
+// Only use for History (not by search Engine)
+
+$SEARCH_OPTION[SOFTWAREVERSION_TYPE][2]['table']='glpi_softwareversions'; 
+$SEARCH_OPTION[SOFTWAREVERSION_TYPE][2]['field']='name'; 
+$SEARCH_OPTION[SOFTWAREVERSION_TYPE][2]['linkfield']='name'; 
+$SEARCH_OPTION[SOFTWAREVERSION_TYPE][2]['name']=$LANG["common"][16]; 
+
+$SEARCH_OPTION[SOFTWAREVERSION_TYPE][16]['table']='glpi_softwareversions';
+$SEARCH_OPTION[SOFTWAREVERSION_TYPE][16]['field']='comments';
+$SEARCH_OPTION[SOFTWAREVERSION_TYPE][16]['linkfield']='comments';
+$SEARCH_OPTION[SOFTWAREVERSION_TYPE][16]['name']=$LANG["common"][25];
+
+$SEARCH_OPTION[SOFTWAREVERSION_TYPE][31]['table']='glpi_dropdown_state';
+$SEARCH_OPTION[SOFTWAREVERSION_TYPE][31]['field']='name';
+$SEARCH_OPTION[SOFTWAREVERSION_TYPE][31]['linkfield']='state';
+$SEARCH_OPTION[SOFTWAREVERSION_TYPE][31]['name']=$LANG["state"][0];
 
 	 
 //////CONTACT_TYPE

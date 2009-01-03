@@ -59,6 +59,9 @@ if(!isset($_POST["withtemplate"])) $_POST["withtemplate"] = "";
 			case 2 :
 				showInstallations($_POST["ID"], "ID");
 				break;
+			case 12 :
+				showHistory(SOFTWAREVERSION_TYPE,$_POST["ID"]);
+				break;
 			default :
 				if (!displayPluginAction(SOFTWAREVERSION_TYPE,$_POST["ID"],$_POST['glpi_tab'],$_POST["withtemplate"])){
 					showInstallationsByEntity($_POST["ID"]);
