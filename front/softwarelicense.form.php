@@ -68,7 +68,8 @@ else if (isset($_POST["update"]))
 
 	$license->update($_POST);
 	logEvent($license->fields['sID'], "software", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][86]." ".$_POST["ID"]);
-	glpi_header($CFG_GLPI["root_doc"]."/front/software.form.php?ID=".$license->fields['sID']);
+	//glpi_header($CFG_GLPI["root_doc"]."/front/software.form.php?ID=".$license->fields['sID']);
+	glpi_header($_SERVER['HTTP_REFERER']);
 } 
 else
 {
