@@ -634,9 +634,10 @@ class SoftwareLicense extends CommonDBTM {
 
 	function prepareInputForUpdate($input) {
 
-		if (!isset($input['FK_computers']) || $input['FK_computers'] == 0){
+		if (isset($input['FK_computers']) && $input['FK_computers'] == 0){
 			$input['FK_computers'] = -1;
-		} else {
+		}
+		if (isset($input['FK_computers']) && $input['FK_computers'] > 0){
 			// Number is 1 for affected license
 			$input['number']=1;
 		}
