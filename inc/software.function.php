@@ -104,7 +104,7 @@ function showVersions($sID) {
 					echo "<td>".$data['comments']."</td></tr>";
 				}
 			}
-			echo "<tr class='tab_bg_1'><td align='right'>".$LANG["common"][33]."</td><td align='right'>$tot</td><td>";
+			echo "<tr class='tab_bg_1'><td></td><td align='right'>".$LANG["common"][33]."</td><td align='right'>$tot</td><td>";
 			if ($canedit){
 				echo "<a href='softwareversion.form.php?sID=$sID'>".$LANG["software"][7]."</a>";
 			}
