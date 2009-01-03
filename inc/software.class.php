@@ -521,7 +521,7 @@ class SoftwareVersion extends CommonDBTM {
 		autocompletionTextField("name","glpi_softwareversions","name",$this->fields["name"],80);
 		echo "</td></tr>";
 	
-		echo "<td>" . $LANG["state"][0] . ":</td><td>";
+		echo "<tr class='tab_bg_1'><td>" . $LANG["state"][0] . ":</td><td>";
 		dropdownValue("glpi_dropdown_state", "state", $this->fields["state"]);
 		echo "</td></tr>";
 
