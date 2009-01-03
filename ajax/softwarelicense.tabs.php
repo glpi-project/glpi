@@ -59,6 +59,9 @@ if(!isset($_POST["withtemplate"])) $_POST["withtemplate"] = "";
 			case 4 :
 				showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",SOFTWARELICENSE_TYPE,$_POST["ID"]);
 				break;
+			case 12 :
+				showHistory(SOFTWARELICENSE_TYPE,$_POST["ID"]);
+				break;
 			default :
 				if (!displayPluginAction(SOFTWARELICENSE_TYPE,$_POST["ID"],$_POST['glpi_tab'],$_POST["withtemplate"])){
 				}

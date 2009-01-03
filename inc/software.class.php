@@ -586,6 +586,7 @@ class SoftwareLicense extends CommonDBTM {
 		$this->type = SOFTWARELICENSE_TYPE;
 		$this->entity_assign=true;
 		$this->may_be_recursive=true;
+		$this->dohistory = true;
 	}
 
 /*	function prepareInputForUpdate($input) {
@@ -687,8 +688,12 @@ class SoftwareLicense extends CommonDBTM {
 
 		$ong[1] = $LANG["title"][26];
 
-		if ($ID && haveRight("infocom","r")){
-			$ong[4] = $LANG["Menu"][26];
+		if ($ID){
+			if (haveRight("infocom","r")) {
+				$ong[4] = $LANG["Menu"][26];
+			}
+
+			$ong[12] = $LANG["title"][38];
 		}
 
 		return $ong;
