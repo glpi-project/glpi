@@ -154,7 +154,7 @@ function update0713to072() {
 	// Software Updates
 	displayMigrationMessage("072", $LANG["Menu"][4]); // Software
 
-	// Male software recursive
+	// Make software recursive
 	if (!FieldExists("glpi_software", "recursive")) {
 		$query = "ALTER TABLE `glpi_software` ADD `recursive` TINYINT( 1 ) NOT NULL DEFAULT '0' AFTER `FK_entities`;";
 		$DB->query($query) or die("0.72 add recursive in glpi_software" . $LANG["update"][90] . $DB->error());
