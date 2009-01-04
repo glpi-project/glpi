@@ -807,7 +807,7 @@ function generate_entity($ID_entity){
 	for ($i=0;$i<$MAX['document']/2;$i++){
 		$link="";
 		if (mt_rand(0,100)<50) $link="http://linktodoc/doc$i";
-		$query="INSERT INTO glpi_docs VALUES (NULL,'$ID_entity','1','Recrusive document $i-$ID_entity','','".mt_rand(1,$MAX['rubdocs'])."','',NOW(),'comment $i','0','$link','notes document $i','0','0')";
+		$query="INSERT INTO glpi_docs VALUES (NULL,'$ID_entity','1','Recursive document $i-$ID_entity','','".mt_rand(1,$MAX['rubdocs'])."','',NOW(),'comment $i','0','$link','notes document $i','0','0')";
 		$DB->query($query) or die("PB REQUETE ".$query);
 	}
 	$LAST["document"]=getMaxItem("glpi_docs");

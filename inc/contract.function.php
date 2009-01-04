@@ -537,9 +537,14 @@ function showContractAssociated($device_type,$ID,$withtemplate=''){
 	if ($withtemplate!=2)echo "<th>&nbsp;</th>";
 	echo "</tr>";
 
+	if ($number>0){
+		$_SESSION['glpilisttitle'][CONTRACT_TYPE]=$ci->getType()." = ".$ci->getName();
+		$_SESSION['glpilistitems'][CONTRACT_TYPE]=array();
+	}
 	$contracts=array();
 	while ($i < $number) {
 		$cID=$DB->result($result, $i, "FK_contract");
+		$_SESSION['glpilistitems'][CONTRACT_TYPE][]=$cID;
 		$contracts[]=$cID;
 		$assocID=$DB->result($result, $i, "ID");
 		$con=new Contract;
