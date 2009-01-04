@@ -76,6 +76,9 @@ if (isset($_POST["device_type"])&&isset($_POST["id_field"])&&$_POST["id_field"])
 				dropdownInteger($search["field"],0,0,120);
 				echo " ".$LANG["financial"][57];
 				break;
+			case "glpi_softwarelicenses.number":
+				dropdownInteger($search["linkfield"],0,1,1000,1,array(-1=>$LANG["software"][4]));
+				break;
 			case "glpi_contracts.begin_date":
 			case "glpi_softwarelicenses.expire":
 				showDateFormItem($search["field"]);
