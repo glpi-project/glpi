@@ -1353,7 +1353,7 @@ function generate_entity($ID_entity){
 		$techID=mt_rand(1,$MAX['users_sadmin']+$MAX['users_admin']);
 		$os=mt_rand(1,$MAX['os']);
 		$recursive=mt_rand(0,1);
-		$query="INSERT INTO glpi_software VALUES (NULL,'$ID_entity','$recursive','$name','comments $i','$loc','$techID','$os','0','-1','".mt_rand(1,$MAX['manufacturer'])."','0','0','',NOW(),'notes software $i','".mt_rand($FIRST['users_admin'],$LAST['users_admin'])."','".mt_rand($FIRST["groups"],$LAST["groups"])."','".(mt_rand(0,100)<$percent['state']?mt_rand(1,$MAX['state']):0)."','0','1','".mt_rand(1,$MAX['softwarecategory'])."')";
+		$query="INSERT INTO glpi_software VALUES (NULL,'$ID_entity','$recursive','$name','comments $i','$loc','$techID','$os','0','-1','".mt_rand(1,$MAX['manufacturer'])."','0','0','',NOW(),'notes software $i','".mt_rand($FIRST['users_admin'],$LAST['users_admin'])."','".mt_rand($FIRST["groups"],$LAST["groups"])."','0','1','".mt_rand(1,$MAX['softwarecategory'])."')";
 		$DB->query($query) or die("PB REQUETE ".$query);
 		$softID=$DB->insert_id();
 		addDocuments(SOFTWARE_TYPE,$softID);
@@ -1373,7 +1373,7 @@ function generate_entity($ID_entity){
 			if (isset($items[$i])) {
 				$version=$items[$i][mt_rand(1,count($items[$i])-1)];
 			} else $version="$j.0";
-			$query="INSERT INTO glpi_softwareversions VALUES (NULL,$softID,'$version','comment $version')";
+			$query="INSERT INTO glpi_softwareversions VALUES (NULL, $softID, '".(mt_rand(0,100)<$percent['state']?mt_rand(1,$MAX['state']):0)."','$version','comment $version')";
 			$DB->query($query) or die("PB REQUETE ".$query);
 			$versID=$DB->insert_id();
 			$val3=mt_rand(1,$MAX['softwareinstall']);
@@ -1388,7 +1388,7 @@ function generate_entity($ID_entity){
 		for ($j=0;$j<$val2;$j++){
 			$buy_version=mt_rand($FIRST["version"],$LAST["version"]);
 			$use_version=mt_rand($buy_version,$LAST["version"]);
-			$query="INSERT INTO glpi_softwarelicenses VALUES (NULL,$softID,'$ID_entity','$recursive','".mt_rand(1,$MAX['softwareinstall'])."','".mt_rand(1,$MAX['licensetype'])."','license $j','serial $j','otherserial $j','$buy_version','$use_version',NULL,-1,'comment license $j')";
+			$query="INSERT INTO glpi_softwarelicenses VALUES (NULL,$softID,'$ID_entity','$recursive','".mt_rand(1,$MAX['softwareinstall'])."','".mt_rand(1,$MAX['licensetype'])."','license $j','serial $j','otherserial $j','$buy_version','$use_version',NULL,0,'comment license $j')";
 			$DB->query($query) or die("PB REQUETE ".$query);
 		}
 
