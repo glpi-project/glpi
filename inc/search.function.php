@@ -1972,7 +1972,7 @@ function addDefaultWhere ($type){
  *@return select string
  *
  **/
-function addWhere ($link,$nott,$type,$ID,$val,$meta=0){
+function addWhere($link,$nott,$type,$ID,$val,$meta=0){
 	global $LINK_ID_TABLE,$LANG,$SEARCH_OPTION,$PLUGIN_HOOKS;
 
 	$table=$SEARCH_OPTION[$type][$ID]["table"];
@@ -2317,7 +2317,7 @@ function displayConfigItem ($type,$field){
 function giveItem ($type,$field,$data,$num,$linkfield=""){
 	global $CFG_GLPI,$INFOFORM_PAGES,$CFG_GLPI,$LANG,$LINK_ID_TABLE,$PLUGIN_HOOKS;
 
-
+	// TODO move args to $type, $ID, $ref_type... / delete linkfield
 	if (isset($CFG_GLPI["union_search_type"][$type])){
 		return giveItem ($data["TYPE"],str_replace($CFG_GLPI["union_search_type"][$type],$LINK_ID_TABLE[$data["TYPE"]],$field),$data,$num,$linkfield);
 	}
