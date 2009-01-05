@@ -2317,7 +2317,7 @@ function displayConfigItem ($type,$field){
 function giveItem ($type,$field,$data,$num,$linkfield=""){
 	global $CFG_GLPI,$INFOFORM_PAGES,$CFG_GLPI,$LANG,$LINK_ID_TABLE,$PLUGIN_HOOKS;
 
-	// TODO move args to $type, $ID, $ref_type... / delete linkfield
+	// TODO move args to $type, $ID, $data, $num, $ref_type / delete linkfield
 	if (isset($CFG_GLPI["union_search_type"][$type])){
 		return giveItem ($data["TYPE"],str_replace($CFG_GLPI["union_search_type"][$type],$LINK_ID_TABLE[$data["TYPE"]],$field),$data,$num,$linkfield);
 	}
