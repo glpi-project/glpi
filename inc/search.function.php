@@ -1424,6 +1424,19 @@ function addHaving($LINK,$NOT,$type,$ID,$val,$meta,$num){
 	$NAME="ITEM_";
 	if ($meta) $NAME="META_";
 
+	// Plugin can override core definition for its type
+	if ($type>1000){
+		if (isset($PLUGIN_HOOKS['plugin_types'][$type])){
+			$function='plugin_'.$PLUGIN_HOOKS['plugin_types'][$type].'_addHaving';
+			if (function_exists($function)){
+				$out=$function($LINK,$NOT,$type,$ID,$val,$num);
+				if (!empty($out)){
+					return $out;
+				}
+			} 
+		} 
+	}
+
 	switch ($table.".".$field){
 		case "glpi_softwarelicenses.number":
 		case "glpi_tracking.count" :
@@ -1479,6 +1492,26 @@ function addHaving($LINK,$NOT,$type,$ID,$val,$meta,$num){
 			}
 		break;
 		default :
+
+			// Link with plugin tables 
+			if ($type<=1000){
+				if (preg_match("/^glpi_plugin_([a-zA-Z]+)/", $table, $matches) 
+				|| preg_match("/^glpi_dropdown_plugin_([a-zA-Z]+)/", $table, $matches) ){
+					if (count($matches)==2){
+						$plug=$matches[1];
+
+						$function='plugin_'.$plug.'_addHaving';
+						if (function_exists($function)){
+							$out=$function($LINK,$NOT,$type,$ID,$val,$num);
+							if (!empty($out)){
+								return $out;
+							}
+						} 
+					}
+				} 
+			}
+
+
 			$ADD="";
 			if (($NOT&&$val!="NULL")||$val=='^$') {
 				$ADD=" OR $NAME$num IS NULL";
@@ -2028,11 +2061,6 @@ function addWhere ($link,$nott,$type,$ID,$val,$meta=0){
 				}
 			}
 		break;
-		case "glpi_device_hdd.specif_default" :
-		case "glpi_device_ram.specif_default" :
-		case "glpi_device_processor.specif_default" :
-			return $link." $table.$field ".makeTextSearch("",$nott);
-			break;
 		case "glpi_networking_ports.ifmac" :
 			$ADD="";
 			if ($type==COMPUTER_TYPE){
