@@ -2555,6 +2555,7 @@ function giveItem ($type,$field,$data,$num,$linkfield=""){
 				if ($count_display) $out.= "<br>";
 				$count_display++;
 				
+				/// TODO : à quoi ca sert cette gestion des dates ?
 				// Line end with a date
 				if (preg_match("/(\d{4}-\d{2}-\d{2})$/",$split[$k],$reg)) {
 					$out .= preg_replace("/".$reg[0]."$/",convDateTime($reg[0]),$split[$k]); 
@@ -2589,17 +2590,8 @@ function giveItem ($type,$field,$data,$num,$linkfield=""){
 			} else {
 				$type=USER_TYPE;
 				$out="";
-				if ($data["ITEM_".$num."_3"]>0)
-					$out= "<a href=\"".$CFG_GLPI["root_doc"]."/front/user.form.php?ID=".$data["ITEM_".$num."_3"]."\">";
-				// print realname or login name
-				if (!empty($data["ITEM_".$num."_2"])||!empty($data["ITEM_".$num."_4"]))
-					$out .= $data["ITEM_".$num."_2"]." ".$data["ITEM_".$num."_4"];
-				else $out .= $data["ITEM_$num"];
 
-				if ($data["ITEM_".$num."_3"]>0&&($_SESSION["glpiview_ID"]||(empty($data["ITEM_$num"])))) $out.= " (".$data["ITEM_".$num."_3"].")";
-
-				if ($data["ITEM_".$num."_3"]>0)
-					$out.= "</a>";
+				$out=formatUserName($data["ITEM_".$num."_3"],$data["ITEM_$num"],$data["ITEM_".$num."_2"],$data["ITEM_".$num."_4"],1);
 			}
 		return $out;
 		break;
@@ -3470,7 +3462,7 @@ function addMetaLeftJoin($from_type,$to_type,&$already_link_tables2,$nullornott)
 					break;			
 
 				case SOFTWARE_TYPE :
-					// TODO: link licenses via installed software OR by affected/FK_computers ???
+					/// TODO: link licenses via installed software OR by affected/FK_computers ???
 					array_push($already_link_tables2,$LINK_ID_TABLE[SOFTWARE_TYPE]);
 					return " $LINK glpi_inst_software as inst_$to_type ON (inst_$to_type.cID = glpi_computers.ID) ".
 						" $LINK glpi_softwareversions as glpi_softwareversions_$to_type ON ( inst_$to_type.vID=glpi_softwareversions_$to_type.ID ) ".
