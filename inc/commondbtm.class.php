@@ -880,7 +880,8 @@ class CommonDBTM {
 
 	/**
 	 * Define onglets to display / WILL BE DELETED : use defineTabs instead
-	 *
+ 	 * Can define 'no_all_tab' item in array in order to not show all tab
+	 * 
 	 *@param $withtemplate is a template view ?
 	 * 
 	 *@return array containing the onglets
@@ -1035,7 +1036,8 @@ class CommonDBTM {
 				echo "&nbsp;&nbsp;" . ($current+1) . "/" . count($_SESSION['glpilistitems'][$this->type]);
 
 				if (isset($_SESSION['glpilisttitle'][$this->type])){
-					echo "&nbsp;<img title='".str_replace("'","`",$_SESSION['glpilisttitle'][$this->type])."' src='".$CFG_GLPI["root_doc"]."/pics/aide.png' >";
+					$title=str_replace("'","`",$_SESSION['glpilisttitle'][$this->type]);
+					echo "&nbsp;<img title='$title' alt='$title' src='".$CFG_GLPI["root_doc"]."/pics/aide.png' >";
 				}
 			}
 						
@@ -1049,7 +1051,13 @@ class CommonDBTM {
 		echo "<div id='tabspanel' class='center-h'></div>";
 		
 		$active=0;
-		if (count($onglets=$this->defineTabs($ID,$withtemplate))){
+		$onglets=$this->defineTabs($ID,$withtemplate);
+		$display_all=true;
+		if (isset($onglets['no_all_tab'])){
+			$display_all=false;
+			unset($onglets['no_all_tab']);
+		}
+		if (count($onglets)){
 			$patterns[0] = '/front/';
 			$patterns[1] = '/form/';
 			$replacements[0] = 'ajax';
@@ -1064,7 +1072,7 @@ class CommonDBTM {
 			$plug_tabs=getPluginTabs($target,$this->type,$ID,$withtemplate);
 			$tabs+=$plug_tabs;
 			// Not all tab for templates and if only 1 tab
-			if(empty($withtemplate) && $this->type!=TRACKING_TYPE && count($tabs)>1){
+			if($display_all && empty($withtemplate) && count($tabs)>1){
 				$tabs[-1]=array('title'=>$LANG["common"][66],
 						'url'=>$CFG_GLPI['root_doc']."/$tabpage",
 						'params'=>"target=$target&type=".$this->type."&glpi_tab=-1&ID=$ID$template$extraparam");
