@@ -157,7 +157,7 @@ function showInfocomForm($target,$device_type,$dev_ID,$show_immo=true,$withtempl
 		if ($show_immo){
 			echo "<td>".$LANG["financial"][81]." :</td><td>";
 
-			echo  TableauAmort($ic->fields["amort_type"],$ic->fields["value"],$ic->fields["amort_time"],$ic->fields["amort_coeff"],$ic->fields["buy_date"],$ic->fields["use_date"],$date_fiscale,"n");
+			echo  formatNumber(TableauAmort($ic->fields["amort_type"],$ic->fields["value"],$ic->fields["amort_time"],$ic->fields["amort_coeff"],$ic->fields["buy_date"],$ic->fields["use_date"],$date_fiscale,"n"));
 
 			echo "</td>";
 		}
@@ -423,7 +423,7 @@ function TableauAmort($type_amort,$va,$duree,$coef,$date_achat,$date_use,$date_f
 			// on prend la valeur residuelle de l'annee n-1
 			$vnc=$tab["vcnetdeb"][array_search(date("Y"),$tab["annee"])];
 		}
-		return formatNumber($vnc);
+		return $vnc;
 	}
 }
 
