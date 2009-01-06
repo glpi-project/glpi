@@ -3,11 +3,12 @@
  * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
- Copyright (C) 2003-2008 by the INDEPNET Development Team.
+ Copyright (C) 2003-2009 by the INDEPNET Development Team.
 
  http://indepnet.net/   http://glpi-project.org
  -------------------------------------------------------------------------
 
+ LICENSE
 
  This file is part of GLPI.
 

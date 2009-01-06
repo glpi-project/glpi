@@ -1,9 +1,9 @@
 <?php
 /*
- * @version $Id: software.tabs.php 7375 2008-10-06 20:54:52Z moyo $
+ * @version $Id: HEADER 6217 2008-01-01 01:32:45Z moyo $
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
- Copyright (C) 2003-2008 by the INDEPNET Development Team.
+ Copyright (C) 2003-2009 by the INDEPNET Development Team.
 
  http://indepnet.net/   http://glpi-project.org
  -------------------------------------------------------------------------
