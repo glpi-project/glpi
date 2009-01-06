@@ -510,8 +510,10 @@ function updatedbUpTo031()
 			update07to071();
 			include("update_071_0712.php");
 			update071to0712();
-			include("update_0712_072.php");
-			update0712to072();
+			include("update_0712_0713.php");
+			update0712to0713();
+			include("update_0713_072.php");
+			update0713to072();
 
 			break;
 	}
@@ -524,7 +526,8 @@ function updatedbUpTo031()
 	$plugin=new Plugin();
 	$plugin->unactivateAll();
 
-	optimize_tables();
+	echo "<h3>".$LANG["update"][139]."</h3>";
+	optimize_tables("displayMigrationMessage");
 
 	return $ret;
 }

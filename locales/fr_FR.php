@@ -1805,4 +1805,5 @@ $LANG["update"][135]="Lieu racine";
 $LANG["update"][136]="Voici la nouvelle hiérarchie générée. Si elle vous convient, vous pouvez la valider."; 
 $LANG["update"][137]="Nouvelle hiérarchie"; 
 $LANG["update"][138]="Lieux actuels"; 
+$LANG["update"][139]="Optimisation des tables"; 
 ?>

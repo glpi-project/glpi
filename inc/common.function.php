@@ -1225,21 +1225,29 @@ function get_hour_from_sql($time){
 /**
  *  Optimize sql table
  *
+ * @param $progress_fct function to call to display progress message
+ *  
  * @return nothing
  */
-function optimize_tables (){
+function optimize_tables ($progress_fct=NULL){
 
 	global $DB;
+	
+	if (function_exists($progress_fct)) $progress_fct("optimize"); // Start
 	$result=$DB->list_tables();
 	while ($line = $DB->fetch_array($result))
 	{
 		if (strstr($line[0],"glpi_")){
 			$table = $line[0];
+			if (function_exists($progress_fct)) $progress_fct("optimize", $table);
+			
 			$query = "OPTIMIZE TABLE ".$table." ;";
 			$DB->query($query);
 		}
 	}
 	$DB->free_result($result);
+
+	if (function_exists($progress_fct)) $progress_fct("optimize"); // End
 }
 
 /**
