@@ -2,7 +2,7 @@
 
 
 /*
- * @version $Id: HEADER 6217 2008-01-01 01:32:45Z moyo $
+ * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2009 by the INDEPNET Development Team.
