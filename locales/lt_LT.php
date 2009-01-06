@@ -1,12 +1,11 @@
 <?php 
 /* 
- * @version $Id$
- -------------------------------------------------------------------------
+ ----------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2009 by the INDEPNET Development Team.
-
+ 
  http://indepnet.net/   http://glpi-project.org
- -------------------------------------------------------------------------
+ ----------------------------------------------------------------------
 
  LICENSE
 
@@ -25,7 +24,7 @@
  You should have received a copy of the GNU General Public License
  along with GLPI; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- --------------------------------------------------------------------------
+ ------------------------------------------------------------------------
  */
 //lt_LT
 
@@ -1778,4 +1777,5 @@ $LANG["update"][135]="Pagrindinio lygmens patalpa";
 $LANG["update"][136]="Tai nauja hierarchija. Jei ji tinkama, galite ją patvirtinti"; 
 $LANG["update"][137]="Nauja hierarchija"; 
 $LANG["update"][138]="Esamos patalpos"; 
+$LANG["update"][139]="Tables Optimization"; 
 ?>

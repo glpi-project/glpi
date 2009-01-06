@@ -1,12 +1,11 @@
 <?php 
 /* 
- * @version $Id: HEADER 6217 2008-01-01 01:32:45Z moyo $
- -------------------------------------------------------------------------
+ ----------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2009 by the INDEPNET Development Team.
-
+ 
  http://indepnet.net/   http://glpi-project.org
- -------------------------------------------------------------------------
+ ----------------------------------------------------------------------
 
  LICENSE
 
@@ -25,7 +24,7 @@
  You should have received a copy of the GNU General Public License
  along with GLPI; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- --------------------------------------------------------------------------
+ ------------------------------------------------------------------------
  */
 //sl_SI
 
@@ -1019,7 +1018,7 @@ $LANG["ocsconfig"][14]="Global import: everything is imported but the material i
 $LANG["ocsconfig"][15]="Brez uvoza: vtičnik ne bo uvozil teh elementov"; 
 $LANG["ocsconfig"][16]="Privzeti status"; 
 $LANG["ocsconfig"][17]="Limit the import to the following tags (separator $, nothing for all)"; 
-$LANG["ocsconfig"][18]="Prvo kot prvo, preveri, če so podvojeni zapisi urejeni v OCSNG"; 
+$LANG["ocsconfig"][18]="Najprej preverite, če so podvojeni zapisi urejeni v OCSNG"; 
 $LANG["ocsconfig"][19]="Uvoz enote po serijski številki"; 
 $LANG["ocsconfig"][27]="Osnovne informacije"; 
 $LANG["ocsconfig"][36]="Modemi"; 
@@ -1778,4 +1777,5 @@ $LANG["update"][135]="Root lokacija";
 $LANG["update"][136]="To je nova hierarhija. Če je pravilna jo lahko preverite."; 
 $LANG["update"][137]="Nova hierarhija"; 
 $LANG["update"][138]="Dejanske lokacije"; 
+$LANG["update"][139]="Tables Optimization"; 
 ?>
