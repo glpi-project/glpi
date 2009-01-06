@@ -102,93 +102,94 @@ function display_infocoms_report($device_type,$begin,$end){
 	if (!empty($begin)) $query.= " AND (glpi_infocoms.buy_date >= '".$begin."' OR glpi_infocoms.use_date >= '".$begin."' )";
 	if (!empty($end)) $query.= " AND (glpi_infocoms.buy_date <= '".$end."' OR glpi_infocoms.use_date <= '".$end."' )";
 
-	$result=$DB->query($query);
-	if ($DB->numrows($result)>0){
-		$comp=new CommonItem();
-		$comp->getFromDB($device_type,0);
-
-		echo "<h2>".$comp->getType()."</h2>";
-
-		echo "<table class='tab_cadre'>";	
-
-		$valeursoustot=0;
-		$valeurnettesoustot=0;
-		$valeurnettegraph=array();
-		$valeurgraph=array();
-
-		while ($line=$DB->fetch_array($result)){
-
-			if ($device_type==SOFTWARELICENSE_TYPE){
-				$comp->getFromDB($device_type,$line["FK_device"]);
-				if ($comp->obj->fields["serial"]=="global"){
-					$line["value"]*=getInstallionsForLicense($line["FK_device"]);
-				}
-			}
-			if ($line["value"]>0) $valeursoustot+=$line["value"];	
-
-			$valeurnette=TableauAmort($line["amort_type"],$line["value"],$line["amort_time"],$line["amort_coeff"],$line["buy_date"],$line["use_date"],$CFG_GLPI["date_fiscale"],"n");
-			$tmp=TableauAmort($line["amort_type"],$line["value"],$line["amort_time"],$line["amort_coeff"],$line["buy_date"],$line["use_date"],$CFG_GLPI["date_fiscale"],"all");
-
-			if (is_array($tmp)&&count($tmp)>0)
-				foreach ($tmp["annee"] as $key => $val){
-					if ($tmp["vcnetfin"][$key]>0){
-						if (!isset($valeurnettegraph[$val])) $valeurnettegraph[$val]=0;
-						$valeurnettegraph[$val]+=$tmp["vcnetdeb"][$key];
+	if ($result=$DB->query($query)){
+		if ($DB->numrows($result)>0){
+			$comp=new CommonItem();
+			$comp->getFromDB($device_type,0);
+	
+			echo "<h2>".$comp->getType()."</h2>";
+	
+			echo "<table class='tab_cadre'>";	
+	
+			$valeursoustot=0;
+			$valeurnettesoustot=0;
+			$valeurnettegraph=array();
+			$valeurgraph=array();
+	
+			while ($line=$DB->fetch_array($result)){
+	
+				if ($device_type==SOFTWARELICENSE_TYPE){
+					$comp->getFromDB($device_type,$line["FK_device"]);
+					if ($comp->obj->fields["serial"]=="global"){
+						$line["value"]*=getInstallionsForLicense($line["FK_device"]);
 					}
 				}
-			if (!empty($line["buy_date"])){
-				$year=substr($line["buy_date"],0,4);
-				if ($line["value"]>0){
-					if (!isset($valeurgraph[$year])) $valeurgraph[$year]=0;
-					$valeurgraph[$year]+=$line["value"];
+				if ($line["value"]>0) $valeursoustot+=$line["value"];	
+	
+				$valeurnette=TableauAmort($line["amort_type"],$line["value"],$line["amort_time"],$line["amort_coeff"],$line["buy_date"],$line["use_date"],$CFG_GLPI["date_fiscale"],"n");
+				$tmp=TableauAmort($line["amort_type"],$line["value"],$line["amort_time"],$line["amort_coeff"],$line["buy_date"],$line["use_date"],$CFG_GLPI["date_fiscale"],"all");
+	
+				if (is_array($tmp)&&count($tmp)>0)
+					foreach ($tmp["annee"] as $key => $val){
+						if ($tmp["vcnetfin"][$key]>0){
+							if (!isset($valeurnettegraph[$val])) $valeurnettegraph[$val]=0;
+							$valeurnettegraph[$val]+=$tmp["vcnetdeb"][$key];
+						}
+					}
+				if (!empty($line["buy_date"])){
+					$year=substr($line["buy_date"],0,4);
+					if ($line["value"]>0){
+						if (!isset($valeurgraph[$year])) $valeurgraph[$year]=0;
+						$valeurgraph[$year]+=$line["value"];
+					}
 				}
+	
+	
+				$valeurnettesoustot+=str_replace(" ","",$valeurnette);	
+	
+	
+			}	
+	
+			$valeurtot+=$valeursoustot;
+			$valeurnettetot+=$valeurnettesoustot;
+	
+	
+			if (count($valeurnettegraph)>0){
+	
+				echo "<tr><td colspan='5'  align='center'>";
+				ksort($valeurnettegraph); 
+	
+				$valeurnettegraphdisplay=array_map('round',$valeurnettegraph);
+	
+				foreach ($valeurnettegraph as $key => $val) {
+					if (!isset($valeurnettegraphtot[$key])) $valeurnettegraphtot[$key]=0;
+					$valeurnettegraphtot[$key]+=$valeurnettegraph[$key];
+				}
+	
+				graphBy($valeurnettegraphdisplay,$LANG["financial"][81],"",0,"year");
+	
+				echo "</td></tr>";
 			}
-
-
-			$valeurnettesoustot+=str_replace(" ","",$valeurnette);	
-
-
-		}	
-
-		$valeurtot+=$valeursoustot;
-		$valeurnettetot+=$valeurnettesoustot;
-
-
-		if (count($valeurnettegraph)>0){
-
-			echo "<tr><td colspan='5'  align='center'>";
-			ksort($valeurnettegraph); 
-
-			$valeurnettegraphdisplay=array_map('round',$valeurnettegraph);
-
-			foreach ($valeurnettegraph as $key => $val) {
-				if (!isset($valeurnettegraphtot[$key])) $valeurnettegraphtot[$key]=0;
-				$valeurnettegraphtot[$key]+=$valeurnettegraph[$key];
+	
+			if (count($valeurgraph)>0){
+				echo "<tr><td colspan='5' align='center'>";
+	
+				ksort($valeurgraph); 
+	
+				$valeurgraphdisplay=array_map('round',$valeurgraph);
+	
+				foreach ($valeurgraph as $key => $val) {
+					if (!isset($valeurgraphtot[$key])) $valeurgraphtot[$key]=0;
+					$valeurgraphtot[$key]+=$valeurgraph[$key];
+				}
+	
+				graphBy($valeurgraphdisplay,$LANG["financial"][21],"",0,"year");
+	
+				echo "</td></tr>";
 			}
-
-			graphBy($valeurnettegraphdisplay,$LANG["financial"][81],"",0,"year");
-
-			echo "</td></tr>";
+			echo "</table>";
+	
 		}
-
-		if (count($valeurgraph)>0){
-			echo "<tr><td colspan='5' align='center'>";
-
-			ksort($valeurgraph); 
-
-			$valeurgraphdisplay=array_map('round',$valeurgraph);
-
-			foreach ($valeurgraph as $key => $val) {
-				if (!isset($valeurgraphtot[$key])) $valeurgraphtot[$key]=0;
-				$valeurgraphtot[$key]+=$valeurgraph[$key];
-			}
-
-			graphBy($valeurgraphdisplay,$LANG["financial"][21],"",0,"year");
-
-			echo "</td></tr>";
-		}
-		echo "</table>";
-
 	}
 }
 
