@@ -1895,4 +1895,23 @@ function getSize($size) {
 	}
 	return round($size, 2)." ".$val;
 }
+
+/** Display how many logins since
+ *
+ * @return  nothing
+ */
+function getCountLogin() {
+	global $DB;
+	
+	$query="SELECT count(*) FROM `glpi_event_log` WHERE message LIKE '%logged in%'";
+	$query2="SELECT date FROM `glpi_event_log` ORDER BY date ASC LIMIT 1";
+	//$DB=new DB;
+	$result=$DB->query($query);
+	$result2=$DB->query($query2);
+	$nb_login=$DB->result($result,0,0);
+	$date=$DB->result($result2,0,0);
+
+	echo '<b>'.$nb_login.'</b> logins since '.$date ;
+}
+
 ?>

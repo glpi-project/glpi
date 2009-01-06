@@ -33,7 +33,7 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-// Test si config_db n'existe pas on lance l'installation
+// If config_db doesn't exist ->  start installation
 define('GLPI_ROOT', '.');
 
 include (GLPI_ROOT . "/config/based_config.php");
@@ -76,23 +76,14 @@ else
 
 	echo "</head>";
 
-	// Body with configured stuff
 	echo "<body>";
-	// contenu
-
 	echo "<div id='contenulogin'>";
-	
 	echo "<div id='logo-login'>";
-
 	echo nl2br(unclean_cross_side_scripting_deep($CFG_GLPI['text_login']));
-
-	
 	echo "</div>";
 
 	echo "<div id='boxlogin'>";
-
 	echo "<form action='login.php' method='post'>";
-
 	// Other CAS 
 	if (isset($_GET["noAUTO"])) {
 		echo "<input type='hidden' name='noAUTO' value='1' />";
@@ -103,19 +94,11 @@ else
 		manageRedirect($_GET["redirect"]);
 		echo '<input type="hidden" name="redirect" value="'.$_GET['redirect'].'">';
 	}
-
 	echo "<fieldset>";
 	echo '<legend>'.$LANG["login"][10].'</legend>';
-
-
 	echo '<div class="row"><span class="label"><label>'.$LANG["login"][6].' :  </label></span><span class="formw"> <input type="text" name="login_name" id="login_name" size="15" /></span></div>';
 
-
 	echo '<div class="row"><span class="label"><label>'.$LANG["login"][7].' : </label></span><span class="formw"><input type="password" name="login_password" id="login_password" size="15" /> </span></div>';
-
-
-
-
 
 	echo "</fieldset>";
 	echo '<p ><span> <input type="submit" name="submit" value="'.$LANG["buttons"][2].'" class="submit" /></span></p>';
@@ -125,8 +108,7 @@ else
 	echo "document.getElementById('login_name').focus();";
 	echo "</script>";
 
-
-	echo "</div>";  // fin box login
+	echo "</div>";  // end login box
 
 
 
@@ -147,37 +129,18 @@ else
 	echo "</div>";
 
 
-	// Affichage autorisee FAQ
+	// Display FAQ is enable
 	if ($CFG_GLPI["public_faq"]){
 		echo '<div id="box-faq"><a href="front/helpdesk.faq.php">[ '.$LANG["knowbase"][24].' ]</a></div>';
 	}
 	
-
-	echo "</div>"; // fin contenu login
+	echo "</div>"; // end contenu login
 
 	if (GLPI_DEMO_MODE){
-		echo "<div align='center'";
-
-		$query="SELECT count(*) 
-			FROM `glpi_event_log` 
-			WHERE message LIKE '%logged in%'";
-
-		$query2="SELECT date 
-			FROM `glpi_event_log` 
-			ORDER BY date ASC 
-			LIMIT 1";
-
-		$DB=new DB;
-		$result=$DB->query($query);
-		$result2=$DB->query($query2);
-		$nb_login=$DB->result($result,0,0);
-		$date=$DB->result($result2,0,0);
-
-		echo '<b>'.$nb_login.'</b> logins since '.$date ;
-
+		echo "<div class='center'>";
+		getCountLogin();
 		echo "</div>";
 	}
-
 
 	echo "<div id='footer-login'>";
 	echo "<a href=\"http://glpi-project.org/\" title=\"Powered By Indepnet\"  >";
@@ -186,15 +149,14 @@ else
 	echo "</div>";
 
 }
-// Appel de cron
+// call cron
 if (! GLPI_DEMO_MODE){
 	callCronForce();
 }
 
-
 echo "</body></html>";
 
-// End
+
 
 
 ?>
