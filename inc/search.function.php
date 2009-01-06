@@ -3452,7 +3452,7 @@ function addMetaLeftJoin($from_type,$to_type,&$already_link_tables2,$nullornott)
 					break;				
 				case PERIPHERAL_TYPE :
 					array_push($already_link_tables2,$LINK_ID_TABLE[PERIPHERAL_TYPE]);
-					return " $LINK glpi_connect_wire AS conn_periph_$to_type ON (conn_periph_$num.end2=glpi_computers.ID  AND conn_periph_$to_type.type='".PERIPHERAL_TYPE."') ".
+					return " $LINK glpi_connect_wire AS conn_periph_$to_type ON (conn_periph_$to_type.end2=glpi_computers.ID  AND conn_periph_$to_type.type='".PERIPHERAL_TYPE."') ".
 						" $LINK glpi_peripherals ON (conn_periph_$to_type.end1=glpi_peripherals.ID) ";
 					break;				
 				case PHONE_TYPE :
