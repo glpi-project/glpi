@@ -668,141 +668,145 @@ function showList ($type,$params){
 	if ($_SESSION["glpisearchcount"][$type]>0&&count($contains)>0) {
 		for ($key=0;$key<$_SESSION["glpisearchcount"][$type];$key++){
 			// if real search (strlen >0) and not all and view search
-			if (isset($contains[$key])&&strlen($contains[$key])>0&&$field[$key]!="all"&&$field[$key]!="view"){
-				$LINK=" ";
-				$NOT=0;
-				$tmplink="";
-				if (is_array($link)&&isset($link[$key])){
-					if (strstr($link[$key],"NOT")){
-						$tmplink=" ".str_replace(" NOT","",$link[$key]);
-						$NOT=1;
+			if (isset($contains[$key])&&strlen($contains[$key])>0){
+				// common search
+				if ($field[$key]!="all"&&$field[$key]!="view"){
+					$LINK=" ";
+					$NOT=0;
+					$tmplink="";
+					if (is_array($link)&&isset($link[$key])){
+						if (strstr($link[$key],"NOT")){
+							$tmplink=" ".str_replace(" NOT","",$link[$key]);
+							$NOT=1;
+						} else {
+							$tmplink=" ".$link[$key];
+						}
 					} else {
-						$tmplink=" ".$link[$key];
+						$tmplink=" AND ";
 					}
-				} else {
-					$tmplink=" AND ";
-				}
-			
-				if (isset($SEARCH_OPTION[$type][$field[$key]]["usehaving"])){
-					// Manage Link if not first item
-					if (!empty($HAVING)) {
-						$LINK=$tmplink;
-					} 
-					// Find key
-					$item_num=array_search($field[$key],$toview);
-
-					$HAVING.=addHaving($LINK,$NOT,$type,$field[$key],$contains[$key],0,$item_num);
-				} else {
+				
+					if (isset($SEARCH_OPTION[$type][$field[$key]]["usehaving"])){
+						// Manage Link if not first item
+						if (!empty($HAVING)) {
+							$LINK=$tmplink;
+						} 
+						// Find key
+						$item_num=array_search($field[$key],$toview);
+	
+						$HAVING.=addHaving($LINK,$NOT,$type,$field[$key],$contains[$key],0,$item_num);
+					} else {
+						// Manage Link if not first item
+						if (!empty($WHERE)) {
+							$LINK=$tmplink;
+						}
+						$WHERE.= addWhere($LINK,$NOT,$type,$field[$key],$contains[$key]);
+					}
+				//  view search
+				} else if ($field[$key]=="view"){
+					$LINK=" OR ";
+					$NOT=0;
+					$globallink=" AND ";
+					if (is_array($link)&&isset($link[$key])){
+						switch ($link[$key]){
+							case "AND";
+								$LINK=" OR ";
+								$globallink=" AND ";
+								break;
+							case "AND NOT";
+								$LINK=" AND ";
+								$NOT=1;
+								$globallink=" AND ";
+								break;
+							case "OR";
+								$LINK=" OR ";
+								$globallink=" OR ";
+								break;
+							case "OR NOT";
+								$LINK=" AND ";
+								$NOT=1;
+								$globallink=" OR ";
+								break;
+						}
+					} else {
+						$tmplink=" AND ";
+					}
+	
 					// Manage Link if not first item
 					if (!empty($WHERE)) {
-						$LINK=$tmplink;
+						$WHERE.=$globallink;
 					}
-					$WHERE.= addWhere($LINK,$NOT,$type,$field[$key],$contains[$key]);
-				}
-				// if real search (strlen >0) and view search
-			} else if (isset($contains[$key])&&strlen($contains[$key])>0&&$field[$key]=="view"){
-				$LINK=" OR ";
-				$NOT=0;
-				$globallink=" AND ";
-				if (is_array($link)&&isset($link[$key])){
-					switch ($link[$key]){
-						case "AND";
-							$LINK=" OR ";
-							$globallink=" AND ";
-							break;
-						case "AND NOT";
-							$LINK=" AND ";
-							$NOT=1;
-							$globallink=" AND ";
-							break;
-						case "OR";
-							$LINK=" OR ";
-							$globallink=" OR ";
-							break;
-						case "OR NOT";
-							$LINK=" AND ";
-							$NOT=1;
-							$globallink=" OR ";
-							break;
-					}
-				} else {
-					$tmplink=" AND ";
-				}
-
-				// Manage Link if not first item
-				if (!empty($WHERE)) {
-					$WHERE.=$globallink;
-				}
-
-				$WHERE.= " ( ";
-				$first2=true;
-				foreach ($toview as $key2 => $val2){
-					// Add Where clause if not to be done in HAVING CLAUSE
-					if (!isset($SEARCH_OPTION[$type][$val2]["usehaving"])){
-						$tmplink=$LINK;
-						if ($first2) {
-							$tmplink=" ";
-							$first2=false;
-						}
-						$WHERE.= addWhere($tmplink,$NOT,$type,$val2,$contains[$key]);
-					}
-				}
-				$WHERE.=" ) ";
-				// if real search (strlen >0) and all search
-			} else if (isset($contains[$key])&&strlen($contains[$key])>0&&$field[$key]=="all"){
-
-				$LINK=" OR ";
-				$NOT=0;
-				$globallink=" AND ";
-				if (is_array($link)&&isset($link[$key])){
-					switch ($link[$key]){
-						case "AND";
-							$LINK=" OR ";
-							$globallink=" AND ";
-							break;
-						case "AND NOT";
-							$LINK=" AND ";
-							$NOT=1;
-							$globallink=" AND ";
-							break;
-						case "OR";
-							$LINK=" OR ";
-							$globallink=" OR ";
-							break;
-						case "OR NOT";
-							$LINK=" AND ";
-							$NOT=1;
-							$globallink=" OR ";
-							break;
-					}
-				} else {
-					$tmplink=" AND ";
-				}
-
-				// Manage Link if not first item
-				if (!empty($WHERE)) {
-					$WHERE.=$globallink;
-				}
-
-
-				$WHERE.= " ( ";
-				$first2=true;
-
-				foreach ($SEARCH_OPTION[$type] as $key2 => $val2)
-					if (is_array($val2)){
-						// Add Where clause if not to be done ine HAVING CLAUSE
-					if (!isset($val2["usehaving"])){
+	
+					$WHERE.= " ( ";
+					$first2=true;
+					foreach ($toview as $key2 => $val2){
+						// Add Where clause if not to be done in HAVING CLAUSE
+						if (!isset($SEARCH_OPTION[$type][$val2]["usehaving"])){
 							$tmplink=$LINK;
 							if ($first2) {
 								$tmplink=" ";
 								$first2=false;
 							}
-							$WHERE.= addWhere($tmplink,$NOT,$type,$key2,$contains[$key]);
+							$WHERE.= addWhere($tmplink,$NOT,$type,$val2,$contains[$key]);
 						}
 					}
-
-				$WHERE.=")";
-			} 
+					$WHERE.=" ) ";
+				
+				// all search
+				} else if ($field[$key]=="all"){
+	
+					$LINK=" OR ";
+					$NOT=0;
+					$globallink=" AND ";
+					if (is_array($link)&&isset($link[$key])){
+						switch ($link[$key]){
+							case "AND";
+								$LINK=" OR ";
+								$globallink=" AND ";
+								break;
+							case "AND NOT";
+								$LINK=" AND ";
+								$NOT=1;
+								$globallink=" AND ";
+								break;
+							case "OR";
+								$LINK=" OR ";
+								$globallink=" OR ";
+								break;
+							case "OR NOT";
+								$LINK=" AND ";
+								$NOT=1;
+								$globallink=" OR ";
+								break;
+						}
+					} else {
+						$tmplink=" AND ";
+					}
+	
+					// Manage Link if not first item
+					if (!empty($WHERE)) {
+						$WHERE.=$globallink;
+					}
+	
+	
+					$WHERE.= " ( ";
+					$first2=true;
+	
+					foreach ($SEARCH_OPTION[$type] as $key2 => $val2)
+						if (is_array($val2)){
+							// Add Where clause if not to be done ine HAVING CLAUSE
+						if (!isset($val2["usehaving"])){
+								$tmplink=$LINK;
+								if ($first2) {
+									$tmplink=" ";
+									$first2=false;
+								}
+								$WHERE.= addWhere($tmplink,$NOT,$type,$key2,$contains[$key]);
+							}
+						}
+	
+					$WHERE.=")";
+				} 
+			}
 		}
 	}
 
@@ -1247,13 +1251,13 @@ function showList ($type,$params){
 				}
 
 				// Print first element - specific case for user 
-				echo displaySearchItem($output_type,giveItem($type,$SEARCH_OPTION[$type][1]["table"].".".$SEARCH_OPTION[$type][1]["field"],$data,0,$SEARCH_OPTION[$type][1]["linkfield"]),$item_num,$row_num,displayConfigItem($type,$SEARCH_OPTION[$type][1]["table"].".".$SEARCH_OPTION[$type][1]["field"]));
+				echo displaySearchItem($output_type,giveItem($type,1,$data,0),$item_num,$row_num,displayConfigItem($type,$SEARCH_OPTION[$type][1]["table"].".".$SEARCH_OPTION[$type][1]["field"]));
 
 				// Print other toview items
 				foreach ($toview as $key => $val){
 					// Do not display first item
 					if ($key>0){
-						echo displaySearchItem($output_type,giveItem($type,$SEARCH_OPTION[$type][$val]["table"].".".$SEARCH_OPTION[$type][$val]["field"],$data,$key,$SEARCH_OPTION[$type][$val]["linkfield"]),$item_num,$row_num,displayConfigItem($type,$SEARCH_OPTION[$type][$val]["table"].".".$SEARCH_OPTION[$type][$val]["field"]));
+						echo displaySearchItem($output_type,giveItem($type,$val,$data,$key),$item_num,$row_num,displayConfigItem($type,$SEARCH_OPTION[$type][$val]["table"].".".$SEARCH_OPTION[$type][$val]["field"]));
 					}
 				}
 
@@ -1575,12 +1579,6 @@ function addOrderBy($type,$ID,$order,$key=0){
 		case "glpi_auth_tables.name" :
 			return " ORDER BY glpi_users.auth_method, glpi_auth_ldap.name, glpi_auth_mail.name $order ";
 		break;
-		case "glpi_contracts.end_date":
-			return " ORDER BY ADDDATE(glpi_contracts.begin_date, INTERVAL glpi_contracts.duration MONTH) $order ";
-		break;
-		case "glpi_infocoms.end_warranty":
-			return " ORDER BY ADDDATE(glpi_infocoms.buy_date, INTERVAL glpi_infocoms.warranty_duration MONTH) $order "; 
-		break; 
 		case "glpi_contracts.expire":
 			return " ORDER BY ADDDATE(glpi_contracts.begin_date, INTERVAL glpi_contracts.duration MONTH) $order ";
 		break;
@@ -1622,6 +1620,13 @@ function addOrderBy($type,$ID,$order,$key=0){
 				} 
 			}
 
+			if (isset($SEARCH_OPTION[$type][$ID]["datatype"])){
+				switch ($SEARCH_OPTION[$type][$ID]["datatype"]){
+					case "date_delay":
+						return " ORDER BY ADDDATE($table.".$SEARCH_OPTION[$type][$ID]["datafields"][1].", INTERVAL $table.".$SEARCH_OPTION[$type][$ID]["datafields"][2]." MONTH) $order ";
+					break;
+				}
+			}
 			return " ORDER BY $table.$field $order ";
 		break;
 	}
@@ -1785,12 +1790,6 @@ function addSelect ($type,$ID,$num,$meta=0,$meta_type=0){
 		break;
 
 
-		case "glpi_contracts.end_date" :
-			return $table.$addtable.".begin_date AS ".$NAME."_$num, ".$table.$addtable.".duration AS ".$NAME."_".$num."_2, ";
-		break;
-		case "glpi_infocoms.end_warranty":
-			return $table.$addtable.".buy_date AS ".$NAME."_$num, ".$table.$addtable.".warranty_duration AS ".$NAME."_".$num."_2, ";
-		break;
 		case "glpi_contracts.expire_notice" : // ajout jmd
 			return $table.$addtable.".begin_date AS ".$NAME."_$num, ".$table.$addtable.".duration AS ".$NAME."_".$num."_2, ".$table.$addtable.".notice AS ".$NAME."_".$num."_3, ";
 		break;
@@ -1919,7 +1918,15 @@ function addSelect ($type,$ID,$num,$meta=0,$meta_type=0){
 				} 
 			}
 
+			if (isset($SEARCH_OPTION[$type][$ID]["datatype"])){
+				switch ($SEARCH_OPTION[$type][$ID]["datatype"]){
+					case "date_delay":
+						return $table.$addtable.".".$SEARCH_OPTION[$type][$ID]["datafields"][1]." AS ".$NAME."_$num, ".$table.$addtable.".".$SEARCH_OPTION[$type][$ID]["datafields"][2]." AS ".$NAME."_".$num."_2, ";
+					break;
+				}
+			}
 
+			// Default case
 			if ($meta){
 				return " GROUP_CONCAT( DISTINCT ".$table.$addtable.".".$field." SEPARATOR '$$$$') AS ".$NAME."_$num, ";
 			}
@@ -2077,64 +2084,6 @@ function addWhere($link,$nott,$type,$ID,$val,$meta=0){
 				return $link." $table.$field $SEARCH $ADD";
 			}
 			break;
-
-		case "glpi_infocoms.end_warranty" :
-		case "glpi_contracts.end_date" :
-		case "glpi_ocs_link.last_update":
-		case "glpi_ocs_link.last_ocs_update":
-		case "glpi_computers.date_mod":
-		case "glpi_printers.date_mod":
-		case "glpi_networking.date_mod":
-		case "glpi_peripherals.date_mod":
-		case "glpi_software.date_mod":
-		case "glpi_phones.date_mod":
-		case "glpi_monitors.date_mod":
-		case "glpi_contracts.begin_date":
-		case "glpi_docs.date_mod":
-		case "glpi_infocoms.buy_date":
-		case "glpi_infocoms.use_date":
-		case "state_types.date_mod":
-		case "reservation_types.date_mod":
-		case "glpi_users.last_login":
-		case "glpi_users.date_mod":
-		case "glpi_softwarelicenses.expire":
-			$date_computation=$table.".".$field;
-			$interval_search=" MONTH ";
-			switch ($table.".".$field){
-				case "glpi_contracts.end_date":
-					$date_computation=" ADDDATE($table.begin_date, INTERVAL $table.duration MONTH) ";
-					break;
-				case "glpi_infocoms.end_warranty":
-					$date_computation=" ADDDATE($table.buy_date, INTERVAL $table.warranty_duration MONTH) ";
-					break;
-			}
-			
-			$search=array("/\&lt;/","/\&gt;/");
-			$replace=array("<",">");
-			$val=preg_replace($search,$replace,$val);
-			if (preg_match("/([<>=])(.*)/",$val,$regs)){
-				if (is_numeric($regs[2])){
-					return $link." NOW() ".$regs[1]." ADDDATE($date_computation, INTERVAL ".$regs[2]." $interval_search) ";	
-				} else {
-					// Reformat date if needed
-					$regs[2]=preg_replace('@(\d{1,2})(-|/)(\d{1,2})(-|/)(\d{4})@','\5-\3-\1',$regs[2]);
-					if (preg_match('/[0-9]{2,4}-[0-9]{1,2}-[0-9]{1,2}/',$regs[2])){
-						return $link." $date_computation ".$regs[1]." '".$regs[2]."'";
-					} else {
-						return "";
-					}
-				}
-			} else { // standard search
-				// Date format modification if needed
-				$val=preg_replace('@(\d{1,2})(-|/)(\d{1,2})(-|/)(\d{4})@','\5-\3-\1',$val);
-				$SEARCH=makeTextSearch($val,$nott);
-				$ADD="";	
-				if ($nott) {
-					$ADD=" OR $date_computation IS NULL";
-				}
-				return $link." ( $date_computation $SEARCH $ADD )";
-			}
-			break;
 		case "glpi_contracts.expire" :
 			$search=array("/\&lt;/","/\&gt;/");
 			$replace=array("<",">");
@@ -2252,6 +2201,49 @@ function addWhere($link,$nott,$type,$ID,$val,$meta=0){
 			}
 
 
+			if (isset($SEARCH_OPTION[$type][$ID]["datatype"])){
+				switch ($SEARCH_OPTION[$type][$ID]["datatype"]){
+					case "date":
+					case "datetime":
+					case "date_delay":
+						$date_computation=$table.".".$field;
+						$interval_search=" MONTH ";
+
+					
+						if ($SEARCH_OPTION[$type][$ID]["datatype"]=="date_delay"){
+							$date_computation="ADDDATE($table.".$SEARCH_OPTION[$type][$ID]["datafields"][1].", INTERVAL $table.".$SEARCH_OPTION[$type][$ID]["datafields"][2]." MONTH)"; 
+						}
+						
+						$search=array("/\&lt;/","/\&gt;/");
+						$replace=array("<",">");
+						$val=preg_replace($search,$replace,$val);
+						if (preg_match("/([<>=])(.*)/",$val,$regs)){
+							if (is_numeric($regs[2])){
+								return $link." NOW() ".$regs[1]." ADDDATE($date_computation, INTERVAL ".$regs[2]." $interval_search) ";	
+							} else {
+								// Reformat date if needed
+								$regs[2]=preg_replace('@(\d{1,2})(-|/)(\d{1,2})(-|/)(\d{4})@','\5-\3-\1',$regs[2]);
+								if (preg_match('/[0-9]{2,4}-[0-9]{1,2}-[0-9]{1,2}/',$regs[2])){
+									return $link." $date_computation ".$regs[1]." '".$regs[2]."'";
+								} else {
+									return "";
+								}
+							}
+						} else { // standard search
+							// Date format modification if needed
+							$val=preg_replace('@(\d{1,2})(-|/)(\d{1,2})(-|/)(\d{4})@','\5-\3-\1',$val);
+							$SEARCH=makeTextSearch($val,$nott);
+							$ADD="";	
+							if ($nott) {
+								$ADD=" OR $date_computation IS NULL";
+							}
+							return $link." ( $date_computation $SEARCH $ADD )";
+						}
+					break;
+				}
+			}
+
+			// Default case 
 			$ADD="";	
 			if (($nott&&$val!="NULL")||$val=='^$') {
 				$ADD=" OR $table.$field IS NULL";
@@ -2304,22 +2296,19 @@ function displayConfigItem ($type,$field){
  * Generic Function to display Items
  *
  *
- *@param $field field to add
+ *@param $type device type
+ *@param $ID ID of the SEARCH_OPTION item
  *@param $data array containing data results
  *@param $num item num in the request
- *@param $type device type
- *@param $linkfield field used to link
- *
  *
  *@return string to print
  *
  **/
-function giveItem ($type,$field,$data,$num,$linkfield=""){
-	global $CFG_GLPI,$INFOFORM_PAGES,$CFG_GLPI,$LANG,$LINK_ID_TABLE,$PLUGIN_HOOKS;
+function giveItem ($type,$ID,$data,$num){
+	global $CFG_GLPI,$SEARCH_OPTION,$INFOFORM_PAGES,$LANG,$PLUGIN_HOOKS;
 
-	// TODO move args to $type, $ID, $data, $num, $ref_type / delete linkfield
 	if (isset($CFG_GLPI["union_search_type"][$type])){
-		return giveItem ($data["TYPE"],str_replace($CFG_GLPI["union_search_type"][$type],$LINK_ID_TABLE[$data["TYPE"]],$field),$data,$num,$linkfield);
+		return giveItem ($data["TYPE"],$ID,$data,$num);
 	}
 
 	// Plugin can override core definition for its type
@@ -2327,7 +2316,7 @@ function giveItem ($type,$field,$data,$num,$linkfield=""){
 		if (isset($PLUGIN_HOOKS['plugin_types'][$type])){
 			$function='plugin_'.$PLUGIN_HOOKS['plugin_types'][$type].'_giveItem';
 			if (function_exists($function)){
-				$out=$function($type,$field,$data,$num,$linkfield);
+				$out=$function($type,$ID,$data,$num);
 				if (!empty($out)){
 					return $out;
 				}
@@ -2335,7 +2324,12 @@ function giveItem ($type,$field,$data,$num,$linkfield=""){
 		} 
 	}
 
-	switch ($field){
+	$table=$SEARCH_OPTION[$type][$ID]["table"];
+	$field=$SEARCH_OPTION[$type][$ID]["field"];
+	$linkfield=$SEARCH_OPTION[$type][$ID]["linkfield"];
+
+
+	switch ($table.'.'.$field){
 		case "glpi_computers.name" :
 			if (!empty($data["ITEM_".$num."_2"])){
 				$out= "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[COMPUTER_TYPE]."?ID=".$data["ITEM_".$num."_2"]."\">";
@@ -2934,14 +2928,8 @@ function giveItem ($type,$field,$data,$num,$linkfield=""){
 		case "glpi_users.date_mod":	
 			return convDateTime($data["ITEM_$num"]);
 			break;
-		case "glpi_infocoms.end_warranty":
-		case "glpi_contracts.end_date":
-			if ($data["ITEM_$num"]!='' && !empty($data["ITEM_$num"])){
-				return getWarrantyExpir($data["ITEM_$num"],$data["ITEM_".$num."_2"]);
-			} else {
-				return "&nbsp;"; 
-			}
-		break;
+
+
 		case "glpi_contracts.expire_notice": // ajout jmd
 			if ($data["ITEM_$num"]!='' && !empty($data["ITEM_$num"])){
 				return getExpir($data["ITEM_$num"],$data["ITEM_".$num."_2"],$data["ITEM_".$num."_3"]);
@@ -2954,11 +2942,6 @@ function giveItem ($type,$field,$data,$num,$linkfield=""){
 			} else {
 				return "&nbsp;"; 
 			}
-		case "glpi_contracts.begin_date":
-		case "glpi_infocoms.buy_date":
-		case "glpi_infocoms.use_date":
-			return convDate($data["ITEM_$num"]);
-			break;
 		case "glpi_infocoms.amort_time":
 			if (!empty($data["ITEM_$num"])){
 				return $data["ITEM_$num"]." ".$LANG["financial"][9];
@@ -3023,20 +3006,38 @@ function giveItem ($type,$field,$data,$num,$linkfield=""){
 		default:
 			// Link with plugin tables : need to know left join structure
 			if ($type<=1000){
-				if (preg_match("/^glpi_plugin_([a-zA-Z]+)/", $field, $matches) 
-				|| preg_match("/^glpi_dropdown_plugin_([a-zA-Z]+)/", $field, $matches) ){
+				if (preg_match("/^glpi_plugin_([a-zA-Z]+)/", $table.'.'.$field, $matches) 
+				|| preg_match("/^glpi_dropdown_plugin_([a-zA-Z]+)/", $table.'.'.$field, $matches) ){
 					if (count($matches)==2){
 						$plug=$matches[1];
 	
 						$function='plugin_'.$plug.'_giveItem';
 						if (function_exists($function)){
-							$out=$function($type,$field,$data,$num,$linkfield);
+							$out=$function($type,$ID,$data,$num);
 							if (!empty($out)){
 								return $out;
 							}
 						} 
 					}
 				} 
+			}
+
+			if (isset($SEARCH_OPTION[$type][$ID]["datatype"])){
+				switch ($SEARCH_OPTION[$type][$ID]["datatype"]){
+					case "date":
+						return convDate($data["ITEM_$num"]);
+						break;
+					case "datetime":
+						return convDateTime($data["ITEM_$num"]);
+						break;
+					case "date_delay":
+						if ($data["ITEM_$num"]!='' && !empty($data["ITEM_$num"])){
+							return getWarrantyExpir($data["ITEM_$num"],$data["ITEM_".$num."_2"]);
+						} else {
+							return "&nbsp;"; 
+						}
+						break;
+				}
 			}
 
 			return $data["ITEM_$num"];

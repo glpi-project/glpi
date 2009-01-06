@@ -40,6 +40,13 @@
 
 // Empty linkfield -> no massive action for field of main table 
 
+// Datatype : 
+// - date 
+// - datetime
+// - date_delay : date with a delay in month (end_warranty, end_date) 
+//   - parameters : ['datafields'][1]=DATE_FIELD, ['datafields'][2]=DELAY_FIELD
+
+
 //////COMPUTER_TYPE
 
 $SEARCH_OPTION[COMPUTER_TYPE]['common']=$LANG["common"][32];
@@ -148,6 +155,7 @@ $SEARCH_OPTION[COMPUTER_TYPE][19]['table']='glpi_computers';
 $SEARCH_OPTION[COMPUTER_TYPE][19]['field']='date_mod';
 $SEARCH_OPTION[COMPUTER_TYPE][19]['linkfield']='';
 $SEARCH_OPTION[COMPUTER_TYPE][19]['name']=$LANG["common"][26];
+$SEARCH_OPTION[COMPUTER_TYPE][19]['datatype']='datetime';
 
 $SEARCH_OPTION[COMPUTER_TYPE][32]['table']='glpi_dropdown_network';
 $SEARCH_OPTION[COMPUTER_TYPE][32]['field']='name';
@@ -364,6 +372,7 @@ $SEARCH_OPTION[COMPUTER_TYPE][132]['field']='begin_date';
 $SEARCH_OPTION[COMPUTER_TYPE][132]['linkfield']='';
 $SEARCH_OPTION[COMPUTER_TYPE][132]['name']=$LANG["search"][8]." ".$LANG["financial"][1];
 $SEARCH_OPTION[COMPUTER_TYPE][132]['forcegroupby']=true;
+$SEARCH_OPTION[COMPUTER_TYPE][132]['datatype']='date';
 
 $SEARCH_OPTION[COMPUTER_TYPE][133]['table']='glpi_contracts';
 $SEARCH_OPTION[COMPUTER_TYPE][133]['field']='compta_num';
@@ -376,6 +385,9 @@ $SEARCH_OPTION[COMPUTER_TYPE][134]['field']='end_date';
 $SEARCH_OPTION[COMPUTER_TYPE][134]['linkfield']='';
 $SEARCH_OPTION[COMPUTER_TYPE][134]['name']=$LANG["search"][9]." ".$LANG["financial"][1];
 $SEARCH_OPTION[COMPUTER_TYPE][134]['forcegroupby']=true;
+$SEARCH_OPTION[COMPUTER_TYPE][134]['datatype']='date_delay';
+$SEARCH_OPTION[COMPUTER_TYPE][134]['datafields'][1]='begin_date';
+$SEARCH_OPTION[COMPUTER_TYPE][134]['datafields'][2]='duration';
 
 $SEARCH_OPTION[COMPUTER_TYPE][135]['table']='glpi_contracts';
 $SEARCH_OPTION[COMPUTER_TYPE][135]['field']='notice';
@@ -428,11 +440,13 @@ $SEARCH_OPTION[COMPUTER_TYPE][37]['table']='glpi_infocoms';
 $SEARCH_OPTION[COMPUTER_TYPE][37]['field']='buy_date';
 $SEARCH_OPTION[COMPUTER_TYPE][37]['linkfield']='';
 $SEARCH_OPTION[COMPUTER_TYPE][37]['name']=$LANG["financial"][14];
+$SEARCH_OPTION[COMPUTER_TYPE][37]['datatype']='date';
 
 $SEARCH_OPTION[COMPUTER_TYPE][38]['table']='glpi_infocoms';
 $SEARCH_OPTION[COMPUTER_TYPE][38]['field']='use_date';
 $SEARCH_OPTION[COMPUTER_TYPE][38]['linkfield']='';
 $SEARCH_OPTION[COMPUTER_TYPE][38]['name']=$LANG["financial"][76];
+$SEARCH_OPTION[COMPUTER_TYPE][38]['datatype']='date';
 
 $SEARCH_OPTION[COMPUTER_TYPE][50]['table']='glpi_dropdown_budget';
 $SEARCH_OPTION[COMPUTER_TYPE][50]['field']='name';
@@ -452,7 +466,8 @@ $SEARCH_OPTION[COMPUTER_TYPE][52]['name']=$LANG["financial"][16];
 $SEARCH_OPTION[COMPUTER_TYPE][120]['table']='glpi_infocoms'; 
 $SEARCH_OPTION[COMPUTER_TYPE][120]['field']='end_warranty'; 
 $SEARCH_OPTION[COMPUTER_TYPE][120]['linkfield']=''; 
-$SEARCH_OPTION[COMPUTER_TYPE][120]['name']=$LANG["financial"][80]; 
+$SEARCH_OPTION[COMPUTER_TYPE][120]['name']=$LANG["financial"][80];
+$SEARCH_OPTION[COMPUTER_TYPE][120]['datatype']='date';
  
 $SEARCH_OPTION[COMPUTER_TYPE][53]['table']='glpi_enterprises_infocoms';
 $SEARCH_OPTION[COMPUTER_TYPE][53]['field']='name';
@@ -501,11 +516,13 @@ $SEARCH_OPTION[COMPUTER_TYPE][102]['table']='glpi_ocs_link';
 $SEARCH_OPTION[COMPUTER_TYPE][102]['field']='last_update';
 $SEARCH_OPTION[COMPUTER_TYPE][102]['linkfield']='';
 $SEARCH_OPTION[COMPUTER_TYPE][102]['name']=$LANG["ocsng"][13];
+$SEARCH_OPTION[COMPUTER_TYPE][102]['datatype']='datetime';
 
 $SEARCH_OPTION[COMPUTER_TYPE][103]['table']='glpi_ocs_link';
 $SEARCH_OPTION[COMPUTER_TYPE][103]['field']='last_ocs_update';
 $SEARCH_OPTION[COMPUTER_TYPE][103]['linkfield']='';
 $SEARCH_OPTION[COMPUTER_TYPE][103]['name']=$LANG["ocsng"][14];
+$SEARCH_OPTION[COMPUTER_TYPE][103]['datatype']='datetime';
 
 $SEARCH_OPTION[COMPUTER_TYPE][100]['table']='glpi_computers';
 $SEARCH_OPTION[COMPUTER_TYPE][100]['field']='ocs_import';
@@ -599,6 +616,7 @@ $SEARCH_OPTION[NETWORKING_TYPE][9]['table']='glpi_networking';
 $SEARCH_OPTION[NETWORKING_TYPE][9]['field']='date_mod';
 $SEARCH_OPTION[NETWORKING_TYPE][9]['linkfield']='';
 $SEARCH_OPTION[NETWORKING_TYPE][9]['name']=$LANG["common"][26];
+$SEARCH_OPTION[NETWORKING_TYPE][9]['datatype']='datetime';
 
 $SEARCH_OPTION[NETWORKING_TYPE][10]['table']='glpi_networking';
 $SEARCH_OPTION[NETWORKING_TYPE][10]['field']='comments';
@@ -728,6 +746,8 @@ $SEARCH_OPTION[NETWORKING_TYPE][132]['field']='begin_date';
 $SEARCH_OPTION[NETWORKING_TYPE][132]['linkfield']='';
 $SEARCH_OPTION[NETWORKING_TYPE][132]['name']=$LANG["search"][8]." ".$LANG["financial"][1];
 $SEARCH_OPTION[NETWORKING_TYPE][132]['forcegroupby']=true;
+$SEARCH_OPTION[NETWORKING_TYPE][132]['datatype']='date';
+
 
 $SEARCH_OPTION[NETWORKING_TYPE][133]['table']='glpi_contracts';
 $SEARCH_OPTION[NETWORKING_TYPE][133]['field']='compta_num';
@@ -740,6 +760,9 @@ $SEARCH_OPTION[NETWORKING_TYPE][134]['field']='end_date';
 $SEARCH_OPTION[NETWORKING_TYPE][134]['linkfield']='';
 $SEARCH_OPTION[NETWORKING_TYPE][134]['name']=$LANG["search"][9]." ".$LANG["financial"][1];
 $SEARCH_OPTION[NETWORKING_TYPE][134]['forcegroupby']=true;
+$SEARCH_OPTION[NETWORKING_TYPE][134]['datatype']='date_delay';
+$SEARCH_OPTION[NETWORKING_TYPE][134]['datafields'][1]='begin_date';
+$SEARCH_OPTION[NETWORKING_TYPE][134]['datafields'][2]='duration';
 
 $SEARCH_OPTION[NETWORKING_TYPE][135]['table']='glpi_contracts';
 $SEARCH_OPTION[NETWORKING_TYPE][135]['field']='notice';
@@ -792,11 +815,13 @@ $SEARCH_OPTION[NETWORKING_TYPE][37]['table']='glpi_infocoms';
 $SEARCH_OPTION[NETWORKING_TYPE][37]['field']='buy_date';
 $SEARCH_OPTION[NETWORKING_TYPE][37]['linkfield']='';
 $SEARCH_OPTION[NETWORKING_TYPE][37]['name']=$LANG["financial"][14];
+$SEARCH_OPTION[NETWORKING_TYPE][37]['datatype']='date';
 
 $SEARCH_OPTION[NETWORKING_TYPE][38]['table']='glpi_infocoms';
 $SEARCH_OPTION[NETWORKING_TYPE][38]['field']='use_date';
 $SEARCH_OPTION[NETWORKING_TYPE][38]['linkfield']='';
 $SEARCH_OPTION[NETWORKING_TYPE][38]['name']=$LANG["financial"][76];
+$SEARCH_OPTION[NETWORKING_TYPE][38]['datatype']='date';
 
 $SEARCH_OPTION[NETWORKING_TYPE][50]['table']='glpi_dropdown_budget';
 $SEARCH_OPTION[NETWORKING_TYPE][50]['field']='name';
@@ -816,7 +841,8 @@ $SEARCH_OPTION[NETWORKING_TYPE][52]['name']=$LANG["financial"][16];
 $SEARCH_OPTION[NETWORKING_TYPE][120]['table']='glpi_infocoms'; 
 $SEARCH_OPTION[NETWORKING_TYPE][120]['field']='end_warranty'; 
 $SEARCH_OPTION[NETWORKING_TYPE][120]['linkfield']=''; 
-$SEARCH_OPTION[NETWORKING_TYPE][120]['name']=$LANG["financial"][80]; 
+$SEARCH_OPTION[NETWORKING_TYPE][120]['name']=$LANG["financial"][80];
+$SEARCH_OPTION[NETWORKING_TYPE][120]['datatype']='date';
  
 $SEARCH_OPTION[NETWORKING_TYPE][53]['table']='glpi_enterprises_infocoms';
 $SEARCH_OPTION[NETWORKING_TYPE][53]['field']='name';
@@ -927,6 +953,7 @@ $SEARCH_OPTION[PRINTER_TYPE][9]['table']='glpi_printers';
 $SEARCH_OPTION[PRINTER_TYPE][9]['field']='date_mod';
 $SEARCH_OPTION[PRINTER_TYPE][9]['linkfield']='';
 $SEARCH_OPTION[PRINTER_TYPE][9]['name']=$LANG["common"][26];
+$SEARCH_OPTION[PRINTER_TYPE][9]['datatype']='datetime';
 
 $SEARCH_OPTION[PRINTER_TYPE][10]['table']='glpi_printers';
 $SEARCH_OPTION[PRINTER_TYPE][10]['field']='comments';
@@ -1041,6 +1068,7 @@ $SEARCH_OPTION[PRINTER_TYPE][132]['field']='begin_date';
 $SEARCH_OPTION[PRINTER_TYPE][132]['linkfield']='';
 $SEARCH_OPTION[PRINTER_TYPE][132]['name']=$LANG["search"][8]." ".$LANG["financial"][1];
 $SEARCH_OPTION[PRINTER_TYPE][132]['forcegroupby']=true;
+$SEARCH_OPTION[PRINTER_TYPE][132]['datatype']='date';
 
 $SEARCH_OPTION[PRINTER_TYPE][133]['table']='glpi_contracts';
 $SEARCH_OPTION[PRINTER_TYPE][133]['field']='compta_num';
@@ -1053,6 +1081,9 @@ $SEARCH_OPTION[PRINTER_TYPE][134]['field']='end_date';
 $SEARCH_OPTION[PRINTER_TYPE][134]['linkfield']='';
 $SEARCH_OPTION[PRINTER_TYPE][134]['name']=$LANG["search"][9]." ".$LANG["financial"][1];
 $SEARCH_OPTION[PRINTER_TYPE][134]['forcegroupby']=true;
+$SEARCH_OPTION[PRINTER_TYPE][134]['datatype']='date_delay';
+$SEARCH_OPTION[PRINTER_TYPE][134]['datafields'][1]='begin_date';
+$SEARCH_OPTION[PRINTER_TYPE][134]['datafields'][2]='duration';
 
 $SEARCH_OPTION[PRINTER_TYPE][135]['table']='glpi_contracts';
 $SEARCH_OPTION[PRINTER_TYPE][135]['field']='notice';
@@ -1105,11 +1136,13 @@ $SEARCH_OPTION[PRINTER_TYPE][37]['table']='glpi_infocoms';
 $SEARCH_OPTION[PRINTER_TYPE][37]['field']='buy_date';
 $SEARCH_OPTION[PRINTER_TYPE][37]['linkfield']='';
 $SEARCH_OPTION[PRINTER_TYPE][37]['name']=$LANG["financial"][14];
+$SEARCH_OPTION[PRINTER_TYPE][37]['datatype']='date';
 
 $SEARCH_OPTION[PRINTER_TYPE][38]['table']='glpi_infocoms';
 $SEARCH_OPTION[PRINTER_TYPE][38]['field']='use_date';
 $SEARCH_OPTION[PRINTER_TYPE][38]['linkfield']='';
 $SEARCH_OPTION[PRINTER_TYPE][38]['name']=$LANG["financial"][76];
+$SEARCH_OPTION[PRINTER_TYPE][38]['datatype']='date';
 
 $SEARCH_OPTION[PRINTER_TYPE][50]['table']='glpi_dropdown_budget';
 $SEARCH_OPTION[PRINTER_TYPE][50]['field']='name';
@@ -1130,6 +1163,7 @@ $SEARCH_OPTION[PRINTER_TYPE][120]['table']='glpi_infocoms';
 $SEARCH_OPTION[PRINTER_TYPE][120]['field']='end_warranty'; 
 $SEARCH_OPTION[PRINTER_TYPE][120]['linkfield']=''; 
 $SEARCH_OPTION[PRINTER_TYPE][120]['name']=$LANG["financial"][80]; 
+$SEARCH_OPTION[PRINTER_TYPE][120]['datatype']='date';
  
 $SEARCH_OPTION[PRINTER_TYPE][53]['table']='glpi_enterprises_infocoms';
 $SEARCH_OPTION[PRINTER_TYPE][53]['field']='name';
@@ -1239,6 +1273,7 @@ $SEARCH_OPTION[MONITOR_TYPE][9]['table']='glpi_monitors';
 $SEARCH_OPTION[MONITOR_TYPE][9]['field']='date_mod';
 $SEARCH_OPTION[MONITOR_TYPE][9]['linkfield']='';
 $SEARCH_OPTION[MONITOR_TYPE][9]['name']=$LANG["common"][26];
+$SEARCH_OPTION[MONITOR_TYPE][9]['datatype']='datetime';
 
 $SEARCH_OPTION[MONITOR_TYPE][10]['table']='glpi_monitors';
 $SEARCH_OPTION[MONITOR_TYPE][10]['field']='comments';
@@ -1311,6 +1346,7 @@ $SEARCH_OPTION[MONITOR_TYPE][132]['field']='begin_date';
 $SEARCH_OPTION[MONITOR_TYPE][132]['linkfield']='';
 $SEARCH_OPTION[MONITOR_TYPE][132]['name']=$LANG["search"][8]." ".$LANG["financial"][1];
 $SEARCH_OPTION[MONITOR_TYPE][132]['forcegroupby']=true;
+$SEARCH_OPTION[MONITOR_TYPE][132]['datatype']='date';
 
 $SEARCH_OPTION[MONITOR_TYPE][133]['table']='glpi_contracts';
 $SEARCH_OPTION[MONITOR_TYPE][133]['field']='compta_num';
@@ -1323,6 +1359,9 @@ $SEARCH_OPTION[MONITOR_TYPE][134]['field']='end_date';
 $SEARCH_OPTION[MONITOR_TYPE][134]['linkfield']='';
 $SEARCH_OPTION[MONITOR_TYPE][134]['name']=$LANG["search"][9]." ".$LANG["financial"][1];
 $SEARCH_OPTION[MONITOR_TYPE][134]['forcegroupby']=true;
+$SEARCH_OPTION[MONITOR_TYPE][134]['datatype']='date_delay';
+$SEARCH_OPTION[MONITOR_TYPE][134]['datafields'][1]='begin_date';
+$SEARCH_OPTION[MONITOR_TYPE][134]['datafields'][2]='duration';
 
 $SEARCH_OPTION[MONITOR_TYPE][135]['table']='glpi_contracts';
 $SEARCH_OPTION[MONITOR_TYPE][135]['field']='notice';
@@ -1374,11 +1413,13 @@ $SEARCH_OPTION[MONITOR_TYPE][37]['table']='glpi_infocoms';
 $SEARCH_OPTION[MONITOR_TYPE][37]['field']='buy_date';
 $SEARCH_OPTION[MONITOR_TYPE][37]['linkfield']='';
 $SEARCH_OPTION[MONITOR_TYPE][37]['name']=$LANG["financial"][14];
+$SEARCH_OPTION[MONITOR_TYPE][37]['datatype']='date';
 
 $SEARCH_OPTION[MONITOR_TYPE][38]['table']='glpi_infocoms';
 $SEARCH_OPTION[MONITOR_TYPE][38]['field']='use_date';
 $SEARCH_OPTION[MONITOR_TYPE][38]['linkfield']='';
 $SEARCH_OPTION[MONITOR_TYPE][38]['name']=$LANG["financial"][76];
+$SEARCH_OPTION[MONITOR_TYPE][38]['datatype']='date';
 
 $SEARCH_OPTION[MONITOR_TYPE][50]['table']='glpi_dropdown_budget';
 $SEARCH_OPTION[MONITOR_TYPE][50]['field']='name';
@@ -1399,6 +1440,7 @@ $SEARCH_OPTION[MONITOR_TYPE][120]['table']='glpi_infocoms';
 $SEARCH_OPTION[MONITOR_TYPE][120]['field']='end_warranty'; 
 $SEARCH_OPTION[MONITOR_TYPE][120]['linkfield']=''; 
 $SEARCH_OPTION[MONITOR_TYPE][120]['name']=$LANG["financial"][80]; 
+$SEARCH_OPTION[MONITOR_TYPE][120]['datatype']='date';
 	 
 $SEARCH_OPTION[MONITOR_TYPE][53]['table']='glpi_enterprises_infocoms';
 $SEARCH_OPTION[MONITOR_TYPE][53]['field']='name';
@@ -1508,6 +1550,7 @@ $SEARCH_OPTION[PERIPHERAL_TYPE][9]['table']='glpi_peripherals';
 $SEARCH_OPTION[PERIPHERAL_TYPE][9]['field']='date_mod';
 $SEARCH_OPTION[PERIPHERAL_TYPE][9]['linkfield']='';
 $SEARCH_OPTION[PERIPHERAL_TYPE][9]['name']=$LANG["common"][26];
+$SEARCH_OPTION[PERIPHERAL_TYPE][9]['datatype']='datetime';
 
 $SEARCH_OPTION[PERIPHERAL_TYPE][10]['table']='glpi_peripherals';
 $SEARCH_OPTION[PERIPHERAL_TYPE][10]['field']='comments';
@@ -1618,6 +1661,7 @@ $SEARCH_OPTION[PERIPHERAL_TYPE][132]['field']='begin_date';
 $SEARCH_OPTION[PERIPHERAL_TYPE][132]['linkfield']='';
 $SEARCH_OPTION[PERIPHERAL_TYPE][132]['name']=$LANG["search"][8]." ".$LANG["financial"][1];
 $SEARCH_OPTION[PERIPHERAL_TYPE][132]['forcegroupby']=true;
+$SEARCH_OPTION[PERIPHERAL_TYPE][132]['datatype']='date';
 
 $SEARCH_OPTION[PERIPHERAL_TYPE][133]['table']='glpi_contracts';
 $SEARCH_OPTION[PERIPHERAL_TYPE][133]['field']='compta_num';
@@ -1630,6 +1674,9 @@ $SEARCH_OPTION[PERIPHERAL_TYPE][134]['field']='end_date';
 $SEARCH_OPTION[PERIPHERAL_TYPE][134]['linkfield']='';
 $SEARCH_OPTION[PERIPHERAL_TYPE][134]['name']=$LANG["search"][9]." ".$LANG["financial"][1];
 $SEARCH_OPTION[PERIPHERAL_TYPE][134]['forcegroupby']=true;
+$SEARCH_OPTION[PERIPHERAL_TYPE][134]['datatype']='date_delay';
+$SEARCH_OPTION[PERIPHERAL_TYPE][134]['datafields'][1]='begin_date';
+$SEARCH_OPTION[PERIPHERAL_TYPE][134]['datafields'][2]='duration';
 
 $SEARCH_OPTION[PERIPHERAL_TYPE][135]['table']='glpi_contracts';
 $SEARCH_OPTION[PERIPHERAL_TYPE][135]['field']='notice';
@@ -1681,11 +1728,13 @@ $SEARCH_OPTION[PERIPHERAL_TYPE][37]['table']='glpi_infocoms';
 $SEARCH_OPTION[PERIPHERAL_TYPE][37]['field']='buy_date';
 $SEARCH_OPTION[PERIPHERAL_TYPE][37]['linkfield']='';
 $SEARCH_OPTION[PERIPHERAL_TYPE][37]['name']=$LANG["financial"][14];
+$SEARCH_OPTION[PERIPHERAL_TYPE][37]['datatype']='date';
 
 $SEARCH_OPTION[PERIPHERAL_TYPE][38]['table']='glpi_infocoms';
 $SEARCH_OPTION[PERIPHERAL_TYPE][38]['field']='use_date';
 $SEARCH_OPTION[PERIPHERAL_TYPE][38]['linkfield']='';
 $SEARCH_OPTION[PERIPHERAL_TYPE][38]['name']=$LANG["financial"][76];
+$SEARCH_OPTION[PERIPHERAL_TYPE][38]['datatype']='date';
 
 $SEARCH_OPTION[PERIPHERAL_TYPE][50]['table']='glpi_dropdown_budget';
 $SEARCH_OPTION[PERIPHERAL_TYPE][50]['field']='name';
@@ -1706,6 +1755,7 @@ $SEARCH_OPTION[PERIPHERAL_TYPE][120]['table']='glpi_infocoms';
 $SEARCH_OPTION[PERIPHERAL_TYPE][120]['field']='end_warranty'; 
 $SEARCH_OPTION[PERIPHERAL_TYPE][120]['linkfield']=''; 
 $SEARCH_OPTION[PERIPHERAL_TYPE][120]['name']=$LANG["financial"][80]; 
+$SEARCH_OPTION[PERIPHERAL_TYPE][120]['datatype']='date';
  
 $SEARCH_OPTION[PERIPHERAL_TYPE][53]['table']='glpi_enterprises_infocoms';
 $SEARCH_OPTION[PERIPHERAL_TYPE][53]['field']='name';
@@ -1806,6 +1856,7 @@ $SEARCH_OPTION[SOFTWARE_TYPE][9]['table']='glpi_software';
 $SEARCH_OPTION[SOFTWARE_TYPE][9]['field']='date_mod';
 $SEARCH_OPTION[SOFTWARE_TYPE][9]['linkfield']='';
 $SEARCH_OPTION[SOFTWARE_TYPE][9]['name']=$LANG["common"][26];
+$SEARCH_OPTION[SOFTWARE_TYPE][9]['datatype']='datetime';
 
 $SEARCH_OPTION[SOFTWARE_TYPE][23]['table']='glpi_dropdown_manufacturer';
 $SEARCH_OPTION[SOFTWARE_TYPE][23]['field']='name';
@@ -1877,6 +1928,7 @@ $SEARCH_OPTION[SOFTWARE_TYPE][132]['field']='begin_date';
 $SEARCH_OPTION[SOFTWARE_TYPE][132]['linkfield']='';
 $SEARCH_OPTION[SOFTWARE_TYPE][132]['name']=$LANG["search"][8]." ".$LANG["financial"][1];
 $SEARCH_OPTION[SOFTWARE_TYPE][132]['forcegroupby']=true;
+$SEARCH_OPTION[SOFTWARE_TYPE][132]['datatype']='date';
 
 $SEARCH_OPTION[SOFTWARE_TYPE][133]['table']='glpi_contracts';
 $SEARCH_OPTION[SOFTWARE_TYPE][133]['field']='compta_num';
@@ -1889,6 +1941,9 @@ $SEARCH_OPTION[SOFTWARE_TYPE][134]['field']='end_date';
 $SEARCH_OPTION[SOFTWARE_TYPE][134]['linkfield']='';
 $SEARCH_OPTION[SOFTWARE_TYPE][134]['name']=$LANG["search"][9]." ".$LANG["financial"][1];
 $SEARCH_OPTION[SOFTWARE_TYPE][134]['forcegroupby']=true;
+$SEARCH_OPTION[SOFTWARE_TYPE][134]['datatype']='date_delay';
+$SEARCH_OPTION[SOFTWARE_TYPE][134]['datafields'][1]='begin_date';
+$SEARCH_OPTION[SOFTWARE_TYPE][134]['datafields'][2]='duration';
 
 $SEARCH_OPTION[SOFTWARE_TYPE][135]['table']='glpi_contracts';
 $SEARCH_OPTION[SOFTWARE_TYPE][135]['field']='notice';
@@ -1978,6 +2033,7 @@ $SEARCH_OPTION[SOFTWARE_TYPE][166]['field']='expire';
 $SEARCH_OPTION[SOFTWARE_TYPE][166]['linkfield']=''; 
 $SEARCH_OPTION[SOFTWARE_TYPE][166]['name']=$LANG["software"][32]; 
 $SEARCH_OPTION[SOFTWARE_TYPE][166]['forcegroupby']=true;
+$SEARCH_OPTION[SOFTWARE_TYPE][166]['datatype']='date';
 
 $SEARCH_OPTION[SOFTWARE_TYPE]['financial']=$LANG["financial"][3];
 
@@ -2005,11 +2061,13 @@ $SEARCH_OPTION[SOFTWARE_TYPE][37]['table']='glpi_infocoms';
 $SEARCH_OPTION[SOFTWARE_TYPE][37]['field']='buy_date';
 $SEARCH_OPTION[SOFTWARE_TYPE][37]['linkfield']='';
 $SEARCH_OPTION[SOFTWARE_TYPE][37]['name']=$LANG["financial"][14];
+$SEARCH_OPTION[SOFTWARE_TYPE][37]['datatype']='date';
 
 $SEARCH_OPTION[SOFTWARE_TYPE][38]['table']='glpi_infocoms';
 $SEARCH_OPTION[SOFTWARE_TYPE][38]['field']='use_date';
 $SEARCH_OPTION[SOFTWARE_TYPE][38]['linkfield']='';
 $SEARCH_OPTION[SOFTWARE_TYPE][38]['name']=$LANG["financial"][76];
+$SEARCH_OPTION[SOFTWARE_TYPE][38]['datatype']='date';
 
 $SEARCH_OPTION[SOFTWARE_TYPE][50]['table']='glpi_dropdown_budget';
 $SEARCH_OPTION[SOFTWARE_TYPE][50]['field']='name';
@@ -2030,6 +2088,7 @@ $SEARCH_OPTION[SOFTWARE_TYPE][120]['table']='glpi_infocoms';
 $SEARCH_OPTION[SOFTWARE_TYPE][120]['field']='end_warranty'; 
 $SEARCH_OPTION[SOFTWARE_TYPE][120]['linkfield']=''; 
 $SEARCH_OPTION[SOFTWARE_TYPE][120]['name']=$LANG["financial"][80]; 
+$SEARCH_OPTION[SOFTWARE_TYPE][120]['datatype']='date';
 
 $SEARCH_OPTION[SOFTWARE_TYPE][53]['table']='glpi_enterprises_infocoms';
 $SEARCH_OPTION[SOFTWARE_TYPE][53]['field']='name';
@@ -2115,6 +2174,7 @@ $SEARCH_OPTION[SOFTWARELICENSE_TYPE][8]['table']='glpi_softwarelicenses';
 $SEARCH_OPTION[SOFTWARELICENSE_TYPE][8]['field']='expire'; 
 $SEARCH_OPTION[SOFTWARELICENSE_TYPE][8]['linkfield']='expire'; 
 $SEARCH_OPTION[SOFTWARELICENSE_TYPE][8]['name']=$LANG["software"][32]; 
+$SEARCH_OPTION[SOFTWARELICENSE_TYPE][8]['datatype']='date'; 
 
 $SEARCH_OPTION[SOFTWARELICENSE_TYPE][9]['table']='glpi_computers'; 
 $SEARCH_OPTION[SOFTWARELICENSE_TYPE][9]['field']='name'; 
@@ -2150,11 +2210,13 @@ $SEARCH_OPTION[SOFTWARELICENSE_TYPE][37]['table']='glpi_infocoms';
 $SEARCH_OPTION[SOFTWARELICENSE_TYPE][37]['field']='buy_date';
 $SEARCH_OPTION[SOFTWARELICENSE_TYPE][37]['linkfield']='';
 $SEARCH_OPTION[SOFTWARELICENSE_TYPE][37]['name']=$LANG["financial"][14];
+$SEARCH_OPTION[SOFTWARELICENSE_TYPE][37]['datatype']='date';
 
 $SEARCH_OPTION[SOFTWARELICENSE_TYPE][38]['table']='glpi_infocoms';
 $SEARCH_OPTION[SOFTWARELICENSE_TYPE][38]['field']='use_date';
 $SEARCH_OPTION[SOFTWARELICENSE_TYPE][38]['linkfield']='';
 $SEARCH_OPTION[SOFTWARELICENSE_TYPE][38]['name']=$LANG["financial"][76];
+$SEARCH_OPTION[SOFTWARELICENSE_TYPE][38]['datatype']='date';
 
 $SEARCH_OPTION[SOFTWARELICENSE_TYPE][50]['table']='glpi_dropdown_budget';
 $SEARCH_OPTION[SOFTWARELICENSE_TYPE][50]['field']='name';
@@ -2175,6 +2237,7 @@ $SEARCH_OPTION[SOFTWARELICENSE_TYPE][120]['table']='glpi_infocoms';
 $SEARCH_OPTION[SOFTWARELICENSE_TYPE][120]['field']='end_warranty'; 
 $SEARCH_OPTION[SOFTWARELICENSE_TYPE][120]['linkfield']=''; 
 $SEARCH_OPTION[SOFTWARELICENSE_TYPE][120]['name']=$LANG["financial"][80]; 
+$SEARCH_OPTION[SOFTWARELICENSE_TYPE][120]['datatype']='date';
 
 $SEARCH_OPTION[SOFTWARELICENSE_TYPE][53]['table']='glpi_enterprises_infocoms';
 $SEARCH_OPTION[SOFTWARELICENSE_TYPE][53]['field']='name';
@@ -2415,6 +2478,7 @@ $SEARCH_OPTION[CONTRACT_TYPE][5]['table']='glpi_contracts';
 $SEARCH_OPTION[CONTRACT_TYPE][5]['field']='begin_date';
 $SEARCH_OPTION[CONTRACT_TYPE][5]['linkfield']='begin_date';
 $SEARCH_OPTION[CONTRACT_TYPE][5]['name']=$LANG["search"][8];
+$SEARCH_OPTION[CONTRACT_TYPE][5]['datatype']='date';
 
 $SEARCH_OPTION[CONTRACT_TYPE][6]['table']='glpi_contracts';
 $SEARCH_OPTION[CONTRACT_TYPE][6]['field']='duration';
@@ -2425,6 +2489,9 @@ $SEARCH_OPTION[CONTRACT_TYPE][20]['table']='glpi_contracts';
 $SEARCH_OPTION[CONTRACT_TYPE][20]['field']='end_date';
 $SEARCH_OPTION[CONTRACT_TYPE][20]['linkfield']='';
 $SEARCH_OPTION[CONTRACT_TYPE][20]['name']=$LANG["search"][9];
+$SEARCH_OPTION[CONTRACT_TYPE][20]['datatype']='date_delay';
+$SEARCH_OPTION[CONTRACT_TYPE][20]['datafields'][1]='begin_date';
+$SEARCH_OPTION[CONTRACT_TYPE][20]['datafields'][2]='duration';
 
 $SEARCH_OPTION[CONTRACT_TYPE][7]['table']='glpi_contracts';
 $SEARCH_OPTION[CONTRACT_TYPE][7]['field']='notice';
@@ -2634,6 +2701,7 @@ $SEARCH_OPTION[DOCUMENT_TYPE][19]['table']='glpi_docs';
 $SEARCH_OPTION[DOCUMENT_TYPE][19]['field']='date_mod';
 $SEARCH_OPTION[DOCUMENT_TYPE][19]['linkfield']='';
 $SEARCH_OPTION[DOCUMENT_TYPE][19]['name']=$LANG["common"][26];
+$SEARCH_OPTION[DOCUMENT_TYPE][19]['datatype']='datetime';
 
 
 //////USER_TYPE
@@ -2706,6 +2774,7 @@ $SEARCH_OPTION[USER_TYPE][14]['table']='glpi_users';
 $SEARCH_OPTION[USER_TYPE][14]['field']='last_login';
 $SEARCH_OPTION[USER_TYPE][14]['linkfield']='';
 $SEARCH_OPTION[USER_TYPE][14]['name']=$LANG["login"][0];
+$SEARCH_OPTION[USER_TYPE][14]['datatype']='datetime';
 
 $SEARCH_OPTION[USER_TYPE][15]['table']='glpi_auth_tables';
 $SEARCH_OPTION[USER_TYPE][15]['field']='name';
@@ -2716,6 +2785,7 @@ $SEARCH_OPTION[USER_TYPE][19]['table']='glpi_users';
 $SEARCH_OPTION[USER_TYPE][19]['field']='date_mod';
 $SEARCH_OPTION[USER_TYPE][19]['linkfield']='';
 $SEARCH_OPTION[USER_TYPE][19]['name']=$LANG["common"][26];
+$SEARCH_OPTION[USER_TYPE][19]['datatype']='datetime';
 
 $SEARCH_OPTION[USER_TYPE][20]['table']='glpi_profiles';
 $SEARCH_OPTION[USER_TYPE][20]['field']='name';
@@ -2884,6 +2954,7 @@ $SEARCH_OPTION[PHONE_TYPE][9]['table']='glpi_phones';
 $SEARCH_OPTION[PHONE_TYPE][9]['field']='date_mod';
 $SEARCH_OPTION[PHONE_TYPE][9]['linkfield']='';
 $SEARCH_OPTION[PHONE_TYPE][9]['name']=$LANG["common"][26];
+$SEARCH_OPTION[PHONE_TYPE][9]['datatype']='datetime';
 
 $SEARCH_OPTION[PHONE_TYPE][10]['table']='glpi_phones';
 $SEARCH_OPTION[PHONE_TYPE][10]['field']='comments';
@@ -2960,6 +3031,7 @@ $SEARCH_OPTION[PHONE_TYPE][132]['field']='begin_date';
 $SEARCH_OPTION[PHONE_TYPE][132]['linkfield']='';
 $SEARCH_OPTION[PHONE_TYPE][132]['name']=$LANG["search"][8]." ".$LANG["financial"][1];
 $SEARCH_OPTION[PHONE_TYPE][132]['forcegroupby']=true;
+$SEARCH_OPTION[PHONE_TYPE][132]['datatype']='date';
 
 $SEARCH_OPTION[PHONE_TYPE][133]['table']='glpi_contracts';
 $SEARCH_OPTION[PHONE_TYPE][133]['field']='compta_num';
@@ -2972,6 +3044,9 @@ $SEARCH_OPTION[PHONE_TYPE][134]['field']='end_date';
 $SEARCH_OPTION[PHONE_TYPE][134]['linkfield']='';
 $SEARCH_OPTION[PHONE_TYPE][134]['name']=$LANG["search"][9]." ".$LANG["financial"][1];
 $SEARCH_OPTION[PHONE_TYPE][134]['forcegroupby']=true;
+$SEARCH_OPTION[PHONE_TYPE][134]['datatype']='date_delay';
+$SEARCH_OPTION[PHONE_TYPE][134]['datafields'][1]='begin_date';
+$SEARCH_OPTION[PHONE_TYPE][134]['datafields'][2]='duration';
 
 $SEARCH_OPTION[PHONE_TYPE][135]['table']='glpi_contracts';
 $SEARCH_OPTION[PHONE_TYPE][135]['field']='notice';
@@ -3023,11 +3098,13 @@ $SEARCH_OPTION[PHONE_TYPE][37]['table']='glpi_infocoms';
 $SEARCH_OPTION[PHONE_TYPE][37]['field']='buy_date';
 $SEARCH_OPTION[PHONE_TYPE][37]['linkfield']='';
 $SEARCH_OPTION[PHONE_TYPE][37]['name']=$LANG["financial"][14];
+$SEARCH_OPTION[PHONE_TYPE][37]['datatype']='date';
 
 $SEARCH_OPTION[PHONE_TYPE][38]['table']='glpi_infocoms';
 $SEARCH_OPTION[PHONE_TYPE][38]['field']='use_date';
 $SEARCH_OPTION[PHONE_TYPE][38]['linkfield']='';
 $SEARCH_OPTION[PHONE_TYPE][38]['name']=$LANG["financial"][76];
+$SEARCH_OPTION[PHONE_TYPE][38]['datatype']='date';
 
 $SEARCH_OPTION[PHONE_TYPE][50]['table']='glpi_dropdown_budget';
 $SEARCH_OPTION[PHONE_TYPE][50]['field']='name';
@@ -3048,6 +3125,7 @@ $SEARCH_OPTION[PHONE_TYPE][120]['table']='glpi_infocoms';
 $SEARCH_OPTION[PHONE_TYPE][120]['field']='end_warranty'; 
 $SEARCH_OPTION[PHONE_TYPE][120]['linkfield']=''; 
 $SEARCH_OPTION[PHONE_TYPE][120]['name']=$LANG["financial"][80]; 
+$SEARCH_OPTION[PHONE_TYPE][120]['datatype']='date';
 	 
 $SEARCH_OPTION[PHONE_TYPE][53]['table']='glpi_enterprises_infocoms';
 $SEARCH_OPTION[PHONE_TYPE][53]['field']='name';
@@ -3293,6 +3371,7 @@ $SEARCH_OPTION[STATE_TYPE][19]['table']='state_types';
 $SEARCH_OPTION[STATE_TYPE][19]['field']='date_mod';
 $SEARCH_OPTION[STATE_TYPE][19]['linkfield']='';
 $SEARCH_OPTION[STATE_TYPE][19]['name']=$LANG["common"][26];
+$SEARCH_OPTION[STATE_TYPE][19]['datatype']='datetime';
 
 $SEARCH_OPTION[STATE_TYPE][23]['table']='glpi_dropdown_manufacturer';
 $SEARCH_OPTION[STATE_TYPE][23]['field']='name';
@@ -3358,6 +3437,8 @@ $SEARCH_OPTION[RESERVATION_TYPE][19]['table']='reservation_types';
 $SEARCH_OPTION[RESERVATION_TYPE][19]['field']='date_mod';
 $SEARCH_OPTION[RESERVATION_TYPE][19]['linkfield']='';
 $SEARCH_OPTION[RESERVATION_TYPE][19]['name']=$LANG["common"][26];
+$SEARCH_OPTION[RESERVATION_TYPE][19]['datatype']='datetime';
+
 
 $SEARCH_OPTION[RESERVATION_TYPE][23]['table']='glpi_dropdown_manufacturer';
 $SEARCH_OPTION[RESERVATION_TYPE][23]['field']='name';
@@ -3432,6 +3513,7 @@ $SEARCH_OPTION[OCSNG_TYPE][2]['table']='glpi_ocs_config';
 $SEARCH_OPTION[OCSNG_TYPE][2]['field']='date_mod';
 $SEARCH_OPTION[OCSNG_TYPE][2]['linkfield']='';
 $SEARCH_OPTION[OCSNG_TYPE][2]['name']=$LANG["common"][26];
+$SEARCH_OPTION[OCSNG_TYPE][2]['datatype']='datetime';
 
 // PROFILE_TYPE
 $SEARCH_OPTION[PROFILE_TYPE]['common']=$LANG["common"][16];
