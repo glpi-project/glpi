@@ -1999,7 +1999,8 @@ function getNumberOfLicences($sID) {
 		$query = "SELECT SUM(number) FROM glpi_softwarelicenses WHERE (sID = '$sID' AND number > 0) " .
 			getEntitiesRestrictRequest('AND', 'glpi_softwarelicenses', '', '', true);
 		$result = $DB->query($query);
-		return $DB->result($result,0,0);
+		$nb = $DB->result($result,0,0);
+		return ($nb ? $nb : 0);
 	}
 }
 
