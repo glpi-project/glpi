@@ -858,14 +858,14 @@ $LANG["login"][31]="Аутентифицировать через";
 $LANG["login"][32]="Аутентифицировать GLPI"; 
 $LANG["login"][33]="Authentication on IMAP/POP server"; 
 
-$LANG["mailgate"][0]="Почтовый парсер"; 
-$LANG["mailgate"][1]="Добавить запись сбора почты"; 
+$LANG["mailgate"][0]="Mail Receiver"; 
+$LANG["mailgate"][1]="Add a mail receiver"; 
 $LANG["mailgate"][2]="Получить заявки"; 
 $LANG["mailgate"][3]="Получено писем"; 
 $LANG["mailgate"][4]="Предупреждение: расширение php mbstring не подключено."; 
 $LANG["mailgate"][5]="Invalid attached file"; 
 $LANG["mailgate"][6]="Too large attached file"; 
-$LANG["mailgate"][7]="Почтовый парсер: max размер вложения (0 – не импортировать)"; 
+$LANG["mailgate"][7]="Mail Receiver: Maximum size of each attached file (0 : no import)"; 
 $LANG["mailgate"][8]="байт"; 
 
 $LANG["mailing"][0]="----------------------------------------------------------"; 
@@ -963,7 +963,7 @@ $LANG["Menu"][35]="Профили";
 $LANG["Menu"][36]="Группы"; 
 $LANG["Menu"][37]="Организации"; 
 $LANG["Menu"][38]="Оборудование"; 
-$LANG["Menu"][39]="Почтовый парсер"; 
+$LANG["Menu"][39]="Receivers"; 
 $LANG["Menu"][40]="Закладки"; 
 
 $LANG["monitors"][14]="Микрофон"; 

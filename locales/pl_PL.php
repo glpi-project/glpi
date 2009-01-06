@@ -858,14 +858,14 @@ $LANG["login"][31]="Uwierzytelnianie w katalogu";
 $LANG["login"][32]="Uwierzytelnianie w bazie GLPI"; 
 $LANG["login"][33]="Uwierzytelnianie w serwerze IMAP/POP"; 
 
-$LANG["mailgate"][0]="Brama e-mail"; 
-$LANG["mailgate"][1]="Dodaj bramkę e-mail"; 
+$LANG["mailgate"][0]="Mail Receiver"; 
+$LANG["mailgate"][1]="Add a mail receiver"; 
 $LANG["mailgate"][2]="Pobierz zgłoszenia e-mail"; 
 $LANG["mailgate"][3]="Liczba dostępnych i odzyskanych e-maili"; 
 $LANG["mailgate"][4]="nie znaleziono  rozszerzenia mbstring. Ostrzeżenia użyły charsets."; 
 $LANG["mailgate"][5]="Dołączony plik jest niepoprawny"; 
 $LANG["mailgate"][6]="Za duży plik załącznika"; 
-$LANG["mailgate"][7]="Bramka Email: Maksymalny rozmiar pliku załącznika (0 : brak importu)"; 
+$LANG["mailgate"][7]="Mail Receiver: Maximum size of each attached file (0 : no import)"; 
 $LANG["mailgate"][8]="bajtów"; 
 
 $LANG["mailing"][0]="-----------------------"; 
@@ -963,7 +963,7 @@ $LANG["Menu"][35]="Profile";
 $LANG["Menu"][36]="Grupy"; 
 $LANG["Menu"][37]="Oddziały"; 
 $LANG["Menu"][38]="Spis"; 
-$LANG["Menu"][39]="Bramka e-mail"; 
+$LANG["Menu"][39]="Receivers"; 
 $LANG["Menu"][40]="Zakładki"; 
 
 $LANG["monitors"][14]="Mikrofon"; 

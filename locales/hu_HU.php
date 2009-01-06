@@ -858,14 +858,14 @@ $LANG["login"][31]="Hitelesítés könyvtárral";
 $LANG["login"][32]="Hitelesítés GLPI adatbázissal"; 
 $LANG["login"][33]="Hitelesítés IMAP/POP kiszolgálón"; 
 
-$LANG["mailgate"][0]="Email átjáró"; 
-$LANG["mailgate"][1]="Új email átjáró"; 
+$LANG["mailgate"][0]="Mail Receiver"; 
+$LANG["mailgate"][1]="Add a mail receiver"; 
 $LANG["mailgate"][2]="Email bejelentések letöltése"; 
 $LANG["mailgate"][3]="Elérhető és letöltött emailek"; 
 $LANG["mailgate"][4]="Az mbstring kiterjesztés hiányzik, kéretik figyelni a használt kódlapra."; 
 $LANG["mailgate"][5]="Érvénytelen csatolt fájl"; 
 $LANG["mailgate"][6]="Túl nagy csatolt fájl"; 
-$LANG["mailgate"][7]="Email átjáró: csato fájl maximum mérete (0: nincs import)"; 
+$LANG["mailgate"][7]="Mail Receiver: Maximum size of each attached file (0 : no import)"; 
 $LANG["mailgate"][8]="bájt"; 
 
 $LANG["mailing"][0]="----------------------------------------------------------"; 
@@ -963,7 +963,7 @@ $LANG["Menu"][35]="Profilok";
 $LANG["Menu"][36]="Csoportok"; 
 $LANG["Menu"][37]="Dolgok"; 
 $LANG["Menu"][38]="Leltár"; 
-$LANG["Menu"][39]="Email átjárók"; 
+$LANG["Menu"][39]="Receivers"; 
 $LANG["Menu"][40]="Könyvelzők"; 
 
 $LANG["monitors"][14]="Mikrofon"; 
