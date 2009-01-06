@@ -858,14 +858,14 @@ $LANG["login"][31]="Πιστοποίηση στον φάκελο";
 $LANG["login"][32]="Πιστοποίηση στην GLPI βάση δεδομένων"; 
 $LANG["login"][33]="Πιστοποίηση στον IMAP/POP server"; 
 
-$LANG["mailgate"][0]="Πύλη ταχυδρομείου"; 
-$LANG["mailgate"][1]="Πρόσθεσε μια Πύλη ταχυδρομείου"; 
+$LANG["mailgate"][0]="Mail Receiver"; 
+$LANG["mailgate"][1]="Add a mail receiver"; 
 $LANG["mailgate"][2]="Πάρε ένα αίτημα ταχυδρομικά"; 
 $LANG["mailgate"][3]="Αριθμός διαθέσιμων και ανακτημένων αιτημάτων (mails)"; 
 $LANG["mailgate"][4]="η επέκταση mbstring δεν υπάρχει. Προσοχή με τους χαρακτήρες που χρησιμοποιούνται."; 
 $LANG["mailgate"][5]="Απαράδεκτο επισυναπτόμενο αρχείο"; 
 $LANG["mailgate"][6]="Μεγάλου μεγέθους επισυναπτόμενο αρχείο"; 
-$LANG["mailgate"][7]="Πύλη ταχυδρομείου:Μέγιστο μέγεθος για κάθε επισυναπτόμενο αρχείο (0 : μη εισαγωγή)"; 
+$LANG["mailgate"][7]="Mail Receiver: Maximum size of each attached file (0 : no import)"; 
 $LANG["mailgate"][8]="ψηφία"; 
 
 $LANG["mailing"][0]="----------------------------------------------------------"; 
@@ -963,7 +963,7 @@ $LANG["Menu"][35]="Επίπεδα";
 $LANG["Menu"][36]="Ομάδες"; 
 $LANG["Menu"][37]="Οντότητες"; 
 $LANG["Menu"][38]="Απογραφή"; 
-$LANG["Menu"][39]="Ταχυδρομείο"; 
+$LANG["Menu"][39]="Receivers"; 
 $LANG["Menu"][40]="Σελιδοδείκτες"; 
 
 $LANG["monitors"][14]="Μικρόφωνο"; 

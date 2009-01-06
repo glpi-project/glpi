@@ -858,14 +858,14 @@ $LANG["login"][31]="Tapatybės nustatymas srityje";
 $LANG["login"][32]="Tapatybės nustatymas iš GLPI duomenų bazės"; 
 $LANG["login"][33]="Tapatybės nustatymas iš IMAP/POP tarnybinės stoties"; 
 
-$LANG["mailgate"][0]="Pašto tinklų sietuvas (gateway)"; 
-$LANG["mailgate"][1]="Pridėti e-pašto sietuvą (gateway)"; 
+$LANG["mailgate"][0]="Mail Receiver"; 
+$LANG["mailgate"][1]="Add a mail receiver"; 
 $LANG["mailgate"][2]="Atsisiųsti paraiškas e-paštu"; 
 $LANG["mailgate"][3]="Gautų ir prieinamų laiškų skaičius"; 
 $LANG["mailgate"][4]="Nėra mbstring plėtinio. Perspėjimas dėl naudojamų simbolių rinkinių."; 
 $LANG["mailgate"][5]="Prisegta rinkmena sugadinta"; 
 $LANG["mailgate"][6]="Too large attached file"; 
-$LANG["mailgate"][7]="Pašto sietuvas: Didžiausias leistinas priedo rinkmenos dydis (0 : įkeltis negalima)"; 
+$LANG["mailgate"][7]="Mail Receiver: Maximum size of each attached file (0 : no import)"; 
 $LANG["mailgate"][8]="baitai"; 
 
 $LANG["mailing"][0]="----------------------------------------------------------"; 
@@ -963,7 +963,7 @@ $LANG["Menu"][35]="Profilis";
 $LANG["Menu"][36]="Grupės"; 
 $LANG["Menu"][37]="Padaliniai"; 
 $LANG["Menu"][38]="Inventorius"; 
-$LANG["Menu"][39]="Pašto tarpinės stotys"; 
+$LANG["Menu"][39]="Receivers"; 
 $LANG["Menu"][40]="Žymelės"; 
 
 $LANG["monitors"][14]="Mikrofonas"; 

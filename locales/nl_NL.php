@@ -858,14 +858,14 @@ $LANG["login"][31]="Authentificatie d.m.v. directorie";
 $LANG["login"][32]="Authentificatie d.m.v. GLPI databank"; 
 $LANG["login"][33]="Authentificatie d.m.v. IMAP/POP server"; 
 
-$LANG["mailgate"][0]="Mail Gateway"; 
-$LANG["mailgate"][1]="E-mail gateway toevoegen"; 
+$LANG["mailgate"][0]="Mail Receiver"; 
+$LANG["mailgate"][1]="Add a mail receiver"; 
 $LANG["mailgate"][2]="Haal de E-mail tickets nu op"; 
 $LANG["mailgate"][3]="Aantal beschikbare en ontvangen E-mail"; 
 $LANG["mailgate"][4]="De 'mbstring' extensie is niet gevonden. waarschuwing voor gebruikte 'charsets'."; 
 $LANG["mailgate"][5]="Invalid attached file"; 
 $LANG["mailgate"][6]="Bestands bijlage is te groot"; 
-$LANG["mailgate"][7]="Mail Gateway: Maximum size of each attached file (0 : no import)"; 
+$LANG["mailgate"][7]="Mail Receiver: Maximum size of each attached file (0 : no import)"; 
 $LANG["mailgate"][8]="bytes"; 
 
 $LANG["mailing"][0]="-----------------------"; 
@@ -963,7 +963,7 @@ $LANG["Menu"][35]="Profielen";
 $LANG["Menu"][36]="Groepen"; 
 $LANG["Menu"][37]="Instantie's"; 
 $LANG["Menu"][38]="Inventaris"; 
-$LANG["Menu"][39]="E-mail Gateways"; 
+$LANG["Menu"][39]="Receivers"; 
 $LANG["Menu"][40]="Bladwijzers"; 
 
 $LANG["monitors"][14]="Microfoon"; 

@@ -858,14 +858,14 @@ $LANG["login"][31]="Dizin üzerinde yetkilendirme";
 $LANG["login"][32]="GLPI veritabanında yetkilendirme"; 
 $LANG["login"][33]="Imap/Pop sunucuda yetkilendirme"; 
 
-$LANG["mailgate"][0]="Mail Gateway"; 
-$LANG["mailgate"][1]="Mail sunucu ekle"; 
+$LANG["mailgate"][0]="Mail Receiver"; 
+$LANG["mailgate"][1]="Add a mail receiver"; 
 $LANG["mailgate"][2]="Mail çağrılarını şimdi al"; 
 $LANG["mailgate"][3]="Number of available and retrieved emails"; 
 $LANG["mailgate"][4]="mbstring extension not found. Warning with charsets used."; 
 $LANG["mailgate"][5]="Eklenen dosya geçersiz"; 
 $LANG["mailgate"][6]="Eklenen dosya çok büyük"; 
-$LANG["mailgate"][7]="Mail Gateway: Maximum size of each attached file (0 : no import)"; 
+$LANG["mailgate"][7]="Mail Receiver: Maximum size of each attached file (0 : no import)"; 
 $LANG["mailgate"][8]="byte"; 
 
 $LANG["mailing"][0]="----------------------------------------------------------"; 
@@ -963,7 +963,7 @@ $LANG["Menu"][35]="Profil";
 $LANG["Menu"][36]="Grup"; 
 $LANG["Menu"][37]="Entities"; 
 $LANG["Menu"][38]="Envanter"; 
-$LANG["Menu"][39]="Mail Gateways"; 
+$LANG["Menu"][39]="Receivers"; 
 $LANG["Menu"][40]="Yerimi"; 
 
 $LANG["monitors"][14]="Mikrofon"; 

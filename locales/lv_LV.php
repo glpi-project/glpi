@@ -858,14 +858,14 @@ $LANG["login"][31]="Pieteikšanās izmantojot AD/LDAP";
 $LANG["login"][32]="Pieteikšanās izmantojot GLPI datubāzi"; 
 $LANG["login"][33]="Pieteikšanās izmantojot IMAP/POP serveri"; 
 
-$LANG["mailgate"][0]="Pasta vārteja"; 
-$LANG["mailgate"][1]="Pievienot pasta vārteju"; 
+$LANG["mailgate"][0]="Mail Receiver"; 
+$LANG["mailgate"][1]="Add a mail receiver"; 
 $LANG["mailgate"][2]="Saņemt epasta pieteikumus tūlīt"; 
 $LANG["mailgate"][3]="Pieejamo un saņemto epastu skaits"; 
 $LANG["mailgate"][4]="mbstring paplašinājums nav atrasts. Var būt problēmas ar garumzīmēm, mīkstinājumiem."; 
 $LANG["mailgate"][5]="Nederīga pievienotā datne"; 
 $LANG["mailgate"][6]="Pievienotā datne ir par lielu"; 
-$LANG["mailgate"][7]="Pasta vārteja: lielākais atļautais izmērs pielikumiem (0 - aizliegt pielikumus)"; 
+$LANG["mailgate"][7]="Mail Receiver: Maximum size of each attached file (0 : no import)"; 
 $LANG["mailgate"][8]="baiti"; 
 
 $LANG["mailing"][0]="----------------------------------------------------------"; 
@@ -963,7 +963,7 @@ $LANG["Menu"][35]="Profili";
 $LANG["Menu"][36]="Grupas"; 
 $LANG["Menu"][37]="Nodaļas"; 
 $LANG["Menu"][38]="Inventārs"; 
-$LANG["Menu"][39]="Pasta vārtejas"; 
+$LANG["Menu"][39]="Receivers"; 
 $LANG["Menu"][40]="Grāmatzīmes"; 
 
 $LANG["monitors"][14]="Mikrofons"; 

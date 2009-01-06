@@ -858,14 +858,14 @@ $LANG["login"][31]="Avtentikacija na imenik";
 $LANG["login"][32]="Avtentikacija na GLPI bazo"; 
 $LANG["login"][33]="Avtentikacija na IMAP/POP strežnik"; 
 
-$LANG["mailgate"][0]="Poštni prehod"; 
-$LANG["mailgate"][1]="Dodaj e-mail prehod"; 
+$LANG["mailgate"][0]="Mail Receiver"; 
+$LANG["mailgate"][1]="Add a mail receiver"; 
 $LANG["mailgate"][2]="Get email tickets now"; 
 $LANG["mailgate"][3]="Število dosegljivih in vrnjenih e-mailov"; 
 $LANG["mailgate"][4]="mbstring extension not found. Warning with charsets used."; 
 $LANG["mailgate"][5]="Pripeta datoteka je nepravilna"; 
 $LANG["mailgate"][6]="Pripeta datoteka je prevelika"; 
-$LANG["mailgate"][7]="Mail Gateway: Maximum size of each attached file (0 : no import)"; 
+$LANG["mailgate"][7]="Mail Receiver: Maximum size of each attached file (0 : no import)"; 
 $LANG["mailgate"][8]="bajt"; 
 
 $LANG["mailing"][0]="----------------------------------------------------------"; 
@@ -963,7 +963,7 @@ $LANG["Menu"][35]="Profili";
 $LANG["Menu"][36]="Skupine"; 
 $LANG["Menu"][37]="Entitete"; 
 $LANG["Menu"][38]="Inventar"; 
-$LANG["Menu"][39]="Poštni prehodi"; 
+$LANG["Menu"][39]="Receivers"; 
 $LANG["Menu"][40]="Priljubljene"; 
 
 $LANG["monitors"][14]="Mikrofon"; 

@@ -858,14 +858,14 @@ $LANG["login"][31]="Identificación sobre LDAP";
 $LANG["login"][32]="Identificación sobre a base de datos de GLPI"; 
 $LANG["login"][33]="Identificación sobre o servidor POP/IMAP"; 
 
-$LANG["mailgate"][0]="Pasarela de correo"; 
-$LANG["mailgate"][1]="Engadir unha pasarela de correo"; 
+$LANG["mailgate"][0]="Mail Receiver"; 
+$LANG["mailgate"][1]="Add a mail receiver"; 
 $LANG["mailgate"][2]="Recuperar agora"; 
 $LANG["mailgate"][3]="Número de mensaxes dispoñibles e recuperados"; 
 $LANG["mailgate"][4]="A extensión mbstring non está dispoñible. Teña coidado cos xogos de carácteres que utiliza."; 
 $LANG["mailgate"][5]="Ficheiro adxunto inválido"; 
 $LANG["mailgate"][6]="Ficheiro adxunto demasiado grande"; 
-$LANG["mailgate"][7]="Gateway de correo: tamaño máximo de cada ficheiro adxunto (0 : sen límite)"; 
+$LANG["mailgate"][7]="Mail Receiver: Maximum size of each attached file (0 : no import)"; 
 $LANG["mailgate"][8]="bytes"; 
 
 $LANG["mailing"][0]="----------------------------------------------------------"; 
@@ -963,7 +963,7 @@ $LANG["Menu"][35]="Perfís";
 $LANG["Menu"][36]="Grupos"; 
 $LANG["Menu"][37]="Entidades"; 
 $LANG["Menu"][38]="Inventario"; 
-$LANG["Menu"][39]="Pasarelas de correo"; 
+$LANG["Menu"][39]="Receivers"; 
 $LANG["Menu"][40]="Marcapáxinas"; 
 
 $LANG["monitors"][14]="Micrófono"; 

@@ -858,14 +858,14 @@ $LANG["login"][31]="Autentizace v adresáři";
 $LANG["login"][32]="Autentizace v databázi GLPI"; 
 $LANG["login"][33]="Autentizace na serveru IMAP/POP"; 
 
-$LANG["mailgate"][0]="Emailová brána"; 
-$LANG["mailgate"][1]="Přidat emailovou bránu"; 
+$LANG["mailgate"][0]="Mail Receiver"; 
+$LANG["mailgate"][1]="Add a mail receiver"; 
 $LANG["mailgate"][2]="Získat úkoly emailem"; 
 $LANG["mailgate"][3]="Počet dostupných a získaných zpráv"; 
 $LANG["mailgate"][4]="Rozšíření mbstring nenalezeno. Upozornění týkající se použité znakové sady."; 
 $LANG["mailgate"][5]="Invalid attached file"; 
 $LANG["mailgate"][6]="Too large attached file"; 
-$LANG["mailgate"][7]="Mail Gateway: Maximum size of each attached file (0 : no import)"; 
+$LANG["mailgate"][7]="Mail Receiver: Maximum size of each attached file (0 : no import)"; 
 $LANG["mailgate"][8]="bytes"; 
 
 $LANG["mailing"][0]="----------------------------------------------------------"; 
@@ -963,7 +963,7 @@ $LANG["Menu"][35]="Profily";
 $LANG["Menu"][36]="Skupiny"; 
 $LANG["Menu"][37]="Objekty"; 
 $LANG["Menu"][38]="Inventář"; 
-$LANG["Menu"][39]="Emailové brány"; 
+$LANG["Menu"][39]="Receivers"; 
 $LANG["Menu"][40]="Bookmarks"; 
 
 $LANG["monitors"][14]="Mikrofón"; 

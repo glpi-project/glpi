@@ -858,14 +858,14 @@ $LANG["login"][31]="Directoryにおける認証";
 $LANG["login"][32]="GLPIデータベースにおける認証"; 
 $LANG["login"][33]="IMAP/POPサーバにおける認証"; 
 
-$LANG["mailgate"][0]="メールゲートウェイ"; 
-$LANG["mailgate"][1]="メールゲートウェイを追加する"; 
+$LANG["mailgate"][0]="Mail Receiver"; 
+$LANG["mailgate"][1]="Add a mail receiver"; 
 $LANG["mailgate"][2]="今すぐメールチケットを取得"; 
 $LANG["mailgate"][3]="有効な受信メールの数"; 
 $LANG["mailgate"][4]="mbstring拡張が見つかりません。使用中の文字セットを確認して下さい。"; 
 $LANG["mailgate"][5]="無効添付ファイル"; 
 $LANG["mailgate"][6]="添付ファイルが大き過ぎます。"; 
-$LANG["mailgate"][7]="メールゲートウェイ：各添付ファイルの最大サイズ（0：インポートなし）"; 
+$LANG["mailgate"][7]="Mail Receiver: Maximum size of each attached file (0 : no import)"; 
 $LANG["mailgate"][8]="バイト"; 
 
 $LANG["mailing"][0]="----------------------------------------------------------"; 
@@ -963,7 +963,7 @@ $LANG["Menu"][35]="プロファイル";
 $LANG["Menu"][36]="グループ"; 
 $LANG["Menu"][37]="エンティティ"; 
 $LANG["Menu"][38]="一覧"; 
-$LANG["Menu"][39]="メールゲートウェイ"; 
+$LANG["Menu"][39]="Receivers"; 
 $LANG["Menu"][40]="ブックマーク"; 
 
 $LANG["monitors"][14]="マイク"; 

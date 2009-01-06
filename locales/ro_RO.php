@@ -858,14 +858,14 @@ $LANG["login"][31]="Autentificare in folder";
 $LANG["login"][32]="Autentificare in baza de date GLPI"; 
 $LANG["login"][33]="Autentificare pe serverul IMAP/POP"; 
 
-$LANG["mailgate"][0]="Mail Gateway"; 
-$LANG["mailgate"][1]="Adauga un gateway pentru E-mail"; 
+$LANG["mailgate"][0]="Mail Receiver"; 
+$LANG["mailgate"][1]="Add a mail receiver"; 
 $LANG["mailgate"][2]="Obtine problemele de E-mail"; 
 $LANG["mailgate"][3]="Numar de E-mail-uri disponibile si regasite"; 
 $LANG["mailgate"][4]="extensia mbstring nu a fost gasita. Atentie la charsets-urile utilizate."; 
 $LANG["mailgate"][5]="Fisierul atasat este defect"; 
 $LANG["mailgate"][6]="Fisierul atasat este prea mare"; 
-$LANG["mailgate"][7]="Mail Gateway: Dimensiunea maxima a fiecarui fisier atasat (0 : fara import)"; 
+$LANG["mailgate"][7]="Mail Receiver: Maximum size of each attached file (0 : no import)"; 
 $LANG["mailgate"][8]="octet"; 
 
 $LANG["mailing"][0]="----------------------------------------------------------"; 
@@ -963,7 +963,7 @@ $LANG["Menu"][35]="Profiluri";
 $LANG["Menu"][36]="Grupuri"; 
 $LANG["Menu"][37]="Entitati"; 
 $LANG["Menu"][38]="Inventar"; 
-$LANG["Menu"][39]="Mail Gateway"; 
+$LANG["Menu"][39]="Receivers"; 
 $LANG["Menu"][40]="Semne de carte"; 
 
 $LANG["monitors"][14]="Microfon"; 

@@ -858,14 +858,14 @@ $LANG["login"][31]="Autenticação no diretório";
 $LANG["login"][32]="Autenticação na base GLPI"; 
 $LANG["login"][33]="Autenticação no servidor IMAP/POP"; 
 
-$LANG["mailgate"][0]="Gateway de e-mail"; 
-$LANG["mailgate"][1]="Adicionar gateway de mail"; 
+$LANG["mailgate"][0]="Mail Receiver"; 
+$LANG["mailgate"][1]="Add a mail receiver"; 
 $LANG["mailgate"][2]="Receber chamados de e-mail agora"; 
 $LANG["mailgate"][3]="Número de e-mails disponíveis e recebidos"; 
 $LANG["mailgate"][4]="Extensão 'mbstring' não encontrada. Cuidado com o código de caracteres usado (charset)."; 
 $LANG["mailgate"][5]="Arquivo anexado inválido"; 
 $LANG["mailgate"][6]="Arquivo anexado muito grande"; 
-$LANG["mailgate"][7]="Gateway de email: Tamanho máximo para o anexo (0: não importar)"; 
+$LANG["mailgate"][7]="Mail Receiver: Maximum size of each attached file (0 : no import)"; 
 $LANG["mailgate"][8]="bytes"; 
 
 $LANG["mailing"][0]="----------------------------------------------------------"; 
@@ -963,7 +963,7 @@ $LANG["Menu"][35]="Perfis";
 $LANG["Menu"][36]="Grupos"; 
 $LANG["Menu"][37]="Entidades"; 
 $LANG["Menu"][38]="Inventário"; 
-$LANG["Menu"][39]="Gateway de email"; 
+$LANG["Menu"][39]="Receivers"; 
 $LANG["Menu"][40]="Favoritos"; 
 
 $LANG["monitors"][14]="Microfone"; 
