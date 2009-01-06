@@ -2237,15 +2237,15 @@ function cron_software($display=false){
 	$items_end=array();
 
 	// Check notice
-	$query="SELECT glpi_licenses.*, glpi_software.FK_entities, glpi_software.name as softname
-		FROM glpi_licenses 
-		LEFT JOIN glpi_alerts ON (glpi_licenses.ID = glpi_alerts.FK_device 
+	$query="SELECT glpi_softwarelicenses.*, glpi_softwarelicenses.FK_entities, glpi_software.name as softname
+		FROM glpi_softwarelicenses 
+		LEFT JOIN glpi_alerts ON (glpi_softwarelicenses.ID = glpi_alerts.FK_device 
 					AND glpi_alerts.device_type='".SOFTWARELICENSE_TYPE."' 
 					AND glpi_alerts.type='".ALERT_END."') 
-		LEFT JOIN glpi_software ON (glpi_licenses.sID = glpi_software.ID)
+		LEFT JOIN glpi_software ON (glpi_softwarelicenses.sID = glpi_software.ID)
 		WHERE glpi_alerts.date IS NULL
-			AND glpi_licenses.expire IS NOT NULL 
-			AND glpi_licenses.expire < CURDATE()
+			AND glpi_softwarelicenses.expire IS NOT NULL 
+			AND glpi_softwarelicenses.expire < CURDATE()
 		";
 
 	$result=$DB->query($query);
