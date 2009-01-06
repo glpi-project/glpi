@@ -872,7 +872,7 @@ function addFormTracking ($device_type=0,$ID=0, $target, $author, $group=0, $ass
 			echo "<br>".$LANG["common"][35].": <span id='span_group_assign'>";
 			dropdownValue("glpi_groups", "assign_group", $assign_group,1,$_SESSION["glpiactive_entity"]);
 			echo "</span>";
-		} else if (haveRight("steal_ticket","1")) {
+		} else if (haveRight("steal_ticket","1") || haveRight("own_ticket","1")) {
 			echo $LANG["job"][6].":";
 			dropdownUsers("assign",$assign,"ID",0,1,$_SESSION["glpiactive_entity"]);
 		}
@@ -1927,7 +1927,12 @@ function showJobDetails ($target,$ID){
 			echo $LANG["job"][6].":</td><td>";
 			dropdownUsers("assign",$job->fields["assign"],"ID",0,1,$job->fields["FK_entities"]);
 			echo "</td></tr>";
-		}else {
+		} else if (haveRight("own_ticket","1") && $job->fields["assign"]==0){
+                        echo "<tr><td class='right'>";
+                        echo $LANG["job"][6].":</td><td>";
+                        dropdownUsers("assign",$job->fields["assign"],"ID",0,1,$job->fields["FK_entities"]);
+                        echo "</td></tr>";
+                } else {
 			echo "<tr><td class='left'>";
 			echo $LANG["job"][6].":</td><td>";
 			echo getUserName($job->fields["assign"],$showuserlink);
