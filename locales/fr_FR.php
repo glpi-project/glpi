@@ -866,14 +866,14 @@ $LANG["login"][31]="Authentification sur l'annuaire";
 $LANG["login"][32]="Authentification sur la base GLPI"; 
 $LANG["login"][33]="Authentification sur le serveur POP/IMAP"; 
 
-$LANG["mailgate"][0]="Passerelle Mail"; 
-$LANG["mailgate"][1]="Ajouter une passerelle mail"; 
+$LANG["mailgate"][0]="Collecteur Mail"; 
+$LANG["mailgate"][1]="Ajouter un collecteur mail"; 
 $LANG["mailgate"][2]="Récupérer maintenant"; 
 $LANG["mailgate"][3]="Nombre de messages disponibles et récupérés"; 
 $LANG["mailgate"][4]="Extension mbstring indisponible. Attention aux jeux de caractères utilisés.";
 $LANG["mailgate"][5]="Fichier attaché invalide";  
 $LANG["mailgate"][6]="Fichier attaché trop volumineux";  
-$LANG["mailgate"][7]="Taille maximum des fichiers importés via les passerelles mails (0 = pas d'import)";  
+$LANG["mailgate"][7]="Taille maximum des fichiers importés via les collecteurs mails (0 = pas d'import)";  
 $LANG["mailgate"][8]="octets";  
 
 $LANG["mailing"][0]="----------------------------------------------------------"; 
@@ -971,7 +971,7 @@ $LANG["Menu"][35]="Profils";
 $LANG["Menu"][36]="Groupes"; 
 $LANG["Menu"][37]="Entités"; 
 $LANG["Menu"][38]="Inventaire"; 
-$LANG["Menu"][39]="Passerelles Mails"; 
+$LANG["Menu"][39]="Collecteurs"; 
 $LANG["Menu"][40]="Marque-pages"; 
 
 $LANG["monitors"][14]="Microphone"; 
