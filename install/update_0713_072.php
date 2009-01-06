@@ -303,6 +303,16 @@ function update0713to072() {
 							//$query="INSERT INTO glpi_softwareversions SELECT * FROM glpi_licenses WHERE ID=".$vers_ID;
 							$query="INSERT INTO glpi_softwareversions SELECT ID,sID,".$soft["state"].",version,'' FROM glpi_licenses WHERE ID=".$vers_ID;
 							$DB->query($query);
+							
+							// Transfert History for this version
+							$findstr = " (v. ".$vers['version'].")"; // Log event format in 0.71
+							$findlen = strlen($findstr); 
+							
+							$DB->query("UPDATE glpi_history "
+								." SET   FK_glpi_device=".$vers_ID.",       device_type=". SOFTWAREVERSION_TYPE
+								." WHERE FK_glpi_device=".$soft['ID']." AND device_type=". SOFTWARE_TYPE
+								."  AND ((linked_action=".HISTORY_INSTALL_SOFTWARE."   AND RIGHT(new_value,$findlen)='$findstr')"
+								."    OR (linked_action=".HISTORY_UNINSTALL_SOFTWARE." AND RIGHT(old_value,$findlen)='$findstr'))");
 						}
 						$DB->free_result($result_searchvers);
 					}
@@ -372,10 +382,15 @@ function update0713to072() {
 						
 					} // Create licence
 
-				} // Each liv
+				} // Each license
 				$DB->free_result($result_vers);
 			}
-		  }
+			
+			// Clean History for this software (old versions no more installed)
+			$DB->query("DELETE FROM glpi_history "
+				." WHERE FK_glpi_device=".$soft['ID']." AND device_type=". SOFTWARE_TYPE
+				."  AND (linked_action=".HISTORY_INSTALL_SOFTWARE." OR linked_action=".HISTORY_UNINSTALL_SOFTWARE.")");
+		  } // Each Software
 		}
 		$query="DROP TABLE `glpi_licenses`";
 		$DB->query($query) or die("0.72 drop table glpi_licenses" . $LANG["update"][90] . $DB->error());
@@ -847,8 +862,6 @@ function update0713to072() {
 			$result = $DB->query($query);
 		}
 	}
-	displayMigrationMessage("072"); // End
-	
 
 	//// Clean DB
 	if (isIndex("glpi_alerts", "item") && isIndex("glpi_alerts", "alert")) {
@@ -980,5 +993,7 @@ function update0713to072() {
 		$DB->query($query) or die("0.72 add tag in config" . $LANG["update"][90] . $DB->error());
 	}
 
+	// Display "Work ended." message - Keep this as the last action.
+	displayMigrationMessage("072"); // End
 } // fin 0.72 #####################################################################################
 ?>
