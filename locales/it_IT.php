@@ -1,12 +1,11 @@
 <?php 
 /* 
- * @version $Id$
- -------------------------------------------------------------------------
+ ----------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2009 by the INDEPNET Development Team.
-
+ 
  http://indepnet.net/   http://glpi-project.org
- -------------------------------------------------------------------------
+ ----------------------------------------------------------------------
 
  LICENSE
 
@@ -25,7 +24,7 @@
  You should have received a copy of the GNU General Public License
  along with GLPI; if not, write to the Free Software
  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- --------------------------------------------------------------------------
+ ------------------------------------------------------------------------
  */
 //it_IT
 
@@ -423,10 +422,10 @@ $LANG["entity"][6]="Assegnazione automatica utenti";
 $LANG["entity"][7]="ramificazioni"; 
 $LANG["entity"][8]="Per entità"; 
 $LANG["entity"][9]="Sotto-entità"; 
-$LANG["entity"][10]="Seleziona entità desiderata"; 
+$LANG["entity"][10]="Seleziona l'entità desiderata"; 
 $LANG["entity"][11]="mostra entità e sotto-entità"; 
-$LANG["entity"][12]="Entity DN"; 
-$LANG["entity"][13]="Entity TAG"; 
+$LANG["entity"][12]="DN dell'entità"; 
+$LANG["entity"][13]="TAG dell'entità"; 
 
 $LANG["event"][0]="Elemento (ID)"; 
 $LANG["event"][2]="Servizio"; 
@@ -1365,8 +1364,8 @@ $LANG["rulesengine"][112]="Assegnazione entità e diritti";
 $LANG["rulesengine"][120]="Il gestore termina alla prima regola soddisfatta."; 
 $LANG["rulesengine"][121]="Il gestore convalida tutte le regole."; 
 $LANG["rulesengine"][122]="Il gestore passa l'esito di una regola alla successiva."; 
-$LANG["rulesengine"][130]="Entity from LDAP"; 
-$LANG["rulesengine"][131]="Entity from TAG"; 
+$LANG["rulesengine"][130]="Entità da LDAP"; 
+$LANG["rulesengine"][131]="Entità da TAG"; 
 
 $LANG["search"][0]="Cerca"; 
 $LANG["search"][2]="contiene"; 
@@ -1381,7 +1380,7 @@ $LANG["search"][17]="Aggiungi criterio di ricerca";
 $LANG["search"][18]="Rimuovi un criterio di ricerca"; 
 $LANG["search"][19]="Aggiungi criterio di ricerca globale"; 
 $LANG["search"][20]="Rimuovi un criterio globale di ricerca"; 
-$LANG["search"][21]="Search results"; 
+$LANG["search"][21]="Risultati della ricerca"; 
 
 $LANG["setup"][0]="Configurazione elenchi"; 
 $LANG["setup"][1]="Attenzione, se questi oggetti sono in uso, saranno sostituiti da un valore nullo."; 
@@ -1672,8 +1671,8 @@ $LANG["software"][46]="Visibile in Helpdesk";
 $LANG["software"][47]="Raggruppamento"; 
 $LANG["software"][48]="Consolidare"; 
 $LANG["software"][49]="Software messo nel cestino dopo la riunificazione"; 
-$LANG["software"][50]="Assigned to the computer"; 
-$LANG["software"][51]="The number must be 1 to be able to affect"; 
+$LANG["software"][50]="Assegnato al computer"; 
+$LANG["software"][51]="Il numero deve essere 1 per essere in grado di incidere"; 
 
 $LANG["softwarecategories"][1]="Compatte"; 
 $LANG["softwarecategories"][2]="Estese"; 
@@ -1778,4 +1777,5 @@ $LANG["update"][135]="Posizione radice";
 $LANG["update"][136]="Questa è la nuova gerarchia. Se corretta, la puoi confermare."; 
 $LANG["update"][137]="Nuova gerarchia"; 
 $LANG["update"][138]="Posizioni attuali"; 
+$LANG["update"][139]="Tables Optimization"; 
 ?>
