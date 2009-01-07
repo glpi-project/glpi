@@ -1,9 +1,11 @@
 <?php
+
+
 /*
- * @version $Id$
+ * @version $Id: dropdownUsers.php 7547 2008-11-16 23:29:45Z moyo $
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
- Copyright (C) 2003-2009 by the INDEPNET Development Team.
+ Copyright (C) 2003-2008 by the INDEPNET Development Team.
 
  http://indepnet.net/   http://glpi-project.org
  -------------------------------------------------------------------------
@@ -33,23 +35,26 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-	define('GLPI_ROOT','..');
-	$AJAX_INCLUDE=1;
-	include (GLPI_ROOT."/inc/includes.php");
-	
-	// Send UTF8 Headers
+$NEEDED_ITEMS = array (
+	"user","tracking"
+);
+
+// Direct access to file
+if (ereg("dropdownUsersEntitiesButton.php", $_SERVER['PHP_SELF'])) {
+	define('GLPI_ROOT', '..');
+	$AJAX_INCLUDE = 1;
+	include (GLPI_ROOT . "/inc/includes.php");
 	header("Content-Type: text/html; charset=UTF-8");
 	header_nocache();
-	
-	checkCentralAccess();
+}
+if (!defined('GLPI_ROOT')) {
+	die("Can not acces directly to this file");
+}
 
-	if(!$_POST["entity_restrict"])
-		$entity_name=$LANG["entity"][2];
-	else
-		$entity_name = getDropdownName("glpi_entities", $_POST["entity_restrict"]);
-			
-	echo "&nbsp;".$entity_name;
-	echo "<input type='hidden' name='FK_entities' value='".$_POST["entity_restrict"]."'>";
-	echo "</span>\n";
+checkCentralAccess();
+echo "<input type='button' class='submit' id='change_entity' value='" . $LANG["buttons"][7] . "'>";
 
+echo "<script type='text/javascript' >\n";
+ajaxUpdateItemOnEventJsCode("change_entity","helpdesk_fields", $CFG_GLPI["root_doc"] . "/ajax/helpdesk.php", $_POST,array("click"),true);
+echo "</script>";
 ?>

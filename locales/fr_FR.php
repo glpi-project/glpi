@@ -668,6 +668,8 @@ $LANG["job"][42]="Coût matériel";
 $LANG["job"][43]="Coût total"; 
 $LANG["job"][44]="Source de la demande"; 
 $LANG["job"][45]="Ajouter un suivi"; 
+$LANG["job"][46]="Ticket crée dans l'entité"; 
+
 
 $LANG["joblist"][0]="Statut"; 
 $LANG["joblist"][1]="Seulement les miens"; 
@@ -1290,7 +1292,8 @@ $LANG["rulesengine"][5]="fini par";
 $LANG["rulesengine"][6]="Critères"; 
 $LANG["rulesengine"][7]="Actions"; 
 $LANG["rulesengine"][8]="Gestion de règles"; 
-$LANG["rulesengine"][9]="Type de matching"; 
+$LANG["rulesengine"][9]="Type de matching";
+ 
 $LANG["rulesengine"][11]="Type d'action"; 
 $LANG["rulesengine"][12]="Champs"; 
 $LANG["rulesengine"][13]="Valeur"; 

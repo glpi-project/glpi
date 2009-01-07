@@ -752,11 +752,6 @@ function addFormTracking ($device_type=0,$ID=0, $target, $author, $group=0, $ass
 	global $CFG_GLPI, $LANG,$CFG_GLPI,$REFERER,$DB;
 	if (!haveRight("create_ticket","1")) return false;
 
-/*	if (!empty($error)) {
-		echo "<div class='center'><strong>$error</strong></div>";
-	}
-*/
-
 	$add_url="";
 	if ($device_type>0){
 		$add_url="?device_type=$device_type&amp;computer=$ID";
@@ -764,19 +759,20 @@ function addFormTracking ($device_type=0,$ID=0, $target, $author, $group=0, $ass
 	echo "<br><form name='form_ticket' method='post' action='$target$add_url' enctype=\"multipart/form-data\">";
 	echo "<div class='center'>";
 	
-
 	echo "<table class='tab_cadre_fixe'><tr><th colspan='4'>".$LANG["job"][13];
 	if (haveRight("comment_all_ticket","1")){
 		echo "&nbsp;&nbsp;";
 		dropdownStatus("status",1);		
 	}
 
+/*
 	if (isMultiEntitiesMode()){
 		echo "<span id='entity_name'>&nbsp;(".getDropdownName("glpi_entities",$_SESSION["glpiactive_entity"]).")";
 		echo "<input type='hidden' name='FK_entities' value='".$_SESSION["glpiactive_entity"]."'></span>";
 	}
 	else
 		echo "<input type='hidden' name='FK_entities' value='".$_SESSION["glpiactive_entity"]."'>";
+*/
 
 	echo '<br>';
 
@@ -794,161 +790,47 @@ function addFormTracking ($device_type=0,$ID=0, $target, $author, $group=0, $ass
 	$author_rand=0;
 	if (haveRight("update_ticket","1")){
 		echo "<tr class='tab_bg_2' align='center'><td>".$LANG["job"][4].":</td>";
-		echo "<td align='center'>";
-		//$author_rand=dropdownAllUsers("author",$author,1,$_SESSION["glpiactive_entity"],1);
+		echo "<td colspan='3' align='center'>";
 		
 		//List all users, no entity restriction
-		$author_rand=dropdownAllUsers("author",$author,1,'',1);
-		echo "<td colspan='2' align='center'><div id='list_entities'></div></td>";
-		
-		echo "<tr class='tab_bg_2' align='center'>";
-		echo "<td>".$LANG["common"][35].":</td>";
-		
-		echo "<td align='center' colspan='3'><span id='span_group'>";
-		dropdownValue("glpi_groups","FK_group",$group,1,$_SESSION["glpiactive_entity"]);
-		echo "</span></td></tr>";
+		$author_rand=dropdownAllUsers("author",$author,1,getEntitySons($_SESSION["glpiactive_entity"]),1);
+		echo "<span id='list_entities'></span></td>";
+		echo "</tr>";
 	} 
+	echo "</table>";
+	echo "<br>";
+	echo "<span id='helpdesk_fields'></span>";
 
 
-	if ($device_type==0 && $_SESSION["glpiactiveprofile"]["helpdesk_hardware"]!=0){
-		echo "<tr class='tab_bg_2'>";
-		echo "<td class='center'>".$LANG["help"][24].": </td>";
-		echo "<td align='center' colspan='3'>";
-		dropdownMyDevices($_SESSION["glpiID"],$_SESSION["glpiactive_entity"]);
-		dropdownTrackingAllDevices("device_type",$device_type,0,$_SESSION["glpiactive_entity"]);
-		echo "</td></tr>";
-	} 
+	$params_helpdesk = getTrackingFormFields($_POST);
+	ajaxUpdateItem("helpdesk_fields", $CFG_GLPI["root_doc"] . "/ajax/helpdesk.php", $params_helpdesk, true, "dropdown_author".$author_rand);
 
-
-	if (haveRight("update_ticket","1")){
-		echo "<tr class='tab_bg_2'><td class='center'>".$LANG["common"][27].":</td>";
-		echo "<td align='center' class='tab_bg_2'>";
-		showDateTimeFormItem("date",date("Y-m-d H:i"),1);
-		echo "</td>";
-
-		echo "<td class='center'>".$LANG["job"][44].":</td>";
-		echo "<td class='center'>";
-		dropdownRequestType("request_type",$request_type);
-		echo "</td></tr>";
-	}
-
-
-	// Need comment right to add a followup with the realtime
-	if (haveRight("comment_all_ticket","1")){
-		echo "<tr  class='tab_bg_2'>";
-		echo "<td class='center'>";
-		echo $LANG["job"][20].":</td>";
-		echo "<td align='center' colspan='3'>";
-		dropdownInteger('hour',$hour,0,100);
-
-		echo $LANG["job"][21]."&nbsp;&nbsp;";
-		dropdownInteger('minute',$minute,0,59);
-
-		echo $LANG["job"][22]."&nbsp;&nbsp;";
-		echo "</td></tr>";
-	}
-
-
-	echo "<tr class='tab_bg_2'>";
-
-	echo "<td class='tab_bg_2' align='center'>".$LANG["joblist"][2].":</td>";
-	echo "<td align='center' class='tab_bg_2'>";
-
-	dropdownPriority("priority",$priority);
-	echo "</td>";
-
-	echo "<td>".$LANG["common"][36].":</td>";
-	echo "<td class='center'>";
-	dropdownValue("glpi_dropdown_tracking_category","category",$category);
-	echo "</td></tr>";
-
-	if (haveRight("assign_ticket","1")||haveRight("steal_ticket","1")){
-		echo "<tr class='tab_bg_2' align='center'><td>".$LANG["buttons"][3].":</td>";
-		echo "<td colspan='3'>";
-
-		if (haveRight("assign_ticket","1")){
-			echo $LANG["job"][6].": ";
-			dropdownUsers("assign",$assign,"own_ticket",0,1,$_SESSION["glpiactive_entity"]);
-			echo "<br>".$LANG["common"][35].": <span id='span_group_assign'>";
-			dropdownValue("glpi_groups", "assign_group", $assign_group,1,$_SESSION["glpiactive_entity"]);
-			echo "</span>";
-		} else if (haveRight("steal_ticket","1") || haveRight("own_ticket","1")) {
-			echo $LANG["job"][6].":";
-			dropdownUsers("assign",$assign,"ID",0,1,$_SESSION["glpiactive_entity"]);
-		}
-		echo "</td></tr>";
-
-	}
-
-
-
-
-	if(isAuthorMailingActivatedForHelpdesk()){
-
-		$query="SELECT email from glpi_users WHERE ID='$author'";
-		
-		$result=$DB->query($query);
-		$email="";
-		if ($result&&$DB->numrows($result))
-			$email=$DB->result($result,0,"email");
-		echo "<tr class='tab_bg_1'>";
-		echo "<td class='center'>".$LANG["help"][8].":</td>";
-		echo "<td class='center'>";
-		dropdownYesNo('emailupdates',!empty($email));
-		echo "</td>";
-		echo "<td class='center'>".$LANG["help"][11].":</td>";
-		echo "<td><span id='uemail_result'>";
-		echo "<input type='text' size='30' name='uemail' value='$email'>";
-		echo "</span>";
-
-		echo "</td></tr>";
-
-	}
-
-	echo "</table><br><table class='tab_cadre_fixe'>";
-	echo "<tr><th class='center'>".$LANG["common"][57].":";
-	echo "</th><th colspan='3' class='left'>";
-
-	echo "<input type='text' size='80' name='name' value='$name'>";
-	echo "</th> </tr>";
-
-	
-	echo "<tr><th colspan='4' align='center'>".$LANG["job"][11].":";
-	echo "</th></tr>";
-
-	echo "<tr class='tab_bg_1'><td colspan='4' align='center'><textarea cols='100' rows='6'  name='contents'>$contents</textarea></td></tr>";
-
-	$max_size=return_bytes_from_ini_vars(ini_get("upload_max_filesize"));
-	$max_size/=1024*1024;
-	$max_size=round($max_size,1);
-
-	echo "<tr class='tab_bg_1'><td>".$LANG["document"][2]." (".$max_size." ".$LANG["common"][45]."):	";
-	echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/aide.png\"class='pointer;' alt=\"aide\"onClick=\"window.open('".$CFG_GLPI["root_doc"]."/front/typedoc.list.php','Help','scrollbars=1,resizable=1,width=1000,height=500')\">";
-	echo "</td>";
-	echo "<td colspan='3'><input type='file' name='filename' value=\"\" size='25'></td>";
-	echo "</tr>";
-
-	echo "<tr class='tab_bg_1'>";
-
-	echo "<td colspan='2' class='center'><a href='$target'><img title=\"".$LANG["buttons"][16]."\" alt=\"".$LANG["buttons"][16]."\" src='".$CFG_GLPI["root_doc"]."/pics/reset.png' class='calendrier'></a></td>";
-
-
-
-	echo "<td colspan='2' align='center'><input type='submit' name='add' value=\"".$LANG["buttons"][2]."\" class='submit'>";
-
-	echo "</td></tr></table>";
 
 	if (haveRight("comment_all_ticket","1")){
-//		echo "<tr><th colspan='4' align='center'>".$LANG["job"][45].":</th></tr>";
-		echo "<br>";
+	echo "<br>";
 
 		showAddFollowupForm(-1);
-		//echo "</td></tr></table>";
-//		echo "<tr class='tab_bg_1'><td colspan='4' align='center'><textarea cols='80' rows='8'  name='_followup'></textarea></td></tr>";
 	}
 
 	echo "</div></form>";
 
+}
+
+function getTrackingFormFields($_POST)
+{
+	$params = array(
+	//"userID"=>(($userID!=-1)?$userID:$_POST["userID"]),
+	//"entity_restrict"=>(($entity_restrict!=-1)?$entity_restrict:$_POST["entity_restrict"]),
+	"group"=>0,"device_type"=>0,
+	"assign"=>0,"assign_group"=>0,"category"=>0,
+	"priority"=>3,"hour"=>0,"minute"=>0,"request_type"=>1,
+	"name"=>'',"contents"=>'',"target"=>"");
+	
+	$params_ajax = array();
+	foreach ($params as $param => $default_value)
+		$params_ajax[$param] = (isset($_POST[$param])?$_POST[$param]:$default_value);
+	 
+	 return $params_ajax;
 }
 
 function getRealtime($realtime){

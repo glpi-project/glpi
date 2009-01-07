@@ -36,7 +36,7 @@
 // ----------------------------------------------------------------------
 
 $NEEDED_ITEMS = array (
-	"user"
+	"user","tracking"
 );
 
 // Direct access to file
@@ -66,27 +66,11 @@ if ($count > 1) {
 	$dropdown_name = $_POST["author_field"];
 }
 
-$paramscomments = array (
-	'userID' => $_POST["userID"],
-	'entity_restrict' => $entity,
-	'device_type' => 0,
-	'group' => 'FK_group'
-);
-	ajaxUpdateItemOnSelectEvent($dropdown_name, "tracking_my_devices", $CFG_GLPI["root_doc"] . "/ajax/updateTrackingDeviceType.php", $paramscomments, true);
-	ajaxUpdateItem("tracking_my_devices", $CFG_GLPI["root_doc"] . "/ajax/updateTrackingDeviceType.php", $paramscomments, true, $dropdown_name);
+echo "<span id='change_entity_button'></span>";
+$params_helpdesk = getTrackingFormFields($_POST);
+$params_helpdesk["entity_restrict"]=$entity;
+$params_helpdesk["userID"]=$_POST["userID"];
 
-
-	ajaxUpdateItemOnSelectEvent($dropdown_name, "entity_name", $CFG_GLPI["root_doc"] . "/ajax/updateHelpdeskEntityName.php", $paramscomments, true);
-	ajaxUpdateItem("entity_name", $CFG_GLPI["root_doc"] . "/ajax/updateHelpdeskEntityName.php", $paramscomments, true, $dropdown_name);
-
-	ajaxUpdateItemOnSelectEvent($dropdown_name, "span_group", $CFG_GLPI["root_doc"] . "/ajax/updateHelpdeskGroup.php", $paramscomments, true);
-	ajaxUpdateItem("span_group", $CFG_GLPI["root_doc"] . "/ajax/updateHelpdeskGroup.php", $paramscomments, true, $dropdown_name);
-
-	$paramscomments['group'] = 'assign_group';
-	ajaxUpdateItemOnSelectEvent($dropdown_name, "span_group_assign", $CFG_GLPI["root_doc"] . "/ajax/updateHelpdeskGroup.php", $paramscomments, true);
-	ajaxUpdateItem("span_group_assign", $CFG_GLPI["root_doc"] . "/ajax/updateHelpdeskGroup.php", $paramscomments, true, $dropdown_name);
-/*
-	ajaxUpdateItemOnSelectEvent($dropdown_name, "span_assign_tech", $CFG_GLPI["root_doc"] . "/ajax/updateHelpdeskTech.php", $paramscomments, false);
-	ajaxUpdateItem("span_assign_tech", $CFG_GLPI["root_doc"] . "/ajax/updateHelpdeskTech.php", $paramscomments, false, $dropdown_name);
-*/
+ajaxUpdateItem("change_entity_button", $CFG_GLPI["root_doc"] . "/ajax/dropdownUsersEntitiesButton.php", $params_helpdesk, true, $dropdown_name);
+ajaxUpdateItemOnSelectEvent($dropdown_name, "change_entity_button", $CFG_GLPI["root_doc"] . "/ajax/dropdownUsersEntitiesButton.php", $params_helpdesk, true);
 ?>
