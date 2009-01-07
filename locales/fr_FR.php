@@ -668,7 +668,7 @@ $LANG["job"][42]="Coût matériel";
 $LANG["job"][43]="Coût total"; 
 $LANG["job"][44]="Source de la demande"; 
 $LANG["job"][45]="Ajouter un suivi"; 
-$LANG["job"][46]="Ticket crée dans l'entité"; 
+$LANG["job"][46]="Ticket créé dans l'entité"; 
 
 
 $LANG["joblist"][0]="Statut"; 
