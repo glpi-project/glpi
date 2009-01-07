@@ -468,6 +468,10 @@ $SEARCH_OPTION[COMPUTER_TYPE][120]['field']='end_warranty';
 $SEARCH_OPTION[COMPUTER_TYPE][120]['linkfield']=''; 
 $SEARCH_OPTION[COMPUTER_TYPE][120]['name']=$LANG["financial"][80];
 $SEARCH_OPTION[COMPUTER_TYPE][120]['datatype']='date';
+$SEARCH_OPTION[COMPUTER_TYPE][120]['datatype']='date_delay';
+$SEARCH_OPTION[COMPUTER_TYPE][120]['datafields'][1]='buy_date';
+$SEARCH_OPTION[COMPUTER_TYPE][120]['datafields'][2]='warranty_duration';
+
  
 $SEARCH_OPTION[COMPUTER_TYPE][53]['table']='glpi_enterprises_infocoms';
 $SEARCH_OPTION[COMPUTER_TYPE][53]['field']='name';
@@ -842,7 +846,9 @@ $SEARCH_OPTION[NETWORKING_TYPE][120]['table']='glpi_infocoms';
 $SEARCH_OPTION[NETWORKING_TYPE][120]['field']='end_warranty'; 
 $SEARCH_OPTION[NETWORKING_TYPE][120]['linkfield']=''; 
 $SEARCH_OPTION[NETWORKING_TYPE][120]['name']=$LANG["financial"][80];
-$SEARCH_OPTION[NETWORKING_TYPE][120]['datatype']='date';
+$SEARCH_OPTION[NETWORKING_TYPE][120]['datatype']='date_delay';
+$SEARCH_OPTION[NETWORKING_TYPE][120]['datafields'][1]='buy_date';
+$SEARCH_OPTION[NETWORKING_TYPE][120]['datafields'][2]='warranty_duration';
  
 $SEARCH_OPTION[NETWORKING_TYPE][53]['table']='glpi_enterprises_infocoms';
 $SEARCH_OPTION[NETWORKING_TYPE][53]['field']='name';
@@ -1163,7 +1169,9 @@ $SEARCH_OPTION[PRINTER_TYPE][120]['table']='glpi_infocoms';
 $SEARCH_OPTION[PRINTER_TYPE][120]['field']='end_warranty'; 
 $SEARCH_OPTION[PRINTER_TYPE][120]['linkfield']=''; 
 $SEARCH_OPTION[PRINTER_TYPE][120]['name']=$LANG["financial"][80]; 
-$SEARCH_OPTION[PRINTER_TYPE][120]['datatype']='date';
+$SEARCH_OPTION[PRINTER_TYPE][120]['datatype']='date_delay';
+$SEARCH_OPTION[PRINTER_TYPE][120]['datafields'][1]='buy_date';
+$SEARCH_OPTION[PRINTER_TYPE][120]['datafields'][2]='warranty_duration';
  
 $SEARCH_OPTION[PRINTER_TYPE][53]['table']='glpi_enterprises_infocoms';
 $SEARCH_OPTION[PRINTER_TYPE][53]['field']='name';
@@ -1440,7 +1448,9 @@ $SEARCH_OPTION[MONITOR_TYPE][120]['table']='glpi_infocoms';
 $SEARCH_OPTION[MONITOR_TYPE][120]['field']='end_warranty'; 
 $SEARCH_OPTION[MONITOR_TYPE][120]['linkfield']=''; 
 $SEARCH_OPTION[MONITOR_TYPE][120]['name']=$LANG["financial"][80]; 
-$SEARCH_OPTION[MONITOR_TYPE][120]['datatype']='date';
+$SEARCH_OPTION[MONITOR_TYPE][120]['datatype']='date_delay';
+$SEARCH_OPTION[MONITOR_TYPE][120]['datafields'][1]='buy_date';
+$SEARCH_OPTION[MONITOR_TYPE][120]['datafields'][2]='warranty_duration';
 	 
 $SEARCH_OPTION[MONITOR_TYPE][53]['table']='glpi_enterprises_infocoms';
 $SEARCH_OPTION[MONITOR_TYPE][53]['field']='name';
@@ -1755,7 +1765,9 @@ $SEARCH_OPTION[PERIPHERAL_TYPE][120]['table']='glpi_infocoms';
 $SEARCH_OPTION[PERIPHERAL_TYPE][120]['field']='end_warranty'; 
 $SEARCH_OPTION[PERIPHERAL_TYPE][120]['linkfield']=''; 
 $SEARCH_OPTION[PERIPHERAL_TYPE][120]['name']=$LANG["financial"][80]; 
-$SEARCH_OPTION[PERIPHERAL_TYPE][120]['datatype']='date';
+$SEARCH_OPTION[PERIPHERAL_TYPE][120]['datatype']='date_delay';
+$SEARCH_OPTION[PERIPHERAL_TYPE][120]['datafields'][1]='buy_date';
+$SEARCH_OPTION[PERIPHERAL_TYPE][120]['datafields'][2]='warranty_duration';
  
 $SEARCH_OPTION[PERIPHERAL_TYPE][53]['table']='glpi_enterprises_infocoms';
 $SEARCH_OPTION[PERIPHERAL_TYPE][53]['field']='name';
@@ -2088,7 +2100,9 @@ $SEARCH_OPTION[SOFTWARE_TYPE][120]['table']='glpi_infocoms';
 $SEARCH_OPTION[SOFTWARE_TYPE][120]['field']='end_warranty'; 
 $SEARCH_OPTION[SOFTWARE_TYPE][120]['linkfield']=''; 
 $SEARCH_OPTION[SOFTWARE_TYPE][120]['name']=$LANG["financial"][80]; 
-$SEARCH_OPTION[SOFTWARE_TYPE][120]['datatype']='date';
+$SEARCH_OPTION[SOFTWARE_TYPE][120]['datatype']='date_delay';
+$SEARCH_OPTION[SOFTWARE_TYPE][120]['datafields'][1]='buy_date';
+$SEARCH_OPTION[SOFTWARE_TYPE][120]['datafields'][2]='warranty_duration';
 
 $SEARCH_OPTION[SOFTWARE_TYPE][53]['table']='glpi_enterprises_infocoms';
 $SEARCH_OPTION[SOFTWARE_TYPE][53]['field']='name';
@@ -2237,7 +2251,9 @@ $SEARCH_OPTION[SOFTWARELICENSE_TYPE][120]['table']='glpi_infocoms';
 $SEARCH_OPTION[SOFTWARELICENSE_TYPE][120]['field']='end_warranty'; 
 $SEARCH_OPTION[SOFTWARELICENSE_TYPE][120]['linkfield']=''; 
 $SEARCH_OPTION[SOFTWARELICENSE_TYPE][120]['name']=$LANG["financial"][80]; 
-$SEARCH_OPTION[SOFTWARELICENSE_TYPE][120]['datatype']='date';
+$SEARCH_OPTION[SOFTWARELICENSE_TYPE][120]['datatype']='date_delay';
+$SEARCH_OPTION[SOFTWARELICENSE_TYPE][120]['datafields'][1]='buy_date';
+$SEARCH_OPTION[SOFTWARELICENSE_TYPE][120]['datafields'][2]='warranty_duration';
 
 $SEARCH_OPTION[SOFTWARELICENSE_TYPE][53]['table']='glpi_enterprises_infocoms';
 $SEARCH_OPTION[SOFTWARELICENSE_TYPE][53]['field']='name';
@@ -3125,7 +3141,9 @@ $SEARCH_OPTION[PHONE_TYPE][120]['table']='glpi_infocoms';
 $SEARCH_OPTION[PHONE_TYPE][120]['field']='end_warranty'; 
 $SEARCH_OPTION[PHONE_TYPE][120]['linkfield']=''; 
 $SEARCH_OPTION[PHONE_TYPE][120]['name']=$LANG["financial"][80]; 
-$SEARCH_OPTION[PHONE_TYPE][120]['datatype']='date';
+$SEARCH_OPTION[PHONE_TYPE][120]['datatype']='date_delay';
+$SEARCH_OPTION[PHONE_TYPE][120]['datafields'][1]='buy_date';
+$SEARCH_OPTION[PHONE_TYPE][120]['datafields'][2]='warranty_duration';
 	 
 $SEARCH_OPTION[PHONE_TYPE][53]['table']='glpi_enterprises_infocoms';
 $SEARCH_OPTION[PHONE_TYPE][53]['field']='name';
