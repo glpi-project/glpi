@@ -1930,7 +1930,7 @@ function initNavigateListItems($device_type,$title=""){
 	$_SESSION['glpilisturl'][$device_type]=$_SERVER['PHP_SELF'];
 }
 
-/** Initialise a list of items to use navigate through search results
+/** Add an item to the navigate through search results list
  *
  * @param $device_type device type
  * @param $ID ID of the item
