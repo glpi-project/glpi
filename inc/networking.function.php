@@ -54,9 +54,8 @@ function showPorts($device, $device_type, $withtemplate = '') {
 
 	$device_real_table_name = $LINK_ID_TABLE[$device_type];
 
-	$_SESSION['glpilisttitle'][NETWORKING_PORT_TYPE] = $ci->getType() . " = " . $ci->getName(); 
-	$_SESSION['glpilistitems'][NETWORKING_PORT_TYPE]=array();
-	
+	initNavigateListItems(NETWORKING_PORT_TYPE,$ci->getType()." = ".$ci->getName());
+
 	$query = "SELECT ID FROM glpi_networking_ports WHERE (on_device = $device AND device_type = $device_type) ORDER BY name, logical_number";
 	if ($result = $DB->query($query)) {
 		if ($DB->numrows($result) != 0) {
@@ -100,7 +99,8 @@ function showPorts($device, $device_type, $withtemplate = '') {
 			while ($devid = $DB->fetch_row($result)) {
 				$netport = new Netport;
 				$netport->getFromDB(current($devid));
-				$_SESSION['glpilistitems'][NETWORKING_PORT_TYPE][]=$netport->fields["ID"];
+				addToNavigateListItems(NETWORKING_PORT_TYPE,$netport->fields["ID"]);
+
 				echo "<tr class='tab_bg_1'>";
 				if ($withtemplate != 2 && $canedit) {
 					echo "<td align='center' width='20'><input type='checkbox' name='del_port[" . $netport->fields["ID"] . "]' value='1'></td>";

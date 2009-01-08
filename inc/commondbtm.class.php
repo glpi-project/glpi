@@ -999,7 +999,7 @@ class CommonDBTM {
 		}
 
 		if (empty($withtemplate)&&$ID){
-			echo "<div>";
+			echo "<div class='tab_cadre_fixe_navigate'>";
 			//$next=getNextItem($this->table,$ID,$nextprevcondition,$nextprev_item);
 			//$prev=getPreviousItem($this->table,$ID,$nextprevcondition,$nextprev_item);
 
@@ -1007,7 +1007,7 @@ class CommonDBTM {
 //				$next=0;
 //				$prev=0;
 //			}
-			$next=$prev=0;
+			$next=$prev=$first=$last=-1;
 			$current=false;
 			if (isset($_SESSION['glpilistitems'][$this->type]) && is_array($_SESSION['glpilistitems'][$this->type])){
 				$current=array_search($ID,$_SESSION['glpilistitems'][$this->type]);
@@ -1019,31 +1019,53 @@ class CommonDBTM {
 					if (isset($_SESSION['glpilistitems'][$this->type][$current-1])){
 						$prev=$_SESSION['glpilistitems'][$this->type][$current-1];
 					}
-					
+					$first=$_SESSION['glpilistitems'][$this->type][0];
+					$last=$_SESSION['glpilistitems'][$this->type][count($_SESSION['glpilistitems'][$this->type])-1];
 				}
 			}
 			
 			$cleantarget=preg_replace("/\?ID=([0-9]+)/","",$target);
-			if ($prev>0) {
-				echo "<a href='$cleantarget?ID=$prev$extraparamhtml'><img src=\"".$CFG_GLPI["root_doc"]."/pics/left.png\" alt='".$LANG["buttons"][12]."' title='".$LANG["buttons"][12]."'></a>";
-			}
 
-			echo "&nbsp;&nbsp;<a href=\"javascript:showHideDiv('tabsbody','tabsbodyimg','".$CFG_GLPI["root_doc"]."/pics/deplier_down.png','".$CFG_GLPI["root_doc"]."/pics/deplier_up.png');\">";
+			echo "<a href=\"javascript:showHideDiv('tabsbody','tabsbodyimg','".$CFG_GLPI["root_doc"]."/pics/deplier_down.png','".$CFG_GLPI["root_doc"]."/pics/deplier_up.png');\">";
 			echo "<img alt='' name='tabsbodyimg' src=\"".$CFG_GLPI["root_doc"]."/pics/deplier_up.png\">";
 			echo "</a>";
 			
 			if ($current!==false){
-				echo "&nbsp;&nbsp;" . ($current+1) . "/" . count($_SESSION['glpilistitems'][$this->type]);
-
+				echo "&nbsp;&nbsp;";
+				echo "<a href='".$_SESSION['glpilisturl'][$this->type]."'>";
 				if (isset($_SESSION['glpilisttitle'][$this->type])){
-					$title=str_replace("'","`",$_SESSION['glpilisttitle'][$this->type]);
-					echo "&nbsp;<img title='$title' alt='$title' src='".$CFG_GLPI["root_doc"]."/pics/aide.png' >";
+					echo $_SESSION['glpilisttitle'][$this->type];
+				} else {
+					echo $LANG["common"][53];
 				}
+				echo "</a>";
+				echo ":&nbsp;" . ($current+1) . "/" . count($_SESSION['glpilistitems'][$this->type]);
 			}
-						
+			echo "&nbsp;";
+			if ($first>0) {
+				echo "<a href='$cleantarget?ID=$first$extraparamhtml'><img src=\"".$CFG_GLPI["root_doc"]."/pics/left.png\" alt='".$LANG["buttons"][55]."' title='".$LANG["buttons"][55]."'></a>";
+			} else {
+				echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/left.png\" alt='".$LANG["buttons"][55]."' title='".$LANG["buttons"][55]."'>";
+			}
+			echo "&nbsp;";
+			if ($prev>0) {
+				echo "<a href='$cleantarget?ID=$prev$extraparamhtml'><img src=\"".$CFG_GLPI["root_doc"]."/pics/left.png\" alt='".$LANG["buttons"][12]."' title='".$LANG["buttons"][12]."'></a>";
+			} else {
+				echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/left.png\" alt='".$LANG["buttons"][12]."' title='".$LANG["buttons"][12]."'>";
+			}
+			echo "&nbsp;";
 			if ($next>0) {
-				echo "&nbsp;&nbsp;<a href='$cleantarget?ID=$next$extraparamhtml'><img src=\"".$CFG_GLPI["root_doc"]."/pics/right.png\" alt='".$LANG["buttons"][11]."' title='".$LANG["buttons"][11]."'></a>";
+				echo "<a href='$cleantarget?ID=$next$extraparamhtml'><img src=\"".$CFG_GLPI["root_doc"]."/pics/right.png\" alt='".$LANG["buttons"][11]."' title='".$LANG["buttons"][11]."'></a>";
+			} else {
+				echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/right.png\" alt='".$LANG["buttons"][11]."' title='".$LANG["buttons"][11]."'>";
 			}
+			echo "&nbsp;";
+			if ($last>0) {
+				echo "<a href='$cleantarget?ID=$last$extraparamhtml'><img src=\"".$CFG_GLPI["root_doc"]."/pics/right.png\" alt='".$LANG["buttons"][56]."' title='".$LANG["buttons"][56]."'></a>";
+			} else {
+				echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/right.png\" alt='".$LANG["buttons"][56]."' title='".$LANG["buttons"][56]."'>";
+			}
+			echo "TODO : Need inactive icons or text";
 			echo "</div>";
 		}
 	

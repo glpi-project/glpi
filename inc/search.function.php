@@ -1209,8 +1209,7 @@ function showList ($type,$params){
 
 			// Init list of items displayed
 			if ($output_type==HTML_OUTPUT){
-				$_SESSION['glpilisttitle'][$type]=$LANG["search"][21];
-				$_SESSION['glpilistitems'][$type]=array();
+				initNavigateListItems($type);
 			}
 
 			// Num of the row (1=header_line)
@@ -1227,7 +1226,7 @@ function showList ($type,$params){
 				echo displaySearchNewLine($output_type,($i%2));
 
 				// Add item in item list
-				$_SESSION['glpilistitems'][$type][]=$data["ID"];
+				addToNavigateListItems($type,$data["ID"]);
 
 				if ($output_type==HTML_OUTPUT){// HTML display - massive modif
 					$tmpcheck="";
