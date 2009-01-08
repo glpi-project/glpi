@@ -1927,7 +1927,11 @@ function initNavigateListItems($device_type,$title=""){
 		$_SESSION['glpilisttitle'][$device_type]=$LANG["common"][53];
 	}
 	$_SESSION['glpilistitems'][$device_type]=array();
-	$_SESSION['glpilisturl'][$device_type]=$_SERVER['PHP_SELF'];
+	if (strpos($_SERVER['PHP_SELF'],"tabs")>0) {
+		$_SESSION['glpilisturl'][$device_type]=$_SERVER['HTTP_REFERER'];
+	} else {
+		$_SESSION['glpilisturl'][$device_type]=$_SERVER['PHP_SELF'];
+	}
 }
 
 /** Add an item to the navigate through search results list
