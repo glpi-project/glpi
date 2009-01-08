@@ -300,6 +300,14 @@ td { }
 	width:950px;
 }
 
+.tab_cadre_fixe_navigate{
+	margin: 0 auto;
+	z-index:1;
+	text-align: left;
+	font-size: 11px;
+	width:950px;
+}
+
 .tab_cadrehov, .tab_cadrehov_pointer{
 	margin: 0 auto;
 	-moz-border-radius: 4px;

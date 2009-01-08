@@ -81,8 +81,8 @@ function showVersions($sID) {
 				LEFT JOIN glpi_dropdown_state ON (glpi_dropdown_state.ID=glpi_softwareversions.state)
 				WHERE (sID = '$sID') ORDER BY name";
 		
-	$_SESSION['glpilisttitle'][SOFTWAREVERSION_TYPE]=$LANG["help"][31] ." = ". $soft->fields["name"];
-	$_SESSION['glpilistitems'][SOFTWAREVERSION_TYPE]=array();
+	initNavigateListItems(SOFTWAREVERSION_TYPE,$LANG["help"][31] ." = ". $soft->fields["name"]);
+
 	if ($result=$DB->query($query)){
 		if ($DB->numrows($result)){
 			echo "<table class='tab_cadre'><tr>";
@@ -92,7 +92,7 @@ function showVersions($sID) {
 			echo "<th>".$LANG["common"][25]."</th>";
 			echo "</tr>";
 			for ($tot=$nb=0;$data=$DB->fetch_assoc($result);$tot+=$nb){
-				$_SESSION['glpilistitems'][SOFTWAREVERSION_TYPE][]=$data['ID'];
+				addToNavigateListItems(SOFTWAREVERSION_TYPE,$data['ID']);
 				$nb=countInstallationsForVersion($data['ID']);
 
 				// Show version if canedit (to update/delete) or if nb (to see installations)
@@ -350,8 +350,8 @@ function showLicenses($sID) {
 			getEntitiesRestrictRequest('AND', 'glpi_softwarelicenses', '', '', true) .
 		"ORDER BY " . $order . " LIMIT $start," . $_SESSION['glpilist_limit'];
 		
-	$_SESSION['glpilisttitle'][SOFTWARELICENSE_TYPE]=$LANG["help"][31] ." = ". $software->fields["name"];
-	$_SESSION['glpilistitems'][SOFTWARELICENSE_TYPE]=array();
+	initNavigateListItems(SOFTWARELICENSE_TYPE,$LANG["help"][31] ." = ". $software->fields["name"]);
+
 	if ($result=$DB->query($query)){
 		if ($DB->numrows($result)){
 			if ($canedit){
@@ -379,7 +379,8 @@ function showLicenses($sID) {
 			//echo "<th>".$LANG["financial"][3]."</th>";
 			echo "</tr>";
 			for ($tot=0;$data=$DB->fetch_assoc($result);){
-				$_SESSION['glpilistitems'][SOFTWARELICENSE_TYPE][]=$data['ID'];
+				addToNavigateListItems(SOFTWARELICENSE_TYPE,$data['ID']);
+
 				echo "<tr class='tab_bg_2'>";
 
 				if ($license->can($data['ID'],"w")){
@@ -584,7 +585,7 @@ function showInstallations($searchID, $crit="sID") {
 }
 */
 /**
- * Show installtions of a software
+ * Show installations of a software
  *
  * @param $searchID valeur to the ID to search
  * @param $crit to search : sID (software) or ID (version)
@@ -657,7 +658,7 @@ function showInstallations($searchID, $crit="sID") {
 	
 	$rand=mt_rand();
 
-	$_SESSION['glpilistitems'][COMPUTER_TYPE]=array();
+
 	if ($result=$DB->query($query)){
 		if ($data=$DB->fetch_assoc($result)){
 			$sID = $data['sID'];
@@ -665,10 +666,11 @@ function showInstallations($searchID, $crit="sID") {
 			$soft = new Software;
 			$showEntity = ($soft->getFromDB($sID) && $soft->isRecursive());
 
-			$_SESSION['glpilisttitle'][COMPUTER_TYPE]=$LANG["help"][31] ." = ". $soft->fields["name"];
+			$title=$LANG["help"][31] ." = ". $soft->fields["name"];
 			if ($crit=="ID") {
-				$_SESSION['glpilisttitle'][COMPUTER_TYPE] .= " - " . $data["vername"];
+				$title .= " - " . $data["vername"];
 			}
+			initNavigateListItems(COMPUTER_TYPE,$title);
 			
 			$sort_img="<img src=\"".$CFG_GLPI["root_doc"]."/pics/puce-up.png\" alt='' title=''>";
 			if ($canedit) {
@@ -696,7 +698,8 @@ function showInstallations($searchID, $crit="sID") {
 			echo "</tr>\n";
 
 			do {
-				$_SESSION['glpilistitems'][COMPUTER_TYPE][]=$data["cID"];
+				addToNavigateListItems(COMPUTER_TYPE,$data["cID"]);
+
 				echo "<tr class='tab_bg_2'>";
 				if ($canedit){
 					echo "<td><input type='checkbox' name='item[".$data["ID"]."]' value='1'></td>";
@@ -1543,8 +1546,8 @@ function showSoftwareInstalled($instID, $withtemplate = '') {
 
 	$cat = -1;
 
-	$_SESSION['glpilisttitle'][SOFTWARE_TYPE]=$LANG["help"][25]." = ".(empty($comp->fields["name"]) ? "(".$comp->fields["ID"].")" : $comp->fields["name"]);
-	$_SESSION['glpilistitems'][SOFTWARE_TYPE]=array();
+	initNavigateListItems(SOFTWARE_TYPE,$LANG["help"][25]." = ".(empty($comp->fields["name"]) ? "(".$comp->fields["ID"].")":$comp->fields["name"]));
+
 	if ($DB->numrows($result)) {
 		while ($data = $DB->fetch_array($result)) {
 			if ($data["category_id"] != $cat) {
@@ -1552,7 +1555,7 @@ function showSoftwareInstalled($instID, $withtemplate = '') {
 			}
 
 			displaySoftsByCategory($data, $instID, $withtemplate);
-			$_SESSION['glpilistitems'][SOFTWARE_TYPE][]=$data["sID"];
+			addToNavigateListItems(SOFTWARE_TYPE,$data["sID"]);
 		}
 
 		echo "</table>";

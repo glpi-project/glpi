@@ -422,12 +422,11 @@ function showDocumentAssociated($device_type,$ID,$withtemplate=''){
 	echo "</tr>";
 	$used=array();
 	if ($number){
-		$_SESSION['glpilisttitle'][DOCUMENT_TYPE]=$ci->getType()." = ".$ci->getName();
-		$_SESSION['glpilistitems'][DOCUMENT_TYPE]=array();
+		initNavigateListItems(DOCUMENT_TYPE,$ci->getType()." = ".$ci->getName());
 
 		while ($data=$DB->fetch_assoc($result)) {
 			$docID=$data["ID"];
-			$_SESSION['glpilistitems'][DOCUMENT_TYPE][]=$docID;
+			addToNavigateListItems(DOCUMENT_TYPE,$docID);
 			$used[$docID]=$docID;
 			$assocID=$data["assocID"];
 	

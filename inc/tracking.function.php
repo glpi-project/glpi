@@ -309,9 +309,8 @@ function showJobListForItem($item_type,$item) {
 	{
 		$ci = new CommonItem();
 		$ci->getFromDB($item_type,$item);
-		$_SESSION['glpilisttitle'][TRACKING_TYPE]=$ci->getType()." = ".$ci->getName();
-		$_SESSION['glpilistitems'][TRACKING_TYPE]=array();
-		
+		initNavigateListItems(TRACKING_TYPE,$ci->getType()." = ".$ci->getName());
+
 		echo "<div class='center'><table class='tab_cadre_fixe'>";
 		echo "<tr><th colspan='10'>".$number." ".$LANG["job"][8].": &nbsp;";
 		echo "<a href='".$CFG_GLPI["root_doc"]."/front/tracking.php?reset=reset_before&amp;status=all&amp;item=$item&amp;type=$item_type'>".$LANG["buttons"][40]."</a>";
@@ -329,7 +328,7 @@ function showJobListForItem($item_type,$item) {
 		commonTrackingListHeader(HTML_OUTPUT,$_SERVER['PHP_SELF'],"ID=$item","","",true);
 
 		while ($data=$DB->fetch_assoc($result)){
-			$_SESSION['glpilistitems'][TRACKING_TYPE][]=$data['ID'];
+			addToNavigateListItems(TRACKING_TYPE,$data["ID"]);
 			showJobShort($data, 0);
 		}
 		echo "</table></div>";
@@ -377,8 +376,7 @@ function showJobListForEnterprise($entID) {
 	{
 		$ent=new Enterprise();
 		$ent->getFromDB($entID);
-		$_SESSION['glpilisttitle'][TRACKING_TYPE]=$LANG["financial"][26]." = ".$ent->fields['name'];
-		$_SESSION['glpilistitems'][TRACKING_TYPE]=array();
+		initNavigateListItems(TRACKING_TYPE,$LANG["financial"][26]." = ".$ent->fields['name']);
 
 		echo "<div class='center'><table class='tab_cadre_fixe'>";
 		echo "<tr><th colspan='10'>".$number." ".$LANG["job"][8].": &nbsp;";
@@ -389,7 +387,7 @@ function showJobListForEnterprise($entID) {
 		commonTrackingListHeader(HTML_OUTPUT,$_SERVER['PHP_SELF'],"","","",true);
 
 		while ($data=$DB->fetch_assoc($result)){
-			$_SESSION['glpilistitems'][TRACKING_TYPE][]=$data['ID'];
+			addToNavigateListItems(TRACKING_TYPE,$data["ID"]);
 			showJobShort($data, 0);
 		}
 		echo "</table></div>";
@@ -429,8 +427,7 @@ function showJobListForUser($userID) {
 	{
 		$user=new User();
 		$user->getFromDB($userID);
-		$_SESSION['glpilisttitle'][TRACKING_TYPE]=$LANG["common"][34]." = ".$user->getName();
-		$_SESSION['glpilistitems'][TRACKING_TYPE]=array();
+		initNavigateListItems(TRACKING_TYPE,$LANG["common"][34]." = ".$user->getName());
 
 		echo "<div class='center'><table class='tab_cadre_fixe'>";
 		echo "<tr><th colspan='10'>".$number." ".$LANG["job"][8].": &nbsp;";
@@ -441,7 +438,7 @@ function showJobListForUser($userID) {
 		commonTrackingListHeader(HTML_OUTPUT,$_SERVER['PHP_SELF'],"","","",true);
 
 		while ($data=$DB->fetch_assoc($result)){
-			$_SESSION['glpilistitems'][TRACKING_TYPE][]=$data['ID'];
+			addToNavigateListItems(TRACKING_TYPE,$data["ID"]);
 			showJobShort($data, 0);
 		}
 		echo "</table></div>";
@@ -1515,12 +1512,11 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$to
 			
 			commonTrackingListHeader($output_type,$target,$parameters2,$sort,$order);
 			if ($output_type==HTML_OUTPUT){
-				$_SESSION['glpilistitems'][TRACKING_TYPE]=array();
-				$_SESSION['glpilisttitle'][TRACKING_TYPE]=$LANG["search"][21];
+				initNavigateListItems(TRACKING_TYPE,$LANG["search"][21]);
 			}
 
 			while ($i < $numrows && $i<$end_display&&$data=$DB->fetch_array($result)){
-				$_SESSION['glpilistitems'][TRACKING_TYPE][]=$data['ID'];
+				addToNavigateListItems(TRACKING_TYPE,$data["ID"]);
 //				$ID = $DB->result($result, $i, "ID");
 				showJobShort($data, $showfollowups,$output_type,$i-$start+1);
 				$i++;

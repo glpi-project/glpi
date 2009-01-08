@@ -1913,5 +1913,32 @@ function getCountLogin() {
 
 	echo '<b>'.$nb_login.'</b> logins since '.$date ;
 }
+/** Initialise a list of items to use navigate through search results
+ *
+ * @param $device_type device type
+ * @param $title titre de la liste
+ */
+function initNavigateListItems($device_type,$title=""){
+	global $LANG;
+
+	if (!empty($title)){
+		$_SESSION['glpilisttitle'][$device_type]=$title;
+	} else {
+		$_SESSION['glpilisttitle'][$device_type]=$LANG["common"][53];
+	}
+	$_SESSION['glpilistitems'][$device_type]=array();
+	$_SESSION['glpilisturl'][$device_type]=$_SERVER['PHP_SELF'];
+}
+
+/** Initialise a list of items to use navigate through search results
+ *
+ * @param $device_type device type
+ * @param $ID ID of the item
+ */
+function addToNavigateListItems($device_type,$ID){
+	$_SESSION['glpilistitems'][$device_type][]=$ID;
+}
+
+
 
 ?>
