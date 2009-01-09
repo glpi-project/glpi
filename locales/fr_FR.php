@@ -669,7 +669,6 @@ $LANG["job"][41]="Coût fixe";
 $LANG["job"][42]="Coût matériel"; 
 $LANG["job"][43]="Coût total"; 
 $LANG["job"][44]="Source de la demande"; 
-$LANG["job"][45]="Ajouter un suivi"; 
 $LANG["job"][46]="Ticket créé dans l'entité"; 
 
 
@@ -746,7 +745,6 @@ $LANG["ldap"][33]="Déréférencés pendant la recherche";
 $LANG["ldap"][34]="Déréférencés pendant la localisation";
 
 $LANG["links"][1]="Lien ou Nom du fichier"; 
-$LANG["links"][3]="Ajouter un lien externe"; 
 $LANG["links"][4]="Types de matériel associés"; 
 $LANG["links"][6]="Tags valides"; 
 $LANG["links"][7]="Aucun lien défini"; 
