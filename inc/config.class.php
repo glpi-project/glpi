@@ -171,7 +171,7 @@ class Config extends CommonDBTM {
 
 
 
-		echo "<tr class='tab_bg_2'>";
+/*		echo "<tr class='tab_bg_2'>";
 
 		echo "<td class='center'> " . $LANG["setup"][183] . " </td><td>";
 		dropdownYesNo("use_cache", $CFG_GLPI["use_cache"]);
@@ -180,7 +180,7 @@ class Config extends CommonDBTM {
 		dropdownInteger('cache_max_size',$CFG_GLPI["cache_max_size"],5,500,5);
 		echo " MB";
 		echo "</td></tr>";
-							
+*/							
 		echo "<tr class='tab_bg_1'><td colspan='4' align='center'><strong>" . $LANG["Menu"][38] . "</strong></td></tr>";
 	
 		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["setup"][115] . "</td><td>";
