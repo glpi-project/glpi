@@ -1032,42 +1032,45 @@ class CommonDBTM {
 			echo "<img alt='' name='tabsbodyimg' src=\"".$CFG_GLPI["root_doc"]."/pics/deplier_up.png\">";
 			echo "</a>";
 			
-			if ($current!==false){
-				echo "&nbsp;&nbsp;";
-				echo "<a href='".$_SESSION['glpilisturl'][$this->type]."'>";
-				if (isset($_SESSION['glpilisttitle'][$this->type])){
-					echo $_SESSION['glpilisttitle'][$this->type];
-				} else {
-					echo $LANG["common"][53];
-				}
-				echo "</a>";
-				echo ":&nbsp;" . ($current+1) . "/" . count($_SESSION['glpilistitems'][$this->type]);
-			}
-			echo "&nbsp;";
-			if ($first>0) {
-				echo "<a href='$cleantarget?ID=$first$extraparamhtml'><img src=\"".$CFG_GLPI["root_doc"]."/pics/left.png\" alt='".$LANG["buttons"][55]."' title='".$LANG["buttons"][55]."'></a>";
+			echo "&nbsp;&nbsp;";
+			echo "<a href='".$_SESSION['glpilisturl'][$this->type]."'>";
+			if (isset($_SESSION['glpilisttitle'][$this->type])){
+				echo $_SESSION['glpilisttitle'][$this->type];
 			} else {
-				echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/left.png\" alt='".$LANG["buttons"][55]."' title='".$LANG["buttons"][55]."'>";
+				echo $LANG["common"][53];
 			}
-			echo "&nbsp;";
+			echo "</a>:";
+			echo "&nbsp;&nbsp;";
+
+			if ($first>0) {
+				echo "<a href='$cleantarget?ID=$first$extraparamhtml'><img src=\"".$CFG_GLPI["root_doc"]."/pics/first.png\" alt='".$LANG["buttons"][55]."' title='".$LANG["buttons"][55]."'></a>";
+			} else {
+				echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/first_off.png\" alt='".$LANG["buttons"][55]."' title='".$LANG["buttons"][55]."'>";
+			}
+			echo "&nbsp;&nbsp;";
 			if ($prev>0) {
 				echo "<a href='$cleantarget?ID=$prev$extraparamhtml'><img src=\"".$CFG_GLPI["root_doc"]."/pics/left.png\" alt='".$LANG["buttons"][12]."' title='".$LANG["buttons"][12]."'></a>";
 			} else {
-				echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/left.png\" alt='".$LANG["buttons"][12]."' title='".$LANG["buttons"][12]."'>";
+				echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/left_off.png\" alt='".$LANG["buttons"][12]."' title='".$LANG["buttons"][12]."'>";
 			}
-			echo "&nbsp;";
+			echo "&nbsp;&nbsp;";
+			if ($current!==false){
+				echo  ($current+1) . "/" . count($_SESSION['glpilistitems'][$this->type]);
+			}
+			echo "&nbsp;&nbsp;";
+
 			if ($next>0) {
 				echo "<a href='$cleantarget?ID=$next$extraparamhtml'><img src=\"".$CFG_GLPI["root_doc"]."/pics/right.png\" alt='".$LANG["buttons"][11]."' title='".$LANG["buttons"][11]."'></a>";
 			} else {
-				echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/right.png\" alt='".$LANG["buttons"][11]."' title='".$LANG["buttons"][11]."'>";
+				echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/right_off.png\" alt='".$LANG["buttons"][11]."' title='".$LANG["buttons"][11]."'>";
 			}
-			echo "&nbsp;";
+			echo "&nbsp;&nbsp;";
 			if ($last>0) {
-				echo "<a href='$cleantarget?ID=$last$extraparamhtml'><img src=\"".$CFG_GLPI["root_doc"]."/pics/right.png\" alt='".$LANG["buttons"][56]."' title='".$LANG["buttons"][56]."'></a>";
+				echo "<a href='$cleantarget?ID=$last$extraparamhtml'><img src=\"".$CFG_GLPI["root_doc"]."/pics/last.png\" alt='".$LANG["buttons"][56]."' title='".$LANG["buttons"][56]."'></a>";
 			} else {
-				echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/right.png\" alt='".$LANG["buttons"][56]."' title='".$LANG["buttons"][56]."'>";
+				echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/last_off.png\" alt='".$LANG["buttons"][56]."' title='".$LANG["buttons"][56]."'>";
 			}
-			echo "TODO : Need inactive icons or text";
+			
 			echo "</div>";
 		}
 	
