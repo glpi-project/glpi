@@ -158,24 +158,29 @@ function showAssociatedContact($instID) {
 	echo "<th>&nbsp;</th></tr>";
 
 	$used=array();
-	if ($number) while ($data=$DB->fetch_array($result)) {
-		$ID=$data["ID_ent"];
-		$used[$data["ID"]]=$data["ID"];
-		echo "<tr class='tab_bg_1".($data["deleted"]?"_2":"")."'>";
-		echo "<td class='center'><a href='".$CFG_GLPI["root_doc"]."/front/contact.form.php?ID=".$data["ID"]."'>".$data["name"]." ".$data["firstname"]."</a></td>";
-		echo "<td align='center'  width='100'>".getDropdownName("glpi_entities",$data["entity"])."</td>";
-		echo "<td align='center'  width='100'>".$data["phone"]."</td>";
-		echo "<td align='center'  width='100'>".$data["phone2"]."</td>";
-		echo "<td align='center'  width='100'>".$data["mobile"]."</td>";
-		echo "<td align='center'  width='100'>".$data["fax"]."</td>";
-		echo "<td class='center'><a href='mailto:".$data["email"]."'>".$DB->result($result, $i, "glpi_contacts.email")."</a></td>";
-		echo "<td class='center'>".getDropdownName("glpi_dropdown_contact_type",$data["type"])."</td>";
-		echo "<td align='center' class='tab_bg_2'>";
-		if ($canedit)
-			echo "<a href='".$CFG_GLPI["root_doc"]."/front/enterprise.form.php?deletecontact=deletecontact&amp;ID=$ID&amp;eID=$instID'><strong>".$LANG["buttons"][6]."</strong></a>";
-		else echo "&nbsp;";
-		echo "</td></tr>";
-		$i++;
+	if ($number) {
+		initNavigateListItems(CONTACT_TYPE,$LANG["financial"][26]." = ".$enterprise->fields['name']);
+
+		while ($data=$DB->fetch_array($result)) {
+			$ID=$data["ID_ent"];
+			$used[$data["ID"]]=$data["ID"];
+			addToNavigateListItems(CONTACT_TYPE,$data["ID"]);
+			echo "<tr class='tab_bg_1".($data["deleted"]?"_2":"")."'>";
+			echo "<td class='center'><a href='".$CFG_GLPI["root_doc"]."/front/contact.form.php?ID=".$data["ID"]."'>".$data["name"]." ".$data["firstname"]."</a></td>";
+			echo "<td align='center'  width='100'>".getDropdownName("glpi_entities",$data["entity"])."</td>";
+			echo "<td align='center'  width='100'>".$data["phone"]."</td>";
+			echo "<td align='center'  width='100'>".$data["phone2"]."</td>";
+			echo "<td align='center'  width='100'>".$data["mobile"]."</td>";
+			echo "<td align='center'  width='100'>".$data["fax"]."</td>";
+			echo "<td class='center'><a href='mailto:".$data["email"]."'>".$DB->result($result, $i, "glpi_contacts.email")."</a></td>";
+			echo "<td class='center'>".getDropdownName("glpi_dropdown_contact_type",$data["type"])."</td>";
+			echo "<td align='center' class='tab_bg_2'>";
+			if ($canedit)
+				echo "<a href='".$CFG_GLPI["root_doc"]."/front/enterprise.form.php?deletecontact=deletecontact&amp;ID=$ID&amp;eID=$instID'><strong>".$LANG["buttons"][6]."</strong></a>";
+			else echo "&nbsp;";
+			echo "</td></tr>";
+			$i++;
+		}
 	}
 
 	echo "</table><br>"    ;
