@@ -73,7 +73,9 @@ class CommonDBTM {
 		global $CFG_GLPI;
 		cleanAllItemCache($ID,"GLPI_".$this->type);
 		cleanAllItemCache("comments_".$ID,"GLPI_".$this->type);
-		$CFG_GLPI["cache"]->remove("data_".$ID,"GLPI_".$this->table,true);
+		if ($CFG_GLPI["use_cache"]){
+			$CFG_GLPI["cache"]->remove("data_".$ID,"GLPI_".$this->table,true);
+		}
 		cleanRelationCache($this->table);
 	}
 

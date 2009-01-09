@@ -287,31 +287,35 @@ if (!defined('GLPI_ROOT')){
  	**/
 	function cron_cache(){
 		global $CFG_GLPI;
-		$max_recursion=5;
-		$lifetime=DEFAULT_CACHE_LIFETIME;
-		$max_size=$CFG_GLPI['cache_max_size']*1024*1024;
-		while ($max_recursion>0&&(($size=filesizeDirectory(GLPI_CACHE_DIR))>$max_size)){
-			$cache_options = array(
-				'cacheDir' => GLPI_CACHE_DIR,
-				'lifeTime' => $lifetime,
-				'automaticSerialization' => true,
-				'caching' => $CFG_GLPI["use_cache"],
-				'hashedDirectoryLevel' => 2,
-				'fileLocking' => CACHE_FILELOCKINGCONTROL,
-				'writeControl' => CACHE_WRITECONTROL,
-				'readControl' => CACHE_READCONTROL,
-			);
-			$cache = new Cache_Lite($cache_options);
-			$cache->clean(false,"old");
-
-			logInFile("cron","Clean cache created since more than $lifetime seconds\n");
-			$lifetime/=2;
-			$max_recursion--;
-		}
-		if ($max_recursion>0){
-			return 1;
+		if ($CFG_GLPI["use_cache"]){
+			$max_recursion=5;
+			$lifetime=DEFAULT_CACHE_LIFETIME;
+			$max_size=$CFG_GLPI['cache_max_size']*1024*1024;
+			while ($max_recursion>0&&(($size=filesizeDirectory(GLPI_CACHE_DIR))>$max_size)){
+				$cache_options = array(
+					'cacheDir' => GLPI_CACHE_DIR,
+					'lifeTime' => $lifetime,
+					'automaticSerialization' => true,
+					'caching' => $CFG_GLPI["use_cache"],
+					'hashedDirectoryLevel' => 2,
+					'fileLocking' => CACHE_FILELOCKINGCONTROL,
+					'writeControl' => CACHE_WRITECONTROL,
+					'readControl' => CACHE_READCONTROL,
+				);
+				$cache = new Cache_Lite($cache_options);
+				$cache->clean(false,"old");
+	
+				logInFile("cron","Clean cache created since more than $lifetime seconds\n");
+				$lifetime/=2;
+				$max_recursion--;
+			}
+			if ($max_recursion>0){
+				return 1;
+			} else {
+				return -1;
+			}
 		} else {
-			return -1;
+			return 1;
 		}
 	}
 
@@ -368,22 +372,24 @@ function filesizeDirectory($path){
  * @return nothing
  **/
 function cleanCache($group=""){
-
-	include_once (GLPI_CACHE_LITE_DIR."/Lite.php");
-
-	$cache_options = array(
-		'cacheDir' => GLPI_CACHE_DIR,
-		'lifeTime' => 0,
-		'hashedDirectoryLevel' => 2,
-		'fileLocking' => CACHE_FILELOCKINGCONTROL,
-		'writeControl' => CACHE_WRITECONTROL,
-		'readControl' => CACHE_READCONTROL,
-		);
-	$CACHE = new Cache_Lite($cache_options);
-	if (empty($group)){
-		$CACHE->clean();
-	} else {
-		$CACHE->clean($group,"ingroup");
+	global $CFG_GLPI;
+	if ($CFG_GLPI["use_cache"]){
+		include_once (GLPI_CACHE_LITE_DIR."/Lite.php");
+	
+		$cache_options = array(
+			'cacheDir' => GLPI_CACHE_DIR,
+			'lifeTime' => 0,
+			'hashedDirectoryLevel' => 2,
+			'fileLocking' => CACHE_FILELOCKINGCONTROL,
+			'writeControl' => CACHE_WRITECONTROL,
+			'readControl' => CACHE_READCONTROL,
+			);
+		$CACHE = new Cache_Lite($cache_options);
+		if (empty($group)){
+			$CACHE->clean();
+		} else {
+			$CACHE->clean($group,"ingroup");
+		}
 	}
 
 }
