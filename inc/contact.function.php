@@ -82,27 +82,31 @@ function showEnterpriseContact($instID) {
 	echo "<th>&nbsp;</th></tr>";
 
 	$used=array();
-	while ($data= $DB->fetch_array($result)) {
-		$ID=$data["ID"];
-		$used[$data["entID"]]=$data["entID"];
-		$website=$data["website"];
-		if (!empty($website)){
+	if ($number>0){
+		initNavigateListItems(ENTERPRISE_TYPE,$LANG["common"][18]." = ".$contact->fields['name']);
+		while ($data= $DB->fetch_array($result)) {
+			$ID=$data["ID"];
+			addToNavigateListItems(ENTERPRISE_TYPE,$data["entID"]);
+			$used[$data["entID"]]=$data["entID"];
 			$website=$data["website"];
-			if (!preg_match("?https*://?",$website)) $website="http://".$website;
-			$website="<a target=_blank href='$website'>".$data["website"]."</a>";
+			if (!empty($website)){
+				$website=$data["website"];
+				if (!preg_match("?https*://?",$website)) $website="http://".$website;
+				$website="<a target=_blank href='$website'>".$data["website"]."</a>";
+			}
+			echo "<tr class='tab_bg_1".($data["deleted"]?"_2":"")."'>";
+			echo "<td class='center'><a href='".$CFG_GLPI["root_doc"]."/front/enterprise.form.php?ID=".$data["entID"]."'>".getDropdownName("glpi_enterprises",$data["entID"])."</a></td>";
+			echo "<td class='center'>".getDropdownName("glpi_entities",$data["entity"])."</td>";
+			echo "<td class='center'>".getDropdownName("glpi_dropdown_enttype",$data["type"])."</td>";
+			echo "<td align='center'  width='100'>".$data["phone"]."</td>";
+			echo "<td align='center'  width='100'>".$data["fax"]."</td>";
+			echo "<td class='center'>".$website."</td>";
+			echo "<td align='center' class='tab_bg_2'>";
+			if ($canedit) 
+				echo "<a href='".$CFG_GLPI["root_doc"]."/front/contact.form.php?deleteenterprise=deleteenterprise&amp;ID=$ID&amp;cID=$instID'><strong>".$LANG["buttons"][6]."</strong></a>";
+			else echo "&nbsp;";
+			echo "</td></tr>";
 		}
-		echo "<tr class='tab_bg_1".($data["deleted"]?"_2":"")."'>";
-		echo "<td class='center'><a href='".$CFG_GLPI["root_doc"]."/front/enterprise.form.php?ID=".$data["entID"]."'>".getDropdownName("glpi_enterprises",$data["entID"])."</a></td>";
-		echo "<td class='center'>".getDropdownName("glpi_entities",$data["entity"])."</td>";
-		echo "<td class='center'>".getDropdownName("glpi_dropdown_enttype",$data["type"])."</td>";
-		echo "<td align='center'  width='100'>".$data["phone"]."</td>";
-		echo "<td align='center'  width='100'>".$data["fax"]."</td>";
-		echo "<td class='center'>".$website."</td>";
-		echo "<td align='center' class='tab_bg_2'>";
-		if ($canedit) 
-			echo "<a href='".$CFG_GLPI["root_doc"]."/front/contact.form.php?deleteenterprise=deleteenterprise&amp;ID=$ID&amp;cID=$instID'><strong>".$LANG["buttons"][6]."</strong></a>";
-		else echo "&nbsp;";
-		echo "</td></tr>";
 	}
 	if ($canedit){
 		if ($contact->fields["recursive"]) {
