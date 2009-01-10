@@ -41,6 +41,7 @@ class CommonDBTM {
 	var $table="";
 	/// GLPI Item type
 	var $type=-1;
+	var $sub_type_name="";
 	/// Make an history of the changes
 	var $dohistory=false;
 	/// Is an item specific to entity
@@ -1009,23 +1010,34 @@ class CommonDBTM {
 //				$next=0;
 //				$prev=0;
 //			}
+
+			if ($this->sub_type_name) {
+				$sub_type=$this->sub_type_name;
+				$glpilistitems =& $_SESSION['glpilistitems'][$this->type][$this->$sub_type];
+				$glpilisttitle =& $_SESSION['glpilisttitle'][$this->type][$this->$sub_type];
+				$glpilisturl   =& $_SESSION['glpilisturl'][$this->type][$this->$sub_type];
+			} else {
+				$glpilistitems =& $_SESSION['glpilistitems'][$this->type];
+				$glpilisttitle =& $_SESSION['glpilisttitle'][$this->type];
+				$glpilisturl   =& $_SESSION['glpilisturl'][$this->type];
+			}
 			$next=$prev=$first=$last=-1;
 			$current=false;
-			if (isset($_SESSION['glpilistitems'][$this->type]) && is_array($_SESSION['glpilistitems'][$this->type])){
-				$current=array_search($ID,$_SESSION['glpilistitems'][$this->type]);
+			if (is_array($glpilistitems)){
+				$current=array_search($ID,$glpilistitems);
 				
 				if ($current!==false){
-					if (isset($_SESSION['glpilistitems'][$this->type][$current+1])){
-						$next=$_SESSION['glpilistitems'][$this->type][$current+1];
+					if (isset($glpilistitems[$current+1])){
+						$next=$glpilistitems[$current+1];
 					}
-					if (isset($_SESSION['glpilistitems'][$this->type][$current-1])){
-						$prev=$_SESSION['glpilistitems'][$this->type][$current-1];
+					if (isset($glpilistitems[$current-1])){
+						$prev=$glpilistitems[$current-1];
 					}
-					$first=$_SESSION['glpilistitems'][$this->type][0];
+					$first=$glpilistitems[0];
 					if ($first==$ID) {
 						$first= -1;
 					}
-					$last=$_SESSION['glpilistitems'][$this->type][count($_SESSION['glpilistitems'][$this->type])-1];
+					$last=$glpilistitems[count($glpilistitems)-1];
 					if ($last==$ID) {
 						$last= -1;
 					}
@@ -1040,9 +1052,9 @@ class CommonDBTM {
 			
 			echo "&nbsp;&nbsp;";
 			
-			echo "<a href='".$_SESSION['glpilisturl'][$this->type]."'>";
-			if (isset($_SESSION['glpilisttitle'][$this->type])){
-				echo $_SESSION['glpilisttitle'][$this->type];
+			echo "<a href='".$glpilisturl."'>";
+			if ($glpilisttitle){
+				echo $glpilisttitle;
 			} else {
 				echo $LANG["common"][53];
 			}
@@ -1062,7 +1074,7 @@ class CommonDBTM {
 			}
 			echo "&nbsp;&nbsp;";
 			if ($current!==false){
-				echo  ($current+1) . "/" . count($_SESSION['glpilistitems'][$this->type]);
+				echo  ($current+1) . "/" . count($glpilistitems);
 			}
 			echo "&nbsp;&nbsp;";
 

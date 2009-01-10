@@ -266,9 +266,10 @@ class RuleCollection {
 		echo "<td class='tab_bg_2' colspan='2'></td>";
 		echo "</tr>";
 		
-		//foreach ($this->RuleList->list as $rule){
+		initNavigateListItems(RULE_TYPE,"",$this->rule_type);
 		for ($i=$start,$j=0 ; isset($this->RuleList->list[$j]) ; $i++,$j++) {
 			$this->RuleList->list[$j]->showMinimalForm($target,$i==0,$i==$nb-1);
+			addToNavigateListItems(RULE_TYPE,$this->RuleList->list[$j]->fields['ID'],$this->rule_type);
 		}
 		echo "</table>";
 		echo "</div>";
@@ -749,7 +750,8 @@ class Rule extends CommonDBTM{
 	**/
 	function __construct($rule_type=0) {
 		$this->table = "glpi_rules_descriptions";
-		$this->type = -1;
+		$this->type = RULE_TYPE;
+		$this->sub_type_name="rule_type";
 		$this->rule_type=$rule_type;
 		$this->can_sort=false;
 	}
