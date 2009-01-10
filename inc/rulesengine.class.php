@@ -1102,7 +1102,7 @@ class Rule extends CommonDBTM{
 	/**
 	 * Display the dropdown of the criterias for the rule
 	 * 
-	 * @return the initial value (first non used)
+	 * @return the initial value (first)
 	 */
 	function dropdownCriterias(){
 		global $CFG_GLPI;
@@ -1136,7 +1136,9 @@ class Rule extends CommonDBTM{
 		$value='';
 		foreach ($this->getFilteredActions() as $ID => $act){
 			$items[$ID]=$act['name'];
-			if (empty($value) && !isset($used[$ID])) $value=$ID;
+			if (empty($value) && !isset($used[$ID])) {
+				$value=$ID;
+			}
 		}
 
 		$rand=dropdownArrayValues("field", $items, $value, $used);
