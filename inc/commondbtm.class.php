@@ -1000,7 +1000,7 @@ class CommonDBTM {
 			}
 		}
 
-		if (empty($withtemplate)&&$ID){
+		if (empty($withtemplate) && $ID && $this->type>0){
 			echo "<div class='tab_cadre_fixe_navigate'>";
 			//$next=getNextItem($this->table,$ID,$nextprevcondition,$nextprev_item);
 			//$prev=getPreviousItem($this->table,$ID,$nextprevcondition,$nextprev_item);
@@ -1022,7 +1022,13 @@ class CommonDBTM {
 						$prev=$_SESSION['glpilistitems'][$this->type][$current-1];
 					}
 					$first=$_SESSION['glpilistitems'][$this->type][0];
+					if ($first==$ID) {
+						$first= -1;
+					}
 					$last=$_SESSION['glpilistitems'][$this->type][count($_SESSION['glpilistitems'][$this->type])-1];
+					if ($last==$ID) {
+						$last= -1;
+					}
 				}
 			}
 			
@@ -1033,6 +1039,7 @@ class CommonDBTM {
 			echo "</a>";
 			
 			echo "&nbsp;&nbsp;";
+			
 			echo "<a href='".$_SESSION['glpilisturl'][$this->type]."'>";
 			if (isset($_SESSION['glpilisttitle'][$this->type])){
 				echo $_SESSION['glpilisttitle'][$this->type];
