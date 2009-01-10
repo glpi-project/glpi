@@ -1047,7 +1047,7 @@ class CommonDBTM {
 			$cleantarget=preg_replace("/\?ID=([0-9]+)/","",$target);
 
 			echo "<a href=\"javascript:showHideDiv('tabsbody','tabsbodyimg','".$CFG_GLPI["root_doc"]."/pics/deplier_down.png','".$CFG_GLPI["root_doc"]."/pics/deplier_up.png');\">";
-			echo "<img alt='' name='tabsbodyimg' src=\"".$CFG_GLPI["root_doc"]."/pics/deplier_up.png\">";
+			echo "<img alt='' title='".$this->fields["name"]."' name='tabsbodyimg' src=\"".$CFG_GLPI["root_doc"]."/pics/deplier_up.png\">";
 			echo "</a>";
 			
 			echo "&nbsp;&nbsp;";
