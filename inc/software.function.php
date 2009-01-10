@@ -616,7 +616,7 @@ function showInstallations($searchID, $crit="sID") {
 	if (isset($_REQUEST["sort"]) && !empty($_REQUEST["sort"])) {
 		$sort = $_REQUEST["sort"];
 	} else {
-		$sort = "name";
+		$sort = "entity, version";
 	}
 	
 	if (isset($_REQUEST["order"]) && !empty($_REQUEST["order"])) {
