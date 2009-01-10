@@ -44,7 +44,7 @@ class DictionnarySoftwareCollection extends RuleCachedCollection {
 	**/
 	function __construct() {
 		
-		$this->rule_type = RULE_DICTIONNARY_SOFTWARE;
+		$this->sub_type = RULE_DICTIONNARY_SOFTWARE;
 		$this->rule_class_name = 'DictionnarySoftwareRule';
 		$this->stop_on_first_match = true;
 		$this->right = "rule_dictionnary_software";

@@ -494,11 +494,6 @@ function update0713to072() {
 		$DB->query($query) or die("0.72 add ldap_field_title in glpi_auth_ldap" . $LANG["update"][90] . $DB->error());
 	}	  	
 	
-	//Add title criteria
-	$result  = $DB->query("SELECT count(*) as cpt FROM glpi_rules_ldap_parameters WHERE value='title' AND rule_type=".RULE_AFFECT_RIGHTS);
-	if (!$DB->result($result,0,"cpt"))
-		$DB->query("INSERT INTO `glpi_rules_ldap_parameters` (`ID` ,`name` ,`value` ,`rule_type`) VALUES (NULL , '(LDAP) Title', 'title', '1');");
-
 	//Add user type retrieval from LDAP 
 	if (!TableExists("glpi_dropdown_user_types")) {
 		$query="CREATE TABLE `glpi_dropdown_user_types` (
@@ -997,6 +992,19 @@ function update0713to072() {
 		$query="ALTER TABLE `glpi_entities_data` ADD `tag` VARCHAR( 255 ) NOT NULL";
 		$DB->query($query) or die("0.72 add tag in config" . $LANG["update"][90] . $DB->error());
 	}
+	if (FieldExists("glpi_rules_ldap_parameters","rule_type")){
+		$query="ALTER TABLE `glpi_rules_ldap_parameters` CHANGE `rule_type` `sub_type` SMALLINT( 6 ) NOT NULL DEFAULT '1'";
+		$DB->query($query) or die("0.72 rename rule_type to sub_type in glpi_rules_ldap_parameters" . $LANG["update"][90] . $DB->error());
+	}
+	if (FieldExists("glpi_rules_descriptions","rule_type")){
+		$query="ALTER TABLE `glpi_rules_descriptions` CHANGE `rule_type` `sub_type` SMALLINT( 4 ) NOT NULL DEFAULT '0'";
+		$DB->query($query) or die("0.72 rename rule_type to sub_type in glpi_rules_descriptions" . $LANG["update"][90] . $DB->error());
+	}
+	//Add title criteria
+	$result  = $DB->query("SELECT count(*) as cpt FROM glpi_rules_ldap_parameters WHERE value='title' AND sub_type=".RULE_AFFECT_RIGHTS);
+	if (!$DB->result($result,0,"cpt"))
+		$DB->query("INSERT INTO `glpi_rules_ldap_parameters` (`ID` ,`name` ,`value` ,`sub_type`) VALUES (NULL , '(LDAP) Title', 'title', '1');");
+
 
 	// Display "Work ended." message - Keep this as the last action.
 	displayMigrationMessage("072"); // End

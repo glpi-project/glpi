@@ -50,8 +50,8 @@ include_once (GLPI_ROOT."/inc/rulesengine.function.php");
 	
 checkLoginUser();
 // Non define case
-if (isset($_POST["rule_type"])){
-	$rule=getRuleClass($_POST["rule_type"]);
+if (isset($_POST["sub_type"])){
+	$rule=getRuleClass($_POST["sub_type"]);
 	$criterias=$rule->getCriterias();
 	$rule->displayCriteriaSelectPattern("pattern",$_POST["criteria"],$_POST['condition']);
 }

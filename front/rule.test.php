@@ -41,16 +41,16 @@ if(!defined('GLPI_ROOT')){
 }
 
 
-if (isset($_POST["rule_type"]))$rule_type=$_POST["rule_type"];
-elseif (isset($_GET["rule_type"]))$rule_type=$_GET["rule_type"];
-else $rule_type=0;
+if (isset($_POST["sub_type"]))$sub_type=$_POST["sub_type"];
+elseif (isset($_GET["sub_type"]))$sub_type=$_GET["sub_type"];
+else $sub_type=0;
 
 
 if (isset($_POST["rule_id"]))$rule_id=$_POST["rule_id"];
 elseif (isset($_GET["rule_id"]))$rule_id=$_GET["rule_id"];
 else $rule_id=0;
 
-$rule = getRuleClass($rule_type);
+$rule = getRuleClass($sub_type);
 checkRight($rule->right,"r");
 
 $test_rule_output=null;
@@ -67,7 +67,7 @@ if (isset($_POST["test_rule"]))
 	//Unset values that must not be processed by the rule
 	unset($_POST["test_rule"]);
 	unset($_POST["rule_id"]);
-	unset($_POST["rule_type"]);
+	unset($_POST["sub_type"]);
 	$rule->getRuleWithCriteriasAndActions($rule_id,1,1);
 	
 	// Need for RuleEngines

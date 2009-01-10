@@ -51,7 +51,7 @@ class RuleDictionnaryDropdown extends RuleCached{
 
 	function getTitle() {
 		global $LANG;
-		switch ($this->rule_type){
+		switch ($this->sub_type){
 			case RULE_DICTIONNARY_MANUFACTURER :
 				return $LANG["rulesengine"][36];
 			break;
@@ -104,7 +104,7 @@ class RuleDictionnaryDropdown extends RuleCached{
 	}
 
 	function showCacheRuleHeader(){
-		if (in_array($this->rule_type,array(RULE_DICTIONNARY_MODEL_COMPUTER,
+		if (in_array($this->sub_type,array(RULE_DICTIONNARY_MODEL_COMPUTER,
 						RULE_DICTIONNARY_MODEL_MONITOR,
 						RULE_DICTIONNARY_MODEL_PRINTER,
 						RULE_DICTIONNARY_MODEL_PHONE,
@@ -124,7 +124,7 @@ class RuleDictionnaryDropdown extends RuleCached{
 	}
 
 	function showCacheRuleDetail($fields){
-		if (in_array($this->rule_type,array(RULE_DICTIONNARY_MODEL_COMPUTER,
+		if (in_array($this->sub_type,array(RULE_DICTIONNARY_MODEL_COMPUTER,
 						RULE_DICTIONNARY_MODEL_MONITOR,
 						RULE_DICTIONNARY_MODEL_PRINTER,
 						RULE_DICTIONNARY_MODEL_PHONE,
@@ -155,11 +155,11 @@ class DictionnaryDropdownCollection extends RuleCachedCollection{
 	 * @param $type dropdown type
 	**/
 	function __construct($type){
-		$this->rule_type = $type;
+		$this->sub_type = $type;
 		$this->rule_class_name = 'RuleDictionnaryDropdown';
 		$this->right="rule_dictionnary_dropdown";
 
-		switch ($this->rule_type){
+		switch ($this->sub_type){
 			case RULE_DICTIONNARY_MANUFACTURER :
 				$this->item_table="glpi_dropdown_manufacturer";
 				//Init cache system values
@@ -237,7 +237,7 @@ class DictionnaryDropdownCollection extends RuleCachedCollection{
 
 	function getTitle() {
 		global $LANG;
-		switch ($this->rule_type){
+		switch ($this->sub_type){
 			case RULE_DICTIONNARY_MANUFACTURER :
 				return $LANG["rulesengine"][36];
 			break;
@@ -290,7 +290,7 @@ class DictionnaryDropdownCollection extends RuleCachedCollection{
 	}
 
 	function getRuleClass(){
-		return new $this->rule_class_name($this->rule_type);
+		return new $this->rule_class_name($this->sub_type);
 	}
 
 
@@ -306,7 +306,7 @@ class DictionnaryDropdownCollection extends RuleCachedCollection{
 
 
 		// Model check : need to check using manufacturer extra data so specific function
-		if (in_array($this->rule_type,array(RULE_DICTIONNARY_MODEL_COMPUTER,
+		if (in_array($this->sub_type,array(RULE_DICTIONNARY_MODEL_COMPUTER,
 						RULE_DICTIONNARY_MODEL_MONITOR,
 						RULE_DICTIONNARY_MODEL_PRINTER,
 						RULE_DICTIONNARY_MODEL_PHONE,
@@ -470,7 +470,7 @@ class DictionnaryDropdownCollection extends RuleCachedCollection{
 					$deletecartmodel=true;
 				} 
 				// Manage cartridge assoc Update items
-				if ($this->rule_type==RULE_DICTIONNARY_MODEL_PRINTER){
+				if ($this->sub_type==RULE_DICTIONNARY_MODEL_PRINTER){
 					$sql="SELECT * FROM glpi_cartridges_assoc WHERE FK_glpi_dropdown_model_printers = '$ID'";
 					if ($result=$DB->query($sql)){
 						if ($DB->numrows($result)){	

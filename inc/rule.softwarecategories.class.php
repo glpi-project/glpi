@@ -43,7 +43,7 @@ class SoftwareCategoriesRuleCollection extends RuleCollection {
 	 * Constructor
 	**/
 	function __construct(){
-		$this->rule_type = RULE_SOFTWARE_CATEGORY;
+		$this->sub_type = RULE_SOFTWARE_CATEGORY;
 		$this->rule_class_name = 'SoftwareCategoriesRule';
 		$this->stop_on_first_match=true;
 		$this->right="rule_softwarecategories";

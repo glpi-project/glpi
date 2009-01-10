@@ -180,12 +180,12 @@ function dropdownRulesConditions($type,$name,$value=''){
 /**
  * Display a dropdown with all the possible actions
 **/
-function dropdownRulesActions($rule_type,$name,$value=''){
+function dropdownRulesActions($sub_type,$name,$value=''){
 	global $LANG,$CFG_GLPI,$RULES_ACTIONS;
 
 	$actions=array("assign");
-	if (isset($RULES_ACTIONS[$rule_type][$value]['force_actions'])){
-		$actions=$RULES_ACTIONS[$rule_type][$value]['force_actions'];
+	if (isset($RULES_ACTIONS[$sub_type][$value]['force_actions'])){
+		$actions=$RULES_ACTIONS[$sub_type][$value]['force_actions'];
 	}
 
 	$elements=array();
@@ -419,11 +419,11 @@ function getRegexResultById($action,$regex_results){
 }
 
 /**
- * Get category name to display in commonheader by rule_type
+ * Get category name to display in commonheader by sub_type
 **/
-function getCategoryNameToDisplay($rule_type){
+function getCategoryNameToDisplay($sub_type){
 	
-	switch ($rule_type){
+	switch ($sub_type){
 		case RULE_OCS_AFFECT_COMPUTER:
 		case RULE_AFFECT_RIGHTS:
 		case RULE_SOFTWARE_CATEGORY:
@@ -434,13 +434,13 @@ function getCategoryNameToDisplay($rule_type){
 	}
 }
 
-function getAlreadyUsedActionsByRuleID($rule_id,$rule_type){
+function getAlreadyUsedActionsByRuleID($rule_id,$sub_type){
 	global $DB,$RULES_ACTIONS;
 	$actions = array();
 
 	$res = $DB->query("SELECT field FROM glpi_rules_actions WHERE FK_rules=".$rule_id);
 	while ($action = $DB->fetch_array($res)){
-		if (isset($RULES_ACTIONS[$rule_type][$action["field"]])) {
+		if (isset($RULES_ACTIONS[$sub_type][$action["field"]])) {
 			$actions[$action["field"]] = $action["field"];
 		}
 	}

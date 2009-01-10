@@ -47,7 +47,7 @@ class OcsRuleCollection extends RuleCollection {
 	 * @param $ocs_server_id ID of the OCS server
 	**/
 	function __construct($ocs_server_id=-1) {
-		$this->rule_type = RULE_OCS_AFFECT_COMPUTER;
+		$this->sub_type = RULE_OCS_AFFECT_COMPUTER;
 		$this->rule_class_name = 'OcsAffectEntityRule';
 		$this->ocs_server_id = $ocs_server_id;
 		$this->stop_on_first_match=true;
@@ -143,7 +143,7 @@ class OcsRuleCollection extends RuleCollection {
 		global $RULES_CRITERIAS;
 
 		$tables = array();
-		foreach ($RULES_CRITERIAS[$this->rule_type] as $criteria){
+		foreach ($RULES_CRITERIAS[$this->sub_type] as $criteria){
 			if ((!isset($criteria['virtual']) || !$criteria['virtual']) && $criteria['table'] != '' && !array_key_exists($criteria["table"],$tables)) {
 				$tables[]=$criteria['table'];
 			}
@@ -160,7 +160,7 @@ class OcsRuleCollection extends RuleCollection {
 		global $RULES_CRITERIAS;
 
 		$fields = array();
-		foreach ($RULES_CRITERIAS[$this->rule_type] as $key => $criteria){
+		foreach ($RULES_CRITERIAS[$this->sub_type] as $key => $criteria){
 
 			if ($withouttable)
 			{
@@ -201,7 +201,7 @@ class OcsRuleCollection extends RuleCollection {
 		global $RULES_CRITERIAS;
 
 		$fields = array();
-		foreach ($RULES_CRITERIAS[$this->rule_type] as $criteria){
+		foreach ($RULES_CRITERIAS[$this->sub_type] as $criteria){
 			//If the field name is not null AND a table name is provided
 			if ( (!isset($criteria['virtual']) || !$criteria['virtual']) && $criteria['linkfield'] != ''){
 				$fields[]=$criteria['table'].".".$criteria['linkfield'];
@@ -262,7 +262,7 @@ class OcsAffectEntityRule extends Rule {
 			echo $LANG["rulesengine"][9] . ":";
 			$this->dropdownRulesMatch("match", "AND");
 			echo "</td><td align='center' class='tab_bg_2'>";
-			echo "<input type=hidden name='rule_type' value=\"" . $this->rule_type . "\">";
+			echo "<input type=hidden name='sub_type' value=\"" . $this->sub_type . "\">";
 			echo "<input type=hidden name='FK_entities' value=\"-1\">";
 			echo "<input type=hidden name='affectentity' value=\"" . $ID . "\">";
 			echo "<input type='submit' name='add_rule' value=\"" . $LANG["buttons"][8] . "\" class='submit'>";
@@ -279,10 +279,10 @@ class OcsAffectEntityRule extends Rule {
 
 		if (!empty ($rules)) {
 
-			initNavigateListItems(RULE_TYPE,$LANG["entity"][0]."=".getDropdownName("glpi_entities",$ID),$this->rule_type);
+			initNavigateListItems(RULE_TYPE,$LANG["entity"][0]."=".getDropdownName("glpi_entities",$ID),$this->sub_type);
 			
 			foreach ($rules as $rule) {
-				addToNavigateListItems(RULE_TYPE,$rule->fields["ID"],$this->rule_type);
+				addToNavigateListItems(RULE_TYPE,$rule->fields["ID"],$this->sub_type);
 				
 				echo "<tr class='tab_bg_1'>";
 
@@ -335,8 +335,8 @@ function getRulesByID($ID, $withcriterias, $withactions) {
 	$ocs_affect_computer_rules = array ();
 
 
-	//Get all the rules whose rule_type is $rule_type and entity is $ID
-	$sql="SELECT * FROM `glpi_rules_actions` as gra, glpi_rules_descriptions as grd  WHERE gra.FK_rules=grd.ID AND gra.field='FK_entities'  and grd.rule_type=".$this->rule_type." and gra.value='".$ID."'";
+	//Get all the rules whose sub_type is $sub_type and entity is $ID
+	$sql="SELECT * FROM `glpi_rules_actions` as gra, glpi_rules_descriptions as grd  WHERE gra.FK_rules=grd.ID AND gra.field='FK_entities'  and grd.sub_type=".$this->sub_type." and gra.value='".$ID."'";
 	
 	$result = $DB->query($sql);
 	while ($rule = $DB->fetch_array($result)) {
