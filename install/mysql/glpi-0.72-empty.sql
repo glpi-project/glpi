@@ -2574,7 +2574,7 @@ DROP TABLE IF EXISTS `glpi_rules_descriptions`;
 CREATE TABLE `glpi_rules_descriptions` (
   `ID` int(11) NOT NULL auto_increment,
   `FK_entities` int(11) NOT NULL default '-1',
-  `rule_type` smallint(4) NOT NULL default '0',
+  `sub_type` smallint(4) NOT NULL default '0',
   `ranking` int(11) NOT NULL default '0',
   `name` varchar(255) collate utf8_unicode_ci default NULL,
   `description` text collate utf8_unicode_ci,
@@ -2594,7 +2594,7 @@ CREATE TABLE `glpi_rules_ldap_parameters` (
   `ID` int(11) NOT NULL auto_increment,
   `name` varchar(255) collate utf8_unicode_ci default NULL,
   `value` varchar(255) collate utf8_unicode_ci default NULL,
-  `rule_type` smallint(6) NOT NULL default '1',
+  `sub_type` smallint(6) NOT NULL default '1',
   PRIMARY KEY  (`ID`)
 ) ENGINE=MyISAM AUTO_INCREMENT=14 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 

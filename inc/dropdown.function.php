@@ -1547,10 +1547,10 @@ function dropdownMassiveAction($device_type,$deleted=0,$extraparams=array()){
 		}
 		switch ($device_type){
 			case SOFTWARE_TYPE :
-				if ($isadmin && countElementsInTable("glpi_rules_descriptions","rule_type='".RULE_SOFTWARE_CATEGORY."'") > 0){
+				if ($isadmin && countElementsInTable("glpi_rules_descriptions","sub_type='".RULE_SOFTWARE_CATEGORY."'") > 0){
 					echo "<option value=\"compute_software_category\">".$LANG["rulesengine"][38]." ".$LANG["rulesengine"][40]."</option>";
 				}
-				if (haveRight("rule_dictionnary_software","w") && countElementsInTable("glpi_rules_descriptions","rule_type='".RULE_DICTIONNARY_SOFTWARE."'") > 0){
+				if (haveRight("rule_dictionnary_software","w") && countElementsInTable("glpi_rules_descriptions","sub_type='".RULE_DICTIONNARY_SOFTWARE."'") > 0){
 					echo "<option value=\"replay_dictionnary\">".$LANG["rulesengine"][76]."</option>";
 				}
 			
@@ -2343,12 +2343,12 @@ function dropdownGMT($name,$value=''){
 }
 
 /**
- * Dropdown rules for a defined rule_type
+ * Dropdown rules for a defined sub_type of rule
  *
  * @param $myname select name
- * @param $rule_type rule type
+ * @param $sub_type rule type
  */
-function dropdownRules ($rule_type, $myname){
+function dropdownRules ($sub_type, $myname){
 	global $DB, $CFG_GLPI, $LANG;
 
 	$rand=mt_rand();
@@ -2356,7 +2356,7 @@ function dropdownRules ($rule_type, $myname){
 
 	$use_ajax=false;
 	if ($CFG_GLPI["use_ajax"]){
-		$nb=countElementsInTable("glpi_rules_descriptions", "rule_type=".$rule_type);
+		$nb=countElementsInTable("glpi_rules_descriptions", "sub_type=".$sub_type);
 		
 		if ($nb>$CFG_GLPI["ajax_limit_count"]){
 			$use_ajax=true;
@@ -2366,7 +2366,7 @@ function dropdownRules ($rule_type, $myname){
 		'myname'=>$myname,
 		'limit'=>$limit_length,
 		'rand'=>$rand,
-		'type'=>$rule_type
+		'type'=>$sub_type
 		);
 	$default="<select name='$myname' id='dropdown_".$myname.$rand."'><option value='0'>------</option></select>\n";
 	ajaxDropdown($use_ajax,"/ajax/dropdownRules.php",$params,$default,$rand);

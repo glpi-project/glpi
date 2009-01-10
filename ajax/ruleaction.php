@@ -55,13 +55,13 @@ if (!defined('GLPI_ROOT')){
 
 
 	// Non define case
-	if (isset($_POST["rule_type"])&&isset($RULES_ACTIONS[$_POST["rule_type"]])){
+	if (isset($_POST["sub_type"])&&isset($RULES_ACTIONS[$_POST["sub_type"]])){
 		// First include -> first of the predefined array
 		if (!isset($_POST["field"])){
-			$_POST["field"]=key($RULES_ACTIONS[$_POST["rule_type"]]);
+			$_POST["field"]=key($RULES_ACTIONS[$_POST["sub_type"]]);
 		}
 
-		$randaction=dropdownRulesActions($_POST["rule_type"],"action_type",$_POST["field"]);
+		$randaction=dropdownRulesActions($_POST["sub_type"],"action_type",$_POST["field"]);
 
 		echo "&nbsp;&nbsp;";
 		echo "<span id='action_type_span'>\n";
@@ -69,7 +69,7 @@ if (!defined('GLPI_ROOT')){
 
 		$paramsaction=array('action_type'=>'__VALUE__',
 				'field'=>$_POST["field"],
-				'rule_type'=>$_POST["rule_type"],
+				'sub_type'=>$_POST["sub_type"],
 		);
 		ajaxUpdateItemOnSelectEvent("dropdown_action_type$randaction","action_type_span",$CFG_GLPI["root_doc"]."/ajax/ruleactionvalue.php",$paramsaction,false);
 		ajaxUpdateItem("action_type_span",$CFG_GLPI["root_doc"]."/ajax/ruleactionvalue.php",$paramsaction,false,"dropdown_action_type$randaction");

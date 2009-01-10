@@ -60,10 +60,10 @@ if (!defined('GLPI_ROOT')){
 			autocompletionTextField("value", "glpi_rules_actions", "value", "", 40);
 		break;	
 		default:
-		if (isset($RULES_ACTIONS[$_POST["rule_type"]][$_POST["field"]]['type'])){
-			switch($RULES_ACTIONS[$_POST["rule_type"]][$_POST["field"]]['type']){
+		if (isset($RULES_ACTIONS[$_POST["sub_type"]][$_POST["field"]]['type'])){
+			switch($RULES_ACTIONS[$_POST["sub_type"]][$_POST["field"]]['type']){
 				case "dropdown":
-					dropdownValue($RULES_ACTIONS[$_POST["rule_type"]][$_POST["field"]]['table'],"value");
+					dropdownValue($RULES_ACTIONS[$_POST["sub_type"]][$_POST["field"]]['table'],"value");
 					$display=true;
 					break;
 				case "dropdown_assign":

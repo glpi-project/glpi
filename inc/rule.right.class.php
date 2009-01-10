@@ -98,7 +98,7 @@ class RightAffectRule extends Rule {
 			echo $LANG["profiles"][28].":";
 			dropdownYesNo("recursive",0);
 			echo "</td><td align='center' class='tab_bg_2'>";
-			echo "<input type=hidden name='rule_type' value=\"" . $this->rule_type . "\">";
+			echo "<input type=hidden name='sub_type' value=\"" . $this->sub_type . "\">";
 			echo "<input type=hidden name='FK_entities' value=\"-1\">";
 			echo "<input type=hidden name='affectentity' value=\"" . $ID . "\">";
 			echo "<input type='submit' name='add_user_rule' value=\"" . $LANG["buttons"][8] . "\" class='submit'>";
@@ -115,10 +115,10 @@ class RightAffectRule extends Rule {
 
 		if (!empty ($rules)) {
 
-			initNavigateListItems(RULE_TYPE,$LANG["entity"][0]."=".getDropdownName("glpi_entities",$ID),$this->rule_type);
+			initNavigateListItems(RULE_TYPE,$LANG["entity"][0]."=".getDropdownName("glpi_entities",$ID),$this->sub_type);
 
 			foreach ($rules as $rule) {
-				addToNavigateListItems(RULE_TYPE,$rule->fields["ID"],$this->rule_type);
+				addToNavigateListItems(RULE_TYPE,$rule->fields["ID"],$this->sub_type);
 
 				echo "<tr class='tab_bg_1'>";
 
@@ -163,14 +163,14 @@ class RightAffectRule extends Rule {
 	{
 		global $DB,$RULES_CRITERIAS;
 
-			$sql = "SELECT name,value,rule_type FROM glpi_rules_ldap_parameters WHERE rule_type=".$this->rule_type;
+			$sql = "SELECT name,value,sub_type FROM glpi_rules_ldap_parameters WHERE sub_type=".$this->sub_type;
 			$result = $DB->query($sql);
 			while ($datas = $DB->fetch_array($result))
 			{
-					$RULES_CRITERIAS[$this->rule_type][$datas["value"]]['name']=$datas["name"];
-					$RULES_CRITERIAS[$this->rule_type][$datas["value"]]['field']=$datas["value"];
-					$RULES_CRITERIAS[$this->rule_type][$datas["value"]]['linkfield']='';
-					$RULES_CRITERIAS[$this->rule_type][$datas["value"]]['table']='';
+					$RULES_CRITERIAS[$this->sub_type][$datas["value"]]['name']=$datas["name"];
+					$RULES_CRITERIAS[$this->sub_type][$datas["value"]]['field']=$datas["value"];
+					$RULES_CRITERIAS[$this->sub_type][$datas["value"]]['linkfield']='';
+					$RULES_CRITERIAS[$this->sub_type][$datas["value"]]['table']='';
 				}
 	}
 
@@ -304,8 +304,8 @@ function getRulesByID($ID, $withcriterias, $withactions) {
 	// MOYO : ca correspond pas deja à un cas particulier de ca : getRuleWithCriteriasAndActions ?
 
 
-	//Get all the rules whose rule_type is $rule_type and entity is $ID
-	$sql="SELECT * FROM `glpi_rules_actions` as gra, glpi_rules_descriptions as grd  WHERE gra.FK_rules=grd.ID AND gra.field='FK_entities'  and grd.rule_type=".$this->rule_type." and gra.value='".$ID."'";
+	//Get all the rules whose sub_type is $sub_type and entity is $ID
+	$sql="SELECT * FROM `glpi_rules_actions` as gra, glpi_rules_descriptions as grd  WHERE gra.FK_rules=grd.ID AND gra.field='FK_entities'  and grd.sub_type=".$this->sub_type." and gra.value='".$ID."'";
 	
 	$result = $DB->query($sql);
 	while ($rule = $DB->fetch_array($result)) {
@@ -354,7 +354,7 @@ class RightRuleCollection extends RuleCollection {
 	**/
 	function __construct() {
 		global $DB;
-		$this->rule_type = RULE_AFFECT_RIGHTS;
+		$this->sub_type = RULE_AFFECT_RIGHTS;
 		$this->rule_class_name = 'RightAffectRule';
 		$this->stop_on_first_match=false;
 		$this->right="rule_ldap";
@@ -425,7 +425,7 @@ class RightRuleCollection extends RuleCollection {
 		{
 			echo "<tr  class='tab_bg_2'>";
 			echo "<td class='tab_bg_2' align='center'>";
-			echo $RULES_ACTIONS[$this->rule_type][$criteria]["name"];
+			echo $RULES_ACTIONS[$this->sub_type][$criteria]["name"];
 			echo "</td>";
 			echo "<td class='tab_bg_2' align='center'>";
 			echo $rule->getActionValue($criteria,$value);
@@ -474,7 +474,7 @@ class RightRuleCollection extends RuleCollection {
 		$params = array();
 		$sql = "SELECT DISTINCT value " .
 				"FROM glpi_rules_descriptions, glpi_rules_criterias, glpi_rules_ldap_parameters " .
-				"WHERE glpi_rules_descriptions.rule_type=".$this->rule_type." AND glpi_rules_criterias.FK_rules=glpi_rules_descriptions.ID AND glpi_rules_criterias.criteria=glpi_rules_ldap_parameters.value";
+				"WHERE glpi_rules_descriptions.sub_type=".$this->sub_type." AND glpi_rules_criterias.FK_rules=glpi_rules_descriptions.ID AND glpi_rules_criterias.criteria=glpi_rules_ldap_parameters.value";
 		
 		$result = $DB->query($sql);
 		while ($param = $DB->fetch_array($result))
@@ -567,7 +567,7 @@ class RightRuleCollection extends RuleCollection {
 		global $RULES_CRITERIAS;
 
 		$fields = array();
-		foreach ($RULES_CRITERIAS[$this->rule_type] as $criteria){
+		foreach ($RULES_CRITERIAS[$this->sub_type] as $criteria){
 				if (isset($criteria['virtual']) && $criteria['virtual'] == "true")
 					$fields[]=$criteria['id'];
 				else	

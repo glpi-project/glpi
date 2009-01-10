@@ -44,10 +44,10 @@ if(!defined('GLPI_ROOT')){
 if (!strpos($_SERVER['PHP_SELF'],"popup"))
 	commonHeader($LANG["rulesengine"][17],$_SERVER['PHP_SELF'],"admin","dictionnary","cache");
 
-if (isset($_GET["rule_type"]))	
+if (isset($_GET["sub_type"]))	
 {
 	echo "<br>";
-	$rulecollection = getRuleCollectionClass($_GET["rule_type"]);
+	$rulecollection = getRuleCollectionClass($_GET["sub_type"]);
 	if (haveRight($rulecollection->right,"r"))
 	{
 		if (!isset($_GET["rule_id"]))

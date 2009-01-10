@@ -49,8 +49,8 @@ if (!defined('GLPI_ROOT')){
 	include_once (GLPI_ROOT."/inc/rulesengine.function.php");
 	
 	checkLoginUser();
-	if (isset($_POST["rule_type"])){
-		$rule=getRuleClass($_POST["rule_type"]);
+	if (isset($_POST["sub_type"])){
+		$rule=getRuleClass($_POST["sub_type"]);
 		$criterias=$rule->getCriterias();
 		if (count($criterias)){
 
@@ -70,7 +70,7 @@ if (!defined('GLPI_ROOT')){
 
 			$paramscriteria=array('condition'=>'__VALUE__',
 					'criteria'=>$_POST["criteria"],
-					'rule_type'=>$_POST["rule_type"],
+					'sub_type'=>$_POST["sub_type"],
 			);
 			ajaxUpdateItemOnSelectEvent("dropdown_condition$randcrit","condition_span",$CFG_GLPI["root_doc"]."/ajax/rulecriteriavalue.php",$paramscriteria,false);
 			ajaxUpdateItem("condition_span",$CFG_GLPI["root_doc"]."/ajax/rulecriteriavalue.php",$paramscriteria,false,"dropdown_condition$randcrit");

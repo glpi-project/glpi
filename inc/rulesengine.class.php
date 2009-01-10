@@ -75,7 +75,7 @@ class SingletonRuleList {
 
 class RuleCollection {
 	/// Rule type
-	var $rule_type;
+	var $sub_type;
 	/// Name of the class used to rule
 	var $rule_class_name="Rule";
 	/// process collection stop on first matched rule
@@ -94,10 +94,10 @@ class RuleCollection {
 	
 	/**
 	* Constructor
-	* @param rule_type the rule type used for the collection
+	* @param sub_type the rule type used for the collection
 	**/
-	function __construct($rule_type){
-		$this->rule_type = $rule_type;
+	function __construct($sub_type){
+		$this->sub_type = $sub_type;
 	}
 
 	/**
@@ -107,7 +107,7 @@ class RuleCollection {
 	**/
 	function getCollectionSize(){
 
-		return countElementsInTable("glpi_rules_descriptions", "rule_type=".$this->rule_type);
+		return countElementsInTable("glpi_rules_descriptions", "sub_type=".$this->sub_type);
 	}
 	
 	/**
@@ -119,11 +119,11 @@ class RuleCollection {
 	function getCollectionPart($start=0,$limit=0){
 		global $DB;
 		
-		$this->RuleList = new SingletonRuleList($this->rule_type);
+		$this->RuleList = new SingletonRuleList($this->sub_type);
 		$this->RuleList->list = array();
 			
 		//Select all the rules of a different type
-		$sql = "SELECT * FROM glpi_rules_descriptions WHERE rule_type=" . $this->rule_type . " ORDER by ".$this->orderby." ASC";
+		$sql = "SELECT * FROM glpi_rules_descriptions WHERE sub_type=" . $this->sub_type . " ORDER by ".$this->orderby." ASC";
 		if ($limit) {
 			$sql .= " LIMIT $start,$limit";
 		}
@@ -148,7 +148,7 @@ class RuleCollection {
 		global $DB;
 		
 		if ($this->RuleList === NULL)
-			$this->RuleList = SingletonRuleList::getInstance($this->rule_type);
+			$this->RuleList = SingletonRuleList::getInstance($this->sub_type);
 			
 		$need = 1+($retrieve_criteria?2:0)+($retrieve_action?4:0);
 
@@ -156,7 +156,7 @@ class RuleCollection {
 		if (($need & $this->RuleList->load) != $need) {
 
 			//Select all the rules of a different type
-			$sql = "SELECT ID FROM glpi_rules_descriptions WHERE active=1 AND rule_type=".$this->rule_type." ORDER by ".$this->orderby." ASC";
+			$sql = "SELECT ID FROM glpi_rules_descriptions WHERE active=1 AND sub_type=".$this->sub_type." ORDER by ".$this->orderby." ASC";
 			
 			 $result = $DB->query($sql);
 			if ($result){
@@ -266,10 +266,10 @@ class RuleCollection {
 		echo "<td class='tab_bg_2' colspan='2'></td>";
 		echo "</tr>";
 		
-		initNavigateListItems(RULE_TYPE,"",$this->rule_type);
+		initNavigateListItems(RULE_TYPE,"",$this->sub_type);
 		for ($i=$start,$j=0 ; isset($this->RuleList->list[$j]) ; $i++,$j++) {
 			$this->RuleList->list[$j]->showMinimalForm($target,$i==0,$i==$nb-1);
-			addToNavigateListItems(RULE_TYPE,$this->RuleList->list[$j]->fields['ID'],$this->rule_type);
+			addToNavigateListItems(RULE_TYPE,$this->RuleList->list[$j]->fields['ID'],$this->sub_type);
 		}
 		echo "</table>";
 		echo "</div>";
@@ -292,7 +292,7 @@ class RuleCollection {
 
 			$params=array('action'=>'__VALUE__',
 					'type'=>RULE_TYPE,
-					'rule_type'=>$this->rule_type,
+					'sub_type'=>$this->sub_type,
 					);
 			
 			ajaxUpdateItemOnSelectEvent("massiveaction","show_massiveaction",$CFG_GLPI["root_doc"]."/ajax/dropdownMassiveAction.php",$params);
@@ -309,7 +309,7 @@ class RuleCollection {
 			echo "</div>";
 		} 
 		
-		echo "<span class='center'><a href='#' onClick=\"var w=window.open('".$CFG_GLPI["root_doc"]."/front/popup.php?popup=test_all_rules&amp;rule_type=".$this->rule_type."&amp' ,'glpipopup', 'height=400, width=1000, top=100, left=100, scrollbars=yes' );w.focus();\">".$LANG["rulesengine"][84]."</a></span>"; 
+		echo "<span class='center'><a href='#' onClick=\"var w=window.open('".$CFG_GLPI["root_doc"]."/front/popup.php?popup=test_all_rules&amp;sub_type=".$this->sub_type."&amp' ,'glpipopup', 'height=400, width=1000, top=100, left=100, scrollbars=yes' );w.focus();\">".$LANG["rulesengine"][84]."</a></span>"; 
 		echo "</form>";
 
 
@@ -333,7 +333,7 @@ class RuleCollection {
 		global $DB;
 		$rules = array();
 		$i=0;
-		$sql ="SELECT ID FROM glpi_rules_descriptions WHERE rule_type = '".$this->rule_type."' ORDER BY ranking ASC";
+		$sql ="SELECT ID FROM glpi_rules_descriptions WHERE sub_type = '".$this->sub_type."' ORDER BY ranking ASC";
 		
 		if ($result = $DB->query($sql)){
 			//Reorder rules : we reaffect ranking for each rule of type $type
@@ -353,7 +353,7 @@ class RuleCollection {
 	**/
 	function changeRuleOrder($ID,$action){
 		global $DB;
-		//$sql ="SELECT ID FROM glpi_rules_descriptions WHERE rule_type =".$this->rule_type." ORDER BY ranking ASC";
+
 		$sql ="SELECT ranking FROM glpi_rules_descriptions WHERE ID ='$ID'";
 		if ($result = $DB->query($sql)){
 			if ($DB->numrows($result)==1){
@@ -363,10 +363,10 @@ class RuleCollection {
 				$sql2="";
 				switch ($action){
 					case "up":
-						$sql2 ="SELECT ID,ranking FROM glpi_rules_descriptions WHERE rule_type ='".$this->rule_type."' AND ranking < '$current_rank' ORDER BY ranking DESC LIMIT 1";
+						$sql2 ="SELECT ID,ranking FROM glpi_rules_descriptions WHERE sub_type ='".$this->sub_type."' AND ranking < '$current_rank' ORDER BY ranking DESC LIMIT 1";
 					break;
 					case "down":
-						$sql2="SELECT ID,ranking FROM glpi_rules_descriptions WHERE rule_type ='".$this->rule_type."' AND ranking > '$current_rank' ORDER BY ranking ASC LIMIT 1";
+						$sql2="SELECT ID,ranking FROM glpi_rules_descriptions WHERE sub_type ='".$this->sub_type."' AND ranking > '$current_rank' ORDER BY ranking ASC LIMIT 1";
 					break;
 					default :
 						return false;
@@ -395,7 +395,7 @@ class RuleCollection {
 	function deleteRuleOrder($ranking){
 		global $DB;
 		$rules = array();
-		$sql ="UPDATE glpi_rules_descriptions SET ranking=ranking-1 WHERE rule_type =".$this->rule_type." AND ranking > '$ranking' ";
+		$sql ="UPDATE glpi_rules_descriptions SET ranking=ranking-1 WHERE sub_type =".$this->sub_type." AND ranking > '$ranking' ";
 		return $DB->query($sql);
 	}
 	
@@ -426,7 +426,7 @@ class RuleCollection {
 		} else if ($type == "after") {
 			// Move after all			 
 			$query = "SELECT MAX(ranking) AS maxi FROM glpi_rules_descriptions  " .
-					" WHERE rule_type ='".$this->rule_type."' ";
+					" WHERE sub_type ='".$this->sub_type."' ";
 			$result = $DB->query($query);
 			$ligne = $DB->fetch_array($result);
 			$rank = $ligne['maxi'];
@@ -441,7 +441,7 @@ class RuleCollection {
 
 			// Move back all rules between old and new rank
 			$query = "UPDATE glpi_rules_descriptions SET ranking=ranking-1 " .
-					" WHERE rule_type ='".$this->rule_type."' " .
+					" WHERE sub_type ='".$this->sub_type."' " .
 					" AND ranking > '$old_rank' AND ranking <= '$rank'";
 			$result = $DB->query($query);
 			
@@ -450,7 +450,7 @@ class RuleCollection {
 			
 			// Move forward all rule  between old and new rank 
 			$query = "UPDATE glpi_rules_descriptions SET ranking=ranking+1 " .
-					" WHERE rule_type ='".$this->rule_type."' " .
+					" WHERE sub_type ='".$this->sub_type."' " .
 					" AND ranking >= '$rank' AND ranking < '$old_rank'";
 			$result = $DB->query($query);
 
@@ -523,15 +523,15 @@ class RuleCollection {
 			foreach ($input as $criteria){
 				echo "<tr class='tab_bg_1'>"; 
 
-				if (isset($RULES_CRITERIAS[$this->rule_type][$criteria])){
-					$criteria_constants = $RULES_CRITERIAS[$this->rule_type][$criteria];
+				if (isset($RULES_CRITERIAS[$this->sub_type][$criteria])){
+					$criteria_constants = $RULES_CRITERIAS[$this->sub_type][$criteria];
 					echo "<td>".$criteria_constants["name"].":</td>";
 				}else{
 					echo "<td>".$criteria.":</td>";
 				}
 				echo "<td>";
 
-				$rule = getRuleClass($this->rule_type);
+				$rule = getRuleClass($this->sub_type);
 				$rule->displayCriteriaSelectPattern($criteria,$criteria,PATTERN_IS,isset($values[$criteria])?$values[$criteria]:'');
 				echo "</td>";
 				echo "</tr>"; 
@@ -540,7 +540,7 @@ class RuleCollection {
 
 			echo "<tr><td class='tab_bg_2' colspan='2' align='center'>"; 
 			echo "<input type='submit' name='test_all_rules' value=\"" . $LANG["buttons"][50] . "\" class='submit'>";
-			echo "<input type='hidden' name='rule_type' value=\"" . $this->rule_type . "\">"; 
+			echo "<input type='hidden' name='sub_type' value=\"" . $this->sub_type . "\">"; 
 			echo "</td></tr>"; 
 			echo "</table>";
 			echo "</div>";
@@ -612,7 +612,7 @@ class RuleCollection {
 		global $DB;
 		$input = array();
 		
-		$res = $DB->query("SELECT DISTINCT grc.criteria as criteria FROM glpi_rules_criterias as grc, glpi_rules_descriptions grd WHERE grd.active=1 AND grc.FK_rules=grd.ID AND grd.rule_type=".$this->rule_type);
+		$res = $DB->query("SELECT DISTINCT grc.criteria as criteria FROM glpi_rules_criterias as grc, glpi_rules_descriptions grd WHERE grd.active=1 AND grc.FK_rules=grd.ID AND grd.sub_type=".$this->sub_type);
 		while ($data = $DB->fetch_array($res))
 			$input[]=$data["criteria"];
 		return $input;
@@ -628,7 +628,7 @@ class RuleCollection {
 		$output = array();
 
 		$output = $this->testAllRules($input,array(),$input);
-		$rule = getRuleClass($this->rule_type);
+		$rule = getRuleClass($this->sub_type);
 
 		echo "<div class='center'>"; 
 		
@@ -706,7 +706,7 @@ class RuleCollection {
 		foreach ($output as $criteria => $value){
 			echo "<tr  class='tab_bg_2'>";
 			echo "<td class='tab_bg_2'>";
-			echo $RULES_ACTIONS[$this->rule_type][$criteria]["name"];
+			echo $RULES_ACTIONS[$this->sub_type][$criteria]["name"];
 			echo "</td>";
 			echo "<td class='tab_bg_2'>";
 			echo $rule->getActionValue($criteria,$value);
@@ -736,7 +736,7 @@ class Rule extends CommonDBTM{
 	///Criterias affected to this rule
 	var $criterias = array();
 	/// Rule type
-	var $rule_type;
+	var $sub_type;
 	/// Right needed to use this rule
 	var $right="config";
 	/// Rules can be sorted ?
@@ -746,13 +746,12 @@ class Rule extends CommonDBTM{
 
 	/**
 	* Constructor
-	* @param rule_type the rule type used for the collection
+	* @param sub_type the rule type used for the collection
 	**/
-	function __construct($rule_type=0) {
+	function __construct($sub_type=0) {
 		$this->table = "glpi_rules_descriptions";
 		$this->type = RULE_TYPE;
-		$this->sub_type_name="rule_type";
-		$this->rule_type=$rule_type;
+		$this->sub_type=$sub_type;
 		$this->can_sort=false;
 	}
 
@@ -799,7 +798,7 @@ class Rule extends CommonDBTM{
 			
 		$this->getTitleRule($target);
 
-		$this->showTabs($ID, $new,$_SESSION['glpi_tab'],array(),"rule_type='".$this->rule_type."'",$this->orderby);
+		$this->showTabs($ID, $new,$_SESSION['glpi_tab'],array(),"sub_type='".$this->sub_type."'",$this->orderby);
 		echo "<form name='rule_form'  method='post' action=\"$target\">\n";
 
 		echo "<div class='center' id='tabsbody' >";
@@ -835,7 +834,7 @@ class Rule extends CommonDBTM{
 		if ($canedit){
 			if ($new){
 				echo "<tr><td class='tab_bg_2' align='center' colspan='4'>";
-				echo "<input type='hidden' name='rule_type' value='".$this->rule_type."'>";
+				echo "<input type='hidden' name='sub_type' value='".$this->sub_type."'>";
 				echo "<input type='submit' name='add_rule' value=\"" . $LANG["buttons"][8] . "\" class='submit'>";
 				echo "</td></tr>";
 				
@@ -849,7 +848,7 @@ class Rule extends CommonDBTM{
 				echo "</tr>";
 
 				echo "<tr><td class='tab_bg_2' align='center' colspan='4'>";
-				echo "<a href='#' onClick=\"var w=window.open('".$CFG_GLPI["root_doc"]."/front/popup.php?popup=test_rule&amp;rule_type=".$this->rule_type."&amp;rule_id=".$this->fields["ID"]."' ,'glpipopup', 'height=400, width=1000, top=100, left=100, scrollbars=yes' );w.focus();\">".$LANG["buttons"][50]."</a>"; 
+				echo "<a href='#' onClick=\"var w=window.open('".$CFG_GLPI["root_doc"]."/front/popup.php?popup=test_rule&amp;sub_type=".$this->sub_type."&amp;rule_id=".$this->fields["ID"]."' ,'glpipopup', 'height=400, width=1000, top=100, left=100, scrollbars=yes' );w.focus();\">".$LANG["buttons"][50]."</a>"; 
 				echo "</td></tr>";
 			}
 		}			
@@ -986,10 +985,10 @@ class Rule extends CommonDBTM{
 		echo "<tr  class='tab_bg_2' align='center'><td>";
 		echo $LANG["rulesengine"][30] . ":";
 		echo "</td><td>";
-		$val=$this->dropdownActions(getAlreadyUsedActionsByRuleID($rule_id,$this->rule_type));
+		$val=$this->dropdownActions(getAlreadyUsedActionsByRuleID($rule_id,$this->sub_type));
 		echo "</td><td align='left' width='500px'>";
 		echo "<span id='action_span'>\n";
-		$_POST["rule_type"]=$this->rule_type;
+		$_POST["sub_type"]=$this->sub_type;
 		$_POST["field"]=$val;
 		include (GLPI_ROOT."/ajax/ruleaction.php");
 		echo "</span>\n";	
@@ -1020,7 +1019,7 @@ class Rule extends CommonDBTM{
 		echo "</td><td align='left' width='500px'>";
 		
 		echo "<span id='criteria_span'>\n";
-		$_POST["rule_type"]=$this->rule_type;
+		$_POST["sub_type"]=$this->sub_type;
 		$_POST["criteria"]=$val;
 		include (GLPI_ROOT."/ajax/rulecriteria.php");
 		echo "</span>\n";	
@@ -1112,7 +1111,7 @@ class Rule extends CommonDBTM{
 		$rand=dropdownArrayValues("criteria", $items);
 
 		$params=array('criteria'=>'__VALUE__',
-				'rule_type'=>$this->rule_type,
+				'sub_type'=>$this->sub_type,
 		);
 		ajaxUpdateItemOnSelectEvent("dropdown_criteria$rand","criteria_span",$CFG_GLPI["root_doc"]."/ajax/rulecriteria.php",$params,false);
 //		ajaxUpdateItem("criteria_span",$CFG_GLPI["root_doc"]."/ajax/rulecriteria.php",$params,false,"dropdown_criteria$rand");
@@ -1134,7 +1133,7 @@ class Rule extends CommonDBTM{
 
 		$rand=dropdownArrayValues("field", $items,'',$used);
 		$params=array('field'=>'__VALUE__',
-				'rule_type'=>$this->rule_type
+				'sub_type'=>$this->sub_type
 		);
 		ajaxUpdateItemOnSelectEvent("dropdown_field$rand","action_span",$CFG_GLPI["root_doc"]."/ajax/ruleaction.php",$params,false);
 //		ajaxUpdateItem("action_span",$CFG_GLPI["root_doc"]."/ajax/ruleaction.php",$params,false,"dropdown_field$rand");
@@ -1158,8 +1157,8 @@ class Rule extends CommonDBTM{
 	function getCriterias(){
 		global $RULES_CRITERIAS;
 
-		if (isset($RULES_CRITERIAS[$this->rule_type])){
-			return $RULES_CRITERIAS[$this->rule_type];
+		if (isset($RULES_CRITERIAS[$this->sub_type])){
+			return $RULES_CRITERIAS[$this->sub_type];
 		} else {
 			return array();
 		}
@@ -1168,8 +1167,8 @@ class Rule extends CommonDBTM{
 	function getFilteredActions()
 	{
 		global $RULES_ACTIONS;
-		if (isset($RULES_ACTIONS[$this->rule_type])){
-				return $this->filterActions($RULES_ACTIONS[$this->rule_type]);
+		if (isset($RULES_ACTIONS[$this->sub_type])){
+				return $this->filterActions($RULES_ACTIONS[$this->sub_type]);
 		} else {
 			return array();
 		}
@@ -1181,8 +1180,8 @@ class Rule extends CommonDBTM{
 	 */
 	function getActions(){
 		global $RULES_ACTIONS;
-		if (isset($RULES_ACTIONS[$this->rule_type])){
-				return $RULES_ACTIONS[$this->rule_type];	
+		if (isset($RULES_ACTIONS[$this->sub_type])){
+				return $RULES_ACTIONS[$this->sub_type];	
 		} else {
 			return array();
 		}
@@ -1269,7 +1268,7 @@ class Rule extends CommonDBTM{
 				$output=$this->executeActions($output,$params,$regex_result);
 	
 				//Hook 
-				$hook_params["rule_type"]=$this->rule_type; 
+				$hook_params["sub_type"]=$this->sub_type; 
 				$hook_params["ruleid"]=$this->fields["ID"]; 
 				$hook_params["input"]=$input; 
 				$hook_params["output"]=$output; 
@@ -1465,12 +1464,12 @@ class Rule extends CommonDBTM{
 			echo "<td>".$LANG["choice"][0]."</td>";
 				
 		if ($this->can_sort && !$first && $canedit){
-			echo "<td><a href=\"".$target."?type=".$this->fields["rule_type"]."&amp;action=up&amp;ID=".$this->fields["ID"]."\"><img src=\"".$CFG_GLPI["root_doc"]."/pics/deplier_up.png\" alt=''></a></td>";
+			echo "<td><a href=\"".$target."?type=".$this->fields["sub_type"]."&amp;action=up&amp;ID=".$this->fields["ID"]."\"><img src=\"".$CFG_GLPI["root_doc"]."/pics/deplier_up.png\" alt=''></a></td>";
 		} else {
 			echo "<td>&nbsp;</td>";
 		}
 		if ($this->can_sort && !$last && $canedit){
-			echo "<td><a href=\"".$target."?type=".$this->fields["rule_type"]."&amp;action=down&amp;ID=".$this->fields["ID"]."\"><img src=\"".$CFG_GLPI["root_doc"]."/pics/deplier_down.png\" alt=''></a></td>";
+			echo "<td><a href=\"".$target."?type=".$this->fields["sub_type"]."&amp;action=down&amp;ID=".$this->fields["ID"]."\"><img src=\"".$CFG_GLPI["root_doc"]."/pics/deplier_down.png\" alt=''></a></td>";
 		} else {
 			echo "<td>&nbsp;</td>";
 		}
@@ -1490,7 +1489,7 @@ class Rule extends CommonDBTM{
 	function getNextRanking()
 	{
 		global $DB;
-		$sql = "SELECT max(ranking) as rank FROM glpi_rules_descriptions WHERE rule_type=".$this->rule_type;
+		$sql = "SELECT max(ranking) as rank FROM glpi_rules_descriptions WHERE sub_type=".$this->sub_type;
 		$result = $DB->query($sql);
 		if ($DB->numrows($result) > 0)
 		{
@@ -1589,7 +1588,7 @@ class Rule extends CommonDBTM{
 		foreach ($output as $criteria => $value){
 			echo "<tr  class='tab_bg_2'>";
 			echo "<td class='tab_bg_2'>";
-			echo $RULES_ACTIONS[$this->rule_type][$criteria]["name"];
+			echo $RULES_ACTIONS[$this->sub_type][$criteria]["name"];
 			echo "</td>";
 			echo "<td class='tab_bg_2'>";
 			echo $this->getActionValue($criteria,$value);
@@ -1904,7 +1903,7 @@ class Rule extends CommonDBTM{
 					}
 					echo "</td>";
 					
-					$criteria_constants = $RULES_CRITERIAS[$this->fields["rule_type"]][$criteria->fields["criteria"]];
+					$criteria_constants = $RULES_CRITERIAS[$this->fields["sub_type"]][$criteria->fields["criteria"]];
 					echo "<td>".$criteria_constants["name"].":</td>";
 					echo "<td>";
 					$value="";
@@ -1924,7 +1923,7 @@ class Rule extends CommonDBTM{
 			echo "<tr><td class='tab_bg_2' colspan='3' align='center'>"; 
 			echo "<input type='submit' name='test_rule' value=\"" . $LANG["buttons"][50] . "\" class='submit'>";
 			echo "<input type='hidden' name='rule_id' value=\"" . $rule_id . "\">"; 
-			echo "<input type='hidden' name='rule_type' value=\"" . $this->rule_type . "\">"; 
+			echo "<input type='hidden' name='sub_type' value=\"" . $this->sub_type . "\">"; 
 			echo "</td></tr>"; 
 			echo "</table>";
 			echo "</div>";
@@ -2101,12 +2100,12 @@ class RuleCached extends Rule{
 
 	/**
 	* Constructor
-	* @param rule_type the rule type used for the collection
+	* @param sub_type the rule type used for the collection
 	**/
 	// Dummy constructor required for php 5.3.0 (regression ?)
 	// TODO : switch to __construct ?
-	function __construct($rule_type=0) {
-		parent::__construct($rule_type);
+	function __construct($sub_type=0) {
+		parent::__construct($sub_type);
 	}
 
 	function getTitleAction($target){
@@ -2126,7 +2125,7 @@ class RuleCached extends Rule{
 	**/
 	function deleteCacheByRuleId($ID){
 		global $DB;
-		$DB->query("DELETE FROM ".getCacheTableByRuleType($this->rule_type)." WHERE rule_id=".$ID);
+		$DB->query("DELETE FROM ".getCacheTableByRuleType($this->sub_type)." WHERE rule_id=".$ID);
 	}
 
 	function post_updateItem($input,$updates,$history=1) {
@@ -2143,7 +2142,7 @@ class RuleCached extends Rule{
 		echo "<div class='center'>"; 
 		echo "<table  class='tab_cadre_fixe'>";
 
-		$rulecollection = getRuleCollectionClass($this->rule_type);
+		$rulecollection = getRuleCollectionClass($this->sub_type);
 		
 		$query="SELECT *
 			FROM ".$rulecollection->cache_table.", glpi_rules_descriptions
@@ -2224,7 +2223,7 @@ class RuleCachedCollection extends RuleCollection{
 	**/
 	function showAdditionalInformationsInForm($target){
 		global $CFG_GLPI,$LANG;
-		echo "<span class='center'><a href='#' onClick=\"var w = window.open('".$CFG_GLPI["root_doc"]."/front/popup.php?popup=show_cache&amp;rule_type=".$this->rule_type."' ,'glpipopup', 'height=400, width=1000, top=100, left=100, scrollbars=yes' );w.focus();\">".$LANG["rulesengine"][100]."</a></span>"; 
+		echo "<span class='center'><a href='#' onClick=\"var w = window.open('".$CFG_GLPI["root_doc"]."/front/popup.php?popup=show_cache&amp;sub_type=".$this->sub_type."' ,'glpipopup', 'height=400, width=1000, top=100, left=100, scrollbars=yes' );w.focus();\">".$LANG["rulesengine"][100]."</a></span>"; 
 
 	}	
 
@@ -2280,7 +2279,7 @@ class RuleCachedCollection extends RuleCollection{
 		while ($datas = $DB->fetch_array($res_count)){
 			echo "<tr>";			
 			echo "<td class='tab_bg_2'>";
-			echo "<a href='#' onClick=\"var w = window.open('".$CFG_GLPI["root_doc"]."/front/popup.php?popup=show_cache&amp;rule_type=".$this->rule_type."&rule_id=".$datas["rule_id"]."' ,'glpipopup', 'height=400, width=1000, top=100, left=100, scrollbars=yes' );w.focus();\">";
+			echo "<a href='#' onClick=\"var w = window.open('".$CFG_GLPI["root_doc"]."/front/popup.php?popup=show_cache&amp;sub_type=".$this->sub_type."&rule_id=".$datas["rule_id"]."' ,'glpipopup', 'height=400, width=1000, top=100, left=100, scrollbars=yes' );w.focus();\">";
 			echo $datas["name"];
 			echo "</a></td>";
 			echo "<td class='tab_bg_2'>".$datas["cpt"]."</td>";

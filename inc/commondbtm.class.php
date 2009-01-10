@@ -41,7 +41,6 @@ class CommonDBTM {
 	var $table="";
 	/// GLPI Item type
 	var $type=-1;
-	var $sub_type_name="";
 	/// Make an history of the changes
 	var $dohistory=false;
 	/// Is an item specific to entity
@@ -1011,11 +1010,10 @@ class CommonDBTM {
 //				$prev=0;
 //			}
 
-			if ($this->sub_type_name) {
-				$sub_type=$this->sub_type_name;
-				$glpilistitems =& $_SESSION['glpilistitems'][$this->type][$this->$sub_type];
-				$glpilisttitle =& $_SESSION['glpilisttitle'][$this->type][$this->$sub_type];
-				$glpilisturl   =& $_SESSION['glpilisturl'][$this->type][$this->$sub_type];
+			if (isset($this->sub_type)) {
+				$glpilistitems =& $_SESSION['glpilistitems'][$this->type][$this->sub_type];
+				$glpilisttitle =& $_SESSION['glpilisttitle'][$this->type][$this->sub_type];
+				$glpilisturl   =& $_SESSION['glpilisturl'][$this->type][$this->sub_type];
 			} else {
 				$glpilistitems =& $_SESSION['glpilistitems'][$this->type];
 				$glpilisttitle =& $_SESSION['glpilisttitle'][$this->type];
