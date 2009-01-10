@@ -4,9 +4,9 @@
 	define("GLPI_VERSION","0.72");
 	define("GLPI_DEMO_MODE","0");
 
-	// dicts
-	// dictionnaires
-	// 0 Name - 1 lang file -  2calendar dico - 3toolbar dico
+	
+	// dictionnaries
+	// 0 Name - 1 lang file -  2 calendar dico - 3 toolbar dico
 	$CFG_GLPI["languages"]=array(   
 		"pt_BR"=>array("Brazilian","pt_BR.php","pt_BR","pt"),
 		"bg_BG"=>array("Bulgarian","bg_BG.php","bg","bg"),
