@@ -669,7 +669,7 @@ function showInstallations($searchID, $crit="sID") {
 			getEntitiesRestrictRequest(' AND', 'glpi_computers') .
 			" AND glpi_computers.deleted=0 AND glpi_computers.is_template=0 " .
 		"ORDER BY " . $sort." ".$order . " LIMIT $start," . $_SESSION['glpilist_limit'];
-	echo $query;
+
 	$rand=mt_rand();
 
 
