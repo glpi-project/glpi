@@ -312,12 +312,19 @@ function showLicenses($sID) {
 	} else {
 		$start = 0;
 	}
+	
+	if (isset($_REQUEST["sort"]) && !empty($_REQUEST["sort"])) {
+		$sort = $_REQUEST["sort"];
+	} else {
+		$sort = "entity, name";
+	}
+	
 	if (isset($_REQUEST["order"]) && !empty($_REQUEST["order"])) {
 		$order = $_REQUEST["order"];
 	} else {
-		$order = "entity, name";
+		$order = "ASC";
 	}
-
+		
 	// Righ type is enough. Can add a License on a software we have Read access
 	$canedit = haveRight("software", "w");
 
@@ -348,7 +355,7 @@ function showLicenses($sID) {
 		LEFT JOIN glpi_dropdown_licensetypes ON (glpi_dropdown_licensetypes.ID = glpi_softwarelicenses.type)
 		WHERE (glpi_softwarelicenses.sID = '$sID') " .
 			getEntitiesRestrictRequest('AND', 'glpi_softwarelicenses', '', '', true) .
-		"ORDER BY " . $order . " LIMIT $start," . $_SESSION['glpilist_limit'];
+		"ORDER BY " . $sort." ".$order . " LIMIT $start," . $_SESSION['glpilist_limit'];
 		
 	initNavigateListItems(SOFTWARELICENSE_TYPE,$LANG["help"][31] ." = ". $software->fields["name"]);
 
@@ -359,22 +366,22 @@ function showLicenses($sID) {
 				echo "<form method='post' name='massiveactionlicense_form$rand' id='massiveactionlicense_form$rand' action=\"".$CFG_GLPI["root_doc"]."/front/massiveaction.php\">";
 			}
 
-			$sort_img="<img src=\"".$CFG_GLPI["root_doc"]."/pics/puce-up.png\" alt='' title=''>";
+			$sort_img="<img src=\"" . $CFG_GLPI["root_doc"] . "/pics/" . ($order == "DESC" ? "puce-down.png" : "puce-up.png") . "\" alt='' title=''>";
 			echo "<table class='tab_cadrehov'><tr>";
 			echo "<th>&nbsp;</th>";
 				
-			echo "<th>".($order=="name"?$sort_img:"")."<a href='javascript:reloadTab(\"order=name&start=0\");'>".$LANG["common"][16]."</a></th>";
+			echo "<th>".($sort=="name"?$sort_img:"")."<a href='javascript:reloadTab(\"sort=name&order=".($order=="ASC"?"DESC":"ASC")."&start=0\");'>".$LANG["common"][16]."</a></th>";
 			
 			if ($software->isRecursive()) {
 				// Ereg to search entity in string for match default order
-				echo "<th>".(strstr($order,"entity")?$sort_img:"")."<a href='javascript:reloadTab(\"order=entity&start=0\");'>".$LANG["entity"][0]."</a></th>";
+				echo "<th>".(strstr($order,"entity")?$sort_img:"")."<a href='javascript:reloadTab(\"sort=entity&order=".($order=="ASC"?"DESC":"ASC")."&start=0\");'>".$LANG["entity"][0]."</a></th>";
 			}
-			echo "<th>".($order=="serial"?$sort_img:"")."<a href='javascript:reloadTab(\"order=serial&start=0\");'>".$LANG["common"][19]."</a></th>";
+			echo "<th>".($sort=="serial"?$sort_img:"")."<a href='javascript:reloadTab(\"sort=serial&order=".($order=="ASC"?"DESC":"ASC")."&start=0\");'>".$LANG["common"][19]."</a></th>";
 			echo "<th>".$LANG["tracking"][29]."</th>";
-			echo "<th>".($order=="typename"?$sort_img:"")."<a href='javascript:reloadTab(\"order=typename&start=0\");'>".$LANG["common"][17]."</a></th>";
-			echo "<th>".($order=="buyname"?$sort_img:"")."<a href='javascript:reloadTab(\"order=buyname&start=0\");'>".$LANG["software"][1]."</a></th>";
-			echo "<th>".($order=="usename"?$sort_img:"")."<a href='javascript:reloadTab(\"order=usename&start=0\");'>".$LANG["software"][2]."</a></th>";
-			echo "<th>".($order=="expire"?$sort_img:"")."<a href='javascript:reloadTab(\"order=expire&start=0\");'>".$LANG["software"][32]."</a></th>";
+			echo "<th>".($sort=="typename"?$sort_img:"")."<a href='javascript:reloadTab(\"sort=typename&order=".($order=="ASC"?"DESC":"ASC")."&start=0\");'>".$LANG["common"][17]."</a></th>";
+			echo "<th>".($sort=="buyname"?$sort_img:"")."<a href='javascript:reloadTab(\"sort=buyname&order=".($order=="ASC"?"DESC":"ASC")."&start=0\");'>".$LANG["software"][1]."</a></th>";
+			echo "<th>".($sort=="usename"?$sort_img:"")."<a href='javascript:reloadTab(\"sort=usename&order=".($order=="ASC"?"DESC":"ASC")."&start=0\");'>".$LANG["software"][2]."</a></th>";
+			echo "<th>".($sort=="expire"?$sort_img:"")."<a href='javascript:reloadTab(\"sort=expire&order=".($order=="ASC"?"DESC":"ASC")."&start=0\");'>".$LANG["software"][32]."</a></th>";
 			echo "<th>".$LANG["help"][25]."</th>"; // "Computer" rather than "Affected To computer" ($LANG["software"][50] is too long) ?? 
 			//echo "<th>".$LANG["financial"][3]."</th>";
 			echo "</tr>";
@@ -605,10 +612,17 @@ function showInstallations($searchID, $crit="sID") {
 	} else {
 		$start = 0;
 	}
+	
+	if (isset($_REQUEST["sort"]) && !empty($_REQUEST["sort"])) {
+		$sort = $_REQUEST["sort"];
+	} else {
+		$sort = "name";
+	}
+	
 	if (isset($_REQUEST["order"]) && !empty($_REQUEST["order"])) {
 		$order = $_REQUEST["order"];
 	} else {
-		$order = "entity,compname";
+		$order = "ASC";
 	}
 
 	// Total Number of events
@@ -654,8 +668,8 @@ function showInstallations($searchID, $crit="sID") {
 		WHERE (glpi_softwareversions.$crit = '$searchID') " .
 			getEntitiesRestrictRequest(' AND', 'glpi_computers') .
 			" AND glpi_computers.deleted=0 AND glpi_computers.is_template=0 " .
-		"ORDER BY " . $order . " LIMIT $start," . $_SESSION['glpilist_limit'];
-	
+		"ORDER BY " . $sort." ".$order . " LIMIT $start," . $_SESSION['glpilist_limit'];
+	echo $query;
 	$rand=mt_rand();
 
 
@@ -672,7 +686,7 @@ function showInstallations($searchID, $crit="sID") {
 			}
 			initNavigateListItems(COMPUTER_TYPE,$title);
 			
-			$sort_img="<img src=\"".$CFG_GLPI["root_doc"]."/pics/puce-up.png\" alt='' title=''>";
+			$sort_img="<img src=\"" . $CFG_GLPI["root_doc"] . "/pics/" . ($order == "DESC" ? "puce-down.png" : "puce-up.png") . "\" alt='' title=''>";
 			if ($canedit) {
 				echo "<form name='softinstall".$rand."' id='softinstall".$rand."' method='post' action=\"".$CFG_GLPI["root_doc"]."/front/software.licenses.php\">";
 				echo "<input type='hidden' name='sID' value='$sID'>";
@@ -683,18 +697,18 @@ function showInstallations($searchID, $crit="sID") {
 			}
 			
 			if ($crit=="sID") {
-				echo "<th>".($order=="vername"?$sort_img:"")."<a href='javascript:reloadTab(\"order=vername&start=0\");'>".$LANG["software"][5]."</a></th>";
+				echo "<th>".($sort=="vername"?$sort_img:"")."<a href='javascript:reloadTab(\"sort=vername&order=".($order=="ASC"?"DESC":"ASC")."&start=0\");'>".$LANG["software"][5]."</a></th>";
 			}
-			echo "<th>".($order=="compname"?$sort_img:"")."<a href='javascript:reloadTab(\"order=compname&start=0\");'>".$LANG["common"][16]."</a></th>";
+			echo "<th>".($sort=="compname"?$sort_img:"")."<a href='javascript:reloadTab(\"sort=compname&order=".($order=="ASC"?"DESC":"ASC")."&start=0\");'>".$LANG["common"][16]."</a></th>";
 			if ($showEntity) {
-				echo "<th>".(strstr($order,"entity")?$sort_img:"")."<a href='javascript:reloadTab(\"order=entity,compname&start=0\");'>".$LANG["entity"][0]."</a></th>";
+				echo "<th>".(strstr($sort,"entity")?$sort_img:"")."<a href='javascript:reloadTab(\"sort=entity,compname&order=".($order=="ASC"?"DESC":"ASC")."&start=0\");'>".$LANG["entity"][0]."</a></th>";
 			}
-			echo "<th>".($order=="serial"?$sort_img:"")."<a href='javascript:reloadTab(\"order=serial&start=0\");'>".$LANG["common"][19]."</a></th>";
-			echo "<th>".($order=="otherserial"?$sort_img:"")."<a href='javascript:reloadTab(\"order=otherserial&start=0\");'>".$LANG["common"][20]."</a></th>";
-			echo "<th>".(strstr($order,"location")?$sort_img:"")."<a href='javascript:reloadTab(\"order=location,compname&start=0\");'>".$LANG["common"][15]."</a></th>";
-			echo "<th>".(strstr($order,"groupe")?$sort_img:"")."<a href='javascript:reloadTab(\"order=groupe,compname&start=0\");'>".$LANG["common"][35]."</a></th>";
-			echo "<th>".(strstr($order,"username")?$sort_img:"")."<a href='javascript:reloadTab(\"order=username,compname&start=0\");'>".$LANG["common"][34]."</a></th>";
-			echo "<th>".($order=="lname"?$sort_img:"")."<a href='javascript:reloadTab(\"order=lname&start=0\");'>".$LANG["software"][11]."</a></th>";
+			echo "<th>".($sort=="serial"?$sort_img:"")."<a href='javascript:reloadTab(\"sort=serial&order=".($order=="ASC"?"DESC":"ASC")."&start=0\");'>".$LANG["common"][19]."</a></th>";
+			echo "<th>".($sort=="otherserial"?$sort_img:"")."<a href='javascript:reloadTab(\"sort=otherserial&order=".($order=="ASC"?"DESC":"ASC")."&start=0\");'>".$LANG["common"][20]."</a></th>";
+			echo "<th>".(strstr($sort,"location")?$sort_img:"")."<a href='javascript:reloadTab(\"sort=location,compname&order=".($order=="ASC"?"DESC":"ASC")."&start=0\");'>".$LANG["common"][15]."</a></th>";
+			echo "<th>".(strstr($sort,"groupe")?$sort_img:"")."<a href='javascript:reloadTab(\"sort=groupe,compname&order=".($order=="ASC"?"DESC":"ASC")."&start=0\");'>".$LANG["common"][35]."</a></th>";
+			echo "<th>".(strstr($sort,"username")?$sort_img:"")."<a href='javascript:reloadTab(\"sort=username,compname&order=".($order=="ASC"?"DESC":"ASC")."&start=0\");'>".$LANG["common"][34]."</a></th>";
+			echo "<th>".($sort=="lname"?$sort_img:"")."<a href='javascript:reloadTab(\"sort=lname&order=".($order=="ASC"?"DESC":"ASC")."&start=0\");'>".$LANG["software"][11]."</a></th>";
 			echo "</tr>\n";
 
 			do {
