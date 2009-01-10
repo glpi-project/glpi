@@ -82,9 +82,8 @@ class SoftwareCategoriesRule extends Rule {
 	 * Constructor
 	**/
 	function __construct() {
-		$this->table = "glpi_rules_descriptions";
-		$this->type = -1;
-		$this->rule_type = RULE_SOFTWARE_CATEGORY;
+		parent::__construct(RULE_SOFTWARE_CATEGORY);
+
 		$this->right="rule_softwarecategories";
 		$this->can_sort=true;
 	}

@@ -222,9 +222,7 @@ class OcsAffectEntityRule extends Rule {
          * @param $ocs_server_id ID of the OCS server
 	**/
 	function __construct($ocs_server_id=-1) {
-		$this->table = "glpi_rules_descriptions";
-		$this->type = -1;
-		$this->rule_type = RULE_OCS_AFFECT_COMPUTER;
+		parent::__construct(RULE_OCS_AFFECT_COMPUTER);
 		$this->right="rule_ocs";
 		$this->can_sort=true;
 	}
@@ -281,7 +279,11 @@ class OcsAffectEntityRule extends Rule {
 
 		if (!empty ($rules)) {
 
+			initNavigateListItems(RULE_TYPE,$LANG["entity"][0]."=".getDropdownName("glpi_entities",$ID),$this->rule_type);
+			
 			foreach ($rules as $rule) {
+				addToNavigateListItems(RULE_TYPE,$rule->fields["ID"],$this->rule_type);
+				
 				echo "<tr class='tab_bg_1'>";
 
 				if ($canedit) {

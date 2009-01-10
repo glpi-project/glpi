@@ -398,9 +398,7 @@ class DictionnarySoftwareRule extends RuleCached {
 	 * Constructor
 	**/
 	function __construct() {
-		$this->table = "glpi_rules_descriptions";
-		$this->type = -1;
-		$this->rule_type = RULE_DICTIONNARY_SOFTWARE;
+		parent::__construct(RULE_DICTIONNARY_SOFTWARE);
 		$this->right = "rule_dictionnary_software";
 		$this->can_sort = true;
 	}

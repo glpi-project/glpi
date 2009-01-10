@@ -234,7 +234,7 @@ class Entity extends CommonDBTM{
 
 		echo "<td>".$LANG["entity"][13].":		</td>";
 		echo "<td>";
-		autocompletionTextField("tag","glpi_entities_data","tag",$entdata->fields["tag"],50);		
+		autocompletionTextField("tag","glpi_entities_data","tag",$entdata->fields["tag"],40);		
 		echo "</td></tr>";
 
 		if ($canedit) {
