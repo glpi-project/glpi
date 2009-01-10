@@ -1101,9 +1101,12 @@ class Rule extends CommonDBTM{
 
 	/**
 	 * Display the dropdown of the criterias for the rule
+	 * 
+	 * @return the initial value (first non used)
 	 */
 	function dropdownCriterias(){
 		global $CFG_GLPI;
+
 		$items=array();
 		foreach ($this->getCriterias() as $ID => $crit){
 			$items[$ID]=$crit['name'];
@@ -1121,22 +1124,29 @@ class Rule extends CommonDBTM{
 
 	/**
 	 * Display the dropdown of the actions for the rule
+	 * 
 	 * @param $used already used actions
+	 * 
+	 * @return the initial value (first non used)
 	 */
 	function dropdownActions($used=array()){
 		global $CFG_GLPI;
 
 		$items=array();
+		$value='';
 		foreach ($this->getFilteredActions() as $ID => $act){
 			$items[$ID]=$act['name'];
+			if (empty($value) && !isset($used[$ID])) $value=$ID;
 		}
 
-		$rand=dropdownArrayValues("field", $items,'',$used);
+		$rand=dropdownArrayValues("field", $items, $value, $used);
 		$params=array('field'=>'__VALUE__',
 				'sub_type'=>$this->sub_type
 		);
 		ajaxUpdateItemOnSelectEvent("dropdown_field$rand","action_span",$CFG_GLPI["root_doc"]."/ajax/ruleaction.php",$params,false);
 //		ajaxUpdateItem("action_span",$CFG_GLPI["root_doc"]."/ajax/ruleaction.php",$params,false,"dropdown_field$rand");
+
+		return $value;
 	}
 
 	/**
