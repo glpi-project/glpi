@@ -300,13 +300,7 @@ td { }
 	width:950px;
 }
 
-.tab_cadre_fixe_navigate{
-	margin: 0 auto;
-	z-index:1;
-	text-align: left;
-	font-size: 11px;
-	width:950px;
-}
+
 
 .tab_cadrehov, .tab_cadrehov_pointer{
 	margin: 0 auto;
@@ -716,6 +710,24 @@ a.icon_nav_move:hover img {
 
 
 /* ################--------------- Onglet  ---------------#################### */
+
+
+div#menu_navigate{
+	margin: 0 auto;
+	z-index:1;
+	font-size: 10px;
+	width:950px;
+}
+
+div#menu_navigate li {
+margin-left:2px;
+display:block;
+float:left;   
+padding:2px;
+}
+
+
+
 
 #barre_onglets {
 
