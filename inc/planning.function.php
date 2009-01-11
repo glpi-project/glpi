@@ -239,8 +239,6 @@ function showPlanning($who,$who_group,$when,$type){
 		$interv=array_merge($data["items"],$interv);
 	}
 
-	ksort($interv);
-	
 	// Display Items
 	$tmp=explode(":",$CFG_GLPI["planning_begin"]);
 	$hour_begin=$tmp[0];
@@ -672,7 +670,6 @@ function showPlanningCentral($who){
 		$interv=array_merge($data["items"],$interv);
 	}
 
-
 	ksort($interv);
 
 	echo "<table class='tab_cadrehov'><tr><th><a href='".$CFG_GLPI["root_doc"]."/front/planning.php'>".$LANG["planning"][15]."</a></th></tr>";
@@ -724,26 +721,27 @@ function showPlanningCentral($who){
 
 
 /**
- *  Generate ical body file
+ *  Generate ical file content
  *  
  * @param $who
- * @return $debutcal $event $fincal
+ * @return icalendar string
  **/      
 function generateIcal($who){
-
 	global  $DB,$CFG_GLPI, $LANG;
 
 	include_once (GLPI_ROOT . "/lib/icalcreator/iCalcreator.class.php");
 	$v = new vcalendar(); 
 
 	if ( ! empty ( $CFG_GLPI["version"]) ) {
-		$v->setConfig( 'unique_id', "GLPI-Planning-".$CFG_GLPI["version"] ); 
+		$v->setConfig( 'unique_id', "GLPI-Planning-".trim($CFG_GLPI["version"]) ); 
 	} else {
 		$v->setConfig( 'unique_id', "GLPI-Planning-UnknownVersion" ); 
 	}
 	$v->setProperty( "method", "PUBLISH" );
 	$v->setProperty( "version", "2.0" );
-	$v->setProperty( "x-wr-calname", getUserName($who) );
+	$v->setProperty( "x-wr-calname", "GLPI - ".getUserName($who) );
+
+	$interv=array();
 
 	// export job
 	$query="SELECT * FROM glpi_tracking_planning WHERE id_assign=$who";
@@ -752,7 +750,6 @@ function generateIcal($who){
 
 	$job=new Job();
 	$fup=new Followup();
-	$interv=array();
 	$i=0;
 	if ($DB->numrows($result)>0)
 		while ($data=$DB->fetch_array($result)){
@@ -806,10 +803,6 @@ function generateIcal($who){
 			$i++;
 		}
 
-	$debutcal="";
-	$event="";
-	$fincal="";
-	
 	//
 	$begin=time()-MONTH_TIMESTAMP*12;
 	$end=time()+MONTH_TIMESTAMP*12;
@@ -824,15 +817,11 @@ function generateIcal($who){
 	}
 
 
-
-	ksort($interv);
-
 	if (count($interv)>0) {
 
 		
 
 		foreach ($interv as $key => $val){
-
 
 			$vevent = new vevent(); //initiate EVENT 
 			
@@ -841,7 +830,11 @@ function generateIcal($who){
 			}else if (isset($val["id_reminder"])){
 				$vevent->setProperty("uid","Event#".$val["id_reminder"]);
 			} else {
-				$vevent->setProperty("uid","UID:Plugin#".$key);
+//				if (isset($val['ID'])){
+//					$vevent->setProperty("uid","UID:Plugin#".$val['ID']);
+//				} else {
+					$vevent->setProperty("uid","UID:Plugin#".$key);
+//				}
 			}	
 			$vevent->setProperty( "dstamp" , $val["begin"] ); 
 			$vevent->setProperty( "dtstart" , $val["begin"] ); 
@@ -855,17 +848,19 @@ function generateIcal($who){
 
 			if (isset($val["content"])){
 				$vevent->setProperty( "description" , html_clean($val["content"]) ); 
+			} else if (isset($val["name"])){
+				$vevent->setProperty( "description" , $val["name"] ); 
 			}
 
-			//todo recup la cat�orie d'intervention.
-			//$event .= "CATEGORIES:".$val["categorie"]."\n";
 			if(isset($val["id_tracking"])){
 				$vevent->setProperty( "url", $CFG_GLPI["url_base"]."/index.php?redirect=tracking_".$val["id_tracking"] );
-			}
+			} 
 			$v->setComponent( $vevent );
 		}
 	}
+	$v->sort();
 	$v->parse();
+
 	return  $v->createCalendar(); 
 }
 
