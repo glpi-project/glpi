@@ -743,7 +743,7 @@ function showJobVeryShort($ID) {
 	}
 }
 
-function addFormTracking ($device_type=0,$ID=0, $target, $author, $group=0, $assign=0, $assign_group=0, $name='',$contents='',$category=0, $priority=3,$request_type=1,$hour=0,$minute=0,$entity_restrict) {
+function addFormTracking ($device_type=0,$ID=0, $target, $author, $group=0, $assign=0, $assign_group=0, $name='',$contents='',$category=0, $priority=3,$request_type=1,$hour=0,$minute=0,$entity_restrict,$status=1) {
 	// Prints a nice form to add jobs
 
 	global $CFG_GLPI, $LANG,$CFG_GLPI,$REFERER,$DB;
@@ -759,7 +759,7 @@ function addFormTracking ($device_type=0,$ID=0, $target, $author, $group=0, $ass
 	echo "<table class='tab_cadre_fixe'><tr><th colspan='4'>".$LANG["job"][13];
 	if (haveRight("comment_all_ticket","1")){
 		echo "&nbsp;&nbsp;";
-		dropdownStatus("status",1);		
+		dropdownStatus("status",$status);		
 	}
 
 	echo '<br>';
@@ -786,13 +786,17 @@ function addFormTracking ($device_type=0,$ID=0, $target, $author, $group=0, $ass
 		$values = getUserEntities($author, true);
 		$count = count($values);
 		
+		//If entity is not in the list of user's entities, then display as default value the first value of the user's entites list
 		$first_entity = (in_array($entity_restrict,$values)?$entity_restrict:$values[0]);
+		
+		//If user have access to more than one entity, then display a combobox
 		if ($count > 1)
 			$rand = dropdownValue("glpi_entities", "FK_entities", $first_entity, 1, $values,'',array(),1);
 			
 		echo "</tr>";
 	} 
 
+	//If multi-entity environment, display the name of the entity on which the ticket will be created
 	if (isMultiEntitiesMode()){
 		echo "<tr class='tab_bg_2' align='center'>";
 		echo "<th colspan='4'>";
@@ -807,7 +811,7 @@ function addFormTracking ($device_type=0,$ID=0, $target, $author, $group=0, $ass
 		echo "<tr class='tab_bg_2' align='center'>";
 		echo "<td>".$LANG["common"][35].":</td>";
 		echo "<td align='center' colspan='3'><span id='span_group'>";
-		dropdownValue("glpi_groups","FK_group",$group,1,$entity_restrict);
+		dropdownValue("glpi_groups","FK_group",(isGroupVisibleInEntity($group,$entity_restrict)?$group:''),1,$entity_restrict);
 		echo "</span></td></tr>";
 	} 
 
@@ -872,7 +876,7 @@ function addFormTracking ($device_type=0,$ID=0, $target, $author, $group=0, $ass
 			echo $LANG["job"][6].": ";
 			dropdownUsers("assign",$assign,"own_ticket",0,1,$entity_restrict);
 			echo "<br>".$LANG["common"][35].": <span id='span_group_assign'>";
-			dropdownValue("glpi_groups", "assign_group", $assign_group,1,$entity_restrict);
+			dropdownValue("glpi_groups", "assign_group", (isGroupVisibleInEntity($assign_group,$entity_restrict)?$assign_group:''),1,$entity_restrict);
 			echo "</span>";
 		} else if (haveRight("steal_ticket","1") || haveRight("own_ticket","1")) {
 			echo $LANG["job"][6].":";

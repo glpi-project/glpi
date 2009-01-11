@@ -71,7 +71,7 @@ function dropdown($table,$myname,$display_comments=1,$entity_restrict=-1,$used=a
  * @return nothing (display the select box)
  *
  */
-function dropdownValue($table,$myname,$value='',$display_comments=1,$entity_restrict=-1,$update_item="",$used=array(),$helpdesk_ajax=0) {
+function dropdownValue($table,$myname,$value='',$display_comments=1,$entity_restrict=-1,$update_item="",$used=array(),$auto_submit=0) {
 
 	global $DB,$CFG_GLPI,$LANG;
 
@@ -135,7 +135,7 @@ function dropdownValue($table,$myname,$value='',$display_comments=1,$entity_rest
 			'entity_restrict'=>$entity_restrict,
 			'update_item'=>$update_item,
 			'used'=>$used,
-			'helpdesk_ajax'=>$helpdesk_ajax
+			'auto_submit'=>$auto_submit
 			);
 			
 	$default="<select name='$myname' id='dropdown_".$myname.$rand."'><option value='$value'>$name</option></select>\n";

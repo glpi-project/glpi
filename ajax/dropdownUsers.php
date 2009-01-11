@@ -83,7 +83,7 @@ asort($users);
 
 echo "<select id='dropdown_".$_POST["myname"].$_POST["rand"]."' name=\"".$_POST['myname']."\"";
 if (isset($_POST["helpdesk_ajax"]))
-	echo " onChange='javascript:document.form_ticket.submit()'";
+	echo " onChange='submit()'";
 echo ">";
 
 if ($_POST['searchText']!=$CFG_GLPI["ajax_wildcard"] && $DB->numrows($result)==$CFG_GLPI["dropdown_max"])

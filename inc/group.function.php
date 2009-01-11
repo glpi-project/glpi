@@ -204,17 +204,22 @@ function deleteUserGroup($ID){
 	$result = $DB->query($query);
 }
 
-/* // NOT_USED
-function searchGroupID($name,$FK_entities){
+/**
+ * Indicates if a group is present in an entity
+ * @param group the group ID to look for
+ * @param entity_request the entity to search into
+ * @return true if group was found, false is not 
+ */
+function isGroupVisibleInEntity($group,$entity_restrict)
+{
 	global $DB;
-	$query ="SELECT ID from glpi_groups where name='$name' AND FK_entities='$FK_entities'";
+	$query = "SELECT ID FROM glpi_groups WHERE ID=$group".getEntitiesRestrictRequest(" AND","glpi_groups","FK_entities",$entity_restrict,true);
 	$result = $DB->query($query);
-	if ($DB->numrows($result) > 0){
-		$data= $DB->fetch_array($result);
-		$groupID = $data['ID'];
-		return $groupID;
-	} 
-	else return -1;
+	$found = false;
+
+	if ($DB->numrows($result) ==1)
+		return true;
+	else
+		return false;	
 }
-*/
 ?>
