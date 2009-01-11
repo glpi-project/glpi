@@ -45,6 +45,121 @@ if (!defined('GLPI_ROOT')){
  * Show the planning
  *
  *  
+ * @param $type planning type : can be day, week, month
+ * @param $date working date
+ * @param $usertype type of planning to view : can be user or group
+ * @param $uID ID of the user
+ * @param $gID ID of the group
+ * @return Display form
+ *
+ **/
+function showFormPlanning($type,$date,$usertype,$uID,$gID){
+	global $LANG, $CFG_GLPI;
+
+	switch ($type){
+		case "month":
+			$split=explode("-",$date);
+			$year_next=$split[0];
+			$month_next=$split[1]+1;
+			if ($month_next>12) {
+				$year_next++;
+				$month_next-=12;
+			}
+		
+			$year_prev=$split[0];
+			$month_prev=$split[1]-1;
+		
+			if ($month_prev==0) {
+				$year_prev--;
+				$month_prev+=12;
+			}
+			$next=$year_next."-".sprintf("%02u",$month_next)."-".$split[2];
+			$prev=$year_prev."-".sprintf("%02u",$month_prev)."-".$split[2];
+		
+		break;
+		default :
+			$time=strtotime($date);
+		
+			$step=0;
+			switch ($type){
+				case "week":
+					$step=WEEK_TIMESTAMP;
+				break;
+				case "day":
+					$step=DAY_TIMESTAMP;
+				break;
+			}
+		
+			$next=$time+$step+10;
+			$prev=$time-$step;
+		
+			$next=strftime("%Y-%m-%d",$next);
+			$prev=strftime("%Y-%m-%d",$prev);
+		break;
+	}
+
+	echo "<div align='center'><form method=\"get\" name=\"form\" action=\"planning.php\">";
+	echo "<table class='tab_cadre'><tr class='tab_bg_2'>";
+	echo "<td>";
+	echo "<a href=\"".$_SERVER['PHP_SELF']."?type=".$type."&amp;uID=".$uID."&amp;date=$prev\"><img src=\"".$CFG_GLPI["root_doc"]."/pics/left.png\" alt='".$LANG["buttons"][12]."' title='".$LANG["buttons"][12]."'></a>";
+	echo "</td>";
+	echo "<td>";
+	if (haveRight("show_all_planning","1")){
+		echo "<input type='radio' id='radio_user' name='usertype' value='user' ".($usertype=="user"?"checked":"").">";
+		$rand_user=dropdownUsers("uID",$uID,"interface",1,1,$_SESSION["glpiactive_entity"]);
+		echo "<hr>";
+		echo "<input type='radio' id='radio_group' name='usertype' value='group' ".($usertype=="group"?"checked":"").">";
+		$rand_group=dropdownValue("glpi_groups","gID",$gID,1,$_SESSION["glpiactive_entity"]);
+		echo "<hr>";
+		echo "<input type='radio' id='radio_user_group' name='usertype' value='user_group' ".($usertype=="user_group"?"checked":"").">";
+		echo $LANG["joblist"][3];
+	
+	
+		echo "<script type='text/javascript' >\n";
+		echo "Ext.onReady(function() {";
+		echo "	Ext.get('dropdown_uID".$rand_user."').on('change',function() {window.document.getElementById('radio_user').checked=true;});";
+		echo "	Ext.get('dropdown_gID".$rand_group."').on('change',function() {window.document.getElementById('radio_group').checked=true;});";
+		echo "});";
+		echo "</script>\n";
+	} else if (haveRight("show_group_planning","1")){
+		echo "<select name='usertype'>";
+		echo "<option value='user' ".($usertype=='user'?'selected':'').">".$LANG["joblist"][1]."</option>";
+		echo "<option value='user_group' ".($usertype=='user_group'?'selected':'').">".$LANG["joblist"][3]."</option>";
+		echo "</select>";
+	}
+	echo "</td>";
+echo "<td align='right'>";
+echo $LANG["common"][27].":</td><td>";
+showDateFormItem("date",$date,false);
+
+echo "</td>";
+echo "<td><select name='type'>";
+echo "<option value='day' ".($type=="day"?" selected ":"").">".$LANG["planning"][5]."</option>";
+echo "<option value='week' ".($type=="week"?" selected ":"").">".$LANG["planning"][6]."</option>";
+echo "<option value='month' ".($type=="month"?" selected ":"").">".$LANG["planning"][14]."</option>";
+echo "</select></td>";
+echo "<td rowspan='2' align='center'><input type=\"submit\" class='button' name=\"submit\" Value=\"". $LANG["buttons"][7] ."\" /></td>";
+echo "<td>";
+
+echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/planning.ical.php?uID=".$uID."\"><span style='font-size:10px'>-".$LANG["planning"][12]."</span></a>";
+echo "<br>";
+// Todo recup l'url complete de glpi proprement, ? nouveau champs table config ?
+echo "<a href=\"webcal://".$_SERVER['HTTP_HOST'].$CFG_GLPI["root_doc"]."/front/planning.ical.php?uID=".$uID."\"><span style='font-size:10px'>-".$LANG["planning"][13]."</span></a>";
+
+echo "</td>";	
+echo "<td>";
+echo "<a href=\"".$_SERVER['PHP_SELF']."?type=".$type."&amp;uID=".$uID."&amp;date=$next\"><img src=\"".$CFG_GLPI["root_doc"]."/pics/right.png\" alt='".$LANG["buttons"][11]."' title='".$LANG["buttons"][11]."'></a>";
+echo "</td>";
+
+echo "</tr>";
+echo "</table></form></div>";
+
+}
+
+/**
+ * Show the planning
+ *
+ *  
  * @param $who ID of the user (0 = undefined)
  * @param $who_group ID of the group of users (0 = undefined)
  * @param $when Date of the planning to display
