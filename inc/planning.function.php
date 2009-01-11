@@ -740,11 +740,17 @@ function generateIcal($who){
 	$v->setProperty( "method", "PUBLISH" );
 	$v->setProperty( "version", "2.0" );
 	$v->setProperty( "x-wr-calname", "GLPI - ".getUserName($who) );
-
+	$v->setProperty( "calscale", "GREGORIAN" ); 
 	$interv=array();
 
+
+	$begin=time()-MONTH_TIMESTAMP*12;
+	$end=time()+MONTH_TIMESTAMP*12;
+	$begin=date("Y-m-d H:i:s",$begin); 
+	$end=date("Y-m-d H:i:s",$end); 
+
 	// export job
-	$query="SELECT * FROM glpi_tracking_planning WHERE id_assign=$who";
+	$query="SELECT * FROM glpi_tracking_planning WHERE id_assign=$who AND end > '$begin' AND begin < '$end' ";
 
 	$result=$DB->query($query);
 
@@ -781,7 +787,7 @@ function generateIcal($who){
 
 	// reminder 
 
-	$query2="SELECT * FROM glpi_reminder WHERE rv='1' AND (FK_users='$who' OR private=0)";
+	$query2="SELECT * FROM glpi_reminder WHERE rv='1' AND (FK_users='$who' OR private=0) AND end > '$begin' AND begin < '$end'";
 
 	$result2=$DB->query($query2);
 
@@ -803,12 +809,6 @@ function generateIcal($who){
 			$i++;
 		}
 
-	//
-	$begin=time()-MONTH_TIMESTAMP*12;
-	$end=time()+MONTH_TIMESTAMP*12;
-	$begin=date("Y-m-d H:i:s",$begin); 
-	$end=date("Y-m-d H:i:s",$end); 
-	
 
 	$data=doHookFunction("planning_populate",array("begin"=>$begin,"end"=>$end,"who"=>$who));
 
@@ -830,11 +830,7 @@ function generateIcal($who){
 			}else if (isset($val["id_reminder"])){
 				$vevent->setProperty("uid","Event#".$val["id_reminder"]);
 			} else {
-//				if (isset($val['ID'])){
-//					$vevent->setProperty("uid","UID:Plugin#".$val['ID']);
-//				} else {
-					$vevent->setProperty("uid","UID:Plugin#".$key);
-//				}
+				$vevent->setProperty("uid","Plugin#".$key);
 			}	
 			$vevent->setProperty( "dstamp" , $val["begin"] ); 
 			$vevent->setProperty( "dtstart" , $val["begin"] ); 
@@ -855,6 +851,7 @@ function generateIcal($who){
 			if(isset($val["id_tracking"])){
 				$vevent->setProperty( "url", $CFG_GLPI["url_base"]."/index.php?redirect=tracking_".$val["id_tracking"] );
 			} 
+
 			$v->setComponent( $vevent );
 		}
 	}
