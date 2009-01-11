@@ -1065,7 +1065,7 @@ function formatNumber($number,$edit=false,$forcedecimal=-1) {
  * @return nothing
  */
 function sendFile($file,$filename){
-	global $DB;
+	global $DB,$LANG;
 
 	// Test securite : document in DOC_DIR
 	$tmpfile=str_replace(GLPI_DOC_DIR,"",$file);
@@ -1128,8 +1128,13 @@ function sendFile($file,$filename){
 			// Pour que les \x00 ne devienne pas \0
 			$mc=get_magic_quotes_runtime();
 			if ($mc) @set_magic_quotes_runtime(0); 
+			$fsize=filesize($file);
 
-			echo fread($f, filesize($file));
+			if ($fsize){
+				echo fread($f, filesize($file));
+			} else {
+				echo $LANG["document"][47];
+			}
 
 			if ($mc) @set_magic_quotes_runtime($mc); 
 		}
