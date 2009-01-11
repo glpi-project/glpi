@@ -57,10 +57,10 @@ if ($_GET["type"]!="month"){
 	$step=0;
 	switch ($_GET["type"]){
 		case "week":
-			$step=7*60*60*24;
+			$step=WEEK_TIMESTAMP;
 		break;
 		case "day":
-			$step=60*60*24;
+			$step=DAY_TIMESTAMP;
 		break;
 	}
 
