@@ -85,8 +85,8 @@ if ($_GET["type"]!="month"){
 		$year_prev--;
 		$month_prev+=12;
 	}
-	$next=$year_next."-".$month_next."-".$split[2];
-	$prev=$year_prev."-".$month_prev."-".$split[2];
+	$next=$year_next."-".sprintf("%02u",$month_next)."-".$split[2];
+	$prev=$year_prev."-".sprintf("%02u",$month_prev)."-".$split[2];
 
 }
 
