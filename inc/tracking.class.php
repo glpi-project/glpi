@@ -539,9 +539,7 @@ class Job extends CommonDBTM{
 
 	function prepareInputForAdd($input) {
 		global $CFG_GLPI,$LANG;
-
-//		print_r($input);
-//		exit();
+		
 		// Check mandatory
 		$mandatory_ok=true;
 

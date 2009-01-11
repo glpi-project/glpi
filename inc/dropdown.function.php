@@ -71,7 +71,7 @@ function dropdown($table,$myname,$display_comments=1,$entity_restrict=-1,$used=a
  * @return nothing (display the select box)
  *
  */
-function dropdownValue($table,$myname,$value='',$display_comments=1,$entity_restrict=-1,$update_item="",$used=array()) {
+function dropdownValue($table,$myname,$value='',$display_comments=1,$entity_restrict=-1,$update_item="",$used=array(),$helpdesk_ajax=0) {
 
 	global $DB,$CFG_GLPI,$LANG;
 
@@ -134,8 +134,10 @@ function dropdownValue($table,$myname,$value='',$display_comments=1,$entity_rest
 			'rand'=>$rand,
 			'entity_restrict'=>$entity_restrict,
 			'update_item'=>$update_item,
-			'used'=>$used
+			'used'=>$used,
+			'helpdesk_ajax'=>$helpdesk_ajax
 			);
+			
 	$default="<select name='$myname' id='dropdown_".$myname.$rand."'><option value='$value'>$name</option></select>\n";
 	ajaxDropdown($use_ajax,"/ajax/dropdownValue.php",$params,$default,$rand);
 
@@ -449,7 +451,8 @@ function dropdownUsers($myname,$value,$right,$all=0,$display_comments=1,$entity_
 	$user=getUserName($value,2);
 	$default_display="";
 
-	$default_display="<select id='dropdown_".$myname.$rand."' name='$myname'><option value='$value'>".substr($user["name"],0,$_SESSION["glpidropdown_limit"])."</option></select>\n";
+	$default_display="<select id='dropdown_".$myname.$rand."' name='$myname'>";
+	$default_display.="<option value='$value'>".substr($user["name"],0,$_SESSION["glpidropdown_limit"])."</option></select>\n";
 
 	$view_users=(haveRight("user","r"));
 

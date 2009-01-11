@@ -50,6 +50,15 @@ if (isset($_POST["_my_items"])&&!empty($_POST["_my_items"])){
 	}
 }
 
+if (!isset($_POST["add"]))
+	$post_ticket = false;
+else
+	$post_ticket = true;	
+
+if (!isset($_POST["FK_entities"]))
+	$entity_restrict = $_SESSION["glpiactive_entity"];
+else
+	$entity_restrict = $_POST["FK_entities"];	
 
 if (isset($_GET["device_type"])) $device_type=$_GET["device_type"];
 else if (isset($_SESSION["helpdeskSaved"]["device_type"])) $device_type=$_SESSION["helpdeskSaved"]["device_type"];
@@ -59,39 +68,60 @@ if (isset($_GET["computer"])) $computer=$_GET["computer"];
 else if (isset($_SESSION["helpdeskSaved"]["computer"])) $computer=$_SESSION["helpdeskSaved"]["computer"];
 else $computer=0;
 
-if (!isset($_SESSION["helpdeskSaved"]["user"])) $user=$_SESSION["glpiID"];
+if (!$post_ticket && isset($_POST["author"]))
+	$user=$_POST["author"];
+elseif (!isset($_SESSION["helpdeskSaved"]["user"])) $user=$_SESSION["glpiID"];
 else $user=$_SESSION["helpdeskSaved"]["user"];
 
-if (!isset($_SESSION["helpdeskSaved"]["FK_group"])) $group=0;
+if (!$post_ticket && isset($_POST["FK_group"]))
+	$group=$_POST["FK_group"];
+elseif (!isset($_SESSION["helpdeskSaved"]["FK_group"])) $group=0;
 else $group=$_SESSION["helpdeskSaved"]["FK_group"];
 
-if (!isset($_SESSION["helpdeskSaved"]["assign"])) $assign=0;
+if (!$post_ticket && isset($_POST["assign"]))
+	$assign=$_POST["assign"];	
+elseif (!isset($_SESSION["helpdeskSaved"]["assign"])) $assign=0;
 else $assign=$_SESSION["helpdeskSaved"]["assign"];
 
-if (!isset($_SESSION["helpdeskSaved"]["assign_group"])) $assign_group=0;
+if (!$post_ticket && isset($_POST["assign_group"]))
+	$assign_group=$_POST["assign_group"];
+elseif (!isset($_SESSION["helpdeskSaved"]["assign_group"])) $assign_group=0;
 else $assign_group=$_SESSION["helpdeskSaved"]["assign_group"];
 
-if (!isset($_SESSION["helpdeskSaved"]["minute"])) $minute=0;
+if (!$post_ticket && isset($_POST["minute"]))
+	$minute=$_POST["minute"];
+elseif (!isset($_SESSION["helpdeskSaved"]["minute"])) $minute=0;
 else $minute=$_SESSION["helpdeskSaved"]["minute"];
 
-if (!isset($_SESSION["helpdeskSaved"]["hour"])) $hour=0;
+if (!$post_ticket && isset($_POST["hour"]))
+	$hour=$_POST["hour"];
+elseif (!isset($_SESSION["helpdeskSaved"]["hour"])) $hour=0;
 else $hour=$_SESSION["helpdeskSaved"]["hour"];
 
-if (!isset($_SESSION["helpdeskSaved"]["category"])) $category=0;
+if (!$post_ticket && isset($_POST["category"]))
+	$category=$_POST["category"];
+elseif (!isset($_SESSION["helpdeskSaved"]["category"])) $category=0;
 else $category=$_SESSION["helpdeskSaved"]["category"];
 
-if (!isset($_SESSION["helpdeskSaved"]["priority"])) $priority=3;
+if (!$post_ticket && isset($_POST["priority"]))
+	$priority=$_POST["priority"];
+elseif (!isset($_SESSION["helpdeskSaved"]["priority"])) $priority=3;
 else $priority=$_SESSION["helpdeskSaved"]["priority"];
 
-if (!isset($_SESSION["helpdeskSaved"]["request_type"])) $request_type=1;
+if (!$post_ticket && isset($_POST["request_type"]))
+	$request_type=$_POST["request_type"];
+elseif (!isset($_SESSION["helpdeskSaved"]["request_type"])) $request_type=1;
 else $request_type=$_SESSION["helpdeskSaved"]["request_type"];
 
-if (!isset($_SESSION["helpdeskSaved"]["name"])) $name='';
+if (!$post_ticket && isset($_POST["name"]))
+	$name=$_POST["name"];
+elseif (!isset($_SESSION["helpdeskSaved"]["name"])) $name='';
 else $name=stripslashes($_SESSION["helpdeskSaved"]["name"]);
 
-if (!isset($_SESSION["helpdeskSaved"]["contents"])) $contents='';
+if (!$post_ticket && isset($_POST["contents"]))
+	$contents=$_POST["contents"];
+elseif (!isset($_SESSION["helpdeskSaved"]["contents"])) $contents='';
 else $contents=stripslashes($_SESSION["helpdeskSaved"]["contents"]);
-
 
 if (isset($_SESSION["helpdeskSaved"])&&count($_GET)==0){
 	unset($_SESSION["helpdeskSaved"]);
@@ -99,19 +129,14 @@ if (isset($_SESSION["helpdeskSaved"])&&count($_GET)==0){
 
 $track=new Job();
 
-if (isset($_POST["priority"])){
+if (isset($_POST["priority"]) && $post_ticket){
 	if ($newID=$track->add($_POST)){
 		logEvent($newID, "tracking", 4, "tracking", $_SESSION["glpiname"]." ".$LANG["log"][20]." $newID.");
 	}
 	glpi_header($_SERVER['HTTP_REFERER']);
-
-
 } else {
-	addFormTracking($device_type,$computer,$_SERVER['PHP_SELF'],$user,$group,$assign,$assign_group,$name,$contents,$category,$priority,$request_type,$hour,$minute);
+	addFormTracking($device_type,$computer,$_SERVER['PHP_SELF'],$user,$group,$assign,$assign_group,$name,$contents,$category,$priority,$request_type,$hour,$minute,$entity_restrict);
 }
 
-
 commonFooter();
-
-
 ?>
