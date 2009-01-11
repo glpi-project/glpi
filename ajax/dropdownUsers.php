@@ -81,8 +81,10 @@ if ($DB->numrows($result)) {
 
 asort($users);
 
-
-echo "<select id='dropdown_".$_POST["myname"].$_POST["rand"]."' name=\"".$_POST['myname']."\">";
+echo "<select id='dropdown_".$_POST["myname"].$_POST["rand"]."' name=\"".$_POST['myname']."\"";
+if (isset($_POST["helpdesk_ajax"]))
+	echo " onChange='javascript:document.form_ticket.submit()'";
+echo ">";
 
 if ($_POST['searchText']!=$CFG_GLPI["ajax_wildcard"] && $DB->numrows($result)==$CFG_GLPI["dropdown_max"])
 echo "<option value=\"0\">--".$LANG["common"][11]."--</option>";
@@ -108,32 +110,30 @@ if (count($users)) {
 }
 echo "</select>";
 
-if (isset($_POST["comments"])&&$_POST["comments"]){
-	$paramscomments=array('value'=>'__VALUE__','table'=>"glpi_users");
-	if (isset($_POST['update_link'])){
-		$paramscomments['withlink']="comments_link_".$_POST["myname"].$_POST["rand"];
+if (!isMultiEntitiesMode())
+{
+	if (isset($_POST["comments"])&&$_POST["comments"]){
+		$paramscomments=array('value'=>'__VALUE__','table'=>"glpi_users");
+		if (isset($_POST['update_link'])){
+			$paramscomments['withlink']="comments_link_".$_POST["myname"].$_POST["rand"];
+		}
+		ajaxUpdateItemOnSelectEvent("dropdown_".$_POST["myname"].$_POST["rand"],"comments_".$_POST["myname"].$_POST["rand"],$CFG_GLPI["root_doc"]."/ajax/comments.php",$paramscomments,false);
 	}
-	ajaxUpdateItemOnSelectEvent("dropdown_".$_POST["myname"].$_POST["rand"],"comments_".$_POST["myname"].$_POST["rand"],$CFG_GLPI["root_doc"]."/ajax/comments.php",$paramscomments,false);
 }
 
 // Manage updates others dropdown for helpdesk
 if (isset($_POST["helpdesk_ajax"])&&$_POST["helpdesk_ajax"]){
-
+	if (!isMultiEntitiesMode())
+	{
 		$paramscomments=array('userID'=>'__VALUE__',
 				'entity_restrict'=>$_POST["entity_restrict"],
 				'device_type'=>0,
 				'author_field'=>"dropdown_author".$_POST["rand"]
 		);
-	
-	if (isMultiEntitiesMode())
-		ajaxUpdateItemOnSelectEvent("dropdown_author".$_POST["rand"],"list_entities",$CFG_GLPI["root_doc"]."/ajax/dropdownUsersEntities.php",$paramscomments,false);
-	else
+
 		ajaxUpdateItemOnSelectEvent("dropdown_author".$_POST["rand"],"tracking_my_devices",$CFG_GLPI["root_doc"]."/ajax/updateTrackingDeviceType.php",$paramscomments,false);
-
-	$paramscomments=array('value'=>'__VALUE__'
-	);
-	ajaxUpdateItemOnSelectEvent("dropdown_author".$_POST["rand"],"uemail_result",$CFG_GLPI["root_doc"]."/ajax/uemailUpdate.php",$paramscomments,false);
+		$paramscomments=array('value'=>'__VALUE__');
+		ajaxUpdateItemOnSelectEvent("dropdown_author".$_POST["rand"],"uemail_result",$CFG_GLPI["root_doc"]."/ajax/uemailUpdate.php",$paramscomments,false);
+	}
 }
-
-
 ?>
