@@ -118,8 +118,8 @@ if (!isset($_POST["limit"])) $_POST["limit"]=$_SESSION["glpidropdown_limit"];
 		$result = $DB->query($query);
 
 		echo "<select id='dropdown_".$_POST["myname"].$_POST["rand"]."' name=\"".$_POST['myname']."\" size='1'"; 
-		if ($_POST['table'] == "glpi_entities" &&$_POST["helpdesk_ajax"]==1)
-			echo " onChange='javascript:document.form_ticket.submit()'";
+		if ($_POST['table'] == "glpi_entities" &&$_POST["auto_submit"]==1)
+			echo " onChange='submit()'";
 		echo ">";
 
 		if ($_POST['searchText']!=$CFG_GLPI["ajax_wildcard"]&&$DB->numrows($result)==$NBMAX)

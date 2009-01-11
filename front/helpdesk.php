@@ -60,6 +60,7 @@ if (!isset($_POST["FK_entities"]))
 else
 	$entity_restrict = $_POST["FK_entities"];	
 
+
 if (isset($_GET["device_type"])) $device_type=$_GET["device_type"];
 else if (isset($_SESSION["helpdeskSaved"]["device_type"])) $device_type=$_SESSION["helpdeskSaved"]["device_type"];
 else $device_type=0;
@@ -67,6 +68,11 @@ else $device_type=0;
 if (isset($_GET["computer"])) $computer=$_GET["computer"];
 else if (isset($_SESSION["helpdeskSaved"]["computer"])) $computer=$_SESSION["helpdeskSaved"]["computer"];
 else $computer=0;
+
+if (!$post_ticket && isset($_POST["status"]))
+	$status=$_POST["status"];
+elseif (!isset($_SESSION["helpdeskSaved"]["status"])) $status=1;
+else $status=$_SESSION["helpdeskSaved"]["status"];
 
 if (!$post_ticket && isset($_POST["author"]))
 	$user=$_POST["author"];
@@ -135,7 +141,7 @@ if (isset($_POST["priority"]) && $post_ticket){
 	}
 	glpi_header($_SERVER['HTTP_REFERER']);
 } else {
-	addFormTracking($device_type,$computer,$_SERVER['PHP_SELF'],$user,$group,$assign,$assign_group,$name,$contents,$category,$priority,$request_type,$hour,$minute,$entity_restrict);
+	addFormTracking($device_type,$computer,$_SERVER['PHP_SELF'],$user,$group,$assign,$assign_group,$name,$contents,$category,$priority,$request_type,$hour,$minute,$entity_restrict,$status);
 }
 
 commonFooter();
