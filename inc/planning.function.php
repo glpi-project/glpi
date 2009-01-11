@@ -721,85 +721,6 @@ function showPlanningCentral($who){
 //*******************************************************************************************************************************
 
 
-/**
- * Generate URL for ICAL
- *
- *  
- * @param $who 
- * @return Nothing (display function)
- *
- **/      
-function urlIcal ($who) {
-
-	global  $CFG_GLPI, $LANG;
-
-	echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/planning.ical.php?uID=$who\"><span style='font-size:10px'>-".$LANG["planning"][12]."</span></a>";
-	echo "<br>";
-
-	// Todo recup l'url complete de glpi proprement, ? nouveau champs table config ?
-	echo "<a href=\"webcal://".$_SERVER['HTTP_HOST'].$CFG_GLPI["root_doc"]."/front/planning.ical.php?uID=$who\"><span style='font-size:10px'>-".$LANG["planning"][13]."</span></a>";
-
-}
-
-
-/**
- * Convert date mysql to timestamp
- * 
- * @param $date  date in mysql format
- * @return timestamp
- *
- **/      
-function date_mysql_to_timestamp($date){
-	if (!preg_match('/(\d\d\d\d)-(\d\d)-(\d\d) (\d\d):(\d\d):(\d\d)/', $date, $r)){
-		return false;
-	}
-
-	return mktime($r[4], $r[5], $r[6], $r[2], $r[3], $r[1] );
-}
-
-
-/**
- * Convert timestamp to date in ical format
- * 
- * @param $date  timestamp
- * @return date in ical format
- *
- **/      
-function date_ical($date) {
-	return date("Ymd\THis", date_mysql_to_timestamp($date));
-}
-
-
-
-/**
- *
- * Generate header for ical file
- * 
- * @param $name 
- * @return $debut_cal  
- *
- **/      
-function debutIcal($name) {
-
-	global  $CFG_GLPI, $LANG;
-
-	$debut_cal = "BEGIN:VCALENDAR\n";
-	$debut_cal .= "VERSION:2.0\n";
-
-	if ( ! empty ( $CFG_GLPI["version"]) ) {
-		$debut_cal.= "PRODID:-//GLPI-Planning-".$CFG_GLPI["version"]."\n";
-	} else {
-		$debut_cal.= "PRODID:-//GLPI-Planning-UnknownVersion\n";
-	}
-
-	$debut_cal.= "METHOD:PUBLISH\n"; // Outlook want's this in the header, why I don't know...
-	$debut_cal .= "X-WR-CALNAME ;VALUE=TEXT:$name\n";
-
-	//   $debut_cal .= "X-WR-RELCALID:n";
-	//   $debut_cal .= "X-WR-TIMEZONE:US/Pacific\n";
-	$debut_cal .= "CALSCALE:GREGORIAN\n\n";
-	return (string) $debut_cal;
-}
 
 
 /**
@@ -811,6 +732,18 @@ function debutIcal($name) {
 function generateIcal($who){
 
 	global  $DB,$CFG_GLPI, $LANG;
+
+	include_once (GLPI_ROOT . "/lib/icalcreator/iCalcreator.class.php");
+	$v = new vcalendar(); 
+
+	if ( ! empty ( $CFG_GLPI["version"]) ) {
+		$v->setConfig( 'unique_id', "GLPI-Planning-".$CFG_GLPI["version"] ); 
+	} else {
+		$v->setConfig( 'unique_id', "GLPI-Planning-UnknownVersion" ); 
+	}
+	$v->setProperty( "method", "PUBLISH" );
+	$v->setProperty( "version", "2.0" );
+	$v->setProperty( "x-wr-calname", getUserName($who) );
 
 	// export job
 	$query="SELECT * FROM glpi_tracking_planning WHERE id_assign=$who";
@@ -896,49 +829,44 @@ function generateIcal($who){
 
 	if (count($interv)>0) {
 
-		$debutcal=debutIcal(getUserName($who));
+		
 
 		foreach ($interv as $key => $val){
 
-			$event .= "BEGIN:VEVENT\n";
 
+			$vevent = new vevent(); //initiate EVENT 
+			
 			if(isset($val["id_tracking"])){
-				$event.="UID:Job#".$val["id_tracking"]."\n";
+				$vevent->setProperty("uid","Job#".$val["id_tracking"]);
 			}else if (isset($val["id_reminder"])){
-				$event.="UID:Event#".$val["id_reminder"]."\n";
+				$vevent->setProperty("uid","Event#".$val["id_reminder"]);
 			} else {
-				$event.="UID:Plugin#".$key."\n";
+				$vevent->setProperty("uid","UID:Plugin#".$key);
 			}	
-
-			$event.="DTSTAMP:".date_ical($val["begin"])."\n";
-
-			$event .= "DTSTART:".date_ical($val["begin"])."\n";
-
-			$event .= "DTEND:".date_ical($val["end"])."\n";
-
+			$vevent->setProperty( "dstamp" , $val["begin"] ); 
+			$vevent->setProperty( "dtstart" , $val["begin"] ); 
+			$vevent->setProperty( "dtend" , $val["end"] ); 
+			
 			if(isset($val["id_tracking"])){
-				$event .= "SUMMARY:".$LANG["planning"][8]." # ".$val["id_tracking"]." ".$LANG["common"][1]." # ".$val["device"]."\n";
+				$vevent->setProperty( "summary" , $LANG["planning"][8]." # ".$val["id_tracking"]." ".$LANG["common"][1]." # ".$val["device"] ); 
 			}else if (isset($val["name"])){
-				$event .= "SUMMARY:".$val["name"]."\n";
+				$vevent->setProperty( "summary" , $val["name"] ); 
 			}
 
 			if (isset($val["content"])){
-				$event .= "DESCRIPTION:".$val["content"]."\n";
+				$vevent->setProperty( "description" , html_clean($val["content"]) ); 
 			}
 
 			//todo recup la cat�orie d'intervention.
 			//$event .= "CATEGORIES:".$val["categorie"]."\n";
 			if(isset($val["id_tracking"])){
-				$event .= "URL:".$CFG_GLPI["url_base"]."/index.php?redirect=tracking_".$val["id_tracking"]."\n";
+				$vevent->setProperty( "url", $CFG_GLPI["url_base"]."/index.php?redirect=tracking_".$val["id_tracking"] );
 			}
-
-			$event .= "END:VEVENT\n\n";
+			$v->setComponent( $vevent );
 		}
-		$fincal= "END:VCALENDAR\n";	
 	}
-
-	return $debutcal.$event.$fincal;
-
+	$v->parse();
+	return  $v->createCalendar(); 
 }
 
 

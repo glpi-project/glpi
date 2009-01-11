@@ -28,6 +28,7 @@
  --------------------------------------------------------------------------
  */
 
+
 // ----------------------------------------------------------------------
 // Original Author of file:
 // Purpose of file:
@@ -131,7 +132,12 @@ echo "<option value='month' ".($_GET["type"]=="month"?" selected ":"").">".$LANG
 echo "</select></td>";
 echo "<td rowspan='2' align='center'><input type=\"submit\" class='button' name=\"submit\" Value=\"". $LANG["buttons"][7] ."\" /></td>";
 echo "<td>";
-urlIcal ($_GET['uID']);
+
+echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/planning.ical.php?uID=".$_GET['uID']."\"><span style='font-size:10px'>-".$LANG["planning"][12]."</span></a>";
+echo "<br>";
+// Todo recup l'url complete de glpi proprement, ? nouveau champs table config ?
+echo "<a href=\"webcal://".$_SERVER['HTTP_HOST'].$CFG_GLPI["root_doc"]."/front/planning.ical.php?uID=".$_GET['uID']."\"><span style='font-size:10px'>-".$LANG["planning"][13]."</span></a>";
+
 echo "</td>";	
 echo "<td>";
 echo "<a href=\"".$_SERVER['PHP_SELF']."?type=".$_GET["type"]."&amp;uID=".$_GET["uID"]."&amp;date=$next\"><img src=\"".$CFG_GLPI["root_doc"]."/pics/right.png\" alt='".$LANG["buttons"][11]."' title='".$LANG["buttons"][11]."'></a>";
