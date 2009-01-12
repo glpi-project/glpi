@@ -289,9 +289,11 @@ function showConnections($target,$ID,$withtemplate='') {
  **/
 function showComputerDisks($ID,$withtemplate='') {
 	global $DB, $CFG_GLPI, $LANG;
-	if (!haveRight("computer", "r"))
+	
+	$comp = new Computer();
+	if (!$comp->getFromDB($ID) || ! $comp->can($ID, "r"))
 		return false;
-	$canedit = haveRight("computer", "w");
+	$canedit = $comp->can($ID, "w");
 
 	echo "<div class='center'>";
 	
@@ -311,6 +313,10 @@ function showComputerDisks($ID,$withtemplate='') {
 			echo "<th>".$LANG["computers"][3]."</th>";
 			echo "<th>".$LANG["computers"][2]."</th>";
 			echo "</tr>";
+
+			initNavigateListItems(COMPUTERDISK_TYPE, $LANG["help"][25]." = ".
+				(empty($comp->field['name']) ? "($ID)" : $comp->field['name']));
+
 			while ($data=$DB->fetch_assoc($result)){
 				echo "<tr class='tab_bg_2'>";
 				if ($canedit){
@@ -323,6 +329,8 @@ function showComputerDisks($ID,$withtemplate='') {
 				echo "<td>".$data['fsname']."</td>";
 				echo "<td>".formatNumber($data['totalsize'], false, 0)."&nbsp;".$LANG["common"][82]."</td>";
 				echo "<td>".formatNumber($data['freesize'], false, 0)."&nbsp;".$LANG["common"][82]."</td>";
+
+				addToNavigateListItems(COMPUTERDISK_TYPE,$data['ID']);
 			}
 			//echo "</table>";
 		} else {

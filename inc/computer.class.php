@@ -802,6 +802,8 @@ class ComputerDisk extends CommonDBTM {
 			$this->getEmpty();
 		} 
 
+		$this->showTabs($ID, '', $_SESSION['glpi_tab']);
+		
 		echo "<form name='form' method='post' action=\"$target\" enctype=\"multipart/form-data\">";
 
 		echo "<div class='center'><table class='tab_cadre_fixe'>";
@@ -871,10 +873,20 @@ class ComputerDisk extends CommonDBTM {
 		}
 		echo "</table></div></form>";
 				
+		echo "<div id='tabcontent'></div>";
+		echo "<script type='text/javascript'>loadDefaultTab();</script>";
+
 		return true;
 
 	}
 
+	function defineTabs($ID,$withtemplate){
+		global $LANG,$CFG_GLPI;
+
+		$ong[1]=$LANG["title"][26];
+
+		return $ong;
+	}
 }
 
 
