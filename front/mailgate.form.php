@@ -35,7 +35,7 @@
 
 
 
-$NEEDED_ITEMS=array("mailgate","setup","tracking","rulesengine","rule.tracking","user","mailing","document","group","enterprise","networking");
+$NEEDED_ITEMS=array("mailgate","setup","tracking","rulesengine","rule.tracking","user","mailing","document","group","enterprise","computer","printer","networking","peripheral","monitor","software","infocom","phone","planning");
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
