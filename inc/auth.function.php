@@ -97,6 +97,7 @@ function haveTypeRight($type, $right) {
 		case GENERAL_TYPE :
 			return true;
 			break;
+		case COMPUTERDISK_TYPE:
 		case COMPUTER_TYPE :
 			return haveRight("computer", $right);
 			break;
