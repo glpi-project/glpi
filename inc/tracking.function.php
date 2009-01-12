@@ -811,7 +811,13 @@ function addFormTracking ($device_type=0,$ID=0, $target, $author, $group=0, $ass
 		echo "<tr class='tab_bg_2' align='center'>";
 		echo "<td>".$LANG["common"][35].":</td>";
 		echo "<td align='center' colspan='3'><span id='span_group'>";
-		dropdownValue("glpi_groups","FK_group",(isGroupVisibleInEntity($group,$entity_restrict)?$group:''),1,$entity_restrict);
+		
+		//Look for group in the entities. If it's not present, then do not use default combobox value
+		if (isGroupVisibleInEntity($group,$entity_restrict))
+			$group_visible = $group;
+		else
+			$group_visible = '';
+		dropdownValue("glpi_groups","FK_group",$group_visible,1,$entity_restrict);
 		echo "</span></td></tr>";
 	} 
 
@@ -872,15 +878,29 @@ function addFormTracking ($device_type=0,$ID=0, $target, $author, $group=0, $ass
 		echo "<tr class='tab_bg_2' align='center'><td>".$LANG["buttons"][3].":</td>";
 		echo "<td colspan='3'>";
 
+		//Try to assign the ticket to an user. Look if it's visible in the entites
+		$assign_entities = getUserEntities($assign,true);
+		if (in_array($entity_restrict,$assign_entities))
+			$assign_tech = $assign;
+		else
+			$assign_tech = 0;	
+
 		if (haveRight("assign_ticket","1")){
 			echo $LANG["job"][6].": ";
-			dropdownUsers("assign",$assign,"own_ticket",0,1,$entity_restrict);
+			dropdownUsers("assign",$assign_tech,"own_ticket",0,1,$entity_restrict,0);
 			echo "<br>".$LANG["common"][35].": <span id='span_group_assign'>";
-			dropdownValue("glpi_groups", "assign_group", (isGroupVisibleInEntity($assign_group,$entity_restrict)?$assign_group:''),1,$entity_restrict);
+
+			//Look for group in the entities. If it's not present, then do not use default combobox value
+			if (isGroupVisibleInEntity($assign_group,$entity_restrict))
+				$group_visible = $assign_group;
+			else
+				$group_visible = '';
+
+			dropdownValue("glpi_groups", "assign_group", $group_visible,1,$entity_restrict);
 			echo "</span>";
 		} else if (haveRight("steal_ticket","1") || haveRight("own_ticket","1")) {
 			echo $LANG["job"][6].":";
-			dropdownUsers("assign",$assign,"ID",0,1,$entity_restrict);
+			dropdownUsers("assign",$assign_tech,"ID",0,1,$entity_restrict,0);
 		}
 		echo "</td></tr>";
 
