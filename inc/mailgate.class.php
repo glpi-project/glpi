@@ -229,7 +229,7 @@ class MailCollect {
 				$result=imap_fetchheader($this->marubox,$i);
 
 				// Is a mail responding of an already existgin ticket ?
-				if (array_key_exists('tracking',$tkt) ) {
+				if (isset($tkt['tracking']) ) {
 					// Deletion of message with sucess
 					if (false === is_array($result)){
 						$fup=new Followup();
@@ -277,7 +277,7 @@ class MailCollect {
 		global $DB,$LANG,$CFG_GLPI;
 	
 		$head=$this->getHeaders($i);  // Get Header Info Return Array Of Headers **Key Are (subject,to,toOth,toNameOth,from,fromName)
-	
+
 		$tkt= array ();
 
 		// max size = 0 : no import attachments
@@ -320,17 +320,35 @@ class MailCollect {
 		if ($this->addtobody) {
 			$tkt['contents'] .= $this->addtobody;
 		}
-		$exists = false;
-		if ( preg_match('/\[GLPI #(\d+)\]/',$head['subject'],$match) ) {
-			// it's a reply to a previous ticket
-			$ID = (int)$match[1];
-			$tkt['tracking'] = $ID;
-			$job=new Job();
-			$job->getfromDB($ID);
-			// the job exists and the author is the same
-			if ( $job->getFromDB($ID) && ($job->fields["author"] == $tkt['author']) ) {
 		
-				$exists = true;
+		//// Detect if it is a mail reply
+		$glpi_message_match="/GLPI-([0-9]+)\.[0-9]+\.[0-9]+@\w*/";
+		// See In-Reply-To field
+		if (isset($head['in_reply_to'])){
+			if (preg_match($glpi_message_match,$head['in_reply_to'],$match)){
+				$tkt['tracking'] = (int)$match[1];
+			}
+		}
+		// See in References
+		if (!isset($tkt['tracking']) && isset($head['references'])){
+			if (preg_match($glpi_message_match,$head['references'],$match)){
+				$tkt['tracking'] = (int)$match[1];
+			}
+		}
+
+		// See in title
+		if (!isset($tkt['tracking']) && preg_match('/\[GLPI #(\d+)\]/',$head['subject'],$match)){
+				$tkt['tracking']=(int)$match[1];
+		}
+		// Found ticket link
+		if ( isset($tkt['tracking']) ) {
+			// it's a reply to a previous ticket
+			$job=new Job();
+
+			// Check if tracking exists and author exists in GLPI
+			/// TODO check if author have right to add a followup to the ticket
+			if ( $job->getFromDB($tkt['tracking']) &&  $tkt['author'] > 0) {
+		
 				$content=explode("\n",$tkt['contents']);
 				$tkt['contents']="";
 				$first_comment=true;
@@ -360,11 +378,12 @@ class MailCollect {
 				foreach($to_keep as $ID ){
 					$tkt['contents'].=$content[$ID]."\n";
 				}
+			} else {
+				unset($tkt['tracking']);
 			}
 		}
 
-                if ( ! $exists ) {
-			unset($tkt['tracking']);
+                if ( ! isset($tkt['tracking']) ) {
 			// Mail followup
 			$tkt['uemail']=$head['from'];
 			$tkt['emailupdates']=1;
@@ -384,7 +403,7 @@ class MailCollect {
 		$tkt['contents']=clean_cross_side_scripting_deep(html_clean($tkt['contents']));
 
 		$tkt=addslashes_deep($tkt);
-		
+
 		return $tkt;
 	}
 
@@ -457,7 +476,7 @@ class MailCollect {
 	 ///Connect To the Mail Box
 	function connect()
 	{
-		$this->marubox=imap_open($this->server,$this->username,$this->password, 1);
+		$this->marubox=@imap_open($this->server,$this->username,$this->password, 1);
 	}
 
 	/**
@@ -491,18 +510,27 @@ class MailCollect {
 	function getHeaders($mid) // Get Header info
 	{	
 		$mail_header=imap_header($this->marubox,$mid);
+		
 		$sender=$mail_header->from[0];
 		$sender_replyto=$mail_header->reply_to[0];
 		if(strtolower($sender->mailbox)!='mailer-daemon' && strtolower($sender->mailbox)!='postmaster')
 		{
 			$mail_details=array(
 					'from'=>strtolower($sender->mailbox).'@'.$sender->host,
+					'subject'=>$mail_header->subject,
+					'references' => $mail_header->references,
+
 					//'fromName'=>$sender->personal,
 					//'toOth'=>strtolower($sender_replyto->mailbox).'@'.$sender_replyto->host,
 					//'toNameOth'=>$sender_replyto->personal,
-					'subject'=>$mail_header->subject,
 					//'to'=>strtolower($mail_header->toaddress)
 				);
+			if (isset($mail_header->references)){
+					$mail_details['references'] = $mail_header->references;
+			}
+			if (isset($mail_header->in_reply_to)){
+					$mail_details['in_reply_to'] = $mail_header->in_reply_to;
+			}
 		}
 		return $mail_details;
 	}

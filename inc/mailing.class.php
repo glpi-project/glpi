@@ -633,7 +633,8 @@ class Mailing
 							$mmail->AltBody=$altbodys[$lang];
 
 							$mmail->AddAddress($email, "");
-
+							$mmail->MessageID="GLPI-".$this->job->fields["ID"].".".time().".".rand()."@".$_SERVER['HTTP_HOST'];
+		
 							if(!$mmail->Send()){
 								$senderror=true;
 								addMessageAfterRedirect($messageerror."<br>".$mmail->ErrorInfo);
