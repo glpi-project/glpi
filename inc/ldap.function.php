@@ -463,11 +463,10 @@ function getAllLdapUsers($id_auth, $sync = 0,$myfilter='',$order='DESC') {
 				}		
 		}
 		}
-		
 	//If add, do the difference between ldap users and glpi users
 	if (!$sync)
 	{
-		$diff = 	array_diff_key($ldap_users,$glpi_users);
+		$diff = 	array_diff_ukey($ldap_users,$glpi_users,'strcasecmp');
 		$list = array();
 		
 		foreach ($diff as $user)
