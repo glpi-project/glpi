@@ -1553,6 +1553,16 @@ function addOrderBy($type,$ID,$order,$key=0){
 		return " ORDER BY ITEM_$key $order ";
 	}
 
+
+	// Preformat items
+	if (isset($SEARCH_OPTION[$type][$ID]["datatype"])){
+		switch ($SEARCH_OPTION[$type][$ID]["datatype"]){
+			case "date_delay":
+				return " ORDER BY ADDDATE($table.".$SEARCH_OPTION[$type][$ID]["datafields"][1].", INTERVAL $table.".$SEARCH_OPTION[$type][$ID]["datafields"][2]." MONTH) $order ";
+			break;
+		}
+	}
+
 	// Plugin can override core definition for its type
 	if ($type>1000){
 		if (isset($PLUGIN_HOOKS['plugin_types'][$type])){
@@ -1619,13 +1629,6 @@ function addOrderBy($type,$ID,$order,$key=0){
 				} 
 			}
 
-			if (isset($SEARCH_OPTION[$type][$ID]["datatype"])){
-				switch ($SEARCH_OPTION[$type][$ID]["datatype"]){
-					case "date_delay":
-						return " ORDER BY ADDDATE($table.".$SEARCH_OPTION[$type][$ID]["datafields"][1].", INTERVAL $table.".$SEARCH_OPTION[$type][$ID]["datafields"][2]." MONTH) $order ";
-					break;
-				}
-			}
 			return " ORDER BY $table.$field $order ";
 		break;
 	}
@@ -1717,6 +1720,16 @@ function addSelect ($type,$ID,$num,$meta=0,$meta_type=0){
 		if ($LINK_ID_TABLE[$meta_type]!=$table)
 			$addtable="_".$meta_type;
 	}
+
+	// Preformat items
+	if (isset($SEARCH_OPTION[$type][$ID]["datatype"])){
+		switch ($SEARCH_OPTION[$type][$ID]["datatype"]){
+			case "date_delay":
+				return $table.$addtable.".".$SEARCH_OPTION[$type][$ID]["datafields"][1]." AS ".$NAME."_$num, ".$table.$addtable.".".$SEARCH_OPTION[$type][$ID]["datafields"][2]." AS ".$NAME."_".$num."_2, ";
+			break;
+		}
+	}
+
 
 	// Plugin can override core definition for its type
 	if ($type>1000){
@@ -1917,14 +1930,6 @@ function addSelect ($type,$ID,$num,$meta=0,$meta_type=0){
 				} 
 			}
 
-			if (isset($SEARCH_OPTION[$type][$ID]["datatype"])){
-				switch ($SEARCH_OPTION[$type][$ID]["datatype"]){
-					case "date_delay":
-						return $table.$addtable.".".$SEARCH_OPTION[$type][$ID]["datafields"][1]." AS ".$NAME."_$num, ".$table.$addtable.".".$SEARCH_OPTION[$type][$ID]["datafields"][2]." AS ".$NAME."_".$num."_2, ";
-					break;
-				}
-			}
-
 			// Default case
 			if ($meta){
 				return " GROUP_CONCAT( DISTINCT ".$table.$addtable.".".$field." SEPARATOR '$$$$') AS ".$NAME."_$num, ";
@@ -1996,6 +2001,50 @@ function addWhere($link,$nott,$type,$ID,$val,$meta=0){
 
 	$SEARCH=makeTextSearch($val,$nott);
 
+	// Preformat items
+	if (isset($SEARCH_OPTION[$type][$ID]["datatype"])){
+		switch ($SEARCH_OPTION[$type][$ID]["datatype"]){
+			case "date":
+			case "datetime":
+			case "date_delay":
+				$date_computation=$table.".".$field;
+				$interval_search=" MONTH ";
+
+			
+				if ($SEARCH_OPTION[$type][$ID]["datatype"]=="date_delay"){
+					$date_computation="ADDDATE($table.".$SEARCH_OPTION[$type][$ID]["datafields"][1].", INTERVAL $table.".$SEARCH_OPTION[$type][$ID]["datafields"][2]." MONTH)"; 
+				}
+				
+				$search=array("/\&lt;/","/\&gt;/");
+				$replace=array("<",">");
+				$val=preg_replace($search,$replace,$val);
+				if (preg_match("/([<>=])(.*)/",$val,$regs)){
+					if (is_numeric($regs[2])){
+						return $link." NOW() ".$regs[1]." ADDDATE($date_computation, INTERVAL ".$regs[2]." $interval_search) ";	
+					} else {
+						// Reformat date if needed
+						$regs[2]=preg_replace('@(\d{1,2})(-|/)(\d{1,2})(-|/)(\d{4})@','\5-\3-\1',$regs[2]);
+						if (preg_match('/[0-9]{2,4}-[0-9]{1,2}-[0-9]{1,2}/',$regs[2])){
+							return $link." $date_computation ".$regs[1]." '".$regs[2]."'";
+						} else {
+							return "";
+						}
+					}
+				} else { // standard search
+					// Date format modification if needed
+					$val=preg_replace('@(\d{1,2})(-|/)(\d{1,2})(-|/)(\d{4})@','\5-\3-\1',$val);
+					$SEARCH=makeTextSearch($val,$nott);
+					$ADD="";	
+					if ($nott) {
+						$ADD=" OR $date_computation IS NULL";
+					}
+					return $link." ( $date_computation $SEARCH $ADD )";
+				}
+			break;
+		}
+	}
+
+
 	// Plugin can override core definition for its type
 	if ($type>1000){
 		if (isset($PLUGIN_HOOKS['plugin_types'][$type])){
@@ -2008,7 +2057,6 @@ function addWhere($link,$nott,$type,$ID,$val,$meta=0){
 			} 
 		} 
 	}
-
 
 	switch ($inittable.".".$field){
 		case "glpi_users.name" :
@@ -2199,49 +2247,6 @@ function addWhere($link,$nott,$type,$ID,$val,$meta=0){
 				} 
 			}
 
-
-			if (isset($SEARCH_OPTION[$type][$ID]["datatype"])){
-				switch ($SEARCH_OPTION[$type][$ID]["datatype"]){
-					case "date":
-					case "datetime":
-					case "date_delay":
-						$date_computation=$table.".".$field;
-						$interval_search=" MONTH ";
-
-					
-						if ($SEARCH_OPTION[$type][$ID]["datatype"]=="date_delay"){
-							$date_computation="ADDDATE($table.".$SEARCH_OPTION[$type][$ID]["datafields"][1].", INTERVAL $table.".$SEARCH_OPTION[$type][$ID]["datafields"][2]." MONTH)"; 
-						}
-						
-						$search=array("/\&lt;/","/\&gt;/");
-						$replace=array("<",">");
-						$val=preg_replace($search,$replace,$val);
-						if (preg_match("/([<>=])(.*)/",$val,$regs)){
-							if (is_numeric($regs[2])){
-								return $link." NOW() ".$regs[1]." ADDDATE($date_computation, INTERVAL ".$regs[2]." $interval_search) ";	
-							} else {
-								// Reformat date if needed
-								$regs[2]=preg_replace('@(\d{1,2})(-|/)(\d{1,2})(-|/)(\d{4})@','\5-\3-\1',$regs[2]);
-								if (preg_match('/[0-9]{2,4}-[0-9]{1,2}-[0-9]{1,2}/',$regs[2])){
-									return $link." $date_computation ".$regs[1]." '".$regs[2]."'";
-								} else {
-									return "";
-								}
-							}
-						} else { // standard search
-							// Date format modification if needed
-							$val=preg_replace('@(\d{1,2})(-|/)(\d{1,2})(-|/)(\d{4})@','\5-\3-\1',$val);
-							$SEARCH=makeTextSearch($val,$nott);
-							$ADD="";	
-							if ($nott) {
-								$ADD=" OR $date_computation IS NULL";
-							}
-							return $link." ( $date_computation $SEARCH $ADD )";
-						}
-					break;
-				}
-			}
-
 			// Default case 
 			$ADD="";	
 			if (($nott&&$val!="NULL")||$val=='^$') {
@@ -2326,6 +2331,50 @@ function giveItem ($type,$ID,$data,$num){
 	$table=$SEARCH_OPTION[$type][$ID]["table"];
 	$field=$SEARCH_OPTION[$type][$ID]["field"];
 	$linkfield=$SEARCH_OPTION[$type][$ID]["linkfield"];
+
+	// Preformat items
+	if (isset($SEARCH_OPTION[$type][$ID]["datatype"])){
+		switch ($SEARCH_OPTION[$type][$ID]["datatype"]){
+			case "text":
+				return nl2br($data["ITEM_$num"]);
+				break;
+			case "date":
+				return convDate($data["ITEM_$num"]);
+				break;
+			case "datetime":
+				return convDateTime($data["ITEM_$num"]);
+				break;
+			case "date_delay":
+				if ($data["ITEM_$num"]!='' && !empty($data["ITEM_$num"])){
+					return getWarrantyExpir($data["ITEM_$num"],$data["ITEM_".$num."_2"]);
+				} else {
+					return "&nbsp;"; 
+				}
+				break;
+			case "email" :
+				$email=trim($data["ITEM_$num"]);
+				if (!empty($email)){
+					return "<a href='mailto:$email'>$email</a>";
+				} else {
+					return "&nbsp;";
+				}
+				break;	
+			case "weblink" :
+				$orig_link=trim($data["ITEM_$num"]);
+				if (!empty($orig_link)){
+					if (strlen($orig_link)>30){
+						$link=utf8_substr($orig_link,0,30)."...";
+					} else {
+						$link=$orig_link;
+					}
+					return "<a href=\"$orig_link\" target='_blank'>$link</a>";
+				} else {
+					return "&nbsp;";
+				}
+				break;	
+
+		}
+	}
 
 
 	switch ($table.'.'.$field){
@@ -2613,23 +2662,6 @@ function giveItem ($type,$ID,$data,$num){
 			}
 		return $out;
 		break;
-		case "glpi_computers.comments" :
-		case "glpi_networking.comments" :
-		case "glpi_printers.comments" :
-		case "glpi_monitors.comments" :
-		case "glpi_peripherals.comments" :
-		case "glpi_software.comments" :
-		case "glpi_contacts.comments" :
-		case "glpi_enterprises.comments" :
-		case "glpi_users.comments" :
-		case "glpi_phones.comments" :
-		case "glpi_groups.comments" :
-		case "glpi_entities.comments" :
-		case "glpi_consumables_type.comments" :
-		case "glpi_docs.comment" :
-		case "glpi_cartridges_type.comments" :
-			return nl2br($data["ITEM_$num"]);
-		break;
 		case "glpi_profiles.name" :
 			if ($type==PROFILE_TYPE){
 				$out= "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data['ID']."\">";
@@ -2823,24 +2855,6 @@ function giveItem ($type,$ID,$data,$num){
 			return getDocumentLink($data["ITEM_$num"]);
 		break;		
 		case "glpi_docs.link" :
-		case "glpi_enterprises.website" :
-			if (!empty($data["ITEM_$num"])){
-				$link=$data["ITEM_$num"];
-				if (strlen($data["ITEM_$num"])>30){
-					$link=utf8_substr($data["ITEM_$num"],0,30)."...";
-				}
-				return "<a href=\"".$data["ITEM_$num"]."\" target='_blank'>".$link."</a>";
-			} else return "&nbsp;";
-			break;	
-		case "glpi_enterprises.email" :
-		case "glpi_contacts.email" :
-		case "glpi_users.email" :
-			if (!empty($data["ITEM_$num"])){
-				return "<a href='mailto:".$data["ITEM_$num"]."'>".$data["ITEM_$num"]."</a>";
-			} else {
-				return "&nbsp;";
-			}
-			break;	
 		case "glpi_device_hdd.specif_default" :
 		case "glpi_device_ram.specif_default" :
 		case "glpi_device_processor.specif_default" :
@@ -3019,24 +3033,6 @@ function giveItem ($type,$ID,$data,$num){
 						} 
 					}
 				} 
-			}
-
-			if (isset($SEARCH_OPTION[$type][$ID]["datatype"])){
-				switch ($SEARCH_OPTION[$type][$ID]["datatype"]){
-					case "date":
-						return convDate($data["ITEM_$num"]);
-						break;
-					case "datetime":
-						return convDateTime($data["ITEM_$num"]);
-						break;
-					case "date_delay":
-						if ($data["ITEM_$num"]!='' && !empty($data["ITEM_$num"])){
-							return getWarrantyExpir($data["ITEM_$num"],$data["ITEM_".$num."_2"]);
-						} else {
-							return "&nbsp;"; 
-						}
-						break;
-				}
 			}
 
 			return $data["ITEM_$num"];
