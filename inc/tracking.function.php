@@ -786,8 +786,11 @@ function addFormTracking ($device_type=0,$ID=0, $target, $author, $group=0, $ass
 		$values = getUserEntities($author, true);
 		$count = count($values);
 		
-		//If entity is not in the list of user's entities, then display as default value the first value of the user's entites list
-		$first_entity = (in_array($entity_restrict,$values)?$entity_restrict:$values[0]);
+		if (!empty($values))
+			//If entity is not in the list of user's entities, then display as default value the first value of the user's entites list
+			$first_entity = (in_array($entity_restrict,$values)?$entity_restrict:$values[0]);
+		else
+			$first_entity = $entity_restrict; 
 		
 		//If user have access to more than one entity, then display a combobox
 		if ($count > 1)
