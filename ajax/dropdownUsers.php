@@ -82,7 +82,7 @@ if ($DB->numrows($result)) {
 asort($users);
 
 echo "<select id='dropdown_".$_POST["myname"].$_POST["rand"]."' name=\"".$_POST['myname']."\"";
-if (isset($_POST["helpdesk_ajax"]))
+if (isset($_POST["helpdesk_ajax"]) && !empty($_POST["helpdesk_ajax"]))
 	echo " onChange='submit()'";
 echo ">";
 
