@@ -1808,25 +1808,7 @@ function addSelect ($type,$ID,$num,$meta=0,$meta_type=0){
 				return " GROUP_CONCAT( DISTINCT CONCAT(glpi_software.name, ' - ', glpi_softwareversions$addtable.name, ' - ', ".$table.$addtable.".$field) SEPARATOR '$$$$') AS ".$NAME."_".$num.", ";				
 			} else if ($type==SOFTWARE_TYPE) {
 				return " GROUP_CONCAT( DISTINCT CONCAT(glpi_softwareversions.name, ' - ', ".$table.$addtable.".$field) SEPARATOR '$$$$') AS ".$NAME."_".$num.", ";								
-			} else if ($meta){
-				return " GROUP_CONCAT( DISTINCT ".$table.$addtable.".".$field." SEPARATOR '$$$$') AS ".$NAME."_$num, ";
-			} else {
-				return $table.$addtable.".".$field." AS ".$NAME."_$num, ";
-			}			
-		break;
-		case "glpi_networking_ports.ifaddr" :
-		case "glpi_dropdown_netpoint.name" :
-		case "glpi_registry.registry_ocs_name" :
-		case "glpi_registry.registry_value" :
-			return " GROUP_CONCAT( DISTINCT ".$table.$addtable.".".$field." SEPARATOR '$$$$') AS ".$NAME."_".$num.", ";
-		break;
-		case "glpi_computerdisks.name" :
-		case "glpi_computerdisks.device" :
-		case "glpi_computerdisks.mountpoint" :
-		case "glpi_computerdisks.totalsize" :
-		case "glpi_computerdisks.freesize" :
-		case "glpi_dropdown_filesystems.name" :
-			return " GROUP_CONCAT( ".($meta?"DISTINCT":"")." ".$table.$addtable.".".$field." SEPARATOR '$$$$') AS ".$NAME."_".$num.", ";
+			} 		
 		break;
 		case "glpi_computerdisks.freepercent" :
 			return " GROUP_CONCAT( ".($meta?"DISTINCT":"")." ROUND(100*".$table.$addtable.".freesize / ".$table.$addtable.".totalsize) SEPARATOR '$$$$') AS ".$NAME."_".$num.", ";
@@ -2293,58 +2275,6 @@ function giveItem ($type,$ID,$data,$num){
 
 
 	switch ($table.'.'.$field){
-		case "glpi_dropdown_state.name" :
-		case "glpi_softwarelicenses.name" :
-		case "glpi_softwarelicenses.serial" :
-		case "glpi_softwarelicenses.otherserial" :
-		case "glpi_softwarelicenses.expire" :
-		case "glpi_softwarelicenses.comments" :
-		case "glpi_softwareversions.name" :
-		case "glpi_softwareversions.comments" :
-		case "glpi_networking_ports.ifaddr" :
-		case "glpi_dropdown_netpoint.name" :
-		case "glpi_registry.registry_ocs_name" :
-		case "glpi_registry.registry_value" :
-		case "glpi_computerdisks.name" :
-		case "glpi_computerdisks.device" :
-		case "glpi_computerdisks.mountpoint" :
-		case "glpi_computerdisks.totalsize" :
-		case "glpi_computerdisks.freesize" :
-		case "glpi_dropdown_filesystems.name" :
-		$out="";
-		$split=explode("$$$$",$data["ITEM_$num"]);
-
-		$count_display=0;
-		for ($k=0;$k<count($split);$k++)
-			if (strlen(trim($split[$k]))>0){
-				if ($count_display) $out.= "<br>";
-				$count_display++;
-				
-				/// TODO : à quoi ca sert cette gestion des dates ?
-				// Line end with a date
-				if (preg_match("/(\d{4}-\d{2}-\d{2})$/",$split[$k],$reg)) {
-					$out .= preg_replace("/".$reg[0]."$/",convDateTime($reg[0]),$split[$k]); 
-				} else {
-					$out .= $split[$k];
-				}
-			}
-		return $out;
-
-		break;
-		case "glpi_computerdisks.freepercent" :
-		$out="";
-		$split=explode("$$$$",$data["ITEM_$num"]);
-
-		$count_display=0;
-		for ($k=0;$k<count($split);$k++)
-			if (strlen(trim($split[$k]))>0){
-				if ($count_display) $out.= "<br>";
-				$count_display++;
-				$out.= $split[$k]." %";
-			}
-		return $out;
-
-		break;
 		case "glpi_users.name" :		
 			// USER search case
 			if (!empty($linkfield)){
@@ -2407,37 +2337,7 @@ function giveItem ($type,$ID,$data,$num){
 				} 
 			}
 			break;
-		case "glpi_contracts.num" :
-			if (empty($linkfield)){
-				$out="";
-				$split=explode("$$$$",$data["ITEM_$num"]);
 
-				$count_display=0;
-				for ($k=0;$k<count($split);$k++)
-					if (strlen(trim($split[$k]))>0){
-						if ($count_display) $out.= "<br>";
-						$count_display++;
-						$out.= $split[$k];
-					}
-				return $out;
-			} else {
-				return $data["ITEM_$num"];
-			}
-		break;
-
-		case "glpi_contacts.completename":
-				$out="";
-				$split=explode("$$$$",$data["ITEM_$num"]);
-
-				$count_display=0;
-				for ($k=0;$k<count($split);$k++)
-					if (strlen(trim($split[$k]))>0){
-						if ($count_display) $out.= "<br>";
-						$count_display++;
-						$out.= $split[$k];
-					}
-				return $out;
-			break;
 		case "glpi_type_docs.icon" :
 			if (!empty($data["ITEM_$num"])){
 				return "<img class='middle' alt='' src='".$CFG_GLPI["typedoc_icon_dir"]."/".$data["ITEM_$num"]."'>";
@@ -2494,20 +2394,8 @@ function giveItem ($type,$ID,$data,$num){
 						}
 					}
 				}
-			} else {
-				$split=explode("$$$$",$data["ITEM_".$num]);
-				$count_display=0;
-				for ($k=0;$k<count($split);$k++){
-					if (strlen(trim($split[$k]))>0){	
-						if ($count_display){
-							$out.= "<br>";
-						}
-						$count_display++;
-						$out.= $split[$k];
-					}
-				}
+				return $out;
 			}
-			return $out;
 			break;
 		case "glpi_contracts.duration":
 		case "glpi_contracts.notice":
@@ -2683,16 +2571,19 @@ function giveItem ($type,$ID,$data,$num){
 	}
 
 	// Manage items with need group by / group_concat
-	if (isset($SEARCH_OPTION[$type][$ID]['forcegroupby']) && isset($SEARCH_OPTION[$type][$ID]['forcegroupby'])){
+	if (isset($SEARCH_OPTION[$type][$ID]['forcegroupby']) && $SEARCH_OPTION[$type][$ID]['forcegroupby']){
 		$out="";
 		$split=explode("$$$$",$data["ITEM_$num"]);
-
+		$unit='';
+		if (isset($SEARCH_OPTION[$type][$ID]['unit']) && !empty($SEARCH_OPTION[$type][$ID]['unit'])){
+			$unit=$SEARCH_OPTION[$type][$ID]['unit'];
+		}
 		$count_display=0;
 		for ($k=0;$k<count($split);$k++)
 			if (strlen(trim($split[$k]))>0){
 				if ($count_display) $out.= "<br>";
 				$count_display++;
-				$out.= $split[$k];
+				$out.= $split[$k]." ".$unit;
 			}
 		return $out;	
 	}
