@@ -348,6 +348,36 @@ function getRulesByID($ID, $withcriterias, $withactions) {
 	return $ocs_affect_computer_rules;
 }
 
+	function preProcessPreviewResults($output)
+	{
+		return $output;
+	}
+
+	function executeActions($output,$params,$regex_results)
+	{
+		if (count($this->actions)){
+			foreach ($this->actions as $action){
+				switch ($action->fields["action_type"]){
+					case "assign" :
+						$output[$action->fields["field"]] = $action->fields["value"];
+					break;
+					case "regex_result":
+						//Assign entity using the regex's result
+						if ($action->fields["field"] == "_affect_entity_by_tag")
+						{
+							//Get the TAG from the regex's results
+							$res = getRegexResultById($action->fields["value"],$regex_results);
+							if ($res != null) 
+								//Get the entity associated with the TAG
+								$output["FK_entities"]=getEntityIDByTag($res);
+						}
+					break;								
+				}
+			}
+		}
+		return $output;
+	}
+
 }
 
 
