@@ -2503,6 +2503,12 @@ function giveItem ($type,$ID,$data,$num){
 		} 
 	}
 
+	$unit='';
+	if (isset($SEARCH_OPTION[$type][$ID]['unit']) && !empty($SEARCH_OPTION[$type][$ID]['unit'])){
+		$unit=$SEARCH_OPTION[$type][$ID]['unit'];
+	}
+
+
 	// Preformat items
 	if (isset($SEARCH_OPTION[$type][$ID]["datatype"])){
 		switch ($SEARCH_OPTION[$type][$ID]["datatype"]){
@@ -2558,13 +2564,13 @@ function giveItem ($type,$ID,$data,$num){
 				}
 				break;	
 			case "number":
-				return formatNumber($data["ITEM_$num"],false,0);
+				return formatNumber($data["ITEM_$num"],false,0).$unit;
 				break;
 			case "decimal":
-				return formatNumber($data["ITEM_$num"]);
+				return formatNumber($data["ITEM_$num"]).$unit;
 				break;
 			case "bool":
-				return getYesNo($data["ITEM_$num"]);
+				return getYesNo($data["ITEM_$num"]).$unit;
 				break;
 
 		}
@@ -2574,23 +2580,19 @@ function giveItem ($type,$ID,$data,$num){
 	if (isset($SEARCH_OPTION[$type][$ID]['forcegroupby']) && $SEARCH_OPTION[$type][$ID]['forcegroupby']){
 		$out="";
 		$split=explode("$$$$",$data["ITEM_$num"]);
-		$unit='';
-		if (isset($SEARCH_OPTION[$type][$ID]['unit']) && !empty($SEARCH_OPTION[$type][$ID]['unit'])){
-			$unit=$SEARCH_OPTION[$type][$ID]['unit'];
-		}
 		$count_display=0;
 		for ($k=0;$k<count($split);$k++)
 			if (strlen(trim($split[$k]))>0){
 				if ($count_display) $out.= "<br>";
 				$count_display++;
-				$out.= $split[$k]." ".$unit;
+				$out.= $split[$k].$unit;
 			}
 		return $out;	
 	}
 
 
 
-	return $data["ITEM_$num"];
+	return $data["ITEM_$num"].$unit;
 
 
 }
