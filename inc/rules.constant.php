@@ -107,6 +107,10 @@ $RULES_ACTIONS[RULE_OCS_AFFECT_COMPUTER]['FK_entities']['name']=$LANG["entity"][
 $RULES_ACTIONS[RULE_OCS_AFFECT_COMPUTER]['FK_entities']['type']='dropdown';
 $RULES_ACTIONS[RULE_OCS_AFFECT_COMPUTER]['FK_entities']['table']='glpi_entities';
 
+$RULES_ACTIONS[RULE_OCS_AFFECT_COMPUTER]['_affect_entity_by_tag']['name']=$LANG["rulesengine"][131];
+$RULES_ACTIONS[RULE_OCS_AFFECT_COMPUTER]['_affect_entity_by_tag']['type']='text';
+$RULES_ACTIONS[RULE_OCS_AFFECT_COMPUTER]['_affect_entity_by_tag']['force_actions']=array("regex_result");
+
 $RULES_ACTIONS[RULE_AFFECT_RIGHTS]['FK_entities']['name']=$LANG["entity"][0];
 $RULES_ACTIONS[RULE_AFFECT_RIGHTS]['FK_entities']['type']='dropdown';
 $RULES_ACTIONS[RULE_AFFECT_RIGHTS]['FK_entities']['table']='glpi_entities';
