@@ -40,7 +40,7 @@
 
 // Empty linkfield -> no massive action for field of main table 
 
-// Datatype : 
+// Datatype : parameter ['unit'] permit to set unit to display after standard display
 // - date 
 // - datetime
 // - date_delay : date with a delay in month (end_warranty, end_date) 
@@ -292,6 +292,8 @@ $SEARCH_OPTION[COMPUTER_TYPE][152]['field']='freepercent';
 $SEARCH_OPTION[COMPUTER_TYPE][152]['linkfield']='';
 $SEARCH_OPTION[COMPUTER_TYPE][152]['name']=$LANG["computers"][1];
 $SEARCH_OPTION[COMPUTER_TYPE][152]['forcegroupby']=true;
+$SEARCH_OPTION[COMPUTER_TYPE][152]['unit']='%';
+
 
 $SEARCH_OPTION[COMPUTER_TYPE][153]['table']='glpi_computerdisks';
 $SEARCH_OPTION[COMPUTER_TYPE][153]['field']='mountpoint';
