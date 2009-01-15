@@ -2109,9 +2109,9 @@ function addWhere($link,$nott,$type,$ID,$val,$meta=0){
 			}
 			break;
 
-		case "glpi_computerdisks.totalsize" :
-		case "glpi_computerdisks.freesize" :
-		case "glpi_computerdisks.freepercent" :
+		case "glpi_computerdisks.totalsize" : // -> number
+		case "glpi_computerdisks.freesize" : // -> number
+		case "glpi_computerdisks.freepercent" : // -> decimal : need to add computation param and unit
 
 			$compute_size=$table.".".$field;
 			$larg=1000;
