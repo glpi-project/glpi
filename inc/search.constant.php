@@ -1953,6 +1953,7 @@ $SEARCH_OPTION[SOFTWARE_TYPE][61]['table']='glpi_software';
 $SEARCH_OPTION[SOFTWARE_TYPE][61]['field']='helpdesk_visible';
 $SEARCH_OPTION[SOFTWARE_TYPE][61]['linkfield']='helpdesk_visible';
 $SEARCH_OPTION[SOFTWARE_TYPE][61]['name']=$LANG["software"][46];
+$SEARCH_OPTION[SOFTWARE_TYPE][61]['datatype']='bool';
 
 $SEARCH_OPTION[SOFTWARE_TYPE][80]['table']='glpi_entities';
 $SEARCH_OPTION[SOFTWARE_TYPE][80]['field']='completename';
@@ -2699,6 +2700,7 @@ $SEARCH_OPTION[CARTRIDGE_TYPE][8]['table']='glpi_cartridges_type';
 $SEARCH_OPTION[CARTRIDGE_TYPE][8]['field']='alarm';
 $SEARCH_OPTION[CARTRIDGE_TYPE][8]['linkfield']='alarm';
 $SEARCH_OPTION[CARTRIDGE_TYPE][8]['name']=$LANG["consumables"][38];
+$SEARCH_OPTION[CARTRIDGE_TYPE][8]['datatype']='number';
 
 $SEARCH_OPTION[CARTRIDGE_TYPE][10]['table']='glpi_cartridges_type';
 $SEARCH_OPTION[CARTRIDGE_TYPE][10]['field']='comments';
@@ -2963,6 +2965,7 @@ $SEARCH_OPTION[CONSUMABLE_TYPE][8]['table']='glpi_consumables_type';
 $SEARCH_OPTION[CONSUMABLE_TYPE][8]['field']='alarm';
 $SEARCH_OPTION[CONSUMABLE_TYPE][8]['linkfield']='alarm';
 $SEARCH_OPTION[CONSUMABLE_TYPE][8]['name']=$LANG["consumables"][38];
+$SEARCH_OPTION[CONSUMABLE_TYPE][8]['datatype']='number';
 
 $SEARCH_OPTION[CONSUMABLE_TYPE][16]['table']='glpi_consumables_type';
 $SEARCH_OPTION[CONSUMABLE_TYPE][16]['field']='comments';
