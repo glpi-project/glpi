@@ -2504,7 +2504,7 @@ function giveItem ($type,$ID,$data,$num){
 	}
 
 	$unit='';
-	if (isset($SEARCH_OPTION[$type][$ID]['unit']) && !empty($SEARCH_OPTION[$type][$ID]['unit'])){
+	if (isset($SEARCH_OPTION[$type][$ID]['unit'])){
 		$unit=$SEARCH_OPTION[$type][$ID]['unit'];
 	}
 
