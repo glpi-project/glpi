@@ -2798,7 +2798,7 @@ function addLeftJoin ($type,$ref_table,&$already_link_tables,$new_table,$linkfie
 
 		case "glpi_enterprises_infocoms":
 			$out=addLeftJoin($type,$ref_table,$already_link_tables,"glpi_infocoms",$linkfield);
-		return $out." LEFT JOIN glpi_enterprises AS glpi_enterprises_infocoms ON (glpi_infocoms.FK_enterprise = $nt.ID) ";
+		return $out." LEFT JOIN glpi_enterprises $AS ON (glpi_infocoms.FK_enterprise = $nt.ID) ";
 		break;
 		case "glpi_dropdown_budget":
 			$out=addLeftJoin($type,$ref_table,$already_link_tables,"glpi_infocoms",$linkfield);
