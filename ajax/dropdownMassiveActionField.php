@@ -62,11 +62,8 @@ if (isset($_POST["device_type"])&&isset($_POST["id_field"])&&$_POST["id_field"])
 	$FIELDNAME_PRINTED=false;
 
 	if ($search["table"]==$LINK_ID_TABLE[$_POST["device_type"]]){ // field type
+
 		switch ($search["table"].".".$search["linkfield"]){
-			case "glpi_software.helpdesk_visible":
-			case "glpi_users.active":
-				dropdownYesNo($search["linkfield"]);
-				break;
 			case "glpi_cartridges_type.alarm":
 			case "glpi_consumables_type.alarm":
 				dropdownInteger($search["linkfield"],0,-1,100);
@@ -78,10 +75,6 @@ if (isset($_POST["device_type"])&&isset($_POST["id_field"])&&$_POST["id_field"])
 				break;
 			case "glpi_softwarelicenses.number":
 				dropdownInteger($search["linkfield"],0,1,1000,1,array(-1=>$LANG["software"][4]));
-				break;
-			case "glpi_contracts.begin_date":
-			case "glpi_softwarelicenses.expire":
-				showDateFormItem($search["field"]);
 				break;
 			case "glpi_contracts.alert":
 				dropdownContractAlerting($search["linkfield"],0);
@@ -102,7 +95,23 @@ if (isset($_POST["device_type"])&&isset($_POST["id_field"])&&$_POST["id_field"])
 							$_POST["device_type"],$search["table"],$search["field"],$search["linkfield"]);
 					} 
 				} 
-				if (!$plugdisplay){
+
+				$already_display=false;
+				if (isset($search['datatype'])){
+					switch ($search['datatype']){
+						case "date":
+							showDateFormItem($search["field"]);
+							$already_display=true;
+							break;
+						case "bool":
+							dropdownYesNo($search["linkfield"]);
+							$already_display=true;
+							break;
+					}
+				}
+
+				
+				if (!$plugdisplay && !$already_display){
 					autocompletionTextField($search["linkfield"],$search["table"],$search["field"],'',40,$_SESSION["glpiactive_entity"]);
 				}
 				
