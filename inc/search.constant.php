@@ -45,13 +45,14 @@
 // - datetime
 // - date_delay : date with a delay in month (end_warranty, end_date) 
 //   - parameters : ['datafields'][1]=DATE_FIELD, ['datafields'][2]=DELAY_FIELD
+// - realtime : time spent in second
 // - weblink
 // - email
 // - text
 // - number : 
 //   - optionnal parameter : ['width'] for width search
 // - decimal : idem that number but formatted with decimal
-
+// - bool
 
 //////COMPUTER_TYPE
 
@@ -2836,6 +2837,7 @@ $SEARCH_OPTION[USER_TYPE][8]['table']='glpi_users';
 $SEARCH_OPTION[USER_TYPE][8]['field']='active';
 $SEARCH_OPTION[USER_TYPE][8]['linkfield']='active';
 $SEARCH_OPTION[USER_TYPE][8]['name']=$LANG["common"][60];
+$SEARCH_OPTION[USER_TYPE][8]['datatype']='bool';
 
 $SEARCH_OPTION[USER_TYPE][6]['table']='glpi_users';
 $SEARCH_OPTION[USER_TYPE][6]['field']='phone';

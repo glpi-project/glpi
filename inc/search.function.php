@@ -2034,6 +2034,16 @@ function addWhere($link,$nott,$type,$ID,$val,$meta=0){
 					return $link." ( $date_computation $SEARCH $ADD )";
 				}
 			break;
+
+			case "bool":
+				if (!is_numeric($val)){
+					if (strcasecmp($val,$LANG['choice'][0])==0){
+						$val=0;
+					} else 	if (strcasecmp($val,$LANG['choice'][1])==0){
+						$val=1;
+					}
+				}
+				// No break here : use number comparison case
 			case "number":
 			case "decimal":
 				$search=array("/\&lt;/","/\&gt;/");
@@ -2342,6 +2352,9 @@ function giveItem ($type,$ID,$data,$num){
 			case "datetime":
 				return convDateTime($data["ITEM_$num"]);
 				break;
+			case "realtime":
+				return getRealtime($data["ITEM_$num"]);
+				break;
 			case "date_delay":
 				if ($data["ITEM_$num"]!='' && !empty($data["ITEM_$num"])){
 					return getWarrantyExpir($data["ITEM_$num"],$data["ITEM_".$num."_2"]);
@@ -2376,7 +2389,9 @@ function giveItem ($type,$ID,$data,$num){
 			case "decimal":
 				return formatNumber($data["ITEM_$num"]);
 				break;
-			
+			case "bool":
+				return getYesNo($data["ITEM_$num"]);
+				break;
 
 		}
 	}
