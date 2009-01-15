@@ -1427,6 +1427,50 @@ function addHaving($LINK,$NOT,$type,$ID,$val,$meta,$num){
 	$NAME="ITEM_";
 	if ($meta) $NAME="META_";
 
+
+	// Preformat items
+	if (isset($SEARCH_OPTION[$type][$ID]["datatype"])){
+		switch ($SEARCH_OPTION[$type][$ID]["datatype"]){
+			case "number":
+			case "decimal":
+
+				$search=array("/\&lt;/","/\&gt;/");
+				$replace=array("<",">");
+				$val=preg_replace($search,$replace,$val);
+		
+				if (preg_match("/([<>])([=]*)[[:space:]]*([0-9]*)/",$val,$regs)){
+					if ($NOT){
+						if ($regs[1]=='<') {
+							$regs[1]='>';
+						} else {
+							$regs[1]='<';
+						}
+					} 
+					$regs[1].=$regs[2];
+					return " $LINK ($NAME$num ".$regs[1]." ".$regs[3]." ) ";
+				} else {
+					if (is_numeric($val)){
+						if (isset($SEARCH_OPTION[$type][$ID]["width"])){
+							if (!$NOT){
+								return " $LINK ( $NAME$num < ".(intval($val)+$SEARCH_OPTION[$type][$ID]["width"])." AND $NAME$num > ".(intval($val)-$SEARCH_OPTION[$type][$ID]["width"])." ) ";
+							} else {
+								return " $LINK ( $NAME$num > ".(intval($val)+$SEARCH_OPTION[$type][$ID]["width"])." OR $NAME$num < ".(intval($val)-$SEARCH_OPTION[$type][$ID]["width"])." ) ";
+							}
+	
+						} else { // Exact search
+							if (!$NOT){
+								return " $LINK ( $NAME$num = ".(intval($val)).") ";
+							} else {
+								return " $LINK ( $NAME$num <> ".(intval($val)).") ";
+							}
+						}
+					}
+				}
+			break;
+		}
+	}
+
+
 	// Plugin can override core definition for its type
 	if ($type>1000){
 		if (isset($PLUGIN_HOOKS['plugin_types'][$type])){
@@ -1441,59 +1485,6 @@ function addHaving($LINK,$NOT,$type,$ID,$val,$meta,$num){
 	}
 
 	switch ($table.".".$field){
-		case "glpi_softwarelicenses.number":
-		case "glpi_tracking.count" :
-			$search=array("/\&lt;/","/\&gt;/");
-			$replace=array("<",">");
-			$val=preg_replace($search,$replace,$val);
-	
-			if (preg_match("/([<>])([=]*)[[:space:]]*([0-9]*)/",$val,$regs)){
-				if ($NOT){
-					if ($regs[1]=='<') {
-						$regs[1]='>';
-					} else {
-						$regs[1]='<';
-					}
-				} 
-				$regs[1].=$regs[2];
-				return " $LINK ($NAME$num ".$regs[1]." ".$regs[3]." ) ";
-			} else {
-				if (!$NOT){
-					return " $LINK ( $NAME$num = ".(intval($val)).") ";
-				} else {
-					return " $LINK ( $NAME$num <> ".(intval($val)).") ";
-				}
-			}
-		break;
-		case "glpi_device_ram.specif_default" :
-		case "glpi_device_processor.specif_default" :
-		case "glpi_device_hdd.specif_default" :
-			$search=array("/\&lt;/","/\&gt;/");
-			$replace=array("<",">");
-			$val=preg_replace($search,$replace,$val);
-			if (preg_match("/([<>])([=]*)[[:space:]]*([0-9]*)/",$val,$regs)){
-				if ($NOT){
-					if ($regs[1]=='<') {
-						$regs[1]='>';
-					} else {
-						$regs[1]='<';
-					}
-				} 
-				$regs[1].=$regs[2];
-				return " $LINK ($NAME$num ".$regs[1]." ".$regs[3]." ) ";
-			} else {
-				if ($field=="glpi_device_hdd.specif_default"){
-					$larg=1000;
-				} else {
-					$larg=100;
-				}
-				if (!$NOT){
-					return " $LINK ( $NAME$num < ".(intval($val)+$larg)." AND $NAME$num > ".(intval($val)-$larg)." ) ";
-				} else {
-					return " $LINK ( $NAME$num > ".(intval($val)+$larg)." OR $NAME$num < ".(intval($val)-$larg)." ) ";
-				}
-			}
-		break;
 		default :
 
 			// Link with plugin tables 
@@ -1578,13 +1569,14 @@ function addOrderBy($type,$ID,$order,$key=0){
 
 
 	switch($table.".".$field){
-		case "glpi_softwarelicenses.number":
+/*		case "glpi_softwarelicenses.number":
 		case "glpi_device_hdd.specif_default" :
 		case "glpi_device_ram.specif_default" :
 		case "glpi_device_processor.specif_default" :
 		case "glpi_tracking.count" :
 			return " ORDER BY ITEM_$key $order ";
 		break;
+*/
 		case "glpi_auth_tables.name" :
 			return " ORDER BY glpi_users.auth_method, glpi_auth_ldap.name, glpi_auth_mail.name $order ";
 		break;
@@ -1629,7 +1621,8 @@ function addOrderBy($type,$ID,$order,$key=0){
 				} 
 			}
 
-			return " ORDER BY $table.$field $order ";
+			//return " ORDER BY $table.$field $order ";
+			return " ORDER BY ITEM_$key $order ";
 		break;
 	}
 
@@ -1808,6 +1801,9 @@ function addSelect ($type,$ID,$num,$meta=0,$meta_type=0){
 		case "glpi_contracts.expire" : // ajout jmd
 			return $table.$addtable.".begin_date AS ".$NAME."_$num, ".$table.$addtable.".duration AS ".$NAME."_".$num."_2, ";
 		break;
+		case "glpi_softwarelicenses.number":
+			return " FLOOR( SUM($table$addtable.$field) * COUNT(DISTINCT $table$addtable.ID) / COUNT($table$addtable.ID) ) AS ".$NAME."_".$num.", ";
+		break;
 		case "glpi_device_hdd.specif_default" :
 			return " SUM(DEVICE_".HDD_DEVICE.".specificity) / COUNT( DEVICE_".HDD_DEVICE.".ID) * COUNT( DISTINCT DEVICE_".HDD_DEVICE.".ID) AS ".$NAME."_".$num.", ";
 		break;
@@ -1816,6 +1812,9 @@ function addSelect ($type,$ID,$num,$meta=0,$meta_type=0){
 		break;
 		case "glpi_device_processor.specif_default" :
 			return " SUM(DEVICE_".PROCESSOR_DEVICE.".specificity) / COUNT( DEVICE_".PROCESSOR_DEVICE.".ID) AS ".$NAME."_".$num.", ";
+		break;
+		case "glpi_tracking.count" :
+			return " COUNT(DISTINCT glpi_tracking$addtable.ID) AS ".$NAME."_".$num.", ";
 		break;
 		case "glpi_networking_ports.ifmac" :
 			if ($type==COMPUTER_TYPE)
@@ -1856,9 +1855,6 @@ function addSelect ($type,$ID,$num,$meta=0,$meta_type=0){
 			} else {
 				return $table.$addtable.".".$field." AS ".$NAME."_$num, ";
 			}
-		break;
-		case "glpi_softwarelicenses.number":
-			return " FLOOR( SUM($table$addtable.$field) * COUNT(DISTINCT $table$addtable.ID) / COUNT($table$addtable.ID) ) AS ".$NAME."_".$num.", ";
 		break;
 		case "glpi_softwarelicenses.name" :
 		case "glpi_softwareversions.name" :
@@ -1906,9 +1902,6 @@ function addSelect ($type,$ID,$num,$meta=0,$meta_type=0){
 		break;
 		case "glpi_computerdisks.freepercent" :
 			return " GROUP_CONCAT( ".($meta?"DISTINCT":"")." ROUND(100*".$table.$addtable.".freesize / ".$table.$addtable.".totalsize) SEPARATOR '$$$$') AS ".$NAME."_".$num.", ";
-		break;
-		case "glpi_tracking.count" :
-			return " COUNT(DISTINCT glpi_tracking$addtable.ID) AS ".$NAME."_".$num.", ";
 		break;
 		default:
 
@@ -2041,6 +2034,42 @@ function addWhere($link,$nott,$type,$ID,$val,$meta=0){
 					return $link." ( $date_computation $SEARCH $ADD )";
 				}
 			break;
+			case "number":
+			case "decimal":
+				$search=array("/\&lt;/","/\&gt;/");
+				$replace=array("<",">");
+				$val=preg_replace($search,$replace,$val);
+				if (preg_match("/([<>])([=]*)[[:space:]]*([0-9]*)/",$val,$regs)){
+					if ($nott){
+						if ($regs[1]=='<') {
+							$regs[1]='>';
+						} else {
+							$regs[1]='<';
+						}
+					} 
+						$regs[1].=$regs[2];
+					
+					return $link." ($table.$field ".$regs[1]." ".$regs[3]." ) ";
+				} else {
+					if (is_numeric($val)){
+						if (isset($SEARCH_OPTION[$type][$ID]["width"])){
+							$ADD="";
+							if ($nott&&$val!="NULL") $ADD=" OR $table.$field IS NULL";
+							if ($nott){
+								return $link." ($table.$field < ".(intval($val)-$SEARCH_OPTION[$type][$ID]["width"])." OR $table.$field > ".(intval($val)+$SEARCH_OPTION[$type][$ID]["width"])." ".$ADD." ) ";
+							} else {
+								return $link." (($table.$field >= ".(intval($val)-$SEARCH_OPTION[$type][$ID]["width"])." AND $table.$field <= ".(intval($val)+$SEARCH_OPTION[$type][$ID]["width"]).") ".$ADD." ) ";
+							}
+						} else {
+							if (!$nott){
+								return " $link ( $table.$field = ".(intval($val)).") ";
+							} else {
+								return " $link ( $table.$field <> ".(intval($val)).") ";
+							}
+						}
+					}
+				}
+			break;
 		}
 	}
 
@@ -2150,37 +2179,6 @@ function addWhere($link,$nott,$type,$ID,$val,$meta=0){
 				return $link." $table.notice<>0 AND DATEDIFF(ADDDATE($table.begin_date, INTERVAL ($table.duration - $table.notice) MONTH),CURDATE() )".$regs[1].$regs[2]." ";
 			} else {
 				return $link." ADDDATE($table.begin_date, INTERVAL ($table.duration - $table.notice) MONTH) $SEARCH ";		
-			}
-			break;
-
-		case "glpi_infocoms.value":
-		case "glpi_infocoms.warranty_value":
-			if (is_numeric($val)){
-				$search=array("/\&lt;/","/\&gt;/");
-				$replace=array("<",">");
-				$val=preg_replace($search,$replace,$val);
-				if (preg_match("/([<>])([=]*)[[:space:]]*([0-9]*)/",$val,$regs)){
-					if ($nott){
-						if ($regs[1]=='<') {
-							$regs[1]='>';
-						} else {
-							$regs[1]='<';
-						}
-					} 
-						$regs[1].=$regs[2];
-					
-					return $link." ($table.$field ".$regs[1]." ".$regs[3]." ) ";
-				} else {
-	
-					$interval=100;
-					$ADD="";
-					if ($nott&&$val!="NULL") $ADD=" OR $table.$field IS NULL";
-					if ($nott){
-						return $link." ($table.$field < ".intval($val)."-$interval OR $table.$field > ".intval($val)."+$interval ".$ADD." ) ";
-					} else {
-						return $link." (($table.$field >= ".intval($val)."-$interval AND $table.$field <= ".intval($val)."+$interval) ".$ADD." ) ";
-					}
-				}
 			}
 			break;
 		case "glpi_infocoms.amort_time":
@@ -2372,6 +2370,13 @@ function giveItem ($type,$ID,$data,$num){
 					return "&nbsp;";
 				}
 				break;	
+			case "number":
+				return formatNumber($data["ITEM_$num"],false,0);
+				break;
+			case "decimal":
+				return formatNumber($data["ITEM_$num"]);
+				break;
+			
 
 		}
 	}
@@ -2971,10 +2976,6 @@ function giveItem ($type,$ID,$data,$num){
 			break;
 		case "glpi_infocoms.amort_type":
 			return getAmortTypeName($data["ITEM_$num"]);
-			break;
-		case "glpi_infocoms.value":
-		case "glpi_infocoms.warranty_value":
-			return formatNumber($data["ITEM_$num"]);
 			break;
 		case "glpi_infocoms.alert":
 			if ($data["ITEM_$num"]==pow(2,ALERT_END)){
