@@ -48,6 +48,11 @@ if (!defined('GLPI_ROOT')){
 checkCentralAccess();
 // Make a select box with all glpi users
 
+if (isset($_POST["helpdesk_ajax"])&& $_POST["helpdesk_ajax"])
+	$is_helpdesk_multientity = true;
+else
+	$is_helpdesk_multientity = false;
+		
 if (!isset($_POST['right'])) {
 	$_POST['right']="all";
 }
@@ -82,7 +87,7 @@ if ($DB->numrows($result)) {
 asort($users);
 
 echo "<select id='dropdown_".$_POST["myname"].$_POST["rand"]."' name=\"".$_POST['myname']."\"";
-if (isset($_POST["helpdesk_ajax"]) && !empty($_POST["helpdesk_ajax"]))
+if ($is_helpdesk_multientity)
 	echo " onChange='submit()'";
 echo ">";
 
@@ -110,7 +115,7 @@ if (count($users)) {
 }
 echo "</select>";
 
-if (!isMultiEntitiesMode())
+if (!$is_helpdesk_multientity)
 {
 	if (isset($_POST["comments"])&&$_POST["comments"]){
 		$paramscomments=array('value'=>'__VALUE__','table'=>"glpi_users");
@@ -122,7 +127,7 @@ if (!isMultiEntitiesMode())
 }
 
 // Manage updates others dropdown for helpdesk
-if (isset($_POST["helpdesk_ajax"])&&$_POST["helpdesk_ajax"]){
+if ($is_helpdesk_multientity){
 	if (!isMultiEntitiesMode())
 	{
 		$paramscomments=array('userID'=>'__VALUE__',
