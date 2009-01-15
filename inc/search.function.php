@@ -1275,6 +1275,10 @@ function showList ($type,$params){
 								$split=explode("$$$$",$data["META_$j"]);
 								$count_display=0;
 								$out="";
+								$unit="";
+								if (isset($SEARCH_OPTION[$type2[$j]][$field2[$j]]['unit'])){
+									$unit=$SEARCH_OPTION[$type2[$j]][$field2[$j]]['unit'];
+								}
 								for ($k=0;$k<count($split);$k++)
 									if ($contains2[$j]=="NULL"||(strlen($contains2[$j])==0
 										||preg_match('/'.$contains2[$j].'/i',$split[$k])
@@ -1283,7 +1287,7 @@ function showList ($type,$params){
 
 										if ($count_display) $out.= "<br>";
 										$count_display++;
-										$out.= $split[$k];
+										$out.= $split[$k].$unit;
 									}
 								echo displaySearchItem($output_type,$out,$item_num,$row_num);
 
@@ -1837,7 +1841,11 @@ function addSelect ($type,$ID,$num,$meta=0,$meta_type=0){
 	if (isset($SEARCH_OPTION[$type][$ID]["datatype"])){
 		switch ($SEARCH_OPTION[$type][$ID]["datatype"]){
 			case "date_delay":
-				return $table.$addtable.".".$SEARCH_OPTION[$type][$ID]["datafields"][1]." AS ".$NAME."_$num, ".$table.$addtable.".".$SEARCH_OPTION[$type][$ID]["datafields"][2]." AS ".$NAME."_".$num."_2, ";
+				if ($meta){
+					return " GROUP_CONCAT( DISTINCT ADDDATE($table$addtable.".$SEARCH_OPTION[$type][$ID]["datafields"][1].", INTERVAL $table$addtable.".$SEARCH_OPTION[$type][$ID]["datafields"][2]." MONTH) SEPARATOR '$$$$') AS ".$NAME."_$num, ";
+				} else {
+					return $table.$addtable.".".$SEARCH_OPTION[$type][$ID]["datafields"][1]." AS ".$NAME."_$num, ".$table.$addtable.".".$SEARCH_OPTION[$type][$ID]["datafields"][2]." AS ".$NAME."_".$num."_2, ";
+				}
 			break;
 			case "itemlink" :
 				if ($meta){
