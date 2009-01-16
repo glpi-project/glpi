@@ -301,6 +301,11 @@ class User extends CommonDBTM {
 
 		// Manage preferences fields
 		if (isset ($_SESSION["glpiID"]) && $_SESSION["glpiID"] == $input['ID']) {
+			if (isset($input['use_mode'])){
+				$_SESSION['glpi_use_mode']=$input['use_mode'];
+				loadLanguage();
+			}
+
 			foreach ($CFG_GLPI['user_pref_field'] as $f){
 				if (isset($input[$f])){
 					$_SESSION["glpi$f"] = $input[$f];
@@ -313,7 +318,6 @@ class User extends CommonDBTM {
 				}
 			}
 		}
-
 		$this->syncLdapGroups($input);
 
 		$this->applyRightRules($input);
@@ -328,12 +332,6 @@ class User extends CommonDBTM {
 		if (in_array("language", $updates) && isset ($input["ID"])) {
 			cleanCache("GLPI_HEADER_".$input["ID"]);
 		}
-		if (isset($_SESSION["glpiID"]) && $_SESSION["glpiID"] == $input['ID']) {
-			if (in_array('use_mode',$updates)){
-				$_SESSION['glpi_use_mode']=$input['use_mode'];
-			}
-		}
-
 	}
 
 	// SPECIFIC FUNCTIONS
