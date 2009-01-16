@@ -144,10 +144,20 @@ class Job extends CommonDBTM{
 		// Security checks
 		if (!haveRight("assign_ticket","1")){
 			if (isset($input["assign"])){
-				// Can not steal or can steal and not assign to me
-				if (!haveRight("steal_ticket","1")||$input["assign"]!=$_SESSION["glpiID"]){
-					unset($input["assign"]);
-				} 
+				$this->getFromDB($input['ID']);
+				// must own_ticket to grab a non assign ticket
+				if ($this->fields['assign']==0){
+					if ((!haveRight("steal_ticket","1") && !haveRight("own_ticket","1"))
+						|| ($input["assign"]!=$_SESSION["glpiID"])){
+						unset($input["assign"]);
+					}
+				} else {
+					// Can not steal or can steal and not assign to me
+					if (!haveRight("steal_ticket","1")||$input["assign"]!=$_SESSION["glpiID"]){
+						unset($input["assign"]);
+					} 
+
+				}
 			}
 			if (isset($input["assign_ent"])){
 				unset($input["assign_ent"]);
