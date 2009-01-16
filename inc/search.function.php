@@ -1722,17 +1722,19 @@ function addSelect ($type,$ID,$num,$meta=0,$meta_type=0){
 			return " GROUP_CONCAT( DISTINCT CONCAT(".$table.$addtable.".name, ' ', ".$table.$addtable.".firstname) SEPARATOR '$$$$') AS ".$NAME."_$num, ";
 		break;
 		case "glpi_users.name" :
-			$linkfield="";
-			if (!empty($SEARCH_OPTION[$type][$ID]["linkfield"]))
-				$linkfield="_".$SEARCH_OPTION[$type][$ID]["linkfield"];
-
-			if ($meta){
-				return " CONCAT(".$table.$linkfield.$addtable.".realname,' ',".$table.$linkfield.$addtable.".firstname) AS ".$NAME."_$num, ";
-			} else {
-				return $table.$linkfield.$addtable.".".$field." AS ".$NAME."_$num,
-					".$table.$linkfield.$addtable.".realname AS ".$NAME."_".$num."_2,
-					".$table.$linkfield.$addtable.".ID AS ".$NAME."_".$num."_3,
-					".$table.$linkfield.$addtable.".firstname AS ".$NAME."_".$num."_4,";
+			if ($type!=USER_TYPE){
+				$linkfield="";
+				if (!empty($SEARCH_OPTION[$type][$ID]["linkfield"]))
+					$linkfield="_".$SEARCH_OPTION[$type][$ID]["linkfield"];
+	
+				if ($meta){
+					return " CONCAT(".$table.$linkfield.$addtable.".realname,' ',".$table.$linkfield.$addtable.".firstname) AS ".$NAME."_$num, ";
+				} else {
+					return $table.$linkfield.$addtable.".".$field." AS ".$NAME."_$num,
+						".$table.$linkfield.$addtable.".realname AS ".$NAME."_".$num."_2,
+						".$table.$linkfield.$addtable.".ID AS ".$NAME."_".$num."_3,
+						".$table.$linkfield.$addtable.".firstname AS ".$NAME."_".$num."_4,";
+				}
 			}
 		break;
 
