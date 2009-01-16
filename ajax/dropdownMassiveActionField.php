@@ -103,6 +103,10 @@ if (isset($_POST["device_type"])&&isset($_POST["id_field"])&&$_POST["id_field"])
 							showDateFormItem($search["field"]);
 							$already_display=true;
 							break;
+						case "datetime":
+							showDateTimeFormItem($search["field"]);
+							$already_display=true;
+							break;
 						case "bool":
 							dropdownYesNo($search["linkfield"]);
 							$already_display=true;
