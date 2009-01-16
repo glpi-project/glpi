@@ -300,11 +300,16 @@ class User extends CommonDBTM {
 		}
 
 		// Manage preferences fields
-		if (isset ($_SESSION["glpiID"]) && isset ($input["language"]) && $_SESSION["glpiID"] == $input['ID']) {
+		if (isset ($_SESSION["glpiID"]) && $_SESSION["glpiID"] == $input['ID']) {
 			foreach ($CFG_GLPI['user_pref_field'] as $f){
-				$_SESSION["glpi$f"] = $input[$f];
-				if (isset($input[$f]) && $input[$f] == $CFG_GLPI[$f]){
-					$input[$f]="NULL";
+				if (isset($input[$f]){
+					$_SESSION["glpi$f"] = $input[$f];
+					if ($input[$f] == $CFG_GLPI[$f]){
+						$input[$f]="NULL";
+					}
+					if ($f=="language"){
+						loadLanguage();
+					}
 				}
 			}
 		}
