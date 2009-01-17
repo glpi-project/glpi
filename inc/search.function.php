@@ -463,7 +463,7 @@ function searchForm($type,$params){
  *
  * Build the query, make the search and list items after a search.
  *
- *@param $target filename where to go when done.
+ *@param $type item type
  *@param $params parameters array may include field, contains, sort, order, start, deleted, link, link2, contains2, field2, type2
  *
  *
