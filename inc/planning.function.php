@@ -302,59 +302,50 @@ function showPlanning($who,$who_group,$when,$type){
 		}
 	// ---------------reminder 
 
-	$ASSIGN="";
+	$readpub=$readpriv="";
 
-/*
-	if ($who_group=="mine"){
-		if (count($_SESSION["glpigroups"])){
-			$groups=implode(",",$_SESSION['glpigroups']);
-			$ASSIGN=" AND FK_users IN (SELECT DISTINCT FK_users FROM glpi_users_groups WHERE FK_groups IN ($groups)) ";
-		} else { // Only personal ones
-			$ASSIGN=" AND ( FK_users='$who' OR (private=0 ".getEntitiesRestrictRequest("AND","glpi_reminder")."))";
-		}
-	} else {
-		if ($who>0){
-			$ASSIGN=" AND ( FK_users='$who' OR (private=0 ".getEntitiesRestrictRequest("AND","glpi_reminder")."))";
-		}
-		if ($who_group>0){
-			$ASSIGN=" AND ( (private=0 ".getEntitiesRestrictRequest("AND","glpi_reminder").") OR FK_users IN (SELECT FK_users FROM glpi_users_groups WHERE FK_groups = '$who_group') )";
-		}
+	// See public reminder ?
+	if (haveRight("reminder_public","r")) {
+		$readpub="(private=0 AND".getEntitiesRestrictRequest("","glpi_reminder",'','',true).")";
 	}
-*/
-	// Only see public reminder
-	$ASSIGN=" (private=0 ".getEntitiesRestrictRequest("AND","glpi_reminder").")";
 	
+	// See my private reminder ?
 	if ($who_group=="mine" || $who==$_SESSION["glpiID"]){
-		// Also See my private reminder
-		$ASSIGN=" ($ASSIGN OR (private=1 AND FK_users=".$_SESSION["glpiID"]."))";
+		$readpriv="(private=1 AND FK_users=".$_SESSION["glpiID"].")";		
 	}
-
-	$query2="SELECT * FROM glpi_reminder WHERE rv=1 AND $ASSIGN  AND begin < '$end' AND end > '$begin' ORDER BY begin";
-
-	$result2=$DB->query($query2);
-
-
-	$remind=new Reminder();
-
-	if ($DB->numrows($result2)>0)
-		while ($data=$DB->fetch_array($result2)){
-
-			$interv[$data["begin"]."$$".$i]["id_reminder"]=$data["ID"];
-			if (strcmp($begin,$data["begin"])>0)
-				$interv[$data["begin"]."$$".$i]["begin"]=$begin;
-			else $interv[$data["begin"]."$$".$i]["begin"]=$data["begin"];
-			if (strcmp($end,$data["end"])<0)
-				$interv[$data["begin"]."$$".$i]["end"]=$end;
-			else $interv[$data["begin"]."$$".$i]["end"]=$data["end"];
-
-			$interv[$data["begin"]."$$".$i]["name"]=resume_text($data["name"],$CFG_GLPI["cut"]);
-			$interv[$data["begin"]."$$".$i]["text"]=resume_text($data["text"],$CFG_GLPI["cut"]);
-			$interv[$data["begin"]."$$".$i]["FK_users"]=$data["FK_users"];
-			$interv[$data["begin"]."$$".$i]["private"]=$data["private"];
-			$interv[$data["begin"]."$$".$i]["state"]=$data["state"];
-
-			$i++;
+	
+	if ($readpub && $readpriv) {
+		$ASSIGN	= "($readpub OR $readpriv)";
+	} else if ($readpub) {
+		$ASSIGN	= $readpub;	
+	} else {
+		$ASSIGN	= $readpriv;	
+	}		
+	if ($ASSIGN) {
+		$query2="SELECT * FROM glpi_reminder WHERE rv=1 AND $ASSIGN  AND begin < '$end' AND end > '$begin' ORDER BY begin";
+		$result2=$DB->query($query2);
+	
+		if ($DB->numrows($result2)>0) {	
+			while ($data=$DB->fetch_array($result2)){
+	
+				$interv[$data["begin"]."$$".$i]["id_reminder"]=$data["ID"];
+				if (strcmp($begin,$data["begin"])>0)
+					$interv[$data["begin"]."$$".$i]["begin"]=$begin;
+				else $interv[$data["begin"]."$$".$i]["begin"]=$data["begin"];
+				if (strcmp($end,$data["end"])<0)
+					$interv[$data["begin"]."$$".$i]["end"]=$end;
+				else $interv[$data["begin"]."$$".$i]["end"]=$data["end"];
+	
+				$interv[$data["begin"]."$$".$i]["name"]=resume_text($data["name"],$CFG_GLPI["cut"]);
+				$interv[$data["begin"]."$$".$i]["text"]=resume_text($data["text"],$CFG_GLPI["cut"]);
+				$interv[$data["begin"]."$$".$i]["FK_users"]=$data["FK_users"];
+				$interv[$data["begin"]."$$".$i]["private"]=$data["private"];
+				$interv[$data["begin"]."$$".$i]["state"]=$data["state"];
+	
+				$i++;
+			} //
 		}
+	}
 
 	$data=doHookFunction("planning_populate",array("begin"=>$begin,"end"=>$end,"who"=>$who,"who_group"=>$who_group));
 
