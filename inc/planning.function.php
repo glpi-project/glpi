@@ -304,7 +304,7 @@ function showPlanning($who,$who_group,$when,$type){
 
 	$ASSIGN="";
 
-
+/*
 	if ($who_group=="mine"){
 		if (count($_SESSION["glpigroups"])){
 			$groups=implode(",",$_SESSION['glpigroups']);
@@ -320,8 +320,16 @@ function showPlanning($who,$who_group,$when,$type){
 			$ASSIGN=" AND ( (private=0 ".getEntitiesRestrictRequest("AND","glpi_reminder").") OR FK_users IN (SELECT FK_users FROM glpi_users_groups WHERE FK_groups = '$who_group') )";
 		}
 	}
+*/
+	// Only see public reminder
+	$ASSIGN=" (private=0 ".getEntitiesRestrictRequest("AND","glpi_reminder").")";
 	
-	$query2="SELECT * FROM glpi_reminder WHERE rv=1 $ASSIGN  AND begin < '$end' AND end > '$begin' ORDER BY begin";
+	if ($who_group=="mine" || $who==$_SESSION["glpiID"]){
+		// Also See my private reminder
+		$ASSIGN=" ($ASSIGN OR (private=1 AND FK_users=".$_SESSION["glpiID"]."))";
+	}
+
+	$query2="SELECT * FROM glpi_reminder WHERE rv=1 AND $ASSIGN  AND begin < '$end' AND end > '$begin' ORDER BY begin";
 
 	$result2=$DB->query($query2);
 
