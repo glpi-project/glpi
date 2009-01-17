@@ -301,7 +301,6 @@ function showPlanning($who,$who_group,$when,$type){
 			}
 		}
 	// ---------------reminder 
-
 	$readpub=$readpriv="";
 
 	// See public reminder ?
@@ -347,7 +346,9 @@ function showPlanning($who,$who_group,$when,$type){
 		}
 	}
 
+	// --------------- Plugins
 	$data=doHookFunction("planning_populate",array("begin"=>$begin,"end"=>$end,"who"=>$who,"who_group"=>$who_group));
+
 
 	if (isset($data["items"])&&count($data["items"])){
 		$interv=array_merge($data["items"],$interv);
