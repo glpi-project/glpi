@@ -128,8 +128,7 @@ function showFormPlanning($type,$date,$usertype,$uID,$gID){
 		echo "</select>";
 	}
 	echo "</td>";
-echo "<td align='right'>";
-echo $LANG["common"][27].":</td><td>";
+echo "<td>";
 showDateFormItem("date",$date,false);
 
 echo "</td>";
@@ -141,10 +140,10 @@ echo "</select></td>";
 echo "<td rowspan='2' align='center'><input type=\"submit\" class='button' name=\"submit\" Value=\"". $LANG["buttons"][7] ."\" /></td>";
 echo "<td>";
 
-echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/planning.ical.php?uID=".$uID."\"><span style='font-size:10px'>-".$LANG["planning"][12]."</span></a>";
+echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/planning.ical.php?uID=".$uID."\" title='".$LANG["planning"][12]."'><span style='font-size:10px'>-".$LANG["planning"][10]."</span></a>";
 echo "<br>";
 // Todo recup l'url complete de glpi proprement, ? nouveau champs table config ?
-echo "<a href=\"webcal://".$_SERVER['HTTP_HOST'].$CFG_GLPI["root_doc"]."/front/planning.ical.php?uID=".$uID."\"><span style='font-size:10px'>-".$LANG["planning"][13]."</span></a>";
+echo "<a href=\"webcal://".$_SERVER['HTTP_HOST'].$CFG_GLPI["root_doc"]."/front/planning.ical.php?uID=".$uID."\" title='".$LANG["planning"][13]."'><span style='font-size:10px'>-".$LANG["planning"][11]."</span></a>";
 
 echo "</td>";	
 echo "<td>";
