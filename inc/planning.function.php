@@ -321,7 +321,7 @@ function showPlanning($who,$who_group,$when,$type){
 		}
 	}
 	
-	$query2="SELECT * FROM glpi_reminder WHERE FK_entities= '".$_SESSION["glpiactive_entity"]."' AND rv='1' $ASSIGN  AND (('$begin' <= begin AND '$end' >= begin) OR ('$begin' < end AND '$end' >= end) OR (begin <= '$begin' AND end > '$begin') OR (begin <= '$end' AND end > '$end')) ORDER BY begin";
+	$query2="SELECT * FROM glpi_reminder WHERE rv=1 $ASSIGN  AND begin < '$end' AND end > '$begin' ORDER BY begin";
 
 	$result2=$DB->query($query2);
 
