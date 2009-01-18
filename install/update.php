@@ -50,9 +50,9 @@ include_once (GLPI_ROOT . "/config/based_config.php");
 include_once (GLPI_CONFIG_DIR . "/config_db.php");
 
 // Clean cache if directory is writable
-if (is_writable(GLPI_CACHE_DIR)){
-	cleanCache();
-}
+//if (is_writable(GLPI_CACHE_DIR)){
+//	cleanCache();
+//}
 // Use default session dir if not writable
 if (is_writable(GLPI_SESSION_DIR)){
 	setGlpiSessionPath();
