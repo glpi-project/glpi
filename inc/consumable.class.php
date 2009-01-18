@@ -75,10 +75,12 @@ class ConsumableType extends CommonDBTM {
 			$ong[4]=$LANG["Menu"][26];
 		if (haveRight("document","r"))	
 			$ong[5]=$LANG["Menu"][27];
-		if (haveRight("link","r"))	
-			$ong[7]=$LANG["title"][34];
-		if (haveRight("notes","r"))
-			$ong[10]=$LANG["title"][37];
+		if(empty($withtemplate)){		
+			if (haveRight("link","r"))	
+				$ong[7]=$LANG["title"][34];
+			if (haveRight("notes","r"))
+				$ong[10]=$LANG["title"][37];
+		}
 		return $ong;
 	}
 

@@ -44,7 +44,7 @@ function update0712to0713() {
 		$DB->query($query) or die("0.71.3 add ignore _from_ocs field in dictionnary cache " . $LANG["update"][90] . $DB->error());
 	}
 	// Clean KB cache because error on datas stored
-	cleanCache("GLPI_".KNOWBASE_TYPE);
+	//cleanCache("GLPI_".KNOWBASE_TYPE);
 	
 	// Update to longtext for fields which may be very long
 	if (FieldExists("glpi_kbitems", "answer")) {
