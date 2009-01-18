@@ -664,6 +664,12 @@ $SEARCH_OPTION[NETWORKING_TYPE][11]['field']='name';
 $SEARCH_OPTION[NETWORKING_TYPE][11]['linkfield']='firmware';
 $SEARCH_OPTION[NETWORKING_TYPE][11]['name']=$LANG["setup"][71];
 
+$SEARCH_OPTION[NETWORKING_TYPE][14]['table']='glpi_networking';
+$SEARCH_OPTION[NETWORKING_TYPE][14]['field']='ram';
+$SEARCH_OPTION[NETWORKING_TYPE][14]['linkfield']='ram';
+$SEARCH_OPTION[NETWORKING_TYPE][14]['name']=$LANG["networking"][5];
+$SEARCH_OPTION[NETWORKING_TYPE][14]['datatype']='number';
+
 $SEARCH_OPTION[NETWORKING_TYPE][12]['table']='glpi_networking';
 $SEARCH_OPTION[NETWORKING_TYPE][12]['field']='ifaddr';
 $SEARCH_OPTION[NETWORKING_TYPE][12]['linkfield']='ifaddr';
