@@ -1510,6 +1510,7 @@ function showSoftwareInstalled($instID, $withtemplate = '') {
 	$rand=mt_rand();
 	$comp = new Computer();
 	$comp->getFromDB($instID);
+	$canedit=haveRight("software", "w");
 	$FK_entities = $comp->fields["FK_entities"];
 
 	$query_cat = "SELECT 1 as TYPE, glpi_dropdown_software_category.name as category, glpi_software.category as category_id, 
@@ -1543,7 +1544,7 @@ function showSoftwareInstalled($instID, $withtemplate = '') {
 
 	echo "<div class='center'><table class='tab_cadre_fixe'>";
 
-	if ((empty ($withtemplate) || $withtemplate != 2) && haveRight("software", "w")) {
+	if ((empty ($withtemplate) || $withtemplate != 2) && $canedit) {
 		echo "<tr class='tab_bg_1'><td align='center' colspan='5'>";
 		echo "<form method='post' action=\"" . $CFG_GLPI["root_doc"] . "/front/software.licenses.php\">";
 
@@ -1565,34 +1566,36 @@ function showSoftwareInstalled($instID, $withtemplate = '') {
 	if ($DB->numrows($result)) {
 		while ($data = $DB->fetch_array($result)) {
 			if ($data["category_id"] != $cat) {
-				$cat = displayCategoryHeader($data, $cat,$rand);
+				$cat = displayCategoryHeader($data, $cat,$rand,$canedit);
 			}
 
-			displaySoftsByCategory($data, $instID, $withtemplate);
+			displaySoftsByCategory($data, $instID, $withtemplate,$canedit);
 			addToNavigateListItems(SOFTWARE_TYPE,$data["sID"]);
 		}
 
 		echo "</table>";
 		
-		echo "<table width='950px'>";
-		echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td><a onclick= \"if ( markCheckboxes('lic_form$cat$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=".$cat."&amp;select=all'>".$LANG["buttons"][18]."</a></td>";
-		echo "<td>/</td><td ><a onclick=\"if ( unMarkCheckboxes ('lic_form$cat$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=".$cat."&amp;select=none'>".$LANG["buttons"][19]."</a>";
-		echo "</td><td class='left' width='80%'>";
-
-		echo "<select name='update_licenses$cat$rand' id='update_licenses_choice$cat$rand'>";
-		echo "<option value=''>-----</option>";
-		echo "<option value='uninstall_license'>".$LANG["buttons"][5]."</option>";
-		echo "</select>";
-
-		$params=array('type'=>'__VALUE__',
-							'sID'=>$data["sID"],
-					);
-					ajaxUpdateItemOnSelectEvent("update_licenses_choice$cat$rand","update_licenses_view$cat$rand",$CFG_GLPI["root_doc"]."/ajax/updateLicenses.php",$params,false);
-
-		echo "<span id='update_licenses_view$cat$rand'>\n";
-		echo "&nbsp;";
-		echo "</span>\n";
-		echo "</td></tr></table>";
+		if ($canedit) {
+			echo "<table width='950px'>";
+			echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td><a onclick= \"if ( markCheckboxes('lic_form$cat$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=".$cat."&amp;select=all'>".$LANG["buttons"][18]."</a></td>";
+			echo "<td>/</td><td ><a onclick=\"if ( unMarkCheckboxes ('lic_form$cat$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=".$cat."&amp;select=none'>".$LANG["buttons"][19]."</a>";
+			echo "</td><td class='left' width='80%'>";
+	
+			echo "<select name='update_licenses$cat$rand' id='update_licenses_choice$cat$rand'>";
+			echo "<option value=''>-----</option>";
+			echo "<option value='uninstall_license'>".$LANG["buttons"][5]."</option>";
+			echo "</select>";
+	
+			$params=array('type'=>'__VALUE__',
+								'sID'=>$data["sID"],
+						);
+						ajaxUpdateItemOnSelectEvent("update_licenses_choice$cat$rand","update_licenses_view$cat$rand",$CFG_GLPI["root_doc"]."/ajax/updateLicenses.php",$params,false);
+	
+			echo "<span id='update_licenses_view$cat$rand'>\n";
+			echo "&nbsp;";
+			echo "</span>\n";
+			echo "</td></tr></table>";
+		}
 		echo "</form>";
 		echo "</div></td></tr>";
 
@@ -1613,33 +1616,35 @@ function showSoftwareInstalled($instID, $withtemplate = '') {
  * @param $cat current category ID
  * @return new category ID
  */
-function displayCategoryHeader($data, $cat,$rand) {
+function displayCategoryHeader($data, $cat,$rand,$canedit) {
 	global $LANG, $CFG_GLPI;
 	$expirecss = '';
 	
 	// Close old one
 	if ($cat != -1) {
 		echo "</table>";
-
-		echo "<table width='950px'>";
-		echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td><a onclick= \"if ( markCheckboxes('lic_form$cat$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=".$cat."&amp;select=all'>".$LANG["buttons"][18]."</a></td>";
-		echo "<td>/</td><td ><a onclick=\"if ( unMarkCheckboxes('lic_form$cat$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=".$cat."&amp;select=none'>".$LANG["buttons"][19]."</a>";
-		echo "</td><td class='left' width='80%'>";
-
-		echo "<select name='update_licenses$cat$rand' id='update_licenses_choice$cat$rand'>";
-		echo "<option value=''>-----</option>";
-		echo "<option value='uninstall_license'>".$LANG["buttons"][5]."</option>";
-		echo "</select>";
-
-		$params=array('type'=>'__VALUE__',
-		'sID'=>$data["sID"],
-		);
-		ajaxUpdateItemOnSelectEvent("update_licenses_choice$cat$rand","update_licenses_view$cat$rand",$CFG_GLPI["root_doc"]."/ajax/updateLicenses.php",$params,false);
-
-		echo "<span id='update_licenses_view$cat$rand'>\n";
-		echo "&nbsp;";
-		echo "</span>\n";
-		echo "</td></tr></table>";
+		
+		if ($canedit) {
+			echo "<table width='950px'>";
+			echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td><a onclick= \"if ( markCheckboxes('lic_form$cat$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=".$cat."&amp;select=all'>".$LANG["buttons"][18]."</a></td>";
+			echo "<td>/</td><td ><a onclick=\"if ( unMarkCheckboxes('lic_form$cat$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=".$cat."&amp;select=none'>".$LANG["buttons"][19]."</a>";
+			echo "</td><td class='left' width='80%'>";
+	
+			echo "<select name='update_licenses$cat$rand' id='update_licenses_choice$cat$rand'>";
+			echo "<option value=''>-----</option>";
+			echo "<option value='uninstall_license'>".$LANG["buttons"][5]."</option>";
+			echo "</select>";
+	
+			$params=array('type'=>'__VALUE__',
+			'sID'=>$data["sID"],
+			);
+			ajaxUpdateItemOnSelectEvent("update_licenses_choice$cat$rand","update_licenses_view$cat$rand",$CFG_GLPI["root_doc"]."/ajax/updateLicenses.php",$params,false);
+	
+			echo "<span id='update_licenses_view$cat$rand'>\n";
+			echo "&nbsp;";
+			echo "</span>\n";
+			echo "</td></tr></table>";
+		}
 		echo "</form>";
 		echo "</div></td></tr>";
 	}
@@ -1667,7 +1672,8 @@ function displayCategoryHeader($data, $cat,$rand) {
 	echo "<form id='lic_form$cat$rand' name='lic_form$cat$rand' method='post' action=\"".$CFG_GLPI["root_doc"]."/front/software.licenses.php\">";
 	echo "			<table class='tab_cadre_fixe'>";
 	echo "				<tr>";
-	echo "<th>&nbsp;</th>";
+	if ($canedit)
+		echo "<th>&nbsp;</th>";
 	echo "					<th>" . $LANG["common"][16] . "</th><th>" . $LANG["state"][0] . "</th><th>" . $LANG["software"][5] . "</th>";
 	echo "				</tr>";
 	return $cat;
@@ -1681,7 +1687,7 @@ function displayCategoryHeader($data, $cat,$rand) {
  * @param $withtemplate template case of the view process
  * @return nothing
  */
-function displaySoftsByCategory($data, $instID, $withtemplate) {
+function displaySoftsByCategory($data, $instID, $withtemplate,$canedit) {
 	global $LANG, $CFG_GLPI;
 
 	$ID = $data["ID"];
@@ -1695,6 +1701,7 @@ function displaySoftsByCategory($data, $instID, $withtemplate) {
 	}
 
 	echo "<tr class='tab_bg_1'>";
+	if ($canedit)
 	echo "<td><input type='checkbox' name='license_".$data['ID']."'></td>";
 	echo "<td class='center'><strong><a href=\"" . $CFG_GLPI["root_doc"] . "/front/software.form.php?ID=" . $data['sID'] . "\">";
 	echo $data["softname"] . ($_SESSION["glpiview_ID"] ? " (" . $data['ID'] . ")" : "") . "</a>";
@@ -1704,7 +1711,7 @@ function displaySoftsByCategory($data, $instID, $withtemplate) {
 	echo "<td>" . $data["version"];
 	if ($data["FK_computers"]==$instID)
 		echo " - <strong>". getDropdownName("glpi_dropdown_licensetypes",$data["lictype"]) . "</strong>";
-	if (empty ($withtemplate) || $withtemplate != 2) {
+	if ((empty ($withtemplate) || $withtemplate != 2) && $canedit) {
 		echo " - <a href=\"" . $CFG_GLPI["root_doc"] . "/front/software.licenses.php?uninstall=uninstall&amp;ID=$ID&amp;cID=$instID\">";
 		echo "<strong>" . $LANG["buttons"][5] . "</strong></a>";
 	}
