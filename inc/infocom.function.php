@@ -82,9 +82,10 @@ function showInfocomForm($target,$device_type,$dev_ID,$show_immo=true,$withtempl
 			}
 		} else { // getFromDBforDevice
 			$canedit = ($ic->can($ic->fields['ID'], "w") && $withtemplate!=2); 
-
-			echo "<form name='form_ic' method='post' action=\"$target\">";
-	
+			
+			if ($canedit) {
+				echo "<form name='form_ic' method='post' action=\"$target\">";
+			}
 			echo "<div class='center'>";
 			echo "<table class='tab_cadre".(!strpos($_SERVER['PHP_SELF'],"infocoms-show")?"_fixe":"")."'>";
 	
@@ -246,10 +247,10 @@ function showInfocomForm($target,$device_type,$dev_ID,$show_immo=true,$withtempl
 	
 				echo "</td>";
 				echo "</tr>";
-
+				echo "</table></div></form>";
 			}
 			else {
-				echo "</table></div></form>";
+				echo "</table></div>";
 			}
 	
 		}
