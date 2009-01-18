@@ -77,7 +77,8 @@ class Script_Timer {
 		$end_time = explode (" ", microtime ());
 		$end_time = $end_time[1] + $end_time[0];
 
-		return formatNumber ($end_time - $start_time, false, $decimals);
+		return	number_format($end_time - $start_time,$decimals,'.',' ');
+
 	}
 }
 ?>
