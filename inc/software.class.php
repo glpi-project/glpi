@@ -269,9 +269,9 @@ class Software extends CommonDBTM {
 		}
 
 		echo "<div class='center' id='tabsbody'>";
-		if ($canedit) {
-			echo "<form method='post' action=\"$target\">";
-		}
+		
+		echo "<form method='post' action=\"$target\">";
+
 		if (strcmp($template, "newtemplate") === 0) {
 			echo "<input type=\"hidden\" name=\"is_template\" value=\"1\" />";
 		}
@@ -383,10 +383,10 @@ class Software extends CommonDBTM {
 
 			}
 			echo "</tr>";
-			echo "</table></form></div>";
-		} else {
-			echo "</table></div>";
 		}
+		echo "</table>";
+		echo "</div>";
+		echo "</form>";
 		echo "<div id='tabcontent'></div>";
 		echo "<script type='text/javascript'>loadDefaultTab();</script>";
 
