@@ -539,9 +539,7 @@ class Printer  extends CommonDBTM {
 		}else { // ! $canedit
 			echo "</table></div>\n";
 		}
-		echo "</table>";
-		echo "</div>";
-		echo "</form>";
+
 		echo "<div id='tabcontent'></div>";
 		echo "<script type='text/javascript'>loadDefaultTab();</script>";
 
