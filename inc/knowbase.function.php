@@ -506,7 +506,11 @@ function ShowKbItemFull($ID,$linkauthor=true){
 	global $DB,$LANG,$CFG_GLPI;
 
 	if (!haveRight("user","r")) $linkauthor=false;
-	
+
+	//update counter view
+	$query="UPDATE glpi_kbitems SET view=view+1 WHERE ID = '$ID'";
+	$DB->query($query);	
+
 	$ki= new kbitem;	
 
 	if ($ki->getFromDB($ID)){
@@ -516,9 +520,7 @@ function ShowKbItemFull($ID,$linkauthor=true){
 		else 
 			if (!haveRight("knowbase","r")) return false;	
 	
-		//update counter view
-		$query="UPDATE glpi_kbitems SET view=view+1 WHERE ID = '$ID'";
-		$DB->query($query);
+		
 	
 	
 	
