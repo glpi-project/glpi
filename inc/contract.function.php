@@ -525,7 +525,7 @@ function showContractAssociated($device_type,$ID,$withtemplate=''){
 	$i = 0;
 
 	if ($withtemplate!=2) echo "<form method='post' action=\"".$CFG_GLPI["root_doc"]."/front/contract.form.php\">";
-	echo "<div class='center'><table class='tab_cadre_fixe'>";
+	echo "<div class='center'><br><table class='tab_cadre_fixe'>";
 	echo "<tr><th colspan='8'>".$LANG["financial"][66].":</th></tr>";
 	echo "<tr><th>".$LANG["common"][16]."</th>";
 	echo "<th>".$LANG["entity"][0]."</th>";
