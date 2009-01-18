@@ -60,7 +60,7 @@ function showInfocomEnterprise($instID) {
 	$number = $DB->numrows($result);
 	$i = 0;
 
-	echo "<br><br><div class='center'><table class='tab_cadrehov'>";
+	echo "<div class='center'><table class='tab_cadrehov'>";
 	echo "<tr><th colspan='2'>";
 	printPagerForm();
 	echo "</th><th colspan='3'>".$LANG["document"][19].":</th></tr>";
@@ -150,7 +150,7 @@ function showAssociatedContact($instID) {
 	$i = 0;
 
 
-	echo "<br><div class='center'><table class='tab_cadre_fixe'>";
+	echo "<div class='center'><table class='tab_cadre_fixe'>";
 	echo "<tr><th colspan='9'>".$LANG["financial"][46].":</th></tr>";
 	echo "<tr><th>".$LANG["common"][16]."</th><th>".$LANG["entity"][0]."</th><th>".$LANG["help"][35]."</th>";
 	echo "<th>".$LANG["help"][35]." 2</th><th>".$LANG["common"][42]."</th><th>".$LANG["financial"][30]."</th>";

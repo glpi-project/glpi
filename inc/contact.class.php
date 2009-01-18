@@ -144,11 +144,9 @@ class Contact extends CommonDBTM{
 
 		$this->showTabs($ID, $withtemplate,$_SESSION['glpi_tab']);
 
-		if ($canedit) {
-			echo "<form method='post' name=form action=\"$target\"><div class='center' id='tabsbody'>";
-			if (empty($ID)||$ID<0){
-				echo "<input type='hidden' name='FK_entities' value='".$_SESSION["glpiactive_entity"]."'>";
-			}
+		echo "<form method='post' name=form action=\"$target\"><div class='center' id='tabsbody'>";
+		if (empty($ID)||$ID<0){
+			echo "<input type='hidden' name='FK_entities' value='".$_SESSION["glpiactive_entity"]."'>";
 		}
 
 		echo "<table class='tab_cadre_fixe' cellpadding='2' >";
@@ -221,8 +219,11 @@ class Contact extends CommonDBTM{
 		}
 
 		if ($canedit) {
+			
+			echo "<tr>";
+			
 			if ($ID>0){
-				echo "<tr>";
+				
 				echo "<td class='tab_bg_2' valign='top'>";
 				echo "<input type='hidden' name='ID' value=\"$ID\">\n";
 				echo "<div class='center'><input type='submit' name='update' value=\"".$LANG["buttons"][7]."\" class='submit' ></div>";
@@ -236,23 +237,22 @@ class Contact extends CommonDBTM{
 					echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='submit' name='purge' value=\"".$LANG["buttons"][22]."\" class='submit'></div>";
 				}
 				echo "</td>";
-				echo "</tr>";
 
 			} else {
 
-				echo "<tr>";
 				echo "<td class='tab_bg_2' valign='top' colspan='2'>";
 				echo "<div class='center'><input type='submit' name='add' value=\"".$LANG["buttons"][8]."\" class='submit'></div>";
 				echo "</td>";
-				echo "</tr>";
+
 			}
-			echo "</table></div></form>";
+			echo "</tr>";
 			
 			
-		} else { // canedit
-			echo "</table></div>";
 		}
 		
+		echo "</table>";
+		echo "</div>";
+		echo "</form>";
 		echo "<div id='tabcontent'></div>";
 		echo "<script type='text/javascript'>loadDefaultTab();</script>";
 			

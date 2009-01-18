@@ -139,13 +139,11 @@ class Contract extends CommonDBTM {
 
 		$this->showTabs($ID, $withtemplate,$_SESSION['glpi_tab']);
 
-		if ($can_edit) { 
-			echo "<form name='form' method='post' action=\"$target\">";
-			if (empty($ID)||$ID<0){
-				echo "<input type='hidden' name='FK_entities' value='".$_SESSION["glpiactive_entity"]."'>";
-			}
+		echo "<form name='form' method='post' action=\"$target\">";
+		if (empty($ID)||$ID<0){
+			echo "<input type='hidden' name='FK_entities' value='".$_SESSION["glpiactive_entity"]."'>";
 		}
-			
+
 		echo "<div class='center' id='tabsbody'><table class='tab_cadre_fixe'>";
 
 		$this->showFormHeader($ID,'',2);
@@ -279,22 +277,22 @@ class Contract extends CommonDBTM {
 				}
 
 				echo "</td>";
-				echo "</tr>";
 
 			} else {
 
 				echo "<td class='tab_bg_2' valign='top' colspan='4'>";
 				echo "<div class='center'><input type='submit' name='add' value=\"".$LANG["buttons"][8]."\" class='submit'></div>";
 				echo "</td>";
-				echo "</tr>";
-			}
-			echo "</table></div></form>";
 
-		} else { // can't edit
-			echo "</table></div>";
+			}
+			echo "</tr>";
+
 		}
-	
-		echo "<div class='center' id='tabcontent'></div>";
+		
+		echo "</table>";
+		echo "</div>";
+		echo "</form>";
+		echo "<div id='tabcontent'></div>";
 		echo "<script type='text/javascript'>loadDefaultTab();</script>";
 
 		return true;

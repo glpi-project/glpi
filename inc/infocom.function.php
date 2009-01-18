@@ -82,9 +82,8 @@ function showInfocomForm($target,$device_type,$dev_ID,$show_immo=true,$withtempl
 			}
 		} else { // getFromDBforDevice
 			$canedit = ($ic->can($ic->fields['ID'], "w") && $withtemplate!=2); 
-			if ($canedit) {
-				echo "<form name='form_ic' method='post' action=\"$target\">";
-			}
+
+			echo "<form name='form_ic' method='post' action=\"$target\">";
 	
 			echo "<div class='center'>";
 			echo "<table class='tab_cadre".(!strpos($_SERVER['PHP_SELF'],"infocoms-show")?"_fixe":"")."'>";
@@ -183,9 +182,6 @@ function showInfocomForm($target,$device_type,$dev_ID,$show_immo=true,$withtempl
 	
 				echo "</td>";
 	
-	
-	
-	
 				echo "<td>".$LANG["financial"][22].":		</td><td >";
 				if ($withtemplate==2){
 					echo getAmortTypeName($ic->fields["amort_type"]);
@@ -250,10 +246,10 @@ function showInfocomForm($target,$device_type,$dev_ID,$show_immo=true,$withtempl
 	
 				echo "</td>";
 				echo "</tr>";
-				echo "</table></div></form>";
+
 			}
 			else {
-				echo "</table></div>";
+				echo "</table></div></form>";
 			}
 	
 		}

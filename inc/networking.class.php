@@ -304,10 +304,9 @@ class Netdevice extends CommonDBTM {
 
 
 		echo "<div class='center'  id='tabsbody'>";
-		if ($canedit) {
-			echo "<form name='form' method='post' action=\"$target\">\n";
-			echo "<input type='hidden' name='FK_entities' value='".$this->fields["FK_entities"]."'>";
-		}
+
+		echo "<form name='form' method='post' action=\"$target\">\n";
+		echo "<input type='hidden' name='FK_entities' value='".$this->fields["FK_entities"]."'>";
 
 		echo "<table  class='tab_cadre_fixe' cellpadding='2'>\n";
 
@@ -351,9 +350,6 @@ class Netdevice extends CommonDBTM {
 			echo "<tr><td>".$LANG["common"][35].": 	</td><td>";
 			dropdownValue("glpi_groups", "FK_groups", $this->fields["FK_groups"],1,$this->fields["FK_entities"]);
 			echo "</td></tr>";
-
-			
-
 
 			echo "<tr><td>".$LANG["state"][0].":</td><td>\n";
 			dropdownValue("glpi_dropdown_state", "state",$this->fields["state"]);
@@ -467,11 +463,12 @@ class Netdevice extends CommonDBTM {
 				echo "</td>\n";
 			}
 			echo "</tr>\n";
-			echo "</table></form></div>\n";
 
-		} else { // ! $canedit
-			echo "</table></div>\n";
 		}
+		
+		echo "</table>";
+		echo "</div>";
+		echo "</form>";
 		echo "<div id='tabcontent'></div>";
 		echo "<script type='text/javascript'>loadDefaultTab();</script>";
 
@@ -643,4 +640,5 @@ class Netwire {
 		}
 	}
 }
+
 ?>

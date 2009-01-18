@@ -212,7 +212,7 @@ function showDeviceDocument($instID) {
 		$rand=mt_rand();
 		echo "<form method='post' name='document_form$rand' id='document_form$rand'  action=\"".$CFG_GLPI["root_doc"]."/front/document.form.php\">";
 	
-		echo "<br><br><div class='center'><table class='tab_cadre_fixe'>";
+		echo "<div class='center'><table class='tab_cadre_fixe'>";
 		echo "<tr><th colspan='".($canedit?6:5)."'>".$LANG["document"][19].":</th></tr><tr>";
 		if ($canedit) {
 			echo "<th>&nbsp;</th>";
