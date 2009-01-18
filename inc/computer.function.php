@@ -334,12 +334,12 @@ function showComputerDisks($ID,$withtemplate='') {
 			}
 			//echo "</table>";
 		} else {
-			echo "<th colspan='6'>".$LANG["search"][15]."</th></tr>";
+			echo "<tr><th colspan='6'>".$LANG["search"][15]."</th></tr>";
 		}
 	if ($canedit){
-		echo "<tr class='tab_bg_2'><th colspan='6''><a href='computerdisk.form.php?cID=$ID'>".$LANG["computers"][7]."</a></th></tr></table>";
+		echo "<tr class='tab_bg_2'><th colspan='6''><a href='computerdisk.form.php?cID=$ID'>".$LANG["computers"][7]."</a></th></tr>";
 	}
-	
+	echo "</table>";
 	}
 	echo "</div><br>";
 
