@@ -78,8 +78,9 @@ padding-right:20px;
 
 }
 
-.center {
-text-align:center;}
+.center {text-align:center;}
+
+.left{ text-align:left;}
 
        table {
        text-align:center;
@@ -93,7 +94,7 @@ text-align:center;}
   {  
     font-size: 12px;
     font-weight: bold;
- color: #fccc6f;
+ 	color: #fccc6f;
 	vertical-align:bottom;
 }
 
@@ -103,6 +104,16 @@ text-align:center;}
 
 .tab_bg_1 {
 
+
+}
+
+.tab_check {
+border: 1px solid #aaaaaa;
+padding:10px;
+}
+
+.tab_check td{
+	border-bottom:1px solid #bbbbbb;
 
 }
 

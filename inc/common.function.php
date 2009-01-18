@@ -558,7 +558,7 @@ function commonCheckForUseGLPI(){
 	global $LANG;
 
 	// memory test
-	echo "<tr class='tab_bg_1'><td><b>".$LANG["install"][86]."</b></td>";
+	echo "<tr class='tab_bg_1'><td class='left'><b>".$LANG["install"][86]."</b></td>";
 
 	$mem=ini_get("memory_limit");
 
@@ -584,17 +584,17 @@ function commonCheckForUseGLPI(){
 	}
 
 	if( $mem == "" ){          // memory_limit non compilé -> no memory limit
-		echo "<td>".$LANG["install"][95]." - ".$LANG["install"][89]."</td></tr>";
+		echo "<td><img src=\"".GLPI_ROOT."/pics/greenbutton.png\" alt='".$LANG["install"][95]." - ".$LANG["install"][89]."' title='".$LANG["install"][95]." - ".$LANG["install"][89]."'></td></tr>";
 	}
 	else if( $mem == "-1" ){   // memory_limit compilé mais illimité
-		echo "<td>".$LANG["install"][96]." - ".$LANG["install"][89]."</td></tr>";
+		echo "<td><img src=\"".GLPI_ROOT."/pics/greenbutton.png\" alt='".$LANG["install"][96]." - ".$LANG["install"][89]."' title='".$LANG["install"][96]." - ".$LANG["install"][89]."'></td></tr>";
 	}
 	else{	
 		if ($mem<64*1024*1024){ // memoire insuffisante
-			echo "<td  class='red'><b>".$LANG["install"][87]." $mem octets</b><br>".$LANG["install"][88]."<br>".$LANG["install"][90]."</td></tr>";
+			echo "<td  class='red'><img src=\"".GLPI_ROOT."/pics/redbutton.png\"><b>".$LANG["install"][87]." $mem octets</b><br>".$LANG["install"][88]."<br>".$LANG["install"][90]."</td></tr>";
 		}
 		else{ // on a sufisament de mémoire on passe à la suite
-			echo "<td>".$LANG["install"][91]." - ".$LANG["install"][89]."</td></tr>";
+			echo "<td><img src=\"".GLPI_ROOT."/pics/greenbutton.png\" alt='".$LANG["install"][91]." - ".$LANG["install"][89]."' title='".$LANG["install"][91]." - ".$LANG["install"][89]."'></td></tr>";
 		}
 	}
 	return checkWriteAccessToDirs();
@@ -617,40 +617,40 @@ function checkWriteAccessToDirs(){
 	);
 	$error=0;	
 	foreach ($dir_to_check as $dir => $message){
-		echo "<tr class='tab_bg_1'><td><strong>".$message."</strong></td>";
+		echo "<tr class='tab_bg_1' ><td class='left'><strong>".$message."</strong></td>";
 		$tmperror=testWriteAccessToDirectory($dir);
 	
 		switch($tmperror){
 			// Error on creation
 			case 4 :
-				echo "<td><p class='red'>".$LANG["install"][100]."</p> ".$LANG["install"][97]."'".$dir."'. ".$LANG["install"][98]."</td></tr>";
+				echo "<td><img src=\"".GLPI_ROOT."/pics/redbutton.png\"><p class='red'>".$LANG["install"][100]."</p> ".$LANG["install"][97]."'".$dir."'. ".$LANG["install"][98]."</td></tr>";
 				$error=2;
 				break;
 			case 3 :
-				echo "<td><p class='red'>".$LANG["install"][101]."</p> ".$LANG["install"][97]."'".$dir."'. ".$LANG["install"][98]."</td></tr>";
+				echo "<td><img src=\"".GLPI_ROOT."/pics/redbutton.png\"><p class='red'>".$LANG["install"][101]."</p> ".$LANG["install"][97]."'".$dir."'. ".$LANG["install"][98]."</td></tr>";
 				$error=1;
 				break;
 			// Error on creation
 			case 2 :
-				echo "<td><p class='red'>".$LANG["install"][17]."</p> ".$LANG["install"][97]."'".$dir."'. ".$LANG["install"][98]."</td></tr>";
+				echo "<td><img src=\"".GLPI_ROOT."/pics/redbutton.png\"><p class='red'>".$LANG["install"][17]."</p> ".$LANG["install"][97]."'".$dir."'. ".$LANG["install"][98]."</td></tr>";
 				$error=2;
 				break;
 			case 1 :
-				echo "<td><p class='red'>".$LANG["install"][19]."</p> ".$LANG["install"][97]."'".$dir."'. ".$LANG["install"][98]."</td></tr>";
+				echo "<td><img src=\"".GLPI_ROOT."/pics/redbutton.png\"><p class='red'>".$LANG["install"][19]."</p> ".$LANG["install"][97]."'".$dir."'. ".$LANG["install"][98]."</td></tr>";
 				$error=1;
 				break;
 			default :
-				echo "<td>".$LANG["install"][20]."</td></tr>";
+				echo "<td><img src=\"".GLPI_ROOT."/pics/greenbutton.png\" alt='".$LANG["install"][20]."' title='".$LANG["install"][20]."'></td></tr>";
 				break;
 		}
 	}
 	
 	// Only write test for GLPI_LOG as SElinux prevent removing log file.
-	echo "<tr class='tab_bg_1'><td><strong>".$LANG["install"][53]."</strong></td>";
+	echo "<tr class='tab_bg_1'><td class='left'><b>".$LANG["install"][53]."</b></td>";
 	if (error_log("Test\n", 3, GLPI_LOG_DIR."/php-errors.log")) {
-		echo "<td>".$LANG["install"][22]."</td></tr>";
+		echo "<td><img src=\"".GLPI_ROOT."/pics/greenbutton.png\" alt='".$LANG["install"][22]."' title='".$LANG["install"][22]."'></td></tr>";
 	} else {
-		echo "<td><p class='red'>".$LANG["install"][19]."</p> ".$LANG["install"][97]."'".GLPI_LOG_DIR."'. ".$LANG["install"][98]."</td></tr>";
+		echo "<td><img src=\"".GLPI_ROOT."/pics/redbutton.png\"><p class='red'>".$LANG["install"][19]."</p> ".$LANG["install"][97]."'".GLPI_LOG_DIR."'. ".$LANG["install"][98]."</td></tr>";
 		$error=1;
 	}
 	return $error;
