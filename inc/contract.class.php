@@ -139,7 +139,7 @@ class Contract extends CommonDBTM {
 
 		$this->showTabs($ID, $withtemplate,$_SESSION['glpi_tab']);
 		
-		if ($canedit) {
+		if ($can_edit) {
 			echo "<form name='form' method='post' action=\"$target\">";
 			if (empty($ID)||$ID<0){
 				echo "<input type='hidden' name='FK_entities' value='".$_SESSION["glpiactive_entity"]."'>";
