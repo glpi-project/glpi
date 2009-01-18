@@ -304,10 +304,11 @@ class Netdevice extends CommonDBTM {
 
 
 		echo "<div class='center'  id='tabsbody'>";
-
-		echo "<form name='form' method='post' action=\"$target\">\n";
-		echo "<input type='hidden' name='FK_entities' value='".$this->fields["FK_entities"]."'>";
-
+		
+		if ($canedit) {
+			echo "<form name='form' method='post' action=\"$target\">\n";
+			echo "<input type='hidden' name='FK_entities' value='".$this->fields["FK_entities"]."'>";
+		}
 		echo "<table  class='tab_cadre_fixe' cellpadding='2'>\n";
 
 		$this->showFormHeader($ID, $withtemplate);
@@ -463,12 +464,12 @@ class Netdevice extends CommonDBTM {
 				echo "</td>\n";
 			}
 			echo "</tr>\n";
+			echo "</table></form></div>\n";
 
+		}else { // ! $canedit
+			echo "</table></div>\n";
 		}
-		
-		echo "</table>";
-		echo "</div>";
-		echo "</form>";
+
 		echo "<div id='tabcontent'></div>";
 		echo "<script type='text/javascript'>loadDefaultTab();</script>";
 

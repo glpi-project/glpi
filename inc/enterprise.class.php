@@ -139,12 +139,13 @@ class Enterprise extends CommonDBTM {
 		$canedit=$this->can($ID,'w');
 		
 		$this->showTabs($ID, $withtemplate,$_SESSION['glpi_tab']);
-
-		echo "<form method='post' action=\"$target\">";
-		if (empty($ID)||$ID<0){
-			echo "<input type='hidden' name='FK_entities' value='".$_SESSION["glpiactive_entity"]."'>";
+		
+		if ($canedit) {
+			echo "<form method='post' action=\"$target\">";
+			if (empty($ID)||$ID<0){
+				echo "<input type='hidden' name='FK_entities' value='".$_SESSION["glpiactive_entity"]."'>";
+			}
 		}
-
 		echo "<div class='center' id='tabsbody' >";
 		echo "<table class='tab_cadre_fixe'>";
 
@@ -244,12 +245,12 @@ class Enterprise extends CommonDBTM {
 
 			}
 			echo "</tr>";
+			echo "</table></div></form>";
 			
+		}else { // canedit
+			echo "</table></div>";
 		}
-		
-		echo "</table>";
-		echo "</div>";
-		echo "</form>";
+
 		echo "<div id='tabcontent'></div>";
 		echo "<script type='text/javascript'>loadDefaultTab();</script>";
 

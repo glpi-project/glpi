@@ -137,7 +137,7 @@ function showDeviceContract($instID) {
 	$number = $DB->numrows($result);
 	$i = 0;
 
-	echo "<div class='center'><table class='tab_cadrehov'>";
+	echo "<br><br><div class='center'><table class='tab_cadrehov'>";
 	echo "<tr><th colspan='2'>";
 	printPagerForm();
 	echo "</th><th colspan='".($canedit ? 4 : 3) ."'>".$LANG["document"][19].":</th></tr>";
@@ -316,7 +316,7 @@ function showEnterpriseContract($instID) {
 	$i = 0;
 
 	echo "<form method='post' action=\"".$CFG_GLPI["root_doc"]."/front/contract.form.php\">";
-	echo "<div class='center'><table class='tab_cadre_fixe'>";
+	echo "<br><br><div class='center'><table class='tab_cadre_fixe'>";
 	echo "<tr><th colspan='6'>".$LANG["financial"][65].":</th></tr>";
 	echo "<tr><th>".$LANG["financial"][26]."</th>";
 	echo "<th>".$LANG["entity"][0]."</th>";
