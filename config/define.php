@@ -395,7 +395,7 @@
 		SOFTWARE_TYPE => "glpi_software", SOFTWARELICENSE_TYPE => "glpi_softwarelicenses", PRINTER_TYPE => "glpi_printers",LINK_TYPE=>"glpi_links");
 		
 	// New config options which can be missing during migration
-	$_SESSION["glpinumberformat"]=0;
+	$CFG_GLPI["numberformat"]=0;
 	$CFG_GLPI["decimal_number"]=2;
 
 	// Default debug options : may be locally overriden
