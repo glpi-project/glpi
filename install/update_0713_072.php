@@ -1005,6 +1005,11 @@ function update0713to072() {
 	if (!$DB->result($result,0,"cpt"))
 		$DB->query("INSERT INTO `glpi_rules_ldap_parameters` (`ID` ,`name` ,`value` ,`sub_type`) VALUES (NULL , '(LDAP) Title', 'title', '1');");
 
+	// Duplicate index with PRIMARY
+	if (isIndex("glpi_monitors", "ID")) {
+		$query = "ALTER TABLE `glpi_monitors` DROP INDEX `ID`";
+		$DB->query($query) or die("0.72 drop ID index on glpi_monitors " . $LANG["update"][90] . $DB->error());
+	}	
 
 	// Display "Work ended." message - Keep this as the last action.
 	displayMigrationMessage("072"); // End

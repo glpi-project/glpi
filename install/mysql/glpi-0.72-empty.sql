@@ -1740,7 +1740,6 @@ CREATE TABLE `glpi_monitors` (
   `state` int(11) NOT NULL default '0',
   `ticket_tco` decimal(20,4) default '0.0000',
   PRIMARY KEY  (`ID`),
-  KEY `ID` (`ID`),
   KEY `location` (`location`),
   KEY `FK_glpi_enterprise` (`FK_glpi_enterprise`),
   KEY `tech_num` (`tech_num`),
