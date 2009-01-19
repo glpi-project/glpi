@@ -83,11 +83,12 @@ if (isset($_GET['onglet'])) {
 	$_SESSION['glpi_tab']=$_GET['onglet'];
 }	
 
+	$track->check($_GET["ID"],'r');
 
-	$track->showTabs($_GET["ID"],'',$_SESSION['glpi_tab']); 
+	$track->showTabs($_GET["ID"],'',$_SESSION['glpi_tab']);
 	echo "<div id='tabcontent'></div>";
 
 	echo "<script type='text/javascript'>loadDefaultTab();</script>";
-	
+
 commonFooter();
 ?>
