@@ -638,10 +638,15 @@ $LANG["install"][94]="J'ai lu et N'ACCEPTE PAS les termes de la licence énoncé
 $LANG["install"][95]="Mémoire non limitée"; 
 $LANG["install"][96]="Mémoire illimitée"; 
 $LANG["install"][97]="Vérifiez les droits sur le répertoire :"; 
-$LANG["install"][98]=""; 
 $LANG["install"][99]="Test d'écriture des fichiers de cache"; 
 $LANG["install"][100]="Le dossier n'a pas pu être créé."; 
 $LANG["install"][101]="Le dossier a été créé mais n'a pas pu être supprimé."; 
+$LANG["install"][102]="Test sur les fonctions Json"; 
+$LANG["install"][103]="GLPI ne peut pas fonctionner correctement sans les fonctions json_encode et json_decode "; 
+
+
+
+
 
 $LANG["job"][2]="par"; 
 $LANG["job"][3]="Receveur"; 

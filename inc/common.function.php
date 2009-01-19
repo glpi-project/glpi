@@ -623,20 +623,20 @@ function checkWriteAccessToDirs(){
 		switch($tmperror){
 			// Error on creation
 			case 4 :
-				echo "<td><img src=\"".GLPI_ROOT."/pics/redbutton.png\"><p class='red'>".$LANG["install"][100]."</p> ".$LANG["install"][97]."'".$dir."'. ".$LANG["install"][98]."</td></tr>";
+				echo "<td><img src=\"".GLPI_ROOT."/pics/redbutton.png\"><p class='red'>".$LANG["install"][100]."</p> ".$LANG["install"][97]."'".$dir."'</td></tr>";
 				$error=2;
 				break;
 			case 3 :
-				echo "<td><img src=\"".GLPI_ROOT."/pics/redbutton.png\"><p class='red'>".$LANG["install"][101]."</p> ".$LANG["install"][97]."'".$dir."'. ".$LANG["install"][98]."</td></tr>";
+				echo "<td><img src=\"".GLPI_ROOT."/pics/redbutton.png\"><p class='red'>".$LANG["install"][101]."</p> ".$LANG["install"][97]."'".$dir."'</td></tr>";
 				$error=1;
 				break;
 			// Error on creation
 			case 2 :
-				echo "<td><img src=\"".GLPI_ROOT."/pics/redbutton.png\"><p class='red'>".$LANG["install"][17]."</p> ".$LANG["install"][97]."'".$dir."'. ".$LANG["install"][98]."</td></tr>";
+				echo "<td><img src=\"".GLPI_ROOT."/pics/redbutton.png\"><p class='red'>".$LANG["install"][17]."</p> ".$LANG["install"][97]."'".$dir."'</td></tr>";
 				$error=2;
 				break;
 			case 1 :
-				echo "<td><img src=\"".GLPI_ROOT."/pics/redbutton.png\"><p class='red'>".$LANG["install"][19]."</p> ".$LANG["install"][97]."'".$dir."'. ".$LANG["install"][98]."</td></tr>";
+				echo "<td><img src=\"".GLPI_ROOT."/pics/redbutton.png\"><p class='red'>".$LANG["install"][19]."</p> ".$LANG["install"][97]."'".$dir."'</td></tr>";
 				$error=1;
 				break;
 			default :
