@@ -256,6 +256,19 @@ function step1($update)
 		echo "<td><img src=\"".GLPI_ROOT."/pics/greenbutton.png\" alt='".$LANG["install"][85]."' title='".$LANG["install"][85]."'></td></tr>";
 
 	}
+
+	//Test for json_encode function.
+	echo "<tr class='tab_bg_1'><td class='left'><b>".$LANG["install"][102]."</b></td>";
+	if (!function_exists('json_encode')|!function_exists('json_decode')) {
+		echo "<td><img src=\"".GLPI_ROOT."/pics/redbutton.png\" >".$LANG["install"][103]."></td></tr>";
+		$error = 2;
+	}
+	else {
+		echo "<td><img src=\"".GLPI_ROOT."/pics/greenbutton.png\" alt='".$LANG["install"][85]."' title='".$LANG["install"][85]."'></td></tr>";
+
+	}
+	
+	
 	
 	// Check right permission to specific directories
 	$tmperror=commonCheckForUseGLPI();
