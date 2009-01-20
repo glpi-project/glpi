@@ -929,7 +929,7 @@ function showList ($type,$params){
 	for ($i=0;$i<$_SESSION["glpisearchcount"][$type];$i++)
 		if (isset($contains[$i])&&strlen($contains[$i])>0) $nosearch=false;
 
-	if ($_SESSION["glpisearchcount2"][$type]>0)	
+	if ($_SESSION["glpisearchcount2"][$type]>0)
 		$nosearch=false;
 
 	$LIMIT="";
@@ -938,8 +938,8 @@ function showList ($type,$params){
 	if ($nosearch) {
 		$LIMIT= " LIMIT $start, ".$LIST_LIMIT;
 
-		$query_num="SELECT count(DISTINCT $itemtable.ID) FROM ".$itemtable.$COMMONLEFTJOIN;
-		
+		$query_num="SELECT count(*) FROM ".$itemtable.$COMMONLEFTJOIN;
+
 		$first=true;
 
 		if (!empty($COMMONWHERE)){
