@@ -245,144 +245,146 @@ function update0713to072() {
 		$DB->query($query) or die("0.72 prepare infocoms for update softwares" . $LANG["update"][90] . $DB->error());
 
 		// Foreach software
-		$query_softs = " SELECT * FROM glpi_software 
+		$query_softs = " SELECT * FROM glpi_software
 				ORDER BY FK_entities;";
-	
+
 		if ($result_softs = $DB->query($query_softs)){
 		  $nbsoft=$DB->numrows($result_softs);
 		  $step = round($nbsoft/100);
 		  if (!$step) $step=1;
 		  if ($step>500) $step=500;
-			
+
 		  for ($numsoft=0 ; $soft = $DB->fetch_assoc($result_softs) ; $numsoft++){
-		  
-		    // To avoid navigator timeout on by DB 
+
+		    // To avoid navigator timeout on by DB
 		    if (!($numsoft % $step)) {
 				displayMigrationMessage("072", $LANG["software"][11] . " : $numsoft / $nbsoft");
-		    }	
-		    
+		    }
+
 		    // oldstate present if migration run more than once
-		    if (isset($soft["oldstate"])) $soft["state"] = $soft["oldstate"]; 
-			
+		    if (isset($soft["oldstate"])) $soft["state"] = $soft["oldstate"];
+
 			// Foreach lics
-			$query_versions="SELECT glpi_licenses.*, glpi_infocoms.ID AS infocomID FROM glpi_licenses 
+			$query_versions="SELECT glpi_licenses.*, glpi_infocoms.ID AS infocomID FROM glpi_licenses
 					LEFT JOIN glpi_infocoms ON (glpi_infocoms.device_type=9999 AND glpi_infocoms.FK_device=glpi_licenses.ID)
-					WHERE sID=".$soft['ID']." 
+					WHERE sID=".$soft['ID']."
 					ORDER BY ID;";
 			if ($result_vers = $DB->query($query_versions)){
-				while ($vers = $DB->fetch_assoc($result_vers)){
-					$install_count=0;
-					$vers_ID=$vers['ID'];
-
-					// init : count installations
-					$query_count="SELECT COUNT(*) FROM glpi_inst_software WHERE vID=".$vers['ID'].";";
-					if ($result_count=$DB->query($query_count)){
-						$install_count=$DB->result($result_count,0,0);
-						$DB->free_result($result_count);
-					}
-
-					// 1 - Is version already exists ?
-					$query_search_version="SELECT * FROM glpi_softwareversions 
-								WHERE sID=".$soft['ID']." 
-									AND name='".$vers['version']."';";
-					if ($result_searchvers = $DB->query($query_search_version)){
-						// Version already exists : update inst_software
-						if ($DB->numrows($result_searchvers)==1){
-							$found_vers=$DB->fetch_assoc($result_searchvers);
-							$vers_ID=$found_vers['ID'];
-							
-							$query="UPDATE glpi_inst_software 
-								SET vID = ".$found_vers['ID']." 
-								WHERE vID = ".$vers['ID'].";";
-							$DB->query($query);
-							
-							//$query="DELETE FROM glpi_licenses WHERE ID=".$vers['ID'];
-							//$DB->query($query);
-						} else {
-							// Re Create new entry
-							//$query="INSERT INTO glpi_softwareversions SELECT * FROM glpi_licenses WHERE ID=".$vers_ID;
-							$query="INSERT INTO glpi_softwareversions SELECT ID,sID,".$soft["state"].",version,'' FROM glpi_licenses WHERE ID=".$vers_ID;
-							$DB->query($query);
-							
-							// Transfert History for this version
-							$findstr = " (v. ".$vers['version'].")"; // Log event format in 0.71
-							$findlen = strlen($findstr); 
-							
-							$DB->query("UPDATE glpi_history "
-								." SET   FK_glpi_device=".$vers_ID.",       device_type=". SOFTWAREVERSION_TYPE
-								." WHERE FK_glpi_device=".$soft['ID']." AND device_type=". SOFTWARE_TYPE
-								."  AND ((linked_action=".HISTORY_INSTALL_SOFTWARE."   AND RIGHT(new_value,$findlen)='$findstr')"
-								."    OR (linked_action=".HISTORY_UNINSTALL_SOFTWARE." AND RIGHT(old_value,$findlen)='$findstr'))");
-						}
-						$DB->free_result($result_searchvers);
-					}
-					// 2 - Create glpi_licenses
-					if ($vers['buy'] // Buy license
-					|| (!empty($vers['serial'])&&!in_array($vers['serial'],array('free','global'))) // Non global / free serial
-					|| !empty($vers['comments'])  // With comments
-					|| !empty($vers['expire']) // with an expire date
-					|| $vers['oem_computer'] > 0 // oem license
-					|| !empty($vers['infocomID']) // with and infocoms
-					){
-						$found_lic=-1;
-						// No infocoms try to find already exists license
-						if (empty($vers['infocomID'])){
-							$query_search_lic="SELECT ID 
-								FROM  glpi_softwarelicenses 
-								WHERE buy_version = $vers_ID
-									AND serial = '".$vers['serial']."'
-									AND FK_computers = '".$vers['oem_computer']."'
-									AND comments = '".$vers['comments']."'
-								";
-							if (empty($vers['expire'])) {
-								$query .= " AND expire IS NULL";
-							} else {
-								$query .= " AND expire = '".$vers['expire']."'";
-							}
-							if ($result_searchlic = $DB->query($query_search_lic)){
-								if ($DB->numrows($result_searchlic)>0){
-									$found_lic=$DB->result($result_searchlic,0,0);
-									$DB->free_result($result_searchlic);
-								}
-							}
-
-						}
-						if ($install_count==0){
-							$install_count=1; // license exists so count 1 	
-						}
-
-						// Found license : merge with found one
-						if ($found_lic>0){
-							$query="UPDATE `glpi_softwarelicenses`
-								SET `number` = number+1 
-								WHERE ID=$found_lic";
-							$DB->query($query);
-						} else { // Create new license
-							if (empty($vers['expire'])){
-								$vers['expire']='NULL';
-							} else {
-								$vers['expire']="'".$vers['expire']."'";
-							}
-							$query="INSERT INTO `glpi_softwarelicenses` 
-							(`sID` ,`FK_entities`, `number` ,`type` ,`name` ,`serial` ,`buy_version`, `use_version`, `expire`, `FK_computers` ,`comments`)
-							VALUES 
-							(".$soft['ID']." , ".$soft["FK_entities"].",$install_count, 0, '".$vers['serial']."', '".$vers['serial']."' , $vers_ID, $vers_ID, ".$vers['expire'].", '".$vers['oem_computer']."', '".addslashes($vers['comments'])."');";
-							
-							if ($DB->query($query)) {
-								$lic_ID=$DB->insert_id();
-								// Update infocoms link
-								if (!empty($vers['infocomID'])){
-									$query="UPDATE glpi_infocoms 
-										SET device_type=".SOFTWARELICENSE_TYPE.", FK_device=$lic_ID
-										WHERE device_type=9999 AND FK_device=".$vers['ID'].";";
-									$DB->query($query);
-								}
-							}
-						}
-						
-					} // Create licence
-
-				} // Each license
+                                if ($DB->numrows($result_vers)>0){
+        				while ($vers = $DB->fetch_assoc($result_vers)){
+        					$install_count=0;
+        					$vers_ID=$vers['ID'];
+        
+        					// init : count installations
+        					$query_count="SELECT COUNT(*) FROM glpi_inst_software WHERE vID=".$vers['ID'].";";
+        					if ($result_count=$DB->query($query_count)){
+        						$install_count=$DB->result($result_count,0,0);
+        						$DB->free_result($result_count);
+        					}
+        
+        					// 1 - Is version already exists ?
+        					$query_search_version="SELECT * FROM glpi_softwareversions
+        								WHERE sID=".$soft['ID']."
+        									AND name='".$vers['version']."';";
+        					if ($result_searchvers = $DB->query($query_search_version)){
+        						// Version already exists : update inst_software
+        						if ($DB->numrows($result_searchvers)==1){
+        							$found_vers=$DB->fetch_assoc($result_searchvers);
+        							$vers_ID=$found_vers['ID'];
+        
+        							$query="UPDATE glpi_inst_software
+        								SET vID = ".$found_vers['ID']."
+        								WHERE vID = ".$vers['ID'].";";
+        							$DB->query($query);
+        
+        							//$query="DELETE FROM glpi_licenses WHERE ID=".$vers['ID'];
+        							//$DB->query($query);
+        						} else {
+        							// Re Create new entry
+        							//$query="INSERT INTO glpi_softwareversions SELECT * FROM glpi_licenses WHERE ID=".$vers_ID;
+        							$query="INSERT INTO glpi_softwareversions SELECT ID,sID,".$soft["state"].",version,'' FROM glpi_licenses WHERE ID=".$vers_ID;
+        							$DB->query($query);
+        
+        							// Transfert History for this version
+        							$findstr = " (v. ".$vers['version'].")"; // Log event format in 0.71
+        							$findlen = strlen($findstr);
+        
+        							$DB->query("UPDATE glpi_history "
+        								." SET   FK_glpi_device=".$vers_ID.",       device_type=". SOFTWAREVERSION_TYPE
+        								." WHERE FK_glpi_device=".$soft['ID']." AND device_type=". SOFTWARE_TYPE
+        								."  AND ((linked_action=".HISTORY_INSTALL_SOFTWARE."   AND RIGHT(new_value,$findlen)='$findstr')"
+        								."    OR (linked_action=".HISTORY_UNINSTALL_SOFTWARE." AND RIGHT(old_value,$findlen)='$findstr'))");
+        						}
+        						$DB->free_result($result_searchvers);
+        					}
+        					// 2 - Create glpi_licenses
+        					if ($vers['buy'] // Buy license
+        					|| (!empty($vers['serial'])&&!in_array($vers['serial'],array('free','global'))) // Non global / free serial
+        					|| !empty($vers['comments'])  // With comments
+        					|| !empty($vers['expire']) // with an expire date
+        					|| $vers['oem_computer'] > 0 // oem license
+        					|| !empty($vers['infocomID']) // with and infocoms
+        					){
+        						$found_lic=-1;
+        						// No infocoms try to find already exists license
+        						if (empty($vers['infocomID'])){
+        							$query_search_lic="SELECT ID
+        								FROM  glpi_softwarelicenses
+        								WHERE buy_version = $vers_ID
+        									AND serial = '".$vers['serial']."'
+        									AND FK_computers = '".$vers['oem_computer']."'
+        									AND comments = '".$vers['comments']."'
+        								";
+        							if (empty($vers['expire'])) {
+        								$query .= " AND expire IS NULL";
+        							} else {
+        								$query .= " AND expire = '".$vers['expire']."'";
+        							}
+        							if ($result_searchlic = $DB->query($query_search_lic)){
+        								if ($DB->numrows($result_searchlic)>0){
+        									$found_lic=$DB->result($result_searchlic,0,0);
+        									$DB->free_result($result_searchlic);
+        								}
+        							}
+        
+        						}
+        						if ($install_count==0){
+        							$install_count=1; // license exists so count 1
+        						}
+        
+        						// Found license : merge with found one
+        						if ($found_lic>0){
+        							$query="UPDATE `glpi_softwarelicenses`
+        								SET `number` = number+1
+        								WHERE ID=$found_lic";
+        							$DB->query($query);
+        						} else { // Create new license
+        							if (empty($vers['expire'])){
+        								$vers['expire']='NULL';
+        							} else {
+        								$vers['expire']="'".$vers['expire']."'";
+        							}
+        							$query="INSERT INTO `glpi_softwarelicenses`
+        							(`sID` ,`FK_entities`, `number` ,`type` ,`name` ,`serial` ,`buy_version`, `use_version`, `expire`, `FK_computers` ,`comments`)
+        							VALUES
+        							(".$soft['ID']." , ".$soft["FK_entities"].",$install_count, 0, '".$vers['serial']."', '".$vers['serial']."' , $vers_ID, $vers_ID, ".$vers['expire'].", '".$vers['oem_computer']."', '".addslashes($vers['comments'])."');";
+        
+        							if ($DB->query($query)) {
+        								$lic_ID=$DB->insert_id();
+        								// Update infocoms link
+        								if (!empty($vers['infocomID'])){
+        									$query="UPDATE glpi_infocoms
+        										SET device_type=".SOFTWARELICENSE_TYPE.", FK_device=$lic_ID
+        										WHERE device_type=9999 AND FK_device=".$vers['ID'].";";
+        									$DB->query($query);
+        								}
+        							}
+        						}
+        
+        					} // Create licence
+        
+        				} // Each license
+		               }
 				$DB->free_result($result_vers);
 			}
 			
@@ -400,7 +402,36 @@ function update0713to072() {
 		$DB->query($query) or die("0.72 clean alerts for licenses infocoms" . $LANG["update"][90] . $DB->error());
 
 	} // TableExists("glpi_licenses")
-	
+
+
+        // Change software search pref
+        $query="SELECT DISTINCT FK_users FROM glpi_display WHERE type=".SOFTWARE_TYPE.";";
+        if ($result = $DB->query($query)){
+              if ($DB->numrows($result)>0){
+                    while ($data = $DB->fetch_assoc($result)){
+                         $query="SELECT max(rank) FROM glpi_display WHERE FK_users='".$data['FK_users']."' AND type=".SOFTWARE_TYPE.";";
+                         $result=$DB->query($query);
+                         $rank=$DB->result($result,0,0);
+                         $query="SELECT * FROM glpi_display WHERE FK_users='".$data['FK_users']."' AND num=72 AND type=".SOFTWARE_TYPE.";";
+                         if ($result2=$DB->query($query)){
+                               if ($DB->numrows($result2)==0){
+                                    $query="INSERT INTO glpi_display (`type` ,`num` ,`rank` ,`FK_users`) VALUES ('".SOFTWARE_TYPE."', '72', '".$rank++."', '".$data['FK_users']."');";
+                                    $DB->query($query);
+                               }
+                         }
+                         $query="SELECT * FROM glpi_display WHERE FK_users='".$data['FK_users']."' AND num=163 AND type=".SOFTWARE_TYPE.";";
+                         if ($result2=$DB->query($query)){
+                               if ($DB->numrows($result2)==0){
+                                    $query="INSERT INTO glpi_display (`type` ,`num` ,`rank` ,`FK_users`) VALUES ('".SOFTWARE_TYPE."', '163', '".$rank++."', '".$data['FK_users']."');";
+                                    $DB->query($query);
+                               }
+                         }
+                   }
+
+              }
+        }
+
+
 	displayMigrationMessage("072", $LANG["Menu"][4]); // Software
 	
 /*	// ALTER softwareversions
@@ -428,13 +459,13 @@ function update0713to072() {
 	if (!FieldExists("glpi_softwareversions", "state")) {
 		$query="ALTER TABLE `glpi_softwareversions` ADD `state` INT NOT NULL DEFAULT '0' AFTER `sID`";
 		$DB->query($query) or die("0.72 add state to softwareversion table" . $LANG["update"][90] . $DB->error());
-	}	
+	}
 	// TODO : to be removed on final 0.72 version ?
 	// To allow migration to be run more than once
 	if (FieldExists("glpi_software", "state")) {
 		$query="ALTER TABLE `glpi_software` CHANGE `state` `oldstate` INT( 11 ) NOT NULL DEFAULT '0'";
 		$DB->query($query) or die("0.72 change state to to oldtsate in softwareversion table" . $LANG["update"][90] . $DB->error());
-	}	
+	}
 
 
 	if (!TableExists("glpi_dropdown_licensetypes")) {

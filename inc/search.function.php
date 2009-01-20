@@ -297,7 +297,7 @@ function searchForm($type,$params){
 				else $first_group=false;
 				echo "<optgroup label=\"$val\">";
 			}else {
-				echo "<option value=\"".$key."\""; 
+				echo "<option value=\"".$key."\"";
 				if(is_array($field)&&isset($field[$i]) && $key == $field[$i]) echo "selected";
 				echo ">". utf8_substr($val["name"],0,32) ."</option>\n";
 			}
@@ -1178,8 +1178,8 @@ function showList ($type,$params){
 						echo displaySearchHeaderItem($output_type,$names[$type2[$i]]." - ".$SEARCH_OPTION[$type2[$i]][$field2[$i]]["name"],$header_num);
 					}
 			// Add specific column Header
-			if ($type==SOFTWARE_TYPE)
-				echo displaySearchHeaderItem($output_type,$LANG["software"][11],$header_num);
+//			if ($type==SOFTWARE_TYPE)
+//				echo displaySearchHeaderItem($output_type,$LANG["software"][11],$header_num);
 			if ($type==CARTRIDGE_TYPE)
 				echo displaySearchHeaderItem($output_type,$LANG["cartridges"][0],$header_num);	
 			if ($type==CONSUMABLE_TYPE)
@@ -1297,9 +1297,9 @@ function showList ($type,$params){
 				if ($type==CARTRIDGE_TYPE){
 					echo displaySearchItem($output_type,countCartridges($data["ID"],$data["ALARM"],$output_type),$item_num,$row_num);
 				}
-				if ($type==SOFTWARE_TYPE){
-					echo displaySearchItem($output_type,countInstallations($data["ID"],$output_type),$item_num,$row_num);
-				}		
+//				if ($type==SOFTWARE_TYPE){
+//					echo displaySearchItem($output_type,countInstallations($data["ID"],$output_type),$item_num,$row_num);
+//				}		
 				if ($type==CONSUMABLE_TYPE){
 					echo displaySearchItem($output_type,countConsumables($data["ID"],$data["ALARM"],$output_type),$item_num,$row_num);
 				}	
@@ -1452,7 +1452,7 @@ function addHaving($LINK,$NOT,$type,$ID,$val,$meta,$num){
 	//// Default cases
 	// Link with plugin tables 
 	if ($type<=1000){
-		if (preg_match("/^glpi_plugin_([a-zA-Z]+)/", $table, $matches) 
+		if (preg_match("/^glpi_plugin_([a-zA-Z]+)/", $table, $matches)
 		|| preg_match("/^glpi_dropdown_plugin_([a-zA-Z]+)/", $table, $matches) ){
 			if (count($matches)==2){
 				$plug=$matches[1];
@@ -1485,7 +1485,7 @@ function addHaving($LINK,$NOT,$type,$ID,$val,$meta,$num){
 						} else {
 							$regs[1]='<';
 						}
-					} 
+					}
 					$regs[1].=$regs[2];
 					return " $LINK ($NAME$num ".$regs[1]." ".$regs[3]." ) ";
 				} else {
@@ -1747,6 +1747,9 @@ function addSelect ($type,$ID,$num,$meta=0,$meta_type=0){
 		break;
 		case "glpi_softwarelicenses.number":
 			return " FLOOR( SUM($table$addtable.$field) * COUNT(DISTINCT $table$addtable.ID) / COUNT($table$addtable.ID) ) AS ".$NAME."_".$num.", ";
+		break;
+		case "glpi_inst_software.count" :
+			return " COUNT(DISTINCT glpi_inst_software$addtable.ID) AS ".$NAME."_".$num.", ";
 		break;
 		case "glpi_device_hdd.specif_default" :
 			return " SUM(DEVICE_".HDD_DEVICE.".specificity) / COUNT( DEVICE_".HDD_DEVICE.".ID) * COUNT( DISTINCT DEVICE_".HDD_DEVICE.".ID) AS ".$NAME."_".$num.", ";
@@ -2903,18 +2906,22 @@ function addLeftJoin ($type,$ref_table,&$already_link_tables,$new_table,$linkfie
 			} else {
 				return "";
 			}
-		break;	
+		break;
+		case "glpi_inst_software":
+			$out=addLeftJoin($type,$rt,$already_link_tables,"glpi_softwareversions",$linkfield,$device_type,$meta,$meta_type);
+		return $out." LEFT JOIN $new_table $AS ON (glpi_softwareversions$addmetanum.ID = $nt.vID) ";
+		break;
 		case "glpi_computer_device":
 			if ($device_type==0){
 				return " LEFT JOIN $new_table $AS ON ($rt.ID = $nt.FK_computers ) ";
 			} else {
 				return " LEFT JOIN $new_table AS DEVICE_".$device_type." ON ($rt.ID = DEVICE_".$device_type.".FK_computers AND DEVICE_".$device_type.".device_type='$device_type') ";
 			}
-		break;	
+		break;
 		case "glpi_device_processor":
 			$out=addLeftJoin($type,$ref_table,$already_link_tables,"glpi_computer_device",$linkfield,PROCESSOR_DEVICE,$meta,$meta_type);
 			return $out." LEFT JOIN $new_table $AS ON (DEVICE_".PROCESSOR_DEVICE.".FK_device = $nt.ID) ";
-		break;		
+		break;
 		case "glpi_device_ram":
 			$out=addLeftJoin($type,$ref_table,$already_link_tables,"glpi_computer_device",$linkfield,RAM_DEVICE,$meta,$meta_type);
 			return $out." LEFT JOIN $new_table $AS ON (DEVICE_".RAM_DEVICE.".FK_device = $nt.ID) ";
