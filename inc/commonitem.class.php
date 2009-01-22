@@ -407,17 +407,18 @@ class CommonItem{
 		$ID="";
 		switch ($this->device_type){
 			case GENERAL_TYPE :
-			case CARTRIDGE_ITEM_TYPE : 
-			case CONSUMABLE_ITEM_TYPE : 
+			case CARTRIDGE_ITEM_TYPE :
+			case CONSUMABLE_ITEM_TYPE :
 				return $this->getName($with_comments);
-				break;						
+				break;
 			default :
-				return "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$this->device_type]."?ID=".$this->id_device."\">".$this->getNameID($with_comments)."</a>";
+				return "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$this->device_type]."?ID=".$this->id_device.($this->getField('is_template')==1?"&withtemplate=1":"")."\">".$this->getNameID($with_comments)."</a>";
 				break;
 		}
 
 
 	}
+	
 	/**
 	 * Get comments of the Object
 	 *
