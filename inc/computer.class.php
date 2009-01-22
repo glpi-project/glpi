@@ -320,7 +320,7 @@ class Computer extends CommonDBTM {
 					compdevice_add($newID,$val["devType"],$val["devID"],$val["specificity"],0);
 				}
 			}
-	
+
 			// ADD Infocoms
 			$ic= new Infocom();
 			if ($ic->getFromDBforDevice(COMPUTER_TYPE,$input["_oldID"])){
@@ -331,31 +331,45 @@ class Computer extends CommonDBTM {
 				}
 				$ic->addToDB();
 			}
-	
+
+       			// ADD volumes
+			$query="SELECT ID from glpi_computerdisks WHERE FK_computers='".$input["_oldID"]."'";
+			$result=$DB->query($query);
+			if ($DB->numrows($result)>0){
+				while ($data=$DB->fetch_array($result)){
+                                  $disk=new ComputerDisk();
+                                  $disk->getfromDB($data['ID']);
+                                  unset($disk->fields["ID"]);
+                                  $disk->fields["FK_computers"]=$newID;
+                                  $disk->addToDB();
+                                }
+
+			}
+
 			// ADD software
 			$query="SELECT vID from glpi_inst_software WHERE cID='".$input["_oldID"]."'";
 			$result=$DB->query($query);
 			if ($DB->numrows($result)>0){
 				while ($data=$DB->fetch_array($result))
-					installSoftware($newID,$data['vID']);
+					installSoftwareVersion($newID,$data['vID']);
 			}
-	
-			// ADD Contract				
+
+			// ADD Contract
 			$query="SELECT FK_contract from glpi_contract_device WHERE FK_device='".$input["_oldID"]."' AND device_type='".COMPUTER_TYPE."';";
 			$result=$DB->query($query);
 			if ($DB->numrows($result)>0){
 				while ($data=$DB->fetch_array($result))
 					addDeviceContract($data["FK_contract"],COMPUTER_TYPE,$newID);
 			}
-	
-			// ADD Documents			
+
+			// ADD Documents
 			$query="SELECT FK_doc from glpi_doc_device WHERE FK_device='".$input["_oldID"]."' AND device_type='".COMPUTER_TYPE."';";
 			$result=$DB->query($query);
 			if ($DB->numrows($result)>0){
 				while ($data=$DB->fetch_array($result))
 					addDeviceDocument($data["FK_doc"],COMPUTER_TYPE,$newID);
 			}
-	
+
 			// ADD Ports
 			$query="SELECT ID from glpi_networking_ports WHERE on_device='".$input["_oldID"]."' AND device_type='".COMPUTER_TYPE."';";
 			$result=$DB->query($query);

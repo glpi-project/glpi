@@ -289,14 +289,14 @@ function showConnections($target,$ID,$withtemplate='') {
  **/
 function showComputerDisks($ID,$withtemplate='') {
 	global $DB, $CFG_GLPI, $LANG;
-	
+
 	$comp = new Computer();
 	if (!$comp->getFromDB($ID) || ! $comp->can($ID, "r"))
 		return false;
 	$canedit = $comp->can($ID, "w");
 
 	echo "<div class='center'>";
-	
+
 	$query = "SELECT glpi_dropdown_filesystems.name as fsname, glpi_computerdisks.* FROM glpi_computerdisks
 		LEFT JOIN glpi_dropdown_filesystems ON (glpi_computerdisks.FK_filesystems = glpi_dropdown_filesystems.ID)
 		WHERE (FK_computers = '$ID')";
@@ -337,13 +337,13 @@ function showComputerDisks($ID,$withtemplate='') {
 			echo "<tr><th colspan='6'>".$LANG["search"][15]."</th></tr>";
 		}
 	if ($canedit){
-		echo "<tr class='tab_bg_2'><th colspan='6''><a href='computerdisk.form.php?cID=$ID'>".$LANG["computers"][7]."</a></th></tr>";
+		echo "<tr class='tab_bg_2'><th colspan='6''><a href='computerdisk.form.php?cID=$ID&amp;withtemplate=".$withtemplate."'>".$LANG["computers"][7]."</a></th></tr>";
 	}
 	echo "</table>";
 	}
 	echo "</div><br>";
 
-	
+
 }
 
 
