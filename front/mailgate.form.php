@@ -55,6 +55,7 @@ if (isset($_POST["add"]))
 else if (isset($_POST["delete"]))
 {
 	$mailgate->check($_POST['ID'],'w');
+	$mailgate->delete($_POST);
 	logEvent($_POST["ID"], "mailgate", 4, "setup", $_SESSION["glpiname"]." ".$LANG["log"][22]);
 	glpi_header($CFG_GLPI["root_doc"]."/front/mailgate.php");
 }
