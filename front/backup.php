@@ -199,7 +199,7 @@ function current_time() {
 */
 function get_content($DB, $table,$from,$limit){
 	$content="";
-	$result = $DB->query("SELECT * FROM $table LIMIT $from,$limit");
+	$result = $DB->query("SELECT * FROM `$table` LIMIT ".intval($from).",".intval($limit));
 	if($result)
 		while($row = $DB->fetch_row($result)) {
 			if (get_magic_quotes_runtime()) $row=addslashes_deep($row);
@@ -225,7 +225,7 @@ function get_def($DB, $table) {
 
 	$def = "### Dump table $table\n\n";
 	$def .= "DROP TABLE IF EXISTS `$table`;\n";
-	$query = "SHOW CREATE TABLE $table";
+	$query = "SHOW CREATE TABLE `$table`";
 	$result=$DB->query($query);
 	$row=$DB->fetch_array($result);
 
