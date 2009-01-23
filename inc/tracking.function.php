@@ -780,11 +780,25 @@ function addFormTracking ($device_type=0,$ID=0, $target, $author, $group=0, $ass
 		echo "<tr class='tab_bg_2' align='center'><td>".$LANG["job"][4].":</td>";
 		echo "<td colspan='3' align='center'>";
 		
-		//List all users in the activy entity and all it's sub-entities
-		$author_rand=dropdownAllUsers("author",$author,1,getEntitySons($_SESSION["glpiactive_entity"]),1);
+		//Check if the user have access to this entity only, or subentities too
+		if (haveAccessToEntity($_SESSION["glpiactive_entity"],true))
+			$entities = getEntitySons($_SESSION["glpiactive_entity"]);
+		else
+			$entities = $_SESSION["glpiactive_entity"];	
+			
+		//List all users in the active entity (and all it's sub-entities if needed)
+		$author_rand=dropdownAllUsers("author",$author,1,$entities,1);
 
-		$values = getUserEntities($author, true);
-		$count = count($values);
+		//Get all the user's entities
+		$all_entities = getUserEntities($author, true);
+		$values = array();
+		
+		//For each user's entity, check if the technician which creates the ticket have access to it
+		foreach ($all_entities as $tmp => $ID)
+			if (haveAccessToEntity($ID))
+				$values[]=$ID;
+				
+		$count = count($values);					
 		
 		if (!empty($values))
 			//If entity is not in the list of user's entities, then display as default value the first value of the user's entites list
