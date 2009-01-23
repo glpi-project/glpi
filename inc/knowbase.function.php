@@ -232,7 +232,7 @@ function showKbItemList($target,$contains,$start,$parentID,$faq=0){
 		
 	} else { // Il ne s'agit pas d'une recherche, on browse by category
 	
-		$where.="(glpi_kbitems.categoryID = $parentID) ";
+		$where.="(glpi_kbitems.categoryID = '$parentID') ";
 	}
 	
 	
@@ -252,7 +252,7 @@ function showKbItemList($target,$contains,$start,$parentID,$faq=0){
 
 		// Limit the result, if no limit applies, use prior result
 		if ($numrows > $_SESSION["glpilist_limit"]&&!isset($_GET['export_all'])) {
-			$query_limit = $query ." LIMIT $start,".$_SESSION["glpilist_limit"]." ";
+			$query_limit = $query ." LIMIT ".intval($start).",".intval($_SESSION["glpilist_limit"])." ";
 			$result_limit = $DB->query($query_limit);
 			$numrows_limit = $DB->numrows($result_limit);
 		} else {

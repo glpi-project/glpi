@@ -283,7 +283,7 @@ class Bookmark extends CommonDBTM {
 			return false;
 		}
 	
-		$query="SELECT * FROM ".$this->table." WHERE ";
+		$query="SELECT * FROM `".$this->table."` WHERE ";
 			
 		if ($private){
 			$query.="(private=1 AND FK_users='".$_SESSION['glpiID']."') ";

@@ -258,7 +258,7 @@ function dropdownNoValue($table,$myname,$value,$entity_restrict=-1) {
 
 	$where="";
 	if (in_array($table,$CFG_GLPI["specif_entities_tables"])){
-		$where.= "WHERE ".$table.".FK_entities='".$entity_restrict."'";
+		$where.= "WHERE `".$table."`.`FK_entities`='".$entity_restrict."'";
 	} 
 
 	if (in_array($table,$CFG_GLPI["deleted_tables"])){
@@ -286,10 +286,10 @@ function dropdownNoValue($table,$myname,$value,$entity_restrict=-1) {
 	$where.=" ID<>'$value' ";
 
 	if (in_array($table,$CFG_GLPI["dropdowntree_tables"])){
-		$query = "SELECT ID, completename as name FROM $table $where  ORDER BY completename";
+		$query = "SELECT ID, completename as name FROM `$table` $where  ORDER BY completename";
 	}
 	else {
-		$query = "SELECT ID, name FROM $table $where AND ID<>'$value' ORDER BY name";
+		$query = "SELECT ID, name FROM `$table` $where AND ID<>'$value' ORDER BY name";
 	}
 	$result = $DB->query($query);
 
@@ -547,7 +547,7 @@ function getDropdownName($table,$id,$withcomments=0) {
 		$name = "";
 		$comments = "";
 		if ($id){
-			$query = "SELECT * FROM ". $table ." WHERE ID = '". $id ."'";
+			$query = "SELECT * FROM `". $table ."` WHERE ID = '". $id ."'";
 			if ($result = $DB->query($query)){
 				if($DB->numrows($result) != 0) {
 					$data=$DB->fetch_assoc($result);
@@ -621,7 +621,7 @@ function getDropdownArrayNames($table,$ids) {
 			$field='completename';
 		}
 
-		$query="SELECT ID, $field FROM $table WHERE ID IN (";
+		$query="SELECT ID, $field FROM `$table` WHERE ID IN (";
 		$first=true;
 		foreach ($ids as $val){
 			if (!$first) $query.=",";
@@ -662,7 +662,7 @@ function dropdownUsersTracking($myname,$value,$field,$display_comments=1) {
 		if ($CFG_GLPI["ajax_limit_count"]==0){
 			$use_ajax=true;
 		} else {
-			$query="SELECT COUNT(".$field.") FROM glpi_tracking ".getEntitiesRestrictRequest("WHERE","glpi_tracking");
+			$query="SELECT COUNT(`".$field."`) FROM glpi_tracking ".getEntitiesRestrictRequest("WHERE","glpi_tracking");
 			$result=$DB->query($query);
 			$nb=$DB->result($result,0,0);
 			if ($nb>$CFG_GLPI["ajax_limit_count"]){

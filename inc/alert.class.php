@@ -61,7 +61,7 @@ class Alert extends CommonDBTM {
 		global $DB;
 		if (empty($ID)) return false;
 
-		$query = "SELECT * FROM ".$this->table." WHERE (device_type='$type' AND FK_device = '$ID')";
+		$query = "SELECT * FROM `".$this->table."` WHERE (device_type='$type' AND FK_device = '$ID')";
 
 		if ($result = $DB->query($query)) {
 			if ($DB->numrows($result)==1){
@@ -84,7 +84,7 @@ class Alert extends CommonDBTM {
 	function clear($device_type,$ID,$alert_type){
 		global $DB;
 
-		$query="DELETE FROM ".$this->table." WHERE (device_type='$device_type' AND FK_device = '$ID' AND type='$alert_type')";
+		$query="DELETE FROM `".$this->table."` WHERE (device_type='$device_type' AND FK_device = '$ID' AND type='$alert_type')";
 		$DB->query($query);
 	}
 

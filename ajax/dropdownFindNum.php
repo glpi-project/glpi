@@ -44,7 +44,7 @@ checkRight("create_ticket","1");
 $where="";
 
 if (isset($_POST["entity_restrict"])&&$_POST["entity_restrict"]>=0){
-	$where.= "WHERE ".$_POST['table'].".FK_entities='".$_POST["entity_restrict"]."'";
+	$where.= "WHERE `".$_POST['table']."`.FK_entities='".$_POST["entity_restrict"]."'";
 } else {
 	$where.=getEntitiesRestrictRequest("WHERE",$_POST['table']);
 }
@@ -75,7 +75,7 @@ $NBMAX=$CFG_GLPI["dropdown_max"];
 $LIMIT="LIMIT 0,$NBMAX";
 if ($_POST['searchText']==$CFG_GLPI["ajax_wildcard"]) $LIMIT="";
 
-$query = "SELECT * FROM ".$_POST['table']." $where ORDER BY name $LIMIT";
+$query = "SELECT * FROM `".$_POST['table']."` $where ORDER BY name $LIMIT";
 
 $result = $DB->query($query);
 

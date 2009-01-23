@@ -113,7 +113,7 @@ if (!isset($_POST["limit"])) $_POST["limit"]=$CFG_GLPI["dropdown_limit"];
 			}
 		}
 
-		$query = "SELECT * FROM ".$_POST['table']." $where ORDER BY $add_order completename $LIMIT";
+		$query = "SELECT * FROM `".$_POST['table']."` $where ORDER BY $add_order completename $LIMIT";
 		//error_log("SQL1:".$query);
 		$result = $DB->query($query);
 
@@ -235,10 +235,10 @@ if (!isset($_POST["limit"])) $_POST["limit"]=$CFG_GLPI["dropdown_limit"];
 
 		switch ($_POST['table']){
 			case "glpi_contacts":
-				$query = "SELECT FK_entities, CONCAT(name,' ',firstname) as $field, ".$_POST['table'].".comments, ".$_POST['table'].".ID FROM ".$_POST['table']." $where";
+				$query = "SELECT FK_entities, CONCAT(name,' ',firstname) as $field, `".$_POST['table']."`.comments, ".$_POST['table'].".ID FROM `".$_POST['table']."` $where";
 			break;
 			default :
-				$query = "SELECT * FROM ".$_POST['table']." $where";
+				$query = "SELECT * FROM `".$_POST['table']."` $where";
 			break;
 		}
 		if ($multi) {

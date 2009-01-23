@@ -1168,7 +1168,7 @@ function optimize_tables (){
 	{
 		if (ereg("glpi_",$line[0])){
 			$table = $line[0];
-			$query = "OPTIMIZE TABLE ".$table." ;";
+			$query = "OPTIMIZE TABLE `".$table."` ;";
 			$DB->query($query);
 		}
 	}

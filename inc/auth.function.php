@@ -687,7 +687,7 @@ function loadGroups() {
 	foreach ($_SESSION['glpiactiveentities'] as $val){
 		if (!$first) $entities.=",";
 		else $first=false;
-		$entities.=$val;
+		$entities.="'".$val."'";
 	}			
 
 
