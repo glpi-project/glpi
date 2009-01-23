@@ -301,13 +301,14 @@ function showOldJobListForItem($username,$item_type,$item,$sort="",$order="") {
 	if ($sort==""){
 		$sort="glpi_tracking.date_mod";
 	}
+	
 	if ($order==""){
 		$order=getTrackingOrderPrefs($_SESSION["glpiID"]);
 	}
 
 	$where = "(status = 'old_done' OR status = 'old_notdone')";
 
-	$query = "SELECT ".getCommonSelectForTrackingSearch()." FROM glpi_tracking ".getCommonLeftJoinForTrackingSearch()." WHERE $where AND (device_type = '$item_type' and computer = '$item') ORDER BY $sort $order";
+	$query = "SELECT ".getCommonSelectForTrackingSearch()." FROM glpi_tracking ".getCommonLeftJoinForTrackingSearch()." WHERE $where AND (device_type = '$item_type' and computer = '$item') ORDER BY '$sort' $order";
 
 
 	$result = $DB->query($query);
@@ -1373,7 +1374,6 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$to
 		default : $where.=" ( 1 )";;break;
 	}
 
-
 	if ($category > 0){
 		$where.=" AND ".getRealQueryForTreeItem("glpi_dropdown_tracking_category",$category,"glpi_tracking.category");
 	}
@@ -2185,7 +2185,7 @@ function showFollowupsSummary($tID){
 	$RESTRICT="";
 	if (!$showprivate)  $RESTRICT=" AND ( private='0' OR author ='".$_SESSION["glpiID"]."' ) ";
 
-	$query = "SELECT * FROM glpi_followups WHERE (tracking = $tID) $RESTRICT ORDER BY date DESC";
+	$query = "SELECT * FROM glpi_followups WHERE (tracking = '$tID') $RESTRICT ORDER BY date DESC";
 	$result=$DB->query($query);
 
 	

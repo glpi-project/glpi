@@ -1578,7 +1578,7 @@ class Transfer extends CommonDBTM{
 								$need_clean_process=true;
 								// OCS clean link
 								if ($ocs_computer&&!empty($ocs_field)){
-									$query="UPDATE glpi_ocs_link SET $ocs_field = NULL WHERE glpi_id='$ID'";
+									$query="UPDATE glpi_ocs_link SET `$ocs_field` = NULL WHERE glpi_id='$ID'";
 									$DB->query($query);
 								}
 
@@ -1615,7 +1615,7 @@ class Transfer extends CommonDBTM{
 									$ci->obj->delete(array('ID'=>$item_ID),1);
 								}
 								if ($ocs_computer&&!empty($ocs_field)){
-									$query="UPDATE glpi_ocs_link SET $ocs_field = NULL WHERE glpi_id='$ID'";
+									$query="UPDATE glpi_ocs_link SET `$ocs_field` = NULL WHERE glpi_id='$ID'";
 									$DB->query($query);
 								}
 							}
