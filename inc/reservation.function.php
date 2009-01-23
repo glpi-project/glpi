@@ -428,7 +428,7 @@ function printReservationItem($target,$ID,$date){
 	$debut=$date." 00:00:00";
 	$fin=$date." 23:59:59";
 	$query = "SELECT * FROM glpi_reservation_resa".
-		" WHERE (('".$debut."' < begin AND '".$fin."' > begin) OR ('".$debut."' < end AND '".$fin."' > end) OR (begin < '".$debut."' AND end > '".$debut."') OR (begin < '".$fin."' AND end > '".$fin."')) AND id_item=$ID ORDER BY begin";
+		" WHERE (('".$debut."' < begin AND '".$fin."' > begin) OR ('".$debut."' < end AND '".$fin."' > end) OR (begin < '".$debut."' AND end > '".$debut."') OR (begin < '".$fin."' AND end > '".$fin."')) AND id_item='$ID' ORDER BY begin";
 	//		echo $query."<br>";
 	if ($result=$DB->query($query)){
 		if ($DB->numrows($result)>0){

@@ -64,16 +64,16 @@ function showDropdownList($target, $tablename,$FK_entities='',$location=-1){
 
 	if ($tablename=="glpi_dropdown_netpoint") {
 		if ($location > 0) {
-			$where = " WHERE location=$location";			
+			$where = " WHERE location='$location'";			
 		} else if ($location < 0) {
 			$where = getEntitiesRestrictRequest(" WHERE ",$tablename,'',$entity_restrict);
 		} else {
-			$where = " WHERE location=0 " . getEntitiesRestrictRequest(" AND ",$tablename,'',$entity_restrict);			
+			$where = " WHERE location=0 " . getEntitiesRestrictRequest(" AND ",$tablename,'',$entity_restrict);
 		}
 	} else if (in_array($tablename, $CFG_GLPI["specif_entities_tables"])) {
 		$where=getEntitiesRestrictRequest(" WHERE ",$tablename,'',$entity_restrict);
-	} 
-	
+	}
+
 	echo "<div class='center'>";
 	$query="SELECT * FROM $tablename $where ORDER BY $field";
 	if ($result=$DB->query($query)){

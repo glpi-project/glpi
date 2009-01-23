@@ -106,12 +106,12 @@ class DictionnarySoftwareCollection extends RuleCachedCollection {
 			"ON glpi_dropdown_manufacturer.ID=glpi_software.FK_glpi_enterprise ";
 			
 			if (isset($params['manufacturer'])&&$params['manufacturer'] > 0) {
-				$sql.=" WHERE FK_glpi_enterprise=".$params['manufacturer'];
+				$sql.=" WHERE FK_glpi_enterprise='".$params['manufacturer']."'";
 			}
 			if ($offset) {
 				$sql .= " LIMIT $offset,999999999";
-			} 
-				
+			}
+
 			$res = $DB->query($sql);
 			$nb = $DB->numrows($res)+$offset;
 			$i  = $offset;
@@ -140,7 +140,7 @@ class DictionnarySoftwareCollection extends RuleCachedCollection {
 				{
 					$IDs = array();
 					//Find all the softwares in the database with the same name and manufacturer
-					$sql = "SELECT ID FROM `glpi_software` WHERE name='" . $input["name"] . "' AND FK_glpi_enterprise=" . $input["FK_glpi_enterprise"];
+					$sql = "SELECT ID FROM `glpi_software` WHERE name='" . $input["name"] . "' AND FK_glpi_enterprise='" . $input["FK_glpi_enterprise"]."'";
 					$res_soft = $DB->query($sql);
 					if ($DB->numrows($res_soft) > 0)
 					{
@@ -192,8 +192,8 @@ class DictionnarySoftwareCollection extends RuleCachedCollection {
 
 		foreach ($IDs as $ID) {
 			$res_soft = $DB->query("SELECT gs.ID AS ID, gs.name AS name, gs.FK_entities AS FK_entities, gm.name AS manufacturer
-						FROM glpi_software AS gs LEFT JOIN glpi_dropdown_manufacturer AS gm ON gs.FK_glpi_enterprise = gm.ID 
-						WHERE gs.is_template=0 AND gs.ID =" . $ID);
+						FROM glpi_software AS gs LEFT JOIN glpi_dropdown_manufacturer AS gm ON gs.FK_glpi_enterprise = gm.ID
+						WHERE gs.is_template=0 AND gs.ID ='" . $ID."'");
 			
 			if ($DB->numrows($res_soft)){
 				$soft = $DB->fetch_array($res_soft);
@@ -232,7 +232,7 @@ class DictionnarySoftwareCollection extends RuleCachedCollection {
 		}
 			
 		//Get all the different versions for a software
-		$result = $DB->query("SELECT ID, version FROM glpi_licenses WHERE sID=" . $ID);
+		$result = $DB->query("SELECT ID, version FROM glpi_licenses WHERE sID='" . $ID."'");
 		while ($license = $DB->fetch_array($result)) {
 			$input["version"]=addslashes($license["version"]);
 			//Replay software dictionnary rules
@@ -284,7 +284,7 @@ class DictionnarySoftwareCollection extends RuleCachedCollection {
 			//Try to delete all the software that are not used anymore (which means that don't have license associated anymore)
 			$res_countsoftinstall = $DB->query("SELECT glpi_software.ID as ID, count( glpi_licenses.sID ) AS cpt " .
 						"FROM `glpi_software` LEFT JOIN glpi_licenses ON glpi_licenses.sID = glpi_software.ID " .
-						"WHERE glpi_software.ID IN (" . $ids . ") AND deleted=0 GROUP BY glpi_software.ID HAVING cpt=0 ORDER BY cpt");
+						"WHERE glpi_software.ID IN ('" . $ids . "') AND deleted=0 GROUP BY glpi_software.ID HAVING cpt=0 ORDER BY cpt");
 
 			$software = new Software;
 			while ($soft = $DB->fetch_array($res_countsoftinstall)) {
@@ -310,11 +310,11 @@ class DictionnarySoftwareCollection extends RuleCachedCollection {
 		//A license does not exist
 		if ($new_licenseID == -1){
 			//Transfer licenses from old software to new software for a specific version
-			$DB->query("UPDATE glpi_licenses SET version='" . $new_version . "', sID=" . $new_software_id . " WHERE sID=" . $ID." AND version='".$old_version."'");
+			$DB->query("UPDATE glpi_licenses SET version='" . $new_version . "', sID='" . $new_software_id . "' WHERE sID='" . $ID."' AND version='".$old_version."'");
 		} else {
 			//Change ID of the license in glpi_inst_software
-			$DB->query("UPDATE glpi_inst_software SET license=" . $new_licenseID . " WHERE license=" . $ID);
-	
+			$DB->query("UPDATE glpi_inst_software SET license='" . $new_licenseID . "' WHERE license='" . $ID."'");
+
 			//Delete old license
 			$old_license = new License;
 			$old_license->delete(array("ID"=>$license_id));

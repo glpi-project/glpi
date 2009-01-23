@@ -51,7 +51,7 @@ function showPorts ($device,$device_type,$withtemplate='') {
 
 	$device_real_table_name = $LINK_ID_TABLE[$device_type];
 
-	$query = "SELECT ID FROM glpi_networking_ports WHERE (on_device = $device AND device_type = $device_type) ORDER BY name, logical_number";
+	$query = "SELECT ID FROM glpi_networking_ports WHERE (on_device = '$device' AND device_type = '$device_type') ORDER BY name, logical_number";
 	if ($result = $DB->query($query)) {
 		if ($DB->numrows($result)!=0) { 
 			$colspan=8;
@@ -598,7 +598,7 @@ function makeConnector($sport, $dport, $dohistory=true, $addmsg=false) {
 	}
 	// end manage VLAN
 	
-	$query = "INSERT INTO glpi_networking_wire VALUES (NULL,$sport,$dport)";
+	$query = "INSERT INTO glpi_networking_wire VALUES (NULL,'$sport','$dport')";
 	if ($result = $DB->query($query)) {
 		$source=new CommonItem;
 		$source->getFromDB($ps->fields['device_type'],$ps->fields['on_device']);

@@ -200,7 +200,7 @@ function showLinkOnDevice($type,$ID){
 				$ipmac=array();
 				$i=0;
 				if (ereg("\[IP\]",$link)||ereg("\[MAC\]",$link)){
-					$query2 = "SELECT ifaddr,ifmac,logical_number FROM glpi_networking_ports WHERE (on_device = $ID AND device_type = $type) ORDER BY logical_number";
+					$query2 = "SELECT ifaddr,ifmac,logical_number FROM glpi_networking_ports WHERE (on_device = '$ID' AND device_type = '$type') ORDER BY logical_number";
 					$result2=$DB->query($query2);
 					if ($DB->numrows($result2)>0)
 						while ($data2=$DB->fetch_array($result2)){

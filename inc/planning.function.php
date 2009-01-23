@@ -155,7 +155,7 @@ function showPlanning($who,$who_group,$when,$type){
 	}
 	// ---------------Tracking
 	$query="SELECT * FROM glpi_tracking_planning WHERE $ASSIGN (('$begin' <= begin AND '$end' >= begin) OR ('$begin' < end AND '$end' >= end) OR (begin <= '$begin' AND end > '$begin') OR (begin <= '$end' AND end > '$end')) ORDER BY begin";
-	
+
 	$result=$DB->query($query);
 
 	$fup=new Followup();
@@ -192,26 +192,26 @@ function showPlanning($who,$who_group,$when,$type){
 			}
 		}
 
-	// ---------------reminder 
+	// ---------------reminder
 	$readpub=$readpriv="";
 
 	// See public reminder ?
 	if (haveRight("reminder_public","r")) {
 		$readpub="(private=0 AND".getEntitiesRestrictRequest("","glpi_reminder",'','',true).")";
 	}
-	
+
 	// See my private reminder ?
 	if ($who_group=="mine" || $who==$_SESSION["glpiID"]){
-		$readpriv="(private=1 AND FK_users=".$_SESSION["glpiID"].")";		
+		$readpriv="(private=1 AND FK_users='".$_SESSION["glpiID"]."')";
 	}
-	
+
 	if ($readpub && $readpriv) {
 		$ASSIGN	= "($readpub OR $readpriv)";
 	} else if ($readpub) {
-		$ASSIGN	= $readpub;	
+		$ASSIGN	= $readpub;
 	} else {
-		$ASSIGN	= $readpriv;	
-	}		
+		$ASSIGN	= $readpriv;
+	}
 	if ($ASSIGN) {
 		$query2="SELECT * FROM glpi_reminder WHERE rv=1 AND $ASSIGN  AND begin < '$end' AND end > '$begin' ORDER BY begin";
 		$result2=$DB->query($query2);
@@ -576,7 +576,7 @@ function displayUsingTwoDigits($time){
 /**
  * Show the planning for the central page of a user
  *
- *  
+ *
  * @param $who ID of the user
  * @return Nothing (display function)
  *
@@ -596,7 +596,7 @@ function showPlanningCentral($who){
 		$ASSIGN="id_assign='$who' AND";
 	} else {
 		return false;
-	} 
+	}
 
 
 	$INTERVAL=" 1 DAY "; // we want to show planning of the day
@@ -635,7 +635,7 @@ function showPlanningCentral($who){
 		}
 
 
-	// reminder 
+	// reminder
 	$read_public="";
 	if (haveRight("reminder_public","r")) $read_public=" OR ( private=0 ".getEntitiesRestrictRequest("AND","glpi_reminder").") ";
 
@@ -819,7 +819,7 @@ function generateIcal($who){
 	global  $DB,$CFG_GLPI, $LANG;
 
 	// export job
-	$query="SELECT * FROM glpi_tracking_planning WHERE id_assign=$who";
+	$query="SELECT * FROM glpi_tracking_planning WHERE id_assign='$who'";
 
 	$result=$DB->query($query);
 

@@ -284,7 +284,7 @@ function dropdownNoValue($table,$myname,$value,$entity_restrict=-1) {
 		$where.=" AND ";
 	}
 	$where.=" ID<>'$value' ";
-	
+
 	if (in_array($table,$CFG_GLPI["dropdowntree_tables"])){
 		$query = "SELECT ID, completename as name FROM $table $where  ORDER BY completename";
 	}
@@ -626,8 +626,8 @@ function getDropdownArrayNames($table,$ids) {
 		foreach ($ids as $val){
 			if (!$first) $query.=",";
 			else $first=false;
-			$query.=$val;
-		}			
+			$query.="'".$val."'";
+		}
 		$query.=")";
 
 		if ($result=$DB->query($query)){
@@ -1243,7 +1243,7 @@ function dropdownDocument($myname,$entity_restrict='',$used=array()) {
 	if (count($used)) {
 		$where .= " AND ID NOT IN (0";
 		foreach ($used as $ID)
-			$where .= ",$ID";
+			$where .= ",'$ID'";
 		$where .= ")";
 	}
 

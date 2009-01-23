@@ -102,7 +102,7 @@ class OcsRuleCollection extends RuleCollection {
 
 		if ($select_sql != "" && $from_sql != "" && $where_sql != "") {
 			//Build the all request
-			$sql = $begin_sql . $select_sql . " FROM " . $from_sql . " WHERE " . $where_sql . " AND hardware.ID=" . $computer_id;
+			$sql = $begin_sql . $select_sql . " FROM " . $from_sql . " WHERE " . $where_sql . " AND hardware.ID='" . $computer_id."'";
 		
 			checkOCSconnection($this->ocs_server_id);
 			$result = $DBocs->query($sql);
@@ -334,8 +334,8 @@ function getRulesByID($ID, $withcriterias, $withactions) {
 
 
 	//Get all the rules whose rule_type is $rule_type and entity is $ID
-	$sql="SELECT * FROM `glpi_rules_actions` as gra, glpi_rules_descriptions as grd  WHERE gra.FK_rules=grd.ID AND gra.field='FK_entities'  and grd.rule_type=".$this->rule_type." and gra.value='".$ID."'";
-	
+	$sql="SELECT * FROM `glpi_rules_actions` as gra, glpi_rules_descriptions as grd  WHERE gra.FK_rules=grd.ID AND gra.field='FK_entities'  and grd.rule_type='".$this->rule_type."' and gra.value='".$ID."'";
+
 	$result = $DB->query($sql);
 	while ($rule = $DB->fetch_array($result)) {
 		$affect_rule = new Rule;

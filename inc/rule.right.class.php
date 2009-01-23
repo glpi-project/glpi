@@ -159,7 +159,7 @@ class RightAffectRule extends Rule {
 	{
 		global $DB,$RULES_CRITERIAS;
 
-			$sql = "SELECT name,value,rule_type FROM glpi_rules_ldap_parameters WHERE rule_type=".$this->rule_type;
+			$sql = "SELECT name,value,rule_type FROM glpi_rules_ldap_parameters WHERE rule_type='".$this->rule_type."'";
 			$result = $DB->query($sql);
 			while ($datas = $DB->fetch_array($result))
 			{
@@ -223,7 +223,7 @@ function getRulesByID($ID, $withcriterias, $withactions) {
 
 	//Get all the rules whose rule_type is $rule_type and entity is $ID
 	$sql="SELECT * FROM `glpi_rules_actions` as gra, glpi_rules_descriptions as grd  WHERE gra.FK_rules=grd.ID AND gra.field='FK_entities'  and grd.rule_type=".$this->rule_type." and gra.value='".$ID."'";
-	
+
 	$result = $DB->query($sql);
 	while ($rule = $DB->fetch_array($result)) {
 		$affect_rule = new Rule;
@@ -392,8 +392,8 @@ class RightRuleCollection extends RuleCollection {
 		$params = array();
 		$sql = "SELECT DISTINCT value " .
 				"FROM glpi_rules_descriptions, glpi_rules_criterias, glpi_rules_ldap_parameters " .
-				"WHERE glpi_rules_descriptions.rule_type=".$this->rule_type." AND glpi_rules_criterias.FK_rules=glpi_rules_descriptions.ID AND glpi_rules_criterias.criteria=glpi_rules_ldap_parameters.value";
-		
+				"WHERE glpi_rules_descriptions.rule_type='".$this->rule_type."' AND glpi_rules_criterias.FK_rules=glpi_rules_descriptions.ID AND glpi_rules_criterias.criteria=glpi_rules_ldap_parameters.value";
+
 		$result = $DB->query($sql);
 		while ($param = $DB->fetch_array($result))
 		{

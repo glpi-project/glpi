@@ -624,7 +624,7 @@ function showSynchronizationForm($target, $ID) {
 
 	if (haveRight("user", "w")){
 		//Look it the user's auth method is LDAP
-		$sql = "SELECT auth_method, id_auth FROM glpi_users WHERE ID=" . $ID;
+		$sql = "SELECT auth_method, id_auth FROM glpi_users WHERE ID='" . $ID."'";
 		$result = $DB->query($sql);
 		
 		if ($DB->numrows($result) > 0) {
@@ -636,7 +636,7 @@ function showSynchronizationForm($target, $ID) {
 					echo "<div class='center'>";
 					echo "<form method='post' action=\"$target\">";
 
-					$sql = "SELECT name FROM glpi_auth_ldap WHERE ID=" . $data["id_auth"];
+					$sql = "SELECT name FROM glpi_auth_ldap WHERE ID='" . $data["id_auth"]."'";
 					$result = $DB->query($sql);
 					if ($DB->numrows($result) > 0) {
 						//Look it the auth server still exists !

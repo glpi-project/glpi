@@ -83,23 +83,23 @@ class CommonDBTM {
 	 *@param $ID ID of the item to get
 	 *@return true if succeed else false
 	 *@todo Specific ones : Reservation Item
-	 * 
-	**/	
+	 *
+	**/
 	function getFromDB ($ID) {
 
 		// Make new database object and fill variables
 		global $DB,$CFG_GLPI;
 		// != 0 because 0 is consider as empty
 		if (strlen($ID)==0) return false;
-		
-		$query = "SELECT * FROM ".$this->table." WHERE (".$this->getIndexName()." = $ID)";
-		
+
+		$query = "SELECT * FROM ".$this->table." WHERE (".$this->getIndexName()." = '".$ID."')";
+
 		if ($result = $DB->query($query)) {
 			if ($DB->numrows($result)==1){
 				$this->fields = $DB->fetch_assoc($result);
 				return true;
 			} 
-		} 
+		}
 		return false;;
 
 	}

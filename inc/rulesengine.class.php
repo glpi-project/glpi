@@ -123,7 +123,7 @@ class RuleCollection {
 		$this->RuleList->list = array();
 			
 		//Select all the rules of a different type
-		$sql = "SELECT * FROM glpi_rules_descriptions WHERE rule_type=" . $this->rule_type . " ORDER by ".$this->orderby." ASC";
+		$sql = "SELECT * FROM glpi_rules_descriptions WHERE rule_type='" . $this->rule_type . "' ORDER by ".$this->orderby." ASC";
 		if ($limit) {
 			$sql .= " LIMIT $start,$limit";
 		}
@@ -156,7 +156,7 @@ class RuleCollection {
 		if (($need & $this->RuleList->load) != $need) {
 
 			//Select all the rules of a different type
-			$sql = "SELECT ID FROM glpi_rules_descriptions WHERE rule_type=".$this->rule_type." ORDER by ".$this->orderby." ASC";
+			$sql = "SELECT ID FROM glpi_rules_descriptions WHERE rule_type='".$this->rule_type."' ORDER by ".$this->orderby." ASC";
 			 $result = $DB->query($sql);
 			if ($result){
 				$this->RuleList->list = array();
@@ -393,7 +393,7 @@ class RuleCollection {
 	function deleteRuleOrder($ranking){
 		global $DB;
 		$rules = array();
-		$sql ="UPDATE glpi_rules_descriptions SET ranking=ranking-1 WHERE rule_type =".$this->rule_type." AND ranking > '$ranking' ";
+		$sql ="UPDATE glpi_rules_descriptions SET ranking=ranking-1 WHERE rule_type ='".$this->rule_type."' AND ranking > '$ranking' ";
 		return $DB->query($sql);
 	}
 	
@@ -609,7 +609,7 @@ class RuleCollection {
 		global $DB;
 		$input = array();
 		
-		$res = $DB->query("SELECT DISTINCT grc.criteria as criteria FROM glpi_rules_criterias as grc, glpi_rules_descriptions grd WHERE grc.FK_rules=grd.ID AND grd.rule_type=".$this->rule_type);
+		$res = $DB->query("SELECT DISTINCT grc.criteria as criteria FROM glpi_rules_criterias as grc, glpi_rules_descriptions grd WHERE grc.FK_rules=grd.ID AND grd.rule_type='".$this->rule_type."'");
 		while ($data = $DB->fetch_array($res))
 			$input[]=$data["criteria"];
 		return $input;
@@ -1394,10 +1394,10 @@ class Rule extends CommonDBTM{
 	function cleanDBonPurge($ID){
 		// Delete a rule and all associated criterias and actions
 		global $DB;
-		$sql = "DELETE FROM glpi_rules_actions WHERE FK_rules=".$ID;
+		$sql = "DELETE FROM glpi_rules_actions WHERE FK_rules='".$ID."'";
 		$DB->query($sql);
-		
-		$sql = "DELETE FROM glpi_rules_criterias WHERE FK_rules=".$ID;
+
+		$sql = "DELETE FROM glpi_rules_criterias WHERE FK_rules='".$ID."'";
 		$DB->query($sql);
 	}
 
@@ -1465,7 +1465,7 @@ class Rule extends CommonDBTM{
 	function getNextRanking()
 	{
 		global $DB;
-		$sql = "SELECT max(ranking) as rank FROM glpi_rules_descriptions WHERE rule_type=".$this->rule_type;
+		$sql = "SELECT max(ranking) as rank FROM glpi_rules_descriptions WHERE rule_type='".$this->rule_type."'";
 		$result = $DB->query($sql);
 		if ($DB->numrows($result) > 0)
 		{
@@ -1915,7 +1915,7 @@ class RuleAction extends CommonDBTM {
 	 * @return an array of RuleAction objects
 	**/
 	function getRuleActions($ID) {
-		$sql = "SELECT * FROM glpi_rules_actions WHERE FK_rules=" . $ID;
+		$sql = "SELECT * FROM glpi_rules_actions WHERE FK_rules='" . $ID."'";
 		global $DB;
 
 		$rules_actions = array ();
@@ -1963,7 +1963,7 @@ class RuleCriteria extends CommonDBTM {
 	**/
 	function getRuleCriterias($ID) {
 		global $DB;
-		$sql = "SELECT * FROM glpi_rules_criterias WHERE FK_rules=" . $ID;
+		$sql = "SELECT * FROM glpi_rules_criterias WHERE FK_rules='" . $ID."'";
 
 		$rules_list = array ();
 		$result = $DB->query($sql);
@@ -2089,7 +2089,7 @@ class RuleCached extends Rule{
 	**/
 	function deleteCacheByRuleId($ID){
 		global $DB;
-		$DB->query("DELETE FROM ".getCacheTableByRuleType($this->rule_type)." WHERE rule_id=".$ID);
+		$DB->query("DELETE FROM ".getCacheTableByRuleType($this->rule_type)." WHERE rule_id='".$ID."'");
 	}
 
 	function post_updateItem($input,$updates,$history=1) {
@@ -2111,7 +2111,7 @@ class RuleCached extends Rule{
 		$query="SELECT *
 			FROM ".$rulecollection->cache_table.", glpi_rules_descriptions
 			WHERE ".$rulecollection->cache_table.".rule_id=glpi_rules_descriptions.ID 
-			AND ".$rulecollection->cache_table.".rule_id=".$this->fields["ID"]." 
+			AND ".$rulecollection->cache_table.".rule_id='".$this->fields["ID"]."'
 			ORDER BY name";
 
 		$res_count=$DB->query($query);
@@ -2265,7 +2265,7 @@ class RuleCachedCollection extends RuleCollection{
 	**/
 	function checkDataInCache($input){
 		global $DB;
-		
+
 		$where="";
 		$first=true;
 		foreach($this->cache_params["input_value"] as $param => $value){
@@ -2274,7 +2274,7 @@ class RuleCachedCollection extends RuleCollection{
 				$first=false;
 			}
 		}
-			
+
 		$sql = "SELECT * FROM ".$this->cache_table." WHERE ".$where;
 
 		if ($res_check = $DB->query($sql)){

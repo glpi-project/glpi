@@ -126,7 +126,7 @@ function getTreeLeafValueName($table,$ID,$withcomments=false){
 		$name = $LANG["knowbase"][12];
 		
 	} else {
-		$query = "SELECT * 
+		$query = "SELECT *
 			FROM $table 
 			WHERE (ID = '$ID')";
 		if ($result=$DB->query($query)){
@@ -160,7 +160,7 @@ function getTreeValueCompleteName($table,$ID,$withcomments=false){
 
 	if ($ID==0 && $table=="glpi_entities") {
 		$name = $LANG["entity"][2];
-		
+
 	} else if ($ID==0 && $table=="glpi_dropdown_kbcategories") {
 		$name = $LANG["knowbase"][12];
 		
@@ -201,7 +201,7 @@ function getTreeValueName($table,$ID, $wholename="",$level=0){
 	global $DB,$LANG;
 
 	$query = "SELECT * 
-		FROM $table 
+		FROM $table
 		WHERE (ID = '$ID')";
 	$name="";
 
@@ -376,7 +376,7 @@ function getTreeForItem($table,$IDf){
 			$id_found[$row['ID']]['name']=$row['name'];
 			array_push($found,$row['ID']);
 		}
-	} 
+	}
 
 	// Get the leafs of previous founded item
 	while (count($found)>0){
@@ -611,9 +611,9 @@ function getNextItem($table,$ID,$condition="",$nextprev_item=""){
 	$LEFTJOIN='';
 	if ($table=="glpi_users"){
 		$LEFTJOIN=' LEFT JOIN glpi_users_profiles ON (glpi_users.ID = glpi_users_profiles.FK_users)';
-	}	
+	}
 
-	$query = "SELECT $table.ID 
+	$query = "SELECT $table.ID
 		FROM $table $LEFTJOIN
 		WHERE ( $table.".$nextprev_item." > '$search' ";
 
@@ -630,7 +630,7 @@ function getNextItem($table,$ID,$condition="",$nextprev_item=""){
 	if (in_array($table,$CFG_GLPI["deleted_tables"]))
 		$query.=" AND $table.deleted='0' ";
 	if (in_array($table,$CFG_GLPI["template_tables"]))
-		$query.=" AND $table.is_template='0' ";	
+		$query.=" AND $table.is_template='0' ";
 
 	// Restrict to active entities
 	if (in_array($table,$CFG_GLPI["specif_entities_tables"])){
@@ -667,9 +667,9 @@ function getPreviousItem($table,$ID,$condition="",$nextprev_item=""){
 
 	$search=$ID;
 	if ($nextprev_item!="ID"){
-		$query="SELECT ".$nextprev_item." 
-			FROM $table 
-			WHERE ID=$ID";
+		$query="SELECT ".$nextprev_item."
+			FROM $table
+			WHERE ID='$ID'";
 		$result=$DB->query($query);
 		if ($DB->numrows($result)>0){
 			$search=addslashes($DB->result($result,0,0));
@@ -681,9 +681,9 @@ function getPreviousItem($table,$ID,$condition="",$nextprev_item=""){
 	$LEFTJOIN='';
 	if ($table=="glpi_users"){
 		$LEFTJOIN=' LEFT JOIN glpi_users_profiles ON (glpi_users.ID = glpi_users_profiles.FK_users)';
-	}	
+	}
 
-	$query = "SELECT $table.ID 
+	$query = "SELECT $table.ID
 		FROM $table $LEFTJOIN
 		WHERE  ($table.".$nextprev_item." < '$search' ";
 
@@ -702,7 +702,7 @@ function getPreviousItem($table,$ID,$condition="",$nextprev_item=""){
 	if (in_array($table,$CFG_GLPI["deleted_tables"]))
 		$query.="AND $table.deleted='0'";
 	if (in_array($table,$CFG_GLPI["template_tables"]))
-		$query.="AND $table.is_template='0'";	
+		$query.="AND $table.is_template='0'";
 
 	// Restrict to active entities
 	if (in_array($table,$CFG_GLPI["specif_entities_tables"])){

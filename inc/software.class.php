@@ -396,7 +396,7 @@ class Software extends CommonDBTM {
 	*/
 	function countInstallations() {
 		global $DB;
-		$query = "SELECT * FROM glpi_inst_software WHERE (sID = " . $this->fields["ID"] . ")";
+		$query = "SELECT * FROM glpi_inst_software WHERE (sID = '" . $this->fields["ID"] . "')";
 		if ($result = $DB->query($query)) {
 			$number = $DB->numrows($result);
 			return $number;

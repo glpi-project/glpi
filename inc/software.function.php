@@ -658,12 +658,12 @@ function installSoftware($cID, $lID, $sID = '', $dohistory = 1) {
 
 	if (!empty ($lID) && $lID > 0) {
 
-		$query_exists = "SELECT ID FROM glpi_inst_software WHERE cID=" . $cID . " AND license=" . $lID;
+		$query_exists = "SELECT ID FROM glpi_inst_software WHERE cID='" . $cID . "' AND license='" . $lID."'";
 		$result = $DB->query($query_exists);
 		if ($DB->numrows($result) > 0)
 			return $DB->result($result, 0, "ID");
 		else {
-			$query = "INSERT INTO glpi_inst_software VALUES (NULL,$cID,$lID)";
+			$query = "INSERT INTO glpi_inst_software VALUES (NULL,'$cID','$lID')";
 			if ($result = $DB->query($query)) {
 				$newID = $DB->insert_id();
 				if ($dohistory) {
@@ -696,7 +696,7 @@ function installSoftware($cID, $lID, $sID = '', $dohistory = 1) {
 			$newinput['serial'] = $LANG["software"][6];
 			$lID = $lic->add($newinput);
 
-			$query = "INSERT INTO glpi_inst_software VALUES (NULL,$cID,$lID)";
+			$query = "INSERT INTO glpi_inst_software VALUES (NULL,'$cID','$lID')";
 			if ($result = $DB->query($query)) {
 				$newID = $DB->insert_id();
 				if ($dohistory) {
@@ -1485,7 +1485,7 @@ function addSoftwareOrRestoreFromTrash($name,$manufacturer,$entity,$comments='',
 	//Look for the software by his name in GLPI for a specific entity
 	$query_search = "SELECT glpi_software.ID as ID, glpi_software.deleted as deleted  
 			FROM glpi_software 
-			WHERE name = '" . $name . "' AND is_template='0' AND FK_entities=" . $entity;
+			WHERE name = '" . $name . "' AND is_template='0' AND FK_entities='" . $entity."'";
 	$result_search = $DB->query($query_search);
 	if ($DB->numrows($result_search) > 0) {
 		//Software already exists for this entity, get his ID

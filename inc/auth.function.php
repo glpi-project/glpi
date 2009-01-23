@@ -1212,7 +1212,7 @@ function showReplicatesList($target,$master_id){
 
 	addNewReplicateForm($target, $master_id);
 	
-	$sql = "SELECT * FROM glpi_auth_ldap_replicate WHERE server_id=".$master_id." ORDER BY name";
+	$sql = "SELECT * FROM glpi_auth_ldap_replicate WHERE server_id='".$master_id."' ORDER BY name";
 	$result = $DB->query($sql);
 	if ($DB->numrows($result)>0){
 		echo "<br>";
@@ -1296,7 +1296,7 @@ function getAllReplicateForAMaster($master_id){
 	global $DB;
 	
 	$replicates = array();
-	$result = $DB->query("SELECT ID, ldap_host,ldap_port FROM glpi_auth_ldap_replicate WHERE server_id=".$master_id);
+	$result = $DB->query("SELECT ID, ldap_host,ldap_port FROM glpi_auth_ldap_replicate WHERE server_id='".$master_id."'");
 	if ($DB->numrows($result)>0){
 		while ($replicate = $DB->fetch_array($result)){
 			$replicates[] = array("ID"=>$replicate["ID"], "ldap_host"=>$replicate["ldap_host"], "ldap_port"=>$replicate["ldap_port"]);

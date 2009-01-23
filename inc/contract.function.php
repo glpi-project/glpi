@@ -169,7 +169,7 @@ function showDeviceContract($instID) {
 				." WHERE ".$LINK_ID_TABLE[$type].".ID = glpi_contract_device.FK_device AND glpi_contract_device.device_type='$type' AND glpi_contract_device.FK_contract = '$instID'";
 			if (in_array($LINK_ID_TABLE[$type],$CFG_GLPI["template_tables"])){
 				$query.=" AND ".$LINK_ID_TABLE[$type].".is_template='0'";
-			}						
+			}
 			$query .= getEntitiesRestrictRequest(" AND",$LINK_ID_TABLE[$type])
 				." ORDER BY glpi_entities.completename, ".$LINK_ID_TABLE[$type].".name";
 
@@ -459,7 +459,7 @@ function dropdownContracts($name,$entity_restrict=-1,$alreadyused=array()){
 	}
 	if (count($alreadyused)) {
 		foreach ($alreadyused AS $ID) {
-			$idrest .= (empty($idrest) ? "AND ID NOT IN(" : ",") . $ID;
+			$idrest .= (empty($idrest) ? "AND ID NOT IN(" : ",") . "'".$ID."'";
 		}
 		$idrest .= ")";
 	}

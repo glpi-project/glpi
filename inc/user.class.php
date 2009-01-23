@@ -1133,7 +1133,7 @@ class User extends CommonDBTM {
 		//Purge only in case of connection to the master mysql server
 		if (!$DB->isSlave())
 		{
-			$sql = "DELETE FROM glpi_users_profiles WHERE FK_users=".$this->fields["ID"]." AND dynamic=1";
+			$sql = "DELETE FROM glpi_users_profiles WHERE FK_users='".$this->fields["ID"]."' AND dynamic=1";
 			$DB->query($sql);
 		}
 	}

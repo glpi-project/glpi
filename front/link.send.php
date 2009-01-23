@@ -97,7 +97,7 @@ if (isset($_GET["lID"])){
 		$ipmac=array();
 		$i=0;
 		if (ereg("\[IP\]",$file)||ereg("\[MAC\]",$file)){
-			$query2 = "SELECT ifaddr,ifmac FROM glpi_networking_ports WHERE (on_device = ".$_GET["ID"]." AND device_type = ".$_GET["type"].") ORDER BY logical_number";
+			$query2 = "SELECT ifaddr,ifmac FROM glpi_networking_ports WHERE (on_device = '".$_GET["ID"]."' AND device_type = '".$_GET["type"]."') ORDER BY logical_number";
 			$result2=$DB->query($query2);
 			if ($DB->numrows($result2)>0){
 				$data2=$DB->fetch_array($result2);

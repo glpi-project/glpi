@@ -714,7 +714,7 @@ class Job extends CommonDBTM{
 		$RESTRICT="";
 		if ($with_private!=1) $RESTRICT = " AND private='0'";
 		// Set number of followups
-		$query = "SELECT count(*) FROM glpi_followups WHERE tracking = ".$this->fields["ID"]." $RESTRICT";
+		$query = "SELECT count(*) FROM glpi_followups WHERE tracking = '".$this->fields["ID"]."' $RESTRICT";
 		$result = $DB->query($query);
 		return $DB->result($result,0,0);
 

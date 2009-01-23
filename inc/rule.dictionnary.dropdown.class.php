@@ -412,7 +412,7 @@ class DictionnaryDropdownCollection extends RuleCachedCollection{
 			"WHERE $model_table.model=".$this->item_table.".ID ";
 		if ($offset) {
 			$Sql .= " LIMIT $offset,999999999";
-		} 
+		}
 		$result = $DB->query($Sql);
 
 		$nb = $DB->numrows($result)+$offset;
@@ -442,11 +442,11 @@ class DictionnaryDropdownCollection extends RuleCachedCollection{
 				if ($data['ID'] != $ID) {
 					$tocheck[$data["ID"]][]=$ID;
 
-					$sql = "UPDATE $model_table SET model=".$ID." WHERE model=".$data['ID'];
+					$sql = "UPDATE $model_table SET model='".$ID."' WHERE model='".$data['ID']."'";
 					if (empty($data['idmanu'])){
 						$sql .= " AND (FK_glpi_enterprise IS NULL OR FK_glpi_enterprise = 0)";
 					} else {
-						$sql .= " AND FK_glpi_enterprise=".$data['idmanu'];
+						$sql .= " AND FK_glpi_enterprise='".$data['idmanu']."'";
 					}
 
 					$DB->query($sql);
@@ -462,12 +462,12 @@ class DictionnaryDropdownCollection extends RuleCachedCollection{
 			} 
 
 			foreach ($tocheck AS $ID => $tab) 	{
-				$sql="SELECT COUNT(*) FROM $model_table WHERE model=$ID";
+				$sql="SELECT COUNT(*) FROM $model_table WHERE model='$ID'";
 				$result = $DB->query($sql);
 				$deletecartmodel=false;
 				// No item left : delete old item
 				if ($result && $DB->result($result,0,0)==0) {
-					$Sql = "DELETE FROM ".$this->item_table." WHERE ID=".$ID;
+					$Sql = "DELETE FROM ".$this->item_table." WHERE ID='".$ID."'";
 					$resdel = $DB->query($Sql);
 					$deletecartmodel=true;
 				} 
