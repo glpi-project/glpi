@@ -141,7 +141,7 @@ function showDeviceUser($ID){
 
 	if (!empty($group_where)){
 		echo "<div class='center'><table class='tab_cadre_fixe'><tr><th>".$LANG["common"][17]."</th><th>".$LANG["common"][16]."</th><th>".$LANG["common"][19]."</th><th>".$LANG["common"][20]."</th><th>&nbsp;</th></tr>";
-	
+
 		foreach ($CFG_GLPI["linkuser_types"] as $type){
 			$query="SELECT * FROM ".$LINK_ID_TABLE[$type]." WHERE $group_where";
 
@@ -471,7 +471,7 @@ function getUserEntities($ID,$recursive=true){
 	return array();
 }
 
-/** Get all the authentication methods parameters for a specific auth_method and id_auth and return it as an array 
+/** Get all the authentication methods parameters for a specific auth_method and id_auth and return it as an array
 * @param $auth_method Authentication method
 * @param $id_auth Authentication method ID
 */
@@ -487,16 +487,16 @@ function getAuthMethodsByID($auth_method, $id_auth) {
 		case AUTH_CAS :
 			if ($id_auth>0){
 				//Get all the ldap directories
-				$sql = "SELECT * FROM glpi_auth_ldap WHERE ID=" . $id_auth;
+				$sql = "SELECT * FROM glpi_auth_ldap WHERE ID='" . $id_auth."'";
 			}
 			break;
 		case AUTH_LDAP :
 			//Get all the ldap directories
-			$sql = "SELECT * FROM glpi_auth_ldap WHERE ID=" . $id_auth;
+			$sql = "SELECT * FROM glpi_auth_ldap WHERE ID='" . $id_auth."'";
 			break;
 		case AUTH_MAIL :
 			//Get all the pop/imap servers
-			$sql = "SELECT * FROM glpi_auth_mail WHERE ID=" . $id_auth;
+			$sql = "SELECT * FROM glpi_auth_mail WHERE ID='" . $id_auth."'";
 			break;
 	}
 

@@ -159,7 +159,7 @@ function getTrackingOrderPrefs ($ID) {
 }
 
 function showCentralJobList($target,$start,$status="process",$showgrouptickets=true) {
-	
+
 
 	global $DB,$CFG_GLPI, $LANG;
 
@@ -173,7 +173,7 @@ function showCentralJobList($target,$start,$status="process",$showgrouptickets=t
 			foreach ($_SESSION['glpigroups'] as $val){
 				if (!$first) $groups.=",";
 				else $first=false;
-				$groups.=$val;
+				$groups.="'".$val."'";
 			}
 			$search_assign.= " OR assign_group IN ($groups) ";
 		}
@@ -182,7 +182,7 @@ function showCentralJobList($target,$start,$status="process",$showgrouptickets=t
 
 	if($status=="waiting"){ // on affiche les tickets en attente
 		$query = "SELECT ID FROM glpi_tracking WHERE ( $search_assign ) AND status ='waiting' ".getEntitiesRestrictRequest("AND","glpi_tracking")." ORDER BY date_mod ".getTrackingOrderPrefs($_SESSION["glpiID"]);
-		
+
 		if($showgrouptickets){
 			$title=$LANG["central"][16];
 		}else{
@@ -200,7 +200,7 @@ function showCentralJobList($target,$start,$status="process",$showgrouptickets=t
 		}
 	}
 
-	$lim_query = " LIMIT ".$start.",".$_SESSION["glpilist_limit"]."";	
+	$lim_query = " LIMIT ".intval($start).",".intval($_SESSION["glpilist_limit"])."";
 
 	$result = $DB->query($query);
 	$numrows = $DB->numrows($result);
@@ -305,7 +305,7 @@ function showOldJobListForItem($username,$item_type,$item,$sort="",$order="") {
 		$order=getTrackingOrderPrefs($_SESSION["glpiID"]);
 	}
 
-	$where = "(status = 'old_done' OR status = 'old_notdone')";	
+	$where = "(status = 'old_done' OR status = 'old_notdone')";
 
 	$query = "SELECT ".getCommonSelectForTrackingSearch()." FROM glpi_tracking ".getCommonLeftJoinForTrackingSearch()." WHERE $where AND (device_type = '$item_type' and computer = '$item') ORDER BY $sort $order";
 
@@ -360,9 +360,9 @@ function showJobListForItem($username,$item_type,$item,$sort="",$order="") {
 	}
 
 
-	$where = "(status = 'new' OR status= 'assign' OR status='plan' OR status='waiting')";	
+	$where = "(status = 'new' OR status= 'assign' OR status='plan' OR status='waiting')";
 
-	$query = "SELECT ".getCommonSelectForTrackingSearch()." FROM glpi_tracking ".getCommonLeftJoinForTrackingSearch()." WHERE $where and (computer = '$item' and device_type= '$item_type') ORDER BY $sort $order";
+	$query = "SELECT ".getCommonSelectForTrackingSearch()." FROM glpi_tracking ".getCommonLeftJoinForTrackingSearch()." WHERE $where and (computer = '$item' and device_type= '$item_type') ORDER BY '$sort' $order";
 
 	$result = $DB->query($query);
 
@@ -724,7 +724,7 @@ function addFormTracking ($device_type=0,$ID=0, $target, $author, $group=0, $ass
 	echo "<table class='tab_cadre_fixe'><tr><th colspan='4'>".$LANG["job"][13];
 	if (haveRight("comment_all_ticket","1")){
 		echo "&nbsp;&nbsp;";
-		dropdownStatus("status",1);		
+		dropdownStatus("status",1);
 	}
 
 	if (isMultiEntitiesMode()){
@@ -1406,7 +1406,7 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$to
 				if (!$first) $groups.=",";
 				else $first=false;
 				$groups.=$val;
-			}			
+			}
 			$where.=" AND ( glpi_tracking.FK_group IN ($groups) ";
 
 			if ($author!=0) {
@@ -1778,7 +1778,7 @@ function showJobDetails ($target,$ID){
 		echo "<tr><th colspan='2' style='text-align:left;'><span class='tracking_small'>";
 		echo $LANG["joblist"][11].": ";
 		if ($canupdate){
-			showCalendarForm("form_ticket","date",$job->fields["date"],true,true,false);	
+			showCalendarForm("form_ticket","date",$job->fields["date"],true,true,false);
 		} else {
 			echo $job->fields["date"];
 		}
@@ -2181,7 +2181,7 @@ function showFollowupsSummary($tID){
 	// Display existing Followups
 	$showprivate=haveRight("show_full_ticket","1");
 	$caneditall=haveRight("update_followups","1");
-	
+
 	$RESTRICT="";
 	if (!$showprivate)  $RESTRICT=" AND ( private='0' OR author ='".$_SESSION["glpiID"]."' ) ";
 
@@ -2243,7 +2243,7 @@ function showFollowupsSummary($tID){
 			$query2="SELECT * from glpi_tracking_planning WHERE id_followup='".$data['ID']."'";
 			$result2=$DB->query($query2);
 			if ($DB->numrows($result2)==0){
-				echo $LANG["job"][32];	
+				echo $LANG["job"][32];
 			} else {
 				$data2=$DB->fetch_array($result2);
 				echo "<script type='text/javascript' >\n";

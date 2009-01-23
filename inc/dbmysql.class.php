@@ -246,7 +246,7 @@ class DBmysql {
 	 * @return list of fields
 	 */
 	function list_fields($table) {
-		$result = $this->query("SHOW COLUMNS FROM $table");
+		$result = $this->query("SHOW COLUMNS FROM `$table`");
 		if ($result) {
 			if ($this->numrows($result) > 0) {
 				while ($data = mysql_fetch_assoc($result)){
