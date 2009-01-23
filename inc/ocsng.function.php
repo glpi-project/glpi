@@ -1388,7 +1388,7 @@ function mergeOcsArray($glpi_id, $tomerge, $field) {
 			$newtab = array_merge($tomerge, $tab);
 			$newtab = array_unique($newtab);
 			$query = "UPDATE glpi_ocs_link 
-									SET $field='" . exportArrayToDB($newtab) . "' 
+									SET `$field`='" . exportArrayToDB($newtab) . "' 
 									WHERE glpi_id='$glpi_id'";
 			$DB->query($query);
 		}
@@ -1398,7 +1398,7 @@ function mergeOcsArray($glpi_id, $tomerge, $field) {
 
 function deleteInOcsArray($glpi_id, $todel, $field,$is_value_to_del=false) {
 	global $DB;
-	$query = "SELECT $field FROM glpi_ocs_link WHERE glpi_id='$glpi_id'";
+	$query = "SELECT `$field` FROM glpi_ocs_link WHERE glpi_id='$glpi_id'";
 	if ($result = $DB->query($query)) {
 		if ($DB->numrows($result)){
 			$tab = importArrayFromDB($DB->result($result, 0, 0));
@@ -1408,7 +1408,7 @@ function deleteInOcsArray($glpi_id, $todel, $field,$is_value_to_del=false) {
 			if (isset($tab[$todel])){
 				unset ($tab[$todel]);
 				$query = "UPDATE glpi_ocs_link 
-									SET $field='" . exportArrayToDB($tab) . "' 
+									SET `$field`='" . exportArrayToDB($tab) . "' 
 									WHERE glpi_id='$glpi_id'";
 				$DB->query($query);
 			}
@@ -1420,11 +1420,11 @@ function replaceOcsArray($glpi_id, $newArray, $field) {
 	global $DB;
 	
 	$newArray = exportArrayToDB($newArray);
-	$query = "SELECT $field FROM glpi_ocs_link WHERE glpi_id=".$glpi_id;
+	$query = "SELECT `$field` FROM glpi_ocs_link WHERE glpi_id='".$glpi_id."'";
 	if ($result = $DB->query($query)) {
 		if ($DB->numrows($result)){
 			$query = "UPDATE glpi_ocs_link 
-								SET $field='" . $newArray . "' 
+								SET `$field`='" . $newArray . "' 
 								WHERE glpi_id='".$glpi_id."'";
 			$DB->query($query);
 		}
@@ -1433,7 +1433,7 @@ function replaceOcsArray($glpi_id, $newArray, $field) {
 
 function addToOcsArray($glpi_id, $toadd, $field) {
 	global $DB;
-	$query = "SELECT $field 
+	$query = "SELECT `$field` 
 				FROM glpi_ocs_link 
 				WHERE glpi_id='$glpi_id'";
 	if ($result = $DB->query($query)) {
@@ -1443,7 +1443,7 @@ function addToOcsArray($glpi_id, $toadd, $field) {
 				$tab[$key] = $val;
 			}
 			$query = "UPDATE glpi_ocs_link 
-								SET $field='" . exportArrayToDB($tab) . "' 
+								SET `$field`='" . exportArrayToDB($tab) . "' 
 								WHERE glpi_id='$glpi_id'";
 			$DB->query($query);
 		}
@@ -1484,7 +1484,7 @@ function ocsUnlockItems($glpi_id,$field){
 	if (!in_array($field,array("import_monitor","import_printers","import_peripheral","import_ip","import_software"))){
 		return false;
 	}
-	$query = "SELECT $field 
+	$query = "SELECT `$field` 
 			FROM glpi_ocs_link 
 			WHERE glpi_id='$glpi_id'";
 	if ($result = $DB->query($query)) {
@@ -1519,7 +1519,7 @@ function ocsUnlockItems($glpi_id,$field){
 			
 			if ($update_done){
 				$query = "UPDATE glpi_ocs_link 
-						SET $field='" . exportArrayToDB($tab) . "' 
+						SET `$field`='" . exportArrayToDB($tab) . "' 
 						WHERE glpi_id='$glpi_id'";
 				$DB->query($query);
 			}
@@ -2498,7 +2498,7 @@ function ocsUpdatePeripherals($device_type, $entity, $glpi_id, $ocs_id, $ocs_ser
 									$query = "SELECT ID 
 																												FROM glpi_printers 
 																												WHERE name = '" . $print["name"] . "' 
-																												AND is_global = '1' AND FK_entities=" . $entity;
+																												AND is_global = '1' AND FK_entities='" . $entity."'";
 									$result_search = $DB->query($query);
 									if ($DB->numrows($result_search) > 0) {
 										//Periph is already in GLPI
@@ -2582,7 +2582,7 @@ function ocsUpdatePeripherals($device_type, $entity, $glpi_id, $ocs_id, $ocs_ser
 								$query = "SELECT ID 
 																									FROM glpi_peripherals 
 																									WHERE name = '" . $periph["name"] . "' 
-																									AND is_global = '1' AND FK_entities=" . $entity;
+																									AND is_global = '1' AND FK_entities='" . $entity."'";
 								$result_search = $DB->query($query);
 								if ($DB->numrows($result_search) > 0) {
 									//Periph is already in GLPI
@@ -3328,7 +3328,7 @@ function ocsResetRegistry($glpi_computer_id) {
 function ocsResetDropdown($glpi_computer_id, $field, $table) {
 
 	global $DB;
-	$query = "SELECT $field AS VAL 
+	$query = "SELECT `$field` AS VAL 
 				FROM glpi_computers 
 				WHERE ID = '" . $glpi_computer_id . "'";
 	$result = $DB->query($query);
@@ -3336,10 +3336,10 @@ function ocsResetDropdown($glpi_computer_id, $field, $table) {
 		$value = $DB->result($result, 0, "VAL");
 		$query = "SELECT COUNT(*) AS CPT 
 							FROM glpi_computers 
-							WHERE $field = '$value'";
+							WHERE `$field` = '$value'";
 		$result = $DB->query($query);
 		if ($DB->result($result, 0, "CPT") == 1) {
-			$query2 = "DELETE FROM $table 
+			$query2 = "DELETE FROM `$table` 
 										WHERE ID = '$value'";
 			$DB->query($query2);
 		}

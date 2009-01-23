@@ -100,7 +100,7 @@ function getStatsItems($date1,$date2,$type){
 		$device_table = getDeviceTable($type);
 
 		//select devices IDs (table row)
-		$query = "select ID, designation from ".$device_table." order by designation";
+		$query = "select ID, designation from `".$device_table."` order by designation";
 		$result = $DB->query($query);
 
 		if($DB->numrows($result) >=1) {
@@ -357,7 +357,7 @@ function getNbIntervDropdown($dropdown){
 		$order=" ORDER BY FK_entities, $field";	
 	}
 
-	$query = "SELECT * FROM ". $dropdown.$where.$order;
+	$query = "SELECT * FROM `". $dropdown."` ".$where.$order;
 	$tab=array();
 	$result = $DB->query($query);
 	if($DB->numrows($result) >0) {
@@ -641,7 +641,7 @@ function constructEntryValues($type,$begin="",$end="",$param="",$value="",$value
 		case "comp_champ":
 			$LEFTJOIN= "INNER JOIN glpi_computers ON (glpi_computers.ID = glpi_tracking.computer AND glpi_tracking.device_type='".COMPUTER_TYPE."')";
 
-			$WHERE.=" AND glpi_computers.$value2='$value' AND glpi_computers.is_template <> '1'";
+			$WHERE.=" AND `glpi_computers`.`$value2`='$value' AND glpi_computers.is_template <> '1'";
 		break;
 	}
 	switch($type)	{

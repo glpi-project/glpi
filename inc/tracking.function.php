@@ -1546,7 +1546,7 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$to
 		$order=getTrackingOrderPrefs($_SESSION["glpiID"]);
 
 
-	$query=$SELECT.$FROM.$where." ORDER BY $sort $order";
+	$query=$SELECT.$FROM.$where." ORDER BY '$sort' $order";
 	//echo $query;
 	// Get it from database	
 	if ($result = $DB->query($query)) {

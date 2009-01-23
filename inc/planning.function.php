@@ -126,7 +126,7 @@ function showPlanning($who,$who_group,$when,$type){
 			foreach ($_SESSION['glpigroups'] as $val){
 				if (!$first) $groups.=",";
 				else $first=false;
-				$groups.=$val;
+				$groups.="'".$val."'";
 			}			
 			$ASSIGN="id_assign IN (SELECT DISTINCT FK_users FROM glpi_users_groups WHERE FK_groups IN ($groups)) AND";
 		} else { // Only personal ones
