@@ -198,7 +198,7 @@ class CommonDBTM {
 		if ($nb_fields>0){		
 
 			// Build query
-			$query = "INSERT INTO ".$this->table." (";
+			$query = "INSERT INTO `".$this->table."` (";
 			$i=0;
 			foreach ($this->fields as $key => $val) {
 				$fields[$i] = $key;
