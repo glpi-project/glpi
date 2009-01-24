@@ -636,6 +636,8 @@ $LANG["install"][97]="Check permissions to the directory:";
 $LANG["install"][99]="Se verifica permisiunea de a scrie pentru fisierele Cache"; 
 $LANG["install"][100]="Directorul nu a putut fi creat."; 
 $LANG["install"][101]="Directorul a fost creat, dar nu a putut fi indepartat"; 
+$LANG["install"][102]="Test json functions"; 
+$LANG["install"][103]="GLPI can't work correctly without the json_encode and json_decode functions"; 
 
 $LANG["job"][2]="dupa"; 
 $LANG["job"][3]="Destinatar"; 

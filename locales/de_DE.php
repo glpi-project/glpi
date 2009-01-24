@@ -636,6 +636,8 @@ $LANG["install"][97]="Check permissions to the directory:";
 $LANG["install"][99]="Überprüfe Schreibzugriff für Cache Dateien"; 
 $LANG["install"][100]="Das Verzeichnis konnte nicht erstellt werden"; 
 $LANG["install"][101]="Das Verzeichnis wurde erstellt, konnte aber nicht gelöscht werden."; 
+$LANG["install"][102]="Test json functions"; 
+$LANG["install"][103]="GLPI can't work correctly without the json_encode and json_decode functions"; 
 
 $LANG["job"][2]="von"; 
 $LANG["job"][3]="Empfänger"; 

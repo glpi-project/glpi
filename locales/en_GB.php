@@ -45,7 +45,7 @@ $LANG["backup"][23]="Mysql error starting from";
 $LANG["backup"][24]="Automatic redirection, else click"; 
 
 $LANG["bookmark"][1]="bookmark"; 
-$LANG["bookmark"][3]="You have not recorded bookmark yet."; 
+$LANG["bookmark"][3]="You have not recorded any bookmarks yet."; 
 $LANG["bookmark"][4]="New bookmark"; 
 $LANG["bookmark"][5]="Public bookmarks"; 
 $LANG["bookmark"][6]="Main view"; 
@@ -311,7 +311,7 @@ $LANG["computers"][56]="Status updated. The connected items have been updated us
 $LANG["connect"][0]="Direct Connections"; 
 $LANG["connect"][1]="Not connected."; 
 $LANG["connect"][15]="Automatic update of the following items"; 
-$LANG["connect"][16]="Warning!! The following items of the two hardwares do not match"; 
+$LANG["connect"][16]="Warning!! The following two items of hardware do not match"; 
 
 $LANG["consumables"][0]="Consumable"; 
 $LANG["consumables"][1]="In stock"; 
@@ -413,7 +413,7 @@ $LANG["document"][42]="Added by";
 $LANG["document"][43]="Unknown File"; 
 $LANG["document"][44]="Invalid Filename"; 
 $LANG["document"][45]="Unauthorized access to this file"; 
-$LANG["document"][46]="Failure in the sending of the file (certainly too voluminous)"; 
+$LANG["document"][46]="Failure in sending the file (probably too large)"; 
 $LANG["document"][47]="Empty file"; 
 
 $LANG["entity"][0]="Entity"; 
@@ -636,6 +636,8 @@ $LANG["install"][97]="Check permissions to the directory:";
 $LANG["install"][99]="Checking write permissions for cache files"; 
 $LANG["install"][100]="The directory could not be created."; 
 $LANG["install"][101]="The directory was created but could not be removed."; 
+$LANG["install"][102]="Test json functions"; 
+$LANG["install"][103]="GLPI can't work correctly without the json_encode and json_decode functions"; 
 
 $LANG["job"][2]="by"; 
 $LANG["job"][3]="Receiver"; 
@@ -667,7 +669,7 @@ $LANG["job"][44]="Request source";
 $LANG["job"][46]="Ticket created in the entity"; 
 
 $LANG["joblist"][0]="Status"; 
-$LANG["joblist"][1]="Just mine ones"; 
+$LANG["joblist"][1]="Just my ones"; 
 $LANG["joblist"][2]="Priority"; 
 $LANG["joblist"][3]="Personal + group(s)"; 
 $LANG["joblist"][4]="Assigned"; 
@@ -1101,7 +1103,7 @@ $LANG["ocsng"][56]="No volume blocked";
 
 $LANG["pager"][1]="to"; 
 $LANG["pager"][2]="from"; 
-$LANG["pager"][3]="in"; 
+$LANG["pager"][3]="of"; 
 $LANG["pager"][4]="Show"; 
 $LANG["pager"][5]="items"; 
 
@@ -1176,7 +1178,7 @@ $LANG["profiles"][23]="Reservation Administration";
 $LANG["profiles"][24]="Update Password"; 
 $LANG["profiles"][25]="Common"; 
 $LANG["profiles"][26]="Show tickets create by my groups"; 
-$LANG["profiles"][27]="See hardwares of my groups"; 
+$LANG["profiles"][27]="See hardware of my groups"; 
 $LANG["profiles"][28]="Recursive"; 
 $LANG["profiles"][29]="Dynamic"; 
 $LANG["profiles"][30]="View OCSNG information"; 
@@ -1211,7 +1213,7 @@ $LANG["reminder"][16]="Global notes";
 
 $LANG["reports"][0]="Select the report you want to generate"; 
 $LANG["reports"][4]="List of the hardware under contract"; 
-$LANG["reports"][11]="Hardwares under contract"; 
+$LANG["reports"][11]="Hardware under contract"; 
 $LANG["reports"][12]="Hardware Type"; 
 $LANG["reports"][13]="Date(s)"; 
 $LANG["reports"][15]="Show report"; 
@@ -1373,7 +1375,7 @@ $LANG["rulesengine"][131]="Entity from TAG";
 $LANG["search"][0]="Search"; 
 $LANG["search"][2]="contains"; 
 $LANG["search"][4]="sorted by"; 
-$LANG["search"][8]="Begin date"; 
+$LANG["search"][8]="Start date"; 
 $LANG["search"][9]="End date"; 
 $LANG["search"][10]="in"; 
 $LANG["search"][11]="Items Seen"; 
@@ -1690,7 +1692,7 @@ $LANG["state"][11]="Summary";
 
 $LANG["stats"][0]="Select statistics to be displayed"; 
 $LANG["stats"][1]="Global"; 
-$LANG["stats"][3]="Per item"; 
+$LANG["stats"][3]="By item"; 
 $LANG["stats"][5]="Number of tickets"; 
 $LANG["stats"][6]="Average resolution delay"; 
 $LANG["stats"][11]="Number of resolved tickets"; 

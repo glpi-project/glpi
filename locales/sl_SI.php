@@ -177,7 +177,7 @@ $LANG["central"][11]="Čakajoča naročila";
 $LANG["central"][12]="Osebni pogled"; 
 $LANG["central"][13]="Globalni pogled"; 
 $LANG["central"][14]="Skupinski pogled"; 
-$LANG["central"][15]="Tickets in progress for your groups"; 
+$LANG["central"][15]="Naročila v teku (za tvoje skupine)"; 
 $LANG["central"][16]="Čakajoča naročila za tvoje skupine"; 
 
 $LANG["choice"][0]="Ne"; 
@@ -636,6 +636,8 @@ $LANG["install"][97]="Check permissions to the directory:";
 $LANG["install"][99]="Preverjanje pravic pisanja za predpomnilniške datoteke"; 
 $LANG["install"][100]="Imenika ni bilo mogoče ustvariti."; 
 $LANG["install"][101]="Imenik je bil ustvarjen, vendar ga ni bilo mogoče odstraniti."; 
+$LANG["install"][102]="Test json functions"; 
+$LANG["install"][103]="GLPI can't work correctly without the json_encode and json_decode functions"; 
 
 $LANG["job"][2]="od"; 
 $LANG["job"][3]="Prejemnik"; 
@@ -667,7 +669,7 @@ $LANG["job"][44]="Vir naročila";
 $LANG["job"][46]="Ticket created in the entity"; 
 
 $LANG["joblist"][0]="Status"; 
-$LANG["joblist"][1]="Just mine ones"; 
+$LANG["joblist"][1]="Just my ones"; 
 $LANG["joblist"][2]="Prioriteta"; 
 $LANG["joblist"][3]="Personal + group(s)"; 
 $LANG["joblist"][4]="Dodeljen"; 

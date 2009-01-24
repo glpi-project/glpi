@@ -413,7 +413,7 @@ $LANG["document"][42]="Добавлен";
 $LANG["document"][43]="Unknown File"; 
 $LANG["document"][44]="Неправильное имя файла"; 
 $LANG["document"][45]="Unauthorized access to this file"; 
-$LANG["document"][46]="Failure in the sending of the file (certainly too voluminous)"; 
+$LANG["document"][46]="Failure in sending the file (probably too large)"; 
 $LANG["document"][47]="Empty file"; 
 
 $LANG["entity"][0]="Организация"; 
@@ -626,7 +626,7 @@ $LANG["install"][87]="Выделяемая память:";
 $LANG["install"][88]="минимум 64Mб обычно необходим для GLPI."; 
 $LANG["install"][89]="Идеально !"; 
 $LANG["install"][90]="Попробуйте увеличить параметр memory_limit в Вашем файле php.ini."; 
-$LANG["install"][91]="Allocated memory > 64M"; 
+$LANG["install"][91]="Выделяемой памяти > 64 Mб"; 
 $LANG["install"][92]="Лицензия"; 
 $LANG["install"][93]="Я прочел и ПРИНИМАЮ все пункты лицензии."; 
 $LANG["install"][94]="Я прочел и НЕ ПРИНИМАЮ все пункты лицензии"; 
@@ -636,6 +636,8 @@ $LANG["install"][97]="Check permissions to the directory:";
 $LANG["install"][99]="Проверка прав записи для кэширования файлов"; 
 $LANG["install"][100]="Не удалось создать каталог."; 
 $LANG["install"][101]="The directory was created but could not be removed."; 
+$LANG["install"][102]="Test json functions"; 
+$LANG["install"][103]="GLPI can't work correctly without the json_encode and json_decode functions"; 
 
 $LANG["job"][2]="кто:"; 
 $LANG["job"][3]="Получатель"; 

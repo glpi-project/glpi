@@ -636,6 +636,8 @@ $LANG["install"][97]="Check permissions to the directory:";
 $LANG["install"][99]="Checando permissão de gravação para arquivos de cache"; 
 $LANG["install"][100]="O processo não pôde ser criado."; 
 $LANG["install"][101]="O processo foi criado mas não pôde ser suprimido."; 
+$LANG["install"][102]="Test json functions"; 
+$LANG["install"][103]="GLPI can't work correctly without the json_encode and json_decode functions"; 
 
 $LANG["job"][2]="por"; 
 $LANG["job"][3]="Receptor"; 

@@ -636,6 +636,8 @@ $LANG["install"][97]="Check permissions to the directory:";
 $LANG["install"][99]="Έλεγχος δικαιώματος εγγραφής στα αρχεία προσωρινής μνήμης"; 
 $LANG["install"][100]="Ο φάκελος δεν μπόρεσε να δημιουργηθεί."; 
 $LANG["install"][101]="Ο φάκελος δημιουργήθηκε αλλά δεν ήταν δυνατή η διαγραφή του."; 
+$LANG["install"][102]="Test json functions"; 
+$LANG["install"][103]="GLPI can't work correctly without the json_encode and json_decode functions"; 
 
 $LANG["job"][2]="από"; 
 $LANG["job"][3]="Παραλήπτης"; 

@@ -413,7 +413,7 @@ $LANG["document"][42]="Ekleyen";
 $LANG["document"][43]="Tanınmaz Dosya"; 
 $LANG["document"][44]="Geçersiz dosya ismi"; 
 $LANG["document"][45]="Unauthorized access to this file"; 
-$LANG["document"][46]="Failure in the sending of the file (certainly too voluminous)"; 
+$LANG["document"][46]="Failure in sending the file (probably too large)"; 
 $LANG["document"][47]="Empty file"; 
 
 $LANG["entity"][0]="Entity"; 
@@ -636,6 +636,8 @@ $LANG["install"][97]="Check permissions to the directory:";
 $LANG["install"][99]="Cache dosyalarını yazmak için yetki kontrolü yapılıyor"; 
 $LANG["install"][100]="Dizin oluşturulamadı"; 
 $LANG["install"][101]="Dizin oluşturuldu ama kaldırılamıyor."; 
+$LANG["install"][102]="Test json functions"; 
+$LANG["install"][103]="GLPI can't work correctly without the json_encode and json_decode functions"; 
 
 $LANG["job"][2]="by"; 
 $LANG["job"][3]="Receiver"; 
@@ -667,7 +669,7 @@ $LANG["job"][44]="Talep kaynağı";
 $LANG["job"][46]="Ticket created in the entity"; 
 
 $LANG["joblist"][0]="Durum"; 
-$LANG["joblist"][1]="Just mine ones"; 
+$LANG["joblist"][1]="Just my ones"; 
 $LANG["joblist"][2]="Öncelik"; 
 $LANG["joblist"][3]="Personal + group(s)"; 
 $LANG["joblist"][4]="Atandı"; 
@@ -1101,7 +1103,7 @@ $LANG["ocsng"][56]="No volume blocked";
 
 $LANG["pager"][1]="to"; 
 $LANG["pager"][2]="from"; 
-$LANG["pager"][3]="in"; 
+$LANG["pager"][3]="of"; 
 $LANG["pager"][4]="Göster"; 
 $LANG["pager"][5]="öğe"; 
 
@@ -1176,7 +1178,7 @@ $LANG["profiles"][23]="Rezervasyon Yöneticisi";
 $LANG["profiles"][24]="Parola Güncelle"; 
 $LANG["profiles"][25]="Genel"; 
 $LANG["profiles"][26]="Show tickets create by my groups"; 
-$LANG["profiles"][27]="See hardwares of my groups"; 
+$LANG["profiles"][27]="See hardware of my groups"; 
 $LANG["profiles"][28]="Recursive"; 
 $LANG["profiles"][29]="Dinamik"; 
 $LANG["profiles"][30]="OCSNG bilgisini göster"; 

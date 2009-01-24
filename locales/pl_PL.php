@@ -636,6 +636,8 @@ $LANG["install"][97]="Check permissions to the directory:";
 $LANG["install"][99]="Sprawdzanie praw dostępu do plików tymczasowych"; 
 $LANG["install"][100]="Katalog nie może zostać utworzony"; 
 $LANG["install"][101]="Katalog został stworzony ale nie moze zostać usunięty"; 
+$LANG["install"][102]="Test json functions"; 
+$LANG["install"][103]="GLPI can't work correctly without the json_encode and json_decode functions"; 
 
 $LANG["job"][2]="przez"; 
 $LANG["job"][3]="Odbiornik"; 

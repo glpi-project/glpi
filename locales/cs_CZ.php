@@ -45,7 +45,7 @@ $LANG["backup"][23]="Chyba Mysql začíná na";
 $LANG["backup"][24]="Automatické přesměrování, jinak klikněte"; 
 
 $LANG["bookmark"][1]="bookmark"; 
-$LANG["bookmark"][3]="You have not recorded bookmark yet."; 
+$LANG["bookmark"][3]="You have not recorded any bookmarks yet."; 
 $LANG["bookmark"][4]="New bookmark"; 
 $LANG["bookmark"][5]="Public bookmarks"; 
 $LANG["bookmark"][6]="Main view"; 
@@ -413,7 +413,7 @@ $LANG["document"][42]="Přidán pomocí";
 $LANG["document"][43]="Neznámý soubor"; 
 $LANG["document"][44]="Neplatný název souboru"; 
 $LANG["document"][45]="Neoprávněný přístup k tomuto souboru"; 
-$LANG["document"][46]="Failure in the sending of the file (certainly too voluminous)"; 
+$LANG["document"][46]="Failure in sending the file (probably too large)"; 
 $LANG["document"][47]="Empty file"; 
 
 $LANG["entity"][0]="Objekt"; 
@@ -636,6 +636,8 @@ $LANG["install"][97]="Check permissions to the directory:";
 $LANG["install"][99]="Kontroluji oprávnění zápisu pro soubory s cache pamětí"; 
 $LANG["install"][100]="Adresář není možno vytvořit"; 
 $LANG["install"][101]="Adresář byl vytvořen, ale není ho možno odstranit."; 
+$LANG["install"][102]="Test json functions"; 
+$LANG["install"][103]="GLPI can't work correctly without the json_encode and json_decode functions"; 
 
 $LANG["job"][2]="dle"; 
 $LANG["job"][3]="Přijímač"; 
