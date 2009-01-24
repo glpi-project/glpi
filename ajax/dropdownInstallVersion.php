@@ -61,7 +61,7 @@ if ($_POST['sID']>0){
 
 	$query = "SELECT DISTINCT glpi_softwareversions.*, glpi_dropdown_state.name AS sname FROM glpi_softwareversions "
 			." LEFT JOIN glpi_dropdown_state on (glpi_softwareversions.state=glpi_dropdown_state.ID) "
-			." WHERE glpi_softwareversions.sID=".$_POST['sID']
+			." WHERE glpi_softwareversions.sID='".$_POST['sID']."'"
 			." ORDER BY name";
 
 	$result = $DB->query($query);

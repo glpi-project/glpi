@@ -63,7 +63,7 @@ if (isset($_POST['used'])) {
 			$used=unserialize(stripslashes($_POST['used']));
 		}
 	if (count($used)) {
-		$where .=" AND ID NOT IN (".implode(",",$used).") ";	
+		$where .=" AND ID NOT IN ('".implode("','",$used)."') ";	
 	}
 }
 
@@ -75,7 +75,10 @@ $LIMIT="LIMIT 0,$NBMAX";
 if ($_POST['searchText']==$CFG_GLPI["ajax_wildcard"]) $LIMIT="";
 
 
-$query = "SELECT * FROM glpi_docs $where ORDER BY FK_entities, name $LIMIT";
+$query = "SELECT * 
+	FROM glpi_docs 
+	$where 
+	ORDER BY FK_entities, name $LIMIT";
 //error_log($query);
 $result = $DB->query($query);
 

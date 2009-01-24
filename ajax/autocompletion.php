@@ -53,12 +53,18 @@ if (isset($_POST['user_restrict'])&&$_POST['user_restrict']>0){
 	$entity=" AND FK_users='".$_POST['user_restrict']."' ";
 }
 
-$query="SELECT COUNT(".$_POST['field'].") FROM ".$_POST['table']." WHERE ".$_POST['field']." LIKE '".$_POST['query']."%' AND ".$_POST['field']." <> '".$_POST['query']."' $entity ";
+$query="SELECT COUNT(`".$_POST['field']."`) 
+	FROM `".$_POST['table']."` 
+	WHERE `".$_POST['field']."` LIKE '".$_POST['query']."%' 
+		AND `".$_POST['field']."` <> '".$_POST['query']."' $entity ";
 $result=$DB->query($query);
 $totnum=$DB->result($result,0,0);
 
 
-$query="SELECT DISTINCT ".$_POST['field']." AS VAL FROM ".$_POST['table']." WHERE ".$_POST['field']." LIKE '".$_POST['query']."%' AND ".$_POST['field']." <> '".$_POST['query']."' $entity ORDER BY ".$_POST['field']." LIMIT ".$_POST['start'].",".$_POST['limit']."";
+$query="SELECT DISTINCT `".$_POST['field']."` AS VAL 
+	FROM `".$_POST['table']."` 
+	WHERE `".$_POST['field']."` LIKE '".$_POST['query']."%' AND `".$_POST['field']."` <> '".$_POST['query']."' $entity 
+	ORDER BY `".$_POST['field']."` LIMIT ".intval($_POST['start']).",".intval($_POST['limit']);
 
 
 if ($result=$DB->query($query))

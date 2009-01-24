@@ -49,77 +49,82 @@ if (!defined('GLPI_ROOT')){
 checkLoginUser();
 
 // Make a select box with preselected values
-if (!isset($_POST["limit"])) $_POST["limit"]=$_SESSION["glpidropdown_limit"];
+if (!isset($_POST["limit"])) {
+	$_POST["limit"]=$_SESSION["glpidropdown_limit"];
+}
 
-	if (strlen($_POST['searchText'])>0&&$_POST['searchText']!=$CFG_GLPI["ajax_wildcard"]){
-		$where=" WHERE (glpi_dropdown_netpoint.name ".makeTextSearch($_POST['searchText'])." OR glpi_dropdown_locations.completename ".makeTextSearch($_POST['searchText']).")";
+if (strlen($_POST['searchText'])>0&&$_POST['searchText']!=$CFG_GLPI["ajax_wildcard"]){
+	$where=" WHERE (glpi_dropdown_netpoint.name ".makeTextSearch($_POST['searchText'])." 
+			OR glpi_dropdown_locations.completename ".makeTextSearch($_POST['searchText']).")";
+} else {
+	$where=" WHERE 1 ";		
+}
+
+$NBMAX=$CFG_GLPI["dropdown_max"];
+$LIMIT="LIMIT 0,$NBMAX";
+if ($_POST['searchText']==$CFG_GLPI["ajax_wildcard"]) $LIMIT="";
+
+if (!(isset($_POST["devtype"]) && $_POST["devtype"]!=NETWORKING_TYPE && isset($_POST["location"]) && $_POST["location"]>0)) {
+	if (isset($_POST["entity_restrict"])&&$_POST["entity_restrict"]>=0){
+		$where.= " AND glpi_dropdown_netpoint.FK_entities='".$_POST["entity_restrict"]."'";
 	} else {
-		$where=" WHERE 1 ";		
+		$where.=getEntitiesRestrictRequest(" AND ","glpi_dropdown_locations");
 	}
+}
 
-	$NBMAX=$CFG_GLPI["dropdown_max"];
-	$LIMIT="LIMIT 0,$NBMAX";
-	if ($_POST['searchText']==$CFG_GLPI["ajax_wildcard"]) $LIMIT="";
+$query = "SELECT glpi_dropdown_netpoint.comments as comments, glpi_dropdown_netpoint.ID as ID, 
+		glpi_dropdown_netpoint.name as netpname, glpi_dropdown_locations.completename as loc 
+	FROM glpi_dropdown_netpoint";
+$query .= " LEFT JOIN glpi_dropdown_locations ON (glpi_dropdown_netpoint.location = glpi_dropdown_locations.ID)";
 
-	if (!(isset($_POST["devtype"]) && $_POST["devtype"]!=NETWORKING_TYPE && isset($_POST["location"]) && $_POST["location"]>0)) {
-		if (isset($_POST["entity_restrict"])&&$_POST["entity_restrict"]>=0){
-			$where.= " AND glpi_dropdown_netpoint.FK_entities='".$_POST["entity_restrict"]."'";
-		} else {
-			$where.=getEntitiesRestrictRequest(" AND ","glpi_dropdown_locations");
+if (isset($_POST["devtype"]) && $_POST["devtype"]>0){
+	$query .= " LEFT JOIN glpi_networking_ports ON (glpi_dropdown_netpoint.ID = glpi_networking_ports.netpoint";
+
+	if ($_POST["devtype"]==NETWORKING_TYPE){
+		$query .= " AND  glpi_networking_ports.device_type =" . NETWORKING_TYPE .")";
+	}
+	else {
+		$query .= " AND  glpi_networking_ports.device_type !=" . NETWORKING_TYPE .")";
+
+		if (isset($_POST["location"]) && $_POST["location"]>=0){
+			$where.=" AND glpi_dropdown_netpoint.location='".$_POST["location"]."' ";
 		}
 	}
+	$where.=" AND glpi_networking_ports.netpoint IS NULL ";
 
-	$query = "SELECT glpi_dropdown_netpoint.comments as comments, glpi_dropdown_netpoint.ID as ID, glpi_dropdown_netpoint.name as netpname, glpi_dropdown_locations.completename as loc FROM glpi_dropdown_netpoint";
-	$query .= " LEFT JOIN glpi_dropdown_locations ON (glpi_dropdown_netpoint.location = glpi_dropdown_locations.ID)";
+} else	if (isset($_POST["location"]) && $_POST["location"]>=0){
+	$where.=" AND glpi_dropdown_netpoint.location='".$_POST["location"]."' ";
+}
 
-	if (isset($_POST["devtype"]) && $_POST["devtype"]>0){
-		$query .= " LEFT JOIN glpi_networking_ports ON (glpi_dropdown_netpoint.ID = glpi_networking_ports.netpoint";
-	
-		if ($_POST["devtype"]==NETWORKING_TYPE){
-			$query .= " AND  glpi_networking_ports.device_type =" . NETWORKING_TYPE .")";
-		}
-		else {
-			$query .= " AND  glpi_networking_ports.device_type !=" . NETWORKING_TYPE .")";
+$query .= $where . " ORDER BY glpi_dropdown_locations.completename, glpi_dropdown_netpoint.name $LIMIT"; 
 
-			if (isset($_POST["location"]) && $_POST["location"]>=0){
-				$where.=" AND glpi_dropdown_netpoint.location='".$_POST["location"]."' ";
-			}
-		}
-		$where.=" AND glpi_networking_ports.netpoint IS NULL ";
+//logInFile("debug","SQL:".$query."\n\n");
+$result = $DB->query($query);
 
-	} else	if (isset($_POST["location"]) && $_POST["location"]>=0){
-		$where.=" AND glpi_dropdown_netpoint.location='".$_POST["location"]."' ";
+echo "<select id='dropdown_".$_POST["myname"].$_POST["rand"]."' name=\"".$_POST['myname']."\" size='1'>";
+
+if ($_POST['searchText']!=$CFG_GLPI["ajax_wildcard"]&&$DB->numrows($result)==$NBMAX)
+	echo "<option value=\"0\">--".$LANG["common"][11]."--</option>";
+else echo "<option value=\"0\">-----</option>";
+
+$output=getDropdownName('glpi_dropdown_netpoint',$_POST['value']);
+if (!empty($output)&&$output!="&nbsp;")
+	echo "<option selected value='".$_POST['value']."'>".$output."</option>";
+
+
+if ($DB->numrows($result)) {
+	while ($data =$DB->fetch_array($result)) {
+		$output = $data['netpname'];
+		$loc=$data['loc'];
+		$ID = $data['ID'];
+		$addcomment="";
+		if (isset($data["comments"])) $addcomment=" - ".$data["comments"];
+		echo "<option value=\"$ID\" title=\"".cleanInputText($output.$addcomment)."\"";
+		//if ($ID==$_POST['value']) echo " selected ";
+		echo ">".$output." ($loc)</option>";
 	}
-
-	$query .= $where . " ORDER BY glpi_dropdown_locations.completename, glpi_dropdown_netpoint.name $LIMIT"; 
-
-	//logInFile("debug","SQL:".$query."\n\n");
-	$result = $DB->query($query);
-
-	echo "<select id='dropdown_".$_POST["myname"].$_POST["rand"]."' name=\"".$_POST['myname']."\" size='1'>";
-
-	if ($_POST['searchText']!=$CFG_GLPI["ajax_wildcard"]&&$DB->numrows($result)==$NBMAX)
-		echo "<option value=\"0\">--".$LANG["common"][11]."--</option>";
-	else echo "<option value=\"0\">-----</option>";
-
-	$output=getDropdownName('glpi_dropdown_netpoint',$_POST['value']);
-	if (!empty($output)&&$output!="&nbsp;")
-		echo "<option selected value='".$_POST['value']."'>".$output."</option>";
-
-
-	if ($DB->numrows($result)) {
-		while ($data =$DB->fetch_array($result)) {
-			$output = $data['netpname'];
-			$loc=$data['loc'];
-			$ID = $data['ID'];
-			$addcomment="";
-			if (isset($data["comments"])) $addcomment=" - ".$data["comments"];
-			echo "<option value=\"$ID\" title=\"".cleanInputText($output.$addcomment)."\"";
-			//if ($ID==$_POST['value']) echo " selected ";
-			echo ">".$output." ($loc)</option>";
-		}
-	}
-	echo "</select>";
+}
+echo "</select>";
 
 if (isset($_POST["comments"])&&$_POST["comments"]){
 	$paramscomments=array('value'=>'__VALUE__','table'=>"glpi_dropdown_netpoint");

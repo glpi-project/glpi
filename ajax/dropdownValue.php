@@ -113,7 +113,11 @@ if (!isset($_POST["limit"])) $_POST["limit"]=$_SESSION["glpidropdown_limit"];
 			}
 		}
 
-		$query = "SELECT * FROM ".$_POST['table']." $where ORDER BY $add_order completename $LIMIT";
+		$query = "SELECT * 
+			FROM `".$_POST['table']."` 
+			$where 
+			ORDER BY $add_order completename 
+			$LIMIT";
 		//error_log("SQL1:".$query);
 		$result = $DB->query($query);
 
@@ -213,7 +217,7 @@ if (!isset($_POST["limit"])) $_POST["limit"]=$_SESSION["glpidropdown_limit"];
 		echo "</select>";
 
 	} else { // Not dropdowntree_tables
-		$where .=" AND ID NOT IN (".$_POST['value'];
+		$where .=" AND ID NOT IN ('".$_POST['value']."'";
 		if (isset($_POST['used'])) {
 			if (is_array($_POST['used'])) {
 				$used=$_POST['used'];
@@ -221,7 +225,7 @@ if (!isset($_POST["limit"])) $_POST["limit"]=$_SESSION["glpidropdown_limit"];
 				$used=unserialize(stripslashes($_POST['used']));
 			}
 			if (count($used)) {
-				$where .= ",".implode(",",$used);
+				$where .= ",'".implode("','",$used)."'";
 			}
 		}
 		$where .= ") ";
@@ -244,17 +248,24 @@ if (!isset($_POST["limit"])) $_POST["limit"]=$_SESSION["glpidropdown_limit"];
 		}
 
 		$field="name";
-		if (strstr($_POST['table'],"glpi_device")) $field="designation";
+		if (strstr($_POST['table'],"glpi_device")) {
+			$field="designation";
+		}
 
 		if ($_POST['searchText']!=$CFG_GLPI["ajax_wildcard"])
 			$where.=" AND $field ".makeTextSearch($_POST['searchText']);
 
 		switch ($_POST['table']){
 			case "glpi_contacts":
-				$query = "SELECT FK_entities, CONCAT(name,' ',firstname) as $field, ".$_POST['table'].".comments, ".$_POST['table'].".ID FROM ".$_POST['table']." $where";
+				$query = "SELECT FK_entities, CONCAT(name,' ',firstname) as $field, 
+						`".$_POST['table']."`.comments, `".$_POST['table']."`.ID 
+					FROM `".$_POST['table']."` 
+					$where";
 			break;
 			default :
-				$query = "SELECT * FROM ".$_POST['table']." $where";
+				$query = "SELECT * 
+					FROM `".$_POST['table']."` 
+					$where";
 			break;
 		}
 		if ($multi) {

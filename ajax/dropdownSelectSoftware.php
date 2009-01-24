@@ -50,8 +50,6 @@ checkRight("software","w");
 $rand=mt_rand();
 
 $where="";
-$leftjoin=""; 
-
 	 	
 if (strlen($_POST['searchText'])>0&&$_POST['searchText']!=$CFG_GLPI["ajax_wildcard"])
 	$where.=" AND name ".makeTextSearch($_POST['searchText'])." ";
@@ -60,7 +58,12 @@ if (strlen($_POST['searchText'])>0&&$_POST['searchText']!=$CFG_GLPI["ajax_wildca
 $where .= getEntitiesRestrictRequest(' AND', 'glpi_software','FK_entities',$_POST["entity_restrict"],true);
 
 
-$query = "SELECT DISTINCT glpi_software.ID, glpi_software.name FROM glpi_software $leftjoin WHERE glpi_software.deleted=0 AND glpi_software.is_template=0 $where ORDER BY glpi_software.name";
+$query = "SELECT DISTINCT glpi_software.ID, glpi_software.name 
+		FROM glpi_software 
+		WHERE glpi_software.deleted=0 
+			AND glpi_software.is_template=0 
+			$where 
+		ORDER BY glpi_software.name";
 $result = $DB->query($query);
 
 echo "<select name='sID' id='item_type$rand'>\n";

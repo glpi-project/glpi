@@ -58,7 +58,12 @@ $NBMAX=$CFG_GLPI["dropdown_max"];
 $LIMIT="LIMIT 0,$NBMAX";
 if ($_POST['searchText']==$CFG_GLPI["ajax_wildcard"]) $LIMIT="";
 
-$query = "SELECT glpi_users.ID, glpi_users.name, glpi_users.realname, glpi_users.firstname FROM glpi_users WHERE $where AND ID IN (SELECT DISTINCT ".$_POST['field']." FROM glpi_tracking ".getEntitiesRestrictRequest("WHERE","glpi_tracking").") ";
+$query = "SELECT glpi_users.ID, glpi_users.name, glpi_users.realname, glpi_users.firstname 
+		FROM glpi_users 
+		WHERE $where 
+			AND ID IN (SELECT DISTINCT `".$_POST['field']."` 
+				FROM glpi_tracking 
+				".getEntitiesRestrictRequest("WHERE","glpi_tracking").") ";
 
 $query.=" ORDER BY glpi_users.realname,glpi_users.firstname,glpi_users.name $LIMIT";
 

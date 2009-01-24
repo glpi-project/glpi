@@ -62,13 +62,16 @@ if (isset($_POST["entity_restrict"])&&!is_numeric($_POST["entity_restrict"])&&!i
 $table=$LINK_ID_TABLE[$_POST["idtable"]];
 
 $where="";		
-if (in_array($table,$CFG_GLPI["deleted_tables"]))
-$where.=" AND $table.deleted=0 ";
-if (in_array($table,$CFG_GLPI["template_tables"]))
-$where.=" AND $table.is_template='0' ";		
+if (in_array($table,$CFG_GLPI["deleted_tables"])){
+	$where.=" AND $table.deleted=0 ";
+}
+if (in_array($table,$CFG_GLPI["template_tables"])){
+	$where.=" AND $table.is_template='0' ";
+}
 
-if (!empty($used))
-	$where.=" AND $table.ID NOT IN (".implode(',',$used).")";
+if (!empty($used)){
+	$where.=" AND $table.ID NOT IN ('".implode("','",$used)."')";
+}
 
 if (strlen($_POST['searchText'])>0&&$_POST['searchText']!=$CFG_GLPI["ajax_wildcard"])
 $where.=" AND ( $table.name ".makeTextSearch($_POST['searchText'])." OR $table.serial ".makeTextSearch($_POST['searchText'])." )";
@@ -90,7 +93,9 @@ if (isset($_POST["entity_restrict"]) && !($_POST["entity_restrict"]<0)){
 $NBMAX=$CFG_GLPI["dropdown_max"];
 $LIMIT="LIMIT 0,$NBMAX";
 
-if ($_POST['searchText']==$CFG_GLPI["ajax_wildcard"]) $LIMIT="";
+if ($_POST['searchText']==$CFG_GLPI["ajax_wildcard"]) {
+	$LIMIT="";
+}
 
 
 if ($_POST["onlyglobal"]&&$_POST["idtable"]!=COMPUTER_TYPE){
@@ -107,7 +112,12 @@ $LEFTJOINCONNECT="";
 if ($_POST["idtable"]!=COMPUTER_TYPE&&!$_POST["onlyglobal"]){
 	$LEFTJOINCONNECT="LEFT JOIN glpi_connect_wire on ($table.ID = glpi_connect_wire.end1 AND glpi_connect_wire.type = '".$_POST['idtable']."')";
 }
-$query = "SELECT DISTINCT $table.ID AS ID,$table.name AS name,$table.serial AS serial,$table.otherserial AS otherserial, $table.FK_entities as FK_entities FROM $table $LEFTJOINCONNECT $CONNECT_SEARCH $where ORDER BY FK_entities, name ASC";
+$query = "SELECT DISTINCT $table.ID AS ID,$table.name AS name,
+		$table.serial AS serial,$table.otherserial AS otherserial, $
+		table.FK_entities as FK_entities 
+	FROM $table $LEFTJOINCONNECT $CONNECT_SEARCH 
+	$where 
+	ORDER BY FK_entities, name ASC";
 
 $result = $DB->query($query);
 echo "<select name=\"".$_POST['myname']."\" size='1'>";
