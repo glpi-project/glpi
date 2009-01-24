@@ -101,7 +101,11 @@ function fillidfield(Type,Id){
 	echo " </tr>";
 
 
-	$query = "select name,ID,contact, serial, otherserial from glpi_computers where is_template='0' AND deleted='0' AND (contact like '%".$_POST["NomContact"]."%' OR name like '%".$_POST["NomContact"]."%' OR serial like '%".$_POST["NomContact"]."%' OR otherserial like '%".$_POST["NomContact"]."%')";
+	$query = "SELECT name, ID, contact, serial, otherserial 
+		FROM glpi_computers 
+		WHERE is_template='0' AND deleted='0' 
+			AND (contact LIKE '%".$_POST["NomContact"]."%' OR name LIKE '%".$_POST["NomContact"]."%' 
+				OR serial LIKE '%".$_POST["NomContact"]."%' OR otherserial LIKE '%".$_POST["NomContact"]."%')";
 	$result = $DB->query($query);
 	while($ligne = $DB->fetch_array($result))
 	{
@@ -124,7 +128,11 @@ function fillidfield(Type,Id){
 		echo "</tr>";
 	}
 
-	$query = "select name,ID,contact, serial, otherserial from glpi_networking where is_template='0' AND deleted='0' AND (contact like '%".$_POST["NomContact"]."%' OR name like '%".$_POST["NomContact"]."%' OR serial like '%".$_POST["NomContact"]."%' OR otherserial like '%".$_POST["NomContact"]."%')";
+	$query = "SELECT name, ID, contact, serial, otherserial 
+		FROM glpi_networking 
+		WHERE is_template='0' AND deleted='0' 
+			AND (contact LIKE '%".$_POST["NomContact"]."%' OR name LIKE '%".$_POST["NomContact"]."%' 
+				OR serial LIKE '%".$_POST["NomContact"]."%' OR otherserial LIKE '%".$_POST["NomContact"]."%')";
 	$result = $DB->query($query);
 	while($ligne = $DB->fetch_array($result))
 	{
@@ -147,7 +155,11 @@ function fillidfield(Type,Id){
 		echo "</tr>";
 	}
 
-	$query = "select name,ID,contact, serial, otherserial from glpi_printers where is_template='0' AND deleted='0' AND (contact like '%".$_POST["NomContact"]."%' OR name like '%".$_POST["NomContact"]."%' OR serial like '%".$_POST["NomContact"]."%' OR otherserial like '%".$_POST["NomContact"]."%')";
+	$query = "SELECT name, ID, contact, serial, otherserial 
+		FROM glpi_printers 
+		WHERE is_template='0' AND deleted='0' 
+			AND (contact LIKE '%".$_POST["NomContact"]."%' OR name LIKE '%".$_POST["NomContact"]."%' 
+				OR serial LIKE '%".$_POST["NomContact"]."%' OR otherserial LIKE '%".$_POST["NomContact"]."%')";
 	$result = $DB->query($query);
 	while($ligne = $DB->fetch_array($result))
 	{
@@ -170,7 +182,11 @@ function fillidfield(Type,Id){
 		echo "</tr>";
 	}
 
-	$query = "select name,ID,contact, serial, otherserial from glpi_monitors where is_template='0' AND deleted='0' AND (contact like '%".$_POST["NomContact"]."%' OR name like '%".$_POST["NomContact"]."%' OR serial like '%".$_POST["NomContact"]."%' OR otherserial like '%".$_POST["NomContact"]."%')";
+	$query = "SELECT name, ID, contact, serial, otherserial 
+		FROM glpi_monitors 
+		WHERE is_template='0' AND deleted='0' 
+			AND (contact LIKE '%".$_POST["NomContact"]."%' OR name LIKE '%".$_POST["NomContact"]."%' 
+				OR serial LIKE '%".$_POST["NomContact"]."%' OR otherserial LIKE '%".$_POST["NomContact"]."%')";
 	$result = $DB->query($query);
 	while($ligne = $DB->fetch_array($result))
 	{
@@ -193,7 +209,11 @@ function fillidfield(Type,Id){
 		echo "</tr>";
 	}
 
-	$query = "select name,ID,contact, serial, otherserial from glpi_peripherals where is_template='0' AND deleted='0' AND (contact like '%".$_POST["NomContact"]."%' OR name like '%".$_POST["NomContact"]."%' OR serial like '%".$_POST["NomContact"]."%' OR otherserial like '%".$_POST["NomContact"]."%')";
+	$query = "SELECT name, ID, contact, serial, otherserial 
+		FROM glpi_peripherals 
+		WHERE is_template='0' AND deleted='0' 
+			AND (contact LIKE '%".$_POST["NomContact"]."%' OR name LIKE '%".$_POST["NomContact"]."%' 
+				OR serial LIKE '%".$_POST["NomContact"]."%' OR otherserial LIKE '%".$_POST["NomContact"]."%')";
 	$result = $DB->query($query);
 	while($ligne = $DB->fetch_array($result))
 	{
@@ -216,7 +236,10 @@ function fillidfield(Type,Id){
 		echo "</tr>";
 	}
 
-	$query = "select name,ID from glpi_software where is_template='0' AND deleted='0' AND (name like '%".$_POST["NomContact"]."%' )";
+	$query = "SELECT name, ID 
+		FROM glpi_software 
+		WHERE is_template='0' AND deleted='0' 
+			AND (name LIKE '%".$_POST["NomContact"]."%' )";
 	$result = $DB->query($query);
 	while($ligne = $DB->fetch_array($result))
 	{

@@ -37,7 +37,9 @@ include (GLPI_ROOT . "/inc/includes.php");
 checkRight("link","r");
 
 if (isset($_GET["lID"])){
-	$query="SELECT glpi_links.ID as ID, glpi_links.link as link,glpi_links.data as data from glpi_links WHERE glpi_links.ID='".$_GET["lID"]."'";
+	$query="SELECT glpi_links.ID as ID, glpi_links.link as link,glpi_links.data as data 
+		FROM glpi_links 
+		WHERE glpi_links.ID='".$_GET["lID"]."'";
 
 	$result=$DB->query($query);
 	if ($DB->numrows($result)==1){
@@ -97,7 +99,10 @@ if (isset($_GET["lID"])){
 		$ipmac=array();
 		$i=0;
 		if (strstr($file,"[IP]")||strstr($file,"[MAC]")){
-			$query2 = "SELECT ifaddr,ifmac FROM glpi_networking_ports WHERE (on_device = ".$_GET["ID"]." AND device_type = ".$_GET["type"].") ORDER BY logical_number";
+			$query2 = "SELECT ifaddr, ifmac 
+				FROM glpi_networking_ports 
+				WHERE (on_device = '".$_GET["ID"]."' AND device_type = '".$_GET["type"]."') 
+				ORDER BY logical_number";
 			$result2=$DB->query($query2);
 			if ($DB->numrows($result2)>0){
 				$data2=$DB->fetch_array($result2);
