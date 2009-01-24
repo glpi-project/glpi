@@ -45,7 +45,7 @@ $LANG["backup"][23]="Error MySQL a partir de";
 $LANG["backup"][24]="Automatic redirection, else click"; 
 
 $LANG["bookmark"][1]="bookmark"; 
-$LANG["bookmark"][3]="You have not recorded bookmark yet."; 
+$LANG["bookmark"][3]="You have not recorded any bookmarks yet."; 
 $LANG["bookmark"][4]="New bookmark"; 
 $LANG["bookmark"][5]="Public bookmarks"; 
 $LANG["bookmark"][6]="Main view"; 
@@ -311,7 +311,7 @@ $LANG["computers"][56]="Status updated. The connected items have been updated us
 $LANG["connect"][0]="Conexiones directas"; 
 $LANG["connect"][1]="No conectado"; 
 $LANG["connect"][15]="Automatic update of the following items"; 
-$LANG["connect"][16]="Warning!! The following items of the two hardwares do not match"; 
+$LANG["connect"][16]="Warning!! The following two items of hardware do not match"; 
 
 $LANG["consumables"][0]="Insumos"; 
 $LANG["consumables"][1]="En stock"; 
@@ -413,7 +413,7 @@ $LANG["document"][42]="Agregado por";
 $LANG["document"][43]="Archivo desconocido"; 
 $LANG["document"][44]="Nombre de archivo incorrecto"; 
 $LANG["document"][45]="Usted no tiene permiso de acceder a este archivo"; 
-$LANG["document"][46]="Failure in the sending of the file (certainly too voluminous)"; 
+$LANG["document"][46]="Failure in sending the file (probably too large)"; 
 $LANG["document"][47]="Empty file"; 
 
 $LANG["entity"][0]="Entidad"; 
@@ -636,6 +636,8 @@ $LANG["install"][97]="Check permissions to the directory:";
 $LANG["install"][99]="Test de escritura de archivos de cache"; 
 $LANG["install"][100]="The directory could not be created."; 
 $LANG["install"][101]="The directory was created but could not be removed."; 
+$LANG["install"][102]="Test json functions"; 
+$LANG["install"][103]="GLPI can't work correctly without the json_encode and json_decode functions"; 
 
 $LANG["job"][2]="por"; 
 $LANG["job"][3]="Receptor"; 
@@ -1176,7 +1178,7 @@ $LANG["profiles"][23]="Administración de reservas";
 $LANG["profiles"][24]="Actualización de contraseña"; 
 $LANG["profiles"][25]="General"; 
 $LANG["profiles"][26]="Show tickets create by my groups"; 
-$LANG["profiles"][27]="See hardwares of my groups"; 
+$LANG["profiles"][27]="See hardware of my groups"; 
 $LANG["profiles"][28]="Recursivo"; 
 $LANG["profiles"][29]="Dinámico"; 
 $LANG["profiles"][30]="Ver los datos OCSNG"; 

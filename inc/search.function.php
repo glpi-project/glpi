@@ -2154,9 +2154,9 @@ function addWhere($link,$nott,$type,$ID,$val,$meta=0){
 
 			case "bool":
 				if (!is_numeric($val)){
-					if (strcasecmp($val,$LANG['choice'][0])==0){
+					if (strcasecmp($val,$LANG["choice"][0])==0){
 						$val=0;
-					} else 	if (strcasecmp($val,$LANG['choice'][1])==0){
+					} else 	if (strcasecmp($val,$LANG["choice"][1])==0){
 						$val=1;
 					}
 				}

@@ -636,6 +636,8 @@ $LANG["install"][97]="Check permissions to the directory:";
 $LANG["install"][99]="Tikrinama rašymo prieeiga į podėlio rinkmenas"; 
 $LANG["install"][100]="Aplankas nėsukurtas"; 
 $LANG["install"][101]="Aplankas sukurtas bet po to nepašalintas"; 
+$LANG["install"][102]="Test json functions"; 
+$LANG["install"][103]="GLPI can't work correctly without the json_encode and json_decode functions"; 
 
 $LANG["job"][2]="kas:"; 
 $LANG["job"][3]="Gavėjas"; 

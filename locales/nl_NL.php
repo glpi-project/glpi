@@ -413,7 +413,7 @@ $LANG["document"][42]="Toegevoegd door";
 $LANG["document"][43]="Onbekend bestand"; 
 $LANG["document"][44]="Verkeerde bestandsnaam"; 
 $LANG["document"][45]="U bent niet geautoriseerd voor toegang van deze file"; 
-$LANG["document"][46]="Failure in the sending of the file (certainly too voluminous)"; 
+$LANG["document"][46]="Failure in sending the file (probably too large)"; 
 $LANG["document"][47]="Empty file"; 
 
 $LANG["entity"][0]="Instantie"; 
@@ -636,6 +636,8 @@ $LANG["install"][97]="Check permissions to the directory:";
 $LANG["install"][99]="Controle schrijf rechten voor cache bestanden"; 
 $LANG["install"][100]="De directorie kan niet worden aangemaakt"; 
 $LANG["install"][101]="De directorie is aangemaakt maar kon NIET worden verwijderd."; 
+$LANG["install"][102]="Test json functions"; 
+$LANG["install"][103]="GLPI can't work correctly without the json_encode and json_decode functions"; 
 
 $LANG["job"][2]="door"; 
 $LANG["job"][3]="Ontvanger"; 

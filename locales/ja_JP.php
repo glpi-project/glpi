@@ -636,6 +636,8 @@ $LANG["install"][97]="Check permissions to the directory:";
 $LANG["install"][99]="キャッシュファイルのための権限を確認する"; 
 $LANG["install"][100]="Directoryは作成されませんでした。"; 
 $LANG["install"][101]="Directoryは作成されましたが、移動できませんでした。"; 
+$LANG["install"][102]="Test json functions"; 
+$LANG["install"][103]="GLPI can't work correctly without the json_encode and json_decode functions"; 
 
 $LANG["job"][2]="によって"; 
 $LANG["job"][3]="受信者"; 

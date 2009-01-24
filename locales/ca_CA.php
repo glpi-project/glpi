@@ -636,6 +636,8 @@ $LANG["install"][97]="Check permissions to the directory:";
 $LANG["install"][99]="Prova d'escriptura dels arxius de caché"; 
 $LANG["install"][100]="No s'ha pogut crear el directori."; 
 $LANG["install"][101]="S'ha creat el directori però no s'ha pogut eliminar."; 
+$LANG["install"][102]="Test json functions"; 
+$LANG["install"][103]="GLPI can't work correctly without the json_encode and json_decode functions"; 
 
 $LANG["job"][2]="per"; 
 $LANG["job"][3]="Receptor"; 

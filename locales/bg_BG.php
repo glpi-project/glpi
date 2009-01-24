@@ -45,7 +45,7 @@ $LANG["backup"][23]="Mysql error starting from";
 $LANG["backup"][24]="Automatic redirection, else click"; 
 
 $LANG["bookmark"][1]="bookmark"; 
-$LANG["bookmark"][3]="You have not recorded bookmark yet."; 
+$LANG["bookmark"][3]="You have not recorded any bookmarks yet."; 
 $LANG["bookmark"][4]="New bookmark"; 
 $LANG["bookmark"][5]="Public bookmarks"; 
 $LANG["bookmark"][6]="Main view"; 
@@ -311,7 +311,7 @@ $LANG["computers"][56]="Status updated. The connected items have been updated us
 $LANG["connect"][0]="Директно включени"; 
 $LANG["connect"][1]="Не включени."; 
 $LANG["connect"][15]="Automatic update of the following items"; 
-$LANG["connect"][16]="Warning!! The following items of the two hardwares do not match"; 
+$LANG["connect"][16]="Warning!! The following two items of hardware do not match"; 
 
 $LANG["consumables"][0]="Консуматив"; 
 $LANG["consumables"][1]="На склад"; 
@@ -413,7 +413,7 @@ $LANG["document"][42]="Добавен от";
 $LANG["document"][43]="Непознат файл"; 
 $LANG["document"][44]="Неправилно име на файла"; 
 $LANG["document"][45]="Непозволен достъп до този файл"; 
-$LANG["document"][46]="Failure in the sending of the file (certainly too voluminous)"; 
+$LANG["document"][46]="Failure in sending the file (probably too large)"; 
 $LANG["document"][47]="Empty file"; 
 
 $LANG["entity"][0]="Entity"; 
@@ -636,6 +636,8 @@ $LANG["install"][97]="Check permissions to the directory:";
 $LANG["install"][99]="Checking write permissions for cache files"; 
 $LANG["install"][100]="The directory could not be created."; 
 $LANG["install"][101]="The directory was created but could not be removed."; 
+$LANG["install"][102]="Test json functions"; 
+$LANG["install"][103]="GLPI can't work correctly without the json_encode and json_decode functions"; 
 
 $LANG["job"][2]="by"; 
 $LANG["job"][3]="Receiver"; 
@@ -667,7 +669,7 @@ $LANG["job"][44]="Заявка за ремонт";
 $LANG["job"][46]="Ticket created in the entity"; 
 
 $LANG["joblist"][0]="Статус"; 
-$LANG["joblist"][1]="Just mine ones"; 
+$LANG["joblist"][1]="Just my ones"; 
 $LANG["joblist"][2]="Приоритет"; 
 $LANG["joblist"][3]="Personal + group(s)"; 
 $LANG["joblist"][4]="Назначени"; 
@@ -1176,7 +1178,7 @@ $LANG["profiles"][23]="Администриране на резервиране�
 $LANG["profiles"][24]="Промяна на паролата"; 
 $LANG["profiles"][25]="Общ"; 
 $LANG["profiles"][26]="Show tickets create by my groups"; 
-$LANG["profiles"][27]="See hardwares of my groups"; 
+$LANG["profiles"][27]="See hardware of my groups"; 
 $LANG["profiles"][28]="Recursive"; 
 $LANG["profiles"][29]="Dynamic"; 
 $LANG["profiles"][30]="View OCSNG information"; 

@@ -636,6 +636,8 @@ $LANG["install"][97]="Check permissions to the directory:";
 $LANG["install"][99]="Verificar permissões de escrita nos ficheiros de cache"; 
 $LANG["install"][100]="A pasta não pôde ser criada."; 
 $LANG["install"][101]="A pasta foi criada mas não pôde ser removida."; 
+$LANG["install"][102]="Test json functions"; 
+$LANG["install"][103]="GLPI can't work correctly without the json_encode and json_decode functions"; 
 
 $LANG["job"][2]="por"; 
 $LANG["job"][3]="Receptor"; 
@@ -1176,7 +1178,7 @@ $LANG["profiles"][23]="Administração das Reservas";
 $LANG["profiles"][24]="Actualizar senha"; 
 $LANG["profiles"][25]="Comum"; 
 $LANG["profiles"][26]="Show tickets create by my groups"; 
-$LANG["profiles"][27]="See hardwares of my groups"; 
+$LANG["profiles"][27]="See hardware of my groups"; 
 $LANG["profiles"][28]="Recursivo"; 
 $LANG["profiles"][29]="Dinâmico"; 
 $LANG["profiles"][30]="Visualizar informação OCSNG"; 

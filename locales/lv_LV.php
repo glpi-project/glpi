@@ -636,6 +636,8 @@ $LANG["install"][97]="Check permissions to the directory:";
 $LANG["install"][99]="Pārbaudu rakstīšanas tiesības kešatmiņas datnēm"; 
 $LANG["install"][100]="Mapīti izveidot nebija iespējams"; 
 $LANG["install"][101]="Mapīte tika izveidota, taču to nav iespējams dzēst"; 
+$LANG["install"][102]="Test json functions"; 
+$LANG["install"][103]="GLPI can't work correctly without the json_encode and json_decode functions"; 
 
 $LANG["job"][2]=""; 
 $LANG["job"][3]="Saņēmējs"; 
