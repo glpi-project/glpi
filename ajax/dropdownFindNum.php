@@ -55,10 +55,12 @@ $where.=getEntitiesRestrictRequest("WHERE",$_POST['table'],'',$entity,$recursive
 if (empty($where)){
 	$where="WHERE 1 ";
 }
-if (in_array($_POST['table'],$CFG_GLPI["deleted_tables"]))
+if (in_array($_POST['table'],$CFG_GLPI["deleted_tables"])){
 	$where.=" AND deleted=0 ";
-if (in_array($_POST['table'],$CFG_GLPI["template_tables"]))
+}
+if (in_array($_POST['table'],$CFG_GLPI["template_tables"])){
 	$where.=" AND is_template=0 ";		
+}
 
 if (strlen($_POST['searchText'])>0&&$_POST['searchText']!=$CFG_GLPI["ajax_wildcard"]){
 	$search=makeTextSearch($_POST['searchText']);
@@ -78,7 +80,10 @@ $NBMAX=$CFG_GLPI["dropdown_max"];
 $LIMIT="LIMIT 0,$NBMAX";
 if ($_POST['searchText']==$CFG_GLPI["ajax_wildcard"]) $LIMIT="";
 
-$query = "SELECT * FROM ".$_POST['table']." $where ORDER BY name $LIMIT";
+$query = "SELECT * 
+	FROM `".$_POST['table']."` 
+	$where 
+	ORDER BY name $LIMIT";
 
 $result = $DB->query($query);
 

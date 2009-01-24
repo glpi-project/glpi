@@ -50,7 +50,7 @@ if (isset($LINK_ID_TABLE[$_POST["type"]])&&$_POST["type"]>0){
 	if (!isset($_POST['searchText']))$_POST['searchText']="";
 
 	$where="WHERE deleted=0 ";
-	$where.=" AND is_template='0' ";		
+	$where.=" AND is_template=0 ";		
 
 	if (isset($_POST["entity_restrict"])&&!is_numeric($_POST["entity_restrict"])&&!is_array($_POST["entity_restrict"])){
 		$_POST["entity_restrict"]=unserialize(stripslashes($_POST["entity_restrict"]));
@@ -78,7 +78,10 @@ if (isset($LINK_ID_TABLE[$_POST["type"]])&&$_POST["type"]>0){
 	if ($_POST['searchText']==$CFG_GLPI["ajax_wildcard"]) $LIMIT="";
 
 	$order = ($multi ? "FK_entities,name" : "name");
-	$query = "SELECT * FROM ".$table." $where ORDER BY $order $LIMIT";
+	$query = "SELECT * 
+		FROM ".$table." 
+		$where ORDER BY 
+		$order $LIMIT";
 	$result = $DB->query($query);
 
 	echo "<select id='item$rand' name=\"item\" size='1'>";
