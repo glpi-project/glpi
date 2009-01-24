@@ -161,7 +161,9 @@ switch($_GET["type"]){
 		$next=getNextItem($device_table,$_GET["ID"]);
 		$prev=getPreviousItem($device_table,$_GET["ID"]);
 	
-		$query = "select  designation from ".$device_table." WHERE ID='".$_GET['ID']."'";
+		$query = "SELECT designation 
+			FROM ".$device_table." 
+			WHERE ID='".$_GET['ID']."'";
 		$result=$DB->query($query);
 	
 		$title=$LANG["Menu"][13].": ".$DB->result($result,0,"designation");

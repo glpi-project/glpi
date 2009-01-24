@@ -50,11 +50,12 @@ checkRight("reports","r");
 
 		// Titre
 		echo "<div align='center'><h2>".$LANG["reports"][51]." $name</h2></div><br><br>";
-		$query="SELECT a.name as bureau,a.ID as ID,glpi_dropdown_netpoint.name as prise,c.name as port,c.ifaddr as ip,c.ifmac as mac,c.ID AS IDport
+		$query="SELECT a.name as bureau, a.ID as ID, glpi_dropdown_netpoint.name as prise, c.name as port, 
+				c.ifaddr as ip,c.ifmac as mac,c.ID AS IDport
 			FROM glpi_dropdown_netpoint
 			LEFT JOIN glpi_dropdown_locations a ON a.id=glpi_dropdown_netpoint.location
 			LEFT JOIN glpi_networking_ports c ON c.netpoint=glpi_dropdown_netpoint.id 
-			WHERE glpi_dropdown_netpoint.id=".$_POST["prise"]." AND c.device_type=".NETWORKING_TYPE.";";
+			WHERE glpi_dropdown_netpoint.id='".$_POST["prise"]."' AND c.device_type=".NETWORKING_TYPE.";";
 
 		/*!
 		  on envoie la requ�e de selection qui varie selon le choix fait dans la dropdown �la fonction report perso qui

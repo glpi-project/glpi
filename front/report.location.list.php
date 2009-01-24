@@ -46,8 +46,7 @@ if (isset($_POST["location"])&&$_POST["location"]){
 	$query="SELECT glpi_dropdown_netpoint.name AS prise, glpi_networking_ports.name AS port, glpi_networking_ports.ifaddr  
 		AS ip, glpi_networking_ports.ifmac AS mac,glpi_networking_ports.ID AS IDport, glpi_dropdown_locations.ID as location,glpi_dropdown_locations.completename
 		FROM glpi_dropdown_locations
-		LEFT JOIN glpi_dropdown_netpoint ON glpi_dropdown_netpoint.location = 
-		glpi_dropdown_locations.ID
+		LEFT JOIN glpi_dropdown_netpoint ON glpi_dropdown_netpoint.location = glpi_dropdown_locations.ID
 		LEFT JOIN glpi_networking_ports ON glpi_networking_ports.netpoint=glpi_dropdown_netpoint.id 
 		WHERE ".getRealQueryForTreeItem("glpi_dropdown_locations",$_POST["location"])." AND glpi_networking_ports.device_type=".NETWORKING_TYPE."
 		ORDER BY glpi_dropdown_locations.completename, glpi_networking_ports.name;";

@@ -70,7 +70,9 @@ $query = "SELECT count(*)
 $result = $DB->query($query);
 $number_of_printers = $DB->result($result,0,0);
 
-$query = "SELECT count(*) FROM glpi_networking where deleted ='0'  AND is_template = '0' ".getEntitiesRestrictRequest("AND","glpi_networking");
+$query = "SELECT count(*) 
+	FROM glpi_networking 
+	WHERE deleted ='0'  AND is_template = '0' ".getEntitiesRestrictRequest("AND","glpi_networking");
 $result = $DB->query($query);
 $number_of_networking = $DB->result($result,0,0);
 
