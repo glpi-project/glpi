@@ -19,7 +19,7 @@
 *
 * @package Cache_Lite
 * @category Caching
-* @version $Id: Lite.php,v 1.51 2008/06/08 08:46:22 tacker Exp $
+* @version $Id: Lite.php,v 1.53 2009/01/13 10:28:16 tacker Exp $
 * @author Fabien MARTY <fab@php.net>
 */
 
@@ -375,12 +375,9 @@ class Cache_Lite
                     return true;
                 }
             }
-            if ($this->_automaticCleaningFactor>0) {
-                $rand = rand(1, $this->_automaticCleaningFactor);
-                if ($rand==1) {
-                    $this->clean(false, 'old');
-                }
-            }
+            if ($this->_automaticCleaningFactor>0 && ($this->_automaticCleaningFactor==1 || mt_rand(1, $this->_automaticCleaningFactor)==1)) {
+				$this->clean(false, 'old');			
+			}
             if ($this->_writeControl) {
                 $res = $this->_writeAndControl($data);
                 if (is_bool($res)) {
@@ -628,7 +625,7 @@ class Cache_Lite
                             case 'old':
                                 // files older than lifeTime get deleted from cache
                                 if (!is_null($this->_lifeTime)) {
-                                    if ((mktime() - @filemtime($file2)) > $this->_lifeTime) {
+                                    if ((time() - @filemtime($file2)) > $this->_lifeTime) {
                                         $result = ($result and ($this->_unlink($file2)));
                                     }
                                 }
