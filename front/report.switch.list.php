@@ -52,7 +52,7 @@ if (isset($_POST["switch"])&&$_POST["switch"]){
 
 	$query="SELECT c.name as port,c.ifaddr as ip,c.ifmac as mac, c.ID AS IDport, glpi_networking.name as switch
 		FROM glpi_networking
-		LEFT JOIN glpi_networking_ports c ON c.device_type=".NETWORKING_TYPE." AND c.on_device=glpi_networking.ID
+		INNER JOIN glpi_networking_ports c ON c.device_type=".NETWORKING_TYPE." AND c.on_device=glpi_networking.ID
 		WHERE glpi_networking.id='".$_POST["switch"]."'";
 
 
