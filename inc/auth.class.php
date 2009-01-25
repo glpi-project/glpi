@@ -203,7 +203,7 @@ class Identification {
 			return false;
 		}
 
-		$query = "SELECT password, password_md5 from glpi_users where (name = '" . $name . "')";
+		$query = "SELECT password, password_md5 FROM glpi_users WHERE name = '" . $name . "'";
 		$result = $DB->query($query);
 		if (!$result) {
 			$this->addToError($LANG["login"][14]);
@@ -218,7 +218,7 @@ class Identification {
 					return true;
 				} else {
 
-					$query2 = "SELECT PASSWORD('" . addslashes($password) . "') as password";
+					$query2 = "SELECT PASSWORD('" . addslashes($password) . "') AS password";
 					$result2 = $DB->query($query2);
 					if (!$result2 || $DB->numrows($result2) != 1) {
 						$this->addToError($LANG["login"][12]);

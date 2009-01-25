@@ -91,7 +91,9 @@ function showConsumables ($tID,$show_old=0) {
 	
 	if ($cartype->getFromDB($tID)){
 
-		$query = "SELECT count(*) AS COUNT  FROM glpi_consumables WHERE (FK_glpi_consumables_type = '$tID')";
+		$query = "SELECT count(*) AS COUNT 
+			FROM glpi_consumables 
+			WHERE (FK_glpi_consumables_type = '$tID')";
 	
 		if ($result = $DB->query($query)) {
 			if ($DB->result($result,0,0)!=0) { 
@@ -151,7 +153,9 @@ function showConsumables ($tID,$show_old=0) {
 			$addselect= ", glpi_users.realname AS REALNAME, glpi_users.firstname AS FIRSTNAME, glpi_users.name AS USERNAME ";
 		}
 	
-		$query = "SELECT glpi_consumables.* $addselect FROM glpi_consumables $leftjoin WHERE (FK_glpi_consumables_type = '$tID') $where";
+		$query = "SELECT glpi_consumables.* $addselect 
+			FROM glpi_consumables $leftjoin 
+			WHERE (FK_glpi_consumables_type = '$tID') $where";
 	
 		if ($result = $DB->query($query)) {			
 			$number=$DB->numrows($result);
@@ -363,7 +367,13 @@ function showConsumableSummary(){
 
 	if (!haveRight("consumable","r")) return false;
 
-	$query = "SELECT COUNT(*) AS COUNT, FK_glpi_consumables_type, id_user FROM glpi_consumables WHERE date_out IS NOT NULL AND FK_glpi_consumables_type IN (SELECT ID FROM glpi_consumables_type ".getEntitiesRestrictRequest("WHERE","glpi_consumables_type").") GROUP BY id_user,FK_glpi_consumables_type";
+	$query = "SELECT COUNT(*) AS COUNT, FK_glpi_consumables_type, id_user 
+		FROM glpi_consumables 
+		WHERE date_out IS NOT NULL 
+			AND FK_glpi_consumables_type IN (SELECT ID 
+							FROM glpi_consumables_type 
+							".getEntitiesRestrictRequest("WHERE","glpi_consumables_type").") 
+		GROUP BY id_user,FK_glpi_consumables_type";
 	$used=array();
 
 	if ($result=$DB->query($query)){
@@ -372,7 +382,13 @@ function showConsumableSummary(){
 				$used[$data["id_user"]][$data["FK_glpi_consumables_type"]]=$data["COUNT"];
 	}
 
-	$query = "SELECT COUNT(*) AS COUNT, FK_glpi_consumables_type FROM glpi_consumables WHERE date_out IS NULL AND FK_glpi_consumables_type IN (SELECT ID FROM glpi_consumables_type ".getEntitiesRestrictRequest("WHERE","glpi_consumables_type").") GROUP BY FK_glpi_consumables_type";
+	$query = "SELECT COUNT(*) AS COUNT, FK_glpi_consumables_type 
+		FROM glpi_consumables 
+		WHERE date_out IS NULL 
+			AND FK_glpi_consumables_type IN (SELECT ID 
+							FROM glpi_consumables_type 
+							".getEntitiesRestrictRequest("WHERE","glpi_consumables_type").") 
+		GROUP BY FK_glpi_consumables_type";
 	$new=array();
 
 	if ($result=$DB->query($query)){
@@ -463,7 +479,13 @@ function cron_consumable($display=false){
 	loadLanguage($CFG_GLPI["language"]);
 
 	// Get cartridges type with alarm activated and last warning > config
-	$query="SELECT glpi_consumables_type.ID AS consID, glpi_consumables_type.FK_entities as entity, glpi_consumables_type.ref as consref, glpi_consumables_type.name AS consname, glpi_consumables_type.alarm AS threshold, glpi_alerts.ID AS alertID, glpi_alerts.date FROM glpi_consumables_type LEFT JOIN glpi_alerts ON (glpi_consumables_type.ID = glpi_alerts.FK_device AND glpi_alerts.device_type='".CONSUMABLE_TYPE."') WHERE glpi_consumables_type.deleted='0' AND glpi_consumables_type.alarm>='0' AND (glpi_alerts.date IS NULL OR (glpi_alerts.date+".$CFG_GLPI["consumables_alert"].") < CURRENT_TIMESTAMP());";
+	$query="SELECT glpi_consumables_type.ID AS consID, glpi_consumables_type.FK_entities as entity, 
+			glpi_consumables_type.ref as consref, glpi_consumables_type.name AS consname, 
+			glpi_consumables_type.alarm AS threshold, glpi_alerts.ID AS alertID, glpi_alerts.date 
+		FROM glpi_consumables_type 
+		LEFT JOIN glpi_alerts ON (glpi_consumables_type.ID = glpi_alerts.FK_device AND glpi_alerts.device_type='".CONSUMABLE_TYPE."') 
+		WHERE glpi_consumables_type.deleted='0' AND glpi_consumables_type.alarm>='0' 
+			AND (glpi_alerts.date IS NULL OR (glpi_alerts.date+".$CFG_GLPI["consumables_alert"].") < CURRENT_TIMESTAMP());";
 
 	$result=$DB->query($query);
 	$message=array();

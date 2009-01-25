@@ -204,7 +204,10 @@ function showDeviceDocument($instID) {
 		// for a document,
 		// don't show here others documents associated to this one,
 		// it's done for both directions in showDocumentAssociated
-		$query = "SELECT DISTINCT device_type FROM glpi_doc_device WHERE glpi_doc_device.FK_doc = '$instID' AND glpi_doc_device.device_type != ".DOCUMENT_TYPE." ORDER BY device_type";
+		$query = "SELECT DISTINCT device_type 
+			FROM glpi_doc_device 
+			WHERE glpi_doc_device.FK_doc = '$instID' AND glpi_doc_device.device_type != ".DOCUMENT_TYPE." 
+			ORDER BY device_type";
 		
 		$result = $DB->query($query);
 		$number = $DB->numrows($result);
@@ -234,7 +237,8 @@ function showDeviceDocument($instID) {
 				$query = "SELECT ".$LINK_ID_TABLE[$type].".*, glpi_doc_device.ID AS IDD, glpi_entities.ID AS entity "
 					." FROM glpi_doc_device, ".$LINK_ID_TABLE[$type]
 					." LEFT JOIN glpi_entities ON (glpi_entities.ID=".$LINK_ID_TABLE[$type].".FK_entities) "
-					." WHERE ".$LINK_ID_TABLE[$type].".ID = glpi_doc_device.FK_device  AND glpi_doc_device.device_type='$type' AND glpi_doc_device.FK_doc = '$instID' "
+					." WHERE ".$LINK_ID_TABLE[$type].".ID = glpi_doc_device.FK_device  
+						AND glpi_doc_device.device_type='$type' AND glpi_doc_device.FK_doc = '$instID' "
 					. getEntitiesRestrictRequest(" AND ",$LINK_ID_TABLE[$type],'','',isset($CFG_GLPI["recursive_type"][$type])); 
 				if (in_array($LINK_ID_TABLE[$type],$CFG_GLPI["template_tables"])){
 					$query.=" AND ".$LINK_ID_TABLE[$type].".is_template='0'";
@@ -541,7 +545,7 @@ function getDocumentLink($filename,$params=""){
 
 	if (count($splitter)==2){
 
-		$query="SELECT * from glpi_type_docs WHERE ext LIKE '".$splitter[0]."' AND icon <> ''";
+		$query="SELECT * FROM glpi_type_docs WHERE ext LIKE '".$splitter[0]."' AND icon <> ''";
 
 		if ($result=$DB->query($query))
 			if ($DB->numrows($result)>0){
@@ -612,7 +616,7 @@ function isValidDoc($filename){
 	$splitter=explode(".",$filename);
 	$ext=end($splitter);
 
-	$query="SELECT * from glpi_type_docs where ext LIKE '$ext' AND upload='1'";
+	$query="SELECT * FROM glpi_type_docs WHERE ext LIKE '$ext' AND upload='1'";
 	if ($result = $DB->query($query))
 		if ($DB->numrows($result)>0)
 			return strtoupper($ext);

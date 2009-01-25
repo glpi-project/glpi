@@ -1081,7 +1081,7 @@ function sendFile($file,$filename){
 	} else {
 		$splitter=explode("/",$file);
 		$filedb=$splitter[count($splitter)-2]."/".$splitter[count($splitter)-1];
-		$query="SELECT mime from glpi_docs WHERE filename LIKE '$filedb'";
+		$query="SELECT mime FROM glpi_docs WHERE filename LIKE '$filedb'";
 		$result=$DB->query($query);
 		$mime="application/octetstream";
 		if ($result&&$DB->numrows($result)==1){
@@ -1254,7 +1254,7 @@ function optimize_tables ($progress_fct=NULL){
 			$table = $line[0];
 			if (function_exists($progress_fct)) $progress_fct("optimize", $table);
 			
-			$query = "OPTIMIZE TABLE ".$table." ;";
+			$query = "OPTIMIZE TABLE `".$table."` ;";
 			$DB->query($query);
 		}
 	}
@@ -1916,8 +1916,12 @@ function getSize($size) {
 function getCountLogin() {
 	global $DB;
 	
-	$query="SELECT count(*) FROM `glpi_event_log` WHERE message LIKE '%logged in%'";
-	$query2="SELECT date FROM `glpi_event_log` ORDER BY date ASC LIMIT 1";
+	$query="SELECT count(*) 
+		FROM `glpi_event_log` 
+		WHERE message LIKE '%logged in%'";
+	$query2="SELECT date 
+		FROM `glpi_event_log` 
+		ORDER BY date ASC LIMIT 1";
 	//$DB=new DB;
 	$result=$DB->query($query);
 	$result2=$DB->query($query2);

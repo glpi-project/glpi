@@ -57,31 +57,53 @@ function showCentralContract(){
 	// No recursive contract, not in local management 
 	
 	// contrats echus depuis moins de 30j
-	$query = "SELECT count(*)  FROM glpi_contracts WHERE glpi_contracts.deleted='0' ".getEntitiesRestrictRequest("AND","glpi_contracts")." AND DATEDIFF( ADDDATE(glpi_contracts.begin_date, INTERVAL glpi_contracts.duration MONTH),CURDATE() )>-30 AND DATEDIFF( ADDDATE(glpi_contracts.begin_date, INTERVAL glpi_contracts.duration MONTH),CURDATE() )<0";
+	$query = "SELECT count(*)  
+		FROM glpi_contracts 
+		WHERE glpi_contracts.deleted='0' ".getEntitiesRestrictRequest("AND","glpi_contracts")." 
+			AND DATEDIFF( ADDDATE(glpi_contracts.begin_date, INTERVAL glpi_contracts.duration MONTH),CURDATE() )>-30 
+			AND DATEDIFF( ADDDATE(glpi_contracts.begin_date, INTERVAL glpi_contracts.duration MONTH),CURDATE() )<0";
 	$result = $DB->query($query);
 	$contract0=$DB->result($result,0,0);
 
 
 	// contrats  echeance j-7
-	$query = "SELECT count(*)  FROM glpi_contracts WHERE glpi_contracts.deleted='0' ".getEntitiesRestrictRequest("AND","glpi_contracts")." AND DATEDIFF( ADDDATE(glpi_contracts.begin_date, INTERVAL glpi_contracts.duration MONTH),CURDATE() )>0 AND DATEDIFF( ADDDATE(glpi_contracts.begin_date, INTERVAL glpi_contracts.duration MONTH),CURDATE() )<=7";
+	$query = "SELECT count(*) 
+		FROM glpi_contracts 
+		WHERE glpi_contracts.deleted='0' ".getEntitiesRestrictRequest("AND","glpi_contracts")." 
+			AND DATEDIFF( ADDDATE(glpi_contracts.begin_date, INTERVAL glpi_contracts.duration MONTH),CURDATE() )>0 
+			AND DATEDIFF( ADDDATE(glpi_contracts.begin_date, INTERVAL glpi_contracts.duration MONTH),CURDATE() )<=7";
 	$result = $DB->query($query);
 	$contract7= $DB->result($result,0,0);
 
 
 	// contrats echeance j -30
-	$query = "SELECT count(*)  FROM glpi_contracts WHERE glpi_contracts.deleted='0' ".getEntitiesRestrictRequest("AND","glpi_contracts")." AND  DATEDIFF( ADDDATE(glpi_contracts.begin_date, INTERVAL glpi_contracts.duration MONTH),CURDATE() )>7 AND DATEDIFF( ADDDATE(glpi_contracts.begin_date, INTERVAL glpi_contracts.duration MONTH),CURDATE() )<30";
+	$query = "SELECT count(*) 
+		FROM glpi_contracts 
+		WHERE glpi_contracts.deleted='0' ".getEntitiesRestrictRequest("AND","glpi_contracts")." 
+			AND  DATEDIFF( ADDDATE(glpi_contracts.begin_date, INTERVAL glpi_contracts.duration MONTH),CURDATE() )>7 
+			AND DATEDIFF( ADDDATE(glpi_contracts.begin_date, INTERVAL glpi_contracts.duration MONTH),CURDATE() )<30";
 	$result = $DB->query($query);
 	$contract30= $DB->result($result,0,0);
 
 
 	// contrats avec préavis echeance j-7
-	$query = "SELECT count(*)  FROM glpi_contracts WHERE glpi_contracts.deleted='0' ".getEntitiesRestrictRequest("AND","glpi_contracts")." AND glpi_contracts.notice<>0 AND DATEDIFF( ADDDATE(glpi_contracts.begin_date, INTERVAL (glpi_contracts.duration-glpi_contracts.notice) MONTH),CURDATE() )>0 AND DATEDIFF( ADDDATE(glpi_contracts.begin_date, INTERVAL(glpi_contracts.duration-glpi_contracts.notice) MONTH),CURDATE() )<=7";
+	$query = "SELECT count(*) 
+		FROM glpi_contracts 
+		WHERE glpi_contracts.deleted='0' ".getEntitiesRestrictRequest("AND","glpi_contracts")." 
+			AND glpi_contracts.notice<>0 
+			AND DATEDIFF( ADDDATE(glpi_contracts.begin_date, INTERVAL (glpi_contracts.duration-glpi_contracts.notice) MONTH),CURDATE() )>0 
+			AND DATEDIFF( ADDDATE(glpi_contracts.begin_date, INTERVAL(glpi_contracts.duration-glpi_contracts.notice) MONTH),CURDATE() )<=7";
 	$result = $DB->query($query);
 	$contractpre7= $DB->result($result,0,0);
 
 
 	// contrats avec préavis echeance j -30
-	$query = "SELECT count(*)  FROM glpi_contracts WHERE glpi_contracts.deleted='0'".getEntitiesRestrictRequest("AND","glpi_contracts")."  AND  glpi_contracts.notice<>0  AND DATEDIFF( ADDDATE(glpi_contracts.begin_date, INTERVAL (glpi_contracts.duration-glpi_contracts.notice) MONTH),CURDATE() )>7 AND DATEDIFF( ADDDATE(glpi_contracts.begin_date, INTERVAL (glpi_contracts.duration-glpi_contracts.notice) MONTH),CURDATE() )<30";
+	$query = "SELECT count(*) 
+		FROM glpi_contracts 
+		WHERE glpi_contracts.deleted='0'".getEntitiesRestrictRequest("AND","glpi_contracts")." 
+			AND  glpi_contracts.notice<>0 
+			AND DATEDIFF( ADDDATE(glpi_contracts.begin_date, INTERVAL (glpi_contracts.duration-glpi_contracts.notice) MONTH),CURDATE() )>7 
+			AND DATEDIFF( ADDDATE(glpi_contracts.begin_date, INTERVAL (glpi_contracts.duration-glpi_contracts.notice) MONTH),CURDATE() )<30";
 	$result = $DB->query($query);
 	$contractpre30= $DB->result($result,0,0);
 
@@ -131,7 +153,10 @@ function showDeviceContract($instID) {
 	$rand=mt_rand();
 	$contract=new Contract();
 	$canedit=$contract->can($instID,'w');
-	$query = "SELECT DISTINCT device_type FROM glpi_contract_device WHERE glpi_contract_device.FK_contract = '$instID' order by device_type";
+	$query = "SELECT DISTINCT device_type 
+		FROM glpi_contract_device 
+		WHERE glpi_contract_device.FK_contract = '$instID' 
+		ORDER BY device_type";
 
 	$result = $DB->query($query);
 	$number = $DB->numrows($result);
@@ -303,8 +328,9 @@ function showEnterpriseContract($instID) {
 	$contract=new Contract();
 	$canedit=$contract->can($instID,'w');
 	
-	$query = "SELECT glpi_contract_enterprise.ID as ID, glpi_enterprises.ID as entID, glpi_enterprises.name as name, glpi_enterprises.website as website, "
-		. " glpi_enterprises.phonenumber as phone, glpi_enterprises.type as type, glpi_entities.ID AS entity"
+	$query = "SELECT glpi_contract_enterprise.ID as ID, glpi_enterprises.ID as entID, glpi_enterprises.name as name, 
+			glpi_enterprises.website as website, glpi_enterprises.phonenumber as phone, glpi_enterprises.type as type, 
+			glpi_entities.ID AS entity"
 		. " FROM glpi_contract_enterprise, glpi_enterprises "
 		. " LEFT JOIN glpi_entities ON (glpi_entities.ID=glpi_enterprises.FK_entities) "
 		. " WHERE glpi_contract_enterprise.FK_contract = '$instID' AND glpi_contract_enterprise.FK_enterprise = glpi_enterprises.ID"
@@ -428,7 +454,9 @@ function deleteEnterpriseContract($ID){
 function getContractEnterprises($ID){
 	global $DB;
 
-	$query = "SELECT glpi_enterprises.* FROM glpi_contract_enterprise, glpi_enterprises WHERE glpi_contract_enterprise.FK_enterprise = glpi_enterprises.ID AND glpi_contract_enterprise.FK_contract = '$ID'";
+	$query = "SELECT glpi_enterprises.* 
+			FROM glpi_contract_enterprise, glpi_enterprises 
+			WHERE glpi_contract_enterprise.FK_enterprise = glpi_enterprises.ID AND glpi_contract_enterprise.FK_contract = '$ID'";
 	$result = $DB->query($query);
 	$out="";
 	while ($data=$DB->fetch_array($result)){
@@ -460,11 +488,14 @@ function dropdownContracts($name,$entity_restrict=-1,$alreadyused=array()){
 	}
 	if (count($alreadyused)) {
 		foreach ($alreadyused AS $ID) {
-			$idrest .= (empty($idrest) ? "AND ID NOT IN(" : ",") . $ID;
+			$idrest .= (empty($idrest) ? "AND ID NOT IN(" : ",") . "'".$ID."'";
 		}
 		$idrest .= ")";
 	}
-	$query = "SELECT * FROM glpi_contracts WHERE deleted = '0' $entrest $idrest ORDER BY FK_entities, begin_date DESC";
+	$query = "SELECT * 
+		FROM glpi_contracts 
+		WHERE deleted = '0' $entrest $idrest 
+		ORDER BY FK_entities, begin_date DESC";
 	$result=$DB->query($query);
 	echo "<select name='$name'>";
 	echo "<option value='-1'>-----</option>";
@@ -515,10 +546,13 @@ function showContractAssociated($device_type,$ID,$withtemplate=''){
 	$ci->getFromDB($device_type,$ID);
 	$canedit=$ci->obj->can($ID,"w");
 
-	$query = "SELECT glpi_contract_device.* "
-		." FROM glpi_contract_device, glpi_contracts LEFT JOIN glpi_entities ON (glpi_contracts.FK_entities=glpi_entities.ID)"
-		." WHERE glpi_contracts.ID=glpi_contract_device.FK_contract AND glpi_contract_device.FK_device = '$ID' AND glpi_contract_device.device_type = '$device_type' "
-		.getEntitiesRestrictRequest(" AND","glpi_contracts",'','',true)." ORDER BY glpi_contracts.name";
+	$query = "SELECT glpi_contract_device.* 
+		FROM glpi_contract_device, glpi_contracts 
+		LEFT JOIN glpi_entities ON (glpi_contracts.FK_entities=glpi_entities.ID)
+		WHERE glpi_contracts.ID=glpi_contract_device.FK_contract AND glpi_contract_device.FK_device = '$ID' 
+			AND glpi_contract_device.device_type = '$device_type' 
+		".getEntitiesRestrictRequest(" AND","glpi_contracts",'','',true)." 
+		ORDER BY glpi_contracts.name";
 
 	$result = $DB->query($query);
 	$number = $DB->numrows($result);
@@ -576,7 +610,9 @@ function showContractAssociated($device_type,$ID,$withtemplate=''){
 		echo "</tr>";
 		$i++;
 	}
-	$q="SELECT * FROM glpi_contracts WHERE deleted='0' "
+	$q="SELECT * 
+		FROM glpi_contracts 
+		WHERE deleted='0' "
 		.getEntitiesRestrictRequest("AND","glpi_contracts","FK_entities",$ci->obj->fields["FK_entities"],true);;
 	$result = $DB->query($q);
 	$nb = $DB->numrows($result);
@@ -741,7 +777,15 @@ function cron_contract($display=false){
 	}
 
 	// Check end
-	$query="SELECT glpi_contracts.* FROM glpi_contracts LEFT JOIN glpi_alerts ON (glpi_contracts.ID = glpi_alerts.FK_device AND glpi_alerts.device_type='".CONTRACT_TYPE."' AND glpi_alerts.type='".ALERT_END."') WHERE (glpi_contracts.alert & ".pow(2,ALERT_END).") >0 AND glpi_contracts.deleted='0' AND glpi_contracts.begin_date IS NOT NULL AND glpi_contracts.duration <> '0' AND DATEDIFF( ADDDATE(glpi_contracts.begin_date, INTERVAL (glpi_contracts.duration) MONTH),CURDATE() )<0 AND glpi_alerts.date IS NULL;";
+	$query="SELECT glpi_contracts.* 
+		FROM glpi_contracts 
+		LEFT JOIN glpi_alerts ON (glpi_contracts.ID = glpi_alerts.FK_device 
+					AND glpi_alerts.device_type='".CONTRACT_TYPE."' 
+					AND glpi_alerts.type='".ALERT_END."') 
+		WHERE (glpi_contracts.alert & ".pow(2,ALERT_END).") >0 AND glpi_contracts.deleted='0' 
+			AND glpi_contracts.begin_date IS NOT NULL AND glpi_contracts.duration <> '0' 
+			AND DATEDIFF( ADDDATE(glpi_contracts.begin_date, INTERVAL (glpi_contracts.duration) MONTH),CURDATE() )<0 
+			AND glpi_alerts.date IS NULL;";
 
 	$result=$DB->query($query);
 	if ($DB->numrows($result)>0){

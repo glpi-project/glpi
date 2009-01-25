@@ -1608,7 +1608,8 @@ function printHelpDesk ($ID,$from_helpdesk) {
 
 	if (!haveRight("create_ticket","1")) return false;
 
-	$query = "SELECT email,realname,firstname,name FROM glpi_users WHERE (ID = '$ID')";
+	$query = "SELECT email, realname, firstname, name 
+		FROM glpi_users WHERE (ID = '$ID')";
 	$result=$DB->query($query);
 	$email = $DB->result($result,0,"email");
 

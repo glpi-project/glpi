@@ -247,7 +247,7 @@ class DBmysql {
 	 * @return list of fields
 	 */
 	function list_fields($table) {
-		$result = $this->query("SHOW COLUMNS FROM $table");
+		$result = $this->query("SHOW COLUMNS FROM `$table`");
 		if ($result) {
 			if ($this->numrows($result) > 0) {
 				while ($data = mysql_fetch_assoc($result)){
@@ -405,23 +405,23 @@ class DBmysqlIterator  implements Iterator {
 			} else if (empty($field)) {
 				$this->sql = "SELECT *";
 			} else {
-				$this->sql = "SELECT " . $field;
+				$this->sql = "SELECT `".$field."`";
 			}
 			// FROM table list
 			if (is_array($table)) {
-				$this->sql .= " FROM " . implode(", ",$table);
+				$this->sql .= " FROM `".implode("`, `",$table)."`";
 			} else {
-				$this->sql .= " FROM " . $table;			
+				$this->sql .= " FROM `".$table."`";
 			}
 			// WHERE criteria list
 			if (!empty($crit)) {
-				$this->sql .= " WHERE " . $this->analyseCrit($crit);			
+				$this->sql .= " WHERE ".$this->analyseCrit($crit);
 			}
 			// ORDER BY
 			if (is_array($orderby)) {
-				$this->sql .= " ORDER BY " . implode(", ",$orderby);
+				$this->sql .= " ORDER BY `".implode("`, `",$orderby)."`";
 			} else if (!empty($orderby)) {
-				$this->sql .= " ORDER BY " . $orderby;			
+				$this->sql .= " ORDER BY `".$orderby."`";
 			}
 			if (is_numeric($limit) && $limit>0) {
 				$this->sql .= " LIMIT $limit";			

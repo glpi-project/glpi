@@ -127,7 +127,7 @@ function getTreeLeafValueName($table,$ID,$withcomments=false){
 		
 	} else {
 		$query = "SELECT * 
-			FROM $table 
+			FROM `$table` 
 			WHERE (ID = '$ID')";
 		if ($result=$DB->query($query)){
 			if ($DB->numrows($result)==1){
@@ -166,7 +166,7 @@ function getTreeValueCompleteName($table,$ID,$withcomments=false){
 		
 	} else {
 		$query = "SELECT * 
-			FROM $table 
+			FROM `$table` 
 			WHERE (ID = '$ID')";
 		if ($result=$DB->query($query)){
 			if ($DB->numrows($result)==1){
@@ -201,7 +201,7 @@ function getTreeValueName($table,$ID, $wholename="",$level=0){
 	global $DB,$LANG;
 
 	$query = "SELECT * 
-		FROM $table 
+		FROM `$table` 
 		WHERE (ID = '$ID')";
 	$name="";
 
@@ -281,7 +281,7 @@ function getAncestorsOfTreeItem($table,$IDf){
 	while ($IDf>0){
 		// Get next elements
 		$query="SELECT parentID 
-			FROM $table 
+			FROM `$table` 
 			WHERE ID = '$IDf'";
 
 		$result=$DB->query($query);
@@ -316,7 +316,7 @@ function getSonsOfTreeItem($table,$IDf){
 	$found=array();
 	// First request init the  varriables
 	$query="SELECT ID 
-		FROM $table 
+		FROM `$table` 
 		WHERE parentID = '$IDf'
 		ORDER BY name";
 	if ( ($result=$DB->query($query)) && ($DB->numrows($result)>0) ){
@@ -331,8 +331,8 @@ function getSonsOfTreeItem($table,$IDf){
 		$first=true;
 		// Get next elements
 		$query="SELECT ID 
-			FROM $table 
-			WHERE parentID IN (" . implode(",",$found) . ")";
+			FROM `$table` 
+			WHERE parentID IN ('" . implode("','",$found) . "')";
 
 		// CLear the found array
 		unset($found);
@@ -369,7 +369,7 @@ function getTreeForItem($table,$IDf){
 	$found=array();
 	// First request init the  varriables
 	$query="SELECT * 
-		FROM $table 
+		FROM `$table` 
 		WHERE parentID = '$IDf' ORDER BY name";
 	if ( ($result=$DB->query($query)) && ($DB->numrows($result)>0) ){
 		while ($row=$DB->fetch_array($result)){
@@ -384,8 +384,8 @@ function getTreeForItem($table,$IDf){
 		$first=true;
 		// Get next elements
 		$query="SELECT * 
-			FROM $table 
-			WHERE parentID IN (" . implode(",",$found)." ) ORDER BY name";
+			FROM `$table` 
+			WHERE parentID IN ('" . implode("','",$found)."') ORDER BY name";
 		// CLear the found array
 		unset($found);
 		$found=array();
@@ -531,12 +531,12 @@ function getTreeItemLevel($table,$ID){
 function regenerateTreeCompleteName($table){
 	global $DB;
 	$query="SELECT ID 
-		FROM $table";
+		FROM `$table`";
 	$result=$DB->query($query);
 	if ($DB->numrows($result)>0){
 		while ($data=$DB->fetch_array($result)){
 			list($name,$level)=getTreeValueName($table,$data['ID']);
-			$query="UPDATE $table 
+			$query="UPDATE `$table` 
 				SET completename='".addslashes($name)."', level='$level' 
 				WHERE ID='".$data['ID']."'";
 			$DB->query($query);
@@ -556,12 +556,12 @@ function regenerateTreeCompleteNameUnderID($table,$ID){
 
 	list($name,$level)=getTreeValueName($table,$ID);
 
-	$query="UPDATE $table 
+	$query="UPDATE `$table` 
 		SET completename='".addslashes($name)."', level='$level' 
 		WHERE ID='".$ID."'";
 	$DB->query($query);
 	$query="SELECT ID 
-		FROM $table 
+		FROM `$table` 
 		WHERE parentID='$ID'";
 	$result=$DB->query($query);
 	if ($DB->numrows($result)>0){
@@ -591,8 +591,8 @@ function getNextItem($table,$ID,$condition="",$nextprev_item=""){
 	$search=$ID;
 
 	if ($nextprev_item!="ID"){
-		$query="SELECT ".$nextprev_item." 
-			FROM $table 
+		$query="SELECT `".$nextprev_item."` 
+			FROM `$table` 
 			WHERE ID='$ID'";
 		if ($result=$DB->query($query)){
 			if ($DB->numrows($result)>0){
@@ -608,13 +608,13 @@ function getNextItem($table,$ID,$condition="",$nextprev_item=""){
 		$LEFTJOIN=' LEFT JOIN glpi_users_profiles ON (glpi_users.ID = glpi_users_profiles.FK_users)';
 	}	
 
-	$query = "SELECT $table.ID 
-		FROM $table $LEFTJOIN
-		WHERE ( $table.".$nextprev_item." > '$search' ";
+	$query = "SELECT `$table`.ID 
+		FROM `$table` $LEFTJOIN
+		WHERE ( `$table`.`".$nextprev_item."` > '$search' ";
 
 	// Same name case
 	if ($nextprev_item!="ID"){
-		$query .= " OR ($table.".$nextprev_item." = '$search' AND $table.ID > '$ID') ";
+		$query .= " OR (`$table`.`".$nextprev_item."` = '$search' AND `$table`.ID > '$ID') ";
 	}
 
 	$query.=" ) ";
@@ -623,9 +623,9 @@ function getNextItem($table,$ID,$condition="",$nextprev_item=""){
 		$query.=" AND $condition ";
 	}
 	if (in_array($table,$CFG_GLPI["deleted_tables"]))
-		$query.=" AND $table.deleted='0' ";
+		$query.=" AND `$table`.deleted='0' ";
 	if (in_array($table,$CFG_GLPI["template_tables"]))
-		$query.=" AND $table.is_template='0' ";	
+		$query.=" AND `$table`.is_template='0' ";	
 
 	// Restrict to active entities
 	if ($table=="glpi_entities") {
@@ -637,7 +637,7 @@ function getNextItem($table,$ID,$condition="",$nextprev_item=""){
 	}
 
 	//$query.=" ORDER BY ".$nextprev_item." ASC, ID ASC";
-	$query.=" ORDER BY $table.$nextprev_item ASC, $table.ID ASC";
+	$query.=" ORDER BY `$table`.`$nextprev_item` ASC, `$table`.ID ASC";
 
 	$result=$DB->query($query);
 	if ($result&&$DB->numrows($result)>0)
@@ -664,9 +664,9 @@ function getPreviousItem($table,$ID,$condition="",$nextprev_item=""){
 
 	$search=$ID;
 	if ($nextprev_item!="ID"){
-		$query="SELECT ".$nextprev_item." 
-			FROM $table 
-			WHERE ID=$ID";
+		$query="SELECT `".$nextprev_item."` 
+			FROM `$table` 
+			WHERE ID='$ID'";
 		$result=$DB->query($query);
 		if ($DB->numrows($result)>0){
 			$search=addslashes($DB->result($result,0,0));
@@ -680,13 +680,13 @@ function getPreviousItem($table,$ID,$condition="",$nextprev_item=""){
 		$LEFTJOIN=' LEFT JOIN glpi_users_profiles ON (glpi_users.ID = glpi_users_profiles.FK_users)';
 	}	
 
-	$query = "SELECT $table.ID 
-		FROM $table $LEFTJOIN
-		WHERE  ($table.".$nextprev_item." < '$search' ";
+	$query = "SELECT `$table`.ID 
+		FROM `$table` $LEFTJOIN
+		WHERE  (`$table`.`".$nextprev_item."` < '$search' ";
 
 	// Same name case
 	if ($nextprev_item!="ID"){
-		$query .= " OR ($table.".$nextprev_item." = '$search' AND $table.ID < '$ID') ";
+		$query .= " OR (`$table`.`".$nextprev_item."` = '$search' AND `$table`.ID < '$ID') ";
 	}
 
 	$query.=" ) ";
@@ -697,9 +697,9 @@ function getPreviousItem($table,$ID,$condition="",$nextprev_item=""){
 	}
 
 	if (in_array($table,$CFG_GLPI["deleted_tables"]))
-		$query.="AND $table.deleted='0'";
+		$query.="AND `$table`.deleted='0'";
 	if (in_array($table,$CFG_GLPI["template_tables"]))
-		$query.="AND $table.is_template='0'";	
+		$query.="AND `$table`.is_template='0'";	
 
 	// Restrict to active entities
 	if ($table=="glpi_entities") {
@@ -710,7 +710,7 @@ function getPreviousItem($table,$ID,$condition="",$nextprev_item=""){
 		$query.=getEntitiesRestrictRequest("AND","glpi_users_profiles");
 	}
 
-	$query.=" ORDER BY $table.".$nextprev_item." DESC, $table.ID DESC";
+	$query.=" ORDER BY `$table`.`".$nextprev_item."` DESC, `$table`.ID DESC";
 
 	$result=$DB->query($query);
 	if ($result&&$DB->numrows($result)>0)
@@ -872,7 +872,7 @@ function FieldExists($table, $field) {
 function isIndex($table, $field) {
 
 	global $DB;
-	$result = $DB->query("SHOW INDEX FROM ". $table);
+	$result = $DB->query("SHOW INDEX FROM `". $table."`");
 	if ($result&&$DB->numrows($result)){
 		while ($data=$DB->fetch_assoc($result))
 			if ($data["Key_name"]==$field){
