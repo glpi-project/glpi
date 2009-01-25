@@ -52,8 +52,8 @@ class LdapCriteria extends CommonDBTM {
 	function getParametersList() {
 		global $DB;
 		$sql = "SELECT * 
-			FROM " . $this->table . " 
-			WHERE sub_type=".RULE_AFFECT_RIGHTS." 
+			FROM `".$this->table."` 
+			WHERE sub_type='".RULE_AFFECT_RIGHTS."' 
 			ORDER BY name ASC";
 		$result = $DB->query($sql);
 		$parameters = array ();

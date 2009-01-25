@@ -168,7 +168,7 @@ class Mailing
 							case ADMIN_ENTITY_MAILING :
 								$query2 = "SELECT admin_email AS EMAIL 
 									FROM glpi_entities_data 
-									WHERE (FK_entities = '".$this->job->fields["FK_entities"]."')";
+									WHERE FK_entities = '".$this->job->fields["FK_entities"]."'";
 								if ($result2 = $DB->query($query2)) {
 									if ($DB->numrows($result2)==1){
 										$row = $DB->fetch_array($result2);
@@ -183,7 +183,7 @@ class Mailing
 								if (isset($this->job->fields["assign"])&&$this->job->fields["assign"]>0){
 									$query2 = "SELECT DISTINCT glpi_users.email AS EMAIL, glpi_users.language AS LANG 
 										FROM glpi_users $join 
-										WHERE (glpi_users.ID = '".$this->job->fields["assign"]."')";
+										WHERE glpi_users.ID = '".$this->job->fields["assign"]."'";
 									if ($result2 = $DB->query($query2)) {
 										if ($DB->numrows($result2)==1){
 											$row = $DB->fetch_array($result2);
@@ -200,7 +200,7 @@ class Mailing
 								if (!$sendprivate&&isset($this->job->fields["assign_ent"])&&$this->job->fields["assign_ent"]>0){
 									$query2 = "SELECT DISTINCT glpi_enterprises.email AS EMAIL 
 									FROM glpi_enterprises 
-									WHERE (glpi_enterprises.ID = '".$this->job->fields["assign_ent"]."')";
+									WHERE glpi_enterprises.ID = '".$this->job->fields["assign_ent"]."'";
 									if ($result2 = $DB->query($query2)) {
 										if ($DB->numrows($result2)==1){
 											$row = $DB->fetch_array($result2);
@@ -236,7 +236,7 @@ class Mailing
 									$query2 = "SELECT DISTINCT glpi_users.email AS EMAIL, glpi_users.language AS LANG 
 									FROM glpi_groups 
 									LEFT JOIN glpi_users ON (glpi_users.ID = glpi_groups.FK_users) $join 
-									WHERE (glpi_groups.ID = '".$this->job->fields["assign_group"]."')";
+									WHERE glpi_groups.ID = '".$this->job->fields["assign_group"]."'";
 									if ($result2 = $DB->query($query2)) {
 										if ($DB->numrows($result2)==1){
 											$row = $DB->fetch_array($result2);
@@ -254,7 +254,7 @@ class Mailing
 								if (isset($this->job->fields["recipient"])&&$this->job->fields["recipient"]>0){
 									$query2 = "SELECT DISTINCT glpi_users.email AS EMAIL, glpi_users.language AS LANG  
 										FROM glpi_users $join 
-										WHERE (glpi_users.ID = '".$this->job->fields["recipient"]."')";
+										WHERE glpi_users.ID = '".$this->job->fields["recipient"]."'";
 									if ($result2 = $DB->query($query2)) {
 										if ($DB->numrows($result2)==1){
 											$row = $DB->fetch_array($result2);
@@ -280,7 +280,7 @@ class Mailing
 									// Is the user have the same mail that uemail ?
 									$query2 = "SELECT DISTINCT glpi_users.email AS EMAIL, glpi_users.language AS LANG   
 									FROM glpi_users $join 
-									WHERE (glpi_users.ID = '".$this->job->fields["author"]."')";
+									WHERE glpi_users.ID = '".$this->job->fields["author"]."'";
 									if ($result2 = $DB->query($query2)) {
 										if ($DB->numrows($result2)==1){
 											$row = $DB->fetch_array($result2);
@@ -302,7 +302,7 @@ class Mailing
 									$query2 = "SELECT DISTINCT glpi_users.email AS EMAIL, glpi_users.language AS LANG 
 										FROM glpi_groups 
 										LEFT JOIN glpi_users ON (glpi_users.ID = glpi_groups.FK_users) $join 
-										WHERE (glpi_groups.ID = '".$this->job->fields["FK_group"]."')";
+										WHERE glpi_groups.ID = '".$this->job->fields["FK_group"]."'";
 									if ($result2 = $DB->query($query2)) {
 										if ($DB->numrows($result2)==1){
 											$row = $DB->fetch_array($result2);
@@ -319,7 +319,7 @@ class Mailing
 								if (isset($this->job->fields["_old_assign"])&&$this->job->fields["_old_assign"]>0){
 									$query2 = "SELECT DISTINCT glpi_users.email AS EMAIL, glpi_users.language AS LANG  
 										FROM glpi_users $join 
-										WHERE (glpi_users.ID = '".$this->job->fields["_old_assign"]."')";
+										WHERE glpi_users.ID = '".$this->job->fields["_old_assign"]."'";
 									if ($result2 = $DB->query($query2)) {
 										if ($DB->numrows($result2)==1){
 											$row = $DB->fetch_array($result2);
@@ -338,7 +338,7 @@ class Mailing
 									if ($tmp=$ci->getField('tech_num')){
 										$query2 = "SELECT DISTINCT glpi_users.email AS EMAIL, glpi_users.language AS LANG 
 											FROM glpi_users $join 
-											WHERE (glpi_users.ID = '".$tmp."')";
+											WHERE glpi_users.ID = '".$tmp."'";
 										if ($result2 = $DB->query($query2)) {
 											if ($DB->numrows($result2)==1){
 												$row = $DB->fetch_array($result2);
@@ -358,7 +358,7 @@ class Mailing
 									if ($tmp=$ci->getField('FK_users')){
 										$query2 = "SELECT DISTINCT glpi_users.email AS EMAIL, glpi_users.language AS LANG 
 											FROM glpi_users $join 
-											WHERE (glpi_users.ID = '".$tmp."')";
+											WHERE glpi_users.ID = '".$tmp."'";
 										if ($result2 = $DB->query($query2)) {
 											if ($DB->numrows($result2)==1){
 												$row = $DB->fetch_array($result2);
@@ -462,7 +462,9 @@ class Mailing
 	function get_mail_sender(){
 		global $CFG_GLPI,$DB;
 
-		$query = "SELECT admin_email AS EMAIL FROM glpi_entities_data WHERE (FK_entities = '".$this->job->fields["FK_entities"]."')";
+		$query = "SELECT admin_email AS EMAIL 
+			FROM glpi_entities_data 
+			WHERE FK_entities = '".$this->job->fields["FK_entities"]."'";
 		if ($result=$DB->query($query)){
 			if ($DB->numrows($result)){
 				$data=$DB->fetch_assoc($result);
@@ -531,7 +533,9 @@ class Mailing
 		$replyto=$CFG_GLPI["admin_email"];
 
 		// Entity  conf
-		$query = "SELECT admin_email AS EMAIL, admin_reply AS REPLY FROM glpi_entities_data WHERE (FK_entities = '".$this->job->fields["FK_entities"]."')";
+		$query = "SELECT admin_email AS EMAIL, admin_reply AS REPLY 
+			FROM glpi_entities_data 
+			WHERE FK_entities = '".$this->job->fields["FK_entities"]."'";
 		if ($result=$DB->query($query)){
 			if ($DB->numrows($result)){
 				$data=$DB->fetch_assoc($result);
@@ -721,7 +725,9 @@ class MailingResa{
 								}
 								
 								if ($entity>=0){
-									$query2 = "SELECT admin_email AS EMAIL FROM glpi_entities_data WHERE (FK_entities = '".$entity."')";
+									$query2 = "SELECT admin_email AS EMAIL 
+										FROM glpi_entities_data 
+										WHERE FK_entities = '".$entity."'";
 									if ($result2 = $DB->query($query2)) {
 										if ($DB->numrows($result2)==1){
 											$row = $DB->fetch_array($result2);
@@ -749,7 +755,7 @@ class MailingResa{
 
 									if ($tmp=$ci->getField('tech_num')){
 										$query2 = "SELECT glpi_users.email as EMAIL, glpi_users.language as LANG 
-										FROM glpi_users WHERE (glpi_users.ID = '".$tmp."')";
+										FROM glpi_users WHERE glpi_users.ID = '".$tmp."'";
 										if ($result2 = $DB->query($query2)) {
 											if ($DB->numrows($result2)==1){
 												$row = $DB->fetch_row($result2);
@@ -770,7 +776,7 @@ class MailingResa{
 
 									if ($tmp=$ci->getField('FK_users')){
 										$query2 = "SELECT glpi_users.email AS EMAIL, glpi_users.language as LANG 
-										FROM glpi_users WHERE (glpi_users.ID = '".$tmp."')";
+										FROM glpi_users WHERE glpi_users.ID = '".$tmp."'";
 										if ($result2 = $DB->query($query2)) {
 											if ($DB->numrows($result2)==1){
 												$row = $DB->fetch_row($result2);
@@ -845,7 +851,7 @@ class MailingResa{
 			}
 		}
 		if ($entity>=0){
-			$query = "SELECT admin_email AS EMAIL FROM glpi_entities_data WHERE (FK_entities = '$entity')";
+			$query = "SELECT admin_email AS EMAIL FROM glpi_entities_data WHERE FK_entities = '$entity'";
 			if ($result=$DB->query($query)){
 				if ($DB->numrows($result)){
 					$data=$DB->fetch_assoc($result);
@@ -1045,7 +1051,7 @@ class MailingAlert
 							case ADMIN_ENTITY_MAILING :
 								$query2 = "SELECT admin_email AS EMAIL 
 									FROM glpi_entities_data 
-									WHERE (FK_entities = '".$this->entity."')";
+									WHERE FK_entities = '".$this->entity."'";
 								if ($result2 = $DB->query($query2)) {
 									if ($DB->numrows($result2)==1){
 										$row = $DB->fetch_array($result2);
@@ -1162,7 +1168,7 @@ class MailingAlert
 	function get_mail_sender(){
 		global $CFG_GLPI,$DB;
 
-		$query = "SELECT admin_email AS EMAIL FROM glpi_entities_data WHERE (FK_entities = '".$this->entity."')";
+		$query = "SELECT admin_email AS EMAIL FROM glpi_entities_data WHERE FK_entities = '".$this->entity."'";
 		if ($result=$DB->query($query)){
 			if ($DB->numrows($result)){
 				$data=$DB->fetch_assoc($result);

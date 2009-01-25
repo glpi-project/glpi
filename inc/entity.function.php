@@ -209,13 +209,13 @@ function deleteUserProfileEntity($ID){
 
 	global $DB;
 
-	$query="SELECT FK_users FROM glpi_users_profiles WHERE ID= '$ID';";
+	$query="SELECT FK_users FROM glpi_users_profiles WHERE ID = '$ID';";
 	$result = $DB->query($query);
 	$data=$DB->fetch_assoc($result);
 	$user=new User();
 	$user->cleanCache($data['FK_users']);
 	
-	$query="DELETE FROM glpi_users_profiles WHERE ID= '$ID';";
+	$query="DELETE FROM glpi_users_profiles WHERE ID = '$ID';";
 	$result = $DB->query($query);
 }
 
@@ -228,7 +228,7 @@ function deleteUserProfileEntity($ID){
 function moveUserProfileEntity($ID,$FK_entities){
 
 	global $DB;
-	$query="UPDATE glpi_users_profiles SET FK_entities='$FK_entities' WHERE ID= '$ID';";
+	$query="UPDATE glpi_users_profiles SET FK_entities='$FK_entities' WHERE ID = '$ID';";
 	return $DB->query($query);
 }
 

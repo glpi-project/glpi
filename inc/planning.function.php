@@ -235,8 +235,8 @@ function showPlanning($who,$who_group,$when,$type){
 
 	if ($who_group=="mine"){
 		if (count($_SESSION["glpigroups"])){
-			$groups=implode(",",$_SESSION['glpigroups']);
-			$ASSIGN="id_assign IN (SELECT DISTINCT FK_users FROM glpi_users_groups WHERE FK_groups IN ($groups)) AND";
+			$groups=implode("','",$_SESSION['glpigroups']);
+			$ASSIGN="id_assign IN (SELECT DISTINCT FK_users FROM glpi_users_groups WHERE FK_groups IN ('$groups')) AND";
 		} else { // Only personal ones
 			$ASSIGN="id_assign='$who' AND ";
 		}
@@ -262,7 +262,14 @@ function showPlanning($who,$who_group,$when,$type){
 
 	}
 	// ---------------Tracking
-	$query="SELECT * FROM glpi_tracking_planning WHERE $ASSIGN (('$begin' <= begin AND '$end' >= begin) OR ('$begin' < end AND '$end' >= end) OR (begin <= '$begin' AND end > '$begin') OR (begin <= '$end' AND end > '$end')) ORDER BY begin";
+	$query="SELECT * 
+		FROM glpi_tracking_planning 
+		WHERE $ASSIGN 
+			(('$begin' <= begin AND '$end' >= begin) 
+				OR ('$begin' < end AND '$end' >= end) 
+				OR (begin <= '$begin' AND end > '$begin') 
+				OR (begin <= '$end' AND end > '$end')) 
+		ORDER BY begin";
 	
 	$result=$DB->query($query);
 
@@ -309,7 +316,7 @@ function showPlanning($who,$who_group,$when,$type){
 	
 	// See my private reminder ?
 	if ($who_group=="mine" || $who==$_SESSION["glpiID"]){
-		$readpriv="(private=1 AND FK_users=".$_SESSION["glpiID"].")";		
+		$readpriv="(private=1 AND FK_users='".$_SESSION["glpiID"]."')";		
 	}
 	
 	if ($readpub && $readpriv) {
@@ -320,7 +327,10 @@ function showPlanning($who,$who_group,$when,$type){
 		$ASSIGN	= $readpriv;	
 	}		
 	if ($ASSIGN) {
-		$query2="SELECT * FROM glpi_reminder WHERE rv=1 AND $ASSIGN  AND begin < '$end' AND end > '$begin' ORDER BY begin";
+		$query2="SELECT * 
+			FROM glpi_reminder 
+			WHERE rv=1 AND $ASSIGN  AND begin < '$end' AND end > '$begin' 
+			ORDER BY begin";
 		$result2=$DB->query($query2);
 	
 		if ($DB->numrows($result2)>0) {	
@@ -707,7 +717,15 @@ function showPlanningCentral($who){
 
 	$INTERVAL=" 1 DAY "; // we want to show planning of the day
 
-	$query="SELECT * FROM glpi_tracking_planning WHERE $ASSIGN (('".$debut."' <= begin AND adddate( '". $debut ."' , INTERVAL $INTERVAL ) >= begin) OR ('".$debut."' < end AND adddate( '". $debut ."' , INTERVAL $INTERVAL ) >= end) OR (begin <= '".$debut."' AND end > '".$debut."') OR (begin <= adddate( '". $debut ."' , INTERVAL $INTERVAL ) AND end > adddate( '". $debut ."' , INTERVAL $INTERVAL ))) ORDER BY begin";
+	$query="SELECT * 
+		FROM glpi_tracking_planning 
+		WHERE $ASSIGN 
+			(('".$debut."' <= begin AND adddate( '". $debut ."' , INTERVAL $INTERVAL ) >= begin) 
+				OR ('".$debut."' < end AND adddate( '". $debut ."' , INTERVAL $INTERVAL ) >= end) 
+				OR (begin <= '".$debut."' AND end > '".$debut."') 
+				OR (begin <= adddate( '". $debut ."' , INTERVAL $INTERVAL ) 
+					AND end > adddate( '". $debut ."' , INTERVAL $INTERVAL ))) 
+		ORDER BY begin";
 
 	$result=$DB->query($query);
 
@@ -745,7 +763,16 @@ function showPlanningCentral($who){
 	$read_public="";
 	if (haveRight("reminder_public","r")) $read_public=" OR ( private=0 ".getEntitiesRestrictRequest("AND","glpi_reminder").") ";
 
-	$query2="SELECT * FROM glpi_reminder WHERE rv='1' AND (FK_users='$who' $read_public)    AND (('".$debut."' <= begin AND adddate( '". $debut ."' , INTERVAL $INTERVAL ) >= begin) OR ('".$debut."' < end AND adddate( '". $debut ."' , INTERVAL $INTERVAL ) >= end) OR (begin <= '".$debut."' AND end > '".$debut."') OR (begin <= adddate( '". $debut ."' , INTERVAL $INTERVAL ) AND end > adddate( '". $debut ."' , INTERVAL $INTERVAL ))) ORDER BY begin";
+	$query2="SELECT * 
+		FROM glpi_reminder 
+		WHERE rv='1' 
+			AND (FK_users='$who' $read_public)    
+			AND (('".$debut."' <= begin AND adddate( '". $debut ."' , INTERVAL $INTERVAL ) >= begin) 
+				OR ('".$debut."' < end AND adddate( '". $debut ."' , INTERVAL $INTERVAL ) >= end) 
+				OR (begin <= '".$debut."' AND end > '".$debut."') 
+				OR (begin <= adddate( '". $debut ."' , INTERVAL $INTERVAL ) 
+					AND end > adddate( '". $debut ."' , INTERVAL $INTERVAL ))) 
+		ORDER BY begin";
 
 	$result2=$DB->query($query2);
 
@@ -864,7 +891,11 @@ function generateIcal($who){
 	$end=date("Y-m-d H:i:s",$end); 
 
 	// export job
-	$query="SELECT * FROM glpi_tracking_planning WHERE id_assign=$who AND end > '$begin' AND begin < '$end' ";
+	$query="SELECT * 
+		FROM glpi_tracking_planning 
+		WHERE id_assign='$who' 
+			AND end > '$begin' 
+			AND begin < '$end' ";
 
 	$result=$DB->query($query);
 
@@ -901,7 +932,11 @@ function generateIcal($who){
 
 	// reminder 
 
-	$query2="SELECT * FROM glpi_reminder WHERE rv='1' AND (FK_users='$who' OR private=0) AND end > '$begin' AND begin < '$end'";
+	$query2="SELECT * 
+		FROM glpi_reminder 
+		WHERE rv='1' 
+			AND (FK_users='$who' OR private=0) 
+			AND end > '$begin' AND begin < '$end'";
 
 	$result2=$DB->query($query2);
 

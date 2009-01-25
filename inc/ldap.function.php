@@ -391,7 +391,10 @@ function getAllLdapUsers($id_auth, $sync = 0,$myfilter='',$order='DESC') {
 	if (!$res) {
 		return false;
 	}
-
+	if ($order!="DESC"){
+		$order="ASC";
+	}
+	
 	$ds = connect_ldap($config_ldap->fields['ldap_host'], $config_ldap->fields['ldap_port'], $config_ldap->fields['ldap_rootdn'], $config_ldap->fields['ldap_pass'], $config_ldap->fields['ldap_use_tls'], $config_ldap->fields['ldap_opt_deref']);
 	if ($ds) {
 
@@ -624,7 +627,7 @@ function showSynchronizationForm($target, $ID) {
 
 	if (haveRight("user", "w")){
 		//Look it the user's auth method is LDAP
-		$sql = "SELECT auth_method, id_auth FROM glpi_users WHERE ID=" . $ID;
+		$sql = "SELECT auth_method, id_auth FROM glpi_users WHERE ID='" . $ID."'";
 		$result = $DB->query($sql);
 		
 		if ($DB->numrows($result) > 0) {
@@ -637,7 +640,7 @@ function showSynchronizationForm($target, $ID) {
 					echo "<form method='post' action=\"$target\">";
 						
 					//Look it the auth server still exists ! <- Bad idea : id not exists unable to change anything
-					$sql = "SELECT name FROM glpi_auth_ldap WHERE ID=" . $data["id_auth"];
+					$sql = "SELECT name FROM glpi_auth_ldap WHERE ID='" . $data["id_auth"]."'";
 					$result = $DB->query($sql);
 
 					if ($DB->numrows($result) > 0) {
@@ -675,7 +678,7 @@ function showSynchronizationForm($target, $ID) {
 
 					if ($data["id_auth"]){
 						//Look it the auth server still exists ! <- Bad idea : id not exists unable to change anything
-						$sql = "SELECT name FROM glpi_auth_ldap WHERE ID=" . $data["id_auth"];
+						$sql = "SELECT name FROM glpi_auth_ldap WHERE ID='" . $data["id_auth"]."'";
 						$result = $DB->query($sql);
 	
 						if ($DB->numrows($result) > 0) {
@@ -770,7 +773,7 @@ function formChangeAuthMethodToMail($ID){
 /* // NOT_USED
 function getAuthMethodFromDB($ID) {
 	global $DB;
-	$sql = "SELECT auth_method FROM glpi_users WHERE ID=" . $ID;
+	$sql = "SELECT auth_method FROM glpi_users WHERE ID='".$ID."'";
 	$result = $DB->query($sql);
 	if ($DB->numrows($result) > 0) {
 		$data = $DB->fetch_array($result);

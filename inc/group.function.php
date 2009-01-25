@@ -50,7 +50,9 @@ function showGroupDevice($ID){
 	echo "<div class='center'><table class='tab_cadre'><tr><th>".$LANG["common"][17]."</th>" .
 			"<th>".$LANG["common"][16]."</th><th>".$LANG["entity"][0]."</th></tr>";
 	foreach ($CFG_GLPI["linkuser_types"] as $type){
-		$query="SELECT * from ".$LINK_ID_TABLE[$type]." WHERE FK_groups='$ID' " .
+		$query="SELECT * 
+			FROM ".$LINK_ID_TABLE[$type]." 
+			WHERE FK_groups='$ID' " .
 			getEntitiesRestrictRequest(" AND ", $LINK_ID_TABLE[$type], '', '', isset($CFG_GLPI["recursive_type"][$type]));
 		$result=$DB->query($query);
 		if ($DB->numrows($result)>0){
@@ -95,8 +97,11 @@ function showGroupUsers($target,$ID){
 		}
 	
 		echo "<div class='center'><table class='tab_cadrehov'><tr><th colspan='$headerspan'>".$LANG["Menu"][14]."</th></tr>";
-		$query="SELECT glpi_users.*,glpi_users_groups.ID as linkID from glpi_users_groups LEFT JOIN glpi_users ON (glpi_users.ID = glpi_users_groups.FK_users) WHERE glpi_users_groups.FK_groups='$ID' " .
-				"ORDER BY glpi_users.name, glpi_users.realname, glpi_users.firstname";
+		$query="SELECT glpi_users.*, glpi_users_groups.ID as linkID 
+			FROM glpi_users_groups 
+			LEFT JOIN glpi_users ON (glpi_users.ID = glpi_users_groups.FK_users) 
+			WHERE glpi_users_groups.FK_groups='$ID'
+			ORDER BY glpi_users.name, glpi_users.realname, glpi_users.firstname";
 	
 		$used = array();
 
@@ -200,7 +205,7 @@ function addUserGroup($uID,$gID){
 function deleteUserGroup($ID){
 
 	global $DB;
-	$query="DELETE FROM glpi_users_groups WHERE ID= '$ID';";
+	$query="DELETE FROM glpi_users_groups WHERE ID = '$ID';";
 	$result = $DB->query($query);
 }
 
@@ -213,7 +218,10 @@ function deleteUserGroup($ID){
 function isGroupVisibleInEntity($group,$entity_restrict)
 {
 	global $DB;
-	$query = "SELECT ID FROM glpi_groups WHERE ID=$group".getEntitiesRestrictRequest(" AND","glpi_groups","FK_entities",$entity_restrict,true);
+	$query = "SELECT ID 
+		FROM glpi_groups 
+		WHERE ID='$group' ".
+		getEntitiesRestrictRequest(" AND","glpi_groups","FK_entities",$entity_restrict,true);
 	$result = $DB->query($query);
 	$found = false;
 

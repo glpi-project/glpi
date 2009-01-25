@@ -291,7 +291,9 @@ class MailCollect {
 
 		//  Who is the user ?
 		$tkt['author']=0;
-		$query="SELECT ID from glpi_users WHERE email='".$head['from']."'";
+		$query="SELECT ID 
+			FROM glpi_users 
+			WHERE email='".$head['from']."'";
 		$result=$DB->query($query);
 		if ($result&&$DB->numrows($result)){
 			$tkt['author']=$DB->result($result,0,"ID");

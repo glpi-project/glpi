@@ -114,7 +114,9 @@ class Peripheral  extends CommonDBTM  {
 			}
 	
 			// ADD Ports
-			$query="SELECT ID from glpi_networking_ports WHERE on_device='".$input["_oldID"]."' AND device_type='".PERIPHERAL_TYPE."';";
+			$query="SELECT ID 
+				FROM glpi_networking_ports 
+				WHERE on_device='".$input["_oldID"]."' AND device_type='".PERIPHERAL_TYPE."';";
 			$result=$DB->query($query);
 			if ($DB->numrows($result)>0){
 	
@@ -131,7 +133,9 @@ class Peripheral  extends CommonDBTM  {
 			}
 	
 			// ADD Contract				
-			$query="SELECT FK_contract from glpi_contract_device WHERE FK_device='".$input["_oldID"]."' AND device_type='".PERIPHERAL_TYPE."';";
+			$query="SELECT FK_contract 
+				FROM glpi_contract_device 
+				WHERE FK_device='".$input["_oldID"]."' AND device_type='".PERIPHERAL_TYPE."';";
 			$result=$DB->query($query);
 			if ($DB->numrows($result)>0){
 	
@@ -140,7 +144,9 @@ class Peripheral  extends CommonDBTM  {
 			}
 	
 			// ADD Documents			
-			$query="SELECT FK_doc from glpi_doc_device WHERE FK_device='".$input["_oldID"]."' AND device_type='".PERIPHERAL_TYPE."';";
+			$query="SELECT FK_doc 
+				FROM glpi_doc_device 
+				WHERE FK_device='".$input["_oldID"]."' AND device_type='".PERIPHERAL_TYPE."';";
 			$result=$DB->query($query);
 			if ($DB->numrows($result)>0){
 	
@@ -155,7 +161,9 @@ class Peripheral  extends CommonDBTM  {
 		global $DB,$CFG_GLPI;
 
 		$job =new Job();
-		$query = "SELECT * FROM glpi_tracking WHERE (computer = '$ID'  AND device_type='".PERIPHERAL_TYPE."')";
+		$query = "SELECT * 
+			FROM glpi_tracking 
+			WHERE computer = '$ID'  AND device_type='".PERIPHERAL_TYPE."'";
 		$result = $DB->query($query);
 
 		if ($DB->numrows($result))
@@ -166,7 +174,7 @@ class Peripheral  extends CommonDBTM  {
 				} else $job->delete(array("ID"=>$data["ID"]));
 			}
 
-		$query="select * from glpi_reservation_item where (device_type='".PERIPHERAL_TYPE."' and id_device='$ID')";
+		$query="SELECT * FROM glpi_reservation_item WHERE (device_type='".PERIPHERAL_TYPE."' AND id_device='$ID')";
 		if ($result = $DB->query($query)) {
 			if ($DB->numrows($result)>0){
 				$rr=new ReservationItem();

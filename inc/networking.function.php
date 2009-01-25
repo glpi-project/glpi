@@ -56,7 +56,9 @@ function showPorts($device, $device_type, $withtemplate = '') {
 
 	initNavigateListItems(NETWORKING_PORT_TYPE,$ci->getType()." = ".$ci->getName());
 
-	$query = "SELECT ID FROM glpi_networking_ports WHERE (on_device = $device AND device_type = $device_type) ORDER BY name, logical_number";
+	$query = "SELECT ID FROM glpi_networking_ports 
+		WHERE (on_device = '$device' AND device_type = '$device_type') 
+		ORDER BY name, logical_number";
 	if ($result = $DB->query($query)) {
 		if ($DB->numrows($result) != 0) {
 			$colspan = 9;
@@ -175,7 +177,7 @@ function showPortVLAN($ID, $withtemplate) {
 
 	$used = array();
 	
-	$query = "SELECT * from glpi_networking_vlan WHERE FK_port='$ID'";
+	$query = "SELECT * FROM glpi_networking_vlan WHERE FK_port='$ID'";
 	$result = $DB->query($query);
 	if ($DB->numrows($result) > 0) {
 		echo "<table cellpadding='0' cellspacing='0'>";
@@ -673,7 +675,7 @@ function makeConnector($sport, $dport, $dohistory = true, $addmsg = false) {
 	}
 	// end manage VLAN
 
-	$query = "INSERT INTO glpi_networking_wire VALUES (NULL,$sport,$dport)";
+	$query = "INSERT INTO glpi_networking_wire VALUES (NULL,'$sport','$dport')";
 	if ($result = $DB->query($query)) {
 		$source = new CommonItem;
 		$source->getFromDB($ps->fields['device_type'], $ps->fields['on_device']);
@@ -817,13 +819,19 @@ function getUniqueObjectIDByIPAddressOrMac($value, $type = 'IP', $entity) {
 	}
 
 	//Try to get all the object (not deleted, and not template) with a network port having the specified IP, in a given entity
-	$query = "SELECT gnp.on_device as ID, gnp.ID as portID, gnp.device_type as device_type FROM `glpi_networking_ports` as gnp
-					LEFT JOIN  `glpi_computers` as gc ON (gnp.on_device=gc.ID AND gc.FK_entities=$entity AND gc.deleted=0 AND gc.is_template=0 AND device_type=" . COMPUTER_TYPE . ") 
-					LEFT JOIN  `glpi_printers` as gp ON (gnp.on_device=gp.ID AND gp.FK_entities=$entity AND gp.deleted=0 AND gp.is_template=0 AND device_type=" . PRINTER_TYPE . ")
-					LEFT JOIN  `glpi_networking` as gn ON (gnp.on_device=gn.ID AND gn.FK_entities=$entity AND gn.deleted=0 AND gn.is_template=0 AND device_type=" . NETWORKING_TYPE . ")  
-					LEFT JOIN  `glpi_phones` as gph ON (gnp.on_device=gph.ID AND gph.FK_entities=$entity AND gph.deleted=0 AND gph.is_template=0 AND device_type=" . PHONE_TYPE . ") 
-					LEFT JOIN  `glpi_peripherals` as gpe ON (gnp.on_device=gpe.ID AND gpe.FK_entities=$entity AND gpe.deleted=0 AND gpe.is_template=0 AND device_type=" . PERIPHERAL_TYPE . ") 
-	 				WHERE gnp.$field='" . $value . "'";
+	$query = "SELECT gnp.on_device as ID, gnp.ID as portID, gnp.device_type as device_type 
+		FROM `glpi_networking_ports` as gnp
+		LEFT JOIN  `glpi_computers` as gc ON (gnp.on_device=gc.ID AND gc.FK_entities=$entity AND gc.deleted=0 
+							AND gc.is_template=0 AND device_type=" . COMPUTER_TYPE . ") 
+		LEFT JOIN  `glpi_printers` as gp ON (gnp.on_device=gp.ID AND gp.FK_entities=$entity AND gp.deleted=0 
+							AND gp.is_template=0 AND device_type=" . PRINTER_TYPE . ")
+		LEFT JOIN  `glpi_networking` as gn ON (gnp.on_device=gn.ID AND gn.FK_entities=$entity AND gn.deleted=0 
+							AND gn.is_template=0 AND device_type=" . NETWORKING_TYPE . ")  
+		LEFT JOIN  `glpi_phones` as gph ON (gnp.on_device=gph.ID AND gph.FK_entities=$entity AND gph.deleted=0 
+							AND gph.is_template=0 AND device_type=" . PHONE_TYPE . ") 
+		LEFT JOIN  `glpi_peripherals` as gpe ON (gnp.on_device=gpe.ID AND gpe.FK_entities=$entity AND gpe.deleted=0 
+							AND gpe.is_template=0 AND device_type=" . PERIPHERAL_TYPE . ") 
+	 	WHERE gnp.$field='" . $value . "'";
 
 	$result = $DB->query($query);
 
@@ -834,7 +842,7 @@ function getUniqueObjectIDByIPAddressOrMac($value, $type = 'IP', $entity) {
 	switch ($DB->numrows($result)) {
 		case 0 :
 			//No result found with the previous request. Try to look for IP in the glpi_networking table directly
-			$query = "SELECT ID FROM glpi_networking WHERE UPPER($field)=UPPER('$value') AND FK_entities=$entity";
+			$query = "SELECT ID FROM glpi_networking WHERE UPPER($field)=UPPER('$value') AND FK_entities='$entity'";
 			$result = $DB->query($query);
 			if ($DB->numrows($result) == 1)
 				return array (
@@ -868,7 +876,9 @@ function getUniqueObjectIDByIPAddressOrMac($value, $type = 'IP', $entity) {
 			//If one port is connected on a network device
 			if ($network_port != -1) {
 				//If the 2 ports are linked each others
-				$query = "SELECT ID FROM glpi_networking_wire WHERE (end1=" . $port1["portID"] . " AND end2=" . $port2["portID"] . ") OR (end1=" . $port2["portID"] . " AND end2=" . $port1["portID"] . ")";
+				$query = "SELECT ID FROM glpi_networking_wire 
+					WHERE (end1='".$port1["portID"]."' AND end2='".$port2["portID"]."') 
+						OR (end1='".$port2["portID"]."' AND end2='".$port1["portID"]."')";
 				$query = $DB->query($query);
 				if ($DB->numrows($query) == 1)
 					return array (
@@ -917,9 +927,9 @@ function getUniqueObjectByFDQNAndType($fqdn, $type, $entity) {
 	$commonitem->setType($type, true);
 
 	$query = "SELECT obj.ID AS ID
-				FROM " . $commonitem->obj->table . " AS obj, glpi_dropdown_domain AS gdd
-				WHERE obj.FK_entities=$entity AND obj.domain = gdd.ID
-				AND LOWER( '$fqdn' ) = ( CONCAT( LOWER( obj.name ) , '.', LOWER( gdd.name ) ) )";
+		FROM " . $commonitem->obj->table . " AS obj, glpi_dropdown_domain AS gdd
+		WHERE obj.FK_entities='$entity' AND obj.domain = gdd.ID
+			AND LOWER( '$fqdn' ) = ( CONCAT( LOWER( obj.name ) , '.', LOWER( gdd.name ) ) )";
 
 	$result = $DB->query($query);
 	if ($DB->numrows($result) == 1) {
