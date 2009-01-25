@@ -1386,17 +1386,17 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$to
 	if (!empty($datemod2)&&$datemod2!="0000-00-00") $where.=" AND glpi_tracking.date_mod <= adddate( '". $datemod2 ."' , INTERVAL 1 DAY ) ";
 
 	if ($recipient!=0)
-		$where.=" AND glpi_tracking.recipient=$recipient";	
+		$where.=" AND glpi_tracking.recipient='$recipient'";	
 
 
 	if ($type!=0)
-		$where.=" AND glpi_tracking.device_type=$type";	
+		$where.=" AND glpi_tracking.device_type='$type'";	
 
 	if ($item!=0&&$type!=0)
-		$where.=" AND glpi_tracking.computer = $item";	
+		$where.=" AND glpi_tracking.computer = '$item'";	
 
 	$search_author=false;
-	if ($group>0) $where.=" AND glpi_tracking.FK_group = $group";
+	if ($group>0) $where.=" AND glpi_tracking.FK_group = '$group'";
 	else if ($group==-1&&$author!=0&&haveRight("show_group_ticket",1)){
 		// Get Author group's
 		if (count($_SESSION["glpigroups"])){
@@ -1405,7 +1405,7 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$to
 			foreach ($_SESSION['glpigroups'] as $val){
 				if (!$first) $groups.=",";
 				else $first=false;
-				$groups.=$val;
+				$groups.="'".$val."'";
 			}
 			$where.=" AND ( glpi_tracking.FK_group IN ($groups) ";
 
@@ -1430,14 +1430,14 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$to
 		$search_assign=" glpi_tracking.assign = '".$_SESSION["glpiID"]."' ";
 		if (count($_SESSION['glpigroups'])){
 			if ($assign_group>0){
-				$search_assign.= " OR glpi_tracking.assign_group = $assign_group ";
+				$search_assign.= " OR glpi_tracking.assign_group = '$assign_group' ";
 			} else {
 				$first=true;
 				$groups="";
 				foreach ($_SESSION['glpigroups'] as $val){
 					if (!$first) $groups.=",";
 					else $first=false;
-					$groups.=$val;
+					$groups.="'".$val."'";
 				}
 				$search_assign.= " OR glpi_tracking.assign_group IN ($groups) ";
 			}
@@ -1455,7 +1455,7 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$to
 				foreach ($_SESSION['glpigroups'] as $val){
 					if (!$first) $groups.=",";
 					else $first=false;
-					$groups.=$val;
+					$groups.="'".$val."'";
 				}			
 				$author_part.=" OR glpi_tracking.FK_group IN ($groups) ";
 	
