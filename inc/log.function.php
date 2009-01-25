@@ -68,7 +68,10 @@ function historyLog ($id_device,$device_type,$changes,$device_internal_type='0',
 			$username="";
 
 		// Build query
-		$query = "INSERT INTO glpi_history (FK_glpi_device,device_type,device_internal_type,linked_action,user_name,date_mod,id_search_option,old_value,new_value)  VALUES ('$id_device','$device_type','$device_internal_type','$linked_action','". addslashes($username)."','$date_mod','$id_search_option','".utf8_substr($old_value,0,250)."','".utf8_substr($new_value,0,250)."');";
+		$query = "INSERT INTO glpi_history (FK_glpi_device, device_type, device_internal_type, linked_action, user_name, date_mod,
+		id_search_option, old_value, new_value)  
+		VALUES ('$id_device', '$device_type', '$device_internal_type', '$linked_action','". addslashes($username)."', '$date_mod',
+		'$id_search_option', '".utf8_substr($old_value,0,250)."', '".utf8_substr($new_value,0,250)."');";
 		$DB->query($query)  or die($DB->error());
 	}
 
@@ -189,8 +192,10 @@ function showHistory($device_type,$id_device){
 	// Display the pager
 	printAjaxPager($LANG["title"][38],$start,$number);
 
-	$query="SELECT * FROM glpi_history WHERE FK_glpi_device='".$id_device."' AND device_type='".$device_type.
-		"' ORDER BY  ID DESC LIMIT $start," . $_SESSION['glpilist_limit'];
+	$query="SELECT * 
+		FROM glpi_history 
+		WHERE FK_glpi_device='".$id_device."' AND device_type='".$device_type."'
+		ORDER BY  ID DESC LIMIT ".intval($start)."," . intval($_SESSION['glpilist_limit']);
 
 	//echo $query;
 
@@ -487,7 +492,10 @@ function showAddEvents($target,$order,$sort,$user="") {
 		$usersearch=$user." ";
 
 	// Query Database
-	$query = "SELECT * FROM glpi_event_log WHERE message LIKE '".$usersearch.addslashes($LANG["log"][20])."%' ORDER BY $sort $order LIMIT 0,".$_SESSION["glpinum_of_events"];
+	$query = "SELECT * 
+		FROM glpi_event_log 
+		WHERE message LIKE '".$usersearch.addslashes($LANG["log"][20])."%' 
+		ORDER BY $sort $order LIMIT 0,".intval($_SESSION["glpinum_of_events"]);
 
 	// Get results
 	$result = $DB->query($query);
@@ -586,13 +594,15 @@ function showEvents($target,$order,$sort,$start=0) {
 
 	if (!$sort) {
 		$sort = "date";
+	}
+	if ($order!="ASC"){
 		$order = "DESC";
 	}
 
 	// Query Database
-	$query = "SELECT * FROM glpi_event_log ORDER BY $sort $order";
+	$query = "SELECT * FROM glpi_event_log ORDER BY `$sort` $order";
 
-	$query_limit = "SELECT * FROM glpi_event_log ORDER BY $sort $order LIMIT $start,".$_SESSION['glpilist_limit'];
+	$query_limit = "SELECT * FROM glpi_event_log ORDER BY `$sort` $order LIMIT ".intval($start).",".intval($_SESSION['glpilist_limit']);
 	// Get results
 	$result = $DB->query($query);
 

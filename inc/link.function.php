@@ -70,7 +70,7 @@ function showLinkDevice($instID) {
 	if (!haveRight("link","r")) return false;
 	//$canedit= haveRight("link","w");
 	$ci = new CommonItem();
-	$query = "SELECT * from glpi_links_device WHERE FK_links='$instID' ORDER BY device_type";
+	$query = "SELECT * FROM glpi_links_device WHERE FK_links='$instID' ORDER BY device_type";
 	$result = $DB->query($query);
 	$number = $DB->numrows($result);
 	$i = 0;
@@ -155,10 +155,12 @@ function showLinkOnDevice($type,$ID){
 	
 	if (!haveRight("link","r")) return false;
 
-	$query="SELECT glpi_links.ID as ID, glpi_links.link as link, glpi_links.name as name , glpi_links.data as data from glpi_links INNER JOIN glpi_links_device ON glpi_links.ID= glpi_links_device.FK_links " .
-			"WHERE glpi_links_device.device_type='$type' " .
+	$query="SELECT glpi_links.ID as ID, glpi_links.link as link, glpi_links.name as name , glpi_links.data as data 
+		FROM glpi_links 
+		INNER JOIN glpi_links_device ON glpi_links.ID= glpi_links_device.FK_links
+		WHERE glpi_links_device.device_type='$type' " .
 			getEntitiesRestrictRequest(" AND","glpi_links","FK_entities",$commonitem->obj->fields["FK_entities"],true).
-			" ORDER BY glpi_links.name";
+		" ORDER BY glpi_links.name";
 
 	$result=$DB->query($query);
 	
@@ -228,7 +230,10 @@ function showLinkOnDevice($type,$ID){
 				$ipmac=array();
 				$i=0;
 				if (strstr($link,"[IP]")||strstr($link,"[MAC]")){
-					$query2 = "SELECT ifaddr,ifmac,logical_number FROM glpi_networking_ports WHERE (on_device = $ID AND device_type = $type) ORDER BY logical_number";
+					$query2 = "SELECT ifaddr, ifmac, logical_number 
+						FROM glpi_networking_ports 
+						WHERE on_device = '$ID' AND device_type = '$type' 
+						ORDER BY logical_number";
 					$result2=$DB->query($query2);
 					if ($DB->numrows($result2)>0)
 						while ($data2=$DB->fetch_array($result2)){

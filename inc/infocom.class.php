@@ -68,7 +68,9 @@ class InfoCom extends CommonDBTM {
 	function getFromDBforDevice ($device_type,$ID) {
 
 		global $DB;
-		$query = "SELECT * FROM glpi_infocoms WHERE (FK_device = '$ID' AND device_type='$device_type')";
+		$query = "SELECT * 
+			FROM glpi_infocoms 
+			WHERE FK_device = '$ID' AND device_type='$device_type'";
 	
 		if ($result = $DB->query($query)) {
 			if ($DB->numrows($result)==1){	

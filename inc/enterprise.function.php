@@ -54,7 +54,10 @@ function showInfocomEnterprise($instID) {
 
 	if (!haveRight("contact_enterprise","r")) return false;
 
-	$query = "SELECT DISTINCT device_type FROM glpi_infocoms WHERE FK_enterprise = '$instID' ORDER BY device_type";
+	$query = "SELECT DISTINCT device_type 
+		FROM glpi_infocoms 
+		WHERE FK_enterprise = '$instID' 
+		ORDER BY device_type";
 
 	$result = $DB->query($query);
 	$number = $DB->numrows($result);
@@ -232,7 +235,7 @@ function addContactEnterprise($eID,$cID){
 function deleteContactEnterprise($ID){
 
 	global $DB;
-	$query="DELETE FROM glpi_contact_enterprise WHERE ID= '$ID';";
+	$query="DELETE FROM glpi_contact_enterprise WHERE ID = '$ID';";
 	$result = $DB->query($query);
 }
 

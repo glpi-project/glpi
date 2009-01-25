@@ -62,11 +62,13 @@ function showProfileEntityUser($target,$ID,$prof){
 		return false;
 	}
 
-  	$query="SELECT glpi_users.*, glpi_users_profiles.FK_entities AS entity, glpi_users_profiles.ID AS linkID, glpi_users_profiles.dynamic as dynamic,glpi_users_profiles.recursive as recursive   
+  	$query="SELECT glpi_users.*, glpi_users_profiles.FK_entities AS entity, glpi_users_profiles.ID AS linkID, 
+			glpi_users_profiles.dynamic as dynamic,glpi_users_profiles.recursive as recursive   
  		FROM glpi_users_profiles 
  		LEFT JOIN glpi_entities ON (glpi_entities.ID=glpi_users_profiles.FK_entities)
  		LEFT JOIN glpi_users ON (glpi_users.ID=glpi_users_profiles.FK_users)
- 		WHERE glpi_users_profiles.FK_profiles=".$ID." AND glpi_users.deleted=0 ".getEntitiesRestrictRequest("AND","glpi_users_profiles")." 
+ 		WHERE glpi_users_profiles.FK_profiles='".$ID."' 
+			AND glpi_users.deleted=0 ".getEntitiesRestrictRequest("AND","glpi_users_profiles")." 
  		ORDER BY glpi_entities.completename";
 
  	echo "<div class='center'>";

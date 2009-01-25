@@ -54,7 +54,7 @@ class Group extends CommonDBTM{
 	function cleanDBonPurge($ID) {
 		global $DB,$CFG_GLPI,$LINK_ID_TABLE;
 
-		$query = "DELETE from glpi_users_groups WHERE FK_groups = '$ID'";
+		$query = "DELETE FROM glpi_users_groups WHERE FK_groups = '$ID'";
 		$DB->query($query);
 
 	}

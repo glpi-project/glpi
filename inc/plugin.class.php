@@ -58,7 +58,7 @@ class Plugin extends CommonDBTM {
 	**/	
 	function getFromDBbyDir($dir) {
 		global $DB;
-		$query = "SELECT * FROM ".$this->table." WHERE (directory = '" . $dir . "')";
+		$query = "SELECT * FROM `".$this->table."` WHERE (directory = '" . $dir . "')";
 		if ($result = $DB->query($query)) {
 			if ($DB->numrows($result) != 1) {
 				return false;

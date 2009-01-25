@@ -59,11 +59,11 @@ class Enterprise extends CommonDBTM {
 		$job=new Job;
 
 		// Delete all enterprises associations from infocoms and contract
-		$query3 = "DELETE FROM glpi_contract_enterprise WHERE (FK_enterprise = \"$ID\")";
+		$query3 = "DELETE FROM glpi_contract_enterprise WHERE (FK_enterprise = '$ID')";
 		$result3 = $DB->query($query3);
 
 		// Delete all contact enterprise associations
-		$query2 = "DELETE FROM glpi_contact_enterprise WHERE (FK_enterprise = \"$ID\")";
+		$query2 = "DELETE FROM glpi_contact_enterprise WHERE (FK_enterprise = '$ID')";
 		$result2 = $DB->query($query2);
 	}
 

@@ -108,12 +108,16 @@ function showKbCategoriesFirstLevel($target,$parentID=0,$faq=0){
 	global $DB,$LANG,$CFG_GLPI;
 	
 	if($faq){
-		if ($CFG_GLPI["public_faq"] == 0 && !haveRight("faq","r")) return false;	
+		if ($CFG_GLPI["public_faq"] == 0 && !haveRight("faq","r")) {
+			return false;	
+		}
 		
 		// Get All FAQ categories
 		if (!isset($_SESSION['glpi_faqcategories'])){
 			$_SESSION['glpi_faqcategories']=array();
-			$query="SELECT DISTINCT categoryID FROM glpi_kbitems WHERE (glpi_kbitems.faq = '1')";
+			$query="SELECT DISTINCT categoryID 
+				FROM glpi_kbitems 
+				WHERE glpi_kbitems.faq = '1'";
 			if ($result=$DB->query($query)){
 				if ($DB->numrows($result)){
 					while ($data=$DB->fetch_array($result)){
@@ -129,7 +133,7 @@ function showKbCategoriesFirstLevel($target,$parentID=0,$faq=0){
 					foreach ($_SESSION['glpi_faqcategories'] as $key => $val){
 						if ($first) $first=false;
 						else $tmp.=',';
-						$tmp.=$val;
+						$tmp.="'".$val."'";
 					}
 					$tmp.=')';
 					$_SESSION['glpi_faqcategories']=$tmp;
@@ -138,10 +142,19 @@ function showKbCategoriesFirstLevel($target,$parentID=0,$faq=0){
 			}
 			
 		}
-		$query = "SELECT DISTINCT glpi_dropdown_kbcategories.* FROM glpi_dropdown_kbcategories WHERE ID IN ".$_SESSION['glpi_faqcategories']." AND  (glpi_dropdown_kbcategories.parentID = '$parentID') ORDER  BY name ASC";
+		$query = "SELECT DISTINCT glpi_dropdown_kbcategories.* 
+			FROM glpi_dropdown_kbcategories 
+			WHERE ID IN ".$_SESSION['glpi_faqcategories']." 
+				AND (glpi_dropdown_kbcategories.parentID = '$parentID') 
+			ORDER  BY name ASC";
 	}else{
-		if (!haveRight("knowbase","r")) return false;
-		$query = "SELECT * FROM glpi_dropdown_kbcategories WHERE  (glpi_dropdown_kbcategories.parentID = '$parentID') ORDER  BY name ASC";
+		if (!haveRight("knowbase","r")) {
+			return false;
+		}
+		$query = "SELECT * 
+			FROM glpi_dropdown_kbcategories 
+			WHERE  (glpi_dropdown_kbcategories.parentID = '$parentID') 
+			ORDER  BY name ASC";
 	}
 
 	/// Show category
@@ -154,7 +167,9 @@ function showKbCategoriesFirstLevel($target,$parentID=0,$faq=0){
 			$tmpID=$parentID;
 			$todisplay="";
 			while ($tmpID!=0){
-				$query2="SELECT * FROM glpi_dropdown_kbcategories WHERE ID='$tmpID'";
+				$query2="SELECT * 
+					FROM glpi_dropdown_kbcategories 
+					WHERE ID='$tmpID'";
 				$result2=$DB->query($query2);
 				if ($DB->numrows($result2)==1){	
 					$data=$DB->fetch_assoc($result2);
@@ -235,8 +250,9 @@ function showKbItemList($target,$contains,$start,$parentID,$faq=0){
 		$order="order by SCORE DESC";
 
 		// preliminar query to allow alternate search if no result with fulltext
-		$query_1 = "SELECT count(ID) FROM glpi_kbitems";
- 		$query_1.=" WHERE $where_1";
+		$query_1 = "SELECT count(ID) 
+			FROM glpi_kbitems 
+			WHERE $where_1";
 		$result_1 = $DB->query($query_1);
 		$numrows_1 =  $DB->result($result_1,0,0);
 
@@ -264,7 +280,7 @@ function showKbItemList($target,$contains,$start,$parentID,$faq=0){
 		}
 
 	} else { // no search -> browse by category
-		$where.="(glpi_kbitems.categoryID = $parentID) ";
+		$where.="(glpi_kbitems.categoryID = '$parentID') ";
 		$order="ORDER BY glpi_kbitems.question ASC";
 	}
 	
@@ -283,7 +299,7 @@ function showKbItemList($target,$contains,$start,$parentID,$faq=0){
 		$list_limit=$_SESSION['glpilist_limit'];
 		// Limit the result, if no limit applies, use prior result
 		if ($numrows > $list_limit&&!isset($_GET['export_all'])) {
-			$query_limit = $query ." LIMIT $start,".$list_limit." ";
+			$query_limit = $query ." LIMIT ".intval($start).",".intval($list_limit)." ";
 			$result_limit = $DB->query($query_limit);
 			$numrows_limit = $DB->numrows($result_limit);
 		} else {
