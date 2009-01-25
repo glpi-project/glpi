@@ -80,7 +80,10 @@ function showDeviceUser($ID){
 
 	$group_where="";
 	$groups=array();
-	$query="SELECT glpi_users_groups.FK_groups, glpi_groups.name FROM glpi_users_groups LEFT JOIN glpi_groups ON (glpi_groups.ID = glpi_users_groups.FK_groups) WHERE glpi_users_groups.FK_users='$ID';";
+	$query="SELECT glpi_users_groups.FK_groups, glpi_groups.name 
+		FROM glpi_users_groups 
+		LEFT JOIN glpi_groups ON (glpi_groups.ID = glpi_users_groups.FK_groups) 
+		WHERE glpi_users_groups.FK_users='$ID';";
 	$result=$DB->query($query);
 	if ($DB->numrows($result)>0){
 		$first=true;
@@ -207,7 +210,11 @@ function showGroupAssociated($target,$ID){
 	}
 
 	echo "<div class='center'><table class='tab_cadrehov'><tr><th colspan='$headerspan'>".$LANG["Menu"][36]."</th></tr>";
-	$query="SELECT glpi_groups.*, glpi_users_groups.ID AS IDD,glpi_users_groups.ID as linkID from glpi_users_groups LEFT JOIN glpi_groups ON (glpi_groups.ID = glpi_users_groups.FK_groups) WHERE glpi_users_groups.FK_users='$ID' ORDER BY glpi_groups.name";
+	$query="SELECT glpi_groups.*, glpi_users_groups.ID AS IDD, glpi_users_groups.ID as linkID 
+		FROM glpi_users_groups 
+		LEFT JOIN glpi_groups ON (glpi_groups.ID = glpi_users_groups.FK_groups) 
+		WHERE glpi_users_groups.FK_users='$ID' 
+		ORDER BY glpi_groups.name";
 
 	$result=$DB->query($query);
 	$used=array();
@@ -484,16 +491,16 @@ function getAuthMethodsByID($auth_method, $id_auth) {
 		case AUTH_CAS :
 			if ($id_auth>0){
 				//Get all the ldap directories
-				$sql = "SELECT * FROM glpi_auth_ldap WHERE ID=" . $id_auth;
+				$sql = "SELECT * FROM glpi_auth_ldap WHERE ID='".$id_auth."'";
 			}
 			break;
 		case AUTH_LDAP :
 			//Get all the ldap directories
-			$sql = "SELECT * FROM glpi_auth_ldap WHERE ID=" . $id_auth;
+			$sql = "SELECT * FROM glpi_auth_ldap WHERE ID='".$id_auth."'";
 			break;
 		case AUTH_MAIL :
 			//Get all the pop/imap servers
-			$sql = "SELECT * FROM glpi_auth_mail WHERE ID=" . $id_auth;
+			$sql = "SELECT * FROM glpi_auth_mail WHERE ID='".$id_auth."'";
 			break;
 	}
 

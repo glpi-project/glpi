@@ -121,7 +121,8 @@ class User extends CommonDBTM {
 			foreach ($entities as $ent){
 				if (haveAccessToEntity($ent)){
 					$all=false;
-					$query = "DELETE FROM glpi_users_profiles WHERE (FK_users = '$ID' AND FK_entities='$ent')";
+					$query = "DELETE FROM glpi_users_profiles 
+						WHERE FK_users = '$ID' AND FK_entities='$ent'";
 					$DB->query($query);
 				}
 			}
@@ -437,16 +438,17 @@ class User extends CommonDBTM {
 							$WHERE = "AND (ldap_group_dn<>'' AND ldap_group_dn IS NOT NULL )";
 							break;
 						case 2 : // user+ group search
-							$WHERE = "AND ((glpi_groups.ldap_field <> '' AND glpi_groups.ldap_field IS NOT NULL AND glpi_groups.ldap_value<>'' AND glpi_groups.ldap_value IS NOT NULL) 
+							$WHERE = "AND ((glpi_groups.ldap_field <> '' AND glpi_groups.ldap_field IS NOT NULL 
+									AND glpi_groups.ldap_value<>'' AND glpi_groups.ldap_value IS NOT NULL) 
 								OR (ldap_group_dn<>'' AND ldap_group_dn IS NOT NULL) )";
 							break;
 	
 					}
 					// Delete not available groups like to LDAP
 					$query = "SELECT glpi_users_groups.ID, glpi_users_groups.FK_groups 
-								FROM glpi_users_groups 
-								LEFT JOIN glpi_groups ON (glpi_groups.ID = glpi_users_groups.FK_groups) 
-								WHERE glpi_users_groups.FK_users='" . $input["ID"] . "' $WHERE";
+						FROM glpi_users_groups 
+						LEFT JOIN glpi_groups ON (glpi_groups.ID = glpi_users_groups.FK_groups) 
+						WHERE glpi_users_groups.FK_users='" . $input["ID"] . "' $WHERE";
 	
 					$result = $DB->query($query);
 					if ($DB->numrows($result) > 0) {
@@ -544,8 +546,12 @@ class User extends CommonDBTM {
 			}
 
 			// Get group fields
-			$query_user = "SELECT ID,ldap_field, ldap_value FROM glpi_groups WHERE ldap_field<>'' AND ldap_field IS NOT NULL AND ldap_value<>'' AND ldap_value IS NOT NULL";
-			$query_group = "SELECT ID,ldap_group_dn FROM glpi_groups WHERE ldap_group_dn<>'' AND ldap_group_dn IS NOT NULL";
+			$query_user = "SELECT ID,ldap_field, ldap_value 
+				FROM glpi_groups 
+				WHERE ldap_field<>'' AND ldap_field IS NOT NULL AND ldap_value<>'' AND ldap_value IS NOT NULL";
+			$query_group = "SELECT ID,ldap_group_dn 
+				FROM glpi_groups 
+				WHERE ldap_group_dn<>'' AND ldap_group_dn IS NOT NULL";
 
 			$group_fields = array ();
 			$groups = array ();
@@ -1181,7 +1187,7 @@ class User extends CommonDBTM {
 		//Purge only in case of connection to the master mysql server
 		if (!$DB->isSlave())
 		{
-			$sql = "DELETE FROM glpi_users_profiles WHERE FK_users=".$this->fields["ID"]." AND dynamic=1";
+			$sql = "DELETE FROM glpi_users_profiles WHERE FK_users='".$this->fields["ID"]."' AND dynamic=1";
 			$DB->query($sql);
 		}
 	}

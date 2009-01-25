@@ -64,7 +64,7 @@ function showDropdownList($target, $tablename,$FK_entities='',$location=-1){
 
 	if ($tablename=="glpi_dropdown_netpoint") {
 		if ($location > 0) {
-			$where = " WHERE location=$location";			
+			$where = " WHERE location='$location'";			
 		} else if ($location < 0) {
 			$where = getEntitiesRestrictRequest(" WHERE ",$tablename,'',$entity_restrict);
 		} else {
@@ -75,7 +75,7 @@ function showDropdownList($target, $tablename,$FK_entities='',$location=-1){
 	} 
 	
 	echo "<div class='center'>";
-	$query="SELECT * FROM $tablename $where ORDER BY $field";
+	$query="SELECT * FROM `$tablename` $where ORDER BY `$field`";
 	if ($result=$DB->query($query)){
 		if ($DB->numrows($result)>0){
 			echo "<form method='post' name='massiveaction_form' id='massiveaction_form' action=\"$target\"><table class='tab_cadre_fixe'>";
@@ -270,7 +270,7 @@ function showFormNetpoint($target, $human, $ID, $FK_entities='',$location=0) {
 		echo "&nbsp;&nbsp;<input type='image' class='calendrier'  src=\"" . $CFG_GLPI["root_doc"] . "/pics/puce.gif\" alt='' title='' name='fillright' value='fillright'>&nbsp;";
 
 
-		$query = "select * from glpi_dropdown_netpoint where ID = '" . $ID . "'";
+		$query = "SELECT * FROM glpi_dropdown_netpoint WHERE ID = '" . $ID . "'";
 		$result = $DB->query($query);
 		$value = $loc = $comments = "";
 		$entity = 0;
@@ -451,7 +451,7 @@ function moveTreeUnder($table, $to_move, $where) {
 		$current_ID = $where;
 		while ($current_ID != 0 && $impossible_move == false) {
 
-			$query = "SELECT * FROM $table WHERE ID='$current_ID'";
+			$query = "SELECT * FROM `$table` WHERE ID='$current_ID'";
 			$result = $DB->query($query);
 			$current_ID = $DB->result($result, 0, "parentID");
 			if ($current_ID == $to_move){
@@ -460,7 +460,7 @@ function moveTreeUnder($table, $to_move, $where) {
 		}
 		if (!$impossible_move) {
 			// Move Location
-			$query = "UPDATE $table SET parentID='$where' where ID='$to_move'";
+			$query = "UPDATE `$table` SET parentID='$where' WHERE ID='$to_move'";
 			$result = $DB->query($query);
 			regenerateTreeCompleteNameUnderID($table, $to_move);
 		}
@@ -475,10 +475,14 @@ function updateDropdown($input) {
 	if (empty($input["value"])) return false;
 	
 	if ($input["tablename"] == "glpi_dropdown_netpoint") {
-		$query = "update " . $input["tablename"] . " SET name = '" . $input["value"] . "', location = '" . $input["value2"] . "', comments='" . $input["comments"] . "' where ID = '" . $input["ID"] . "'";
+		$query = "UPDATE `".$input["tablename"]."` 
+			SET name = '".$input["value"]."', location = '".$input["value2"]."', comments='".$input["comments"]."' 
+			WHERE ID = '".$input["ID"]."'";
 
 	} else {
-		$query = "update " . $input["tablename"] . " SET name = '" . $input["value"] . "', comments='" . $input["comments"] . "' where ID = '" . $input["ID"] . "'";
+		$query = "UPDATE `".$input["tablename"]."` 
+			SET name = '".$input["value"]."', comments='".$input["comments"]."' 
+			WHERE ID = '".$input["ID"]."'";
 	}
 
 	if ($result = $DB->query($query)) {
@@ -512,15 +516,17 @@ function getDropdownID($input){
 		$query="";
 		$query_twin="";
 		if ($input["tablename"] == "glpi_dropdown_netpoint") {
-			$query_twin="SELECT ID FROM " . $input["tablename"] . " WHERE $add_entity_field_twin name= '".$input["value"]."' AND location = '".$input["value2"]."'";
+			$query_twin="SELECT ID FROM `".$input["tablename"]."` 
+				WHERE $add_entity_field_twin name= '".$input["value"]."' AND location = '".$input["value2"]."'";
 		} else {
 			if (in_array($input["tablename"], $CFG_GLPI["dropdowntree_tables"])) {
 
-				$query_twin="SELECT ID FROM " . $input["tablename"] . " WHERE $add_entity_field_twin name= '".$input["value"]."' AND parentID='0'";
+				$query_twin="SELECT ID FROM `".$input["tablename"]."` 
+					WHERE $add_entity_field_twin name= '".$input["value"]."' AND parentID='0'";
 
 				if ($input['type'] != "first" && $input["value2"] != 0) {
 					$level_up=-1;
-					$query = "SELECT * FROM " . $input["tablename"] . " where ID='" . $input["value2"] . "'";
+					$query = "SELECT * FROM `".$input["tablename"]."` WHERE ID='" . $input["value2"] . "'";
 					
 					$result = $DB->query($query);
 					
@@ -532,10 +538,12 @@ function getDropdownID($input){
 							$level_up = $data["ID"];
 						}
 					} 
-					$query_twin="SELECT ID FROM " . $input["tablename"] . " WHERE $add_entity_field_twin name= '".$input["value"]."' AND parentID='$level_up'";
+					$query_twin="SELECT ID FROM `".$input["tablename"]."` 
+						WHERE $add_entity_field_twin name= '".$input["value"]."' AND parentID='$level_up'";
 				}
 			} else {
-				$query_twin="SELECT ID FROM " . $input["tablename"] . " WHERE $add_entity_field_twin name= '".$input["value"]."' ";
+				$query_twin="SELECT ID FROM `".$input["tablename"]." 
+					WHERE $add_entity_field_twin name= '".$input["value"]."' ";
 			}
 		}
 		
@@ -646,15 +654,17 @@ function addDropdown($input) {
 		}
 		$query="";
 		if ($input["tablename"] == "glpi_dropdown_netpoint") {
-			$query = "INSERT INTO " . $input["tablename"] . " (" . $add_entity_field . "name,location,comments) VALUES (" . $add_entity_value . "'" . $input["value"] . "', '" . $input["value2"] . "', '" . $input["comments"] . "')";
+			$query = "INSERT INTO `".$input["tablename"]." (" . $add_entity_field . "name,location,comments) 
+				VALUES (" . $add_entity_value . "'" . $input["value"] . "', '" . $input["value2"] . "', '" . $input["comments"] . "')";
 		} else {
 			if (in_array($input["tablename"], $CFG_GLPI["dropdowntree_tables"])) {
 
-				$query = "INSERT INTO " . $input["tablename"] . " (" . $add_entity_field . "name,parentID,completename,comments) VALUES (" . $add_entity_value . "'" . $input["value"] . "', '0','','" . $input["comments"] . "')";
+				$query = "INSERT INTO `".$input["tablename"]."` (" . $add_entity_field . "name,parentID,completename,comments)
+					VALUES (" . $add_entity_value . "'" . $input["value"] . "', '0','','" . $input["comments"] . "')";
 
 				if ($input['type'] != "first" && $input["value2"] != 0) {
 					$level_up=-1;
-					$query = "SELECT * FROM " . $input["tablename"] . " where ID='" . $input["value2"] . "'";
+					$query = "SELECT * FROM `".$input["tablename"]."` WHERE ID='" . $input["value2"] . "'";
 					
 					$result = $DB->query($query);
 					
@@ -666,10 +676,12 @@ function addDropdown($input) {
 							$level_up = $data["ID"];
 						}
 					} 
-					$query = "INSERT INTO " . $input["tablename"] . " (" . $add_entity_field . "name,parentID,completename,comments) VALUES (" . $add_entity_value . "'" . $input["value"] . "', '$level_up','','" . $input["comments"] . "')";
+					$query = "INSERT INTO `".$input["tablename"]."` (" . $add_entity_field . "name,parentID,completename,comments) 
+					VALUES (" . $add_entity_value . "'" . $input["value"] . "', '$level_up','','" . $input["comments"] . "')";
 				}
 			} else {
-				$query = "INSERT INTO " . $input["tablename"] . " (" . $add_entity_field . "name,comments) VALUES (" . $add_entity_value . "'" . $input["value"] . "','" . $input["comments"] . "')";
+				$query = "INSERT INTO `".$input["tablename"]."` (" . $add_entity_field . "name,comments) 
+					VALUES (" . $add_entity_value . "'" . $input["value"] . "','" . $input["comments"] . "')";
 			}
 		}
 
@@ -1016,7 +1028,7 @@ function showLdapAuthList($target) {
 		echo "</th></tr>";
 		echo "<tr class='tab_bg_1'><td class='center'>" . $LANG["common"][16] . "</td><td class='center'>" . $LANG["common"][52] . "</td></tr>";
 
-		$sql = "SELECT * from glpi_auth_ldap";
+		$sql = "SELECT * FROM glpi_auth_ldap";
 		$result = $DB->query($sql);
 		if ($DB->numrows($result)) {
 			while ($ldap_method = $DB->fetch_array($result)){
@@ -1132,7 +1144,7 @@ function showImapAuthList($target) {
 
 		echo "</th></tr>";
 		echo "<tr class='tab_bg_1'><td class='center'>" . $LANG["common"][16] . "</td><td class='center'>" . $LANG["common"][52] . "</td></tr>";
-		$sql = "SELECT * from glpi_auth_mail";
+		$sql = "SELECT * FROM glpi_auth_mail";
 		$result = $DB->query($sql);
 		if ($DB->numrows($result)) {
 					

@@ -121,7 +121,7 @@ class CommonDBTM {
 		}
 
 		if (!empty($order)){
-			$query.=" ORDER BY `$order`";
+			$query.=" ORDER BY $order";
 		}
 		if (!empty($limit)){
 			$query.=" LIMIT ".intval($limit);

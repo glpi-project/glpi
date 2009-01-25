@@ -321,9 +321,9 @@ class DictionnaryDropdownCollection extends RuleCachedCollection{
 			echo "replayRulesOnExistingDB started : " . date("r") . "\n";
 
 		// Get All items
-		$Sql="SELECT * FROM " . $this->item_table;
+		$Sql="SELECT * FROM `".$this->item_table."`";
 		if ($offset) {
-			$Sql .= " LIMIT $offset,999999999";
+			$Sql .= " LIMIT ".intval($offset).",999999999";
 		} 
 		
 		$result = $DB->query($Sql);
@@ -405,12 +405,13 @@ class DictionnaryDropdownCollection extends RuleCachedCollection{
 
 
 		// Need to give manufacturer from item table
-		$Sql="SELECT DISTINCT glpi_dropdown_manufacturer.ID AS idmanu, glpi_dropdown_manufacturer.name AS manufacturer, ".
-			$this->item_table.".ID AS ID, ".$this->item_table.".name AS name, ".$this->item_table.".comments AS comments ".
-			"FROM ".$this->item_table.", $model_table LEFT JOIN glpi_dropdown_manufacturer ON ($model_table.FK_glpi_enterprise=glpi_dropdown_manufacturer.ID) ".
-			"WHERE $model_table.model=".$this->item_table.".ID ";
+		$Sql="SELECT DISTINCT glpi_dropdown_manufacturer.ID AS idmanu, glpi_dropdown_manufacturer.name AS manufacturer, 
+			".$this->item_table.".ID AS ID, `".$this->item_table."`.name AS name, `".$this->item_table."`.comments AS comments 
+			FROM `".$this->item_table."`, $model_table 
+			LEFT JOIN glpi_dropdown_manufacturer ON ($model_table.FK_glpi_enterprise=glpi_dropdown_manufacturer.ID) 
+			WHERE $model_table.model=`".$this->item_table."`.ID ";
 		if ($offset) {
-			$Sql .= " LIMIT $offset,999999999";
+			$Sql .= " LIMIT ".intval($offset).",999999999";
 		} 
 		$result = $DB->query($Sql);
 
@@ -444,7 +445,7 @@ class DictionnaryDropdownCollection extends RuleCachedCollection{
 					if (empty($data['idmanu'])){
 						$sql .= " AND (FK_glpi_enterprise IS NULL OR FK_glpi_enterprise = 0)";
 					} else {
-						$sql .= " AND FK_glpi_enterprise=".$data['idmanu'];
+						$sql .= " AND FK_glpi_enterprise='".$data['idmanu']."'";
 					}
 					
 					$DB->query($sql);
@@ -460,12 +461,12 @@ class DictionnaryDropdownCollection extends RuleCachedCollection{
 			} 
 
 			foreach ($tocheck AS $ID => $tab) 	{
-				$sql="SELECT COUNT(*) FROM $model_table WHERE model=$ID";
+				$sql="SELECT COUNT(*) FROM $model_table WHERE model='$ID'";
 				$result = $DB->query($sql);
 				$deletecartmodel=false;
 				// No item left : delete old item
 				if ($result && $DB->result($result,0,0)==0) {
-					$Sql = "DELETE FROM ".$this->item_table." WHERE ID=".$ID;
+					$Sql = "DELETE FROM `".$this->item_table."` WHERE ID='$ID'";
 					$resdel = $DB->query($Sql);
 					$deletecartmodel=true;
 				} 
@@ -481,7 +482,8 @@ class DictionnaryDropdownCollection extends RuleCachedCollection{
 							}
 							// Delete cartrodges_assoc
 							if ($deletecartmodel){
-								$sql="DELETE FROM glpi_cartridges_assoc WHERE FK_glpi_dropdown_model_printers = 'ID'";
+								$sql="DELETE FROM glpi_cartridges_assoc 
+									WHERE FK_glpi_dropdown_model_printers = 'ID'";
 								$DB->query($sql);
 							}
 							// Add new assoc

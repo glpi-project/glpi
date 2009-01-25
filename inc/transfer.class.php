@@ -659,7 +659,7 @@ class Transfer extends CommonDBTM{
 	**/
 	function createSearchConditionUsingArray($array){
 		if (is_array($array)&&count($array)){
-			return "(".implode(",",$array).")";
+			return "('".implode("','",$array)."')";
 		} else {
 			return "(-1)";
 		}
@@ -1245,7 +1245,6 @@ class Transfer extends CommonDBTM{
 							// Can be transfer without copy ? = all linked items need to be transfer (so not copy)
 							$canbetransfer=true;
 							$query="SELECT DISTINCT device_type FROM glpi_contract_device WHERE FK_contract='$item_ID'";
-							echo $query;
 							
 							if ($result_type = $DB->query($query)) {
 								if ($DB->numrows($result_type)>0) {
@@ -1535,7 +1534,10 @@ class Transfer extends CommonDBTM{
 									}
 								} else { // Not yet tranfer
 									// Can be managed like a non global one ? = all linked computers need to be transfer (so not copy)
-									$query="SELECT count(*) AS CPT FROM glpi_connect_wire WHERE type='".$link_type."' AND end1='$item_ID' AND end2 NOT IN ".$this->item_search[COMPUTER_TYPE];
+									$query="SELECT count(*) AS CPT 
+										FROM glpi_connect_wire 
+										WHERE type='".$link_type."' AND end1='$item_ID' 
+											AND end2 NOT IN ".$this->item_search[COMPUTER_TYPE];
 									$result_search=$DB->query($query);
 									// All linked computers need to be transfer -> use unique transfer system
 									if ($DB->result($result_search,0,'CPT')==0){
@@ -1546,7 +1548,10 @@ class Transfer extends CommonDBTM{
 									} else { // else Transfer by Copy
 										$need_clean_process=true;
 										// Is existing global item in the destination entity ?
-										$query="SELECT * FROM ".$LINK_ID_TABLE[$link_type]." WHERE is_global='1' AND FK_entities='".$this->to."' AND name='".addslashes($ci->getField('name'))."'";
+										$query="SELECT * 
+											FROM ".$LINK_ID_TABLE[$link_type]." 
+											WHERE is_global='1' AND FK_entities='".$this->to."' 
+												AND name='".addslashes($ci->getField('name'))."'";
 										if ($result_search=$DB->query($query)){
 											if ($DB->numrows($result_search)>0){
 												$newID=$DB->result($result_search,0,'ID');
@@ -1582,7 +1587,7 @@ class Transfer extends CommonDBTM{
 								$need_clean_process=true;
 								// OCS clean link
 								if ($ocs_computer&&!empty($ocs_field)){
-									$query="UPDATE glpi_ocs_link SET $ocs_field = NULL WHERE glpi_id='$ID'";
+									$query="UPDATE glpi_ocs_link SET `$ocs_field` = NULL WHERE glpi_id='$ID'";
 									$DB->query($query);
 								}
 
@@ -1619,7 +1624,7 @@ class Transfer extends CommonDBTM{
 									$ci->obj->delete(array('ID'=>$item_ID),1);
 								}
 								if ($ocs_computer&&!empty($ocs_field)){
-									$query="UPDATE glpi_ocs_link SET $ocs_field = NULL WHERE glpi_id='$ID'";
+									$query="UPDATE glpi_ocs_link SET `$ocs_field` = NULL WHERE glpi_id='$ID'";
 									$DB->query($query);
 								}
 							}

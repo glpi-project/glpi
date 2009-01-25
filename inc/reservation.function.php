@@ -385,8 +385,11 @@ function printReservation($target,$ID,$date){
 		$debut=$date." 00:00:00";
 		$fin=$date." 23:59:59";
 
-		$query = "SELECT DISTINCT glpi_reservation_item.ID FROM glpi_reservation_item INNER JOIN glpi_reservation_resa ON (glpi_reservation_item.ID = glpi_reservation_resa.id_item )".
-			" WHERE active='1' AND '".$debut."' < end AND '".$fin."' > begin ORDER BY begin";
+		$query = "SELECT DISTINCT glpi_reservation_item.ID 
+			FROM glpi_reservation_item 
+			INNER JOIN glpi_reservation_resa ON (glpi_reservation_item.ID = glpi_reservation_resa.id_item )
+			WHERE active='1' AND '".$debut."' < end AND '".$fin."' > begin 
+			ORDER BY begin";
 //		echo $query;
 		$result=$DB->query($query);
 
@@ -426,7 +429,8 @@ function printReservationItem($target,$ID,$date){
 	$debut=$date." 00:00:00";
 	$fin=$date." 23:59:59";
 	$query = "SELECT * FROM glpi_reservation_resa".
-		" WHERE '".$debut."' < end AND '".$fin."' > begin AND id_item=$ID ORDER BY begin";
+		" WHERE '".$debut."' < end AND '".$fin."' > begin AND id_item='$ID' 
+		ORDER BY begin";
 	//		echo $query."<br>";
 	if ($result=$DB->query($query)){
 		if ($DB->numrows($result)>0){
@@ -487,9 +491,11 @@ function printReservationItems($target){
 	foreach ($CFG_GLPI["reservation_types"] as $type){
 		$ci->setType($type);
 		$query="SELECT glpi_reservation_item.ID as ID, glpi_reservation_item.comments as comments, 
-				".$LINK_ID_TABLE[$type].".name as name, ".$LINK_ID_TABLE[$type].".FK_entities as FK_entities, glpi_dropdown_locations.completename as location, glpi_reservation_item.id_device as id_device	
+				".$LINK_ID_TABLE[$type].".name as name, ".$LINK_ID_TABLE[$type].".FK_entities as FK_entities,
+				 glpi_dropdown_locations.completename as location, glpi_reservation_item.id_device as id_device	
 			FROM glpi_reservation_item 
-			INNER JOIN ".$LINK_ID_TABLE[$type]." ON (glpi_reservation_item.device_type='$type' AND glpi_reservation_item.id_device=".$LINK_ID_TABLE[$type].".ID)
+			INNER JOIN ".$LINK_ID_TABLE[$type]." ON (glpi_reservation_item.device_type='$type' 
+								AND glpi_reservation_item.id_device=".$LINK_ID_TABLE[$type].".ID)
 			LEFT JOIN glpi_dropdown_locations ON (".$LINK_ID_TABLE[$type].".location = glpi_dropdown_locations.ID)
 			WHERE glpi_reservation_item.active='1' AND ".$LINK_ID_TABLE[$type].".deleted ='0' ".getEntitiesRestrictRequest("AND",$LINK_ID_TABLE[$type])." ORDER BY ".$LINK_ID_TABLE[$type].".FK_entities, ".$LINK_ID_TABLE[$type].".name";
 

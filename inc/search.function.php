@@ -111,9 +111,10 @@ function manageGetValuesInSearch($type=0,$usesession=true,$save=true){
 
 	// First view of the page : try to load a bookmark
 	if ($usesession && !isset($_SESSION['glpisearch'][$type])){
-		$query="SELECT FK_bookmark FROM glpi_display_default 
-				WHERE FK_users='".$_SESSION['glpiID']."'
-					AND device_type='$type';";
+		$query="SELECT FK_bookmark 
+			FROM glpi_display_default 
+			WHERE FK_users='".$_SESSION['glpiID']."'
+				AND device_type='$type';";
 		if ($result=$DB->query($query)){
 			if ($DB->numrows($result)>0){
 				$IDtoload=$DB->result($result,0,0);
@@ -538,11 +539,17 @@ function showList ($type,$params){
 	$toview=addDefaultToView($type);
 
 	// Add default items
-	$query="SELECT * FROM glpi_display WHERE type='$type' AND FK_users='".$_SESSION["glpiID"]."' ORDER by rank";
+	$query="SELECT * 
+		FROM glpi_display 
+		WHERE type='$type' AND FK_users='".$_SESSION["glpiID"]."' 
+		ORDER BY rank";
 	$result=$DB->query($query);
 	// GET default serach options
 	if ($DB->numrows($result)==0){
-		$query="SELECT * FROM glpi_display WHERE type='$type' AND FK_users='0' ORDER by rank";
+		$query="SELECT * 
+			FROM glpi_display 
+			WHERE type='$type' AND FK_users='0' 
+			ORDER BY rank";
 		$result=$DB->query($query);
 	}
 

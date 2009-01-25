@@ -92,7 +92,7 @@ class OcsRuleCollection extends RuleCollection {
 		//Remove all the non duplicated table names
 		$tables = array_unique($tables);
 		foreach ($tables as $table) {
-			$from_sql .= ($from_sql != "" ? " , " : "") . $table;
+			$from_sql .= ($from_sql != "" ? " , " : "") ."`".$table."`";
 		}
 
 		//Build the WHERE part of the request
@@ -102,7 +102,7 @@ class OcsRuleCollection extends RuleCollection {
 
 		if ($select_sql != "" && $from_sql != "" && $where_sql != "") {
 			//Build the all request
-			$sql = $begin_sql . $select_sql . " FROM " . $from_sql . " WHERE " . $where_sql . " AND hardware.ID=" . $computer_id;
+			$sql = $begin_sql . $select_sql . " FROM " . $from_sql . " WHERE " . $where_sql . " AND hardware.ID='".$computer_id."'";
 		
 			checkOCSconnection($this->ocs_server_id);
 			$result = $DBocs->query($sql);
@@ -336,7 +336,10 @@ function getRulesByID($ID, $withcriterias, $withactions) {
 
 
 	//Get all the rules whose sub_type is $sub_type and entity is $ID
-	$sql="SELECT * FROM `glpi_rules_actions` as gra, glpi_rules_descriptions as grd  WHERE gra.FK_rules=grd.ID AND gra.field='FK_entities'  and grd.sub_type=".$this->sub_type." and gra.value='".$ID."'";
+	$sql="SELECT * 
+		FROM `glpi_rules_actions` as gra, glpi_rules_descriptions as grd  
+		WHERE gra.FK_rules=grd.ID AND gra.field='FK_entities'  
+		AND grd.sub_type='".$this->sub_type."' AND gra.value='".$ID."'";
 	
 	$result = $DB->query($sql);
 	while ($rule = $DB->fetch_array($result)) {
