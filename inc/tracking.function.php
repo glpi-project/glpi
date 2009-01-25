@@ -171,8 +171,8 @@ function showCentralJobList($target,$start,$status="process",$showgrouptickets=t
 	$search_assign="assign = '".$_SESSION["glpiID"]."'";
 	if ($showgrouptickets){
 		if (count($_SESSION['glpigroups'])){
-			$groups=implode(",",$_SESSION['glpigroups']);
-			$search_assign.= " OR assign_group IN ($groups) ";
+			$groups=implode("','",$_SESSION['glpigroups']);
+			$search_assign.= " OR assign_group IN ('$groups') ";
 		}
 	}
 
@@ -197,7 +197,7 @@ function showCentralJobList($target,$start,$status="process",$showgrouptickets=t
 		}
 	}
 
-	$lim_query = " LIMIT ".$start.",".$_SESSION['glpilist_limit'];	
+	$lim_query = " LIMIT ".intval($start).",".intval($_SESSION['glpilist_limit']);	
 
 	$result = $DB->query($query);
 	$numrows = $DB->numrows($result);
@@ -299,7 +299,7 @@ function showJobListForItem($item_type,$item) {
 	$query = "SELECT ".getCommonSelectForTrackingSearch()." 
 			FROM glpi_tracking ".getCommonLeftJoinForTrackingSearch()." 
 			WHERE (computer = '$item' and device_type= '$item_type') 
-				ORDER BY glpi_tracking.date_mod DESC LIMIT ".$_SESSION['glpilist_limit'];
+				ORDER BY glpi_tracking.date_mod DESC LIMIT ".intval($_SESSION['glpilist_limit']);
 
 	$result = $DB->query($query);
 
@@ -366,7 +366,7 @@ function showJobListForEnterprise($entID) {
 	$query = "SELECT ".getCommonSelectForTrackingSearch()." 
 			FROM glpi_tracking ".getCommonLeftJoinForTrackingSearch()." 
 			WHERE (assign_ent = '$entID') 
-				ORDER BY glpi_tracking.date_mod DESC LIMIT ".$_SESSION['glpilist_limit'];
+				ORDER BY glpi_tracking.date_mod DESC LIMIT ".intval($_SESSION['glpilist_limit']);
 
 	$result = $DB->query($query);
 
@@ -417,7 +417,7 @@ function showJobListForUser($userID) {
 	$query = "SELECT ".getCommonSelectForTrackingSearch()." 
 			FROM glpi_tracking ".getCommonLeftJoinForTrackingSearch()." 
 			WHERE (author = '$userID') 
-				ORDER BY glpi_tracking.date_mod DESC LIMIT ".$_SESSION['glpilist_limit'];
+				ORDER BY glpi_tracking.date_mod DESC LIMIT ".intval($_SESSION['glpilist_limit']);
 
 	$result = $DB->query($query);
 
@@ -1488,22 +1488,22 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$to
 	if (!empty($datemod2)) $where.=" AND glpi_tracking.date_mod <= adddate( '". $datemod2 ."' , INTERVAL 1 DAY ) ";
 
 	if ($recipient!=0)
-		$where.=" AND glpi_tracking.recipient=$recipient";	
+		$where.=" AND glpi_tracking.recipient='$recipient'";	
 
 
 	if ($type!=0)
-		$where.=" AND glpi_tracking.device_type=$type";	
+		$where.=" AND glpi_tracking.device_type='$type";	
 
 	if ($item!=0&&$type!=0)
-		$where.=" AND glpi_tracking.computer = $item";	
+		$where.=" AND glpi_tracking.computer = '$item'";	
 
 	$search_author=false;
-	if ($group>0) $where.=" AND glpi_tracking.FK_group = $group";
+	if ($group>0) $where.=" AND glpi_tracking.FK_group = '$group'";
 	else if ($group==-1&&$author!=0&&haveRight("show_group_ticket",1)){
 		// Get Author group's
 		if (count($_SESSION["glpigroups"])){
-			$groups=implode(",",$_SESSION['glpigroups']);
-			$where.=" AND ( glpi_tracking.FK_group IN ($groups) ";
+			$groups=implode("','",$_SESSION['glpigroups']);
+			$where.=" AND ( glpi_tracking.FK_group IN ('$groups') ";
 
 			if ($author!=0) {
 				$where.=" OR ";
@@ -1526,10 +1526,10 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$to
 		$search_assign=" glpi_tracking.assign = '".$_SESSION["glpiID"]."' ";
 		if (count($_SESSION['glpigroups'])){
 			if ($assign_group>0){
-				$search_assign.= " OR glpi_tracking.assign_group = $assign_group ";
+				$search_assign.= " OR glpi_tracking.assign_group = '$assign_group' ";
 			} else {
-				$groups=implode(",",$_SESSION['glpigroups']);
-				$search_assign.= " OR glpi_tracking.assign_group IN ($groups) ";
+				$groups=implode("','",$_SESSION['glpigroups']);
+				$search_assign.= " OR glpi_tracking.assign_group IN ('$groups') ";
 			}
 		}
 
@@ -1540,8 +1540,8 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$to
 
 			// Get Author group's
 			if (haveRight("show_group_ticket",1)&&count($_SESSION["glpigroups"])){
-				$groups=implode(",",$_SESSION['glpigroups']);
-				$author_part.=" OR glpi_tracking.FK_group IN ($groups) ";
+				$groups=implode("','",$_SESSION['glpigroups']);
+				$author_part.=" OR glpi_tracking.FK_group IN ('$groups') ";
 	
 			}
 		}
@@ -1630,7 +1630,7 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$to
 		$order=getTrackingOrderPrefs($_SESSION["glpiID"]);
 
 
-	$query=$SELECT.$FROM.$where." ORDER BY $sort $order";
+	$query=$SELECT.$FROM.$where." ORDER BY '$sort' $order";
 	//echo $query;
 	// Get it from database	
 	if ($result = $DB->query($query)) {
@@ -2167,7 +2167,9 @@ function showJobDetails ($target,$ID){
 
 
 		// File associated ?
-		$query2 = "SELECT * FROM glpi_doc_device WHERE glpi_doc_device.FK_device = '".$job->fields["ID"]."' AND glpi_doc_device.device_type = '".TRACKING_TYPE."' ";
+		$query2 = "SELECT * 
+			FROM glpi_doc_device 
+			WHERE glpi_doc_device.FK_device = '".$job->fields["ID"]."' AND glpi_doc_device.device_type = '".TRACKING_TYPE."' ";
 		$result2 = $DB->query($query2);
 		$numfiles=$DB->numrows($result2);
 		echo "<table width='100%'><tr><th colspan='2'>".$LANG["document"][21]."</th></tr>";			
@@ -2244,7 +2246,7 @@ function showFollowupsSummary($tID){
 	$RESTRICT="";
 	if (!$showprivate)  $RESTRICT=" AND ( private='0' OR author ='".$_SESSION["glpiID"]."' ) ";
 
-	$query = "SELECT * FROM glpi_followups WHERE (tracking = $tID) $RESTRICT ORDER BY date DESC";
+	$query = "SELECT * FROM glpi_followups WHERE (tracking = '$tID') $RESTRICT ORDER BY date DESC";
 	$result=$DB->query($query);
 	
 	$rand=mt_rand();
@@ -2298,7 +2300,9 @@ function showFollowupsSummary($tID){
 				echo "$minute ".$LANG["job"][22]."</td>";
 
 			echo "<td>";
-			$query2="SELECT * from glpi_tracking_planning WHERE id_followup='".$data['ID']."'";
+			$query2="SELECT * 
+				FROM glpi_tracking_planning 
+				WHERE id_followup='".$data['ID']."'";
 			$result2=$DB->query($query2);
 			if ($DB->numrows($result2)==0){
 				echo $LANG["job"][32];	
@@ -2567,7 +2571,9 @@ function showUpdateFollowupForm($ID){
 		echo "<td>".$LANG["job"][35]."</td>";
 		echo "<td>";
 
-		$query2="SELECT * from glpi_tracking_planning WHERE id_followup='".$fup->fields['ID']."'";
+		$query2="SELECT * 
+			FROM glpi_tracking_planning 
+			WHERE id_followup='".$fup->fields['ID']."'";
 		$result2=$DB->query($query2);
 		if ($DB->numrows($result2)==0){
 			if ($commentall){

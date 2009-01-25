@@ -210,7 +210,10 @@ class ReservationResa extends CommonDBTM {
 			$ID_where=" (ID <> '".$this->fields["ID"]."') AND ";
 
 		$query = "SELECT * FROM glpi_reservation_resa".
-			" WHERE $ID_where (id_item = '".$this->fields["id_item"]."') AND ( ('".$this->fields["begin"]."' < begin AND '".$this->fields["end"]."' > begin) OR ('".$this->fields["begin"]."' < end AND '".$this->fields["end"]."' >= end) OR ('".$this->fields["begin"]."' >= begin AND '".$this->fields["end"]."' < end))";
+			" WHERE $ID_where (id_item = '".$this->fields["id_item"]."') 
+				AND ( ('".$this->fields["begin"]."' < begin AND '".$this->fields["end"]."' > begin) 
+					OR ('".$this->fields["begin"]."' < end AND '".$this->fields["end"]."' >= end) 
+					OR ('".$this->fields["begin"]."' >= begin AND '".$this->fields["end"]."' < end))";
 		//		echo $query."<br>";
 		if ($result=$DB->query($query)){
 			return ($DB->numrows($result)>0);

@@ -137,7 +137,7 @@ class Software extends CommonDBTM {
 			}
 	
 			// ADD Contract				
-			$query = "SELECT FK_contract from glpi_contract_device WHERE FK_device='" . $input["_oldID"] . "' AND device_type='" . SOFTWARE_TYPE . "';";
+			$query = "SELECT FK_contract FROM glpi_contract_device WHERE FK_device='" . $input["_oldID"] . "' AND device_type='" . SOFTWARE_TYPE . "';";
 			$result = $DB->query($query);
 			if ($DB->numrows($result) > 0) {
 	
@@ -146,7 +146,7 @@ class Software extends CommonDBTM {
 			}
 	
 			// ADD Documents			
-			$query = "SELECT FK_doc from glpi_doc_device WHERE FK_device='" . $input["_oldID"] . "' AND device_type='" . SOFTWARE_TYPE . "';";
+			$query = "SELECT FK_doc FROM glpi_doc_device WHERE FK_device='" . $input["_oldID"] . "' AND device_type='" . SOFTWARE_TYPE . "';";
 			$result = $DB->query($query);
 			if ($DB->numrows($result) > 0) {
 	
@@ -404,7 +404,7 @@ class Software extends CommonDBTM {
 	*/
 	function countInstallations() {
 		global $DB;
-		$query = "SELECT * FROM glpi_inst_software WHERE (sID = " . $this->fields["ID"] . ")";
+		$query = "SELECT * FROM glpi_inst_software WHERE (sID = '".$this->fields["ID"]."')";
 		if ($result = $DB->query($query)) {
 			$number = $DB->numrows($result);
 			return $number;

@@ -100,7 +100,7 @@ function getStatsItems($date1,$date2,$type){
 		$device_table = getDeviceTable($type);
 
 		//select devices IDs (table row)
-		$query = "select ID, designation from ".$device_table." order by designation";
+		$query = "SELECT ID, designation FROM ".$device_table." ORDER BY designation";
 		$result = $DB->query($query);
 
 		if($DB->numrows($result) >=1) {
@@ -602,9 +602,9 @@ function constructEntryValues($type,$begin="",$end="",$param="",$value="",$value
 		case "category":
 			if (!empty($value)){
 				$categories=getSonsOfTreeItem("glpi_dropdown_tracking_category",$value);
-				$condition=implode(",",$categories);
+				$condition=implode("','",$categories);
 	
-				$WHERE.=" AND glpi_tracking.category IN ($condition)";
+				$WHERE.=" AND glpi_tracking.category IN ('$condition')";
 			} else {
 				$WHERE.=" AND glpi_tracking.category = '$value' ";
 			}

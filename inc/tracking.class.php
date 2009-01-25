@@ -754,7 +754,7 @@ class Job extends CommonDBTM{
 		$RESTRICT="";
 		if ($with_private!=1) $RESTRICT = " AND private='0'";
 		// Set number of followups
-		$query = "SELECT count(*) FROM glpi_followups WHERE tracking = ".$this->fields["ID"]." $RESTRICT";
+		$query = "SELECT count(*) FROM glpi_followups WHERE tracking = '".$this->fields["ID"]."' $RESTRICT";
 		$result = $DB->query($query);
 		return $DB->result($result,0,0);
 
@@ -821,7 +821,7 @@ class Job extends CommonDBTM{
 							$message .= "<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$LANG["mailing"][104].":</span> ".getRealtime($fup->fields["realtime"])."\n";
 
 						$message.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$LANG["mailing"][25]."</span> ";
-						$query2="SELECT * from glpi_tracking_planning WHERE id_followup='".$data['ID']."'";
+						$query2="SELECT * FROM glpi_tracking_planning WHERE id_followup='".$data['ID']."'";
 						$result2=$DB->query($query2);
 						if ($DB->numrows($result2)==0)
 							$message.=$LANG["job"][32]."\n";
@@ -847,7 +847,7 @@ class Job extends CommonDBTM{
 							$message .= $LANG["mailing"][104].": ".getRealtime($fup->fields["realtime"])."\n";
 
 						$message.=$LANG["mailing"][25]." ";
-						$query2="SELECT * from glpi_tracking_planning WHERE id_followup='".$data['ID']."'";
+						$query2="SELECT * FROM glpi_tracking_planning WHERE id_followup='".$data['ID']."'";
 						$result2=$DB->query($query2);
 						if ($DB->numrows($result2)==0)
 							$message.=$LANG["job"][32]."\n";
