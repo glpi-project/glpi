@@ -562,7 +562,11 @@ function getDocumentLink($filename,$params=""){
  * @param name filename to clean
  **/
 function cleanFilenameDocument($name){
-	return preg_replace("/[^a-zA-Z0-9\-_\.]/","_",$name);
+	// See http://en.wikipedia.org/wiki/Filename
+	$bad_chars = array("'", "\\", ' ', '/', ':', '*', '?', '"', '<', '>', '|');
+	$name = str_replace($bad_chars, '_', $name);
+	$name = preg_replace("/%(\w{2})/", '_', $name);
+	return preg_replace("/\\x00-\\x1f/u", '_', $name);
 }
 
 /**
