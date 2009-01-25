@@ -531,8 +531,11 @@ function initEntityProfiles($userID) {
 
 //	$profile = new Profile;
 
-	$query = "SELECT DISTINCT glpi_profiles.* FROM glpi_users_profiles INNER JOIN glpi_profiles ON (glpi_users_profiles.FK_profiles = glpi_profiles.ID)
-					WHERE glpi_users_profiles.FK_users='$userID' ORDER BY glpi_profiles.name";
+	$query = "SELECT DISTINCT glpi_profiles.* 
+		FROM glpi_users_profiles 
+			INNER JOIN glpi_profiles ON (glpi_users_profiles.FK_profiles = glpi_profiles.ID)
+		WHERE glpi_users_profiles.FK_users='$userID' 
+		ORDER BY glpi_profiles.name";
 	$result = $DB->query($query);
 	$_SESSION['glpiprofiles'] = array ();
 	if ($DB->numrows($result)) {
@@ -544,8 +547,12 @@ function initEntityProfiles($userID) {
 		}
 
 		foreach ($_SESSION['glpiprofiles'] as $key => $tab) {
-			$query2 = "SELECT glpi_users_profiles.FK_entities as eID, glpi_users_profiles.ID as kID, glpi_users_profiles.recursive as recursive, glpi_entities.* FROM glpi_users_profiles LEFT JOIN glpi_entities ON (glpi_users_profiles.FK_entities = glpi_entities.ID)
-													WHERE glpi_users_profiles.FK_profiles='$key' AND glpi_users_profiles.FK_users='$userID' ORDER BY glpi_entities.completename";
+			$query2 = "SELECT glpi_users_profiles.FK_entities as eID, glpi_users_profiles.ID as kID, 
+					glpi_users_profiles.recursive as recursive, glpi_entities.* 
+				FROM glpi_users_profiles 
+				LEFT JOIN glpi_entities ON (glpi_users_profiles.FK_entities = glpi_entities.ID)
+				WHERE glpi_users_profiles.FK_profiles='$key' AND glpi_users_profiles.FK_users='$userID' 
+				ORDER BY glpi_entities.completename";
 			$result2 = $DB->query($query2);
 			if ($DB->numrows($result2)) {
 				while ($data = $DB->fetch_array($result2)) {
@@ -666,10 +673,13 @@ function changeActiveEntities($ID="all",$recursive=false) {
 
 	if (count($newentities)>0){
 		$_SESSION['glpiactiveentities']=$newentities;
-		$_SESSION['glpiactiveentities_string']=implode(',',$newentities);
+		$_SESSION['glpiactiveentities_string']="'".implode("','",$newentities)."'";
 		$active = reset($newentities);
 		$_SESSION['glpiparententities']=$ancestors;
-		$_SESSION['glpiparententities_string']=implode(',',$ancestors);
+		$_SESSION['glpiparententities_string']=implode("','",$ancestors);
+		if (!empty($_SESSION['glpiparententities_string'])){
+			$_SESSION['glpiparententities_string']="'".$_SESSION['glpiparententities_string']."'";
+		}
 		// Active entity loading
 		
 		$_SESSION["glpiactive_entity"] = $active;
@@ -715,7 +725,10 @@ function loadGroups() {
 
 	$_SESSION["glpigroups"] = array ();
 
-	$query_gp = "SELECT FK_groups FROM glpi_users_groups LEFT JOIN glpi_groups ON (glpi_users_groups.FK_groups = glpi_groups.ID) WHERE glpi_users_groups.FK_users='" . $_SESSION['glpiID'] . "' " .
+	$query_gp = "SELECT FK_groups 
+			FROM glpi_users_groups 
+			LEFT JOIN glpi_groups ON (glpi_users_groups.FK_groups = glpi_groups.ID) 
+			WHERE glpi_users_groups.FK_users='" . $_SESSION['glpiID'] . "' " .
 			getEntitiesRestrictRequest(" AND ","glpi_groups","FK_entities",$_SESSION['glpiactiveentities'],true);
 
 	$result_gp = $DB->query($query_gp);
@@ -837,7 +850,7 @@ function getEntitiesRestrictRequest($separator = "AND", $table = "", $field = ""
 	$query.=$field;
 
 	if (is_array($value)){
-		$query .= " IN (" . implode(",",$value) . ") ";
+		$query .= " IN ('" . implode("','",$value) . "') ";
 	} else {
 		if (strlen($value)==0){
 			$query.=" IN (".$_SESSION['glpiactiveentities_string'].") ";
@@ -861,9 +874,9 @@ function getEntitiesRestrictRequest($separator = "AND", $table = "", $field = ""
 		
 		if (count($ancestors)){
 			if ($table=='glpi_entities') {
-				$query.=" OR $table.$field IN (" . implode(",",$ancestors) . ")";
+				$query.=" OR `$table`.`$field` IN ('" . implode("','",$ancestors) . "')";
 			} else {
-				$query.=" OR ( $table.recursive='1' AND $table.$field IN (" . implode(",",$ancestors) . "))";
+				$query.=" OR ( `$table`.`recursive`='1' AND `$table`.`$field` IN ('" . implode("','",$ancestors) . "'))";
 			}
 		}
 	}
@@ -1222,7 +1235,9 @@ function showReplicatesList($target,$master_id){
 
 	addNewReplicateForm($target, $master_id);
 	
-	$sql = "SELECT * FROM glpi_auth_ldap_replicate WHERE server_id=".$master_id." ORDER BY name";
+	$sql = "SELECT * FROM glpi_auth_ldap_replicate 
+		WHERE server_id='".$master_id."' 
+		ORDER BY name";
 	$result = $DB->query($sql);
 	if ($DB->numrows($result)>0){
 		echo "<br>";
@@ -1306,10 +1321,15 @@ function getAllReplicateForAMaster($master_id){
 	global $DB;
 	
 	$replicates = array();
-	$result = $DB->query("SELECT ID, ldap_host,ldap_port FROM glpi_auth_ldap_replicate WHERE server_id=".$master_id);
+	$query="SELECT ID, ldap_host, ldap_port 
+		FROM glpi_auth_ldap_replicate 
+		WHERE server_id='".$master_id."'";
+	$result = $DB->query($query);
 	if ($DB->numrows($result)>0){
 		while ($replicate = $DB->fetch_array($result)){
-			$replicates[] = array("ID"=>$replicate["ID"], "ldap_host"=>$replicate["ldap_host"], "ldap_port"=>$replicate["ldap_port"]);
+			$replicates[] = array("ID"=>$replicate["ID"], 
+					"ldap_host"=>$replicate["ldap_host"], 
+					"ldap_port"=>$replicate["ldap_port"]);
 		}
 	}
 	return $replicates;

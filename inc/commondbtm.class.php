@@ -92,7 +92,7 @@ class CommonDBTM {
 		// != 0 because 0 is consider as empty
 		if (strlen($ID)==0) return false;
 		
-		$query = "SELECT * FROM ".$this->table." WHERE (".$this->getIndexName()." = $ID)";
+		$query = "SELECT * FROM `".$this->table."` WHERE ".$this->getIndexName()." = '$ID'";
 		
 		if ($result = $DB->query($query)) {
 			if ($DB->numrows($result)==1){
@@ -115,16 +115,16 @@ class CommonDBTM {
 		// Make new database object and fill variables
 		global $DB;
 		
-		$query = "SELECT * FROM ".$this->table;
+		$query = "SELECT * FROM `".$this->table."`";
 		if (!empty($condition)){
 			$query.=" WHERE $condition";
 		}
 
 		if (!empty($order)){
-			$query.=" ORDER BY $order";
+			$query.=" ORDER BY `$order`";
 		}
 		if (!empty($limit)){
-			$query.=" LIMIT $limit";
+			$query.=" LIMIT ".intval($limit);
 		}
 	
 		$data=array();
@@ -241,7 +241,7 @@ class CommonDBTM {
 		if ($nb_fields>0){		
 
 			// Build query
-			$query = "INSERT INTO ".$this->table." (";
+			$query = "INSERT INTO `".$this->table."` (";
 			$i=0;
 			foreach ($this->fields as $key => $val) {
 				$fields[$i] = $key;
@@ -289,7 +289,7 @@ class CommonDBTM {
 	function restoreInDB($ID) {
 		global $DB,$CFG_GLPI;
 		if (in_array($this->table,$CFG_GLPI["deleted_tables"])){
-			$query = "UPDATE ".$this->table." SET deleted='0' WHERE (ID = '$ID')";
+			$query = "UPDATE `".$this->table."` SET deleted='0' WHERE (ID = '$ID')";
 			if ($result = $DB->query($query)) {
 				return true;
 			} else {
@@ -320,7 +320,7 @@ class CommonDBTM {
 
 			$this->cleanRelationData($ID);
 
-			$query = "DELETE from ".$this->table." WHERE ID = '$ID'";
+			$query = "DELETE FROM `".$this->table."` WHERE ID = '$ID'";
 
 			if ($result = $DB->query($query)) {
 				$this->post_deleteFromDB($ID);
@@ -330,7 +330,7 @@ class CommonDBTM {
 				return false;
 			}
 		}else {
-			$query = "UPDATE ".$this->table." SET deleted='1' WHERE ID = '$ID'";		
+			$query = "UPDATE `".$this->table."` SET deleted='1' WHERE ID = '$ID'";		
 			$this->cleanDBonMarkDeleted($ID);
 
 			if ($result = $DB->query($query)){
@@ -354,7 +354,8 @@ class CommonDBTM {
 	function cleanHistory($ID){
 		global $DB;
 		if ($this->dohistory){
-			$query = "DELETE FROM glpi_history WHERE ( device_type = '".$this->type."' AND FK_glpi_device = '$ID')";
+			$query = "DELETE FROM glpi_history 
+				WHERE ( device_type = '".$this->type."' AND FK_glpi_device = '$ID')";
 			$DB->query($query);
 		}
 	}
@@ -1209,9 +1210,9 @@ class CommonDBTM {
 		if ($ID<0 || !$this->fields['recursive']) {
 			return true;
 		}
-		$entities = "(".$this->fields['FK_entities'];
+		$entities = "('".$this->fields['FK_entities']."'";
 		foreach (getEntityAncestors($this->fields['FK_entities']) as $papa) {
-			$entities .= ",$papa";
+			$entities .= ",'$papa'";
 		}
 		$entities .= ")";
 
@@ -1223,12 +1224,12 @@ class CommonDBTM {
 					// 1->N Relation
 					if (is_array($field)) {
 						foreach ($field as $f) {
-							if (countElementsInTable($tablename, "$f=$ID AND FK_entities NOT IN $entities")>0) {
+							if (countElementsInTable($tablename, "`$f`='$ID' AND FK_entities NOT IN $entities")>0) {
 								return false;
 							}
 						}
 					} else {
-						if (countElementsInTable($tablename, "$field=$ID AND FK_entities NOT IN $entities")>0) {
+						if (countElementsInTable($tablename, "`$field`='$ID' AND FK_entities NOT IN $entities")>0) {
 							return false;
 						}
 					}
@@ -1242,7 +1243,7 @@ class CommonDBTM {
 							$devfield  = $rel[$tablename][0]; // FK_device, on_device, end1...
 							$typefield = $rel[$tablename][1]; // device_type, type, ...
 							
-							$sql = "SELECT DISTINCT $typefield AS type FROM $tablename WHERE $field=$ID";
+							$sql = "SELECT DISTINCT `$typefield` AS type FROM `$tablename` WHERE `$field`='$ID'";
 							$res = $DB->query($sql);
 							
 							// Search linked device of each type
@@ -1252,7 +1253,10 @@ class CommonDBTM {
 									in_array($device=$LINK_ID_TABLE[$type], $CFG_GLPI["specif_entities_tables"])) {
 
 									if (countElementsInTable("$tablename, $device", 
-										"$tablename.$field=$ID AND $tablename.$typefield=$type AND $tablename.$devfield=$device.ID AND $device.FK_entities NOT IN $entities")>0) {
+										"`$tablename`.`$field`='$ID' 
+										AND `$tablename`.`$typefield`='$type' 
+										AND `$tablename`.`$devfield`=`$device`.ID 
+										AND `$device`.FK_entities NOT IN $entities")>0) {
 											return false;											
 									}
 								}			
@@ -1265,13 +1269,19 @@ class CommonDBTM {
 
 							if (is_array($rel[$tablename])) {
 								foreach ($rel[$tablename] as $otherfield){
-									if (countElementsInTable("$tablename, $othertable", "$tablename.$field=$ID AND $tablename.$otherfield=$othertable.ID AND $othertable.FK_entities NOT IN $entities")>0) {
+									if (countElementsInTable("$tablename, $othertable",
+										"`$tablename`.`$field`='$ID' 
+										AND `$tablename`.`$otherfield`=`$othertable`.ID 
+										AND `$othertable`.FK_entities NOT IN $entities")>0) {
 										return false;
 									}
 								}
 							} else {
 								$otherfield = $rel[$tablename];							
-								if (countElementsInTable("$tablename, $othertable", "$tablename.$field=$ID AND $tablename.$otherfield=$othertable.ID AND $othertable.FK_entities NOT IN $entities")>0) {
+								if (countElementsInTable("$tablename, $othertable", 
+									"`$tablename`.`$field`=$ID 
+									AND `$tablename`.`$otherfield`=`$othertable`.ID 
+									AND `$othertable`.FK_entities NOT IN $entities")>0) {
 									return false;
 								}
 							}						

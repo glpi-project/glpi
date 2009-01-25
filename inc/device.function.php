@@ -326,7 +326,9 @@ function update_device_specif($newValue,$compDevID,$strict=false,$checkcoherence
 	global $DB;
 	
 		
-	$query ="SELECT * FROM glpi_computer_device WHERE ID = '".$compDevID."'";
+	$query ="SELECT * 
+		FROM glpi_computer_device 
+		WHERE ID = '".$compDevID."'";
 
 	if ($result = $DB->query($query)) {
 		if ($DB->numrows($result)){
@@ -376,7 +378,10 @@ function update_device_specif($newValue,$compDevID,$strict=false,$checkcoherence
 			if( $condition){
 				
 				// Update specificity 
-				$WHERE=" WHERE FK_device = '".$data["FK_device"]."' AND FK_computers = '".$data["FK_computers"]."' AND device_type = '".$data["device_type"]."'  AND specificity='".$data["specificity"]."'";
+				$WHERE=" WHERE FK_device = '".$data["FK_device"]."' 
+					AND FK_computers = '".$data["FK_computers"]."' 
+					AND device_type = '".$data["device_type"]."'  
+					AND specificity='".$data["specificity"]."'";
 				if ($strict) $WHERE=" WHERE ID='$compDevID'";
 				
 				$query2 = "UPDATE glpi_computer_device SET specificity = '".$newValue."' $WHERE";
@@ -404,11 +409,16 @@ function update_device_specif($newValue,$compDevID,$strict=false,$checkcoherence
 function update_device_quantity($newNumber,$compDevID){
 	// Check old value for history 
 	global $DB;
-	$query ="SELECT * FROM glpi_computer_device WHERE ID = '".$compDevID."'";
+	$query ="SELECT * 
+		FROM glpi_computer_device 
+		WHERE ID = '".$compDevID."'";
 	if ($result = $DB->query($query)) {
 		$data = addslashes_deep($DB->fetch_array($result));
 
-		$query2 = "SELECT ID FROM glpi_computer_device WHERE FK_device = '".$data["FK_device"]."' AND FK_computers = '".$data["FK_computers"]."' AND device_type = '".$data["device_type"]."' AND specificity='".$data["specificity"]."'";
+		$query2 = "SELECT ID 
+			FROM glpi_computer_device 
+			WHERE FK_device = '".$data["FK_device"]."' AND FK_computers = '".$data["FK_computers"]."' 
+				AND device_type = '".$data["device_type"]."' AND specificity='".$data["specificity"]."'";
 		if ($result2 = $DB->query($query2)) {
 
 			// Delete devices
@@ -441,7 +451,9 @@ function unlink_device_computer($compDevID,$dohistory=1){
 
 	// get old value  and id for history 
 	global $DB;
-	$query ="SELECT * FROM glpi_computer_device WHERE ID = '".$compDevID."'";
+	$query ="SELECT * 
+		FROM glpi_computer_device 
+		WHERE ID = '".$compDevID."'";
 	if ($result = $DB->query($query)) {
 		$data = $DB->fetch_array($result);
 	} 
@@ -506,7 +518,8 @@ function showDevicesList($device_type,$target) {
 	global $DB,$CFG_GLPI, $LANG;
 
 
-	$query = "select device.ID, device.designation, glpi_dropdown_manufacturer.name as manufacturer FROM ".getDeviceTable($device_type)." as device ";
+	$query = "SELECT device.ID, device.designation, glpi_dropdown_manufacturer.name as manufacturer 
+		FROM ".getDeviceTable($device_type)." as device ";
 	$query.= " LEFT JOIN glpi_dropdown_manufacturer ON (glpi_dropdown_manufacturer.ID = device.FK_glpi_enterprise ) ";
 	$query .= " ORDER by device.designation ASC";
 	

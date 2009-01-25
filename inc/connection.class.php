@@ -101,7 +101,7 @@ class Connection {
 
 		global $DB;
 
-		$query = "DELETE from glpi_connect_wire WHERE (ID = '$ID')";
+		$query = "DELETE FROM glpi_connect_wire WHERE (ID = '$ID')";
 		if ($result = $DB->query($query)) {
 			return true;
 		} else {

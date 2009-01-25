@@ -109,7 +109,11 @@ class Computer extends CommonDBTM {
 		global $DB;
 
 		if ($this->getFromDB($ID)){
-			$query = "SELECT count(*) AS NB, ID, device_type, FK_device, specificity FROM glpi_computer_device WHERE FK_computers = '$ID' GROUP BY device_type, FK_device, specificity ORDER BY device_type, ID";
+			$query = "SELECT count(*) AS NB, ID, device_type, FK_device, specificity 
+				FROM glpi_computer_device 
+				WHERE FK_computers = '$ID' 
+				GROUP BY device_type, FK_device, specificity 
+				ORDER BY device_type, ID";
 			if ($result = $DB->query($query)) {
 				if ($DB->numrows($result)>0) {
 					$i = 0;
@@ -134,7 +138,9 @@ class Computer extends CommonDBTM {
 		}
 
 		if (isset($input["_auto_update_ocs"])){
-			$query="UPDATE glpi_ocs_link SET auto_update='".$input["_auto_update_ocs"]."' 	WHERE glpi_id='".$input["ID"]."'";
+			$query="UPDATE glpi_ocs_link 
+				SET auto_update='".$input["_auto_update_ocs"]."' 
+				WHERE glpi_id='".$input["ID"]."'";
 			$DB->query($query);
 		}
 
@@ -150,7 +156,9 @@ class Computer extends CommonDBTM {
 				$updates3[1]="contact_num";
 
 				foreach ($items as $t){
-					$query = "SELECT * from glpi_connect_wire WHERE end2='".$this->fields["ID"]."' AND type='".$t."'";
+					$query = "SELECT * 
+						FROM glpi_connect_wire 
+						WHERE end2='".$this->fields["ID"]."' AND type='".$t."'";
 					if ($result=$DB->query($query)) {
 						$resultnum = $DB->numrows($result);
 						if ($resultnum>0) {
@@ -186,7 +194,9 @@ class Computer extends CommonDBTM {
 				$updates4[1]="FK_groups";
 
 				foreach ($items as $t){
-					$query = "SELECT * from glpi_connect_wire WHERE end2='".$this->fields["ID"]."' AND type='".$t."'";
+					$query = "SELECT * 
+						FROM glpi_connect_wire 
+						WHERE end2='".$this->fields["ID"]."' AND type='".$t."'";
 
 					if ($result=$DB->query($query)) {
 						$resultnum = $DB->numrows($result);
@@ -226,7 +236,9 @@ class Computer extends CommonDBTM {
 				$update_done=false;
 
 				foreach ($items as $t){
-					$query = "SELECT * from glpi_connect_wire WHERE end2='".$this->fields["ID"]."' AND type='".$t."'";
+					$query = "SELECT * 
+						FROM glpi_connect_wire 
+						WHERE end2='".$this->fields["ID"]."' AND type='".$t."'";
 
 					if ($result=$DB->query($query)) {
 						$resultnum = $DB->numrows($result);
@@ -263,7 +275,9 @@ class Computer extends CommonDBTM {
 				$updates2[0]="location";
 
 				foreach ($items as $t){
-					$query = "SELECT * from glpi_connect_wire WHERE end2='".$this->fields["ID"]."' AND type='".$t."'";
+					$query = "SELECT * 
+						FROM glpi_connect_wire 
+						WHERE end2='".$this->fields["ID"]."' AND type='".$t."'";
 
 					if ($result=$DB->query($query)) {
 						$resultnum = $DB->numrows($result);
@@ -333,7 +347,9 @@ class Computer extends CommonDBTM {
 			}
 
        			// ADD volumes
-			$query="SELECT ID from glpi_computerdisks WHERE FK_computers='".$input["_oldID"]."'";
+			$query="SELECT ID 
+				FROM glpi_computerdisks 
+				WHERE FK_computers='".$input["_oldID"]."'";
 			$result=$DB->query($query);
 			if ($DB->numrows($result)>0){
 				while ($data=$DB->fetch_array($result)){
@@ -347,7 +363,9 @@ class Computer extends CommonDBTM {
 			}
 
 			// ADD software
-			$query="SELECT vID from glpi_inst_software WHERE cID='".$input["_oldID"]."'";
+			$query="SELECT vID 
+				FROM glpi_inst_software 
+				WHERE cID='".$input["_oldID"]."'";
 			$result=$DB->query($query);
 			if ($DB->numrows($result)>0){
 				while ($data=$DB->fetch_array($result))
@@ -355,7 +373,9 @@ class Computer extends CommonDBTM {
 			}
 
 			// ADD Contract
-			$query="SELECT FK_contract from glpi_contract_device WHERE FK_device='".$input["_oldID"]."' AND device_type='".COMPUTER_TYPE."';";
+			$query="SELECT FK_contract 
+				FROM glpi_contract_device 
+				WHERE FK_device='".$input["_oldID"]."' AND device_type='".COMPUTER_TYPE."';";
 			$result=$DB->query($query);
 			if ($DB->numrows($result)>0){
 				while ($data=$DB->fetch_array($result))
@@ -363,7 +383,9 @@ class Computer extends CommonDBTM {
 			}
 
 			// ADD Documents
-			$query="SELECT FK_doc from glpi_doc_device WHERE FK_device='".$input["_oldID"]."' AND device_type='".COMPUTER_TYPE."';";
+			$query="SELECT FK_doc 
+				FROM glpi_doc_device 
+				WHERE FK_device='".$input["_oldID"]."' AND device_type='".COMPUTER_TYPE."';";
 			$result=$DB->query($query);
 			if ($DB->numrows($result)>0){
 				while ($data=$DB->fetch_array($result))
@@ -371,7 +393,9 @@ class Computer extends CommonDBTM {
 			}
 
 			// ADD Ports
-			$query="SELECT ID from glpi_networking_ports WHERE on_device='".$input["_oldID"]."' AND device_type='".COMPUTER_TYPE."';";
+			$query="SELECT ID 
+				FROM glpi_networking_ports 
+				WHERE on_device='".$input["_oldID"]."' AND device_type='".COMPUTER_TYPE."';";
 			$result=$DB->query($query);
 			if ($DB->numrows($result)>0){
 				while ($data=$DB->fetch_array($result)){
@@ -387,7 +411,9 @@ class Computer extends CommonDBTM {
 			}
 	
 			// Add connected devices
-			$query="SELECT * from glpi_connect_wire WHERE end2='".$input["_oldID"]."';";
+			$query="SELECT * 
+				FROM glpi_connect_wire 
+				WHERE end2='".$input["_oldID"]."';";
 	
 			$result=$DB->query($query);
 			if ($DB->numrows($result)>0){
@@ -404,13 +430,17 @@ class Computer extends CommonDBTM {
 
 		$job=new Job;
 
-		$query = "SELECT * FROM glpi_tracking WHERE (computer = '$ID'  AND device_type='".COMPUTER_TYPE."')";
+		$query = "SELECT * 
+			FROM glpi_tracking 
+			WHERE (computer = '$ID'  AND device_type='".COMPUTER_TYPE."')";
 		$result = $DB->query($query);
 
 		if ($DB->numrows($result))
 			while ($data=$DB->fetch_array($result)) {
 				if ($CFG_GLPI["keep_tracking_on_delete"]==1){
-					$query = "UPDATE glpi_tracking SET computer = '0', device_type='0' WHERE ID='".$data["ID"]."';";
+					$query = "UPDATE glpi_tracking 
+						SET computer = '0', device_type='0' 
+						WHERE ID='".$data["ID"]."';";
 					$DB->query($query);
 				} else $job->delete(array("ID"=>$data["ID"]));
 			}
@@ -449,7 +479,7 @@ class Computer extends CommonDBTM {
 		$query = "DELETE FROM glpi_registry WHERE (computer_id = '$ID')";
 		$result = $DB->query($query);
 
-		$query="select * from glpi_reservation_item where (device_type='".COMPUTER_TYPE."' and id_device='$ID')";
+		$query="SELECT * FROM glpi_reservation_item WHERE (device_type='".COMPUTER_TYPE."' AND id_device='$ID')";
 		if ($result = $DB->query($query)) {
 			if ($DB->numrows($result)>0) {
 				$rr=new ReservationItem();

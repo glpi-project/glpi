@@ -58,8 +58,9 @@ function showEnterpriseContact($instID) {
 	$contact=new Contact();
 	$canedit=$contact->can($instID,'w');
 
-	$query = "SELECT glpi_contact_enterprise.ID as ID, glpi_enterprises.ID as entID, glpi_enterprises.name as name, glpi_enterprises.website as website, glpi_enterprises.fax as fax, "
-		. " glpi_enterprises.phonenumber as phone, glpi_enterprises.type as type, glpi_enterprises.deleted as deleted, glpi_entities.ID AS entity"
+	$query = "SELECT glpi_contact_enterprise.ID as ID, glpi_enterprises.ID as entID, glpi_enterprises.name as name, 
+			glpi_enterprises.website as website, glpi_enterprises.fax as fax, glpi_enterprises.phonenumber as phone,
+			glpi_enterprises.type as type, glpi_enterprises.deleted as deleted, glpi_entities.ID AS entity"
 		. " FROM glpi_contact_enterprise, glpi_enterprises "
 		. " LEFT JOIN glpi_entities ON (glpi_entities.ID=glpi_enterprises.FK_entities) "
 		. " WHERE glpi_contact_enterprise.FK_contact = '$instID' AND glpi_contact_enterprise.FK_enterprise = glpi_enterprises.ID"

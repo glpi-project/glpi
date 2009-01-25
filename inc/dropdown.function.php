@@ -273,7 +273,7 @@ function dropdownNoValue($table,$myname,$value,$entity_restrict=-1) {
 
 	$where="";
 	if (in_array($table,$CFG_GLPI["specif_entities_tables"])){
-		$where.= "WHERE ".$table.".FK_entities='".$entity_restrict."'";
+		$where.= "WHERE `".$table."`.FK_entities='".$entity_restrict."'";
 	} 
 
 	if (in_array($table,$CFG_GLPI["deleted_tables"])){
@@ -301,10 +301,10 @@ function dropdownNoValue($table,$myname,$value,$entity_restrict=-1) {
 	$where.=" ID<>'$value' ";
 	
 	if (in_array($table,$CFG_GLPI["dropdowntree_tables"])){
-		$query = "SELECT ID, completename as name FROM $table $where  ORDER BY completename";
+		$query = "SELECT ID, completename as name FROM `$table` $where  ORDER BY completename";
 	}
 	else {
-		$query = "SELECT ID, name FROM $table $where AND ID<>'$value' ORDER BY name";
+		$query = "SELECT ID, name FROM `$table` $where AND ID<>'$value' ORDER BY name";
 	}
 	$result = $DB->query($query);
 
@@ -361,7 +361,7 @@ function dropdownUsersSelect ($count=true, $right="all", $entity_restrict=-1, $v
 		break;
 		default :
 			$joinprofile=true;
-			$where=" ( glpi_profiles.".$right."='1' AND glpi_profiles.interface='central' ";
+			$where=" ( glpi_profiles.`".$right."`='1' AND glpi_profiles.interface='central' ";
 			$where.=getEntitiesRestrictRequest("AND","glpi_users_profiles",'',$entity_restrict,1);
 			$where.=" ) ";
 			
@@ -563,7 +563,7 @@ function getDropdownName($table,$id,$withcomments=0) {
 		$name = "";
 		$comments = "";
 		if ($id){
-			$query = "SELECT * FROM ". $table ." WHERE ID = '". $id ."'";
+			$query = "SELECT * FROM `". $table ."` WHERE ID = '". $id ."'";
 			if ($result = $DB->query($query)){
 				if($DB->numrows($result) != 0) {
 					$data=$DB->fetch_assoc($result);
@@ -642,12 +642,12 @@ function getDropdownArrayNames($table,$ids) {
 			$field='completename';
 		}
 
-		$query="SELECT ID, $field FROM $table WHERE ID IN (";
+		$query="SELECT ID, `$field` FROM `$table` WHERE ID IN (";
 		$first=true;
 		foreach ($ids as $val){
 			if (!$first) $query.=",";
 			else $first=false;
-			$query.=$val;
+			$query.="'".$val."'";
 		}			
 		$query.=")";
 
@@ -683,7 +683,7 @@ function dropdownUsersTracking($myname,$value,$field,$display_comments=1) {
 		if ($CFG_GLPI["ajax_limit_count"]==0){
 			$use_ajax=true;
 		} else {
-			$query="SELECT COUNT(".$field.") FROM glpi_tracking ".getEntitiesRestrictRequest("WHERE","glpi_tracking");
+			$query="SELECT COUNT(`".$field."`) FROM glpi_tracking ".getEntitiesRestrictRequest("WHERE","glpi_tracking");
 			$result=$DB->query($query);
 			$nb=$DB->result($result,0,0);
 			if ($nb>$CFG_GLPI["ajax_limit_count"]){
@@ -935,7 +935,9 @@ function dropdownMyDevices($userID=0,$entity_restrict=-1){
 		// My items
 		foreach ($CFG_GLPI["linkuser_types"] as $type){
 			if ($_SESSION["glpiactiveprofile"]["helpdesk_hardware_type"]&pow(2,$type)){
-				$query="SELECT * FROM ".$LINK_ID_TABLE[$type]." WHERE FK_users='".$userID."' AND deleted='0' ";
+				$query="SELECT * 
+					FROM ".$LINK_ID_TABLE[$type]." 
+					WHERE FK_users='".$userID."' AND deleted='0' ";
 				if (in_array($LINK_ID_TABLE[$type],$CFG_GLPI["template_tables"])){
 					$query.=" AND is_template='0' ";
 				}
@@ -971,7 +973,10 @@ function dropdownMyDevices($userID=0,$entity_restrict=-1){
 		if (haveRight("show_group_hardware","1")){
 			$group_where="";
 			$groups=array();
-			$query="SELECT glpi_users_groups.FK_groups, glpi_groups.name FROM glpi_users_groups LEFT JOIN glpi_groups ON (glpi_groups.ID = glpi_users_groups.FK_groups) WHERE glpi_users_groups.FK_users='".$userID."' ";
+			$query="SELECT glpi_users_groups.FK_groups, glpi_groups.name 
+				FROM glpi_users_groups 
+				LEFT JOIN glpi_groups ON (glpi_groups.ID = glpi_users_groups.FK_groups) 
+				WHERE glpi_users_groups.FK_users='".$userID."' ";
 			$query.=getEntitiesRestrictRequest("AND","glpi_groups","",$entity_restrict);
 			$result=$DB->query($query);
 			$first=true;
@@ -987,7 +992,9 @@ function dropdownMyDevices($userID=0,$entity_restrict=-1){
 				foreach ($CFG_GLPI["linkuser_types"] as $type){
 					if ($_SESSION["glpiactiveprofile"]["helpdesk_hardware_type"]&pow(2,$type))
 					{
-						$query="SELECT * FROM ".$LINK_ID_TABLE[$type]." WHERE ($group_where) AND deleted='0' ";
+						$query="SELECT * 
+							FROM `".$LINK_ID_TABLE[$type]."` 
+							WHERE ($group_where) AND deleted='0' ";
 						$query.=getEntitiesRestrictRequest("AND",$LINK_ID_TABLE[$type],"",$entity_restrict);
 						$result=$DB->query($query);
 						if ($DB->numrows($result)>0){
@@ -1034,7 +1041,12 @@ function dropdownMyDevices($userID=0,$entity_restrict=-1){
 			foreach ($types as $type){
 				if ($_SESSION["glpiactiveprofile"]["helpdesk_hardware_type"]&pow(2,$type)){
 					if (!isset($already_add[$type])) $already_add[$type]=array();
-					$query="SELECT DISTINCT ".$LINK_ID_TABLE[$type].".* FROM glpi_connect_wire LEFT JOIN ".$LINK_ID_TABLE[$type]." ON (glpi_connect_wire.end1=".$LINK_ID_TABLE[$type].".ID) WHERE glpi_connect_wire.type='$type' AND  ".str_replace("XXXX","glpi_connect_wire.end2",$search_computer)." AND ".$LINK_ID_TABLE[$type].".deleted='0' ";
+					$query="SELECT DISTINCT ".$LINK_ID_TABLE[$type].".* 
+						FROM glpi_connect_wire 
+						LEFT JOIN ".$LINK_ID_TABLE[$type]." ON (glpi_connect_wire.end1=".$LINK_ID_TABLE[$type].".ID) 
+						WHERE glpi_connect_wire.type='$type' 
+							AND  ".str_replace("XXXX","glpi_connect_wire.end2",$search_computer)." 
+							AND ".$LINK_ID_TABLE[$type].".deleted='0' ";
 					if (in_array($LINK_ID_TABLE[$type],$CFG_GLPI["template_tables"])){
 						$query.=" AND is_template='0' ";
 					}
@@ -1068,7 +1080,8 @@ function dropdownMyDevices($userID=0,$entity_restrict=-1){
 				
 			// Software
 			if ($_SESSION["glpiactiveprofile"]["helpdesk_hardware_type"]&pow(2,SOFTWARE_TYPE)){
-				$query = "SELECT DISTINCT glpi_softwareversions.name as version, glpi_software.name as name, glpi_software.ID as ID FROM glpi_inst_software, glpi_software,glpi_softwareversions ";
+				$query = "SELECT DISTINCT glpi_softwareversions.name as version, glpi_software.name as name, 
+					glpi_software.ID as ID FROM glpi_inst_software, glpi_software,glpi_softwareversions ";
 				$query.= "WHERE glpi_inst_software.vID = glpi_softwareversions.ID AND glpi_softwareversions.sID = glpi_software.ID AND ".str_replace("XXXX","glpi_inst_software.cID",$search_computer)." AND  glpi_software.helpdesk_visible=1 ";
 				$query.=getEntitiesRestrictRequest("AND","glpi_software","",$entity_restrict);
 				$query.=" ORDER BY glpi_software.name";
@@ -1272,12 +1285,15 @@ function dropdownDocument($myname,$entity_restrict='',$used=array()) {
 	if (count($used)) {
 		$where .= " AND ID NOT IN (0";
 		foreach ($used as $ID)
-			$where .= ",$ID";
+			$where .= ",'$ID'";
 		$where .= ")";
 	}
 
 
-	$query="SELECT * FROM glpi_dropdown_rubdocs WHERE ID IN (SELECT DISTINCT rubrique FROM glpi_docs $where) ORDER BY name";
+	$query="SELECT * FROM glpi_dropdown_rubdocs 
+		WHERE ID IN (SELECT DISTINCT rubrique 
+				FROM glpi_docs $where) 
+		ORDER BY name";
 	//error_log($query);
 	$result=$DB->query($query);
 
@@ -2274,7 +2290,9 @@ function dropdownStateBehaviour ($name, $lib="", $value=0){
 		$elements["-1"]=$lib;	
 	}
 
-	$queryStateList = "SELECT ID,name from glpi_dropdown_state ORDER BY name";
+	$queryStateList = "SELECT ID,name 
+			FROM glpi_dropdown_state 
+			ORDER BY name";
 	$result = $DB->query($queryStateList);
 	if ($DB->numrows($result) > 0) {
 		while (($data = $DB->fetch_assoc($result))) {
@@ -2389,7 +2407,9 @@ function dropdownUnderProfiles($name,$value=''){
 
 	$prof=new Profile();
 
-	$query="SELECT * FROM glpi_profiles ".$prof->getUnderProfileRetrictRequest("WHERE")." ORDER BY name";
+	$query="SELECT * 
+		FROM glpi_profiles ".$prof->getUnderProfileRetrictRequest("WHERE")." 
+		ORDER BY name";
 
 	$res = $DB->query($query);
 

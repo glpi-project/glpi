@@ -106,7 +106,7 @@ class Bookmark extends CommonDBTM {
 
         function cleanDBonPurge($ID) {
 		global $DB;
-		$query="DELETE FROM glpi_display_default WHERE FK_bookmark=$ID";
+		$query="DELETE FROM glpi_display_default WHERE FK_bookmark='$ID'";
 		$DB->query($query);
         }
 	
@@ -304,7 +304,8 @@ class Bookmark extends CommonDBTM {
 		if ($this->getFromDB($ID) && $this->fields['type']=BOOKMARK_SEARCH){
 			$dd=new SetupDefaultDisplay();
 			// Is default view for this device_type already exists ?
-			$query="SELECT ID FROM glpi_display_default 
+			$query="SELECT ID 
+				FROM glpi_display_default 
 				WHERE FK_users='".$_SESSION['glpiID']."'
 					AND device_type='".$this->fields['device_type']."'";
 			if ($result=$DB->query($query)){
@@ -333,7 +334,8 @@ class Bookmark extends CommonDBTM {
 		if ($this->getFromDB($ID) && $this->fields['type']=BOOKMARK_SEARCH){
 			$dd=new SetupDefaultDisplay();
 			// Is default view for this device_type already exists ?
-			$query="SELECT ID FROM glpi_display_default 
+			$query="SELECT ID 
+				FROM glpi_display_default 
 				WHERE FK_users='".$_SESSION['glpiID']."'
 					AND FK_bookmark='$ID'
 					AND device_type='".$this->fields['device_type']."'";
@@ -362,18 +364,19 @@ class Bookmark extends CommonDBTM {
 			return false;
 		}
 	
-		$query="SELECT ".$this->table.".*, glpi_display_default.ID AS IS_DEFAULT FROM ".$this->table." 
-			LEFT JOIN glpi_display_default 
-				ON (".$this->table.".device_type = glpi_display_default.device_type AND ".$this->table.".ID = glpi_display_default.FK_bookmark) 
+		$query="SELECT `".$this->table."`.*, glpi_display_default.ID AS IS_DEFAULT 
+			FROM `".$this->table."` 
+			LEFT JOIN glpi_display_default ON (`".$this->table."`.device_type = glpi_display_default.device_type 
+							AND `".$this->table."`.ID = glpi_display_default.FK_bookmark) 
 			WHERE ";
 			
 		if ($private){
-			$query.="(".$this->table.".private=1 AND ".$this->table.".FK_users='".$_SESSION['glpiID']."') ";
+			$query.="(`".$this->table."`.private=1 AND `".$this->table."`.FK_users='".$_SESSION['glpiID']."') ";
 		} else {
-			$query.="(".$this->table.".private=0  ".getEntitiesRestrictRequest("AND",$this->table,"","",true) . ")";
+			$query.="(`".$this->table."`.private=0  ".getEntitiesRestrictRequest("AND",$this->table,"","",true) . ")";
 		}
 			
-		$query.=" ORDER BY device_type,name";
+		$query.=" ORDER BY device_type, name";
 
 		if ($result = $DB->query($query)){
 			echo "<br>";

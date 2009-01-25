@@ -54,7 +54,7 @@ class Contact extends CommonDBTM{
 	function cleanDBonPurge($ID) {
 		global $DB;
 
-		$query = "DELETE from glpi_contact_enterprise WHERE FK_contact = '$ID'";
+		$query = "DELETE FROM glpi_contact_enterprise WHERE FK_contact = '$ID'";
 		$DB->query($query);
 	}
 
@@ -80,7 +80,11 @@ class Contact extends CommonDBTM{
 	function GetAddress() {
 		global $DB;
 
-		$query = "SELECT  glpi_enterprises.name, glpi_enterprises.address, glpi_enterprises.postcode, glpi_enterprises.town, glpi_enterprises.state, glpi_enterprises.country FROM glpi_enterprises,glpi_contact_enterprise WHERE glpi_contact_enterprise.FK_contact = '".$this->fields["ID"]."' AND glpi_contact_enterprise.FK_enterprise = glpi_enterprises.ID";
+		$query = "SELECT  glpi_enterprises.name, glpi_enterprises.address, glpi_enterprises.postcode, 
+				glpi_enterprises.town, glpi_enterprises.state, glpi_enterprises.country 
+			FROM glpi_enterprises,glpi_contact_enterprise 
+			WHERE glpi_contact_enterprise.FK_contact = '".$this->fields["ID"]."' 
+				AND glpi_contact_enterprise.FK_enterprise = glpi_enterprises.ID";
 
 		if ($result = $DB->query($query)) 
 			if ($DB->numrows($result)){
@@ -101,7 +105,10 @@ class Contact extends CommonDBTM{
 	function GetWebsite() {
 		global $DB;
 
-		$query = "SELECT  glpi_enterprises.website as website FROM glpi_enterprises,glpi_contact_enterprise WHERE glpi_contact_enterprise.FK_contact = '".$this->fields["ID"]."' AND glpi_contact_enterprise.FK_enterprise = glpi_enterprises.ID";
+		$query = "SELECT  glpi_enterprises.website as website 
+			FROM glpi_enterprises,glpi_contact_enterprise 
+			WHERE glpi_contact_enterprise.FK_contact = '".$this->fields["ID"]."' 
+				AND glpi_contact_enterprise.FK_enterprise = glpi_enterprises.ID";
 
 		if ($result = $DB->query($query)) 
 			if ($DB->numrows($result)){

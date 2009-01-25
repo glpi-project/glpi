@@ -103,7 +103,7 @@ class CartridgeType extends CommonDBTM {
 	 **/
 	function countCartridges() {
 		global $DB;
-		$query = "SELECT * FROM glpi_cartridges WHERE (FK_glpi_cartridges_type = '".$this->fields["ID"]."')";
+		$query = "SELECT * FROM glpi_cartridges WHERE FK_glpi_cartridges_type = '".$this->fields["ID"]."'";
 		if ($result = $DB->query($query)) {
 			$number = $DB->numrows($result);
 			return $number;
@@ -331,7 +331,9 @@ class Cartridge extends CommonDBTM {
 	function restore($input,$history=1) {
 
 		global $DB;
-		$query = "UPDATE glpi_cartridges SET date_out = NULL, date_use = NULL , FK_glpi_printers= 0 WHERE ID='".$input["ID"]."'";
+		$query = "UPDATE glpi_cartridges 
+			SET date_out = NULL, date_use = NULL, FK_glpi_printers= 0 
+			WHERE ID='".$input["ID"]."'";
 		if ($result = $DB->query($query)) {
 			return true;
 		} else {
@@ -368,11 +370,15 @@ class Cartridge extends CommonDBTM {
 		global $DB,$LANG;
 
 		// Get first unused cartridge
-		$query = "SELECT ID FROM glpi_cartridges WHERE FK_glpi_cartridges_type = '$tID' AND date_use IS NULL";
+		$query = "SELECT ID 
+			FROM glpi_cartridges 
+			WHERE FK_glpi_cartridges_type = '$tID' AND date_use IS NULL";
 		$result = $DB->query($query);
 		if ($DB->numrows($result)>0){
 			// Mise a jour cartouche en prenant garde aux insertion multiples	
-			$query = "UPDATE glpi_cartridges SET date_use = '".date("Y-m-d")."', FK_glpi_printers = '$pID' WHERE ID='".$DB->result($result,0,0)."' AND date_use IS NULL";
+			$query = "UPDATE glpi_cartridges 
+				SET date_use = '".date("Y-m-d")."', FK_glpi_printers = '$pID' 
+				WHERE ID='".$DB->result($result,0,0)."' AND date_use IS NULL";
 			if ($result = $DB->query($query)) {
 				return true;
 			} else {
@@ -397,7 +403,9 @@ class Cartridge extends CommonDBTM {
 	function uninstall($ID) {
 
 		global $DB;
-		$query = "UPDATE glpi_cartridges SET date_out = '".date("Y-m-d")."' WHERE ID='$ID'";
+		$query = "UPDATE glpi_cartridges 
+			SET date_out = '".date("Y-m-d")."' 
+			WHERE ID='$ID'";
 		if ($result = $DB->query($query)) {
 			return true;
 		} else {

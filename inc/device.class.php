@@ -50,21 +50,26 @@ class Device extends CommonDBTM {
 
 	function cleanDBonPurge($ID) {
 		global $DB;
-		$query="SELECT FK_computers FROM glpi_computer_device WHERE (FK_device = '$ID' AND device_type='".$this->devtype."')";
+		$query="SELECT FK_computers 
+			FROM glpi_computer_device 
+			WHERE FK_device = '$ID' AND device_type='".$this->devtype."'";
 		$result=$DB->query($query);
 		if ($DB->numrows($result)){
 			while ($data=$DB->fetch_assoc($result)){
 				cleanAllItemCache("device_".$data["FK_computers"],"GLPI_".COMPUTER_TYPE);
 			}
 		}
-		$query2 = "DELETE FROM glpi_computer_device WHERE (FK_device = '$ID' AND device_type='".$this->devtype."')";
+		$query2 = "DELETE FROM glpi_computer_device 
+			WHERE FK_device = '$ID' AND device_type='".$this->devtype."'";
 		$DB->query($query2);
 	}
 
 	function post_updateItem($input,$updates,$history=1) {
 		global $DB;
 		if (count($updates)){
-			$query="SELECT FK_computers FROM glpi_computer_device WHERE (FK_device = '".$input["ID"]."' AND device_type='".$input["device_type"]."')";
+			$query="SELECT FK_computers 
+				FROM glpi_computer_device 
+				WHERE (FK_device = '".$input["ID"]."' AND device_type='".$input["device_type"]."')";
 			$result=$DB->query($query);
 			if ($DB->numrows($result)){
 				while ($data=$DB->fetch_assoc($result)){
@@ -92,7 +97,8 @@ class Device extends CommonDBTM {
 	**/
 	function computer_link($compID,$device_type,$specificity='') {
 		global $DB;
-		$query = "INSERT INTO glpi_computer_device (device_type,FK_device,FK_computers,specificity) values ('".$device_type."','".$this->fields["ID"]."','".$compID."','".$specificity."')";
+		$query = "INSERT INTO glpi_computer_device (device_type,FK_device,FK_computers,specificity) 
+			VALUES ('".$device_type."','".$this->fields["ID"]."','".$compID."','".$specificity."')";
 		if($DB->query($query)) {
 			return $DB->insert_id();
 		} else { 

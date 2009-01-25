@@ -867,13 +867,17 @@ class Config extends CommonDBTM {
 				
 			asort($profiles);
 
-			$query = "SELECT ID, name FROM glpi_profiles order by name";
+			$query = "SELECT ID, name 
+				FROM glpi_profiles 
+				ORDER BY name";
 			$result = $DB->query($query);
 			while ($data = $DB->fetch_assoc($result)){
 				$profiles[PROFILE_MAILING_TYPE ."_" . $data["ID"]] = $LANG["profiles"][22] . " " . $data["name"];
 			}
 
-			$query = "SELECT ID, name FROM glpi_groups order by name";
+			$query = "SELECT ID, name 
+				FROM glpi_groups 
+				ORDER BY name";
 			$result = $DB->query($query);
 			while ($data = $DB->fetch_assoc($result)){
 				$profiles[GROUP_MAILING_TYPE ."_" . $data["ID"]] = $LANG["common"][35] . " " . $data["name"];
@@ -921,13 +925,17 @@ class Config extends CommonDBTM {
 		case 3:
 			$profiles[USER_MAILING_TYPE . "_" . ADMIN_MAILING] = $LANG["setup"][237];
 			$profiles[USER_MAILING_TYPE . "_" . ADMIN_ENTITY_MAILING] = $LANG["setup"][237]." ".$LANG["entity"][0];
-			$query = "SELECT ID, name FROM glpi_profiles order by name";
+			$query = "SELECT ID, name 
+				FROM glpi_profiles 
+				ORDER BY name";
 			$result = $DB->query($query);
 			while ($data = $DB->fetch_assoc($result)){
 				$profiles[PROFILE_MAILING_TYPE ."_" . $data["ID"]] = $LANG["profiles"][22] . " " . $data["name"];
 			}
 	
-			$query = "SELECT ID, name FROM glpi_groups order by name";
+			$query = "SELECT ID, name 
+				FROM glpi_groups 
+				ORDER BY name";
 			$result = $DB->query($query);
 			while ($data = $DB->fetch_assoc($result)){
 				$profiles[GROUP_MAILING_TYPE ."_" . $data["ID"]] = $LANG["common"][35] . " " . $data["name"];
