@@ -520,8 +520,6 @@ class MailCollect {
 			$mail_details=array(
 					'from'=>strtolower($sender->mailbox).'@'.$sender->host,
 					'subject'=>$mail_header->subject,
-					'references' => $mail_header->references,
-
 					//'fromName'=>$sender->personal,
 					//'toOth'=>strtolower($sender_replyto->mailbox).'@'.$sender_replyto->host,
 					//'toNameOth'=>$sender_replyto->personal,
