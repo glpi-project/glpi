@@ -123,7 +123,7 @@ class RuleCollection {
 		$this->RuleList->list = array();
 			
 		//Select all the rules of a different type
-		$sql = "SELECT * FROM glpi_rules_descriptions WHERE rule_type='" . $this->rule_type . "' ORDER by '".$this->orderby."' ASC";
+		$sql = "SELECT * FROM glpi_rules_descriptions WHERE rule_type='" . $this->rule_type . "' ORDER by `".$this->orderby."` ASC";
 		if ($limit) {
 			$sql .= " LIMIT $start,$limit";
 		}
@@ -156,7 +156,7 @@ class RuleCollection {
 		if (($need & $this->RuleList->load) != $need) {
 
 			//Select all the rules of a different type
-			$sql = "SELECT ID FROM glpi_rules_descriptions WHERE rule_type='".$this->rule_type."' ORDER by '".$this->orderby."' ASC";
+			$sql = "SELECT ID FROM glpi_rules_descriptions WHERE rule_type='".$this->rule_type."' ORDER by `".$this->orderby."` ASC";
 			 $result = $DB->query($sql);
 			if ($result){
 				$this->RuleList->list = array();
