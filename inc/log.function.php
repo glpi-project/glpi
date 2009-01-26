@@ -476,7 +476,7 @@ function showAddEvents($target,$order,$sort,$user="") {
 		$usersearch=$user." ";
 
 	// Query Database
-	$query = "SELECT * FROM glpi_event_log WHERE message LIKE '".$usersearch.addslashes($LANG["log"][20])."%' ORDER BY '$sort' $order LIMIT 0,".$CFG_GLPI["num_of_events"];
+	$query = "SELECT * FROM glpi_event_log WHERE message LIKE '".$usersearch.addslashes($LANG["log"][20])."%' ORDER BY `$sort` $order LIMIT 0,".$CFG_GLPI["num_of_events"];
 
 	// Get results
 	$result = $DB->query($query);
@@ -582,9 +582,9 @@ function showEvents($target,$order,$sort,$start=0) {
 	}
 
 	// Query Database
-	$query = "SELECT * FROM glpi_event_log ORDER BY '$sort' $order";
+	$query = "SELECT * FROM glpi_event_log ORDER BY `$sort` $order";
 
-	$query_limit = "SELECT * FROM glpi_event_log ORDER BY '$sort' $order LIMIT ".intval($start).",".intval($_SESSION["glpilist_limit"]);
+	$query_limit = "SELECT * FROM glpi_event_log ORDER BY `$sort` $order LIMIT ".intval($start).",".intval($_SESSION["glpilist_limit"]);
 	// Get results
 	$result = $DB->query($query);
 
