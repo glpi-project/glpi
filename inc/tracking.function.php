@@ -105,15 +105,10 @@ function showTrackingOnglets($target){
 
 }
 
+function getTrackingSortOptions() {
 
-function commonTrackingListHeader($output_type=HTML_OUTPUT,$target="",$parameters="",$sort="",$order=""){
 	global $LANG,$CFG_GLPI;
-
-	// New Line for Header Items Line
-	echo displaySearchNewLine($output_type);
-	// $show_sort if 
-	$header_num=1;
-
+	
 	$items[$LANG["joblist"][0]]="glpi_tracking.status";
 	$items[$LANG["common"][27]]="glpi_tracking.date";
 	$items[$LANG["common"][26]]="glpi_tracking.date_mod";
@@ -126,7 +121,20 @@ function commonTrackingListHeader($output_type=HTML_OUTPUT,$target="",$parameter
 	$items[$LANG["common"][1]]="glpi_tracking.device_type,glpi_tracking.computer";
 	$items[$LANG["common"][36]]="glpi_dropdown_tracking_category.completename";
 	$items[$LANG["common"][57]]="glpi_tracking.name";
+	
+	return $items;
+}
 
+function commonTrackingListHeader($output_type=HTML_OUTPUT,$target="",$parameters="",$sort="",$order=""){
+	global $LANG,$CFG_GLPI;
+
+	// New Line for Header Items Line
+	echo displaySearchNewLine($output_type);
+	// $show_sort if 
+	$header_num=1;
+
+	$items = getTrackingSortOptions();
+	
 	foreach ($items as $key => $val){
 		$issort=0;
 		$link="";
@@ -1540,13 +1548,15 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$to
 		$where.=" WHERE $wherecomp) ";
 	}
 
-	if ($sort=="")
+	$sortitems = getTrackingSortOptions();
+	if (!in_array($sort, $sortitems)) {
 		$sort="glpi_tracking.date_mod";
-	if ($order=="")
+	}
+	if ($order!="ASC" && $order!="DESC") {
 		$order=getTrackingOrderPrefs($_SESSION["glpiID"]);
+	}
 
-
-	$query=$SELECT.$FROM.$where." ORDER BY '$sort' $order";
+	$query=$SELECT.$FROM.$where." ORDER BY $sort $order";
 	//echo $query;
 	// Get it from database	
 	if ($result = $DB->query($query)) {
