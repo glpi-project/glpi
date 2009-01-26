@@ -93,7 +93,7 @@ function showCentralGlobalView(){
 		if ($CFG_GLPI["num_of_events"]>0){
 
 			//Show last add events
-			showAddEvents($_SERVER['PHP_SELF'],"","",$_SESSION["glpiname"]);
+			showAddEvents($_SERVER['PHP_SELF'],$_SESSION["glpiname"]);
 
 		} else {
 			echo "&nbsp;";
