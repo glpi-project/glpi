@@ -555,15 +555,11 @@ function showEvents($target,$order,$sort,$start=0) {
 	}
 
 	// Query Database
-	$query = "SELECT * FROM glpi_event_log ORDER BY `$sort` $order";
-
 	$query_limit = "SELECT * FROM glpi_event_log ORDER BY `$sort` $order LIMIT ".intval($start).",".intval($_SESSION["glpilist_limit"]);
-	// Get results
-	$result = $DB->query($query);
-
 
 	// Number of results
-	$numrows = $DB->numrows($result);
+	$numrows = countElementsInTable("glpi_event_log");
+	// Get results
 	$result = $DB->query($query_limit);
 	$number = $DB->numrows($result);
 
