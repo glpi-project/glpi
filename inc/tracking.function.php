@@ -105,6 +105,31 @@ function showTrackingOnglets($target){
 
 }
 
+/**
+ * get the allowed Soft options for the tickets list
+ * 
+ * @return array of options (title => field)
+ */
+function &getTrackingSortOptions() {
+	global $LANG,$CFG_GLPI;
+	static $items=array();
+	
+	if (!count($items)) {		
+		$items[$LANG["joblist"][0]]="glpi_tracking.status";
+		$items[$LANG["common"][27]]="glpi_tracking.date";
+		$items[$LANG["common"][26]]="glpi_tracking.date_mod";
+		if (count($_SESSION["glpiactiveentities"])>1){
+			$items[$LANG["Menu"][37]]="glpi_entities.completename";
+		}
+		$items[$LANG["joblist"][2]]="glpi_tracking.priority";
+		$items[$LANG["job"][4]]="glpi_tracking.author";
+		$items[$LANG["joblist"][4]]="glpi_tracking.assign";
+		$items[$LANG["common"][1]]="glpi_tracking.device_type,glpi_tracking.computer";
+		$items[$LANG["common"][36]]="glpi_dropdown_tracking_category.completename";
+		$items[$LANG["common"][57]]="glpi_tracking.name";
+	}
+	return ($items);
+}
 
 function commonTrackingListHeader($output_type=HTML_OUTPUT,$target="",$parameters="",$sort="",$order="",$nolink=false){
 	global $LANG,$CFG_GLPI;
@@ -114,20 +139,8 @@ function commonTrackingListHeader($output_type=HTML_OUTPUT,$target="",$parameter
 	// $show_sort if 
 	$header_num=1;
 
-	$items[$LANG["joblist"][0]]="glpi_tracking.status";
-	$items[$LANG["common"][27]]="glpi_tracking.date";
-	$items[$LANG["common"][26]]="glpi_tracking.date_mod";
-	if (count($_SESSION["glpiactiveentities"])>1){
-		$items[$LANG["Menu"][37]]="glpi_entities.completename";
-	}
-	$items[$LANG["joblist"][2]]="glpi_tracking.priority";
-	$items[$LANG["job"][4]]="glpi_tracking.author";
-	$items[$LANG["joblist"][4]]="glpi_tracking.assign";
-	$items[$LANG["common"][1]]="glpi_tracking.device_type,glpi_tracking.computer";
-	$items[$LANG["common"][36]]="glpi_dropdown_tracking_category.completename";
-	$items[$LANG["common"][57]]="glpi_tracking.name";
 
-	foreach ($items as $key => $val){
+	foreach (getTrackingSortOptions() as $key => $val){
 		$issort=0;
 		$link="";
 		if (!$nolink){
@@ -178,7 +191,9 @@ function showCentralJobList($target,$start,$status="process",$showgrouptickets=t
 
 
 	if($status=="waiting"){ // on affiche les tickets en attente
-		$query = "SELECT ID FROM glpi_tracking WHERE ( $search_assign ) AND status ='waiting' ".getEntitiesRestrictRequest("AND","glpi_tracking")." ORDER BY date_mod ".getTrackingOrderPrefs($_SESSION["glpiID"]);
+		$query = "SELECT ID FROM glpi_tracking " .
+				" WHERE ( $search_assign ) AND status ='waiting' ".getEntitiesRestrictRequest("AND","glpi_tracking").
+				" ORDER BY date_mod ".getTrackingOrderPrefs($_SESSION["glpiID"]);
 		
 		if($showgrouptickets){
 			$title=$LANG["central"][16];
@@ -188,7 +203,9 @@ function showCentralJobList($target,$start,$status="process",$showgrouptickets=t
 
 	}else{ // on affiche les tickets planifiés ou assignés à glpiID
 
-		$query = "SELECT ID FROM glpi_tracking WHERE ( $search_assign ) AND (status ='plan' OR status = 'assign') ".getEntitiesRestrictRequest("AND","glpi_tracking")." ORDER BY date_mod ".getTrackingOrderPrefs($_SESSION["glpiID"]);
+		$query = "SELECT ID FROM glpi_tracking " .
+				" WHERE ( $search_assign ) AND (status ='plan' OR status = 'assign') ".getEntitiesRestrictRequest("AND","glpi_tracking").
+				" ORDER BY date_mod ".getTrackingOrderPrefs($_SESSION["glpiID"]);
 		
 		if($showgrouptickets){
 			$title=$LANG["central"][15];
@@ -1624,13 +1641,15 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$to
 		$where.=" WHERE $wherecomp) ";
 	}
 
-	if ($sort=="")
+	if (!in_array($sort,getTrackingSortOptions())) {
 		$sort="glpi_tracking.date_mod";
-	if ($order=="")
-		$order=getTrackingOrderPrefs($_SESSION["glpiID"]);
+	}
+	if ($order!="ASC" && $order!="DESC") {
+		$order=getTrackingOrderPrefs($_SESSION["glpiID"]);		
+	}
 
 
-	$query=$SELECT.$FROM.$where." ORDER BY '$sort' $order";
+	$query=$SELECT.$FROM.$where." ORDER BY $sort $order";
 	//echo $query;
 	// Get it from database	
 	if ($result = $DB->query($query)) {
