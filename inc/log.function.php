@@ -484,6 +484,8 @@ function showAddEvents($target,$order,$sort,$user="") {
 
 	if (!$sort) {
 		$sort = "date";
+	}
+	if ($order!="ASC"){
 		$order = "DESC";
 	}
 
@@ -495,7 +497,7 @@ function showAddEvents($target,$order,$sort,$user="") {
 	$query = "SELECT * 
 		FROM glpi_event_log 
 		WHERE message LIKE '".$usersearch.addslashes($LANG["log"][20])."%' 
-		ORDER BY $sort $order LIMIT 0,".intval($_SESSION["glpinum_of_events"]);
+		ORDER BY `$sort` $order LIMIT 0,".intval($_SESSION["glpinum_of_events"]);
 
 	// Get results
 	$result = $DB->query($query);
