@@ -473,7 +473,7 @@ function displayItemLogID($itemtype,$item){
  * @param $sort order by clause occurences (eg: date) 
  * @param $user
  **/
-function showAddEvents($target,$order,$sort,$user="") {
+function showAddEvents($target,$user="") {
 	// Show events from $result in table form
 
 	global $DB,$CFG_GLPI, $LANG;
@@ -481,13 +481,6 @@ function showAddEvents($target,$order,$sort,$user="") {
 	list($logItemtype,$logService)=logArray();
 
 	// define default sorting
-
-	if (!$sort) {
-		$sort = "date";
-	}
-	if ($order!="ASC"){
-		$order = "DESC";
-	}
 
 	$usersearch="%";
 	if (!empty($user))
@@ -497,7 +490,7 @@ function showAddEvents($target,$order,$sort,$user="") {
 	$query = "SELECT * 
 		FROM glpi_event_log 
 		WHERE message LIKE '".$usersearch.addslashes($LANG["log"][20])."%' 
-		ORDER BY `$sort` $order LIMIT 0,".intval($_SESSION["glpinum_of_events"]);
+		ORDER BY date DESC LIMIT 0,".intval($_SESSION["glpinum_of_events"]);
 
 	// Get results
 	$result = $DB->query($query);
@@ -523,33 +516,13 @@ function showAddEvents($target,$order,$sort,$user="") {
 	echo "<tr><th colspan='5'><a href=\"".$CFG_GLPI["root_doc"]."/front/log.php\">".$LANG["central"][2]." ".$_SESSION["glpinum_of_events"]." ".$LANG["central"][8]."</a></th></tr>";
 	echo "<tr>";
 
-	echo "<th colspan='2'>";
-	if ($sort=="item") {
-		if ($order=="DESC") echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/puce-down.png\" alt='' title=''>";
-		else echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/puce-up.png\" alt='' title=''>";
-	}
-	echo "<a href=\"$target?sort=item&amp;order=".($order=="ASC"?"DESC":"ASC")."\">".$LANG["event"][0]."</a></th>";
+	echo "<th colspan='2'>".$LANG["event"][0]."</th>";
 
-	echo "<th>";
-	if ($sort=="date") {
-		if ($order=="DESC") echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/puce-down.png\" alt='' title=''>";
-		else echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/puce-up.png\" alt='' title=''>";
-	}
-	echo "<a href=\"$target?sort=date&amp;order=".($order=="ASC"?"DESC":"ASC")."\">".$LANG["common"][27]."</a></th>";
+	echo "<th>".$LANG["common"][27]."</th>";
 
-	echo "<th width='8%'>";
-	if ($sort=="service") {
-		if ($order=="DESC") echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/puce-down.png\" alt='' title=''>";
-		else echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/puce-up.png\" alt='' title=''>";
-	}
-	echo "<a href=\"$target?sort=service&amp;order=".($order=="ASC"?"DESC":"ASC")."\">".$LANG["event"][2]."</a></th>";
+	echo "<th width='8%'>".$LANG["event"][2]."</th>";
 
-	echo "<th width='60%'>";
-	if ($sort=="message") {
-		if ($order=="DESC") echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/puce-down.png\" alt='' title=''>";
-		else echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/puce-up.png\" alt='' title=''>";
-	}
-	echo "<a href=\"$target?sort=message&amp;order=".($order=="ASC"?"DESC":"ASC")."\">".$LANG["event"][4]."</a></th></tr>";
+	echo "<th width='60%'>".$LANG["event"][4]."</th></tr>";
 
 	while ($i < $number) {
 		$ID = $DB->result($result, $i, "ID");
