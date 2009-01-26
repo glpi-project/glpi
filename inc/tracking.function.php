@@ -306,17 +306,19 @@ function showOldJobListForItem($username,$item_type,$item,$sort="",$order="") {
 
 	if (!haveRight("show_all_ticket","1")) return false;
 
-	if ($sort==""){
+	$sortitems = getTrackingSortOptions();
+	if (!in_array($sort, $sortitems)) {
 		$sort="glpi_tracking.date_mod";
 	}
-	
-	if ($order==""){
+	if ($order!="ASC" && $order!="DESC") {
 		$order=getTrackingOrderPrefs($_SESSION["glpiID"]);
 	}
 
 	$where = "(status = 'old_done' OR status = 'old_notdone')";
 
-	$query = "SELECT ".getCommonSelectForTrackingSearch()." FROM glpi_tracking ".getCommonLeftJoinForTrackingSearch()." WHERE $where AND (device_type = '$item_type' and computer = '$item') ORDER BY '$sort' $order";
+	$query = "SELECT ".getCommonSelectForTrackingSearch().
+		" FROM glpi_tracking ".getCommonLeftJoinForTrackingSearch().
+		" WHERE $where AND (device_type = '$item_type' and computer = '$item') ORDER BY $sort $order";
 
 
 	$result = $DB->query($query);
@@ -361,17 +363,20 @@ function showJobListForItem($username,$item_type,$item,$sort="",$order="") {
 
 	if (!haveRight("show_all_ticket","1")) return false;
 
-	if ($sort==""){
+	$sortitems = getTrackingSortOptions();
+	if (!in_array($sort, $sortitems)) {
 		$sort="glpi_tracking.date_mod";
 	}
-	if ($order==""){
+	if ($order!="ASC" && $order!="DESC") {
 		$order=getTrackingOrderPrefs($_SESSION["glpiID"]);
 	}
 
 
 	$where = "(status = 'new' OR status= 'assign' OR status='plan' OR status='waiting')";
 
-	$query = "SELECT ".getCommonSelectForTrackingSearch()." FROM glpi_tracking ".getCommonLeftJoinForTrackingSearch()." WHERE $where and (computer = '$item' and device_type= '$item_type') ORDER BY '$sort' $order";
+	$query = "SELECT ".getCommonSelectForTrackingSearch().
+		" FROM glpi_tracking ".getCommonLeftJoinForTrackingSearch().
+		" WHERE $where and (computer = '$item' and device_type= '$item_type') ORDER BY $sort $order";
 
 	$result = $DB->query($query);
 
