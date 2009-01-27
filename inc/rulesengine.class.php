@@ -2092,6 +2092,11 @@ class RuleCached extends Rule{
 		$DB->query("DELETE FROM ".getCacheTableByRuleType($this->rule_type)." WHERE rule_id='".$ID."'");
 	}
 
+	function cleanDBonPurge($ID){
+		parent::cleanDBonPurge($ID);
+		$this->deleteCacheByRuleId($ID);
+	}
+
 	function post_updateItem($input,$updates,$history=1) {
 		if(isset($updates['match']))
 			$this->deleteCacheByRuleId($input["ID"]);
