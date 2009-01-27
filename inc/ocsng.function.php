@@ -3679,6 +3679,31 @@ function getListState($ocs_server_id) {
 	dropdownArrayValues("deconnection_behavior", $values, $selected);
 }
 */
+
+function getFormServerAction($ID,$templateid)
+{
+	$action ="";
+	if (!isset($withtemplate) || $withtemplate == "")
+		$action = "edit_server";
+	elseif (isset($withtemplate) && $withtemplate ==1)
+	{
+		if ($ID == -1 && $templateid == '')
+			$action = "add_template";
+		else
+			$action = "update_template";	
+	}
+	elseif (isset($withtemplate) && $withtemplate ==2)
+	{
+		if ($templateid== '')
+			$action = "edit_server";
+		elseif ($ID == -1)
+			$action = "add_server_with_template";
+		else
+			$action = "update_server_with_template";	
+	}
+	return $action;	
+	
+}
 function setEntityLock($entity) {
 	global $CFG_GLPI;
 	$fp = fopen(GLPI_LOCK_DIR . "/lock_entity_" . $entity, "w+");

@@ -85,51 +85,22 @@ class Ocsng extends CommonDBTM {
 	function defineTabs($ID,$withtemplate='')
 	{
 		global $LANG;
-		$tabs[0]=$LANG["log"][55]." ".$LANG["ocsng"][29];
-		if (checkOCSconnection($ID)){
-			$tabs[1]=$LANG["ocsconfig"][27];
-			$tabs[2]=$LANG["ocsconfig"][52];
+		$tabs[0]=$LANG["help"][30];
+		//If connection to the OCS DB  is ok, and all rights are ok too
+		if (checkOCSconnection($ID) &&
+				ocsCheckConfig(1) &&
+					ocsCheckConfig(2) &&
+						ocsCheckConfig(4) && 
+							ocsCheckConfig(8)){
+			$tabs[1]=$LANG["ocsconfig"][5];
+			$tabs[2]=$LANG["ocsconfig"][27];
+			$tabs[3]=$LANG["setup"][620];
 		}
 		return $tabs;
 	}
 	
-	/**
-	 * Print ocs config form
-	 *
-	 *@param $target form target
-	 *@param $ID Integer : Id of the ocs config
-	 *@param $withtemplate template or basic computer
-	 *@param $templateid Integer : Id of the template used
-	 *@todo clean template process
-	 *@return Nothing (display)
-	 *
-	 **/
-	function ocsFormConfig($target, $ID,$withtemplate='',$templateid='') {
-		global $DB, $LANG, $CFG_GLPI;
-		
-		if (!haveRight("ocsng", "w"))
-			return false;
-
-		$action ="";
-		if (!isset($withtemplate) || $withtemplate == "")
-			$action = "edit_server";
-		elseif (isset($withtemplate) && $withtemplate ==1)
-		{
-			if ($ID == -1 && $templateid == '')
-				$action = "add_template";
-			else
-				$action = "update_template";	
-		}
-		elseif (isset($withtemplate) && $withtemplate ==2)
-		{
-			if ($templateid== '')
-				$action = "edit_server";
-			elseif ($ID == -1)
-				$action = "add_server_with_template";
-			else
-				$action = "update_server_with_template";	
-		}
-		
+	function cleanFieldsByAction($action,$ID,$templateid)
+	{
 		//Get datas
 		switch($action)
 		{
@@ -166,115 +137,28 @@ class Ocsng extends CommonDBTM {
 			break;	
 		}
 		
-		$datestring = $LANG["computers"][14].": ";
-		$date = convDateTime($_SESSION["glpi_currenttime"]);
-
-		echo "<form name='formconfig' action=\"$target\" method=\"post\">";
-		echo "<input type='hidden' name='ID' value='" . $ID . "'>";
-
-		echo "<div class='center'><table class='tab_cadre'>";
+	}
+	/**
+	 * Print ocs config form
+	 *
+	 *@param $target form target
+	 *@param $ID Integer : Id of the ocs config
+	 *@param $withtemplate template or basic computer
+	 *@param $templateid Integer : Id of the template used
+	 *@todo clean template process
+	 *@return Nothing (display)
+	 *
+	 **/
+	function ocsFormConfig($target, $ID,$withtemplate='',$templateid='') {
+		global $DB, $LANG, $CFG_GLPI;
 		
-		//This is a new template, name must me supplied
-		if($action == "add_template" || $action == "update_template") {
-				echo "<input type=\"hidden\" name=\"is_template\" value=\"1\">";
-				echo "<input type=\"hidden\" name=\"withtemplate\" value=\"1\">";
-				echo "<input type=\"hidden\" name=\"ID\" value=\"".$templateid."\">";
-			}
-		if ($action == "add_template")
-				echo "<input type=\"hidden\" name=\"name\" value=\"\">";
-		if ($action == "update_server_with_template")
-				echo "<input type=\"hidden\" name=\"tplname\" value=\"".$this->fields["tplname"]."\">";
-	
+		if (!haveRight("ocsng", "w"))
+			return false;
 
-			//If template, display a textfield to modify name
-		if($action == "add_template" || $action == "update_template") {
-				echo "<tr><th align='center'  colspan=2>";
+		$action = getFormServerAction($ID,$templateid);
+		$this->cleanFieldsByAction($action,$ID,$templateid);
 
-				echo $LANG["common"][6]."&nbsp;: ";
-				autocompletionTextField("tplname","glpi_ocs_config","tplname",$this->fields["tplname"],40);
-				echo "</th></tr>";
-					
-			//Adding a new machine, just display the name, not editable
-		}
-		elseif($action == "edit_server" || $action == "update_server_with_template") {
-				echo "<tr><th align='center'>";
-				
-				echo $LANG["ocsng"][28].": ".$this->fields["tplname"];
-				echo "<input type='hidden' name='tplname' value='".$this->fields["tplname"]."'>";
-
-				echo "</th>";
-				
-				echo "<th align='center'>".$datestring.$date."</th>";
-				echo "</tr>";
-		}
-
-
-		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["ocsconfig"][59] . " </td><td> <input type=\"text\" size='30' name=\"ocs_url\" value=\"" . $this->fields["ocs_url"] . "\"></td></tr>";
-
-		echo "<tr><th colspan='2'>" . $LANG["ocsconfig"][5] . "</th></tr>";
-
-		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["ocsconfig"][17] . " </td><td> <input type=\"text\" size='30' name=\"tag_limit\" value=\"" . $this->fields["tag_limit"] . "\"></td></tr>";
-
-		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["ocsconfig"][9] . " </td><td> <input type=\"text\" size='30' name=\"tag_exclude\" value=\"" . $this->fields["tag_exclude"] . "\"></td></tr>";
-
-		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["ocsconfig"][16] . " </td><td>";
-		dropdownValue("glpi_dropdown_state", "default_state", $this->fields["default_state"]);
-		echo "</td></tr>";
-		
-		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["ocsconfig"][48] . " </td><td>";
-		//getListState($ID);
-		dropdownArrayValues("deconnection_behavior", 
-			array(''=>$LANG["buttons"][49], "trash"=>$LANG["ocsconfig"][49], "delete"=>$LANG["ocsconfig"][50]), 
-			$this->fields["deconnection_behavior"]);
-		echo "</td></tr>";
-		
-		$import_array = array("0"=>$LANG["ocsconfig"][11],"1"=>$LANG["ocsconfig"][10],"2"=>$LANG["ocsconfig"][12]);
-		$import_array2= array("0"=>$LANG["ocsconfig"][11],"1"=>$LANG["ocsconfig"][10],"2"=>$LANG["ocsconfig"][12],"3"=>$LANG["ocsconfig"][19]);
-		$periph = $this->fields["import_periph"];
-		$monitor = $this->fields["import_monitor"];
-		$printer = $this->fields["import_printer"];
-		$software = $this->fields["import_software"];
-		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["Menu"][16] . " </td><td>";
-		dropdownArrayValues("import_periph",$import_array,$periph);
-		echo "</td></tr>";
-
-		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["Menu"][3] . " </td><td>";
-		dropdownArrayValues("import_monitor",$import_array2,$monitor);
-		echo "</td></tr>";
-
-		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["Menu"][2] . " </td><td>";
-		dropdownArrayValues("import_printer",$import_array,$printer);
-		echo "</td></tr>";
-
-		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["Menu"][4] . " </td><td>";
-		$import_array = array("0"=>$LANG["ocsconfig"][11],"1"=>$LANG["ocsconfig"][12]);
-		dropdownArrayValues("import_software",$import_array,$software);
-		echo "</td></tr>";
-
-		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["computers"][8] . " </td><td>";
-		dropdownYesNo("import_disk", $this->fields["import_disk"]);
-		echo "</td></tr>";
-
-		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["ocsconfig"][38] . " </td><td>";
-		dropdownYesNo("use_soft_dict", $this->fields["use_soft_dict"]);
-		echo "</td></tr>";		
-
-		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["ocsconfig"][41] . " </td><td>";
-		dropdownYesNo("import_registry", $this->fields["import_registry"]);
-		echo "</td></tr>";
-
-		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["ocsconfig"][40] . " </td><td>";
-		dropdownInteger('cron_sync_number', $this->fields["cron_sync_number"], 0, 100);
-		echo "</td></tr>";
-
-		echo "</table></div>";
-
-		echo "<div class='center'>" . $LANG["ocsconfig"][15] . "</div>";
-		echo "<div class='center'>" . $LANG["ocsconfig"][14] . "</div>";
-		echo "<div class='center'>" . $LANG["ocsconfig"][13] . "</div>";
-
-		echo "<br>";
-
+		echo "<br>";		
 		echo "<div class='center'><table class='tab_cadre'>";
 		echo "<tr><th>" . $LANG["ocsconfig"][27] ." ".$LANG["Menu"][0]. "</th><th>" . $LANG["title"][30] . "</th><th>" . $LANG["ocsconfig"][43] . "</th></tr>";
 		echo "<tr><td class='tab_bg_2' valign='top'><table width='100%' cellpadding='1' cellspacing='0' border='0'>";
@@ -417,6 +301,13 @@ class Ocsng extends CommonDBTM {
 		echo "<td class='tab_bg_2' valign='top'></td></tr>"; 
 		echo "</table></div>";
 
+		echo "<div class='center'>" . $LANG["ocsconfig"][15] . "</div>";
+		echo "<div class='center'>" . $LANG["ocsconfig"][14] . "</div>";
+		echo "<div class='center'>" . $LANG["ocsconfig"][13] . "</div>";
+
+		echo "<br>";
+
+
 		switch($action)
 		{
 			case  "update_server_with_template" :
@@ -436,11 +327,189 @@ class Ocsng extends CommonDBTM {
 	echo "</form>";
 	}
 
+	function ocsFormImportOptions($target, $ID,$withtemplate='',$templateid='')
+	{
+		global $LANG;
+		
+		$action = getFormServerAction($ID,$templateid);
+		$this->cleanFieldsByAction($action,$ID,$templateid);
+
+		echo "<br>";
+		echo "<div class='center'>";
+		echo "<form name='formconfig' action=\"$target\" method=\"post\">";
+		echo "<table class='tab_cadre'>";
+		echo "<input type='hidden' name='ID' value='" . $ID . "'>";
+		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["ocsconfig"][59] . " </td><td> <input type=\"text\" size='30' name=\"ocs_url\" value=\"" . $this->fields["ocs_url"] . "\"></td></tr>";
+
+		echo "<tr><th colspan='2'>" . $LANG["ocsconfig"][5] . "</th></tr>";
+
+		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["ocsconfig"][17] . " </td><td> <input type=\"text\" size='30' name=\"tag_limit\" value=\"" . $this->fields["tag_limit"] . "\"></td></tr>";
+
+		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["ocsconfig"][9] . " </td><td> <input type=\"text\" size='30' name=\"tag_exclude\" value=\"" . $this->fields["tag_exclude"] . "\"></td></tr>";
+
+		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["ocsconfig"][16] . " </td><td>";
+		dropdownValue("glpi_dropdown_state", "default_state", $this->fields["default_state"]);
+		echo "</td></tr>";
+		
+		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["ocsconfig"][48] . " </td><td>";
+		//getListState($ID);
+		dropdownArrayValues("deconnection_behavior", 
+			array(''=>$LANG["buttons"][49], "trash"=>$LANG["ocsconfig"][49], "delete"=>$LANG["ocsconfig"][50]), 
+			$this->fields["deconnection_behavior"]);
+		echo "</td></tr>";
+		
+		$import_array = array("0"=>$LANG["ocsconfig"][11],"1"=>$LANG["ocsconfig"][10],"2"=>$LANG["ocsconfig"][12]);
+		$import_array2= array("0"=>$LANG["ocsconfig"][11],"1"=>$LANG["ocsconfig"][10],"2"=>$LANG["ocsconfig"][12],"3"=>$LANG["ocsconfig"][19]);
+		$periph = $this->fields["import_periph"];
+		$monitor = $this->fields["import_monitor"];
+		$printer = $this->fields["import_printer"];
+		$software = $this->fields["import_software"];
+		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["Menu"][16] . " </td><td>";
+		dropdownArrayValues("import_periph",$import_array,$periph);
+		echo "</td></tr>";
+
+		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["Menu"][3] . " </td><td>";
+		dropdownArrayValues("import_monitor",$import_array2,$monitor);
+		echo "</td></tr>";
+
+		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["Menu"][2] . " </td><td>";
+		dropdownArrayValues("import_printer",$import_array,$printer);
+		echo "</td></tr>";
+
+		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["Menu"][4] . " </td><td>";
+		$import_array = array("0"=>$LANG["ocsconfig"][11],"1"=>$LANG["ocsconfig"][12]);
+		dropdownArrayValues("import_software",$import_array,$software);
+		echo "</td></tr>";
+
+		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["computers"][8] . " </td><td>";
+		dropdownYesNo("import_disk", $this->fields["import_disk"]);
+		echo "</td></tr>";
+
+		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["ocsconfig"][38] . " </td><td>";
+		dropdownYesNo("use_soft_dict", $this->fields["use_soft_dict"]);
+		echo "</td></tr>";		
+
+		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["ocsconfig"][41] . " </td><td>";
+		dropdownYesNo("import_registry", $this->fields["import_registry"]);
+		echo "</td></tr>";
+
+		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["ocsconfig"][40] . " </td><td>";
+		dropdownInteger('cron_sync_number', $this->fields["cron_sync_number"], 0, 100);
+		echo "</td></tr>";
+		
+		
+		echo "<tr class='tab_bg_2'><td colspan='2 class='center'>";
+		switch($action)
+		{
+			case  "update_server_with_template" :
+					echo "<p class=\"submit\"><input type=\"submit\" name=\"update_server_with_template\" class=\"submit\" value=\"" . $LANG["buttons"][2] . "\" ></p>";
+					break;
+			case "edit_server" :
+					echo "<p class=\"submit\"><input type=\"submit\" name=\"update_server\" class=\"submit\" value=\"" . $LANG["buttons"][2] . "\" ></p>";
+					break;
+			case "add_template" :
+				echo "<p class=\"submit\"><input type=\"submit\" name=\"add_template\" class=\"submit\" value=\"" . $LANG["buttons"][2] . "\" ></p>";
+				break;
+			case  "update_template" :
+				echo "<p class=\"submit\"><input type=\"submit\" name=\"update_template\" class=\"submit\" value=\"" . $LANG["buttons"][2] . "\" ></p>";
+				break;
+		}
+		echo "</td></tr>";
+		echo "</form>";
+		echo "</table></div>";
+	}
+
 	function ocsFormAutomaticLinkConfig($target, $ID,$withtemplate='',$templateid='') {
 		global $DB, $LANG, $CFG_GLPI;
 		
 		if (!haveRight("ocsng", "w"))
 			return false;
+
+		$action = getFormServerAction($ID,$templateid);
+		$this->cleanFieldsByAction($action,$ID,$templateid);
+		
+		
+		echo "<br><div class='center'><table class='tab_cadre'>";
+		echo "<tr><th colspan='4'>" . $LANG["ocsconfig"][52] . "</th></tr>";
+		echo "<tr class='tab_bg_2'><td>" . $LANG["ocsconfig"][53] . " </td><td>";
+		dropdownYesNo("glpi_link_enabled", $this->fields["glpi_link_enabled"]);
+		echo "</td><td colspan='2'></td></tr>";
+		
+		echo "<tr><th colspan='4'>" . $LANG["ocsconfig"][54] . "</th></tr>";
+		echo "<tr class='tab_bg_2'><td>" . $LANG["networking"][14] . " </td><td>";
+		dropdownYesNo("link_ip", $this->fields["link_ip"]);
+		echo "</td>";
+		echo "<td>" . $LANG["device_iface"][2] . " </td><td>";
+		dropdownYesNo("link_mac_address", $this->fields["link_mac_address"]);
+		echo "</td></tr>";
+		echo "<tr class='tab_bg_2'><td>" . $LANG["rulesengine"][25] . " </td><td>";
+		$link_array=array("0"=>$LANG["choice"][0],"1"=>$LANG["choice"][1]." : ".$LANG["ocsconfig"][57],"2"=>$LANG["choice"][1]." : ".$LANG["ocsconfig"][56]);
+		dropdownArrayValues("link_name", $link_array,$this->fields["link_name"]);
+		echo "</td>";
+		echo "<td>" . $LANG["common"][19] . " </td><td>";
+		dropdownYesNo("link_serial", $this->fields["link_serial"]);
+		echo "</td></tr>";
+		echo "<tr class='tab_bg_2'><td>" . $LANG["ocsconfig"][55] . " </td><td>";
+		dropdownValue("glpi_dropdown_state", "link_if_status", $this->fields["link_if_status"]);
+		echo "</td><td colspan='2'></tr>";
+		
+		echo "</table><br>".$LANG["ocsconfig"][58]."</div>";
+
+		switch($action)
+		{
+			case  "update_server_with_template" :
+					echo "<p class=\"submit\"><input type=\"submit\" name=\"update_server_with_template\" class=\"submit\" value=\"" . $LANG["buttons"][2] . "\" ></p>";
+					break;
+			case "edit_server" :
+					echo "<p class=\"submit\"><input type=\"submit\" name=\"update_server\" class=\"submit\" value=\"" . $LANG["buttons"][2] . "\" ></p>";
+					break;
+			case "add_template" :
+				echo "<p class=\"submit\"><input type=\"submit\" name=\"add_template\" class=\"submit\" value=\"" . $LANG["buttons"][2] . "\" ></p>";
+				break;
+			case  "update_template" :
+				echo "<p class=\"submit\"><input type=\"submit\" name=\"update_template\" class=\"submit\" value=\"" . $LANG["buttons"][2] . "\" ></p>";
+				break;
+		}
+
+	echo "</form>";
+	}
+
+	/**
+	 * Print simple ocs config form (database part)
+	 *
+	 *@param $target form target
+	 *@param $ID Integer : Id of the ocs config
+	 *@param $withtemplate template or basic computer
+	 *@param $templateid Integer : Id of the template used
+	 *@todo clean template process
+	 *@return Nothing (display)
+	 *
+	 **/
+	function showForm($target, $ID,$withtemplate='',$templateid='') {
+
+		global $DB, $DBocs, $LANG, $CFG_GLPI;
+
+		if (!haveRight("ocsng", "w"))
+			return false;
+			
+		//If no ID provided, or if the server is created using an existing template
+		if (empty ($ID) || $ID == -1 ) {
+			//Create a server using a template
+			if ($templateid != '' && $templateid != -1)
+				$this->getFromDB($templateid);
+			else
+			//Installing without a template	
+			$this->getEmpty();
+		} else {
+			$this->getFromDB($ID);
+		}
+		
+		$params = array("templateid"=>$templateid,"withtemplate"=>$withtemplate);
+		$this->showTabs($ID, $withtemplate,$_SESSION['glpi_tab'],$params);
+
+		
+		echo "<div class='center' id='tabsbody'>";	
+		echo "<form name='formdbconfig' action=\"$target\" method=\"post\">";
 
 		$action ="";
 		if (!isset($withtemplate) || $withtemplate == "")
@@ -461,7 +530,7 @@ class Ocsng extends CommonDBTM {
 			else
 				$action = "update_server_with_template";	
 		}
-
+		
 		//Get datas
 		switch($action)
 		{
@@ -498,88 +567,49 @@ class Ocsng extends CommonDBTM {
 			break;	
 		}
 		
-		
-		echo "<br><div class='center'><table class='tab_cadre'>";
-		echo "<tr><th colspan='4'>" . $LANG["ocsconfig"][52] . "</th></tr>";
-		echo "<tr class='tab_bg_2'><td>" . $LANG["ocsconfig"][53] . " </td><td>";
-		dropdownYesNo("glpi_link_enabled", $this->fields["glpi_link_enabled"]);
-		echo "</td><td colspan='2'></td></tr>";
-		
-		echo "<tr><th colspan='4'>" . $LANG["ocsconfig"][54] . "</th></tr>";
-		echo "<tr class='tab_bg_2'><td>" . $LANG["networking"][14] . " </td><td>";
-		dropdownYesNo("link_ip", $this->fields["link_ip"]);
-		echo "</td>";
-		echo "<td>" . $LANG["device_iface"][2] . " </td><td>";
-		dropdownYesNo("link_mac_address", $this->fields["link_mac_address"]);
-		echo "</td></tr>";
-		echo "<tr class='tab_bg_2'><td>" . $LANG["rulesengine"][25] . " </td><td>";
-		$link_array=array("0"=>$LANG["choice"][0],"1"=>$LANG["choice"][1]." : ".$LANG["ocsconfig"][57],"2"=>$LANG["choice"][1]." : ".$LANG["ocsconfig"][56]);
-		dropdownArrayValues("link_name", $link_array,$this->fields["link_name"]);
-		echo "</td>";
-		echo "<td>" . $LANG["common"][19] . " </td><td>";
-		dropdownYesNo("link_serial", $this->fields["link_serial"]);
-		echo "</td></tr>";
-		echo "<tr class='tab_bg_2'><td>" . $LANG["ocsconfig"][55] . " </td><td>";
-		dropdownValue("glpi_dropdown_state", "link_if_status", $this->fields["link_if_status"]);
-		echo "</td><td colspan='2'></tr>";
-		echo "</table><br>".$LANG["ocsconfig"][58]."</div>";
-		
+		$datestring = $LANG["computers"][14].": ";
+		$date = convDateTime($_SESSION["glpi_currenttime"]);
 
-		switch($action)
-		{
-			case  "update_server_with_template" :
-					echo "<p class=\"submit\"><input type=\"submit\" name=\"update_server_with_template\" class=\"submit\" value=\"" . $LANG["buttons"][2] . "\" ></p>";
-					break;
-			case "edit_server" :
-					echo "<p class=\"submit\"><input type=\"submit\" name=\"update_server\" class=\"submit\" value=\"" . $LANG["buttons"][2] . "\" ></p>";
-					break;
-			case "add_template" :
-				echo "<p class=\"submit\"><input type=\"submit\" name=\"add_template\" class=\"submit\" value=\"" . $LANG["buttons"][2] . "\" ></p>";
-				break;
-			case  "update_template" :
-				echo "<p class=\"submit\"><input type=\"submit\" name=\"update_template\" class=\"submit\" value=\"" . $LANG["buttons"][2] . "\" ></p>";
-				break;
+		echo "<form name='formconfig' action=\"$target\" method=\"post\">";
+		echo "<input type='hidden' name='ID' value='" . $ID . "'>";
+
+		echo "<div class='center'><table class='tab_cadre_fixe'>";
+		
+		//This is a new template, name must me supplied
+		if($action == "add_template" || $action == "update_template") {
+				echo "<input type=\"hidden\" name=\"is_template\" value=\"1\">";
+				echo "<input type=\"hidden\" name=\"withtemplate\" value=\"1\">";
+				echo "<input type=\"hidden\" name=\"ID\" value=\"".$templateid."\">";
+			}
+		if ($action == "add_template")
+				echo "<input type=\"hidden\" name=\"name\" value=\"\">";
+		if ($action == "update_server_with_template")
+				echo "<input type=\"hidden\" name=\"tplname\" value=\"".$this->fields["tplname"]."\">";
+	
+
+			//If template, display a textfield to modify name
+		if($action == "add_template" || $action == "update_template") {
+				echo "<tr><th align='center'  colspan=2>";
+
+				echo $LANG["common"][6]."&nbsp;: ";
+				autocompletionTextField("tplname","glpi_ocs_config","tplname",$this->fields["tplname"],40);
+				echo "</th></tr>";
+					
+			//Adding a new machine, just display the name, not editable
 		}
+		elseif($action == "edit_server" || $action == "update_server_with_template") {
+				echo "<tr><th align='center'>";
+				
+				echo $LANG["ocsng"][28].": ".$this->fields["tplname"];
+				echo "<input type='hidden' name='tplname' value='".$this->fields["tplname"]."'>";
 
-	echo "</form>";
-	}
-
-
-	/**
-	 * Print simple ocs config form (database part)
-	 *
-	 *@param $target form target
-	 *@param $ID Integer : Id of the ocs config
-	 *@param $withtemplate template or basic computer
-	 *@param $templateid Integer : Id of the template used
-	 *@todo clean template process
-	 *@return Nothing (display)
-	 *
-	 **/
-	function showForm($target, $ID,$withtemplate='',$templateid='') {
-
-		global $DB, $DBocs, $LANG, $CFG_GLPI;
-
-		if (!haveRight("ocsng", "w"))
-			return false;
-			
-		//If no ID provided, or if the server is created using an existing template
-		if (empty ($ID) || $ID == -1 ) {
-			//Create a server using a template
-			if ($templateid != '' && $templateid != -1)
-				$this->getFromDB($templateid);
-			else
-			//Installing without a template	
-			$this->getEmpty();
-		} else {
-			$this->getFromDB($ID);
+				echo "</th>";
+				
+				echo "<th align='center'>".$datestring.$date."</th>";
+				echo "</tr>";
 		}
 		
-		$params = array("templateid"=>$templateid,"withtemplate"=>$withtemplate);
-		$this->showTabs($ID, $withtemplate,$_SESSION['glpi_tab'],$params);
-		
-		echo "<div class='center' id='tabsbody'>";	
-		echo "<form name='formdbconfig' action=\"$target\" method=\"post\">";
+		/*
 		if (!empty ($ID) && $withtemplate!=2)
 			echo "<input type='hidden' name='ID' value='" . $ID. "'>";
 		//Creation or modification of a machine, using a template
@@ -587,62 +617,67 @@ class Ocsng extends CommonDBTM {
 		{	
 			echo "<input type='hidden' name='withtemplate' value=2>";
 			echo "<input type='hidden' name='templateid' value='" . $templateid. "'>";
-		}
-		echo "<div class='center'><table class='tab_cadre_fixe'>";
-		echo "<tr><th colspan='2'>" . $LANG["ocsconfig"][0] . "</th></tr>";
+		}*/
+		
+		//echo "<table class='tab_cadre_fixe'>";
+		//echo "<tr><th colspan='2'>" . $LANG["ocsconfig"][0] . "</th></tr>";
 		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["common"][16] . " </td><td> <input type=\"text\" name=\"name\" value=\"" . $this->fields["name"] . "\"></td></tr>";
 		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["ocsconfig"][2] . " </td><td> <input type=\"text\" name=\"ocs_db_host\" value=\"" . $this->fields["ocs_db_host"] . "\"></td></tr>";
 		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["ocsconfig"][4] . " </td><td> <input type=\"text\" name=\"ocs_db_name\" value=\"" . $this->fields["ocs_db_name"] . "\"></td></tr>";
 		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["ocsconfig"][1] . " </td><td> <input type=\"text\" name=\"ocs_db_user\" value=\"" . $this->fields["ocs_db_user"] . "\"></td></tr>";
 		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["ocsconfig"][3] . " </td><td> <input type=\"password\" name=\"ocs_db_passwd\" value=\"\"></td></tr>";
-		echo "</table></div>";
-
-		echo "<br><div class='center'><table border='0' class='tab_glpi'>";
 		
 		if ($ID == -1 || $withtemplate == 2)
 			echo "<tr class='tab_bg_2'><td align='center' colspan=2><input type=\"submit\" name=\"add_server\" class=\"submit\" value=\"" . $LANG["buttons"][2] . "\" ></td></tr>";
 		else
 		{
-			echo "<tr class='tab_bg_2'><td class='center'><input type=\"submit\" name=\"update_server\" class=\"submit\" value=\"" . $LANG["buttons"][2] . "\" ></td>";
-			echo "<td class='center'><input type=\"submit\" name=\"delete\" class=\"submit\" value=\"" . $LANG["buttons"][6] . "\" ></td></tr>";
+			echo "<tr class='tab_bg_2'><td align='center' colspan=2><input type=\"submit\" name=\"update_server\" class=\"submit\" value=\"" . $LANG["buttons"][2] . "\" >";
+			echo "&nbsp;<input type=\"submit\" name=\"delete\" class=\"submit\" value=\"" . $LANG["buttons"][6] . "\" ></td></tr>";
 			
 		}
 		echo "</table>";
 		echo "</form>";
-
-
-		//echo "<div class='center'>";
-
-		if ($ID != -1) {
-			if (!checkOCSconnection($ID)){
-				echo $LANG["ocsng"][21];
-			}
-			else if (!ocsCheckConfig(1)) {
-				echo $LANG["ocsng"][20];
-			}
-			else if (!ocsCheckConfig(2)) {
-				echo $LANG["ocsng"][42];
-			}
-			else if (!ocsCheckConfig(4)) {
-				echo $LANG["ocsng"][43];
-			}
-			else if (!ocsCheckConfig(8)) {
-				echo $LANG["ocsng"][44];
-			}
-			else {
-				echo $LANG["ocsng"][18] . "<br>";
-				echo $LANG["ocsng"][19];
-/*
-				if ($withtemplate == 2)
-					$this->ocsFormConfig($target,$ID,$withtemplate,$templateid);
-				else
-					$this->ocsFormConfig($target, $ID,$withtemplate);
-			*/}
-
-		}
 		echo "</div>";
 		echo "<div id='tabcontent'></div>";
 		echo "<script type='text/javascript'>loadDefaultTab();</script>";
+	}
+	
+	function showDBConnectionStatus($ID)
+	{
+			global $LANG;
+			$out="<br>";
+			$out.="<div class='center'>";
+			$out.="<div class='center'>";
+			$out.="<table class='tab_cadre'>";
+			$out.="<tr><th>" .$LANG["setup"][602] . "</th></tr>";
+			$out.="<tr class='tab_bg_2'><td align='center'>";
+			if ($ID != -1) {
+			if (!checkOCSconnection($ID)){
+				$out.=$LANG["ocsng"][21];
+			}
+			else if (!ocsCheckConfig(1)) {
+				$out.=$LANG["ocsng"][20];
+			}
+			else if (!ocsCheckConfig(2)) {
+				$out.=$LANG["ocsng"][42];
+			}
+			else if (!ocsCheckConfig(4)) {
+				$out.=$LANG["ocsng"][43];
+			}
+			else if (!ocsCheckConfig(8)) {
+				$out.=$LANG["ocsng"][44];
+			}
+			else {
+				$out.=$LANG["ocsng"][18];
+				$out.="<tr class='tab_bg_2'><td align='center'>".$LANG["ocsng"][19];
+			}
+
+		}
+		$out.="</td>";
+		$out.="</table>";
+		$out.="</div>";
+		echo $out;
+		
 	}
 	
 	function prepareInputForUpdate($input){
@@ -653,36 +688,45 @@ class Ocsng extends CommonDBTM {
 			unset($input["ocs_db_passwd"]);
 		}
 
-		if (isset($input["import_ip"])){
+		//Someting in the OCS configuration has changed -> need to update the checksum!
+		if (isset($input["import_ip"]) || isset($input["import_disk"])){
 			$input["checksum"]=0;
-
-			if ($input["import_ip"]) $input["checksum"]|= pow(2,NETWORKS_FL);
-			if ($input["import_device_ports"]) $input["checksum"]|= pow(2,PORTS_FL);
-			if ($input["import_device_modems"]) $input["checksum"]|= pow(2,MODEMS_FL);
-			if ($input["import_device_drives"]) $input["checksum"]|= pow(2,STORAGES_FL);
-			if ($input["import_device_sound"]) $input["checksum"]|= pow(2,SOUNDS_FL);
-			if ($input["import_device_gfxcard"]) $input["checksum"]|= pow(2,VIDEOS_FL);
-			if ($input["import_device_iface"]) $input["checksum"]|= pow(2,NETWORKS_FL);
-			if ($input["import_device_hdd"]) $input["checksum"]|= pow(2,STORAGES_FL);
-			if ($input["import_device_memory"]) $input["checksum"]|= pow(2,MEMORIES_FL);
-			if ($input["import_disk"]) $input["checksum"]|= pow(2,DRIVES_FL);
-			if (	$input["import_device_processor"]
-					||$input["import_general_contact"]
-					||$input["import_general_comments"]
-					||$input["import_general_domain"]
-					||$input["import_general_os"]
-					||$input["import_general_name"]) $input["checksum"]|= pow(2,HARDWARE_FL);
-			if (	$input["import_general_enterprise"]
-					||$input["import_general_type"]
-					||$input["import_general_model"]
-					||$input["import_general_serial"]) $input["checksum"]|= pow(2,BIOS_FL);
-			if ($input["import_printer"]) $input["checksum"]|= pow(2,PRINTERS_FL);
-			if ($input["import_software"]) $input["checksum"]|= pow(2,SOFTWARES_FL);
-			if ($input["import_monitor"]) $input["checksum"]|= pow(2,MONITORS_FL);
-			if ($input["import_periph"]) $input["checksum"]|= pow(2,INPUTS_FL);
-			if ($input["import_registry"]) $input["checksum"]|= pow(2,REGISTRY_FL);
+			
+			//If import_disk is set : we're updating the importation options
+			if (isset($input["import_disk"]))
+			{
+				if ($input["import_printer"]) $input["checksum"]|= pow(2,PRINTERS_FL);
+				if ($input["import_software"]) $input["checksum"]|= pow(2,SOFTWARES_FL);
+				if ($input["import_monitor"]) $input["checksum"]|= pow(2,MONITORS_FL);
+				if ($input["import_periph"]) $input["checksum"]|= pow(2,INPUTS_FL);
+				if ($input["import_registry"]) $input["checksum"]|= pow(2,REGISTRY_FL);
+				if ($input["import_disk"]) $input["checksum"]|= pow(2,DRIVES_FL);
+			}
+			else
+			//We're updating the general informations
+			if (isset($input["import_ip"])){
+			
+				if ($input["import_ip"]) $input["checksum"]|= pow(2,NETWORKS_FL);
+				if ($input["import_device_ports"]) $input["checksum"]|= pow(2,PORTS_FL);
+				if ($input["import_device_modems"]) $input["checksum"]|= pow(2,MODEMS_FL);
+				if ($input["import_device_drives"]) $input["checksum"]|= pow(2,STORAGES_FL);
+				if ($input["import_device_sound"]) $input["checksum"]|= pow(2,SOUNDS_FL);
+				if ($input["import_device_gfxcard"]) $input["checksum"]|= pow(2,VIDEOS_FL);
+				if ($input["import_device_iface"]) $input["checksum"]|= pow(2,NETWORKS_FL);
+				if ($input["import_device_hdd"]) $input["checksum"]|= pow(2,STORAGES_FL);
+				if ($input["import_device_memory"]) $input["checksum"]|= pow(2,MEMORIES_FL);
+				if (	$input["import_device_processor"]
+						||$input["import_general_contact"]
+						||$input["import_general_comments"]
+						||$input["import_general_domain"]
+						||$input["import_general_os"]
+						||$input["import_general_name"]) $input["checksum"]|= pow(2,HARDWARE_FL);
+				if (	$input["import_general_enterprise"]
+						||$input["import_general_type"]
+						||$input["import_general_model"]
+						||$input["import_general_serial"]) $input["checksum"]|= pow(2,BIOS_FL);
+			}
 		}
-		
 		return $input;
 	}
 	
