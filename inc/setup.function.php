@@ -542,7 +542,7 @@ function getDropdownID($input){
 						WHERE $add_entity_field_twin name= '".$input["value"]."' AND parentID='$level_up'";
 				}
 			} else {
-				$query_twin="SELECT ID FROM `".$input["tablename"]." 
+				$query_twin="SELECT ID FROM `".$input["tablename"]."` 
 					WHERE $add_entity_field_twin name= '".$input["value"]."' ";
 			}
 		}
