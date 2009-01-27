@@ -100,7 +100,12 @@ function showDeviceUser($ID){
 
 
 	$ci=new CommonItem();
-	echo "<div class='center'><table class='tab_cadre_fixe'><tr><th>".$LANG["common"][17]."</th><th>".$LANG["common"][16]."</th><th>".$LANG["common"][19]."</th><th>".$LANG["common"][20]."</th><th>&nbsp;</th></tr>";
+	echo "<div class='center'><table class='tab_cadre_fixe'><tr><th>".$LANG["common"][17]
+		."</th><th>".$LANG["entity"][0]
+		."</th><th>".$LANG["common"][16]
+		."</th><th>".$LANG["common"][19]
+		."</th><th>".$LANG["common"][20]
+		."</th><th>&nbsp;</th></tr>";
 
 	foreach ($CFG_GLPI["linkuser_types"] as $type){
 		if (haveTypeRight($type,'r')){
@@ -115,17 +120,22 @@ function showDeviceUser($ID){
 
 			$result=$DB->query($query);
 			if ($DB->numrows($result)>0){
-				$ci->setType($type);
+				$ci->setType($type,true);
 				$type_name=$ci->getType();
-				$cansee=haveTypeRight($type,"r");
 				while ($data=$DB->fetch_array($result)){
+					$cansee=$ci->obj->can($data["ID"],"r");
 					$link=$data["name"];
-					if ($cansee) $link="<a href='".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data["ID"]."'>".$link.(($_SESSION["glpiview_ID"]||empty($link))?" (".$data["ID"].")":"")."</a>";
+					if ($cansee) {
+						$link="<a href='".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data["ID"]."'>".
+							$link.(($_SESSION["glpiview_ID"]||empty($link))?" (".$data["ID"].")":"")."</a>";	
+					}
 					$linktype="";
 					if ($data["FK_users"]==$ID){
 						$linktype=$LANG["common"][34];
 					}
-					echo "<tr class='tab_bg_1'><td class='center'>$type_name</td><td class='center'>$link</td>";
+					echo "<tr class='tab_bg_1'><td class='center'>$type_name</td>" 
+						."<td class='center'>".getDropdownName("glpi_entities",$data["FK_entities"])."</td>"
+						."<td class='center'>$link</td>";
 					echo "<td class='center'>";
 					if (isset($data["serial"])&&!empty($data["serial"])){
 						echo $data["serial"];
@@ -143,7 +153,12 @@ function showDeviceUser($ID){
 	echo "</table></div><br>";
 
 	if (!empty($group_where)){
-		echo "<div class='center'><table class='tab_cadre_fixe'><tr><th>".$LANG["common"][17]."</th><th>".$LANG["common"][16]."</th><th>".$LANG["common"][19]."</th><th>".$LANG["common"][20]."</th><th>&nbsp;</th></tr>";
+		echo "<div class='center'><table class='tab_cadre_fixe'><tr><th>"
+			.$LANG["common"][17]."</th><th>"
+			.$LANG["entity"][0]."</th><th>"
+			.$LANG["common"][16]."</th><th>"
+			.$LANG["common"][19]."</th><th>"
+			.$LANG["common"][20]."</th><th>&nbsp;</th></tr>";
 	
 		foreach ($CFG_GLPI["linkuser_types"] as $type){
 			$query="SELECT * FROM ".$LINK_ID_TABLE[$type]." WHERE $group_where";
@@ -157,17 +172,20 @@ function showDeviceUser($ID){
 
 			$result=$DB->query($query);
 			if ($DB->numrows($result)>0){
-				$ci->setType($type);
+				$ci->setType($type,true);
 				$type_name=$ci->getType();
-				$cansee=haveTypeRight($type,"r");
 				while ($data=$DB->fetch_array($result)){
+					$cansee=$ci->obj->can($data["ID"],"r");
 					$link=$data["name"];
 					if ($cansee) $link="<a href='".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data["ID"]."'>".$link.(($_SESSION["glpiview_ID"]||empty($link))?" (".$data["ID"].")":"")."</a>";
 					$linktype="";
 					if (isset($groups[$data["FK_groups"]])){
 						$linktype=$LANG["common"][35]." ".$groups[$data["FK_groups"]];
 					}
-					echo "<tr class='tab_bg_1'><td class='center'>$type_name</td><td class='center'>$link</td>";
+					echo "<tr class='tab_bg_1'><td class='center'>$type_name</td>"
+						."<td class='center'>".getDropdownName("glpi_entities",$data["FK_entities"])."</td>"
+						."<td class='center'>$link</td>";
+						
 					echo "<td class='center'>";
 					if (isset($data["serial"])&&!empty($data["serial"])){
 						echo $data["serial"];
