@@ -1650,6 +1650,7 @@ $LANG["setup"][604]="Associer à un groupe";
 $LANG["setup"][606]="Ajout impossible. L'utilisateur existe déjà."; 
 $LANG["setup"][607]="Associer à un profil"; 
 $LANG["setup"][608]="Logiciels visibles dans le Helpdesk par défaut"; 
+$LANG["setup"][609]="Ajout impossible. Le serveur OCS existe déjà.";
 
 $LANG["setup"][610]="Titre du ticket obligatoire"; 
 $LANG["setup"][611]="Contenu du ticket obligatoire"; 

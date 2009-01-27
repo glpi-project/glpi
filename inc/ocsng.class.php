@@ -78,12 +78,21 @@ class Ocsng extends CommonDBTM {
 	 * Constructor
 	**/
 	function __construct() {
-		global $CFG_GLPI;
-
 		$this->table = "glpi_ocs_config";
 		$this->type = OCSNG_TYPE;
 	}
 
+	function defineTabs($ID,$withtemplate='')
+	{
+		global $LANG;
+		$tabs[0]=$LANG["log"][55]." ".$LANG["ocsng"][29];
+		if (checkOCSconnection($ID)){
+			$tabs[1]=$LANG["ocsconfig"][27];
+			$tabs[2]=$LANG["ocsconfig"][52];
+		}
+		return $tabs;
+	}
+	
 	/**
 	 * Print ocs config form
 	 *
@@ -159,7 +168,7 @@ class Ocsng extends CommonDBTM {
 		
 		$datestring = $LANG["computers"][14].": ";
 		$date = convDateTime($_SESSION["glpi_currenttime"]);
-		
+
 		echo "<form name='formconfig' action=\"$target\" method=\"post\">";
 		echo "<input type='hidden' name='ID' value='" . $ID . "'>";
 
@@ -406,9 +415,90 @@ class Ocsng extends CommonDBTM {
 		echo "</td></tr>";
 		echo "</table></td>";
 		echo "<td class='tab_bg_2' valign='top'></td></tr>"; 
-		
 		echo "</table></div>";
 
+		switch($action)
+		{
+			case  "update_server_with_template" :
+					echo "<p class=\"submit\"><input type=\"submit\" name=\"update_server_with_template\" class=\"submit\" value=\"" . $LANG["buttons"][2] . "\" ></p>";
+					break;
+			case "edit_server" :
+					echo "<p class=\"submit\"><input type=\"submit\" name=\"update_server\" class=\"submit\" value=\"" . $LANG["buttons"][2] . "\" ></p>";
+					break;
+			case "add_template" :
+				echo "<p class=\"submit\"><input type=\"submit\" name=\"add_template\" class=\"submit\" value=\"" . $LANG["buttons"][2] . "\" ></p>";
+				break;
+			case  "update_template" :
+				echo "<p class=\"submit\"><input type=\"submit\" name=\"update_template\" class=\"submit\" value=\"" . $LANG["buttons"][2] . "\" ></p>";
+				break;
+		}
+
+	echo "</form>";
+	}
+
+	function ocsFormAutomaticLinkConfig($target, $ID,$withtemplate='',$templateid='') {
+		global $DB, $LANG, $CFG_GLPI;
+		
+		if (!haveRight("ocsng", "w"))
+			return false;
+
+		$action ="";
+		if (!isset($withtemplate) || $withtemplate == "")
+			$action = "edit_server";
+		elseif (isset($withtemplate) && $withtemplate ==1)
+		{
+			if ($ID == -1 && $templateid == '')
+				$action = "add_template";
+			else
+				$action = "update_template";	
+		}
+		elseif (isset($withtemplate) && $withtemplate ==2)
+		{
+			if ($templateid== '')
+				$action = "edit_server";
+			elseif ($ID == -1)
+				$action = "add_server_with_template";
+			else
+				$action = "update_server_with_template";	
+		}
+
+		//Get datas
+		switch($action)
+		{
+			case  "update_server_with_template" :
+				
+					//Get the template configuration
+					$template_config = getOcsConf($templateid);
+					
+					//Unset all the variable which are not in the template
+					unset($template_config["ID"]);
+					unset($template_config["name"]);
+					unset($template_config["ocs_db_user"]);
+					unset($template_config["ocs_db_password"]);
+					unset($template_config["ocs_db_name"]);
+					unset($template_config["ocs_db_host"]);
+					unset($template_config["checksum"]);
+					
+					//Add all the template's informations to the server's object'
+					foreach ($template_config as $key => $value)
+						if ($value != "") $this->fields[$key] = $value;
+					break; 
+			case "edit_server" :
+				if (empty($ID))
+					$this->getEmpty($ID);
+				else
+					$this->getFromDB($ID);
+				break;
+			case "add_template" :
+					$this->getEmpty($ID);
+					break;
+			case  "update_template" :
+			case "add_server_with_template" :
+				$this->getFromDB($templateid);
+			break;	
+		}
+		
+		
 		echo "<br><div class='center'><table class='tab_cadre'>";
 		echo "<tr><th colspan='4'>" . $LANG["ocsconfig"][52] . "</th></tr>";
 		echo "<tr class='tab_bg_2'><td>" . $LANG["ocsconfig"][53] . " </td><td>";
@@ -454,6 +544,7 @@ class Ocsng extends CommonDBTM {
 	echo "</form>";
 	}
 
+
 	/**
 	 * Print simple ocs config form (database part)
 	 *
@@ -483,8 +574,12 @@ class Ocsng extends CommonDBTM {
 		} else {
 			$this->getFromDB($ID);
 		}
-
-		echo "<br><form name='formdbconfig' action=\"$target\" method=\"post\">";
+		
+		$params = array("templateid"=>$templateid,"withtemplate"=>$withtemplate);
+		$this->showTabs($ID, $withtemplate,$_SESSION['glpi_tab'],$params);
+		
+		echo "<div class='center' id='tabsbody'>";	
+		echo "<form name='formdbconfig' action=\"$target\" method=\"post\">";
 		if (!empty ($ID) && $withtemplate!=2)
 			echo "<input type='hidden' name='ID' value='" . $ID. "'>";
 		//Creation or modification of a machine, using a template
@@ -493,7 +588,7 @@ class Ocsng extends CommonDBTM {
 			echo "<input type='hidden' name='withtemplate' value=2>";
 			echo "<input type='hidden' name='templateid' value='" . $templateid. "'>";
 		}
-		echo "<div class='center'><table class='tab_cadre'>";
+		echo "<div class='center'><table class='tab_cadre_fixe'>";
 		echo "<tr><th colspan='2'>" . $LANG["ocsconfig"][0] . "</th></tr>";
 		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["common"][16] . " </td><td> <input type=\"text\" name=\"name\" value=\"" . $this->fields["name"] . "\"></td></tr>";
 		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["ocsconfig"][2] . " </td><td> <input type=\"text\" name=\"ocs_db_host\" value=\"" . $this->fields["ocs_db_host"] . "\"></td></tr>";
@@ -512,11 +607,11 @@ class Ocsng extends CommonDBTM {
 			echo "<td class='center'><input type=\"submit\" name=\"delete\" class=\"submit\" value=\"" . $LANG["buttons"][6] . "\" ></td></tr>";
 			
 		}
-		echo "</table></div>";
+		echo "</table>";
 		echo "</form>";
 
 
-		echo "<div class='center'>";
+		//echo "<div class='center'>";
 
 		if ($ID != -1) {
 			if (!checkOCSconnection($ID)){
@@ -537,15 +632,17 @@ class Ocsng extends CommonDBTM {
 			else {
 				echo $LANG["ocsng"][18] . "<br>";
 				echo $LANG["ocsng"][19];
-
+/*
 				if ($withtemplate == 2)
 					$this->ocsFormConfig($target,$ID,$withtemplate,$templateid);
 				else
 					$this->ocsFormConfig($target, $ID,$withtemplate);
-			}
+			*/}
 
 		}
 		echo "</div>";
+		echo "<div id='tabcontent'></div>";
+		echo "<script type='text/javascript'>loadDefaultTab();</script>";
 	}
 	
 	function prepareInputForUpdate($input){
@@ -590,6 +687,16 @@ class Ocsng extends CommonDBTM {
 	}
 	
 	function prepareInputForAdd($input){
+		global $LANG,$DB;
+		
+		// Check if user does not exists
+		$query="SELECT * FROM glpi_auth_ldap WHERE name='".$input['name']."';";
+		$result=$DB->query($query);
+		if ($DB->numrows($result)>0){
+			addMessageAfterRedirect($LANG["setup"][609]);
+			return false;
+		}
+		
 		
 		if (isset($input["ocs_db_passwd"])&&!empty($input["ocs_db_passwd"])){
 			$input["ocs_db_passwd"]=rawurlencode(stripslashes($input["ocs_db_passwd"]));

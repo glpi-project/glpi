@@ -65,9 +65,13 @@ elseif (isset ($tab["update_server"])) {
 //Add new server
 elseif (isset ($tab["add_server"])) {
 	$newid = $ocs->add($tab);
-
-	//If template, display the template form
-	$ocs->showForm($_SERVER['PHP_SELF'], $newid,$tab["withtemplate"],$tab["templateid"]);
+	
+	if ($newid != '')
+	//	If template, display the template form
+		$ocs->showForm($_SERVER['PHP_SELF'], $newid,$tab["withtemplate"],$tab["templateid"]);
+	else
+		//The OCS server already exists in the DB	
+		glpi_header($_SERVER["HTTP_REFERER"]);
 }
 
 //Templates
