@@ -55,13 +55,22 @@ $ocs = new Ocsng();
 
 switch ($_POST['glpi_tab']) {
 	case -1 :
+		$ocs->showDBConnectionStatus($_POST["ID"]);
+		$ocs->ocsFormImportOptions($_SERVER['PHP_SELF'], $_POST["ID"],$_POST["withtemplate"],$_POST["templateid"]);
 		$ocs->ocsFormConfig($_SERVER['PHP_SELF'], $_POST["ID"],$_POST["withtemplate"]);
 		$ocs->ocsFormAutomaticLinkConfig($_SERVER['PHP_SELF'], $_POST["ID"],$_POST["withtemplate"],$_POST["templateid"]);
 		break;
+	case 0 :
+		if ($_POST["ID"] != -1)
+			$ocs->showDBConnectionStatus($_POST["ID"]);
+		break;	
 	case 1:
+		$ocs->ocsFormImportOptions($_SERVER['PHP_SELF'], $_POST["ID"],$_POST["withtemplate"],$_POST["templateid"]);
+		break;	
+	case 2:
 		$ocs->ocsFormConfig($_SERVER['PHP_SELF'], $_POST["ID"],$_POST["withtemplate"],$_POST["templateid"]);
 		break;
-	case 2 :
+	case 3 :
 		$ocs->ocsFormAutomaticLinkConfig($_SERVER['PHP_SELF'], $_POST["ID"],$_POST["withtemplate"],$_POST["templateid"]);
 		break;	
 	default :
