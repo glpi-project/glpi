@@ -1533,7 +1533,6 @@ function ajaxFooter(){
 		
 		echo "</div></div>";
 	}
-	echo "</body></html>";
 
 
 }
@@ -1733,7 +1732,7 @@ function printPagerForm ($action="") {
 		echo "<span>".$LANG["pager"][4]."&nbsp;</span>";
 		echo "<select name='glpilist_limit' onChange='submit()'>";
 	} else {
-		echo "<form method='POST'>\n";
+		echo "<form method='POST' action =''>\n";
 		echo "<span>".$LANG["pager"][4]."&nbsp;</span>";
 		echo "<select name='glpilist_limit' onChange='reloadTab(\"glpilist_limit=\"+this.value)'>";		
 	}
