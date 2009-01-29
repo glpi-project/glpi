@@ -702,8 +702,7 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="")
 			$menu['config']['content']['ocsng']['title']=$LANG["setup"][134];
 			$menu['config']['content']['ocsng']['page']='/front/setup.ocsng.php';
 			$menu['config']['content']['ocsng']['links']['search']='/front/setup.ocsng.php';
-			$menu['config']['content']['ocsng']['links']['add']='/front/setup.templates.php?type='.OCSNG_TYPE.'&amp;add=1';
-			$menu['config']['content']['ocsng']['links']['template']='/front/setup.templates.php?type='.OCSNG_TYPE.'&amp;add=0';
+			$menu['config']['content']['ocsng']['links']['add']='/front/ocsng.form.php';
 		}
 
 		if (haveRight("typedoc","r")){

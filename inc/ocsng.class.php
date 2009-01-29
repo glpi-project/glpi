@@ -86,8 +86,9 @@ class Ocsng extends CommonDBTM {
 	{
 		global $LANG;
 		$tabs[0]=$LANG["help"][30];
+		
 		//If connection to the OCS DB  is ok, and all rights are ok too
-		if (checkOCSconnection($ID) &&
+		if ($ID != '' && checkOCSconnection($ID) &&
 				ocsCheckConfig(1) &&
 					ocsCheckConfig(2) &&
 						ocsCheckConfig(4) && 
@@ -98,46 +99,7 @@ class Ocsng extends CommonDBTM {
 		}
 		return $tabs;
 	}
-	
-	function cleanFieldsByAction($action,$ID,$templateid)
-	{
-		//Get datas
-		switch($action)
-		{
-			case  "update_server_with_template" :
-				
-					//Get the template configuration
-					$template_config = getOcsConf($templateid);
-					
-					//Unset all the variable which are not in the template
-					unset($template_config["ID"]);
-					unset($template_config["name"]);
-					unset($template_config["ocs_db_user"]);
-					unset($template_config["ocs_db_password"]);
-					unset($template_config["ocs_db_name"]);
-					unset($template_config["ocs_db_host"]);
-					unset($template_config["checksum"]);
-					
-					//Add all the template's informations to the server's object'
-					foreach ($template_config as $key => $value)
-						if ($value != "") $this->fields[$key] = $value;
-					break; 
-			case "edit_server" :
-				if (empty($ID))
-					$this->getEmpty($ID);
-				else
-					$this->getFromDB($ID);
-				break;
-			case "add_template" :
-					$this->getEmpty($ID);
-					break;
-			case  "update_template" :
-			case "add_server_with_template" :
-				$this->getFromDB($templateid);
-			break;	
-		}
-		
-	}
+
 	/**
 	 * Print ocs config form
 	 *
@@ -149,17 +111,18 @@ class Ocsng extends CommonDBTM {
 	 *@return Nothing (display)
 	 *
 	 **/
-	function ocsFormConfig($target, $ID,$withtemplate='',$templateid='') {
+	function ocsFormConfig($target, $ID) {
 		global $DB, $LANG, $CFG_GLPI;
 		
 		if (!haveRight("ocsng", "w"))
 			return false;
 
-		$action = getFormServerAction($ID,$templateid);
-		$this->cleanFieldsByAction($action,$ID,$templateid);
-
+		$this->getFromDB($ID);
 		echo "<br>";		
-		echo "<div class='center'><table class='tab_cadre'>";
+		echo "<div class='center'>"; 
+		echo "<form name='formconfig' action=\"$target\" method=\"post\">";
+		echo "<input type='hidden' name='ID' value='" . $ID . "'>";
+		echo "<table class='tab_cadre'>";
 		echo "<tr><th>" . $LANG["ocsconfig"][27] ." ".$LANG["Menu"][0]. "</th><th>" . $LANG["title"][30] . "</th><th>" . $LANG["ocsconfig"][43] . "</th></tr>";
 		echo "<tr><td class='tab_bg_2' valign='top'><table width='100%' cellpadding='1' cellspacing='0' border='0'>";
 
@@ -299,41 +262,21 @@ class Ocsng extends CommonDBTM {
 		echo "</td></tr>";
 		echo "</table></td>";
 		echo "<td class='tab_bg_2' valign='top'></td></tr>"; 
-		echo "</table></div>";
+		echo "</table>";
+		echo "<p class=\"submit\"><input type=\"submit\" name=\"update_server\" class=\"submit\" value=\"" . $LANG["buttons"][2] . "\" ></p>";
+		echo "</form></div>";
 
+		echo "<br>";
 		echo "<div class='center'>" . $LANG["ocsconfig"][15] . "</div>";
 		echo "<div class='center'>" . $LANG["ocsconfig"][14] . "</div>";
 		echo "<div class='center'>" . $LANG["ocsconfig"][13] . "</div>";
-
-		echo "<br>";
-
-
-		switch($action)
-		{
-			case  "update_server_with_template" :
-					echo "<p class=\"submit\"><input type=\"submit\" name=\"update_server_with_template\" class=\"submit\" value=\"" . $LANG["buttons"][2] . "\" ></p>";
-					break;
-			case "edit_server" :
-					echo "<p class=\"submit\"><input type=\"submit\" name=\"update_server\" class=\"submit\" value=\"" . $LANG["buttons"][2] . "\" ></p>";
-					break;
-			case "add_template" :
-				echo "<p class=\"submit\"><input type=\"submit\" name=\"add_template\" class=\"submit\" value=\"" . $LANG["buttons"][2] . "\" ></p>";
-				break;
-			case  "update_template" :
-				echo "<p class=\"submit\"><input type=\"submit\" name=\"update_template\" class=\"submit\" value=\"" . $LANG["buttons"][2] . "\" ></p>";
-				break;
-		}
-
-	echo "</form>";
 	}
 
 	function ocsFormImportOptions($target, $ID,$withtemplate='',$templateid='')
 	{
 		global $LANG;
 		
-		$action = getFormServerAction($ID,$templateid);
-		$this->cleanFieldsByAction($action,$ID,$templateid);
-
+		$this->getFromDB($ID);
 		echo "<br>";
 		echo "<div class='center'>";
 		echo "<form name='formconfig' action=\"$target\" method=\"post\">";
@@ -352,7 +295,6 @@ class Ocsng extends CommonDBTM {
 		echo "</td></tr>";
 		
 		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["ocsconfig"][48] . " </td><td>";
-		//getListState($ID);
 		dropdownArrayValues("deconnection_behavior", 
 			array(''=>$LANG["buttons"][49], "trash"=>$LANG["ocsconfig"][49], "delete"=>$LANG["ocsconfig"][50]), 
 			$this->fields["deconnection_behavior"]);
@@ -397,23 +339,8 @@ class Ocsng extends CommonDBTM {
 		dropdownInteger('cron_sync_number', $this->fields["cron_sync_number"], 0, 100);
 		echo "</td></tr>";
 		
-		
 		echo "<tr class='tab_bg_2'><td colspan='2 class='center'>";
-		switch($action)
-		{
-			case  "update_server_with_template" :
-					echo "<p class=\"submit\"><input type=\"submit\" name=\"update_server_with_template\" class=\"submit\" value=\"" . $LANG["buttons"][2] . "\" ></p>";
-					break;
-			case "edit_server" :
-					echo "<p class=\"submit\"><input type=\"submit\" name=\"update_server\" class=\"submit\" value=\"" . $LANG["buttons"][2] . "\" ></p>";
-					break;
-			case "add_template" :
-				echo "<p class=\"submit\"><input type=\"submit\" name=\"add_template\" class=\"submit\" value=\"" . $LANG["buttons"][2] . "\" ></p>";
-				break;
-			case  "update_template" :
-				echo "<p class=\"submit\"><input type=\"submit\" name=\"update_template\" class=\"submit\" value=\"" . $LANG["buttons"][2] . "\" ></p>";
-				break;
-		}
+		echo "<p class=\"submit\"><input type=\"submit\" name=\"update_server\" class=\"submit\" value=\"" . $LANG["buttons"][2] . "\" ></p>";
 		echo "</td></tr>";
 		echo "</form>";
 		echo "</table></div>";
@@ -425,11 +352,13 @@ class Ocsng extends CommonDBTM {
 		if (!haveRight("ocsng", "w"))
 			return false;
 
-		$action = getFormServerAction($ID,$templateid);
-		$this->cleanFieldsByAction($action,$ID,$templateid);
-		
-		
-		echo "<br><div class='center'><table class='tab_cadre'>";
+		$this->getFromDB($ID);		
+
+		echo "<br>";
+		echo "<div class='center'>";
+		echo "<form name='formconfig' action=\"$target\" method=\"post\">";
+		echo "<table class='tab_cadre'>";
+		echo "<input type='hidden' name='ID' value='" . $ID . "'>";
 		echo "<tr><th colspan='4'>" . $LANG["ocsconfig"][52] . "</th></tr>";
 		echo "<tr class='tab_bg_2'><td>" . $LANG["ocsconfig"][53] . " </td><td>";
 		dropdownYesNo("glpi_link_enabled", $this->fields["glpi_link_enabled"]);
@@ -453,25 +382,10 @@ class Ocsng extends CommonDBTM {
 		dropdownValue("glpi_dropdown_state", "link_if_status", $this->fields["link_if_status"]);
 		echo "</td><td colspan='2'></tr>";
 		
-		echo "</table><br>".$LANG["ocsconfig"][58]."</div>";
-
-		switch($action)
-		{
-			case  "update_server_with_template" :
-					echo "<p class=\"submit\"><input type=\"submit\" name=\"update_server_with_template\" class=\"submit\" value=\"" . $LANG["buttons"][2] . "\" ></p>";
-					break;
-			case "edit_server" :
-					echo "<p class=\"submit\"><input type=\"submit\" name=\"update_server\" class=\"submit\" value=\"" . $LANG["buttons"][2] . "\" ></p>";
-					break;
-			case "add_template" :
-				echo "<p class=\"submit\"><input type=\"submit\" name=\"add_template\" class=\"submit\" value=\"" . $LANG["buttons"][2] . "\" ></p>";
-				break;
-			case  "update_template" :
-				echo "<p class=\"submit\"><input type=\"submit\" name=\"update_template\" class=\"submit\" value=\"" . $LANG["buttons"][2] . "\" ></p>";
-				break;
-		}
-
-	echo "</form>";
+		echo "</table><br>".$LANG["ocsconfig"][58];
+		echo "<p class=\"submit\"><input type=\"submit\" name=\"update_server\" class=\"submit\" value=\"" . $LANG["buttons"][2] . "\" ></p>";
+		echo "</form>";
+		echo "</div>";
 	}
 
 	/**
@@ -479,13 +393,10 @@ class Ocsng extends CommonDBTM {
 	 *
 	 *@param $target form target
 	 *@param $ID Integer : Id of the ocs config
-	 *@param $withtemplate template or basic computer
-	 *@param $templateid Integer : Id of the template used
-	 *@todo clean template process
 	 *@return Nothing (display)
 	 *
 	 **/
-	function showForm($target, $ID,$withtemplate='',$templateid='') {
+	function showForm($target, $ID) {
 
 		global $DB, $DBocs, $LANG, $CFG_GLPI;
 
@@ -493,153 +404,38 @@ class Ocsng extends CommonDBTM {
 			return false;
 			
 		//If no ID provided, or if the server is created using an existing template
-		if (empty ($ID) || $ID == -1 ) {
-			//Create a server using a template
-			if ($templateid != '' && $templateid != -1)
-				$this->getFromDB($templateid);
-			else
-			//Installing without a template	
+		if (empty ($ID)) {
 			$this->getEmpty();
-		} else {
+		} else { 
 			$this->getFromDB($ID);
 		}
 		
-		$params = array("templateid"=>$templateid,"withtemplate"=>$withtemplate);
-		$this->showTabs($ID, $withtemplate,$_SESSION['glpi_tab'],$params);
-
+		$this->showTabs($ID, '',$_SESSION['glpi_tab']);
 		
-		echo "<div class='center' id='tabsbody'>";	
-		echo "<form name='formdbconfig' action=\"$target\" method=\"post\">";
+		$out  = "<div class='center' id='tabsbody'>";	
+		$out .= "<form name='formdbconfig' action=\"$target\" method=\"post\">";
+		$out .= "<table class='tab_cadre_fixe'>";
+		$out .= "<tr class='tab_bg_2'><td class='center'>" . $LANG["common"][16] . " </td><td> <input type=\"text\" name=\"name\" value=\"" . $this->fields["name"] . "\"></td></tr>";
+		$out .= "<tr class='tab_bg_2'><td class='center'>" . $LANG["ocsconfig"][2] . " </td><td> <input type=\"text\" name=\"ocs_db_host\" value=\"" . $this->fields["ocs_db_host"] . "\"></td></tr>";
+		$out .= "<tr class='tab_bg_2'><td class='center'>" . $LANG["ocsconfig"][4] . " </td><td> <input type=\"text\" name=\"ocs_db_name\" value=\"" . $this->fields["ocs_db_name"] . "\"></td></tr>";
+		$out .= "<tr class='tab_bg_2'><td class='center'>" . $LANG["ocsconfig"][1] . " </td><td> <input type=\"text\" name=\"ocs_db_user\" value=\"" . $this->fields["ocs_db_user"] . "\"></td></tr>";
+		$out .= "<tr class='tab_bg_2'><td class='center'>" . $LANG["ocsconfig"][3] . " </td><td> <input type=\"password\" name=\"ocs_db_passwd\" value=\"\"></td></tr>";
 
-		$action ="";
-		if (!isset($withtemplate) || $withtemplate == "")
-			$action = "edit_server";
-		elseif (isset($withtemplate) && $withtemplate ==1)
-		{
-			if ($ID == -1 && $templateid == '')
-				$action = "add_template";
-			else
-				$action = "update_template";	
-		}
-		elseif (isset($withtemplate) && $withtemplate ==2)
-		{
-			if ($templateid== '')
-				$action = "edit_server";
-			elseif ($ID == -1)
-				$action = "add_server_with_template";
-			else
-				$action = "update_server_with_template";	
-		}
-		
-		//Get datas
-		switch($action)
-		{
-			case  "update_server_with_template" :
-				
-					//Get the template configuration
-					$template_config = getOcsConf($templateid);
-					
-					//Unset all the variable which are not in the template
-					unset($template_config["ID"]);
-					unset($template_config["name"]);
-					unset($template_config["ocs_db_user"]);
-					unset($template_config["ocs_db_password"]);
-					unset($template_config["ocs_db_name"]);
-					unset($template_config["ocs_db_host"]);
-					unset($template_config["checksum"]);
-					
-					//Add all the template's informations to the server's object'
-					foreach ($template_config as $key => $value)
-						if ($value != "") $this->fields[$key] = $value;
-					break; 
-			case "edit_server" :
-				if (empty($ID))
-					$this->getEmpty($ID);
-				else
-					$this->getFromDB($ID);
-				break;
-			case "add_template" :
-					$this->getEmpty($ID);
-					break;
-			case  "update_template" :
-			case "add_server_with_template" :
-				$this->getFromDB($templateid);
-			break;	
-		}
-		
-		$datestring = $LANG["computers"][14].": ";
-		$date = convDateTime($_SESSION["glpi_currenttime"]);
-
-		echo "<form name='formconfig' action=\"$target\" method=\"post\">";
-		echo "<input type='hidden' name='ID' value='" . $ID . "'>";
-
-		echo "<div class='center'><table class='tab_cadre_fixe'>";
-		
-		//This is a new template, name must me supplied
-		if($action == "add_template" || $action == "update_template") {
-				echo "<input type=\"hidden\" name=\"is_template\" value=\"1\">";
-				echo "<input type=\"hidden\" name=\"withtemplate\" value=\"1\">";
-				echo "<input type=\"hidden\" name=\"ID\" value=\"".$templateid."\">";
-			}
-		if ($action == "add_template")
-				echo "<input type=\"hidden\" name=\"name\" value=\"\">";
-		if ($action == "update_server_with_template")
-				echo "<input type=\"hidden\" name=\"tplname\" value=\"".$this->fields["tplname"]."\">";
-	
-
-			//If template, display a textfield to modify name
-		if($action == "add_template" || $action == "update_template") {
-				echo "<tr><th align='center'  colspan=2>";
-
-				echo $LANG["common"][6]."&nbsp;: ";
-				autocompletionTextField("tplname","glpi_ocs_config","tplname",$this->fields["tplname"],40);
-				echo "</th></tr>";
-					
-			//Adding a new machine, just display the name, not editable
-		}
-		elseif($action == "edit_server" || $action == "update_server_with_template") {
-				echo "<tr><th align='center'>";
-				
-				echo $LANG["ocsng"][28].": ".$this->fields["tplname"];
-				echo "<input type='hidden' name='tplname' value='".$this->fields["tplname"]."'>";
-
-				echo "</th>";
-				
-				echo "<th align='center'>".$datestring.$date."</th>";
-				echo "</tr>";
-		}
-		
-		/*
-		if (!empty ($ID) && $withtemplate!=2)
-			echo "<input type='hidden' name='ID' value='" . $ID. "'>";
-		//Creation or modification of a machine, using a template
-		elseif ($withtemplate == 2)
-		{	
-			echo "<input type='hidden' name='withtemplate' value=2>";
-			echo "<input type='hidden' name='templateid' value='" . $templateid. "'>";
-		}*/
-		
-		//echo "<table class='tab_cadre_fixe'>";
-		//echo "<tr><th colspan='2'>" . $LANG["ocsconfig"][0] . "</th></tr>";
-		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["common"][16] . " </td><td> <input type=\"text\" name=\"name\" value=\"" . $this->fields["name"] . "\"></td></tr>";
-		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["ocsconfig"][2] . " </td><td> <input type=\"text\" name=\"ocs_db_host\" value=\"" . $this->fields["ocs_db_host"] . "\"></td></tr>";
-		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["ocsconfig"][4] . " </td><td> <input type=\"text\" name=\"ocs_db_name\" value=\"" . $this->fields["ocs_db_name"] . "\"></td></tr>";
-		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["ocsconfig"][1] . " </td><td> <input type=\"text\" name=\"ocs_db_user\" value=\"" . $this->fields["ocs_db_user"] . "\"></td></tr>";
-		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["ocsconfig"][3] . " </td><td> <input type=\"password\" name=\"ocs_db_passwd\" value=\"\"></td></tr>";
-		
-		if ($ID == -1 || $withtemplate == 2)
-			echo "<tr class='tab_bg_2'><td align='center' colspan=2><input type=\"submit\" name=\"add_server\" class=\"submit\" value=\"" . $LANG["buttons"][2] . "\" ></td></tr>";
+		if ($ID == '')
+			$out .= "<tr class='tab_bg_2'><td align='center' colspan=2><input type=\"submit\" name=\"add\" class=\"submit\" value=\"" . $LANG["buttons"][2] . "\" ></td></tr>";
 		else
 		{
-			echo "<tr class='tab_bg_2'><td align='center' colspan=2><input type=\"submit\" name=\"update_server\" class=\"submit\" value=\"" . $LANG["buttons"][2] . "\" >";
-			echo "&nbsp;<input type=\"submit\" name=\"delete\" class=\"submit\" value=\"" . $LANG["buttons"][6] . "\" ></td></tr>";
+			$out .= "<input type='hidden' name='ID' value='$ID'>";
+			$out .= "<tr class='tab_bg_2'><td align='center' colspan=2><input type=\"submit\" name=\"update\" class=\"submit\" value=\"" . $LANG["buttons"][2] . "\" >";
+			$out .= "&nbsp;<input type=\"submit\" name=\"delete\" class=\"submit\" value=\"" . $LANG["buttons"][6] . "\" ></td></tr>";
 			
 		}
-		echo "</table>";
-		echo "</form>";
-		echo "</div>";
-		echo "<div id='tabcontent'></div>";
-		echo "<script type='text/javascript'>loadDefaultTab();</script>";
+		$out .= "</table>";
+		$out .= "</form>";
+		$out .= "</div>";
+		$out .= "<div id='tabcontent'></div>";
+		$out .= "<script type='text/javascript'>loadDefaultTab();</script>";
+		echo $out;
 	}
 	
 	function showDBConnectionStatus($ID)

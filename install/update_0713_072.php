@@ -1042,6 +1042,25 @@ function update0713to072() {
 		$DB->query($query) or die("0.72 drop ID index on glpi_monitors " . $LANG["update"][90] . $DB->error());
 	}	
 
+	
+	if (FieldExists("glpi_ocs_config","is_template")){
+		$quey="DELETE FROM `glpi_ocs_config` WHERE is_template=1";
+		$DB->query($query) or die("0.72 delete templates in glpi_ocs_config" . $LANG["update"][90] . $DB->error());
+		
+		$query="ALTER TABLE `glpi_ocs_config` DROP `is_template`;";
+		$DB->query($query) or die("0.72 drop is_template in glpi_ocs_config" . $LANG["update"][90] . $DB->error());
+	}
+
+	if (FieldExists("glpi_ocs_config","tplname")){
+		$query="ALTER TABLE `glpi_ocs_config` DROP `tplname`;";
+		$DB->query($query) or die("0.72 drop tplname in glpi_ocs_config" . $LANG["update"][90] . $DB->error());
+	}
+
+	if (FieldExists("glpi_ocs_config","date_mod")){
+		$query="ALTER TABLE `glpi_ocs_config` DROP `date_mod`;";
+		$DB->query($query) or die("0.72 drop date_mod in glpi_ocs_config" . $LANG["update"][90] . $DB->error());
+	}
+
 	// Display "Work ended." message - Keep this as the last action.
 	displayMigrationMessage("072"); // End
 } // fin 0.72 #####################################################################################
