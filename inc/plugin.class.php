@@ -197,12 +197,12 @@ class Plugin extends CommonDBTM {
 			if (empty($name)){
 				$plug['name']=$plug['directory'];
 			}
-			
+
+
 			// Only config for install plugins
 			if (in_array($plug['state'],array(PLUGIN_ACTIVATED,PLUGIN_TOBECONFIGURED,PLUGIN_NOTACTIVATED)) 
-				//Only display config page link if the plugin have a config.php in his root directory
-				&& file_exists(GLPI_ROOT."/plugins/".$plug['directory']."/config.php")) {
-				echo "<a href='".$CFG_GLPI["root_doc"]."/plugins/".$plug['directory']."/config.php'><strong>".$plug['name']."</strong></a>";		
+				&& isset($PLUGIN_HOOKS['config_page'][$plug['directory']])) {
+				echo "<a href='".$CFG_GLPI["root_doc"]."/plugins/".$plug['directory']."/".$PLUGIN_HOOKS['config_page'][$plug['directory']]."'><strong>".$plug['name']."</strong></a>";		
 			} else {
 				echo $plug['name'];
 			}
