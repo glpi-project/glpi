@@ -38,6 +38,8 @@ if (!defined('GLPI_ROOT')){
 	die("Sorry. You can't access directly to this file");
 }
 
+
+
 global $PLUGIN_HOOKS;
 $PLUGIN_HOOKS = array();
 global $CFG_GLPI_PLUGINS;
@@ -108,7 +110,7 @@ function doHook ($name,$param=NULL) {
 			if (file_exists(GLPI_ROOT . "/plugins/$plug/hook.php")) {
 				include_once(GLPI_ROOT . "/plugins/$plug/hook.php");
 			}
-			if (function_exists("plugin_".$plug."_".$function)) {
+			if (function_exists($function)) {
 				$function($data);
 			}
 		}
@@ -135,7 +137,7 @@ function doHookFunction($name,$parm=NULL) {
 			if (file_exists(GLPI_ROOT . "/plugins/$plug/hook.php")) {
 				include_once(GLPI_ROOT . "/plugins/$plug/hook.php");
 			}
-			if (function_exists("plugin_".$plug."_".$function)) {
+			if (function_exists($function)) {
 				$ret = $function($ret);
 			}
 		}
@@ -180,11 +182,11 @@ function displayPluginAction($type,$ID,$onglet,$withtemplate=0){
 	// Show all Case
 	if ($onglet==-1){
 		if (isset($PLUGIN_HOOKS["headings_action"])&&is_array($PLUGIN_HOOKS["headings_action"])&&count($PLUGIN_HOOKS["headings_action"])){
-			foreach ($PLUGIN_HOOKS["headings_action"] as $plug => $tpm){
+			foreach ($PLUGIN_HOOKS["headings_action"] as $plug => $function){
 				if (file_exists(GLPI_ROOT . "/plugins/$plug/hook.php")) {
 					include_once(GLPI_ROOT . "/plugins/$plug/hook.php");
 				}
-				$function = "plugin_headings_actions_".$plug;
+
 				if (function_exists($function)){
 					$actions=$function($type);
 					if (is_array($actions)&&count($actions))
@@ -210,8 +212,7 @@ function displayPluginAction($type,$ID,$onglet,$withtemplate=0){
 					include_once(GLPI_ROOT . "/plugins/$plug/hook.php");
 				}
 
-				//$function=$PLUGIN_HOOKS["headings_action"][$plug];
-				$function = "plugin_headings_actions_".$plug;
+				$function=$PLUGIN_HOOKS["headings_action"][$plug];
 				if (function_exists($function)){
 					$actions=$function($type);
 
@@ -242,14 +243,12 @@ function displayPluginHeadings($target,$type,$withtemplate,$actif){
 		$template="&amp;withtemplate=$withtemplate";
 	}
 	$display_onglets=array();
-	
 	if (isset($PLUGIN_HOOKS["headings"]) && is_array($PLUGIN_HOOKS["headings"])) {
-		foreach ($PLUGIN_HOOKS["headings"] as $plug => $tpm) {
-			$function = "plugin_get_headings_".$plug;
+		foreach ($PLUGIN_HOOKS["headings"] as $plug => $function) {
 			if (file_exists(GLPI_ROOT . "/plugins/$plug/hook.php")) {
 				include_once(GLPI_ROOT . "/plugins/$plug/hook.php");
 			}
-			syslog(LOG_ERR,$function);
+
 			if (function_exists($function)) {
 				$onglet=$function($type,$withtemplate);
 
@@ -319,11 +318,11 @@ function getPluginTabs($target,$type,$ID,$withtemplate){
 	$tabs=array();
 	$order=array();
 	if (isset($PLUGIN_HOOKS["headings"]) && is_array($PLUGIN_HOOKS["headings"])) {
-		foreach ($PLUGIN_HOOKS["headings"] as $plug => $tmp) {
+		foreach ($PLUGIN_HOOKS["headings"] as $plug => $function) {
 			if (file_exists(GLPI_ROOT . "/plugins/$plug/hook.php")) {
 				include_once(GLPI_ROOT . "/plugins/$plug/hook.php");
 			}
-			$function = "plugin_get_headings_".$plug;
+
 			if (function_exists($function)) {
 				$onglet=$function($type,$withtemplate);
 
@@ -490,138 +489,4 @@ function loadPluginLang($name){
 	}
 }
 
-//------------------------------------------------------//
-//------------ Plugin Hook functions ------------------//
-//----------------------------------------------------//
-
-/**
- * Enable one or serveral hooks at the same time, with or without parameters
- * @param the plugin's name
- * @param an array with all the hooks to enable, or just a simple hook
- * @params params the parameters to associate with the hook (can be a string, an array or whatever)
- * @return nothing 
- */
-function pluginEnableHooks($name,$hooks = array(),$params = array())
-{
-	global $PLUGIN_HOOKS;
-	
-	//If hook is not an array, then transform it as an array
-	if (!is_array($hooks))
-		$hooks = array($hooks);
-		
-	foreach ($hooks as $hook)
-	{
-		if (empty($params))
-			$PLUGIN_HOOKS[$hook][$name] = true;
-		else
-			$PLUGIN_HOOKS[$hook][$name] = $params;	
-	}
-}
-
-/**
- * Enable headings integration
- * @param name the plugin's name
- * @return nothing 
- */
-function pluginEnableHeadings($name)
-{
-	pluginEnableHooks($name,array('headings','headings_action'));
-}
-
-/**
- * Add a javascript page for this plugin
- * @param name the plugin's name
- * @param page the javascript page
- * @return nothing 
- */
-function pluginAddJavascriptPage($name,$page)
-{
-	pluginEnableHooks($name,'add_javascript', $page);
-}
-
-/**
- * Add a css page for this plugin
- * @param name the plugin's name
- * @param page the css page
- * @return nothing 
- */
-function pluginAddSpecificCss($name,$page)
-{
-	pluginEnableHooks($name,'add_css', $page);
-}
-
-/**
- * Add a cron take for this plugin
- * @param name the plugin's name
- * @param frequency the cron's execution frequency
- * @return nothing 
- */
-function pluginAddCronTask($name,$frequency)
-{
-	pluginEnableHooks($name,'cron', $frequency);
-}
-
-/**
- * Add a cron take for this plugin
- * @param name the plugin's name
- * @param params an array with the planning hooks to use. Currently option available are
- *   - planning_populate
- *   - display planning
- * @return nothing 
- */
-function pluginUsePlanning($name,$params = array())
-{
-	if (isset($params["populate"]) && $params["populate"] == true)
-		pluginEnableHooks($name,'planning_populate');
-
-	if (isset($params["display"]) && $params["display"] == true)
-		pluginEnableHooks($name,'display_planning');
-}
-
-/**
- * Add a redirection for this plugin
- * @param name the plugin's name
- * @param page the page to be redirect to
- * @return nothing 
- */
-function pluginAddRedirectPage($name,$page)
-{
-	pluginEnableHooks($name,'redirect_page', $page);
-}
-
-/**
- * Add a statistics or reports for this plugin
- * @param name the plugin's name
- * @param params an array with the hooks to use. Currently option available are
- *   - reports
- *   - stats
- * @return nothing 
- */
-function pluginAddStatsOrReports($name,$params)
-{
-	if (isset($params["reports"]) && !empty($params["reports"]))
-		pluginEnableHooks($name,"reports",$params["reports"]);
-		
-	if (isset($params["stats"]) && !empty($params["stats"]))
-		pluginEnableHooks($name,"stats",$params["stats"]);
-}
-
-/**
- * Enable menu entry integration
- * @param name the plugin's name
- * @param params an array with the subentities to use (subentry_name => subentry_value):
- * @return nothing 
- */
-function pluginEnableMenuEntry($plugin_name,$submenu_entries = array())
-{
-	global $PLUGIN_HOOKS;
-	pluginEnableHooks($plugin_name,'menu_entry');
-	foreach ($submenu_entries as $action => $value)
-		$PLUGIN_HOOKS['submenu_entry'][$plugin_name][$action] = $value;
-}
-
-function pluginEnableMassiveActions($plugin_name)
-{
-	pluginEnableHooks($plugin_name,'use_massive_action');
-}
 ?>
