@@ -1543,6 +1543,11 @@ function addHaving($LINK,$NOT,$type,$ID,$val,$meta,$num){
 function addOrderBy($type,$ID,$order,$key=0){
 	global $SEARCH_OPTION,$CFG_GLPI,$PLUGIN_HOOKS;
 
+	// Security test for order
+	if ($order!="ASC"){
+		$order="DESC";
+	}
+
 	$table=$SEARCH_OPTION[$type][$ID]["table"];
 	$field=$SEARCH_OPTION[$type][$ID]["field"];
 	$linkfield=$SEARCH_OPTION[$type][$ID]["linkfield"];
