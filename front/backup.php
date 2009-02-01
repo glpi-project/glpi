@@ -203,7 +203,7 @@ function get_content($DB, $table,$from,$limit){
 	if($result)
 		while($row = $DB->fetch_row($result)) {
 			if (get_magic_quotes_runtime()) $row=addslashes_deep($row);
-			$insert = "INSERT INTO $table VALUES (";
+			$insert = "INSERT INTO `$table` VALUES (";
 			for($j=0; $j<$DB->num_fields($result);$j++) {
 				if(is_null($row[$j])) $insert .= "NULL,";
 				else if($row[$j] != "") $insert .= "'".addslashes($row[$j])."',";

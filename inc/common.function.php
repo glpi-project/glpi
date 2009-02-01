@@ -679,7 +679,7 @@ function stripslashes_deep($value) {
 function addslashes_deep($value) {
 	$value = is_array($value) ?
 		array_map('addslashes_deep', $value) :
-			(is_null($value) ? NULL : addslashes($value));
+			(is_null($value) ? NULL : mysql_real_escape_string($value));
 	return $value;
 }
 
@@ -693,8 +693,8 @@ function addslashes_deep($value) {
  * @see unclean_cross_side_scripting_deep*
  */
 function clean_cross_side_scripting_deep($value) {
-	$in=array("<",">");
-	$out=array("&lt;","&gt;");
+	$in=array('<','>','&','(',')','%','+','-');
+	$out=array("&lt;","&gt;","&amp;","&#40;","&#41;","&#37;","&#43;","&#45;");
 	$value = is_array($value) ?
 		array_map('clean_cross_side_scripting_deep', $value) :
 			(is_null($value) ? NULL : str_replace($in,$out,$value));
