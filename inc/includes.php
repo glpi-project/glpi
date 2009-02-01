@@ -84,15 +84,18 @@ if (!isset($AJAX_INCLUDE)){
 
 // Security system
 if (isset($_POST)){
-	if (!get_magic_quotes_gpc()){
-		$_POST = array_map('addslashes_deep', $_POST);
+	if (get_magic_quotes_gpc()){
+		$_POST = array_map('stripslashes_deep', $_POST);
 	}
+
+	$_POST = array_map('addslashes_deep', $_POST);
 	$_POST = array_map('clean_cross_side_scripting_deep', $_POST);
 }
 if (isset($_GET)){
-	if (!get_magic_quotes_gpc()){
-		$_GET = array_map('addslashes_deep', $_GET);
+	if (get_magic_quotes_gpc()){
+		$_GET = array_map('stripslashes_deep', $_GET);
 	}
+	$_GET = array_map('addslashes_deep', $_GET);
 	$_GET = array_map('clean_cross_side_scripting_deep', $_GET);
 }
 
