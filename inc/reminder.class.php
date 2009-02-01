@@ -87,7 +87,10 @@ class Reminder extends CommonDBTM {
 	function prepareInputForUpdate($input) {
 		global $LANG;
 
-		if(empty($input["name"])) $input["name"]=$LANG["reminder"][15];
+		$input["name"] = trim($input["name"]);
+		if(empty($input["name"])) {
+			$input["name"]=$LANG["reminder"][15];
+		}
 
 
 		if (isset($input['plan'])){
