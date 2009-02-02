@@ -693,8 +693,8 @@ function addslashes_deep($value) {
  * @see unclean_cross_side_scripting_deep*
  */
 function clean_cross_side_scripting_deep($value) {
-	$in=array('&','<','>','(',')','%','+','-');
-	$out=array("&amp;","&lt;","&gt;","&#40;","&#41;","&#37;","&#43;","&#45;");
+	$in=array('<','>');
+	$out=array("&lt;","&gt;");
 	$value = is_array($value) ?
 		array_map('clean_cross_side_scripting_deep', $value) :
 			(is_null($value) ? NULL : str_replace($in,$out,$value));
@@ -708,8 +708,8 @@ function clean_cross_side_scripting_deep($value) {
  * @see clean_cross_side_scripting_deep
  */
 function unclean_cross_side_scripting_deep($value) {
-	$in=array('<','>','(',')','%','+','-','&');
-	$out=array("&lt;","&gt;","&#40;","&#41;","&#37;","&#43;","&#45;","&amp;");
+	$in=array('<','>');
+	$out=array("&lt;","&gt;");
 	$value = is_array($value) ?
 		array_map('unclean_cross_side_scripting_deep', $value) :
 			(is_null($value) ? NULL : str_replace($out,$in,$value));
