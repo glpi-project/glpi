@@ -41,6 +41,11 @@ header_nocache();
 
 checkRight("create_ticket","1");
 
+// Security
+if (! TableExists($_POST['table']) ){
+	exit();
+}
+
 $where="";
 
 if (isset($_POST["entity_restrict"])&&$_POST["entity_restrict"]>=0){

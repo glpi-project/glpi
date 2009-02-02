@@ -51,6 +51,10 @@ if (!defined('GLPI_ROOT')){
 
 checkLoginUser();
 
+// Security
+if (! TableExists($_POST['table']) ){
+	exit();
+}
 
 if (isset($_POST["entity_restrict"])&&!is_numeric($_POST["entity_restrict"])&&!is_array($_POST["entity_restrict"])){
 	$_POST["entity_restrict"]=unserialize(stripslashes($_POST["entity_restrict"]));

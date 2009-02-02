@@ -46,6 +46,11 @@ checkRight("entity","w");
 
 $which=ENTITY_TYPE;
 
+// Security
+if (isset($_POST["tablename"]) && ! TableExists($_POST["tablename"]) ){
+	exit();
+}
+
 if (isset($_GET["where"]))$where=$_GET["where"];
 else if (isset($_POST["value_where"]))$where=$_POST["value_where"];
 else $where="";
