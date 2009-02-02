@@ -47,6 +47,11 @@ if (!defined('GLPI_ROOT')){
 
 checkCentralAccess();
 
+// Security
+if ( ! FieldExists("glpi_tracking",$_POST['field']) ){
+	exit();
+}
+
 // Make a select box with all glpi users
 
 $where=" glpi_users.deleted='0' AND glpi_users.active='1' ";

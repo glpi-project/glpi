@@ -43,6 +43,11 @@ header_nocache();
 
 checkLoginUser();
 
+// Security
+if (! TableExists($_POST['table']) ){
+	exit();
+}
+
 if (isset($_POST["table"])&&isset($_POST["value"])){	
 	switch ($_POST["table"]){
 		case "glpi_users":

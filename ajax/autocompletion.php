@@ -44,6 +44,12 @@ header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
 checkLoginUser();
+
+// Security
+if (! TableExists($_POST['table']) || ! FieldExists($_POST['table'],$_POST['field']) ){
+	exit();
+}
+
 $entity="";
 if (isset($_POST['entity_restrict'])&&$_POST['entity_restrict']>=0&&in_array($_POST['table'],$CFG_GLPI["specif_entities_tables"])){
 	$entity=" AND FK_entities='".$_POST['entity_restrict']."' ";

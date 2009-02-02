@@ -52,6 +52,17 @@ if (isset($_POST["which"]))$which=$_POST["which"];
 elseif (isset($_GET["which"]))$which=$_GET["which"];
 else $which="";
 
+
+// Security
+if (!empty($which) && ! TableExists($which) ){
+	exit();
+}
+
+// Security
+if (isset($_POST["tablename"]) && ! TableExists($_POST["tablename"]) ){
+	exit();
+}
+
 if (isset($_GET["where"]))$where=$_GET["where"];
 else if (isset($_POST["value_where"]))$where=$_POST["value_where"];
 else $where="";
