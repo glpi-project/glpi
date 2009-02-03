@@ -265,11 +265,6 @@ class Ocsng extends CommonDBTM {
 		echo "</table>";
 		echo "<p class=\"submit\"><input type=\"submit\" name=\"update_server\" class=\"submit\" value=\"" . $LANG["buttons"][2] . "\" ></p>";
 		echo "</form></div>";
-
-		echo "<br>";
-		echo "<div class='center'>" . $LANG["ocsconfig"][15] . "</div>";
-		echo "<div class='center'>" . $LANG["ocsconfig"][14] . "</div>";
-		echo "<div class='center'>" . $LANG["ocsconfig"][13] . "</div>";
 	}
 
 	function ocsFormImportOptions($target, $ID,$withtemplate='',$templateid='')
@@ -337,13 +332,15 @@ class Ocsng extends CommonDBTM {
 
 		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["ocsconfig"][40] . " </td><td>";
 		dropdownInteger('cron_sync_number', $this->fields["cron_sync_number"], 0, 100);
-		echo "</td></tr>";
+		echo "</td></tr></table>";
 		
-		echo "<tr class='tab_bg_2'><td colspan='2 class='center'>";
+		echo "<br>" . $LANG["ocsconfig"][15];
+		echo "<br>" . $LANG["ocsconfig"][14];
+		echo "<br>" . $LANG["ocsconfig"][13];
+
 		echo "<p class=\"submit\"><input type=\"submit\" name=\"update_server\" class=\"submit\" value=\"" . $LANG["buttons"][2] . "\" ></p>";
-		echo "</td></tr>";
 		echo "</form>";
-		echo "</table></div>";
+		echo "</div>";
 	}
 
 	function ocsFormAutomaticLinkConfig($target, $ID,$withtemplate='',$templateid='') {
