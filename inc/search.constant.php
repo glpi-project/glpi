@@ -705,6 +705,13 @@ $SEARCH_OPTION[NETWORKING_TYPE][80]['field']='completename';
 $SEARCH_OPTION[NETWORKING_TYPE][80]['linkfield']='FK_entities';
 $SEARCH_OPTION[NETWORKING_TYPE][80]['name']=$LANG["entity"][0];
 
+$SEARCH_OPTION[NETWORKING_TYPE][86]['table']='glpi_networking';
+$SEARCH_OPTION[NETWORKING_TYPE][86]['field']='recursive';
+$SEARCH_OPTION[NETWORKING_TYPE][86]['linkfield']='recursive';
+$SEARCH_OPTION[NETWORKING_TYPE][86]['name']=$LANG["entity"][9];
+$SEARCH_OPTION[NETWORKING_TYPE][86]['datatype']='bool';
+
+
 $SEARCH_OPTION[NETWORKING_TYPE]['network']=$LANG["setup"][88];
 
 $SEARCH_OPTION[NETWORKING_TYPE][20]['table']='glpi_networking_ports';
@@ -1036,6 +1043,12 @@ $SEARCH_OPTION[PRINTER_TYPE][80]['table']='glpi_entities';
 $SEARCH_OPTION[PRINTER_TYPE][80]['field']='completename';
 $SEARCH_OPTION[PRINTER_TYPE][80]['linkfield']='FK_entities';
 $SEARCH_OPTION[PRINTER_TYPE][80]['name']=$LANG["entity"][0];
+
+$SEARCH_OPTION[PRINTER_TYPE][86]['table']='glpi_printers';
+$SEARCH_OPTION[PRINTER_TYPE][86]['field']='recursive';
+$SEARCH_OPTION[PRINTER_TYPE][86]['linkfield']='recursive';
+$SEARCH_OPTION[PRINTER_TYPE][86]['name']=$LANG["entity"][9];
+$SEARCH_OPTION[PRINTER_TYPE][86]['datatype']='bool';
 
 $SEARCH_OPTION[PRINTER_TYPE]['network']=$LANG["setup"][88];
 
@@ -2520,6 +2533,12 @@ $SEARCH_OPTION[CONTACT_TYPE][80]['field']='completename';
 $SEARCH_OPTION[CONTACT_TYPE][80]['linkfield']='FK_entities';
 $SEARCH_OPTION[CONTACT_TYPE][80]['name']=$LANG["entity"][0];
 
+$SEARCH_OPTION[CONTACT_TYPE][86]['table']='glpi_contacts';
+$SEARCH_OPTION[CONTACT_TYPE][86]['field']='recursive';
+$SEARCH_OPTION[CONTACT_TYPE][86]['linkfield']='recursive';
+$SEARCH_OPTION[CONTACT_TYPE][86]['name']=$LANG["entity"][9];
+$SEARCH_OPTION[CONTACT_TYPE][86]['datatype']='bool';
+
 //////ENTERPRISE_TYPE
 
 $SEARCH_OPTION[ENTERPRISE_TYPE]['common']=$LANG["common"][32];
@@ -2603,6 +2622,12 @@ $SEARCH_OPTION[ENTERPRISE_TYPE][80]['table']='glpi_entities';
 $SEARCH_OPTION[ENTERPRISE_TYPE][80]['field']='completename';
 $SEARCH_OPTION[ENTERPRISE_TYPE][80]['linkfield']='FK_entities';
 $SEARCH_OPTION[ENTERPRISE_TYPE][80]['name']=$LANG["entity"][0];
+
+$SEARCH_OPTION[ENTERPRISE_TYPE][86]['table']='glpi_enterprises';
+$SEARCH_OPTION[ENTERPRISE_TYPE][86]['field']='recursive';
+$SEARCH_OPTION[ENTERPRISE_TYPE][86]['linkfield']='recursive';
+$SEARCH_OPTION[ENTERPRISE_TYPE][86]['name']=$LANG["entity"][9];
+$SEARCH_OPTION[ENTERPRISE_TYPE][86]['datatype']='bool';
 
 //////CONTRACT_TYPE
 
@@ -2708,6 +2733,12 @@ $SEARCH_OPTION[CONTRACT_TYPE][59]['table']='glpi_contracts';
 $SEARCH_OPTION[CONTRACT_TYPE][59]['field']='alert';
 $SEARCH_OPTION[CONTRACT_TYPE][59]['linkfield']='alert';
 $SEARCH_OPTION[CONTRACT_TYPE][59]['name']=$LANG["common"][41];
+
+$SEARCH_OPTION[CONTRACT_TYPE][86]['table']='glpi_contracts';
+$SEARCH_OPTION[CONTRACT_TYPE][86]['field']='recursive';
+$SEARCH_OPTION[CONTRACT_TYPE][86]['linkfield']='recursive';
+$SEARCH_OPTION[CONTRACT_TYPE][86]['name']=$LANG["entity"][9];
+$SEARCH_OPTION[CONTRACT_TYPE][86]['datatype']='bool';
 
 
 //////CARTRIDGE_TYPE
