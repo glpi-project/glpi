@@ -61,7 +61,9 @@ switch ($_POST['glpi_tab']) {
 			$ocs->ocsFormAutomaticLinkConfig($_POST['target'], $_POST["ID"]);
 		break;
 	case 0 :
+		if ($_POST["ID"]>0) {
 			$ocs->showDBConnectionStatus($_POST["ID"]);
+		}
 		break;	
 	case 1:
 		$ocs->ocsFormImportOptions($_POST['target'], $_POST["ID"]);
