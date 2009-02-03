@@ -908,7 +908,7 @@ function addFormTracking ($device_type=0,$ID=0, $target, $author, $group=0, $ass
 	dropdownValue("glpi_dropdown_tracking_category","category",$category);
 	echo "</td></tr>";
 
-	if (haveRight("assign_ticket","1")||haveRight("steal_ticket","1")){
+	if (haveRight("assign_ticket","1")||haveRight("steal_ticket","1")||haveRight("own_ticket","1")){
 		echo "<tr class='tab_bg_2' align='center'><td>".$LANG["buttons"][3].":</td>";
 		echo "<td colspan='3'>";
 
@@ -932,7 +932,7 @@ function addFormTracking ($device_type=0,$ID=0, $target, $author, $group=0, $ass
 
 			dropdownValue("glpi_groups", "assign_group", $group_visible,1,$entity_restrict);
 			echo "</span>";
-		} else if (haveRight("steal_ticket","1") || haveRight("own_ticket","1")) {
+		} else { // own or steal active
 			echo $LANG["job"][6].":";
 			dropdownUsers("assign",$assign_tech,"ID",0,1,$entity_restrict,0);
 		}
