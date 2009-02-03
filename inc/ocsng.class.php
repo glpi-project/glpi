@@ -529,8 +529,8 @@ class Ocsng extends CommonDBTM {
 	function prepareInputForAdd($input){
 		global $LANG,$DB;
 		
-		// Check if user does not exists
-		$query="SELECT * FROM glpi_auth_ldap WHERE name='".$input['name']."';";
+		// Check if server config does not exists
+		$query="SELECT * FROM `" . $this->table . "` WHERE name='".$input['name']."';";
 		$result=$DB->query($query);
 		if ($DB->numrows($result)>0){
 			addMessageAfterRedirect($LANG["setup"][609]);
