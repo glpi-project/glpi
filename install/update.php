@@ -483,6 +483,8 @@ function updatedbUpTo031()
 			include("update_0712_0713.php");
 			update0712to0713();
 		case "0.71.3":
+		case "0.71.4":
+		case "0.71.5":
 			include("update_0713_072.php");
 			update0713to072();
 		case "0.72":
