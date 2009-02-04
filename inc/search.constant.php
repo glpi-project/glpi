@@ -3734,11 +3734,6 @@ $SEARCH_OPTION[OCSNG_TYPE][1]['linkfield']='name';
 $SEARCH_OPTION[OCSNG_TYPE][1]['name']=$LANG["common"][16];
 $SEARCH_OPTION[OCSNG_TYPE][1]['datatype']='itemlink';
 
-$SEARCH_OPTION[OCSNG_TYPE][2]['table']='glpi_ocs_config';
-$SEARCH_OPTION[OCSNG_TYPE][2]['field']='date_mod';
-$SEARCH_OPTION[OCSNG_TYPE][2]['linkfield']='';
-$SEARCH_OPTION[OCSNG_TYPE][2]['name']=$LANG["common"][26];
-$SEARCH_OPTION[OCSNG_TYPE][2]['datatype']='datetime';
 
 // PROFILE_TYPE
 $SEARCH_OPTION[PROFILE_TYPE]['common']=$LANG["common"][16];
