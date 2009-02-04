@@ -1044,7 +1044,7 @@ function update0713to072() {
 
 	
 	if (FieldExists("glpi_ocs_config","is_template")){
-		$quey="DELETE FROM `glpi_ocs_config` WHERE is_template=1";
+		$query="DELETE FROM `glpi_ocs_config` WHERE is_template=1";
 		$DB->query($query) or die("0.72 delete templates in glpi_ocs_config" . $LANG["update"][90] . $DB->error());
 		
 		$query="ALTER TABLE `glpi_ocs_config` DROP `is_template`;";
