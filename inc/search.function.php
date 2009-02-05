@@ -1275,8 +1275,8 @@ function showList ($type,$params){
 
 							// General case
 							if (strpos($data["META_$j"],"$$$$")===false){
-								
-								echo displaySearchItem($output_type,$data["META_$j"],$item_num,$row_num);
+								$out=giveItem ($type2[$j],$field2[$j],$data,$j,1);
+								echo displaySearchItem($output_type,$out,$item_num,$row_num);
 							// Case of GROUP_CONCAT item : split item and multilline display
 							} else {
 								$split=explode("$$$$",$data["META_$j"]);
@@ -1758,7 +1758,7 @@ function addSelect ($type,$ID,$num,$meta=0,$meta_type=0){
 			return $table.$addtable.".begin_date AS ".$NAME."_$num, ".$table.$addtable.".duration AS ".$NAME."_".$num."_2, ";
 		break;
 		case "glpi_softwarelicenses.number":
-			return " FLOOR( SUM($table$addtable.$field) * COUNT(DISTINCT $table$addtable.ID) / COUNT($table$addtable.ID) ) AS ".$NAME."_".$num.", ";
+			return " FLOOR( SUM($table$addtable.$field) * COUNT(DISTINCT $table$addtable.ID) / COUNT($table$addtable.ID) ) AS ".$NAME."_".$num.", MIN($table$addtable.$field) AS ".$NAME."_".$num."_2, ";
 		break;
 		case "glpi_inst_software.count" :
 			return " COUNT(DISTINCT glpi_inst_software$addtable.ID) AS ".$NAME."_".$num.", ";
@@ -2270,11 +2270,12 @@ function displayConfigItem ($type,$field){
  *@param $ID ID of the SEARCH_OPTION item
  *@param $data array containing data results
  *@param $num item num in the request
+ *@param $meta is a meta item ?
  *
  *@return string to print
  *
  **/
-function giveItem ($type,$ID,$data,$num){
+function giveItem ($type,$ID,$data,$num,$meta=0){
 	global $CFG_GLPI,$SEARCH_OPTION,$INFOFORM_PAGES,$LANG,$PLUGIN_HOOKS;
 
 	if (isset($CFG_GLPI["union_search_type"][$type])){
@@ -2294,25 +2295,28 @@ function giveItem ($type,$ID,$data,$num){
 		} 
 	}
 
+	$NAME="ITEM_";
+	if ($meta){
+		$NAME="META_";
+	}
 	$table=$SEARCH_OPTION[$type][$ID]["table"];
 	$field=$SEARCH_OPTION[$type][$ID]["field"];
 	$linkfield=$SEARCH_OPTION[$type][$ID]["linkfield"];
-
 
 	switch ($table.'.'.$field){
 		case "glpi_users.name" :		
 			// USER search case
 			if (!empty($linkfield)){
-				return formatUserName($data["ITEM_".$num."_3"],$data["ITEM_$num"],$data["ITEM_".$num."_2"],$data["ITEM_".$num."_4"],1);
+				return formatUserName($data[$NAME.$num."_3"],$data[$NAME.$num],$data[$NAME.$num."_2"],$data[$NAME.$num."_4"],1);
 			}
 		break;
 		case "glpi_profiles.name" :
 			if ($type==USER_TYPE){
 				$out="";
 
-				$split=explode("$$$$",$data["ITEM_$num"]);
-				$split2=explode("$$$$",$data["ITEM_".$num."_2"]);
-				$split3=explode("$$$$",$data["ITEM_".$num."_3"]);
+				$split=explode("$$$$",$data[$NAME.$num]);
+				$split2=explode("$$$$",$data[$NAME.$num."_2"]);
+				$split3=explode("$$$$",$data[$NAME.$num."_3"]);
 
 				$count_display=0;
 				$added=array();
@@ -2336,9 +2340,9 @@ function giveItem ($type,$ID,$data,$num){
 			 if ($type==USER_TYPE){	
 				$out="";
 
-				$split=explode("$$$$",$data["ITEM_$num"]);
-				$split2=explode("$$$$",$data["ITEM_".$num."_2"]);
-				$split3=explode("$$$$",$data["ITEM_".$num."_3"]);
+				$split=explode("$$$$",$data[$NAME.$num]);
+				$split2=explode("$$$$",$data[$NAME.$num."_2"]);
+				$split3=explode("$$$$",$data[$NAME.$num."_3"]);
 				$added=array();
 				$count_display=0;
 				for ($k=0;$k<count($split);$k++)
@@ -2357,15 +2361,15 @@ function giveItem ($type,$ID,$data,$num){
 				return $out;
 			} else {
 				// Set name for Root entity
-				if ($data["ITEM_".$num."_2"]==0){
-					$data["ITEM_$num"]=$LANG["entity"][2];
+				if ($data[$NAME.$num."_2"]==0){
+					$data[$NAME.$num]=$LANG["entity"][2];
 				} 
 			}
 			break;
 
 		case "glpi_type_docs.icon" :
-			if (!empty($data["ITEM_$num"])){
-				return "<img class='middle' alt='' src='".$CFG_GLPI["typedoc_icon_dir"]."/".$data["ITEM_$num"]."'>";
+			if (!empty($data[$NAME.$num])){
+				return "<img class='middle' alt='' src='".$CFG_GLPI["typedoc_icon_dir"]."/".$data[$NAME.$num]."'>";
 			}
 			else {
 				return "&nbsp;";
@@ -2373,20 +2377,20 @@ function giveItem ($type,$ID,$data,$num){
 		break;	
 
 		case "glpi_docs.filename" :		
-			return getDocumentLink($data["ITEM_$num"]);
+			return getDocumentLink($data[$NAME.$num]);
 		break;		
 		case "glpi_docs.link" :
 		case "glpi_device_hdd.specif_default" :
 		case "glpi_device_ram.specif_default" :
 		case "glpi_device_processor.specif_default" :
-			return $data["ITEM_".$num];
+			return $data[$NAME.$num];
 			break;
 		case "glpi_networking_ports.ifmac" :
 			$out="";
 			if ($type==COMPUTER_TYPE){
 				$displayed=array();
-				if (!empty($data["ITEM_".$num."_2"])){
-					$split=explode("$$$$",$data["ITEM_".$num."_2"]);
+				if (!empty($data[$NAME.$num."_2"])){
+					$split=explode("$$$$",$data[$NAME.$num."_2"]);
 					$count_display=0;
 					for ($k=0;$k<count($split);$k++){
 						$lowstr=strtolower($split[$k]);
@@ -2400,11 +2404,11 @@ function giveItem ($type,$ID,$data,$num){
 							$displayed[]=$lowstr;
 						}
 					}
-					if (!empty($data["ITEM_".$num])) $out.= "<br>";
+					if (!empty($data[$NAME.$num])) $out.= "<br>";
 				}
 
-				if (!empty($data["ITEM_".$num])){
-					$split=explode("$$$$",$data["ITEM_".$num]);
+				if (!empty($data[$NAME.$num])){
+					$split=explode("$$$$",$data[$NAME.$num]);
 					$count_display=0;
 					for ($k=0;$k<count($split);$k++){
 						$lowstr=strtolower($split[$k]);
@@ -2426,53 +2430,53 @@ function giveItem ($type,$ID,$data,$num){
 		case "glpi_contracts.notice":
 		case "glpi_contracts.periodicity":
 		case "glpi_contracts.facturation":
-			if (!empty($data["ITEM_$num"])){
-				return $data["ITEM_$num"]." ".$LANG["financial"][57];
+			if (!empty($data[$NAME.$num])){
+				return $data[$NAME.$num]." ".$LANG["financial"][57];
 			} else {
 				return "&nbsp;";
 			}
 			break;
 		case "glpi_contracts.renewal":
-			return getContractRenewalName($data["ITEM_$num"]);
+			return getContractRenewalName($data[$NAME.$num]);
 			break;
 
 		case "glpi_contracts.expire_notice": // ajout jmd
-			if ($data["ITEM_$num"]!='' && !empty($data["ITEM_$num"])){
-				return getExpir($data["ITEM_$num"],$data["ITEM_".$num."_2"],$data["ITEM_".$num."_3"]);
+			if ($data[$NAME.$num]!='' && !empty($data[$NAME.$num])){
+				return getExpir($data[$NAME.$num],$data[$NAME.$num."_2"],$data[$NAME.$num."_3"]);
 			} else {
 				return "&nbsp;"; 
 			}
 		case "glpi_contracts.expire": // ajout jmd
-			if ($data["ITEM_$num"]!='' && !empty($data["ITEM_$num"])){
-				return getExpir($data["ITEM_$num"],$data["ITEM_".$num."_2"]);
+			if ($data[$NAME.$num]!='' && !empty($data[$NAME.$num])){
+				return getExpir($data[$NAME.$num],$data[$NAME.$num."_2"]);
 			} else {
 				return "&nbsp;"; 
 			}
 		case "glpi_infocoms.amort_time":
-			if (!empty($data["ITEM_$num"])){
-				return $data["ITEM_$num"]." ".$LANG["financial"][9];
+			if (!empty($data[$NAME.$num])){
+				return $data[$NAME.$num]." ".$LANG["financial"][9];
 			} else { 
 				return "&nbsp;";
 			}
 			break;
 		case "glpi_infocoms.warranty_duration":
-			if (!empty($data["ITEM_$num"])){
-				return $data["ITEM_$num"]." ".$LANG["financial"][57];
+			if (!empty($data[$NAME.$num])){
+				return $data[$NAME.$num]." ".$LANG["financial"][57];
 			} else {
 				return "&nbsp;";
 			}
 			break;
 		case "glpi_infocoms.amort_type":
-			return getAmortTypeName($data["ITEM_$num"]);
+			return getAmortTypeName($data[$NAME.$num]);
 			break;
 		case "glpi_infocoms.alert":
-			if ($data["ITEM_$num"]==pow(2,ALERT_END)){
+			if ($data[$NAME.$num]==pow(2,ALERT_END)){
 				return $LANG["financial"][80];
 			} 
 			return "";
 			break;
 		case "glpi_contracts.alert":
-			switch ($data["ITEM_$num"]){
+			switch ($data[$NAME.$num]){
 				case pow(2,ALERT_END);
 					return $LANG["buttons"][32];
 					break;
@@ -2486,23 +2490,37 @@ function giveItem ($type,$ID,$data,$num){
 			return "";
 			break;
 		case "glpi_tracking.count":
-			if ($data["ITEM_$num"]>0&&haveRight("show_all_ticket","1")){
+			if ($data[$NAME.$num]>0&&haveRight("show_all_ticket","1")){
 				$out= "<a href=\"".$CFG_GLPI["root_doc"]."/front/tracking.php?reset=reset_before&status=all&type=$type&item=".$data['ID']."\">";
-				$out.= $data["ITEM_$num"];
+				$out.= $data[$NAME.$num];
 				$out.="</a>";
 			} else {
-				$out= $data["ITEM_$num"];
+				$out= $data[$NAME.$num];
 			}
 			return $out;
 			break;
+
+		case "glpi_softwarelicenses.number":
+
+			if ($data[$NAME.$num."_2"]==-1){
+				return $LANG["software"][4];
+			} else {
+				if (empty($data[$NAME.$num])){
+					return 0;
+				} else {
+					return $data[$NAME.$num];
+				}
+			}
+		break;
+
 		case "glpi_auth_tables.name" :
-			return getAuthMethodName($data["ITEM_".$num], $data["ITEM_".$num."_2"], 1,$data["ITEM_".$num."_3"].$data["ITEM_".$num."_4"]);
+			return getAuthMethodName($data[$NAME.$num], $data[$NAME.$num."_2"], 1,$data[$NAME.$num."_3"].$data[$NAME.$num."_4"]);
 			break;
 		case "glpi_reservation_item.comments" :
-			if (empty($data["ITEM_$num"])){
+			if (empty($data[$NAME.$num])){
 				return  "<a href='".$CFG_GLPI["root_doc"]."/front/reservation.php?comment=".$data["refID"]."' title='".$LANG["reservation"][22]."'>".$LANG["common"][49]."</a>";
 			}else{
-				return "<a href='".$CFG_GLPI["root_doc"]."/front/reservation.php?comment=".$data['refID']."' title='".$LANG["reservation"][22]."'>". resume_text($data["ITEM_$num"])."</a>";
+				return "<a href='".$CFG_GLPI["root_doc"]."/front/reservation.php?comment=".$data['refID']."' title='".$LANG["reservation"][22]."'>". resume_text($data[$NAME.$num])."</a>";
 			}
 			break;
 	}
@@ -2538,37 +2556,37 @@ function giveItem ($type,$ID,$data,$num){
 	if (isset($SEARCH_OPTION[$type][$ID]["datatype"])){
 		switch ($SEARCH_OPTION[$type][$ID]["datatype"]){
 			case "itemlink":
-				if (!empty($data["ITEM_".$num."_2"])){
-					$out= "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data["ITEM_".$num."_2"]."\">";
-					$out.= $data["ITEM_$num"];
-					if ($_SESSION["glpiview_ID"]||empty($data["ITEM_$num"])) {
-						$out.= " (".$data["ITEM_".$num."_2"].")";
+				if (!empty($data[$NAME.$num."_2"])){
+					$out= "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data[$NAME.$num."_2"]."\">";
+					$out.= $data[$NAME.$num];
+					if ($_SESSION["glpiview_ID"]||empty($data[$NAME.$num])) {
+						$out.= " (".$data[$NAME.$num."_2"].")";
 					}
 					$out.= "</a>";
 					return $out;
 				}
 				break;
 			case "text":
-				return nl2br($data["ITEM_$num"]);
+				return nl2br($data[$NAME.$num]);
 				break;
 			case "date":
-				return convDate($data["ITEM_$num"]);
+				return convDate($data[$NAME.$num]);
 				break;
 			case "datetime":
-				return convDateTime($data["ITEM_$num"]);
+				return convDateTime($data[$NAME.$num]);
 				break;
 			case "realtime":
-				return getRealtime($data["ITEM_$num"]);
+				return getRealtime($data[$NAME.$num]);
 				break;
 			case "date_delay":
-				if ($data["ITEM_$num"]!='' && !empty($data["ITEM_$num"])){
-					return getWarrantyExpir($data["ITEM_$num"],$data["ITEM_".$num."_2"]);
+				if ($data[$NAME.$num]!='' && !empty($data[$NAME.$num])){
+					return getWarrantyExpir($data[$NAME.$num],$data[$NAME.$num."_2"]);
 				} else {
 					return "&nbsp;"; 
 				}
 				break;
 			case "email" :
-				$email=trim($data["ITEM_$num"]);
+				$email=trim($data[$NAME.$num]);
 				if (!empty($email)){
 					return "<a href='mailto:$email'>$email</a>";
 				} else {
@@ -2576,7 +2594,7 @@ function giveItem ($type,$ID,$data,$num){
 				}
 				break;	
 			case "weblink" :
-				$orig_link=trim($data["ITEM_$num"]);
+				$orig_link=trim($data[$NAME.$num]);
 				if (!empty($orig_link)){
 					if (strlen($orig_link)>30){
 						$link=utf8_substr($orig_link,0,30)."...";
@@ -2589,13 +2607,13 @@ function giveItem ($type,$ID,$data,$num){
 				}
 				break;	
 			case "number":
-				return formatNumber($data["ITEM_$num"],false,0).$unit;
+				return formatNumber($data[$NAME.$num],false,0).$unit;
 				break;
 			case "decimal":
-				return formatNumber($data["ITEM_$num"]).$unit;
+				return formatNumber($data[$NAME.$num]).$unit;
 				break;
 			case "bool":
-				return getYesNo($data["ITEM_$num"]).$unit;
+				return getYesNo($data[$NAME.$num]).$unit;
 				break;
 
 		}
@@ -2604,7 +2622,7 @@ function giveItem ($type,$ID,$data,$num){
 	// Manage items with need group by / group_concat
 	if (isset($SEARCH_OPTION[$type][$ID]['forcegroupby']) && $SEARCH_OPTION[$type][$ID]['forcegroupby']){
 		$out="";
-		$split=explode("$$$$",$data["ITEM_$num"]);
+		$split=explode("$$$$",$data[$NAME.$num]);
 		$count_display=0;
 		for ($k=0;$k<count($split);$k++)
 			if (strlen(trim($split[$k]))>0){
@@ -2617,7 +2635,7 @@ function giveItem ($type,$ID,$data,$num){
 
 
 
-	return $data["ITEM_$num"].$unit;
+	return $data[$NAME.$num].$unit;
 
 
 }
