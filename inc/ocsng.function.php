@@ -872,7 +872,7 @@ function ocsUpdateComputer($ID, $ocs_server_id, $dohistory, $force = 0) {
 			/*			echo "OCS CS=".decbin($ocs_checksum)." - $ocs_checksum<br>";
 						  echo "GLPI CS=".decbin($cfg_ocs["checksum"])." - ".$cfg_ocs["checksum"]."<br>";
 						  echo "MIXED CS=".decbin($mixed_checksum)." - $mixed_checksum <br>";
-			 */
+			*/
 			
 			//By default log history
 			$loghistory["history"] = 1;
@@ -887,6 +887,7 @@ function ocsUpdateComputer($ID, $ocs_server_id, $dohistory, $force = 0) {
 
 				if ($mixed_checksum & pow(2, HARDWARE_FL))
 					$loghistory = ocsUpdateHardware($line['glpi_id'], $line['ocs_id'], $ocs_server_id, $cfg_ocs, $computer_updates, $dohistory);
+
 				if ($mixed_checksum & pow(2, BIOS_FL))
 					ocsUpdateBios($line['glpi_id'], $line['ocs_id'], $ocs_server_id, $cfg_ocs, $computer_updates, $dohistory);
 				// Get import devices
@@ -1045,6 +1046,7 @@ function ocsUpdateHardware($glpi_id, $ocs_id, $ocs_server_id, $cfg_ocs, $compute
 			" WHERE glpi_ocs_link.glpi_id = glpi_computers.ID AND glpi_dropdown_os.ID = glpi_computers.os 
 				AND glpi_dropdown_os_sp.ID = glpi_computers.os_sp
 				AND glpi_ocs_link.ocs_id='".$ocs_id."' AND glpi_ocs_link.ocs_server_id='".$ocs_server_id."'";
+
 		$res_computer = $DB->query($sql_computer);
 		if ($DB->numrows($res_computer) ==  1)
 		{
@@ -3525,7 +3527,7 @@ function ocsResetDropdown($glpi_computer_id, $field, $table) {
 function ocsChooseServer($target) {
 	global $DB, $LANG;
 
-	$query = "SELECT * FROM glpi_ocs_config WHERE is_template='0' ORDER BY name ASC";
+	$query = "SELECT * FROM glpi_ocs_config ORDER BY name ASC";
 	$result = $DB->query($query);
 	if ($DB->numrows($result) > 1) {
 		echo "<form action=\"$target\" method=\"get\">";
