@@ -481,48 +481,46 @@ class Ocsng extends CommonDBTM {
 			unset($input["ocs_db_passwd"]);
 		}
 
-		//Someting in the OCS configuration has changed -> need to update the checksum!
-		if (isset($input["import_ip"]) || isset($input["import_disk"])){
-			$input["checksum"]=0;
-			
-			//If import_disk is set : we're updating the importation options
-			if (isset($input["import_disk"]))
-			{
-				if ($input["import_printer"]) $input["checksum"]|= pow(2,PRINTERS_FL);
-				if ($input["import_software"]) $input["checksum"]|= pow(2,SOFTWARES_FL);
-				if ($input["import_monitor"]) $input["checksum"]|= pow(2,MONITORS_FL);
-				if ($input["import_periph"]) $input["checksum"]|= pow(2,INPUTS_FL);
-				if ($input["import_registry"]) $input["checksum"]|= pow(2,REGISTRY_FL);
-				if ($input["import_disk"]) $input["checksum"]|= pow(2,DRIVES_FL);
-			}
-			else
-			//We're updating the general informations
-			if (isset($input["import_ip"])){
-			
-				if ($input["import_ip"]) $input["checksum"]|= pow(2,NETWORKS_FL);
-				if ($input["import_device_ports"]) $input["checksum"]|= pow(2,PORTS_FL);
-				if ($input["import_device_modems"]) $input["checksum"]|= pow(2,MODEMS_FL);
-				if ($input["import_device_drives"]) $input["checksum"]|= pow(2,STORAGES_FL);
-				if ($input["import_device_sound"]) $input["checksum"]|= pow(2,SOUNDS_FL);
-				if ($input["import_device_gfxcard"]) $input["checksum"]|= pow(2,VIDEOS_FL);
-				if ($input["import_device_iface"]) $input["checksum"]|= pow(2,NETWORKS_FL);
-				if ($input["import_device_hdd"]) $input["checksum"]|= pow(2,STORAGES_FL);
-				if ($input["import_device_memory"]) $input["checksum"]|= pow(2,MEMORIES_FL);
-				if (	$input["import_device_processor"]
-						||$input["import_general_contact"]
-						||$input["import_general_comments"]
-						||$input["import_general_domain"]
-						||$input["import_general_os"]
-						||$input["import_general_name"]) $input["checksum"]|= pow(2,HARDWARE_FL);
-				if (	$input["import_general_enterprise"]
-						||$input["import_general_type"]
-						||$input["import_general_model"]
-						||$input["import_general_serial"]) $input["checksum"]|= pow(2,BIOS_FL);
-			}
-		}
 		return $input;
 	}
 	
+	function pre_updateInDB($input,$updates,$oldvalues=array()) {
+
+		// Update checksum
+		$input["checksum"]=0;
+
+		if ($this->fields["import_printer"]) $input["checksum"]|= pow(2,PRINTERS_FL);
+		if ($this->fields["import_software"]) $input["checksum"]|= pow(2,SOFTWARES_FL);
+		if ($this->fields["import_monitor"]) $input["checksum"]|= pow(2,MONITORS_FL);
+		if ($this->fields["import_periph"]) $input["checksum"]|= pow(2,INPUTS_FL);
+		if ($this->fields["import_registry"]) $input["checksum"]|= pow(2,REGISTRY_FL);
+		if ($this->fields["import_disk"]) $input["checksum"]|= pow(2,DRIVES_FL);
+
+		if ($this->fields["import_ip"]) $input["checksum"]|= pow(2,NETWORKS_FL);
+		if ($this->fields["import_device_ports"]) $input["checksum"]|= pow(2,PORTS_FL);
+		if ($this->fields["import_device_modems"]) $input["checksum"]|= pow(2,MODEMS_FL);
+		if ($this->fields["import_device_drives"]) $input["checksum"]|= pow(2,STORAGES_FL);
+		if ($this->fields["import_device_sound"]) $input["checksum"]|= pow(2,SOUNDS_FL);
+		if ($this->fields["import_device_gfxcard"]) $input["checksum"]|= pow(2,VIDEOS_FL);
+		if ($this->fields["import_device_iface"]) $input["checksum"]|= pow(2,NETWORKS_FL);
+		if ($this->fields["import_device_hdd"]) $input["checksum"]|= pow(2,STORAGES_FL);
+		if ($this->fields["import_device_memory"]) $input["checksum"]|= pow(2,MEMORIES_FL);
+		if (	$this->fields["import_device_processor"]
+				||$this->fields["import_general_contact"]
+				||$this->fields["import_general_comments"]
+				||$this->fields["import_general_domain"]
+				||$this->fields["import_general_os"]
+				||$this->fields["import_general_name"]) $input["checksum"]|= pow(2,HARDWARE_FL);
+		if (	$this->fields["import_general_enterprise"]
+				||$this->fields["import_general_type"]
+				||$this->fields["import_general_model"]
+				||$this->fields["import_general_serial"]) $input["checksum"]|= pow(2,BIOS_FL);
+
+		$updates[]="checksum";
+		$this->fields["checksum"]=$input["checksum"];
+		return array($input,$updates);
+	}
+
 	function prepareInputForAdd($input){
 		global $LANG,$DB;
 		
@@ -541,36 +539,6 @@ class Ocsng extends CommonDBTM {
 			unset($input["ocs_db_passwd"]);
 		}
 
-		if (isset($input["import_ip"])){ # are inputs defined
-			$input["checksum"]=0;
-
-			if ($input["import_ip"]) $input["checksum"]|= pow(2,NETWORKS_FL);
-			if ($input["import_device_ports"]) $input["checksum"]|= pow(2,PORTS_FL);
-			if ($input["import_device_modems"]) $input["checksum"]|= pow(2,MODEMS_FL);
-			if ($input["import_device_drives"]) $input["checksum"]|= pow(2,STORAGES_FL);
-			if ($input["import_device_sound"]) $input["checksum"]|= pow(2,SOUNDS_FL);
-			if ($input["import_device_gfxcard"]) $input["checksum"]|= pow(2,VIDEOS_FL);
-			if ($input["import_device_iface"]) $input["checksum"]|= pow(2,NETWORKS_FL);
-			if ($input["import_device_hdd"]) $input["checksum"]|= pow(2,STORAGES_FL);
-			if ($input["import_device_memory"]) $input["checksum"]|= pow(2,MEMORIES_FL);
-			if ($input["import_disk"]) $input["checksum"]|= pow(2,DRIVES_FL);
-
-			if (	$input["import_device_processor"]
-					||$input["import_general_contact"]
-					||$input["import_general_comments"]
-					||$input["import_general_domain"]
-					||$input["import_general_os"]
-					||$input["import_general_name"]) $input["checksum"]|= pow(2,HARDWARE_FL);
-			if (	$input["import_general_enterprise"]
-					||$input["import_general_type"]
-					||$input["import_general_model"]
-					||$input["import_general_serial"]) $input["checksum"]|= pow(2,BIOS_FL);
-			if ($input["import_printer"]) $input["checksum"]|= pow(2,PRINTERS_FL);
-			if ($input["import_software"]) $input["checksum"]|= pow(2,SOFTWARES_FL);
-			if ($input["import_monitor"]) $input["checksum"]|= pow(2,MONITORS_FL);
-			if ($input["import_periph"]) $input["checksum"]|= pow(2,INPUTS_FL);
-			if ($input["import_registry"]) $input["checksum"]|= pow(2,REGISTRY_FL);
-		}
 		
 		return $input;
 	}
