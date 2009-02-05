@@ -618,6 +618,7 @@ function update0713to072() {
 		$query = "ALTER TABLE `glpi_ocs_link` ADD `import_disk` LONGTEXT NULL AFTER `import_device` ;";
 		$DB->query($query) or die("0.72 add import_device in glpi_ocs_link" . $LANG["update"][90] . $DB->error());
 	}
+
 	
 	// Clean software ocs 
 	if (FieldExists("glpi_ocs_config", "import_software_buy")){ 
@@ -1060,6 +1061,32 @@ function update0713to072() {
 		$query="ALTER TABLE `glpi_ocs_config` DROP `date_mod`;";
 		$DB->query($query) or die("0.72 drop date_mod in glpi_ocs_config" . $LANG["update"][90] . $DB->error());
 	}
+
+	if (FieldExists("glpi_ocs_config","glpi_link_enabled")){
+		$query="ALTER TABLE `glpi_ocs_config` CHANGE `glpi_link_enabled` `glpi_link_enabled` INT( 1 ) NOT NULL DEFAULT '0' ";
+		$DB->query($query) or die("0.72 alter glpi_link_enabled in glpi_ocs_config" . $LANG["update"][90] . $DB->error());
+	}
+
+	if (FieldExists("glpi_ocs_config","link_ip")){
+		$query=" ALTER TABLE `glpi_ocs_config` CHANGE `link_ip` `link_ip` INT( 1 ) NOT NULL DEFAULT '0' ";
+		$DB->query($query) or die("0.72 alter link_ip in glpi_ocs_config" . $LANG["update"][90] . $DB->error());
+	}
+
+	if (FieldExists("glpi_ocs_config","link_name")){
+		$query="  ALTER TABLE `glpi_ocs_config` CHANGE `link_name` `link_name` INT( 1 ) NOT NULL DEFAULT '0' ";
+		$DB->query($query) or die("0.72 alter link_name in glpi_ocs_config" . $LANG["update"][90] . $DB->error());
+	}
+
+	if (FieldExists("glpi_ocs_config","link_mac_address")){
+		$query="ALTER TABLE `glpi_ocs_config` CHANGE `link_mac_address` `link_mac_address` INT( 1 ) NOT NULL DEFAULT '0' ";
+		$DB->query($query) or die("0.72 alter link_mac_address in glpi_ocs_config" . $LANG["update"][90] . $DB->error());
+	}
+
+	if (FieldExists("glpi_ocs_config","link_serial")){
+		$query="ALTER TABLE `glpi_ocs_config` CHANGE `link_serial` `link_serial` INT( 1 ) NOT NULL DEFAULT '0' ";
+		$DB->query($query) or die("0.72 alter link_serial in glpi_ocs_config" . $LANG["update"][90] . $DB->error());
+	}
+
 
 	// Display "Work ended." message - Keep this as the last action.
 	displayMigrationMessage("072"); // End
