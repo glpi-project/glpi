@@ -22,6 +22,7 @@
 		"fr_FR"=>array("Français","fr_FR.php","fr","fr"),
 		"gl_ES"=>array("Galician","gl_ES.php","es","es"),
 		"el_EL"=>array("Greek","el_EL.php","el_GR","el"),
+		"hr_HR"=>array("Croatian","hr_HR.php","hr","hr"),
 		"hu_HU"=>array("Hungarian","hu_HU.php","hu","hu"),
 		"it_IT"=>array("Italiano","it_IT.php","it","it"),
 		"ja_JP"=>array("Japanese","ja_JP.php","ja","ja"),
