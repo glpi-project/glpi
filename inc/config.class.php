@@ -688,7 +688,12 @@ class Config extends CommonDBTM {
 		
 		echo "</td>";
 		echo "<td class='center'>" . $LANG["setup"][113] . " </td><td>";
-		dropdownLanguages("language", $data["language"]);
+		
+		if (haveRight("config","w") || ! GLPI_DEMO_MODE){
+			dropdownLanguages("language", $data["language"]);
+		} else {
+			echo "&nbsp;";
+		}
 
 		echo "</td></tr>";		
 
