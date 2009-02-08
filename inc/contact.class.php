@@ -152,12 +152,12 @@ class Contact extends CommonDBTM{
 		$this->showTabs($ID, $withtemplate,$_SESSION['glpi_tab']);
 		
 		if ($canedit) {
-			echo "<form method='post' name=form action=\"$target\"><div class='center' id='tabsbody'>";
+			echo "<form method='post' name=form action=\"$target\">";
 			if (empty($ID)||$ID<0){
 				echo "<input type='hidden' name='FK_entities' value='".$_SESSION["glpiactive_entity"]."'>";
 			}
 		}
-		echo "<table class='tab_cadre_fixe' cellpadding='2' >";
+		echo "<div class='center' id='tabsbody'><table class='tab_cadre_fixe' cellpadding='2' >";
 
 		$this->showFormHeader($ID);
 		
