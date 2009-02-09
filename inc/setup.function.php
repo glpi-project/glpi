@@ -654,7 +654,7 @@ function addDropdown($input) {
 		}
 		$query="";
 		if ($input["tablename"] == "glpi_dropdown_netpoint") {
-			$query = "INSERT INTO `".$input["tablename"]." (" . $add_entity_field . "name,location,comments) 
+			$query = "INSERT INTO `".$input["tablename"]."` (" . $add_entity_field . "name,location,comments) 
 				VALUES (" . $add_entity_value . "'" . $input["value"] . "', '" . $input["value2"] . "', '" . $input["comments"] . "')";
 		} else {
 			if (in_array($input["tablename"], $CFG_GLPI["dropdowntree_tables"])) {
