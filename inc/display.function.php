@@ -2109,7 +2109,7 @@ function showDateFormItem($element,$value='',$maybeempty=true,$can_edit=true,$mi
  * @return nothing
  */
 function createAjaxTabs($tabdiv_id='tabspanel',$tabdivcontent_id='tabcontent',$tabs=array(),$active_tabs=''){
-
+	global $CFG_GLPI;
 
 	if (count($tabs)>0){
 		echo "<script type='text/javascript'>";
@@ -2122,31 +2122,41 @@ function createAjaxTabs($tabdiv_id='tabspanel',$tabdivcontent_id='tabcontent',$t
 				collapsed: true,
 				plain: true,
 				items: [";
-				$active=0;
-				$active_key="";
-				$tabid=0;
 				$first=true;
+				$default_tab=$active_tabs;
+				if (!isset($tabs[$active_tabs])){
+					$default_tab=0;
+				}
 				foreach ($tabs as $key => $val){
 					if ($first){
 						$first=false;
 					} else {
 						echo ",";
 					}
-					if ($active_tabs==$key){
-						$active=$tabid;
-						$active_key=$key;
-					}
+					
 					echo "{
 						title: \"".$val['title']."\",
+						id: '$key',
 						autoLoad: {url: '".$val['url']."',  
 							scripts: true, 
 							nocache: true";
 							if (isset($val['params'])){
 								echo ", params: '".$val['params']."'";
 							}
-							echo "}";
+							echo "},";
+
+					echo "	listeners:{ // Force glpi_tab storage
+							  beforeshow : function(panel){
+								Ext.Ajax.request({  
+									url : '".$CFG_GLPI['root_doc']."/ajax/updatecurrenttab.php?glpi_tab=$key',
+									success: function(objServerResponse){  
+									//alert(objServerResponse.responseText); 
+								}  
+								});  	
+							}
+						}";
+
 					echo "}";
-					$tabid++;
 				}
 			echo "]
 				});";
@@ -2158,7 +2168,7 @@ function createAjaxTabs($tabdiv_id='tabspanel',$tabdivcontent_id='tabcontent',$t
 	
 			echo "	// force first load 
 				function loadDefaultTab(){
-					tabpanel.setActiveTab($active);";
+					tabpanel.setActiveTab($default_tab);";
 /*				if (!empty($active_key)){
 					echo "Ext.get('$tabdivcontent_id').load({
 						url: '".$tabs[$active_key]['url']."',
