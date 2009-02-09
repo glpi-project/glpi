@@ -45,13 +45,17 @@ function showCentralReminder($entity = -1, $parent = false){
 
 	if ($entity < 0) {
 
-		$query = "SELECT * FROM glpi_reminder WHERE FK_users='$author' AND private=1 AND (end>='$today' or rv='0') ";
+		$query = "SELECT * FROM glpi_reminder " .
+				"WHERE FK_users='$author' AND private=1 AND (end>='$today' or rv='0') " .
+				"ORDER BY `name`";
 		$titre = "<a href=\"".$CFG_GLPI["root_doc"]."/front/reminder.php\">".$LANG["reminder"][0]."</a>";	
 		$private  = 1;
 
 	} else if ($entity == $_SESSION["glpiactive_entity"]) {
 		
-		$query = "SELECT * FROM glpi_reminder WHERE private=0 ".getEntitiesRestrictRequest("AND","glpi_reminder","",$entity);
+		$query = "SELECT * FROM glpi_reminder " .
+				"WHERE private=0 ".getEntitiesRestrictRequest("AND","glpi_reminder","",$entity). 
+				" ORDER BY `name`";
 		$titre = "<a href=\"".$CFG_GLPI["root_doc"]."/front/reminder.php\">".$LANG["reminder"][1]."</a> (".getdropdownName("glpi_entities", $entity).")";
 		
 		if (haveRight("reminder_public","w")) {
@@ -60,12 +64,16 @@ function showCentralReminder($entity = -1, $parent = false){
 		
 	} else if ($parent) {
 		
-		$query = "SELECT * FROM glpi_reminder WHERE private=0 AND recursive=1 ".getEntitiesRestrictRequest("AND","glpi_reminder","",$entity);
+		$query = "SELECT * FROM glpi_reminder " .
+				"WHERE private=0 AND recursive=1 ".getEntitiesRestrictRequest("AND","glpi_reminder","",$entity). 
+				" ORDER BY `name`";
 		$titre = $LANG["reminder"][1]." (".getdropdownName("glpi_entities", $entity).")";		
 		
 	} else { // Filles
 		
-		$query = "SELECT * FROM glpi_reminder WHERE private = 0 ".getEntitiesRestrictRequest("AND","glpi_reminder","",$entity);
+		$query = "SELECT * FROM glpi_reminder " .
+				"WHERE private = 0 ".getEntitiesRestrictRequest("AND","glpi_reminder","",$entity). 
+				" ORDER BY `name`";
 		$titre = $LANG["reminder"][1]." (".getdropdownName("glpi_entities", $entity).")";
 
 	}
