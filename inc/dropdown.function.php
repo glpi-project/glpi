@@ -1899,7 +1899,7 @@ function displayActiveEntities($target,$myname){
 		height           : 320,
 		width            : 770,
 		loader           : Tree_Category_Loader,
-		rootVisible 	 : false,
+		rootVisible 	 : false
 	});";
 	
 	// SET the root node.
