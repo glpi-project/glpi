@@ -186,25 +186,20 @@ class RightAffectRule extends Rule {
 			$this->actions = $RuleAction->getRuleActions($this->fields["ID"]);
 			foreach($this->actions as $action)
 			{
-				switch ($action->fields["action_type"])
+				switch ($action->fields["field"])
 				{
 					case "_affect_entity_by_dn":
 						unset($actions["_affect_entity_by_tag"]);
 						unset($actions["FK_entities"]);
-					break;
+						break;
 					case "_affect_entity_by_tag":
 						unset($actions["_affect_entity_by_dn"]);
 						unset($actions["FK_entities"]);
-					break;
-					case "assign":
-						if($action->fields["field"] == "FK_entities")
-						{
-							unset($actions["_affect_entity_by_tag"]);
-							unset($actions["_affect_entity_by_dn"]);
-						}
-					break;
-					default:
-					break;	
+						break;
+					case "FK_entities":
+						unset($actions["_affect_entity_by_tag"]);
+						unset($actions["_affect_entity_by_dn"]);
+						break;
 				}
 			}
 
@@ -244,23 +239,30 @@ class RightAffectRule extends Rule {
 							case "active":
 								$output["active"] = $action->fields["value"];
 							break;
+						} // switch (field)
+						break;
+					case "regex_result" :
+						switch ($action->fields["field"])
+						{
 							case "_affect_entity_by_dn":
 								$res = getRegexResultById($action->fields["value"],$regex_results);
-								if ($res != null) 
+								if ($res != null) {
 									$entity=getEntityIDByDn($res);
-								//Not entity assigned : action processing must be stopped for this rule 
-								else
-									$continue=false;	
+								} else {
+									//Not entity assigned : action processing must be stopped for this rule
+									$continue=false;										
+								}
 							break;
 							case "_affect_entity_by_tag":
 								$res = getRegexResultById($action->fields["value"],$regex_results);
-								if ($res != null) 
+								if ($res != null) {
 									$entity=getEntityIDByTag($res);
-								//Not entity assigned : action processing must be stopped for this rule
-								else
+								} else {
+									//Not entity assigned : action processing must be stopped for this rule
 									$continue=false;
+								}
 								break;								
-						}
+						} // switch (field)
 						/*
 						if ($action->fields["field"] == "FK_entities") $entity = $action->fields["value"]; 
 						elseif ($action->fields["field"] == "FK_profiles") $right = $action->fields["value"];
@@ -268,9 +270,9 @@ class RightAffectRule extends Rule {
 						elseif ($action->fields["field"] == "active") $output["active"] = $action->fields["value"];
 						*/
 					break;
-				}
-			}
-		}
+				} // switch (action_type)
+			} // foreach (action)
+		} // count (actions)
 
 		if ($continue)
 		{
