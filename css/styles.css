@@ -38,6 +38,7 @@ body{
 	font-size: 12px;
 	margin: 0;
 	padding: 0;
+	background: white;
 }
 
 ul, li, dt, dl, dd, form,img, input{
@@ -155,13 +156,16 @@ option {border:1px solid #ccc;
 select { 
 	font-size: 11px;
 	border: 1px solid #888888;
+	color: black; 
+	background-color: white; 
 }
 
 
 textarea, input {
-background-color:#FAFAFA;
-border: 1px solid #888888;
-font-size: 11px;
+	background-color:#FAFAFA;
+	color: black; 
+	border: 1px solid #888888;
+	font-size: 11px;
 }
 
 input.submit {
