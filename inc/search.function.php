@@ -207,7 +207,7 @@ function searchForm($type,$params){
 	$default_values["field2"]="";
 	$default_values["type2"]="";
 	if (isset($INFOFORM_PAGES[$type])){
-		$default_values["target"]=str_replace('front/','',str_replace('.form','',$INFOFORM_PAGES[$type]));
+		$default_values["target"]=preg_replace(':^.*front/:','',str_replace('.form','',$INFOFORM_PAGES[$type]));
 	} else {
 		$default_values["target"]=$_SERVER['PHP_SELF'];
 	}
