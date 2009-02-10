@@ -2168,7 +2168,7 @@ function createAjaxTabs($tabdiv_id='tabspanel',$tabdivcontent_id='tabcontent',$t
 	
 			echo "	// force first load 
 				function loadDefaultTab(){
-					tabpanel.setActiveTab($default_tab);";
+					tabpanel.setActiveTab('$default_tab');";
 /*				if (!empty($active_key)){
 					echo "Ext.get('$tabdivcontent_id').load({
 						url: '".$tabs[$active_key]['url']."',
