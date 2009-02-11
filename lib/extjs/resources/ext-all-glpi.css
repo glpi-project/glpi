@@ -152,5 +152,16 @@ padding-left:20px;
 /*line-height:16px;*/
 margin:3px;
 }
-  
+ 
+/* X panel */
+/* Allow class overlink to function grr */
+
+
+.x-panel-body {
+ overflow:visible;
+}
+
+.x-panel-bwrap {
+overflow:visible;
+}
 
