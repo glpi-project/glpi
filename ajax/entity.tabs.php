@@ -54,7 +54,7 @@ if (!isset($_POST["start"])) {
 
 	$entity->check($_POST["ID"],'r');
 
-		if ($_POST["ID"]>0){
+		if ($_POST["ID"]>=0){
 			switch($_POST['glpi_tab']){
 				case -1 :	
 					showEntityUser($_POST['target'],$_POST["ID"]);
