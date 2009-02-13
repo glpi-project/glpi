@@ -1420,6 +1420,7 @@ $LANG["setup"][4]="Types d'ordinateurs";
 $LANG["setup"][5]="Système d'exploitation"; 
 $LANG["setup"][6]="Personnalisation"; 
 $LANG["setup"][9]="Interface réseau"; 
+$LANG["setup"][10]="Affichage des noms prénoms"; 
 $LANG["setup"][14]="E-Mail"; 
 $LANG["setup"][18]="Login"; 
 $LANG["setup"][19]="Password"; 

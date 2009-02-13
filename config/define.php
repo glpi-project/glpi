@@ -201,6 +201,10 @@
 	define("ALERT_END",2);
 	define("ALERT_NOTICE",3);
 
+	// NAME FIRSTNAME ORDER TYPE
+	define("REALNAME_BEFORE",0);
+	define("FIRSTNAME_BEFORE",1);
+
 	// Default number of items displayed in global search
 	define("GLOBAL_SEARCH_DISPLAY_COUNT",10);
 	
