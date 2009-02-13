@@ -407,7 +407,14 @@ function dropdownUsersSelect ($count=true, $right="all", $entity_restrict=-1, $v
 			$where.=" AND (glpi_users.name ".makeTextSearch($search)." OR glpi_users.realname ".makeTextSearch($search).
 				"  OR glpi_users.firstname ".makeTextSearch($search)." OR CONCAT(glpi_users.realname,' ',glpi_users.firstname) ".makeTextSearch($search).")";
 		}
-		$query .= " WHERE $where ORDER BY glpi_users.realname,glpi_users.firstname, glpi_users.name ";
+		$query .= " WHERE $where ";
+
+		if ($CFG_GLPI["name_display_order"]==FIRSTNAME_BEFORE){
+			$query.=" ORDER BY glpi_users.firstname,glpi_users.realname,glpi_users.name ";
+			} else {
+			$query.=" ORDER BY glpi_users.realname,glpi_users.firstname,glpi_users.name ";
+		}
+		
 		if ($search != $CFG_GLPI["ajax_wildcard"]) {
 			$query .= " LIMIT 0,".$CFG_GLPI["dropdown_max"];
 		}

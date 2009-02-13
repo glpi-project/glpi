@@ -70,7 +70,13 @@ $query = "SELECT glpi_users.ID, glpi_users.name, glpi_users.realname, glpi_users
 				FROM glpi_tracking 
 				".getEntitiesRestrictRequest("WHERE","glpi_tracking").") ";
 
-$query.=" ORDER BY glpi_users.realname,glpi_users.firstname,glpi_users.name $LIMIT";
+if ($CFG_GLPI["name_display_order"]==FIRSTNAME_BEFORE){
+	$query.=" ORDER BY glpi_users.firstname,glpi_users.realname,glpi_users.name ";
+	} else {
+	$query.=" ORDER BY glpi_users.realname,glpi_users.firstname,glpi_users.name ";
+}
+
+$query.=$LIMIT;
 
 $result = $DB->query($query);
 

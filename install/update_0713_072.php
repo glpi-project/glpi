@@ -1087,6 +1087,11 @@ function update0713to072() {
 		$DB->query($query) or die("0.72 alter link_serial in glpi_ocs_config" . $LANG["update"][90] . $DB->error());
 	}
 
+	if (!FieldExists("glpi_config","name_display_order")){
+		$query="ALTER TABLE `glpi_config` ADD `name_display_order` TINYINT NOT NULL DEFAULT '0';";
+		$DB->query($query) or die("0.72 add name_display_order in glpi_config" . $LANG["update"][90] . $DB->error());
+	}
+
 
 	// Display "Work ended." message - Keep this as the last action.
 	displayMigrationMessage("072"); // End

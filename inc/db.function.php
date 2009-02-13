@@ -740,7 +740,13 @@ function formatUserName($ID,$login,$realname,$firstname,$link=0,$cut=0){
 	if (strlen($realname)>0) {
 		$temp=$realname;
 		
-		if (strlen($firstname)>0)$temp.=" ".$firstname;
+		if (strlen($firstname)>0){
+			if ($CFG_GLPI["name_display_order"]==FIRSTNAME_BEFORE){
+				$temp=$firstname." ".$temp;
+			} else {
+				$temp.=" ".$firstname;
+			}
+		}
 
 		if($cut>0&&strlen($temp) > $cut){
 			$temp=utf8_substr($temp,0,$cut);

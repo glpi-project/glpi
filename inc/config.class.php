@@ -326,7 +326,16 @@ class Config extends CommonDBTM {
 		echo "<td class='center'>" . $LANG["setup"][111]." <br> ".$LANG["common"][58]."</td><td>";
 		dropdownInteger("list_limit_max",$CFG_GLPI["list_limit_max"],5,200,5);
 		
-		echo "</td><td class='center'>&nbsp;</td><td>&nbsp;";
+		echo "</td><td class='center'>".$LANG["setup"][10]."</td><td>&nbsp;";
+		$values = array (
+			REALNAME_BEFORE=>$LANG["common"][48]." ".$LANG["common"][43],
+			FIRSTNAME_BEFORE=>$LANG["common"][43]." ".$LANG["common"][48]
+		);
+		echo "<select name='name_display_order'>";
+		foreach ($values as $key=>$val) {
+			echo "<option value='$key'" . ($CFG_GLPI["name_display_order"] == $key ? " selected " : "") . ">$val</option>";
+		}			
+		echo "</select>";
 		echo "</td></tr>";
 		
 		echo "<tr class='tab_bg_1'><td colspan='4' align='center'><strong>" . $LANG["setup"][6] . "</strong></td></tr>";
