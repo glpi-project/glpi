@@ -567,7 +567,7 @@ class CommonDBTM {
 						$this->fields[$key]='NULL';
 					}
 											
-					if ( $this->fields[$key] != stripslashes($input[$key])) {
+					if ( $this->fields[$key] !== stripslashes($input[$key])) {
 						if ($key!="ID"){
 							// Store old values
 							$oldvalues[$key]=$this->fields[$key];
