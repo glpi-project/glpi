@@ -48,7 +48,7 @@ $LANG["bookmark"][1]="σελιδοδείκτης";
 $LANG["bookmark"][3]="Δεν έχετε καταγράψει το σελιδοδείκτη ακόμα."; 
 $LANG["bookmark"][4]="Νέος σελιδοδείκτης"; 
 $LANG["bookmark"][5]="Δημόσιος σελιδοδείκτης"; 
-$LANG["bookmark"][6]="Main view"; 
+$LANG["bookmark"][6]="Apply by default"; 
 
 $LANG["buttons"][0]="Έρευνα"; 
 $LANG["buttons"][2]="Δημοσίευση"; 

@@ -48,7 +48,7 @@ $LANG["bookmark"][1]="grāmatzīme";
 $LANG["bookmark"][3]="Jums nav saglabāta neviena grāmatzīme."; 
 $LANG["bookmark"][4]="Jauna grāmatzīme"; 
 $LANG["bookmark"][5]="Publiskās grāmatzīmes"; 
-$LANG["bookmark"][6]="Main view"; 
+$LANG["bookmark"][6]="Apply by default"; 
 
 $LANG["buttons"][0]="Meklēt"; 
 $LANG["buttons"][2]="Nosūtīt"; 

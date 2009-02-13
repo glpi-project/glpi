@@ -48,7 +48,7 @@ $LANG["bookmark"][1]="Semn de carte";
 $LANG["bookmark"][3]="Nu ati salvat inca semnul de carte"; 
 $LANG["bookmark"][4]="Semn de carte nou"; 
 $LANG["bookmark"][5]="Semn de carte public"; 
-$LANG["bookmark"][6]="Main view"; 
+$LANG["bookmark"][6]="Apply by default"; 
 
 $LANG["buttons"][0]="Cauta"; 
 $LANG["buttons"][2]="OK"; 

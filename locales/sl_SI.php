@@ -48,7 +48,7 @@ $LANG["bookmark"][1]="zaznamek";
 $LANG["bookmark"][3]="Niste še shranili nobenega zaznamka."; 
 $LANG["bookmark"][4]="Nov zaznamek"; 
 $LANG["bookmark"][5]="Javni zaznamki"; 
-$LANG["bookmark"][6]="Glavni pogled"; 
+$LANG["bookmark"][6]="Apply by default"; 
 
 $LANG["buttons"][0]="Išči"; 
 $LANG["buttons"][2]="Objavi"; 

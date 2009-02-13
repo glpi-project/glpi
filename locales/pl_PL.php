@@ -48,7 +48,7 @@ $LANG["bookmark"][1]="zakładka";
 $LANG["bookmark"][3]="Nie masz jeszcze zapisanych zakładek."; 
 $LANG["bookmark"][4]="Nowa zakładka"; 
 $LANG["bookmark"][5]="Opublikuj zakładki"; 
-$LANG["bookmark"][6]="Widok główny"; 
+$LANG["bookmark"][6]="Apply by default"; 
 
 $LANG["buttons"][0]="Szukaj"; 
 $LANG["buttons"][2]="Wyślij"; 

@@ -48,7 +48,7 @@ $LANG["bookmark"][1]="skirtukas";
 $LANG["bookmark"][3]="Nėra išsaugotų skirtukų"; 
 $LANG["bookmark"][4]="Naujas skirtukas"; 
 $LANG["bookmark"][5]="Vieši skirtukai"; 
-$LANG["bookmark"][6]="Main view"; 
+$LANG["bookmark"][6]="Apply by default"; 
 
 $LANG["buttons"][0]="Paieška"; 
 $LANG["buttons"][2]="Toliau"; 

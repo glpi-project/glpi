@@ -48,7 +48,7 @@ $LANG["bookmark"][1]="marcapáxinas";
 $LANG["bookmark"][3]="Non ten marcadores gardados"; 
 $LANG["bookmark"][4]="Novo marcador"; 
 $LANG["bookmark"][5]="Marcadores Públicos"; 
-$LANG["bookmark"][6]="Vista principal"; 
+$LANG["bookmark"][6]="Apply by default"; 
 
 $LANG["buttons"][0]="Buscar"; 
 $LANG["buttons"][2]="Aceptar"; 
