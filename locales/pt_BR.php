@@ -48,7 +48,7 @@ $LANG["bookmark"][1]="Favorito";
 $LANG["bookmark"][3]="Você ainda não registrou um favorito"; 
 $LANG["bookmark"][4]="Novo favorito"; 
 $LANG["bookmark"][5]="Favorito público"; 
-$LANG["bookmark"][6]="Visão principal"; 
+$LANG["bookmark"][6]="Apply by default"; 
 
 $LANG["buttons"][0]="Pesquisar"; 
 $LANG["buttons"][2]="Enviar"; 

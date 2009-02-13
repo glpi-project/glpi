@@ -48,7 +48,7 @@ $LANG["bookmark"][1]="Lesezeichen";
 $LANG["bookmark"][3]="Sie haben noch keine Lesezeichen gespeichert."; 
 $LANG["bookmark"][4]="Neues Lesezeichen"; 
 $LANG["bookmark"][5]="Öffentliche Lesezeichen"; 
-$LANG["bookmark"][6]="Hauptansicht"; 
+$LANG["bookmark"][6]="Apply by default"; 
 
 $LANG["buttons"][0]="Suchen"; 
 $LANG["buttons"][2]="Fertig"; 

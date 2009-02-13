@@ -48,7 +48,7 @@ $LANG["bookmark"][1]="bokmärke";
 $LANG["bookmark"][3]="Du har ännu inte skapat några bokmärken."; 
 $LANG["bookmark"][4]="Nytt bokmärke"; 
 $LANG["bookmark"][5]="Publika bokmärken"; 
-$LANG["bookmark"][6]="Huvudvy"; 
+$LANG["bookmark"][6]="Apply by default"; 
 
 $LANG["buttons"][0]="Sök"; 
 $LANG["buttons"][2]="Skicka"; 

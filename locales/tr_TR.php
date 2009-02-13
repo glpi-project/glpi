@@ -48,7 +48,7 @@ $LANG["bookmark"][1]="Yer imi";
 $LANG["bookmark"][3]="Henüz yerimini kaydetmediniz"; 
 $LANG["bookmark"][4]="Yeni yerimi"; 
 $LANG["bookmark"][5]="Genel yerimleri"; 
-$LANG["bookmark"][6]="Main view"; 
+$LANG["bookmark"][6]="Apply by default"; 
 
 $LANG["buttons"][0]="Ara"; 
 $LANG["buttons"][2]="Gönder"; 

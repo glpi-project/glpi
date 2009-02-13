@@ -48,7 +48,7 @@ $LANG["bookmark"][1]="ブックマーク";
 $LANG["bookmark"][3]="まだブックマークを行っていません。"; 
 $LANG["bookmark"][4]="新しいブックマーク"; 
 $LANG["bookmark"][5]="公開ブックマーク"; 
-$LANG["bookmark"][6]="メインビュー"; 
+$LANG["bookmark"][6]="Apply by default"; 
 
 $LANG["buttons"][0]="検索"; 
 $LANG["buttons"][2]="更新/ログイン"; 

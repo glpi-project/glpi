@@ -48,7 +48,7 @@ $LANG["bookmark"][1]="podsjetnik";
 $LANG["bookmark"][3]="Niste još spremili ni jedan podsjetnik."; 
 $LANG["bookmark"][4]="Novi podsjetnik"; 
 $LANG["bookmark"][5]="Javni podsjetnik"; 
-$LANG["bookmark"][6]="Glavni pogled"; 
+$LANG["bookmark"][6]="Apply by default"; 
 
 $LANG["buttons"][0]="Traži"; 
 $LANG["buttons"][2]="Objavi"; 

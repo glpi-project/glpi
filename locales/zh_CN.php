@@ -48,7 +48,7 @@ $LANG["bookmark"][1]="bookmark";
 $LANG["bookmark"][3]="You have not recorded any bookmarks yet."; 
 $LANG["bookmark"][4]="New bookmark"; 
 $LANG["bookmark"][5]="Public bookmarks"; 
-$LANG["bookmark"][6]="Main view"; 
+$LANG["bookmark"][6]="Apply by default"; 
 
 $LANG["buttons"][0]="检索"; 
 $LANG["buttons"][2]="确定"; 

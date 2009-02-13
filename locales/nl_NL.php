@@ -48,7 +48,7 @@ $LANG["bookmark"][1]="Bladwijzer";
 $LANG["bookmark"][3]="U heeft nu nog geen bladwijzer opgenomen."; 
 $LANG["bookmark"][4]="Nieuwe bladwijzer"; 
 $LANG["bookmark"][5]="Publieke bladwijzers"; 
-$LANG["bookmark"][6]="Main view"; 
+$LANG["bookmark"][6]="Apply by default"; 
 
 $LANG["buttons"][0]="Zoeken"; 
 $LANG["buttons"][2]="Verzenden"; 
