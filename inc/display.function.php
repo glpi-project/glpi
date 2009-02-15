@@ -1544,7 +1544,7 @@ function ajaxFooter(){
  **/
 function helpFooter() {
 	// Print foot for help page
-	global $CFG_GLPI,$FOOTER_LOADED;
+	global $LANG,$CFG_GLPI,$DEBUG_SQL,$TIMER_DEBUG,$SQL_TOTAL_TIMER,$SQL_TOTAL_REQUEST,$FOOTER_LOADED;
 
 	if ($FOOTER_LOADED) return;
 	$FOOTER_LOADED=true;
@@ -1558,7 +1558,60 @@ function helpFooter() {
 	echo "<span class='copyright'>GLPI ".$CFG_GLPI["version"]." Copyright (C) 2003-".date("Y")." by the INDEPNET Development Team.</span>";
 	echo "</a></tr></table>";
 	echo "</div>";
+	
+	if ($_SESSION['glpi_use_mode']==DEBUG_MODE){ // mode debug 
 
+		echo "<div id='debug-float'>";		
+		echo "<a href='#see_debug'>GLPI MODE DEBUG</a>";
+		echo "</div>";
+
+
+
+		echo "<div id='debug'>";
+		echo "<h1><a id='see_debug' name='see_debug'>GLPI MODE DEBUG</a></h1>";
+		if ($CFG_GLPI["debug_sql"]){
+			echo "<h2>SQL REQUEST : ";
+				
+			echo $SQL_TOTAL_REQUEST." Queries ";
+			echo "took  ".array_sum($DEBUG_SQL['times'])."s  </h2>";
+	
+			echo "<table class='tab_cadre' ><tr><th>N&#176; </th><th>Queries</th><th>Time</th><th>Errors</th></tr>";
+	
+			foreach ($DEBUG_SQL['queries'] as $num => $query){
+				echo "<tr class='tab_bg_".(($num%2)+1)."'><td>$num</td><td>";
+				echo str_ireplace("ORDER BY","<br>ORDER BY",
+					str_ireplace("SORT","<br>SORT",
+					str_ireplace("LEFT JOIN","<br>LEFT JOIN",
+					str_ireplace("INNER JOIN","<br>INNER JOIN",
+					str_ireplace("WHERE","<br>WHERE",
+					str_ireplace("FROM","<br>FROM",
+					str_ireplace("UNION","<br>UNION<br>",
+					str_replace(">","&gt;",
+					str_replace("<","&lt;",$query)))))))));
+				echo "</td><td>";
+				echo $DEBUG_SQL['times'][$num];
+				echo "</td><td>";
+				if (isset($DEBUG_SQL['errors'][$num])){
+					echo $DEBUG_SQL['errors'][$num];
+				} else {
+					echo "&nbsp;";
+				}
+				echo "</td></tr>";
+			}
+			echo "</table>";		
+		}
+		
+		if ($CFG_GLPI["debug_vars"]){
+			echo "<h2>POST VARIABLE</h2>";
+			printCleanArray($_POST);
+			echo "<h2>GET VARIABLE</h2>";
+			printCleanArray($_GET);
+			echo "<h2>SESSION VARIABLE</h2>";
+			printCleanArray($_SESSION);
+		}
+		
+		echo "</div>";
+	}
 	echo "</body></html>";
 	closeDBConnections();
 }
