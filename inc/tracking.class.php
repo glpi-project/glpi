@@ -1072,7 +1072,7 @@ class Followup  extends CommonDBTM {
 	**/
 	function __construct () {
 		$this->table="glpi_followups";
-		$this->type=-1;
+		$this->type=FOLLOWUP_TYPE;
 	}
 
 	function cleanDBonPurge($ID) {
