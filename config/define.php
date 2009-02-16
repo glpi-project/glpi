@@ -248,7 +248,7 @@
 			SOFTWAREVERSION_TYPE => "glpi_softwareversions",
 			COMPUTERDISK_TYPE => "glpi_computerdisks",
 			NETWORKING_PORT_TYPE => "glpi_networking_ports",
-			FOLLOWUP_TYPE => "glpi_networking_ports",
+			FOLLOWUP_TYPE => "glpi_followups",
 			);
 
 	$INFOFORM_PAGES=array( 
