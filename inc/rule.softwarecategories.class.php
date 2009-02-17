@@ -62,6 +62,10 @@ class SoftwareCategoriesRuleCollection extends RuleCollection {
 	 */
 	function prepareInputDataForProcess($input,$software){
 		$params["name"]=$software["name"];
+		
+		if (isset($software["comments"]))
+			$params["comments"]=$software["comments"];
+			
 		if (isset($software["FK_glpi_enterprise"]))
 			$params["manufacturer"]=getDropdownName("glpi_dropdown_manufacturer",$software["FK_glpi_enterprise"]);
 		return $params;
