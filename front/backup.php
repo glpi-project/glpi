@@ -287,14 +287,15 @@ function restoreMySqlDump($DB,$dumpFile , $duree){
 		// on indique le  length pour la fonction fgets pour compatibilit�avec les versions <=PHP 4.2
 		$buffer=fgets($fileHandle,102400);
 
-		if(substr($buffer, 0, 1) != "#")
+		// do not strip comments due to problems when # in begin of a data line
+		//if(substr($buffer, 0, 1) != "#")
 		{
 			$formattedQuery .= $buffer;
 			if (get_magic_quotes_runtime()) $formattedQuery=stripslashes($formattedQuery);
 			if (substr(rtrim($formattedQuery),-1)==";"){
 
 				// Do not use the $DB->query 
-				if ($DB->query($formattedQuery)) //r�ssie sinon continue �conca&t�er
+				if ($DB->query($formattedQuery)) //if no success continue to concatenate
 				{
 
 					$offset=ftell($fileHandle);
