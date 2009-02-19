@@ -650,7 +650,7 @@ function showJobShort($data, $followups,$output_type=HTML_OUTPUT,$row_num=0) {
 
 		// Add link
 		if ($_SESSION["glpiactiveprofile"]["interface"]=="central"){
-			if ($job->canShowTicket()) {
+			if ($job->canView()) {
 				$eigth_column="<a href=\"".$CFG_GLPI["root_doc"]."/front/tracking.form.php?ID=".$data["ID"]."\">$eigth_column</a>";
 
 				if ($followups&&$output_type==HTML_OUTPUT){
@@ -1860,7 +1860,7 @@ function showJobDetails ($target,$ID){
 	}
 	if ($job->getFromDB($ID)&&haveAccessToEntity($job->fields["FK_entities"])) {
 
-		if (!$job->canShowTicket()){
+		if (!$job->canView()){
 			return false;
 		}
 		
