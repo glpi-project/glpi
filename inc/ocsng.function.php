@@ -2059,12 +2059,9 @@ function ocsUpdateDevices($device_type, $glpi_id, $ocs_id, $ocs_server_id, $cfg_
 			}
 			break;
 		case NETWORK_DEVICE :
-			if ($cfg_ocs["import_device_iface"]){
-				$do_clean=true;
-			}
 			//Carte reseau
 			if ($cfg_ocs["import_device_iface"] || $cfg_ocs["import_ip"]) {
-				
+				$do_clean=true;
 				//If import_ip doesn't contain _VERSION_072_, then migrate it to the new architecture
 				if (!in_array(OCS_IMPORT_TAG_072,$import_ip))
 					$import_ip=migrateImportIP($glpi_id,$import_ip);
