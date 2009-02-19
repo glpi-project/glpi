@@ -1049,7 +1049,7 @@ class Job extends CommonDBTM{
 	 * 
 	 * @return boolean
 	 */
-	function canShowTicket(){
+	function canView(){
 		return (
 			haveRight("show_all_ticket","1")
 			|| (isset($_SESSION["glpiID"])&&$this->fields["author"]==$_SESSION["glpiID"])
