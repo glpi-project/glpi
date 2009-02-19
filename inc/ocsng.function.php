@@ -2059,10 +2059,12 @@ function ocsUpdateDevices($device_type, $glpi_id, $ocs_id, $ocs_server_id, $cfg_
 			}
 			break;
 		case NETWORK_DEVICE :
-			
-
+			if ($cfg_ocs["import_device_iface"]){
+				$do_clean=true;
+			}
 			//Carte reseau
 			if ($cfg_ocs["import_device_iface"] || $cfg_ocs["import_ip"]) {
+				
 				//If import_ip doesn't contain _VERSION_072_, then migrate it to the new architecture
 				if (!in_array(OCS_IMPORT_TAG_072,$import_ip))
 					$import_ip=migrateImportIP($glpi_id,$import_ip);
@@ -2078,6 +2080,7 @@ function ocsUpdateDevices($device_type, $glpi_id, $ocs_id, $ocs_server_id, $cfg_
 				
 				//Count old ip in GLPI
 				$count_ip = count($import_ip);
+
 				// Add network device
 				if ($DBocs->numrows($result2) > 0) {
 					while ($line2 = $DBocs->fetch_array($result2)) {
@@ -2276,7 +2279,6 @@ function ocsUpdateDevices($device_type, $glpi_id, $ocs_id, $ocs_server_id, $cfg_
 				deleteInOcsArray($glpi_id, $key, "import_device");
 			}
 		}
-
 	}
 	if ($do_clean && count($import_ip) && $device_type == NETWORK_DEVICE) {
 		foreach ($import_ip as $key => $val) {
