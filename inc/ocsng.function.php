@@ -2086,7 +2086,6 @@ function ocsUpdateDevices($device_type, $glpi_id, $ocs_id, $ocs_server_id, $cfg_
 					while ($line2 = $DBocs->fetch_array($result2)) {
 						$line2 = clean_cross_side_scripting_deep(addslashes_deep($line2));
 						if ($cfg_ocs["import_device_iface"]) {
-							$do_clean = true;
 							$network["designation"] = $line2["DESCRIPTION"];
 							if (!in_array(NETWORK_DEVICE . OCS_FIELD_SEPARATOR . $network["designation"], $import_device)) {
 								
@@ -2107,7 +2106,6 @@ function ocsUpdateDevices($device_type, $glpi_id, $ocs_id, $ocs_server_id, $cfg_
 						}
 
 						if (!empty ($line2["IPADDRESS"]) && $cfg_ocs["import_ip"]) {
-							$do_clean = true;
 							$ocs_ips = explode(",", $line2["IPADDRESS"]);
 							$ocs_ips = array_unique($ocs_ips);
 							sort($ocs_ips);
