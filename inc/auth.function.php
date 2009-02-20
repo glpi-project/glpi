@@ -992,7 +992,7 @@ function ldap_search_user_dn($ds, $basedn, $login_attr, $login, $condition) {
 		if (is_array($info) AND $info['count'] == 1) {
 			return $info[0]['dn'];
 		} else { // Si echec, essayer de deviner le DN / Flat LDAP
-			$dn = "$login_attr=$login, " . $basedn;
+			$dn = "$login_attr=$login," . $basedn;
 			return $dn;
 		}
 	} else {
