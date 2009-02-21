@@ -1111,7 +1111,7 @@ class Transfer extends CommonDBTM{
 		}
 		$soft=new Software();
 		if ($soft->getFromDB($ID)) {
-			error_log("copySingleSoftware: ".$soft->fields['name']);
+			// error_log("copySingleSoftware: ".$soft->fields['name']);
 			
 			if ($soft->fields['recursive']
 				&& in_array($soft->fields['FK_entities'],getEntityAncestors($this->to))) {
@@ -1153,7 +1153,7 @@ class Transfer extends CommonDBTM{
 
 		$vers=new SoftwareVersion();
 		if ($vers->getFromDB($ID)) {
-			error_log("copySingleVersion: ".$vers->fields['name']);
+			// error_log("copySingleVersion: ".$vers->fields['name']);
 			
 			$newsoftID = $this->copySingleSoftware($vers->fields['sID']);
 
@@ -1306,7 +1306,7 @@ class Transfer extends CommonDBTM{
 				&& countElementsInTable("glpi_softwarelicenses","use_version=$old")==0
 				&& countElementsInTable("glpi_inst_software","vID=$old")==0) {
 
-				if ($vers->getFromDB($old)) error_log("cleanSoftwareVersions: ".$vers->fields['name']);
+				// if ($vers->getFromDB($old)) error_log("cleanSoftwareVersions: ".$vers->fields['name']);
 				
 				$vers->delete(array("ID" => $old));
 			}
@@ -1323,7 +1323,7 @@ class Transfer extends CommonDBTM{
 			if    (countElementsInTable("glpi_softwarelicenses","sID=$old")==0
 				&& countElementsInTable("glpi_softwareversions","sID=$old")==0) {
 
-				if ($soft->getFromDB($old)) error_log("cleanSoftwares: ".$soft->fields['name']);
+				// if ($soft->getFromDB($old)) error_log("cleanSoftwares: ".$soft->fields['name']);
 
 				if ($this->options['clean_softwares']==1){ // delete
 					$soft->delete(array("ID" => $old),0);
