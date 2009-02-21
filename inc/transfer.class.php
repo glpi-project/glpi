@@ -59,7 +59,7 @@ class Transfer extends CommonDBTM{
 	/// type of initial item transfered
 	var $inittype=0;
 	/// item types which have infocoms
-	var $INFOCOMS_TYPES = array(COMPUTER_TYPE, NETWORKING_TYPE, PRINTER_TYPE, MONITOR_TYPE, PERIPHERAL_TYPE, PHONE_TYPE, SOFTWARE_TYPE);
+	var $INFOCOMS_TYPES = array(COMPUTER_TYPE, NETWORKING_TYPE, PRINTER_TYPE, MONITOR_TYPE, PERIPHERAL_TYPE, PHONE_TYPE, SOFTWARE_TYPE, SOFTWARELICENSE_TYPE);
 	/// item types which have contracts
 	var $CONTRACTS_TYPES = array(COMPUTER_TYPE, NETWORKING_TYPE, PRINTER_TYPE, MONITOR_TYPE, PERIPHERAL_TYPE, PHONE_TYPE, SOFTWARE_TYPE);
 	/// item types which have tickets
@@ -146,7 +146,16 @@ class Transfer extends CommonDBTM{
 			$this->simulateTransfer($items);
 
 			//printCleanArray($this->needtobe_transfer);
-			// Computer first
+
+			// Software first (to avoid copy during computer transfer)
+			$this->inittype=SOFTWARE_TYPE;
+			if (isset($items[SOFTWARE_TYPE])&&count($items[SOFTWARE_TYPE])){
+				foreach ($items[SOFTWARE_TYPE] as $ID){
+					$this->transferItem(SOFTWARE_TYPE,$ID,$ID);
+				}
+			}
+			
+			// Computer before all other items
 			$this->inittype=COMPUTER_TYPE;
 			if (isset($items[COMPUTER_TYPE])&&count($items[COMPUTER_TYPE])){
 				foreach ($items[COMPUTER_TYPE] as $ID){
@@ -155,7 +164,7 @@ class Transfer extends CommonDBTM{
 			}
 			
 			// Inventory Items : MONITOR....
-			$INVENTORY_TYPES = array(NETWORKING_TYPE, PRINTER_TYPE, MONITOR_TYPE, PERIPHERAL_TYPE, PHONE_TYPE, SOFTWARE_TYPE, CARTRIDGE_TYPE, CONSUMABLE_TYPE);
+			$INVENTORY_TYPES = array(NETWORKING_TYPE, PRINTER_TYPE, MONITOR_TYPE, PERIPHERAL_TYPE, PHONE_TYPE, SOFTWARELICENSE_TYPE, CARTRIDGE_TYPE, CONSUMABLE_TYPE);
 			foreach ($INVENTORY_TYPES as $type){
 				$this->inittype=$type;
 				if (isset($items[$type])&&count($items[$type])){
@@ -164,6 +173,13 @@ class Transfer extends CommonDBTM{
 					}
 				}
 			}
+
+			// Clean unused
+			$this->cleanSoftwareVersions();
+
+			// TODO : don't do this as ticket, history, ... will be lost
+			// $this->cleanSoftwares();
+
 			// Management Items
 			$MANAGEMENT_TYPES = array(ENTERPRISE_TYPE, CONTRACT_TYPE, CONTACT_TYPE, DOCUMENT_TYPE);
 			foreach ($MANAGEMENT_TYPES as $type){
@@ -239,7 +255,10 @@ class Transfer extends CommonDBTM{
 		global $DB,$LINK_ID_TABLE,$CFG_GLPI;
 
 		// Init types :
-		$types=array(COMPUTER_TYPE,NETWORKING_TYPE,PRINTER_TYPE,MONITOR_TYPE,PERIPHERAL_TYPE,PHONE_TYPE,SOFTWARE_TYPE,CONTRACT_TYPE,ENTERPRISE_TYPE,CONTACT_TYPE,TRACKING_TYPE,DOCUMENT_TYPE,CARTRIDGE_TYPE, CONSUMABLE_TYPE,LINK_TYPE);
+		$types=array(COMPUTER_TYPE, NETWORKING_TYPE, PRINTER_TYPE, MONITOR_TYPE, PERIPHERAL_TYPE, PHONE_TYPE,
+			SOFTWARE_TYPE, SOFTWARELICENSE_TYPE, SOFTWAREVERSION_TYPE, CONTRACT_TYPE, ENTERPRISE_TYPE, CONTACT_TYPE,
+			TRACKING_TYPE, DOCUMENT_TYPE, CARTRIDGE_TYPE, CONSUMABLE_TYPE, LINK_TYPE);
+		
 		foreach ($types as $t){
 			if (!isset($this->needtobe_transfer[$t])){
 					$this->needtobe_transfer[$t]=array();
@@ -250,7 +269,9 @@ class Transfer extends CommonDBTM{
 					$this->noneedtobe_transfer[$t]=array();
 			}
 		}
-		// Copy items to needtobe_transfer
+		$this->noneedtobe_transfer[SOFTWAREVERSION_TYPE]=array(); // not recursive but need this
+
+			// Copy items to needtobe_transfer
 		foreach ($items as $key => $tab){
 			if (count($tab)){
 				foreach ($tab as $ID){
@@ -314,7 +335,7 @@ class Transfer extends CommonDBTM{
 			if (isset($CFG_GLPI["recursive_type"][$type])) {
 				$this->item_recurs[$type]=$this->createSearchConditionUsingArray($this->noneedtobe_transfer[$type]);				
 			}
-		}	
+		} // End of direct connections	
 
 		// Licence / Software :  keep / delete + clean unused / keep unused 
 		if ($this->options['keep_softwares']){
@@ -363,7 +384,7 @@ class Transfer extends CommonDBTM{
 				}
 			}
 
-			$query = "SELECT glpi_software.ID, glpi_software.FK_entities, glpi_software.recursive
+			$query = "SELECT glpi_software.ID, glpi_software.FK_entities, glpi_software.recursive, glpi_softwareversions.ID AS vID
 				FROM glpi_inst_software 
 				INNER JOIN glpi_softwareversions ON (glpi_inst_software.vID = glpi_softwareversions.ID)
 				INNER JOIN glpi_software ON (glpi_software.ID = glpi_softwareversions.sID)
@@ -372,17 +393,49 @@ class Transfer extends CommonDBTM{
 				if ($DB->numrows($result)>0) { 
 					while ($data=$DB->fetch_array($result)){
 						if ($data['recursive'] && in_array($data['FK_entities'], getEntityAncestors($this->to))) {
-							$this->addNotToBeTransfer(SOFTWARE_TYPE,$data['ID']);
+							$this->addNotToBeTransfer(SOFTWAREVERSION_TYPE,$data['vID']);
 						} else {
-							$this->addToBeTransfer(SOFTWARE_TYPE,$data['ID']);
+							$this->addToBeTransfer(SOFTWAREVERSION_TYPE,$data['vID']);
 						}
 					}
 				}
 			}
+
+			if (count($this->needtobe_transfer[COMPUTER_TYPE])>0) { // because -1 (empty list) is possible for FK_computers
+				// Transfer affected license (always even if recursive)
+				$query = "SELECT ID FROM glpi_softwarelicenses WHERE FK_computers IN ".$this->item_search[COMPUTER_TYPE];
+				foreach ($DB->request($query) AS $lic) {
+					$this->addToBeTransfer(SOFTWARELICENSE_TYPE,$lic['ID']);			
+				}
+			}
 		}
 
+		// Software: From user choice only
 		$this->item_search[SOFTWARE_TYPE]=$this->createSearchConditionUsingArray($this->needtobe_transfer[SOFTWARE_TYPE]);
 		$this->item_recurs[SOFTWARE_TYPE]=$this->createSearchConditionUsingArray($this->noneedtobe_transfer[SOFTWARE_TYPE]);
+
+		// Move license of software 
+		// TODO : should we transfert "affected license" ? 
+		$query = "SELECT ID, buy_version, use_version FROM glpi_softwarelicenses WHERE sID IN ".$this->item_search[SOFTWARE_TYPE];
+		foreach ($DB->request($query) AS $lic) {
+			$this->addToBeTransfer(SOFTWARELICENSE_TYPE,$lic['ID']);			
+
+			// Force version transfer (remove from item_recurs)
+			if ($lic['buy_version']>0) {
+				$this->addToBeTransfer(SOFTWAREVERSION_TYPE,$lic['buy_version']);	
+			}
+			if ($lic['use_version']>0) {
+				$this->addToBeTransfer(SOFTWAREVERSION_TYPE,$lic['use_version']);
+			}
+		}
+
+		// Licenses: from softwares  and computers (affected)
+		$this->item_search[SOFTWARELICENSE_TYPE]=$this->createSearchConditionUsingArray($this->needtobe_transfer[SOFTWARELICENSE_TYPE]);
+		$this->item_recurs[SOFTWARELICENSE_TYPE]=$this->createSearchConditionUsingArray($this->noneedtobe_transfer[SOFTWARELICENSE_TYPE]);
+		
+		// Versions: from affected licenses and installed versions
+		$this->item_search[SOFTWAREVERSION_TYPE]=$this->createSearchConditionUsingArray($this->needtobe_transfer[SOFTWAREVERSION_TYPE]);
+		$this->item_recurs[SOFTWAREVERSION_TYPE]=$this->createSearchConditionUsingArray($this->noneedtobe_transfer[SOFTWAREVERSION_TYPE]);
 
 		$this->item_search[NETWORKING_TYPE]=$this->createSearchConditionUsingArray($this->needtobe_transfer[NETWORKING_TYPE]);
 
@@ -688,7 +741,7 @@ class Transfer extends CommonDBTM{
 				// Manage Ocs links 
 				$dataocslink=array();
 				$ocs_computer=false;
-				if ($type==COMPUTER_TYPE&&$CFG_GLPI['ocs_mode']){
+				if ($type==COMPUTER_TYPE && $CFG_GLPI['ocs_mode']){
 					$query="SELECT * FROM glpi_ocs_link WHERE glpi_id='$ID'";
 					if ($result=$DB->query($query)){
 						if ($DB->numrows($result)>0){
@@ -721,6 +774,9 @@ class Transfer extends CommonDBTM{
 					$this->transferInfocoms($type,$ID,$newID);
 				}
 			
+				if ($type==SOFTWARE_TYPE){
+					$this->transferSoftwareLicensesAndVersions($ID);
+				}
 				if ($type==COMPUTER_TYPE){
 					// Monitor Direct Connect : keep / delete + clean unused / keep unused 
 					$this->transferDirectConnection($type,$ID,MONITOR_TYPE,$ocs_computer);
@@ -731,7 +787,10 @@ class Transfer extends CommonDBTM{
 					// Printer Direct Connect : keep / delete + clean unused / keep unused 
 					$this->transferDirectConnection($type,$ID,PRINTER_TYPE,$ocs_computer);
 					// Licence / Software :  keep / delete + clean unused / keep unused 
-					$this->transferSoftwares($type,$ID,$ocs_computer);
+					$this->transferComputerSoftwares($type,$ID,$ocs_computer);
+				}
+				if ($type==SOFTWARELICENSE_TYPE){
+					$this->transferLicenseSoftwares($ID);
 				}
 				// Computer Direct Connect : delete link if it is the initial transfer item (no recursion)
 				if ($this->inittype==$type&&in_array($type,
@@ -1037,13 +1096,235 @@ class Transfer extends CommonDBTM{
 	
 	}
 	
+		/**
+	 * Copy (if needed) One software to the destination entity
+	 * 
+	 * @param $ID of the software
+	 * 
+	 * @return $ID of the new software (could be the same)
+	 */
+	function copySingleSoftware ($ID) {
+		global $DB;
+		
+		if (isset($this->already_transfer[SOFTWARE_TYPE][$ID])){
+			return $this->already_transfer[SOFTWARE_TYPE][$ID];
+		}
+		$soft=new Software();
+		if ($soft->getFromDB($ID)) {
+			error_log("copySingleSoftware: ".$soft->fields['name']);
+			
+			$query="SELECT * FROM glpi_software WHERE FK_entities=".$this->to." AND name='".addslashes($soft->fields['name'])."'";
+			if ($data=$DB->request($query)->next()) {
+				$newsoftID=$data["ID"];
+			} else {			
+				// create new item (don't check if move possible => clean needed)
+				unset($soft->fields['ID']);
+				$input=$soft->fields;
+				$input['FK_entities']=$this->to;
+				unset($soft->fields);
+				$newsoftID=$soft->add($input);
+			}
+						
+			$this->addToAlreadyTransfer(SOFTWARE_TYPE,$ID,$newsoftID);
+			return $newsoftID;
+		}
+		return -1;
+	}
+
+	/**
+	 * Copy (if needed) One softwareversion to the Dest Entity
+	 * 
+	 * @param $ID of the version
+	 * 
+	 * @return $ID of the new version (could be the same)
+	 */
+	function copySingleVersion ($ID) {
+		global $DB;
+		
+		if (isset($this->already_transfer[SOFTWAREVERSION_TYPE][$ID])){
+			return $this->already_transfer[SOFTWAREVERSION_TYPE][$ID];
+		}
+
+		$vers=new SoftwareVersion();
+		if ($vers->getFromDB($ID)) {
+			error_log("copySingleVersion: ".$vers->fields['name']);
+			
+			$newsoftID = $this->copySingleSoftware($vers->fields['sID']);
+
+			$query="SELECT ID FROM glpi_softwareversions WHERE sID=$newsoftID AND  version='".addslashes($vers->fields['name'])."'";			
+			if ($data=$DB->request($query)->next()) {
+				$newversID=$data["ID"];
+			} else {
+				// create new item (don't check if move possible => clean needed)
+				unset($vers->fields['ID']);
+				$input=$vers->fields;
+				unset($vers->fields);
+				$input['sID']=$newsoftID;
+				$newversID=$vers->add($input);
+			}
+			
+			$this->addToAlreadyTransfer(SOFTWAREVERSION_TYPE,$ID,$newversID);
+			return $newversID;
+		}
+		return -1;
+	}
 	/**
 	* Transfer softwares of a computer
 	*
-	*@param $type original type of transfered item
 	*@param $ID ID of the computer
 	*@param $ocs_computer ID of the computer in OCS if imported from OCS
 	**/
+	function transferComputerSoftwares($ID,$ocs_computer=false){
+		global $DB;
+
+		// Get Installed version
+		$query = "SELECT *	FROM glpi_inst_software 
+			WHERE cID = $ID AND vID NOT IN ".$this->item_recurs[SOFTWAREVERSION_TYPE];
+			
+		foreach ($DB->request($query) AS $data) {
+			
+			if ($this->options['keep_softwares']){
+
+				$newversID = $this->copySingleVersion($data['vID']);
+				
+				if ($newversID>0 && $newversID!=$data['vID']){
+					$query="UPDATE glpi_inst_software SET vID=$newversID WHERE ID=".$data['ID'];
+					$DB->query($query);	
+				}
+				
+			} else { // Do not keep 
+
+				// Delete inst software for computer
+				$del_query="DELETE FROM glpi_inst_software WHERE ID = ".$data['ID'];
+				$DB->query($del_query);
+
+				if ($ocs_computer){
+					$query="UPDATE glpi_ocs_link SET import_software = NULL WHERE glpi_id=$ID";
+					$DB->query($query);
+				}	
+			}
+		} // each installed version
+
+		// Affected licenses 
+		if ($this->options['keep_softwares']){
+			$query = "SELECT *	FROM glpi_softwarelicenses
+				WHERE FK_computers = '$ID'";
+			
+			foreach ($DB->request($query) AS $data) {
+				$this->transferItem(SOFTWARELICENSE_TYPE,$data['ID'],$data['ID']);
+			}
+			
+		} else {
+			$query="UPDATE glpi_softwarelicenses SET FK_computers = -1 WHERE FK_computers='$ID'";			
+			$DB->query($query);
+		}		
+	}
+	/**
+	* Transfer softwares of a license
+	*
+	*@param $ID ID of the License
+	*
+	**/
+	function transferLicenseSoftwares($ID){
+		global $DB;
+
+		if ($this->inittype == SOFTWARE_TYPE) {
+			// All version will be move with the software
+			return;
+		}
+		$license = new SoftwareLicense();
+		if ($license->getFromDB($ID)) {
+			$input=array();
+
+			$newsoftID = $this->copySingleSoftware($license->fields['sID']);
+			if ($newsoftID>0 && $newsoftID!=$license->fields['sID']){
+				$input['sID']=$newsoftID;
+			}
+
+			foreach (array("buy_version","use_version") as $field) {			
+				if ($license->fields[$field]>0) {
+					$newversID = $this->copySingleVersion($license->fields[$field]);
+					
+					if ($newversID>0 && $newversID!=$license->fields[$field]){
+						$input[$field] = $newversID;
+					}
+				}
+			}
+
+			if (count($input)) {
+				$input['ID'] = $ID;
+				$license->update($input);
+			}			
+		} // getFromDB
+	}
+
+	/**
+	* Transfer License and Version of a Software
+	*
+	*@param $ID ID of the Software
+	*
+	**/
+	function transferSoftwareLicensesAndVersions($ID){
+		global $DB;
+
+		$query = "SELECT ID FROM glpi_softwarelicenses
+			WHERE sID = '$ID'";
+		
+		foreach ($DB->request($query) AS $data) {
+			$this->transferItem(SOFTWARELICENSE_TYPE,$data['ID'],$data['ID']);
+		}
+
+		$query = "SELECT ID FROM glpi_softwareversions
+			WHERE sID = '$ID'";
+		
+		foreach ($DB->request($query) AS $data) {
+			// Just Store the info.
+			$this->addToAlreadyTransfer(SOFTWAREVERSION_TYPE,$data['ID'],$data['ID']);
+		}
+	}
+
+	function cleanSoftwareVersions() {
+		
+		if (!isset($this->already_transfer[SOFTWAREVERSION_TYPE])) return;
+		
+		$vers=new SoftwareVersion();
+		
+		foreach ($this->already_transfer[SOFTWAREVERSION_TYPE] AS $old => $new) {
+
+			if    (countElementsInTable("glpi_softwarelicenses","buy_version=$old")==0
+				&& countElementsInTable("glpi_softwarelicenses","use_version=$old")==0
+				&& countElementsInTable("glpi_inst_software","vID=$old")==0) {
+
+				if ($vers->getFromDB($old)) error_log("cleanSoftwareVersions: ".$vers->fields['name']);
+				
+				$vers->delete(array("ID" => $old));
+			}
+		}
+	}
+	function cleanSoftwares() {
+		
+		if (!isset($this->already_transfer[SOFTWARE_TYPE])) return;
+		
+		$soft=new Software();
+		
+		foreach ($this->already_transfer[SOFTWARE_TYPE] AS $old => $new) {
+
+			if    (countElementsInTable("glpi_softwarelicenses","sID=$old")==0
+				&& countElementsInTable("glpi_softwareversions","sID=$old")==0) {
+
+				if ($soft->getFromDB($old)) error_log("cleanSoftwares: ".$soft->fields['name']);
+
+				if ($this->options['clean_softwares']==1){ // delete
+					$soft->delete(array("ID" => $old),0);
+				}
+				else if ($this->options['clean_softwares']==2){ // purge
+					$soft->delete(array("ID" => $old),1);
+				}
+			}
+		}
+	}
+	
+	/* previous function
 	function transferSoftwares($type,$ID,$ocs_computer=false){
 		global $DB;
 		// Get licenses linked
@@ -1207,8 +1488,8 @@ class Transfer extends CommonDBTM{
 				}
 			}
 		}
-	}
-
+	}*/
+	
 	/**
 	* Transfer contracts
 	*
