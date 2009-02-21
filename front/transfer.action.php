@@ -33,7 +33,10 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-$NEEDED_ITEMS=array("transfer","user","tracking","reservation","document","computer","device","printer","networking","peripheral","monitor","software","infocom","phone","link","ocsng","consumable","cartridge","contract","enterprise","contact","group","profile","search","mailgate","typedoc","setup","rulesengine","rule.softwarecategories");
+$NEEDED_ITEMS=array("transfer","user","tracking","reservation","document","computer","device","printer",
+	"networking","peripheral","monitor","software","infocom","phone","link","ocsng","consumable",
+	"cartridge","contract","enterprise","contact","group","profile","search","mailgate","typedoc","setup",
+	"rulesengine","rule.softwarecategories");
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
