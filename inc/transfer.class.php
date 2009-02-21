@@ -787,7 +787,7 @@ class Transfer extends CommonDBTM{
 					// Printer Direct Connect : keep / delete + clean unused / keep unused 
 					$this->transferDirectConnection($type,$ID,PRINTER_TYPE,$ocs_computer);
 					// Licence / Software :  keep / delete + clean unused / keep unused 
-					$this->transferComputerSoftwares($type,$ID,$ocs_computer);
+					$this->transferComputerSoftwares($ID,$ocs_computer);
 				}
 				if ($type==SOFTWARELICENSE_TYPE){
 					$this->transferLicenseSoftwares($ID);
