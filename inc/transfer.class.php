@@ -1113,16 +1113,22 @@ class Transfer extends CommonDBTM{
 		if ($soft->getFromDB($ID)) {
 			error_log("copySingleSoftware: ".$soft->fields['name']);
 			
-			$query="SELECT * FROM glpi_software WHERE FK_entities=".$this->to." AND name='".addslashes($soft->fields['name'])."'";
-			if ($data=$DB->request($query)->next()) {
-				$newsoftID=$data["ID"];
-			} else {			
-				// create new item (don't check if move possible => clean needed)
-				unset($soft->fields['ID']);
-				$input=$soft->fields;
-				$input['FK_entities']=$this->to;
-				unset($soft->fields);
-				$newsoftID=$soft->add($input);
+			if ($soft->fields['recursive']
+				&& in_array($soft->fields['FK_entities'],getEntityAncestors($this->to))) {
+				// no need to copy
+				$newsoftID = $ID;
+			} else {				
+				$query="SELECT * FROM glpi_software WHERE FK_entities=".$this->to." AND name='".addslashes($soft->fields['name'])."'";
+				if ($data=$DB->request($query)->next()) {
+					$newsoftID=$data["ID"];
+				} else {			
+					// create new item (don't check if move possible => clean needed)
+					unset($soft->fields['ID']);
+					$input=$soft->fields;
+					$input['FK_entities']=$this->to;
+					unset($soft->fields);
+					$newsoftID=$soft->add($input);
+				}
 			}
 						
 			$this->addToAlreadyTransfer(SOFTWARE_TYPE,$ID,$newsoftID);
@@ -1151,16 +1157,21 @@ class Transfer extends CommonDBTM{
 			
 			$newsoftID = $this->copySingleSoftware($vers->fields['sID']);
 
-			$query="SELECT ID FROM glpi_softwareversions WHERE sID=$newsoftID AND  version='".addslashes($vers->fields['name'])."'";			
-			if ($data=$DB->request($query)->next()) {
-				$newversID=$data["ID"];
-			} else {
-				// create new item (don't check if move possible => clean needed)
-				unset($vers->fields['ID']);
-				$input=$vers->fields;
-				unset($vers->fields);
-				$input['sID']=$newsoftID;
-				$newversID=$vers->add($input);
+			if ($newsoftID == $vers->fields['sID']) {
+				// no need to copy
+				$newversID = $ID;
+			} else {				
+				$query="SELECT ID FROM glpi_softwareversions WHERE sID=$newsoftID AND  version='".addslashes($vers->fields['name'])."'";			
+				if ($data=$DB->request($query)->next()) {
+					$newversID=$data["ID"];
+				} else {
+					// create new item (don't check if move possible => clean needed)
+					unset($vers->fields['ID']);
+					$input=$vers->fields;
+					unset($vers->fields);
+					$input['sID']=$newsoftID;
+					$newversID=$vers->add($input);
+				}
 			}
 			
 			$this->addToAlreadyTransfer(SOFTWAREVERSION_TYPE,$ID,$newversID);
