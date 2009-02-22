@@ -550,21 +550,18 @@ function testWriteAccessToDirectory($dir){
 }
 
 /**
-* Common Checks needed to use GLPI
+* Compute PHP memory_limit
 *
-* @return 2 : creation error 1 : delete error 0: OK
+* @return memory limit
 **/
-function commonCheckForUseGLPI(){
-	global $LANG;
-
-	// memory test
-	echo "<tr class='tab_bg_1'><td class='left'><b>".$LANG["install"][86]."</b></td>";
-
+function getMemoryLimit () {
+	
 	$mem=ini_get("memory_limit");
 
-	// Cette bidouille me plait pas
-	//if(empty($mem)) {$mem=get_cfg_var("memory_limit");}  // Sous Win l'ini_get ne retourne rien.....
-
+	if (empty($mem) || $mem=="-1") {
+		// -1 case not handle by regex
+		return $mem;
+	}
 	preg_match("/([0-9]+)([KMG]*)/",$mem,$matches);
 
 	$mem="";
@@ -582,7 +579,22 @@ function commonCheckForUseGLPI(){
 			}
 		}
 	}
+	return $mem;
+}
 
+/**
+* Common Checks needed to use GLPI
+*
+* @return 2 : creation error 1 : delete error 0: OK
+**/
+function commonCheckForUseGLPI(){
+	global $LANG;
+
+	// memory test
+	echo "<tr class='tab_bg_1'><td class='left'><b>".$LANG["install"][86]."</b></td>";
+
+	$mem = getMemoryLimit();
+	
 	if( $mem == "" ){          // memory_limit non compilé -> no memory limit
 		echo "<td><img src=\"".GLPI_ROOT."/pics/greenbutton.png\" alt='".$LANG["install"][95]." - ".$LANG["install"][89]."' title='".$LANG["install"][95]." - ".$LANG["install"][89]."'></td></tr>";
 	}
