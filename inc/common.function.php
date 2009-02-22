@@ -562,7 +562,7 @@ function commonCheckForUseGLPI(){
 	// Cette bidouille me plait pas
 	//if(empty($mem)) {$mem=get_cfg_var("memory_limit");}  // Sous Win l'ini_get ne retourne rien.....
 
-	preg_match("/([0-9]+)([KMG]*)/",$mem,$matches);
+	preg_match("/([-0-9]+)([KMG]*)/",$mem,$matches);
 
 	// no K M or G 
 	if (!isset($matches[2])){
