@@ -558,11 +558,7 @@ function getMemoryLimit () {
 	
 	$mem=ini_get("memory_limit");
 
-	if (empty($mem) || $mem=="-1") {
-		// -1 case not handle by regex
-		return $mem;
-	}
-	preg_match("/([0-9]+)([KMG]*)/",$mem,$matches);
+	preg_match("/([-0-9]+)([KMG]*)/",$mem,$matches);
 
 	$mem="";
 	// no K M or G
