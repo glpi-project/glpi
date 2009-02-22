@@ -586,6 +586,102 @@ function getMemoryLimit () {
 function commonCheckForUseGLPI(){
 	global $LANG;
 
+	$error = 0;
+
+	// Title
+	echo "<tr><th>".$LANG["install"][6]."</th><th >".$LANG["install"][7]."</th></tr>";
+
+	// Parser test
+	echo "<tr class='tab_bg_1'><td class='left'><b>".$LANG["install"][8]."</b></td>";
+	// PHP Version  - exclude PHP3, PHP 4 and zend.ze1 compatibility
+	if (substr(phpversion(),0,1) == "5") {
+		// PHP > 5 ok, now check PHP zend.ze1_compatibility_mode
+		if(ini_get("zend.ze1_compatibility_mode") == 1) {
+			$error = 2;
+			echo "<td  class='red'><img src=\"".GLPI_ROOT."/pics/redbutton.png\">".$LANG["install"][10]."</td></tr>";
+		}else{
+			echo "<td><img src=\"".GLPI_ROOT."/pics/greenbutton.png\" alt='".$LANG["install"][11]."' title='".$LANG["install"][11]."'></td></tr>";
+		}
+	} else { // PHP <5
+		$error = 2;
+		echo "<td  class='red'><img src=\"".GLPI_ROOT."/pics/redbutton.png\">".$LANG["install"][9]."</td></tr>";
+	}	
+
+	// Check for mysql extension ni php
+	echo "<tr class='tab_bg_1'><td class='left'><b>".$LANG["install"][71]."</b></td>";
+	if(!function_exists("mysql_query")) {
+		echo "<td  class='red'><img src=\"".GLPI_ROOT."/pics/redbutton.png\">".$LANG["install"][72]."</td></tr>";
+		$error = 2;
+	} else {
+		echo "<td><img src=\"".GLPI_ROOT."/pics/greenbutton.png\" alt='".$LANG["install"][73]."' title='".$LANG["install"][73]."'></td></tr>";
+	}
+
+	// session test
+	echo "<tr class='tab_bg_1'><td class='left'><b>".$LANG["install"][12]."</b></td>";
+	// check whether session are enabled at all!!
+	if (!extension_loaded('session')) {
+		$error = 2;
+		echo "<td  class='red'><b>".$LANG["install"][13]."</b></td></tr>";
+	} else {
+		if ($_SESSION["Test_session_GLPI"] == 1) {
+			echo "<td><img src=\"".GLPI_ROOT."/pics/greenbutton.png\" alt='".$LANG["install"][14]."' title='".$LANG["install"][14]."'></td></tr>";
+		}
+		else {
+			if($error != 2) $error = 1;
+			echo "<td  class='red'><img src=\"".GLPI_ROOT."/pics/redbutton.png\">".$LANG["install"][15]."</td></tr>";
+		}
+	}
+
+	//Test for session auto_start
+	if(ini_get('session.auto_start')==1) {
+		echo "<tr class='tab_bg_1'><td class='left'><b>".$LANG["install"][68]."</b></td>";
+		echo "<td class='red'><img src=\"".GLPI_ROOT."/pics/redbutton.png\">".$LANG["install"][69]."</td></tr>";
+		$error = 2;
+	}
+
+	//Test for option session use trans_id loaded or not.
+	echo "<tr class='tab_bg_1'><td class='left'><b>".$LANG["install"][74]."</b></td>";
+	//if(ini_get('session.use_trans_sid')) {
+	if (isset($_POST[session_name()])||isset($_GET[session_name()])) {
+		echo "<td class='red'><img src=\"".GLPI_ROOT."/pics/redbutton.png\">".$LANG["install"][75]."</td></tr>";
+		$error = 2;
+	}
+	else {
+		echo "<td><img src=\"".GLPI_ROOT."/pics/greenbutton.png\" alt='".$LANG["install"][76]."' title='".$LANG["install"][76]."'></td></tr>";
+	}
+
+	//Test for sybase extension loaded or not.
+	echo "<tr class='tab_bg_1'><td class='left'><b>".$LANG["install"][65]."</b></td>";
+	if(ini_get('magic_quotes_sybase')) {
+		echo "<td class='red'><img src=\"".GLPI_ROOT."/pics/redbutton.png\">".$LANG["install"][66]."</td></tr>";
+		$error = 2;
+	}
+	else {
+		echo "<td><img src=\"".GLPI_ROOT."/pics/greenbutton.png\" alt='".$LANG["install"][67]."' title='".$LANG["install"][67]."'></td></tr>";
+	}
+
+	//Test for utf8_encode function.
+	echo "<tr class='tab_bg_1'><td class='left'><b>".$LANG["install"][83]."</b></td>";
+	if(!function_exists('utf8_encode')||!function_exists('utf8_decode')) {
+		echo "<td><img src=\"".GLPI_ROOT."/pics/redbutton.png\" >".$LANG["install"][84]."></td></tr>";
+		$error = 2;
+	}
+	else {
+		echo "<td><img src=\"".GLPI_ROOT."/pics/greenbutton.png\" alt='".$LANG["install"][85]."' title='".$LANG["install"][85]."'></td></tr>";
+
+	}
+
+	//Test for json_encode function.
+	echo "<tr class='tab_bg_1'><td class='left'><b>".$LANG["install"][102]."</b></td>";
+	if (!function_exists('json_encode')|!function_exists('json_decode')) {
+		echo "<td><img src=\"".GLPI_ROOT."/pics/redbutton.png\" >".$LANG["install"][103]."></td></tr>";
+		$error = 2;
+	}
+	else {
+		echo "<td><img src=\"".GLPI_ROOT."/pics/greenbutton.png\" alt='".$LANG["install"][85]."' title='".$LANG["install"][85]."'></td></tr>";
+
+	}
+	
 	// memory test
 	echo "<tr class='tab_bg_1'><td class='left'><b>".$LANG["install"][86]."</b></td>";
 
@@ -605,7 +701,10 @@ function commonCheckForUseGLPI(){
 			echo "<td><img src=\"".GLPI_ROOT."/pics/greenbutton.png\" alt='".$LANG["install"][91]." - ".$LANG["install"][89]."' title='".$LANG["install"][91]." - ".$LANG["install"][89]."'></td></tr>";
 		}
 	}
-	return checkWriteAccessToDirs();
+	
+	$suberr = checkWriteAccessToDirs();
+
+	return ($suberr ? $suberr : $error);
 }
 
 /**
