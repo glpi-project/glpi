@@ -824,9 +824,11 @@ function addFormTracking ($device_type=0,$ID=0, $target, $author, $group=0, $ass
 			$first_entity = $entity_restrict; 
 		
 		//If user have access to more than one entity, then display a combobox
-		if ($count > 1)
+		if ($count > 1) {
 			$rand = dropdownValue("glpi_entities", "FK_entities", $first_entity, 1, $values,'',array(),1);
-			
+		} else {
+			echo "<input type='hidden' name='FK_entities' value='".$entity_restrict."'>";
+		}
 		echo "</tr>";
 	} 
 
@@ -837,8 +839,6 @@ function addFormTracking ($device_type=0,$ID=0, $target, $author, $group=0, $ass
 		echo $LANG["job"][46].":&nbsp;".getDropdownName("glpi_entities",$first_entity);
 		echo "</th></tr>";
 	}
-	else
-		echo "<input type='hidden' name='FK_entities' value='".$entity_restrict."'>";
 
 	$author_rand=0;
 	if (haveRight("update_ticket","1")){
