@@ -240,7 +240,7 @@ class MailCollect {
 				} else { // New ticket
 					// Deletion of message with sucess
 					if (false === is_array($result)){
-						$track=new job;
+						
 						$track->add($tkt);
 					} else {
 						$error++;
@@ -400,6 +400,9 @@ class MailCollect {
 			$tkt['device_type']="0";
 			// Mail request type
 			$tkt['request_type']="2";
+		} else {
+			// Reopen if needed
+			$tkt['add_reopen']=1;
 		}
 
 		$tkt['contents']=clean_cross_side_scripting_deep(html_clean($tkt['contents']));
