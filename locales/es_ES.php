@@ -48,7 +48,7 @@ $LANG["bookmark"][1]="marcador";
 $LANG["bookmark"][3]="No tiene marcadores guardados"; 
 $LANG["bookmark"][4]="Nuevo marcador"; 
 $LANG["bookmark"][5]="Marcadores Públicos"; 
-$LANG["bookmark"][6]="Apply by default"; 
+$LANG["bookmark"][6]="Vista predeterminada"; 
 
 $LANG["buttons"][0]="Buscar"; 
 $LANG["buttons"][2]="Aceptar"; 
@@ -1395,6 +1395,7 @@ $LANG["setup"][4]="Tipos de ordenadores";
 $LANG["setup"][5]="Sistemas operativos"; 
 $LANG["setup"][6]="Personalización"; 
 $LANG["setup"][9]="Interfaz de red"; 
+$LANG["setup"][10]="Display of surnames firstnames"; 
 $LANG["setup"][14]="E-Mail"; 
 $LANG["setup"][18]="Login"; 
 $LANG["setup"][19]="Contraseña"; 

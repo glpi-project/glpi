@@ -1395,6 +1395,7 @@ $LANG["setup"][4]="Typy komputerów";
 $LANG["setup"][5]="System operacyjny"; 
 $LANG["setup"][6]="Personalizacja"; 
 $LANG["setup"][9]="Interfejsy sieciowe"; 
+$LANG["setup"][10]="Display of surnames firstnames"; 
 $LANG["setup"][14]="E-mail"; 
 $LANG["setup"][18]="Login"; 
 $LANG["setup"][19]="Hasło"; 

@@ -1395,6 +1395,7 @@ $LANG["setup"][4]="Τύποι Υπολογιστών";
 $LANG["setup"][5]="Λειτουργικά συστήματα"; 
 $LANG["setup"][6]="Personalization"; 
 $LANG["setup"][9]="Κάρτες Δικτύου"; 
+$LANG["setup"][10]="Display of surnames firstnames"; 
 $LANG["setup"][14]="E-Mail"; 
 $LANG["setup"][18]="Login"; 
 $LANG["setup"][19]="Password"; 
