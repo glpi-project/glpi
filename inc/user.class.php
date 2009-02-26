@@ -78,20 +78,22 @@ class User extends CommonDBTM {
 	function defineTabs($ID,$withtemplate) {
 		global $LANG;
 
-
 		$ong[1] = $LANG["title"][26]; // principal
 
-		$ong[4]=$LANG["Menu"][36];
-
-		$ong[2] = $LANG["common"][1]; // materiel
-		if (haveRight("show_all_ticket", "1")){
-			$ong[3] = $LANG["title"][28]; // tickets
-		}
-		if (haveRight("reservation_central", "r")){
-			$ong[11] = $LANG["Menu"][17];
-		}
-		if (haveRight("user_auth_method", "w")){
-			$ong[12] = $LANG["ldap"][12];
+		// No add process	
+		if (!empty($ID)){
+			$ong[4]=$LANG["Menu"][36];
+	
+			$ong[2] = $LANG["common"][1]; // materiel
+			if (haveRight("show_all_ticket", "1")){
+				$ong[3] = $LANG["title"][28]; // tickets
+			}
+			if (haveRight("reservation_central", "r")){
+				$ong[11] = $LANG["Menu"][17];
+			}
+			if (haveRight("user_auth_method", "w")){
+				$ong[12] = $LANG["ldap"][12];
+			}
 		}
 
 		return $ong;
