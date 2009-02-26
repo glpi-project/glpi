@@ -81,7 +81,7 @@ class User extends CommonDBTM {
 		$ong[1] = $LANG["title"][26]; // principal
 
 		// No add process	
-		if (!empty($ID)){
+		if ($ID>0){
 			$ong[4]=$LANG["Menu"][36];
 	
 			$ong[2] = $LANG["common"][1]; // materiel

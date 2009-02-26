@@ -52,21 +52,22 @@ function showCartridgesAdd($ID) {
 	global $CFG_GLPI,$LANG;
 
 	if (!haveRight("cartridge","w")) return false;
-
-	echo "<form method='post'  action=\"".$CFG_GLPI["root_doc"]."/front/cartridge.edit.php\">";
-	echo "<div class='center'>&nbsp;<table class='tab_cadre_fixe' cellpadding='2'>";
-	echo "<tr>";
-	echo "<td align='center' class='tab_bg_2'>";
-	echo "<input type='submit' name='add_several' value=\"".$LANG["buttons"][8]."\" class='submit'>";
-	echo "<input type='hidden' name='tID' value=\"$ID\">\n";
-
-	echo "&nbsp;&nbsp;";
-	dropdownInteger('to_add',1,1,100);
-	echo "&nbsp;&nbsp;";
-	echo $LANG["cartridges"][16];
-	echo "</td></tr>";
-	echo "</table></div>";
-	echo "</form><br>";
+	if ($ID > 0){
+		echo "<form method='post'  action=\"".$CFG_GLPI["root_doc"]."/front/cartridge.edit.php\">";
+		echo "<div class='center'>&nbsp;<table class='tab_cadre_fixe' cellpadding='2'>";
+		echo "<tr>";
+		echo "<td align='center' class='tab_bg_2'>";
+		echo "<input type='submit' name='add_several' value=\"".$LANG["buttons"][8]."\" class='submit'>";
+		echo "<input type='hidden' name='tID' value=\"$ID\">\n";
+	
+		echo "&nbsp;&nbsp;";
+		dropdownInteger('to_add',1,1,100);
+		echo "&nbsp;&nbsp;";
+		echo $LANG["cartridges"][16];
+		echo "</td></tr>";
+		echo "</table></div>";
+		echo "</form><br>";
+	}
 }
 /**
  * Print out the cartridges of a defined type
@@ -83,160 +84,162 @@ function showCartridges ($tID,$show_old=0) {
 	global $DB,$CFG_GLPI,$LANG;
 
 	if (!haveRight("cartridge","r")) return false;
-	$canedit=haveRight("cartridge","w");
-
-	$query = "SELECT count(*) AS COUNT 
-		FROM glpi_cartridges 
-		WHERE (FK_glpi_cartridges_type = '$tID')";
-
-	if ($result = $DB->query($query)) {
-		if ($DB->result($result,0,0)!=0) { 
-			$total=$DB->result($result, 0, "COUNT");
-			$unused=getUnusedCartridgesNumber($tID);
-			$used=getUsedCartridgesNumber($tID);
-			$old=getOldCartridgesNumber($tID);
-
-			echo "<br><div class='center'><table cellpadding='2' class='tab_cadre_fixe'>";
-			if (!$show_old){
-				echo "<tr><th colspan='7'>";
-				echo countCartridges($tID,-1);
-				echo "</th>";
-				echo "<th colspan='2'>";
-				echo "&nbsp;</th></tr>";
-			} else { // Old
-				echo "<tr><th colspan='8'>";
-				echo $LANG["cartridges"][35];
-				echo "</th>";
-				echo "<th colspan='2'>";
-				echo "&nbsp;</th></tr>";
+	if ($tID > 0){
+		$canedit=haveRight("cartridge","w");
+	
+		$query = "SELECT count(*) AS COUNT 
+			FROM glpi_cartridges 
+			WHERE (FK_glpi_cartridges_type = '$tID')";
+	
+		if ($result = $DB->query($query)) {
+			if ($DB->result($result,0,0)!=0) { 
+				$total=$DB->result($result, 0, "COUNT");
+				$unused=getUnusedCartridgesNumber($tID);
+				$used=getUsedCartridgesNumber($tID);
+				$old=getOldCartridgesNumber($tID);
+	
+				echo "<br><div class='center'><table cellpadding='2' class='tab_cadre_fixe'>";
+				if (!$show_old){
+					echo "<tr><th colspan='7'>";
+					echo countCartridges($tID,-1);
+					echo "</th>";
+					echo "<th colspan='2'>";
+					echo "&nbsp;</th></tr>";
+				} else { // Old
+					echo "<tr><th colspan='8'>";
+					echo $LANG["cartridges"][35];
+					echo "</th>";
+					echo "<th colspan='2'>";
+					echo "&nbsp;</th></tr>";
+				}
+				$i=0;
+				echo "<tr><th>".$LANG["common"][2]."</th><th>".$LANG["consumables"][23]."</th><th>".$LANG["cartridges"][24]."</th><th>".$LANG["consumables"][26]."</th><th>".$LANG["cartridges"][27]."</th><th>".$LANG["search"][9]."</th>";
+	
+				if ($show_old){
+					echo "<th>".$LANG["cartridges"][39]."</th>";
+				}
+	
+				echo "<th>".$LANG["financial"][3]."</th>";
+				echo "<th colspan='2'>&nbsp;</th>";
+	
+				echo "</tr>";
+			} else {
+				echo "<br><div class='center'><table border='0' width='50%' cellpadding='2'>";
+				echo "<tr><th>".$LANG["cartridges"][7]."</th></tr>";
+				echo "</table></div>";
 			}
-			$i=0;
-			echo "<tr><th>".$LANG["common"][2]."</th><th>".$LANG["consumables"][23]."</th><th>".$LANG["cartridges"][24]."</th><th>".$LANG["consumables"][26]."</th><th>".$LANG["cartridges"][27]."</th><th>".$LANG["search"][9]."</th>";
-
-			if ($show_old){
-				echo "<th>".$LANG["cartridges"][39]."</th>";
-			}
-
-			echo "<th>".$LANG["financial"][3]."</th>";
-			echo "<th colspan='2'>&nbsp;</th>";
-
-			echo "</tr>";
-		} else {
-			echo "<br><div class='center'><table border='0' width='50%' cellpadding='2'>";
-			echo "<tr><th>".$LANG["cartridges"][7]."</th></tr>";
-			echo "</table></div>";
 		}
-	}
-
-	if (!$show_old){ // NEW
-		$where= " AND glpi_cartridges.date_out IS NULL";
-	} else { //OLD
-		$where= " AND glpi_cartridges.date_out IS NOT NULL";
-	}
-
-	$stock_time=0;
-	$use_time=0;	
-	$pages_printed=0;
-	$nb_pages_printed=0;
-	$ORDER="glpi_cartridges.date_use ASC, glpi_cartridges.date_out DESC,  glpi_cartridges.date_in";
-	if (!$show_old){
-		$ORDER=" glpi_cartridges.date_out ASC, glpi_cartridges.date_use ASC,  glpi_cartridges.date_in";
-	}
-	$query = "SELECT glpi_cartridges.*, glpi_printers.ID as printID, glpi_printers.name as printname, 
-			glpi_printers.initial_pages as initial_pages 
-		FROM glpi_cartridges 
-		LEFT JOIN glpi_printers ON (glpi_cartridges.FK_glpi_printers = glpi_printers.ID) 
-		WHERE (glpi_cartridges.FK_glpi_cartridges_type = '$tID') $where 
-		ORDER BY $ORDER";
-
-	$pages=array();
-
-	if ($result = $DB->query($query)) {			
-		$number=$DB->numrows($result);
-		while ($data=$DB->fetch_array($result)) {
-			$date_in=convDate($data["date_in"]);
-			$date_use=convDate($data["date_use"]);
-			$date_out=convDate($data["date_out"]);
-			$printer=$data["FK_glpi_printers"];
-			$page=$data["pages"];
-
-			echo "<tr  class='tab_bg_1'><td class='center'>";
-			echo $data["ID"]; 
-			echo "</td><td class='center'>";
-			echo getCartridgeStatus($data["date_use"],$data["date_out"]);
-			echo "</td><td class='center'>";
-			echo $date_in;
-			echo "</td><td class='center'>";
-			echo $date_use;
-			echo "</td><td class='center'>";
-			if (!is_null($date_use)){
-				if ($data["printID"]>0){
-				echo "<a href='".$CFG_GLPI["root_doc"]."/front/printer.form.php?ID=".$data["printID"]."'><strong>".$data["printname"];
-				if ($_SESSION['glpiview_ID']){
-					echo " (".$data["printID"].")";
+	
+		if (!$show_old){ // NEW
+			$where= " AND glpi_cartridges.date_out IS NULL";
+		} else { //OLD
+			$where= " AND glpi_cartridges.date_out IS NOT NULL";
+		}
+	
+		$stock_time=0;
+		$use_time=0;	
+		$pages_printed=0;
+		$nb_pages_printed=0;
+		$ORDER="glpi_cartridges.date_use ASC, glpi_cartridges.date_out DESC,  glpi_cartridges.date_in";
+		if (!$show_old){
+			$ORDER=" glpi_cartridges.date_out ASC, glpi_cartridges.date_use ASC,  glpi_cartridges.date_in";
+		}
+		$query = "SELECT glpi_cartridges.*, glpi_printers.ID as printID, glpi_printers.name as printname, 
+				glpi_printers.initial_pages as initial_pages 
+			FROM glpi_cartridges 
+			LEFT JOIN glpi_printers ON (glpi_cartridges.FK_glpi_printers = glpi_printers.ID) 
+			WHERE (glpi_cartridges.FK_glpi_cartridges_type = '$tID') $where 
+			ORDER BY $ORDER";
+	
+		$pages=array();
+	
+		if ($result = $DB->query($query)) {			
+			$number=$DB->numrows($result);
+			while ($data=$DB->fetch_array($result)) {
+				$date_in=convDate($data["date_in"]);
+				$date_use=convDate($data["date_use"]);
+				$date_out=convDate($data["date_out"]);
+				$printer=$data["FK_glpi_printers"];
+				$page=$data["pages"];
+	
+				echo "<tr  class='tab_bg_1'><td class='center'>";
+				echo $data["ID"]; 
+				echo "</td><td class='center'>";
+				echo getCartridgeStatus($data["date_use"],$data["date_out"]);
+				echo "</td><td class='center'>";
+				echo $date_in;
+				echo "</td><td class='center'>";
+				echo $date_use;
+				echo "</td><td class='center'>";
+				if (!is_null($date_use)){
+					if ($data["printID"]>0){
+					echo "<a href='".$CFG_GLPI["root_doc"]."/front/printer.form.php?ID=".$data["printID"]."'><strong>".$data["printname"];
+					if ($_SESSION['glpiview_ID']){
+						echo " (".$data["printID"].")";
+					}
+					echo "</strong></a>";
+					} else {
+						echo "N/A";
+					}
+					$tmp_dbeg=explode("-",$data["date_in"]);
+					$tmp_dend=explode("-",$data["date_use"]);
+					$stock_time_tmp= mktime(0,0,0,$tmp_dend[1],$tmp_dend[2],$tmp_dend[0]) 
+						- mktime(0,0,0,$tmp_dbeg[1],$tmp_dbeg[2],$tmp_dbeg[0]);		
+					$stock_time+=$stock_time_tmp;
 				}
-				echo "</strong></a>";
-				} else {
-					echo "N/A";
+				echo "</td><td class='center'>";
+				echo $date_out;		
+				if ($show_old){
+					$tmp_dbeg=explode("-",$data["date_use"]);
+					$tmp_dend=explode("-",$data["date_out"]);
+	
+					$use_time_tmp= mktime(0,0,0,$tmp_dend[1],$tmp_dend[2],$tmp_dend[0]) 
+						- mktime(0,0,0,$tmp_dbeg[1],$tmp_dbeg[2],$tmp_dbeg[0]);		
+					$use_time+=$use_time_tmp;
 				}
-				$tmp_dbeg=explode("-",$data["date_in"]);
-				$tmp_dend=explode("-",$data["date_use"]);
-				$stock_time_tmp= mktime(0,0,0,$tmp_dend[1],$tmp_dend[2],$tmp_dend[0]) 
-					- mktime(0,0,0,$tmp_dbeg[1],$tmp_dbeg[2],$tmp_dbeg[0]);		
-				$stock_time+=$stock_time_tmp;
-			}
-			echo "</td><td class='center'>";
-			echo $date_out;		
-			if ($show_old){
-				$tmp_dbeg=explode("-",$data["date_use"]);
-				$tmp_dend=explode("-",$data["date_out"]);
-
-				$use_time_tmp= mktime(0,0,0,$tmp_dend[1],$tmp_dend[2],$tmp_dend[0]) 
-					- mktime(0,0,0,$tmp_dbeg[1],$tmp_dbeg[2],$tmp_dbeg[0]);		
-				$use_time+=$use_time_tmp;
-			}
-
-			echo "</td>";
-			if ($show_old){
-				// Get initial counter page
-				if (!isset($pages[$printer])){
-					$pages[$printer]=$data['initial_pages'];
-				}
-				echo "<td class='center'>";
-				if ($pages[$printer]<$data['pages']){
-					$pages_printed+=$data['pages']-$pages[$printer];
-					$nb_pages_printed++;
-					echo ($data['pages']-$pages[$printer])." ".$LANG["printers"][31];
-					$pages[$printer]=$data['pages'];
-				}
+	
 				echo "</td>";
-			} 
-			echo "<td class='center'>";
-			showDisplayInfocomLink(CARTRIDGE_ITEM_TYPE,$data["ID"],1);
-			echo "</td>";
-			echo "<td class='center'>";
-			if (!is_null($date_use)&&$canedit)
-				echo "<a href='".$CFG_GLPI["root_doc"]."/front/cartridge.edit.php?restore=restore&amp;ID=".$data["ID"]."&amp;tID=$tID'>".$LANG["consumables"][37]."</a>";		
-			else echo "&nbsp;";
-
-			echo "</td>";
-			echo "<td class='center'>";
-			if ($canedit){
-				echo "<a href='".$CFG_GLPI["root_doc"]."/front/cartridge.edit.php?delete=delete&amp;ID=".$data["ID"]."&amp;tID=$tID'>".$LANG["buttons"][6]."</a>";
-			} else echo "&nbsp;";
-			echo "</td></tr>";
+				if ($show_old){
+					// Get initial counter page
+					if (!isset($pages[$printer])){
+						$pages[$printer]=$data['initial_pages'];
+					}
+					echo "<td class='center'>";
+					if ($pages[$printer]<$data['pages']){
+						$pages_printed+=$data['pages']-$pages[$printer];
+						$nb_pages_printed++;
+						echo ($data['pages']-$pages[$printer])." ".$LANG["printers"][31];
+						$pages[$printer]=$data['pages'];
+					}
+					echo "</td>";
+				} 
+				echo "<td class='center'>";
+				showDisplayInfocomLink(CARTRIDGE_ITEM_TYPE,$data["ID"],1);
+				echo "</td>";
+				echo "<td class='center'>";
+				if (!is_null($date_use)&&$canedit)
+					echo "<a href='".$CFG_GLPI["root_doc"]."/front/cartridge.edit.php?restore=restore&amp;ID=".$data["ID"]."&amp;tID=$tID'>".$LANG["consumables"][37]."</a>";		
+				else echo "&nbsp;";
+	
+				echo "</td>";
+				echo "<td class='center'>";
+				if ($canedit){
+					echo "<a href='".$CFG_GLPI["root_doc"]."/front/cartridge.edit.php?delete=delete&amp;ID=".$data["ID"]."&amp;tID=$tID'>".$LANG["buttons"][6]."</a>";
+				} else echo "&nbsp;";
+				echo "</td></tr>";
+			}	
+			if ($show_old&&$number>0){
+				if ($nb_pages_printed==0) $nb_pages_printed=1;
+				echo "<tr class='tab_bg_2'><td colspan='3'>&nbsp;</td>";
+				echo "<td class='center'>".$LANG["cartridges"][40].":<br>".round($stock_time/$number/60/60/24/30.5,1)." ".$LANG["financial"][57]."</td>";
+				echo "<td>&nbsp;</td>";
+				echo "<td class='center'>".$LANG["cartridges"][41].":<br>".round($use_time/$number/60/60/24/30.5,1)." ".$LANG["financial"][57]."</td>";
+				echo "<td class='center'>".$LANG["cartridges"][42].":<br>".round($pages_printed/$nb_pages_printed)."</td>";
+				echo "<td colspan='3'>&nbsp;</td></tr>";
+			}
 		}	
-		if ($show_old&&$number>0){
-			if ($nb_pages_printed==0) $nb_pages_printed=1;
-			echo "<tr class='tab_bg_2'><td colspan='3'>&nbsp;</td>";
-			echo "<td class='center'>".$LANG["cartridges"][40].":<br>".round($stock_time/$number/60/60/24/30.5,1)." ".$LANG["financial"][57]."</td>";
-			echo "<td>&nbsp;</td>";
-			echo "<td class='center'>".$LANG["cartridges"][41].":<br>".round($use_time/$number/60/60/24/30.5,1)." ".$LANG["financial"][57]."</td>";
-			echo "<td class='center'>".$LANG["cartridges"][42].":<br>".round($pages_printed/$nb_pages_printed)."</td>";
-			echo "<td colspan='3'>&nbsp;</td></tr>";
-		}
-	}	
-	echo "</table></div>\n\n";
+		echo "</table></div>\n\n";
+	}
 }
 
 
@@ -255,40 +258,42 @@ function showCompatiblePrinters($instID) {
 	global $DB,$CFG_GLPI, $LANG;
 
 	if (!haveRight("cartridge","r")) return false;
-
-	$query = "SELECT glpi_dropdown_model_printers.name as type, glpi_cartridges_assoc.ID as ID 
-		FROM glpi_cartridges_assoc, glpi_dropdown_model_printers 
-		WHERE glpi_cartridges_assoc.FK_glpi_dropdown_model_printers=glpi_dropdown_model_printers.ID 
-			AND glpi_cartridges_assoc.FK_glpi_cartridges_type = '$instID' 
-		ORDER BY glpi_dropdown_model_printers.name";
-
-	$result = $DB->query($query);
-	$number = $DB->numrows($result);
-	$i = 0;
-
-	echo "<form method='post' action=\"".$CFG_GLPI["root_doc"]."/front/cartridge.form.php\">";
-	echo "<br><br><div class='center'><table class='tab_cadre_fixe'>";
-	echo "<tr><th colspan='3'>".$LANG["cartridges"][32].":</th></tr>";
-	echo "<tr><th>".$LANG["common"][2]."</th><th>".$LANG["common"][22]."</th><th>&nbsp;</th></tr>";
-
-	while ($i < $number) {
-		$ID=$DB->result($result, $i, "ID");
-		$type=$DB->result($result, $i, "type");
-		echo "<tr class='tab_bg_1'><td class='center'>$ID</td>";
-		echo "<td class='center'>$type</td>";
-		echo "<td align='center' class='tab_bg_2'><a href='".$CFG_GLPI['root_doc']."/front/cartridge.form.php?deletetype=deletetype&amp;ID=$ID&amp;tID=$instID'><strong>".$LANG["buttons"][6]."</strong></a></td></tr>";
-		$i++;
+	
+	if ($instID > 0){
+		$query = "SELECT glpi_dropdown_model_printers.name as type, glpi_cartridges_assoc.ID as ID 
+			FROM glpi_cartridges_assoc, glpi_dropdown_model_printers 
+			WHERE glpi_cartridges_assoc.FK_glpi_dropdown_model_printers=glpi_dropdown_model_printers.ID 
+				AND glpi_cartridges_assoc.FK_glpi_cartridges_type = '$instID' 
+			ORDER BY glpi_dropdown_model_printers.name";
+	
+		$result = $DB->query($query);
+		$number = $DB->numrows($result);
+		$i = 0;
+	
+		echo "<form method='post' action=\"".$CFG_GLPI["root_doc"]."/front/cartridge.form.php\">";
+		echo "<br><br><div class='center'><table class='tab_cadre_fixe'>";
+		echo "<tr><th colspan='3'>".$LANG["cartridges"][32].":</th></tr>";
+		echo "<tr><th>".$LANG["common"][2]."</th><th>".$LANG["common"][22]."</th><th>&nbsp;</th></tr>";
+	
+		while ($i < $number) {
+			$ID=$DB->result($result, $i, "ID");
+			$type=$DB->result($result, $i, "type");
+			echo "<tr class='tab_bg_1'><td class='center'>$ID</td>";
+			echo "<td class='center'>$type</td>";
+			echo "<td align='center' class='tab_bg_2'><a href='".$CFG_GLPI['root_doc']."/front/cartridge.form.php?deletetype=deletetype&amp;ID=$ID&amp;tID=$instID'><strong>".$LANG["buttons"][6]."</strong></a></td></tr>";
+			$i++;
+		}
+		if (haveRight("cartridge","w")){
+			echo "<tr class='tab_bg_1'><td>&nbsp;</td><td class='center'>";
+			echo "<div class='software-instal'><input type='hidden' name='tID' value='$instID'>";
+			dropdown("glpi_dropdown_model_printers","model");
+			echo "</div></td><td align='center' class='tab_bg_2'>";
+			echo "<input type='submit' name='addtype' value=\"".$LANG["buttons"][8]."\" class='submit'>";
+			echo "</td></tr>";
+		}
+	
+		echo "</table></div></form>"    ;
 	}
-	if (haveRight("cartridge","w")){
-		echo "<tr class='tab_bg_1'><td>&nbsp;</td><td class='center'>";
-		echo "<div class='software-instal'><input type='hidden' name='tID' value='$instID'>";
-		dropdown("glpi_dropdown_model_printers","model");
-		echo "</div></td><td align='center' class='tab_bg_2'>";
-		echo "<input type='submit' name='addtype' value=\"".$LANG["buttons"][8]."\" class='submit'>";
-		echo "</td></tr>";
-	}
-
-	echo "</table></div></form>"    ;
 }
 
 /**

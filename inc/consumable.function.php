@@ -54,20 +54,22 @@ function showConsumableAdd($ID) {
 
 	if (!haveRight("consumable","w")) return false;
 
-	echo "<form method='post'  action=\"".$CFG_GLPI["root_doc"]."/front/consumable.edit.php\">";
-	echo "<div class='center'>&nbsp;<table class='tab_cadre_fixe'>";
-	echo "<tr>";
-	echo "<td align='center' class='tab_bg_2'>";
-	echo "<input type='submit' name='add_several' value=\"".$LANG["buttons"][8]."\" class='submit'>";
-	echo "<input type='hidden' name='tID' value=\"$ID\">\n";
-
-	echo "&nbsp;&nbsp;";
-	dropdownInteger('to_add',1,1,100);
-	echo "&nbsp;&nbsp;";
-	echo $LANG["consumables"][16];
-	echo "</td></tr>";
-	echo "</table></div>";
-	echo "</form><br>";
+	if ($ID > 0){
+		echo "<form method='post'  action=\"".$CFG_GLPI["root_doc"]."/front/consumable.edit.php\">";
+		echo "<div class='center'>&nbsp;<table class='tab_cadre_fixe'>";
+		echo "<tr>";
+		echo "<td align='center' class='tab_bg_2'>";
+		echo "<input type='submit' name='add_several' value=\"".$LANG["buttons"][8]."\" class='submit'>";
+		echo "<input type='hidden' name='tID' value=\"$ID\">\n";
+	
+		echo "&nbsp;&nbsp;";
+		dropdownInteger('to_add',1,1,100);
+		echo "&nbsp;&nbsp;";
+		echo $LANG["consumables"][16];
+		echo "</td></tr>";
+		echo "</table></div>";
+		echo "</form><br>";
+	}
 }
 /**
  * Print out the consumables of a defined type
