@@ -338,7 +338,7 @@ function showComputerDisks($ID,$withtemplate='') {
 		} else {
 			echo "<tr><th colspan='6'>".$LANG["search"][15]."</th></tr>";
 		}
-	if ($canedit){
+	if ($canedit &&!(!empty($withtemplate) && $withtemplate == 2)){
 		echo "<tr class='tab_bg_2'><th colspan='6''><a href='computerdisk.form.php?cID=$ID&amp;withtemplate=".$withtemplate."'>".$LANG["computers"][7]."</a></th></tr>";
 	}
 	echo "</table>";
