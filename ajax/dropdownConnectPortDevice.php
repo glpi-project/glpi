@@ -102,7 +102,9 @@ if (isset($LINK_ID_TABLE[$_POST["type"]])&&$_POST["type"]>0){
 			}
 			$output = $data['name'];
 			$ID = $data['ID'];
-			if (empty($output)) $output="($ID)";
+			if ($_SESSION["glpiview_ID"]||empty($output)) {
+				$output="($ID)";
+			}
 			echo "<option value=\"$ID\" title=\"".cleanInputText($output)."\">".substr($output,0,$_SESSION["glpidropdown_limit"])."</option>";
 		}
 		if ($multi && $prev>=0) {
