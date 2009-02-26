@@ -141,7 +141,9 @@ if ($DB->numrows($result)) {
 		if (!empty($data['serial'])) $output.=" - ".$data["serial"];
 		if (!empty($data['otherserial'])) $output.=" - ".$data["otherserial"];
 		$ID = $data['ID'];
-		if (empty($output)) $output="($ID)";
+		if ($_SESSION["glpiview_ID"]||empty($output)){
+			 $output="($ID)";
+		}
 	
 		echo "<option value=\"$ID\" title=\"".cleanInputText($output)."\">".substr($output,0,$_SESSION["glpidropdown_limit"])."</option>";
 	}
