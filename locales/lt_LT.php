@@ -1395,6 +1395,7 @@ $LANG["setup"][4]="Kompiuterių tipai";
 $LANG["setup"][5]="Operacinės sistemos"; 
 $LANG["setup"][6]="Personalization"; 
 $LANG["setup"][9]="Tinklo sąsajos"; 
+$LANG["setup"][10]="Display of surnames firstnames"; 
 $LANG["setup"][14]="E-paštas"; 
 $LANG["setup"][18]="Prisijungimas"; 
 $LANG["setup"][19]="Slaptažodis"; 

@@ -1395,6 +1395,7 @@ $LANG["setup"][4]="Bilgisayar Tipi";
 $LANG["setup"][5]="İşletim Sistemi"; 
 $LANG["setup"][6]="Personalization"; 
 $LANG["setup"][9]="Ağ Arayüzü"; 
+$LANG["setup"][10]="Display of surnames firstnames"; 
 $LANG["setup"][14]="E-Mail"; 
 $LANG["setup"][18]="Giriş"; 
 $LANG["setup"][19]="Parola"; 

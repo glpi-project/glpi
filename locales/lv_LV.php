@@ -1395,6 +1395,7 @@ $LANG["setup"][4]="Datoru tipi";
 $LANG["setup"][5]="Operētājsistēmas"; 
 $LANG["setup"][6]="Personalization"; 
 $LANG["setup"][9]="Tīkla saskarnes"; 
+$LANG["setup"][10]="Display of surnames firstnames"; 
 $LANG["setup"][14]="E-pasts"; 
 $LANG["setup"][18]="Lietotājvārds"; 
 $LANG["setup"][19]="Parole"; 

@@ -1395,6 +1395,7 @@ $LANG["setup"][4]="Типове компютри";
 $LANG["setup"][5]="Операционни системи"; 
 $LANG["setup"][6]="Personalization"; 
 $LANG["setup"][9]="Мрежови интерфейси"; 
+$LANG["setup"][10]="Display of surnames firstnames"; 
 $LANG["setup"][14]="E-Mail"; 
 $LANG["setup"][18]="Потребителско име"; 
 $LANG["setup"][19]="Парола"; 

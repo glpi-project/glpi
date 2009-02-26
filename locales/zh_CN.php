@@ -1395,6 +1395,7 @@ $LANG["setup"][4]="计算机类型";
 $LANG["setup"][5]="操作系统"; 
 $LANG["setup"][6]="Personalization"; 
 $LANG["setup"][9]="网络界面"; 
+$LANG["setup"][10]="Display of surnames firstnames"; 
 $LANG["setup"][14]="电子邮件"; 
 $LANG["setup"][18]="登陆"; 
 $LANG["setup"][19]="密码"; 

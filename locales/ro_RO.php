@@ -1395,6 +1395,7 @@ $LANG["setup"][4]="Tipuri de calculatoare";
 $LANG["setup"][5]="Sistem de operare"; 
 $LANG["setup"][6]="Personalization"; 
 $LANG["setup"][9]="Interfata retea"; 
+$LANG["setup"][10]="Display of surnames firstnames"; 
 $LANG["setup"][14]="E-mail"; 
 $LANG["setup"][18]="Logare"; 
 $LANG["setup"][19]="Parola"; 

@@ -48,7 +48,7 @@ $LANG["bookmark"][1]="закладки";
 $LANG["bookmark"][3]="Вы не заполнили закладки"; 
 $LANG["bookmark"][4]="Новая закладка"; 
 $LANG["bookmark"][5]="Public bookmarks"; 
-$LANG["bookmark"][6]="Apply by default"; 
+$LANG["bookmark"][6]="Применять по умолчанию"; 
 
 $LANG["buttons"][0]="Поиск"; 
 $LANG["buttons"][2]="Отправить"; 
@@ -1395,6 +1395,7 @@ $LANG["setup"][4]="Типы компьютеров";
 $LANG["setup"][5]="Операционные системы"; 
 $LANG["setup"][6]="Внешний вид"; 
 $LANG["setup"][9]="Сетевые интерфейсы"; 
+$LANG["setup"][10]="Display of surnames firstnames"; 
 $LANG["setup"][14]="E-Mail"; 
 $LANG["setup"][18]="Имя пользователя"; 
 $LANG["setup"][19]="Пароль"; 

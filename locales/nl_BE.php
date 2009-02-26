@@ -1395,6 +1395,7 @@ $LANG["setup"][4]="Computertype";
 $LANG["setup"][5]="Besturingssystemen"; 
 $LANG["setup"][6]="Personalization"; 
 $LANG["setup"][9]="Netwerkinterfaces"; 
+$LANG["setup"][10]="Display of surnames firstnames"; 
 $LANG["setup"][14]="e-mail"; 
 $LANG["setup"][18]="Aanmelden"; 
 $LANG["setup"][19]="Wachtwoord"; 
