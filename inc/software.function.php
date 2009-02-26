@@ -2119,7 +2119,8 @@ function addSoftware($name, $manufacturer, $entity, $comments = '', $process_typ
 		$input["name"] = $name;
 		$input["FK_glpi_enterprise"] = $manufacturer_id;
 		$input["FK_entities"] = $entity;
-		$input["comments"] = $LANG["rulesengine"][88];
+		// No comments
+		//$input["comments"] = $LANG["rulesengine"][88];
 		$input["helpdesk_visible"] = $CFG_GLPI["software_helpdesk_visible"];
 		
 		//Process software's category rules
