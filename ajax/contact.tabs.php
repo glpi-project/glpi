@@ -36,6 +36,8 @@
 $NEEDED_ITEMS=array("contact","enterprise","link","document");
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
+header("Content-Type: text/html; charset=UTF-8");
+header_nocache();
 
 if(!isset($_POST["ID"])) {
 	exit();
