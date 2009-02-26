@@ -84,7 +84,6 @@ if (!isset($_POST["limit"])) $_POST["limit"]=$_SESSION["glpidropdown_limit"];
 			$where.=" AND completename ".makeTextSearch($_POST['searchText']);
 		}
 
-
 		$multi=false;
 
 		// Manage multiple Entities dropdowns
@@ -162,6 +161,10 @@ if (!isset($_POST["limit"])) $_POST["limit"]=$_SESSION["glpidropdown_limit"];
 					// Completename for tree dropdown : keep right
 					$outputval = "&hellip;".utf8_substr($outputval,-$_POST["limit"]);
 				}
+				if ($_SESSION["glpiview_ID"]||empty($outputval)){
+					 $outputval.=" (".$_POST['value'].")";
+				}
+
 				echo "<option class='tree' selected value='".$_POST['value']."'>".$outputval."</option>";
 			}
 		}
@@ -199,9 +202,7 @@ if (!isset($_POST["limit"])) $_POST["limit"]=$_SESSION["glpidropdown_limit"];
 					}
 				}
 				
-				if (empty($output)) {
-					$output="($ID)";
-				} else if (strlen($output)>$_POST["limit"]) {
+				if (strlen($output)>$_POST["limit"]) {
 					if ($_SESSION['glpiflat_dropdowntree']){
 						$output="&hellip;".utf8_substr($output,-$_POST["limit"]);
 					} else {
@@ -209,6 +210,9 @@ if (!isset($_POST["limit"])) $_POST["limit"]=$_SESSION["glpidropdown_limit"];
 					}
 				}
 				
+				if ($_SESSION["glpiview_ID"]||empty($output)){
+					 $output.=" ($ID)";
+				}
 
 				$style=$class;
 				$addcomment="";
@@ -304,13 +308,12 @@ if (!isset($_POST["limit"])) $_POST["limit"]=$_SESSION["glpidropdown_limit"];
 				if (isset($_POST['withserial'])&&isset($data["serial"])) $output.=" - ".$data["serial"];
 				if (isset($_POST['withotherserial'])&&isset($data["otherserial"])) $output.=" - ".$data["otherserial"];
 				$ID = $data['ID'];
-				if($_SESSION["glpiview_ID"]||empty($output)){
-					$output.=" ($ID)";
-				}
 				$addcomment="";
 				if (isset($data["comments"])) $addcomment=" - ".$data["comments"];
 
-				if (empty($output)) $output="($ID)";
+				if ($_SESSION["glpiview_ID"]||empty($output)){
+					 $output.=" ($ID)";
+				}
 				if ($multi && $data["FK_entities"]!=$prev) {
 					if ($prev>=0) {
 						echo "</optgroup>";
