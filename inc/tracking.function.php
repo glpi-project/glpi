@@ -887,10 +887,10 @@ function addFormTracking ($device_type=0,$ID=0, $target, $author, $group=0, $ass
 		echo "<td align='center' colspan='3'>";
 		dropdownInteger('hour',$hour,0,100);
 
-		echo $LANG["job"][21]."&nbsp;&nbsp;";
+		echo "&nbsp;".$LANG["job"][21]."&nbsp;&nbsp;";
 		dropdownInteger('minute',$minute,0,59);
 
-		echo $LANG["job"][22]."&nbsp;&nbsp;";
+		echo "&nbsp;".$LANG["job"][22]."&nbsp;&nbsp;";
 		echo "</td></tr>";
 	}
 
