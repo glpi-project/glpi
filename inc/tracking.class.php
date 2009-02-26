@@ -1249,7 +1249,7 @@ class Followup  extends CommonDBTM {
 				$input["_job"]->updateInDB($updates);
 			}
 
-			if (isset($input["_reopen"])&&$input["_reopen"]){
+			if (isset($input["_reopen"]) && $input["_reopen"] && strstr($input["_job"]->fields["status"],"old_")){
 				$updates[]="status";
 				if ($input["_job"]->fields["assign"]>0 || $input["_job"]->fields["assign_group"]>0 
 					|| $input["_job"]->fields["assign_ent"]>0){
