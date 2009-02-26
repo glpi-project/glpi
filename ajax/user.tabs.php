@@ -38,6 +38,8 @@ $NEEDED_ITEMS=array("user","profile","group","setup","tracking","computer","prin
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
+header("Content-Type: text/html; charset=UTF-8");
+header_nocache();
 
 
 if(!isset($_POST["ID"])) {
