@@ -289,6 +289,11 @@ if (!isset($_POST["limit"])) $_POST["limit"]=$_SESSION["glpidropdown_limit"];
 
 		$output=getDropdownName($_POST['table'],$_POST['value']);
 		if (!empty($output)&&$output!="&nbsp;"){
+
+			if($_SESSION["glpiview_ID"]||empty($output)){
+				$output.=" (".$_POST['value'].")";
+			}
+
 			echo "<option selected value='".$_POST['value']."'>".$output."</option>";
 		}
 
@@ -299,6 +304,9 @@ if (!isset($_POST["limit"])) $_POST["limit"]=$_SESSION["glpidropdown_limit"];
 				if (isset($_POST['withserial'])&&isset($data["serial"])) $output.=" - ".$data["serial"];
 				if (isset($_POST['withotherserial'])&&isset($data["otherserial"])) $output.=" - ".$data["otherserial"];
 				$ID = $data['ID'];
+				if($_SESSION["glpiview_ID"]||empty($output)){
+					$output.=" ($ID)";
+				}
 				$addcomment="";
 				if (isset($data["comments"])) $addcomment=" - ".$data["comments"];
 
