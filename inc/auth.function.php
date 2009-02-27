@@ -467,7 +467,14 @@ function loadLanguage($forcelang='') {
 	$file = "";
 
 	if (!isset($_SESSION["glpilanguage"])){
-		$_SESSION["glpilanguage"]=$CFG_GLPI["language"];
+		if (isset($CFG_GLPI["language"])) {
+			// Default config in GLPI >= 0.72
+			$_SESSION["glpilanguage"]=$CFG_GLPI["language"];
+			
+		} else if (isset($CFG_GLPI["default_language"])) {
+			// Default config in GLPI < 0.72
+			$_SESSION["glpilanguage"]=$CFG_GLPI["default_language"];
+		}
 	}
 
 	$trytoload=$_SESSION["glpilanguage"];
