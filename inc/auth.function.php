@@ -472,7 +472,7 @@ function loadLanguage($forcelang='') {
 			$_SESSION["glpilanguage"]=$CFG_GLPI["language"];
 			
 		} else if (isset($CFG_GLPI["default_language"])) {
-			// Default config in GLPI < 0.72
+			// Default config in GLPI < 0.72 : keep it for upgrade process
 			$_SESSION["glpilanguage"]=$CFG_GLPI["default_language"];
 		}
 	}
