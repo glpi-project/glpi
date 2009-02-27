@@ -248,7 +248,11 @@ class Ocsng extends CommonDBTM {
 		echo "</table></td>";
 		echo "</tr>";
 
-		echo "<tr><th>" . $LANG["ocsconfig"][27] ." ".$LANG["Menu"][3]. "</th><th>" . $LANG["ocsconfig"][27] ." ".$LANG["Menu"][4] . "</th><th>&nbsp;</th></tr>";
+		echo "<tr><th>" . $LANG["ocsconfig"][27] ." ".$LANG["Menu"][3]. "</th><th>"; 
+		/* TODO import_software_comments : See Ticket 1234
+		echo $LANG["ocsconfig"][27] ." ".$LANG["Menu"][4];
+		*/ 
+		echo "&nbsp;</th><th>&nbsp;</th></tr>";
 		
 		echo "<tr><td class='tab_bg_2' valign='top'><table width='100%' cellpadding='1' cellspacing='0' border='0'>";
 		echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["common"][25] . " </td><td>";
@@ -256,12 +260,15 @@ class Ocsng extends CommonDBTM {
 		echo "</td></tr>";
 		echo "</table></td>";
 		
-		echo "<td class='tab_bg_2' valign='top'><table width='100%' cellpadding='1' cellspacing='0' border='0'>";
+		echo "<td class='tab_bg_2' valign='top'>";
+		/*
+		echo "<table width='100%' cellpadding='1' cellspacing='0' border='0'>";
 		echo "<tr class='tab_bg_2'><td align='center'>" . $LANG["common"][25] . " </td><td>";
 		dropdownYesNo("import_software_comments", $this->fields["import_software_comments"]);
-		echo "</td></tr>";
-		echo "</table></td>";
-		echo "<td class='tab_bg_2' valign='top'></td></tr>"; 
+		echo "</td></tr></table>";
+		*/
+		echo "&nbsp;</td>";
+		echo "<td class='tab_bg_2' valign='top'>&nbsp;</td></tr>"; 
 		echo "</table>";
 		echo "<p class=\"submit\"><input type=\"submit\" name=\"update_server\" class=\"submit\" value=\"" . $LANG["buttons"][2] . "\" ></p>";
 		echo "</form></div>";
