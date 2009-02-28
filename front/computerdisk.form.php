@@ -86,7 +86,7 @@ else if (isset($_POST["update"]))
 else
 {
 
-	commonHeader($LANG["Menu"][0],$_SERVER['PHP_SELF'],"inventory","computer");
+	commonHeader($LANG['Menu'][0],$_SERVER['PHP_SELF'],"inventory","computer");
 	$disk->showForm($_SERVER['PHP_SELF'],$_GET["ID"],$_GET["cID"]);
 
 	commonFooter();

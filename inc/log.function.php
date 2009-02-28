@@ -404,17 +404,17 @@ function logArray(){
 			"transfers"=>$LANG['transfer'][1]);
 
 
-	$logService=array("inventory"=>$LANG["Menu"][38],
-			"tracking"=>$LANG["Menu"][5],
-			"planning"=>$LANG["Menu"][29],
-			"tools"=>$LANG["Menu"][18],
-			"financial"=>$LANG["Menu"][26],
+	$logService=array("inventory"=>$LANG['Menu'][38],
+			"tracking"=>$LANG['Menu'][5],
+			"planning"=>$LANG['Menu'][29],
+			"tools"=>$LANG['Menu'][18],
+			"financial"=>$LANG['Menu'][26],
 			"login"=>$LANG['log'][55],
 			"setup"=>$LANG['common'][12],
 			"security"=>$LANG['log'][66],
 			"reservation"=>$LANG['log'][58],
 			"cron"=>$LANG['log'][59],
-			"document"=>$LANG["Menu"][27],
+			"document"=>$LANG['Menu'][27],
 			"plugin"=>$LANG['common'][29]);
 
 	return array($logItemtype,$logService);

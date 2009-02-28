@@ -63,7 +63,7 @@ class Contact extends CommonDBTM{
 		$ong[1]=$LANG['title'][26];
 		if ($ID>0){
 			if (haveRight("document","r"))	
-				$ong[5]=$LANG["Menu"][27];
+				$ong[5]=$LANG['Menu'][27];
 			if (haveRight("link","r"))	
 				$ong[7]=$LANG['title'][34];
 			if (haveRight("notes","r"))

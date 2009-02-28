@@ -252,7 +252,7 @@ class CommonItem{
 				return $LANG['document'][7];
 				break;
 			case DOCUMENT_TYPE : 
-				return $LANG["Menu"][27];
+				return $LANG['Menu'][27];
 				break;					
 			case KNOWBASE_TYPE : 
 				return $LANG['title'][5];
@@ -288,7 +288,7 @@ class CommonItem{
 				return $LANG['common'][35];
 				break;	
 			case ENTITY_TYPE : 
-				return $LANG["Menu"][37];
+				return $LANG['Menu'][37];
 				break;			
 			case AUTH_MAIL_TYPE:
 				return $LANG['login'][3];
@@ -303,10 +303,10 @@ class CommonItem{
 				return $LANG['title'][43];
 				break;					
 			case PROFILE_TYPE:
-				return $LANG["Menu"][35];
+				return $LANG['Menu'][35];
 				break;					
 			case MAILGATE_TYPE:
-				return $LANG["Menu"][39];
+				return $LANG['Menu'][39];
 				break;
 			case INFOCOM_TYPE:
 				return $LANG['financial'][3];

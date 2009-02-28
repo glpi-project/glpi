@@ -38,7 +38,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 checkRight("reports","r");
 
-commonHeader($LANG["Menu"][6],$_SERVER['PHP_SELF'],"utils","report");
+commonHeader($LANG['Menu'][6],$_SERVER['PHP_SELF'],"utils","report");
 
 
 
@@ -56,13 +56,13 @@ echo "<td  align='center' width='200' >";
 echo "<p><b>".$LANG['reports'][12]."</b></p> ";
 echo "<p><select name='item_type[]' size='8' multiple>";
 echo "<option value='0' selected>".$LANG['common'][66]."</option>";
-echo "<option value='".COMPUTER_TYPE."'>".$LANG["Menu"][0]."</option>";
-echo "<option value='".PRINTER_TYPE."'>".$LANG["Menu"][2]."</option>";
+echo "<option value='".COMPUTER_TYPE."'>".$LANG['Menu'][0]."</option>";
+echo "<option value='".PRINTER_TYPE."'>".$LANG['Menu'][2]."</option>";
 echo "<option value='".NETWORKING_TYPE."'>".$LANG['help'][26]."</option>";
-echo "<option value='".MONITOR_TYPE."'>".$LANG["Menu"][3]."</option>";
-echo "<option value='".PERIPHERAL_TYPE."'>".$LANG["Menu"][16]."</option>";
-echo "<option value='".SOFTWARE_TYPE."'>".$LANG["Menu"][4]."</option>";
-echo "<option value='".PHONE_TYPE."'>".$LANG["Menu"][34]."</option>";
+echo "<option value='".MONITOR_TYPE."'>".$LANG['Menu'][3]."</option>";
+echo "<option value='".PERIPHERAL_TYPE."'>".$LANG['Menu'][16]."</option>";
+echo "<option value='".SOFTWARE_TYPE."'>".$LANG['Menu'][4]."</option>";
+echo "<option value='".PHONE_TYPE."'>".$LANG['Menu'][34]."</option>";
 echo "</select></p> </td> ";
 
 echo "<td  align='center'  width='200'>";

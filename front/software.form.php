@@ -102,7 +102,7 @@ else if (isset($_POST["mergesoftware"]))
 {
 	$soft->check($_POST["ID"],'w');
 
-	popHeader($LANG["Menu"][4]);
+	popHeader($LANG['Menu'][4]);
 
 	if (isset($_POST["ID"]) && isset($_POST["item"]) && is_array($_POST["item"]) && count($_POST["item"])) {
 		mergeSoftware($_POST["ID"], $_POST["item"]);		
@@ -113,7 +113,7 @@ else
 {
 
 
-	commonHeader($LANG["Menu"][4],$_SERVER['PHP_SELF'],"inventory","software");
+	commonHeader($LANG['Menu'][4],$_SERVER['PHP_SELF'],"inventory","software");
 
 	$soft->showForm($_SERVER['PHP_SELF'],$_GET["ID"],$_GET["withtemplate"]);
 

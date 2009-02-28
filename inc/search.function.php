@@ -225,13 +225,13 @@ function searchForm($type,$params){
 
 	// Meta search names
 	$names=array(
-			COMPUTER_TYPE => $LANG["Menu"][0],
-			//		NETWORKING_TYPE => $LANG["Menu"][1],
-			PRINTER_TYPE => $LANG["Menu"][2],
-			MONITOR_TYPE => $LANG["Menu"][3],
-			PERIPHERAL_TYPE => $LANG["Menu"][16],
-			SOFTWARE_TYPE => $LANG["Menu"][4],
-			PHONE_TYPE => $LANG["Menu"][34],	
+			COMPUTER_TYPE => $LANG['Menu'][0],
+			//		NETWORKING_TYPE => $LANG['Menu'][1],
+			PRINTER_TYPE => $LANG['Menu'][2],
+			MONITOR_TYPE => $LANG['Menu'][3],
+			PERIPHERAL_TYPE => $LANG['Menu'][16],
+			SOFTWARE_TYPE => $LANG['Menu'][4],
+			PHONE_TYPE => $LANG['Menu'][34],	
 		    );
 
 	echo "<form method='get' action=\"$target\">";
@@ -526,13 +526,13 @@ function showList ($type,$params){
 
 
 	$names=array(
-			COMPUTER_TYPE => $LANG["Menu"][0],
-			//		NETWORKING_TYPE => $LANG["Menu"][1],
-			PRINTER_TYPE => $LANG["Menu"][2],
-			MONITOR_TYPE => $LANG["Menu"][3],
-			PERIPHERAL_TYPE => $LANG["Menu"][16],
-			SOFTWARE_TYPE => $LANG["Menu"][4],
-			PHONE_TYPE => $LANG["Menu"][34],
+			COMPUTER_TYPE => $LANG['Menu'][0],
+			//		NETWORKING_TYPE => $LANG['Menu'][1],
+			PRINTER_TYPE => $LANG['Menu'][2],
+			MONITOR_TYPE => $LANG['Menu'][3],
+			PERIPHERAL_TYPE => $LANG['Menu'][16],
+			SOFTWARE_TYPE => $LANG['Menu'][4],
+			PHONE_TYPE => $LANG['Menu'][34],
 		    );	
 
 	// Get the items to display

@@ -62,16 +62,16 @@ class Computer extends CommonDBTM {
 		if ($ID > 0){
 			$ong[20]=$LANG['computers'][8];
 			if (haveRight("software","r"))	{
-				$ong[2]=$LANG["Menu"][4];
+				$ong[2]=$LANG['Menu'][4];
 			}
 			if (haveRight("networking","r")||haveRight("printer","r")||haveRight("monitor","r")||haveRight("peripheral","r")||haveRight("phone","r")){	
 				$ong[3]=$LANG['title'][27];
 			}
 			if (haveRight("contract","r") || haveRight("infocom","r")){
-				$ong[4]=$LANG["Menu"][26];
+				$ong[4]=$LANG['Menu'][26];
 			}
 			if (haveRight("document","r")){
-				$ong[5]=$LANG["Menu"][27];
+				$ong[5]=$LANG['Menu'][27];
 			}
 	
 			if(empty($withtemplate)){
@@ -88,13 +88,13 @@ class Computer extends CommonDBTM {
 					$ong[10]=$LANG['title'][37];
 				}
 				if (haveRight("reservation_central","r")){
-					$ong[11]=$LANG["Menu"][17];
+					$ong[11]=$LANG['Menu'][17];
 				}
 					
 				$ong[12]=$LANG['title'][38];
 	
 				if ($CFG_GLPI["ocs_mode"]&&(haveRight("sync_ocsng","w")||haveRight("computer","w"))){
-					$ong[13]=$LANG["Menu"][33];
+					$ong[13]=$LANG['Menu'][33];
 				}
 			}
 		}	
@@ -698,7 +698,7 @@ class Computer extends CommonDBTM {
 
 			echo "<tr class='tab_bg_1'>";
 			if (!empty($ID)&&$this->fields["ocs_import"]&&haveRight("view_ocsng","r")&&haveRight("sync_ocsng","w")&&count($dataocs)){
-				echo "<td >".$LANG['ocsng'][6]." ".$LANG["Menu"][33].":</td>";
+				echo "<td >".$LANG['ocsng'][6]." ".$LANG['Menu'][33].":</td>";
 				echo "<td >";
 				dropdownYesNo("_auto_update_ocs",$dataocs["auto_update"]);
 				echo "</td>";

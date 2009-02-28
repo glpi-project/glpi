@@ -78,7 +78,7 @@ else if (isset($_POST["get_mails"]))
 }
 else
 {
-	commonHeader($LANG["Menu"][39],$_SERVER['PHP_SELF'],"config","mailgate");
+	commonHeader($LANG['Menu'][39],$_SERVER['PHP_SELF'],"config","mailgate");
 	$mailgate->showForm($_SERVER['PHP_SELF'],$_GET["ID"]);
 	commonFooter();
 }

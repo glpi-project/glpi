@@ -181,7 +181,7 @@ class Config extends CommonDBTM {
 		echo " MB";
 		echo "</td></tr>";
 */							
-		echo "<tr class='tab_bg_1'><td colspan='4' align='center'><strong>" . $LANG["Menu"][38] . "</strong></td></tr>";
+		echo "<tr class='tab_bg_1'><td colspan='4' align='center'><strong>" . $LANG['Menu'][38] . "</strong></td></tr>";
 	
 		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['setup'][115] . "</td><td>";
 		dropdownInteger('cartridges_alarm', $CFG_GLPI["cartridges_alarm"], -1, 100);
@@ -424,7 +424,7 @@ class Config extends CommonDBTM {
 		dropdownYesNo("ocs_mode", $CFG_GLPI["ocs_mode"]);
 		echo "</td><td class='center'colspan='2'></tr>";
 
-		echo "<tr><th colspan='2'>" . $LANG['login'][10] . "</th><th colspan='2'>".$LANG["Menu"][20]."</th></tr>";
+		echo "<tr><th colspan='2'>" . $LANG['login'][10] . "</th><th colspan='2'>".$LANG['Menu'][20]."</th></tr>";
 		echo "<tr class='tab_bg_2'><td class='center'> " . $LANG['setup'][124] . " </td><td>";
 		dropdownYesNo("auto_add_users", $CFG_GLPI["auto_add_users"]);
 		echo "</td>";
@@ -433,7 +433,7 @@ class Config extends CommonDBTM {
 		dropdownYesNo("public_faq", $CFG_GLPI["public_faq"]);
 		echo " </td></tr>";
 
-		echo "<tr><th colspan='4' align='center'>" . $LANG["Menu"][31]. "</th></tr>";
+		echo "<tr><th colspan='4' align='center'>" . $LANG['Menu'][31]. "</th></tr>";
 
 		echo "<tr class='tab_bg_2'><td class='center'> " . $LANG['setup'][219] . " </td><td>";
 		dropdownYesNo("permit_helpdesk", $CFG_GLPI["permit_helpdesk"]);

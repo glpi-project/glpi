@@ -72,7 +72,7 @@ class Entity extends CommonDBTM{
 		global $LANG;
 
 		$ong[1]=$LANG['title'][26];
-		$ong[2]=$LANG["Menu"][14];
+		$ong[2]=$LANG['Menu'][14];
 		$ong[3]=$LANG['rulesengine'][17];
 
 		return $ong;
@@ -87,14 +87,14 @@ class Entity extends CommonDBTM{
 		global  $LANG,$CFG_GLPI;
 
 		$buttons=array();
-		$title=$LANG["Menu"][37];
+		$title=$LANG['Menu'][37];
 		if (haveRight("entity","w")){
 			$buttons["entity.tree.php"]=$LANG['entity'][1];
 			$title="";
 		}
 		$buttons["entity.form.php?ID=0"]=$LANG['entity'][2];
 		
-		displayTitle($CFG_GLPI["root_doc"]."/pics/groupes.png",$LANG["Menu"][37],$title,$buttons);
+		displayTitle($CFG_GLPI["root_doc"]."/pics/groupes.png",$LANG['Menu'][37],$title,$buttons);
 	}
 
 	/**

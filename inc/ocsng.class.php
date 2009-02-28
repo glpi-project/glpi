@@ -123,7 +123,7 @@ class Ocsng extends CommonDBTM {
 		echo "<form name='formconfig' action=\"$target\" method=\"post\">";
 		echo "<input type='hidden' name='ID' value='" . $ID . "'>";
 		echo "<table class='tab_cadre'>";
-		echo "<tr><th>" . $LANG['ocsconfig'][27] ." ".$LANG["Menu"][0]. "</th><th>" . $LANG['title'][30] . "</th><th>" . $LANG['ocsconfig'][43] . "</th></tr>";
+		echo "<tr><th>" . $LANG['ocsconfig'][27] ." ".$LANG['Menu'][0]. "</th><th>" . $LANG['title'][30] . "</th><th>" . $LANG['ocsconfig'][43] . "</th></tr>";
 		echo "<tr><td class='tab_bg_2' valign='top'><table width='100%' cellpadding='1' cellspacing='0' border='0'>";
 
 		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['common'][16] . " </td><td>";
@@ -248,9 +248,9 @@ class Ocsng extends CommonDBTM {
 		echo "</table></td>";
 		echo "</tr>";
 
-		echo "<tr><th>" . $LANG['ocsconfig'][27] ." ".$LANG["Menu"][3]. "</th><th>"; 
+		echo "<tr><th>" . $LANG['ocsconfig'][27] ." ".$LANG['Menu'][3]. "</th><th>"; 
 		/* TODO import_software_comments : See Ticket 1234
-		echo $LANG['ocsconfig'][27] ." ".$LANG["Menu"][4];
+		echo $LANG['ocsconfig'][27] ." ".$LANG['Menu'][4];
 		*/ 
 		echo "&nbsp;</th><th>&nbsp;</th></tr>";
 		
@@ -308,19 +308,19 @@ class Ocsng extends CommonDBTM {
 		$monitor = $this->fields["import_monitor"];
 		$printer = $this->fields["import_printer"];
 		$software = $this->fields["import_software"];
-		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["Menu"][16] . " </td><td>";
+		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['Menu'][16] . " </td><td>";
 		dropdownArrayValues("import_periph",$import_array,$periph);
 		echo "</td></tr>";
 
-		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["Menu"][3] . " </td><td>";
+		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['Menu'][3] . " </td><td>";
 		dropdownArrayValues("import_monitor",$import_array2,$monitor);
 		echo "</td></tr>";
 
-		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["Menu"][2] . " </td><td>";
+		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['Menu'][2] . " </td><td>";
 		dropdownArrayValues("import_printer",$import_array,$printer);
 		echo "</td></tr>";
 
-		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["Menu"][4] . " </td><td>";
+		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['Menu'][4] . " </td><td>";
 		$import_array = array("0"=>$LANG['ocsconfig'][11],"1"=>$LANG['ocsconfig'][12]);
 		dropdownArrayValues("import_software",$import_array,$software);
 		echo "</td></tr>";
@@ -372,7 +372,7 @@ class Ocsng extends CommonDBTM {
 		echo "<tr class='tab_bg_2'><td>" . $LANG['networking'][14] . " </td><td>";
 		dropdownYesNo("link_ip", $this->fields["link_ip"]);
 		echo "</td>";
-		echo "<td>" . $LANG["device_iface"][2] . " </td><td>";
+		echo "<td>" . $LANG['device_iface'][2] . " </td><td>";
 		dropdownYesNo("link_mac_address", $this->fields["link_mac_address"]);
 		echo "</td></tr>";
 		echo "<tr class='tab_bg_2'><td>" . $LANG['rulesengine'][25] . " </td><td>";

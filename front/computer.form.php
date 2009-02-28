@@ -214,7 +214,7 @@ elseif(isset($_POST["unlock_field"])){
 	glpi_header($_SERVER['HTTP_REFERER']);
 } else {//print computer informations
 
-	commonHeader($LANG["Menu"][0],$_SERVER['PHP_SELF'],"inventory","computer");
+	commonHeader($LANG['Menu'][0],$_SERVER['PHP_SELF'],"inventory","computer");
 	//show computer form to add
 	$computer->showForm($_SERVER['PHP_SELF'],$_GET["ID"], $_GET["withtemplate"]);
 	commonFooter();

@@ -132,7 +132,7 @@ if (isset($_POST["update"]))
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 
-commonHeader($LANG["Menu"][37],$_SERVER['PHP_SELF'],"admin","entity");
+commonHeader($LANG['Menu'][37],$_SERVER['PHP_SELF'],"admin","entity");
 
 $entity->showForm($_SERVER['PHP_SELF'],$_GET["ID"]);
 

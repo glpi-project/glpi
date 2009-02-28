@@ -925,35 +925,35 @@ function listTemplates($type, $target, $add = 0) {
 
 	switch ($type) {
 		case COMPUTER_TYPE :
-			$title = $LANG["Menu"][0];
+			$title = $LANG['Menu'][0];
 			$query = "SELECT * FROM glpi_computers WHERE is_template = '1' AND FK_entities='" . $_SESSION["glpiactive_entity"] . "' ORDER by tplname";
 			break;
 		case NETWORKING_TYPE :
-			$title = $LANG["Menu"][1];
+			$title = $LANG['Menu'][1];
 			$query = "SELECT * FROM glpi_networking WHERE is_template = '1' AND FK_entities='" . $_SESSION["glpiactive_entity"] . "' ORDER by tplname";
 			break;
 		case MONITOR_TYPE :
-			$title = $LANG["Menu"][3];
+			$title = $LANG['Menu'][3];
 			$query = "SELECT * FROM glpi_monitors WHERE is_template = '1' AND FK_entities='" . $_SESSION["glpiactive_entity"] . "' ORDER by tplname";
 			break;
 		case PRINTER_TYPE :
-			$title = $LANG["Menu"][2];
+			$title = $LANG['Menu'][2];
 			$query = "SELECT * FROM glpi_printers WHERE is_template = '1' AND FK_entities='" . $_SESSION["glpiactive_entity"] . "' ORDER by tplname";
 			break;
 		case PERIPHERAL_TYPE :
-			$title = $LANG["Menu"][16];
+			$title = $LANG['Menu'][16];
 			$query = "SELECT * FROM glpi_peripherals WHERE is_template = '1' AND FK_entities='" . $_SESSION["glpiactive_entity"] . "' ORDER by tplname";
 			break;
 		case SOFTWARE_TYPE :
-			$title = $LANG["Menu"][4];
+			$title = $LANG['Menu'][4];
 			$query = "SELECT * FROM glpi_software WHERE is_template = '1' AND FK_entities='" . $_SESSION["glpiactive_entity"] . "' ORDER by tplname";
 			break;
 		case PHONE_TYPE :
-			$title = $LANG["Menu"][34];
+			$title = $LANG['Menu'][34];
 			$query = "SELECT * FROM glpi_phones WHERE is_template = '1' AND FK_entities='" . $_SESSION["glpiactive_entity"] . "' ORDER by tplname";
 			break;
 		case OCSNG_TYPE :
-			$title = $LANG["Menu"][33];
+			$title = $LANG['Menu'][33];
 			$query = "SELECT * FROM glpi_ocs_config WHERE is_template = '1' ORDER by tplname";
 			break;
 

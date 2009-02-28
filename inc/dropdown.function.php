@@ -1589,13 +1589,13 @@ function dropdownMassiveAction($device_type,$deleted=0,$extraparams=array()){
 						if (haveRight("ocsng","w") || haveRight("sync_ocsng","w")){
 							echo "<option value=\"force_ocsng_update\">".$LANG['ocsng'][24]."</option>";
 						}
-						echo "<option value=\"unlock_ocsng_field\">".$LANG['buttons'][38]." ".$LANG["Menu"][33]." - ".$LANG['ocsng'][16]."</option>";
-						echo "<option value=\"unlock_ocsng_monitor\">".$LANG['buttons'][38]." ".$LANG["Menu"][33]." - ".$LANG['ocsng'][30]."</option>";
-						echo "<option value=\"unlock_ocsng_peripheral\">".$LANG['buttons'][38]." ".$LANG["Menu"][33]." - ".$LANG['ocsng'][32]."</option>";
-						echo "<option value=\"unlock_ocsng_printer\">".$LANG['buttons'][38]." ".$LANG["Menu"][33]." - ".$LANG['ocsng'][34]."</option>";
-						echo "<option value=\"unlock_ocsng_software\">".$LANG['buttons'][38]." ".$LANG["Menu"][33]." - ".$LANG['ocsng'][52]."</option>";
-						echo "<option value=\"unlock_ocsng_ip\">".$LANG['buttons'][38]." ".$LANG["Menu"][33]." - ".$LANG['ocsng'][50]."</option>";
-						echo "<option value=\"unlock_ocsng_disk\">".$LANG['buttons'][38]." ".$LANG["Menu"][33]." - ".$LANG['ocsng'][55]."</option>";
+						echo "<option value=\"unlock_ocsng_field\">".$LANG['buttons'][38]." ".$LANG['Menu'][33]." - ".$LANG['ocsng'][16]."</option>";
+						echo "<option value=\"unlock_ocsng_monitor\">".$LANG['buttons'][38]." ".$LANG['Menu'][33]." - ".$LANG['ocsng'][30]."</option>";
+						echo "<option value=\"unlock_ocsng_peripheral\">".$LANG['buttons'][38]." ".$LANG['Menu'][33]." - ".$LANG['ocsng'][32]."</option>";
+						echo "<option value=\"unlock_ocsng_printer\">".$LANG['buttons'][38]." ".$LANG['Menu'][33]." - ".$LANG['ocsng'][34]."</option>";
+						echo "<option value=\"unlock_ocsng_software\">".$LANG['buttons'][38]." ".$LANG['Menu'][33]." - ".$LANG['ocsng'][52]."</option>";
+						echo "<option value=\"unlock_ocsng_ip\">".$LANG['buttons'][38]." ".$LANG['Menu'][33]." - ".$LANG['ocsng'][50]."</option>";
+						echo "<option value=\"unlock_ocsng_disk\">".$LANG['buttons'][38]." ".$LANG['Menu'][33]." - ".$LANG['ocsng'][55]."</option>";
 					}
 				}
 				break;
@@ -2120,7 +2120,7 @@ function getRequestTypeName($value){
 
 	switch ($value){
 		case 1 :
-			return $LANG["Menu"][31];
+			return $LANG['Menu'][31];
 			break;
 		case 2 :
 			return $LANG['setup'][14];
@@ -2151,7 +2151,7 @@ function dropdownRequestType($name,$value=0){
 
 	echo "<select name='$name'>";
 	echo "<option value='0' ".($value==0?" selected ":"").">-----</option>";
-	echo "<option value='1' ".($value==1?" selected ":"").">".$LANG["Menu"][31]."</option>"; // Helpdesk
+	echo "<option value='1' ".($value==1?" selected ":"").">".$LANG['Menu'][31]."</option>"; // Helpdesk
 	echo "<option value='2' ".($value==2?" selected ":"").">".$LANG['setup'][14]."</option>"; // mail
 	echo "<option value='3' ".($value==3?" selected ":"").">".$LANG['help'][35]."</option>"; // phone
 	echo "<option value='4' ".($value==4?" selected ":"").">".$LANG['tracking'][34]."</option>"; // direct

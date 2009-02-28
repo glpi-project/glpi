@@ -45,7 +45,7 @@ checkRight("reports","r");
 
 // Titre
 if (isset($_POST["switch"])&&$_POST["switch"]){
-	commonHeader($LANG["Menu"][6],$_SERVER['PHP_SELF'],"utils","report");
+	commonHeader($LANG['Menu'][6],$_SERVER['PHP_SELF'],"utils","report");
 
 	$name=getDropdownName("glpi_networking",$_POST["switch"]);
 	echo "<div align='center'><h2>".$LANG['reports'][49]." $name </h2></div><br><br>";
@@ -63,10 +63,10 @@ if (isset($_POST["switch"])&&$_POST["switch"]){
 		echo "<th>&nbsp;</th>";
 		echo "<th>".$LANG['reports'][46]."</th>";
 		echo "<th>".$LANG['reports'][38]."</th>";
-		echo "<th>".$LANG["device_iface"][2]."</th>";
+		echo "<th>".$LANG['device_iface'][2]."</th>";
 		echo "<th>".$LANG['reports'][47]."</th>";
 		echo "<th>".$LANG['reports'][38]."</th>";
-		echo "<th>".$LANG["device_iface"][2]."</th>";
+		echo "<th>".$LANG['device_iface'][2]."</th>";
 		echo "<th>".$LANG['reports'][36]."</th>";
 		echo "</tr>\n";
 

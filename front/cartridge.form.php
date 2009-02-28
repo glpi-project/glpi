@@ -100,7 +100,7 @@ else if (isset($_GET["deletetype"])){
 else
 {
 
-	commonHeader($LANG["Menu"][21],$_SERVER['PHP_SELF'],"inventory","cartridge");
+	commonHeader($LANG['Menu'][21],$_SERVER['PHP_SELF'],"inventory","cartridge");
 	$cartype->showForm($_SERVER['PHP_SELF'],$_GET["ID"]);
 	commonFooter();
 }

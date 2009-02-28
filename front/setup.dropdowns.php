@@ -183,7 +183,7 @@ if (isset($_POST['mass_delete'])){
 
 					),
 
-			$LANG["Menu"][26]=>array(
+			$LANG['Menu'][26]=>array(
 					"glpi_dropdown_budget"=>$LANG['financial'][87],
 					"glpi_dropdown_rubdocs"=>$LANG['setup'][81],
 					),
@@ -192,7 +192,7 @@ if (isset($_POST['mass_delete'])){
 					"glpi_dropdown_tracking_category"=>$LANG['setup'][79],
 					),
 
-			$LANG["Menu"][18]=>array(
+			$LANG['Menu'][18]=>array(
 					"glpi_dropdown_kbcategories"=>$LANG['title'][5],	
 					),
 
@@ -212,7 +212,7 @@ if (isset($_POST['mass_delete'])){
 					"glpi_dropdown_vlan"=>$LANG['setup'][90],	
 					),
 			
-			$LANG["Menu"][4]=>array(
+			$LANG['Menu'][4]=>array(
 			"glpi_dropdown_software_category"=>$LANG['softwarecategories'][5],
 			),
 

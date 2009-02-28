@@ -152,7 +152,7 @@ function update0713to072() {
 	}
 	
 	// Software Updates
-	displayMigrationMessage("072", $LANG["Menu"][4]); // Software
+	displayMigrationMessage("072", $LANG['Menu'][4]); // Software
 
 	// Make software recursive
 	if (!FieldExists("glpi_software", "recursive")) {
@@ -432,7 +432,7 @@ function update0713to072() {
         }
 
 
-	displayMigrationMessage("072", $LANG["Menu"][4]); // Software
+	displayMigrationMessage("072", $LANG['Menu'][4]); // Software
 	
 /*	// ALTER softwareversions
 	// TODO to be removed if final schema used above
@@ -485,7 +485,7 @@ function update0713to072() {
 		$DB->query($query) or die("0.72 affect OEM as licensetype" . $LANG['update'][90] . $DB->error());
 	}	
 
-	displayMigrationMessage("072", $LANG["Menu"][14]); // User
+	displayMigrationMessage("072", $LANG['Menu'][14]); // User
 
 	if (!FieldExists("glpi_groups", "recursive")) {
 		$query = "ALTER TABLE `glpi_groups` ADD `recursive` TINYINT( 1 ) NOT NULL DEFAULT '0' AFTER `FK_entities`;";

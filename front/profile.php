@@ -42,7 +42,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 checkRight("profile","r");
 
-commonHeader($LANG["Menu"][35],$_SERVER['PHP_SELF'],"admin","profile");
+commonHeader($LANG['Menu'][35],$_SERVER['PHP_SELF'],"admin","profile");
 
 manageGetValuesInSearch(PROFILE_TYPE);
 

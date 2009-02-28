@@ -96,7 +96,7 @@ function showGroupUsers($target,$ID){
 			$headerspan=$nb_per_line;
 		}
 	
-		echo "<div class='center'><table class='tab_cadrehov'><tr><th colspan='$headerspan'>".$LANG["Menu"][14]."</th></tr>";
+		echo "<div class='center'><table class='tab_cadrehov'><tr><th colspan='$headerspan'>".$LANG['Menu'][14]."</th></tr>";
 		$query="SELECT glpi_users.*, glpi_users_groups.ID as linkID 
 			FROM glpi_users_groups 
 			LEFT JOIN glpi_users ON (glpi_users.ID = glpi_users_groups.FK_users) 

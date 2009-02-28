@@ -75,7 +75,7 @@ else
 {
 	checkRight("software","r");
 
-	commonHeader($LANG["Menu"][4],$_SERVER['PHP_SELF'],"inventory","software");
+	commonHeader($LANG['Menu'][4],$_SERVER['PHP_SELF'],"inventory","software");
 	$license->showForm($_SERVER['PHP_SELF'],$_GET["ID"],$_GET["sID"]);
 
 	commonFooter();

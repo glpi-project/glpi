@@ -328,7 +328,7 @@ function getRulesByID($ID, $withcriterias, $withactions) {
 		echo "<table class='tab_cadrehov'>";
 		echo "<tr  class='tab_bg_2'>";
 		echo "<td width='100%'>";
-		echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ldap.parameters.php\">".$LANG["Menu"][26]." ".$LANG['ruleldap'][1]."</a>";
+		echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ldap.parameters.php\">".$LANG['Menu'][26]." ".$LANG['ruleldap'][1]."</a>";
 		echo "</td></tr>";
 		echo "</table></div><br>";
 
@@ -456,7 +456,7 @@ class RightRuleCollection extends RuleCollection {
 			 	echo  "</td>"; 
 			break;
 			case "profile":
-			 	echo  "<td class='tab_bg_2' align='center'>".$LANG["Menu"][35]." </td>\n"; 
+			 	echo  "<td class='tab_bg_2' align='center'>".$LANG['Menu'][35]." </td>\n"; 
 			 	echo  "<td class='tab_bg_2' align='center'>";                                                                         
 			 	echo  getDropdownName("glpi_profiles",$value);  
 			 	echo  "</td>"; 
