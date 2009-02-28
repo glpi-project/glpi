@@ -20,8 +20,27 @@ function checkOne ($name, $tab="") {
 	}
 	chdir($old);
 }
+
+function diffTab ($from, $dest, $name) {
+
+	$nb=0;
+
+	if (is_array($from)) foreach ($from as $ligne => $value) {
+		if (isset($dest[$ligne])) {
+			$nb += diffTab($from[$ligne], $dest[$ligne], $name."['$ligne']");
+		} else {
+			echo $name."['$ligne'] absent ($value)\n";
+			$nb++;
+		}
+
+	} 
+	//else  echo "$name ok\n";
+
+	return $nb;
+}
 if (isset($_SERVER["argc"]) && $_SERVER["argc"]==2 && $_SERVER["argv"][1]=="all") {
 
+	// For 0.71 plugin only
 	$exception=array(
 		"data_injection" => "DATAINJECTIONLANG",
 		"hole" => "LANG_HOLE", 
@@ -33,7 +52,9 @@ if (isset($_SERVER["argc"]) && $_SERVER["argc"]==2 && $_SERVER["argv"][1]=="all"
 	while (($file = readdir($dir)) !== false) {
 		if (is_dir($file) && substr($file,0,1)!=".") {
 			//echo "$file\n";
-			checkOne($file, (isset($exception[$file]) ? $exception[$file] : ""));
+			checkOne($file, (is_file($file."/trunk/hook.php") ? "LANG" 
+				: (isset($exception[$file]) ? $exception[$file] 
+					: "")));
 		}
 	}
 	closedir($dir);
@@ -52,32 +73,13 @@ $dest = $GLOBALS[$_SERVER["argv"][1]];
 
 $nb=0;
 //print_r($GLOBALS);
-printf ("Contrôle %s dans %s\n", $_SERVER["argv"][1], $_SERVER["argv"][3]);
-foreach ($from as $section => $tab1) {
-	if (is_array($tab1)) foreach ($tab1 as $ligne => $value) {
-		if (!isset($dest[$section][$ligne])) {
-			printf("\$%s['%s']['%s'] absent (%s)\n", $_SERVER["argv"][1], $section, $ligne, $value);
-			$nb++;
-		}
-	} else if (!isset($dest[$section])) {
-		printf("\$%s['%s'] absent (%s)\n", $_SERVER["argv"][1], $section, $tab1);
-		$nb++;
-	}
 
-}
+printf ("Contrôle %s dans %s\n", $_SERVER["argv"][1], $_SERVER["argv"][3]);
+$nb += diffTab($from, $dest, '$'.$_SERVER["argv"][1]);
 printf ("Contrôle %s dans %s\n", $_SERVER["argv"][1], $_SERVER["argv"][2]);
-foreach ($dest as $section => $tab1) {
-	if (is_array($tab1)) foreach ($tab1 as $ligne => $value) {
-		if (!isset($from[$section][$ligne])) {
-			printf("\$%s['%s']['%s'] absent (%s)\n", $_SERVER["argv"][1], $section, $ligne, $value);
-			$nb++;
-		}
-	} else if (!isset($from[$section])) {
-		printf("\$%s['%s'] absent (%s)\n", $_SERVER["argv"][1], $section, $tab1);
-		$nb++;
-	}
-}
-if ($nb)	echo "$nb erreur(s) détectées : au boulot !\n";
+$nb += diffTab($dest, $from, '$'.$_SERVER["argv"][1]);
+
+if ($nb)	echo "$nb erreur(s) détectée(s) : au boulot !\n";
 else		echo "C'est bon :)\n";
 
 } else {
