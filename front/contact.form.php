@@ -98,7 +98,7 @@ else if (isset($_GET["deleteenterprise"]))
 
 else
 {
-	commonHeader($LANG["Menu"][22],$_SERVER['PHP_SELF'],"financial","contact");
+	commonHeader($LANG['Menu'][22],$_SERVER['PHP_SELF'],"financial","contact");
 
 	$contact->showForm($_SERVER['PHP_SELF'],$_GET["ID"],'');
 		

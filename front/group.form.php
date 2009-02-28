@@ -92,7 +92,7 @@ else
 		$_SESSION['glpi_tab']=$_GET['onglet'];
 	}
 
-	commonHeader($LANG["Menu"][36],$_SERVER['PHP_SELF'],"admin","group");
+	commonHeader($LANG['Menu'][36],$_SERVER['PHP_SELF'],"admin","group");
 
 	$group->showForm($_SERVER['PHP_SELF'],$_GET["ID"]);	
 

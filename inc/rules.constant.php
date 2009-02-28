@@ -97,7 +97,7 @@ $RULES_CRITERIAS[RULE_AFFECT_RIGHTS]['MAIL_EMAIL']['id']='mail_email';
 
 $RULES_CRITERIAS[RULE_AFFECT_RIGHTS]['GROUPS']['table']='glpi_groups';
 $RULES_CRITERIAS[RULE_AFFECT_RIGHTS]['GROUPS']['field']='name';
-$RULES_CRITERIAS[RULE_AFFECT_RIGHTS]['GROUPS']['name']=$LANG["Menu"][36]." ".$LANG['login'][2];
+$RULES_CRITERIAS[RULE_AFFECT_RIGHTS]['GROUPS']['name']=$LANG['Menu'][36]." ".$LANG['login'][2];
 $RULES_CRITERIAS[RULE_AFFECT_RIGHTS]['GROUPS']['linkfield']='';
 $RULES_CRITERIAS[RULE_AFFECT_RIGHTS]['GROUPS']['type']='dropdown';
 $RULES_CRITERIAS[RULE_AFFECT_RIGHTS]['GROUPS']['virtual']='true';
@@ -123,7 +123,7 @@ $RULES_ACTIONS[RULE_AFFECT_RIGHTS]['_affect_entity_by_tag']['name']=$LANG['rules
 $RULES_ACTIONS[RULE_AFFECT_RIGHTS]['_affect_entity_by_tag']['type']='text';
 $RULES_ACTIONS[RULE_AFFECT_RIGHTS]['_affect_entity_by_tag']['force_actions']=array("regex_result");
 
-$RULES_ACTIONS[RULE_AFFECT_RIGHTS]['FK_profiles']['name']=$LANG["Menu"][35];
+$RULES_ACTIONS[RULE_AFFECT_RIGHTS]['FK_profiles']['name']=$LANG['Menu'][35];
 $RULES_ACTIONS[RULE_AFFECT_RIGHTS]['FK_profiles']['type']='dropdown';
 $RULES_ACTIONS[RULE_AFFECT_RIGHTS]['FK_profiles']['table']='glpi_profiles';
 //$RULES_ACTIONS[RULE_AFFECT_RIGHTS]['FK_profiles']['force_actions']=array("assign","regex_result");

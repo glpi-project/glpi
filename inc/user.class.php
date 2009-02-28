@@ -82,14 +82,14 @@ class User extends CommonDBTM {
 
 		// No add process	
 		if ($ID>0){
-			$ong[4]=$LANG["Menu"][36];
+			$ong[4]=$LANG['Menu'][36];
 	
 			$ong[2] = $LANG['common'][1]; // materiel
 			if (haveRight("show_all_ticket", "1")){
 				$ong[3] = $LANG['title'][28]; // tickets
 			}
 			if (haveRight("reservation_central", "r")){
-				$ong[11] = $LANG["Menu"][17];
+				$ong[11] = $LANG['Menu'][17];
 			}
 			if (haveRight("user_auth_method", "w")){
 				$ong[12] = $LANG['ldap'][12];
@@ -762,7 +762,7 @@ class User extends CommonDBTM {
 		global $LANG, $CFG_GLPI;
 
 		$buttons = array ();
-		$title = $LANG["Menu"][14];
+		$title = $LANG['Menu'][14];
 		if (haveRight("user", "w")) {
 			$buttons["user.form.php?new=1"] = $LANG['setup'][2];
 			$title = "";
@@ -778,7 +778,7 @@ class User extends CommonDBTM {
 			}
 		}
 
-		displayTitle($CFG_GLPI["root_doc"] . "/pics/users.png", $LANG["Menu"][14], $title, $buttons);
+		displayTitle($CFG_GLPI["root_doc"] . "/pics/users.png", $LANG['Menu'][14], $title, $buttons);
 	}
 
 	/**

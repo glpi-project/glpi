@@ -227,7 +227,7 @@ function showGroupAssociated($target,$ID){
 		$headerspan=$nb_per_line;
 	}
 
-	echo "<div class='center'><table class='tab_cadrehov'><tr><th colspan='$headerspan'>".$LANG["Menu"][36]."</th></tr>";
+	echo "<div class='center'><table class='tab_cadrehov'><tr><th colspan='$headerspan'>".$LANG['Menu'][36]."</th></tr>";
 	$query="SELECT glpi_groups.*, glpi_users_groups.ID AS IDD, glpi_users_groups.ID as linkID 
 		FROM glpi_users_groups 
 		LEFT JOIN glpi_groups ON (glpi_groups.ID = glpi_users_groups.FK_groups) 
@@ -348,7 +348,7 @@ function showUserRights($target,$ID){
 		echo "</table></div><br>";
 	}
 
-	echo "<div class='center'><table class='tab_cadrehov'><tr><th colspan='2'>".$LANG["Menu"][37]."</th><th>".$LANG['profiles'][22]." (D=".$LANG['profiles'][29].", R=".$LANG['profiles'][28].")</th></tr>";
+	echo "<div class='center'><table class='tab_cadrehov'><tr><th colspan='2'>".$LANG['Menu'][37]."</th><th>".$LANG['profiles'][22]." (D=".$LANG['profiles'][29].", R=".$LANG['profiles'][28].")</th></tr>";
 
 	$query="SELECT DISTINCT glpi_users_profiles.ID as linkID, glpi_profiles.ID, glpi_profiles.name, glpi_users_profiles.recursive,
 			glpi_users_profiles.dynamic, glpi_entities.completename, glpi_users_profiles.FK_entities

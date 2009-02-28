@@ -40,7 +40,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 checkRight("entity","r");
 
-commonHeader($LANG["Menu"][37],$_SERVER['PHP_SELF'],"admin","entity");
+commonHeader($LANG['Menu'][37],$_SERVER['PHP_SELF'],"admin","entity");
 
 $entity=new Entity();
 $entity->title();

@@ -123,7 +123,7 @@ else if (isset($_GET["deletecontract"]))
 }
 else
 {
-	commonHeader($LANG["Menu"][23],$_SERVER['PHP_SELF'],"financial","enterprise");
+	commonHeader($LANG['Menu'][23],$_SERVER['PHP_SELF'],"financial","enterprise");
 
 	$ent->showForm($_SERVER['PHP_SELF'],$_GET["ID"]);
 		

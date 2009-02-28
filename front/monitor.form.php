@@ -124,7 +124,7 @@ else if(isset($_POST["connect"])&&isset($_POST["item"])&&$_POST["item"]>0)
 }
 else
 {
-	commonHeader($LANG["Menu"][3],$_SERVER['PHP_SELF'],"inventory","monitor");
+	commonHeader($LANG['Menu'][3],$_SERVER['PHP_SELF'],"inventory","monitor");
 
 	$monitor->showForm($_SERVER['PHP_SELF'],$_GET["ID"], $_GET["withtemplate"]);
 

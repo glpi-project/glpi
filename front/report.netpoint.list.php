@@ -44,7 +44,7 @@ checkRight("reports","r");
 
 
 	if (isset($_POST["prise"])&&$_POST["prise"]){
-		commonHeader($LANG["Menu"][6],$_SERVER['PHP_SELF'],"utils","report");
+		commonHeader($LANG['Menu'][6],$_SERVER['PHP_SELF'],"utils","report");
 
 		$name=getDropdownName("glpi_dropdown_netpoint",$_POST["prise"]);
 
@@ -71,10 +71,10 @@ checkRight("reports","r");
 			echo "<th>".$LANG['reports'][52]."</th>";
 			echo "<th>".$LANG['reports'][38]."</th>";
 			echo "<th>".$LANG['reports'][46]."</th>";
-			echo "<th>".$LANG["device_iface"][2]."</th>";
+			echo "<th>".$LANG['device_iface'][2]."</th>";
 			echo "<th>".$LANG['reports'][47]."</th>";
 			echo "<th>".$LANG['reports'][38]."</th>";
-			echo "<th>".$LANG["device_iface"][2]."</th>";
+			echo "<th>".$LANG['device_iface'][2]."</th>";
 			echo "<th>".$LANG['reports'][36]."</th>";
 			echo "</tr>";
 

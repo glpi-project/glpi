@@ -86,7 +86,7 @@ else  if (isset($_POST["update"])){
 }
 
 
-commonHeader($LANG["Menu"][35],$_SERVER['PHP_SELF'],"admin","profile");
+commonHeader($LANG['Menu'][35],$_SERVER['PHP_SELF'],"admin","profile");
 
 if (!isset($_SESSION['glpi_tab'])) $_SESSION['glpi_tab']=1;
 if (isset($_GET['onglet'])) {

@@ -63,7 +63,7 @@ if (isset($_POST["clear_resa"])||isset($_POST["add_resa"])||isset($_POST["edit_r
 	}
 
 
-	commonHeader($LANG["Menu"][17],$_SERVER['PHP_SELF'],"utils","reservation");
+	commonHeader($LANG['Menu'][17],$_SERVER['PHP_SELF'],"utils","reservation");
 	if (isset($_POST["clear_resa"])){
 		$id_item=key($_POST["items"]);
 		if ($rr->delete($_POST)){
@@ -146,7 +146,7 @@ if (isset($_POST["clear_resa"])||isset($_POST["add_resa"])||isset($_POST["edit_r
 else {
 	checkSeveralRightsOr(array("reservation_central"=>"r","reservation_helpdesk"=>"1"));
 	if (!haveRight("reservation_central","r")){
-		commonHeader($LANG["Menu"][17],$_SERVER['PHP_SELF'],"utils","reservation");
+		commonHeader($LANG['Menu'][17],$_SERVER['PHP_SELF'],"utils","reservation");
 		printReservationItems($_SERVER['PHP_SELF']);
 	}
 	else {
@@ -181,7 +181,7 @@ else {
 
 		checkRight("reservation_central","r");
 
-		commonHeader($LANG["Menu"][17],$_SERVER['PHP_SELF'],"utils","reservation");
+		commonHeader($LANG['Menu'][17],$_SERVER['PHP_SELF'],"utils","reservation");
 
 		if (isset($_GET["comment"])){
 			showReservationCommentForm($_SERVER['PHP_SELF'],$_GET["comment"]);

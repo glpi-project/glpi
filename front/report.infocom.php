@@ -43,7 +43,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 checkRight("reports","r");
 
-commonHeader($LANG["Menu"][6],$_SERVER['PHP_SELF'],"utils","report");
+commonHeader($LANG['Menu'][6],$_SERVER['PHP_SELF'],"utils","report");
 
 
 if(empty($_POST["date1"])&&empty($_POST["date2"])) {

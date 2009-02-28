@@ -85,7 +85,7 @@ else if (isset($_POST["update"]))
 } 
 else
 {
-	commonHeader($LANG["Menu"][32],$_SERVER['PHP_SELF'],"inventory","consumable");
+	commonHeader($LANG['Menu'][32],$_SERVER['PHP_SELF'],"inventory","consumable");
 	$constype->showForm($_SERVER['PHP_SELF'],$_GET["ID"]);
 	commonFooter();
 }

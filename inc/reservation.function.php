@@ -162,7 +162,7 @@ function printCalendrier($target,$ID=""){
 	echo "<div class='center'>";
 
 	echo "<table cellpadding='20'  class='tab_glpi'><tr><td><a href=\"".$target.$str_precedent."\"><img src=\"".$CFG_GLPI["root_doc"]."/pics/left.png\" alt='".$LANG['buttons'][12]."' title='".$LANG['buttons'][12]."'></a></td><td><strong>".
-		$LANG["calendarM"][$mois_courant-1]."&nbsp;".$annee_courante."</strong></td><td><a href=\"".$target.$str_suivant."\"><img src=\"".$CFG_GLPI["root_doc"]."/pics/right.png\" alt='".$LANG['buttons'][11]."' title='".$LANG['buttons'][11]."'></a></td></tr></table>";
+		$LANG['calendarM'][$mois_courant-1]."&nbsp;".$annee_courante."</strong></td><td><a href=\"".$target.$str_suivant."\"><img src=\"".$CFG_GLPI["root_doc"]."/pics/right.png\" alt='".$LANG['buttons'][11]."' title='".$LANG['buttons'][11]."'></a></td></tr></table>";
 	// test
 	echo "<table width='90%' class='tab_glpi'><tr><td class='top'  width='100px'>";
 
@@ -182,25 +182,25 @@ function printCalendrier($target,$ID=""){
 	echo "<div class='center'><strong>$annee_avant</strong></div>";
 	for ($i=$mois_courant; $i < 13; $i++) {
 		echo "<div class='calendrier_case2'><a href=\"".$target."?show=resa&amp;ID=$ID&amp;mois_courant=$i&amp;annee_courante=$annee_avant\">".
-			$LANG["calendarM"][$i-1]."</a></div>";
+			$LANG['calendarM'][$i-1]."</a></div>";
 	}
 
 	echo "<div class='center'><strong>$annee_courante</strong></div>";
 	for ($i=1; $i < 13; $i++) {
 		if ($i == $mois_courant) {
 			echo "<div class='calendrier_case1'><strong>".
-				$LANG["calendarM"][$i-1]."</strong></div>";
+				$LANG['calendarM'][$i-1]."</strong></div>";
 		}
 		else {
 			echo "<div class='calendrier_case2'><a href=\"".$target."?show=resa&amp;ID=$ID&amp;mois_courant=$i&amp;annee_courante=$annee_courante\">".
-				$LANG["calendarM"][$i-1]."</a></div>";
+				$LANG['calendarM'][$i-1]."</a></div>";
 		}
 	}
 
 	echo "<div class='center'><strong>$annee_apres</strong></div>";
 	for ($i=1; $i < $mois_courant+1; $i++) {
 		echo "<div class='calendrier_case2'><a href=\"".$target."?show=resa&amp;ID=$ID&amp;mois_courant=$i&amp;annee_courante=$annee_apres\">".
-			$LANG["calendarM"][$i-1]."</a></div>";
+			$LANG['calendarM'][$i-1]."</a></div>";
 	}
 	echo "</div>";
 
@@ -214,13 +214,13 @@ function printCalendrier($target,$ID=""){
 
 
 	echo "<table class='tab_cadre' width='100%' class='tab_glpi'><tr>";
-	echo "<th width='14%'>".$LANG["calendarD"][1]."</th>";
-	echo "<th width='14%'>".$LANG["calendarD"][2]."</th>";
-	echo "<th width='14%'>".$LANG["calendarD"][3]."</th>";
-	echo "<th width='14%'>".$LANG["calendarD"][4]."</th>";
-	echo "<th width='14%'>".$LANG["calendarD"][5]."</th>";
-	echo "<th width='14%'>".$LANG["calendarD"][6]."</th>";
-	echo "<th width='14%'>".$LANG["calendarD"][0]."</th>";
+	echo "<th width='14%'>".$LANG['calendarD'][1]."</th>";
+	echo "<th width='14%'>".$LANG['calendarD'][2]."</th>";
+	echo "<th width='14%'>".$LANG['calendarD'][3]."</th>";
+	echo "<th width='14%'>".$LANG['calendarD'][4]."</th>";
+	echo "<th width='14%'>".$LANG['calendarD'][5]."</th>";
+	echo "<th width='14%'>".$LANG['calendarD'][6]."</th>";
+	echo "<th width='14%'>".$LANG['calendarD'][0]."</th>";
 	echo "</tr>";
 	echo "<tr class='tab_bg_3' >";
 

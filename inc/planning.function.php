@@ -200,11 +200,11 @@ function showPlanning($who,$who_group,$when,$type){
 		case "month":
 		case "week":
 			for ($i=1;$i<=7;$i++){
-				echo "<th width='12%'>".$LANG["calendarDay"][$i%7]."</th>";
+				echo "<th width='12%'>".$LANG['calendarDay'][$i%7]."</th>";
 			}
 			break;
 		case "day":
-			echo "<th width='12%'>".$LANG["calendarDay"][$dayofweek%7]."</th>";
+			echo "<th width='12%'>".$LANG['calendarDay'][$dayofweek%7]."</th>";
 			break;
 	}
 	echo "</tr>";

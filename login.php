@@ -101,7 +101,7 @@ if (!isset ($_POST["noAUTO"]) && $auth_method=checkAlternateAuthSystems()) {
 		$identificat->user->fields['name']=$user;
 		$identificat->user->fields["last_login"] = $_SESSION["glpi_currenttime"];
 	} else {
-		$identificat->addToError($LANG["login"][8]);
+		$identificat->addToError($LANG['login'][8]);
 	}
 }
 
@@ -112,7 +112,7 @@ if (!isset ($_POST["noAUTO"]) && $auth_method=checkAlternateAuthSystems()) {
 	// If not already auth
 	if (!$identificat->auth_succeded){ 
 		if (empty ($_POST['login_name']) || empty ($_POST['login_password'])) {
-			$identificat->addToError($LANG["login"][8]);
+			$identificat->addToError($LANG['login'][8]);
 		} else {
 	
 			// exists=0 -> no exist
@@ -195,7 +195,7 @@ if (!isset ($_POST["noAUTO"]) && $auth_method=checkAlternateAuthSystems()) {
 			unset ($identificat->user->fields);
 			$identificat->user->add($input);
 		} else	if (!$identificat->user_present) { // Auto add not enable so auth failed
-			$identificat->addToError($LANG["login"][11]);
+			$identificat->addToError($LANG['login'][11]);
 			$identificat->auth_succeded = false;
 		} else	if ($identificat->user_present) {
 			// update user and Blank PWD to clean old database for the external auth
@@ -216,9 +216,9 @@ if (!isset ($_POST["noAUTO"]) && $auth_method=checkAlternateAuthSystems()) {
 	if ($identificat->auth_succeded) {
 		// Log Event
 		if (GLPI_DEMO_MODE){
-			logEvent("-1", "system", 3, "login", $_POST['login_name'] . " logged in." . $LANG["log"][40] . " : " . $ip);
+			logEvent("-1", "system", 3, "login", $_POST['login_name'] . " logged in." . $LANG['log'][40] . " : " . $ip);
 		} else {
-			logEvent("-1", "system", 3, "login", $_POST['login_name'] . " " . $LANG["log"][40] . " : " . $ip);
+			logEvent("-1", "system", 3, "login", $_POST['login_name'] . " " . $LANG['log'][40] . " : " . $ip);
 		}
 	
 		// Redirect management
@@ -240,11 +240,11 @@ if (!isset ($_POST["noAUTO"]) && $auth_method=checkAlternateAuthSystems()) {
 		// we have done at least a good login? No, we exit. 
 		nullHeader("Login", $_SERVER['PHP_SELF']);
 		echo '<div align="center"><b>' . $identificat->getErr() . '</b><br><br>';
-		echo '<b><a href="' . $CFG_GLPI["root_doc"] . '/logout.php">' . $LANG["login"][1] . '</a></b></div>';
+		echo '<b><a href="' . $CFG_GLPI["root_doc"] . '/logout.php">' . $LANG['login'][1] . '</a></b></div>';
 		if (GLPI_DEMO_MODE){
 			logEvent(-1, "system", 1, "login", "failed login: " . $_POST['login_name'] . "  ($ip)");
 		} else {
-			logEvent(-1, "system", 1, "login", $LANG["log"][41] . ": " . $_POST['login_name'] . " ($ip)");
+			logEvent(-1, "system", 1, "login", $LANG['log'][41] . ": " . $_POST['login_name'] . " ($ip)");
 		}
 		nullFooter();
 		exit();

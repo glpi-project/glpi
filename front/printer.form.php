@@ -121,7 +121,7 @@ else if(isset($_POST["connect"])&&isset($_POST["item"])&&$_POST["item"]>0)
 }
 else
 {
-	commonHeader($LANG["Menu"][2],$_SERVER['PHP_SELF'],"inventory","printer");
+	commonHeader($LANG['Menu'][2],$_SERVER['PHP_SELF'],"inventory","printer");
 
 	$print->showForm($_SERVER['PHP_SELF'],$_GET["ID"], $_GET["withtemplate"]);
 

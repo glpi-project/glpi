@@ -75,11 +75,11 @@ class Enterprise extends CommonDBTM {
 		}
 		if ($ID>0){
 			if (haveRight("contract","r")){
-				$ong[4] = $LANG["Menu"][26];
+				$ong[4] = $LANG['Menu'][26];
 			}
 			$ong[15] = $LANG['financial'][104];
 			if (haveRight("document","r")){
-				$ong[5] = $LANG["Menu"][27];
+				$ong[5] = $LANG['Menu'][27];
 			}
 			if (haveRight("show_all_ticket","1")){
 				$ong[6] = $LANG['title'][28];

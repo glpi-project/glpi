@@ -361,7 +361,7 @@ $SEARCH_OPTION[COMPUTER_TYPE][60]['forcegroupby']=true;
 $SEARCH_OPTION[COMPUTER_TYPE][60]['usehaving']=true;
 $SEARCH_OPTION[COMPUTER_TYPE][60]['datatype']='number';
 
-$SEARCH_OPTION[COMPUTER_TYPE]['contract']=$LANG["Menu"][25];
+$SEARCH_OPTION[COMPUTER_TYPE]['contract']=$LANG['Menu'][25];
 
 $SEARCH_OPTION[COMPUTER_TYPE][29]['table']='glpi_contracts';
 $SEARCH_OPTION[COMPUTER_TYPE][29]['field']='name';
@@ -539,7 +539,7 @@ $SEARCH_OPTION[COMPUTER_TYPE][122]['name']=$LANG['common'][25]." - ".$LANG['fina
 $SEARCH_OPTION[COMPUTER_TYPE][122]['datatype']='text';
  	
 
-$SEARCH_OPTION[COMPUTER_TYPE]['ocsng']=$LANG["Menu"][33];
+$SEARCH_OPTION[COMPUTER_TYPE]['ocsng']=$LANG['Menu'][33];
 
 $SEARCH_OPTION[COMPUTER_TYPE][102]['table']='glpi_ocs_link';
 $SEARCH_OPTION[COMPUTER_TYPE][102]['field']='last_update';
@@ -561,7 +561,7 @@ $SEARCH_OPTION[COMPUTER_TYPE][100]['name']=$LANG['ocsng'][7];
 $SEARCH_OPTION[COMPUTER_TYPE][101]['table']='glpi_ocs_link';
 $SEARCH_OPTION[COMPUTER_TYPE][101]['field']='auto_update';
 $SEARCH_OPTION[COMPUTER_TYPE][101]['linkfield']='';
-$SEARCH_OPTION[COMPUTER_TYPE][101]['name']=$LANG['ocsng'][6]." ".$LANG["Menu"][33];
+$SEARCH_OPTION[COMPUTER_TYPE][101]['name']=$LANG['ocsng'][6]." ".$LANG['Menu'][33];
 
 $SEARCH_OPTION[COMPUTER_TYPE]['registry']=$LANG['title'][43];
 
@@ -760,7 +760,7 @@ $SEARCH_OPTION[NETWORKING_TYPE][60]['forcegroupby']=true;
 $SEARCH_OPTION[NETWORKING_TYPE][60]['usehaving']=true;
 $SEARCH_OPTION[NETWORKING_TYPE][60]['datatype']='number';
 
-$SEARCH_OPTION[NETWORKING_TYPE]['contract']=$LANG["Menu"][25];
+$SEARCH_OPTION[NETWORKING_TYPE]['contract']=$LANG['Menu'][25];
 
 $SEARCH_OPTION[NETWORKING_TYPE][29]['table']='glpi_contracts';
 $SEARCH_OPTION[NETWORKING_TYPE][29]['field']='name';
@@ -1098,7 +1098,7 @@ $SEARCH_OPTION[PRINTER_TYPE][60]['forcegroupby']=true;
 $SEARCH_OPTION[PRINTER_TYPE][60]['usehaving']=true;
 $SEARCH_OPTION[PRINTER_TYPE][60]['datatype']='number';
 
-$SEARCH_OPTION[PRINTER_TYPE]['contract']=$LANG["Menu"][25];
+$SEARCH_OPTION[PRINTER_TYPE]['contract']=$LANG['Menu'][25];
 
 $SEARCH_OPTION[PRINTER_TYPE][29]['table']='glpi_contracts';
 $SEARCH_OPTION[PRINTER_TYPE][29]['field']='name';
@@ -1424,7 +1424,7 @@ $SEARCH_OPTION[MONITOR_TYPE][60]['usehaving']=true;
 $SEARCH_OPTION[MONITOR_TYPE][60]['datatype']='number';
 
 
-$SEARCH_OPTION[MONITOR_TYPE]['contract']=$LANG["Menu"][25];
+$SEARCH_OPTION[MONITOR_TYPE]['contract']=$LANG['Menu'][25];
 
 $SEARCH_OPTION[MONITOR_TYPE][29]['table']='glpi_contracts';
 $SEARCH_OPTION[MONITOR_TYPE][29]['field']='name';
@@ -1749,7 +1749,7 @@ $SEARCH_OPTION[PERIPHERAL_TYPE][60]['usehaving']=true;
 $SEARCH_OPTION[PERIPHERAL_TYPE][60]['datatype']='number';
 
 
-$SEARCH_OPTION[PERIPHERAL_TYPE]['contract']=$LANG["Menu"][25];
+$SEARCH_OPTION[PERIPHERAL_TYPE]['contract']=$LANG['Menu'][25];
 
 $SEARCH_OPTION[PERIPHERAL_TYPE][29]['table']='glpi_contracts';
 $SEARCH_OPTION[PERIPHERAL_TYPE][29]['field']='name';
@@ -2105,7 +2105,7 @@ $SEARCH_OPTION[SOFTWARE_TYPE][60]['forcegroupby']=true;
 $SEARCH_OPTION[SOFTWARE_TYPE][60]['usehaving']=true;
 $SEARCH_OPTION[SOFTWARE_TYPE][60]['datatype']='number';
 
-$SEARCH_OPTION[SOFTWARE_TYPE]['contract']=$LANG["Menu"][25];
+$SEARCH_OPTION[SOFTWARE_TYPE]['contract']=$LANG['Menu'][25];
 
 $SEARCH_OPTION[SOFTWARE_TYPE][29]['table']='glpi_contracts';
 $SEARCH_OPTION[SOFTWARE_TYPE][29]['field']='name';
@@ -2992,7 +2992,7 @@ $SEARCH_OPTION[USER_TYPE][19]['datatype']='datetime';
 $SEARCH_OPTION[USER_TYPE][20]['table']='glpi_profiles';
 $SEARCH_OPTION[USER_TYPE][20]['field']='name';
 $SEARCH_OPTION[USER_TYPE][20]['linkfield']='';
-$SEARCH_OPTION[USER_TYPE][20]['name']=$LANG["Menu"][35];
+$SEARCH_OPTION[USER_TYPE][20]['name']=$LANG['Menu'][35];
 $SEARCH_OPTION[USER_TYPE][20]['forcegroupby']=true;
 
 $SEARCH_OPTION[USER_TYPE][80]['table']='glpi_entities';
@@ -3211,7 +3211,7 @@ $SEARCH_OPTION[PHONE_TYPE][60]['forcegroupby']=true;
 $SEARCH_OPTION[PHONE_TYPE][60]['usehaving']=true;
 $SEARCH_OPTION[PHONE_TYPE][60]['datatype']='number';
 
-$SEARCH_OPTION[PHONE_TYPE]['contract']=$LANG["Menu"][25];
+$SEARCH_OPTION[PHONE_TYPE]['contract']=$LANG['Menu'][25];
 
 $SEARCH_OPTION[PHONE_TYPE][29]['table']='glpi_contracts';
 $SEARCH_OPTION[PHONE_TYPE][29]['field']='name';

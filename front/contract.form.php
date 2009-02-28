@@ -133,7 +133,7 @@ else if (isset($_GET["deleteenterprise"]))
 }
 else
 {
-	commonHeader($LANG["Menu"][25],$_SERVER['PHP_SELF'],"financial","contract");
+	commonHeader($LANG['Menu'][25],$_SERVER['PHP_SELF'],"financial","contract");
 
 	$contract->showForm($_SERVER['PHP_SELF'],$_GET["ID"]);
 		

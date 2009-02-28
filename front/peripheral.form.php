@@ -129,7 +129,7 @@ else if(isset($_POST["connect"])&&isset($_POST["item"])&&$_POST["item"]>0)
 }
 else
 {
-	commonHeader($LANG["Menu"][16],$_SERVER['PHP_SELF'],"inventory","peripheral");
+	commonHeader($LANG['Menu'][16],$_SERVER['PHP_SELF'],"inventory","peripheral");
 
 	$peripheral->showForm($_SERVER['PHP_SELF'],$_GET["ID"], $_GET["withtemplate"]);
 	commonFooter();

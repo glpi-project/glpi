@@ -103,7 +103,7 @@ function showCentralReminder($entity = -1, $parent = false){
 				$tab=explode(" ",$data["begin"]);
 				$date_url=$tab[0];
 
-				echo "<span class='reminder_right'><a href=\"".$CFG_GLPI["root_doc"]."/front/planning.php?date=".$date_url."&amp;type=day\"><img src=\"".$CFG_GLPI["root_doc"]."/pics/rdv.png\" alt='".$LANG["Menu"][29]."' title='".convDateTime($data["begin"])."=>".convDateTime($data["end"])."'></a></span>";
+				echo "<span class='reminder_right'><a href=\"".$CFG_GLPI["root_doc"]."/front/planning.php?date=".$date_url."&amp;type=day\"><img src=\"".$CFG_GLPI["root_doc"]."/pics/rdv.png\" alt='".$LANG['Menu'][29]."' title='".convDateTime($data["begin"])."=>".convDateTime($data["end"])."'></a></span>";
 
 			}
 			echo "</div></div></td></tr>\n";
@@ -208,7 +208,7 @@ function showListReminder($private=1,$recursive=0){
 				if ($planningRight){
 					echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/planning.php?date=".$date_url."&amp;type=day\">";
 				}
-				echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/rdv.png\" alt='".$LANG["Menu"][29]."' title='".$LANG["Menu"][29]."'>";
+				echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/rdv.png\" alt='".$LANG['Menu'][29]."' title='".$LANG['Menu'][29]."'>";
 				if ($planningRight){
 					echo "</a>";
 				}

@@ -37,7 +37,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 checkRight("reports","r");
 
 if (isset($_POST["location"])&&$_POST["location"]){
-	commonHeader($LANG["Menu"][6],$_SERVER['PHP_SELF'],"utils","report");
+	commonHeader($LANG['Menu'][6],$_SERVER['PHP_SELF'],"utils","report");
 
 	// Titre
 	$name=getDropdownName("glpi_dropdown_locations",$_POST["location"]);
@@ -61,10 +61,10 @@ if (isset($_POST["location"])&&$_POST["location"]){
 		echo "<th>".$LANG['reports'][52]."</th>";
 		echo "<th>".$LANG['reports'][38]."</th>";
 		echo "<th>".$LANG['reports'][46]."</th>";
-		echo "<th>".$LANG["device_iface"][2]."</th>";
+		echo "<th>".$LANG['device_iface'][2]."</th>";
 		echo "<th>".$LANG['reports'][47]."</th>";
 		echo "<th>".$LANG['reports'][38]."</th>";
-		echo "<th>".$LANG["device_iface"][2]."</th>";
+		echo "<th>".$LANG['device_iface'][2]."</th>";
 		echo "<th>".$LANG['reports'][36]."</th>";
 		echo "</tr>";
 		while( $ligne = $DB->fetch_array($result)){

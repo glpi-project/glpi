@@ -90,16 +90,16 @@ function getDeviceSpecifityLabel($dev_type){
 			return "";
 			break;
 		case PROCESSOR_DEVICE :
-			return $LANG["device_ram"][1];
+			return $LANG['device_ram'][1];
 			break;
 		case RAM_DEVICE :
-			return  $LANG["device_ram"][2];
+			return  $LANG['device_ram'][2];
 			break;
 		case HDD_DEVICE :
-			return $LANG["device_hdd"][4];
+			return $LANG['device_hdd'][4];
 			break;
 		case NETWORK_DEVICE :
-			return $LANG["device_iface"][2];
+			return $LANG['device_iface'][2];
 			break;
 		case DRIVE_DEVICE :
 			return "";
@@ -109,7 +109,7 @@ function getDeviceSpecifityLabel($dev_type){
 			break;
 		case GFX_DEVICE :
 			//return "";
-			return  $LANG["device_gfxcard"][0];
+			return  $LANG['device_gfxcard'][0];
 			break;
 		case SND_DEVICE :
 			return "";
@@ -178,16 +178,16 @@ function printDeviceComputer($device,$quantity,$specif,$compID,$compDevID,$witht
 		case HDD_DEVICE :
 			$type=$LANG['devices'][1];
 			$name=$device->fields["designation"];
-			if (!empty($device->fields["rpm"]))	$entry[$LANG["device_hdd"][0]]=$device->fields["rpm"];
+			if (!empty($device->fields["rpm"]))	$entry[$LANG['device_hdd'][0]]=$device->fields["rpm"];
 			if ($device->fields["interface"])	$entry[$LANG['common'][65]]=getDropdownName("glpi_dropdown_interface",$device->fields["interface"]);
-			if (!empty($device->fields["cache"])) $entry[$LANG["device_hdd"][1]]=$device->fields["cache"];
+			if (!empty($device->fields["cache"])) $entry[$LANG['device_hdd'][1]]=$device->fields["cache"];
 
 			$specificity_size = 10;
 			break;
 		case GFX_DEVICE :
 			$type=$LANG['devices'][2];
 			$name=$device->fields["designation"];
-//			if (!empty($device->fields["ram"])) $entry[$LANG["device_gfxcard"][0]]=$device->fields["ram"];
+//			if (!empty($device->fields["ram"])) $entry[$LANG['device_gfxcard'][0]]=$device->fields["ram"];
 //			if (!empty($device->fields["interface"])) 		$entry[$LANG['common'][65]]=getDropdownName("glpi_dropdown_interface",$device->fields["interface"]);
 
 			$entry[$LANG['common'][65]]=getDropdownName("glpi_dropdown_interface",$device->fields["FK_interface"]);
@@ -196,21 +196,21 @@ function printDeviceComputer($device,$quantity,$specif,$compID,$compDevID,$witht
 		case NETWORK_DEVICE :
 			$type=$LANG['devices'][3];
 			$name=$device->fields["designation"];
-			if (!empty($device->fields["bandwidth"])) $entry[$LANG["device_iface"][0]]=$device->fields["bandwidth"];
+			if (!empty($device->fields["bandwidth"])) $entry[$LANG['device_iface'][0]]=$device->fields["bandwidth"];
 
 			$specificity_size = 18;
 			break;
 		case MOBOARD_DEVICE :
 			$type=$LANG['devices'][5];
 			$name=$device->fields["designation"];
-			if (!empty($device->fields["chipset"])) $entry[$LANG["device_moboard"][0]]=$device->fields["chipset"];
+			if (!empty($device->fields["chipset"])) $entry[$LANG['device_moboard'][0]]=$device->fields["chipset"];
 
 			$specificity_size = 10;
 			break;
 		case PROCESSOR_DEVICE :
 			$type=$LANG['devices'][4];
 			$name=$device->fields["designation"];
-			if (!empty($device->fields["frequence"])) $entry[$LANG["device_ram"][1]]=$device->fields["frequence"];
+			if (!empty($device->fields["frequence"])) $entry[$LANG['device_ram'][1]]=$device->fields["frequence"];
 
 			$specificity_size = 10;
 			break;
@@ -218,7 +218,7 @@ function printDeviceComputer($device,$quantity,$specif,$compID,$compDevID,$witht
 			$type=$LANG['devices'][6];
 			$name=$device->fields["designation"];
 			if (!empty($device->fields["type"])) $entry[$LANG['common'][17]]=getDropdownName("glpi_dropdown_ram_type",$device->fields["type"]);
-			if (!empty($device->fields["frequence"])) $entry[$LANG["device_ram"][1]]=$device->fields["frequence"];
+			if (!empty($device->fields["frequence"])) $entry[$LANG['device_ram'][1]]=$device->fields["frequence"];
 
 			$specificity_size = 10;
 			break;
@@ -233,14 +233,14 @@ function printDeviceComputer($device,$quantity,$specif,$compID,$compDevID,$witht
 		case DRIVE_DEVICE : 
 			$type=$LANG['devices'][19];
 			$name=$device->fields["designation"];
-			if ($device->fields["is_writer"]) $entry[$LANG["device_drive"][0]]=getYesNo($device->fields["is_writer"]);
-			if (!empty($device->fields["speed"])) $entry[$LANG["device_drive"][1]]=$device->fields["speed"];
+			if ($device->fields["is_writer"]) $entry[$LANG['device_drive'][0]]=getYesNo($device->fields["is_writer"]);
+			if (!empty($device->fields["speed"])) $entry[$LANG['device_drive'][1]]=$device->fields["speed"];
 			if (!empty($device->fields["frequence"])) $entry[$LANG['common'][65]]=$device->fields["frequence"];
 			break;
 		case CONTROL_DEVICE :
 			$type=$LANG['devices'][20];
 			$name=$device->fields["designation"];
-			if ($device->fields["raid"]) $entry[$LANG["device_control"][0]]=getYesNo($device->fields["raid"]);
+			if ($device->fields["raid"]) $entry[$LANG['device_control'][0]]=getYesNo($device->fields["raid"]);
 			if ($device->fields["interface"]) $entry[$LANG['common'][65]]=getDropdownName("glpi_dropdown_interface",$device->fields["interface"]);
 
 			break;
@@ -252,15 +252,15 @@ function printDeviceComputer($device,$quantity,$specif,$compID,$compDevID,$witht
 		case POWER_DEVICE :
 			$type=$LANG['devices'][23];
 			$name=$device->fields["designation"];
-			if (!empty($device->fields["power"])) $entry[$LANG["device_power"][0]]=$device->fields["power"];
-			if ($device->fields["atx"]) $entry[$LANG["device_power"][1]]=getYesNo($device->fields["atx"]);
+			if (!empty($device->fields["power"])) $entry[$LANG['device_power'][0]]=$device->fields["power"];
+			if ($device->fields["atx"]) $entry[$LANG['device_power'][1]]=getYesNo($device->fields["atx"]);
 
 			break;
 		case CASE_DEVICE :
 			$type=$LANG['devices'][22];
 			$name=$device->fields["designation"];
 			if (!empty($device->fields["type"])) {
-				$entry[$LANG["device_case"][0]]=getDropdownName("glpi_dropdown_case_type",$device->fields["type"]);
+				$entry[$LANG['device_case'][0]]=getDropdownName("glpi_dropdown_case_type",$device->fields["type"]);
 			}
 
 			break;
@@ -634,14 +634,14 @@ function showDevicesForm ($target,$ID,$device_type) {
 	echo "<table cellpadding='1' cellspacing='0' border='0'>";
 	switch($table) {
 		case "glpi_device_moboard" : 
-			echo "<tr><td>".$LANG["device_moboard"][0].":</td>";
+			echo "<tr><td>".$LANG['device_moboard'][0].":</td>";
 			echo "<td>";
 			autocompletionTextField("chipset",$table,"chipset",$device->fields["chipset"],40);
 
 			echo "</td></tr>";
 		break;
 		case "glpi_device_processor" :
-			echo "<tr><td>".$LANG["device_ram"][1].":</td><td>";
+			echo "<tr><td>".$LANG['device_ram'][1].":</td><td>";
 			autocompletionTextField("frequence",$table,"frequence",$device->fields["frequence"],40);
 			echo "</td></tr>";
 		break;
@@ -651,16 +651,16 @@ function showDevicesForm ($target,$ID,$device_type) {
 			dropdownValue("glpi_dropdown_ram_type","type",$device->fields["type"]);
 			echo "</td>";
 			echo "</tr>";
-			echo "<tr><td>".$LANG["device_ram"][1].":</td><td>";
+			echo "<tr><td>".$LANG['device_ram'][1].":</td><td>";
 			autocompletionTextField("frequence",$table,"frequence",$device->fields["frequence"],40);
 			echo "</td></tr>";
 		break;
 		case "glpi_device_hdd" :
-			echo "<tr><td>".$LANG["device_hdd"][0].":</td><td>";
+			echo "<tr><td>".$LANG['device_hdd'][0].":</td><td>";
 			autocompletionTextField("rpm",$table,"rpm",$device->fields["rpm"],40);
 	
 			echo "</td></tr>";
-			echo "<tr><td>".$LANG["device_hdd"][1].":</td><td>";
+			echo "<tr><td>".$LANG['device_hdd'][1].":</td><td>";
 			autocompletionTextField("cache",$table,"cache",$device->fields["cache"],40);
 			echo "</td></tr>";
 	
@@ -673,13 +673,13 @@ function showDevicesForm ($target,$ID,$device_type) {
 			echo "</tr>";
 		break;
 		case "glpi_device_iface" :
-			echo "<tr><td>".$LANG["device_iface"][0].":</td><td>";
+			echo "<tr><td>".$LANG['device_iface'][0].":</td><td>";
 			autocompletionTextField("bandwidth",$table,"bandwidth",$device->fields["bandwidth"],40);
 			echo "</td></tr>";
 		break;
 		case "glpi_device_drive" :
 			echo "</tr>";
-			echo "<tr><td>".$LANG["device_drive"][0].":</td>";
+			echo "<tr><td>".$LANG['device_drive'][0].":</td>";
 			echo "<td>";
 			dropdownYesNo("is_writer",$device->fields["is_writer"]);
 			echo "</td>";
@@ -691,7 +691,7 @@ function showDevicesForm ($target,$ID,$device_type) {
 	
 			echo "</td>";
 			echo "</tr>";
-			echo "<tr><td>".$LANG["device_drive"][1].":</td><td>";
+			echo "<tr><td>".$LANG['device_drive'][1].":</td><td>";
 			autocompletionTextField("speed",$table,"speed",$device->fields["speed"],40);
 			echo "</td></tr>";
 
@@ -699,7 +699,7 @@ function showDevicesForm ($target,$ID,$device_type) {
 		break;
 		case  "glpi_device_control" :
 			echo "</tr>";
-			echo "<tr><td>".$LANG["device_control"][0].":</td>";
+			echo "<tr><td>".$LANG['device_control'][0].":</td>";
 			echo "<td>";
 			dropdownYesNo("raid",$device->fields["raid"]);
 			echo "</td>";
@@ -713,7 +713,7 @@ function showDevicesForm ($target,$ID,$device_type) {
 		break;
 		case "glpi_device_gfxcard" :
 
-			echo "<tr><td>".$LANG["device_gfxcard"][0].":</td><td>";
+			echo "<tr><td>".$LANG['device_gfxcard'][0].":</td><td>";
 			autocompletionTextField("specif_default",$table,"specif_default",$device->fields["specif_default"],40);
 			echo "</td></tr>";
 			echo "<tr><td>".$LANG['common'][65].":</td>";
@@ -730,7 +730,7 @@ function showDevicesForm ($target,$ID,$device_type) {
 		case "glpi_device_pci" :
 			break;
 		case "glpi_device_case" :
-			echo "<tr><td>".$LANG["device_case"][0].":</td>";
+			echo "<tr><td>".$LANG['device_case'][0].":</td>";
 			echo "<td>";
 			dropdownValue("glpi_dropdown_case_type","type",$device->fields["type"]);
 			echo "</td>";
@@ -738,10 +738,10 @@ function showDevicesForm ($target,$ID,$device_type) {
 
 		break;
 		case "glpi_device_power" :
-			echo "<tr><td>".$LANG["device_power"][0].":</td><td>";
+			echo "<tr><td>".$LANG['device_power'][0].":</td><td>";
 			autocompletionTextField("power",$table,"power",$device->fields["power"],40);
 			echo "</td></tr>";
-			echo "<tr><td>".$LANG["device_power"][1].":</td>";
+			echo "<tr><td>".$LANG['device_power'][1].":</td>";
 			echo "<td>";
 			dropdownYesNo("atx",$device->fields["atx"]);
 			echo "</td>";
