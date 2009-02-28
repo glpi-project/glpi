@@ -34,7 +34,7 @@ function diffTab ($from, $dest, $name) {
 		}
 
 	} 
-	//else  echo "$name ok\n";
+	//else  echo "$name ok (".$from." => ".$dest.")\n";
 
 	return $nb;
 }
@@ -67,14 +67,14 @@ require $_SERVER["argv"][1];
 isset($GLOBALS[$nomtab]) or die ($nomtab . " not defined in " . $_SERVER["argv"][1] . "\n");
 $from = $GLOBALS[$nomtab];
 
-unset ($GLOBALS[$_SERVER["argv"][1]]);
+unset ($GLOBALS[$nomtab]);
 
 require $_SERVER["argv"][2];
 isset($GLOBALS[$nomtab]) or die ($nomtab . " not defined in " . $_SERVER["argv"][2] . "\n");
 $dest = $GLOBALS[$nomtab];
 
 $nb=0;
-//print_r($GLOBALS);
+// print_r($GLOBALS);
 
 printf ("Contrôle %s dans %s\n", $nomtab, $_SERVER["argv"][2]);
 $nb += diffTab($from, $dest, '$'.$nomtab);
