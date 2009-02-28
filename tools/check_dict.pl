@@ -33,25 +33,6 @@ print "USAGE check_dict.pl dico_file [1=count_all_entries]\n Must to be launch i
 exit();
 }
 
-$badwritten=`grep -r --exclude-dir=files --exclude-dir=.svn "\\\$LANG\\\['" * | wc -l`;
-
-if ($badwritten!=0){
-	print "WRONG dict uses:\n";
-	$badwritten=`grep -r  --exclude-dir=files --exclude-dir=.svn -n "\\\$LANG\\\['" *`;
-	print $badwritten;
-	print "\n\n";
-}
-
-$badwritten2=`grep -r --exclude-dir=files --exclude-dir=.svn "\\\$LANG\\\[\\\"[a-zA-Z_]*\\\"\\\]\\\[[0-9]*['\\\"a-zA-Z]" * | wc -l`;
-
-
-if ($badwritten2!=0){
-	print "WRONG dict uses:\n";
-	$badwritten2=`grep -r --exclude-dir=files --exclude-dir=.svn "\\\$LANG\\\[\\\"[a-zA-Z_]*\\\"\\\]\\\[[0-9]*['\\\"a-zA-Z]" * `;
-	print $badwritten2;
-	print "\n\n";
-}
-
 $count_all=0;
 if (length($ARGV[1])>0){
 $count_all=1;
@@ -66,8 +47,9 @@ close(INFO);
 
 foreach (@lines)
 {
-	if ($_=~m/(\$LANG)\[\"([a-zA-Z_]+)\"\]\[([0-9]+)\]/){
-		print "SEARCH $1\[\"$2\"\]\[$3\] : ";
+	
+	if ($_=~m/\$(LANG)\[['"]([a-zA-Z_]+)['"]\]\[([0-9]+)\]/){
+		print "SEARCH $1\['$2'\]\[$3\] : ";
 		$count=0;
 		do_dir(".",$1,$2,$3);
 		print $count;
@@ -76,15 +58,23 @@ foreach (@lines)
 		print "\n";
 	}
 
+	if ($_=~m/\$(LANG)\[['"]([a-zA-Z_]+)['"]\]\[['"]([a-zA-Z_]+)['"]\]\[([0-9]+)\]/){
+		print "SEARCH2 $1\['$2'\]['$3'\]\[$4\] : ";
+		$count=0;
+		do_dir2(".",$1,$2,$3,$4);
+		print $count;
+		print "\n";
+	}
+
 }
 
 
 sub do_dir{
 	local ($dir,$varname,$module,$i)=@_;	
-	
 	#print "Entering $dir\n";
 	my $found_php=0;
 	opendir(DIRHANDLE,$dir)||die "ERROR: can not read current directory\n"; 
+
 	foreach (readdir(DIRHANDLE)){ 
 		if ($_ ne '..' && $_ ne '.'){
 				
@@ -102,7 +92,7 @@ sub do_dir{
 		}
 	}
 	if ($found_php==1 && ($count_all==1 || $count==0) ){
-		open COUNT, "cat $dir/*.php | grep \'$varname\\\[\\\"$module\\\"\\\]\\\[$i\\\]\' | wc -l |";
+		open COUNT, "cat $dir/*.php | grep \"$varname\\\[\['\\\"\]$module\['\\\"\]\\\]\\\[$i\\\]\" | wc -l |";
 		while(<COUNT>) {
 			$count+=$_;
 			#print $_."\n";
@@ -113,3 +103,36 @@ sub do_dir{
 	
 }
 
+sub do_dir2{
+	local ($dir,$varname,$module,$module2,$i)=@_;	
+	
+	#print "Entering $dir\n";
+	my $found_php=0;
+	opendir(DIRHANDLE,$dir)||die "ERROR: can not read current directory\n"; 
+	foreach (readdir(DIRHANDLE)){ 
+		if ($_ ne '..' && $_ ne '.'){
+				
+			if (-d "$dir/$_" && $_!~m/locales/ && $_!~m/files/ && $_!~m/\.svn/ ){
+				if ($count_all==1 || $count==0){
+					do_dir("$dir/$_",$varname,$module,$module2,$i);
+				}
+			} else {
+				if ($count_all==1 || $count==0){
+					if (!-d "$dir/$_" && (index($_,".php",0)==length($_)-4)){
+					$found_php=1;
+					}
+				}
+			}
+		}
+	}
+	if ($found_php==1 && ($count_all==1 || $count==0) ){
+		open COUNT, "cat $dir/*.php | grep \"$varname\\\[\['\\\"\]$module\['\\\"\]\\\]\\\[\['\\\"\]$module2\['\\\"\]\\\]\\\[$i\\\]\" | wc -l |";
+		while(<COUNT>) {
+			$count+=$_;
+			#print $_."\n";
+		}
+	}
+	
+	closedir DIRHANDLE; 
+	
+}
