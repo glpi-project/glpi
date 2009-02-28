@@ -52,7 +52,7 @@ if (isset($_POST["add"]))
 	$soft->check(-1,'w',$_POST['FK_entities']);
 
 	$newID=$soft->add($_POST);
-	logEvent($newID, "software", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][20]." ".$_POST["name"].".");
+	logEvent($newID, "software", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][20]." ".$_POST["name"].".");
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($_POST["delete"]))
@@ -63,7 +63,7 @@ else if (isset($_POST["delete"]))
 		$soft->delete($_POST,1);
 	else $soft->delete($_POST);
 
-	logEvent($_POST["ID"], "software", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][22]);
+	logEvent($_POST["ID"], "software", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][22]);
 	if(!empty($_POST["withtemplate"])) 
 		glpi_header($CFG_GLPI["root_doc"]."/front/setup.templates.php");
 	else 
@@ -74,7 +74,7 @@ else if (isset($_POST["restore"]))
 	$soft->check($_POST["ID"],'w');
 
 	$soft->restore($_POST);
-	logEvent($_POST["ID"], "software", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][23]);
+	logEvent($_POST["ID"], "software", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][23]);
 	glpi_header($CFG_GLPI["root_doc"]."/front/software.php");
 }
 else if (isset($_POST["purge"]) || isset($_GET["purge"]))
@@ -87,7 +87,7 @@ else if (isset($_POST["purge"]) || isset($_GET["purge"]))
 	$soft->check($input["ID"],'w');
 
 	$soft->delete($input,1);
-	logEvent($input["ID"], "software", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][24]);
+	logEvent($input["ID"], "software", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][24]);
 	glpi_header($CFG_GLPI["root_doc"]."/front/software.php");
 }
 else if (isset($_POST["update"]))
@@ -95,7 +95,7 @@ else if (isset($_POST["update"]))
 	$soft->check($_POST["ID"],'w');
 
 	$soft->update($_POST);
-	logEvent($_POST["ID"], "software", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][21]);
+	logEvent($_POST["ID"], "software", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][21]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 } 
 else if (isset($_POST["mergesoftware"]))

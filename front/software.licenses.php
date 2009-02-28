@@ -233,7 +233,7 @@ else if (isset($_POST["uninstall_license"])){
 /*
 else if (isset($_GET["unglobalize"])&&isset($_GET["ID"])){
 	unglobalizeLicense($_GET["ID"]);
-	logEvent($_GET["sID"], "software", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][60]);
+	logEvent($_GET["sID"], "software", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][60]);
 	glpi_header($CFG_GLPI["root_doc"]."/front/software.form.php?ID=".$_GET["sID"]);
 }*/
 else if (isset($_GET["back"])){

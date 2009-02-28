@@ -50,7 +50,7 @@ if (!canUseImapPop()) {
 	echo "<div align='center'>";
 	echo "<table class='tab_cadre_fixe'>";
 	echo "<tr><th colspan='2'>" . $LANG["Menu"][39] . "</th></tr>";
-	echo "<tr class='tab_bg_2'><td align='center'><p class='red'>" . $LANG["setup"][165] . "</p></td></tr></table>";
+	echo "<tr class='tab_bg_2'><td align='center'><p class='red'>" . $LANG['setup'][165] . "</p></td></tr></table>";
 	echo "</div>";
 	commonFooter();
 	exit();

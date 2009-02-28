@@ -47,12 +47,12 @@ if (!isset($_GET['ID'])) {
 	$_GET['ID']="";
 }
 
-commonHeader($LANG["title"][10],$_SERVER['PHP_SELF'],"maintain","tracking");
+commonHeader($LANG['title'][10],$_SERVER['PHP_SELF'],"maintain","tracking");
 if (isset($_POST['update'])){
 	checkSeveralRightsOr(array("update_ticket"=>"1","assign_ticket"=>"1","steal_ticket"=>"1","comment_ticket"=>"1","comment_all_ticket"=>"1"));
 
 	$track->update($_POST);
-	logEvent($_POST["ID"], "tracking", 4, "tracking", $_SESSION["glpiname"]." ".$LANG["log"][21]);
+	logEvent($_POST["ID"], "tracking", 4, "tracking", $_SESSION["glpiname"]." ".$LANG['log'][21]);
 
 	glpi_header($CFG_GLPI["root_doc"]."/front/tracking.form.php?ID=".$_POST["ID"]);
 
@@ -61,19 +61,19 @@ if (isset($_POST['update'])){
 	checkSeveralRightsOr(array("comment_ticket"=>"1","comment_all_ticket"=>"1","show_assign_ticket"=>"1"));
 	$newID=$fup->add($_POST);
 
-	logEvent($_POST["tracking"], "tracking", 4, "tracking", $_SESSION["glpiname"]." ".$LANG["log"][20]." $newID.");
+	logEvent($_POST["tracking"], "tracking", 4, "tracking", $_SESSION["glpiname"]." ".$LANG['log'][20]." $newID.");
 	glpi_header($CFG_GLPI["root_doc"]."/front/tracking.form.php?ID=".$_POST["tracking"]."&glpi_tab=1");
 
 } else if (isset($_POST["update_followup"])){
 	checkRight("comment_all_ticket","1");
 	$fup->update($_POST);
 
-	logEvent($_POST["tracking"], "tracking", 4, "tracking", $_SESSION["glpiname"]."  ".$LANG["log"][21]." ".$_POST["ID"].".");
+	logEvent($_POST["tracking"], "tracking", 4, "tracking", $_SESSION["glpiname"]."  ".$LANG['log'][21]." ".$_POST["ID"].".");
 	glpi_header($CFG_GLPI["root_doc"]."/front/tracking.form.php?ID=".$_POST["tracking"]);
 } else if (isset($_POST["delete_followup"])){
 	checkRight("comment_all_ticket","1");
 	$fup->delete($_POST);
-	logEvent($_POST["tracking"], "tracking", 4, "tracking", $_SESSION["glpiname"]." ".$LANG["log"][22]." ".$_POST["ID"].".");
+	logEvent($_POST["tracking"], "tracking", 4, "tracking", $_SESSION["glpiname"]." ".$LANG['log'][22]." ".$_POST["ID"].".");
 	glpi_header($CFG_GLPI["root_doc"]."/front/tracking.form.php?ID=".$_POST["tracking"]);
 }
 

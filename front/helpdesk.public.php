@@ -81,13 +81,13 @@ if (isset($_GET["show"]) && strcmp($_GET["show"],"user") == 0)
 		$fup=new Followup();
 		$newID=$fup->add($_POST);
 
-		logEvent($_POST["tracking"], "tracking", 4, "tracking", $_SESSION["glpiname"]." ".$LANG["log"][20]." $newID.");
+		logEvent($_POST["tracking"], "tracking", 4, "tracking", $_SESSION["glpiname"]." ".$LANG['log'][20]." $newID.");
 		glpi_header($_SERVER['HTTP_REFERER']);
 
 	}	
 	if (!isset($_GET["start"])) $_GET["start"]=0;
 
-	helpHeader($LANG["title"][1],$_SERVER['PHP_SELF'],$_SESSION["glpiname"]);
+	helpHeader($LANG['title'][1],$_SERVER['PHP_SELF'],$_SESSION["glpiname"]);
 
 	if (!isset($_GET["ID"])) {
 		if (!isset($_GET["start"])) $_GET["start"]=0;
@@ -126,7 +126,7 @@ if (isset($_GET["show"]) && strcmp($_GET["show"],"user") == 0)
 
 else {
 	checkHelpdeskAccess();
-	helpHeader($LANG["title"][1],$_SERVER['PHP_SELF'],$_SESSION["glpiname"]);
+	helpHeader($LANG['title'][1],$_SERVER['PHP_SELF'],$_SESSION["glpiname"]);
 
 	printHelpDesk($_SESSION["glpiID"],1);
 }

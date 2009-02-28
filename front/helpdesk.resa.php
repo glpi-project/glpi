@@ -64,7 +64,7 @@ if (isset($_GET["redirect"])){
 		}
 	}
 
-	helpHeader($LANG["title"][1],$_SERVER['PHP_SELF'],$_SESSION["glpiname"]);
+	helpHeader($LANG['title'][1],$_SERVER['PHP_SELF'],$_SESSION["glpiname"]);
 
 	if (isset($_POST["clear_resa"])){
 		$id_item=key($_POST["items"]);

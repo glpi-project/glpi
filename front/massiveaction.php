@@ -78,7 +78,7 @@ if (isset($_POST["device_type"])){
 			break;
 	}
 
-	commonHeader($LANG["title"][42],$_SERVER['PHP_SELF']);
+	commonHeader($LANG['title'][42],$_SERVER['PHP_SELF']);
 	
 	
 	if (isset($_GET['multiple_actions'])){
@@ -543,13 +543,13 @@ if (isset($_POST["device_type"])){
 			break;
 		}
 	
-		addMessageAfterRedirect($LANG["common"][23]);
+		addMessageAfterRedirect($LANG['common'][23]);
 		glpi_header($REDIRECT);
 	
 	} else {
 		
 		echo "<div align='center'><img src=\"".$CFG_GLPI["root_doc"]."/pics/warning.png\" alt=\"warning\"><br><br>";
-		echo "<b>".$LANG["common"][24]."</b></div>";
+		echo "<b>".$LANG['common'][24]."</b></div>";
 		
 		displayBackLink();
 	}

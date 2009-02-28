@@ -232,7 +232,7 @@ function UpdateContent($DB, $duree,$rowlimit,$conv_utf8,$complete_utf8)
 
 	}
 	if ($DB->error()){
-		echo "<hr>".$LANG["backup"][23]." [$formattedQuery]<br>".$DB->error()."<hr>";
+		echo "<hr>".$LANG['backup'][23]." [$formattedQuery]<br>".$DB->error()."<hr>";
 	}
 	$offsettable=-1;
 	return TRUE;
@@ -319,7 +319,7 @@ if ($offsettable>=0&&$complete_utf8){
 		}
 		if (UpdateContent($DB,$duree,$rowlimit,$conv_utf8,$complete_utf8))
 		{
-			echo "<br><a href=\"update_content.php?dump=1&amp;duree=$duree&amp;rowlimit=$rowlimit&amp;offsetrow=$offsetrow&amp;offsettable=$offsettable&amp;cpt=$cpt\">".$LANG["backup"][24]."</a>";
+			echo "<br><a href=\"update_content.php?dump=1&amp;duree=$duree&amp;rowlimit=$rowlimit&amp;offsetrow=$offsetrow&amp;offsettable=$offsettable&amp;cpt=$cpt\">".$LANG['backup'][24]."</a>";
 			echo "<script language=\"javascript\" type=\"text/javascript\">window.location=\"update_content.php?dump=1&duree=$duree&rowlimit=$rowlimit&offsetrow=$offsetrow&offsettable=$offsettable&cpt=$cpt\";</script>";
 //			echo "<div class='bas'></div></div></div></body></html>";
 
@@ -328,14 +328,14 @@ if ($offsettable>=0&&$complete_utf8){
 		}
 	}
 else  { 
-	echo "<p class='submit'> <a href=\"../index.php\"><span class='button'>".$LANG["install"][64]."</span></a></p>";
+	echo "<p class='submit'> <a href=\"../index.php\"><span class='button'>".$LANG['install'][64]."</span></a></p>";
 	echo "<div class='bas'></div></div></div></body></html>";
 
 }
 
 if ($conv_utf8){
 	$query = "ALTER TABLE `glpi_config` ADD `utf8_conv` INT( 11 ) DEFAULT '0' NOT NULL";
-	$DB->query($query) or die(" 0.6 add utf8_conv to glpi_config".$LANG["update"][90].$DB->error());
+	$DB->query($query) or die(" 0.6 add utf8_conv to glpi_config".$LANG['update'][90].$DB->error());
 }
 
 if ($complete_utf8){

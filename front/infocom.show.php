@@ -42,7 +42,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 checkRight("infocom","r");
 
-popHeader($LANG["financial"][3],$_SERVER['PHP_SELF']);
+popHeader($LANG['financial'][3],$_SERVER['PHP_SELF']);
 
 $ci=new CommonItem();
 
@@ -54,7 +54,7 @@ if (isset($_GET["ID"])){
 }
 
 if(!isset($_GET["device_type"])||!isset($_GET["device_id"])||!$ci->getFromDB($_GET["device_type"],$_GET["device_id"]))
-echo "<div align='center'><br><br>".$LANG["financial"][85]."</div>";
+echo "<div align='center'><br><br>".$LANG['financial'][85]."</div>";
 else {
 
 	echo "<div align='center'><br><br><strong>".$ci->getType()." - ".$ci->getName()."</strong></div>";

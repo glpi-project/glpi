@@ -42,7 +42,7 @@ if(!defined('GLPI_ROOT')){
 include (GLPI_ROOT . "/inc/includes.php");
 
 if (!strstr($_SERVER['PHP_SELF'],"popup"))
-	commonHeader($LANG["rulesengine"][17],$_SERVER['PHP_SELF'],"admin","dictionnary","cache");
+	commonHeader($LANG['rulesengine'][17],$_SERVER['PHP_SELF'],"admin","dictionnary","cache");
 */
 
 if(!isset($_GET["ID"])) {
@@ -96,11 +96,11 @@ if (isset($_POST["add"])){
 	$_GET["action"]="load";
 }
 
-$tabs[1]=array('title'=>$LANG["common"][77],
+$tabs[1]=array('title'=>$LANG['common'][77],
 'url'=>$CFG_GLPI['root_doc']."/ajax/bookmark.tabs.php",
 'params'=>"target=".$_SERVER['PHP_SELF']."&ID=".$_GET["ID"]."&action=".$_GET["action"]."&url=".rawurlencode($_GET["url"])."&device_type=".$_GET["device_type"]."&type=".$_GET["type"]."&mark_default=".$_GET["mark_default"]."&glpi_tab=1");
 	
-$tabs[0]=array('title'=>$LANG["common"][76],
+$tabs[0]=array('title'=>$LANG['common'][76],
 'url'=>$CFG_GLPI['root_doc']."/ajax/bookmark.tabs.php",
 'params'=>"target=".$_SERVER['PHP_SELF']."&ID=".$_GET["ID"]."&action=".$_GET["action"]."&url=".rawurlencode($_GET["url"])."&device_type=".$_GET["device_type"]."&type=".$_GET["type"]."&mark_default=".$_GET["mark_default"]."&glpi_tab=0");
 			

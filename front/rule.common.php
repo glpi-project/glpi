@@ -60,7 +60,7 @@ if (isset($_GET["action"])){
 					$rulecollection->deleteRuleOrder($rule->fields["ranking"]);
 					$rule->delete(array('ID'=>$key));
 				}
-				logEvent(0, "rules", 4, "setup", $_SESSION["glpiname"]." ".$LANG["log"][22]);
+				logEvent(0, "rules", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][22]);
 				glpi_header($_SERVER['HTTP_REFERER']);
 			}
 		break;
@@ -97,7 +97,7 @@ if (isset($_GET["action"])){
 	$max = get_cfg_var("max_execution_time");
 	$max = $start + ($max>0 ? $max/2.0 : 30.0);
 	
-	commonHeader($LANG["rulesengine"][17],$_SERVER['PHP_SELF'],"admin",getCategoryNameToDisplay($rulecollection->sub_type),$rulecollection->sub_type);
+	commonHeader($LANG['rulesengine'][17],$_SERVER['PHP_SELF'],"admin",getCategoryNameToDisplay($rulecollection->sub_type),$rulecollection->sub_type);
 
 	if (!(isset($_POST['replay_confirm']) || isset($_GET['offset'])) && $rulecollection->warningBeforeReplayRulesOnExistingDB($_SERVER['PHP_SELF'])){
 		commonFooter();
@@ -108,9 +108,9 @@ if (isset($_GET["action"])){
 	echo "<table class='tab_cadrehov'>";
 
 	echo "<tr><th><div class='relative'><span><strong>" .$rulecollection->getTitle(). "</strong></span>";
-	echo " - " .$LANG["rulesengine"][76]. "</th></tr>\n";
+	echo " - " .$LANG['rulesengine'][76]. "</th></tr>\n";
 	echo "<tr><td align='center'>";
-	createProgressBar($LANG["rulesengine"][90]);
+	createProgressBar($LANG['rulesengine'][90]);
 	echo "</td></tr>\n";
 	echo "</table>";
 	echo "</div>";
@@ -133,8 +133,8 @@ if (isset($_GET["action"])){
 		$end=explode(" ",microtime());
 		$duree=round($end[0]+$end[1]-$start);
 
-		changeProgressBarMessage($LANG["rulesengine"][91]." (".timestampToString($duree).
-			")<br /><a href='".$_SERVER['PHP_SELF']."'>".$LANG["buttons"][13]."</a>");		
+		changeProgressBarMessage($LANG['rulesengine'][91]." (".timestampToString($duree).
+			")<br /><a href='".$_SERVER['PHP_SELF']."'>".$LANG['buttons'][13]."</a>");		
 	} else {
 		// Need more work
 		glpi_header($_SERVER['PHP_SELF']."?start=$start&replay_rule=1&offset=$offset&manufacturer=$manufacturer");
@@ -144,7 +144,7 @@ if (isset($_GET["action"])){
 	exit();
 }
 
-commonHeader($LANG["rulesengine"][17],$_SERVER['PHP_SELF'],"admin",getCategoryNameToDisplay($rulecollection->sub_type),$rulecollection->sub_type);
+commonHeader($LANG['rulesengine'][17],$_SERVER['PHP_SELF'],"admin",getCategoryNameToDisplay($rulecollection->sub_type),$rulecollection->sub_type);
 
 $rulecollection->showForm($_SERVER['PHP_SELF']);
 commonFooter();

@@ -46,7 +46,7 @@ if (isset($_GET["add"]))
 	checkRight("infocom","w");
 	
 	$newID=$ic->add($_GET, false);
-	logEvent($newID, "infocom", 4, "financial", $_SESSION["glpiname"]." ".$LANG["log"][20]);
+	logEvent($newID, "infocom", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][20]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 } 
 else if (isset($_POST["delete"]))
@@ -54,7 +54,7 @@ else if (isset($_POST["delete"]))
 	checkRight("infocom","w");
 
 	$ic->delete($_POST);
-	logEvent($_POST["ID"], "infocom", 4, "financial", $_SESSION["glpiname"]." ".$LANG["log"][22]);
+	logEvent($_POST["ID"], "infocom", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][22]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($_POST["update"]))
@@ -62,7 +62,7 @@ else if (isset($_POST["update"]))
 	checkRight("infocom","w");
 
 	$ic->update($_POST);
-	logEvent($_POST["ID"], "infocom", 4, "financial", $_SESSION["glpiname"]." ".$LANG["log"][21]);
+	logEvent($_POST["ID"], "infocom", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][21]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 } 
 

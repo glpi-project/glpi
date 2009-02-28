@@ -49,7 +49,7 @@ if ($_GET["type"]==OCSNG_TYPE){
 }
 $item=str_replace(".form.php","",$INFOFORM_PAGES[$_GET["type"]]);
 $item=str_replace("front/","",$item);
-commonHeader($LANG["common"][12],$_SERVER['PHP_SELF'],$type,$item);
+commonHeader($LANG['common'][12],$_SERVER['PHP_SELF'],$type,$item);
 
 listTemplates($_GET["type"],$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$_GET["type"]],$_GET["add"]);
 

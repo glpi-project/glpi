@@ -64,24 +64,24 @@ if (isset($_POST["add"])) {
 	$device=new Device($_POST["device_type"]);	
 	$newID=$device->add($_POST);
 
-	logEvent(0, "devices", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][20]." ".$_POST["designation"].".");
+	logEvent(0, "devices", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][20]." ".$_POST["designation"].".");
 	glpi_header($CFG_GLPI["root_doc"]."/front/device.php?device_type=".$_POST["device_type"]);
 }
 else if (isset($_POST["delete"])) {
 	$device=new Device($_POST["device_type"]);	
 	$device->delete($_POST);
-	logEvent($_POST["ID"], "devices", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][22]);
+	logEvent($_POST["ID"], "devices", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][22]);
 	glpi_header($CFG_GLPI["root_doc"]."/front/device.php?device_type=".$_POST["device_type"]);
 }
 else if (isset($_POST["update"])) {
 	$device=new Device($_POST["device_type"]);	
 	$device->update($_POST);
-	logEvent($_POST["ID"], "devices", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][21]);
+	logEvent($_POST["ID"], "devices", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][21]);
 	glpi_header($_SERVER['HTTP_REFERER']."&referer=$REFERER");
 }
 else {
 
-	commonHeader($LANG["title"][30],$_SERVER['PHP_SELF'],"config","device");
+	commonHeader($LANG['title'][30],$_SERVER['PHP_SELF'],"config","device");
 	showDevicesForm($_SERVER['PHP_SELF'],$_GET["ID"],$_GET["device_type"]);
 	commonFooter();
 }

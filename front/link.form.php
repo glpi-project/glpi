@@ -49,7 +49,7 @@ if (isset($_POST["add"]))
 	$link->check(-1,'w');
 
 	$newID=$link->add($_POST);
-	logEvent($newID, "links", 4, "setup", $_SESSION["glpiname"]." ".$LANG["log"][20]." ".$_POST["name"].".");
+	logEvent($newID, "links", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][20]." ".$_POST["name"].".");
 	glpi_header($CFG_GLPI["root_doc"]."/front/link.php");
 }
 else if (isset($_POST["delete"]))
@@ -57,7 +57,7 @@ else if (isset($_POST["delete"]))
 	$link->check($_POST["ID"],'w');
 
 	$link->delete($_POST);
-	logEvent($_POST["ID"], "links", 4, "setup", $_SESSION["glpiname"]." ".$LANG["log"][22]);
+	logEvent($_POST["ID"], "links", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][22]);
 	glpi_header($CFG_GLPI["root_doc"]."/front/link.php");
 }
 else if (isset($_POST["update"]))
@@ -65,21 +65,21 @@ else if (isset($_POST["update"]))
 	$link->check($_POST["ID"],'w');
 
 	$link->update($_POST);
-	logEvent($_POST["ID"], "links", 4, "setup", $_SESSION["glpiname"]." ".$LANG["log"][21]);
+	logEvent($_POST["ID"], "links", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][21]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($_POST["adddevice"])){
 	$link->check($_POST["lID"],'w');
 
 	addLinkDevice($_POST["device_type"],$_POST["lID"]);
-	logEvent($_POST["lID"], "links", 4, "setup", $_SESSION["glpiname"]." ".$LANG["log"][32]);
+	logEvent($_POST["lID"], "links", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][32]);
 	glpi_header($CFG_GLPI["root_doc"]."/front/link.form.php?ID=".$_POST["lID"]);
 }
 else if (isset($_GET["deletedevice"])){
 	$link->check($_GET["lID"],'w');
 
 	deleteLinkDevice($_GET["ID"]);
-	logEvent($_GET["lID"], "links", 4, "setup", $_SESSION["glpiname"]." ".$LANG["log"][33]);
+	logEvent($_GET["lID"], "links", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][33]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 
@@ -91,7 +91,7 @@ else
 		//		glpi_header($_SERVER['HTTP_REFERER']);
 	}
 
-	commonHeader($LANG["title"][33],$_SERVER['PHP_SELF'],"config","link");
+	commonHeader($LANG['title'][33],$_SERVER['PHP_SELF'],"config","link");
 
 	if ($link->showForm($_SERVER['PHP_SELF'],$_GET["ID"])&&!empty($_GET["ID"]))
 		showLinkDevice($_GET["ID"]);

@@ -41,7 +41,7 @@ if (isset($_POST["location"])&&$_POST["location"]){
 
 	// Titre
 	$name=getDropdownName("glpi_dropdown_locations",$_POST["location"]);
-	echo "<div align='center'><h2>".$LANG["reports"][54]." $name </h2></div>";
+	echo "<div align='center'><h2>".$LANG['reports'][54]." $name </h2></div>";
 
 	$query="SELECT glpi_dropdown_netpoint.name AS prise, glpi_networking_ports.name AS port, glpi_networking_ports.ifaddr  
 		AS ip, glpi_networking_ports.ifmac AS mac,glpi_networking_ports.ID AS IDport, glpi_dropdown_locations.ID as location,glpi_dropdown_locations.completename
@@ -56,16 +56,16 @@ if (isset($_POST["location"])&&$_POST["location"]){
 
 		echo "<div align='center'><table class='tab_cadre_report'>";
 		echo "<tr> ";
-		echo "<th>".$LANG["common"][15]."</th>";
-		echo "<th>".$LANG["reports"][37]."</th>";
-		echo "<th>".$LANG["reports"][52]."</th>";
-		echo "<th>".$LANG["reports"][38]."</th>";
-		echo "<th>".$LANG["reports"][46]."</th>";
+		echo "<th>".$LANG['common'][15]."</th>";
+		echo "<th>".$LANG['reports'][37]."</th>";
+		echo "<th>".$LANG['reports'][52]."</th>";
+		echo "<th>".$LANG['reports'][38]."</th>";
+		echo "<th>".$LANG['reports'][46]."</th>";
 		echo "<th>".$LANG["device_iface"][2]."</th>";
-		echo "<th>".$LANG["reports"][47]."</th>";
-		echo "<th>".$LANG["reports"][38]."</th>";
+		echo "<th>".$LANG['reports'][47]."</th>";
+		echo "<th>".$LANG['reports'][38]."</th>";
 		echo "<th>".$LANG["device_iface"][2]."</th>";
-		echo "<th>".$LANG["reports"][36]."</th>";
+		echo "<th>".$LANG['reports'][36]."</th>";
 		echo "</tr>";
 		while( $ligne = $DB->fetch_array($result)){
 			$lieu=$ligne["completename"];

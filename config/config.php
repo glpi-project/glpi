@@ -158,7 +158,7 @@
 			loadLanguage();
 			
 			if (isCommandLine()){
-				echo $LANG["update"][88] . "\n";
+				echo $LANG['update'][88] . "\n";
 			} else {			
 				nullHeader("UPDATE NEEDED",$_SERVER['PHP_SELF']);
 				echo "<div align='center'>";
@@ -174,21 +174,21 @@
 					if (!isset($CFG_GLPI["version"])||trim($CFG_GLPI["version"])<GLPI_VERSION){
 						echo "<form method='post' action='".$CFG_GLPI["root_doc"]."/install/update.php'>";
 						echo "<table class='tab_cadre' style='width:500px'><tr><th>";
-						echo $LANG["update"][88];
+						echo $LANG['update'][88];
 						echo "</th></tr>";
 						echo "<tr class='tab_bg_1'><td align='center'>";
-						echo "<input type='submit' name='from_update' value='".$LANG["install"][4]."' class='submit'>";
+						echo "<input type='submit' name='from_update' value='".$LANG['install'][4]."' class='submit'>";
 						echo "</td></tr>";
 						echo "</table></form>";
 					} else if (trim($CFG_GLPI["version"])>GLPI_VERSION){
 						echo "<table class='tab_cadre' style='width:500px'><tr><th>";
-						echo $LANG["update"][89];
+						echo $LANG['update'][89];
 						echo "</th></tr>";
 						echo "</table>";
 					}
 				} else {
 					echo "<form action=\"".$_SERVER['PHP_SELF']."\" method=\"post\">";
-					echo "<input type=\"submit\" name=\"submit\" class=\"submit\" value=\"".$LANG["install"][27]."\" />";
+					echo "<input type=\"submit\" name=\"submit\" class=\"submit\" value=\"".$LANG['install'][27]."\" />";
 					echo "</form>";
 				}
 				echo "</div>";

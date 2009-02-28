@@ -49,7 +49,7 @@ if (isset($_POST["add"]))
 	$transfer->check(-1,'w');
 
 	$newID=$transfer->add($_POST);
-	logEvent($newID, "transfers", 4, "setup", $_SESSION["glpiname"]." ".$LANG["log"][20]." ".$_POST["name"].".");
+	logEvent($newID, "transfers", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][20]." ".$_POST["name"].".");
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($_POST["delete"]))
@@ -57,18 +57,18 @@ else if (isset($_POST["delete"]))
 	$transfer->check($_POST["ID"],'w');
 
 	$transfer->delete($_POST);
-	logEvent($_POST["ID"], "transfers", 4, "setup", $_SESSION["glpiname"]." ".$LANG["log"][22]);
+	logEvent($_POST["ID"], "transfers", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][22]);
 	glpi_header($CFG_GLPI["root_doc"]."/front/transfer.php");
 }else if (isset($_POST["update"]))
 {
 	$transfer->check($_POST["ID"],'w');
 
 	$transfer->update($_POST);
-	logEvent($_POST["ID"], "transfers", 4, "setup", $_SESSION["glpiname"]." ".$LANG["log"][21]);
+	logEvent($_POST["ID"], "transfers", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][21]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 
-commonHeader($LANG["transfer"][1],$_SERVER['PHP_SELF'],"admin","transfer");
+commonHeader($LANG['transfer'][1],$_SERVER['PHP_SELF'],"admin","transfer");
 
 if (!isset($_SESSION['glpi_tab'])||$_SESSION['glpi_tab']==-1) $_SESSION['glpi_tab']=1;
 if (isset($_GET['onglet'])) {

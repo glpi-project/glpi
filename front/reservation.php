@@ -67,7 +67,7 @@ if (isset($_POST["clear_resa"])||isset($_POST["add_resa"])||isset($_POST["edit_r
 	if (isset($_POST["clear_resa"])){
 		$id_item=key($_POST["items"]);
 		if ($rr->delete($_POST)){
-			logEvent($_POST["ID"], "reservation", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][22]);
+			logEvent($_POST["ID"], "reservation", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][22]);
 		}
 
 		list($begin_year,$begin_month,$begin_day)=explode("-",$_POST["begin"]);
@@ -118,7 +118,7 @@ if (isset($_POST["clear_resa"])||isset($_POST["add_resa"])||isset($_POST["edit_r
 			$_GET["annee_courant"]=$begin_year;
 	
 			if ($_POST['_ok']){
-				logEvent($_POST["id_item"], "reservation", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][20]);
+				logEvent($_POST["id_item"], "reservation", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][20]);
 			} else $all_ok=false;
 
 			if ($all_ok){
@@ -154,7 +154,7 @@ else {
 		{
 			checkRight("reservation_central","w");
 			if ($newID=$ri->add($_GET)){
-				logEvent($newID, "reservation", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][20]." ".$_GET["device_type"]."-".$_GET["id_device"].".");
+				logEvent($newID, "reservation", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][20]." ".$_GET["device_type"]."-".$_GET["id_device"].".");
 			}
 			glpi_header($_SERVER['HTTP_REFERER']);
 		} 
@@ -162,13 +162,13 @@ else {
 		{
 			checkRight("reservation_central","w");
 			$ri->delete($_GET);
-			logEvent($_GET['ID'], "reservation", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][22]);
+			logEvent($_GET['ID'], "reservation", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][22]);
 			glpi_header($CFG_GLPI["root_doc"] . "/front/reservation.php");
 		} else if (isset($_GET["active"]))
 		{
 			checkRight("reservation_central","w");
 			$ri->update($_GET);
-			logEvent($_GET['ID'], "reservation", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][21]);
+			logEvent($_GET['ID'], "reservation", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][21]);
 			glpi_header($CFG_GLPI["root_doc"] . "/front/reservation.php");
 		}
 
@@ -176,7 +176,7 @@ else {
 		{
 			checkRight("reservation_central","w");
 			$ri->update($_POST);
-			logEvent($_POST['ID'], "reservation", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][21]);
+			logEvent($_POST['ID'], "reservation", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][21]);
 		} 
 
 		checkRight("reservation_central","r");

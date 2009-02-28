@@ -120,16 +120,16 @@ function acceptLicence() {
 	echo "<p>";
 	echo " <input type=\"radio\" name=\"install\" id=\"agree\" value=\"Licence\">";
 	echo " <label for=\"agree\">";
-	echo $LANG["install"][93];
+	echo $LANG['install'][93];
 	echo " </label></p>";
 
 
 	echo "<br>";
 	echo " <input type=\"radio\" name=\"install\" value=\"lang_select\" id=\"disagree\" checked=\"checked\">";
 	echo " <label for=\"disagree\">";
-	echo $LANG["install"][94];
+	echo $LANG['install'][94];
 	echo " </label>";
-	echo "<p><input type=\"submit\" name=\"submit\" class=\"submit\" value=\"".$LANG["install"][26]."\" ></p>";
+	echo "<p><input type=\"submit\" name=\"submit\" class=\"submit\" value=\"".$LANG['install'][26]."\" ></p>";
 	echo "</form>";
 	echo "</div>";
 }
@@ -141,18 +141,18 @@ function step0()
 {
 
 	global $LANG;
-	echo "<h3>".$LANG["install"][0]."</h3>";
-	echo "<p>".$LANG["install"][1]."</p>";
-	echo "<p> ".$LANG["install"][2]."</p>";
+	echo "<h3>".$LANG['install'][0]."</h3>";
+	echo "<p>".$LANG['install'][1]."</p>";
+	echo "<p> ".$LANG['install'][2]."</p>";
 	echo "<form action=\"install.php\" method=\"post\">";
 	echo "<input type=\"hidden\" name=\"update\" value=\"no\">";
 	echo "<p class=\"submit\"><input type=\"hidden\" name=\"install\" value=\"Etape_0\">";
-	echo "<input type=\"submit\" name=\"submit\" class=\"submit\" value=\"".$LANG["install"][3]."\"></p>";
+	echo "<input type=\"submit\" name=\"submit\" class=\"submit\" value=\"".$LANG['install'][3]."\"></p>";
 	echo "</form>";
 	echo "<form action=\"install.php\" method=\"post\">";
 	echo "<input type=\"hidden\" name=\"update\" value=\"yes\">";
 	echo "<p class=\"submit\"><input type=\"hidden\" name=\"install\" value=\"Etape_0\">";
-	echo "<input type=\"submit\" name=\"submit\" class=\"submit\" value=\"".$LANG["install"][4]."\"></p>";
+	echo "<input type=\"submit\" name=\"submit\" class=\"submit\" value=\"".$LANG['install'][4]."\"></p>";
 	echo "</form>";
 }
 
@@ -162,7 +162,7 @@ function step1($update)
 	global $LANG,$CFG_GLPI;
 
 	$error = 0;
-	echo "<h3>".$LANG["install"][5]."</h3>";
+	echo "<h3>".$LANG['install'][5]."</h3>";
 	echo "<table class='tab_check'>";
 
 	$error=commonCheckForUseGLPI();
@@ -170,32 +170,32 @@ function step1($update)
 	echo "</table>";
 	switch ($error) {
 		case 0 :       
-			echo "<h3>".$LANG["install"][25]."</h3>";
+			echo "<h3>".$LANG['install'][25]."</h3>";
 			echo "<form action=\"install.php\" method=\"post\">";
 			echo "<input type=\"hidden\" name=\"update\" value=\"". $update."\">";
 			echo "<p class=\"submit\"><input type=\"hidden\" name=\"install\" value=\"Etape_1\">";
-			echo "<input type=\"submit\" name=\"submit\" class=\"submit\" value=\"".$LANG["install"][26]."\"></p>";
+			echo "<input type=\"submit\" name=\"submit\" class=\"submit\" value=\"".$LANG['install'][26]."\"></p>";
 			echo "</form>";
 			break;
 		case 1 :       
-			echo "<h3>".$LANG["install"][25]."</h3>";
+			echo "<h3>".$LANG['install'][25]."</h3>";
 			echo "<form action=\"install.php\" method=\"post\">";
 			echo "<p class=\"submit\"><input type=\"hidden\" name=\"install\" value=\"Etape_1\">";
 			echo "<input type=\"hidden\" name=\"update\" value=\"". $update."\">";
-			echo "<input type=\"submit\" name=\"submit\" class=\"submit\" value=\"".$LANG["install"][26]."\"></p>";
+			echo "<input type=\"submit\" name=\"submit\" class=\"submit\" value=\"".$LANG['install'][26]."\"></p>";
 			echo "</form> &nbsp;&nbsp;";
 			echo "<form action=\"install.php\" method=\"post\">";
 			echo "<input type=\"hidden\" name=\"update\" value=\"". $update."\">";
 			echo "<p class=\"submit\"><input type=\"hidden\" name=\"install\" value=\"Etape_0\">";
-			echo "<input type=\"submit\" name=\"submit\" class=\"submit\" value=\"".$LANG["install"][27]."\"></p>";
+			echo "<input type=\"submit\" name=\"submit\" class=\"submit\" value=\"".$LANG['install'][27]."\"></p>";
 			echo "</form>";
 			break;
 		case 2 :       
-			echo "<h3>".$LANG["install"][25]."</h3>";
+			echo "<h3>".$LANG['install'][25]."</h3>";
 			echo "<form action=\"install.php\" method=\"post\">";
 			echo "<input type=\"hidden\" name=\"update\" value=\"".$update."\">";
 			echo "<p class=\"submit\"><input type=\"hidden\" name=\"install\" value=\"Etape_0\">";
-			echo "<input type=\"submit\" name=\"submit\" class=\"submit\" value=\"".$LANG["install"][27]."\"></p>";
+			echo "<input type=\"submit\" name=\"submit\" class=\"submit\" value=\"".$LANG['install'][27]."\"></p>";
 			echo "</form>";
 			break;
 	}
@@ -207,15 +207,15 @@ function step1($update)
 function step2($update)
 {
 	global $LANG;
-	echo "<p>".$LANG["install"][28]."</p>";
+	echo "<p>".$LANG['install'][28]."</p>";
 	echo "<form action=\"install.php\" method=\"post\">";
 	echo "<input type=\"hidden\" name=\"update\" value=\"".$update."\">";
-	echo "<fieldset><legend>".$LANG["install"][29]."</legend>";
-	echo "<p><label>".$LANG["install"][30] .": <input type=\"text\" name=\"db_host\"></label></p>";
-	echo "<p ><label>".$LANG["install"][31] .": <input type=\"text\" name=\"db_user\"></label></p>";
-	echo "<p ><label>".$LANG["install"][32]." : <input type=\"password\" name=\"db_pass\"></label></p></fieldset>";
+	echo "<fieldset><legend>".$LANG['install'][29]."</legend>";
+	echo "<p><label>".$LANG['install'][30] .": <input type=\"text\" name=\"db_host\"></label></p>";
+	echo "<p ><label>".$LANG['install'][31] .": <input type=\"text\" name=\"db_user\"></label></p>";
+	echo "<p ><label>".$LANG['install'][32]." : <input type=\"password\" name=\"db_pass\"></label></p></fieldset>";
 	echo "<input type=\"hidden\" name=\"install\" value=\"Etape_2\">";
-	echo "<p class=\"submit\"><input type=\"submit\" name=\"submit\" class=\"submit\" value=\"".$LANG["install"][26]."\"></p>";
+	echo "<p class=\"submit\"><input type=\"submit\" name=\"submit\" class=\"submit\" value=\"".$LANG['install'][26]."\"></p>";
 	echo "</form>";
 
 }
@@ -226,27 +226,27 @@ function step3($host,$user,$password,$update)
 
 	global $LANG;
 	error_reporting(16);
-	echo "<h3>".$LANG["install"][34]."</h3>";
+	echo "<h3>".$LANG['install'][34]."</h3>";
 	$link = mysql_connect($host,$user,$password);
 	if (!$link || empty($host) || empty($user)) {
-		echo "".$LANG["install"][35]." : \n
-			<br>".$LANG["install"][36]." : ".mysql_error();
+		echo "".$LANG['install'][35]." : \n
+			<br>".$LANG['install'][36]." : ".mysql_error();
 		if(empty($host) || empty($user)) {
-			echo "<p>".$LANG["install"][37]."</p>";
+			echo "<p>".$LANG['install'][37]."</p>";
 		}
 		echo "<form action=\"install.php\" method=\"post\">";
 		echo "<input type=\"hidden\" name=\"update\" value=\"".$update."\">";
 		echo "<input type=\"hidden\" name=\"install\" value=\"Etape_1\">";
-		echo "<p class=\"submit\"><input type=\"submit\" name=\"submit\" class=\"submit\"  value=\"".$LANG["buttons"][13]."\"></p>";
+		echo "<p class=\"submit\"><input type=\"submit\" name=\"submit\" class=\"submit\"  value=\"".$LANG['buttons'][13]."\"></p>";
 		echo "</form>";
 
 	}
 	else {
-		echo  "<h3>".$LANG["update"][93]."</h3>";
+		echo  "<h3>".$LANG['update'][93]."</h3>";
 
 		if($update == "no") {
 
-			echo "<p>".$LANG["install"][38]."</p>";
+			echo "<p>".$LANG['install'][38]."</p>";
 
 			echo "<form action=\"install.php\" method=\"post\">";
 
@@ -254,18 +254,18 @@ function step3($host,$user,$password,$update)
 			while ($row = mysql_fetch_object($DB_list)) {
 				echo "<p><input type=\"radio\" name=\"databasename\" value=\"". $row->Database ."\">$row->Database.</p>";
 			}
-			echo "<p><input type=\"radio\" name=\"databasename\" value=\"0\">".$LANG["install"][39];
+			echo "<p><input type=\"radio\" name=\"databasename\" value=\"0\">".$LANG['install'][39];
 			echo "&nbsp;<input type=\"text\" name=\"newdatabasename\"></p>";
 			echo "<input type=\"hidden\" name=\"db_host\" value=\"". $host ."\">";
 			echo "<input type=\"hidden\" name=\"db_user\" value=\"". $user ."\">";
 			echo "<input type=\"hidden\" name=\"db_pass\" value=\"". rawurlencode($password) ."\">";
 			echo "<input type=\"hidden\" name=\"install\" value=\"Etape_3\">";
-			echo "<p class=\"submit\"><input type=\"submit\" name=\"submit\" class=\"submit\" value=\"".$LANG["install"][26]."\"></p>";
+			echo "<p class=\"submit\"><input type=\"submit\" name=\"submit\" class=\"submit\" value=\"".$LANG['install'][26]."\"></p>";
 			mysql_close($link);
 			echo "</form>";
 		}
 		elseif($update == "yes") {
-			echo "<p>".$LANG["install"][40]."</p>";
+			echo "<p>".$LANG['install'][40]."</p>";
 			echo "<form action=\"install.php\" method=\"post\">";
 
 			$DB_list = mysql_list_dbs($link);
@@ -276,7 +276,7 @@ function step3($host,$user,$password,$update)
 			echo "<input type=\"hidden\" name=\"db_user\" value=\"". $user ."\">";
 			echo "<input type=\"hidden\" name=\"db_pass\" value=\"". rawurlencode($password) ."\">";
 			echo "<input type=\"hidden\" name=\"install\" value=\"update_1\">";
-			echo "<p class=\"submit\"><input type=\"submit\" name=\"submit\" class=\"submit\" value=\"".$LANG["install"][26]."\"></p>";
+			echo "<p class=\"submit\"><input type=\"submit\" name=\"submit\" class=\"submit\" value=\"".$LANG['install'][26]."\"></p>";
 			mysql_close($link);
 			echo "</form>";
 
@@ -300,7 +300,7 @@ function step4 ($host,$user,$password,$databasename,$newdatabasename)
 		echo " <input type=\"hidden\" name=\"db_pass\" value=\"". rawurlencode($password) ."\">";
 		echo "<input type=\"hidden\" name=\"update\" value=\"no\">";
 		echo "<input type=\"hidden\" name=\"install\" value=\"Etape_2\">";
-		echo "<p class=\"submit\"><input type=\"submit\" name=\"submit\" class=\"submit\" value=\"".$LANG["buttons"][13]."\"></p>";
+		echo "<p class=\"submit\"><input type=\"submit\" name=\"submit\" class=\"submit\" value=\"".$LANG['buttons'][13]."\"></p>";
 		echo "</form>";
 	}
 	//Display the form to go to the next page
@@ -310,7 +310,7 @@ function step4 ($host,$user,$password,$databasename,$newdatabasename)
 	
 		echo "<br><form action=\"install.php\" method=\"post\">";
 		echo "<input type=\"hidden\" name=\"install\" value=\"Etape_4\">";
-		echo "<p class=\"submit\"><input type=\"submit\" name=\"submit\" class=\"submit\" value=\"".$LANG["install"][26]."\"></p>";
+		echo "<p class=\"submit\"><input type=\"submit\" name=\"submit\" class=\"submit\" value=\"".$LANG['install'][26]."\"></p>";
 		echo "</form>";
 	}
 
@@ -333,9 +333,9 @@ function step4 ($host,$user,$password,$databasename,$newdatabasename)
 		}
 		// update default language
 		$query = "UPDATE `glpi_config` SET language='".$_SESSION["glpilanguage"]."' ;";
-		$DB->query($query) or die("4203 ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("4203 ".$LANG['update'][90].$DB->error());
 		$query = "UPDATE `glpi_users` SET language='".$_SESSION["glpilanguage"]."' ;";
-		$DB->query($query) or die("4203 ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("4203 ".$LANG['update'][90].$DB->error());
 	}
 
 	$link = mysql_connect($host,$user,$password);
@@ -345,21 +345,21 @@ function step4 ($host,$user,$password,$databasename,$newdatabasename)
 
 		if (!$DB_selected) {
 			
-			echo $LANG["install"][41];
+			echo $LANG['install'][41];
 			echo "<br>";
-			echo $LANG["install"][36]." ". mysql_error();
+			echo $LANG['install'][36]." ". mysql_error();
 			prev_form($host,$user,$password);
 		}
 		else {
 			if (create_conn_file($host,$user,$password,$databasename)) {
 				fill_db();
-				echo "<p>".$LANG["install"][43]."</p>";
-				echo "<p>".$LANG["install"][44]."</p>";
-				echo "<p>".$LANG["install"][46]."</p>";
+				echo "<p>".$LANG['install'][43]."</p>";
+				echo "<p>".$LANG['install'][44]."</p>";
+				echo "<p>".$LANG['install'][46]."</p>";
 				next_form();
 			}
 			else { // can't create config_db file
-				echo "<p>".$LANG["install"][47]."</p>";
+				echo "<p>".$LANG['install'][47]."</p>";
 				prev_form($host,$user,$password);
 			}
 		}
@@ -367,42 +367,42 @@ function step4 ($host,$user,$password,$databasename,$newdatabasename)
 		// Try to connect 
 		if (mysql_select_db($newdatabasename, $link)){
 		
-			echo "<p>".$LANG["install"][82]."</p>";
+			echo "<p>".$LANG['install'][82]."</p>";
 			if (create_conn_file($host,$user,$password,$newdatabasename)){
 				fill_db();
-				echo "<p>".$LANG["install"][43]."</p>";
-				echo "<p>".$LANG["install"][44]."</p>";
-				echo "<p>".$LANG["install"][46]."</p>";
+				echo "<p>".$LANG['install'][43]."</p>";
+				echo "<p>".$LANG['install'][44]."</p>";
+				echo "<p>".$LANG['install'][46]."</p>";
 				next_form();
 			} else { // can't create config_db file
-				echo "<p>".$LANG["install"][47]."</p>";
+				echo "<p>".$LANG['install'][47]."</p>";
 				prev_form($host,$user,$password);
 			}
 		} else { // try to create the DB
 			if (mysql_query("CREATE DATABASE IF NOT EXISTS `".$newdatabasename."`")){
 	
-				echo "<p>".$LANG["install"][82]."</p>";
+				echo "<p>".$LANG['install'][82]."</p>";
 				
 				if (mysql_select_db($newdatabasename, $link)&&create_conn_file($host,$user,$password,$newdatabasename)) {
 					fill_db();
-					echo "<p>".$LANG["install"][43]."</p>";
-					echo "<p>".$LANG["install"][44]."</p>";
-					echo "<p>".$LANG["install"][46]."</p>";
+					echo "<p>".$LANG['install'][43]."</p>";
+					echo "<p>".$LANG['install'][44]."</p>";
+					echo "<p>".$LANG['install'][46]."</p>";
 					next_form();
 	
 				}
 				else { // can't create config_db file
-					echo "<p>".$LANG["install"][47]."</p>";
+					echo "<p>".$LANG['install'][47]."</p>";
 					prev_form($host,$user,$password);
 				}
 			} else { // can't create database
-				echo $LANG["install"][48];
-				echo "<br>".$LANG["install"][42] . mysql_error();
+				echo $LANG['install'][48];
+				echo "<br>".$LANG['install'][42] . mysql_error();
 				prev_form($host,$user,$password);
 			}
 		}
 	} else { // no db selected
-		echo "<p>".$LANG["install"][49]. "</p>";
+		echo "<p>".$LANG['install'][49]. "</p>";
 		//prev_form();
 		prev_form($host,$user,$password);
 	}
@@ -429,14 +429,14 @@ function step4 ($host,$user,$password,$databasename,$newdatabasename)
 		$DB->query($query);
 
 
-		echo "<h2>".$LANG["install"][55]."</h2>";
-		echo "<p>".$LANG["install"][57]."</p>";
-		echo "<p><ul><li> ".$LANG["install"][58]."</li>";
-		echo "<li>".$LANG["install"][59]."</li>";
-		echo "<li>".$LANG["install"][60]."</li>";
-		echo "<li>".$LANG["install"][61]."</li></ul></p>";
-		echo "<p>".$LANG["install"][62]."</p>";
-		echo "<p class='submit'> <a href=\"../index.php\"><span class='button'>".$LANG["install"][64]."</span></a></p>";
+		echo "<h2>".$LANG['install'][55]."</h2>";
+		echo "<p>".$LANG['install'][57]."</p>";
+		echo "<p><ul><li> ".$LANG['install'][58]."</li>";
+		echo "<li>".$LANG['install'][59]."</li>";
+		echo "<li>".$LANG['install'][60]."</li>";
+		echo "<li>".$LANG['install'][61]."</li></ul></p>";
+		echo "<p>".$LANG['install'][62]."</p>";
+		echo "<p class='submit'> <a href=\"../index.php\"><span class='button'>".$LANG['install'][64]."</span></a></p>";
 	}
 
 	//Create the file config_db.php
@@ -463,12 +463,12 @@ function step4 ($host,$user,$password,$databasename,$newdatabasename)
 			include(GLPI_ROOT ."/install/update.php");
 		}
 		else { // can't create config_db file
-			echo $LANG["install"][70];
-			echo "<h3>".$LANG["install"][25]."</h3>";
+			echo $LANG['install'][70];
+			echo "<h3>".$LANG['install'][25]."</h3>";
 			echo "<form action=\"install.php\" method=\"post\">";
 			echo "<input type=\"hidden\" name=\"update\" value=\"yes\">";
 			echo "<p class=\"submit\"><input type=\"hidden\" name=\"install\" value=\"Etape_0\">";
-			echo "<input type=\"submit\" name=\"submit\" class=\"submit\" value=\"".$LANG["install"][25]."\"></p>";
+			echo "<input type=\"submit\" name=\"submit\" class=\"submit\" value=\"".$LANG['install'][25]."\"></p>";
 			echo "</form>";
 		}
 
@@ -522,15 +522,15 @@ function step4 ($host,$user,$password,$databasename,$newdatabasename)
 		switch ($_POST["install"]) {
 
 			case "lang_select" : // lang ok, go accept licence
-				header_html("".$LANG["install"][92]."");
+				header_html("".$LANG['install'][92]."");
 				acceptLicence();
 			break;
 			case "Licence" : // licence  ok, go choose installation or Update
-				header_html("".$LANG["install"][81]."");
+				header_html("".$LANG['install'][81]."");
 				step0();
 			break;
 			case "Etape_0" : // choice ok , go check system
-				header_html($LANG["install"][77]." 0");
+				header_html($LANG['install'][77]." 0");
 				$_SESSION["Test_session_GLPI"] = 1;
 				step1($_POST["update"]);
 			break;
@@ -543,23 +543,23 @@ function step4 ($host,$user,$password,$databasename,$newdatabasename)
 				error_reporting(E_ALL); 
 				set_error_handler("userErrorHandler"); 				
 				
-				header_html($LANG["install"][77]." 1");
+				header_html($LANG['install'][77]." 1");
 				step2($_POST["update"]);
 			break;
 			case "Etape_2" : // mysql settings ok, go test mysql settings and select database.
-				header_html($LANG["install"][77]." 2"); 
+				header_html($LANG['install'][77]." 2"); 
 				step3($_POST["db_host"],$_POST["db_user"],$_POST["db_pass"],$_POST["update"]);
 			break;
 			case "Etape_3" : // Create and fill database
 
-				header_html($LANG["install"][77]." 3");
+				header_html($LANG['install'][77]." 3");
 				if(empty($_POST["databasename"])) $_POST["databasename"] ="";
 				if(empty($_POST["newdatabasename"])) $_POST["newdatabasename"] ="";
 
 				step4($_POST["db_host"],$_POST["db_user"],$_POST["db_pass"],$_POST["databasename"],$_POST["newdatabasename"]);
 			break;
 			case "Etape_4" : // finish installation
-				header_html($LANG["install"][77]." 4");
+				header_html($LANG['install'][77]." 4");
 				step7();
 			break;
 

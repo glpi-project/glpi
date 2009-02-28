@@ -56,7 +56,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 checkRight("ocsng", "w");
 
-commonHeader($LANG["ocsng"][0], $_SERVER['PHP_SELF'], "utils","ocsng");
+commonHeader($LANG['ocsng'][0], $_SERVER['PHP_SELF'], "utils","ocsng");
 if (isset ($_SESSION["ocs_import"]))
 	unset ($_SESSION["ocs_import"]);
 if (isset ($_SESSION["ocs_link"]))
@@ -78,19 +78,19 @@ if (isset($_GET["ocs_server_id"]) && $_GET["ocs_server_id"]) {
 		$name = " : " . $datas["name"];
 	}
 	echo "<div align='center'><table border='0'><tr><td>";
-	echo "<img src=\"" . $CFG_GLPI["root_doc"] . "/pics/logoOcs.png\" alt='" . $LANG["ocsng"][0] . "' title='" . $LANG["ocsng"][0] . "' ></td>";
+	echo "<img src=\"" . $CFG_GLPI["root_doc"] . "/pics/logoOcs.png\" alt='" . $LANG['ocsng'][0] . "' title='" . $LANG['ocsng'][0] . "' ></td>";
 	echo "</tr></table></div>";
 
 	echo "<div align='center'><table class='tab_cadre' cellpadding='5'>";
-	echo "<tr><th>" . $LANG["ocsng"][0] . " " . $name . "</th></tr>";
+	echo "<tr><th>" . $LANG['ocsng'][0] . " " . $name . "</th></tr>";
 
-	echo "<tr class='tab_bg_1'><td  align='center'><a href=\"ocsng.sync.php\"><b>" . $LANG["ocsng"][1] . "</b></a></td></tr>";
+	echo "<tr class='tab_bg_1'><td  align='center'><a href=\"ocsng.sync.php\"><b>" . $LANG['ocsng'][1] . "</b></a></td></tr>";
 
-	echo "<tr class='tab_bg_1'><td align='center'><a href=\"ocsng.import.php\"><b>" . $LANG["ocsng"][2] . "</b></a></td> </tr>";
+	echo "<tr class='tab_bg_1'><td align='center'><a href=\"ocsng.import.php\"><b>" . $LANG['ocsng'][2] . "</b></a></td> </tr>";
 
-	echo "<tr class='tab_bg_1'><td align='center'><a href=\"ocsng.link.php\"><b>" . $LANG["ocsng"][4] . "</b></a></td> </tr>";
+	echo "<tr class='tab_bg_1'><td align='center'><a href=\"ocsng.link.php\"><b>" . $LANG['ocsng'][4] . "</b></a></td> </tr>";
 
-	echo "<tr class='tab_bg_1'><td align='center'><a href=\"ocsng.clean.php\"><b>" . $LANG["ocsng"][3] . "</b></a></td> </tr>";
+	echo "<tr class='tab_bg_1'><td align='center'><a href=\"ocsng.clean.php\"><b>" . $LANG['ocsng'][3] . "</b></a></td> </tr>";
 
 	echo "</table></div>";
 

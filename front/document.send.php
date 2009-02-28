@@ -144,14 +144,14 @@ if (isset($_GET["file"])){
 
 					}
 				}
-			} else echo $LANG["document"][43];
+			} else echo $LANG['document'][43];
 		}
 
 
 		if ($send&&file_exists(GLPI_DOC_DIR."/".$_GET["file"]))
 			sendFile(GLPI_DOC_DIR."/".$_GET["file"],$splitter[1]);
-		else echo $LANG["document"][45];
-	} else echo $LANG["document"][44];
+		else echo $LANG['document'][45];
+	} else echo $LANG['document'][44];
 }
 
 

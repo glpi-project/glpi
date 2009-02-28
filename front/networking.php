@@ -43,7 +43,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 checkRight("networking","r");
 
-commonHeader($LANG["title"][6],$_SERVER['PHP_SELF'],"inventory","networking");
+commonHeader($LANG['title'][6],$_SERVER['PHP_SELF'],"inventory","networking");
 
 manageGetValuesInSearch(NETWORKING_TYPE);
 

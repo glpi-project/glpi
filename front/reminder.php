@@ -42,7 +42,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 checkCentralAccess();
 
-commonHeader($LANG["title"][40],$_SERVER['PHP_SELF'],"utils","reminder");
+commonHeader($LANG['title'][40],$_SERVER['PHP_SELF'],"utils","reminder");
 
 showListReminder();
 

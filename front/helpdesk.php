@@ -137,7 +137,7 @@ $track=new Job();
 
 if (isset($_POST["priority"]) && $post_ticket){
 	if ($newID=$track->add($_POST)){
-		logEvent($newID, "tracking", 4, "tracking", $_SESSION["glpiname"]." ".$LANG["log"][20]." $newID.");
+		logEvent($newID, "tracking", 4, "tracking", $_SESSION["glpiname"]." ".$LANG['log'][20]." $newID.");
 	}
 	glpi_header($_SERVER['HTTP_REFERER']);
 } else {

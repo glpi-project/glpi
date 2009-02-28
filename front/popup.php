@@ -43,7 +43,7 @@ if (isset($_SESSION["glpipopup"]["name"])){
 		case "dropdown":
 			if (isset($_GET["rand"])) $_SESSION["glpipopup"]["rand"]=$_GET["rand"];
 
-			popHeader($LANG["common"][12],$_SERVER['PHP_SELF']);
+			popHeader($LANG['common'][12],$_SERVER['PHP_SELF']);
 			// Manage reload
 			if (isset($_POST["add"])||isset($_POST["delete"])||isset($_POST["several_add"])||isset($_POST["move"])||isset($_POST["update"])){
 				echo "<script type='text/javascript' >\n";
@@ -60,7 +60,7 @@ if (isset($_SESSION["glpipopup"]["name"])){
 
 		break;
 		case "search_config":
-			popHeader($LANG["common"][12],$_SERVER['PHP_SELF']);
+			popHeader($LANG['common'][12],$_SERVER['PHP_SELF']);
 			if (isset($_POST["add"])||isset($_POST["delete"])||isset($_POST["delete_x"])||isset($_POST["up"])||isset($_POST["up_x"])||isset($_POST["down"])||isset($_POST["down_x"])){
 				echo "<script type='text/javascript' >\n";
 				echo "window.opener.location.reload();";
@@ -70,17 +70,17 @@ if (isset($_SESSION["glpipopup"]["name"])){
 			popFooter();
 		break;
 		case "test_rule": 
-			popHeader($LANG["buttons"][50],$_SERVER['PHP_SELF']); 
+			popHeader($LANG['buttons'][50],$_SERVER['PHP_SELF']); 
 			include "rule.test.php"; 
 			popFooter(); 
 		break;
 		case "test_all_rules": 
-			popHeader($LANG["buttons"][50],$_SERVER['PHP_SELF']); 
+			popHeader($LANG['buttons'][50],$_SERVER['PHP_SELF']); 
 			include "rulesengine.test.php"; 
 			popFooter(); 
 		break;
 		case "show_cache": 
-			popHeader($LANG["buttons"][50],$_SERVER['PHP_SELF']); 
+			popHeader($LANG['buttons'][50],$_SERVER['PHP_SELF']); 
 			include "rule.cache.php"; 
 			popFooter(); 
 		break;

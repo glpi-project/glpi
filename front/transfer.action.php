@@ -44,7 +44,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 
 
-commonHeader($LANG["transfer"][1],$_SERVER['PHP_SELF'],"admin","transfer");
+commonHeader($LANG['transfer'][1],$_SERVER['PHP_SELF'],"admin","transfer");
 
 $transfer=new Transfer();
 $transfer->check(-1,"r");
@@ -54,15 +54,15 @@ if (isset($_POST['transfer'])){
 	if (isset($_SESSION['glpitransfer_list'])){
 		$transfer->moveItems($_SESSION['glpitransfer_list'],$_POST['to_entity'],$_POST);
 		unset($_SESSION['glpitransfer_list']);
-		echo "<strong>".$LANG["common"][23]."</strong><br>";
-		echo "<a href=\"central.php\"><b>".$LANG["buttons"][13]."</b></a>";
+		echo "<strong>".$LANG['common'][23]."</strong><br>";
+		echo "<a href=\"central.php\"><b>".$LANG['buttons'][13]."</b></a>";
 		commonFooter();
 		exit();
 	}
 } else if (isset($_GET['clear'])){
 	unset($_SESSION['glpitransfer_list']);
-	echo "<strong>".$LANG["common"][23]."</strong><br>";
-	echo "<a href=\"central.php\"><b>".$LANG["buttons"][13]."</b></a>";
+	echo "<strong>".$LANG['common'][23]."</strong><br>";
+	echo "<a href=\"central.php\"><b>".$LANG['buttons'][13]."</b></a>";
 	commonFooter();
 	exit();
 }

@@ -45,7 +45,7 @@ $ocs = new Ocsng();
 
 if(!isset($_GET["ID"])) $_GET["ID"] = "";
 
-commonHeader($LANG["ocsng"][0], $_SERVER['PHP_SELF'], "config","ocsng");
+commonHeader($LANG['ocsng'][0], $_SERVER['PHP_SELF'], "config","ocsng");
 
 //Delete template or server
 if (isset ($_POST["delete"])) {

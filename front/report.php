@@ -47,11 +47,11 @@ commonHeader($LANG["Menu"][6],$_SERVER['PHP_SELF'],"utils","report");
 
 
 echo "<div align='center'><table class='tab_cadre' cellpadding='5'>";
-echo "<tr><th>".$LANG["reports"][0].":</th></tr>";
+echo "<tr><th>".$LANG['reports'][0].":</th></tr>";
 
 // Report generation
 // Default Report included
-$report_list["default"]["name"] = $LANG["reports"][26];
+$report_list["default"]["name"] = $LANG['reports'][26];
 $report_list["default"]["file"] = "report.default.php";
 
 // Vous pouvez faire vos propres rapports :
@@ -63,23 +63,23 @@ $report_list["default"]["file"] = "report.default.php";
 
 if (haveRight("contract","r")){
 	// Rapport ajout� par GLPI V0.2
-	$report_list["Contrats"]["name"] = $LANG["reports"][27];
+	$report_list["Contrats"]["name"] = $LANG['reports'][27];
 	$report_list["Contrats"]["file"] = "report.contract.php";
 }
 if (haveRight("infocom","r")){
-	$report_list["Par_annee"]["name"] = $LANG["reports"][28];
+	$report_list["Par_annee"]["name"] = $LANG['reports'][28];
 	$report_list["Par_annee"]["file"] = "report.year.php";
-	$report_list["Infocoms"]["name"]=$LANG["reports"][62];
+	$report_list["Infocoms"]["name"]=$LANG['reports'][62];
 	$report_list["Infocoms"]["file"]="report.infocom.php";
-	$report_list["Infocoms2"]["name"]=$LANG["reports"][63];
+	$report_list["Infocoms2"]["name"]=$LANG['reports'][63];
 	$report_list["Infocoms2"]["file"]="report.infocom.conso.php";
 }
 if (haveRight("networking","r")){
-	$report_list["Rapport prises reseau"]["name"]=$LANG["reports"][33];
+	$report_list["Rapport prises reseau"]["name"]=$LANG['reports'][33];
 	$report_list["Rapport prises reseau"]["file"]="report.networking.php";
 }
 if (haveRight("reservation_central","r")){
-	$report_list["reservation"]["name"]=$LANG["financial"][50];
+	$report_list["reservation"]["name"]=$LANG['financial'][50];
 	$report_list["reservation"]["file"]="report.reservation.php";
 }
 

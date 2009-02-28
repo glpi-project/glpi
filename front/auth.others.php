@@ -59,7 +59,7 @@ if (!isset($_GET["ID"])){
 	$_GET["ID"]="";	
 }
 
-commonHeader($LANG["title"][14], $_SERVER['PHP_SELF'],"config","extauth","others");
+commonHeader($LANG['title'][14], $_SERVER['PHP_SELF'],"config","extauth","others");
 
 showOtherAuthList($_SERVER['PHP_SELF']);
 

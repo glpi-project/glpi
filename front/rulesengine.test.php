@@ -48,7 +48,7 @@ $rulecollection = getRuleCollectionClass($sub_type);
 checkRight($rulecollection->right,"r");
 
 if (!strpos($_SERVER['PHP_SELF'],"popup")){
-	commonHeader($LANG["common"][12],$_SERVER['PHP_SELF'],"config","display");
+	commonHeader($LANG['common'][12],$_SERVER['PHP_SELF'],"config","display");
 }
 
 // Need for RuleEngines
