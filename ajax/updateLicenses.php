@@ -47,34 +47,34 @@
 	switch ($_POST["type"]){
 		case "update_buy"	:
 			dropdownYesNo("buy");
-			echo "&nbsp;&nbsp;<input type='submit' name='update_buy' value='".$LANG["buttons"][14]."' class='submit'>";
+			echo "&nbsp;&nbsp;<input type='submit' name='update_buy' value='".$LANG['buttons'][14]."' class='submit'>";
 		break;
 		case "update_expire" :
 			echo "<table><tr><td>";
 			showDateFormItem("expire");
 			echo "</td></td>";
-			echo "&nbsp;&nbsp;&nbsp;&nbsp;<input type='submit' name='update_expire' value='".$LANG["buttons"][14]."' class='submit'>";
+			echo "&nbsp;&nbsp;&nbsp;&nbsp;<input type='submit' name='update_expire' value='".$LANG['buttons'][14]."' class='submit'>";
 			echo "</td></tr></table>";
 		break;
 		case "move":
 			// TODO : check this ? obsoleted function call
 			dropdownLicenseOfSoftware("lID",$_POST["sID"]);
-			echo "&nbsp;&nbsp;<input type='submit' name='move' value='".$LANG["buttons"][14]."' class='submit'>";
+			echo "&nbsp;&nbsp;<input type='submit' name='move' value='".$LANG['buttons'][14]."' class='submit'>";
 		break;
 		case "delete_similar_license":
-			echo "&nbsp;&nbsp;<input type='submit' name='delete_similar_license' value='".$LANG["buttons"][6]."' class='submit'>"; 
+			echo "&nbsp;&nbsp;<input type='submit' name='delete_similar_license' value='".$LANG['buttons'][6]."' class='submit'>"; 
 		break;
 		case "delete_license": 
-			echo "&nbsp;&nbsp;<input type='submit' name='delete_license' value='".$LANG["buttons"][2]."' class='submit'>";
+			echo "&nbsp;&nbsp;<input type='submit' name='delete_license' value='".$LANG['buttons'][2]."' class='submit'>";
 		break;
 		case "uninstall_license": 
-			echo "<input type='submit' name='uninstall_license' value='".$LANG["buttons"][2]."' class='submit'>";
+			echo "<input type='submit' name='uninstall_license' value='".$LANG['buttons'][2]."' class='submit'>";
 		break;
 		case "move_to_software":
 			$soft=new Software();
 			$soft->getFromDB($_POST["sID"]);
 			dropdownValue("glpi_software","sID",0,1,$soft->fields['FK_entities']);
-			echo "&nbsp;&nbsp;<input type='submit' name='move_to_software' value='".$LANG["buttons"][14]."' class='submit'>";
+			echo "&nbsp;&nbsp;<input type='submit' name='move_to_software' value='".$LANG['buttons'][14]."' class='submit'>";
 		break;
 		
 	}

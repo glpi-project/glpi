@@ -52,20 +52,20 @@ if (!defined('GLPI_ROOT')){
 				echo "<input type='hidden' name='private' value='1'>\n";
 				echo "<input type='hidden' name='FK_entities' value='-1'>\n";
 				echo "<input type='hidden' name='recursive' value='0'>\n";
-				echo $LANG["common"][77]. " - ";
+				echo $LANG['common'][77]. " - ";
 
-				echo "<a onClick='setPublic".$_POST['rand']."()'>".$LANG["common"][78]."</a>";
+				echo "<a onClick='setPublic".$_POST['rand']."()'>".$LANG['common'][78]."</a>";
 				break;
 			case false :
 				echo "<input type='hidden' name='private' value='0'>\n";
-				echo $LANG["common"][76].":&nbsp;";
+				echo $LANG['common'][76].":&nbsp;";
 				dropdownValue('glpi_entities',"FK_entities",$_POST["FK_entities"]);
-				echo "&nbsp;+&nbsp;".$LANG["entity"][9].":&nbsp;";
+				echo "&nbsp;+&nbsp;".$LANG['entity'][9].":&nbsp;";
 				dropdownYesNo('recursive',$_POST["recursive"]);
 
 				echo " - ";
 
-				echo "<a onClick='setPrivate".$_POST['rand']."()'>".$LANG["common"][79]."</a>";
+				echo "<a onClick='setPrivate".$_POST['rand']."()'>".$LANG['common'][79]."</a>";
 				
 				break;
 		}

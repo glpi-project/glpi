@@ -47,19 +47,19 @@ if (isset($_POST["action"])){
 	echo "<input type='hidden' name='action' value='".$_POST["action"]."'>";
 	switch($_POST["action"]){
 		case "delete":
-			echo "<input type=\"submit\" name=\"delete_several\" class=\"submit\" value=\"".$LANG["buttons"][2]."\" >";
+			echo "<input type=\"submit\" name=\"delete_several\" class=\"submit\" value=\"".$LANG['buttons'][2]."\" >";
 		break;
 		case "assign_vlan":
 			dropdownValue("glpi_dropdown_vlan","vlan",0);
-		echo "&nbsp;<input type=\"submit\" name=\"assign_vlan_several\" class=\"submit\" value=\"".$LANG["buttons"][2]."\" >";
+		echo "&nbsp;<input type=\"submit\" name=\"assign_vlan_several\" class=\"submit\" value=\"".$LANG['buttons'][2]."\" >";
 		break;
 		case "unassign_vlan":
 			dropdownValue("glpi_dropdown_vlan","vlan",0);
-		echo "&nbsp;<input type=\"submit\" name=\"unassign_vlan_several\" class=\"submit\" value=\"".$LANG["buttons"][2]."\" >";
+		echo "&nbsp;<input type=\"submit\" name=\"unassign_vlan_several\" class=\"submit\" value=\"".$LANG['buttons'][2]."\" >";
 		break;
 		case "move":
 			dropdownValue($LINK_ID_TABLE[$_POST['type']],"device",0);
-			echo "&nbsp;<input type=\"submit\" name=\"move\" class=\"submit\" value=\"".$LANG["buttons"][2]."\" >";
+			echo "&nbsp;<input type=\"submit\" name=\"move\" class=\"submit\" value=\"".$LANG['buttons'][2]."\" >";
 		break;
 	}
 }

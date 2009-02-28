@@ -62,15 +62,15 @@ if (isset($_POST["action"])&&isset($_POST["type"])&&!empty($_POST["type"])){
 	switch($_POST["action"]){
 		case "activate_rule":
 			echo dropdownYesNo("activate_rule");
-			echo "&nbsp;<input type=\"submit\" name=\"massiveaction\" class=\"submit\" value=\"".$LANG["buttons"][2]."\" >";
+			echo "&nbsp;<input type=\"submit\" name=\"massiveaction\" class=\"submit\" value=\"".$LANG['buttons'][2]."\" >";
 		break;
 		case "move_rule":
 			echo "<select name='move_type'>";
-			echo "<option value='after' selected>".$LANG["buttons"][47]."</option>";
-			echo "<option value='before'>".$LANG["buttons"][46]."</option>";
+			echo "<option value='after' selected>".$LANG['buttons'][47]."</option>";
+			echo "<option value='before'>".$LANG['buttons'][46]."</option>";
 			echo "</select>&nbsp;";
 			dropdownRules($_POST['sub_type'],"ranking");
-			echo "<input type=\"submit\" name=\"massiveaction\" class=\"submit\" value=\"".$LANG["buttons"][2]."\" >";
+			echo "<input type=\"submit\" name=\"massiveaction\" class=\"submit\" value=\"".$LANG['buttons'][2]."\" >";
 		break;
 		case "add_followup":
 			showAddFollowupForm(-1,true);
@@ -83,14 +83,14 @@ if (isset($_POST["action"])&&isset($_POST["type"])&&!empty($_POST["type"])){
 		case "purge":
 		case "restore":
 		case "add_transfer_list":
-			echo "<input type=\"submit\" name=\"massiveaction\" class=\"submit\" value=\"".$LANG["buttons"][2]."\" >";
+			echo "<input type=\"submit\" name=\"massiveaction\" class=\"submit\" value=\"".$LANG['buttons'][2]."\" >";
 		break;
 		case "unlock_ocsng_field":
-			$fields['all']=$LANG["common"][66];
+			$fields['all']=$LANG['common'][66];
 			$fields+=getOcsLockableFields();
 			dropdownArrayValues("field",$fields);
 			
-			echo "&nbsp;<input type=\"submit\" name=\"massiveaction\" class=\"submit\" value=\"".$LANG["buttons"][2]."\" >";
+			echo "&nbsp;<input type=\"submit\" name=\"massiveaction\" class=\"submit\" value=\"".$LANG['buttons'][2]."\" >";
 			break;	
 		case "unlock_ocsng_monitor";
 		case "unlock_ocsng_peripheral";
@@ -98,51 +98,51 @@ if (isset($_POST["action"])&&isset($_POST["type"])&&!empty($_POST["type"])){
 		case "unlock_ocsng_printer";
 		case "unlock_ocsng_disk";
 		case "unlock_ocsng_ip";
-			echo "<input type=\"submit\" name=\"massiveaction\" class=\"submit\" value=\"".$LANG["buttons"][2]."\" >";
+			echo "<input type=\"submit\" name=\"massiveaction\" class=\"submit\" value=\"".$LANG['buttons'][2]."\" >";
 			break;
 		case "install":
 			dropdownSoftwareToInstall("vID",$_SESSION["glpiactive_entity"],1);
-            echo "<input type=\"submit\" name=\"massiveaction\" class=\"submit\" value=\"".$LANG["buttons"][4]."\" >"; 
+            echo "<input type=\"submit\" name=\"massiveaction\" class=\"submit\" value=\"".$LANG['buttons'][4]."\" >"; 
 		break;
 		case "connect":
 			dropdownConnect(COMPUTER_TYPE,$_POST["type"],"connect_item");
-		echo "<input type=\"submit\" name=\"massiveaction\" class=\"submit\" value=\"".$LANG["buttons"][2]."\" >";
+		echo "<input type=\"submit\" name=\"massiveaction\" class=\"submit\" value=\"".$LANG['buttons'][2]."\" >";
 		break;
 		case "connect_to_computer":
 			dropdownAllItems("connect_item",0,0,$_SESSION["glpiactive_entity"],array(PHONE_TYPE,MONITOR_TYPE,PRINTER_TYPE,PERIPHERAL_TYPE),true);
-		echo "<input type=\"submit\" name=\"massiveaction\" class=\"submit\" value=\"".$LANG["buttons"][2]."\" >";
+		echo "<input type=\"submit\" name=\"massiveaction\" class=\"submit\" value=\"".$LANG['buttons'][2]."\" >";
 		break;
 		case "disconnect":
-			echo "<input type=\"submit\" name=\"massiveaction\" class=\"submit\" value=\"".$LANG["buttons"][2]."\" >";
+			echo "<input type=\"submit\" name=\"massiveaction\" class=\"submit\" value=\"".$LANG['buttons'][2]."\" >";
 		break;
 		case "add_group":
 			dropdownValue("glpi_groups","group",0);
-			echo "&nbsp;<input type=\"submit\" name=\"massiveaction\" class=\"submit\" value=\"".$LANG["buttons"][2]."\" >";
+			echo "&nbsp;<input type=\"submit\" name=\"massiveaction\" class=\"submit\" value=\"".$LANG['buttons'][2]."\" >";
 		break;
 		case "add_userprofile":
 			dropdownValue("glpi_entities","FK_entities",0,1,$_SESSION['glpiactiveentities']);
-			echo ".&nbsp;".$LANG["profiles"][22].":";
+			echo ".&nbsp;".$LANG['profiles'][22].":";
 			dropdownUnderProfiles("FK_profiles");
-			echo ".&nbsp;".$LANG["profiles"][28].":";
+			echo ".&nbsp;".$LANG['profiles'][28].":";
 			dropdownYesNo("recursive",0);
 			
-			echo "&nbsp;<input type=\"submit\" name=\"massiveaction\" class=\"submit\" value=\"".$LANG["buttons"][2]."\" >";
+			echo "&nbsp;<input type=\"submit\" name=\"massiveaction\" class=\"submit\" value=\"".$LANG['buttons'][2]."\" >";
 		break;
 		case "add_document":
 			dropdownDocument("docID");
-		echo "&nbsp;<input type=\"submit\" name=\"massiveaction\" class=\"submit\" value=\"".$LANG["buttons"][2]."\" >";
+		echo "&nbsp;<input type=\"submit\" name=\"massiveaction\" class=\"submit\" value=\"".$LANG['buttons'][2]."\" >";
 		break;
 		case "add_contract":
 			dropdown("glpi_contracts","conID",1);
-		echo "&nbsp;<input type=\"submit\" name=\"massiveaction\" class=\"submit\" value=\"".$LANG["buttons"][2]."\" >";
+		echo "&nbsp;<input type=\"submit\" name=\"massiveaction\" class=\"submit\" value=\"".$LANG['buttons'][2]."\" >";
 		break;
 		case "add_contact":
 			dropdown("glpi_contacts","conID",1);
-		echo "&nbsp;<input type=\"submit\" name=\"massiveaction\" class=\"submit\" value=\"".$LANG["buttons"][2]."\" >";
+		echo "&nbsp;<input type=\"submit\" name=\"massiveaction\" class=\"submit\" value=\"".$LANG['buttons'][2]."\" >";
 		break;
 		case "add_enterprise":
 			dropdown("glpi_enterprises","entID",1);
-		echo "&nbsp;<input type=\"submit\" name=\"massiveaction\" class=\"submit\" value=\"".$LANG["buttons"][2]."\" >";
+		echo "&nbsp;<input type=\"submit\" name=\"massiveaction\" class=\"submit\" value=\"".$LANG['buttons'][2]."\" >";
 		break;
 		case "update":
 			$first_group=true;

@@ -74,7 +74,7 @@
 					if ($DB->result($result2,0,0) >0){
 						$path['leaf']	= false;
 						$path['cls']	= 'folder';
-						$path['text'] .= "<a title=\"".$LANG["buttons"][40]."\" href='".$CFG_GLPI["root_doc"]."/front/".$target."?active_entity=".$ID."&amp;recursive=1'><img alt=\"".$LANG["buttons"][40]."\" src='".$CFG_GLPI["root_doc"]."/pics/entity_all.png'></a>";
+						$path['text'] .= "<a title=\"".$LANG['buttons'][40]."\" href='".$CFG_GLPI["root_doc"]."/front/".$target."?active_entity=".$ID."&amp;recursive=1'><img alt=\"".$LANG['buttons'][40]."\" src='".$CFG_GLPI["root_doc"]."/pics/entity_all.png'></a>";
 					}
 				}
 				$nodes[] = $path;
@@ -99,7 +99,7 @@
 						if ($DB->result($result2,0,0) >0){
 							$path['leaf']	= false;
 							$path['cls']	= 'folder';
-							$path['text'] .= "<a title=\"".$LANG["buttons"][40]."\" href='".$CFG_GLPI["root_doc"]."/front/".$target."?active_entity=".$row['ID']."&amp;recursive=1'><img alt=\"".$LANG["buttons"][40]."\" src='".$CFG_GLPI["root_doc"]."/pics/entity_all.png'></a>";
+							$path['text'] .= "<a title=\"".$LANG['buttons'][40]."\" href='".$CFG_GLPI["root_doc"]."/front/".$target."?active_entity=".$row['ID']."&amp;recursive=1'><img alt=\"".$LANG['buttons'][40]."\" src='".$CFG_GLPI["root_doc"]."/pics/entity_all.png'></a>";
 						} else {
 							$path['leaf']	= true;
 							$path['cls']	= 'file';

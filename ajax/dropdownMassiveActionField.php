@@ -71,10 +71,10 @@ if (isset($_POST["device_type"])&&isset($_POST["id_field"])&&$_POST["id_field"])
 			case "glpi_contracts.duration":
 			case "glpi_contracts.notice":
 				dropdownInteger($search["field"],0,0,120);
-				echo " ".$LANG["financial"][57];
+				echo " ".$LANG['financial'][57];
 				break;
 			case "glpi_softwarelicenses.number":
-				dropdownInteger($search["linkfield"],0,1,1000,1,array(-1=>$LANG["software"][4]));
+				dropdownInteger($search["linkfield"],0,1,1000,1,array(-1=>$LANG['software'][4]));
 				break;
 			case "glpi_contracts.alert":
 				dropdownContractAlerting($search["linkfield"],0);
@@ -143,7 +143,7 @@ if (isset($_POST["device_type"])&&isset($_POST["id_field"])&&$_POST["id_field"])
 					break;
 					case "warranty_duration" :
 						dropdownInteger("warranty_duration",0,0,120);
-						echo " ".$LANG["financial"][57]."&nbsp;&nbsp;";
+						echo " ".$LANG['financial'][57]."&nbsp;&nbsp;";
 					break;
 					default :
 						autocompletionTextField($search["field"],$search["table"],$search["field"],'',40,$_SESSION["glpiactive_entity"]);
@@ -214,7 +214,7 @@ if (isset($_POST["device_type"])&&isset($_POST["id_field"])&&$_POST["id_field"])
 		}
 	}
 
-	echo "&nbsp;<input type=\"submit\" name=\"massiveaction\" class=\"submit\" value=\"".$LANG["buttons"][2]."\" >";
+	echo "&nbsp;<input type=\"submit\" name=\"massiveaction\" class=\"submit\" value=\"".$LANG['buttons'][2]."\" >";
 }
 
 ?>

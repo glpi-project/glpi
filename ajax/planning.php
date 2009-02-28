@@ -71,21 +71,21 @@
 	
 	echo "<table class='tab_cadre' cellpadding='2'>";
 	if (isset($_POST["author"])&&isset($_POST["entity"])){
-		echo "<tr class='tab_bg_2'><td>".$LANG["planning"][9].":	</td>";
+		echo "<tr class='tab_bg_2'><td>".$LANG['planning'][9].":	</td>";
 		echo "<td>";
 		dropdownUsers("plan[id_assign]",$_POST["author"],"own_ticket",-1,1,$_POST["entity"]);
 		echo "</td></tr>";
 	}
 	
-	echo "<tr class='tab_bg_2'><td>".$LANG["search"][8].":	</td><td>";
+	echo "<tr class='tab_bg_2'><td>".$LANG['search'][8].":	</td><td>";
 	showDateTimeFormItem("plan[begin]",$begin,-1,false,true,'','',$global_begin,$global_end);
 	echo "</td></tr>";
 	
-	echo "<tr class='tab_bg_2'><td>".$LANG["search"][9].":	</td><td>";
+	echo "<tr class='tab_bg_2'><td>".$LANG['search'][9].":	</td><td>";
 	showDateTimeFormItem("plan[end]",$end,-1,false,true,'','',$global_begin,$global_end);
 	echo "</td></tr>";
 	
-	echo "<tr class='tab_bg_2'><td>".$LANG["state"][0].":	</td>";
+	echo "<tr class='tab_bg_2'><td>".$LANG['state'][0].":	</td>";
 	echo "<td>";
 	dropdownPlanningState("plan[state]",$state);
 	echo "</td></tr>";

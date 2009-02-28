@@ -130,11 +130,11 @@ if (!isset($_POST["limit"])) $_POST["limit"]=$_SESSION["glpidropdown_limit"];
 		echo ">";
 
 		if ($_POST['searchText']!=$CFG_GLPI["ajax_wildcard"]&&$DB->numrows($result)==$NBMAX)
-			echo "<option class='tree' value=\"0\">--".$LANG["common"][11]."--</option>";
+			echo "<option class='tree' value=\"0\">--".$LANG['common'][11]."--</option>";
 		$display_selected=true;
 		switch ($_POST["table"]){
 			case "glpi_dropdown_kbcategories" :
-				echo "<option class='tree' value=\"0\">--".$LANG["knowbase"][12]."--</option>";
+				echo "<option class='tree' value=\"0\">--".$LANG['knowbase'][12]."--</option>";
 				break;
 			case "glpi_entities" :
 				// If entity=0 allowed
@@ -142,7 +142,7 @@ if (!isset($_POST["limit"])) $_POST["limit"]=$_SESSION["glpidropdown_limit"];
 					(($_POST["entity_restrict"]<0 && in_array(0,$_SESSION['glpiactiveentities']))
 					|| (is_array($_POST["entity_restrict"]) && in_array(0,$_POST["entity_restrict"]))))
 				{	
-					echo "<option class='tree' value=\"0\">--".$LANG["entity"][2]."--</option>";
+					echo "<option class='tree' value=\"0\">--".$LANG['entity'][2]."--</option>";
 				}
 				// Entity=0 already add above
 				if ($_POST['value']==0){
@@ -287,7 +287,7 @@ if (!isset($_POST["limit"])) $_POST["limit"]=$_SESSION["glpidropdown_limit"];
 		echo "<select id='dropdown_".$_POST["myname"].$_POST["rand"]."' name=\"".$_POST['myname']."\" size='1'>";
 
 		if ($_POST['searchText']!=$CFG_GLPI["ajax_wildcard"]&&$DB->numrows($result)==$NBMAX)
-			echo "<option value=\"0\">--".$LANG["common"][11]."--</option>";
+			echo "<option value=\"0\">--".$LANG['common'][11]."--</option>";
 
 		echo "<option value=\"0\">-----</option>";
 

@@ -95,13 +95,13 @@ else
 		echo '<input type="hidden" name="redirect" value="'.$_GET['redirect'].'">';
 	}
 	echo "<fieldset>";
-	echo '<legend>'.$LANG["login"][10].'</legend>';
-	echo '<div class="row"><span class="label"><label>'.$LANG["login"][6].' :  </label></span><span class="formw"> <input type="text" name="login_name" id="login_name" size="15" /></span></div>';
+	echo '<legend>'.$LANG['login'][10].'</legend>';
+	echo '<div class="row"><span class="label"><label>'.$LANG['login'][6].' :  </label></span><span class="formw"> <input type="text" name="login_name" id="login_name" size="15" /></span></div>';
 
-	echo '<div class="row"><span class="label"><label>'.$LANG["login"][7].' : </label></span><span class="formw"><input type="password" name="login_password" id="login_password" size="15" /> </span></div>';
+	echo '<div class="row"><span class="label"><label>'.$LANG['login'][7].' : </label></span><span class="formw"><input type="password" name="login_password" id="login_password" size="15" /> </span></div>';
 
 	echo "</fieldset>";
-	echo '<p ><span> <input type="submit" name="submit" value="'.$LANG["buttons"][2].'" class="submit" /></span></p>';
+	echo '<p ><span> <input type="submit" name="submit" value="'.$LANG['buttons'][2].'" class="submit" /></span></p>';
 	echo "</form>";
 
 	echo "<script type='text/javascript' >\n";
@@ -114,15 +114,15 @@ else
 
 	echo "<div class='error'>";
 	echo "<noscript><p>";
-	echo $LANG["login"][26];
+	echo $LANG['login'][26];
 	echo "</p></noscript>";
 	if (isset($_GET['error'])){
 		switch ($_GET['error']){
 			case 1 : // cookie error
-				echo $LANG["login"][27];
+				echo $LANG['login'][27];
 				break;
 			case 2 : // GLPI_SESSION_DIR not writable
-				echo $LANG["install"][50].": ".GLPI_SESSION_DIR;
+				echo $LANG['install'][50].": ".GLPI_SESSION_DIR;
 				break;
 		}
 	}
@@ -131,7 +131,7 @@ else
 
 	// Display FAQ is enable
 	if ($CFG_GLPI["public_faq"]){
-		echo '<div id="box-faq"><a href="front/helpdesk.faq.php">[ '.$LANG["knowbase"][24].' ]</a></div>';
+		echo '<div id="box-faq"><a href="front/helpdesk.faq.php">[ '.$LANG['knowbase'][24].' ]</a></div>';
 	}
 	
 	echo "</div>"; // end contenu login
