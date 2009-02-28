@@ -59,9 +59,9 @@ elseif (isset ($_POST["add_ldap"])) {
 	if ($_POST["name"] != ""){
 		if ($newID=$config_ldap->add($_POST)){
 			if (testLDAPConnection($newID)){
-				addMessageAfterRedirect($LANG["login"][22]);
+				addMessageAfterRedirect($LANG['login'][22]);
 			} else{
-				addMessageAfterRedirect($LANG["login"][23]);	
+				addMessageAfterRedirect($LANG['login'][23]);	
 			}
 			glpi_header($CFG_GLPI["root_doc"] . "/front/auth.ldap.php?next=extauth_ldap&ID=".$newID);
 		}
@@ -78,9 +78,9 @@ elseif (isset ($_POST["test_ldap"])) {
 	$ldap->getFromDB($_POST["ID"]);
 	
 	if (testLDAPConnection($_POST["ID"])){
-		$_SESSION["LDAP_TEST_MESSAGE"]=$LANG["login"][22]." (".$LANG["ldap"][21]." : ".$ldap->fields["name"].")";;
+		$_SESSION["LDAP_TEST_MESSAGE"]=$LANG['login'][22]." (".$LANG['ldap'][21]." : ".$ldap->fields["name"].")";;
 	} else{
-		$_SESSION["LDAP_TEST_MESSAGE"]=$LANG["login"][23]." (".$LANG["ldap"][21]." : ".$ldap->fields["name"].")";;	
+		$_SESSION["LDAP_TEST_MESSAGE"]=$LANG['login'][23]." (".$LANG['ldap'][21]." : ".$ldap->fields["name"].")";;	
 	}
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
@@ -91,9 +91,9 @@ elseif (isset ($_POST["test_ldap_replicate"])) {
 		$replicate->getFromDB($replicate_id);
 
 		if (testLDAPConnection($_POST["ID"],$replicate_id)){
-			$_SESSION["LDAP_TEST_MESSAGE"]=$LANG["login"][22]." (".$LANG["ldap"][19]." : ".$replicate->fields["name"].")";
+			$_SESSION["LDAP_TEST_MESSAGE"]=$LANG['login'][22]." (".$LANG['ldap'][19]." : ".$replicate->fields["name"].")";
 		} else{
-			$_SESSION["LDAP_TEST_MESSAGE"]=$LANG["login"][23]." (".$LANG["ldap"][19]." : ".$replicate->fields["name"].")";	
+			$_SESSION["LDAP_TEST_MESSAGE"]=$LANG['login'][23]." (".$LANG['ldap'][19]." : ".$replicate->fields["name"].")";	
 		}
 	}
 	glpi_header($_SERVER['HTTP_REFERER']);
@@ -127,7 +127,7 @@ if (!isset($_GET["preconfig"])){
 	$_GET["preconfig"]="";	
 }
 
-commonHeader($LANG["title"][14], $_SERVER['PHP_SELF'],"config","extauth","ldap");
+commonHeader($LANG['title'][14], $_SERVER['PHP_SELF'],"config","extauth","ldap");
 
 switch($_GET['next']){
 	case "extauth_ldap" :

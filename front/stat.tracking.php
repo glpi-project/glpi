@@ -69,49 +69,49 @@ if(!isset($_GET["start"])) $_GET["start"] = 0;
 
 
 $items=array(
-	$LANG["job"][4]=> array(
+	$LANG['job'][4]=> array(
 		"user"=>array(	
-			"title"=>$LANG["common"][37],
+			"title"=>$LANG['common'][37],
 			"field"=>"glpi_tracking.author"
 			),
 		"recipient"=>array(	
-			"title"=>$LANG["job"][3],
+			"title"=>$LANG['job'][3],
 			"field"=>"glpi_tracking.recipient"
 			),
 		"group"=>array(	
-			"title"=>$LANG["common"][35],
+			"title"=>$LANG['common'][35],
 			"field"=>"glpi_tracking.FK_group"
 			),
 	),
-	$LANG["common"][32] => array(
+	$LANG['common'][32] => array(
 		"category"=>array(	
-			"title"=>$LANG["common"][36],
+			"title"=>$LANG['common'][36],
 			"field"=>"glpi_tracking.category"
 			),
 		"priority"=>array(	
-			"title"=>$LANG["joblist"][2],
+			"title"=>$LANG['joblist'][2],
 			"field"=>"glpi_tracking.priority"
 			),
 		"request_type"=>array(	
-			"title"=>$LANG["job"][44],
+			"title"=>$LANG['job'][44],
 			"field"=>"glpi_tracking.request_type"
 			),
 	),
-	$LANG["job"][5] => array(
+	$LANG['job'][5] => array(
 		"technicien"=>array(	
-			"title"=>$LANG["job"][6]." ".$LANG["stats"][48],
+			"title"=>$LANG['job'][6]." ".$LANG['stats'][48],
 			"field"=>"glpi_tracking.assign"
 			),
 		"technicien_followup"=>array(	
-				"title"=>$LANG["job"][6]." ".$LANG["stats"][49],
+				"title"=>$LANG['job'][6]." ".$LANG['stats'][49],
 				"field"=>"glpi_followup.author"
 				),
 		"assign_group"=>array(	
-			"title"=>$LANG["common"][35],
+			"title"=>$LANG['common'][35],
 			"field"=>"glpi_tracking.assign_group"
 			),
 		"enterprise"=>array(	
-				"title"=>$LANG["financial"][26],
+				"title"=>$LANG['financial'][26],
 				"field"=>"glpi_tracking.assign_ent"
 				),
 	)
@@ -141,10 +141,10 @@ $items=array(
 	echo $INSELECT;
 	echo "</td>";
 	echo "<td align='right'>";
-	echo $LANG["search"][8]." :</td><td>";
+	echo $LANG['search'][8]." :</td><td>";
 	showDateFormItem("date1",$_POST["date1"]);
-	echo "</td><td rowspan='2' align='center'><input type=\"submit\" class='button' name=\"submit\" Value=\"". $LANG["buttons"][7] ."\"></td></tr>";
-	echo "<tr class='tab_bg_2'><td align='right'>".$LANG["search"][9]." :</td><td>";
+	echo "</td><td rowspan='2' align='center'><input type=\"submit\" class='button' name=\"submit\" Value=\"". $LANG['buttons'][7] ."\"></td></tr>";
+	echo "<tr class='tab_bg_2'><td align='right'>".$LANG['search'][9]." :</td><td>";
 	showDateFormItem("date2",$_POST["date2"]);
 	echo "</td></tr>";
 	echo "</table></form></div>";

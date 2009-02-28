@@ -96,7 +96,7 @@ function update065to068(){
 			KEY `interface` (`interface`)
 				) TYPE=MyISAM;";
 
-		$DB->query($query) or die("0.68 add profiles ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.68 add profiles ".$LANG['update'][90].$DB->error());
 
 		$helpdesk_link_type=array(COMPUTER_TYPE,PRINTER_TYPE,MONITOR_TYPE,PERIPHERAL_TYPE,NETWORKING_TYPE,PHONE_TYPE,NETWORKING_TYPE);
 		$checksum=0;
@@ -104,13 +104,13 @@ function update065to068(){
 			$checksum+=pow(2,$val);
 
 		$query="INSERT INTO `glpi_profiles` VALUES (1, 'post-only', 'helpdesk', '1', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'r', '1', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '1', NULL, '1', NULL, NULL, NULL, NULL, NULL, NULL, NULL, '1', NULL, NULL, NULL, '1', '1', '$checksum');";
-		$DB->query($query) or die("0.68 add post-only profile ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.68 add post-only profile ".$LANG['update'][90].$DB->error());
 		$query="INSERT INTO `glpi_profiles` VALUES (2, 'normal', 'central', '0', 'r', 'r', 'r', 'r', 'r', 'r', 'r', 'r', 'r', 'r', 'r', 'r', 'r', 'r', 'r', '1', 'r', 'r', NULL, NULL, NULL, 'r', 'r', NULL, NULL, 'r', NULL, 'r', 'r', NULL, NULL, NULL, '1', '1', '1', '0', '0', '1', '0', '0', '1', '0', '1', '1', '0', '1', '1', '1', '$checksum');";
-		$DB->query($query) or die("0.68 add normal profile ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.68 add normal profile ".$LANG['update'][90].$DB->error());
 		$query="INSERT INTO `glpi_profiles` VALUES (3, 'admin', 'central', '0', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', '1', 'w', 'r', 'w', 'w', 'w', 'w', 'w', NULL, 'w', 'r', 'r', 'w', 'w', NULL, NULL, NULL, '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '3', '$checksum');";
-		$DB->query($query) or die("0.68 add admin profile ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.68 add admin profile ".$LANG['update'][90].$DB->error());
 		$query="INSERT INTO `glpi_profiles` VALUES (4, 'super-admin', 'central', '0', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'w', '1', 'w', 'r', 'w', 'w', 'w', 'w', 'w', 'w', 'w', 'r', 'w', 'w', 'w', 'r', 'w', 'w', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '1', '3', '$checksum');";
-		$DB->query($query) or die("0.68 add super-admin profile ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.68 add super-admin profile ".$LANG['update'][90].$DB->error());
 
 	}
 
@@ -121,12 +121,12 @@ function update065to068(){
 		$result=$DB->query($query);
 		if ($DB->result($result,0,0)){
 			$query="UPDATE glpi_profiles SET comment_ticket='1';";
-			$DB->query($query) or die("0.68 update default glpi_profiles ".$LANG["update"][90].$DB->error());
+			$DB->query($query) or die("0.68 update default glpi_profiles ".$LANG['update'][90].$DB->error());
 		}
 
 		// TO DO : drop post_only_followup field of glpi_config
 		$query="ALTER TABLE `glpi_config` DROP `post_only_followup`;";
-		$DB->query($query) or die("0.68 drop post_only_followup in glpi_config ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.68 drop post_only_followup in glpi_config ".$LANG['update'][90].$DB->error());
 	}
 
 	$profiles=array("post-only"=>1,"normal"=>2,"admin"=>3,"super-admin"=>4);
@@ -139,7 +139,7 @@ function update065to068(){
 			KEY `FK_profiles` (`FK_profiles`),
 			UNIQUE `FK_users_profiles` (`FK_users`,`FK_profiles`)
 				) TYPE = MYISAM ;";
-		$DB->query($query) or die("0.68 create users_profiles table ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.68 create users_profiles table ".$LANG['update'][90].$DB->error());
 
 
 		$query="SELECT ID, type FROM glpi_users";
@@ -147,11 +147,11 @@ function update065to068(){
 		if ($DB->numrows($result)){
 			while ($data=$DB->fetch_array($result)){
 				$query2="INSERT INTO glpi_users_profiles (FK_users,FK_profiles) VALUES ('".$data['ID']."','".$profiles[$data['type']]."')";
-				$DB->query($query2) or die("0.68 insert new users_profiles ".$LANG["update"][90].$DB->error());
+				$DB->query($query2) or die("0.68 insert new users_profiles ".$LANG['update'][90].$DB->error());
 			}
 		}
 		$query="ALTER TABLE `glpi_users` DROP `type`, DROP `can_assign_job`;";
-		$DB->query($query) or die("0.68 drop type and can_assign_job from users ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.68 drop type and can_assign_job from users ".$LANG['update'][90].$DB->error());
 	}
 
 	if(!TableExists("glpi_mailing")) {	
@@ -166,7 +166,7 @@ function update065to068(){
 			KEY `items` (`item_type`,`FK_item`),
 			UNIQUE `mailings` (`type`,`FK_item`,`item_type`)
 				) TYPE = MYISAM ;";
-		$DB->query($query) or die("0.68 create mailing table ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.68 create mailing table ".$LANG['update'][90].$DB->error());
 
 		// MAILING TYPE
 		define("USER_MAILING_TYPE","1");
@@ -186,99 +186,99 @@ function update065to068(){
 			$data=$DB->fetch_assoc($result);
 			if ($data["mailing_resa_all_admin"]){
 				$query2="INSERT INTO `glpi_mailing` (type,FK_item,item_type) VALUES ('resa','".$profiles["admin"]."','".PROFILE_MAILING_TYPE."');";
-				$DB->query($query2) or die("0.68 populate mailing resa all admin ".$LANG["update"][90].$DB->error());
+				$DB->query($query2) or die("0.68 populate mailing resa all admin ".$LANG['update'][90].$DB->error());
 			}
 			if ($data["mailing_resa_user"]){
 				$query2="INSERT INTO `glpi_mailing` (type,FK_item,item_type) VALUES ('resa','".AUTHOR_MAILING."','".USER_MAILING_TYPE."');";
-				$DB->query($query2) or die("0.68 populate mailing resa all admin ".$LANG["update"][90].$DB->error());
+				$DB->query($query2) or die("0.68 populate mailing resa all admin ".$LANG['update'][90].$DB->error());
 			}
 			if ($data["mailing_resa_admin"]){
 				$query2="INSERT INTO `glpi_mailing` (type,FK_item,item_type) VALUES ('resa','".ADMIN_MAILING."','".USER_MAILING_TYPE."');";
-				$DB->query($query2) or die("0.68 populate mailing resa all admin ".$LANG["update"][90].$DB->error());
+				$DB->query($query2) or die("0.68 populate mailing resa all admin ".$LANG['update'][90].$DB->error());
 			}
 			if ($data["mailing_new_all_admin"]){
 				$query2="INSERT INTO `glpi_mailing` (type,FK_item,item_type) VALUES ('new','".$profiles["admin"]."','".PROFILE_MAILING_TYPE."');";
-				$DB->query($query2) or die("0.68 populate mailing new all admin ".$LANG["update"][90].$DB->error());
+				$DB->query($query2) or die("0.68 populate mailing new all admin ".$LANG['update'][90].$DB->error());
 			}
 			if ($data["mailing_update_all_admin"]){
 				$query2="INSERT INTO `glpi_mailing` (type,FK_item,item_type) VALUES ('update','".$profiles["admin"]."','".PROFILE_MAILING_TYPE."');";
-				$DB->query($query2) or die("0.68 populate mailing update all admin ".$LANG["update"][90].$DB->error());
+				$DB->query($query2) or die("0.68 populate mailing update all admin ".$LANG['update'][90].$DB->error());
 			}
 			if ($data["mailing_followup_all_admin"]){
 				$query2="INSERT INTO `glpi_mailing` (type,FK_item,item_type) VALUES ('followup','".$profiles["admin"]."','".PROFILE_MAILING_TYPE."');";
-				$DB->query($query2) or die("0.68 populate mailing followup all admin ".$LANG["update"][90].$DB->error());
+				$DB->query($query2) or die("0.68 populate mailing followup all admin ".$LANG['update'][90].$DB->error());
 			}
 			if ($data["mailing_finish_all_admin"]){
 				$query2="INSERT INTO `glpi_mailing` (type,FK_item,item_type) VALUES ('finish','".$profiles["admin"]."','".PROFILE_MAILING_TYPE."');";
-				$DB->query($query2) or die("0.68 populate mailing finish all admin ".$LANG["update"][90].$DB->error());
+				$DB->query($query2) or die("0.68 populate mailing finish all admin ".$LANG['update'][90].$DB->error());
 			}
 			if ($data["mailing_new_all_normal"]){
 				$query2="INSERT INTO `glpi_mailing` (type,FK_item,item_type) VALUES ('new','".$profiles["normal"]."','".PROFILE_MAILING_TYPE."');";
-				$DB->query($query2) or die("0.68 populate mailing new all normal ".$LANG["update"][90].$DB->error());
+				$DB->query($query2) or die("0.68 populate mailing new all normal ".$LANG['update'][90].$DB->error());
 			}
 			if ($data["mailing_update_all_normal"]){
 				$query2="INSERT INTO `glpi_mailing` (type,FK_item,item_type) VALUES ('update','".$profiles["normal"]."','".PROFILE_MAILING_TYPE."');";
-				$DB->query($query2) or die("0.68 populate mailing update all normal ".$LANG["update"][90].$DB->error());
+				$DB->query($query2) or die("0.68 populate mailing update all normal ".$LANG['update'][90].$DB->error());
 			}
 			if ($data["mailing_followup_all_normal"]){
 				$query2="INSERT INTO `glpi_mailing` (type,FK_item,item_type) VALUES ('followup','".$profiles["normal"]."','".PROFILE_MAILING_TYPE."');";
-				$DB->query($query2) or die("0.68 populate mailing followup all normal ".$LANG["update"][90].$DB->error());
+				$DB->query($query2) or die("0.68 populate mailing followup all normal ".$LANG['update'][90].$DB->error());
 			}
 			if ($data["mailing_finish_all_normal"]){
 				$query2="INSERT INTO `glpi_mailing` (type,FK_item,item_type) VALUES ('finish','".$profiles["normal"]."','".PROFILE_MAILING_TYPE."');";
-				$DB->query($query2) or die("0.68 populate mailing finish all normal ".$LANG["update"][90].$DB->error());
+				$DB->query($query2) or die("0.68 populate mailing finish all normal ".$LANG['update'][90].$DB->error());
 			}
 			if ($data["mailing_new_admin"]){
 				$query2="INSERT INTO `glpi_mailing` (type,FK_item,item_type) VALUES ('new','".ADMIN_MAILING."','".USER_MAILING_TYPE."');";
-				$DB->query($query2) or die("0.68 populate mailing new admin ".$LANG["update"][90].$DB->error());
+				$DB->query($query2) or die("0.68 populate mailing new admin ".$LANG['update'][90].$DB->error());
 			}
 			if ($data["mailing_update_admin"]){
 				$query2="INSERT INTO `glpi_mailing` (type,FK_item,item_type) VALUES ('update','".ADMIN_MAILING."','".USER_MAILING_TYPE."');";
-				$DB->query($query2) or die("0.68 populate mailing update admin ".$LANG["update"][90].$DB->error());
+				$DB->query($query2) or die("0.68 populate mailing update admin ".$LANG['update'][90].$DB->error());
 			}
 			if ($data["mailing_followup_admin"]){
 				$query2="INSERT INTO `glpi_mailing` (type,FK_item,item_type) VALUES ('followup','".ADMIN_MAILING."','".USER_MAILING_TYPE."');";
-				$DB->query($query2) or die("0.68 populate mailing followup admin ".$LANG["update"][90].$DB->error());
+				$DB->query($query2) or die("0.68 populate mailing followup admin ".$LANG['update'][90].$DB->error());
 			}
 			if ($data["mailing_finish_admin"]){
 				$query2="INSERT INTO `glpi_mailing` (type,FK_item,item_type) VALUES ('finish','".ADMIN_MAILING."','".USER_MAILING_TYPE."');";
-				$DB->query($query2) or die("0.68 populate mailing finish admin ".$LANG["update"][90].$DB->error());
+				$DB->query($query2) or die("0.68 populate mailing finish admin ".$LANG['update'][90].$DB->error());
 			}
 			if ($data["mailing_new_attrib"]){
 				$query2="INSERT INTO `glpi_mailing` (type,FK_item,item_type) VALUES ('new','".ASSIGN_MAILING."','".USER_MAILING_TYPE."');";
-				$DB->query($query2) or die("0.68 populate mailing new attrib ".$LANG["update"][90].$DB->error());
+				$DB->query($query2) or die("0.68 populate mailing new attrib ".$LANG['update'][90].$DB->error());
 			}
 			if ($data["mailing_update_attrib"]){
 				$query2="INSERT INTO `glpi_mailing` (type,FK_item,item_type) VALUES ('update','".ASSIGN_MAILING."','".USER_MAILING_TYPE."');";
-				$DB->query($query2) or die("0.68 populate mailing update attrib ".$LANG["update"][90].$DB->error());
+				$DB->query($query2) or die("0.68 populate mailing update attrib ".$LANG['update'][90].$DB->error());
 			}
 			if ($data["mailing_followup_attrib"]){
 				$query2="INSERT INTO `glpi_mailing` (type,FK_item,item_type) VALUES ('followup','".ASSIGN_MAILING."','".USER_MAILING_TYPE."');";
-				$DB->query($query2) or die("0.68 populate mailing followup attrib ".$LANG["update"][90].$DB->error());
+				$DB->query($query2) or die("0.68 populate mailing followup attrib ".$LANG['update'][90].$DB->error());
 			}
 			if ($data["mailing_finish_attrib"]){
 				$query2="INSERT INTO `glpi_mailing` (type,FK_item,item_type) VALUES ('finish','".ASSIGN_MAILING."','".USER_MAILING_TYPE."');";
-				$DB->query($query2) or die("0.68 populate mailing finish attrib ".$LANG["update"][90].$DB->error());
+				$DB->query($query2) or die("0.68 populate mailing finish attrib ".$LANG['update'][90].$DB->error());
 			}
 			if ($data["mailing_attrib_attrib"]){
 				$query2="INSERT INTO `glpi_mailing` (type,FK_item,item_type) VALUES ('update','".OLD_ASSIGN_MAILING."','".USER_MAILING_TYPE."');";
-				$DB->query($query2) or die("0.68 populate mailing finish attrib ".$LANG["update"][90].$DB->error());
+				$DB->query($query2) or die("0.68 populate mailing finish attrib ".$LANG['update'][90].$DB->error());
 			}	
 			if ($data["mailing_new_user"]){
 				$query2="INSERT INTO `glpi_mailing` (type,FK_item,item_type) VALUES ('new','".AUTHOR_MAILING."','".USER_MAILING_TYPE."');";
-				$DB->query($query2) or die("0.68 populate mailing new user ".$LANG["update"][90].$DB->error());
+				$DB->query($query2) or die("0.68 populate mailing new user ".$LANG['update'][90].$DB->error());
 			}
 			if ($data["mailing_update_user"]){
 				$query2="INSERT INTO `glpi_mailing` (type,FK_item,item_type) VALUES ('update','".AUTHOR_MAILING."','".USER_MAILING_TYPE."');";
-				$DB->query($query2) or die("0.68 populate mailing update user ".$LANG["update"][90].$DB->error());
+				$DB->query($query2) or die("0.68 populate mailing update user ".$LANG['update'][90].$DB->error());
 			}
 			if ($data["mailing_followup_user"]){
 				$query2="INSERT INTO `glpi_mailing` (type,FK_item,item_type) VALUES ('followup','".AUTHOR_MAILING."','".USER_MAILING_TYPE."');";
-				$DB->query($query2) or die("0.68 populate mailing followup user ".$LANG["update"][90].$DB->error());
+				$DB->query($query2) or die("0.68 populate mailing followup user ".$LANG['update'][90].$DB->error());
 			}
 			if ($data["mailing_finish_user"]){
 				$query2="INSERT INTO `glpi_mailing` (type,FK_item,item_type) VALUES ('finish','".AUTHOR_MAILING."','".USER_MAILING_TYPE."');";
-				$DB->query($query2) or die("0.68 populate mailing finish user ".$LANG["update"][90].$DB->error());
+				$DB->query($query2) or die("0.68 populate mailing finish user ".$LANG['update'][90].$DB->error());
 			}
 
 		}
@@ -308,7 +308,7 @@ function update065to068(){
 			     DROP `mailing_followup_user`,
 			     DROP `mailing_finish_user`,
 			     DROP `mailing_attrib_attrib`;";
-		$DB->query($query) or die("0.68 delete mailing config from config ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.68 delete mailing config from config ".$LANG['update'][90].$DB->error());
 	}
 
 
@@ -323,7 +323,7 @@ function update065to068(){
 			if ($DB->numrows($result)>0){
 				while($line = $DB->fetch_array($result)) {
 					$query="UPDATE glpi_kbitems SET answer='".addslashes(rembo($line["answer"]))."' WHERE ID='".$line["ID"]."'";
-					$DB->query($query) 	 or die("0.68 convert knowbase to xhtml ".$LANG["update"][90].$DB->error());
+					$DB->query($query) 	 or die("0.68 convert knowbase to xhtml ".$LANG['update'][90].$DB->error());
 				}
 				$DB->free_result($result);
 			}
@@ -332,7 +332,7 @@ function update065to068(){
 				ADD `view` INT( 11 ) NOT NULL DEFAULT '0' AFTER `author` ,
 				ADD `date` DATETIME NULL DEFAULT NULL AFTER `view` ,
 				ADD `date_mod` DATETIME NULL DEFAULT NULL AFTER `date` ;";
-			$DB->query($query) or die("0.68 add  fields in knowbase ".$LANG["update"][90].$DB->error());
+			$DB->query($query) or die("0.68 add  fields in knowbase ".$LANG['update'][90].$DB->error());
 
 		}
 	} // fin convert
@@ -342,13 +342,13 @@ function update065to068(){
 	foreach ($dropdowntree_tables as $t)
 		if(!FieldExists($t,"level")) {	
 			$query="ALTER TABLE `$t` ADD `level` INT(11)";
-			$DB->query($query) or die("0.68 add level to $t ".$LANG["update"][90].$DB->error());
+			$DB->query($query) or die("0.68 add level to $t ".$LANG['update'][90].$DB->error());
 			regenerateTreeCompleteName($t);
 		}
 
 	if(FieldExists("glpi_config","root_doc")) {	
 		$query="ALTER TABLE `glpi_config` DROP  `root_doc`";
-		$DB->query($query) or die("0.68 drop root_doc ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.68 drop root_doc ".$LANG['update'][90].$DB->error());
 		regenerateTreeCompleteName($t);
 	}
 	// add smtp config
@@ -358,13 +358,13 @@ function update065to068(){
 			ADD  `smtp_port` int(11) DEFAULT '25' NOT NULL,
 			ADD  `smtp_username` varchar(255),
 			ADD  `smtp_password` varchar(255);";
-		$DB->query($query) or die("0.68 add smtp config ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.68 add smtp config ".$LANG['update'][90].$DB->error());
 	}
 
 	$map_lang=array("french"=>"fr_FR","english"=>"en_GB","deutsch"=>"de_DE","italian"=>"it_IT","castillano"=>"es_ES","portugese"=>"pt_PT","dutch"=>"nl_NL","hungarian"=>"hu_HU","polish"=>"po_PO","rumanian"=>"ro_RO","russian"=>"ru_RU");
 	foreach ($map_lang as $old => $new){
 		$query="UPDATE glpi_users SET language='$new' WHERE language='$old';";
-		$DB->query($query) or die("0.68 update $new lang user setting ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.68 update $new lang user setting ".$LANG['update'][90].$DB->error());
 
 	}
 	$query="SELECT default_language FROM glpi_config WHERE ID='1';";
@@ -372,97 +372,97 @@ function update065to068(){
 	$def_lang=$DB->result($result,0,0);
 	if (isset($map_lang[$def_lang])){
 		$query="UPDATE glpi_config SET default_language='".$map_lang[$def_lang]."' WHERE ID='1';";
-		$DB->query($query) or die("0.68 update default_language in config ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.68 update default_language in config ".$LANG['update'][90].$DB->error());
 	}
 
 	// Improve link management
 	if(!FieldExists("glpi_links","link")) {	
 		$query="ALTER TABLE `glpi_links` CHANGE `name` `link` VARCHAR( 255 ) NULL DEFAULT NULL ";
-		$DB->query($query) or die("0.68 rename name in link ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.68 rename name in link ".$LANG['update'][90].$DB->error());
 		$query="ALTER TABLE `glpi_links` ADD `name` VARCHAR( 255 ) NULL AFTER `ID`";
-		$DB->query($query) or die("0.68 add name in link ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.68 add name in link ".$LANG['update'][90].$DB->error());
 		$query="UPDATE glpi_links SET name=link";
-		$DB->query($query) or die("0.68 init name field in link ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.68 init name field in link ".$LANG['update'][90].$DB->error());
 	}
 
 	if(FieldExists("glpi_config","ldap_field_name")) {
 		$query="UPDATE `glpi_config` SET  ldap_login = ldap_field_name ";
 		$DB->query($query);
 		$query="ALTER TABLE `glpi_config` DROP `ldap_field_name` ";
-		$DB->query($query) or die("0.68 drop ldap_field_name in config ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.68 drop ldap_field_name in config ".$LANG['update'][90].$DB->error());
 	}
 
 	// Security user Helpdesk
 	$query="UPDATE glpi_users SET password='', active='0' WHERE name='Helpdesk';";
-	$DB->query($query) or die("0.68 security update for user Helpdesk ".$LANG["update"][90].$DB->error());
+	$DB->query($query) or die("0.68 security update for user Helpdesk ".$LANG['update'][90].$DB->error());
 
 	if(!FieldExists("glpi_ocs_config","import_general_name")) {	
 		$query = "ALTER TABLE `glpi_ocs_config` ADD `import_general_name` INT( 2 ) NOT NULL DEFAULT '0' AFTER `import_printer`"; 
-		$DB->query($query) or die("0.68 add import_name in ocs_config ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.68 add import_name in ocs_config ".$LANG['update'][90].$DB->error());
 	}
 	// Clean default values for devices
 	if(FieldExists("glpi_device_drive","speed")) {	
 		$query = "ALTER TABLE `glpi_device_drive` CHANGE `speed` `speed` VARCHAR( 255 ) NULL "; 
-		$DB->query($query) or die("0.68 alter speed in device_drive ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.68 alter speed in device_drive ".$LANG['update'][90].$DB->error());
 	}
 
 	if(FieldExists("glpi_device_gfxcard","ram")) {	
 		$query = "ALTER TABLE `glpi_device_gfxcard` CHANGE `ram` `ram` VARCHAR( 255 ) NULL "; 
-		$DB->query($query) or die("0.68 alter ram in device_gfxcard ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.68 alter ram in device_gfxcard ".$LANG['update'][90].$DB->error());
 	}
 
 	if(FieldExists("glpi_device_hdd","rpm")) {	
 		$query = "ALTER TABLE `glpi_device_hdd` CHANGE `rpm` `rpm` VARCHAR( 255 ) NULL , CHANGE `cache` `cache` VARCHAR( 255 ) NULL "; 
-		$DB->query($query) or die("0.68 alter rpm and cache in device_hdd ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.68 alter rpm and cache in device_hdd ".$LANG['update'][90].$DB->error());
 	}	
 
 	if(FieldExists("glpi_device_iface","bandwidth")) {	
 		$query = "ALTER TABLE `glpi_device_iface` CHANGE `bandwidth` `bandwidth` VARCHAR( 255 ) NULL "; 
-		$DB->query($query) or die("0.68 alter bandwidth in device_iface ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.68 alter bandwidth in device_iface ".$LANG['update'][90].$DB->error());
 	}
 
 	if(FieldExists("glpi_device_moboard","chipset")) {	
 		$query = "ALTER TABLE `glpi_device_moboard` CHANGE `chipset` `chipset` VARCHAR( 255 ) NULL "; 
-		$DB->query($query) or die("0.68 alter chipset in device_moboard ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.68 alter chipset in device_moboard ".$LANG['update'][90].$DB->error());
 	}
 
 	if(FieldExists("glpi_device_drive","speed")) {	
 		$query = "ALTER TABLE `glpi_device_drive` CHANGE `speed` `speed` VARCHAR( 255 ) NULL "; 
-		$DB->query($query) or die("0.68 alter speed in device_drive ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.68 alter speed in device_drive ".$LANG['update'][90].$DB->error());
 	}
 
 	if(FieldExists("glpi_device_power","power")) {	
 		$query = "ALTER TABLE `glpi_device_power` CHANGE `power` `power` VARCHAR( 255 ) NULL "; 
-		$DB->query($query) or die("0.68 alter power in device_power ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.68 alter power in device_power ".$LANG['update'][90].$DB->error());
 	}
 
 	if(FieldExists("glpi_device_ram","frequence")) {	
 		$query = "ALTER TABLE `glpi_device_ram` CHANGE `frequence` `frequence` VARCHAR( 255 ) NULL "; 
-		$DB->query($query) or die("0.68 alter frequence in device_ram ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.68 alter frequence in device_ram ".$LANG['update'][90].$DB->error());
 	}
 
 	if(FieldExists("glpi_device_sndcard","type")) {	
 		$query = "ALTER TABLE `glpi_device_sndcard` CHANGE `type` `type` VARCHAR( 255 ) NULL "; 
-		$DB->query($query) or die("0.68 alter type in device_sndcard ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.68 alter type in device_sndcard ".$LANG['update'][90].$DB->error());
 	}	
 
 	if(!FieldExists("glpi_display","FK_users")) {	
 		$query = "ALTER TABLE `glpi_display` ADD `FK_users` INT NOT NULL DEFAULT '0'"; 
-		$DB->query($query) or die("0.68 alter display add FK_users".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.68 alter display add FK_users".$LANG['update'][90].$DB->error());
 		$query="ALTER TABLE `glpi_display` DROP INDEX `type_2`, ADD UNIQUE `type_2` ( `type` , `num` , `FK_users` )";
-		$DB->query($query) or die("0.68 alter display update unique key".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.68 alter display update unique key".$LANG['update'][90].$DB->error());
 	}	
 
 	// Proxy configuration
 
 	if(!FieldExists("glpi_config","proxy_name")) {	
 		$query = "ALTER TABLE `glpi_config` ADD `proxy_name` VARCHAR( 255 ) NULL, ADD `proxy_port` VARCHAR( 255 ) DEFAULT '8080' NOT NULL, ADD `proxy_user` VARCHAR( 255 ) NULL, ADD `proxy_password` VARCHAR( 255 ) NULL"; 
-		$DB->query($query) or die("0.68 add proxy fields to glpi_config".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.68 add proxy fields to glpi_config".$LANG['update'][90].$DB->error());
 	}	
 	// Log update with followups
 	if(!FieldExists("glpi_config","followup_on_update_ticket")) {	
 		$query = "ALTER TABLE `glpi_config` ADD `followup_on_update_ticket` tinyint(4) DEFAULT '1' NOT NULL;"; 
-		$DB->query($query) or die("0.68 add followup_on_update_ticket to glpi_config".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.68 add followup_on_update_ticket to glpi_config".$LANG['update'][90].$DB->error());
 	}	
 
 
@@ -471,23 +471,23 @@ function update065to068(){
 		$query = "ALTER TABLE glpi_dropdown_tracking_category ADD `parentID` INT NOT NULL DEFAULT '0' AFTER `ID`,
 			ADD `completename` TEXT NULL AFTER `name`,
 			ADD `level` INT NULL AFTER `comments` "; 
-				$DB->query($query) or die("0.68 glpi_dropdown_tracking_category to dropdown tree".$LANG["update"][90].$DB->error());
+				$DB->query($query) or die("0.68 glpi_dropdown_tracking_category to dropdown tree".$LANG['update'][90].$DB->error());
 		regenerateTreeCompleteName("glpi_dropdown_tracking_category");
 	}
 	// User to Document
 	if(!FieldExists("glpi_docs","FK_users")) {	
 		$query = "ALTER TABLE `glpi_docs` ADD `FK_users` int DEFAULT '0' NOT NULL, ADD `FK_tracking` int DEFAULT '0' NOT NULL;"; 
-		$DB->query($query) or die("0.68 add FK_users to docs".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.68 add FK_users to docs".$LANG['update'][90].$DB->error());
 	}	
 	// Import Ocs TAG
 	if(!FieldExists("glpi_ocs_config","import_tag_field")) {	
 		$query = "ALTER TABLE `glpi_ocs_config` ADD `import_tag_field` varchar( 255 ) NULL;"; 
-		$DB->query($query) or die("0.68 add import_tag_field to ocs_config".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.68 add import_tag_field to ocs_config".$LANG['update'][90].$DB->error());
 	}
 	// Use ocs soft dict
 	if(!FieldExists("glpi_ocs_config","use_soft_dict")) {	
 		$query = "ALTER TABLE `glpi_ocs_config` ADD `use_soft_dict` char( 1 ) DEFAULT '1';"; 
-		$DB->query($query) or die("0.68 add use_soft_dict to ocs_config".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.68 add use_soft_dict to ocs_config".$LANG['update'][90].$DB->error());
 	}
 
 	// Link user and group to hardware
@@ -496,7 +496,7 @@ function update065to068(){
 	foreach ($new_link as $table)
 		if(!FieldExists("glpi_$table","FK_users")) {	
 			$query="ALTER TABLE `glpi_$table` ADD `FK_users` INT(11) DEFAULT '0', ADD `FK_groups` INT(11) DEFAULT '0';";
-			$DB->query($query) or die("0.65 add link user group field in $table ".$LANG["update"][90].$DB->error());
+			$DB->query($query) or die("0.65 add link user group field in $table ".$LANG['update'][90].$DB->error());
 
 			if ($table != "software"){
 				// Update using name field of users
@@ -528,7 +528,7 @@ function update065to068(){
 	// Manage old plugin table
 	if(FieldExists("glpi_groups","extend")){
 		$query= "ALTER TABLE `glpi_groups` RENAME `glpi_plugin_droits_groups`;";
-		$DB->query($query) or die("0.68 rename plugin groups table ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.68 rename plugin groups table ".$LANG['update'][90].$DB->error());
 	}
 
 	if(!TableExists("glpi_groups")) {
@@ -542,10 +542,10 @@ function update065to068(){
 			KEY `name` (`name`),
 			KEY `ldap_field` (`ldap_field`)
 				) TYPE=MyISAM;";
-		$DB->query($query) or die("0.68 add groups ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.68 add groups ".$LANG['update'][90].$DB->error());
 
 		$query="INSERT INTO `glpi_display` (`type`, `num`, `rank`, `FK_users`) VALUES ('".GROUP_TYPE."', '16', '1', '0')";
-		$DB->query($query) or die("0.68 add groups search config".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.68 add groups search config".$LANG['update'][90].$DB->error());
 	}
 
 	if(!TableExists("glpi_users_groups")) {
@@ -559,23 +559,23 @@ function update065to068(){
 			KEY `FK_users_2` (`FK_users`),
 			KEY `FK_groups` (`FK_groups`)
 				) TYPE=MyISAM;";
-		$DB->query($query) or die("0.68 add users_groups ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.68 add users_groups ".$LANG['update'][90].$DB->error());
 	}
 
 	if(!FieldExists("glpi_config","ldap_field_group")) {	
 		$query="ALTER TABLE  `glpi_config` ADD  `ldap_field_group` varchar(255) NULL;";
-		$DB->query($query) or die("0.68 add ldap_field_group in config ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.68 add ldap_field_group in config ".$LANG['update'][90].$DB->error());
 	}
 
 	if(!FieldExists("glpi_tracking","request_type")) {	
 		$query="ALTER TABLE  `glpi_tracking` ADD  `request_type` tinyint(2) DEFAULT '0' AFTER `author`;";
-		$DB->query($query) or die("0.68 add request_type in tracking ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.68 add request_type in tracking ".$LANG['update'][90].$DB->error());
 	}
 
 	// History update for software
 	if(FieldExists("glpi_history","device_internal_action")) {	
 		$query="ALTER TABLE `glpi_history` CHANGE `device_internal_action` `linked_action` TINYINT( 4 ) NULL DEFAULT '0'";
-		$DB->query($query) or die("0.68 alater glpi_history ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.68 alater glpi_history ".$LANG['update'][90].$DB->error());
 	}
 
 	if(!TableExists("glpi_alerts")) {
@@ -594,77 +594,77 @@ function update065to068(){
 			KEY `type` (`type`),
 			KEY `date` (`date`)
 				) TYPE=MyISAM;";
-		$DB->query($query) or die("0.68 add alerts ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.68 add alerts ".$LANG['update'][90].$DB->error());
 	}
 
 	if(!FieldExists("glpi_contracts","alert")) {	
 		$query="ALTER TABLE  `glpi_contracts` ADD  `alert` tinyint(2) NOT NULL DEFAULT '0';";
-		$DB->query($query) or die("0.68 add alert in contracts ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.68 add alert in contracts ".$LANG['update'][90].$DB->error());
 	}
 
 	if(!FieldExists("glpi_infocoms","alert")) {	
 		$query="ALTER TABLE  `glpi_infocoms` ADD  `alert` tinyint(2) NOT NULL DEFAULT '0';";
-		$DB->query($query) or die("0.68 add alert in infocoms ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.68 add alert in infocoms ".$LANG['update'][90].$DB->error());
 	}
 
 	if(!FieldExists("glpi_config","contract_alerts")) {	
 		$query="ALTER TABLE  `glpi_config` ADD  `contract_alerts` tinyint(2) NOT NULL  DEFAULT '0';";
-		$DB->query($query) or die("0.68 add contract_alerts in config ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.68 add contract_alerts in config ".$LANG['update'][90].$DB->error());
 	}
 
 	if(!FieldExists("glpi_config","infocom_alerts")) {	
 		$query="ALTER TABLE  `glpi_config` ADD  `infocom_alerts` tinyint(2) NOT NULL DEFAULT '0';";
-		$DB->query($query) or die("0.68 add infocom_alerts in config ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.68 add infocom_alerts in config ".$LANG['update'][90].$DB->error());
 	}
 
 	if(!FieldExists("glpi_tracking","FK_group")) {	
 		$query="ALTER TABLE  `glpi_tracking` ADD  `FK_group` int(11) NOT NULL  DEFAULT '0' AFTER `author`;";
-		$DB->query($query) or die("0.68 add FK_group in tracking ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.68 add FK_group in tracking ".$LANG['update'][90].$DB->error());
 	}
 
 	if(!FieldExists("glpi_config","cartridges_alert")) {	
 		$query="ALTER TABLE  `glpi_config` ADD  `cartridges_alert` int(11) NOT NULL  DEFAULT '0';";
-		$DB->query($query) or die("0.68 add cartridges_alert in config ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.68 add cartridges_alert in config ".$LANG['update'][90].$DB->error());
 	}
 
 	if(!FieldExists("glpi_config","consumables_alert")) {	
 		$query="ALTER TABLE  `glpi_config` ADD  `consumables_alert` int(11) NOT NULL  DEFAULT '0';";
-		$DB->query($query) or die("0.68 add consumables_alert in config ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.68 add consumables_alert in config ".$LANG['update'][90].$DB->error());
 	}
 
 	if(!FieldExists("glpi_contacts","firstname")) {	
 		$query="ALTER TABLE  `glpi_contacts` ADD  `firstname` varchar(255)  DEFAULT '' AFTER `name`;";
-		$DB->query($query) or die("0.68 add firstname in contacts ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.68 add firstname in contacts ".$LANG['update'][90].$DB->error());
 	}
 
 	if(!FieldExists("glpi_contacts","mobile")) {	
 		$query="ALTER TABLE  `glpi_contacts` ADD  `mobile` varchar(255)  DEFAULT '' AFTER `phone2`;";
-		$DB->query($query) or die("0.68 add mobile in contacts ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.68 add mobile in contacts ".$LANG['update'][90].$DB->error());
 	}
 
 	if(!FieldExists("glpi_enterprises","country")) {	
 		$query="ALTER TABLE  `glpi_enterprises` ADD  `country` varchar(255)  DEFAULT '' AFTER `address`;";
-		$DB->query($query) or die("0.68 add country in enterprises ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.68 add country in enterprises ".$LANG['update'][90].$DB->error());
 	}
 
 	if(!FieldExists("glpi_enterprises","state")) {	
 		$query="ALTER TABLE  `glpi_enterprises` ADD  `state` varchar(255)  DEFAULT '' AFTER `address`;";
-		$DB->query($query) or die("0.68 add state in enterprises ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.68 add state in enterprises ".$LANG['update'][90].$DB->error());
 	}
 
 	if(!FieldExists("glpi_enterprises","town")) {	
 		$query="ALTER TABLE  `glpi_enterprises` ADD  `town` varchar(255)  DEFAULT '' AFTER `address`;";
-		$DB->query($query) or die("0.68 add town in enterprises ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.68 add town in enterprises ".$LANG['update'][90].$DB->error());
 	}
 
 	if(!FieldExists("glpi_enterprises","postcode")) {	
 		$query="ALTER TABLE  `glpi_enterprises` ADD  `postcode` varchar(255)  DEFAULT '' AFTER `address`;";
-		$DB->query($query) or die("0.68 add postcode in enterprises ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.68 add postcode in enterprises ".$LANG['update'][90].$DB->error());
 	}
 
 	if(!FieldExists("glpi_contracts","renewal")) {	
 		$query="ALTER TABLE  `glpi_contracts` ADD  `renewal` tinyint(2) NOT NULL DEFAULT '0';";
-		$DB->query($query) or die("0.68 add renewal in contracts ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.68 add renewal in contracts ".$LANG['update'][90].$DB->error());
 	}
 
 
@@ -673,43 +673,43 @@ function update065to068(){
 
 	foreach ($values as $key => $val){
 		$query="UPDATE glpi_contracts SET periodicity='$val' WHERE periodicity='$key';";
-		$DB->query($query) or die("0.68 update contract periodicity value ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.68 update contract periodicity value ".$LANG['update'][90].$DB->error());
 		$query="UPDATE glpi_contracts SET facturation='$val' WHERE facturation='$key';";
-		$DB->query($query) or die("0.68 update contract facturation value ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.68 update contract facturation value ".$LANG['update'][90].$DB->error());
 	}
 
 	// Add user fields
 	if(!FieldExists("glpi_users","mobile")) {	
 		$query="ALTER TABLE  `glpi_users` ADD  `mobile` varchar(255)  DEFAULT '' AFTER `phone`;";
-		$DB->query($query) or die("0.68 add mobile in users ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.68 add mobile in users ".$LANG['update'][90].$DB->error());
 	}
 	if(!FieldExists("glpi_users","phone2")) {	
 		$query="ALTER TABLE  `glpi_users` ADD  `phone2` varchar(255)  DEFAULT '' AFTER `phone`;";
-		$DB->query($query) or die("0.68 add phone2 in users ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.68 add phone2 in users ".$LANG['update'][90].$DB->error());
 	}
 	if(!FieldExists("glpi_users","firstname")) {	
 		$query="ALTER TABLE  `glpi_users` ADD  `firstname` varchar(255)  DEFAULT '' AFTER `realname`;";
-		$DB->query($query) or die("0.68 add firstname in users ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.68 add firstname in users ".$LANG['update'][90].$DB->error());
 	}
 
 	if(!FieldExists("glpi_users","comments")) {	
 		$query="ALTER TABLE  `glpi_users` ADD  `comments` TEXT ;";
-		$DB->query($query) or die("0.68 add comments in users ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.68 add comments in users ".$LANG['update'][90].$DB->error());
 	}
 
 	if(!FieldExists("glpi_config","ldap_field_firstname")) {	
 		$query="ALTER TABLE  `glpi_config` ADD  `ldap_field_firstname` varchar(200)  DEFAULT 'givenname' AFTER `ldap_field_realname`;";
-		$DB->query($query) or die("0.68 add ldap_field_firstname in config ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.68 add ldap_field_firstname in config ".$LANG['update'][90].$DB->error());
 	}
 
 	if(!FieldExists("glpi_config","ldap_field_mobile")) {	
 		$query="ALTER TABLE  `glpi_config` ADD  `ldap_field_mobile` varchar(200)  DEFAULT 'mobile' AFTER `ldap_field_phone`;";
-		$DB->query($query) or die("0.68 add ldap_mobile in config ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.68 add ldap_mobile in config ".$LANG['update'][90].$DB->error());
 	}
 
 	if(!FieldExists("glpi_config","ldap_field_phone2")) {	
 		$query="ALTER TABLE  `glpi_config` ADD  `ldap_field_phone2` varchar(200)  DEFAULT 'homephone' AFTER `ldap_field_phone`;";
-		$DB->query($query) or die("0.68 add ldap_field_phone2 in config ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.68 add ldap_field_phone2 in config ".$LANG['update'][90].$DB->error());
 	}
 
 

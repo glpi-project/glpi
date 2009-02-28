@@ -41,10 +41,10 @@ function update071to0712() {
 
 
 	$query="UPDATE glpi_display SET num=120 WHERE num=121"	;
-	$DB->query($query) or die("0.71.2 Update display index in view item ".$LANG["update"][90].$DB->error());
+	$DB->query($query) or die("0.71.2 Update display index in view item ".$LANG['update'][90].$DB->error());
 
 	$query="UPDATE glpi_rules_actions SET field='_ignore_ocs_import' WHERE action_type='ignore'"	;
-	$DB->query($query) or die("0.71.2 Update ignore field for soft dict ".$LANG["update"][90].$DB->error());
+	$DB->query($query) or die("0.71.2 Update ignore field for soft dict ".$LANG['update'][90].$DB->error());
 
 } // fin 0.71 #####################################################################################
 ?>

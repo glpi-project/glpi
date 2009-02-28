@@ -48,23 +48,23 @@ $user = new User();
 
 if (isset ($_POST["update"]) && $_POST["ID"] == $_SESSION["glpiID"]) {
 	$user->update($_POST);
-	logEvent(0, "users", 5, "setup", $_SESSION["glpiname"] . "  " . $LANG["log"][21] . "  " . $_SESSION["glpiname"] . ".");
+	logEvent(0, "users", 5, "setup", $_SESSION["glpiname"] . "  " . $LANG['log'][21] . "  " . $_SESSION["glpiname"] . ".");
 	glpi_header($_SERVER['HTTP_REFERER']);
 } else {
 
 
 	if ($_SESSION["glpiactiveprofile"]["interface"] == "central")
-		commonHeader($LANG["title"][13], $_SERVER['PHP_SELF']);
+		commonHeader($LANG['title'][13], $_SERVER['PHP_SELF']);
 	else
-		helpHeader($LANG["title"][13], $_SERVER['PHP_SELF']);
+		helpHeader($LANG['title'][13], $_SERVER['PHP_SELF']);
 
 
 	//forea
-	$tabs[1]=array('title'=>$LANG["title"][26],
+	$tabs[1]=array('title'=>$LANG['title'][26],
 		'url'=>$CFG_GLPI['root_doc']."/ajax/preference.tabs.php",
 		'params'=>"target=".$_SERVER['PHP_SELF']."&type=prefs&glpi_tab=1");
 
-	$tabs[2]=array('title'=>$LANG["setup"][6],
+	$tabs[2]=array('title'=>$LANG['setup'][6],
 		'url'=>$CFG_GLPI['root_doc']."/ajax/preference.tabs.php",
 		'params'=>"target=".$_SERVER['PHP_SELF']."&type=prefs&glpi_tab=2");
 

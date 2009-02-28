@@ -70,15 +70,15 @@ if (empty($_POST)||count($_POST)==0){
 /*if (!empty($_POST["priority"]) && empty($_POST["name"]))
 {
 	if(!empty($_POST["type"]) && ($_POST["type"] == "Helpdesk")) {
-		nullHeader($LANG["title"][10],$_SERVER['PHP_SELF']);
+		nullHeader($LANG['title'][10],$_SERVER['PHP_SELF']);
 	}
 	else if ($_POST["_from_helpdesk"]){
-		helpHeader($LANG["title"][1],$_SERVER['PHP_SELF'],$_SESSION["glpiname"]);
+		helpHeader($LANG['title'][1],$_SERVER['PHP_SELF'],$_SESSION["glpiname"]);
 	}
-	else commonHeader($LANG["title"][1],$_SERVER['PHP_SELF'],$_SESSION["glpiname"],"maintain","tracking");
+	else commonHeader($LANG['title'][1],$_SERVER['PHP_SELF'],$_SESSION["glpiname"],"maintain","tracking");
 
 	echo "<div align='center'><img src=\"".$CFG_GLPI["root_doc"]."/pics/warning.png\" alt=\"warning\"><br><br><b>";
-	echo $LANG["help"][200]."<br><br>";
+	echo $LANG['help'][200]."<br><br>";
 	displayBackLink();
 	echo "</b></div>";
 
@@ -88,15 +88,15 @@ if (empty($_POST)||count($_POST)==0){
 if (!empty($_POST["priority"]) && !$_POST["category"])
 {
 	if(!empty($_POST["type"]) && ($_POST["type"] == "Helpdesk")) {
-		nullHeader($LANG["title"][10],$_SERVER['PHP_SELF']);
+		nullHeader($LANG['title'][10],$_SERVER['PHP_SELF']);
 	}
 	else if ($_POST["_from_helpdesk"]){
-		helpHeader($LANG["title"][1],$_SERVER['PHP_SELF'],$_SESSION["glpiname"]);
+		helpHeader($LANG['title'][1],$_SERVER['PHP_SELF'],$_SESSION["glpiname"]);
 	}
-	else commonHeader($LANG["title"][1],$_SERVER['PHP_SELF'],$_SESSION["glpiname"],"maintain","tracking");
+	else commonHeader($LANG['title'][1],$_SERVER['PHP_SELF'],$_SESSION["glpiname"],"maintain","tracking");
 
 	echo "<div align='center'><img src=\"".$CFG_GLPI["root_doc"]."/pics/warning.png\" alt=\"warning\"><br><br><b>";
-	echo $LANG["help"][201]."<br><br>";
+	echo $LANG['help'][201]."<br><br>";
 	displayBackLink();
 	echo "</b></div>";
 
@@ -106,15 +106,15 @@ if (!empty($_POST["priority"]) && !$_POST["category"])
 elseif (!empty($_POST["priority"]) && empty($_POST["contents"]))
 {
 	if(!empty($_POST["type"]) && ($_POST["type"] == "Helpdesk")) {
-		nullHeader($LANG["title"][10],$_SERVER['PHP_SELF']);
+		nullHeader($LANG['title'][10],$_SERVER['PHP_SELF']);
 	}
 	else if ($_POST["_from_helpdesk"]){
-		helpHeader($LANG["title"][1],$_SERVER['PHP_SELF'],$_SESSION["glpiname"]);
+		helpHeader($LANG['title'][1],$_SERVER['PHP_SELF'],$_SESSION["glpiname"]);
 	}
-	else commonHeader($LANG["title"][1],$_SERVER['PHP_SELF'],$_SESSION["glpiname"],"maintain","tracking");
+	else commonHeader($LANG['title'][1],$_SERVER['PHP_SELF'],$_SESSION["glpiname"],"maintain","tracking");
 
 	echo "<div align='center'><img src=\"".$CFG_GLPI["root_doc"]."/pics/warning.png\" alt=\"warning\"><br><br><b>";
-	echo $LANG["tracking"][8]."<br><br>";
+	echo $LANG['tracking'][8]."<br><br>";
 	displayBackLink();
 	echo "</b></div>";
 
@@ -124,16 +124,16 @@ elseif (!empty($_POST["priority"]) && empty($_POST["contents"]))
 elseif (isset($_POST["emailupdates"]) && $_POST["emailupdates"] && isset($_POST["uemail"]) && $_POST["uemail"] =="")
 {
 	if(!empty($_POST["type"]) && ($_POST["type"] == "Helpdesk")) {
-		nullHeader($LANG["title"][10],$_SERVER['PHP_SELF']);
+		nullHeader($LANG['title'][10],$_SERVER['PHP_SELF']);
 	}
 	else if ($_POST["_from_helpdesk"]){
-		helpHeader($LANG["title"][1],$_SERVER['PHP_SELF'],$_SESSION["glpiname"]);
+		helpHeader($LANG['title'][1],$_SERVER['PHP_SELF'],$_SESSION["glpiname"]);
 	}
-	else commonHeader($LANG["title"][1],$_SERVER['PHP_SELF'],$_SESSION["glpiname"],"maintain","tracking");
+	else commonHeader($LANG['title'][1],$_SERVER['PHP_SELF'],$_SESSION["glpiname"],"maintain","tracking");
 
 	echo "<div align='center'><img src=\"".$CFG_GLPI["root_doc"]."/pics/warning.png\" alt=\"warning\"><br><br><b>";
 
-	echo $LANG["help"][16]."<br><br>";
+	echo $LANG['help'][16]."<br><br>";
 	displayBackLink();
 	echo "</b></div>";
 	nullFooter();
@@ -143,12 +143,12 @@ elseif (isset($_POST["emailupdates"]) && $_POST["emailupdates"] && isset($_POST[
 
 
 	if(!empty($_POST["type"]) && ($_POST["type"] == "Helpdesk")) {
-		nullHeader($LANG["title"][10],$_SERVER['PHP_SELF']);
+		nullHeader($LANG['title'][10],$_SERVER['PHP_SELF']);
 	}
 	else if ($_POST["_from_helpdesk"]){
-		helpHeader($LANG["title"][1],$_SERVER['PHP_SELF'],$_SESSION["glpiname"]);
+		helpHeader($LANG['title'][1],$_SERVER['PHP_SELF'],$_SESSION["glpiname"]);
 	}
-	else commonHeader($LANG["title"][1],$_SERVER['PHP_SELF'],$_SESSION["glpiname"],"maintain","tracking");
+	else commonHeader($LANG['title'][1],$_SERVER['PHP_SELF'],$_SESSION["glpiname"],"maintain","tracking");
 
 
 {
@@ -170,14 +170,14 @@ elseif (isset($_POST["emailupdates"]) && $_POST["emailupdates"] && isset($_POST[
 	if ($newID=$track->add($_POST)){
 		if(isset($_POST["type"]) && ($_POST["type"] == "Helpdesk")) {
 			echo "<div align='center'>";
-			echo $LANG["help"][18]."<br><br>";
+			echo $LANG['help'][18]."<br><br>";
 			displayBackLink();
 			echo "</div>";
 
 		} else {
 			echo "<div align='center'><img src=\"".$CFG_GLPI["root_doc"]."/pics/ok.png\" alt=\"OK\"><br><br><b>";
-			echo $LANG["help"][18]." (".$LANG["job"][38]." <a class='b' href='helpdesk.public.php?show=user&amp;ID=$newID'>$newID</a>)<br>";
-			echo $LANG["help"][19];
+			echo $LANG['help'][18]." (".$LANG['job'][38]." <a class='b' href='helpdesk.public.php?show=user&amp;ID=$newID'>$newID</a>)<br>";
+			echo $LANG['help'][19];
 			echo "</b></div>";
 		}
 	} else {

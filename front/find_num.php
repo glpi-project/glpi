@@ -77,15 +77,15 @@ function fillidfield(Type,Id){
 	<?php 
 
 	echo "<div align='center'>";
-	echo "<p><strong>".$LANG["help"][22]."</strong></p>";
+	echo "<p><strong>".$LANG['help'][22]."</strong></p>";
 	echo " <form name=\"form1\" method=\"post\"  action=\"".$_SERVER['PHP_SELF']."\">"; 
 
 	echo "<table cellspacing='1' width='100%'  class='tab_cadre'>";
-	echo "<tr><th align='center'  width='100%' height='29'>".$LANG["help"][23]."</th>";
+	echo "<tr><th align='center'  width='100%' height='29'>".$LANG['help'][23]."</th>";
 	echo "</tr><tr><td class='tab_bg_1' align='center' width='100%'>"; 
 	echo "<input name='NomContact' type='text' id='NomContact' >";
 	echo "<input type='hidden' name='send' value='1' />"; // bug IE ! La validation par enter ne fonctionne pas sans cette ligne  incroyable mais vrai !
-	echo "<input type='submit' name='send' value=\"". $LANG["buttons"][0]."\">";
+	echo "<input type='submit' name='send' value=\"". $LANG['buttons'][0]."\">";
 	echo "</td>  </tr> </table> </form></div>";
 
 
@@ -93,11 +93,11 @@ function fillidfield(Type,Id){
 {
 	echo "<table width='100%' class='tab_cadre'>";
 	echo " <tr class='tab_bg3'>";
-	echo " <td align='center' width='30%'><b>".$LANG["reports"][19]."</b></td>";
-	echo " <td align='center' width='20%'><b>".$LANG["help"][24]."</b></td>";
-	echo " <td align='center' width='30%'><b>".$LANG["common"][1]."</b></td>";
-	echo " <td align='center' width='5%'><b>".$LANG["common"][2]."</b></td>";
-	echo " <td align='center' width='20%'><b>".$LANG["common"][19]."&nbsp;/&nbsp;".$LANG["common"][20]."</b></td>";
+	echo " <td align='center' width='30%'><b>".$LANG['reports'][19]."</b></td>";
+	echo " <td align='center' width='20%'><b>".$LANG['help'][24]."</b></td>";
+	echo " <td align='center' width='30%'><b>".$LANG['common'][1]."</b></td>";
+	echo " <td align='center' width='5%'><b>".$LANG['common'][2]."</b></td>";
+	echo " <td align='center' width='20%'><b>".$LANG['common'][19]."&nbsp;/&nbsp;".$LANG['common'][20]."</b></td>";
 	echo " </tr>";
 
 
@@ -116,7 +116,7 @@ function fillidfield(Type,Id){
 		$s2 = $ligne['otherserial'];
 		echo " <tr class='tab_find' onClick=\"fillidfield(".COMPUTER_TYPE.",".$Comp_num.")\">";
 		echo "<td width='25%' align='center'><b>&nbsp;$Contact</b></td>";
-		echo "<td width='25%' align='center'><b>&nbsp;".$LANG["help"][25]."</b></td>";
+		echo "<td width='25%' align='center'><b>&nbsp;".$LANG['help'][25]."</b></td>";
 		echo "<td width='25%' align='center'><b>&nbsp;$Computer&nbsp;</b></td>";
 		echo "<td  width='25%' align='center'>";
 		echo "<b>&nbsp;$Comp_num </b></td>";
@@ -143,7 +143,7 @@ function fillidfield(Type,Id){
 		$s2 = $ligne['otherserial'];
 		echo " <tr class='tab_find' onClick=\"fillidfield(".NETWORKING_TYPE.",".$Comp_num.")\">";
 		echo "<td width='25%' align='center'><b>&nbsp;$Contact </b></td>";
-		echo "<td width='25%' align='center'><b>&nbsp;".$LANG["help"][26]."</b></td>";
+		echo "<td width='25%' align='center'><b>&nbsp;".$LANG['help'][26]."</b></td>";
 		echo "<td width='25%' align='center'><b>&nbsp;$Computer </b></td>";
 		echo "<td  width='25%' align='center'>";
 		echo "<b>&nbsp;$Comp_num </b></td>";
@@ -170,7 +170,7 @@ function fillidfield(Type,Id){
 		$s2 = $ligne['otherserial'];
 		echo " <tr class='tab_find' onClick=\"fillidfield(".PRINTER_TYPE.",".$Comp_num.")\">";
 		echo "<td width='25%' align='center'><b>&nbsp;$Contact </b></td>";
-		echo "<td width='25%' align='center'><b>&nbsp;".$LANG["help"][27]."</b></td>";
+		echo "<td width='25%' align='center'><b>&nbsp;".$LANG['help'][27]."</b></td>";
 		echo "<td width='25%' align='center'><b>&nbsp;$Computer </b></td>";
 		echo "<td  width='25%' align='center'>";
 		echo "<b>&nbsp;$Comp_num </b></td>";
@@ -197,7 +197,7 @@ function fillidfield(Type,Id){
 		$s2 = $ligne['otherserial'];
 		echo " <tr class='tab_find' onClick=\"fillidfield(".MONITOR_TYPE.",".$Comp_num.")\">";
 		echo "<td width='25%' align='center'><b>&nbsp;$Contact </b></td>";
-		echo "<td width='25%' align='center'><b>&nbsp;".$LANG["help"][28]."</b></td>";
+		echo "<td width='25%' align='center'><b>&nbsp;".$LANG['help'][28]."</b></td>";
 		echo "<td width='25%' align='center'><b>&nbsp;$Computer </b></td>";
 		echo "<td  width='25%' align='center'>";
 		echo "<b>&nbsp;$Comp_num </b></td>";
@@ -224,7 +224,7 @@ function fillidfield(Type,Id){
 		$s2 = $ligne['otherserial'];
 		echo " <tr class='tab_find' onClick=\"fillidfield(".PERIPHERAL_TYPE.",".$Comp_num.")\">";
 		echo "<td width='25%' align='center'><b>&nbsp;$Contact </b></td>";
-		echo "<td width='25%' align='center'><b>&nbsp;".$LANG["help"][29]."</b></td>";
+		echo "<td width='25%' align='center'><b>&nbsp;".$LANG['help'][29]."</b></td>";
 		echo "<td width='25%' align='center'><b>&nbsp;$Computer </b></td>";
 		echo "<td  width='25%' align='center'>";
 		echo "<b>&nbsp;$Comp_num </b></td>";
@@ -247,7 +247,7 @@ function fillidfield(Type,Id){
 		$Computer = $ligne['name'];
 		echo " <tr class='tab_find' onClick=\"fillidfield(".SOFTWARE_TYPE.",".$Comp_num.")\">";
 		echo "<td width='25%' align='center'>&nbsp;</td>";
-		echo "<td width='25%' align='center'><b>&nbsp;".$LANG["help"][31]."</b></td>";
+		echo "<td width='25%' align='center'><b>&nbsp;".$LANG['help'][31]."</b></td>";
 		echo "<td width='25%' align='center'><b>&nbsp;$Computer </b></td>";
 		echo "<td  width='25%' align='center'>";
 		echo "<b>&nbsp;$Comp_num </b></td>";

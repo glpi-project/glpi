@@ -128,7 +128,7 @@ elseif (isset($_POST["update_rule"]))
 	}
 
 	$rule->update($_POST);
-	logEvent($_POST['ID'], "rules", 4, "setup", $_SESSION["glpiname"]." ".$LANG["log"][21]);
+	logEvent($_POST['ID'], "rules", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][21]);
 
 	glpi_header($_SERVER['HTTP_REFERER']);
 } elseif (isset($_POST["add_rule"]))
@@ -136,7 +136,7 @@ elseif (isset($_POST["update_rule"]))
 	checkRight($rule->right,"w");
 
 	$newID=$rule->add($_POST);
-	logEvent($newID, "rules", 4, "setup", $_SESSION["glpiname"]." ".$LANG["log"][20]);
+	logEvent($newID, "rules", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][20]);
 
 	glpi_header($_SERVER['HTTP_REFERER']."?ID=$newID");
 } elseif (isset($_POST["delete_rule"]))
@@ -144,7 +144,7 @@ elseif (isset($_POST["update_rule"]))
 	checkRight($rule->right,"w");
 	$rulecollection->deleteRuleOrder($_POST["ranking"]);
 	$rule->delete($_POST);
-	logEvent($_POST["ID"], "rules", 4, "setup", $_SESSION["glpiname"]." ".$LANG["log"][22]);
+	logEvent($_POST["ID"], "rules", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][22]);
 
 	// Is a cached Rule ?
 	if(method_exists($rule,'deleteCacheByRuleId')){
@@ -154,7 +154,7 @@ elseif (isset($_POST["update_rule"]))
 	glpi_header(str_replace('.form','',$_SERVER['PHP_SELF']));
 }
 
-commonHeader($LANG["common"][12],$_SERVER['PHP_SELF'],"admin",getCategoryNameToDisplay($rulecollection->sub_type),$rulecollection->sub_type);
+commonHeader($LANG['common'][12],$_SERVER['PHP_SELF'],"admin",getCategoryNameToDisplay($rulecollection->sub_type),$rulecollection->sub_type);
 
 $rule->showForm($_SERVER['PHP_SELF'],$_GET["ID"]);
 if (!empty($_GET["ID"])&&$_GET["ID"] >0) {

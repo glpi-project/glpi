@@ -60,10 +60,10 @@ if (!empty($_POST["date1"])&&!empty($_POST["date2"])&&strcmp($_POST["date2"],$_P
 
 echo "<div align='center'><form method=\"post\" name=\"form\" action=\"".$_SERVER['PHP_SELF']."\">";
 echo "<table class='tab_cadre'><tr class='tab_bg_2'><td align='right'>";
-echo $LANG["search"][8]." :</td><td>";
+echo $LANG['search'][8]." :</td><td>";
 showDateFormItem("date1",$_POST["date1"]);
-echo "</td><td rowspan='2' class='center'><input type=\"submit\" class='button' name=\"submit\" Value=\"". $LANG["buttons"][7] ."\" /></td></tr>";
-echo "<tr class='tab_bg_2'><td align='right'>".$LANG["search"][9]." :</td><td>";
+echo "</td><td rowspan='2' class='center'><input type=\"submit\" class='button' name=\"submit\" Value=\"". $LANG['buttons'][7] ."\" /></td></tr>";
+echo "<tr class='tab_bg_2'><td align='right'>".$LANG['search'][9]." :</td><td>";
 showDateFormItem("date2",$_POST["date2"]);
 echo "</td></tr>";
 echo "</table></form></div>";
@@ -104,12 +104,12 @@ function display_infocoms_report($device_type,$begin,$end){
 
 		echo "<h2>".$comp->getType()."</h2>";
 
-		echo "<table class='tab_cadre'><tr><th>".$LANG["common"][16]."</th>";
+		echo "<table class='tab_cadre'><tr><th>".$LANG['common'][16]."</th>";
 		if ($display_entity){
-			echo "<th>".$LANG["entity"][0]."</th>";
+			echo "<th>".$LANG['entity'][0]."</th>";
 		}
 
-		echo "<th>".$LANG["financial"][21]."</th><th>".$LANG["financial"][92]."</th><th>".$LANG["financial"][91]."</th><th>".$LANG["financial"][14]."</th><th>".$LANG["financial"][76]."</th><th>".$LANG["financial"][80]."</th></tr>";
+		echo "<th>".$LANG['financial'][21]."</th><th>".$LANG['financial'][92]."</th><th>".$LANG['financial'][91]."</th><th>".$LANG['financial'][14]."</th><th>".$LANG['financial'][76]."</th><th>".$LANG['financial'][80]."</th></tr>";
 
 
 		$valeursoustot=0;
@@ -149,7 +149,7 @@ function display_infocoms_report($device_type,$begin,$end){
 			echo "<tr class='tab_bg_1'><td>".$line["name"]."</td>";
 			if ($display_entity){
 				if ($line['entID']==0){
-					echo "<td>".$LANG["entity"][2]."</td>";
+					echo "<td>".$LANG['entity'][2]."</td>";
 				} else {
 					echo "<td>".$line['entname']."</td>";
 				}
@@ -163,7 +163,7 @@ function display_infocoms_report($device_type,$begin,$end){
 		$valeurtot+=$valeursoustot;
 		$valeurnettetot+=$valeurnettesoustot;
 
-		echo "<tr><td colspan='6' class='center'><h3>".$LANG["common"][33].": ".$LANG["financial"][21]."=".formatNumber($valeursoustot)." - ".$LANG["financial"][81]."=".formatNumber($valeurnettesoustot)."</h3></td></tr>";
+		echo "<tr><td colspan='6' class='center'><h3>".$LANG['common'][33].": ".$LANG['financial'][21]."=".formatNumber($valeursoustot)." - ".$LANG['financial'][81]."=".formatNumber($valeurnettesoustot)."</h3></td></tr>";
 
 
 		if (count($valeurnettegraph)>0){
@@ -178,7 +178,7 @@ function display_infocoms_report($device_type,$begin,$end){
 				$valeurnettegraphtot[$key]+=$valeurnettegraph[$key];
 			}
 
-			graphBy($valeurnettegraphdisplay,$LANG["financial"][81],"",0,"year");
+			graphBy($valeurnettegraphdisplay,$LANG['financial'][81],"",0,"year");
 
 			echo "</td></tr>";
 		}
@@ -195,7 +195,7 @@ function display_infocoms_report($device_type,$begin,$end){
 				$valeurgraphtot[$key]+=$valeurgraph[$key];
 			}
 
-			graphBy($valeurgraphdisplay,$LANG["financial"][21],"",0,"year");
+			graphBy($valeurgraphdisplay,$LANG['financial'][21],"",0,"year");
 
 			echo "</td></tr>";
 		}
@@ -224,15 +224,15 @@ echo "</table>";
 
 
 
-echo "<div align='center'><h3>".$LANG["common"][33].": ".$LANG["financial"][21]."=".formatNumber($valeurtot)." - ".$LANG["financial"][81]."=".formatNumber($valeurnettetot)."</h3></div>";
+echo "<div align='center'><h3>".$LANG['common'][33].": ".$LANG['financial'][21]."=".formatNumber($valeurtot)." - ".$LANG['financial'][81]."=".formatNumber($valeurnettetot)."</h3></div>";
 
 if (count($valeurnettegraphtot)>0){
 	$valeurnettegraphtotdisplay=array_map('round',$valeurnettegraphtot);
-	graphBy($valeurnettegraphtotdisplay,$LANG["financial"][81],"",0,"year");
+	graphBy($valeurnettegraphtotdisplay,$LANG['financial'][81],"",0,"year");
 }
 if (count($valeurgraphtot)>0){	
 	$valeurgraphtotdisplay=array_map('round',$valeurgraphtot);
-	graphBy($valeurgraphtotdisplay,$LANG["financial"][21],"",0,"year");
+	graphBy($valeurgraphtotdisplay,$LANG['financial'][21],"",0,"year");
 }
 commonFooter();
 ?>

@@ -56,29 +56,29 @@ if (!empty ($_POST["update"])) {
 		glpi_header($CFG_GLPI["root_doc"] ."/front/setup.config.php");
 }
 
-commonHeader($LANG["common"][12], $_SERVER['PHP_SELF'],"config","config");
+commonHeader($LANG['common'][12], $_SERVER['PHP_SELF'],"config","config");
 
-$tabs[1]=array('title'=>$LANG["setup"][70],
+$tabs[1]=array('title'=>$LANG['setup'][70],
 'url'=>$CFG_GLPI['root_doc']."/ajax/config.tabs.php",
 'params'=>"target=".$_SERVER['PHP_SELF']."&ID=-1&glpi_tab=1");
 	
-$tabs[2]=array('title'=>$LANG["setup"][119],
+$tabs[2]=array('title'=>$LANG['setup'][119],
 'url'=>$CFG_GLPI['root_doc']."/ajax/config.tabs.php",
 'params'=>"target=".$_SERVER['PHP_SELF']."&ID=-1&glpi_tab=2");
 
-$tabs[6]=array('title'=>$LANG["setup"][6],
+$tabs[6]=array('title'=>$LANG['setup'][6],
 'url'=>$CFG_GLPI['root_doc']."/ajax/config.tabs.php",
 'params'=>"target=".$_SERVER['PHP_SELF']."&ID=-1&glpi_tab=6");
 
-$tabs[3]=array('title'=>$LANG["setup"][184],
+$tabs[3]=array('title'=>$LANG['setup'][184],
 'url'=>$CFG_GLPI['root_doc']."/ajax/config.tabs.php",
 'params'=>"target=".$_SERVER['PHP_SELF']."&ID=-1&glpi_tab=3");
 
-$tabs[4]=array('title'=>$LANG["connect"][0],
+$tabs[4]=array('title'=>$LANG['connect'][0],
 'url'=>$CFG_GLPI['root_doc']."/ajax/config.tabs.php",
 'params'=>"target=".$_SERVER['PHP_SELF']."&ID=-1&glpi_tab=4");
 
-$tabs[5]=array('title'=>$LANG["setup"][800],
+$tabs[5]=array('title'=>$LANG['setup'][800],
 'url'=>$CFG_GLPI['root_doc']."/ajax/config.tabs.php",
 'params'=>"target=".$_SERVER['PHP_SELF']."&ID=-1&glpi_tab=5");
 				

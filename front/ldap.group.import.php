@@ -41,7 +41,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 checkSeveralRightsAnd(array("group"=>"w", "user_auth_method"=>"w"));
 
-commonHeader($LANG["setup"][3],$_SERVER['PHP_SELF'],"admin","group","ldap");
+commonHeader($LANG['setup'][3],$_SERVER['PHP_SELF'],"admin","group","ldap");
 
 if (isset($_GET['next']))
 {
@@ -70,8 +70,8 @@ if (isset($_SESSION["ldap_import"])){
 	   
 		displayProgressBar(400,100);
 
-		echo "<div align='center'><strong>".$LANG["ocsng"][8]."<br>";
-		echo "<a href='".$_SERVER['PHP_SELF']."'>".$LANG["buttons"][13]."</a>";
+		echo "<div align='center'><strong>".$LANG['ocsng'][8]."<br>";
+		echo "<a href='".$_SERVER['PHP_SELF']."'>".$LANG['buttons'][13]."</a>";
 		echo "</strong></div>";
 	}
 }
@@ -100,8 +100,8 @@ elseif (!isset($_POST["import_ok"])){
 	if (!testLDAPConnection($_SESSION["ldap_server"]))
 	{
 		unset($_SESSION["ldap_server"]);
-		echo "<div align='center'><strong>".$LANG["ldap"][6]."<br>";
-		echo "<a href='".$_SERVER['PHP_SELF']."?next=listservers'>".$LANG["buttons"][13]."</a>";
+		echo "<div align='center'><strong>".$LANG['ldap'][6]."<br>";
+		echo "<a href='".$_SERVER['PHP_SELF']."?next=listservers'>".$LANG['buttons'][13]."</a>";
 		echo "</strong></div>";
 	}
 	else

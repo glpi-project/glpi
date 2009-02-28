@@ -43,7 +43,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 checkRight("config", "w");
 
-commonHeader($LANG["ocsng"][0], $_SERVER['PHP_SELF'], "config","ocsng");
+commonHeader($LANG['ocsng'][0], $_SERVER['PHP_SELF'], "config","ocsng");
 	
 manageGetValuesInSearch(OCSNG_TYPE);
 searchForm(OCSNG_TYPE,$_GET);

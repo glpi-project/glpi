@@ -50,7 +50,7 @@ if (isset($_POST["add"]))
 	checkRight("software","w");
 
 	$newID=$license->add($_POST);
-	logEvent($_POST['sID'], "software", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][85]." $newID.");
+	logEvent($_POST['sID'], "software", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][85]." $newID.");
 	glpi_header($CFG_GLPI["root_doc"]."/front/software.form.php?ID=".$license->fields['sID']);
 }
 else if (isset($_POST["delete"]))
@@ -59,7 +59,7 @@ else if (isset($_POST["delete"]))
 
 	$license->delete($_POST);
 
-	logEvent($license->fields['sID'], "software", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][87]." ".$_POST["ID"]);
+	logEvent($license->fields['sID'], "software", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][87]." ".$_POST["ID"]);
 	glpi_header($CFG_GLPI["root_doc"]."/front/software.form.php?ID=".$license->fields['sID']);
 }
 else if (isset($_POST["update"]))
@@ -67,7 +67,7 @@ else if (isset($_POST["update"]))
 	checkRight("software","w");
 
 	$license->update($_POST);
-	logEvent($license->fields['sID'], "software", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][86]." ".$_POST["ID"]);
+	logEvent($license->fields['sID'], "software", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][86]." ".$_POST["ID"]);
 	//glpi_header($CFG_GLPI["root_doc"]."/front/software.form.php?ID=".$license->fields['sID']);
 	glpi_header($_SERVER['HTTP_REFERER']);
 } 

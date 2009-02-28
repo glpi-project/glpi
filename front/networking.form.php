@@ -50,7 +50,7 @@ if (isset($_POST["add"]))
 	$netdevice->check(-1,'w',$_POST['FK_entities']);
 
 	$newID=$netdevice->add($_POST);
-	logEvent($newID, "networking", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][20]." :  ".$_POST["name"].".");
+	logEvent($newID, "networking", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][20]." :  ".$_POST["name"].".");
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($_POST["delete"]))
@@ -61,7 +61,7 @@ else if (isset($_POST["delete"]))
 		$netdevice->delete($_POST,1);
 	else $netdevice->delete($_POST);
 
-	logEvent($_POST["ID"], "networking", 4, "inventory", $_SESSION["glpiname"] ." ".$LANG["log"][22]);
+	logEvent($_POST["ID"], "networking", 4, "inventory", $_SESSION["glpiname"] ." ".$LANG['log'][22]);
 	if(!empty($_POST["withtemplate"])) 
 		glpi_header($CFG_GLPI["root_doc"]."/front/setup.templates.php");
 	else 
@@ -72,7 +72,7 @@ else if (isset($_POST["restore"]))
 	$netdevice->check($_POST["ID"],'w');
 
 	$netdevice->restore($_POST);
-	logEvent($_POST["ID"], "networking", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][23]);
+	logEvent($_POST["ID"], "networking", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][23]);
 	glpi_header($CFG_GLPI["root_doc"]."/front/networking.php");
 }
 else if (isset($_POST["purge"]) || isset($_GET["purge"]))
@@ -86,7 +86,7 @@ else if (isset($_POST["purge"]) || isset($_GET["purge"]))
 	$netdevice->check($input["ID"],'w');
 	
 	$netdevice->delete($input,1);
-	logEvent($input["ID"], "networking", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][24]);
+	logEvent($input["ID"], "networking", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][24]);
 	glpi_header($CFG_GLPI["root_doc"]."/front/networking.php");
 }
 else if (isset($_POST["update"]))
@@ -94,12 +94,12 @@ else if (isset($_POST["update"]))
 	$netdevice->check($_POST["ID"],'w');
 
 	$netdevice->update($_POST);
-	logEvent($_POST["ID"], "networking", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][21]);
+	logEvent($_POST["ID"], "networking", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][21]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else
 {
-	commonHeader($LANG["title"][6],$_SERVER['PHP_SELF'],"inventory","networking");
+	commonHeader($LANG['title'][6],$_SERVER['PHP_SELF'],"inventory","networking");
 
 	$netdevice->showForm($_SERVER['PHP_SELF'],$_GET["ID"], $_GET["withtemplate"]);
 

@@ -49,7 +49,7 @@ if (!isset($_SESSION['glpi_searchconfig'])) $_SESSION['glpi_searchconfig']=1;
 if (isset($_GET['onglet'])) $_SESSION['glpi_searchconfig']=$_GET['onglet'];
 
 if (!strpos($_SERVER['PHP_SELF'],"popup")){
-	commonHeader($LANG["common"][12],$_SERVER['PHP_SELF'],"config","display");
+	commonHeader($LANG['common'][12],$_SERVER['PHP_SELF'],"config","display");
 }
 
 checkSeveralRightsOr(array("search_config_global"=>"w","search_config"=>"w"));
@@ -69,11 +69,11 @@ if (isset($_POST["activate"])) {
 }
 if ((strpos($_SERVER['PHP_SELF'],"popup")&&$type>0)/*||$type=$setupdisplay->title($_SERVER['PHP_SELF'],$type)*/){
 	
-	$tabs[1]=array('title'=>$LANG["central"][13],
+	$tabs[1]=array('title'=>$LANG['central'][13],
 	'url'=>$CFG_GLPI['root_doc']."/ajax/display.tabs.php",
 	'params'=>"target=".$_SERVER['PHP_SELF']."&ID=-1&glpi_tab=1&type=$type");
 		
-	$tabs[2]=array('title'=>$LANG["central"][12],
+	$tabs[2]=array('title'=>$LANG['central'][12],
 	'url'=>$CFG_GLPI['root_doc']."/ajax/display.tabs.php",
 	'params'=>"target=".$_SERVER['PHP_SELF']."&ID=-1&glpi_tab=2&type=$type");
 						

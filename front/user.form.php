@@ -66,20 +66,20 @@ if (isset($_POST["add"])) {
 	// Pas de nom pas d'ajout	
 	if (!empty($_POST["name"])){
 		$newID=$user->add($_POST);
-		logEvent($newID, "users", 4, "setup", $_SESSION["glpiname"]." ".$LANG["log"][20]." ".$_POST["name"].".");
+		logEvent($newID, "users", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][20]." ".$_POST["name"].".");
 	}
 	glpi_header($_SERVER['HTTP_REFERER']);
 } else if (isset($_POST["delete"])) {
 	checkRight("user","w");
 
 	$user->delete($_POST);
-	logEvent(0,"users", 4, "setup", $_SESSION["glpiname"]."  ".$LANG["log"][22]." ".$_POST["ID"].".");
+	logEvent(0,"users", 4, "setup", $_SESSION["glpiname"]."  ".$LANG['log'][22]." ".$_POST["ID"].".");
 	glpi_header($CFG_GLPI["root_doc"]."/front/user.php");
 } else if (isset($_POST["restore"]))
 {
 	checkRight("user","w");
 	$user->restore($_POST);
-	logEvent($_POST["ID"],"users", 4, "setup", $_SESSION["glpiname"]." ".$LANG["log"][23]);
+	logEvent($_POST["ID"],"users", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][23]);
 	glpi_header($CFG_GLPI["root_doc"]."/front/user.php");
 }
 else if (isset($_POST["purge"]))
@@ -87,7 +87,7 @@ else if (isset($_POST["purge"]))
 	checkRight("user","w");
 	$user->delete($_POST,1);
 	
-	logEvent($_POST["ID"], "users", 4, "setup", $_SESSION["glpiname"]." ".$LANG["log"][24]);
+	logEvent($_POST["ID"], "users", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][24]);
 	glpi_header($CFG_GLPI["root_doc"]."/front/user.php");
 
 } else if (isset ($_POST["force_ldap_resynch"]))
@@ -101,7 +101,7 @@ else if (isset($_POST["purge"]))
 	checkRight("user","w");
 
 	$user->update($_POST);
-	logEvent(0,"users", 5, "setup", $_SESSION["glpiname"]."  ".$LANG["log"][21]."  ".$_POST["name"].".");
+	logEvent(0,"users", 5, "setup", $_SESSION["glpiname"]."  ".$LANG['log'][21]."  ".$_POST["name"].".");
 	glpi_header($_SERVER['HTTP_REFERER']);
 } else if (isset($_POST["addgroup"]))
 {
@@ -109,7 +109,7 @@ else if (isset($_POST["purge"]))
 
 	addUserGroup($_POST["FK_users"],$_POST["FK_groups"]);
 
-	logEvent($_POST["FK_users"], "users", 4, "setup", $_SESSION["glpiname"]." ".$LANG["log"][48]);
+	logEvent($_POST["FK_users"], "users", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][48]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($_POST["deletegroup"]))
@@ -119,7 +119,7 @@ else if (isset($_POST["deletegroup"]))
 		foreach ($_POST["item"] as $key => $val)
 			deleteUserGroup($key);
 
-	logEvent($_POST["FK_users"], "users", 4, "setup", $_SESSION["glpiname"]." ".$LANG["log"][49]);
+	logEvent($_POST["FK_users"], "users", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][49]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 } else if (isset($_POST["addright"]))
 {
@@ -127,7 +127,7 @@ else if (isset($_POST["deletegroup"]))
 
 	addUserProfileEntity($_POST);
 
-	logEvent($_POST["FK_users"], "users", 4, "setup", $_SESSION["glpiname"]." ".$LANG["log"][61]);
+	logEvent($_POST["FK_users"], "users", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][61]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 } else if (isset($_POST["deleteright"]))
 {
@@ -137,7 +137,7 @@ else if (isset($_POST["deletegroup"]))
 		foreach ($_POST["item"] as $key => $val){
 			deleteUserProfileEntity($key);
 		}
-		logEvent($_POST["FK_users"], "users", 4, "setup", $_SESSION["glpiname"]." ".$LANG["log"][62]);
+		logEvent($_POST["FK_users"], "users", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][62]);
 	}
 
 	glpi_header($_SERVER['HTTP_REFERER']);
@@ -183,7 +183,7 @@ else if (isset($_POST["deletegroup"]))
 	if (!isset($_GET["ext_auth"])){
 		checkRight("user","r");
 
-		commonHeader($LANG["title"][13],$_SERVER['PHP_SELF'],"admin","user");
+		commonHeader($LANG['title'][13],$_SERVER['PHP_SELF'],"admin","user");
 
 		$user->showForm($_SERVER['PHP_SELF'],$_GET["ID"]);
 
@@ -204,7 +204,7 @@ else if (isset($_POST["deletegroup"]))
 			glpi_header($_SERVER['HTTP_REFERER']);
 		}
 
-		commonHeader($LANG["title"][13],$_SERVER['PHP_SELF'],"admin","user");
+		commonHeader($LANG['title'][13],$_SERVER['PHP_SELF'],"admin","user");
 		showAddExtAuthUserForm($_SERVER['PHP_SELF']);
 		commonFooter();
 	}

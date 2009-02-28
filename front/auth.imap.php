@@ -71,9 +71,9 @@ elseif (isset ($_POST["delete_mail"])) {
 }elseif (isset ($_POST["test_mail"])) {
 	
 	if (test_auth_mail($_POST["imap_string"],$_POST["imap_login"],$_POST["imap_password"])){
-		addMessageAfterRedirect($LANG["login"][22]);
+		addMessageAfterRedirect($LANG['login'][22]);
 	} else {
-		addMessageAfterRedirect($LANG["login"][23]);	
+		addMessageAfterRedirect($LANG['login'][23]);	
 	}
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
@@ -86,7 +86,7 @@ if (!isset($_GET["next"])){
 	$_GET["next"]="";	
 }
 
-commonHeader($LANG["title"][14], $_SERVER['PHP_SELF'],"config","extauth","imap");
+commonHeader($LANG['title'][14], $_SERVER['PHP_SELF'],"config","extauth","imap");
 	
 switch($_GET['next']){
 	case "extauth_mail" :

@@ -47,7 +47,7 @@ if (isset($_POST["add"]))
 	$contract->check(-1,'w',$_POST['FK_entities']);
 	
 	$newID=$contract->add($_POST);
-	logEvent($newID, "contracts", 4, "financial", $_SESSION["glpiname"]." ".$LANG["log"][20]." ".$_POST["num"].".");
+	logEvent($newID, "contracts", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][20]." ".$_POST["num"].".");
 	glpi_header($_SERVER['HTTP_REFERER']);
 } 
 else if (isset($_POST["delete"]))
@@ -55,7 +55,7 @@ else if (isset($_POST["delete"]))
 	$contract->check($_POST['ID'],'w');
 
 	$contract->delete($_POST);
-	logEvent($_POST["ID"], "contracts", 4, "financial", $_SESSION["glpiname"]." ".$LANG["log"][22]);
+	logEvent($_POST["ID"], "contracts", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][22]);
 	glpi_header($CFG_GLPI["root_doc"]."/front/contract.php");
 }
 else if (isset($_POST["restore"]))
@@ -63,7 +63,7 @@ else if (isset($_POST["restore"]))
 	$contract->check($_POST['ID'],'w');
 
 	$contract->restore($_POST);
-	logEvent($_POST["ID"], "contracts", 4, "financial", $_SESSION["glpiname"]." ".$LANG["log"][23]);
+	logEvent($_POST["ID"], "contracts", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][23]);
 	glpi_header($CFG_GLPI["root_doc"]."/front/contract.php");
 }
 else if (isset($_POST["purge"]))
@@ -71,7 +71,7 @@ else if (isset($_POST["purge"]))
 	$contract->check($_POST['ID'],'w');
 
 	$contract->delete($_POST,1);
-	logEvent($_POST["ID"], "contracts", 4, "financial", $_SESSION["glpiname"]." ".$LANG["log"][24]);
+	logEvent($_POST["ID"], "contracts", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][24]);
 	glpi_header($CFG_GLPI["root_doc"]."/front/contract.php");
 }
 else if (isset($_POST["update"]))
@@ -79,7 +79,7 @@ else if (isset($_POST["update"]))
 	$contract->check($_POST['ID'],'w');
 
 	$contract->update($_POST);
-	logEvent($_POST["ID"], "contracts", 4, "financial", $_SESSION["glpiname"]." ".$LANG["log"][21]);
+	logEvent($_POST["ID"], "contracts", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][21]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 } 
 else if (isset($_POST["additem"]))
@@ -88,7 +88,7 @@ else if (isset($_POST["additem"]))
 
 	if ($_POST['type']>0&&$_POST['item']>0){
 		addDeviceContract($_POST["conID"],$_POST['type'],$_POST['item']);
-		logEvent($_POST["conID"], "contracts", 4, "financial", $_SESSION["glpiname"]." ".$LANG["log"][32]);
+		logEvent($_POST["conID"], "contracts", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][32]);
 	}
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
@@ -101,7 +101,7 @@ else if (isset($_POST["deleteitem"]))
 		foreach ($_POST["item"] as $key => $val)
 			deleteDeviceContract($key);
 
-	logEvent($_POST["conID"], "contracts", 4, "financial", $_SESSION["glpiname"]." ".$LANG["log"][33]);
+	logEvent($_POST["conID"], "contracts", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][33]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($_GET["deleteitem"]))
@@ -112,7 +112,7 @@ else if (isset($_GET["deleteitem"]))
 
 	deleteDeviceContract($_GET["ID"]);
 
-	logEvent($_GET["conID"], "contracts", 4, "financial", $_SESSION["glpiname"]." ".$LANG["log"][33]);
+	logEvent($_GET["conID"], "contracts", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][33]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($_POST["addenterprise"]))
@@ -120,7 +120,7 @@ else if (isset($_POST["addenterprise"]))
 	$contract->check($_POST['conID'],'w');
 
 	addEnterpriseContract($_POST["conID"],$_POST["entID"]);
-	logEvent($_POST["conID"], "contracts", 4, "financial", $_SESSION["glpiname"]." ".$LANG["log"][34]);
+	logEvent($_POST["conID"], "contracts", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][34]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($_GET["deleteenterprise"]))
@@ -128,7 +128,7 @@ else if (isset($_GET["deleteenterprise"]))
 	$contract->check($_GET['conID'],'w');
 
 	deleteEnterpriseContract($_GET["ID"]);
-	logEvent($_GET["ID"], "contracts", 4, "financial", $_SESSION["glpiname"]." ".$LANG["log"][35]);
+	logEvent($_GET["ID"], "contracts", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][35]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else

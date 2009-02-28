@@ -36,7 +36,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 checkLoginUser();
 
-popHeader($LANG["common"][12],$_SERVER['PHP_SELF']);
+popHeader($LANG['common'][12],$_SERVER['PHP_SELF']);
 
 manageGetValuesInSearch(TYPEDOC_TYPE);
 showList(TYPEDOC_TYPE,$_GET);

@@ -48,7 +48,7 @@ if (isset($_POST["add"]))
 	$constype->check(-1,'w',$_POST['FK_entities']);
 
 	$newID=$constype->add($_POST);
-	logEvent($newID, "consumables", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][20]." ".$_POST["name"].".");
+	logEvent($newID, "consumables", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][20]." ".$_POST["name"].".");
 	glpi_header($_SERVER['HTTP_REFERER']);
 } 
 else if (isset($_POST["delete"]))
@@ -56,7 +56,7 @@ else if (isset($_POST["delete"]))
 	$constype->check($_POST["ID"],'w');
 
 	$constype->delete($_POST);
-	logEvent($_POST["ID"], "consumables", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][22]);
+	logEvent($_POST["ID"], "consumables", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][22]);
 	glpi_header($CFG_GLPI["root_doc"]."/front/consumable.php");
 }
 else if (isset($_POST["restore"]))
@@ -64,7 +64,7 @@ else if (isset($_POST["restore"]))
 	$constype->check($_POST["ID"],'w');
 
 	$constype->restore($_POST);
-	logEvent($_POST["ID"], "consumables", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][23]);
+	logEvent($_POST["ID"], "consumables", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][23]);
 	glpi_header($CFG_GLPI["root_doc"]."/front/consumable.php");
 }
 else if (isset($_POST["purge"]))
@@ -72,7 +72,7 @@ else if (isset($_POST["purge"]))
 	$constype->check($_POST["ID"],'w');
 
 	$constype->delete($_POST,1);
-	logEvent($_POST["ID"], "consumables", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][24]);
+	logEvent($_POST["ID"], "consumables", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][24]);
 	glpi_header($CFG_GLPI["root_doc"]."/front/consumable.php");
 }
 else if (isset($_POST["update"]))
@@ -80,7 +80,7 @@ else if (isset($_POST["update"]))
 	$constype->check($_POST["ID"],'w');
 
 	$constype->update($_POST);
-	logEvent($_POST["ID"], "consumables", 4, "inventory", $_SESSION["glpiname"]." ".$LANG["log"][21]);
+	logEvent($_POST["ID"], "consumables", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][21]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 } 
 else

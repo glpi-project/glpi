@@ -56,14 +56,14 @@ else if (isset($_POST["delete"]))
 {
 	$mailgate->check($_POST['ID'],'w');
 	$mailgate->delete($_POST);
-	logEvent($_POST["ID"], "mailgate", 4, "setup", $_SESSION["glpiname"]." ".$LANG["log"][22]);
+	logEvent($_POST["ID"], "mailgate", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][22]);
 	glpi_header($CFG_GLPI["root_doc"]."/front/mailgate.php");
 }
 else if (isset($_POST["update"]))
 {
 	$mailgate->check($_POST['ID'],'w');
 	$mailgate->update($_POST);
-	logEvent($_POST["ID"], "mailgate", 4, "setup", $_SESSION["glpiname"]." ".$LANG["log"][21]);
+	logEvent($_POST["ID"], "mailgate", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][21]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($_POST["get_mails"]))

@@ -60,10 +60,10 @@ if (!empty($_POST["date1"])&&!empty($_POST["date2"])&&strcmp($_POST["date2"],$_P
 
 echo "<div align='center'><form method=\"post\" name=\"form\" action=\"".$_SERVER['PHP_SELF']."\">";
 echo "<table class='tab_cadre'><tr class='tab_bg_2'><td align='right'>";
-echo $LANG["search"][8]." :</td><td>";
+echo $LANG['search'][8]." :</td><td>";
 showDateFormItem("date1",$_POST["date1"]);
-echo "</td><td rowspan='2' align='center'><input type=\"submit\" class='button' name=\"submit\" Value=\"". $LANG["buttons"][7] ."\" /></td></tr>";
-echo "<tr class='tab_bg_2'><td align='right'>".$LANG["search"][9]." :</td><td>";
+echo "</td><td rowspan='2' align='center'><input type=\"submit\" class='button' name=\"submit\" Value=\"". $LANG['buttons'][7] ."\" /></td></tr>";
+echo "<tr class='tab_bg_2'><td align='right'>".$LANG['search'][9]." :</td><td>";
 showDateFormItem("date2",$_POST["date2"]);
 echo "</td></tr>";
 echo "</table></form></div>";
@@ -168,7 +168,7 @@ function display_infocoms_report($device_type,$begin,$end){
 					$valeurnettegraphtot[$key]+=$valeurnettegraph[$key];
 				}
 	
-				graphBy($valeurnettegraphdisplay,$LANG["financial"][81],"",0,"year");
+				graphBy($valeurnettegraphdisplay,$LANG['financial'][81],"",0,"year");
 	
 				echo "</td></tr>";
 			}
@@ -185,7 +185,7 @@ function display_infocoms_report($device_type,$begin,$end){
 					$valeurgraphtot[$key]+=$valeurgraph[$key];
 				}
 	
-				graphBy($valeurgraphdisplay,$LANG["financial"][21],"",0,"year");
+				graphBy($valeurgraphdisplay,$LANG['financial'][21],"",0,"year");
 	
 				echo "</td></tr>";
 			}
@@ -210,15 +210,15 @@ echo "</table>";
 
 
 
-echo "<div align='center'><h3>".$LANG["common"][33].": ".$LANG["financial"][21]."=".formatNumber($valeurtot)." - ".$LANG["financial"][81]."=".formatNumber($valeurnettetot)."</h3></div>";
+echo "<div align='center'><h3>".$LANG['common'][33].": ".$LANG['financial'][21]."=".formatNumber($valeurtot)." - ".$LANG['financial'][81]."=".formatNumber($valeurnettetot)."</h3></div>";
 
 if (count($valeurnettegraphtot)>0){
 	$valeurnettegraphtotdisplay=array_map('round',$valeurnettegraphtot);
-	graphBy($valeurnettegraphtotdisplay,$LANG["financial"][81],"",0,"year");
+	graphBy($valeurnettegraphtotdisplay,$LANG['financial'][81],"",0,"year");
 }
 if (count($valeurgraphtot)>0){	
 	$valeurgraphtotdisplay=array_map('round',$valeurgraphtot);
-	graphBy($valeurgraphtotdisplay,$LANG["financial"][21],"",0,"year");
+	graphBy($valeurgraphtotdisplay,$LANG['financial'][21],"",0,"year");
 }
 
 commonFooter();

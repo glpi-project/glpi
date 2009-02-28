@@ -41,7 +41,7 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 checkRight("device","w");
 
-commonHeader($LANG["title"][30],$_SERVER['PHP_SELF'],"config","device");
+commonHeader($LANG['title'][30],$_SERVER['PHP_SELF'],"config","device");
 
 if(!isset($_GET["device_type"])) $_GET["device_type"] = "0";
 if(!empty($_GET["device_type"])) {
@@ -50,7 +50,7 @@ if(!empty($_GET["device_type"])) {
 
 echo "<form method='get' action=\"".$CFG_GLPI["root_doc"]."/front/device.php\">";
 echo "<table class='tab_cadre' cellpadding='3'><tr><th colspan='2'>";
-echo $LANG["devices"][17].": </th></tr><tr class='tab_bg_1'><td><select name='device_type'>";
+echo $LANG['devices'][17].": </th></tr><tr class='tab_bg_1'><td><select name='device_type'>";
 
 $dp=getDictDeviceLabel();
 
@@ -60,7 +60,7 @@ foreach ($dp as $key=>$val) {
 	echo "<option value='$key' $sel>".$val."</option>";	
 }
 echo "</select></td>";
-echo "<td><input type='submit' value=\"".$LANG["buttons"][2]."\" class='submit' ></td></tr>";
+echo "<td><input type='submit' value=\"".$LANG['buttons'][2]."\" class='submit' ></td></tr>";
 echo "</table></form>";
 
 if(!empty($_GET["device_type"])) {

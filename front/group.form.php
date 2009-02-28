@@ -46,7 +46,7 @@ if (isset($_POST["add"]))
 	$group->check(-1,'w',$_POST['FK_entities']);
 
 	$newID=$group->add($_POST);
-	logEvent($newID, "groups", 4, "setup", $_SESSION["glpiname"]." ".$LANG["log"][20]." ".$_POST["name"].".");
+	logEvent($newID, "groups", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][20]." ".$_POST["name"].".");
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($_POST["delete"]))
@@ -54,7 +54,7 @@ else if (isset($_POST["delete"]))
 	$group->check($_POST["ID"],'w');
 
 	$group->delete($_POST);
-	logEvent($_POST["ID"], "groups", 4, "setup", $_SESSION["glpiname"]." ".$LANG["log"][22]);
+	logEvent($_POST["ID"], "groups", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][22]);
 	glpi_header($CFG_GLPI["root_doc"]."/front/group.php");
 }
 else if (isset($_POST["update"]))
@@ -62,7 +62,7 @@ else if (isset($_POST["update"]))
 	$group->check($_POST["ID"],'w');
 
 	$group->update($_POST);
-	logEvent($_POST["ID"], "groups", 4, "setup", $_SESSION["glpiname"]." ".$LANG["log"][21]);
+	logEvent($_POST["ID"], "groups", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][21]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($_POST["adduser"]))
@@ -71,7 +71,7 @@ else if (isset($_POST["adduser"]))
 
 	addUserGroup($_POST["FK_users"],$_POST["FK_groups"]);
 
-	logEvent($_POST["FK_groups"], "groups", 4, "setup", $_SESSION["glpiname"]." ".$LANG["log"][48]);
+	logEvent($_POST["FK_groups"], "groups", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][48]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($_POST["deleteuser"]))
@@ -82,7 +82,7 @@ else if (isset($_POST["deleteuser"]))
 		foreach ($_POST["item"] as $key => $val)
 			deleteUserGroup($key);
 
-	logEvent($_POST["FK_groups"], "groups", 4, "setup", $_SESSION["glpiname"]." ".$LANG["log"][49]);
+	logEvent($_POST["FK_groups"], "groups", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][49]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else

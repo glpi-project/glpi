@@ -76,7 +76,7 @@ switch($_GET["type"]){
 	
 		$next=getNextItem("glpi_users",$_GET["ID"]);
 		$prev=getPreviousItem("glpi_users",$_GET["ID"]);
-		$title=$LANG["stats"][16].": ".getAssignName($_GET["ID"],USER_TYPE,1);
+		$title=$LANG['stats'][16].": ".getAssignName($_GET["ID"],USER_TYPE,1);
 		break;
 	case "technicien_followup":
 		$val1=$_GET["ID"];
@@ -84,7 +84,7 @@ switch($_GET["type"]){
 	
 		$next=getNextItem("glpi_users",$_GET["ID"]);
 		$prev=getPreviousItem("glpi_users",$_GET["ID"]);
-		$title=$LANG["stats"][16].": ".getAssignName($_GET["ID"],USER_TYPE,1);
+		$title=$LANG['stats'][16].": ".getAssignName($_GET["ID"],USER_TYPE,1);
 		break;
 	case "enterprise":
 		$val1=$_GET["ID"];
@@ -92,7 +92,7 @@ switch($_GET["type"]){
 	
 		$next=getNextItem("glpi_enterprises",$_GET["ID"]);
 		$prev=getPreviousItem("glpi_enterprises",$_GET["ID"]);
-		$title=$LANG["stats"][44].": ".getAssignName($_GET["ID"],ENTERPRISE_TYPE,1);
+		$title=$LANG['stats'][44].": ".getAssignName($_GET["ID"],ENTERPRISE_TYPE,1);
 		break;
 	case "user":
 		$val1=$_GET["ID"];
@@ -101,7 +101,7 @@ switch($_GET["type"]){
 	
 		$next=getNextItem("glpi_users",$_GET["ID"]);
 		$prev=getPreviousItem("glpi_users",$_GET["ID"]);
-		$title=$LANG["stats"][20].": ".$job->getAuthorName(1);
+		$title=$LANG['stats'][20].": ".$job->getAuthorName(1);
 		break;	
 	case "recipient":
 		$val1=$_GET["ID"];
@@ -110,7 +110,7 @@ switch($_GET["type"]){
 	
 		$next=getNextItem("glpi_users",$_GET["ID"]);
 		$prev=getPreviousItem("glpi_users",$_GET["ID"]);
-		$title=$LANG["stats"][20].": ".$job->getAuthorName(1);
+		$title=$LANG['stats'][20].": ".$job->getAuthorName(1);
 		break;	
 	case "category":
 		$val1=$_GET["ID"];
@@ -118,7 +118,7 @@ switch($_GET["type"]){
 	
 		$next=getNextItem("glpi_dropdown_tracking_category",$_GET["ID"]);
 		$prev=getPreviousItem("glpi_dropdown_tracking_category",$_GET["ID"]);
-		$title=$LANG["common"][36].": ".getDropdownName("glpi_dropdown_tracking_category",$_GET["ID"]);
+		$title=$LANG['common'][36].": ".getDropdownName("glpi_dropdown_tracking_category",$_GET["ID"]);
 		break;	
 	case "group":
 		$val1=$_GET["ID"];
@@ -126,7 +126,7 @@ switch($_GET["type"]){
 	
 		$next=getNextItem("glpi_groups",$_GET["ID"]);
 		$prev=getPreviousItem("glpi_groups",$_GET["ID"]);
-		$title=$LANG["common"][35].": ".getDropdownName("glpi_groups",$_GET["ID"]);
+		$title=$LANG['common'][35].": ".getDropdownName("glpi_groups",$_GET["ID"]);
 		break;	
 	case "assign_group":
 		$val1=$_GET["ID"];
@@ -134,7 +134,7 @@ switch($_GET["type"]){
 	
 		$next=getNextItem("glpi_groups",$_GET["ID"]);
 		$prev=getPreviousItem("glpi_groups",$_GET["ID"]);
-		$title=$LANG["common"][35].": ".getDropdownName("glpi_groups",$_GET["ID"]);
+		$title=$LANG['common'][35].": ".getDropdownName("glpi_groups",$_GET["ID"]);
 		break;	
 	case "priority":
 		$val1=$_GET["ID"];
@@ -142,7 +142,7 @@ switch($_GET["type"]){
 		$next=$prev=0;
 		if ($val1<5) $next=$val1+1;
 		if ($val1>1) $prev=$val1-1;
-		$title=$LANG["joblist"][2].": ".getPriorityName($_GET["ID"]);
+		$title=$LANG['joblist'][2].": ".getPriorityName($_GET["ID"]);
 		break;	
 	case "request_type":
 		$val1=$_GET["ID"];
@@ -150,7 +150,7 @@ switch($_GET["type"]){
 		$next=$prev=0;
 		if ($val1<6) $next=$val1+1;
 		if ($val1>0) $prev=$val1-1;
-		$title=$LANG["job"][44].": ".getRequestTypeName($_GET["ID"]);
+		$title=$LANG['job'][44].": ".getRequestTypeName($_GET["ID"]);
 		break;	
 	case "device":
 		$val1=$_GET["ID"];
@@ -178,7 +178,7 @@ switch($_GET["type"]){
 	
 		$next=getNextItem($table,$_GET["ID"]);
 		$prev=getPreviousItem($table,$_GET["ID"]);
-		$title=$LANG["stats"][26].": ".getDropdownName($table,$_GET["ID"]);
+		$title=$LANG['stats'][26].": ".getDropdownName($table,$_GET["ID"]);
 	break;
 
 }
@@ -188,12 +188,12 @@ switch($_GET["type"]){
 	echo "<table class='tab_cadre_navigation'>";
 	echo "<tr>";
 	echo "<td>";
-	if ($prev>0) echo "<a href='".$_SERVER['PHP_SELF']."?$cleantarget&amp;date1=".$_POST["date1"]."&amp;date2=".$_POST["date2"]."&amp;ID=$prev'><img src=\"".$CFG_GLPI["root_doc"]."/pics/left.png\" alt='".$LANG["buttons"][12]."' title='".$LANG["buttons"][12]."'></a>";
+	if ($prev>0) echo "<a href='".$_SERVER['PHP_SELF']."?$cleantarget&amp;date1=".$_POST["date1"]."&amp;date2=".$_POST["date2"]."&amp;ID=$prev'><img src=\"".$CFG_GLPI["root_doc"]."/pics/left.png\" alt='".$LANG['buttons'][12]."' title='".$LANG['buttons'][12]."'></a>";
 	echo "</td>";
 	
 	echo "<td width='400' align='center'><b>$title</b></td>";
 	echo "<td>";
-	if ($next>0) echo "<a href='".$_SERVER['PHP_SELF']."?$cleantarget&amp;date1=".$_POST["date1"]."&amp;date2=".$_POST["date2"]."&amp;ID=$next'><img src=\"".$CFG_GLPI["root_doc"]."/pics/right.png\" alt='".$LANG["buttons"][11]."' title='".$LANG["buttons"][11]."'></a>";
+	if ($next>0) echo "<a href='".$_SERVER['PHP_SELF']."?$cleantarget&amp;date1=".$_POST["date1"]."&amp;date2=".$_POST["date2"]."&amp;ID=$next'><img src=\"".$CFG_GLPI["root_doc"]."/pics/right.png\" alt='".$LANG['buttons'][11]."' title='".$LANG['buttons'][11]."'></a>";
 	echo "</td>";
 	
 	echo "</tr>";
@@ -204,10 +204,10 @@ $target=preg_replace("/&/","&amp;",$_SERVER["REQUEST_URI"]);
 
 echo "<div align='center'><form method=\"post\" name=\"form\" action=\"".$target."\">";
 echo "<table class='tab_cadre'><tr class='tab_bg_2'><td align='right'>";
-echo $LANG["search"][8]." :</td><td>";
+echo $LANG['search'][8]." :</td><td>";
 showDateFormItem("date1",$_POST["date1"]);
-echo "</td><td rowspan='2' align='center'><input type=\"submit\" class='button' name=\"submit\" value=\"". $LANG["buttons"][7] ."\"></td></tr>";
-echo "<tr class='tab_bg_2'><td align='right'>".$LANG["search"][9]." :</td><td>";
+echo "</td><td rowspan='2' align='center'><input type=\"submit\" class='button' name=\"submit\" value=\"". $LANG['buttons'][7] ."\"></td></tr>";
+echo "<tr class='tab_bg_2'><td align='right'>".$LANG['search'][9]." :</td><td>";
 showDateFormItem("date2",$_POST["date2"]);
 echo "</td></tr>";
 echo "</table></form></div>";
@@ -218,27 +218,27 @@ echo "</table></form></div>";
 // Total des interventions
 $entrees_total=constructEntryValues("inter_total",$_POST["date1"],$_POST["date2"],$_GET["type"],$val1,$val2);
 if (count($entrees_total)>0)
-	graphBy($entrees_total,$LANG["stats"][5],$LANG["stats"][35],1,"month");
+	graphBy($entrees_total,$LANG['stats'][5],$LANG['stats'][35],1,"month");
 
 	// Total des interventions r�olues
 	$entrees_solved=constructEntryValues("inter_solved",$_POST["date1"],$_POST["date2"],$_GET["type"],$val1,$val2);
 if (count($entrees_solved)>0)
-	graphBy($entrees_solved,$LANG["stats"][11],$LANG["stats"][35],1,"month");
+	graphBy($entrees_solved,$LANG['stats'][11],$LANG['stats'][35],1,"month");
 
 	//Temps moyen de resolution d'intervention
 	$entrees_avgtime=constructEntryValues("inter_avgsolvedtime",$_POST["date1"],$_POST["date2"],$_GET["type"],$val1,$val2);
 if (count($entrees_avgtime)>0)
-	graphBy($entrees_avgtime,$LANG["stats"][6],$LANG["job"][21],0,"month");
+	graphBy($entrees_avgtime,$LANG['stats'][6],$LANG['job'][21],0,"month");
 
 	//Temps moyen d'intervention r�l
 	$entrees_avgtime=constructEntryValues("inter_avgrealtime",$_POST["date1"],$_POST["date2"],$_GET["type"],$val1,$val2);
 if (count($entrees_avgtime)>0)
-	graphBy($entrees_avgtime,$LANG["stats"][25],$LANG["stats"][33],0,"month");
+	graphBy($entrees_avgtime,$LANG['stats'][25],$LANG['stats'][33],0,"month");
 
 	//Temps moyen de prise en compte de l'intervention
 	$entrees_avgtime=constructEntryValues("inter_avgtakeaccount",$_POST["date1"],$_POST["date2"],$_GET["type"],$val1,$val2);
 if (count($entrees_avgtime)>0)
-	graphBy($entrees_avgtime,$LANG["stats"][30],$LANG["job"][21],0,"month");
+	graphBy($entrees_avgtime,$LANG['stats'][30],$LANG['job'][21],0,"month");
 
 	commonFooter();
 

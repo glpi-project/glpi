@@ -49,7 +49,7 @@ checkRight("reports","r");
 		$name=getDropdownName("glpi_dropdown_netpoint",$_POST["prise"]);
 
 		// Titre
-		echo "<div align='center'><h2>".$LANG["reports"][51]." $name</h2></div><br><br>";
+		echo "<div align='center'><h2>".$LANG['reports'][51]." $name</h2></div><br><br>";
 		$query="SELECT a.name as bureau, a.ID as ID, glpi_dropdown_netpoint.name as prise, c.name as port, 
 				c.ifaddr as ip,c.ifmac as mac,c.ID AS IDport
 			FROM glpi_dropdown_netpoint
@@ -67,15 +67,15 @@ checkRight("reports","r");
 
 			echo "<div align='center'><table class='tab_cadre_report'>";
 			echo "<tr> ";
-			echo "<th>".$LANG["common"][15]."</th>";
-			echo "<th>".$LANG["reports"][52]."</th>";
-			echo "<th>".$LANG["reports"][38]."</th>";
-			echo "<th>".$LANG["reports"][46]."</th>";
+			echo "<th>".$LANG['common'][15]."</th>";
+			echo "<th>".$LANG['reports'][52]."</th>";
+			echo "<th>".$LANG['reports'][38]."</th>";
+			echo "<th>".$LANG['reports'][46]."</th>";
 			echo "<th>".$LANG["device_iface"][2]."</th>";
-			echo "<th>".$LANG["reports"][47]."</th>";
-			echo "<th>".$LANG["reports"][38]."</th>";
+			echo "<th>".$LANG['reports'][47]."</th>";
+			echo "<th>".$LANG['reports'][38]."</th>";
 			echo "<th>".$LANG["device_iface"][2]."</th>";
-			echo "<th>".$LANG["reports"][36]."</th>";
+			echo "<th>".$LANG['reports'][36]."</th>";
 			echo "</tr>";
 
 			while( $ligne = $DB->fetch_array($result))

@@ -46,35 +46,35 @@ include (GLPI_ROOT . "/inc/includes.php");
 checkCentralAccess();
 
 
-commonHeader($LANG["common"][12],$_SERVER['PHP_SELF'],"config");
+commonHeader($LANG['common'][12],$_SERVER['PHP_SELF'],"config");
 
 
 echo "<div align='center'><table class='tab_cadre' cellpadding='5'>";
-echo "<tr><th colspan='2'>".$LANG["setup"][62]."</th></tr>";
+echo "<tr><th colspan='2'>".$LANG['setup'][62]."</th></tr>";
 
 $config=array();
 
 if (haveRight("config","w")){
-	$config["setup.config.php"]=$LANG["setup"][70];
-	$config["setup.mailing.php"]=$LANG["setup"][68];
-	$config["setup.auth.php"]=$LANG["setup"][67];
+	$config["setup.config.php"]=$LANG['setup'][70];
+	$config["setup.mailing.php"]=$LANG['setup'][68];
+	$config["setup.auth.php"]=$LANG['setup'][67];
 	$config["mailgate.php"]=$LANG["Menu"][39];
 	if ($CFG_GLPI["ocs_mode"]&&haveRight("ocsng","w"))
-		$config["setup.ocsng.php"]=$LANG["setup"][134];
+		$config["setup.ocsng.php"]=$LANG['setup'][134];
 }
 
 $data=array();
 if (haveRight("dropdown","w")||haveRight("entity_dropdown","w")){
-	$data["setup.dropdowns.php"]=$LANG["setup"][0];
+	$data["setup.dropdowns.php"]=$LANG['setup'][0];
 }
 if (haveRight("device","w")){
-	$data[$CFG_GLPI["root_doc"]."/front/device.php"]=$LANG["title"][30];
+	$data[$CFG_GLPI["root_doc"]."/front/device.php"]=$LANG['title'][30];
 }
 if (haveRight("typedoc","r")){
-	$data[$CFG_GLPI["root_doc"]."/front/typedoc.php"]=$LANG["document"][7];
+	$data[$CFG_GLPI["root_doc"]."/front/typedoc.php"]=$LANG['document'][7];
 }
 if (haveRight("link","r")){
-	$data[$CFG_GLPI["root_doc"]."/front/link.php"]=$LANG["setup"][87];
+	$data[$CFG_GLPI["root_doc"]."/front/link.php"]=$LANG['setup'][87];
 }
 
 echo "<tr class='tab_bg_1'>";
@@ -95,9 +95,9 @@ if (count($config)>0){
 echo "</tr>";
 
 if (isset($PLUGIN_HOOKS['config_page'])&&is_array($PLUGIN_HOOKS['config_page'])&&count($PLUGIN_HOOKS['config_page']))
-echo "<tr class='tab_bg_1'><td  colspan='2' align='center'><a href=\"setup.plugins.php\"><b>".$LANG["common"][29]."</b></a></td></tr>";
+echo "<tr class='tab_bg_1'><td  colspan='2' align='center'><a href=\"setup.plugins.php\"><b>".$LANG['common'][29]."</b></a></td></tr>";
 if (haveRight("check_update","r"))
-echo "<tr class='tab_bg_1'><td  colspan='2' align='center'><a href=\"setup.version.php\"><b>".$LANG["setup"][300]."</b></a></td></tr>";
+echo "<tr class='tab_bg_1'><td  colspan='2' align='center'><a href=\"setup.version.php\"><b>".$LANG['setup'][300]."</b></a></td></tr>";
 
 
 

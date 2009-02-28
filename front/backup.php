@@ -47,7 +47,7 @@ $path = GLPI_DUMP_DIR ;
 
 
 
-commonHeader($LANG["common"][12],$_SERVER['PHP_SELF'],"admin","backup");
+commonHeader($LANG['common'][12],$_SERVER['PHP_SELF'],"admin","backup");
 
 
 $max_time=min(get_cfg_var("max_execution_time"),get_cfg_var("max_input_time"));
@@ -61,24 +61,24 @@ else {$defaulttimeout=max(1,$max_time-2);$defaultrowlimit=2;}
 <script language="JavaScript" type="text/javascript">
 <!--
 function dump(what3){
-	if (confirm("<?php echo $LANG["backup"][18];?> " + what3 +  "?")) {
+	if (confirm("<?php echo $LANG['backup'][18];?> " + what3 +  "?")) {
 		window.location = "backup.php?dump=" + what3;
 	}
 }
 function restore(what) {
-	if (confirm("<?php echo $LANG["backup"][16];?> " + what +  "?")) {
+	if (confirm("<?php echo $LANG['backup'][16];?> " + what +  "?")) {
 		window.location = "backup.php?file=" + what +"&donotcheckversion=1";
 	}
 }
 
 function erase(what2){
-	if (confirm("<?php echo $LANG["backup"][17];?> " + what2 +  "?")) {
+	if (confirm("<?php echo $LANG['backup'][17];?> " + what2 +  "?")) {
 		window.location = "backup.php?delfile=" + what2;
 	}
 }
 
 function xmlnow(what4){
-	if (confirm("<?php echo $LANG["backup"][18] ;?> " + what4 +  "?")) {
+	if (confirm("<?php echo $LANG['backup'][18] ;?> " + what4 +  "?")) {
 		window.location = "backup.php?xmlnow=" + what4;
 	}
 }
@@ -253,14 +253,14 @@ function restoreMySqlDump($DB,$dumpFile , $duree){
 	global $DB,$TPSCOUR,$offset,$cpt,$LANG;
 
 	if(!file_exists($dumpFile)){
-		echo $LANG["document"][38].": $dumpFile<br>";
+		echo $LANG['document'][38].": $dumpFile<br>";
 		return FALSE;
 	}
 	$fileHandle = fopen($dumpFile, "rb");
 
 	if(!$fileHandle)
 	{
-		echo $LANG["document"][45].": $dumpFile<br>";
+		echo $LANG['document'][45].": $dumpFile<br>";
 		return FALSE;
 	}
 
@@ -268,7 +268,7 @@ function restoreMySqlDump($DB,$dumpFile , $duree){
 	{
 		if (fseek($fileHandle,$offset,SEEK_SET)!=0) //erreur
 		{
-			echo $LANG["backup"][22]." ".formatNumber($offset,false,0)."<br>";
+			echo $LANG['backup'][22]." ".formatNumber($offset,false,0)."<br>";
 			return FALSE;
 		}
 		glpi_flush();
@@ -308,7 +308,7 @@ function restoreMySqlDump($DB,$dumpFile , $duree){
 	}
 
 	if ($DB->error){
-		echo "<hr>".$LANG["backup"][23]." [$formattedQuery]<br>".$DB->error()."<hr>";
+		echo "<hr>".$LANG['backup'][23]." [$formattedQuery]<br>".$DB->error()."<hr>";
 	}
 
 	fclose($fileHandle);
@@ -332,7 +332,7 @@ function backupMySql($DB,$dumpFile, $duree,$rowlimit){
 
 	if(!$fileHandle)
 	{
-		echo $LANG["document"][45].": $dumpFile<br>";
+		echo $LANG['document'][45].": $dumpFile<br>";
 		return FALSE;
 	}
 
@@ -393,7 +393,7 @@ function backupMySql($DB,$dumpFile, $duree,$rowlimit){
 			return TRUE;
 	}
 	if ($DB->error())
-		echo "<hr>".$LANG["backup"][23]." [$formattedQuery]<br>".$DB->error()."<hr>";
+		echo "<hr>".$LANG['backup'][23]." [$formattedQuery]<br>".$DB->error()."<hr>";
 	$offsettable=-1;
 	fclose($fileHandle);
 	return TRUE;
@@ -410,7 +410,7 @@ if (isset($_GET["dump"]) && $_GET["dump"] != ""){
 
 
 	if (!isset($_GET["duree"])&&is_file($filename)){
-		echo "<div align='center'>".$LANG["backup"][21]."</div>";
+		echo "<div align='center'>".$LANG['backup'][21]."</div>";
 	} else {
 		init_time(); //initialise le temps
 		//d�ut de fichier
@@ -447,7 +447,7 @@ if (isset($_GET["dump"]) && $_GET["dump"] != ""){
 		if ($offsettable>=0){
 			if (backupMySql($DB,$fichier,$duree,$rowlimit))
 			{
-				echo "<br> <a href=\"backup.php?dump=1&duree=$duree&rowlimit=$rowlimit&offsetrow=$offsetrow&offsettable=$offsettable&cpt=$cpt&fichier=$fichier\">".$LANG["backup"][24]."</a>";
+				echo "<br> <a href=\"backup.php?dump=1&duree=$duree&rowlimit=$rowlimit&offsetrow=$offsetrow&offsettable=$offsettable&cpt=$cpt&fichier=$fichier\">".$LANG['backup'][24]."</a>";
 				echo "<script>window.location=\"backup.php?dump=1&duree=$duree&rowlimit=$rowlimit&offsetrow=$offsetrow&offsettable=$offsettable&cpt=$cpt&fichier=$fichier\";</script>";
 				glpi_flush();    
 				exit;
@@ -505,7 +505,7 @@ if (isset($_GET["file"]) && $_GET["file"] != ""&&is_file($path."/".$_GET["file"]
 	if ($offset!=-1){
 		if (restoreMySqlDump($DB,$path."/".$_GET["file"],$duree))
 		{
-			echo "<br><a href=\"backup.php?file=".$_GET["file"]."&amp;duree=$duree&amp;offset=$offset&amp;cpt=$cpt&amp;donotcheckversion=1\">".$LANG["backup"][24]."</a>";
+			echo "<br><a href=\"backup.php?file=".$_GET["file"]."&amp;duree=$duree&amp;offset=$offset&amp;cpt=$cpt&amp;donotcheckversion=1\">".$LANG['backup'][24]."</a>";
 			echo "<script language=\"javascript\" type=\"text/javascript\">window.location=\"backup.php?file=".$_GET["file"]."&duree=$duree&offset=$offset&cpt=$cpt&donotcheckversion=1\";</script>";
 			glpi_flush();
 			exit;
@@ -527,13 +527,13 @@ if (isset($_GET["delfile"]) && $_GET["delfile"] != ""){
 	$filename=$_GET["delfile"];
 	if (is_file($path."/".$_GET["delfile"])){
 		unlink($path."/".$_GET["delfile"]);
-		echo "<div align ='center'>".$filename." ".$LANG["common"][28]."</div>";
+		echo "<div align ='center'>".$filename." ".$LANG['common'][28]."</div>";
 	}
 
 }
 
 // Title backup
-echo " <div align='center'> <table border='0'><tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/sauvegardes.png\" alt='".$LANG["common"][28]."'></td> <td><a href=\"javascript:dump('".$LANG["backup"][19]."')\"  class='icon_consol'><b>". $LANG["backup"][0]."</b></a></td><td><a href=\"javascript:xmlnow('".$LANG["backup"][19]."')\" class='icon_consol'><b>". $LANG["backup"][1]."</b></a></td></tr></table>";
+echo " <div align='center'> <table border='0'><tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/sauvegardes.png\" alt='".$LANG['common'][28]."'></td> <td><a href=\"javascript:dump('".$LANG['backup'][19]."')\"  class='icon_consol'><b>". $LANG['backup'][0]."</b></a></td><td><a href=\"javascript:xmlnow('".$LANG['backup'][19]."')\" class='icon_consol'><b>". $LANG['backup'][1]."</b></a></td></tr></table>";
 
 
 ?>
@@ -544,9 +544,9 @@ echo " <div align='center'> <table border='0'><tr><td><img src=\"".$CFG_GLPI["ro
 <br>
 <table class='tab_cadre'  cellpadding="5">
 <tr align="center"> 
-<th><u><i><?php echo $LANG["document"][2]; ?></i></u></th>
-<th><u><i><?php echo $LANG["backup"][11]; ?></i></u></th>
-<th><u><i><?php echo $LANG["common"][27]; ?></i></u></th>
+<th><u><i><?php echo $LANG['document'][2]; ?></i></u></th>
+<th><u><i><?php echo $LANG['backup'][11]; ?></i></u></th>
+<th><u><i><?php echo $LANG['common'][27]; ?></i></u></th>
 <th colspan='3'>&nbsp;</th>
 </tr>
 <?php
@@ -565,10 +565,10 @@ if (count($files)){
 		echo "<tr class='tab_bg_2'><td>$file&nbsp;</td>
 			<td align=\"right\">&nbsp;" . $taille_fic . " kB&nbsp;</td>
 			<td>&nbsp;" . convDateTime(date("Y-m-d H:i",$date)) . "</td>
-			<td>&nbsp;<a href=\"javascript:erase('$file')\">".$LANG["buttons"][6]."</a>&nbsp;</td>
+			<td>&nbsp;<a href=\"javascript:erase('$file')\">".$LANG['buttons'][6]."</a>&nbsp;</td>
 
-			<td>&nbsp;<a href=\"javascript:restore('$file')\">".$LANG["buttons"][21]."</a>&nbsp;</td>
-			<td>&nbsp;<a href=\"document.send.php?file=_dumps/$file\">".$LANG["backup"][13]."</a></td></tr>";
+			<td>&nbsp;<a href=\"javascript:restore('$file')\">".$LANG['buttons'][21]."</a>&nbsp;</td>
+			<td>&nbsp;<a href=\"document.send.php?file=_dumps/$file\">".$LANG['backup'][13]."</a></td></tr>";
 	}
 }
 closedir($dir);
@@ -590,10 +590,10 @@ if (count($files)){
 			<tr class='tab_bg_2'><td>$file&nbsp;</td>
 			<td align=\"right\">&nbsp;" . $taille_fic . " kB&nbsp;</td>
 			<td>&nbsp;" . convDateTime(date("Y-m-d H:i",$date)) . "</td>
-			<td>&nbsp;<a href=\"javascript:erase('$file')\">".$LANG["buttons"][6]."</a>&nbsp;</td>
+			<td>&nbsp;<a href=\"javascript:erase('$file')\">".$LANG['buttons'][6]."</a>&nbsp;</td>
 			<td>&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;</td>
 
-			<td>&nbsp;<a  href=\"document.send.php?file=_dumps/$file\">".$LANG["backup"][13]."</a></td></tr>";
+			<td>&nbsp;<a  href=\"document.send.php?file=_dumps/$file\">".$LANG['backup'][13]."</a></td></tr>";
 	}
 }
 closedir($dir);

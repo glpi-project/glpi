@@ -54,7 +54,7 @@ if ($_GET["ID"]=="new"){
 	// on affiche le formulaire de saisie de l'item
 	$kb->can(-1,'w');
 
-	commonHeader($LANG["title"][5],$_SERVER['PHP_SELF'],"utils","knowbase");
+	commonHeader($LANG['title'][5],$_SERVER['PHP_SELF'],"utils","knowbase");
 	$kb->showForm($_SERVER['PHP_SELF'],"");
 	commonFooter();
 
@@ -63,7 +63,7 @@ if ($_GET["ID"]=="new"){
 	$kb->can(-1,'w');
 
 	$newID=$kb->add($_POST);
-	logEvent($newID, "knowbase", 5, "tools", $_SESSION["glpiname"]." ".$LANG["log"][20]);
+	logEvent($newID, "knowbase", 5, "tools", $_SESSION["glpiname"]." ".$LANG['log'][20]);
 	glpi_header($CFG_GLPI["root_doc"]."/front/knowbase.php");
 
 }  else if (isset($_POST["update"])){
@@ -71,14 +71,14 @@ if ($_GET["ID"]=="new"){
 	$kb->can($_POST["ID"],'w');
 
 	$kb->update($_POST);
-	logEvent($_POST["ID"], "knowbase", 5, "tools", $_SESSION["glpiname"]." ".$LANG["log"][21]);	
+	logEvent($_POST["ID"], "knowbase", 5, "tools", $_SESSION["glpiname"]." ".$LANG['log'][21]);	
 	glpi_header($CFG_GLPI["root_doc"]."/front/knowbase.form.php?ID=".$_POST['ID']);
 
 } else if (isset($_GET["ID"])  && strcmp($_GET["modify"],"yes") == 0){
 	// modifier un item dans la base de connaissance
 	$kb->can($_GET["ID"],'r');
 
-	commonHeader($LANG["title"][5],$_SERVER['PHP_SELF'],"utils","knowbase");
+	commonHeader($LANG['title'][5],$_SERVER['PHP_SELF'],"utils","knowbase");
 	$kb->showForm($_SERVER['PHP_SELF'],$_GET["ID"]);
 	commonFooter();
 
@@ -87,7 +87,7 @@ if ($_GET["ID"]=="new"){
 	$kb->can($_GET["ID"],'w');
 
 	$kb->delete($_GET);
-	logEvent($_GET["ID"], "knowbase", 5, "tools", $_SESSION["glpiname"]." ".$LANG["log"][22]);	
+	logEvent($_GET["ID"], "knowbase", 5, "tools", $_SESSION["glpiname"]." ".$LANG['log'][22]);	
 	glpi_header($CFG_GLPI["root_doc"]."/front/knowbase.php");
 
 } else if (isset($_GET["ID"])  && strcmp($_GET["addtofaq"],"yes") == 0){
@@ -111,7 +111,7 @@ if ($_GET["ID"]=="new"){
 	// Affiche un item de la base de connaissances
 	$kb->can($_GET["ID"],'r');
 
-	commonHeader($LANG["title"][5],$_SERVER['PHP_SELF'],"utils","knowbase");
+	commonHeader($LANG['title'][5],$_SERVER['PHP_SELF'],"utils","knowbase");
 
 	if (ShowKbItemFull($_GET["ID"])){
 		kbItemMenu($_GET["ID"]);

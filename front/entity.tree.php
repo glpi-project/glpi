@@ -70,18 +70,18 @@ else $ID="";
 
 if (isset($_POST["move"])) {
 	moveTreeUnder($_POST["tablename"],$_POST["value_to_move"],$_POST["value_where"]);
-	logEvent(0, "dropdown", 5, "setup", $_SESSION["glpiname"]."".$LANG["log"][21]);
+	logEvent(0, "dropdown", 5, "setup", $_SESSION["glpiname"]."".$LANG['log'][21]);
 	glpi_header($_SERVER['PHP_SELF']."?which=$which&value2=$value2&tomove=$tomove&where=$where&type=$type");
 }else if (isset($_POST["add"])) {
 	addDropdown($_POST);
-	logEvent(0, "dropdown", 5, "setup", $_SESSION["glpiname"]." ".$LANG["log"][20]);
+	logEvent(0, "dropdown", 5, "setup", $_SESSION["glpiname"]." ".$LANG['log'][20]);
 	glpi_header($_SERVER['PHP_SELF']."?which=$which&value2=$value2&tomove=$tomove&where=$where&type=$type");
 } else if (isset($_POST["delete"])) {
 	if(dropdownUsed($_POST["tablename"], $_POST["ID"]) && empty($_POST["forcedelete"])) {
 		if (strstr($_SERVER['PHP_SELF'],"popup"))
-			popHeader($LANG["common"][12],$_SERVER['PHP_SELF']);
+			popHeader($LANG['common'][12],$_SERVER['PHP_SELF']);
 		else 	
-			commonHeader($LANG["common"][12],$_SERVER['PHP_SELF']);
+			commonHeader($LANG['common'][12],$_SERVER['PHP_SELF']);
 		showDeleteConfirmForm($_SERVER['PHP_SELF'],$_POST["tablename"], $_POST["ID"],$_POST["FK_entities"]);
 		if (strstr($_SERVER['PHP_SELF'],"popup"))
 			popFooter();
@@ -89,23 +89,23 @@ if (isset($_POST["move"])) {
 			commonFooter();
 	} else {
 		deleteDropdown($_POST);
-		logEvent(0, "dropdown", 4, "setup", $_SESSION["glpiname"]." ".$LANG["log"][22]);
+		logEvent(0, "dropdown", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][22]);
 		glpi_header($_SERVER['PHP_SELF']."?which=$which");
 	}
 
 } else if (isset($_POST["update"])) {
 	updateDropdown($_POST);
-	logEvent(0, "dropdown", 4, "setup", $_SESSION["glpiname"]." ".$LANG["log"][21]);
+	logEvent(0, "dropdown", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][21]);
 	glpi_header($_SERVER['PHP_SELF']."?which=$which&ID=$ID");
 } else if (isset($_POST["replace"])) {
 	replaceDropDropDown($_POST);
-	logEvent(0, "dropdown", 4, "setup", $_SESSION["glpiname"]." ".$LANG["log"][21]);
+	logEvent(0, "dropdown", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][21]);
 	glpi_header($_SERVER['PHP_SELF']."?which=$which");
 }
 else {
-	commonHeader($LANG["common"][12],$_SERVER['PHP_SELF'],"admin","entity");
+	commonHeader($LANG['common'][12],$_SERVER['PHP_SELF'],"admin","entity");
 
-	showFormTreeDown($_SERVER['PHP_SELF'],"glpi_entities",$LANG["entity"][1],$ID,$value2,$where,$tomove,$type);
+	showFormTreeDown($_SERVER['PHP_SELF'],"glpi_entities",$LANG['entity'][1],$ID,$value2,$where,$tomove,$type);
 	commonFooter();
 }
 

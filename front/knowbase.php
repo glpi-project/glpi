@@ -46,7 +46,7 @@ if (isset($_GET["ID"])){
 	glpi_header($CFG_GLPI["root_doc"]."/front/knowbase.form.php?ID=".$_GET["ID"]);
 }
 
-commonHeader($LANG["title"][5],$_SERVER['PHP_SELF'],"utils","knowbase");
+commonHeader($LANG['title'][5],$_SERVER['PHP_SELF'],"utils","knowbase");
 
 
 if(!isset($_GET["start"])) $_GET["start"] = 0;

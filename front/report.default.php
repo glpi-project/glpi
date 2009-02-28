@@ -113,7 +113,7 @@ echo "<tr class='tab_bg_2'><td>".$LANG["Menu"][16].":</td><td>$number_of_periphe
 echo "<tr class='tab_bg_2'><td>".$LANG["Menu"][34].":</td><td>$number_of_phones</td></tr>";
 
 echo "<tr><td colspan='2' height=10></td></tr>";
-echo  "<tr class='tab_bg_1'><td colspan='2'><b>".$LANG["setup"][5].":</b></td></tr>";
+echo  "<tr class='tab_bg_1'><td colspan='2'><b>".$LANG['setup'][5].":</b></td></tr>";
 
 
 # 3. Get some more number data (operating systems per computer)

@@ -44,7 +44,7 @@ checkRight("config", "w");
 
 $plugin=new Plugin();
 
-commonHeader($LANG["common"][12],$_SERVER['PHP_SELF'],"config","plugins");
+commonHeader($LANG['common'][12],$_SERVER['PHP_SELF'],"config","plugins");
 
 if (isset($_GET['action'])&& isset($_GET['ID'])){
 	if (method_exists($plugin,$_GET['action'])){

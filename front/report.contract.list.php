@@ -47,7 +47,7 @@ commonHeader($LANG["Menu"][6],$_SERVER['PHP_SELF'],"utils","report");
 
 $items=array(COMPUTER_TYPE,PRINTER_TYPE,MONITOR_TYPE,NETWORKING_TYPE,PERIPHERAL_TYPE,SOFTWARE_TYPE,PHONE_TYPE);
 # Titre
-echo "<div align='center'><big><strong>".$LANG["reports"][4]."</strong></big><br><br>";
+echo "<div align='center'><big><strong>".$LANG['reports'][4]."</strong></big><br><br>";
 
 # Request All
 if((isset($_POST["item_type"][0])&&$_POST["item_type"][0] == '0')||!isset($_POST["item_type"])){
@@ -97,17 +97,17 @@ if (isset($query)&&count($query)){
 			echo " <div align='center'><strong>".$ci->getType()."</strong>";
 			echo "<table class='tab_cadre_report'>";
 			echo "<tr> ";
-			echo "<th>".$LANG["common"][16]."</th>";
-			echo "<th>".$LANG["common"][28]."</th>";
+			echo "<th>".$LANG['common'][16]."</th>";
+			echo "<th>".$LANG['common'][28]."</th>";
 			if ($display_entity){
-				echo "<th>".$LANG["entity"][0]."</th>";
+				echo "<th>".$LANG['entity'][0]."</th>";
 			}
-			echo "<th>".$LANG["common"][15]."</th>";
-			echo "<th>".$LANG["financial"][14]."</th>";
-			echo "<th>".$LANG["financial"][80]."</th>";
-			echo "<th>".$LANG["financial"][6]."</th>";
-			echo "<th>".$LANG["search"][8]."</th>";
-			echo "<th>".$LANG["search"][9]."</th>";
+			echo "<th>".$LANG['common'][15]."</th>";
+			echo "<th>".$LANG['financial'][14]."</th>";
+			echo "<th>".$LANG['financial'][80]."</th>";
+			echo "<th>".$LANG['financial'][6]."</th>";
+			echo "<th>".$LANG['search'][8]."</th>";
+			echo "<th>".$LANG['search'][9]."</th>";
 			echo "</tr>";
 			while( $data = $DB->fetch_array($result)){
 				echo "<tr class='tab_bg_1'>";	
@@ -121,7 +121,7 @@ if (isset($query)&&count($query)){
 
 				if ($display_entity){
 					if ($data['entID']==0){
-						echo "<td>".$LANG["entity"][2]."</td>";
+						echo "<td>".$LANG['entity'][2]."</td>";
 					} else {
 						echo "<td>".$data['entname']."</td>";
 					}

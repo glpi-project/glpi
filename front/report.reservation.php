@@ -50,7 +50,7 @@ echo "<table class='tab_cadre'><tr class='tab_bg_2'>";
 echo "<td rowspan='2' align='center'>";
 dropdownAllUsers("ID",$_GET["ID"],"reservation_helpdesk");
 echo "</td>";
-echo "<td rowspan='2' align='center'><input type=\"submit\" class='button' name=\"submit\" Value=\"". $LANG["buttons"][7] ."\" /></td></tr>";
+echo "<td rowspan='2' align='center'><input type=\"submit\" class='button' name=\"submit\" Value=\"". $LANG['buttons'][7] ."\" /></td></tr>";
 echo "</table></form></div>";
 
 if ($_GET["ID"]>0)

@@ -42,20 +42,20 @@ function update042to05(){
 
 	// Augmentation taille itemtype
 	$query = "ALTER TABLE `glpi_event_log` CHANGE `itemtype` `itemtype` VARCHAR(20) NOT NULL ;";
-	$DB->query($query) or die("4204 ".$LANG["update"][90].$DB->error());
+	$DB->query($query) or die("4204 ".$LANG['update'][90].$DB->error());
 
 	// Correction des itemtype tronqu�
 	$query = "UPDATE `glpi_event_log` SET `itemtype` = 'reservation' WHERE `itemtype` = 'reservatio' ;";
-	$DB->query($query) or die("4204 ".$LANG["update"][90].$DB->error());
+	$DB->query($query) or die("4204 ".$LANG['update'][90].$DB->error());
 
 
 	/*******************************GLPI 0.5***********************************************/
 	//pass all templates to computers
 	if(!FieldExists("glpi_computers","is_template")) {
 		$query = "ALTER TABLE `glpi_computers` ADD `is_template` ENUM('0','1') DEFAULT '0' NOT NULL ";
-		$DB->query($query) or die("0.5 alter computers add is_template ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.5 alter computers add is_template ".$LANG['update'][90].$DB->error());
 		$query = "ALTER TABLE `glpi_computers` ADD `tplname` VARCHAR(200) DEFAULT NULL ";
-		$DB->query($query) or die("0.5 alter computers add tplname ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.5 alter computers add tplname ".$LANG['update'][90].$DB->error());
 
 		$query = "Select * from glpi_templates";
 		$result = $DB->query($query);
@@ -77,7 +77,7 @@ function update042to05(){
 		$result=$DB->query($query);
 		if ($DB->numrows($result)==0){
 			$query="INSERT INTO glpi_computers (is_template,tplname) VALUES ('1','Blank Template')";
-			$DB->query($query) or die("0.5 add blank template ".$LANG["update"][90].$DB->error());	
+			$DB->query($query) or die("0.5 add blank template ".$LANG['update'][90].$DB->error());	
 		}
 		$DB->free_result($result);
 	}
@@ -99,7 +99,7 @@ function update042to05(){
 			KEY (`device_type`,`FK_device`),
 			KEY (`FK_computers`)
 				) TYPE=MyISAM;";
-		$DB->query($query) or die("0.5 CREATE TABLE `glpi_computer_device` ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.5 CREATE TABLE `glpi_computer_device` ".$LANG['update'][90].$DB->error());
 	}
 
 	if(!TableExists("glpi_device_gfxcard")) {
@@ -114,7 +114,7 @@ function update042to05(){
 			PRIMARY KEY  (`ID`),
 			KEY(`FK_glpi_enterprise`)
 				) TYPE=MyISAM;";
-		$DB->query($query) or die("0.5 create table `glpi_device_gfxcard` ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.5 create table `glpi_device_gfxcard` ".$LANG['update'][90].$DB->error());
 		compDpd2Device(GFX_DEVICE,"gfxcard","gfxcard","gfxcard");
 	}
 	if(!TableExists("glpi_device_hdd")) {
@@ -130,7 +130,7 @@ function update042to05(){
 			PRIMARY KEY  (`ID`),
 			KEY(`FK_glpi_enterprise`)
 				) TYPE=MyISAM;";
-		$DB->query($query) or die("0.5 CREATE TABLE `glpi_device_hdtype` ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.5 CREATE TABLE `glpi_device_hdtype` ".$LANG['update'][90].$DB->error());
 		compDpd2Device(HDD_DEVICE,"hdd","hdtype","hdtype","hdspace");
 	}
 	if(!TableExists("glpi_device_iface")) {
@@ -144,7 +144,7 @@ function update042to05(){
 			PRIMARY KEY  (`ID`),
 			KEY(`FK_glpi_enterprise`)
 				) TYPE=MyISAM;";
-		$DB->query($query) or die("0.5- CREATE TABLE `glpi_device_iface` ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.5- CREATE TABLE `glpi_device_iface` ".$LANG['update'][90].$DB->error());
 		compDpd2Device(NETWORK_DEVICE,"iface","network","network");
 	}
 	if(!TableExists("glpi_device_moboard")) {
@@ -158,7 +158,7 @@ function update042to05(){
 			PRIMARY KEY  (`ID`),
 			KEY(`FK_glpi_enterprise`)
 				) TYPE=MyISAM;";
-		$DB->query($query) or die("0.5 CREATE TABLE `glpi_device_moboard` ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.5 CREATE TABLE `glpi_device_moboard` ".$LANG['update'][90].$DB->error());
 		compDpd2Device(MOBOARD_DEVICE,"moboard","moboard","moboard");
 	}
 	if(!TableExists("glpi_device_processor")) {
@@ -172,7 +172,7 @@ function update042to05(){
 			PRIMARY KEY  (`ID`),
 			KEY(`FK_glpi_enterprise`)
 				) TYPE=MyISAM;";
-		$DB->query($query) or die("0.5 CREATE TABLE `glpi_device_processor` ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.5 CREATE TABLE `glpi_device_processor` ".$LANG['update'][90].$DB->error());
 		compDpd2Device(PROCESSOR_DEVICE,"processor","processor","processor","processor_speed");
 	}
 	if(!TableExists("glpi_device_ram")) {
@@ -187,7 +187,7 @@ function update042to05(){
 			PRIMARY KEY  (`ID`),
 			KEY(`FK_glpi_enterprise`)
 				) TYPE=MyISAM;";
-		$DB->query($query) or die("0.5 CREATE TABLE `glpi_device_ram` ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.5 CREATE TABLE `glpi_device_ram` ".$LANG['update'][90].$DB->error());
 		compDpd2Device(RAM_DEVICE,"ram","ram","ramtype","ram");
 	}
 	if(!TableExists("glpi_device_sndcard")) {
@@ -201,7 +201,7 @@ function update042to05(){
 			PRIMARY KEY  (`ID`),
 			KEY(`FK_glpi_enterprise`)
 				) TYPE=MyISAM;";
-		$DB->query($query) or die("0.5 CREATE TABLE `glpi_device_sndcard ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.5 CREATE TABLE `glpi_device_sndcard ".$LANG['update'][90].$DB->error());
 		compDpd2Device(SND_DEVICE,"sndcard","sndcard","sndcard");
 	}
 
@@ -295,7 +295,7 @@ function update042to05(){
 			KEY `deleted` (`deleted`),
 			KEY `type` (`type`)
 				) TYPE=MyISAM;";
-		$DB->query($query) or die("0.5 CREATE TABLE `glpi_enterprise ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.5 CREATE TABLE `glpi_enterprise ".$LANG['update'][90].$DB->error());
 	}
 
 	/// Base connaissance
@@ -308,7 +308,7 @@ function update042to05(){
 			KEY(`parentID`),
 			UNIQUE KEY(`parentID`,`name`)
 				)  TYPE=MyISAM;";
-		$DB->query($query) or die("0.5 CREATE TABLE `glpi_dropdown_kbcategories ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.5 CREATE TABLE `glpi_dropdown_kbcategories ".$LANG['update'][90].$DB->error());
 
 		$query="CREATE TABLE `glpi_kbitems` (
 			`ID` int(11) NOT NULL auto_increment,
@@ -319,14 +319,14 @@ function update042to05(){
 			PRIMARY KEY  (`ID`),
 			KEY(`categoryID`)
 				) TYPE=MyISAM;";
-		$DB->query($query) or die("0.5 CREATE TABLE `glpi_kbitems ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.5 CREATE TABLE `glpi_kbitems ".$LANG['update'][90].$DB->error());
 
 	}
 
 	// Comment reservation
 	if(!FieldExists("glpi_reservation_resa","comment")) {
 		$query = "ALTER TABLE `glpi_reservation_resa` ADD `comment` VARCHAR(255) NOT NULL ;";
-		$DB->query($query) or die("0.5 alter reservation add comment ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.5 alter reservation add comment ".$LANG['update'][90].$DB->error());
 	}	
 
 	// Tracking categorie
@@ -337,28 +337,28 @@ function update042to05(){
 			   name varchar(255) default NULL,
 			   PRIMARY KEY  (ID)
 				   ) TYPE=MyISAM;";
-		$DB->query($query) or die("0.5 CREATE TABLE `glpi_dropdown_tracking_category ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.5 CREATE TABLE `glpi_dropdown_tracking_category ".$LANG['update'][90].$DB->error());
 
 	}
 
 	if(!FieldExists("glpi_tracking","category")) {
 		$query= "ALTER TABLE `glpi_tracking` ADD `category` INT(11) ;";
-		$DB->query($query) or die("0.5 alter tracking add categorie ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.5 alter tracking add categorie ".$LANG['update'][90].$DB->error());
 	}
 
 	// Nouvelle gestion des software et licenses
 	if(!FieldExists("glpi_licenses","oem")) {
 		$query = "ALTER TABLE `glpi_licenses` ADD `oem` ENUM('N', 'Y') DEFAULT 'N' NOT NULL , ADD `oem_computer` INT(11) NOT NULL, ADD `buy` ENUM('Y', 'N') DEFAULT 'Y' NOT NULL;";
-		$DB->query($query) or die("0.5 alter licenses add oem + buy ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.5 alter licenses add oem + buy ".$LANG['update'][90].$DB->error());
 
 		$query = "ALTER TABLE `glpi_software` ADD `is_update` ENUM('N', 'Y') DEFAULT 'N' NOT NULL , ADD `update_software` INT(11) NOT NULL DEFAULT '-1';";
-		$DB->query($query) or die("0.5 alter software add update ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.5 alter software add update ".$LANG['update'][90].$DB->error());
 	}
 
 	// Couleur pour les priorit�
 	if(!FieldExists("glpi_config","priority_1")) {
 		$query= "ALTER TABLE `glpi_config` ADD `priority_1` VARCHAR(200) DEFAULT '#fff2f2' NOT NULL, ADD `priority_2` VARCHAR(200) DEFAULT '#ffe0e0' NOT NULL, ADD `priority_3` VARCHAR(200) DEFAULT '#ffcece' NOT NULL, ADD `priority_4` VARCHAR(200) DEFAULT '#ffbfbf' NOT NULL, ADD `priority_5` VARCHAR(200) DEFAULT '#ffadad' NOT NULL ;";
-		$DB->query($query) or die("0.5 alter config add priority_X ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.5 alter config add priority_X ".$LANG['update'][90].$DB->error());
 
 	}
 
@@ -376,7 +376,7 @@ function update042to05(){
 			KEY(`FK_glpi_cartridges_type`),
 			KEY(`FK_glpi_printers`)
 				) TYPE=MyISAM;";
-		$DB->query($query) or die("0.5 CREATE TABLE glpi_cartridges ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.5 CREATE TABLE glpi_cartridges ".$LANG['update'][90].$DB->error());
 
 		$query= "CREATE TABLE `glpi_cartridges_type` (
 			`ID` int(11) NOT NULL auto_increment,
@@ -393,7 +393,7 @@ function update042to05(){
 			KEY(`tech_num`),
 			KEY(`deleted`)
 				) TYPE=MyISAM;";
-		$DB->query($query) or die("0.5 CREATE TABLE glpi_cartridges_type ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.5 CREATE TABLE glpi_cartridges_type ".$LANG['update'][90].$DB->error());
 
 		$query= "CREATE TABLE `glpi_cartridges_assoc` (
 			`ID` int(11) NOT NULL auto_increment,
@@ -404,7 +404,7 @@ function update042to05(){
 			KEY(`FK_glpi_cartridges_type`),
 			KEY(`FK_glpi_type_printer`) 
 				) TYPE=MyISAM;";
-		$DB->query($query) or die("0.5 CREATE TABLE glpi_cartridges_assoc ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.5 CREATE TABLE glpi_cartridges_assoc ".$LANG['update'][90].$DB->error());
 	}
 
 	//// DEBUT INSERTION PARTIE GESTION 
@@ -421,10 +421,10 @@ function update042to05(){
 			`deleted` enum('Y','N') NOT NULL default 'N',
 			PRIMARY KEY  (`ID`)
 				) TYPE=MyISAM;";
-		$DB->query($query) or die("0.5 CREATE TABLE glpi_contact ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.5 CREATE TABLE glpi_contact ".$LANG['update'][90].$DB->error());
 
 		$query = " CREATE TABLE `glpi_dropdown_enttype` (`ID` INT NOT NULL AUTO_INCREMENT ,`name` VARCHAR(255) NOT NULL ,PRIMARY KEY (`ID`))";
-		$DB->query($query) or die("23 ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("23 ".$LANG['update'][90].$DB->error());
 
 
 		$query= "CREATE TABLE `glpi_contact_enterprise` (
@@ -436,7 +436,7 @@ function update042to05(){
 			KEY(`FK_enterprise`),
 			KEY(`FK_contact`) 
 				) TYPE=MyISAM;";
-		$DB->query($query) or die("0.5 CREATE TABLE glpi_contact_enterprise ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.5 CREATE TABLE glpi_contact_enterprise ".$LANG['update'][90].$DB->error());
 
 		$query= "CREATE TABLE `glpi_contracts` (
 			`ID` int(11) NOT NULL auto_increment,
@@ -466,7 +466,7 @@ function update042to05(){
 			KEY `begin_date` (`begin_date`),
 			KEY `bill_type` (`bill_type`)
 				) TYPE=MyISAM;";
-		$DB->query($query) or die("0.5 CREATE TABLE glpi_contract ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.5 CREATE TABLE glpi_contract ".$LANG['update'][90].$DB->error());
 
 		$query= "CREATE TABLE `glpi_contract_device` (
 			`ID` int(11) NOT NULL auto_increment,
@@ -478,7 +478,7 @@ function update042to05(){
 			KEY (`FK_contract`),
 			KEY (`FK_device`,`device_type`)
 				) TYPE=MyISAM;";
-		$DB->query($query) or die("0.5 CREATE TABLE glpi_contract_device ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.5 CREATE TABLE glpi_contract_device ".$LANG['update'][90].$DB->error());
 
 		$query= "CREATE TABLE `glpi_contract_enterprise` (
 			`ID` int(11) NOT NULL auto_increment,
@@ -489,7 +489,7 @@ function update042to05(){
 			KEY  (`FK_enterprise`),
 			KEY (`FK_contract`)
 				) TYPE=MyISAM;";
-		$DB->query($query) or die("0.5 CREATE TABLE glpi_contrat_enterprise ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.5 CREATE TABLE glpi_contrat_enterprise ".$LANG['update'][90].$DB->error());
 
 		$query= "CREATE TABLE `glpi_infocoms` (
 			`ID` int(11) NOT NULL auto_increment,
@@ -514,7 +514,7 @@ function update042to05(){
 			KEY `FK_enterprise` (`FK_enterprise`),
 			KEY `buy_date` (`buy_date`)
 				) TYPE=MyISAM;";
-		$DB->query($query) or die("0.5 CREATE TABLE glpi_infocom ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.5 CREATE TABLE glpi_infocom ".$LANG['update'][90].$DB->error());
 
 		///// Move warranty infos from item to infocoms.
 
@@ -531,11 +531,11 @@ function update042to05(){
 		if (isMaintenanceUsed()){
 
 			$query="INSERT INTO `glpi_contracts` VALUES (1, 'Maintenance', '', '0', 5, '2005-01-01', 120, 0, 0, 0, 0, '', '', 'N', '00:00:00', '00:00:00', '00:00:00', '00:00:00', 'N', '00:00:00', '00:00:00', 'N');";
-			$result=$DB->query($query) or die("0.5 insert_init for update maintenace ".$LANG["update"][90].$DB->error());
+			$result=$DB->query($query) or die("0.5 insert_init for update maintenace ".$LANG['update'][90].$DB->error());
 
 			if ($result){
 				$query="SELECT ID FROM glpi_contracts;";
-				$result=$DB->query($query) or die("0.5 select_init for update maintenace ".$LANG["update"][90].$DB->error());
+				$result=$DB->query($query) or die("0.5 select_init for update maintenace ".$LANG['update'][90].$DB->error());
 				if ($result){
 					$data=$DB->fetch_array($result);
 					$IDcontract=$data["ID"];
@@ -556,7 +556,7 @@ function update042to05(){
 		// R�up�ation des couples existants
 		$query="SELECT DISTINCT glpi_computers.os AS ID , glpi_computers.osver AS VERS, glpi_dropdown_os.name as NAME FROM glpi_computers 
 			LEFT JOIN glpi_dropdown_os ON glpi_dropdown_os.ID=glpi_computers.os ORDER BY glpi_computers.os, glpi_computers.osver";
-		$result=$DB->query($query) or die("0.5 select for update OS ".$LANG["update"][90].$DB->error());
+		$result=$DB->query($query) or die("0.5 select for update OS ".$LANG['update'][90].$DB->error());
 		$valeur=array();
 		$curros=-1;
 		$currvers="-------------------------";
@@ -567,36 +567,36 @@ function update042to05(){
 
 				if (!empty($data["VERS"])){
 					$query_update="UPDATE glpi_dropdown_os SET name='".$data["NAME"]." - ".$data["VERS"]."' WHERE ID='".$data["ID"]."'";
-					$DB->query($query_update) or die("0.5 update for update OS ".$LANG["update"][90].$DB->error());
+					$DB->query($query_update) or die("0.5 update for update OS ".$LANG['update'][90].$DB->error());
 				}
 
 			} else { // OS deja mis a jour -> creation d'un nouvel OS et mise a jour des elements
 				$newname=$data["NAME"]." - ".$data["VERS"];
 				$query_insert="INSERT INTO glpi_dropdown_os (name) VALUES ('$newname');";
-				$DB->query($query_insert) or die("0.5 insert for update OS ".$LANG["update"][90].$DB->error());
+				$DB->query($query_insert) or die("0.5 insert for update OS ".$LANG['update'][90].$DB->error());
 				$query_select="SELECT ID from  glpi_dropdown_os WHERE name = '$newname';";
-				$res=$DB->query($query_select) or die("0.5 select for update OS ".$LANG["update"][90].$DB->error());
+				$res=$DB->query($query_select) or die("0.5 select for update OS ".$LANG['update'][90].$DB->error());
 				if ($DB->numrows($res)==1){
 					$query_update="UPDATE glpi_computers SET os='".$DB->result($res,0,"ID")."' WHERE os='".$data["ID"]."' AND osver='".$data["VERS"]."'";
-					$DB->query($query_update) or die("0.5 update2 for update OS ".$LANG["update"][90].$DB->error());
+					$DB->query($query_update) or die("0.5 update2 for update OS ".$LANG['update'][90].$DB->error());
 				}
 
 			}
 		}
 		$DB->free_result($result);
 		$query_alter= "ALTER TABLE `glpi_computers` DROP `osver` ";
-		$DB->query($query_alter) or die("0.5 alter for update OS ".$LANG["update"][90].$DB->error());
+		$DB->query($query_alter) or die("0.5 alter for update OS ".$LANG['update'][90].$DB->error());
 	}
 
 	// Ajout Fabriquant computer
 	if(!FieldExists("glpi_computers","FK_glpi_enterprise")) {
 
 		$query = "ALTER TABLE `glpi_computers` ADD `FK_glpi_enterprise` INT(11) DEFAULT '0' NOT NULL ;";
-		$DB->query($query) or die("0.5 add field manufacturer ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.5 add field manufacturer ".$LANG['update'][90].$DB->error());
 
 
 		$query="ALTER TABLE `glpi_computers` ADD INDEX (`FK_glpi_enterprise`)" ;
-		$DB->query($query) or die("0.5 alter field manufacturer ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.5 alter field manufacturer ".$LANG['update'][90].$DB->error());
 
 	}
 
@@ -604,10 +604,10 @@ function update042to05(){
 	if(!FieldExists("glpi_printers","FK_glpi_enterprise")) {
 
 		$query = "ALTER TABLE `glpi_printers` ADD `FK_glpi_enterprise` INT(11) DEFAULT '0' NOT NULL ;";
-		$DB->query($query) or die("0.5 add field manufacturer ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.5 add field manufacturer ".$LANG['update'][90].$DB->error());
 
 		$query="ALTER TABLE `glpi_printers` ADD INDEX (`FK_glpi_enterprise`)" ;
-		$DB->query($query) or die("0.5 alter field manufacturer ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.5 alter field manufacturer ".$LANG['update'][90].$DB->error());
 
 
 	}
@@ -616,10 +616,10 @@ function update042to05(){
 	if(!FieldExists("glpi_networking","FK_glpi_enterprise")) {
 
 		$query = "ALTER TABLE `glpi_networking` ADD `FK_glpi_enterprise` INT(11) DEFAULT '0' NOT NULL ;";
-		$DB->query($query) or die("0.5 add field manufacturer ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.5 add field manufacturer ".$LANG['update'][90].$DB->error());
 
 		$query="ALTER TABLE `glpi_networking` ADD INDEX (`FK_glpi_enterprise`)" ;
-		$DB->query($query) or die("0.5 alter field manufacturer ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.5 alter field manufacturer ".$LANG['update'][90].$DB->error());
 
 
 	}
@@ -628,10 +628,10 @@ function update042to05(){
 	if(!FieldExists("glpi_monitors","FK_glpi_enterprise")) {
 
 		$query = "ALTER TABLE `glpi_monitors` ADD `FK_glpi_enterprise` INT(11) DEFAULT '0' NOT NULL ;";
-		$DB->query($query) or die("0.5 add field manufacturer ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.5 add field manufacturer ".$LANG['update'][90].$DB->error());
 
 		$query="ALTER TABLE `glpi_monitors` ADD INDEX (`FK_glpi_enterprise`)" ;
-		$DB->query($query) or die("0.5 alter field manufacturer ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.5 alter field manufacturer ".$LANG['update'][90].$DB->error());
 
 
 	}
@@ -640,10 +640,10 @@ function update042to05(){
 	if(!FieldExists("glpi_software","FK_glpi_enterprise")) {
 
 		$query = "ALTER TABLE `glpi_software` ADD `FK_glpi_enterprise` INT(11) DEFAULT '0' NOT NULL ;";
-		$DB->query($query) or die("0.5 add field manufacturer ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.5 add field manufacturer ".$LANG['update'][90].$DB->error());
 
 		$query="ALTER TABLE `glpi_software` ADD INDEX (`FK_glpi_enterprise`)" ;
-		$DB->query($query) or die("0.5 alter field manufacturer ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.5 alter field manufacturer ".$LANG['update'][90].$DB->error());
 
 
 	}
@@ -652,10 +652,10 @@ function update042to05(){
 	if(!FieldExists("glpi_peripherals","FK_glpi_enterprise")) {
 
 		$query = "ALTER TABLE `glpi_peripherals` ADD `FK_glpi_enterprise` INT(11) DEFAULT '0' NOT NULL ;";
-		$DB->query($query) or die("0.5 add field manufacturer ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.5 add field manufacturer ".$LANG['update'][90].$DB->error());
 
 		$query="ALTER TABLE `glpi_peripherals` ADD INDEX (`FK_glpi_enterprise`)" ;
-		$DB->query($query) or die("0.5 alter field manufacturer ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.5 alter field manufacturer ".$LANG['update'][90].$DB->error());
 
 
 	}
@@ -664,10 +664,10 @@ function update042to05(){
 	if(!FieldExists("glpi_peripherals","deleted")) {
 
 		$query = "ALTER TABLE `glpi_peripherals` ADD `deleted` ENUM('Y', 'N') DEFAULT 'N' NOT NULL ;";
-		$DB->query($query) or die("0.5 add field deleted ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.5 add field deleted ".$LANG['update'][90].$DB->error());
 
 		$query="ALTER TABLE `glpi_peripherals` ADD INDEX (`deleted`)" ;
-		$DB->query($query) or die("0.5 alter field deleted ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.5 alter field deleted ".$LANG['update'][90].$DB->error());
 
 
 	}
@@ -676,10 +676,10 @@ function update042to05(){
 	if(!FieldExists("glpi_software","deleted")) {
 
 		$query = "ALTER TABLE `glpi_software` ADD `deleted` ENUM('Y', 'N') DEFAULT 'N' NOT NULL ;";
-		$DB->query($query) or die("0.5 add field deleted ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.5 add field deleted ".$LANG['update'][90].$DB->error());
 
 		$query="ALTER TABLE `glpi_software` ADD INDEX (`deleted`)" ;
-		$DB->query($query) or die("0.5 alter field deleted ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.5 alter field deleted ".$LANG['update'][90].$DB->error());
 
 
 	}
@@ -688,10 +688,10 @@ function update042to05(){
 	if(!FieldExists("glpi_monitors","deleted")) {
 
 		$query = "ALTER TABLE `glpi_monitors` ADD `deleted` ENUM('Y', 'N') DEFAULT 'N' NOT NULL ;";
-		$DB->query($query) or die("0.5 add field deleted ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.5 add field deleted ".$LANG['update'][90].$DB->error());
 
 		$query="ALTER TABLE `glpi_monitors` ADD INDEX (`deleted`)" ;
-		$DB->query($query) or die("0.5 alter field deleted ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.5 alter field deleted ".$LANG['update'][90].$DB->error());
 
 
 	}
@@ -700,10 +700,10 @@ function update042to05(){
 	if(!FieldExists("glpi_networking","deleted")) {
 
 		$query = "ALTER TABLE `glpi_networking` ADD `deleted` ENUM('Y', 'N') DEFAULT 'N' NOT NULL ;";
-		$DB->query($query) or die("0.5 add field deleted ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.5 add field deleted ".$LANG['update'][90].$DB->error());
 
 		$query="ALTER TABLE `glpi_networking` ADD INDEX (`deleted`)" ;
-		$DB->query($query) or die("0.5 alter field deleted ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.5 alter field deleted ".$LANG['update'][90].$DB->error());
 
 
 	}
@@ -711,10 +711,10 @@ function update042to05(){
 	if(!FieldExists("glpi_printers","deleted")) {
 
 		$query = "ALTER TABLE `glpi_printers` ADD `deleted` ENUM('Y', 'N') DEFAULT 'N' NOT NULL ;";
-		$DB->query($query) or die("0.5 add field deleted ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.5 add field deleted ".$LANG['update'][90].$DB->error());
 
 		$query="ALTER TABLE `glpi_printers` ADD INDEX (`deleted`)" ;
-		$DB->query($query) or die("0.5 alter field deleted ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.5 alter field deleted ".$LANG['update'][90].$DB->error());
 
 
 	}
@@ -722,10 +722,10 @@ function update042to05(){
 	if(!FieldExists("glpi_computers","deleted")) {
 
 		$query = "ALTER TABLE `glpi_computers` ADD `deleted` ENUM('Y', 'N') DEFAULT 'N' NOT NULL ;";
-		$DB->query($query) or die("0.5 add field deleted ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.5 add field deleted ".$LANG['update'][90].$DB->error());
 
 		$query="ALTER TABLE `glpi_computers` ADD INDEX (`deleted`)" ;
-		$DB->query($query) or die("0.5 alter field deleted ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.5 alter field deleted ".$LANG['update'][90].$DB->error());
 
 
 	}
@@ -734,13 +734,13 @@ function update042to05(){
 	if(!FieldExists("glpi_peripherals","is_template")) {
 
 		$query = "ALTER TABLE `glpi_peripherals` ADD `is_template` ENUM('0', '1') DEFAULT '0' NOT NULL , ADD `tplname` VARCHAR(255) ;";
-		$DB->query($query) or die("0.5 add field deleted ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.5 add field deleted ".$LANG['update'][90].$DB->error());
 
 		$query="INSERT INTO glpi_peripherals (is_template,tplname) VALUES ('1','Blank Template')";
-		$DB->query($query) or die("0.5 add blank template ".$LANG["update"][90].$DB->error());	
+		$DB->query($query) or die("0.5 add blank template ".$LANG['update'][90].$DB->error());	
 
 		$query="ALTER TABLE `glpi_peripherals` ADD INDEX (`is_template`)" ;
-		$DB->query($query) or die("0.5 alter field is_template ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.5 alter field is_template ".$LANG['update'][90].$DB->error());
 
 
 	}
@@ -749,13 +749,13 @@ function update042to05(){
 	if(!FieldExists("glpi_software","is_template")) {
 
 		$query = "ALTER TABLE `glpi_software` ADD `is_template` ENUM('0', '1') DEFAULT '0' NOT NULL , ADD `tplname` VARCHAR(255) ;";
-		$DB->query($query) or die("0.5 add field deleted ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.5 add field deleted ".$LANG['update'][90].$DB->error());
 
 		$query="INSERT INTO glpi_software (is_template,tplname) VALUES ('1','Blank Template')";
-		$DB->query($query) or die("0.5 add blank template ".$LANG["update"][90].$DB->error());	
+		$DB->query($query) or die("0.5 add blank template ".$LANG['update'][90].$DB->error());	
 
 		$query="ALTER TABLE `glpi_software` ADD INDEX (`is_template`)" ;
-		$DB->query($query) or die("0.5 alter field is_template ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.5 alter field is_template ".$LANG['update'][90].$DB->error());
 
 	}
 
@@ -763,33 +763,33 @@ function update042to05(){
 	if(!FieldExists("glpi_monitors","is_template")) {
 
 		$query = "ALTER TABLE `glpi_monitors` ADD `is_template` ENUM('0', '1') DEFAULT '0' NOT NULL , ADD `tplname` VARCHAR(255) ;";
-		$DB->query($query) or die("0.5 add field deleted ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.5 add field deleted ".$LANG['update'][90].$DB->error());
 
 		$query="INSERT INTO glpi_monitors (is_template,tplname) VALUES ('1','Blank Template')";
-		$DB->query($query) or die("0.5 add blank template ".$LANG["update"][90].$DB->error());	
+		$DB->query($query) or die("0.5 add blank template ".$LANG['update'][90].$DB->error());	
 
 		$query="ALTER TABLE `glpi_monitors` ADD INDEX (`is_template`)" ;
-		$DB->query($query) or die("0.5 alter field is_template ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.5 alter field is_template ".$LANG['update'][90].$DB->error());
 
 
 	}
 
 	if(!isIndex("glpi_computers", "is_template")) {
 		$query = "ALTER TABLE `glpi_computers` ADD INDEX (`is_template`) ";
-		$DB->query($query) or die("5 ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("5 ".$LANG['update'][90].$DB->error());
 	}
 
 	// Ajout template networking
 	if(!FieldExists("glpi_networking","is_template")) {
 
 		$query = "ALTER TABLE `glpi_networking` ADD `is_template` ENUM('0', '1') DEFAULT '0' NOT NULL , ADD `tplname` VARCHAR(255) ;";
-		$DB->query($query) or die("0.5 add field deleted ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.5 add field deleted ".$LANG['update'][90].$DB->error());
 
 		$query="INSERT INTO glpi_networking (is_template,tplname) VALUES ('1','Blank Template')";
-		$DB->query($query) or die("0.5 add blank template ".$LANG["update"][90].$DB->error());	
+		$DB->query($query) or die("0.5 add blank template ".$LANG['update'][90].$DB->error());	
 
 		$query="ALTER TABLE `glpi_networking` ADD INDEX (`is_template`)" ;
-		$DB->query($query) or die("0.5 alter field is_template ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.5 alter field is_template ".$LANG['update'][90].$DB->error());
 
 
 	}
@@ -797,13 +797,13 @@ function update042to05(){
 	if(!FieldExists("glpi_printers","is_template")) {
 
 		$query = "ALTER TABLE `glpi_printers` ADD `is_template` ENUM('0', '1') DEFAULT '0' NOT NULL , ADD `tplname` VARCHAR(255) ;";
-		$DB->query($query) or die("0.5 add field deleted ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.5 add field deleted ".$LANG['update'][90].$DB->error());
 
 		$query="INSERT INTO glpi_printers (is_template,tplname) VALUES ('1','Blank Template')";
-		$DB->query($query) or die("0.5 add blank template ".$LANG["update"][90].$DB->error());	
+		$DB->query($query) or die("0.5 add blank template ".$LANG['update'][90].$DB->error());	
 
 		$query="ALTER TABLE `glpi_printers` ADD INDEX (`is_template`)" ;
-		$DB->query($query) or die("0.5 alter field is_template ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.5 alter field is_template ".$LANG['update'][90].$DB->error());
 
 
 
@@ -814,13 +814,13 @@ function update042to05(){
 		$DB->query($query) or die("Error : ".$query." ".$DB->error());
 
 		$query="ALTER TABLE `glpi_printers` ADD INDEX (`date_mod`)" ;
-		$DB->query($query) or die("0.5 alter field date_mod ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.5 alter field date_mod ".$LANG['update'][90].$DB->error());
 
 	}
 
 	if(!isIndex("glpi_computers", "date_mod")) {
 		$query = "ALTER TABLE `glpi_computers` ADD INDEX (`date_mod`) ";
-		$DB->query($query) or die("5 ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("5 ".$LANG['update'][90].$DB->error());
 	}
 
 	// Ajout date_mod
@@ -829,7 +829,7 @@ function update042to05(){
 		$DB->query($query) or die("Error : ".$query." ".$DB->error());
 
 		$query="ALTER TABLE `glpi_monitors` ADD INDEX (`date_mod`)" ;
-		$DB->query($query) or die("0.5 alter field date_mod ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.5 alter field date_mod ".$LANG['update'][90].$DB->error());
 	}
 
 	// Ajout date_mod
@@ -838,7 +838,7 @@ function update042to05(){
 		$DB->query($query) or die("Error : ".$query." ".$DB->error());
 
 		$query="ALTER TABLE `glpi_software` ADD INDEX (`date_mod`)" ;
-		$DB->query($query) or die("0.5 alter field date_mod ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.5 alter field date_mod ".$LANG['update'][90].$DB->error());
 	}
 
 	// Ajout date_mod
@@ -847,7 +847,7 @@ function update042to05(){
 		$DB->query($query) or die("Error : ".$query." ".$DB->error());
 
 		$query="ALTER TABLE `glpi_networking` ADD INDEX (`date_mod`)" ;
-		$DB->query($query) or die("0.5 alter field date_mod ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.5 alter field date_mod ".$LANG['update'][90].$DB->error());
 	}
 
 	// Ajout tech_num
@@ -856,7 +856,7 @@ function update042to05(){
 		$DB->query($query) or die("Error : ".$query." ".$DB->error());
 
 		$query="ALTER TABLE `glpi_computers` ADD INDEX (`tech_num`)" ;
-		$DB->query($query) or die("0.5 alter field tech_num ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.5 alter field tech_num ".$LANG['update'][90].$DB->error());
 	}
 	// Ajout tech_num
 	if(!FieldExists("glpi_networking","tech_num")) {
@@ -864,7 +864,7 @@ function update042to05(){
 		$DB->query($query) or die("Error : ".$query." ".$DB->error());
 
 		$query="ALTER TABLE `glpi_networking` ADD INDEX (`tech_num`)" ;
-		$DB->query($query) or die("0.5 alter field tech_num ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.5 alter field tech_num ".$LANG['update'][90].$DB->error());
 	}
 	// Ajout tech_num
 	if(!FieldExists("glpi_printers","tech_num")) {
@@ -872,7 +872,7 @@ function update042to05(){
 		$DB->query($query) or die("Error : ".$query." ".$DB->error());
 
 		$query="ALTER TABLE `glpi_printers` ADD INDEX (`tech_num`)" ;
-		$DB->query($query) or die("0.5 alter field tech_num ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.5 alter field tech_num ".$LANG['update'][90].$DB->error());
 	}
 
 	// Ajout tech_num
@@ -881,7 +881,7 @@ function update042to05(){
 		$DB->query($query) or die("Error : ".$query." ".$DB->error());
 
 		$query="ALTER TABLE `glpi_monitors` ADD INDEX (`tech_num`)" ;
-		$DB->query($query) or die("0.5 alter field tech_num ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.5 alter field tech_num ".$LANG['update'][90].$DB->error());
 	}
 
 	// Ajout tech_num
@@ -890,7 +890,7 @@ function update042to05(){
 		$DB->query($query) or die("Error : ".$query." ".$DB->error());
 
 		$query="ALTER TABLE `glpi_software` ADD INDEX (`tech_num`)" ;
-		$DB->query($query) or die("0.5 alter field tech_num ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.5 alter field tech_num ".$LANG['update'][90].$DB->error());
 	}
 
 	// Ajout tech_num
@@ -899,7 +899,7 @@ function update042to05(){
 		$DB->query($query) or die("Error : ".$query." ".$DB->error());
 
 		$query="ALTER TABLE `glpi_peripherals` ADD INDEX (`tech_num`)" ;
-		$DB->query($query) or die("0.5 alter field tech_num ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.5 alter field tech_num ".$LANG['update'][90].$DB->error());
 	}
 
 	// Ajout tech_num
@@ -908,7 +908,7 @@ function update042to05(){
 		$DB->query($query) or die("Error : ".$query." ".$DB->error());
 
 		$query="ALTER TABLE `glpi_software` ADD INDEX (`tech_num`)" ;
-		$DB->query($query) or die("0.5 alter field tech_num ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.5 alter field tech_num ".$LANG['update'][90].$DB->error());
 	}
 
 	// Ajout tech_num
@@ -1042,42 +1042,42 @@ function update042to05(){
 
 	if(!isIndex("glpi_contacts", "deleted")) {
 		$query = "ALTER TABLE `glpi_contacts` ADD INDEX `deleted` (`deleted`) ";
-		$DB->query($query) or die("0.5 alter field deleted".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.5 alter field deleted".$LANG['update'][90].$DB->error());
 	}
 
 	if(!isIndex("glpi_contacts", "type")) {
 		$query = "ALTER TABLE `glpi_contacts` ADD INDEX `type` (`type`) ";
-		$DB->query($query) or die("0.5 alter field type ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.5 alter field type ".$LANG['update'][90].$DB->error());
 	}
 
 	if(!isIndex("glpi_event_log", "itemtype")) {
 		$query = "ALTER TABLE `glpi_event_log` ADD INDEX (`itemtype`) ";
-		$DB->query($query) or die("0.5 alter field itemtype ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.5 alter field itemtype ".$LANG['update'][90].$DB->error());
 	}
 
 	if(!isIndex("glpi_followups", "date")) {
 		$query = "ALTER TABLE `glpi_followups` ADD INDEX (`date`) ";
-		$DB->query($query) or die("0.5 alter field date ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.5 alter field date ".$LANG['update'][90].$DB->error());
 	}
 
 	if(!isIndex("glpi_tracking", "category")) {
 		$query = "ALTER TABLE `glpi_tracking` ADD INDEX (`category`) ";
-		$DB->query($query) or die("0.5 alter field category ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.5 alter field category ".$LANG['update'][90].$DB->error());
 	}
 
 	if(!FieldExists("glpi_config","date_fiscale")) {
 		$query = "ALTER TABLE `glpi_config` ADD `date_fiscale` date NOT NULL default '2005-12-31'";
-		$DB->query($query) or die("0.5 add field date_fiscale ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.5 add field date_fiscale ".$LANG['update'][90].$DB->error());
 	}
 
 	if(!FieldExists("glpi_networking","ifmac")) {
 		$query = "ALTER TABLE `glpi_networking` ADD `ifmac` char(30) NOT NULL default ''";
-		$DB->query($query) or die("0.5 add field ifmac ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.5 add field ifmac ".$LANG['update'][90].$DB->error());
 	}
 
 	if(!FieldExists("glpi_networking","ifaddr")) {
 		$query = "ALTER TABLE `glpi_networking` ADD `ifaddr` char(30) NOT NULL default ''";
-		$DB->query($query) or die("0.5 add field ifaddr ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.5 add field ifaddr ".$LANG['update'][90].$DB->error());
 	}
 
 	if(!TableExists("glpi_repair_item")) {
@@ -1091,20 +1091,20 @@ function update042to05(){
 			   KEY device_type_2 (device_type,id_device)
 				   )TYPE=MyISAM;";
 
-		$DB->query($query) or die("0.5 create glpirepair_item table ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.5 create glpirepair_item table ".$LANG['update'][90].$DB->error());
 	}
 
 	if(TableExists("glpi_prefs")&&!FieldExists("glpi_prefs","username")) {
 
 		if(isIndex("glpi_prefs", "user")) {
 			$query = " ALTER TABLE `glpi_prefs` DROP INDEX `user`;";
-			$DB->query($query) or die("0.5 drop key user ".$LANG["update"][90].$DB->error());
+			$DB->query($query) or die("0.5 drop key user ".$LANG['update'][90].$DB->error());
 		}
 
 		$query = " ALTER TABLE `glpi_prefs` CHANGE `user` `username` VARCHAR(80) NOT NULL;";
-		$DB->query($query) or die("0.5 change user to username ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.5 change user to username ".$LANG['update'][90].$DB->error());
 		$query = "ALTER TABLE `glpi_prefs` ADD UNIQUE (`username`) ";
-		$DB->query($query) or die("0.5 alter field username ".$LANG["update"][90].$DB->error());
+		$DB->query($query) or die("0.5 alter field username ".$LANG['update'][90].$DB->error());
 	}
 
 	//Mise a jour 0.5 verification des prefs pour chaque user.
@@ -1123,7 +1123,7 @@ function update042to05(){
 			while($line = $DB->fetch_array($result)) {
 				if(!in_array($line["name"],$prefs)) {
 					$query_insert =  "INSERT INTO `glpi_prefs` (`username` , `tracking_order` , `language`) VALUES ('".$line["name"]."', 'no', 'english')";
-					$DB->query($query_insert) or die("glpi maj prefs ".$LANG["update"][90].$DB->error()); 
+					$DB->query($query_insert) or die("glpi maj prefs ".$LANG['update'][90].$DB->error()); 
 				}
 			}
 		}
@@ -1169,12 +1169,12 @@ function updateMaintenanceInfos($table,$type,$ID){
 	$result=$DB->query($query);
 	while ($data=$DB->fetch_array($result)){
 		$query_insert="INSERT INTO glpi_contract_device (FK_contract,FK_device,device_type) VALUES ('$ID','".$data["ID"]."','$type')";	
-		$result_insert=$DB->query($query_insert) or die("0.5 insert for update maintenance ".$LANG["update"][90].$DB->error());
+		$result_insert=$DB->query($query_insert) or die("0.5 insert for update maintenance ".$LANG['update'][90].$DB->error());
 	}
 	$DB->free_result($result);
 
 	$query_drop =  "ALTER TABLE `$table` DROP `maintenance`";
-	$result_drop=$DB->query($query_drop) or die("0.5 drop for update maintenance ".$LANG["update"][90].$DB->error());
+	$result_drop=$DB->query($query_drop) or die("0.5 drop for update maintenance ".$LANG['update'][90].$DB->error());
 
 }
 
@@ -1186,7 +1186,7 @@ function updateWarrantyInfos($table,$type){
 	global $DB,$LANG;
 	$elements=array();
 	$query="SELECT ID,achat_date,date_fin_garantie from $table ORDER BY achat_date,date_fin_garantie";
-	$result=$DB->query($query) or die("0.5 select for update warranty ".$LANG["update"][90].$DB->error());
+	$result=$DB->query($query) or die("0.5 select for update warranty ".$LANG['update'][90].$DB->error());
 	while ($data=$DB->fetch_array($result)){
 		if (($data['achat_date']!="0000-00-00"&&!empty($data['achat_date']))||($data['date_fin_garantie']!="0000-00-00"&&!empty($data['date_fin_garantie']))){
 			$IDitem=$data['ID'];
@@ -1196,15 +1196,15 @@ function updateWarrantyInfos($table,$type){
 			if ($data['date_fin_garantie']!="0000-00-00"&&!empty($data['date_fin_garantie']))
 				$duration=round(date_diff($achat_date,$data['date_fin_garantie']),2);
 			$query_insert="INSERT INTO glpi_infocoms (device_type,FK_device,buy_date,warranty_duration) VALUES ('$type','$IDitem','".$achat_date."','$duration')";
-			$result_insert=$DB->query($query_insert) or die("0.5 insert for update warranty ".$LANG["update"][90].$DB->error());
+			$result_insert=$DB->query($query_insert) or die("0.5 insert for update warranty ".$LANG['update'][90].$DB->error());
 		}
 	}
 	$DB->free_result($result);
 
 	$query_drop =  "ALTER TABLE `$table` DROP `achat_date`";
-	$result_drop=$DB->query($query_drop) or die("0.5 drop1 for update warranty ".$LANG["update"][90].$DB->error());
+	$result_drop=$DB->query($query_drop) or die("0.5 drop1 for update warranty ".$LANG['update'][90].$DB->error());
 	$query_drop =  "ALTER TABLE `$table` DROP `date_fin_garantie`";
-	$result_drop=$DB->query($query_drop) or die("0.5 drop2 for update warranty ".$LANG["update"][90].$DB->error());
+	$result_drop=$DB->query($query_drop) or die("0.5 drop2 for update warranty ".$LANG['update'][90].$DB->error());
 
 }
 /// Update to 0.5 :Is maintenance used ?
@@ -1213,7 +1213,7 @@ function isMaintenanceUsed(){
 	$tables=array("glpi_computers","glpi_printers","glpi_monitors","glpi_peripherals","glpi_networking");
 	foreach ($tables as $key => $table){
 		$query="SELECT ID from $table WHERE maintenance='1';";
-		$result=$DB->query($query) or die("0.5 find for update maintenance ".$LANG["update"][90].$DB->error());
+		$result=$DB->query($query) or die("0.5 find for update maintenance ".$LANG['update'][90].$DB->error());
 		if ($DB->numrows($result)>0) return true;
 	}
 	return false;
@@ -1226,7 +1226,7 @@ function dropMaintenanceField(){
 	$tables=array("glpi_computers","glpi_printers","glpi_monitors","glpi_peripherals","glpi_networking");
 	foreach ($tables as $key => $table){
 		$query="ALTER TABLE `$table` DROP `maintenance`";
-		$result=$DB->query($query) or die("0.5 alter for update maintenance ".$LANG["update"][90].$DB->error());
+		$result=$DB->query($query) or die("0.5 alter for update maintenance ".$LANG['update'][90].$DB->error());
 	}
 }
 
@@ -1250,7 +1250,7 @@ function compDpd2Device($devtype,$devname,$dpdname,$compDpdName,$specif='') {
 	$result = $DB->query($query);
 	while($lndropd = $DB->fetch_array($result)) {
 		$query2 = "insert into glpi_device_".$devname." (designation) values ('".addslashes($lndropd["name"])."')";
-		$DB->query($query2) or die("unable to transfer ".$dpdname." to ".$devname."  ".$LANG["update"][90].$DB->error());
+		$DB->query($query2) or die("unable to transfer ".$dpdname." to ".$devname."  ".$LANG['update'][90].$DB->error());
 		$devid = $DB->insert_id();
 		$query3 = "select * from glpi_computers where ".$compDpdName." = '".$lndropd["ID"]."'";
 		$result3 = $DB->query($query3);
@@ -1263,7 +1263,7 @@ function compDpd2Device($devtype,$devname,$dpdname,$compDpdName,$specif='') {
 				}
 
 			}
-			$DB->query($query4) or die("unable to migrate from ".$dpdname." to ".$devname." for item computer:".$lncomp["ID"]."  ".$LANG["update"][90].$DB->error());
+			$DB->query($query4) or die("unable to migrate from ".$dpdname." to ".$devname." for item computer:".$lncomp["ID"]."  ".$LANG['update'][90].$DB->error());
 		}
 	}
 	$DB->free_result($result);
