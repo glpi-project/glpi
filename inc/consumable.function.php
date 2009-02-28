@@ -59,13 +59,13 @@ function showConsumableAdd($ID) {
 		echo "<div class='center'>&nbsp;<table class='tab_cadre_fixe'>";
 		echo "<tr>";
 		echo "<td align='center' class='tab_bg_2'>";
-		echo "<input type='submit' name='add_several' value=\"".$LANG["buttons"][8]."\" class='submit'>";
+		echo "<input type='submit' name='add_several' value=\"".$LANG['buttons'][8]."\" class='submit'>";
 		echo "<input type='hidden' name='tID' value=\"$ID\">\n";
 	
 		echo "&nbsp;&nbsp;";
 		dropdownInteger('to_add',1,1,100);
 		echo "&nbsp;&nbsp;";
-		echo $LANG["consumables"][16];
+		echo $LANG['consumables'][16];
 		echo "</td></tr>";
 		echo "</table></div>";
 		echo "</form><br>";
@@ -111,24 +111,24 @@ function showConsumables ($tID,$show_old=0) {
 				}
 				else { // Old
 					echo "<tr><th colspan='8'>";
-					echo $LANG["consumables"][35];
+					echo $LANG['consumables'][35];
 					echo "</th></tr>";
 	
 				}
 				$i=0;
-				echo "<tr><th>".$LANG["common"][2]."</th><th>".$LANG["consumables"][23]."</th><th>".$LANG["cartridges"][24]."</th><th>".$LANG["consumables"][26]."</th>";
+				echo "<tr><th>".$LANG['common'][2]."</th><th>".$LANG['consumables'][23]."</th><th>".$LANG['cartridges'][24]."</th><th>".$LANG['consumables'][26]."</th>";
 	
 	
 				if ($show_old){
-					echo "<th>".$LANG["common"][34]."</th>";
+					echo "<th>".$LANG['common'][34]."</th>";
 				}
 	
-				echo "<th>".$LANG["financial"][3]."</th>";
+				echo "<th>".$LANG['financial'][3]."</th>";
 	
 				if (!$show_old&&$canedit){
 					echo "<th>";
 					dropdownAllUsers("id_user",0,1,$cartype->fields["FK_entities"]);
-					echo "&nbsp;<input type='submit' class='submit' name='give' value='".$LANG["consumables"][32]."'>";
+					echo "&nbsp;<input type='submit' class='submit' name='give' value='".$LANG['consumables'][32]."'>";
 					echo "</th>";
 				} else {echo "<th>&nbsp;</th>";}
 
@@ -139,7 +139,7 @@ function showConsumables ($tID,$show_old=0) {
 			} else {
 	
 				echo "<br>";
-				echo "<div class='center'><strong>".$LANG["consumables"][7]."</strong></div>";
+				echo "<div class='center'><strong>".$LANG['consumables'][7]."</strong></div>";
 				return;
 			}
 		}
@@ -199,13 +199,13 @@ function showConsumables ($tID,$show_old=0) {
 	
 				if ($show_old&&$canedit){
 					echo "<td class='center'>";
-					echo "<a href='".$CFG_GLPI["root_doc"]."/front/consumable.edit.php?restore=restore&amp;ID=".$data["ID"]."&amp;tID=$tID'>".$LANG["consumables"][37]."</a>";
+					echo "<a href='".$CFG_GLPI["root_doc"]."/front/consumable.edit.php?restore=restore&amp;ID=".$data["ID"]."&amp;tID=$tID'>".$LANG['consumables'][37]."</a>";
 					echo "</td>";
 				}						
 	
 				echo "<td class='center'>";
 	
-				echo "<a href='".$CFG_GLPI["root_doc"]."/front/consumable.edit.php?delete=delete&amp;ID=".$data["ID"]."&amp;tID=$tID'>".$LANG["buttons"][6]."</a>";
+				echo "<a href='".$CFG_GLPI["root_doc"]."/front/consumable.edit.php?delete=delete&amp;ID=".$data["ID"]."&amp;tID=$tID'>".$LANG['buttons'][6]."</a>";
 				echo "</td></tr>";
 	
 			}	
@@ -248,13 +248,13 @@ function countConsumables($tID,$alarm,$nohtml=0) {
 		if ($unused<=$alarm)
 			$highlight="class='tab_bg_1_2'";
 		if (!$nohtml)
-			$out.= "<div $highlight>".$LANG["common"][33].":&nbsp;$total&nbsp;&nbsp;&nbsp;<strong>".$LANG["consumables"][13].": $unused</strong>&nbsp;&nbsp;&nbsp;".$LANG["consumables"][15].": $old</div>";			
-		else $out.= $LANG["common"][33].": $total   ".$LANG["consumables"][13].": $unused   ".$LANG["consumables"][15].": $old";			
+			$out.= "<div $highlight>".$LANG['common'][33].":&nbsp;$total&nbsp;&nbsp;&nbsp;<strong>".$LANG['consumables'][13].": $unused</strong>&nbsp;&nbsp;&nbsp;".$LANG['consumables'][15].": $old</div>";			
+		else $out.= $LANG['common'][33].": $total   ".$LANG['consumables'][13].": $unused   ".$LANG['consumables'][15].": $old";			
 
 	} else {
 		if (!$nohtml)
-			$out.= "<div class='tab_bg_1_2'><i>".$LANG["consumables"][9]."</i></div>";
-		else $out.= $LANG["consumables"][9];
+			$out.= "<div class='tab_bg_1_2'><i>".$LANG['consumables'][9]."</i></div>";
+		else $out.= $LANG['consumables'][9];
 	}
 	return $out;
 }	
@@ -356,8 +356,8 @@ function isOldConsumable($cID){
  **/
 function getConsumableStatus($cID){
 	global $LANG;
-	if (isNewConsumable($cID)) return $LANG["consumables"][20];
-	else if (isOldConsumable($cID)) return $LANG["consumables"][22];
+	if (isNewConsumable($cID)) return $LANG['consumables'][20];
+	else if (isOldConsumable($cID)) return $LANG['consumables'][22];
 }
 
 /**
@@ -417,17 +417,17 @@ function showConsumableSummary(){
 
 		// Type			
 		echo "<th>";;
-		echo $LANG["common"][34]."</th>";
+		echo $LANG['common'][34]."</th>";
 
 		foreach ($types as $key => $type){
 			echo "<th>$type</th>";
 			$total[$key]=0;
 		}
-		echo "<th>".$LANG["common"][33]."</th>";
+		echo "<th>".$LANG['common'][33]."</th>";
 		echo "</tr>";
 
 		// new
-		echo "<tr class='tab_bg_2'><td><strong>".$LANG["consumables"][1]."</strong></td>";
+		echo "<tr class='tab_bg_2'><td><strong>".$LANG['consumables'][1]."</strong></td>";
 		$tot=0;
 		foreach ($types as $id_type => $type){
 			if (!isset($new[$id_type])) $new[$id_type]=0;
@@ -450,7 +450,7 @@ function showConsumableSummary(){
 			echo "<td class='center'>".$tot."</td>";
 			echo "</tr>";
 		}
-		echo "<tr class='tab_bg_1'><td><strong>".$LANG["common"][33]."</strong></td>";
+		echo "<tr class='tab_bg_1'><td><strong>".$LANG['common'][33]."</strong></td>";
 		$tot=0;
 		foreach ($types as $id_type => $type){
 			$tot+=$total[$id_type];
@@ -461,7 +461,7 @@ function showConsumableSummary(){
 		echo "</table></div>";
 
 	} else {
-		echo "<div class='center'><strong>".$LANG["consumables"][7]."</strong></div>";
+		echo "<div class='center'><strong>".$LANG['consumables'][7]."</strong></div>";
 	}
 
 }
@@ -505,7 +505,7 @@ function cron_consumable($display=false){
 				}
 
 				// define message alert
-				$message[$data["entity"]].=$LANG["mailing"][35]." ".$data["consname"]." - ".$LANG["consumables"][2].": ".$data["consref"]." - ".$LANG["software"][20].": ".$unused."<br>\n";
+				$message[$data["entity"]].=$LANG['mailing'][35]." ".$data["consname"]." - ".$LANG['consumables'][2].": ".$data["consref"]." - ".$LANG['software'][20].": ".$unused."<br>\n";
 				$items[$data["entity"]][]=$data["consID"];
 
 				//// if alert exists -> delete 

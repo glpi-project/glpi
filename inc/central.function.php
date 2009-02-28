@@ -88,7 +88,7 @@ function showCentralGlobalView(){
 		echo "<br>";
 
 		echo "<div class='center'><strong>";
-		echo $LANG["central"][10];
+		echo $LANG['central'][10];
 		echo "</strong></div>";
 
 		showTrackingList($_SERVER['PHP_SELF'],0,"","","new");
@@ -109,7 +109,7 @@ function showCentralMyView(){
 
 		if ($DB->isSlave() && !$DB->first_connection){	
 			echo "<tr><th colspan='2'><br>";	
-			displayTitle(GLPI_ROOT."/pics/warning.png", $LANG["setup"][809], $LANG["setup"][809]);
+			displayTitle(GLPI_ROOT."/pics/warning.png", $LANG['setup'][809], $LANG['setup'][809]);
 			echo "</th></tr>";
 		}
 		echo "<tr><td class='top'>";

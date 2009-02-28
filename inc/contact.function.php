@@ -73,18 +73,18 @@ function showEnterpriseContact($instID) {
 
 	echo "<form method='post' action=\"".$CFG_GLPI["root_doc"]."/front/contact.form.php\">";
 	echo "<br><br><div class='center'><table class='tab_cadre_fixe'>";
-	echo "<tr><th colspan='7'>".$LANG["financial"][65].":</th></tr>";
-	echo "<tr><th>".$LANG["financial"][26]."</th>";
-	echo "<th>".$LANG["entity"][0]."</th>";
-	echo "<th>".$LANG["financial"][79]."</th>";
-	echo "<th>".$LANG["help"][35]."</th>";
-	echo "<th>".$LANG["financial"][30]."</th>";
-	echo "<th>".$LANG["financial"][45]."</th>";
+	echo "<tr><th colspan='7'>".$LANG['financial'][65].":</th></tr>";
+	echo "<tr><th>".$LANG['financial'][26]."</th>";
+	echo "<th>".$LANG['entity'][0]."</th>";
+	echo "<th>".$LANG['financial'][79]."</th>";
+	echo "<th>".$LANG['help'][35]."</th>";
+	echo "<th>".$LANG['financial'][30]."</th>";
+	echo "<th>".$LANG['financial'][45]."</th>";
 	echo "<th>&nbsp;</th></tr>";
 
 	$used=array();
 	if ($number>0){
-		initNavigateListItems(ENTERPRISE_TYPE,$LANG["common"][18]." = ".$contact->fields['name']);
+		initNavigateListItems(ENTERPRISE_TYPE,$LANG['common'][18]." = ".$contact->fields['name']);
 		while ($data= $DB->fetch_array($result)) {
 			$ID=$data["ID"];
 			addToNavigateListItems(ENTERPRISE_TYPE,$data["entID"]);
@@ -104,7 +104,7 @@ function showEnterpriseContact($instID) {
 			echo "<td class='center'>".$website."</td>";
 			echo "<td align='center' class='tab_bg_2'>";
 			if ($canedit) 
-				echo "<a href='".$CFG_GLPI["root_doc"]."/front/contact.form.php?deleteenterprise=deleteenterprise&amp;ID=$ID&amp;cID=$instID'><strong>".$LANG["buttons"][6]."</strong></a>";
+				echo "<a href='".$CFG_GLPI["root_doc"]."/front/contact.form.php?deleteenterprise=deleteenterprise&amp;ID=$ID&amp;cID=$instID'><strong>".$LANG['buttons'][6]."</strong></a>";
 			else echo "&nbsp;";
 			echo "</td></tr>";
 		}
@@ -123,7 +123,7 @@ function showEnterpriseContact($instID) {
 			} else {
 				dropdown("glpi_enterprises","entID",1,$contact->fields["FK_entities"],$used);
 			}
-			echo "&nbsp;&nbsp;<input type='submit' name='addenterprise' value=\"".$LANG["buttons"][8]."\" class='submit'>";
+			echo "&nbsp;&nbsp;<input type='submit' name='addenterprise' value=\"".$LANG['buttons'][8]."\" class='submit'>";
 			echo "</div>";
 			echo "</td><td>&nbsp;</td><td>&nbsp;</td>";
 			echo "</tr>";

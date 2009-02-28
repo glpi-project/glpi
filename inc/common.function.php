@@ -466,7 +466,7 @@ function getSearchOptions(){
 			if (!isset($SEARCH_OPTION[$key])){
 				$SEARCH_OPTION[$key]=array();
 			} else {
-				$SEARCH_OPTION[$key]+=array('plugins'=>$LANG["common"][29]);
+				$SEARCH_OPTION[$key]+=array('plugins'=>$LANG['common'][29]);
 			}
 
 			$SEARCH_OPTION[$key]+=$val;
@@ -589,117 +589,117 @@ function commonCheckForUseGLPI(){
 	$error = 0;
 
 	// Title
-	echo "<tr><th>".$LANG["install"][6]."</th><th >".$LANG["install"][7]."</th></tr>";
+	echo "<tr><th>".$LANG['install'][6]."</th><th >".$LANG['install'][7]."</th></tr>";
 
 	// Parser test
-	echo "<tr class='tab_bg_1'><td class='left'><b>".$LANG["install"][8]."</b></td>";
+	echo "<tr class='tab_bg_1'><td class='left'><b>".$LANG['install'][8]."</b></td>";
 	// PHP Version  - exclude PHP3, PHP 4 and zend.ze1 compatibility
 	if (substr(phpversion(),0,1) == "5") {
 		// PHP > 5 ok, now check PHP zend.ze1_compatibility_mode
 		if(ini_get("zend.ze1_compatibility_mode") == 1) {
 			$error = 2;
-			echo "<td  class='red'><img src=\"".GLPI_ROOT."/pics/redbutton.png\">".$LANG["install"][10]."</td></tr>";
+			echo "<td  class='red'><img src=\"".GLPI_ROOT."/pics/redbutton.png\">".$LANG['install'][10]."</td></tr>";
 		}else{
-			echo "<td><img src=\"".GLPI_ROOT."/pics/greenbutton.png\" alt='".$LANG["install"][11]."' title='".$LANG["install"][11]."'></td></tr>";
+			echo "<td><img src=\"".GLPI_ROOT."/pics/greenbutton.png\" alt='".$LANG['install'][11]."' title='".$LANG['install'][11]."'></td></tr>";
 		}
 	} else { // PHP <5
 		$error = 2;
-		echo "<td  class='red'><img src=\"".GLPI_ROOT."/pics/redbutton.png\">".$LANG["install"][9]."</td></tr>";
+		echo "<td  class='red'><img src=\"".GLPI_ROOT."/pics/redbutton.png\">".$LANG['install'][9]."</td></tr>";
 	}	
 
 	// Check for mysql extension ni php
-	echo "<tr class='tab_bg_1'><td class='left'><b>".$LANG["install"][71]."</b></td>";
+	echo "<tr class='tab_bg_1'><td class='left'><b>".$LANG['install'][71]."</b></td>";
 	if(!function_exists("mysql_query")) {
-		echo "<td  class='red'><img src=\"".GLPI_ROOT."/pics/redbutton.png\">".$LANG["install"][72]."</td></tr>";
+		echo "<td  class='red'><img src=\"".GLPI_ROOT."/pics/redbutton.png\">".$LANG['install'][72]."</td></tr>";
 		$error = 2;
 	} else {
-		echo "<td><img src=\"".GLPI_ROOT."/pics/greenbutton.png\" alt='".$LANG["install"][73]."' title='".$LANG["install"][73]."'></td></tr>";
+		echo "<td><img src=\"".GLPI_ROOT."/pics/greenbutton.png\" alt='".$LANG['install'][73]."' title='".$LANG['install'][73]."'></td></tr>";
 	}
 
 	// session test
-	echo "<tr class='tab_bg_1'><td class='left'><b>".$LANG["install"][12]."</b></td>";
+	echo "<tr class='tab_bg_1'><td class='left'><b>".$LANG['install'][12]."</b></td>";
 	// check whether session are enabled at all!!
 	if (!extension_loaded('session')) {
 		$error = 2;
-		echo "<td  class='red'><b>".$LANG["install"][13]."</b></td></tr>";
+		echo "<td  class='red'><b>".$LANG['install'][13]."</b></td></tr>";
 	} else {
 		if ($_SESSION["Test_session_GLPI"] == 1			// From install
 			|| isset($_SESSION["glpi_currenttime"])) { 	// From Update
-			echo "<td><img src=\"".GLPI_ROOT."/pics/greenbutton.png\" alt='".$LANG["install"][14]."' title='".$LANG["install"][14]."'></td></tr>";
+			echo "<td><img src=\"".GLPI_ROOT."/pics/greenbutton.png\" alt='".$LANG['install'][14]."' title='".$LANG['install'][14]."'></td></tr>";
 		}
 		else {
 			if($error != 2) $error = 1;
-			echo "<td  class='red'><img src=\"".GLPI_ROOT."/pics/redbutton.png\">".$LANG["install"][15]."</td></tr>";
+			echo "<td  class='red'><img src=\"".GLPI_ROOT."/pics/redbutton.png\">".$LANG['install'][15]."</td></tr>";
 		}
 	}
 
 	//Test for session auto_start
 	if(ini_get('session.auto_start')==1) {
-		echo "<tr class='tab_bg_1'><td class='left'><b>".$LANG["install"][68]."</b></td>";
-		echo "<td class='red'><img src=\"".GLPI_ROOT."/pics/redbutton.png\">".$LANG["install"][69]."</td></tr>";
+		echo "<tr class='tab_bg_1'><td class='left'><b>".$LANG['install'][68]."</b></td>";
+		echo "<td class='red'><img src=\"".GLPI_ROOT."/pics/redbutton.png\">".$LANG['install'][69]."</td></tr>";
 		$error = 2;
 	}
 
 	//Test for option session use trans_id loaded or not.
-	echo "<tr class='tab_bg_1'><td class='left'><b>".$LANG["install"][74]."</b></td>";
+	echo "<tr class='tab_bg_1'><td class='left'><b>".$LANG['install'][74]."</b></td>";
 	//if(ini_get('session.use_trans_sid')) {
 	if (isset($_POST[session_name()])||isset($_GET[session_name()])) {
-		echo "<td class='red'><img src=\"".GLPI_ROOT."/pics/redbutton.png\">".$LANG["install"][75]."</td></tr>";
+		echo "<td class='red'><img src=\"".GLPI_ROOT."/pics/redbutton.png\">".$LANG['install'][75]."</td></tr>";
 		$error = 2;
 	}
 	else {
-		echo "<td><img src=\"".GLPI_ROOT."/pics/greenbutton.png\" alt='".$LANG["install"][76]."' title='".$LANG["install"][76]."'></td></tr>";
+		echo "<td><img src=\"".GLPI_ROOT."/pics/greenbutton.png\" alt='".$LANG['install'][76]."' title='".$LANG['install'][76]."'></td></tr>";
 	}
 
 	//Test for sybase extension loaded or not.
-	echo "<tr class='tab_bg_1'><td class='left'><b>".$LANG["install"][65]."</b></td>";
+	echo "<tr class='tab_bg_1'><td class='left'><b>".$LANG['install'][65]."</b></td>";
 	if(ini_get('magic_quotes_sybase')) {
-		echo "<td class='red'><img src=\"".GLPI_ROOT."/pics/redbutton.png\">".$LANG["install"][66]."</td></tr>";
+		echo "<td class='red'><img src=\"".GLPI_ROOT."/pics/redbutton.png\">".$LANG['install'][66]."</td></tr>";
 		$error = 2;
 	}
 	else {
-		echo "<td><img src=\"".GLPI_ROOT."/pics/greenbutton.png\" alt='".$LANG["install"][67]."' title='".$LANG["install"][67]."'></td></tr>";
+		echo "<td><img src=\"".GLPI_ROOT."/pics/greenbutton.png\" alt='".$LANG['install'][67]."' title='".$LANG['install'][67]."'></td></tr>";
 	}
 
 	//Test for utf8_encode function.
-	echo "<tr class='tab_bg_1'><td class='left'><b>".$LANG["install"][83]."</b></td>";
+	echo "<tr class='tab_bg_1'><td class='left'><b>".$LANG['install'][83]."</b></td>";
 	if(!function_exists('utf8_encode')||!function_exists('utf8_decode')) {
-		echo "<td><img src=\"".GLPI_ROOT."/pics/redbutton.png\" >".$LANG["install"][84]."></td></tr>";
+		echo "<td><img src=\"".GLPI_ROOT."/pics/redbutton.png\" >".$LANG['install'][84]."></td></tr>";
 		$error = 2;
 	}
 	else {
-		echo "<td><img src=\"".GLPI_ROOT."/pics/greenbutton.png\" alt='".$LANG["install"][85]."' title='".$LANG["install"][85]."'></td></tr>";
+		echo "<td><img src=\"".GLPI_ROOT."/pics/greenbutton.png\" alt='".$LANG['install'][85]."' title='".$LANG['install'][85]."'></td></tr>";
 
 	}
 
 	//Test for json_encode function.
-	echo "<tr class='tab_bg_1'><td class='left'><b>".$LANG["install"][102]."</b></td>";
+	echo "<tr class='tab_bg_1'><td class='left'><b>".$LANG['install'][102]."</b></td>";
 	if (!function_exists('json_encode')|!function_exists('json_decode')) {
-		echo "<td><img src=\"".GLPI_ROOT."/pics/redbutton.png\" >".$LANG["install"][103]."></td></tr>";
+		echo "<td><img src=\"".GLPI_ROOT."/pics/redbutton.png\" >".$LANG['install'][103]."></td></tr>";
 		$error = 2;
 	}
 	else {
-		echo "<td><img src=\"".GLPI_ROOT."/pics/greenbutton.png\" alt='".$LANG["install"][85]."' title='".$LANG["install"][85]."'></td></tr>";
+		echo "<td><img src=\"".GLPI_ROOT."/pics/greenbutton.png\" alt='".$LANG['install'][85]."' title='".$LANG['install'][85]."'></td></tr>";
 
 	}
 	
 	// memory test
-	echo "<tr class='tab_bg_1'><td class='left'><b>".$LANG["install"][86]."</b></td>";
+	echo "<tr class='tab_bg_1'><td class='left'><b>".$LANG['install'][86]."</b></td>";
 
 	$mem = getMemoryLimit();
 	
 	if( $mem == "" ){          // memory_limit non compilé -> no memory limit
-		echo "<td><img src=\"".GLPI_ROOT."/pics/greenbutton.png\" alt='".$LANG["install"][95]." - ".$LANG["install"][89]."' title='".$LANG["install"][95]." - ".$LANG["install"][89]."'></td></tr>";
+		echo "<td><img src=\"".GLPI_ROOT."/pics/greenbutton.png\" alt='".$LANG['install'][95]." - ".$LANG['install'][89]."' title='".$LANG['install'][95]." - ".$LANG['install'][89]."'></td></tr>";
 	}
 	else if( $mem == "-1" ){   // memory_limit compilé mais illimité
-		echo "<td><img src=\"".GLPI_ROOT."/pics/greenbutton.png\" alt='".$LANG["install"][96]." - ".$LANG["install"][89]."' title='".$LANG["install"][96]." - ".$LANG["install"][89]."'></td></tr>";
+		echo "<td><img src=\"".GLPI_ROOT."/pics/greenbutton.png\" alt='".$LANG['install'][96]." - ".$LANG['install'][89]."' title='".$LANG['install'][96]." - ".$LANG['install'][89]."'></td></tr>";
 	}
 	else{	
 		if ($mem<64*1024*1024){ // memoire insuffisante
-			echo "<td  class='red'><img src=\"".GLPI_ROOT."/pics/redbutton.png\"><b>".$LANG["install"][87]." $mem octets</b><br>".$LANG["install"][88]."<br>".$LANG["install"][90]."</td></tr>";
+			echo "<td  class='red'><img src=\"".GLPI_ROOT."/pics/redbutton.png\"><b>".$LANG['install'][87]." $mem octets</b><br>".$LANG['install'][88]."<br>".$LANG['install'][90]."</td></tr>";
 		}
 		else{ // on a sufisament de mémoire on passe à la suite
-			echo "<td><img src=\"".GLPI_ROOT."/pics/greenbutton.png\" alt='".$LANG["install"][91]." - ".$LANG["install"][89]."' title='".$LANG["install"][91]." - ".$LANG["install"][89]."'></td></tr>";
+			echo "<td><img src=\"".GLPI_ROOT."/pics/greenbutton.png\" alt='".$LANG['install'][91]." - ".$LANG['install'][89]."' title='".$LANG['install'][91]." - ".$LANG['install'][89]."'></td></tr>";
 		}
 	}
 	
@@ -716,12 +716,12 @@ function commonCheckForUseGLPI(){
 function checkWriteAccessToDirs(){
 	global $LANG;
 	$dir_to_check=array(
-		GLPI_DUMP_DIR => $LANG["install"][16],
-		GLPI_DOC_DIR => $LANG["install"][21],
-		GLPI_CONFIG_DIR => $LANG["install"][23],
-		GLPI_SESSION_DIR => $LANG["install"][50],
-		GLPI_CRON_DIR => $LANG["install"][52],
-		GLPI_CACHE_DIR => $LANG["install"][99]
+		GLPI_DUMP_DIR => $LANG['install'][16],
+		GLPI_DOC_DIR => $LANG['install'][21],
+		GLPI_CONFIG_DIR => $LANG['install'][23],
+		GLPI_SESSION_DIR => $LANG['install'][50],
+		GLPI_CRON_DIR => $LANG['install'][52],
+		GLPI_CACHE_DIR => $LANG['install'][99]
 	);
 	$error=0;	
 	foreach ($dir_to_check as $dir => $message){
@@ -731,34 +731,34 @@ function checkWriteAccessToDirs(){
 		switch($tmperror){
 			// Error on creation
 			case 4 :
-				echo "<td><img src=\"".GLPI_ROOT."/pics/redbutton.png\"><p class='red'>".$LANG["install"][100]."</p> ".$LANG["install"][97]."'".$dir."'</td></tr>";
+				echo "<td><img src=\"".GLPI_ROOT."/pics/redbutton.png\"><p class='red'>".$LANG['install'][100]."</p> ".$LANG['install'][97]."'".$dir."'</td></tr>";
 				$error=2;
 				break;
 			case 3 :
-				echo "<td><img src=\"".GLPI_ROOT."/pics/redbutton.png\"><p class='red'>".$LANG["install"][101]."</p> ".$LANG["install"][97]."'".$dir."'</td></tr>";
+				echo "<td><img src=\"".GLPI_ROOT."/pics/redbutton.png\"><p class='red'>".$LANG['install'][101]."</p> ".$LANG['install'][97]."'".$dir."'</td></tr>";
 				$error=1;
 				break;
 			// Error on creation
 			case 2 :
-				echo "<td><img src=\"".GLPI_ROOT."/pics/redbutton.png\"><p class='red'>".$LANG["install"][17]."</p> ".$LANG["install"][97]."'".$dir."'</td></tr>";
+				echo "<td><img src=\"".GLPI_ROOT."/pics/redbutton.png\"><p class='red'>".$LANG['install'][17]."</p> ".$LANG['install'][97]."'".$dir."'</td></tr>";
 				$error=2;
 				break;
 			case 1 :
-				echo "<td><img src=\"".GLPI_ROOT."/pics/redbutton.png\"><p class='red'>".$LANG["install"][19]."</p> ".$LANG["install"][97]."'".$dir."'</td></tr>";
+				echo "<td><img src=\"".GLPI_ROOT."/pics/redbutton.png\"><p class='red'>".$LANG['install'][19]."</p> ".$LANG['install'][97]."'".$dir."'</td></tr>";
 				$error=1;
 				break;
 			default :
-				echo "<td><img src=\"".GLPI_ROOT."/pics/greenbutton.png\" alt='".$LANG["install"][20]."' title='".$LANG["install"][20]."'></td></tr>";
+				echo "<td><img src=\"".GLPI_ROOT."/pics/greenbutton.png\" alt='".$LANG['install'][20]."' title='".$LANG['install'][20]."'></td></tr>";
 				break;
 		}
 	}
 	
 	// Only write test for GLPI_LOG as SElinux prevent removing log file.
-	echo "<tr class='tab_bg_1'><td class='left'><b>".$LANG["install"][53]."</b></td>";
+	echo "<tr class='tab_bg_1'><td class='left'><b>".$LANG['install'][53]."</b></td>";
 	if (error_log("Test\n", 3, GLPI_LOG_DIR."/php-errors.log")) {
-		echo "<td><img src=\"".GLPI_ROOT."/pics/greenbutton.png\" alt='".$LANG["install"][22]."' title='".$LANG["install"][22]."'></td></tr>";
+		echo "<td><img src=\"".GLPI_ROOT."/pics/greenbutton.png\" alt='".$LANG['install'][22]."' title='".$LANG['install'][22]."'></td></tr>";
 	} else {
-		echo "<td><img src=\"".GLPI_ROOT."/pics/redbutton.png\"><p class='red'>".$LANG["install"][19]."</p> ".$LANG["install"][97]."'".GLPI_LOG_DIR."'. ".$LANG["install"][98]."</td></tr>";
+		echo "<td><img src=\"".GLPI_ROOT."/pics/redbutton.png\"><p class='red'>".$LANG['install'][19]."</p> ".$LANG['install'][97]."'".GLPI_LOG_DIR."'. ".$LANG['install'][98]."</td></tr>";
 		$error=1;
 	}
 	return $error;
@@ -1241,7 +1241,7 @@ function sendFile($file,$filename){
 			if ($fsize){
 				echo fread($f, filesize($file));
 			} else {
-				echo $LANG["document"][47];
+				echo $LANG['document'][47];
 			}
 
 			if ($mc) @set_magic_quotes_runtime($mc); 
@@ -1597,7 +1597,7 @@ function getURLContent ($url, &$msgerr=NULL, $rec=0) {
 
 		} else {
 			if (isset($msgerr)) {
-				$msgerr=$LANG["setup"][304] . " ($errstr)"; // failed direct connexion - try proxy
+				$msgerr=$LANG['setup'][304] . " ($errstr)"; // failed direct connexion - try proxy
 			}
 			return "";
 		}
@@ -1615,7 +1615,7 @@ function getURLContent ($url, &$msgerr=NULL, $rec=0) {
 			
 		} else {
 			if (isset($msgerr)) {
-				$msgerr=$LANG["setup"][311] . " ($errstr)"; // failed proxy connexion
+				$msgerr=$LANG['setup'][311] . " ($errstr)"; // failed proxy connexion
 			}
 			return "";
 		}
@@ -1664,10 +1664,10 @@ function getURLContent ($url, &$msgerr=NULL, $rec=0) {
 
  	if (empty($content) && isset($msgerr)) {
  		if (empty($errstr)) {
- 			$msgerr=$LANG["setup"][312]; // no data
+ 			$msgerr=$LANG['setup'][312]; // no data
  		}
 		else {
-			$msgerr=$LANG["setup"][310] . " ($errstr)"; // HTTP error	
+			$msgerr=$LANG['setup'][310] . " ($errstr)"; // HTTP error	
 		}
 	}
 
@@ -1725,16 +1725,16 @@ function checkNewVersionAvailable($auto=true){
 			$input["founded_new_version"]=$latest_version;
 			$config_object->update($input);
 			if (!$auto) {
-				echo "<div class='center'>".$LANG["setup"][301]." ".$latest_version."</div>";
-				echo "<div class='center'>".$LANG["setup"][302]."</div>";
+				echo "<div class='center'>".$LANG['setup'][301]." ".$latest_version."</div>";
+				echo "<div class='center'>".$LANG['setup'][302]."</div>";
 			} else {
-				return $LANG["setup"][301]." ".$latest_version;
+				return $LANG['setup'][301]." ".$latest_version;
 			}
 		}  else {
 			if (!$auto){
-				echo "<div class='center'>".$LANG["setup"][303]."</div>";
+				echo "<div class='center'>".$LANG['setup'][303]."</div>";
 			} else {
-				return $LANG["setup"][303];
+				return $LANG['setup'][303];
 			}
 		}
 	} 
@@ -1763,7 +1763,7 @@ function getWarrantyExpir($from,$addwarranty,$deletenotice=0){
 	global $LANG;
 	// Life warranty
 	if ($addwarranty==-1 && $deletenotice==0){
-		return $LANG["setup"][307];
+		return $LANG['setup'][307];
 	}
 	if ($from==NULL || empty($from))
 		return "";
@@ -1789,9 +1789,9 @@ function getExpir($begin,$duration,$notice="0"){
 		$diff=strtotime("$begin+$duration month -$notice month")-time();
 		$diff_days=floor($diff/60/60/24);
 		if($diff_days>0){
-			return $diff_days." ".$LANG["stats"][31];
+			return $diff_days." ".$LANG['stats'][31];
 		}else{
-			return "<span class='red'>".$diff_days." ".$LANG["stats"][31]."</span>";
+			return "<span class='red'>".$diff_days." ".$LANG['stats'][31]."</span>";
 		}
 	}
 }
@@ -1898,22 +1898,22 @@ function timestampToString($sec,$display_sec=true){
 	if ($sec<0) $sec=0;
 
 	if($sec < MINUTE_TIMESTAMP) {
-		return $sec." ".$LANG["stats"][34];
+		return $sec." ".$LANG['stats'][34];
 
 	} else if($sec < HOUR_TIMESTAMP) {
 		$min = floor($sec/MINUTE_TIMESTAMP);
 		$sec = $sec%MINUTE_TIMESTAMP;
 
-		$out=$min." ".$LANG["stats"][33];
-		if ($display_sec) $out.=" ".$sec." ".$LANG["stats"][34];
+		$out=$min." ".$LANG['stats'][33];
+		if ($display_sec) $out.=" ".$sec." ".$LANG['stats'][34];
 		return $out;
 
 	} else if($sec <  DAY_TIMESTAMP) {
 		$heure = floor($sec/HOUR_TIMESTAMP);
 		$min = floor(($sec%HOUR_TIMESTAMP)/(MINUTE_TIMESTAMP));
 		$sec = $sec%MINUTE_TIMESTAMP;
-		$out=$heure." ".$LANG["job"][21]." ".$min." ".$LANG["stats"][33];
-		if ($display_sec) $out.=" ".$sec." ".$LANG["stats"][34];
+		$out=$heure." ".$LANG['job'][21]." ".$min." ".$LANG['stats'][33];
+		if ($display_sec) $out.=" ".$sec." ".$LANG['stats'][34];
 		return $out;
 
 	} else {
@@ -1921,8 +1921,8 @@ function timestampToString($sec,$display_sec=true){
 		$heure = floor(($sec%DAY_TIMESTAMP)/(HOUR_TIMESTAMP));
 		$min = floor(($sec%HOUR_TIMESTAMP)/(MINUTE_TIMESTAMP));
 		$sec = $sec%MINUTE_TIMESTAMP;
-		$out=$jour." ".$LANG["stats"][31]." ".$heure." ".$LANG["job"][21]." ".$min." ".$LANG["stats"][33];
-		if ($display_sec) $out.=" ".$sec." ".$LANG["stats"][34];
+		$out=$jour." ".$LANG['stats'][31]." ".$heure." ".$LANG['job'][21]." ".$min." ".$LANG['stats'][33];
+		if ($display_sec) $out.=" ".$sec." ".$LANG['stats'][34];
 		return $out;
 
 	}
@@ -2048,7 +2048,7 @@ function initNavigateListItems($device_type,$title="",$sub_type=-1){
 	global $LANG;
 
 	if (empty($title)){
-		$title=$LANG["common"][53];
+		$title=$LANG['common'][53];
 	}
 	if (strpos($_SERVER['PHP_SELF'],"tabs")>0) {
 		$url=$_SERVER['HTTP_REFERER'];

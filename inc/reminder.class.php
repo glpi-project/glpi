@@ -57,7 +57,7 @@ class Reminder extends CommonDBTM {
 
 		$input["name"] = trim($input["name"]);
 		if(empty($input["name"])) {
-			$input["name"]=$LANG["reminder"][15];
+			$input["name"]=$LANG['reminder'][15];
 		}
 
 		$input["begin"] = $input["end"] = "NULL";
@@ -71,14 +71,14 @@ class Reminder extends CommonDBTM {
 				$input["begin"] = $input['_plan']["begin"];
 				$input["end"] = $input['_plan']["end"];				
 			}else {
-				addMessageAfterRedirect($LANG["planning"][1]);
+				addMessageAfterRedirect($LANG['planning'][1]);
 			}
 		}	
 
 		if ($input['recursive']&&!$input['private']){
 			if (!haveRecursiveAccessToEntity($input["FK_entities"])){
 				unset($input['recursive']);
-				addMessageAfterRedirect($LANG["common"][75]);
+				addMessageAfterRedirect($LANG['common'][75]);
 			}
 		}
 
@@ -93,7 +93,7 @@ class Reminder extends CommonDBTM {
 
 		$input["name"] = trim($input["name"]);
 		if(empty($input["name"])) {
-			$input["name"]=$LANG["reminder"][15];
+			$input["name"]=$LANG['reminder'][15];
 		}
 
 
@@ -107,13 +107,13 @@ class Reminder extends CommonDBTM {
 				$input["end"] = $input['_plan']["end"];
 				$input["state"] = $input['_plan']["state"];				
 			}else {
-				addMessageAfterRedirect($LANG["planning"][1]);
+				addMessageAfterRedirect($LANG['planning'][1]);
 			}
 		}	
 		if ($input['recursive']&&!$input['private']){
 			if (!haveRecursiveAccessToEntity($input["FK_entities"])){
 				unset($input['recursive']);
-				addMessageAfterRedirect($LANG["common"][75]);
+				addMessageAfterRedirect($LANG['common'][75]);
 			}
 		}
 
@@ -132,7 +132,7 @@ class Reminder extends CommonDBTM {
 
 	function post_getEmpty () {
 		global $LANG;
-		$this->fields["name"]=$LANG["reminder"][6];
+		$this->fields["name"]=$LANG['reminder'][6];
 		$this->fields["FK_users"]=$_SESSION['glpiID'];
 		$this->fields["private"]=1;
 		$this->fields["FK_entities"]=$_SESSION["glpiactive_entity"];
@@ -172,26 +172,26 @@ class Reminder extends CommonDBTM {
 		echo "<div class='center'><table class='tab_cadre' width='450'>";
 		echo "<tr><th>&nbsp;</th><th>";
 		if (!$ID) {
-			echo $LANG["reminder"][6];
+			echo $LANG['reminder'][6];
 		} else {
-			echo $LANG["common"][2]." $ID";
+			echo $LANG['common'][2]." $ID";
 		}		
 
 		echo "</th></tr>";
 
-		echo "<tr class='tab_bg_2'><td>".$LANG["common"][57].":		</td>";
+		echo "<tr class='tab_bg_2'><td>".$LANG['common'][57].":		</td>";
 		echo "<td>";
 		autocompletionTextField("name",$this->table,"name",$this->fields['name'],80,-1,$this->fields["FK_users"],$onfocus);	
 		echo "</td></tr>";
 
 		if(!$canedit) { 
-			echo "<tr class='tab_bg_2'><td>".$LANG["planning"][9].":		</td>";
+			echo "<tr class='tab_bg_2'><td>".$LANG['planning'][9].":		</td>";
 			echo "<td>";
 			echo getUserName($this->fields["FK_users"]);
 			echo "</td></tr>";
 		}
 
-		echo "<tr class='tab_bg_2'><td>".$LANG["common"][17].":		</td>";
+		echo "<tr class='tab_bg_2'><td>".$LANG['common'][17].":		</td>";
 		echo "<td>";
 
 		if($canedit&&haveRight("reminder_public","w")) { 
@@ -208,16 +208,16 @@ class Reminder extends CommonDBTM {
 			privatePublicSwitch($this->fields["private"],$this->fields["FK_entities"],$this->fields["recursive"]);
 		}else{
 			if ($this->fields["private"]){
-				echo $LANG["common"][77];
+				echo $LANG['common'][77];
 			} else {
-				echo $LANG["common"][76];
+				echo $LANG['common'][76];
 			}
 		}
 
 		echo "</td></tr>";
 
 
-		echo "<tr class='tab_bg_2'><td >".$LANG["buttons"][15].":		</td>";
+		echo "<tr class='tab_bg_2'><td >".$LANG['buttons'][15].":		</td>";
 
 
 
@@ -244,7 +244,7 @@ class Reminder extends CommonDBTM {
 		if(!$ID||$this->fields["rv"]==0){
 			if($canedit) { 
 				echo "<div id='plan'  onClick='showPlan()'>\n";
-				echo "<span class='showplan'>".$LANG["reminder"][12]."</span>";
+				echo "<span class='showplan'>".$LANG['reminder'][12]."</span>";
 			}
 		}else{
 			if($canedit) {
@@ -267,7 +267,7 @@ class Reminder extends CommonDBTM {
 
 		echo "</tr>";
 
-		echo "<tr class='tab_bg_2'><td>".$LANG["reminder"][9].":		</td><td>";
+		echo "<tr class='tab_bg_2'><td>".$LANG['reminder'][9].":		</td><td>";
 		if($canedit) { 
 			echo "<textarea cols='80' rows='15' name='text'>".$this->fields["text"]."</textarea>";
 		}else{
@@ -279,7 +279,7 @@ class Reminder extends CommonDBTM {
 			echo "<tr>";
 			echo "<td class='tab_bg_2' valign='top' colspan='2'>";
 			echo "<input type='hidden' name='FK_users' value=\"".$this->fields['FK_users']."\">\n";
-			echo "<div class='center'><input type='submit' name='add' value=\"".$LANG["buttons"][8]."\" class='submit'></div>";
+			echo "<div class='center'><input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'></div>";
 			echo "</td>";
 			echo "</tr>";
 		} elseif($canedit) { 
@@ -287,11 +287,11 @@ class Reminder extends CommonDBTM {
 
 			echo "<td class='tab_bg_2' valign='top' colspan='2'>";
 			echo "<input type='hidden' name='ID' value=\"$ID\">\n";
-			echo "<div class='center'><input type='submit' name='update' value=\"".$LANG["buttons"][7]."\" class='submit'>";
+			echo "<div class='center'><input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit'>";
 
 			echo "<input type='hidden' name='ID' value=\"$ID\">\n";
 
-			echo "<input type='submit' name='delete' value=\"".$LANG["buttons"][6]."\" class='submit'></div>";
+			echo "<input type='submit' name='delete' value=\"".$LANG['buttons'][6]."\" class='submit'></div>";
 
 			echo "</td>";
 			echo "</tr>";

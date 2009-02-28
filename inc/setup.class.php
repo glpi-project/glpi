@@ -204,14 +204,14 @@ class SetupSearchDisplay extends CommonDBTM{
 			echo "<input type='hidden' name='type' value='$type'>";
 			echo "<input type='hidden' name='FK_users' value='$IDuser'>";
 
-			echo $LANG["setup"][241];
-			echo "&nbsp;&nbsp;&nbsp;<input type='submit' name='activate' value=\"".$LANG["buttons"][2]."\" class='submit' >";
+			echo $LANG['setup'][241];
+			echo "&nbsp;&nbsp;&nbsp;<input type='submit' name='activate' value=\"".$LANG['buttons'][2]."\" class='submit' >";
 			echo "</form></th></tr></table>";
 
 		} else {
 
 			echo "<table class='tab_cadre_fixe' cellpadding='2' ><tr><th colspan='4'>";
-			echo $LANG["setup"][252].": </th></tr>";
+			echo $LANG['setup'][252].": </th></tr>";
 			echo "<tr class='tab_bg_1'><td colspan='4' align='center'>";
 			echo "<form method='post' action=\"$target\">";
 			echo "<input type='hidden' name='type' value='$type'>";
@@ -230,7 +230,7 @@ class SetupSearchDisplay extends CommonDBTM{
 			if (!$first_group) echo "</optgroup>";
 
 			echo "</select>";
-			echo "&nbsp;&nbsp;&nbsp;<input type='submit' name='add' value=\"".$LANG["buttons"][8]."\" class='submit' >";
+			echo "&nbsp;&nbsp;&nbsp;<input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit' >";
 			echo "</form>";
 			echo "</td></tr>";
 
@@ -256,7 +256,7 @@ class SetupSearchDisplay extends CommonDBTM{
 							echo "<input type='hidden' name='FK_users' value='$IDuser'>";
 
 							echo "<input type='hidden' name='type' value='$type'>";
-							echo "<input type='image' name='up'  value=\"".$LANG["buttons"][24]."\"  src=\"".$CFG_GLPI["root_doc"]."/pics/puce-up2.png\" alt=\"".$LANG["buttons"][24]."\"  title=\"".$LANG["buttons"][24]."\" >";	
+							echo "<input type='image' name='up'  value=\"".$LANG['buttons'][24]."\"  src=\"".$CFG_GLPI["root_doc"]."/pics/puce-up2.png\" alt=\"".$LANG['buttons'][24]."\"  title=\"".$LANG['buttons'][24]."\" >";	
 							echo "</form>";
 							echo "</td>";
 						} else echo "<td>&nbsp;</td>";
@@ -267,7 +267,7 @@ class SetupSearchDisplay extends CommonDBTM{
 							echo "<input type='hidden' name='FK_users' value='$IDuser'>";
 
 							echo "<input type='hidden' name='type' value='$type'>";
-							echo "<input type='image' name='down' value=\"".$LANG["buttons"][25]."\" src=\"".$CFG_GLPI["root_doc"]."/pics/puce-down2.png\" alt=\"".$LANG["buttons"][25]."\"  title=\"".$LANG["buttons"][25]."\" >";	
+							echo "<input type='image' name='down' value=\"".$LANG['buttons'][25]."\" src=\"".$CFG_GLPI["root_doc"]."/pics/puce-down2.png\" alt=\"".$LANG['buttons'][25]."\"  title=\"".$LANG['buttons'][25]."\" >";	
 							echo "</form>";
 							echo "</td>";
 						} else echo "<td>&nbsp;</td>";
@@ -278,7 +278,7 @@ class SetupSearchDisplay extends CommonDBTM{
 						echo "<input type='hidden' name='FK_users' value='$IDuser'>";
 
 						echo "<input type='hidden' name='type' value='$type'>";
-						echo "<input type='image' name='delete' value=\"".$LANG["buttons"][6]."\"src=\"".$CFG_GLPI["root_doc"]."/pics/puce-delete2.png\" alt=\"".$LANG["buttons"][6]."\"  title=\"".$LANG["buttons"][6]."\" >";	
+						echo "<input type='image' name='delete' value=\"".$LANG['buttons'][6]."\"src=\"".$CFG_GLPI["root_doc"]."/pics/puce-delete2.png\" alt=\"".$LANG['buttons'][6]."\"  title=\"".$LANG['buttons'][6]."\" >";	
 						echo "</form>";
 						echo "</td>";
 						echo "</tr>";
@@ -321,7 +321,7 @@ class SetupSearchDisplay extends CommonDBTM{
 		$numrows=$DB->numrows($result);
 
 		echo "<table class='tab_cadre_fixe' cellpadding='2' ><tr><th colspan='4'>";
-		echo $LANG["setup"][252].": </th></tr>";
+		echo $LANG['setup'][252].": </th></tr>";
 		if ($global_write){
 			echo "<tr class='tab_bg_1'><td colspan='4' align='center'>";
 			echo "<form method='post' action=\"$target\">";
@@ -341,7 +341,7 @@ class SetupSearchDisplay extends CommonDBTM{
 			if (!$first_group) echo "</optgroup>";
 
 			echo "</select>";
-			echo "&nbsp;&nbsp;&nbsp;<input type='submit' name='add' value=\"".$LANG["buttons"][8]."\" class='submit' >";
+			echo "&nbsp;&nbsp;&nbsp;<input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit' >";
 			echo "</form>";
 			echo "</td></tr>";
 		}
@@ -370,7 +370,7 @@ class SetupSearchDisplay extends CommonDBTM{
 							echo "<input type='hidden' name='FK_users' value='$IDuser'>";
 
 							echo "<input type='hidden' name='type' value='$type'>";
-							echo "<input type='image' name='up'  value=\"".$LANG["buttons"][24]."\"  src=\"".$CFG_GLPI["root_doc"]."/pics/puce-up2.png\" alt=\"".$LANG["buttons"][24]."\"  title=\"".$LANG["buttons"][24]."\" >";	
+							echo "<input type='image' name='up'  value=\"".$LANG['buttons'][24]."\"  src=\"".$CFG_GLPI["root_doc"]."/pics/puce-up2.png\" alt=\"".$LANG['buttons'][24]."\"  title=\"".$LANG['buttons'][24]."\" >";	
 							echo "</form>";
 							echo "</td>";
 						} else echo "<td>&nbsp;</td>";
@@ -381,7 +381,7 @@ class SetupSearchDisplay extends CommonDBTM{
 							echo "<input type='hidden' name='FK_users' value='$IDuser'>";
 
 							echo "<input type='hidden' name='type' value='$type'>";
-							echo "<input type='image' name='down' value=\"".$LANG["buttons"][25]."\" src=\"".$CFG_GLPI["root_doc"]."/pics/puce-down2.png\" alt=\"".$LANG["buttons"][25]."\"  title=\"".$LANG["buttons"][25]."\" >";	
+							echo "<input type='image' name='down' value=\"".$LANG['buttons'][25]."\" src=\"".$CFG_GLPI["root_doc"]."/pics/puce-down2.png\" alt=\"".$LANG['buttons'][25]."\"  title=\"".$LANG['buttons'][25]."\" >";	
 							echo "</form>";
 							echo "</td>";
 						} else echo "<td>&nbsp;</td>";
@@ -392,7 +392,7 @@ class SetupSearchDisplay extends CommonDBTM{
 						echo "<input type='hidden' name='FK_users' value='$IDuser'>";
 
 						echo "<input type='hidden' name='type' value='$type'>";
-						echo "<input type='image' name='delete' value=\"".$LANG["buttons"][6]."\"src=\"".$CFG_GLPI["root_doc"]."/pics/puce-delete2.png\" alt=\"".$LANG["buttons"][6]."\"  title=\"".$LANG["buttons"][6]."\" >";	
+						echo "<input type='image' name='delete' value=\"".$LANG['buttons'][6]."\"src=\"".$CFG_GLPI["root_doc"]."/pics/puce-delete2.png\" alt=\"".$LANG['buttons'][6]."\"  title=\"".$LANG['buttons'][6]."\" >";	
 						echo "</form>";
 						echo "</td>";
 					}

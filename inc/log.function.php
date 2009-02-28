@@ -183,14 +183,14 @@ function showHistory($device_type,$id_device){
 	if ($number < 1) {
 		echo "<div class='center'>";
 		echo "<table class='tab_cadre_fixe'>";
-		echo "<tr><th>".$LANG["event"][20]."</th></tr>";
+		echo "<tr><th>".$LANG['event'][20]."</th></tr>";
 		echo "</table>";
 		echo "</div><br>";
 		return;
 	}
 
 	// Display the pager
-	printAjaxPager($LANG["title"][38],$start,$number);
+	printAjaxPager($LANG['title'][38],$start,$number);
 
 	$query="SELECT * 
 		FROM glpi_history 
@@ -204,8 +204,8 @@ function showHistory($device_type,$id_device){
 
 	// Output events
 	echo "<div class='center'><table class='tab_cadre_fixe'>";
-	//echo "<tr><th colspan='5'>".$LANG["title"][38]."</th></tr>";
-	echo "<tr><th>".$LANG["common"][2]."</th><th>".$LANG["common"][27]."</th><th>".$LANG["common"][34]."</th><th>".$LANG["event"][18]."</th><th>".$LANG["event"][19]."</th></tr>";
+	//echo "<tr><th colspan='5'>".$LANG['title'][38]."</th></tr>";
+	echo "<tr><th>".$LANG['common'][2]."</th><th>".$LANG['common'][27]."</th><th>".$LANG['common'][34]."</th><th>".$LANG['event'][18]."</th><th>".$LANG['event'][19]."</th></tr>";
 	while ($data =$DB->fetch_array($result)){ 
 		$display_history = true;
 		$ID = $data["ID"];
@@ -219,15 +219,15 @@ function showHistory($device_type,$id_device){
 			switch ($data["linked_action"]){
 
 				case HISTORY_DELETE_ITEM :
-					$change = $LANG["log"][22];	
+					$change = $LANG['log'][22];	
 					break;
 				case HISTORY_RESTORE_ITEM :
-					$change = $LANG["log"][23];	
+					$change = $LANG['log'][23];	
 					break;
 
 				case HISTORY_ADD_DEVICE :
 					$field=getDictDeviceLabel($data["device_internal_type"]);
-					$change = $LANG["devices"][25]."&nbsp;<strong>:</strong>&nbsp;\"".$data[ "new_value"]."\"";	
+					$change = $LANG['devices'][25]."&nbsp;<strong>:</strong>&nbsp;\"".$data[ "new_value"]."\"";	
 					break;
 
 				case HISTORY_UPDATE_DEVICE :
@@ -237,32 +237,32 @@ function showHistory($device_type,$id_device){
 
 				case HISTORY_DELETE_DEVICE :
 					$field=getDictDeviceLabel($data["device_internal_type"]);
-					$change = $LANG["devices"][26]."&nbsp;<strong>:</strong>&nbsp;"."\"".$data["old_value"]."\"";	
+					$change = $LANG['devices'][26]."&nbsp;<strong>:</strong>&nbsp;"."\"".$data["old_value"]."\"";	
 					break;
 				case HISTORY_INSTALL_SOFTWARE :
-					$field=$LANG["help"][31];
-					$change = $LANG["software"][44]."&nbsp;<strong>:</strong>&nbsp;"."\"".$data["new_value"]."\"";	
+					$field=$LANG['help'][31];
+					$change = $LANG['software'][44]."&nbsp;<strong>:</strong>&nbsp;"."\"".$data["new_value"]."\"";	
 					break;				
 				case HISTORY_UNINSTALL_SOFTWARE :
-					$field=$LANG["help"][31];
-					$change = $LANG["software"][45]."&nbsp;<strong>:</strong>&nbsp;"."\"".$data["old_value"]."\"";	
+					$field=$LANG['help'][31];
+					$change = $LANG['software'][45]."&nbsp;<strong>:</strong>&nbsp;"."\"".$data["old_value"]."\"";	
 					break;	
 				case HISTORY_DISCONNECT_DEVICE:
 					$ci=new CommonItem();
 					$ci->setType($data["device_internal_type"]);
 					$field=$ci->getType();
-					$change = $LANG["central"][6]."&nbsp;<strong>:</strong>&nbsp;"."\"".$data["old_value"]."\"";	
+					$change = $LANG['central'][6]."&nbsp;<strong>:</strong>&nbsp;"."\"".$data["old_value"]."\"";	
 					break;	
 				case HISTORY_CONNECT_DEVICE:
 					$ci=new CommonItem();
 					$ci->setType($data["device_internal_type"]);
 					$field=$ci->getType();
-					$change = $LANG["log"][55]."&nbsp;<strong>:</strong>&nbsp;"."\"".$data["new_value"]."\"";	
+					$change = $LANG['log'][55]."&nbsp;<strong>:</strong>&nbsp;"."\"".$data["new_value"]."\"";	
 					break;	
 				case HISTORY_OCS_IMPORT:
 					if (haveRight("view_ocsng","r")){
 						$field="";
-						$change = $LANG["ocsng"][7]." ".$LANG["ocsng"][45]."&nbsp;<strong>:</strong>&nbsp;"."\"".$data["new_value"]."\"";	
+						$change = $LANG['ocsng'][7]." ".$LANG['ocsng'][45]."&nbsp;<strong>:</strong>&nbsp;"."\"".$data["new_value"]."\"";	
 					} else {
 						$display_history = false;
 					}
@@ -271,7 +271,7 @@ function showHistory($device_type,$id_device){
 				case HISTORY_OCS_DELETE:
 					if (haveRight("view_ocsng","r")){
 						$field="";
-						$change = $LANG["ocsng"][46]." ".$LANG["ocsng"][45]."&nbsp;<strong>:</strong>&nbsp;"."\"".$data["old_value"]."\"";	
+						$change = $LANG['ocsng'][46]." ".$LANG['ocsng'][45]."&nbsp;<strong>:</strong>&nbsp;"."\"".$data["old_value"]."\"";	
 					} else {
 						$display_history = false;
 					}
@@ -282,7 +282,7 @@ function showHistory($device_type,$id_device){
 						$ci=new CommonItem();
 						$ci->setType($data["device_internal_type"]);
 						$field=$ci->getType();
-						$change = $LANG["ocsng"][47]." ".$LANG["ocsng"][45]."&nbsp;<strong>:</strong>&nbsp;"."\"".$data["new_value"]."\"";	
+						$change = $LANG['ocsng'][47]." ".$LANG['ocsng'][45]."&nbsp;<strong>:</strong>&nbsp;"."\"".$data["new_value"]."\"";	
 					} else {
 						$display_history = false;
 					}
@@ -291,7 +291,7 @@ function showHistory($device_type,$id_device){
 				case HISTORY_OCS_IDCHANGED:
 					if (haveRight("view_ocsng","r")){
 						$field="";
-						$change = $LANG["ocsng"][48]." "."&nbsp;<strong>:</strong>&nbsp;"."\"".$data["old_value"]."\" --> &nbsp;<strong>:</strong>&nbsp;"."\"".$data["new_value"]."\"";	
+						$change = $LANG['ocsng'][48]." "."&nbsp;<strong>:</strong>&nbsp;"."\"".$data["old_value"]."\" --> &nbsp;<strong>:</strong>&nbsp;"."\"".$data["new_value"]."\"";	
 					} else {
 						$display_history = false;
 					}
@@ -316,10 +316,10 @@ function showHistory($device_type,$id_device){
 
 			switch ($fieldname){
 				case "comments" : 
-					$change =$LANG["log"][64];
+					$change =$LANG['log'][64];
 					break;
 				case "notes" : 
-					$change =$LANG["log"][67];
+					$change =$LANG['log'][67];
 					break;
 				default :
 					$change = "\"".$data[ "old_value"]."\"&nbsp;<strong>--></strong>&nbsp;\"".$data[ "new_value"]."\"";
@@ -373,35 +373,35 @@ function logArray(){
 
 	global $LANG;
 
-	$logItemtype=array("system"=>$LANG["log"][1],
-			"computers"=>$LANG["log"][2],
-			"monitors"=>$LANG["log"][3],
-			"printers"=>$LANG["log"][4],
-			"software"=>$LANG["log"][5],
-			"networking"=>$LANG["log"][6],
-			"cartridges"=>$LANG["log"][7],
-			"peripherals"=>$LANG["log"][8],
-			"consumables"=>$LANG["log"][9],
-			"tracking"=>$LANG["log"][10],
-			"contacts"=>$LANG["log"][11],
-			"enterprises"=>$LANG["log"][12],
-			"documents"=>$LANG["log"][13],
-			"knowbase"=>$LANG["log"][14],
-			"users"=>$LANG["log"][15],
-			"infocom"=>$LANG["log"][19],
-			"devices"=>$LANG["log"][18],
-			"links"=>$LANG["log"][38],
-			"typedocs"=>$LANG["log"][39],
-			"planning"=>$LANG["log"][16],
-			"reservation"=>$LANG["log"][42],
-			"contracts"=>$LANG["log"][17],
-			"phones"=>$LANG["log"][43],
-			"dropdown"=>$LANG["log"][44],
-			"groups"=>$LANG["log"][47],
-			"entity"=>$LANG["log"][63],
-			"rules"=>$LANG["log"][65],
-			"reminder"=>$LANG["log"][81],
-			"transfers"=>$LANG["transfer"][1]);
+	$logItemtype=array("system"=>$LANG['log'][1],
+			"computers"=>$LANG['log'][2],
+			"monitors"=>$LANG['log'][3],
+			"printers"=>$LANG['log'][4],
+			"software"=>$LANG['log'][5],
+			"networking"=>$LANG['log'][6],
+			"cartridges"=>$LANG['log'][7],
+			"peripherals"=>$LANG['log'][8],
+			"consumables"=>$LANG['log'][9],
+			"tracking"=>$LANG['log'][10],
+			"contacts"=>$LANG['log'][11],
+			"enterprises"=>$LANG['log'][12],
+			"documents"=>$LANG['log'][13],
+			"knowbase"=>$LANG['log'][14],
+			"users"=>$LANG['log'][15],
+			"infocom"=>$LANG['log'][19],
+			"devices"=>$LANG['log'][18],
+			"links"=>$LANG['log'][38],
+			"typedocs"=>$LANG['log'][39],
+			"planning"=>$LANG['log'][16],
+			"reservation"=>$LANG['log'][42],
+			"contracts"=>$LANG['log'][17],
+			"phones"=>$LANG['log'][43],
+			"dropdown"=>$LANG['log'][44],
+			"groups"=>$LANG['log'][47],
+			"entity"=>$LANG['log'][63],
+			"rules"=>$LANG['log'][65],
+			"reminder"=>$LANG['log'][81],
+			"transfers"=>$LANG['transfer'][1]);
 
 
 	$logService=array("inventory"=>$LANG["Menu"][38],
@@ -409,13 +409,13 @@ function logArray(){
 			"planning"=>$LANG["Menu"][29],
 			"tools"=>$LANG["Menu"][18],
 			"financial"=>$LANG["Menu"][26],
-			"login"=>$LANG["log"][55],
-			"setup"=>$LANG["common"][12],
-			"security"=>$LANG["log"][66],
-			"reservation"=>$LANG["log"][58],
-			"cron"=>$LANG["log"][59],
+			"login"=>$LANG['log'][55],
+			"setup"=>$LANG['common'][12],
+			"security"=>$LANG['log'][66],
+			"reservation"=>$LANG['log'][58],
+			"cron"=>$LANG['log'][59],
 			"document"=>$LANG["Menu"][27],
-			"plugin"=>$LANG["common"][29]);
+			"plugin"=>$LANG['common'][29]);
 
 	return array($logItemtype,$logService);
 
@@ -489,7 +489,7 @@ function showAddEvents($target,$user="") {
 	// Query Database
 	$query = "SELECT * 
 		FROM glpi_event_log 
-		WHERE message LIKE '".$usersearch.addslashes($LANG["log"][20])."%' 
+		WHERE message LIKE '".$usersearch.addslashes($LANG['log'][20])."%' 
 		ORDER BY date DESC LIMIT 0,".intval($_SESSION["glpinum_of_events"]);
 
 	// Get results
@@ -503,7 +503,7 @@ function showAddEvents($target,$user="") {
 	if ($number < 1) {
 		echo "<br>";
 		echo "<table class='tab_cadrehov'>";
-		echo "<tr><th>".$LANG["central"][4]."</th></tr>";
+		echo "<tr><th>".$LANG['central'][4]."</th></tr>";
 		echo "</table>";
 		echo "<br>";
 		return;
@@ -513,16 +513,16 @@ function showAddEvents($target,$user="") {
 	$i = 0;
 
 	echo "<br><table  class='tab_cadrehov'>";
-	echo "<tr><th colspan='5'><a href=\"".$CFG_GLPI["root_doc"]."/front/log.php\">".$LANG["central"][2]." ".$_SESSION["glpinum_of_events"]." ".$LANG["central"][8]."</a></th></tr>";
+	echo "<tr><th colspan='5'><a href=\"".$CFG_GLPI["root_doc"]."/front/log.php\">".$LANG['central'][2]." ".$_SESSION["glpinum_of_events"]." ".$LANG['central'][8]."</a></th></tr>";
 	echo "<tr>";
 
-	echo "<th colspan='2'>".$LANG["event"][0]."</th>";
+	echo "<th colspan='2'>".$LANG['event'][0]."</th>";
 
-	echo "<th>".$LANG["common"][27]."</th>";
+	echo "<th>".$LANG['common'][27]."</th>";
 
-	echo "<th width='8%'>".$LANG["event"][2]."</th>";
+	echo "<th width='8%'>".$LANG['event'][2]."</th>";
 
-	echo "<th width='60%'>".$LANG["event"][4]."</th></tr>";
+	echo "<th width='60%'>".$LANG['event'][4]."</th></tr>";
 
 	while ($i < $number) {
 		$ID = $DB->result($result, $i, "ID");
@@ -566,11 +566,11 @@ function showEvents($target,$order,$sort,$start=0) {
 
 	// Columns of the Table
 	$items = array(
-		"item"		=> array($LANG["event"][0], "colspan='2'"),
-		"date"		=> array($LANG["common"][27], ""),
-		"service"	=> array($LANG["event"][2], "width='8%'"),
-		"level"		=> array($LANG["event"][3], "width='8%'"),
-		"message"	=> array($LANG["event"][4], "width='50%'")
+		"item"		=> array($LANG['event'][0], "colspan='2'"),
+		"date"		=> array($LANG['common'][27], ""),
+		"service"	=> array($LANG['event'][2], "width='8%'"),
+		"level"		=> array($LANG['event'][3], "width='8%'"),
+		"message"	=> array($LANG['event'][4], "width='50%'")
 		);
 
 	// define default sorting
@@ -592,7 +592,7 @@ function showEvents($target,$order,$sort,$start=0) {
 
 	// No Events in database
 	if ($number < 1) {
-		echo "<div class='center'><strong>".$LANG["central"][4]."</strong></div>";
+		echo "<div class='center'><strong>".$LANG['central'][4]."</strong></div>";
 		return;
 	}
 

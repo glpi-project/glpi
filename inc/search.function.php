@@ -236,7 +236,7 @@ function searchForm($type,$params){
 
 	echo "<form method='get' action=\"$target\">";
 	echo "<table class='tab_cadre_fixe'>";
-//	echo "<tr><th colspan='5'>".$LANG["search"][0].":</th></tr>";
+//	echo "<tr><th colspan='5'>".$LANG['search'][0].":</th></tr>";
 	echo "<tr class='tab_bg_1'>";
 	echo "<td>";
 	echo "<table>";
@@ -246,14 +246,14 @@ function searchForm($type,$params){
 		echo "<tr><td class='right'>";
 		// First line display add / delete images for normal and meta search items
 		if ($i==0){
-			echo "<a href='".$CFG_GLPI["root_doc"]."/front/computer.php?add_search_count=1&amp;type=$type'><img src=\"".$CFG_GLPI["root_doc"]."/pics/plus.png\" alt='+' title='".$LANG["search"][17]."'></a>&nbsp;&nbsp;&nbsp;&nbsp;";
+			echo "<a href='".$CFG_GLPI["root_doc"]."/front/computer.php?add_search_count=1&amp;type=$type'><img src=\"".$CFG_GLPI["root_doc"]."/pics/plus.png\" alt='+' title='".$LANG['search'][17]."'></a>&nbsp;&nbsp;&nbsp;&nbsp;";
 			if ($_SESSION["glpisearchcount"][$type]>1)
-				echo "<a href='".$CFG_GLPI["root_doc"]."/front/computer.php?delete_search_count=1&amp;type=$type'><img src=\"".$CFG_GLPI["root_doc"]."/pics/moins.png\" alt='-' title='".$LANG["search"][18]."'></a>&nbsp;&nbsp;&nbsp;&nbsp;";
+				echo "<a href='".$CFG_GLPI["root_doc"]."/front/computer.php?delete_search_count=1&amp;type=$type'><img src=\"".$CFG_GLPI["root_doc"]."/pics/moins.png\" alt='-' title='".$LANG['search'][18]."'></a>&nbsp;&nbsp;&nbsp;&nbsp;";
 
 			if (isset($names[$type])){
-				echo "<a href='".$CFG_GLPI["root_doc"]."/front/computer.php?add_search_count2=1&amp;type=$type'><img src=\"".$CFG_GLPI["root_doc"]."/pics/meta_plus.png\" alt='+' title='".$LANG["search"][19]."'></a>&nbsp;&nbsp;&nbsp;&nbsp;";
+				echo "<a href='".$CFG_GLPI["root_doc"]."/front/computer.php?add_search_count2=1&amp;type=$type'><img src=\"".$CFG_GLPI["root_doc"]."/pics/meta_plus.png\" alt='+' title='".$LANG['search'][19]."'></a>&nbsp;&nbsp;&nbsp;&nbsp;";
 				if ($_SESSION["glpisearchcount2"][$type]>0)
-					echo "<a href='".$CFG_GLPI["root_doc"]."/front/computer.php?delete_search_count2=1&amp;type=$type'><img src=\"".$CFG_GLPI["root_doc"]."/pics/meta_moins.png\" alt='-' title='".$LANG["search"][20]."'></a>&nbsp;&nbsp;&nbsp;&nbsp;";
+					echo "<a href='".$CFG_GLPI["root_doc"]."/front/computer.php?delete_search_count2=1&amp;type=$type'><img src=\"".$CFG_GLPI["root_doc"]."/pics/meta_moins.png\" alt='-' title='".$LANG['search'][20]."'></a>&nbsp;&nbsp;&nbsp;&nbsp;";
 			}
 		}
 		// Display link item
@@ -281,13 +281,13 @@ function searchForm($type,$params){
 		// display search field
 		echo "<input type='text' size='15' name=\"contains[$i]\" value=\"". (is_array($contains)&&isset($contains[$i])?stripslashes($contains[$i]):"" )."\" >";
 		echo "&nbsp;";
-		echo $LANG["search"][10]."&nbsp;";
+		echo $LANG['search'][10]."&nbsp;";
 
 		// display select box to define serach item
 		echo "<select name=\"field[$i]\" size='1'>";
 		echo "<option value='view' ";
 		if(is_array($field)&&isset($field[$i]) && $field[$i] == "view") echo "selected";
-		echo ">".$LANG["search"][11]."</option>";
+		echo ">".$LANG['search'][11]."</option>";
 
 		reset($options);
 		$first_group=true;
@@ -308,7 +308,7 @@ function searchForm($type,$params){
 
 		echo "<option value='all' ";
 		if(is_array($field)&&isset($field[$i]) && $field[$i] == "all") echo "selected";
-		echo ">".$LANG["common"][66]."</option>";
+		echo ">".$LANG['common'][66]."</option>";
 
 		echo "</select>&nbsp;";
 
@@ -409,7 +409,7 @@ function searchForm($type,$params){
 
 	// Display sort selection
 	echo "<td>";
-	echo $LANG["search"][4];
+	echo $LANG['search'][4];
 	echo "&nbsp;<select name='sort' size='1'>";
 	reset($options);
 	$first_group=true;
@@ -437,20 +437,20 @@ function searchForm($type,$params){
 	if (in_array($LINK_ID_TABLE[$type],$CFG_GLPI["deleted_tables"])){
 		//echo "<tr><td>";
 		dropdownYesNo("deleted",$deleted);
-		echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/showdeleted.png\" alt='".$LANG["common"][3]."' title='".$LANG["common"][3]."'>";
+		echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/showdeleted.png\" alt='".$LANG['common'][3]."' title='".$LANG['common'][3]."'>";
 		//echo "</td></tr>";
 	}
 
 	echo "</td>";
 	// Display Reset search
 	echo "<td align='center'>";
-	echo "<a href='".$CFG_GLPI["root_doc"]."/front/computer.php?reset_search=reset_search&amp;type=$type' ><img title=\"".$LANG["buttons"][16]."\" alt=\"".$LANG["buttons"][16]."\" src='".$CFG_GLPI["root_doc"]."/pics/reset.png' class='calendrier'></a>";
+	echo "<a href='".$CFG_GLPI["root_doc"]."/front/computer.php?reset_search=reset_search&amp;type=$type' ><img title=\"".$LANG['buttons'][16]."\" alt=\"".$LANG['buttons'][16]."\" src='".$CFG_GLPI["root_doc"]."/pics/reset.png' class='calendrier'></a>";
 	showSaveBookmarkButton(BOOKMARK_SEARCH,$type);
 
 	echo "</td>";
 	// Display submit button
 	echo "<td width='80' class='tab_bg_2'>";
-	echo "<input type='submit' value=\"".$LANG["buttons"][0]."\" class='submit' >";
+	echo "<input type='submit' value=\"".$LANG['buttons'][0]."\" class='submit' >";
 	echo "</td></tr>"; 
 	echo "</table>";
 	// Reset to start when submit new search
@@ -1080,7 +1080,7 @@ function showList ($type,$params){
 			echo "<div class='center'><h2>".$ci->getType($type);
 			// More items
 			if ($numrows>$start+GLOBAL_SEARCH_DISPLAY_COUNT){
-				echo " <a href='$target?$parameters'>".$LANG["common"][66]."</a>";
+				echo " <a href='$target?$parameters'>".$LANG['common'][66]."</a>";
 			}
 			echo "</h2></div>";
 		}
@@ -1162,9 +1162,9 @@ function showList ($type,$params){
 				if (haveRight("search_config","w")||haveRight("search_config_global","w")){
 					$tmp= " class='pointer'  onClick=\"var w = window.open('".$CFG_GLPI["root_doc"]."/front/popup.php?popup=search_config&amp;type=$type' ,'glpipopup', 'height=400, width=1000, top=100, left=100, scrollbars=yes' ); w.focus();\"";
 
-					$search_config= "<img alt='".$LANG["setup"][252]."' title='".$LANG["setup"][252]."' src='".$CFG_GLPI["root_doc"]."/pics/options_search.png' ";
+					$search_config= "<img alt='".$LANG['setup'][252]."' title='".$LANG['setup'][252]."' src='".$CFG_GLPI["root_doc"]."/pics/options_search.png' ";
 					$search_config.=$tmp.">";
-					//$search_config.= "<img alt='".$LANG["buttons"][6]."' title='".$LANG["buttons"][6]."' src='".$CFG_GLPI["root_doc"]."/pics/moins.png' ";
+					//$search_config.= "<img alt='".$LANG['buttons'][6]."' title='".$LANG['buttons'][6]."' src='".$CFG_GLPI["root_doc"]."/pics/moins.png' ";
 					//$search_config.=$tmp.">";
 				}
 
@@ -1186,13 +1186,13 @@ function showList ($type,$params){
 					}
 			// Add specific column Header
 //			if ($type==SOFTWARE_TYPE)
-//				echo displaySearchHeaderItem($output_type,$LANG["software"][11],$header_num);
+//				echo displaySearchHeaderItem($output_type,$LANG['software'][11],$header_num);
 			if ($type==CARTRIDGE_TYPE)
-				echo displaySearchHeaderItem($output_type,$LANG["cartridges"][0],$header_num);	
+				echo displaySearchHeaderItem($output_type,$LANG['cartridges'][0],$header_num);	
 			if ($type==CONSUMABLE_TYPE)
-				echo displaySearchHeaderItem($output_type,$LANG["consumables"][0],$header_num);
+				echo displaySearchHeaderItem($output_type,$LANG['consumables'][0],$header_num);
 			if ($type==STATE_TYPE||$type==RESERVATION_TYPE){
-				echo displaySearchHeaderItem($output_type,$LANG["state"][6],$header_num);
+				echo displaySearchHeaderItem($output_type,$LANG['state'][6],$header_num);
 				$ci = new CommonItem();
 				
 			}
@@ -1321,16 +1321,16 @@ function showList ($type,$params){
 							echo displaySearchItem($output_type,"&nbsp;",$item_num,$row_num);
 						} else {
 							if ($data["ACTIVE"]){
-								echo displaySearchItem($output_type,"<a href=\"".$CFG_GLPI["root_doc"]."/front/reservation.php?ID=".$data["refID"]."&amp;active=0\"  title='".$LANG["buttons"][42]."'><img src=\"".$CFG_GLPI["root_doc"]."/pics/moins.png\" alt='' title=''></a>",$item_num,$row_num,"class='center'");
+								echo displaySearchItem($output_type,"<a href=\"".$CFG_GLPI["root_doc"]."/front/reservation.php?ID=".$data["refID"]."&amp;active=0\"  title='".$LANG['buttons'][42]."'><img src=\"".$CFG_GLPI["root_doc"]."/pics/moins.png\" alt='' title=''></a>",$item_num,$row_num,"class='center'");
 							} else {
-								echo displaySearchItem($output_type,"<a href=\"".$CFG_GLPI["root_doc"]."/front/reservation.php?ID=".$data["refID"]."&amp;active=1\"  title='".$LANG["buttons"][41]."'><img src=\"".$CFG_GLPI["root_doc"]."/pics/plus.png\" alt='' title=''></a>",$item_num,$row_num,"class='center'");
+								echo displaySearchItem($output_type,"<a href=\"".$CFG_GLPI["root_doc"]."/front/reservation.php?ID=".$data["refID"]."&amp;active=1\"  title='".$LANG['buttons'][41]."'><img src=\"".$CFG_GLPI["root_doc"]."/pics/plus.png\" alt='' title=''></a>",$item_num,$row_num,"class='center'");
 							}
 
-							echo displaySearchItem($output_type,"<a href=\"javascript:confirmAction('".addslashes($LANG["reservation"][38])."\\n".addslashes($LANG["reservation"][39])."','".$CFG_GLPI["root_doc"]."/front/reservation.php?ID=".$data["refID"]."&amp;delete=delete')\"  title='".$LANG["reservation"][6]."'><img src=\"".$CFG_GLPI["root_doc"]."/pics/delete.png\" alt='' title=''></a>",$item_num,$row_num,"class='center'");
+							echo displaySearchItem($output_type,"<a href=\"javascript:confirmAction('".addslashes($LANG['reservation'][38])."\\n".addslashes($LANG['reservation'][39])."','".$CFG_GLPI["root_doc"]."/front/reservation.php?ID=".$data["refID"]."&amp;delete=delete')\"  title='".$LANG['reservation'][6]."'><img src=\"".$CFG_GLPI["root_doc"]."/pics/delete.png\" alt='' title=''></a>",$item_num,$row_num,"class='center'");
 						}
 					}
 					if ($data["ACTIVE"]){
-						echo displaySearchItem($output_type,"<a href='".$target."?show=resa&amp;ID=".$data["refID"]."' title='".$LANG["reservation"][21]."'><img src=\"".$CFG_GLPI["root_doc"]."/pics/reservation-3.png\" alt='' title=''></a>",$item_num,$row_num,"class='center'");
+						echo displaySearchItem($output_type,"<a href='".$target."?show=resa&amp;ID=".$data["refID"]."' title='".$LANG['reservation'][21]."'><img src=\"".$CFG_GLPI["root_doc"]."/pics/reservation-3.png\" alt='' title=''></a>",$item_num,$row_num,"class='center'");
 					} else {
 						echo displaySearchItem($output_type,"&nbsp;",$item_num,$row_num);
 					}
@@ -1347,10 +1347,10 @@ function showList ($type,$params){
 							if (isset($link[$key])) $title.=" ".$link[$key]." ";
 							switch ($field[$key]){
 								case "all":
-									$title.=$LANG["common"][66];
+									$title.=$LANG['common'][66];
 								break;
 								case "view":
-									$title.=$LANG["search"][11];
+									$title.=$LANG['search'][11];
 								break;
 								default :
 								$title.=$SEARCH_OPTION[$type][$field[$key]]["name"];
@@ -1381,9 +1381,9 @@ function showList ($type,$params){
 				if ($isadmin){
 					
 					echo "<table width='80%' class='tab_glpi'>";
-					echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markCheckboxes('massiveaction_form') ) return false;\" href='".$_SERVER['PHP_SELF']."?select=all' >".$LANG["buttons"][18]."</a></td>";
+					echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markCheckboxes('massiveaction_form') ) return false;\" href='".$_SERVER['PHP_SELF']."?select=all' >".$LANG['buttons'][18]."</a></td>";
 	
-					echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkCheckboxes('massiveaction_form') ) return false;\" href='".$_SERVER['PHP_SELF']."?select=none'>".$LANG["buttons"][19]."</a>";
+					echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkCheckboxes('massiveaction_form') ) return false;\" href='".$_SERVER['PHP_SELF']."?select=none'>".$LANG['buttons'][19]."</a>";
 					echo "</td><td class='left' width='80%'>";
 					dropdownMassiveAction($type,$deleted);
 					echo "</td>";
@@ -2166,9 +2166,9 @@ function addWhere($link,$nott,$type,$ID,$val,$meta=0){
 
 			case "bool":
 				if (!is_numeric($val)){
-					if (strcasecmp($val,$LANG["choice"][0])==0){
+					if (strcasecmp($val,$LANG['choice'][0])==0){
 						$val=0;
-					} else 	if (strcasecmp($val,$LANG["choice"][1])==0){
+					} else 	if (strcasecmp($val,$LANG['choice'][1])==0){
 						$val=1;
 					}
 				}
@@ -2362,7 +2362,7 @@ function giveItem ($type,$ID,$data,$num,$meta=0){
 			} else {
 				// Set name for Root entity
 				if ($data[$NAME.$num."_2"]==0){
-					$data[$NAME.$num]=$LANG["entity"][2];
+					$data[$NAME.$num]=$LANG['entity'][2];
 				} 
 			}
 			break;
@@ -2431,7 +2431,7 @@ function giveItem ($type,$ID,$data,$num,$meta=0){
 		case "glpi_contracts.periodicity":
 		case "glpi_contracts.facturation":
 			if (!empty($data[$NAME.$num])){
-				return $data[$NAME.$num]." ".$LANG["financial"][57];
+				return $data[$NAME.$num]." ".$LANG['financial'][57];
 			} else {
 				return "&nbsp;";
 			}
@@ -2454,14 +2454,14 @@ function giveItem ($type,$ID,$data,$num,$meta=0){
 			}
 		case "glpi_infocoms.amort_time":
 			if (!empty($data[$NAME.$num])){
-				return $data[$NAME.$num]." ".$LANG["financial"][9];
+				return $data[$NAME.$num]." ".$LANG['financial'][9];
 			} else { 
 				return "&nbsp;";
 			}
 			break;
 		case "glpi_infocoms.warranty_duration":
 			if (!empty($data[$NAME.$num])){
-				return $data[$NAME.$num]." ".$LANG["financial"][57];
+				return $data[$NAME.$num]." ".$LANG['financial'][57];
 			} else {
 				return "&nbsp;";
 			}
@@ -2471,20 +2471,20 @@ function giveItem ($type,$ID,$data,$num,$meta=0){
 			break;
 		case "glpi_infocoms.alert":
 			if ($data[$NAME.$num]==pow(2,ALERT_END)){
-				return $LANG["financial"][80];
+				return $LANG['financial'][80];
 			} 
 			return "";
 			break;
 		case "glpi_contracts.alert":
 			switch ($data[$NAME.$num]){
 				case pow(2,ALERT_END);
-					return $LANG["buttons"][32];
+					return $LANG['buttons'][32];
 					break;
 				case pow(2,ALERT_NOTICE);
-					return $LANG["financial"][10];
+					return $LANG['financial'][10];
 					break;
 				case pow(2,ALERT_END)+pow(2,ALERT_NOTICE);
-					return $LANG["buttons"][32]." + ".$LANG["financial"][10];
+					return $LANG['buttons'][32]." + ".$LANG['financial'][10];
 					break;
 			} 
 			return "";
@@ -2503,7 +2503,7 @@ function giveItem ($type,$ID,$data,$num,$meta=0){
 		case "glpi_softwarelicenses.number":
 
 			if ($data[$NAME.$num."_2"]==-1){
-				return $LANG["software"][4];
+				return $LANG['software'][4];
 			} else {
 				if (empty($data[$NAME.$num])){
 					return 0;
@@ -2518,9 +2518,9 @@ function giveItem ($type,$ID,$data,$num,$meta=0){
 			break;
 		case "glpi_reservation_item.comments" :
 			if (empty($data[$NAME.$num])){
-				return  "<a href='".$CFG_GLPI["root_doc"]."/front/reservation.php?comment=".$data["refID"]."' title='".$LANG["reservation"][22]."'>".$LANG["common"][49]."</a>";
+				return  "<a href='".$CFG_GLPI["root_doc"]."/front/reservation.php?comment=".$data["refID"]."' title='".$LANG['reservation'][22]."'>".$LANG['common'][49]."</a>";
 			}else{
-				return "<a href='".$CFG_GLPI["root_doc"]."/front/reservation.php?comment=".$data['refID']."' title='".$LANG["reservation"][22]."'>". resume_text($data[$NAME.$num])."</a>";
+				return "<a href='".$CFG_GLPI["root_doc"]."/front/reservation.php?comment=".$data['refID']."' title='".$LANG['reservation'][22]."'>". resume_text($data[$NAME.$num])."</a>";
 			}
 			break;
 	}
@@ -2896,7 +2896,7 @@ function addLeftJoin ($type,$ref_table,&$already_link_tables,$new_table,$linkfie
 			if (empty($AS)){
 				$AS = "AS glpi_entities";
 			}
-			return " LEFT JOIN ( SELECT * FROM glpi_entities UNION SELECT 0 AS ID, '".addslashes($LANG["entity"][2])."' AS name, -1 AS parentID, '".addslashes($LANG["entity"][2])."' AS completename, '' AS comments, -1 AS level) 
+			return " LEFT JOIN ( SELECT * FROM glpi_entities UNION SELECT 0 AS ID, '".addslashes($LANG['entity'][2])."' AS name, -1 AS parentID, '".addslashes($LANG['entity'][2])."' AS completename, '' AS comments, -1 AS level) 
 				$AS ON ($rt.$linkfield = glpi_entities.ID) ";
 			break;
 		case "glpi_users_groups":

@@ -179,8 +179,8 @@ class Plugin extends CommonDBTM {
 		echo "<div align='center'><table class='tab_cadre' cellpadding='5'>";
 		
 		// ligne a modifier en fonction de la modification des fichiers de langues
-		echo "<tr><th colspan='7'>".$LANG["plugins"][0]."</th></tr>";
-		echo "<tr><th>".$LANG["common"][16]."</th><th>".$LANG["rulesengine"][78]."</th><th>".$LANG["state"][0]."</th><th>".$LANG["common"][37]."</th><th>".$LANG["financial"][45]."</th><th colspan='2'>&nbsp;</th></tr>";
+		echo "<tr><th colspan='7'>".$LANG['plugins'][0]."</th></tr>";
+		echo "<tr><th>".$LANG['common'][16]."</th><th>".$LANG['rulesengine'][78]."</th><th>".$LANG['state'][0]."</th><th>".$LANG['common'][37]."</th><th>".$LANG['financial'][45]."</th><th colspan='2'>&nbsp;</th></tr>";
 		$pluglist=$this->find("","name, directory");
 		$i=0;
 		$PLUGIN_HOOKS_SAVE=$PLUGIN_HOOKS;
@@ -211,23 +211,23 @@ class Plugin extends CommonDBTM {
 			echo "<td>";
 			switch ($plug['state']){
 				case PLUGIN_NEW :
-					echo $LANG["joblist"][9];
+					echo $LANG['joblist'][9];
 					break;
 				case PLUGIN_ACTIVATED :
-					echo $LANG["setup"][192];
+					echo $LANG['setup'][192];
 					break;
 				case PLUGIN_NOTINSTALLED :
-					echo $LANG["plugins"][1];
+					echo $LANG['plugins'][1];
 					break;
 				case PLUGIN_TOBECONFIGURED :
-					echo $LANG["plugins"][2];
+					echo $LANG['plugins'][2];
 					break;
 				case PLUGIN_NOTACTIVATED :
-					echo $LANG["plugins"][3];
+					echo $LANG['plugins'][3];
 					break;
 				case PLUGIN_TOBECLEANED :
 				default:
-					echo $LANG["plugins"][4];
+					echo $LANG['plugins'][4];
 					break;
 			}
 			echo "</td>";
@@ -235,7 +235,7 @@ class Plugin extends CommonDBTM {
 			$weblink=trim($plug['homepage']);
 			echo "<td>";
 			if (!empty($weblink)){
-				echo "<a href='".formatOutputWebLink($weblink)."' target='_blank'><img src='".$CFG_GLPI["root_doc"]."/pics/web.png' class='middle' alt='".$LANG["common"][4]."' title='".$LANG["common"][4]."' ></a>";
+				echo "<a href='".formatOutputWebLink($weblink)."' target='_blank'><img src='".$CFG_GLPI["root_doc"]."/pics/web.png' class='middle' alt='".$LANG['common'][4]."' title='".$LANG['common'][4]."' ></a>";
 			} else {
 				echo "&nbsp;";
 			}
@@ -244,12 +244,12 @@ class Plugin extends CommonDBTM {
 			switch ($plug['state']){
 				case PLUGIN_ACTIVATED :
 					echo "<td>";
-					echo "<a href='".$_SERVER['PHP_SELF']."?ID=$ID&amp;action=unactivate'>".$LANG["buttons"][42]."</a>";
+					echo "<a href='".$_SERVER['PHP_SELF']."?ID=$ID&amp;action=unactivate'>".$LANG['buttons'][42]."</a>";
 					echo "</td><td>";
 					if (function_exists("plugin_".$plug['directory']."_uninstall")){
-						echo "<a href='".$_SERVER['PHP_SELF']."?ID=$ID&amp;action=uninstall'>".$LANG["buttons"][5]."</a>";
+						echo "<a href='".$_SERVER['PHP_SELF']."?ID=$ID&amp;action=uninstall'>".$LANG['buttons'][5]."</a>";
 					} else {
-						echo $LANG["plugins"][5].": "."plugin_".$plug['directory']."_uninstall";
+						echo $LANG['plugins'][5].": "."plugin_".$plug['directory']."_uninstall";
 					}
 					echo "</td>";
 					break;
@@ -264,10 +264,10 @@ class Plugin extends CommonDBTM {
 							$do_install=$function();
 						}
 						if ($do_install){
-							echo "<a href='".$_SERVER['PHP_SELF']."?ID=$ID&amp;action=install'>".$LANG["buttons"][4]."</a>";
+							echo "<a href='".$_SERVER['PHP_SELF']."?ID=$ID&amp;action=install'>".$LANG['buttons'][4]."</a>";
 						}
 					} else {
-						echo $LANG["plugins"][5].":";
+						echo $LANG['plugins'][5].":";
 						if (!function_exists("plugin_".$plug['directory']."_install")){
 							echo " plugin_".$plug['directory']."_install";
 						} 
@@ -277,9 +277,9 @@ class Plugin extends CommonDBTM {
 					}
 					echo "</td><td>";
 					if (function_exists("plugin_".$plug['directory']."_uninstall")){
-						echo "<a href='".$_SERVER['PHP_SELF']."?ID=$ID&amp;action=uninstall'>".$LANG["buttons"][5]."</a>";
+						echo "<a href='".$_SERVER['PHP_SELF']."?ID=$ID&amp;action=uninstall'>".$LANG['buttons'][5]."</a>";
 					} else {
-						echo $LANG["plugins"][5].": "."plugin_".$plug['directory']."_uninstall";
+						echo $LANG['plugins'][5].": "."plugin_".$plug['directory']."_uninstall";
 					}
 					echo "</td>";
 					break;
@@ -292,25 +292,25 @@ class Plugin extends CommonDBTM {
 								glpi_header($_SERVER['PHP_SELF']);
 							}
 						} else {
-							echo $LANG["plugins"][5].": "."plugin_".$plug['directory']."_check_config";
+							echo $LANG['plugins'][5].": "."plugin_".$plug['directory']."_check_config";
 						}
 
 					echo "</td><td>";
 					if (function_exists("plugin_".$plug['directory']."_uninstall")){
-						echo "<a href='".$_SERVER['PHP_SELF']."?ID=$ID&amp;action=uninstall'>".$LANG["buttons"][5]."</a>";
+						echo "<a href='".$_SERVER['PHP_SELF']."?ID=$ID&amp;action=uninstall'>".$LANG['buttons'][5]."</a>";
 					} else {
-						echo $LANG["plugins"][5].": "."plugin_".$plug['directory']."_uninstall";
+						echo $LANG['plugins'][5].": "."plugin_".$plug['directory']."_uninstall";
 					}
 					echo "</td>";
 					break;
 				case PLUGIN_NOTACTIVATED :
 					echo "<td>";
-						echo "<a href='".$_SERVER['PHP_SELF']."?ID=$ID&amp;action=activate'>".$LANG["buttons"][41]."</a>";
+						echo "<a href='".$_SERVER['PHP_SELF']."?ID=$ID&amp;action=activate'>".$LANG['buttons'][41]."</a>";
 					echo "</td><td>";
 					if (function_exists("plugin_".$plug['directory']."_uninstall")){
-						echo "<a href='".$_SERVER['PHP_SELF']."?ID=$ID&amp;action=uninstall'>".$LANG["buttons"][5]."</a>";
+						echo "<a href='".$_SERVER['PHP_SELF']."?ID=$ID&amp;action=uninstall'>".$LANG['buttons'][5]."</a>";
 					} else {
-						echo $LANG["plugins"][5].": "."plugin_".$plug['directory']."_uninstall";
+						echo $LANG['plugins'][5].": "."plugin_".$plug['directory']."_uninstall";
 					}
 					echo "</td>";
 					break;
@@ -318,7 +318,7 @@ class Plugin extends CommonDBTM {
 				case PLUGIN_TOBECLEANED :
 				default:
 					echo "<td colspan='2'>";
-						echo "<a href='".$_SERVER['PHP_SELF']."?ID=$ID&amp;action=clean'>".$LANG["buttons"][53]."</a>";
+						echo "<a href='".$_SERVER['PHP_SELF']."?ID=$ID&amp;action=clean'>".$LANG['buttons'][53]."</a>";
 					echo "</td>";
 					break;
 			}

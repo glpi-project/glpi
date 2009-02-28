@@ -101,7 +101,7 @@ function showFormPlanning($type,$date,$usertype,$uID,$gID){
 	echo "<div align='center'><form method=\"get\" name=\"form\" action=\"planning.php\">";
 	echo "<table class='tab_cadre'><tr class='tab_bg_2'>";
 	echo "<td>";
-	echo "<a href=\"".$_SERVER['PHP_SELF']."?type=".$type."&amp;uID=".$uID."&amp;date=$prev\"><img src=\"".$CFG_GLPI["root_doc"]."/pics/left.png\" alt='".$LANG["buttons"][12]."' title='".$LANG["buttons"][12]."'></a>";
+	echo "<a href=\"".$_SERVER['PHP_SELF']."?type=".$type."&amp;uID=".$uID."&amp;date=$prev\"><img src=\"".$CFG_GLPI["root_doc"]."/pics/left.png\" alt='".$LANG['buttons'][12]."' title='".$LANG['buttons'][12]."'></a>";
 	echo "</td>";
 	echo "<td>";
 	if (haveRight("show_all_planning","1")){
@@ -112,7 +112,7 @@ function showFormPlanning($type,$date,$usertype,$uID,$gID){
 		$rand_group=dropdownValue("glpi_groups","gID",$gID,1,$_SESSION["glpiactive_entity"]);
 		echo "<hr>";
 		echo "<input type='radio' id='radio_user_group' name='usertype' value='user_group' ".($usertype=="user_group"?"checked":"").">";
-		echo $LANG["joblist"][3];
+		echo $LANG['joblist'][3];
 	
 	
 		echo "<script type='text/javascript' >\n";
@@ -123,8 +123,8 @@ function showFormPlanning($type,$date,$usertype,$uID,$gID){
 		echo "</script>\n";
 	} else if (haveRight("show_group_planning","1")){
 		echo "<select name='usertype'>";
-		echo "<option value='user' ".($usertype=='user'?'selected':'').">".$LANG["joblist"][1]."</option>";
-		echo "<option value='user_group' ".($usertype=='user_group'?'selected':'').">".$LANG["joblist"][3]."</option>";
+		echo "<option value='user' ".($usertype=='user'?'selected':'').">".$LANG['joblist'][1]."</option>";
+		echo "<option value='user_group' ".($usertype=='user_group'?'selected':'').">".$LANG['joblist'][3]."</option>";
 		echo "</select>";
 	}
 	echo "</td>";
@@ -133,21 +133,21 @@ showDateFormItem("date",$date,false);
 
 echo "</td>";
 echo "<td><select name='type'>";
-echo "<option value='day' ".($type=="day"?" selected ":"").">".$LANG["planning"][5]."</option>";
-echo "<option value='week' ".($type=="week"?" selected ":"").">".$LANG["planning"][6]."</option>";
-echo "<option value='month' ".($type=="month"?" selected ":"").">".$LANG["planning"][14]."</option>";
+echo "<option value='day' ".($type=="day"?" selected ":"").">".$LANG['planning'][5]."</option>";
+echo "<option value='week' ".($type=="week"?" selected ":"").">".$LANG['planning'][6]."</option>";
+echo "<option value='month' ".($type=="month"?" selected ":"").">".$LANG['planning'][14]."</option>";
 echo "</select></td>";
-echo "<td rowspan='2' align='center'><input type=\"submit\" class='button' name=\"submit\" Value=\"". $LANG["buttons"][7] ."\" /></td>";
+echo "<td rowspan='2' align='center'><input type=\"submit\" class='button' name=\"submit\" Value=\"". $LANG['buttons'][7] ."\" /></td>";
 echo "<td>";
 
-echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/planning.ical.php?uID=".$uID."\" title='".$LANG["planning"][12]."'><span style='font-size:10px'>-".$LANG["planning"][10]."</span></a>";
+echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/planning.ical.php?uID=".$uID."\" title='".$LANG['planning'][12]."'><span style='font-size:10px'>-".$LANG['planning'][10]."</span></a>";
 echo "<br>";
 // Todo recup l'url complete de glpi proprement, ? nouveau champs table config ?
-echo "<a href=\"webcal://".$_SERVER['HTTP_HOST'].$CFG_GLPI["root_doc"]."/front/planning.ical.php?uID=".$uID."\" title='".$LANG["planning"][13]."'><span style='font-size:10px'>-".$LANG["planning"][11]."</span></a>";
+echo "<a href=\"webcal://".$_SERVER['HTTP_HOST'].$CFG_GLPI["root_doc"]."/front/planning.ical.php?uID=".$uID."\" title='".$LANG['planning'][13]."'><span style='font-size:10px'>-".$LANG['planning'][11]."</span></a>";
 
 echo "</td>";	
 echo "<td>";
-echo "<a href=\"".$_SERVER['PHP_SELF']."?type=".$type."&amp;uID=".$uID."&amp;date=$next\"><img src=\"".$CFG_GLPI["root_doc"]."/pics/right.png\" alt='".$LANG["buttons"][11]."' title='".$LANG["buttons"][11]."'></a>";
+echo "<a href=\"".$_SERVER['PHP_SELF']."?type=".$type."&amp;uID=".$uID."&amp;date=$next\"><img src=\"".$CFG_GLPI["root_doc"]."/pics/right.png\" alt='".$LANG['buttons'][11]."' title='".$LANG['buttons'][11]."'></a>";
 echo "</td>";
 
 echo "</tr>";
@@ -586,7 +586,7 @@ function displayPlanningItem($val,$who,$type="",$complete=0){
 		}
 	} else if(isset($val["id_tracking"])){  // show tracking
 
-		echo "<img src='".$CFG_GLPI["root_doc"]."/pics/rdv_interv.png' alt='' title='".$LANG["planning"][8]."'>&nbsp;";
+		echo "<img src='".$CFG_GLPI["root_doc"]."/pics/rdv_interv.png' alt='' title='".$LANG['planning'][8]."'>&nbsp;";
 		echo "&nbsp;<img src=\"".$CFG_GLPI["root_doc"]."/pics/".$val["status"].".png\" alt='".getStatusName($val["status"])."' title='".getStatusName($val["status"])."'>&nbsp;";
 
 		echo "<a href='".$CFG_GLPI["root_doc"]."/front/tracking.form.php?ID=".$val["id_tracking"]."' style='$styleText'";
@@ -601,10 +601,10 @@ function displayPlanningItem($val,$who,$type="",$complete=0){
 			case "through":
 				break;
 			case "begin";
-				echo $LANG["buttons"][33]." ".date("H:i",strtotime($val["begin"])).": ";
+				echo $LANG['buttons'][33]." ".date("H:i",strtotime($val["begin"])).": ";
 				break;
 			case "end";
-				echo $LANG["buttons"][32]." ".date("H:i",strtotime($val["end"])).": ";
+				echo $LANG['buttons'][32]." ".date("H:i",strtotime($val["end"])).": ";
 				break;
 
 		}
@@ -616,27 +616,27 @@ function displayPlanningItem($val,$who,$type="",$complete=0){
 		
 		if ($who<=0){ // show tech for "show all and show group"
 			echo "<br>- ";
-			echo $LANG["planning"][9]." ".getUserName($val["id_assign"]);
+			echo $LANG['planning'][9]." ".getUserName($val["id_assign"]);
 		} 
 		echo "</a>";
 		if ($complete){
 			echo "<br>";
 			echo "<strong>".getPlanningState($val["state"])."</strong><br>";
-			echo "<strong>".$LANG["joblist"][2].":</strong> ".getPriorityName($val["priority"])."<br>";
-			echo "<strong>".$LANG["joblist"][6].":</strong><br>".$val["content"];
+			echo "<strong>".$LANG['joblist'][2].":</strong> ".getPriorityName($val["priority"])."<br>";
+			echo "<strong>".$LANG['joblist'][6].":</strong><br>".$val["content"];
 		} else {
 			echo "<div class='over_link' id='content_tracking_".$val["ID"].$rand."'>";
 			echo "<strong>".getPlanningState($val["state"])."</strong><br>";
-			echo "<strong>".$LANG["joblist"][2].":</strong> ".getPriorityName($val["priority"])."<br>";
-			echo "<strong>".$LANG["joblist"][6].":</strong><br>".$val["content"]."</div>";
+			echo "<strong>".$LANG['joblist'][2].":</strong> ".getPriorityName($val["priority"])."<br>";
+			echo "<strong>".$LANG['joblist'][6].":</strong><br>".$val["content"]."</div>";
 		}
 
 	}else{  // show Reminder
 		if (!$val["private"]){
-			$author="<br>".$LANG["planning"][9]." : ".getUserName($val["FK_users"]);
+			$author="<br>".$LANG['planning'][9]." : ".getUserName($val["FK_users"]);
 			$img="rdv_public.png";
 		} 
-		echo "<img src='".$CFG_GLPI["root_doc"]."/pics/".$img."' alt='' title='".$LANG["title"][37]."'>&nbsp;";
+		echo "<img src='".$CFG_GLPI["root_doc"]."/pics/".$img."' alt='' title='".$LANG['title'][37]."'>&nbsp;";
 		echo "<a href='".$CFG_GLPI["root_doc"]."/front/reminder.form.php?ID=".$val["id_reminder"]."'";
 			if (!$complete){
 			echo "onmouseout=\"cleanhide('content_reminder_".$val["id_reminder"].$rand."')\" onmouseover=\"cleandisplay('content_reminder_".$val["id_reminder"].$rand."')\"";
@@ -650,10 +650,10 @@ function displayPlanningItem($val,$who,$type="",$complete=0){
 			case "through":
 				break;
 			case "begin";
-				echo $LANG["buttons"][33]." ".date("H:i",strtotime($val["begin"])).": ";
+				echo $LANG['buttons'][33]." ".date("H:i",strtotime($val["begin"])).": ";
 				break;
 			case "end";
-				echo $LANG["buttons"][32]." ".date("H:i",strtotime($val["end"])).": ";
+				echo $LANG['buttons'][32]." ".date("H:i",strtotime($val["end"])).": ";
 				break;
 
 		}
@@ -813,7 +813,7 @@ function showPlanningCentral($who){
 
 	ksort($interv);
 
-	echo "<table class='tab_cadrehov'><tr><th><a href='".$CFG_GLPI["root_doc"]."/front/planning.php'>".$LANG["planning"][15]."</a></th></tr>";
+	echo "<table class='tab_cadrehov'><tr><th><a href='".$CFG_GLPI["root_doc"]."/front/planning.php'>".$LANG['planning'][15]."</a></th></tr>";
 	$type='';
 	if (count($interv)>0){
 		foreach ($interv as $key => $val){
@@ -986,7 +986,7 @@ function generateIcal($who){
 			$vevent->setProperty( "dtend" , $val["end"] ); 
 			
 			if(isset($val["id_tracking"])){
-				$vevent->setProperty( "summary" , $LANG["planning"][8]." # ".$val["id_tracking"]." ".$LANG["common"][1]." # ".$val["device"] ); 
+				$vevent->setProperty( "summary" , $LANG['planning'][8]." # ".$val["id_tracking"]." ".$LANG['common'][1]." # ".$val["device"] ); 
 			}else if (isset($val["name"])){
 				$vevent->setProperty( "summary" , $val["name"] ); 
 			}

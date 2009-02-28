@@ -54,7 +54,7 @@ if (!defined('GLPI_ROOT')) {
 	echo "<div class='center'>&nbsp;<table class='tab_cadre_fixe' cellpadding='2'>";
 	echo "<tr><td align='center' class='tab_bg_2'><strong>";
 	echo "<a href=\"" . $CFG_GLPI["root_doc"] . "/front/software.licenses.php?form=add&amp;sID=$ID\">";
-	echo $LANG["software"][12];
+	echo $LANG['software'][12];
 	echo "</a></strong></td></tr>";
 	echo "</table></div><br>";
 }
@@ -81,15 +81,15 @@ function showVersions($sID) {
 				LEFT JOIN glpi_dropdown_state ON (glpi_dropdown_state.ID=glpi_softwareversions.state)
 				WHERE (sID = '$sID') ORDER BY name";
 		
-	initNavigateListItems(SOFTWAREVERSION_TYPE,$LANG["help"][31] ." = ". $soft->fields["name"]);
+	initNavigateListItems(SOFTWAREVERSION_TYPE,$LANG['help'][31] ." = ". $soft->fields["name"]);
 
 	if ($result=$DB->query($query)){
 		if ($DB->numrows($result)){
 			echo "<table class='tab_cadre'><tr>";
-			echo "<th>".$LANG["software"][5]."</th>";
-			echo "<th>".$LANG["state"][0]."</th>";
-			echo "<th>".$LANG["software"][19]."</th>";
-			echo "<th>".$LANG["common"][25]."</th>";
+			echo "<th>".$LANG['software'][5]."</th>";
+			echo "<th>".$LANG['state'][0]."</th>";
+			echo "<th>".$LANG['software'][19]."</th>";
+			echo "<th>".$LANG['common'][25]."</th>";
 			echo "</tr>";
 			for ($tot=$nb=0;$data=$DB->fetch_assoc($result);$tot+=$nb){
 				addToNavigateListItems(SOFTWAREVERSION_TYPE,$data['ID']);
@@ -104,17 +104,17 @@ function showVersions($sID) {
 					echo "<td>".$data['comments']."</td></tr>";
 				}
 			}
-			echo "<tr class='tab_bg_1'><td></td><td align='right'>".$LANG["common"][33]."</td><td align='right'>$tot</td><td>";
+			echo "<tr class='tab_bg_1'><td></td><td align='right'>".$LANG['common'][33]."</td><td align='right'>$tot</td><td>";
 			if ($canedit){
-				echo "<a href='softwareversion.form.php?sID=$sID'>".$LANG["software"][7]."</a>";
+				echo "<a href='softwareversion.form.php?sID=$sID'>".$LANG['software'][7]."</a>";
 			}
 			echo "</td></tr>";
 			echo "</table>";
 		} else {
 			echo "<table class='tab_cadre_fixe'>";
-			echo "<tr><th>".$LANG["search"][15]."</th></tr>";
+			echo "<tr><th>".$LANG['search'][15]."</th></tr>";
 			if ($canedit){
-				echo "<tr class='tab_bg_2'><td align='center'><a href='softwareversion.form.php?sID=$sID'>".$LANG["software"][7]."</a></td></tr>";
+				echo "<tr class='tab_bg_2'><td align='center'><a href='softwareversion.form.php?sID=$sID'>".$LANG['software'][7]."</a></td></tr>";
 			}
 			echo "</table>";
 		}
@@ -138,15 +138,15 @@ function showInstallationsByEntity($vID) {
 		
 	echo "<div class='center'>";
 	echo "<table class='tab_cadre'><tr>";
-	echo "<th>".$LANG["entity"][0]."</th>";
-	echo "<th>".$LANG["software"][19]."</th>";
+	echo "<th>".$LANG['entity'][0]."</th>";
+	echo "<th>".$LANG['software'][19]."</th>";
 	echo "</tr>";
 
 	$tot=0;
 	if (in_array(0,$_SESSION["glpiactiveentities"])) {
 		$nb = countInstallationsForVersion($vID,0);
 		if ($nb>0) {
-			echo "<tr class='tab_bg_2'><td>" . $LANG["entity"][1] . "</td><td>" . $nb . "</td></tr>\n";
+			echo "<tr class='tab_bg_2'><td>" . $LANG['entity'][1] . "</td><td>" . $nb . "</td></tr>\n";
 			$tot+=$nb;
 		}
 	}	
@@ -161,9 +161,9 @@ function showInstallationsByEntity($vID) {
 		}
 	}
 	if ($tot>0) {
-		echo "<tr class='tab_bg_1'><td>" . $LANG["common"][33] . "</td><td><strong>" . $tot . "</strong></td></tr>\n";
+		echo "<tr class='tab_bg_1'><td>" . $LANG['common'][33] . "</td><td><strong>" . $tot . "</strong></td></tr>\n";
 	} else {
-		echo "<tr class='tab_bg_1'><td colspan='2'>" . $LANG["search"][15] . "</strong></td></tr>\n";
+		echo "<tr class='tab_bg_1'><td colspan='2'>" . $LANG['search'][15] . "</strong></td></tr>\n";
 	}
 	echo "</table></div>";
 }
@@ -194,10 +194,10 @@ function showSoftwareMergeCandidates($ID) {
 	if ($req->numrows()) {
 		echo "<form method='post' name='mergesoftware_form$rand' id='mergesoftware_form$rand' action='".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[SOFTWARE_TYPE]."'>";
 		echo "<table class='tab_cadrehov'><tr><th>&nbsp;</th>";
-		echo "<th>".$LANG["common"][16]."</th>";
-		echo "<th>".$LANG["entity"][0]."</th>";
-		echo "<th>".$LANG["software"][19]."</th>";
-		echo "<th>".$LANG["software"][11]."</th></tr>";
+		echo "<th>".$LANG['common'][16]."</th>";
+		echo "<th>".$LANG['entity'][0]."</th>";
+		echo "<th>".$LANG['software'][19]."</th>";
+		echo "<th>".$LANG['software'][11]."</th></tr>";
 		
 		foreach($req as $data) {
 			echo "<tr class='tab_bg_2'>";
@@ -211,14 +211,14 @@ function showSoftwareMergeCandidates($ID) {
 		echo "</table>";
 
 		echo "<table width='80%' class='tab_glpi'>";
-		echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td><a onclick= \"if ( markCheckboxes('mergesoftware_form$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?select=all'>".$LANG["buttons"][18]."</a></td>";
-		echo "<td>/</td><td ><a onclick=\"if ( unMarkCheckboxes('mergesoftware_form$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?select=none'>".$LANG["buttons"][19]."</a>";
+		echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td><a onclick= \"if ( markCheckboxes('mergesoftware_form$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?select=all'>".$LANG['buttons'][18]."</a></td>";
+		echo "<td>/</td><td ><a onclick=\"if ( unMarkCheckboxes('mergesoftware_form$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?select=none'>".$LANG['buttons'][19]."</a>";
 		echo "</td><td class='left' width='80%'>";
-		echo "<input type='hidden' name='ID' value=$ID><input type='submit' name='mergesoftware' value=\"".$LANG["software"][48]."\" class='submit'>";
+		echo "<input type='hidden' name='ID' value=$ID><input type='submit' name='mergesoftware' value=\"".$LANG['software'][48]."\" class='submit'>";
 		echo "</td></table>";
 		echo "</form>";
 	} else {
-		echo $LANG["search"][15];
+		echo $LANG['search'][15];
 	}		
 	
 	echo "</div>";
@@ -237,10 +237,10 @@ function mergeSoftware($ID, $item) {
 	global $DB, $LANG;
 	
 	echo "<div class='center'>";
-	echo "<table class='tab_cadrehov'><tr><th>".$LANG["software"][47]."</th></tr>";
+	echo "<table class='tab_cadrehov'><tr><th>".$LANG['software'][47]."</th></tr>";
 
 	echo "<tr class='tab_bg_2'><td>";
-	createProgressBar($LANG["rulesengine"][90]);
+	createProgressBar($LANG['rulesengine'][90]);
 	echo "</td></tr></table>";	
 	echo "</div>";
 	
@@ -283,10 +283,10 @@ function mergeSoftware($ID, $item) {
 		//error_log ("All merge operations ok.");
 		
 		foreach ($item as $old) {
-			putSoftwareInTrash($old,$LANG["software"][49]);
+			putSoftwareInTrash($old,$LANG['software'][49]);
 		}
 	}
-	changeProgressBarPosition($i,$nb+1,$LANG["rulesengine"][91]);	
+	changeProgressBarPosition($i,$nb+1,$LANG['rulesengine'][91]);	
 	
 	return $i==($nb+1);	
 }
@@ -333,9 +333,9 @@ function showLicenses($sID) {
 	echo "<br><div class='center'>";
 	if ($number < 1) {
 		echo "<table class='tab_cadre_fixe'>";
-		echo "<tr><th>".$LANG["search"][15]."</th></tr>";
+		echo "<tr><th>".$LANG['search'][15]."</th></tr>";
 		if ($canedit){
-			echo "<tr class='tab_bg_2'><td align='center'><a href='softwarelicense.form.php?sID=$sID'>".$LANG["software"][8]."</a></td></tr>";
+			echo "<tr class='tab_bg_2'><td align='center'><a href='softwarelicense.form.php?sID=$sID'>".$LANG['software'][8]."</a></td></tr>";
 		}
 		echo "</table>";
 		echo "</div>";
@@ -343,7 +343,7 @@ function showLicenses($sID) {
 	}
 
 	// Display the pager
-	printAjaxPager($LANG["software"][11],$start,$number);
+	printAjaxPager($LANG['software'][11],$start,$number);
 	
 	
 	$rand=mt_rand();
@@ -357,7 +357,7 @@ function showLicenses($sID) {
 			getEntitiesRestrictRequest('AND', 'glpi_softwarelicenses', '', '', true) .
 		"ORDER BY " . $sort." ".$order . " LIMIT ".intval($start)."," . intval($_SESSION['glpilist_limit']);
 		
-	initNavigateListItems(SOFTWARELICENSE_TYPE,$LANG["help"][31] ." = ". $software->fields["name"]);
+	initNavigateListItems(SOFTWARELICENSE_TYPE,$LANG['help'][31] ." = ". $software->fields["name"]);
 
 	if ($result=$DB->query($query)){
 		if ($DB->numrows($result)){
@@ -370,20 +370,20 @@ function showLicenses($sID) {
 			echo "<table class='tab_cadrehov'><tr>";
 			echo "<th>&nbsp;</th>";
 				
-			echo "<th>".($sort=="name"?$sort_img:"")."<a href='javascript:reloadTab(\"sort=name&order=".($order=="ASC"?"DESC":"ASC")."&start=0\");'>".$LANG["common"][16]."</a></th>";
+			echo "<th>".($sort=="name"?$sort_img:"")."<a href='javascript:reloadTab(\"sort=name&order=".($order=="ASC"?"DESC":"ASC")."&start=0\");'>".$LANG['common'][16]."</a></th>";
 			
 			if ($software->isRecursive()) {
 				// Ereg to search entity in string for match default order
-				echo "<th>".(strstr($order,"entity")?$sort_img:"")."<a href='javascript:reloadTab(\"sort=entity&order=".($order=="ASC"?"DESC":"ASC")."&start=0\");'>".$LANG["entity"][0]."</a></th>";
+				echo "<th>".(strstr($order,"entity")?$sort_img:"")."<a href='javascript:reloadTab(\"sort=entity&order=".($order=="ASC"?"DESC":"ASC")."&start=0\");'>".$LANG['entity'][0]."</a></th>";
 			}
-			echo "<th>".($sort=="serial"?$sort_img:"")."<a href='javascript:reloadTab(\"sort=serial&order=".($order=="ASC"?"DESC":"ASC")."&start=0\");'>".$LANG["common"][19]."</a></th>";
-			echo "<th>".$LANG["tracking"][29]."</th>";
-			echo "<th>".($sort=="typename"?$sort_img:"")."<a href='javascript:reloadTab(\"sort=typename&order=".($order=="ASC"?"DESC":"ASC")."&start=0\");'>".$LANG["common"][17]."</a></th>";
-			echo "<th>".($sort=="buyname"?$sort_img:"")."<a href='javascript:reloadTab(\"sort=buyname&order=".($order=="ASC"?"DESC":"ASC")."&start=0\");'>".$LANG["software"][1]."</a></th>";
-			echo "<th>".($sort=="usename"?$sort_img:"")."<a href='javascript:reloadTab(\"sort=usename&order=".($order=="ASC"?"DESC":"ASC")."&start=0\");'>".$LANG["software"][2]."</a></th>";
-			echo "<th>".($sort=="expire"?$sort_img:"")."<a href='javascript:reloadTab(\"sort=expire&order=".($order=="ASC"?"DESC":"ASC")."&start=0\");'>".$LANG["software"][32]."</a></th>";
-			echo "<th>".$LANG["help"][25]."</th>"; // "Computer" rather than "Affected To computer" ($LANG["software"][50] is too long) ?? 
-			//echo "<th>".$LANG["financial"][3]."</th>";
+			echo "<th>".($sort=="serial"?$sort_img:"")."<a href='javascript:reloadTab(\"sort=serial&order=".($order=="ASC"?"DESC":"ASC")."&start=0\");'>".$LANG['common'][19]."</a></th>";
+			echo "<th>".$LANG['tracking'][29]."</th>";
+			echo "<th>".($sort=="typename"?$sort_img:"")."<a href='javascript:reloadTab(\"sort=typename&order=".($order=="ASC"?"DESC":"ASC")."&start=0\");'>".$LANG['common'][17]."</a></th>";
+			echo "<th>".($sort=="buyname"?$sort_img:"")."<a href='javascript:reloadTab(\"sort=buyname&order=".($order=="ASC"?"DESC":"ASC")."&start=0\");'>".$LANG['software'][1]."</a></th>";
+			echo "<th>".($sort=="usename"?$sort_img:"")."<a href='javascript:reloadTab(\"sort=usename&order=".($order=="ASC"?"DESC":"ASC")."&start=0\");'>".$LANG['software'][2]."</a></th>";
+			echo "<th>".($sort=="expire"?$sort_img:"")."<a href='javascript:reloadTab(\"sort=expire&order=".($order=="ASC"?"DESC":"ASC")."&start=0\");'>".$LANG['software'][32]."</a></th>";
+			echo "<th>".$LANG['help'][25]."</th>"; // "Computer" rather than "Affected To computer" ($LANG['software'][50] is too long) ?? 
+			//echo "<th>".$LANG['financial'][3]."</th>";
 			echo "</tr>";
 			for ($tot=0;$data=$DB->fetch_assoc($result);){
 				addToNavigateListItems(SOFTWARELICENSE_TYPE,$data['ID']);
@@ -401,7 +401,7 @@ function showLicenses($sID) {
 					echo "<td>".$data['entity']."</td>";
 				}
 				echo "<td>".$data['serial']."</td>";
-				echo "<td align='right'>".($data['number']>0?$data['number']:$LANG["software"][4])."</td>";
+				echo "<td align='right'>".($data['number']>0?$data['number']:$LANG['software'][4])."</td>";
 				echo "<td>".$data['typename']."</td>";
 				echo "<td>".$data['buyname']."</td>";
 				echo "<td>".$data['usename']."</td>";
@@ -421,19 +421,19 @@ function showLicenses($sID) {
 					$tot += $data['number'];
 				}
 			}
-			echo "<tr class='tab_bg_1'><td colspan='".($software->isRecursive()?4:3)."' align='right'>".$LANG["common"][33].
-				"</td><td align='right'>".($tot>0?$tot:$LANG["software"][4])."</td><td colspan='5' align='center'>";
+			echo "<tr class='tab_bg_1'><td colspan='".($software->isRecursive()?4:3)."' align='right'>".$LANG['common'][33].
+				"</td><td align='right'>".($tot>0?$tot:$LANG['software'][4])."</td><td colspan='5' align='center'>";
 			if ($canedit){
-				echo "<a href='softwarelicense.form.php?sID=$sID'>".$LANG["software"][8]."</a>";
+				echo "<a href='softwarelicense.form.php?sID=$sID'>".$LANG['software'][8]."</a>";
 			}
 			echo "</td></tr>";
 			echo "</table>";
 			
 			if ($canedit){
 				echo "<table width='80%' class='tab_glpi'>";
-				echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td><a onclick= \"if ( markCheckboxes('massiveactionlicense_form$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?select=all'>".$LANG["buttons"][18]."</a></td>";
+				echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td><a onclick= \"if ( markCheckboxes('massiveactionlicense_form$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?select=all'>".$LANG['buttons'][18]."</a></td>";
 
-				echo "<td>/</td><td ><a onclick=\"if ( unMarkCheckboxes('massiveactionlicense_form$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?select=none'>".$LANG["buttons"][19]."</a>";
+				echo "<td>/</td><td ><a onclick=\"if ( unMarkCheckboxes('massiveactionlicense_form$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?select=none'>".$LANG['buttons'][19]."</a>";
 				echo "</td><td class='left' width='80%'>";
 				dropdownMassiveAction(SOFTWARELICENSE_TYPE,0,array('sID'=>$sID));
 				echo "</td></table>";
@@ -442,7 +442,7 @@ function showLicenses($sID) {
 			}
 
 		} else {
-			echo $LANG["search"][15];
+			echo $LANG['search'][15];
 		}
 	
 	}
@@ -484,8 +484,8 @@ function showInstallations($searchID, $crit="sID") {
 			echo "<form name='softinstall".$rand."' id='softinstall".$rand."' method='post' action=\"".$CFG_GLPI["root_doc"]."/front/software.licenses.php\">";
 			echo "<input type='hidden' name='sID' value='$sID'>";
 			echo "<table class='tab_cadre'><tr>";
-			echo "<th>".$LANG["software"][5]."</th>";
-			echo "<th>".$LANG["computers"][44]."</th>";
+			echo "<th>".$LANG['software'][5]."</th>";
+			echo "<th>".$LANG['computers'][44]."</th>";
 			echo "</tr>";
 			$current_version=-1;
 			do {
@@ -565,15 +565,15 @@ function showInstallations($searchID, $crit="sID") {
 			echo "</td></tr>";
 
 			if ($canedit){
-				echo "<tr class='tab_bg_1'><td>&nbsp;</td><td><a onclick= \"if ( markCheckboxes('softinstall".$rand."') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$sID&amp;select=all'>".$LANG["buttons"][18]."</a>";
+				echo "<tr class='tab_bg_1'><td>&nbsp;</td><td><a onclick= \"if ( markCheckboxes('softinstall".$rand."') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$sID&amp;select=all'>".$LANG['buttons'][18]."</a>";
 								
-				echo "&nbsp;/&nbsp;<a onclick= \"if ( unMarkCheckboxes('softinstall".$rand."') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$sID&amp;select=none'>".$LANG["buttons"][19]."</a>";
+				echo "&nbsp;/&nbsp;<a onclick= \"if ( unMarkCheckboxes('softinstall".$rand."') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$sID&amp;select=none'>".$LANG['buttons'][19]."</a>";
 
 				dropdownSoftwareVersions("versionID",$sID);
-				echo "&nbsp;<input type='submit' name='moveinstalls' value=\"".$LANG["buttons"][20]."\"
+				echo "&nbsp;<input type='submit' name='moveinstalls' value=\"".$LANG['buttons'][20]."\"
  class='submit'>";
 
-				echo "&nbsp;<input type='submit' name='deleteinstalls' value=\"".$LANG["buttons"][6]."\" class='submit'>";
+				echo "&nbsp;<input type='submit' name='deleteinstalls' value=\"".$LANG['buttons'][6]."\" class='submit'>";
 	
 				echo "</td>";
 			}
@@ -583,7 +583,7 @@ function showInstallations($searchID, $crit="sID") {
 			echo "</form>";
 
 		} else {
-			echo $LANG["search"][15];
+			echo $LANG['search'][15];
 		}
 
 
@@ -643,14 +643,14 @@ function showInstallations($searchID, $crit="sID") {
 	echo "<br><div class='center'>";
 	if ($number < 1) {
 		echo "<table class='tab_cadre_fixe'>";
-		echo "<tr><th>".$LANG["search"][15]."</th></tr>";
+		echo "<tr><th>".$LANG['search'][15]."</th></tr>";
 		echo "</table>";
 		echo "</div>";
 		return;
 	}
 
 	// Display the pager
-	printAjaxPager($LANG["software"][19],$start,$number);
+	printAjaxPager($LANG['software'][19],$start,$number);
 	
 	$query = "SELECT glpi_inst_software.*,glpi_computers.name AS compname, glpi_computers.ID AS cID,
 			glpi_computers.name AS compname, glpi_computers.serial, glpi_computers.otherserial, glpi_users.name AS username,
@@ -680,7 +680,7 @@ function showInstallations($searchID, $crit="sID") {
 			$soft = new Software;
 			$showEntity = ($soft->getFromDB($sID) && $soft->isRecursive());
 
-			$title=$LANG["help"][31] ." = ". $soft->fields["name"];
+			$title=$LANG['help'][31] ." = ". $soft->fields["name"];
 			if ($crit=="ID") {
 				$title .= " - " . $data["vername"];
 			}
@@ -697,18 +697,18 @@ function showInstallations($searchID, $crit="sID") {
 			}
 			
 			if ($crit=="sID") {
-				echo "<th>".($sort=="vername"?$sort_img:"")."<a href='javascript:reloadTab(\"sort=vername&order=".($order=="ASC"?"DESC":"ASC")."&start=0\");'>".$LANG["software"][5]."</a></th>";
+				echo "<th>".($sort=="vername"?$sort_img:"")."<a href='javascript:reloadTab(\"sort=vername&order=".($order=="ASC"?"DESC":"ASC")."&start=0\");'>".$LANG['software'][5]."</a></th>";
 			}
-			echo "<th>".($sort=="compname"?$sort_img:"")."<a href='javascript:reloadTab(\"sort=compname&order=".($order=="ASC"?"DESC":"ASC")."&start=0\");'>".$LANG["common"][16]."</a></th>";
+			echo "<th>".($sort=="compname"?$sort_img:"")."<a href='javascript:reloadTab(\"sort=compname&order=".($order=="ASC"?"DESC":"ASC")."&start=0\");'>".$LANG['common'][16]."</a></th>";
 			if ($showEntity) {
-				echo "<th>".(strstr($sort,"entity")?$sort_img:"")."<a href='javascript:reloadTab(\"sort=entity,compname&order=".($order=="ASC"?"DESC":"ASC")."&start=0\");'>".$LANG["entity"][0]."</a></th>";
+				echo "<th>".(strstr($sort,"entity")?$sort_img:"")."<a href='javascript:reloadTab(\"sort=entity,compname&order=".($order=="ASC"?"DESC":"ASC")."&start=0\");'>".$LANG['entity'][0]."</a></th>";
 			}
-			echo "<th>".($sort=="serial"?$sort_img:"")."<a href='javascript:reloadTab(\"sort=serial&order=".($order=="ASC"?"DESC":"ASC")."&start=0\");'>".$LANG["common"][19]."</a></th>";
-			echo "<th>".($sort=="otherserial"?$sort_img:"")."<a href='javascript:reloadTab(\"sort=otherserial&order=".($order=="ASC"?"DESC":"ASC")."&start=0\");'>".$LANG["common"][20]."</a></th>";
-			echo "<th>".(strstr($sort,"location")?$sort_img:"")."<a href='javascript:reloadTab(\"sort=location,compname&order=".($order=="ASC"?"DESC":"ASC")."&start=0\");'>".$LANG["common"][15]."</a></th>";
-			echo "<th>".(strstr($sort,"groupe")?$sort_img:"")."<a href='javascript:reloadTab(\"sort=groupe,compname&order=".($order=="ASC"?"DESC":"ASC")."&start=0\");'>".$LANG["common"][35]."</a></th>";
-			echo "<th>".(strstr($sort,"username")?$sort_img:"")."<a href='javascript:reloadTab(\"sort=username,compname&order=".($order=="ASC"?"DESC":"ASC")."&start=0\");'>".$LANG["common"][34]."</a></th>";
-			echo "<th>".($sort=="lname"?$sort_img:"")."<a href='javascript:reloadTab(\"sort=lname&order=".($order=="ASC"?"DESC":"ASC")."&start=0\");'>".$LANG["software"][11]."</a></th>";
+			echo "<th>".($sort=="serial"?$sort_img:"")."<a href='javascript:reloadTab(\"sort=serial&order=".($order=="ASC"?"DESC":"ASC")."&start=0\");'>".$LANG['common'][19]."</a></th>";
+			echo "<th>".($sort=="otherserial"?$sort_img:"")."<a href='javascript:reloadTab(\"sort=otherserial&order=".($order=="ASC"?"DESC":"ASC")."&start=0\");'>".$LANG['common'][20]."</a></th>";
+			echo "<th>".(strstr($sort,"location")?$sort_img:"")."<a href='javascript:reloadTab(\"sort=location,compname&order=".($order=="ASC"?"DESC":"ASC")."&start=0\");'>".$LANG['common'][15]."</a></th>";
+			echo "<th>".(strstr($sort,"groupe")?$sort_img:"")."<a href='javascript:reloadTab(\"sort=groupe,compname&order=".($order=="ASC"?"DESC":"ASC")."&start=0\");'>".$LANG['common'][35]."</a></th>";
+			echo "<th>".(strstr($sort,"username")?$sort_img:"")."<a href='javascript:reloadTab(\"sort=username,compname&order=".($order=="ASC"?"DESC":"ASC")."&start=0\");'>".$LANG['common'][34]."</a></th>";
+			echo "<th>".($sort=="lname"?$sort_img:"")."<a href='javascript:reloadTab(\"sort=lname&order=".($order=="ASC"?"DESC":"ASC")."&start=0\");'>".$LANG['software'][11]."</a></th>";
 			echo "</tr>\n";
 
 			do {
@@ -731,7 +731,7 @@ function showInstallations($searchID, $crit="sID") {
 					echo "<td>".$compname."</td>";
 				}
 				if ($showEntity) {
-					echo "<td>".(empty($data['entity']) ? $LANG["entity"][2] : $data['entity'])."</td>";
+					echo "<td>".(empty($data['entity']) ? $LANG['entity'][2] : $data['entity'])."</td>";
 				}
 				echo "<td>".$data['serial']."</td>";
 				echo "<td>".$data['otherserial']."</td>";
@@ -752,14 +752,14 @@ function showInstallations($searchID, $crit="sID") {
 			if ($canedit){
 				echo "<table width='80%' class='tab_glpi'>";
 				echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td>";
-				echo "<td class='left' width='100%'><a onclick= \"if ( markCheckboxes('softinstall".$rand."') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$sID&amp;select=all'>".$LANG["buttons"][18]."</a>";							
-				echo "&nbsp;/&nbsp;<a onclick= \"if ( unMarkCheckboxes('softinstall".$rand."') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$sID&amp;select=none'>".$LANG["buttons"][19]."</a>";
+				echo "<td class='left' width='100%'><a onclick= \"if ( markCheckboxes('softinstall".$rand."') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$sID&amp;select=all'>".$LANG['buttons'][18]."</a>";							
+				echo "&nbsp;/&nbsp;<a onclick= \"if ( unMarkCheckboxes('softinstall".$rand."') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$sID&amp;select=none'>".$LANG['buttons'][19]."</a>";
 
 				dropdownSoftwareVersions("versionID",$sID);
-				echo "&nbsp;<input type='submit' name='moveinstalls' value=\"".$LANG["buttons"][20]."\"
+				echo "&nbsp;<input type='submit' name='moveinstalls' value=\"".$LANG['buttons'][20]."\"
  class='submit'>";
 
-				echo "&nbsp;<input type='submit' name='deleteinstalls' value=\"".$LANG["buttons"][6]."\" class='submit'>";
+				echo "&nbsp;<input type='submit' name='deleteinstalls' value=\"".$LANG['buttons'][6]."\" class='submit'>";
 	
 				echo "</td></tr>\n";
 				echo "</table>";
@@ -767,7 +767,7 @@ function showInstallations($searchID, $crit="sID") {
 			}
 			
 		} else { // Not found
-			echo $LANG["search"][15];
+			echo $LANG['search'][15];
 		}
 	} // Query
 	echo "</div>";
@@ -818,27 +818,27 @@ function showInstallations($searchID, $crit="sID") {
 
 			echo "<th colspan='6' $pb >";
 			echo $nb_licences;
-			echo "&nbsp;" . $LANG["software"][13] . "&nbsp;-&nbsp;$nb_updates&nbsp;" . $LANG["software"][36] . "&nbsp;-&nbsp;$installed&nbsp;" . $LANG["software"][19] . "&nbsp;-&nbsp;$tobuy&nbsp;" . $LANG["software"][37] . "</th>";
+			echo "&nbsp;" . $LANG['software'][13] . "&nbsp;-&nbsp;$nb_updates&nbsp;" . $LANG['software'][36] . "&nbsp;-&nbsp;$installed&nbsp;" . $LANG['software'][19] . "&nbsp;-&nbsp;$tobuy&nbsp;" . $LANG['software'][37] . "</th>";
 			echo "<th colspan='1'>";
-			echo " " . $LANG["software"][19] . " :</th></tr>";
+			echo " " . $LANG['software'][19] . " :</th></tr>";
 			$i = 0;
 			echo "<tr>";
 			if ($canedit && !$show_computers) {
 				echo "<th>&nbsp;</th>";
 			}
 
-			echo "<th>" . $LANG["software"][5] . "</th><th>" . $LANG["common"][19] . "</th><th>" . $LANG["common"][33] . "</th><th>" . $LANG["software"][32] . "</th><th>" . $LANG["software"][28] . "</th><th>" . $LANG["software"][35] . "</th>";
+			echo "<th>" . $LANG['software'][5] . "</th><th>" . $LANG['common'][19] . "</th><th>" . $LANG['common'][33] . "</th><th>" . $LANG['software'][32] . "</th><th>" . $LANG['software'][28] . "</th><th>" . $LANG['software'][35] . "</th>";
 			echo "<th>";
 
 			if ($canedit) {
 				if ($show_computers) {
-					echo $LANG["buttons"][14] . "&nbsp;";
+					echo $LANG['buttons'][14] . "&nbsp;";
 					echo "<select name='update_licenses' id='update_licenses_choice'>";
 					echo "<option value=''>-----</option>";
-					echo "<option value='update_expire'>" . $LANG["software"][32] . "</option>";
-					echo "<option value='update_buy'>" . $LANG["software"][35] . "</option>";
-					echo "<option value='move'>" . $LANG["buttons"][20] . "</option>";
-					echo "<option value='delete_license'>" . $LANG["buttons"][6] . "</option>";
+					echo "<option value='update_expire'>" . $LANG['software'][32] . "</option>";
+					echo "<option value='update_buy'>" . $LANG['software'][35] . "</option>";
+					echo "<option value='move'>" . $LANG['buttons'][20] . "</option>";
+					echo "<option value='delete_license'>" . $LANG['buttons'][6] . "</option>";
 					echo "</select>";
 
 					$params = array (
@@ -852,11 +852,11 @@ function showInstallations($searchID, $crit="sID") {
 					echo "&nbsp;";
 					echo "</span>\n";
 				} else {
-					echo $LANG["buttons"][14] . "&nbsp;";
+					echo $LANG['buttons'][14] . "&nbsp;";
 					echo "<select name='update_licenses' id='update_licenses_choice'>";
 					echo "<option value=''>-----</option>";
-					echo "<option value='move_to_software'>" . $LANG["buttons"][20] . "</option>";
-					echo "<option value='delete_similar_license'>" . $LANG["buttons"][6] . "</option>";
+					echo "<option value='move_to_software'>" . $LANG['buttons'][20] . "</option>";
+					echo "<option value='delete_similar_license'>" . $LANG['buttons'][6] . "</option>";
 					echo "</select>";
 
 					$params = array (
@@ -878,7 +878,7 @@ function showInstallations($searchID, $crit="sID") {
 		} else {
 
 			echo "<br><div class='center'><table border='0' width='50%' cellpadding='2'>";
-			echo "<tr><th>" . $LANG["software"][14] . "</th></tr>";
+			echo "<tr><th>" . $LANG['software'][14] . "</th></tr>";
 			echo "</table></div>";
 		}
 	}
@@ -960,12 +960,12 @@ function showInstallations($searchID, $crit="sID") {
 
 			echo "<td align='center' class='tab_bg_1$expirecss'><strong>";
 			if ($expire == NULL)
-				echo $LANG["software"][26];
+				echo $LANG['software'][26];
 			else {
 				if ($expirer)
-					echo $LANG["software"][27];
+					echo $LANG['software'][27];
 				else
-					echo $LANG["software"][25] . "&nbsp;" . convDate($expire);
+					echo $LANG['software'][25] . "&nbsp;" . convDate($expire);
 			}
 
 			echo "</strong></td>";
@@ -974,7 +974,7 @@ function showInstallations($searchID, $crit="sID") {
 				$comp = new Computer();
 				$comp->getFromDB($data["OEM_COMPUTER"]);
 			}
-			echo "<td align='center' class='tab_bg_1" . ($data["OEM"] && !isset ($comp->fields['ID']) ? "_2" : "") . "'>" . ($data["OEM"] ? $LANG["choice"][1] : $LANG["choice"][0]);
+			echo "<td align='center' class='tab_bg_1" . ($data["OEM"] && !isset ($comp->fields['ID']) ? "_2" : "") . "'>" . ($data["OEM"] ? $LANG['choice'][1] : $LANG['choice'][0]);
 			if ($data["OEM"]) {
 				echo "<br><strong>";
 				if (isset ($comp->fields['ID']))
@@ -987,7 +987,7 @@ function showInstallations($searchID, $crit="sID") {
 
 			if ($serial != "free") {
 				// BUY
-				echo "<td class='center'>" . ($data["BUY"] ? $LANG["choice"][1] : $LANG["choice"][0]);
+				echo "<td class='center'>" . ($data["BUY"] ? $LANG['choice'][1] : $LANG['choice'][0]);
 				echo "</td>";
 			} else
 				echo "<td>&nbsp;</td>";
@@ -1002,7 +1002,7 @@ function showInstallations($searchID, $crit="sID") {
 			echo "<tr><td class='center'>";
 
 			if (!$show_computers) {
-				echo $LANG["software"][19] . ": $num_inst&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+				echo $LANG['software'][19] . ": $num_inst&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 			}
 
 			//			$query_new="SELECT glpi_licenses.ID as ID FROM glpi_licenses WHERE $SEARCH_LICENCE";	
@@ -1010,7 +1010,7 @@ function showInstallations($searchID, $crit="sID") {
 			//			if ($result_new = $DB->query($result_lic)) 
 
 			if ($firstID && $serial != "free" && $serial != "global" && $canedit) {
-				echo $LANG["software"][20] . ":";
+				echo $LANG['software'][20] . ":";
 				echo "<select name='stock_licenses_$firstID'>";
 				if (max(0, $restant -100) > 0)
 					echo "<option value='0'>0</option>";
@@ -1033,15 +1033,15 @@ function showInstallations($searchID, $crit="sID") {
 					if ($canedit) {
 						if (($serial == "free" || $serial == "global")) {
 							echo "<strong><a href=\"" . $CFG_GLPI["root_doc"] . "/front/software.licenses.php?delete=delete&amp;ID=$firstID\">";
-							echo "<img src=\"" . $CFG_GLPI["root_doc"] . "/pics/delete.png\" alt='" . $LANG["buttons"][6] . "' title='" . $LANG["buttons"][6] . "'>";
+							echo "<img src=\"" . $CFG_GLPI["root_doc"] . "/pics/delete.png\" alt='" . $LANG['buttons'][6] . "' title='" . $LANG['buttons'][6] . "'>";
 							echo "</a></strong>";
 							if ($CFG_GLPI["license_deglobalisation"]) {
-								echo "&nbsp;&nbsp;<a href=\"javascript:confirmAction('" . addslashes($LANG["common"][40]) . "\\n" . addslashes($LANG["common"][39]) . "','" . $CFG_GLPI["root_doc"] . "/front/software.licenses.php?unglobalize=unglobalize&amp;sID=$sID&amp;ID=$firstID')\" title=\"" . $LANG["common"][39] . "\">" . $LANG["common"][38] . "</a>&nbsp;";
-								echo "<img src='" . $CFG_GLPI["root_doc"] . "/pics/aide.png' alt=\"" . $LANG["common"][39] . "\" title=\"" . $LANG["common"][39] . "\">";
+								echo "&nbsp;&nbsp;<a href=\"javascript:confirmAction('" . addslashes($LANG['common'][40]) . "\\n" . addslashes($LANG['common'][39]) . "','" . $CFG_GLPI["root_doc"] . "/front/software.licenses.php?unglobalize=unglobalize&amp;sID=$sID&amp;ID=$firstID')\" title=\"" . $LANG['common'][39] . "\">" . $LANG['common'][38] . "</a>&nbsp;";
+								echo "<img src='" . $CFG_GLPI["root_doc"] . "/pics/aide.png' alt=\"" . $LANG['common'][39] . "\" title=\"" . $LANG['common'][39] . "\">";
 							}
 						}
 						echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong><a href=\"" . $CFG_GLPI["root_doc"] . "/front/software.licenses.php?form=update&amp;lID=$firstID&amp;sID=$sID\">";
-						echo "<img src=\"" . $CFG_GLPI["root_doc"] . "/pics/edit.png\" alt='" . $LANG["buttons"][14] . "' title='" . $LANG["buttons"][14] . "'>";
+						echo "<img src=\"" . $CFG_GLPI["root_doc"] . "/pics/edit.png\" alt='" . $LANG['buttons'][14] . "' title='" . $LANG['buttons'][14] . "'>";
 						echo "</a></strong>";
 					} else {
 						echo "&nbsp;";
@@ -1053,7 +1053,7 @@ function showInstallations($searchID, $crit="sID") {
 			if ($show_computers && $canedit) {
 				if ($num_inst > 0) {
 					if ($serial != "free" && $serial != "global") {
-						echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" . $LANG["common"][66] . ":";
+						echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" . $LANG['common'][66] . ":";
 						$rand = mt_rand();
 
 						$found_soft = true;
@@ -1102,7 +1102,7 @@ function showInstallations($searchID, $crit="sID") {
 						// delete
 						if ($canedit) {
 							echo "<a href=\"" . $CFG_GLPI["root_doc"] . "/front/software.licenses.php?uninstall=uninstall&amp;ID=" . $data_inst["ID"] . "&amp;cID=" . $data_inst["cID"] . "\">";
-							echo "<img src=\"" . $CFG_GLPI["root_doc"] . "/pics/remove.png\" alt='" . $LANG["buttons"][5] . "' title='" . $LANG["buttons"][5] . "'>";
+							echo "<img src=\"" . $CFG_GLPI["root_doc"] . "/pics/remove.png\" alt='" . $LANG['buttons'][5] . "' title='" . $LANG['buttons'][5] . "'>";
 							echo "</a>";
 						}
 
@@ -1110,7 +1110,7 @@ function showInstallations($searchID, $crit="sID") {
 							echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 							if ($canedit) {
 								echo "<strong><a href=\"" . $CFG_GLPI["root_doc"] . "/front/software.licenses.php?form=update&amp;lID=" . $data_inst["lID"] . "&amp;sID=$sID\">";
-								echo "<img src=\"" . $CFG_GLPI["root_doc"] . "/pics/edit.png\" alt='" . $LANG["buttons"][14] . "' title='" . $LANG["buttons"][14] . "'>";
+								echo "<img src=\"" . $CFG_GLPI["root_doc"] . "/pics/edit.png\" alt='" . $LANG['buttons'][14] . "' title='" . $LANG['buttons'][14] . "'>";
 								echo "</a></strong>";
 							}
 							// Display infocoms
@@ -1133,9 +1133,9 @@ function showInstallations($searchID, $crit="sID") {
 	if ($found_soft) {
 		echo "<div>";
 		echo "<table width='950px' class='tab_glpi'>";
-		echo "<tr><td><img src=\"" . $CFG_GLPI["root_doc"] . "/pics/arrow-left.png\" alt=''></td><td><a onclick= \"if ( markCheckboxes('lic_form') ) return false;\" href='" . $_SERVER['PHP_SELF'] . "?ID=$sID&amp;select=all'>" . $LANG["buttons"][18] . "</a></td>";
+		echo "<tr><td><img src=\"" . $CFG_GLPI["root_doc"] . "/pics/arrow-left.png\" alt=''></td><td><a onclick= \"if ( markCheckboxes('lic_form') ) return false;\" href='" . $_SERVER['PHP_SELF'] . "?ID=$sID&amp;select=all'>" . $LANG['buttons'][18] . "</a></td>";
 
-		echo "<td>/</td><td ><a onclick=\"if ( unMarkCheckboxes('lic_form') ) return false;\" href='" . $_SERVER['PHP_SELF'] . "?ID=$sID&amp;select=none'>" . $LANG["buttons"][19] . "</a>";
+		echo "<td>/</td><td ><a onclick=\"if ( unMarkCheckboxes('lic_form') ) return false;\" href='" . $_SERVER['PHP_SELF'] . "?ID=$sID&amp;select=none'>" . $LANG['buttons'][19] . "</a>";
 		echo "</td><td class='left' width='80%'>&nbsp;";
 		echo "</td></table></div>";
 	}
@@ -1164,8 +1164,8 @@ function showInstallations($searchID, $crit="sID") {
 
 	switch ($action) {
 		case "add" :
-			$title = $LANG["software"][15] . " ($sID):";
-			$button = $LANG["buttons"][8];
+			$title = $LANG['software'][15] . " ($sID):";
+			$button = $LANG['buttons'][8];
 			$ic = new Infocom();
 
 			if ($ic->getFromDBforDevice(SOFTWARE_TYPE, $sID))
@@ -1173,8 +1173,8 @@ function showInstallations($searchID, $crit="sID") {
 
 			break;
 		case "update" :
-			$title = $LANG["software"][34] . " ($lID):";
-			$button = $LANG["buttons"][14];
+			$title = $LANG['software'][34] . " ($lID):";
+			$button = $LANG['buttons'][14];
 			break;
 	}
 
@@ -1205,19 +1205,19 @@ function showInstallations($searchID, $crit="sID") {
 
 	echo "<div class='center'><strong>";
 	echo "<a href=\"" . $CFG_GLPI["root_doc"] . "/front/software.form.php?ID=$sID\">";
-	echo $LANG["buttons"][13] . "</strong>";
+	echo $LANG['buttons'][13] . "</strong>";
 	echo "</a><br>";
 
 	echo "<form name='form' method='post' action=\"$target\">";
 
 	echo "<table class='tab_cadre'><tr><th colspan='3'>$title</th></tr>";
 
-	echo "<tr class='tab_bg_1'><td>" . $LANG["software"][5] . "</td>";
+	echo "<tr class='tab_bg_1'><td>" . $LANG['software'][5] . "</td>";
 	echo "<td>";
 	autocompletionTextField("version", "glpi_licenses", "version", $values["version"], 40);
 	echo "</td></tr>";
 
-	echo "<tr class='tab_bg_1'><td>" . $LANG["software"][16] . "</td>";
+	echo "<tr class='tab_bg_1'><td>" . $LANG['software'][16] . "</td>";
 	echo "<td>";
 
 	$readonly = "";
@@ -1244,7 +1244,7 @@ function showInstallations($searchID, $crit="sID") {
 
 	if ($action != "update") {
 		echo "<tr class='tab_bg_1'><td>";
-		echo $LANG["tracking"][29] . ":</td><td><select name=number>";
+		echo $LANG['tracking'][29] . ":</td><td><select name=number>";
 		echo "<option value='1' selected>1</option>";
 		for ($i = 2; $i <= 1000; $i++)
 			echo "<option value='$i'>$i</option>";
@@ -1252,27 +1252,27 @@ function showInstallations($searchID, $crit="sID") {
 	}
 
 	if ($show_infocom) {
-		echo "<tr class='tab_bg_1'><td>" . $LANG["financial"][3] . ":</td><td>";
+		echo "<tr class='tab_bg_1'><td>" . $LANG['financial'][3] . ":</td><td>";
 		showDisplayInfocomLink(SOFTWARE_TYPE, $sID);
 		echo "</td></tr>";
 	}
 
-	echo "<tr class='tab_bg_1'><td>" . $LANG["search"][9] . ":</td><td>";
+	echo "<tr class='tab_bg_1'><td>" . $LANG['search'][9] . ":</td><td>";
 	showDateFormItem("expire",$values['expire']);
 	echo "</td></tr>";
 
 	// OEM
-	echo "<tr class='tab_bg_1'><td>" . $LANG["software"][28] . "</td><td>";
+	echo "<tr class='tab_bg_1'><td>" . $LANG['software'][28] . "</td><td>";
 	dropdownYesNo("oem", $values['oem']);
 	dropdownValue("glpi_computers", "oem_computer", $values["oem_computer"]);
 
 	echo "</td></tr>";
 	// BUY
-	echo "<tr class='tab_bg_1'><td>" . $LANG["software"][35] . "</td><td>";
+	echo "<tr class='tab_bg_1'><td>" . $LANG['software'][35] . "</td><td>";
 	dropdownYesNo("buy", $values['buy']);
 	echo "</td></tr>";
 
-	echo "<tr class='tab_bg_1'><td>" . $LANG["common"][25] . "</td><td>";
+	echo "<tr class='tab_bg_1'><td>" . $LANG['common'][25] . "</td><td>";
 	echo "<textarea name='comments' rows='6' cols='40'>" . $values['comments'] . "</textarea>";
 	echo "</td></tr>";
 
@@ -1553,17 +1553,17 @@ function showSoftwareInstalled($instID, $withtemplate = '') {
 		echo "<div class='software-instal'>";
 		echo "<input type='hidden' name='cID' value='$instID'>";
 		dropdownSoftwareToInstall("vID", $FK_entities);
-		echo "<input type='submit' name='install' value=\"" . $LANG["buttons"][4] . "\" class='submit'>";
+		echo "<input type='submit' name='install' value=\"" . $LANG['buttons'][4] . "\" class='submit'>";
 		echo "</div>";
 		echo "</form>";
 		echo "</td></tr>";
 	}
 
-	echo "<tr><th colspan='6'>" . $LANG["software"][17] . ":</th></tr>";
+	echo "<tr><th colspan='6'>" . $LANG['software'][17] . ":</th></tr>";
 
 	$cat = -1;
 
-	initNavigateListItems(SOFTWARE_TYPE,$LANG["help"][25]." = ".(empty($comp->fields["name"]) ? "(".$comp->fields["ID"].")":$comp->fields["name"]));
+	initNavigateListItems(SOFTWARE_TYPE,$LANG['help'][25]." = ".(empty($comp->fields["name"]) ? "(".$comp->fields["ID"].")":$comp->fields["name"]));
 
 	if ($DB->numrows($result)) {
 		while ($data = $DB->fetch_array($result)) {
@@ -1579,13 +1579,13 @@ function showSoftwareInstalled($instID, $withtemplate = '') {
 		
 		if ($canedit) {
 			echo "<table width='950px'>";
-			echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td><a onclick= \"if ( markCheckboxes('lic_form$cat$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=".$cat."&amp;select=all'>".$LANG["buttons"][18]."</a></td>";
-			echo "<td>/</td><td ><a onclick=\"if ( unMarkCheckboxes ('lic_form$cat$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=".$cat."&amp;select=none'>".$LANG["buttons"][19]."</a>";
+			echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td><a onclick= \"if ( markCheckboxes('lic_form$cat$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=".$cat."&amp;select=all'>".$LANG['buttons'][18]."</a></td>";
+			echo "<td>/</td><td ><a onclick=\"if ( unMarkCheckboxes ('lic_form$cat$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=".$cat."&amp;select=none'>".$LANG['buttons'][19]."</a>";
 			echo "</td><td class='left' width='80%'>";
 	
 			echo "<select name='update_licenses$cat$rand' id='update_licenses_choice$cat$rand'>";
 			echo "<option value=''>-----</option>";
-			echo "<option value='uninstall_license'>".$LANG["buttons"][5]."</option>";
+			echo "<option value='uninstall_license'>".$LANG['buttons'][5]."</option>";
 			echo "</select>";
 	
 			$params=array('type'=>'__VALUE__',
@@ -1628,13 +1628,13 @@ function displayCategoryHeader($data, $cat,$rand,$canedit) {
 		
 		if ($canedit) {
 			echo "<table width='950px'>";
-			echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td><a onclick= \"if ( markCheckboxes('lic_form$cat$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=".$cat."&amp;select=all'>".$LANG["buttons"][18]."</a></td>";
-			echo "<td>/</td><td ><a onclick=\"if ( unMarkCheckboxes('lic_form$cat$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=".$cat."&amp;select=none'>".$LANG["buttons"][19]."</a>";
+			echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td><a onclick= \"if ( markCheckboxes('lic_form$cat$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=".$cat."&amp;select=all'>".$LANG['buttons'][18]."</a></td>";
+			echo "<td>/</td><td ><a onclick=\"if ( unMarkCheckboxes('lic_form$cat$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=".$cat."&amp;select=none'>".$LANG['buttons'][19]."</a>";
 			echo "</td><td class='left' width='80%'>";
 	
 			echo "<select name='update_licenses$cat$rand' id='update_licenses_choice$cat$rand'>";
 			echo "<option value=''>-----</option>";
-			echo "<option value='uninstall_license'>".$LANG["buttons"][5]."</option>";
+			echo "<option value='uninstall_license'>".$LANG['buttons'][5]."</option>";
 			echo "</select>";
 	
 			$params=array('type'=>'__VALUE__',
@@ -1656,7 +1656,7 @@ function displayCategoryHeader($data, $cat,$rand,$canedit) {
 	$cat = $data["category_id"];
 	$catname = $data["category"];
 	if (!$cat) {
-		$catname = $LANG["softwarecategories"][3];
+		$catname = $LANG['softwarecategories'][3];
 		$display = $_SESSION["glpiexpand_soft_not_categorized"];
 	} else
 		$display = $_SESSION["glpiexpand_soft_categorized"];
@@ -1676,7 +1676,7 @@ function displayCategoryHeader($data, $cat,$rand,$canedit) {
 	echo "				<tr>";
 	if ($canedit)
 		echo "<th>&nbsp;</th>";
-	echo "					<th>" . $LANG["common"][16] . "</th><th>" . $LANG["state"][0] . "</th><th>" . $LANG["software"][5] . "</th>";
+	echo "					<th>" . $LANG['common'][16] . "</th><th>" . $LANG['state'][0] . "</th><th>" . $LANG['software'][5] . "</th>";
 	echo "				</tr>";
 	return $cat;
 }
@@ -1715,7 +1715,7 @@ function displaySoftsByCategory($data, $instID, $withtemplate,$canedit) {
 		echo " - <strong>". getDropdownName("glpi_dropdown_licensetypes",$data["lictype"]) . "</strong>";
 	if ((empty ($withtemplate) || $withtemplate != 2) && $canedit) {
 		echo " - <a href=\"" . $CFG_GLPI["root_doc"] . "/front/software.licenses.php?uninstall=uninstall&amp;ID=$ID&amp;cID=$instID\">";
-		echo "<strong>" . $LANG["buttons"][5] . "</strong></a>";
+		echo "<strong>" . $LANG['buttons'][5] . "</strong></a>";
 	}
 	echo "</td>";
 	echo "</tr>";
@@ -1788,17 +1788,17 @@ function countInstallations($sID, $nohtml = 0) {
 	$installed = countInstallationsForSoftware($sID);
 	$out="";
 	if (!$nohtml)
-		$out .= $LANG["software"][19] . ": <strong>$installed</strong>";
+		$out .= $LANG['software'][19] . ": <strong>$installed</strong>";
 	else
-		$out .= $LANG["software"][19] . ": $installed";
+		$out .= $LANG['software'][19] . ": $installed";
 	
 	$total=getNumberOfLicences($sID);
 
 	if ($total < 0 ){
 		if (!$nohtml)
-			$out .= "&nbsp;&nbsp;".$LANG["software"][11] . ": <strong>".$LANG["software"][4]."</strong>";
+			$out .= "&nbsp;&nbsp;".$LANG['software'][11] . ": <strong>".$LANG['software'][4]."</strong>";
 		else
-			$out .= "&nbsp;&nbsp;".$LANG["software"][11] . ": ".$LANG["software"][4];
+			$out .= "&nbsp;&nbsp;".$LANG['software'][11] . ": ".$LANG['software'][4];
 	} else {
 		if ($total >=$installed) {
 			$color = "green";
@@ -1809,9 +1809,9 @@ function countInstallations($sID, $nohtml = 0) {
 		if (!$nohtml){
 			$total = "<span class='$color'>$total";
 			$total .= "</span>";
-			$out .= "&nbsp;&nbsp;".$LANG["software"][11] . ": <strong>$total</strong>";
+			$out .= "&nbsp;&nbsp;".$LANG['software'][11] . ": <strong>$total</strong>";
 		} else
-			$out .= "&nbsp;&nbsp;".$LANG["software"][11] . ": ".$total;
+			$out .= "&nbsp;&nbsp;".$LANG['software'][11] . ": ".$total;
 	}
 
 	return $out;
@@ -2120,7 +2120,7 @@ function addSoftware($name, $manufacturer, $entity, $comments = '', $process_typ
 		$input["FK_glpi_enterprise"] = $manufacturer_id;
 		$input["FK_entities"] = $entity;
 		// No comments
-		//$input["comments"] = $LANG["rulesengine"][88];
+		//$input["comments"] = $LANG['rulesengine'][88];
 		$input["helpdesk_visible"] = $CFG_GLPI["software_helpdesk_visible"];
 		
 		//Process software's category rules
@@ -2289,7 +2289,7 @@ function cron_software($display=false){
 
 			// define message alert
 			if (strstr($message[$data["FK_entities"]],$name)===false){
-				$message[$data["FK_entities"]].=$LANG["mailing"][51]." ".$name.": ".convDate($data["expire"])."<br>\n";
+				$message[$data["FK_entities"]].=$LANG['mailing'][51]." ".$name.": ".convDate($data["expire"])."<br>\n";
 			}
 			$items[$data["FK_entities"]][]=$data["ID"];
 		}

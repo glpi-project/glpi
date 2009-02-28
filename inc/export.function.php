@@ -153,7 +153,7 @@ function displaySearchError($type){
         	case CSV_OUTPUT : //csv
             		break;
 		default :
-			$out= "<div class='center'><strong>".$LANG["search"][15]."</strong></div>\n";
+			$out= "<div class='center'><strong>".$LANG['search'][15]."</strong></div>\n";
 			break;
 	}
 	return $out;
@@ -177,7 +177,7 @@ function displaySearchFooter($type,$title=""){
 			global $PDF_HEADER,$PDF_ARRAY;
 			$pdf= new Cezpdf('a4','landscape');
 			$pdf->selectFont(GLPI_ROOT."/lib/ezpdf/fonts/Helvetica.afm");
-			$pdf->ezStartPageNumbers(750,10,10,'left',"GLPI PDF export - ".convDate(date("Y-m-d"))." - ".count($PDF_ARRAY)." ".utf8_decode($LANG["pager"][5])."- {PAGENUM}/{TOTALPAGENUM}");
+			$pdf->ezStartPageNumbers(750,10,10,'left',"GLPI PDF export - ".convDate(date("Y-m-d"))." - ".count($PDF_ARRAY)." ".utf8_decode($LANG['pager'][5])."- {PAGENUM}/{TOTALPAGENUM}");
 			$options=array('fontSize'=>8,'colGap'=>2,'maxWidth'=>800,'titleFontSize'=>8,);
 			$pdf->ezTable($PDF_ARRAY,$PDF_HEADER,utf8_decode($title),$options);
 			$pdf->ezStream();
@@ -187,7 +187,7 @@ function displaySearchFooter($type,$title=""){
 			global $PDF_HEADER,$PDF_ARRAY;
 			$pdf= new Cezpdf('a4','portrait');
 			$pdf->selectFont(GLPI_ROOT."/lib/ezpdf/fonts/Helvetica.afm");
-			$pdf->ezStartPageNumbers(550,10,10,'left',"GLPI PDF export - ".convDate(date("Y-m-d"))." - ".count($PDF_ARRAY)." ".utf8_decode($LANG["pager"][5])."- {PAGENUM}/{TOTALPAGENUM}");
+			$pdf->ezStartPageNumbers(550,10,10,'left',"GLPI PDF export - ".convDate(date("Y-m-d"))." - ".count($PDF_ARRAY)." ".utf8_decode($LANG['pager'][5])."- {PAGENUM}/{TOTALPAGENUM}");
 			$options=array('fontSize'=>8,'colGap'=>2,'maxWidth'=>565,'titleFontSize'=>8,);
 			$pdf->ezTable($PDF_ARRAY,$PDF_HEADER,utf8_decode($title),$options);
 			$pdf->ezStream();

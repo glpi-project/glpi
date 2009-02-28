@@ -69,18 +69,18 @@ function showReservationForm($device_type,$id_device){
 		$ri=new ReservationItem;
 		$ri->getFromDB($resaID);
 		
-		// Supprimer le materiel$LANG["reservation"][3]
+		// Supprimer le materiel$LANG['reservation'][3]
 		echo "<br><div>";
 		if ($ri->fields["active"]){
-			echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/reservation.php?ID=".$resaID."&amp;active=0\" class='icon_consol'>".$LANG["reservation"][3]."</a>";
+			echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/reservation.php?ID=".$resaID."&amp;active=0\" class='icon_consol'>".$LANG['reservation'][3]."</a>";
 		} else {
-			echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/reservation.php?ID=".$resaID."&amp;active=1\" class='icon_consol'>".$LANG["reservation"][5]."</a>";
+			echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/reservation.php?ID=".$resaID."&amp;active=1\" class='icon_consol'>".$LANG['reservation'][5]."</a>";
 		}
-		echo "&nbsp;&nbsp;&nbsp;<a href=\"javascript:confirmAction('".addslashes($LANG["reservation"][38])."\\n".addslashes($LANG["reservation"][39])."','".$CFG_GLPI["root_doc"]."/front/reservation.php?ID=".$resaID."&amp;delete=delete')\" class='icon_consol'>".$LANG["reservation"][6]."</a></div>";	
+		echo "&nbsp;&nbsp;&nbsp;<a href=\"javascript:confirmAction('".addslashes($LANG['reservation'][38])."\\n".addslashes($LANG['reservation'][39])."','".$CFG_GLPI["root_doc"]."/front/reservation.php?ID=".$resaID."&amp;delete=delete')\" class='icon_consol'>".$LANG['reservation'][6]."</a></div>";	
 
 	}else {
 		echo "<br><div><a href=\"".$CFG_GLPI["root_doc"]."/front/reservation.php?";
-		echo "id_device=$id_device&amp;device_type=$device_type&amp;comments=&amp;add=add\" class='icon_consol' >".$LANG["reservation"][7]."</a></div>";      
+		echo "id_device=$id_device&amp;device_type=$device_type&amp;comments=&amp;add=add\" class='icon_consol' >".$LANG['reservation'][7]."</a></div>";      
 	}
 }
 
@@ -118,7 +118,7 @@ function printCalendrier($target,$ID=""){
 		$m->getFromDB($ID);
 		if (!$m->fields['active']){
 			echo "<div class='center'><strong>";
-			echo $LANG["reservation"][2]."<br>";
+			echo $LANG['reservation'][2]."<br>";
 			displayBackLink();
 			echo "</strong></div>";
 			return false;
@@ -129,17 +129,17 @@ function printCalendrier($target,$ID=""){
 		if (!$ci->obj->can($m->fields["id_device"],"r")){
 			echo "<div class='center'><strong>";
 
-			echo $LANG["common"][54]."<br>";
+			echo $LANG['common'][54]."<br>";
 			displayBackLink();
 			echo "</strong></div>";
 			return false;
 		}
 		$type=$ci->getType();
 		$name=$ci->getName();
-		$all="<a href='$target?show=resa&amp;ID=&amp;mois_courant=$mois_courant&amp;annee_courante=$annee_courante'>".$LANG["buttons"][40]."</a>";
+		$all="<a href='$target?show=resa&amp;ID=&amp;mois_courant=$mois_courant&amp;annee_courante=$annee_courante'>".$LANG['buttons'][40]."</a>";
 	} else {
 		$type="";
-		$name=$LANG["reservation"][25];
+		$name=$LANG['reservation'][25];
 		$all="&nbsp;";
 	}
 
@@ -161,8 +161,8 @@ function printCalendrier($target,$ID=""){
 
 	echo "<div class='center'>";
 
-	echo "<table cellpadding='20'  class='tab_glpi'><tr><td><a href=\"".$target.$str_precedent."\"><img src=\"".$CFG_GLPI["root_doc"]."/pics/left.png\" alt='".$LANG["buttons"][12]."' title='".$LANG["buttons"][12]."'></a></td><td><strong>".
-		$LANG["calendarM"][$mois_courant-1]."&nbsp;".$annee_courante."</strong></td><td><a href=\"".$target.$str_suivant."\"><img src=\"".$CFG_GLPI["root_doc"]."/pics/right.png\" alt='".$LANG["buttons"][11]."' title='".$LANG["buttons"][11]."'></a></td></tr></table>";
+	echo "<table cellpadding='20'  class='tab_glpi'><tr><td><a href=\"".$target.$str_precedent."\"><img src=\"".$CFG_GLPI["root_doc"]."/pics/left.png\" alt='".$LANG['buttons'][12]."' title='".$LANG['buttons'][12]."'></a></td><td><strong>".
+		$LANG["calendarM"][$mois_courant-1]."&nbsp;".$annee_courante."</strong></td><td><a href=\"".$target.$str_suivant."\"><img src=\"".$CFG_GLPI["root_doc"]."/pics/right.png\" alt='".$LANG['buttons'][11]."' title='".$LANG['buttons'][11]."'></a></td></tr></table>";
 	// test
 	echo "<table width='90%' class='tab_glpi'><tr><td class='top'  width='100px'>";
 
@@ -240,7 +240,7 @@ function printCalendrier($target,$ID=""){
 		echo "<table class='center'  width='100%'><tr><td class='center' ><span class='calendrier_jour'>".$i."</span></td></tr>";
 
 		if (!empty($ID)){
-			echo "<tr><td class='center'><a href=\"".$target."?show=resa&amp;add_resa_on_item=1&amp;add_item[$ID]=$ID&amp;date=".$annee_courante."-".$mois_courant."-".$ii."\"><img  src=\"".$CFG_GLPI["root_doc"]."/pics/addresa.png\" alt='".$LANG["reservation"][8]."' title='".$LANG["reservation"][8]."'></a></td></tr>";
+			echo "<tr><td class='center'><a href=\"".$target."?show=resa&amp;add_resa_on_item=1&amp;add_item[$ID]=$ID&amp;date=".$annee_courante."-".$mois_courant."-".$ii."\"><img  src=\"".$CFG_GLPI["root_doc"]."/pics/addresa.png\" alt='".$LANG['reservation'][8]."' title='".$LANG['reservation'][8]."'></a></td></tr>";
 		}
 		//if (($i-1+$jour_debut_mois)%7!=6&&($i-1+$jour_debut_mois)%7!=0){
 		echo "<tr><td>";
@@ -304,14 +304,14 @@ function showAddReservationForm($target,$items,$date,$resaID=-1){
 
 	echo "<table class='tab_cadre' cellpadding='2'>";
 	echo "<tr><th colspan='2'>";
-	echo $LANG["reservation"][9];
+	echo $LANG['reservation'][9];
 	echo "</th></tr>";
 
 	// Add Hardware name
 	$r=new ReservationItem;
 	$ci=new CommonItem();
 
-	echo "<tr class='tab_bg_1'><td>".$LANG["reservation"][4].":	</td>";
+	echo "<tr class='tab_bg_1'><td>".$LANG['reservation'][4].":	</td>";
 	echo "<td>";
 	foreach ($items as $ID){
 		$r->getFromDB($ID);
@@ -323,7 +323,7 @@ function showAddReservationForm($target,$items,$date,$resaID=-1){
 	if (!haveRight("reservation_central","w") || !haveAccessToEntity($ci->obj->fields["FK_entities"]))
 		echo "<input type='hidden' name='id_user' value='".$_SESSION["glpiID"]."'>";
 	else {
-		echo "<tr class='tab_bg_2'><td>".$LANG["reservation"][31].":	</td>";
+		echo "<tr class='tab_bg_2'><td>".$LANG['reservation'][31].":	</td>";
 		echo "<td>";
 		if ($resaID==-1)
 			dropdownAllUsers("id_user",$_SESSION["glpiID"],1,$ci->getField('FK_entities'));
@@ -333,42 +333,42 @@ function showAddReservationForm($target,$items,$date,$resaID=-1){
 	}
 
 
-	echo "<tr class='tab_bg_2'><td>".$LANG["search"][8].":	</td><td>";
+	echo "<tr class='tab_bg_2'><td>".$LANG['search'][8].":	</td><td>";
 	showDateTimeFormItem("begin",$resa->fields["begin"],-1,false);
 	echo "</td></tr>";
 
-	echo "<tr class='tab_bg_2'><td>".$LANG["search"][9].":	</td><td>";
+	echo "<tr class='tab_bg_2'><td>".$LANG['search'][9].":	</td><td>";
 	showDateTimeFormItem("end",$resa->fields["end"],-1,false);
 	echo "</td></tr>";
 
 
 	if ($resaID==-1){
-		echo "<tr class='tab_bg_2'><td>".$LANG["reservation"][27].":	</td>";
+		echo "<tr class='tab_bg_2'><td>".$LANG['reservation'][27].":	</td>";
 		echo "<td>";
 		echo "<select name='periodicity'>";
-		echo "<option value='day'>".$LANG["reservation"][29]."</option>";	
-		echo "<option value='week'>".$LANG["reservation"][28]."</option>";		
+		echo "<option value='day'>".$LANG['reservation'][29]."</option>";	
+		echo "<option value='week'>".$LANG['reservation'][28]."</option>";		
 		echo "</select>";
 		dropdownInteger('periodicity_times',1,1,60);	
-		echo $LANG["reservation"][30];
+		echo $LANG['reservation'][30];
 		echo "</td></tr>";
 	}
 
-	echo "<tr class='tab_bg_2'><td>".$LANG["common"][25].":	</td>";
+	echo "<tr class='tab_bg_2'><td>".$LANG['common'][25].":	</td>";
 	echo "<td><textarea name='comment'rows='8' cols='30'>".$resa->fields["comment"]."</textarea>";
 	echo "</td></tr>";
 
 	if ($resaID==-1){
 		echo "<tr class='tab_bg_2'>";
 		echo "<td colspan='2'  valign='top' align='center'>";
-		echo "<input type='submit' name='add_resa' value=\"".$LANG["buttons"][8]."\" class='submit'>";
+		echo "<input type='submit' name='add_resa' value=\"".$LANG['buttons'][8]."\" class='submit'>";
 		echo "</td></tr>\n";
 	} else {
 		echo "<tr class='tab_bg_2'>";
 		echo "<td valign='top' align='center'>";
-		echo "<input type='submit' name='clear_resa' value=\"".$LANG["buttons"][6]."\" class='submit'>";
+		echo "<input type='submit' name='clear_resa' value=\"".$LANG['buttons'][6]."\" class='submit'>";
 		echo "</td><td valign='top' align='center'>";
-		echo "<input type='submit' name='edit_resa' value=\"".$LANG["buttons"][14]."\" class='submit'>";
+		echo "<input type='submit' name='edit_resa' value=\"".$LANG['buttons'][14]."\" class='submit'>";
 		echo "</td></tr>\n";
 	}
 
@@ -446,11 +446,11 @@ function printReservationItem($target,$ID,$date){
 				else $heure_fin=get_hour_from_sql($row['end']);
 
 				if (strcmp($heure_debut,"00:00")==0&&strcmp($heure_fin,"24:00")==0)
-					$display=$LANG["planning"][5];
+					$display=$LANG['planning'][5];
 				else if (strcmp($heure_debut,"00:00")==0) 
-					$display=$LANG["reservation"][16]."&nbsp;".$heure_fin;
+					$display=$LANG['reservation'][16]."&nbsp;".$heure_fin;
 				else if (strcmp($heure_fin,"24:00")==0) 
-					$display=$LANG["reservation"][17]."&nbsp;".$heure_debut;
+					$display=$LANG['reservation'][17]."&nbsp;".$heure_debut;
 				else $display=$heure_debut."-".$heure_fin;
 
 				$rand=mt_rand();		
@@ -485,7 +485,7 @@ function printReservationItems($target){
 	$showentity=isMultiEntitiesMode();
 
 	echo "<div class='center'><form name='form' method='get' action='$target'><table class='tab_cadre' cellpadding='5'>";
-	echo "<tr><th colspan='".($showentity?"5":"4")."'>".$LANG["reservation"][1]."</th></tr>";
+	echo "<tr><th colspan='".($showentity?"5":"4")."'>".$LANG['reservation'][1]."</th></tr>";
 
 	
 	foreach ($CFG_GLPI["reservation_types"] as $type){
@@ -526,7 +526,7 @@ function printReservationItems($target){
 		}
 	}
 	if ($ok){
-		echo "<tr class='tab_bg_1' align='center'><td colspan='".($showentity?"5":"4")."'><input type='submit' value=\"".$LANG["buttons"][8]."\" class='submit' ></td></tr>";
+		echo "<tr class='tab_bg_1' align='center'><td colspan='".($showentity?"5":"4")."'><input type='submit' value=\"".$LANG['buttons'][8]."\" class='submit' ></td></tr>";
 	}
 		echo "</table>";
 		echo "<input type='hidden' name='show' value='resa'>";
@@ -552,15 +552,15 @@ function showReservationCommentForm($target,$ID){
 
 		echo "<table class='tab_cadre' cellpadding='2'>";
 		echo "<tr><th colspan='2'>";
-		echo $LANG["reservation"][22];
+		echo $LANG['reservation'][22];
 		echo "</th></tr>";
 		// Ajouter le nom du mat�iel
-		echo "<tr class='tab_bg_1'><td>".$LANG["reservation"][4].":	</td>";
+		echo "<tr class='tab_bg_1'><td>".$LANG['reservation'][4].":	</td>";
 		echo "<td>";
 		echo "<strong>".$ci->getType()." - ".$ci->getName()."</strong>";
 		echo "</td></tr>";
 
-		echo "<tr class='tab_bg_1'><td>".$LANG["common"][25].":	</td>";
+		echo "<tr class='tab_bg_1'><td>".$LANG['common'][25].":	</td>";
 		echo "<td>";
 		echo "<textarea name='comments' cols='30' rows='10' >".$r->fields["comments"]."</textarea>";
 		echo "</td></tr>";
@@ -568,7 +568,7 @@ function showReservationCommentForm($target,$ID){
 
 		echo "<tr class='tab_bg_2'>";
 		echo "<td colspan='2'  valign='top' align='center'>";
-		echo "<input type='submit' name='updatecomment' value=\"".$LANG["buttons"][14]."\" class='submit'>";
+		echo "<input type='submit' name='updatecomment' value=\"".$LANG['buttons'][14]."\" class='submit'>";
 		echo "</td></tr>\n";
 
 		echo "</table>";
@@ -599,15 +599,15 @@ function showDeviceReservations($target,$type,$ID){
 
 		echo "<table class='tab_cadrehov'><tr><th colspan='5'>";
 		if ($ri->fields["active"]){
-			echo "<a href='".$CFG_GLPI["root_doc"]."/front/reservation.php?show=resa&ID=$resaID' >".$LANG["reservation"][35]."</a>";
+			echo "<a href='".$CFG_GLPI["root_doc"]."/front/reservation.php?show=resa&ID=$resaID' >".$LANG['reservation'][35]."</a>";
 		} else {
-			echo $LANG["reservation"][35];
+			echo $LANG['reservation'][35];
 		}
 		echo "</th></tr>";
 		if ($DB->numrows($result)==0){	
-			echo "<tr class='tab_bg_2'><td align='center' colspan='5'>".$LANG["reservation"][37]."</td></tr>";
+			echo "<tr class='tab_bg_2'><td align='center' colspan='5'>".$LANG['reservation'][37]."</td></tr>";
 		} else {
-			echo "<tr><th>".$LANG["search"][8]."</th><th>".$LANG["search"][9]."</th><th>".$LANG["reservation"][31]."</th><th>".$LANG["common"][25]."</th><th>&nbsp;</th></tr>";
+			echo "<tr><th>".$LANG['search'][8]."</th><th>".$LANG['search'][9]."</th><th>".$LANG['reservation'][31]."</th><th>".$LANG['common'][25]."</th><th>&nbsp;</th></tr>";
 			while ($data=$DB->fetch_assoc($result)){
 				echo "<tr class='tab_bg_2'>";
 				echo "<td class='center'>".convDateTime($data["begin"])."</td>";
@@ -617,7 +617,7 @@ function showDeviceReservations($target,$type,$ID){
 				echo "<td class='center'>";
 				
 				list($annee,$mois,$jour)=explode("-",$data["begin"]);
-				echo "<a  href='".$CFG_GLPI["root_doc"]."/front/reservation.php?show=resa&amp;ID=".$resaID."&amp;mois_courant=$mois&amp;annee_courante=$annee' title='".$LANG["reservation"][21]."'><img src=\"".$CFG_GLPI["root_doc"]."/pics/reservation-3.png\" alt='' title=''></a>";
+				echo "<a  href='".$CFG_GLPI["root_doc"]."/front/reservation.php?show=resa&amp;ID=".$resaID."&amp;mois_courant=$mois&amp;annee_courante=$annee' title='".$LANG['reservation'][21]."'><img src=\"".$CFG_GLPI["root_doc"]."/pics/reservation-3.png\" alt='' title=''></a>";
 				
 				
 				echo "</td>";
@@ -634,16 +634,16 @@ function showDeviceReservations($target,$type,$ID){
 		echo "<table class='tab_cadrehov'><tr><th colspan='5'>";
 
 		if ($ri->fields["active"]){
-			echo "<a href='".$CFG_GLPI["root_doc"]."/front/reservation.php?show=resa&ID=$resaID' >".$LANG["reservation"][36]."</a>";
+			echo "<a href='".$CFG_GLPI["root_doc"]."/front/reservation.php?show=resa&ID=$resaID' >".$LANG['reservation'][36]."</a>";
 		} else {
-			echo $LANG["reservation"][36];
+			echo $LANG['reservation'][36];
 		}
 
 		echo "</th></tr>";
 		if ($DB->numrows($result)==0){	
-			echo "<tr class='tab_bg_2'><td align='center' colspan='5'>".$LANG["reservation"][37]."</td></tr>";
+			echo "<tr class='tab_bg_2'><td align='center' colspan='5'>".$LANG['reservation'][37]."</td></tr>";
 		} else {
-			echo "<tr><th>".$LANG["search"][8]."</th><th>".$LANG["search"][9]."</th><th>".$LANG["reservation"][31]."</th><th>".$LANG["common"][25]."</th><th>&nbsp;</th></tr>";
+			echo "<tr><th>".$LANG['search'][8]."</th><th>".$LANG['search'][9]."</th><th>".$LANG['reservation'][31]."</th><th>".$LANG['common'][25]."</th><th>&nbsp;</th></tr>";
 			while ($data=$DB->fetch_assoc($result)){
 				echo "<tr class='tab_bg_2'>";
 				echo "<td class='center'>".convDateTime($data["begin"])."</td>";
@@ -653,7 +653,7 @@ function showDeviceReservations($target,$type,$ID){
 				echo "<td class='center'>";
 				
 				list($annee,$mois,$jour)=explode("-",$data["begin"]);
-				echo "<a  href='".$CFG_GLPI["root_doc"]."/front/reservation.php?show=resa&amp;ID=".$resaID."&amp;mois_courant=$mois&amp;annee_courante=$annee' title='".$LANG["reservation"][21]."'><img src=\"".$CFG_GLPI["root_doc"]."/pics/reservation-3.png\" alt='' title=''></a>";
+				echo "<a  href='".$CFG_GLPI["root_doc"]."/front/reservation.php?show=resa&amp;ID=".$resaID."&amp;mois_courant=$mois&amp;annee_courante=$annee' title='".$LANG['reservation'][21]."'><img src=\"".$CFG_GLPI["root_doc"]."/pics/reservation-3.png\" alt='' title=''></a>";
 				
 				echo "</td>";
 				echo "</tr>";
@@ -663,7 +663,7 @@ function showDeviceReservations($target,$type,$ID){
 		echo "<br>";
 
 
-	} else echo "<strong>".$LANG["reservation"][34]."</strong>";
+	} else echo "<strong>".$LANG['reservation'][34]."</strong>";
 	echo "</div>";
 
 }
@@ -683,11 +683,11 @@ function showUserReservations($target,$ID){
 	$result=$DB->query($query);
 	$ri=new ReservationItem();
 	$ci=new CommonItem();
-	echo "<table class='tab_cadrehov'><tr><th colspan='6'>".$LANG["reservation"][35]."</th></tr>";
+	echo "<table class='tab_cadrehov'><tr><th colspan='6'>".$LANG['reservation'][35]."</th></tr>";
 	if ($DB->numrows($result)==0){	
-		echo "<tr class='tab_bg_2'><td align='center' colspan='6'>".$LANG["reservation"][37]."</td></tr>";
+		echo "<tr class='tab_bg_2'><td align='center' colspan='6'>".$LANG['reservation'][37]."</td></tr>";
 	} else {
-		echo "<tr><th>".$LANG["search"][8]."</th><th>".$LANG["search"][9]."</th><th>".$LANG["common"][1]."</th><th>".$LANG["reservation"][31]."</th><th>".$LANG["common"][25]."</th><th>&nbsp;</th></tr>";
+		echo "<tr><th>".$LANG['search'][8]."</th><th>".$LANG['search'][9]."</th><th>".$LANG['common'][1]."</th><th>".$LANG['reservation'][31]."</th><th>".$LANG['common'][25]."</th><th>&nbsp;</th></tr>";
 
 		while ($data=$DB->fetch_assoc($result)){
 			echo "<tr class='tab_bg_2'>";
@@ -704,7 +704,7 @@ function showUserReservations($target,$ID){
 			echo "<td class='center'>";
 				
 				list($annee,$mois,$jour)=explode("-",$data["begin"]);
-				echo "<a  href='".$CFG_GLPI["root_doc"]."/front/reservation.php?show=resa&amp;ID=".$data["id_item"]."&amp;mois_courant=$mois&amp;annee_courante=$annee' title='".$LANG["reservation"][21]."'><img src=\"".$CFG_GLPI["root_doc"]."/pics/reservation-3.png\" alt='' title=''></a>";
+				echo "<a  href='".$CFG_GLPI["root_doc"]."/front/reservation.php?show=resa&amp;ID=".$data["id_item"]."&amp;mois_courant=$mois&amp;annee_courante=$annee' title='".$LANG['reservation'][21]."'><img src=\"".$CFG_GLPI["root_doc"]."/pics/reservation-3.png\" alt='' title=''></a>";
 				
 				echo "</td>";
 			echo "</tr>";
@@ -717,11 +717,11 @@ function showUserReservations($target,$ID){
 	$query = "SELECT * FROM glpi_reservation_resa WHERE end <= '".$now."' AND id_user='$ID' ORDER BY begin DESC";
 	$result=$DB->query($query);
 
-	echo "<table class='tab_cadrehov'><tr><th colspan='6'>".$LANG["reservation"][36]."</th></tr>";
+	echo "<table class='tab_cadrehov'><tr><th colspan='6'>".$LANG['reservation'][36]."</th></tr>";
 	if ($DB->numrows($result)==0){	
-		echo "<tr class='tab_bg_2'><td align='center' colspan='6'>".$LANG["reservation"][37]."</td></tr>";
+		echo "<tr class='tab_bg_2'><td align='center' colspan='6'>".$LANG['reservation'][37]."</td></tr>";
 	} else {
-		echo "<tr><th>".$LANG["search"][8]."</th><th>".$LANG["search"][9]."</th><th>".$LANG["common"][1]."</th><th>".$LANG["reservation"][31]."</th><th>".$LANG["common"][25]."</th><th>&nbsp;</th></tr>";
+		echo "<tr><th>".$LANG['search'][8]."</th><th>".$LANG['search'][9]."</th><th>".$LANG['common'][1]."</th><th>".$LANG['reservation'][31]."</th><th>".$LANG['common'][25]."</th><th>&nbsp;</th></tr>";
 		while ($data=$DB->fetch_assoc($result)){
 			echo "<tr class='tab_bg_2'>";
 			echo "<td class='center'>".convDateTime($data["begin"])."</td>";
@@ -737,7 +737,7 @@ function showUserReservations($target,$ID){
 			echo "<td class='center'>";
 				
 				list($annee,$mois,$jour)=explode("-",$data["begin"]);
-				echo "<a  href='".$CFG_GLPI["root_doc"]."/front/reservation.php?show=resa&amp;ID=".$data["id_item"]."&amp;mois_courant=$mois&amp;annee_courante=$annee' title='".$LANG["reservation"][21]."'><img src=\"".$CFG_GLPI["root_doc"]."/pics/reservation-3.png\" alt='' title=''></a>";
+				echo "<a  href='".$CFG_GLPI["root_doc"]."/front/reservation.php?show=resa&amp;ID=".$data["id_item"]."&amp;mois_courant=$mois&amp;annee_courante=$annee' title='".$LANG['reservation'][21]."'><img src=\"".$CFG_GLPI["root_doc"]."/pics/reservation-3.png\" alt='' title=''></a>";
 				
 				echo "</td>";
 			echo "</tr>";

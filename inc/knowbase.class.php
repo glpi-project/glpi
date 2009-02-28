@@ -82,7 +82,7 @@ class kbitem extends CommonDBTM {
 		// set author
 
 		// set title for question if empty
-		if(empty($input["question"])) $input["question"]=$LANG["common"][30];
+		if(empty($input["question"])) $input["question"]=$LANG['common'][30];
 
 		if (haveRight("faq","w")&&!haveRight("knowbase","w")) $input["faq"]=1;
 		if (!haveRight("faq","w")&&haveRight("knowbase","w")) $input["faq"]=0;
@@ -94,7 +94,7 @@ class kbitem extends CommonDBTM {
 	function prepareInputForUpdate($input) {
 		global $LANG;
 		// set title for question if empty
-		if(empty($input["question"])) $input["question"]=$LANG["common"][30];
+		if(empty($input["question"])) $input["question"]=$LANG['common'][30];
 
 		return $input;
 	}
@@ -163,19 +163,19 @@ class kbitem extends CommonDBTM {
 		
 		
 			echo "<fieldset>";
-			echo "<legend>".$LANG["knowbase"][13]."</legend>";
-			echo "<div class='center'>".$LANG["knowbase"][6];
+			echo "<legend>".$LANG['knowbase'][13]."</legend>";
+			echo "<div class='center'>".$LANG['knowbase'][6];
 			dropdownValue("glpi_dropdown_kbcategories","categoryID",$this->fields["categoryID"]);
 			echo "</div></fieldset>";
 		
 			echo "<fieldset>";
-			echo "<legend>".$LANG["knowbase"][14]."</legend>";
+			echo "<legend>".$LANG['knowbase'][14]."</legend>";
 			echo "<div class='center'><textarea cols='80' rows='2'  name='question' >".$this->fields["question"]."</textarea></div>"; 
 			echo "</fieldset>";
 		
 		
 			echo "<fieldset>";
-			echo "<legend>".$LANG["knowbase"][15]."</legend><div class='center'>";
+			echo "<legend>".$LANG['knowbase'][15]."</legend><div class='center'>";
 			echo "<textarea cols='80' rows='30' id='answer'  name='answer' >".$this->fields["answer"]."</textarea></div>"; 
 		
 			echo "</fieldset>";
@@ -187,23 +187,23 @@ class kbitem extends CommonDBTM {
 				echo "<fieldset>";
 				echo "<div class='baskb'>";
 				if ($this->fields["author"]){
-					echo $LANG["common"][37]." : ".getUserName($this->fields["author"],"1")."      ";
+					echo $LANG['common'][37]." : ".getUserName($this->fields["author"],"1")."      ";
 				}
 				
 				
 		
 				echo "<span class='baskb_right'  >";
 				if ($this->fields["date_mod"]){
-					echo $LANG["common"][26]." : ".convDateTime($this->fields["date_mod"])."     ";
+					echo $LANG['common'][26]." : ".convDateTime($this->fields["date_mod"])."     ";
 				}
 				echo "</span><br />";
 				
 				if ($this->fields["date"]){
-					echo $LANG["common"][27]." : ". convDateTime($this->fields["date"]);
+					echo $LANG['common'][27]." : ". convDateTime($this->fields["date"]);
 				}
 				
 				echo "<span class='baskb_right'>";
-				echo $LANG["knowbase"][26]." : ".$this->fields["view"]."</span></div>";
+				echo $LANG['knowbase'][26]." : ".$this->fields["view"]."</span></div>";
 				
 		
 				echo "</fieldset>";
@@ -211,10 +211,10 @@ class kbitem extends CommonDBTM {
 			echo "<p class='center'>";
 		
 			if (isMultiEntitiesMode()){
-				echo $LANG["entity"][0].": ";
+				echo $LANG['entity'][0].": ";
 				dropdownValue("glpi_entities", "FK_entities", $this->fields["FK_entities"],0);
 	
-				echo "&nbsp;&nbsp;".$LANG["entity"][9].":	";
+				echo "&nbsp;&nbsp;".$LANG['entity'][9].":	";
 				if ($canrecu) {
 					dropdownYesNo("recursive",$this->fields["recursive"]);					
 				} else {
@@ -222,7 +222,7 @@ class kbitem extends CommonDBTM {
 				}
 			}
 			
-			echo "<br /><br />" . $LANG["knowbase"][5].": ";
+			echo "<br /><br />" . $LANG['knowbase'][5].": ";
 			if (haveRight("faq","w")&&haveRight("knowbase","w")){			
 				dropdownYesNo('faq',$this->fields["faq"]);
 			} else {
@@ -231,10 +231,10 @@ class kbitem extends CommonDBTM {
 			echo "<br /><br />\n";
 		
 			if ($ID>0) {
-				echo "<input type='submit' class='submit' name='update' value=\"".$LANG["buttons"][7]."\"> <input type='reset' class='submit' value=\"".$LANG["buttons"][16]."\">";
+				echo "<input type='submit' class='submit' name='update' value=\"".$LANG['buttons'][7]."\"> <input type='reset' class='submit' value=\"".$LANG['buttons'][16]."\">";
 			} else {
 				echo "<input type='hidden' name='author' value=\"".$_SESSION['glpiID']."\">\n";
-				echo "<input type='submit' class='submit' name='add' value=\"".$LANG["buttons"][8]."\"> <input type='reset' class='submit' value=\"".$LANG["buttons"][16]."\">";
+				echo "<input type='submit' class='submit' name='add' value=\"".$LANG['buttons'][8]."\"> <input type='reset' class='submit' value=\"".$LANG['buttons'][16]."\">";
 			}
 		
 			echo "</p>";

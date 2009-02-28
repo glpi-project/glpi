@@ -120,10 +120,10 @@ function getTreeLeafValueName($table,$ID,$withcomments=false){
 	$name="";
 	$comments="";
 	if ($ID==0 && $table=="glpi_entities") {
-		$name = $LANG["entity"][2];
+		$name = $LANG['entity'][2];
 		
 	} else if ($ID==0 && $table=="glpi_dropdown_kbcategories") {
-		$name = $LANG["knowbase"][12];
+		$name = $LANG['knowbase'][12];
 		
 	} else {
 		$query = "SELECT * 
@@ -159,10 +159,10 @@ function getTreeValueCompleteName($table,$ID,$withcomments=false){
 	$comments="";
 
 	if ($ID==0 && $table=="glpi_entities") {
-		$name = $LANG["entity"][2];
+		$name = $LANG['entity'][2];
 		
 	} else if ($ID==0 && $table=="glpi_dropdown_kbcategories") {
-		$name = $LANG["knowbase"][12];
+		$name = $LANG['knowbase'][12];
 		
 	} else {
 		$query = "SELECT * 
@@ -803,16 +803,16 @@ function getUserName($ID,$link=0){
 			if ($link==2){
 				$user["name"]=$username;
 				$user["link"]=$CFG_GLPI["root_doc"]."/front/user.form.php?ID=".$ID;
-				$user["comments"]=$LANG["common"][16].": ".$username."<br>";
-				$user["comments"].=$LANG["setup"][18].": ".$data["name"]."<br>";
+				$user["comments"]=$LANG['common'][16].": ".$username."<br>";
+				$user["comments"].=$LANG['setup'][18].": ".$data["name"]."<br>";
 				if (!empty($data["email"]))
-					$user["comments"].=$LANG["setup"][14].": ".$data["email"]."<br>";
+					$user["comments"].=$LANG['setup'][14].": ".$data["email"]."<br>";
 				if (!empty($data["phone"]))
-					$user["comments"].=$LANG["help"][35].": ".$data["phone"]."<br>";
+					$user["comments"].=$LANG['help'][35].": ".$data["phone"]."<br>";
 				if (!empty($data["mobile"]))
-					$user["comments"].=$LANG["common"][42].": ".$data["mobile"]."<br>";
+					$user["comments"].=$LANG['common'][42].": ".$data["mobile"]."<br>";
 				if ($data["location"]>0){
-					$user["comments"].=$LANG["common"][15].": ".getDropdownName("glpi_dropdown_locations",$data["location"])."<br>";
+					$user["comments"].=$LANG['common'][15].": ".getDropdownName("glpi_dropdown_locations",$data["location"])."<br>";
 				}
 			} else {
 				$user=$username;

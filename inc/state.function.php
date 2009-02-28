@@ -69,7 +69,7 @@ function showStateSummary($target){
 	
 		// Type			
 		echo "<th>";
-		echo $LANG["state"][0]."</th>";
+		echo $LANG['state'][0]."</th>";
 	
 		$ci=new CommonItem;
 		foreach ($state_type as $type){
@@ -77,7 +77,7 @@ function showStateSummary($target){
 			echo "<th>".$ci->getType()."</th>";
 			$total[$type]=0;
 		}
-		echo "<th>".$LANG["common"][33]."</th>";
+		echo "<th>".$LANG['common'][33]."</th>";
 		echo "</tr>";
 		$query="SELECT * FROM glpi_dropdown_state ORDER BY name";
 		$result = $DB->query($query);
@@ -117,7 +117,7 @@ function showStateSummary($target){
 			echo "<td class='center'><strong>$tot</strong></td>";
 			echo "</tr>";
 		}
-		echo "<tr class='tab_bg_2'><td class='center'><strong>".$LANG["common"][33]."</strong></td>";
+		echo "<tr class='tab_bg_2'><td class='center'><strong>".$LANG['common'][33]."</strong></td>";
 		$tot=0;
 		foreach ($state_type as $type){
 			echo "<td class='center'><strong>".$total[$type]."</strong></td>";
@@ -128,7 +128,7 @@ function showStateSummary($target){
 		echo "</table></div>";
 
 	}else {
-		echo "<div class='center'><strong>".$LANG["state"][7]."</strong></div>";
+		echo "<div class='center'><strong>".$LANG['state'][7]."</strong></div>";
 	}
 
 

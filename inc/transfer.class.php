@@ -2514,9 +2514,9 @@ class Transfer extends CommonDBTM{
 		if ($edit_form){
 			echo "<tr><th colspan='4'>";
 			if (empty($ID)) {
-				echo $LANG["transfer"][2];
+				echo $LANG['transfer'][2];
 			} else {
-				echo $LANG["common"][2]." $ID";
+				echo $LANG['common'][2]." $ID";
 			}		
 			echo "</th></tr>";
 		} else {
@@ -2525,7 +2525,7 @@ class Transfer extends CommonDBTM{
 				
 				echo "<div class='center'>";
 				dropdown("glpi_entities",'to_entity');
-				echo "&nbsp;<input type='submit' name='transfer' value=\"".$LANG["buttons"][48]."\" class='submit'></div>";
+				echo "&nbsp;<input type='submit' name='transfer' value=\"".$LANG['buttons'][48]."\" class='submit'></div>";
 				echo "</td>";
 				echo "</tr>";
 		}
@@ -2533,20 +2533,20 @@ class Transfer extends CommonDBTM{
 		if (!$use_cache||!($CFG_GLPI["cache"]->start($ID."_".$_SESSION['glpilanguage'],"GLPI_".$this->type))) {
 			if ($edit_form){
 				echo "<tr class='tab_bg_1'>";
-				echo "<td colspan='2'>".$LANG["common"][16].":	</td><td colspan='2'>";
+				echo "<td colspan='2'>".$LANG['common'][16].":	</td><td colspan='2'>";
 				autocompletionTextField("name","glpi_transfers","name",$this->fields["name"],40);	
 				echo "</td>";
 				echo "</tr>";
 			}
 
-			$keep=array(0=>$LANG["buttons"][6],
-					1=>$LANG["buttons"][49]);
-			$clean=array(0=>$LANG["buttons"][49],
-				1=>$LANG["buttons"][6],
-				2=>$LANG["buttons"][22]);
+			$keep=array(0=>$LANG['buttons'][6],
+					1=>$LANG['buttons'][49]);
+			$clean=array(0=>$LANG['buttons'][49],
+				1=>$LANG['buttons'][6],
+				2=>$LANG['buttons'][22]);
 
 			echo "<tr class='tab_bg_1'>";
-			echo "<td>".$LANG["common"][66]." -> ".$LANG["title"][38].":	</td><td>";
+			echo "<td>".$LANG['common'][66]." -> ".$LANG['title'][38].":	</td><td>";
 			$fctdropdown('keep_history',$keep,$this->fields['keep_history']);
 			echo "</td>";
 			echo "<td colspan='2'>&nbsp;</td>";
@@ -2556,16 +2556,16 @@ class Transfer extends CommonDBTM{
 			echo "<td colspan='4' class='center'><strong>".$LANG["Menu"][38]."</strong></td></tr>";
 
 			echo "<tr class='tab_bg_1'>";
-			echo "<td>".$LANG["common"][66]." -> ".$LANG["networking"][6].":	</td><td>";
-			$options=array(0=>$LANG["buttons"][6],
-					1=>$LANG["buttons"][49]." - ".$LANG["buttons"][10] ,
-					2=>$LANG["buttons"][49]." - ".$LANG["buttons"][9] );
+			echo "<td>".$LANG['common'][66]." -> ".$LANG['networking'][6].":	</td><td>";
+			$options=array(0=>$LANG['buttons'][6],
+					1=>$LANG['buttons'][49]." - ".$LANG['buttons'][10] ,
+					2=>$LANG['buttons'][49]." - ".$LANG['buttons'][9] );
 			$fctdropdown('keep_networklinks',$options,$this->fields['keep_networklinks']);
 			echo "</td>";
-			echo "<td>".$LANG["common"][66]." -> ".$LANG["title"][28].":	</td><td>";
-			$options=array(0=>$LANG["buttons"][6],
-					1=>$LANG["buttons"][49]." - ".$LANG["buttons"][10] ,
-					2=>$LANG["buttons"][49]." - ".$LANG["buttons"][48] );
+			echo "<td>".$LANG['common'][66]." -> ".$LANG['title'][28].":	</td><td>";
+			$options=array(0=>$LANG['buttons'][6],
+					1=>$LANG['buttons'][49]." - ".$LANG['buttons'][10] ,
+					2=>$LANG['buttons'][49]." - ".$LANG['buttons'][48] );
 			$fctdropdown('keep_tickets',$options,$this->fields['keep_tickets']);
 			echo "</td>";
 			echo "</tr>";
@@ -2576,53 +2576,53 @@ class Transfer extends CommonDBTM{
 			echo "<td>".$LANG["Menu"][0]." -> ".$LANG["Menu"][4].":	</td><td>";
 			$fctdropdown('keep_softwares',$keep,$this->fields['keep_softwares']);
 			echo "</td>";
-			echo "<td>".$LANG["Menu"][4].": ".$LANG["transfer"][3]."	</td><td>";
+			echo "<td>".$LANG["Menu"][4].": ".$LANG['transfer'][3]."	</td><td>";
 			$fctdropdown('clean_softwares',$clean,$this->fields['clean_softwares']);
 			echo "</td>";
 			echo "</tr>";
 
 			echo "<tr class='tab_bg_1'>";
-			echo "<td>".$LANG["common"][66]." -> ".$LANG["Menu"][17].":	</td><td>";	
+			echo "<td>".$LANG['common'][66]." -> ".$LANG["Menu"][17].":	</td><td>";	
 			$fctdropdown('keep_reservations',$keep,$this->fields['keep_reservations']);
 			echo "</td>";
-			echo "<td>".$LANG["Menu"][0]." -> ".$LANG["title"][30].":	</td><td>";
+			echo "<td>".$LANG["Menu"][0]." -> ".$LANG['title'][30].":	</td><td>";
 			$fctdropdown('keep_devices',$keep,$this->fields['keep_devices']);
 			echo "</td>";
 			echo "</tr>";
 
 			echo "<tr class='tab_bg_1'>";
-			echo "<td>".$LANG["Menu"][2]." -> ".$LANG["Menu"][21]." / ".$LANG["cartridges"][12].":	</td><td>";
+			echo "<td>".$LANG["Menu"][2]." -> ".$LANG["Menu"][21]." / ".$LANG['cartridges'][12].":	</td><td>";
 			$fctdropdown('keep_cartridges_type',$keep,$this->fields['keep_cartridges_type']);
 			echo "</td>";
-			echo "<td>".$LANG["cartridges"][12].": ".$LANG["transfer"][3]."	</td><td>";
+			echo "<td>".$LANG['cartridges'][12].": ".$LANG['transfer'][3]."	</td><td>";
 			$fctdropdown('clean_cartridges_type',$clean,$this->fields['clean_cartridges_type']);
 			echo "</td>";
 			echo "</tr>";
 
 			echo "<tr class='tab_bg_1'>";
-			echo "<td>".$LANG["cartridges"][12]." -> ".$LANG["Menu"][21].":	</td><td>";
+			echo "<td>".$LANG['cartridges'][12]." -> ".$LANG["Menu"][21].":	</td><td>";
 			$fctdropdown('keep_cartridges',$keep,$this->fields['keep_cartridges']);
 			echo "</td>";				
-			echo "<td>".$LANG["common"][66]." -> ".$LANG["financial"][3].":	</td><td>";
+			echo "<td>".$LANG['common'][66]." -> ".$LANG['financial'][3].":	</td><td>";
 			$fctdropdown('keep_infocoms',$keep,$this->fields['keep_infocoms']);
 			echo "</td>";
 			echo "</tr>";
 
 			echo "<tr class='tab_bg_1'>";
-			echo "<td>".$LANG["setup"][92]." -> ".$LANG["Menu"][32].":	</td><td>";
+			echo "<td>".$LANG['setup'][92]." -> ".$LANG["Menu"][32].":	</td><td>";
 			$fctdropdown('keep_consumables',$keep,$this->fields['keep_consumables']);
 			echo "</td>";
 			echo "<td colspan='2'>&nbsp;</td>";
 			echo "</tr>";
 
 			echo "<tr class='tab_bg_2'>";
-			echo "<td colspan='4' class='center'><strong>".$LANG["connect"][0]."</strong></td></tr>";
+			echo "<td colspan='4' class='center'><strong>".$LANG['connect'][0]."</strong></td></tr>";
 
 			echo "<tr class='tab_bg_1'>";
 			echo "<td>".$LANG["Menu"][3].":	</td><td>";
 			$fctdropdown('keep_dc_monitor',$keep,$this->fields['keep_dc_monitor']);
 			echo "</td>";
-			echo "<td>".$LANG["Menu"][3].": ".$LANG["transfer"][3]."	</td><td>";
+			echo "<td>".$LANG["Menu"][3].": ".$LANG['transfer'][3]."	</td><td>";
 			$fctdropdown('clean_dc_monitor',$clean,$this->fields['clean_dc_monitor']);
 			echo "</td>";
 			echo "</tr>";
@@ -2631,7 +2631,7 @@ class Transfer extends CommonDBTM{
 			echo "<td>".$LANG["Menu"][2].":	</td><td>";
 			$fctdropdown('keep_dc_printer',$keep,$this->fields['keep_dc_printer']);
 			echo "</td>";
-			echo "<td>".$LANG["Menu"][2].": ".$LANG["transfer"][3]."	</td><td>";
+			echo "<td>".$LANG["Menu"][2].": ".$LANG['transfer'][3]."	</td><td>";
 			$fctdropdown('clean_dc_printer',$clean,$this->fields['clean_dc_printer']);
 			echo "</td>";
 			echo "</tr>";
@@ -2640,7 +2640,7 @@ class Transfer extends CommonDBTM{
 			echo "<td>".$LANG["Menu"][16].":	</td><td>";
 			$fctdropdown('keep_dc_peripheral',$keep,$this->fields['keep_dc_peripheral']);
 			echo "</td>";
-			echo "<td>".$LANG["Menu"][16].": ".$LANG["transfer"][3]."	</td><td>";
+			echo "<td>".$LANG["Menu"][16].": ".$LANG['transfer'][3]."	</td><td>";
 			$fctdropdown('clean_dc_peripheral',$clean,$this->fields['clean_dc_peripheral']);
 			echo "</td>";
 			echo "</tr>";
@@ -2649,7 +2649,7 @@ class Transfer extends CommonDBTM{
 			echo "<td>".$LANG["Menu"][34].":	</td><td>";
 			$fctdropdown('keep_dc_phone',$keep,$this->fields['keep_dc_phone']);
 			echo "</td>";
-			echo "<td>".$LANG["Menu"][34].": ".$LANG["transfer"][3]."	</td><td>";
+			echo "<td>".$LANG["Menu"][34].": ".$LANG['transfer'][3]."	</td><td>";
 			$fctdropdown('clean_dc_phone',$clean,$this->fields['clean_dc_phone']);
 			echo "</td>";
 			echo "</tr>";
@@ -2660,10 +2660,10 @@ class Transfer extends CommonDBTM{
 
 
 			echo "<tr class='tab_bg_1'>";
-			echo "<td>".$LANG["common"][66]." -> ".$LANG["Menu"][23].":	</td><td>";
+			echo "<td>".$LANG['common'][66]." -> ".$LANG["Menu"][23].":	</td><td>";
 			$fctdropdown('keep_enterprises',$keep,$this->fields['keep_enterprises']);
 			echo "</td>";
-			echo "<td>".$LANG["Menu"][23].": ".$LANG["transfer"][3]."	</td><td>";
+			echo "<td>".$LANG["Menu"][23].": ".$LANG['transfer'][3]."	</td><td>";
 			$fctdropdown('clean_enterprises',$clean,$this->fields['clean_enterprises']);
 			echo "</td>";
 			echo "</tr>";
@@ -2672,25 +2672,25 @@ class Transfer extends CommonDBTM{
 			echo "<td>".$LANG["Menu"][23]." -> ".$LANG["Menu"][22].":	</td><td>";
 			$fctdropdown('keep_contacts',$keep,$this->fields['keep_contacts']);
 			echo "</td>";
-			echo "<td>".$LANG["Menu"][22].": ".$LANG["transfer"][3]."	</td><td>";
+			echo "<td>".$LANG["Menu"][22].": ".$LANG['transfer'][3]."	</td><td>";
 			$fctdropdown('clean_contacts',$clean,$this->fields['clean_contacts']);
 			echo "</td>";
 			echo "</tr>";
 
 			echo "<tr class='tab_bg_1'>";
-			echo "<td>".$LANG["common"][66]." -> ".$LANG["Menu"][27].":	</td><td>";
+			echo "<td>".$LANG['common'][66]." -> ".$LANG["Menu"][27].":	</td><td>";
 			$fctdropdown('keep_documents',$keep,$this->fields['keep_documents']);
 			echo "</td>";
-			echo "<td>".$LANG["Menu"][27].": ".$LANG["transfer"][3]."	</td><td>";
+			echo "<td>".$LANG["Menu"][27].": ".$LANG['transfer'][3]."	</td><td>";
 			$fctdropdown('clean_documents',$clean,$this->fields['clean_documents']);
 			echo "</td>";
 			echo "</tr>";
 
 			echo "<tr class='tab_bg_1'>";
-			echo "<td>".$LANG["common"][66]." -> ".$LANG["Menu"][25].":	</td><td>";
+			echo "<td>".$LANG['common'][66]." -> ".$LANG["Menu"][25].":	</td><td>";
 			$fctdropdown('keep_contracts',$keep,$this->fields['keep_contracts']);
 			echo "</td>";
-			echo "<td>".$LANG["Menu"][25].": ".$LANG["transfer"][3]."	</td><td>";
+			echo "<td>".$LANG["Menu"][25].": ".$LANG['transfer'][3]."	</td><td>";
 			$fctdropdown('clean_contracts',$clean,$this->fields['clean_contracts']);
 			echo "</td>";
 			echo "</tr>";
@@ -2705,17 +2705,17 @@ class Transfer extends CommonDBTM{
 				if ($ID=="") {
 					echo "<tr>";
 					echo "<td class='tab_bg_2' valign='top' colspan='4'>";
-					echo "<div class='center'><input type='submit' name='add' value=\"".$LANG["buttons"][8]."\" class='submit'></div>";
+					echo "<div class='center'><input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'></div>";
 					echo "</td>";
 					echo "</tr>";
 				} else {
 					echo "<tr>";
 					echo "<td class='tab_bg_2' valign='top' colspan='2'>";
 					echo "<input type='hidden' name='ID' value=\"$ID\">\n";
-					echo "<div class='center'><input type='submit' name='update' value=\"".$LANG["buttons"][7]."\" class='submit' ></div>";
+					echo "<div class='center'><input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit' ></div>";
 					echo "</td>\n\n";
 					echo "<td class='tab_bg_2' valign='top' colspan='2'>\n";
-					echo "<div class='center'><input type='submit' name='delete' value=\"".$LANG["buttons"][6]."\" class='submit'></div>";
+					echo "<div class='center'><input type='submit' name='delete' value=\"".$LANG['buttons'][6]."\" class='submit'></div>";
 					echo "</td>";
 					echo "</tr>";
 
@@ -2732,12 +2732,12 @@ class Transfer extends CommonDBTM{
 		global $LANG,$LINK_ID_TABLE,$DB,$CFG_GLPI;
 		$ci=new CommonItem();
 		if (isset($_SESSION['glpitransfer_list'])&&count($_SESSION['glpitransfer_list'])){
-			echo "<div class='center'><strong>".$LANG["transfer"][5]."<br>".$LANG["transfer"][6];
+			echo "<div class='center'><strong>".$LANG['transfer'][5]."<br>".$LANG['transfer'][6];
 			echo "</strong>";
 			echo "</div>";
-			//echo '<tr><th colspan="2">'.$LANG["transfer"][4].'</th></tr>';
+			//echo '<tr><th colspan="2">'.$LANG['transfer'][4].'</th></tr>';
 			echo "<table class='tab_cadre_fixe' >";
-			echo '<tr><th>'.$LANG["transfer"][7].'</th><th>'.$LANG["transfer"][8].":&nbsp;";
+			echo '<tr><th>'.$LANG['transfer'][7].'</th><th>'.$LANG['transfer'][8].":&nbsp;";
 			$rand=dropdownValue("glpi_transfers","ID",0,0,-1,array('value_fieldname'=>'ID',
 			'to_update'=>"transfer_form", 'url'=>$CFG_GLPI["root_doc"]."/ajax/transfers.php"));
 			echo '</th></tr>';
@@ -2764,7 +2764,7 @@ class Transfer extends CommonDBTM{
 									if ($entID>0){
 										echo '<strong>'.$data['locname'].'</strong><br>';
 									} else {
-										echo '<strong>'.$LANG["entity"][2].'</strong><br>';
+										echo '<strong>'.$LANG['entity'][2].'</strong><br>';
 									}
 								}
 								echo ($data['name'] ? $data['name']."<br>" : "(".$data['ID'].")<br>");
@@ -2775,7 +2775,7 @@ class Transfer extends CommonDBTM{
 			}
 			echo "</td><td class='tab_bg_2' valign='top'>";
 			if (countElementsInTable('glpi_transfers')==0){
-				echo $LANG["search"][15];
+				echo $LANG['search'][15];
 			} else {
 				
 				$params=array('ID'=>'__VALUE__');
@@ -2783,12 +2783,12 @@ class Transfer extends CommonDBTM{
 				//ajaxUpdateItem("transfer_form",$CFG_GLPI["root_doc"]."/ajax/transfers.php",$params,false,"dropdown_ID".$rand);
 			}
 			echo "<div align='center' id='transfer_form'>";
-			echo "<a href='".$_SERVER['PHP_SELF']."?clear=1'>".$LANG["transfer"][4]."</a>";
+			echo "<a href='".$_SERVER['PHP_SELF']."?clear=1'>".$LANG['transfer'][4]."</a>";
 			echo "</div>";
 			echo '</td></tr>';
 			echo '</table>';
 		} else {
-			echo $LANG["common"][24];
+			echo $LANG['common'][24];
 		}
 
 	}

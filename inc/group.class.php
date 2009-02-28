@@ -68,10 +68,10 @@ class Group extends CommonDBTM{
 	function defineTabs($ID,$withtemplate){
 		global $LANG;
 		if (haveRight("user","r"))	
-			$ong[1]=$LANG["title"][26];
+			$ong[1]=$LANG['title'][26];
 
 		if ($ID>0){
-			$ong[2]=$LANG["common"][1];
+			$ong[2]=$LANG['common'][1];
 		}
 		return $ong;
 	}
@@ -127,12 +127,12 @@ class Group extends CommonDBTM{
 
 		echo "<table cellpadding='1' cellspacing='0' border='0'>\n";
 
-		echo "<tr><td>".$LANG["common"][16].":	</td>";
+		echo "<tr><td>".$LANG['common'][16].":	</td>";
 		echo "<td>";
 		autocompletionTextField("name","glpi_groups","name",$this->fields["name"],40,$this->fields["FK_entities"]);	
 		echo "</td></tr>";
 
-		echo "<tr><td>".$LANG["common"][64].":	</td>";
+		echo "<tr><td>".$LANG['common'][64].":	</td>";
 		echo "<td>";
 		// Manager must be in the same entity
 		// TODO for a recursive group the manager need to have a recursive right ?
@@ -140,24 +140,24 @@ class Group extends CommonDBTM{
 		echo "</td></tr>";
 
 		if(useAuthLdap()){
-			echo "<tr><td colspan='2' align='center'>".$LANG["setup"][256].":	</td>";
+			echo "<tr><td colspan='2' align='center'>".$LANG['setup'][256].":	</td>";
 			echo "</tr>";
 
-			echo "<tr><td>".$LANG["setup"][260].":	</td>";
+			echo "<tr><td>".$LANG['setup'][260].":	</td>";
 			echo "<td>";
 			autocompletionTextField("ldap_field","glpi_groups","ldap_field",$this->fields["ldap_field"],40,$this->fields["FK_entities"]);
 			echo "</td></tr>";
 
-			echo "<tr><td>".$LANG["setup"][601].":	</td>";
+			echo "<tr><td>".$LANG['setup'][601].":	</td>";
 			echo "<td>";
 			autocompletionTextField("ldap_value","glpi_groups","ldap_value",$this->fields["ldap_value"],40,$this->fields["FK_entities"]);
 			echo "</td></tr>";
 
-			echo "<tr><td colspan='2' align='center'>".$LANG["setup"][257].":	</td>";
+			echo "<tr><td colspan='2' align='center'>".$LANG['setup'][257].":	</td>";
 			echo "</tr>";
 
 
-			echo "<tr><td>".$LANG["setup"][261].":	</td>";
+			echo "<tr><td>".$LANG['setup'][261].":	</td>";
 			echo "<td>";
 			autocompletionTextField("ldap_group_dn","glpi_groups","ldap_group_dn",$this->fields["ldap_group_dn"],40,$this->fields["FK_entities"]);
 			echo "</td></tr>";
@@ -170,7 +170,7 @@ class Group extends CommonDBTM{
 		echo "<td class='tab_bg_1' valign='top'>";
 
 		echo "<table cellpadding='1' cellspacing='0' border='0'><tr><td>";
-		echo $LANG["common"][25].":	</td></tr>";
+		echo $LANG['common'][25].":	</td></tr>";
 		echo "<tr><td class='center'><textarea cols='45' rows='4' name='comments' >".$this->fields["comments"]."</textarea>";
 		echo "</td></tr></table>";
 
@@ -182,7 +182,7 @@ class Group extends CommonDBTM{
 
 				echo "<tr>";
 				echo "<td class='tab_bg_2' valign='top' colspan='2'>";
-				echo "<div class='center'><input type='submit' name='add' value=\"".$LANG["buttons"][8]."\" class='submit'></div>";
+				echo "<div class='center'><input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'></div>";
 				echo "</td>";
 				echo "</tr>";
 
@@ -191,10 +191,10 @@ class Group extends CommonDBTM{
 				echo "<tr>";
 				echo "<td class='tab_bg_2' valign='top'>";
 				echo "<input type='hidden' name='ID' value=\"$ID\">\n";
-				echo "<div class='center'><input type='submit' name='update' value=\"".$LANG["buttons"][7]."\" class='submit' ></div>";
+				echo "<div class='center'><input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit' ></div>";
 				echo "</td>\n\n";
 				echo "<td class='tab_bg_2' valign='top'>\n";
-				echo "<div class='center'><input type='submit' name='delete' value=\"".$LANG["buttons"][6]."\" class='submit'></div>";
+				echo "<div class='center'><input type='submit' name='delete' value=\"".$LANG['buttons'][6]."\" class='submit'></div>";
 
 				echo "</td>";
 				echo "</tr>";
@@ -221,7 +221,7 @@ class Group extends CommonDBTM{
 
 		$buttons = array ();
 		if (haveRight("group", "w") && haveRight("user_auth_method", "w") && useAuthLdap()) {
-			$buttons["ldap.group.php"] = $LANG["setup"][3];
+			$buttons["ldap.group.php"] = $LANG['setup'][3];
 			$title="";
 		} else {
 			$title = $LANG["Menu"][36];		

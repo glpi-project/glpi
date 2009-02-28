@@ -119,7 +119,7 @@ function showDeviceComputerForm($target,$ID,$withtemplate='') {
 			echo "<input type='hidden' name='ID' value='$ID'>";
 			echo "<input type='hidden' name='device_action' value='$ID'>";
 			echo "<table class='tab_cadre_fixe' >";
-			echo "<tr><th colspan='65'>".$LANG["title"][30]."</th></tr>";
+			echo "<tr><th colspan='65'>".$LANG['title'][30]."</th></tr>";
 			foreach($comp->devices as $key => $val) {
 				$device = new Device($val["devType"]);
 				$device->getFromDB($val["devID"]);
@@ -129,7 +129,7 @@ function showDeviceComputerForm($target,$ID,$withtemplate='') {
 			$CFG_GLPI["cache"]->end();
 		}
 		if ($canedit&&!(!empty($withtemplate) && $withtemplate == 2)&&count($comp->devices))
-			echo "<tr><td colspan='65' align='center' class='tab_bg_1'><input type='submit' class='submit' name='update_device' value='".$LANG["buttons"][7]."'></td></tr>";
+			echo "<tr><td colspan='65' align='center' class='tab_bg_1'><input type='submit' class='submit' name='update_device' value='".$LANG['buttons'][7]."'></td></tr>";
 		echo "</table>";
 
 		echo "</form>";
@@ -161,7 +161,7 @@ function showConnections($target,$ID,$withtemplate='') {
 	$ci=new CommonItem;
 	$used = array();
 	
-	$items=array(PRINTER_TYPE=>$LANG["computers"][39],MONITOR_TYPE=>$LANG["computers"][40],PERIPHERAL_TYPE=>$LANG["computers"][46],PHONE_TYPE=>$LANG["computers"][55]);
+	$items=array(PRINTER_TYPE=>$LANG['computers'][39],MONITOR_TYPE=>$LANG['computers'][40],PERIPHERAL_TYPE=>$LANG['computers'][46],PHONE_TYPE=>$LANG['computers'][55]);
 	$comp=new Computer();
 	$canedit=haveTypeRight(COMPUTER_TYPE,"w");
 
@@ -174,7 +174,7 @@ function showConnections($target,$ID,$withtemplate='') {
 		if (count($items)){
 			echo "<div class='center'><table class='tab_cadre_fixe'>";
 	
-			echo "<tr><th colspan='".max(2,count($items))."'>".$LANG["connect"][0].":</th></tr>";
+			echo "<tr><th colspan='".max(2,count($items))."'>".$LANG['connect'][0].":</th></tr>";
 	
 			echo "<tr>";
 			$header_displayed=0;
@@ -229,7 +229,7 @@ function showConnections($target,$ID,$withtemplate='') {
 							echo "</td><td>";
 							if($canedit&&(empty($withtemplate) || $withtemplate != 2)) {
 								echo "<td class='center'><a 	href=\"".$CFG_GLPI["root_doc"]."/front/computer.form.php?cID=$ID&amp;ID=$connID&amp;disconnect=1&amp;withtemplate=".$withtemplate."\"><strong>";
-								echo $LANG["buttons"][10];
+								echo $LANG['buttons'][10];
 								echo "</strong></a></td>";
 							}
 							echo "</tr>";
@@ -238,16 +238,16 @@ function showConnections($target,$ID,$withtemplate='') {
 					} else {
 						switch ($type){
 							case PRINTER_TYPE:
-								echo $LANG["computers"][38];
+								echo $LANG['computers'][38];
 								break;
 							case MONITOR_TYPE:
-								echo $LANG["computers"][37];
+								echo $LANG['computers'][37];
 								break;
 							case PERIPHERAL_TYPE:
-								echo $LANG["computers"][47];
+								echo $LANG['computers'][47];
 								break;
 							case PHONE_TYPE:
-								echo $LANG["computers"][54];
+								echo $LANG['computers'][54];
 								break;
 						}
 						echo "<br>";
@@ -264,7 +264,7 @@ function showConnections($target,$ID,$withtemplate='') {
 								echo "<input type='hidden' name='dohistory' value='0'>";
 							}
 							dropdownConnect($type,COMPUTER_TYPE,"item",$comp->fields["FK_entities"],$withtemplate,$used);
-							echo "<input type='submit' value=\"".$LANG["buttons"][9]."\" class='submit'>";
+							echo "<input type='submit' value=\"".$LANG['buttons'][9]."\" class='submit'>";
 							echo "</form>";
 						}
 					}
@@ -305,18 +305,18 @@ function showComputerDisks($ID,$withtemplate='') {
 
 	if ($result=$DB->query($query)){
 		echo "<table class='tab_cadre_fixe'><tr>";
-		echo "<th colspan='6'>".$LANG["computers"][8]."</th></tr>";
+		echo "<th colspan='6'>".$LANG['computers'][8]."</th></tr>";
 		if ($DB->numrows($result)){
-			//echo "<th colspan='6'>".$LANG["computers"][8]."</th></tr>";
-			echo "<tr><th>".$LANG["common"][16]."</th>";
-			echo "<th>".$LANG["computers"][6]."</th>";
-			echo "<th>".$LANG["computers"][5]."</th>";
-			echo "<th>".$LANG["computers"][4]."</th>";
-			echo "<th>".$LANG["computers"][3]."</th>";
-			echo "<th>".$LANG["computers"][2]."</th>";
+			//echo "<th colspan='6'>".$LANG['computers'][8]."</th></tr>";
+			echo "<tr><th>".$LANG['common'][16]."</th>";
+			echo "<th>".$LANG['computers'][6]."</th>";
+			echo "<th>".$LANG['computers'][5]."</th>";
+			echo "<th>".$LANG['computers'][4]."</th>";
+			echo "<th>".$LANG['computers'][3]."</th>";
+			echo "<th>".$LANG['computers'][2]."</th>";
 			echo "</tr>";
 
-			initNavigateListItems(COMPUTERDISK_TYPE, $LANG["help"][25]." = ".
+			initNavigateListItems(COMPUTERDISK_TYPE, $LANG['help'][25]." = ".
 				(empty($comp->field['name']) ? "($ID)" : $comp->field['name']));
 
 			while ($data=$DB->fetch_assoc($result)){
@@ -329,17 +329,17 @@ function showComputerDisks($ID,$withtemplate='') {
 				echo "<td>".$data['device']."</td>";
 				echo "<td>".$data['mountpoint']."</td>";
 				echo "<td>".$data['fsname']."</td>";
-				echo "<td>".formatNumber($data['totalsize'], false, 0)."&nbsp;".$LANG["common"][82]."</td>";
-				echo "<td>".formatNumber($data['freesize'], false, 0)."&nbsp;".$LANG["common"][82]."</td>";
+				echo "<td>".formatNumber($data['totalsize'], false, 0)."&nbsp;".$LANG['common'][82]."</td>";
+				echo "<td>".formatNumber($data['freesize'], false, 0)."&nbsp;".$LANG['common'][82]."</td>";
 
 				addToNavigateListItems(COMPUTERDISK_TYPE,$data['ID']);
 			}
 			//echo "</table>";
 		} else {
-			echo "<tr><th colspan='6'>".$LANG["search"][15]."</th></tr>";
+			echo "<tr><th colspan='6'>".$LANG['search'][15]."</th></tr>";
 		}
 	if ($canedit &&!(!empty($withtemplate) && $withtemplate == 2)){
-		echo "<tr class='tab_bg_2'><th colspan='6''><a href='computerdisk.form.php?cID=$ID&amp;withtemplate=".$withtemplate."'>".$LANG["computers"][7]."</a></th></tr>";
+		echo "<tr class='tab_bg_2'><th colspan='6''><a href='computerdisk.form.php?cID=$ID&amp;withtemplate=".$withtemplate."'>".$LANG['computers'][7]."</a></th></tr>";
 	}
 	echo "</table>";
 	}

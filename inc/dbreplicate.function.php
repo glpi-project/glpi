@@ -218,13 +218,13 @@ function cron_dbreplicate() {
 		
 		//If admin must be notified when slave is not synchronized with master
 		if ($CFG_GLPI["dbreplicate_notify_desynchronization"] && $diff > $CFG_GLPI["dbreplicate_maxdelay"]) {
-			$msg = $LANG["setup"][807] . " " . timestampToString($diff);
+			$msg = $LANG['setup'][807] . " " . timestampToString($diff);
 			$mmail = new glpi_phpmailer();
 			$mmail->From = $CFG_GLPI["admin_email"];
 			$mmail->AddReplyTo($CFG_GLPI["admin_email"], '');
 			$mmail->FromName = $CFG_GLPI["dbreplicate_email"];
 			$mmail->AddAddress($CFG_GLPI["dbreplicate_email"], "");
-			$mmail->Subject = $LANG["setup"][808];
+			$mmail->Subject = $LANG['setup'][808];
 			$mmail->Body = $msg;
 			$mmail->isHTML(false);
 			if (!$mmail->Send())

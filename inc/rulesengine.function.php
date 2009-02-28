@@ -139,21 +139,21 @@ function getConditionByID($ID){
 	
 	switch ($ID){
 		case PATTERN_IS : 
-			return $LANG["rulesengine"][0];
+			return $LANG['rulesengine'][0];
 		case PATTERN_IS_NOT:
-			return $LANG["rulesengine"][1];
+			return $LANG['rulesengine'][1];
 		case PATTERN_CONTAIN:
-			return $LANG["rulesengine"][2];
+			return $LANG['rulesengine'][2];
 		case PATTERN_NOT_CONTAIN:
-			return $LANG["rulesengine"][3];
+			return $LANG['rulesengine'][3];
 		case PATTERN_BEGIN:
-			return $LANG["rulesengine"][4];
+			return $LANG['rulesengine'][4];
 		case PATTERN_END:
-			return $LANG["rulesengine"][5];
+			return $LANG['rulesengine'][5];
 		case REGEX_MATCH:
-			return $LANG["rulesengine"][26];
+			return $LANG['rulesengine'][26];
 		case REGEX_NOT_MATCH:
-			return $LANG["rulesengine"][27];
+			return $LANG['rulesengine'][27];
 	}
 }
 
@@ -164,14 +164,14 @@ function getConditionByID($ID){
 function dropdownRulesConditions($type,$name,$value=''){
 	global $LANG;
 
-	$elements[PATTERN_IS] = $LANG["rulesengine"][0];
-	$elements[PATTERN_IS_NOT] = $LANG["rulesengine"][1];
-	$elements[PATTERN_CONTAIN] = $LANG["rulesengine"][2];
-	$elements[PATTERN_NOT_CONTAIN] = $LANG["rulesengine"][3];
-	$elements[PATTERN_BEGIN] = $LANG["rulesengine"][4];
-	$elements[PATTERN_END] = $LANG["rulesengine"][5];
-	$elements[REGEX_MATCH] = $LANG["rulesengine"][26];
-	$elements[REGEX_NOT_MATCH] = $LANG["rulesengine"][27];
+	$elements[PATTERN_IS] = $LANG['rulesengine'][0];
+	$elements[PATTERN_IS_NOT] = $LANG['rulesengine'][1];
+	$elements[PATTERN_CONTAIN] = $LANG['rulesengine'][2];
+	$elements[PATTERN_NOT_CONTAIN] = $LANG['rulesengine'][3];
+	$elements[PATTERN_BEGIN] = $LANG['rulesengine'][4];
+	$elements[PATTERN_END] = $LANG['rulesengine'][5];
+	$elements[REGEX_MATCH] = $LANG['rulesengine'][26];
+	$elements[REGEX_NOT_MATCH] = $LANG['rulesengine'][27];
 	
 	return dropdownArrayValues($name,$elements,$value);
 }
@@ -192,22 +192,22 @@ function dropdownRulesActions($sub_type,$name,$value=''){
 	foreach ($actions as $action){
 		switch ($action){
 			case "assign":
-				$elements["assign"] = $LANG["rulesengine"][22];
+				$elements["assign"] = $LANG['rulesengine'][22];
 				break;
 			case "regex_result":
-				$elements["regex_result"] = $LANG["rulesengine"][45];
+				$elements["regex_result"] = $LANG['rulesengine'][45];
 				break;
 			case "append_regex_result":
-				$elements["append_regex_result"] = $LANG["rulesengine"][79];
+				$elements["append_regex_result"] = $LANG['rulesengine'][79];
 				break;
 			case "affectbyip":
-				$elements["affectbyip"] = $LANG["rulesengine"][46];
+				$elements["affectbyip"] = $LANG['rulesengine'][46];
 				break;
 			case "affectbyfqdn":
-				$elements["affectbyfqdn"] = $LANG["rulesengine"][47];
+				$elements["affectbyfqdn"] = $LANG['rulesengine'][47];
 				break;
 			case "affectbymac":
-				$elements["affectbymac"] = $LANG["rulesengine"][49];
+				$elements["affectbymac"] = $LANG['rulesengine'][49];
 				break;
 		}
 	}
@@ -220,17 +220,17 @@ function getActionByID($ID){
 	
 	switch ($ID){
 		case "assign" : 
-			return $LANG["rulesengine"][22];
+			return $LANG['rulesengine'][22];
 		case "regex_result":
-			return $LANG["rulesengine"][45];
+			return $LANG['rulesengine'][45];
 		case "append_regex_result":
-			return $LANG["rulesengine"][79];
+			return $LANG['rulesengine'][79];
 		case "affectbyip":
-			return $LANG["rulesengine"][46];
+			return $LANG['rulesengine'][46];
 		case "affectbyfqdn":
-			return $LANG["rulesengine"][47];
+			return $LANG['rulesengine'][47];
 		case "affectbymac":
-			return $LANG["rulesengine"][49];
+			return $LANG['rulesengine'][49];
 	}
 }
 

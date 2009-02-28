@@ -95,32 +95,32 @@ class Mailgate  extends CommonDBTM {
 
 		echo "<tr><th align='center' colspan='2'>";
 		if (empty($ID)){
-			echo $LANG["mailgate"][1];
+			echo $LANG['mailgate'][1];
 		} else {
-			echo $LANG["mailgate"][0].": ".$this->fields["ID"];
+			echo $LANG['mailgate'][0].": ".$this->fields["ID"];
 		}
 
 		echo "</th></tr>";
 		if (!function_exists('mb_list_encodings')||!function_exists('mb_convert_encoding')){
 			echo "<tr class='tab_bg_1'><td align='center' colspan='2'>";
-			echo $LANG["mailgate"][4];
+			echo $LANG['mailgate'][4];
 			echo "</td></tr>";
 		}
-		echo "<tr class='tab_bg_2'><td>".$LANG["common"][16].":	</td><td>";
+		echo "<tr class='tab_bg_2'><td>".$LANG['common'][16].":	</td><td>";
 		autocompletionTextField("name","glpi_mailgate","name",$this->fields["name"],40);
 		echo "</td></tr>";
 
-		echo "<tr class='tab_bg_2'><td>".$LANG["entity"][0].":	</td><td>";
+		echo "<tr class='tab_bg_2'><td>".$LANG['entity'][0].":	</td><td>";
 		dropdownValue("glpi_entities", "FK_entities",$this->fields["FK_entities"],1,$_SESSION['glpiactiveentities']);
 		echo "</td></tr>";
 
 		showMailServerConfig($this->fields["host"]);
 
-		echo "<tr class='tab_bg_2'><td>".$LANG["login"][6].":	</td><td>";
+		echo "<tr class='tab_bg_2'><td>".$LANG['login'][6].":	</td><td>";
 		autocompletionTextField("login","glpi_mailgate","login",$this->fields["login"],40);
 		echo "</td></tr>";
 
-		echo "<tr class='tab_bg_2'><td>".$LANG["login"][7].":	</td><td>";
+		echo "<tr class='tab_bg_2'><td>".$LANG['login'][7].":	</td><td>";
 		echo "<input type='password' name='password' value='' size='20'>";
 		echo "</td></tr>";
 
@@ -131,22 +131,22 @@ class Mailgate  extends CommonDBTM {
 			if(empty($ID)){
 
 				echo "<td valign='top' colspan='2'>";
-				echo "<div class='center'><input type='submit' name='add' value=\"".$LANG["buttons"][8]."\" class='submit'></div>";
+				echo "<div class='center'><input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'></div>";
 				echo "</td>";
 				echo "</tr>";
 			} else {
 
 				echo "<td valign='top' align='center'>";
 				echo "<input type='hidden' name='ID' value=\"$ID\">\n";
-				echo "<input type='submit' name='update' value=\"".$LANG["buttons"][7]."\" class='submit'>";
+				echo "<input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit'>";
 				echo "</td>";
 				echo "<td valign='top'>\n";
 				echo "<div class='center'>";
-				echo "<input type='submit' name='delete' value=\"".$LANG["buttons"][6]."\" class='submit'>";
+				echo "<input type='submit' name='delete' value=\"".$LANG['buttons'][6]."\" class='submit'>";
 				echo "</div>";
 				echo "</td>";
 				echo "</tr>";
-				echo "<tr class='tab_bg_1'><td colspan='2' align='center'><input type='submit' name='get_mails' value=\"".$LANG["mailgate"][2]."\" class='submit'>";
+				echo "<tr class='tab_bg_1'><td colspan='2' align='center'><input type='submit' name='get_mails' value=\"".$LANG['mailgate'][2]."\" class='submit'>";
 				echo "</td></tr>";
 			}
 
@@ -252,14 +252,14 @@ class MailCollect {
 			$this->close_mailbox();   //Close Mail Box
 
 			if ($display){
-				addMessageAfterRedirect($LANG["mailgate"][3].": ".$this->fetch_emails." ".($error>0?"($error ".$LANG["common"][63].")":""));
+				addMessageAfterRedirect($LANG['mailgate'][3].": ".$this->fetch_emails." ".($error>0?"($error ".$LANG['common'][63].")":""));
 			} else {
 				return "Number of messages available and collected : ".$this->fetch_emails." ".($error>0?"($error error(s))":"");
 			}
 			
 		}else{
 			if ($display){
-				addMessageAfterRedirect($LANG["log"][41]);
+				addMessageAfterRedirect($LANG['log'][41]);
 			} else {
 				return "Could not connect to mailgate server";
 			}
@@ -691,11 +691,11 @@ class MailCollect {
 			$filename=$this->decodeMimeString($filename);
 
 			if ($structure->bytes > $maxsize) {
-				$this->addtobody .= "<br>".$LANG["mailgate"][6]." (" . getSize($structure->bytes) . "): ".$filename;
+				$this->addtobody .= "<br>".$LANG['mailgate'][6]." (" . getSize($structure->bytes) . "): ".$filename;
 				return false;
 			}
 			if (!isValidDoc($filename)){
-				$this->addtobody .= "<br>".$LANG["mailgate"][5]." (" . $this->get_mime_type($structure) . "): ".$filename;
+				$this->addtobody .= "<br>".$LANG['mailgate'][5]." (" . $this->get_mime_type($structure) . "): ".$filename;
 				return false;
 			}
 			if ($message=imap_fetchbody($this->marubox, $mid, $part)) {

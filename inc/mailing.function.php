@@ -43,12 +43,12 @@ function testMail(){
 	$mmail->From=$CFG_GLPI["admin_email"];
 	$mmail->FromName=$CFG_GLPI["admin_email"];
 	$mmail->AddAddress($CFG_GLPI["admin_email"], "GLPI");
-	$mmail->Subject="[GLPI] ".$LANG["mailing"][32];  
-	$mmail->Body=$LANG["mailing"][31]."\n-- \n".$CFG_GLPI["mailing_signature"];
+	$mmail->Subject="[GLPI] ".$LANG['mailing'][32];  
+	$mmail->Body=$LANG['mailing'][31]."\n-- \n".$CFG_GLPI["mailing_signature"];
 
 	if(!$mmail->Send()){
-		addMessageAfterRedirect($LANG["setup"][206]);
-	} else addMessageAfterRedirect($LANG["setup"][205]);
+		addMessageAfterRedirect($LANG['setup'][206]);
+	} else addMessageAfterRedirect($LANG['setup'][205]);
 }
 
 	function showFormMailingType($type, $profiles) {
@@ -68,40 +68,40 @@ function testMail(){
 				}
 				switch ($data["item"]) {
 					case ADMIN_MAILING :
-						$name = $LANG["setup"][237];
+						$name = $LANG['setup'][237];
 						break;
 					case ADMIN_ENTITY_MAILING :
-						$name = $LANG["setup"][237]." ".$LANG["entity"][0];
+						$name = $LANG['setup'][237]." ".$LANG['entity'][0];
 						break;
 					case ASSIGN_MAILING :
-						$name = $LANG["setup"][239];
+						$name = $LANG['setup'][239];
 						break;
 					case AUTHOR_MAILING :
-						$name = $LANG["job"][4];
+						$name = $LANG['job'][4];
 						break;
 					case USER_MAILING :
-						$name = $LANG["common"][34] . " " . $LANG["common"][1];
+						$name = $LANG['common'][34] . " " . $LANG['common'][1];
 						break;
 					case OLD_ASSIGN_MAILING :
-						$name = $LANG["setup"][236];
+						$name = $LANG['setup'][236];
 						break;
 					case TECH_MAILING :
-						$name = $LANG["common"][10];
+						$name = $LANG['common'][10];
 						break;
 					case RECIPIENT_MAILING :
-						$name = $LANG["job"][3];
+						$name = $LANG['job'][3];
 						break;
 					case ASSIGN_ENT_MAILING :
-						$name = $LANG["financial"][26];
+						$name = $LANG['financial'][26];
 						break;
 					case ASSIGN_GROUP_MAILING :
-						$name = $LANG["setup"][248];
+						$name = $LANG['setup'][248];
 						break;
 					case SUPERVISOR_ASSIGN_GROUP_MAILING :
-						$name = $LANG["common"][64]." ".$LANG["setup"][248];
+						$name = $LANG['common'][64]." ".$LANG['setup'][248];
 						break;
 					case SUPERVISOR_AUTHOR_GROUP_MAILING :
-						$name = $LANG["common"][64]." ".$LANG["setup"][249];
+						$name = $LANG['common'][64]." ".$LANG['setup'][249];
 						break;
 					default :
 						$name="&nbsp;";
@@ -118,7 +118,7 @@ function testMail(){
 		$result = $DB->query($query);
 		if ($DB->numrows($result))
 			while ($data = $DB->fetch_assoc($result)) {
-				$options.= "<option value='" . $data["ID"] . "'>" . $LANG["profiles"][22] . " " . $data["prof"] . "</option>\n";
+				$options.= "<option value='" . $data["ID"] . "'>" . $LANG['profiles'][22] . " " . $data["prof"] . "</option>\n";
 				if (isset($profiles[PROFILE_MAILING_TYPE."_".$data["item"]])) {
 					unset($profiles[PROFILE_MAILING_TYPE."_".$data["item"]]);
 				}
@@ -133,7 +133,7 @@ function testMail(){
 		$result = $DB->query($query);
 		if ($DB->numrows($result))
 			while ($data = $DB->fetch_assoc($result)) {
-				$options.= "<option value='" . $data["ID"] . "'>" . $LANG["common"][35] . " " . $data["name"] . "</option>\n";
+				$options.= "<option value='" . $data["ID"] . "'>" . $LANG['common'][35] . " " . $data["name"] . "</option>\n";
 				if (isset($profiles[GROUP_MAILING_TYPE."_".$data["item"]])) {
 					unset($profiles[GROUP_MAILING_TYPE."_".$data["item"]]);
 				}
@@ -152,11 +152,11 @@ function testMail(){
 
 		echo "</td><td class='center'>";
 		if (count($profiles)) {
-			echo "<input type='submit'  class=\"submit\" name='mailing_add_$type' value='" . $LANG["buttons"][8] . " >>'>";
+			echo "<input type='submit'  class=\"submit\" name='mailing_add_$type' value='" . $LANG['buttons'][8] . " >>'>";
 		}
 		echo "<br /><br />";
 		if (!empty($options)){
-			echo "<input type='submit'  class=\"submit\" name='mailing_delete_$type' value='<< " . $LANG["buttons"][6] . "'>";
+			echo "<input type='submit'  class=\"submit\" name='mailing_delete_$type' value='<< " . $LANG['buttons'][6] . "'>";
 		}
 
 		echo "</td><td>";

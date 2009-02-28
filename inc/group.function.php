@@ -47,8 +47,8 @@ function showGroupDevice($ID){
 	global $DB,$CFG_GLPI, $LANG,$LINK_ID_TABLE,$INFOFORM_PAGES;
 
 	$ci=new CommonItem();
-	echo "<div class='center'><table class='tab_cadre'><tr><th>".$LANG["common"][17]."</th>" .
-			"<th>".$LANG["common"][16]."</th><th>".$LANG["entity"][0]."</th></tr>";
+	echo "<div class='center'><table class='tab_cadre'><tr><th>".$LANG['common'][17]."</th>" .
+			"<th>".$LANG['common'][16]."</th><th>".$LANG['entity'][0]."</th></tr>";
 	foreach ($CFG_GLPI["linkuser_types"] as $type){
 		$query="SELECT * 
 			FROM ".$LINK_ID_TABLE[$type]." 
@@ -143,12 +143,12 @@ function showGroupUsers($target,$ID){
 
 			echo "<div class='center'>";
 			echo "<table width='80%' class='tab_glpi'>";
-			echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markCheckboxes('groupuser_form$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$ID&amp;select=all'>".$LANG["buttons"][18]."</a></td>";
+			echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markCheckboxes('groupuser_form$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$ID&amp;select=all'>".$LANG['buttons'][18]."</a></td>";
 	
-			echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkCheckboxes('groupuser_form$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$ID&amp;select=none'>".$LANG["buttons"][19]."</a>";
+			echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkCheckboxes('groupuser_form$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$ID&amp;select=none'>".$LANG['buttons'][19]."</a>";
 			echo "</td><td align='left' width='80%'>";
 			echo "<input type='hidden' name='FK_groups' value='$ID'>";
-			echo "<input type='submit' name='deleteuser' value=\"".$LANG["buttons"][6]."\" class='submit'>";
+			echo "<input type='submit' name='deleteuser' value=\"".$LANG['buttons'][6]."\" class='submit'>";
 			echo "</td>";
 			echo "</table>";
 			echo "</div>";
@@ -163,7 +163,7 @@ function showGroupUsers($target,$ID){
 			if ($nb) {		
 				echo "<div class='center'>";
 				echo "<table  class='tab_cadre_fixe'>";
-				echo "<tr class='tab_bg_1'><th colspan='2'>".$LANG["setup"][603]."</tr><tr><td class='tab_bg_2' align='center'>";
+				echo "<tr class='tab_bg_1'><th colspan='2'>".$LANG['setup'][603]."</tr><tr><td class='tab_bg_2' align='center'>";
 				if ($group->fields["recursive"]) {
 					dropdownUsers("FK_users",0,"all",-1,1,getEntitySons($group->fields["FK_entities"]),0,$used);
 				} else {
@@ -171,7 +171,7 @@ function showGroupUsers($target,$ID){
 				}
 				//dropdownAllUsers("FK_users",0,1,$group->fields["FK_entities"],0,$used);
 				echo "</td><td align='center' class='tab_bg_2'>";
-				echo "<input type='submit' name='adduser' value=\"".$LANG["buttons"][8]."\" class='submit'>";
+				echo "<input type='submit' name='adduser' value=\"".$LANG['buttons'][8]."\" class='submit'>";
 				echo "</td></tr>";
 		
 				echo "</table></div><br>";

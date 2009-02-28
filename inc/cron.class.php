@@ -230,7 +230,7 @@ class Cron {
 					if ($code_de_retour < 0) {
 						@touch($lock, (0 - $code_de_retour));
 					} else {// Log Event 
-//						logEvent("-1", "system", 3, "cron", $tache." (" . $this->timer('tache') . ") ".$LANG["log"][45] );
+//						logEvent("-1", "system", 3, "cron", $tache." (" . $this->timer('tache') . ") ".$LANG['log'][45] );
 						logInFile("cron","$tache task was done (" . $this->timer('tache') . ")\n");
 					}
 				} else {

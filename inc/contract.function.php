@@ -111,22 +111,22 @@ function showCentralContract(){
 
 	echo "<table class='tab_cadrehov' style='text-align:center'>";
 
-	echo "<tr><th colspan='2'><a href=\"".$CFG_GLPI["root_doc"]."/front/contract.php?reset=reset_before\">".$LANG["financial"][1]."</a></th></tr>";
+	echo "<tr><th colspan='2'><a href=\"".$CFG_GLPI["root_doc"]."/front/contract.php?reset=reset_before\">".$LANG['financial'][1]."</a></th></tr>";
 
 	echo "<tr class='tab_bg_2'>";
-	echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/contract.php?reset_before=1&amp;glpisearchcount=2&amp;sort=12&amp;order=DESC&amp;start=0&amp;field[0]=12&amp;field[1]=12&amp;link[1]=AND&amp;contains[0]=%3C0&amp;contains[1]=%3E-30\">".$LANG["financial"][93]."</a> </td>";
+	echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/contract.php?reset_before=1&amp;glpisearchcount=2&amp;sort=12&amp;order=DESC&amp;start=0&amp;field[0]=12&amp;field[1]=12&amp;link[1]=AND&amp;contains[0]=%3C0&amp;contains[1]=%3E-30\">".$LANG['financial'][93]."</a> </td>";
 	echo "<td>$contract0</td></tr>";
 	echo "<tr class='tab_bg_2'>";
-	echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/contract.php?reset_before=1&amp;glpisearchcount=2&amp;contains%5B0%5D=%3E0&amp;field%5B0%5D=12&amp;link%5B1%5D=AND&amp;contains%5B1%5D=%3C7&amp;field%5B1%5D=12&amp;sort=12&amp;deleted=0&amp;start=0\">".$LANG["financial"][94]."</a></td>";
+	echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/contract.php?reset_before=1&amp;glpisearchcount=2&amp;contains%5B0%5D=%3E0&amp;field%5B0%5D=12&amp;link%5B1%5D=AND&amp;contains%5B1%5D=%3C7&amp;field%5B1%5D=12&amp;sort=12&amp;deleted=0&amp;start=0\">".$LANG['financial'][94]."</a></td>";
 	echo "<td>".$contract7."</td></tr>";
 	echo "<tr class='tab_bg_2'>";
-	echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/contract.php?reset_before=1&amp;glpisearchcount=2&amp;contains%5B0%5D=%3E6&amp;field%5B0%5D=12&amp;link%5B1%5D=AND&amp;contains%5B1%5D=%3C30&amp;field%5B1%5D=12&amp;sort=12&amp;deleted=0&amp;start=0\">".$LANG["financial"][95]."</a></td>";
+	echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/contract.php?reset_before=1&amp;glpisearchcount=2&amp;contains%5B0%5D=%3E6&amp;field%5B0%5D=12&amp;link%5B1%5D=AND&amp;contains%5B1%5D=%3C30&amp;field%5B1%5D=12&amp;sort=12&amp;deleted=0&amp;start=0\">".$LANG['financial'][95]."</a></td>";
 	echo "<td>".$contract30."</td></tr>";
 	echo "<tr class='tab_bg_2'>";
-	echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/contract.php?reset_before=1&amp;glpisearchcount=2&amp;contains%5B0%5D=%3E0&amp;field%5B0%5D=13&amp;link%5B1%5D=AND&amp;contains%5B1%5D=%3C7&amp;field%5B1%5D=13&amp;sort=12&amp;deleted=0&amp;start=0\">".$LANG["financial"][96]."</a></td>";
+	echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/contract.php?reset_before=1&amp;glpisearchcount=2&amp;contains%5B0%5D=%3E0&amp;field%5B0%5D=13&amp;link%5B1%5D=AND&amp;contains%5B1%5D=%3C7&amp;field%5B1%5D=13&amp;sort=12&amp;deleted=0&amp;start=0\">".$LANG['financial'][96]."</a></td>";
 	echo "<td>".$contractpre7."</td></tr>";
 	echo "<tr class='tab_bg_2'>";
-	echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/contract.php?reset_before=1&amp;glpisearchcount=2&amp;sort=13&amp;order=DESC&amp;start=0&amp;field[0]=13&amp;field[1]=13&amp;link[1]=AND&amp;contains[0]=%3E6&amp;contains[1]=%3C30\">".$LANG["financial"][97]."</a></td>";
+	echo "<td><a href=\"".$CFG_GLPI["root_doc"]."/front/contract.php?reset_before=1&amp;glpisearchcount=2&amp;sort=13&amp;order=DESC&amp;start=0&amp;field[0]=13&amp;field[1]=13&amp;link[1]=AND&amp;contains[0]=%3E6&amp;contains[1]=%3C30\">".$LANG['financial'][97]."</a></td>";
 	echo "<td>".$contractpre30."</td></tr>";
 
 	echo "</table>";
@@ -165,7 +165,7 @@ function showDeviceContract($instID) {
 	echo "<br><br><div class='center'><table class='tab_cadrehov'>";
 	echo "<tr><th colspan='2'>";
 	printPagerForm();
-	echo "</th><th colspan='".($canedit ? 4 : 3) ."'>".$LANG["document"][19].":</th></tr>";
+	echo "</th><th colspan='".($canedit ? 4 : 3) ."'>".$LANG['document'][19].":</th></tr>";
 	if ($canedit) {
 		echo "</table>";
 		echo "</div>";
@@ -178,11 +178,11 @@ function showDeviceContract($instID) {
 	} else {
 		echo "<tr>";
 	}
-	echo "<th>".$LANG["common"][16]."</th>";
-	echo "<th>".$LANG["entity"][0]."</th>";
-	echo "<th>".$LANG["common"][17]."</th>";
-	echo "<th>".$LANG["common"][19]."</th>";
-	echo "<th>".$LANG["common"][20]."</th></tr>";
+	echo "<th>".$LANG['common'][16]."</th>";
+	echo "<th>".$LANG['entity'][0]."</th>";
+	echo "<th>".$LANG['common'][17]."</th>";
+	echo "<th>".$LANG['common'][19]."</th>";
+	echo "<th>".$LANG['common'][20]."</th></tr>";
 	
 	$ci=new CommonItem;
 	while ($i < $number) {
@@ -210,7 +210,7 @@ function showDeviceContract($instID) {
 				}
 				echo "<td class='center' colspan='2'><a href='"
 					. $CFG_GLPI["root_doc"]."/".$SEARCH_PAGES["$type"] . "?" . rawurlencode("contains[0]") . "=" . rawurlencode('$$$$'.$instID) . "&amp;" . rawurlencode("field[0]") . "=29&amp;sort=80&amp;order=ASC&amp;deleted=0&amp;start=0"
-					. "'>" . $LANG["reports"][57]."</a></td>";
+					. "'>" . $LANG['reports'][57]."</a></td>";
 				echo "<td class='center'>".$ci->getType()."<br>$nb</td>";
 				
 				echo "<td class='center'>-</td><td class='center'>-</td></tr>";				
@@ -248,7 +248,7 @@ function showDeviceContract($instID) {
 		echo "<tr class='tab_bg_1'><td colspan='4' class='right'>";
 		echo "<div class='software-instal'><input type='hidden' name='conID' value='$instID'>";
 		dropdownAllItems("item",0,0,($contract->fields['recursive']?-1:$contract->fields['FK_entities']));
-		echo "</div></td><td class='center'><input type='submit' name='additem' value=\"".$LANG["buttons"][8]."\" class='submit'>";
+		echo "</div></td><td class='center'><input type='submit' name='additem' value=\"".$LANG['buttons'][8]."\" class='submit'>";
 		echo "<input type='hidden' name='ID' value='$instID'>";
 		echo "</td><td>&nbsp;</td>";
 		echo "</tr>";
@@ -256,11 +256,11 @@ function showDeviceContract($instID) {
 		
 		echo "<div class='center'>";
 		echo "<table width='950px' class='tab_glpi'>";
-		echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markCheckboxes('contract_form$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$instID&amp;select=all'>".$LANG["buttons"][18]."</a></td>";
+		echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markCheckboxes('contract_form$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$instID&amp;select=all'>".$LANG['buttons'][18]."</a></td>";
 	
-		echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkCheckboxes('contract_form$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$instID&amp;select=none'>".$LANG["buttons"][19]."</a>";
+		echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkCheckboxes('contract_form$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$instID&amp;select=none'>".$LANG['buttons'][19]."</a>";
 		echo "</td><td align='left' width='80%'>";
-		echo "<input type='submit' name='deleteitem' value=\"".$LANG["buttons"][6]."\" class='submit'>";
+		echo "<input type='submit' name='deleteitem' value=\"".$LANG['buttons'][6]."\" class='submit'>";
 		echo "</td>";
 		echo "</table>";
 		echo "</div>";
@@ -343,12 +343,12 @@ function showEnterpriseContract($instID) {
 
 	echo "<form method='post' action=\"".$CFG_GLPI["root_doc"]."/front/contract.form.php\">";
 	echo "<br><br><div class='center'><table class='tab_cadre_fixe'>";
-	echo "<tr><th colspan='6'>".$LANG["financial"][65].":</th></tr>";
-	echo "<tr><th>".$LANG["financial"][26]."</th>";
-	echo "<th>".$LANG["entity"][0]."</th>";
-	echo "<th>".$LANG["financial"][79]."</th>";
-	echo "<th>".$LANG["help"][35]."</th>";
-	echo "<th>".$LANG["financial"][45]."</th>";
+	echo "<tr><th colspan='6'>".$LANG['financial'][65].":</th></tr>";
+	echo "<tr><th>".$LANG['financial'][26]."</th>";
+	echo "<th>".$LANG['entity'][0]."</th>";
+	echo "<th>".$LANG['financial'][79]."</th>";
+	echo "<th>".$LANG['help'][35]."</th>";
+	echo "<th>".$LANG['financial'][45]."</th>";
 	echo "<th>&nbsp;</th></tr>";
 
 	$used=array();
@@ -374,7 +374,7 @@ function showEnterpriseContract($instID) {
 		echo "<td class='center'>".$website."</td>";
 		echo "<td align='center' class='tab_bg_2'>";
 		if ($canedit)
-			echo "<a href='".$CFG_GLPI["root_doc"]."/front/contract.form.php?deleteenterprise=deleteenterprise&amp;ID=$ID&amp;conID=$instID'><strong>".$LANG["buttons"][6]."</strong></a>";
+			echo "<a href='".$CFG_GLPI["root_doc"]."/front/contract.form.php?deleteenterprise=deleteenterprise&amp;ID=$ID&amp;conID=$instID'><strong>".$LANG['buttons'][6]."</strong></a>";
 		else echo "&nbsp;";
 		echo "</td></tr>";
 		$i++;
@@ -394,7 +394,7 @@ function showEnterpriseContract($instID) {
 				dropdown("glpi_enterprises","entID",1,$contract->fields["FK_entities"],$used);
 			}
 			echo "</div></td><td class='center'>";
-			echo "<input type='submit' name='addenterprise' value=\"".$LANG["buttons"][8]."\" class='submit'>";
+			echo "<input type='submit' name='addenterprise' value=\"".$LANG['buttons'][8]."\" class='submit'>";
 			echo "</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>";
 			echo "</tr>";
 		}
@@ -560,14 +560,14 @@ function showContractAssociated($device_type,$ID,$withtemplate=''){
 
 	if ($withtemplate!=2) echo "<form method='post' action=\"".$CFG_GLPI["root_doc"]."/front/contract.form.php\">";
 	echo "<div class='center'><br><table class='tab_cadre_fixe'>";
-	echo "<tr><th colspan='8'>".$LANG["financial"][66].":</th></tr>";
-	echo "<tr><th>".$LANG["common"][16]."</th>";
-	echo "<th>".$LANG["entity"][0]."</th>";
-	echo "<th>".$LANG["financial"][4]."</th>";
-	echo "<th>".$LANG["financial"][6]."</th>";
-	echo "<th>".$LANG["financial"][26]."</th>";
-	echo "<th>".$LANG["search"][8]."</th>";	
-	echo "<th>".$LANG["financial"][8]."</th>";	
+	echo "<tr><th colspan='8'>".$LANG['financial'][66].":</th></tr>";
+	echo "<tr><th>".$LANG['common'][16]."</th>";
+	echo "<th>".$LANG['entity'][0]."</th>";
+	echo "<th>".$LANG['financial'][4]."</th>";
+	echo "<th>".$LANG['financial'][6]."</th>";
+	echo "<th>".$LANG['financial'][26]."</th>";
+	echo "<th>".$LANG['search'][8]."</th>";	
+	echo "<th>".$LANG['financial'][8]."</th>";	
 	if ($withtemplate!=2)echo "<th>&nbsp;</th>";
 	echo "</tr>";
 
@@ -592,7 +592,7 @@ function showContractAssociated($device_type,$ID,$withtemplate=''){
 		echo "<td class='center'>".getDropdownName("glpi_dropdown_contract_type",$con->fields["contract_type"])."</td>";
 		echo "<td class='center'>".getContractEnterprises($cID)."</td>";	
 		echo "<td class='center'>".convDate($con->fields["begin_date"])."</td>";
-		echo "<td class='center'>".$con->fields["duration"]." ".$LANG["financial"][57];
+		echo "<td class='center'>".$con->fields["duration"]." ".$LANG['financial'][57];
 		if ($con->fields["begin_date"]!=''&&!empty($con->fields["begin_date"])) {
 			echo " -> ".getWarrantyExpir($con->fields["begin_date"],$con->fields["duration"]);
 		}
@@ -601,7 +601,7 @@ function showContractAssociated($device_type,$ID,$withtemplate=''){
 		if ($withtemplate!=2) {
 			echo "<td align='center' class='tab_bg_2'>";
 			if ($canedit) {
-				echo "<a href='".$CFG_GLPI["root_doc"]."/front/contract.form.php?deleteitem=deleteitem&amp;ID=$assocID&amp;conID=$cID'><strong>".$LANG["buttons"][6]."</strong></a>";
+				echo "<a href='".$CFG_GLPI["root_doc"]."/front/contract.form.php?deleteitem=deleteitem&amp;ID=$assocID&amp;conID=$cID'><strong>".$LANG['buttons'][6]."</strong></a>";
 			} else {
 				echo "&nbsp;";
 			}
@@ -623,7 +623,7 @@ function showContractAssociated($device_type,$ID,$withtemplate=''){
 			echo "<div class='software-instal'><input type='hidden' name='item' value='$ID'><input type='hidden' name='type' value='$device_type'>";
 			dropdownContracts("conID",$ci->obj->fields["FK_entities"],$contracts);
 			echo "</div></td><td class='center'>";
-			echo "<input type='submit' name='additem' value=\"".$LANG["buttons"][8]."\" class='submit'>";
+			echo "<input type='submit' name='additem' value=\"".$LANG['buttons'][8]."\" class='submit'>";
 			echo "</td>";
 
 			echo "<td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>";
@@ -665,14 +665,14 @@ function showContractAssociatedEnterprise($ID){
 
 	echo "<form method='post' action=\"".$CFG_GLPI["root_doc"]."/front/enterprise.form.php\">";
 	echo "<br><br><div class='center'><table class='tab_cadre_fixe'>";
-	echo "<tr><th colspan='7'>".$LANG["financial"][66].":</th></tr>";
-	echo "<tr><th>".$LANG["common"][16]."</th>";
-	echo "<th>".$LANG["entity"][0]."</th>";
-	echo "<th>".$LANG["financial"][4]."</th>";
-	echo "<th>".$LANG["financial"][6]."</th>";
-	//echo "<th>".$LANG["financial"][26]."</th>";
-	echo "<th>".$LANG["search"][8]."</th>";	
-	echo "<th>".$LANG["financial"][8]."</th>";	
+	echo "<tr><th colspan='7'>".$LANG['financial'][66].":</th></tr>";
+	echo "<tr><th>".$LANG['common'][16]."</th>";
+	echo "<th>".$LANG['entity'][0]."</th>";
+	echo "<th>".$LANG['financial'][4]."</th>";
+	echo "<th>".$LANG['financial'][6]."</th>";
+	//echo "<th>".$LANG['financial'][26]."</th>";
+	echo "<th>".$LANG['search'][8]."</th>";	
+	echo "<th>".$LANG['financial'][8]."</th>";	
 	echo "<th>&nbsp;</th>";
 	echo "</tr>";
 
@@ -690,7 +690,7 @@ function showContractAssociatedEnterprise($ID){
 		echo "<td class='center'>".getDropdownName("glpi_dropdown_contract_type",$data["contract_type"])."</td>";
 		//echo "<td class='center'>".getContractEnterprises($cID)."</td>";	
 		echo "<td class='center'>".convDate($data["begin_date"])."</td>";
-		echo "<td class='center'>".$data["duration"]." ".$LANG["financial"][57];
+		echo "<td class='center'>".$data["duration"]." ".$LANG['financial'][57];
 		if ($data["begin_date"]!=''&&!empty($data["begin_date"])) {
 			echo " -> ".getWarrantyExpir($data["begin_date"],$data["duration"]);
 		}
@@ -698,7 +698,7 @@ function showContractAssociatedEnterprise($ID){
 
 		echo "<td align='center' class='tab_bg_2'>";
 		if ($canedit) 
-			echo "<a href='".$CFG_GLPI["root_doc"]."/front/enterprise.form.php?deletecontract=deletecontract&amp;ID=$assocID&amp;entID=$ID'><strong>".$LANG["buttons"][6]."</strong></a>";
+			echo "<a href='".$CFG_GLPI["root_doc"]."/front/enterprise.form.php?deletecontract=deletecontract&amp;ID=$assocID&amp;entID=$ID'><strong>".$LANG['buttons'][6]."</strong></a>";
 		else echo "&nbsp;";
 		echo "</td></tr>";
 		$i++;
@@ -719,7 +719,7 @@ function showContractAssociatedEnterprise($ID){
 				dropdownContracts("conID",$ent->fields['FK_entities'],$used);
 			}
 			echo "</div></td><td class='center'>";
-			echo "<input type='submit' name='addcontract' value=\"".$LANG["buttons"][8]."\" class='submit'>";
+			echo "<input type='submit' name='addcontract' value=\"".$LANG['buttons'][8]."\" class='submit'>";
 			echo "</td>";
 
 			echo "<td>&nbsp;</td></tr>";
@@ -771,7 +771,7 @@ function cron_contract($display=false){
 				$items_notice[$data["FK_entities"]]=array();
 			}
 			// define message alert
-			$message[$data["FK_entities"]].=$LANG["mailing"][37]." ".$data["name"].": ".getWarrantyExpir($data["begin_date"],$data["duration"],$data["notice"])."<br>\n";
+			$message[$data["FK_entities"]].=$LANG['mailing'][37]." ".$data["name"].": ".getWarrantyExpir($data["begin_date"],$data["duration"],$data["notice"])."<br>\n";
 			$items_notice[$data["FK_entities"]][]=$data["ID"];
 		}
 	}
@@ -798,7 +798,7 @@ function cron_contract($display=false){
 			}
 
 			// define message alert
-			$message[$data["FK_entities"]].=$LANG["mailing"][38]." ".$data["name"].": ".getWarrantyExpir($data["begin_date"],$data["duration"])."<br>\n";
+			$message[$data["FK_entities"]].=$LANG['mailing'][38]." ".$data["name"].": ".getWarrantyExpir($data["begin_date"],$data["duration"])."<br>\n";
 			$items_end[$data["FK_entities"]][]=$data["ID"];
 		}
 

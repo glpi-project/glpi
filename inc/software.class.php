@@ -55,10 +55,10 @@ class Software extends CommonDBTM {
 
 	function defineTabs($ID,$withtemplate) {
 		global $LANG, $CFG_GLPI;
-		$ong[1] = $LANG["title"][26];
+		$ong[1] = $LANG['title'][26];
 		if ($ID > 0 ){
 			if (empty ($withtemplate)) {
-				$ong[2] = $LANG["software"][19];
+				$ong[2] = $LANG['software'][19];
 			}
 			if (haveRight("contract","r") || haveRight("infocom","r")){
 				$ong[4] = $LANG["Menu"][26];
@@ -69,22 +69,22 @@ class Software extends CommonDBTM {
 	
 			if (empty ($withtemplate)) {
 				if (haveRight("show_all_ticket","1")){
-					$ong[6] = $LANG["title"][28];
+					$ong[6] = $LANG['title'][28];
 				}
 				if (haveRight("link","r")){
-					$ong[7] = $LANG["title"][34];
+					$ong[7] = $LANG['title'][34];
 				}
 				if (haveRight("notes","r")){
-					$ong[10] = $LANG["title"][37];
+					$ong[10] = $LANG['title'][37];
 				}
 				if (haveRight("reservation_central", "r")){
 					$ong[11] = $LANG["Menu"][17];
 				}
 			
-				$ong[12] = $LANG["title"][38];
+				$ong[12] = $LANG['title'][38];
 				
 				if ($this->isRecursive()) {
-					$ong[21] = $LANG["software"][47];
+					$ong[21] = $LANG['software'][47];
 				}
 			}
 		}
@@ -257,15 +257,15 @@ class Software extends CommonDBTM {
 		$this->showTabs($ID, $withtemplate, $_SESSION['glpi_tab']);
 		if (!empty ($withtemplate) && $withtemplate == 2) {
 			$template = "newcomp";
-			$datestring = $LANG["computers"][14] . ": ";
+			$datestring = $LANG['computers'][14] . ": ";
 			$date = convDateTime($_SESSION["glpi_currenttime"]);
 		}
 		elseif (!empty ($withtemplate) && $withtemplate == 1) {
 			$template = "newtemplate";
-			$datestring = $LANG["computers"][14] . ": ";
+			$datestring = $LANG['computers'][14] . ": ";
 			$date = convDateTime($_SESSION["glpi_currenttime"]);
 		} else {
-			$datestring = $LANG["common"][26] . " : ";
+			$datestring = $LANG['common'][26] . " : ";
 			$date = convDateTime($this->fields["date_mod"]);
 			$template = false;
 		}
@@ -286,63 +286,63 @@ class Software extends CommonDBTM {
 		$this->showFormHeader($ID, $withtemplate, 2);
 
 		if (!$use_cache||!($CFG_GLPI["cache"]->start($ID . "_" . $_SESSION['glpilanguage'], "GLPI_" . $this->type))) {
-			echo "<tr class='tab_bg_1'><td>" . $LANG["common"][16] . ":		</td>";
+			echo "<tr class='tab_bg_1'><td>" . $LANG['common'][16] . ":		</td>";
 			echo "<td>";
 			autocompletionTextField("name", "glpi_software", "name", $this->fields["name"], 40,$this->fields["FK_entities"]);
 			echo "</td>";
 			
 			
-			echo "<td>" . $LANG["common"][36] . ":		</td><td>";
+			echo "<td>" . $LANG['common'][36] . ":		</td><td>";
 			dropdownValue("glpi_dropdown_software_category", "category", $this->fields["category"]);
 			echo "</td>";
 
-			echo "<tr class='tab_bg_1'><td>" . $LANG["software"][3] . ": 	</td><td>";
+			echo "<tr class='tab_bg_1'><td>" . $LANG['software'][3] . ": 	</td><td>";
 			dropdownValue("glpi_dropdown_os", "platform", $this->fields["platform"]);
 			echo "</td>";
 
-			echo "<td>" . $LANG["common"][5] . ": 	</td><td>";
+			echo "<td>" . $LANG['common'][5] . ": 	</td><td>";
 			dropdownValue("glpi_dropdown_manufacturer", "FK_glpi_enterprise", $this->fields["FK_glpi_enterprise"]);
 			echo "</td></tr>";
 
 			echo "<tr class='tab_bg_1'>";
-			echo "<td >" . $LANG["common"][34] . ": 	</td>";
+			echo "<td >" . $LANG['common'][34] . ": 	</td>";
 			echo "<td >";
 			dropdownAllUsers("FK_users", $this->fields["FK_users"], 1, $this->fields["FK_entities"]);
 			echo "</td>";
 
-			echo "<td>" . $LANG["common"][35] . ":</td><td>";
+			echo "<td>" . $LANG['common'][35] . ":</td><td>";
 			dropdownValue("glpi_groups", "FK_groups", $this->fields["FK_groups"], 1, $this->fields["FK_entities"]);
 			echo "</td></tr>";
 
-			echo "<tr class='tab_bg_1'><td>" . $LANG["common"][10] . ": 	</td><td>";
+			echo "<tr class='tab_bg_1'><td>" . $LANG['common'][10] . ": 	</td><td>";
 			dropdownUsersID("tech_num", $this->fields["tech_num"], "interface", 1, $this->fields["FK_entities"]);
 			echo "</td>";
 
-			echo "<td>" . $LANG["common"][15] . ": 	</td><td>";
+			echo "<td>" . $LANG['common'][15] . ": 	</td><td>";
 			dropdownValue("glpi_dropdown_locations", "location", $this->fields["location"], 1, $this->fields["FK_entities"]);
 			echo "</td></tr>";
 
 			// UPDATE
-			echo "<tr class='tab_bg_1'><td>" . $LANG["software"][29] . ":</td><td colspan='3'>";
+			echo "<tr class='tab_bg_1'><td>" . $LANG['software'][29] . ":</td><td colspan='3'>";
 			dropdownYesNo("is_update",$this->fields['is_update']);
-			echo "&nbsp;" . $LANG["pager"][2] . "&nbsp;";
+			echo "&nbsp;" . $LANG['pager'][2] . "&nbsp;";
 			dropdownValue("glpi_software", "update_software", $this->fields["update_software"]);
 			echo "</td>";
 
-			/*echo "<td>" . $LANG["state"][0] . ":</td><td>";
+			/*echo "<td>" . $LANG['state'][0] . ":</td><td>";
 			dropdownValue("glpi_dropdown_state", "state", $this->fields["state"]);
 			echo "</td></tr>";*/
 
-			echo "<tr class='tab_bg_1'><td>" . $LANG["software"][46] . ":</td><td>";
+			echo "<tr class='tab_bg_1'><td>" . $LANG['software'][46] . ":</td><td>";
 			dropdownYesNo('helpdesk_visible',$this->fields['helpdesk_visible']);
 			echo "</td>";
 			echo "<td>$datestring</td><td>$date";
 			if (!$template && !empty ($this->fields['tplname']))
-				echo "&nbsp;&nbsp;&nbsp;(" . $LANG["common"][13] . ": " . $this->fields['tplname'] . ")";
+				echo "&nbsp;&nbsp;&nbsp;(" . $LANG['common'][13] . ": " . $this->fields['tplname'] . ")";
 			echo "</td></tr>";
 
 			echo "<tr class='tab_bg_1'><td valign='top'>";
-			echo $LANG["common"][25] . ":	</td>";
+			echo $LANG['common'][25] . ":	</td>";
 			echo "<td align='center' colspan='3'><textarea cols='50' rows='4' name='comments' >" . $this->fields["comments"] . "</textarea>";
 			echo "</td></tr>";
 			if ($use_cache){
@@ -358,12 +358,12 @@ class Software extends CommonDBTM {
 				if (empty ($ID) || $withtemplate == 2) {
 					echo "<td class='tab_bg_2' align='center' colspan='4'>\n";
 					echo "<input type='hidden' name='ID' value=$ID>";
-					echo "<input type='submit' name='add' value=\"" . $LANG["buttons"][8] . "\" class='submit'>";
+					echo "<input type='submit' name='add' value=\"" . $LANG['buttons'][8] . "\" class='submit'>";
 					echo "</td>\n";
 				} else {
 					echo "<td class='tab_bg_2' align='center' colspan='4'>\n";
 					echo "<input type='hidden' name='ID' value=$ID>";
-					echo "<input type='submit' name='update' value=\"" . $LANG["buttons"][7] . "\" class='submit'>";
+					echo "<input type='submit' name='update' value=\"" . $LANG['buttons'][7] . "\" class='submit'>";
 					echo "</td>\n";
 				}
 			} else {
@@ -371,15 +371,15 @@ class Software extends CommonDBTM {
 				echo "<td class='tab_bg_2'>&nbsp;</td>";
 				echo "<td class='tab_bg_2' valign='top'>";
 				echo "<input type='hidden' name='ID' value=\"$ID\">\n";
-				echo "<div class='center'><input type='submit' name='update' value=\"" . $LANG["buttons"][7] . "\" class='submit'></div>";
+				echo "<div class='center'><input type='submit' name='update' value=\"" . $LANG['buttons'][7] . "\" class='submit'></div>";
 				echo "</td>";
 				echo "<td class='tab_bg_2' valign='top' colspan='2'>\n";
 				echo "<div class='center'>";
 				if (!$this->fields["deleted"])
-					echo "<input type='submit' name='delete' value=\"" . $LANG["buttons"][6] . "\" class='submit'>";
+					echo "<input type='submit' name='delete' value=\"" . $LANG['buttons'][6] . "\" class='submit'>";
 				else {
-					echo "<input type='submit' name='restore' value=\"" . $LANG["buttons"][21] . "\" class='submit'>";
-					echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='submit' name='purge' value=\"" . $LANG["buttons"][22] . "\" class='submit'>";
+					echo "<input type='submit' name='restore' value=\"" . $LANG['buttons'][21] . "\" class='submit'>";
+					echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='submit' name='purge' value=\"" . $LANG['buttons'][22] . "\" class='submit'>";
 				}
 				echo "</div>";
 				echo "</td>";
@@ -468,11 +468,11 @@ class SoftwareVersion extends CommonDBTM {
 	function defineTabs($ID,$withtemplate) {
 		global $LANG, $CFG_GLPI;
 
-		$ong[1] = $LANG["title"][26];
+		$ong[1] = $LANG['title'][26];
 		
 		if ($ID) {
-			$ong[2] = $LANG["software"][19];
-			$ong[12] = $LANG["title"][38];
+			$ong[2] = $LANG['software'][19];
+			$ong[12] = $LANG['title'][38];
 		}
 
 		return $ong;
@@ -509,32 +509,32 @@ class SoftwareVersion extends CommonDBTM {
 
 		echo "<div class='center' id='tabsbody'><table class='tab_cadre_fixe'>";
 		if ($ID>0){
-			echo "<tr><th colspan='2'>".$LANG["common"][2]." $ID";
+			echo "<tr><th colspan='2'>".$LANG['common'][2]." $ID";
 			$sID=$this->fields["sID"];
 		} else {
-			echo "<tr><th colspan='2'>".$LANG["software"][7];
+			echo "<tr><th colspan='2'>".$LANG['software'][7];
 			echo "<input type='hidden' name='sID' value='$sID'>";
 		}
 		echo "</th></tr>";
 
-		echo "<tr class='tab_bg_1'><td>".$LANG["help"][31].":		</td>";
+		echo "<tr class='tab_bg_1'><td>".$LANG['help'][31].":		</td>";
 		echo "<td>";
 		echo "<a href='software.form.php?ID=".$sID."'>".getDropdownName("glpi_software",$sID)."</a>";
 		echo "</td></tr>";
 	
-		echo "<tr class='tab_bg_1'><td>".$LANG["common"][16].":		</td>";
+		echo "<tr class='tab_bg_1'><td>".$LANG['common'][16].":		</td>";
 		echo "<td>";
 		autocompletionTextField("name","glpi_softwareversions","name",$this->fields["name"],80);
 		echo "</td></tr>";
 	
-		echo "<tr class='tab_bg_1'><td>" . $LANG["state"][0] . ":</td><td>";
+		echo "<tr class='tab_bg_1'><td>" . $LANG['state'][0] . ":</td><td>";
 		dropdownValue("glpi_dropdown_state", "state", $this->fields["state"]);
 		echo "</td></tr>";
 
 		echo "<tr  class='tab_bg_1'><td valign='top'>";
 
 		// table commentaires
-		echo $LANG["common"][25].":	</td>";
+		echo $LANG['common'][25].":	</td>";
 		echo "<td class='tab_bg_1'>";
 		echo "<textarea cols='70' rows='4' name='comments' >".$this->fields["comments"]."</textarea>";
 
@@ -549,16 +549,16 @@ class SoftwareVersion extends CommonDBTM {
 				if (countInstallationsForVersion($ID)>0){
 					echo "<td  colspan='2'>";
 					echo "<input type='hidden' name='ID' value=\"$ID\">\n";
-					echo "<div class='center'><input type='submit' name='update' value=\"".$LANG["buttons"][7]."\" class='submit'></div>";
+					echo "<div class='center'><input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit'></div>";
 					echo "</td>\n\n";
 				} else {
 					echo "<td>";
 					echo "<input type='hidden' name='ID' value=\"$ID\">\n";
-					echo "<div class='center'><input type='submit' name='update' value=\"".$LANG["buttons"][7]."\" class='submit'></div>";
+					echo "<div class='center'><input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit'></div>";
 					echo "</td>\n\n";
 					echo "<td>";
 					echo "<input type='hidden' name='ID' value=\"$ID\">\n";
-					echo "<div class='center'><input type='submit' name='delete' value=\"".$LANG["buttons"][6]."\" class='submit'></div>";
+					echo "<div class='center'><input type='submit' name='delete' value=\"".$LANG['buttons'][6]."\" class='submit'></div>";
 					echo "</td>\n\n";
 	
 				}
@@ -567,7 +567,7 @@ class SoftwareVersion extends CommonDBTM {
 			} else {
 	
 				echo "<td colspan='2'>";
-				echo "<div class='center'><input type='submit' name='add' value=\"".$LANG["buttons"][8]."\" class='submit'></div>";
+				echo "<div class='center'><input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'></div>";
 				echo "</td></tr>";
 	
 			}
@@ -692,14 +692,14 @@ class SoftwareLicense extends CommonDBTM {
 	function defineTabs($ID,$withtemplate) {
 		global $LANG, $CFG_GLPI;
 
-		$ong[1] = $LANG["title"][26];
+		$ong[1] = $LANG['title'][26];
 
 		if ($ID){
 			if (haveRight("infocom","r")) {
 				$ong[4] = $LANG["Menu"][26];
 			}
 
-			$ong[12] = $LANG["title"][38];
+			$ong[12] = $LANG['title'][38];
 		}
 
 		return $ong;
@@ -748,70 +748,70 @@ class SoftwareLicense extends CommonDBTM {
 			echo "<input type='hidden' name='sID' value='$sID'>";
 		}
 
-		echo "<tr class='tab_bg_1'><td>".$LANG["help"][31].":		</td>";
+		echo "<tr class='tab_bg_1'><td>".$LANG['help'][31].":		</td>";
 		echo "<td>";
 		echo "<a href='software.form.php?ID=".$sID."'>".getDropdownName("glpi_software",$sID)."</a>";
 		echo "</td></tr>";
 
-		echo "<tr class='tab_bg_1'><td>".$LANG["common"][16].":		</td>";
+		echo "<tr class='tab_bg_1'><td>".$LANG['common'][16].":		</td>";
 		echo "<td>";
 		autocompletionTextField("name","glpi_softwarelicenses","name",$this->fields["name"],80);
 		echo "</td></tr>";
 
-		echo "<tr class='tab_bg_1'><td>".$LANG["common"][19].":		</td>";
+		echo "<tr class='tab_bg_1'><td>".$LANG['common'][19].":		</td>";
 		echo "<td>";
 		autocompletionTextField("serial","glpi_softwarelicenses","serial",$this->fields["serial"],80);
 		echo "</td></tr>";
 
-		echo "<tr class='tab_bg_1'><td>".$LANG["common"][20].":		</td>";
+		echo "<tr class='tab_bg_1'><td>".$LANG['common'][20].":		</td>";
 		echo "<td>";
 		autocompletionTextField("otherserial","glpi_softwarelicenses","otherserial",$this->fields["otherserial"],80);
 		echo "</td></tr>";
 
-		echo "<tr class='tab_bg_1'><td>".$LANG["tracking"][29].":		</td>";
+		echo "<tr class='tab_bg_1'><td>".$LANG['tracking'][29].":		</td>";
 		echo "<td>";
 		if ($this->fields["FK_computers"]>0) {
-			echo "1  (".$LANG["software"][50].")";		
+			echo "1  (".$LANG['software'][50].")";		
 		} else {
-			dropdownInteger("number",$this->fields["number"],1,1000,1,array(-1=>$LANG["software"][4]));			
+			dropdownInteger("number",$this->fields["number"],1,1000,1,array(-1=>$LANG['software'][4]));			
 		}
 		echo "</td></tr>";
 
-		echo "<tr class='tab_bg_1'><td>".$LANG["common"][17].":		</td>";
+		echo "<tr class='tab_bg_1'><td>".$LANG['common'][17].":		</td>";
 		echo "<td>";
 		dropdownValue("glpi_dropdown_licensetypes", "type", $this->fields["type"]);
 		echo "</td></tr>";
 
 
 
-		echo "<tr class='tab_bg_1'><td>".$LANG["software"][1].":		</td>";
+		echo "<tr class='tab_bg_1'><td>".$LANG['software'][1].":		</td>";
 		echo "<td>";
 		dropdownSoftwareVersions("buy_version",$this->fields["sID"],$this->fields["buy_version"]);
 		echo "</td></tr>";
 
-		echo "<tr class='tab_bg_1'><td>".$LANG["software"][2].":		</td>";
+		echo "<tr class='tab_bg_1'><td>".$LANG['software'][2].":		</td>";
 		echo "<td>";
 		dropdownSoftwareVersions("use_version",$this->fields["sID"],$this->fields["use_version"]);
 		echo "</td></tr>";
 
-		echo "<tr class='tab_bg_1'><td>".$LANG["software"][32].":		</td>";
+		echo "<tr class='tab_bg_1'><td>".$LANG['software'][32].":		</td>";
 		echo "<td>";
 		showDateFormItem('expire',$this->fields["expire"]);
 		echo "</td></tr>";
 
-		echo "<tr class='tab_bg_1'><td>".$LANG["software"][50].":		</td>";
+		echo "<tr class='tab_bg_1'><td>".$LANG['software'][50].":		</td>";
 		echo "<td>";
 		if ($this->fields["number"]==1) {
 			dropdownValue('glpi_computers','FK_computers',$this->fields["FK_computers"],1,$this->fields['FK_entities']);
 		} else {
-			echo $LANG["software"][51];
+			echo $LANG['software'][51];
 		}
 		echo "</td></tr>";
 	
 		echo "<tr  class='tab_bg_1'><td valign='top'>";
 
 		// table commentaires
-		echo $LANG["common"][25].":	</td>";
+		echo $LANG['common'][25].":	</td>";
 		echo "<td class='tab_bg_1'>";
 		echo "<textarea cols='70' rows='4' name='comments' >".$this->fields["comments"]."</textarea>";
 
@@ -824,16 +824,16 @@ class SoftwareLicense extends CommonDBTM {
 
 			echo "<td>";
 			echo "<input type='hidden' name='ID' value=\"$ID\">\n";
-			echo "<div class='center'><input type='submit' name='update' value=\"".$LANG["buttons"][7]."\" class='submit'></div>";
+			echo "<div class='center'><input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit'></div>";
 			echo "</td>\n\n";
 			echo "<td>";
 			echo "<input type='hidden' name='ID' value=\"$ID\">\n";
-			echo "<div class='center'><input type='submit' name='delete' value=\"".$LANG["buttons"][6]."\" class='submit'></div>";
+			echo "<div class='center'><input type='submit' name='delete' value=\"".$LANG['buttons'][6]."\" class='submit'></div>";
 			echo "</td>\n\n";
 		} else {
 
 			echo "<td colspan='2'>";
-			echo "<div class='center'><input type='submit' name='add' value=\"".$LANG["buttons"][8]."\" class='submit'></div>";
+			echo "<div class='center'><input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'></div>";
 			echo "</td></tr>";
 
 		}

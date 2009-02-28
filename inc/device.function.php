@@ -138,18 +138,18 @@ function getDictDeviceLabel($device_num=-1) {
 
 	global $LANG;
 	$dp=array();
-	$dp[MOBOARD_DEVICE]=$LANG["devices"][5];	
-	$dp[PROCESSOR_DEVICE]=$LANG["devices"][4];
-	$dp[NETWORK_DEVICE]=$LANG["devices"][3];
-	$dp[RAM_DEVICE]=$LANG["devices"][6];	
-	$dp[HDD_DEVICE]=$LANG["devices"][1];	
-	$dp[DRIVE_DEVICE]=$LANG["devices"][19];		
-	$dp[CONTROL_DEVICE]=$LANG["devices"][20];		
-	$dp[GFX_DEVICE]=$LANG["devices"][2];		
-	$dp[SND_DEVICE]=$LANG["devices"][7];		
-	$dp[PCI_DEVICE]=$LANG["devices"][21];		
-	$dp[CASE_DEVICE]=$LANG["devices"][22];		
-	$dp[POWER_DEVICE]=$LANG["devices"][23];
+	$dp[MOBOARD_DEVICE]=$LANG['devices'][5];	
+	$dp[PROCESSOR_DEVICE]=$LANG['devices'][4];
+	$dp[NETWORK_DEVICE]=$LANG['devices'][3];
+	$dp[RAM_DEVICE]=$LANG['devices'][6];	
+	$dp[HDD_DEVICE]=$LANG['devices'][1];	
+	$dp[DRIVE_DEVICE]=$LANG['devices'][19];		
+	$dp[CONTROL_DEVICE]=$LANG['devices'][20];		
+	$dp[GFX_DEVICE]=$LANG['devices'][2];		
+	$dp[SND_DEVICE]=$LANG['devices'][7];		
+	$dp[PCI_DEVICE]=$LANG['devices'][21];		
+	$dp[CASE_DEVICE]=$LANG['devices'][22];		
+	$dp[POWER_DEVICE]=$LANG['devices'][23];
 	if ($device_num==-1)
 		return $dp;
 	else return $dp[$device_num];
@@ -176,88 +176,88 @@ function printDeviceComputer($device,$quantity,$specif,$compID,$compDevID,$witht
 	$specificity_label = getDeviceSpecifityLabel($device->devtype);
 	switch($device->devtype) {
 		case HDD_DEVICE :
-			$type=$LANG["devices"][1];
+			$type=$LANG['devices'][1];
 			$name=$device->fields["designation"];
 			if (!empty($device->fields["rpm"]))	$entry[$LANG["device_hdd"][0]]=$device->fields["rpm"];
-			if ($device->fields["interface"])	$entry[$LANG["common"][65]]=getDropdownName("glpi_dropdown_interface",$device->fields["interface"]);
+			if ($device->fields["interface"])	$entry[$LANG['common'][65]]=getDropdownName("glpi_dropdown_interface",$device->fields["interface"]);
 			if (!empty($device->fields["cache"])) $entry[$LANG["device_hdd"][1]]=$device->fields["cache"];
 
 			$specificity_size = 10;
 			break;
 		case GFX_DEVICE :
-			$type=$LANG["devices"][2];
+			$type=$LANG['devices'][2];
 			$name=$device->fields["designation"];
 //			if (!empty($device->fields["ram"])) $entry[$LANG["device_gfxcard"][0]]=$device->fields["ram"];
-//			if (!empty($device->fields["interface"])) 		$entry[$LANG["common"][65]]=getDropdownName("glpi_dropdown_interface",$device->fields["interface"]);
+//			if (!empty($device->fields["interface"])) 		$entry[$LANG['common'][65]]=getDropdownName("glpi_dropdown_interface",$device->fields["interface"]);
 
-			$entry[$LANG["common"][65]]=getDropdownName("glpi_dropdown_interface",$device->fields["FK_interface"]);
+			$entry[$LANG['common'][65]]=getDropdownName("glpi_dropdown_interface",$device->fields["FK_interface"]);
 			$specificity_size = 10;
 			break;
 		case NETWORK_DEVICE :
-			$type=$LANG["devices"][3];
+			$type=$LANG['devices'][3];
 			$name=$device->fields["designation"];
 			if (!empty($device->fields["bandwidth"])) $entry[$LANG["device_iface"][0]]=$device->fields["bandwidth"];
 
 			$specificity_size = 18;
 			break;
 		case MOBOARD_DEVICE :
-			$type=$LANG["devices"][5];
+			$type=$LANG['devices'][5];
 			$name=$device->fields["designation"];
 			if (!empty($device->fields["chipset"])) $entry[$LANG["device_moboard"][0]]=$device->fields["chipset"];
 
 			$specificity_size = 10;
 			break;
 		case PROCESSOR_DEVICE :
-			$type=$LANG["devices"][4];
+			$type=$LANG['devices'][4];
 			$name=$device->fields["designation"];
 			if (!empty($device->fields["frequence"])) $entry[$LANG["device_ram"][1]]=$device->fields["frequence"];
 
 			$specificity_size = 10;
 			break;
 		case RAM_DEVICE :
-			$type=$LANG["devices"][6];
+			$type=$LANG['devices'][6];
 			$name=$device->fields["designation"];
-			if (!empty($device->fields["type"])) $entry[$LANG["common"][17]]=getDropdownName("glpi_dropdown_ram_type",$device->fields["type"]);
+			if (!empty($device->fields["type"])) $entry[$LANG['common'][17]]=getDropdownName("glpi_dropdown_ram_type",$device->fields["type"]);
 			if (!empty($device->fields["frequence"])) $entry[$LANG["device_ram"][1]]=$device->fields["frequence"];
 
 			$specificity_size = 10;
 			break;
 		case SND_DEVICE :
 
-			$type=$LANG["devices"][7];
+			$type=$LANG['devices'][7];
 			$name=$device->fields["designation"];
-			if (!empty($device->fields["type"])) $entry[$LANG["common"][17]]=$device->fields["type"];
+			if (!empty($device->fields["type"])) $entry[$LANG['common'][17]]=$device->fields["type"];
 
 			$specificity_size = 10;
 			break;
 		case DRIVE_DEVICE : 
-			$type=$LANG["devices"][19];
+			$type=$LANG['devices'][19];
 			$name=$device->fields["designation"];
 			if ($device->fields["is_writer"]) $entry[$LANG["device_drive"][0]]=getYesNo($device->fields["is_writer"]);
 			if (!empty($device->fields["speed"])) $entry[$LANG["device_drive"][1]]=$device->fields["speed"];
-			if (!empty($device->fields["frequence"])) $entry[$LANG["common"][65]]=$device->fields["frequence"];
+			if (!empty($device->fields["frequence"])) $entry[$LANG['common'][65]]=$device->fields["frequence"];
 			break;
 		case CONTROL_DEVICE :
-			$type=$LANG["devices"][20];
+			$type=$LANG['devices'][20];
 			$name=$device->fields["designation"];
 			if ($device->fields["raid"]) $entry[$LANG["device_control"][0]]=getYesNo($device->fields["raid"]);
-			if ($device->fields["interface"]) $entry[$LANG["common"][65]]=getDropdownName("glpi_dropdown_interface",$device->fields["interface"]);
+			if ($device->fields["interface"]) $entry[$LANG['common'][65]]=getDropdownName("glpi_dropdown_interface",$device->fields["interface"]);
 
 			break;
 		case PCI_DEVICE :
-			$type=$LANG["devices"][21];
+			$type=$LANG['devices'][21];
 			$name=$device->fields["designation"];
 
 			break;
 		case POWER_DEVICE :
-			$type=$LANG["devices"][23];
+			$type=$LANG['devices'][23];
 			$name=$device->fields["designation"];
 			if (!empty($device->fields["power"])) $entry[$LANG["device_power"][0]]=$device->fields["power"];
 			if ($device->fields["atx"]) $entry[$LANG["device_power"][1]]=getYesNo($device->fields["atx"]);
 
 			break;
 		case CASE_DEVICE :
-			$type=$LANG["devices"][22];
+			$type=$LANG['devices'][22];
 			$name=$device->fields["designation"];
 			if (!empty($device->fields["type"])) {
 				$entry[$LANG["device_case"][0]]=getDropdownName("glpi_dropdown_case_type",$device->fields["type"]);
@@ -534,11 +534,11 @@ function showDevicesList($device_type,$target) {
 
 			// designation
 			echo "<th>";
-			echo $LANG["common"][16]."</th>";
+			echo $LANG['common'][16]."</th>";
 
 			// Manufacturer		
 			echo "<th>";
-			echo $LANG["common"][5]."</th>";
+			echo $LANG['common'][5]."</th>";
 
 			echo "</tr>";
 
@@ -557,7 +557,7 @@ function showDevicesList($device_type,$target) {
 			// Close Table
 			echo "</table></div>";
 		} else {
-			echo "<div class='center'><strong>".$LANG["devices"][18]."</strong></div>";
+			echo "<div class='center'><strong>".$LANG['devices'][18]."</strong></div>";
 		}
 	}
 }
@@ -570,7 +570,7 @@ function showDevicesList($device_type,$target) {
 function titleDevices($device_type){
 	global  $LANG,$CFG_GLPI;
 
-	displayTitle($CFG_GLPI["root_doc"]."/pics/periph.png",$LANG["devices"][12],"",array("device.form.php?device_type=$device_type"=>$LANG["devices"][12]));
+	displayTitle($CFG_GLPI["root_doc"]."/pics/periph.png",$LANG['devices'][12],"",array("device.form.php?device_type=$device_type"=>$LANG['devices'][12]));
 
 }
 
@@ -601,7 +601,7 @@ function showDevicesForm ($target,$ID,$device_type) {
 	$table=getDeviceTable($device_type);
 
 
-	echo "<a href='$REFERER'>".$LANG["buttons"][13]."</a>";
+	echo "<a href='$REFERER'>".$LANG['buttons'][13]."</a>";
 	$device->showTabs($ID, "",$_SESSION['glpi_tab'],array("device_type"=>$device_type,"referer"=>$REFERER),"","designation");
 	echo "<form method='post' name='form' action=\"$target\">";
 	echo "<div class='center' id='tabsbody'>";
@@ -612,16 +612,16 @@ function showDevicesForm ($target,$ID,$device_type) {
 	echo "<tr><td class='tab_bg_1' colspan='1'>";
 	// table commune
 	echo "<table cellpadding='1' cellspacing='0' border='0'>\n";
-	echo "<tr><td>".$LANG["common"][16].":	</td>";
+	echo "<tr><td>".$LANG['common'][16].":	</td>";
 	echo "<td>";
 	autocompletionTextField("designation",$table,"designation",$device->fields["designation"],50);
 
 	echo "</td></tr>";
-	echo "<tr class='tab_bg_1'><td>".$LANG["common"][5].": 	</td><td colspan='2'>";
+	echo "<tr class='tab_bg_1'><td>".$LANG['common'][5].": 	</td><td colspan='2'>";
 	dropdownValue("glpi_dropdown_manufacturer","FK_glpi_enterprise",$device->fields["FK_glpi_enterprise"]);
 	echo "</td></tr>";
 	if (getDeviceSpecifityLabel($device_type)!=""){
-		echo "<tr><td>".getDeviceSpecifityLabel($device_type)." ".$LANG["devices"][24]."</td>";
+		echo "<tr><td>".getDeviceSpecifityLabel($device_type)." ".$LANG['devices'][24]."</td>";
 		echo "<td><input type='text' name='specif_default' value=\"".$device->fields["specif_default"]."\" size='20'></td>";
 		echo "</tr>";
 	}
@@ -646,7 +646,7 @@ function showDevicesForm ($target,$ID,$device_type) {
 			echo "</td></tr>";
 		break;
 		case "glpi_device_ram" :
-			echo "<tr><td>".$LANG["common"][17].":</td>";
+			echo "<tr><td>".$LANG['common'][17].":</td>";
 			echo "<td>";
 			dropdownValue("glpi_dropdown_ram_type","type",$device->fields["type"]);
 			echo "</td>";
@@ -665,7 +665,7 @@ function showDevicesForm ($target,$ID,$device_type) {
 			echo "</td></tr>";
 	
 	
-			echo "<tr><td>".$LANG["common"][65].":</td>";
+			echo "<tr><td>".$LANG['common'][65].":</td>";
 			echo "<td>";
 			dropdownValue("glpi_dropdown_interface","interface",$device->fields["interface"]);
 			echo "</td>";
@@ -684,7 +684,7 @@ function showDevicesForm ($target,$ID,$device_type) {
 			dropdownYesNo("is_writer",$device->fields["is_writer"]);
 			echo "</td>";
 			echo "</tr>";
-			echo "<tr><td>".$LANG["common"][65].":</td>";
+			echo "<tr><td>".$LANG['common'][65].":</td>";
 			echo "<td>";
 	
 			dropdownValue("glpi_dropdown_interface","interface",$device->fields["interface"]);
@@ -704,7 +704,7 @@ function showDevicesForm ($target,$ID,$device_type) {
 			dropdownYesNo("raid",$device->fields["raid"]);
 			echo "</td>";
 			echo "</tr>";
-			echo "<tr><td>".$LANG["common"][65].":</td>";
+			echo "<tr><td>".$LANG['common'][65].":</td>";
 			echo "<td>";
 			dropdownValue("glpi_dropdown_interface","interface",$device->fields["interface"]);
 			echo "</td>";
@@ -716,14 +716,14 @@ function showDevicesForm ($target,$ID,$device_type) {
 			echo "<tr><td>".$LANG["device_gfxcard"][0].":</td><td>";
 			autocompletionTextField("specif_default",$table,"specif_default",$device->fields["specif_default"],40);
 			echo "</td></tr>";
-			echo "<tr><td>".$LANG["common"][65].":</td>";
+			echo "<tr><td>".$LANG['common'][65].":</td>";
 			echo "<td>";
 			dropdownValue("glpi_dropdown_interface","FK_interface",$device->fields["FK_interface"]);
 			echo "</td>";
 			echo "</tr>";
 		break;
 		case "glpi_device_sndcard" :
-			echo "<tr><td>".$LANG["common"][17].":</td><td>";
+			echo "<tr><td>".$LANG['common'][17].":</td><td>";
 			autocompletionTextField("type",$table,"type",$device->fields["type"],40);
 			echo "</td></tr>";
 		break;
@@ -759,7 +759,7 @@ function showDevicesForm ($target,$ID,$device_type) {
 
 	// table commentaires
 	echo "<table width='100%' cellpadding='0' cellspacing='0' border='0'><tr><td valign='top'>";
-	echo $LANG["common"][25].":	</td>";
+	echo $LANG['common'][25].":	</td>";
 	echo "<td class='center'><textarea cols='80' rows='4' name='comment' >".$device->fields["comment"]."</textarea>";
 	echo "</td></tr></table>";
 
@@ -770,11 +770,11 @@ function showDevicesForm ($target,$ID,$device_type) {
 		echo "<td class='tab_bg_2' valign='top' align='center'>";
 		echo "<input type='hidden' name='ID' value=\"$ID\">\n";
 		echo "<input type='hidden' name='device_type' value=\"$device_type\">\n";
-		echo "<input type='submit' name='update' value=\"".$LANG["buttons"][7]."\" class='submit'>";
+		echo "<input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit'>";
 		echo "</td>";
 		echo "<td class='tab_bg_2' valign='top' align='center'>\n";
 		echo "<div class='center'>";
-		echo "<input type='submit' name='delete' value=\"".$LANG["buttons"][6]."\" class='submit'>";
+		echo "<input type='submit' name='delete' value=\"".$LANG['buttons'][6]."\" class='submit'>";
 		echo "</div>";
 		echo "</td>";
 		echo "</tr>";
@@ -782,7 +782,7 @@ function showDevicesForm ($target,$ID,$device_type) {
 	else {
 		echo "<td class='tab_bg_2' valign='top' align='center' colspan='2'>";
 		echo "<input type='hidden' name='device_type' value=\"$device_type\">\n";
-		echo "<input type='submit' name='add' value=\"".$LANG["buttons"][8]."\" class='submit'>";
+		echo "<input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'>";
 		echo "</td>";
 	}
 	echo "</table></div></form>";

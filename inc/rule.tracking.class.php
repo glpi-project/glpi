@@ -50,7 +50,7 @@ class TrackingBusinessRuleCollection extends RuleCollection {
 
 	function getTitle() {
 		global $LANG;
-		return $LANG["rulesengine"][28];
+		return $LANG['rulesengine'][28];
 	}
 
 	function preProcessPreviewResults($output)

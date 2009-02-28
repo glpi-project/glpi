@@ -57,13 +57,13 @@ function showCartridgesAdd($ID) {
 		echo "<div class='center'>&nbsp;<table class='tab_cadre_fixe' cellpadding='2'>";
 		echo "<tr>";
 		echo "<td align='center' class='tab_bg_2'>";
-		echo "<input type='submit' name='add_several' value=\"".$LANG["buttons"][8]."\" class='submit'>";
+		echo "<input type='submit' name='add_several' value=\"".$LANG['buttons'][8]."\" class='submit'>";
 		echo "<input type='hidden' name='tID' value=\"$ID\">\n";
 	
 		echo "&nbsp;&nbsp;";
 		dropdownInteger('to_add',1,1,100);
 		echo "&nbsp;&nbsp;";
-		echo $LANG["cartridges"][16];
+		echo $LANG['cartridges'][16];
 		echo "</td></tr>";
 		echo "</table></div>";
 		echo "</form><br>";
@@ -107,25 +107,25 @@ function showCartridges ($tID,$show_old=0) {
 					echo "&nbsp;</th></tr>";
 				} else { // Old
 					echo "<tr><th colspan='8'>";
-					echo $LANG["cartridges"][35];
+					echo $LANG['cartridges'][35];
 					echo "</th>";
 					echo "<th colspan='2'>";
 					echo "&nbsp;</th></tr>";
 				}
 				$i=0;
-				echo "<tr><th>".$LANG["common"][2]."</th><th>".$LANG["consumables"][23]."</th><th>".$LANG["cartridges"][24]."</th><th>".$LANG["consumables"][26]."</th><th>".$LANG["cartridges"][27]."</th><th>".$LANG["search"][9]."</th>";
+				echo "<tr><th>".$LANG['common'][2]."</th><th>".$LANG['consumables'][23]."</th><th>".$LANG['cartridges'][24]."</th><th>".$LANG['consumables'][26]."</th><th>".$LANG['cartridges'][27]."</th><th>".$LANG['search'][9]."</th>";
 	
 				if ($show_old){
-					echo "<th>".$LANG["cartridges"][39]."</th>";
+					echo "<th>".$LANG['cartridges'][39]."</th>";
 				}
 	
-				echo "<th>".$LANG["financial"][3]."</th>";
+				echo "<th>".$LANG['financial'][3]."</th>";
 				echo "<th colspan='2'>&nbsp;</th>";
 	
 				echo "</tr>";
 			} else {
 				echo "<br><div class='center'><table border='0' width='50%' cellpadding='2'>";
-				echo "<tr><th>".$LANG["cartridges"][7]."</th></tr>";
+				echo "<tr><th>".$LANG['cartridges'][7]."</th></tr>";
 				echo "</table></div>";
 			}
 		}
@@ -208,7 +208,7 @@ function showCartridges ($tID,$show_old=0) {
 					if ($pages[$printer]<$data['pages']){
 						$pages_printed+=$data['pages']-$pages[$printer];
 						$nb_pages_printed++;
-						echo ($data['pages']-$pages[$printer])." ".$LANG["printers"][31];
+						echo ($data['pages']-$pages[$printer])." ".$LANG['printers'][31];
 						$pages[$printer]=$data['pages'];
 					}
 					echo "</td>";
@@ -218,23 +218,23 @@ function showCartridges ($tID,$show_old=0) {
 				echo "</td>";
 				echo "<td class='center'>";
 				if (!is_null($date_use)&&$canedit)
-					echo "<a href='".$CFG_GLPI["root_doc"]."/front/cartridge.edit.php?restore=restore&amp;ID=".$data["ID"]."&amp;tID=$tID'>".$LANG["consumables"][37]."</a>";		
+					echo "<a href='".$CFG_GLPI["root_doc"]."/front/cartridge.edit.php?restore=restore&amp;ID=".$data["ID"]."&amp;tID=$tID'>".$LANG['consumables'][37]."</a>";		
 				else echo "&nbsp;";
 	
 				echo "</td>";
 				echo "<td class='center'>";
 				if ($canedit){
-					echo "<a href='".$CFG_GLPI["root_doc"]."/front/cartridge.edit.php?delete=delete&amp;ID=".$data["ID"]."&amp;tID=$tID'>".$LANG["buttons"][6]."</a>";
+					echo "<a href='".$CFG_GLPI["root_doc"]."/front/cartridge.edit.php?delete=delete&amp;ID=".$data["ID"]."&amp;tID=$tID'>".$LANG['buttons'][6]."</a>";
 				} else echo "&nbsp;";
 				echo "</td></tr>";
 			}	
 			if ($show_old&&$number>0){
 				if ($nb_pages_printed==0) $nb_pages_printed=1;
 				echo "<tr class='tab_bg_2'><td colspan='3'>&nbsp;</td>";
-				echo "<td class='center'>".$LANG["cartridges"][40].":<br>".round($stock_time/$number/60/60/24/30.5,1)." ".$LANG["financial"][57]."</td>";
+				echo "<td class='center'>".$LANG['cartridges'][40].":<br>".round($stock_time/$number/60/60/24/30.5,1)." ".$LANG['financial'][57]."</td>";
 				echo "<td>&nbsp;</td>";
-				echo "<td class='center'>".$LANG["cartridges"][41].":<br>".round($use_time/$number/60/60/24/30.5,1)." ".$LANG["financial"][57]."</td>";
-				echo "<td class='center'>".$LANG["cartridges"][42].":<br>".round($pages_printed/$nb_pages_printed)."</td>";
+				echo "<td class='center'>".$LANG['cartridges'][41].":<br>".round($use_time/$number/60/60/24/30.5,1)." ".$LANG['financial'][57]."</td>";
+				echo "<td class='center'>".$LANG['cartridges'][42].":<br>".round($pages_printed/$nb_pages_printed)."</td>";
 				echo "<td colspan='3'>&nbsp;</td></tr>";
 			}
 		}	
@@ -272,15 +272,15 @@ function showCompatiblePrinters($instID) {
 	
 		echo "<form method='post' action=\"".$CFG_GLPI["root_doc"]."/front/cartridge.form.php\">";
 		echo "<br><br><div class='center'><table class='tab_cadre_fixe'>";
-		echo "<tr><th colspan='3'>".$LANG["cartridges"][32].":</th></tr>";
-		echo "<tr><th>".$LANG["common"][2]."</th><th>".$LANG["common"][22]."</th><th>&nbsp;</th></tr>";
+		echo "<tr><th colspan='3'>".$LANG['cartridges'][32].":</th></tr>";
+		echo "<tr><th>".$LANG['common'][2]."</th><th>".$LANG['common'][22]."</th><th>&nbsp;</th></tr>";
 	
 		while ($i < $number) {
 			$ID=$DB->result($result, $i, "ID");
 			$type=$DB->result($result, $i, "type");
 			echo "<tr class='tab_bg_1'><td class='center'>$ID</td>";
 			echo "<td class='center'>$type</td>";
-			echo "<td align='center' class='tab_bg_2'><a href='".$CFG_GLPI['root_doc']."/front/cartridge.form.php?deletetype=deletetype&amp;ID=$ID&amp;tID=$instID'><strong>".$LANG["buttons"][6]."</strong></a></td></tr>";
+			echo "<td align='center' class='tab_bg_2'><a href='".$CFG_GLPI['root_doc']."/front/cartridge.form.php?deletetype=deletetype&amp;ID=$ID&amp;tID=$instID'><strong>".$LANG['buttons'][6]."</strong></a></td></tr>";
 			$i++;
 		}
 		if (haveRight("cartridge","w")){
@@ -288,7 +288,7 @@ function showCompatiblePrinters($instID) {
 			echo "<div class='software-instal'><input type='hidden' name='tID' value='$instID'>";
 			dropdown("glpi_dropdown_model_printers","model");
 			echo "</div></td><td align='center' class='tab_bg_2'>";
-			echo "<input type='submit' name='addtype' value=\"".$LANG["buttons"][8]."\" class='submit'>";
+			echo "<input type='submit' name='addtype' value=\"".$LANG['buttons'][8]."\" class='submit'>";
 			echo "</td></tr>";
 		}
 	
@@ -338,12 +338,12 @@ function showCartridgeInstalled($instID,$old=0) {
 
 	echo "<br><br><div class='center'><table class='tab_cadre_fixe'>";
 	if ($old==0)
-		echo "<tr><th colspan='7'>".$LANG["cartridges"][33].":</th></tr>";
-	else echo "<tr><th colspan='8'>".$LANG["cartridges"][35].":</th></tr>";
+		echo "<tr><th colspan='7'>".$LANG['cartridges'][33].":</th></tr>";
+	else echo "<tr><th colspan='8'>".$LANG['cartridges'][35].":</th></tr>";
 
-	echo "<tr><th>".$LANG["common"][2]."</th><th>".$LANG["cartridges"][12]."</th><th>".$LANG["consumables"][23]."</th><th>".$LANG["cartridges"][24]."</th><th>".$LANG["consumables"][26]."</th><th>".$LANG["search"][9]."</th>";
+	echo "<tr><th>".$LANG['common'][2]."</th><th>".$LANG['cartridges'][12]."</th><th>".$LANG['consumables'][23]."</th><th>".$LANG['cartridges'][24]."</th><th>".$LANG['consumables'][26]."</th><th>".$LANG['search'][9]."</th>";
 	if ($old!=0)
-		echo "<th>".$LANG["cartridges"][39]."</th>";
+		echo "<th>".$LANG['cartridges'][39]."</th>";
 
 	echo "<th>&nbsp;</th></tr>";
 
@@ -402,15 +402,15 @@ function showCartridgeInstalled($instID,$old=0) {
 			if ($pages<$data['pages']){
 				$pages_printed+=$data['pages']-$pages;
 				$nb_pages_printed++;
-				echo ($data['pages']-$pages)." ".$LANG["printers"][31];
+				echo ($data['pages']-$pages)." ".$LANG['printers'][31];
 				$pages=$data['pages'];
 			}
 			echo "</td><td class='center'>";
 		}
 		if ($canedit)
 			if (is_null($date_out))
-				echo "&nbsp;&nbsp;&nbsp;<a href='".$CFG_GLPI["root_doc"]."/front/cartridge.edit.php?uninstall=uninstall&amp;ID=".$data["ID"]."&amp;tID=".$data["tID"]."'>".$LANG["cartridges"][29]."</a>";
-			else echo "&nbsp;&nbsp;&nbsp;<a href='".$CFG_GLPI["root_doc"]."/front/cartridge.edit.php?delete=delete&amp;ID=".$data["ID"]."&amp;tID=".$data["tID"]."'>".$LANG["buttons"][6]."</a>";
+				echo "&nbsp;&nbsp;&nbsp;<a href='".$CFG_GLPI["root_doc"]."/front/cartridge.edit.php?uninstall=uninstall&amp;ID=".$data["ID"]."&amp;tID=".$data["tID"]."'>".$LANG['cartridges'][29]."</a>";
+			else echo "&nbsp;&nbsp;&nbsp;<a href='".$CFG_GLPI["root_doc"]."/front/cartridge.edit.php?delete=delete&amp;ID=".$data["ID"]."&amp;tID=".$data["tID"]."'>".$LANG['buttons'][6]."</a>";
 			echo "</td></tr>";
 
 	}	
@@ -420,7 +420,7 @@ function showCartridgeInstalled($instID,$old=0) {
 
 		echo "<div class='software-instal'><input type='hidden' name='pID' value='$instID'>";
 		if (dropdownCompatibleCartridges($instID)){
-			echo "&nbsp;<input type='submit' name='install' value=\"".$LANG["buttons"][4]."\" class='submit'>";
+			echo "&nbsp;<input type='submit' name='install' value=\"".$LANG['buttons'][4]."\" class='submit'>";
 		}
 
 		echo "</div></form></td><td align='center' class='tab_bg_2'>&nbsp;";
@@ -431,9 +431,9 @@ function showCartridgeInstalled($instID,$old=0) {
 			if ($nb_pages_printed==0) $nb_pages_printed=1;
 			echo "<tr class='tab_bg_2'><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>";
 
-			echo "<td class='center'>".$LANG["cartridges"][40].":<br>".round($stock_time/$number/60/60/24/30.5,1)." ".$LANG["financial"][57]."</td>";
-			echo "<td class='center'>".$LANG["cartridges"][41].":<br>".round($use_time/$number/60/60/24/30.5,1)." ".$LANG["financial"][57]."</td>";
-			echo "<td class='center'>".$LANG["cartridges"][42].":<br>".round($pages_printed/$nb_pages_printed)."</td>";
+			echo "<td class='center'>".$LANG['cartridges'][40].":<br>".round($stock_time/$number/60/60/24/30.5,1)." ".$LANG['financial'][57]."</td>";
+			echo "<td class='center'>".$LANG['cartridges'][41].":<br>".round($use_time/$number/60/60/24/30.5,1)." ".$LANG['financial'][57]."</td>";
+			echo "<td class='center'>".$LANG['cartridges'][42].":<br>".round($pages_printed/$nb_pages_printed)."</td>";
 			echo "<td>&nbsp;</td></tr>";
 		}
 	}
@@ -469,13 +469,13 @@ function countCartridges($tID,$alarm,$nohtml=0) {
 			$highlight="class='tab_bg_1_2'";
 
 		if (!$nohtml)
-			$out.= "<div $highlight>".$LANG["common"][33].":&nbsp;$total&nbsp;&nbsp;&nbsp;<strong>".$LANG["cartridges"][13].": $unused</strong>&nbsp;&nbsp;&nbsp;".$LANG["cartridges"][14].": $used&nbsp;&nbsp;&nbsp;".$LANG["cartridges"][15].": $old</div>";
-		else 	$out.= $LANG["common"][33].": $total   ".$LANG["cartridges"][13].": $unused   ".$LANG["cartridges"][14].": $used   ".$LANG["cartridges"][15].": $old";		
+			$out.= "<div $highlight>".$LANG['common'][33].":&nbsp;$total&nbsp;&nbsp;&nbsp;<strong>".$LANG['cartridges'][13].": $unused</strong>&nbsp;&nbsp;&nbsp;".$LANG['cartridges'][14].": $used&nbsp;&nbsp;&nbsp;".$LANG['cartridges'][15].": $old</div>";
+		else 	$out.= $LANG['common'][33].": $total   ".$LANG['cartridges'][13].": $unused   ".$LANG['cartridges'][14].": $used   ".$LANG['cartridges'][15].": $old";		
 
 	} else {
 		if (!$nohtml)
-			$out.= "<div class='tab_bg_1_2'><i>".$LANG["cartridges"][9]."</i></div>";
-		else $out.= $LANG["cartridges"][9];
+			$out.= "<div class='tab_bg_1_2'><i>".$LANG['cartridges'][9]."</i></div>";
+		else $out.= $LANG['cartridges'][9];
 	}
 	return $out;
 }	
@@ -583,7 +583,7 @@ function dropdownCompatibleCartridges($pID) {
 
 			echo "<select name='tID' size=1>";
 			while ($data= $DB->fetch_assoc($result)) {
-				echo  "<option value='".$data["tID"]."'>".$data["name"]." - ".$data["ref"]." (".$data["cpt"]." ".$LANG["cartridges"][13].") - ".$data["location"]."</option>";
+				echo  "<option value='".$data["tID"]."'>".$data["name"]." - ".$data["ref"]." (".$data["cpt"]." ".$LANG['cartridges'][13].") - ".$data["location"]."</option>";
 			}
 			echo "</select>";
 			return true;
@@ -608,12 +608,12 @@ function dropdownCompatibleCartridges($pID) {
 function getCartridgeStatus($date_use,$date_out){
 	global $LANG;
 	if (is_null($date_use)||empty($date_use)) {
-		return $LANG["cartridges"][20];
+		return $LANG['cartridges'][20];
 	}
 	else if (is_null($date_out)||empty($date_out)) {
-		return $LANG["cartridges"][21];
+		return $LANG['cartridges'][21];
 	} else {
-		return $LANG["cartridges"][22];
+		return $LANG['cartridges'][22];
 	}
 }
 /**
@@ -658,7 +658,7 @@ function cron_cartridge($display=false){
 				}
 
 				// define message alert
-				$message[$data["entity"]].=$LANG["mailing"][34]." ".$data["cartname"]." - ".$LANG["consumables"][2].": ".$data["cartref"]." - ".$LANG["software"][20].": ".$unused."<br>\n";
+				$message[$data["entity"]].=$LANG['mailing'][34]." ".$data["cartname"]." - ".$LANG['consumables'][2].": ".$data["cartref"]." - ".$LANG['software'][20].": ".$unused."<br>\n";
 				$items[$data["entity"]][]=$data["cartID"];
 
 				// if alert exists -> delete 

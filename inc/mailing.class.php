@@ -440,7 +440,7 @@ class Mailing
 		}else{ // text format
 
 			if ($CFG_GLPI["url_in_mail"]&&!empty($CFG_GLPI["url_base"])){
-				$body.=$LANG["mailing"][1]."\n"; $body.="URL : ".$CFG_GLPI["url_base"]."/index.php?redirect=tracking_".$this->job->fields["ID"]."\n";
+				$body.=$LANG['mailing'][1]."\n"; $body.="URL : ".$CFG_GLPI["url_base"]."/index.php?redirect=tracking_".$this->job->fields["ID"]."\n";
 
 			}
 
@@ -494,22 +494,22 @@ class Mailing
 
 		switch ($this->type){
 			case "new":
-				$subject.=$LANG["mailing"][9];
+				$subject.=$LANG['mailing'][9];
 			break;
 			case "attrib":
-				$subject.=$LANG["mailing"][12];
+				$subject.=$LANG['mailing'][12];
 			break;
 			case "followup":
-				$subject.=$LANG["mailing"][10];
+				$subject.=$LANG['mailing'][10];
 			break;
 			case "update":
-				$subject.=$LANG["mailing"][30];
+				$subject.=$LANG['mailing'][30];
 			break;
 			case "finish":
-				$subject.=$LANG["mailing"][11]." ".convDateTime($this->job->fields["closedate"]);			
+				$subject.=$LANG['mailing'][11]." ".convDateTime($this->job->fields["closedate"]);			
 			break;
 			default :
-			$subject.=$LANG["mailing"][13];
+			$subject.=$LANG['mailing'][13];
 			break;
 		}
 		
@@ -610,7 +610,7 @@ class Mailing
 				// get reply-to address : user->email ou job_email if not set OK
 				$replyto=$this->get_reply_to_address ($sender);
 
-				$messageerror=$LANG["mailing"][47];
+				$messageerror=$LANG['mailing'][47];
 				// Send all mails
 				foreach ($users as $private=>$someusers) {
 					if (count($someusers)){
@@ -643,7 +643,7 @@ class Mailing
 								$senderror=true;
 								addMessageAfterRedirect($messageerror."<br>".$mmail->ErrorInfo);
 							}else{
-								logInFile("mail",$LANG["tracking"][38]." ".$email.": ".$subjects[$lang]."\n");
+								logInFile("mail",$LANG['tracking'][38]." ".$email.": ".$subjects[$lang]."\n");
 							} 
 
 							$mmail->ClearAddresses(); 
@@ -656,7 +656,7 @@ class Mailing
 					return false;
 				}
 			} else {
-				addMessageAfterRedirect($LANG["mailing"][112]);
+				addMessageAfterRedirect($LANG['mailing'][112]);
 			}
 		}
 		return true;
@@ -902,9 +902,9 @@ class MailingResa{
 
 		// Create the message subject 
 		if ($this->type=="new")
-			$subject="[GLPI] ".$LANG["mailing"][19];
-		else if ($this->type=="update") $subject="[GLPI] ".$LANG["mailing"][23];
-		else if ($this->type=="delete") $subject="[GLPI] ".$LANG["mailing"][29];
+			$subject="[GLPI] ".$LANG['mailing'][19];
+		else if ($this->type=="update") $subject="[GLPI] ".$LANG['mailing'][23];
+		else if ($this->type=="delete") $subject="[GLPI] ".$LANG['mailing'][29];
 
 		return $subject;
 	}
@@ -977,10 +977,10 @@ class MailingResa{
 					$mmail->AddAddress($email, "");
 	
 					if(!$mmail->Send()){
-						echo "<div class='center'>".$LANG["mailing"][47]."</div>";
+						echo "<div class='center'>".$LANG['mailing'][47]."</div>";
 						return false;
 					}else{
-						logInFile("mail",$LANG["reservation"][40]." ".$email.": ".$subjects[$lang]."\n");
+						logInFile("mail",$LANG['reservation'][40]." ".$email.": ".$subjects[$lang]."\n");
 					}
 	
 					$mmail->ClearAddresses(); 
@@ -1143,19 +1143,19 @@ class MailingAlert
 
 		switch ($this->type){
 			case "alertcartridge" :
-				$subject.=" ".$LANG["mailing"][33]. " - ".getDropdownName("glpi_entities",$this->entity);
+				$subject.=" ".$LANG['mailing'][33]. " - ".getDropdownName("glpi_entities",$this->entity);
 			break;
 			case "alertconsumable":
-				$subject.=" ".$LANG["mailing"][36]. " - ".getDropdownName("glpi_entities",$this->entity);
+				$subject.=" ".$LANG['mailing'][36]. " - ".getDropdownName("glpi_entities",$this->entity);
 			break;
 			case "alertcontract":
-				$subject.=" ".$LANG["mailing"][39]. " - ".getDropdownName("glpi_entities",$this->entity);
+				$subject.=" ".$LANG['mailing'][39]. " - ".getDropdownName("glpi_entities",$this->entity);
 			break;
 			case "alertinfocom":
-				$subject.=" ".$LANG["mailing"][41]. " - ".getDropdownName("glpi_entities",$this->entity);
+				$subject.=" ".$LANG['mailing'][41]. " - ".getDropdownName("glpi_entities",$this->entity);
 			break;
 			case "alertlicense":
-				$subject.=" ".$LANG["mailing"][52]. " - ".getDropdownName("glpi_entities",$this->entity);
+				$subject.=" ".$LANG['mailing'][52]. " - ".getDropdownName("glpi_entities",$this->entity);
 			break;
 		}
 		return $subject;
@@ -1235,10 +1235,10 @@ class MailingAlert
 					$mmail->AddAddress($email, "");
 
 					if(!$mmail->Send()){
-						addMessageAfterRedirect($LANG["mailing"][47]);
+						addMessageAfterRedirect($LANG['mailing'][47]);
 						return false;
 					}else{
-						logInFile("mail",$LANG["mailing"][111]." ".$email.": ".$subjects[$lang]."\n");
+						logInFile("mail",$LANG['mailing'][111]." ".$email.": ".$subjects[$lang]."\n");
 					}
 					$mmail->ClearAddresses(); 
 				}

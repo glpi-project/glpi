@@ -71,9 +71,9 @@ class Entity extends CommonDBTM{
 	function defineTabs($ID,$withtemplate){
 		global $LANG;
 
-		$ong[1]=$LANG["title"][26];
+		$ong[1]=$LANG['title'][26];
 		$ong[2]=$LANG["Menu"][14];
-		$ong[3]=$LANG["rulesengine"][17];
+		$ong[3]=$LANG['rulesengine'][17];
 
 		return $ong;
 	}
@@ -89,10 +89,10 @@ class Entity extends CommonDBTM{
 		$buttons=array();
 		$title=$LANG["Menu"][37];
 		if (haveRight("entity","w")){
-			$buttons["entity.tree.php"]=$LANG["entity"][1];
+			$buttons["entity.tree.php"]=$LANG['entity'][1];
 			$title="";
 		}
-		$buttons["entity.form.php?ID=0"]=$LANG["entity"][2];
+		$buttons["entity.form.php?ID=0"]=$LANG['entity'][2];
 		
 		displayTitle($CFG_GLPI["root_doc"]."/pics/groupes.png",$LANG["Menu"][37],$title,$buttons);
 	}
@@ -129,7 +129,7 @@ class Entity extends CommonDBTM{
 
 			// Special root entity case	
 			if ($ID==0) {
-				$this->fields["name"]=$LANG["entity"][2];
+				$this->fields["name"]=$LANG['entity'][2];
 				$this->fields["completename"]="";
 			}
 		} 
@@ -154,20 +154,20 @@ class Entity extends CommonDBTM{
 		echo "<div class='center' id='tabsbody' >";
 		echo "<table class='tab_cadre_fixe' cellpadding='2' >";
 		echo "<tr><th colspan='4'>";
-		echo $LANG["entity"][0]." ID $ID:";
+		echo $LANG['entity'][0]." ID $ID:";
 
 		echo "</th></tr>";
 
 		echo "<tr class='tab_bg_1'>";
 
-		echo "<td valign='top'>".$LANG["common"][16].":	</td>";
+		echo "<td valign='top'>".$LANG['common'][16].":	</td>";
 		echo "<td valign='top'>";
 		echo $this->fields["name"];
 		if ($ID!=0) echo " (".$this->fields["completename"].")";
 		echo "</td>";
 		if (isset($this->fields["comments"])){
 			echo "<td valign='top'>";
-			echo $LANG["common"][25].":	</td>";
+			echo $LANG['common'][25].":	</td>";
 			echo "<td align='center' valign='top'>".nl2br($this->fields["comments"]);
 			echo "</td>";
 		} else {
@@ -175,64 +175,64 @@ class Entity extends CommonDBTM{
 		}
 		echo "</tr>";
 
-		echo "<tr class='tab_bg_1'><td>".$LANG["help"][35].":		</td>";
+		echo "<tr class='tab_bg_1'><td>".$LANG['help'][35].":		</td>";
 		echo "<td>";
 		autocompletionTextField("phonenumber","glpi_entities_data","phonenumber",$entdata->fields["phonenumber"],40);	
 		echo "</td>";
-		echo "<td>".$LANG["financial"][30].":		</td><td>";
+		echo "<td>".$LANG['financial'][30].":		</td><td>";
 		autocompletionTextField("fax","glpi_entities_data","fax",$entdata->fields["fax"],40);	
 		echo "</td></tr>";
 
-		echo "<tr class='tab_bg_1'><td>".$LANG["financial"][45].":		</td>";
+		echo "<tr class='tab_bg_1'><td>".$LANG['financial'][45].":		</td>";
 		echo "<td>";
 		autocompletionTextField("website","glpi_entities_data","website",$entdata->fields["website"],40);	
 		echo "</td>";
 
-		echo "<td>".$LANG["setup"][14].":		</td><td>";
+		echo "<td>".$LANG['setup'][14].":		</td><td>";
 		autocompletionTextField("email","glpi_entities_data","email",$entdata->fields["email"],40);		
 		echo "</td></tr>";
 
 
-		echo "<tr class='tab_bg_1'><td  rowspan='4'>".$LANG["financial"][44].":		</td>";
+		echo "<tr class='tab_bg_1'><td  rowspan='4'>".$LANG['financial'][44].":		</td>";
 		echo "<td align='center' rowspan='4'><textarea cols='35' rows='4' name='address' >".$entdata->fields["address"]."</textarea>";
-		echo "<td>".$LANG["financial"][100]."</td>";
+		echo "<td>".$LANG['financial'][100]."</td>";
 		echo "<td>";
 		autocompletionTextField("postcode","glpi_entities_data","postcode",$entdata->fields["postcode"],40);		
 		echo "</td>";
 		echo "</tr>";
 
 		echo "<tr class='tab_bg_1'>";
-		echo "<td>".$LANG["financial"][101].":		</td><td>";
+		echo "<td>".$LANG['financial'][101].":		</td><td>";
 		autocompletionTextField("town","glpi_entities_data","town",$entdata->fields["town"],40);		
 		echo "</td></tr>";
 
 		echo "<tr class='tab_bg_1'>";
-		echo "<td>".$LANG["financial"][102].":		</td><td>";
+		echo "<td>".$LANG['financial'][102].":		</td><td>";
 		autocompletionTextField("state","glpi_entities_data","state",$entdata->fields["state"],40);		
 		echo "</td></tr>";
 
 		echo "<tr class='tab_bg_1'>";
-		echo "<td>".$LANG["financial"][103].":		</td><td>";
+		echo "<td>".$LANG['financial'][103].":		</td><td>";
 		autocompletionTextField("country","glpi_entities_data","country",$entdata->fields["country"],40);		
 		echo "</td></tr>";
 
 		echo "<tr class='tab_bg_1'>";
-		echo "<td>".$LANG["setup"][203].":		</td><td colspan='3'>";
+		echo "<td>".$LANG['setup'][203].":		</td><td colspan='3'>";
 		autocompletionTextField("admin_email","glpi_entities_data","admin_email",$entdata->fields["admin_email"],50);		
 		echo "</td></tr>";
 
 		echo "<tr class='tab_bg_1'>";
-		echo "<td>".$LANG["setup"][207].":		</td><td colspan='3'>";
+		echo "<td>".$LANG['setup'][207].":		</td><td colspan='3'>";
 		autocompletionTextField("admin_reply","glpi_entities_data","admin_reply",$entdata->fields["admin_reply"],50);		
 		echo "</td></tr>";
 
 		echo "<tr class='tab_bg_1'>";
-		echo "<td>".$LANG["entity"][12].":		</td>";
+		echo "<td>".$LANG['entity'][12].":		</td>";
 		echo "<td>";
 		autocompletionTextField("ldap_dn","glpi_entities_data","ldap_dn",$entdata->fields["ldap_dn"],50);		
 		echo "</td>";
 
-		echo "<td>".$LANG["entity"][13].":		</td>";
+		echo "<td>".$LANG['entity'][13].":		</td>";
 		echo "<td>";
 		autocompletionTextField("tag","glpi_entities_data","tag",$entdata->fields["tag"],40);		
 		echo "</td></tr>";
@@ -242,7 +242,7 @@ class Entity extends CommonDBTM{
 			echo "<td class='tab_bg_2' colspan='4' valign='top' align='center'>";
 			echo "<input type='hidden' name='FK_entities' value=\"$ID\">\n";
 			echo "<input type='hidden' name='ID' value=\"".$entdata->fields["ID"]."\">\n";
-			echo "<input type='submit' name='update' value=\"".$LANG["buttons"][7]."\" class='submit' >";
+			echo "<input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit' >";
 			echo "</td>\n\n";
 			echo "</tr>";
 

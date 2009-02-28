@@ -139,7 +139,7 @@ function ocsShowNewComputer($ocs_server_id, $advanced, $check, $start, $tolinked
 		}
 
 		if ($tolinked && count($hardware)) {
-			echo "<div class='center'><strong>" . $LANG["ocsng"][22] . "</strong></div>";
+			echo "<div class='center'><strong>" . $LANG['ocsng'][22] . "</strong></div>";
 		}
 		
 		echo "<div class='center'>";
@@ -158,7 +158,7 @@ function ocsShowNewComputer($ocs_server_id, $advanced, $check, $start, $tolinked
 				echo "<form method='post' name='ocsng_import_mode' id='ocsng_import_mode' action='" . $_SERVER['PHP_SELF'] . "'>";
 
 				echo "<table class='tab_cadre'>";
-				echo "<tr><th>" . $LANG["ocsng"][41] . "</th></tr>";
+				echo "<tr><th>" . $LANG['ocsng'][41] . "</th></tr>";
 				echo "<tr class='tab_bg_1'>";
 				echo "<td class='center'>";
 
@@ -169,30 +169,30 @@ function ocsShowNewComputer($ocs_server_id, $advanced, $check, $start, $tolinked
 
 				echo "<a href='" . $_SERVER['PHP_SELF'] . "?change_import_mode=" . $status . "'>";
 				if ($advanced)
-					echo $LANG["ocsng"][38];
+					echo $LANG['ocsng'][38];
 				else
-					echo $LANG["ocsng"][37];
+					echo $LANG['ocsng'][37];
 				echo "</a></td>";
 				echo "</tr></table></form><br>";
 			}
 
-			echo "<strong>" . $LANG["ocsconfig"][18] . "</strong><br>";
+			echo "<strong>" . $LANG['ocsconfig'][18] . "</strong><br>";
 			echo "<form method='post' name='ocsng_form' id='ocsng_form' action='" . $_SERVER['PHP_SELF'] . "'>";
 			if (!$tolinked){
-				echo "<a href='" . $_SERVER['PHP_SELF'] . "?check=all&amp;start=$start' onclick= \"if ( markCheckboxes('ocsng_form') ) return false;\">" . $LANG["buttons"][18] . "</a>&nbsp;/&nbsp;<a href='" . $_SERVER['PHP_SELF'] . "?check=none&amp;start=$start' onclick= \"if ( unMarkCheckboxes('ocsng_form') ) return false;\">" . $LANG["buttons"][19] . "</a>";
+				echo "<a href='" . $_SERVER['PHP_SELF'] . "?check=all&amp;start=$start' onclick= \"if ( markCheckboxes('ocsng_form') ) return false;\">" . $LANG['buttons'][18] . "</a>&nbsp;/&nbsp;<a href='" . $_SERVER['PHP_SELF'] . "?check=none&amp;start=$start' onclick= \"if ( unMarkCheckboxes('ocsng_form') ) return false;\">" . $LANG['buttons'][19] . "</a>";
 			}
 
 			echo "<table class='tab_cadre'>";
 
-			echo "<tr><th>" . $LANG["ocsng"][5] . "</th><th>".$LANG["common"][19]."</th><th>" . $LANG["common"][27] . "</th><th>TAG</th>";
+			echo "<tr><th>" . $LANG['ocsng'][5] . "</th><th>".$LANG['common'][19]."</th><th>" . $LANG['common'][27] . "</th><th>TAG</th>";
 			if ($advanced && !$tolinked) {
-				echo "<th>" . $LANG["ocsng"][40] . "</th>";
-				echo "<th>" . $LANG["ocsng"][36] . "</th>";
+				echo "<th>" . $LANG['ocsng'][40] . "</th>";
+				echo "<th>" . $LANG['ocsng'][36] . "</th>";
 			}
 			echo "<th>&nbsp;</th></tr>";
 
 			echo "<tr class='tab_bg_1'><td colspan='" . ($advanced ? 7 : 5) . "' align='center'>";
-			echo "<input class='submit' type='submit' name='import_ok' value='" . $LANG["buttons"][37] . "'>";
+			echo "<input class='submit' type='submit' name='import_ok' value='" . $LANG['buttons'][37] . "'>";
 			echo "</td></tr>";
 
 			$rule = new OcsRuleCollection($ocs_server_id);
@@ -236,7 +236,7 @@ function ocsShowNewComputer($ocs_server_id, $advanced, $check, $start, $tolinked
 				echo "</tr>";
 			}
 			echo "<tr class='tab_bg_1'><td colspan='" . ($advanced ? 7 : 5) . "' align='center'>";
-			echo "<input class='submit' type='submit' name='import_ok' value='" . $LANG["buttons"][37] . "'>";
+			echo "<input class='submit' type='submit' name='import_ok' value='" . $LANG['buttons'][37] . "'>";
 			echo "<input type=hidden name='ocs_server_id' value='" . $ocs_server_id . "'>";
 			echo "</td></tr>";
 			echo "</table>";
@@ -245,12 +245,12 @@ function ocsShowNewComputer($ocs_server_id, $advanced, $check, $start, $tolinked
 			printPager($start, $numrows, $_SERVER['PHP_SELF'], $parameters);
 
 		} else
-			echo "<strong>" . $LANG["ocsng"][9] . "</strong>";
+			echo "<strong>" . $LANG['ocsng'][9] . "</strong>";
 
 		echo "</div>";
 
 	} else
-		echo "<div class='center'><strong>" . $LANG["ocsng"][9] . "</strong></div>";
+		echo "<div class='center'><strong>" . $LANG['ocsng'][9] . "</strong></div>";
 }
 
 /**
@@ -652,7 +652,7 @@ function ocsLinkComputer($ocs_id, $ocs_server_id, $glpi_id,$link_auto=0) {
 			return true;
 		}
 	} else {
-		addMessageAfterRedirect($ocs_id . " - " . $LANG["ocsng"][23]);
+		addMessageAfterRedirect($ocs_id . " - " . $LANG['ocsng'][23]);
 	}
 
 	return false; 
@@ -1361,7 +1361,7 @@ function ocsShowUpdateComputer($ocs_server_id, $check, $start) {
 		}
 
 		echo "<div class='center'>";
-		echo "<h2>" . $LANG["ocsng"][10] . "</h2>";
+		echo "<h2>" . $LANG['ocsng'][10] . "</h2>";
 
 		if (($numrows = count($already_linked)) > 0) {
 
@@ -1376,12 +1376,12 @@ function ocsShowUpdateComputer($ocs_server_id, $check, $start) {
 
 			echo "<form method='post' id='ocsng_form' name='ocsng_form' action='" . $_SERVER['PHP_SELF'] . "'>";
 
-			echo "<a href='" . $_SERVER['PHP_SELF'] . "?check=all' onclick= \"if ( markCheckboxes('ocsng_form') ) return false;\">" . $LANG["buttons"][18] . "</a>&nbsp;/&nbsp;<a href='" . $_SERVER['PHP_SELF'] . "?check=none' onclick= \"if ( unMarkCheckboxes('ocsng_form') ) return false;\">" . $LANG["buttons"][19] . "</a>";
+			echo "<a href='" . $_SERVER['PHP_SELF'] . "?check=all' onclick= \"if ( markCheckboxes('ocsng_form') ) return false;\">" . $LANG['buttons'][18] . "</a>&nbsp;/&nbsp;<a href='" . $_SERVER['PHP_SELF'] . "?check=none' onclick= \"if ( unMarkCheckboxes('ocsng_form') ) return false;\">" . $LANG['buttons'][19] . "</a>";
 			echo "<table class='tab_cadre'>";
-			echo "<tr><th>" . $LANG["ocsng"][11] . "</th><th>" . $LANG["ocsng"][13] . "</th><th>" . $LANG["ocsng"][14] . "</th><th>" . $LANG["ocsng"][6] . "</th><th>&nbsp;</th></tr>";
+			echo "<tr><th>" . $LANG['ocsng'][11] . "</th><th>" . $LANG['ocsng'][13] . "</th><th>" . $LANG['ocsng'][14] . "</th><th>" . $LANG['ocsng'][6] . "</th><th>&nbsp;</th></tr>";
 
 			echo "<tr class='tab_bg_1'><td colspan='5' align='center'>";
-			echo "<input class='submit' type='submit' name='update_ok' value='" . $LANG["ldap"][15] . "'>";
+			echo "<input class='submit' type='submit' name='update_ok' value='" . $LANG['ldap'][15] . "'>";
 			echo "</td></tr>";
 
 			foreach ($already_linked as $ID => $tab) {
@@ -1389,12 +1389,12 @@ function ocsShowUpdateComputer($ocs_server_id, $check, $start) {
 				echo "<tr align='center' class='tab_bg_2'>";
 				echo "<td><a href='" . $CFG_GLPI["root_doc"] . "/front/computer.form.php?ID=" . $tab["glpi_id"] . "'>" . $tab["name"] . "</a></td>";
 				echo "<td>" . convDateTime($tab["date"]) . "</td><td>" . convDateTime($hardware[$tab["ocs_id"]]["date"]) . "</td>";
-				echo "<td>" . $LANG["choice"][$tab["auto_update"]] . "</td>";
+				echo "<td>" . $LANG['choice'][$tab["auto_update"]] . "</td>";
 				echo "<td><input type='checkbox' name='toupdate[" . $tab["ID"] . "]' " . ($check == "all" ? "checked" : "") . ">";
 				echo "</td></tr>";
 			}
 			echo "<tr class='tab_bg_1'><td colspan='5' align='center'>";
-			echo "<input class='submit' type='submit' name='update_ok' value='" . $LANG["ldap"][15] . "'>";
+			echo "<input class='submit' type='submit' name='update_ok' value='" . $LANG['ldap'][15] . "'>";
 			echo "<input type=hidden name='ocs_server_id' value='" . $ocs_server_id . "'>";
 			echo "</td></tr>";
 			echo "</table>";
@@ -1402,12 +1402,12 @@ function ocsShowUpdateComputer($ocs_server_id, $check, $start) {
 			printPager($start, $numrows, $_SERVER['PHP_SELF'], $parameters);
 
 		} else
-			echo "<br><strong>" . $LANG["ocsng"][11] . "</strong>";
+			echo "<br><strong>" . $LANG['ocsng'][11] . "</strong>";
 
 		echo "</div>";
 
 	} else
-		echo "<div class='center'><strong>" . $LANG["ocsng"][12] . "</strong></div>";
+		echo "<div class='center'><strong>" . $LANG['ocsng'][12] . "</strong></div>";
 }
 
 function mergeOcsArray($glpi_id, $tomerge, $field) {
@@ -1488,25 +1488,25 @@ function getOcsLockableFields(){
 	global $LANG;
 	
 	return array (
-			"name"=>$LANG["common"][16],
-			"type"=>$LANG["common"][17],
-			"FK_glpi_enterprise"=>$LANG["common"][5],
-			"model"=>$LANG["common"][22],
-			"serial"=>$LANG["common"][19],
-			"otherserial"=>$LANG["common"][20],
-			"comments"=>$LANG["common"][25],
-			"contact"=>$LANG["common"][18],
-			"contact_num"=>$LANG["common"][21],
-			"domain"=>$LANG["setup"][89],
-			"network"=>$LANG["setup"][88],
-			"os"=>$LANG["computers"][9],
-			"os_sp"=>$LANG["computers"][53],
-			"os_version"=>$LANG["computers"][52],
-			"os_license_number"=>$LANG["computers"][10],
-			"os_license_id"=>$LANG["computers"][11],
-			"FK_users"=>$LANG["common"][34],
-			"location"=>$LANG["common"][15],
-			"FK_groups"=>$LANG["common"][35],
+			"name"=>$LANG['common'][16],
+			"type"=>$LANG['common'][17],
+			"FK_glpi_enterprise"=>$LANG['common'][5],
+			"model"=>$LANG['common'][22],
+			"serial"=>$LANG['common'][19],
+			"otherserial"=>$LANG['common'][20],
+			"comments"=>$LANG['common'][25],
+			"contact"=>$LANG['common'][18],
+			"contact_num"=>$LANG['common'][21],
+			"domain"=>$LANG['setup'][89],
+			"network"=>$LANG['setup'][88],
+			"os"=>$LANG['computers'][9],
+			"os_sp"=>$LANG['computers'][53],
+			"os_version"=>$LANG['computers'][52],
+			"os_license_number"=>$LANG['computers'][10],
+			"os_license_id"=>$LANG['computers'][11],
+			"FK_users"=>$LANG['common'][34],
+			"location"=>$LANG['common'][15],
+			"FK_groups"=>$LANG['common'][35],
 		);
 }
 
@@ -1582,7 +1582,7 @@ function ocsEditLock($target, $ID) {
 			echo "<input type='hidden' name='ID' value='$ID'>";
 			echo "<table class='tab_cadre'><tr class='tab_bg_2'><td>";
 			echo "<input type='hidden' name='resynch_id' value='" . $data["ID"] . "'>";
-			echo "<input class=submit type='submit' name='force_ocs_resynch' value='" . $LANG["ocsng"][24] . "'>";
+			echo "<input class=submit type='submit' name='force_ocs_resynch' value='" . $LANG['ocsng'][24] . "'>";
 			echo "</td><tr></table>";
 			echo "</form>";
 			echo "</div>";
@@ -1606,15 +1606,15 @@ function ocsEditLock($target, $ID) {
 			echo "<form method='post' action=\"$target\">";
 			echo "<input type='hidden' name='ID' value='$ID'>";
 			echo "<table class='tab_cadre'>";
-			echo "<tr><th colspan='2'>" . $LANG["ocsng"][16] . "</th></tr>";
+			echo "<tr><th colspan='2'>" . $LANG['ocsng'][16] . "</th></tr>";
 			foreach ($locked as $key => $val) {
 				echo "<tr class='tab_bg_1'><td>" . $lockable_fields[$val] . "</td><td><input type='checkbox' name='lockfield[" . $key . "]'></td></tr>";
 			}
-			echo "<tr class='tab_bg_2'><td align='center' colspan='2'><input class='submit' type='submit' name='unlock_field' value='" . $LANG["buttons"][38] . "'></td></tr>";
+			echo "<tr class='tab_bg_2'><td align='center' colspan='2'><input class='submit' type='submit' name='unlock_field' value='" . $LANG['buttons'][38] . "'></td></tr>";
 			echo "</table>";
 			echo "</form>";
 		} else {
-			echo "<strong>" . $LANG["ocsng"][15] . "</strong>";
+			echo "<strong>" . $LANG['ocsng'][15] . "</strong>";
 		}
 		echo "</div>";
 
@@ -1634,18 +1634,18 @@ function ocsEditLock($target, $ID) {
 						echo "<form method='post' action=\"$target\">";
 						echo "<input type='hidden' name='ID' value='$ID'>";
 						echo "<table class='tab_cadre'>";
-						echo "<tr><th colspan='2'>" . $LANG["ocsng"][30] . "</th></tr>";
+						echo "<tr><th colspan='2'>" . $LANG['ocsng'][30] . "</th></tr>";
 					}
 					echo "<tr class='tab_bg_1'><td>" . $val . "</td><td><input type='checkbox' name='lockmonitor[" . $key . "]'></td></tr>";
 				}
 			}
 		}
 		if ($header) {
-			echo "<tr class='tab_bg_2'><td align='center' colspan='2'><input class='submit' type='submit' name='unlock_monitor' value='" . $LANG["buttons"][38] . "'></td></tr>";
+			echo "<tr class='tab_bg_2'><td align='center' colspan='2'><input class='submit' type='submit' name='unlock_monitor' value='" . $LANG['buttons'][38] . "'></td></tr>";
 			echo "</table>";
 			echo "</form>";
 		} else
-			echo "<strong>" . $LANG["ocsng"][31] . "</strong>";
+			echo "<strong>" . $LANG['ocsng'][31] . "</strong>";
 		echo "</div>";
 
 		//Search locked printers
@@ -1663,17 +1663,17 @@ function ocsEditLock($target, $ID) {
 					echo "<form method='post' action=\"$target\">";
 					echo "<input type='hidden' name='ID' value='$ID'>";
 					echo "<table class='tab_cadre'>";
-					echo "<tr><th colspan='2'>" . $LANG["ocsng"][34] . "</th></tr>";
+					echo "<tr><th colspan='2'>" . $LANG['ocsng'][34] . "</th></tr>";
 				}
 				echo "<tr class='tab_bg_1'><td>" . $val . "</td><td><input type='checkbox' name='lockprinter[" . $key . "]'></td></tr>";
 			}
 		}
 		if ($header) {
-			echo "<tr class='tab_bg_2'><td align='center' colspan='2'><input class='submit' type='submit' name='unlock_printer' value='" . $LANG["buttons"][38] . "'></td></tr>";
+			echo "<tr class='tab_bg_2'><td align='center' colspan='2'><input class='submit' type='submit' name='unlock_printer' value='" . $LANG['buttons'][38] . "'></td></tr>";
 			echo "</table>";
 			echo "</form>";
 		} else
-			echo "<strong>" . $LANG["ocsng"][35] . "</strong>";
+			echo "<strong>" . $LANG['ocsng'][35] . "</strong>";
 		echo "</div>";
 
 		// Search locked peripherals
@@ -1691,17 +1691,17 @@ function ocsEditLock($target, $ID) {
 					echo "<form method='post' action=\"$target\">";
 					echo "<input type='hidden' name='ID' value='$ID'>";
 					echo "<table class='tab_cadre'>";
-					echo "<tr><th colspan='2'>" . $LANG["ocsng"][32] . "</th></tr>";
+					echo "<tr><th colspan='2'>" . $LANG['ocsng'][32] . "</th></tr>";
 				}
 				echo "<tr class='tab_bg_1'><td>" . $val . "</td><td><input type='checkbox' name='lockperiph[" . $key . "]'></td></tr>";
 			}
 		}
 		if ($header) {
-			echo "<tr class='tab_bg_2'><td align='center' colspan='2'><input class='submit' type='submit' name='unlock_periph' value='" . $LANG["buttons"][38] . "'></td></tr>";
+			echo "<tr class='tab_bg_2'><td align='center' colspan='2'><input class='submit' type='submit' name='unlock_periph' value='" . $LANG['buttons'][38] . "'></td></tr>";
 			echo "</table>";
 			echo "</form>";
 		} else
-			echo "<strong>" . $LANG["ocsng"][33] . "</strong>";
+			echo "<strong>" . $LANG['ocsng'][33] . "</strong>";
 		echo "</div>";
 		
 		// Search locked IP
@@ -1729,18 +1729,18 @@ function ocsEditLock($target, $ID) {
 						echo "<form method='post' action=\"$target\">";
 						echo "<input type='hidden' name='ID' value='$ID'>";
 						echo "<table class='tab_cadre'>";
-						echo "<tr><th colspan='2'>" . $LANG["ocsng"][50] . "</th></tr>";
+						echo "<tr><th colspan='2'>" . $LANG['ocsng'][50] . "</th></tr>";
 					}
 					echo "<tr class='tab_bg_1'><td>" . $val . "</td><td><input type='checkbox' name='lockip[" . $key . "]'></td></tr>";
 				}
 			}
 		}
 		if ($header) {
-			echo "<tr class='tab_bg_2'><td align='center' colspan='2'><input class='submit' type='submit' name='unlock_ip' value='" . $LANG["buttons"][38] . "'></td></tr>";
+			echo "<tr class='tab_bg_2'><td align='center' colspan='2'><input class='submit' type='submit' name='unlock_ip' value='" . $LANG['buttons'][38] . "'></td></tr>";
 			echo "</table>";
 			echo "</form>";
 		} else
-			echo "<strong>" . $LANG["ocsng"][51] . "</strong>";
+			echo "<strong>" . $LANG['ocsng'][51] . "</strong>";
 		echo "</div>";
 
 
@@ -1760,7 +1760,7 @@ function ocsEditLock($target, $ID) {
 						echo "<form method='post' action=\"$target\">";
 						echo "<input type='hidden' name='ID' value='$ID'>";
 						echo "<table class='tab_cadre'>";
-						echo "<tr><th colspan='2'>" . $LANG["ocsng"][52] . "</th></tr>";
+						echo "<tr><th colspan='2'>" . $LANG['ocsng'][52] . "</th></tr>";
 					}
 					
 					echo "<tr class='tab_bg_1'><td>" . str_replace('$$$$$',' v. ',$val) . "</td><td><input type='checkbox' name='locksoft[" . $key . "]'></td></tr>";
@@ -1768,11 +1768,11 @@ function ocsEditLock($target, $ID) {
 			}
 		}
 		if ($header) {
-			echo "<tr class='tab_bg_2'><td align='center' colspan='2'><input class='submit' type='submit' name='unlock_soft' value='" . $LANG["buttons"][38] . "'></td></tr>";
+			echo "<tr class='tab_bg_2'><td align='center' colspan='2'><input class='submit' type='submit' name='unlock_soft' value='" . $LANG['buttons'][38] . "'></td></tr>";
 			echo "</table>";
 			echo "</form>";
 		} else
-			echo "<strong>" . $LANG["ocsng"][53] . "</strong>";
+			echo "<strong>" . $LANG['ocsng'][53] . "</strong>";
 		echo "</div>";			
 
 		// Search locked computerdisks
@@ -1790,18 +1790,18 @@ function ocsEditLock($target, $ID) {
 					echo "<form method='post' action=\"$target\">";
 					echo "<input type='hidden' name='ID' value='$ID'>";
 					echo "<table class='tab_cadre'>";
-					echo "<tr><th colspan='2'>" . $LANG["ocsng"][55] . "</th></tr>";
+					echo "<tr><th colspan='2'>" . $LANG['ocsng'][55] . "</th></tr>";
 				}
 				
 				echo "<tr class='tab_bg_1'><td>$val</td><td><input type='checkbox' name='lockdisk[" . $key . "]'></td></tr>";
 			}
 		}
 		if ($header) {
-			echo "<tr class='tab_bg_2'><td align='center' colspan='2'><input class='submit' type='submit' name='unlock_disk' value='" . $LANG["buttons"][38] . "'></td></tr>";
+			echo "<tr class='tab_bg_2'><td align='center' colspan='2'><input class='submit' type='submit' name='unlock_disk' value='" . $LANG['buttons'][38] . "'></td></tr>";
 			echo "</table>";
 			echo "</form>";
 		} else
-			echo "<strong>" . $LANG["ocsng"][56] . "</strong>";
+			echo "<strong>" . $LANG['ocsng'][56] . "</strong>";
 		echo "</div>";			
 
 	}
@@ -3091,7 +3091,7 @@ function ocsUpdateSoftware($glpi_id, $entity, $ocs_id, $ocs_server_id, $cfg_ocs,
 								WHERE sID='" . $vers->fields['sID'] . "'";
 							$result3 = $DB->query($query3);
 							if ($DB->result($result3, 0, 0) == 1) 
-								putSoftwareInTrash($vers->fields['sID'],$LANG["ocsng"][54],0);
+								putSoftwareInTrash($vers->fields['sID'],$LANG['ocsng'][54],0);
 							
 							$vers->delete(array (
 								"ID" => $data['vID'],
@@ -3530,14 +3530,14 @@ function ocsChooseServer($target) {
 		echo "<form action=\"$target\" method=\"get\">";
 		echo "<div class='center'>";
 		echo "<table class='tab_cadre'>";
-		echo "<tr class='tab_bg_2'><th colspan='2'>" . $LANG["ocsng"][26] . "</th></tr>";
-		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["common"][16] . "</td><td class='center'>";
+		echo "<tr class='tab_bg_2'><th colspan='2'>" . $LANG['ocsng'][26] . "</th></tr>";
+		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['common'][16] . "</td><td class='center'>";
 		echo "<select name='ocs_server_id'>";
 		while ($ocs = $DB->fetch_array($result))
 			echo "<option value=" . $ocs["ID"] . ">" . $ocs["name"] . "</option>";
 
 		echo "</select></td></tr>";
-		echo "<tr class='tab_bg_2'><td align='center' colspan=2><input class='submit' type='submit' name='ocs_showservers' value='" . $LANG["buttons"][2] . "'></td></tr>";
+		echo "<tr class='tab_bg_2'><td align='center' colspan=2><input class='submit' type='submit' name='ocs_showservers' value='" . $LANG['buttons'][2] . "'></td></tr>";
 		echo "</table></div></form>";
 
 	}
@@ -3548,8 +3548,8 @@ function ocsChooseServer($target) {
 		echo "<form action=\"$target\" method=\"get\">";
 		echo "<div class='center'>";
 		echo "<table class='tab_cadre'>";
-		echo "<tr class='tab_bg_2'><th colspan='2'>" . $LANG["ocsng"][26] . "</th></tr>";
-		echo "<tr class='tab_bg_2'><td align='center' colspan=2>" . $LANG["ocsng"][27] . "</td></tr>";
+		echo "<tr class='tab_bg_2'><th colspan='2'>" . $LANG['ocsng'][26] . "</th></tr>";
+		echo "<tr class='tab_bg_2'><td align='center' colspan=2>" . $LANG['ocsng'][27] . "</td></tr>";
 		echo "</table></div></form>";
 	}
 }
@@ -3664,14 +3664,14 @@ function getListState($ocs_server_id) {
 	}
 
 	$values[''] = "-----";
-	$values["trash"] = $LANG["ocsconfig"][49];
-	$values["delete"] = $LANG["ocsconfig"][50];
+	$values["trash"] = $LANG['ocsconfig'][49];
+	$values["delete"] = $LANG['ocsconfig'][50];
 
 	$queryStateList = "SELECT name FROM glpi_dropdown_state";
 	$result = $DB->query($queryStateList);
 	if ($DB->numrows($result) > 0) {
 		while (($data = $DB->fetch_array($result)))
-			$values[$data["name"]] = $LANG["ocsconfig"][51] .
+			$values[$data["name"]] = $LANG['ocsconfig'][51] .
 			" " . $data["name"];
 
 	}

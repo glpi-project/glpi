@@ -216,91 +216,91 @@ class CommonItem{
 
 		switch ($this->device_type){
 			case GENERAL_TYPE :
-				return $LANG["help"][30];
+				return $LANG['help'][30];
 				break;
 			case COMPUTER_TYPE :
-				return $LANG["computers"][44];
+				return $LANG['computers'][44];
 				break;
 			case NETWORKING_TYPE :
-				return $LANG["help"][26];
+				return $LANG['help'][26];
 				break;
 			case PRINTER_TYPE :
-				return $LANG["help"][27];
+				return $LANG['help'][27];
 				break;
 			case MONITOR_TYPE : 
-				return $LANG["help"][28];
+				return $LANG['help'][28];
 				break;
 			case PERIPHERAL_TYPE : 
-				return $LANG["help"][29];
+				return $LANG['help'][29];
 				break;				
 			case SOFTWARE_TYPE : 
-				return $LANG["help"][31];
+				return $LANG['help'][31];
 				break;				
 			case CONTACT_TYPE : 
-				return $LANG["common"][18];
+				return $LANG['common'][18];
 				break;
 			case ENTERPRISE_TYPE : 
-				return $LANG["financial"][26];
+				return $LANG['financial'][26];
 				break;
 			case CONTRACT_TYPE : 
-				return $LANG["financial"][1];
+				return $LANG['financial'][1];
 				break;	
 			case CARTRIDGE_TYPE : 
-				return $LANG["cartridges"][12];
+				return $LANG['cartridges'][12];
 				break;
 			case TYPEDOC_TYPE : 
-				return $LANG["document"][7];
+				return $LANG['document'][7];
 				break;
 			case DOCUMENT_TYPE : 
 				return $LANG["Menu"][27];
 				break;					
 			case KNOWBASE_TYPE : 
-				return $LANG["title"][5];
+				return $LANG['title'][5];
 				break;	
 			case USER_TYPE : 
-				return $LANG["common"][34];
+				return $LANG['common'][34];
 				break;	
 			case TRACKING_TYPE : 
-				return $LANG["job"][38];
+				return $LANG['job'][38];
 				break;	
 			case CONSUMABLE_TYPE : 
-				return $LANG["consumables"][12];
+				return $LANG['consumables'][12];
 				break;					
 			case CARTRIDGE_ITEM_TYPE : 
-				return $LANG["cartridges"][0];
+				return $LANG['cartridges'][0];
 				break;
 			case CONSUMABLE_ITEM_TYPE : 
-				return $LANG["consumables"][0];
+				return $LANG['consumables'][0];
 				break;					
 			case SOFTWARELICENSE_TYPE : 
-				return $LANG["software"][11];
+				return $LANG['software'][11];
 				break;					
 			case LINK_TYPE : 
-				return $LANG["setup"][87];
+				return $LANG['setup'][87];
 				break;					
 			case PHONE_TYPE : 
-				return $LANG["help"][35];
+				return $LANG['help'][35];
 				break;				
 			case REMINDER_TYPE : 
-				return $LANG["title"][37];
+				return $LANG['title'][37];
 				break;	
 			case GROUP_TYPE : 
-				return $LANG["common"][35];
+				return $LANG['common'][35];
 				break;	
 			case ENTITY_TYPE : 
 				return $LANG["Menu"][37];
 				break;			
 			case AUTH_MAIL_TYPE:
-				return $LANG["login"][3];
+				return $LANG['login'][3];
 				break;
 			case AUTH_LDAP_TYPE:
-				return $LANG["login"][2];
+				return $LANG['login'][2];
 				break;
 			case OCSNG_TYPE:
-				return $LANG["ocsng"][29];
+				return $LANG['ocsng'][29];
 				break;					
 			case REGISTRY_TYPE:
-				return $LANG["title"][43];
+				return $LANG['title'][43];
 				break;					
 			case PROFILE_TYPE:
 				return $LANG["Menu"][35];
@@ -309,7 +309,7 @@ class CommonItem{
 				return $LANG["Menu"][39];
 				break;
 			case INFOCOM_TYPE:
-				return $LANG["financial"][3];
+				return $LANG['financial'][3];
 				break;	
 			default :
 				// Plugin case
@@ -430,41 +430,41 @@ class CommonItem{
 
 		if (!($comment = $CFG_GLPI["cache"]->get("comments_".$this->id_device."_".$_SESSION['glpilanguage'],"GLPI_".$this->device_type))) {
 			if ($tmp=$this->getField('serial')){
-				$comment.="<strong>".$LANG["common"][19].": "."</strong>".$tmp."<br>";
+				$comment.="<strong>".$LANG['common'][19].": "."</strong>".$tmp."<br>";
 			}
 			
 			if ($tmp=$this->getField('otherserial')){
-				$comment.="<strong>".$LANG["common"][20].": "."</strong>".$tmp."<br>";
+				$comment.="<strong>".$LANG['common'][20].": "."</strong>".$tmp."<br>";
 			}
 			if ($tmp=$this->getField('location')){
 				$tmp=getDropdownName("glpi_dropdown_locations",$tmp);
 				if (!empty($tmp)&&$tmp!='&nbsp;'){
-					$comment.="<strong>".$LANG["common"][15].": "."</strong>".$tmp."<br>";
+					$comment.="<strong>".$LANG['common'][15].": "."</strong>".$tmp."<br>";
 				}
 			}
 			if ($tmp=$this->getField('FK_users')){
 				$tmp=getUserName($tmp);
 				if (!empty($tmp)&&$tmp!='&nbsp;'){
-					$comment.="<strong>".$LANG["common"][34].": "."</strong>".$tmp."<br>";
+					$comment.="<strong>".$LANG['common'][34].": "."</strong>".$tmp."<br>";
 				}
 			}
 			if ($tmp=$this->getField('FK_groups')){
 				$tmp=getDropdownName("glpi_groups",$tmp);
 				if (!empty($tmp)&&$tmp!='&nbsp;'){
-					$comment.="<strong>".$LANG["common"][35].": "."</strong>".$tmp."<br>";
+					$comment.="<strong>".$LANG['common'][35].": "."</strong>".$tmp."<br>";
 				}
 			}
 			if ($tmp=$this->getField('tech_num')){
 				$tmp=getUserName($tmp);
 				if (!empty($tmp)&&$tmp!='&nbsp;'){
-					$comment.="<strong>".$LANG["common"][10].": "."</strong>".$tmp."<br>";
+					$comment.="<strong>".$LANG['common'][10].": "."</strong>".$tmp."<br>";
 				}
 			}
 			if ($tmp=$this->getField('contact')){
-				$comment.="<strong>".$LANG["common"][18].": "."</strong>".$tmp."<br>";
+				$comment.="<strong>".$LANG['common'][18].": "."</strong>".$tmp."<br>";
 			}
 			if ($tmp=$this->getField('contact_num')){
-				$comment.="<strong>".$LANG["common"][21].": "."</strong>".$tmp."<br>";
+				$comment.="<strong>".$LANG['common'][21].": "."</strong>".$tmp."<br>";
 			}
 			$CFG_GLPI["cache"]->save($comment,"comments_".$this->id_device."_".$_SESSION['glpilanguage'],"GLPI_".$this->device_type);
 		}

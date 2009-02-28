@@ -106,13 +106,13 @@ function includeCommonHtmlHeader($title=''){
 	echo " Ext.Updater.defaults.loadScripts = true;\n";
 	// TODO : Loading indicator in span not in div : HTML Error if doing that / maybe load a image ?
 	// JMD : validator doesn't accept html in script , must escape html element to validate
-	echo "Ext.UpdateManager.defaults.indicatorText='<\span class=\"loading-indicator\">".$LANG["common"][80]."<\/span>';\n";
+	echo "Ext.UpdateManager.defaults.indicatorText='<\span class=\"loading-indicator\">".$LANG['common'][80]."<\/span>';\n";
 	echo "//]]> \n";
 	echo "</script>\n";
 
 	echo "<!--[if IE]>" ;
 	echo "<script type=\"text/javascript\">\n";
-	echo "Ext.UpdateManager.defaults.indicatorText='<\span class=\"loading-indicator-ie\">".$LANG["common"][80]."<\/span>';\n";
+	echo "Ext.UpdateManager.defaults.indicatorText='<\span class=\"loading-indicator-ie\">".$LANG['common'][80]."<\/span>';\n";
 	echo "</script>\n";
 	echo "<![endif]-->";
 
@@ -304,7 +304,7 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="")
 
 
 //////// ASSISTANCE
-		$menu['maintain']['title']=$LANG["title"][24];
+		$menu['maintain']['title']=$LANG['title'][24];
 
 		if (haveRight("observe_ticket","1")||haveRight("show_all_ticket","1")||haveRight("create_ticket","1")){
 			$menu['maintain']['default']='/front/tracking.php';
@@ -386,7 +386,7 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="")
 		$menu['utils']['title']=$LANG["Menu"][18];
 		$menu['utils']['default']='/front/reminder.php';
 
-		$menu['utils']['content']['reminder']['title']=$LANG["title"][37];
+		$menu['utils']['content']['reminder']['title']=$LANG['title'][37];
 		$menu['utils']['content']['reminder']['page']='/front/reminder.php';
 		$menu['utils']['content']['reminder']['links']['search']='/front/reminder.php';
 		$menu['utils']['content']['reminder']['links']['add']='/front/reminder.form.php';
@@ -427,7 +427,7 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="")
 		
 		// PLUGINS
 		if (isset($PLUGIN_HOOKS["menu_entry"])&&count($PLUGIN_HOOKS["menu_entry"])){	
-			$menu['plugins']['title']=$LANG["common"][29];
+			$menu['plugins']['title']=$LANG['common'][29];
 
 			$plugins=array();
 	
@@ -508,12 +508,12 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="")
 			$menu['admin']['content']['entity']['page']='/front/entity.php';
 			$menu['admin']['content']['entity']['links']['search']='/front/entity.php';
 
-			//$menu['admin']['content']['entity']['links'][$LANG["entity"][2]]="/front/entity.form.php?ID=0"; 
+			//$menu['admin']['content']['entity']['links'][$LANG['entity'][2]]="/front/entity.form.php?ID=0"; 
 			$menu['admin']['content']['entity']['links']['add']="/front/entity.tree.php";
 		}
 
 		if (haveRight("rule_ldap","r")||haveRight("rule_ocs","r")||haveRight("rule_tracking","r")|| haveRight("rule_softwarecategories","r")){
-			$menu['admin']['content']['rule']['title']=$LANG["rulesengine"][17];
+			$menu['admin']['content']['rule']['title']=$LANG['rulesengine'][17];
 			$menu['admin']['content']['rule']['shortcut']='r';
 			$menu['admin']['content']['rule']['page']='/front/rule.php';
 			switch($option){
@@ -539,7 +539,7 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="")
 		if (haveRight("rule_dictionnary_manufacturer","r") || haveRight("rule_dictionnary_software","r") ||
 			haveRight("rule_dictionnary_model","r") || haveRight("rule_dictionnary_type","r")||
 			 haveRight("rule_dictionnary_os","r")){
-			$menu['admin']['content']['dictionnary']['title']=$LANG["rulesengine"][77];
+			$menu['admin']['content']['dictionnary']['title']=$LANG['rulesengine'][77];
 			$menu['admin']['content']['dictionnary']['shortcut']='r';
 			$menu['admin']['content']['dictionnary']['page']='/front/dictionnary.php';
 			switch($option){
@@ -627,7 +627,7 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="")
 		}
 
 		if (haveRight("transfer","r")&&isMultiEntitiesMode()){
-			$menu['admin']['content']['transfer']['title']=$LANG["transfer"][1];
+			$menu['admin']['content']['transfer']['title']=$LANG['transfer'][1];
 			$menu['admin']['content']['transfer']['shortcut']='t';
 			$menu['admin']['content']['transfer']['page']='/front/transfer.php';
 			$menu['admin']['content']['transfer']['links']['search']="/front/transfer.php";
@@ -637,7 +637,7 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="")
 			}
 		}
 
-//		$config[$LANG["common"][12]]=array("setup.php","2");
+//		$config[$LANG['common'][12]]=array("setup.php","2");
 		if (haveRight("backup","w")){
 			$menu['admin']['content']['backup']['title']=$LANG["Menu"][12];
 			$menu['admin']['content']['backup']['shortcut']='b';
@@ -653,26 +653,26 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="")
 // CONFIG
 		$config=array();
 		$addconfig=array();
-		$menu['config']['title']=$LANG["common"][12];
+		$menu['config']['title']=$LANG['common'][12];
 		$menu['config']['default']='/front/setup.php';
 
 		if (haveRight("dropdown","w")||haveRight("entity_dropdown","w")){
-			$menu['config']['content']['dropdowns']['title']=$LANG["setup"][0];
+			$menu['config']['content']['dropdowns']['title']=$LANG['setup'][0];
 			$menu['config']['content']['dropdowns']['page']='/front/setup.dropdowns.php';
 		}
 		if (haveRight("device","w")){
-			$menu['config']['content']['device']['title']=$LANG["title"][30];
+			$menu['config']['content']['device']['title']=$LANG['title'][30];
 			$menu['config']['content']['device']['page']='/front/device.php';
 		}
 
 		if (haveRight("config","w")){
-			$menu['config']['content']['config']['title']=$LANG["setup"][703];
+			$menu['config']['content']['config']['title']=$LANG['setup'][703];
 			$menu['config']['content']['config']['page']='/front/setup.config.php';
 
-			$menu['config']['content']['mailing']['title']=$LANG["setup"][704];
+			$menu['config']['content']['mailing']['title']=$LANG['setup'][704];
 			$menu['config']['content']['mailing']['page']='/front/setup.mailing.php';
 
-			$menu['config']['content']['extauth']['title']=$LANG["login"][10];
+			$menu['config']['content']['extauth']['title']=$LANG['login'][10];
 			$menu['config']['content']['extauth']['page']='/front/setup.auth.php';
 			switch ($option){
 				case "ldap" : // LDAP
@@ -699,14 +699,14 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="")
 		}
 
 		if ($CFG_GLPI["ocs_mode"]&&haveRight("config","w")){
-			$menu['config']['content']['ocsng']['title']=$LANG["setup"][134];
+			$menu['config']['content']['ocsng']['title']=$LANG['setup'][134];
 			$menu['config']['content']['ocsng']['page']='/front/setup.ocsng.php';
 			$menu['config']['content']['ocsng']['links']['search']='/front/setup.ocsng.php';
 			$menu['config']['content']['ocsng']['links']['add']='/front/ocsng.form.php';
 		}
 
 		if (haveRight("typedoc","r")){
-			$menu['config']['content']['typedoc']['title']=$LANG["document"][7];
+			$menu['config']['content']['typedoc']['title']=$LANG['document'][7];
 			$menu['config']['content']['typedoc']['page']='/front/typedoc.php';
 			$menu['config']['content']['typedoc']['hide']=true;
 			$menu['config']['content']['typedoc']['links']['search']='/front/typedoc.php';
@@ -717,7 +717,7 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="")
 
 		}
 		if (haveRight("link","r")){
-			$menu['config']['content']['link']['title']=$LANG["title"][33];
+			$menu['config']['content']['link']['title']=$LANG['title'][33];
 			$menu['config']['content']['link']['page']='/front/link.php';
 			$menu['config']['content']['link']['hide']=true;
 			$menu['config']['content']['link']['links']['search']='/front/link.php';
@@ -730,11 +730,11 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="")
 
 
 		if (haveRight("config","w")){
-			$menu['config']['content']['plugins']['title']=$LANG["common"][29];
+			$menu['config']['content']['plugins']['title']=$LANG['common'][29];
 			$menu['config']['content']['plugins']['page']='/front/setup.plugins.php';
 		}
 		echo "<div id='header'>";
-		echo "<div id='c_logo' ><a href='".$CFG_GLPI["root_doc"]."/front/central.php'  title=\"".$LANG["central"][5]."\"></a></div>";
+		echo "<div id='c_logo' ><a href='".$CFG_GLPI["root_doc"]."/front/central.php'  title=\"".$LANG['central'][5]."\"></a></div>";
 		
 		// Les préférences + lien déconnexion 
 		echo "<div id='c_preference' >";
@@ -743,12 +743,12 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="")
 		if (isset($_SESSION['glpiextauth'])&&$_SESSION['glpiextauth']){
 			echo "?noAUTO=1";
 		}
-		echo "\"  title=\"".$LANG["central"][6]."\">".$LANG["central"][6]."  </a>";
+		echo "\"  title=\"".$LANG['central'][6]."\">".$LANG['central'][6]."  </a>";
 		echo "(";
 		echo formatUserName (0,$_SESSION["glpiname"],$_SESSION["glpirealname"],$_SESSION["glpifirstname"],0,20);
 		echo ")</li>\n"; 
 
-		echo "	<li><a href='".(empty($CFG_GLPI["centralhelp_url"])?"http://glpi-project.org/help-central":$CFG_GLPI["centralhelp_url"])."' target='_blank' title='".$LANG["central"][7]."'>    ".$LANG["central"][7]."</a></li>\n"; 
+		echo "	<li><a href='".(empty($CFG_GLPI["centralhelp_url"])?"http://glpi-project.org/help-central":$CFG_GLPI["centralhelp_url"])."' target='_blank' title='".$LANG['central'][7]."'>    ".$LANG['central'][7]."</a></li>\n"; 
 
 		echo "	<li> <a href=\"".$CFG_GLPI["root_doc"]."/front/user.form.my.php\" title=\"".$LANG["Menu"][11]."\" >".$LANG["Menu"][11]."   </a></li>\n"; 
 		echo "</ul>\n"; 
@@ -759,8 +759,8 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="")
 		echo "<div id='c_recherche' >\n"; 
 
 		echo "<form method='get' action='".$CFG_GLPI["root_doc"]."/front/search.php'>\n"; 
-		echo "	<div id='boutonRecherche'><input type='image' src='".$CFG_GLPI["root_doc"]."/pics/ok2.png'  value='OK'   title=\"".$LANG["buttons"][2]."\"  alt=\"".$LANG["buttons"][2]."\"  ></div>\n"; 
-		echo "	<div id='champRecherche'><input size='15' type='text' name='globalsearch' value='".$LANG["buttons"][0]."' onfocus=\"this.value='';\" ></div>	\n"; 		
+		echo "	<div id='boutonRecherche'><input type='image' src='".$CFG_GLPI["root_doc"]."/pics/ok2.png'  value='OK'   title=\"".$LANG['buttons'][2]."\"  alt=\"".$LANG['buttons'][2]."\"  ></div>\n"; 
+		echo "	<div id='champRecherche'><input size='15' type='text' name='globalsearch' value='".$LANG['buttons'][0]."' onfocus=\"this.value='';\" ></div>	\n"; 		
 
 		echo "</form>\n"; 
 
@@ -851,7 +851,7 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="")
 		echo "<ul>";
 
 		// Display item
-		echo "	<li><a   href='".$CFG_GLPI["root_doc"]."/front/central.php' title='".$LANG["common"][56]."' >".$LANG["common"][56]." </a> ></li>";
+		echo "	<li><a   href='".$CFG_GLPI["root_doc"]."/front/central.php' title='".$LANG['common'][56]."' >".$LANG['common'][56]." </a> ></li>";
 
 		if (isset($menu[$sector])){
 			$link="/front/central.php";
@@ -869,16 +869,16 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="")
 			// Add item
 			echo "<li>";
 			if (isset($menu[$sector]['content'][$item]['links']['add'])){
-				echo "<a href='".$CFG_GLPI["root_doc"].$menu[$sector]['content'][$item]['links']['add']."'><img  src='".$CFG_GLPI["root_doc"]."/pics/menu_add.png' title='".$LANG["buttons"][8]."' alt='".$LANG["buttons"][8]."'></a>";
+				echo "<a href='".$CFG_GLPI["root_doc"].$menu[$sector]['content'][$item]['links']['add']."'><img  src='".$CFG_GLPI["root_doc"]."/pics/menu_add.png' title='".$LANG['buttons'][8]."' alt='".$LANG['buttons'][8]."'></a>";
 			} else {
-				echo "<img src='".$CFG_GLPI["root_doc"]."/pics/menu_add_off.png' title='".$LANG["buttons"][8]."' alt='".$LANG["buttons"][8]."'>";
+				echo "<img src='".$CFG_GLPI["root_doc"]."/pics/menu_add_off.png' title='".$LANG['buttons'][8]."' alt='".$LANG['buttons'][8]."'>";
 			}
 			echo "</li>";
 			// Search Item
 			if (isset($menu[$sector]['content'][$item]['links']['search'])){
-				echo "<li><a href='".$CFG_GLPI["root_doc"].$menu[$sector]['content'][$item]['links']['search']."' ><img  src='".$CFG_GLPI["root_doc"]."/pics/menu_search.png' title='".$LANG["buttons"][0]."' alt='".$LANG["buttons"][0]."'></a></li>";
+				echo "<li><a href='".$CFG_GLPI["root_doc"].$menu[$sector]['content'][$item]['links']['search']."' ><img  src='".$CFG_GLPI["root_doc"]."/pics/menu_search.png' title='".$LANG['buttons'][0]."' alt='".$LANG['buttons'][0]."'></a></li>";
 			} else {
-				echo "<li><img src='".$CFG_GLPI["root_doc"]."/pics/menu_search_off.png' title='".$LANG["buttons"][0]."' alt='".$LANG["buttons"][0]."'></li>";
+				echo "<li><img src='".$CFG_GLPI["root_doc"]."/pics/menu_search_off.png' title='".$LANG['buttons'][0]."' alt='".$LANG['buttons'][0]."'></li>";
 			}
 			
 			// Links
@@ -889,16 +889,16 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="")
 						case "search":
 							break;
 						case "template":
-							echo "<li><a href='".$CFG_GLPI["root_doc"].$val."' ><img title='".$LANG["common"][8]."' alt='".$LANG["common"][8]."' src='".$CFG_GLPI["root_doc"]."/pics/menu_addtemplate.png' > </a></li>";
+							echo "<li><a href='".$CFG_GLPI["root_doc"].$val."' ><img title='".$LANG['common'][8]."' alt='".$LANG['common'][8]."' src='".$CFG_GLPI["root_doc"]."/pics/menu_addtemplate.png' > </a></li>";
 							break;
 						case "showall":
-							echo "<li><a href='".$CFG_GLPI["root_doc"].$val."' ><img title='".$LANG["buttons"][40]."' alt='".$LANG["buttons"][40]."' src='".$CFG_GLPI["root_doc"]."/pics/menu_showall.png' > </a></li>";
+							echo "<li><a href='".$CFG_GLPI["root_doc"].$val."' ><img title='".$LANG['buttons'][40]."' alt='".$LANG['buttons'][40]."' src='".$CFG_GLPI["root_doc"]."/pics/menu_showall.png' > </a></li>";
 							break;
 						case "summary":
-							echo "<li><a href='".$CFG_GLPI["root_doc"].$val."' ><img title='".$LANG["state"][11]."' alt='".$LANG["state"][11]."' src='".$CFG_GLPI["root_doc"]."/pics/menu_show.png' > </a></li>";
+							echo "<li><a href='".$CFG_GLPI["root_doc"].$val."' ><img title='".$LANG['state'][11]."' alt='".$LANG['state'][11]."' src='".$CFG_GLPI["root_doc"]."/pics/menu_show.png' > </a></li>";
 							break;
 						case "config":
-							echo "<li><a href='".$CFG_GLPI["root_doc"].$val."' ><img title='".$LANG["common"][12]."' alt='".$LANG["common"][12]."' src='".$CFG_GLPI["root_doc"]."/pics/menu_config.png' > </a></li>";
+							echo "<li><a href='".$CFG_GLPI["root_doc"].$val."' ><img title='".$LANG['common'][12]."' alt='".$LANG['common'][12]."' src='".$CFG_GLPI["root_doc"]."/pics/menu_config.png' > </a></li>";
 							break;
 
 						default :
@@ -960,7 +960,7 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="")
 		// Bookmark load
 		echo "<li>";
 		echo "  <a href='#' onClick=\"var w=window.open('".$CFG_GLPI["root_doc"]."/front/popup.php?popup=load_bookmark' ,'glpibookmarks', 'height=400, width=600, top=100, left=100, scrollbars=yes' );w.focus();\">"; 
-		echo "   <img src='".$CFG_GLPI["root_doc"]."/pics/bookmark.png' title=\"".$LANG["buttons"][52]." ".$LANG["bookmark"][1]."\"  alt=\"".$LANG["buttons"][52]." ".$LANG["bookmark"][1]."\"    >"; 
+		echo "   <img src='".$CFG_GLPI["root_doc"]."/pics/bookmark.png' title=\"".$LANG['buttons'][52]." ".$LANG['bookmark'][1]."\"  alt=\"".$LANG['buttons'][52]." ".$LANG['bookmark'][1]."\"    >"; 
 		echo "  </a>";
 		echo "</li>";
 
@@ -986,7 +986,7 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="")
 	if ($DB->isSlave() && !$DB->first_connection)
 	{	
 		echo "<div id='dbslave-float'>";		
-		echo "<a href='#see_debug'>".$LANG["setup"][809]."</a>";
+		echo "<a href='#see_debug'>".$LANG['setup'][809]."</a>";
 		echo "</div>";
 	}
 	
@@ -1057,16 +1057,16 @@ function helpHeader($title,$url='') {
 
 	// Main Headline
 	echo "<div id='header'>";
-		echo "<div id='c_logo' ><a href=\"".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php\" accesskey=\"0\"  title=\"".$LANG["central"][5]."\"><span class='invisible'>Logo</span></a></div>";
+		echo "<div id='c_logo' ><a href=\"".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php\" accesskey=\"0\"  title=\"".$LANG['central'][5]."\"><span class='invisible'>Logo</span></a></div>";
 
 		// Les préférences + lien déconnexion 
 		echo "<div id='c_preference' >";
-		echo" <ul><li id='deconnexion'><a href=\"".$CFG_GLPI["root_doc"]."/logout.php\"  title=\"".$LANG["central"][6]."\">".$LANG["central"][6]."  </a>";
+		echo" <ul><li id='deconnexion'><a href=\"".$CFG_GLPI["root_doc"]."/logout.php\"  title=\"".$LANG['central'][6]."\">".$LANG['central'][6]."  </a>";
 		echo "(";
 		echo formatUserName (0,$_SESSION["glpiname"],$_SESSION["glpirealname"],$_SESSION["glpifirstname"],0,20);
 		echo ")</li>\n"; 
 
-		echo "	<li><a href='".(empty($CFG_GLPI["helpdeskhelp_url"])?"http://glpi-project.org/help-helpdesk":$CFG_GLPI["helpdeskhelp_url"])."' target='_blank' title='".$LANG["central"][7]."'>    ".$LANG["central"][7]."</a></li>\n"; 
+		echo "	<li><a href='".(empty($CFG_GLPI["helpdeskhelp_url"])?"http://glpi-project.org/help-helpdesk":$CFG_GLPI["helpdeskhelp_url"])."' target='_blank' title='".$LANG['central'][7]."'>    ".$LANG['central'][7]."</a></li>\n"; 
 		echo "	<li> <a href=\"".$CFG_GLPI["root_doc"]."/front/user.form.my.php\" title=\"".$LANG["Menu"][11]."\" >".$LANG["Menu"][11]."   </a></li>\n"; 
 					
 		echo "</ul>\n"; 
@@ -1093,7 +1093,7 @@ function helpHeader($title,$url='') {
 		// Ticket
 		if (haveRight("create_ticket","1")){
 			echo "	<li id='menu1' >";
-			echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php\"  title=\"".$LANG["job"][13]."\" class='itemP'>".$LANG["Menu"][31]."</a>";
+			echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php\"  title=\"".$LANG['job'][13]."\" class='itemP'>".$LANG["Menu"][31]."</a>";
 			
 			echo "</li>";		
 		}
@@ -1101,7 +1101,7 @@ function helpHeader($title,$url='') {
 		//  Suivi  ticket
 		if (haveRight("observe_ticket","1")){
 			echo "	<li id='menu2' >";
-			echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php?show=user\" title=\"".$LANG["title"][10]."\"   class='itemP'>".$LANG["title"][28]."</a>";
+			echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php?show=user\" title=\"".$LANG['title'][10]."\"   class='itemP'>".$LANG['title'][28]."</a>";
 			
 			echo "</li>";
 		}
@@ -1116,7 +1116,7 @@ function helpHeader($title,$url='') {
 		// FAQ
 		if (haveRight("faq","r")){
 			echo "	<li id='menu4' >";
-			echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/helpdesk.faq.php\" title=\"".$LANG["knowbase"][1]."\" class='itemP'>".$LANG["Menu"][20]."</a>";
+			echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/helpdesk.faq.php\" title=\"".$LANG['knowbase'][1]."\" class='itemP'>".$LANG["Menu"][20]."</a>";
 			
 			echo "</li>";
 		}
@@ -1140,7 +1140,7 @@ function helpHeader($title,$url='') {
 			}
 			asort($list);
 			echo "	<li id='menu5' onmouseover=\"javascript:menuAff('menu5','menu');\" >";
-			echo "<a href='#' title=\"".$LANG["common"][29]."\"  class='itemP'>".$LANG["common"][29]."</a>";  // default none
+			echo "<a href='#' title=\"".$LANG['common'][29]."\"  class='itemP'>".$LANG['common'][29]."</a>";  // default none
 			echo "<ul class='ssmenu'>"; 
 			// list menu item 
 			foreach ($list as $key => $val) {
@@ -1214,7 +1214,7 @@ function simpleHeader($title,$links=array()) {
 
 	// Main Headline
 	echo "<div id='header'>";
-	echo "<div id='c_logo' ><a href=\"".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php\" accesskey=\"0\"  title=\"".$LANG["central"][5]."\"><span class='invisible'>Logo</span></a></div>";
+	echo "<div id='c_logo' ><a href=\"".$CFG_GLPI["root_doc"]."/front/helpdesk.public.php\" accesskey=\"0\"  title=\"".$LANG['central'][5]."\"><span class='invisible'>Logo</span></a></div>";
 
 	// Les préférences + lien déconnexion 
 	echo "<div id='c_preference' >";
@@ -1456,7 +1456,7 @@ function commonFooter($keepDB=false) {
 	echo "</span></td>";
 
 	if (!empty($CFG_GLPI["founded_new_version"]))
-		echo "<td class='copyright'>".$LANG["setup"][301]."<a href='http://www.glpi-project.org' target='_blank' title='".$LANG["setup"][302]."'> ".$CFG_GLPI["founded_new_version"]."</a></td>";
+		echo "<td class='copyright'>".$LANG['setup'][301]."<a href='http://www.glpi-project.org' target='_blank' title='".$LANG['setup'][302]."'> ".$CFG_GLPI["founded_new_version"]."</a></td>";
 
 	echo "<td class='right'>";
 	echo "<a href=\"http://glpi-project.org/\">";
@@ -1637,32 +1637,32 @@ function printHelpDesk ($ID,$from_helpdesk) {
 	echo "<input type='hidden' name='FK_entities' value='".$_SESSION["glpiactive_entity"]."'>";
 	echo "<div class='center'><table  class='tab_cadre'>";
 
-	echo "<tr><th colspan='2'>".$LANG["job"][11].": ";
+	echo "<tr><th colspan='2'>".$LANG['job'][11].": ";
 	if (isMultiEntitiesMode()){
 		echo "&nbsp;(".getDropdownName("glpi_entities",$_SESSION["glpiactive_entity"]).")";
 	}
 
 	echo "</th></tr>";
 	echo "<tr class='tab_bg_1'>";
-	echo "<td>".$LANG["joblist"][2].": </td>";
+	echo "<td>".$LANG['joblist'][2].": </td>";
 	echo "<td>";
 	dropdownPriority("priority",$priority);
 	echo "</td></tr>";
 	if(isAuthorMailingActivatedForHelpdesk()){
 		echo "<tr class='tab_bg_1'>";
-		echo "<td>".$LANG["help"][8].":</td>";
+		echo "<td>".$LANG['help'][8].":</td>";
 		echo "<td>";
 		dropdownYesNo('emailupdates',$emailupdates);
 		echo "</td></tr>";
 		echo "<tr class='tab_bg_1'>";
-		echo "<td>".$LANG["help"][11].":</td>";
+		echo "<td>".$LANG['help'][11].":</td>";
 		echo "<td>	<input name='uemail' value=\"$email\" size='50' onchange=\"emailupdates.value='1'\">";
 		echo "</td></tr>";
 	}
 
 	if ($_SESSION["glpiactiveprofile"]["helpdesk_hardware"]!=0){
 		echo "<tr class='tab_bg_1'>";
-		echo "<td>".$LANG["help"][24].": </td>";
+		echo "<td>".$LANG['help'][24].": </td>";
 		echo "<td class='center'>";
 		dropdownMyDevices($_SESSION["glpiID"],$_SESSION["glpiactive_entity"]);
 		
@@ -1671,14 +1671,14 @@ function printHelpDesk ($ID,$from_helpdesk) {
 	}
 
 	echo "<tr class='tab_bg_1'>";
-	echo "<td>".$LANG["common"][36].":</td><td>";
+	echo "<td>".$LANG['common'][36].":</td><td>";
 
 	dropdownValue("glpi_dropdown_tracking_category","category",$category);
 	echo "</td>";
 	echo "</tr>";
 
 	echo "<tr class='tab_bg_1'>";
-	echo "<td class='center'>".$LANG["common"][57].":</td>";
+	echo "<td class='center'>".$LANG['common'][57].":</td>";
 	echo "<td class='center'><input type='text' maxlength='250' size='60' name='name' value=\"$title\"></td>";
 	echo "</tr>";
 
@@ -1690,14 +1690,14 @@ function printHelpDesk ($ID,$from_helpdesk) {
 	$max_size/=1024*1024;
 	$max_size=round($max_size,1);
 
-	echo "<tr class='tab_bg_1'><td>".$LANG["document"][2]." (".$max_size." Mb max):	";
-	echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/aide.png\" class='pointer' alt=\"".$LANG["central"][7]."\" onclick=\"window.open('".$CFG_GLPI["root_doc"]."/front/typedoc.list.php','Help','scrollbars=1,resizable=1,width=1000,height=800')\">";
+	echo "<tr class='tab_bg_1'><td>".$LANG['document'][2]." (".$max_size." Mb max):	";
+	echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/aide.png\" class='pointer' alt=\"".$LANG['central'][7]."\" onclick=\"window.open('".$CFG_GLPI["root_doc"]."/front/typedoc.list.php','Help','scrollbars=1,resizable=1,width=1000,height=800')\">";
 	echo "</td>";
 	echo "<td><input type='file' name='filename' value=\"\" size='25'></td>";
 	echo "</tr>";
 
 	echo "<tr class='tab_bg_1'>";
-	echo "<td colspan='2' class='center'> <input type='submit' value=\"".$LANG["help"][14]."\" class='submit'>";
+	echo "<td colspan='2' class='center'> <input type='submit' value=\"".$LANG['help'][14]."\" class='submit'>";
 	echo "</td></tr>";
 
 	echo "</table>";
@@ -1721,11 +1721,11 @@ function printPagerForm ($action="") {
 	
 	if ($action) {
 		echo "<form method='POST' action=\"$action\">\n";
-		echo "<span>".$LANG["pager"][4]."&nbsp;</span>";
+		echo "<span>".$LANG['pager'][4]."&nbsp;</span>";
 		echo "<select name='glpilist_limit' onChange='submit()'>";
 	} else {
 		echo "<form method='POST' action =''>\n";
-		echo "<span>".$LANG["pager"][4]."&nbsp;</span>";
+		echo "<span>".$LANG['pager'][4]."&nbsp;</span>";
 		echo "<select name='glpilist_limit' onChange='reloadTab(\"glpilist_limit=\"+this.value)'>";		
 	}
 	if (isset($_SESSION['glpilist_limit'])){
@@ -1743,7 +1743,7 @@ function printPagerForm ($action="") {
 	echo "<option value='9999999' ".(($list_limit==9999999)?" selected ":"").">9999999</option>\n";	
 
 	echo "</select><span>&nbsp;";
-	echo $LANG["pager"][5];
+	echo $LANG['pager'][5];
 	echo "</span>";
 	echo "</form>\n";
 }
@@ -1799,13 +1799,13 @@ function printPager($start,$numrows,$target,$parameters,$item_type_output=0,$ite
 	if (!$start==0) {
 		echo "<th class='left'>";
 		echo "<a href=\"$target?$parameters&amp;start=0\">";
-		echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/first.png\" alt='".$LANG["buttons"][33]."' title='".$LANG["buttons"][33]."'>";
+		echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/first.png\" alt='".$LANG['buttons'][33]."' title='".$LANG['buttons'][33]."'>";
 
 
 		echo "</a></th>\n";
 		echo "<th class='left'>";
 		echo "<a href=\"$target?$parameters&amp;start=$back\">";
-		echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/left.png\" alt='".$LANG["buttons"][12]."' title='".$LANG["buttons"][12]."'>";
+		echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/left.png\" alt='".$LANG['buttons'][12]."' title='".$LANG['buttons'][12]."'>";
 		echo "</a></th>\n";
 	}
 
@@ -1826,34 +1826,34 @@ function printPager($start,$numrows,$target,$parameters,$item_type_output=0,$ite
 			echo "<input type='hidden' name=\"".substr($split[$i],0,$pos)."\" value=\"".substr($split[$i],$pos+1)."\">";
 		}
 		echo "<select name='display_type'>";
-		echo "<option value='".PDF_OUTPUT_LANDSCAPE."'>".$LANG["buttons"][27]." ".$LANG["common"][68]."</option>";
-		echo "<option value='".PDF_OUTPUT_PORTRAIT."'>".$LANG["buttons"][27]." ".$LANG["common"][69]."</option>";
-		echo "<option value='".SYLK_OUTPUT."'>".$LANG["buttons"][28]."</option>";
-		echo "<option value='".CSV_OUTPUT."'>".$LANG["buttons"][44]."</option>";
-		echo "<option value='-".PDF_OUTPUT_LANDSCAPE."'>".$LANG["buttons"][29]." ".$LANG["common"][68]."</option>";
-		echo "<option value='-".PDF_OUTPUT_PORTRAIT."'>".$LANG["buttons"][29]." ".$LANG["common"][69]."</option>";
-		echo "<option value='-".SYLK_OUTPUT."'>".$LANG["buttons"][30]."</option>";
-		echo "<option value='-".CSV_OUTPUT."'>".$LANG["buttons"][45]."</option>";
+		echo "<option value='".PDF_OUTPUT_LANDSCAPE."'>".$LANG['buttons'][27]." ".$LANG['common'][68]."</option>";
+		echo "<option value='".PDF_OUTPUT_PORTRAIT."'>".$LANG['buttons'][27]." ".$LANG['common'][69]."</option>";
+		echo "<option value='".SYLK_OUTPUT."'>".$LANG['buttons'][28]."</option>";
+		echo "<option value='".CSV_OUTPUT."'>".$LANG['buttons'][44]."</option>";
+		echo "<option value='-".PDF_OUTPUT_LANDSCAPE."'>".$LANG['buttons'][29]." ".$LANG['common'][68]."</option>";
+		echo "<option value='-".PDF_OUTPUT_PORTRAIT."'>".$LANG['buttons'][29]." ".$LANG['common'][69]."</option>";
+		echo "<option value='-".SYLK_OUTPUT."'>".$LANG['buttons'][30]."</option>";
+		echo "<option value='-".CSV_OUTPUT."'>".$LANG['buttons'][45]."</option>";
 		echo "</select>";
-		echo "&nbsp;<input type='image' name='export'  src='".$CFG_GLPI["root_doc"]."/pics/greenbutton.png' title='".$LANG["buttons"][31]."' value='".$LANG["buttons"][31]."'>";
+		echo "&nbsp;<input type='image' name='export'  src='".$CFG_GLPI["root_doc"]."/pics/greenbutton.png' title='".$LANG['buttons'][31]."' value='".$LANG['buttons'][31]."'>";
 		echo "</form>";
 		echo "</td>" ;
 	}
 
 	echo "<td  width='50%'  class='tab_bg_2'><strong>";
 
-	echo $LANG["pager"][2]."&nbsp;".$current_start."&nbsp;".$LANG["pager"][1]."&nbsp;".$current_end."&nbsp;".$LANG["pager"][3]."&nbsp;".$numrows."&nbsp;";
+	echo $LANG['pager'][2]."&nbsp;".$current_start."&nbsp;".$LANG['pager'][1]."&nbsp;".$current_end."&nbsp;".$LANG['pager'][3]."&nbsp;".$numrows."&nbsp;";
 	echo "</strong></td>\n";
 
 	// Forward and fast forward button
 	if ($forward<$numrows) {
 		echo "<th class='right'>";
 		echo "<a href=\"$target?$parameters&amp;start=$forward\">";
-		echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/right.png\" alt='".$LANG["buttons"][11]."' title='".$LANG["buttons"][11]."'>";
+		echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/right.png\" alt='".$LANG['buttons'][11]."' title='".$LANG['buttons'][11]."'>";
 		echo "</a></th>\n";
 		echo "<th class='right'>";
 		echo "<a href=\"$target?$parameters&amp;start=$end\">";
-		echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/last.png\" alt='".$LANG["buttons"][32]."' title='".$LANG["buttons"][32]."'>";
+		echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/last.png\" alt='".$LANG['buttons'][32]."' title='".$LANG['buttons'][32]."'>";
 		echo "</a></th>\n";
 	}
 
@@ -1912,9 +1912,9 @@ function printAjaxPager($title,$start,$numrows) {
 	// Back and fast backward button
 	if (!$start==0) {
 		echo "<th class='left'><a href='javascript:reloadTab(\"start=0\");' >"
-			. "<img src=\"".$CFG_GLPI["root_doc"]."/pics/first.png\" alt='".$LANG["buttons"][33]."' title='".$LANG["buttons"][33] . "'>"
+			. "<img src=\"".$CFG_GLPI["root_doc"]."/pics/first.png\" alt='".$LANG['buttons'][33]."' title='".$LANG['buttons'][33] . "'>"
 			. "</a></th><th class='left'><a href='javascript:reloadTab(\"start=$back\");' >"
-			. "<img src=\"".$CFG_GLPI["root_doc"]."/pics/left.png\" alt='".$LANG["buttons"][12]."' title='".$LANG["buttons"][12] . "'>"
+			. "<img src=\"".$CFG_GLPI["root_doc"]."/pics/left.png\" alt='".$LANG['buttons'][12]."' title='".$LANG['buttons'][12] . "'>"
 			. "</th>";
 	}
 
@@ -1925,15 +1925,15 @@ function printAjaxPager($title,$start,$numrows) {
 
 	// Print the "where am I?" 
 	echo "<td  width='50%'  class='tab_bg_2'><strong>";
-	echo $LANG["pager"][2]."&nbsp;".$current_start."&nbsp;".$LANG["pager"][1]."&nbsp;".$current_end."&nbsp;".$LANG["pager"][3]."&nbsp;".$numrows."&nbsp;";
+	echo $LANG['pager'][2]."&nbsp;".$current_start."&nbsp;".$LANG['pager'][1]."&nbsp;".$current_end."&nbsp;".$LANG['pager'][3]."&nbsp;".$numrows."&nbsp;";
 	echo "</strong></td>\n";
 
 	// Forward and fast forward button
 	if ($forward<$numrows) {
 		echo "<th class='right'><a href='javascript:reloadTab(\"start=$forward\");' >"
-			. "<img src=\"".$CFG_GLPI["root_doc"]."/pics/right.png\" alt='".$LANG["buttons"][11]."' title='".$LANG["buttons"][11] . "'>"
+			. "<img src=\"".$CFG_GLPI["root_doc"]."/pics/right.png\" alt='".$LANG['buttons'][11]."' title='".$LANG['buttons'][11] . "'>"
 			. "</a></th><th class='right'><a href='javascript:reloadTab(\"start=$end\");' >"
-			. "<img src=\"".$CFG_GLPI["root_doc"]."/pics/last.png\" alt='".$LANG["buttons"][32]."' title='".$LANG["buttons"][32] . "'>"
+			. "<img src=\"".$CFG_GLPI["root_doc"]."/pics/last.png\" alt='".$LANG['buttons'][32]."' title='".$LANG['buttons'][32] . "'>"
 			. "</th>";
 	}
 
@@ -2213,13 +2213,13 @@ function showNotesForm($target,$type,$id){
 	echo "<div class='center'>";
 	echo "<table class='tab_cadre_fixe' >";
 	echo "<tr><th align='center' >";
-	echo $LANG["title"][37];
+	echo $LANG['title'][37];
 	echo "</th></tr>";
 	echo "<tr><td valign='middle' align='center' class='tab_bg_1' ><textarea class='textarea_notes' cols='100' rows='35' name='notes' >".$ci->getField('notes')."</textarea></td></tr>";
 	echo "<tr><td class='tab_bg_2' align='center' >\n";
 	echo "<input type='hidden' name='ID' value=$id>";
 	if ($canedit) {
-		echo "<input type='submit' name='update' value=\"".$LANG["buttons"][7]."\" class='submit'>";
+		echo "<input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit'>";
 	}
 	echo "</td></tr>\n";
 	echo "</table></div>";
@@ -2259,7 +2259,7 @@ function glpi_flush(){
 function displayProgressBar($width,$percent){
 	global $LANG;
 	$percentwidth=floor($percent*$width/100);
-	echo str_pad("<div class='center'><table class='tab_cadre' width='$width'><tr><td width='$width' align='center'> ".$LANG["common"][47]."&nbsp;".$percent."%</td></tr><tr><td><table><tr><td bgcolor='red'  width='$percentwidth' height='20'>&nbsp;</td></tr></table></td></tr></table></div>\n",4096);
+	echo str_pad("<div class='center'><table class='tab_cadre' width='$width'><tr><td width='$width' align='center'> ".$LANG['common'][47]."&nbsp;".$percent."%</td></tr><tr><td><table><tr><td bgcolor='red'  width='$percentwidth' height='20'>&nbsp;</td></tr></table></td></tr></table></div>\n",4096);
 	glpi_flush();
 }
 /**
@@ -2296,9 +2296,9 @@ function printCleanArray($tab,$pad=0){
 function displayBackLink(){
 	global $LANG;
 	if (isset($_SERVER['HTTP_REFERER'])){
-		echo "<a href='".$_SERVER['HTTP_REFERER']."'>".$LANG["buttons"][13]."</a>";
+		echo "<a href='".$_SERVER['HTTP_REFERER']."'>".$LANG['buttons'][13]."</a>";
 	} else {
-		echo "<a href='javascript:history.back();'>".$LANG["buttons"][13]."</a>";
+		echo "<a href='javascript:history.back();'>".$LANG['buttons'][13]."</a>";
 	}
 }
 
@@ -2338,7 +2338,7 @@ function showProfileSelecter($target){
 				closeAction:'hide',
 				modal: true,
 				autoScroll: true,
-				title: \"".$LANG["entity"][10]."\",
+				title: \"".$LANG['entity'][10]."\",
 				autoLoad: '".$CFG_GLPI['root_doc']."/ajax/entitytree.php?target=$target'
 			});
 		";
