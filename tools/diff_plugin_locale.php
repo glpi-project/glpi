@@ -12,7 +12,7 @@ function checkOne ($name, $tab="") {
 		$dir=opendir($name."/trunk/locales");
 		while (($file = readdir($dir)) !== false) {
 			if (strpos($file, ".php") && $file!="fr_FR.php")
-				passthru("php $cmd $tab $name/trunk/locales/fr_FR.php $name/trunk/locales/$file\n");
+				passthru("php $cmd $name/trunk/locales/fr_FR.php $name/trunk/locales/$file $tab\n");
 		}
 		closedir($dir);
 	} else {
@@ -59,31 +59,33 @@ if (isset($_SERVER["argc"]) && $_SERVER["argc"]==2 && $_SERVER["argv"][1]=="all"
 	}
 	closedir($dir);
 
-} else if (isset($_SERVER["argc"]) && $_SERVER["argc"]==4) {
+} else if (isset($_SERVER["argc"]) && $_SERVER["argc"]>=3) {
 
-require $_SERVER["argv"][2];
-isset($GLOBALS[$_SERVER["argv"][1]]) or die ($_SERVER["argv"][1] . " not defined in " . $_SERVER["argv"][2] . "\n");
-$from = $GLOBALS[$_SERVER["argv"][1]];
+$nomtab = ($_SERVER["argc"]>=4 ? $_SERVER["argv"][3] : "LANG");
+
+require $_SERVER["argv"][1];
+isset($GLOBALS[$nomtab]) or die ($nomtab . " not defined in " . $_SERVER["argv"][1] . "\n");
+$from = $GLOBALS[$nomtab];
 
 unset ($GLOBALS[$_SERVER["argv"][1]]);
 
-require $_SERVER["argv"][3];
-isset($GLOBALS[$_SERVER["argv"][1]]) or die ($_SERVER["argv"][1] . " not defined in " . $_SERVER["argv"][3] . "\n");
-$dest = $GLOBALS[$_SERVER["argv"][1]];
+require $_SERVER["argv"][2];
+isset($GLOBALS[$nomtab]) or die ($nomtab . " not defined in " . $_SERVER["argv"][2] . "\n");
+$dest = $GLOBALS[$nomtab];
 
 $nb=0;
 //print_r($GLOBALS);
 
-printf ("Contrôle %s dans %s\n", $_SERVER["argv"][1], $_SERVER["argv"][3]);
-$nb += diffTab($from, $dest, '$'.$_SERVER["argv"][1]);
-printf ("Contrôle %s dans %s\n", $_SERVER["argv"][1], $_SERVER["argv"][2]);
-$nb += diffTab($dest, $from, '$'.$_SERVER["argv"][1]);
+printf ("Contrôle %s dans %s\n", $nomtab, $_SERVER["argv"][2]);
+$nb += diffTab($from, $dest, '$'.$nomtab);
+printf ("Contrôle %s dans %s\n", $nomtab, $_SERVER["argv"][1]);
+$nb += diffTab($dest, $from, '$'.$nomtab);
 
 if ($nb)	echo "$nb erreur(s) détectée(s) : au boulot !\n";
 else		echo "C'est bon :)\n";
 
 } else {
-	echo "\nusage $cmd  TABLEAU  langue1   langue2\n";
+	echo "\nusage $cmd  langue1   langue2   [ nomtableau | LANG ]\n";
 	echo "\nusage $cmd  all\n\n";
 }
 ?>
