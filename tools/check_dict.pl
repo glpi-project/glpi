@@ -33,14 +33,24 @@ print "USAGE check_dict.pl dico_file [1=count_all_entries]\n Must to be launch i
 exit();
 }
 
-$badwritten=`grep -r --exclude-dir=files --exclude-dir=.svn "\\\$\[A-Z_\]*LANG\[A-Z_\]*\\\['" * | wc -l`;
+$badwritten=`grep -r --exclude-dir=files --exclude-dir=.svn "\\\$LANG\\\['" * | wc -l`;
+
 if ($badwritten!=0){
 	print "WRONG dict uses:\n";
-	$badwritten=`grep -r  --exclude-dir=files --exclude-dir=.svn -n "\\\$\[A-Z_\]*LANG\[A-Z_\]*\\\['" *`;
+	$badwritten=`grep -r  --exclude-dir=files --exclude-dir=.svn -n "\\\$LANG\\\['" *`;
 	print $badwritten;
 	print "\n\n";
 }
 
+$badwritten2=`grep -r --exclude-dir=files --exclude-dir=.svn "\\\$LANG\\\[\\\"[a-zA-Z_]*\\\"\\\]\\\[[0-9]*['\\\"a-zA-Z]" * | wc -l`;
+
+
+if ($badwritten2!=0){
+	print "WRONG dict uses:\n";
+	$badwritten2=`grep -r --exclude-dir=files --exclude-dir=.svn "\\\$LANG\\\[\\\"[a-zA-Z_]*\\\"\\\]\\\[[0-9]*['\\\"a-zA-Z]" * `;
+	print $badwritten2;
+	print "\n\n";
+}
 
 $count_all=0;
 if (length($ARGV[1])>0){
@@ -56,7 +66,7 @@ close(INFO);
 
 foreach (@lines)
 {
-	if ($_=~m/(\$[A-Z_]*LANG[A-Z_]*)\[\"([a-zA-Z_]+)\"\]\[([a-zA-Z0-9]+)\]/){
+	if ($_=~m/(\$LANG)\[\"([a-zA-Z_]+)\"\]\[([0-9]+)\]/){
 		print "SEARCH $1\[\"$2\"\]\[$3\] : ";
 		$count=0;
 		do_dir(".",$1,$2,$3);
