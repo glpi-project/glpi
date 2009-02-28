@@ -63,10 +63,10 @@ function searchFormKnowbase($target,$contains,$parentID=0,$faq=0){
 	echo "<form method=get action=\"".$target."\">";
 	echo "<table border='0' class='tab_cadre'>";
 
-	echo "<tr ><th colspan='2'>".$LANG["search"][0].":</th></tr>";
+	echo "<tr ><th colspan='2'>".$LANG['search'][0].":</th></tr>";
 	echo "<tr class='tab_bg_2' align='center'><td><input type='text' size='30' name=\"contains\" value=\"". stripslashes($contains) ."\" ></td>";
 	
-	echo "<td><input type='submit' value=\"".$LANG["buttons"][0]."\" class='submit' ></td></tr>";
+	echo "<td><input type='submit' value=\"".$LANG['buttons'][0]."\" class='submit' ></td></tr>";
 
 	echo "</table></form>";
 	
@@ -76,13 +76,13 @@ function searchFormKnowbase($target,$contains,$parentID=0,$faq=0){
 	if (isset($_SESSION["glpiID"])&&!$faq){
 		echo "<td><form method=get action=\"".$target."\">";
 		echo "<table border='0' class='tab_cadre'>";
-		echo "<tr ><th colspan='2'>".$LANG["buttons"][43]."</th></tr>";
+		echo "<tr ><th colspan='2'>".$LANG['buttons'][43]."</th></tr>";
 		echo "<tr class='tab_bg_2'><td class='center'>";
-		echo $LANG["common"][36]." : &nbsp; &nbsp;";
+		echo $LANG['common'][36]." : &nbsp; &nbsp;";
 		dropdownValue("glpi_dropdown_kbcategories","parentID",$parentID);
 		// ----***** TODO Dropdown qui affiche uniquement les categories contenant une FAQ
 		
-		echo "</td><td><input type='submit' value=\"".$LANG["buttons"][2]."\" class='submit' ></td></tr>";
+		echo "</td><td><input type='submit' value=\"".$LANG['buttons'][2]."\" class='submit' ></td></tr>";
 	
 		echo "</table></form></td>";
 	} 
@@ -326,8 +326,8 @@ function showKbItemList($target,$contains,$start,$parentID,$faq=0){
 
 			if ($output_type!=HTML_OUTPUT){
 				$header_num=1;
-				echo displaySearchHeaderItem($output_type,$LANG["knowbase"][3],$header_num);
-				echo displaySearchHeaderItem($output_type,$LANG["knowbase"][4],$header_num);
+				echo displaySearchHeaderItem($output_type,$LANG['knowbase'][3],$header_num);
+				echo displaySearchHeaderItem($output_type,$LANG['knowbase'][4],$header_num);
 			}
 
 			// Num of the row (1=header_line)
@@ -367,7 +367,7 @@ function showKbItemList($target,$contains,$start,$parentID,$faq=0){
 			}
 
 		} else {
-			if ($parentID!=0) {echo "<div class='center'><strong>".$LANG["search"][15]."</strong></div>";}
+			if ($parentID!=0) {echo "<div class='center'><strong>".$LANG['search'][15]."</strong></div>";}
 		}
 	}
 
@@ -413,10 +413,10 @@ function showKbRecentPopular($target,$type,$faq=0){
 	
 	if ($type=="recent"){
 		$orderby="ORDER BY date DESC";
-		$title=$LANG["knowbase"][29];
+		$title=$LANG['knowbase'][29];
 	}else {
 		$orderby="ORDER BY view DESC";
-		$title=$LANG["knowbase"][30];
+		$title=$LANG['knowbase'][30];
 	}
 		
 	$faq_limit="";
@@ -480,9 +480,9 @@ function kbItemMenu($ID)
 	echo "<table class='tab_cadre_fixe' cellpadding='10' ><tr><th colspan='3'>";
 
 	if($isFAQ) {
-		echo $LANG["knowbase"][10]."</th></tr>\n";
+		echo $LANG['knowbase'][10]."</th></tr>\n";
 	} else {
-		echo $LANG["knowbase"][11]."</th></tr>\n";
+		echo $LANG['knowbase'][11]."</th></tr>\n";
 	}
 
 	if ($edit) {
@@ -490,14 +490,14 @@ function kbItemMenu($ID)
 		
 		if ($editFAQ) {
 			if($isFAQ) {
-				echo "<td align='center' width=\"33%\"><a class='icon_nav_move' href=\"".$CFG_GLPI["root_doc"]."/front/knowbase.form.php?ID=$ID&amp;removefromfaq=yes\"><img  src=\"".$CFG_GLPI["root_doc"]."/pics/faqremove.png\" alt='".$LANG["knowbase"][7]."' title='".$LANG["knowbase"][7]."'></a></td>\n";
+				echo "<td align='center' width=\"33%\"><a class='icon_nav_move' href=\"".$CFG_GLPI["root_doc"]."/front/knowbase.form.php?ID=$ID&amp;removefromfaq=yes\"><img  src=\"".$CFG_GLPI["root_doc"]."/pics/faqremove.png\" alt='".$LANG['knowbase'][7]."' title='".$LANG['knowbase'][7]."'></a></td>\n";
 			} else {
-				echo "<td align='center' width=\"33%\"><a  class='icon_nav_move' href=\"".$CFG_GLPI["root_doc"]."/front/knowbase.form.php?ID=$ID&amp;addtofaq=yes\"><img  src=\"".$CFG_GLPI["root_doc"]."/pics/faqadd.png\" alt='".$LANG["knowbase"][5]."' title='".$LANG["knowbase"][5]."'></a></td>\n";
+				echo "<td align='center' width=\"33%\"><a  class='icon_nav_move' href=\"".$CFG_GLPI["root_doc"]."/front/knowbase.form.php?ID=$ID&amp;addtofaq=yes\"><img  src=\"".$CFG_GLPI["root_doc"]."/pics/faqadd.png\" alt='".$LANG['knowbase'][5]."' title='".$LANG['knowbase'][5]."'></a></td>\n";
 			}
 		}
 		
-		echo "<td align='center' width=\"34%\"><a class='icon_nav_move' href=\"".$CFG_GLPI["root_doc"]."/front/knowbase.form.php?ID=$ID&amp;modify=yes\"><img  src=\"".$CFG_GLPI["root_doc"]."/pics/faqedit.png\" alt='".$LANG["knowbase"][8]."' title='".$LANG["knowbase"][8]."'></a></td>\n";
-		echo "<td align='center' width=\"33%\"><a class='icon_nav_move' href=\"javascript:confirmAction('".addslashes($LANG["common"][55])."','".$CFG_GLPI["root_doc"]."/front/knowbase.form.php?ID=$ID&amp;delete=yes')\"><img  src=\"".$CFG_GLPI["root_doc"]."/pics/faqdelete.png\" alt='".$LANG["knowbase"][9]."' title='".$LANG["knowbase"][9]."'></a></td>";
+		echo "<td align='center' width=\"34%\"><a class='icon_nav_move' href=\"".$CFG_GLPI["root_doc"]."/front/knowbase.form.php?ID=$ID&amp;modify=yes\"><img  src=\"".$CFG_GLPI["root_doc"]."/pics/faqedit.png\" alt='".$LANG['knowbase'][8]."' title='".$LANG['knowbase'][8]."'></a></td>\n";
+		echo "<td align='center' width=\"33%\"><a class='icon_nav_move' href=\"javascript:confirmAction('".addslashes($LANG['common'][55])."','".$CFG_GLPI["root_doc"]."/front/knowbase.form.php?ID=$ID&amp;delete=yes')\"><img  src=\"".$CFG_GLPI["root_doc"]."/pics/faqdelete.png\" alt='".$LANG['knowbase'][9]."' title='".$LANG['knowbase'][9]."'></a></td>";
 
 		echo "</tr>\n";
 	} 
@@ -545,19 +545,19 @@ function ShowKbItemFull($ID,$linkauthor=true){
 	
 		echo "<table class='tab_cadre_fixe' cellpadding='10' ><tr><th colspan='2'>";
 		
-		echo $LANG["common"][36].": <a href='".$CFG_GLPI["root_doc"]."/front/".(isset($_SESSION['glpiactiveprofile'])&&$_SESSION['glpiactiveprofile']['interface']=="central"?"knowbase.php":"helpdesk.faq.php")."?parentID=$categoryID'>".$fullcategoryname."</a></th></tr>";
+		echo $LANG['common'][36].": <a href='".$CFG_GLPI["root_doc"]."/front/".(isset($_SESSION['glpiactiveprofile'])&&$_SESSION['glpiactiveprofile']['interface']=="central"?"knowbase.php":"helpdesk.faq.php")."?parentID=$categoryID'>".$fullcategoryname."</a></th></tr>";
 	
 		if (!($CFG_GLPI["cache"]->start($ID."_".$_SESSION['glpilanguage'],"GLPI_".$ki->type))) {
 		
 			echo "<tr class='tab_bg_3'><td class='left' colspan='2'><h2>";
-			echo ($ki->fields["faq"]) ? "".$LANG["knowbase"][3]."" : "".$LANG["knowbase"][14]."";
+			echo ($ki->fields["faq"]) ? "".$LANG['knowbase'][3]."" : "".$LANG['knowbase'][14]."";
 			echo "</h2>";
 		
 			echo $ki->fields["question"];
 		
 			echo "</td></tr>\n";
 			echo "<tr  class='tab_bg_3'><td class='left' colspan='2'><h2>";
-			echo ($ki->fields["faq"]) ? "".$LANG["knowbase"][4]."" : "".$LANG["knowbase"][15]."";
+			echo ($ki->fields["faq"]) ? "".$LANG['knowbase'][4]."" : "".$LANG['knowbase'][15]."";
 			echo "</h2>\n";
 		
 			$answer = unclean_cross_side_scripting_deep($ki->fields["answer"]);
@@ -567,7 +567,7 @@ function ShowKbItemFull($ID,$linkauthor=true){
 		
 			echo "<tr><th class='tdkb'>";
 			if($ki->fields["author"]){
-				echo $LANG["common"][37]." : ";
+				echo $LANG['common'][37]." : ";
 				// Integer because true may be 2 and getUserName return array
 				if ($linkauthor){
 					$linkauthor=1;
@@ -580,14 +580,14 @@ function ShowKbItemFull($ID,$linkauthor=true){
 				echo "&nbsp;&nbsp;|&nbsp;&nbsp;  ";
 			}
 			if($ki->fields["date"]){
-				echo $LANG["knowbase"][27]." : ". convDateTime($ki->fields["date"]);
+				echo $LANG['knowbase'][27]." : ". convDateTime($ki->fields["date"]);
 			}	
 		
 			echo "</th><th class='tdkb'>";
 			if($ki->fields["date_mod"]){
-				echo  $LANG["common"][26]." : ".convDateTime($ki->fields["date_mod"])."&nbsp;&nbsp;|&nbsp;&nbsp; ";
+				echo  $LANG['common'][26]." : ".convDateTime($ki->fields["date_mod"])."&nbsp;&nbsp;|&nbsp;&nbsp; ";
 			}
-			echo $LANG["knowbase"][26]." : ".$ki->fields["view"]."</th></tr>";
+			echo $LANG['knowbase'][26]." : ".$ki->fields["view"]."</th></tr>";
 		
 			echo "</table><br>";
 			

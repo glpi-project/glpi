@@ -147,12 +147,12 @@ function displayStats($type,$field,$date1,$date2,$start,$value,$value2=""){
 		if ($output_type==HTML_OUTPUT){ // HTML display
 			echo displaySearchHeaderItem($output_type,"",$header_num);
 		}
-		echo displaySearchHeaderItem($output_type,$LANG["stats"][13],$header_num);
-		echo displaySearchHeaderItem($output_type,$LANG["stats"][11],$header_num);
-		echo displaySearchHeaderItem($output_type,$LANG["stats"][15],$header_num);
-		echo displaySearchHeaderItem($output_type,$LANG["stats"][25],$header_num);
-		echo displaySearchHeaderItem($output_type,$LANG["stats"][27],$header_num);
-		echo displaySearchHeaderItem($output_type,$LANG["stats"][30],$header_num);
+		echo displaySearchHeaderItem($output_type,$LANG['stats'][13],$header_num);
+		echo displaySearchHeaderItem($output_type,$LANG['stats'][11],$header_num);
+		echo displaySearchHeaderItem($output_type,$LANG['stats'][15],$header_num);
+		echo displaySearchHeaderItem($output_type,$LANG['stats'][25],$header_num);
+		echo displaySearchHeaderItem($output_type,$LANG['stats'][27],$header_num);
+		echo displaySearchHeaderItem($output_type,$LANG['stats'][30],$header_num);
 		// End Line for column headers		
 		echo displaySearchEndLine($output_type);
 		$row_num=1;
@@ -246,7 +246,7 @@ function displayStats($type,$field,$date1,$date2,$start,$value,$value2=""){
 		// Display footer
 		echo displaySearchFooter($output_type);
 	} else {
-		echo $LANG["stats"][23];
+		echo $LANG['stats'][23];
 	}
 	if ($output_type==HTML_OUTPUT) // HTML display
 		echo "</div>";
@@ -965,11 +965,11 @@ function showItemStats($target,$date1,$date2,$start){
 		echo displaySearchHeader($output_type,$end_display-$start+1,2,1);
 		$header_num=1;
 		echo displaySearchNewLine($output_type);
-		echo displaySearchHeaderItem($output_type,$LANG["common"][1],$header_num);
+		echo displaySearchHeaderItem($output_type,$LANG['common'][1],$header_num);
 		if ($view_entities){
-			echo displaySearchHeaderItem($output_type,$LANG["entity"][0],$header_num);
+			echo displaySearchHeaderItem($output_type,$LANG['entity'][0],$header_num);
 		}
-		echo displaySearchHeaderItem($output_type,$LANG["stats"][13],$header_num);
+		echo displaySearchHeaderItem($output_type,$LANG['stats'][13],$header_num);
 		echo displaySearchEndLine($output_type);
 
 		$DB->data_seek($result,$start);
@@ -986,7 +986,7 @@ function showItemStats($target,$date1,$date2,$start){
 				if ($view_entities){
 					$ent=$ci->getField('FK_entities');
 					if ($ent==0){
-						$ent=$LANG["entity"][2];
+						$ent=$LANG['entity'][2];
 					} else {
 						$ent=$entities[$ent]['completename'];
 					}

@@ -154,30 +154,30 @@ class Bookmark extends CommonDBTM {
 		echo "<table class='tab_cadre' width='500'>";
 		echo "<tr><th>&nbsp;</th><th>";
 		if ($ID>0) {
-			echo $LANG["common"][2]." $ID";
+			echo $LANG['common'][2]." $ID";
 		} else {
-			echo $LANG["bookmark"][4];
+			echo $LANG['bookmark'][4];
 		}		
 
 		echo "</th></tr>";
 
 
-		echo "<tr><td class='tab_bg_1'>".$LANG["common"][16]."</td>"; 
+		echo "<tr><td class='tab_bg_1'>".$LANG['common'][16]."</td>"; 
 
 		echo "<td class='tab_bg_1'>";
 		autocompletionTextField("name",$this->table,"name",$this->fields['name'],40,-1,$this->fields["FK_users"]);				
 		echo "</td></tr>"; 
 
-		echo "<tr class='tab_bg_2'><td>".$LANG["common"][17].":		</td>";
+		echo "<tr class='tab_bg_2'><td>".$LANG['common'][17].":		</td>";
 		echo "<td>";
 
 		if(haveRight("bookmark_public","w")) { 
 			privatePublicSwitch($this->fields["private"],$this->fields["FK_entities"],$this->fields["recursive"]);
 		}else{
 			if ($this->fields["private"]){
-				echo $LANG["common"][77];
+				echo $LANG['common'][77];
 			} else {
-				echo $LANG["common"][76];
+				echo $LANG['common'][76];
 			}
 		}
 
@@ -187,7 +187,7 @@ class Bookmark extends CommonDBTM {
 			echo "<tr>";
 			echo "<td class='tab_bg_2' valign='top' colspan='2'>";
 			echo "<input type='hidden' name='FK_users' value=\"".$this->fields['FK_users']."\">\n";
-			echo "<div class='center'><input type='submit' name='add' value=\"".$LANG["buttons"][8]."\" class='submit'></div>";
+			echo "<div class='center'><input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'></div>";
 			echo "</td>";
 			echo "</tr>";
 		} else { 
@@ -195,11 +195,11 @@ class Bookmark extends CommonDBTM {
 
 			echo "<td class='tab_bg_2' valign='top' colspan='2'>";
 			echo "<input type='hidden' name='ID' value=\"$ID\">\n";
-			echo "<div class='center'><input type='submit' name='update' value=\"".$LANG["buttons"][7]."\" class='submit'>";
+			echo "<div class='center'><input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit'>";
 
 			echo "<input type='hidden' name='ID' value=\"$ID\">\n";
 
-			echo "<input type='submit' name='delete' value=\"".$LANG["buttons"][6]."\" class='submit'></div>";
+			echo "<input type='submit' name='delete' value=\"".$LANG['buttons'][6]."\" class='submit'></div>";
 
 			echo "</td>";
 			echo "</tr>";
@@ -387,9 +387,9 @@ class Bookmark extends CommonDBTM {
 	
 	
 			echo "<table class='tab_cadrehov'>";
-			echo "<tr><th align='center' colspan='3'>".$LANG["buttons"][52]." ".$LANG["bookmark"][1]."</th>";
+			echo "<tr><th align='center' colspan='3'>".$LANG['buttons'][52]." ".$LANG['bookmark'][1]."</th>";
 			echo "<th width='20px'>&nbsp;</th>";
-			echo "<th>".$LANG["bookmark"][6]."</th>";
+			echo "<th>".$LANG['bookmark'][6]."</th>";
 			echo "</tr>";
 			
 			if( $DB->numrows($result)){
@@ -419,16 +419,16 @@ class Bookmark extends CommonDBTM {
 					echo "<a href=\"".GLPI_ROOT."/front/popup.php?popup=load_bookmark&amp;ID=".$this->fields["ID"]."\">".$this->fields["name"]."</a>";
 					echo "</td>";
 					if ($canedit) {
-						echo "<td><a href=\"".GLPI_ROOT."/front/popup.php?popup=edit_bookmark&amp;ID=".$this->fields["ID"]."\"><img src='".$CFG_GLPI["root_doc"]."/pics/edit.png' alt='".$LANG["buttons"][14]."'></a></td>";
+						echo "<td><a href=\"".GLPI_ROOT."/front/popup.php?popup=edit_bookmark&amp;ID=".$this->fields["ID"]."\"><img src='".$CFG_GLPI["root_doc"]."/pics/edit.png' alt='".$LANG['buttons'][14]."'></a></td>";
 					} else {
 						echo "<td>&nbsp;</td>";					
 					}
 					echo "<td align='center'>";
 					if ($this->fields['type']==BOOKMARK_SEARCH){
 						if (is_null($this->fields['IS_DEFAULT'])){
-							echo "<a href=\"".GLPI_ROOT."/front/popup.php?popup=edit_bookmark&amp;mark_default=1&amp;ID=".$this->fields["ID"]."\">".$LANG["choice"][0]."</a>";;
+							echo "<a href=\"".GLPI_ROOT."/front/popup.php?popup=edit_bookmark&amp;mark_default=1&amp;ID=".$this->fields["ID"]."\">".$LANG['choice'][0]."</a>";;
 						} else {
-							echo "<a href=\"".GLPI_ROOT."/front/popup.php?popup=edit_bookmark&amp;mark_default=0&amp;ID=".$this->fields["ID"]."\">".$LANG["choice"][1]."</a>";;
+							echo "<a href=\"".GLPI_ROOT."/front/popup.php?popup=edit_bookmark&amp;mark_default=0&amp;ID=".$this->fields["ID"]."\">".$LANG['choice'][1]."</a>";;
 						}
 					}
 					echo "</td>";
@@ -440,16 +440,16 @@ class Bookmark extends CommonDBTM {
 				
 				echo "<div class='center'>";
 				echo "<table width='80%' class='tab_glpi'>";
-				echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markCheckboxes('form_load_bookmark$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?select=all'>".$LANG["buttons"][18]."</a></td>";
-				echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkCheckboxes('form_load_bookmark$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?select=none'>".$LANG["buttons"][19]."</a>";
+				echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markCheckboxes('form_load_bookmark$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?select=all'>".$LANG['buttons'][18]."</a></td>";
+				echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkCheckboxes('form_load_bookmark$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?select=none'>".$LANG['buttons'][19]."</a>";
 				echo "</td><td align='left' width='80%'>";
-				echo "<input type='submit' name='delete_several' value=\"".$LANG["buttons"][6]."\" class='submit'>";
+				echo "<input type='submit' name='delete_several' value=\"".$LANG['buttons'][6]."\" class='submit'>";
 				echo "</td></tr>";
 				echo "</table>";
 		
 			}
 			else {
-				echo "<tr class='tab_bg_1'><td colspan='5'>".$LANG["bookmark"][3]."</td></tr></table>";
+				echo "<tr class='tab_bg_1'><td colspan='5'>".$LANG['bookmark'][3]."</td></tr></table>";
 			}
 			echo '</div>';
 			echo "</form>";

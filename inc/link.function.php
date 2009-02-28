@@ -78,8 +78,8 @@ function showLinkDevice($instID) {
 
 	echo "<form method='post' action=\"".$CFG_GLPI["root_doc"]."/front/link.form.php\">";
 	echo "<div class='center'><table class='tab_cadre_fixe'>";
-	echo "<tr><th colspan='2'>".$LANG["links"][4].":</th></tr>";
-	echo "<tr><th>".$LANG["common"][17]."</th>";
+	echo "<tr><th colspan='2'>".$LANG['links'][4].":</th></tr>";
+	echo "<tr><th>".$LANG['common'][17]."</th>";
 	echo "<th>&nbsp;</th></tr>";
 
 	while ($i < $number) {
@@ -87,7 +87,7 @@ function showLinkDevice($instID) {
 		$ci->setType($DB->result($result, $i, "device_type"));
 		echo "<tr class='tab_bg_1'>";
 		echo "<td class='center'>".$ci->getType()."</td>";
-		echo "<td align='center' class='tab_bg_2'><a href='".$_SERVER['PHP_SELF']."?deletedevice=deletedevice&amp;ID=$ID&amp;lID=$instID'><strong>".$LANG["buttons"][6]."</strong></a></td></tr>";
+		echo "<td align='center' class='tab_bg_2'><a href='".$_SERVER['PHP_SELF']."?deletedevice=deletedevice&amp;ID=$ID&amp;lID=$instID'><strong>".$LANG['buttons'][6]."</strong></a></td></tr>";
 		$i++;
 	}
 	if ($canedit){
@@ -103,7 +103,7 @@ function showLinkDevice($instID) {
 		$types[]=CONTRACT_TYPE;
 		dropdownDeviceTypes("device_type",0,$types);
 	
-		echo "&nbsp;&nbsp;<input type='submit' name='adddevice' value=\"".$LANG["buttons"][8]."\" class='submit'>";
+		echo "&nbsp;&nbsp;<input type='submit' name='adddevice' value=\"".$LANG['buttons'][8]."\" class='submit'>";
 		echo "</div>";
 		echo "</td>";
 	
@@ -166,7 +166,7 @@ function showLinkOnDevice($type,$ID){
 	
 	$ci=new CommonItem;
 	if ($DB->numrows($result)>0){
-		echo "<div class='center'><table class='tab_cadre'><tr><th>".$LANG["title"][33]."</th></tr>";
+		echo "<div class='center'><table class='tab_cadre'><tr><th>".$LANG['title'][33]."</th></tr>";
 
 		while ($data=$DB->fetch_assoc($result)){
 
@@ -308,7 +308,7 @@ function showLinkOnDevice($type,$ID){
 
 		}
 		echo "</table></div>";
-	} else echo "<div class='center'><strong>".$LANG["links"][7]."</strong></div>";
+	} else echo "<div class='center'><strong>".$LANG['links'][7]."</strong></div>";
 
 }
 

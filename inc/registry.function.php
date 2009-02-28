@@ -61,15 +61,15 @@ function showRegistry($ID){
 			echo "<tr>";
 			echo "<th colspan='4'>";
 			echo $DB->numrows($result)." ";
-			echo $LANG["registry"][4];
+			echo $LANG['registry'][4];
 			
 			echo ":</th>";
 
 			echo "</tr>";        
 			echo "<tr>";			
-			echo "<th>".$LANG["registry"][6]."</th>";
-			echo "<th>".$LANG["registry"][1]."</th><th>".$LANG["registry"][2]."</th>";
-			echo "<th>".$LANG["registry"][3]."</th></tr>\n";	
+			echo "<th>".$LANG['registry'][6]."</th>";
+			echo "<th>".$LANG['registry'][1]."</th><th>".$LANG['registry'][2]."</th>";
+			echo "<th>".$LANG['registry'][3]."</th></tr>\n";	
 			while ($regid=$DB->fetch_row($result)) {
 				$reg = new Registry;
 				$reg->getFromDB(current($regid));	
@@ -85,7 +85,7 @@ function showRegistry($ID){
 			echo "</div>\n\n";
 	
 		}
-		else echo "<div class='center'><strong>".$LANG["registry"][5]."</strong></div>";
+		else echo "<div class='center'><strong>".$LANG['registry'][5]."</strong></div>";
 	}
 	
 }

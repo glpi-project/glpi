@@ -160,22 +160,22 @@ function ldapChooseDirectory($target) {
 
 	echo "<form action=\"$target\" method=\"post\">";
 	echo "<div class='center'>";
-	echo "<p >" . $LANG["ldap"][5] . "</p>";
+	echo "<p >" . $LANG['ldap'][5] . "</p>";
 	echo "<table class='tab_cadre'>";
-	echo "<tr class='tab_bg_2'><th colspan='2'>" . $LANG["ldap"][4] . "</th></tr>";
+	echo "<tr class='tab_bg_2'><th colspan='2'>" . $LANG['ldap'][4] . "</th></tr>";
 	//If more than one ldap server
 	if ($DB->numrows($result) > 1) {
-		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["common"][16] . "</td><td class='center'>";
+		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['common'][16] . "</td><td class='center'>";
 		echo "<select name='ldap_server'>";
 		while ($ldap = $DB->fetch_array($result))
 			echo "<option value=" . $ldap["ID"] . ">" . $ldap["name"] . "</option>";
 
 		echo "</select></td></tr>";
-		echo "<tr class='tab_bg_2'><td align='center' colspan='2'><input class='submit' type='submit' name='ldap_showusers' value='" . $LANG["buttons"][2] . "'></td></tr>";
+		echo "<tr class='tab_bg_2'><td align='center' colspan='2'><input class='submit' type='submit' name='ldap_showusers' value='" . $LANG['buttons'][2] . "'></td></tr>";
 
 	} else
 		//No ldap server
-		echo "<tr class='tab_bg_2'><td align='center' colspan='2'>" . $LANG["ldap"][7] . "</td></tr>";
+		echo "<tr class='tab_bg_2'><td align='center' colspan='2'>" . $LANG['ldap'][7] . "</td></tr>";
 
 	echo "</table></div></form>";
 }
@@ -334,13 +334,13 @@ function showLdapGroups($target, $check, $start, $sync = 0,$filter='',$filter2='
 	
 			echo "<div class='center'>";
 			echo "<form method='post' id='ldap_form' name='ldap_form'  action='" . $target . "'>";
-			echo "<a href='" . $target . "?check=all' onclick= \"if ( markCheckboxes('ldap_form') ) return false;\">" . $LANG["buttons"][18] . "</a>&nbsp;/&nbsp;<a href='" . $target . "?check=none' onclick= \"if ( unMarkCheckboxes('ldap_form') ) return false;\">" . $LANG["buttons"][19] . "</a>";
+			echo "<a href='" . $target . "?check=all' onclick= \"if ( markCheckboxes('ldap_form') ) return false;\">" . $LANG['buttons'][18] . "</a>&nbsp;/&nbsp;<a href='" . $target . "?check=none' onclick= \"if ( unMarkCheckboxes('ldap_form') ) return false;\">" . $LANG['buttons'][19] . "</a>";
 			echo "<table class='tab_cadre'>";
-			echo "<tr><th>" . $LANG["buttons"][37]. "</th>"; 
-			//echo"<th colspan='2'>" . $LANG["common"][35] . "</th>";
-			echo displaySearchHeaderItem(0,$LANG["common"][35],$header_num,$target."?order=".($order=="DESC"?"ASC":"DESC"),1,$order);
-			echo "<th>".$LANG["setup"][261]."</th>"; 
-			echo"<th>".$LANG["ocsng"][36]."</th></tr>";
+			echo "<tr><th>" . $LANG['buttons'][37]. "</th>"; 
+			//echo"<th colspan='2'>" . $LANG['common'][35] . "</th>";
+			echo displaySearchHeaderItem(0,$LANG['common'][35],$header_num,$target."?order=".($order=="DESC"?"ASC":"DESC"),1,$order);
+			echo "<th>".$LANG['setup'][261]."</th>"; 
+			echo"<th>".$LANG['ocsng'][36]."</th></tr>";
 	
 			foreach ($ldap_groups as $groupinfos) {
 				$group = $groupinfos["cn"];
@@ -359,16 +359,16 @@ function showLdapGroups($target, $check, $start, $sync = 0,$filter='',$filter2='
 				echo "</tr>";
 			}
 			echo "<tr class='tab_bg_1'><td colspan='4' align='center'>";
-			echo "<input class='submit' type='submit' name='" . $form_action . "' value='" . $LANG["buttons"][37] . "'>";
+			echo "<input class='submit' type='submit' name='" . $form_action . "' value='" . $LANG['buttons'][37] . "'>";
 			echo "</td></tr>";
 			echo "</table>";
 			echo "</form></div>";
 			printPager($start, $numrows, $target, $parameters);
 		} else {
-			echo "<div class='center'><strong>" . $LANG["ldap"][25] . "</strong></div>";
+			echo "<div class='center'><strong>" . $LANG['ldap'][25] . "</strong></div>";
 		}
 	} else {
-		echo "<div class='center'><strong>" . $LANG["ldap"][25] . "</strong></div>";
+		echo "<div class='center'><strong>" . $LANG['ldap'][25] . "</strong></div>";
 	}
 }
 
@@ -527,13 +527,13 @@ function showLdapUsers($target, $check, $start, $sync = 0,$filter='',$order='DES
 	
 			echo "<div class='center'>";
 			echo "<form method='post' id='ldap_form' name='ldap_form' action='" . $target . "'>";
-			echo "<a href='" . $target . "?check=all' onclick= \"if ( markCheckboxes('ldap_form') ) return false;\">" . $LANG["buttons"][18] . "</a>&nbsp;/&nbsp;<a href='" . $target . "?check=none' onclick= \"if ( unMarkCheckboxes('ldap_form') ) return false;\">" . $LANG["buttons"][19] . "</a>";
+			echo "<a href='" . $target . "?check=all' onclick= \"if ( markCheckboxes('ldap_form') ) return false;\">" . $LANG['buttons'][18] . "</a>&nbsp;/&nbsp;<a href='" . $target . "?check=none' onclick= \"if ( unMarkCheckboxes('ldap_form') ) return false;\">" . $LANG['buttons'][19] . "</a>";
 			echo "<table class='tab_cadre'>";
 			echo "<tr>"; 
-			echo"<th>" . (!$sync?$LANG["buttons"][37]:$LANG["ldap"][15]) . "</th>"; 
+			echo"<th>" . (!$sync?$LANG['buttons'][37]:$LANG['ldap'][15]) . "</th>"; 
 			echo displaySearchHeaderItem(0,$LANG["Menu"][14],$header_num,$target."?order=".($order=="DESC"?"ASC":"DESC"),1,$order);
-			echo"<th>".$LANG["common"][26]." ".$LANG["ldap"][13]."</th>"; 
-			echo"<th>".$LANG["common"][26]." ".$LANG["ldap"][14]."</th>";
+			echo"<th>".$LANG['common'][26]." ".$LANG['ldap'][13]."</th>"; 
+			echo"<th>".$LANG['common'][26]." ".$LANG['ldap'][14]."</th>";
 			echo"</tr>";
 	
 			foreach ($ldap_users as $userinfos) {
@@ -565,17 +565,17 @@ function showLdapUsers($target, $check, $start, $sync = 0,$filter='',$order='DES
 				echo "</tr>";
 			}
 			echo "<tr class='tab_bg_1'><td colspan='5' align='center'>";
-			echo "<input class='submit' type='submit' name='" . $form_action . "' value='" . (!$sync?$LANG["buttons"][37]:$LANG["ldap"][15]) . "'>";
+			echo "<input class='submit' type='submit' name='" . $form_action . "' value='" . (!$sync?$LANG['buttons'][37]:$LANG['ldap'][15]) . "'>";
 			echo "</td></tr>";
 			echo "</table>";
 			echo "</form></div>";
-			echo "<a href='" . $target . "?check=all' onclick= \"if ( markCheckboxes('ldap_form') ) return false;\">" . $LANG["buttons"][18] . "</a>&nbsp;/&nbsp;<a href='" . $target . "?check=none' onclick= \"if ( unMarkCheckboxes('ldap_form') ) return false;\">" . $LANG["buttons"][19] . "</a>";
+			echo "<a href='" . $target . "?check=all' onclick= \"if ( markCheckboxes('ldap_form') ) return false;\">" . $LANG['buttons'][18] . "</a>&nbsp;/&nbsp;<a href='" . $target . "?check=none' onclick= \"if ( unMarkCheckboxes('ldap_form') ) return false;\">" . $LANG['buttons'][19] . "</a>";
 			printPager($start, $numrows, $target, $parameters);
 		} else {
-			echo "<div class='center'><strong>" . $LANG["ldap"][3] . "</strong></div>";
+			echo "<div class='center'><strong>" . $LANG['ldap'][3] . "</strong></div>";
 		}
 	} else {
-		echo "<div class='center'><strong>" . $LANG["ldap"][3] . "</strong></div>";
+		echo "<div class='center'><strong>" . $LANG['ldap'][3] . "</strong></div>";
 	}
 }
 
@@ -646,7 +646,7 @@ function showSynchronizationForm($target, $ID) {
 					if ($DB->numrows($result) > 0) {
 						echo "<table class='tab_cadre'><tr class='tab_bg_2'><td>";
 						echo "<input type='hidden' name='ID' value='" . $ID . "'>";
-						echo "<input class=submit type='submit' name='force_ldap_resynch' value='" . $LANG["ocsng"][24] . "'>";
+						echo "<input class=submit type='submit' name='force_ldap_resynch' value='" . $LANG['ocsng'][24] . "'>";
 						echo "</td></tr></table>";
 					}
 	
@@ -684,7 +684,7 @@ function showSynchronizationForm($target, $ID) {
 						if ($DB->numrows($result) > 0) {
 							echo "<table class='tab_cadre'><tr class='tab_bg_2'><td>";
 							echo "<input type='hidden' name='ID' value='" . $ID . "'>";
-							echo "<input class=submit type='submit' name='force_ldap_resynch' value='" . $LANG["ocsng"][24] . "'>";
+							echo "<input class=submit type='submit' name='force_ldap_resynch' value='" . $LANG['ocsng'][24] . "'>";
 							echo "</td></tr></table>";
 						}
 					}
@@ -719,9 +719,9 @@ function showSynchronizationForm($target, $ID) {
 function formChangeAuthMethodToDB($ID){
 	global $LANG;
 	echo "<br><table class='tab_cadre'>";
-	echo "<tr><th colspan='2' colspan='2'>" . $LANG["login"][30]."</th></tr>";
+	echo "<tr><th colspan='2' colspan='2'>" . $LANG['login'][30]."</th></tr>";
 	echo "<input type='hidden' name='ID' value='" . $ID . "'>";
-	echo "<tr class='tab_bg_2'><td colspan='2' align='center'><input class=submit type='submit' name='switch_auth_internal' value='" . $LANG["login"][32] . "'>";
+	echo "<tr class='tab_bg_2'><td colspan='2' align='center'><input class=submit type='submit' name='switch_auth_internal' value='" . $LANG['login'][32] . "'>";
 	echo "</td></tr></table>";
 }
 
@@ -738,12 +738,12 @@ function formChangeAuthMethodToLDAP($ID)
 	$result = $DB->query($sql);
 	if ($DB->numrows($result) > 0){
 		echo "<table class='tab_cadre'>";
-		echo "<tr><th colspan='2' colspan='2'>" . $LANG["login"][30]." : ".$LANG["login"][2]."</th></tr>";
+		echo "<tr><th colspan='2' colspan='2'>" . $LANG['login'][30]." : ".$LANG['login'][2]."</th></tr>";
 		echo "<tr class='tab_bg_1'><td><input type='hidden' name='ID' value='" . $ID . "'>";
-		echo $LANG["login"][31]."</td><td>";
+		echo $LANG['login'][31]."</td><td>";
 		dropdownValue("glpi_auth_ldap","id_auth");
 		echo "</td>";
-		echo "<tr class='tab_bg_2'><td colspan='2' align='center'><input class=submit type='submit' name='switch_auth_ldap' value='" . $LANG["buttons"][2] . "'>";
+		echo "<tr class='tab_bg_2'><td colspan='2' align='center'><input class=submit type='submit' name='switch_auth_ldap' value='" . $LANG['buttons'][2] . "'>";
 		echo "</td></tr></table>";
 	}
 }
@@ -759,12 +759,12 @@ function formChangeAuthMethodToMail($ID){
 	$result = $DB->query($sql);
 	if ($DB->numrows($result) > 0){
 		echo "<table class='tab_cadre'>";
-		echo "<tr><th colspan='2' colspan='2'>" . $LANG["login"][30]." : ".$LANG["login"][3]."</th></tr>";
+		echo "<tr><th colspan='2' colspan='2'>" . $LANG['login'][30]." : ".$LANG['login'][3]."</th></tr>";
 		echo "<tr class='tab_bg_1'><td><input type='hidden' name='ID' value='" . $ID . "'>";
-		echo $LANG["login"][33]."</td><td>";
+		echo $LANG['login'][33]."</td><td>";
 		dropdownValue("glpi_auth_mail","id_auth");
 		echo "</td>";
-		echo "<tr class='tab_bg_2'><td colspan='2' align='center'><input class=submit type='submit' name='switch_auth_mail' value='" . $LANG["buttons"][2] . "'>";
+		echo "<tr class='tab_bg_2'><td colspan='2' align='center'><input class=submit type='submit' name='switch_auth_mail' value='" . $LANG['buttons'][2] . "'>";
 		echo "</td></tr></table>";
 	}
 }
@@ -859,7 +859,7 @@ function displayLdapFilter($target,$users=true){
 	echo "<div class='center'>";
 	echo "<form method='post' action=\"$target\">";
 	echo "<table class='tab_cadre'>"; 
-	echo "<tr><th colspan='2'>" . ($users?$LANG["setup"][263]:$LANG["setup"][253]) . "</th></tr>";
+	echo "<tr><th colspan='2'>" . ($users?$LANG['setup'][263]:$LANG['setup'][253]) . "</th></tr>";
 	echo "<tr class='tab_bg_2'><td>";
 	echo "<input type='text' name='ldap_filter' value='" . $_SESSION[$filter_var] . "' size='70'>";
 	
@@ -870,14 +870,14 @@ function displayLdapFilter($target,$users=true){
 			$_SESSION["ldap_group_filter2"]=$config_ldap->fields[$filter_name2];
 
 		echo "</td></tr>";
-		echo "<tr><th colspan='2'>" . $LANG["setup"][263] . "</th></tr>";		
+		echo "<tr><th colspan='2'>" . $LANG['setup'][263] . "</th></tr>";		
 		echo "<tr class='tab_bg_2'><td>";
 		echo "<input type='text' name='ldap_filter2' value='" . $_SESSION["ldap_group_filter2"] . "' size='70'>";
 		echo "</td></tr>";
 	}	
 
 	echo "<tr class='tab_bg_2'><td align='center'>";
-	echo "<input class=submit type='submit' name='change_ldap_filter' value='" . $LANG["buttons"][2] . "'>";
+	echo "<input class=submit type='submit' name='change_ldap_filter' value='" . $LANG['buttons'][2] . "'>";
 	echo "</td></tr></table>";
 	echo "</form></div>";	
 }

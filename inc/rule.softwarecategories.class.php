@@ -51,7 +51,7 @@ class SoftwareCategoriesRuleCollection extends RuleCollection {
 
 	function getTitle(){
 		global $LANG;
-		return $LANG["rulesengine"][37];
+		return $LANG['rulesengine'][37];
 	}
 
 	/**
@@ -94,7 +94,7 @@ class SoftwareCategoriesRule extends Rule {
 
 	function getTitle() {
 		global $LANG;
-		return $LANG["rulesengine"][37];
+		return $LANG['rulesengine'][37];
 	}
 
 	function maxActionsCount(){

@@ -78,21 +78,21 @@ class User extends CommonDBTM {
 	function defineTabs($ID,$withtemplate) {
 		global $LANG;
 
-		$ong[1] = $LANG["title"][26]; // principal
+		$ong[1] = $LANG['title'][26]; // principal
 
 		// No add process	
 		if ($ID>0){
 			$ong[4]=$LANG["Menu"][36];
 	
-			$ong[2] = $LANG["common"][1]; // materiel
+			$ong[2] = $LANG['common'][1]; // materiel
 			if (haveRight("show_all_ticket", "1")){
-				$ong[3] = $LANG["title"][28]; // tickets
+				$ong[3] = $LANG['title'][28]; // tickets
 			}
 			if (haveRight("reservation_central", "r")){
 				$ong[11] = $LANG["Menu"][17];
 			}
 			if (haveRight("user_auth_method", "w")){
-				$ong[12] = $LANG["ldap"][12];
+				$ong[12] = $LANG['ldap'][12];
 			}
 		}
 
@@ -194,7 +194,7 @@ class User extends CommonDBTM {
 		$query="SELECT * FROM glpi_users WHERE name='".$input['name']."';";
 		$result=$DB->query($query);
 		if ($DB->numrows($result)>0){
-			addMessageAfterRedirect($LANG["setup"][606]);
+			addMessageAfterRedirect($LANG['setup'][606]);
 			return false;
 		}
 		
@@ -764,16 +764,16 @@ class User extends CommonDBTM {
 		$buttons = array ();
 		$title = $LANG["Menu"][14];
 		if (haveRight("user", "w")) {
-			$buttons["user.form.php?new=1"] = $LANG["setup"][2];
+			$buttons["user.form.php?new=1"] = $LANG['setup'][2];
 			$title = "";
 			
 			if (haveRight("user_auth_method", "w")) {
 				if (useAuthLdap()) {
-					$buttons["user.form.php?new=1&amp;ext_auth=1"] = $LANG["setup"][125];
-					$buttons["ldap.php"] = $LANG["setup"][3];
+					$buttons["user.form.php?new=1&amp;ext_auth=1"] = $LANG['setup'][125];
+					$buttons["ldap.php"] = $LANG['setup'][3];
 					
 				} else if (useAuthExt()) {
-					$buttons["user.form.php?new=1&amp;ext_auth=1"] = $LANG["setup"][125];
+					$buttons["user.form.php?new=1&amp;ext_auth=1"] = $LANG['setup'][125];
 				}
 			}
 		}
@@ -838,11 +838,11 @@ class User extends CommonDBTM {
 				echo "<input type='hidden' name='auth_method' value='1'>";
 			}
 			echo "<table class='tab_cadre_fixe'>";
-			echo "<tr><th colspan='4'>" . $LANG["common"][34] . " : " . $this->fields["name"] . "&nbsp;";
-			echo "<a href='" . $CFG_GLPI["root_doc"] . "/front/user.vcard.php?ID=$ID'>" . $LANG["common"][46] . "</a>";
+			echo "<tr><th colspan='4'>" . $LANG['common'][34] . " : " . $this->fields["name"] . "&nbsp;";
+			echo "<a href='" . $CFG_GLPI["root_doc"] . "/front/user.vcard.php?ID=$ID'>" . $LANG['common'][46] . "</a>";
 			echo "</th></tr>";
 			echo "<tr class='tab_bg_1'>";
-			echo "<td class='center'>" . $LANG["setup"][18] . "</td>";
+			echo "<td class='center'>" . $LANG['setup'][18] . "</td>";
 			// si on est dans le cas d'un ajout , cet input ne doit plus �re hiden
 			if ($this->fields["name"] == "") {
 				echo "<td><input  name='name' value=\"" . $this->fields["name"] . "\">";
@@ -865,7 +865,7 @@ class User extends CommonDBTM {
 			//do some rights verification
 			if (haveRight("user", "w")) {
 				if ( !$extauth || empty($ID)) {
-					echo "<td class='center'>" . $LANG["setup"][19] . ":</td><td><input type='password' name='password' value='' size='20'></td></tr>";
+					echo "<td class='center'>" . $LANG['setup'][19] . ":</td><td><input type='password' name='password' value='' size='20'></td></tr>";
 				} else {
 					echo "<td colspan='2'>&nbsp;</td></tr>";
 				}
@@ -873,31 +873,31 @@ class User extends CommonDBTM {
 				echo "<td colspan='2'>&nbsp;</td></tr>";
 
 			if (!$use_cache||!($CFG_GLPI["cache"]->start($ID . "_" . $_SESSION['glpilanguage'], "GLPI_" . $this->type))) {
-				echo "<tr class='tab_bg_1'><td class='center'>" . $LANG["common"][48] . ":</td><td>";
+				echo "<tr class='tab_bg_1'><td class='center'>" . $LANG['common'][48] . ":</td><td>";
 				autocompletionTextField("realname", "glpi_users", "realname", $this->fields["realname"], 40);
 				echo "</td>";
-				echo "<td class='center'>" . $LANG["common"][43] . ":</td><td>";
+				echo "<td class='center'>" . $LANG['common'][43] . ":</td><td>";
 				autocompletionTextField("firstname", "glpi_users", "firstname", $this->fields["firstname"], 40);
 				echo "</td></tr>";
 
-				echo "<tr class='tab_bg_1'><td class='center'>" . $LANG["common"][42] . ":</td><td>";
+				echo "<tr class='tab_bg_1'><td class='center'>" . $LANG['common'][42] . ":</td><td>";
 				autocompletionTextField("mobile", "glpi_users", "mobile", $this->fields["mobile"], 40);
 				echo "</td>";
-				echo "<td class='center'>" . $LANG["setup"][14] . ":</td><td>";
+				echo "<td class='center'>" . $LANG['setup'][14] . ":</td><td>";
 				autocompletionTextField("email_form", "glpi_users", "email", $this->fields["email"], 40);
 				if (!empty($ID)&&!isValidEmail($this->fields["email"])){
-					echo "<span class='red'>&nbsp;".$LANG["mailing"][110]."</span>";
+					echo "<span class='red'>&nbsp;".$LANG['mailing'][110]."</span>";
 				}
 				echo "</td></tr>";
 
-				echo "<tr class='tab_bg_1'><td class='center'>" . $LANG["help"][35] . ":</td><td>";
+				echo "<tr class='tab_bg_1'><td class='center'>" . $LANG['help'][35] . ":</td><td>";
 				autocompletionTextField("phone", "glpi_users", "phone", $this->fields["phone"], 40);
 				echo "</td>";
-				echo "<td class='center'>" . $LANG["help"][35] . " 2:</td><td>";
+				echo "<td class='center'>" . $LANG['help'][35] . " 2:</td><td>";
 				autocompletionTextField("phone2", "glpi_users", "phone2", $this->fields["phone2"], 40);
 				echo "</td></tr>";
 
-				echo "<tr class='tab_bg_1'><td class='center'>" . $LANG["common"][15] . ":</td><td>";
+				echo "<tr class='tab_bg_1'><td class='center'>" . $LANG['common'][15] . ":</td><td>";
 				if (!empty($ID)){
 					if (count($entities)>0){
 						dropdownValue("glpi_dropdown_locations", "location", $this->fields["location"],1,$entities);
@@ -913,25 +913,25 @@ class User extends CommonDBTM {
 					}
 				}
 				echo "</td>";
-				echo "<td class='center'>".$LANG["common"][60]."</td><td>";
+				echo "<td class='center'>".$LANG['common'][60]."</td><td>";
 				dropdownYesNo('active',$this->fields['active']);
 				echo "</td></tr>";
 
-				echo "<tr class='tab_bg_1'><td class='center'>" . $LANG["common"][81] . "</td><td>";
+				echo "<tr class='tab_bg_1'><td class='center'>" . $LANG['common'][81] . "</td><td>";
 					dropdownValue("glpi_dropdown_user_titles","title",$this->fields["title"],1,-1);
 
-				echo "<td class='center'>" . $LANG["common"][17] . "</td><td>";
+				echo "<td class='center'>" . $LANG['common'][17] . "</td><td>";
 					dropdownValue("glpi_dropdown_user_types","type",$this->fields["type"],1,-1);
 				echo "</td></tr>";
 
-				echo "<tr class='tab_bg_1' align='center'><td>" . $LANG["common"][25] . ":</td><td colspan='3'><textarea  cols='70' rows='3' name='comments' >" . $this->fields["comments"] . "</textarea></td>";
+				echo "<tr class='tab_bg_1' align='center'><td>" . $LANG['common'][25] . ":</td><td colspan='3'><textarea  cols='70' rows='3' name='comments' >" . $this->fields["comments"] . "</textarea></td>";
 				echo "</tr>";
 
 				//Authentications informations : auth method used and server used
 				//don't display is creation of a new user'
 				if (!empty ($ID)) {
 					if (haveRight("user_auth_method", "r")){
-						echo "<tr class='tab_bg_1' align='center'><td>" . $LANG["login"][10] . ":</td><td class='center'>";
+						echo "<tr class='tab_bg_1' align='center'><td>" . $LANG['login'][10] . ":</td><td class='center'>";
 
 						echo getAuthMethodName($this->fields["auth_method"], $this->fields["id_auth"], 1);
 
@@ -939,11 +939,11 @@ class User extends CommonDBTM {
 						echo "</tr>";
 					}
 					
-					echo "<tr class='tab_bg_1' align='center'><td>" . $LANG["login"][24] . ":</td><td class='center'>";
+					echo "<tr class='tab_bg_1' align='center'><td>" . $LANG['login'][24] . ":</td><td class='center'>";
 					if (!empty($this->fields["date_mod"])){
 						echo convDateTime($this->fields["date_mod"]);
 					}
-					echo "</td><td>" . $LANG["login"][0] . ":</td><td>";
+					echo "</td><td>" . $LANG['login'][0] . ":</td><td>";
 
 					if (!empty($this->fields["last_login"])){
 						echo convDateTime($this->fields["last_login"]);
@@ -962,21 +962,21 @@ class User extends CommonDBTM {
 				if ($this->fields["name"] == "") {
 					echo "<tr>";
 					echo "<td class='tab_bg_2' valign='top' colspan='4' align='center'>";
-					echo "<input type='submit' name='add' value=\"" . $LANG["buttons"][8] . "\" class='submit'>";
+					echo "<input type='submit' name='add' value=\"" . $LANG['buttons'][8] . "\" class='submit'>";
 					echo "</td>";
 					echo "</tr>";
 				} else {
 					echo "<tr>";
 					echo "<td class='tab_bg_2' valign='top' align='center' colspan='2'>";
-					echo "<input type='submit' name='update' value=\"" . $LANG["buttons"][7] . "\" class='submit' >";
+					echo "<input type='submit' name='update' value=\"" . $LANG['buttons'][7] . "\" class='submit' >";
 					echo "</td>";
 					echo "<td class='tab_bg_2' valign='top' align='center' colspan='2'>\n";
 					if (!$this->fields["deleted"]){
-						echo "<input type='submit' name='delete' onclick=\"return confirm('" . $LANG["common"][50] . "')\" value=\"".$LANG["buttons"][6]."\" class='submit'>";
+						echo "<input type='submit' name='delete' onclick=\"return confirm('" . $LANG['common'][50] . "')\" value=\"".$LANG['buttons'][6]."\" class='submit'>";
 					 }else {
-						echo "<input type='submit' name='restore' value=\"".$LANG["buttons"][21]."\" class='submit'>";
+						echo "<input type='submit' name='restore' value=\"".$LANG['buttons'][21]."\" class='submit'>";
 
-						echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='submit' name='purge' value=\"".$LANG["buttons"][22]."\" class='submit'>";
+						echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='submit' name='purge' value=\"".$LANG['buttons'][22]."\" class='submit'>";
 					}
 
 					echo "</td>";
@@ -989,7 +989,7 @@ class User extends CommonDBTM {
 			echo "<script type='text/javascript'>loadDefaultTab();</script>";
 			return true;
 		} else {
-			echo "<div class='center'><strong>".$LANG["common"][54]."</strong></div>";
+			echo "<div class='center'><strong>".$LANG['common'][54]."</strong></div>";
 			return false;
 		}
 	}
@@ -1026,10 +1026,10 @@ class User extends CommonDBTM {
 			
 			echo "<div class='center'>";
 			echo "<form method='post' name=\"user_manager\" action=\"$target\"><table class='tab_cadre_fixe'>";
-			echo "<tr><th colspan='2'>" . $LANG["common"][34] . " : " . $this->fields["name"] . "</th></tr>";
+			echo "<tr><th colspan='2'>" . $LANG['common'][34] . " : " . $this->fields["name"] . "</th></tr>";
 
 			echo "<tr class='tab_bg_1'>";
-			echo "<td class='center'>" . $LANG["setup"][18] . "</td>";
+			echo "<td class='center'>" . $LANG['setup'][18] . "</td>";
 			echo "<td class='center'><strong>" . $this->fields["name"] . "</strong>";
 			echo "<input type='hidden' name='name' value=\"" . $this->fields["name"] . "\">";
 			echo "<input type='hidden' name='ID' value=\"" . $this->fields["ID"] . "\">";
@@ -1037,10 +1037,10 @@ class User extends CommonDBTM {
 
 			//do some rights verification
 			if (!$extauth && haveRight("password_update", "1")) {
-				echo "<tr class='tab_bg_1'><td class='center'>" . $LANG["setup"][19] . "</td><td><input type='password' name='password' value='' size='30' /></td></tr>";
+				echo "<tr class='tab_bg_1'><td class='center'>" . $LANG['setup'][19] . "</td><td><input type='password' name='password' value='' size='30' /></td></tr>";
 			}
 
-			echo "<tr class='tab_bg_1'><td class='center'>" . $LANG["common"][48] . "</td><td>";
+			echo "<tr class='tab_bg_1'><td class='center'>" . $LANG['common'][48] . "</td><td>";
 			if ($extauth && isset ($auth_method['ldap_field_email']) && !empty ($auth_method['ldap_field_realname'])) {
 				echo $this->fields["realname"];
 			} else {
@@ -1048,7 +1048,7 @@ class User extends CommonDBTM {
 			}
 			echo "</td></tr>";
 
-			echo "<tr class='tab_bg_1'><td class='center'>" . $LANG["common"][43] . "</td><td>";
+			echo "<tr class='tab_bg_1'><td class='center'>" . $LANG['common'][43] . "</td><td>";
 			if ($extauth && isset ($auth_method['ldap_field_firstname']) && !empty ($auth_method['ldap_field_firstname'])) {
 				echo $this->fields["firstname"];
 			} else {
@@ -1056,19 +1056,19 @@ class User extends CommonDBTM {
 			}
 			echo "</td></tr>";
 
-			echo "<tr class='tab_bg_1'><td class='center'>" . $LANG["setup"][14] . "</td><td>";
+			echo "<tr class='tab_bg_1'><td class='center'>" . $LANG['setup'][14] . "</td><td>";
 			if ($extauth && isset ($auth_method['ldap_field_email']) && !empty ($auth_method['ldap_field_email'])) {
 				echo $this->fields["email"];
 			} else {
 				autocompletionTextField("email_form", "glpi_users", "email", $this->fields["email"], 40);
 				if (!isValidEmail($this->fields["email"])){
-					echo "<span class='red'>".$LANG["mailing"][110]."</span>";
+					echo "<span class='red'>".$LANG['mailing'][110]."</span>";
 				}
 			}
 
 			echo "</td></tr>";
 
-			echo "<tr class='tab_bg_1'><td class='center'>" . $LANG["help"][35] . "</td><td>";
+			echo "<tr class='tab_bg_1'><td class='center'>" . $LANG['help'][35] . "</td><td>";
 			if ($extauth && isset ($auth_method['ldap_field_phone']) && !empty ($auth_method['ldap_field_phone'])) {
 				echo $this->fields["phone"];
 			} else {
@@ -1076,7 +1076,7 @@ class User extends CommonDBTM {
 			}
 			echo "</td></tr>";
 
-			echo "<tr class='tab_bg_1'><td class='center'>" . $LANG["help"][35] . " 2</td><td>";
+			echo "<tr class='tab_bg_1'><td class='center'>" . $LANG['help'][35] . " 2</td><td>";
 			if ($extauth && isset ($auth_method['ldap_field_phone2']) && !empty ($auth_method['ldap_field_phone2'])) {
 				echo $this->fields["phone2"];
 			} else {
@@ -1084,7 +1084,7 @@ class User extends CommonDBTM {
 			}
 			echo "</td></tr>";
 
-			echo "<tr class='tab_bg_1'><td class='center'>" . $LANG["common"][42] . "</td><td>";
+			echo "<tr class='tab_bg_1'><td class='center'>" . $LANG['common'][42] . "</td><td>";
 			if ($extauth && isset ($auth_method['ldap_field_mobile']) && !empty ($auth_method['ldap_field_mobile'])) {
 				echo $this->fields["mobile"];
 			} else {
@@ -1093,7 +1093,7 @@ class User extends CommonDBTM {
 			echo "</td></tr>";
 
 			if (count($_SESSION['glpiprofiles'])>1){
-				echo "<tr class='tab_bg_1'><td class='center'>" . $LANG["profiles"][13] . "</td><td>";
+				echo "<tr class='tab_bg_1'><td class='center'>" . $LANG['profiles'][13] . "</td><td>";
 				$options=array(0=>'----');
 				
 				foreach ($_SESSION['glpiprofiles'] as $ID => $prof){
@@ -1104,7 +1104,7 @@ class User extends CommonDBTM {
 			}
 
 			if (count($_SESSION['glpiactiveentities'])>1){
-				echo "<tr class='tab_bg_1'><td class='center'>" . $LANG["profiles"][37] . "</td><td>";
+				echo "<tr class='tab_bg_1'><td class='center'>" . $LANG['profiles'][37] . "</td><td>";
 				dropdownValue("glpi_entities","FK_entities",$_SESSION["glpidefault_entity"],1,$_SESSION['glpiactiveentities']);
 				echo "</td></tr>";
 			}
@@ -1112,17 +1112,17 @@ class User extends CommonDBTM {
 			if (haveRight("config", "w")){
 				echo "<tr class='tab_bg_1'>";
 			
-				echo "<td class='center'>" . $LANG["setup"][138] . " </td><td><select name=\"use_mode\">";
-				echo "<option value=\"" . NORMAL_MODE . "\" " . ($this->fields["use_mode"] == NORMAL_MODE ? " selected " : "") . " >" . $LANG["setup"][135] . " </option>";
-				echo "<option value=\"" . TRANSLATION_MODE . "\" " . ($this->fields["use_mode"] == TRANSLATION_MODE ? " selected " : "") . " >" . $LANG["setup"][136] . " </option>";
-				echo "<option value=\"" . DEBUG_MODE . "\" " . ($this->fields["use_mode"] == DEBUG_MODE ? " selected " : "") . " >" . $LANG["setup"][137] . " </option>";
+				echo "<td class='center'>" . $LANG['setup'][138] . " </td><td><select name=\"use_mode\">";
+				echo "<option value=\"" . NORMAL_MODE . "\" " . ($this->fields["use_mode"] == NORMAL_MODE ? " selected " : "") . " >" . $LANG['setup'][135] . " </option>";
+				echo "<option value=\"" . TRANSLATION_MODE . "\" " . ($this->fields["use_mode"] == TRANSLATION_MODE ? " selected " : "") . " >" . $LANG['setup'][136] . " </option>";
+				echo "<option value=\"" . DEBUG_MODE . "\" " . ($this->fields["use_mode"] == DEBUG_MODE ? " selected " : "") . " >" . $LANG['setup'][137] . " </option>";
 				echo "</select></td>";
 				echo "</tr>";
 			}
 
 			echo "<tr>";
 			echo "<td class='tab_bg_2' valign='top' align='center' colspan='2'>";
-			echo "<input type='submit' name='update' value=\"" . $LANG["buttons"][7] . "\" class='submit' >";
+			echo "<input type='submit' name='update' value=\"" . $LANG['buttons'][7] . "\" class='submit' >";
 			echo "</td>";
 			echo "</tr>";
 

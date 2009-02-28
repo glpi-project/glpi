@@ -80,24 +80,24 @@ class LdapCriteria extends CommonDBTM {
 		if ($canedit) {
 			echo "<div class='center'>";
 			echo "<table  class='tab_cadre_fixe'>";
-			echo "<tr class='tab_bg_1'><th colspan='5'>" .$LANG["ruleldap"][3] . "</tr><tr><td class='tab_bg_2' align='center'>";
+			echo "<tr class='tab_bg_1'><th colspan='5'>" .$LANG['ruleldap'][3] . "</tr><tr><td class='tab_bg_2' align='center'>";
 			echo "</td><td align='center' class='tab_bg_2'>";
-			echo $LANG["common"][16] . ":";
+			echo $LANG['common'][16] . ":";
 			autocompletionTextField("name", $this->table, "name", "", 40);
-			echo $LANG["setup"][601] . ":";
+			echo $LANG['setup'][601] . ":";
 			autocompletionTextField("value", $this->table, "value", "", 40);
 			echo "<input type=hidden name='sub_type' value=\"" . RULE_AFFECT_RIGHTS . "\">";
-			echo "<input type='submit' name='add' value=\"" . $LANG["buttons"][8] . "\" class='submit'>";
+			echo "<input type='submit' name='add' value=\"" . $LANG['buttons'][8] . "\" class='submit'>";
 			echo "</td></tr>";
 			
 			echo "</table></div><br>";
 		}
 
 		if (!count($parameters)){
-			echo "<center>".$LANG["ruleldap"][2]."</center>";
+			echo "<center>".$LANG['ruleldap'][2]."</center>";
 		} else {
-			echo "<div class='center'><table class='tab_cadrehov'><tr><th colspan='3'>" . $LANG["common"][53]." ".$LANG["ruleldap"][1] . "</th></tr>";
-			echo "<tr class='tab_bg_1'><td class='tab_bg_2' colspan='2'>" .  $LANG["common"][16]."</td><td class='tab_bg_2'>".$LANG["setup"][601] . "</td></tr>";
+			echo "<div class='center'><table class='tab_cadrehov'><tr><th colspan='3'>" . $LANG['common'][53]." ".$LANG['ruleldap'][1] . "</th></tr>";
+			echo "<tr class='tab_bg_1'><td class='tab_bg_2' colspan='2'>" .  $LANG['common'][16]."</td><td class='tab_bg_2'>".$LANG['setup'][601] . "</td></tr>";
 
 			foreach ($parameters as $parameter) {
 				echo "<tr class='tab_bg_1'>";
@@ -120,11 +120,11 @@ class LdapCriteria extends CommonDBTM {
 			if ($canedit) {
 				echo "<div class='center'>";
 				echo "<table  width='80%'>";
-				echo "<tr><td><img src=\"" . $CFG_GLPI["root_doc"] . "/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markCheckboxes('ldapcriterias_form') ) return false;\" href='" . $_SERVER['PHP_SELF'] . "?ID=$ID&amp;select=all'>" . $LANG["buttons"][18] . "</a></td>";
+				echo "<tr><td><img src=\"" . $CFG_GLPI["root_doc"] . "/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markCheckboxes('ldapcriterias_form') ) return false;\" href='" . $_SERVER['PHP_SELF'] . "?ID=$ID&amp;select=all'>" . $LANG['buttons'][18] . "</a></td>";
 	
-				echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkCheckboxes('ldapcriterias_form') ) return false;\" href='" . $_SERVER['PHP_SELF'] . "?ID=$ID&amp;select=none'>" . $LANG["buttons"][19] . "</a>";
+				echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkCheckboxes('ldapcriterias_form') ) return false;\" href='" . $_SERVER['PHP_SELF'] . "?ID=$ID&amp;select=none'>" . $LANG['buttons'][19] . "</a>";
 				echo "</td><td align='left' width='80%'>";
-				echo "<input type='submit' name='delete' value=\"" . $LANG["buttons"][6] . "\" class='submit'>";
+				echo "<input type='submit' name='delete' value=\"" . $LANG['buttons'][6] . "\" class='submit'>";
 				echo "</td>";
 				echo "</table>";
 	

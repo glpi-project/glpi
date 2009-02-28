@@ -53,8 +53,8 @@ function showProfileEntityUser($target,$ID,$prof){
 	 	
  	echo "<div class='center'>";
 	echo "<table class='tab_cadre_fixe'><tr>";
-	echo "<th>".$LANG["profiles"][22]." :&nbsp;&nbsp;&nbsp;&nbsp;".$prof->fields["name"]."</th></tr>";
-	echo "<tr><th colspan='2'>".$LANG["Menu"][14]." (D=".$LANG["profiles"][29].", R=".$LANG["profiles"][28].")</th></tr>";
+	echo "<th>".$LANG['profiles'][22]." :&nbsp;&nbsp;&nbsp;&nbsp;".$prof->fields["name"]."</th></tr>";
+	echo "<tr><th colspan='2'>".$LANG["Menu"][14]." (D=".$LANG['profiles'][29].", R=".$LANG['profiles'][28].")</th></tr>";
  	echo "</table>";
 	echo "</div>";
   	
@@ -101,14 +101,14 @@ function showProfileEntityUser($target,$ID,$prof){
 						if ($canedit){
 							echo "<div class='center'>";
 							echo "<table width='100%' class='tab_glpi'>";
-							echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markCheckboxes('profileuser_form".$rand."_$temp') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$ID&amp;select=all'>".$LANG["buttons"][18]."</a></td>";
+							echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markCheckboxes('profileuser_form".$rand."_$temp') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$ID&amp;select=all'>".$LANG['buttons'][18]."</a></td>";
 							
-							echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkCheckboxes('profileuser_form".$rand."_$temp') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$ID&amp;select=none'>".$LANG["buttons"][19]."</a>";
+							echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkCheckboxes('profileuser_form".$rand."_$temp') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$ID&amp;select=none'>".$LANG['buttons'][19]."</a>";
 							echo "</td><td align='left' width='80%'>";
 							dropdownValue("glpi_entities","FK_entities",0,1,$_SESSION['glpiactiveentities']);
-							echo "&nbsp;<input type='submit' name='moveentity' value=\"".$LANG["buttons"][20]."\"
+							echo "&nbsp;<input type='submit' name='moveentity' value=\"".$LANG['buttons'][20]."\"
  class='submit'>";
-							echo "&nbsp;<input type='submit' name='deleteuser' value=\"".$LANG["buttons"][6]."\" class='submit'>";
+							echo "&nbsp;<input type='submit' name='deleteuser' value=\"".$LANG['buttons'][6]."\" class='submit'>";
 
 							echo "</td></tr>";
 							echo "</table>";
@@ -185,13 +185,13 @@ function showProfileEntityUser($target,$ID,$prof){
 				if ($canedit){
 					echo "<div class='center'>";
 					echo "<table width='100%' class='tab_glpi'>";
-					echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markCheckboxes('profileuser_form".$rand."_$temp') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$ID&amp;select=all'>".$LANG["buttons"][18]."</a></td>";
+					echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markCheckboxes('profileuser_form".$rand."_$temp') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$ID&amp;select=all'>".$LANG['buttons'][18]."</a></td>";
 					
-					echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkCheckboxes('profileuser_form".$rand."_$temp') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$ID&amp;select=none'>".$LANG["buttons"][19]."</a>";
+					echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkCheckboxes('profileuser_form".$rand."_$temp') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$ID&amp;select=none'>".$LANG['buttons'][19]."</a>";
 					echo "</td><td align='left' width='80%'>";
 					dropdownValue("glpi_entities","FK_entities",0,1,$_SESSION['glpiactiveentities']);
-					echo "&nbsp;<input type='submit' name='moveentity' value=\"".$LANG["buttons"][20]."\" class='submit'>";
-					echo "&nbsp;<input type='submit' name='deleteuser' value=\"".$LANG["buttons"][6]."\" class='submit'>";
+					echo "&nbsp;<input type='submit' name='moveentity' value=\"".$LANG['buttons'][20]."\" class='submit'>";
+					echo "&nbsp;<input type='submit' name='deleteuser' value=\"".$LANG['buttons'][6]."\" class='submit'>";
 					echo "</td>";
 					echo "</table>";
 					echo "</div>";
@@ -201,7 +201,7 @@ function showProfileEntityUser($target,$ID,$prof){
 
 		}
  		else
- 			echo "<tr><td class='tab_bg_1' align=center>".$LANG["profiles"][33]."</td></tr>";
+ 			echo "<tr><td class='tab_bg_1' align=center>".$LANG['profiles'][33]."</td></tr>";
  		}
  
  	echo "</table>";

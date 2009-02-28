@@ -57,7 +57,7 @@ class DictionnarySoftwareCollection extends RuleCachedCollection {
 
 	function getTitle() {
 		global $LANG;
-		return $LANG["rulesengine"][35];
+		return $LANG['rulesengine'][35];
 	}
 
         function cleanTestOutputCriterias($output){
@@ -77,17 +77,17 @@ class DictionnarySoftwareCollection extends RuleCachedCollection {
 		echo "<form name='testrule_form' id='softdictionnary_confirmation' method='post' action=\"".$target."\">\n";
 		echo "<div class='center'>"; 
 		echo "<table class='tab_cadre_fixe'>";
-		echo "<tr><th colspan='2'><strong>" .$LANG["rulesengine"][92]. "</strong></th</tr>";
+		echo "<tr><th colspan='2'><strong>" .$LANG['rulesengine'][92]. "</strong></th</tr>";
 		echo "<tr><td align='center' class='tab_bg_2'>"; 
 		echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/warning.png\"></td>";
-		echo "<td align='center' class='tab_bg_2'>".$LANG["rulesengine"][93]. "</td></tr>\n";
-		echo "<tr><th colspan='2'><strong>" .$LANG["rulesengine"][95]. "</strong></th</tr>";
-		echo "<tr><td align='center' class='tab_bg_2'>".$LANG["rulesengine"][96]."</td>"; 
+		echo "<td align='center' class='tab_bg_2'>".$LANG['rulesengine'][93]. "</td></tr>\n";
+		echo "<tr><th colspan='2'><strong>" .$LANG['rulesengine'][95]. "</strong></th</tr>";
+		echo "<tr><td align='center' class='tab_bg_2'>".$LANG['rulesengine'][96]."</td>"; 
 		echo "<td align='center' class='tab_bg_2'>"; 
 		dropdownValue("glpi_dropdown_manufacturer","manufacturer");
 		echo"</td></tr>\n";
 	
-		echo "<tr><td align='center' class='tab_bg_2' colspan='2'><input type='submit' name='replay_rule' value=\"" . $LANG["buttons"][2] . "\" class='submit'><input type='hidden' name='replay_confirm' value='replay_confirm'</td></tr>";
+		echo "<tr><td align='center' class='tab_bg_2' colspan='2'><input type='submit' name='replay_rule' value=\"" . $LANG['buttons'][2] . "\" class='submit'><input type='hidden' name='replay_confirm' value='replay_confirm'</td></tr>";
 		echo "</table>";
 		echo "</div></form>";
 		return true;
@@ -311,7 +311,7 @@ class DictionnarySoftwareCollection extends RuleCachedCollection {
 
 			$software = new Software;
 			while ($soft = $DB->fetch_array($res_countsoftinstall)) {
-				putSoftwareInTrash($soft["ID"], $LANG["rulesengine"][87], IMPORT_TYPE_DICTIONNARY);
+				putSoftwareInTrash($soft["ID"], $LANG['rulesengine'][87], IMPORT_TYPE_DICTIONNARY);
 			}
 		}
 	}
@@ -410,7 +410,7 @@ class DictionnarySoftwareRule extends RuleCached {
 
 	function getTitle() {
 		global $LANG;
-		return $LANG["rulesengine"][35];
+		return $LANG['rulesengine'][35];
 	}
 
 	function maxActionsCount() {
@@ -420,14 +420,14 @@ class DictionnarySoftwareRule extends RuleCached {
 	function showCacheRuleHeader()
 	{
 		global $LANG;
-		echo "<th colspan='6'>".$LANG["rulesengine"][100]." : ".$this->fields["name"]."</th></tr>";
+		echo "<th colspan='6'>".$LANG['rulesengine'][100]." : ".$this->fields["name"]."</th></tr>";
 		echo "<tr>";
-		echo "<td class='tab_bg_1'>".$LANG["rulesengine"][104]."</td>";
-		echo "<td class='tab_bg_1'>".$LANG["common"][5]." ".$LANG["rulesengine"][108]."</td>";
-		echo "<td class='tab_bg_1'>".$LANG["rulesengine"][105]."</td>";
-		echo "<td class='tab_bg_1'>".$LANG["rulesengine"][78]."</td>";		
-		echo "<td class='tab_bg_1'>".$LANG["common"][5]."</td>";
-		echo "<td class='tab_bg_1'>".$LANG["rulesengine"][39]." ".$LANG["ocsng"][7]."</td>"; 
+		echo "<td class='tab_bg_1'>".$LANG['rulesengine'][104]."</td>";
+		echo "<td class='tab_bg_1'>".$LANG['common'][5]." ".$LANG['rulesengine'][108]."</td>";
+		echo "<td class='tab_bg_1'>".$LANG['rulesengine'][105]."</td>";
+		echo "<td class='tab_bg_1'>".$LANG['rulesengine'][78]."</td>";		
+		echo "<td class='tab_bg_1'>".$LANG['common'][5]."</td>";
+		echo "<td class='tab_bg_1'>".$LANG['rulesengine'][39]." ".$LANG['ocsng'][7]."</td>"; 
 		echo "</tr>";
 	}
 
@@ -436,9 +436,9 @@ class DictionnarySoftwareRule extends RuleCached {
 		global $LANG;
 		echo "<td class='tab_bg_2'>".$fields["old_value"]."</td>";
 		echo "<td class='tab_bg_2'>".$fields["manufacturer"]."</td>";
-		echo "<td class='tab_bg_2'>".($fields["new_value"]!=''?$fields["new_value"]:$LANG["rulesengine"][106])."</td>";
-		echo "<td class='tab_bg_2'>".($fields["version"]!=''?$fields["version"]:$LANG["rulesengine"][106])."</td>";		
-		echo "<td class='tab_bg_2'>".((isset($fields["new_manufacturer"]) && $fields["new_manufacturer"]!='')?getDropdownName("glpi_dropdown_manufacturer",$fields["new_manufacturer"]):$LANG["rulesengine"][106])."</td>";
+		echo "<td class='tab_bg_2'>".($fields["new_value"]!=''?$fields["new_value"]:$LANG['rulesengine'][106])."</td>";
+		echo "<td class='tab_bg_2'>".($fields["version"]!=''?$fields["version"]:$LANG['rulesengine'][106])."</td>";		
+		echo "<td class='tab_bg_2'>".((isset($fields["new_manufacturer"]) && $fields["new_manufacturer"]!='')?getDropdownName("glpi_dropdown_manufacturer",$fields["new_manufacturer"]):$LANG['rulesengine'][106])."</td>";
 		echo "<td class='tab_bg_2'>"; 
  	 	if ($fields["ignore_ocs_import"]==''){ 
  	 		echo "&nbsp;"; 

@@ -60,32 +60,32 @@ function moveUploadedDocument($filename,$old_file=''){
 				// Delete old file
 				if(!empty($old_file)&& is_file(GLPI_DOC_DIR."/".$old_file)&& !is_dir(GLPI_DOC_DIR."/".$old_file)) {
 					if (unlink(GLPI_DOC_DIR."/".$old_file))
-						addMessageAfterRedirect($LANG["document"][24]." ".GLPI_DOC_DIR."/".$old_file);
+						addMessageAfterRedirect($LANG['document'][24]." ".GLPI_DOC_DIR."/".$old_file);
 					else 
-						addMessageAfterRedirect($LANG["document"][25]." ".GLPI_DOC_DIR."/".$old_file);
+						addMessageAfterRedirect($LANG['document'][25]." ".GLPI_DOC_DIR."/".$old_file);
 				}
 
 				// D�lacement si droit
 				if (is_writable (GLPI_DOC_DIR."/_uploads/".$filename)){
 					if (rename(GLPI_DOC_DIR."/_uploads/".$filename,GLPI_DOC_DIR."/".$new_path)){
-						addMessageAfterRedirect($LANG["document"][39]);
+						addMessageAfterRedirect($LANG['document'][39]);
 						return $new_path;
 					}
 					else {
-						addMessageAfterRedirect($LANG["document"][40]);
+						addMessageAfterRedirect($LANG['document'][40]);
 					}
 				} else { // Copi sinon
 					if (copy(GLPI_DOC_DIR."/_uploads/".$filename,GLPI_DOC_DIR."/".$new_path)){
-						addMessageAfterRedirect($LANG["document"][41]);
+						addMessageAfterRedirect($LANG['document'][41]);
 						return $new_path;
 					}
-					else addMessageAfterRedirect($LANG["document"][40]);
+					else addMessageAfterRedirect($LANG['document'][40]);
 				}
 			}
 
-		} else addMessageAfterRedirect($LANG["document"][38].": ".GLPI_DOC_DIR."/_uploads/".$filename);
+		} else addMessageAfterRedirect($LANG['document'][38].": ".GLPI_DOC_DIR."/_uploads/".$filename);
 
-	} else addMessageAfterRedirect($LANG["document"][35]);
+	} else addMessageAfterRedirect($LANG['document'][35]);
 
 	return "";	
 }
@@ -115,17 +115,17 @@ function uploadDocument($FILEDESC,$old_file=''){
 			// Delete old file
 			if(!empty($old_file)&& is_file(GLPI_DOC_DIR."/".$old_file)&& !is_dir(GLPI_DOC_DIR."/".$old_file)) {
 				if (unlink(GLPI_DOC_DIR."/".$old_file))
-					addMessageAfterRedirect($LANG["document"][24]." ".GLPI_DOC_DIR."/".$old_file);
+					addMessageAfterRedirect($LANG['document'][24]." ".GLPI_DOC_DIR."/".$old_file);
 				else 
-					addMessageAfterRedirect($LANG["document"][25]." ".GLPI_DOC_DIR."/".$old_file);
+					addMessageAfterRedirect($LANG['document'][25]." ".GLPI_DOC_DIR."/".$old_file);
 			}
 
 			// Move uploaded file
 			if (rename($FILEDESC['tmp_name'],GLPI_DOC_DIR."/".$new_path)) {
-				addMessageAfterRedirect($LANG["document"][26]);
+				addMessageAfterRedirect($LANG['document'][26]);
 				return $new_path;
 			} else {
-				addMessageAfterRedirect($LANG["document"][27]);
+				addMessageAfterRedirect($LANG['document'][27]);
 			}
 		}
 
@@ -151,7 +151,7 @@ function getUploadFileValidLocationName($dir,$filename,$force){
 		if (is_dir(GLPI_DOC_DIR)){
 			// Test existance sous-repertoire type dans DOCS -> sinon cr�tion
 			if (!is_dir(GLPI_DOC_DIR."/".$dir)){
-				addMessageAfterRedirect($LANG["document"][34]." ".GLPI_DOC_DIR."/".$dir);
+				addMessageAfterRedirect($LANG['document'][34]." ".GLPI_DOC_DIR."/".$dir);
 				@mkdir(GLPI_DOC_DIR."/".$dir);
 			}
 			// Copy du fichier upload�si r�ertoire existe
@@ -175,13 +175,13 @@ function getUploadFileValidLocationName($dir,$filename,$force){
 				}
 				if ($force||!is_file(GLPI_DOC_DIR."/".$dir."/".$filename)){
 					return $dir."/".$filename;
-				} else addMessageAfterRedirect($LANG["document"][28]);
+				} else addMessageAfterRedirect($LANG['document'][28]);
 
-			} else addMessageAfterRedirect($LANG["document"][29]." ".GLPI_DOC_DIR."/".$dir." ".$LANG["document"][30]);
+			} else addMessageAfterRedirect($LANG['document'][29]." ".GLPI_DOC_DIR."/".$dir." ".$LANG['document'][30]);
 
-		} else addMessageAfterRedirect($LANG["document"][31]." ".GLPI_DOC_DIR);
+		} else addMessageAfterRedirect($LANG['document'][31]." ".GLPI_DOC_DIR);
 
-	} else addMessageAfterRedirect($LANG["document"][32]);
+	} else addMessageAfterRedirect($LANG['document'][32]);
 
 	return "";
 }
@@ -216,15 +216,15 @@ function showDeviceDocument($instID) {
 		echo "<form method='post' name='document_form$rand' id='document_form$rand'  action=\"".$CFG_GLPI["root_doc"]."/front/document.form.php\">";
 	
 		echo "<br><br><div class='center'><table class='tab_cadre_fixe'>";
-		echo "<tr><th colspan='".($canedit?6:5)."'>".$LANG["document"][19].":</th></tr><tr>";
+		echo "<tr><th colspan='".($canedit?6:5)."'>".$LANG['document'][19].":</th></tr><tr>";
 		if ($canedit) {
 			echo "<th>&nbsp;</th>";
 		}
-		echo "<th>".$LANG["common"][17]."</th>";
-		echo "<th>".$LANG["common"][16]."</th>";
-		echo "<th>".$LANG["entity"][0]."</th>";
-		echo "<th>".$LANG["common"][19]."</th>";
-		echo "<th>".$LANG["common"][20]."</th>";
+		echo "<th>".$LANG['common'][17]."</th>";
+		echo "<th>".$LANG['common'][16]."</th>";
+		echo "<th>".$LANG['entity'][0]."</th>";
+		echo "<th>".$LANG['common'][19]."</th>";
+		echo "<th>".$LANG['common'][20]."</th>";
 		echo "</tr>";
 		$ci=new CommonItem();
 		while ($i < $number) {
@@ -250,7 +250,7 @@ function showDeviceDocument($instID) {
 						$ci->setType($type);
 						while ($data=$DB->fetch_assoc($result_linked)){
 							$ID="";
-							if ($type==TRACKING_TYPE) $data["name"]=$LANG["job"][38]." ".$data["ID"];
+							if ($type==TRACKING_TYPE) $data["name"]=$LANG['job'][38]." ".$data["ID"];
 							if ($type==KNOWBASE_TYPE) $data["name"]=$data["question"];
 							
 							if($_SESSION["glpiview_ID"]||empty($data["name"])) $ID= " (".$data["ID"].")";
@@ -295,17 +295,17 @@ function showDeviceDocument($instID) {
 			
 			echo "</td>";
 			echo "<td colspan='2' class='center'>";
-			echo "<input type='submit' name='additem' value=\"".$LANG["buttons"][8]."\" class='submit'>";
+			echo "<input type='submit' name='additem' value=\"".$LANG['buttons'][8]."\" class='submit'>";
 			echo "</td></tr>";
 			echo "</table></div>" ;
 			
 			echo "<div class='center'>";
 			echo "<table width='950px' class='tab_glpi'>";
-			echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markCheckboxes('document_form$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$instID&amp;select=all'>".$LANG["buttons"][18]."</a></td>";
+			echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markCheckboxes('document_form$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$instID&amp;select=all'>".$LANG['buttons'][18]."</a></td>";
 		
-			echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkCheckboxes('document_form$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$instID&amp;select=none'>".$LANG["buttons"][19]."</a>";
+			echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkCheckboxes('document_form$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$instID&amp;select=none'>".$LANG['buttons'][19]."</a>";
 			echo "</td><td align='left' width='80%'>";
-			echo "<input type='submit' name='deleteitem' value=\"".$LANG["buttons"][6]."\" class='submit'>";
+			echo "<input type='submit' name='deleteitem' value=\"".$LANG['buttons'][6]."\" class='submit'>";
 			echo "</td>";
 			echo "</table>";
 		
@@ -415,13 +415,13 @@ function showDocumentAssociated($device_type,$ID,$withtemplate=''){
 		echo "<form method='post' action=\"".$CFG_GLPI["root_doc"]."/front/document.form.php\" enctype=\"multipart/form-data\">";
 	}
 	echo "<div class='center'><table class='tab_cadre_fixe'>";
-	echo "<tr><th colspan='7'>".$LANG["document"][21].":</th></tr>";
-	echo "<tr><th>".$LANG["common"][16]."</th>";
-	echo "<th>".$LANG["entity"][0]."</th>";
-	echo "<th width='100px'>".$LANG["document"][2]."</th>";
-	echo "<th>".$LANG["document"][33]."</th>";
-	echo "<th>".$LANG["document"][3]."</th>";
-	echo "<th>".$LANG["document"][4]."</th>";
+	echo "<tr><th colspan='7'>".$LANG['document'][21].":</th></tr>";
+	echo "<tr><th>".$LANG['common'][16]."</th>";
+	echo "<th>".$LANG['entity'][0]."</th>";
+	echo "<th width='100px'>".$LANG['document'][2]."</th>";
+	echo "<th>".$LANG['document'][33]."</th>";
+	echo "<th>".$LANG['document'][3]."</th>";
+	echo "<th>".$LANG['document'][4]."</th>";
 	if ($withtemplate<2)echo "<th>&nbsp;</th>";
 	echo "</tr>";
 	$used=array();
@@ -461,7 +461,7 @@ function showDocumentAssociated($device_type,$ID,$withtemplate=''){
 			if ($withtemplate<2) {
 				echo "<td align='center' class='tab_bg_2'>";
 				if ($canedit)
-					echo "<a href='".$CFG_GLPI["root_doc"]."/front/document.form.php?deleteitem=deleteitem&amp;ID=$assocID&amp;devtype=$device_type&amp;devid=$ID&amp;docid=$docID'><strong>".$LANG["buttons"][6]."</strong></a>";
+					echo "<a href='".$CFG_GLPI["root_doc"]."/front/document.form.php?deleteitem=deleteitem&amp;ID=$assocID&amp;devtype=$device_type&amp;devid=$ID&amp;docid=$docID'><strong>".$LANG['buttons'][6]."</strong></a>";
 				else echo "&nbsp;";
 				echo "</td>";
 			}
@@ -497,7 +497,7 @@ function showDocumentAssociated($device_type,$ID,$withtemplate=''){
 				"<input type='hidden' name='item' value='$ID'>" .
 				"<input type='hidden' name='type' value='$device_type'>" .
 				"<input type='file' name='filename' size='25'>&nbsp;&nbsp;" .
-				"<input type='submit' name='add' value=\"".$LANG["buttons"][8]."\" class='submit'>" .
+				"<input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'>" .
 				"</td>";
 
 			if ($device_type==DOCUMENT_TYPE){
@@ -510,7 +510,7 @@ function showDocumentAssociated($device_type,$ID,$withtemplate=''){
 				echo "<input type='hidden' name='right' value='item'>";
 				dropdownDocument("conID",$entities,$used);
 				echo "</div></td><td class='center'>";
-				echo "<input type='submit' name='additem' value=\"".$LANG["buttons"][8]."\" class='submit'>";
+				echo "<input type='submit' name='additem' value=\"".$LANG['buttons'][8]."\" class='submit'>";
 				echo "</td><td>&nbsp;</td>";
 			}
 			else {
@@ -602,8 +602,8 @@ function showUploadedFilesDropdown($myname){
 			foreach ($uploaded_files as $key => $val)
 				echo "<option value=\"$val\">$val</option>";
 			echo "</select>";
-		} else echo $LANG["document"][37];
-	} else echo $LANG["document"][35];
+		} else echo $LANG['document'][37];
+	} else echo $LANG['document'][35];
 }
 
 /**

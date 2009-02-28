@@ -71,24 +71,24 @@ class Enterprise extends CommonDBTM {
 		global $LANG,$CFG_GLPI;
 
 		if(haveRight("contact_enterprise","r")){
-			$ong[1] = $LANG["title"][26];
+			$ong[1] = $LANG['title'][26];
 		}
 		if ($ID>0){
 			if (haveRight("contract","r")){
 				$ong[4] = $LANG["Menu"][26];
 			}
-			$ong[15] = $LANG["financial"][104];
+			$ong[15] = $LANG['financial'][104];
 			if (haveRight("document","r")){
 				$ong[5] = $LANG["Menu"][27];
 			}
 			if (haveRight("show_all_ticket","1")){
-				$ong[6] = $LANG["title"][28];
+				$ong[6] = $LANG['title'][28];
 			}
 			if (haveRight("link","r")){
-				$ong[7] = $LANG["title"][34];
+				$ong[7] = $LANG['title'][34];
 			}
 			if (haveRight("notes","r")){
-				$ong[10] = $LANG["title"][37];
+				$ong[10] = $LANG['title'][37];
 			}
 		}
 
@@ -154,63 +154,63 @@ class Enterprise extends CommonDBTM {
 		$this->showFormHeader($ID,'',2);
 
 		if (!$use_cache||!($CFG_GLPI["cache"]->start($ID."_".$_SESSION['glpilanguage'],"GLPI_".$this->type))) {
-			echo "<tr class='tab_bg_1'><td>".$LANG["common"][16].":		</td>";
+			echo "<tr class='tab_bg_1'><td>".$LANG['common'][16].":		</td>";
 			echo "<td>";
 			autocompletionTextField("name","glpi_enterprises","name",$this->fields["name"],40,$this->fields["FK_entities"]);
 			echo "</td>";
 
-			echo "<td>".$LANG["financial"][79].":		</td><td>";
+			echo "<td>".$LANG['financial'][79].":		</td><td>";
 			dropdownValue("glpi_dropdown_enttype", "type", $this->fields["type"]);
 			echo "</td></tr>";
 
-			echo "<tr class='tab_bg_1'><td>".$LANG["help"][35].":		</td>";
+			echo "<tr class='tab_bg_1'><td>".$LANG['help'][35].":		</td>";
 			echo "<td>";
 			autocompletionTextField("phonenumber","glpi_enterprises","phonenumber",$this->fields["phonenumber"],40,$this->fields["FK_entities"]);	
 			echo "</td>";
 
 			echo "<td valign='top' rowspan='4'>";
-			echo $LANG["common"][25].":	</td>";
+			echo $LANG['common'][25].":	</td>";
 			echo "<td align='center'  rowspan='4'><textarea cols='35' rows='4' name='comments' >".$this->fields["comments"]."</textarea>";
 			echo "</td></tr>";
 
 
 			echo "<tr class='tab_bg_1'>";
-			echo "<td>".$LANG["financial"][30].":		</td><td>";
+			echo "<td>".$LANG['financial'][30].":		</td><td>";
 			autocompletionTextField("fax","glpi_enterprises","fax",$this->fields["fax"],40,$this->fields["FK_entities"]);
 			echo "</td>";
 			echo "</tr>";
 
-			echo "<tr class='tab_bg_1'><td>".$LANG["financial"][45].":		</td>";
+			echo "<tr class='tab_bg_1'><td>".$LANG['financial'][45].":		</td>";
 			echo "<td>";
 			autocompletionTextField("website","glpi_enterprises","website",$this->fields["website"],40,$this->fields["FK_entities"]);	
 			echo "</td></tr>";
 
 			echo "<tr class='tab_bg_1'>";
-			echo "<td>".$LANG["setup"][14].":		</td><td>";
+			echo "<td>".$LANG['setup'][14].":		</td><td>";
 			autocompletionTextField("email","glpi_enterprises","email",$this->fields["email"],40,$this->fields["FK_entities"]);
 			echo "</td></tr>";
 
 
-			echo "<tr class='tab_bg_1'><td  rowspan='4'>".$LANG["financial"][44].":		</td>";
+			echo "<tr class='tab_bg_1'><td  rowspan='4'>".$LANG['financial'][44].":		</td>";
 			echo "<td align='center' rowspan='4'><textarea cols='35' rows='4' name='address' >".$this->fields["address"]."</textarea>";
-			echo "<td>".$LANG["financial"][100]."</td>";
+			echo "<td>".$LANG['financial'][100]."</td>";
 			echo "<td>";
 			autocompletionTextField("postcode","glpi_enterprises","postcode",$this->fields["postcode"],40,$this->fields["FK_entities"]);
 			echo "</td>";
 			echo "</tr>";
 
 			echo "<tr class='tab_bg_1'>";
-			echo "<td>".$LANG["financial"][101].":		</td><td>";
+			echo "<td>".$LANG['financial'][101].":		</td><td>";
 			autocompletionTextField("town","glpi_enterprises","town",$this->fields["town"],40,$this->fields["FK_entities"]);
 			echo "</td></tr>";
 
 			echo "<tr class='tab_bg_1'>";
-			echo "<td>".$LANG["financial"][102].":		</td><td>";
+			echo "<td>".$LANG['financial'][102].":		</td><td>";
 			autocompletionTextField("state","glpi_enterprises","state",$this->fields["state"],40,$this->fields["FK_entities"]);
 			echo "</td></tr>";
 
 			echo "<tr class='tab_bg_1'>";
-			echo "<td>".$LANG["financial"][103].":		</td><td>";
+			echo "<td>".$LANG['financial'][103].":		</td><td>";
 			autocompletionTextField("country","glpi_enterprises","country",$this->fields["country"],40,$this->fields["FK_entities"]);
 			echo "</td></tr>";
 	
@@ -226,23 +226,23 @@ class Enterprise extends CommonDBTM {
 
 				echo "<td class='tab_bg_2' valign='top' colspan='2'>";
 				echo "<input type='hidden' name='ID' value=\"$ID\">\n";
-				echo "<div class='center'><input type='submit' name='update' value=\"".$LANG["buttons"][7]."\" class='submit'></div>";
+				echo "<div class='center'><input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit'></div>";
 				echo "</td>\n\n";
 				echo "<td class='tab_bg_2' valign='top' colspan='2'>\n";
 				echo "<input type='hidden' name='ID' value=\"$ID\">\n";
 				if (!$this->fields["deleted"])
-					echo "<div class='center'><input type='submit' name='delete' value=\"".$LANG["buttons"][6]."\" class='submit'></div>";
+					echo "<div class='center'><input type='submit' name='delete' value=\"".$LANG['buttons'][6]."\" class='submit'></div>";
 				else {
-					echo "<div class='center'><input type='submit' name='restore' value=\"".$LANG["buttons"][21]."\" class='submit'>";
+					echo "<div class='center'><input type='submit' name='restore' value=\"".$LANG['buttons'][21]."\" class='submit'>";
 
-					echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='submit' name='purge' value=\"".$LANG["buttons"][22]."\" class='submit'></div>";
+					echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='submit' name='purge' value=\"".$LANG['buttons'][22]."\" class='submit'></div>";
 				}
 
 				echo "</td>";
 
 			} else {
 				echo "<td class='tab_bg_2' valign='top' colspan='4'>";
-				echo "<div class='center'><input type='submit' name='add' value=\"".$LANG["buttons"][8]."\" class='submit'></div>";
+				echo "<div class='center'><input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'></div>";
 				echo "</td>";
 
 			}

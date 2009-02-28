@@ -66,12 +66,12 @@ function showInfocomEnterprise($instID) {
 	echo "<br><br><div class='center'><table class='tab_cadrehov'>";
 	echo "<tr><th colspan='2'>";
 	printPagerForm();
-	echo "</th><th colspan='3'>".$LANG["document"][19].":</th></tr>";
-	echo "<tr><th>".$LANG["common"][17]."</th>";
-	echo "<th>".$LANG["entity"][0]."</th>";
-	echo "<th>".$LANG["common"][16]."</th>";
-	echo "<th>".$LANG["common"][19]."</th>";
-	echo "<th>".$LANG["common"][20]."</th>";
+	echo "</th><th colspan='3'>".$LANG['document'][19].":</th></tr>";
+	echo "<tr><th>".$LANG['common'][17]."</th>";
+	echo "<th>".$LANG['entity'][0]."</th>";
+	echo "<th>".$LANG['common'][16]."</th>";
+	echo "<th>".$LANG['common'][19]."</th>";
+	echo "<th>".$LANG['common'][20]."</th>";
 	echo "</tr>";
 	$ci=new CommonItem;
 	$num=0;
@@ -94,7 +94,7 @@ function showInfocomEnterprise($instID) {
 				echo "<td class='center'>".$ci->getType()."<br />$nb</td>";
 				echo "<td class='center' colspan='2'><a href='"
 					. $CFG_GLPI["root_doc"]."/".$SEARCH_PAGES["$type"] . "?" . rawurlencode("contains[0]") . "=" . rawurlencode('$$$$'.$instID) . "&" . rawurlencode("field[0]") . "=53&sort=80&order=ASC&deleted=0&start=0"
-					. "'>" . $LANG["reports"][57]."</a></td>";
+					. "'>" . $LANG['reports'][57]."</a></td>";
 				
 				echo "<td class='center'>-</td><td class='center'>-</td></tr>";		
 			} else if ($nb){
@@ -154,15 +154,15 @@ function showAssociatedContact($instID) {
 
 
 	echo "<br><div class='center'><table class='tab_cadre_fixe'>";
-	echo "<tr><th colspan='9'>".$LANG["financial"][46].":</th></tr>";
-	echo "<tr><th>".$LANG["common"][16]."</th><th>".$LANG["entity"][0]."</th><th>".$LANG["help"][35]."</th>";
-	echo "<th>".$LANG["help"][35]." 2</th><th>".$LANG["common"][42]."</th><th>".$LANG["financial"][30]."</th>";
-	echo "<th>".$LANG["setup"][14]."</th><th>".$LANG["common"][17]."</th>";
+	echo "<tr><th colspan='9'>".$LANG['financial'][46].":</th></tr>";
+	echo "<tr><th>".$LANG['common'][16]."</th><th>".$LANG['entity'][0]."</th><th>".$LANG['help'][35]."</th>";
+	echo "<th>".$LANG['help'][35]." 2</th><th>".$LANG['common'][42]."</th><th>".$LANG['financial'][30]."</th>";
+	echo "<th>".$LANG['setup'][14]."</th><th>".$LANG['common'][17]."</th>";
 	echo "<th>&nbsp;</th></tr>";
 
 	$used=array();
 	if ($number) {
-		initNavigateListItems(CONTACT_TYPE,$LANG["financial"][26]." = ".$enterprise->fields['name']);
+		initNavigateListItems(CONTACT_TYPE,$LANG['financial'][26]." = ".$enterprise->fields['name']);
 
 		while ($data=$DB->fetch_array($result)) {
 			$ID=$data["ID_ent"];
@@ -179,7 +179,7 @@ function showAssociatedContact($instID) {
 			echo "<td class='center'>".getDropdownName("glpi_dropdown_contact_type",$data["type"])."</td>";
 			echo "<td align='center' class='tab_bg_2'>";
 			if ($canedit)
-				echo "<a href='".$CFG_GLPI["root_doc"]."/front/enterprise.form.php?deletecontact=deletecontact&amp;ID=$ID&amp;eID=$instID'><strong>".$LANG["buttons"][6]."</strong></a>";
+				echo "<a href='".$CFG_GLPI["root_doc"]."/front/enterprise.form.php?deletecontact=deletecontact&amp;ID=$ID&amp;eID=$instID'><strong>".$LANG['buttons'][6]."</strong></a>";
 			else echo "&nbsp;";
 			echo "</td></tr>";
 			$i++;
@@ -196,7 +196,7 @@ function showAssociatedContact($instID) {
 		if ($nb>count($used)) {
 			echo "<form method='post' action=\"".$CFG_GLPI["root_doc"]."/front/enterprise.form.php\">";
 			echo "<table  class='tab_cadre_fixe'>";
-			echo "<tr class='tab_bg_1'><th colspan='2'>".$LANG["financial"][33]."</tr><tr><td class='tab_bg_2' align='center'>";
+			echo "<tr class='tab_bg_1'><th colspan='2'>".$LANG['financial'][33]."</tr><tr><td class='tab_bg_2' align='center'>";
 			echo "<input type='hidden' name='eID' value='$instID'>";
 			if ($enterprise->fields["recursive"]) {
 				dropdown("glpi_contacts","cID",1,getEntitySons($enterprise->fields["FK_entities"]),$used);
@@ -204,7 +204,7 @@ function showAssociatedContact($instID) {
 				dropdown("glpi_contacts","cID",1,$enterprise->fields["FK_entities"],$used);
 			}
 			echo "</td><td align='center' class='tab_bg_2'>";
-			echo "<input type='submit' name='addcontact' value=\"".$LANG["buttons"][8]."\" class='submit'>";
+			echo "<input type='submit' name='addcontact' value=\"".$LANG['buttons'][8]."\" class='submit'>";
 			echo "</td></tr>";
 		}
 		echo "</table></form>";
@@ -258,10 +258,10 @@ function getEnterpriseLinks($value,$withname=false){
 
 		if (!empty($ent->fields['website'])){
 			$ret.= "&nbsp;&nbsp;";
-			$ret.= "<a href='".formatOutputWebLink($ent->fields['website'])."' target='_blank'><img src='".$CFG_GLPI["root_doc"]."/pics/web.png' class='middle' alt='".$LANG["common"][4]."' title='".$LANG["common"][4]."' ></a>";
+			$ret.= "<a href='".formatOutputWebLink($ent->fields['website'])."' target='_blank'><img src='".$CFG_GLPI["root_doc"]."/pics/web.png' class='middle' alt='".$LANG['common'][4]."' title='".$LANG['common'][4]."' ></a>";
 		}
 		$ret.= "&nbsp;&nbsp;&nbsp;&nbsp;";
-		$ret.= "<a href='".$CFG_GLPI["root_doc"]."/front/enterprise.form.php?ID=".$ent->fields['ID']."'><img src='".$CFG_GLPI["root_doc"]."/pics/edit.png' class='middle' alt='".$LANG["buttons"][14]."' title='".$LANG["buttons"][14]."'></a>";
+		$ret.= "<a href='".$CFG_GLPI["root_doc"]."/front/enterprise.form.php?ID=".$ent->fields['ID']."'><img src='".$CFG_GLPI["root_doc"]."/pics/edit.png' class='middle' alt='".$LANG['buttons'][14]."' title='".$LANG['buttons'][14]."'></a>";
 	}
 
 	return $ret;

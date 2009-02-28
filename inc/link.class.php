@@ -116,21 +116,21 @@ class Link extends CommonDBTM {
 		
 		$this->showFormHeader($ID, '');
 
-		echo "<tr class='tab_bg_1'><td>".$LANG["links"][6].":	</td>";
+		echo "<tr class='tab_bg_1'><td>".$LANG['links'][6].":	</td>";
 		echo "<td>[LOGIN], [ID], [NAME], [LOCATION], [LOCATIONID], [IP], [MAC], [NETWORK], [DOMAIN], [SERIAL], [OTHERSERIAL], [USER], [GROUP]</td>";
 		echo "</tr>";
 
-		echo "<tr class='tab_bg_1'><td>".$LANG["common"][16].":	</td>";
+		echo "<tr class='tab_bg_1'><td>".$LANG['common'][16].":	</td>";
 		echo "<td>";
 		autocompletionTextField("name","glpi_links","name",$this->fields["name"],80);		
 		echo "</td></tr>";
 
-		echo "<tr class='tab_bg_1'><td>".$LANG["links"][1].":	</td>";
+		echo "<tr class='tab_bg_1'><td>".$LANG['links'][1].":	</td>";
 		echo "<td>";
 		autocompletionTextField("link","glpi_links","link",$this->fields["link"],80);		
 		echo "</td></tr>";
 
-		echo "<tr class='tab_bg_1'><td>".$LANG["links"][9].":	</td>";
+		echo "<tr class='tab_bg_1'><td>".$LANG['links'][9].":	</td>";
 		echo "<td>";
 		echo "<textarea name='data' rows='10' cols='80'>".$this->fields["data"]."</textarea>";
 		echo "</td></tr>";
@@ -143,7 +143,7 @@ class Link extends CommonDBTM {
 
 				echo "<tr>";
 				echo "<td class='tab_bg_2' valign='top' colspan='2'>";
-				echo "<div class='center'><input type='submit' name='add' value=\"".$LANG["buttons"][8]."\" class='submit'></div>";
+				echo "<div class='center'><input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'></div>";
 				echo "</td>";
 				echo "</tr>";
 
@@ -152,11 +152,11 @@ class Link extends CommonDBTM {
 				echo "<tr>";
 				echo "<td class='tab_bg_2' valign='top'>";
 				echo "<input type='hidden' name='ID' value=\"$ID\">\n";
-				echo "<div class='center'><input type='submit' name='update' value=\"".$LANG["buttons"][7]."\" class='submit' ></div>";
+				echo "<div class='center'><input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit' ></div>";
 				echo "</td>\n\n";
 				echo "<td class='tab_bg_2' valign='top'>\n";
 				echo "<input type='hidden' name='ID' value=\"$ID\">\n";
-				echo "<div class='center'><input type='submit' name='delete' value=\"".$LANG["buttons"][6]."\" class='submit' ></div>";
+				echo "<div class='center'><input type='submit' name='delete' value=\"".$LANG['buttons'][6]."\" class='submit' ></div>";
 				echo "</td>";
 				echo "</tr>";
 

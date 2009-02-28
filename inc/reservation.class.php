@@ -242,16 +242,16 @@ class ReservationResa extends CommonDBTM {
 		echo "<br><div class='center'>";
 		switch ($type){
 			case "date":
-				echo $LANG["planning"][1];
+				echo $LANG['planning'][1];
 			break;
 			case "is_res":
-				echo $LANG["reservation"][18];
+				echo $LANG['reservation'][18];
 			break;
 			default :
 			echo "Unknown error";
 			break;
 		}
-		echo "<br><a href='".$target."?show=resa&amp;ID=$ID'>".$LANG["reservation"][20]."</a>";
+		echo "<br><a href='".$target."?show=resa&amp;ID=$ID'>".$LANG['reservation'][20]."</a>";
 		echo "</div>";
 	}
 	/**
@@ -283,26 +283,26 @@ class ReservationResa extends CommonDBTM {
 			$content= "<html><head> <style type=\"text/css\">";
 			$content.=".description{ color: inherit; background: #ebebeb; border-style: solid; border-color: #8d8d8d; border-width: 0px 1px 1px 0px; }";
 			$content.=" </style></head><body>";
-			$content.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$LANG["common"][37].":</span> ".$u->getName()."<br>";
-			$content.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$LANG["mailing"][7]."</span> ".$name."<br>";
+			$content.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$LANG['common'][37].":</span> ".$u->getName()."<br>";
+			$content.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$LANG['mailing'][7]."</span> ".$name."<br>";
 			if (!empty($tech)){
-				$content.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>". $LANG["common"][10].":</span> ".$tech."<br>";
+				$content.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>". $LANG['common'][10].":</span> ".$tech."<br>";
 			}
-			$content.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$LANG["search"][8].":</span> ".convDateTime($this->fields["begin"])."<br>";
-			$content.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$LANG["search"][9].":</span> ".convDateTime($this->fields["end"])."<br>";
-			$content.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$LANG["common"][25].":</span> ".nl2br($this->fields["comment"])."<br>";
+			$content.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$LANG['search'][8].":</span> ".convDateTime($this->fields["begin"])."<br>";
+			$content.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$LANG['search'][9].":</span> ".convDateTime($this->fields["end"])."<br>";
+			$content.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$LANG['common'][25].":</span> ".nl2br($this->fields["comment"])."<br>";
 		} else { // text format
-			$content.=$LANG["mailing"][1]."\n";
-			$content.=$LANG["common"][37].": ".$u->getName()."\n";
-			$content.=$LANG["mailing"][7]." ".$name."\n";
+			$content.=$LANG['mailing'][1]."\n";
+			$content.=$LANG['common'][37].": ".$u->getName()."\n";
+			$content.=$LANG['mailing'][7]." ".$name."\n";
 			if (!empty($tech)){
-				$content.= $LANG["common"][10].": ".$tech."\n";
+				$content.= $LANG['common'][10].": ".$tech."\n";
 			}
 
-			$content.=$LANG["search"][8].": ".convDateTime($this->fields["begin"])."\n";
-			$content.=$LANG["search"][9].": ".convDateTime($this->fields["end"])."\n";
-			$content.=$LANG["common"][25].": ".$this->fields["comment"]."\n";
-			$content.=$LANG["mailing"][1]."\n";
+			$content.=$LANG['search'][8].": ".convDateTime($this->fields["begin"])."\n";
+			$content.=$LANG['search'][9].": ".convDateTime($this->fields["end"])."\n";
+			$content.=$LANG['common'][25].": ".$this->fields["comment"]."\n";
+			$content.=$LANG['mailing'][1]."\n";
 		}
 		return $content;
 

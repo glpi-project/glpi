@@ -84,7 +84,7 @@ class Identification {
 		$query = "SELECT * FROM glpi_users WHERE name='$name'";
 		$result = $DB->query($query);
 		if ($DB->numrows($result) == 0) {
-			$this->addToError($LANG["login"][14]);
+			$this->addToError($LANG['login'][14]);
 			return 0;
 		} else {
 			$pwd = $DB->result($result, 0, "password");
@@ -166,15 +166,15 @@ class Identification {
 				if (doHookFunction("restrict_ldap_auth", $dn)) {
 					return $dn;
 				} else {
-					$this->addToError($LANG["login"][16]);
+					$this->addToError($LANG['login'][16]);
 					return false;
 				}
 			}
 
-			$this->addToError($LANG["login"][12]);
+			$this->addToError($LANG['login'][12]);
 			return false;
 		} else {
-			$this->addToError($LANG["ldap"][6]);
+			$this->addToError($LANG['ldap'][6]);
 			return false;
 		}
 	}
@@ -199,14 +199,14 @@ class Identification {
 		// sanity check... we prevent empty passwords...
 		//
 		if (empty ($password)) {
-			$this->addToError($LANG["login"][13]);
+			$this->addToError($LANG['login'][13]);
 			return false;
 		}
 
 		$query = "SELECT password, password_md5 FROM glpi_users WHERE name = '" . $name . "'";
 		$result = $DB->query($query);
 		if (!$result) {
-			$this->addToError($LANG["login"][14]);
+			$this->addToError($LANG['login'][14]);
 			return false;
 		}
 		if ($result) {
@@ -221,7 +221,7 @@ class Identification {
 					$query2 = "SELECT PASSWORD('" . addslashes($password) . "') AS password";
 					$result2 = $DB->query($query2);
 					if (!$result2 || $DB->numrows($result2) != 1) {
-						$this->addToError($LANG["login"][12]);
+						$this->addToError($LANG['login'][12]);
 						return false;
 					}
 					$pass1 = $DB->result($result, 0, "password");
@@ -231,10 +231,10 @@ class Identification {
 						return true;
 					}
 				}
-				$this->addToError($LANG["login"][12]);
+				$this->addToError($LANG['login'][12]);
 				return false;
 			} else {
-				$this->addToError($LANG["login"][12]);
+				$this->addToError($LANG['login'][12]);
 				return false;
 			}
 		}
@@ -374,16 +374,16 @@ class Identification {
 					if (!isset($_SESSION["glpiactiveprofile"]["interface"])){
 						
 						$this->auth_succeded=false;
-						$this->addToError($LANG["login"][25]);
+						$this->addToError($LANG['login'][25]);
 					} 
 				} else {
 					$this->auth_succeded=false;
-					$this->addToError($LANG["login"][20]);
+					$this->addToError($LANG['login'][20]);
 				}
 	
 			} else  {
 				$this->auth_succeded=false;
-				$this->addToError($LANG["login"][25]);
+				$this->addToError($LANG['login'][25]);
 			}
 		}
 	}
@@ -542,23 +542,23 @@ class AuthMail extends CommonDBTM {
 
 			echo "<div class='center'>";
 			echo "<table class='tab_cadre_fixe'>";
-			echo "<tr><th colspan='2'>" . $LANG["login"][3] . "</th></tr>";
-			echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["common"][16] . "</td><td><input size='30' type=\"text\" name=\"name\" value=\"" . $this->fields["name"] . "\" ></td></tr>";
-			echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["setup"][164] . "</td><td><input size='30' type=\"text\" name=\"imap_host\" value=\"" . $this->fields["imap_host"] . "\" ></td></tr>";
+			echo "<tr><th colspan='2'>" . $LANG['login'][3] . "</th></tr>";
+			echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['common'][16] . "</td><td><input size='30' type=\"text\" name=\"name\" value=\"" . $this->fields["name"] . "\" ></td></tr>";
+			echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['setup'][164] . "</td><td><input size='30' type=\"text\" name=\"imap_host\" value=\"" . $this->fields["imap_host"] . "\" ></td></tr>";
 
 			showMailServerConfig($this->fields["imap_auth_server"]);
 
 			if (empty ($ID)){
-				echo "<tr class='tab_bg_2'><td align='center' colspan=4><input type=\"submit\" name=\"add_mail\" class=\"submit\" value=\"" . $LANG["buttons"][2] . "\" ></td></tr></table>";
+				echo "<tr class='tab_bg_2'><td align='center' colspan=4><input type=\"submit\" name=\"add_mail\" class=\"submit\" value=\"" . $LANG['buttons'][2] . "\" ></td></tr></table>";
 			} else {
-				echo "<tr class='tab_bg_2'><td align='center' colspan=2><input type=\"submit\" name=\"update_mail\" class=\"submit\" value=\"" . $LANG["buttons"][7] . "\" >";
-				echo "&nbsp<input type=\"submit\" name=\"delete_mail\" class=\"submit\" value=\"" . $LANG["buttons"][6] . "\" ></td></tr></table>";
+				echo "<tr class='tab_bg_2'><td align='center' colspan=2><input type=\"submit\" name=\"update_mail\" class=\"submit\" value=\"" . $LANG['buttons'][7] . "\" >";
+				echo "&nbsp<input type=\"submit\" name=\"delete_mail\" class=\"submit\" value=\"" . $LANG['buttons'][6] . "\" ></td></tr></table>";
 				
 				echo "<br><table class='tab_cadre'>";
-				echo "<tr><th colspan='2'>" . $LANG["login"][21] . "</th></tr>";
-				echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["login"][6] . "</td><td><input size='30' type=\"text\" name=\"imap_login\" value=\"\" ></td></tr>";
-				echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["login"][7] . "</td><td><input size='30' type=\"password\" name=\"imap_password\" value=\"\" ></td></tr>";
-				echo "<tr class='tab_bg_2'><td align='center' colspan=2><input type=\"submit\" name=\"test_mail\" class=\"submit\" value=\"" . $LANG["buttons"][2] . "\" ></td></tr>";
+				echo "<tr><th colspan='2'>" . $LANG['login'][21] . "</th></tr>";
+				echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['login'][6] . "</td><td><input size='30' type=\"text\" name=\"imap_login\" value=\"\" ></td></tr>";
+				echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['login'][7] . "</td><td><input size='30' type=\"password\" name=\"imap_password\" value=\"\" ></td></tr>";
+				echo "<tr class='tab_bg_2'><td align='center' colspan=2><input type=\"submit\" name=\"test_mail\" class=\"submit\" value=\"" . $LANG['buttons'][2] . "\" ></td></tr>";
 				echo "</table>&nbsp;";
 	
 			}
@@ -567,8 +567,8 @@ class AuthMail extends CommonDBTM {
 			echo "<input type=\"hidden\" name=\"IMAP_Test\" value=\"1\" >";
 
 			echo "<div class='center'>&nbsp;<table class='tab_cadre_fixe'>";
-			echo "<tr><th colspan='2'>" . $LANG["setup"][162] . "</th></tr>";
-			echo "<tr class='tab_bg_2'><td class='center'><p class='red'>" . $LANG["setup"][165] . "</p><p>" . $LANG["setup"][166] . "</p></td></tr></table></div>";
+			echo "<tr><th colspan='2'>" . $LANG['setup'][162] . "</th></tr>";
+			echo "<tr class='tab_bg_2'><td class='center'><p class='red'>" . $LANG['setup'][165] . "</p><p>" . $LANG['setup'][166] . "</p></td></tr></table></div>";
 		}
 
 		echo "</form>";
@@ -699,106 +699,106 @@ class AuthLDAP extends CommonDBTM {
 			echo "<div class='center'>";
 
 			echo "<table class='tab_cadre_fixe'>";
-			echo "<tr><th colspan='4'>" . $LANG["login"][2] . "</th></tr>";
+			echo "<tr><th colspan='4'>" . $LANG['login'][2] . "</th></tr>";
 			if (empty($ID)){
-			echo "<tr class='tab_bg_2'><td class='center' >".$LANG["ldap"][16].":</td> ";
-			echo "<td colspan='3'><a  href='$target?next=extauth_ldap&amp;preconfig=AD'>".$LANG["ldap"][17]."</a>&nbsp;&nbsp;/&nbsp;&nbsp;";
-			echo "<a  href='$target?next=extauth_ldap&amp;preconfig=default'>".$LANG["common"][44]."</a></td></tr>";
+			echo "<tr class='tab_bg_2'><td class='center' >".$LANG['ldap'][16].":</td> ";
+			echo "<td colspan='3'><a  href='$target?next=extauth_ldap&amp;preconfig=AD'>".$LANG['ldap'][17]."</a>&nbsp;&nbsp;/&nbsp;&nbsp;";
+			echo "<a  href='$target?next=extauth_ldap&amp;preconfig=default'>".$LANG['common'][44]."</a></td></tr>";
 			}
-			echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["common"][16] . "</td><td><input type=\"text\" name=\"name\" value=\"" . $this->fields["name"] . "\"></td>";
+			echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['common'][16] . "</td><td><input type=\"text\" name=\"name\" value=\"" . $this->fields["name"] . "\"></td>";
 			echo "<td align='center' colspan=2>&nbsp;</td></tr>";
 
-			echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["common"][52] . "</td><td><input type=\"text\" name=\"ldap_host\" value=\"" . $this->fields["ldap_host"] . "\"></td>";
-			echo "<td class='center'>" . $LANG["setup"][172] . "</td><td><input id='ldap_port' type=\"text\" name=\"ldap_port\" value=\"" . $this->fields["ldap_port"] . "\"></td></tr>";
+			echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['common'][52] . "</td><td><input type=\"text\" name=\"ldap_host\" value=\"" . $this->fields["ldap_host"] . "\"></td>";
+			echo "<td class='center'>" . $LANG['setup'][172] . "</td><td><input id='ldap_port' type=\"text\" name=\"ldap_port\" value=\"" . $this->fields["ldap_port"] . "\"></td></tr>";
 
-			echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["setup"][154] . "</td><td><input type=\"text\" name=\"ldap_basedn\" value=\"" . $this->fields["ldap_basedn"] . "\" ></td>";
-			echo "<td class='center'>" . $LANG["setup"][155] . "</td><td><input type=\"text\" name=\"ldap_rootdn\" value=\"" . $this->fields["ldap_rootdn"] . "\" ></td></tr>";
+			echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['setup'][154] . "</td><td><input type=\"text\" name=\"ldap_basedn\" value=\"" . $this->fields["ldap_basedn"] . "\" ></td>";
+			echo "<td class='center'>" . $LANG['setup'][155] . "</td><td><input type=\"text\" name=\"ldap_rootdn\" value=\"" . $this->fields["ldap_rootdn"] . "\" ></td></tr>";
 
-			echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["setup"][156] . "</td><td><input type=\"password\" name=\"ldap_pass\" value=\"\" ></td>";
-			echo "<td class='center'>" . $LANG["setup"][228] . "</td><td><input type=\"text\" name=\"ldap_login\" value=\"" . $this->fields["ldap_login"] . "\" ></td></tr>";
+			echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['setup'][156] . "</td><td><input type=\"password\" name=\"ldap_pass\" value=\"\" ></td>";
+			echo "<td class='center'>" . $LANG['setup'][228] . "</td><td><input type=\"text\" name=\"ldap_login\" value=\"" . $this->fields["ldap_login"] . "\" ></td></tr>";
 
-			echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["setup"][159] . "</td><td colspan='3'><input type=\"text\" name=\"ldap_condition\" value=\"" . $this->fields["ldap_condition"] . "\" size='100'></td></tr>";
+			echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['setup'][159] . "</td><td colspan='3'><input type=\"text\" name=\"ldap_condition\" value=\"" . $this->fields["ldap_condition"] . "\" size='100'></td></tr>";
 
 			echo "<tr class='tab_bg_2'>";
-			echo "<td class='center'>" . $LANG["setup"][180] . "</td><td>";
+			echo "<td class='center'>" . $LANG['setup'][180] . "</td><td>";
 			if (function_exists("ldap_start_tls")) {
 				$ldap_use_tls = $this->fields["ldap_use_tls"];
 				echo "<select name='ldap_use_tls'>\n";
-				echo "<option value='0' " . (!$ldap_use_tls ? " selected " : "") . ">" . $LANG["choice"][0] . "</option>\n";
-				echo "<option value='1' " . ($ldap_use_tls ? " selected " : "") . ">" . $LANG["choice"][1] . "</option>\n";
+				echo "<option value='0' " . (!$ldap_use_tls ? " selected " : "") . ">" . $LANG['choice'][0] . "</option>\n";
+				echo "<option value='1' " . ($ldap_use_tls ? " selected " : "") . ">" . $LANG['choice'][1] . "</option>\n";
 				echo "</select>\n";
 			} else {
 				echo "<input type='hidden' name='ldap_use_tls' value='0'>";
-				echo $LANG["setup"][181];
+				echo $LANG['setup'][181];
 
 			}
 			echo "</td>";
-			echo "<td class='center'>" . $LANG["setup"][186] . "</td><td>";
+			echo "<td class='center'>" . $LANG['setup'][186] . "</td><td>";
 			dropdownGMT("timezone",$this->fields["timezone"]);
 			echo"</td></tr>";			
 
 			echo "<tr class='tab_bg_2'>";
-			echo "<td class='center'>" . $LANG["ldap"][30] . "</td><td colspan='3'>";
-			$alias_options[LDAP_DEREF_NEVER] = $LANG["ldap"][31];
-			$alias_options[LDAP_DEREF_ALWAYS] = $LANG["ldap"][32];
-			$alias_options[LDAP_DEREF_SEARCHING] = $LANG["ldap"][33];
-			$alias_options[LDAP_DEREF_FINDING] = $LANG["ldap"][34];
+			echo "<td class='center'>" . $LANG['ldap'][30] . "</td><td colspan='3'>";
+			$alias_options[LDAP_DEREF_NEVER] = $LANG['ldap'][31];
+			$alias_options[LDAP_DEREF_ALWAYS] = $LANG['ldap'][32];
+			$alias_options[LDAP_DEREF_SEARCHING] = $LANG['ldap'][33];
+			$alias_options[LDAP_DEREF_FINDING] = $LANG['ldap'][34];
 			dropdownArrayValues("ldap_opt_deref",$alias_options,$this->fields["ldap_opt_deref"]);
 			echo"</td></tr>";
 
 
-			echo "<tr class='tab_bg_1'><th class='center' colspan='4'>" . $LANG["setup"][259] . "</th></tr>";
+			echo "<tr class='tab_bg_1'><th class='center' colspan='4'>" . $LANG['setup'][259] . "</th></tr>";
 
-			echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["setup"][254] . "</td><td>";
+			echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['setup'][254] . "</td><td>";
 			$ldap_search_for_groups = $this->fields["ldap_search_for_groups"];
 
 			echo "<select name='ldap_search_for_groups'>\n";
-			echo "<option value='0' " . (($ldap_search_for_groups == 0) ? " selected " : "") . ">" . $LANG["setup"][256] . "</option>\n";
-			echo "<option value='1' " . (($ldap_search_for_groups == 1) ? " selected " : "") . ">" . $LANG["setup"][257] . "</option>\n";
-			echo "<option value='2' " . (($ldap_search_for_groups == 2) ? " selected " : "") . ">" . $LANG["setup"][258] . "</option>\n";
+			echo "<option value='0' " . (($ldap_search_for_groups == 0) ? " selected " : "") . ">" . $LANG['setup'][256] . "</option>\n";
+			echo "<option value='1' " . (($ldap_search_for_groups == 1) ? " selected " : "") . ">" . $LANG['setup'][257] . "</option>\n";
+			echo "<option value='2' " . (($ldap_search_for_groups == 2) ? " selected " : "") . ">" . $LANG['setup'][258] . "</option>\n";
 			echo "</select>\n";
 			echo "</td>";
-			echo "<td class='center'>" . $LANG["setup"][260] . "</td><td><input type=\"text\" name=\"ldap_field_group\" value=\"" . $this->fields["ldap_field_group"] . "\" ></td></tr>";
+			echo "<td class='center'>" . $LANG['setup'][260] . "</td><td><input type=\"text\" name=\"ldap_field_group\" value=\"" . $this->fields["ldap_field_group"] . "\" ></td></tr>";
 
-			echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["setup"][253] . "</td><td>";
+			echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['setup'][253] . "</td><td>";
 			echo "<input type=\"text\" name=\"ldap_group_condition\" value=\"" . $this->fields["ldap_group_condition"] . "\" ></td>";
-			echo "<td class='center'>" . $LANG["setup"][255] . "</td><td><input type=\"text\" name=\"ldap_field_group_member\" value=\"" . $this->fields["ldap_field_group_member"] . "\" ></td></tr>";
+			echo "<td class='center'>" . $LANG['setup'][255] . "</td><td><input type=\"text\" name=\"ldap_field_group_member\" value=\"" . $this->fields["ldap_field_group_member"] . "\" ></td></tr>";
 
-			echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["setup"][262] . "</td>";
+			echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['setup'][262] . "</td>";
 			echo "<td>";
 			dropdownYesNo("use_dn",$this->fields["use_dn"]);
 			echo"</td>";
 			echo "<td align='center' colspan='2'></td></tr>";
 
-			echo "<tr class='tab_bg_1'><th class='center' colspan='4'>" . $LANG["setup"][167] . "</th></tr>";
+			echo "<tr class='tab_bg_1'><th class='center' colspan='4'>" . $LANG['setup'][167] . "</th></tr>";
 
-			echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["common"][48] . "</td><td><input type=\"text\" name=\"ldap_field_realname\" value=\"" . $this->fields["ldap_field_realname"] . "\" ></td>";
-			echo "<td class='center'>" . $LANG["common"][43] . "</td><td><input type=\"text\" name=\"ldap_field_firstname\" value=\"" . $this->fields["ldap_field_firstname"] . "\" ></td></tr>";
+			echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['common'][48] . "</td><td><input type=\"text\" name=\"ldap_field_realname\" value=\"" . $this->fields["ldap_field_realname"] . "\" ></td>";
+			echo "<td class='center'>" . $LANG['common'][43] . "</td><td><input type=\"text\" name=\"ldap_field_firstname\" value=\"" . $this->fields["ldap_field_firstname"] . "\" ></td></tr>";
 
-			echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["common"][25] . "</td><td><input type=\"text\" name=\"ldap_field_comments\" value=\"" . $this->fields["ldap_field_comments"] . "\" ></td>";
-			echo "<td class='center'>" . $LANG["setup"][14] . "</td><td><input type=\"text\" name=\"ldap_field_email\" value=\"" . $this->fields["ldap_field_email"] . "\" ></td></tr>";
+			echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['common'][25] . "</td><td><input type=\"text\" name=\"ldap_field_comments\" value=\"" . $this->fields["ldap_field_comments"] . "\" ></td>";
+			echo "<td class='center'>" . $LANG['setup'][14] . "</td><td><input type=\"text\" name=\"ldap_field_email\" value=\"" . $this->fields["ldap_field_email"] . "\" ></td></tr>";
 
-			echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["help"][35] . "</td><td><input type=\"text\" name=\"ldap_field_phone\" value=\"" . $this->fields["ldap_field_phone"] . "\" ></td>";
-			echo "<td class='center'>" . $LANG["help"][35] . " 2</td><td><input type=\"text\" name=\"ldap_field_phone2\" value=\"" . $this->fields["ldap_field_phone2"] . "\" ></td></tr>";
+			echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['help'][35] . "</td><td><input type=\"text\" name=\"ldap_field_phone\" value=\"" . $this->fields["ldap_field_phone"] . "\" ></td>";
+			echo "<td class='center'>" . $LANG['help'][35] . " 2</td><td><input type=\"text\" name=\"ldap_field_phone2\" value=\"" . $this->fields["ldap_field_phone2"] . "\" ></td></tr>";
 
-			echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["common"][42] . "</td><td><input type=\"text\" name=\"ldap_field_mobile\" value=\"" . $this->fields["ldap_field_mobile"] . "\" ></td>";
-			echo "<td class='center'>" . $LANG["common"][81] . " </td><td><input type=\"text\" name=\"ldap_field_title\" value=\"" . $this->fields["ldap_field_title"] . "\" ></td></tr>";
+			echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['common'][42] . "</td><td><input type=\"text\" name=\"ldap_field_mobile\" value=\"" . $this->fields["ldap_field_mobile"] . "\" ></td>";
+			echo "<td class='center'>" . $LANG['common'][81] . " </td><td><input type=\"text\" name=\"ldap_field_title\" value=\"" . $this->fields["ldap_field_title"] . "\" ></td></tr>";
 
-			echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["common"][17] . "</td><td><input type=\"text\" name=\"ldap_field_type\" value=\"" . $this->fields["ldap_field_type"] . "\" ></td>";
-			echo "<td class='center'>" . $LANG["setup"][41] . " </td><td><input type=\"text\" name=\"ldap_field_language\" value=\"" . $this->fields["ldap_field_language"] . "\" ></td></tr>";			
+			echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['common'][17] . "</td><td><input type=\"text\" name=\"ldap_field_type\" value=\"" . $this->fields["ldap_field_type"] . "\" ></td>";
+			echo "<td class='center'>" . $LANG['setup'][41] . " </td><td><input type=\"text\" name=\"ldap_field_language\" value=\"" . $this->fields["ldap_field_language"] . "\" ></td></tr>";			
 			
 			//echo "<td colspan='2'></td></tr>";
 
 			if (empty ($ID)){
 				
-				echo "<tr class='tab_bg_2'><td class='center' colspan=4><input type=\"submit\" name=\"add_ldap\" class=\"submit\" value=\"" . $LANG["buttons"][2] . "\" ></td></tr></table>";
+				echo "<tr class='tab_bg_2'><td class='center' colspan=4><input type=\"submit\" name=\"add_ldap\" class=\"submit\" value=\"" . $LANG['buttons'][2] . "\" ></td></tr></table>";
 
 			} else {
-				echo "<tr class='tab_bg_2'><td class='center' colspan=2><input type=\"submit\" name=\"update_ldap\" class=\"submit\" value=\"" . $LANG["buttons"][2] . "\" ></td>";
-				echo "<td class='center' colspan=2><input type=\"submit\" name=\"delete_ldap\" class=\"submit\" value=\"" . $LANG["buttons"][6] . "\" ></td></tr>";
+				echo "<tr class='tab_bg_2'><td class='center' colspan=2><input type=\"submit\" name=\"update_ldap\" class=\"submit\" value=\"" . $LANG['buttons'][2] . "\" ></td>";
+				echo "<td class='center' colspan=2><input type=\"submit\" name=\"delete_ldap\" class=\"submit\" value=\"" . $LANG['buttons'][6] . "\" ></td></tr>";
 				echo "</table>";
 				echo "<br><table class='tab_cadre_fixe'>";
-				echo "<tr><th colspan='4'>" . $LANG["ldap"][9] . "</th></tr>";
+				echo "<tr><th colspan='4'>" . $LANG['ldap'][9] . "</th></tr>";
 
 				if (isset($_SESSION["LDAP_TEST_MESSAGE"])){
 					echo "<tr class='tab_bg_2'><td align='center' colspan=4>";
@@ -807,7 +807,7 @@ class AuthLDAP extends CommonDBTM {
 					unset($_SESSION["LDAP_TEST_MESSAGE"]);
 				}
 				
-				echo "<tr class='tab_bg_2'><td class='center' colspan=4><input type=\"submit\" name=\"test_ldap\" class=\"submit\" value=\"" . $LANG["buttons"][2] . "\" ></td></tr>";
+				echo "<tr class='tab_bg_2'><td class='center' colspan=4><input type=\"submit\" name=\"test_ldap\" class=\"submit\" value=\"" . $LANG['buttons'][2] . "\" ></td></tr>";
 				echo "</table>&nbsp;";
 
 			}
@@ -821,8 +821,8 @@ class AuthLDAP extends CommonDBTM {
 		} else {
 			echo "<input type=\"hidden\" name=\"LDAP_Test\" value=\"1\" >";
 			echo "<div class='center'><table class='tab_cadre_fixe'>";
-			echo "<tr><th colspan='2'>" . $LANG["setup"][152] . "</th></tr>";
-			echo "<tr class='tab_bg_2'><td class='center'><p class='red'>" . $LANG["setup"][157] . "</p><p>" . $LANG["setup"][158] . "</p></td></tr></table></div>";
+			echo "<tr><th colspan='2'>" . $LANG['setup'][152] . "</th></tr>";
+			echo "<tr class='tab_bg_2'><td class='center'><p class='red'>" . $LANG['setup'][157] . "</p><p>" . $LANG['setup'][158] . "</p></td></tr></table></div>";
 		}
 
 		

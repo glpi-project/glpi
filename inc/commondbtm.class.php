@@ -498,7 +498,7 @@ class CommonDBTM {
 		}
 
 		if ($addMessAfterRedirect) {
-			addMessageAfterRedirect($LANG["common"][70] . 
+			addMessageAfterRedirect($LANG['common'][70] . 
 			": <a href='" . $CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$this->type] . "?ID=" . $this->fields['ID'] . (isset($input['is_template'])?"&amp;withtemplate=1":"")."'>" .
 			(isset($this->fields["name"]) && !empty($this->fields["name"]) ? stripslashes($this->fields["name"]) : "(".$this->fields['ID'].")") . "</a>");
 		} 
@@ -631,7 +631,7 @@ class CommonDBTM {
 
 		if ($addMessAfterRedirect) {
 
-			addMessageAfterRedirect($LANG["common"][71].": <a href='" . $CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$this->type] . "?ID=" . $this->fields['ID'] . "'>" .
+			addMessageAfterRedirect($LANG['common'][71].": <a href='" . $CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$this->type] . "?ID=" . $this->fields['ID'] . "'>" .
 			(isset($this->fields["name"]) && !empty($this->fields["name"]) ? stripslashes($this->fields["name"]) : "(".$this->fields['ID'].")") . "</a>");
 		} 
 	}
@@ -762,7 +762,7 @@ class CommonDBTM {
 		}
 
 		if ($addMessAfterRedirect) {
-			addMessageAfterRedirect($LANG["common"][72] . 
+			addMessageAfterRedirect($LANG['common'][72] . 
 			": <a href='" . $CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$this->type] . "?ID=" . $this->fields['ID'] . "'>" .
 			(isset($this->fields["name"]) && !empty($this->fields["name"]) ? stripslashes($this->fields["name"]) : "(".$this->fields['ID'].")") . "</a>");
 		} 
@@ -790,7 +790,7 @@ class CommonDBTM {
 		}
 
 		if ($addMessAfterRedirect) {
-			addMessageAfterRedirect($LANG["common"][73].": ".(isset($this->fields["name"]) && !empty($this->fields["name"]) ? stripslashes($this->fields["name"]) : "(".$this->fields['ID'].")"));
+			addMessageAfterRedirect($LANG['common'][73].": ".(isset($this->fields["name"]) && !empty($this->fields["name"]) ? stripslashes($this->fields["name"]) : "(".$this->fields['ID'].")"));
 		} 
 	}
 
@@ -866,7 +866,7 @@ class CommonDBTM {
 		}
 
 		if ($addMessAfterRedirect) {
-			addMessageAfterRedirect($LANG["common"][74] . 
+			addMessageAfterRedirect($LANG['common'][74] . 
 			": <a href='" . $CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$this->type] . "?ID=" . $this->fields['ID'] . "'>" .
 			(isset($this->fields["name"]) && !empty($this->fields["name"]) ? stripslashes($this->fields["name"]) : "(".$this->fields['ID'].")") . "</a>");
 		} 
@@ -941,7 +941,7 @@ class CommonDBTM {
 			}
 			if(empty($withtemplate)){
 				echo "<li class='invisible'>&nbsp;</li>";
-				echo "<li "; if ($actif=="-1") {echo "class='actif'";} echo "><a href='$target&amp;onglet=-1$template$addurlparam'>".$LANG["common"][66]."</a></li>";
+				echo "<li "; if ($actif=="-1") {echo "class='actif'";} echo "><a href='$target&amp;onglet=-1$template$addurlparam'>".$LANG['common'][66]."</a></li>";
 			}
 		}
 	
@@ -957,10 +957,10 @@ class CommonDBTM {
 			$prev=getPreviousItem($this->table,$ID,$nextprevcondition,$nextprev_item);
 			$cleantarget=preg_replace("/\?ID=([0-9]+)/","",$target);
 			if ($prev>0) {
-				echo "<li><a href='$cleantarget?ID=$prev$addurlparam'><img src=\"".$CFG_GLPI["root_doc"]."/pics/left.png\" alt='".$LANG["buttons"][12]."' title='".$LANG["buttons"][12]."'></a></li>";
+				echo "<li><a href='$cleantarget?ID=$prev$addurlparam'><img src=\"".$CFG_GLPI["root_doc"]."/pics/left.png\" alt='".$LANG['buttons'][12]."' title='".$LANG['buttons'][12]."'></a></li>";
 			}
 			if ($next>0) {
-				echo "<li><a href='$cleantarget?ID=$next$addurlparam'><img src=\"".$CFG_GLPI["root_doc"]."/pics/right.png\" alt='".$LANG["buttons"][11]."' title='".$LANG["buttons"][11]."'></a></li>";
+				echo "<li><a href='$cleantarget?ID=$next$addurlparam'><img src=\"".$CFG_GLPI["root_doc"]."/pics/right.png\" alt='".$LANG['buttons'][11]."' title='".$LANG['buttons'][11]."'></a></li>";
 			}
 		}
 	
@@ -1055,21 +1055,21 @@ class CommonDBTM {
 			if ($glpilisttitle){
 				echo $glpilisttitle;
 			} else {
-				echo $LANG["common"][53];
+				echo $LANG['common'][53];
 			}
 			echo "</a>:</li>";
 			
 
 			if ($first>0) {
-				echo "<li><a href='$cleantarget?ID=$first$extraparamhtml'><img src=\"".$CFG_GLPI["root_doc"]."/pics/first.png\" alt='".$LANG["buttons"][55]."' title='".$LANG["buttons"][55]."'></a></li>";
+				echo "<li><a href='$cleantarget?ID=$first$extraparamhtml'><img src=\"".$CFG_GLPI["root_doc"]."/pics/first.png\" alt='".$LANG['buttons'][55]."' title='".$LANG['buttons'][55]."'></a></li>";
 			} else {
-				echo "<li><img src=\"".$CFG_GLPI["root_doc"]."/pics/first_off.png\" alt='".$LANG["buttons"][55]."' title='".$LANG["buttons"][55]."'></li>";
+				echo "<li><img src=\"".$CFG_GLPI["root_doc"]."/pics/first_off.png\" alt='".$LANG['buttons'][55]."' title='".$LANG['buttons'][55]."'></li>";
 			}
 			
 			if ($prev>0) {
-				echo "<li><a href='$cleantarget?ID=$prev$extraparamhtml'><img src=\"".$CFG_GLPI["root_doc"]."/pics/left.png\" alt='".$LANG["buttons"][12]."' title='".$LANG["buttons"][12]."'></a></li>";
+				echo "<li><a href='$cleantarget?ID=$prev$extraparamhtml'><img src=\"".$CFG_GLPI["root_doc"]."/pics/left.png\" alt='".$LANG['buttons'][12]."' title='".$LANG['buttons'][12]."'></a></li>";
 			} else {
-				echo "<li><img src=\"".$CFG_GLPI["root_doc"]."/pics/left_off.png\" alt='".$LANG["buttons"][12]."' title='".$LANG["buttons"][12]."'></li>";
+				echo "<li><img src=\"".$CFG_GLPI["root_doc"]."/pics/left_off.png\" alt='".$LANG['buttons'][12]."' title='".$LANG['buttons'][12]."'></li>";
 			}
 			
 			
@@ -1079,15 +1079,15 @@ class CommonDBTM {
 			
 
 			if ($next>0) {
-				echo "<li><a href='$cleantarget?ID=$next$extraparamhtml'><img src=\"".$CFG_GLPI["root_doc"]."/pics/right.png\" alt='".$LANG["buttons"][11]."' title='".$LANG["buttons"][11]."'></a></li>";
+				echo "<li><a href='$cleantarget?ID=$next$extraparamhtml'><img src=\"".$CFG_GLPI["root_doc"]."/pics/right.png\" alt='".$LANG['buttons'][11]."' title='".$LANG['buttons'][11]."'></a></li>";
 			} else {
-				echo "<li><img src=\"".$CFG_GLPI["root_doc"]."/pics/right_off.png\" alt='".$LANG["buttons"][11]."' title='".$LANG["buttons"][11]."'></li>";
+				echo "<li><img src=\"".$CFG_GLPI["root_doc"]."/pics/right_off.png\" alt='".$LANG['buttons'][11]."' title='".$LANG['buttons'][11]."'></li>";
 			}
 		
 			if ($last>0) {
-				echo "<li><a href='$cleantarget?ID=$last$extraparamhtml'><img src=\"".$CFG_GLPI["root_doc"]."/pics/last.png\" alt='".$LANG["buttons"][56]."' title='".$LANG["buttons"][56]."'></a></li>";
+				echo "<li><a href='$cleantarget?ID=$last$extraparamhtml'><img src=\"".$CFG_GLPI["root_doc"]."/pics/last.png\" alt='".$LANG['buttons'][56]."' title='".$LANG['buttons'][56]."'></a></li>";
 			} else {
-				echo "<li><img src=\"".$CFG_GLPI["root_doc"]."/pics/last_off.png\" alt='".$LANG["buttons"][56]."' title='".$LANG["buttons"][56]."'></li>";
+				echo "<li><img src=\"".$CFG_GLPI["root_doc"]."/pics/last_off.png\" alt='".$LANG['buttons'][56]."' title='".$LANG['buttons'][56]."'></li>";
 			}
 			
 			echo "</ul></div>";
@@ -1120,7 +1120,7 @@ class CommonDBTM {
 			$tabs+=$plug_tabs;
 			// Not all tab for templates and if only 1 tab
 			if($display_all && empty($withtemplate) && count($tabs)>1){
-				$tabs[-1]=array('title'=>$LANG["common"][66],
+				$tabs[-1]=array('title'=>$LANG['common'][66],
 						'url'=>$CFG_GLPI['root_doc']."/$tabpage",
 						'params'=>"target=$target&type=".$this->type."&glpi_tab=-1&ID=$ID$template$extraparam");
 			}
@@ -1320,21 +1320,21 @@ class CommonDBTM {
 		if (!empty($withtemplate) && $withtemplate == 2 && $ID>0) {
 			
 			echo "<input type='hidden' name='tplname' value='".$this->fields["tplname"]."'>";
-			echo $LANG["buttons"][8] . " - " . $LANG["common"][13] . ": " . $this->fields["tplname"];
+			echo $LANG['buttons'][8] . " - " . $LANG['common'][13] . ": " . $this->fields["tplname"];
 			
 		} else if (!empty($withtemplate) && $withtemplate == 1) {
 			
 			echo "<input type='hidden' name='is_template' value='1' />\n";
-			echo $LANG["common"][6].": "; 
+			echo $LANG['common'][6].": "; 
 			autocompletionTextField("tplname",$this->table,"tplname",$this->fields["tplname"],25,$this->fields["FK_entities"]); 			
 		
 		} else if (empty($ID)||$ID<0){
 
-			echo $LANG["common"][87];
+			echo $LANG['common'][87];
 
 		} else {
 
-			echo $LANG["common"][2]." $ID";
+			echo $LANG['common'][2]." $ID";
 		}
 		
 		if (isMultiEntitiesMode()){
@@ -1344,19 +1344,19 @@ class CommonDBTM {
 		echo "</th><th colspan='$colspan'>";
 
 		if ($this->may_be_recursive && isMultiEntitiesMode()){
-			echo $LANG["entity"][9].":&nbsp;";
+			echo $LANG['entity'][9].":&nbsp;";
 		
 			if (!$this->can($ID,'recursive')) {
 				echo getYesNo($this->fields["recursive"]);
-				$comment=$LANG["common"][86];
+				$comment=$LANG['common'][86];
 				$image="/pics/lock.png";
 			} else if (!$this->canUnrecurs()) {
 				echo getYesNo($this->fields["recursive"]);
-				$comment=$LANG["common"][84];
+				$comment=$LANG['common'][84];
 				$image="/pics/lock.png";
 			} else {
 				dropdownYesNo("recursive",$this->fields["recursive"]);
-				$comment=$LANG["common"][85];
+				$comment=$LANG['common'][85];
 				$image="/pics/aide.png";
 			}
 			$rand=mt_rand();

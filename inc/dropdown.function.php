@@ -311,7 +311,7 @@ function dropdownNoValue($table,$myname,$value,$entity_restrict=-1) {
 	
 	echo "<select name=\"$myname\" size='1'>";
 	if ($table=="glpi_entities"){
-		echo "<option value=\"0\">".$LANG["entity"][2]."</option>";
+		echo "<option value=\"0\">".$LANG['entity'][2]."</option>";
 	}
 
 	if ($DB->numrows($result) > 0) {
@@ -483,7 +483,7 @@ function dropdownUsers($myname,$value,$right,$all=0,$display_comments=1,$entity_
 		$default=$default_display;
 	} else {
 		if ($all){
-			$default="<select name='$myname' id='dropdown_".$myname.$rand."'><option value='0'>[ ".$LANG["common"][66]." ]</option></select>\n";
+			$default="<select name='$myname' id='dropdown_".$myname.$rand."'><option value='0'>[ ".$LANG['common'][66]." ]</option></select>\n";
 		} else {
 			$default="<select name='$myname' id='dropdown_".$myname.$rand."'><option value='0'>[ Nobody ]</option></select>\n";
 		}
@@ -587,30 +587,30 @@ function getDropdownName($table,$id,$withcomments=0) {
 						case "glpi_contacts" :
 							$name .= " ".$data["firstname"];
 							if (!empty($data["phone"])){
-								$comments.="<br><strong>".$LANG["help"][35].":</strong> ".$data["phone"];
+								$comments.="<br><strong>".$LANG['help'][35].":</strong> ".$data["phone"];
 							}
 							if (!empty($data["phone2"])){
-								$comments.="<br><strong>".$LANG["help"][35]." 2:</strong> ".$data["phone2"];
+								$comments.="<br><strong>".$LANG['help'][35]." 2:</strong> ".$data["phone2"];
 							}
 							if (!empty($data["mobile"])){
-								$comments.="<br><strong>".$LANG["common"][42].":</strong> ".$data["mobile"];
+								$comments.="<br><strong>".$LANG['common'][42].":</strong> ".$data["mobile"];
 							}
 							if (!empty($data["fax"])){
-								$comments.="<br><strong>".$LANG["financial"][30].":</strong> ".$data["fax"];
+								$comments.="<br><strong>".$LANG['financial'][30].":</strong> ".$data["fax"];
 							}
 							if (!empty($data["email"])){
-								$comments.="<br><strong>".$LANG["setup"][14].":</strong> ".$data["email"];
+								$comments.="<br><strong>".$LANG['setup'][14].":</strong> ".$data["email"];
 							}
 							break;
 						case "glpi_enterprises" :
 							if (!empty($data["phone"])){
-								$comments.="<br><strong>".$LANG["help"][35].":</strong> ".$data["phone"];
+								$comments.="<br><strong>".$LANG['help'][35].":</strong> ".$data["phone"];
 							}
 							if (!empty($data["fax"])){
-								$comments.="<br><strong>".$LANG["financial"][30].":</strong> ".$data["fax"];
+								$comments.="<br><strong>".$LANG['financial'][30].":</strong> ".$data["fax"];
 							}
 							if (!empty($data["email"])){
-								$comments.="<br><strong>".$LANG["setup"][14].":</strong> ".$data["email"];
+								$comments.="<br><strong>".$LANG['setup'][14].":</strong> ".$data["email"];
 							}
 							break;
 
@@ -619,7 +619,7 @@ function getDropdownName($table,$id,$withcomments=0) {
 							break;
 						case "glpi_software":
 							if ($data["platform"]!=0 && $data["helpdesk_visible"] != 0)
-								$comments.="<br>".$LANG["software"][3].": ".getDropdownName("glpi_dropdown_os",$data["platform"]);
+								$comments.="<br>".$LANG['software'][3].": ".getDropdownName("glpi_dropdown_os",$data["platform"]);
 							break;
 					}
 	
@@ -703,7 +703,7 @@ function dropdownUsersTracking($myname,$value,$field,$display_comments=1) {
 	$user=getUserName($value,2);
 	$default="<select name='$myname'><option value='$value'>".substr($user["name"],0,$_SESSION["glpidropdown_limit"])."</option></select>\n";
 	if (empty($value)||$value==0){
-			$default= "<select name='$myname'><option value='0'>[ ".$LANG["common"][66]." ]</option></select>\n";
+			$default= "<select name='$myname'><option value='0'>[ ".$LANG['common'][66]." ]</option></select>\n";
 	}
 
 	$params=array('searchText'=>'__VALUE__',
@@ -871,8 +871,8 @@ function dropdownAllItems($myname,$value_type=0,$value=0,$entity_restrict=-1,$ty
 function dropdownYesNo($name,$value=0){
 	global $LANG;
 	echo "<select name='$name' id='dropdownyesno_$name'>\n";
-	echo "<option value='0' ".(!$value?" selected ":"").">".$LANG["choice"][0]."</option>\n";
-	echo "<option value='1' ".($value?" selected ":"").">".$LANG["choice"][1]."</option>\n";
+	echo "<option value='0' ".(!$value?" selected ":"").">".$LANG['choice'][0]."</option>\n";
+	echo "<option value='1' ".($value?" selected ":"").">".$LANG['choice'][1]."</option>\n";
 	echo "</select>\n";	
 }	
 
@@ -885,9 +885,9 @@ function dropdownYesNo($name,$value=0){
 function getYesNo($value){
 	global $LANG;
 	if ($value){
-		return $LANG["choice"][1];
+		return $LANG['choice'][1];
 	} else {
-		return $LANG["choice"][0];
+		return $LANG['choice'][0];
 	}
 }
 /**
@@ -906,11 +906,11 @@ function dropdownNoneReadWrite($name,$value,$none=1,$read=1,$write=1){
 	global $LANG;
 	echo "<select name='$name'>\n";
 	if ($none)
-		echo "<option value='' ".(empty($value)?" selected ":"").">".$LANG["profiles"][12]."</option>\n";
+		echo "<option value='' ".(empty($value)?" selected ":"").">".$LANG['profiles'][12]."</option>\n";
 	if ($read)
-		echo "<option value='r' ".($value=='r'?" selected ":"").">".$LANG["profiles"][10]."</option>\n";
+		echo "<option value='r' ".($value=='r'?" selected ":"").">".$LANG['profiles'][10]."</option>\n";
 	if ($write)
-		echo "<option value='w' ".($value=='w'?" selected ":"").">".$LANG["profiles"][11]."</option>\n";
+		echo "<option value='w' ".($value=='w'?" selected ":"").">".$LANG['profiles'][11]."</option>\n";
 	echo "</select>\n";	
 }	
 
@@ -972,7 +972,7 @@ function dropdownMyDevices($userID=0,$entity_restrict=-1){
 			}
 		}
 		if (!empty($my_devices)){
-			$my_devices="<optgroup label=\"".$LANG["tracking"][1]."\">".$my_devices."</optgroup>";
+			$my_devices="<optgroup label=\"".$LANG['tracking'][1]."\">".$my_devices."</optgroup>";
 		}
 
 
@@ -1026,7 +1026,7 @@ function dropdownMyDevices($userID=0,$entity_restrict=-1){
 					}
 				}
 				if (!empty($tmp_device)){
-					$my_devices.="<optgroup label=\"".$LANG["tracking"][1]." - ".$LANG["common"][35]."\">".$tmp_device."</optgroup>";
+					$my_devices.="<optgroup label=\"".$LANG['tracking'][1]." - ".$LANG['common'][35]."\">".$tmp_device."</optgroup>";
 				}
 			}
 		}
@@ -1082,7 +1082,7 @@ function dropdownMyDevices($userID=0,$entity_restrict=-1){
 				}
 			}
 			if (!empty($tmp_device)){
-				$my_devices.="<optgroup label=\"".$LANG["reports"][36]."\">".$tmp_device."</optgroup>";
+				$my_devices.="<optgroup label=\"".$LANG['reports'][36]."\">".$tmp_device."</optgroup>";
 			}
 				
 			// Software
@@ -1106,13 +1106,13 @@ function dropdownMyDevices($userID=0,$entity_restrict=-1){
 						}
 					}
 					if (!empty($tmp_device)){
-						$my_devices.="<optgroup label=\"".ucfirst($LANG["software"][17])."\">".$tmp_device."</optgroup>";
+						$my_devices.="<optgroup label=\"".ucfirst($LANG['software'][17])."\">".$tmp_device."</optgroup>";
 					}
 				}
 			}
 		}
 		echo "<div id='tracking_my_devices'>";
-		echo $LANG["tracking"][1].":&nbsp;<select id='my_items' name='_my_items'><option value=''>--- ".$LANG["help"][30]." ---</option>$my_devices</select></div>";
+		echo $LANG['tracking'][1].":&nbsp;<select id='my_items' name='_my_items'><option value=''>--- ".$LANG['help'][30]." ---</option>$my_devices</select></div>";
 	}
 
 }
@@ -1139,25 +1139,25 @@ function dropdownTrackingAllDevices($myname,$value,$admin=0,$entity_restrict=-1)
 		if ($_SESSION["glpiactiveprofile"]["helpdesk_hardware"]&pow(2,HELPDESK_ALL_HARDWARE)){
 			// Display a message if view my hardware
 			if (!$admin&&$_SESSION["glpiactiveprofile"]["helpdesk_hardware"]&pow(2,HELPDESK_MY_HARDWARE)){
-				echo $LANG["tracking"][2].":<br>";
+				echo $LANG['tracking'][2].":<br>";
 			}
 			echo "<select id='search_$myname$rand' name='$myname'>\n";
-			echo "<option value='0' ".(($value==0)?" selected":"").">".$LANG["help"][30]."</option>\n";
+			echo "<option value='0' ".(($value==0)?" selected":"").">".$LANG['help'][30]."</option>\n";
 			// Also display type if selected
 			if ($value==COMPUTER_TYPE||$_SESSION["glpiactiveprofile"]["helpdesk_hardware_type"]&pow(2,COMPUTER_TYPE))
-				echo "<option value='".COMPUTER_TYPE."' ".(($value==COMPUTER_TYPE)?" selected":"").">".$LANG["help"][25]."</option>\n";
+				echo "<option value='".COMPUTER_TYPE."' ".(($value==COMPUTER_TYPE)?" selected":"").">".$LANG['help'][25]."</option>\n";
 			if ($value==NETWORKING_TYPE||$_SESSION["glpiactiveprofile"]["helpdesk_hardware_type"]&pow(2,NETWORKING_TYPE))
-				echo "<option value='".NETWORKING_TYPE."' ".(($value==NETWORKING_TYPE)?" selected":"").">".$LANG["help"][26]."</option>\n";
+				echo "<option value='".NETWORKING_TYPE."' ".(($value==NETWORKING_TYPE)?" selected":"").">".$LANG['help'][26]."</option>\n";
 			if ($value==PRINTER_TYPE||$_SESSION["glpiactiveprofile"]["helpdesk_hardware_type"]&pow(2,PRINTER_TYPE))
-				echo "<option value='".PRINTER_TYPE."' ".(($value==PRINTER_TYPE)?" selected":"").">".$LANG["help"][27]."</option>\n";
+				echo "<option value='".PRINTER_TYPE."' ".(($value==PRINTER_TYPE)?" selected":"").">".$LANG['help'][27]."</option>\n";
 			if ($value==MONITOR_TYPE||$_SESSION["glpiactiveprofile"]["helpdesk_hardware_type"]&pow(2,MONITOR_TYPE))
-				echo "<option value='".MONITOR_TYPE."' ".(($value==MONITOR_TYPE)?" selected":"").">".$LANG["help"][28]."</option>\n";
+				echo "<option value='".MONITOR_TYPE."' ".(($value==MONITOR_TYPE)?" selected":"").">".$LANG['help'][28]."</option>\n";
 			if ($value==PERIPHERAL_TYPE||$_SESSION["glpiactiveprofile"]["helpdesk_hardware_type"]&pow(2,PERIPHERAL_TYPE))
-				echo "<option value='".PERIPHERAL_TYPE."' ".(($value==PERIPHERAL_TYPE)?" selected":"").">".$LANG["help"][29]."</option>\n";
+				echo "<option value='".PERIPHERAL_TYPE."' ".(($value==PERIPHERAL_TYPE)?" selected":"").">".$LANG['help'][29]."</option>\n";
 			if ($value==SOFTWARE_TYPE||$_SESSION["glpiactiveprofile"]["helpdesk_hardware_type"]&pow(2,SOFTWARE_TYPE))
-				echo "<option value='".SOFTWARE_TYPE."' ".(($value==SOFTWARE_TYPE)?" selected":"").">".$LANG["help"][31]."</option>\n";
+				echo "<option value='".SOFTWARE_TYPE."' ".(($value==SOFTWARE_TYPE)?" selected":"").">".$LANG['help'][31]."</option>\n";
 			if ($value==PHONE_TYPE||$_SESSION["glpiactiveprofile"]["helpdesk_hardware_type"]&pow(2,PHONE_TYPE))
-				echo "<option value='".PHONE_TYPE."' ".(($value==PHONE_TYPE)?" selected":"").">".$LANG["help"][35]."</option>\n";
+				echo "<option value='".PHONE_TYPE."' ".(($value==PHONE_TYPE)?" selected":"").">".$LANG['help'][35]."</option>\n";
 			echo "</select>\n";
 
 			$params=array('type'=>'__VALUE__',
@@ -1480,7 +1480,7 @@ function device_selecter($target,$cID,$withtemplate='') {
 	} else {
 		echo "<table class='tab_cadre_fixe'>";
 		echo "<tr  class='tab_bg_1'><td colspan='2' align='right' width='30%'>";
-		echo $LANG["devices"][0].":";
+		echo $LANG['devices'][0].":";
 		echo "</td>";
 		echo "<td colspan='63'>"; 
 		echo "<form action=\"$target\" method=\"post\">";
@@ -1508,7 +1508,7 @@ function device_selecter($target,$cID,$withtemplate='') {
 		echo "<input type=\"hidden\" name=\"withtemplate\" value=\"".$withtemplate."\" >";
 		echo "<input type=\"hidden\" name=\"connect_device\" value=\"".true."\" >";
 		echo "<input type=\"hidden\" name=\"cID\" value=\"".$cID."\" >";
-		echo "<input type=\"submit\" class ='submit' value=\"".$LANG["buttons"][2]."\" >";
+		echo "<input type=\"submit\" class ='submit' value=\"".$LANG['buttons'][2]."\" >";
 		echo "</form>";
 		echo "</td>";
 		echo "</tr></table>";
@@ -1536,13 +1536,13 @@ function dropdownMassiveAction($device_type,$deleted=0,$extraparams=array()){
 		)
 	){
 		
-		echo "<option value=\"update\">".$LANG["buttons"][14]."</option>";
+		echo "<option value=\"update\">".$LANG['buttons'][14]."</option>";
 	}
 
 	if ($deleted){
 		if ($isadmin){
-			echo "<option value=\"purge\">".$LANG["buttons"][22]."</option>";
-			echo "<option value=\"restore\">".$LANG["buttons"][21]."</option>";
+			echo "<option value=\"purge\">".$LANG['buttons'][22]."</option>";
+			echo "<option value=\"restore\">".$LANG['buttons'][21]."</option>";
 		}
 	} else {
 		// No delete for entities and tracking of not have right
@@ -1550,79 +1550,79 @@ function dropdownMassiveAction($device_type,$deleted=0,$extraparams=array()){
 		&&( ($isadmin && $device_type!=TRACKING_TYPE)
 			|| ($device_type==TRACKING_TYPE&&haveRight('delete_ticket',1))
 		)){
-			echo "<option value=\"delete\">".$LANG["buttons"][6]."</option>";
+			echo "<option value=\"delete\">".$LANG['buttons'][6]."</option>";
 		}
 		if ($isadmin && in_array($device_type,array(PHONE_TYPE,PRINTER_TYPE,PERIPHERAL_TYPE,MONITOR_TYPE))){
-			echo "<option value=\"connect\">".$LANG["buttons"][9]."</option>";
-			echo "<option value=\"disconnect\">".$LANG["buttons"][10]."</option>";
+			echo "<option value=\"connect\">".$LANG['buttons'][9]."</option>";
+			echo "<option value=\"disconnect\">".$LANG['buttons'][10]."</option>";
 		}
 		if (haveTypeRight(DOCUMENT_TYPE,"w") && in_array($device_type,array(CARTRIDGE_TYPE,COMPUTER_TYPE,CONSUMABLE_TYPE,CONTACT_TYPE,CONTRACT_TYPE,ENTERPRISE_TYPE,
 				MONITOR_TYPE,NETWORKING_TYPE,PERIPHERAL_TYPE,PHONE_TYPE,PRINTER_TYPE,SOFTWARE_TYPE))){
-			echo "<option value=\"add_document\">".$LANG["document"][16]."</option>";
+			echo "<option value=\"add_document\">".$LANG['document'][16]."</option>";
 		}
 
 		if (haveTypeRight(CONTRACT_TYPE,"w") &&in_array($device_type,$CFG_GLPI["state_types"])){
-			echo "<option value=\"add_contract\">".$LANG["financial"][36]."</option>";
+			echo "<option value=\"add_contract\">".$LANG['financial'][36]."</option>";
 		}
 		if (haveRight('transfer','r') && isMultiEntitiesMode() && 
 				in_array($device_type, 	array(CARTRIDGE_TYPE,COMPUTER_TYPE,CONSUMABLE_TYPE,CONTACT_TYPE,CONTRACT_TYPE,ENTERPRISE_TYPE,
 				MONITOR_TYPE,NETWORKING_TYPE,PERIPHERAL_TYPE,PHONE_TYPE,PRINTER_TYPE,SOFTWARE_TYPE,SOFTWARELICENSE_TYPE,TRACKING_TYPE,DOCUMENT_TYPE,GROUP_TYPE,LINK_TYPE))
 				&& $isadmin
 			){
-			echo "<option value=\"add_transfer_list\">".$LANG["buttons"][48]."</option>";
+			echo "<option value=\"add_transfer_list\">".$LANG['buttons'][48]."</option>";
 		}
 		switch ($device_type){
 			case SOFTWARE_TYPE :
 				if ($isadmin && countElementsInTable("glpi_rules_descriptions","sub_type='".RULE_SOFTWARE_CATEGORY."'") > 0){
-					echo "<option value=\"compute_software_category\">".$LANG["rulesengine"][38]." ".$LANG["rulesengine"][40]."</option>";
+					echo "<option value=\"compute_software_category\">".$LANG['rulesengine'][38]." ".$LANG['rulesengine'][40]."</option>";
 				}
 				if (haveRight("rule_dictionnary_software","w") && countElementsInTable("glpi_rules_descriptions","sub_type='".RULE_DICTIONNARY_SOFTWARE."'") > 0){
-					echo "<option value=\"replay_dictionnary\">".$LANG["rulesengine"][76]."</option>";
+					echo "<option value=\"replay_dictionnary\">".$LANG['rulesengine'][76]."</option>";
 				}
 			
 				break;
 			case COMPUTER_TYPE :
 				if ($isadmin){
-					echo "<option value=\"connect_to_computer\">".$LANG["buttons"][9]."</option>";
-					echo "<option value=\"install\">".$LANG["buttons"][4]."</option>";
+					echo "<option value=\"connect_to_computer\">".$LANG['buttons'][9]."</option>";
+					echo "<option value=\"install\">".$LANG['buttons'][4]."</option>";
 					if ($CFG_GLPI['ocs_mode']){
 						if (haveRight("ocsng","w") || haveRight("sync_ocsng","w")){
-							echo "<option value=\"force_ocsng_update\">".$LANG["ocsng"][24]."</option>";
+							echo "<option value=\"force_ocsng_update\">".$LANG['ocsng'][24]."</option>";
 						}
-						echo "<option value=\"unlock_ocsng_field\">".$LANG["buttons"][38]." ".$LANG["Menu"][33]." - ".$LANG["ocsng"][16]."</option>";
-						echo "<option value=\"unlock_ocsng_monitor\">".$LANG["buttons"][38]." ".$LANG["Menu"][33]." - ".$LANG["ocsng"][30]."</option>";
-						echo "<option value=\"unlock_ocsng_peripheral\">".$LANG["buttons"][38]." ".$LANG["Menu"][33]." - ".$LANG["ocsng"][32]."</option>";
-						echo "<option value=\"unlock_ocsng_printer\">".$LANG["buttons"][38]." ".$LANG["Menu"][33]." - ".$LANG["ocsng"][34]."</option>";
-						echo "<option value=\"unlock_ocsng_software\">".$LANG["buttons"][38]." ".$LANG["Menu"][33]." - ".$LANG["ocsng"][52]."</option>";
-						echo "<option value=\"unlock_ocsng_ip\">".$LANG["buttons"][38]." ".$LANG["Menu"][33]." - ".$LANG["ocsng"][50]."</option>";
-						echo "<option value=\"unlock_ocsng_disk\">".$LANG["buttons"][38]." ".$LANG["Menu"][33]." - ".$LANG["ocsng"][55]."</option>";
+						echo "<option value=\"unlock_ocsng_field\">".$LANG['buttons'][38]." ".$LANG["Menu"][33]." - ".$LANG['ocsng'][16]."</option>";
+						echo "<option value=\"unlock_ocsng_monitor\">".$LANG['buttons'][38]." ".$LANG["Menu"][33]." - ".$LANG['ocsng'][30]."</option>";
+						echo "<option value=\"unlock_ocsng_peripheral\">".$LANG['buttons'][38]." ".$LANG["Menu"][33]." - ".$LANG['ocsng'][32]."</option>";
+						echo "<option value=\"unlock_ocsng_printer\">".$LANG['buttons'][38]." ".$LANG["Menu"][33]." - ".$LANG['ocsng'][34]."</option>";
+						echo "<option value=\"unlock_ocsng_software\">".$LANG['buttons'][38]." ".$LANG["Menu"][33]." - ".$LANG['ocsng'][52]."</option>";
+						echo "<option value=\"unlock_ocsng_ip\">".$LANG['buttons'][38]." ".$LANG["Menu"][33]." - ".$LANG['ocsng'][50]."</option>";
+						echo "<option value=\"unlock_ocsng_disk\">".$LANG['buttons'][38]." ".$LANG["Menu"][33]." - ".$LANG['ocsng'][55]."</option>";
 					}
 				}
 				break;
 			case ENTERPRISE_TYPE :
 				if ($isadmin){
-					echo "<option value=\"add_contact\">".$LANG["financial"][24]."</option>";
+					echo "<option value=\"add_contact\">".$LANG['financial'][24]."</option>";
 				}
 				break;
 			case CONTACT_TYPE :
 				if ($isadmin){
-					echo "<option value=\"add_enterprise\">".$LANG["financial"][25]."</option>";
+					echo "<option value=\"add_enterprise\">".$LANG['financial'][25]."</option>";
 				}
 				break;
 			case USER_TYPE :
 				if ($isadmin){
-					echo "<option value=\"add_group\">".$LANG["setup"][604]."</option>";
-					echo "<option value=\"add_userprofile\">".$LANG["setup"][607]."</option>";
+					echo "<option value=\"add_group\">".$LANG['setup'][604]."</option>";
+					echo "<option value=\"add_userprofile\">".$LANG['setup'][607]."</option>";
 				}
 
 				if (haveRight("user","w")){
-					echo "<option value=\"force_user_ldap_update\">".$LANG["ocsng"][24]."</option>";
+					echo "<option value=\"force_user_ldap_update\">".$LANG['ocsng'][24]."</option>";
 				}
 
 				break;
 			case TRACKING_TYPE :
 				if (haveRight("comment_all_ticket","1")){
-					echo "<option value=\"add_followup\">".$LANG["job"][29]."</option>";
+					echo "<option value=\"add_followup\">".$LANG['job'][29]."</option>";
 				}
 				break;
 		}
@@ -1670,10 +1670,10 @@ function dropdownMassiveActionPorts($device_type){
 	echo "<select name=\"massiveaction\" id='massiveaction'>";
 
 	echo "<option value=\"-1\" selected>-----</option>";
-	echo "<option value=\"delete\">".$LANG["buttons"][6]."</option>";
-	echo "<option value=\"assign_vlan\">".$LANG["networking"][55]."</option>";
-	echo "<option value=\"unassign_vlan\">".$LANG["networking"][58]."</option>";
-	echo "<option value=\"move\">".$LANG["buttons"][20]."</option>";
+	echo "<option value=\"delete\">".$LANG['buttons'][6]."</option>";
+	echo "<option value=\"assign_vlan\">".$LANG['networking'][55]."</option>";
+	echo "<option value=\"unassign_vlan\">".$LANG['networking'][58]."</option>";
+	echo "<option value=\"move\">".$LANG['buttons'][20]."</option>";
 	echo "</select>";
 
 
@@ -1698,26 +1698,26 @@ function dropdownMassiveActionPorts($device_type){
 function globalManagementDropdown($target,$withtemplate,$ID,$value,$management_restrict=0){
 	global $LANG,$CFG_GLPI;	
 	if ($value&&empty($withtemplate)) {
-		echo $LANG["peripherals"][31];
+		echo $LANG['peripherals'][31];
 
 		if ($management_restrict == 2){
-			echo "&nbsp;<a title=\"".$LANG["common"][39]."\" href=\"javascript:confirmAction('".addslashes($LANG["common"][40])."\\n".addslashes($LANG["common"][39])."','$target?unglobalize=unglobalize&amp;ID=$ID')\">".$LANG["common"][38]."</a>&nbsp;";	
-			echo "<img alt=\"".$LANG["common"][39]."\" title=\"".$LANG["common"][39]."\" src=\"".$CFG_GLPI["root_doc"]."/pics/aide.png\">";
+			echo "&nbsp;<a title=\"".$LANG['common'][39]."\" href=\"javascript:confirmAction('".addslashes($LANG['common'][40])."\\n".addslashes($LANG['common'][39])."','$target?unglobalize=unglobalize&amp;ID=$ID')\">".$LANG['common'][38]."</a>&nbsp;";	
+			echo "<img alt=\"".$LANG['common'][39]."\" title=\"".$LANG['common'][39]."\" src=\"".$CFG_GLPI["root_doc"]."/pics/aide.png\">";
 		}
 	} else {
 
 		if ($management_restrict == 2){
 			echo "<select name='is_global'>";
-			echo "<option value='0' ".(!$value?" selected":"").">".$LANG["peripherals"][32]."</option>";
-			echo "<option value='1' ".($value?" selected":"").">".$LANG["peripherals"][31]."</option>";
+			echo "<option value='0' ".(!$value?" selected":"").">".$LANG['peripherals'][32]."</option>";
+			echo "<option value='1' ".($value?" selected":"").">".$LANG['peripherals'][31]."</option>";
 			echo "</select>";
 		} else {
 			// Templates edition
 			if (!empty($withtemplate)){
 				echo "<input type='hidden' name='is_global' value=\"".$management_restrict."\">";
-				echo (!$management_restrict?$LANG["peripherals"][32]:$LANG["peripherals"][31]);
+				echo (!$management_restrict?$LANG['peripherals'][32]:$LANG['peripherals'][31]);
 			} else {
-				echo (!$value?$LANG["peripherals"][32]:$LANG["peripherals"][31]);
+				echo (!$value?$LANG['peripherals'][32]:$LANG['peripherals'][31]);
 			}
 		}
 
@@ -1733,9 +1733,9 @@ function dropdownContractAlerting($myname,$value){
 	global $LANG;
 	echo "<select name='$myname'>";
 	echo "<option value='0' ".($value==0?"selected":"")." >-------</option>";
-	echo "<option value='".pow(2,ALERT_END)."' ".($value==pow(2,ALERT_END)?"selected":"")." >".$LANG["buttons"][32]."</option>";
-	echo "<option value='".pow(2,ALERT_NOTICE)."' ".($value==pow(2,ALERT_NOTICE)?"selected":"")." >".$LANG["financial"][10]."</option>";
-	echo "<option value='".(pow(2,ALERT_END)+pow(2,ALERT_NOTICE))."' ".($value==(pow(2,ALERT_END)+pow(2,ALERT_NOTICE))?"selected":"")." >".$LANG["buttons"][32]." + ".$LANG["financial"][10]."</option>";
+	echo "<option value='".pow(2,ALERT_END)."' ".($value==pow(2,ALERT_END)?"selected":"")." >".$LANG['buttons'][32]."</option>";
+	echo "<option value='".pow(2,ALERT_NOTICE)."' ".($value==pow(2,ALERT_NOTICE)?"selected":"")." >".$LANG['financial'][10]."</option>";
+	echo "<option value='".(pow(2,ALERT_END)+pow(2,ALERT_NOTICE))."' ".($value==(pow(2,ALERT_END)+pow(2,ALERT_NOTICE))?"selected":"")." >".$LANG['buttons'][32]." + ".$LANG['financial'][10]."</option>";
 	echo "</select>";
 
 }
@@ -1816,11 +1816,11 @@ function dropdownLicenseOfSoftware($myname,$sID) {
 		echo "<select name='$myname'>";
 		while ($data=$DB->fetch_array($result)){
 			echo "<option value='".$data["ID"]."'>".$data["version"]." - ".$data["serial"];
-			if ($data["expire"]!=NULL) echo " - ".$LANG["software"][25]." ".$data["expire"];
-			else echo " - ".$LANG["software"][26];
-			if ($data["buy"]) echo " - ".$LANG["software"][35];
-			else echo " - ".$LANG["software"][37];
-			if ($data["oem"]) echo " - ".$LANG["software"][28];
+			if ($data["expire"]!=NULL) echo " - ".$LANG['software'][25]." ".$data["expire"];
+			else echo " - ".$LANG['software'][26];
+			if ($data["buy"]) echo " - ".$LANG['software'][35];
+			else echo " - ".$LANG['software'][37];
+			if ($data["oem"]) echo " - ".$LANG['software'][28];
 			echo "</option>";
 		}
 		echo "</select>";
@@ -1882,8 +1882,8 @@ function displayActiveEntities($target,$myname){
 	global $CFG_GLPI,$LANG;
 	$rand=mt_rand();
 	
-	echo "<div class='center' ><span class='b'>".$LANG["entity"][10]." ( <img src=\"".$CFG_GLPI["root_doc"]."/pics/entity_all.png\" alt=''> ".$LANG["entity"][11].")</span><br>";
-	echo "<a style='font-size:14px;' href='".$target."?active_entity=all' title=\"".$LANG["buttons"][40]."\">".str_replace(" ","&nbsp;",$LANG["buttons"][40])."</a></div>";
+	echo "<div class='center' ><span class='b'>".$LANG['entity'][10]." ( <img src=\"".$CFG_GLPI["root_doc"]."/pics/entity_all.png\" alt=''> ".$LANG['entity'][11].")</span><br>";
+	echo "<a style='font-size:14px;' href='".$target."?active_entity=all' title=\"".$LANG['buttons'][40]."\">".str_replace(" ","&nbsp;",$LANG['buttons'][40])."</a></div>";
 
 	echo "<div class='left' style='width:100%'>";
 	
@@ -1989,7 +1989,7 @@ function displayEntityTree($target,$myname,$ID,$recursive,$level=0){
 				echo "<div $class>".str_repeat("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;", max(1,$level)).$raquo."&nbsp;<a style='font-size:".$fsize."px;' title=\"".$data['name']."\" href='".$target."?active_entity=$ID'>".str_replace(" ","&nbsp;",$data['name'])."</a>";
 				
 				if ($subitems){
-					echo "&nbsp;&nbsp;<a title=\"".$LANG["buttons"][40]."\" href='".$target."?active_entity=$ID&amp;recursive=1'><img alt=\"".$LANG["buttons"][40]."\" src='".$CFG_GLPI["root_doc"]."/pics/entity_all.png'></a></div>";
+					echo "&nbsp;&nbsp;<a title=\"".$LANG['buttons'][40]."\" href='".$target."?active_entity=$ID&amp;recursive=1'><img alt=\"".$LANG['buttons'][40]."\" src='".$CFG_GLPI["root_doc"]."/pics/entity_all.png'></a></div>";
 					if ($level!=0 && $subitems>1){
 						echo "<div id='entity_subitem_$ID' style='display: none;'>";
 						displayEntityTree($target,$myname,$data['tree'],$level+1);
@@ -2017,12 +2017,12 @@ function dropdownStatus($name,$value=0){
 	global $LANG;
 
 	echo "<select name='$name'>";
-	echo "<option value='new' ".($value=="new"?" selected ":"").">".$LANG["joblist"][9]."</option>";
-	echo "<option value='assign' ".($value=="assign"?" selected ":"").">".$LANG["joblist"][18]."</option>";
-	echo "<option value='plan' ".($value=="plan"?" selected ":"").">".$LANG["joblist"][19]."</option>";
-	echo "<option value='waiting' ".($value=="waiting"?" selected ":"").">".$LANG["joblist"][26]."</option>";
-	echo "<option value='old_done' ".($value=="old_done"?" selected ":"").">".$LANG["joblist"][10]."</option>";
-	echo "<option value='old_notdone' ".($value=="old_notdone"?" selected ":"").">".$LANG["joblist"][17]."</option>";
+	echo "<option value='new' ".($value=="new"?" selected ":"").">".$LANG['joblist'][9]."</option>";
+	echo "<option value='assign' ".($value=="assign"?" selected ":"").">".$LANG['joblist'][18]."</option>";
+	echo "<option value='plan' ".($value=="plan"?" selected ":"").">".$LANG['joblist'][19]."</option>";
+	echo "<option value='waiting' ".($value=="waiting"?" selected ":"").">".$LANG['joblist'][26]."</option>";
+	echo "<option value='old_done' ".($value=="old_done"?" selected ":"").">".$LANG['joblist'][10]."</option>";
+	echo "<option value='old_notdone' ".($value=="old_notdone"?" selected ":"").">".$LANG['joblist'][17]."</option>";
 	echo "</select>";	
 }
 
@@ -2036,22 +2036,22 @@ function getStatusName($value){
 
 	switch ($value){
 		case "new" :
-			return $LANG["joblist"][9];
+			return $LANG['joblist'][9];
 		break;
 		case "assign" :
-			return $LANG["joblist"][18];
+			return $LANG['joblist'][18];
 		break;
 		case "plan" :
-			return $LANG["joblist"][19];
+			return $LANG['joblist'][19];
 		break;
 		case "waiting" :
-			return $LANG["joblist"][26];
+			return $LANG['joblist'][26];
 		break;
 		case "old_done" :
-			return $LANG["joblist"][10];
+			return $LANG['joblist'][10];
 		break;
 		case "old_notdone" :
-			return $LANG["joblist"][17];
+			return $LANG['joblist'][17];
 		break;
 	}	
 }
@@ -2068,18 +2068,18 @@ function dropdownPriority($name,$value=0,$complete=0){
 
 	echo "<select name='$name'>";
 	if ($complete){
-		echo "<option value='0' ".($value==1?" selected ":"").">".$LANG["common"][66]."</option>";
-		echo "<option value='-5' ".($value==-5?" selected ":"").">".$LANG["search"][16]." ".$LANG["help"][3]."</option>";
-		echo "<option value='-4' ".($value==-4?" selected ":"").">".$LANG["search"][16]." ".$LANG["help"][4]."</option>";
-		echo "<option value='-3' ".($value==-3?" selected ":"").">".$LANG["search"][16]." ".$LANG["help"][5]."</option>";
-		echo "<option value='-2' ".($value==-2?" selected ":"").">".$LANG["search"][16]." ".$LANG["help"][6]."</option>";
-		echo "<option value='-1' ".($value==-1?" selected ":"").">".$LANG["search"][16]." ".$LANG["help"][7]."</option>";
+		echo "<option value='0' ".($value==1?" selected ":"").">".$LANG['common'][66]."</option>";
+		echo "<option value='-5' ".($value==-5?" selected ":"").">".$LANG['search'][16]." ".$LANG['help'][3]."</option>";
+		echo "<option value='-4' ".($value==-4?" selected ":"").">".$LANG['search'][16]." ".$LANG['help'][4]."</option>";
+		echo "<option value='-3' ".($value==-3?" selected ":"").">".$LANG['search'][16]." ".$LANG['help'][5]."</option>";
+		echo "<option value='-2' ".($value==-2?" selected ":"").">".$LANG['search'][16]." ".$LANG['help'][6]."</option>";
+		echo "<option value='-1' ".($value==-1?" selected ":"").">".$LANG['search'][16]." ".$LANG['help'][7]."</option>";
 	}
-	echo "<option value='5' ".($value==5?" selected ":"").">".$LANG["help"][3]."</option>";
-	echo "<option value='4' ".($value==4?" selected ":"").">".$LANG["help"][4]."</option>";
-	echo "<option value='3' ".($value==3?" selected ":"").">".$LANG["help"][5]."</option>";
-	echo "<option value='2' ".($value==2?" selected ":"").">".$LANG["help"][6]."</option>";
-	echo "<option value='1' ".($value==1?" selected ":"").">".$LANG["help"][7]."</option>";
+	echo "<option value='5' ".($value==5?" selected ":"").">".$LANG['help'][3]."</option>";
+	echo "<option value='4' ".($value==4?" selected ":"").">".$LANG['help'][4]."</option>";
+	echo "<option value='3' ".($value==3?" selected ":"").">".$LANG['help'][5]."</option>";
+	echo "<option value='2' ".($value==2?" selected ":"").">".$LANG['help'][6]."</option>";
+	echo "<option value='1' ".($value==1?" selected ":"").">".$LANG['help'][7]."</option>";
 
 	echo "</select>";	
 }
@@ -2094,19 +2094,19 @@ function getPriorityName($value){
 
 	switch ($value){
 		case 5 :
-			return $LANG["help"][3];
+			return $LANG['help'][3];
 			break;
 		case 4 :
-			return $LANG["help"][4];
+			return $LANG['help'][4];
 			break;
 		case 3 :
-			return $LANG["help"][5];
+			return $LANG['help'][5];
 			break;
 		case 2 :
-			return $LANG["help"][6];
+			return $LANG['help'][6];
 			break;
 		case 1 :
-			return $LANG["help"][7];
+			return $LANG['help'][7];
 			break;
 	}	
 }
@@ -2123,19 +2123,19 @@ function getRequestTypeName($value){
 			return $LANG["Menu"][31];
 			break;
 		case 2 :
-			return $LANG["setup"][14];
+			return $LANG['setup'][14];
 			break;
 		case 3 :
-			return $LANG["help"][35];
+			return $LANG['help'][35];
 			break;
 		case 4 :
-			return $LANG["tracking"][34];
+			return $LANG['tracking'][34];
 			break;
 		case 5 :
-			return $LANG["tracking"][35];
+			return $LANG['tracking'][35];
 			break;
 		case 6 :
-			return $LANG["common"][62];
+			return $LANG['common'][62];
 			break;
 		default : return "";
 	}	
@@ -2152,11 +2152,11 @@ function dropdownRequestType($name,$value=0){
 	echo "<select name='$name'>";
 	echo "<option value='0' ".($value==0?" selected ":"").">-----</option>";
 	echo "<option value='1' ".($value==1?" selected ":"").">".$LANG["Menu"][31]."</option>"; // Helpdesk
-	echo "<option value='2' ".($value==2?" selected ":"").">".$LANG["setup"][14]."</option>"; // mail
-	echo "<option value='3' ".($value==3?" selected ":"").">".$LANG["help"][35]."</option>"; // phone
-	echo "<option value='4' ".($value==4?" selected ":"").">".$LANG["tracking"][34]."</option>"; // direct
-	echo "<option value='5' ".($value==5?" selected ":"").">".$LANG["tracking"][35]."</option>"; // writing
-	echo "<option value='6' ".($value==6?" selected ":"").">".$LANG["common"][62]."</option>"; // other
+	echo "<option value='2' ".($value==2?" selected ":"").">".$LANG['setup'][14]."</option>"; // mail
+	echo "<option value='3' ".($value==3?" selected ":"").">".$LANG['help'][35]."</option>"; // phone
+	echo "<option value='4' ".($value==4?" selected ":"").">".$LANG['tracking'][34]."</option>"; // direct
+	echo "<option value='5' ".($value==5?" selected ":"").">".$LANG['tracking'][35]."</option>"; // writing
+	echo "<option value='6' ".($value==6?" selected ":"").">".$LANG['common'][62]."</option>"; // other
 
 	echo "</select>";	
 }
@@ -2172,8 +2172,8 @@ function dropdownAmortType($name,$value=0){
 
 	echo "<select name='$name'>";
 	echo "<option value='0' ".($value==0?" selected ":"").">-------------</option>";
-	echo "<option value='2' ".($value==2?" selected ":"").">".$LANG["financial"][47]."</option>";
-	echo "<option value='1' ".($value==1?" selected ":"").">".$LANG["financial"][48]."</option>";
+	echo "<option value='2' ".($value==2?" selected ":"").">".$LANG['financial'][47]."</option>";
+	echo "<option value='1' ".($value==1?" selected ":"").">".$LANG['financial'][48]."</option>";
 	echo "</select>";	
 }
 /**
@@ -2186,10 +2186,10 @@ function getAmortTypeName($value){
 
 	switch ($value){
 		case 2 :
-			return $LANG["financial"][47];
+			return $LANG['financial'][47];
 			break;
 		case 1 :
-			return $LANG["financial"][48];
+			return $LANG['financial'][48];
 			break;
 		case 0 :
 			return "";
@@ -2208,13 +2208,13 @@ function getPlanningState($value)
 	
 	switch ($value){
 		case 0:
-			return $LANG["planning"][16];
+			return $LANG['planning'][16];
 			break;
 		case 1:
-			return $LANG["planning"][17];
+			return $LANG['planning'][17];
 			break;
 		case 2:
-			return $LANG["planning"][18];
+			return $LANG['planning'][18];
 			break;
 	}
 	
@@ -2232,9 +2232,9 @@ function dropdownPlanningState($name,$value='')
 	
 	echo "<select name='$name' id='$name'>";
 
-	echo "<option value='0'".($value==0?" selected ":"").">".$LANG["planning"][16]."</option>";
-	echo "<option value='1'".($value==1?" selected ":"").">".$LANG["planning"][17]."</option>";
-	echo "<option value='2'".($value==2?" selected ":"").">".$LANG["planning"][18]."</option>";
+	echo "<option value='0'".($value==0?" selected ":"").">".$LANG['planning'][16]."</option>";
+	echo "<option value='1'".($value==1?" selected ":"").">".$LANG['planning'][17]."</option>";
+	echo "<option value='2'".($value==2?" selected ":"").">".$LANG['planning'][18]."</option>";
 
 	echo "</select>";	
 	
@@ -2292,7 +2292,7 @@ function dropdownArrayValuesReadonly($name,$elements,$value='',$used=array()){
 function dropdownStateBehaviour ($name, $lib="", $value=0){
 	global $DB, $LANG;
 	
-	$elements=array("0"=>$LANG["setup"][195]);
+	$elements=array("0"=>$LANG['setup'][195]);
 	if ($lib) {
 		$elements["-1"]=$lib;	
 	}
@@ -2303,7 +2303,7 @@ function dropdownStateBehaviour ($name, $lib="", $value=0){
 	$result = $DB->query($queryStateList);
 	if ($DB->numrows($result) > 0) {
 		while (($data = $DB->fetch_assoc($result))) {
-			$elements[$data["ID"]] = $LANG["setup"][198] . ": " . $data["name"];
+			$elements[$data["ID"]] = $LANG['setup'][198] . ": " . $data["name"];
 		}
 	}
 	dropdownArrayValues($name, $elements, $value);
@@ -2321,30 +2321,30 @@ function adminManagementDropdown($name,$value,$software=0){
 	echo "<select name=\"".$name."\">";
 
 	if (!$software){
-		$yesUnit = $LANG["peripherals"][32];
-		$yesGlobal = $LANG["peripherals"][31];
+		$yesUnit = $LANG['peripherals'][32];
+		$yesGlobal = $LANG['peripherals'][31];
 	} else {
-		$yesUnit = $LANG["ocsconfig"][46];
-		$yesGlobal = $LANG["ocsconfig"][45];
+		$yesUnit = $LANG['ocsconfig'][46];
+		$yesGlobal = $LANG['ocsconfig'][45];
 	}
 	
 	echo "<option value=\"2\"";
 	if ($value == 2) {
 		echo " selected";
 	}
-	echo ">".$LANG["choice"][0]."</option>";
+	echo ">".$LANG['choice'][0]."</option>";
 	
 	echo "<option value=\"0\"";
 	if ($value == 0) {
 		echo " selected";
 	}
-	echo ">" . $LANG["choice"][1]." - ". $LANG["setup"][274]. " : ".  $yesUnit . "</option>";
+	echo ">" . $LANG['choice'][1]." - ". $LANG['setup'][274]. " : ".  $yesUnit . "</option>";
 
 	echo "<option value=\"1\"";
 	if ($value == 1) {
 		echo " selected";
 	}
-	echo ">" . $LANG["choice"][1]." - ". $LANG["setup"][274]. " : ". $yesGlobal . " </option>";
+	echo ">" . $LANG['choice'][1]." - ". $LANG['setup'][274]. " : ". $yesGlobal . " </option>";
 				
 	echo "</select>";
 }
@@ -2362,8 +2362,8 @@ function dropdownGMT($name,$value=''){
 
 	foreach($elements as $element){
 		if ($element != 0)
-			$display_value = $LANG["gmt"][0].($element > 0?" +":" ").$element." ".$LANG["gmt"][1];
-		else $display_value = $LANG["gmt"][0];
+			$display_value = $LANG['gmt'][0].($element > 0?" +":" ").$element." ".$LANG['gmt'][1];
+		else $display_value = $LANG['gmt'][0];
 		echo "<option value='".$element."'".($element==$value?" selected ":"").">".$display_value."</option>";
 	}
 
@@ -2440,7 +2440,7 @@ function dropdownAlertInfocoms($name,$value=0){
 	global $LANG;
 	echo "<select name=\"$name\">";
 	echo "<option value=\"0\" ".($value==0?" selected ":"")." >-----</option>";
-	echo "<option value=\"".pow(2,ALERT_END)."\" ".($value==pow(2,ALERT_END)?" selected ":"")." >".$LANG["financial"][80]." </option>";
+	echo "<option value=\"".pow(2,ALERT_END)."\" ".($value==pow(2,ALERT_END)?" selected ":"")." >".$LANG['financial'][80]." </option>";
 	echo "</select>";
 }
 
@@ -2512,7 +2512,7 @@ function dropdownContractPeriodicity($name,$value=0){
 	echo "<select name='$name'>";
 	echo "<option value='0' ".($value==0?" selected ":"").">-------------</option>";
 	foreach ( $values as $val)
-		echo "<option value='$val' ".($value==$val?" selected ":"").">".$val." ".$LANG["financial"][57]."</option>";
+		echo "<option value='$val' ".($value==$val?" selected ":"").">".$val." ".$LANG['financial'][57]."</option>";
 	echo "</select>";	
 }
 
@@ -2532,8 +2532,8 @@ function dropdownContractRenewal($name,$value=0){
 
 	echo "<select name='$name'>";
 	echo "<option value='0' ".($value==0?" selected ":"").">-------------</option>";
-	echo "<option value='1' ".($value==1?" selected ":"").">".$LANG["financial"][105]."</option>";
-	echo "<option value='2' ".($value==2?" selected ":"").">".$LANG["financial"][106]."</option>";
+	echo "<option value='1' ".($value==1?" selected ":"").">".$LANG['financial'][105]."</option>";
+	echo "<option value='2' ".($value==2?" selected ":"").">".$LANG['financial'][106]."</option>";
 	echo "</select>";	
 }
 
@@ -2548,8 +2548,8 @@ function dropdownContractRenewal($name,$value=0){
 function getContractRenewalName($value){
 	global $LANG;
 	switch ($value){
-		case 1: return $LANG["financial"][105];break;
-		case 2: return $LANG["financial"][106];break;
+		case 1: return $LANG['financial'][105];break;
+		case 2: return $LANG['financial'][106];break;
 		default : return "";
 	}
 }
@@ -2561,9 +2561,9 @@ function getContractRenewalName($value){
  */
 function getContractRenewalIDByName($value){
 	global $LANG;
-	if (preg_match("/$value/i",$LANG["financial"][105])){
+	if (preg_match("/$value/i",$LANG['financial'][105])){
 		return 1;
-	} else if (preg_match("/$value/i",$LANG["financial"][106])){
+	} else if (preg_match("/$value/i",$LANG['financial'][106])){
 		return 2;
 	} 
 	return 0;

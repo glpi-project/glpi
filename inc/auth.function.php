@@ -231,19 +231,19 @@ function displayRightError() {
 	global $LANG, $CFG_GLPI, $HEADER_LOADED;
 	if (!$HEADER_LOADED) {
 		if (!isset ($_SESSION["glpiactiveprofile"]["interface"])){
-			nullHeader($LANG["login"][5], $_SERVER['PHP_SELF']);
+			nullHeader($LANG['login'][5], $_SERVER['PHP_SELF']);
 		} else {
 			if ($_SESSION["glpiactiveprofile"]["interface"] == "central"){
-				commonHeader($LANG["login"][5], $_SERVER['PHP_SELF']);
+				commonHeader($LANG['login'][5], $_SERVER['PHP_SELF']);
 			} else {
 				if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk"){
-					helpHeader($LANG["login"][5], $_SERVER['PHP_SELF']);
+					helpHeader($LANG['login'][5], $_SERVER['PHP_SELF']);
 				}
 			}
 		}
 	}
 	echo "<div class='center'><br><br><img src=\"" . $CFG_GLPI["root_doc"] . "/pics/warning.png\" alt=\"warning\"><br><br>";
-	echo "<strong>" . $LANG["common"][83] . "</strong></div>";
+	echo "<strong>" . $LANG['common'][83] . "</strong></div>";
 	nullFooter();
 	exit ();
 }
@@ -257,19 +257,19 @@ function displayNotFoundError() {
 	global $LANG, $CFG_GLPI, $HEADER_LOADED;
 	if (!$HEADER_LOADED) {
 		if (!isset ($_SESSION["glpiactiveprofile"]["interface"])){
-			nullHeader($LANG["login"][5], $_SERVER['PHP_SELF']);
+			nullHeader($LANG['login'][5], $_SERVER['PHP_SELF']);
 		} else {
 			if ($_SESSION["glpiactiveprofile"]["interface"] == "central"){
-				commonHeader($LANG["login"][5], $_SERVER['PHP_SELF']);
+				commonHeader($LANG['login'][5], $_SERVER['PHP_SELF']);
 			} else {
 				if ($_SESSION["glpiactiveprofile"]["interface"] == "helpdesk"){
-					helpHeader($LANG["login"][5], $_SERVER['PHP_SELF']);
+					helpHeader($LANG['login'][5], $_SERVER['PHP_SELF']);
 				}
 			}
 		}
 	}
 	echo "<div class='center'><br><br><img src=\"" . $CFG_GLPI["root_doc"] . "/pics/warning.png\" alt=\"warning\"><br><br>";
-	echo "<strong>" . $LANG["common"][54] . "</strong></div>";
+	echo "<strong>" . $LANG['common'][54] . "</strong></div>";
 	nullFooter();
 	exit ();
 }
@@ -693,12 +693,12 @@ function changeActiveEntities($ID="all",$recursive=false) {
 		$_SESSION["glpiactive_entity_name"] = getDropdownName("glpi_entities",$active);
 		$_SESSION["glpiactive_entity_shortname"] = getTreeLeafValueName("glpi_entities",$active);
 		if ($recursive){
-			$_SESSION["glpiactive_entity_name"] .= " (".$LANG["entity"][7].")";
-			$_SESSION["glpiactive_entity_shortname"] .= " (".$LANG["entity"][7].")";
+			$_SESSION["glpiactive_entity_name"] .= " (".$LANG['entity'][7].")";
+			$_SESSION["glpiactive_entity_shortname"] .= " (".$LANG['entity'][7].")";
 		}
 		if ($ID=="all"){
-			$_SESSION["glpiactive_entity_name"] .= " (".$LANG["buttons"][40].")";
-			$_SESSION["glpiactive_entity_shortname"] .= " (".$LANG["buttons"][40].")";
+			$_SESSION["glpiactive_entity_name"] .= " (".$LANG['buttons'][40].")";
+			$_SESSION["glpiactive_entity_shortname"] .= " (".$LANG['buttons'][40].")";
 		}
 		if (countElementsInTable('glpi_entities')<count($_SESSION['glpiactiveentities'])){
 			$_SESSION['glpishowallentities']=1;
@@ -1168,9 +1168,9 @@ function import_user_from_ldap_servers($login){
 				return $result;
 			}  
 		}
-		addMessageAfterRedirect($LANG["login"][15]);
+		addMessageAfterRedirect($LANG['login'][15]);
 	} else {
-		addMessageAfterRedirect($LANG["setup"][606]);
+		addMessageAfterRedirect($LANG['setup'][606]);
 	}
 	return false;
 	
@@ -1255,8 +1255,8 @@ function showReplicatesList($target,$master_id){
 		echo "<div class='center'>";
 		echo "<table class='tab_cadre_fixe'>";
 	
-		echo "<tr><th colspan='4'><div class='relative'><span><strong>" . $LANG["ldap"][18] . "</strong></span></th></tr>";
-		echo "<tr class='tab_bg_1'><td class='center'></td><td class='center'>".$LANG["common"][16]."</td><td class='center'>".$LANG["ldap"][18]."</td><td class='center'></td>";
+		echo "<tr><th colspan='4'><div class='relative'><span><strong>" . $LANG['ldap'][18] . "</strong></span></th></tr>";
+		echo "<tr class='tab_bg_1'><td class='center'></td><td class='center'>".$LANG['common'][16]."</td><td class='center'>".$LANG['ldap'][18]."</td><td class='center'></td>";
 		while ($ldap_replicate = $DB->fetch_array($result)){
 			echo "<tr class='tab_bg_2'><td class='center'>";
 				
@@ -1270,7 +1270,7 @@ function showReplicatesList($target,$master_id){
 			echo "<td class='center'>" . $ldap_replicate["name"] . "</td>";
 			echo "<td class='center'>".$ldap_replicate["ldap_host"]." : ".$ldap_replicate["ldap_port"] . "</td>"; 
 			echo "<td align='center' colspan=4>"; 
-			echo"<input type=\"submit\" name=\"test_ldap_replicate[".$ldap_replicate["ID"]."]\" class=\"submit\" value=\"" . $LANG["buttons"][50] . "\" ></td>";
+			echo"<input type=\"submit\" name=\"test_ldap_replicate[".$ldap_replicate["ID"]."]\" class=\"submit\" value=\"" . $LANG['buttons'][50] . "\" ></td>";
 			echo"</tr>";
 				
 		}
@@ -1278,10 +1278,10 @@ function showReplicatesList($target,$master_id){
 		echo "<div class='center'>";
 		echo "<table width='950px' class='tab_glpi'>";
 				
-		echo "<tr><td><img src=\"" . $CFG_GLPI["root_doc"] . "/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markCheckboxes('ldap_replicates_form') ) return false;\" href='" . $_SERVER['PHP_SELF'] . "?next=extauth_ldap&ID=$master_id&select=all'>" . $LANG["buttons"][18] . "</a></td>";
-		echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkCheckboxes('ldap_replicates_form') ) return false;\" href='" . $_SERVER['PHP_SELF'] . "?next=extauth_ldap&ID=$master_id&select=none'>" . $LANG["buttons"][19] . "</a>";
+		echo "<tr><td><img src=\"" . $CFG_GLPI["root_doc"] . "/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markCheckboxes('ldap_replicates_form') ) return false;\" href='" . $_SERVER['PHP_SELF'] . "?next=extauth_ldap&ID=$master_id&select=all'>" . $LANG['buttons'][18] . "</a></td>";
+		echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkCheckboxes('ldap_replicates_form') ) return false;\" href='" . $_SERVER['PHP_SELF'] . "?next=extauth_ldap&ID=$master_id&select=none'>" . $LANG['buttons'][19] . "</a>";
 		echo "</td><td align='left' width='80%'>";
-		echo "<input type='submit' name='delete_replicate' value=\"" . $LANG["buttons"][6] . "\" class='submit'></td>";
+		echo "<input type='submit' name='delete_replicate' value=\"" . $LANG['buttons'][6] . "\" class='submit'></td>";
 		echo "</tr>";
 				
 		echo "</table>";
@@ -1303,15 +1303,15 @@ function addNewReplicateForm($target, $master_id){
 	echo "<div class='center'>";
 	echo "<table class='tab_cadre_fixe'>";
 	
-	echo "<tr><th colspan='4'><div class='relative'><span><strong>" .$LANG["ldap"][20] . "</strong></span></th></tr>";
-	echo "<tr class='tab_bg_1'><td class='center'>".$LANG["common"][16]."</td><td class='center'>".$LANG["common"][52]."</td><td class='center'>".$LANG["setup"][175]."</td><td></td></tr>";
+	echo "<tr><th colspan='4'><div class='relative'><span><strong>" .$LANG['ldap'][20] . "</strong></span></th></tr>";
+	echo "<tr class='tab_bg_1'><td class='center'>".$LANG['common'][16]."</td><td class='center'>".$LANG['common'][52]."</td><td class='center'>".$LANG['setup'][175]."</td><td></td></tr>";
 	echo "<tr class='tab_bg_1'>"; 
 	echo "<td class='center'><input type='text' name='name'></td>";
 	echo "<td class='center'><input type='text' name='ldap_host'></td>"; 
 	echo "<td class='center'><input type='text' name='ldap_port'></td>";
 	echo "<input type='hidden' name='next' value=\"extauth_ldap\"></td>";
 	echo "<input type='hidden' name='server_id' value=\"".$master_id."\">";
-	echo "<td class='center'><input type='submit' name='add_replicate' value=\"" . $LANG["buttons"][2] . "\" class='submit'></td></tr>";
+	echo "<td class='center'><input type='submit' name='add_replicate' value=\"" . $LANG['buttons'][2] . "\" class='submit'></td></tr>";
 	echo "</table>";
 	echo "</div>";
 	echo "</form>";

@@ -101,16 +101,16 @@ function showDropdownList($target, $tablename,$FK_entities='',$location=-1){
 			echo "<div>";
 			echo "<table width='950' class='tab_glpi'>";
 			$parameters="which=$tablename&amp;mass_deletion=1&amp;FK_entities=$FK_entities";
-			echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td><a onclick= \"if ( markCheckboxes('massiveaction_form') ) return false;\" href='".$_SERVER['PHP_SELF']."?$parameters&amp;select=all'>".$LANG["buttons"][18]."</a></td>";
+			echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td><a onclick= \"if ( markCheckboxes('massiveaction_form') ) return false;\" href='".$_SERVER['PHP_SELF']."?$parameters&amp;select=all'>".$LANG['buttons'][18]."</a></td>";
 
-			echo "<td>/</td><td ><a onclick=\"if ( unMarkCheckboxes('massiveaction_form') ) return false;\" href='".$_SERVER['PHP_SELF']."?$parameters&amp;select=none'>".$LANG["buttons"][19]."</a>";
+			echo "<td>/</td><td ><a onclick=\"if ( unMarkCheckboxes('massiveaction_form') ) return false;\" href='".$_SERVER['PHP_SELF']."?$parameters&amp;select=none'>".$LANG['buttons'][19]."</a>";
 			echo "</td><td class='left' width='80%'>";
-			echo "<input type='submit' class='submit' name='mass_delete' value='".$LANG["buttons"][6]."'>";
-			echo "&nbsp;<strong>".$LANG["setup"][1]."</strong>";
+			echo "<input type='submit' class='submit' name='mass_delete' value='".$LANG['buttons'][6]."'>";
+			echo "&nbsp;<strong>".$LANG['setup'][1]."</strong>";
 			echo "</td></table></div>";
 			echo "</form>";
 		} else {
-			echo "<strong>".$LANG["search"][15]."</strong>";
+			echo "<strong>".$LANG['search'][15]."</strong>";
 		}
 	
 	}
@@ -162,15 +162,15 @@ function showFormTreeDown($target, $tablename, $human, $ID, $value2 = '', $where
 
 		autocompletionTextField('value',$tablename,'name',$value["name"],40,$entity_restrict,-1,'maxlength=\'100\'');
 		echo '<br>'; 
-		echo "<textarea rows='2' cols='50' name='comments' title='" . $LANG["common"][25] . "' >" . $value["comments"] . "</textarea>";
+		echo "<textarea rows='2' cols='50' name='comments' title='" . $LANG['common'][25] . "' >" . $value["comments"] . "</textarea>";
 
 		echo "</td><td align='center' class='tab_bg_2' width='99'>";
 		echo "<input type='hidden' name='tablename' value='$tablename'>";
 		//  on ajoute un bouton modifier
-		echo "<input type='submit' name='update' value='" . $LANG["buttons"][14] . "' class='submit'>";
+		echo "<input type='submit' name='update' value='" . $LANG['buttons'][14] . "' class='submit'>";
 		echo "</td><td align='center' class='tab_bg_2' width='99'>";
 		//
-		echo "<input type='submit' name='delete' value=\"" . $LANG["buttons"][6] . "\" class='submit'>";
+		echo "<input type='submit' name='delete' value=\"" . $LANG['buttons'][6] . "\" class='submit'>";
 		echo "</td></tr></table></form>";
 
 		echo "<form method='post' action=\"$target\">";
@@ -181,12 +181,12 @@ function showFormTreeDown($target, $tablename, $human, $ID, $value2 = '', $where
 		echo "<tr><td align='center' class='tab_bg_1'>";
 
 		dropdownValue($tablename, "value_to_move", $tomove, 0, $entity_restrict);
-		echo "&nbsp;&nbsp;&nbsp;" . $LANG["setup"][75] . " :&nbsp;&nbsp;&nbsp;";
+		echo "&nbsp;&nbsp;&nbsp;" . $LANG['setup'][75] . " :&nbsp;&nbsp;&nbsp;";
 
 		dropdownValue($tablename, "value_where", $where, 0, $entity_restrict);
 		echo "</td><td align='center' colspan='2' class='tab_bg_2' width='202'>";
 		echo "<input type='hidden' name='tablename' value='$tablename' >";
-		echo "<input type='submit' name='move' value=\"" . $LANG["buttons"][20] . "\" class='submit'>";
+		echo "<input type='submit' name='move' value=\"" . $LANG['buttons'][20] . "\" class='submit'>";
 		echo "<input type='hidden' name='FK_entities' value='$entity_restrict'>";
 
 		echo "</td></tr>";
@@ -205,25 +205,25 @@ function showFormTreeDown($target, $tablename, $human, $ID, $value2 = '', $where
 
 	if ($numberof > 0) {
 		echo "<select name='type'>";
-		echo "<option value='under' " . ($type == 'under' ? " selected " : "") . ">" . $LANG["setup"][75] . "</option>";
-		echo "<option value='same' " . ($type == 'same' ? " selected " : "") . ">" . $LANG["setup"][76] . "</option>";
+		echo "<option value='under' " . ($type == 'under' ? " selected " : "") . ">" . $LANG['setup'][75] . "</option>";
+		echo "<option value='same' " . ($type == 'same' ? " selected " : "") . ">" . $LANG['setup'][76] . "</option>";
 		echo "</select>&nbsp;&nbsp;&nbsp;";
 		dropdownValue($tablename, "value2", (strlen($value2) ? $value2 : 0), 0, $entity_restrict);
 	} else
 		echo "<input type='hidden' name='type' value='first'>";
 
-	echo "<br><textarea rows='2' cols='50' name='comments' title='" . $LANG["common"][25] . "' ></textarea>";
+	echo "<br><textarea rows='2' cols='50' name='comments' title='" . $LANG['common'][25] . "' ></textarea>";
 
 	echo "</td><td align='center' colspan='2' class='tab_bg_2'  width='202'>";
 	echo "<input type='hidden' name='tablename' value='$tablename' >";
 
-	echo "<input type='submit' name='add' value=\"" . $LANG["buttons"][8] . "\" class='submit'>";
+	echo "<input type='submit' name='add' value=\"" . $LANG['buttons'][8] . "\" class='submit'>";
 	echo "</td></tr>";
 
 	echo "</table></form>";
 	
 	if (strpos($target,'setup.dropdowns.php') && $numberof>0){
-		echo "<a href='$target?which=$tablename&amp;mass_deletion=1&amp;FK_entities=$FK_entities'>".$LANG["title"][42]."</a>";
+		echo "<a href='$target?which=$tablename&amp;mass_deletion=1&amp;FK_entities=$FK_entities'>".$LANG['title'][42]."</a>";
 	}
 	
 	
@@ -280,23 +280,23 @@ function showFormNetpoint($target, $human, $ID, $FK_entities='',$location=0) {
 			$comments = $DB->result($result, 0, "comments");
 		}
 		echo "<br>";
-		echo $LANG["common"][15] . ": ";
+		echo $LANG['common'][15] . ": ";
 		dropdownValue("glpi_dropdown_locations", "value2", $location, 0, $entity_restrict);
 		
-		echo $LANG["networking"][52] . ": ";
+		echo $LANG['networking'][52] . ": ";
 		autocompletionTextField('value',$tablename,'name',$value,40,$entity_restrict,-1,'maxlength=\'100\''); 
 		echo "<br>"; 
-		echo "<textarea rows='2' cols='50' name='comments' title='" . $LANG["common"][25] . "' >" . $comments . "</textarea>";
+		echo "<textarea rows='2' cols='50' name='comments' title='" . $LANG['common'][25] . "' >" . $comments . "</textarea>";
 
 		//
 		echo "</td><td align='center' class='tab_bg_2' width='99'>";
 		echo "<input type='hidden' name='tablename' value='$tablename'>";
 
 		//  on ajoute un bouton modifier
-		echo "<input type='submit' name='update' value='" . $LANG["buttons"][14] . "' class='submit'>";
+		echo "<input type='submit' name='update' value='" . $LANG['buttons'][14] . "' class='submit'>";
 		echo "</td><td align='center' class='tab_bg_2' width='99'>";
 		//
-		echo "<input type='submit' name='delete' value=\"" . $LANG["buttons"][6] . "\" class='submit'>";
+		echo "<input type='submit' name='delete' value=\"" . $LANG['buttons'][6] . "\" class='submit'>";
 		echo "</td></tr>";
 
 	}
@@ -310,14 +310,14 @@ function showFormNetpoint($target, $human, $ID, $FK_entities='',$location=0) {
 	echo "<table class='tab_cadre_fixe' cellpadding='1'>";
 	echo "<tr><td align='center'  class='tab_bg_1'>";
 
-	echo $LANG["networking"][52] . ": ";
+	echo $LANG['networking'][52] . ": ";
 	autocompletionTextField('value',$tablename,'name','',40,$entity_restrict,-1,'maxlength=\'100\''); 
 	echo "<br>"; 
-	echo "<textarea rows='2' cols='50' name='comments' title='" . $LANG["common"][25] . "'></textarea>";
+	echo "<textarea rows='2' cols='50' name='comments' title='" . $LANG['common'][25] . "'></textarea>";
 
 	echo "</td><td align='center' colspan='2' class='tab_bg_2' width='202'>";
 
-	echo "<input type='submit' name='add' value=\"" . $LANG["buttons"][8] . "\" class='submit'>";
+	echo "<input type='submit' name='add' value=\"" . $LANG['buttons'][8] . "\" class='submit'>";
 	echo "</td></tr>";
 
 	// Multiple Add for Netpoint
@@ -332,23 +332,23 @@ function showFormNetpoint($target, $human, $ID, $FK_entities='',$location=0) {
 	echo "<table class='tab_cadre_fixe' cellpadding='1'>";
 	echo "<tr><td align='center'  class='tab_bg_1'>";
 
-	echo $LANG["networking"][52] . ": ";
+	echo $LANG['networking'][52] . ": ";
 	echo "<input type='text' maxlength='100' size='5' name='before'>";
 	dropdownInteger('from', 0, 0, 400);
 	echo "-->";
 	dropdownInteger('to', 0, 0, 400);
 
 	echo "<input type='text' maxlength='100' size='5' name='after'><br>";
-	echo "<textarea rows='2' cols='50' name='comments' title='" . $LANG["common"][25] . "'></textarea>";
+	echo "<textarea rows='2' cols='50' name='comments' title='" . $LANG['common'][25] . "'></textarea>";
 	echo "</td><td align='center' colspan='2' class='tab_bg_2' width='202'>";
 
-	echo "<input type='submit' name='several_add' value=\"" . $LANG["buttons"][8] . "\" class='submit'>";
+	echo "<input type='submit' name='several_add' value=\"" . $LANG['buttons'][8] . "\" class='submit'>";
 	echo "</td></tr>";
 
 	echo "</table></form>";
 	
 	if (strpos($target,'setup.dropdowns.php') && $numberof>0){
-		echo "<a href='$target?which=$tablename&amp;mass_deletion=1&amp;FK_entities=$FK_entities&amp;value2=$location'>".$LANG["title"][42]."</a>";
+		echo "<a href='$target?which=$tablename&amp;mass_deletion=1&amp;FK_entities=$FK_entities&amp;value2=$location'>".$LANG['title'][42]."</a>";
 	}
 	
 	echo "</div>";
@@ -401,17 +401,17 @@ function showFormDropDown($target, $tablename, $human, $ID, $FK_entities='') {
 
 		autocompletionTextField('value',$tablename,'name',$value["name"],40,$entity_restrict,-1,'maxlength=\'100\''); 
 		echo "<br>";
-		echo "<textarea rows='2' cols='50' name='comments' title='" . $LANG["common"][25] . "' >" . $value["comments"] . "</textarea>";
+		echo "<textarea rows='2' cols='50' name='comments' title='" . $LANG['common'][25] . "' >" . $value["comments"] . "</textarea>";
 
 		//
 		echo "</td><td align='center' class='tab_bg_2' width='99'>";
 		echo "<input type='hidden' name='tablename' value='$tablename'>";
 
 		//  on ajoute un bouton modifier
-		echo "<input type='submit' name='update' value='" . $LANG["buttons"][14] . "' class='submit'>";
+		echo "<input type='submit' name='update' value='" . $LANG['buttons'][14] . "' class='submit'>";
 		echo "</td><td align='center' class='tab_bg_2' width='99'>";
 		//
-		echo "<input type='submit' name='delete' value=\"" . $LANG["buttons"][6] . "\" class='submit'>";
+		echo "<input type='submit' name='delete' value=\"" . $LANG['buttons'][6] . "\" class='submit'>";
 		echo "</td></tr>";
 
 	}
@@ -424,19 +424,19 @@ function showFormDropDown($target, $tablename, $human, $ID, $FK_entities='') {
 	echo "<tr><td align='center'  class='tab_bg_1'>";
 	autocompletionTextField('value',$tablename,'name','',40,$entity_restrict,-1,'maxlength=\'100\'');
 	echo "<br>"; 
-	echo "<textarea rows='2' cols='50' name='comments' title='" . $LANG["common"][25] . "'></textarea>";
+	echo "<textarea rows='2' cols='50' name='comments' title='" . $LANG['common'][25] . "'></textarea>";
 
 	echo "</td><td align='center' colspan='2' class='tab_bg_2' width='202'>";
 	echo "<input type='hidden' name='tablename' value='$tablename' >";
 	echo "<input type='hidden' name='FK_entities' value='$entity_restrict'>";
 
-	echo "<input type='submit' name='add' value=\"" . $LANG["buttons"][8] . "\" class='submit'>";
+	echo "<input type='submit' name='add' value=\"" . $LANG['buttons'][8] . "\" class='submit'>";
 	echo "</td></tr>";
 
 	echo "</table></form>";
 	
 	if (strpos($target,'setup.dropdowns.php') && $numberof>0){
-		echo "<a href='$target?which=$tablename&amp;mass_deletion=1&amp;FK_entities=$FK_entities'>".$LANG["title"][42]."</a>";
+		echo "<a href='$target?which=$tablename&amp;mass_deletion=1&amp;FK_entities=$FK_entities'>".$LANG['title'][42]."</a>";
 	}
 	
 	echo "</div>";
@@ -801,7 +801,7 @@ function showDeleteConfirmForm($target, $table, $ID,$FK_entities) {
 		$query = "SELECT COUNT(*) AS cpt FROM `$table` WHERE `parentID` = '" . $ID . "'";
 		$result = $DB->query($query);
 		if ($DB->result($result, 0, "cpt") > 0) {
-			echo "<div class='center'><p class='red'>" . $LANG["setup"][74] . "</p></div>";
+			echo "<div class='center'><p class='red'>" . $LANG['setup'][74] . "</p></div>";
 			return;
 		}
 
@@ -809,7 +809,7 @@ function showDeleteConfirmForm($target, $table, $ID,$FK_entities) {
 			$query = "SELECT COUNT(*) AS cpt FROM `glpi_kbitems` WHERE `categoryID` = '" . $ID . "'";
 			$result = $DB->query($query);
 			if ($DB->result($result, 0, "cpt") > 0) {
-				echo "<div class='center'><p class='red'>" . $LANG["setup"][74] . "</p></div>";
+				echo "<div class='center'><p class='red'>" . $LANG['setup'][74] . "</p></div>";
 				return;
 			}
 		}
@@ -818,10 +818,10 @@ function showDeleteConfirmForm($target, $table, $ID,$FK_entities) {
 
 
 	echo "<div class='center'>";
-	echo "<p class='red'>" . $LANG["setup"][63] . "</p>";
+	echo "<p class='red'>" . $LANG['setup'][63] . "</p>";
 
 	if ($table!="glpi_entities"){
-		echo "<p>" . $LANG["setup"][64] . "</p>";
+		echo "<p>" . $LANG['setup'][64] . "</p>";
 		echo "<form action=\"" . $target . "\" method=\"post\">";
 		echo "<input type=\"hidden\" name=\"tablename\" value=\"" . $table . "\"  />";
 		echo "<input type=\"hidden\" name=\"ID\" value=\"" . $ID . "\"  />";
@@ -830,12 +830,12 @@ function showDeleteConfirmForm($target, $table, $ID,$FK_entities) {
 		echo "<input type=\"hidden\" name=\"FK_entities\" value=\"$FK_entities\" />";
 	
 		echo "<table class='tab_cadre'><tr><td>";
-		echo "<input class='button' type=\"submit\" name=\"delete\" value=\"" . $LANG["buttons"][2] . "\" /></td>";
+		echo "<input class='button' type=\"submit\" name=\"delete\" value=\"" . $LANG['buttons'][2] . "\" /></td>";
 	
-		echo "<td><input class='button' type=\"submit\" name=\"annuler\" value=\"" . $LANG["buttons"][34] . "\" /></td></tr></table>";
+		echo "<td><input class='button' type=\"submit\" name=\"annuler\" value=\"" . $LANG['buttons'][34] . "\" /></td></tr></table>";
 		echo "</form>";
 	}
-	echo "<p>" . $LANG["setup"][65] . "</p>";
+	echo "<p>" . $LANG['setup'][65] . "</p>";
 	echo "<form action=\" " . $target . "\" method=\"post\">";
 	echo "<input type=\"hidden\" name=\"which\" value=\"" . $table . "\"  />";
 	echo "<table class='tab_cadre'><tr><td>";
@@ -843,8 +843,8 @@ function showDeleteConfirmForm($target, $table, $ID,$FK_entities) {
 	echo "<input type=\"hidden\" name=\"tablename\" value=\"" . $table . "\"  />";
 	echo "<input type=\"hidden\" name=\"oldID\" value=\"" . $ID . "\"  />";
 	echo "<input type=\"hidden\" name=\"FK_entities\" value=\"$FK_entities\" />";
-	echo "</td><td><input class='button' type=\"submit\" name=\"replace\" value=\"" . $LANG["buttons"][39] . "\" /></td><td>";
-	echo "<input class='button' type=\"submit\" name=\"annuler\" value=\"" . $LANG["buttons"][34] . "\" /></td></tr></table>";
+	echo "</td><td><input class='button' type=\"submit\" name=\"replace\" value=\"" . $LANG['buttons'][39] . "\" /></td><td>";
+	echo "<input class='button' type=\"submit\" name=\"annuler\" value=\"" . $LANG['buttons'][34] . "\" /></td></tr></table>";
 	echo "</form>";
 
 	echo "</div>";
@@ -962,16 +962,16 @@ function listTemplates($type, $target, $add = 0) {
 
 		echo "<div class='center'><table class='tab_cadre' width='50%'>";
 		if ($add) {
-			echo "<tr><th>" . $LANG["common"][7] . " - $title:</th></tr>";
+			echo "<tr><th>" . $LANG['common'][7] . " - $title:</th></tr>";
 		} else {
-			echo "<tr><th colspan='2'>" . $LANG["common"][14] . " - $title:</th></tr>";
+			echo "<tr><th colspan='2'>" . $LANG['common'][14] . " - $title:</th></tr>";
 		}
 
 		if ($add) {
 
 			echo "<tr>";
 			echo "<td align='center' class='tab_bg_1'>";
-			echo "<a href=\"$target?ID=-1&amp;withtemplate=2\">&nbsp;&nbsp;&nbsp;" . $LANG["common"][31] . "&nbsp;&nbsp;&nbsp;</a></td>";
+			echo "<a href=\"$target?ID=-1&amp;withtemplate=2\">&nbsp;&nbsp;&nbsp;" . $LANG['common'][31] . "&nbsp;&nbsp;&nbsp;</a></td>";
 			echo "</tr>";
 		}
 	
@@ -988,7 +988,7 @@ function listTemplates($type, $target, $add = 0) {
 				echo "<a href=\"$target?ID=" . $data["ID"] . "&amp;withtemplate=1\">&nbsp;&nbsp;&nbsp;$templname&nbsp;&nbsp;&nbsp;</a></td>";
 
 				echo "<td align='center' class='tab_bg_2'>";
-				echo "<strong><a href=\"$target?ID=" . $data["ID"] . "&amp;purge=purge&amp;withtemplate=1\">" . $LANG["buttons"][6] . "</a></strong>";
+				echo "<strong><a href=\"$target?ID=" . $data["ID"] . "&amp;purge=purge&amp;withtemplate=1\">" . $LANG['buttons'][6] . "</a></strong>";
 				echo "</td>";
 			} else {
 				echo "<a href=\"$target?ID=" . $data["ID"] . "&amp;withtemplate=2\">&nbsp;&nbsp;&nbsp;$templname&nbsp;&nbsp;&nbsp;</a></td>";
@@ -1001,7 +1001,7 @@ function listTemplates($type, $target, $add = 0) {
 		if (haveTypeRight($type, "w") &&!$add) {
 			echo "<tr>";
 			echo "<td colspan='2' align='center' class='tab_bg_2'>";
-			echo "<strong><a href=\"$target?withtemplate=1\">" . $LANG["common"][9] . "</a></strong>";
+			echo "<strong><a href=\"$target?withtemplate=1\">" . $LANG['common'][9] . "</a></strong>";
 			echo "</td>";
 			echo "</tr>";
 		}
@@ -1024,19 +1024,19 @@ function showLdapAuthList($target) {
 		
 		echo "<table class='tab_cadre_fixe' cellpadding='5'>";
 		echo "<tr><th colspan='2'>";
-		echo "<strong>" . $LANG["login"][2] . "</strong>";
+		echo "<strong>" . $LANG['login'][2] . "</strong>";
 		echo "</th></tr>";
-		echo "<tr class='tab_bg_1'><td class='center'>" . $LANG["common"][16] . "</td><td class='center'>" . $LANG["common"][52] . "</td></tr>";
+		echo "<tr class='tab_bg_1'><td class='center'>" . $LANG['common'][16] . "</td><td class='center'>" . $LANG['common'][52] . "</td></tr>";
 
 		$sql = "SELECT * FROM glpi_auth_ldap";
 		$result = $DB->query($sql);
 		if ($DB->numrows($result)) {
 			while ($ldap_method = $DB->fetch_array($result)){
 				echo "<tr class='tab_bg_2'><td class='center'><a href='$target?next=extauth_ldap&amp;ID=" . $ldap_method["ID"] . "' >" . $ldap_method["name"] . "</a>" .
-				"</td><td class='center'>" . $LANG["ldap"][21]." : ".$ldap_method["ldap_host"].":".$ldap_method["ldap_port"];
+				"</td><td class='center'>" . $LANG['ldap'][21]." : ".$ldap_method["ldap_host"].":".$ldap_method["ldap_port"];
 				$replicates=getAllReplicatesNamesForAMaster($ldap_method["ID"]);
 				if (!empty($replicates)){
-					echo "<br>".$LANG["ldap"][22]." : ".$replicates. "</td>";
+					echo "<br>".$LANG['ldap'][22]." : ".$replicates. "</td>";
 				}
 				echo '</tr>';
 			}
@@ -1045,8 +1045,8 @@ function showLdapAuthList($target) {
 	} else {
 		echo "<input type=\"hidden\" name=\"LDAP_Test\" value=\"1\" >";
 		echo "<table class='tab_cadre_fixe'>";
-		echo "<tr><th colspan='2'>" . $LANG["setup"][152] . "</th></tr>";
-		echo "<tr class='tab_bg_2'><td class='center'><p class='red'>" . $LANG["setup"][157] . "</p><p>" . $LANG["setup"][158] . "</p></td></tr></table>";
+		echo "<tr><th colspan='2'>" . $LANG['setup'][152] . "</th></tr>";
+		echo "<tr class='tab_bg_2'><td class='center'><p class='red'>" . $LANG['setup'][157] . "</p><p>" . $LANG['setup'][158] . "</p></td></tr></table>";
 	}
 
 
@@ -1069,35 +1069,35 @@ function showOtherAuthList($target) {
 	echo "<table class='tab_cadre_fixe' cellpadding='5'>";
 
 	// CAS config
-	echo "<tr><th colspan='2'>" . $LANG["setup"][177];
+	echo "<tr><th colspan='2'>" . $LANG['setup'][177];
 	if (!empty($CFG_GLPI["cas_host"])){
-		echo " - ".$LANG["setup"][192];
+		echo " - ".$LANG['setup'][192];
 	}
 	echo "</th></tr>";
 
 	if (function_exists('curl_init') && (version_compare(PHP_VERSION, '5', '>=') || (function_exists("domxml_open_mem") && function_exists("utf8_decode")))) {		
-		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["setup"][174] . "</td><td><input type=\"text\" name=\"cas_host\" value=\"" . $CFG_GLPI["cas_host"] . "\"></td></tr>";
-		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["setup"][175] . "</td><td><input type=\"text\" name=\"cas_port\" value=\"" . $CFG_GLPI["cas_port"] . "\"></td></tr>";
-		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["setup"][176] . "</td><td><input type=\"text\" name=\"cas_uri\" value=\"" . $CFG_GLPI["cas_uri"] . "\" ></td></tr>";
-		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["setup"][182] . "</td><td><input type=\"text\" name=\"cas_logout\" value=\"" . $CFG_GLPI["cas_logout"] . "\" ></td></tr>";
+		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['setup'][174] . "</td><td><input type=\"text\" name=\"cas_host\" value=\"" . $CFG_GLPI["cas_host"] . "\"></td></tr>";
+		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['setup'][175] . "</td><td><input type=\"text\" name=\"cas_port\" value=\"" . $CFG_GLPI["cas_port"] . "\"></td></tr>";
+		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['setup'][176] . "</td><td><input type=\"text\" name=\"cas_uri\" value=\"" . $CFG_GLPI["cas_uri"] . "\" ></td></tr>";
+		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['setup'][182] . "</td><td><input type=\"text\" name=\"cas_logout\" value=\"" . $CFG_GLPI["cas_logout"] . "\" ></td></tr>";
 	} else {
-		echo "<tr class='tab_bg_2'><td class='center' colspan='2'><p class='red'>" . $LANG["setup"][178] . "</p><p>" . $LANG["setup"][179] . "</p></td></tr>";
+		echo "<tr class='tab_bg_2'><td class='center' colspan='2'><p class='red'>" . $LANG['setup'][178] . "</p><p>" . $LANG['setup'][179] . "</p></td></tr>";
 	}
 	// X509 config
-	echo "<tr><th colspan='2'>" . $LANG["setup"][190];
+	echo "<tr><th colspan='2'>" . $LANG['setup'][190];
 	if (!empty($CFG_GLPI["x509_email_field"])){
-		echo " - ".$LANG["setup"][192];
+		echo " - ".$LANG['setup'][192];
 	}
 	echo "</th></tr>";
-	echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["setup"][191] . "</td><td><input type=\"text\" name=\"x509_email_field\" value=\"" . $CFG_GLPI["x509_email_field"] . "\"></td></tr>";
+	echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['setup'][191] . "</td><td><input type=\"text\" name=\"x509_email_field\" value=\"" . $CFG_GLPI["x509_email_field"] . "\"></td></tr>";
 
 	// X509 config
-	echo "<tr><th colspan='2'>" . $LANG["common"][67];
+	echo "<tr><th colspan='2'>" . $LANG['common'][67];
 	if (!empty($CFG_GLPI["existing_auth_server_field"])){
-		echo " - ".$LANG["setup"][192];
+		echo " - ".$LANG['setup'][192];
 	}
 	echo "</th></tr>";
-	echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["setup"][193] . "</td><td>";
+	echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['setup'][193] . "</td><td>";
 	echo "<select name='existing_auth_server_field'>";
 	echo "<option value=''>&nbsp;</option>";
 	echo "<option value='HTTP_AUTH_USER' " . ($CFG_GLPI["existing_auth_server_field"]=="HTTP_AUTH_USER" ? " selected " : "") . ">HTTP_AUTH_USER</option>";
@@ -1109,17 +1109,17 @@ function showOtherAuthList($target) {
 	
 	echo "</td></tr>";
 
-	echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["setup"][199] . "</td><td>";
+	echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['setup'][199] . "</td><td>";
 
 	dropdownYesNo('existing_auth_server_field_clean_domain',$CFG_GLPI['existing_auth_server_field_clean_domain']);		
 	echo "</td></tr>";
 
-	echo "<tr><th colspan='2'>" . $LANG["setup"][194]."</th></tr>";
-	echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["ldap"][4] . "</td><td>";
+	echo "<tr><th colspan='2'>" . $LANG['setup'][194]."</th></tr>";
+	echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['ldap'][4] . "</td><td>";
 	dropdownValue("glpi_auth_ldap","extra_ldap_server",$CFG_GLPI["extra_ldap_server"]);
 	echo "</td></tr>";
 
-	echo "<tr class='tab_bg_1'><td align='center' colspan='2'><input type=\"submit\" name=\"update\" class=\"submit\" value=\"" . $LANG["buttons"][7] . "\" ></td></tr>";
+	echo "<tr class='tab_bg_1'><td align='center' colspan='2'><input type=\"submit\" name=\"update\" class=\"submit\" value=\"" . $LANG['buttons'][7] . "\" ></td></tr>";
 
 	echo "</table>";
 
@@ -1140,10 +1140,10 @@ function showImapAuthList($target) {
 	if (canUseImapPop()) {
 		echo "<table class='tab_cadre_fixe' cellpadding='5'>";
 		echo "<tr><th colspan='2'>";
-		echo "<strong>" . $LANG["login"][3] . "</strong>";
+		echo "<strong>" . $LANG['login'][3] . "</strong>";
 
 		echo "</th></tr>";
-		echo "<tr class='tab_bg_1'><td class='center'>" . $LANG["common"][16] . "</td><td class='center'>" . $LANG["common"][52] . "</td></tr>";
+		echo "<tr class='tab_bg_1'><td class='center'>" . $LANG['common'][16] . "</td><td class='center'>" . $LANG['common'][52] . "</td></tr>";
 		$sql = "SELECT * FROM glpi_auth_mail";
 		$result = $DB->query($sql);
 		if ($DB->numrows($result)) {
@@ -1158,8 +1158,8 @@ function showImapAuthList($target) {
 		echo "<input type=\"hidden\" name=\"IMAP_Test\" value=\"1\" >";
 		
 		echo "<table class='tab_cadre_fixe'>";
-		echo "<tr><th colspan='2'>" . $LANG["setup"][162] . "</th></tr>";
-		echo "<tr class='tab_bg_2'><td class='center'><p class='red'>" . $LANG["setup"][165] . "</p><p>" . $LANG["setup"][166] . "</p></td></tr></table>";
+		echo "<tr><th colspan='2'>" . $LANG['setup'][162] . "</th></tr>";
+		echo "<tr class='tab_bg_2'><td class='center'><p class='red'>" . $LANG['setup'][165] . "</p><p>" . $LANG['setup'][166] . "</p></td></tr></table>";
 	}
 	echo "</div>";
 	
@@ -1183,8 +1183,8 @@ function showImapAuthList($target) {
 		}
 		$mailbox = preg_replace("/.*}/", "", $value);
 
-		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["common"][52] . "</td><td><input size='30' type=\"text\" name=\"mail_server\" value=\"" . $addr . "\" ></td></tr>";
-		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["setup"][168] . "</td><td>";
+		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['common'][52] . "</td><td><input size='30' type=\"text\" name=\"mail_server\" value=\"" . $addr . "\" ></td></tr>";
+		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['setup'][168] . "</td><td>";
 		echo "<select name='server_type'>";
 		echo "<option value=''>&nbsp;</option>";
 		echo "<option value='/imap' " . (strstr($value,"/imap") ? " selected " : "") . ">IMAP</option>";
@@ -1210,11 +1210,11 @@ function showImapAuthList($target) {
 		echo "<input type=hidden name=imap_string value='".$value."'>";
 		echo "</td></tr>";
 
-		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["setup"][169] . "</td><td><input size='30' type=\"text\" name=\"server_mailbox\" value=\"" . $mailbox . "\" ></td></tr>";
-		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["setup"][171] . "</td><td><input size='10' type=\"text\" name=\"server_port\" value=\"" . $port . "\" ></td></tr>";
+		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['setup'][169] . "</td><td><input size='30' type=\"text\" name=\"server_mailbox\" value=\"" . $mailbox . "\" ></td></tr>";
+		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['setup'][171] . "</td><td><input size='10' type=\"text\" name=\"server_port\" value=\"" . $port . "\" ></td></tr>";
 		if (empty ($value))
 			$value = "&nbsp;";
-		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG["setup"][170] . "</td><td><strong>$value</strong></td></tr>";
+		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['setup'][170] . "</td><td><strong>$value</strong></td></tr>";
 
 	}
 	function constructMailServerConfig($input) {

@@ -58,14 +58,14 @@ class Computer extends CommonDBTM {
 	function defineTabs($ID,$withtemplate){
 		global $LANG,$CFG_GLPI;
 
-		$ong[1]=$LANG["title"][26];
+		$ong[1]=$LANG['title'][26];
 		if ($ID > 0){
-			$ong[20]=$LANG["computers"][8];
+			$ong[20]=$LANG['computers'][8];
 			if (haveRight("software","r"))	{
 				$ong[2]=$LANG["Menu"][4];
 			}
 			if (haveRight("networking","r")||haveRight("printer","r")||haveRight("monitor","r")||haveRight("peripheral","r")||haveRight("phone","r")){	
-				$ong[3]=$LANG["title"][27];
+				$ong[3]=$LANG['title'][27];
 			}
 			if (haveRight("contract","r") || haveRight("infocom","r")){
 				$ong[4]=$LANG["Menu"][26];
@@ -76,22 +76,22 @@ class Computer extends CommonDBTM {
 	
 			if(empty($withtemplate)){
 				if ($CFG_GLPI["ocs_mode"]){
-					$ong[14]=$LANG["title"][43];
+					$ong[14]=$LANG['title'][43];
 				}
 				if (haveRight("show_all_ticket","1")){
-					$ong[6]=$LANG["title"][28];
+					$ong[6]=$LANG['title'][28];
 				}
 				if (haveRight("link","r")){
-					$ong[7]=$LANG["title"][34];
+					$ong[7]=$LANG['title'][34];
 				}
 				if (haveRight("notes","r")){
-					$ong[10]=$LANG["title"][37];
+					$ong[10]=$LANG['title'][37];
 				}
 				if (haveRight("reservation_central","r")){
 					$ong[11]=$LANG["Menu"][17];
 				}
 					
-				$ong[12]=$LANG["title"][38];
+				$ong[12]=$LANG['title'][38];
 	
 				if ($CFG_GLPI["ocs_mode"]&&(haveRight("sync_ocsng","w")||haveRight("computer","w"))){
 					$ong[13]=$LANG["Menu"][33];
@@ -182,7 +182,7 @@ class Computer extends CommonDBTM {
 				}
 
 				if ($update_done) {
-					addMessageAfterRedirect($LANG["computers"][49],true);
+					addMessageAfterRedirect($LANG['computers'][49],true);
 				}
 
 			}
@@ -226,7 +226,7 @@ class Computer extends CommonDBTM {
 					}
 				}
 				if ($update_done) {
-					addMessageAfterRedirect($LANG["computers"][50],true);
+					addMessageAfterRedirect($LANG['computers'][50],true);
 				}
 
 			}
@@ -263,7 +263,7 @@ class Computer extends CommonDBTM {
 					}
 				}
 				if ($update_done) {
-					addMessageAfterRedirect($LANG["computers"][56],true);
+					addMessageAfterRedirect($LANG['computers'][56],true);
 				}
 
 			}
@@ -302,7 +302,7 @@ class Computer extends CommonDBTM {
 					}
 				}
 				if ($update_done) {
-					addMessageAfterRedirect($LANG["computers"][48],true);
+					addMessageAfterRedirect($LANG['computers'][48],true);
 				}
 
 			}
@@ -529,15 +529,15 @@ class Computer extends CommonDBTM {
 		if(!empty($withtemplate) && $withtemplate == 2) {
 			$use_cache=false;
 			$template = "newcomp";
-			$datestring = $LANG["computers"][14].": ";
+			$datestring = $LANG['computers'][14].": ";
 			$date = convDateTime($_SESSION["glpi_currenttime"]);
 		} elseif(!empty($withtemplate) && $withtemplate == 1) { 
 			$use_cache=false;
 			$template = "newtemplate";
-			$datestring = $LANG["computers"][14].": ";
+			$datestring = $LANG['computers'][14].": ";
 			$date = convDateTime($_SESSION["glpi_currenttime"]);
 		} else {
-			$datestring = $LANG["common"][26].": ";
+			$datestring = $LANG['common'][26].": ";
 			$date = convDateTime($this->fields["date_mod"]);
 			$template = false;
 		}
@@ -554,12 +554,12 @@ class Computer extends CommonDBTM {
 
 		echo "<tr><th colspan ='2' align='center' >";
 		if(!$template) {
-			echo $LANG["common"][2]." ".$this->fields["ID"];
+			echo $LANG['common'][2]." ".$this->fields["ID"];
 		}elseif (strcmp($template,"newcomp") === 0) {
-			echo $LANG["computers"][12].": ".$this->fields["tplname"];
+			echo $LANG['computers'][12].": ".$this->fields["tplname"];
 			echo "<input type='hidden' name='tplname' value='".$this->fields["tplname"]."'>";
 		}elseif (strcmp($template,"newtemplate") === 0) {
-			echo $LANG["common"][6].": ";
+			echo $LANG['common'][6].": ";
 			autocompletionTextField("tplname","glpi_computers","tplname",$this->fields["tplname"],40,$this->fields["FK_entities"]);	
 		}
 		if (isMultiEntitiesMode()){
@@ -570,13 +570,13 @@ class Computer extends CommonDBTM {
 
 			echo "</th><th  colspan ='2' align='center'>".$datestring.$date;
 			if (!$template&&!empty($this->fields['tplname']))
-				echo "&nbsp;&nbsp;&nbsp;(".$LANG["common"][13].": ".$this->fields['tplname'].")";
+				echo "&nbsp;&nbsp;&nbsp;(".$LANG['common'][13].": ".$this->fields['tplname'].")";
 			if ($this->fields["ocs_import"])
-				echo "&nbsp;&nbsp;&nbsp;(".$LANG["ocsng"][7].")";
+				echo "&nbsp;&nbsp;&nbsp;(".$LANG['ocsng'][7].")";
 
 			echo "</th></tr>";
 
-			echo "<tr class='tab_bg_1'><td>".$LANG["common"][16].($template?"*":"").":		</td>";
+			echo "<tr class='tab_bg_1'><td>".$LANG['common'][16].($template?"*":"").":		</td>";
 
 			echo "<td>";
 
@@ -585,100 +585,100 @@ class Computer extends CommonDBTM {
 
 			echo "</td>";
 				
-			echo "<td>".$LANG["common"][18].":	</td><td>";
+			echo "<td>".$LANG['common'][18].":	</td><td>";
 			autocompletionTextField("contact","glpi_computers","contact",$this->fields["contact"],40,$this->fields["FK_entities"]);
 
 			echo "</td></tr>";
 
 
 			echo "<tr class='tab_bg_1'>";
-			echo "<td >".$LANG["common"][17].": 	</td>";
+			echo "<td >".$LANG['common'][17].": 	</td>";
 			echo "<td >";
 			dropdownValue("glpi_type_computers", "type", $this->fields["type"]);
 			echo "</td>";
 
 
-			echo "<td>".$LANG["common"][21].":		</td><td>";
+			echo "<td>".$LANG['common'][21].":		</td><td>";
 			autocompletionTextField("contact_num","glpi_computers","contact_num",$this->fields["contact_num"],40,$this->fields["FK_entities"]);
 			echo "</td></tr>";
 
 			echo "<tr class='tab_bg_1'>";
-			echo "<td >".$LANG["common"][22].": 	</td>";
+			echo "<td >".$LANG['common'][22].": 	</td>";
 			echo "<td >";
 			dropdownValue("glpi_dropdown_model", "model", $this->fields["model"]);
 			echo "</td>";
 			
-			echo "<td >".$LANG["common"][34].": 	</td>";
+			echo "<td >".$LANG['common'][34].": 	</td>";
 			echo "<td >";
 			dropdownAllUsers("FK_users", $this->fields["FK_users"],1,$this->fields["FK_entities"]);
 			echo "</td></tr>";
 
 			echo "<tr class='tab_bg_1'>";
-			echo "<td >".$LANG["common"][15].": 	</td>";
+			echo "<td >".$LANG['common'][15].": 	</td>";
 			echo "<td >";
 			dropdownValue("glpi_dropdown_locations", "location", $this->fields["location"],1,$this->fields["FK_entities"]);
 			echo "</td>";
 			
-			echo "<td>".$LANG["common"][35].":</td><td>";
+			echo "<td>".$LANG['common'][35].":</td><td>";
 			dropdownValue("glpi_groups", "FK_groups", $this->fields["FK_groups"],1,$this->fields["FK_entities"]);
 			echo "</td></tr>";
 
 			echo "<tr class='tab_bg_1'>";
-			echo "<td>".$LANG["common"][5].": 	</td><td>";
+			echo "<td>".$LANG['common'][5].": 	</td><td>";
 			dropdownValue("glpi_dropdown_manufacturer","FK_glpi_enterprise",$this->fields["FK_glpi_enterprise"]);
 			echo "</td>";
 
-			echo "<td >".$LANG["common"][10].": 	</td>";
+			echo "<td >".$LANG['common'][10].": 	</td>";
 			echo "<td >";
 			dropdownUsersID("tech_num",$this->fields["tech_num"],"interface",1,$this->fields["FK_entities"]);
 			echo "</td></tr>";
 			
 			echo "<tr class='tab_bg_1'>";
-			echo "<td>".$LANG["computers"][9].":</td><td>";
+			echo "<td>".$LANG['computers'][9].":</td><td>";
 			dropdownValue("glpi_dropdown_os", "os", $this->fields["os"]);
 			echo "</td>";
 			
-			echo "<td>".$LANG["setup"][88].":</td><td>";
+			echo "<td>".$LANG['setup'][88].":</td><td>";
 			dropdownValue("glpi_dropdown_network", "network", $this->fields["network"]);
 			echo "</td></tr>";
 
 			echo "<tr class='tab_bg_1'>";
-			echo "<td>".$LANG["computers"][52].":</td><td>";
+			echo "<td>".$LANG['computers'][52].":</td><td>";
 			dropdownValue("glpi_dropdown_os_version", "os_version", $this->fields["os_version"]);
 			echo "</td>";
 
 
-			echo "<td>".$LANG["setup"][89].":</td><td>";
+			echo "<td>".$LANG['setup'][89].":</td><td>";
 			dropdownValue("glpi_dropdown_domain", "domain", $this->fields["domain"]);
 			echo "</td></tr>";
 
 
 			echo "<tr class='tab_bg_1'>";
-			echo "<td>".$LANG["computers"][53].":</td><td>";
+			echo "<td>".$LANG['computers'][53].":</td><td>";
 			dropdownValue("glpi_dropdown_os_sp", "os_sp", $this->fields["os_sp"]);
 			echo "</td>";
 
-			echo "<td>".$LANG["common"][19].":	</td><td>";
+			echo "<td>".$LANG['common'][19].":	</td><td>";
 			autocompletionTextField("serial","glpi_computers","serial",$this->fields["serial"],40,$this->fields["FK_entities"]);
 			echo "</td></tr>";
 
 			echo "<tr class='tab_bg_1'>";
-			echo "<td>".$LANG["computers"][10]."</td><td>";
+			echo "<td>".$LANG['computers'][10]."</td><td>";
 			autocompletionTextField("os_license_number","glpi_computers","os_license_number",$this->fields["os_license_number"],40,$this->fields["FK_entities"]);
 			echo"</td>";
 
-			echo "<td>".$LANG["common"][20].($template?"*":"").":	</td><td>";
+			echo "<td>".$LANG['common'][20].($template?"*":"").":	</td><td>";
 			$objectName = autoName($this->fields["otherserial"], "otherserial", ($template === "newcomp"), COMPUTER_TYPE,$this->fields["FK_entities"]);
 			autocompletionTextField("otherserial","glpi_computers","otherserial",$objectName,40,$this->fields["FK_entities"]);
 
 			echo "</td></tr>";
 
 			echo "<tr class='tab_bg_1'>";
-			echo "<td>".$LANG["computers"][11]."</td><td>";
+			echo "<td>".$LANG['computers'][11]."</td><td>";
 			autocompletionTextField("os_license_id","glpi_computers","os_license_id",$this->fields["os_license_id"],40,$this->fields["FK_entities"]);
 			echo"</td>";
 			
-			echo "<td>".$LANG["state"][0].":</td><td>";
+			echo "<td>".$LANG['state'][0].":</td><td>";
 			dropdownValue("glpi_dropdown_state", "state",$this->fields["state"]);
 			echo "</td>";
 
@@ -698,14 +698,14 @@ class Computer extends CommonDBTM {
 
 			echo "<tr class='tab_bg_1'>";
 			if (!empty($ID)&&$this->fields["ocs_import"]&&haveRight("view_ocsng","r")&&haveRight("sync_ocsng","w")&&count($dataocs)){
-				echo "<td >".$LANG["ocsng"][6]." ".$LANG["Menu"][33].":</td>";
+				echo "<td >".$LANG['ocsng'][6]." ".$LANG["Menu"][33].":</td>";
 				echo "<td >";
 				dropdownYesNo("_auto_update_ocs",$dataocs["auto_update"]);
 				echo "</td>";
 			} else	{
 				echo "<td colspan=2></td>";
 			}
-			echo "<td>".$LANG["computers"][51].":</td><td>";
+			echo "<td>".$LANG['computers'][51].":</td><td>";
 			dropdownValue("glpi_dropdown_auto_update", "auto_update", $this->fields["auto_update"]);
 			echo "</td>";
 
@@ -715,26 +715,26 @@ class Computer extends CommonDBTM {
 			
 			if (!empty($ID)&&$this->fields["ocs_import"]&&haveRight("view_ocsng","r")&&count($dataocs)){
 				echo "<td colspan='2' align='center'>";
-				echo $LANG["ocsng"][14].": ".convDateTime($dataocs["last_ocs_update"]);
+				echo $LANG['ocsng'][14].": ".convDateTime($dataocs["last_ocs_update"]);
 				echo "<br>";
-				echo $LANG["ocsng"][13].": ".convDateTime($dataocs["last_update"]);
+				echo $LANG['ocsng'][13].": ".convDateTime($dataocs["last_update"]);
 				echo "<br>";
 				if (haveRight("ocsng","r")){
-					echo $LANG["common"][52]." <a href='".$CFG_GLPI["root_doc"]."/front/ocsng.form.php?ID=".getOCSServerByMachineID($ID)."'>".getOCSServerNameByID($ID)."</a>";
+					echo $LANG['common'][52]." <a href='".$CFG_GLPI["root_doc"]."/front/ocsng.form.php?ID=".getOCSServerByMachineID($ID)."'>".getOCSServerNameByID($ID)."</a>";
 					$query = "SELECT ocs_agent_version FROM glpi_ocs_link WHERE (glpi_id = '$ID')";
 					$result_agent_version = $DB->query($query);
 					$data_version = $DB->fetch_array($result_agent_version);
 					if ($data_version["ocs_agent_version"] != NULL)
-						echo " , ".$LANG["ocsng"][49]." : ".$data_version["ocs_agent_version"];
+						echo " , ".$LANG['ocsng'][49]." : ".$data_version["ocs_agent_version"];
 				} else {
-					echo $LANG["common"][52]." ".getOCSServerNameByID($ID);	
+					echo $LANG['common'][52]." ".getOCSServerNameByID($ID);	
 					echo "</td>";
 				}
 				
 			} else	{
 				echo "<td colspan=2></td>";	
 			}
-			echo "<td valign='middle'>".$LANG["common"][25].":</td><td valign='middle'><textarea  cols='50' rows='3' name='comments' >".$this->fields["comments"]."</textarea></td>";
+			echo "<td valign='middle'>".$LANG['common'][25].":</td><td valign='middle'><textarea  cols='50' rows='3' name='comments' >".$this->fields["comments"]."</textarea></td>";
 			echo "</tr>";
 			if ($use_cache){
 				$CFG_GLPI["cache"]->end();
@@ -748,27 +748,27 @@ class Computer extends CommonDBTM {
 				if (empty($ID)||$withtemplate==2){
 					echo "<td class='tab_bg_2' align='center' colspan='4'>\n";
 					echo "<input type='hidden' name='ID' value=$ID>";
-					echo "<input type='submit' name='add' value=\"".$LANG["buttons"][8]."\" class='submit'>";
+					echo "<input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'>";
 					echo "</td>\n";
 				} else {
 					echo "<td class='tab_bg_2' align='center' colspan='4'>\n";
 					echo "<input type='hidden' name='ID' value=$ID>";
-					echo "<input type='submit' name='update' value=\"".$LANG["buttons"][7]."\" class='submit'>";
+					echo "<input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit'>";
 					echo "</td>\n";
 				}
 			} else {
 				echo "<td class='tab_bg_2' colspan='2' align='center' valign='top'>\n";
-				echo "<input type='submit' name='update' value=\"".$LANG["buttons"][7]."\" class='submit'>";
+				echo "<input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit'>";
 				echo "</td>\n";
 				echo "<td class='tab_bg_2' colspan='2'  align='center'>\n";
 				echo "<input type='hidden' name='ID' value=$ID>";
 				echo "<div class='center'>";
 				if (!$this->fields["deleted"]){
-					echo "<input type='submit' name='delete' value=\"".$LANG["buttons"][6]."\" class='submit'>";
+					echo "<input type='submit' name='delete' value=\"".$LANG['buttons'][6]."\" class='submit'>";
 					}else {
-					echo "<input type='submit' name='restore' value=\"".$LANG["buttons"][21]."\" class='submit'>";
+					echo "<input type='submit' name='restore' value=\"".$LANG['buttons'][21]."\" class='submit'>";
 
-					echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='submit' name='purge' value=\"".$LANG["buttons"][22]."\" class='submit'>";
+					echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='submit' name='purge' value=\"".$LANG['buttons'][22]."\" class='submit'>";
 				}
 				echo "</div>";
 				echo "</td>";
@@ -854,48 +854,48 @@ class ComputerDisk extends CommonDBTM {
 
 		echo "<div class='center'><table class='tab_cadre_fixe'>";
 		if ($ID>0){
-			echo "<tr><th colspan='4'>".$LANG["common"][2]." $ID";
+			echo "<tr><th colspan='4'>".$LANG['common'][2]." $ID";
 			echo " - <a href='computer.form.php?ID=".$this->fields["FK_computers"]."'>".getDropdownName("glpi_computers",$this->fields["FK_computers"])."</a>";
 			echo "</th></tr>";
 		} else {
-			echo "<tr><th colspan='4'>".$LANG["computers"][7];
+			echo "<tr><th colspan='4'>".$LANG['computers'][7];
 			echo " - <a href='computer.form.php?ID=".$cID."'>".getDropdownName("glpi_computers",$cID)."</a>";
 
 			echo "</th></tr>";
 			echo "<input type='hidden' name='FK_computers' value='$cID'>";
 		}
 
-		echo "<tr class='tab_bg_1'><td>".$LANG["common"][16].":		</td>";
+		echo "<tr class='tab_bg_1'><td>".$LANG['common'][16].":		</td>";
 		echo "<td>";
 		autocompletionTextField("name","glpi_computerdisks","name",$this->fields["name"],40);
 		echo "</td>";
 
-		echo "<td>".$LANG["computers"][6].":		</td>";
+		echo "<td>".$LANG['computers'][6].":		</td>";
 		echo "<td>";
 		autocompletionTextField("device","glpi_computerdisks","device",$this->fields["device"],40);
 		echo "</td>";
 		echo "</tr>";
 
-		echo "<tr class='tab_bg_1'><td>".$LANG["computers"][5].":		</td>";
+		echo "<tr class='tab_bg_1'><td>".$LANG['computers'][5].":		</td>";
 		echo "<td>";
 		autocompletionTextField("mountpoint","glpi_computerdisks","mountpoint",$this->fields["mountpoint"],40);
 		echo "</td>";
 
-		echo "<td>".$LANG["computers"][4].":		</td>";
+		echo "<td>".$LANG['computers'][4].":		</td>";
 		echo "<td>";
 		dropdownValue("glpi_dropdown_filesystems", "FK_filesystems", $this->fields["FK_filesystems"]);
 		echo "</td>";
 		echo "</tr>";
 
-		echo "<tr class='tab_bg_1'><td>".$LANG["computers"][3].":		</td>";
+		echo "<tr class='tab_bg_1'><td>".$LANG['computers'][3].":		</td>";
 		echo "<td>";
 		autocompletionTextField("totalsize","glpi_computerdisks","totalsize",$this->fields["totalsize"],40);
-		echo "&nbsp;".$LANG["common"][82]."</td>";
+		echo "&nbsp;".$LANG['common'][82]."</td>";
 
-		echo "<td>".$LANG["computers"][2].":		</td>";
+		echo "<td>".$LANG['computers'][2].":		</td>";
 		echo "<td>";
 		autocompletionTextField("freesize","glpi_computerdisks","freesize",$this->fields["freesize"],40);
-		echo "&nbsp;".$LANG["common"][82]."</td>";
+		echo "&nbsp;".$LANG['common'][82]."</td>";
 		echo "</tr>";
 	
 		echo "<tr  class='tab_bg_2'>";
@@ -904,16 +904,16 @@ class ComputerDisk extends CommonDBTM {
 
 			echo "<td colspan='2'>";
 			echo "<input type='hidden' name='ID' value=\"$ID\">\n";
-			echo "<div class='center'><input type='submit' name='update' value=\"".$LANG["buttons"][7]."\" class='submit'></div>";
+			echo "<div class='center'><input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit'></div>";
 			echo "</td>\n\n";
 			echo "<td colspan='2'>";
 			echo "<input type='hidden' name='ID' value=\"$ID\">\n";
-			echo "<div class='center'><input type='submit' name='delete' value=\"".$LANG["buttons"][6]."\" class='submit'></div>";
+			echo "<div class='center'><input type='submit' name='delete' value=\"".$LANG['buttons'][6]."\" class='submit'></div>";
 			echo "</td>\n\n";
 		} else {
 
 			echo "<td colspan='4'>";
-			echo "<div class='center'><input type='submit' name='add' value=\"".$LANG["buttons"][8]."\" class='submit'></div>";
+			echo "<div class='center'><input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'></div>";
 			echo "</td></tr>";
 
 		}
@@ -929,7 +929,7 @@ class ComputerDisk extends CommonDBTM {
 	function defineTabs($ID,$withtemplate){
 		global $LANG,$CFG_GLPI;
 
-		$ong[1]=$LANG["title"][26];
+		$ong[1]=$LANG['title'][26];
 
 		return $ong;
 	}

@@ -78,44 +78,44 @@ class RightAffectRule extends Rule {
 
 			echo "<div class='center'>";
 			echo "<table  class='tab_cadre_fixe'>";
-			echo "<tr class='tab_bg_1'><th colspan='4'>" .$LANG["rulesengine"][19] . "</tr><tr><td class='tab_bg_2' align='center'>";
-			echo $LANG["common"][16] . ":";
+			echo "<tr class='tab_bg_1'><th colspan='4'>" .$LANG['rulesengine'][19] . "</tr><tr><td class='tab_bg_2' align='center'>";
+			echo $LANG['common'][16] . ":";
 			echo "</td><td align='center' class='tab_bg_2'>";
 			autocompletionTextField("name", "glpi_rules_descriptions", "name", "", 40);
-			echo $LANG["joblist"][6] . ":";
+			echo $LANG['joblist'][6] . ":";
 			autocompletionTextField("description", "glpi_rules_descriptions", "description", "", 40);
 			echo "</td><td align='center' class='tab_bg_2'>";
-			echo $LANG["rulesengine"][9] . ":";
+			echo $LANG['rulesengine'][9] . ":";
 			$this->dropdownRulesMatch("match", "AND");
 			echo "</td><td align='center' class='tab_bg_2'>";
 			echo "</td></tr>";
 
 			echo "<tr><td align='center' class='tab_bg_2'>";
 			echo "</td><td align='center' class='tab_bg_2'>";
-			echo $LANG["profiles"][22].":";
+			echo $LANG['profiles'][22].":";
 			dropdownValue("glpi_profiles","FK_profiles");
 			echo "</td><td align='center' class='tab_bg_2'>";
-			echo $LANG["profiles"][28].":";
+			echo $LANG['profiles'][28].":";
 			dropdownYesNo("recursive",0);
 			echo "</td><td align='center' class='tab_bg_2'>";
 			echo "<input type=hidden name='sub_type' value=\"" . $this->sub_type . "\">";
 			echo "<input type=hidden name='FK_entities' value=\"-1\">";
 			echo "<input type=hidden name='affectentity' value=\"" . $ID . "\">";
-			echo "<input type='submit' name='add_user_rule' value=\"" . $LANG["buttons"][8] . "\" class='submit'>";
+			echo "<input type='submit' name='add_user_rule' value=\"" . $LANG['buttons'][8] . "\" class='submit'>";
 			echo "</td></tr>";
 			
 			echo "</table></div><br>";
 
 		}
 
-		echo "<div class='center'><table class='tab_cadrehov'><tr><th colspan='3'>" . $LANG["entity"][6] . "</th></tr>";
+		echo "<div class='center'><table class='tab_cadrehov'><tr><th colspan='3'>" . $LANG['entity'][6] . "</th></tr>";
 
 		//Get all rules and actions
 		$rules = $this->getRulesByID( $ID, 0, 1);
 
 		if (!empty ($rules)) {
 
-			initNavigateListItems(RULE_TYPE,$LANG["entity"][0]."=".getDropdownName("glpi_entities",$ID),$this->sub_type);
+			initNavigateListItems(RULE_TYPE,$LANG['entity'][0]."=".getDropdownName("glpi_entities",$ID),$this->sub_type);
 
 			foreach ($rules as $rule) {
 				addToNavigateListItems(RULE_TYPE,$rule->fields["ID"],$this->sub_type);
@@ -144,11 +144,11 @@ class RightAffectRule extends Rule {
 
 		if ($canedit) {
 			echo "<table class='tab_glpi' width='80%'>";
-			echo "<tr><td><img src=\"" . $CFG_GLPI["root_doc"] . "/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markCheckboxes('ldapaffectation_form') ) return false;\" href='" . $_SERVER['PHP_SELF'] . "?ID=$ID&amp;select=all'>" . $LANG["buttons"][18] . "</a></td>";
+			echo "<tr><td><img src=\"" . $CFG_GLPI["root_doc"] . "/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markCheckboxes('ldapaffectation_form') ) return false;\" href='" . $_SERVER['PHP_SELF'] . "?ID=$ID&amp;select=all'>" . $LANG['buttons'][18] . "</a></td>";
 
-			echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkCheckboxes('ldapaffectation_form') ) return false;\" href='" . $_SERVER['PHP_SELF'] . "?ID=$ID&amp;select=none'>" . $LANG["buttons"][19] . "</a>";
+			echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkCheckboxes('ldapaffectation_form') ) return false;\" href='" . $_SERVER['PHP_SELF'] . "?ID=$ID&amp;select=none'>" . $LANG['buttons'][19] . "</a>";
 			echo "</td><td align='left' width='80%'>";
-			echo "<input type='submit' name='delete_user_rule' value=\"" . $LANG["buttons"][6] . "\" class='submit'>";
+			echo "<input type='submit' name='delete_user_rule' value=\"" . $LANG['buttons'][6] . "\" class='submit'>";
 			echo "</td>";
 			echo "</table>";
 
@@ -328,7 +328,7 @@ function getRulesByID($ID, $withcriterias, $withactions) {
 		echo "<table class='tab_cadrehov'>";
 		echo "<tr  class='tab_bg_2'>";
 		echo "<td width='100%'>";
-		echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ldap.parameters.php\">".$LANG["Menu"][26]." ".$LANG["ruleldap"][1]."</a>";
+		echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/ldap.parameters.php\">".$LANG["Menu"][26]." ".$LANG['ruleldap'][1]."</a>";
 		echo "</td></tr>";
 		echo "</table></div><br>";
 
@@ -340,7 +340,7 @@ function getRulesByID($ID, $withcriterias, $withactions) {
 	function getTitle()
 	{
 		global $LANG;
-		return $LANG["entity"][6];
+		return $LANG['entity'][6];
 	}
 }
 
@@ -368,7 +368,7 @@ class RightRuleCollection extends RuleCollection {
 
 	function getTitle() {
 		global $LANG;
-		return $LANG["rulesengine"][19];
+		return $LANG['rulesengine'][19];
 	}
 
 
@@ -382,14 +382,14 @@ class RightRuleCollection extends RuleCollection {
 	function showTestResults($rule,$output,$global_result){
 		global $LANG,$RULES_ACTIONS;
 
-		echo "<tr><th colspan='4'>" . $LANG["rulesengine"][81] . "</th></tr>";
+		echo "<tr><th colspan='4'>" . $LANG['rulesengine'][81] . "</th></tr>";
 		echo "<tr  class='tab_bg_2'>";
-		echo "<td class='tab_bg_2' colspan='4' align='center'>".$LANG["rulesengine"][41]." : <strong> ".getYesNo($global_result)."</strong></td>";
+		echo "<td class='tab_bg_2' colspan='4' align='center'>".$LANG['rulesengine'][41]." : <strong> ".getYesNo($global_result)."</strong></td>";
 
 		if (isset($output["_ldap_rules"]["rules_entities"]))
 		{
 			echo "<tr  class='tab_bg_2'>";
-			echo "<td class='tab_bg_2' colspan='4' align='center'>".$LANG["rulesengine"][111]."</td>";
+			echo "<td class='tab_bg_2' colspan='4' align='center'>".$LANG['rulesengine'][111]."</td>";
 
 			foreach ($output["_ldap_rules"]["rules_entities"] as $val)
 			{
@@ -402,7 +402,7 @@ class RightRuleCollection extends RuleCollection {
 		if (isset($output["_ldap_rules"]["rules_rights"]))
 		{
 			echo "<tr  class='tab_bg_2'>";
-			echo "<td class='tab_bg_2' colspan='4' align='center'>".$LANG["rulesengine"][110]."</td>";
+			echo "<td class='tab_bg_2' colspan='4' align='center'>".$LANG['rulesengine'][110]."</td>";
 
 			foreach ($output["_ldap_rules"]["rules_rights"] as $val)
 				$this->displayActionByName("profile",$val[0]);
@@ -411,7 +411,7 @@ class RightRuleCollection extends RuleCollection {
 		if (isset($output["_ldap_rules"]["rules_entities_rights"]))
 		{
 			echo "<tr  class='tab_bg_2'>";
-			echo "<td class='tab_bg_2' colspan='4' align='center'>".$LANG["rulesengine"][112]."</td>";
+			echo "<td class='tab_bg_2' colspan='4' align='center'>".$LANG['rulesengine'][112]."</td>";
 
 			foreach ($output["_ldap_rules"]["rules_entities_rights"] as $val)
 			{
@@ -450,7 +450,7 @@ class RightRuleCollection extends RuleCollection {
 		echo "<tr>"; 
 		switch ($name){
 			case "entity":
-			 	echo  "<td class='tab_bg_2' align='center'>".$LANG["entity"][0]." </td>\n"; 
+			 	echo  "<td class='tab_bg_2' align='center'>".$LANG['entity'][0]." </td>\n"; 
 			 	echo  "<td class='tab_bg_2' align='center'>";                                                                         
 			 	echo  getDropdownName("glpi_entities",$value);  
 			 	echo  "</td>"; 
@@ -462,9 +462,9 @@ class RightRuleCollection extends RuleCollection {
 			 	echo  "</td>"; 
 			break;			
 			case "recursive":
-			 	echo "<td class='tab_bg_2' align='center'>".$LANG["profiles"][28]." </td>\n";
+			 	echo "<td class='tab_bg_2' align='center'>".$LANG['profiles'][28]." </td>\n";
 			 	echo  "<td class='tab_bg_2' align='center'>";                                                                         
-			 	echo ((!$value)?$LANG["choice"][0]:$LANG["choice"][1]); 
+			 	echo ((!$value)?$LANG['choice'][0]:$LANG['choice'][1]); 
 			 	echo  "</td>"; 
 			break;			
 		}

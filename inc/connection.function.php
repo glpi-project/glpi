@@ -69,12 +69,12 @@ function showConnect($target,$ID,$type) {
 		else $nb=count($computers);
 
 		echo "<br><div class='center'><table width='50%' class='tab_cadre'><tr><th colspan='2'>";
-		echo $LANG["connect"][0].": ".$nb;
+		echo $LANG['connect'][0].": ".$nb;
 		echo "</th></tr>";
 
 		if ($computers&&count($computers)>0) {
 			foreach ($computers as $key => $computer){
-				echo "<tr><td class='tab_bg_1".($computer['deleted']?"_2":"")."'><strong>".$LANG["help"][25].": ";
+				echo "<tr><td class='tab_bg_1".($computer['deleted']?"_2":"")."'><strong>".$LANG['help'][25].": ";
 				echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/computer.form.php?ID=".$computer['ID']."\">";
 				echo $computer['name'];
 				if ($_SESSION["glpiview_ID"]||empty($computer['name'])) echo " (".$computer['ID'].")";
@@ -82,7 +82,7 @@ function showConnect($target,$ID,$type) {
 				echo "</strong></td>";
 				echo "<td class='tab_bg_2".($computer['deleted']?"_2":"")."' align='center'><strong>";
 				if ($canedit){
-					echo "<a href=\"$target?disconnect=1&amp;cID=".$computer['ID']."&amp;ID=".$key."\">".$LANG["buttons"][10]."</a>";
+					echo "<a href=\"$target?disconnect=1&amp;cID=".$computer['ID']."&amp;ID=".$key."\">".$LANG['buttons'][10]."</a>";
 				} else {
 					echo "&nbsp;";
 				}
@@ -90,8 +90,8 @@ function showConnect($target,$ID,$type) {
 				$used[] = $computer['ID'];
 			}
 		} else {
-			echo "<tr><td class='tab_bg_1'><strong>".$LANG["help"][25].": </strong>";
-			echo "<i>".$LANG["connect"][1]."</i>";
+			echo "<tr><td class='tab_bg_1'><strong>".$LANG['help'][25].": </strong>";
+			echo "<i>".$LANG['connect'][1]."</i>";
 			echo "</td>";
 			echo "<td class='tab_bg_2' align='center'>";
 			if ($canedit){
@@ -104,7 +104,7 @@ function showConnect($target,$ID,$type) {
 				} else {
 					dropdownConnect(COMPUTER_TYPE,$type,"item",$ci->getField('FK_entities'),0,$used);
 				}
-				echo "<input type='submit' value=\"".$LANG["buttons"][9]."\" class='submit'>";
+				echo "<input type='submit' value=\"".$LANG['buttons'][9]."\" class='submit'>";
 				echo "</form>";
 			} else echo "&nbsp;";
 
@@ -126,7 +126,7 @@ function showConnect($target,$ID,$type) {
 				} else {
 					dropdownConnect(COMPUTER_TYPE,$type,"item",$ci->getField('FK_entities'),0,$used);
 				}
-				echo "<input type='submit' value=\"".$LANG["buttons"][9]."\" class='submit'>";
+				echo "<input type='submit' value=\"".$LANG['buttons'][9]."\" class='submit'>";
 				echo "</form>";
 			} else echo "&nbsp;";
 		}
@@ -353,7 +353,7 @@ function Connect($sID,$cID,$type,$dohistory=1) {
 			$updates[0]="location";
 			$dev->obj->fields['location']=addslashes($comp->fields['location']);
 			$dev->obj->updateInDB($updates);
-			addMessageAfterRedirect($LANG["computers"][48],true);
+			addMessageAfterRedirect($LANG['computers'][48],true);
 		}
 		if (($CFG_GLPI["autoupdate_link_user"]&&$comp->fields['FK_users']!=$dev->getField('FK_users'))
 		||($CFG_GLPI["autoupdate_link_group"]&&$comp->fields['FK_groups']!=$dev->getField('FK_groups'))){
@@ -366,7 +366,7 @@ function Connect($sID,$cID,$type,$dohistory=1) {
 				$dev->obj->fields['FK_groups']=$comp->fields['FK_groups'];
 			}
 			$dev->obj->updateInDB($updates);
-			addMessageAfterRedirect($LANG["computers"][50],true);
+			addMessageAfterRedirect($LANG['computers'][50],true);
 		}
 
 		if ($CFG_GLPI["autoupdate_link_contact"]
@@ -376,13 +376,13 @@ function Connect($sID,$cID,$type,$dohistory=1) {
 			$dev->obj->fields['contact']=addslashes($comp->fields['contact']);
 			$dev->obj->fields['contact_num']=addslashes($comp->fields['contact_num']);
 			$dev->obj->updateInDB($updates);
-			addMessageAfterRedirect($LANG["computers"][49],true);
+			addMessageAfterRedirect($LANG['computers'][49],true);
 		}
 		if ($CFG_GLPI["autoupdate_link_state"]<0 && $comp->fields['state']!=$dev->getField('state')) {
 			$updates[0]="state";
 			$dev->obj->fields['state']=$comp->fields['state'];
 			$dev->obj->updateInDB($updates);
-			addMessageAfterRedirect($LANG["computers"][56],true);
+			addMessageAfterRedirect($LANG['computers'][56],true);
 		}
 		if ($CFG_GLPI["autoupdate_link_state"]>0 && $dev->getField('state')!=$CFG_GLPI["autoupdate_link_state"]) {
 			$updates[0]="state";

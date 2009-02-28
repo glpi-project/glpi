@@ -214,7 +214,7 @@ class RuleCollection {
 	**/	
 	function getTitle(){
 		global $LANG;
-		return $LANG["rulesengine"][29];
+		return $LANG['rulesengine'][29];
 	}
 
 	/**
@@ -230,14 +230,14 @@ class RuleCollection {
 		//Display informations about the how the rules engine process the rules
 		if ($this->stop_on_first_match){
 			//The engine stop on the first matched rule
-			echo "<span class='center'><strong>".$LANG["rulesengine"][120]."</strong></span><br>";
+			echo "<span class='center'><strong>".$LANG['rulesengine'][120]."</strong></span><br>";
 		} else {
 			//The engine process all the rules
-			echo "<span class='center'><strong>".$LANG["rulesengine"][121]."</strong></span><br>";
+			echo "<span class='center'><strong>".$LANG['rulesengine'][121]."</strong></span><br>";
 		}
 		if ($this->use_output_rule_process_as_next_input){
 			//The engine keep the result of a rule to be processed further
-			echo "<span class='center'><strong>".$LANG["rulesengine"][122]."</strong></span><br>";
+			echo "<span class='center'><strong>".$LANG['rulesengine'][122]."</strong></span><br>";
 		}
 
 		$nb = $this->getCollectionSize();
@@ -257,15 +257,15 @@ class RuleCollection {
 
 		echo "<tr><th colspan='6'><div class='relative'><span><strong>" . $this->getTitle() . "</strong></span>";
 		if ($canedit){
-			echo "<span style='  position:absolute; right:0; margin-right:5px; font-size:10px;'><a href=\"".str_replace(".php",".form.php",$target)."\"><img src=\"".$CFG_GLPI["root_doc"]."/pics/plus.png\" alt='+' title='".$LANG["buttons"][8]."'></a></span>";
+			echo "<span style='  position:absolute; right:0; margin-right:5px; font-size:10px;'><a href=\"".str_replace(".php",".form.php",$target)."\"><img src=\"".$CFG_GLPI["root_doc"]."/pics/plus.png\" alt='+' title='".$LANG['buttons'][8]."'></a></span>";
 		}
 
 		echo "</div></th></tr>";
 		echo "<tr>";
 		echo "<td class='tab_bg_2'></td>";
-		echo "<td class='tab_bg_2'>".$LANG["common"][16]."</td>";
-		echo "<td class='tab_bg_2'>".$LANG["joblist"][6]."</td>";
-		echo "<td class='tab_bg_2'>".$LANG["common"][60]."</td>";
+		echo "<td class='tab_bg_2'>".$LANG['common'][16]."</td>";
+		echo "<td class='tab_bg_2'>".$LANG['joblist'][6]."</td>";
+		echo "<td class='tab_bg_2'>".$LANG['common'][60]."</td>";
 		echo "<td class='tab_bg_2' colspan='2'></td>";
 		echo "</tr>";
 		
@@ -280,17 +280,17 @@ class RuleCollection {
 			echo "<div class='center'>";
 			echo "<table width='80%' class='tab_glpi'>";
 			
-			echo "<tr><td><img src=\"" . $CFG_GLPI["root_doc"] . "/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markCheckboxes('entityaffectation_form') ) return false;\" href='" . $_SERVER['PHP_SELF'] . "?select=all'>" . $LANG["buttons"][18] . "</a></td>";
+			echo "<tr><td><img src=\"" . $CFG_GLPI["root_doc"] . "/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markCheckboxes('entityaffectation_form') ) return false;\" href='" . $_SERVER['PHP_SELF'] . "?select=all'>" . $LANG['buttons'][18] . "</a></td>";
 
-			echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkCheckboxes('entityaffectation_form') ) return false;\" href='" . $_SERVER['PHP_SELF'] . "?select=none'>" . $LANG["buttons"][19] . "</a>";
+			echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkCheckboxes('entityaffectation_form') ) return false;\" href='" . $_SERVER['PHP_SELF'] . "?select=none'>" . $LANG['buttons'][19] . "</a>";
 			echo "</td><td align='left' width='80%'>";
 			echo "<select name=\"massiveaction\" id='massiveaction'>";
 			echo "<option value=\"-1\" selected>-----</option>";
-			echo "<option value=\"delete\">".$LANG["buttons"][6]."</option>";
+			echo "<option value=\"delete\">".$LANG['buttons'][6]."</option>";
 			if ($this->orderby=="ranking"){
-				echo "<option value=\"move_rule\">".$LANG["buttons"][20]."</option>";
+				echo "<option value=\"move_rule\">".$LANG['buttons'][20]."</option>";
 			}
-			echo "<option value=\"activate_rule\">".$LANG["buttons"][41]."</option>";
+			echo "<option value=\"activate_rule\">".$LANG['buttons'][41]."</option>";
 			echo "</select>";
 
 			$params=array('action'=>'__VALUE__',
@@ -304,7 +304,7 @@ class RuleCollection {
 
 			echo "</td>";
 			if ($this->can_replay_rules){
-				echo "<td><input type='submit' name='replay_rule' value=\"" . $LANG["rulesengine"][76] . "\" class='submit'></td>";
+				echo "<td><input type='submit' name='replay_rule' value=\"" . $LANG['rulesengine'][76] . "\" class='submit'></td>";
 			}
 			echo "</tr>";
 			
@@ -312,7 +312,7 @@ class RuleCollection {
 			echo "</div>";
 		} 
 		
-		echo "<span class='center'><a href='#' onClick=\"var w=window.open('".$CFG_GLPI["root_doc"]."/front/popup.php?popup=test_all_rules&amp;sub_type=".$this->sub_type."&amp' ,'glpipopup', 'height=400, width=1000, top=100, left=100, scrollbars=yes' );w.focus();\">".$LANG["rulesengine"][84]."</a></span>"; 
+		echo "<span class='center'><a href='#' onClick=\"var w=window.open('".$CFG_GLPI["root_doc"]."/front/popup.php?popup=test_all_rules&amp;sub_type=".$this->sub_type."&amp' ,'glpipopup', 'height=400, width=1000, top=100, left=100, scrollbars=yes' );w.focus();\">".$LANG['rulesengine'][84]."</a></span>"; 
 		echo "</form>";
 
 
@@ -520,7 +520,7 @@ class RuleCollection {
 			echo "<form name='testrule_form' id='testrulesengine_form' method='post' action=\"$target\">\n";
 			echo "<div class='center'>";
 			echo "<table class='tab_cadre_fixe'>"; 
-			echo "<tr><th colspan='2'>" . $LANG["rulesengine"][6] . "</th></tr>"; 
+			echo "<tr><th colspan='2'>" . $LANG['rulesengine'][6] . "</th></tr>"; 
 			
 			 //Brower all criterias 
 			foreach ($input as $criteria){
@@ -542,14 +542,14 @@ class RuleCollection {
 			$rule->showSpecificCriteriasForPreview($_POST);
 
 			echo "<tr><td class='tab_bg_2' colspan='2' align='center'>"; 
-			echo "<input type='submit' name='test_all_rules' value=\"" . $LANG["buttons"][50] . "\" class='submit'>";
+			echo "<input type='submit' name='test_all_rules' value=\"" . $LANG['buttons'][50] . "\" class='submit'>";
 			echo "<input type='hidden' name='sub_type' value=\"" . $this->sub_type . "\">"; 
 			echo "</td></tr>"; 
 			echo "</table>";
 			echo "</div>";
 			echo "</form>";
 		} else {
-			echo '<br><div class="center"><strong>'.$LANG["rulesengine"][97].'</strong></div>';
+			echo '<br><div class="center"><strong>'.$LANG['rulesengine'][97].'</strong></div>';
 		}		
 		return $input;
 	}
@@ -637,7 +637,7 @@ class RuleCollection {
 		
 		if (isset($output["result"])){
 			echo "<table class='tab_cadrehov'>";
-			echo "<tr><th colspan='4'>" . $LANG["rulesengine"][82] . "</th></tr>";
+			echo "<tr><th colspan='4'>" . $LANG['rulesengine'][82] . "</th></tr>";
 
 			foreach ($output["result"] as $ID=>$rule_result){
 				echo "<tr  class='tab_bg_2'>";
@@ -649,13 +649,13 @@ class RuleCollection {
 				echo "<td class='tab_bg_2'>";
 				switch ($rule_result["result"]){
 					case 0 : 
-						echo "<strong>".$LANG["choice"][0]."</strong>";
+						echo "<strong>".$LANG['choice'][0]."</strong>";
 					break;
 					case 1 : 
-						echo "<strong>".$LANG["choice"][1]."</strong>";
+						echo "<strong>".$LANG['choice'][1]."</strong>";
 					break;
 					case 2 : 
-						echo "<strong>".$LANG["rulesengine"][107]."</strong>";
+						echo "<strong>".$LANG['rulesengine'][107]."</strong>";
 					break;
 					
 				}
@@ -700,9 +700,9 @@ class RuleCollection {
 	 **/
 	function showTestResults($rule,$output,$global_result){
 		global $LANG,$RULES_ACTIONS;
-		echo "<tr><th colspan='4'>" . $LANG["rulesengine"][81] . "</th></tr>";
+		echo "<tr><th colspan='4'>" . $LANG['rulesengine'][81] . "</th></tr>";
 		echo "<tr  class='tab_bg_2'>";
-		echo "<td class='tab_bg_2' colspan='4' align='center'>".$LANG["rulesengine"][41]." : <strong> ".getYesNo($global_result)."</strong></td>";
+		echo "<td class='tab_bg_2' colspan='4' align='center'>".$LANG['rulesengine'][41]." : <strong> ".getYesNo($global_result)."</strong></td>";
 
 		$output = $this->preProcessPreviewResults($output);
 		
@@ -776,7 +776,7 @@ class Rule extends CommonDBTM{
 	**/	
 	function getTitle(){
 		global $LANG;
-		return $LANG["rulesengine"][8];	
+		return $LANG['rulesengine'][8];	
 	}
 	
 	/**
@@ -808,28 +808,28 @@ class Rule extends CommonDBTM{
 		echo "<table class='tab_cadre_fixe'>";
 		echo "<tr><th colspan='4'>" . $this->getTitle() . "</th></tr>";
 		echo "<tr>";
-		echo "<td class='tab_bg_2'>".$LANG["common"][16]."</td>";
+		echo "<td class='tab_bg_2'>".$LANG['common'][16]."</td>";
 		echo "<td class='tab_bg_2'>";
 		autocompletionTextField("name",$this->table,"name",$this->fields["name"] ,40);
 		echo "</td>";
-		echo "<td class='tab_bg_2'>".$LANG["joblist"][6]."</td>";
+		echo "<td class='tab_bg_2'>".$LANG['joblist'][6]."</td>";
 		echo "<td class='tab_bg_2'>";
 		autocompletionTextField("description",$this->table,"description",$this->fields["description"] ,40);
 		echo "</td></tr>";
 
 		echo "<tr>";
-		echo "<td class='tab_bg_2'>".$LANG["rulesengine"][9]."</td>";
+		echo "<td class='tab_bg_2'>".$LANG['rulesengine'][9]."</td>";
 		echo "<td class='tab_bg_2'>";
 		$this->dropdownRulesMatch("match",$this->fields["match"]);
 		echo "</td>";
 			
-		echo "<td class='tab_bg_2'>".$LANG["common"][60]."</td>";
+		echo "<td class='tab_bg_2'>".$LANG['common'][60]."</td>";
 		echo "<td class='tab_bg_2'>";
 		dropdownYesNo("active",$this->fields["active"]);
 		echo"</td></tr>";
 
 		echo "<tr>";
-		echo "<td class='tab_bg_2'>".$LANG["common"][25]."</td>";
+		echo "<td class='tab_bg_2'>".$LANG['common'][25]."</td>";
 		echo "<td class='tab_bg_2' valign='middle' colspan='3'>";
 		echo "<textarea  cols='50' rows='3' name='comments' >".$this->fields["comments"]."</textarea>";
 		echo"</td></tr>";
@@ -838,20 +838,20 @@ class Rule extends CommonDBTM{
 			if ($new){
 				echo "<tr><td class='tab_bg_2' align='center' colspan='4'>";
 				echo "<input type='hidden' name='sub_type' value='".$this->sub_type."'>";
-				echo "<input type='submit' name='add_rule' value=\"" . $LANG["buttons"][8] . "\" class='submit'>";
+				echo "<input type='submit' name='add_rule' value=\"" . $LANG['buttons'][8] . "\" class='submit'>";
 				echo "</td></tr>";
 				
 			} else {
 				echo "<tr><td class='tab_bg_2' align='center' colspan='2'>";
 				echo "<input type='hidden' name='ID' value='".$ID."'>";
 				echo "<input type='hidden' name='ranking' value='".$this->fields["ranking"]."'>";
-				echo "<input type='submit' name='update_rule' value=\"" . $LANG["buttons"][7] . "\" class='submit'></td>";
+				echo "<input type='submit' name='update_rule' value=\"" . $LANG['buttons'][7] . "\" class='submit'></td>";
 				echo "<td class='tab_bg_2' align='center' colspan='2'>";
-				echo "<input type='submit' name='delete_rule' value=\"" . $LANG["buttons"][6] . "\" class='submit'></td>";
+				echo "<input type='submit' name='delete_rule' value=\"" . $LANG['buttons'][6] . "\" class='submit'></td>";
 				echo "</tr>";
 
 				echo "<tr><td class='tab_bg_2' align='center' colspan='4'>";
-				echo "<a href='#' onClick=\"var w=window.open('".$CFG_GLPI["root_doc"]."/front/popup.php?popup=test_rule&amp;sub_type=".$this->sub_type."&amp;rule_id=".$this->fields["ID"]."' ,'glpipopup', 'height=400, width=1000, top=100, left=100, scrollbars=yes' );w.focus();\">".$LANG["buttons"][50]."</a>"; 
+				echo "<a href='#' onClick=\"var w=window.open('".$CFG_GLPI["root_doc"]."/front/popup.php?popup=test_rule&amp;sub_type=".$this->sub_type."&amp;rule_id=".$this->fields["ID"]."' ,'glpipopup', 'height=400, width=1000, top=100, left=100, scrollbars=yes' );w.focus();\">".$LANG['buttons'][50]."</a>"; 
 				echo "</td></tr>";
 			}
 		}			
@@ -869,8 +869,8 @@ class Rule extends CommonDBTM{
 	function dropdownRulesMatch($name,$value=''){
 		global $LANG;
 
-		$elements[AND_MATCHING] = $LANG["rulesengine"][42];
-		$elements[OR_MATCHING] = $LANG["rulesengine"][43];
+		$elements[AND_MATCHING] = $LANG['rulesengine'][42];
+		$elements[OR_MATCHING] = $LANG['rulesengine'][43];
 		return dropdownArrayValues($name,$elements,$value);
 	}
 
@@ -944,14 +944,14 @@ class Rule extends CommonDBTM{
 				
 		echo "<div class='center'>"; 
 		echo "<table class='tab_cadrehov'>";
-		echo "<tr><th colspan='".($canedit?" 4 ":"3")."'>" . $LANG["rulesengine"][7] . "</th></tr>";
+		echo "<tr><th colspan='".($canedit?" 4 ":"3")."'>" . $LANG['rulesengine'][7] . "</th></tr>";
 		echo "<tr  class='tab_bg_2'>";
 		if ($canedit){
 			echo "<td class='tab_bg_2'>&nbsp;</td>";
 		}
-		echo "<td class='tab_bg_2'>".$LANG["rulesengine"][12]."</td>";
-		echo "<td class='tab_bg_2'>".$LANG["rulesengine"][11]."</td>";
-		echo "<td class='tab_bg_2'>".$LANG["rulesengine"][13]."</td>";
+		echo "<td class='tab_bg_2'>".$LANG['rulesengine'][12]."</td>";
+		echo "<td class='tab_bg_2'>".$LANG['rulesengine'][11]."</td>";
+		echo "<td class='tab_bg_2'>".$LANG['rulesengine'][13]."</td>";
 		echo "</tr>";
 
 		$nb=count($this->actions);
@@ -963,11 +963,11 @@ class Rule extends CommonDBTM{
 		if ($canedit&&$nb>0) {
 			echo "<div class='center'>";
 			echo "<table  width='80%' class='tab_glpi'>";
-			echo "<tr><td><img src=\"" . $CFG_GLPI["root_doc"] . "/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markCheckboxes('actionsform') ) return false;\" href='" . $_SERVER['PHP_SELF'] . "?select=all'>" . $LANG["buttons"][18] . "</a></td>";
+			echo "<tr><td><img src=\"" . $CFG_GLPI["root_doc"] . "/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markCheckboxes('actionsform') ) return false;\" href='" . $_SERVER['PHP_SELF'] . "?select=all'>" . $LANG['buttons'][18] . "</a></td>";
 
-			echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkCheckboxes('actionsform') ) return false;\" href='" . $_SERVER['PHP_SELF'] . "?select=none'>" . $LANG["buttons"][19] . "</a>";
+			echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkCheckboxes('actionsform') ) return false;\" href='" . $_SERVER['PHP_SELF'] . "?select=none'>" . $LANG['buttons'][19] . "</a>";
 			echo "</td><td align='left' width='80%'>";
-			echo "<input type='submit' name='delete_action' value=\"" . $LANG["buttons"][6] . "\" class='submit'>";
+			echo "<input type='submit' name='delete_action' value=\"" . $LANG['buttons'][6] . "\" class='submit'>";
 			echo "<input type='hidden' name='rule_id' value='" . $rule_id . "'>";
 			echo "</td></tr></table>";
 			echo "</div>";
@@ -984,9 +984,9 @@ class Rule extends CommonDBTM{
 		global $LANG,$CFG_GLPI;
 		echo "<div class='center'>";
 		echo "<table  class='tab_cadre_fixe'>";
-		echo "<tr class='tab_bg_1'><th colspan='4'>" . $LANG["rulesengine"][7] . ":</tr>";
+		echo "<tr class='tab_bg_1'><th colspan='4'>" . $LANG['rulesengine'][7] . ":</tr>";
 		echo "<tr  class='tab_bg_2' align='center'><td>";
-		echo $LANG["rulesengine"][30] . ":";
+		echo $LANG['rulesengine'][30] . ":";
 		echo "</td><td>";
 		$val=$this->dropdownActions(getAlreadyUsedActionsByRuleID($rule_id,$this->sub_type));
 		echo "</td><td align='left' width='500px'>";
@@ -998,7 +998,7 @@ class Rule extends CommonDBTM{
 
 		echo "</td><td>";
 		echo "<input type=hidden name='FK_rules' value=\"" . $this->fields["ID"] . "\">";
-		echo "<input type='submit' name='add_action' value=\"" . $LANG["buttons"][8] . "\" class='submit'>";
+		echo "<input type='submit' name='add_action' value=\"" . $LANG['buttons'][8] . "\" class='submit'>";
 		echo "<input type='hidden' name='rule_id' value='" . $rule_id . "'>";
 		
 		echo "</td></tr>";
@@ -1014,9 +1014,9 @@ class Rule extends CommonDBTM{
 		global $LANG,$CFG_GLPI,$RULES_CRITERIAS;
 		echo "<div class='center'>";
 		echo "<table  class='tab_cadre_fixe'>";
-		echo "<tr class='tab_bg_1'><th colspan='4'>" . $LANG["rulesengine"][16] . ":</tr>";
+		echo "<tr class='tab_bg_1'><th colspan='4'>" . $LANG['rulesengine'][16] . ":</tr>";
 		echo "<tr class='tab_bg_2' align='center'><td>";
-		echo $LANG["rulesengine"][16] . ":";
+		echo $LANG['rulesengine'][16] . ":";
 		echo "</td><td>";
 		$val=$this->dropdownCriterias();
 		echo "</td><td align='left' width='500px'>";
@@ -1032,7 +1032,7 @@ class Rule extends CommonDBTM{
 
 			
 		echo "<input type=hidden name='FK_rules' value=\"" . $this->fields["ID"] . "\">";
-		echo "<input type='submit' name='add_criteria' value=\"" . $LANG["buttons"][8] . "\" class='submit'>";
+		echo "<input type='submit' name='add_criteria' value=\"" . $LANG['buttons'][8] . "\" class='submit'>";
 		echo "<input type='hidden' name='rule_id' value='" . $rule_id . "'>";
 		echo "</td></tr>";
 
@@ -1070,14 +1070,14 @@ class Rule extends CommonDBTM{
 		echo "<form name='criteriasform' id='criteriasform' method='post' action=\"$target\">\n";
 		echo "<div class='center'>"; 
 		echo "<table class='tab_cadrehov'>";
-		echo "<tr><th colspan='".($canedit?" 4 ":"3")."'>" . $LANG["rulesengine"][6] . "</th></tr>\n";
+		echo "<tr><th colspan='".($canedit?" 4 ":"3")."'>" . $LANG['rulesengine'][6] . "</th></tr>\n";
 		echo "<tr>";
 		if ($canedit){
 			echo "<td class='tab_bg_2'>&nbsp;</td>";
 		}
-		echo "<td class='tab_bg_2'>".$LANG["rulesengine"][16]."</td>\n";
-		echo "<td class='tab_bg_2'>".$LANG["rulesengine"][14]."</td>\n";
-		echo "<td class='tab_bg_2'>".$LANG["rulesengine"][15]."</td>\n";
+		echo "<td class='tab_bg_2'>".$LANG['rulesengine'][16]."</td>\n";
+		echo "<td class='tab_bg_2'>".$LANG['rulesengine'][14]."</td>\n";
+		echo "<td class='tab_bg_2'>".$LANG['rulesengine'][15]."</td>\n";
 		echo "</tr>";
 			
 		$maxsize = sizeof($this->criterias);
@@ -1088,11 +1088,11 @@ class Rule extends CommonDBTM{
 		if ($canedit&&$maxsize>0) {
 			echo "<div class='center'>\n";
 			echo "<table width='80%' class='tab_glpi'>\n";
-			echo "<tr><td><img src=\"" . $CFG_GLPI["root_doc"] . "/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markCheckboxes('criteriasform') ) return false;\" href='" . $_SERVER['PHP_SELF'] . "?ID=".$this->fields["ID"]."&amp;select=all'>" . $LANG["buttons"][18] . "</a></td>";
+			echo "<tr><td><img src=\"" . $CFG_GLPI["root_doc"] . "/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markCheckboxes('criteriasform') ) return false;\" href='" . $_SERVER['PHP_SELF'] . "?ID=".$this->fields["ID"]."&amp;select=all'>" . $LANG['buttons'][18] . "</a></td>";
 
-			echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkCheckboxes('criteriasform') ) return false;\" href='" . $_SERVER['PHP_SELF'] . "?ID=".$this->fields["ID"]."&amp;select=none'>" . $LANG["buttons"][19] . "</a>";
+			echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkCheckboxes('criteriasform') ) return false;\" href='" . $_SERVER['PHP_SELF'] . "?ID=".$this->fields["ID"]."&amp;select=none'>" . $LANG['buttons'][19] . "</a>";
 			echo "</td><td align='left' width='80%'>";
-			echo "<input type='submit' name='delete_criteria' value=\"" . $LANG["buttons"][6] . "\" class='submit'>";
+			echo "<input type='submit' name='delete_criteria' value=\"" . $LANG['buttons'][6] . "\" class='submit'>";
 			echo "<input type='hidden' name='rule_id' value='" . $rule_id . "'>";
 			echo "</td></tr>";
 			echo "</table>";
@@ -1474,9 +1474,9 @@ class Rule extends CommonDBTM{
 					
 		echo "<td>".$this->fields["description"]."</td>";
 		if ($this->fields["active"])
-			echo "<td>".$LANG["choice"][1]."</td>";
+			echo "<td>".$LANG['choice'][1]."</td>";
 		else
-			echo "<td>".$LANG["choice"][0]."</td>";
+			echo "<td>".$LANG['choice'][0]."</td>";
 				
 		if ($this->can_sort && !$first && $canedit){
 			echo "<td><a href=\"".$target."?type=".$this->fields["sub_type"]."&amp;action=up&amp;ID=".$this->fields["ID"]."\"><img src=\"".$CFG_GLPI["root_doc"]."/pics/deplier_up.png\" alt=''></a></td>";
@@ -1565,13 +1565,13 @@ class Rule extends CommonDBTM{
 
 		echo "<div class='center'>"; 
 		echo "<table class='tab_cadrehov'>";
-		echo "<tr><th colspan='4'>" . $LANG["rulesengine"][82] . "</th></tr>";
+		echo "<tr><th colspan='4'>" . $LANG['rulesengine'][82] . "</th></tr>";
 		
 		echo "<tr class='tab_bg_2'>";
-		echo "<td class='tab_bg_2'>".$LANG["rulesengine"][16]."</td>";
-		echo "<td class='tab_bg_2'>".$LANG["rulesengine"][14]."</td>";
-		echo "<td class='tab_bg_2'>".$LANG["rulesengine"][15]."</td>";
-		echo "<td class='tab_bg_2'>".$LANG["rulesengine"][41]."</td>";
+		echo "<td class='tab_bg_2'>".$LANG['rulesengine'][16]."</td>";
+		echo "<td class='tab_bg_2'>".$LANG['rulesengine'][14]."</td>";
+		echo "<td class='tab_bg_2'>".$LANG['rulesengine'][15]."</td>";
+		echo "<td class='tab_bg_2'>".$LANG['rulesengine'][41]."</td>";
 		echo "</tr>";
 
 		foreach ($check_results as $ID=>$criteria_result){
@@ -1587,9 +1587,9 @@ class Rule extends CommonDBTM{
 		$global_result =(isset($output["_rule_process"])?1:0);
 		
 		echo "<br><table class='tab_cadrehov'>";
-		echo "<tr><th colspan='4'>" . $LANG["rulesengine"][81] . "</th></tr>";
+		echo "<tr><th colspan='4'>" . $LANG['rulesengine'][81] . "</th></tr>";
 		echo "<tr  class='tab_bg_2'>";
-		echo "<td class='tab_bg_2' colspan='4' align='center'>".$LANG["rulesengine"][41]." : <strong> ".getYesNo($global_result)."</strong></td>";
+		echo "<td class='tab_bg_2' colspan='4' align='center'>".$LANG['rulesengine'][41]." : <strong> ".getYesNo($global_result)."</strong></td>";
 
 		//If output array contains keys begining with _ : drop it
 		foreach($output as $criteria => $value){
@@ -1615,7 +1615,7 @@ class Rule extends CommonDBTM{
 		if (count($regex_results))
 		{
 				echo "<tr  class='tab_bg_2'>";
-				echo "<td class='tab_bg_2'>".$LANG["rulesengine"][85]."</td>";
+				echo "<td class='tab_bg_2'>".$LANG['rulesengine'][85]."</td>";
 				echo "<td class='tab_bg_2'>";
 				printCleanArray($regex_results);
 				echo "</td>";
@@ -1808,9 +1808,9 @@ class Rule extends CommonDBTM{
 						break;
 					case "yesno":
 						if ($value) 
-							return $LANG["choice"][1];
+							return $LANG['choice'][1];
 						else
-							return $LANG["choice"][0];	
+							return $LANG['choice'][0];	
 						break;
 					case "dropdown_priority":
 						return getPriorityName($value);
@@ -1851,9 +1851,9 @@ class Rule extends CommonDBTM{
 				case "yesno":
  					if ($condition!=PATTERN_IS&&$condition!=PATTERN_IS_NOT){
  						if ($value) 
- 							return $LANG["choice"][1];
+ 							return $LANG['choice'][1];
  						else
- 							return $LANG["choice"][0];	
+ 							return $LANG['choice'][0];	
  					}
 				break;
 				case "dropdown_priority":
@@ -1896,9 +1896,9 @@ class Rule extends CommonDBTM{
 			echo "<form name='testrule_form' id='testrule_form' method='post' action=\"$target\">\n";
 			echo "<div class='center'>";
 			echo "<table class='tab_cadre_fixe'>"; 
-			echo "<tr><th colspan='3'>" . $LANG["rulesengine"][6] . "</th></tr>"; 
+			echo "<tr><th colspan='3'>" . $LANG['rulesengine'][6] . "</th></tr>"; 
 
-			$type_match=($this->fields["match"]==AND_MATCHING?$LANG["rulesengine"][42]:$LANG["rulesengine"][43]);
+			$type_match=($this->fields["match"]==AND_MATCHING?$LANG['rulesengine'][42]:$LANG['rulesengine'][43]);
 			$already_displayed=array(); 
 			$first=true;
 			 //Brower all criterias 
@@ -1936,7 +1936,7 @@ class Rule extends CommonDBTM{
 		
 
 			echo "<tr><td class='tab_bg_2' colspan='3' align='center'>"; 
-			echo "<input type='submit' name='test_rule' value=\"" . $LANG["buttons"][50] . "\" class='submit'>";
+			echo "<input type='submit' name='test_rule' value=\"" . $LANG['buttons'][50] . "\" class='submit'>";
 			echo "<input type='hidden' name='rule_id' value=\"" . $rule_id . "\">"; 
 			echo "<input type='hidden' name='sub_type' value=\"" . $this->sub_type . "\">"; 
 			echo "</td></tr>"; 
@@ -2129,7 +2129,7 @@ class RuleCached extends Rule{
 		echo "<table class='tab_cadrehov'>";
 		echo "<tr  class='tab_bg_2'>";
 		echo "<td width='100%'>";
-		echo $LANG["rulesengine"][83];
+		echo $LANG['rulesengine'][83];
 		echo "</td></tr>";
 		echo "</table></div><br>";
 	}
@@ -2182,17 +2182,17 @@ class RuleCached extends Rule{
 		}
 		
 		echo "</table></div><br>";
-		echo "<center><a href=\"$target\">".$LANG["buttons"][13]."</center>";
+		echo "<center><a href=\"$target\">".$LANG['buttons'][13]."</center>";
 		
 	}
 
 	/// Display Header for cache display
 	function showCacheRuleHeader(){
 		global $LANG;
-		echo "<tr><th colspan='2'>".$LANG["rulesengine"][100]." : ".$this->fields["name"]."</th></tr>";
+		echo "<tr><th colspan='2'>".$LANG['rulesengine'][100]." : ".$this->fields["name"]."</th></tr>";
 		echo "<tr>";
-		echo "<td class='tab_bg_1'>".$LANG["rulesengine"][104]."</td>";
-		echo "<td class='tab_bg_1'>".$LANG["rulesengine"][105]."</td>";
+		echo "<td class='tab_bg_1'>".$LANG['rulesengine'][104]."</td>";
+		echo "<td class='tab_bg_1'>".$LANG['rulesengine'][105]."</td>";
 		echo "</tr>";
 	}
 
@@ -2203,7 +2203,7 @@ class RuleCached extends Rule{
 	function showCacheRuleDetail($fields){
 		global $LANG;
 		echo "<td class='tab_bg_2'>".$fields["old_value"]."</td>";
-		echo "<td class='tab_bg_2'>".($fields["new_value"]!=''?$fields["new_value"]:$LANG["rulesengine"][106])."</td>";
+		echo "<td class='tab_bg_2'>".($fields["new_value"]!=''?$fields["new_value"]:$LANG['rulesengine'][106])."</td>";
 	}
 			
 }
@@ -2242,7 +2242,7 @@ class RuleCachedCollection extends RuleCollection{
 	**/
 	function showAdditionalInformationsInForm($target){
 		global $CFG_GLPI,$LANG;
-		echo "<span class='center'><a href='#' onClick=\"var w = window.open('".$CFG_GLPI["root_doc"]."/front/popup.php?popup=show_cache&amp;sub_type=".$this->sub_type."' ,'glpipopup', 'height=400, width=1000, top=100, left=100, scrollbars=yes' );w.focus();\">".$LANG["rulesengine"][100]."</a></span>"; 
+		echo "<span class='center'><a href='#' onClick=\"var w = window.open('".$CFG_GLPI["root_doc"]."/front/popup.php?popup=show_cache&amp;sub_type=".$this->sub_type."' ,'glpipopup', 'height=400, width=1000, top=100, left=100, scrollbars=yes' );w.focus();\">".$LANG['rulesengine'][100]."</a></span>"; 
 
 	}	
 
@@ -2288,10 +2288,10 @@ class RuleCachedCollection extends RuleCollection{
 				ORDER BY name";
 		$res_count=$DB->query($query);
 
-		echo "<tr><th colspan='2'>".$LANG["rulesengine"][100]." : ".$this->getTitle()."</th></tr>";
+		echo "<tr><th colspan='2'>".$LANG['rulesengine'][100]." : ".$this->getTitle()."</th></tr>";
 		echo "<tr>";
-		echo "<td class='tab_bg_1'>".$LANG["rulesengine"][102]."</td>";
-		echo "<td class='tab_bg_1'>".$LANG["rulesengine"][103]."</td>";
+		echo "<td class='tab_bg_1'>".$LANG['rulesengine'][102]."</td>";
+		echo "<td class='tab_bg_1'>".$LANG['rulesengine'][103]."</td>";
 		echo "</tr>";
 		
 		$total = 0;		
@@ -2307,7 +2307,7 @@ class RuleCachedCollection extends RuleCollection{
 		}
 		
 		echo "<tr>";
-		echo "<td class='tab_bg_2'><strong>".$LANG["common"][33]." (".$DB->numrows($res_count).")</strong></td>";
+		echo "<td class='tab_bg_2'><strong>".$LANG['common'][33]." (".$DB->numrows($res_count).")</strong></td>";
 		echo "<td class='tab_bg_2'><strong>".$total."</strong></td>";
 		echo "</tr></table></div>";		
 	}

@@ -64,17 +64,17 @@ function showEntityUser($target,$ID){
 	
 			echo "<div class='center'>";
 			echo "<table  class='tab_cadre_fixe'>";
-			echo "<tr class='tab_bg_1'><th colspan='5'>".$LANG["setup"][603]."</tr><tr><td class='tab_bg_2' align='center'>";
+			echo "<tr class='tab_bg_1'><th colspan='5'>".$LANG['setup'][603]."</tr><tr><td class='tab_bg_2' align='center'>";
 			echo "<input type='hidden' name='FK_entities' value='$ID'>";
 			dropdownAllUsers("FK_users",0,1);
 			echo "</td><td align='center' class='tab_bg_2'>";
-			echo $LANG["profiles"][22].":";
+			echo $LANG['profiles'][22].":";
 			dropdownUnderProfiles("FK_profiles");
 			echo "</td><td align='center' class='tab_bg_2'>";
-			echo $LANG["profiles"][28].":";
+			echo $LANG['profiles'][28].":";
 			dropdownYesNo("recursive",0);
 			echo "</td><td align='center' class='tab_bg_2'>";
-			echo "<input type='submit' name='adduser' value=\"".$LANG["buttons"][8]."\" class='submit'>";
+			echo "<input type='submit' name='adduser' value=\"".$LANG['buttons'][8]."\" class='submit'>";
 			echo "</td></tr>";
 	
 			echo "</table></div><br>";
@@ -83,7 +83,7 @@ function showEntityUser($target,$ID){
 	
 	
 	
-		echo "<div class='center'><table class='tab_cadrehov'><tr><th colspan='$headerspan'>".$LANG["Menu"][14]." (D=".$LANG["profiles"][29].", R=".$LANG["profiles"][28].")</th></tr>";
+		echo "<div class='center'><table class='tab_cadrehov'><tr><th colspan='$headerspan'>".$LANG["Menu"][14]." (D=".$LANG['profiles'][29].", R=".$LANG['profiles'][28].")</th></tr>";
 
 
 
@@ -143,7 +143,7 @@ function showEntityUser($target,$ID){
 					echo "</tr>";
 
 				} else {
-					echo "<tr colspan='$headerspan'>".$LANG["common"][54]."</tr>";
+					echo "<tr colspan='$headerspan'>".$LANG['common'][54]."</tr>";
 				}
 
 
@@ -157,11 +157,11 @@ function showEntityUser($target,$ID){
 		if ($canedit){
 			echo "<div class='center'>";
 			echo "<table width='80%' class='tab_glpi'>";
-			echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markCheckboxes('entityuser_form$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$ID&amp;select=all'>".$LANG["buttons"][18]."</a></td>";
+			echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markCheckboxes('entityuser_form$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$ID&amp;select=all'>".$LANG['buttons'][18]."</a></td>";
 	
-			echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkCheckboxes('entityuser_form$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$ID&amp;select=none'>".$LANG["buttons"][19]."</a>";
+			echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkCheckboxes('entityuser_form$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$ID&amp;select=none'>".$LANG['buttons'][19]."</a>";
 			echo "</td><td align='left' width='80%'>";
-			echo "<input type='submit' name='deleteuser' value=\"".$LANG["buttons"][6]."\" class='submit'>";
+			echo "<input type='submit' name='deleteuser' value=\"".$LANG['buttons'][6]."\" class='submit'>";
 			echo "</td>";
 			echo "</table>";
 	

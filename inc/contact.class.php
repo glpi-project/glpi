@@ -60,14 +60,14 @@ class Contact extends CommonDBTM{
 
 	function defineTabs($ID,$withtemplate){
 		global $LANG;
-		$ong[1]=$LANG["title"][26];
+		$ong[1]=$LANG['title'][26];
 		if ($ID>0){
 			if (haveRight("document","r"))	
 				$ong[5]=$LANG["Menu"][27];
 			if (haveRight("link","r"))	
-				$ong[7]=$LANG["title"][34];
+				$ong[7]=$LANG['title'][34];
 			if (haveRight("notes","r"))
-				$ong[10]=$LANG["title"][37];
+				$ong[10]=$LANG['title'][37];
 		}
 		return $ong;
 	}
@@ -168,39 +168,39 @@ class Contact extends CommonDBTM{
 
 			echo "<table cellpadding='1' cellspacing='0' border='0'>\n";
 
-			echo "<tr><td>".$LANG["common"][48].":	</td>";
+			echo "<tr><td>".$LANG['common'][48].":	</td>";
 			echo "<td>";
 			autocompletionTextField("name","glpi_contacts","name",$this->fields["name"],40,$this->fields["FK_entities"]);	
 			echo "</td></tr>";
 
-			echo "<tr><td>".$LANG["common"][43].":	</td>";
+			echo "<tr><td>".$LANG['common'][43].":	</td>";
 			echo "<td>";
 			autocompletionTextField("firstname","glpi_contacts","firstname",$this->fields["firstname"],40,$this->fields["FK_entities"]);	
 			echo "</td></tr>";
 
-			echo "<tr><td>".$LANG["help"][35].": 	</td>";
+			echo "<tr><td>".$LANG['help'][35].": 	</td>";
 			echo "<td>";
 			autocompletionTextField("phone","glpi_contacts","phone",$this->fields["phone"],40,$this->fields["FK_entities"]);	
 
 			echo "</td></tr>";
 
-			echo "<tr><td>".$LANG["help"][35]." 2:	</td><td>";
+			echo "<tr><td>".$LANG['help'][35]." 2:	</td><td>";
 			autocompletionTextField("phone2","glpi_contacts","phone2",$this->fields["phone2"],40,$this->fields["FK_entities"]);
 			echo "</td></tr>";
 
-			echo "<tr><td>".$LANG["common"][42].":	</td><td>";
+			echo "<tr><td>".$LANG['common'][42].":	</td><td>";
 			autocompletionTextField("mobile","glpi_contacts","mobile",$this->fields["mobile"],40,$this->fields["FK_entities"]);
 			echo "</td></tr>";
 
 
-			echo "<tr><td>".$LANG["financial"][30].":	</td><td>";
+			echo "<tr><td>".$LANG['financial'][30].":	</td><td>";
 			autocompletionTextField("fax","glpi_contacts","fax",$this->fields["fax"],40,$this->fields["FK_entities"]);
 			echo "</td></tr>";
-			echo "<tr><td>".$LANG["setup"][14].":	</td><td>";
+			echo "<tr><td>".$LANG['setup'][14].":	</td><td>";
 			autocompletionTextField("email","glpi_contacts","email",$this->fields["email"],40,$this->fields["FK_entities"]);
 			echo "</td></tr>";
 
-			echo "<tr><td>".$LANG["common"][17].":	</td>";
+			echo "<tr><td>".$LANG['common'][17].":	</td>";
 			echo "<td>";
 			dropdownValue("glpi_dropdown_contact_type","type",$this->fields["type"]);
 			echo "</td>";
@@ -213,11 +213,11 @@ class Contact extends CommonDBTM{
 			echo "<td class='tab_bg_1' valign='top'>";
 
 			echo "<table cellpadding='1' cellspacing='0' border='0'><tr><td>";
-			echo $LANG["common"][25].":	</td></tr>";
+			echo $LANG['common'][25].":	</td></tr>";
 			echo "<tr><td class='center'><textarea cols='45' rows='4' name='comments' >".$this->fields["comments"]."</textarea>";
 
 			if ($ID>0) {				
-				echo "</td></tr><tr><td><a href='".$CFG_GLPI["root_doc"]."/front/contact.vcard.php?ID=$ID'>".$LANG["common"][46]."</a>";
+				echo "</td></tr><tr><td><a href='".$CFG_GLPI["root_doc"]."/front/contact.vcard.php?ID=$ID'>".$LANG['common'][46]."</a>";
 			}		
 			echo "</td></tr></table>";
 
@@ -236,22 +236,22 @@ class Contact extends CommonDBTM{
 				
 				echo "<td class='tab_bg_2' valign='top'>";
 				echo "<input type='hidden' name='ID' value=\"$ID\">\n";
-				echo "<div class='center'><input type='submit' name='update' value=\"".$LANG["buttons"][7]."\" class='submit' ></div>";
+				echo "<div class='center'><input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit' ></div>";
 				echo "</td>\n\n";
 				echo "<td class='tab_bg_2' valign='top'>\n";
 				if (!$this->fields["deleted"])
-					echo "<div class='center'><input type='submit' name='delete' value=\"".$LANG["buttons"][6]."\" class='submit'></div>";
+					echo "<div class='center'><input type='submit' name='delete' value=\"".$LANG['buttons'][6]."\" class='submit'></div>";
 				else {
-					echo "<div class='center'><input type='submit' name='restore' value=\"".$LANG["buttons"][21]."\" class='submit'>";
+					echo "<div class='center'><input type='submit' name='restore' value=\"".$LANG['buttons'][21]."\" class='submit'>";
 
-					echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='submit' name='purge' value=\"".$LANG["buttons"][22]."\" class='submit'></div>";
+					echo "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='submit' name='purge' value=\"".$LANG['buttons'][22]."\" class='submit'></div>";
 				}
 				echo "</td>";
 
 			} else {
 
 				echo "<td class='tab_bg_2' valign='top' colspan='2'>";
-				echo "<div class='center'><input type='submit' name='add' value=\"".$LANG["buttons"][8]."\" class='submit'></div>";
+				echo "<div class='center'><input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'></div>";
 				echo "</td>";
 
 			}
