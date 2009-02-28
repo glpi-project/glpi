@@ -87,7 +87,7 @@ if (isset($LINK_ID_TABLE[$_POST["type"]])&&$_POST["type"]>0){
 	echo "<select id='item$rand' name=\"item\" size='1'>";
 
 	if ($_POST['searchText']!=$CFG_GLPI["ajax_wildcard"]&&$DB->numrows($result)==$NBMAX)
-		echo "<option value=\"0\">--".$LANG["common"][11]."--</option>";
+		echo "<option value=\"0\">--".$LANG['common'][11]."--</option>";
 
 	echo "<option value=\"0\">-----</option>";
 	if ($DB->numrows($result)) {

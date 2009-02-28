@@ -50,7 +50,7 @@ if (isset($LINK_ID_TABLE[$_POST["type"]])&&$_POST["type"]>0&&($_SESSION["glpiact
 	$table=$LINK_ID_TABLE[$_POST["type"]];
 
 	if (!isset($_POST["admin"])||$_POST["admin"]==0){
-		echo "<div align='center'>".$LANG["help"][23].":&nbsp;";
+		echo "<div align='center'>".$LANG['help'][23].":&nbsp;";
 	}
 	$rand=mt_rand();
 

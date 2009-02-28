@@ -81,7 +81,7 @@ if (isset($LINK_ID_TABLE[$_POST["type"]])&&isset($_POST["item"])){
 	}
 	echo "</select>";
 
-	echo "<input type='submit' name='connect' value=\"".$LANG["buttons"][9]."\" class='submit'>";
+	echo "<input type='submit' name='connect' value=\"".$LANG['buttons'][9]."\" class='submit'>";
 }
 
 ?>

@@ -47,7 +47,7 @@
 		checkTypeRight($_POST["type"],"r");
 		echo "<input type='text' size='10' name=\"contains2[".$_POST["num"]."]\" value=\"".stripslashes($_POST["val"])."\" >";
 		echo "&nbsp;";
-		echo $LANG["search"][10]."&nbsp;";
+		echo $LANG['search'][10]."&nbsp;";
 	
 		echo "<select name=\"field2[".$_POST["num"]."]\" size='1'>";
 		$first_group=true;
