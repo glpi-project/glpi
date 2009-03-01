@@ -2099,10 +2099,9 @@ function isSoftwareDeleted($ID) {
  * @param manufacturer the software's manufacturer
  * @param entity the entity in which the software must be added
  * @param comments
- * @param process_type process which calls the function (IMPORT_TYPE_OCS, IMPORT_TYPE_DICTIONNARY, etc...) 
  * @return the software's ID
  */
-function addSoftware($name, $manufacturer, $entity, $comments = '', $process_type = -1) {
+function addSoftware($name, $manufacturer, $entity, $comments = '') {
 	global $LANG, $DB,$CFG_GLPI;
 	$software = new Software;
 
@@ -2132,14 +2131,6 @@ function addSoftware($name, $manufacturer, $entity, $comments = '', $process_typ
 			$input["category"] = 0;
 		}
 
-		switch ($process_type) {
-			case IMPORT_TYPE_OCS :
-				$input["_from_ocs"] = 1;
-				break;
-			default :
-				break;
-		}
-
 		$id = $software->add($input);
 	}
 	return $id;
@@ -2149,9 +2140,8 @@ function addSoftware($name, $manufacturer, $entity, $comments = '', $process_typ
  * Put software in trash because it's been removed by GLPI software dictionnary
  * @param $ID  the ID of the software to put in trash
  * @param $comments the comments to add to the already existing software's comments
- * @param $process_type process which calls the function (IMPORT_TYPE_OCS, IMPORT_TYPE_DICTIONNARY, etc...)
  */
-function putSoftwareInTrash($ID, $comments = '', $process_type = -1) {
+function putSoftwareInTrash($ID, $comments = '') {
 	global $LANG,$CFG_GLPI;
 	$software = new Software;
 	//Get the software's fields
@@ -2170,24 +2160,14 @@ function putSoftwareInTrash($ID, $comments = '', $process_type = -1) {
 	//Add dictionnary comment to the current comments
 	$input["comments"] = ($software->fields["comments"] != '' ? "\n" : '') . $comments;
 
-	//Update the software
-	switch ($process_type) {
-		case IMPORT_TYPE_OCS :
-			$input["_from_ocs"] = 1;
-			break;
-		default :
-			break;
-	}
-
 	$software->update($input);
 }
 
 /**
  * Restore a software from trash
  * @param $ID  the ID of the software to put in trash
- * @param $process_type process which calls the function (IMPORT_TYPE_OCS, IMPORT_TYPE_DICTIONNARY, etc...) 
  */
-function removeSoftwareFromTrash($ID, $process_type = -1) {
+function removeSoftwareFromTrash($ID) {
 	$s = new Software;
 
 	$s->getFromDB($ID);
@@ -2199,14 +2179,6 @@ function removeSoftwareFromTrash($ID, $process_type = -1) {
 	else
 		$input["category"] = 0;
 
-	//Update the software
-	switch ($process_type) {
-		case IMPORT_TYPE_OCS :
-			$input["_from_ocs"] = 1;
-			break;
-		default :
-			break;
-	}
 	$s->restore(array (
 		"ID" => $ID
 	));
@@ -2217,9 +2189,8 @@ function removeSoftwareFromTrash($ID, $process_type = -1) {
  * @param manufacturer the software's manufacturer
  * @param entity the entity in which the software must be added
  * @param comments comments
- * @param process_type process which calls the function (IMPORT_TYPE_OCS, IMPORT_TYPE_DICTIONNARY, etc...) 
  */
-function addSoftwareOrRestoreFromTrash($name,$manufacturer,$entity,$comments='',$process_type=-1) {
+function addSoftwareOrRestoreFromTrash($name,$manufacturer,$entity,$comments='') {
 	global $DB;
 	//Look for the software by his name in GLPI for a specific entity
 	$query_search = "SELECT glpi_software.ID as ID, glpi_software.deleted as deleted  
@@ -2239,7 +2210,7 @@ function addSoftwareOrRestoreFromTrash($name,$manufacturer,$entity,$comments='',
 	}
 
 	if (!$ID) 
-		$ID = addSoftware($name, $manufacturer, $entity, $comments, $process_type);
+		$ID = addSoftware($name, $manufacturer, $entity, $comments);
 	return $ID;	
 }
 
