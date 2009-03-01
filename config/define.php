@@ -358,10 +358,6 @@
 	define("RULE_DICTIONNARY_OS_SP",19);
 	define("RULE_DICTIONNARY_OS_VERSION",20);	
 
-	//Type of process to import datas in GLPI
-	define("IMPORT_TYPE_OCS",0); //Import from OCS
-	define("IMPORT_TYPE_DICTIONNARY",1); //Import or modified from dictionnaries
-
 	//Bookmark types
 	define("BOOKMARK_SEARCH",1); //SEARCH SYSTEM bookmark
 

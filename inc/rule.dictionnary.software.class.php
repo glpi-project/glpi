@@ -248,7 +248,7 @@ class DictionnarySoftwareCollection extends RuleCachedCollection {
 			//New software not already present in this entity
 			if (!isset($new_softs[$entity][$res_rule["name"]])){
 				// create new software or restore it from trash
-				$new_software_id = addSoftwareOrRestoreFromTrash($res_rule["name"],$manufacturer,$entity,'',IMPORT_TYPE_DICTIONNARY);
+				$new_software_id = addSoftwareOrRestoreFromTrash($res_rule["name"],$manufacturer,$entity);
 				$new_softs[$entity][$res_rule["name"]] = $new_software_id; 
 			} else {
 				$new_software_id = $new_softs[$entity][$res_rule["name"]];
@@ -311,7 +311,7 @@ class DictionnarySoftwareCollection extends RuleCachedCollection {
 
 			$software = new Software;
 			while ($soft = $DB->fetch_array($res_countsoftinstall)) {
-				putSoftwareInTrash($soft["ID"], $LANG['rulesengine'][87], IMPORT_TYPE_DICTIONNARY);
+				putSoftwareInTrash($soft["ID"], $LANG['rulesengine'][87]);
 			}
 		}
 	}
