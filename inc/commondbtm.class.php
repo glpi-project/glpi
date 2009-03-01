@@ -465,7 +465,7 @@ class CommonDBTM {
 			if ($newID= $this->addToDB()){
 				$this->addMessageOnAddAction($input);
 				$this->post_addItem($newID,$input);
-				doHook("item_add",array("type"=>$this->type, "ID" => $newID));
+				doHook("item_add",array("type"=>$this->type, "ID" => $newID, "input" => $input));
 				return $newID;
 			} else {
 				return false;
@@ -597,7 +597,7 @@ class CommonDBTM {
 
 				if ($this->updateInDB($updates,$oldvalues)){
 					$this->addMessageOnUpdateAction($input);
-					doHook("item_update",array("type"=>$this->type, "ID" => $input["ID"]));
+					doHook("item_update",array("type"=>$this->type, "ID" => $input["ID"], "input"=> $input, "updates" => $updates, "oldvalues" => $oldvalues));
 				}
 			} 
 			$this->post_updateItem($input,$updates,$history);
@@ -712,7 +712,7 @@ class CommonDBTM {
 				if ($this->deleteFromDB($this->fields["ID"],$force)){
 					if ($force){
 						$this->addMessageOnPurgeAction($input);
-						doHook("item_purge",array("type"=>$this->type, "ID" => $this->fields["ID"]));
+						doHook("item_purge",array("type"=>$this->type, "ID" => $this->fields["ID"], "input" => $input));
 					} else {
 						$this->addMessageOnDeleteAction($input);
 
@@ -723,7 +723,7 @@ class CommonDBTM {
 							historyLog ($this->fields["ID"],$this->type,$changes,0,HISTORY_DELETE_ITEM);
 						}
 
-						doHook("item_delete",array("type"=>$this->type, "ID" => $this->fields["ID"]));
+						doHook("item_delete",array("type"=>$this->type, "ID" => $this->fields["ID"], "input" => $input));
 					}
 				}
 				return true;
@@ -839,7 +839,7 @@ class CommonDBTM {
 					historyLog ($input["ID"],$this->type,$changes,0,HISTORY_RESTORE_ITEM);
 				}
 	
-				doHook("item_restore",array("type"=>$this->type, "ID" => $input["ID"]));
+				doHook("item_restore",array("type"=>$this->type, "ID" => $input["ID"], "input" => $input));
 			}
 		}
 	}
