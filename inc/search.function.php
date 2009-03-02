@@ -472,7 +472,7 @@ function searchForm($type,$params){
  *
  **/
 function showList ($type,$params){
-	global $DB,$INFOFORM_PAGES,$SEARCH_OPTION,$LINK_ID_TABLE,$CFG_GLPI,$LANG,$PLUGIN_HOOKS;
+	global $DB,$INFOFORM_PAGES,$SEARCH_PAGES,$SEARCH_OPTION,$LINK_ID_TABLE,$CFG_GLPI,$LANG,$PLUGIN_HOOKS;
 
 	// Default values of parameters
 	$default_values["link"]=array();
@@ -487,10 +487,13 @@ function showList ($type,$params){
 	$default_values["contains2"]="";
 	$default_values["field2"]="";
 	$default_values["type2"]="";
-	if (isset($INFOFORM_PAGES[$type])){
-		$default_values["target"]=str_replace('front/','',str_replace('.form','',$INFOFORM_PAGES[$type]));
+
+	if (isset($SEARCH_PAGES[$type])){
+		$default_values["target"] = $CFG_GLPI['root_doc'].'/'.$SEARCH_PAGES[$type];
+	} else if (isset($INFOFORM_PAGES[$type])){
+		$default_values["target"] = $CFG_GLPI['root_doc'].'/'.str_replace('.form','',$INFOFORM_PAGES[$type]);
 	} else {
-		$default_values["target"]=$_SERVER['PHP_SELF'];
+		$default_values["target"] = $_SERVER['PHP_SELF'];
 	}
 
 	foreach ($default_values as $key => $val){
