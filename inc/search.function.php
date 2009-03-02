@@ -194,7 +194,7 @@ function manageGetValuesInSearch($type=0,$usesession=true,$save=true){
  *
  **/
 function searchForm($type,$params){
-	global $LANG,$SEARCH_OPTION,$CFG_GLPI,$LINK_ID_TABLE,$INFOFORM_PAGES;
+	global $LANG,$SEARCH_OPTION,$CFG_GLPI,$LINK_ID_TABLE,$INFOFORM_PAGES,$SEARCH_PAGES;
 
 	// Default values of parameters
 	$default_values["link"]="";
@@ -206,10 +206,13 @@ function searchForm($type,$params){
 	$default_values["contains2"]="";
 	$default_values["field2"]="";
 	$default_values["type2"]="";
-	if (isset($INFOFORM_PAGES[$type])){
-		$default_values["target"]=preg_replace(':^.*front/:','',str_replace('.form','',$INFOFORM_PAGES[$type]));
+
+	if (isset($SEARCH_PAGES[$type])){
+		$default_values["target"] = $CFG_GLPI['root_doc'].'/'.$SEARCH_PAGES[$type];
+	} else if (isset($INFOFORM_PAGES[$type])){
+		$default_values["target"] = $CFG_GLPI['root_doc'].'/'.str_replace('.form','',$INFOFORM_PAGES[$type]);
 	} else {
-		$default_values["target"]=$_SERVER['PHP_SELF'];
+		$default_values["target"] = $_SERVER['PHP_SELF'];
 	}
 
 	foreach ($default_values as $key => $val){
@@ -503,6 +506,7 @@ function showList ($type,$params){
 			$$key=$default_values[$key];
 		}
 	}
+
 	if ($export_all){
 		$start=0;
 	}
