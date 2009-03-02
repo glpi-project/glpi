@@ -444,7 +444,9 @@ function getPluginSearchOption(){
 	return $sopt;
 }
 /**
- * Define a new device type used in a plugin
+ * DEPRECATED Define a new device type used in a plugin
+ * 
+ * TODO : to delete ASAP (all plugin switch to registerPluginType)
  * @param $plugin plugin of the device type
  * @param $name name of the device_type to define the constant
  * @param $ID number used as constant
@@ -456,10 +458,11 @@ function getPluginSearchOption(){
  * 
  * @return nothing
  */
-
 function pluginNewType($plugin,$name,$ID,$class,$table,$formpage='',$typename='',$recursive=false){
 	global $PLUGIN_HOOKS,$LINK_ID_TABLE,$INFOFORM_PAGES,$CFG_GLPI; 
 
+	trigger_error("pluginNewType is deprecated, use registerPluginType instead");
+	
 	if (!defined($name)) {
 		define($name,$ID);
 		$LINK_ID_TABLE[$ID]=$table;
@@ -475,6 +478,56 @@ function pluginNewType($plugin,$name,$ID,$class,$table,$formpage='',$typename=''
 		}
 	}
 }
+/**
+ * Define a new device type used in a plugin
+ * 
+ * @param $plugin plugin of the device type
+ * @param $name name of the device_type to define the constant
+ * @param $ID number used as constant
+ * @param $attrib Array of attributes, a hashtable with index in
+ * 	(classname, tablename, typename, formpage, searchpage, 
+ *   deleted_tables, specif_entities_tables, recursive_type, template_tables)
+ * 
+ * @return nothing
+ */
+function registerPluginType($plugin,$name,$ID,$attrib){
+	global $PLUGIN_HOOKS,$LINK_ID_TABLE,$INFOFORM_PAGES,$SEARCH_PAGES,$CFG_GLPI;
+	
+	if (!defined($name)) {
+		error_log("registerPluginType($plugin,$name,$ID,...)");
+		define($name,$ID);
+		$PLUGIN_HOOKS['plugin_types'][$ID]=$plugin;
+		
+		if (isset($attrib['classname'])) {
+			$PLUGIN_HOOKS['plugin_classes'][$ID]=$attrib['classname'];
+		}
+		if (isset($attrib['typename'])) {
+			$PLUGIN_HOOKS['plugin_typenames'][$ID]=$attrib['typename'];
+		}
+		if (isset($attrib['formpage'])) {
+			$INFOFORM_PAGES[$ID]="plugins/$plugin/".$attrib['formpage'];
+		}
+		if (isset($attrib['searchpage'])) {
+			$SEARCH_PAGES[$ID]="plugins/$plugin/".$attrib['searchpage'];
+		}
+		if (isset($attrib['tablename'])) {
+			$LINK_ID_TABLE[$ID] = $attrib['tablename'];
+
+			if (isset($attrib['recursive_type']) && $attrib['recursive_type']) {
+				$CFG_GLPI["recursive_type"][$ID] = $attrib['tablename'];
+			}
+			if (isset($attrib['deleted_tables']) && $attrib['deleted_tables']) {
+				array_push($CFG_GLPI["deleted_tables"], $attrib['tablename']);
+			}
+			if (isset($attrib['specif_entities_tables']) && $attrib['specif_entities_tables']) {
+				array_push($CFG_GLPI["specif_entities_tables"], $attrib['tablename']);
+			}
+			if (isset($attrib['template_tables']) && $attrib['template_tables']) {
+				array_push($CFG_GLPI["template_tables"], $attrib['tablename']);
+			}
+		} // is set tablename
+	} // not already defined
+} 
 
 function loadPluginLang($name){
 	global $CFG_GLPI,$LANG;
