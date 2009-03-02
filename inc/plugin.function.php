@@ -494,7 +494,7 @@ function registerPluginType($plugin,$name,$ID,$attrib){
 	global $PLUGIN_HOOKS,$LINK_ID_TABLE,$INFOFORM_PAGES,$SEARCH_PAGES,$CFG_GLPI;
 	
 	if (!defined($name)) {
-		error_log("registerPluginType($plugin,$name,$ID,...)");
+
 		define($name,$ID);
 		$PLUGIN_HOOKS['plugin_types'][$ID]=$plugin;
 		
