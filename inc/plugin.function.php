@@ -457,7 +457,6 @@ function getPluginSearchOption(){
  * @param $recursive boolean
  * 
  * @return nothing
- */
 function pluginNewType($plugin,$name,$ID,$class,$table,$formpage='',$typename='',$recursive=false){
 	global $PLUGIN_HOOKS,$LINK_ID_TABLE,$INFOFORM_PAGES,$CFG_GLPI; 
 
@@ -478,6 +477,8 @@ function pluginNewType($plugin,$name,$ID,$class,$table,$formpage='',$typename=''
 		}
 	}
 }
+ */
+
 /**
  * Define a new device type used in a plugin
  * 
@@ -498,19 +499,19 @@ function registerPluginType($plugin,$name,$ID,$attrib){
 		define($name,$ID);
 		$PLUGIN_HOOKS['plugin_types'][$ID]=$plugin;
 		
-		if (isset($attrib['classname'])) {
+		if (isset($attrib['classname']) && !empty($attrib['classname'])) {
 			$PLUGIN_HOOKS['plugin_classes'][$ID]=$attrib['classname'];
 		}
-		if (isset($attrib['typename'])) {
+		if (isset($attrib['typename']) && !empty($attrib['typename'])) {
 			$PLUGIN_HOOKS['plugin_typenames'][$ID]=$attrib['typename'];
 		}
-		if (isset($attrib['formpage'])) {
+		if (isset($attrib['formpage']) && !empty($attrib['formpage'])) {
 			$INFOFORM_PAGES[$ID]="plugins/$plugin/".$attrib['formpage'];
 		}
-		if (isset($attrib['searchpage'])) {
+		if (isset($attrib['searchpage']) && !empty($attrib['searchpage'])) {
 			$SEARCH_PAGES[$ID]="plugins/$plugin/".$attrib['searchpage'];
 		}
-		if (isset($attrib['tablename'])) {
+		if (isset($attrib['tablename']) && !empty($attrib['tablename'])) {
 			$LINK_ID_TABLE[$ID] = $attrib['tablename'];
 
 			if (isset($attrib['recursive_type']) && $attrib['recursive_type']) {
@@ -525,10 +526,10 @@ function registerPluginType($plugin,$name,$ID,$attrib){
 			if (isset($attrib['template_tables']) && $attrib['template_tables']) {
 				array_push($CFG_GLPI["template_tables"], $attrib['tablename']);
 			}
-			if (isset($attrib['reservation_types']) && $attrib['reservation_types']) {
-				array_push($CFG_GLPI["reservation_types"], $ID);
-			}
 		} // is set tablename
+		if (isset($attrib['reservation_types']) && $attrib['reservation_types']) {
+			array_push($CFG_GLPI["reservation_types"], $ID);
+		}
 	} // not already defined
 } 
 
