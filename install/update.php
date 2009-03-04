@@ -97,14 +97,14 @@ function displayMigrationMessage ($id, $msg="") {
 	
 	if ($created != $id) {
 		if (empty($msg)) $msg=$LANG['rulesengine'][90];
-		echo "<div id='migration_message_$id'><p align='center'>$msg</p></div>";
+		echo "<div id='migration_message_$id'><p class='center'>$msg</p></div>";
 		$created = $id;
 		$deb = time();
 	} else {
 		if (empty($msg)) $msg=$LANG['rulesengine'][91];
 		$fin = time();
 		$tps = timestampToString($fin-$deb);
-		echo "<script type='text/javascript'>document.getElementById('migration_message_$id').innerHTML = '<p align=\"center\">$msg ($tps)</p>';</script>\n";	
+		echo "<script type='text/javascript'>document.getElementById('migration_message_$id').innerHTML = '<p class=\"center\">$msg ($tps)</p>';</script>\n";	
 	}	
 	glpi_flush();								
 }
@@ -117,7 +117,7 @@ function displayMigrationMessage ($id, $msg="") {
 function showContentUpdateForm() {
 
 	global $LANG;
-	echo "<div align='center'>";
+	echo "<div class='center'>";
 	echo "<h3>".$LANG['update'][94]."</h3>";
 	echo "<p>".$LANG['update'][107]."</p></div>";
 	echo "<p class='submit'> <a href=\"update_content.php\"><span class='button'>".$LANG['install'][25]."</span></a>";
@@ -296,7 +296,7 @@ function showLocationUpdateForm(){
 	}
 
 	if (!isset($_POST["validate_location"])){
-		echo "<div align='center'>";
+		echo "<div class='center'>";
 		echo "<h4>".$LANG['update'][130]."</h4>";
 		echo "<p>".$LANG['update'][131]."</p>";
 		echo "<p>".$LANG['update'][132]."<br>".$LANG['update'][133]."</p>";
@@ -592,20 +592,20 @@ echo "<div id='principal'>";
 echo "<div id='bloc'>";
 echo "<div class='haut'></div>";
 echo "<h2>GLPI SETUP</h2>";
-echo "<br><h3>Update</h3>";
+echo "<br><h3>".$LANG['install'][4]."</h3>";
 
 // step 1    avec bouton de confirmation
 
 if(empty($_POST["continuer"]) && empty($_POST["from_update"])) {
 
 	if(empty($from_install)&&!isset($_POST["from_update"])) {
-		echo "<div align='center'>";
+		echo "<div class='center'>";
 		echo "<h3><span class='red'>".$LANG['update'][105]."</span>";
 		echo "<p class='submit'> <a href=\"../index.php\"><span class='button'>".$LANG['update'][106]."</span></a></p>";
 		echo "</div>";
 	}
 	else {
-		echo "<div align='center'>";
+		echo "<div class='center'>";
 		echo "<h3><span class='red'>".$LANG['update'][91]."</span>".$LANG['update'][92]. $DB->dbdefault ."</h3>";
 
 		echo "<form action=\"update.php\" method=\"post\">";
@@ -632,9 +632,9 @@ else {
 				$tab = updateDbUpTo031();
 			}
 
-			echo "<div align='center'>";
+			echo "<div class='center'>";
 			if(!empty($tab) && $tab["adminchange"]) {
-				echo "<div align='center'> <h2>". $LANG['update'][96] ."<h2></div>";
+				echo "<div class='center'> <h2>". $LANG['update'][96] ."<h2></div>";
 			}
 
 			if (showLocationUpdateForm()){
