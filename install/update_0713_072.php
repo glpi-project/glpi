@@ -367,7 +367,7 @@ function update0713to072() {
         							$query="INSERT INTO `glpi_softwarelicenses`
         							(`sID` ,`FK_entities`, `number` ,`type` ,`name` ,`serial` ,`buy_version`, `use_version`, `expire`, `FK_computers` ,`comments`)
         							VALUES
-        							(".$soft['ID']." , ".$soft["FK_entities"].",$install_count, 0, '".$vers['serial']."', '".$vers['serial']."' , $vers_ID, $vers_ID, ".$vers['expire'].", '".$vers['oem_computer']."', '".addslashes($vers['comments'])."');";
+        							(".$soft['ID']." , ".$soft["FK_entities"].",$install_count, 0, '".$vers['serial']."', '".addslashes($vers['serial'])."' , $vers_ID, $vers_ID, ".$vers['expire'].", '".$vers['oem_computer']."', '".addslashes($vers['comments'])."');";
         
         							if ($DB->query($query)) {
         								$lic_ID=$DB->insert_id();
