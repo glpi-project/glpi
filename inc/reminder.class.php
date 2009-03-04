@@ -120,7 +120,7 @@ class Reminder extends CommonDBTM {
 		return $input;
 	}
 
-	function pre_updateInDB($input,$updates) {
+	function pre_updateInDB($input,$updates,$oldvalues=array()) {
 		// Set new user if initial user have been deleted 
 		if ($this->fields['FK_users']==0){
 			$input['FK_users']=$_SESSION["glpiID"];

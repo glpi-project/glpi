@@ -81,7 +81,7 @@ class Contract extends CommonDBTM {
 		return $ong;
 	}
 
-	function pre_updateInDB($input,$updates,$oldvalues) {
+	function pre_updateInDB($input,$updates,$oldvalues=array()) {
 
 		// Clean end alert if begin_date is after old one
 		// Or if duration is greater than old one

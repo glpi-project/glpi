@@ -607,7 +607,7 @@ class SoftwareLicense extends CommonDBTM {
 	}
 */
 
-	function pre_updateInDB($input,$updates,$oldvalues) {
+	function pre_updateInDB($input,$updates,$oldvalues=array()) {
 		// Clean end alert if expire is after old one
 		if ((isset($oldvalues['expire'])
 			&& ($oldvalues['expire'] < $this->fields['expire'] ))
