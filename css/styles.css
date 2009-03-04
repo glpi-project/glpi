@@ -908,24 +908,29 @@ ul#onglet span.fake{
 	font-weight: bold;
 }
 
-#contenu-nullHeader {
-	height: 424px;
-	width: 739px;
-	margin-top:50px;
-	margin-left: auto;
-	margin-right: auto;
-	background:url("../pics/null-header.png")  no-repeat;
-	
+
+#bloc .haut{
+height: 53px;
+background: url(../pics/haut_install.png) 0 0 no-repeat; 
+width:760px;
+margin:0;
+padding:0;
+}
+
+#bloc{
+background: url(../pics/milieu_install.png) 0 0 repeat-y;
+width:760px;
+margin:0 auto;
+text-align:left;
 }
 
 
-#text-nullHeader {
-	float:left;
-	height: 300px;
-	width: 739px;
-	margin-right:auto;
-	margin-left: auto;
-	margin-top:100px;
+#bloc .bas{
+height: 31px;
+background: url(../pics/bas_install.png)  0 0  no-repeat; 
+width:760px;
+margin:0;
+padding:0;
 }
 
 
