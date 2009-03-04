@@ -623,7 +623,7 @@ function commonCheckForUseGLPI(){
 		$error = 2;
 		echo "<td  class='red'><b>".$LANG['install'][13]."</b></td></tr>";
 	} else {
-		if ($_SESSION["Test_session_GLPI"] == 1			// From install
+		if ((isset($_SESSION["Test_session_GLPI"])&&$_SESSION["Test_session_GLPI"] == 1)			// From install
 			|| isset($_SESSION["glpi_currenttime"])) { 	// From Update
 			echo "<td><img src=\"".GLPI_ROOT."/pics/greenbutton.png\" alt='".$LANG['install'][14]."' title='".$LANG['install'][14]."'></td></tr>";
 		}
