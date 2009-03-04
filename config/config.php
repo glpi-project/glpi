@@ -132,7 +132,7 @@
 		// If debug mode activated : display some informations
 		if ($_SESSION['glpi_use_mode']==DEBUG_MODE){
 			ini_set('display_errors','On'); 
-			error_reporting(E_ALL); 
+			error_reporting(E_ALL | E_STRICT); 
 			//ini_set('error_prepend_string','<div style="position:fload-left; background-color:red; z-index:10000">PHP ERROR : '); 
 			//ini_set('error_append_string','</div>'); 
 			set_error_handler("userErrorHandler"); 
