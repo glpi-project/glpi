@@ -82,7 +82,7 @@ class Ocsng extends CommonDBTM {
 		$this->type = OCSNG_TYPE;
 	}
 
-	function defineTabs($ID,$withtemplate='')
+	function defineTabs($ID,$withtemplate)
 	{
 		global $LANG;
 		$tabs[0]=$LANG['help'][30];
