@@ -230,8 +230,8 @@ function update0713to072() {
 		`ID` int(15) NOT NULL auto_increment,
 		`sID` int(15) NOT NULL default '0',
 	  	`state` int(11) NOT NULL default '0',
-		`name` varchar(255) collate utf8_unicode_ci default NULL,
-		`comments` text collate utf8_unicode_ci,
+		`name` varchar(255) NULL default NULL,
+		`comments` text,
 		PRIMARY KEY  (`ID`),
 		KEY `sID` (`sID`),
 		KEY `name` (`name`)
@@ -471,7 +471,7 @@ function update0713to072() {
 	if (!TableExists("glpi_dropdown_licensetypes")) {
 		$query="CREATE TABLE `glpi_dropdown_licensetypes` (
 			`ID` int(11) NOT NULL auto_increment,
-			`name` varchar(255) default NULL,
+			`name` varchar(255) NULL default NULL,
 			`comments` text,
 			PRIMARY KEY  (`ID`),
 			KEY `name` (`name`)
@@ -493,7 +493,7 @@ function update0713to072() {
 	}	  	
 
 	if (!FieldExists("glpi_auth_ldap", "ldap_field_title")) {
-		$query = "ALTER TABLE `glpi_auth_ldap` ADD `ldap_field_title` VARCHAR( 255 ) NOT NULL ;";
+		$query = "ALTER TABLE `glpi_auth_ldap` ADD `ldap_field_title` VARCHAR( 255 ) DEFAULT NULL ;";
 		$DB->query($query) or die("0.72 add ldap_field_title in glpi_auth_ldap" . $LANG['update'][90] . $DB->error());
 	}	  	
 
@@ -501,7 +501,7 @@ function update0713to072() {
 	if (!TableExists("glpi_dropdown_user_titles")) {
 		$query="CREATE TABLE `glpi_dropdown_user_titles` (
 		`ID` int( 11 ) NOT NULL AUTO_INCREMENT ,
-		`name` varchar( 255 ) default NULL ,
+		`name` varchar( 255 ) NULL default NULL ,
 		`comments` text ,
 		PRIMARY KEY ( `ID` ) ,
 		KEY `name` ( `name` )
@@ -521,7 +521,7 @@ function update0713to072() {
 
 	if (!FieldExists("glpi_auth_ldap", "ldap_field_type"))
 	{ 
-		$query = "ALTER TABLE `glpi_auth_ldap` ADD `ldap_field_type` VARCHAR( 255 ) NOT NULL ;";
+		$query = "ALTER TABLE `glpi_auth_ldap` ADD `ldap_field_type` VARCHAR( 255 ) DEFAULT NULL ;";
 		$DB->query($query) or die("0.72 add ldap_field_title in glpi_auth_ldap" . $LANG['update'][90] . $DB->error());
 	}	  	
 	
@@ -529,7 +529,7 @@ function update0713to072() {
 	if (!TableExists("glpi_dropdown_user_types")) {
 		$query="CREATE TABLE `glpi_dropdown_user_types` (
 		`ID` int( 11 ) NOT NULL AUTO_INCREMENT ,
-		`name` varchar( 255 ) default NULL ,
+		`name` varchar( 255 ) NULL default NULL ,
 		`comments` text ,
 		PRIMARY KEY ( `ID` ) ,
 		KEY `name` ( `name` )
@@ -553,7 +553,7 @@ function update0713to072() {
 	}	  	
 
 	if (!FieldExists("glpi_auth_ldap", "ldap_field_language")){ 
-		$query = "ALTER TABLE `glpi_auth_ldap` ADD `ldap_field_language` VARCHAR( 255 ) NOT NULL ;";
+		$query = "ALTER TABLE `glpi_auth_ldap` ADD `ldap_field_language` VARCHAR( 255 ) NULL DEFAULT NULL ;";
 		$DB->query($query) or die("0.72 add ldap_field_language in glpi_auth_ldap" . $LANG['update'][90] . $DB->error());
 	}
 
@@ -572,7 +572,7 @@ function update0713to072() {
 	if (!TableExists("glpi_dropdown_filesystems")) {
 		$query="CREATE TABLE `glpi_dropdown_filesystems` (
 			`ID` int(11) NOT NULL auto_increment,
-			`name` varchar(255) default NULL,
+			`name` varchar(255) NULL default NULL,
 			`comments` text ,
 			PRIMARY KEY  (`ID`),
 			KEY `name` (`name`)
@@ -590,9 +590,9 @@ function update0713to072() {
 		$query="CREATE TABLE `glpi_computerdisks` (
 			`ID` int(11) NOT NULL auto_increment,
 			`FK_computers` int(11) NOT NULL default 0,
-			`name` varchar(255)  default NULL,
-			`device` varchar(255) default NULL,
-			`mountpoint` varchar(255)  default NULL,
+			`name` varchar(255)  NULL default NULL,
+			`device` varchar(255) NULL default NULL,
+			`mountpoint` varchar(255) NULL default NULL,
 			`FK_filesystems` int(11) NOT NULL default 0,
 			`totalsize` int(11) NOT NULL default 0,
 			`freesize` int(11) NOT NULL default 0,
@@ -716,11 +716,11 @@ function update0713to072() {
 		$query="CREATE TABLE IF NOT EXISTS `glpi_plugins` (
 			`ID` int(11) NOT NULL auto_increment,
 			`directory` varchar(255) NOT NULL,
-			`name` varchar(255) NOT NULL,
+			`name` varchar(255)  NOT NULL,
 			`version` varchar(255)  NOT NULL,
 			`state` tinyint(4) NOT NULL default '0',
-			`author` varchar(255)default NULL,
-			`homepage` varchar(255) default NULL,
+			`author` varchar(255) NULL default NULL,
+			`homepage` varchar(255) NULL default NULL,
 			PRIMARY KEY  (`ID`),
 			UNIQUE KEY `name` (`directory`)
 			) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
@@ -1016,12 +1016,12 @@ function update0713to072() {
 	}
 
 	if (!FieldExists("glpi_entities_data","ldap_dn")){
-		$query="ALTER TABLE `glpi_entities_data` ADD `ldap_dn` VARCHAR( 255 ) NOT NULL";
+		$query="ALTER TABLE `glpi_entities_data` ADD `ldap_dn` VARCHAR( 255 ) NULL";
 		$DB->query($query) or die("0.72 add ldap_dn in config" . $LANG['update'][90] . $DB->error());
 	}
 
 	if (!FieldExists("glpi_entities_data","tag")){
-		$query="ALTER TABLE `glpi_entities_data` ADD `tag` VARCHAR( 255 ) NOT NULL";
+		$query="ALTER TABLE `glpi_entities_data` ADD `tag` VARCHAR( 255 ) NULL";
 		$DB->query($query) or die("0.72 add tag in config" . $LANG['update'][90] . $DB->error());
 	}
 	if (FieldExists("glpi_rules_ldap_parameters","rule_type")){
