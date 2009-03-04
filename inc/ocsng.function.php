@@ -1058,7 +1058,13 @@ function ocsUpdateHardware($glpi_id, $ocs_id, $ocs_server_id, $cfg_ocs, $compute
 			
 		if ($cfg_ocs["import_general_os"]) {
 			if (!in_array("os", $computer_updates)) {
-				$compupdate["os"] = externalImportDropdown('glpi_dropdown_os', $line["OSNAME"]);
+				$osname=$line["OSNAME"];
+				// Hack for OCS encoding problems
+				if (!seems_utf8($osname)){
+					$osname=utf8_encode($osname);
+				}
+			
+				$compupdate["os"] = externalImportDropdown('glpi_dropdown_os', $osname);
 			}
 			if (!in_array("os_version", $computer_updates)) {
 				$compupdate["os_version"] = externalImportDropdown('glpi_dropdown_os_version', $line["OSVERSION"]);
@@ -2919,10 +2925,12 @@ function ocsUpdateSoftware($glpi_id, $entity, $ocs_id, $ocs_server_id, $cfg_ocs,
 					
 		}
 		
+
+
 		//---- Get all the softwares for this machine from OCS -----//
 		if ($cfg_ocs["use_soft_dict"]){
 			$query2 = "SELECT softwares.NAME AS INITNAME, dico_soft.FORMATTED AS NAME, 
-				softwares.VERSION AS VERSION, softwares.PUBLISHER AS PUBLISHER, softwares.COMMENTS AS COMMENTS 
+				softwares.VERSION AS VERSION, softwares.PUBLISHER AS PUBLISHER, softwares.COMMENTS AS COMMENTS
 				FROM softwares 
 				INNER JOIN dico_soft ON (softwares.NAME = dico_soft.EXTRACTED) 
 				WHERE softwares.HARDWARE_ID='$ocs_id'";
@@ -2941,10 +2949,17 @@ function ocsUpdateSoftware($glpi_id, $entity, $ocs_id, $ocs_server_id, $cfg_ocs,
 			while ($data2 = $DBocs->fetch_array($result2)) {
 				$data2 = clean_cross_side_scripting_deep(addslashes_deep($data2));
 				$initname = $data2["INITNAME"];
+				// Hack for OCS encoding problems
+				if (!seems_utf8($initname)){
+					$initname=utf8_encode($initname);
+				}
 				$name = $data2["NAME"];
+				// Hack for OCS encoding problems
+				if (!seems_utf8($name)){
+					$name=utf8_encode($name);
+				}
 				$version = $data2["VERSION"];
 				$manufacturer = processManufacturerName($data2["PUBLISHER"]);
-				
 				$use_glpi_dictionnary = false;
 				if (!$cfg_ocs["use_soft_dict"])
 				{
@@ -2974,14 +2989,14 @@ function ocsUpdateSoftware($glpi_id, $entity, $ocs_id, $ocs_server_id, $cfg_ocs,
 	
 					// Clean software object
 					$soft->reset();
-	
+
 					//If name+version not in present for this computer in glpi, add it 
 					if (!in_array($initname . OCS_FIELD_SEPARATOR. $version, $import_software)) 
 					{
 							//------------------------------------------------------------------------------------------------------------------//
 							//---- The software doesn't exists in this version for this computer -----//
 							//----------------------------------------------------------------------------------------------------------------//
-							
+
 							$isNewSoft= addSoftwareOrRestoreFromTrash($modified_name,$manufacturer,$entity);
 							//Import version for this software
 							$versionID = ocsImportVersion($isNewSoft,$modified_version);
