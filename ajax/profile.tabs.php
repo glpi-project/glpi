@@ -41,7 +41,9 @@ include (GLPI_ROOT . "/inc/includes.php");
 header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
-if(!isset($_POST["ID"])) $_POST["ID"] = "";
+if(!isset($_POST["ID"])) {
+	$_POST["ID"] = "";
+}
 
 $prof=new Profile();
 
@@ -66,9 +68,7 @@ checkRight("profile","r");
 					}
 					break;
 			}
-		}
-	else
-	{
+		} else	{
 		switch($_POST['glpi_tab']){
 				case -1 :	
 					$prof->showForm($_POST['target'],$_POST["ID"]);

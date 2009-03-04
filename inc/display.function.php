@@ -2150,8 +2150,7 @@ function createAjaxTabs($tabdiv_id='tabspanel',$tabdivcontent_id='tabcontent',$t
 
 					echo "}";
 				}
-			echo "]
-				});";
+			echo "]});";
 
 			echo "/// Define view point";
 			echo "tabpanel.expand();";
