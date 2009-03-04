@@ -169,15 +169,19 @@ function update065to068(){
 		$DB->query($query) or die("0.68 create mailing table ".$LANG['update'][90].$DB->error());
 
 		// MAILING TYPE
-		define("USER_MAILING_TYPE","1");
-		define("PROFILE_MAILING_TYPE","2");
-		define("GROUP_MAILING_TYPE","3");
+		if (!defined("USER_MAILING_TYPE")){
+			define("USER_MAILING_TYPE","1");
+			define("PROFILE_MAILING_TYPE","2");
+			define("GROUP_MAILING_TYPE","3");
+		}
 
 		// MAILING USERS TYPE
-		define("ADMIN_MAILING","1");
-		define("ASSIGN_MAILING","2");
-		define("AUTHOR_MAILING","3");
-		define("OLD_ASSIGN_MAILING","4");
+		if (!defined("ADMIN_MAILING")){
+			define("ADMIN_MAILING","1");
+			define("ASSIGN_MAILING","2");
+			define("AUTHOR_MAILING","3");
+			define("OLD_ASSIGN_MAILING","4");
+		}
 
 
 		$query="SELECT * from glpi_config WHERE ID='1'";
