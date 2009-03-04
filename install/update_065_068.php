@@ -530,7 +530,7 @@ function update065to068(){
 
 	//// Group management
 	// Manage old plugin table
-	if(FieldExists("glpi_groups","extend")){
+	if(TableExists("glpi_groups") && FieldExists("glpi_groups","extend")){
 		$query= "ALTER TABLE `glpi_groups` RENAME `glpi_plugin_droits_groups`;";
 		$DB->query($query) or die("0.68 rename plugin groups table ".$LANG['update'][90].$DB->error());
 	}
