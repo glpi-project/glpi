@@ -201,11 +201,11 @@ function ajaxUpdateItemJsCode($toupdate,$url,$parameters=array(),$spinner=true,$
 	//echo "Ext.onReady(function() {";
 		echo "Ext.get('$toupdate').load({
 			url: '$url',
-			scripts: true,
-			";
+			scripts: true";
 	
 		if (count($parameters)){
-			echo "params:'";
+			echo ",
+				params:'";
 			$first=true;
 			foreach ($parameters as $key => $val){
 				if ($first){

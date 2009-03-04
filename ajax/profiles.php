@@ -42,13 +42,16 @@
 	
 	header("Content-Type: text/html; charset=UTF-8");
 	header_nocache();
-	
+
 	checkRight("profile","r");
 	$prof=new Profile();
-	if ($_POST["interface"]=="helpdesk")
-	$prof->showHelpdeskForm($CFG_GLPI["root_doc"]."/front/profile.form.php",$_POST["ID"]);
-	else if ($_POST["interface"]=="central")
-	$prof->showCentralForm($CFG_GLPI["root_doc"]."/front/profile.form.php",$_POST["ID"]);
-
+	
+	if (isset($_POST["interface"])&&isset($_POST["ID"])){
+		if ($_POST["interface"]=="helpdesk"){
+			$prof->showHelpdeskForm($CFG_GLPI["root_doc"]."/front/profile.form.php",$_POST["ID"]);
+		} else {
+			$prof->showCentralForm($CFG_GLPI["root_doc"]."/front/profile.form.php",$_POST["ID"]);
+		}
+	}
 	ajaxFooter();
 ?>

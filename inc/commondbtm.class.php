@@ -985,7 +985,6 @@ class CommonDBTM {
 		global $LANG,$CFG_GLPI,$INFOFORM_PAGES;
 
 		$target=$_SERVER['PHP_SELF'];
-	
 		$template="";
 		$templatehtml="";
 		if(!empty($withtemplate)){
@@ -1000,6 +999,7 @@ class CommonDBTM {
 				$extraparam.="&$key=$val";
 			}
 		}
+
 
 		if (empty($withtemplate) && $ID && $this->type>0){
 			echo "<div id='menu_navigate'>";
@@ -1044,21 +1044,22 @@ class CommonDBTM {
 			}
 			
 			$cleantarget=preg_replace("/\?ID=([0-9]+)/","",$target);
-
-			
-			echo "<ul><li><a href=\"javascript:showHideDiv('tabsbody','tabsbodyimg','".$CFG_GLPI["root_doc"]."/pics/deplier_down.png','".$CFG_GLPI["root_doc"]."/pics/deplier_up.png');\">";
+			echo "<ul>";
+			echo "<li><a href=\"javascript:showHideDiv('tabsbody','tabsbodyimg','".$CFG_GLPI["root_doc"]."/pics/deplier_down.png','".$CFG_GLPI["root_doc"]."/pics/deplier_up.png')\">";
 			echo "<img alt='' name='tabsbodyimg' src=\"".$CFG_GLPI["root_doc"]."/pics/deplier_up.png\">";
 			echo "</a></li>";
-			
+
 						
-			echo "<li><a href='".$glpilisturl."'>";
+			echo "<li><a href=\"".$glpilisturl."\">";
 			if ($glpilisttitle){
 				echo $glpilisttitle;
 			} else {
 				echo $LANG['common'][53];
 			}
-			echo "</a>:</li>";
-			
+			echo "</a>:&nbsp;</li>";
+		
+
+
 
 			if ($first>0) {
 				echo "<li><a href='$cleantarget?ID=$first$extraparamhtml'><img src=\"".$CFG_GLPI["root_doc"]."/pics/first.png\" alt='".$LANG['buttons'][55]."' title='".$LANG['buttons'][55]."'></a></li>";
@@ -1077,7 +1078,6 @@ class CommonDBTM {
 				echo "<li>".($current+1) . "/" . count($glpilistitems)."</li>";
 			}
 			
-
 			if ($next>0) {
 				echo "<li><a href='$cleantarget?ID=$next$extraparamhtml'><img src=\"".$CFG_GLPI["root_doc"]."/pics/right.png\" alt='".$LANG['buttons'][11]."' title='".$LANG['buttons'][11]."'></a></li>";
 			} else {
@@ -1089,9 +1089,11 @@ class CommonDBTM {
 			} else {
 				echo "<li><img src=\"".$CFG_GLPI["root_doc"]."/pics/last_off.png\" alt='".$LANG['buttons'][56]."' title='".$LANG['buttons'][56]."'></li>";
 			}
-			
+
 			echo "</ul></div>";
+
 			echo "<div class='sep'></div>";
+
 		}
 	
 		
