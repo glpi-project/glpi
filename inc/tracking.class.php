@@ -280,7 +280,7 @@ class Job extends CommonDBTM{
 		return $input;
 	}
 
-	function pre_updateInDB($input,$updates) {
+	function pre_updateInDB($input,$updates,$oldvalues=array()) {
 		global $LANG;
 
 		// Status close : check dates

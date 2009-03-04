@@ -1140,7 +1140,7 @@ class User extends CommonDBTM {
 	}
 
 
-	function pre_updateInDB($input,$updates) {
+	function pre_updateInDB($input,$updates,$oldvalues=array()) {
 		
 		// Security system except for login update
 		if (isset ($_SESSION["glpiID"]) && !haveRight("user", "w") && !strpos($_SERVER['PHP_SELF'],"login.php")) { 
