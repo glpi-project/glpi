@@ -1317,10 +1317,10 @@ function nullHeader($title,$url='') {
 
 	// Body with configured stuff
 	echo "<body>";
+	echo "<div id='page'>";
+	echo "<div id='bloc'>";
 
-	echo "<div id='contenu-nullHeader'>";
-
-	echo "<div id='text-nullHeader'>";
+	echo "<div class='haut'></div>";
 }
 
 /**
@@ -1568,8 +1568,8 @@ function nullFooter() {
 	$FOOTER_LOADED=true;
 
 	if (!isCommandLine()){
-		echo "</div>";  // fin box text-nullHeader ouvert dans le null header
-		echo "</div>"; // fin contenu-nullHeader ouvert dans le null header
+		
+		echo "<div class='bas'></div></div></div>"; 
 		
 	
 		echo "<div id='footer-login'>";
