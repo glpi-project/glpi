@@ -1613,6 +1613,7 @@ function dropdownMassiveAction($device_type,$deleted=0,$extraparams=array()){
 				if ($isadmin){
 					echo "<option value=\"add_group\">".$LANG['setup'][604]."</option>";
 					echo "<option value=\"add_userprofile\">".$LANG['setup'][607]."</option>";
+					echo "<option value=\"change_auth_method\">".$LANG['login'][30]."</option>";
 				}
 
 				if (haveRight("user","w")){
@@ -2569,4 +2570,34 @@ function getContractRenewalIDByName($value){
 	return 0;
 }
 
+/**
+ * Print all the authentication methods
+ * @param name the dropdown name
+ * 
+ *@return Nothing (display)
+ */
+function dropdownAuthMethods($name)
+{
+	global $LANG,$DB;
+	$methods[0]='-----';
+	$methods[AUTH_DB_GLPI]=$LANG['login'][32];
+	
+	$sql = "SELECT count(*) as cpt FROM  glpi_auth_ldap";
+	$result = $DB->query($sql);
+	
+	if ($DB->result($result,0,"cpt") > 0)
+	{
+		$methods[AUTH_LDAP]=$LANG['login'][31];
+		$methods[AUTH_EXTERNAL]=$LANG['setup'][67];
+	}
+		
+	
+	$sql = "SELECT count(*) as cpt FROM glpi_auth_mail";
+	$result = $DB->query($sql);
+	
+	if ($DB->result($result,0,"cpt") > 0)
+		$methods[AUTH_MAIL]=$LANG['login'][33];
+	
+	return dropdownArrayValues($name,$methods);	
+}
 ?>

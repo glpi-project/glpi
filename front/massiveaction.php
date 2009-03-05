@@ -372,6 +372,14 @@ if (isset($_POST["device_type"])){
 					}
 				}
 			break;
+			case "change_auth_method":
+				foreach ($_POST["item"] as $key => $val){
+					if ($val==1) 
+						$ids[]=$key;
+				}
+			changeUserAuthMethod($ids,$_POST["auth_method"],$_POST["auth_server"]);
+
+			break;
 			case "unlock_ocsng_field":
 				$fields=getOcsLockableFields();
 				if ($_POST['field']=='all'||isset($fields[$_POST['field']])){
@@ -465,6 +473,7 @@ if (isset($_POST["device_type"])){
 						$soft->getFromDB($key);
 						$params["name"]=$soft->fields["name"];
 						$params["FK_glpi_enterprise"]=$soft->fields["FK_glpi_enterprise"];
+						$params["comments"]=$soft->fields["comments"];
 						
 						//Process rules
 						$soft->update($softcatrule->processAllRules(null,$soft->fields,$params));

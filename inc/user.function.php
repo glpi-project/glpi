@@ -636,4 +636,15 @@ function getUserLanguage($lang)
 
 	return ""; 
 }
+
+function changeUserAuthMethod($IDs=array(),$auth_method=1,$server=-1)
+{
+	global $DB;
+	if (!empty($IDs) && in_array($auth_method,array(AUTH_DB_GLPI,AUTH_LDAP,AUTH_MAIL,AUTH_EXTERNAL)))
+	{
+		$where = implode(',',$IDs);
+		$query="UPDATE glpi_users SET auth_method=".$auth_method.", id_auth=".$server." WHERE ID IN (".$where.")";
+		$DB->query($query);
+	}
+}
 ?>
