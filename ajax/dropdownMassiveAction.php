@@ -75,6 +75,17 @@ if (isset($_POST["action"])&&isset($_POST["type"])&&!empty($_POST["type"])){
 		case "add_followup":
 			showAddFollowupForm(-1,true);
 		break;
+		case "change_auth_method":
+			$rand = dropdownAuthMethods("auth_method");
+			$paramsmassaction=array('auth_method'=>'__VALUE__');
+			
+			ajaxUpdateItemOnSelectEvent("dropdown_auth_method$rand","show_massiveaction_field",$CFG_GLPI["root_doc"]."/ajax/dropdownMassiveActionAuthMethods.php",$paramsmassaction);
+	
+			echo "<span id='show_massiveaction_field'>"; 
+			echo "<input type=\"submit\" name=\"massiveaction\" class=\"submit\" value=\"".$LANG['buttons'][2]."\" >";
+			echo "</span>\n";
+		
+		break;
 		case "compute_software_category":
 		case "replay_dictionnary":
 		case "force_ocsng_update":
