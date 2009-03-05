@@ -1177,7 +1177,7 @@ function sendFile($file,$filename){
 
 	// Test securite : document in DOC_DIR
 	$tmpfile=str_replace(GLPI_DOC_DIR,"",$file);
-	if (strstr($tmpfile,"..")){
+	if (strstr($tmpfile,"../") || strstr($tmpfile,"..\\")){
 		echo "Security attack !!!";
 		logEvent($file, "sendFile", 1, "security", $_SESSION["glpiname"]." try to get a non standard file.");
 		return;
