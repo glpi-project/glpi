@@ -75,7 +75,7 @@ class Cache_Lite_File extends Cache_Lite
     * @return string data of the cache (or false if no cache available)
     * @access public
     */
-    function get($id, $group = 'default') 
+    function get($id, $group = 'default', $doNotTestCacheValidity = false) 
     {
         if ($data = parent::get($id, $group, true)) {
             if ($filemtime = $this->lastModified()) {
