@@ -35,7 +35,7 @@
 
 
 
-$NEEDED_ITEMS=array("profile");
+$NEEDED_ITEMS=array();
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
