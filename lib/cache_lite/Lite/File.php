@@ -11,7 +11,7 @@
 * Technical choices are described in the 'docs/technical' file
 *
 * @package Cache_Lite
-* @version $Id: File.php,v 1.3 2005/12/04 16:03:55 fab Exp $
+* @version $Id: File.php,v 1.4 2009/03/07 12:55:39 tacker Exp $
 * @author Fabien MARTY <fab@php.net>
 */
  
@@ -72,10 +72,11 @@ class Cache_Lite_File extends Cache_Lite
     *
     * @param string $id cache id
     * @param string $group name of the cache group
-    * @return string data of the cache (or false if no cache available)
+    * @param boolean $doNotTestCacheValidity if set to true, the cache validity won't be tested
+    * @return string data of the cache (else : false)
     * @access public
     */
-    function get($id, $group = 'default', $doNotTestCacheValidity = false) 
+    function get($id, $group = 'default', $doNotTestCacheValidity = false)
     {
         if ($data = parent::get($id, $group, true)) {
             if ($filemtime = $this->lastModified()) {
