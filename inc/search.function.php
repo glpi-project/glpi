@@ -952,7 +952,12 @@ function showList ($type,$params){
 	if ($nosearch) {
 		$LIMIT= " LIMIT $start, ".$LIST_LIMIT;
 
-		$query_num="SELECT count(*) FROM ".$itemtable.$COMMONLEFTJOIN;
+		if (!isset($SEARCH_OPTION[$type][1]['forcegroupby'])){
+			$count="count(*)";
+		} else {
+			$count="count(DISTINCT $itemtable.ID)";
+		}
+		$query_num="SELECT $count FROM ".$itemtable.$COMMONLEFTJOIN;
 
 		$first=true;
 
@@ -991,7 +996,6 @@ function showList ($type,$params){
 				}
 			}
 		} else {
-			
 			$result_num = $DB->query($query_num);
 			$numrows= $DB->result($result_num,0,0);
 		}
