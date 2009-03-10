@@ -122,6 +122,25 @@ class Mailing
 	}
 
 	/**
+	 * Add new mail with lang to current email array
+	 * 
+	 * @param $emails : emails array
+	 * @param $mail : new email to add
+	 * @param $lang used with this email
+	 *
+	 */
+	function addToEmailList(&$emails,$mail,$lang){
+		$new_mail=trim($mail);
+		$new_lang=trim($lang);
+
+		if (!empty($new_mail) && !empty($new_lang)){
+		
+			if (isValidEmail($new_mail)&&!isset($emails[$new_mail])){
+				$emails[$new_mail]=$new_lang;
+			}
+		}
+	}
+	/**
 	 * Give mails to send the mail
 	 * 
 	 * Determine email to send mail using global config and Mailing type
@@ -160,9 +179,7 @@ class Mailing
 						switch($data["FK_item"]){
 							// ADMIN SEND
 							case ADMIN_MAILING :
-								if (isValidEmail($CFG_GLPI["admin_email"])&&!isset($emails[$CFG_GLPI["admin_email"]])){
-									$emails[$CFG_GLPI["admin_email"]]=$CFG_GLPI["language"];
-								}
+								$this->addToEmailList(&$emails,$CFG_GLPI["admin_email"],$CFG_GLPI["language"]);
 								break;
 							// ADMIN ENTITY SEND
 							case ADMIN_ENTITY_MAILING :
@@ -172,9 +189,7 @@ class Mailing
 								if ($result2 = $DB->query($query2)) {
 									if ($DB->numrows($result2)==1){
 										$row = $DB->fetch_array($result2);
-										if (isValidEmail($row['EMAIL'])&&!isset($emails[$row['EMAIL']])){
-											$emails[$row['EMAIL']]=$CFG_GLPI["language"];
-										}
+										$this->addToEmailList(&$emails,$row['EMAIL'],$CFG_GLPI["language"]);
 									}
 								}
 								break;
@@ -187,9 +202,7 @@ class Mailing
 									if ($result2 = $DB->query($query2)) {
 										if ($DB->numrows($result2)==1){
 											$row = $DB->fetch_array($result2);
-											if (isValidEmail($row['EMAIL'])&&!isset($emails[$row['EMAIL']])){
-												$emails[$row['EMAIL']]=$row['LANG'];
-											}
+											$this->addToEmailList($emails,$row['EMAIL'],$row['LANG']);
 										}
 									}
 								}
@@ -204,9 +217,7 @@ class Mailing
 									if ($result2 = $DB->query($query2)) {
 										if ($DB->numrows($result2)==1){
 											$row = $DB->fetch_array($result2);
-											if (isValidEmail($row['EMAIL'])&&!isset($emails[$row['EMAIL']])){
-												$emails[$row['EMAIL']]=$CFG_GLPI["language"];
-											}
+											$this->addToEmailList($emails,$row['EMAIL'],$CFG_GLPI["language"]);
 										}
 									}
 								}
@@ -222,9 +233,7 @@ class Mailing
 									if ($result2= $DB->query($query)){
 										if ($DB->numrows($result2)){
 											while ($row=$DB->fetch_assoc($result2)){
-												if (isValidEmail($row["EMAIL"])&&!isset($emails[$row['EMAIL']])){
-													$emails[$row['EMAIL']]=$row['LANG'];
-												}
+												$this->addToEmailList($emails,$row['EMAIL'],$row['LANG']);
 											}
 										}
 									}
@@ -240,9 +249,7 @@ class Mailing
 									if ($result2 = $DB->query($query2)) {
 										if ($DB->numrows($result2)==1){
 											$row = $DB->fetch_array($result2);
-											if (isValidEmail($row['EMAIL'])&&!isset($emails[$row['EMAIL']])){
-												$emails[$row['EMAIL']]=$row['LANG'];
-											}
+											$this->addToEmailList($emails,$row['EMAIL'],$row['LANG']);
 										}
 									}
 								}
@@ -258,9 +265,7 @@ class Mailing
 									if ($result2 = $DB->query($query2)) {
 										if ($DB->numrows($result2)==1){
 											$row = $DB->fetch_array($result2);
-											if (isValidEmail($row['EMAIL'])&&!isset($emails[$row['EMAIL']])){
-												$emails[$row['EMAIL']]=$row['LANG'];
-											}
+											$this->addToEmailList($emails,$row['EMAIL'],$row['LANG']);
 										}
 									}
 								}
@@ -268,7 +273,7 @@ class Mailing
 
 							// AUTHOR SEND
 							case AUTHOR_MAILING :
-								if ($this->job->fields["emailupdates"]&&isValidEmail($this->job->fields["uemail"])&&!isset($emails[$this->job->fields["uemail"]])){
+								if ($this->job->fields["emailupdates"]){
 									// Uemail = mail of the author ? -> use right of the author to see private followups
 									// Else not see private
 									$authorsend=false;
@@ -292,7 +297,7 @@ class Mailing
 									}
 
 									if ($authorsend){
-										$emails[$this->job->fields["uemail"]]=$authorlang;
+										$this->addToEmailList($emails,$this->job->fields["uemail"],$authorlang);
 									}
 								}
 								break;
@@ -306,9 +311,7 @@ class Mailing
 									if ($result2 = $DB->query($query2)) {
 										if ($DB->numrows($result2)==1){
 											$row = $DB->fetch_array($result2);
-											if (isValidEmail($row['EMAIL'])&&!isset($emails[$row['EMAIL']])){
-												$emails[$row['EMAIL']]=$row['LANG'];
-											}
+											$this->addToEmailList($emails,$row['EMAIL'],$row['LANG']);
 										}
 									}
 								}
@@ -323,9 +326,7 @@ class Mailing
 									if ($result2 = $DB->query($query2)) {
 										if ($DB->numrows($result2)==1){
 											$row = $DB->fetch_array($result2);
-											if (isValidEmail($row['EMAIL'])&&!isset($emails[$row['EMAIL']])){
-												$emails[$row['EMAIL']]=$row['LANG'];
-											}
+											$this->addToEmailList($emails,$row['EMAIL'],$row['LANG']);
 										}
 									}
 								}
@@ -342,9 +343,7 @@ class Mailing
 										if ($result2 = $DB->query($query2)) {
 											if ($DB->numrows($result2)==1){
 												$row = $DB->fetch_array($result2);
-												if (isValidEmail($row['EMAIL'])&&!isset($emails[$row['EMAIL']])){
-													$emails[$row['EMAIL']]=$row['LANG'];
-												}
+												$this->addToEmailList($emails,$row['EMAIL'],$row['LANG']);
 											}
 										}
 									}
@@ -362,9 +361,7 @@ class Mailing
 										if ($result2 = $DB->query($query2)) {
 											if ($DB->numrows($result2)==1){
 												$row = $DB->fetch_array($result2);
-												if (isValidEmail($row['EMAIL'])&&!isset($emails[$row['EMAIL']])){
-													$emails[$row['EMAIL']]=$row['LANG'];
-												}
+												$this->addToEmailList($emails,$row['EMAIL'],$row['LANG']);
 											}
 										}
 									}
@@ -374,7 +371,7 @@ class Mailing
 						}
 						break;
 					case PROFILE_MAILING_TYPE :
-						$query="SELECT glpi_users.email AS EMAIL, glpi_users.language AS LANG 
+						$query="SELECT DISTINCT glpi_users.email AS EMAIL, glpi_users.language AS LANG 
 						FROM glpi_users_profiles 
 						INNER JOIN glpi_users ON (glpi_users_profiles.FK_users = glpi_users.ID) $joinprofile 
 						WHERE glpi_users.deleted=0 AND glpi_users_profiles.FK_profiles='".$data["FK_item"]."' ".
@@ -383,14 +380,12 @@ class Mailing
 						if ($result2= $DB->query($query)){
 							if ($DB->numrows($result2))
 								while ($row=$DB->fetch_assoc($result2)){
-									if (isValidEmail($row['EMAIL'])&&!isset($emails[$row['EMAIL']])){
-										$emails[$row['EMAIL']]=$row['LANG'];
-									}
+									$this->addToEmailList($emails,$row['EMAIL'],$row['LANG']);
 								}
 						}
 						break;
 					case GROUP_MAILING_TYPE :
-						$query="SELECT glpi_users.email AS EMAIL, glpi_users.language AS LANG 
+						$query="SELECT DISTINCT glpi_users.email AS EMAIL, glpi_users.language AS LANG 
 							FROM glpi_users_groups 
 							INNER JOIN glpi_users ON (glpi_users_groups.FK_users = glpi_users.ID) $join 
 							WHERE glpi_users.deleted=0 AND glpi_users_groups.FK_groups='".$data["FK_item"]."'";
@@ -398,9 +393,7 @@ class Mailing
 						if ($result2= $DB->query($query)){
 							if ($DB->numrows($result2))
 								while ($row=$DB->fetch_assoc($result2)){
-									if (isValidEmail($row['EMAIL'])&&!isset($emails[$row['EMAIL']])){
-										$emails[$row['EMAIL']]=$row['LANG'];
-									}
+									$this->addToEmailList($emails,$row['EMAIL'],$row['LANG']);
 								}
 						}
 						break;
@@ -612,6 +605,7 @@ class Mailing
 
 				$messageerror=$LANG['mailing'][47];
 				// Send all mails
+
 				foreach ($users as $private=>$someusers) {
 					if (count($someusers)){
 
@@ -686,7 +680,25 @@ class MailingResa{
 		$this->type=$type;
 
 	}
+	/**
+	 * Add new mail with lang to current email array
+	 * 
+	 * @param $emails : emails array
+	 * @param $mail : new email to add
+	 * @param $lang used with this email
+	 *
+	 */
+	function addToEmailList(&$emails,$mail,$lang){
+		$new_mail=trim($mail);
+		$new_langl=trim($lang);
 
+		if (!empty($new_mail) && !empty($new_lang)){
+		
+			if (isValidEmail($new_mail)&&!isset($emails[$new_mail])){
+				$emails[$new_mail]=$new_lang;
+			}
+		}
+	}
 	/**
 	 * Give mails to send the mail
 	 * 
@@ -709,8 +721,7 @@ class MailingResa{
 						switch ($data["FK_item"]){
 							// ADMIN SEND
 							case ADMIN_MAILING :
-								if (isValidEmail($CFG_GLPI["admin_email"])&&!isset($emails[$CFG_GLPI["admin_email"]]))
-									$emails[$CFG_GLPI["admin_email"]]=$CFG_GLPI["language"];
+								$this->addToEmailList($emails,$CFG_GLPI["admin_email"],$CFG_GLPI["language"]);
 								break;
 							// ADMIN ENTITY SEND
 							case ADMIN_ENTITY_MAILING :
@@ -731,9 +742,7 @@ class MailingResa{
 									if ($result2 = $DB->query($query2)) {
 										if ($DB->numrows($result2)==1){
 											$row = $DB->fetch_array($result2);
-											if (isValidEmail($CFG_GLPI["admin_email"])&&!isset($emails[$CFG_GLPI["admin_email"]])){
-												$emails[$row['EMAIL']]=$CFG_GLPI["language"];
-											}
+											$this->addToEmailList($emails,$row['EMAIL'],$CFG_GLPI["language"]);
 										}
 									}
 								}
@@ -742,9 +751,7 @@ class MailingResa{
 							case AUTHOR_MAILING :
 								$user = new User;
 								if ($user->getFromDB($this->resa->fields["id_user"]))
-									if (isValidEmail($user->fields["email"])&&!isset($emails[$user->fields["email"]])){
-										$emails[$user->fields["email"]]=$user->fields['language'];
-									}
+									$this->addToEmailList($emails,$user->fields["email"],$user->fields['language']);
 								break;
 							// TECH SEND
 							case TECH_MAILING :
@@ -759,9 +766,7 @@ class MailingResa{
 										if ($result2 = $DB->query($query2)) {
 											if ($DB->numrows($result2)==1){
 												$row = $DB->fetch_row($result2);
-												if (isValidEmail($row['EMAIL'])&&!isset($emails[$row['EMAIL']])){
-													$emails[$row['EMAIL']]=$row['LANG'];
-												}
+												$this->addToEmailList($emails,$row['EMAIL'],$row['LANG']);
 											}
 										}
 									}
@@ -780,9 +785,7 @@ class MailingResa{
 										if ($result2 = $DB->query($query2)) {
 											if ($DB->numrows($result2)==1){
 												$row = $DB->fetch_row($result2);
-												if (isValidEmail($row['EMAIL'])&&!isset($emails[$row['EMAIL']])){
-													$emails[$row['EMAIL']]=$row['LANG'];
-												}
+												$this->addToEmailList($emails,$row['EMAIL'],$row['LANG']);
 											}
 										}
 									}
@@ -806,9 +809,7 @@ class MailingResa{
 						if ($result2= $DB->query($query)){
 							if ($DB->numrows($result2))
 								while ($row=$DB->fetch_assoc($result2)){
-									if (isValidEmail($row['EMAIL'])&&!isset($emails[$row['EMAIL']])){
-										$emails[$row['EMAIL']]=$row['LANG'];
-									}
+									$this->addToEmailList($emails,$row['EMAIL'],$row['LANG']);
 							}
 						}
 						break;
@@ -820,9 +821,7 @@ class MailingResa{
 						if ($result2= $DB->query($query)){
 							if ($DB->numrows($result2))
 								while ($row=$DB->fetch_assoc($result2)){
-									if (isValidEmail($row['EMAIL'])&&!isset($emails[$row['EMAIL']])){
-										$emails[$row['EMAIL']]=$row['LANG'];
-									}
+									$this->addToEmailList($emails,$row['EMAIL'],$row['LANG']);
 								}
 						}
 						break;
