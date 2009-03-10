@@ -2912,6 +2912,7 @@ $SEARCH_OPTION[USER_TYPE][1]['field']='name';
 $SEARCH_OPTION[USER_TYPE][1]['linkfield']='';
 $SEARCH_OPTION[USER_TYPE][1]['name']=$LANG['setup'][18];
 $SEARCH_OPTION[USER_TYPE][1]['datatype']='itemlink';
+$SEARCH_OPTION[USER_TYPE][1]['forcegroupby']=true;
 
 $SEARCH_OPTION[USER_TYPE][2]['table']='glpi_users';
 $SEARCH_OPTION[USER_TYPE][2]['field']='ID';
