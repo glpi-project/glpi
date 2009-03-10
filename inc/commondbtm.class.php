@@ -566,8 +566,8 @@ class CommonDBTM {
 					if ( is_null($this->fields[$key]) && $input[$key]=='NULL'){
 						$this->fields[$key]='NULL';
 					}
-											
-					if ( $this->fields[$key] !== stripslashes($input[$key])) {
+					
+					if ( $this->fields[$key] != stripslashes($input[$key])) {
 						if ($key!="ID"){
 							// Store old values
 							$oldvalues[$key]=$this->fields[$key];
@@ -578,7 +578,7 @@ class CommonDBTM {
 					}
 				}
 			}
-
+			
 			if(count($updates)){
 				if (isset($this->fields['date_mod'])){
 					// is a non blacklist field exists
