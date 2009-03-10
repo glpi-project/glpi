@@ -606,10 +606,10 @@ if(empty($_POST["continuer"]) && empty($_POST["from_update"])) {
 	}
 	else {
 		echo "<div class='center'>";
-		echo "<h3><span class='red'>".$LANG['update'][91]."</span>".$LANG['update'][92]. $DB->dbdefault ."</h3>";
+		echo "<h3><span class='red'>".$LANG['update'][91]."</span>&nbsp;".$LANG['update'][92]. $DB->dbdefault ."</h3>";
 
 		echo "<form action=\"update.php\" method=\"post\">";
-		echo "<input type=\"submit\" class='submit' name=\"continuer\" value=\"".$LANG['install'][25] ."\">";
+		echo "<input type=\"submit\" class='submit' name=\"continuer\" value=\"".$LANG['install'][26] ."\">";
 		echo "</form></div>";
 	}
 }
