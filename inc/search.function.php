@@ -952,6 +952,7 @@ function showList ($type,$params){
 	if ($nosearch) {
 		$LIMIT= " LIMIT $start, ".$LIST_LIMIT;
 
+		// Force group by for all the type -> need to count only on table ID
 		if (!isset($SEARCH_OPTION[$type][1]['forcegroupby'])){
 			$count="count(*)";
 		} else {
