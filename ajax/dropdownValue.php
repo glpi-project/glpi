@@ -305,8 +305,12 @@ if (!isset($_POST["limit"])) $_POST["limit"]=$_SESSION["glpidropdown_limit"];
 			$prev=-1;
 			while ($data =$DB->fetch_array($result)) {
 				$output = $data[$field];
-				if (isset($_POST['withserial'])&&isset($data["serial"])) $output.=" - ".$data["serial"];
-				if (isset($_POST['withotherserial'])&&isset($data["otherserial"])) $output.=" - ".$data["otherserial"];
+				if (isset($_POST['withserial'])&&isset($data["serial"]) && !empty($data["serial"])){
+					 $output.=" - ".$data["serial"];
+				}
+				if (isset($_POST['withotherserial'])&&isset($data["otherserial"]) && !empty($data["otherserial"])) {
+					$output.=" - ".$data["otherserial"];
+				}
 				$ID = $data['ID'];
 				$addcomment="";
 				if (isset($data["comments"])) $addcomment=" - ".$data["comments"];

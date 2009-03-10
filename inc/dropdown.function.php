@@ -959,9 +959,16 @@ function dropdownMyDevices($userID=0,$entity_restrict=-1){
 					while ($data=$DB->fetch_array($result)){
 						$output=$data["name"];
 						if ($type!=SOFTWARE_TYPE){
-						$output.=" - ".$data['serial']." - ".$data['otherserial'];
+							if (!empty($data['serial'])){
+								$output.=" - ".$data['serial'];
+							}
+							if (!empty($data['otherserial'])){
+								$output.=" - ".$data['otherserial'];
+							}
 						}
-						if (empty($output)||$_SESSION["glpiview_ID"]) $output.=" (".$data['ID'].")";
+						if (empty($output)||$_SESSION["glpiview_ID"]) {
+							$output.=" (".$data['ID'].")";
+						}
 						$my_devices.="<option title=\"$output\" value='".$type."_".$data["ID"]."' ".($my_item==$type."_".$data["ID"]?"selected":"").">";
 						$my_devices.="$type_name - ".substr($output,0,$_SESSION["glpidropdown_limit"]);
 						$my_devices.="</option>";
