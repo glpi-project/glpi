@@ -179,7 +179,7 @@ class Mailing
 						switch($data["FK_item"]){
 							// ADMIN SEND
 							case ADMIN_MAILING :
-								$this->addToEmailList(&$emails,$CFG_GLPI["admin_email"],$CFG_GLPI["language"]);
+								$this->addToEmailList($emails,$CFG_GLPI["admin_email"],$CFG_GLPI["language"]);
 								break;
 							// ADMIN ENTITY SEND
 							case ADMIN_ENTITY_MAILING :
@@ -189,7 +189,7 @@ class Mailing
 								if ($result2 = $DB->query($query2)) {
 									if ($DB->numrows($result2)==1){
 										$row = $DB->fetch_array($result2);
-										$this->addToEmailList(&$emails,$row['EMAIL'],$CFG_GLPI["language"]);
+										$this->addToEmailList($emails,$row['EMAIL'],$CFG_GLPI["language"]);
 									}
 								}
 								break;
