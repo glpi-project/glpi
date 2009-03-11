@@ -419,6 +419,7 @@ class Ocsng extends CommonDBTM {
 		$out  = "<div class='center' id='tabsbody'>";	
 		$out .= "<form name='formdbconfig' action=\"$target\" method=\"post\">";
 		$out .= "<table class='tab_cadre_fixe'>";
+		$out .= "<tr class='tab_bg_2'><td class='center'>" . $LANG['common'][2] . " </td><td><strong>" . $this->fields["ID"] . "</strong></td></tr>";
 		$out .= "<tr class='tab_bg_2'><td class='center'>" . $LANG['common'][16] . " </td><td> <input type=\"text\" name=\"name\" value=\"" . $this->fields["name"] . "\"></td></tr>";
 		$out .= "<tr class='tab_bg_2'><td class='center'>" . $LANG['ocsconfig'][2] . " </td><td> <input type=\"text\" name=\"ocs_db_host\" value=\"" . $this->fields["ocs_db_host"] . "\"></td></tr>";
 		$out .= "<tr class='tab_bg_2'><td class='center'>" . $LANG['ocsconfig'][4] . " </td><td> <input type=\"text\" name=\"ocs_db_name\" value=\"" . $this->fields["ocs_db_name"] . "\"></td></tr>";
