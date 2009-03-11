@@ -126,17 +126,19 @@ class Mailing
 	 * 
 	 * @param $emails : emails array
 	 * @param $mail : new email to add
-	 * @param $lang used with this email
+	 * @param $lang used with this email - default to config language
 	 *
 	 */
-	function addToEmailList(&$emails,$mail,$lang){
+	function addToEmailList(&$emails,$mail,$lang=''){
+		global $CFG_GLPI;
+
 		$new_mail=trim($mail);
 		$new_lang=trim($lang);
 
-		if (!empty($new_mail) && !empty($new_lang)){
+		if (!empty($new_mail)){
 		
 			if (isValidEmail($new_mail)&&!isset($emails[$new_mail])){
-				$emails[$new_mail]=$new_lang;
+				$emails[$new_mail] = (empty($new_lang) ? $CFG_GLPI["language"] : $new_lang);
 			}
 		}
 	}
@@ -179,7 +181,7 @@ class Mailing
 						switch($data["FK_item"]){
 							// ADMIN SEND
 							case ADMIN_MAILING :
-								$this->addToEmailList($emails,$CFG_GLPI["admin_email"],$CFG_GLPI["language"]);
+								$this->addToEmailList($emails,$CFG_GLPI["admin_email"]);
 								break;
 							// ADMIN ENTITY SEND
 							case ADMIN_ENTITY_MAILING :
@@ -189,7 +191,7 @@ class Mailing
 								if ($result2 = $DB->query($query2)) {
 									if ($DB->numrows($result2)==1){
 										$row = $DB->fetch_array($result2);
-										$this->addToEmailList($emails,$row['EMAIL'],$CFG_GLPI["language"]);
+										$this->addToEmailList($emails,$row['EMAIL']);
 									}
 								}
 								break;
@@ -217,7 +219,7 @@ class Mailing
 									if ($result2 = $DB->query($query2)) {
 										if ($DB->numrows($result2)==1){
 											$row = $DB->fetch_array($result2);
-											$this->addToEmailList($emails,$row['EMAIL'],$CFG_GLPI["language"]);
+											$this->addToEmailList($emails,$row['EMAIL']);
 										}
 									}
 								}
@@ -685,17 +687,19 @@ class MailingResa{
 	 * 
 	 * @param $emails : emails array
 	 * @param $mail : new email to add
-	 * @param $lang used with this email
+	 * @param $lang used with this email - default to config language
 	 *
 	 */
-	function addToEmailList(&$emails,$mail,$lang){
-		$new_mail=trim($mail);
-		$new_langl=trim($lang);
+	function addToEmailList(&$emails,$mail,$lang=''){
+		global $CFG_GLPI;
 
-		if (!empty($new_mail) && !empty($new_lang)){
+		$new_mail=trim($mail);
+		$new_lang=trim($lang);
+
+		if (!empty($new_mail)){
 		
 			if (isValidEmail($new_mail)&&!isset($emails[$new_mail])){
-				$emails[$new_mail]=$new_lang;
+				$emails[$new_mail] = (empty($new_lang) ? $CFG_GLPI["language"] : $new_lang);
 			}
 		}
 	}
@@ -721,7 +725,7 @@ class MailingResa{
 						switch ($data["FK_item"]){
 							// ADMIN SEND
 							case ADMIN_MAILING :
-								$this->addToEmailList($emails,$CFG_GLPI["admin_email"],$CFG_GLPI["language"]);
+								$this->addToEmailList($emails,$CFG_GLPI["admin_email"]);
 								break;
 							// ADMIN ENTITY SEND
 							case ADMIN_ENTITY_MAILING :
@@ -742,7 +746,7 @@ class MailingResa{
 									if ($result2 = $DB->query($query2)) {
 										if ($DB->numrows($result2)==1){
 											$row = $DB->fetch_array($result2);
-											$this->addToEmailList($emails,$row['EMAIL'],$CFG_GLPI["language"]);
+											$this->addToEmailList($emails,$row['EMAIL']);
 										}
 									}
 								}
