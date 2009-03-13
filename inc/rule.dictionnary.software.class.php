@@ -427,7 +427,7 @@ class DictionnarySoftwareRule extends RuleCached {
 		echo "<td class='tab_bg_1'>".$LANG['rulesengine'][105]."</td>";
 		echo "<td class='tab_bg_1'>".$LANG['rulesengine'][78]."</td>";		
 		echo "<td class='tab_bg_1'>".$LANG['common'][5]."</td>";
-		echo "<td class='tab_bg_1'>".$LANG['rulesengine'][39]." ".$LANG['ocsng'][7]."</td>"; 
+		echo "<td class='tab_bg_1'>".$LANG['ocsconfig'][6]."</td>"; 
 		echo "</tr>";
 	}
 
