@@ -203,9 +203,11 @@ function displayPluginAction($type,$ID,$onglet,$withtemplate=0){
 		return true;
 
 	} else {
-		$split=explode("_",$onglet);
-		if (count($split)==2){
-			list($plug,$ID_onglet)=$split;
+		//$split=explode("_",$onglet);
+		//if (count($split)==2){
+		if (preg_match("/^(.*)_([0-9]*)$/",$onglet,$split)) {
+			$plug = $split[1];
+			$ID_onglet = $split[2];
 
 			if (isset($PLUGIN_HOOKS["headings_action"][$plug])){
 				if (file_exists(GLPI_ROOT . "/plugins/$plug/hook.php")) {
