@@ -706,7 +706,8 @@ class AuthLDAP extends CommonDBTM {
 			echo "<a  href='$target?next=extauth_ldap&amp;preconfig=default'>".$LANG['common'][44]."</a></td></tr>";
 			}
 			echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['common'][16] . "</td><td><input type=\"text\" name=\"name\" value=\"" . $this->fields["name"] . "\"></td>";
-			echo "<td align='center' colspan=2>&nbsp;</td></tr>";
+
+			echo "<td class='center'>" . $LANG['common'][88] . " </td><td><strong>" . $this->fields["ID"] . "</strong></td></tr>";
 
 			echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['common'][52] . "</td><td><input type=\"text\" name=\"ldap_host\" value=\"" . $this->fields["ldap_host"] . "\"></td>";
 			echo "<td class='center'>" . $LANG['setup'][172] . "</td><td><input id='ldap_port' type=\"text\" name=\"ldap_port\" value=\"" . $this->fields["ldap_port"] . "\"></td></tr>";

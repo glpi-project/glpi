@@ -274,7 +274,8 @@ $LANG['common'][83]="Vous n'avez pas les droits suffisants pour réaliser cette 
 $LANG['common'][84]="La présence d'éléments liés interdit la modification de cet attribut";
 $LANG['common'][85]="Modifier la visibilité dans les sous-entités";
 $LANG['common'][86]="Vous n'avez pas les droits suffisants pour modifier la visibilité dans les sous-entités.";
-$LANG['common'][87]="Nouvelle fiche"; 
+$LANG['common'][87]="Nouvelle fiche";
+$LANG['common'][88]="Identifiant interne du serveur (ID)";  
 
 $LANG['computers'][0]="Volume"; 
 $LANG['computers'][1]="Pourcentage libre"; 
