@@ -54,7 +54,6 @@ if (!isset ($_POST["ID"])) {
 checkRight("ocsng", "w");
 
 $ocs = new Ocsng();
-
 switch ($_POST['glpi_tab']) {
 	case -1 :
 			$ocs->showDBConnectionStatus($_POST["ID"]);
@@ -76,7 +75,8 @@ switch ($_POST['glpi_tab']) {
 	case 3 :
 		$ocs->ocsFormAutomaticLinkConfig($_POST['target'], $_POST["ID"]);
 		break;	
-	default :
+	default:
+		displayPluginAction(OCSNG_TYPE,$_POST["ID"],$_POST['glpi_tab'], '');
 		break;
 }
 
