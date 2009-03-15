@@ -271,6 +271,7 @@ $LANG['common'][84]="Sprememba zastavice prepovedana. Povezane predmete našel."
 $LANG['common'][85]="Spremeni vidljivost v otrokovih entitetah"; 
 $LANG['common'][86]="Nimaš pravice, da spremeniš vidljivost zastavce za otrokove entitete."; 
 $LANG['common'][87]="Nova kartica"; 
+$LANG['common'][88]="Internal server ID"; 
 
 $LANG['computers'][0]="Nosilec"; 
 $LANG['computers'][1]="Odstotek praznega prostora"; 

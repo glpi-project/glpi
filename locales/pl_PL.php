@@ -271,6 +271,7 @@ $LANG['common'][84]="Zmiana flagi zabroniona. Znaleziono połączone pozycje.";
 $LANG['common'][85]="Zmień widzialność w pododdziałach"; 
 $LANG['common'][86]="Nie masz uprawnień do zmiany flag widzialności dla pododdziałów."; 
 $LANG['common'][87]="Nowa karta"; 
+$LANG['common'][88]="Internal server ID"; 
 
 $LANG['computers'][0]="Partycja"; 
 $LANG['computers'][1]="Procent wolnego"; 

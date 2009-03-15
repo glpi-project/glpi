@@ -271,6 +271,7 @@ $LANG['common'][84]="A presença de itens relacionados proibe a modificação de
 $LANG['common'][85]="Editar o perfil nas sub-entidades"; 
 $LANG['common'][86]="Você não tem permissão para alterar a visibilidade nas sub-entidades"; 
 $LANG['common'][87]="Novo cartão"; 
+$LANG['common'][88]="Internal server ID"; 
 
 $LANG['computers'][0]="Volume"; 
 $LANG['computers'][1]="Percentual livre"; 

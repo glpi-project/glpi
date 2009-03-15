@@ -271,6 +271,7 @@ $LANG['common'][84]="フラグの変更は禁止されています。リンク�
 $LANG['common'][85]="子エンティティの可視属性を変更する"; 
 $LANG['common'][86]="子エンティティの可視属性を変更することはできません。"; 
 $LANG['common'][87]="新しいカード"; 
+$LANG['common'][88]="Internal server ID"; 
 
 $LANG['computers'][0]="ボリューム"; 
 $LANG['computers'][1]="空き領域％"; 

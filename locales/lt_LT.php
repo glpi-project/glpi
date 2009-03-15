@@ -271,6 +271,7 @@ $LANG['common'][84]="Flag change forbidden. Linked items found.";
 $LANG['common'][85]="Change visibility in the child entities"; 
 $LANG['common'][86]="You are not allowed to change the visibility flag for child entities."; 
 $LANG['common'][87]="New card"; 
+$LANG['common'][88]="Internal server ID"; 
 
 $LANG['computers'][0]="Volume"; 
 $LANG['computers'][1]="Free percentage"; 

@@ -271,6 +271,7 @@ $LANG['common'][84]="Flag change forbidden. Linked items found.";
 $LANG['common'][85]="Sichtbarkeit der Unter-Einheiten ändern"; 
 $LANG['common'][86]="Sie sind nicht berechtigt die Sichtbarkeit für Nachfolge-Instanzen zu ändern."; 
 $LANG['common'][87]="Neue Karte"; 
+$LANG['common'][88]="Internal server ID"; 
 
 $LANG['computers'][0]="Laufwerk"; 
 $LANG['computers'][1]="Anteil freier"; 
