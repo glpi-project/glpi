@@ -271,6 +271,7 @@ $LANG['common'][84]="Zabranjena promijena. Nađeni vezani artikli.";
 $LANG['common'][85]="Promijeni vidljivost"; 
 $LANG['common'][86]="Niste ovlašteni da mijenjate stavke vidljivosti definicija."; 
 $LANG['common'][87]="Nova kartica"; 
+$LANG['common'][88]="Internal server ID"; 
 
 $LANG['computers'][0]="Veličina"; 
 $LANG['computers'][1]="Slobodno u postocima"; 

@@ -271,6 +271,7 @@ $LANG['common'][84]="La existencia de elementos enlazados impiden la modificaci√
 $LANG['common'][85]="Modificar la visibilidad en las subentidades"; 
 $LANG['common'][86]="Usted no tiene los permisos suficientes para modificar la visibilidad en las subentidades"; 
 $LANG['common'][87]="Nueva tarjeta"; 
+$LANG['common'][88]="Internal server ID"; 
 
 $LANG['computers'][0]="Volumen"; 
 $LANG['computers'][1]="Porcentaje libre"; 
