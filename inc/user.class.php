@@ -1092,6 +1092,12 @@ class User extends CommonDBTM {
 			}
 			echo "</td></tr>";
 
+			echo "<tr class='tab_bg_1'><td class='center'>" . $LANG['setup'][41] . " </td><td>";
+			// Use sesion variable because field in table may be null if same of the global config
+			dropdownLanguages("language", $_SESSION["glpilanguage"]);
+			echo "</td></tr>";
+
+
 			if (count($_SESSION['glpiprofiles'])>1){
 				echo "<tr class='tab_bg_1'><td class='center'>" . $LANG['profiles'][13] . "</td><td>";
 				$options=array(0=>'----');
