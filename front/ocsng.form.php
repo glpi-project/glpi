@@ -60,7 +60,6 @@ elseif (isset ($_POST["update"])) {
 //Update server
 elseif (isset ($_POST["update_server"])) {
 	$ocs->update($_POST);
-	$ocs->updateAdminInfo($_POST);
 	//$ocs->showForm($_SERVER['PHP_SELF'],$_GET["ID"]);
 	glpi_header($_SERVER["HTTP_REFERER"]);	
 }
