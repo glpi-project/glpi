@@ -287,7 +287,7 @@ class Plugin extends CommonDBTM {
 					echo "<td>";
 						$function = 'plugin_' . $plug['directory'] . '_check_config';
 						if (function_exists($function)){
-							if ($function()){
+							if ($function(true)){
 								$this->update(array('ID'=>$ID,'state'=>PLUGIN_NOTACTIVATED));
 								glpi_header($_SERVER['PHP_SELF']);
 							}
