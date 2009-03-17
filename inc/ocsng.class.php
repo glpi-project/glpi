@@ -482,7 +482,7 @@ class Ocsng extends CommonDBTM {
 	}
 	
 	function prepareInputForUpdate($input){
-		
+		$this->updateAdminInfo($input);
 		if (isset($input["ocs_db_passwd"])&&!empty($input["ocs_db_passwd"])){
 			$input["ocs_db_passwd"]=rawurlencode(stripslashes($input["ocs_db_passwd"]));
 		} else {
@@ -565,51 +565,55 @@ class Ocsng extends CommonDBTM {
 	 *@param $tab data array
 	 **/
 	function updateAdminInfo($tab){
-		$adm = new AdminInfo();	
-		$adm->cleanDBonPurge($tab["ID"]);		
-		if (isset ($tab["import_location"])){
- 			if($tab["import_location"]!=""){
-				$adm = new AdminInfo();			
-				$adm->fields["ocs_server_id"] = $tab["ID"];							
-				$adm->fields["glpi_column"] = "location";	
-				$adm->fields["ocs_column"] = $tab["import_location"];				
-				$isNewAdm = $adm->addToDB(); 
- 			}          		
-		}
-		if (isset ($tab["import_otherserial"])){
-			if($tab["import_otherserial"]!=""){
-				$adm = new AdminInfo();			
-				$adm->fields["ocs_server_id"] =  $tab["ID"];			
-				$adm->fields["glpi_column"] = "otherserial";	
-				$adm->fields["ocs_column"] = $tab["import_otherserial"];		
-				$isNewAdm = $adm->addToDB();
-			}				
-		}
-		if (isset ($tab["import_group"])){			
-			if($tab["import_group"]!=""){
-				$adm = new AdminInfo();			
-				$adm->fields["ocs_server_id"] = $tab["ID"];		
-				$adm->fields["glpi_column"] = "FK_groups";	
-				$adm->fields["ocs_column"] = $tab["import_group"];				
-				$isNewAdm = $adm->addToDB();
+		if (isset($tab["import_location"]) || isset ($tab["import_otherserial"]) 
+		|| isset ($tab["import_group"])||isset ($tab["import_network"])
+		|| isset ($tab["import_contact_num"])){
+			$adm = new AdminInfo();	
+			$adm->cleanDBonPurge($tab["ID"]);		
+			if (isset ($tab["import_location"])){
+				if($tab["import_location"]!=""){
+					$adm = new AdminInfo();			
+					$adm->fields["ocs_server_id"] = $tab["ID"];							
+					$adm->fields["glpi_column"] = "location";	
+					$adm->fields["ocs_column"] = $tab["import_location"];				
+					$isNewAdm = $adm->addToDB(); 
+				}          		
 			}
-		}
-		if (isset ($tab["import_network"])){
-			if($tab["import_network"]!=""){			
-				$adm = new AdminInfo();			
-				$adm->fields["ocs_server_id"] = $tab["ID"];		
-				$adm->fields["glpi_column"] = "network";	
-				$adm->fields["ocs_column"] = $tab["import_network"];				
-				$isNewAdm = $adm->addToDB();
+			if (isset ($tab["import_otherserial"])){
+				if($tab["import_otherserial"]!=""){
+					$adm = new AdminInfo();			
+					$adm->fields["ocs_server_id"] =  $tab["ID"];			
+					$adm->fields["glpi_column"] = "otherserial";	
+					$adm->fields["ocs_column"] = $tab["import_otherserial"];		
+					$isNewAdm = $adm->addToDB();
+				}				
 			}
-		}
-		if (isset ($tab["import_contact_num"])){
-			if($tab["import_contact_num"]!=""){			
-				$adm = new AdminInfo();			
-				$adm->fields["ocs_server_id"] = $tab["ID"];		
-				$adm->fields["glpi_column"] = "contact_num";	
-				$adm->fields["ocs_column"] = $tab["import_contact_num"];				
-				$isNewAdm = $adm->addToDB(); 
+			if (isset ($tab["import_group"])){			
+				if($tab["import_group"]!=""){
+					$adm = new AdminInfo();			
+					$adm->fields["ocs_server_id"] = $tab["ID"];		
+					$adm->fields["glpi_column"] = "FK_groups";	
+					$adm->fields["ocs_column"] = $tab["import_group"];				
+					$isNewAdm = $adm->addToDB();
+				}
+			}
+			if (isset ($tab["import_network"])){
+				if($tab["import_network"]!=""){			
+					$adm = new AdminInfo();			
+					$adm->fields["ocs_server_id"] = $tab["ID"];		
+					$adm->fields["glpi_column"] = "network";	
+					$adm->fields["ocs_column"] = $tab["import_network"];				
+					$isNewAdm = $adm->addToDB();
+				}
+			}
+			if (isset ($tab["import_contact_num"])){
+				if($tab["import_contact_num"]!=""){			
+					$adm = new AdminInfo();			
+					$adm->fields["ocs_server_id"] = $tab["ID"];		
+					$adm->fields["glpi_column"] = "contact_num";	
+					$adm->fields["ocs_column"] = $tab["import_contact_num"];				
+					$isNewAdm = $adm->addToDB(); 
+				}
 			}
 		}
 	}	
