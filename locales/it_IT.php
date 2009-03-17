@@ -266,12 +266,12 @@ $LANG['common'][79]="Rendi privato";
 $LANG['common'][80]="In fase di caricamento..."; 
 $LANG['common'][81]="Titolo"; 
 $LANG['common'][82]="MB"; 
-$LANG['common'][83]="Non hai i diritti sufficienti per eseguire questa azione."; 
+$LANG['common'][83]="Non hai diritti sufficienti per eseguire questa azione."; 
 $LANG['common'][84]="Cambio del flag non consentito. Sono stati trovati elementi collegati."; 
 $LANG['common'][85]="Cambia la visibilità nelle entità figlio"; 
 $LANG['common'][86]="Non sei autorizzato a cambiare il flag di visibilità per le entità figlio."; 
 $LANG['common'][87]="Nuova scheda"; 
-$LANG['common'][88]="Internal server ID"; 
+$LANG['common'][88]="Identificativo interno del server (ID)"; 
 
 $LANG['computers'][0]="Quantità"; 
 $LANG['computers'][1]="Percentuale libera"; 

@@ -6,7 +6,7 @@
 
 	
 	// dictionnaries
-	// 0 Name - 1 lang file -  2 calendar dico - 3 toolbar dico
+	// 0 Name - 1 lang file -  2 extjs dico - 3 tiny_mce dico
 	$CFG_GLPI["languages"]=array(   
 		"pt_BR"=>array("Brazilian","pt_BR.php","pt_BR","pt"),
 		"bg_BG"=>array("Bulgarian","bg_BG.php","bg","bg"),
@@ -28,6 +28,7 @@
 		"ja_JP"=>array("Japanese","ja_JP.php","ja","ja"),
 		"lv_LV"=>array("Latvian","lv_LV.php","lv","lv"),
 		"lt_LT"=>array("Lithuanian","lt_LT.php","lt","lt"),
+		"no_NB"=>array("Norwegian","no_NB.php","no_NB","nb"),
 		"pl_PL"=>array("Polish","pl_PL.php","pl","pl"),
 		"pt_PT"=>array("Português","pt_PT.php","pt","pt"),
 		"ro_RO"=>array("Romanian","ro_RO.php","ro","en"),
