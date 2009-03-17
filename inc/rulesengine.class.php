@@ -1945,6 +1945,12 @@ class Rule extends CommonDBTM{
 			echo "</form>";
 		}
 	}
+
+	function preProcessPreviewResults($output)
+	{
+		return $output;
+	}	
+	
 }
 
 class RuleAction extends CommonDBTM {
@@ -2376,7 +2382,6 @@ class RuleCachedCollection extends RuleCollection{
 		$DB->query($sql);
 	}
 
-	
 /*
 	// NOT_USED
 	function deleteCache(){

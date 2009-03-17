@@ -59,7 +59,7 @@ if (!strpos($_SERVER['PHP_SELF'],"popup")){
 	commonHeader($LANG['common'][12],$_SERVER['PHP_SELF'],"config","display");
 }
 
-$rule->showRulePreviewCriteriasForm($_SERVER['PHP_SELF'],$rule_id,array(),array());
+$rule->showRulePreviewCriteriasForm($_SERVER['PHP_SELF'],$rule_id);
 
 if (isset($_POST["test_rule"]))
 {
