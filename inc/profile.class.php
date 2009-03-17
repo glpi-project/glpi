@@ -187,12 +187,7 @@ class Profile extends CommonDBTM{
 	function showProfileConfig($target,$ID,$rand){
 		global $LANG,$CFG_GLPI;
 
-		echo "<div align='center' id='profile_form$rand'>";
-		$params=array('interface'=>'__VALUE__','ID'=>$ID);
-		ajaxUpdateItemOnSelectEvent("profile_interface$rand","profile_form$rand",$CFG_GLPI["root_doc"]."/ajax/profiles.php",$params,false);
-		ajaxUpdateItem("profile_form$rand",$CFG_GLPI["root_doc"]."/ajax/profiles.php",$params,false,"profile_interface$rand");
-		echo "</div>";
-		$this->showLegend();
+
 	}
 	function showLegend(){
 		global $LANG;
@@ -218,12 +213,14 @@ class Profile extends CommonDBTM{
 		if (!haveRight("profile","r")) return false;
 
 		$onfocus="";
-			if (!empty($ID)&&$ID){
-				$this->getFromDB($ID);
-			} else {
-				$this->getEmpty();
-				$onfocus="onfocus=\"this.value=''\"";
-			}
+		$new=false;
+		if (!empty($ID)&&$ID){
+			$this->getFromDB($ID);
+		} else {
+			$this->getEmpty();
+			$onfocus="onfocus=\"this.value=''\"";
+			$new=true;
+		}
 
 		$rand=mt_rand();
 
@@ -236,12 +233,28 @@ class Profile extends CommonDBTM{
 		echo "<th>".$LANG['common'][16]." :&nbsp;&nbsp;&nbsp;&nbsp;";
 		echo "<input type='text' name='name' value=\"".$this->fields["name"]."\" $onfocus></th>";
 		echo "<th>".$LANG['profiles'][2]." :&nbsp;&nbsp;&nbsp;&nbsp;";
-		echo "<select name='interface' id='profile_interface$rand'>";
+		echo "<select name='interface' ".($new?"":"onchange='submit()'").">";
 		echo "<option value='helpdesk' ".($this->fields["interface"]=="helpdesk"?"selected":"").">".$LANG['Menu'][31]."</option>";
 		echo "<option value='central' ".($this->fields["interface"]=="central"?"selected":"").">".$LANG['title'][0]."</option>";
 		echo "</select></th>";
 		echo "</tr></table></div>";
-		$this->showProfileConfig($target,$ID,$rand);
+
+		echo "<div align='center' id='profile_form$rand'>";
+
+		if (!empty($ID)&&$ID){
+
+			//$this->showProfileConfig($target,$ID,$rand);
+	
+			if ($this->fields["interface"]=="helpdesk"){
+				$this->showHelpdeskForm($CFG_GLPI["root_doc"]."/front/profile.form.php",$ID);
+			} else {
+				$this->showCentralForm($CFG_GLPI["root_doc"]."/front/profile.form.php",$ID);
+			}
+			$this->showLegend();
+		} else {
+			echo "<input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'>";
+		}
+		echo "</div>";
 		
 		return true;
 	}
@@ -262,7 +275,7 @@ class Profile extends CommonDBTM{
 		if ($ID){
 			$this->getFromDB($ID);
 		} else {
-			$this->getEmpty();
+			return false;
 		}
 		echo "<table class='tab_cadre_fixe'><tr>";
 		echo "<th colspan='4'>".$LANG['profiles'][3].":&nbsp;&nbsp;".$LANG['profiles'][13].":&nbsp;&nbsp;";
@@ -343,18 +356,13 @@ class Profile extends CommonDBTM{
 
 		if ($canedit){
 			echo "<tr class='tab_bg_1'>";
-			if ($ID){
-				echo "<td colspan='2' align='center'>";
-				echo "<input type='hidden' name='ID' value=$ID>";
-				echo "<input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit'>";
+			echo "<td colspan='2' align='center'>";
+			echo "<input type='hidden' name='ID' value=$ID>";
+			echo "<input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit'>";
 
-				echo "</td><td colspan='2' align='center'>";
-				echo "<input type='submit' name='delete' onclick=\"return confirm('".$LANG['common'][50]."')\"  value=\"".$LANG['buttons'][6]."\" class='submit'>";
+			echo "</td><td colspan='2' align='center'>";
+			echo "<input type='submit' name='delete' onclick=\"return confirm('".$LANG['common'][50]."')\"  value=\"".$LANG['buttons'][6]."\" class='submit'>";
 
-			} else {
-				echo "<td colspan='4' align='center'>";
-				echo "<input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'>";
-			}
 			echo "</td></tr>";
 		}
 		echo "</table>";
@@ -377,7 +385,7 @@ class Profile extends CommonDBTM{
 		if ($ID){
 			$this->getFromDB($ID);
 		} else {
-			$this->getEmpty();
+			return false;
 		}
 		
 		echo "<table class='tab_cadre_fixe'>";
@@ -722,16 +730,11 @@ class Profile extends CommonDBTM{
 
 		if ($canedit){
 			echo "<tr class='tab_bg_2'>";
-			if ($ID){
-				echo "<td colspan='3' align='center'>";
-				echo "<input type='hidden' name='ID' value=$ID>";
-				echo "<input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit'>";
-				echo "</td><td colspan='3' align='center'>";
-				echo "<input type='submit' name='delete'  onclick=\"return confirm('".$LANG['common'][50]."')\"  value=\"".$LANG['buttons'][6]."\" class='submit'>";
-			} else {
-				echo "<td colspan='6' align='center'>";
-				echo "<input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'>";
-			}
+			echo "<td colspan='3' align='center'>";
+			echo "<input type='hidden' name='ID' value=$ID>";
+			echo "<input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit'>";
+			echo "</td><td colspan='3' align='center'>";
+			echo "<input type='submit' name='delete'  onclick=\"return confirm('".$LANG['common'][50]."')\"  value=\"".$LANG['buttons'][6]."\" class='submit'>";
 			echo "</td></tr>";
 		}
 		echo "</table>";
