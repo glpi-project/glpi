@@ -271,7 +271,7 @@ $LANG['common'][84]="A presença de itens relacionados proibe a modificação de
 $LANG['common'][85]="Editar o perfil nas sub-entidades"; 
 $LANG['common'][86]="Você não tem permissão para alterar a visibilidade nas sub-entidades"; 
 $LANG['common'][87]="Novo cartão"; 
-$LANG['common'][88]="Internal server ID"; 
+$LANG['common'][88]="Identificação interna do servidor (ID)"; 
 
 $LANG['computers'][0]="Volume"; 
 $LANG['computers'][1]="Percentual livre"; 
@@ -528,7 +528,7 @@ $LANG['help'][4]="Alta";
 $LANG['help'][5]="Média"; 
 $LANG['help'][6]="Baixa"; 
 $LANG['help'][7]="Muito baixa"; 
-$LANG['help'][8]="Me informe a respeito das ações feitas"; 
+$LANG['help'][8]="Informe a respeito das ações feitas"; 
 $LANG['help'][11]="Meu e-mail"; 
 $LANG['help'][14]="Enviar mensagem"; 
 $LANG['help'][16]="Se você quer ser notificado sobre as ações feitas, você deve informar seu e-mail!"; 
