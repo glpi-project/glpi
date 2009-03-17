@@ -297,6 +297,14 @@ class Job extends CommonDBTM{
 			}
 		}
 
+		// Check dates change interval due to the fact that second are not displayed in form
+		
+		if (($key=array_search('date',$updates))!==false && (substr($this->fields["date"],0,16) == substr($oldvalues['date'],0,16))){
+			unset($updates[$key]);
+		}
+		if (($key=array_search('closedate',$updates))!==false && (substr($this->fields["closedate"],0,16) == substr($oldvalues['closedate'],0,16))){
+			unset($updates[$key]);
+		}
 
 
 		if (((in_array("assign",$updates)&&$input["assign"]>0)||(in_array("assign_ent",$updates)&&$input["assign_ent"]>0)||(in_array("assign_group",$updates)&&$input["assign_group"]>0))&&$this->fields["status"]=="new"){
