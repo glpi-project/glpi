@@ -1960,18 +1960,18 @@ function displayActiveEntities($target,$myname){
 	echo "</div>";
 }
 /**
- * Display entities tree 
+ * Display entities tree : ************ Unused function 
  *
  * @param $myname select name
  * @param $target target for entity change action
  * @param $ID ID of the root entity
  * @param $level current level displayed
- */
+ *
 function displayEntityTree($target,$myname,$ID,$recursive,$level=0){
 	global $CFG_GLPI,$LANG;
 
 
-	if (count($tree)){
+	if (count($tree)){	//  $tree not defined, couldn't work
 		// Is multiple items to display ? only one expand it if have subitems
 		foreach ($tree as $ID => $data){
 			if (isset($data['name'])){
@@ -2012,7 +2012,7 @@ function displayEntityTree($target,$myname,$ID,$recursive,$level=0){
 		}
 	}
 }
-
+*/
 
 
 /**
