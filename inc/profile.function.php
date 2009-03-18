@@ -76,6 +76,7 @@ function showProfileEntityUser($target,$ID,$prof){
  	
 	$i=0;
 	$nb_per_line=3;
+	$rand=mt_rand(); // Just to avoid IDE warning
 
  	if ($result = $DB->query($query))
  	{ 
