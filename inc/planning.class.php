@@ -136,6 +136,8 @@ class PlanningTracking extends CommonDBTM {
 
 
 	function post_addItem($newID,$input) {
+		global $CFG_GLPI;
+		
 		// Auto update Status
 		$job=new Job();
 		$job->getFromDB($input["id_tracking"]);
