@@ -45,9 +45,6 @@ if (isset($_POST["type"]))$type=$_POST["type"];
 elseif (isset($_GET["type"]))$type=$_GET["type"];
 else $type=0;
 
-if (!isset($_SESSION['glpi_searchconfig'])) $_SESSION['glpi_searchconfig']=1;
-if (isset($_GET['onglet'])) $_SESSION['glpi_searchconfig']=$_GET['onglet'];
-
 if (!strpos($_SERVER['PHP_SELF'],"popup")){
 	commonHeader($LANG['common'][12],$_SERVER['PHP_SELF'],"config","display");
 }
@@ -78,7 +75,7 @@ if ((strpos($_SERVER['PHP_SELF'],"popup")&&$type>0)/*||$type=$setupdisplay->titl
 	'params'=>"target=".$_SERVER['PHP_SELF']."&ID=-1&glpi_tab=2&type=$type");
 						
 	echo "<div id='tabspanel' class='center-h'></div>";
-	createAjaxTabs('tabspanel','tabcontent',$tabs,$_SESSION['glpi_searchconfig']);
+	createAjaxTabs('tabspanel','tabcontent',$tabs,$_SESSION['glpi_tab']);
 	echo "<div id='tabcontent'></div>";
 	echo "<script type='text/javascript'>loadDefaultTab();</script>";
 }
