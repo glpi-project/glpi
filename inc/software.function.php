@@ -187,7 +187,7 @@ function showSoftwareMergeCandidates($ID) {
 			"LEFT JOIN glpi_entities ON (glpi_software.FK_entities=glpi_entities.ID) " .
 			"WHERE glpi_software.ID!=$ID AND glpi_software.name='".$soft->fields["name"]."'".
 				"AND glpi_software.deleted=0 AND glpi_software.is_template=0 " .
-				getEntitiesRestrictRequest('AND', 'glpi_software','FK_entities',getEntitySons($soft->fields["FK_entities"]),true).
+				getEntitiesRestrictRequest('AND', 'glpi_software','FK_entities',getEntitySons($soft->fields["FK_entities"]),false).
 			"ORDER BY glpi_entities.completename";
 	$req = $DB->request($sql);
 
@@ -2110,7 +2110,10 @@ function addSoftware($name, $manufacturer, $entity, $comments = '') {
 		$manufacturer_id = externalImportDropdown("glpi_dropdown_manufacturer", $manufacturer);
 	}									
 
-	$sql = "SELECT ID FROM glpi_software WHERE FK_entities='$entity' AND FK_glpi_enterprise='$manufacturer_id' AND name='".$name."'";
+	$sql = "SELECT ID FROM glpi_software " .
+		"WHERE FK_entities='$entity' AND FK_glpi_enterprise='$manufacturer_id' AND name='".$name."' " .
+		getEntitiesRestrictRequest('AND', 'glpi_software', 'FK_entities', $entity, true);
+
 	$res_soft = $DB->query($sql);
 	if ($soft = $DB->fetch_array($res_soft)) {
 		$id = $soft["ID"];
