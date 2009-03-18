@@ -3460,10 +3460,11 @@ $SEARCH_OPTION[GROUP_TYPE][5]['field']='ldap_group_dn';
 $SEARCH_OPTION[GROUP_TYPE][5]['linkfield']='ldap_group_dn';
 $SEARCH_OPTION[GROUP_TYPE][5]['name']=$LANG['setup'][261];
 
-$SEARCH_OPTION[GROUP_TYPE][80]['table']='glpi_entities';
-$SEARCH_OPTION[GROUP_TYPE][80]['field']='completename';
-$SEARCH_OPTION[GROUP_TYPE][80]['linkfield']='FK_entities';
-$SEARCH_OPTION[GROUP_TYPE][80]['name']=$LANG['entity'][0];
+$SEARCH_OPTION[GROUP_TYPE][6]['table']='glpi_groups';
+$SEARCH_OPTION[GROUP_TYPE][6]['field']='recursive';
+$SEARCH_OPTION[GROUP_TYPE][6]['linkfield']='recursive';
+$SEARCH_OPTION[GROUP_TYPE][6]['name']=$LANG['entity'][9];
+$SEARCH_OPTION[GROUP_TYPE][6]['datatype']='bool';
 
 //////ENTITY_TYPE
 
