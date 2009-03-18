@@ -1717,7 +1717,7 @@ function printHelpDesk ($ID,$from_helpdesk) {
  * 
  */
 function printPagerForm ($action="") {
-	global $LANG;
+	global $LANG, $CFG_GLPI;
 	
 	if ($action) {
 		echo "<form method='POST' action=\"$action\">\n";
