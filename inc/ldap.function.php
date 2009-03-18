@@ -338,7 +338,7 @@ function showLdapGroups($target, $check, $start, $sync = 0,$filter='',$filter2='
 			echo "<table class='tab_cadre'>";
 			echo "<tr><th>" . $LANG['buttons'][37]. "</th>"; 
 			//echo"<th colspan='2'>" . $LANG['common'][35] . "</th>";
-			echo displaySearchHeaderItem(0,$LANG['common'][35],$header_num,$target."?order=".($order=="DESC"?"ASC":"DESC"),1,$order);
+			echo displaySearchHeaderItem(0,$LANG['common'][35],$header_num=0,$target."?order=".($order=="DESC"?"ASC":"DESC"),1,$order);
 			echo "<th>".$LANG['setup'][261]."</th>"; 
 			echo"<th>".$LANG['ocsng'][36]."</th></tr>";
 	
@@ -531,7 +531,7 @@ function showLdapUsers($target, $check, $start, $sync = 0,$filter='',$order='DES
 			echo "<table class='tab_cadre'>";
 			echo "<tr>"; 
 			echo"<th>" . (!$sync?$LANG['buttons'][37]:$LANG['ldap'][15]) . "</th>"; 
-			echo displaySearchHeaderItem(0,$LANG['Menu'][14],$header_num,$target."?order=".($order=="DESC"?"ASC":"DESC"),1,$order);
+			echo displaySearchHeaderItem(0,$LANG['Menu'][14],$header_num=0,$target."?order=".($order=="DESC"?"ASC":"DESC"),1,$order);
 			echo"<th>".$LANG['common'][26]." ".$LANG['ldap'][13]."</th>"; 
 			echo"<th>".$LANG['common'][26]." ".$LANG['ldap'][14]."</th>";
 			echo"</tr>";
