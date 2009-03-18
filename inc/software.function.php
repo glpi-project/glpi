@@ -2226,7 +2226,7 @@ function addSoftwareOrRestoreFromTrash($name,$manufacturer,$entity,$comments='')
 function cron_software($display=false){
 	global $DB,$CFG_GLPI,$LANG;
 
-	return ;
+	return ; // TODO ???
 	if (!$CFG_GLPI["mailing"]){
 		return false;
 	}
