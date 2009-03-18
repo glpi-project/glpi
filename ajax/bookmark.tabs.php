@@ -65,7 +65,6 @@ $bookmark = new Bookmark;
 				
 				case 0 :
 				case 1 :
-						$_SESSION['glpi_viewbookmark']=$_POST['glpi_tab'];
 						switch($_POST['action']){
 							case "edit" :
 								if ($_POST['ID']>0){

@@ -49,9 +49,6 @@ if(!isset($_GET["ID"])) {
 	$_GET["ID"] = -1;
 }
 
-if (!isset($_SESSION['glpi_viewbookmark'])) $_SESSION['glpi_viewbookmark']=1;
-if (isset($_GET['onglet'])) $_SESSION['glpi_viewbookmark']=$_GET['onglet'];
-
 if(!isset($_GET["type"])) {
 	$_GET["type"] = -1;
 }
@@ -105,7 +102,7 @@ $tabs[0]=array('title'=>$LANG['common'][76],
 'params'=>"target=".$_SERVER['PHP_SELF']."&ID=".$_GET["ID"]."&action=".$_GET["action"]."&url=".rawurlencode($_GET["url"])."&device_type=".$_GET["device_type"]."&type=".$_GET["type"]."&mark_default=".$_GET["mark_default"]."&glpi_tab=0");
 			
 echo "<div id='tabspanel' class='center-h'></div>";
-createAjaxTabs('tabspanel','tabcontent',$tabs,$_SESSION['glpi_viewbookmark']);
+createAjaxTabs('tabspanel','tabcontent',$tabs,$_SESSION['glpi_tab']);
 echo "<div id='tabcontent'></div>";
 echo "<script type='text/javascript'>loadDefaultTab();</script>";
 		
