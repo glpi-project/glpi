@@ -74,10 +74,11 @@ function ldapImportGroup ($group_dn,$ldap_server,$entity,$type){
  *
  * @param   $login  dn of the user to import
  * @param   $sync synchoronise (true) or import (false)
+ * @param   $display display message information on redirect
  * @return  nothing
  */
-function ldapImportUser ($login,$sync){
-	ldapImportUserByServerId($login, $sync,$_SESSION["ldap_server"]);
+function ldapImportUser ($login,$sync,$display=false){
+	ldapImportUserByServerId($login, $sync,$_SESSION["ldap_server"],$display);
 }
 
 /** Import a user from a specific ldap server
@@ -85,9 +86,10 @@ function ldapImportUser ($login,$sync){
  * @param   $login  dn of the user to import
  * @param   $sync synchoronise (true) or import (false)
  * @param   $ldap_server ID of the LDAP server to use
+ * @param   $display display message information on redirect
  * @return  nothing
  */
-function ldapImportUserByServerId($login, $sync,$ldap_server) {
+function ldapImportUserByServerId($login, $sync,$ldap_server,$display=false) {
 	global $DB, $LANG;
 
 	$config_ldap = new AuthLDAP();
@@ -122,7 +124,10 @@ function ldapImportUserByServerId($login, $sync,$ldap_server) {
 					//Save informations in database !
 					$input = $user->fields;
 					unset ($user->fields);
-					$input['add']=1;
+					// Display message after redirect
+					if ($display){
+						$input['add']=1;
+					}
 					$user->fields["ID"] = $user->add($input);
 	//				$user->applyRightRules($groups);
 					return $user->fields["ID"];
