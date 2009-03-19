@@ -379,14 +379,14 @@ class Bookmark extends CommonDBTM {
 		$query.=" ORDER BY device_type, name";
 
 		if ($result = $DB->query($query)){
-			echo "<br>";
+			//echo "<br>";
 	
 			$rand=mt_rand();
 			echo "<form method='post' id='form_load_bookmark$rand' action=\"$target\">";
 			echo "<div class='center' id='tabsbody' >";
 	
 	
-			echo "<table class='tab_cadrehov'>";
+			echo "<table class='tab_cadrehov' style='width:100%'>";
 			echo "<tr><th align='center' colspan='3'>".$LANG['buttons'][52]." ".$LANG['bookmark'][1]."</th>";
 			echo "<th width='20px'>&nbsp;</th>";
 			echo "<th>".$LANG['bookmark'][6]."</th>";
