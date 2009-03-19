@@ -517,7 +517,7 @@ class MailCollect {
 		$mail_header=imap_header($this->marubox,$mid);
 		
 		$sender=$mail_header->from[0];
-		$sender_replyto=$mail_header->reply_to[0];
+		//$sender_replyto=$mail_header->reply_to[0];
 		if(strtolower($sender->mailbox)!='mailer-daemon' && strtolower($sender->mailbox)!='postmaster')
 		{
 			$mail_details=array(
