@@ -33,32 +33,12 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-/*
-$NEEDED_ITEMS=array("bookmark");
-
-if(!defined('GLPI_ROOT')){
-	define('GLPI_ROOT', '..');
-}
-include (GLPI_ROOT . "/inc/includes.php");
-
-if (!strstr($_SERVER['PHP_SELF'],"popup"))
-	commonHeader($LANG['rulesengine'][17],$_SERVER['PHP_SELF'],"admin","dictionnary","cache");
-*/
-
-if(!isset($_GET["ID"])) {
-	$_GET["ID"] = -1;
-}
-
 if(!isset($_GET["type"])) {
 	$_GET["type"] = -1;
 }
 
 if(!isset($_GET["device_type"])) {
 	$_GET["device_type"] = -1;
-}
-
-if(!isset($_GET["mark_default"])) {
-	$_GET["mark_default"] = -1;
 }
 
 if(!isset($_GET["url"])) {
@@ -70,43 +50,76 @@ $bookmark = new Bookmark;
 /// TODO : check rights for actions
 
 if (isset($_POST["add"])){
+
 	$bookmark->getEmpty();
 	$bookmark->check(-1,'w',$_POST['FK_entities']);
 
 	$bookmark->add($_POST);
 	$_GET["action"]="load";
+
 } elseif (isset($_POST["update"])){
+
 	$bookmark->check($_POST["ID"],'w');	
 
 	$bookmark->update($_POST);
 	$_GET["action"]="load";
+	
+} elseif ($_GET["action"]=="edit" && isset($_GET['mark_default']) && isset($_GET["ID"])){
+	
+	if ($_GET["mark_default"]>0){
+		$bookmark->mark_default($_GET["ID"]);
+	} elseif ($_GET["mark_default"]==0){
+		$bookmark->unmark_default($_GET["ID"]);
+	}
+	$_GET["action"]="load";
+
+} elseif ($_GET["action"]=="load" && isset($_GET["ID"]) && $_GET["ID"]>0){
+	
+	$bookmark->load($_GET["ID"]);
+
 } elseif (isset($_POST["delete"])){
+	
 	$bookmark->check($_POST["ID"],'w');	
 	$bookmark->delete($_POST);
 	$_GET["action"]="load";
-}elseif (isset($_POST["delete_several"])){
+
+} elseif (isset($_POST["delete_several"])){
 	foreach ($_POST["bookmark"] as $ID=>$value){
 		if ($bookmark->can($ID,'w')){
 			$bookmark->delete(array("ID"=>$ID));
 		}
+		
 	}
 	$_GET["action"]="load";
 }
 
-$tabs[1]=array('title'=>$LANG['common'][77],
-'url'=>$CFG_GLPI['root_doc']."/ajax/bookmark.tabs.php",
-'params'=>"target=".$_SERVER['PHP_SELF']."&ID=".$_GET["ID"]."&action=".$_GET["action"]."&url=".rawurlencode($_GET["url"])."&device_type=".$_GET["device_type"]."&type=".$_GET["type"]."&mark_default=".$_GET["mark_default"]."&glpi_tab=1");
+
+if ($_GET["action"]=="edit") {
 	
-$tabs[0]=array('title'=>$LANG['common'][76],
-'url'=>$CFG_GLPI['root_doc']."/ajax/bookmark.tabs.php",
-'params'=>"target=".$_SERVER['PHP_SELF']."&ID=".$_GET["ID"]."&action=".$_GET["action"]."&url=".rawurlencode($_GET["url"])."&device_type=".$_GET["device_type"]."&type=".$_GET["type"]."&mark_default=".$_GET["mark_default"]."&glpi_tab=0");
-			
-echo "<div id='tabspanel' class='center-h'></div>";
-createAjaxTabs('tabspanel','tabcontent',$tabs,$_SESSION['glpi_tab']);
-echo "<div id='tabcontent'></div>";
-echo "<script type='text/javascript'>loadDefaultTab();</script>";
+	if (isset($_GET['ID']) && $_GET['ID']>0){
+		// Modify
+		$bookmark->showForm($_SERVER['PHP_SELF'],$_GET['ID']);
+	} else {
+		// Create
+		$bookmark->showForm($_SERVER['PHP_SELF'],0,$_GET["type"],rawurldecode($_GET["url"]),$_GET["device_type"]);	
+	}
+
+} else { // $_GET["action"]="load";
+	
+	echo '<br>';
+	
+	$tabs[1]=array('title'=>$LANG['common'][77],
+		'url'=>$CFG_GLPI['root_doc']."/ajax/bookmark.tabs.php",
+		'params'=>"target=".$_SERVER['PHP_SELF']."&glpi_tab=1");
 		
-if (!strstr($_SERVER['PHP_SELF'],"popup")){
-	commonFooter();
+	$tabs[0]=array('title'=>$LANG['common'][76],
+		'url'=>$CFG_GLPI['root_doc']."/ajax/bookmark.tabs.php",
+		'params'=>"target=".$_SERVER['PHP_SELF']."&glpi_tab=0");
+				
+	echo "<div id='tabspanel' class='center-h'></div>";
+	createAjaxTabs('tabspanel','tabcontent',$tabs,$_SESSION['glpi_tab']);
+	echo "<div id='tabcontent'></div>";
+	echo "<script type='text/javascript'>loadDefaultTab();</script>";
 }
+		
 ?>
