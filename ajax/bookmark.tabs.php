@@ -42,59 +42,8 @@ header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
 
-if(!isset($_POST["type"])) {
-	$_POST["type"] = -1;
-}
-
-if(!isset($_POST["device_type"])) {
-	$_POST["device_type"] = -1;
-}
-
-if(!isset($_POST["mark_default"])) {
-	$_POST["mark_default"] = -1;
-}
-
-if(!isset($_POST["url"])) {
-	$_POST["url"] = "";
-}
-
 $bookmark = new Bookmark;
+$bookmark->showBookmarkList($_POST['target'],$_POST['glpi_tab']);
 
-	//	if ($_POST["ID"]>0){
-			switch($_POST['glpi_tab']){
-				
-				case 0 :
-				case 1 :
-						switch($_POST['action']){
-							case "edit" :
-								if ($_POST['ID']>0){
-									if (isset($_POST['mark_default']) && $_POST['mark_default']!=-1){
-										if ($_POST["mark_default"]>0){
-											$bookmark->mark_default($_POST["ID"]);
-										}elseif ($_POST["mark_default"]==0){
-											$bookmark->unmark_default($_POST["ID"]);
-										}
-										$bookmark->showBookmarkList($_POST['target'],$_POST['glpi_tab']);
-									} else {
-										$bookmark->showForm($_POST['target'],$_POST["ID"]);
-									}
-								} else  {
-									$bookmark->showForm($_POST['target'],$_POST["ID"],$_POST["type"],rawurldecode($_POST["url"]),$_POST["device_type"]);	
-								}
-								break;
-							case "load" :
-								if (isset($_POST["ID"]) && $_POST["ID"]>0){
-									$bookmark->load($_POST["ID"]);
-								}
-								$bookmark->showBookmarkList($_POST['target'],$_POST['glpi_tab']);
-								break;
-						}
-					break;
-					
-				default :
-					break;
-			}
-		//}
-	
-	ajaxFooter();
+ajaxFooter();
 ?>
