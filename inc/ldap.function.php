@@ -122,7 +122,7 @@ function ldapImportUserByServerId($login, $sync,$ldap_server) {
 					//Save informations in database !
 					$input = $user->fields;
 					unset ($user->fields);
-	
+					$input['add']=1;
 					$user->fields["ID"] = $user->add($input);
 	//				$user->applyRightRules($groups);
 					return $user->fields["ID"];
@@ -530,11 +530,12 @@ function showLdapUsers($target, $check, $start, $sync = 0,$filter='',$order='DES
 			echo "<a href='" . $target . "?check=all' onclick= \"if ( markCheckboxes('ldap_form') ) return false;\">" . $LANG['buttons'][18] . "</a>&nbsp;/&nbsp;<a href='" . $target . "?check=none' onclick= \"if ( unMarkCheckboxes('ldap_form') ) return false;\">" . $LANG['buttons'][19] . "</a>";
 			echo "<table class='tab_cadre'>";
 			echo "<tr>"; 
-			echo"<th>" . (!$sync?$LANG['buttons'][37]:$LANG['ldap'][15]) . "</th>"; 
-			echo displaySearchHeaderItem(0,$LANG['Menu'][14],$header_num=0,$target."?order=".($order=="DESC"?"ASC":"DESC"),1,$order);
-			echo"<th>".$LANG['common'][26]." ".$LANG['ldap'][13]."</th>"; 
-			echo"<th>".$LANG['common'][26]." ".$LANG['ldap'][14]."</th>";
-			echo"</tr>";
+			echo "<th>" . (!$sync?$LANG['buttons'][37]:$LANG['ldap'][15]) . "</th>"; 
+			$num=0;
+			echo displaySearchHeaderItem(0,$LANG['Menu'][14],$num,$target."?order=".($order=="DESC"?"ASC":"DESC"),1,$order);
+			echo "<th>".$LANG['common'][26]." ".$LANG['ldap'][13]."</th>"; 
+			echo "<th>".$LANG['common'][26]." ".$LANG['ldap'][14]."</th>";
+			echo "</tr>";
 	
 			foreach ($ldap_users as $userinfos) {
 				$user = $userinfos["user"];
