@@ -800,15 +800,15 @@ function getMachinesAlreadyInGLPI($ocs_id,$ocs_server_id,$entity){
 		if ($conf["link_if_status"] > 0)
 			$sql_where .= " AND glpi_computers.state='".$conf["link_if_status"]."'";
 		
-		$sql_glpi = "SELECT glpi_computers.ID FROM $sql_from WHERE $sql_where ;";
+		$sql_glpi = "SELECT glpi_computers.ID FROM $sql_from " .
+			"WHERE $sql_where ORDER BY `glpi_computers`.`deleted` ASC";
 		$result_glpi = $DB->query($sql_glpi);
 		
-		// If only one result
-			if ($DB->numrows($result_glpi) > 0){
-				while ($data = $DB->fetch_array($result_glpi)) {
-					$found_computers[]=$data['ID'];
-				}
+		if ($DB->numrows($result_glpi) > 0){
+			while ($data = $DB->fetch_array($result_glpi)) {
+				$found_computers[]=$data['ID'];
 			}
+		}
 	}
 
 	return $found_computers; 
