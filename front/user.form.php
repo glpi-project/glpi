@@ -199,7 +199,8 @@ else if (isset($_POST["deletegroup"]))
 		}
 		if (isset($_GET['add_ext_auth_simple'])){
 			if (isset($_GET['login'])&&!empty($_GET['login'])){
-				$user->add(array('name'=>$_GET['login'],'_extauth'=>1));
+				$newID=$user->add(array('name'=>$_GET['login'],'_extauth'=>1,'add'=>1));
+				logEvent($newID, "users", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][20]." ".$_GET['login'].".");
 			}
 			glpi_header($_SERVER['HTTP_REFERER']);
 		}
