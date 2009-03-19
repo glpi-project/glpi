@@ -1163,7 +1163,7 @@ function import_user_from_ldap_servers($login){
 		$userid = -1;
 		
 		foreach ($ldap_methods as $ldap_method){
-			$result=ldapImportUserByServerId($login, 0,$ldap_method["ID"]);
+			$result=ldapImportUserByServerId($login, 0,$ldap_method["ID"],true);
 			if ($result != false){
 				return $result;
 			}  
