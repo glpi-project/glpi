@@ -240,7 +240,7 @@ class MailCollect {
 				} else { // New ticket
 					// Deletion of message with sucess
 					if (false === is_array($result)){
-						
+						$track=new Job();
 						$track->add($tkt);
 					} else {
 						$error++;
