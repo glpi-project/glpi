@@ -814,6 +814,10 @@ function getUserName($ID,$link=0){
 				if ($data["location"]>0){
 					$user["comments"].=$LANG['common'][15].": ".getDropdownName("glpi_dropdown_locations",$data["location"])."<br>";
 				}
+				if ($data["title"]>0)
+					$user["comments"].=$LANG['common'][81].": ".getDropdownName("glpi_dropdown_user_titles",$data["title"])."<br>";
+				if ($data["type"]>0)
+					$user["comments"].=$LANG['common'][17].": ".getDropdownName("glpi_dropdown_user_types",$data["type"])."<br>";
 			} else {
 				$user=$username;
 			}
