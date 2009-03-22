@@ -185,7 +185,7 @@ class Plugin extends CommonDBTM {
 		$i=0;
 		$PLUGIN_HOOKS_SAVE=$PLUGIN_HOOKS;
 		foreach ($pluglist as $ID => $plug){
-			usePlugin($plug['directory']);
+			usePlugin($plug['directory'],true);
 			$i++;
 			$class='tab_bg_1';
 			if ($i%2==0){
@@ -336,8 +336,8 @@ class Plugin extends CommonDBTM {
 	**/	
 	function uninstall($ID){
 		if ($this->getFromDB($ID)){
-			include_once(GLPI_ROOT."/plugins/".$this->fields['directory']."/setup.php");
-			usePlugin($this->fields['directory']);
+
+			usePlugin($this->fields['directory'],true);
 			// Run the Plugin's Uninstall Function first
 			$function = 'plugin_' . $this->fields['directory'] . '_uninstall';
 			if (function_exists($function)) {
@@ -355,8 +355,8 @@ class Plugin extends CommonDBTM {
 	**/	
 	function install($ID){
 		if ($this->getFromDB($ID)){
-			include_once(GLPI_ROOT."/plugins/".$this->fields['directory']."/setup.php");
-			usePlugin($this->fields['directory']);
+
+			usePlugin($this->fields['directory'],true);
 			$function = 'plugin_' . $this->fields['directory'] . '_install';
 			$install_ok=false;
 			if (function_exists($function)) {
@@ -380,9 +380,11 @@ class Plugin extends CommonDBTM {
 	 *@param $ID ID of the plugin
 	**/	
 	function activate($ID){
+		global $PLUGIN_HOOKS;
+		
 		if ($this->getFromDB($ID)){
-			include_once(GLPI_ROOT."/plugins/".$this->fields['directory']."/setup.php");
-			usePlugin($this->fields['directory']);
+
+			usePlugin($this->fields['directory'],true);
 			$function = 'plugin_' . $this->fields['directory'] . 'check_prerequisites';
 			if (function_exists($function)) {
 				if (!$function()){
@@ -398,9 +400,20 @@ class Plugin extends CommonDBTM {
 					if (isset($_SESSION["glpiID"])){
 						cleanCache("GLPI_HEADER_".$_SESSION["glpiID"]);
 					}
+					// Initialize session for the plugin
+					if (isset($PLUGIN_HOOKS['init_session'][$this->fields['directory']]) 
+						&& function_exists($PLUGIN_HOOKS['init_session'][$this->fields['directory']])) {
+							call_user_func($PLUGIN_HOOKS['init_session'][$this->fields['directory']]);		
+					}
+
+					// Initialize profile for the plugin
+					if (isset($PLUGIN_HOOKS['change_profile'][$this->fields['directory']]) 
+						&& function_exists($PLUGIN_HOOKS['change_profile'][$this->fields['directory']])) {
+							call_user_func($PLUGIN_HOOKS['change_profile'][$this->fields['directory']]);		
+					}						
 				} 
-			}
-		}
+			}  // exists _check_config
+		} // getFromDB
 	}
 	/**
 	 * unactivate a plugin

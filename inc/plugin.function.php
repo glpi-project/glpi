@@ -70,9 +70,11 @@ function initPlugins(){
  * launching plugin_init_NAME function  after checking compatibility 
  * 
  * @param $name Name of hook to use
+ * @param $withhook boolean to load hook functions
+ * 
  * @return nothing
  */
-function usePlugin ($name) {
+function usePlugin ($name, $withhook=false) {
 	global $CFG_GLPI, $PLUGIN_HOOKS,$LANG,$LOADED_PLUGINS;
 
 	if (file_exists(GLPI_ROOT . "/plugins/$name/setup.php")) {
@@ -87,7 +89,9 @@ function usePlugin ($name) {
 				$LOADED_PLUGINS[$name]=$name;
 			}
 		}
-
+	}
+	if ($withhook && file_exists(GLPI_ROOT . "/plugins/$name/hook.php")) {
+		include_once(GLPI_ROOT . "/plugins/$name/hook.php");
 	}
 }
 
