@@ -159,18 +159,23 @@ function showFormTreeDown($target, $tablename, $human, $ID, $value2 = '', $where
 		dropdownValue($tablename, "ID", $ID, 0, $entity_restrict);
 		// on ajoute un input text pour entrer la valeur modifier
 		echo "&nbsp;&nbsp<input type='image' class='calendrier' src=\"" . $CFG_GLPI["root_doc"] . "/pics/puce.gif\" alt='' title='' name='fillright' value='fillright'>&nbsp";
-
-		autocompletionTextField('value',$tablename,'name',$value["name"],40,$entity_restrict,-1,'maxlength=\'100\'');
-		echo '<br>'; 
-		echo "<textarea rows='2' cols='50' name='comments' title='" . $LANG['common'][25] . "' >" . $value["comments"] . "</textarea>";
-
-		echo "</td><td align='center' class='tab_bg_2' width='99'>";
 		echo "<input type='hidden' name='tablename' value='$tablename'>";
-		//  on ajoute un bouton modifier
-		echo "<input type='submit' name='update' value='" . $LANG['buttons'][14] . "' class='submit'>";
-		echo "</td><td align='center' class='tab_bg_2' width='99'>";
-		//
-		echo "<input type='submit' name='delete' value=\"" . $LANG['buttons'][6] . "\" class='submit'>";
+
+		if ($ID>0) {
+			autocompletionTextField('value',$tablename,'name',$value["name"],40,$entity_restrict,-1,'maxlength=\'100\'');
+			echo '<br>'; 
+			echo "<textarea rows='2' cols='50' name='comments' title='" . $LANG['common'][25] . "' >" . $value["comments"] . "</textarea>";
+	
+			echo "</td><td align='center' class='tab_bg_2' width='99'>";
+			//  on ajoute un bouton modifier
+			echo "<input type='submit' name='update' value='" . $LANG['buttons'][14] . "' class='submit'>";
+			echo "</td><td align='center' class='tab_bg_2' width='99'>";
+			//
+			echo "<input type='submit' name='delete' value=\"" . $LANG['buttons'][6] . "\" class='submit'>";
+		} else {
+			echo "</td><td align='center' class='tab_bg_2' width='99'>&nbsp;";
+		}
+		
 		echo "</td></tr></table></form>";
 
 		echo "<form method='post' action=\"$target\">";
@@ -260,43 +265,46 @@ function showFormNetpoint($target, $human, $ID, $FK_entities='',$location=0) {
 	echo "<tr><th colspan='3'>$human:</th></tr>";
 	if ($numberof > 0) {
 		echo "<tr><td class='tab_bg_1' align='center' valign='top'>";
+		echo "<input type='hidden' name='tablename' value='$tablename'>";
 		echo "<input type='hidden' name='which' value='$tablename'>";
 		echo "<input type='hidden' name='FK_entities' value='$entity_restrict'>";
-		echo "<input type='hidden' name='value2' value='$location'>";
 
 		dropdownNetpoint("ID", $ID, $location, 0, $entity_restrict);
 
 		// on ajoute un input text pour entrer la valeur modifier
 		echo "&nbsp;&nbsp;<input type='image' class='calendrier'  src=\"" . $CFG_GLPI["root_doc"] . "/pics/puce.gif\" alt='' title='' name='fillright' value='fillright'>&nbsp;";
 
-
-		$query = "SELECT * FROM glpi_dropdown_netpoint WHERE ID = '" . $ID . "'";
-		$result = $DB->query($query);
-		$value = $loc = $comments = "";
-		$entity = 0;
-		if ($DB->numrows($result) == 1) {
-			$value = $DB->result($result, 0, "name");
-			$loc = $DB->result($result, 0, "location");
-			$comments = $DB->result($result, 0, "comments");
+		if ($ID>0) {		
+			$query = "SELECT * FROM glpi_dropdown_netpoint WHERE ID = '" . $ID . "'";
+			$result = $DB->query($query);
+			$value = $loc = $comments = "";
+			$entity = 0;
+			if ($DB->numrows($result) == 1) {
+				$value = $DB->result($result, 0, "name");
+				$loc = $DB->result($result, 0, "location");
+				$comments = $DB->result($result, 0, "comments");
+			}
+			echo "<br>";
+			echo $LANG['common'][15] . ": ";
+			dropdownValue("glpi_dropdown_locations", "value2", $location, 0, $entity_restrict);
+			
+			echo $LANG['networking'][52] . ": ";
+			autocompletionTextField('value',$tablename,'name',$value,40,$entity_restrict,-1,'maxlength=\'100\''); 
+			echo "<br>"; 
+			echo "<textarea rows='2' cols='50' name='comments' title='" . $LANG['common'][25] . "' >" . $comments . "</textarea>";
+	
+			//
+			echo "</td><td align='center' class='tab_bg_2' width='99'>";
+	
+			//  on ajoute un bouton modifier
+			echo "<input type='submit' name='update' value='" . $LANG['buttons'][14] . "' class='submit'>";
+			echo "</td><td align='center' class='tab_bg_2' width='99'>";
+			//
+			echo "<input type='submit' name='delete' value=\"" . $LANG['buttons'][6] . "\" class='submit'>";
+		} else {
+			echo "<input type='hidden' name='value2' value='$location'>";
+			echo "</td><td align='center' class='tab_bg_2' width='99'>&nbsp;";			
 		}
-		echo "<br>";
-		echo $LANG['common'][15] . ": ";
-		dropdownValue("glpi_dropdown_locations", "value2", $location, 0, $entity_restrict);
-		
-		echo $LANG['networking'][52] . ": ";
-		autocompletionTextField('value',$tablename,'name',$value,40,$entity_restrict,-1,'maxlength=\'100\''); 
-		echo "<br>"; 
-		echo "<textarea rows='2' cols='50' name='comments' title='" . $LANG['common'][25] . "' >" . $comments . "</textarea>";
-
-		//
-		echo "</td><td align='center' class='tab_bg_2' width='99'>";
-		echo "<input type='hidden' name='tablename' value='$tablename'>";
-
-		//  on ajoute un bouton modifier
-		echo "<input type='submit' name='update' value='" . $LANG['buttons'][14] . "' class='submit'>";
-		echo "</td><td align='center' class='tab_bg_2' width='99'>";
-		//
-		echo "<input type='submit' name='delete' value=\"" . $LANG['buttons'][6] . "\" class='submit'>";
 		echo "</td></tr>";
 
 	}
@@ -397,21 +405,24 @@ function showFormDropDown($target, $tablename, $human, $ID, $FK_entities='') {
 
 		// on ajoute un input text pour entrer la valeur modifier
 		echo "&nbsp;&nbsp;<input type='image' class='calendrier'  src=\"" . $CFG_GLPI["root_doc"] . "/pics/puce.gif\" alt='' title='' name='fillright' value='fillright'>&nbsp;";
-
-
-		autocompletionTextField('value',$tablename,'name',$value["name"],40,$entity_restrict,-1,'maxlength=\'100\''); 
-		echo "<br>";
-		echo "<textarea rows='2' cols='50' name='comments' title='" . $LANG['common'][25] . "' >" . $value["comments"] . "</textarea>";
-
-		//
-		echo "</td><td align='center' class='tab_bg_2' width='99'>";
 		echo "<input type='hidden' name='tablename' value='$tablename'>";
 
-		//  on ajoute un bouton modifier
-		echo "<input type='submit' name='update' value='" . $LANG['buttons'][14] . "' class='submit'>";
-		echo "</td><td align='center' class='tab_bg_2' width='99'>";
-		//
-		echo "<input type='submit' name='delete' value=\"" . $LANG['buttons'][6] . "\" class='submit'>";
+		if ($ID>0) {			
+			autocompletionTextField('value',$tablename,'name',$value["name"],40,$entity_restrict,-1,'maxlength=\'100\''); 
+			echo "<br>";
+			echo "<textarea rows='2' cols='50' name='comments' title='" . $LANG['common'][25] . "' >" . $value["comments"] . "</textarea>";
+	
+			//
+			echo "</td><td align='center' class='tab_bg_2' width='99'>";
+	
+			//  on ajoute un bouton modifier
+			echo "<input type='submit' name='update' value='" . $LANG['buttons'][14] . "' class='submit'>";
+			echo "</td><td align='center' class='tab_bg_2' width='99'>";
+			//
+			echo "<input type='submit' name='delete' value=\"" . $LANG['buttons'][6] . "\" class='submit'>";
+		} else {
+			echo "</td><td align='center' class='tab_bg_2' width='99'>&nbsp;";			
+		}
 		echo "</td></tr>";
 
 	}
