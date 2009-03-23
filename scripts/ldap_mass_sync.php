@@ -31,7 +31,7 @@
  */
 
 // ----------------------------------------------------------------------
-// Original Author of file: Walid Nouh (walid.nouh@atosorigin.com)
+// Original Author of file: Walid Nouh
 // Purpose of file:
 // ----------------------------------------------------------------------
 
@@ -63,7 +63,11 @@ $NEEDED_ITEMS = array (
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-// Default action : synchro (1=synchro 0=import)
+// Default action : synchro 
+// - possible option :
+//   - 0 : import new users
+//	 - 1 : synchronize users
+//	 - 2 : force synchronization of all the users (even if ldap timestamp wasn't modified)
 if (!isset($_GET["action"])) $_GET["action"]=1;
 
 //If no ldap_server ID is given, then use all the available servers
