@@ -82,6 +82,14 @@ $items=array(
 			"title"=>$LANG['common'][35],
 			"field"=>"glpi_tracking.FK_group"
 			),
+		"title"=>array(	
+			"title"=>$LANG['common'][57],
+			"field"=>"glpi_dropdown_user_titles.title"
+			),
+		"type"=>array(	
+			"title"=>$LANG['common'][17],
+			"field"=>"glpi_dropdown_user_titles.type"
+			),
 	),
 	$LANG['common'][32] => array(
 		"category"=>array(	

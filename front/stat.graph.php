@@ -144,6 +144,22 @@ switch($_GET["type"]){
 		if ($val1>1) $prev=$val1-1;
 		$title=$LANG['joblist'][2].": ".getPriorityName($_GET["ID"]);
 		break;	
+	case "title":
+		$val1=$_GET["ID"];
+		$val2="";
+		$next=$prev=0;
+		$next=getNextItem("glpi_dropdown_user_titles",$_GET["ID"]);
+		$prev=getPreviousItem("glpi_dropdown_user_titles",$_GET["ID"]);
+		$title=$LANG['common'][57].": ".getDropdownName("glpi_dropdown_user_titles",$_GET["ID"]);
+		break;	
+	case "type":
+		$val1=$_GET["ID"];
+		$val2="";
+		$next=$prev=0;
+		$next=getNextItem("glpi_dropdown_user_types",$_GET["ID"]);
+		$prev=getPreviousItem("glpi_dropdown_user_types",$_GET["ID"]);
+		$title=$LANG['common'][17].": ".getDropdownName("glpi_dropdown_user_types",$_GET["ID"]);
+		break;	
 	case "request_type":
 		$val1=$_GET["ID"];
 		$val2="";
