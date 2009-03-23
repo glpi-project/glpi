@@ -86,8 +86,18 @@ function getStatsItems($date1,$date2,$type){
 		break;
 		case "request_type":
 			$val = getNbIntervRequestType($date1,$date2);
-
+		
 		break;
+		
+		case "title":
+			$val = getNbIntervTitleOrType($date1,$date2,true);
+		
+		break;
+		case "type":
+			$val = getNbIntervTitleOrType($date1,$date2,false);
+		
+		break;
+		
 		case "glpi_type_computers":
 		case "glpi_dropdown_model":
 		case "glpi_dropdown_os":
@@ -408,6 +418,46 @@ function getNbIntervAuthor($date1,$date2){
 /** Get recipient of tickets between 2 dates
 * @param $date1 date : begin date
 * @param $date2 date : end date
+* @param title : indicates if stat if by title (true) or type (false)
+* @return array contains the distinct recipents which have tickets
+*/
+function getNbIntervTitleOrType($date1,$date2,$title=true){	
+	global $DB;
+	if ($title)
+	{
+		$table = "glpi_dropdown_user_titles";
+		$field = "title";	
+	}
+		
+	else
+	{
+		$table = "glpi_dropdown_user_types";
+		$field = "type";
+	}
+	
+	$query = "SELECT DISTINCT $table.ID FROM glpi_users, $table, glpi_tracking ";
+	$query.=getEntitiesRestrictRequest("WHERE","glpi_tracking");
+	if (!empty($date1)) $query.= " AND glpi_tracking.date >= '". $date1 ."' ";
+	if (!empty($date2)) $query.= " AND glpi_tracking.date <= adddate( '". $date2 ."' , INTERVAL 1 DAY ) ";
+	$query.=" AND (glpi_users.ID=glpi_tracking.author) AND $table.ID=glpi_users.$field ";
+	$query.=" GROUP BY $field ORDER BY $field";
+	
+	$result = $DB->query($query);
+	$tab=array();
+	if($DB->numrows($result) >=1) {
+		while($line = $DB->fetch_assoc($result)) {
+			$tmp['ID']= $line["ID"];
+			$tmp['link']=getDropdownName($table,$line["ID"]);
+			$tab[]=$tmp;
+		}
+	}
+	return $tab;
+
+}
+
+/** Get recipient of tickets between 2 dates
+* @param $date1 date : begin date
+* @param $date2 date : end date
 * @return array contains the distinct recipents which have tickets
 */
 function getNbIntervRecipient($date1,$date2){	
@@ -620,6 +670,12 @@ function constructEntryValues($type,$begin="",$end="",$param="",$value="",$value
 		break;
 		case "request_type":
 			$WHERE.=" AND glpi_tracking.request_type='$value'";
+		break;
+		case "title":
+			$LEFTJOIN= "INNER JOIN glpi_users ON (glpi_users.ID = glpi_tracking.author AND glpi_users.title=$value)";
+		break;
+		case "type":
+			$LEFTJOIN= "INNER JOIN glpi_users ON (glpi_users.ID = glpi_tracking.author AND glpi_users.type=$value)";
 		break;
 
 		case "device":
