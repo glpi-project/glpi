@@ -271,7 +271,7 @@ $LANG['common'][84]="L'existencia d'elements enllaçats impideixen la modificaci
 $LANG['common'][85]="Modificar la visibilitat a les sub-entitats"; 
 $LANG['common'][86]="Vostè no té permissos suficients per a modificar la visibilitat a les sub-entitats"; 
 $LANG['common'][87]="Nova targeta"; 
-$LANG['common'][88]="Internal server ID"; 
+$LANG['common'][88]="Identificador intern del servidor (ID)"; 
 
 $LANG['computers'][0]="Volum"; 
 $LANG['computers'][1]="Percentatge lliure"; 
