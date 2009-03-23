@@ -343,7 +343,7 @@ function showLdapGroups($target, $check, $start, $sync = 0,$filter='',$filter2='
 			echo "<table class='tab_cadre'>";
 			echo "<tr><th>" . $LANG['buttons'][37]. "</th>"; 
 			//echo"<th colspan='2'>" . $LANG['common'][35] . "</th>";
-			echo displaySearchHeaderItem(0,$LANG['common'][35],$header_num=0,$target."?order=".($order=="DESC"?"ASC":"DESC"),1,$order);
+			echo displaySearchHeaderItem('',0,$LANG['common'][35],$header_num=0,$target."?order=".($order=="DESC"?"ASC":"DESC"),1,$order);
 			echo "<th>".$LANG['setup'][261]."</th>"; 
 			echo"<th>".$LANG['ocsng'][36]."</th></tr>";
 	
@@ -448,7 +448,7 @@ function getAllLdapUsers($id_auth, $sync = 0,$myfilter='',$order='DESC') {
 	$glpi_users = array ();
 	$sql = "SELECT name, date_mod FROM glpi_users ";
 	if ($sync){
-		$sql.=" WHERE auth_method IN (-1,".AUTH_LDAP.") ";
+		$sql.=" WHERE auth_method IN (-1,".AUTH_LDAP.",".AUTH_EXTERNAL.") ";
 	}
 	$sql.="ORDER BY name ".$order;
 	
@@ -464,7 +464,8 @@ function getAllLdapUsers($id_auth, $sync = 0,$myfilter='',$order='DESC') {
 			//Ldap synchronisation : look if the user exists in the directory and compares the modifications dates (ldap and glpi db)
 				if (!empty ($ldap_users[$user['name']]))
 				{
-					if ($ldap_users[$user['name']] - strtotime($user['date_mod']) > 0)
+					//If entry was modified or if script should synchronize all the users
+					if ( ($sync ==2) || ($ldap_users[$user['name']] - strtotime($user['date_mod']) > 0))
 					{
 						$glpi_users[] = array("user" => $user['name'], "timestamp"=>$user_infos[$user['name']]['timestamp'],"date_mod"=>$user['date_mod']);
 					}
