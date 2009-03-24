@@ -320,6 +320,10 @@
 	define("MAIL_SMTPSSL",2);
 	define("MAIL_SMTPTLS",3);
 	
+	// MESSAGE TYPE
+	define("INFO",0);
+	define("ERROR",1);
+
 
 
 	//Generic rules engine

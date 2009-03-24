@@ -73,7 +73,7 @@ elseif (isset ($_POST["delete_mail"])) {
 	if (test_auth_mail($_POST["imap_string"],$_POST["imap_login"],$_POST["imap_password"])){
 		addMessageAfterRedirect($LANG['login'][22]);
 	} else {
-		addMessageAfterRedirect($LANG['login'][23]);	
+		addMessageAfterRedirect($LANG['login'][23],false,ERROR);	
 	}
 	glpi_header($_SERVER['HTTP_REFERER']);
 }

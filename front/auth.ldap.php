@@ -61,7 +61,7 @@ elseif (isset ($_POST["add_ldap"])) {
 			if (testLDAPConnection($newID)){
 				addMessageAfterRedirect($LANG['login'][22]);
 			} else{
-				addMessageAfterRedirect($LANG['login'][23]);	
+				addMessageAfterRedirect($LANG['login'][23],false,ERROR);	
 			}
 			glpi_header($CFG_GLPI["root_doc"] . "/front/auth.ldap.php?next=extauth_ldap&ID=".$newID);
 		}
