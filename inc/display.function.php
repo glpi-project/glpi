@@ -1007,7 +1007,7 @@ function displayMessageAfterRedirect(){
 		echo "<div class=\"box\" style=\"margin-bottom:20px;\">";
 		echo "<div class=\"box-tleft\"><div class=\"box-tright\"><div class=\"box-tcenter\"></div></div></div>";
 		echo "<div class=\"box-mleft\"><div class=\"box-mright\"><div class=\"box-mcenter\">";
-		echo "<h3>".$_SESSION["MESSAGE_AFTER_REDIRECT"]."</h3>";
+		echo $_SESSION["MESSAGE_AFTER_REDIRECT"];
 		echo "</div></div></div>";
 		echo "<div class=\"box-bleft\"><div class=\"box-bright\"><div class=\"box-bcenter\"></div></div></div>";
 		echo "</div>";
@@ -1021,17 +1021,34 @@ function displayMessageAfterRedirect(){
  *
  * @param $msg Message to add
  * @param $check_once Check if the message is not already added
+ * @param $message_type message type (INFO, ERROR)
  **/
-function addMessageAfterRedirect($msg,$check_once=false){
+function addMessageAfterRedirect($msg,$check_once=false,$message_type=INFO){
+	
 	if (!empty($msg)){
+		$toadd="";
+
 		if ($check_once){
 			if (strstr($_SESSION["MESSAGE_AFTER_REDIRECT"],$msg)===false){
-				$_SESSION["MESSAGE_AFTER_REDIRECT"].=$msg.'<br>';
+				$toadd=$msg.'<br>';
 			}
 		} else {
-			$_SESSION["MESSAGE_AFTER_REDIRECT"].=$msg.'<br>';
+			$toadd=$msg.'<br>';
 		}
+		if (!empty($toadd)){
+			switch ($message_type){
+				case ERROR :
+					$_SESSION["MESSAGE_AFTER_REDIRECT"].="<h3><span class='red'>$toadd</span></h3>";
+					break;
+				default: // INFO
+					$_SESSION["MESSAGE_AFTER_REDIRECT"].="<h3>$toadd</h3>";
+					break;
+			}
+		}
+
 	}
+
+
 }
 
 /**
