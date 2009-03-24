@@ -2515,7 +2515,7 @@ function privatePublicSwitch($private,$entity,$recursive){
  **/
 function dropdownContractPeriodicity($name,$value=0){
 	global $LANG;
-	$values=array("1","2","3","6","12","24","36");
+	$values=array("1","2","3","6","12","24","36","48","60");
 
 	echo "<select name='$name'>";
 	echo "<option value='0' ".($value==0?" selected ":"").">-------------</option>";
