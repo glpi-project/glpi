@@ -255,7 +255,7 @@ class MailCollect {
 				if ($error==0){
 					addMessageAfterRedirect($LANG['mailgate'][3].": ".$this->fetch_emails);
 				} else {
-					addMessageAfterRedirect($LANG['mailgate'][3].": ".$this->fetch_emails." ($error ".$LANG['common'][63].")":""),false,ERROR);
+					addMessageAfterRedirect($LANG['mailgate'][3].": ".$this->fetch_emails." ($error ".$LANG['common'][63].")",false,ERROR);
 				}
 			} else {
 				return "Number of messages available and collected : ".$this->fetch_emails." ".($error>0?"($error error(s))":"");
