@@ -95,7 +95,7 @@ else if (isset($_POST["purge"]))
 	checkSeveralRightsAnd(array("user"=>"w", "user_auth_method"=>"w"));
 	
 	$user->getFromDB($_POST["ID"]);
-	ldapImportUserByServerId($user->fields["name"],1,$user->fields["id_auth"]);
+	ldapImportUserByServerId($user->fields["name"],true,$user->fields["id_auth"],true);
 	glpi_header($_SERVER['HTTP_REFERER']);
 } else if (isset($_POST["update"])) {
 	checkRight("user","w");

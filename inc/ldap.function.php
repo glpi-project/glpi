@@ -115,8 +115,11 @@ function ldapImportUserByServerId($login, $sync,$ldap_server,$display=false) {
 			//Get informations from LDAP
 			if ($user->getFromLDAP($ds, $config_ldap->fields, $user_dn, addslashes($login), "")){
 				//Add the auth method
-				$user->fields["auth_method"] = AUTH_LDAP;
-				$user->fields["id_auth"] = $ldap_server;
+				if (!$sync){
+					$user->fields["auth_method"] = $specific_auth;
+					$user->fields["id_auth"] = $ldap_server;
+				}
+				// Force date mod
 				$user->fields["date_mod"]=$_SESSION["glpi_currenttime"];
 				
 				//$rule->processAllRules($groups,$user->fields,array("type"=>"LDAP","ldap_server"=>$ldap_server,"connection"=>$ds,"userdn"=>$user_dn));
@@ -134,7 +137,11 @@ function ldapImportUserByServerId($login, $sync,$ldap_server,$display=false) {
 				} else
 				{
 	//				$user->applyRightRules($groups);
-					$user->update($user->fields);
+					$input=$user->fields;
+					if ($display){
+						$input['update']=1;
+					}
+					$user->update($input);
 					return true;
 				}
 			} else {
@@ -637,14 +644,14 @@ function showSynchronizationForm($target, $ID) {
 		$sql = "SELECT auth_method, id_auth FROM glpi_users WHERE ID='" . $ID."'";
 		$result = $DB->query($sql);
 		
-		if ($DB->numrows($result) > 0) {
+		if ($DB->numrows($result) == 1) {
 			$data = $DB->fetch_array($result);
+			echo "<div class='center'>";
+			echo "<form method='post' action=\"$target\">";
 
 			switch($data["auth_method"])
 			{
 				case AUTH_LDAP :
-					echo "<div class='center'>";
-					echo "<form method='post' action=\"$target\">";
 						
 					//Look it the auth server still exists ! <- Bad idea : id not exists unable to change anything
 					$sql = "SELECT name FROM glpi_auth_ldap WHERE ID='" . $data["id_auth"]."'";
@@ -661,27 +668,19 @@ function showSynchronizationForm($target, $ID) {
 					echo "<br>";
 					formChangeAuthMethodToMail($ID);
 							
-					echo "</form></div>";
 				break;	
 				case AUTH_DB_GLPI :
-					echo "<div class='center'>";
-					echo "<form method='post' action=\"$target\">";
 					formChangeAuthMethodToLDAP($ID);
 					echo "<br>";
 					formChangeAuthMethodToMail($ID);
-					echo "</form></div>";
 				break;
 				case AUTH_MAIL :
-					echo "<div class='center'>";
-					echo "<form method='post' action=\"$target\">";
 					formChangeAuthMethodToDB($ID);
 					echo "<br>";
 					formChangeAuthMethodToLDAP($ID);
-					echo "</form></div>";
 				break;
+				case AUTH_CAS :
 				case AUTH_EXTERNAL :
-					echo "<div class='center'>";
-					echo "<form method='post' action=\"$target\">";
 
 					if ($data["id_auth"]){
 						//Look it the auth server still exists ! <- Bad idea : id not exists unable to change anything
@@ -701,19 +700,17 @@ function showSynchronizationForm($target, $ID) {
 					formChangeAuthMethodToLDAP($ID);
 					echo "<br>";
 					formChangeAuthMethodToMail($ID);
-					echo "</form></div>";
 					break;
 				case AUTH_X509 :
-					echo "<div class='center'>";
-					echo "<form method='post' action=\"$target\">";
 					formChangeAuthMethodToDB($ID);
 					echo "<br>";
 					formChangeAuthMethodToLDAP($ID);
 					echo "<br>";
 					formChangeAuthMethodToMail($ID);
-					echo "</form></div>";
 				break;
 			} 
+			echo "</form></div>";
+
 		}
 	}
 }
