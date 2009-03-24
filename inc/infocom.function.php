@@ -595,7 +595,7 @@ function cron_infocom($display=false){
 
 				} else {
 					if ($display){
-						addMessageAfterRedirect(getDropdownName("glpi_entities",$entity).":  Send infocom alert failed");
+						addMessageAfterRedirect(getDropdownName("glpi_entities",$entity).":  Send infocom alert failed",false,ERROR);
 					}
 					logInFile("cron",getDropdownName("glpi_entities",$entity).":  Send infocom alert failed\n");
 				}

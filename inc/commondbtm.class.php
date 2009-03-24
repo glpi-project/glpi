@@ -578,7 +578,6 @@ class CommonDBTM {
 					}
 				}
 			}
-			
 			if(count($updates)){
 				if (isset($this->fields['date_mod'])){
 					// is a non blacklist field exists
@@ -630,7 +629,6 @@ class CommonDBTM {
 		
 
 		if ($addMessAfterRedirect) {
-
 			addMessageAfterRedirect($LANG['common'][71].": <a href='" . $CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$this->type] . "?ID=" . $this->fields['ID'] . "'>" .
 			(isset($this->fields["name"]) && !empty($this->fields["name"]) ? stripslashes($this->fields["name"]) : "(".$this->fields['ID'].")") . "</a>");
 		} 

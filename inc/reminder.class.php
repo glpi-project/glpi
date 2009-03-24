@@ -71,14 +71,14 @@ class Reminder extends CommonDBTM {
 				$input["begin"] = $input['_plan']["begin"];
 				$input["end"] = $input['_plan']["end"];				
 			}else {
-				addMessageAfterRedirect($LANG['planning'][1]);
+				addMessageAfterRedirect($LANG['planning'][1],false,ERROR);
 			}
 		}	
 
 		if ($input['recursive']&&!$input['private']){
 			if (!haveRecursiveAccessToEntity($input["FK_entities"])){
 				unset($input['recursive']);
-				addMessageAfterRedirect($LANG['common'][75]);
+				addMessageAfterRedirect($LANG['common'][75],false,ERROR);
 			}
 		}
 
@@ -107,13 +107,13 @@ class Reminder extends CommonDBTM {
 				$input["end"] = $input['_plan']["end"];
 				$input["state"] = $input['_plan']["state"];				
 			}else {
-				addMessageAfterRedirect($LANG['planning'][1]);
+				addMessageAfterRedirect($LANG['planning'][1],false,ERROR);
 			}
 		}	
 		if ($input['recursive']&&!$input['private']){
 			if (!haveRecursiveAccessToEntity($input["FK_entities"])){
 				unset($input['recursive']);
-				addMessageAfterRedirect($LANG['common'][75]);
+				addMessageAfterRedirect($LANG['common'][75],false,ERROR);
 			}
 		}
 

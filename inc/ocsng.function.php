@@ -649,7 +649,7 @@ function ocsLinkComputer($ocs_id, $ocs_server_id, $glpi_id,$link_auto=0) {
 			return true;
 		}
 	} else {
-		addMessageAfterRedirect($ocs_id . " - " . $LANG['ocsng'][23]);
+		addMessageAfterRedirect($ocs_id . " - " . $LANG['ocsng'][23],false,ERROR);
 	}
 
 	return false; 

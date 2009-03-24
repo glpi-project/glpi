@@ -387,7 +387,7 @@ class Cartridge extends CommonDBTM {
 				return false;
 			}
 		} else {
-			addMessageAfterRedirect($LANG['cartridges'][34]);
+			addMessageAfterRedirect($LANG['cartridges'][34],false,ERROR);
 			return false;		
 		}
 	}

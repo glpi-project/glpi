@@ -252,14 +252,18 @@ class MailCollect {
 			$this->close_mailbox();   //Close Mail Box
 
 			if ($display){
-				addMessageAfterRedirect($LANG['mailgate'][3].": ".$this->fetch_emails." ".($error>0?"($error ".$LANG['common'][63].")":""));
+				if ($error==0){
+					addMessageAfterRedirect($LANG['mailgate'][3].": ".$this->fetch_emails);
+				} else {
+					addMessageAfterRedirect($LANG['mailgate'][3].": ".$this->fetch_emails." ($error ".$LANG['common'][63].")":""),false,ERROR);
+				}
 			} else {
 				return "Number of messages available and collected : ".$this->fetch_emails." ".($error>0?"($error error(s))":"");
 			}
 			
 		}else{
 			if ($display){
-				addMessageAfterRedirect($LANG['log'][41]);
+				addMessageAfterRedirect($LANG['log'][41],false,ERROR);
 			} else {
 				return "Could not connect to mailgate server";
 			}
