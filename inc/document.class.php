@@ -78,7 +78,7 @@ class Document extends CommonDBTM {
 				if (unlink(GLPI_DOC_DIR."/".$this->fields["filename"])){
 					addMessageAfterRedirect($LANG['document'][24].GLPI_DOC_DIR."/".$this->fields["filename"]);
 				 } else {
-					addMessageAfterRedirect($LANG['document'][25].GLPI_DOC_DIR."/".$this->fields["filename"]);
+					addMessageAfterRedirect($LANG['document'][25].GLPI_DOC_DIR."/".$this->fields["filename"],false,ERROR);
 				}
 			}
 	}

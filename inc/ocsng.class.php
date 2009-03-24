@@ -536,7 +536,7 @@ class Ocsng extends CommonDBTM {
 		$query="SELECT * FROM `" . $this->table . "` WHERE name='".$input['name']."';";
 		$result=$DB->query($query);
 		if ($DB->numrows($result)>0){
-			addMessageAfterRedirect($LANG['setup'][609]);
+			addMessageAfterRedirect($LANG['setup'][609],false,ERROR);
 			return false;
 		}
 		

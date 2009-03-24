@@ -47,8 +47,10 @@ function testMail(){
 	$mmail->Body=$LANG['mailing'][31]."\n-- \n".$CFG_GLPI["mailing_signature"];
 
 	if(!$mmail->Send()){
-		addMessageAfterRedirect($LANG['setup'][206]);
-	} else addMessageAfterRedirect($LANG['setup'][205]);
+		addMessageAfterRedirect($LANG['setup'][206],false,ERROR);
+	} else {
+		addMessageAfterRedirect($LANG['setup'][205]);
+	}
 }
 
 	function showFormMailingType($type, $profiles) {

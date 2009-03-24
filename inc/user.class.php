@@ -194,7 +194,7 @@ class User extends CommonDBTM {
 		$query="SELECT * FROM glpi_users WHERE name='".$input['name']."';";
 		$result=$DB->query($query);
 		if ($DB->numrows($result)>0){
-			addMessageAfterRedirect($LANG['setup'][606]);
+			addMessageAfterRedirect($LANG['setup'][606],false,ERROR);
 			return false;
 		}
 		

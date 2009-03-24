@@ -241,7 +241,7 @@ class Job extends CommonDBTM{
 					}
 				}
 			} else if (!empty($_FILES['filename']['name'])&&isset($_FILES['filename']['error'])&&$_FILES['filename']['error']){
-				addMessageAfterRedirect($LANG['document'][46]);
+				addMessageAfterRedirect($LANG['document'][46],false,ERROR);
 			}
 		}
 
@@ -287,7 +287,7 @@ class Job extends CommonDBTM{
 		if (strstr($this->fields["status"],"old_")&&(in_array("date",$updates)||in_array("closedate",$updates))){
 			// Invalid dates : no change
 			if ($this->fields["closedate"]<$this->fields["date"]){
-				addMessageAfterRedirect($LANG['tracking'][3]);
+				addMessageAfterRedirect($LANG['tracking'][3],false,ERROR);
 				if (($key=array_search('date',$updates))!==false){
 					unset($updates[$key]);
 				}
@@ -567,19 +567,19 @@ class Job extends CommonDBTM{
 			$_SESSION["helpdeskSaved"]=$input;
 	
 			if ($CFG_GLPI["ticket_content_mandatory"]&&(!isset($input['contents'])||empty($input['contents']))){
-				addMessageAfterRedirect($LANG['tracking'][8]);
+				addMessageAfterRedirect($LANG['tracking'][8],false,ERROR);
 				$mandatory_ok=false;
 			}
 			if ($CFG_GLPI["ticket_title_mandatory"]&&(!isset($input['name'])||empty($input['name']))){
-				addMessageAfterRedirect($LANG['help'][40]);
+				addMessageAfterRedirect($LANG['help'][40],false,ERROR);
 				$mandatory_ok=false;
 			}
 			if ($CFG_GLPI["ticket_category_mandatory"]&&(!isset($input['category'])||empty($input['category']))){
-				addMessageAfterRedirect($LANG['help'][41]);
+				addMessageAfterRedirect($LANG['help'][41],false,ERROR);
 				$mandatory_ok=false;
 			}
 			if (isset($input['emailupdates'])&&$input['emailupdates']&&(!isset($input['uemail'])||empty($input['uemail']))){
-				addMessageAfterRedirect($LANG['help'][16]);
+				addMessageAfterRedirect($LANG['help'][16],false,ERROR);
 				$mandatory_ok=false;
 			}
 	

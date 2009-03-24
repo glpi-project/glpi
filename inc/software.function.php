@@ -2294,7 +2294,7 @@ function cron_software($display=false){
 				}
 			} else {
 				if ($display){
-					addMessageAfterRedirect(getDropdownName("glpi_entities",$entity).":  Send licenses alert failed");
+					addMessageAfterRedirect(getDropdownName("glpi_entities",$entity).":  Send licenses alert failed",false,ERROR);
 				}
 				logInFile("cron",getDropdownName("glpi_entities",$entity).":  Send licenses alert failed\n");
 			}

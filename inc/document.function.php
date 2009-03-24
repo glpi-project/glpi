@@ -59,10 +59,11 @@ function moveUploadedDocument($filename,$old_file=''){
 
 				// Delete old file
 				if(!empty($old_file)&& is_file(GLPI_DOC_DIR."/".$old_file)&& !is_dir(GLPI_DOC_DIR."/".$old_file)) {
-					if (unlink(GLPI_DOC_DIR."/".$old_file))
+					if (unlink(GLPI_DOC_DIR."/".$old_file)){
 						addMessageAfterRedirect($LANG['document'][24]." ".GLPI_DOC_DIR."/".$old_file);
-					else 
-						addMessageAfterRedirect($LANG['document'][25]." ".GLPI_DOC_DIR."/".$old_file);
+					} else {
+						addMessageAfterRedirect($LANG['document'][25]." ".GLPI_DOC_DIR."/".$old_file,false,ERROR);
+					}
 				}
 
 				// D�lacement si droit
@@ -70,22 +71,22 @@ function moveUploadedDocument($filename,$old_file=''){
 					if (rename(GLPI_DOC_DIR."/_uploads/".$filename,GLPI_DOC_DIR."/".$new_path)){
 						addMessageAfterRedirect($LANG['document'][39]);
 						return $new_path;
-					}
-					else {
-						addMessageAfterRedirect($LANG['document'][40]);
+					} else {
+						addMessageAfterRedirect($LANG['document'][40],false,ERROR);
 					}
 				} else { // Copi sinon
 					if (copy(GLPI_DOC_DIR."/_uploads/".$filename,GLPI_DOC_DIR."/".$new_path)){
 						addMessageAfterRedirect($LANG['document'][41]);
 						return $new_path;
+					} else {
+						addMessageAfterRedirect($LANG['document'][40],false,ERROR);
 					}
-					else addMessageAfterRedirect($LANG['document'][40]);
 				}
 			}
 
-		} else addMessageAfterRedirect($LANG['document'][38].": ".GLPI_DOC_DIR."/_uploads/".$filename);
+		} else addMessageAfterRedirect($LANG['document'][38].": ".GLPI_DOC_DIR."/_uploads/".$filename,false,ERROR);
 
-	} else addMessageAfterRedirect($LANG['document'][35]);
+	} else addMessageAfterRedirect($LANG['document'][35],false,ERROR);
 
 	return "";	
 }
@@ -114,10 +115,11 @@ function uploadDocument($FILEDESC,$old_file=''){
 		if (!empty($new_path)){
 			// Delete old file
 			if(!empty($old_file)&& is_file(GLPI_DOC_DIR."/".$old_file)&& !is_dir(GLPI_DOC_DIR."/".$old_file)) {
-				if (unlink(GLPI_DOC_DIR."/".$old_file))
+				if (unlink(GLPI_DOC_DIR."/".$old_file)){
 					addMessageAfterRedirect($LANG['document'][24]." ".GLPI_DOC_DIR."/".$old_file);
-				else 
-					addMessageAfterRedirect($LANG['document'][25]." ".GLPI_DOC_DIR."/".$old_file);
+				} else {
+					addMessageAfterRedirect($LANG['document'][25]." ".GLPI_DOC_DIR."/".$old_file,false,ERROR);
+				}
 			}
 
 			// Move uploaded file
@@ -125,7 +127,7 @@ function uploadDocument($FILEDESC,$old_file=''){
 				addMessageAfterRedirect($LANG['document'][26]);
 				return $new_path;
 			} else {
-				addMessageAfterRedirect($LANG['document'][27]);
+				addMessageAfterRedirect($LANG['document'][27],false,ERROR);
 			}
 		}
 
@@ -175,13 +177,13 @@ function getUploadFileValidLocationName($dir,$filename,$force){
 				}
 				if ($force||!is_file(GLPI_DOC_DIR."/".$dir."/".$filename)){
 					return $dir."/".$filename;
-				} else addMessageAfterRedirect($LANG['document'][28]);
+				} else addMessageAfterRedirect($LANG['document'][28],false,ERROR);
 
-			} else addMessageAfterRedirect($LANG['document'][29]." ".GLPI_DOC_DIR."/".$dir." ".$LANG['document'][30]);
+			} else addMessageAfterRedirect($LANG['document'][29]." ".GLPI_DOC_DIR."/".$dir." ".$LANG['document'][30],false,ERROR);
 
-		} else addMessageAfterRedirect($LANG['document'][31]." ".GLPI_DOC_DIR);
+		} else addMessageAfterRedirect($LANG['document'][31]." ".GLPI_DOC_DIR,false,ERROR);
 
-	} else addMessageAfterRedirect($LANG['document'][32]);
+	} else addMessageAfterRedirect($LANG['document'][32],false,ERROR);
 
 	return "";
 }
