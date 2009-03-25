@@ -435,19 +435,19 @@ function getNbIntervTitleOrType($date1,$date2,$title=true){
 		$field = "type";
 	}
 	
-	$query = "SELECT DISTINCT $table.ID FROM glpi_users, $table, glpi_tracking ";
+	$query = "SELECT DISTINCT glpi_users.$field FROM glpi_tracking INNER JOIN glpi_users ON (glpi_users.ID=glpi_tracking.author)
+		LEFT JOIN  $table ON ($table.ID=glpi_users.$field)";
 	$query.=getEntitiesRestrictRequest("WHERE","glpi_tracking");
 	if (!empty($date1)) $query.= " AND glpi_tracking.date >= '". $date1 ."' ";
 	if (!empty($date2)) $query.= " AND glpi_tracking.date <= adddate( '". $date2 ."' , INTERVAL 1 DAY ) ";
-	$query.=" AND (glpi_users.ID=glpi_tracking.author) AND $table.ID=glpi_users.$field ";
-	$query.=" GROUP BY $field ORDER BY $field";
+	$query.=" ORDER BY glpi_users.$field";
 	
 	$result = $DB->query($query);
 	$tab=array();
 	if($DB->numrows($result) >=1) {
 		while($line = $DB->fetch_assoc($result)) {
-			$tmp['ID']= $line["ID"];
-			$tmp['link']=getDropdownName($table,$line["ID"]);
+			$tmp['ID']= $line[$field];
+			$tmp['link']=getDropdownName($table,$line[$field]);
 			$tab[]=$tmp;
 		}
 	}
