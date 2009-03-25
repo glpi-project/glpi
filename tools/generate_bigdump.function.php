@@ -746,7 +746,7 @@ function generate_entity($ID_entity){
 	// glpi_users
 	$FIRST["users_sadmin"]=getMaxItem("glpi_users")+1;
 	for ($i=0;$i<$MAX['users_sadmin'];$i++){
-		$query="INSERT INTO glpi_users (name, password_md5,email,phone,phone2,mobile,realname,firstname,comments,title,type) VALUES ('sadmin$i-$ID_entity',MD5('sadmin$i'),'sadmin$i-$ID_entity@tutu.com','tel $i','tel2 $i','mobile $i','sadmin$i name','sadmin$i firstname','comments $i','".mt_rand(1,$MAX['user_title'])."','".mt_rand(1,$MAX['user_type'])."')";
+		$query="INSERT INTO glpi_users (name, password_md5,email,phone,phone2,mobile,realname,firstname,comments,title,type) VALUES ('sadmin$i-$ID_entity',MD5('sadmin$i'),'sadmin$i-$ID_entity@tutu.com','tel $i','tel2 $i','mobile $i','sadmin$i name','sadmin$i firstname','comments $i','".mt_rand(0,$MAX['user_title'])."','".mt_rand(0,$MAX['user_type'])."')";
 		$DB->query($query) or die("PB REQUETE ".$query);
 		$user_id=$DB->insert_id();
 		$query="INSERT INTO glpi_users_profiles VALUES (NULL,'$user_id','4','$ID_entity','1','0');";
@@ -757,7 +757,7 @@ function generate_entity($ID_entity){
 	$LAST["users_sadmin"]=getMaxItem("glpi_users");
 	$FIRST["users_admin"]=getMaxItem("glpi_users")+1;
 	for ($i=0;$i<$MAX['users_admin'];$i++){
-		$query="INSERT INTO glpi_users (name, password_md5,email,phone,phone2,mobile,realname,firstname,comments,title,type) VALUES ('admin$i-$ID_entity',MD5('admin$i'),'admin$i-$ID_entity@tutu.com','tel $i','tel2 $i','mobile $i','admin$i name','admin$i firstname','comments $i','".mt_rand(1,$MAX['user_title'])."','".mt_rand(1,$MAX['user_type'])."')";
+		$query="INSERT INTO glpi_users (name, password_md5,email,phone,phone2,mobile,realname,firstname,comments,title,type) VALUES ('admin$i-$ID_entity',MD5('admin$i'),'admin$i-$ID_entity@tutu.com','tel $i','tel2 $i','mobile $i','admin$i name','admin$i firstname','comments $i','".mt_rand(0,$MAX['user_title'])."','".mt_rand(0,$MAX['user_type'])."')";
 		$DB->query($query) or die("PB REQUETE ".$query);
 		$user_id=$DB->insert_id();
 		$query="INSERT INTO glpi_users_profiles VALUES (NULL,'$user_id','3','$ID_entity','1','0');";
@@ -771,7 +771,7 @@ function generate_entity($ID_entity){
 	$LAST["users_admin"]=getMaxItem("glpi_users");
 	$FIRST["users_normal"]=getMaxItem("glpi_users")+1;
 	for ($i=0;$i<$MAX['users_normal'];$i++){
-		$query="INSERT INTO glpi_users (name, password_md5,email,phone,phone2,mobile,realname,firstname,comments,title,type) VALUES ('normal$i-$ID_entity',MD5('normal$i'),'normal$i-$ID_entity@tutu.com','tel $i','tel2 $i','mobile $i','normal$i name','normal$i firstname','comments $i','".mt_rand(1,$MAX['user_title'])."','".mt_rand(1,$MAX['user_type'])."')";
+		$query="INSERT INTO glpi_users (name, password_md5,email,phone,phone2,mobile,realname,firstname,comments,title,type) VALUES ('normal$i-$ID_entity',MD5('normal$i'),'normal$i-$ID_entity@tutu.com','tel $i','tel2 $i','mobile $i','normal$i name','normal$i firstname','comments $i','".mt_rand(0,$MAX['user_title'])."','".mt_rand(0,$MAX['user_type'])."')";
 		$DB->query($query) or die("PB REQUETE ".$query);
 		$user_id=$DB->insert_id();
 		$LAST["users_normal"]=$user_id;
@@ -783,7 +783,7 @@ function generate_entity($ID_entity){
 	$LAST["users_normal"]=getMaxItem("glpi_users");
 	$FIRST["users_postonly"]=getMaxItem("glpi_users")+1;
 	for ($i=0;$i<$MAX['users_postonly'];$i++){
-		$query="INSERT INTO glpi_users (name, password_md5,email,phone,phone2,mobile,realname,firstname,comments,title,type) VALUES ('postonly$i-$ID_entity',MD5('postonly$i'),'postonly$i-$ID_entity@tutu.com','tel $i','tel2 $i','mobile $i','postonly$i name','postonly$i firstname','comments $i','".mt_rand(1,$MAX['user_title'])."','".mt_rand(1,$MAX['user_type'])."')";
+		$query="INSERT INTO glpi_users (name, password_md5,email,phone,phone2,mobile,realname,firstname,comments,title,type) VALUES ('postonly$i-$ID_entity',MD5('postonly$i'),'postonly$i-$ID_entity@tutu.com','tel $i','tel2 $i','mobile $i','postonly$i name','postonly$i firstname','comments $i','".mt_rand(0,$MAX['user_title'])."','".mt_rand(0,$MAX['user_type'])."')";
 		$DB->query($query) or die("PB REQUETE ".$query);
 		$user_id=$DB->insert_id();
 		$LAST["users_postonly"]=$user_id;
