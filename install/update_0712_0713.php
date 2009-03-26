@@ -48,8 +48,17 @@ function update0712to0713() {
 	
 	// Update to longtext for fields which may be very long
 	if (FieldExists("glpi_kbitems", "answer")) {
+		
+		if (isIndex("glpi_kbitems","fulltext")){ // to avoid pb in altering column answer 		 
+			$query = "ALTER TABLE `glpi_kbitems` DROP INDEX `fulltext`";
+			$DB->query($query) or die("0.71.3 alter kbitem drop index Fulltext " . $LANG['update'][90] . $DB->error());
+		}  
 		$query = "ALTER TABLE `glpi_kbitems` CHANGE `answer` `answer` LONGTEXT NULL DEFAULT NULL  ";
 		$DB->query($query) or die("0.71.3 alter kbitem answer field to longtext " . $LANG['update'][90] . $DB->error());
+		
+		$query = "ALTER TABLE `glpi_kbitems` ADD FULLTEXT `fulltext` (`question`,`answer`)";
+		$DB->query($query) or die("0.71.3 alter kbitem re-add index Fulltext " . $LANG['update'][90] . $DB->error());
+		
 	}
 	if (FieldExists("glpi_tracking", "contents")) {
 		$query = "ALTER TABLE `glpi_tracking` CHANGE `contents` `contents` LONGTEXT NULL DEFAULT NULL  ";
