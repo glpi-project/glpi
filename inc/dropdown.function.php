@@ -2611,14 +2611,15 @@ function dropdownContracts($name,$entity_restrict=-1,$alreadyused=array()){
 	}
 	if (count($alreadyused)) {
 		foreach ($alreadyused AS $ID) {
-			$idrest .= (empty($idrest) ? "AND ID NOT IN(" : ",") . "'".$ID."'";
+			$idrest .= (empty($idrest) ? "AND glpi_contracts.ID NOT IN(" : ",") . "'".$ID."'";
 		}
 		$idrest .= ")";
 	}
-	$query = "SELECT * 
+	$query = "SELECT glpi_contracts.*, glpi_entities.completename 
 		FROM glpi_contracts 
-		WHERE deleted = '0' $entrest $idrest 
-		ORDER BY FK_entities, name, begin_date DESC";
+		LEFT JOIN glpi_entities ON (glpi_contracts.FK_entities = glpi_entities.ID)
+		WHERE glpi_contracts.deleted = '0' $entrest $idrest 
+		ORDER BY glpi_entities.completename, glpi_contracts.name ASC, glpi_contracts.begin_date DESC";
 	$result=$DB->query($query);
 	echo "<select name='$name'>";
 	echo "<option value='-1'>-----</option>";
@@ -2631,10 +2632,10 @@ function dropdownContracts($name,$entity_restrict=-1,$alreadyused=array()){
 					echo "</optgroup>";
 				}
 				$prev=$data["FK_entities"];
-				echo "<optgroup label=\"". getDropdownName("glpi_entities", $prev) ."\">";
+				echo "<optgroup label=\"". $data["completename"] ."\">";
 			}
 			echo "<option value='".$data["ID"]."'>";
-			echo substr("#".$data["num"]." - ".convDateTime($data["begin_date"])." - ".$data["name"],0,$_SESSION["glpidropdown_limit"]);
+			echo substr($data["name"]." - #".$data["num"]." - ".convDateTime($data["begin_date"]),0,$_SESSION["glpidropdown_limit"]);
 			echo "</option>";
 		}
 	}
