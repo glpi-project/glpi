@@ -140,6 +140,7 @@ class Contract extends CommonDBTM {
 		$can_edit=$this->can($ID,'w');
 
 		$this->showTabs($ID, $withtemplate,$_SESSION['glpi_tab']);
+
 		
 		if ($can_edit) {
 			echo "<form name='form' method='post' action=\"$target\">";
@@ -190,7 +191,8 @@ class Contract extends CommonDBTM {
 			echo "</td></tr>";
 	
 			echo "<tr class='tab_bg_1'><td>".$LANG['financial'][69].":		</td><td>";
-			dropdownContractPeriodicity("periodicity",$this->fields["periodicity"]);
+			dropdownInteger("periodicity",$this->fields["periodicity"],12,60,12,array(0=>"-----",1=>"1",2=>"2",3=>"3",6=>"6"));
+			echo " ".$LANG['financial'][57];
 			echo "</td>";
 	
 	
@@ -209,7 +211,8 @@ class Contract extends CommonDBTM {
 	
 			echo "<td>".$LANG['financial'][11].":		</td>";
 			echo "<td>";
-			dropdownContractPeriodicity("facturation",$this->fields["facturation"]);
+			dropdownInteger("facturation",$this->fields["facturation"],12,60,12,array(0=>"-----",1=>"1",2=>"2",3=>"3",6=>"6"));
+			echo " ".$LANG['financial'][57];
 			echo "</td></tr>";
 	
 			echo "<tr class='tab_bg_1'><td>".$LANG['financial'][83].":		</td><td>";

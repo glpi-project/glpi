@@ -2502,27 +2502,6 @@ function privatePublicSwitch($private,$entity,$recursive){
 }
 
 
-/**
- * Print a select with contract priority
- *
- * Print a select named $name with contract periodicty options and selected value $value
- *
- *@param $name string : HTML select name
- *@param $value integer : HTML select selected value
- *
- *@return Nothing (display)
- *
- **/
-function dropdownContractPeriodicity($name,$value=0){
-	global $LANG;
-	$values=array("1","2","3","6","12","24","36","48","60");
-
-	echo "<select name='$name'>";
-	echo "<option value='0' ".($value==0?" selected ":"").">-------------</option>";
-	foreach ( $values as $val)
-		echo "<option value='$val' ".($value==$val?" selected ":"").">".$val." ".$LANG['financial'][57]."</option>";
-	echo "</select>";	
-}
 
 /**
  * Print a select with contract renewal
