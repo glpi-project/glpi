@@ -2586,4 +2586,65 @@ function dropdownAuthMethods($name)
 	
 	return dropdownArrayValues($name,$methods);	
 }
+
+
+/**
+ * Print a select with contracts
+ *
+ * Print a select named $name with contracts options and selected value $value
+ *
+ * @param $name string : HTML select name
+ * @param $entity_restrict Restrict to a defined entity
+ * @param $alreadyused : already used contract, do not add to dropdown
+ *
+ *@return Nothing (display)
+ *
+ **/
+function dropdownContracts($name,$entity_restrict=-1,$alreadyused=array()){
+
+	global $DB;
+
+	$entrest="";
+	$idrest="";
+	if ($entity_restrict>=0){
+		$entrest=getEntitiesRestrictRequest("AND","glpi_contracts","FK_entities",$entity_restrict,true);
+	}
+	if (count($alreadyused)) {
+		foreach ($alreadyused AS $ID) {
+			$idrest .= (empty($idrest) ? "AND ID NOT IN(" : ",") . "'".$ID."'";
+		}
+		$idrest .= ")";
+	}
+	$query = "SELECT * 
+		FROM glpi_contracts 
+		WHERE deleted = '0' $entrest $idrest 
+		ORDER BY FK_entities, name, begin_date DESC";
+	$result=$DB->query($query);
+	echo "<select name='$name'>";
+	echo "<option value='-1'>-----</option>";
+	$prev=-1;
+	while ($data=$DB->fetch_array($result)){
+
+		if ($data["device_countmax"]==0||$data["device_countmax"]>countElementsInTable("glpi_contract_device","FK_contract = '".$data['ID']."'" )){
+			if ($data["FK_entities"]!=$prev) {
+				if ($prev>=0) {
+					echo "</optgroup>";
+				}
+				$prev=$data["FK_entities"];
+				echo "<optgroup label=\"". getDropdownName("glpi_entities", $prev) ."\">";
+			}
+			echo "<option value='".$data["ID"]."'>";
+			echo substr("#".$data["num"]." - ".convDateTime($data["begin_date"])." - ".$data["name"],0,$_SESSION["glpidropdown_limit"]);
+			echo "</option>";
+		}
+	}
+	if ($prev>=0) {
+		echo "</optgroup>";
+	}		
+
+	echo "</select>";	
+
+
+
+}
 ?>
