@@ -1844,7 +1844,7 @@ function addSelect ($type,$ID,$num,$meta=0,$meta_type=0){
 			} 		
 		break;
 		case "glpi_computerdisks.freepercent" :
-			return " GROUP_CONCAT( ".($meta?"DISTINCT":"")." ROUND(100*".$table.$addtable.".freesize / ".$table.$addtable.".totalsize) SEPARATOR '$$$$') AS ".$NAME."_".$num.", ";
+			return " GROUP_CONCAT( DISTINCT ROUND(100*".$table.$addtable.".freesize / ".$table.$addtable.".totalsize) SEPARATOR '$$$$') AS ".$NAME."_".$num.", ";
 		break;
 	}
 
