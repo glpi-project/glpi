@@ -721,11 +721,26 @@ class Computer extends CommonDBTM {
 				echo "<br>";
 				if (haveRight("ocsng","r")){
 					echo $LANG['common'][52]." <a href='".$CFG_GLPI["root_doc"]."/front/ocsng.form.php?ID=".getOCSServerByMachineID($ID)."'>".getOCSServerNameByID($ID)."</a>";
-					$query = "SELECT ocs_agent_version FROM glpi_ocs_link WHERE (glpi_id = '$ID')";
+					$query = "SELECT ocs_agent_version, ocs_id FROM glpi_ocs_link WHERE (glpi_id = '$ID')";
 					$result_agent_version = $DB->query($query);
 					$data_version = $DB->fetch_array($result_agent_version);
+
+					$ocs_config = getOcsConf(getOCSServerByMachineID($ID));
+					//If have write right on OCS and ocsreports url is not empty in OCS config
+					if (haveRight("ocsng","w") && $ocs_config["ocs_url"] != '')
+					{
+						//Display direct link to the computer in ocsreports
+						$url = $ocs_config["ocs_url"];
+						if (!preg_match("/\/$/i",$ocs_config["ocs_url"]))
+							$url.= '/';
+						$url.="machine.php?systemid=".$data_version["ocs_id"];
+						echo ", <a href='$url'>".$LANG['ocsng'][57]."</a>";	
+					}
+
 					if ($data_version["ocs_agent_version"] != NULL)
 						echo " , ".$LANG['ocsng'][49]." : ".$data_version["ocs_agent_version"];
+					
+							
 				} else {
 					echo $LANG['common'][52]." ".getOCSServerNameByID($ID);	
 					echo "</td>";
