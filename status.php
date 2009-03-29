@@ -131,6 +131,7 @@ if (( $ok_master || $ok_slave ) && establishDBConnection(false,false,false)){
 	// TODO Check mail server : cannot open a mail connexion / only ping server ?
 
 	// TODO check CAS url / check url using socket ?
+
 	
 }
 
