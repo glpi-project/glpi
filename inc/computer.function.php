@@ -317,7 +317,7 @@ function showComputerDisks($ID,$withtemplate='') {
 			echo "</tr>";
 
 			initNavigateListItems(COMPUTERDISK_TYPE, $LANG['help'][25]." = ".
-				(empty($comp->field['name']) ? "($ID)" : $comp->field['name']));
+				(empty($comp->fields['name']) ? "($ID)" : $comp->fields['name']));
 
 			while ($data=$DB->fetch_assoc($result)){
 				echo "<tr class='tab_bg_2'>";
