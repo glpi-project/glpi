@@ -1101,6 +1101,7 @@ $LANG['ocsng'][53]="Ni programske opreme, ki bi bila zaklenjena";
 $LANG['ocsng'][54]="Programska oprema izbrisana z OCS sinhronizacijo"; 
 $LANG['ocsng'][55]="Nosilci zaklenjeni"; 
 $LANG['ocsng'][56]="Noben nosilec ni zaklenjen"; 
+$LANG['ocsng'][57]="OCS Interface"; 
 
 $LANG['pager'][1]="do"; 
 $LANG['pager'][2]="od"; 

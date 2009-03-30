@@ -1101,6 +1101,7 @@ $LANG['ocsng'][53]="Brak zablokowanego oprogramowania";
 $LANG['ocsng'][54]="Oprogramowanie usunięte podczas synchronizacji z OCS"; 
 $LANG['ocsng'][55]="Partycja zablokowana"; 
 $LANG['ocsng'][56]="Brak zablokowanych partycji"; 
+$LANG['ocsng'][57]="OCS Interface"; 
 
 $LANG['pager'][1]="do"; 
 $LANG['pager'][2]="od"; 

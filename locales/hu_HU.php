@@ -1101,6 +1101,7 @@ $LANG['ocsng'][53]="Nincs zárolt szoftver";
 $LANG['ocsng'][54]="OCS szinkron törölte a szoftvert"; 
 $LANG['ocsng'][55]="Zárolt kötet(ek)"; 
 $LANG['ocsng'][56]="Nincs blokkolt kötet"; 
+$LANG['ocsng'][57]="OCS Interface"; 
 
 $LANG['pager'][1]="vége"; 
 $LANG['pager'][2]="kezdet"; 

@@ -1101,6 +1101,7 @@ $LANG['ocsng'][53]="No hay Software bloqueado";
 $LANG['ocsng'][54]="Material tirado a la papelera por la sincronización OCS"; 
 $LANG['ocsng'][55]="Volumen(es) bloqueado(s)"; 
 $LANG['ocsng'][56]="El volumen no está bloqueado"; 
+$LANG['ocsng'][57]="OCS Interface"; 
 
 $LANG['pager'][1]="hasta"; 
 $LANG['pager'][2]="desde"; 
