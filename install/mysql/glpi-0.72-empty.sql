@@ -962,10 +962,6 @@ CREATE TABLE `glpi_dropdown_case_type` (
   KEY `name` (`name`)
 ) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-INSERT INTO `glpi_dropdown_case_type` VALUES ('1','Grand',NULL);
-INSERT INTO `glpi_dropdown_case_type` VALUES ('2','Moyen',NULL);
-INSERT INTO `glpi_dropdown_case_type` VALUES ('3','Micro',NULL);
-
 ### Dump table glpi_dropdown_consumable_type
 
 DROP TABLE IF EXISTS `glpi_dropdown_consumable_type`;
@@ -1000,14 +996,6 @@ CREATE TABLE `glpi_dropdown_contract_type` (
   PRIMARY KEY  (`ID`),
   KEY `name` (`name`)
 ) ENGINE=MyISAM AUTO_INCREMENT=8 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
-INSERT INTO `glpi_dropdown_contract_type` VALUES ('1','Pr&#234;t',NULL);
-INSERT INTO `glpi_dropdown_contract_type` VALUES ('2','Location',NULL);
-INSERT INTO `glpi_dropdown_contract_type` VALUES ('3','Leasing',NULL);
-INSERT INTO `glpi_dropdown_contract_type` VALUES ('4','Assurances',NULL);
-INSERT INTO `glpi_dropdown_contract_type` VALUES ('5','Maintenance Hardware',NULL);
-INSERT INTO `glpi_dropdown_contract_type` VALUES ('6','Maintenance Software',NULL);
-INSERT INTO `glpi_dropdown_contract_type` VALUES ('7','Prestation',NULL);
 
 ### Dump table glpi_dropdown_domain
 
@@ -2068,9 +2056,6 @@ CREATE TABLE `glpi_plugins` (
   PRIMARY KEY  (`ID`),
   UNIQUE KEY `name` (`directory`)
 ) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
-INSERT INTO `glpi_plugins` VALUES ('1','example','Plugin Example','0.1.0','2','Julien Dombre','http://glpi-project.org');
-INSERT INTO `glpi_plugins` VALUES ('2','room','Salles','2.0','2','Julien Dombre','http://glpi-project.org');
 
 ### Dump table glpi_printers
 
