@@ -1101,6 +1101,7 @@ $LANG['ocsng'][53]="No software locked";
 $LANG['ocsng'][54]="Software deleted by OCS synchronization"; 
 $LANG['ocsng'][55]="Volume(s) locked(s)"; 
 $LANG['ocsng'][56]="No volume blocked"; 
+$LANG['ocsng'][57]="OCS Interface"; 
 
 $LANG['pager'][1]="til"; 
 $LANG['pager'][2]="fra"; 

@@ -1101,6 +1101,7 @@ $LANG['ocsng'][53]="ロックされたソフトウェアが見つかりません
 $LANG['ocsng'][54]="OCS同期によって削除されたソフトウェア"; 
 $LANG['ocsng'][55]="ロックされた領域"; 
 $LANG['ocsng'][56]="ブロックされている領域はありません"; 
+$LANG['ocsng'][57]="OCS Interface"; 
 
 $LANG['pager'][1]="to"; 
 $LANG['pager'][2]="from"; 

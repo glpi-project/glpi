@@ -1101,6 +1101,7 @@ $LANG['ocsng'][53]="Ingen programvare blokkert";
 $LANG['ocsng'][54]="Programvare slettet av OCS synkronisering"; 
 $LANG['ocsng'][55]="Volum (er) låst"; 
 $LANG['ocsng'][56]="Ingen volum blokkert"; 
+$LANG['ocsng'][57]="OCS Interface"; 
 
 $LANG['pager'][1]="til"; 
 $LANG['pager'][2]="fra"; 

@@ -1101,6 +1101,7 @@ $LANG['ocsng'][53]="Nav slēgtas programmatūras";
 $LANG['ocsng'][54]="Sinhrinizējoties ar OCS dzēstā programmatūra"; 
 $LANG['ocsng'][55]="Volume(s) locked(s)"; 
 $LANG['ocsng'][56]="No volume blocked"; 
+$LANG['ocsng'][57]="OCS Interface"; 
 
 $LANG['pager'][1]="līdz"; 
 $LANG['pager'][2]=""; 

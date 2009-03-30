@@ -352,7 +352,7 @@ $LANG['devices'][22]="Корпуса";
 $LANG['devices'][23]="Блок питания"; 
 $LANG['devices'][24]="по умолчанию"; 
 $LANG['devices'][25]="Добавлен компонент"; 
-$LANG['devices'][26]="удаление компонента"; 
+$LANG['devices'][26]="Удаление компонента"; 
 
 $LANG['device_case'][0]="Размер"; 
 
@@ -1101,6 +1101,7 @@ $LANG['ocsng'][53]="No software locked";
 $LANG['ocsng'][54]="Software deleted by OCS synchronization"; 
 $LANG['ocsng'][55]="Volume(s) locked(s)"; 
 $LANG['ocsng'][56]="No volume blocked"; 
+$LANG['ocsng'][57]="OCS Interface"; 
 
 $LANG['pager'][1]="по"; 
 $LANG['pager'][2]="С"; 
@@ -1675,8 +1676,8 @@ $LANG['software'][34]="Обновить лицензию";
 $LANG['software'][35]="Куплено"; 
 $LANG['software'][36]="обновлений найдено"; 
 $LANG['software'][37]="Купить"; 
-$LANG['software'][44]="Install software"; 
-$LANG['software'][45]="Uninstall software"; 
+$LANG['software'][44]="Установлено ПО"; 
+$LANG['software'][45]="Удалено ПО"; 
 $LANG['software'][46]="Показывать в Helpdesk"; 
 $LANG['software'][47]="Merging"; 
 $LANG['software'][48]="Merge"; 
@@ -1731,7 +1732,7 @@ $LANG['title'][13]="Информация о пользователях";
 $LANG['title'][14]="Внешние источники аутентификации"; 
 $LANG['title'][15]="Поддержка Email"; 
 $LANG['title'][24]="Поддержка"; 
-$LANG['title'][26]="Главное"; 
+$LANG['title'][26]="Основное"; 
 $LANG['title'][27]="Соединения"; 
 $LANG['title'][28]="Заявки"; 
 $LANG['title'][30]="Компоненты"; 
@@ -1745,7 +1746,7 @@ $LANG['title'][43]="Registry";
 
 $LANG['tracking'][1]="Мои устройства"; 
 $LANG['tracking'][2]="или найти в"; 
-$LANG['tracking'][3]="Invalid dates. Update cancelled."; 
+$LANG['tracking'][3]="Некорректная дата. Обновление отменено."; 
 $LANG['tracking'][8]="Нет описания, попробуйте еще раз"; 
 $LANG['tracking'][24]="Документ заявки"; 
 $LANG['tracking'][29]="Кол-во"; 

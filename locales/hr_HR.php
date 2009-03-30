@@ -1101,6 +1101,7 @@ $LANG['ocsng'][53]="Nema zaključanog programa";
 $LANG['ocsng'][54]="Program obrisan od OCS sinkronizacije"; 
 $LANG['ocsng'][55]="Disk zaključan"; 
 $LANG['ocsng'][56]="Nema blokiranog diska"; 
+$LANG['ocsng'][57]="OCS Interface"; 
 
 $LANG['pager'][1]="Prema"; 
 $LANG['pager'][2]="od"; 

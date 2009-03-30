@@ -1101,6 +1101,7 @@ $LANG['ocsng'][53]="No hi ha Programari bloquejat";
 $LANG['ocsng'][54]="Material llençat a la paperera per la sincronització OCS"; 
 $LANG['ocsng'][55]="Volum(s) bloquejat(s)"; 
 $LANG['ocsng'][56]="El volum no està bloquejat"; 
+$LANG['ocsng'][57]="OCS Interface"; 
 
 $LANG['pager'][1]="fins a"; 
 $LANG['pager'][2]="des de"; 

@@ -1101,6 +1101,7 @@ $LANG['ocsng'][53]="Keine Software gesperrt";
 $LANG['ocsng'][54]="Software wurde durch die OCS-Synchronisation in den Papierkorb verschoben"; 
 $LANG['ocsng'][55]="Gesperrte(s) Laufwerk(e)"; 
 $LANG['ocsng'][56]="Kein Laufwerk gesperrt"; 
+$LANG['ocsng'][57]="OCS Interface"; 
 
 $LANG['pager'][1]="bis"; 
 $LANG['pager'][2]="Von"; 
