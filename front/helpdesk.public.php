@@ -82,7 +82,8 @@ if (isset($_GET["show"]) && strcmp($_GET["show"],"user") == 0)
 		$newID=$fup->add($_POST);
 
 		logEvent($_POST["tracking"], "tracking", 4, "tracking", $_SESSION["glpiname"]." ".$LANG['log'][20]." $newID.");
-		glpi_header($_SERVER['HTTP_REFERER']);
+		glpi_header($CFG_GLPI["root_doc"]."/front/helpdesk.public.php?show=user&ID=".$_POST["tracking"]."&glpi_tab=1");
+
 
 	}	
 	if (!isset($_GET["start"])) $_GET["start"]=0;
