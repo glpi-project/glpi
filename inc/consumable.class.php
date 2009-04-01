@@ -265,6 +265,12 @@ class Consumable extends CommonDBTM {
 			unset($ic->fields["ID"]);
 			$ic->fields["FK_device"]=$newID;
 			$ic->fields["device_type"]=CONSUMABLE_ITEM_TYPE;
+			if (empty($ic->fields['use_date'])){
+				unset($ic->fields['use_date']);
+			}
+			if (empty($ic->fields['buy_date'])){
+				unset($ic->fields['buy_date']);
+			}
 			$ic->addToDB();
 		}
 	}
