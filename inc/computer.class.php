@@ -326,7 +326,6 @@ class Computer extends CommonDBTM {
 
 	function post_addItem($newID,$input) {
 		global $DB;
-
 		// Manage add from template
 		if (isset($input["_oldID"])){
 			// ADD Devices
@@ -344,6 +343,12 @@ class Computer extends CommonDBTM {
 				unset ($ic->fields["ID"]);
 				if (isset($ic->fields["num_immo"])) {
 					$ic->fields["num_immo"] = autoName($ic->fields["num_immo"], "num_immo", 1, INFOCOM_TYPE,$input['FK_entities']);
+				}
+				if (empty($ic->fields['use_date'])){
+					unset($ic->fields['use_date']);
+				}
+				if (empty($ic->fields['buy_date'])){
+					unset($ic->fields['buy_date']);
 				}
 				$ic->addToDB();
 			}

@@ -135,6 +135,16 @@ class Software extends CommonDBTM {
 			if ($ic->getFromDBforDevice(SOFTWARE_TYPE, $input["_oldID"])) {
 				$ic->fields["FK_device"] = $newID;
 				unset ($ic->fields["ID"]);
+				if (isset($ic->fields["num_immo"])) {
+					$ic->fields["num_immo"] = autoName($ic->fields["num_immo"], "num_immo", 1, INFOCOM_TYPE,$input['FK_entities']);
+				}
+				if (empty($ic->fields['use_date'])){
+					unset($ic->fields['use_date']);
+				}
+				if (empty($ic->fields['buy_date'])){
+					unset($ic->fields['buy_date']);
+				}
+
 				$ic->addToDB();
 			}
 	
@@ -667,6 +677,15 @@ class SoftwareLicense extends CommonDBTM {
 		if ($ic->getFromDBforDevice($type, $dupid)) {
 			unset ($ic->fields["ID"]);
 			$ic->fields["FK_device"] = $newID;
+			if (isset($ic->fields["num_immo"])) {
+				$ic->fields["num_immo"] = autoName($ic->fields["num_immo"], "num_immo", 1, INFOCOM_TYPE,$input['FK_entities']);
+			}
+			if (empty($ic->fields['use_date'])){
+				unset($ic->fields['use_date']);
+			}
+			if (empty($ic->fields['buy_date'])){
+				unset($ic->fields['buy_date']);
+			}
 			$ic->fields["device_type"] = SOFTWARELICENSE_TYPE;
 			$ic->addToDB();
 		}
