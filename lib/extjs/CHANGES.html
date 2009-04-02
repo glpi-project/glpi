@@ -1,6 +1,6 @@
 <html>
 <head>
-	<title>Ext Release Notes for 2.2.0</title>
+	<title>Ext Release Notes for 2.2.1</title>
 	<style>
 		* {
 			font-family: 'helvetica', tahoma, verdana, sans-serif;
@@ -11,353 +11,52 @@
 		h2 { font-size: 16px; }
 		h3 { font-size: 14px; }
 		li { padding: 2px 0; }
+        .doc { color: blue; }
+        .new { color: green; }
 	</style>
 </head>
 
 <body>
 
-<h1>Release Notes for Ext 2.2.0</h1>
+<h1>Release Notes for Ext 2.2.1</h1>
 
 <p>
-	Release Date: August 4, 2008<br/>
-	Current Version: 2.2.0 (rev 2547) <br/>
-	Previous Version: 2.1.0 (rev 2042)
+	Release Date: Feb 1, 2009<br/>
+
+	Current Version: 2.2.1 (rev 3003) <br/>
+	Previous Version: 2.2.0 (rev 2547)
 </p>
 
 <h2>Overview</h2>
 <ul>
-	<li>Full Firefox 3.0 support</li>
-	<li>Added Ext.History component and sample</li>
-	<li>Completely refactored Checkbox and Radio controls</li>
-	<li>Added CheckboxGroup and RadioGroup components and sample</li>
-	<li>Added MultiSelect and ItemSelector extensions and sample</li>
-	<li>Added FileUploadField extension and sample</li>
-	<li>Added XMLTreeLoader extension and sample</li>
-	<li>Added several new Drag-and-Drop samples</li>
-	<li>Added GMapPanel extension and sample</li>
-	<li>Grid performance improvements</li>
-	<li>Many general improvements and bug fixes</li>
-	<li>Extensive documentation improvements</li>
-	<li>Various locale file updates</li>
+<li>Chrome support</li>
+<li>Various memory leak issues solved.</li>
+<li>Added removeAll method for the container.</li>
+<li>A series of new Ext.air classes have been added.</li>
 </ul>
 
-<h2>Change Log</h2>
-<ul>
-	<li><strong>Adapters</strong></li>
-	<ul>
-		<li>Ext Base</li>
-		<ul>
-			<li>Added UTF-8 to defaultPostHeader to support international char sets properly</li>
-		</ul>
-	</ul>
-
-	<li><strong>Ext.core</strong></li>
-	<ul>
-		<li>Ext</li>
-		<ul>
-			<li>New properties for isGecko2 and isGecko3</li>
-			<li>Updated useShims property to be Gecko2-only on Mac</li>
-			<li>Fix for isArray and array check fix in Ext.each</li>
-		</ul>
-		<li>Ext.Element</li>
-		<ul>
-			<li>Event registration improvements</li>
-			<li>Updated Gecko/Mac overflow auto fix to be scoped to Gecko2 only</li>
-			<li>Shim border fix for IE8</li>
-		</ul>
-		<li>Ext.EventManager</li>
-		<ul>
-			<li>Event handler registration logic refactored to fix DOM leak issues</li>
-		</ul>
-		<li>Ext.Updater</li>
-		<ul>
-			<li>Now extends Ext.util.Observable</li>
-			<li>New overrideable getDefaultRenderer method</li>
-			<li>Fix in update method to preserve passed in config options correctly</li>
-		</ul>
-	</ul>
-
-	<li><strong>Ext.data</strong></li>
-	<ul>
-		<li>Ext.data.Connection</li>
-		<ul>
-			<li>New disableCachingParam config</li>
-		</ul>
-		<li>Ext.data.Record</li>
-		<ul>
-			<li>Fixed type coercion bug in isModified</li>
-		</ul>
-		<li>Ext.data.Tree</li>
-		<ul>
-			<li>New Node.isExpandable method</li>
-		</ul>
-	</ul>
-
-	<li><strong>Ext.util</strong></li>
-	<ul>
-		<li>Ext.util.ClickRepeater</li>
-		<ul>
-			<li>Fixed scope issue when unregistering interal event handlers</li>
-		</ul>
-		<li>Ext.util.Date</li>
-		<ul>
-			<li>Various date format fixes</li>
-		</ul>
-		<li>Ext.util.Format</li>
-		<ul>
-			<li>Fix in htmlDecode to handle ampersands correctly</li>
-			<li>New nl2br (newline to BR) function</li>
-		</ul>
-		<li>Ext.util.History</li>
-		<ul>
-			<li>New component</li>
-		</ul>
-		<li>Ext.util.KeyMap</li>
-		<ul>
-			<li>Added stopEvent as a valid config option for the addBinding method</li>
-		</ul>
-	</ul>
-
-	<li><strong>Ext.widgets</strong></li>
-	<ul>
-		<li>Ext.Button</li>
-		<ul>
-			<li>Fixes to minimize mouse handlers created on buttons</li>
-		</ul>
-		<li>Ext.Component</li>
-		<ul>
-			<li>New initPlugin method for more flexible plugin initialization</li>
-			<li>Fix to ignore state events if stateful=false</li>
-		</ul>
-		<li>Ext.Container</li>
-		<ul>
-			<li>Updated onDestroy to call destroy on the container's layout if available</li>
-			<li>Fixed default scope passed to the cascaded function in Container.cascade</li>
-		</ul>
-		<li>Ext.DatePicker</li>
-		<ul>
-			<li>Marked constrainToViewport config as deprecated (it's not currently used)</li>
-			<li>Changed disabledDaysText and disabledDatesText to default to "Disabled" instead of ""</li>
-			<li>New configs for minDate, maxDate, disabledDays, disabledDaysRE and disabledDates</li>
-			<li>New methods setDisabledDates, setDisabledDays, setMinDate and setMaxDate</li>
-			<li>New showToday config to show/hide the Today button and footer</li>
-			<li>Fixed selectToday to check for disabled Today button before changing the date</li>
-		</ul>
-		<li>Ext.DataView</li>
-		<ul>
-			<li>New mouseenter and mouseleave events</li>
-			<li>New trackOver config to enable mouse events</li>
-			<li>Fix in getNodes to calculate the end node correctly</li>
-		</ul>
-		<li>Ext.Editor</li>
-		<ul>
-			<li>New canceledit event</li>
-			<li>Fixed issue with TriggerField editors not blurring correctly on key navigation</li>
-			<li>Fixed editor wrapper element scrollbar issue in FF2/Opera</li>
-		</ul>
-		<li>Ext.PagingToolbar</li>
-		<ul>
-			<li>Added beforechange and change events and changePage method</li>
-			<li>Fixed handling of 0 entered into the page field</li>
-		</ul>
-		<li>Ext.Panel</li>
-		<ul>
-			<li>Change to set ownerCt on buttons added to panels</li>
-			<li>Fix for FF2/Mac scroll bar issue on contained items</li>
-			<li>Fix panel disabling support in IE</li>
-			<li>Fixed in destruction order of internal components</li>
-		</ul>
-		<li>Ext.ProgressBar</li>
-		<ul>
-			<li>Fix to only attempt progress updates if rendered</li>
-			<li>Added support for the text config in the wait method</li>
-			<li>Fix for preserving the proper progress width in ratio to the value on resize</li>
-		</ul>
-		<li>Ext.QuickTips</li>
-		<ul>
-			<li>Added autoRender support to fix initial display issues</li>
-		</ul>
-		<li>Ext.Resizable</li>
-		<ul>
-			<li>Change to render the resize proxy to the document body instead of as a sibling to its element so it doesn't interfere with Component position calculations</li>
-		</ul>
-		<li>Ext.Slider</li>
-		<ul>
-			<li>New dragging property and changecomplete event</li>
-			<li>Fixes for slider with minValue != 0</li>
-			<li>Fix for preserving the proper thumb position in ratio to the value on resize</li>
-		</ul>
-		<li>Ext.StatusBar</li>
-		<ul>
-			<li>Fix for setting the proper default icon on clear</li>
-		</ul>
-		<li>Ext.TabPanel</li>
-		<ul>
-			<li>Fix to position the tab strip spacer element correctly for tabPosition bottom</li>
-			<li>Fix for FF3 to raise the contextmenu event correctly on tab strip right-click</li>
-		</ul>
-		<li>Ext.Tip</li>
-		<ul>
-			<li>Fixed IE7 repaint bug on initial show</li>
-		</ul>
-		<li>Ext.Toolbar</li>
-		<ul>
-			<li>Fix in addField to add the fields to the items collection rather than the Toolbar items</li>
-		</ul>
-		<li>Ext.Window</li>
-		<ul>
-			<li>Added doLayout call on resize</li>
-		</ul>
-		<li>Ext.dd.DDCore</li>
-		<ul>
-			<li>Fixed null error in isValidHandleChild</li>
-		</ul>
-		<li>Ext.dd.ScrollManager</li>
-		<ul>
-			<li>Fix to enable overriding scroll frequency in the scroll config object</li>
-		</ul>
-		<li>Ext.dd.StatusProxy</li>
-		<ul>
-			<li>Fix to remove float style from ghost elements when adding them to the proxy to prevent proxy box collapse</li>
-		</ul>
-		<li>Ext.form.Checkbox</li>
-		<ul>
-			<li>Completely refactored to support new visual styles</li>
-		</ul>
-		<li>Ext.form.CheckboxGroup</li>
-		<ul>
-			<li>New component</li>
-		</ul>
-		<li>Ext.form.DateField</li>
-		<ul>
-			<li>New showToday config to show/hide the Today button and footer on the associated DatePicker</li>
-			<li>New methods setDisabledDates, setDisabledDays, setMinValue and setMaxValue</li>
-		</ul>
-		<li>Ext.form.Field</li>
-		<ul>
-			<li>Fix to prevent initializing the data value to emptyText</li>
-			<li>Fix to preserve the originalValue on init</li>
-			<li>Fix for odd FF/Win issue when changing OS window focus that disabled editing</li>
-			<li>Change to default error messages to basic tooltips if no field container el is available</li>
-		</ul>
-		<li>Ext.form.FormPanel</li>
-		<ul>
-			<li>Change to make the form tag into the panel's body element</li>
-		</ul>
-		<li>Ext.form.HtmlEditor</li>
-		<ul>
-			<li>Scoped disabling the font, link, lists and source edit buttons to Safari2 only (Safari3 is OK)</li>
-			<li>Various fixes to improve initialization</li>
-			<li>Fix to prevent multiple event handlers from being setup (resolved double line break issue in IE)</li>
-			<li>Fixed issue of IE allowing toolbar commands to apply to content outside the editor body</li>
-		</ul>
-		<li>Ext.form.Label</li>
-		<ul>
-			<li>Added setText method</li>
-		</ul>
-		<li>Ext.form.TextArea</li>
-		<ul>
-			<li>Fixed onKeyUp not calling its superclass method</li>
-		</ul>
-		<li>Ext.form.TimeField</li>
-		<ul>
-			<li>Fix for broken field on DST boundary dates</li>
-		</ul>
-		<li>Ext.form.TriggerField</li>
-		<ul>
-			<li>Fix for trigger icon alignment to field in IE</li>
-			<li>Fixed missing scope to properly remove the document mousedown handler after mimicing blur</li>
-		</ul>
-		<li>Ext.form.Radio</li>
-		<ul>
-			<li>Completely refactored to support new visual styles</li>
-		</ul>
-		<li>Ext.form.RadioGroup</li>
-		<ul>
-			<li>New component</li>
-		</ul>
-		<li>Ext.form.TextField</li>
-		<ul>
-			<li>Fix for selectOnFocus support</li>
-			<li>Fixed broken key filtering when using maskRe in non-FF browsers</li>
-		</ul>
-		<li>Ext.grid.ColumnModel</li>
-		<ul>
-			<li>Fixed configchange event declaration name typo</li>
-		</ul>
-		<li>Ext.grid.EditorGrid</li>
-		<ul>
-			<li>Fix to align editors correctly with mixed-height row content</li>
-			<li>Fixed bug in preEditValue that prevented html decoding when needed</li>
-			<li>Added onDestroy method to clean up column model's editors on destroy</li>
-		</ul>
-		<li>Ext.grid.GridPanel</li>
-		<ul>
-			<li>New deferRowRender config</li>
-		</ul>
-		<li>Ext.grid.GridView</li>
-		<ul>
-			<li>New configs for controlling cell and row selector class and depth</li>
-			<li>Fixes to sync the invisible focus element on row add/remove actions</li>
-			<li>Moved some rendering logic to afterRender (improved performance)</li>
-		</ul>
-		<li>Ext.layout.BorderLayout</li>
-		<ul>
-			<li>Added destroy method to clean up splitbars created by layout</li>
-		</ul>
-		<li>Ext.layout.ColumnLayout</li>
-		<ul>
-			<li>Target size calculation fix for IE</li>
-		</ul>
-		<li>Ext.layoutContainerLayout</li>
-		<ul>
-			<li>Added support for subclass destroy functions</li>
-		</ul>
-		<li>Ext.menu.Item</li>
-		<ul>
-			<li>Improved tolerance for mousing from a menu to its submenu without dismissing the submenu too quickly while passing over other menu items</li>
-		</ul>
-		<li>Ext.menu.Menu</li>
-		<ul>
-			<li>New ignoreParentClicks config to ignore clicks on menu items with child menus</li>
-		</ul>
-		<li>Ext.menu.TextItem</li>
-		<ul>
-			<li>Updated constructor to support config object in addition to just text</li>
-		</ul>
-		<li>Ext.tree.TreeDragZone</li>
-		<ul>
-			<li>Fix to honor the hlDrop config on invalid drop repair</li>
-		</ul>
-		<li>Ext.tree.TreeDropZone</li>
-		<ul>
-			<li>Fixed highlight calls to check enableFx first to avoid possible errors</li>
-		</ul>
-		<li>Ext.tree.TreeEditor</li>
-		<ul>
-			<li>Fixed editor alignment to node when autoScroll is on and the node is outside the scroll area</li>
-		</ul>
-		<li>Ext.tree.TreeLoader</li>
-		<ul>
-			<li>Fixed type coercion bug in isLoading</li>
-			<li>Updated createNode to support new TreePanel.nodeTypes</li>
-		</ul>
-		<li>Ext.tree.TreeNode</li>
-		<ul>
-			<li>New getLoader method</li>
-			<li>Fixed null error in destroy when no child nodes present</li>
-		</ul>
-		<li>Ext.tree.TreeNodeUI</li>
-		<ul>
-			<li>Refactored internal support for Ext.data.Node.isExpandable</li>
-		</ul>
-		<li>Ext.tree.TreePanel</li>
-		<ul>
-			<li>Ability to specify dataUrl or a TreeLoader config in addition to a TreeLoader instance</li>
-			<li>New nodeTypes support for more flexible node declaration and creation</li>
-		</ul>
-	</ul>
-
-</ul>
-</body>
-</html>
+<h2>Change Log</h2><ul><li><strong>Ext.sql</strong></li><ul><li>Ext.sql.Proxy (<span class="doc">Doc Updates</span>)<ul></ul></li></ul><ul><li>Ext.sql.SQLLiteStore (<span class="new">New File</span>)<ul><li>
+        Convience class for creating stores bound to SqlLite Air DB
+      </li></ul></li></ul><li><strong>Ext.air</strong></li><ul><li>Ext.air.App (<span class="new">New File</span>)<ul><li>
+        Convience class for creating applications
+      </li></ul></li></ul><ul><li>Ext.air.Clipboard (<span class="new">New File</span>)<ul><li>
+        Allows for interactions with the os clipboard.
+      </li></ul></li></ul><ul><li>Ext.air.Debug (<span class="new">New File</span>)<ul><li>
+        Adds a method similar to console.dir.
+      </li></ul></li></ul><ul><li>Ext.air.ext-air-adapter<ul><li>
+        Added a method to return a unique ID.
+      </li><li>
+        Added support for nested objects within the JsonReader.
+      </li></ul></li></ul><ul><li>Ext.air.FileTreeLoader (<span class="new">New File</span>)<ul><li>
+        Added to be able to populate a tree from the filesystem.
+      </li></ul></li></ul><ul><li>Ext.air.MusicPlayer (<span class="new">New File</span>)<ul><li>
+        Allows for playing music.
+      </li></ul></li></ul><ul><li>Ext.air.NativeWindow (<span class="doc">Doc Updates</span>)<ul><li>
+        Added new window management methods.
+      </li><li>
+        Added the ability to load window content with html.
+      </li></ul></li></ul><ul><li>Ext.air.Notify (<span class="new">New File</span>)<ul><li>
+        Provides toast style notifications.
+      </li></ul></li></ul><ul><li>Ext.air.SystemTray (<span class="doc">Doc Updates</span>)<ul></ul></li></ul><ul><li>Ext.air.VideoPanel (<span class="new">New File</span>)<ul><li>
+        Panel with video player support.
+      </li></ul></li></ul><li><strong>Adapters</strong></li><ul><li>Adapters.ext-base<ul><li>Fixed issue where IE mangles the response code when returning 204 no content.</li></ul></li></ul><li><strong>Ext.core</strong></li><ul><li>Ext.core.DomQuery (<span class="doc">Doc Updates</span>)<ul></ul></li></ul><ul><li>Ext.core.Elements (<span class="doc">Doc Updates</span>)<ul><li>Fixed replaceWith issue in IE.</li><li>Fix to remove position: relative when masking.</li></ul></li></ul><ul><li>Ext.core.EventManager (<span class="doc">Doc Updates</span>)<ul><li>Rolled back 2.2 onReady code to fix issues in IE.</li><li>Removed anonymous method in onWindowResize.</li><li>Added Ext.isIE8 and Ext.isChrome properties.</li><li>Added extra property to within() to allow the element to be included.</li></ul></li></ul><ul><li>Ext.core.Ext (<span class="doc">Doc Updates</span>)<ul><li>Fixed date handling in urlEncode.</li><li>Add date as a return option inside Ext.type()</li></ul></li></ul><ul><li>Ext.core.Fx (<span class="doc">Doc Updates</span>)<ul><li>Fix for fadeOut when specifying an endOpacity.</li></ul></li></ul><ul><li>Ext.core.Template (<span class="doc">Doc Updates</span>)<ul></ul></li></ul><ul><li>Ext.core.UpdateManager (<span class="doc">Doc Updates</span>)<ul></ul></li></ul><li><strong>Ext.data</strong></li><ul><li>Ext.data.Connection (<span class="doc">Doc Updates</span>)<ul></ul></li></ul><ul><li>Ext.data.DataField (<span class="doc">Doc Updates</span>)<ul></ul></li></ul><ul><li>Ext.data.GroupingStore (<span class="doc">Doc Updates</span>)<ul></ul></li></ul><ul><li>Ext.data.JsonReader (<span class="doc">Doc Updates</span>)<ul></ul></li></ul><ul><li>Ext.data.JsonStore (<span class="doc">Doc Updates</span>)<ul></ul></li></ul><ul><li>Ext.data.MemoryProxy (<span class="doc">Doc Updates</span>)<ul></ul></li></ul><ul><li>Ext.data.Record (<span class="doc">Doc Updates</span>)<ul></ul></li></ul><ul><li>Ext.data.SimpleStore (<span class="doc">Doc Updates</span>)<ul></ul></li></ul><ul><li>Ext.data.Store (<span class="doc">Doc Updates</span>)<ul><li>Added removeAt method.</li><li>Fixed a bug where the store was not correctly unregister at destroy time.</li></ul></li></ul><ul><li>Ext.data.Tree<ul><li>Fix applied to allow replaceNode to have the same id.</li></ul></li></ul><li><strong>Ext.dd</strong></li><ul><li>Ext.dd.DDCore (<span class="doc">Doc Updates</span>)<ul><li>Fixed a few minor cleanup issues.</li></ul></li></ul><ul><li>Ext.dd.DropTarget (<span class="doc">Doc Updates</span>)<ul></ul></li></ul><li><strong>Ext.state</strong></li><ul><li>Ext.state.CookieProvider (<span class="doc">Doc Updates</span>)<ul></ul></li></ul><li><strong>Ext.util</strong></li><ul><li>Ext.util.ClickRepeater<ul><li>Added destroy method.</li></ul></li></ul><ul><li>Ext.util.Date (<span class="doc">Doc Updates</span>)<ul><li>Various date parsing fixes.</li></ul></li></ul><ul><li>Ext.util.Format (<span class="doc">Doc Updates</span>)<ul></ul></li></ul><ul><li>Ext.util.History<ul><li>Fix data hash to initialize at startup.</li></ul></li></ul><ul><li>Ext.util.KeyNav<ul><li>Fixed missing scope when unbinding event handlers.</li></ul></li></ul><ul><li>Ext.util.MixedCollection (<span class="doc">Doc Updates</span>)<ul><li>Fixed sorting inside the keySort method.</li></ul></li></ul><ul><li>Ext.util.Observable (<span class="doc">Doc Updates</span>)<ul></ul></li></ul><ul><li>Ext.util.TaskMgr (<span class="doc">Doc Updates</span>)<ul></ul></li></ul><li><strong>Ext.widgets</strong></li><li><strong>Ext.form</strong></li><ul><li>Ext.form.Action (<span class="doc">Doc Updates</span>)<ul></ul></li></ul><ul><li>Ext.form.BasicForm (<span class="doc">Doc Updates</span>)<ul></ul></li></ul><ul><li>Ext.form.Checkbox (<span class="doc">Doc Updates</span>)<ul></ul></li></ul><ul><li>Ext.form.CheckboxGroup (<span class="doc">Doc Updates</span>)<ul></ul></li></ul><ul><li>Ext.form.Combo (<span class="doc">Doc Updates</span>)<ul><li>Added additional cleanup code.</li></ul></li></ul><ul><li>Ext.form.DateField (<span class="doc">Doc Updates</span>)<ul><li>Added select event.</li><li>Updated outdated variable names.</li></ul></li></ul><ul><li>Ext.form.Field (<span class="doc">Doc Updates</span>)<ul><li>Remove redundant focus/blur calls for Opera 9.</li></ul></li></ul><ul><li>Ext.form.FieldSet<ul><li>Fieldsets now correctly call the onCollapse/onExpand superclass methods.</li></ul></li></ul><ul><li>Ext.form.Form (<span class="doc">Doc Updates</span>)<ul></ul></li></ul><ul><li>Ext.form.HtmlEditor (<span class="doc">Doc Updates</span>)<ul><li>Fixed an issue where pasted data wasn't saved correctly.</li><li>Fixed issues when HtmlEditor was being resized.</li></ul></li></ul><ul><li>Ext.form.Label (<span class="doc">Doc Updates</span>)<ul></ul></li></ul><ul><li>Ext.form.NumberField (<span class="doc">Doc Updates</span>)<ul><li>Fixed issue when setValue is called with 0.</li></ul></li></ul><ul><li>Ext.form.RadioGroup (<span class="doc">Doc Updates</span>)<ul></ul></li></ul><ul><li>Ext.form.TextField (<span class="doc">Doc Updates</span>)<ul><li>Fixed minor memory leak when using autoSize.</li><li>Normalize the behaviour of selectText across browsers.</li></ul></li></ul><ul><li>Ext.form.TriggerField<ul><li>Fixed minor issue when trying to remove css class on the wrapping element.</li></ul></li></ul><ul><li>Ext.form.VTypes (<span class="doc">Doc Updates</span>)<ul><li>Fixed email regex to work correctly, caused hanging in some browsers.</li></ul></li></ul><li><strong>Ext.grid</strong></li><ul><li>Ext.grid.ColumnModel (<span class="doc">Doc Updates</span>)<ul></ul></li></ul><ul><li>Ext.grid.EditorGrid (<span class="doc">Doc Updates</span>)<ul><li>Remove redundant css class.</li><li>Fix for passing an empty default value.</li></ul></li></ul><ul><li>Ext.grid.GridPanel (<span class="doc">Doc Updates</span>)<ul><li>Updated empty functions to use the global Ext.emptyFn.</li></ul></li></ul><ul><li>Ext.grid.GridView (<span class="doc">Doc Updates</span>)<ul><li>Fixed various focus issues.</li><li>Fix for scrolling when data is updated.</li><li>Destroy cleanup added.</li><li>Fixed various scrolling issues.</li><li>Fix for autoFill when using layouts with deferred size.</li></ul></li></ul><ul><li>Ext.grid.PropertyGrid (<span class="doc">Doc Updates</span>)<ul></ul></li></ul><ul><li>Ext.grid.RowNumberer (<span class="doc">Doc Updates</span>)<ul></ul></li></ul><ul><li>Ext.grid.RowSelectionModel (<span class="doc">Doc Updates</span>)<ul><li>Removed unnecessary selectionchange events when in single select mode.</li><li>Update code to use the documented isLocked() method.</li></ul></li></ul><li><strong>Ext.layout</strong></li><ul><li>Ext.layout.AbsoluteLayout (<span class="doc">Doc Updates</span>)<ul></ul></li></ul><ul><li>Ext.layout.AccordionLayout (<span class="doc">Doc Updates</span>)<ul></ul></li></ul><ul><li>Ext.layout.BorderLayout (<span class="doc">Doc Updates</span>)<ul><li>Fixed an issue with accordion expand/collapse icons when in border layout.</li></ul></li></ul><ul><li>Ext.layout.ColumnLayout (<span class="doc">Doc Updates</span>)<ul><li>Fixed issue when getting a valid parent node.</li></ul></li></ul><ul><li>Ext.layout.ContainerLayout (<span class="doc">Doc Updates</span>)<ul></ul></li></ul><ul><li>Ext.layout.FormLayout (<span class="doc">Doc Updates</span>)<ul><li>Fix when getting the positioning element.</li><li>Added a fix where overriding a labelStyle would override unrelated css properties.</li></ul></li></ul><ul><li>Ext.layout.TableLayout<ul><li>Fixed an issue where the extraCls wasn't being applied.</li></ul></li></ul><li><strong>Ext.menu</strong></li><ul><li>Ext.menu.BaseItem<ul><li>Allowed the ability to specify an id for a menu item.</li></ul></li></ul><ul><li>Ext.menu.ColorMenu<ul><li>Palette is now destroyed when the menu is destroyed.</li></ul></li></ul><ul><li>Ext.menu.Item<ul><li>Menus now destroy child items.</li></ul></li></ul><ul><li>Ext.menu.Menu (<span class="doc">Doc Updates</span>)<ul></ul></li></ul><li><strong>Ext.QuickTips</strong></li><ul><li>Ext.QuickTips.QuickTips (<span class="doc">Doc Updates</span>)<ul></ul></li></ul><li><strong>Ext.tree</strong></li><ul><li>Ext.tree.AsyncTreeNode<ul><li>Fixed a memory leak when reloading a node.</li></ul></li></ul><ul><li>Ext.tree.TreeLoader (<span class="doc">Doc Updates</span>)<ul></ul></li></ul><ul><li>Ext.tree.TreeNode (<span class="doc">Doc Updates</span>)<ul><li>Added null check for ensureVisible on the root node.</li></ul></li></ul><ul><li>Ext.tree.TreeNodeUI<ul><li>Fixed focusing issue in IE.</li></ul></li></ul><ul><li>Ext.BoxComponent (<span class="doc">Doc Updates</span>)<ul></ul></li></ul><ul><li>Ext.Button (<span class="doc">Doc Updates</span>)<ul><li>Fix leak issues.</li><li>Fix the button selector to a more standard option.</li></ul></li></ul><ul><li>Ext.ColorPalette<ul><li>ColorPalette will now assign an id correctly if passed as a config option.</li></ul></li></ul><ul><li>Ext.Component (<span class="doc">Doc Updates</span>)<ul><li>State management now ignores auto generated ids.</li><li>Made overCls be assigned later in the render cycle to work correctly with panels.</li><li>Allow for an instance to be passed to isXType.</li></ul></li></ul><ul><li>Ext.ComponentMgr (<span class="doc">Doc Updates</span>)<ul></ul></li></ul><ul><li>Ext.Container (<span class="doc">Doc Updates</span>)<ul><li>Added support for shallow findByType.</li><li>Added removeAll method.</li><li>Allow for an empty items array to be passed to a container.</li></ul></li></ul><ul><li>Ext.DataView (<span class="doc">Doc Updates</span>)<ul><li>Fix mouseouts being fired prematurely.</li></ul></li></ul><ul><li>Ext.DatePicker<ul><li>Remove global var.</li><li>Added extra destroy code.</li></ul></li></ul><ul><li>Ext.Editor<ul><li>Added extra null check in destruction code.</li></ul></li></ul><ul><li>Ext.Layer (<span class="doc">Doc Updates</span>)<ul></ul></li></ul><ul><li>Ext.MessageBox (<span class="doc">Doc Updates</span>)<ul><li>Fix to hide MessageBox while dragging.</li><li>Fix for IE when buttons are wider than the content area.</li></ul></li></ul><ul><li>Ext.PagingToolbar (<span class="doc">Doc Updates</span>)<ul><li>Added destruction code to unbind store.</li><li>Fix for resetting the text field value when blurring.</li></ul></li></ul><ul><li>Ext.Panel (<span class="doc">Doc Updates</span>)<ul><li>Extra destruction code added.</li><li>Avoid overwriting duplicate tools.</li><li>Added new iconchange event.</li><li>Added new getTool method.</li></ul></li></ul><ul><li>Ext.ProgressBar<ul><li>Added option to animate fx transition.</li></ul></li></ul><ul><li>Ext.Resizable<ul><li>Added extra destruction code.</li></ul></li></ul><ul><li>Ext.Slider<ul><li>Fixed an issue where vertical sliders with non-zero minimum values worked incorrectly.</li><li>Normalized disabling sliders across browsers.</li></ul></li></ul><ul><li>Ext.SplitBar<ul><li>Minor code cleanup.</li></ul></li></ul><ul><li>Ext.TabPanel (<span class="doc">Doc Updates</span>)<ul><li>Extra cleanup code added.</li><li>Fixed tab scrolling issue.</li><li>Added support for enableTabScroll when tabPosition is set to bottom.</li><li>setIconClass now works correctly for panels as TabPanel items.</li></ul></li></ul><ul><li>Ext.Toolbar<ul><li>Added extra cleanup code.</li></ul></li></ul><ul><li>Ext.Window (<span class="doc">Doc Updates</span>)<ul><li>Added extra cleanup code.</li><li>anchorTo now removes resize listeners.</li><li>Added code to refocus a modal window when clicking on the mask.</li></ul></li></ul></ul></body></html>
