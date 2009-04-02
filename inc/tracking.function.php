@@ -181,7 +181,7 @@ function showCentralJobList($target,$start,$status="process",$showgrouptickets=t
 
 	if (!haveRight("show_all_ticket","1")&&!haveRight("show_assign_ticket","1")&&!haveRight("create_ticket","1")) return false;
 
-	$search_author=" author = '".$_SESSION["glpiID"]."' OR ";
+	$search_author=" (author = '".$_SESSION["glpiID"]."' AND (status = 'new' OR status = 'plan' OR status = 'assign' OR status = 'waiting')) OR ";
 	$search_assign=" assign = '".$_SESSION["glpiID"]."' ";
 	if ($showgrouptickets){
 		$search_author = "";
@@ -190,7 +190,7 @@ function showCentralJobList($target,$start,$status="process",$showgrouptickets=t
 			$groups=implode("','",$_SESSION['glpigroups']);
 			$search_assign= " assign_group IN ('$groups') ";
 			if (haveRight("show_group_ticket",1)){
-				$search_author= " FK_group IN ('$groups') OR ";
+				$search_author= " (FK_group IN ('$groups') AND (status = 'new' OR status = 'plan' OR status = 'assign' OR status = 'waiting')) OR ";
 			}
 		}
 	}
@@ -203,7 +203,7 @@ function showCentralJobList($target,$start,$status="process",$showgrouptickets=t
 	}else{ // on affiche les tickets planifiés ou assignés à glpiID
 
 		$query = "SELECT ID FROM glpi_tracking " .
-				" WHERE  ($search_author (( $search_assign ) AND (status ='plan' OR status = 'assign'))) ".getEntitiesRestrictRequest("AND","glpi_tracking").
+				" WHERE  ($search_author  (( $search_assign ) AND (status ='plan' OR status = 'assign'))) ".getEntitiesRestrictRequest("AND","glpi_tracking").
 				" ORDER BY date_mod ".getTrackingOrderPrefs($_SESSION["glpiID"]);
 		
 	}
