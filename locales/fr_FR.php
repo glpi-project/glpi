@@ -182,6 +182,7 @@ $LANG['central'][13]="Vue globale";
 $LANG['central'][14]="Vue groupe"; 
 $LANG['central'][15]="Les tickets en cours de vos groupes"; 
 $LANG['central'][16]="Les tickets en attente de vos groupes"; 
+$LANG['central'][17]="Vos tickets"; 
 
 
 $LANG['choice'][0]="Non"; 
@@ -684,6 +685,7 @@ $LANG['joblist'][1]="Seulement les miens";
 $LANG['joblist'][2]="Priorité"; 
 $LANG['joblist'][3]="Personnel + groupe(s)"; 
 $LANG['joblist'][4]="Attribué"; 
+$LANG['joblist'][5]="Personnel"; 
 $LANG['joblist'][6]="Description"; 
 $LANG['joblist'][7]="Nouveau ticket pour cet item..."; 
 $LANG['joblist'][8]="Pas de ticket trouvé."; 
