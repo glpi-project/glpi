@@ -179,39 +179,33 @@ function showCentralJobList($target,$start,$status="process",$showgrouptickets=t
 
 	global $DB,$CFG_GLPI, $LANG;
 
-	if (!haveRight("show_all_ticket","1")&&!haveRight("show_assign_ticket","1")) return false;
+	if (!haveRight("show_all_ticket","1")&&!haveRight("show_assign_ticket","1")&&!haveRight("create_ticket","1")) return false;
 
-	$search_assign="assign = '".$_SESSION["glpiID"]."'";
+	$search_author=" author = '".$_SESSION["glpiID"]."' OR ";
+	$search_assign=" assign = '".$_SESSION["glpiID"]."' ";
 	if ($showgrouptickets){
+		$search_author = "";
+		$search_assign = " 0 = 1 ";
 		if (count($_SESSION['glpigroups'])){
 			$groups=implode("','",$_SESSION['glpigroups']);
-			$search_assign.= " OR assign_group IN ('$groups') ";
+			$search_assign= " assign_group IN ('$groups') ";
+			if (haveRight("show_group_ticket",1)){
+				$search_author= " FK_group IN ('$groups') OR ";
+			}
 		}
 	}
-
-
+	 
 	if($status=="waiting"){ // on affiche les tickets en attente
 		$query = "SELECT ID FROM glpi_tracking " .
-				" WHERE ( $search_assign ) AND status ='waiting' ".getEntitiesRestrictRequest("AND","glpi_tracking").
+				" WHERE ($search_assign) AND status ='waiting' ".getEntitiesRestrictRequest("AND","glpi_tracking").
 				" ORDER BY date_mod ".getTrackingOrderPrefs($_SESSION["glpiID"]);
 		
-		if($showgrouptickets){
-			$title=$LANG['central'][16];
-		}else{
- 			$title=$LANG['central'][11];
-		}
-
 	}else{ // on affiche les tickets planifiés ou assignés à glpiID
 
 		$query = "SELECT ID FROM glpi_tracking " .
-				" WHERE ( $search_assign ) AND (status ='plan' OR status = 'assign') ".getEntitiesRestrictRequest("AND","glpi_tracking").
+				" WHERE  ($search_author (( $search_assign ) AND (status ='plan' OR status = 'assign'))) ".getEntitiesRestrictRequest("AND","glpi_tracking").
 				" ORDER BY date_mod ".getTrackingOrderPrefs($_SESSION["glpiID"]);
 		
-		if($showgrouptickets){
-			$title=$LANG['central'][15];
-		}else{
-			$title=$LANG['central'][9];
-		}
 	}
 
 	$lim_query = " LIMIT ".intval($start).",".intval($_SESSION['glpilist_limit']);	
@@ -226,15 +220,35 @@ function showCentralJobList($target,$start,$status="process",$showgrouptickets=t
 	$number = $DB->numrows($result);
 
 	if ($number > 0) {
-		echo "<table class='tab_cadrehov'>";
-
-		$link="assign=mine&amp;status=$status&amp;reset=reset_before";
+		echo "<table class='tab_cadrehov'  style='width:420px'>";
+		$link_common="&amp;status=$status&amp;reset=reset_before";
+		$link="assign=mine$link_common";
 		// Only mine
 		if (!$showgrouptickets&&(haveRight("show_all_ticket","1")||haveRight("show_assign_ticket",'1'))){
-			$link="assign=".$_SESSION["glpiID"]."&amp;status=$status&amp;reset=reset_before";
+			$link="assign=".$_SESSION["glpiID"].$link_common;
 		}
 
-		echo "<tr><th colspan='5'><a href=\"".$CFG_GLPI["root_doc"]."/front/tracking.php?$link\">".$title."</a></th></tr>";
+		echo "<tr><th colspan='5'>";
+//		<a href=\"".$CFG_GLPI["root_doc"]."/front/tracking.php?$link\">".$title."</a>
+		if($status=="waiting"){
+			if($showgrouptickets){
+				echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/tracking.php?$link\">".$LANG['central'][16]."</a>";
+			}else{
+				echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/tracking.php?$link\">".$LANG['central'][11]."</a>";
+			}
+		} else {
+			if($showgrouptickets){
+				echo $LANG['central'][17].": ";
+				if (haveRight("show_group_ticket",1)){ 
+					echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/tracking.php?group=-1&amp;author=".$_SESSION["glpiID"]."&amp;reset=reset_before\">".$LANG['joblist'][5]."</a> / ";
+				} 
+				echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/tracking.php?$link\">".$LANG['joblist'][21]."</a>";
+			}else{
+				echo $LANG['central'][17].": <a href=\"".$CFG_GLPI["root_doc"]."/front/tracking.php?author=".$_SESSION["glpiID"]."&amp;reset=reset_before\">".$LANG['joblist'][5]."</a> / <a href=\"".$CFG_GLPI["root_doc"]."/front/tracking.php?$link\">".$LANG['joblist'][21]."</a>";
+			}
+		}
+
+		echo "</th></tr>";
 		echo "<tr><th></th>";
 		echo "<th>".$LANG['job'][4]."</th>";
 		echo "<th>".$LANG['common'][1]."</th>";
@@ -249,7 +263,13 @@ function showCentralJobList($target,$start,$status="process",$showgrouptickets=t
 	else
 	{
 		echo "<table class='tab_cadrehov'>";
-		echo "<tr><th>".$title."</th></tr>";
+		echo "<tr><th>";
+		if($status=="waiting"){
+			echo $LANG['central'][11];
+		} else {
+			echo $LANG['central'][9];
+		}
+		echo "</th></tr>";
 
 		echo "</table>";
 	}
@@ -1515,6 +1535,7 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$to
 		$where.=" AND glpi_tracking.computer = '$item'";	
 
 	$search_author=false;
+
 	if ($group>0) $where.=" AND glpi_tracking.FK_group = '$group'";
 	else if ($group==-1&&$author!=0&&haveRight("show_group_ticket",1)){
 		// Get Author group's
@@ -1709,7 +1730,7 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$to
 			
 			commonTrackingListHeader($output_type,$target,$parameters2,$sort,$order);
 			if ($output_type==HTML_OUTPUT){
-				initNavigateListItems(TRACKING_TYPE,$LANG['search'][21]);
+				initNavigateListItems(TRACKING_TYPE,$LANG['common'][53]);
 			}
 
 			while ($i < $numrows && $i<$end_display&&$data=$DB->fetch_array($result)){
