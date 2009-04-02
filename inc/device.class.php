@@ -48,6 +48,22 @@ class Device extends CommonDBTM {
 	}
 
 
+	function prepareInputForAdd($input) {
+		if (isset($input['device_type'])){
+			switch ($input['device_type']){
+				case PROCESSOR_DEVICE :
+					if (isset($input['frequence'])){
+						if (!is_numeric($input['frequence'])){
+							$input['frequence']=0;
+						}
+					}
+					break;
+			}
+		}
+
+		return $input;
+	}
+
 	function cleanDBonPurge($ID) {
 		global $DB;
 		$query="SELECT FK_computers 

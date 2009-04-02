@@ -608,7 +608,12 @@ function showDevicesForm ($target,$ID,$device_type) {
 	echo "<input type='hidden' name='referer' value='$REFERER'>";
 	echo "<table class='tab_cadre_fixe' cellpadding='2'>";
 	echo "<tr><th align='center' colspan='1'>";
-	echo getDictDeviceLabel($device_type)."</th><th align='center' colspan='1'> ID : ".$ID;
+	echo getDictDeviceLabel($device_type)."</th><th align='center' colspan='1'> ";
+	if ($ID>0){
+		echo "ID : ".$ID;
+	} else {
+		echo "&nbsp;";
+	}
 	echo "<tr><td class='tab_bg_1' colspan='1'>";
 	// table commune
 	echo "<table cellpadding='1' cellspacing='0' border='0'>\n";
