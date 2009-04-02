@@ -125,7 +125,9 @@ function printCalendrier($target,$ID=""){
 		}
 		$ci=new CommonItem();
 		$ci->getFromDB($m->fields["device_type"],$m->fields["id_device"]);
-		
+
+				
+/*		// No check because post-only users have no rights to items
 		if (!$ci->obj->can($m->fields["id_device"],"r")){
 			echo "<div class='center'><strong>";
 
@@ -134,6 +136,7 @@ function printCalendrier($target,$ID=""){
 			echo "</strong></div>";
 			return false;
 		}
+*/
 		$type=$ci->getType();
 		$name=$ci->getName();
 		$all="<a href='$target?show=resa&amp;ID=&amp;mois_courant=$mois_courant&amp;annee_courante=$annee_courante'>".$LANG['buttons'][40]."</a>";
