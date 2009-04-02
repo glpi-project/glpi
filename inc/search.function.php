@@ -2964,6 +2964,10 @@ function addLeftJoin ($type,$ref_table,&$already_link_tables,$new_table,$linkfie
 			$out=addLeftJoin($type,$ref_table,$already_link_tables,"glpi_computer_device",$linkfield,PROCESSOR_DEVICE,$meta,$meta_type);
 			return $out." LEFT JOIN $new_table $AS ON (DEVICE_".PROCESSOR_DEVICE.".FK_device = $nt.ID) ";
 		break;
+		case "glpi_device_power":
+			$out=addLeftJoin($type,$ref_table,$already_link_tables,"glpi_computer_device",$linkfield,POWER_DEVICE,$meta,$meta_type);
+			return $out." LEFT JOIN $new_table $AS ON (DEVICE_".POWER_DEVICE.".FK_device = $nt.ID) ";
+		break;
 		case "glpi_device_ram":
 			$out=addLeftJoin($type,$ref_table,$already_link_tables,"glpi_computer_device",$linkfield,RAM_DEVICE,$meta,$meta_type);
 			return $out." LEFT JOIN $new_table $AS ON (DEVICE_".RAM_DEVICE.".FK_device = $nt.ID) ";
