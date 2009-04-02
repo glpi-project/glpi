@@ -266,6 +266,13 @@ $SEARCH_OPTION[COMPUTER_TYPE][34]['usehaving']=true;
 $SEARCH_OPTION[COMPUTER_TYPE][34]['datatype']='number';
 $SEARCH_OPTION[COMPUTER_TYPE][34]['width']=1000;
 
+$SEARCH_OPTION[COMPUTER_TYPE][39]['table']='glpi_device_power';
+$SEARCH_OPTION[COMPUTER_TYPE][39]['field']='designation';
+$SEARCH_OPTION[COMPUTER_TYPE][39]['linkfield']='';
+$SEARCH_OPTION[COMPUTER_TYPE][39]['name']=$LANG['devices'][23];
+$SEARCH_OPTION[COMPUTER_TYPE][39]['forcegroupby']=true;
+$SEARCH_OPTION[COMPUTER_TYPE][39]['usehaving']=true;
+
 
 $SEARCH_OPTION[COMPUTER_TYPE]['disk']=$LANG['computers'][8];
 
