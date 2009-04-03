@@ -114,7 +114,7 @@ sub do_dir2{
 				
 			if (-d "$dir/$_" && $_!~m/locales/ && $_!~m/files/ && $_!~m/\.svn/ ){
 				if ($count_all==1 || $count==0){
-					do_dir("$dir/$_",$varname,$module,$module2,$i);
+					do_dir2("$dir/$_",$varname,$module,$module2,$i);
 				}
 			} else {
 				if ($count_all==1 || $count==0){
