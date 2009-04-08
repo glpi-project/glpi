@@ -2159,7 +2159,7 @@ function createAjaxTabs($tabdiv_id='tabspanel',$tabdivcontent_id='tabcontent',$t
 							}
 							echo "},";
 
-					echo "	listeners:{ // Force glpi_tab storage
+					echo "  listeners:{ // Force glpi_tab storage
 							  beforeshow : function(panel){
 								Ext.Ajax.request({  
 									url : '".$CFG_GLPI['root_doc']."/ajax/updatecurrenttab.php?glpi_tab=$key',
@@ -2171,16 +2171,17 @@ function createAjaxTabs($tabdiv_id='tabspanel',$tabdivcontent_id='tabcontent',$t
 						}";
 
 					echo "}";
-				}
+				} // Foreach tabs
 			echo "]});";
 
 			echo "/// Define view point";
 			echo "tabpanel.expand();";
-			echo "Ext.destroy(tabpanel.body);
-				tabpanel.body='$tabdivcontent_id';";
+			//echo "Ext.destroy(tabpanel.body);
+			//	tabpanel.body='$tabdivcontent_id';";
 	
 			echo "	// force first load 
 				function loadDefaultTab(){
+					tabpanel.body=Ext.get('$tabdivcontent_id');
 					tabpanel.setActiveTab('$default_tab');";
 /*				if (!empty($active_key)){
 					echo "Ext.get('$tabdivcontent_id').load({
