@@ -1982,72 +1982,74 @@ function showDateTimeFormItem($element,$value='',$time_step=-1,$maybeempty=true,
 	
 	echo "<input type='hidden' id='showdate$rand' value=''>";
 
-	echo "<script type='text/javascript'>";
+	$output = "<script type='text/javascript'>";
 				
-	echo "Ext.onReady(function(){  
+	$output .= "Ext.onReady(function(){  
 		var md$rand = new Ext.ux.form.DateTime({
-		hiddenName: '$element',
-		id: '_date$rand',
-		value: '".convDateTime($value)."',
-		hiddenFormat:'Y-m-d H:i:s',
-		applyTo: 'showdate$rand',
-		timeFormat:'H:i',
-		timeWidth: 60,
-		dateWidth: 100,";
+		hiddenName: '$element'
+		,id: '_date$rand'
+		,value: '".convDateTime($value)."'
+		,hiddenFormat:'Y-m-d H:i:s'
+		,applyTo: 'showdate$rand'
+		,timeFormat:'H:i'
+		,timeWidth: 60
+		,dateWidth: 100";
 		
 		$empty="";
 		if ($maybeempty){
-			$empty="allowBlank: true,";
+			$empty="allowBlank: true";
 		} else {
-			$empty="allowBlank: false,";
+			$empty="allowBlank: false";
 		}
-		echo $empty;
-		echo "timeConfig: {
-			altFormats:'H:i',
-			increment: $time_step,$empty";
+		$output .= ",$empty";
+		$output .= ",timeConfig: {
+			altFormats:'H:i'
+			,increment: $time_step,$empty";
 			if (!empty($minTime)){
-				echo "minValue: '$minTime',";
+				$output .= ",minValue: '$minTime'";
 			}
 			if (!empty($maxTime)){
-				echo "maxValue: '$maxTime',";
+				$output .= ",maxValue: '$maxTime'";
 			}
-		echo "},
+		$output .= "}
 		";
 
 		switch ($_SESSION['glpidateformat']){
 			case 1:
-				echo "dateFormat: 'd-m-Y',
-				dateConfig: {
+				$output .= ",dateFormat: 'd-m-Y'
+				,dateConfig: {
 					altFormats:'d-m-Y|d-n-Y',$empty";
 				break;
 			case 2:
-				echo "dateFormat: 'm-d-Y',
-				dateConfig: {
+				$output .= ",dateFormat: 'm-d-Y'
+				,dateConfig: {
 					altFormats:'m-d-Y|n-d-Y',$empty";
 				break;
 			default:
-				echo "dateFormat: 'Y-m-d',
-				dateConfig: {
+				$output .= ",dateFormat: 'Y-m-d'
+				,dateConfig: {
 					altFormats:'Y-m-d|Y-n-d',$empty";
 				break;
 		}
 		if (!empty($minDate)){
-			echo "minValue: '".convDate($minDate)."',";
+			$output .= ",minValue: '".convDate($minDate)."'";
 		}
 		if (!empty($maxDate)){
-			echo "maxValue: '".convDate($maxDate)."',";
+			$output .= ",maxValue: '".convDate($maxDate)."'";
 		}
 
-		echo "},";
+		$output .= "}";
 		if (!$can_edit){
-			echo "disabled: true,";
+			$output .= ",disabled: true";
 		}
 
-	echo " });
+	$output .= " });
 	});";
 		
-	echo "</script>";
+	$output .= "</script>\n";
 
+//	logInFile('php-errors',$output);
+	echo $output;
 }
 
 
@@ -2065,46 +2067,49 @@ function showDateFormItem($element,$value='',$maybeempty=true,$can_edit=true,$mi
 	$rand=mt_rand();
 	echo "<input id='showdate$rand' type='text' size='10' name='$element'>";
 
-	echo "<script type='text/javascript'>";
+	$output = "<script type='text/javascript'>\n";
 
-	echo "Ext.onReady(function(){  
+	$output .= "Ext.onReady(function(){  
 		var md$rand = new Ext.ux.form.XDateField({
-		name: '$element',
-		value: '".convDate($value)."',
-		applyTo: 'showdate$rand',
-		id: '_date$rand',
-		submitFormat:'Y-m-d',";
+		name: '$element'
+		,value: '".convDate($value)."'
+		,applyTo: 'showdate$rand'
+		,id: '_date$rand'
+		,submitFormat:'Y-m-d'";
 
 		switch ($_SESSION['glpidateformat']){
 			case 1:
-				echo "format: 'd-m-Y',";
+				$output .= ",format: 'd-m-Y'";
 				break;
 			case 2:
-				echo "format: 'm-d-Y',";
+				$output .= ",format: 'm-d-Y'";
 				break;
 			default:
-				echo "format: 'Y-m-d',";
+				$output .= ",format: 'Y-m-d'";
 				break;
 		}
 
 		if ($maybeempty){
-			echo "allowBlank: true,";
+			$output .= ",allowBlank: true";
 		} else {
-			echo "allowBlank: false,";
+			$output .= ",allowBlank: false";
 		}
 		if (!$can_edit){
-			echo "disabled: true,";
+			$output .= ",disabled: true";
 		}
 		if (!empty($minDate)){
-			echo "minValue: '".convDate($minDate)."',";
+			$output .= ",minValue: '".convDate($minDate)."'";
 		}
 		if (!empty($maxDate)){
-			echo "maxValue: '".convDate($maxDate)."',";
+			$output .= ",maxValue: '".convDate($maxDate)."'";
 		}
-	echo " });		
+	$output .= " });		
 	});";
 		
-	echo "</script>";	
+	$output .= "</script>\n";	
+
+//	logInFile('php-errors',$output);
+	echo $output;
 }
 
 
