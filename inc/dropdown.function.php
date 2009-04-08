@@ -1419,23 +1419,23 @@ function autocompletionTextField($myname,$table,$field,$value='',$size=40,$entit
 	if ($CFG_GLPI["use_ajax"]&&$CFG_GLPI["ajax_autocompletion"]){
 		$rand=mt_rand();
 		echo "<input $option id='textfield_$myname$rand' type='text' name='$myname' value=\"".cleanInputText($value)."\" size='$size'>\n";
-		echo "<script type='text/javascript' >\n";
+		$output = "<script type='text/javascript' >\n";
 
-		echo "var textfield_$myname$rand = new Ext.data.Store({
+		$output .= "var textfield_$myname$rand = new Ext.data.Store({
 			proxy: new Ext.data.HttpProxy(
 			new Ext.data.Connection ({
 				url: '".$CFG_GLPI["root_doc"]."/ajax/autocompletion.php',
 				extraParams : {
 					table: '$table',
-					field: '$field',";
+					field: '$field'";
 				
 				if (!empty($entity_restrict)&&$entity_restrict>=0){
-					echo "entity_restrict: $entity_restrict,";
+					$output .= ",entity_restrict: $entity_restrict";
 				}
 				if (!empty($user_restrict)&&$user_restrict>=0){
-					echo "user_restrict: $user_restrict,";
+					$output .= ",user_restrict: $user_restrict";
 				}
-				echo "
+				$output .= "
 				},
 				method: 'POST'
 				})
@@ -1443,25 +1443,28 @@ function autocompletionTextField($myname,$table,$field,$value='',$size=40,$entit
 			reader: new Ext.data.JsonReader({
 				totalProperty: 'totalCount',
 				root: 'items',
-				id: 'value',
+				id: 'value'
 			}, [
-			{name: 'value', mapping: 'value'},
+			{name: 'value', mapping: 'value'}
 			])
 		});
 ";
 		
 		
 	
-		echo "var searchfield_$myname$rand = new Ext.ux.form.SpanComboBox({
+		$output .= "var searchfield_$myname$rand = new Ext.ux.form.SpanComboBox({
 			store: textfield_$myname$rand,
 			displayField:'value',
 			pageSize:20,
 			hideTrigger:true,
 			resizable:true,
-			applyTo: 'textfield_$myname$rand',
+			applyTo: 'textfield_$myname$rand'
 		});";
 	
-		echo "</script>";
+		$output .= "</script>";
+		
+		//logInFile('php-errors',$output);
+		echo $output;
 
 	}	else {
 		echo "<input $option type='text' name='$myname' value=\"".cleanInputText($value)."\" size='$size'>\n";
