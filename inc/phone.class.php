@@ -56,7 +56,7 @@ class Phone extends CommonDBTM {
 		global $LANG,$CFG_GLPI;
 		$ong=array();
 
-		$ong[1]=$LANG['title'][26];
+		$ong[1]=$LANG['title'][27];
 		if ($ID > 0){
 			if (haveRight("contract","r") || haveRight("infocom","r")){
 				$ong[4]=$LANG['Menu'][26];
