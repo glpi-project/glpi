@@ -58,6 +58,9 @@ $contract=new Contract();
 					showLinkOnDevice(CONTACT_TYPE,$_POST["ID"]);
 					displayPluginAction(CONTRACT_TYPE,$_POST["ID"],$_POST['glpi_tab']);
 					break;
+				case 2 :
+					showDeviceContract($_POST["ID"]);
+					break;
 				case 5 : 
 					showDocumentAssociated(CONTRACT_TYPE,$_POST["ID"]);
 					break;
@@ -70,7 +73,6 @@ $contract=new Contract();
 				default :
 					if (!displayPluginAction(CONTRACT_TYPE,$_POST["ID"],$_POST['glpi_tab'])){
 						showEnterpriseContract($_POST["ID"]);
-						showDeviceContract($_POST["ID"]);
 					}
 					break;
 			}

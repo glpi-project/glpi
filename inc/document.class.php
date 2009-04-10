@@ -85,7 +85,7 @@ class Document extends CommonDBTM {
 
 	function defineTabs($ID,$withtemplate){
 		global $LANG;
-		$ong[1]=$LANG['title'][26];
+		$ong[1]=$LANG['common'][1];
 		if ($ID>0){
 			$ong[5]=$LANG['Menu'][27];
 			if (haveRight("notes","r"))

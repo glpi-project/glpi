@@ -71,7 +71,7 @@ class Enterprise extends CommonDBTM {
 		global $LANG,$CFG_GLPI;
 
 		if(haveRight("contact_enterprise","r")){
-			$ong[1] = $LANG['title'][26];
+			$ong[1] = $LANG['Menu'][22];
 		}
 		if ($ID>0){
 			if (haveRight("contract","r")){

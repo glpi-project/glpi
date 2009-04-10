@@ -57,7 +57,7 @@ class Peripheral  extends CommonDBTM  {
 		global $LANG;
 		$ong=array();
 		if (haveRight("computer","r")){
-			$ong[1]=$LANG['title'][26];
+			$ong[1]=$LANG['title'][27];
 		}
 		if ($ID > 0){
 			if (haveRight("contract","r") || haveRight("infocom","r")){

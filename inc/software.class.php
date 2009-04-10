@@ -55,7 +55,7 @@ class Software extends CommonDBTM {
 
 	function defineTabs($ID,$withtemplate) {
 		global $LANG, $CFG_GLPI;
-		$ong[1] = $LANG['title'][26];
+		$ong[1] = $LANG['software'][5]."/".$LANG['software'][11];
 		if ($ID > 0 ){
 			if (empty ($withtemplate)) {
 				$ong[2] = $LANG['software'][19];

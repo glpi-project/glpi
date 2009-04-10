@@ -60,7 +60,7 @@ class Contact extends CommonDBTM{
 
 	function defineTabs($ID,$withtemplate){
 		global $LANG;
-		$ong[1]=$LANG['title'][26];
+		$ong[1]=$LANG['Menu'][23];
 		if ($ID>0){
 			if (haveRight("document","r"))	
 				$ong[5]=$LANG['Menu'][27];
