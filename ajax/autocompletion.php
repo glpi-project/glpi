@@ -76,11 +76,15 @@ $query="SELECT DISTINCT `".$_POST['field']."` AS VAL
 if ($result=$DB->query($query))
 	echo '{"totalCount":"'.$totnum.'","items":[';
 	if ($DB->numrows($result)>0){
-//		echo "<ul class='autocomp'>";
-		while ($data=$DB->fetch_array($result))
-			echo '{"value":"'.$data['VAL'].'"},';
-//			echo "<li class='autocomp'>".cleanInputText($data["VAL"])."</li>";
-//		echo "</ul>";
+		$first=true;
+		while ($data=$DB->fetch_array($result))	{
+			if ($first){
+				$first=false;
+			} else {
+				echo ',';
+			}
+			echo '{"value":"'.$data['VAL'].'"}';
+		}
 	}
 	echo ']}';
 
