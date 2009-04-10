@@ -2409,6 +2409,7 @@ function showAddFollowupForm($tID,$massiveaction=false){
 
 
 	$commentall=(haveRight("comment_all_ticket","1")||$job->fields["assign"]==$_SESSION["glpiID"]||in_array($job->fields["assign_group"],$_SESSION["glpigroups"]));
+	$editticket=haveRight("update_ticket","1");
 
 	if ($_SESSION["glpiactiveprofile"]["interface"]=="central"){
 		$target=$CFG_GLPI["root_doc"]."/front/tracking.form.php";
@@ -2499,11 +2500,15 @@ function showAddFollowupForm($tID,$massiveaction=false){
 		}
 	}
 	if ($tID>0||$massiveaction){
+		$cancloseopen=false;
+		if ($commentall&&$editticket&&$tID>0){
+			$cancloseopen=true;
+		}
 		echo "<tr class='tab_bg_2'>";
-		echo "<td class='center'>";
+		echo "<td class='center' ".(!$cancloseopen?"colspan=2":"").">";
 		echo "<input type='submit' name='add' value='".$LANG['buttons'][8]."' class='submit'>";
 		echo "</td>";
-		if ($commentall&&$tID>0){
+		if ($cancloseopen){
 			echo "<td class='center'>";
 			// closed ticket 
 			if (strstr($job->fields['status'],'old_')){
