@@ -206,7 +206,7 @@ function showFormTreeDown($target, $tablename, $human, $ID, $value2 = '', $where
 	echo "<table class='tab_cadre_fixe' cellpadding='1'>\n";
 	echo "<tr><td  align='center'  class='tab_bg_1'>";
 	autocompletionTextField('value',$tablename,'name','',40,$entity_restrict,-1,'maxlength=\'100\'');
-	echo "&nbsp;&nbsp;&nbsp;";
+	echo "</td><td align='center'  class='tab_bg_1'>";
 
 	if ($numberof > 0) {
 		echo "<select name='type'>";
@@ -216,14 +216,15 @@ function showFormTreeDown($target, $tablename, $human, $ID, $value2 = '', $where
 		dropdownValue($tablename, "value2", (strlen($value2) ? $value2 : 0), 0, $entity_restrict);
 	} else
 		echo "<input type='hidden' name='type' value='first'>";
-
-	echo "<br><textarea rows='2' cols='50' name='comments' title='" . $LANG['common'][25] . "' ></textarea>";
-
-	echo "</td><td align='center' colspan='2' class='tab_bg_2'  width='202'>";
+	echo "</td><td align='center' rowspan='2' class='tab_bg_2'  >";
 	echo "<input type='hidden' name='tablename' value='$tablename' >";
 
 	echo "<input type='submit' name='add' value=\"" . $LANG['buttons'][8] . "\" class='submit'>";
 	echo "</td></tr>";
+	echo "<tr><td colspan='2' align='center' class='tab_bg_1'>";
+	echo "<textarea rows='2' cols='50' name='comments' title='" . $LANG['common'][25] . "' ></textarea>";
+	echo "</td></tr>"	;
+
 
 	echo "</table></form>";
 	
