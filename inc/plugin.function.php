@@ -536,6 +536,9 @@ function registerPluginType($plugin,$name,$ID,$attrib){
 		if (isset($attrib['reservation_types']) && $attrib['reservation_types']) {
 			array_push($CFG_GLPI["reservation_types"], $ID);
 		}
+		if (isset($attrib['infocom_types']) && $attrib['infocom_types']) {
+			array_push($CFG_GLPI["infocom_types"], $ID);
+		}
 	} // not already defined
 } 
 
