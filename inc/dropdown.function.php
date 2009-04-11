@@ -1457,7 +1457,9 @@ function autocompletionTextField($myname,$table,$field,$value='',$size=40,$entit
 			displayField:'value',
 			pageSize:20,
 			hideTrigger:true,
+			minChars:3,
 			resizable:true,
+			minListWidth:".($size*5).", // IE problem : wrong computation of the width of the ComboBox field 
 			applyTo: 'textfield_$myname$rand'
 		});";
 	
