@@ -185,7 +185,8 @@ $RELATION=array(
 					"glpi_peripherals"=>"state",
 					"glpi_phones"=>"state",
 					"glpi_printers"=>"state",
-					"glpi_software"=>"state",
+					"glpi_software"=>"oldstate", /// TODO DEL
+					"glpi_softwareversions"=>"state",
 				),
 	
 	"glpi_dropdown_tracking_category" =>array("glpi_tracking"=>"category"),
@@ -215,6 +216,7 @@ $RELATION=array(
 				"_glpi_entities_data"=>"FK_entities",
 				"glpi_groups"=>"FK_entities",
 				"glpi_kbitems"=>"FK_entities",
+				"glpi_links"=>"FK_entities",
 				"glpi_mailgate"=>"FK_entities",
 				"glpi_monitors"=>"FK_entities",
 				"glpi_networking"=>"FK_entities",
@@ -224,6 +226,7 @@ $RELATION=array(
 				"glpi_reminder"=>"FK_entities",
 				"glpi_rules_descriptions"=>"FK_entities",
 				"glpi_software"=>"FK_entities",
+				"glpi_softwareversions"=>"FK_entities",
 				"glpi_tracking"=>"FK_entities",
 				"glpi_users"=>"FK_entities",
 				"glpi_users_profiles"=>"FK_entities"),
