@@ -484,7 +484,7 @@ CREATE TABLE `glpi_contract_device` (
   `ID` int(11) NOT NULL auto_increment,
   `FK_contract` int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_contracts (ID)',
   `FK_device` int(11) NOT NULL default '0' COMMENT 'RELATION to _virtual_device (ID)',
-  `device_type` int(11) NOT NULL default '0' COMMENT 'RELATION to _virtual_device (ID)',
+  `device_type` smallint(6) NOT NULL default '0',
   PRIMARY KEY  (`ID`),
   UNIQUE KEY `FK_contract_device` (`FK_contract`,`device_type`,`FK_device`),
   KEY `FK_device` (`FK_device`,`device_type`),
@@ -878,7 +878,7 @@ CREATE TABLE `glpi_doc_device` (
   `ID` int(11) NOT NULL auto_increment,
   `FK_doc` int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_docs (ID)',
   `FK_device` int(11) NOT NULL default '0' COMMENT 'RELATION to _virtual_device (ID)',
-  `device_type` int(11) NOT NULL default '0' COMMENT 'RELATION to _virtual_device (ID)',
+  `device_type` smallint(6) NOT NULL default '0',
   PRIMARY KEY  (`ID`),
   UNIQUE KEY `FK_doc_device` (`FK_doc`,`device_type`,`FK_device`),
   KEY `FK_device` (`FK_device`,`device_type`),
@@ -1503,7 +1503,7 @@ INSERT INTO `glpi_event_log` VALUES ('4','-1','system','2009-03-04 18:25:58','lo
 DROP TABLE IF EXISTS `glpi_followups`;
 CREATE TABLE `glpi_followups` (
   `ID` int(11) NOT NULL auto_increment,
-  `tracking` int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_tracking (ID)',
+  `tracking` int(11) default NULL COMMENT 'RELATION to glpi_tracking (ID)',
   `date` datetime default NULL,
   `author` int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_users (ID)',
   `contents` text collate utf8_unicode_ci,
@@ -1564,7 +1564,7 @@ DROP TABLE IF EXISTS `glpi_infocoms`;
 CREATE TABLE `glpi_infocoms` (
   `ID` int(11) NOT NULL auto_increment,
   `FK_device` int(11) NOT NULL default '0' COMMENT 'RELATION to _virtual_device (ID)',
-  `device_type` int(11) NOT NULL default '0' COMMENT 'RELATION to _virtual_device (ID)',
+  `device_type` smallint(6) NOT NULL default '0',
   `buy_date` date default NULL,
   `use_date` date default NULL,
   `warranty_duration` smallint(6) NOT NULL default '0',
