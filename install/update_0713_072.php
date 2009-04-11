@@ -184,17 +184,17 @@ function update0713to072() {
 	// Create licenses
 	if (!TableExists("glpi_softwarelicenses")){
 		$query = "CREATE TABLE `glpi_softwarelicenses` (
-				`ID` int(15) NOT NULL auto_increment,
-				`sID` int(15) NOT NULL default '0',
+				`ID` int(11) NOT NULL auto_increment,
+				`sID` int(11) NOT NULL default '0',
 				`FK_entities` int(11) NOT NULL default '0',
 				`recursive` tinyint(1) NOT NULL DEFAULT '0',
-				`number` int(15) NOT NULL default '0',
-				`type` int(15) NOT NULL default '0',
+				`number` int(11) NOT NULL default '0',
+				`type` int(11) NOT NULL default '0',
 				`name` varchar(255) NULL default NULL,
 				`serial` varchar(255) NULL default NULL,
 				`otherserial` varchar(255) NULL default NULL,
-				`buy_version` int(15) NOT NULL default '0',
-				`use_version` int(15) NOT NULL default '0',
+				`buy_version` int(11) NOT NULL default '0',
+				`use_version` int(11) NOT NULL default '0',
 				`expire` date default NULL,
 				`FK_computers` int(11) NOT NULL default '0',
 				`comments` text,
@@ -227,8 +227,8 @@ function update0713to072() {
 
 	if (!TableExists("glpi_softwareversions")){
 		$query = "CREATE TABLE `glpi_softwareversions` (
-		`ID` int(15) NOT NULL auto_increment,
-		`sID` int(15) NOT NULL default '0',
+		`ID` int(11) NOT NULL auto_increment,
+		`sID` int(11) NOT NULL default '0',
 	  	`state` int(11) NOT NULL default '0',
 		`name` varchar(255) NULL default NULL,
 		`comments` text,
