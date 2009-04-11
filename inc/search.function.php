@@ -2443,7 +2443,12 @@ function giveItem ($type,$ID,$data,$num,$meta=0){
 		case "glpi_contracts.periodicity":
 		case "glpi_contracts.facturation":
 			if (!empty($data[$NAME.$num])){
-				return $data[$NAME.$num]." ".$LANG['financial'][57];
+				$split=explode('$$$$', $data[$NAME.$num]);
+				$output = "";
+				foreach ($split as $duration) {
+					$output .= (empty($output)?'':'<br>') . $duration . " " . $LANG['financial'][57]; 
+				}
+				return $output;
 			} else {
 				return "&nbsp;";
 			}
