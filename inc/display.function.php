@@ -1989,7 +1989,7 @@ function showDateTimeFormItem($element,$value='',$time_step=-1,$maybeempty=true,
 		hiddenName: '$element'
 		,id: '_date$rand'
 		,value: '".convDateTime($value)."'
-		,hiddenFormat:'Y-m-d H:i:s'
+		,hiddenFormat:'Y-m-d H:i'
 		,applyTo: 'showdate$rand'
 		,timeFormat:'H:i'
 		,timeWidth: 60
