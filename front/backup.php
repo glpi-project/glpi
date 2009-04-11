@@ -227,6 +227,7 @@ function get_def($DB, $table) {
 	$def .= "DROP TABLE IF EXISTS `$table`;\n";
 	$query = "SHOW CREATE TABLE `$table`";
 	$result=$DB->query($query);
+	$DB->query("SET SESSION sql_quote_show_create = 1;");	
 	$row=$DB->fetch_array($result);
 
 	// DELETE charset definition : UNEEDED WHEN UTF8 CONVERSION OF THE DATABASE
