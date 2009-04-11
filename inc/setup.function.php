@@ -166,14 +166,14 @@ function showFormTreeDown($target, $tablename, $human, $ID, $value2 = '', $where
 			echo '<br>'; 
 			echo "<textarea rows='2' cols='50' name='comments' title='" . $LANG['common'][25] . "' >" . $value["comments"] . "</textarea>";
 	
-			echo "</td><td align='center' class='tab_bg_2' width='99'>";
+			echo "</td><td align='center' class='tab_bg_2' width='98'>";
 			//  on ajoute un bouton modifier
 			echo "<input type='submit' name='update' value='" . $LANG['buttons'][14] . "' class='submit'>";
-			echo "</td><td align='center' class='tab_bg_2' width='99'>";
+			echo "</td><td align='center' class='tab_bg_2' width='98'>";
 			//
 			echo "<input type='submit' name='delete' value=\"" . $LANG['buttons'][6] . "\" class='submit'>";
 		} else {
-			echo "</td><td align='center' class='tab_bg_2' width='99'>&nbsp;";
+			echo "</td><td align='center' class='tab_bg_2' width='202'>&nbsp;";
 		}
 		
 		echo "</td></tr></table></form>";
@@ -189,7 +189,7 @@ function showFormTreeDown($target, $tablename, $human, $ID, $value2 = '', $where
 		echo "&nbsp;&nbsp;&nbsp;" . $LANG['setup'][75] . " :&nbsp;&nbsp;&nbsp;";
 
 		dropdownValue($tablename, "value_where", $where, 0, $entity_restrict);
-		echo "</td><td align='center' colspan='2' class='tab_bg_2' width='202'>";
+		echo "</td><td align='center' class='tab_bg_2' width='202'>";
 		echo "<input type='hidden' name='tablename' value='$tablename' >";
 		echo "<input type='submit' name='move' value=\"" . $LANG['buttons'][20] . "\" class='submit'>";
 		echo "<input type='hidden' name='FK_entities' value='$entity_restrict'>";
@@ -216,7 +216,7 @@ function showFormTreeDown($target, $tablename, $human, $ID, $value2 = '', $where
 		dropdownValue($tablename, "value2", (strlen($value2) ? $value2 : 0), 0, $entity_restrict);
 	} else
 		echo "<input type='hidden' name='type' value='first'>";
-	echo "</td><td align='center' rowspan='2' class='tab_bg_2' width='200' >";
+	echo "</td><td align='center' rowspan='2' class='tab_bg_2' width='202' >";
 	echo "<input type='hidden' name='tablename' value='$tablename' >";
 
 	echo "<input type='submit' name='add' value=\"" . $LANG['buttons'][8] . "\" class='submit'>";
@@ -295,16 +295,16 @@ function showFormNetpoint($target, $human, $ID, $FK_entities='',$location=0) {
 			echo "<textarea rows='2' cols='50' name='comments' title='" . $LANG['common'][25] . "' >" . $comments . "</textarea>";
 	
 			//
-			echo "</td><td align='center' class='tab_bg_2' width='99'>";
+			echo "</td><td align='center' class='tab_bg_2' width='98'>";
 	
 			//  on ajoute un bouton modifier
 			echo "<input type='submit' name='update' value='" . $LANG['buttons'][14] . "' class='submit'>";
-			echo "</td><td align='center' class='tab_bg_2' width='99'>";
+			echo "</td><td align='center' class='tab_bg_2' width='98'>";
 			//
 			echo "<input type='submit' name='delete' value=\"" . $LANG['buttons'][6] . "\" class='submit'>";
 		} else {
 			echo "<input type='hidden' name='value2' value='$location'>";
-			echo "</td><td align='center' class='tab_bg_2' width='99'>&nbsp;";			
+			echo "</td><td align='center' class='tab_bg_2' width='202'>&nbsp;";			
 		}
 		echo "</td></tr>";
 
@@ -324,7 +324,7 @@ function showFormNetpoint($target, $human, $ID, $FK_entities='',$location=0) {
 	echo "<br>"; 
 	echo "<textarea rows='2' cols='50' name='comments' title='" . $LANG['common'][25] . "'></textarea>";
 
-	echo "</td><td align='center' colspan='2' class='tab_bg_2' width='202'>";
+	echo "</td><td align='center' class='tab_bg_2' width='202'>";
 
 	echo "<input type='submit' name='add' value=\"" . $LANG['buttons'][8] . "\" class='submit'>";
 	echo "</td></tr>";
@@ -349,7 +349,7 @@ function showFormNetpoint($target, $human, $ID, $FK_entities='',$location=0) {
 
 	echo "<input type='text' maxlength='100' size='5' name='after'><br>";
 	echo "<textarea rows='2' cols='50' name='comments' title='" . $LANG['common'][25] . "'></textarea>";
-	echo "</td><td align='center' colspan='2' class='tab_bg_2' width='202'>";
+	echo "</td><td align='center' class='tab_bg_2' width='202'>";
 
 	echo "<input type='submit' name='several_add' value=\"" . $LANG['buttons'][8] . "\" class='submit'>";
 	echo "</td></tr>";
@@ -414,15 +414,15 @@ function showFormDropDown($target, $tablename, $human, $ID, $FK_entities='') {
 			echo "<textarea rows='2' cols='50' name='comments' title='" . $LANG['common'][25] . "' >" . $value["comments"] . "</textarea>";
 	
 			//
-			echo "</td><td align='center' class='tab_bg_2' width='99'>";
+			echo "</td><td align='center' class='tab_bg_2' width='98'>";
 	
 			//  on ajoute un bouton modifier
 			echo "<input type='submit' name='update' value='" . $LANG['buttons'][14] . "' class='submit'>";
-			echo "</td><td align='center' class='tab_bg_2' width='99'>";
+			echo "</td><td align='center' class='tab_bg_2' width='98'>";
 			//
 			echo "<input type='submit' name='delete' value=\"" . $LANG['buttons'][6] . "\" class='submit'>";
 		} else {
-			echo "</td><td align='center' class='tab_bg_2' width='99'>&nbsp;";			
+			echo "</td><td align='center' class='tab_bg_2' width='202'>&nbsp;";			
 		}
 		echo "</td></tr>";
 
@@ -438,7 +438,7 @@ function showFormDropDown($target, $tablename, $human, $ID, $FK_entities='') {
 	echo "<br>"; 
 	echo "<textarea rows='2' cols='50' name='comments' title='" . $LANG['common'][25] . "'></textarea>";
 
-	echo "</td><td align='center' colspan='2' class='tab_bg_2' width='202'>";
+	echo "</td><td align='center' class='tab_bg_2' width='202'>";
 	echo "<input type='hidden' name='tablename' value='$tablename' >";
 	echo "<input type='hidden' name='FK_entities' value='$entity_restrict'>";
 
