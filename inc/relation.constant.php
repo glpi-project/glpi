@@ -134,13 +134,6 @@ $RELATION=array(
 						"glpi_phones"=>"FK_glpi_enterprise",
 						"glpi_printers"=>"FK_glpi_enterprise",
 						"glpi_software"=>"FK_glpi_enterprise",
-						"glpi_rule_cache_model_computer"=>"manufacturer",
-						"glpi_rule_cache_model_monitor"=>"manufacturer",
-						"glpi_rule_cache_model_networking"=>"manufacturer",
-						"glpi_rule_cache_model_peripheral"=>"manufacturer",
-						"glpi_rule_cache_model_phone"=>"manufacturer",
-						"glpi_rule_cache_model_printer"=>"manufacturer",
-						"glpi_rule_cache_software"=>array("manufacturer","new_manufacturer"),
 	),
 	
 	"glpi_dropdown_model" =>array("glpi_computers"=>"model"),
