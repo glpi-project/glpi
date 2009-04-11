@@ -216,7 +216,7 @@ function showFormTreeDown($target, $tablename, $human, $ID, $value2 = '', $where
 		dropdownValue($tablename, "value2", (strlen($value2) ? $value2 : 0), 0, $entity_restrict);
 	} else
 		echo "<input type='hidden' name='type' value='first'>";
-	echo "</td><td align='center' rowspan='2' class='tab_bg_2'  >";
+	echo "</td><td align='center' rowspan='2' class='tab_bg_2' width='200' >";
 	echo "<input type='hidden' name='tablename' value='$tablename' >";
 
 	echo "<input type='submit' name='add' value=\"" . $LANG['buttons'][8] . "\" class='submit'>";
