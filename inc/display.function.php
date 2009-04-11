@@ -55,6 +55,8 @@ function includeCommonHtmlHeader($title=''){
 
 	// Send UTF8 Headers
 	header("Content-Type: text/html; charset=UTF-8");
+	// IE8 to IE7 compatibility
+	header("X-UA-Compatible: IE=EmulateIE7");
 	// Send extra expires header 
 	header_nocache();
 
