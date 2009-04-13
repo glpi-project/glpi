@@ -61,24 +61,24 @@ else {$defaulttimeout=max(1,$max_time-2);$defaultrowlimit=2;}
 <script language="JavaScript" type="text/javascript">
 <!--
 function dump(what3){
-	if (confirm("<?php echo $LANG['backup'][18];?> " + what3 +  "?")) {
+	if (confirm("<?php echo $LANG['backup'][18];?> " + what3 +  " ?")) {
 		window.location = "backup.php?dump=" + what3;
 	}
 }
 function restore(what) {
-	if (confirm("<?php echo $LANG['backup'][16];?> " + what +  "?")) {
+	if (confirm("<?php echo $LANG['backup'][16];?> " + what +  " ?")) {
 		window.location = "backup.php?file=" + what +"&donotcheckversion=1";
 	}
 }
 
 function erase(what2){
-	if (confirm("<?php echo $LANG['backup'][17];?> " + what2 +  "?")) {
+	if (confirm("<?php echo $LANG['backup'][17];?> " + what2 +  " ?")) {
 		window.location = "backup.php?delfile=" + what2;
 	}
 }
 
 function xmlnow(what4){
-	if (confirm("<?php echo $LANG['backup'][18] ;?> " + what4 +  "?")) {
+	if (confirm("<?php echo $LANG['backup'][18] ;?> " + what4 +  " ?")) {
 		window.location = "backup.php?xmlnow=" + what4;
 	}
 }
@@ -412,7 +412,7 @@ if (isset($_GET["dump"]) && $_GET["dump"] != ""){
 
 
 	if (!isset($_GET["duree"])&&is_file($filename)){
-		echo "<div align='center'>".$LANG['backup'][21]."</div>";
+		echo "<div class='center'>".$LANG['backup'][21]."</div>";
 	} else {
 		init_time(); //initialise le temps
 		//d�ut de fichier
@@ -535,7 +535,7 @@ if (isset($_GET["delfile"]) && $_GET["delfile"] != ""){
 }
 
 // Title backup
-echo " <div align='center'> <table border='0'><tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/sauvegardes.png\" alt='".$LANG['common'][28]."'></td> <td><a href=\"javascript:dump('".$LANG['backup'][19]."')\"  class='icon_consol'><b>". $LANG['backup'][0]."</b></a></td><td><a href=\"javascript:xmlnow('".$LANG['backup'][19]."')\" class='icon_consol'><b>". $LANG['backup'][1]."</b></a></td></tr></table>";
+echo " <div class='center'> <table class='tab_glpi'><tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/sauvegardes.png\" alt='".$LANG['common'][28]."'></td> <td><a href=\"javascript:dump('".$LANG['backup'][19]."')\"  class='icon_consol'><b>". $LANG['backup'][0]."</b></a></td><td><a href=\"javascript:xmlnow('".$LANG['backup'][19]."')\" class='icon_consol'><b>". $LANG['backup'][1]."</b></a></td></tr></table>";
 
 
 ?>
@@ -545,7 +545,7 @@ echo " <div align='center'> <table border='0'><tr><td><img src=\"".$CFG_GLPI["ro
 
 <br>
 <table class='tab_cadre'  cellpadding="5">
-<tr align="center"> 
+<tr class='center'> 
 <th><u><i><?php echo $LANG['document'][2]; ?></i></u></th>
 <th><u><i><?php echo $LANG['backup'][11]; ?></i></u></th>
 <th><u><i><?php echo $LANG['common'][27]; ?></i></u></th>
@@ -565,7 +565,7 @@ if (count($files)){
 		$taille_fic = filesize($path."/".$file)/1024;
 		$taille_fic = (int)$taille_fic;
 		echo "<tr class='tab_bg_2'><td>$file&nbsp;</td>
-			<td align=\"right\">&nbsp;" . $taille_fic . " kB&nbsp;</td>
+			<td class=\"right\">&nbsp;" . $taille_fic . " kB&nbsp;</td>
 			<td>&nbsp;" . convDateTime(date("Y-m-d H:i",$date)) . "</td>
 			<td>&nbsp;<a href=\"javascript:erase('$file')\">".$LANG['buttons'][6]."</a>&nbsp;</td>
 
@@ -574,6 +574,7 @@ if (count($files)){
 	}
 }
 closedir($dir);
+
 $dir=opendir($path);
 unset($files);
 $files=array();
@@ -590,7 +591,7 @@ if (count($files)){
 		echo "
 			<tr class='tab_bg_1'><td colspan='6' ><hr noshade></td></tr>
 			<tr class='tab_bg_2'><td>$file&nbsp;</td>
-			<td align=\"right\">&nbsp;" . $taille_fic . " kB&nbsp;</td>
+			<td class=\"right\">&nbsp;" . $taille_fic . " kB&nbsp;</td>
 			<td>&nbsp;" . convDateTime(date("Y-m-d H:i",$date)) . "</td>
 			<td>&nbsp;<a href=\"javascript:erase('$file')\">".$LANG['buttons'][6]."</a>&nbsp;</td>
 			<td>&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;</td>
