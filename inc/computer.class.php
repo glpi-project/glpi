@@ -58,8 +58,8 @@ class Computer extends CommonDBTM {
 	function defineTabs($ID,$withtemplate){
 		global $LANG,$CFG_GLPI;
 
-		$ong[1]=$LANG['title'][30];
 		if ($ID > 0){
+			$ong[1]=$LANG['title'][30];
 			$ong[20]=$LANG['computers'][8];
 			if (haveRight("software","r"))	{
 				$ong[2]=$LANG['Menu'][4];
@@ -97,6 +97,8 @@ class Computer extends CommonDBTM {
 					$ong[13]=$LANG['Menu'][33];
 				}
 			}
+		} else { // New computer
+			$ong[1]=$LANG['title'][26];
 		}	
 		return $ong;
 	}
