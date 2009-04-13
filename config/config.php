@@ -46,12 +46,14 @@
 	if(!file_exists(GLPI_CONFIG_DIR . "/config_db.php")) {
 		nullHeader("DB Error",$_SERVER['PHP_SELF']);
 		if (!isCommandLine()){
-			echo "<div align='center'>";
+			echo "<div class='center'>";
 			echo "<p>Error : GLPI seems to not be installed properly.</p><p> config_db.php file is missing.</p><p>Please restart the install process.</p>";
+			echo "<p><a class='red' href='".GLPI_ROOT."'>Click here to proceed</a></p>";			
 			echo "</div>";
 		} else {
 			echo "Error : GLPI seems to not be installed properly.</p><p> config_db.php file is missing.\n";
 			echo "Please restart the install process.\n";
+			
 		}
 		nullFooter("DB Error",$_SERVER['PHP_SELF']);
 	
@@ -161,10 +163,10 @@
 				echo $LANG['update'][88] . "\n";
 			} else {			
 				nullHeader("UPDATE NEEDED",$_SERVER['PHP_SELF']);
-				echo "<div align='center'>";
+				echo "<div class='center'>";
 		
 		
-				echo "<table class='tab_cadre' style='width:700px'>";
+				echo "<table class='tab_check'>";
 		
 				$error=commonCheckForUseGLPI();
 		
@@ -173,18 +175,16 @@
 				if (!$error){
 					if (!isset($CFG_GLPI["version"])||trim($CFG_GLPI["version"])<GLPI_VERSION){
 						echo "<form method='post' action='".$CFG_GLPI["root_doc"]."/install/update.php'>";
-						echo "<table class='tab_cadre' style='width:500px'><tr><th>";
+						echo "<p class='red'>";
 						echo $LANG['update'][88];
-						echo "</th></tr>";
-						echo "<tr class='tab_bg_1'><td align='center'>";
+						echo "</p>";						
 						echo "<input type='submit' name='from_update' value='".$LANG['install'][4]."' class='submit'>";
-						echo "</td></tr>";
-						echo "</table></form>";
+						echo "</form>";
 					} else if (trim($CFG_GLPI["version"])>GLPI_VERSION){
-						echo "<table class='tab_cadre' style='width:500px'><tr><th>";
+						echo "<p class='red'>";
 						echo $LANG['update'][89];
-						echo "</th></tr>";
-						echo "</table>";
+						
+						echo "</p>";
 					}
 				} else {
 					echo "<form action=\"".$_SERVER['PHP_SELF']."\" method=\"post\">";
