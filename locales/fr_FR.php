@@ -1804,8 +1804,8 @@ $LANG['transfer'][6]="Pensez à faire une sauvegarde avant de transférer des é
 $LANG['transfer'][7]="Éléments à transférer"; 
 $LANG['transfer'][8]="Mode de transfert"; 
 
-$LANG['update'][88]="Votre version de la base de données n'est pas compatible avec la version du code installé. Une mise à jour est nécessaire."; 
-$LANG['update'][89]="Vous essayez d'utiliser GLPI avec une version de la base de données prévue pour une version supérieure. Veuillez installer la version correspondante à votre base de données."; 
+$LANG['update'][88]="Votre version de la base de données n'est pas compatible avec la version des fichiers  installés. Une mise à jour est nécessaire."; 
+$LANG['update'][89]="Vous tenter d'utiliser GLPI avec des fichiers d'une version antérieure à la version de la base de données. Veuillez installer les fichiers GLPI dans la  version correspondante à votre base de données."; 
 $LANG['update'][90]="Erreur durant la mise à jour de la base de données"; 
 $LANG['update'][91]="Attention !"; 
 $LANG['update'][92]="Vous allez mettre à jour votre base de données GLPI ayant pour nom :"; 

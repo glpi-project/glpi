@@ -725,7 +725,7 @@ function checkWriteAccessToDirs(){
 	);
 	$error=0;	
 	foreach ($dir_to_check as $dir => $message){
-		echo "<tr class='tab_bg_1' ><td class='left'><strong>".$message."</strong></td>";
+		echo "<tr class='tab_bg_1' ><td class='left'><b>".$message."</b></td>";
 		$tmperror=testWriteAccessToDirectory($dir);
 	
 		switch($tmperror){

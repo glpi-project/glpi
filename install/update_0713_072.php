@@ -176,8 +176,8 @@ function update0713to072() {
 		} 
 			$query="RENAME TABLE `glpi_softwarelicenses` TO `glpi_softwarelicenses_backup`";
 			$DB->query($query) or die("0.72 backup table glpi_softwareversions" . $LANG['update'][90] . $DB->error());
-		echo "<strong>glpi_softwarelicenses table already exists. A backup have been done to glpi_softwarelicenses_backup.<br>
-			You can delete it if you have no need of it.<br></strong>";
+		echo "<p><b>glpi_softwarelicenses table already exists. A backup have been done to glpi_softwarelicenses_backup.</p>
+			<p>You can delete it if you have no need of it.</p></b>";
 
 	}
 
@@ -220,8 +220,8 @@ function update0713to072() {
 		} 
 			$query="RENAME TABLE `glpi_softwareversions` TO `glpi_softwareversions_backup`";
 			$DB->query($query) or die("0.72 backup table glpi_softwareversions" . $LANG['update'][90] . $DB->error());
-		echo "<strong>glpi_softwareversions table already exists. A backup have been done to glpi_softwareversions_backup.<br>
-			You can delete it if you have no need of it.<br></strong>";
+		echo "<p><b>glpi_softwareversions table already exists. A backup have been done to glpi_softwareversions_backup.</p><p>
+			You can delete it if you have no need of it.</p></b>";
 
 	}
 
