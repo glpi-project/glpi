@@ -61,7 +61,7 @@ class Profile extends CommonDBTM{
 		global $LANG,$CFG_GLPI; 
 			
 		$ong[1]=$LANG['common'][12]; 
-		if (haveRight("user","r")){ 
+		if ($ID && haveRight("user","r")){ 
 			$ong[2]=$LANG['Menu'][14]; 
 		} 
 		

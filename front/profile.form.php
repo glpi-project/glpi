@@ -54,7 +54,10 @@ if (isset($_POST["add"])){
 
 	checkRight("profile","w");
 	$ID=$prof->add($_POST);
-	glpi_header($_SERVER['HTTP_REFERER']);
+
+	// We need to redirect to form to enter rights
+	glpi_header($CFG_GLPI["root_doc"]."/front/profile.form.php?ID=$ID");
+
 }else  if (isset($_POST["delete"])){
 	checkRight("profile","w");
 
