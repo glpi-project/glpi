@@ -137,6 +137,10 @@ padding:10px;
         font-size: 12px;
         font-weight:200;}
 
+	.block {
+	display: inline-block;
+	width:300px;
+	}
         .submit { text-align:center;}
        
         input.submit {

@@ -83,7 +83,7 @@ function choose_language()
 {
 
 	echo "<form action=\"install.php\" method=\"post\">";
-	echo "<p class='center'><label>Select your language </label>";
+	echo "<p class='center'>";
 
 	dropdownLanguages("language", "en_GB");
 	echo "</p>"; 
@@ -207,13 +207,13 @@ function step1($update)
 function step2($update)
 {
 	global $LANG;
-	echo "<p>".$LANG['install'][28]."</p>";
+	echo "<p class='center'>".$LANG['install'][28]."</p>";
 	echo "<form action=\"install.php\" method=\"post\">";
 	echo "<input type=\"hidden\" name=\"update\" value=\"".$update."\">";
 	echo "<fieldset><legend>".$LANG['install'][29]."</legend>";
-	echo "<p><label>".$LANG['install'][30] .": <input type=\"text\" name=\"db_host\"></label></p>";
-	echo "<p ><label>".$LANG['install'][31] .": <input type=\"text\" name=\"db_user\"></label></p>";
-	echo "<p ><label>".$LANG['install'][32]." : <input type=\"password\" name=\"db_pass\"></label></p></fieldset>";
+	echo "<p><label class='block'>".$LANG['install'][30] .": </label><input type=\"text\" name=\"db_host\"><p>";
+	echo "<p ><label class='block'>".$LANG['install'][31] .": </label><input type=\"text\" name=\"db_user\"></p>";
+	echo "<p ><label class='block'>".$LANG['install'][32]." : </label><input type=\"password\" name=\"db_pass\"></p></fieldset>";
 	echo "<input type=\"hidden\" name=\"install\" value=\"Etape_2\">";
 	echo "<p class=\"submit\"><input type=\"submit\" name=\"submit\" class=\"submit\" value=\"".$LANG['install'][26]."\"></p>";
 	echo "</form>";
@@ -229,8 +229,8 @@ function step3($host,$user,$password,$update)
 	echo "<h3>".$LANG['install'][34]."</h3>";
 	$link = mysql_connect($host,$user,$password);
 	if (!$link || empty($host) || empty($user)) {
-		echo "".$LANG['install'][35]." : \n
-			<br>".$LANG['install'][36]." : ".mysql_error();
+		echo "<p>".$LANG['install'][35]." : \n
+			<br>".$LANG['install'][36]." : ".mysql_error()."</p>";
 		if(empty($host) || empty($user)) {
 			echo "<p>".$LANG['install'][37]."</p>";
 		}
@@ -505,7 +505,7 @@ function step4 ($host,$user,$password,$databasename,$newdatabasename)
 			die();
 		}
 		else {
-			header_html("Language");
+			header_html("Select your language");
 			choose_language();
 		}
 	}
