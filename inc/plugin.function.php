@@ -287,8 +287,8 @@ function displayPluginHeadings($target,$type,$withtemplate,$actif){
  * @param $target page to link 
  * @param $type ID of the device type or "central" or "prefs"
  * @param $ID ID of the device
- * @param $withtemplate is the item display like a template ?
- * @return true if display have been done
+ * @param $withtemplate is the item display like a template ? 
+ * @return Array of tabs (sorted)
  */
 function getPluginTabs($target,$type,$ID,$withtemplate){
 	global $PLUGIN_HOOKS,$LANG,$INFOFORM_PAGES,$CFG_GLPI;
