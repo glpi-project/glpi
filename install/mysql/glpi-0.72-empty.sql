@@ -5,9 +5,9 @@
 DROP TABLE IF EXISTS `glpi_alerts`;
 CREATE TABLE `glpi_alerts` (
   `ID` int(11) NOT NULL auto_increment,
-  `device_type` int(11) NOT NULL default '0',
-  `FK_device` int(11) NOT NULL default '0',
-  `type` int(11) NOT NULL default '0',
+  `device_type` int(11) NOT NULL default '0' COMMENT 'see define.php *_TYPE constant',
+  `FK_device` int(11) NOT NULL default '0' COMMENT 'RELATION to various table, according to device_type (ID)',
+  `type` int(11) NOT NULL default '0' COMMENT 'see define.php ALERT_* constant',
   `date` timestamp NOT NULL default CURRENT_TIMESTAMP,
   PRIMARY KEY  (`ID`),
   UNIQUE KEY `alert` (`device_type`,`FK_device`,`type`),
@@ -84,7 +84,7 @@ CREATE TABLE `glpi_bookmark` (
   `ID` int(11) NOT NULL auto_increment,
   `name` varchar(255) collate utf8_unicode_ci default NULL,
   `type` int(11) NOT NULL default '0',
-  `device_type` int(11) NOT NULL default '0',
+  `device_type` int(11) NOT NULL default '0'  COMMENT 'see define.php *_TYPE constant',
   `FK_users` int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_users (ID)',
   `private` smallint(6) NOT NULL default '1',
   `FK_entities` int(11) NOT NULL default '-1' COMMENT 'RELATION to glpi_entities (ID)',
@@ -165,8 +165,8 @@ DROP TABLE IF EXISTS `glpi_computer_device`;
 CREATE TABLE `glpi_computer_device` (
   `ID` int(11) NOT NULL auto_increment,
   `specificity` varchar(255) collate utf8_unicode_ci default NULL,
-  `device_type` smallint(6) NOT NULL default '0',
-  `FK_device` int(11) NOT NULL default '0',
+  `device_type` smallint(6) NOT NULL default '0' COMMENT 'see define.php *_DEVICE constant',
+  `FK_device` int(11) NOT NULL default '0' COMMENT 'RELATION to various table, according to device_type (ID),
   `FK_computers` int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_computers (ID)',
   PRIMARY KEY  (`ID`),
   KEY `FK_computers` (`FK_computers`),
@@ -383,7 +383,7 @@ INSERT INTO `glpi_config` VALUES ('1','10','0','1','250','30','15','50',' 0.72',
 DROP TABLE IF EXISTS `glpi_connect_wire`;
 CREATE TABLE `glpi_connect_wire` (
   `ID` int(11) NOT NULL auto_increment,
-  `end1` int(11) NOT NULL default '0',
+  `end1` int(11) NOT NULL default '0' COMMENT 'RELATION to various table, according to type (ID),
   `end2` int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_computers (ID)',
   `type` smallint(6) NOT NULL default '0',
   PRIMARY KEY  (`ID`),
@@ -483,8 +483,8 @@ DROP TABLE IF EXISTS `glpi_contract_device`;
 CREATE TABLE `glpi_contract_device` (
   `ID` int(11) NOT NULL auto_increment,
   `FK_contract` int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_contracts (ID)',
-  `FK_device` int(11) NOT NULL default '0' COMMENT 'RELATION to _virtual_device (ID)',
-  `device_type` smallint(6) NOT NULL default '0',
+  `FK_device` int(11) NOT NULL default '0' COMMENT 'RELATION to various table, according to device_type (ID)',
+  `device_type` smallint(6) NOT NULL default '0' COMMENT 'see define.php *_TYPE constant',
   PRIMARY KEY  (`ID`),
   UNIQUE KEY `FK_contract_device` (`FK_contract`,`device_type`,`FK_device`),
   KEY `FK_device` (`FK_device`,`device_type`),
@@ -864,7 +864,7 @@ DROP TABLE IF EXISTS `glpi_display_default`;
 CREATE TABLE `glpi_display_default` (
   `ID` int(11) NOT NULL auto_increment,
   `FK_users` int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_users (ID)',
-  `device_type` int(11) NOT NULL,
+  `device_type` int(11) NOT NULL COMMENT 'see define.php *_TYPE constant',
   `FK_bookmark` int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_bookmark (ID)',
   PRIMARY KEY  (`ID`),
   UNIQUE KEY `FK_users` (`FK_users`,`device_type`)
@@ -877,8 +877,8 @@ DROP TABLE IF EXISTS `glpi_doc_device`;
 CREATE TABLE `glpi_doc_device` (
   `ID` int(11) NOT NULL auto_increment,
   `FK_doc` int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_docs (ID)',
-  `FK_device` int(11) NOT NULL default '0' COMMENT 'RELATION to _virtual_device (ID)',
-  `device_type` smallint(6) NOT NULL default '0',
+  `FK_device` int(11) NOT NULL default '0' COMMENT 'RELATION to various table, according to device_type (ID)',
+  `device_type` smallint(6) NOT NULL default '0' COMMENT 'see define.php *_TYPE constant',
   PRIMARY KEY  (`ID`),
   UNIQUE KEY `FK_doc_device` (`FK_doc`,`device_type`,`FK_device`),
   KEY `FK_device` (`FK_device`,`device_type`),
@@ -1541,8 +1541,8 @@ CREATE TABLE `glpi_groups` (
 DROP TABLE IF EXISTS `glpi_history`;
 CREATE TABLE `glpi_history` (
   `ID` int(11) NOT NULL auto_increment,
-  `FK_glpi_device` int(11) NOT NULL default '0',
-  `device_type` smallint(6) NOT NULL default '0',
+  `FK_glpi_device` int(11) NOT NULL default '0' COMMENT 'RELATION to various table, according to device_type (ID)',
+  `device_type` smallint(6) NOT NULL default '0' COMMENT 'see define.php *_TYPE constant',
   `device_internal_type` int(11) default '0',
   `linked_action` smallint(6) NOT NULL default '0',
   `user_name` varchar(255) collate utf8_unicode_ci default NULL,
@@ -1563,8 +1563,8 @@ CREATE TABLE `glpi_history` (
 DROP TABLE IF EXISTS `glpi_infocoms`;
 CREATE TABLE `glpi_infocoms` (
   `ID` int(11) NOT NULL auto_increment,
-  `FK_device` int(11) NOT NULL default '0' COMMENT 'RELATION to _virtual_device (ID)',
-  `device_type` smallint(6) NOT NULL default '0',
+  `FK_device` int(11) NOT NULL default '0' COMMENT 'RELATION to various table, according to device_type (ID)',
+  `device_type` smallint(6) NOT NULL default '0' COMMENT 'see define.php *_TYPE constant',
   `buy_date` date default NULL,
   `use_date` date default NULL,
   `warranty_duration` smallint(6) NOT NULL default '0',
@@ -1648,7 +1648,7 @@ DROP TABLE IF EXISTS `glpi_links_device`;
 CREATE TABLE `glpi_links_device` (
   `ID` int(11) NOT NULL auto_increment,
   `FK_links` int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_links (ID)',
-  `device_type` int(11) NOT NULL default '0',
+  `device_type` int(11) NOT NULL default '0' COMMENT 'see define.php *_TYPE constant',
   PRIMARY KEY  (`ID`),
   UNIQUE KEY `link` (`device_type`,`FK_links`),
   KEY `FK_links` (`FK_links`)
@@ -1803,8 +1803,8 @@ CREATE TABLE `glpi_networking` (
 DROP TABLE IF EXISTS `glpi_networking_ports`;
 CREATE TABLE `glpi_networking_ports` (
   `ID` int(11) NOT NULL auto_increment,
-  `on_device` int(11) NOT NULL default '0',
-  `device_type` smallint(6) NOT NULL default '0',
+  `on_device` int(11) NOT NULL default '0' COMMENT 'RELATION to various table, according to device_type (ID)',
+  `device_type` smallint(6) NOT NULL default '0' COMMENT 'see define.php *_TYPE constant',
   `logical_number` int(11) NOT NULL default '0',
   `name` varchar(255) collate utf8_unicode_ci default NULL,
   `ifaddr` varchar(255) collate utf8_unicode_ci default NULL,
@@ -2245,8 +2245,8 @@ CREATE TABLE `glpi_reminder` (
 DROP TABLE IF EXISTS `glpi_reservation_item`;
 CREATE TABLE `glpi_reservation_item` (
   `ID` int(11) NOT NULL auto_increment,
-  `device_type` smallint(6) NOT NULL default '0',
-  `id_device` int(11) NOT NULL default '0',
+  `device_type` smallint(6) NOT NULL default '0' COMMENT 'see define.php *_TYPE constant',
+  `id_device` int(11) NOT NULL default '0' COMMENT 'RELATION to various table, according to device_type (ID)',
   `comments` text collate utf8_unicode_ci,
   `active` smallint(6) NOT NULL default '1',
   PRIMARY KEY  (`ID`),
@@ -2705,8 +2705,8 @@ CREATE TABLE `glpi_tracking` (
   `assign` int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_users (ID)',
   `assign_ent` int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_enterprises (ID)',
   `assign_group` int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_groups (ID)',
-  `device_type` int(11) NOT NULL default '0',
-  `computer` int(11) NOT NULL default '0',
+  `device_type` int(11) NOT NULL default '0' COMMENT 'see define.php *_TYPE constant',
+  `computer` int(11) NOT NULL default '0' COMMENT 'RELATION to various table, according to device_type (ID)',
   `contents` longtext collate utf8_unicode_ci,
   `priority` smallint(6) NOT NULL default '1',
   `uemail` varchar(255) collate utf8_unicode_ci default NULL,
