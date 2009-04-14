@@ -330,13 +330,7 @@ function getPluginTabs($target,$type,$ID,$withtemplate){
 			}
 
 			if (function_exists($function)) {
-				if ($ID>0 || $template>0) {
-					$onglet=$function($type,$withtemplate);				
-				} else {
-					// Hack : Plugin need to know whe are creating a new objet
-					// TODO : pass $ID as a new option to hook and change all plugins :(
-					$onglet=$function($type,1);				
-				}
+				$onglet=$function($type,$ID,$withtemplate);				
 
 				if (is_array($onglet)&&count($onglet)){
 					foreach ($onglet as $key => $val){
