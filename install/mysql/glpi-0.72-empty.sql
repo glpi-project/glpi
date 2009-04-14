@@ -166,7 +166,7 @@ CREATE TABLE `glpi_computer_device` (
   `ID` int(11) NOT NULL auto_increment,
   `specificity` varchar(255) collate utf8_unicode_ci default NULL,
   `device_type` smallint(6) NOT NULL default '0' COMMENT 'see define.php *_DEVICE constant',
-  `FK_device` int(11) NOT NULL default '0' COMMENT 'RELATION to various table, according to device_type (ID),
+  `FK_device` int(11) NOT NULL default '0' COMMENT 'RELATION to various table, according to device_type (ID)',
   `FK_computers` int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_computers (ID)',
   PRIMARY KEY  (`ID`),
   KEY `FK_computers` (`FK_computers`),
@@ -383,7 +383,7 @@ INSERT INTO `glpi_config` VALUES ('1','10','0','1','250','30','15','50',' 0.72',
 DROP TABLE IF EXISTS `glpi_connect_wire`;
 CREATE TABLE `glpi_connect_wire` (
   `ID` int(11) NOT NULL auto_increment,
-  `end1` int(11) NOT NULL default '0' COMMENT 'RELATION to various table, according to type (ID),
+  `end1` int(11) NOT NULL default '0' COMMENT 'RELATION to various table, according to type (ID)',
   `end2` int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_computers (ID)',
   `type` smallint(6) NOT NULL default '0',
   PRIMARY KEY  (`ID`),
