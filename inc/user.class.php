@@ -412,9 +412,9 @@ class User extends CommonDBTM {
 			unset($input["_ldap_rules"]);
 			
 			return true;
-		} else {
-			return false;
 		} 
+		return false;
+		 
 	}
 	/**
 	 * Synchronise LDAP group of the user
