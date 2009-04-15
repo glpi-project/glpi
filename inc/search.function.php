@@ -1877,7 +1877,7 @@ function addSelect ($type,$ID,$num,$meta=0,$meta_type=0){
 				}
 			break;
 			case "itemlink" :
-				if ($meta || isset($SEARCH_OPTION[$type][$ID]["itemlink_type"])){
+				if ($meta || (isset($SEARCH_OPTION[$type][$ID]["itemlink_type"]) && $SEARCH_OPTION[$type][$ID]["itemlink_type"] != $type) ){
 					return " GROUP_CONCAT( DISTINCT CONCAT(".$table.$addtable.".".$field.",'$$' ,".$table.$addtable.".ID) SEPARATOR '$$$$') AS ".$NAME."_$num, ";
 				}
 				else {
