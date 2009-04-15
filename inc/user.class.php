@@ -247,10 +247,10 @@ class User extends CommonDBTM {
 		$input["ID"]=$newID;
 
 		$this->syncLdapGroups($input);
-		$this->applyRightRules($input);
+		$rulesplayed = $this->applyRightRules($input);
 
 		// Add default profile
-		if ($input['auth_method']==AUTH_DB_GLPI || (isAlternateAuthWithLdap($input['auth_method']))){
+		if (!$rulesplayed){
 			$sql_default_profile = "SELECT ID FROM glpi_profiles WHERE is_default=1";
 			$result = $DB->query($sql_default_profile);
 			if ($DB->numrows($result)){
@@ -342,6 +342,8 @@ class User extends CommonDBTM {
 	 * Apply rules to determine dynamic rights of the user
 	 *
 	 *@param $input data used to apply rules
+	 *
+	 *@return boolean : true if we play the Rule Engine
 	**/	
 	function applyRightRules($input){
 		global $DB;
@@ -408,8 +410,11 @@ class User extends CommonDBTM {
 			
 			//Unset all the temporary tables
 			unset($input["_ldap_rules"]);
-		}
-
+			
+			return true;
+		} else {
+			return false;
+		} 
 	}
 	/**
 	 * Synchronise LDAP group of the user
