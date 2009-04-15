@@ -1877,8 +1877,8 @@ function addSelect ($type,$ID,$num,$meta=0,$meta_type=0){
 				}
 			break;
 			case "itemlink" :
-				if ($meta){
-					return " GROUP_CONCAT( DISTINCT ".$table.$addtable.".".$field." SEPARATOR '$$$$') AS ".$NAME."_$num, ";
+				if ($meta || isset($SEARCH_OPTION[$type][$ID]["itemlink_type"])){
+					return " GROUP_CONCAT( DISTINCT CONCAT(".$table.$addtable.".".$field.",'$$' ,".$table.$addtable.".ID) SEPARATOR '$$$$') AS ".$NAME."_$num, ";
 				}
 				else {
 					return $table.$addtable.".".$field." AS ".$NAME."_$num, ".$table.$addtable.".ID AS ".$NAME."_".$num."_2, ";
@@ -2575,11 +2575,31 @@ function giveItem ($type,$ID,$data,$num,$meta=0){
 			case "itemlink":
 				if (!empty($data[$NAME.$num."_2"])){
 					$out= "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data[$NAME.$num."_2"]."\">";
-					$out.= $data[$NAME.$num];
+					$out.= $data[$NAME.$num].$unit;
 					if ($_SESSION["glpiview_ID"]||empty($data[$NAME.$num])) {
 						$out.= " (".$data[$NAME.$num."_2"].")";
 					}
 					$out.= "</a>";
+					return $out;
+				} else if (isset($SEARCH_OPTION[$type][$ID]["itemlink_type"])){
+					$out="";
+					$split=explode("$$$$",$data[$NAME.$num]);
+					$count_display=0;
+					for ($k=0;$k<count($split);$k++){
+						if (strlen(trim($split[$k]))>0){
+							$split2=explode("$$",$split[$k]);
+							if (isset($split2[1])&&$split2[1]>0){
+								if ($count_display) $out.= "<br>";
+								$count_display++;
+								$out.= "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$SEARCH_OPTION[$type][$ID]["itemlink_type"]]."?ID=".$split2[1]."\">";
+								$out.= $split2[0].$unit;
+								if ($_SESSION["glpiview_ID"]||empty($split2[0])) {
+									$out.= " (".$split2[1].")";
+								}
+								$out.= "</a>";
+							}
+						}
+					}
 					return $out;
 				}
 				break;
@@ -2641,12 +2661,13 @@ function giveItem ($type,$ID,$data,$num,$meta=0){
 		$out="";
 		$split=explode("$$$$",$data[$NAME.$num]);
 		$count_display=0;
-		for ($k=0;$k<count($split);$k++)
+		for ($k=0;$k<count($split);$k++){
 			if (strlen(trim($split[$k]))>0){
 				if ($count_display) $out.= "<br>";
 				$count_display++;
 				$out.= $split[$k].$unit;
 			}
+		}
 		return $out;	
 	}
 
