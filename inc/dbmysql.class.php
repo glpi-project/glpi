@@ -120,7 +120,8 @@ class DBmysql {
 					$error .= "Backtrace :\n";
 					$traces=debug_backtrace();
 					foreach ($traces as $trace) {
-						$error .= $trace["file"] . ":" . $trace["line"] . "\t\t"
+						$error .= (isset($trace["file"]) ? $trace["file"] : "") . ":" 
+								. (isset($trace["line"]) ? $trace["line"] : "") . "\t\t"
 								. (isset($trace["class"]) ? $trace["class"] : "")
 								. (isset($trace["type"]) ? $trace["type"] : "")
 								. (isset($trace["function"]) ? $trace["function"]."()" : "")
