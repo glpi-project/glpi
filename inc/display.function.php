@@ -1990,8 +1990,8 @@ function showDateTimeFormItem($element,$value='',$time_step=-1,$maybeempty=true,
 		var md$rand = new Ext.ux.form.DateTime({
 		hiddenName: '$element'
 		,id: '_date$rand'
-		,value: '".convDateTime($value)."'
-		,hiddenFormat:'Y-m-d H:i'
+		,value: '$value'
+		,hiddenFormat:'Y-m-d H:i:s'
 		,applyTo: 'showdate$rand'
 		,timeFormat:'H:i'
 		,timeWidth: 60

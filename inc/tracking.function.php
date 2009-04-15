@@ -889,7 +889,7 @@ function addFormTracking ($device_type=0,$ID=0, $target, $author, $group=0, $ass
 	if (haveRight("update_ticket","1")){
 		echo "<tr class='tab_bg_2'><td class='center'>".$LANG['common'][27].":</td>";
 		echo "<td align='center' class='tab_bg_2'>";
-		showDateTimeFormItem("date",date("Y-m-d H:i"),1);
+		showDateTimeFormItem("date",date("Y-m-d H:i:s"),1);
 		echo "</td>";
 
 		echo "<td class='center'>".$LANG['job'][44].":</td>";
@@ -2471,26 +2471,26 @@ function showAddFollowupForm($tID,$massiveaction=false){
 			echo "<td>".$LANG['job'][35]."</td>";
 
 			echo "<td>";
-
+			$rand=mt_rand();
 			echo "<script type='text/javascript' >\n";
-			echo "function showPlanAdd(){\n";
+			echo "function showPlanAdd$rand(){\n";
 		
-				echo "Ext.get('plan').setDisplayed('none');";
+				echo "Ext.get('plan$rand').setDisplayed('none');";
 				$params=array('form'=>'followups',
 					'state'=>1,
 					'author'=>$_SESSION['glpiID'],
 					'entity'=>$_SESSION["glpiactive_entity"],
 				);
-				ajaxUpdateItemJsCode('viewplan',$CFG_GLPI["root_doc"]."/ajax/planning.php",$params,false);
+				ajaxUpdateItemJsCode('viewplan'.$rand,$CFG_GLPI["root_doc"]."/ajax/planning.php",$params,false);
 		
 			echo "};";
 			echo "</script>";
 
-			echo "<div id='plan'  onClick='showPlanAdd()'>\n";
+			echo "<div id='plan$rand'  onClick='showPlanAdd$rand()'>\n";
 			echo "<span class='showplan'>".$LANG['job'][34]."</span>";
 			echo "</div>\n";	
 
-			echo "<div id='viewplan'>\n";
+			echo "<div id='viewplan$rand'>\n";
 			echo "</div>\n";	
 
 
