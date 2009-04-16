@@ -432,14 +432,20 @@ function getAllLdapUsers($id_auth, $sync = 0,$myfilter='') {
 				//If ldap add
 				if (!$sync)
 				{
-					$ldap_users[$info[$ligne][$config_ldap->fields['ldap_login']][0]] = $info[$ligne][$config_ldap->fields['ldap_login']][0];
-					$user_infos[$info[$ligne][$config_ldap->fields['ldap_login']][0]]["timestamp"]=ldapStamp2UnixStamp($info[$ligne]['modifytimestamp'][0],$config_ldap->fields['timezone'],true);
+					if (in_array($config_ldap->fields['ldap_login'],$info[$ligne]))
+					{
+						$ldap_users[$info[$ligne][$config_ldap->fields['ldap_login']][0]] = $info[$ligne][$config_ldap->fields['ldap_login']][0];
+						$user_infos[$info[$ligne][$config_ldap->fields['ldap_login']][0]]["timestamp"]=ldapStamp2UnixStamp($info[$ligne]['modifytimestamp'][0],$config_ldap->fields['timezone'],true);
+					}
 				}
 				else
 				{
 				//If ldap synchronisation
-					$ldap_users[$info[$ligne][$config_ldap->fields['ldap_login']][0]] = ldapStamp2UnixStamp($info[$ligne]['modifytimestamp'][0],$config_ldap->fields['timezone'],true);
-					$user_infos[$info[$ligne][$config_ldap->fields['ldap_login']][0]]["timestamp"]=ldapStamp2UnixStamp($info[$ligne]['modifytimestamp'][0],$config_ldap->fields['timezone'],true);
+					if (in_array($config_ldap->fields['ldap_login'],$info[$ligne]))
+					{
+						$ldap_users[$info[$ligne][$config_ldap->fields['ldap_login']][0]] = ldapStamp2UnixStamp($info[$ligne]['modifytimestamp'][0],$config_ldap->fields['timezone'],true);
+						$user_infos[$info[$ligne][$config_ldap->fields['ldap_login']][0]]["timestamp"]=ldapStamp2UnixStamp($info[$ligne]['modifytimestamp'][0],$config_ldap->fields['timezone'],true);
+					}
 				}
 			}	
 		} else {
