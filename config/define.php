@@ -19,6 +19,7 @@
 		"en_GB"=>array("English","en_GB.php","en","en"),
 		"es_AR"=>array("Español (Argentina)","es_AR.php","es","es"),
 		"es_ES"=>array("Español (España)","es_ES.php","es","es"),
+		"es_MX"=>array("Español (Mexico)","es_MX.php","es","es"),
 		"fr_FR"=>array("Français","fr_FR.php","fr","fr"),
 		"gl_ES"=>array("Galician","gl_ES.php","es","es"),
 		"el_EL"=>array("Greek","el_EL.php","el_GR","el"),
