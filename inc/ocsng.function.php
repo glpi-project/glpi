@@ -1842,13 +1842,39 @@ function ocsUpdateDevices($device_type, $glpi_id, $ocs_id, $ocs_server_id, $cfg_
 					ORDER BY ID";
 				$result2 = $DBocs->query($query2);
 				if ($DBocs->numrows($result2) > 0) {
+					// Drop all memories and force no history
+					if (!in_array(OCS_IMPORT_TAG_072,$import_device)){
+						addToOcsArray($glpi_id,array(0=>OCS_IMPORT_TAG_072),"import_device");
+						// Clean memories for this computer
+						if (count($import_device)){
+							$dohistory=false;
+							foreach ($import_device as $import_ID => $val){
+								$tmp=explode(OCS_FIELD_SEPARATOR,$val);
+								if (isset($tmp[1]) && $tmp[0] == RAM_DEVICE){
+									unlink_device_computer($import_ID, false);
+									deleteInOcsArray($glpi_id, $import_ID, "import_device");
+									unset($import_device[$import_ID]);
+								}
+							}
+						}
+
+					}
+
+
+
 					while ($line2 = $DBocs->fetch_array($result2)) {
 						$line2 = clean_cross_side_scripting_deep(addslashes_deep($line2));
 						if (!empty ($line2["CAPACITY"]) && $line2["CAPACITY"] != "No") {
-							if ($line2["DESCRIPTION"])
-								$ram["designation"] = $line2["DESCRIPTION"];
-							else
-								$ram["designation"] = "Unknown";
+							$ram["designation"]="";
+							if ($line2["TYPE"]!="Empty Slot" && $line2["TYPE"] != "Unknown"){
+								$ram["designation"]=$line2["TYPE"];
+							}
+							if ($line2["DESCRIPTION"]){
+								if (!empty($ram["designation"])){
+									$ram["designation"].=" - ";
+								}
+								$ram["designation"] .= $line2["DESCRIPTION"];
+							}
 							$ram["specif_default"] = $line2["CAPACITY"];
 							if (!in_array(RAM_DEVICE . OCS_FIELD_SEPARATOR . $ram["designation"], $import_device)) {
 								$ram["frequence"] = $line2["SPEED"];
@@ -3775,4 +3801,6 @@ function migrateImportIP($glpi_id,$import_ip)
 	}
 	return $import_ip;
 }
+
+
 ?>
