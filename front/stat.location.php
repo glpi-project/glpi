@@ -44,8 +44,6 @@ commonHeader($LANG['Menu'][13],$_SERVER['PHP_SELF'],"maintain","stat");
 
 checkRight("statistic","1");
 
-echo "<div align='center'><p><b><span class='icon_consol'>".$LANG['Menu'][13]."</span></b></p>";
-
 if (isset($_GET["date1"])) $_POST["date1"] = $_GET["date1"];
 if (isset($_GET["date2"])) $_POST["date2"] = $_GET["date2"];
 

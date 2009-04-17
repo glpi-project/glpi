@@ -131,16 +131,12 @@ $items=array(
 			// Current field
 			if ($key==$_POST["type"]){
 				$field=$val["field"];
-				$title=$val["title"];
 			}
 			$INSELECT.= "<option value='$key' ".($key==$_POST["type"]?"selected":"").">".$val['title']."</option>";
 		}
 		$INSELECT.= "</optgroup>";
 	}
 
-
-
-	echo "<div align ='center'><p><b><span class='icon_consol'>".$title."</span></b></p></div>";
 
 	echo "<div align='center'><form method=\"post\" name=\"form\" action=\"stat.tracking.php\">";
 	echo "<table class='tab_cadre'><tr class='tab_bg_2'>";
