@@ -54,7 +54,7 @@ if (isset($_GET['multiple_actions'])){
 
 if (isset($_POST["device_type"])){
 
-
+	// Right check
 	switch ($_POST["device_type"]){
 		case TRACKING_TYPE :
 			switch ($_POST["action"]){
@@ -90,6 +90,7 @@ if (isset($_POST["device_type"])){
 	
 	
 	if (isset($_POST["action"])&&isset($_POST["device_type"])&&isset($_POST["item"])&&count($_POST["item"])){
+
 	
 	// Save selection
 	if (!isset($_SESSION['glpimassiveactionselected'])||count($_SESSION['glpimassiveactionselected'])==0){
@@ -532,32 +533,24 @@ if (isset($_POST["device_type"])){
 				}
 			break;
 			default :
+
 				// Plugin specific actions
-				if ($_POST["device_type"]>1000){
-					$split=explode('_',$_POST["action"]);
-					if ($split[0]=='plugin' && isset($split[1])){
-						// Normalized name plugin_name_action
-						// Allow hook from any plugin on any plugin type
-						doOneHook($split[1],
-							'MassiveActionsProcess',
-							$_POST);
-					}
-					else if (isset($PLUGIN_HOOKS['plugin_types'][$_POST["device_type"]])){
-						// non-normalized name plugin_name_action
-						// hook from the plugin defining the type
-						doOneHook($PLUGIN_HOOKS['plugin_types'][$_POST["device_type"]],
-							'MassiveActionsProcess',
-							$_POST);
-					} 
-				} else {
-					// Need to search display item over plugins
-					$split=explode('_',$_POST["action"]);
-					if (isset($split[1])){
-						doOneHook($split[1], 
-							'MassiveActionsProcess',
-							$_POST);
-					}
+				$split=explode('_',$_POST["action"]);
+				if ($split[0]=='plugin' && isset($split[1])){
+					// Normalized name plugin_name_action
+					// Allow hook from any plugin on any (core or plugin) type
+					doOneHook($split[1],
+						'MassiveActionsProcess',
+						$_POST);
 				}
+				else if ($_POST["device_type"]>1000
+					&& isset($PLUGIN_HOOKS['plugin_types'][$_POST["device_type"]])){
+					// non-normalized name
+					// hook from the plugin defining the type
+					doOneHook($PLUGIN_HOOKS['plugin_types'][$_POST["device_type"]],
+						'MassiveActionsProcess',
+						$_POST);
+				} 
 	
 			break;
 		}
@@ -565,7 +558,7 @@ if (isset($_POST["device_type"])){
 		addMessageAfterRedirect($LANG['common'][23]);
 		glpi_header($REDIRECT);
 	
-	} else {
+	} else { //action, device_type or item not defined
 		
 		echo "<div align='center'><img src=\"".$CFG_GLPI["root_doc"]."/pics/warning.png\" alt=\"warning\"><br><br>";
 		echo "<b>".$LANG['common'][24]."</b></div>";
@@ -574,6 +567,6 @@ if (isset($_POST["device_type"])){
 	}
 	
 	commonFooter();
-}
+} // device_type defined
 
 ?>
