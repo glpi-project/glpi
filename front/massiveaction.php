@@ -534,7 +534,17 @@ if (isset($_POST["device_type"])){
 			default :
 				// Plugin specific actions
 				if ($_POST["device_type"]>1000){
-					if (isset($PLUGIN_HOOKS['plugin_types'][$_POST["device_type"]])){
+					$split=explode('_',$_POST["action"]);
+					if ($split[0]=='plugin' && isset($split[1])){
+						// Normalized name plugin_name_action
+						// Allow hook from any plugin on any plugin type
+						doOneHook($split[1],
+							'MassiveActionsProcess',
+							$_POST);
+					}
+					else if (isset($PLUGIN_HOOKS['plugin_types'][$_POST["device_type"]])){
+						// non-normalized name plugin_name_action
+						// hook from the plugin defining the type
 						doOneHook($PLUGIN_HOOKS['plugin_types'][$_POST["device_type"]],
 							'MassiveActionsProcess',
 							$_POST);
