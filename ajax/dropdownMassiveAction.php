@@ -228,7 +228,17 @@ if (isset($_POST["action"])&&isset($_POST["type"])&&!empty($_POST["type"])){
 		default :
 			// Plugin specific actions
 			if ($_POST["type"]>1000){
-				if (isset($PLUGIN_HOOKS['plugin_types'][$_POST["type"]])){
+				$split=explode('_',$_POST["action"]);
+				if ($split[0]=='plugin' && isset($split[1])){
+					// Normalized name plugin_name_action
+					// Allow hook from any plugin on any plugin type
+					doOneHook($split[1],
+						'MassiveActionsDisplay',
+						$_POST["type"],$_POST["action"]);
+				}
+				else if (isset($PLUGIN_HOOKS['plugin_types'][$_POST["type"]])){
+					// non-normalized name plugin_name_action
+					// hook from the plugin defining the type
 					doOneHook($PLUGIN_HOOKS['plugin_types'][$_POST["type"]],
 						'MassiveActionsDisplay',
 						$_POST["type"],$_POST["action"]);
