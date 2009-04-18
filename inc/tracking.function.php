@@ -1384,7 +1384,7 @@ function searchFormTracking($extended=0,$target,$start="",$status="new",$tosearc
 function getCommonSelectForTrackingSearch(){
 	$SELECT="";
 	if (count($_SESSION["glpiactiveentities"])>1){
-		$SELECT.= ", glpi_entities.completename as entityname, glpi_tracking.FK_entities as entityID";
+		$SELECT.= ", glpi_entities.completename as entityname, glpi_tracking.FK_entities as entityID ";
 	}
 
 
@@ -1401,7 +1401,7 @@ function getCommonLeftJoinForTrackingSearch(){
 	$FROM="";
 
 	if (count($_SESSION["glpiactiveentities"])>1){
-		$FROM.= " LEFT JOIN glpi_entities ON ( glpi_entities.ID = glpi_tracking.FK_entities)";
+		$FROM.= " LEFT JOIN glpi_entities ON ( glpi_entities.ID = glpi_tracking.FK_entities) ";
 	}
 
 	return //" LEFT JOIN glpi_users as author ON ( glpi_tracking.author = author.ID) "
