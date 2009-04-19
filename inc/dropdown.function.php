@@ -1018,12 +1018,19 @@ function dropdownMyDevices($userID=0,$entity_restrict=-1){
 							if (!isset($already_add[$type])) $already_add[$type]=array();
 							while ($data=$DB->fetch_array($result)){
 								if (!in_array($data["ID"],$already_add[$type])){
-									$output=$data["name"];
-									if ($type!=SOFTWARE_TYPE){
-										$output.=" - ".(isset($data['serial'])?$data['serial']:'')." - ".(isset($data['otherserial'])?$data['otherserial']:'');
+									$output='';
+									if (isset($data["name"])) {
+										$output = $data["name"];
 									}
-
-									if (empty($output)||$_SESSION["glpiview_ID"]) $output.=" (".$data['ID'].")";
+									if (isset($data['serial'])) {
+										$output .= " - ".$data['serial']; 
+									}
+									if (isset($data['otherserial'])) {
+										$output .= " - ".$data['otherserial'];
+									}
+									if (empty($output)||$_SESSION["glpiview_ID"]) {
+										$output .= " (".$data['ID'].")";	
+									}
 									$tmp_device.="<option title=\"$output\" value='".$type."_".$data["ID"]."' ".($my_item==$type."_".$data["ID"]?"selected":"").">";
 									$tmp_device.="$type_name - ".substr($output,0,$_SESSION["glpidropdown_limit"]);
 									$tmp_device.="</option>";
