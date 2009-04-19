@@ -2507,7 +2507,9 @@ function giveItem ($type,$ID,$data,$num,$meta=0){
 			return "";
 			break;
 		case "glpi_tracking.count":
-			if ($data[$NAME.$num]>0&&haveRight("show_all_ticket","1")){
+			if ($data[$NAME.$num]>0
+				&& haveRight("show_all_ticket","1")
+				&& $type<1000) { // Plugin not yet supported in tracking search engine 
 				$out= "<a href=\"".$CFG_GLPI["root_doc"]."/front/tracking.php?reset=reset_before&status=all&type=$type&item=".$data['ID']."\">";
 				$out.= $data[$NAME.$num];
 				$out.="</a>";
