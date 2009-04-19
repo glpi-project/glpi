@@ -813,6 +813,7 @@ function addFormTracking ($device_type=0,$ID=0, $target, $author, $group=0, $ass
 	echo "</th></tr>";
 
 	$author_rand=0;
+	$first_entity = $entity_restrict; 
 	if (haveRight("update_ticket","1")){
 		echo "<tr class='tab_bg_2' align='center'><td>".$LANG['job'][4].":</td>";
 		echo "<td colspan='3' align='center'>";
