@@ -2782,17 +2782,20 @@ function getAllTypesForHelpdesk()
 	     				SOFTWARE_TYPE=>$LANG['help'][31],
 	      				PHONE_TYPE=>$LANG['help'][35]);
 	
-	//Types of the core      				
-	foreach ($array_types as $type => $label)
-		if ($_SESSION["glpiactiveprofile"]["helpdesk_hardware_type"]&pow(2,$type))
-			$types[$type] = $label;
-	
 	//Types of the plugins
 	if (isset($PLUGIN_HOOKS['assign_to_ticket'])){
 		foreach ($PLUGIN_HOOKS['assign_to_ticket'] as $plugin => $value){
 			$types=doOneHook($plugin,'AssignToTicket',$types);
 		}	
 	}
+
+	//Types of the core (after the plugin for robustness)     				
+	foreach ($array_types as $type => $label)
+		if ($_SESSION["glpiactiveprofile"]["helpdesk_hardware_type"]&pow(2,$type))
+			$types[$type] = $label;
+	
+	ksort($types); // core type first... asort could be better ?
+
 	return $types;		 
 }
 
