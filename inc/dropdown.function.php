@@ -799,7 +799,6 @@ function dropdownDeviceTypes($name,$value=0,$types=array()){
 }
 
 
-
 /**
  * 
  *Make a select box for all items
@@ -941,14 +940,16 @@ function dropdownMyDevices($userID=0,$entity_restrict=-1){
 
 		// My items
 		foreach ($CFG_GLPI["linkuser_types"] as $type){
-			if ($_SESSION["glpiactiveprofile"]["helpdesk_hardware_type"]&pow(2,$type)){
+			if (isPossibleToAssignType($type)){
 				$query="SELECT * 
 					FROM ".$LINK_ID_TABLE[$type]." 
 					WHERE FK_users='".$userID."' AND deleted='0' ";
 				if (in_array($LINK_ID_TABLE[$type],$CFG_GLPI["template_tables"])){
 					$query.=" AND is_template='0' ";
 				}
-				$query.=getEntitiesRestrictRequest("AND",$LINK_ID_TABLE[$type],"",$entity_restrict);
+				
+				
+				$query.=getEntitiesRestrictRequest("AND",$LINK_ID_TABLE[$type],"",$entity_restrict,in_array($type,$CFG_GLPI["recursive_type"]));
 				$query.=" ORDER BY name ";
 
 				$result=$DB->query($query);
@@ -1003,13 +1004,13 @@ function dropdownMyDevices($userID=0,$entity_restrict=-1){
 				}
 
 				$tmp_device="";
-				foreach ($CFG_GLPI["linkuser_types"] as $type){
-					if ($_SESSION["glpiactiveprofile"]["helpdesk_hardware_type"]&pow(2,$type))
+				foreach ($CFG_GLPI["linkgroup_types"] as $type){
+					if (isPossibleToAssignType($type))
 					{
 						$query="SELECT * 
 							FROM `".$LINK_ID_TABLE[$type]."` 
 							WHERE ($group_where) AND deleted='0' ";
-						$query.=getEntitiesRestrictRequest("AND",$LINK_ID_TABLE[$type],"",$entity_restrict);
+						$query.=getEntitiesRestrictRequest("AND",$LINK_ID_TABLE[$type],"",$entity_restrict,in_array($type,$CFG_GLPI["recursive_type"]));
 						$result=$DB->query($query);
 						if ($DB->numrows($result)>0){
 							$ci->setType($type);
@@ -1019,7 +1020,7 @@ function dropdownMyDevices($userID=0,$entity_restrict=-1){
 								if (!in_array($data["ID"],$already_add[$type])){
 									$output=$data["name"];
 									if ($type!=SOFTWARE_TYPE){
-										$output.=" - ".$data['serial']." - ".$data['otherserial'];
+										$output.=" - ".(isset($data['serial'])?$data['serial']:'')." - ".(isset($data['otherserial'])?$data['otherserial']:'');
 									}
 
 									if (empty($output)||$_SESSION["glpiview_ID"]) $output.=" (".$data['ID'].")";
@@ -1118,6 +1119,7 @@ function dropdownMyDevices($userID=0,$entity_restrict=-1){
 				}
 			}
 		}
+		
 		echo "<div id='tracking_my_devices'>";
 		echo $LANG['tracking'][1].":&nbsp;<select id='my_items' name='_my_items'><option value=''>--- ".$LANG['help'][30]." ---</option>$my_devices</select></div>";
 	}
@@ -1148,8 +1150,16 @@ function dropdownTrackingAllDevices($myname,$value,$admin=0,$entity_restrict=-1)
 			if (!$admin&&$_SESSION["glpiactiveprofile"]["helpdesk_hardware"]&pow(2,HELPDESK_MY_HARDWARE)){
 				echo $LANG['tracking'][2].":";
 			}
+
+			$types = getAllTypesForHelpdesk();
 			echo "<select id='search_$myname$rand' name='$myname'>\n";
 			echo "<option value='0' ".(($value==0)?" selected":"").">".$LANG['help'][30]."</option>\n";
+			foreach ($types as $type => $label)
+			{
+				echo "<option value='".$type."' ".(($value==$type)?" selected":"").">".$label."</option>\n";
+			}
+			
+			/*
 			// Also display type if selected
 			if ($value==COMPUTER_TYPE||$_SESSION["glpiactiveprofile"]["helpdesk_hardware_type"]&pow(2,COMPUTER_TYPE))
 				echo "<option value='".COMPUTER_TYPE."' ".(($value==COMPUTER_TYPE)?" selected":"").">".$LANG['help'][25]."</option>\n";
@@ -1165,8 +1175,11 @@ function dropdownTrackingAllDevices($myname,$value,$admin=0,$entity_restrict=-1)
 				echo "<option value='".SOFTWARE_TYPE."' ".(($value==SOFTWARE_TYPE)?" selected":"").">".$LANG['help'][31]."</option>\n";
 			if ($value==PHONE_TYPE||$_SESSION["glpiactiveprofile"]["helpdesk_hardware_type"]&pow(2,PHONE_TYPE))
 				echo "<option value='".PHONE_TYPE."' ".(($value==PHONE_TYPE)?" selected":"").">".$LANG['help'][35]."</option>\n";
+			*/
+			
 			echo "</select>\n";
 
+			
 			$params=array('type'=>'__VALUE__',
 					'entity_restrict'=>$entity_restrict,
 					'admin'=>$admin,
