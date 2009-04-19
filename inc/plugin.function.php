@@ -539,6 +539,12 @@ function registerPluginType($plugin,$name,$ID,$attrib){
 		if (isset($attrib['infocom_types']) && $attrib['infocom_types']) {
 			array_push($CFG_GLPI["infocom_types"], $ID);
 		}
+		if (isset($attrib['linkuser_types']) && !empty($attrib['linkuser_types'])) {
+			array_push($CFG_GLPI["linkuser_types"],$ID);
+		}
+		if (isset($attrib['linkgroup_types']) && !empty($attrib['linkgroup_types'])) {
+			array_push($CFG_GLPI["linkgroup_types"],$ID);
+		}
 	} // not already defined
 } 
 

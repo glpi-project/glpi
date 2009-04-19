@@ -2764,4 +2764,66 @@ function computeTicketTco($item_type,$item){
 		unset($output["FK_entities"]);
 		return $output;
 	}
+
+/**
+ * Get all available types to which a ticket can be assigned
+ * 
+ */
+function getAllTypesForHelpdesk()
+{
+	global $LANG, $PLUGIN_HOOKS;
+	$types = array();
+
+	$array_types = array(COMPUTER_TYPE=>$LANG['help'][25],
+	 					NETWORKING_TYPE=>$LANG['help'][26],
+	  					PRINTER_TYPE=>$LANG['help'][27],
+	   					MONITOR_TYPE=>$LANG['help'][28],
+	    				PERIPHERAL_TYPE=>$LANG['help'][29],
+	     				SOFTWARE_TYPE=>$LANG['help'][31],
+	      				PHONE_TYPE=>$LANG['help'][35]);
+	
+	//Types of the core      				
+	foreach ($array_types as $type => $label)
+		if ($_SESSION["glpiactiveprofile"]["helpdesk_hardware_type"]&pow(2,$type))
+			$types[$type] = $label;
+	
+	//Types of the plugins
+	if (isset($PLUGIN_HOOKS['assign_to_ticket'])){
+		foreach ($PLUGIN_HOOKS['assign_to_ticket'] as $plugin => $value){
+			$types=doOneHook($plugin,'AssignToTicket',$types);
+		}	
+	}
+	return $types;		 
+}
+
+/**
+ * Check if it's possible to assign ticket to a type (core or plugin)
+ * @param type the object's type
+ * @return true if ticket can be assign to this type, false if not
+ */
+function isPossibleToAssignType($type)
+{
+	global $PLUGIN_HOOKS;
+
+	//check the core
+	if ($type < 1000)
+	{
+		if (($_SESSION["glpiactiveprofile"]["helpdesk_hardware_type"]&pow(2,$type)))
+			return true;
+		else
+			return false;		
+	}
+
+	//If it's not a core's type, then check plugins
+	$types = array();	
+	if (isset($PLUGIN_HOOKS['assign_to_ticket'])){
+		foreach ($PLUGIN_HOOKS['assign_to_ticket'] as $plugin => $value){
+			$types=doOneHook($plugin,'AssignToTicket',$types);
+		}
+		if (array_key_exists($type,$types))
+			return true;
+	}
+	return false;	
+}
+
 ?>

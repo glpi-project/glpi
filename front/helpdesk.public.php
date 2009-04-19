@@ -128,7 +128,6 @@ if (isset($_GET["show"]) && strcmp($_GET["show"],"user") == 0)
 else {
 	checkHelpdeskAccess();
 	helpHeader($LANG['title'][1],$_SERVER['PHP_SELF'],$_SESSION["glpiname"]);
-
 	printHelpDesk($_SESSION["glpiID"],1);
 }
 

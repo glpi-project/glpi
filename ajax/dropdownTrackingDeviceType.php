@@ -33,20 +33,17 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-
 define('GLPI_ROOT','..');
-$AJAX_INCLUDE=1;
+//$AJAX_INCLUDE=1;
+$NEEDED_ITEMS=array("tracking");
 include (GLPI_ROOT."/inc/includes.php");
 header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
-
 checkLoginUser();
 
-// Make a select box
-
-
-if (isset($LINK_ID_TABLE[$_POST["type"]])&&$_POST["type"]>0&&($_SESSION["glpiactiveprofile"]["helpdesk_hardware_type"]&pow(2,$_POST["type"]))){
+// Make a select box                                            
+if (isset($LINK_ID_TABLE[$_POST["type"]])&&$_POST["type"]>0&&(isPossibleToAssignType($_POST["type"]))){
 	$table=$LINK_ID_TABLE[$_POST["type"]];
 
 	if (!isset($_POST["admin"])||$_POST["admin"]==0){
