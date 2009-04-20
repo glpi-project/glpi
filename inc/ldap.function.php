@@ -116,7 +116,7 @@ function ldapImportUserByServerId($login, $sync,$ldap_server,$display=false) {
 			if ($user->getFromLDAP($ds, $config_ldap->fields, $user_dn, addslashes($login), "")){
 				//Add the auth method
 				if (!$sync){
-					$user->fields["auth_method"] = $specific_auth;
+					$user->fields["auth_method"] = AUTH_LDAP;
 					$user->fields["id_auth"] = $ldap_server;
 				}
 				// Force date mod
