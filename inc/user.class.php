@@ -64,7 +64,7 @@ class User extends CommonDBTM {
 
 		$this->table = "glpi_users";
 		$this->type = USER_TYPE;
-
+		$this->dohistory = true;
 		$this->date_mod_blacklist = array('last_login');
 
 		$this->fields['tracking_order'] = 0;
@@ -94,6 +94,8 @@ class User extends CommonDBTM {
 			if (haveRight("user_auth_method", "w")){
 				$ong[12] = $LANG['ldap'][12];
 			}
+			$ong[13]=$LANG['title'][38];
+			
 		}
 
 		return $ong;

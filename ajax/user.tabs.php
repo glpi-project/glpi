@@ -93,6 +93,9 @@ if(empty($_POST["name"])) $_POST["name"] = "";
 				case 12:
 					showSynchronizationForm($_POST['target'],$_POST["ID"]);
 					break;
+				case 13:
+					showHistory(USER_TYPE,$_POST["ID"]);
+					break;
 				default : 
 					if (!displayPluginAction(USER_TYPE,$_POST["ID"],$_SESSION['glpi_tab']))
 						showGroupAssociated($_POST['target'],$_POST["ID"]);
