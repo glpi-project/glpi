@@ -65,7 +65,7 @@ class User extends CommonDBTM {
 		$this->table = "glpi_users";
 		$this->type = USER_TYPE;
 		$this->dohistory = true;
-		$this->date_mod_blacklist = array('last_login');
+		$this->history_blacklist = array('last_login');
 
 		$this->fields['tracking_order'] = 0;
 		if (isset ($CFG_GLPI["language"])){
