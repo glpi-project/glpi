@@ -733,15 +733,11 @@ class Computer extends CommonDBTM {
 					$data_version = $DB->fetch_array($result_agent_version);
 
 					$ocs_config = getOcsConf(getOCSServerByMachineID($ID));
+
 					//If have write right on OCS and ocsreports url is not empty in OCS config
 					if (haveRight("ocsng","w") && $ocs_config["ocs_url"] != '')
 					{
-						//Display direct link to the computer in ocsreports
-						$url = $ocs_config["ocs_url"];
-						if (!preg_match("/\/$/i",$ocs_config["ocs_url"]))
-							$url.= '/';
-						$url.="machine.php?systemid=".$data_version["ocs_id"];
-						echo ", <a href='$url'>".$LANG['ocsng'][57]."</a>";	
+						echo ", ".getComputerLinkToOcsConsole (getOCSServerByMachineID($ID),$data_version["ocs_id"],$LANG['ocsng'][57]);
 					}
 
 					if ($data_version["ocs_agent_version"] != NULL)
