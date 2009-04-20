@@ -120,7 +120,6 @@ class Identification {
 		}
 		$this->addToError(imap_last_error());
 
-		imap_close($mbox);
 		return false;
 	}
 
