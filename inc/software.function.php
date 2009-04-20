@@ -614,7 +614,9 @@ function showInstallations($searchID, $crit="sID") {
 	}
 	
 	if (isset($_REQUEST["sort"]) && !empty($_REQUEST["sort"])) {
-		$sort = "`".$_REQUEST["sort"]."`";
+		// manage several param like location,compname
+		$tmp=explode(",",$_REQUEST["sort"]);
+		$sort="`".implode("`,`",$tmp)."`";
 	} else {
 		$sort = "entity, version";
 	}
@@ -669,7 +671,7 @@ function showInstallations($searchID, $crit="sID") {
 			getEntitiesRestrictRequest(' AND', 'glpi_computers') .
 			" AND glpi_computers.deleted=0 AND glpi_computers.is_template=0 " .
 		"ORDER BY " . $sort." ".$order . " LIMIT ".intval($start)."," . intval($_SESSION['glpilist_limit']);
-
+	
 	$rand=mt_rand();
 
 
