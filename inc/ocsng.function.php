@@ -3802,5 +3802,27 @@ function migrateImportIP($glpi_id,$import_ip)
 	return $import_ip;
 }
 
-
+/**
+ * Get a direct link to the computer in ocs console
+ * @param ocs_server_id the ID of the OCS server
+ * @param computer_id ID of the computer in OCS hardware table
+ * @param todisplay the link's label to display 
+ * @return the html link to the computer in ocs console
+ */
+function getComputerLinkToOcsConsole ($ocs_server_id,$ocs_id,$todisplay)
+{
+	global $LANG;
+	$ocs_config = getOcsConf($ocs_server_id);
+	$url = '';
+	if ($ocs_config["ocs_url"] != '')
+	{
+		//Display direct link to the computer in ocsreports
+		$url = $ocs_config["ocs_url"];
+		if (!preg_match("/\/$/i",$ocs_config["ocs_url"]))
+			$url.= '/';
+		return "<a href='".$url."machine.php?systemid=".$ocs_id."'>".$todisplay."</a>";
+	}
+	else
+		return $url;
+}
 ?>
