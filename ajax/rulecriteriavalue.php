@@ -36,7 +36,8 @@
 // Direct access to file
 if(strstr($_SERVER['PHP_SELF'],"rulecriteriavalue.php")){
 	define('GLPI_ROOT','..');
-	$AJAX_INCLUDE=1;
+	//$AJAX_INCLUDE=1;
+	$NEEDED_ITEMS = array("tracking");
 	include (GLPI_ROOT."/inc/includes.php");
 	header("Content-Type: text/html; charset=UTF-8");
 	header_nocache();
