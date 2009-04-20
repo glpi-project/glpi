@@ -49,8 +49,8 @@ class CommonDBTM {
 	var $may_be_recursive=false;
 	/// Is an item that can be private or assign to an entity
 	var $may_be_private=false;
-	/// Black list fields for date_mod updates
-	var $date_mod_blacklist	= array();
+	/// Black list fields for history log or date mod update
+	var $history_blacklist	= array();
 
 	/// set false to desactivate automatic message on action
 	var $auto_message_on_action=true;
@@ -570,7 +570,9 @@ class CommonDBTM {
 					if ( $this->fields[$key] != stripslashes($input[$key])) {
 						if ($key!="ID"){
 							// Store old values
-							$oldvalues[$key]=$this->fields[$key];
+							if (!in_array($key,$this->history_blacklist)){
+								$oldvalues[$key]=$this->fields[$key];
+							}
 							$this->fields[$key] = $input[$key];
 							$updates[$x] = $key;
 							$x++;
@@ -581,7 +583,7 @@ class CommonDBTM {
 			if(count($updates)){
 				if (isset($this->fields['date_mod'])){
 					// is a non blacklist field exists
-					if (count(array_diff($updates,$this->date_mod_blacklist)) > 0){
+					if (count(array_diff($updates,$this->history_blacklist)) > 0){
 						$this->fields['date_mod']=$_SESSION["glpi_currenttime"];
 						$updates[$x++] = 'date_mod';
 					}
