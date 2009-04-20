@@ -1753,7 +1753,7 @@ class Rule extends CommonDBTM{
 					break;
 				case "dropdown_tracking_device_type":
 					if ($test||$condition==PATTERN_IS||$condition==PATTERN_IS_NOT){
-						dropdownDeviceTypes($name,0,$CFG_GLPI["helpdesk_types"]);
+						dropdownDeviceTypes($name,0,array_keys(getAllTypesForHelpdesk()));
 						$display=true;
 					}
 					break;
