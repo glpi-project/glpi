@@ -85,7 +85,7 @@
 			if ($result=$DB->query($query)){
 				if ($DB->numrows($result)){
 					$pos=0;
-					while ($row = mysql_fetch_array($result)) {
+					while ($row = $DB->fetch_array($result)) {
 						$path['text']		= $row['name'];
 						$path['id']		= $row['ID'];
 						$path['position']	= $pos;
