@@ -78,10 +78,11 @@ class User extends CommonDBTM {
 	function defineTabs($ID,$withtemplate) {
 		global $LANG;
 
-		$ong[1] = $LANG['Menu'][35]; // principal
-
+		$ong=array();
 		// No add process	
 		if ($ID>0){
+			$ong[1] = $LANG['Menu'][35]; // principal
+
 			$ong[4]=$LANG['Menu'][36];
 	
 			$ong[2] = $LANG['common'][1]; // materiel
@@ -95,7 +96,8 @@ class User extends CommonDBTM {
 				$ong[12] = $LANG['ldap'][12];
 			}
 			$ong[13]=$LANG['title'][38];
-			
+		} else { // New item
+			$ong[1]=$LANG['title'][26];
 		}
 
 		return $ong;
