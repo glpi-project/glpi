@@ -284,7 +284,9 @@ class User extends CommonDBTM {
 				unset($input["password"]);
 			} else {
 				// Check right : my password of user with lesser rights
-				if (isset($input['ID']) && ($input['ID']==$_SESSION['glpiID'] || $this->currentUserHaveMoreRightThan($input['ID']) )){
+				if (isset($input['ID']) && 
+					((isset($_SESSION['glpiID']) && $input['ID']==$_SESSION['glpiID']) 
+						|| $this->currentUserHaveMoreRightThan($input['ID']) )){
 					$input["password_md5"] = md5(unclean_cross_side_scripting_deep(stripslashes($input["password"])));
 					$input["password"] = "";
 				} else {
