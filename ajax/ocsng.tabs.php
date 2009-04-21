@@ -60,11 +60,6 @@ switch ($_POST['glpi_tab']) {
 			$ocs->ocsFormImportOptions($_POST['target'], $_POST["ID"]);
 			$ocs->ocsFormConfig($_POST['target'], $_POST["ID"]);
 			$ocs->ocsFormAutomaticLinkConfig($_POST['target'], $_POST["ID"]);
-		break;
-	case 0 :
-		if ($_POST["ID"]>0) {
-			$ocs->showDBConnectionStatus($_POST["ID"]);
-		}
 		break;	
 	case 1:
 		$ocs->ocsFormImportOptions($_POST['target'], $_POST["ID"]);
@@ -76,7 +71,9 @@ switch ($_POST['glpi_tab']) {
 		$ocs->ocsFormAutomaticLinkConfig($_POST['target'], $_POST["ID"]);
 		break;	
 	default:
-		displayPluginAction(OCSNG_TYPE,$_POST["ID"],$_POST['glpi_tab'], '');
+		if (!displayPluginAction(OCSNG_TYPE,"",$_POST['glpi_tab'],"")){
+			$ocs->showDBConnectionStatus($_POST["ID"]);
+		}
 		break;
 }
 
