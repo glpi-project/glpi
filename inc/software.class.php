@@ -55,8 +55,9 @@ class Software extends CommonDBTM {
 
 	function defineTabs($ID,$withtemplate) {
 		global $LANG, $CFG_GLPI;
-		$ong[1] = $LANG['software'][5]."/".$LANG['software'][11];
+		$ong=array();
 		if ($ID > 0 ){
+			$ong[1] = $LANG['software'][5]."/".$LANG['software'][11];
 			if (empty ($withtemplate)) {
 				$ong[2] = $LANG['software'][19];
 			}
@@ -87,6 +88,8 @@ class Software extends CommonDBTM {
 					$ong[21] = $LANG['software'][47];
 				}
 			}
+		} else { // New item
+			$ong[1]=$LANG['title'][26];
 		}
 		return $ong;
 	}

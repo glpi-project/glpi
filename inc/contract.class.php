@@ -69,15 +69,18 @@ class Contract extends CommonDBTM {
 
 	function defineTabs($ID,$withtemplate){
 		global $LANG;
-		$ong[1]=$LANG['Menu'][23];
-		$ong[2]=$LANG['common'][1];
+		$ong=array();
 		if ($ID > 0){
+			$ong[1]=$LANG['Menu'][23];
+			$ong[2]=$LANG['common'][1];
 			if (haveRight("document","r"))	
 				$ong[5]=$LANG['Menu'][27];
 			if (haveRight("link","r"))	
 				$ong[7]=$LANG['title'][34];
 			if (haveRight("notes","r"))
 				$ong[10]=$LANG['title'][37];
+		} else { // New item
+			$ong[1]=$LANG['title'][26];
 		}
 		return $ong;
 	}

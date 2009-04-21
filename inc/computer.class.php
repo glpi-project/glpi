@@ -97,7 +97,7 @@ class Computer extends CommonDBTM {
 					$ong[13]=$LANG['Menu'][33];
 				}
 			}
-		} else { // New computer
+		} else { // New item
 			$ong[1]=$LANG['title'][26];
 		}	
 		return $ong;
