@@ -175,7 +175,34 @@ class Profile extends CommonDBTM{
 		$query.=")";
 		return $query;
 	}
-	
+
+	/**
+	 * Is the current user have more right than all profiles in parameters
+	 *
+	 *@param $IDs array of profile ID to test
+	 *@return boolean true if have more right
+	 **/	
+	function currentUserHaveMoreRightThan($IDs=array()){
+		global $DB;
+
+		if (count($IDs)==0) {
+			return false;
+		}
+		$under_profiles=array();
+		$query="SELECT * FROM glpi_profiles ".$this->getUnderProfileRetrictRequest("WHERE");
+		$result=$DB->query($query);
+		while ($data=$DB->fetch_assoc($result)){
+			$under_profiles[$data['ID']]=$data['ID'];
+		}
+		foreach ($IDs as $ID){
+			if (!isset($under_profiles[$ID])){
+				return false;
+			}
+		}
+		return true;
+
+	}
+
 	/**
 	 * Print the profile form configuration
 	 *

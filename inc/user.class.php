@@ -278,15 +278,21 @@ class User extends CommonDBTM {
 	function prepareInputForUpdate($input) {
 		global  $LANG,$CFG_GLPI;
 
+		if (isset ($input["password"])){
+			// Empty : do not update
+			if (empty($input["password"])){
+				unset($input["password"]);
+			} else {
+				// Check right : my password of user with lesser rights
+				if (isset($input['ID']) && ($input['ID']==$_SESSION['glpiID'] || $this->currentUserHaveMoreRightThan($input['ID']) )){
+					$input["password_md5"] = md5(unclean_cross_side_scripting_deep(stripslashes($input["password"])));
+					$input["password"] = "";
+				} else {
+					unset($input["password"]);
+				}
 
-		if (isset ($input["password"])&&empty($input["password"])) {
-			unset($input["password"]);
-		}
+			}
 
-
-		if (isset ($input["password"])) {
-			$input["password_md5"] = md5(unclean_cross_side_scripting_deep(stripslashes($input["password"])));
-			$input["password"] = "";
 		}
 
 		// change email_form to email (not to have a problem with preselected email)
@@ -790,6 +796,44 @@ class User extends CommonDBTM {
 		displayTitle($CFG_GLPI["root_doc"] . "/pics/users.png", $LANG['Menu'][14], $title, $buttons);
 	}
 
+
+	/**
+	 * Is the current user have more right than the current one ?
+	 *
+	 *@param $ID Integer : Id of the user
+	 *
+	 *@return boolean : true if currrent user have the same right or more right
+	 **/
+	function currentUserHaveMoreRightThan($ID) {
+		$user_prof=$this->getUserProfiles($ID);
+		$prof=new Profile();
+		return $prof->currentUserHaveMoreRightThan($user_prof);
+	}
+
+	/**
+	 * Get user profiles (no entity association)
+	 *
+	 *@param $ID Integer : Id of the user
+	 *
+	 *@return array of the IDs of the profiles
+	 **/
+	function getUserProfiles($ID){
+		global $DB;
+		$prof=array();
+		$query="SELECT DISTINCT glpi_users_profiles.FK_profiles
+				FROM glpi_users_profiles 
+				WHERE glpi_users_profiles.FK_users='$ID'";
+	
+		$result=$DB->query($query);
+		if ($DB->numrows($result)>0){		
+			while ($data=$DB->fetch_assoc($result)){
+				$prof[$data['FK_profiles']]=$data['FK_profiles'];
+			}
+		}
+		
+		return $prof;
+	}
+
 	/**
 	 * Print the user form
 	 *
@@ -809,6 +853,8 @@ class User extends CommonDBTM {
 
 		$canedit = haveRight("user", "w");
 		$canread = haveRight("user", "r");
+		
+		$caneditpassword=$this->currentUserHaveMoreRightThan($ID);
 
 		$spotted = false;
 		$use_cache=true;
@@ -871,9 +917,11 @@ class User extends CommonDBTM {
 				echo "</td>";
 			}
 
+
 			//do some rights verification
 			if (haveRight("user", "w")) {
-				if ( !$extauth || empty($ID)) {
+				if ( (!$extauth || empty($ID)) && $caneditpassword) {
+					
 					echo "<td class='center'>" . $LANG['setup'][19] . ":</td><td><input type='password' name='password' value='' size='20'></td></tr>";
 				} else {
 					echo "<td colspan='2'>&nbsp;</td></tr>";

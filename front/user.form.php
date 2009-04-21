@@ -125,9 +125,12 @@ else if (isset($_POST["deletegroup"]))
 {
 	checkRight("user","w");
 
-	addUserProfileEntity($_POST);
-
-	logEvent($_POST["FK_users"], "users", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][61]);
+	$prof=new Profile();
+	if ($prof->currentUserHaveMoreRightThan(array($_POST['FK_profiles']=>$_POST['FK_profiles']))){
+		addUserProfileEntity($_POST);
+		logEvent($_POST["FK_users"], "users", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][61]);
+	}
+	
 	glpi_header($_SERVER['HTTP_REFERER']);
 } else if (isset($_POST["deleteright"]))
 {
