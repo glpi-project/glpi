@@ -67,11 +67,16 @@ class Group extends CommonDBTM{
 
 	function defineTabs($ID,$withtemplate){
 		global $LANG;
-		if (haveRight("user","r"))	
-			$ong[1]=$LANG['Menu'][14];
+
+		$ong=array();
 
 		if ($ID>0){
+			if (haveRight("user","r")){
+				$ong[1]=$LANG['Menu'][14];
+			}
 			$ong[2]=$LANG['common'][1];
+		} else { // New item
+			$ong[1]=$LANG['title'][26];
 		}
 		return $ong;
 	}
