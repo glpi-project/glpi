@@ -57,10 +57,10 @@ class Printer  extends CommonDBTM {
 		global $LANG,$CFG_GLPI;
 
 		$ong=array();
-		if (haveRight("cartridge","r"))	{
-			$ong[1]=$LANG['Menu'][21];
-		}
 		if ($ID > 0 ){
+			if (haveRight("cartridge","r"))	{
+				$ong[1]=$LANG['Menu'][21];
+			}
 			if (haveRight("networking","r")||haveRight("computer","r")){
 				$ong[3]=$LANG['title'][27];
 			}
@@ -88,6 +88,8 @@ class Printer  extends CommonDBTM {
 				$ong[12]=$LANG['title'][38];
 	
 			}	
+		} else { // New item
+			$ong[1]=$LANG['title'][26];
 		}
 		return $ong;
 	}

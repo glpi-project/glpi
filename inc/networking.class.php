@@ -58,8 +58,9 @@ class Netdevice extends CommonDBTM {
 	function defineTabs($ID,$withtemplate){
 		global $LANG;
 
-		$ong[1]=$LANG['title'][27];
+		$ong=array();
 		if ($ID > 0){
+			$ong[1]=$LANG['title'][27];
 			if (haveRight("contract","r") || haveRight("infocom","r")){
 				$ong[4]=$LANG['Menu'][26];
 			}
@@ -84,6 +85,8 @@ class Netdevice extends CommonDBTM {
 	
 				$ong[12]=$LANG['title'][38];
 			}	
+		} else { // New item
+			$ong[1]=$LANG['title'][26];
 		}
 		return $ong;
 	}

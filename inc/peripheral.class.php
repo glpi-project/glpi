@@ -56,10 +56,10 @@ class Peripheral  extends CommonDBTM  {
 	function defineTabs($ID,$withtemplate){
 		global $LANG;
 		$ong=array();
-		if (haveRight("computer","r")){
-			$ong[1]=$LANG['title'][27];
-		}
 		if ($ID > 0){
+			if (haveRight("computer","r")){
+				$ong[1]=$LANG['title'][27];
+			}
 			if (haveRight("contract","r") || haveRight("infocom","r")){
 				$ong[4]=$LANG['Menu'][26];
 			}
@@ -83,6 +83,8 @@ class Peripheral  extends CommonDBTM  {
 					
 				$ong[12]=$LANG['title'][38];
 			}	
+		} else { // New item
+			$ong[1]=$LANG['title'][26];
 		}
 		return $ong;
 	}

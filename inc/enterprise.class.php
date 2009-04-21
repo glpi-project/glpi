@@ -70,10 +70,11 @@ class Enterprise extends CommonDBTM {
 	function defineTabs($ID,$withtemplate){
 		global $LANG,$CFG_GLPI;
 
-		if(haveRight("contact_enterprise","r")){
-			$ong[1] = $LANG['Menu'][22];
-		}
+		$ong=array();
 		if ($ID>0){
+			if(haveRight("contact_enterprise","r")){
+				$ong[1] = $LANG['Menu'][22];
+			}
 			if (haveRight("contract","r")){
 				$ong[4] = $LANG['Menu'][26];
 			}
@@ -90,6 +91,8 @@ class Enterprise extends CommonDBTM {
 			if (haveRight("notes","r")){
 				$ong[10] = $LANG['title'][37];
 			}
+		} else { // New item
+			$ong[1]=$LANG['title'][26];
 		}
 
 		return $ong;

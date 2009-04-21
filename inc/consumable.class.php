@@ -70,8 +70,9 @@ class ConsumableType extends CommonDBTM {
 
 	function defineTabs($ID,$withtemplate){
 		global $LANG;
-		$ong[1]=$LANG['Menu'][32];
+			$ong=array();
 		if ($ID>0){
+			$ong[1]=$LANG['Menu'][32];
 			if (haveRight("contract","r") || haveRight("infocom","r"))
 				$ong[4]=$LANG['Menu'][26];
 			if (haveRight("document","r"))	
@@ -80,6 +81,8 @@ class ConsumableType extends CommonDBTM {
 				$ong[7]=$LANG['title'][34];
 			if (haveRight("notes","r"))
 				$ong[10]=$LANG['title'][37];
+		} else { // New item
+			$ong[1]=$LANG['title'][26];
 		}
 		return $ong;
 	}
