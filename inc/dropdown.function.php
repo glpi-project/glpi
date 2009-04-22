@@ -1561,7 +1561,7 @@ function dropdownMassiveAction($device_type,$deleted=0,$extraparams=array()){
 	echo "<select name=\"massiveaction\" id='massiveaction'>";
 
 	echo "<option value=\"-1\" selected>-----</option>";
-	if (!in_array($device_type,array(MAILGATE_TYPE,OCSNG_TYPE,ENTITY_TYPE))
+	if (!in_array($device_type,$CFG_GLPI["massiveaction_noupdate_types"])
 	&& ( $isadmin
 		||(in_array($device_type,$CFG_GLPI["infocom_types"])&&haveTypeRight(INFOCOM_TYPE,"w"))
 		|| ($device_type==TRACKING_TYPE&&haveRight('update_ticket',1)) 
@@ -1578,7 +1578,7 @@ function dropdownMassiveAction($device_type,$deleted=0,$extraparams=array()){
 		}
 	} else {
 		// No delete for entities and tracking of not have right
-		if ($device_type!=ENTITY_TYPE
+		if (!in_array($device_type,$CFG_GLPI["massiveaction_nodelete_types"])
 		&&( ($isadmin && $device_type!=TRACKING_TYPE)
 			|| ($device_type==TRACKING_TYPE&&haveRight('delete_ticket',1))
 		)){
