@@ -160,7 +160,7 @@ function showDeviceUser($ID){
 			.$LANG['common'][19]."</th><th>"
 			.$LANG['common'][20]."</th><th>&nbsp;</th></tr>";
 	
-		foreach ($CFG_GLPI["linkuser_types"] as $type){
+		foreach ($CFG_GLPI["linkgroup_types"] as $type){
 			$query="SELECT * FROM ".$LINK_ID_TABLE[$type]." WHERE $group_where";
 
 			if (in_array($LINK_ID_TABLE[$type],$CFG_GLPI["template_tables"])){
