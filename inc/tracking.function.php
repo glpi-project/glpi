@@ -813,7 +813,6 @@ function addFormTracking ($device_type=0,$ID=0, $target, $author, $group=0, $ass
 	echo "</th></tr>";
 
 	$author_rand=0;
-	$first_entity = $entity_restrict; 
 	if (haveRight("update_ticket","1")){
 		echo "<tr class='tab_bg_2' align='center'><td>".$LANG['job'][4].":</td>";
 		echo "<td colspan='3' align='center'>";
@@ -838,15 +837,15 @@ function addFormTracking ($device_type=0,$ID=0, $target, $author, $group=0, $ass
 				
 		$count = count($values);					
 		
-		if (!empty($values))
-			//If entity is not in the list of user's entities, then display as default value the first value of the user's entites list
-			$first_entity = (in_array($entity_restrict,$values)?$entity_restrict:$values[0]);
-		else
-			$first_entity = $entity_restrict; 
+		if ($count>0 && !in_array($entity_restrict,$values)) {
+			// If entity is not in the list of user's entities, 
+			// then use as default value the first value of the user's entites list
+			$entity_restrict = $values[0];
+		}
 		
 		//If user have access to more than one entity, then display a combobox
 		if ($count > 1) {
-			$rand = dropdownValue("glpi_entities", "FK_entities", $first_entity, 1, $values,'',array(),1);
+			$rand = dropdownValue("glpi_entities", "FK_entities", $entity_restrict, 1, $values,'',array(),1);
 		} else {
 			echo "<input type='hidden' name='FK_entities' value='".$entity_restrict."'>";
 		}
@@ -857,7 +856,7 @@ function addFormTracking ($device_type=0,$ID=0, $target, $author, $group=0, $ass
 	if (isMultiEntitiesMode()){
 		echo "<tr class='tab_bg_2' align='center'>";
 		echo "<th colspan='4'>";
-		echo $LANG['job'][46].":&nbsp;".getDropdownName("glpi_entities",$first_entity);
+		echo $LANG['job'][46].":&nbsp;".getDropdownName("glpi_entities",$entity_restrict);
 		echo "</th></tr>";
 	}
 
