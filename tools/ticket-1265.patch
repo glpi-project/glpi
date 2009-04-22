@@ -1,6 +1,6 @@
 --- inc/user.class.php.orig	2009-04-22 09:55:28.000000000 +0200
-+++ inc/user.class.php	2009-04-22 09:55:54.000000000 +0200
-@@ -503,6 +503,108 @@
++++ inc/user.class.php	2009-04-22 10:47:37.000000000 +0200
+@@ -503,6 +503,120 @@
  	}
  
  	/**
@@ -42,10 +42,22 @@
 +					for ($tmp=$v[$i]['dn'] ; count($tmptab=explode(',',$tmp,2))==2 ; $tmp=$tmptab[1]) {
 +		                $v[$i]['ou'][] = $tmptab[1];
 +					}
-+	                $v[$i]['ou']['count'] = count($v[$i]['ou']);
 +
++					// Search in DB for group with ldap_group_dn
++					if ($ldap_method["ldap_field_group"]=='dn' && count($v[$i]['ou'])>0) {
++						
++						$query="SELECT ID FROM `glpi_groups`
++							WHERE `ldap_group_dn` IN ('".implode("','",$v[$i]['ou'])."')";
++							
++						foreach ($DB->request($query) as $group) {
++							$this->fields["_groups"][]=$group['ID'];										
++						}
++					}
++
++					// searching with ldap_field='OU' and ldap_value is also possible
++	                $v[$i]['ou']['count'] = count($v[$i]['ou']);
 +				}
-+				logInFile("debug","Groupes virtuels LDAP avec OU : ".print_r($v[$i],true));			                
++				logInFile("debug","Groupes virtuels LDAP (avec OU) : ".print_r($v[$i],true));			                
 +				
 +				// For each attribute retrieve from LDAP, search in the DB
 +				foreach ($group_fields as $field) {
@@ -109,7 +121,7 @@
  	 * Function that try to load from LDAP the user information...
  	 *
  	 * @param $ldap_connection ldap connection descriptor
-@@ -564,88 +666,20 @@
+@@ -564,88 +678,20 @@
  					}	
  			}
  
