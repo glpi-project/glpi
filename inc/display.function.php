@@ -70,9 +70,6 @@ function includeCommonHtmlHeader($title=''){
 	echo "<meta http-equiv=\"Pragma\" content=\"no-cache\">\n";
 	echo "<meta http-equiv=\"Cache-Control\" content=\"no-cache\">\n";
 	
-	 // Force render IE7 for IE8
-  	echo "<meta http-equiv=\"X-UA-Compatible\" content=\"IE=EmulateIE7\" />"
-
 	//  CSS link
 	echo "<link rel='stylesheet'  href='".$CFG_GLPI["root_doc"]."/css/styles.css' type='text/css' media='screen' >\n";
 	// surcharge CSS hack for IE
