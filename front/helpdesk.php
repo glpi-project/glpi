@@ -75,9 +75,9 @@ elseif (!isset($_SESSION["helpdeskSaved"]["status"])) $status=1;
 else $status=$_SESSION["helpdeskSaved"]["status"];
 
 if (!$post_ticket && isset($_POST["author"]))
-	$user=$_POST["author"];
-elseif (!isset($_SESSION["helpdeskSaved"]["user"])) $user=$_SESSION["glpiID"];
-else $user=$_SESSION["helpdeskSaved"]["user"];
+	$author=$_POST["author"];
+elseif (!isset($_SESSION["helpdeskSaved"]["author"])) $author=$_SESSION["glpiID"];
+else $author=$_SESSION["helpdeskSaved"]["author"];
 
 if (!$post_ticket && isset($_POST["FK_group"]))
 	$group=$_POST["FK_group"];
@@ -141,7 +141,7 @@ if (isset($_POST["priority"]) && $post_ticket){
 	}
 	glpi_header($_SERVER['HTTP_REFERER']);
 } else {
-	addFormTracking($device_type,$computer,$_SERVER['PHP_SELF'],$user,$group,$assign,$assign_group,$name,$contents,$category,$priority,$request_type,$hour,$minute,$entity_restrict,$status);
+	addFormTracking($device_type,$computer,$_SERVER['PHP_SELF'],$author,$group,$assign,$assign_group,$name,$contents,$category,$priority,$request_type,$hour,$minute,$entity_restrict,$status);
 }
 
 commonFooter();
