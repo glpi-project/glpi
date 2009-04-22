@@ -49,7 +49,7 @@ function showGroupDevice($ID){
 	$ci=new CommonItem();
 	echo "<div class='center'><table class='tab_cadre'><tr><th>".$LANG['common'][17]."</th>" .
 			"<th>".$LANG['common'][16]."</th><th>".$LANG['entity'][0]."</th></tr>";
-	foreach ($CFG_GLPI["linkuser_types"] as $type){
+	foreach ($CFG_GLPI["linkgroup_types"] as $type){
 		$query="SELECT * 
 			FROM ".$LINK_ID_TABLE[$type]." 
 			WHERE FK_groups='$ID' " .
