@@ -670,10 +670,9 @@ function ocsProcessComputer($ocs_id, $ocs_server_id, $lock = 0, $defaultentity =
 	$result_glpi_ocs_link = $DB->query($query);
 	if ($DB->numrows($result_glpi_ocs_link)) {
 		$datas = $DB->fetch_array($result_glpi_ocs_link);
-		ocsUpdateComputer($datas["ID"], $ocs_server_id, 1, 0);
 
-		//Return code to indicates that the machine was synchronized
-		return 0;
+		//Return code to indicates that the machine was synchronized or only last inventory date changed
+		return ocsUpdateComputer($datas["ID"], $ocs_server_id, 1, 0);
 	} else
 		return ocsImportComputer($ocs_id, $ocs_server_id, $lock, $defaultentity,$canlink);
 }
@@ -949,7 +948,13 @@ function ocsUpdateComputer($ID, $ocs_server_id, $dohistory, $force = 0) {
 				$DBocs->query($query_ocs);
 				$comp = new Computer();
 				$comp->cleanCache($line['glpi_id']);
+
+				//Return code to indicate that computer was synchronized	
+				return 0;
 			}
+			else
+				//Return code to indicate only last inventory date changed
+				return 4;
 
 		}
 	}
