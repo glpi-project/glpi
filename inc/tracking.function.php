@@ -1530,7 +1530,7 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$to
 
 
 	if ($type!=0)
-		$where.=" AND glpi_tracking.device_type='$type";	
+		$where.=" AND glpi_tracking.device_type='$type'";	
 
 	if ($item!=0&&$type!=0)
 		$where.=" AND glpi_tracking.computer = '$item'";	
