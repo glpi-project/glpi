@@ -545,6 +545,12 @@ function registerPluginType($plugin,$name,$ID,$attrib){
 		if (isset($attrib['linkgroup_types']) && !empty($attrib['linkgroup_types'])) {
 			array_push($CFG_GLPI["linkgroup_types"],$ID);
 		}
+		if (isset($attrib['massiveaction_noupdate']) && !empty($attrib['massiveaction_noupdate'])) {
+			array_push($CFG_GLPI["massiveaction_noupdate_types"],$ID);
+		}
+		if (isset($attrib['massiveaction_nodelete']) && !empty($attrib['massiveaction_nodelete'])) {
+			array_push($CFG_GLPI["massiveaction_nodelete_types"],$ID);
+		}
 	} // not already defined
 } 
 
