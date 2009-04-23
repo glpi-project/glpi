@@ -139,7 +139,7 @@ if (!isset($_POST["limit"])) $_POST["limit"]=$_SESSION["glpidropdown_limit"];
 			case "glpi_entities" :
 				// If entity=0 allowed
 				if (isset($_POST["entity_restrict"])&& 
-					(($_POST["entity_restrict"]<0 && in_array(0,$_SESSION['glpiactiveentities']))
+					(($_POST["entity_restrict"]<=0 && in_array(0,$_SESSION['glpiactiveentities']))
 					|| (is_array($_POST["entity_restrict"]) && in_array(0,$_POST["entity_restrict"]))))
 				{	
 					echo "<option class='tree' value=\"0\">--".$LANG['entity'][2]."--</option>";
