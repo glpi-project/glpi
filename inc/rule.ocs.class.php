@@ -359,6 +359,7 @@ function getRulesByID($ID, $withcriterias, $withactions) {
 	function executeActions($output,$params,$regex_results)
 	{
 		if (count($this->actions)){
+
 			foreach ($this->actions as $action){
 				switch ($action->fields["action_type"]){
 					case "assign" :
@@ -370,9 +371,14 @@ function getRulesByID($ID, $withcriterias, $withactions) {
 						{
 							//Get the TAG from the regex's results
 							$res = getRegexResultById($action->fields["value"],$regex_results);
-							if ($res != null) 
+							if ($res != null)
+							{
 								//Get the entity associated with the TAG
-								$output["FK_entities"]=getEntityIDByTag($res);
+								$target_entity = getEntityIDByTag($res);
+
+								if ($target_entity != '')
+									$output["FK_entities"]=$target_entity;
+							} 
 						}
 					break;								
 				}
