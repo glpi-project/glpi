@@ -366,7 +366,13 @@
 
 	//Bookmark types
 	define("BOOKMARK_SEARCH",1); //SEARCH SYSTEM bookmark
-
+	
+	//OCS constants
+	define("OCS_COMPUTER_IMPORTED", 0);
+	define("OCS_COMPUTER_SYNCHRONIZED", 1);
+	define("OCS_COMPUTER_LINKED", 2);
+	define("OCS_COMPUTER_FAILED_IMPORT", 3);
+	define("OCS_COMPUTER_NOTUPDATED", 4);
 
 	// PLUGIN states
 	define("PLUGIN_NEW",0);

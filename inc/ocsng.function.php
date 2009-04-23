@@ -493,7 +493,7 @@ function ocsImportComputer($ocs_id, $ocs_server_id, $lock = 0, $defaultentity = 
 				if (is_array($found_computers) && count($found_computers)>0){
 					foreach ($found_computers as $glpi_id){
 						if (ocsLinkComputer($ocs_id,$ocs_server_id,$glpi_id,$canlink)){ 
-							return 3;
+							return OCS_COMPUTER_LINKED;
 						}
 					}
 				}
@@ -535,11 +535,11 @@ function ocsImportComputer($ocs_id, $ocs_server_id, $lock = 0, $defaultentity = 
 				removeEntityLock($data['FK_entities'], $fp);
 			}
 			//Return code to indicates that the machine was imported
-			return 1;	
+			return OCS_COMPUTER_IMPORTED;	
 		}
 		else
 			//Return code to indicates that the machine was not imported because it doesn't matched rules
-			return 2;
+			return OCS_COMPUTER_FAILED_IMPORT;
 }
 
 function ocsLinkComputer($ocs_id, $ocs_server_id, $glpi_id,$link_auto=0) {
@@ -950,11 +950,11 @@ function ocsUpdateComputer($ID, $ocs_server_id, $dohistory, $force = 0) {
 				$comp->cleanCache($line['glpi_id']);
 
 				//Return code to indicate that computer was synchronized	
-				return 0;
+				return OCS_COMPUTER_SYNCHRONIZED;
 			}
 			else
 				//Return code to indicate only last inventory date changed
-				return 4;
+				return OCS_COMPUTER_NOTUPDATED;
 
 		}
 	}
