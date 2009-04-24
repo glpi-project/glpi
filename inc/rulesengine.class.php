@@ -904,7 +904,24 @@ class Rule extends CommonDBTM{
 	 * @param $target where to go if action
 	**/
 	function getTitleAction($target){
+
+		foreach($this->getFilteredActions() as $key => $val){
+			if (isset($val['force_actions']) && 
+				( in_array('regex_result',$val['force_actions']) || in_array('append_regex_result',$val['force_actions'])) ) {
+				global $LANG,$CFG_GLPI;
+				echo "<div class='center'>"; 
+				echo "<table class='tab_cadrehov'>";
+				echo "<tr  class='tab_bg_2'>";
+				echo "<td width='100%'>";
+				echo $LANG['rulesengine'][83];
+				echo "</td></tr>";
+				echo "</table></div><br>";
+				return;
+			}
+		}
+
 	}
+
 
 	/**
 	 * display title for criteria form
@@ -2127,17 +2144,6 @@ class RuleCached extends Rule{
 	// TODO : switch to __construct ?
 	function __construct($sub_type=0) {
 		parent::__construct($sub_type);
-	}
-
-	function getTitleAction($target){
-		global $LANG,$CFG_GLPI;
-		echo "<div class='center'>"; 
-		echo "<table class='tab_cadrehov'>";
-		echo "<tr  class='tab_bg_2'>";
-		echo "<td width='100%'>";
-		echo $LANG['rulesengine'][83];
-		echo "</td></tr>";
-		echo "</table></div><br>";
 	}
 
 	/**
