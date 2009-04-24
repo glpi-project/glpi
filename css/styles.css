@@ -639,9 +639,14 @@ background-color:#ffffff;
 	width:550px;
 }
 
-#kbanswer ul {
+#kbanswer ul{
 padding-left: 15px;
+list-style-type: circle;
+}
 
+#kbanswer ol {
+padding-left: 15px;
+list-style-type: decimal;
 }
 
 .tdkb_result{
