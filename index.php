@@ -61,7 +61,7 @@ else
 
 	echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">";
 	echo "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"fr\" lang=\"fr\">";
-	echo "<head><title>GLPI Login</title>\n";
+	echo "<head><title>GLPI - ".$LANG['login'][10]."</title>\n";
 	echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8 \" />\n";
 	echo "<meta http-equiv=\"Content-Script-Type\" content=\"text/javascript\" />\n";
 	echo '<link rel="shortcut icon" type="images/x-icon" href="'.$CFG_GLPI["root_doc"].'/pics/favicon.ico" />';
