@@ -1172,7 +1172,7 @@ function deleteSimilarLicenses($lID) {
 		if ($lic->fields['expire'] == "") {
 			$query .= " AND expire IS NULL";
 		} else {
-			$query .= " AND .expire = '" . addslashes($lic->fields['expire']) . "'";
+			$query .= " AND expire = '" . addslashes($lic->fields['expire']) . "'";
 		}
 
 		if ($result = $DB->query($query)) {
