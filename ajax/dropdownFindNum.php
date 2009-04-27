@@ -71,7 +71,7 @@ if (strlen($_POST['searchText'])>0&&$_POST['searchText']!=$CFG_GLPI["ajax_wildca
 	$search=makeTextSearch($_POST['searchText']);
 	$WWHERE="";
 	$FWHERE="";
-	if ($_POST['table']!="glpi_software"){
+	if ($_POST['table']!="glpi_software" && $_POST['type']<1000){
 		$WWHERE=" OR contact ".$search." OR serial ".$search." OR otherserial ".$search;
 	} 
 	 	
@@ -102,7 +102,7 @@ if ($DB->numrows($result)) {
 	while ($data = $DB->fetch_array($result)) {
 
 		$output = $data['name'];
-		if ($_POST['table']!="glpi_software"){
+		if ($_POST['table']!="glpi_software" && $_POST['type']<1000){
 			if (!empty($data['contact'])){
 				$output.=" - ".$data['contact'];
 			}
