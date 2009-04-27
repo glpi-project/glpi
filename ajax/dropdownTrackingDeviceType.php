@@ -60,6 +60,7 @@ if (isset($LINK_ID_TABLE[$_POST["type"]])&&$_POST["type"]>0&&(isPossibleToAssign
 	$paramstrackingdt=array('searchText'=>'__VALUE__',
 			'myname'=>$_POST["myname"],
 			'table'=>$table,
+			'type'=>$_POST["type"],
 			'entity_restrict'=>$_POST['entity_restrict'],
 	);
 	ajaxUpdateItemOnInputTextEvent("search_".$_POST['myname'].$rand,"results_ID$rand",$CFG_GLPI["root_doc"]."/ajax/dropdownFindNum.php",$paramstrackingdt,false);
