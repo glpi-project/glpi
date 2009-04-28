@@ -1843,9 +1843,6 @@ function addSelect ($type,$ID,$num,$meta=0,$meta_type=0){
 				return " GROUP_CONCAT( DISTINCT CONCAT(glpi_softwareversions.name, ' - ', ".$table.$addtable.".$field) SEPARATOR '$$$$') AS ".$NAME."_".$num.", ";								
 			} 		
 		break;
-		case "glpi_computerdisks.freepercent" :
-			return " GROUP_CONCAT( DISTINCT ROUND(100*".$table.$addtable.".freesize / ".$table.$addtable.".totalsize) SEPARATOR '$$$$') AS ".$NAME."_".$num.", ";
-		break;
 	}
 
 	//// Default cases
@@ -1866,6 +1863,14 @@ function addSelect ($type,$ID,$num,$meta=0,$meta_type=0){
 			}
 		} 
 	}
+	
+	$tocompute=$table.$addtable.".".$field;
+
+	if (isset($SEARCH_OPTION[$type][$ID]["computation"])){
+		$tocompute = $SEARCH_OPTION[$type][$ID]["computation"];
+		$tocompute = str_replace("TABLE",$table.$addtable,$tocompute);
+	}
+
 	// Preformat items
 	if (isset($SEARCH_OPTION[$type][$ID]["datatype"])){
 		switch ($SEARCH_OPTION[$type][$ID]["datatype"]){
@@ -1881,7 +1886,7 @@ function addSelect ($type,$ID,$num,$meta=0,$meta_type=0){
 					return " GROUP_CONCAT( DISTINCT CONCAT(".$table.$addtable.".".$field.",'$$' ,".$table.$addtable.".ID) SEPARATOR '$$$$') AS ".$NAME."_$num, ";
 				}
 				else {
-					return $table.$addtable.".".$field." AS ".$NAME."_$num, ".$table.$addtable.".ID AS ".$NAME."_".$num."_2, ";
+					return $tocompute." AS ".$NAME."_$num, ".$table.$addtable.".ID AS ".$NAME."_".$num."_2, ";
 				}
 			break;
 
@@ -1893,10 +1898,10 @@ function addSelect ($type,$ID,$num,$meta=0,$meta_type=0){
 	// Default case
 	if ($meta || 
 		(isset($SEARCH_OPTION[$type][$ID]["forcegroupby"]) && $SEARCH_OPTION[$type][$ID]["forcegroupby"])){
-		return " GROUP_CONCAT( DISTINCT ".$table.$addtable.".".$field." SEPARATOR '$$$$') AS ".$NAME."_$num, ";
+		return " GROUP_CONCAT( DISTINCT ".$tocompute." SEPARATOR '$$$$') AS ".$NAME."_$num, ";
 	}
 	else {
-		return $table.$addtable.".".$field." AS ".$NAME."_$num, ";
+		return $tocompute." AS ".$NAME."_$num, ";
 	}
 
 
@@ -1996,41 +2001,6 @@ function addWhere($link,$nott,$type,$ID,$val,$meta=0){
 			}
 			break;
 
-		case "glpi_computerdisks.totalsize" : // -> number
-		case "glpi_computerdisks.freesize" : // -> number
-		case "glpi_computerdisks.freepercent" : // -> decimal : need to add computation param and unit
-
-			$compute_size=$table.".".$field;
-			$larg=1000;
-			switch ($inittable.".".$field){
-				case "glpi_computerdisks.freepercent";
-					$larg=2;
-					$compute_size="ROUND(100*$table.freesize/$table.totalsize)";
-				break;
-			}
-			$search=array("/\&lt;/","/\&gt;/");
-			$replace=array("<",">");
-			$val=preg_replace($search,$replace,$val);
-			if (preg_match("/([<>])([=]*)[[:space:]]*([0-9]*)/",$val,$regs)){
-				if ($nott){
-					if ($regs[1]=='<') {
-						$regs[1]='>';
-					} else {
-						$regs[1]='<';
-					}
-				} 
-				$regs[1].=$regs[2];
-				return $link." ( $compute_size ".$regs[1]." ".$regs[3]." ) ";
-			} else {
-				
-
-				if (!$nott){
-					return $link." ( $compute_size < ".(intval($val)+$larg)." AND $compute_size > ".(intval($val)-$larg)." ) ";
-				} else {
-					return $link." ( $compute_size > ".(intval($val)+$larg)." OR $compute_size < ".(intval($val)-$larg)." ) ";
-				}
-			}
-		break;
 		case "glpi_networking_ports.ifmac" :
 			$ADD="";
 			if ($type==COMPUTER_TYPE){
@@ -2135,13 +2105,19 @@ function addWhere($link,$nott,$type,$ID,$val,$meta=0){
 		} 
 	}
 
+	$tocompute=$table.".".$field;
+	if (isset($SEARCH_OPTION[$type][$ID]["computation"])){
+		$tocompute=$SEARCH_OPTION[$type][$ID]["computation"];
+	}
+
+
 	// Preformat items
 	if (isset($SEARCH_OPTION[$type][$ID]["datatype"])){
 		switch ($SEARCH_OPTION[$type][$ID]["datatype"]){
 			case "date":
 			case "datetime":
 			case "date_delay":
-				$date_computation=$table.".".$field;
+				$date_computation=$tocompute;
 				$interval_search=" MONTH ";
 
 			
@@ -2200,22 +2176,22 @@ function addWhere($link,$nott,$type,$ID,$val,$meta=0){
 					} 
 						$regs[1].=$regs[2];
 					
-					return $link." ($table.$field ".$regs[1]." ".$regs[3]." ) ";
+					return $link." ($tocompute ".$regs[1]." ".$regs[3]." ) ";
 				} else {
 					if (is_numeric($val)){
 						if (isset($SEARCH_OPTION[$type][$ID]["width"])){
 							$ADD="";
-							if ($nott&&$val!="NULL") $ADD=" OR $table.$field IS NULL";
+							if ($nott&&$val!="NULL") $ADD=" OR $tocompute IS NULL";
 							if ($nott){
-								return $link." ($table.$field < ".(intval($val)-$SEARCH_OPTION[$type][$ID]["width"])." OR $table.$field > ".(intval($val)+$SEARCH_OPTION[$type][$ID]["width"])." ".$ADD." ) ";
+								return $link." ($tocompute < ".(intval($val)-$SEARCH_OPTION[$type][$ID]["width"])." OR $tocompute > ".(intval($val)+$SEARCH_OPTION[$type][$ID]["width"])." ".$ADD." ) ";
 							} else {
-								return $link." (($table.$field >= ".(intval($val)-$SEARCH_OPTION[$type][$ID]["width"])." AND $table.$field <= ".(intval($val)+$SEARCH_OPTION[$type][$ID]["width"]).") ".$ADD." ) ";
+								return $link." (($tocompute >= ".(intval($val)-$SEARCH_OPTION[$type][$ID]["width"])." AND $tocompute <= ".(intval($val)+$SEARCH_OPTION[$type][$ID]["width"]).") ".$ADD." ) ";
 							}
 						} else {
 							if (!$nott){
-								return " $link ( $table.$field = ".(intval($val)).") ";
+								return " $link ( $tocompute = ".(intval($val)).") ";
 							} else {
-								return " $link ( $table.$field <> ".(intval($val)).") ";
+								return " $link ( $tocompute <> ".(intval($val)).") ";
 							}
 						}
 					}
@@ -2229,10 +2205,10 @@ function addWhere($link,$nott,$type,$ID,$val,$meta=0){
 	// Default case 
 	$ADD="";	
 	if (($nott&&$val!="NULL")||$val=='^$') {
-		$ADD=" OR $table.$field IS NULL";
+		$ADD=" OR $tocompute IS NULL";
 	}
 	
-	return $link." ($table.$field $SEARCH ".$ADD." ) ";
+	return $link." ($tocompute $SEARCH ".$ADD." ) ";
 
 
 }
