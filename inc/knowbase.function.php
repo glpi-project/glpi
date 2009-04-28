@@ -502,7 +502,7 @@ function kbItemMenu($ID)
 		echo "</tr>\n";
 	} 
 
-	echo "</table>\n";
+	echo "</table><br>\n";
 }
 
 
