@@ -44,11 +44,7 @@
 	
 	checkLoginUser();
 	echo "<textarea ".(isset($_POST['rows'])?" rows='".$_POST['rows']."' ":"")." ".(isset($_POST['cols'])?" cols='".$_POST['cols']."' ":"")."  name='".$_POST['name']."'>";
-	$order   = array('\r\n', '\n');
-	$replace = "\n";
-	//echo rawurldecode($_POST["data"]);
-	$text=str_replace($order,$replace,rawurldecode($_POST["data"]));
-	echo $text;
+	echo cleanPostForTextArea(rawurldecode($_POST["data"]));
 	echo "</textarea>";
 
 ?>

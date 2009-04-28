@@ -127,7 +127,10 @@ else $name=stripslashes($_SESSION["helpdeskSaved"]["name"]);
 if (!$post_ticket && isset($_POST["contents"]))
 	$contents=$_POST["contents"];
 elseif (!isset($_SESSION["helpdeskSaved"]["contents"])) $contents='';
-else $contents=stripslashes($_SESSION["helpdeskSaved"]["contents"]);
+else {
+	$contents=cleanPostForTextArea($_SESSION["helpdeskSaved"]["contents"]);
+}
+
 
 if (isset($_SESSION["helpdeskSaved"])&&count($_GET)==0){
 	unset($_SESSION["helpdeskSaved"]);

@@ -945,6 +945,21 @@ function utf8_str_pad($ps_input, $pn_pad_length, $ps_pad_string = " ", $pn_pad_t
 
 */
 
+
+/**
+ * Clean post value for display in textarea
+ *
+ *@param $value string: string value
+ *
+ *@return clean value
+ **/
+function cleanPostForTextArea($value){
+	$order   = array('\r\n', '\n');
+	$replace = "\n";
+	//echo rawurldecode($_POST["data"]);
+	return str_replace($order,$replace,$value);
+
+}
 /**
  * Clean display value deleting html tags
  *
