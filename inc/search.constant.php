@@ -40,7 +40,7 @@
 
 // Empty linkfield -> no massive action for field of main table 
 
-// Datatype : parameter ['unit'] permit to set unit to display after standard display
+// Datatype : 
 // - date 
 // - datetime
 // - date_delay : date with a delay in month (end_warranty, end_date) 
@@ -50,11 +50,16 @@
 // - email
 // - text
 // - number : 
-//   - optionnal parameter : ['width'] for width search
+//   - optional parameter : ['width'] for width search
 // - decimal : idem that number but formatted with decimal
 // - bool
 // - itemlink : link to the item
 //     - optionnal parameter for linked or meta items : itemlink_type : type used to link
+
+// Spécial parameters :
+//   - ['unit'] permit to set unit to display after standard display
+//   - ['computation'] for special computation case : use TABLE for table name
+
 
 //////COMPUTER_TYPE
 
@@ -290,18 +295,28 @@ $SEARCH_OPTION[COMPUTER_TYPE][150]['field']='totalsize';
 $SEARCH_OPTION[COMPUTER_TYPE][150]['linkfield']='';
 $SEARCH_OPTION[COMPUTER_TYPE][150]['name']=$LANG['computers'][3];
 $SEARCH_OPTION[COMPUTER_TYPE][150]['forcegroupby']=true;
+$SEARCH_OPTION[COMPUTER_TYPE][150]['usehaving']=true;
+$SEARCH_OPTION[COMPUTER_TYPE][150]['datatype']='number';
+$SEARCH_OPTION[COMPUTER_TYPE][150]['width']=1000;
 
 $SEARCH_OPTION[COMPUTER_TYPE][151]['table']='glpi_computerdisks';
 $SEARCH_OPTION[COMPUTER_TYPE][151]['field']='freesize';
 $SEARCH_OPTION[COMPUTER_TYPE][151]['linkfield']='';
 $SEARCH_OPTION[COMPUTER_TYPE][151]['name']=$LANG['computers'][2];
 $SEARCH_OPTION[COMPUTER_TYPE][151]['forcegroupby']=true;
+$SEARCH_OPTION[COMPUTER_TYPE][151]['usehaving']=true;
+$SEARCH_OPTION[COMPUTER_TYPE][151]['datatype']='number';
+$SEARCH_OPTION[COMPUTER_TYPE][151]['width']=1000;
 
 $SEARCH_OPTION[COMPUTER_TYPE][152]['table']='glpi_computerdisks';
 $SEARCH_OPTION[COMPUTER_TYPE][152]['field']='freepercent';
 $SEARCH_OPTION[COMPUTER_TYPE][152]['linkfield']='';
 $SEARCH_OPTION[COMPUTER_TYPE][152]['name']=$LANG['computers'][1];
 $SEARCH_OPTION[COMPUTER_TYPE][152]['forcegroupby']=true;
+$SEARCH_OPTION[COMPUTER_TYPE][152]['usehaving']=true;
+$SEARCH_OPTION[COMPUTER_TYPE][152]['datatype']='decimal';
+$SEARCH_OPTION[COMPUTER_TYPE][152]['width']=2;
+$SEARCH_OPTION[COMPUTER_TYPE][152]['computation']="ROUND(100*TABLE.freesize/TABLE.totalsize)";
 $SEARCH_OPTION[COMPUTER_TYPE][152]['unit']='%';
 
 
