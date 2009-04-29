@@ -300,16 +300,16 @@ function getPluginTabs($target,$type,$ID,$withtemplate){
 
 	switch ($type){
 		case "central":
-			$tabpage="/ajax/central.tabs.php";
+			$tabpage="ajax/central.tabs.php";
 		break;
 		case "prefs":
-			$tabpage="/ajax/preference.tabs.php";
+			$tabpage="ajax/preference.tabs.php";
 		break;
 		case "profile":
-			$tabpage="/ajax/profile.tabs.php";
+			$tabpage="ajax/profile.tabs.php";
 		break;
 		case "mailing":
-			$tabpage="/ajax/mailing.tabs.php";
+			$tabpage="ajax/mailing.tabs.php";
 		break;
 		default:
 			$patterns[0] = '/front/';
