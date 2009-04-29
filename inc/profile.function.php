@@ -148,7 +148,7 @@ function showProfileEntityUser($target,$ID,$prof){
 					echo "<td width='10'>";
 					$sel="";
 					if (isset($_GET["select"])&&$_GET["select"]=="all") $sel="checked";
-					echo "<input type='checkbox' name='item[".$data["ID"]."]' value='1' $sel>";
+					echo "<input type='checkbox' name='item[".$data["linkID"]."]' value='1' $sel>";
 					echo "</td>";
 				}
 
