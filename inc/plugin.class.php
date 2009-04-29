@@ -176,7 +176,7 @@ class Plugin extends CommonDBTM {
 		global $LANG,$CFG_GLPI,$PLUGIN_HOOKS;
 		$this->checkStates();
 
-		echo "<div align='center'><table class='tab_cadre' cellpadding='5'>";
+		echo "<div align='center'><table class='tab_cadrehov' cellpadding='5'>";
 		
 		// ligne a modifier en fonction de la modification des fichiers de langues
 		echo "<tr><th colspan='7'>".$LANG['plugins'][0]."</th></tr>";
