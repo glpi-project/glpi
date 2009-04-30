@@ -687,7 +687,6 @@ class Job extends CommonDBTM{
 			$input["name"]=preg_replace('/\n/',' ',$input['name']);
 			$input["name"]=substr($input['name'],0,70);
 		}
-
 		return $input;
 	}
 
@@ -706,7 +705,7 @@ class Job extends CommonDBTM{
 				$input2=array();
 				$input2["name"]=$LANG['tracking'][24]." $newID";
 				$input2["FK_tracking"]=$newID;
-				$input2["FK_entities"]=$input["FK_entities"];
+				$input2["FK_entities"]=$this->fields["FK_entities"];
 				$input2["rubrique"]=$CFG_GLPI["default_rubdoc_tracking"];
 				$input2["_only_if_upload_succeed"]=1;
 				$doc=new Document();

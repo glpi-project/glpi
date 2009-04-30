@@ -810,6 +810,11 @@ function addFormTracking ($device_type=0,$ID=0, $target, $author, $group=0, $ass
 	echo "<input type='hidden' name='computer' value=\"$ID\">";
 	echo "<input type='hidden' name='device_type' value=\"$device_type\">";
 
+	// Set default entity
+	if (!haveRight("update_ticket","1")){
+		echo "<input type='hidden' name='FK_entities' value='".$entity_restrict."'>";
+	}
+
 	echo "</th></tr>";
 
 	$author_rand=0;
@@ -848,9 +853,9 @@ function addFormTracking ($device_type=0,$ID=0, $target, $author, $group=0, $ass
 			$rand = dropdownValue("glpi_entities", "FK_entities", $entity_restrict, 1, $values,'',array(),1);
 		} else {
 			echo "<input type='hidden' name='FK_entities' value='".$entity_restrict."'>";
-		}
-		echo "</tr>";
-	} 
+		} 
+		echo "</td></tr>";
+	}  
 
 	//If multi-entity environment, display the name of the entity on which the ticket will be created
 	if (isMultiEntitiesMode()){
