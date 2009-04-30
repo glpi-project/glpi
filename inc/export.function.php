@@ -124,7 +124,7 @@ function displaySearchItem($type,$value,&$num,$row,$extraparam=''){
             		$out="\"".csv_clean($value)."\";";
             		break;
 		default :
-			$out="<td $extraparam>".$value."</td>\n";
+			$out="<td $extraparam valign='top'>".$value."</td>\n";
 			break;
 	}
 	$num++;
