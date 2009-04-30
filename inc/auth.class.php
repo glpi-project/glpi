@@ -393,13 +393,14 @@ class Identification {
 	**/
 	function destroySession() {
 		startGlpiSession();
+		
 		// Unset all of the session variables.
-		
-		
 		session_unset();
-		session_destroy();
+		// destroy may cause problems (no login / back to login page)
+		//session_destroy();
 		$_SESSION = array();
-		session_write_close();
+		// write_close may cause troubles (no login / back to login page) 
+		//session_write_close();
 	}
 
 	/**
