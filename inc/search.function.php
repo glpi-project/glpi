@@ -1306,7 +1306,18 @@ function showList ($type,$params){
 
 										if ($count_display) $out.= "<br>";
 										$count_display++;
-										$out.= $split[$k].$unit;
+										// Manage Link to item
+										$split2=explode("$$",$split[$k]);
+										if (isset($split2[1])){
+											$out.= "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$type2[$j]]."?ID=".$split2[1]."\">";
+											$out.= $split2[0].$unit;
+											if ($_SESSION["glpiview_ID"]||empty($split2[0])) {
+												$out.= " (".$split2[1].")";
+											}
+											$out.= "</a>";
+										} else {
+											$out.= $split[$k].$unit;
+										}
 									}
 								echo displaySearchItem($output_type,$out,$item_num,$row_num);
 
