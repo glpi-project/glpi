@@ -702,6 +702,15 @@ class Transfer extends CommonDBTM{
 			}
 		}
 		$this->item_search[CARTRIDGE_TYPE]=$this->createSearchConditionUsingArray($this->needtobe_transfer[CARTRIDGE_TYPE]);
+
+
+		// Init all item_search if not defined
+		foreach ($types as $type){
+			if (!isset($this->item_search[$type])){
+				$this->item_search[$type]="(-1)";
+			}
+		}
+
 	}
 
 	/**
@@ -1161,7 +1170,7 @@ class Transfer extends CommonDBTM{
 				// no need to copy
 				$newversID = $ID;
 			} else {				
-				$query="SELECT ID FROM glpi_softwareversions WHERE sID=$newsoftID AND  version='".addslashes($vers->fields['name'])."'";			
+				$query="SELECT ID FROM glpi_softwareversions WHERE sID=$newsoftID AND  name='".addslashes($vers->fields['name'])."'";			
 				if ($data=$DB->request($query)->next()) {
 					$newversID=$data["ID"];
 				} else {
