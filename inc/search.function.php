@@ -2633,10 +2633,40 @@ function giveItem ($type,$ID,$data,$num,$meta=0){
 				}
 				break;	
 			case "number":
-				return formatNumber($data[$NAME.$num],false,0).$unit;
+				if (isset($SEARCH_OPTION[$type][$ID]['forcegroupby']) && $SEARCH_OPTION[$type][$ID]['forcegroupby']){
+					$out="";
+					$split=explode("$$$$",$data[$NAME.$num]);
+					$count_display=0;
+					for ($k=0;$k<count($split);$k++){
+						if (strlen(trim($split[$k]))>0){
+							if ($count_display) $out.= "<br>";
+							$count_display++;
+							$out.= str_replace(' ','&nbsp;',formatNumber($split[$k],false,0)).$unit;
+						}
+					}
+					return $out;	
+
+				} else {
+					return str_replace(' ','&nbsp;',formatNumber($data[$NAME.$num],false,0)).$unit;
+				}
 				break;
 			case "decimal":
-				return formatNumber($data[$NAME.$num]).$unit;
+				if (isset($SEARCH_OPTION[$type][$ID]['forcegroupby']) && $SEARCH_OPTION[$type][$ID]['forcegroupby']){
+					$out="";
+					$split=explode("$$$$",$data[$NAME.$num]);
+					$count_display=0;
+					for ($k=0;$k<count($split);$k++){
+						if (strlen(trim($split[$k]))>0){
+							if ($count_display) $out.= "<br>";
+							$count_display++;
+							$out.= str_replace(' ','&nbsp;',formatNumber($split[$k],false,0)).$unit;
+						}
+					}
+					return $out;	
+
+				} else {
+					return str_replace(' ','&nbsp;',formatNumber($data[$NAME.$num])).$unit;
+				}
 				break;
 			case "bool":
 				return getYesNo($data[$NAME.$num]).$unit;
