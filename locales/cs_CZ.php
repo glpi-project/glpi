@@ -641,7 +641,7 @@ $LANG['install'][101]="Adresář byl vytvořen, ale není ho možno odstranit.";
 $LANG['install'][102]="Test json functions"; 
 $LANG['install'][103]="GLPI can't work correctly without the json_encode and json_decode functions"; 
 
-$LANG['job'][2]="dle"; 
+$LANG['job'][2]="zadavatel"; 
 $LANG['job'][3]="Přijímač"; 
 $LANG['job'][4]="Žadatel"; 
 $LANG['job'][5]="Přiřazeno k"; 
