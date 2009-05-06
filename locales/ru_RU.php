@@ -179,7 +179,7 @@ $LANG['central'][13]="Общий вид";
 $LANG['central'][14]="Ваши группы"; 
 $LANG['central'][15]="Заявки в ожидании"; 
 $LANG['central'][16]="Заявки в процессе"; 
-$LANG['central'][17]="Your tickets"; 
+$LANG['central'][17]="Ваши заявки"; 
 
 $LANG['choice'][0]="Нет"; 
 $LANG['choice'][1]="Да"; 
@@ -675,7 +675,7 @@ $LANG['joblist'][1]="Только мои";
 $LANG['joblist'][2]="Приоритет"; 
 $LANG['joblist'][3]="Мои и моих групп"; 
 $LANG['joblist'][4]="Назначено"; 
-$LANG['joblist'][5]="Personal"; 
+$LANG['joblist'][5]="Свои"; 
 $LANG['joblist'][6]="Описание"; 
 $LANG['joblist'][7]="Новая заявка для этого элемента..."; 
 $LANG['joblist'][8]="Заявок не найдено."; 
