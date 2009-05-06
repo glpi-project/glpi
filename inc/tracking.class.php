@@ -283,6 +283,29 @@ class Job extends CommonDBTM{
 	function pre_updateInDB($input,$updates,$oldvalues=array()) {
 		global $LANG;
 
+		if (((in_array("assign",$updates)&&$input["assign"]>0)||(in_array("assign_ent",$updates)&&$input["assign_ent"]>0)||(in_array("assign_group",$updates)&&$input["assign_group"]>0))&&$this->fields["status"]=="new"){
+			$updates[]="status";
+			$this->fields["status"]="assign";
+		}
+		if (isset($input["status"])){
+			if (isset($input["assign_ent"])&&$input["assign_ent"]==0&&isset($input["assign_group"])&&$input["assign_group"]==0&&
+			isset($input["assign"])&&$input["assign"]==0&&$input["status"]=="assign"){
+				$updates[]="status";
+				$this->fields["status"]="new";
+			}
+
+			if (in_array("status",$updates)&&strstr($input["status"],"old_")){
+				$updates[]="closedate";
+				$oldvalues['closedate']=$this->fields["closedate"];
+				$this->fields["closedate"]=$_SESSION["glpi_currenttime"];
+				// If invalid date : set open date
+				if ($this->fields["closedate"]<$this->fields["date"]){
+					$this->fields["closedate"]=$this->fields["date"];
+				}
+			}
+		}
+
+
 		// Status close : check dates
 		if (strstr($this->fields["status"],"old_")&&(in_array("date",$updates)||in_array("closedate",$updates))){
 			// Invalid dates : no change
@@ -306,27 +329,6 @@ class Job extends CommonDBTM{
 			unset($updates[$key]);
 		}
 
-
-		if (((in_array("assign",$updates)&&$input["assign"]>0)||(in_array("assign_ent",$updates)&&$input["assign_ent"]>0)||(in_array("assign_group",$updates)&&$input["assign_group"]>0))&&$this->fields["status"]=="new"){
-			$updates[]="status";
-			$this->fields["status"]="assign";
-		}
-		if (isset($input["status"])){
-			if (isset($input["assign_ent"])&&$input["assign_ent"]==0&&isset($input["assign_group"])&&$input["assign_group"]==0&&
-			isset($input["assign"])&&$input["assign"]==0&&$input["status"]=="assign"){
-				$updates[]="status";
-				$this->fields["status"]="new";
-			}
-
-			if (in_array("status",$updates)&&strstr($input["status"],"old_")){
-				$updates[]="closedate";
-				$this->fields["closedate"]=$_SESSION["glpi_currenttime"];
-				// If invalid date : set open date
-				if ($this->fields["closedate"]<$this->fields["date"]){
-					$this->fields["closedate"]=$this->fields["date"];
-				}
-			}
-		}
 
 		if (in_array("author",$updates)){
 			$user=new User;
