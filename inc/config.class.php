@@ -608,6 +608,10 @@ class Config extends CommonDBTM {
 		global $DB, $LANG;
 
 		$oncentral=($_SESSION["glpiactiveprofile"]["interface"]=="central");
+		$userpref=false;
+		if (isset($data['last_login'])){
+			$userpref=true;
+		}
 			
 		echo "<form name='form' action=\"$target\" method=\"post\">";
 		echo "<div class='center' id='tabsbody'>";
@@ -696,7 +700,7 @@ class Config extends CommonDBTM {
 		dropdownInteger("list_limit",$data["list_limit"],5,200,5);
 		
 		echo "</td>";
-		echo "<td class='center'>" . $LANG['setup'][113] . " </td><td>";
+		echo "<td class='center'>" . ($userpref?$LANG['setup'][41]:$LANG['setup'][113]) . " </td><td>";
 		
 		if (haveRight("config","w") || ! GLPI_DEMO_MODE){
 			dropdownLanguages("language", $data["language"]);
