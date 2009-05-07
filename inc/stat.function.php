@@ -542,13 +542,18 @@ function getNbIntervRequestType($date1,$date2){
 function getNbIntervCategory($date1,$date2){	
 	global $DB;
 	
-	$query = "SELECT DISTINCT glpi_dropdown_tracking_category.ID,   glpi_dropdown_tracking_category.completename AS category
+	// Get all tracking categories for tree merge management
+
+	$query="SELECT DISTINCT glpi_dropdown_tracking_category.ID,   glpi_dropdown_tracking_category.completename AS category
+		FROM glpi_dropdown_tracking_category ";
+
+/*	$query = "SELECT DISTINCT glpi_dropdown_tracking_category.ID,   glpi_dropdown_tracking_category.completename AS category
 		FROM glpi_tracking 
 		LEFT JOIN glpi_dropdown_tracking_category ON (glpi_tracking.category = glpi_dropdown_tracking_category.ID) ";
 	$query.=getEntitiesRestrictRequest(" WHERE","glpi_tracking");
 	if (!empty($date1)) $query.= " AND glpi_tracking.date >= '". $date1 ."' ";
 	if (!empty($date2)) $query.= " AND glpi_tracking.date <= adddate( '". $date2 ."' , INTERVAL 1 DAY ) ";
-		
+*/		
 	$query.=" ORDER BY glpi_dropdown_tracking_category.completename";
 
 	$result = $DB->query($query);
