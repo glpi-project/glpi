@@ -205,11 +205,17 @@ class Cron {
 		if ($this->touch($lock, $this->taches[$tache])) {
 			// preparer la tache
 			$this->timer('tache');
-
+		
 			$fonction = 'cron_' . $tache;
 
 			$fct_trouve=false;
-			if (!function_exists($fonction)){
+
+			$expl = explode('_',$tache,2);
+			if ($expl[0]=='plugin' && isset($expl[1])) {
+				// Plugin case / Load hook
+				usePlugin($expl[1],true);
+			}
+			else if (!function_exists($fonction)){
 				// pas trouvé de fonction -> inclusion de la fonction 
 				if(file_exists(GLPI_ROOT.'/inc/'.$tache.'.function.php')) include_once(GLPI_ROOT.'/inc/'.$tache.'.function.php');
 				if(file_exists(GLPI_ROOT.'/inc/'.$tache.'.class.php')) include_once(GLPI_ROOT.'/inc/'.$tache.'.class.php');
