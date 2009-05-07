@@ -210,7 +210,7 @@ class Cron {
 
 			$fct_trouve=false;
 
-			$expl = explode('_',$tache,2);
+			$expl = explode('_',$tache);
 			if ($expl[0]=='plugin' && isset($expl[1])) {
 				// Plugin case / Load hook
 				usePlugin($expl[1],true);
@@ -243,12 +243,12 @@ class Cron {
 					logInFile("cron","$tache Nothing to do (" . $this->timer('tache') . ")\n");
 				} 
 
-			} else {echo "Erreur fonction manquante";}
+			} else {
+				logInFile("cron","Can't run task ($tache: missing function $fonction)\n");
+			}
 
 
-
-
-		}
+		} // touch
 
 		// relacher le lock mysql
 		$this->release_lock('cron');
