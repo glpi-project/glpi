@@ -211,11 +211,11 @@ function displayStats($type,$field,$date1,$date2,$start,$value,$value2=""){
 			$data=constructEntryValues("inter_avgrealtime",$date1,$date2,$type,$value[$i]["ID"],$value2);
 			
 			foreach ($data as $key2 => $val2){
-//				if (isset($solved[$key2])){
+				if (isset($solved[$key2])){
 					$data[$key2]*=$solved[$key2];
-//				} else {
-//					$data[$key2]=0;
-//				}
+				} else {
+					$data[$key2]*=0;
+				}
 			}
 			$total_realtime=array_sum($data);
 			if ($nb_solved>0)
