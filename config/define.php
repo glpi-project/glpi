@@ -291,7 +291,7 @@
 			TRANSFER_TYPE => "front/transfer.form.php",
 			SOFTWAREVERSION_TYPE => "front/softwareversion.form.php",
 			COMPUTERDISK_TYPE => "front/computerdisk.form.php",
-			NETWORKING_PORT_TYPE => "/front/networking.port.php",
+			NETWORKING_PORT_TYPE => "front/networking.port.php",
 //			FOLLOWUP_TYPE => "???",			
 			);
 	$SEARCH_PAGES=array( 
