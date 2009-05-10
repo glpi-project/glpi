@@ -2113,7 +2113,7 @@ function addSoftware($name, $manufacturer, $entity, $comments = '') {
 	}									
 
 	$sql = "SELECT ID FROM glpi_software " .
-		"WHERE FK_entities='$entity' AND FK_glpi_enterprise='$manufacturer_id' AND name='".$name."' " .
+		"WHERE FK_glpi_enterprise='$manufacturer_id' AND name='".$name."' " .
 		getEntitiesRestrictRequest('AND', 'glpi_software', 'FK_entities', $entity, true);
 
 	$res_soft = $DB->query($sql);
