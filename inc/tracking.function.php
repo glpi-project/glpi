@@ -1251,7 +1251,7 @@ function searchFormTracking($extended=0,$target,$start="",$status="new",$tosearc
 
 	echo "<td class='center' colspan='2'>";
 	echo "<table border='0'><tr><td>".$LANG['common'][1].":</td><td>";
-	dropdownAllItems("item",$type,$item);
+	dropdownAllItems("item",$type,$item,-1,array_keys(getAllTypesForHelpdesk()));
 	echo "</td></tr></table>";
 	echo "</td>";
 
