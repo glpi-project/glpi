@@ -34,7 +34,8 @@
 // ----------------------------------------------------------------------
 
 define('GLPI_ROOT', '..');
-$NEEDED_ITEMS=array("group","user","planning","tracking","computer","printer","monitor","peripheral","networking","software","enterprise","phone","document","mailing");
+$NEEDED_ITEMS=array("group","user","planning","tracking","computer","printer","monitor","peripheral",
+	"ocsng","networking","software","enterprise","phone","document","mailing");
 include (GLPI_ROOT . "/inc/includes.php");
 
 checkCentralAccess();
