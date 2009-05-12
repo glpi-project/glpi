@@ -2574,7 +2574,7 @@ function showUpdateFollowupForm($ID){
 * @return total cost formatted string
 */
 function trackingTotalCost($realtime,$cost_time,$cost_fixed,$cost_material){
-	return formatNumber(($realtime*$cost_time)+$cost_fixed+$cost_material);
+	return formatNumber(($realtime*$cost_time)+$cost_fixed+$cost_material,true);
 }
 
 /**
