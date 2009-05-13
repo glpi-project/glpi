@@ -639,7 +639,7 @@ class SoftwareLicense extends CommonDBTM {
 		/*if (isset($input['oem']) && !$input['oem']){
 			$input['oem_computer'] = -1;
 		}*/
-		if (!isset($input['FK_computers']) || $input['FK_computers'] == 0){
+		if (!isset($input['FK_computers']) || $input['FK_computers'] <= 0){
 			$input['FK_computers'] = -1;
 		} else {
 			// Number is 1 for affected license
