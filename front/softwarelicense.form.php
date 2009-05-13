@@ -51,7 +51,7 @@ if (isset($_POST["add"]))
 
 	$newID=$license->add($_POST);
 	logEvent($_POST['sID'], "software", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][85]." $newID.");
-	glpi_header($CFG_GLPI["root_doc"]."/front/software.form.php?ID=".$license->fields['sID']);
+	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($_POST["delete"]))
 {
