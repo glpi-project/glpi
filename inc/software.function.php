@@ -185,7 +185,7 @@ function showSoftwareMergeCandidates($ID) {
 	$sql = "SELECT glpi_software.ID, glpi_software.name, glpi_entities.completename AS entity " .
 			"FROM glpi_software " .
 			"LEFT JOIN glpi_entities ON (glpi_software.FK_entities=glpi_entities.ID) " .
-			"WHERE glpi_software.ID!=$ID AND glpi_software.name='".$soft->fields["name"]."'".
+			"WHERE glpi_software.ID!=$ID AND glpi_software.name='".addslashes($soft->fields["name"])."'".
 				"AND glpi_software.deleted=0 AND glpi_software.is_template=0 " .
 				getEntitiesRestrictRequest('AND', 'glpi_software','FK_entities',getEntitySons($soft->fields["FK_entities"]),false).
 			"ORDER BY glpi_entities.completename";
