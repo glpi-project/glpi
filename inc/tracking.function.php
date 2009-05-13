@@ -1272,7 +1272,9 @@ function searchFormTracking($extended=0,$target,$start="",$status="new",$tosearc
 		} else if (count($_SESSION['glpigroups'])>1){ // Display limited dropdown
 			echo "<br>";
 			$groups[0]='-----';
-			$groups=array_merge($groups,getDropdownArrayNames('glpi_groups',$_SESSION['glpigroups']));
+			foreach (getDropdownArrayNames('glpi_groups',$_SESSION['glpigroups']) as $tmpgroupid => $tmpgroupname)
+				$groups[$tmpgroupid] = $tmpgroupname;
+			//$groups=array_merge($groups,$all_mygrous);
 			dropdownArrayValues('assign_group',$groups,$assign_group);
 		}
 	} else {
@@ -2745,7 +2747,7 @@ function computeTicketTco($item_type,$item){
 	function showPreviewAssignAction($output)
 	{
 		global $LANG,$INFOFORM_PAGES,$CFG_GLPI;
-		print_r($output);
+
 		//If ticket is assign to an object, display this information first
 		if (isset($output["FK_entities"]) && isset($output["computer"]) && isset($output["device_type"]))
 		{
