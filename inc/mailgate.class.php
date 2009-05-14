@@ -673,7 +673,7 @@ class MailCollect {
 			if ($message=imap_fetchbody($this->marubox, $mid, $part)) {
 				switch ($structure->encoding)
 				{
-					case 0:	$message = imap_7bit($message); break;
+					case 0:	$message = imap_8bit($message); break;
 					case 1:	$message = imap_8bit($message); break;
 					case 2: $message = imap_binary($message); break;
 					case 3: $message = imap_base64($message); break;
