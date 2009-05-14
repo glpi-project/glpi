@@ -1147,7 +1147,9 @@ function searchFormTracking($extended=0,$target,$start="",$status="new",$tosearc
 		} else if (count($_SESSION['glpigroups'])>1){ // Display limited dropdown
 			echo "<br>";
 			$groups[0]='-----';
-			$groups=array_merge($groups,getDropdownArrayNames('glpi_groups',$_SESSION['glpigroups']));
+			foreach (getDropdownArrayNames('glpi_groups',$_SESSION['glpigroups']) as $tmpgroupid => $tmpgroupname) 
+               $groups[$tmpgroupid] = $tmpgroupname; 
+			//$groups=array_merge($groups,getDropdownArrayNames('glpi_groups',$_SESSION['glpigroups']));
 			dropdownArrayValues('assign_group',$groups,$assign_group);
 		}
 	} else {
