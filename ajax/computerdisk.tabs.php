@@ -39,7 +39,14 @@ include (GLPI_ROOT . "/inc/includes.php");
 header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
-ajaxFooter();
-		
-		
+if(isset($_POST["ID"]) && $_POST['ID']>0) {
+	switch($_POST['glpi_tab']){
+		default :
+			if (!displayPluginAction(COMPUTERDISK_TYPE,$_POST["ID"],$_POST['glpi_tab'])){
+			}
+			break;
+	}	
+}
+
+ajaxFooter();		
 ?>
