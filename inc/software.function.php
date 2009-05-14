@@ -406,7 +406,7 @@ function showLicenses($sID) {
 				echo "<td>".$data['buyname']."</td>";
 				echo "<td>".$data['usename']."</td>";
 				echo "<td>".convDate($data['expire'])."</td>";
-				echo "<td>".($data['FK_computers']>0?getDropdownName("glpi_computers",$data['FK_computers']):"")."</td>";
+				echo "<td>".($data['FK_computers']>0?"<a href='computer.form.php?ID=".$data['FK_computers']."'>".getDropdownName("glpi_computers",$data['FK_computers'])."</a>":"")."</td>";
 				
 				/*echo "<td>";
 				showDisplayInfocomLink(SOFTWARELICENSE_TYPE, $data['ID'], 1);
