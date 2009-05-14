@@ -2555,6 +2555,8 @@ $SEARCH_OPTION[CONTACT_TYPE][8]['field']='name';
 $SEARCH_OPTION[CONTACT_TYPE][8]['linkfield']='';
 $SEARCH_OPTION[CONTACT_TYPE][8]['name']=$LANG['financial'][65];
 $SEARCH_OPTION[CONTACT_TYPE][8]['forcegroupby']=true;
+$SEARCH_OPTION[CONTACT_TYPE][8]['datatype']='itemlink';
+$SEARCH_OPTION[CONTACT_TYPE][8]['itemlink_type']=ENTERPRISE_TYPE;
 
 $SEARCH_OPTION[CONTACT_TYPE][7]['table']='glpi_contacts';
 $SEARCH_OPTION[CONTACT_TYPE][7]['field']='comments';
