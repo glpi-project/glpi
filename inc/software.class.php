@@ -720,7 +720,9 @@ class SoftwareLicense extends CommonDBTM {
 			if (haveRight("infocom","r")) {
 				$ong[4] = $LANG['Menu'][26];
 			}
-
+      if (haveRight("document","r")){
+				$ong[5]=$LANG['Menu'][27];
+			}
 			$ong[12] = $LANG['title'][38];
 		}
 

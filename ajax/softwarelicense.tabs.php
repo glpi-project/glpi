@@ -61,6 +61,9 @@ if(!isset($_POST["withtemplate"])) $_POST["withtemplate"] = "";
 			case 4 :
 				showInfocomForm($CFG_GLPI["root_doc"]."/front/infocom.form.php",SOFTWARELICENSE_TYPE,$_POST["ID"]);
 				break;
+			case 5 :
+					showDocumentAssociated(SOFTWARELICENSE_TYPE,$_POST["ID"],$_POST["withtemplate"]);
+					break;
 			case 12 :
 				showHistory(SOFTWARELICENSE_TYPE,$_POST["ID"]);
 				break;
