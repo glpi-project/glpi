@@ -1752,10 +1752,6 @@ function addSelect ($type,$ID,$num,$meta=0,$meta_type=0){
 	}
 
 	switch ($table.".".$field){
-		// Contact for display in the enterprise item
-		case "glpi_contacts.completename":
-			return " GROUP_CONCAT( DISTINCT CONCAT(".$table.$addtable.".name, ' ', ".$table.$addtable.".firstname) SEPARATOR '$$$$') AS ".$NAME."_$num, ";
-		break;
 		case "glpi_users.name" :
 			if ($type!=USER_TYPE){
 				$linkfield="";
