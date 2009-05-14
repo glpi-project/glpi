@@ -411,12 +411,15 @@ class Config extends CommonDBTM {
 		adminManagementDropdown("printers_management_restrict",$CFG_GLPI["printers_management_restrict"]);
 		echo "</td></tr>";
 
+		/* TODO : to remove and clean DB schema
 		echo "<tr class='tab_bg_2'>";
 		echo "<td class='center'> " . $LANG['setup'][276] . " </td><td>";
 		adminManagementDropdown("licenses_management_restrict",$CFG_GLPI["licenses_management_restrict"],1);				
+
 		echo "</td><td class='center'>".$LANG['setup'][277]."</td><td>";
 		dropdownYesNo("license_deglobalisation",$CFG_GLPI["license_deglobalisation"]);
 		echo"</td></tr>";
+		*/
 
 		echo "<tr><th colspan='2'>" . $LANG['setup'][134]. "</th><th colspan='2'></th></tr>";
 
