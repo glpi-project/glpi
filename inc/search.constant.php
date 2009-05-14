@@ -2648,6 +2648,8 @@ $SEARCH_OPTION[ENTERPRISE_TYPE][8]['field']='completename';
 $SEARCH_OPTION[ENTERPRISE_TYPE][8]['linkfield']='';
 $SEARCH_OPTION[ENTERPRISE_TYPE][8]['name']=$LANG['financial'][46];
 $SEARCH_OPTION[ENTERPRISE_TYPE][8]['forcegroupby']=true;
+$SEARCH_OPTION[ENTERPRISE_TYPE][8]['datatype']='itemlink';
+$SEARCH_OPTION[ENTERPRISE_TYPE][8]['itemlink_type']=CONTACT_TYPE;
 
 $SEARCH_OPTION[ENTERPRISE_TYPE][7]['table']='glpi_enterprises';
 $SEARCH_OPTION[ENTERPRISE_TYPE][7]['field']='comments';
