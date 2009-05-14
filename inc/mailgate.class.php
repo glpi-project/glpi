@@ -598,7 +598,7 @@ class MailCollect {
 					$name=$struckture->parts[$key]->dparameters[0]->value;
 					$message = imap_fetchbody($this->marubox,$mid,$key+1);
 					if ($enc == 0)
-						$message = imap_7bit($message);
+						$message = imap_8bit($message);
 					if ($enc == 1)
 						$message = imap_8bit ($message);
 					if ($enc == 2)
