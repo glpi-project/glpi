@@ -2191,8 +2191,8 @@ function ocsUpdateDevices($device_type, $glpi_id, $ocs_id, $ocs_server_id, $cfg_
 												addToOcsArray($glpi_id,array($ID=>$ocs_ips[$j].OCS_FIELD_SEPARATOR.$line2["MACADDR"]),"import_ip");
 												$import_ip[$ID]= $ocs_ips[$j].OCS_FIELD_SEPARATOR.$line2["MACADDR"];
 												$id_ip = $ID;
+												break;
 											}
-											break;
 										}
 									}
 								}
