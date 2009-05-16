@@ -93,6 +93,7 @@ function ocsShowNewComputer($ocs_server_id, $advanced, $check, $start, $tolinked
 
 	if ($tolinked){
 		// Computers existing in GLPI
+		// TODO : limit to authorized entities + get FK_entities
 		$query_glpi_comp = "SELECT ID,name 
 				FROM glpi_computers 
 				WHERE is_template='0'";
@@ -125,6 +126,8 @@ function ocsShowNewComputer($ocs_server_id, $advanced, $check, $start, $tolinked
 			$computer_names = array ();
 			if ($DB->numrows($result_glpi_comp) > 0) {
 				while ($data = $DBocs->fetch_array($result_glpi_comp)) {
+					// TODO store multiple values for each name
+					// really usefull for big database ?
 					$computer_names[strtolower($data["name"])] = $data["ID"];
 				}
 			}
@@ -223,6 +226,7 @@ function ocsShowNewComputer($ocs_server_id, $advanced, $check, $start, $tolinked
 				if (!$tolinked){
 					echo "<input type='checkbox' name='toimport[" . $tab["ID"] . "]' " . ($check == "all" ? "checked" : "") . ">";
 				} else {
+					// TODO : display in entity mode
 					if (isset ($computer_names[strtolower($tab["name"])])){
 						dropdownValue("glpi_computers", "tolink[" .
 						$tab["ID"] . "]", $computer_names[strtolower($tab["name"])]);
