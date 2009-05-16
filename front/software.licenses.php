@@ -190,6 +190,12 @@ if (isset($_POST["install"])){
 	logEvent($_POST["cID"], "computers", 5, "inventory", $_SESSION["glpiname"]." installed software.");
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
+else if (isset($_GET["install"])){
+	checkRight("software","w");
+	installSoftwareVersion($_GET["cID"],$_GET["vID"]);
+	logEvent($_GET["cID"], "computers", 5, "inventory", $_SESSION["glpiname"]." installed software.");
+	glpi_header($_SERVER['HTTP_REFERER']);
+}
 else if (isset($_GET["uninstall"])){
 	checkRight("software","w");
 
@@ -225,10 +231,19 @@ else if (isset($_POST["uninstall_license"])){
 			$input["ID"]=$ereg[1];
 			uninstallSoftwareVersion($input["ID"]);
 		}
-	
-	glpi_header($_SERVER['HTTP_REFERER']);
-	
-	
+	logEvent($_POST["cID"], "computers", 5, "inventory", $_SESSION["glpiname"]." uninstalled software.");	
+	glpi_header($_SERVER['HTTP_REFERER']);	
+}
+else if (isset($_POST["install_license"]) && isset($_POST["cID"])){
+	checkRight("software","w");
+	foreach ($_POST as $key => $val)
+		if (preg_match("/version_([0-9]+)/",$key,$ereg)){
+			if ($ereg[1]>0) {
+				installSoftwareVersion($_POST["cID"],$ereg[1]);
+			}
+		}
+	logEvent($_POST["cID"], "computers", 5, "inventory", $_SESSION["glpiname"]." installed software.");
+	glpi_header($_SERVER['HTTP_REFERER']);	
 }
 /*
 else if (isset($_GET["unglobalize"])&&isset($_GET["ID"])){

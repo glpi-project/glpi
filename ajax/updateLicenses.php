@@ -70,6 +70,9 @@
 		case "uninstall_license": 
 			echo "<input type='submit' name='uninstall_license' value='".$LANG['buttons'][2]."' class='submit'>";
 		break;
+		case "install_license": 
+			echo "<input type='submit' name='install_license' value='".$LANG['buttons'][2]."' class='submit'>";
+		break;
 		case "move_to_software":
 			$soft=new Software();
 			$soft->getFromDB($_POST["sID"]);
