@@ -1546,7 +1546,6 @@ function showSoftwareInstalled($instID, $withtemplate = '') {
 		LEFT JOIN glpi_softwarelicenses ON ( glpi_softwareversions.sID = glpi_softwarelicenses.sID AND glpi_softwarelicenses.FK_computers = '$instID')
 		LEFT JOIN glpi_software ON (glpi_softwareversions.sID = glpi_software.ID) 
 		LEFT JOIN glpi_dropdown_software_category ON (glpi_dropdown_software_category.ID = glpi_software.category)";
-
 	$query_cat .= " WHERE glpi_inst_software.cID = '$instID' AND glpi_software.category > 0";
 
 	$query_nocat = "SELECT 2 as TYPE, glpi_dropdown_software_category.name as category, glpi_software.category as category_id,
@@ -1593,7 +1592,7 @@ function showSoftwareInstalled($instID, $withtemplate = '') {
 		while ($data = $DB->fetch_array($result)) {
 			if ($data["category_id"] != $cat) {
 				displayCategoryFooter($cat,$rand,$canedit);
-				$cat = displayCategoryHeader($data,$rand,$canedit);
+				$cat = displayCategoryHeader($instID, $data,$rand,$canedit);
 			}
 
 			displaySoftsByCategory($data, $instID, $withtemplate,$canedit);
@@ -1610,6 +1609,27 @@ function showSoftwareInstalled($instID, $withtemplate = '') {
 		*/
 	}
 
+	// Affected licenses NOT installed
+	$query = "SELECT glpi_software.name as softname, glpi_software.deleted, glpi_dropdown_state.name AS state, glpi_softwarelicenses.buy_version,
+		glpi_softwarelicenses.sID, glpi_softwareversions.name AS version, glpi_softwarelicenses.type AS lictype
+		FROM glpi_softwarelicenses 
+		INNER JOIN glpi_software ON (glpi_softwarelicenses.sID = glpi_software.ID) 
+		LEFT JOIN glpi_dropdown_software_category ON (glpi_dropdown_software_category.ID = glpi_software.category)
+		LEFT JOIN glpi_softwareversions ON ( glpi_softwarelicenses.buy_version = glpi_softwareversions.ID )
+		LEFT JOIN glpi_dropdown_state ON ( glpi_dropdown_state.ID = glpi_softwareversions.state )
+		WHERE glpi_softwarelicenses.FK_computers = '$instID' ";
+	if (count($installed)) {
+		$query .= " AND glpi_softwarelicenses.sID NOT IN (".implode(',',$installed).")";
+	}
+	$req=$DB->request($query);
+	if ($req->numrows()) {
+		displayCategoryHeader($instID, $data,$rand,$canedit);
+		foreach ($req as $data) {
+			displaySoftsByLicense($data, $instID, $withtemplate, $canedit);			
+		}
+		displayCategoryFooter(NULL,$rand,$canedit);
+	}
+	
 	echo "</table></div><br>";
 
 }
@@ -1638,7 +1658,11 @@ function displayCategoryFooter($cat,$rand,$canedit) {
 	
 			echo "<select name='update_licenses$cat$rand' id='update_licenses_choice$cat$rand'>";
 			echo "<option value=''>-----</option>";
-			echo "<option value='uninstall_license'>".$LANG['buttons'][5]."</option>";
+			if (isset($cat)) {
+				echo "<option value='uninstall_license'>".$LANG['buttons'][5]."</option>";
+			} else {
+				echo "<option value='install_license'>".$LANG['buttons'][4]."</option>";
+			}
 			echo "</select>";
 	
 			$params=array('type'=>'__VALUE__');
@@ -1657,24 +1681,35 @@ function displayCategoryFooter($cat,$rand,$canedit) {
 /**
  * Display category header for showSoftwareInstalled function
  *
+ * @param $cID ID of the computer
  * @param $data data used to display 
  * @param $rand random for unicity
  * @param $canedit boolean
  * 
  * @return new category ID
  */
-function displayCategoryHeader($data,$rand,$canedit) {
+function displayCategoryHeader($cID,$data,$rand,$canedit) {
 	global $LANG, $CFG_GLPI;
 		
 	$display = "none";
 
-	$cat = $data["category_id"];
-	$catname = $data["category"];
-	if (!$cat) {
-		$catname = $LANG['softwarecategories'][3];
-		$display = $_SESSION["glpiexpand_soft_not_categorized"];
-	} else
-		$display = $_SESSION["glpiexpand_soft_categorized"];
+	if (isset($data["category_id"])) {
+		$cat = $data["category_id"];
+		if ($cat) {
+			// Categorized
+			$catname = $data["category"];
+			$display = $_SESSION["glpiexpand_soft_categorized"];		
+		} else {
+			// Not categorized
+			$catname = $LANG['softwarecategories'][3];
+			$display = $_SESSION["glpiexpand_soft_not_categorized"];
+		}
+	} else {
+		// Not installed
+		$cat = '';		
+		$catname = $LANG['software'][50] . " - " . $LANG['plugins'][1];
+		$display = true;
+	} 
 
 	echo "	<tr class='tab_bg_2'>";
 	echo "  	<td align='center' colspan='5'>";
@@ -1687,10 +1722,12 @@ function displayCategoryHeader($data,$rand,$canedit) {
 	echo "		<td colspan='5'>
 				     <div align='center' id='softcat$cat$rand' " . (!$display ? "style=\"display:none;\"" : '') . ">";
 	echo "<form id='lic_form$cat$rand' name='lic_form$cat$rand' method='post' action=\"".$CFG_GLPI["root_doc"]."/front/software.licenses.php\">";
+	echo "<input type='hidden' name='cID' value='$cID'>";
 	echo "			<table class='tab_cadre_fixe'>";
 	echo "				<tr>";
-	if ($canedit)
+	if ($canedit) {
 		echo "<th>&nbsp;</th>";
+	}
 	echo "					<th>" . $LANG['common'][16] . "</th><th>" . $LANG['state'][0] . "</th><th>" . $LANG['software'][5] . "</th>";
 	echo "				</tr>";
 
@@ -1698,7 +1735,7 @@ function displayCategoryHeader($data,$rand,$canedit) {
 }
 
 /**
- * Display a software for a category
+ * Display a installed software for a category
  *
  * @param $data data used to display 
  * @param $instID ID of the computer
@@ -1711,26 +1748,55 @@ function displaySoftsByCategory($data, $instID, $withtemplate,$canedit) {
 	$ID = $data["ID"];
 	$multiple = false;
 
-	$today = date("Y-m-d");
-
-	if ($data['deleted']) {
-		$expirer = 1;
-	}
-
 	echo "<tr class='tab_bg_1'>";
-	if ($canedit)
-	echo "<td><input type='checkbox' name='license_".$data['ID']."'></td>";
+	if ($canedit) {
+		echo "<td><input type='checkbox' name='license_".$data['ID']."'></td>";
+	}
 	echo "<td class='center'><strong><a href=\"" . $CFG_GLPI["root_doc"] . "/front/software.form.php?ID=" . $data['sID'] . "\">";
-	echo $data["softname"] . ($_SESSION["glpiview_ID"] ? " (" . $data['ID'] . ")" : "") . "</a>";
+	echo $data["softname"] . ($_SESSION["glpiview_ID"] ? " (" . $data['sID'] . ")" : "") . "</a>";
 	echo "</strong></td>";
 	echo "<td>" . $data["state"] . "</td>";
 
 	echo "<td>" . $data["version"];
-	if ($data["FK_computers"]==$instID)
+	if ($data["FK_computers"]==$instID) {
 		echo " - <strong>". getDropdownName("glpi_dropdown_licensetypes",$data["lictype"]) . "</strong>";
+	}
 	if ((empty ($withtemplate) || $withtemplate != 2) && $canedit) {
 		echo " - <a href=\"" . $CFG_GLPI["root_doc"] . "/front/software.licenses.php?uninstall=uninstall&amp;ID=$ID&amp;cID=$instID\">";
 		echo "<strong>" . $LANG['buttons'][5] . "</strong></a>";
+	}
+	echo "</td>";
+	echo "</tr>";
+}
+
+/**
+ * Display a software for a License (not installed)
+ *
+ * @param $data data used to display 
+ * @param $instID ID of the computer
+ * @param $withtemplate template case of the view process
+ * @return nothing
+ */
+function displaySoftsByLicense($data, $instID, $withtemplate,$canedit) {
+	global $LANG, $CFG_GLPI;
+
+	$ID = $data["buy_version"];
+	$multiple = false;
+
+	echo "<tr class='tab_bg_1'>";
+	if ($canedit) {
+		echo "<td><input type='checkbox' name='version_$ID'></td>";
+	}
+	echo "<td class='center'><strong><a href=\"" . $CFG_GLPI["root_doc"] . "/front/software.form.php?ID=" . $data['sID'] . "\">";
+	echo $data["softname"] . ($_SESSION["glpiview_ID"] ? " (" . $data['sID'] . ")" : "") . "</a>";
+	echo "</strong></td>";
+	echo "<td>" . $data["state"] . "</td>";
+
+	echo "<td>" . $data["version"];
+	echo " - <strong>". getDropdownName("glpi_dropdown_licensetypes",$data["lictype"]) . "</strong>";
+	if ((empty ($withtemplate) || $withtemplate != 2) && $canedit) {
+		echo " - <a href=\"" . $CFG_GLPI["root_doc"] . "/front/software.licenses.php?install=install&amp;vID=$ID&amp;cID=$instID\">";
+		echo "<strong>" . $LANG['buttons'][4] . "</strong></a>";
 	}
 	echo "</td>";
 	echo "</tr>";
