@@ -1431,7 +1431,7 @@ function updateInstalledVersion($instID, $newvID, $dohistory=1) {
 	if ($DB->numrows($result) > 0){
 		$cID=$DB->result($result, 0, "cID");
 		$vID=$DB->result($result, 0, "vID");
-		if ($vID!=$newvID){
+		if ($vID!=$newvID && $newvID>0){
 			uninstallSoftwareVersion($instID, $dohistory);
 			installSoftwareVersion($cID, $newvID, $dohistory);
 		}

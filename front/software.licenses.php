@@ -211,7 +211,7 @@ else if (isset($_POST["deleteinstalls"])){
 else if (isset($_POST["moveinstalls"])){
 	checkRight("software","w");
 	foreach ($_POST["item"] as $key => $val){
-		if ($val==1) {
+		if ($val==1 && $_POST['versionID']>0) {
 			updateInstalledVersion($key, $_POST['versionID']);
 			logEvent($_POST["sID"], "software", 5, "inventory", $_SESSION["glpiname"]." change version of versions installed on computers.");
 		}
