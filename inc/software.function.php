@@ -1485,6 +1485,9 @@ function uninstallSoftwareVersion($ID, $dohistory = 1) {
 			// Update use_version for Affected License
 			$DB->query("UPDATE glpi_softwarelicenses SET use_version=0 
 				WHERE sID='".$vers->fields["sID"]."' AND FK_computers='".$data["cID"]."'");
+
+			// TODO : do we need this HACK (OCS synch install new version before uninstall the old)
+			// " AND  use_version=".$vers->fields["ID"]."'"
 			
 			if ($dohistory) {
 				$soft = new Software();
