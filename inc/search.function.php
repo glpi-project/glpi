@@ -1769,14 +1769,11 @@ function addSelect ($type,$ID,$num,$meta=0,$meta_type=0){
 				if (!empty($SEARCH_OPTION[$type][$ID]["linkfield"]))
 					$linkfield="_".$SEARCH_OPTION[$type][$ID]["linkfield"];
 	
-				if ($meta){
-					return " CONCAT(".$table.$linkfield.$addtable.".realname,' ',".$table.$linkfield.$addtable.".firstname) AS ".$NAME."_$num, ";
-				} else {
-					return $table.$linkfield.$addtable.".".$field." AS ".$NAME."_$num,
-						".$table.$linkfield.$addtable.".realname AS ".$NAME."_".$num."_2,
-						".$table.$linkfield.$addtable.".ID AS ".$NAME."_".$num."_3,
-						".$table.$linkfield.$addtable.".firstname AS ".$NAME."_".$num."_4,";
-				}
+				// if ($meta) return " CONCAT(".$table.$linkfield.$addtable.".realname,' ',".$table.$linkfield.$addtable.".firstname) AS ".$NAME."_$num, ";
+				return $table.$linkfield.$addtable.".".$field." AS ".$NAME."_$num,
+					".$table.$linkfield.$addtable.".realname AS ".$NAME."_".$num."_2,
+					".$table.$linkfield.$addtable.".ID AS ".$NAME."_".$num."_3,
+					".$table.$linkfield.$addtable.".firstname AS ".$NAME."_".$num."_4,";
 			}
 		break;
 
