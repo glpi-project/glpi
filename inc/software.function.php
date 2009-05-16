@@ -1559,6 +1559,7 @@ function showSoftwareInstalled($instID, $withtemplate = '') {
 	    LEFT JOIN glpi_software ON (glpi_softwareversions.sID = glpi_software.ID)  
 	    LEFT JOIN glpi_dropdown_software_category ON (glpi_dropdown_software_category.ID = glpi_software.category)";
 	$query_nocat .= " WHERE glpi_inst_software.cID = '$instID' AND (glpi_software.category <= 0 OR glpi_software.category IS NULL )";
+
 	$query = "( $query_cat ) UNION ($query_nocat) ORDER BY TYPE, category, softname, version";
 
 	$DB->query("SET SESSION group_concat_max_len = 9999999;");
@@ -1587,46 +1588,26 @@ function showSoftwareInstalled($instID, $withtemplate = '') {
 
 	initNavigateListItems(SOFTWARE_TYPE,$LANG['help'][25]." = ".(empty($comp->fields["name"]) ? "(".$comp->fields["ID"].")":$comp->fields["name"]));
 
+	$installed=array();
 	if ($DB->numrows($result)) {
 		while ($data = $DB->fetch_array($result)) {
 			if ($data["category_id"] != $cat) {
-				$cat = displayCategoryHeader($data, $cat,$rand,$canedit);
+				displayCategoryFooter($cat,$rand,$canedit);
+				$cat = displayCategoryHeader($data,$rand,$canedit);
 			}
 
 			displaySoftsByCategory($data, $instID, $withtemplate,$canedit);
 			addToNavigateListItems(SOFTWARE_TYPE,$data["sID"]);
+			$installed[]=$data["sID"];
 		}
 
-		echo "</table>";
-		
-		if ($canedit) {
-			echo "<table width='950px'>";
-			echo "<tr><td><img src=\"".$CFG_GLPI["root_doc"]."/pics/arrow-left.png\" alt=''></td><td><a onclick= \"if ( markCheckboxes('lic_form$cat$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=".$cat."&amp;select=all'>".$LANG['buttons'][18]."</a></td>";
-			echo "<td>/</td><td ><a onclick=\"if ( unMarkCheckboxes ('lic_form$cat$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=".$cat."&amp;select=none'>".$LANG['buttons'][19]."</a>";
-			echo "</td><td class='left' width='80%'>";
-	
-			echo "<select name='update_licenses$cat$rand' id='update_licenses_choice$cat$rand'>";
-			echo "<option value=''>-----</option>";
-			echo "<option value='uninstall_license'>".$LANG['buttons'][5]."</option>";
-			echo "</select>";
-	
-			$params=array('type'=>'__VALUE__',
-								'sID'=>$data["sID"],
-						);
-						ajaxUpdateItemOnSelectEvent("update_licenses_choice$cat$rand","update_licenses_view$cat$rand",$CFG_GLPI["root_doc"]."/ajax/updateLicenses.php",$params,false);
-	
-			echo "<span id='update_licenses_view$cat$rand'>\n";
-			echo "&nbsp;";
-			echo "</span>\n";
-			echo "</td></tr></table>";
-		}
-		echo "</form>";
-		echo "</div></td></tr>";
+		displayCategoryFooter($cat,$rand,$canedit);
 
+		/* seems not used
 		$q = "SELECT count(*) FROM glpi_software WHERE deleted='0' AND is_template='0'";
 		$result = $DB->query($q);
 		$nb = $DB->result($result, 0, 0);
-
+		*/
 	}
 
 	echo "</table></div><br>";
@@ -1634,16 +1615,17 @@ function showSoftwareInstalled($instID, $withtemplate = '') {
 }
 
 /**
- * Display category header for showSoftwareInstalled function
+ * Display category footer for showSoftwareInstalled function
  *
- * @param $data data used to display 
  * @param $cat current category ID
+ * @param $rand random for unicity
+ * @param $canedit boolean
+ * 
  * @return new category ID
  */
-function displayCategoryHeader($data, $cat,$rand,$canedit) {
+function displayCategoryFooter($cat,$rand,$canedit) {
 	global $LANG, $CFG_GLPI;
-	$expirecss = '';
-	
+
 	// Close old one
 	if ($cat != -1) {
 		echo "</table>";
@@ -1659,9 +1641,7 @@ function displayCategoryHeader($data, $cat,$rand,$canedit) {
 			echo "<option value='uninstall_license'>".$LANG['buttons'][5]."</option>";
 			echo "</select>";
 	
-			$params=array('type'=>'__VALUE__',
-			'sID'=>$data["sID"],
-			);
+			$params=array('type'=>'__VALUE__');
 			ajaxUpdateItemOnSelectEvent("update_licenses_choice$cat$rand","update_licenses_view$cat$rand",$CFG_GLPI["root_doc"]."/ajax/updateLicenses.php",$params,false);
 	
 			echo "<span id='update_licenses_view$cat$rand'>\n";
@@ -1672,7 +1652,20 @@ function displayCategoryHeader($data, $cat,$rand,$canedit) {
 		echo "</form>";
 		echo "</div></td></tr>";
 	}
-	
+}
+
+/**
+ * Display category header for showSoftwareInstalled function
+ *
+ * @param $data data used to display 
+ * @param $rand random for unicity
+ * @param $canedit boolean
+ * 
+ * @return new category ID
+ */
+function displayCategoryHeader($data,$rand,$canedit) {
+	global $LANG, $CFG_GLPI;
+		
 	$display = "none";
 
 	$cat = $data["category_id"];
@@ -1683,14 +1676,14 @@ function displayCategoryHeader($data, $cat,$rand,$canedit) {
 	} else
 		$display = $_SESSION["glpiexpand_soft_categorized"];
 
-	echo "	<tr class='tab_bg_2$expirecss'>";
+	echo "	<tr class='tab_bg_2'>";
 	echo "  	<td align='center' colspan='5'>";
 	echo "			<a  href=\"javascript:showHideDiv('softcat$cat$rand','imgcat$cat','" . GLPI_ROOT . "/pics/folder.png','" . GLPI_ROOT . "/pics/folder-open.png');\">";
 	echo "				<img alt='' name='imgcat$cat' src=\"" . GLPI_ROOT . "/pics/folder" . (!$display ? '' : "-open") . ".png\">&nbsp;<strong>" . $catname . "</strong>";
 	echo "			</a>";
 	echo "		</td>";
 	echo "	</tr>";
-	echo "<tr class='tab_bg_2$expirecss'>";
+	echo "<tr class='tab_bg_2'>";
 	echo "		<td colspan='5'>
 				     <div align='center' id='softcat$cat$rand' " . (!$display ? "style=\"display:none;\"" : '') . ">";
 	echo "<form id='lic_form$cat$rand' name='lic_form$cat$rand' method='post' action=\"".$CFG_GLPI["root_doc"]."/front/software.licenses.php\">";
@@ -1700,6 +1693,7 @@ function displayCategoryHeader($data, $cat,$rand,$canedit) {
 		echo "<th>&nbsp;</th>";
 	echo "					<th>" . $LANG['common'][16] . "</th><th>" . $LANG['state'][0] . "</th><th>" . $LANG['software'][5] . "</th>";
 	echo "				</tr>";
+
 	return $cat;
 }
 
@@ -1721,7 +1715,6 @@ function displaySoftsByCategory($data, $instID, $withtemplate,$canedit) {
 
 	if ($data['deleted']) {
 		$expirer = 1;
-		$expirecss = "_2";
 	}
 
 	echo "<tr class='tab_bg_1'>";
