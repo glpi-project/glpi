@@ -406,7 +406,24 @@ function showLicenses($sID) {
 				echo "<td>".$data['buyname']."</td>";
 				echo "<td>".$data['usename']."</td>";
 				echo "<td>".convDate($data['expire'])."</td>";
-				echo "<td>".($data['FK_computers']>0?"<a href='computer.form.php?ID=".$data['FK_computers']."'>".getDropdownName("glpi_computers",$data['FK_computers'])."</a>":"")."</td>";
+				if ($data['FK_computers']>0) {
+					echo "<td><a href='computer.form.php?ID=".$data['FK_computers']."'>".getDropdownName("glpi_computers",$data['FK_computers'])."</a>";
+					
+					$sql = "SELECT glpi_softwareversions.name " .
+							"FROM glpi_softwareversions, glpi_inst_software " .
+							"WHERE glpi_softwareversions.sID='$sID' " .
+							"  AND glpi_inst_software.vID=glpi_softwareversions.ID" .
+							"  AND glpi_inst_software.cID='".$data['FK_computers']."'";
+							
+					$installed='';
+					foreach ($DB->request($sql) as $inst) {
+						$installed .= (empty($installed)?'':',').$inst['name']; 
+					}
+					echo " (".(empty($installed) ? $LANG['plugins'][1] : $installed).")"; // TODO : move lang to common ?
+					echo "</td>";
+				} else {
+					echo "<td>&nbsp;</td>";
+				}
 				
 				/*echo "<td>";
 				showDisplayInfocomLink(SOFTWARELICENSE_TYPE, $data['ID'], 1);
