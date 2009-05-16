@@ -409,6 +409,8 @@ function showLicenses($sID) {
 				if ($data['FK_computers']>0) {
 					echo "<td><a href='computer.form.php?ID=".$data['FK_computers']."'>".getDropdownName("glpi_computers",$data['FK_computers'])."</a>";
 					
+					// search installed version name
+					// should be same as name of used_version, except for multiple installation
 					$sql = "SELECT glpi_softwareversions.name " .
 							"FROM glpi_softwareversions, glpi_inst_software " .
 							"WHERE glpi_softwareversions.sID='$sID' " .
@@ -418,7 +420,7 @@ function showLicenses($sID) {
 							
 					$installed='';
 					foreach ($DB->request($sql) as $inst) {
-						$installed .= (empty($installed)?'':',').$inst['name']; 
+						$installed .= (empty($installed)?'':', ').$inst['name']; 
 					}
 					echo " (".(empty($installed) ? $LANG['plugins'][1] : $installed).")"; // TODO : move lang to common ?
 					echo "</td>";
