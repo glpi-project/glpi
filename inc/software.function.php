@@ -413,7 +413,8 @@ function showLicenses($sID) {
 							"FROM glpi_softwareversions, glpi_inst_software " .
 							"WHERE glpi_softwareversions.sID='$sID' " .
 							"  AND glpi_inst_software.vID=glpi_softwareversions.ID" .
-							"  AND glpi_inst_software.cID='".$data['FK_computers']."'";
+							"  AND glpi_inst_software.cID='".$data['FK_computers']."' " .
+							"ORDER BY name";
 							
 					$installed='';
 					foreach ($DB->request($sql) as $inst) {
