@@ -992,7 +992,7 @@ function addFormTracking ($device_type=0,$ID=0, $target, $author, $group=0, $ass
 	echo "<tr><th class='center'>".$LANG['common'][57].":";
 	echo "</th><th colspan='3' class='left'>";
 
-	echo "<input type='text' size='80' name='name' value='$name'>";
+	echo "<input type='text' size='80' name='name' value=\"".cleanInputText($name)."\">";
 	echo "</th> </tr>";
 
 	
