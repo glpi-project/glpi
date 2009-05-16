@@ -1726,7 +1726,7 @@ function addDefaultSelect ($type){
  *
  **/
 function addSelect ($type,$ID,$num,$meta=0,$meta_type=0){
-	global $LINK_ID_TABLE,$SEARCH_OPTION,$PLUGIN_HOOKS;
+	global $LINK_ID_TABLE,$SEARCH_OPTION,$PLUGIN_HOOKS,$CFG_GLPI;
 
 	$table=$SEARCH_OPTION[$type][$ID]["table"];
 	$field=$SEARCH_OPTION[$type][$ID]["field"];
@@ -1752,6 +1752,17 @@ function addSelect ($type,$ID,$num,$meta=0,$meta_type=0){
 	}
 
 	switch ($table.".".$field){
+		case "glpi_contacts.completename":
+			// Contact for display in the enterprise item
+			if ($CFG_GLPI["name_display_order"]==FIRSTNAME_BEFORE) {
+				$name1='firstname';
+				$name2='name';					
+			} else {
+				$name1='name';
+				$name2='firstname';					
+			}
+			return " GROUP_CONCAT( DISTINCT CONCAT(".$table.$addtable.".$name1, ' ', ".$table.$addtable.".$name2, '$$', ".$table.$addtable.".ID) SEPARATOR '$$$$') AS ".$NAME."_$num, ";
+		break;
 		case "glpi_users.name" :
 			if ($type!=USER_TYPE){
 				$linkfield="";
