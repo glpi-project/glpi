@@ -967,7 +967,7 @@ class Rule extends CommonDBTM{
 		echo "<form name='actionsform' id='actionsform' method='post' action=\"$target\">\n";
 				
 		echo "<div class='center'>"; 
-		echo "<table class='tab_cadrehov'>";
+		echo "<table class='tab_cadre_fixe'>";
 		echo "<tr><th colspan='".($canedit?" 4 ":"3")."'>" . $LANG['rulesengine'][7] . "</th></tr>";
 		echo "<tr  class='tab_bg_2'>";
 		if ($canedit){
@@ -986,7 +986,7 @@ class Rule extends CommonDBTM{
 				
 		if ($canedit&&$nb>0) {
 			echo "<div class='center'>";
-			echo "<table  width='80%' class='tab_glpi'>";
+			echo "<table  width='950px' class='tab_glpi'>";
 			echo "<tr><td><img src=\"" . $CFG_GLPI["root_doc"] . "/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markCheckboxes('actionsform') ) return false;\" href='" . $_SERVER['PHP_SELF'] . "?select=all'>" . $LANG['buttons'][18] . "</a></td>";
 
 			echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkCheckboxes('actionsform') ) return false;\" href='" . $_SERVER['PHP_SELF'] . "?select=none'>" . $LANG['buttons'][19] . "</a>";
@@ -1093,7 +1093,7 @@ class Rule extends CommonDBTM{
 		
 		echo "<form name='criteriasform' id='criteriasform' method='post' action=\"$target\">\n";
 		echo "<div class='center'>"; 
-		echo "<table class='tab_cadrehov'>";
+		echo "<table class='tab_cadre_fixe'>";
 		echo "<tr><th colspan='".($canedit?" 4 ":"3")."'>" . $LANG['rulesengine'][6] . "</th></tr>\n";
 		echo "<tr>";
 		if ($canedit){
@@ -1111,7 +1111,7 @@ class Rule extends CommonDBTM{
 		echo "</table></div>";
 		if ($canedit&&$maxsize>0) {
 			echo "<div class='center'>\n";
-			echo "<table width='80%' class='tab_glpi'>\n";
+			echo "<table width='950px' class='tab_glpi'>\n";
 			echo "<tr><td><img src=\"" . $CFG_GLPI["root_doc"] . "/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markCheckboxes('criteriasform') ) return false;\" href='" . $_SERVER['PHP_SELF'] . "?ID=".$this->fields["ID"]."&amp;select=all'>" . $LANG['buttons'][18] . "</a></td>";
 
 			echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkCheckboxes('criteriasform') ) return false;\" href='" . $_SERVER['PHP_SELF'] . "?ID=".$this->fields["ID"]."&amp;select=none'>" . $LANG['buttons'][19] . "</a>";
