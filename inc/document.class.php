@@ -87,8 +87,8 @@ class Document extends CommonDBTM {
 		global $LANG;
 		$ong=array();
 		if ($ID>0){
-			$ong[1]=$LANG['common'][1];
-			$ong[5]=$LANG['Menu'][27];
+			$ong[1]=$LANG['financial'][104];
+			$ong[5]=$LANG['document'][21];
 			if (haveRight("notes","r"))
 				$ong[10]=$LANG['title'][37];
 		} else { // New item
