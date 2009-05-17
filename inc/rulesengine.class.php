@@ -257,7 +257,7 @@ class RuleCollection {
 		
 		echo "<br><form name='ruleactions_form' id='ruleactions_form' method='post' action=\"$target\">\n";
 		echo "<div class='center'>"; 
-		echo "<table class='tab_cadrehov'>";
+		echo "<table class='tab_cadre_fixe'>";
 
 		echo "<tr><th colspan='6'><div class='relative'><span><strong>" . $this->getTitle() . "</strong></span>";
 		/* 
@@ -285,7 +285,7 @@ class RuleCollection {
 		echo "</div>";
 		if ($canedit&&$nb>0) {
 			echo "<div class='center'>";
-			echo "<table width='80%' class='tab_glpi'>";
+			echo "<table width='950px' class='tab_glpi'>";
 			
 			echo "<tr><td><img src=\"" . $CFG_GLPI["root_doc"] . "/pics/arrow-left.png\" alt=''></td><td class='center'><a onclick= \"if ( markCheckboxes('entityaffectation_form') ) return false;\" href='" . $_SERVER['PHP_SELF'] . "?select=all'>" . $LANG['buttons'][18] . "</a></td>";
 
@@ -319,11 +319,13 @@ class RuleCollection {
 			echo "</div>";
 		} 
 		
-		echo "<span class='icon_consol'><a href='#' onClick=\"var w=window.open('".$CFG_GLPI["root_doc"]."/front/popup.php?popup=test_all_rules&amp;sub_type=".$this->sub_type."&amp' ,'glpipopup', 'height=400, width=1000, top=100, left=100, scrollbars=yes' );w.focus();\">".$LANG['rulesengine'][84]."</a></span>"; 
 		echo "</form>";
+		echo "<br><span class='icon_consol'><a href='#' onClick=\"var w=window.open('".$CFG_GLPI["root_doc"]."/front/popup.php?popup=test_all_rules&amp;sub_type=".$this->sub_type."&amp' ,'glpipopup', 'height=400, width=1000, top=100, left=100, scrollbars=yes' );w.focus();\">".$LANG['rulesengine'][84]."</a></span>"; 
+		
 
 
-		$this->showAdditionalInformationsInForm($target);
+		$this->showAdditionalInformationsInForm($target);	
+		
 
 	}
 
@@ -917,7 +919,7 @@ class Rule extends CommonDBTM{
 				( in_array('regex_result',$val['force_actions']) || in_array('append_regex_result',$val['force_actions'])) ) {
 				global $LANG,$CFG_GLPI;
 				echo "<div class='center'>"; 
-				echo "<table class='tab_cadrehov'>";
+				echo "<table class='tab_cadre_fixe'>";
 				echo "<tr  class='tab_bg_2'>";
 				echo "<td width='100%'>";
 				echo $LANG['rulesengine'][83];
@@ -2261,7 +2263,7 @@ class RuleCachedCollection extends RuleCollection{
 	**/
 	function showAdditionalInformationsInForm($target){
 		global $CFG_GLPI,$LANG;
-		echo "<span class='center'><a href='#' onClick=\"var w = window.open('".$CFG_GLPI["root_doc"]."/front/popup.php?popup=show_cache&amp;sub_type=".$this->sub_type."' ,'glpipopup', 'height=400, width=1000, top=100, left=100, scrollbars=yes' );w.focus();\">".$LANG['rulesengine'][100]."</a></span>"; 
+		echo "<span class='icon_consol'><a href='#' onClick=\"var w = window.open('".$CFG_GLPI["root_doc"]."/front/popup.php?popup=show_cache&amp;sub_type=".$this->sub_type."' ,'glpipopup', 'height=400, width=1000, top=100, left=100, scrollbars=yes' );w.focus();\">".$LANG['rulesengine'][100]."</a></span>"; 
 
 	}	
 
