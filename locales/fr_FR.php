@@ -1396,7 +1396,7 @@ $LANG['rulesengine'][112]="Affectation de droits et d'entités";
 
 $LANG['rulesengine'][120]="Le moteur s'arrête à la première règle vérifiée.";
 $LANG['rulesengine'][121]="Le moteur traite toutes les règles.";
-$LANG['rulesengine'][122]="Le moteur passe le résultat d'une règle aux suivantes.";
+$LANG['rulesengine'][122]="Le moteur transmet le résultat d'une règle aux suivantes.";
 
 $LANG['rulesengine'][130]="Entité depuis LDAP";
 $LANG['rulesengine'][131]="Entité depuis TAG";

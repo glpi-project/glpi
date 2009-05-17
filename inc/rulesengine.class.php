@@ -226,6 +226,8 @@ class RuleCollection {
 		global $CFG_GLPI, $LANG;
 			
 		$canedit = haveRight($this->right, "w");
+		
+		echo "<table class='tab_cadre_fixe'><tr><th>";
 
 		//Display informations about the how the rules engine process the rules
 		if ($this->stop_on_first_match){
@@ -239,6 +241,8 @@ class RuleCollection {
 			//The engine keep the result of a rule to be processed further
 			echo "<span class='center'><strong>".$LANG['rulesengine'][122]."</strong></span><br>";
 		}
+
+		echo "</th></tr></table>";
 
 		$nb = $this->getCollectionSize();
 		$start = (isset($_GET["start"]) ? $_GET["start"] : 0);
@@ -256,9 +260,12 @@ class RuleCollection {
 		echo "<table class='tab_cadrehov'>";
 
 		echo "<tr><th colspan='6'><div class='relative'><span><strong>" . $this->getTitle() . "</strong></span>";
+		/* 
+		// TODO Delete definitively this because we have the add button in the menu bar...		
 		if ($canedit){
 			echo "<span style='  position:absolute; right:0; margin-right:5px; font-size:10px;'><a href=\"".str_replace(".php",".form.php",$target)."\"><img src=\"".$CFG_GLPI["root_doc"]."/pics/plus.png\" alt='+' title='".$LANG['buttons'][8]."'></a></span>";
 		}
+		*/
 
 		echo "</div></th></tr>";
 		echo "<tr>";
@@ -312,7 +319,7 @@ class RuleCollection {
 			echo "</div>";
 		} 
 		
-		echo "<span class='center'><a href='#' onClick=\"var w=window.open('".$CFG_GLPI["root_doc"]."/front/popup.php?popup=test_all_rules&amp;sub_type=".$this->sub_type."&amp' ,'glpipopup', 'height=400, width=1000, top=100, left=100, scrollbars=yes' );w.focus();\">".$LANG['rulesengine'][84]."</a></span>"; 
+		echo "<span class='icon_consol'><a href='#' onClick=\"var w=window.open('".$CFG_GLPI["root_doc"]."/front/popup.php?popup=test_all_rules&amp;sub_type=".$this->sub_type."&amp' ,'glpipopup', 'height=400, width=1000, top=100, left=100, scrollbars=yes' );w.focus();\">".$LANG['rulesengine'][84]."</a></span>"; 
 		echo "</form>";
 
 
