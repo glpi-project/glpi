@@ -1487,7 +1487,7 @@ function uninstallSoftwareVersion($ID, $dohistory = 1) {
 			$DB->query("UPDATE glpi_softwarelicenses SET use_version=0 
 				WHERE sID='".$vers->fields["sID"]."' 
 				  AND FK_computers='".$data["cID"]."' 
-				  AND use_version=".$vers->fields["ID"]."'");
+				  AND use_version='".$vers->fields["ID"]."'");
 			
 			if ($dohistory) {
 				$soft = new Software();
