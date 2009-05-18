@@ -1584,7 +1584,7 @@ function showSoftwareInstalled($instID, $withtemplate = '') {
 		echo "</td></tr>";
 	}
 
-	echo "<tr><th colspan='6'>" . $LANG['software'][17] . ":</th></tr>";
+	echo "<tr><th colspan='5'>" . $LANG['software'][17] . ":</th></tr>";
 
 	$cat = -1;
 
