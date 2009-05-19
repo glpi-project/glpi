@@ -1640,13 +1640,14 @@ function printHelpDesk ($ID,$from_helpdesk) {
 	if (isset($_SESSION["helpdeskSaved"]["device_type"]))
 		$device_type = stripslashes($_SESSION["helpdeskSaved"]["device_type"]);
 	if (isset($_SESSION["helpdeskSaved"]["contents"]))
-		$contents = stripslashes($_SESSION["helpdeskSaved"]["contents"]);
+		$contents = cleanPostForTextArea($_SESSION["helpdeskSaved"]["contents"]);
 	if (isset($_SESSION["helpdeskSaved"]["name"]))
 		$title = stripslashes($_SESSION["helpdeskSaved"]["name"]);
 	if (isset($_SESSION["helpdeskSaved"]["category"]))
 		$category = stripslashes($_SESSION["helpdeskSaved"]["category"]);
 	if (isset($_SESSION["helpdeskSaved"]["priority"]))
 		$priority = stripslashes($_SESSION["helpdeskSaved"]["priority"]);
+
 	unset($_SESSION["helpdeskSaved"]);
 	
 
