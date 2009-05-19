@@ -179,7 +179,7 @@ $LANG['central'][13]="Globalni pogled";
 $LANG['central'][14]="Skupinski pogled"; 
 $LANG['central'][15]="Zahtevki v poteku (za tvoje skupine)"; 
 $LANG['central'][16]="Čakajoči zahtevki za tvoje skupine"; 
-$LANG['central'][17]="Your tickets"; 
+$LANG['central'][17]="Vaši zahtevki"; 
 
 $LANG['choice'][0]="Ne"; 
 $LANG['choice'][1]="Da"; 
@@ -1453,7 +1453,7 @@ $LANG['setup'][106]="4- Zapiski (Dodano, zbrisano, sledenje)";
 $LANG['setup'][107]="5- Kompletno (Vse)"; 
 $LANG['setup'][108]="Število dnevnikovih dogodkov ki se natisnejo"; 
 $LANG['setup'][109]="Kako dolgo se dnevnik dogodkov hrani v bazi (v dnevih, 0 za neskončno)"; 
-$LANG['setup'][110]="Show new tickets on the home page"; 
+$LANG['setup'][110]="Prikaži nove zahtevke na uvodni strani"; 
 $LANG['setup'][111]="Število elementov ki se natisnejo na stran"; 
 $LANG['setup'][112]="Maksimalno število znakov za vsak predmet seznama"; 
 $LANG['setup'][113]="Privzeti jezik"; 
