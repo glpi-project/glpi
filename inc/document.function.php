@@ -574,7 +574,8 @@ function cleanFilenameDocument($name){
  $bad_chars = array("'", "\\", ' ', '/', ':', '*', '?', '"', '<', '>', '|');
  $name = str_replace($bad_chars, '_', $name);
  $name = preg_replace("/%(\w{2})/", '_', $name);
- return preg_replace("/\\x00-\\x1f/u", '_', $name);
+ $name = preg_replace("/\\x00-\\x1f/u", '_', $name);
+ return strtolower($name);
 }
 
 /**
