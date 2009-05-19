@@ -780,7 +780,7 @@ function showJobVeryShort($ID) {
 	}
 }
 
-function addFormTracking ($device_type=0,$ID=0, $target, $author, $group=0, $assign=0, $assign_group=0, $name='',$contents='',$category=0, $priority=3,$request_type=1,$hour=0,$minute=0,$entity_restrict,$status=1) {
+function addFormTracking ($device_type=0,$ID=0, $target, $author, $group=0, $assign=0, $assign_group=0, $name='',$contents='',$category=0, $priority=3,$request_type=1,$hour=0,$minute=0,$entity_restrict,$status=1,$followup=array()) {
 	// Prints a nice form to add jobs
 
 	global $CFG_GLPI, $LANG,$CFG_GLPI,$REFERER,$DB;
@@ -928,7 +928,7 @@ function addFormTracking ($device_type=0,$ID=0, $target, $author, $group=0, $ass
 	dropdownPriority("priority",$priority);
 	echo "</td>";
 
-	echo "<td>".$LANG['common'][36].":</td>";
+	echo "<td class='center'>".$LANG['common'][36].":</td>";
 	echo "<td class='center'>";
 	dropdownValue("glpi_dropdown_tracking_category","category",$category);
 	echo "</td></tr>";
@@ -1026,7 +1026,7 @@ function addFormTracking ($device_type=0,$ID=0, $target, $author, $group=0, $ass
 	if (haveRight("comment_all_ticket","1")){
 	echo "<br>";
 
-		showAddFollowupForm(-1);
+		showAddFollowupForm(-1,false,$followup);
 	}
 
 	echo "</div></form>";
@@ -2394,12 +2394,12 @@ function showFollowupsSummary($tID){
 /** Form to add a followup to a ticket
 * @param $tID integer : ticket ID
 * @param $massiveaction boolean : add followup using massive action
+* @param $datas array : datas to preset form
 */
-function showAddFollowupForm($tID,$massiveaction=false){
+function showAddFollowupForm($tID,$massiveaction=false,$datas=array()){
 	global $DB,$LANG,$CFG_GLPI;
 
 	$job=new Job;
-
 	if ($tID>0){
 		$job->getFromDB($tID);
 	} else {
@@ -2445,7 +2445,11 @@ function showAddFollowupForm($tID,$massiveaction=false){
 	echo "<tr class='tab_bg_2'><td width='$width_left'>";
 	echo "<table width='100%'>";
 	echo "<tr><td>".$LANG['joblist'][6]."</td>";
-	echo "<td><textarea name='".$prefix."contents".$postfix."' rows='12' cols='$cols'></textarea>";
+	echo "<td><textarea name='".$prefix."contents".$postfix."' rows='12' cols='$cols'>";
+	if (isset($datas['contents'])){
+		echo cleanPostForTextArea($datas['contents']);
+	}
+	echo "</textarea>";
 	echo "</td></tr>";
 	echo "</table>";
 	echo "</td>";
@@ -2457,9 +2461,14 @@ function showAddFollowupForm($tID,$massiveaction=false){
 		echo "<tr>";
 		echo "<td>".$LANG['common'][77].":</td>";
 		echo "<td>";
+
+		$default_private=$_SESSION['glpifollowup_private'];
+		if (isset($datas['private'])){
+			$default_private=$datas['private'];
+		}
 		echo "<select name='".$prefix."private".$postfix."'>";
-		echo "<option value='0' ".(!$_SESSION['glpifollowup_private']?"selected":"").">".$LANG['choice'][0]."</option>";
-		echo "<option value='1' ".($_SESSION['glpifollowup_private']?"selected":"").">".$LANG['choice'][1]."</option>";
+		echo "<option value='0' ".(!$default_private?"selected":"").">".$LANG['choice'][0]."</option>";
+		echo "<option value='1' ".($default_private?"selected":"").">".$LANG['choice'][1]."</option>";
 		echo "</select>";
 		echo "</td>";
 		echo "</tr>";
@@ -2488,6 +2497,20 @@ function showAddFollowupForm($tID,$massiveaction=false){
 					'author'=>$_SESSION['glpiID'],
 					'entity'=>$_SESSION["glpiactive_entity"],
 				);
+
+				if (isset($datas['plan'])&&isset($datas['plan']['state'])){
+					$params['state']=$datas['plan']['state'];
+				}
+				if (isset($datas['plan'])&&isset($datas['plan']['id_assign'])){
+					$params['author']=$datas['plan']['id_assign'];
+				}
+				if (isset($datas['plan'])&&isset($datas['plan']['begin'])){
+					$params['begin']=$datas['plan']['begin'];
+				}
+				if (isset($datas['plan'])&&isset($datas['plan']['end'])){
+					$params['end']=$datas['plan']['end'];
+				}
+
 				ajaxUpdateItemJsCode('viewplan'.$rand,$CFG_GLPI["root_doc"]."/ajax/planning.php",$params,false);
 		
 			echo "};";
@@ -2497,8 +2520,17 @@ function showAddFollowupForm($tID,$massiveaction=false){
 			echo "<span class='showplan'>".$LANG['job'][34]."</span>";
 			echo "</div>\n";	
 
+
 			echo "<div id='viewplan$rand'>\n";
 			echo "</div>\n";	
+
+			echo "<script type='text/javascript' >\n";
+		
+			// Display form
+			if (isset($params['end'])&&isset($params['begin'])){
+				echo "showPlanAdd$rand();";
+			}
+			echo "</script>";
 
 
 			echo "</td>";
@@ -2538,6 +2570,7 @@ function showAddFollowupForm($tID,$massiveaction=false){
 		echo "<input type='hidden' name='tracking' value='$tID'>";
 		echo "</form>";
 	}
+	
 	echo "</div>";
 
 }
