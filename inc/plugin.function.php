@@ -382,15 +382,12 @@ function getPluginsDropdowns(){
 	$dps=array();
 	if (isset($_SESSION["glpi_plugins"]) && is_array($_SESSION["glpi_plugins"])) { 
 		foreach ($_SESSION["glpi_plugins"] as  $plug) { 
-
-			$function="plugin_version_$plug";
-			$function2="plugin_".$plug."_getDropdown";
-			if (function_exists($function2)) {
+			
+			$tab = doOneHook($plug,'getDropdown');
+			if (is_array($tab)){ 
+				$function="plugin_version_$plug";			
 				$name=$function();
-				$tab=$function2();
-				if (is_array($tab)){ 
-					$dps=array_merge($dps,array($name['name']=>$tab));
-				}
+				$dps=array_merge($dps,array($name['name']=>$tab));
 			}
 		} 
 	} 
