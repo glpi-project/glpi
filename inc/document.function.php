@@ -537,7 +537,7 @@ function getDocumentLink($filename,$params=""){
 	global $DB,$CFG_GLPI;	
 	if (empty($filename))
 		return "&nbsp;";
-	$out="";
+
 	$splitter=explode("/",$filename);
 	if (count($splitter)==2)
 		$fileout=$splitter[1];
@@ -545,6 +545,7 @@ function getDocumentLink($filename,$params=""){
 
 	if (strlen($fileout)>20) $fileout=substr($fileout,0,20)."...";
 
+	$out = "<a href=\"".$CFG_GLPI["root_doc"]."/front/document.send.php?file=".urlencode($filename).$params."\" target=\"_blank\">";				
 	if (count($splitter)==2){
 
 		$query="SELECT * FROM glpi_type_docs WHERE ext LIKE '".$splitter[0]."' AND icon <> ''";
@@ -553,12 +554,11 @@ function getDocumentLink($filename,$params=""){
 			if ($DB->numrows($result)>0){
 				$icon=$DB->result($result,0,'icon');
 
-				$out="<a href=\"".$CFG_GLPI["root_doc"]."/front/document.send.php?file=$filename$params\" target=\"_blank\">&nbsp;<img style=\"vertical-align:middle; margin-left:3px; margin-right:6px;\" alt='".$fileout."' title='".$fileout."' src=\"".$CFG_GLPI["typedoc_icon_dir"]."/$icon\" ></a>";				
+				$out .= "&nbsp;<img style=\"vertical-align:middle; margin-left:3px; margin-right:6px;\" alt='".$fileout."' title='".$fileout."' src=\"".$CFG_GLPI["typedoc_icon_dir"]."/$icon\" >";				
 			}
 
 	}
-
-	$out.="<a href=\"".$CFG_GLPI["root_doc"]."/front/document.send.php?file=$filename$params\" target=\"_blank\"><strong>$fileout</strong></a>";	
+	$out.= "<strong>$fileout</strong></a>";	
 
 
 	return $out;
