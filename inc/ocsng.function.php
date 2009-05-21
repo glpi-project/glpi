@@ -3107,18 +3107,14 @@ function ocsUpdateSoftware($glpi_id, $entity, $ocs_id, $ocs_server_id, $cfg_ocs,
 					if ($data = $DB->fetch_assoc($result)) {
 						uninstallSoftwareVersion($key, $dohistory);
 
-						$query2 = "SELECT COUNT(*) 
-							FROM glpi_inst_software 
-							WHERE vID = '" . $data['vID'] . "'";
-						$result2 = $DB->query($query2);
-						if ($DB->result($result2, 0, 0) == 0) {
+						if (countElementsInTable('glpi_inst_software', "vID = '" . $data['vID'] . "'") == 0 
+							&& countElementsInTable('glpi_softwarelicenses', "buy_version  = '" . $data['vID'] . "'") == 0) {
+
 							$vers = new SoftwareVersion;
-							$vers->getFromDB($data['vID']);
-							$query3 = "SELECT COUNT(*) 
-								FROM glpi_softwareversions
-								WHERE sID='" . $vers->fields['sID'] . "'";
-							$result3 = $DB->query($query3);
-							if ($DB->result($result3, 0, 0) == 1){
+
+							if ($vers->getFromDB($data['vID'])
+								&& countElementsInTable('glpi_softwarelicenses', "sID  = '" . $vers->fields['sID'] . "'") == 0
+								&& countElementsInTable('glpi_softwareversions', "sID  = '" . $vers->fields['sID'] . "'") == 1) { // 1 is the current to be removed
 								putSoftwareInTrash($vers->fields['sID'],$LANG['ocsng'][54]);
 							}
 							
