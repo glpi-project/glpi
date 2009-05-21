@@ -559,7 +559,8 @@ class SoftwareVersion extends CommonDBTM {
 
 			if ($ID>0) {
 	
-				if (countInstallationsForVersion($ID)>0){
+				if (countLicensesForVersion($ID)>0    // Only count buy_version (don't care of use_version if no installation) 
+					|| countInstallationsForVersion($ID)>0){
 					echo "<td  colspan='2'>";
 					echo "<input type='hidden' name='ID' value=\"$ID\">\n";
 					echo "<div class='center'><input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit'></div>";

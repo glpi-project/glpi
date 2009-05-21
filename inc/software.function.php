@@ -2078,6 +2078,30 @@ function countInstallationsForVersion($vID, $entity='') {
 }
 
 /**
+ * Get number of bought licenses of a version
+ *
+ * @param $vID version ID
+ * @param $entity to search for licenses in (default = all active entities)
+ * 
+ * @return number of installations
+ */
+function countLicensesForVersion($vID, $entity='') {
+	global $DB;
+	$query = "SELECT count(*) 
+			FROM glpi_softwarelicenses
+			WHERE buy_version='$vID' " .
+			getEntitiesRestrictRequest('AND', 'glpi_softwarelicenses','',$entity);
+
+	$result = $DB->query($query);
+
+	if ($DB->numrows($result) != 0) {
+		return $DB->result($result, 0, 0);
+	} else
+		return 0;
+
+}
+
+/**
  * Get number of licenses to buy of a software
  *
  * @param $sID software ID
