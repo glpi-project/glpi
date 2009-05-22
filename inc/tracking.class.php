@@ -693,7 +693,10 @@ class Job extends CommonDBTM{
 			$user=new User();
 			$user->getFromDB($input["author"]);
 
-			$this->fields=stripslashes_deep($this->fields);
+			//$this->fields=stripslashes_deep($this->fields);
+			// Clean reload of the ticket
+			$this->getFromDB($newID);
+
 			$type="new";
 			if (isset($this->fields["status"])&&ereg("old_",$this->fields["status"])) $type="finish";
 			$mail = new Mailing($type,$this,$user);

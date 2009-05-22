@@ -902,6 +902,7 @@ function html_clean($value){
 */
 
 
+	$value = preg_replace("/<(p|br)( [^>]*)?".">/i", "\n", $value);
 
 	$search = array('@<script[^>]*?>.*?</script[^>]*?>@si',  // Strip out javascript
                '@<style[^>]*?>.*?</style[^>]*?>@siU',    // Strip style tags properly
@@ -913,8 +914,6 @@ function html_clean($value){
 	$value = preg_replace("/(&nbsp;| )+/", " ", $value);
 	// nettoyer l'apostrophe curly qui pose probleme a certains rss-readers, lecteurs de mail...
 	$value = str_replace("&#8217;","'",$value);
-
-	$value = preg_replace("/<(p|br)( [^>]*)?".">/i", "\n", $value);
 
 	$value = preg_replace("/ +/u", " ", $value);
 //	$value = preg_replace("/^\n+/", " ", $value);
