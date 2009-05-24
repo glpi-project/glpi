@@ -28,7 +28,8 @@
 		"it_IT"=>array("Italiano","it_IT.php","it","it"),//
 		"lv_LV"=>array("Latviešu","lv_LV.php","lv","lv"),//
 		"lt_LT"=>array("Lietuvių","lt_LT.php","lt","lt"),//
-		"no_NB"=>array("Norsk (bokmål)","no_NB.php","no_NB","nb"),//
+		"no_NB"=>array("Norsk (Bokmål)","no_NB.php","no_NB","nb"),//
+		"no_NN"=>array("Norsk (Nynorsk)","no_NN.php","no_NN","nn"),//
 		"pl_PL"=>array("Polski","pl_PL.php","pl","pl"),//
 		"pt_PT"=>array("Português","pt_PT.php","pt","pt"),//
 		"pt_BR"=>array("Português do Brasil","pt_BR.php","pt_BR","pt"),
