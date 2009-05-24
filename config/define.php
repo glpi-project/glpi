@@ -22,6 +22,7 @@
 		"fr_FR"=>array("Français","fr_FR.php","fr","fr"),//
 		"gl_ES"=>array("Galego","gl_ES.php","es","es"),//
 		"el_EL"=>array("Ελληνικά","el_EL.php","el_GR","el"),//
+		"he_HE"=>array("עברית","he_HE.php","he","he"),//
 		"hr_HR"=>array("Hrvatski","hr_HR.php","hr","hr"),//
 		"hu_HU"=>array("Magyar","hu_HU.php","hu","hu"),//
 		"it_IT"=>array("Italiano","it_IT.php","it","it"),//
