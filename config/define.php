@@ -8,36 +8,36 @@
 	// dictionnaries
 	// 0 Name - 1 lang file -  2 extjs dico - 3 tiny_mce dico
 	$CFG_GLPI["languages"]=array(   
-		"pt_BR"=>array("Brazilian","pt_BR.php","pt_BR","pt"),
-		"bg_BG"=>array("Bulgarian","bg_BG.php","bg","bg"),
-		"ca_CA"=>array("Catalan","ca_CA.php","ca","ca"),
-		"cs_CZ"=>array("Czech","cs_CZ.php","cs","cs"),
-		"de_DE"=>array("Deutsch","de_DE.php","de","de"),
-		"dk_DK"=>array("Danish","dk_DK.php","da","da"),
-		"nl_NL"=>array("Dutch","nl_NL.php","nl","nl"),
-		"nl_BE"=>array("Dutch (Belgium)","nl.php","nl","nl"),
-		"en_GB"=>array("English","en_GB.php","en","en"),
-		"es_AR"=>array("Español (Argentina)","es_AR.php","es","es"),
-		"es_ES"=>array("Español (España)","es_ES.php","es","es"),
-		"es_MX"=>array("Español (Mexico)","es_MX.php","es","es"),
-		"fr_FR"=>array("Français","fr_FR.php","fr","fr"),
-		"gl_ES"=>array("Galician","gl_ES.php","es","es"),
-		"el_EL"=>array("Greek","el_EL.php","el_GR","el"),
-		"hr_HR"=>array("Croatian","hr_HR.php","hr","hr"),
-		"hu_HU"=>array("Hungarian","hu_HU.php","hu","hu"),
-		"it_IT"=>array("Italiano","it_IT.php","it","it"),
-		"ja_JP"=>array("Japanese","ja_JP.php","ja","ja"),
-		"lv_LV"=>array("Latvian","lv_LV.php","lv","lv"),
-		"lt_LT"=>array("Lithuanian","lt_LT.php","lt","lt"),
-		"no_NB"=>array("Norwegian","no_NB.php","no_NB","nb"),
-		"pl_PL"=>array("Polish","pl_PL.php","pl","pl"),
-		"pt_PT"=>array("Português","pt_PT.php","pt","pt"),
-		"ro_RO"=>array("Romanian","ro_RO.php","ro","en"),
-		"ru_RU"=>array("Russian","ru_RU.php","ru","ru"),
-		"zh_CN"=>array("Simplified Chinese","zh_CN.php","en","zh"),
-		"sl_SL"=>array("Slovenian","sl_SI.php","sl","sl"),
-		"sv_SE"=>array("Swedish","sv_SE.php","sv_SE","sv"),
-		"tr_TR"=>array("Turkish","tr_TR.php","tr","en"),
+		"bg_BG"=>array("Български","bg_BG.php","bg","bg"),// 
+		"ca_CA"=>array("Català","ca_CA.php","ca","ca"),//
+		"cs_CZ"=>array("Čeština","cs_CZ.php","cs","cs"),// 
+		"de_DE"=>array("Deutsch","de_DE.php","de","de"),//
+		"dk_DK"=>array("Dansk","dk_DK.php","da","da"),//
+		"nl_NL"=>array("Nederlands","nl_NL.php","nl","nl"),//
+		"nl_BE"=>array("Nederlands (Belgium)","nl.php","nl","nl"),//
+		"en_GB"=>array("English","en_GB.php","en","en"),//
+		"es_AR"=>array("Español (Argentina)","es_AR.php","es","es"),//
+		"es_ES"=>array("Español (España)","es_ES.php","es","es"),//
+		"es_MX"=>array("Español (Mexico)","es_MX.php","es","es"),//
+		"fr_FR"=>array("Français","fr_FR.php","fr","fr"),//
+		"gl_ES"=>array("Galego","gl_ES.php","es","es"),//
+		"el_EL"=>array("Ελληνικά","el_EL.php","el_GR","el"),//
+		"hr_HR"=>array("Hrvatski","hr_HR.php","hr","hr"),//
+		"hu_HU"=>array("Magyar","hu_HU.php","hu","hu"),//
+		"it_IT"=>array("Italiano","it_IT.php","it","it"),//
+		"lv_LV"=>array("Latviešu","lv_LV.php","lv","lv"),//
+		"lt_LT"=>array("Lietuvių","lt_LT.php","lt","lt"),//
+		"no_NB"=>array("Norsk (bokmål)","no_NB.php","no_NB","nb"),//
+		"pl_PL"=>array("Polski","pl_PL.php","pl","pl"),//
+		"pt_PT"=>array("Português","pt_PT.php","pt","pt"),//
+		"pt_BR"=>array("Português do Brasil","pt_BR.php","pt_BR","pt"),
+		"ro_RO"=>array("Română","ro_RO.php","ro","en"),//
+		"ru_RU"=>array("Pусский","ru_RU.php","ru","ru"),//
+		"sl_SL"=>array("Slovenščina","sl_SI.php","sl","sl"),//
+		"sv_SE"=>array("Svenska","sv_SE.php","sv_SE","sv"),//
+		"tr_TR"=>array("Türkçe","tr_TR.php","tr","en"),//
+		"ja_JP"=>array("日本語","ja_JP.php","ja","ja"),//
+		"zh_CN"=>array("中文","zh_CN.php","en","zh"),//
 		);
 
 	// TIMES
