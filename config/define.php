@@ -20,7 +20,7 @@
 		"es_ES"=>array("Español (España)","es_ES.php","es","es"),//
 		"es_MX"=>array("Español (Mexico)","es_MX.php","es","es"),//
 		"fr_FR"=>array("Français","fr_FR.php","fr","fr"),//
-		"gl_ES"=>array("Galego","gl_ES.php","es","es"),//
+		"gl_ES"=>array("Galego","gl_ES.php","es","gl"),//
 		"el_EL"=>array("Ελληνικά","el_EL.php","el_GR","el"),//
 		"he_HE"=>array("עברית","he_HE.php","he","he"),//
 		"hr_HR"=>array("Hrvatski","hr_HR.php","hr","hr"),//
