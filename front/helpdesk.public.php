@@ -111,8 +111,8 @@ if (isset($_GET["show"]) && strcmp($_GET["show"],"user") == 0)
 			$track->update($_POST);
 			glpi_header($_SERVER['PHP_SELF']."?show=user&ID=".$_POST["ID"]);
 		}
-
 		$track=new Job();	
+		$track->check($_GET["ID"],'r');
 		$track->showTabs($_GET["ID"],'',$_SESSION['glpi_tab']); 
 		echo "<div id='tabcontent'></div>";
 	
