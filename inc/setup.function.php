@@ -500,7 +500,8 @@ function updateDropdown($input) {
 	if ($result = $DB->query($query)) {
 		if (in_array($input["tablename"], $CFG_GLPI["dropdowntree_tables"])) {
 			regenerateTreeCompleteNameUnderID($input["tablename"], $input["ID"]);
-			if ($input["tablename"]=="glpi_entities"&&isset($_SESSION["glpiID"])){
+
+/*			if ($input["tablename"]=="glpi_entities"&&isset($_SESSION["glpiID"])){
 				
 				$activeprof=$_SESSION['glpiactiveprofile']['ID'];
 				initEntityProfiles($_SESSION["glpiID"]);
@@ -508,6 +509,7 @@ function updateDropdown($input) {
 				cleanCache("GLPI_entities_ancestors");
 				cleanCache("GLPI_entities_sons");
 			}
+*/
 		}
 		cleanRelationCache($input["tablename"]);
 		return true;
@@ -702,7 +704,7 @@ function addDropdown($input) {
 			if (in_array($input["tablename"], $CFG_GLPI["dropdowntree_tables"])) {
 				regenerateTreeCompleteNameUnderID($input["tablename"], $ID);
 			}
-			if ($input["tablename"]=="glpi_entities"&&isset($_SESSION["glpiID"])){
+/*			if ($input["tablename"]=="glpi_entities"&&isset($_SESSION["glpiID"])){
 				$activeprof=$_SESSION['glpiactiveprofile']['ID'];
 				initEntityProfiles($_SESSION["glpiID"]);
 				changeProfile($activeprof);
@@ -710,7 +712,7 @@ function addDropdown($input) {
 				cleanCache("GLPI_entities_sons");
 
 			}
-
+*/
 			cleanRelationCache($input["tablename"]);
 			return $ID;
 		} else {
@@ -785,14 +787,15 @@ function replaceDropDropDown($input) {
 		$query = "DELETE FROM `glpi_entities_data` WHERE `FK_entities` = '" . $input["oldID"] . "'";
 		$DB->query($query);
 
-		if (isset($_SESSION["glpiID"])){
+/*		if (isset($_SESSION["glpiID"])){
 			$activeprof=$_SESSION['glpiactiveprofile']['ID'];
 			initEntityProfiles($_SESSION["glpiID"]);
 			changeProfile($activeprof);
 		}
+
 		cleanCache("GLPI_entities_ancestors");
 		cleanCache("GLPI_entities_sons");
-
+*/
 	}
 	cleanRelationCache($input["tablename"]);
 }
