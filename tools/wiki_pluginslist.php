@@ -17,7 +17,7 @@ function ListePlug ($lang, $name, $base, $num) {
 	if ($page) {
 		while ($buf=fgets($page, 1000)) {
 			$buf=Clean($buf);
-			if (preg_match('@<tr class="row_even"><td>(.*)</td><td> <a href="(.*/(glpi-(.*)-([0-9,\.]*)).tar.gz)">(.*)</a> </td><td>(.*)</td><td>.*</td></tr>@', $buf, $regs)) {
+			if (preg_match('@<tr class="row_even"><td>(.*)</td><td> <a href="(.*/(glpi-(.*)-([0-9,\.]*)).(tar.gz|tgz))">(.*)</a> </td><td>(.*)</td><td>.*</td></tr>@', $buf, $regs)) {
 				$id=$regs[4];
 				$liste[$id]["doc"]=$url;
 				$liste[$id]["use"]=$lang.":plugins:".$id."_use";
@@ -25,7 +25,7 @@ function ListePlug ($lang, $name, $base, $num) {
 				$liste[$id]["des"]=$name;
 				$liste[$id]["ver"]=$regs[5];
 				$liste[$id]["dat"]=$regs[1];
-				$liste[$id]["cpt"]=$regs[7];
+				$liste[$id]["cpt"]=$regs[8];
 				$liste[$id]["tgz"]=$regs[2];
 				return;
 			}
