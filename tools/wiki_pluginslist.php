@@ -24,7 +24,11 @@ function ListePlug ($lang, $name, $base, $num) {
 				$liste[$id]["faq"]=$lang.":plugins:".$id."_faq";
 				$liste[$id]["des"]=$name;
 				$liste[$id]["ver"]=str_replace('-','.',$regs[5]);
-				$liste[$id]["dat"]=$regs[1];
+				if ($lang=='en' && preg_match("/^([0-9]{2}).([0-9]{2}).([0-9]{4})$/",trim($regs[1]),$part)) {
+					$liste[$id]["dat"]=$part[3].".".$part[2].".".$part[1];
+				} else {
+					$liste[$id]["dat"]=$regs[1];
+				}
 				$liste[$id]["cpt"]=$regs[8];
 				$liste[$id]["tgz"]=$regs[2];
 				return;
