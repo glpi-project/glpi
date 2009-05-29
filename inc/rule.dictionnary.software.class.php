@@ -91,7 +91,7 @@ class DictionnarySoftwareCollection extends RuleCachedCollection {
 		return true;
 	}
 
-	function replayRulesOnExistingDB($offset=0,$maxtime=0, $items = array (),$params=0) {
+	function replayRulesOnExistingDB($offset=0, $maxtime=0, $items=array(), $params=array()) {
 		global $DB;
 		if (isCommandLine()){
 			echo "replayRulesOnExistingDB started : " . date("r") . "\n";

@@ -174,9 +174,10 @@ class RightAffectRule extends Rule {
 	* Execute the actions as defined in the rule
 	* @param $output the result of the actions
 	* @param $params the parameters
+	* @param $regex_results (not used)
 	* @return the fields modified
 	*/
-	function executeActions($output,$params)
+	function executeActions($output,$params,$regex_results)
 	{
 		$entity='';
 		$right='';

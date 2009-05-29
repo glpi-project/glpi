@@ -301,7 +301,7 @@ class DictionnaryDropdownCollection extends RuleCachedCollection{
 	 * @param $maxtime maximum time of process (reload at the end)
 	 * @return -1 on completion else current offset
 	**/
-	function replayRulesOnExistingDB($offset=0,$maxtime=0){
+	function replayRulesOnExistingDB($offset=0, $maxtime=0, $items=array(), $params=array()) {
 		global $DB,$LANG;
 
 

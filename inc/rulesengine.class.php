@@ -200,7 +200,7 @@ class RuleCollection {
 	 * 
 	 * @return -1 if all rows done, else offset for next run
 	**/
-	function replayRulesOnExistingDB($offset=0,$maxtime=0, $items=array(),$params=array()){
+	function replayRulesOnExistingDB($offset=0, $maxtime=0, $items=array(), $params=array()) {
 
 	}
 
