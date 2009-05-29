@@ -110,7 +110,7 @@ function Display ($lang) {
 				echo "^ Name ^ Doc. ^ Manual ^ FAQ ^ Description ^ Version ^ Date ^ Glpi ^ Maintained ^ Source ^\n";
 				break;
 		}
-		
+		ksort($val);
 		foreach ($val as $id => $plug) {
 		
 			$p=strpos($plug["des"], "(");
