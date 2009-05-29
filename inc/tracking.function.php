@@ -2442,6 +2442,7 @@ function showUpdateFollowupForm($ID){
 		}
 
 		$commentall=haveRight("update_followups","1");
+		$canplan = haveRight("show_planning","1");
 
 		$job=new Job();
 		$job->getFromDB($fup->fields["tracking"]);
@@ -2511,7 +2512,7 @@ function showUpdateFollowupForm($ID){
 		$query2="SELECT * from glpi_tracking_planning WHERE id_followup='".$fup->fields['ID']."'";
 		$result2=$DB->query($query2);
 		if ($DB->numrows($result2)==0){
-			if ($commentall){
+			if ($canplan){
 
 				echo "<div id='plan'  onClick='showPlan()'>\n";
 				echo "<span class='showplan'>".$LANG["job"][34]."</span>";
@@ -2522,13 +2523,13 @@ function showUpdateFollowupForm($ID){
 			}
 		 } else {
 			$fup->fields2=$DB->fetch_array($result2);
-			if ($commentall){
+			if ($canplan){
 
 				echo "<div id='plan'  onClick='showPlan".$ID."()'>\n";
 				echo "<span class='showplan'>";
 			}
 			echo getPlanningState($fup->fields2["state"])."<br>".convDateTime($fup->fields2["begin"])."<br>->".convDateTime($fup->fields2["end"])."<br>".getUserName($fup->fields2["id_assign"]);
-			if ($commentall){
+			if ($canplan){
 				echo "</span>";
 				echo "</div>\n";	
 				echo "<div id='viewplan'></div>\n";
