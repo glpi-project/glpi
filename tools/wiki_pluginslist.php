@@ -102,11 +102,11 @@ function Display ($lang) {
 		
 		switch ($lang) {
 			case "fr":
-				echo "**Catégorie ".$key."**\n\n";
+				echo "**".$key."**\n\n";
 				echo "^ Nom ^ Doc. GLPI ^ Mode d'emploi ^ FAQ ^ Description ^ Version ^ Date maj. ^ Glpi ^ Maintenu ^ Source ^\n";
 				break;
 			case "en":
-				echo "**Category ".$key."**\n\n";
+				echo "**".$key."**\n\n";
 				echo "^ Name ^ Doc. ^ Manual ^ FAQ ^ Description ^ Version ^ Date ^ Glpi ^ Maintained ^ Source ^\n";
 				break;
 		}
