@@ -21,7 +21,6 @@ function ListePlug ($lang, $name, $base, $num,$cat) {
 				$id=$regs[4];
 				$liste[$cat][$id]["doc"]=$url;
 				$liste[$cat][$id]["use"]=$lang.":plugins:".$id."_use";
-				$liste[$cat][$id]["faq"]=$lang.":plugins:".$id."_faq";
 				$liste[$cat][$id]["des"]=$name;
 				$liste[$cat][$id]["ver"]=str_replace('-','.',$regs[5]);
 				if ($lang=='en' && preg_match("/^([0-9]{2}).([0-9]{2}).([0-9]{4})$/",trim($regs[1]),$part)) {
@@ -102,11 +101,11 @@ function Display ($lang) {
 		switch ($lang) {
 			case "fr":
 				echo "**".$key."**\n\n";
-				echo "^ Nom ^ Doc. GLPI ^ Mode d'emploi ^ FAQ ^ Description ^ Version ^ Date maj. ^ Glpi ^ Source ^\n";
+				echo "^ Nom ^ Doc. GLPI ^ Mode d'emploi ^ Description ^ Version ^ Date maj. ^ Glpi ^ Source ^\n";
 				break;
 			case "en":
 				echo "**".$key."**\n\n";
-				echo "^ Name ^ Doc. ^ Manual ^ FAQ ^ Description ^ Version ^ Date ^ Glpi ^ Source ^\n";
+				echo "^ Name ^ Doc. ^ Manual ^ Description ^ Version ^ Date ^ Glpi ^ Source ^\n";
 				break;
 		}
 		ksort($val);
@@ -115,8 +114,8 @@ function Display ($lang) {
 			$p=strpos($plug["des"], "(");
 			$des= ($p ? substr($plug["des"],0,$p) : $plug["des"]);
 
-			printf ("| **%s**  | [[%s|Doc]] | [[%s|Wiki-use]] | [[%s|Wiki-FAQ]] | %s | %s | %s | %s | [[%s|source]]|\n",
-				$id, $plug["doc"], $plug["use"], $plug["faq"], $des, $plug["ver"], $plug["dat"], $plug["cpt"], $plug["tgz"]);
+			printf ("| **%s**  | [[%s|Doc]] | [[%s|Wiki-use]] | %s | %s | %s | %s | [[%s|source]]|\n",
+				$id, $plug["doc"], $plug["use"], $des, $plug["ver"], $plug["dat"], $plug["cpt"], $plug["tgz"]);
 		}
 		
 		echo "\n\n";
