@@ -72,7 +72,7 @@ function ListeAll ($lang, $base, $num) {
 			if (preg_match('@<h4><span class="fond_blanc"><a href="(spip.php\?rubrique([0-9]*))".*>(.*)</a></span></h4>@', $buf, $regs)) {
 				$regs[3]=trim($regs[3]);
 				ListeRub($lang, $regs[3], $base, $regs[1],
-					(substr($regs[3],0,3)=="Non" || substr($regs[3],0,3)=="Not" ? 1 : 0));
+					(substr($regs[3],0,3)=="Non" || substr($regs[3],0,3)=="Not" ? 0 : 1));
 				//return;
 			}
 		}
@@ -104,7 +104,7 @@ function Display ($lang) {
 
 		printf ("| **%s** | [[%s|Doc]] | [[%s|Wiki-use]] | [[%s|Wiki-FAQ]] | %s | %s | %s | %s | %s | [[%s|source]]|\n",
 			$id, $plug["doc"], $plug["use"], $plug["faq"], $des, $plug["ver"], $plug["dat"], $plug["cpt"], 
-			($plug["dev"] ? ($lang=="fr" ? "Oui" : "Yes") : ""),
+			($plug["dev"] ? ($lang=="fr" ? "Oui" : "Yes") : ($lang=="fr" ? "Non" : "No") ),
 			$plug["tgz"]);
 	}
 
