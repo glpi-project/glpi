@@ -7,7 +7,7 @@ function CLean ($buf) {
 	$buf=utf8_encode($buf);
 	return html_entity_decode($buf,ENT_QUOTES,"utf-8");
 }
-function ListePlug ($lang, $name, $base, $num, $dev,$cat) {
+function ListePlug ($lang, $name, $base, $num,$cat) {
 	global $liste;
 
 	fputs(STDERR, ".");
@@ -31,7 +31,6 @@ function ListePlug ($lang, $name, $base, $num, $dev,$cat) {
 				}
 				$liste[$cat][$id]["cpt"]=$regs[8];
 				$liste[$cat][$id]["tgz"]=$regs[2];
-				$liste[$cat][$id]["dev"]=$dev;
 				return;
 			}
 		}
@@ -40,7 +39,7 @@ function ListePlug ($lang, $name, $base, $num, $dev,$cat) {
 		echo "*** Cannot read $url\n";
 	}
 }
-function ListeRub ($lang, $name, $base, $num, $dev) {
+function ListeRub ($lang, $name, $base, $num) {
 
 	$url=$base.$num;
 	$page=fopen($url, "r");
@@ -51,7 +50,7 @@ function ListeRub ($lang, $name, $base, $num, $dev) {
 			$buf=Clean($buf);
 			if ($secteur && preg_match('@<li><a href="(spip.php\?article([0-9]*))".*>(.*)</a></li>@', $buf, $regs)) {
 				$cat=$name;
-				ListePlug($lang, $regs[3], $base, $regs[1], $dev,$cat);
+				ListePlug($lang, $regs[3], $base, $regs[1],$cat);
 			}
 			else if (strpos($buf, '<div class="secteur">')) {
 				$secteur=true;
@@ -72,7 +71,7 @@ function ListeAll ($lang, $base, $num) {
 			$buf=Clean($buf);
 			if (preg_match('@<h4><span class="fond_blanc"><a href="(spip.php\?rubrique([0-9]*))".*>(.*)</a></span></h4>@', $buf, $regs)) {
 				$regs[3]=trim($regs[3]);
-				ListeRub($lang, $regs[3], $base, $regs[1],(substr($regs[3],0,3)=="Non" || substr($regs[3],0,3)=="Not" ? 0 : 1));
+				ListeRub($lang, $regs[3], $base, $regs[1]);
 				//return;
 			}
 		}
@@ -103,11 +102,11 @@ function Display ($lang) {
 		switch ($lang) {
 			case "fr":
 				echo "**".$key."**\n\n";
-				echo "^ Nom ^ Doc. GLPI ^ Mode d'emploi ^ FAQ ^ Description ^ Version ^ Date maj. ^ Glpi ^ Maintenu ^ Source ^\n";
+				echo "^ Nom ^ Doc. GLPI ^ Mode d'emploi ^ FAQ ^ Description ^ Version ^ Date maj. ^ Glpi ^ Source ^\n";
 				break;
 			case "en":
 				echo "**".$key."**\n\n";
-				echo "^ Name ^ Doc. ^ Manual ^ FAQ ^ Description ^ Version ^ Date ^ Glpi ^ Maintained ^ Source ^\n";
+				echo "^ Name ^ Doc. ^ Manual ^ FAQ ^ Description ^ Version ^ Date ^ Glpi ^ Source ^\n";
 				break;
 		}
 		ksort($val);
@@ -116,10 +115,8 @@ function Display ($lang) {
 			$p=strpos($plug["des"], "(");
 			$des= ($p ? substr($plug["des"],0,$p) : $plug["des"]);
 
-			printf ("| **%s**  | [[%s|Doc]] | [[%s|Wiki-use]] | [[%s|Wiki-FAQ]] | %s | %s | %s | %s | %s | [[%s|source]]|\n",
-				$id, $plug["doc"], $plug["use"], $plug["faq"], $des, $plug["ver"], $plug["dat"], $plug["cpt"], 
-				($plug["dev"] ? ($lang=="fr" ? "Oui" : "Yes") : ($lang=="fr" ? "Non" : "No") ),
-				$plug["tgz"]);
+			printf ("| **%s**  | [[%s|Doc]] | [[%s|Wiki-use]] | [[%s|Wiki-FAQ]] | %s | %s | %s | %s | [[%s|source]]|\n",
+				$id, $plug["doc"], $plug["use"], $plug["faq"], $des, $plug["ver"], $plug["dat"], $plug["cpt"], $plug["tgz"]);
 		}
 		
 		echo "\n\n";
