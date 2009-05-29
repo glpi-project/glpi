@@ -2590,12 +2590,7 @@ function showUpdateFollowupForm($ID){
 		}
 
 		$commentall=haveRight("update_followups","1");
-
-		if ($fup->fields["author"]==$_SESSION['glpiID']) {
-			$canplan = haveRight("show_planning","1");
-		} else {
-			$canplan = (haveRight("show_all_planning","1") || haveRight("show_group_planning","1"));
-		}
+		$canplan = haveRight("show_planning","1");
 
 		$job=new Job();
 		$job->getFromDB($fup->fields["tracking"]);
