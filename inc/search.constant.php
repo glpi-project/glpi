@@ -3805,7 +3805,7 @@ $SEARCH_OPTION[PROFILE_TYPE][1]['itemlink_type']=PROFILE_TYPE;
 
 $SEARCH_OPTION[PROFILE_TYPE][2]['table']='glpi_profiles';
 $SEARCH_OPTION[PROFILE_TYPE][2]['field']='interface';
-$SEARCH_OPTION[PROFILE_TYPE][2]['linkfield']='interface';
+$SEARCH_OPTION[PROFILE_TYPE][2]['linkfield']='';
 $SEARCH_OPTION[PROFILE_TYPE][2]['name']=$LANG['profiles'][2];
 
 
