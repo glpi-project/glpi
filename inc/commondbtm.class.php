@@ -1051,7 +1051,11 @@ class CommonDBTM {
 
 						
 			echo "<li><a href=\"".$glpilisturl."\">";
+			
 			if ($glpilisttitle){
+				if (utf8_strlen($glpilisttitle)>$_SESSION['glpidropdown_limit']) {
+					$glpilisttitle = utf8_substr($glpilisttitle, 0, $_SESSION['glpidropdown_limit']) . "&hellip;";
+				}
 				echo $glpilisttitle;
 			} else {
 				echo $LANG['common'][53];
