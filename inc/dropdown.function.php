@@ -1416,7 +1416,7 @@ function dropdownMassiveAction($device_type,$deleted=0){
 	echo "<select name=\"massiveaction\" id='massiveaction'>";
 
 	echo "<option value=\"-1\" selected>-----</option>";
-	if (!in_array($device_type,array(MAILGATE_TYPE,OCSNG_TYPE,ENTITY_TYPE))
+	if (!in_array($device_type,array(MAILGATE_TYPE,OCSNG_TYPE,ENTITY_TYPE,PROFILE_TYPE))
 	&& ( $isadmin
 		||(in_array($device_type,$CFG_GLPI["infocom_types"])&&haveTypeRight(INFOCOM_TYPE,"w"))
 		|| ($device_type==TRACKING_TYPE&&haveRight('update_ticket',1)) 
