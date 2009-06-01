@@ -428,11 +428,17 @@ function showDocumentAssociated($device_type,$ID,$withtemplate=''){
 	echo "</tr>";
 	$used=array();
 	if ($number){
-		initNavigateListItems(DOCUMENT_TYPE,$ci->getType()." = ".$ci->getName());
+		// Don't use this for document associated to document
+		// To not loose navigation list for current document
+		if ($device_type!=DOCUMENT_TYPE) {
+			initNavigateListItems(DOCUMENT_TYPE,$ci->getType()." = ".$ci->getName());
+		}
 
 		while ($data=$DB->fetch_assoc($result)) {
 			$docID=$data["ID"];
-			addToNavigateListItems(DOCUMENT_TYPE,$docID);
+			if ($device_type!=DOCUMENT_TYPE) {
+				addToNavigateListItems(DOCUMENT_TYPE,$docID);
+			}
 			$used[$docID]=$docID;
 			$assocID=$data["assocID"];
 	
