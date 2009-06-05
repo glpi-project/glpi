@@ -144,6 +144,9 @@ class CommonItem{
 				case SOFTWARELICENSE_TYPE : 
 					$this->obj= new SoftwareLicense;	
 					break;					
+				case SOFTWAREVERSION_TYPE : 
+					$this->obj= new SoftwareVersion;	
+					break;					
 				case LINK_TYPE : 
 					$this->obj= new Link;	
 					break;	
@@ -274,6 +277,9 @@ class CommonItem{
 				break;					
 			case SOFTWARELICENSE_TYPE : 
 				return $LANG['software'][11];
+				break;					
+			case SOFTWAREVERSION_TYPE : 
+				return $LANG['software'][5];
 				break;					
 			case LINK_TYPE : 
 				return $LANG['setup'][87];
