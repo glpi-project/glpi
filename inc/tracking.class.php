@@ -591,6 +591,7 @@ class Job extends CommonDBTM{
 		}
 		unset($_SESSION["helpdeskSaved"]);
 
+
 		// Manage helpdesk.html submission type
 		unset($input["type"]);
 
@@ -613,11 +614,6 @@ class Job extends CommonDBTM{
 		if (!isset($input["status"])) $input["status"]="new";
 		if (!isset($input["assign"])) $input["assign"]=0;
 		
-		$user=new User();
-		if ($user->getFromDB($input["author"])){
-			$input['author_location']=$user->fields['location'];
-		}
-
 		if (!isset($input["date"])||empty($input["date"])){
 			$input["date"] = $_SESSION["glpi_currenttime"];
 		}
@@ -653,6 +649,20 @@ class Job extends CommonDBTM{
 		// Process Business Rules
 		$rules=new TrackingBusinessRuleCollection();
 
+		// Set unset variables with are needed
+		$user=new User();
+		if ($user->getFromDB($input["author"])){
+			$input['author_location']=$user->fields['location'];
+		}
+
+		// Set default dropdown
+		$dropdown_fields=array('FK_entities','device_type','request_type','assign_group','assign','FK_group','author','category');
+		foreach ($dropdown_fields as $field ){
+			if (!isset($input[$field])){
+				$input[$field]=0;
+			}
+		} 
+
 		$input=$rules->processAllRules($input,$input);
 
 		if (isset($input["emailupdates"])&&$input["emailupdates"]&&empty($input["uemail"])){
@@ -683,12 +693,14 @@ class Job extends CommonDBTM{
 				$input["closedate"]=$_SESSION["glpi_currenttime"];
 			}
 		} 
+		
+		// No name set name
+                if (empty($input["name"])) {
+                        $input["name"]=preg_replace('/\r\n/',' ',$input['contents']);
+                        $input["name"]=preg_replace('/\n/',' ',$input['name']);
+                        $input["name"]=substr($input['name'],0,70);
+                }
 
-		if (empty($input["name"])) {
-			$input["name"]=preg_replace('/\r\n/',' ',$input['contents']);
-			$input["name"]=preg_replace('/\n/',' ',$input['name']);
-			$input["name"]=substr($input['name'],0,70);
-		}
 		return $input;
 	}
 
