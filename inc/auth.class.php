@@ -783,9 +783,9 @@ class AuthLDAP extends CommonDBTM {
 			echo "<td class='center'>" . $LANG['help'][35] . " 2</td><td><input type=\"text\" name=\"ldap_field_phone2\" value=\"" . $this->fields["ldap_field_phone2"] . "\" ></td></tr>";
 
 			echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['common'][42] . "</td><td><input type=\"text\" name=\"ldap_field_mobile\" value=\"" . $this->fields["ldap_field_mobile"] . "\" ></td>";
-			echo "<td class='center'>" . $LANG['common'][81] . " </td><td><input type=\"text\" name=\"ldap_field_title\" value=\"" . $this->fields["ldap_field_title"] . "\" ></td></tr>";
+			echo "<td class='center'>" . $LANG['users'][1] . " </td><td><input type=\"text\" name=\"ldap_field_title\" value=\"" . $this->fields["ldap_field_title"] . "\" ></td></tr>";
 
-			echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['common'][17] . "</td><td><input type=\"text\" name=\"ldap_field_type\" value=\"" . $this->fields["ldap_field_type"] . "\" ></td>";
+			echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['users'][2] . "</td><td><input type=\"text\" name=\"ldap_field_type\" value=\"" . $this->fields["ldap_field_type"] . "\" ></td>";
 			echo "<td class='center'>" . $LANG['setup'][41] . " </td><td><input type=\"text\" name=\"ldap_field_language\" value=\"" . $this->fields["ldap_field_language"] . "\" ></td></tr>";			
 			
 			//echo "<td colspan='2'></td></tr>";

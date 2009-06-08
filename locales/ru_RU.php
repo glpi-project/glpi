@@ -264,7 +264,6 @@ $LANG['common'][77]="Личный";
 $LANG['common'][78]="Сделать общей"; 
 $LANG['common'][79]="Сделать личной"; 
 $LANG['common'][80]="Загружается…"; 
-$LANG['common'][81]="Должность"; 
 $LANG['common'][82]="Mb"; 
 $LANG['common'][83]="У Вас нет прав для этой операции."; 
 $LANG['common'][84]="Flag change forbidden. Linked items found."; 
@@ -1330,7 +1329,7 @@ $LANG['rulesengine'][61]="Типы мониторов";
 $LANG['rulesengine'][62]="Phone type dictionary"; 
 $LANG['rulesengine'][63]="Peripheral type dictionary"; 
 $LANG['rulesengine'][64]="Printer type dictionary"; 
-$LANG['rulesengine'][65]="Networking device type dictionnary"; 
+$LANG['rulesengine'][65]="Networking device type dictionary"; 
 $LANG['rulesengine'][66]="Типы"; 
 $LANG['rulesengine'][67]="OS dictionary"; 
 $LANG['rulesengine'][68]="Service Pack dictionary"; 
@@ -1778,4 +1777,7 @@ $LANG['update'][136]="This is the new hierarchy. If it's OK, you can validate it
 $LANG['update'][137]="New hierarchy"; 
 $LANG['update'][138]="Реальные местонахождения"; 
 $LANG['update'][139]="Tables Optimization"; 
+
+$LANG['users'][1]="Должность"; 
+$LANG['users'][2]="Категория"; 
 ?>

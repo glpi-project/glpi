@@ -264,7 +264,6 @@ $LANG['common'][77]="Privat";
 $LANG['common'][78]="Fer Públic"; 
 $LANG['common'][79]="Fer Privat"; 
 $LANG['common'][80]="Durant la càrrega"; 
-$LANG['common'][81]="Títol"; 
 $LANG['common'][82]="Mb"; 
 $LANG['common'][83]="Vostè no té permissos per a realitzar aquesta acció."; 
 $LANG['common'][84]="L'existencia d'elements enllaçats impideixen la modificació d'aquest atribut"; 
@@ -1778,4 +1777,7 @@ $LANG['update'][136]="Aquí tens la nova jerarquia. Si es correcta pots validar-
 $LANG['update'][137]="Nova jerarquia"; 
 $LANG['update'][138]="Llocs actuals"; 
 $LANG['update'][139]="Optimizació de les taules"; 
+
+$LANG['users'][1]="Títol"; 
+$LANG['users'][2]="Categoria"; 
 ?>

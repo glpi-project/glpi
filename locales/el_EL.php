@@ -264,7 +264,6 @@ $LANG['common'][77]="Προσωπικό";
 $LANG['common'][78]="Βάλε δημόσιο"; 
 $LANG['common'][79]="Βάλε προσωπικό"; 
 $LANG['common'][80]="During loading..."; 
-$LANG['common'][81]="Title"; 
 $LANG['common'][82]="Mb"; 
 $LANG['common'][83]="You don't have permission to perform this action."; 
 $LANG['common'][84]="Flag change forbidden. Linked items found."; 
@@ -1778,4 +1777,7 @@ $LANG['update'][136]="Αυτή είναι η νέα ιεραρχία. Εάν ε�
 $LANG['update'][137]="Καινούργια ιεραρχία"; 
 $LANG['update'][138]="Ακριβείς Τοποθεσίες"; 
 $LANG['update'][139]="Tables Optimization"; 
+
+$LANG['users'][1]="Title"; 
+$LANG['users'][2]="Κατηγορία"; 
 ?>

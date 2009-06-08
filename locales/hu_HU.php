@@ -264,7 +264,6 @@ $LANG['common'][77]="Privát";
 $LANG['common'][78]="Publikál"; 
 $LANG['common'][79]="Privatizál"; 
 $LANG['common'][80]="Betöltés folyamatban..."; 
-$LANG['common'][81]="Cím"; 
 $LANG['common'][82]="Mb"; 
 $LANG['common'][83]="Nincs jogosultságod a művelethez"; 
 $LANG['common'][84]="Jelző módosítás letiltva. Kapcsolt elemeket találtam."; 
@@ -1778,4 +1777,7 @@ $LANG['update'][136]="Ez az új hierarchia. Ha rendben, érvényesítheted.";
 $LANG['update'][137]="Új hierarchia"; 
 $LANG['update'][138]="Aktuális helyek"; 
 $LANG['update'][139]="Adattblák optimalizálása"; 
+
+$LANG['users'][1]="Cím"; 
+$LANG['users'][2]="Kategória"; 
 ?>

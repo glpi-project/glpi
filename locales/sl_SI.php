@@ -264,7 +264,6 @@ $LANG['common'][77]="Zasebno";
 $LANG['common'][78]="Nastavi javno"; 
 $LANG['common'][79]="Nastavi zasebno"; 
 $LANG['common'][80]="Med nalaganjem..."; 
-$LANG['common'][81]="Naziv"; 
 $LANG['common'][82]="Mb"; 
 $LANG['common'][83]="Nimate dovoljenja za izvedbo te operacije."; 
 $LANG['common'][84]="Sprememba zastavice prepovedana. Povezane predmete našel."; 
@@ -1225,7 +1224,7 @@ $LANG['reports'][27]="Po pogodbi";
 $LANG['reports'][28]="Po letu"; 
 $LANG['reports'][33]="Omrežno poročilo"; 
 $LANG['reports'][36]="Povezane naprave"; 
-$LANG['reports'][37]="Meniji"; 
+$LANG['reports'][37]="Vtičnice"; 
 $LANG['reports'][38]="IP"; 
 $LANG['reports'][39]="Po lokaciji"; 
 $LANG['reports'][41]="Po računalniški strojni opremi - hardware"; 
@@ -1778,4 +1777,7 @@ $LANG['update'][136]="To je nova hierarhija. Če je pravilna jo lahko preverite.
 $LANG['update'][137]="Nova hierarhija"; 
 $LANG['update'][138]="Dejanske lokacije"; 
 $LANG['update'][139]="Optimizacija tabel"; 
+
+$LANG['users'][1]="Naziv"; 
+$LANG['users'][2]="Kategorija"; 
 ?>

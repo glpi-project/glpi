@@ -83,11 +83,11 @@ $items=array(
 			"field"=>"glpi_tracking.FK_group"
 			),
 		"title"=>array(	
-			"title"=>$LANG['common'][57],
+			"title"=>$LANG['users'][1],
 			"field"=>"glpi_dropdown_user_titles.title"
 			),
 		"type"=>array(	
-			"title"=>$LANG['common'][17],
+			"title"=>$LANG['users'][2],
 			"field"=>"glpi_dropdown_user_titles.type"
 			),
 	),

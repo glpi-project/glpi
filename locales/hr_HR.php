@@ -264,7 +264,6 @@ $LANG['common'][77]="Privatno";
 $LANG['common'][78]="Postavi javno"; 
 $LANG['common'][79]="Postavi privatno"; 
 $LANG['common'][80]="Tijekom učitavanja..."; 
-$LANG['common'][81]="Naziv"; 
 $LANG['common'][82]="Mb"; 
 $LANG['common'][83]="Nemate ovlasti za izvođenje ove akcije"; 
 $LANG['common'][84]="Zabranjena promijena. Nađeni vezani artikli."; 
@@ -1778,4 +1777,7 @@ $LANG['update'][136]="Ovo je nova hijerarhija. Ako je u redu, možete validirati
 $LANG['update'][137]="Nova hijerarhija"; 
 $LANG['update'][138]="Aktualna lokacija"; 
 $LANG['update'][139]="Optimizacija tablice"; 
+
+$LANG['users'][1]="Naziv"; 
+$LANG['users'][2]="Kategorija"; 
 ?>

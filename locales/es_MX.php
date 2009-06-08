@@ -264,7 +264,6 @@ $LANG['common'][77]="Privado";
 $LANG['common'][78]="Hacer Público"; 
 $LANG['common'][79]="Hacer privado"; 
 $LANG['common'][80]="Durante la carga..."; 
-$LANG['common'][81]="Título"; 
 $LANG['common'][82]="Mb"; 
 $LANG['common'][83]="Usted no tiene permisos para realizar esta acción."; 
 $LANG['common'][84]="La existencia de elementos enlazados impiden la modificación de este atributo"; 
@@ -1778,4 +1777,7 @@ $LANG['update'][136]="He aquí la nueva jerarquía generada. Si es correcta pued
 $LANG['update'][137]="Nueva jerarquía"; 
 $LANG['update'][138]="Lugares actuales"; 
 $LANG['update'][139]="Optimización de las tablas"; 
+
+$LANG['users'][1]="Título"; 
+$LANG['users'][2]="Categoría"; 
 ?>
