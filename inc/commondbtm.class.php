@@ -1536,7 +1536,7 @@ class CommonDBTM {
 	 * @return integer (0/1) 
 	**/
 	function isRecursive () {
-		if ($this->may_be_recursive) {
+		if ($this->may_be_recursive && isset($this->fields["recursive"])) {
 			return $this->fields["recursive"];		
 		} 
 		return 0;
