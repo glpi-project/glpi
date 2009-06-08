@@ -110,10 +110,12 @@ function displaySearchItem($type,$value,&$num,$row,$extraparam=''){
 		case PDF_OUTPUT_LANDSCAPE : //pdf
 		case PDF_OUTPUT_PORTRAIT :
 			global $PDF_ARRAY,$PDF_HEADER;
+			$value = weblink_extract($value);
 			$PDF_ARRAY[$row][$num]=utf8_decode(html_clean($value));
 			break;
 		case SYLK_OUTPUT : //sylk
 			global $SYLK_ARRAY,$SYLK_HEADER,$SYLK_SIZE;
+			$value = weblink_extract($value);
 			$SYLK_ARRAY[$row][$num]=sylk_clean($value);
 			$SYLK_SIZE[$num]=max($SYLK_SIZE[$num],strlen($SYLK_ARRAY[$row][$num]));
 
@@ -121,6 +123,7 @@ function displaySearchItem($type,$value,&$num,$row,$extraparam=''){
 //			$out.= "C;N;K\"".sylk_clean($value)."\"\n"; 
 			break;
       		case CSV_OUTPUT : //csv
+			$value = weblink_extract($value);
             		$out="\"".csv_clean($value)."\";";
             		break;
 		default :
@@ -390,6 +393,22 @@ function csv_clean($value){
 	$value=html_clean($value);
 
 	return $value;
+}
+
+/**
+ * Extract url from web link
+ *
+ *
+ *@param $value string value
+ *
+ *@return clean value
+ *
+ **/
+function weblink_extract($value){
+
+        $value = preg_replace('/<a\s+href\="(https?\:\/\/[^"]+)"[^>]*>[^<]*<\/a>/i', '$1', $value);
+
+        return $value;
 }
 
 /**
