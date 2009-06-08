@@ -268,7 +268,6 @@ $LANG['common'][77]="Privé";
 $LANG['common'][78]="Rendre public";
 $LANG['common'][79]="Rendre privé";
 $LANG['common'][80]="En cours de chargement...";
-$LANG['common'][81]="Titre";
 $LANG['common'][82]="Mb"; 
 $LANG['common'][83]="Vous n'avez pas les droits suffisants pour réaliser cette action."; 
 $LANG['common'][84]="La présence d'éléments liés interdit la modification de cet attribut";
@@ -1813,4 +1812,7 @@ $LANG['update'][136]="Voici la nouvelle hiérarchie générée. Si elle vous con
 $LANG['update'][137]="Nouvelle hiérarchie"; 
 $LANG['update'][138]="Lieux actuels"; 
 $LANG['update'][139]="Optimisation des tables"; 
+
+$LANG['users'][1]= "Titre";
+$LANG['users'][2]="Catégorie"; 
 ?>

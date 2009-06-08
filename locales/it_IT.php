@@ -264,7 +264,6 @@ $LANG['common'][77]="Privato";
 $LANG['common'][78]="Rendi pubblico"; 
 $LANG['common'][79]="Rendi privato"; 
 $LANG['common'][80]="In fase di caricamento..."; 
-$LANG['common'][81]="Titolo"; 
 $LANG['common'][82]="MB"; 
 $LANG['common'][83]="Non hai diritti sufficienti per eseguire questa azione."; 
 $LANG['common'][84]="Cambio del flag non consentito. Sono stati trovati elementi collegati."; 
@@ -1778,4 +1777,7 @@ $LANG['update'][136]="Questa è la nuova gerarchia. Se corretta, la puoi conferm
 $LANG['update'][137]="Nuova gerarchia"; 
 $LANG['update'][138]="Posizioni attuali"; 
 $LANG['update'][139]="Ottimizzazione tabelle"; 
+
+$LANG['users'][1]="Titolo"; 
+$LANG['users'][2]="Categoria"; 
 ?>

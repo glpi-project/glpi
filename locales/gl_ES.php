@@ -264,7 +264,6 @@ $LANG['common'][77]="Privado";
 $LANG['common'][78]="Configurar pública"; 
 $LANG['common'][79]="Configurar privado"; 
 $LANG['common'][80]="Durante a carga..."; 
-$LANG['common'][81]="Título"; 
 $LANG['common'][82]="Mb"; 
 $LANG['common'][83]="Vostede non ten permisos para realizar esta acción."; 
 $LANG['common'][84]="A existencia de elementos ligados impiden a modificación deste atributo"; 
@@ -1778,4 +1777,7 @@ $LANG['update'][136]="Velaquí a nova xerarquía xerada. Si é correcta pode ace
 $LANG['update'][137]="Nova xerarquía"; 
 $LANG['update'][138]="Lugares actuais"; 
 $LANG['update'][139]="Optimización das táboas"; 
+
+$LANG['users'][1]="Título"; 
+$LANG['users'][2]="Categoría"; 
 ?>

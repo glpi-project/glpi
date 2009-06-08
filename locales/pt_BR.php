@@ -264,7 +264,6 @@ $LANG['common'][77]="Privado";
 $LANG['common'][78]="Definir público"; 
 $LANG['common'][79]="Definir privado"; 
 $LANG['common'][80]="Carregando..."; 
-$LANG['common'][81]="Título"; 
 $LANG['common'][82]="Mb"; 
 $LANG['common'][83]="Você não tem permissão para executar essa ação."; 
 $LANG['common'][84]="A presença de itens relacionados proibe a modificação deste atributo"; 
@@ -1168,8 +1167,8 @@ $LANG['profiles'][12]="Sem acesso";
 $LANG['profiles'][13]="Perfil padrão"; 
 $LANG['profiles'][14]="Deletar um chamado"; 
 $LANG['profiles'][15]="Adicionar um follow-up para todos os chamados"; 
-$LANG['profiles'][16]="Apropriar-se de um chamado"; 
-$LANG['profiles'][17]="Se apropriar de um chamado"; 
+$LANG['profiles'][16]="Receber atribuição de chamados"; 
+$LANG['profiles'][17]="Apropriar-se de um chamado de outro usuário"; 
 $LANG['profiles'][18]="Atualizar um chamado"; 
 $LANG['profiles'][19]="Atribuir um chamado"; 
 $LANG['profiles'][20]="Ver planejamento pessoal"; 
@@ -1778,4 +1777,7 @@ $LANG['update'][136]="Esta é um nova hieraquia. Se estiver certo, você pode va
 $LANG['update'][137]="Nova hierarquia"; 
 $LANG['update'][138]="Localização atual"; 
 $LANG['update'][139]="Otimização das tables"; 
+
+$LANG['users'][1]="Título"; 
+$LANG['users'][2]="Categoria"; 
 ?>

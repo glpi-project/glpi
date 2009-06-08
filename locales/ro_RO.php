@@ -264,7 +264,6 @@ $LANG['common'][77]="Privat";
 $LANG['common'][78]="Setati public"; 
 $LANG['common'][79]="Setati privat"; 
 $LANG['common'][80]="Se incarca..."; 
-$LANG['common'][81]="Titlu"; 
 $LANG['common'][82]="Mb"; 
 $LANG['common'][83]="You don't have permission to perform this action."; 
 $LANG['common'][84]="Flag change forbidden. Linked items found."; 
@@ -1778,4 +1777,7 @@ $LANG['update'][136]="Aceasta este o noua ierarhie. Daca este OK o puteti valida
 $LANG['update'][137]="Ierarhie noua"; 
 $LANG['update'][138]="Locatii actuale"; 
 $LANG['update'][139]="Tables Optimization"; 
+
+$LANG['users'][1]="Titlu"; 
+$LANG['users'][2]="Categorie"; 
 ?>

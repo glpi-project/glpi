@@ -150,7 +150,7 @@ switch($_GET["type"]){
 		$next=$prev=0;
 		$next=getNextItem("glpi_dropdown_user_titles",$_GET["ID"]);
 		$prev=getPreviousItem("glpi_dropdown_user_titles",$_GET["ID"]);
-		$title=$LANG['common'][57].": ".getDropdownName("glpi_dropdown_user_titles",$_GET["ID"]);
+		$title=$LANG['users'][1].": ".getDropdownName("glpi_dropdown_user_titles",$_GET["ID"]);
 		break;	
 	case "type":
 		$val1=$_GET["ID"];
@@ -158,7 +158,7 @@ switch($_GET["type"]){
 		$next=$prev=0;
 		$next=getNextItem("glpi_dropdown_user_types",$_GET["ID"]);
 		$prev=getPreviousItem("glpi_dropdown_user_types",$_GET["ID"]);
-		$title=$LANG['common'][17].": ".getDropdownName("glpi_dropdown_user_types",$_GET["ID"]);
+		$title=$LANG['users'][2].": ".getDropdownName("glpi_dropdown_user_types",$_GET["ID"]);
 		break;	
 	case "request_type":
 		$val1=$_GET["ID"];

@@ -264,7 +264,6 @@ $LANG['common'][77]="Privat";
 $LANG['common'][78]="Sett som offentlig"; 
 $LANG['common'][79]="Sett som privat"; 
 $LANG['common'][80]="Under lasting"; 
-$LANG['common'][81]="Tittel"; 
 $LANG['common'][82]="Mb"; 
 $LANG['common'][83]="Du har ikke rettigheter til å utføre denne handlingen"; 
 $LANG['common'][84]="Flagg endre forbudt. Linkede elemtenter funnet."; 
@@ -1778,4 +1777,7 @@ $LANG['update'][136]="Dette er den nye rangsordningen, hvis den er OK, kan du be
 $LANG['update'][137]="Ny rangsordning"; 
 $LANG['update'][138]="Reelle steder"; 
 $LANG['update'][139]="Tabeller optimaliseringsforespørsel"; 
+
+$LANG['users'][1]="Tittel"; 
+$LANG['users'][2]="Kategori"; 
 ?>

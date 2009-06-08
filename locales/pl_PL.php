@@ -264,7 +264,6 @@ $LANG['common'][77]="Prywatne";
 $LANG['common'][78]="Ustaw publiczne"; 
 $LANG['common'][79]="Ustaw prywatne"; 
 $LANG['common'][80]="trwa ładowanie..."; 
-$LANG['common'][81]="Nazwa"; 
 $LANG['common'][82]="Mb"; 
 $LANG['common'][83]="Brak uprawnień do wykonania tej akcji."; 
 $LANG['common'][84]="Zmiana flagi zabroniona. Znaleziono połączone pozycje."; 
@@ -1778,4 +1777,7 @@ $LANG['update'][136]="TO jest nowa hierarchia. Jezeli jest ok możesz ją pozost
 $LANG['update'][137]="Nowa hierarchia"; 
 $LANG['update'][138]="Obecne lokalizacje"; 
 $LANG['update'][139]="Tabele optymalizacji"; 
+
+$LANG['users'][1]="Nazwa"; 
+$LANG['users'][2]="Kategoria"; 
 ?>

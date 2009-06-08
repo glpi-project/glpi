@@ -978,10 +978,10 @@ class User extends CommonDBTM {
 				dropdownYesNo('active',$this->fields['active']);
 				echo "</td></tr>";
 
-				echo "<tr class='tab_bg_1'><td class='center'>" . $LANG['common'][81] . "</td><td>";
+				echo "<tr class='tab_bg_1'><td class='center'>" . $LANG['users'][1] . "</td><td>";
 					dropdownValue("glpi_dropdown_user_titles","title",$this->fields["title"],1,-1);
 
-				echo "<td class='center'>" . $LANG['common'][17] . "</td><td>";
+				echo "<td class='center'>" . $LANG['users'][2] . "</td><td>";
 					dropdownValue("glpi_dropdown_user_types","type",$this->fields["type"],1,-1);
 				echo "</td></tr>";
 

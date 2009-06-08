@@ -264,7 +264,6 @@ $LANG['common'][77]="Privāts";
 $LANG['common'][78]="Uzstādīt kā publisku"; 
 $LANG['common'][79]="Uzstādīt kā privātu"; 
 $LANG['common'][80]="During loading..."; 
-$LANG['common'][81]="Title"; 
 $LANG['common'][82]="Mb"; 
 $LANG['common'][83]="You don't have permission to perform this action."; 
 $LANG['common'][84]="Flag change forbidden. Linked items found."; 
@@ -1778,4 +1777,7 @@ $LANG['update'][136]="Šī ir jaunā hierarhija. Ja piekrītat, varat apstiprin�
 $LANG['update'][137]="Jauna hierarhija"; 
 $LANG['update'][138]="Faktiskā vieta"; 
 $LANG['update'][139]="Tables Optimization"; 
+
+$LANG['users'][1]="Title"; 
+$LANG['users'][2]="Kategorija"; 
 ?>

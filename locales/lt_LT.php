@@ -264,7 +264,6 @@ $LANG['common'][77]="Asmeninis";
 $LANG['common'][78]="Set public"; 
 $LANG['common'][79]="Set private"; 
 $LANG['common'][80]="During loading..."; 
-$LANG['common'][81]="Title"; 
 $LANG['common'][82]="Mb"; 
 $LANG['common'][83]="You don't have permission to perform this action."; 
 $LANG['common'][84]="Flag change forbidden. Linked items found."; 
@@ -1778,4 +1777,7 @@ $LANG['update'][136]="Tai nauja hierarchija. Jei ji tinkama, galite ją patvirti
 $LANG['update'][137]="Nauja hierarchija"; 
 $LANG['update'][138]="Esamos patalpos"; 
 $LANG['update'][139]="Tables Optimization"; 
+
+$LANG['users'][1]="Title"; 
+$LANG['users'][2]="Kategorija"; 
 ?>
