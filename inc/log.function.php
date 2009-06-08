@@ -257,7 +257,7 @@ function showHistory($device_type,$id_device){
 					$ci=new CommonItem();
 					$ci->setType($data["device_internal_type"]);
 					$field=$ci->getType();
-					$change = $LANG['log'][55]."&nbsp;<strong>:</strong>&nbsp;"."\"".$data["new_value"]."\"";	
+					$change = $LANG['log'][27]."&nbsp;<strong>:</strong>&nbsp;"."\"".$data["new_value"]."\"";	
 					break;	
 				case HISTORY_OCS_IMPORT:
 					if (haveRight("view_ocsng","r")){
