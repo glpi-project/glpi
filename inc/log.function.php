@@ -251,7 +251,7 @@ function showHistory($device_type,$id_device){
 					$ci=new CommonItem();
 					$ci->setType($data["device_internal_type"]);
 					$field=$ci->getType();
-					$change = $LANG['central'][6]."&nbsp;<strong>:</strong>&nbsp;"."\"".$data["old_value"]."\"";	
+					$change = $LANG['log'][26]."&nbsp;<strong>:</strong>&nbsp;"."\"".$data["old_value"]."\"";	
 					break;	
 				case HISTORY_CONNECT_DEVICE:
 					$ci=new CommonItem();
