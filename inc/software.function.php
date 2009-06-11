@@ -513,13 +513,14 @@ function showInstallations($searchID, $crit="sID") {
 	$query = "SELECT glpi_inst_software.*,glpi_computers.name AS compname, glpi_computers.ID AS cID,
 			glpi_computers.name AS compname, glpi_computers.serial, glpi_computers.otherserial, glpi_users.name AS username,
 			glpi_softwareversions.name as version, glpi_softwareversions.ID as vID, glpi_softwareversions.sID as sID, glpi_softwareversions.name as vername,
-			glpi_entities.completename AS entity, glpi_dropdown_locations.completename AS location, glpi_groups.name AS groupe,
+			glpi_entities.completename AS entity, glpi_dropdown_locations.completename AS location, glpi_dropdown_state.name AS state, glpi_groups.name AS groupe,
 			glpi_softwarelicenses.name AS lname, glpi_softwarelicenses.ID AS lID 
 		FROM glpi_inst_software
 		INNER JOIN glpi_softwareversions ON (glpi_inst_software.vID = glpi_softwareversions.ID)
 		INNER JOIN glpi_computers ON (glpi_inst_software.cID = glpi_computers.ID)
 		LEFT JOIN glpi_entities ON (glpi_computers.FK_entities=glpi_entities.ID)
 		LEFT JOIN glpi_dropdown_locations ON (glpi_computers.location=glpi_dropdown_locations.ID)
+		LEFT JOIN glpi_dropdown_state ON (glpi_computers.state=glpi_dropdown_state.ID)
 		LEFT JOIN glpi_groups ON (glpi_computers.FK_groups=glpi_groups.ID)
 		LEFT JOIN glpi_users ON (glpi_computers.FK_users=glpi_users.ID)
 		LEFT JOIN glpi_softwarelicenses ON (glpi_softwarelicenses.sID=glpi_softwareversions.sID AND glpi_softwarelicenses.FK_computers=glpi_computers.ID)
@@ -564,6 +565,7 @@ function showInstallations($searchID, $crit="sID") {
 			echo "<th>".($sort=="serial"?$sort_img:"")."<a href='javascript:reloadTab(\"sort=serial&order=".($order=="ASC"?"DESC":"ASC")."&start=0\");'>".$LANG['common'][19]."</a></th>";
 			echo "<th>".($sort=="otherserial"?$sort_img:"")."<a href='javascript:reloadTab(\"sort=otherserial&order=".($order=="ASC"?"DESC":"ASC")."&start=0\");'>".$LANG['common'][20]."</a></th>";
 			echo "<th>".(strstr($sort,"location")?$sort_img:"")."<a href='javascript:reloadTab(\"sort=location,compname&order=".($order=="ASC"?"DESC":"ASC")."&start=0\");'>".$LANG['common'][15]."</a></th>";
+			echo "<th>".(strstr($sort,"state")?$sort_img:"")."<a href='javascript:reloadTab(\"sort=state,compname&order=".($order=="ASC"?"DESC":"ASC")."&start=0\");'>".$LANG['state'][0]."</a></th>";
 			echo "<th>".(strstr($sort,"groupe")?$sort_img:"")."<a href='javascript:reloadTab(\"sort=groupe,compname&order=".($order=="ASC"?"DESC":"ASC")."&start=0\");'>".$LANG['common'][35]."</a></th>";
 			echo "<th>".(strstr($sort,"username")?$sort_img:"")."<a href='javascript:reloadTab(\"sort=username,compname&order=".($order=="ASC"?"DESC":"ASC")."&start=0\");'>".$LANG['common'][34]."</a></th>";
 			echo "<th>".($sort=="lname"?$sort_img:"")."<a href='javascript:reloadTab(\"sort=lname&order=".($order=="ASC"?"DESC":"ASC")."&start=0\");'>".$LANG['software'][11]."</a></th>";
@@ -594,6 +596,7 @@ function showInstallations($searchID, $crit="sID") {
 				echo "<td>".$data['serial']."</td>";
 				echo "<td>".$data['otherserial']."</td>";
 				echo "<td>".$data['location']."</td>";
+				echo "<td>".$data['state']."</td>";
 				echo "<td>".$data['groupe']."</td>";
 				echo "<td>".$data['username']."</td>";
 				if ($data['lID']>0) {
