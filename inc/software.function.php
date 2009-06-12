@@ -887,9 +887,11 @@ function showSoftwareInstalled($instID, $withtemplate = '') {
 	}
 	$req=$DB->request($query);
 	if ($req->numrows()) {
+		$cat=true;
 		foreach ($req as $data) {
 			if ($cat) {
-				$cat = displayCategoryHeader($instID, $data,$rand,$canedit);
+				displayCategoryHeader($instID, $data,$rand,$canedit);
+				$cat = false;
 			}
 			displaySoftsByLicense($data, $instID, $withtemplate, $canedit);			
 		}
