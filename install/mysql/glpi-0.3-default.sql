@@ -561,9 +561,9 @@ CREATE TABLE `prefs` (
 
 INSERT INTO `prefs` (`user`, `tracking_order`, `language`) VALUES ('glpi', 'yes', 'french');
 INSERT INTO `prefs` (`user`, `tracking_order`, `language`) VALUES ('Helpdesk', 'no', 'french');
-INSERT INTO `prefs` (`user`, `tracking_order`, `language`) VALUES ('normal', '', 'english');
+INSERT INTO `prefs` (`user`, `tracking_order`, `language`) VALUES ('normal', 'yes', 'english');
 INSERT INTO `prefs` (`user`, `tracking_order`, `language`) VALUES ('tech', 'yes', 'french');
-INSERT INTO `prefs` (`user`, `tracking_order`, `language`) VALUES ('post-only', '', 'english');
+INSERT INTO `prefs` (`user`, `tracking_order`, `language`) VALUES ('post-only', 'yes', 'english');
 
 # --------------------------------------------------------
 
