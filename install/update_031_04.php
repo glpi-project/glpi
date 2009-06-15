@@ -33,6 +33,19 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
+//Verifie si il existe bien un utilisateur ayant les droits super-admin
+function superAdminExists() {
+        $db = new DB;
+        $query = "select type, password from glpi_users";
+        $result = $db->query($query);
+        $var1 = false;
+        while($line = $db->fetch_array($result)) {
+                if($line["type"] == "super-admin" && !empty($line["password"])) $var1 = true;
+        }
+        return $var1;
+}
+
+
 /// Update from 0.31 to 0.4
 function update031to04(){
 	global $DB,$LANG;
