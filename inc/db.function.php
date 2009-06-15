@@ -537,7 +537,7 @@ function regenerateTreeCompleteName($table){
 		while ($data=$DB->fetch_array($result)){
 			list($name,$level)=getTreeValueName($table,$data['ID']);
 			$query="UPDATE `$table` 
-				SET completename='".addslashes($name)."', level='$level' 
+				SET completename='".addslashes($name)."'
 				WHERE ID='".$data['ID']."'";
 			$DB->query($query);
 		}

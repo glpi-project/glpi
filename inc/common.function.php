@@ -95,7 +95,7 @@ if (!defined('GLPI_ROOT')){
 	**/
 	function logInFile($name,$text,$force=false){
 		global $CFG_GLPI;
-		if ($CFG_GLPI["use_errorlog"]||$force){ 
+		if (isset($CFG_GLPI["use_errorlog"])&&$CFG_GLPI["use_errorlog"]||$force){ 
 			error_log(convDateTime(date("Y-m-d H:i:s"))."\n".$text,3,GLPI_LOG_DIR."/".$name.".log");
 		}
 	}

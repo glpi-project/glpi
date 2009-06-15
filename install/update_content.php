@@ -36,6 +36,9 @@
 //#################### INCLUDE & SESSIONS ############################
 define('GLPI_ROOT', '..');
 
+// Do not include config.php so set root_doc
+$CFG_GLPI['root_doc']='..';
+
 include_once (GLPI_ROOT . "/config/define.php");
 
 include_once (GLPI_ROOT . "/inc/dbmysql.class.php");

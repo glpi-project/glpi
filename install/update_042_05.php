@@ -63,9 +63,13 @@ function update042to05(){
 
 		while($line = $DB->fetch_array($result)) {
 			$line=addslashes_deep($line);
-			$query2 = "INSERT INTO glpi_computers (`ID`,`name`, `osver`, `processor_speed`, `serial`, `otherserial`, `ram`, `hdspace`, `contact`, `contact_num`, `comments`, `achat_date`, `date_fin_garantie`, `maintenance`, `os`, `hdtype`, `sndcard`, `moboard`, `gfxcard`, `network`, `ramtype`, `location`, `processor`, `type`, `is_template`, `tplname`)";
+			$query2 = "INSERT INTO glpi_computers (`name`, `osver`, `processor_speed`, `serial`, `otherserial`, `ram`, `hdspace`, `contact`, `contact_num`, `comments`, `achat_date`, `date_fin_garantie`, `maintenance`, `os`, `hdtype`, `sndcard`, `moboard`, `gfxcard`, `network`, `ramtype`, `location`, `processor`, `type`, `is_template`, `tplname`)";
 
-			$query2 .= " VALUES ('','".$line["name"]."', '".$line["osver"]."', '".$line["processor_speed"]."', '".$line["serial"]."', '".$line["otherserial"]."', '".$line["ram"]."', '".$line ["hdspace"]."', '".$line["contact"]."', '".$line["contact_num"]."', '".$line["comments"]."', '".$line["achat_date"]."', '".$line["date_fin_garantie"]."', '".$line["maintenance"]."', '".$line["os"]."', '".$line["hdtype"]."', '".$line["sndcard"]."', '".$line["moboard"]."', '".$line["gfxcard"]."', '".$line["network"]."', '".$line["ramtype"]."', '".$line["location"]."', '".$line["processor"]."', '".$line["type"]."','1','".$line["templname"]."')";	
+			if (empty($line["location"])){
+				$line["location"]=0;
+			}
+
+			$query2 .= " VALUES ('".$line["name"]."', '".$line["osver"]."', '".$line["processor_speed"]."', '".$line["serial"]."', '".$line["otherserial"]."', '".$line["ram"]."', '".$line ["hdspace"]."', '".$line["contact"]."', '".$line["contact_num"]."', '".$line["comments"]."', '".$line["achat_date"]."', '".$line["date_fin_garantie"]."', '".$line["maintenance"]."', '".$line["os"]."', '".$line["hdtype"]."', '".$line["sndcard"]."', '".$line["moboard"]."', '".$line["gfxcard"]."', '".$line["network"]."', '".$line["ramtype"]."', '".$line["location"]."', '".$line["processor"]."', '".$line["type"]."','1','".$line["templname"]."')";	
 			//echo $query2;
 			$DB->query($query2) or die("0.5-convert template 2 computers ".$DB->error());
 		}
@@ -76,7 +80,7 @@ function update042to05(){
 		$query="SELECT ID FROM glpi_computers WHERE tplname='Blank Template'";
 		$result=$DB->query($query);
 		if ($DB->numrows($result)==0){
-			$query="INSERT INTO glpi_computers (is_template,tplname) VALUES ('1','Blank Template')";
+			$query="INSERT INTO glpi_computers (is_template,tplname,name,comment,contact,contact_num,serial,otherserial) VALUES ('1','Blank Template','','','','','','')";
 			$DB->query($query) or die("0.5 add blank template ".$LANG['update'][90].$DB->error());	
 		}
 		$DB->free_result($result);
@@ -286,7 +290,7 @@ function update042to05(){
 			`ID` int(11) NOT NULL auto_increment,
 			`name` varchar(50) NOT NULL default '',
 			`type` int(11) NOT NULL default '0',
-			`address` text NOT NULL default '',
+			`address` text NOT NULL,
 			`website` varchar(100) NOT NULL default '',
 			`phonenumber` varchar(20) NOT NULL default '',
 			`comments` text NOT NULL,
@@ -736,7 +740,7 @@ function update042to05(){
 		$query = "ALTER TABLE `glpi_peripherals` ADD `is_template` ENUM('0', '1') DEFAULT '0' NOT NULL , ADD `tplname` VARCHAR(255) ;";
 		$DB->query($query) or die("0.5 add field deleted ".$LANG['update'][90].$DB->error());
 
-		$query="INSERT INTO glpi_peripherals (is_template,tplname) VALUES ('1','Blank Template')";
+		$query="INSERT INTO glpi_peripherals (is_template,tplname,name,contact,contact_num,comments,serial,otherserial,brand) VALUES ('1','Blank Template','','','','','','','')";
 		$DB->query($query) or die("0.5 add blank template ".$LANG['update'][90].$DB->error());	
 
 		$query="ALTER TABLE `glpi_peripherals` ADD INDEX (`is_template`)" ;
@@ -751,7 +755,7 @@ function update042to05(){
 		$query = "ALTER TABLE `glpi_software` ADD `is_template` ENUM('0', '1') DEFAULT '0' NOT NULL , ADD `tplname` VARCHAR(255) ;";
 		$DB->query($query) or die("0.5 add field deleted ".$LANG['update'][90].$DB->error());
 
-		$query="INSERT INTO glpi_software (is_template,tplname) VALUES ('1','Blank Template')";
+		$query="INSERT INTO glpi_software (is_template,tplname,name,comments,version) VALUES ('1','Blank Template','','','')";
 		$DB->query($query) or die("0.5 add blank template ".$LANG['update'][90].$DB->error());	
 
 		$query="ALTER TABLE `glpi_software` ADD INDEX (`is_template`)" ;
@@ -765,7 +769,7 @@ function update042to05(){
 		$query = "ALTER TABLE `glpi_monitors` ADD `is_template` ENUM('0', '1') DEFAULT '0' NOT NULL , ADD `tplname` VARCHAR(255) ;";
 		$DB->query($query) or die("0.5 add field deleted ".$LANG['update'][90].$DB->error());
 
-		$query="INSERT INTO glpi_monitors (is_template,tplname) VALUES ('1','Blank Template')";
+		$query="INSERT INTO glpi_monitors (is_template,tplname,name,contact,contact_num,comments,serial,otherserial) VALUES ('1','Blank Template','','','','','','')";
 		$DB->query($query) or die("0.5 add blank template ".$LANG['update'][90].$DB->error());	
 
 		$query="ALTER TABLE `glpi_monitors` ADD INDEX (`is_template`)" ;
@@ -785,7 +789,7 @@ function update042to05(){
 		$query = "ALTER TABLE `glpi_networking` ADD `is_template` ENUM('0', '1') DEFAULT '0' NOT NULL , ADD `tplname` VARCHAR(255) ;";
 		$DB->query($query) or die("0.5 add field deleted ".$LANG['update'][90].$DB->error());
 
-		$query="INSERT INTO glpi_networking (is_template,tplname) VALUES ('1','Blank Template')";
+		$query="INSERT INTO glpi_networking (is_template,tplname,name,contact,contact_num,comments,ram,otherserial,serial) VALUES ('1','Blank Template','','','','','','','')";
 		$DB->query($query) or die("0.5 add blank template ".$LANG['update'][90].$DB->error());	
 
 		$query="ALTER TABLE `glpi_networking` ADD INDEX (`is_template`)" ;
@@ -799,7 +803,7 @@ function update042to05(){
 		$query = "ALTER TABLE `glpi_printers` ADD `is_template` ENUM('0', '1') DEFAULT '0' NOT NULL , ADD `tplname` VARCHAR(255) ;";
 		$DB->query($query) or die("0.5 add field deleted ".$LANG['update'][90].$DB->error());
 
-		$query="INSERT INTO glpi_printers (is_template,tplname) VALUES ('1','Blank Template')";
+		$query="INSERT INTO glpi_printers (is_template,tplname,name,contact,contact_num,comments,serial,otherserial,ramSize) VALUES ('1','Blank Template','','','','','','','')";
 		$DB->query($query) or die("0.5 add blank template ".$LANG['update'][90].$DB->error());	
 
 		$query="ALTER TABLE `glpi_printers` ADD INDEX (`is_template`)" ;
@@ -1195,7 +1199,7 @@ function updateWarrantyInfos($table,$type){
 			$duration=0;
 			if ($data['date_fin_garantie']!="0000-00-00"&&!empty($data['date_fin_garantie']))
 				$duration=round(date_diff($achat_date,$data['date_fin_garantie']),2);
-			$query_insert="INSERT INTO glpi_infocoms (device_type,FK_device,buy_date,warranty_duration) VALUES ('$type','$IDitem','".$achat_date."','$duration')";
+			$query_insert="INSERT INTO glpi_infocoms (device_type,FK_device,buy_date,warranty_duration,comments) VALUES ('$type','$IDitem','".$achat_date."','$duration','')";
 			$result_insert=$DB->query($query_insert) or die("0.5 insert for update warranty ".$LANG['update'][90].$DB->error());
 		}
 	}
@@ -1249,7 +1253,7 @@ function compDpd2Device($devtype,$devname,$dpdname,$compDpdName,$specif='') {
 
 	$result = $DB->query($query);
 	while($lndropd = $DB->fetch_array($result)) {
-		$query2 = "insert into glpi_device_".$devname." (designation) values ('".addslashes($lndropd["name"])."')";
+		$query2 = "insert into glpi_device_".$devname." (designation,comment,specif_default) values ('".addslashes($lndropd["name"])."','','')";
 		$DB->query($query2) or die("unable to transfer ".$dpdname." to ".$devname."  ".$LANG['update'][90].$DB->error());
 		$devid = $DB->insert_id();
 		$query3 = "select * from glpi_computers where ".$compDpdName." = '".$lndropd["ID"]."'";

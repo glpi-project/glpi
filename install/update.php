@@ -146,7 +146,6 @@ function display_new_locations(){
 	for ($i=1;$i<=$MAX_LEVEL;$i++){
 		$SELECT_ALL.=" , location$i.name AS NAME$i , location$i.parentID AS PARENT$i ";
 		$FROM_ALL.=" LEFT JOIN glpi_dropdown_locations_new AS location$i ON location".($i-1).".ID = location$i.parentID ";
-		//$WHERE_ALL.=" AND location$i.level='$i' ";
 		$ORDER_ALL.=" , NAME$i";
 
 	}
@@ -274,7 +273,6 @@ function location_create_new($split_char,$add_first){
 function showLocationUpdateForm(){
 	global $DB,$LANG;
 
-
 	if (FieldExists("glpi_dropdown_locations", "parentID")) {
 		updateTreeDropdown();
 		return true;
@@ -330,6 +328,7 @@ function showLocationUpdateForm(){
 	} else {
 		display_old_locations();	
 	}
+	exit();
 }
 
 
@@ -447,6 +446,7 @@ function updatedbUpTo031()
 			include("update_04_042.php");
 			update04to042();
 		case "0.42": 
+			showLocationUpdateForm();
 			include("update_042_05.php");
 			update042to05();
 		case "0.5": 
@@ -495,6 +495,7 @@ function updatedbUpTo031()
 			update031to04();
 			include("update_04_042.php");
 			update04to042();
+			showLocationUpdateForm();
 			include("update_042_05.php");
 			update042to05();
 			include("update_05_051.php");
@@ -547,12 +548,12 @@ function updateTreeDropdown(){
 	global $DB,$LANG;
 
 	// Update Tree dropdown
-	if(!FieldExists("glpi_dropdown_locations","completename")) {
+	if(TableExists("glpi_dropdown_locations") && !FieldExists("glpi_dropdown_locations","completename")) {
 		$query= "ALTER TABLE `glpi_dropdown_locations` ADD `completename` TEXT NOT NULL ;";
 		$DB->query($query) or die("0.6 add completename in dropdown_locations ".$LANG['update'][90].$DB->error());	
 		regenerateTreeCompleteName("glpi_dropdown_locations");
 	}
-	if(!FieldExists("glpi_dropdown_kbcategories","completename")) {
+	if(TableExists("glpi_dropdown_kbcategories")&& !FieldExists("glpi_dropdown_kbcategories","completename")) {
 		$query= "ALTER TABLE `glpi_dropdown_kbcategories` ADD `completename` TEXT NOT NULL ;";
 		$DB->query($query) or die("0.6 add completename in dropdown_kbcategories ".$LANG['update'][90].$DB->error());	
 		regenerateTreeCompleteName("glpi_dropdown_kbcategories");

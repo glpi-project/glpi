@@ -515,9 +515,9 @@ CREATE TABLE glpi_prefs (
 
 INSERT INTO glpi_prefs VALUES ('glpi','yes','french','1');
 INSERT INTO glpi_prefs VALUES ('Helpdesk','no','french','2');
-INSERT INTO glpi_prefs VALUES ('normal','','english','3');
+INSERT INTO glpi_prefs VALUES ('normal','yes','english','3');
 INSERT INTO glpi_prefs VALUES ('tech','yes','french','4');
-INSERT INTO glpi_prefs VALUES ('post-only','','english','5');
+INSERT INTO glpi_prefs VALUES ('post-only','yes','english','5');
 ### Dump table glpi_printers
 
 DROP TABLE IF EXISTS glpi_printers;
