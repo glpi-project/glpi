@@ -247,7 +247,10 @@ function showDeviceContract($instID) {
 	if ($canedit){
 		echo "<tr class='tab_bg_1'><td colspan='4' class='right'>";
 		echo "<div class='software-instal'><input type='hidden' name='conID' value='$instID'>";
-		dropdownAllItems("item",0,0,($contract->fields['recursive']?-1:$contract->fields['FK_entities']));
+                $types=$CFG_GLPI["state_types"];
+                $types[]=SOFTWARE_TYPE;
+
+		dropdownAllItems("item",0,0,($contract->fields['recursive']?-1:$contract->fields['FK_entities']),$types);
 		echo "</div></td><td class='center'><input type='submit' name='additem' value=\"".$LANG['buttons'][8]."\" class='submit'>";
 		echo "<input type='hidden' name='ID' value='$instID'>";
 		echo "</td><td>&nbsp;</td>";

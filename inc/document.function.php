@@ -292,6 +292,7 @@ function showDeviceDocument($instID) {
 			$types[]=CARTRIDGE_TYPE;
 			$types[]=CONSUMABLE_TYPE;
 			$types[]=CONTRACT_TYPE;
+			$types[]=SOFTWARE_TYPE;
 			$types[]=SOFTWARELICENSE_TYPE;
 			dropdownAllItems("item",0,0,($doc->fields['recursive']?-1:$doc->fields['FK_entities']),$types);
 			
