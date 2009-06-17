@@ -338,17 +338,19 @@ class Job extends CommonDBTM{
 				$this->fields["uemail"]=$user->fields["email"];
 			}
 		}
+		
+		// Do not take into account date_mod if no update is done
+		if (count($updates)==1 && ($key=array_search('date_mod',$updates))!==false){
+			unset($updates[$key]);
+		}
 
 		return array($input,$updates);
 	}
 
 	function post_updateItem($input,$updates,$history=1) {
 		global $CFG_GLPI,$LANG;
-
-		// Do not take into account date_mod for post processes
-		if (($key=array_search('date_mod',$updates))!==false){
-			unset($updates[$key]);
-		}
+		print_r($updates);
+		exit();
 
 		if (count($updates)){
 			// New values for add followup in change
