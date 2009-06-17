@@ -374,6 +374,10 @@ function showDocumentAssociated($device_type,$ID,$withtemplate=''){
 	$ci->getFromDB($device_type,$ID);
 	$canread=$ci->obj->can($ID,'r');
 	$canedit=$ci->obj->can($ID,'w');
+	$recursive=0;
+	if ($ci->getField('recursive')){
+		$recursive=1;
+	}
 
 	$needed_fields=array('ID','name','filename','mime','rubrique','link','deleted','FK_entities','recursive');
 
@@ -504,6 +508,7 @@ function showDocumentAssociated($device_type,$ID,$withtemplate=''){
 			echo "<tr class='tab_bg_1'><td align='center' colspan='3'>" .
 				"<input type='hidden' name='FK_entities' value='$entity'>" .
 				"<input type='hidden' name='item' value='$ID'>" .
+				"<input type='hidden' name='recursive' value='$recursive'>" .
 				"<input type='hidden' name='type' value='$device_type'>" .
 				"<input type='file' name='filename' size='25'>&nbsp;&nbsp;" .
 				"<input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'>" .
