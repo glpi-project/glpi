@@ -501,6 +501,9 @@ class Computer extends CommonDBTM {
 
 		$query = "DELETE FROM glpi_ocs_link WHERE (glpi_id = '$ID')";
 		$result = $DB->query($query);
+
+		$query = "DELETE FROM glpi_computerdisks WHERE (FK_computers = '$ID')";
+		$result = $DB->query($query);
 	}
 
 	/**
