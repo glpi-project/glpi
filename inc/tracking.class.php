@@ -349,8 +349,6 @@ class Job extends CommonDBTM{
 
 	function post_updateItem($input,$updates,$history=1) {
 		global $CFG_GLPI,$LANG;
-		print_r($updates);
-		exit();
 
 		if (count($updates)){
 			// New values for add followup in change
