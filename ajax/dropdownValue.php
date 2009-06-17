@@ -225,7 +225,7 @@ if (!isset($_POST["limit"])) $_POST["limit"]=$_SESSION["glpidropdown_limit"];
 		echo "</select>";
 
 	} else { // Not dropdowntree_tables
-		$where .=" AND ID NOT IN ('".$_POST['value']."'";
+		$where .=" AND `".$_POST['table']."`.ID NOT IN ('".$_POST['value']."'";
 		if (isset($_POST['used'])) {
 			if (is_array($_POST['used'])) {
 				$used=$_POST['used'];
@@ -265,10 +265,16 @@ if (!isset($_POST["limit"])) $_POST["limit"]=$_SESSION["glpidropdown_limit"];
 
 		switch ($_POST['table']){
 			case "glpi_contacts":
-				$query = "SELECT FK_entities, CONCAT(name,' ',firstname) as $field, 
+				$query = "SELECT `".$_POST['table']."`.FK_entities, CONCAT(name,' ',firstname) as $field, 
 						`".$_POST['table']."`.comments, `".$_POST['table']."`.ID 
 					FROM `".$_POST['table']."` 
 					$where";
+			break;
+			case "glpi_softwarelicenses":
+				$query = "SELECT `".$_POST['table']."`.*, CONCAT(glpi_software.name,' - ',glpi_softwarelicenses.name) as $field
+					FROM `".$_POST['table']."` LEFT JOIN glpi_software ON (glpi_softwarelicenses.sID = glpi_software.ID)
+					$where";
+
 			break;
 			default :
 				$query = "SELECT * 
@@ -283,7 +289,7 @@ if (!isset($_POST["limit"])) $_POST["limit"]=$_SESSION["glpidropdown_limit"];
 		}
 		//error_log("SQL2:".$query);
 		$result = $DB->query($query);
-
+		//echo $query;
 		echo "<select id='dropdown_".$_POST["myname"].$_POST["rand"]."' name=\"".$_POST['myname']."\" size='1'>";
 
 		if ($_POST['searchText']!=$CFG_GLPI["ajax_wildcard"]&&$DB->numrows($result)==$NBMAX)
