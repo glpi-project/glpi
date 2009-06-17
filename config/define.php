@@ -14,7 +14,7 @@
 		"de_DE"=>array("Deutsch","de_DE.php","de","de"),//
 		"dk_DK"=>array("Dansk","dk_DK.php","da","da"),//
 		"nl_NL"=>array("Nederlands","nl_NL.php","nl","nl"),//
-		"nl_BE"=>array("Nederlands (Belgium)","nl.php","nl","nl"),//
+		"nl_BE"=>array("Nederlands (Belgium)","nl_BE.php","nl","nl"),//
 		"en_GB"=>array("English","en_GB.php","en","en"),//
 		"es_AR"=>array("Español (Argentina)","es_AR.php","es","es"),//
 		"es_ES"=>array("Español (España)","es_ES.php","es","es"),//
