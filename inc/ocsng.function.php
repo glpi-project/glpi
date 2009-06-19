@@ -926,17 +926,17 @@ function ocsUpdateComputer($ID, $ocs_server_id, $dohistory, $force = 0) {
 				}
 
 				if ($mixed_checksum & pow(2, INPUTS_FL)) {
-					// Get import monitors
+					// Get import peripheral
 					$import_peripheral = importArrayFromDB($line["import_peripheral"]);
 					ocsUpdatePeripherals(PERIPHERAL_TYPE, $comp->fields["FK_entities"], $line['glpi_id'], $line['ocs_id'], $ocs_server_id, $cfg_ocs, $import_peripheral, $dohistory);
 				}
 				if ($mixed_checksum & pow(2, SOFTWARES_FL)) {
-					// Get import monitors
+					// Get import software
 					$import_software = importArrayFromDB($line["import_software"]);
 					ocsUpdateSoftware($line['glpi_id'], $comp->fields["FK_entities"], $line['ocs_id'], $ocs_server_id, $cfg_ocs, $import_software, (!$loghistory["history"]?0:$dohistory));
 				}
 				if ($mixed_checksum & pow(2, DRIVES_FL)) {
-					// Get import monitors
+					// Get import drives
 					$import_disk = importArrayFromDB($line["import_disk"]);
 					ocsUpdateDisk($line['glpi_id'], $line['ocs_id'], $ocs_server_id, $cfg_ocs, $import_disk);
 				}
@@ -2770,21 +2770,24 @@ function ocsUpdatePeripherals($device_type, $entity, $glpi_id, $ocs_id, $ocs_ser
 	if ($do_clean && count($import_periph)) {
 		foreach ($import_periph as $key => $val) {
 
-			Disconnect($key, $dohistory, $ocs_server_id);
-
 			switch ($device_type) {
 				case MONITOR_TYPE :
 					// Only if sync done
 					if ($cfg_ocs["import_monitor"]<=2 || $checkserial) {
+						Disconnect($key, $dohistory, $ocs_server_id);
 						deleteInOcsArray($glpi_id, $key, "import_monitor");
 					}
 					break;
 				case PRINTER_TYPE :
+					Disconnect($key, $dohistory, $ocs_server_id);
 					deleteInOcsArray($glpi_id, $key, "import_printers");
 					break;
 				case PERIPHERAL_TYPE :
+					Disconnect($key, $dohistory, $ocs_server_id);
 					deleteInOcsArray($glpi_id, $key, "import_peripheral");
 					break;
+				default:
+					Disconnect($key, $dohistory, $ocs_server_id);
 			}
 		}
 	}
