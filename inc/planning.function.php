@@ -964,8 +964,6 @@ function generateIcal($who){
 	if (isset($data["items"])&&count($data["items"])){
 		$interv=array_merge($data["items"],$interv);
 	}
-
-
 	if (count($interv)>0) {
 
 		
@@ -978,7 +976,9 @@ function generateIcal($who){
 				$vevent->setProperty("uid","Job#".$val["id_tracking"]);
 			}else if (isset($val["id_reminder"])){
 				$vevent->setProperty("uid","Event#".$val["id_reminder"]);
-			} else {
+			} else if (isset($val['planningID'])){ // Specify the ID (for plugins)
+				$vevent->setProperty("uid","Plugin#".$val['planningID']);
+			} else {				
 				$vevent->setProperty("uid","Plugin#".$key);
 			}	
 			$vevent->setProperty( "dstamp" , $val["begin"] ); 
