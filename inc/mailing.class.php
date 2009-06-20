@@ -37,7 +37,7 @@ if (!defined('GLPI_ROOT')){
 	die("Sorry. You can't access directly to this file");
 	}
 
-require_once(GLPI_ROOT . "/lib/phpmailer/class.phpmailer.php");
+require_once(GLPI_PHPMAILER_DIR . "/class.phpmailer.php");
 
 /**
  *  glpi_phpmailer class extends 
@@ -57,7 +57,7 @@ class glpi_phpmailer extends phpmailer {
 		global $CFG_GLPI;
 
 		// Comes from config
-		$this->SetLanguage("en", GLPI_ROOT . "/lib/phpmailer/language/");
+		$this->SetLanguage("en", GLPI_PHPMAILER_DIR . "/language/");
 
 		if ($CFG_GLPI['smtp_mode'] != MAIL_MAIL){
 			$this->Mailer = "smtp";

@@ -106,4 +106,12 @@ if (!defined("GLPI_CACHE_LITE_DIR")){
 	# if PEAR + Cache_Lite installed, use (in config_path.php)
 	# define("GLPI_CACHE_LITE_DIR", "Cache");
 }
+
+// Default PHPMailer installation dir
+if (!defined("GLPI_PHPMAILER_DIR")){
+	define("GLPI_PHPMAILER_DIR", GLPI_ROOT."/lib/phpmailer");
+
+	# if PHPMailer installed, use (in config_path.php)
+	# define("GLPI_PHPMAILER_DIR", "/usr/share/php/phpmailer");
+}
 ?>
