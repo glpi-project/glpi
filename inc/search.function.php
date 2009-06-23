@@ -1251,9 +1251,9 @@ function showList ($type,$params){
 					$tmpcheck="";
 					if ($isadmin){
 						if ($type==ENTITY_TYPE && !in_array($data["ID"],$_SESSION["glpiactiveentities"])) {							
-							echo "&nbsp;";
+							$tmpcheck="&nbsp;";
 						} else if (isset($CFG_GLPI["recursive_type"][$type]) && !in_array($data["FK_entities"],$_SESSION["glpiactiveentities"])) {
-							echo "&nbsp;";
+							$tmpcheck="&nbsp;";
 						} else {
 							$sel="";
 							if (isset($_GET["select"])&&$_GET["select"]=="all") {
