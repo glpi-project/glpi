@@ -236,3 +236,6 @@ strong{font-weight:bolder;}
 overflow:visible;
 }
 
+
+/* Correct for date picker */
+.ext-ie .x-menu{overflow:visible;}
