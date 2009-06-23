@@ -134,7 +134,8 @@ if (isset($_GET["action"])){
 		$duree=round($end[0]+$end[1]-$start);
 
 		changeProgressBarMessage($LANG['rulesengine'][91]." (".timestampToString($duree).
-			")<br /><a href='".$_SERVER['PHP_SELF']."'>".$LANG['buttons'][13]."</a>");		
+			")");		
+		echo "<a href='".$_SERVER['PHP_SELF']."'>".$LANG['buttons'][13]."</a>";
 	} else {
 		// Need more work
 		glpi_header($_SERVER['PHP_SELF']."?start=$start&replay_rule=1&offset=$offset&manufacturer=$manufacturer");
