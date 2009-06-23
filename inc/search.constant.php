@@ -447,6 +447,7 @@ $SEARCH_OPTION[COMPUTER_TYPE][136]['field']='cost';
 $SEARCH_OPTION[COMPUTER_TYPE][136]['linkfield']='';
 $SEARCH_OPTION[COMPUTER_TYPE][136]['name']=$LANG['financial'][5]." ".$LANG['financial'][1];
 $SEARCH_OPTION[COMPUTER_TYPE][136]['forcegroupby']=true;
+$SEARCH_OPTION[COMPUTER_TYPE][136]['datatype']='decimal';
 
 $SEARCH_OPTION[COMPUTER_TYPE][137]['table']='glpi_contracts';
 $SEARCH_OPTION[COMPUTER_TYPE][137]['field']='facturation';
@@ -848,6 +849,7 @@ $SEARCH_OPTION[NETWORKING_TYPE][136]['field']='cost';
 $SEARCH_OPTION[NETWORKING_TYPE][136]['linkfield']='';
 $SEARCH_OPTION[NETWORKING_TYPE][136]['name']=$LANG['financial'][5]." ".$LANG['financial'][1];
 $SEARCH_OPTION[NETWORKING_TYPE][136]['forcegroupby']=true;
+$SEARCH_OPTION[NETWORKING_TYPE][136]['datatype']='decimal';
 
 $SEARCH_OPTION[NETWORKING_TYPE][137]['table']='glpi_contracts';
 $SEARCH_OPTION[NETWORKING_TYPE][137]['field']='facturation';
@@ -1187,6 +1189,7 @@ $SEARCH_OPTION[PRINTER_TYPE][136]['field']='cost';
 $SEARCH_OPTION[PRINTER_TYPE][136]['linkfield']='';
 $SEARCH_OPTION[PRINTER_TYPE][136]['name']=$LANG['financial'][5]." ".$LANG['financial'][1];
 $SEARCH_OPTION[PRINTER_TYPE][136]['forcegroupby']=true;
+$SEARCH_OPTION[PRINTER_TYPE][136]['datatype']='decimal';
 
 $SEARCH_OPTION[PRINTER_TYPE][137]['table']='glpi_contracts';
 $SEARCH_OPTION[PRINTER_TYPE][137]['field']='facturation';
@@ -1514,6 +1517,7 @@ $SEARCH_OPTION[MONITOR_TYPE][136]['field']='cost';
 $SEARCH_OPTION[MONITOR_TYPE][136]['linkfield']='';
 $SEARCH_OPTION[MONITOR_TYPE][136]['name']=$LANG['financial'][5]." ".$LANG['financial'][1];
 $SEARCH_OPTION[MONITOR_TYPE][136]['forcegroupby']=true;
+$SEARCH_OPTION[MONITOR_TYPE][136]['datatype']='decimal';
 
 $SEARCH_OPTION[MONITOR_TYPE][137]['table']='glpi_contracts';
 $SEARCH_OPTION[MONITOR_TYPE][137]['field']='facturation';
@@ -1840,6 +1844,7 @@ $SEARCH_OPTION[PERIPHERAL_TYPE][136]['field']='cost';
 $SEARCH_OPTION[PERIPHERAL_TYPE][136]['linkfield']='';
 $SEARCH_OPTION[PERIPHERAL_TYPE][136]['name']=$LANG['financial'][5]." ".$LANG['financial'][1];
 $SEARCH_OPTION[PERIPHERAL_TYPE][136]['forcegroupby']=true;
+$SEARCH_OPTION[PERIPHERAL_TYPE][136]['datatype']='decimal';
 
 $SEARCH_OPTION[PERIPHERAL_TYPE][137]['table']='glpi_contracts';
 $SEARCH_OPTION[PERIPHERAL_TYPE][137]['field']='facturation';
@@ -2197,6 +2202,7 @@ $SEARCH_OPTION[SOFTWARE_TYPE][136]['field']='cost';
 $SEARCH_OPTION[SOFTWARE_TYPE][136]['linkfield']='';
 $SEARCH_OPTION[SOFTWARE_TYPE][136]['name']=$LANG['financial'][5]." ".$LANG['financial'][1];
 $SEARCH_OPTION[SOFTWARE_TYPE][136]['forcegroupby']=true;
+$SEARCH_OPTION[SOFTWARE_TYPE][136]['datatype']='decimal';
 
 $SEARCH_OPTION[SOFTWARE_TYPE][137]['table']='glpi_contracts';
 $SEARCH_OPTION[SOFTWARE_TYPE][137]['field']='facturation';
@@ -2727,6 +2733,7 @@ $SEARCH_OPTION[CONTRACT_TYPE][11]['table']='glpi_contracts';
 $SEARCH_OPTION[CONTRACT_TYPE][11]['field']='cost';
 $SEARCH_OPTION[CONTRACT_TYPE][11]['linkfield']='cost';
 $SEARCH_OPTION[CONTRACT_TYPE][11]['name']=$LANG['financial'][5];
+$SEARCH_OPTION[CONTRACT_TYPE][11]['datatype']='decimal';
 
 $SEARCH_OPTION[CONTRACT_TYPE][21]['table']='glpi_contracts';
 $SEARCH_OPTION[CONTRACT_TYPE][21]['field']='periodicity';
@@ -3319,6 +3326,7 @@ $SEARCH_OPTION[PHONE_TYPE][136]['field']='cost';
 $SEARCH_OPTION[PHONE_TYPE][136]['linkfield']='';
 $SEARCH_OPTION[PHONE_TYPE][136]['name']=$LANG['financial'][5]." ".$LANG['financial'][1];
 $SEARCH_OPTION[PHONE_TYPE][136]['forcegroupby']=true;
+$SEARCH_OPTION[PHONE_TYPE][136]['datatype']='decimal';
 
 $SEARCH_OPTION[PHONE_TYPE][137]['table']='glpi_contracts';
 $SEARCH_OPTION[PHONE_TYPE][137]['field']='facturation';

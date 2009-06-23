@@ -2663,7 +2663,7 @@ function giveItem ($type,$ID,$data,$num,$meta=0){
 						if (strlen(trim($split[$k]))>0){
 							if ($count_display) $out.= "<br>";
 							$count_display++;
-							$out.= str_replace(' ','&nbsp;',formatNumber($split[$k],false,0)).$unit;
+							$out.= str_replace(' ','&nbsp;',formatNumber($split[$k])).$unit;
 						}
 					}
 					return $out;	
