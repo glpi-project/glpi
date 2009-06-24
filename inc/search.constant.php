@@ -2617,6 +2617,12 @@ $SEARCH_OPTION[ENTERPRISE_TYPE][11]['field']='town';
 $SEARCH_OPTION[ENTERPRISE_TYPE][11]['linkfield']='town';
 $SEARCH_OPTION[ENTERPRISE_TYPE][11]['name']=$LANG['financial'][101];
 
+$SEARCH_OPTION[ENTERPRISE_TYPE][14]['table']='glpi_enterprises';
+$SEARCH_OPTION[ENTERPRISE_TYPE][14]['field']='postcode';
+$SEARCH_OPTION[ENTERPRISE_TYPE][14]['linkfield']='postcode';
+$SEARCH_OPTION[ENTERPRISE_TYPE][14]['name']=$LANG['financial'][100];
+
+
 $SEARCH_OPTION[ENTERPRISE_TYPE][12]['table']='glpi_enterprises';
 $SEARCH_OPTION[ENTERPRISE_TYPE][12]['field']='state';
 $SEARCH_OPTION[ENTERPRISE_TYPE][12]['linkfield']='state';
