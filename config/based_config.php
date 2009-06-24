@@ -46,7 +46,7 @@ if (function_exists('date_default_timezone_set')){
 
 // If this file exists, it is load, allow to set configdir/dumpdir elsewhere
 if(file_exists(GLPI_ROOT ."/config/config_path.php")) {
-	include(GLPI_ROOT ."/config/config_path.php");
+	include_once(GLPI_ROOT ."/config/config_path.php");
 }
 
 // Default location for database configuration : config_db.php
