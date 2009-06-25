@@ -521,97 +521,137 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="")
 			switch($option){
 				 case RULE_OCS_AFFECT_COMPUTER :
 					$menu['admin']['content']['rule']['links']['search']='/front/rule.ocs.php';
-					$menu['admin']['content']['rule']['links']['add']='/front/rule.ocs.form.php';
+					if (haveRight("rule_ocs","w")){
+						$menu['admin']['content']['rule']['links']['add']='/front/rule.ocs.form.php';
+					}
 					break;
 				case RULE_AFFECT_RIGHTS :
 					$menu['admin']['content']['rule']['links']['search']='/front/rule.right.php';
-					$menu['admin']['content']['rule']['links']['add']='/front/rule.right.form.php';
+					if (haveRight("rule_ldap","w")){
+						$menu['admin']['content']['rule']['links']['add']='/front/rule.right.form.php';
+					}
 					break;
 				case RULE_TRACKING_AUTO_ACTION :
 					$menu['admin']['content']['rule']['links']['search']='/front/rule.tracking.php';
-					$menu['admin']['content']['rule']['links']['add']='/front/rule.tracking.form.php';
+					if (haveRight("rule_tracking","w")){
+						$menu['admin']['content']['rule']['links']['add']='/front/rule.tracking.form.php';
+					}
 					break;
 				case RULE_SOFTWARE_CATEGORY :
 					$menu['admin']['content']['rule']['links']['search']='/front/rule.softwarecategories.php';
-					$menu['admin']['content']['rule']['links']['add']='/front/rule.softwarecategories.form.php';
+					if (haveRight("rule_softwarecategories","w")){
+						$menu['admin']['content']['rule']['links']['add']='/front/rule.softwarecategories.form.php';
+					}
 					break;
 			}
 		}
 
-		if (haveRight("rule_dictionnary_manufacturer","r") || haveRight("rule_dictionnary_software","r") ||
-			haveRight("rule_dictionnary_model","r") || haveRight("rule_dictionnary_type","r")||
-			 haveRight("rule_dictionnary_os","r")){
+		if (haveRight("rule_dictionnary_dropdown","r") || haveRight("rule_dictionnary_software","r")){
 			$menu['admin']['content']['dictionnary']['title']=$LANG['rulesengine'][77];
 			$menu['admin']['content']['dictionnary']['shortcut']='r';
 			$menu['admin']['content']['dictionnary']['page']='/front/dictionnary.php';
 			switch($option){
 				case RULE_DICTIONNARY_MANUFACTURER :
 					$menu['admin']['content']['dictionnary']['links']['search']='/front/rule.dictionnary.manufacturer.php';
-					$menu['admin']['content']['dictionnary']['links']['add']='/front/rule.dictionnary.manufacturer.form.php';
+					if (haveRight("rule_dictionnary_dropdown","w")){
+						$menu['admin']['content']['dictionnary']['links']['add']='/front/rule.dictionnary.manufacturer.form.php';
+					}
 					break;
 				case RULE_DICTIONNARY_SOFTWARE :
 					$menu['admin']['content']['dictionnary']['links']['search']='/front/rule.dictionnary.software.php';
-					$menu['admin']['content']['dictionnary']['links']['add']='/front/rule.dictionnary.software.form.php';
+					if (haveRight("rule_dictionnary_software","w")){
+						$menu['admin']['content']['dictionnary']['links']['add']='/front/rule.dictionnary.software.form.php';
+					}
 					break;
 				case RULE_DICTIONNARY_MODEL_COMPUTER :
 					$menu['admin']['content']['dictionnary']['links']['search']='/front/rule.dictionnary.model.computer.php';
-					$menu['admin']['content']['dictionnary']['links']['add']='/front/rule.dictionnary.model.computer.form.php';
+					if (haveRight("rule_dictionnary_dropdown","w")){
+						$menu['admin']['content']['dictionnary']['links']['add']='/front/rule.dictionnary.model.computer.form.php';
+					}
 					break;
 				case RULE_DICTIONNARY_MODEL_MONITOR :
 					$menu['admin']['content']['dictionnary']['links']['search']='/front/rule.dictionnary.model.monitor.php';
-					$menu['admin']['content']['dictionnary']['links']['add']='/front/rule.dictionnary.model.monitor.form.php';
+					if (haveRight("rule_dictionnary_dropdown","w")){
+						$menu['admin']['content']['dictionnary']['links']['add']='/front/rule.dictionnary.model.monitor.form.php';
+					}
 					break;
 				case RULE_DICTIONNARY_MODEL_PRINTER :
 					$menu['admin']['content']['dictionnary']['links']['search']='/front/rule.dictionnary.model.printer.php';
-					$menu['admin']['content']['dictionnary']['links']['add']='/front/rule.dictionnary.model.printer.form.php';
+					if (haveRight("rule_dictionnary_dropdown","w")){
+						$menu['admin']['content']['dictionnary']['links']['add']='/front/rule.dictionnary.model.printer.form.php';
+					}
 					break;
 				case RULE_DICTIONNARY_MODEL_PERIPHERAL :
 					$menu['admin']['content']['dictionnary']['links']['search']='/front/rule.dictionnary.model.peripheral.php';
-					$menu['admin']['content']['dictionnary']['links']['add']='/front/rule.dictionnary.model.peripheral.form.php';
+					if (haveRight("rule_dictionnary_dropdown","w")){
+						$menu['admin']['content']['dictionnary']['links']['add']='/front/rule.dictionnary.model.peripheral.form.php';
+					}
 					break;
 				case RULE_DICTIONNARY_MODEL_NETWORKING :
 					$menu['admin']['content']['dictionnary']['links']['search']='/front/rule.dictionnary.model.networking.php';
-					$menu['admin']['content']['dictionnary']['links']['add']='/front/rule.dictionnary.model.networking.form.php';
+					if (haveRight("rule_dictionnary_dropdown","w")){
+						$menu['admin']['content']['dictionnary']['links']['add']='/front/rule.dictionnary.model.networking.form.php';
+					}
 					break;
 				case RULE_DICTIONNARY_MODEL_PHONE :
 					$menu['admin']['content']['dictionnary']['links']['search']='/front/rule.dictionnary.model.phone.php';
-					$menu['admin']['content']['dictionnary']['links']['add']='/front/rule.dictionnary.model.phone.form.php';
+					if (haveRight("rule_dictionnary_dropdown","w")){
+						$menu['admin']['content']['dictionnary']['links']['add']='/front/rule.dictionnary.model.phone.form.php';
+					}
 					break;
 				case RULE_DICTIONNARY_TYPE_COMPUTER :
 					$menu['admin']['content']['dictionnary']['links']['search']='/front/rule.dictionnary.type.computer.php';
-					$menu['admin']['content']['dictionnary']['links']['add']='/front/rule.dictionnary.type.computer.form.php';
+					if (haveRight("rule_dictionnary_dropdown","w")){
+						$menu['admin']['content']['dictionnary']['links']['add']='/front/rule.dictionnary.type.computer.form.php';
+					}
 					break;
 				case RULE_DICTIONNARY_TYPE_MONITOR :
 					$menu['admin']['content']['dictionnary']['links']['search']='/front/rule.dictionnary.type.monitor.php';
-					$menu['admin']['content']['dictionnary']['links']['add']='/front/rule.dictionnary.type.monitor.form.php';
+					if (haveRight("rule_dictionnary_dropdown","w")){
+						$menu['admin']['content']['dictionnary']['links']['add']='/front/rule.dictionnary.type.monitor.form.php';
+					}
 					break;
 				case RULE_DICTIONNARY_TYPE_PRINTER :
 					$menu['admin']['content']['dictionnary']['links']['search']='/front/rule.dictionnary.type.printer.php';
-					$menu['admin']['content']['dictionnary']['links']['add']='/front/rule.dictionnary.type.printer.form.php';
+					if (haveRight("rule_dictionnary_dropdown","w")){
+						$menu['admin']['content']['dictionnary']['links']['add']='/front/rule.dictionnary.type.printer.form.php';
+					}
 					break;
 				case RULE_DICTIONNARY_TYPE_PERIPHERAL :
 					$menu['admin']['content']['dictionnary']['links']['search']='/front/rule.dictionnary.type.peripheral.php';
-					$menu['admin']['content']['dictionnary']['links']['add']='/front/rule.dictionnary.type.peripheral.form.php';
+					if (haveRight("rule_dictionnary_dropdown","w")){
+						$menu['admin']['content']['dictionnary']['links']['add']='/front/rule.dictionnary.type.peripheral.form.php';
+					}
 					break;
 				case RULE_DICTIONNARY_TYPE_NETWORKING :
 					$menu['admin']['content']['dictionnary']['links']['search']='/front/rule.dictionnary.type.networking.php';
-					$menu['admin']['content']['dictionnary']['links']['add']='/front/rule.dictionnary.type.networking.form.php';
+					if (haveRight("rule_dictionnary_dropdown","w")){
+						$menu['admin']['content']['dictionnary']['links']['add']='/front/rule.dictionnary.type.networking.form.php';
+					}
 					break;
 				case RULE_DICTIONNARY_TYPE_PHONE :
 					$menu['admin']['content']['dictionnary']['links']['search']='/front/rule.dictionnary.type.phone.php';
-					$menu['admin']['content']['dictionnary']['links']['add']='/front/rule.dictionnary.type.phone.form.php';
+					if (haveRight("rule_dictionnary_dropdown","w")){
+						$menu['admin']['content']['dictionnary']['links']['add']='/front/rule.dictionnary.type.phone.form.php';
+					}
 					break;
 				case RULE_DICTIONNARY_OS :
 					$menu['admin']['content']['dictionnary']['links']['search']='/front/rule.dictionnary.os.php';
-					$menu['admin']['content']['dictionnary']['links']['add']='/front/rule.dictionnary.os.form.php';
+					if (haveRight("rule_dictionnary_dropdown","w")){
+						$menu['admin']['content']['dictionnary']['links']['add']='/front/rule.dictionnary.os.form.php';
+					}
 					break;
 				case RULE_DICTIONNARY_OS_SP :
 					$menu['admin']['content']['dictionnary']['links']['search']='/front/rule.dictionnary.os_sp.php';
-					$menu['admin']['content']['dictionnary']['links']['add']='/front/rule.dictionnary.os_sp.form.php';
+					if (haveRight("rule_dictionnary_dropdown","w")){
+						$menu['admin']['content']['dictionnary']['links']['add']='/front/rule.dictionnary.os_sp.form.php';
+					}
 					break;
 				case RULE_DICTIONNARY_OS_VERSION :
 					$menu['admin']['content']['dictionnary']['links']['search']='/front/rule.dictionnary.os_version.php';
-					$menu['admin']['content']['dictionnary']['links']['add']='/front/rule.dictionnary.os_version.form.php';
+					if (haveRight("rule_dictionnary_dropdown","w")){
+						$menu['admin']['content']['dictionnary']['links']['add']='/front/rule.dictionnary.os_version.form.php';
+					}
 					break;
 			}
 		}
