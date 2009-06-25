@@ -1089,7 +1089,9 @@ class SMTP {
    */
   private function get_lines() {
     $data = "";
-    while($str = @fgets($this->smtp_conn,515)) {
+   /// GLPI PATCH
+    while (!feof($this->smtp_conn)) {
+      $str = @fgets($this->smtp_conn,515);
       if($this->do_debug >= 4) {
         echo "SMTP -> get_lines(): \$data was \"$data\"" .
                  $this->CRLF;
