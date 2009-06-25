@@ -549,7 +549,7 @@ class Job extends CommonDBTM{
 				$user=new User;
 				$user->getFromDB($_SESSION["glpiID"]);
 				$mailtype="update";
-				if ($input["status"]&&in_array("status",$updates)&&strstr($input["status"],"old_")){
+				if (isset($input["status"])&&$input["status"]&&in_array("status",$updates)&&strstr($input["status"],"old_")){
 					$mailtype="finish";
 				} 
 				if (isset($input["_old_assign"])){
