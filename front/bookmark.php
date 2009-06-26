@@ -112,10 +112,11 @@ if ($_GET["action"]=="edit") {
 		'url'=>$CFG_GLPI['root_doc']."/ajax/bookmark.tabs.php",
 		'params'=>"target=".$_SERVER['PHP_SELF']."&glpi_tab=1");
 		
-	$tabs[0]=array('title'=>$LANG['common'][76],
-		'url'=>$CFG_GLPI['root_doc']."/ajax/bookmark.tabs.php",
-		'params'=>"target=".$_SERVER['PHP_SELF']."&glpi_tab=0");
-				
+	if (haveRight('bookmark_public','r')){
+		$tabs[0]=array('title'=>$LANG['common'][76],
+			'url'=>$CFG_GLPI['root_doc']."/ajax/bookmark.tabs.php",
+			'params'=>"target=".$_SERVER['PHP_SELF']."&glpi_tab=0");
+	}				
 	echo "<div id='tabspanel' class='center-h'></div>";
 	createAjaxTabs('tabspanel','tabcontent',$tabs,$_SESSION['glpi_tab']);
 	echo "<div id='tabcontent'></div>";
