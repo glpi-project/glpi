@@ -72,6 +72,15 @@ $RULES_CRITERIAS[RULE_OCS_AFFECT_COMPUTER]['DESCRIPTION']['field']='DESCRIPTION'
 $RULES_CRITERIAS[RULE_OCS_AFFECT_COMPUTER]['DESCRIPTION']['name']=$LANG['joblist'][6];
 $RULES_CRITERIAS[RULE_OCS_AFFECT_COMPUTER]['DESCRIPTION']['linkfield']='';
 
+$RULES_ACTIONS[RULE_OCS_AFFECT_COMPUTER]['FK_entities']['name']=$LANG['entity'][0];
+$RULES_ACTIONS[RULE_OCS_AFFECT_COMPUTER]['FK_entities']['type']='dropdown';
+$RULES_ACTIONS[RULE_OCS_AFFECT_COMPUTER]['FK_entities']['table']='glpi_entities';
+
+$RULES_ACTIONS[RULE_OCS_AFFECT_COMPUTER]['_affect_entity_by_tag']['name']=$LANG['rulesengine'][131];
+$RULES_ACTIONS[RULE_OCS_AFFECT_COMPUTER]['_affect_entity_by_tag']['type']='text';
+$RULES_ACTIONS[RULE_OCS_AFFECT_COMPUTER]['_affect_entity_by_tag']['force_actions']=array("regex_result");
+
+
 $RULES_CRITERIAS[RULE_AFFECT_RIGHTS]['LDAP_SERVER']['table']='glpi_auth_ldap';
 $RULES_CRITERIAS[RULE_AFFECT_RIGHTS]['LDAP_SERVER']['field']='name';
 $RULES_CRITERIAS[RULE_AFFECT_RIGHTS]['LDAP_SERVER']['name']=$LANG['login'][2];
@@ -103,13 +112,6 @@ $RULES_CRITERIAS[RULE_AFFECT_RIGHTS]['GROUPS']['type']='dropdown';
 $RULES_CRITERIAS[RULE_AFFECT_RIGHTS]['GROUPS']['virtual']='true';
 $RULES_CRITERIAS[RULE_AFFECT_RIGHTS]['GROUPS']['id']='groups';
 
-$RULES_ACTIONS[RULE_OCS_AFFECT_COMPUTER]['FK_entities']['name']=$LANG['entity'][0];
-$RULES_ACTIONS[RULE_OCS_AFFECT_COMPUTER]['FK_entities']['type']='dropdown';
-$RULES_ACTIONS[RULE_OCS_AFFECT_COMPUTER]['FK_entities']['table']='glpi_entities';
-
-$RULES_ACTIONS[RULE_OCS_AFFECT_COMPUTER]['_affect_entity_by_tag']['name']=$LANG['rulesengine'][131];
-$RULES_ACTIONS[RULE_OCS_AFFECT_COMPUTER]['_affect_entity_by_tag']['type']='text';
-$RULES_ACTIONS[RULE_OCS_AFFECT_COMPUTER]['_affect_entity_by_tag']['force_actions']=array("regex_result");
 
 $RULES_ACTIONS[RULE_AFFECT_RIGHTS]['FK_entities']['name']=$LANG['entity'][0];
 $RULES_ACTIONS[RULE_AFFECT_RIGHTS]['FK_entities']['type']='dropdown';
