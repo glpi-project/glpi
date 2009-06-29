@@ -2627,7 +2627,7 @@ function giveItem ($type,$ID,$data,$num,$meta=0){
 				if (!empty($orig_link)){
 					// strip begin of link
 					$link=preg_replace('/https?:\/\/(www.)?/','',$orig_link);
-					
+					$link=preg_replace('/\/$/','',$link);
 					if (strlen($link)>30){
 						$link=utf8_substr($link,0,30)."...";
 					} 
