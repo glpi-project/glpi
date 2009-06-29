@@ -2382,7 +2382,6 @@ function giveItem ($type,$ID,$data,$num,$meta=0){
 		case "glpi_docs.filename" :		
 			return getDocumentLink($data[$NAME.$num]);
 		break;		
-		case "glpi_docs.link" :
 		case "glpi_device_hdd.specif_default" :
 		case "glpi_device_ram.specif_default" :
 		case "glpi_device_processor.specif_default" :
@@ -2626,11 +2625,12 @@ function giveItem ($type,$ID,$data,$num,$meta=0){
 			case "weblink" :
 				$orig_link=trim($data[$NAME.$num]);
 				if (!empty($orig_link)){
-					if (strlen($orig_link)>30){
-						$link=utf8_substr($orig_link,0,30)."...";
-					} else {
-						$link=$orig_link;
-					}
+					// strip begin of link
+					$link=preg_replace('/https?:\/\/(www.)?/','',$orig_link);
+					
+					if (strlen($link)>30){
+						$link=utf8_substr($link,0,30)."...";
+					} 
 					return "<a href=\"$orig_link\" target='_blank'>$link</a>";
 				} else {
 					return "&nbsp;";

@@ -2925,6 +2925,7 @@ $SEARCH_OPTION[DOCUMENT_TYPE][4]['table']='glpi_docs';
 $SEARCH_OPTION[DOCUMENT_TYPE][4]['field']='link';
 $SEARCH_OPTION[DOCUMENT_TYPE][4]['linkfield']='link';
 $SEARCH_OPTION[DOCUMENT_TYPE][4]['name']=$LANG['document'][33];
+$SEARCH_OPTION[DOCUMENT_TYPE][4]['datatype']='weblink';
 
 $SEARCH_OPTION[DOCUMENT_TYPE][5]['table']='glpi_docs';
 $SEARCH_OPTION[DOCUMENT_TYPE][5]['field']='mime';
