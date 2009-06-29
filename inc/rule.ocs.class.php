@@ -61,23 +61,19 @@ class OcsRuleCollection extends RuleCollection {
 
 	function prepareInputDataForProcess($input,$computer_id){
 		global $DBocs;
-		//$tables = $this->getTablesForQuery();
+		$tables = $this->getTablesForQuery();
 		$fields = $this->getFieldsForQuery();
-		//$linked_fields = $this->getFKFieldsForQuery();
+		$linked_fields = $this->getFKFieldsForQuery();
 
 		$rule_parameters = array ();
 
 		$sql = "";
 		$begin_sql = "SELECT ";
 		$select_sql = "";
-		$from_sql = " hardware ";
+		$from_sql = "";
 		$where_sql = "";
 
-		$select_sql="accountinfo.TAG , hardware.WORKGROUP AS DOMAIN , networks.IPSUBNET , networks.IPADDRESS , hardware.NAME AS MACHINE_NAME , hardware.DESCRIPTION";
-
-		//OCS server ID is provided by extra_params -> get the configuration associated with the ocs server
-		$rule_parameters["OCS_SERVER"] = $this->ocs_server_id;
-/*		//Build the select request
+		//Build the select request
 		foreach ($fields as $field) {
 			switch (strtoupper($field)) {
 				//OCS server ID is provided by extra_params -> get the configuration associated with the ocs server
@@ -91,16 +87,16 @@ class OcsRuleCollection extends RuleCollection {
 			}
 
 		}
-*/
+
 		//Build the FROM part of the request
 		//Remove all the non duplicated table names
-		//$tables = array_unique($tables);
-		$tables=array("accountinfo","networks");
-		
-		foreach ($tables as $table) {
-			$from_sql.=" LEFT JOIN $table ON ($table.HARDWARE_ID = hardware.ID) ";
+		$from_sql = " hardware ";
+		foreach ($tables as $table => $linkfield) {
+			if ($table!='hardware' && !empty($linkfield)){
+				$from_sql .= " LEFT JOIN `$table` ON (`$table`.`$linkfield` = hardware.ID)";
+			}
 		}
-		echo $where_sql;
+
 		//Build the WHERE part of the request
 //		foreach ($linked_fields as $linked_field) {
 //			$where_sql .= ($where_sql != "" ? " AND " : "") . $linked_field . "=hardware.ID ";
@@ -108,7 +104,7 @@ class OcsRuleCollection extends RuleCollection {
 
 		if ($select_sql != "" && $from_sql != "" /*&& $where_sql != ""*/) {
 			//Build the all request
-			$sql = $begin_sql . $select_sql . " FROM " . $from_sql . " WHERE hardware.ID='".$computer_id."'";
+			$sql = $begin_sql . $select_sql . " FROM " . $from_sql . " WHERE  hardware.ID='".$computer_id."'";
 		
 			checkOCSconnection($this->ocs_server_id);
 			$result = $DBocs->query($sql);
@@ -150,8 +146,8 @@ class OcsRuleCollection extends RuleCollection {
 
 		$tables = array();
 		foreach ($RULES_CRITERIAS[$this->sub_type] as $criteria){
-			if ((!isset($criteria['virtual']) || !$criteria['virtual']) && $criteria['table'] != '' && !array_key_exists($criteria["table"],$tables)) {
-				$tables[]=$criteria['table'];
+			if ((!isset($criteria['virtual']) || !$criteria['virtual']) && $criteria['table'] != '' && !isset($tables[$criteria["table"]])) {
+				$tables[$criteria['table']]=$criteria['linkfield'];
 			}
 		}
 		return $tables;		  
@@ -213,7 +209,6 @@ class OcsRuleCollection extends RuleCollection {
 				$fields[]=$criteria['table'].".".$criteria['linkfield'];
 			}
 		}	
-
 		return $fields;		  
 	}
 
