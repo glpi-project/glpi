@@ -63,7 +63,7 @@ class OcsRuleCollection extends RuleCollection {
 		global $DBocs;
 		$tables = $this->getTablesForQuery();
 		$fields = $this->getFieldsForQuery();
-		$linked_fields = $this->getFKFieldsForQuery();
+		//$linked_fields = $this->getFKFieldsForQuery();
 
 		$rule_parameters = array ();
 
