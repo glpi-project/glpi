@@ -45,7 +45,7 @@ $entitydata=new EntityData();
 
 if (isset($_POST["update"]))
 {
-	$entity->check($_POST["ID"],'w');
+	$entity->check($_POST["FK_entities"],'w');
 
 	$entitydata->update($_POST);
 
