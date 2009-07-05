@@ -58,14 +58,14 @@ function update072to075() {
 	displayMigrationMessage("075", $LANG['update'][141] . ' - glpi_config'); // Updating schema
 	if (FieldExists('glpi_config', 'license_deglobalisation')) {
 		$query="ALTER TABLE `glpi_config` DROP `license_deglobalisation`;";
-		$DB->query($query) or die("0.72 alter clean glpi_config table" . $LANG['update'][90] . $DB->error());
+		$DB->query($query) or die("0.75 alter clean glpi_config table" . $LANG['update'][90] . $DB->error());
 	}	
 
 	displayMigrationMessage("075", $LANG['update'][141] . ' - glpi_mailgate'); // Updating schema
 
 	if (!FieldExists("glpi_mailgate", "active")) {
 		$query = "ALTER TABLE `glpi_mailgate` ADD `active` INT( 1 ) NOT NULL DEFAULT '1' ;";
-		$DB->query($query) or die("0.72 add active in glpi_mailgate" . $LANG['update'][90] . $DB->error());
+		$DB->query($query) or die("0.75 add active in glpi_mailgate" . $LANG['update'][90] . $DB->error());
 	}
 
 	// Change mailgate search pref : add ative
@@ -88,7 +88,41 @@ function update072to075() {
 		}
 	}
 
+	displayMigrationMessage("075", $LANG['update'][141] . ' - glpi_device_xxxx'); // Updating schema
 
+	if (FieldExists("glpi_device_control", "interface")) {
+		$query="ALTER TABLE `glpi_device_control` CHANGE `interface` `FK_interface` INT( 11 ) NOT NULL DEFAULT '0'";
+		$DB->query($query) or die("0.75 alter interface in glpi_device_control" . $LANG['update'][90] . $DB->error());
+		if (isIndex("glpi_device_control", "interface")) {
+			$query="ALTER TABLE `glpi_device_control` DROP INDEX `interface`, ADD INDEX `FK_interface` ( `FK_interface` ) ";
+			$DB->query($query) or die("0.75 alter interface index in glpi_device_control" . $LANG['update'][90] . $DB->error());
+		}
+	}
+
+	if (FieldExists("glpi_device_hdd", "interface")) {
+		$query="ALTER TABLE `glpi_device_hdd` CHANGE `interface` `FK_interface` INT( 11 ) NOT NULL DEFAULT '0'";
+		$DB->query($query) or die("0.75 alter interface in glpi_device_hdd" . $LANG['update'][90] . $DB->error());
+		if (isIndex("glpi_device_hdd", "interface")) {
+			$query="ALTER TABLE `glpi_device_hdd` DROP INDEX `interface`, ADD INDEX `FK_interface` ( `FK_interface` ) ";
+			$DB->query($query) or die("0.75 alter interface index in glpi_device_control" . $LANG['update'][90] . $DB->error());
+		}
+	}
+
+	if (FieldExists("glpi_device_drive", "interface")) {
+		$query="ALTER TABLE `glpi_device_drive` CHANGE `interface` `FK_interface` INT( 11 ) NOT NULL DEFAULT '0'";
+		$DB->query($query) or die("0.75 alter interface in glpi_device_drive" . $LANG['update'][90] . $DB->error());
+		if (isIndex("glpi_device_drive", "interface")) {
+			$query="ALTER TABLE `glpi_device_drive` DROP INDEX `interface`, ADD INDEX `FK_interface` ( `FK_interface` ) ";
+			$DB->query($query) or die("0.75 alter interface index in glpi_device_drive" . $LANG['update'][90] . $DB->error());
+		}
+	}
+
+	if (!isIndex("glpi_device_gfxcard", "FK_interface")) {
+		$query="ALTER TABLE `glpi_device_gfxcard` ADD INDEX `FK_interface` ( `FK_interface` ) ";
+		$DB->query($query) or die("0.75 add interface index in glpi_device_gfxcard" . $LANG['update'][90] . $DB->error());
+	}
+	
+	
 	// Display "Work ended." message - Keep this as the last action.
 	displayMigrationMessage("075"); // End
 }
