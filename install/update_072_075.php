@@ -40,4 +40,20 @@
 function update072to075() {
 	global $DB, $LANG;
 
+	echo "<h3>".$LANG['install'][4]." -&gt; 0.75</h3>";
+	displayMigrationMessage("075"); // Start
+
+
+	displayMigrationMessage("075", $LANG['update'][140]); // Index creation
+	if (!isIndex('glpi_groups', 'ldap_group_dn')) {
+		$query = "ALTER TABLE `glpi_groups` ADD INDEX `ldap_group_dn` ( `ldap_group_dn` );";
+		$DB->query($query) or die("0.75 add index on ldap_group_dn in glpi_groups" . $LANG['update'][90] . $DB->error());
+	}	  	
+	if (!isIndex('glpi_groups', 'ldap_value')) {
+		$query = "ALTER TABLE `glpi_groups` ADD INDEX `ldap_value` ( `ldap_value` );";
+		$DB->query($query) or die("0.75 add index on ldap_value in glpi_groups" . $LANG['update'][90] . $DB->error());
+	}	  	
+
+	// Display "Work ended." message - Keep this as the last action.
+	displayMigrationMessage("075"); // End
 }
