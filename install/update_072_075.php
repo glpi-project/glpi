@@ -54,6 +54,12 @@ function update072to075() {
 		$DB->query($query) or die("0.75 add index on ldap_value in glpi_groups" . $LANG['update'][90] . $DB->error());
 	}	  	
 
+	displayMigrationMessage("075", $LANG['update'][141] . ' - glpi_config'); // Updating schema
+	if (FieldExists('glpi_config', 'license_deglobalisation')) {
+		$query="ALTER TABLE `glpi_config` DROP `license_deglobalisation`;";
+		$DB->query($query) or die("0.72 alter clean glpi_config table" . $LANG['update'][90] . $DB->error());
+	}	
+
 	// Display "Work ended." message - Keep this as the last action.
 	displayMigrationMessage("075"); // End
 }
