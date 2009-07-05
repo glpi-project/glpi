@@ -3839,6 +3839,12 @@ $SEARCH_OPTION[MAILGATE_TYPE][80]['field']='completename';
 $SEARCH_OPTION[MAILGATE_TYPE][80]['linkfield']='FK_entities';
 $SEARCH_OPTION[MAILGATE_TYPE][80]['name']=$LANG['entity'][0];
 
+$SEARCH_OPTION[MAILGATE_TYPE][2]['table']='glpi_mailgate';
+$SEARCH_OPTION[MAILGATE_TYPE][2]['field']='active';
+$SEARCH_OPTION[MAILGATE_TYPE][2]['linkfield']='active';
+$SEARCH_OPTION[MAILGATE_TYPE][2]['name']=$LANG['common'][60];
+$SEARCH_OPTION[MAILGATE_TYPE][2]['datatype']='bool';
+
 // TRANSFER_TYPE
 $SEARCH_OPTION[TRANSFER_TYPE]['common']=$LANG['common'][16];
 $SEARCH_OPTION[TRANSFER_TYPE][1]['table']='glpi_transfers';

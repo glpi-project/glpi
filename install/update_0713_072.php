@@ -404,32 +404,33 @@ function update0713to072() {
 	} // TableExists("glpi_licenses")
 
 
-        // Change software search pref
-        $query="SELECT DISTINCT FK_users FROM glpi_display WHERE type=".SOFTWARE_TYPE.";";
-        if ($result = $DB->query($query)){
-              if ($DB->numrows($result)>0){
-                    while ($data = $DB->fetch_assoc($result)){
-                         $query="SELECT max(rank) FROM glpi_display WHERE FK_users='".$data['FK_users']."' AND type=".SOFTWARE_TYPE.";";
-                         $result=$DB->query($query);
-                         $rank=$DB->result($result,0,0);
-                         $query="SELECT * FROM glpi_display WHERE FK_users='".$data['FK_users']."' AND num=72 AND type=".SOFTWARE_TYPE.";";
-                         if ($result2=$DB->query($query)){
-                               if ($DB->numrows($result2)==0){
-                                    $query="INSERT INTO glpi_display (`type` ,`num` ,`rank` ,`FK_users`) VALUES ('".SOFTWARE_TYPE."', '72', '".$rank++."', '".$data['FK_users']."');";
-                                    $DB->query($query);
-                               }
-                         }
-                         $query="SELECT * FROM glpi_display WHERE FK_users='".$data['FK_users']."' AND num=163 AND type=".SOFTWARE_TYPE.";";
-                         if ($result2=$DB->query($query)){
-                               if ($DB->numrows($result2)==0){
-                                    $query="INSERT INTO glpi_display (`type` ,`num` ,`rank` ,`FK_users`) VALUES ('".SOFTWARE_TYPE."', '163', '".$rank++."', '".$data['FK_users']."');";
-                                    $DB->query($query);
-                               }
-                         }
-                   }
-
-              }
-        }
+	// Change software search pref
+	$query="SELECT DISTINCT FK_users FROM glpi_display WHERE type=".SOFTWARE_TYPE.";";
+	if ($result = $DB->query($query)){
+		if ($DB->numrows($result)>0){
+			while ($data = $DB->fetch_assoc($result)){
+				$query="SELECT max(rank) FROM glpi_display WHERE FK_users='".$data['FK_users']."' AND type=".SOFTWARE_TYPE.";";
+				$result=$DB->query($query);
+				$rank=$DB->result($result,0,0);
+				$rank++;
+				$query="SELECT * FROM glpi_display WHERE FK_users='".$data['FK_users']."' AND num=72 AND type=".SOFTWARE_TYPE.";";
+				if ($result2=$DB->query($query)){
+					if ($DB->numrows($result2)==0){
+						$query="INSERT INTO glpi_display (`type` ,`num` ,`rank` ,`FK_users`) VALUES ('".SOFTWARE_TYPE."', '72', '".$rank++."', '".$data['FK_users']."');";
+						$DB->query($query);
+					}
+				}
+				$query="SELECT * FROM glpi_display WHERE FK_users='".$data['FK_users']."' AND num=163 AND type=".SOFTWARE_TYPE.";";
+				if ($result2=$DB->query($query)){
+					if ($DB->numrows($result2)==0){
+						$query="INSERT INTO glpi_display (`type` ,`num` ,`rank` ,`FK_users`) VALUES ('".SOFTWARE_TYPE."', '163', '".$rank++."', '".$data['FK_users']."');";
+						$DB->query($query);
+					}
+				}
+			}
+	
+		}
+	}
 
 
 	displayMigrationMessage("072", $LANG['Menu'][4]); // Software
