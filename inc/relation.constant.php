@@ -88,10 +88,10 @@ $RELATION=array(
 	
 	"glpi_dropdown_iface" =>array("glpi_networking_ports"=>"iface"),
 	
-	"glpi_dropdown_interface" =>array("glpi_device_hdd"=>"interface",
-					"glpi_device_drive"=>"interface",
+	"glpi_dropdown_interface" =>array("glpi_device_hdd"=>"FK_interface",
+					"glpi_device_drive"=>"FK_interface",
 					"glpi_device_gfxcard"=>"FK_interface",
-					"glpi_device_control"=>"interface"),
+					"glpi_device_control"=>"FK_interface"),
 	
 	"glpi_dropdown_kbcategories" =>array("glpi_dropdown_kbcategories"=>"parentID",
 					"glpi_kbitems" =>"categoryID"),
