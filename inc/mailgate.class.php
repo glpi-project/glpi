@@ -48,6 +48,10 @@ class Mailgate  extends CommonDBTM {
 		$this->table="glpi_mailgate";
 		$this->type=MAILGATE_TYPE;
 	}
+
+	function post_getEmpty () {
+		$this->fields['active']=1;
+	}
 	function prepareInputForUpdate($input) {
 
 		if (isset($input['password'])&&empty($input['password'])){
@@ -113,6 +117,11 @@ class Mailgate  extends CommonDBTM {
 		echo "<tr class='tab_bg_2'><td>".$LANG['entity'][0].":	</td><td>";
 		dropdownValue("glpi_entities", "FK_entities",$this->fields["FK_entities"],1,$_SESSION['glpiactiveentities']);
 		echo "</td></tr>";
+
+		echo "<tr class='tab_bg_2'><td>".$LANG['common'][60].":	</td><td>";
+		dropdownYesNo("active", $this->fields["active"]);
+		echo "</td></tr>";
+
 
 		showMailServerConfig($this->fields["host"]);
 

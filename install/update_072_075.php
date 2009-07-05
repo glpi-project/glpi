@@ -54,11 +54,40 @@ function update072to075() {
 		$DB->query($query) or die("0.75 add index on ldap_value in glpi_groups" . $LANG['update'][90] . $DB->error());
 	}	  	
 
+
 	displayMigrationMessage("075", $LANG['update'][141] . ' - glpi_config'); // Updating schema
 	if (FieldExists('glpi_config', 'license_deglobalisation')) {
 		$query="ALTER TABLE `glpi_config` DROP `license_deglobalisation`;";
 		$DB->query($query) or die("0.72 alter clean glpi_config table" . $LANG['update'][90] . $DB->error());
 	}	
+
+	displayMigrationMessage("075", $LANG['update'][141] . ' - glpi_mailgate'); // Updating schema
+
+	if (!FieldExists("glpi_mailgate", "active")) {
+		$query = "ALTER TABLE `glpi_mailgate` ADD `active` INT( 1 ) NOT NULL DEFAULT '1' ;";
+		$DB->query($query) or die("0.72 add active in glpi_mailgate" . $LANG['update'][90] . $DB->error());
+	}
+
+	// Change mailgate search pref : add ative
+	$query="SELECT DISTINCT FK_users FROM glpi_display WHERE type=".MAILGATE_TYPE.";";
+	if ($result = $DB->query($query)){
+		if ($DB->numrows($result)>0){
+			while ($data = $DB->fetch_assoc($result)){
+				$query="SELECT max(rank) FROM glpi_display WHERE FK_users='".$data['FK_users']."' AND type=".MAILGATE_TYPE.";";
+				$result=$DB->query($query);
+				$rank=$DB->result($result,0,0);
+				$rank++;
+				$query="SELECT * FROM glpi_display WHERE FK_users='".$data['FK_users']."' AND num=2 AND type=".MAILGATE_TYPE.";";
+				if ($result2=$DB->query($query)){
+					if ($DB->numrows($result2)==0){
+						$query="INSERT INTO glpi_display (`type` ,`num` ,`rank` ,`FK_users`) VALUES ('".MAILGATE_TYPE."', '2', '".$rank++."', '".$data['FK_users']."');";
+						$DB->query($query);
+					}
+				}
+			}
+		}
+	}
+
 
 	// Display "Work ended." message - Keep this as the last action.
 	displayMigrationMessage("075"); // End
