@@ -412,6 +412,7 @@ function update0713to072() {
                          $query="SELECT max(rank) FROM glpi_display WHERE FK_users='".$data['FK_users']."' AND type=".SOFTWARE_TYPE.";";
                          $result=$DB->query($query);
                          $rank=$DB->result($result,0,0);
+			 $rank++;
                          $query="SELECT * FROM glpi_display WHERE FK_users='".$data['FK_users']."' AND num=72 AND type=".SOFTWARE_TYPE.";";
                          if ($result2=$DB->query($query)){
                                if ($DB->numrows($result2)==0){
