@@ -85,7 +85,7 @@ if (!isset($_POST["import_ok"])){
 	if (!isset($_GET['start'])) $_GET['start']=0;
 
 	ocsManageDeleted($_SESSION["ocs_server_id"]);
-	ocsShowNewComputer($_SESSION["ocs_server_id"],$_SESSION["change_import_mode"],$_GET['check'],$_GET['start'],1);
+	ocsShowNewComputer($_SESSION["ocs_server_id"],$_SESSION["change_import_mode"],$_GET['check'],$_GET['start'],$_SESSION['glpiactive_entity'],1);
 
 } else {
 	if (count($_POST['tolink'])>0){

@@ -68,7 +68,7 @@ function ocsGetTagLimit($cfg_ocs){
 	return $WHERE;
 }
 
-function ocsShowNewComputer($ocs_server_id, $advanced, $check, $start, $tolinked = false) {
+function ocsShowNewComputer($ocs_server_id, $advanced, $check, $start, $entity=0, $tolinked = false) {
 	global $DB, $DBocs, $LANG, $CFG_GLPI;
 
 	if (!haveRight("ocsng", "w"))
@@ -93,10 +93,9 @@ function ocsShowNewComputer($ocs_server_id, $advanced, $check, $start, $tolinked
 
 	if ($tolinked){
 		// Computers existing in GLPI
-		// TODO : limit to authorized entities + get FK_entities
 		$query_glpi_comp = "SELECT ID,name 
 				FROM glpi_computers 
-				WHERE is_template='0'";
+				WHERE is_template='0' AND FK_entities IN (".$_SESSION["glpiactiveentities_string"].")";
 		$result_glpi_comp = $DB->query($query_glpi_comp);
 	}
 
