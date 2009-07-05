@@ -1532,7 +1532,9 @@ CREATE TABLE `glpi_groups` (
   PRIMARY KEY  (`ID`),
   KEY `name` (`name`),
   KEY `ldap_field` (`ldap_field`),
-  KEY `FK_entities` (`FK_entities`)
+  KEY `FK_entities` (`FK_entities`),
+  KEY `ldap_group_dn` (`ldap_group_dn`),
+  KEY `ldap_value` (`ldap_value`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
