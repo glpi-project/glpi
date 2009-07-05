@@ -855,8 +855,8 @@ INSERT INTO `glpi_display` VALUES ('118','22','31','1','0');
 INSERT INTO `glpi_display` VALUES ('119','29','4','1','0');
 INSERT INTO `glpi_display` VALUES ('120','29','3','2','0');
 INSERT INTO `glpi_display` VALUES ('121','35','80','1','0');
-INSERT INTO `glpi_display` VALUES ('122','6','72','3','0');
-INSERT INTO `glpi_display` VALUES ('123','6','163','4','0');
+INSERT INTO `glpi_display` VALUES ('122','6','72','4','0');
+INSERT INTO `glpi_display` VALUES ('123','6','163','5','0');
 
 ### Dump table glpi_display_default
 
