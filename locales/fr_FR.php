@@ -1056,7 +1056,7 @@ $LANG['ocsconfig'][54]="Critères d'existence d'une machine";
 $LANG['ocsconfig'][55]="Chercher les machines GLPI ayant le statut"; 
 $LANG['ocsconfig'][56]="vide"; 
 $LANG['ocsconfig'][57]="égal"; 
-$LANG['ocsconfig'][58]="La liaison fusionne automatiquement une machine GLPI avec une d'OCS.<br>Cette option n'est prise en compte que par les scripts de synchronisation (pas manuellement)."; 
+$LANG['ocsconfig'][58]="La liaison fusionne automatiquement une machine GLPI avec une d'OCS.<br>Cette option est prise en compte lors de la liaison manuelle et par les scripts de synchronisation."; 
 $LANG['ocsconfig'][59]="URL de la console OCS"; 
 
 $LANG['ocsng'][0]="OCS Inventory NG"; 

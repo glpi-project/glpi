@@ -68,7 +68,7 @@ function ocsGetTagLimit($cfg_ocs){
 	return $WHERE;
 }
 
-function ocsShowNewComputer($ocs_server_id, $advanced, $check, $start, $tolinked = false) {
+function ocsShowNewComputer($ocs_server_id, $advanced, $check, $start, $entity=0, $tolinked = false) {
 	global $DB, $DBocs, $LANG, $CFG_GLPI;
 
 	if (!haveRight("ocsng", "w"))
@@ -91,12 +91,12 @@ function ocsShowNewComputer($ocs_server_id, $advanced, $check, $start, $tolinked
 			WHERE ocs_server_id='".$ocs_server_id."'";
 	$result_glpi = $DB->query($query_glpi);
 
+
 	if ($tolinked){
 		// Computers existing in GLPI
-		// TODO : limit to authorized entities + get FK_entities
 		$query_glpi_comp = "SELECT ID,name 
 				FROM glpi_computers 
-				WHERE is_template='0'";
+				WHERE is_template='0' AND FK_entities IN (".$_SESSION["glpiactiveentities_string"].")";
 		$result_glpi_comp = $DB->query($query_glpi_comp);
 	}
 
@@ -226,10 +226,12 @@ function ocsShowNewComputer($ocs_server_id, $advanced, $check, $start, $tolinked
 				if (!$tolinked){
 					echo "<input type='checkbox' name='toimport[" . $tab["ID"] . "]' " . ($check == "all" ? "checked" : "") . ">";
 				} else {
-					// TODO : display in entity mode
-					if (isset ($computer_names[strtolower($tab["name"])])){
+					//Look for the computer using automatic link criterias as defined in OCSNG configuration
+					$computer_found = getMachinesAlreadyInGLPI($tab["ID"],$ocs_server_id,$entity);
+					
+					if (!empty($computer_found) && $computer_found != -1) {
 						dropdownValue("glpi_computers", "tolink[" .
-						$tab["ID"] . "]", $computer_names[strtolower($tab["name"])]);
+						$tab["ID"] . "]", $computer_found[0],1,$entity);
 					} else {
 						dropdown("glpi_computers", "tolink[" .
 						$tab["ID"] . "]");
@@ -757,7 +759,12 @@ function getMachinesAlreadyInGLPI($ocs_id,$ocs_server_id,$entity){
 		}
 
 		//Build the request to check if the machine exists in GLPI
-		$sql_where = " FK_entities='$entity' AND is_template=0 ";
+		if (is_array($entity))
+			$where_entity = implode($entity,',');
+		else
+			$where_entity = $entity;
+			
+		$sql_where = " FK_entities IN ($where_entity) AND is_template=0 ";
 		$sql_from = "glpi_computers";
 		if ( $conf["link_ip"] || $conf["link_mac_address"]){
 			$sql_from.=" LEFT JOIN glpi_networking_ports ON (glpi_computers.ID=glpi_networking_ports.on_device 
