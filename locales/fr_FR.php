@@ -1668,6 +1668,10 @@ $LANG['setup'][653]="SMTP+TLS";
 $LANG['setup'][703]="Générale"; 
 $LANG['setup'][704]="Notifications"; 
 
+$LANG['setup'][720]="Info. Système";
+$LANG['setup'][721]="Informations sur le système, l'installation et la configuration";
+$LANG['setup'][722]="A copier/coller lors d'un demande d'assistance";
+ 
 
 //MySQL Replicate
 $LANG['setup'][800]="Réplicat MySQL";
