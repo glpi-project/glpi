@@ -72,6 +72,9 @@ if(!isset($_POST["ID"])) {
 				case 6 :
 					$config->showFormUserPrefs($_POST['target'],$CFG_GLPI);
 					break;
+				case 7 :
+					showSystemInformations();
+					break;
 				default :
 					break;
 		}

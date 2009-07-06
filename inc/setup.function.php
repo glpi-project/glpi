@@ -1258,4 +1258,65 @@ function showImapAuthList($target) {
 
 	}
 
+/*
+ * Display a HTML report about systeme information / configuration
+ * 
+ */
+function showSystemInformations () {
+	global $DB,$LANG,$CFG_GLPI;
+	
+	$width=128;
+	
+	echo "<div class='center' id='tabsbody'>";
+	echo "<table class='tab_cadre_fixe'>";
+	echo "<tr><th>" . $LANG['setup'][721] . "</th></tr>";
+	echo "<tr class='tab_bg_1'><td><pre>\n&nbsp;\n";
+ 	
+ 	echo "GLPI ".$CFG_GLPI['version']."\n";
+
+	echo $LANG['plugins'][0].":\n";
+	$plug = new Plugin();
+	$pluglist=$plug->find("","name, directory");
+	foreach ($pluglist as $plugin) {
+		$msg  = $plugin['directory']."\t".$LANG['common'][16].":".$plugin['name']."\t";
+		$msg .= $LANG['rulesengine'][78].":".$plugin['version']."\t";
+		$msg .= $LANG['joblist'][0].":";
+		switch ($plugin['state']){
+			case PLUGIN_NEW :
+				$msg .=  $LANG['joblist'][9];
+				break;
+			case PLUGIN_ACTIVATED :
+				$msg .=  $LANG['setup'][192];
+				break;
+			case PLUGIN_NOTINSTALLED :
+				$msg .=  $LANG['plugins'][1];
+				break;
+			case PLUGIN_TOBECONFIGURED :
+				$msg .=  $LANG['plugins'][2];
+				break;
+			case PLUGIN_NOTACTIVATED :
+				$msg .=  $LANG['plugins'][3];
+				break;
+			case PLUGIN_TOBECLEANED :
+			default:
+				$msg .=  $LANG['plugins'][4];
+				break;
+		}
+		echo wordwrap("\t".$msg."\n", $width, "\n\t\t");
+	} 	
+ 	echo wordwrap($LANG['setup'][5].": ".php_uname()."\n", $width, "\n\t");
+ 	$exts = get_loaded_extensions();
+ 	sort($exts);
+ 	echo wordwrap("PHP ".phpversion()." (".implode(', ',$exts).")\n", $width, "\n\t");
+
+	$version = "???";
+	foreach($DB->request('SELECT VERSION() as ver') as $data) {
+		$version = $data['ver'];		
+	}
+	echo "MySQL: $version (".$DB->dbuser."@".$DB->dbhost."/".$DB->dbdefault.")\n";	
+
+	echo "\n</pre></td>";
+	echo "<tr class='tab_bg_2'><th>" . $LANG['setup'][722] . "</th></tr>";
+	echo "</tr></table></div>";
+ }
 ?>

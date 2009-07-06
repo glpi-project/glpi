@@ -82,6 +82,10 @@ $tabs[5]=array('title'=>$LANG['setup'][800],
 'url'=>$CFG_GLPI['root_doc']."/ajax/config.tabs.php",
 'params'=>"target=".$_SERVER['PHP_SELF']."&ID=-1&glpi_tab=5");
 				
+$tabs[7]=array('title'=>$LANG['setup'][720],
+'url'=>$CFG_GLPI['root_doc']."/ajax/config.tabs.php",
+'params'=>"target=".$_SERVER['PHP_SELF']."&ID=-1&glpi_tab=7");
+				
 echo "<div id='tabspanel' class='center-h'></div>";
 createAjaxTabs('tabspanel','tabcontent',$tabs,$_SESSION['glpi_tab']);
 echo "<div id='tabcontent'></div>";
