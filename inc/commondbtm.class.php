@@ -581,7 +581,7 @@ class CommonDBTM {
 				}
 			}
 			if(count($updates)){
-				if (isset($this->fields['date_mod'])){
+				if (array_key_exists('date_mod',$this->fields)){
 					// is a non blacklist field exists
 					if (count(array_diff($updates,$this->history_blacklist)) > 0){
 						$this->fields['date_mod']=$_SESSION["glpi_currenttime"];
