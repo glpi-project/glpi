@@ -421,7 +421,7 @@ class Mailing
 
 		if($format=="html"){
 			if ($CFG_GLPI["url_in_mail"]&&!empty($CFG_GLPI["url_base"])){
-				$body.="URL :<a href=\"".$CFG_GLPI["url_base"]."/index.php?redirect=tracking_".$this->job->fields["ID"]."\">".$CFG_GLPI["url_base"]."/index.php?redirect=tracking_".$this->job->fields["ID"]." </a><br><br>";
+				$body.="URL: <a href=\"".$CFG_GLPI["url_base"]."/index.php?redirect=tracking_".$this->job->fields["ID"]."\">".$CFG_GLPI["url_base"]."/index.php?redirect=tracking_".$this->job->fields["ID"]." </a><br><br>";
 
 			}
 
@@ -435,7 +435,7 @@ class Mailing
 		}else{ // text format
 
 			if ($CFG_GLPI["url_in_mail"]&&!empty($CFG_GLPI["url_base"])){
-				$body.=$LANG['mailing'][1]."\n"; $body.="URL : ".$CFG_GLPI["url_base"]."/index.php?redirect=tracking_".$this->job->fields["ID"]."\n";
+				$body.=$LANG['mailing'][1]."\n"; $body.="URL: ".$CFG_GLPI["url_base"]."/index.php?redirect=tracking_".$this->job->fields["ID"]."\n";
 
 			}
 
