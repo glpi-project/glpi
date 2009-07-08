@@ -122,7 +122,18 @@ function update072to075() {
 		$DB->query($query) or die("0.75 add interface index in glpi_device_gfxcard" . $LANG['update'][90] . $DB->error());
 	}
 	
+	displayMigrationMessage("075", $LANG['update'][141] . ' - glpi_rule_cache_software'); // Updating schema
 	
+	if (FieldExists("glpi_rule_cache_software","ignore_ocs_import"))
+	{
+		$query = "ALTER TABLE `glpi_rule_cache_software` CHANGE `ignore_ocs_import` `ignore_ocs_import` CHAR( 1 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL ";
+		$DB->query($query) or die("0.75 alter table glpi_rule_cache_software" . $LANG['update'][90] . $DB->error());
+	}
+	if (!FieldExists("glpi_rule_cache_software","helpdesk_visible"))
+	{
+		$query = "ALTER TABLE `glpi_rule_cache_software` ADD `helpdesk_visible` CHAR( 1 ) NULL ";
+		$DB->query($query) or die("0.75 add helpdesk_visible index in glpi_rule_cache_software" . $LANG['update'][90] . $DB->error());
+	}
 	// Display "Work ended." message - Keep this as the last action.
 	displayMigrationMessage("075"); // End
 }

@@ -275,6 +275,10 @@ $RULES_ACTIONS[RULE_DICTIONNARY_SOFTWARE]['manufacturer']['name']=$LANG['common'
 $RULES_ACTIONS[RULE_DICTIONNARY_SOFTWARE]['manufacturer']['table']="glpi_dropdown_manufacturer";
 $RULES_ACTIONS[RULE_DICTIONNARY_SOFTWARE]['manufacturer']['type']='dropdown';
 
+$RULES_ACTIONS[RULE_DICTIONNARY_SOFTWARE]['helpdesk_visible']['name']=$LANG['software'][46];
+$RULES_ACTIONS[RULE_DICTIONNARY_SOFTWARE]['helpdesk_visible']['table']="glpi_software";
+$RULES_ACTIONS[RULE_DICTIONNARY_SOFTWARE]['helpdesk_visible']['type']='yesno';
+
 //Dictionnary Manufacturer
 $RULES_CRITERIAS[RULE_DICTIONNARY_MANUFACTURER]['name']['field']='name';
 $RULES_CRITERIAS[RULE_DICTIONNARY_MANUFACTURER]['name']['name']=$LANG['common'][5];
