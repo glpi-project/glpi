@@ -1594,9 +1594,11 @@ function getURLContent ($url, &$msgerr=NULL, $rec=0) {
 	
 	$content="";
 
+	$taburl=parse_url($url);
+
 	// Connection directe
 	if (empty($CFG_GLPI["proxy_name"])){
-		$taburl=parse_url($url);
+		
 		if ($fp=@fsockopen($taburl["host"], (isset($taburl["port"]) ? $taburl["port"] : 80), $errno, $errstr, 1)){
 
 			if (isset($taburl["path"]) && $taburl["path"]!='/') {
@@ -1649,7 +1651,19 @@ function getURLContent ($url, &$msgerr=NULL, $rec=0) {
 					$header=false;
 				} else if ($redir && preg_match("/^Location: (.*)$/", $buf, $rep)) {
 					if ($rec<9) {
-						return (getURLContent(trim($rep[1]),$errstr,$rec+1));						
+						$desturl=trim($rep[1]);
+						$taburl2=parse_url($desturl);
+						if (isset($taburl2['host'])) {
+							// Redirect to another host
+							return (getURLContent($desturl,$errstr,$rec+1));
+						} else  {
+							// redirect to same host
+							return (getURLContent(
+								(isset($taburl['scheme'])?$taburl['scheme']:'http')."://".
+								$taburl['host'].
+								(isset($taburl['port'])?':'.$taburl['port']:'').
+								$desturl,$errstr,$rec+1));
+						}
 					} else {
 						$errstr="Too deep";
 						break;
