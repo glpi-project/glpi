@@ -280,6 +280,7 @@ function showLicenses($sID) {
 
 	$software = new Software;
 	$license = new SoftwareLicense;
+	$computer = new Computer();
 	
 	if (!$software->getFromDB($sID) || !$software->can($sID,"r")) {
 		return false;
@@ -384,8 +385,16 @@ function showLicenses($sID) {
 				echo "<td>".$data['buyname']."</td>";
 				echo "<td>".$data['usename']."</td>";
 				echo "<td>".convDate($data['expire'])."</td>";
-				if ($data['FK_computers']>0) {
-					echo "<td><a href='computer.form.php?ID=".$data['FK_computers']."'>".getDropdownName("glpi_computers",$data['FK_computers'])."</a>";
+				if ($data['FK_computers']>0 && $computer->getFromDB($data['FK_computers'])) {
+					$link = $computer->fields['name'];
+					if (empty($link) || $_SESSION['glpiview_ID']) {
+						$link .= " (".$computer->fields['ID'].")";
+					}
+					if ($computer->fields['deleted']) {
+						$link .= " (".$LANG['common'][28].")"; 
+					}
+					echo "<td><a href='computer.form.php?ID=".$data['FK_computers']."'>".$link."</a>";
+
 					
 					// search installed version name
 					// should be same as name of used_version, except for multiple installation
