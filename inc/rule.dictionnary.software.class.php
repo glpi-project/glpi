@@ -260,6 +260,16 @@ class DictionnarySoftwareCollection extends RuleCachedCollection {
 
 		} else {
 			$new_software_id = $ID;
+                        $res_rule["ID"] = $ID;
+
+                        if (isset($res_rule["manufacturer"]))
+                        {
+                                $res_rule["FK_glpi_enterprise"] = $res_rule["manufacturer"];
+                                unset($res_rule["manufacturer"]);
+                        }
+
+                        $soft = new Software;
+                        $soft->update($res_rule);
 		}
 
 		// Add to software to deleted list
