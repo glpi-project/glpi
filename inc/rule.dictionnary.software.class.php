@@ -58,6 +58,7 @@ class DictionnarySoftwareCollection extends RuleCachedCollection {
 			"name" => "new_value",
 			"version" => "version",
 			"manufacturer" => "new_manufacturer",
+			"helpdesk_visible" => "helpdesk_visible",
 			"_ignore_ocs_import" => "ignore_ocs_import"
 		));
 	}
@@ -241,7 +242,7 @@ class DictionnarySoftwareCollection extends RuleCachedCollection {
 			$res_rule = $this->processAllRules($input, array (), array ());
 			$res_rule = addslashes_deep($res_rule);
 		}
-
+		
 		//Software's name has changed
 		if (isset ($res_rule["name"]) && $res_rule["name"] != $name) {
 			if (isset ($res_rule["manufacturer"]))
@@ -260,6 +261,16 @@ class DictionnarySoftwareCollection extends RuleCachedCollection {
 
 		} else {
 			$new_software_id = $ID;
+			$res_rule["ID"] = $ID;
+			
+			if (isset($res_rule["manufacturer"]))
+			{
+				$res_rule["FK_glpi_enterprise"] = $res_rule["manufacturer"];
+				unset($res_rule["manufacturer"]);
+			}
+				 
+			$soft = new Software;
+			$soft->update($res_rule);
 		}
 
 		// Add to software to deleted list
@@ -416,12 +427,12 @@ class DictionnarySoftwareRule extends RuleCached {
 	}
 
 	function maxActionsCount() {
-		return 3;
+		return 4;
 	}
 
 	function showCacheRuleHeader() {
 		global $LANG;
-		echo "<th colspan='6'>" . $LANG['rulesengine'][100] . " : " . $this->fields["name"] . "</th></tr>";
+		echo "<th colspan='7'>" . $LANG['rulesengine'][100] . " : " . $this->fields["name"] . "</th></tr>";
 		echo "<tr>";
 		echo "<td class='tab_bg_1'>" . $LANG['rulesengine'][104] . "</td>";
 		echo "<td class='tab_bg_1'>" . $LANG['common'][5] . " " . $LANG['rulesengine'][108] . "</td>";
@@ -429,6 +440,7 @@ class DictionnarySoftwareRule extends RuleCached {
 		echo "<td class='tab_bg_1'>" . $LANG['rulesengine'][78] . "</td>";
 		echo "<td class='tab_bg_1'>" . $LANG['common'][5] . "</td>";
 		echo "<td class='tab_bg_1'>" . $LANG['ocsconfig'][6] . "</td>";
+		echo "<td class='tab_bg_1'>" . $LANG['software'][46] . "</td>";		
 		echo "</tr>";
 	}
 
@@ -446,6 +458,7 @@ class DictionnarySoftwareRule extends RuleCached {
 			echo getYesNo($fields["ignore_ocs_import"]);
 		}
 		echo "</td>";
+		echo "<td class='tab_bg_2'>" . ((isset ($fields["helpdesk_visible"]) && $fields["helpdesk_visible"] != '') ? getYesNo($fields["helpdesk_visible"]) : getYesNo(0)) . "</td>";
 	}
 }
 ?>

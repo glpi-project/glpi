@@ -2439,7 +2439,8 @@ CREATE TABLE `glpi_rule_cache_software` (
   `new_value` varchar(255) collate utf8_unicode_ci default NULL,
   `version` varchar(255) collate utf8_unicode_ci default NULL,
   `new_manufacturer` varchar(255) collate utf8_unicode_ci NOT NULL,
-  `ignore_ocs_import` varchar(255) collate utf8_unicode_ci default NULL,
+  `ignore_ocs_import` char(1) collate utf8_unicode_ci default NULL,
+  `hepldesk_visible` char( 1 ) collate utf8_unicode_ci default NULL,
   PRIMARY KEY  (`ID`),
   KEY `rule_id` (`rule_id`),
   KEY `old_value` (`old_value`)
