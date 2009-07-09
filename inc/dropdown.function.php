@@ -1588,8 +1588,7 @@ function dropdownMassiveAction($device_type,$deleted=0,$extraparams=array()){
 			echo "<option value=\"connect\">".$LANG['buttons'][9]."</option>";
 			echo "<option value=\"disconnect\">".$LANG['buttons'][10]."</option>";
 		}
-		if (haveTypeRight(DOCUMENT_TYPE,"w") && in_array($device_type,array(CARTRIDGE_TYPE,COMPUTER_TYPE,CONSUMABLE_TYPE,CONTACT_TYPE,CONTRACT_TYPE,ENTERPRISE_TYPE,
-				MONITOR_TYPE,NETWORKING_TYPE,PERIPHERAL_TYPE,PHONE_TYPE,PRINTER_TYPE,SOFTWARE_TYPE))){
+		if (haveTypeRight(DOCUMENT_TYPE,"w") && in_array($device_type,$CFG_GLPI["doc_types"])){
 			echo "<option value=\"add_document\">".$LANG['document'][16]."</option>";
 		}
 
