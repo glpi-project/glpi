@@ -722,18 +722,21 @@ class Config extends CommonDBTM {
 			echo " </td><td>" . $LANG['setup'][40] . "</td><td>";
 			dropdownYesNo("tracking_order", $data["tracking_order"]);
 			echo "</td></tr>";
+			
 		} else {
 			echo "<tr class='tab_bg_2'><td class='center'> " . $LANG['setup'][40] . " </td><td>";
 			dropdownYesNo("tracking_order", $data["tracking_order"]);
 			echo "</td><td colspan='2'>&nbsp;</td></tr>";
-
-
 		}
 
 		if ($oncentral){
 			echo "<tr class='tab_bg_2'><td class='center'> " . $LANG['setup'][39] . " </td><td>";
 			dropdownYesNo("followup_private", $data["followup_private"]);
-			echo "</td><td colspan='2'>&nbsp;</td></tr>";
+			echo "</td>";
+			echo "<td class='center'> " . $LANG['job'][44] . " </td><td>";
+			dropdownRequestType("request_type", $data["request_type"]);
+			echo "</td></tr>";
+
 	
 			echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['setup'][114] . "</td><td colspan='3'>";
 			echo "<table><tr>";

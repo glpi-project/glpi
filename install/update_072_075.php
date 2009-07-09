@@ -134,6 +134,22 @@ function update072to075() {
 		$query = "ALTER TABLE `glpi_rule_cache_software` ADD `helpdesk_visible` CHAR( 1 ) NULL ";
 		$DB->query($query) or die("0.75 add helpdesk_visible index in glpi_rule_cache_software" . $LANG['update'][90] . $DB->error());
 	}
+
+	displayMigrationMessage("075", $LANG['update'][141] . ' - glpi_config'); // Updating schema
+
+	if (!FieldExists("glpi_config","request_type"))
+	{
+		$query = "ALTER TABLE `glpi_config` ADD `request_type` INT( 1 ) NOT NULL DEFAULT 1";
+		$DB->query($query) or die("0.75 add request_type index in glpi_config" . $LANG['update'][90] . $DB->error());
+	}
+
+	if (!FieldExists("glpi_users","request_type"))
+	{
+		$query = "ALTER TABLE `glpi_users` ADD `request_type` INT( 1 ) NULL";
+		$DB->query($query) or die("0.75 add request_type index in glpi_config" . $LANG['update'][90] . $DB->error());
+	}
+
+
 	// Display "Work ended." message - Keep this as the last action.
 	displayMigrationMessage("075"); // End
 }
