@@ -532,12 +532,14 @@ function registerPluginType($plugin,$name,$ID,$attrib){
 		} // is set tablename
 		
 		foreach (array('reservation_types','infocom_types','linkuser_types','linkgroup_types',
-					'massiveaction_noupdate','massiveaction_nodelete', 'doc_types') as $att) {
+					'massiveaction_noupdate','massiveaction_nodelete', 'doc_types',
+                                        'helpdesk_visible_types') as $att) {
 			if (isset($attrib[$att]) && $attrib[$att]) {
 				array_push($CFG_GLPI[$att], $ID);
 			}
 		}
 	} // not already defined
+	//} // not already defined
 } 
 
 function loadPluginLang($name){
