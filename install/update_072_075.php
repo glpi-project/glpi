@@ -149,7 +149,12 @@ function update072to075() {
 		$DB->query($query) or die("0.75 add request_type index in glpi_config" . $LANG['update'][90] . $DB->error());
 	}
 
-
+	if (!FieldExists("glpi_config","add_norights_users"))
+	{
+		$query = "ALTER TABLE `glpi_config` ADD `add_norights_users` INT( 1 ) NOT NULL DEFAULT '1'";
+		$DB->query($query) or die("0.75 add add_norights_users index in glpi_config" . $LANG['update'][90] . $DB->error());
+	}
+	
 	// Display "Work ended." message - Keep this as the last action.
 	displayMigrationMessage("075"); // End
 }

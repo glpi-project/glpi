@@ -128,7 +128,6 @@ $RULES_ACTIONS[RULE_AFFECT_RIGHTS]['_affect_entity_by_tag']['force_actions']=arr
 $RULES_ACTIONS[RULE_AFFECT_RIGHTS]['FK_profiles']['name']=$LANG['Menu'][35];
 $RULES_ACTIONS[RULE_AFFECT_RIGHTS]['FK_profiles']['type']='dropdown';
 $RULES_ACTIONS[RULE_AFFECT_RIGHTS]['FK_profiles']['table']='glpi_profiles';
-//$RULES_ACTIONS[RULE_AFFECT_RIGHTS]['FK_profiles']['force_actions']=array("assign","regex_result");
 
 $RULES_ACTIONS[RULE_AFFECT_RIGHTS]['recursive']['name']=$LANG['profiles'][28];
 $RULES_ACTIONS[RULE_AFFECT_RIGHTS]['recursive']['type']='yesno';
@@ -137,6 +136,10 @@ $RULES_ACTIONS[RULE_AFFECT_RIGHTS]['recursive']['table']='';
 $RULES_ACTIONS[RULE_AFFECT_RIGHTS]['active']['name']=$LANG['common'][60];
 $RULES_ACTIONS[RULE_AFFECT_RIGHTS]['active']['type']='yesno';
 $RULES_ACTIONS[RULE_AFFECT_RIGHTS]['active']['table']='';
+
+$RULES_ACTIONS[RULE_AFFECT_RIGHTS]['_ignore_user_import']['name']=$LANG['rulesengine'][132];
+$RULES_ACTIONS[RULE_AFFECT_RIGHTS]['_ignore_user_import']['type']='yesno';
+$RULES_ACTIONS[RULE_AFFECT_RIGHTS]['_ignore_user_import']['table']='';
 
 // BUSINESS RULES FOR TRACKING
 

@@ -1396,6 +1396,7 @@ $LANG['rulesengine'][122]="Le moteur transmet le résultat d'une règle aux suiv
 
 $LANG['rulesengine'][130]="Entité depuis LDAP";
 $LANG['rulesengine'][131]="Entité depuis TAG";
+$LANG['rulesengine'][132]="Ignorer l'import";
 
 $LANG['search'][0]="Recherche"; 
 $LANG['search'][2]="contient"; 
@@ -1656,6 +1657,7 @@ $LANG['setup'][609]="Ajout impossible. Le serveur OCS existe déjà.";
 $LANG['setup'][610]="Titre du ticket obligatoire"; 
 $LANG['setup'][611]="Contenu du ticket obligatoire"; 
 $LANG['setup'][612]="Catégorie du ticket obligatoire"; 
+$LANG['setup'][613]="Ajouter un utilisateur LDAP qui n'a pas de droits"; 
 
 $LANG['setup'][620]="Liaison"; 
 

@@ -1299,8 +1299,7 @@ class Rule extends CommonDBTM{
 	*/
 	function process(&$input,&$output,&$params)
 	{
-		if (count($this->criterias))	
-		{
+		if (count($this->criterias)) {
 			$regex_result=array();
 			
 			$input=$this->prepareInputDataForProcess($input,$params);
@@ -1316,6 +1315,10 @@ class Rule extends CommonDBTM{
 				doHook("rule_matched",$hook_params); 
 				$output["_rule_process"]=true;
 			}			
+			else
+			{
+				$output["_no_rule_matches"] = true;
+			}
 		}
 	}
 

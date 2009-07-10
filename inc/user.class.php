@@ -693,8 +693,6 @@ class User extends CommonDBTM {
 					$this->getFromLDAPGroupDiscret($ldap_connection, $ldap_method, $userdn, $login, $password);
 			}
 
-			logInFile("debug","Groupes  : ".print_r($this->fields["_groups"],true));
-
 			//Only process rules if working on the master database
 			if (!$DB->isSlave())
 			{
@@ -703,13 +701,19 @@ class User extends CommonDBTM {
 					
 				//Process affectation rules :
 				//we don't care about the function's return because all the datas are stored in session temporary
-				if (isset($this->fields["_groups"]))
+				if (isset($this->fields["_groups"])) {
 					$groups = $this->fields["_groups"];
-				else
+				} else {
 					$groups = array();	
-		
+				}
 				$this->fields=$rule->processAllRules($groups,$this->fields,array("type"=>"LDAP","ldap_server"=>$ldap_method["ID"],"connection"=>$ldap_connection,"userdn"=>$userdn));
-				
+				//If rule  action is ignore import  
+				if (isset($this->fields["_stop_import"])
+					//or use matches no rules & do not import users with no rights 
+					|| (isset($this->fields["_no_rule_matches"])) 
+						&& !$CFG_GLPI["add_norights_users"]) {
+					return false;
+				}
 				//Hook to retrieve more informations for ldap
 				$this->fields = doHookFunction("retrieve_more_data_from_ldap", $this->fields);
 			}
