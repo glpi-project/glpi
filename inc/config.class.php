@@ -427,15 +427,20 @@ class Config extends CommonDBTM {
 		dropdownYesNo("ocs_mode", $CFG_GLPI["ocs_mode"]);
 		echo "</td><td class='center'colspan='2'></tr>";
 
-		echo "<tr><th colspan='2'>" . $LANG['login'][10] . "</th><th colspan='2'>".$LANG['Menu'][20]."</th></tr>";
+		echo "<tr><th colspan='4' align='center'>" . $LANG['login'][10] . "</th></tr>";
 		echo "<tr class='tab_bg_2'><td class='center'> " . $LANG['setup'][124] . " </td><td>";
 		dropdownYesNo("auto_add_users", $CFG_GLPI["auto_add_users"]);
 		echo "</td>";
-		
-		echo "<td class='center'> " . $LANG['setup'][117] . " </td><td>";
-		dropdownYesNo("public_faq", $CFG_GLPI["public_faq"]);
-		echo " </td></tr>";
 
+		echo "<td class='center'> " . $LANG['setup'][613] . " </td><td class='center'>";
+		dropdownYesNo("add_norights_users", $CFG_GLPI["add_norights_users"]);
+		echo " </td></tr>";
+	
+		echo "<tr><th colspan='4' align='center'>" . $LANG['Menu'][20] . "</th></tr>";	
+		echo "<tr class='tab_bg_2'><td class='center'> " . $LANG['setup'][117] . " </td><td>";
+		dropdownYesNo("public_faq", $CFG_GLPI["public_faq"]);
+		echo " </td><td class='center' colspan='2'></td></tr>";
+		
 		echo "<tr><th colspan='4' align='center'>" . $LANG['Menu'][31]. "</th></tr>";
 
 		echo "<tr class='tab_bg_2'><td class='center'> " . $LANG['setup'][219] . " </td><td>";

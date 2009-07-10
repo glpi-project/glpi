@@ -214,31 +214,35 @@ class RightAffectRule extends Rule {
 	*/
 	function executeActions($output,$params,$regex_results)
 	{
+		global $CFG_GLPI;
 		$entity='';
 		$right='';
 		$recursive = 0;
 		$continue = true;
 		$output_src = $output;
-		
-		if (count($this->actions)){
-			foreach ($this->actions as $action){
+
+		if (count($this->actions)) {
+			foreach ($this->actions as $action) {
 					
-				switch ($action->fields["action_type"]){
+				switch ($action->fields["action_type"]) {
 					case "assign" :
-						switch ($action->fields["field"])
-						{
+						switch ($action->fields["field"]) {
 							case "FK_entities":
 								$entity = $action->fields["value"];
-							break;
+								break;
 							case "FK_profiles":
 								$right = $action->fields["value"];
-							break;
+								break;
 							case "recursive":
 								$recursive = $action->fields["value"];
-							break;
+								break;
 							case "active":
 								$output["active"] = $action->fields["value"];
-							break;
+								break;
+							case "_ignore_user_import":
+								$continue = false;
+								$output_src["_stop_import"] = true;
+								break;
 						} // switch (field)
 						break;
 					case "regex_result" :
@@ -263,32 +267,30 @@ class RightAffectRule extends Rule {
 								}
 								break;								
 						} // switch (field)
-						/*
-						if ($action->fields["field"] == "FK_entities") $entity = $action->fields["value"]; 
-						elseif ($action->fields["field"] == "FK_profiles") $right = $action->fields["value"];
-						elseif ($action->fields["field"] == "recursive") $recursive = $action->fields["value"];
-						elseif ($action->fields["field"] == "active") $output["active"] = $action->fields["value"];
-						*/
 					break;
 				} // switch (action_type)
 			} // foreach (action)
 		} // count (actions)
 
-		if ($continue)
-		{
+		if ($continue) {
+
 			//Nothing to be returned by the function :
 			//Store in session the entity and/or right
-			if ($entity != '' && $right != '')
+			if ($entity != '' && $right != '') {
 				$output["_ldap_rules"]["rules_entities_rights"][]=array($entity,$right,$recursive);
-			elseif ($entity != '') 
+			}
+			elseif ($entity != '') { 
 				$output["_ldap_rules"]["rules_entities"][]=array($entity,$recursive);
-			elseif ($right != '') 
+			}
+			elseif ($right != '') { 
 				$output["_ldap_rules"]["rules_rights"][]=$right;
-
+			}
 			return $output;
 		}
-		else
+		else {	
 			return $output_src;
+		}	
+			
 			
 	}
 
