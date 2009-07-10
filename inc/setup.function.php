@@ -1314,9 +1314,37 @@ function showSystemInformations () {
 		$version = $data['ver'];		
 	}
 	echo "MySQL: $version (".$DB->dbuser."@".$DB->dbhost."/".$DB->dbdefault.")\n";	
+	echo "\n</pre></td></tr>";
 
-	echo "\n</pre></td>";
+	$ldap_servers = getLdapServers ();
+	
+	if (!empty($ldap_servers)) {
+		echo "<tr class='tab_bg_2'><th>" . $LANG['login'][2] . "</th></tr>";
+		echo "<tr class='tab_bg_1'><td><pre>\n&nbsp;\n";
+
+		foreach ($ldap_servers as $ID => $value) {
+				$fields = array ($LANG['common'][52]=>'ldap_host',
+									  $LANG['setup'][172]=>'ldap_port',
+									  $LANG['setup'][154]=>'ldap_basedn',
+									  $LANG['setup'][159]=>'ldap_condition',
+									  $LANG['setup'][155]=>'ldap_rootdn',
+									  $LANG['setup'][180]=>'ldap_use_tls');
+				$msg = '';
+				$first = true;
+				foreach($fields as $label => $field) {
+					$msg.=(!$first?', ':'').$label.': '.($value[$field] != ''?'\''.$value[$field].'\'':$LANG['common'][49]);
+					$first = false;
+				}
+				echo wordwrap($msg."\n", $width, "\n\t\t");
+		}
+		
+		echo "\n</pre></td>";
+	}
+
 	echo "<tr class='tab_bg_2'><th>" . $LANG['setup'][722] . "</th></tr>";
-	echo "</tr></table></div>";
+	echo "</tr>"; 
+	
+	
+	echo "</table></div>";
  }
 ?>
