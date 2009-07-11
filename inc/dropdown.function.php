@@ -1592,7 +1592,7 @@ function dropdownMassiveAction($device_type,$deleted=0,$extraparams=array()){
 			echo "<option value=\"add_document\">".$LANG['document'][16]."</option>";
 		}
 
-		if (haveTypeRight(CONTRACT_TYPE,"w") &&in_array($device_type,$CFG_GLPI["state_types"])){
+		if (haveTypeRight(CONTRACT_TYPE,"w") && in_array($device_type,$CFG_GLPI["contract_types"])){
 			echo "<option value=\"add_contract\">".$LANG['financial'][36]."</option>";
 		}
 		if (haveRight('transfer','r') && isMultiEntitiesMode() && 

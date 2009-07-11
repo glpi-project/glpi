@@ -34,7 +34,8 @@
 // ----------------------------------------------------------------------
 
 
-$NEEDED_ITEMS=array('entity', 'rulesengine', 'rule.ocs', 'rule.right', 'user', 'profile', 'document');
+$NEEDED_ITEMS=array('entity', 'rulesengine', 'rule.ocs', 'rule.right', 'user', 'profile', 
+	'document', 'contract');
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
@@ -75,6 +76,9 @@ if (!isset($_POST["start"])) {
 					if ($CFG_GLPI["ocs_mode"]) {
 						$ocsrule->showAndAddRuleForm($_POST['target'],$_POST["ID"]);
 					}
+					break;
+				case 4 :
+					showContractAssociated(ENTITY_TYPE,$_POST["ID"]);
 					break;
 				case 5 :
 					showDocumentAssociated(ENTITY_TYPE,$_POST["ID"]);
