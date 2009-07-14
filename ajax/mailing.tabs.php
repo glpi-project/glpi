@@ -62,5 +62,7 @@ header_nocache();
 			break;
 		
 	}
+	
+	ajaxFooter();
 
 ?>
