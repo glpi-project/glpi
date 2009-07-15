@@ -654,10 +654,17 @@ class User extends CommonDBTM {
 				return false;
 			
 			foreach ($fields as $k => $e) {
-					if (empty($v[0][$e][0]))
-						$this->fields[$k] = "";
-					else
-					{
+					if (empty($v[0][$e][0])){
+						switch ($k){ 
+                     case "title":
+                     case "type":
+                        $this->fields[$k] = 0;
+                        break;
+                     default:
+                        $this->fields[$k] = "";
+                        break;
+                   }
+					} else {
 							switch ($k)
 							{
 								case "language":
