@@ -133,14 +133,16 @@
 	
 		// If debug mode activated : display some informations
 		if ($_SESSION['glpi_use_mode']==DEBUG_MODE){
+			// display_errors only need for for E_ERROR, E_PARSE, ... which cannot be catched
 			ini_set('display_errors','On'); 
+			// Recommended development settings
 			error_reporting(E_ALL | E_STRICT); 
-			//ini_set('error_prepend_string','<div style="position:fload-left; background-color:red; z-index:10000">PHP ERROR : '); 
-			//ini_set('error_append_string','</div>'); 
-			set_error_handler("userErrorHandler"); 
+			set_error_handler('userErrorHandlerDebug'); 
 		}else{
-			//Pas besoin des warnings de PHP en mode normal : on va eviter de faire peur ;)
-			error_reporting(0); 
+			// Recommended production settings
+			ini_set('display_errors','Off'); 
+			error_reporting(E_ALL); 
+			set_error_handler('userErrorHandlerNormal'); 
 		}
 	
 		if (isset($_SESSION["glpiroot"])&&$CFG_GLPI["root_doc"]!=$_SESSION["glpiroot"]) {
