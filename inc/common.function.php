@@ -101,7 +101,7 @@ if (!defined('GLPI_ROOT')){
 	}
 	
 	/**
-	* Specific error handler
+	* Specific error handler in Normal mode
 	*@param $errno integer: level of the error raised.
 	*@param $errmsg string: error message.
 	*@param $filename string: filename that the error was raised in.
@@ -109,8 +109,9 @@ if (!defined('GLPI_ROOT')){
 	*@param $vars array: that points to the active symbol table at the point the error occurred.
 	*
 	**/
-	function userErrorHandler($errno, $errmsg, $filename, $linenum, $vars){
+	function userErrorHandlerNormal($errno, $errmsg, $filename, $linenum, $vars){
 		global $CFG_GLPI;
+      
 		// Date et heure de l'erreur
 		//$dt = date("Y-m-d H:i:s (T)");
 		$errortype = array (
@@ -152,20 +153,38 @@ if (!defined('GLPI_ROOT')){
 				}
 			}
 		} else {
-			$error .= "Script: $filename, Line: $linenum\n" ; 
+			$err .= "Script: $filename, Line: $linenum\n" ; 
 		}
 		
 		// sauvegarde de l'erreur, et mail si c'est critique
 		logInFile("php-errors",$err."\n");
 		
-		if (!isCommandLine()){
-			echo '<div style="position:fload-left; background-color:red; z-index:10000"><strong>PHP ERROR: </strong>';
-			echo $errmsg." in ".$filename." at line ".$linenum;
-			echo '</div>';
-		} else {
-			echo "PHP ERROR: ".$errmsg." in ".$filename." at line ".$linenum."\n";
-		}
+      return $errortype[$errno];
 	}
+   /**
+   * Specific error handler in Debug mode
+   *@param $errno integer: level of the error raised.
+   *@param $errmsg string: error message.
+   *@param $filename string: filename that the error was raised in.
+   *@param $linenum integer: line number the error was raised at. 
+   *@param $vars array: that points to the active symbol table at the point the error occurred.
+   *
+   **/
+   function userErrorHandlerDebug($errno, $errmsg, $filename, $linenum, $vars){
+      global $CFG_GLPI;
+
+      // For file record
+      $type = userErrorHandlerNormal($errno, $errmsg, $filename, $linenum, $vars);       
+      
+      // Display
+      if (!isCommandLine()){
+         echo '<div style="position:fload-left; background-color:red; z-index:10000"><strong>PHP '.$type.': </strong>';
+         echo $errmsg.' in '.$filename.' at line '.$linenum;
+         echo '</div>';
+      } else {
+         echo 'PHP '.$type.': '.$errmsg.' in '.$filename.' at line '.$linenum."\n";
+      }
+   }
 	/**
 	* Is the script launch in Command line ?
 	*@return boolean

@@ -64,8 +64,8 @@ $_SESSION['glpi_use_mode']=DEBUG_MODE;
 $CFG_GLPI["debug_sql"]=$CFG_GLPI["debug_vars"]=0; 
 $CFG_GLPI["use_errorlog"]=1;
 ini_set('display_errors','On'); 
-error_reporting(E_ALL); 
-set_error_handler("userErrorHandler"); 
+error_reporting(E_ALL | E_STRICT); 
+set_error_handler("userErrorHandlerDebug");           
 
 $DB=new DB();
 
