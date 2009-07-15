@@ -226,7 +226,7 @@ function showDeviceDocument($instID) {
 		echo "<th>".$LANG['common'][16]."</th>";
 		echo "<th>".$LANG['entity'][0]."</th>";
 		echo "<th>".$LANG['common'][19]."</th>";
-		echo "<th>".$LANG['common'][20]."--</th>";
+		echo "<th>".$LANG['common'][20]."</th>";
 		echo "</tr>";
 		$ci=new CommonItem();
 		while ($i < $number) {
