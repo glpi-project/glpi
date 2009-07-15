@@ -1768,7 +1768,7 @@ function addSelect ($type,$ID,$num,$meta=0,$meta_type=0){
 				$linkfield="";
 				if (!empty($SEARCH_OPTION[$type][$ID]["linkfield"]))
 					$linkfield="_".$SEARCH_OPTION[$type][$ID]["linkfield"];
-	
+            
 				// if ($meta) return " CONCAT(".$table.$linkfield.$addtable.".realname,' ',".$table.$linkfield.$addtable.".firstname) AS ".$NAME."_$num, ";
 				return $table.$linkfield.$addtable.".".$field." AS ".$NAME."_$num,
 					".$table.$linkfield.$addtable.".realname AS ".$NAME."_".$num."_2,
@@ -1964,7 +1964,7 @@ function addDefaultWhere ($type){
  *
  **/
 function addWhere($link,$nott,$type,$ID,$val,$meta=0){
-	global $LINK_ID_TABLE,$LANG,$SEARCH_OPTION,$PLUGIN_HOOKS;
+	global $LINK_ID_TABLE,$LANG,$SEARCH_OPTION,$PLUGIN_HOOKS,$CFG_GLPI;
 
 	$table=$SEARCH_OPTION[$type][$ID]["table"];
 	$field=$SEARCH_OPTION[$type][$ID]["field"];
@@ -2012,7 +2012,20 @@ function addWhere($link,$nott,$type,$ID,$val,$meta=0){
 				if ($nott) {
 					$ADD=" OR $table$linkfield.$field IS NULL";
 				}
-				return $link." ( $table$linkfield.$field $SEARCH OR $table$linkfield.realname $SEARCH OR $table$linkfield.firstname $SEARCH OR CONCAT($table$linkfield.realname,' ',$table$linkfield.firstname) $SEARCH $ADD) ";
+            
+            if ($CFG_GLPI["name_display_order"]==FIRSTNAME_BEFORE) {
+               $name1='firstname';
+               $name2='realname';
+            } else {
+               $name1='realname';
+               $name2='firstname';
+            }
+            
+				return $link." ( $table$linkfield.$field $SEARCH
+                  OR $table$linkfield.$name1 $SEARCH
+                  OR $table$linkfield.$name2 $SEARCH
+                  OR CONCAT($table$linkfield.$name1,' ',$table$linkfield.$name2) $SEARCH
+                  $ADD) ";
 			}
 			break;
 
@@ -2089,7 +2102,19 @@ function addWhere($link,$nott,$type,$ID,$val,$meta=0){
 			}
 			break;
 		case "glpi_contacts.completename":
-			return $link." ($table.name $SEARCH OR $table.firstname $SEARCH ) ";
+         if ($CFG_GLPI["name_display_order"]==FIRSTNAME_BEFORE) {
+            $name1='firstname';
+            $name2='name';
+         } else {
+            $name1='name';
+            $name2='firstname';
+         }
+            
+         return $link." ($table.$name1 $SEARCH
+               OR $table.$name2 $SEARCH
+               OR CONCAT($table.$name1,' ',$table.$name2) $SEARCH) ";
+         
+			//return $link." ($table.name $SEARCH OR $table.firstname $SEARCH ) ";
 		break;
 		case "glpi_auth_tables.name":
 			return $link." (glpi_auth_mail.name $SEARCH OR glpi_auth_ldap.name $SEARCH ) ";
