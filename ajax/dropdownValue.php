@@ -260,8 +260,14 @@ if (!isset($_POST["limit"])) $_POST["limit"]=$_SESSION["glpidropdown_limit"];
 			$field="designation";
 		}
 
-		if ($_POST['searchText']!=$CFG_GLPI["ajax_wildcard"])
-			$where.=" AND $field ".makeTextSearch($_POST['searchText']);
+		if ($_POST['searchText']!=$CFG_GLPI["ajax_wildcard"]){
+         $search=makeTextSearch($_POST['searchText']);
+         $where.=" AND  (`".$_POST['table']."`.`$field` ".$search;
+         if ($_POST['table']=="glpi_softwarelicenses"){
+            $where.=" OR `glpi_software`.`name` ".$search;
+         }
+         $where.=')';
+      }
 
 		switch ($_POST['table']){
 			case "glpi_contacts":
