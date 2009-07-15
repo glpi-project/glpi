@@ -185,6 +185,7 @@ function showDeviceContract($instID) {
 	echo "<th>".$LANG['common'][20]."</th></tr>";
 	
 	$ci=new CommonItem;
+   $totalnb=0;
 	while ($i < $number) {
 		$type=$DB->result($result, $i, "device_type");
 
@@ -201,6 +202,7 @@ function showDeviceContract($instID) {
 
 			$result_linked=$DB->query($query);
 			$nb=$DB->numrows($result_linked);
+         $totalnb+=$nb;
 				if ($nb>$_SESSION['glpilist_limit'] && isset($SEARCH_PAGES["$type"])) {
 				$ci->setType($type);
 				
@@ -245,16 +247,20 @@ function showDeviceContract($instID) {
 		$i++;
 	}
 	if ($canedit){
-		echo "<tr class='tab_bg_1'><td colspan='4' class='right'>";
-		echo "<div class='software-instal'><input type='hidden' name='conID' value='$instID'>";
-                $types=$CFG_GLPI["state_types"];
-                $types[]=SOFTWARE_TYPE;
+      
+      if ($contract->fields['device_countmax']==0 || $contract->fields['device_countmax'] > $totalnb){
+         echo "<tr class='tab_bg_1'><td colspan='4' class='right'>";
+         echo "<div class='software-instal'>";
+         $types=$CFG_GLPI["state_types"];
+         $types[]=SOFTWARE_TYPE;
+         dropdownAllItems("item", 0, 0, ($contract->fields['recursive']?-1:$contract->fields['FK_entities']), $types);
+         echo "</div></td><td class='center'><input type='submit' name='additem' value=\"".$LANG['buttons'][8]."\" class='submit'>";
+         echo "<input type='hidden' name='ID' value='$instID'>";
+         echo "</td><td>&nbsp;</td>";
+         echo "</tr>";
+      }
 
-		dropdownAllItems("item",0,0,($contract->fields['recursive']?-1:$contract->fields['FK_entities']),$types);
-		echo "</div></td><td class='center'><input type='submit' name='additem' value=\"".$LANG['buttons'][8]."\" class='submit'>";
-		echo "<input type='hidden' name='ID' value='$instID'>";
-		echo "</td><td>&nbsp;</td>";
-		echo "</tr>";
+      
 		echo "</table></div>"    ;
 		
 		echo "<div class='center'>";
@@ -263,6 +269,7 @@ function showDeviceContract($instID) {
 	
 		echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkCheckboxes('contract_form$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$instID&amp;select=none'>".$LANG['buttons'][19]."</a>";
 		echo "</td><td align='left' width='80%'>";
+      echo "<input type='hidden' name='conID' value='$instID'>";
 		echo "<input type='submit' name='deleteitem' value=\"".$LANG['buttons'][6]."\" class='submit'>";
 		echo "</td>";
 		echo "</table>";
