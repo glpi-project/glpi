@@ -226,7 +226,7 @@ function showDeviceDocument($instID) {
 		echo "<th>".$LANG['common'][16]."</th>";
 		echo "<th>".$LANG['entity'][0]."</th>";
 		echo "<th>".$LANG['common'][19]."</th>";
-		echo "<th>".$LANG['common'][20]."</th>";
+		echo "<th>".$LANG['common'][20]."--</th>";
 		echo "</tr>";
 		$ci=new CommonItem();
 		while ($i < $number) {
@@ -246,7 +246,10 @@ function showDeviceDocument($instID) {
 					$query.=" AND ".$LINK_ID_TABLE[$type].".is_template='0'";
 				}
 				$query.=" ORDER BY glpi_entities.completename, ".$LINK_ID_TABLE[$type].".$column";
-				
+
+            if ($type==SOFTWARELICENSE_TYPE) {
+               $soft=new Software();
+            }
 				if ($result_linked=$DB->query($query))
 					if ($DB->numrows($result_linked)){
 						$ci->setType($type);
@@ -254,6 +257,10 @@ function showDeviceDocument($instID) {
 							$ID="";
 							if ($type==TRACKING_TYPE) $data["name"]=$LANG['job'][38]." ".$data["ID"];
 							if ($type==KNOWBASE_TYPE) $data["name"]=$data["question"];
+                     if ($type==SOFTWARELICENSE_TYPE) {
+                        $soft->getFromDB($data['sID']);
+                        $data["name"]=$data["name"].' - '.$soft->fields['name'];
+                     }
 							
 							if($_SESSION["glpiview_ID"]||empty($data["name"])) $ID= " (".$data["ID"].")";
 							$name= "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data["ID"]."\">"
