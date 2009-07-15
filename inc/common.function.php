@@ -152,7 +152,7 @@ if (!defined('GLPI_ROOT')){
 				}
 			}
 		} else {
-			$error .= "Script: $filename, Line: $linenum\n" ; 
+			$err .= "Script: $filename, Line: $linenum\n" ; 
 		}
 		
 		// sauvegarde de l'erreur, et mail si c'est critique
