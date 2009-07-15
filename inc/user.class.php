@@ -538,12 +538,18 @@ class User extends CommonDBTM {
 
 			if (!is_array($v) || count($v) == 0 || empty ($v[0][$fields['name']][0]))
 				return false;
-			
-			foreach ($fields as $k => $e) {
-					if (empty($v[0][$e][0]))
-						$this->fields[$k] = "";
-					else
-					{
+         foreach ($fields as $k => $e) {
+            if (empty($v[0][$e][0])){
+               switch ($k){
+                  case "title":
+                  case "type":
+                     $this->fields[$k] = 0;
+                     break;
+                  default:
+                     $this->fields[$k] = "";
+                     break;
+                   }
+               } else {
 							switch ($k)
 							{
 								case "language":
@@ -553,12 +559,13 @@ class User extends CommonDBTM {
 									break;
 								case "title":
 								case "type":
-									$this->fields[$k] = externalImportDropdown("glpi_dropdown_user_".$k."s",addslashes($v[0][$e][0]),-1,array(),'',true);
+									$this->fields[$k] =
+externalImportDropdown("glpi_dropdown_user_".$k."s",addslashes($v[0][$e][0]),-1,array(),'',true);
 									break;
 								break;
 								default:
 								if (!empty($v[0][$e][0]))
-								$this->fields[$k] = addslashes($v[0][$e][0]);
+								 $this->fields[$k] = addslashes($v[0][$e][0]);
 								else
 								$this->fields[$k] = "";
 								break;						
