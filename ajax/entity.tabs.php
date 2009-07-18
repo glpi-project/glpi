@@ -77,9 +77,6 @@ if (!isset($_POST["start"])) {
 						$ocsrule->showAndAddRuleForm($_POST['target'],$_POST["ID"]);
 					}
 					break;
-				case 4 :
-					showContractAssociated(ENTITY_TYPE,$_POST["ID"]);
-					break;
 				case 5 :
 					showDocumentAssociated(ENTITY_TYPE,$_POST["ID"]);
 					break;
