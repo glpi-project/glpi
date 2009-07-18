@@ -530,23 +530,12 @@ function registerPluginType($plugin,$name,$ID,$attrib){
 				array_push($CFG_GLPI["template_tables"], $attrib['tablename']);
 			}
 		} // is set tablename
-		if (isset($attrib['reservation_types']) && $attrib['reservation_types']) {
-			array_push($CFG_GLPI["reservation_types"], $ID);
-		}
-		if (isset($attrib['infocom_types']) && $attrib['infocom_types']) {
-			array_push($CFG_GLPI["infocom_types"], $ID);
-		}
-		if (isset($attrib['linkuser_types']) && !empty($attrib['linkuser_types'])) {
-			array_push($CFG_GLPI["linkuser_types"],$ID);
-		}
-		if (isset($attrib['linkgroup_types']) && !empty($attrib['linkgroup_types'])) {
-			array_push($CFG_GLPI["linkgroup_types"],$ID);
-		}
-		if (isset($attrib['massiveaction_noupdate']) && !empty($attrib['massiveaction_noupdate'])) {
-			array_push($CFG_GLPI["massiveaction_noupdate_types"],$ID);
-		}
-		if (isset($attrib['massiveaction_nodelete']) && !empty($attrib['massiveaction_nodelete'])) {
-			array_push($CFG_GLPI["massiveaction_nodelete_types"],$ID);
+		
+		foreach (array('reservation_types','infocom_types','linkuser_types','linkgroup_types',
+					'massiveaction_noupdate_types','massiveaction_nodelete_types', 'doc_types') as $att) {
+			if (isset($attrib[$att]) && $attrib[$att]) {
+				array_push($CFG_GLPI[$att], $ID);
+			}
 		}
 	} // not already defined
 } 

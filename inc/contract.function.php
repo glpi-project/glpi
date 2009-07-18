@@ -190,10 +190,15 @@ function showDeviceContract($instID) {
 		$type=$DB->result($result, $i, "device_type");
 
 		if (haveTypeRight($type,"r")){
- 			$query = "SELECT ".$LINK_ID_TABLE[$type].".*, glpi_contract_device.ID AS IDD, glpi_entities.ID AS entity"
-				." FROM glpi_contract_device, " .$LINK_ID_TABLE[$type]
-				." LEFT JOIN glpi_entities ON (".$LINK_ID_TABLE[$type].".FK_entities=glpi_entities.ID)"
-				." WHERE ".$LINK_ID_TABLE[$type].".ID = glpi_contract_device.FK_device AND glpi_contract_device.device_type='$type' AND glpi_contract_device.FK_contract = '$instID'";
+ 			$query = "SELECT ".$LINK_ID_TABLE[$type].".*, glpi_contract_device.ID AS IDD, glpi_entities.ID AS entity
+						FROM glpi_contract_device, " .$LINK_ID_TABLE[$type];
+			if ($type != ENTITY_TYPE) {	
+				$query .= " LEFT JOIN glpi_entities ON (".$LINK_ID_TABLE[$type].".FK_entities=glpi_entities.ID) ";
+			}
+			$query .= " WHERE ".$LINK_ID_TABLE[$type].".ID = glpi_contract_device.FK_device 
+								AND glpi_contract_device.device_type='$type' 
+								AND glpi_contract_device.FK_contract = '$instID'";
+						
 			if (in_array($LINK_ID_TABLE[$type],$CFG_GLPI["template_tables"])){
 				$query.=" AND ".$LINK_ID_TABLE[$type].".is_template='0'";
 			}						
@@ -251,9 +256,8 @@ function showDeviceContract($instID) {
       if ($contract->fields['device_countmax']==0 || $contract->fields['device_countmax'] > $totalnb){
          echo "<tr class='tab_bg_1'><td colspan='4' class='right'>";
          echo "<div class='software-instal'>";
-         $types=$CFG_GLPI["state_types"];
-         $types[]=SOFTWARE_TYPE;
-         dropdownAllItems("item", 0, 0, ($contract->fields['recursive']?-1:$contract->fields['FK_entities']), $types);
+         dropdownAllItems("item", 0, 0, ($contract->fields['recursive']?-1:$contract->fields['FK_entities']),$CFG_GLPI["contract_types"]);
+         
          echo "</div></td><td class='center'><input type='submit' name='additem' value=\"".$LANG['buttons'][8]."\" class='submit'>";
          echo "<input type='hidden' name='ID' value='$instID'>";
          echo "</td><td>&nbsp;</td>";
@@ -563,7 +567,7 @@ function showContractAssociated($device_type,$ID,$withtemplate=''){
 	$q="SELECT * 
 		FROM glpi_contracts 
 		WHERE deleted='0' "
-		.getEntitiesRestrictRequest("AND","glpi_contracts","FK_entities",$ci->obj->fields["FK_entities"],true);;
+		.getEntitiesRestrictRequest("AND","glpi_contracts","FK_entities",$ci->obj->getEntityID(),true);;
 	$result = $DB->query($q);
 	$nb = $DB->numrows($result);
 
@@ -571,7 +575,7 @@ function showContractAssociated($device_type,$ID,$withtemplate=''){
 		if ($withtemplate!=2 && $nb>count($contracts)){
 			echo "<tr class='tab_bg_1'><td align='right' colspan='3'>";
 			echo "<div class='software-instal'><input type='hidden' name='item' value='$ID'><input type='hidden' name='type' value='$device_type'>";
-			dropdownContracts("conID",$ci->obj->fields["FK_entities"],$contracts);
+			dropdownContracts("conID",$ci->obj->getEntityID(),$contracts);
 			echo "</div></td><td class='center'>";
 			echo "<input type='submit' name='additem' value=\"".$LANG['buttons'][8]."\" class='submit'>";
 			echo "</td>";

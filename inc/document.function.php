@@ -236,12 +236,14 @@ function showDeviceDocument($instID) {
 				if ($type==TRACKING_TYPE) $column="ID";
 				if ($type==KNOWBASE_TYPE) $column="question";
 	
-				$query = "SELECT ".$LINK_ID_TABLE[$type].".*, glpi_doc_device.ID AS IDD, glpi_entities.ID AS entity "
-					." FROM glpi_doc_device, ".$LINK_ID_TABLE[$type]
-					." LEFT JOIN glpi_entities ON (glpi_entities.ID=".$LINK_ID_TABLE[$type].".FK_entities) "
-					." WHERE ".$LINK_ID_TABLE[$type].".ID = glpi_doc_device.FK_device  
+				$query = "SELECT ".$LINK_ID_TABLE[$type].".*, glpi_doc_device.ID AS IDD, glpi_entities.ID AS entity
+							FROM glpi_doc_device, ".$LINK_ID_TABLE[$type];
+				if ($type != ENTITY_TYPE) {
+					$query .= " LEFT JOIN glpi_entities ON (glpi_entities.ID=".$LINK_ID_TABLE[$type].".FK_entities) ";
+				}
+				$query .= " WHERE ".$LINK_ID_TABLE[$type].".ID = glpi_doc_device.FK_device  
 						AND glpi_doc_device.device_type='$type' AND glpi_doc_device.FK_doc = '$instID' "
-					. getEntitiesRestrictRequest(" AND ",$LINK_ID_TABLE[$type],'','',isset($CFG_GLPI["recursive_type"][$type])); 
+						. getEntitiesRestrictRequest(" AND ",$LINK_ID_TABLE[$type],'','',isset($CFG_GLPI["recursive_type"][$type])); 
 				if (in_array($LINK_ID_TABLE[$type],$CFG_GLPI["template_tables"])){
 					$query.=" AND ".$LINK_ID_TABLE[$type].".is_template='0'";
 				}
@@ -294,14 +296,7 @@ function showDeviceDocument($instID) {
 	
 			echo "<input type='hidden' name='conID' value='$instID'>";
 			echo "<input type='hidden' name='right' value='doc'>";
-			$types=$CFG_GLPI["state_types"];
-			$types[]=ENTERPRISE_TYPE;
-			$types[]=CARTRIDGE_TYPE;
-			$types[]=CONSUMABLE_TYPE;
-			$types[]=CONTRACT_TYPE;
-			$types[]=SOFTWARE_TYPE;
-			$types[]=SOFTWARELICENSE_TYPE;
-			dropdownAllItems("item",0,0,($doc->fields['recursive']?-1:$doc->fields['FK_entities']),$types);
+			dropdownAllItems("item",0,0,($doc->fields['recursive']?-1:$doc->fields['FK_entities']),$CFG_GLPI["doc_types"]);
 			
 			echo "</td>";
 			echo "<td colspan='2' class='center'>";

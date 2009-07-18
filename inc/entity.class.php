@@ -74,6 +74,9 @@ class Entity extends CommonDBTM{
 		$ong[1]=$LANG['title'][26];
 		$ong[2]=$LANG['Menu'][14];
 		$ong[3]=$LANG['rulesengine'][17];
+		if (haveRight("document","r")){
+			$ong[5]=$LANG['Menu'][27];
+		}
 
 		return $ong;
 	}

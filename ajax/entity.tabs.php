@@ -34,7 +34,8 @@
 // ----------------------------------------------------------------------
 
 
-$NEEDED_ITEMS=array("entity","rulesengine","rule.ocs","rule.right","user","profile");
+$NEEDED_ITEMS=array('entity', 'rulesengine', 'rule.ocs', 'rule.right', 'user', 'profile', 
+	'document', 'contract');
 
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
@@ -60,18 +61,24 @@ if (!isset($_POST["start"])) {
 			switch($_POST['glpi_tab']){
 				case -1 :	
 					showEntityUser($_POST['target'],$_POST["ID"]);
-					displayPluginAction(ENTITY_TYPE,$_POST["ID"],$_SESSION['glpi_tab']);
+					showDocumentAssociated(ENTITY_TYPE,$_POST["ID"]);
 					$ldaprule->showAndAddRuleForm($_POST['target'],$_POST["ID"]);
-					if ($CFG_GLPI["ocs_mode"])
-						$ocsrule->showAndAddRuleForm($_POST['target'],$_POST["ID"]);
-				break;
+					if ($CFG_GLPI["ocs_mode"]) {
+					   $ocsrule->showAndAddRuleForm($_POST['target'],$_POST["ID"]);
+					}
+					displayPluginAction(ENTITY_TYPE,$_POST["ID"],$_SESSION['glpi_tab']);
+					break;
 				case 2 : 
 					showEntityUser($_POST['target'],$_POST["ID"]);
-				break;
+					break;
 				case 3 :
 					$ldaprule->showAndAddRuleForm($_POST['target'],$_POST["ID"]);
-					if ($CFG_GLPI["ocs_mode"])
+					if ($CFG_GLPI["ocs_mode"]) {
 						$ocsrule->showAndAddRuleForm($_POST['target'],$_POST["ID"]);
+					}
+					break;
+				case 5 :
+					showDocumentAssociated(ENTITY_TYPE,$_POST["ID"]);
 					break;
 				default :
 					if (!displayPluginAction(ENTITY_TYPE,$_POST["ID"],$_SESSION['glpi_tab'])){

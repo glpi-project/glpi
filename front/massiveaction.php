@@ -305,9 +305,16 @@ if (isset($_POST["device_type"])){
 							// Items exists ?
 							if ($ci2->getFromDB($_POST["device_type"],$key)){
 								// Entity security
-								if (!isset($ci2->obj->fields["FK_entities"])
-								||$ci->obj->fields["FK_entities"]==$ci2->obj->fields["FK_entities"]
-								||($ci->obj->fields["recursive"] && in_array($ci->obj->fields["FK_entities"], getEntityAncestors($ci2->obj->fields["FK_entities"])))){
+								if ($_POST["device_type"]==ENTITY_TYPE) {
+								   $destentity = $ci2->obj->fields["ID"];
+								} else if (isset($ci2->obj->fields["FK_entities"])) {
+								   $destentity = $ci2->obj->fields["FK_entities"];
+								} else {
+								   $destentity = -1;
+								}
+								if ($destentity<0
+								|| $ci->obj->fields["FK_entities"]==$destentity
+								|| ($ci->obj->fields["recursive"] && in_array($ci->obj->fields["FK_entities"], getEntityAncestors($destentity)))){
 									addDeviceDocument($_POST['docID'],$_POST["device_type"],$key);
 								}
 							}
@@ -323,10 +330,17 @@ if (isset($_POST["device_type"])){
 						if ($val==1) {
 							// Items exists ?
 							if ($ci2->getFromDB($_POST["device_type"],$key)){
+								if ($_POST["device_type"]==ENTITY_TYPE) {
+								   $destentity = $ci2->obj->fields["ID"];
+								} else if (isset($ci2->obj->fields["FK_entities"])) {
+								   $destentity = $ci2->obj->fields["FK_entities"];
+								} else {
+								   $destentity = -1;
+								}
 								// Entity security
-								if (!isset($ci2->obj->fields["FK_entities"])
-								||$ci->obj->fields["FK_entities"]==$ci2->obj->fields["FK_entities"]
-								||($ci->obj->fields["recursive"] && in_array($ci->obj->fields["FK_entities"], getEntityAncestors($ci2->obj->fields["FK_entities"])))){
+								if ($destentity<0
+								||$ci->obj->fields["FK_entities"]==$destentity
+								||($ci->obj->fields["recursive"] && in_array($ci->obj->fields["FK_entities"], getEntityAncestors($destentity)))){
 									addContactEnterprise($key,$_POST["conID"]);
 								}
 							}
@@ -342,10 +356,17 @@ if (isset($_POST["device_type"])){
 						if ($val==1) {
 							// Items exists ?
 							if ($ci2->getFromDB($_POST["device_type"],$key)){
+								if ($_POST["device_type"]==ENTITY_TYPE) {
+								   $destentity = $ci2->obj->fields["ID"];
+								} else if (isset($ci2->obj->fields["FK_entities"])) {
+								   $destentity = $ci2->obj->fields["FK_entities"];
+								} else {
+								   $destentity = -1;
+								}
 								// Entity security
-								if (!isset($ci2->obj->fields["FK_entities"])
-								||$ci->obj->fields["FK_entities"]==$ci->obj->fields["FK_entities"]
-								||($ci->obj->fields["recursive"] && in_array($ci->obj->fields["FK_entities"], getEntityAncestors($ci2->obj->fields["FK_entities"])))){
+								if ($destentity<0
+								||$ci->obj->fields["FK_entities"]==$destentity
+								||($ci->obj->fields["recursive"] && in_array($ci->obj->fields["FK_entities"], getEntityAncestors($destentity)))){
 									addDeviceContract($_POST['conID'],$_POST["device_type"],$key);
 								}
 							}
