@@ -186,7 +186,10 @@ class Plugin extends CommonDBTM {
 		$i=0;
 		$PLUGIN_HOOKS_SAVE=$PLUGIN_HOOKS;
 		foreach ($pluglist as $ID => $plug){
-			usePlugin($plug['directory'],true);
+			if ($plug['state']==PLUGIN_NOTACTIVATED || $plug['state']==PLUGIN_TOBECONFIGURED) {
+				// Only to get Configuration link (init must not be called for incompatible plugins)
+				usePlugin($plug['directory'],true);
+			}
 			$i++;
 			$class='tab_bg_1';
 			if ($i%2==0){
@@ -278,7 +281,12 @@ class Plugin extends CommonDBTM {
 					}
 					echo "</td><td>";
 					if (function_exists("plugin_".$plug['directory']."_uninstall")){
-						echo "<a href='".$_SERVER['PHP_SELF']."?ID=$ID&amp;action=uninstall'>".$LANG['buttons'][5]."</a>";
+						if (function_exists("plugin_".$plug['directory']."_check_config")) {
+							echo "<a href='".$_SERVER['PHP_SELF']."?ID=$ID&amp;action=uninstall'>".$LANG['buttons'][5]."</a>";
+						} else {
+							// This is an incompatible plugin (0.71), uninstall fonction could crash
+							echo "&nbsp;";
+						}
 					} else {
 						echo $LANG['plugins'][5].": "."plugin_".$plug['directory']."_uninstall";
 					}
