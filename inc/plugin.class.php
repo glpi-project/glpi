@@ -186,8 +186,8 @@ class Plugin extends CommonDBTM {
 		$i=0;
 		$PLUGIN_HOOKS_SAVE=$PLUGIN_HOOKS;
 		foreach ($pluglist as $ID => $plug){
-			if ($plug['state']==PLUGIN_NOTACTIVATED || $plug['state']==PLUGIN_TOBECONFIGURED) {
-				// Only to get Configuration link (init must not be called for incompatible plugins)
+			if (function_exists("plugin_".$plug['directory']."_check_config")) {
+				// init must not be called for incompatible plugins
 				usePlugin($plug['directory'],true);
 			}
 			$i++;
