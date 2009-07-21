@@ -17,7 +17,7 @@ function ListePlug ($lang, $name, $base, $num,$cat) {
 	if ($page) {
 		while ($buf=fgets($page, 1000)) {
 			$buf=Clean($buf);
-			if (preg_match('@<tr class="row_even"><td>(.*)</td><td> <a href="(.*/(glpi-([a-zA-Z_]*)-([0-9,\.\-]*)).(tar.gz|tgz))">(.*)</a> </td><td>(.*)</td><td>.*</td></tr>@', $buf, $regs)) {
+			if (preg_match('@<tr class="row_even"><td>(.*)</td><td> <a href="(.*/(glpi-([a-zA-Z_]*)-([0-9,\.\-]*)).(tar.gz|tgz))">(.*)</a> </td><td>([^<]*)@', $buf, $regs)) {
 				$id=$regs[4];
 				$liste[$cat][$id]["doc"]=$url;
 				$liste[$cat][$id]["use"]=$lang.":plugins:".$id."_use";
@@ -83,14 +83,14 @@ function ListeAll ($lang, $base, $num) {
 function Display ($lang) {
 	global $liste;
 
-	echo "\rSTART COPY FROM HERE :\n\n";
+	echo "\rSTART COPY AFTER HERE :\n\n";
 	
 	switch ($lang) {
 			case "fr":
-				echo "Liste des Plugins GLPI\n\n";
+				echo "===== Liste des Plugins GLPI =====\n\n";
 				break;
 			case "en":
-				echo "GLPI Plugins list\n\n";
+				echo "===== GLPI Plugins list =====\n\n";
 				break;
 		}
 		
