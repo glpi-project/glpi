@@ -108,13 +108,10 @@ else if (isset($_GET["unglobalize"]))
 	logEvent($_GET["ID"], "peripherals", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][60]);
 	glpi_header($CFG_GLPI["root_doc"]."/front/peripheral.form.php?ID=".$_GET["ID"]);
 }
-else if (isset($_GET["disconnect"]))
+else if (isset($_GET["disconnect"]) && isset($_GET["dID"]) && isset($_GET["ID"]))
 {
-	/// TODO : which right on connect / disconnect ?
-	checkRight("peripheral","w");
-
+	$peripheral->check($_GET["dID"],"w");
 	Disconnect($_GET["ID"]);
-
 	logEvent(0, "peripherals", 5, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][27]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
