@@ -82,7 +82,7 @@ function showConnect($target,$ID,$type) {
 				echo "</strong></td>";
 				echo "<td class='tab_bg_2".($computer['deleted']?"_2":"")."' align='center'><strong>";
 				if ($canedit){
-					echo "<a href=\"$target?disconnect=1&amp;cID=".$computer['ID']."&amp;ID=".$key."\">".$LANG['buttons'][10]."</a>";
+					echo "<a href=\"$target?disconnect=1&amp;dID=".$ID."&amp;cID=".$computer['ID']."&amp;ID=".$key."\">".$LANG['buttons'][10]."</a>";
 				} else {
 					echo "&nbsp;";
 				}
