@@ -78,7 +78,7 @@ if (strlen($_POST['searchText'])>0&&$_POST['searchText']!=$CFG_GLPI["ajax_wildca
 	$where.=" AND (name ".$search." OR ID = '".$_POST['searchText']."' $WWHERE)";
 }
 //If software : filter to display only the softwares that are allowed to be visible in Helpdesk
-if ($_POST['table']=="glpi_software"){
+if (in_array($_POST['type'],$CFG_GLPI["helpdesk_visible_types"])){ 
 	$where.= " AND helpdesk_visible=1 ";
 }
 $NBMAX=$CFG_GLPI["dropdown_max"];
