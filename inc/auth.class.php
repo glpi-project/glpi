@@ -335,7 +335,6 @@ class Identification {
 					$_SESSION["glpirealname"] = $this->user->fields['realname'];
 					$_SESSION["glpifirstname"] = $this->user->fields['firstname'];
 					$_SESSION["glpidefault_entity"] = $this->user->fields['FK_entities'];
-					loadLanguage();
 					$_SESSION["glpiauthorisation"] = true;
 					$_SESSION["glpiextauth"] = $this->extauth;
 					$_SESSION["glpiauth_method"] = $this->user->fields['auth_method'];
@@ -353,6 +352,8 @@ class Identification {
 						}
 					}
 						
+					loadLanguage();
+
 					// glpiprofiles -> other available profile with link to the associated entities
 					doHook("init_session");
 		
