@@ -335,7 +335,6 @@ class Identification {
 					$_SESSION["glpirealname"] = $this->user->fields['realname'];
 					$_SESSION["glpifirstname"] = $this->user->fields['firstname'];
 					$_SESSION["glpidefault_entity"] = $this->user->fields['FK_entities'];
-					loadLanguage();
 					$_SESSION["glpiauthorisation"] = true;
 					$_SESSION["glpiextauth"] = $this->extauth;
 					$_SESSION["glpiauth_method"] = $this->user->fields['auth_method'];
@@ -347,11 +346,14 @@ class Identification {
 					// Default tab
 					$_SESSION['glpi_tab']=1;
 					$this->user->computePreferences();
+
 					foreach ($CFG_GLPI['user_pref_field'] as $field){
 						if (isset($this->user->fields[$field])){
 							$_SESSION["glpi$field"] = $this->user->fields[$field];
 						}
 					}
+
+					loadLanguage();
 						
 					// glpiprofiles -> other available profile with link to the associated entities
 					doHook("init_session");
