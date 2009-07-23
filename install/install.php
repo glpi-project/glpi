@@ -323,7 +323,7 @@ function step4 ($host,$user,$password,$databasename,$newdatabasename)
 		include_once (GLPI_CONFIG_DIR . "/config_db.php");
 
 		$DB = new DB;
-		$DB_file = GLPI_ROOT ."/install/mysql/glpi-0.75-empty.sql";
+		$DB_file = GLPI_ROOT ."/install/mysql/glpi-0.80-empty.sql";
 		$DBf_handle = fopen($DB_file, "rt");
 		$sql_query = fread($DBf_handle, filesize($DB_file));
 		fclose($DBf_handle);
@@ -480,10 +480,6 @@ function step4 ($host,$user,$password,$databasename,$newdatabasename)
 
 	//------------Start of install script---------------------------
 
-	// Clean cache if directory is writable
-//	if (is_writable(GLPI_CACHE_DIR)){
-//		cleanCache();
-//	}
 
 	// Use default session dir if not writable
 	if (is_writable(GLPI_SESSION_DIR)){

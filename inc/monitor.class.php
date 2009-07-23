@@ -215,26 +215,21 @@ class Monitor extends CommonDBTM {
 
 		if (!haveRight("monitor","r")) return false;
 
-		$use_cache=true;
-
 		if ($ID > 0){
 			$this->check($ID,'r');
 		} else {
 			// Create item 
 			$this->check(-1,'w');
-			$use_cache=false;
 			$this->getEmpty();
 		} 
 
 		$this->showTabs($ID, $withtemplate,$_SESSION['glpi_tab']);
 
 		if(!empty($withtemplate) && $withtemplate == 2) {
-			$use_cache=false;
 			$template = "newcomp";
 			$datestring = $LANG['computers'][14].": ";
 			$date = convDateTime($_SESSION["glpi_currenttime"]);
 		} elseif(!empty($withtemplate) && $withtemplate == 1) { 
-			$use_cache=false;
 			$template = "newtemplate";
 			$datestring = $LANG['computers'][14].": ";
 			$date = convDateTime($_SESSION["glpi_currenttime"]);
@@ -272,148 +267,143 @@ class Monitor extends CommonDBTM {
 			echo "&nbsp;&nbsp;&nbsp;(".$LANG['common'][13].": ".$this->fields['tplname'].")";
 		echo "</th></tr>";
 
-		if (!$use_cache||!($CFG_GLPI["cache"]->start($ID."_".$_SESSION['glpilanguage'],"GLPI_".$this->type))) {
-			echo "<tr><td class='tab_bg_1' valign='top'>";
+      echo "<tr><td class='tab_bg_1' valign='top'>";
 
-			echo "<table cellpadding='1' cellspacing='0' border='0'>\n";
+      echo "<table cellpadding='1' cellspacing='0' border='0'>\n";
 
-			echo "<tr><td>".$LANG['common'][16].($template?"*":"").":	</td>";
-			echo "<td>";
-			$objectName = autoName($this->fields["name"], "name", ($template === "newcomp"), MONITOR_TYPE,$this->fields["FK_entities"]);
-			autocompletionTextField("name","glpi_monitors","name",$objectName,40,$this->fields["FK_entities"]);
+      echo "<tr><td>".$LANG['common'][16].($template?"*":"").":	</td>";
+      echo "<td>";
+      $objectName = autoName($this->fields["name"], "name", ($template === "newcomp"), MONITOR_TYPE,$this->fields["FK_entities"]);
+      autocompletionTextField("name","glpi_monitors","name",$objectName,40,$this->fields["FK_entities"]);
 
-			echo "</td></tr>";
+      echo "</td></tr>";
 
-			echo "<tr><td>".$LANG['common'][15].": 	</td><td>";
-			dropdownValue("glpi_dropdown_locations", "location", $this->fields["location"],1,$this->fields["FK_entities"]);
-			echo "</td></tr>";
+      echo "<tr><td>".$LANG['common'][15].": 	</td><td>";
+      dropdownValue("glpi_dropdown_locations", "location", $this->fields["location"],1,$this->fields["FK_entities"]);
+      echo "</td></tr>";
 
-			echo "<tr class='tab_bg_1'><td>".$LANG['common'][10].": 	</td><td colspan='2'>";
-			dropdownUsersID("tech_num", $this->fields["tech_num"],"interface",1,$this->fields["FK_entities"]);
-			echo "</td></tr>";
+      echo "<tr class='tab_bg_1'><td>".$LANG['common'][10].": 	</td><td colspan='2'>";
+      dropdownUsersID("tech_num", $this->fields["tech_num"],"interface",1,$this->fields["FK_entities"]);
+      echo "</td></tr>";
 
-			echo "<tr class='tab_bg_1'><td>".$LANG['common'][5].": 	</td><td colspan='2'>";
-			dropdownValue("glpi_dropdown_manufacturer","FK_glpi_enterprise",$this->fields["FK_glpi_enterprise"]);
-			echo "</td></tr>";
+      echo "<tr class='tab_bg_1'><td>".$LANG['common'][5].": 	</td><td colspan='2'>";
+      dropdownValue("glpi_dropdown_manufacturer","FK_glpi_enterprise",$this->fields["FK_glpi_enterprise"]);
+      echo "</td></tr>";
 
-			echo "<tr><td>".$LANG['common'][21].":	</td>";
-			echo "<td>";
-			autocompletionTextField("contact_num","glpi_monitors","contact_num",$this->fields["contact_num"],40,$this->fields["FK_entities"]);	
-			echo "</td></tr>";
+      echo "<tr><td>".$LANG['common'][21].":	</td>";
+      echo "<td>";
+      autocompletionTextField("contact_num","glpi_monitors","contact_num",$this->fields["contact_num"],40,$this->fields["FK_entities"]);
+      echo "</td></tr>";
 
-			echo "<tr><td>".$LANG['common'][18].":	</td><td>";
-			autocompletionTextField("contact","glpi_monitors","contact",$this->fields["contact"],40,$this->fields["FK_entities"]);	
-			echo "</td></tr>";
+      echo "<tr><td>".$LANG['common'][18].":	</td><td>";
+      autocompletionTextField("contact","glpi_monitors","contact",$this->fields["contact"],40,$this->fields["FK_entities"]);
+      echo "</td></tr>";
 
-			echo "<tr><td>".$LANG['common'][34].": 	</td><td>";
-			dropdownAllUsers("FK_users", $this->fields["FK_users"],1,$this->fields["FK_entities"]);
-			echo "</td></tr>";
+      echo "<tr><td>".$LANG['common'][34].": 	</td><td>";
+      dropdownAllUsers("FK_users", $this->fields["FK_users"],1,$this->fields["FK_entities"]);
+      echo "</td></tr>";
 
-			echo "<tr><td>".$LANG['common'][35].": 	</td><td>";
-			dropdownValue("glpi_groups", "FK_groups", $this->fields["FK_groups"],1,$this->fields["FK_entities"]);
-			echo "</td></tr>";
+      echo "<tr><td>".$LANG['common'][35].": 	</td><td>";
+      dropdownValue("glpi_groups", "FK_groups", $this->fields["FK_groups"],1,$this->fields["FK_entities"]);
+      echo "</td></tr>";
 
-			echo "<tr><td>".$LANG['state'][0].":</td><td>";
-			dropdownValue("glpi_dropdown_state", "state",$this->fields["state"]);
-			echo "</td></tr>";
-			
-			echo "</table>";
+      echo "<tr><td>".$LANG['state'][0].":</td><td>";
+      dropdownValue("glpi_dropdown_state", "state",$this->fields["state"]);
+      echo "</td></tr>";
+      
+      echo "</table>";
 
-			echo "</td>\n";	
-			echo "<td class='tab_bg_1' valign='top'>";
+      echo "</td>\n";
+      echo "<td class='tab_bg_1' valign='top'>";
 
-			echo "<table cellpadding='1' cellspacing='0' border='0'";
+      echo "<table cellpadding='1' cellspacing='0' border='0'";
 
-			echo "<tr><td>".$LANG['peripherals'][33].":</td><td>";
-			globalManagementDropdown($target,$withtemplate,$this->fields["ID"],$this->fields["is_global"],$CFG_GLPI["monitors_management_restrict"]);
-			echo "</td></tr>";
-				
-			echo "<tr><td>".$LANG['common'][17].": 	</td><td>";
-			dropdownValue("glpi_type_monitors", "type", $this->fields["type"]);
-			echo "</td></tr>";
+      echo "<tr><td>".$LANG['peripherals'][33].":</td><td>";
+      globalManagementDropdown($target,$withtemplate,$this->fields["ID"],$this->fields["is_global"],$CFG_GLPI["monitors_management_restrict"]);
+      echo "</td></tr>";
+         
+      echo "<tr><td>".$LANG['common'][17].": 	</td><td>";
+      dropdownValue("glpi_type_monitors", "type", $this->fields["type"]);
+      echo "</td></tr>";
 
-			echo "<tr><td>".$LANG['common'][22].": 	</td><td>";
-			dropdownValue("glpi_dropdown_model_monitors", "model", $this->fields["model"]);
-			echo "</td></tr>";
+      echo "<tr><td>".$LANG['common'][22].": 	</td><td>";
+      dropdownValue("glpi_dropdown_model_monitors", "model", $this->fields["model"]);
+      echo "</td></tr>";
 
-			echo "<tr><td>".$LANG['common'][19].":	</td><td>";
-			autocompletionTextField("serial","glpi_monitors","serial",$this->fields["serial"],40,$this->fields["FK_entities"]);
-			echo "</td></tr>";
+      echo "<tr><td>".$LANG['common'][19].":	</td><td>";
+      autocompletionTextField("serial","glpi_monitors","serial",$this->fields["serial"],40,$this->fields["FK_entities"]);
+      echo "</td></tr>";
 
-			echo "<tr><td>".$LANG['common'][20].($template?"*":"").":</td><td>";
-			$objectName = autoName($this->fields["otherserial"], "otherserial", ($template === "newcomp"), MONITOR_TYPE,$this->fields["FK_entities"]);
-			autocompletionTextField("otherserial","glpi_monitors","otherserial",$objectName,40,$this->fields["FK_entities"]);
+      echo "<tr><td>".$LANG['common'][20].($template?"*":"").":</td><td>";
+      $objectName = autoName($this->fields["otherserial"], "otherserial", ($template === "newcomp"), MONITOR_TYPE,$this->fields["FK_entities"]);
+      autocompletionTextField("otherserial","glpi_monitors","otherserial",$objectName,40,$this->fields["FK_entities"]);
 
-			echo "</td></tr>";
+      echo "</td></tr>";
 
-			echo "<tr><td>".$LANG['monitors'][21].":</td>";
-			echo "<td>";
-			autocompletionTextField("size","glpi_monitors","size",$this->fields["size"],2,$this->fields["FK_entities"]);	
-			echo "\"</td></tr>";
+      echo "<tr><td>".$LANG['monitors'][21].":</td>";
+      echo "<td>";
+      autocompletionTextField("size","glpi_monitors","size",$this->fields["size"],2,$this->fields["FK_entities"]);
+      echo "\"</td></tr>";
 
-			echo "<tr><td>".$LANG['monitors'][18].": </td><td>";
+      echo "<tr><td>".$LANG['monitors'][18].": </td><td>";
 
-			// micro?
-			echo "<table border='0' cellpadding='2' cellspacing='0'><tr>";
-			echo "<td>".$LANG['monitors'][14]."</td>";
-			echo "<td>";
-			dropdownYesNo("flags_micro",$this->fields["flags_micro"]);
-			echo "</td>";
+      // micro?
+      echo "<table border='0' cellpadding='2' cellspacing='0'><tr>";
+      echo "<td>".$LANG['monitors'][14]."</td>";
+      echo "<td>";
+      dropdownYesNo("flags_micro",$this->fields["flags_micro"]);
+      echo "</td>";
 
-			// speakers?
-			echo "<td>".$LANG['monitors'][15]."</td>";
-			echo "<td>";
-			dropdownYesNo("flags_speaker",$this->fields["flags_speaker"]);
-			echo "</td>";
-			echo "</tr><tr>";
+      // speakers?
+      echo "<td>".$LANG['monitors'][15]."</td>";
+      echo "<td>";
+      dropdownYesNo("flags_speaker",$this->fields["flags_speaker"]);
+      echo "</td>";
+      echo "</tr><tr>";
 
-			// sub-d?
-			echo "<td>".$LANG['monitors'][19]."</td>";
-			echo "<td>";
-			dropdownYesNo("flags_subd",$this->fields["flags_subd"]);
-			echo "</td>";
+      // sub-d?
+      echo "<td>".$LANG['monitors'][19]."</td>";
+      echo "<td>";
+      dropdownYesNo("flags_subd",$this->fields["flags_subd"]);
+      echo "</td>";
 
-			// bnc?
-			echo "<td>".$LANG['monitors'][20]."</td>";
-			echo "<td>";
-			dropdownYesNo("flags_bnc",$this->fields["flags_bnc"]);
-			echo "</td>";
+      // bnc?
+      echo "<td>".$LANG['monitors'][20]."</td>";
+      echo "<td>";
+      dropdownYesNo("flags_bnc",$this->fields["flags_bnc"]);
+      echo "</td>";
 
-			echo "</tr><tr>";
+      echo "</tr><tr>";
 
-			// dvi?
-			echo "<td>".$LANG['monitors'][32]."</td>";
-			echo "<td>";
-			dropdownYesNo("flags_dvi",$this->fields["flags_dvi"]);
-			echo "</td>";
+      // dvi?
+      echo "<td>".$LANG['monitors'][32]."</td>";
+      echo "<td>";
+      dropdownYesNo("flags_dvi",$this->fields["flags_dvi"]);
+      echo "</td>";
 
-			// pivot ?
-			echo "<td>".$LANG['monitors'][33]."</td>";
-			echo "<td>";
-			dropdownYesNo("flags_pivot",$this->fields["flags_pivot"]);
-			echo "</td>";
+      // pivot ?
+      echo "<td>".$LANG['monitors'][33]."</td>";
+      echo "<td>";
+      dropdownYesNo("flags_pivot",$this->fields["flags_pivot"]);
+      echo "</td>";
 
-			echo "</tr></table>";
+      echo "</tr></table>";
 
-			echo "</td></tr>";
+      echo "</td></tr>";
 
-			echo "</table>";
-			echo "</td>\n";	
-			echo "</tr>";
-			echo "<tr>";
-			echo "<td class='tab_bg_1' valign='top' colspan='2'>";
+      echo "</table>";
+      echo "</td>\n";
+      echo "</tr>";
+      echo "<tr>";
+      echo "<td class='tab_bg_1' valign='top' colspan='2'>";
 
-			echo "<table width='100%' cellpadding='0' cellspacing='0' border='0'><tr><td valign='top'>";
-			echo $LANG['common'][25].":	</td>";
-			echo "<td class='center'><textarea cols='75' rows='4' name='comments' >".$this->fields["comments"]."</textarea>";
-			echo "</td></tr></table>";
+      echo "<table width='100%' cellpadding='0' cellspacing='0' border='0'><tr><td valign='top'>";
+      echo $LANG['common'][25].":	</td>";
+      echo "<td class='center'><textarea cols='75' rows='4' name='comments' >".$this->fields["comments"]."</textarea>";
+      echo "</td></tr></table>";
 
-			echo "</td>";
-			echo "</tr>";
-			if ($use_cache){
-				$CFG_GLPI["cache"]->end();
-			}
-		}
+      echo "</td>";
+      echo "</tr>";
 
 		if (haveRight("monitor","w")){
 

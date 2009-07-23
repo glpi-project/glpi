@@ -60,7 +60,6 @@ function showLinkDevice($instID) {
 	} else {
 		// Create item 
 		$link->check(-1,'w');
-		$use_cache=false;
 		$link->getEmpty();
 	} 
 

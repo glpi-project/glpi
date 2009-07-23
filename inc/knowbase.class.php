@@ -123,7 +123,6 @@ class kbitem extends CommonDBTM {
 				$spotted = true;	
 			}
 		} else {
-			$use_cache=false;
 			if ($this->getEmpty() && $this->can(-1,'w')){
 				$spotted = true;	
 			}

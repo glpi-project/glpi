@@ -89,22 +89,11 @@ class Link extends CommonDBTM {
 
 		if (!haveRight("link","r")) return false;
 
-/*
 		if ($ID > 0){
 			$this->check($ID,'r');
 		} else {
 			// Create item 
 			$this->check(-1,'w');
-			$use_cache=false;
-			$this->getEmpty();
-		} 
-*/
-		if ($ID > 0){
-			$this->check($ID,'r');
-		} else {
-			// Create item 
-			$this->check(-1,'w');
-			$use_cache=false;
 			$this->getEmpty();
 		} 
 

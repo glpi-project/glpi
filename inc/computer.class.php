@@ -523,26 +523,21 @@ class Computer extends CommonDBTM {
 
 		if (!haveRight("computer","r")) return false;
 
-		$use_cache=true;
-
 		if ($ID > 0){
 			$this->check($ID,'r');
 		} else {
 			// Create item 
 			$this->check(-1,'w');
-			$use_cache=false;
 			$this->getEmpty();
 		} 
 
 		$this->showTabs($ID, $withtemplate,$_SESSION['glpi_tab']);
 
 		if(!empty($withtemplate) && $withtemplate == 2) {
-			$use_cache=false;
 			$template = "newcomp";
 			$datestring = $LANG['computers'][14].": ";
 			$date = convDateTime($_SESSION["glpi_currenttime"]);
 		} elseif(!empty($withtemplate) && $withtemplate == 1) { 
-			$use_cache=false;
 			$template = "newtemplate";
 			$datestring = $LANG['computers'][14].": ";
 			$date = convDateTime($_SESSION["glpi_currenttime"]);
@@ -576,192 +571,185 @@ class Computer extends CommonDBTM {
 			echo "&nbsp;(".getDropdownName("glpi_entities",$this->fields["FK_entities"]).")";
 		}
 
-		if (!$use_cache||!($CFG_GLPI["cache"]->start($ID."_".$_SESSION['glpilanguage'],"GLPI_".$this->type))) {
+      echo "</th><th  colspan ='2' align='center'>".$datestring.$date;
+      if (!$template&&!empty($this->fields['tplname']))
+         echo "&nbsp;&nbsp;&nbsp;(".$LANG['common'][13].": ".$this->fields['tplname'].")";
+      if ($this->fields["ocs_import"])
+         echo "&nbsp;&nbsp;&nbsp;(".$LANG['ocsng'][7].")";
 
-			echo "</th><th  colspan ='2' align='center'>".$datestring.$date;
-			if (!$template&&!empty($this->fields['tplname']))
-				echo "&nbsp;&nbsp;&nbsp;(".$LANG['common'][13].": ".$this->fields['tplname'].")";
-			if ($this->fields["ocs_import"])
-				echo "&nbsp;&nbsp;&nbsp;(".$LANG['ocsng'][7].")";
+      echo "</th></tr>";
 
-			echo "</th></tr>";
+      echo "<tr class='tab_bg_1'><td>".$LANG['common'][16].($template?"*":"").":		</td>";
 
-			echo "<tr class='tab_bg_1'><td>".$LANG['common'][16].($template?"*":"").":		</td>";
+      echo "<td>";
 
-			echo "<td>";
+      $objectName = autoName($this->fields["name"], "name", ($template === "newcomp"), COMPUTER_TYPE,$this->fields["FK_entities"]);
+      autocompletionTextField("name","glpi_computers","name",$objectName,40,$this->fields["FK_entities"]);
 
-			$objectName = autoName($this->fields["name"], "name", ($template === "newcomp"), COMPUTER_TYPE,$this->fields["FK_entities"]);
-			autocompletionTextField("name","glpi_computers","name",$objectName,40,$this->fields["FK_entities"]);
+      echo "</td>";
+         
+      echo "<td>".$LANG['common'][18].":	</td><td>";
+      autocompletionTextField("contact","glpi_computers","contact",$this->fields["contact"],40,$this->fields["FK_entities"]);
 
-			echo "</td>";
-				
-			echo "<td>".$LANG['common'][18].":	</td><td>";
-			autocompletionTextField("contact","glpi_computers","contact",$this->fields["contact"],40,$this->fields["FK_entities"]);
-
-			echo "</td></tr>";
+      echo "</td></tr>";
 
 
-			echo "<tr class='tab_bg_1'>";
-			echo "<td >".$LANG['common'][17].": 	</td>";
-			echo "<td >";
-			dropdownValue("glpi_type_computers", "type", $this->fields["type"]);
-			echo "</td>";
+      echo "<tr class='tab_bg_1'>";
+      echo "<td >".$LANG['common'][17].": 	</td>";
+      echo "<td >";
+      dropdownValue("glpi_type_computers", "type", $this->fields["type"]);
+      echo "</td>";
 
 
-			echo "<td>".$LANG['common'][21].":		</td><td>";
-			autocompletionTextField("contact_num","glpi_computers","contact_num",$this->fields["contact_num"],40,$this->fields["FK_entities"]);
-			echo "</td></tr>";
+      echo "<td>".$LANG['common'][21].":		</td><td>";
+      autocompletionTextField("contact_num","glpi_computers","contact_num",$this->fields["contact_num"],40,$this->fields["FK_entities"]);
+      echo "</td></tr>";
 
-			echo "<tr class='tab_bg_1'>";
-			echo "<td >".$LANG['common'][22].": 	</td>";
-			echo "<td >";
-			dropdownValue("glpi_dropdown_model", "model", $this->fields["model"]);
-			echo "</td>";
-			
-			echo "<td >".$LANG['common'][34].": 	</td>";
-			echo "<td >";
-			dropdownAllUsers("FK_users", $this->fields["FK_users"],1,$this->fields["FK_entities"]);
-			echo "</td></tr>";
+      echo "<tr class='tab_bg_1'>";
+      echo "<td >".$LANG['common'][22].": 	</td>";
+      echo "<td >";
+      dropdownValue("glpi_dropdown_model", "model", $this->fields["model"]);
+      echo "</td>";
+      
+      echo "<td >".$LANG['common'][34].": 	</td>";
+      echo "<td >";
+      dropdownAllUsers("FK_users", $this->fields["FK_users"],1,$this->fields["FK_entities"]);
+      echo "</td></tr>";
 
-			echo "<tr class='tab_bg_1'>";
-			echo "<td >".$LANG['common'][15].": 	</td>";
-			echo "<td >";
-			dropdownValue("glpi_dropdown_locations", "location", $this->fields["location"],1,$this->fields["FK_entities"]);
-			echo "</td>";
-			
-			echo "<td>".$LANG['common'][35].":</td><td>";
-			dropdownValue("glpi_groups", "FK_groups", $this->fields["FK_groups"],1,$this->fields["FK_entities"]);
-			echo "</td></tr>";
+      echo "<tr class='tab_bg_1'>";
+      echo "<td >".$LANG['common'][15].": 	</td>";
+      echo "<td >";
+      dropdownValue("glpi_dropdown_locations", "location", $this->fields["location"],1,$this->fields["FK_entities"]);
+      echo "</td>";
+      
+      echo "<td>".$LANG['common'][35].":</td><td>";
+      dropdownValue("glpi_groups", "FK_groups", $this->fields["FK_groups"],1,$this->fields["FK_entities"]);
+      echo "</td></tr>";
 
-			echo "<tr class='tab_bg_1'>";
-			echo "<td>".$LANG['common'][5].": 	</td><td>";
-			dropdownValue("glpi_dropdown_manufacturer","FK_glpi_enterprise",$this->fields["FK_glpi_enterprise"]);
-			echo "</td>";
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".$LANG['common'][5].": 	</td><td>";
+      dropdownValue("glpi_dropdown_manufacturer","FK_glpi_enterprise",$this->fields["FK_glpi_enterprise"]);
+      echo "</td>";
 
-			echo "<td >".$LANG['common'][10].": 	</td>";
-			echo "<td >";
-			dropdownUsersID("tech_num",$this->fields["tech_num"],"interface",1,$this->fields["FK_entities"]);
-			echo "</td></tr>";
-			
-			echo "<tr class='tab_bg_1'>";
-			echo "<td>".$LANG['computers'][9].":</td><td>";
-			dropdownValue("glpi_dropdown_os", "os", $this->fields["os"]);
-			echo "</td>";
-			
-			echo "<td>".$LANG['setup'][88].":</td><td>";
-			dropdownValue("glpi_dropdown_network", "network", $this->fields["network"]);
-			echo "</td></tr>";
+      echo "<td >".$LANG['common'][10].": 	</td>";
+      echo "<td >";
+      dropdownUsersID("tech_num",$this->fields["tech_num"],"interface",1,$this->fields["FK_entities"]);
+      echo "</td></tr>";
+      
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".$LANG['computers'][9].":</td><td>";
+      dropdownValue("glpi_dropdown_os", "os", $this->fields["os"]);
+      echo "</td>";
+      
+      echo "<td>".$LANG['setup'][88].":</td><td>";
+      dropdownValue("glpi_dropdown_network", "network", $this->fields["network"]);
+      echo "</td></tr>";
 
-			echo "<tr class='tab_bg_1'>";
-			echo "<td>".$LANG['computers'][52].":</td><td>";
-			dropdownValue("glpi_dropdown_os_version", "os_version", $this->fields["os_version"]);
-			echo "</td>";
-
-
-			echo "<td>".$LANG['setup'][89].":</td><td>";
-			dropdownValue("glpi_dropdown_domain", "domain", $this->fields["domain"]);
-			echo "</td></tr>";
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".$LANG['computers'][52].":</td><td>";
+      dropdownValue("glpi_dropdown_os_version", "os_version", $this->fields["os_version"]);
+      echo "</td>";
 
 
-			echo "<tr class='tab_bg_1'>";
-			echo "<td>".$LANG['computers'][53].":</td><td>";
-			dropdownValue("glpi_dropdown_os_sp", "os_sp", $this->fields["os_sp"]);
-			echo "</td>";
+      echo "<td>".$LANG['setup'][89].":</td><td>";
+      dropdownValue("glpi_dropdown_domain", "domain", $this->fields["domain"]);
+      echo "</td></tr>";
 
-			echo "<td>".$LANG['common'][19].":	</td><td>";
-			autocompletionTextField("serial","glpi_computers","serial",$this->fields["serial"],40,$this->fields["FK_entities"]);
-			echo "</td></tr>";
 
-			echo "<tr class='tab_bg_1'>";
-			echo "<td>".$LANG['computers'][10]."</td><td>";
-			autocompletionTextField("os_license_number","glpi_computers","os_license_number",$this->fields["os_license_number"],40,$this->fields["FK_entities"]);
-			echo"</td>";
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".$LANG['computers'][53].":</td><td>";
+      dropdownValue("glpi_dropdown_os_sp", "os_sp", $this->fields["os_sp"]);
+      echo "</td>";
 
-			echo "<td>".$LANG['common'][20].($template?"*":"").":	</td><td>";
-			$objectName = autoName($this->fields["otherserial"], "otherserial", ($template === "newcomp"), COMPUTER_TYPE,$this->fields["FK_entities"]);
-			autocompletionTextField("otherserial","glpi_computers","otherserial",$objectName,40,$this->fields["FK_entities"]);
+      echo "<td>".$LANG['common'][19].":	</td><td>";
+      autocompletionTextField("serial","glpi_computers","serial",$this->fields["serial"],40,$this->fields["FK_entities"]);
+      echo "</td></tr>";
 
-			echo "</td></tr>";
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".$LANG['computers'][10]."</td><td>";
+      autocompletionTextField("os_license_number","glpi_computers","os_license_number",$this->fields["os_license_number"],40,$this->fields["FK_entities"]);
+      echo"</td>";
 
-			echo "<tr class='tab_bg_1'>";
-			echo "<td>".$LANG['computers'][11]."</td><td>";
-			autocompletionTextField("os_license_id","glpi_computers","os_license_id",$this->fields["os_license_id"],40,$this->fields["FK_entities"]);
-			echo"</td>";
-			
-			echo "<td>".$LANG['state'][0].":</td><td>";
-			dropdownValue("glpi_dropdown_state", "state",$this->fields["state"]);
-			echo "</td>";
+      echo "<td>".$LANG['common'][20].($template?"*":"").":	</td><td>";
+      $objectName = autoName($this->fields["otherserial"], "otherserial", ($template === "newcomp"), COMPUTER_TYPE,$this->fields["FK_entities"]);
+      autocompletionTextField("otherserial","glpi_computers","otherserial",$objectName,40,$this->fields["FK_entities"]);
 
-			// Get OCS Datas :
-			$dataocs=array();
-			if (!empty($ID)&&$this->fields["ocs_import"]&&haveRight("view_ocsng","r")){
-				$query="SELECT * 
-					FROM glpi_ocs_link 
-					WHERE glpi_id='$ID'";
+      echo "</td></tr>";
 
-				$result=$DB->query($query);
-				if ($DB->numrows($result)==1){
-					$dataocs=$DB->fetch_array($result);
-				}
+      echo "<tr class='tab_bg_1'>";
+      echo "<td>".$LANG['computers'][11]."</td><td>";
+      autocompletionTextField("os_license_id","glpi_computers","os_license_id",$this->fields["os_license_id"],40,$this->fields["FK_entities"]);
+      echo"</td>";
+      
+      echo "<td>".$LANG['state'][0].":</td><td>";
+      dropdownValue("glpi_dropdown_state", "state",$this->fields["state"]);
+      echo "</td>";
 
-			}
+      // Get OCS Datas :
+      $dataocs=array();
+      if (!empty($ID)&&$this->fields["ocs_import"]&&haveRight("view_ocsng","r")){
+         $query="SELECT *
+            FROM glpi_ocs_link
+            WHERE glpi_id='$ID'";
 
-			echo "<tr class='tab_bg_1'>";
-			if (!empty($ID)&&$this->fields["ocs_import"]&&haveRight("view_ocsng","r")&&haveRight("sync_ocsng","w")&&count($dataocs)){
-				echo "<td >".$LANG['ocsng'][6]." ".$LANG['Menu'][33].":</td>";
-				echo "<td >";
-				dropdownYesNo("_auto_update_ocs",$dataocs["auto_update"]);
-				echo "</td>";
-			} else	{
-				echo "<td colspan=2></td>";
-			}
-			echo "<td>".$LANG['computers'][51].":</td><td>";
-			dropdownValue("glpi_dropdown_auto_update", "auto_update", $this->fields["auto_update"]);
-			echo "</td>";
+         $result=$DB->query($query);
+         if ($DB->numrows($result)==1){
+            $dataocs=$DB->fetch_array($result);
+         }
 
-			echo "</tr>";
-			
-			echo "<tr class='tab_bg_1'>";
-			
-			if (!empty($ID)&&$this->fields["ocs_import"]&&haveRight("view_ocsng","r")&&count($dataocs)){
-				echo "<td colspan='2' align='center'>";
-				echo $LANG['ocsng'][14].": ".convDateTime($dataocs["last_ocs_update"]);
-				echo "<br>";
-				echo $LANG['ocsng'][13].": ".convDateTime($dataocs["last_update"]);
-				echo "<br>";
-				if (haveRight("ocsng","r")){
-					echo $LANG['common'][52]." <a href='".$CFG_GLPI["root_doc"]."/front/ocsng.form.php?ID=".getOCSServerByMachineID($ID)."'>".getOCSServerNameByID($ID)."</a>";
-					$query = "SELECT ocs_agent_version, ocs_id FROM glpi_ocs_link WHERE (glpi_id = '$ID')";
-					$result_agent_version = $DB->query($query);
-					$data_version = $DB->fetch_array($result_agent_version);
+      }
 
-					$ocs_config = getOcsConf(getOCSServerByMachineID($ID));
+      echo "<tr class='tab_bg_1'>";
+      if (!empty($ID)&&$this->fields["ocs_import"]&&haveRight("view_ocsng","r")&&haveRight("sync_ocsng","w")&&count($dataocs)){
+         echo "<td >".$LANG['ocsng'][6]." ".$LANG['Menu'][33].":</td>";
+         echo "<td >";
+         dropdownYesNo("_auto_update_ocs",$dataocs["auto_update"]);
+         echo "</td>";
+      } else	{
+         echo "<td colspan=2></td>";
+      }
+      echo "<td>".$LANG['computers'][51].":</td><td>";
+      dropdownValue("glpi_dropdown_auto_update", "auto_update", $this->fields["auto_update"]);
+      echo "</td>";
 
-					//If have write right on OCS and ocsreports url is not empty in OCS config
-					if (haveRight("ocsng","w") && $ocs_config["ocs_url"] != '')
-					{
-						echo ", ".getComputerLinkToOcsConsole (getOCSServerByMachineID($ID),$data_version["ocs_id"],$LANG['ocsng'][57]);
-					}
+      echo "</tr>";
+      
+      echo "<tr class='tab_bg_1'>";
+      
+      if (!empty($ID)&&$this->fields["ocs_import"]&&haveRight("view_ocsng","r")&&count($dataocs)){
+         echo "<td colspan='2' align='center'>";
+         echo $LANG['ocsng'][14].": ".convDateTime($dataocs["last_ocs_update"]);
+         echo "<br>";
+         echo $LANG['ocsng'][13].": ".convDateTime($dataocs["last_update"]);
+         echo "<br>";
+         if (haveRight("ocsng","r")){
+            echo $LANG['common'][52]." <a href='".$CFG_GLPI["root_doc"]."/front/ocsng.form.php?ID=".getOCSServerByMachineID($ID)."'>".getOCSServerNameByID($ID)."</a>";
+            $query = "SELECT ocs_agent_version, ocs_id FROM glpi_ocs_link WHERE (glpi_id = '$ID')";
+            $result_agent_version = $DB->query($query);
+            $data_version = $DB->fetch_array($result_agent_version);
 
-					if ($data_version["ocs_agent_version"] != NULL)
-						echo " , ".$LANG['ocsng'][49]." : ".$data_version["ocs_agent_version"];
-					
-							
-				} else {
-					echo $LANG['common'][52]." ".getOCSServerNameByID($ID);	
-					echo "</td>";
-				}
-				
-			} else	{
-				echo "<td colspan=2></td>";	
-			}
-			echo "<td valign='middle'>".$LANG['common'][25].":</td><td valign='middle'><textarea  cols='50' rows='3' name='comments' >".$this->fields["comments"]."</textarea></td>";
-			echo "</tr>";
-			if ($use_cache){
-				$CFG_GLPI["cache"]->end();
-			}
-		}
-		
+            $ocs_config = getOcsConf(getOCSServerByMachineID($ID));
+
+            //If have write right on OCS and ocsreports url is not empty in OCS config
+            if (haveRight("ocsng","w") && $ocs_config["ocs_url"] != '')
+            {
+               echo ", ".getComputerLinkToOcsConsole (getOCSServerByMachineID($ID),$data_version["ocs_id"],$LANG['ocsng'][57]);
+            }
+
+            if ($data_version["ocs_agent_version"] != NULL)
+               echo " , ".$LANG['ocsng'][49]." : ".$data_version["ocs_agent_version"];
+            
+                  
+         } else {
+            echo $LANG['common'][52]." ".getOCSServerNameByID($ID);
+            echo "</td>";
+         }
+         
+      } else	{
+         echo "<td colspan=2></td>";
+      }
+      echo "<td valign='middle'>".$LANG['common'][25].":</td><td valign='middle'><textarea  cols='50' rows='3' name='comments' >".$this->fields["comments"]."</textarea></td>";
+      echo "</tr>";	
 
 		if (haveRight("computer","w")) {
 			echo "<tr>\n";
@@ -865,7 +853,6 @@ class ComputerDisk extends CommonDBTM {
 		} else {
 			// Create item 
 			$this->check(-1,'w');
-			$use_cache=false;
 			$this->getEmpty();
 		} 
 

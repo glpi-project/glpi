@@ -406,10 +406,8 @@ class Plugin extends CommonDBTM {
 				if ($function()){
 					$this->update(array('ID'=>$ID,'state'=>PLUGIN_ACTIVATED));
 					$_SESSION['glpi_plugins'][]=$this->fields['directory'];
-					if (isset($_SESSION["glpiID"])){
-						cleanCache("GLPI_HEADER_".$_SESSION["glpiID"]);
-					}
-					// Initialize session for the plugin
+					
+// Initialize session for the plugin
 					if (isset($PLUGIN_HOOKS['init_session'][$this->fields['directory']]) 
 						&& function_exists($PLUGIN_HOOKS['init_session'][$this->fields['directory']])) {
 							call_user_func($PLUGIN_HOOKS['init_session'][$this->fields['directory']]);		
@@ -446,9 +444,6 @@ class Plugin extends CommonDBTM {
 		$DB->query($query);
 
 		$_SESSION['glpi_plugins']=array();
-		if (isset($_SESSION["glpiID"])){
-			cleanCache("GLPI_HEADER_".$_SESSION["glpiID"]);
-		}
 
 	}
 	/**
@@ -497,9 +492,6 @@ class Plugin extends CommonDBTM {
 		$key=array_search($plugin,$_SESSION['glpi_plugins']);
 		if ($key!==false){
 			unset($_SESSION['glpi_plugins'][$key]);
-			if (isset($_SESSION["glpiID"])){
-				cleanCache("GLPI_HEADER_".$_SESSION["glpiID"]);
-			}
 		}
 	}
 

@@ -43,8 +43,6 @@ function update0712to0713() {
 		$query = "ALTER TABLE `glpi_rule_cache_software` ADD `ignore_ocs_import` VARCHAR( 255 ) NULL ;";
 		$DB->query($query) or die("0.71.3 add ignore_ocs_import field in dictionnary cache " . $LANG['update'][90] . $DB->error());
 	}
-	// Clean KB cache because error on datas stored
-	//cleanCache("GLPI_".KNOWBASE_TYPE);
 	
 	// Update to longtext for fields which may be very long
 	if (FieldExists("glpi_kbitems", "answer")) {

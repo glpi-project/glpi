@@ -112,23 +112,20 @@ function showDeviceComputerForm($target,$ID,$withtemplate='') {
 	}
 
 	if (!empty($ID)){
-		//print devices.
-		if (!($CFG_GLPI["cache"]->start("device_".$ID."_".$_SESSION['glpilanguage'],"GLPI_".COMPUTER_TYPE))) {
-			echo "<div class='center'>";
-			echo "<form name='form_device_action' action=\"$target\" method=\"post\" >";
-			echo "<input type='hidden' name='ID' value='$ID'>";
-			echo "<input type='hidden' name='device_action' value='$ID'>";
-			echo "<table class='tab_cadre_fixe' >";
-			echo "<tr><th colspan='65'>".$LANG['title'][30]."</th></tr>";
-			foreach($comp->devices as $key => $val) {
-				$device = new Device($val["devType"]);
-				$device->getFromDB($val["devID"]);
-				printDeviceComputer($device,$val["quantity"],$val["specificity"],$comp->fields["ID"],$val["compDevID"],$withtemplate);
+      echo "<div class='center'>";
+      echo "<form name='form_device_action' action=\"$target\" method=\"post\" >";
+      echo "<input type='hidden' name='ID' value='$ID'>";
+      echo "<input type='hidden' name='device_action' value='$ID'>";
+      echo "<table class='tab_cadre_fixe' >";
+      echo "<tr><th colspan='65'>".$LANG['title'][30]."</th></tr>";
+      foreach($comp->devices as $key => $val) {
+         $device = new Device($val["devType"]);
+         $device->getFromDB($val["devID"]);
+         printDeviceComputer($device,$val["quantity"],$val["specificity"],$comp->fields["ID"],$val["compDevID"],$withtemplate);
 
-			}
-			$CFG_GLPI["cache"]->end();
-		}
-		if ($canedit&&!(!empty($withtemplate) && $withtemplate == 2)&&count($comp->devices))
+      }
+		
+      if ($canedit&&!(!empty($withtemplate) && $withtemplate == 2)&&count($comp->devices))
 			echo "<tr><td colspan='65' align='center' class='tab_bg_1'><input type='submit' class='submit' name='update_device' value='".$LANG['buttons'][7]."'></td></tr>";
 		echo "</table>";
 

@@ -366,11 +366,6 @@ class Identification {
 						changeProfile(key($_SESSION['glpiprofiles']));
 					}
 			
-					// glpiactiveprofile -> active profile
-					// glpiactiveentities -> active entities
-
-					// Already done un changeProfile
-					//cleanCache("GLPI_HEADER_".$_SESSION["glpiID"]);
 					if (!isset($_SESSION["glpiactiveprofile"]["interface"])){
 						
 						$this->auth_succeded=false;

@@ -256,13 +256,11 @@ class Software extends CommonDBTM {
 		if (!haveRight("software", "r"))
 			return false;
 
-		$use_cache=true;
 		if ($ID > 0){
 			$this->check($ID,'r');
 		} else {
 			// Create item 
 			$this->check(-1,'w');
-			$use_cache=false;
 			$this->getEmpty();
 		} 
 		$canedit=$this->can($ID,'w');
@@ -298,70 +296,65 @@ class Software extends CommonDBTM {
 	
 		$this->showFormHeader($ID, $withtemplate, 2);
 
-		if (!$use_cache||!($CFG_GLPI["cache"]->start($ID . "_" . $_SESSION['glpilanguage'], "GLPI_" . $this->type))) {
-			echo "<tr class='tab_bg_1'><td>" . $LANG['common'][16] . ":		</td>";
-			echo "<td>";
-			autocompletionTextField("name", "glpi_software", "name", $this->fields["name"], 40,$this->fields["FK_entities"]);
-			echo "</td>";
-			
-			
-			echo "<td>" . $LANG['common'][36] . ":		</td><td>";
-			dropdownValue("glpi_dropdown_software_category", "category", $this->fields["category"]);
-			echo "</td>";
+      echo "<tr class='tab_bg_1'><td>" . $LANG['common'][16] . ":		</td>";
+      echo "<td>";
+      autocompletionTextField("name", "glpi_software", "name", $this->fields["name"], 40,$this->fields["FK_entities"]);
+      echo "</td>";
+      
+      
+      echo "<td>" . $LANG['common'][36] . ":		</td><td>";
+      dropdownValue("glpi_dropdown_software_category", "category", $this->fields["category"]);
+      echo "</td>";
 
-			echo "<tr class='tab_bg_1'><td>" . $LANG['software'][3] . ": 	</td><td>";
-			dropdownValue("glpi_dropdown_os", "platform", $this->fields["platform"]);
-			echo "</td>";
+      echo "<tr class='tab_bg_1'><td>" . $LANG['software'][3] . ": 	</td><td>";
+      dropdownValue("glpi_dropdown_os", "platform", $this->fields["platform"]);
+      echo "</td>";
 
-			echo "<td>" . $LANG['common'][5] . ": 	</td><td>";
-			dropdownValue("glpi_dropdown_manufacturer", "FK_glpi_enterprise", $this->fields["FK_glpi_enterprise"]);
-			echo "</td></tr>";
+      echo "<td>" . $LANG['common'][5] . ": 	</td><td>";
+      dropdownValue("glpi_dropdown_manufacturer", "FK_glpi_enterprise", $this->fields["FK_glpi_enterprise"]);
+      echo "</td></tr>";
 
-			echo "<tr class='tab_bg_1'>";
-			echo "<td >" . $LANG['common'][34] . ": 	</td>";
-			echo "<td >";
-			dropdownAllUsers("FK_users", $this->fields["FK_users"], 1, $this->fields["FK_entities"]);
-			echo "</td>";
+      echo "<tr class='tab_bg_1'>";
+      echo "<td >" . $LANG['common'][34] . ": 	</td>";
+      echo "<td >";
+      dropdownAllUsers("FK_users", $this->fields["FK_users"], 1, $this->fields["FK_entities"]);
+      echo "</td>";
 
-			echo "<td>" . $LANG['common'][35] . ":</td><td>";
-			dropdownValue("glpi_groups", "FK_groups", $this->fields["FK_groups"], 1, $this->fields["FK_entities"]);
-			echo "</td></tr>";
+      echo "<td>" . $LANG['common'][35] . ":</td><td>";
+      dropdownValue("glpi_groups", "FK_groups", $this->fields["FK_groups"], 1, $this->fields["FK_entities"]);
+      echo "</td></tr>";
 
-			echo "<tr class='tab_bg_1'><td>" . $LANG['common'][10] . ": 	</td><td>";
-			dropdownUsersID("tech_num", $this->fields["tech_num"], "interface", 1, $this->fields["FK_entities"]);
-			echo "</td>";
+      echo "<tr class='tab_bg_1'><td>" . $LANG['common'][10] . ": 	</td><td>";
+      dropdownUsersID("tech_num", $this->fields["tech_num"], "interface", 1, $this->fields["FK_entities"]);
+      echo "</td>";
 
-			echo "<td>" . $LANG['common'][15] . ": 	</td><td>";
-			dropdownValue("glpi_dropdown_locations", "location", $this->fields["location"], 1, $this->fields["FK_entities"]);
-			echo "</td></tr>";
+      echo "<td>" . $LANG['common'][15] . ": 	</td><td>";
+      dropdownValue("glpi_dropdown_locations", "location", $this->fields["location"], 1, $this->fields["FK_entities"]);
+      echo "</td></tr>";
 
-			// UPDATE
-			echo "<tr class='tab_bg_1'><td>" . $LANG['software'][29] . ":</td><td colspan='3'>";
-			dropdownYesNo("is_update",$this->fields['is_update']);
-			echo "&nbsp;" . $LANG['pager'][2] . "&nbsp;";
-			dropdownValue("glpi_software", "update_software", $this->fields["update_software"]);
-			echo "</td>";
+      // UPDATE
+      echo "<tr class='tab_bg_1'><td>" . $LANG['software'][29] . ":</td><td colspan='3'>";
+      dropdownYesNo("is_update",$this->fields['is_update']);
+      echo "&nbsp;" . $LANG['pager'][2] . "&nbsp;";
+      dropdownValue("glpi_software", "update_software", $this->fields["update_software"]);
+      echo "</td>";
 
-			/*echo "<td>" . $LANG['state'][0] . ":</td><td>";
-			dropdownValue("glpi_dropdown_state", "state", $this->fields["state"]);
-			echo "</td></tr>";*/
+      /*echo "<td>" . $LANG['state'][0] . ":</td><td>";
+      dropdownValue("glpi_dropdown_state", "state", $this->fields["state"]);
+      echo "</td></tr>";*/
 
-			echo "<tr class='tab_bg_1'><td>" . $LANG['software'][46] . ":</td><td>";
-			dropdownYesNo('helpdesk_visible',$this->fields['helpdesk_visible']);
-			echo "</td>";
-			echo "<td>$datestring</td><td>$date";
-			if (!$template && !empty ($this->fields['tplname']))
-				echo "&nbsp;&nbsp;&nbsp;(" . $LANG['common'][13] . ": " . $this->fields['tplname'] . ")";
-			echo "</td></tr>";
+      echo "<tr class='tab_bg_1'><td>" . $LANG['software'][46] . ":</td><td>";
+      dropdownYesNo('helpdesk_visible',$this->fields['helpdesk_visible']);
+      echo "</td>";
+      echo "<td>$datestring</td><td>$date";
+      if (!$template && !empty ($this->fields['tplname']))
+         echo "&nbsp;&nbsp;&nbsp;(" . $LANG['common'][13] . ": " . $this->fields['tplname'] . ")";
+      echo "</td></tr>";
 
-			echo "<tr class='tab_bg_1'><td valign='top'>";
-			echo $LANG['common'][25] . ":	</td>";
-			echo "<td align='center' colspan='3'><textarea cols='50' rows='4' name='comments' >" . $this->fields["comments"] . "</textarea>";
-			echo "</td></tr>";
-			if ($use_cache){
-				$CFG_GLPI["cache"]->end();
-			}
-		}
+      echo "<tr class='tab_bg_1'><td valign='top'>";
+      echo $LANG['common'][25] . ":	</td>";
+      echo "<td align='center' colspan='3'><textarea cols='50' rows='4' name='comments' >" . $this->fields["comments"] . "</textarea>";
+      echo "</td></tr>";
 
 		if ($canedit) {
 			echo "<tr>";
@@ -505,13 +498,11 @@ class SoftwareVersion extends CommonDBTM {
 
 		if (!haveRight("software","r"))	return false;
 
-		$use_cache=true;
 		if ($ID > 0){
 			$this->check($ID,'r');
 		} else {
 			// Create item 
 			$this->check(-1,'w');
-			$use_cache=false;
 			$this->getEmpty();
 		} 
 		$canedit=$this->can($ID,'w');
@@ -744,13 +735,11 @@ class SoftwareLicense extends CommonDBTM {
 
 		if (!haveRight("software","w"))	return false;
 
-		$use_cache=true;
 		if ($ID > 0){
 			$this->check($ID,'r');
 		} else {
 			// Create item 
 			$this->check(-1,'w');
-			$use_cache=false;
 			$this->getEmpty();
 			
 			$this->fields['sID']=$sID;

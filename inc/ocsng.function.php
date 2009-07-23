@@ -957,8 +957,6 @@ function ocsUpdateComputer($ID, $ocs_server_id, $dohistory, $force = 0) {
 						SET CHECKSUM= (CHECKSUM - $mixed_checksum) 
 						WHERE ID='" . $line['ocs_id'] . "'";
 				$DBocs->query($query_ocs);
-				$comp = new Computer();
-				$comp->cleanCache($line['glpi_id']);
 
 				//Return code to indicate that computer was synchronized	
 				return OCS_COMPUTER_SYNCHRONIZED;

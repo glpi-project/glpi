@@ -140,15 +140,11 @@ class Contact extends CommonDBTM{
 
 		if (!haveRight("contact_enterprise","r")) return false;
 
-
-		$use_cache=true;
-
 		if ($ID > 0){
 			$this->check($ID,'r');
 		} else {
 			// Create item 
 			$this->check(-1,'w');
-			$use_cache=false;
 			$this->getEmpty();
 		} 
 
@@ -166,70 +162,65 @@ class Contact extends CommonDBTM{
 
 		$this->showFormHeader($ID);
 		
-		if (!$use_cache||!($CFG_GLPI["cache"]->start($ID."_".$_SESSION['glpilanguage'],"GLPI_".$this->type))) {
-			echo "<tr><td class='tab_bg_1' valign='top'>";
+      echo "<tr><td class='tab_bg_1' valign='top'>";
 
-			echo "<table cellpadding='1' cellspacing='0' border='0'>\n";
+      echo "<table cellpadding='1' cellspacing='0' border='0'>\n";
 
-			echo "<tr><td>".$LANG['common'][48].":	</td>";
-			echo "<td>";
-			autocompletionTextField("name","glpi_contacts","name",$this->fields["name"],40,$this->fields["FK_entities"]);	
-			echo "</td></tr>";
+      echo "<tr><td>".$LANG['common'][48].":	</td>";
+      echo "<td>";
+      autocompletionTextField("name","glpi_contacts","name",$this->fields["name"],40,$this->fields["FK_entities"]);
+      echo "</td></tr>";
 
-			echo "<tr><td>".$LANG['common'][43].":	</td>";
-			echo "<td>";
-			autocompletionTextField("firstname","glpi_contacts","firstname",$this->fields["firstname"],40,$this->fields["FK_entities"]);	
-			echo "</td></tr>";
+      echo "<tr><td>".$LANG['common'][43].":	</td>";
+      echo "<td>";
+      autocompletionTextField("firstname","glpi_contacts","firstname",$this->fields["firstname"],40,$this->fields["FK_entities"]);
+      echo "</td></tr>";
 
-			echo "<tr><td>".$LANG['help'][35].": 	</td>";
-			echo "<td>";
-			autocompletionTextField("phone","glpi_contacts","phone",$this->fields["phone"],40,$this->fields["FK_entities"]);	
+      echo "<tr><td>".$LANG['help'][35].": 	</td>";
+      echo "<td>";
+      autocompletionTextField("phone","glpi_contacts","phone",$this->fields["phone"],40,$this->fields["FK_entities"]);
 
-			echo "</td></tr>";
+      echo "</td></tr>";
 
-			echo "<tr><td>".$LANG['help'][35]." 2:	</td><td>";
-			autocompletionTextField("phone2","glpi_contacts","phone2",$this->fields["phone2"],40,$this->fields["FK_entities"]);
-			echo "</td></tr>";
+      echo "<tr><td>".$LANG['help'][35]." 2:	</td><td>";
+      autocompletionTextField("phone2","glpi_contacts","phone2",$this->fields["phone2"],40,$this->fields["FK_entities"]);
+      echo "</td></tr>";
 
-			echo "<tr><td>".$LANG['common'][42].":	</td><td>";
-			autocompletionTextField("mobile","glpi_contacts","mobile",$this->fields["mobile"],40,$this->fields["FK_entities"]);
-			echo "</td></tr>";
+      echo "<tr><td>".$LANG['common'][42].":	</td><td>";
+      autocompletionTextField("mobile","glpi_contacts","mobile",$this->fields["mobile"],40,$this->fields["FK_entities"]);
+      echo "</td></tr>";
 
 
-			echo "<tr><td>".$LANG['financial'][30].":	</td><td>";
-			autocompletionTextField("fax","glpi_contacts","fax",$this->fields["fax"],40,$this->fields["FK_entities"]);
-			echo "</td></tr>";
-			echo "<tr><td>".$LANG['setup'][14].":	</td><td>";
-			autocompletionTextField("email","glpi_contacts","email",$this->fields["email"],40,$this->fields["FK_entities"]);
-			echo "</td></tr>";
+      echo "<tr><td>".$LANG['financial'][30].":	</td><td>";
+      autocompletionTextField("fax","glpi_contacts","fax",$this->fields["fax"],40,$this->fields["FK_entities"]);
+      echo "</td></tr>";
+      echo "<tr><td>".$LANG['setup'][14].":	</td><td>";
+      autocompletionTextField("email","glpi_contacts","email",$this->fields["email"],40,$this->fields["FK_entities"]);
+      echo "</td></tr>";
 
-			echo "<tr><td>".$LANG['common'][17].":	</td>";
-			echo "<td>";
-			dropdownValue("glpi_dropdown_contact_type","type",$this->fields["type"]);
-			echo "</td>";
-			echo "</tr>";
+      echo "<tr><td>".$LANG['common'][17].":	</td>";
+      echo "<td>";
+      dropdownValue("glpi_dropdown_contact_type","type",$this->fields["type"]);
+      echo "</td>";
+      echo "</tr>";
 
-			echo "</table>";
+      echo "</table>";
 
-			echo "</td>\n";	
+      echo "</td>\n";
 
-			echo "<td class='tab_bg_1' valign='top'>";
+      echo "<td class='tab_bg_1' valign='top'>";
 
-			echo "<table cellpadding='1' cellspacing='0' border='0'><tr><td>";
-			echo $LANG['common'][25].":	</td></tr>";
-			echo "<tr><td class='center'><textarea cols='45' rows='4' name='comments' >".$this->fields["comments"]."</textarea>";
+      echo "<table cellpadding='1' cellspacing='0' border='0'><tr><td>";
+      echo $LANG['common'][25].":	</td></tr>";
+      echo "<tr><td class='center'><textarea cols='45' rows='4' name='comments' >".$this->fields["comments"]."</textarea>";
 
-			if ($ID>0) {				
-				echo "</td></tr><tr><td><a href='".$CFG_GLPI["root_doc"]."/front/contact.vcard.php?ID=$ID'>".$LANG['common'][46]."</a>";
-			}		
-			echo "</td></tr></table>";
+      if ($ID>0) {
+         echo "</td></tr><tr><td><a href='".$CFG_GLPI["root_doc"]."/front/contact.vcard.php?ID=$ID'>".$LANG['common'][46]."</a>";
+      }
+      echo "</td></tr></table>";
 
-			echo "</td>";
-			echo "</tr>";
-			if ($use_cache){
-				$CFG_GLPI["cache"]->end();
-			}
-		}
+      echo "</td>";
+      echo "</tr>";
 
 		if ($canedit) {
 			

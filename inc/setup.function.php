@@ -501,17 +501,7 @@ function updateDropdown($input) {
 		if (in_array($input["tablename"], $CFG_GLPI["dropdowntree_tables"])) {
 			regenerateTreeCompleteNameUnderID($input["tablename"], $input["ID"]);
 
-/*			if ($input["tablename"]=="glpi_entities"&&isset($_SESSION["glpiID"])){
-				
-				$activeprof=$_SESSION['glpiactiveprofile']['ID'];
-				initEntityProfiles($_SESSION["glpiID"]);
-				changeProfile($activeprof);
-				cleanCache("GLPI_entities_ancestors");
-				cleanCache("GLPI_entities_sons");
-			}
-*/
 		}
-		cleanRelationCache($input["tablename"]);
 		return true;
 	} else {
 		return false;
@@ -704,16 +694,7 @@ function addDropdown($input) {
 			if (in_array($input["tablename"], $CFG_GLPI["dropdowntree_tables"])) {
 				regenerateTreeCompleteNameUnderID($input["tablename"], $ID);
 			}
-/*			if ($input["tablename"]=="glpi_entities"&&isset($_SESSION["glpiID"])){
-				$activeprof=$_SESSION['glpiactiveprofile']['ID'];
-				initEntityProfiles($_SESSION["glpiID"]);
-				changeProfile($activeprof);
-				cleanCache("GLPI_entities_ancestors");
-				cleanCache("GLPI_entities_sons");
-
-			}
-*/
-			cleanRelationCache($input["tablename"]);
+			
 			return $ID;
 		} else {
 			return false;
@@ -729,7 +710,6 @@ function deleteDropdown($input) {
 	$send["oldID"] = $input["ID"];
 	$send["newID"] = 0;
 	replaceDropDropDown($send);
-	cleanRelationCache($input["tablename"]);
 }
 
 /** Replace a dropdown item (oldID) by another one (newID) in a dropdown table (tablename) and update all linked fields
@@ -787,17 +767,7 @@ function replaceDropDropDown($input) {
 		$query = "DELETE FROM `glpi_entities_data` WHERE `FK_entities` = '" . $input["oldID"] . "'";
 		$DB->query($query);
 
-/*		if (isset($_SESSION["glpiID"])){
-			$activeprof=$_SESSION['glpiactiveprofile']['ID'];
-			initEntityProfiles($_SESSION["glpiID"]);
-			changeProfile($activeprof);
-		}
-
-		cleanCache("GLPI_entities_ancestors");
-		cleanCache("GLPI_entities_sons");
-*/
 	}
-	cleanRelationCache($input["tablename"]);
 }
 
 function showDeleteConfirmForm($target, $table, $ID,$FK_entities) {

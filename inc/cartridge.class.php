@@ -173,15 +173,11 @@ class CartridgeType extends CommonDBTM {
 
 		if (!haveRight("cartridge","r")) return false;
 
-
-		$use_cache=true;
-
 		if ($ID > 0){
 			$this->check($ID,'r');
 		} else {
 			// Create item 
 			$this->check(-1,'w');
-			$use_cache=false;
 			$this->getEmpty();
 		} 
 
@@ -192,60 +188,55 @@ class CartridgeType extends CommonDBTM {
 			echo "<input type='hidden' name='FK_entities' value='".$_SESSION["glpiactive_entity"]."'>";
 		}
 
-		if (!$use_cache||!($CFG_GLPI["cache"]->start($ID."_".$_SESSION['glpilanguage'],"GLPI_".$this->type))) {
-			echo "<table class='tab_cadre_fixe' >\n";
-			echo "<tr><th colspan='3'>\n";
-			if (!$ID) {
-				echo $LANG['cartridges'][6];
-			} else { 
-				echo $LANG['common'][2]." $ID";
-			}
+      echo "<table class='tab_cadre_fixe' >\n";
+      echo "<tr><th colspan='3'>\n";
+      if (!$ID) {
+         echo $LANG['cartridges'][6];
+      } else {
+         echo $LANG['common'][2]." $ID";
+      }
 
-			if (isMultiEntitiesMode()){
-				echo "&nbsp;(".getDropdownName("glpi_entities",$this->fields["FK_entities"]).")";
-			}			
+      if (isMultiEntitiesMode()){
+         echo "&nbsp;(".getDropdownName("glpi_entities",$this->fields["FK_entities"]).")";
+      }
 
-			echo "</th></tr>\n";
+      echo "</th></tr>\n";
 
-			echo "<tr class='tab_bg_1'><td>".$LANG['common'][16].":		</td>\n";
-			echo "<td colspan='2'>";
-			autocompletionTextField("name","glpi_cartridges_type","name",$this->fields["name"],40,$this->fields["FK_entities"]);
-			echo "</td></tr>\n";
+      echo "<tr class='tab_bg_1'><td>".$LANG['common'][16].":		</td>\n";
+      echo "<td colspan='2'>";
+      autocompletionTextField("name","glpi_cartridges_type","name",$this->fields["name"],40,$this->fields["FK_entities"]);
+      echo "</td></tr>\n";
 
-			echo "<tr class='tab_bg_1'><td>".$LANG['consumables'][2].":		</td>\n";
-			echo "<td colspan='2'>";
-			autocompletionTextField("ref","glpi_cartridges_type","ref",$this->fields["ref"],40,$this->fields["FK_entities"]);	
-			echo "</td></tr>\n";
+      echo "<tr class='tab_bg_1'><td>".$LANG['consumables'][2].":		</td>\n";
+      echo "<td colspan='2'>";
+      autocompletionTextField("ref","glpi_cartridges_type","ref",$this->fields["ref"],40,$this->fields["FK_entities"]);
+      echo "</td></tr>\n";
 
-			echo "<tr class='tab_bg_1'><td>".$LANG['common'][17].": 	</td><td colspan='2'>\n";
-			dropdownValue("glpi_dropdown_cartridge_type","type",$this->fields["type"]);
-			echo "</td></tr>\n";
+      echo "<tr class='tab_bg_1'><td>".$LANG['common'][17].": 	</td><td colspan='2'>\n";
+      dropdownValue("glpi_dropdown_cartridge_type","type",$this->fields["type"]);
+      echo "</td></tr>\n";
 
-			echo "<tr class='tab_bg_1'><td>".$LANG['common'][5].": 	</td><td colspan='2'>\n";
-			dropdownValue("glpi_dropdown_manufacturer","FK_glpi_enterprise",$this->fields["FK_glpi_enterprise"]);
-			echo "</td></tr>\n";
+      echo "<tr class='tab_bg_1'><td>".$LANG['common'][5].": 	</td><td colspan='2'>\n";
+      dropdownValue("glpi_dropdown_manufacturer","FK_glpi_enterprise",$this->fields["FK_glpi_enterprise"]);
+      echo "</td></tr>\n";
 
-			echo "<tr class='tab_bg_1'><td>".$LANG['common'][10].": 	</td><td colspan='2'>\n";
-			dropdownUsersID("tech_num", $this->fields["tech_num"],"interface",1,$this->fields["FK_entities"]);
-			echo "</td></tr>\n";
+      echo "<tr class='tab_bg_1'><td>".$LANG['common'][10].": 	</td><td colspan='2'>\n";
+      dropdownUsersID("tech_num", $this->fields["tech_num"],"interface",1,$this->fields["FK_entities"]);
+      echo "</td></tr>\n";
 
-			echo "<tr class='tab_bg_1'><td>".$LANG['consumables'][36].": 	</td><td colspan='2'>\n";
-			dropdownValue("glpi_dropdown_locations","location",$this->fields["location"],1,$this->fields["FK_entities"]);
-			echo "</td></tr>\n";
+      echo "<tr class='tab_bg_1'><td>".$LANG['consumables'][36].": 	</td><td colspan='2'>\n";
+      dropdownValue("glpi_dropdown_locations","location",$this->fields["location"],1,$this->fields["FK_entities"]);
+      echo "</td></tr>\n";
 
-			echo "<tr class='tab_bg_1'><td>".$LANG['consumables'][38].":</td><td colspan='2'>";
-			dropdownInteger('alarm',$this->fields["alarm"],-1,100);
-			echo "</td></tr>\n";
+      echo "<tr class='tab_bg_1'><td>".$LANG['consumables'][38].":</td><td colspan='2'>";
+      dropdownInteger('alarm',$this->fields["alarm"],-1,100);
+      echo "</td></tr>\n";
 
 
-			echo "<tr class='tab_bg_1'><td valign='top'>\n";
-			echo $LANG['common'][25].":	</td>";
-			echo "<td align='center' colspan='2'><textarea cols='35' rows='4' name='comments' >".$this->fields["comments"]."</textarea>";
-			echo "</td></tr>\n";
-			if ($use_cache){
-				$CFG_GLPI["cache"]->end();
-			}
-		}
+      echo "<tr class='tab_bg_1'><td valign='top'>\n";
+      echo $LANG['common'][25].":	</td>";
+      echo "<td align='center' colspan='2'><textarea cols='35' rows='4' name='comments' >".$this->fields["comments"]."</textarea>";
+      echo "</td></tr>\n";
 
 		if (haveRight("cartridge","w"))
 			if (!$ID) {

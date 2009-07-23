@@ -86,21 +86,6 @@ class Config extends CommonDBTM {
 	}
 
 	/**
-	 * Actions done after the UPDATE of the item in the database
-	 *
-	 *@param $input datas used to update the item
-	 *@param $updates array of the updated fields
-	 *@param $history store changes history ?
-	 * 
-	**/
-	function post_updateItem($input,$updates,$history=1) {
-		global $CACHE_CFG;
-		if (count($updates)){
-			cleanCache(); 
-		}
-	}
-
-	/**
 	 * Print the config form for common options
 	 *
 	 *@param $target filename : where to go when done.
@@ -169,18 +154,6 @@ class Config extends CommonDBTM {
 		dropdownYesNo("use_errorlog", $CFG_GLPI["use_errorlog"]);
 		echo "</td></tr>";								
 
-
-
-/*		echo "<tr class='tab_bg_2'>";
-
-		echo "<td class='center'> " . $LANG['setup'][183] . " </td><td>";
-		dropdownYesNo("use_cache", $CFG_GLPI["use_cache"]);
-		echo " - ".getSize(filesizeDirectory(GLPI_CACHE_DIR));
-		echo "</td><td class='center'>".$LANG['setup'][187]."</td><td>";
-		dropdownInteger('cache_max_size',$CFG_GLPI["cache_max_size"],5,500,5);
-		echo " MB";
-		echo "</td></tr>";
-*/							
 		echo "<tr class='tab_bg_1'><td colspan='4' align='center'><strong>" . $LANG['Menu'][38] . "</strong></td></tr>";
 	
 		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['setup'][115] . "</td><td>";

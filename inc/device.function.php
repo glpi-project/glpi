@@ -334,7 +334,6 @@ function update_device_specif($newValue,$compDevID,$strict=false,$checkcoherence
 	if ($result = $DB->query($query)) {
 		if ($DB->numrows($result)){
 			$data = addslashes_deep($DB->fetch_array($result));
-			cleanAllItemCache("device_".$data["FK_computers"],"GLPI_".COMPUTER_TYPE);
 
 			if ($checkcoherence){
 				switch ($data["device_type"]){
@@ -459,8 +458,6 @@ function unlink_device_computer($compDevID,$dohistory=1){
 		$data = $DB->fetch_array($result);
 	} 
 
-	cleanAllItemCache("device_".$data["FK_computers"],"GLPI_".COMPUTER_TYPE);
-
 	$query2 = "DELETE FROM glpi_computer_device where ID = '".$compDevID."'";
 	if($DB->query($query2)){
 		
@@ -495,8 +492,8 @@ function compdevice_add($cID,$device_type,$dID,$specificity='',$dohistory=1) {
 	$device->getFromDB($dID);
 	if (empty($specificity)) $specificity=$device->fields['specif_default'];
 	$newID=$device->computer_link($cID,$device_type,$specificity);
-	cleanAllItemCache("device_".$cID,"GLPI_".COMPUTER_TYPE);
-	if ($dohistory){
+	
+   if ($dohistory){
 		$changes[0]='0';
 		$changes[1]="";
 		$changes[2]=addslashes($device->fields["designation"]);
@@ -594,7 +591,6 @@ function showDevicesForm ($target,$ID,$device_type) {
 	} else {
 		// Create item 
 		$device->check(-1,'w');
-		$use_cache=false;
 		$device->getEmpty();
 	} 
 
