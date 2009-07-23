@@ -207,6 +207,12 @@ $RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['FK_entities']['type']='dropdown';
 $RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['priority']['name']=$LANG['joblist'][2];
 $RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['priority']['type']='dropdown_priority';
 
+R$ULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['_mailgate']['table']='glpi_mailgate';
+$RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['_mailgate']['field']='name';
+$RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['_mailgate']['name']=$LANG['mailgate'][0];
+$RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['_mailgate']['linkfield']='_mailgate';
+$RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['_mailgate']['type']='dropdown';
+
 
 $RULES_ACTIONS[RULE_TRACKING_AUTO_ACTION]['category']['name']=$LANG['common'][36];
 $RULES_ACTIONS[RULE_TRACKING_AUTO_ACTION]['category']['type']='dropdown';

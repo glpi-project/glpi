@@ -205,7 +205,7 @@ class MailCollect {
 	* @param $display display messages in MessageAfterRedirect or just return error
 	* @return if $display = false return messages result string
 	*/
-	function collect($server,$username,$password,$entity,$display=0){
+	function collect($server,$username,$password,$entity,$display=0,$mailgateID=0){
 		global $LANG;
 		$this->entity=$entity;
 
@@ -225,6 +225,8 @@ class MailCollect {
 
 			for($i=1;$i<=$tot && $i<= MAX_MAILS_RETRIEVED;$i++){
 				$tkt= $this->buildTicket($i);
+				$tkt['_mailgate']=$mailgateID;
+
 				$this->deleteMails($i); // Delete Mail from Mail box
 				$result=imap_fetchheader($this->marubox,$i);
 

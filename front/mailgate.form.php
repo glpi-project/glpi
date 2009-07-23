@@ -72,7 +72,7 @@ else if (isset($_POST["get_mails"]))
 
 	$mc=new MailCollect();
 	if ($mailgate->getFromDB($_POST["ID"])){
-		$mc->collect($mailgate->fields["host"],$mailgate->fields["login"],$mailgate->fields["password"],$mailgate->fields["FK_entities"],1);
+		$mc->collect($mailgate->fields["host"],$mailgate->fields["login"],$mailgate->fields["password"],$mailgate->fields["FK_entities"],1,$_POST['ID']);
 	}
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
