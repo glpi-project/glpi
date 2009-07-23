@@ -207,76 +207,88 @@ class MailCollect {
 
 	/**
 	* Constructor
-	* @param $server IMAP/POP server address
+	* @param $mailgateID ID of the mailgate
 	* @param $username IMAP/POP user name
 	* @param $password IMAP/POP password
 	* @param $entity entity ID used
 	* @param $display display messages in MessageAfterRedirect or just return error
 	* @return if $display = false return messages result string
 	*/
-	function collect($server,$username,$password,$entity,$display=0){
+	function collect($mailgateID,$display=0){
 		global $LANG;
-		$this->entity=$entity;
 
-		$this->server	=	$server;
-		$this->username	=	$username;
-		$this->password	=	$password;
-		$this->mid	= -1;
+		$mailgate=new Mailgate();
+		if ($mailgate->getFromDB($mailgateID)){
 
-		$this->fetch_emails = 0;
-		//Connect to the Mail Box
-		$this->connect();
-
-		if ($this->marubox){
-			// Get Total Number of Unread Email in mail box
-			$tot=$this->getTotalMails(); //Total Mails in Inbox Return integer value
-			$error=0;
-
-			for($i=1;$i<=$tot && $i<= MAX_MAILS_RETRIEVED;$i++){
-				$tkt= $this->buildTicket($i);
-				$this->deleteMails($i); // Delete Mail from Mail box
-				$result=imap_fetchheader($this->marubox,$i);
-
-				// Is a mail responding of an already existgin ticket ?
-				if (isset($tkt['tracking']) ) {
-					// Deletion of message with sucess
-					if (false === is_array($result)){
-						$fup=new Followup();
-						$fup->add($tkt);
-					} else {
-						$error++;
+			$this->entity=$mailgate->fields['FK_entities'];
+	
+			$this->server	=	$mailgate->fields['host'];
+			$this->username	=	$mailgate->fields['login'];
+			$this->password	=	$mailgate->fields['password'];
+			$this->mid	= -1;
+	
+			$this->fetch_emails = 0;
+			//Connect to the Mail Box
+			$this->connect();
+	
+			if ($this->marubox){
+				// Get Total Number of Unread Email in mail box
+				$tot=$this->getTotalMails(); //Total Mails in Inbox Return integer value
+				$error=0;
+	
+				for($i=1;$i<=$tot && $i<= MAX_MAILS_RETRIEVED;$i++){
+					$tkt= $this->buildTicket($i);
+					$tkt['_mailgate']=$mailgateID; 
+					$this->deleteMails($i); // Delete Mail from Mail box
+					$result=imap_fetchheader($this->marubox,$i);
+	
+					// Is a mail responding of an already existgin ticket ?
+					if (isset($tkt['tracking']) ) {
+						// Deletion of message with sucess
+						if (false === is_array($result)){
+							$fup=new Followup();
+							$fup->add($tkt);
+						} else {
+							$error++;
+						}
+					} else { // New ticket
+						// Deletion of message with sucess
+						if (false === is_array($result)){
+							$track=new Job();
+							$track->add($tkt);
+						} else {
+							$error++;
+						}
 					}
-				} else { // New ticket
-					// Deletion of message with sucess
-					if (false === is_array($result)){
-						$track=new Job();
-						$track->add($tkt);
-					} else {
-						$error++;
-					}
+					$this->fetch_emails++;
 				}
-				$this->fetch_emails++;
-			}
-			imap_expunge($this->marubox);
-			$this->close_mailbox();   //Close Mail Box
-
-			if ($display){
-				if ($error==0){
-					addMessageAfterRedirect($LANG['mailgate'][3].": ".$this->fetch_emails);
+				imap_expunge($this->marubox);
+				$this->close_mailbox();   //Close Mail Box
+	
+				if ($display){
+					if ($error==0){
+						addMessageAfterRedirect($LANG['mailgate'][3].": ".$this->fetch_emails);
+					} else {
+						addMessageAfterRedirect($LANG['mailgate'][3].": ".$this->fetch_emails." ($error ".$LANG['common'][63].")",false,ERROR);
+					}
 				} else {
-					addMessageAfterRedirect($LANG['mailgate'][3].": ".$this->fetch_emails." ($error ".$LANG['common'][63].")",false,ERROR);
+					return "Number of messages available and collected : ".$this->fetch_emails." ".($error>0?"($error error(s))":"");
 				}
-			} else {
-				return "Number of messages available and collected : ".$this->fetch_emails." ".($error>0?"($error error(s))":"");
+				
+			}else{
+				if ($display){
+					addMessageAfterRedirect($LANG['log'][41],false,ERROR);
+				} else {
+					return "Could not connect to mailgate server";
+				}
+	//			return 0;
 			}
-			
-		}else{
+		} else {
 			if ($display){
-				addMessageAfterRedirect($LANG['log'][41],false,ERROR);
+				addMessageAfterRedirect($LANG['common'][54].': mailgate '.$mailgateID,false,ERROR);
 			} else {
-				return "Could not connect to mailgate server";
+				return 'Could find mailgate '.$mailgateID;
 			}
-//			return 0;
 		}
 	} // end function MailCollect
 	
