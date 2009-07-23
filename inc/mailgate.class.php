@@ -355,7 +355,8 @@ class MailCollect {
 
 			// Check if tracking exists and author exists in GLPI
 			/// TODO check if author have right to add a followup to the ticket
-			if ( $job->getFromDB($tkt['tracking']) &&  $tkt['author'] > 0) {
+			if ( $job->getFromDB($tkt['tracking'])
+               &&  ($tkt['author'] > 0 || !strcasecmp($job->fields['uemail'],$head['from'])) ) {
 		
 				$content=explode("\n",$tkt['contents']);
 				$tkt['contents']="";
