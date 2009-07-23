@@ -504,6 +504,120 @@ class User extends CommonDBTM {
 		return formatUserName($this->fields["ID"],$this->fields["name"],$this->fields["realname"],$this->fields["firstname"]);
 	}
 
+   	/**
+   * Function that try to load from LDAP the user membership
+   * by searching in the attribute of the User
+   *
+   * @param $ldap_connection ldap connection descriptor
+   * @param $ldap_method LDAP method
+   * @param $userdn Basedn of the user
+   * @param $login User Login
+   * @param $password User Password
+   *
+   * @return String : basedn of the user / false if not founded
+      */
+   private function getFromLDAPGroupVirtual($ldap_connection, $ldap_method, $userdn, $login, $password) {
+      global $DB,$CFG_GLPI;
+
+		/// Search in DB the ldap_field we need to search for in LDAP
+      $query="SELECT DISTINCT `ldap_field` FROM `glpi_groups` WHERE `ldap_field`!='' ORDER BY `ldap_field`";
+      $group_fields = array ();
+      foreach ($DB->request($query) as $data) {
+         $group_fields[] = strtolower($data["ldap_field"]);
+      }
+      if (count($group_fields)) {
+			///Need to sort the array because edirectory don't like it!
+         sort($group_fields);
+         //logInFile("debug","Champs de recherche : ".print_r($group_fields,true));
+
+			/// If the groups must be retrieve from the ldap user object
+         $sr = @ ldap_read($ldap_connection, $userdn, "objectClass=*", $group_fields);
+         $v = ldap_get_entries($ldap_connection, $sr);
+			
+         for ($i=0;$i<count($v['count']);$i++) {
+				
+				///Try to find is DN in present and needed: if yes, then extract only the OU from it
+            if (($ldap_method["ldap_field_group"]=='dn' || in_array('ou',$group_fields))
+                  && isset($v[$i]['dn'])) {
+               $v[$i]['ou'] = array();
+               for ($tmp=$v[$i]['dn'] ; count($tmptab=explode(',',$tmp,2))==2 ; $tmp=$tmptab[1]) {
+                  $v[$i]['ou'][] = $tmptab[1];
+               }
+
+					/// Search in DB for group with ldap_group_dn
+               if ($ldap_method["ldap_field_group"]=='dn' && count($v[$i]['ou'])>0) {
+						
+                  $query="SELECT ID FROM `glpi_groups`
+                        WHERE `ldap_group_dn` IN ('".implode("','",$v[$i]['ou'])."')";
+							
+                  foreach ($DB->request($query) as $group) {
+                     $this->fields["_groups"][]=$group['ID'];
+                  }
+               }
+
+					/// searching with ldap_field='OU' and ldap_value is also possible
+                     $v[$i]['ou']['count'] = count($v[$i]['ou']);
+            }
+            //logInFile("debug","Groupes virtuels LDAP (avec OU) : ".print_r($v[$i],true));
+				
+				/// For each attribute retrieve from LDAP, search in the DB
+            foreach ($group_fields as $field) {
+               if (isset($v[$i][$field]) && isset($v[$i][$field]['count']) && $v[$i][$field]['count']>0) {
+                  unset($v[$i][$field]['count']);
+                  $query="SELECT ID FROM `glpi_groups`
+                        WHERE `ldap_field`='$field'
+                        AND `ldap_value` IN ('".implode("','",$v[$i][$field])."')";
+							  
+                  foreach ($DB->request($query) as $group) {
+                     $this->fields["_groups"][]=$group['ID'];
+                  }
+               }
+            }
+         } // for each ldapresult
+      } // count($group_fields)
+   }
+	
+	/**
+   * Function that try to load from LDAP the user membership
+   * by searching in the attribute of the Groups
+   *
+   * @param $ldap_connection ldap connection descriptor
+   * @param $ldap_method LDAP method
+   * @param $userdn Basedn of the user
+   * @param $login User Login
+   * @param $password User Password
+   *
+   * @return String : basedn of the user / false if not founded
+   */
+   private function getFromLDAPGroupDiscret($ldap_connection, $ldap_method, $userdn, $login, $password) {
+      global $DB,$CFG_GLPI;
+
+      if ($ldap_method["use_dn"]) {
+         $user_tmp = $userdn;
+      } else {
+			///$user_tmp = $ldap_method["ldap_login"]."=".$login;
+			///Don't add $ldap_method["ldap_login"]."=", because sometimes it may not work (for example with posixGroup)
+         $user_tmp = $login;
+      }
+			
+      $v = $this->ldap_get_user_groups($ldap_connection, $ldap_method["ldap_basedn"], $user_tmp, $ldap_method["ldap_group_condition"], $ldap_method["ldap_field_group_member"],$ldap_method["use_dn"],$ldap_method["ldap_login"]);
+      //logInFile("debug","Groupes discrets LDAP : ".print_r($v,true));
+		
+      foreach ($v as $result) {
+         if (isset($result[$ldap_method["ldap_field_group_member"]])
+             && is_array($result[$ldap_method["ldap_field_group_member"]])
+             && count($result[$ldap_method["ldap_field_group_member"]])>0) {
+			
+            $query="SELECT ID FROM `glpi_groups`
+                  WHERE `ldap_group_dn` IN ('".implode("','",$result[$ldap_method["ldap_field_group_member"]])."')";
+						
+            foreach ($DB->request($query) as $group) {
+               $this->fields["_groups"][]=$group['ID'];
+            }
+         }
+      }
+   }
+
 	/**
 	 * Function that try to load from LDAP the user information...
 	 *
@@ -573,97 +687,27 @@ externalImportDropdown("glpi_dropdown_user_".$k."s",addslashes($v[0][$e][0]),-1,
 					}	
 			}
 
-			// Get group fields
-			$query_user = "SELECT ID,ldap_field, ldap_value 
-				FROM glpi_groups 
-				WHERE ldap_field<>'' AND ldap_field IS NOT NULL AND ldap_value<>'' AND ldap_value IS NOT NULL";
-			$query_group = "SELECT ID,ldap_group_dn 
-				FROM glpi_groups 
-				WHERE ldap_group_dn<>'' AND ldap_group_dn IS NOT NULL";
 
-			$group_fields = array ();
-			$groups = array ();
-			$v = array ();
-			//The groupes are retrived by looking into an ldap user object
-			if ($ldap_method["ldap_search_for_groups"] == 0 || $ldap_method["ldap_search_for_groups"] == 2) {
-
-				$result = $DB->query($query_user);
-
-				if ($DB->numrows($result) > 0) {
-					while ($data = $DB->fetch_assoc($result)) {
-						$group_fields[] = strtolower($data["ldap_field"]);
-						$groups[strtolower($data["ldap_field"])][$data["ID"]] = $data["ldap_value"];
-					}
-					$group_fields = array_unique($group_fields);
-					
-					//Need to sort the array because edirectory don't like it!
-					sort($group_fields);
-
-					// If the groups must be retrieve from the ldap user object
-					$sr = @ ldap_read($ldap_connection, $userdn, "objectClass=*", $group_fields);
-					$v = ldap_get_entries($ldap_connection, $sr);
-				}
-			}
-			//The groupes are retrived by looking into an ldap group object
-			if ($ldap_method["ldap_search_for_groups"] == 1 || $ldap_method["ldap_search_for_groups"] == 2) {
-
-				$result = $DB->query($query_group);
-
-				if ($DB->numrows($result) > 0) {
-					while ($data = $DB->fetch_assoc($result)) {
-						$groups[$ldap_method["ldap_field_group_member"]][$data["ID"]] = $data["ldap_group_dn"];
-					}
-					if ($ldap_method["use_dn"])
-						$user_tmp = $userdn;
-					else
-						//$user_tmp = $ldap_method["ldap_login"]."=".$login;
-						//Don't add $ldap_method["ldap_login"]."=", because sometimes it may not work (for example with posixGroup)
-						$user_tmp = $login;
-						
-					$v2 = $this->ldap_get_user_groups($ldap_connection, $ldap_method["ldap_basedn"], $user_tmp, $ldap_method["ldap_group_condition"], $ldap_method["ldap_field_group_member"],$ldap_method["use_dn"],$ldap_method["ldap_login"]);
-					
-					$v = array_merge($v, $v2);
-				}
-
-			}
-
-			if ($ldap_method["ldap_field_group"] == "dn")
-			{
-				for ($i=0;$i<count($v['count']);$i++) 
-				{
-					//Try to find is DN in present: if yes, then extract only the OU from it
-			        if (array_key_exists($ldap_method["ldap_field_group"],$v[$i]))
-			        {
-			         	list($null,$ou) = explode(",",$v[$i][$ldap_method["ldap_field_group"]],2);
-		                $v[$i]['ou'] = array( $ou );
-		                $v[$i]['count'] = 1;
-			        }
-				}
-			}
+			///The groups are retrieved by looking into an ldap user object
+         if ($ldap_method["ldap_search_for_groups"] == 0
+             || $ldap_method["ldap_search_for_groups"] == 2) {
+            $this->getFromLDAPGroupVirtual($ldap_connection, $ldap_method, $userdn, $login, $password);
+         }
 			
-			if (is_array($v) && count($v) > 0) {
-				foreach ($v as $attribute => $valattribute) {
-					if (is_array($valattribute))
-						foreach ($valattribute as $key => $val) {
-							if (is_array($val))
-								for ($i = 0; $i < count($val); $i++) {
-									 if (isset ($val[$i]))
-										if ($group_found = array_search($val[$i], $groups[$key])) {
-											$this->fields["_groups"][] = $group_found;
-										}
-								}
-						}
-				}
-			}
-
-			//Only process rules if working on the master database
-			if (!$DB->isSlave())
-			{
-				//Instanciate the affectation's rule
+					
+			///The groups are retrived by looking into an ldap group object
+         if ($ldap_method["ldap_search_for_groups"] == 1
+                 || $ldap_method["ldap_search_for_groups"] == 2) {
+            $this->getFromLDAPGroupDiscret($ldap_connection, $ldap_method, $userdn, $login, $password);
+         }
+         
+			///Only process rules if working on the master database
+			if (!$DB->isSlave()){
+				///Instanciate the affectation's rule
 				$rule = new RightRuleCollection();
 					
-				//Process affectation rules :
-				//we don't care about the function's return because all the datas are stored in session temporary
+				///Process affectation rules :
+				///we don't care about the function's return because all the datas are stored in session temporary
 				if (isset($this->fields["_groups"]))
 					$groups = $this->fields["_groups"];
 				else
@@ -671,14 +715,14 @@ externalImportDropdown("glpi_dropdown_user_".$k."s",addslashes($v[0][$e][0]),-1,
 		
 				$this->fields=$rule->processAllRules($groups,$this->fields,array("type"=>"LDAP","ldap_server"=>$ldap_method["ID"],"connection"=>$ldap_connection,"userdn"=>$userdn));
 				
-				//Hook to retrieve more informations for ldap
+				///Hook to retrieve more informations for ldap
 				$this->fields = doHookFunction("retrieve_more_data_from_ldap", $this->fields);
 			}
 			return true;
 		}
 		return false;
 
-	} // getFromLDAP()
+	} /// getFromLDAP()
 
 	/**
 	 * Get all the group a user belongs to
