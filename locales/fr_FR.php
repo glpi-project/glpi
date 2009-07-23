@@ -1813,7 +1813,6 @@ $LANG['update'][136]="Voici la nouvelle hiérarchie générée. Si elle vous con
 $LANG['update'][137]="Nouvelle hiérarchie"; 
 $LANG['update'][138]="Lieux actuels"; 
 $LANG['update'][139]="Optimisation des tables";
-$LANG['update'][140]="Création d'index";
 
 $LANG['users'][1]= "Titre";
 $LANG['users'][2]="Catégorie"; 
