@@ -1210,11 +1210,13 @@ class User extends CommonDBTM {
 				autocompletionTextField("mobile", "glpi_users", "mobile", $this->fields["mobile"], 40);
 			}
 			echo "</td></tr>";
-
-			echo "<tr class='tab_bg_1'><td class='center'>" . $LANG['setup'][41] . " </td><td>";
-			/// Use sesion variable because field in table may be null if same of the global config
-			dropdownLanguages("language", $_SESSION["glpilanguage"]);
-			echo "</td></tr>";
+         
+         if (! GLPI_DEMO_MODE){
+   			echo "<tr class='tab_bg_1'><td class='center'>" . $LANG['setup'][41] . " </td><td>";
+			   /// Use sesion variable because field in table may be null if same of the global config
+			   dropdownLanguages("language", $_SESSION["glpilanguage"]);
+			   echo "</td></tr>";
+         }
 
 
 			if (count($_SESSION['glpiprofiles'])>1){
