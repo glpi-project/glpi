@@ -373,7 +373,7 @@ function filesizeDirectory($path){
  **/
 function cleanCache($group=""){
 	global $CFG_GLPI;
-	if ($CFG_GLPI["use_cache"]){
+	if (isset($CFG_GLPI["use_cache"]) && $CFG_GLPI["use_cache"]){
 		include_once (GLPI_CACHE_LITE_DIR."/Lite.php");
 	
 		$cache_options = array(
