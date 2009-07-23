@@ -529,7 +529,7 @@ class User extends CommonDBTM {
 		if (count($group_fields)) {
 			//Need to sort the array because edirectory don't like it!
 			sort($group_fields);
-			logInFile("debug","Champs de recherche : ".print_r($group_fields,true));			                
+			//logInFile("debug","Champs de recherche : ".print_r($group_fields,true));			                
 
 			// If the groups must be retrieve from the ldap user object
 			$sr = @ ldap_read($ldap_connection, $userdn, "objectClass=*", $group_fields);
@@ -559,7 +559,7 @@ class User extends CommonDBTM {
 					// searching with ldap_field='OU' and ldap_value is also possible
 	                $v[$i]['ou']['count'] = count($v[$i]['ou']);
 				}
-				logInFile("debug","Groupes virtuels LDAP (avec OU) : ".print_r($v[$i],true));			                
+				//logInFile("debug","Groupes virtuels LDAP (avec OU) : ".print_r($v[$i],true));			                
 				
 				// For each attribute retrieve from LDAP, search in the DB
 				foreach ($group_fields as $field) {
@@ -602,7 +602,7 @@ class User extends CommonDBTM {
 		}
 			
 		$v = $this->ldap_get_user_groups($ldap_connection, $ldap_method["ldap_basedn"], $user_tmp, $ldap_method["ldap_group_condition"], $ldap_method["ldap_field_group_member"],$ldap_method["use_dn"],$ldap_method["ldap_login"]);
-		logInFile("debug","Groupes discrets LDAP : ".print_r($v,true));
+		//logInFile("debug","Groupes discrets LDAP : ".print_r($v,true));
 		
 		foreach ($v as $result) {
 			if (isset($result[$ldap_method["ldap_field_group_member"]]) 
@@ -688,20 +688,20 @@ class User extends CommonDBTM {
 					}	
 			}
 
-			//The groupes are retrived by looking into an ldap user object
+			///The groups are retrieved by looking into an ldap user object
 			if ($ldap_method["ldap_search_for_groups"] == 0 
 				|| $ldap_method["ldap_search_for_groups"] == 2) {
 					$this->getFromLDAPGroupVirtual($ldap_connection, $ldap_method, $userdn, $login, $password);
 			}
 			
 					
-			//The groupes are retrived by looking into an ldap group object
+			///The groups are retrived by looking into an ldap group object
 			if ($ldap_method["ldap_search_for_groups"] == 1 
 				|| $ldap_method["ldap_search_for_groups"] == 2) {
 					$this->getFromLDAPGroupDiscret($ldap_connection, $ldap_method, $userdn, $login, $password);
 			}
 
-			//Only process rules if working on the master database
+			///Only process rules if working on the master database
 			if (!$DB->isSlave())
 			{
 				//Instanciate the affectation's rule
