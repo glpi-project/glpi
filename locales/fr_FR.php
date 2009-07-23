@@ -1656,6 +1656,7 @@ $LANG['setup'][609]="Ajout impossible. Le serveur OCS existe déjà.";
 $LANG['setup'][610]="Titre du ticket obligatoire"; 
 $LANG['setup'][611]="Contenu du ticket obligatoire"; 
 $LANG['setup'][612]="Catégorie du ticket obligatoire"; 
+$LANG['setup'][614]="Modification du login impossible. Un utilisateur existe déjà.";
 
 $LANG['setup'][620]="Liaison"; 
 

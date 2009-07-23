@@ -1215,7 +1215,21 @@ externalImportDropdown("glpi_dropdown_user_".$k."s",addslashes($v[0][$e][0]),-1,
 
 
 	function pre_updateInDB($input,$updates,$oldvalues=array()) {
-		
+      global $DB,$LANG;
+
+      if (($key=array_search('name',$updates))!==false){
+         /// Check if user does not exists
+         $query="SELECT * FROM glpi_users WHERE name='".$input['name']."' AND ID <> '".$input['ID']."';";
+         $result=$DB->query($query);
+         if ($DB->numrows($result)>0){
+            unset($updates[$key]);
+            /// For displayed message
+            $this->fields['name']=$oldvalues['name'];
+            addMessageAfterRedirect($LANG['setup'][614],false,ERROR);
+         }
+      }
+
+      
 		// Security system except for login update
 		if (isset ($_SESSION["glpiID"]) && !haveRight("user", "w") && !strpos($_SERVER['PHP_SELF'],"login.php")) { 
 			if ($_SESSION["glpiID"] == $input['ID']) { 
