@@ -278,6 +278,7 @@ class User extends CommonDBTM {
 	function prepareInputForUpdate($input) {
 		global  $LANG,$CFG_GLPI;
 
+
 		if (isset ($input["password"])){
 			// Empty : do not update
 			if (empty($input["password"])){
@@ -1211,7 +1212,7 @@ class User extends CommonDBTM {
 			echo "</td></tr>";
 
 			echo "<tr class='tab_bg_1'><td class='center'>" . $LANG['setup'][41] . " </td><td>";
-			// Use sesion variable because field in table may be null if same of the global config
+			/// Use sesion variable because field in table may be null if same of the global config
 			dropdownLanguages("language", $_SESSION["glpilanguage"]);
 			echo "</td></tr>";
 
@@ -1265,8 +1266,21 @@ class User extends CommonDBTM {
 
 
 	function pre_updateInDB($input,$updates,$oldvalues=array()) {
-		
-		// Security system except for login update
+      global $DB,$LANG;
+      
+      if (($key=array_search('name',$updates))!==false){
+         /// Check if user does not exists
+         $query="SELECT * FROM glpi_users WHERE name='".$input['name']."' AND ID <> '".$input['ID']."';";
+         $result=$DB->query($query);
+         if ($DB->numrows($result)>0){
+            unset($updates[$key]);
+            /// For displayed message
+            $this->fields['name']=$oldvalues['name'];
+            addMessageAfterRedirect($LANG['setup'][614],false,ERROR);
+         }
+      }
+      
+		/// Security system except for login update
 		if (isset ($_SESSION["glpiID"]) && !haveRight("user", "w") && !strpos($_SERVER['PHP_SELF'],"login.php")) { 
 			if ($_SESSION["glpiID"] == $input['ID']) { 
 				$ret = $updates;
@@ -1284,7 +1298,7 @@ class User extends CommonDBTM {
 							}
 						}
 					}
-					// extauth imap case
+					/// extauth imap case
 					if (isset($this->fields["auth_method"])&&$this->fields["auth_method"] == AUTH_MAIL){
 						unset ($ret["email"]);
 					}
