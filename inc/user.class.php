@@ -1160,10 +1160,12 @@ externalImportDropdown("glpi_dropdown_user_".$k."s",addslashes($v[0][$e][0]),-1,
 			}
 			echo "</td></tr>";
 
-			echo "<tr class='tab_bg_1'><td class='center'>" . $LANG['setup'][41] . " </td><td>";
-			// Use sesion variable because field in table may be null if same of the global config
-			dropdownLanguages("language", $_SESSION["glpilanguage"]);
-			echo "</td></tr>";
+         if (! GLPI_DEMO_MODE){
+            echo "<tr class='tab_bg_1'><td class='center'>" . $LANG['setup'][41] . " </td><td>";
+			   /// Use sesion variable because field in table may be null if same of the global config
+			   dropdownLanguages("language", $_SESSION["glpilanguage"]);
+   			echo "</td></tr>";
+         }
 
 
 			if (count($_SESSION['glpiprofiles'])>1){
