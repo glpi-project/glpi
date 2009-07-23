@@ -488,10 +488,12 @@ function updatedbUpTo031()
 		case "0.71.6":
 			include("update_0713_072.php");
 			update0713to072();
-		case "0.72":
-			include("update_072_075.php");
-			update072to075();
-			break;
+      case "0.72":
+         include("update_072_0721.php");
+         update072to0721();
+      case "0.72.1":
+			include("update_0721_075.php");
+			update0721to075();
 		case "0.75":
 			break;
 		default:
@@ -522,8 +524,10 @@ function updatedbUpTo031()
 			update0712to0713();
 			include("update_0713_072.php");
 			update0713to072();
-			include("update_072_075.php");
-			update072to075();
+         include("update_072_0721.php");
+         update072to0721();
+         include("update_0721_075.php");
+			update0721to075();
 
 			break;
 	}
