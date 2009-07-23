@@ -261,6 +261,9 @@ function showGroupAssociated($target,$ID){
 			$i++;
 		}
 		while ($i%$nb_per_line!=0){
+			if ($canedit){
+				echo "<td>&nbsp;</td>";
+			}
 			echo "<td>&nbsp;</td>";
 			$i++;
 		}
