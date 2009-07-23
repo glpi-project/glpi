@@ -71,9 +71,8 @@ else if (isset($_POST["get_mails"]))
 	$mailgate->check($_POST['ID'],'w');
 
 	$mc=new MailCollect();
-	if ($mailgate->getFromDB($_POST["ID"])){
-		$mc->collect($mailgate->fields["host"],$mailgate->fields["login"],$mailgate->fields["password"],$mailgate->fields["FK_entities"],1);
-	}
+	$mc->collect($_POST["ID"],1);
+
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else
