@@ -62,22 +62,6 @@ class CommonDBTM {
 
 	}
 
-	/**
-	 * Clean cache used by the item $ID
-	 *
-	 *@param $ID ID of the item
-	 *@return nothing
-	 *
-	 **/
-	function cleanCache($ID){
-		global $CFG_GLPI;
-		cleanAllItemCache($ID,"GLPI_".$this->type);
-		cleanAllItemCache("comments_".$ID,"GLPI_".$this->type);
-		if ($CFG_GLPI["use_cache"]){
-			$CFG_GLPI["cache"]->remove("data_".$ID,"GLPI_".$this->table,true);
-		}
-		cleanRelationCache($this->table);
-	}
 
 	/**
 	 * Retrieve an item from the database
@@ -222,9 +206,7 @@ class CommonDBTM {
 			constructHistory($this->fields["ID"],$this->type,$oldvalues,$this->fields);
 		}
 
-		
-		$this->cleanCache($this->fields["ID"]);
-		return true;
+      return true;
 	}
 
 	/**
@@ -269,7 +251,6 @@ class CommonDBTM {
 			$query .= ")";
 			if ($result=$DB->query($query)) {
 				$this->fields["ID"]=$DB->insert_id();
-				cleanRelationCache($this->table);
 				return $this->fields["ID"];
 			} else {
 				return false;
@@ -324,7 +305,6 @@ class CommonDBTM {
 
 			if ($result = $DB->query($query)) {
 				$this->post_deleteFromDB($ID);
-				$this->cleanCache($ID);
 				return true;
 			} else {
 				return false;
@@ -334,7 +314,6 @@ class CommonDBTM {
 			$this->cleanDBonMarkDeleted($ID);
 
 			if ($result = $DB->query($query)){
-				$this->cleanCache($ID);
 				return true;
 			} else {
 				return false;

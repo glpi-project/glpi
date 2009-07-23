@@ -289,14 +289,11 @@ class Netdevice extends CommonDBTM {
 
 		if (!haveRight("networking","r")) return false;
 
-		$use_cache=true;
-
 		if ($ID > 0){
 			$this->check($ID,'r');
 		} else {
 			// Create item 
 			$this->check(-1,'w');
-			$use_cache=false;
 			$this->getEmpty();
 		} 
 
@@ -306,12 +303,10 @@ class Netdevice extends CommonDBTM {
 		$this->showTabs($ID, $withtemplate,$_SESSION['glpi_tab']);
 
 		if(!empty($withtemplate) && $withtemplate == 2) {
-			$use_cache=false;
 			$template = "newcomp";
 			$datestring = $LANG['computers'][14].": ";
 			$date = convDateTime($_SESSION["glpi_currenttime"]);
 		} elseif(!empty($withtemplate) && $withtemplate == 1) { 
-			$use_cache=false;
 			$template = "newtemplate";
 			$datestring = $LANG['computers'][14].": ";
 			$date = convDateTime($_SESSION["glpi_currenttime"]);
@@ -332,121 +327,116 @@ class Netdevice extends CommonDBTM {
 
 		$this->showFormHeader($ID, $withtemplate);
 
-		if (!$use_cache||!($CFG_GLPI["cache"]->start($ID."_".$_SESSION['glpilanguage'],"GLPI_".$this->type))) {
-			echo "<tr><td class='tab_bg_1' valign='top'>\n";
+      echo "<tr><td class='tab_bg_1' valign='top'>\n";
 
-			echo "<table cellpadding='1' cellspacing='0' border='0'>\n";
+      echo "<table cellpadding='1' cellspacing='0' border='0'>\n";
 
-			echo "<tr><td>".$LANG['common'][16].($template?"*":"").":	</td>\n";
-			echo "<td>";
-			$objectName = autoName($this->fields["name"], "name", ($template === "newcomp"), NETWORKING_TYPE,$this->fields["FK_entities"]);
-			autocompletionTextField("name","glpi_networking","name",$objectName,40,$this->fields["FK_entities"]);
-			echo "</td></tr>\n";
+      echo "<tr><td>".$LANG['common'][16].($template?"*":"").":	</td>\n";
+      echo "<td>";
+      $objectName = autoName($this->fields["name"], "name", ($template === "newcomp"), NETWORKING_TYPE,$this->fields["FK_entities"]);
+      autocompletionTextField("name","glpi_networking","name",$objectName,40,$this->fields["FK_entities"]);
+      echo "</td></tr>\n";
 
-			echo "<tr class='tab_bg_1'><td>".$LANG['common'][5].": 	</td><td colspan='2'>\n";
-			dropdownValue("glpi_dropdown_manufacturer","FK_glpi_enterprise",$this->fields["FK_glpi_enterprise"]);
-			echo "</td></tr>\n";
+      echo "<tr class='tab_bg_1'><td>".$LANG['common'][5].": 	</td><td colspan='2'>\n";
+      dropdownValue("glpi_dropdown_manufacturer","FK_glpi_enterprise",$this->fields["FK_glpi_enterprise"]);
+      echo "</td></tr>\n";
 
-			echo "<tr><td>".$LANG['common'][15].": 	</td><td>\n";
-			dropdownValue("glpi_dropdown_locations", "location", $this->fields["location"],1,$this->fields["FK_entities"]);
-			echo "</td></tr>\n";
+      echo "<tr><td>".$LANG['common'][15].": 	</td><td>\n";
+      dropdownValue("glpi_dropdown_locations", "location", $this->fields["location"],1,$this->fields["FK_entities"]);
+      echo "</td></tr>\n";
 
-			echo "<tr class='tab_bg_1'><td>".$LANG['common'][10].": 	</td><td colspan='2'>\n";
-			dropdownUsersID("tech_num", $this->fields["tech_num"],"interface",1,$this->fields["FK_entities"]);
-			echo "</td></tr>\n";
+      echo "<tr class='tab_bg_1'><td>".$LANG['common'][10].": 	</td><td colspan='2'>\n";
+      dropdownUsersID("tech_num", $this->fields["tech_num"],"interface",1,$this->fields["FK_entities"]);
+      echo "</td></tr>\n";
 
-			echo "<tr><td>".$LANG['common'][21].":	</td><td>\n";
-			autocompletionTextField("contact_num","glpi_networking","contact_num",$this->fields["contact_num"],40,$this->fields["FK_entities"]);
-			echo "</td></tr>\n";
+      echo "<tr><td>".$LANG['common'][21].":	</td><td>\n";
+      autocompletionTextField("contact_num","glpi_networking","contact_num",$this->fields["contact_num"],40,$this->fields["FK_entities"]);
+      echo "</td></tr>\n";
 
-			echo "<tr><td>".$LANG['common'][18].":	</td><td>\n";
-			autocompletionTextField("contact","glpi_networking","contact",$this->fields["contact"],40,$this->fields["FK_entities"]);
-			echo "</td></tr>\n";
+      echo "<tr><td>".$LANG['common'][18].":	</td><td>\n";
+      autocompletionTextField("contact","glpi_networking","contact",$this->fields["contact"],40,$this->fields["FK_entities"]);
+      echo "</td></tr>\n";
 
-			echo "<tr><td>".$LANG['common'][34].": 	</td><td>";
-			dropdownAllUsers("FK_users", $this->fields["FK_users"],1,$this->fields["FK_entities"]);
-			echo "</td></tr>";
+      echo "<tr><td>".$LANG['common'][34].": 	</td><td>";
+      dropdownAllUsers("FK_users", $this->fields["FK_users"],1,$this->fields["FK_entities"]);
+      echo "</td></tr>";
 
-			echo "<tr><td>".$LANG['common'][35].": 	</td><td>";
-			dropdownValue("glpi_groups", "FK_groups", $this->fields["FK_groups"],1,$this->fields["FK_entities"]);
-			echo "</td></tr>";
+      echo "<tr><td>".$LANG['common'][35].": 	</td><td>";
+      dropdownValue("glpi_groups", "FK_groups", $this->fields["FK_groups"],1,$this->fields["FK_entities"]);
+      echo "</td></tr>";
 
-			echo "<tr><td>".$LANG['state'][0].":</td><td>\n";
-			dropdownValue("glpi_dropdown_state", "state",$this->fields["state"]);
-			echo "</td></tr>\n";
+      echo "<tr><td>".$LANG['state'][0].":</td><td>\n";
+      dropdownValue("glpi_dropdown_state", "state",$this->fields["state"]);
+      echo "</td></tr>\n";
 
-			echo "<tr><td>$datestring</td><td>$date\n";
-			if (!$template&&!empty($this->fields['tplname'])) {
-				echo "&nbsp;&nbsp;&nbsp;(".$LANG['common'][13].": ".$this->fields['tplname'].")";
-			}
-			echo "</td></tr>\n";
+      echo "<tr><td>$datestring</td><td>$date\n";
+      if (!$template&&!empty($this->fields['tplname'])) {
+         echo "&nbsp;&nbsp;&nbsp;(".$LANG['common'][13].": ".$this->fields['tplname'].")";
+      }
+      echo "</td></tr>\n";
 
-			echo "</table>\n";
+      echo "</table>\n";
 
-			echo "</td>\n";	
-			echo "<td class='tab_bg_1' valign='top'>\n";
+      echo "</td>\n";
+      echo "<td class='tab_bg_1' valign='top'>\n";
 
-			echo "<table cellpadding='1' cellspacing='0' border='0'>\n";
+      echo "<table cellpadding='1' cellspacing='0' border='0'>\n";
 
-			echo "<tr><td>".$LANG['common'][17].": 	</td><td>\n";
-			dropdownValue("glpi_type_networking", "type", $this->fields["type"]);
-			echo "</td></tr>\n";
+      echo "<tr><td>".$LANG['common'][17].": 	</td><td>\n";
+      dropdownValue("glpi_type_networking", "type", $this->fields["type"]);
+      echo "</td></tr>\n";
 
-			echo "<tr><td>".$LANG['common'][22].": 	</td><td>";
-			dropdownValue("glpi_dropdown_model_networking", "model", $this->fields["model"]);
-			echo "</td></tr>";
+      echo "<tr><td>".$LANG['common'][22].": 	</td><td>";
+      dropdownValue("glpi_dropdown_model_networking", "model", $this->fields["model"]);
+      echo "</td></tr>";
 
-			echo "<tr><td>".$LANG['setup'][71].": 	</td><td>\n";
-			dropdownValue("glpi_dropdown_firmware", "firmware", $this->fields["firmware"]);
-			echo "</td></tr>\n";
+      echo "<tr><td>".$LANG['setup'][71].": 	</td><td>\n";
+      dropdownValue("glpi_dropdown_firmware", "firmware", $this->fields["firmware"]);
+      echo "</td></tr>\n";
 
-			echo "<tr><td>".$LANG['networking'][5].":	</td><td>\n";
-			autocompletionTextField("ram","glpi_networking","ram",$this->fields["ram"],40,$this->fields["FK_entities"]);
-			echo "</td></tr>\n";
+      echo "<tr><td>".$LANG['networking'][5].":	</td><td>\n";
+      autocompletionTextField("ram","glpi_networking","ram",$this->fields["ram"],40,$this->fields["FK_entities"]);
+      echo "</td></tr>\n";
 
-			echo "<tr><td>".$LANG['common'][19].":	</td><td>\n";
-			autocompletionTextField("serial","glpi_networking","serial",$this->fields["serial"],40,$this->fields["FK_entities"]);
-			echo "</td></tr>\n";
+      echo "<tr><td>".$LANG['common'][19].":	</td><td>\n";
+      autocompletionTextField("serial","glpi_networking","serial",$this->fields["serial"],40,$this->fields["FK_entities"]);
+      echo "</td></tr>\n";
 
-			echo "<tr><td>".$LANG['common'][20].($template?"*":"").":</td><td>\n";
-			$objectName = autoName($this->fields["otherserial"], "otherserial", ($template === "newcomp"), NETWORKING_TYPE,$this->fields["FK_entities"]);
-			autocompletionTextField("otherserial","glpi_networking","otherserial",$objectName,40,$this->fields["FK_entities"]);
-			echo "</td></tr>\n";
+      echo "<tr><td>".$LANG['common'][20].($template?"*":"").":</td><td>\n";
+      $objectName = autoName($this->fields["otherserial"], "otherserial", ($template === "newcomp"), NETWORKING_TYPE,$this->fields["FK_entities"]);
+      autocompletionTextField("otherserial","glpi_networking","otherserial",$objectName,40,$this->fields["FK_entities"]);
+      echo "</td></tr>\n";
 
-			echo "<tr><td>".$LANG['setup'][88].": 	</td><td>\n";
-			dropdownValue("glpi_dropdown_network", "network", $this->fields["network"]);
-			echo "</td></tr>\n";
+      echo "<tr><td>".$LANG['setup'][88].": 	</td><td>\n";
+      dropdownValue("glpi_dropdown_network", "network", $this->fields["network"]);
+      echo "</td></tr>\n";
 
-			echo "<tr><td>".$LANG['setup'][89].": 	</td><td>\n";
-			dropdownValue("glpi_dropdown_domain", "domain", $this->fields["domain"]);
-			echo "</td></tr>\n";
+      echo "<tr><td>".$LANG['setup'][89].": 	</td><td>\n";
+      dropdownValue("glpi_dropdown_domain", "domain", $this->fields["domain"]);
+      echo "</td></tr>\n";
 
-			echo "<tr><td>".$LANG['networking'][14].":</td><td>\n";
-			autocompletionTextField("ifaddr","glpi_networking","ifaddr",$this->fields["ifaddr"],40,$this->fields["FK_entities"]);
-			echo "</td></tr>\n";
+      echo "<tr><td>".$LANG['networking'][14].":</td><td>\n";
+      autocompletionTextField("ifaddr","glpi_networking","ifaddr",$this->fields["ifaddr"],40,$this->fields["FK_entities"]);
+      echo "</td></tr>\n";
 
-			echo "<tr><td>".$LANG['networking'][15].":</td><td>\n";
-			autocompletionTextField("ifmac","glpi_networking","ifmac",$this->fields["ifmac"],40,$this->fields["FK_entities"]);
-			echo "</td></tr>\n";
+      echo "<tr><td>".$LANG['networking'][15].":</td><td>\n";
+      autocompletionTextField("ifmac","glpi_networking","ifmac",$this->fields["ifmac"],40,$this->fields["FK_entities"]);
+      echo "</td></tr>\n";
 
-			echo "</table>\n";
+      echo "</table>\n";
 
-			echo "</td>\n";	
-			echo "</tr>\n";
-			echo "<tr>\n";
-			echo "<td class='tab_bg_1' valign='top' colspan='2'>\n";
+      echo "</td>\n";
+      echo "</tr>\n";
+      echo "<tr>\n";
+      echo "<td class='tab_bg_1' valign='top' colspan='2'>\n";
 
-			echo "<table width='100%' cellpadding='0' cellspacing='0' border='0'><tr><td valign='top'>\n";
-			echo $LANG['common'][25].":	</td>\n";
-			echo "<td class='center'><textarea cols='80' rows='4' name='comments' >".$this->fields["comments"]."</textarea>\n";
-			echo "</td></tr></table>\n";
+      echo "<table width='100%' cellpadding='0' cellspacing='0' border='0'><tr><td valign='top'>\n";
+      echo $LANG['common'][25].":	</td>\n";
+      echo "<td class='center'><textarea cols='80' rows='4' name='comments' >".$this->fields["comments"]."</textarea>\n";
+      echo "</td></tr></table>\n";
 
-			echo "</td>";
-			echo "</tr>\n";
-			if ($use_cache){
-				$CFG_GLPI["cache"]->end();
-			}
-		}
+      echo "</td>";
+      echo "</tr>\n";
 
 		if ($canedit) {
 			echo "<tr class='tab_bg_2'>\n";

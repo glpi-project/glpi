@@ -301,44 +301,6 @@ if (!defined('GLPI_ROOT')){
 	}
 
 	/**
- 	* Clean cache cron function
- 	*
- 	**/
-	function cron_cache(){
-		global $CFG_GLPI;
-		if ($CFG_GLPI["use_cache"]){
-			$max_recursion=5;
-			$lifetime=DEFAULT_CACHE_LIFETIME;
-			$max_size=$CFG_GLPI['cache_max_size']*1024*1024;
-			while ($max_recursion>0&&(($size=filesizeDirectory(GLPI_CACHE_DIR))>$max_size)){
-				$cache_options = array(
-					'cacheDir' => GLPI_CACHE_DIR,
-					'lifeTime' => $lifetime,
-					'automaticSerialization' => true,
-					'caching' => $CFG_GLPI["use_cache"],
-					'hashedDirectoryLevel' => 2,
-					'fileLocking' => CACHE_FILELOCKINGCONTROL,
-					'writeControl' => CACHE_WRITECONTROL,
-					'readControl' => CACHE_READCONTROL,
-				);
-				$cache = new Cache_Lite($cache_options);
-				$cache->clean(false,"old");
-	
-				logInFile("cron","Clean cache created since more than $lifetime seconds\n");
-				$lifetime/=2;
-				$max_recursion--;
-			}
-			if ($max_recursion>0){
-				return 1;
-			} else {
-				return -1;
-			}
-		} else {
-			return 1;
-		}
-	}
-
-	/**
 	 * Garbage collector for expired file session
 	 *
 	 **/
@@ -383,101 +345,15 @@ function filesizeDirectory($path){
    	}
 }
 
-
 /**
- * Clean cache function
- *
- * @param $group string: group to clean (if not set clean all the cache)
- * @return nothing
- **/
-function cleanCache($group=""){
-	global $CFG_GLPI;
-	if (isset($CFG_GLPI["use_cache"])&&$CFG_GLPI["use_cache"]){
-		include_once (GLPI_CACHE_LITE_DIR."/Lite.php");
-	
-		$cache_options = array(
-			'cacheDir' => GLPI_CACHE_DIR,
-			'lifeTime' => 0,
-			'hashedDirectoryLevel' => 2,
-			'fileLocking' => CACHE_FILELOCKINGCONTROL,
-			'writeControl' => CACHE_WRITECONTROL,
-			'readControl' => CACHE_READCONTROL,
-			);
-		$CACHE = new Cache_Lite($cache_options);
-		if (empty($group)){
-			$CACHE->clean();
-		} else {
-			$CACHE->clean($group,"ingroup");
-		}
-	}
-
-}
-
-/**
- * Clean cache function for relations using a specific table
- *
- * @param $table string: table used. Need to clean all cache using this table
- * @return nothing
- **/
-function cleanRelationCache($table){
-	global $LINK_ID_TABLE,$CFG_GLPI;
-	if ($CFG_GLPI["use_cache"]){
-		$RELATION=getDbRelations();
-		if (isset($RELATION[$table])){
-			foreach ($RELATION[$table] as $tablename => $field){
-				if ($key=array_search($tablename,$LINK_ID_TABLE)){
-					cleanCache("GLPI_$key");
-				}
-			}
-		}
-	}
-}
-
-/**
- * Clean all dict cache
- *
- * @param $group string: cache group
- * @param $item  string: remove cache for item
- * @return nothing
- **/
-function cleanAllItemCache($item,$group){
-	global $CFG_GLPI;
-	if ($CFG_GLPI["use_cache"]){
-		foreach ($CFG_GLPI["languages"] as $key => $val){
-			// clean main sheet
-			$CFG_GLPI["cache"]->remove($item."_".$key,$group,true);
-		}
-	}
-}
-
-
-/**
- * Get the SEARCH_OPTION array using cache
+ * Get the SEARCH_OPTION array 
  *
  * @return the SEARCH_OPTION array
  **/
 function getSearchOptions(){
 	global $LANG,$CFG_GLPI,$PLUGIN_HOOKS;
-	$options = array(
-		'cacheDir' => GLPI_CACHE_DIR,
-		'lifeTime' => DEFAULT_CACHE_LIFETIME,
-		'automaticSerialization' => true,
-		'caching' => $CFG_GLPI["use_cache"],
-		'hashedDirectoryLevel' => 2,
-		'masterFile' => GLPI_ROOT . "/inc/search.constant.php",
-		'fileLocking' => CACHE_FILELOCKINGCONTROL,
-		'writeControl' => CACHE_WRITECONTROL,
-		'readControl' => CACHE_READCONTROL,
-	);
-	$cache = new Cache_Lite_File($options);
-
-	// Set a id for this cache : $file
-	if (!($SEARCH_OPTION = $cache->get("OPTIONS","GLPI_SEARCH_".$_SESSION['glpilanguage']))) {
-		// Cache miss !
-		// Put in $SEARCH_OPTION datas to put in cache
-		include (GLPI_ROOT . "/inc/search.constant.php");
-		$cache->save($SEARCH_OPTION,"OPTIONS","GLPI_SEARCH_".$_SESSION['glpilanguage']);
-	}
+	
+   include (GLPI_ROOT . "/inc/search.constant.php");
 	
 	$plugsearch=getPluginSearchOption();
 	if (count($plugsearch)){
@@ -496,32 +372,14 @@ function getSearchOptions(){
 }
 
 /**
- * Get the $RELATION array using cache. It's defined all relations between tables in the DB.
+ * Get the $RELATION array. It's defined all relations between tables in the DB.
  *
  * @return the $RELATION array
  **/
 function getDbRelations(){
 	global $CFG_GLPI;
-	$options = array(
-		'cacheDir' => GLPI_CACHE_DIR,
-		'lifeTime' => DEFAULT_CACHE_LIFETIME,
-		'automaticSerialization' => true,
-		'caching' => $CFG_GLPI["use_cache"],
-		'hashedDirectoryLevel' => 2,
-		'masterFile' => GLPI_ROOT . "/inc/relation.constant.php",
-		'fileLocking' => CACHE_FILELOCKINGCONTROL,
-		'writeControl' => CACHE_WRITECONTROL,
-		'readControl' => CACHE_READCONTROL,
-	);
-	$cache = new Cache_Lite_File($options);
-
-	// Set a id for this cache : $file
-	if (!($RELATION = $cache->get("OPTIONS","GLPI_RELATION"))) {
-		// Cache miss !
-		// Put in $SEARCH_OPTION datas to put in cache
-		include (GLPI_ROOT . "/inc/relation.constant.php");
-		$cache->save($RELATION,"OPTIONS","GLPI_RELATION");
-	}
+		
+	include (GLPI_ROOT . "/inc/relation.constant.php");
 
 	// Add plugins relations
 	$plug_rel=getPluginsDatabaseRelations();

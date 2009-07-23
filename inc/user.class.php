@@ -344,14 +344,6 @@ class User extends CommonDBTM {
 	}
 
 
-	function post_updateItem($input, $updates, $history=1) {
-		global $CFG_GLPI;
-		// Clean header cache for the user
-		if (in_array("language", $updates) && isset ($input["ID"])) {
-			cleanCache("GLPI_HEADER_".$input["ID"]);
-		}
-	}
-
 	// SPECIFIC FUNCTIONS
 	/**
 	 * Apply rules to determine dynamic rights of the user
@@ -919,9 +911,7 @@ class User extends CommonDBTM {
 		$caneditpassword=$this->currentUserHaveMoreRightThan($ID);
 
 		$spotted = false;
-		$use_cache=true;
 		if (empty ($ID)) {
-			$use_cache=false;
 			if ($this->getEmpty()){
 				$spotted = true;
 			}
@@ -988,94 +978,90 @@ class User extends CommonDBTM {
 				} else {
 					echo "<td colspan='2'>&nbsp;</td></tr>";
 				}
-			} else
+			} else {
 				echo "<td colspan='2'>&nbsp;</td></tr>";
+         }
 
-			if (!$use_cache||!($CFG_GLPI["cache"]->start($ID . "_" . $_SESSION['glpilanguage'], "GLPI_" . $this->type))) {
-				echo "<tr class='tab_bg_1'><td class='center'>" . $LANG['common'][48] . ":</td><td>";
-				autocompletionTextField("realname", "glpi_users", "realname", $this->fields["realname"], 40);
-				echo "</td>";
-				echo "<td class='center'>" . $LANG['common'][43] . ":</td><td>";
-				autocompletionTextField("firstname", "glpi_users", "firstname", $this->fields["firstname"], 40);
-				echo "</td></tr>";
+         echo "<tr class='tab_bg_1'><td class='center'>" . $LANG['common'][48] . ":</td><td>";
+         autocompletionTextField("realname", "glpi_users", "realname", $this->fields["realname"], 40);
+         echo "</td>";
+         echo "<td class='center'>" . $LANG['common'][43] . ":</td><td>";
+         autocompletionTextField("firstname", "glpi_users", "firstname", $this->fields["firstname"], 40);
+         echo "</td></tr>";
 
-				echo "<tr class='tab_bg_1'><td class='center'>" . $LANG['common'][42] . ":</td><td>";
-				autocompletionTextField("mobile", "glpi_users", "mobile", $this->fields["mobile"], 40);
-				echo "</td>";
-				echo "<td class='center'>" . $LANG['setup'][14] . ":</td><td>";
-				autocompletionTextField("email_form", "glpi_users", "email", $this->fields["email"], 40);
-				if (!empty($ID)&&!isValidEmail($this->fields["email"])){
-					echo "<span class='red'>&nbsp;".$LANG['mailing'][110]."</span>";
-				}
-				echo "</td></tr>";
+         echo "<tr class='tab_bg_1'><td class='center'>" . $LANG['common'][42] . ":</td><td>";
+         autocompletionTextField("mobile", "glpi_users", "mobile", $this->fields["mobile"], 40);
+         echo "</td>";
+         echo "<td class='center'>" . $LANG['setup'][14] . ":</td><td>";
+         autocompletionTextField("email_form", "glpi_users", "email", $this->fields["email"], 40);
+         if (!empty($ID)&&!isValidEmail($this->fields["email"])){
+            echo "<span class='red'>&nbsp;".$LANG['mailing'][110]."</span>";
+         }
+         echo "</td></tr>";
 
-				echo "<tr class='tab_bg_1'><td class='center'>" . $LANG['help'][35] . ":</td><td>";
-				autocompletionTextField("phone", "glpi_users", "phone", $this->fields["phone"], 40);
-				echo "</td>";
-				echo "<td class='center'>" . $LANG['help'][35] . " 2:</td><td>";
-				autocompletionTextField("phone2", "glpi_users", "phone2", $this->fields["phone2"], 40);
-				echo "</td></tr>";
+         echo "<tr class='tab_bg_1'><td class='center'>" . $LANG['help'][35] . ":</td><td>";
+         autocompletionTextField("phone", "glpi_users", "phone", $this->fields["phone"], 40);
+         echo "</td>";
+         echo "<td class='center'>" . $LANG['help'][35] . " 2:</td><td>";
+         autocompletionTextField("phone2", "glpi_users", "phone2", $this->fields["phone2"], 40);
+         echo "</td></tr>";
 
-				echo "<tr class='tab_bg_1'><td class='center'>" . $LANG['common'][15] . ":</td><td>";
-				if (!empty($ID)){
-					if (count($entities)>0){
-						dropdownValue("glpi_dropdown_locations", "location", $this->fields["location"],1,$entities);
-					} else {
-						echo "&nbsp;";
-					}
-				} else {
-					if (!isMultiEntitiesMode()){
-						// Display all locations : only one entity
-						dropdownValue("glpi_dropdown_locations", "location", $this->fields["location"],1);
-					} else {
-						echo "&nbsp;";
-					}
-				}
-				echo "</td>";
-				echo "<td class='center'>".$LANG['common'][60]."</td><td>";
-				dropdownYesNo('active',$this->fields['active']);
-				echo "</td></tr>";
+         echo "<tr class='tab_bg_1'><td class='center'>" . $LANG['common'][15] . ":</td><td>";
+         if (!empty($ID)){
+            if (count($entities)>0){
+               dropdownValue("glpi_dropdown_locations", "location", $this->fields["location"],1,$entities);
+            } else {
+               echo "&nbsp;";
+            }
+         } else {
+            if (!isMultiEntitiesMode()){
+               // Display all locations : only one entity
+               dropdownValue("glpi_dropdown_locations", "location", $this->fields["location"],1);
+            } else {
+               echo "&nbsp;";
+            }
+         }
+         echo "</td>";
+         echo "<td class='center'>".$LANG['common'][60]."</td><td>";
+         dropdownYesNo('active',$this->fields['active']);
+         echo "</td></tr>";
 
-				echo "<tr class='tab_bg_1'><td class='center'>" . $LANG['users'][1] . "</td><td>";
-					dropdownValue("glpi_dropdown_user_titles","title",$this->fields["title"],1,-1);
+         echo "<tr class='tab_bg_1'><td class='center'>" . $LANG['users'][1] . "</td><td>";
+            dropdownValue("glpi_dropdown_user_titles","title",$this->fields["title"],1,-1);
 
-				echo "<td class='center'>" . $LANG['users'][2] . "</td><td>";
-					dropdownValue("glpi_dropdown_user_types","type",$this->fields["type"],1,-1);
-				echo "</td></tr>";
+         echo "<td class='center'>" . $LANG['users'][2] . "</td><td>";
+            dropdownValue("glpi_dropdown_user_types","type",$this->fields["type"],1,-1);
+         echo "</td></tr>";
 
-				echo "<tr class='tab_bg_1' align='center'><td>" . $LANG['common'][25] . ":</td><td colspan='3'><textarea  cols='70' rows='3' name='comments' >" . $this->fields["comments"] . "</textarea></td>";
-				echo "</tr>";
+         echo "<tr class='tab_bg_1' align='center'><td>" . $LANG['common'][25] . ":</td><td colspan='3'><textarea  cols='70' rows='3' name='comments' >" . $this->fields["comments"] . "</textarea></td>";
+         echo "</tr>";
 
-				//Authentications informations : auth method used and server used
-				//don't display is creation of a new user'
-				if (!empty ($ID)) {
-					if (haveRight("user_auth_method", "r")){
-						echo "<tr class='tab_bg_1' align='center'><td>" . $LANG['login'][10] . ":</td><td class='center'>";
+         //Authentications informations : auth method used and server used
+         //don't display is creation of a new user'
+         if (!empty ($ID)) {
+            if (haveRight("user_auth_method", "r")){
+               echo "<tr class='tab_bg_1' align='center'><td>" . $LANG['login'][10] . ":</td><td class='center'>";
 
-						echo getAuthMethodName($this->fields["auth_method"], $this->fields["id_auth"], 1);
+               echo getAuthMethodName($this->fields["auth_method"], $this->fields["id_auth"], 1);
 
-						echo "</td><td align='center' colspan='2'></td>";
-						echo "</tr>";
-					}
-					
-					echo "<tr class='tab_bg_1' align='center'><td>" . $LANG['login'][24] . ":</td><td class='center'>";
-					if (!empty($this->fields["date_mod"])){
-						echo convDateTime($this->fields["date_mod"]);
-					}
-					echo "</td><td>" . $LANG['login'][0] . ":</td><td>";
+               echo "</td><td align='center' colspan='2'></td>";
+               echo "</tr>";
+            }
+            
+            echo "<tr class='tab_bg_1' align='center'><td>" . $LANG['login'][24] . ":</td><td class='center'>";
+            if (!empty($this->fields["date_mod"])){
+               echo convDateTime($this->fields["date_mod"]);
+            }
+            echo "</td><td>" . $LANG['login'][0] . ":</td><td>";
 
-					if (!empty($this->fields["last_login"])){
-						echo convDateTime($this->fields["last_login"]);
-					}
+            if (!empty($this->fields["last_login"])){
+               echo convDateTime($this->fields["last_login"]);
+            }
 
-					echo "</td>";
-					echo "</tr>";
+            echo "</td>";
+            echo "</tr>";
 
-				}
-				if ($use_cache){
-					$CFG_GLPI["cache"]->end();
-				}
-			}
+         }
 
 			if ($canedit){
 				if ($this->fields["name"] == "") {

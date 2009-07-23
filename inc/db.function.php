@@ -238,11 +238,11 @@ function getTreeValueName($table,$ID, $wholename="",$level=0){
 function getEntityAncestors ($ID){
 	global $CFG_GLPI;
 
-	if (($ancestors = $CFG_GLPI['opcache']->get($ID,"GLPI_entities_ancestors"))===false) {
+//	if (($ancestors = $CFG_GLPI['opcache']->get($ID,"GLPI_entities_ancestors"))===false) {
 		// Cache miss !
 		$ancestors=getAncestorsOfTreeItem("glpi_entities",$ID);
-		$CFG_GLPI['opcache']->save($ancestors,$ID,"GLPI_entities_ancestors");
-	}
+//		$CFG_GLPI['opcache']->save($ancestors,$ID,"GLPI_entities_ancestors");
+//	}
 	return $ancestors;
 }
 
@@ -256,11 +256,11 @@ function getEntityAncestors ($ID){
 function getEntitySons ($ID){
 	global $CFG_GLPI;
 
-	if (!($sons = $CFG_GLPI['opcache']->get($ID,"GLPI_entities_sons"))) {
+//	if (!($sons = $CFG_GLPI['opcache']->get($ID,"GLPI_entities_sons"))) {
 		// Cache miss !
 		$sons=getSonsOfTreeItem("glpi_entities",$ID);
-		$CFG_GLPI['opcache']->save($sons,$ID,"GLPI_entities_sons");
-	}
+//		$CFG_GLPI['opcache']->save($sons,$ID,"GLPI_entities_sons");
+//	}
 	return $sons;
 }
 

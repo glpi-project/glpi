@@ -49,10 +49,6 @@ include_once (GLPI_ROOT . "/inc/plugin.class.php");
 include_once (GLPI_ROOT . "/config/based_config.php");
 include_once (GLPI_CONFIG_DIR . "/config_db.php");
 
-// Clean cache if directory is writable
-//if (is_writable(GLPI_CACHE_DIR)){
-//	cleanCache();
-//}
 // Use default session dir if not writable
 if (is_writable(GLPI_SESSION_DIR)){
 	setGlpiSessionPath();
@@ -492,9 +488,9 @@ function updatedbUpTo031()
          include("update_072_0721.php");
          update072to0721();
       case "0.72.1":
-			include("update_0721_075.php");
-			update0721to075();
-		case "0.75":
+			include("update_0721_080.php");
+			update0721to080();
+		case "0.80":
 			break;
 		default:
 			include("update_031_04.php");
@@ -526,14 +522,14 @@ function updatedbUpTo031()
 			update0713to072();
          include("update_072_0721.php");
          update072to0721();
-         include("update_0721_075.php");
-			update0721to075();
+         include("update_0721_080.php");
+			update0721to080();
 
 			break;
 	}
 
 	// Update version number and default langage and new version_founded ---- LEAVE AT THE END
-	$query = "UPDATE `glpi_config` SET `version` = ' 0.75', language='".$glpilanguage."',founded_new_version='' ;";
+	$query = "UPDATE `glpi_config` SET `version` = ' 0.80', language='".$glpilanguage."',founded_new_version='' ;";
 	$DB->query($query) or die("0.6 ".$LANG['update'][90].$DB->error());
 
 	// Update process desactivate all plugins

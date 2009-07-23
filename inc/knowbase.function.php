@@ -547,53 +547,49 @@ function ShowKbItemFull($ID,$linkauthor=true){
 		
 		echo $LANG['common'][36].": <a href='".$CFG_GLPI["root_doc"]."/front/".(isset($_SESSION['glpiactiveprofile'])&&$_SESSION['glpiactiveprofile']['interface']=="central"?"knowbase.php":"helpdesk.faq.php")."?parentID=$categoryID'>".$fullcategoryname."</a></th></tr>";
 	
-		if (!($CFG_GLPI["cache"]->start($ID."_".$_SESSION['glpilanguage'],"GLPI_".$ki->type))) {
-		
-			echo "<tr class='tab_bg_3'><td class='left' colspan='2'><h2>";
-			echo ($ki->fields["faq"]) ? "".$LANG['knowbase'][3]."" : "".$LANG['knowbase'][14]."";
-			echo "</h2>";
-		
-			echo $ki->fields["question"];
-		
-			echo "</td></tr>\n";
-			echo "<tr  class='tab_bg_3'><td class='left' colspan='2'><h2>";
-			echo ($ki->fields["faq"]) ? "".$LANG['knowbase'][4]."" : "".$LANG['knowbase'][15]."";
-			echo "</h2>\n";
-		
-			$answer = unclean_cross_side_scripting_deep($ki->fields["answer"]);
-		
-			echo "<div id='kbanswer'>".$answer."</div>";
-			echo "</td></tr>";
-		
-			echo "<tr><th class='tdkb'>";
-			if($ki->fields["author"]){
-				echo $LANG['common'][37]." : ";
-				// Integer because true may be 2 and getUserName return array
-				if ($linkauthor){
-					$linkauthor=1;
-				} else {
-					$linkauthor=0;
-				}
+      echo "<tr class='tab_bg_3'><td class='left' colspan='2'><h2>";
+      echo ($ki->fields["faq"]) ? "".$LANG['knowbase'][3]."" : "".$LANG['knowbase'][14]."";
+      echo "</h2>";
+   
+      echo $ki->fields["question"];
+   
+      echo "</td></tr>\n";
+      echo "<tr  class='tab_bg_3'><td class='left' colspan='2'><h2>";
+      echo ($ki->fields["faq"]) ? "".$LANG['knowbase'][4]."" : "".$LANG['knowbase'][15]."";
+      echo "</h2>\n";
+   
+      $answer = unclean_cross_side_scripting_deep($ki->fields["answer"]);
+   
+      echo "<div id='kbanswer'>".$answer."</div>";
+      echo "</td></tr>";
+   
+      echo "<tr><th class='tdkb'>";
+      if($ki->fields["author"]){
+         echo $LANG['common'][37]." : ";
+         // Integer because true may be 2 and getUserName return array
+         if ($linkauthor){
+            $linkauthor=1;
+         } else {
+            $linkauthor=0;
+         }
 
-				echo getUserName($ki->fields["author"],$linkauthor);
+         echo getUserName($ki->fields["author"],$linkauthor);
 
-				echo "&nbsp;&nbsp;|&nbsp;&nbsp;  ";
-			}
-			if($ki->fields["date"]){
-				echo $LANG['knowbase'][27]." : ". convDateTime($ki->fields["date"]);
-			}	
-		
-			echo "</th><th class='tdkb'>";
-			if($ki->fields["date_mod"]){
-				echo  $LANG['common'][26]." : ".convDateTime($ki->fields["date_mod"])."&nbsp;&nbsp;|&nbsp;&nbsp; ";
-			}
-			echo $LANG['knowbase'][26]." : ".$ki->fields["view"]."</th></tr>";
-		
-			echo "</table><br>";
+         echo "&nbsp;&nbsp;|&nbsp;&nbsp;  ";
+      }
+      if($ki->fields["date"]){
+         echo $LANG['knowbase'][27]." : ". convDateTime($ki->fields["date"]);
+      }
+   
+      echo "</th><th class='tdkb'>";
+      if($ki->fields["date_mod"]){
+         echo  $LANG['common'][26]." : ".convDateTime($ki->fields["date_mod"])."&nbsp;&nbsp;|&nbsp;&nbsp; ";
+      }
+      echo $LANG['knowbase'][26]." : ".$ki->fields["view"]."</th></tr>";
+   
+      echo "</table><br>";
 			
-			$CFG_GLPI["cache"]->end();
-		}
-		return true;	
+		return true;
 	} else return false;
 }
 

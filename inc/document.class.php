@@ -172,14 +172,11 @@ class Document extends CommonDBTM {
 
 		if (!haveRight("document","r"))	return false;
 
-		$use_cache=true;
-
 		if ($ID > 0){
 			$this->check($ID,'r');
 		} else {
 			// Create item 
 			$this->check(-1,'w');
-			$use_cache=false;
 			$this->getEmpty();
 		} 
 
@@ -209,60 +206,55 @@ class Document extends CommonDBTM {
 			echo "</tr>\n";
 		}
 
-		if (!$use_cache||!($CFG_GLPI["cache"]->start($ID."_".$_SESSION['glpilanguage'],"GLPI_".$this->type))) {
-			echo "<tr class='tab_bg_1'><td>".$LANG['common'][16].":		</td>";
-			echo "<td>";
-			autocompletionTextField("name","glpi_docs","name",$this->fields["name"],80,$this->fields["FK_entities"]);
-			echo "</td></tr>";
-	
-			if (!empty($ID)){
-				echo "<tr class='tab_bg_1'><td>".$LANG['document'][22].":		</td>";
-				echo "<td>".getDocumentLink($this->fields["filename"])."";
-				echo "<input type='hidden' name='current_filename' value='".$this->fields["filename"]."'>";
-				echo "</td></tr>";
-			}
-			$max_size=return_bytes_from_ini_vars(ini_get("upload_max_filesize"));
-			$max_size/=1024*1024;
-			$max_size=round($max_size,1);
-	
-			echo "<tr class='tab_bg_1'><td>".$LANG['document'][2]." (".$max_size." Mb max):	</td>";
-			echo "<td><input type='file' name='filename' value=\"".$this->fields["filename"]."\" size='40'></td>";
-			echo "</tr>";
-	
-			echo "<tr class='tab_bg_1'><td>".$LANG['document'][36].":		</td>";
-			echo "<td>";
-			showUploadedFilesDropdown("upload_file");
-			echo "</td></tr>";
-	
-	
-			echo "<tr class='tab_bg_1'><td>".$LANG['document'][33].":		</td>";
-			echo "<td>";
-			autocompletionTextField("link","glpi_docs","link",$this->fields["link"],40,$this->fields["FK_entities"]);
-			echo "</td></tr>";
-	
-			echo "<tr class='tab_bg_1'><td>".$LANG['document'][3].":		</td>";
-			echo "<td>";
-			dropdownValue("glpi_dropdown_rubdocs","rubrique",$this->fields["rubrique"]);
-			echo "</td></tr>";
-	
-			echo "<tr class='tab_bg_1'><td>".$LANG['document'][4].":		</td>";
-			echo "<td>";
-			autocompletionTextField("mime","glpi_docs","mime",$this->fields["mime"],40,$this->fields["FK_entities"]);
-			echo "</td></tr>";
-	
-			echo "<tr>";
-			echo "<td class='tab_bg_1' valign='top'>";
-	
-			// table commentaires
-			echo $LANG['common'][25].":	</td>";
-			echo "<td class='tab_bg_1'><textarea cols='70' rows='4' name='comments' >".$this->fields["comments"]."</textarea>";
-	
-			echo "</td>";
-			echo "</tr>";
-			if ($use_cache){
-				$CFG_GLPI["cache"]->end();
-			}
-		}
+      echo "<tr class='tab_bg_1'><td>".$LANG['common'][16].":		</td>";
+      echo "<td>";
+      autocompletionTextField("name","glpi_docs","name",$this->fields["name"],80,$this->fields["FK_entities"]);
+      echo "</td></tr>";
+
+      if (!empty($ID)){
+         echo "<tr class='tab_bg_1'><td>".$LANG['document'][22].":		</td>";
+         echo "<td>".getDocumentLink($this->fields["filename"])."";
+         echo "<input type='hidden' name='current_filename' value='".$this->fields["filename"]."'>";
+         echo "</td></tr>";
+      }
+      $max_size=return_bytes_from_ini_vars(ini_get("upload_max_filesize"));
+      $max_size/=1024*1024;
+      $max_size=round($max_size,1);
+
+      echo "<tr class='tab_bg_1'><td>".$LANG['document'][2]." (".$max_size." Mb max):	</td>";
+      echo "<td><input type='file' name='filename' value=\"".$this->fields["filename"]."\" size='40'></td>";
+      echo "</tr>";
+
+      echo "<tr class='tab_bg_1'><td>".$LANG['document'][36].":		</td>";
+      echo "<td>";
+      showUploadedFilesDropdown("upload_file");
+      echo "</td></tr>";
+
+
+      echo "<tr class='tab_bg_1'><td>".$LANG['document'][33].":		</td>";
+      echo "<td>";
+      autocompletionTextField("link","glpi_docs","link",$this->fields["link"],40,$this->fields["FK_entities"]);
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_1'><td>".$LANG['document'][3].":		</td>";
+      echo "<td>";
+      dropdownValue("glpi_dropdown_rubdocs","rubrique",$this->fields["rubrique"]);
+      echo "</td></tr>";
+
+      echo "<tr class='tab_bg_1'><td>".$LANG['document'][4].":		</td>";
+      echo "<td>";
+      autocompletionTextField("mime","glpi_docs","mime",$this->fields["mime"],40,$this->fields["FK_entities"]);
+      echo "</td></tr>";
+
+      echo "<tr>";
+      echo "<td class='tab_bg_1' valign='top'>";
+
+      // table commentaires
+      echo $LANG['common'][25].":	</td>";
+      echo "<td class='tab_bg_1'><textarea cols='70' rows='4' name='comments' >".$this->fields["comments"]."</textarea>";
+
+      echo "</td>";
+      echo "</tr>";
 
 		if ($canedit){
 			echo "<tr>";

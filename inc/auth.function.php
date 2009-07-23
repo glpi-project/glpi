@@ -495,26 +495,8 @@ function loadLanguage($forcelang='') {
 		$trytoload='en_GB';
 		$file = "/locales/en_GB.php";
 	}
-	$options = array (
-		'cacheDir' => GLPI_CACHE_DIR,
-		'lifeTime' => DEFAULT_CACHE_LIFETIME,
-		'automaticSerialization' => true,
-		'caching' => $CFG_GLPI["use_cache"],
-		'hashedDirectoryLevel' => 2,
-		'masterFile' => GLPI_ROOT . $file,
-		'fileLocking' => CACHE_FILELOCKINGCONTROL,
-		'writeControl' => CACHE_WRITECONTROL,
-		'readControl' => CACHE_READCONTROL,
-		);
-	$cache = new Cache_Lite_File($options);
-
-	// Set a id for this cache : $file
-	if (!($LANG = $cache->get($file, "GLPI_LANG"))) {
-		// Cache miss !
-		// Put in $LANG datas to put in cache
-		include (GLPI_ROOT . $file);
-		$cache->save($LANG, $file, "GLPI_LANG");
-	}
+	
+   include (GLPI_ROOT . $file);
 
 	// Debug display lang element with item
 	if ($_SESSION['glpi_use_mode']==TRANSLATION_MODE && $CFG_GLPI["debug_lang"]) {
@@ -612,8 +594,7 @@ function changeProfile($ID) {
 		}
 	}
 
-	cleanCache("GLPI_HEADER_".$_SESSION["glpiID"]);
-	// Clean specific datas 
+	// Clean specific datas
 	if (isset($_SESSION['glpi_faqcategories'])){
 		unset($_SESSION['glpi_faqcategories']);
 	}
@@ -717,7 +698,6 @@ function changeActiveEntities($ID="all",$recursive=false) {
 
 		loadGroups();
 		doHook("change_entity");
-		cleanCache("GLPI_HEADER_".$_SESSION["glpiID"]);
 		return true;
 	}
 	return false;
