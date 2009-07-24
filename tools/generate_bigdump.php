@@ -164,20 +164,20 @@ generate_entity(0);
 $added=0;
 for ($i=0;$i<max(1,pow($entity_number,1/2))&&$added<$entity_number;$i++){
 	$added++;
-	$query="INSERT INTO glpi_entities VALUES (NULL,'entity $i','0','','comment entity $i','1')";
+	$query="INSERT INTO glpi_entities VALUES (NULL,'entity $i','0','','comment entity $i','1','','')";
 	$DB->query($query) or die("PB REQUETE ".$query);
 	$newID=$DB->insert_id();
 	generate_entity($newID);
 
 	for ($j=0;$j<mt_rand(0,pow($entity_number,1/2))&&$added<$entity_number;$j++){
 		$added++;
-		$query="INSERT INTO glpi_entities VALUES (NULL,'s-entity $j','$newID','','comment s-entity $j','2')";
+      $query="INSERT INTO glpi_entities VALUES (NULL,'s-entity $j','$newID','','comment s-entity $j','2','','')";
 		$DB->query($query) or die("PB REQUETE ".$query);
 		$newID2=$DB->insert_id();
 		generate_entity($newID2);
 		for ($k=0;$k<mt_rand(0,pow($entity_number,1/2))&&$added<$entity_number;$k++){
 			$added++;
-			$query="INSERT INTO glpi_entities VALUES (NULL,'ss-entity $k','$newID2','','comment ss-entity $k','3')";
+         $query="INSERT INTO glpi_entities VALUES (NULL,'ss-entity $k','$newID2','','comment ss-entity $k','3','','')";
 			$DB->query($query) or die("PB REQUETE ".$query);
 			$newID3=$DB->insert_id();
 			generate_entity($newID3);
