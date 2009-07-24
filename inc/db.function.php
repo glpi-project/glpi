@@ -258,7 +258,7 @@ function getEntitySons ($ID){
 
 //	if (!($sons = $CFG_GLPI['opcache']->get($ID,"GLPI_entities_sons"))) {
 		// Cache miss !
-		$sons=getSonsOfTreeItem("glpi_entities",$ID);
+      $sons=getSonsOfTreeItem("glpi_entities",$ID);
 //		$CFG_GLPI['opcache']->save($sons,$ID,"GLPI_entities_sons");
 //	}
 	return $sons;
@@ -299,6 +299,126 @@ function getAncestorsOfTreeItem($table,$IDf){
 	return $id_found;
 
 }
+
+/**
+ * Get the ancestors of an item in a tree dropdown
+ *
+ * @param $table string: table name
+ * @param $IDf integer: The ID of the item
+ * @return array of IDs of the ancestors
+ */
+function getAncestorsOf($table,$IDf){
+   global $DB;
+
+   $use_cache=FieldExists($table,"cache_ancestors");
+   if ($use_cache){
+      $query="SELECT cache_ancestors FROM `$table` WHERE ID = '$IDf'";
+      if ( ($result=$DB->query($query)) && ($DB->numrows($result)>0) ){
+         $ancestors=trim($DB->result($result,0,0));
+         if (!empty($ancestors)){
+            return importArrayFromDB($ancestors);
+         }
+      }
+   }
+   
+	/// IDs to be present in the final array
+   $id_found=array();
+	
+	/// Get the leafs of previous founded item
+   while ($IDf>0){
+      /// Get next elements
+      $query="SELECT parentID
+               FROM `$table`
+               WHERE ID = '$IDf'";
+
+      $result=$DB->query($query);
+      if ($DB->numrows($result)>0){
+         $IDf=$DB->result($result,0,0);
+      } else {
+         $IDf=0;
+      }
+      if (!isset($id_found[$IDf])){
+         $id_found[$IDf]=$IDf;
+      } else {
+         $IDf=0;
+      }
+   }
+
+   /// Store cache datas in DB
+   if ($use_cache){
+      $query="UPDATE `$table` SET cache_ancestors='".exportArrayToDB($id_found)."' WHERE ID='$IDf';";
+      $DB->query($query);
+   }
+   return $id_found;
+
+}
+
+/**
+ * Get the sons of an item in a tree dropdown. Get datas in cache if available
+ *
+ * @param $table string: table name
+ * @param $IDf integer: The ID of the father
+ * @return array of IDs of the sons
+ */
+function getSonsOf($table,$IDf){
+   global $DB;
+
+   $use_cache=FieldExists($table,"cache_sons");
+   if ($use_cache){
+      $query="SELECT cache_sons FROM `$table` WHERE ID = '$IDf'";
+      if ( ($result=$DB->query($query)) && ($DB->numrows($result)>0) ){
+         $sons=trim($DB->result($result,0,0));
+         if (!empty($sons)){
+            return importArrayFromDB($sons);
+         }
+      }
+   }
+	/// IDs to be present in the final array
+   $id_found[$IDf]=$IDf;
+	/// current ID found to be added
+   $found=array();
+	/// First request init the  varriables
+   $query="SELECT ID
+         FROM `$table`
+         WHERE parentID = '$IDf'
+         ORDER BY name";
+   if ( ($result=$DB->query($query)) && ($DB->numrows($result)>0) ){
+      while ($row=$DB->fetch_array($result)){
+         $id_found[$row['ID']]=$row['ID'];
+         $found[$row['ID']]=$row['ID'];
+      }
+   } 
+
+	/// Get the leafs of previous founded item
+   while (count($found)>0){
+      $first=true;
+		/// Get next elements
+      $query="SELECT ID
+            FROM `$table`
+            WHERE parentID IN ('" . implode("','",$found) . "')";
+
+		/// CLear the found array
+      unset($found);
+      $found=array();
+
+      $result=$DB->query($query);
+      if ($DB->numrows($result)>0){
+         while ($row=$DB->fetch_array($result)){
+            if (!isset($id_found[$row['ID']])){
+               $id_found[$row['ID']]=$row['ID'];
+               $found[$row['ID']]=$row['ID'];
+            }
+         }
+      }
+   }
+   /// Store cache datas in DB
+   if ($use_cache){
+      $query="UPDATE `$table` SET cache_sons='".exportArrayToDB($id_found)."' WHERE ID='$IDf';";
+      $DB->query($query);
+   }
+   return $id_found;
+}
+
 
 /**
  * Get the sons of an item in a tree dropdown
