@@ -559,6 +559,17 @@ function commonCheckForUseGLPI(){
 		echo "<td><img src=\"".GLPI_ROOT."/pics/greenbutton.png\" alt='".$LANG['install'][85]."' title='".$LANG['install'][85]."'></td></tr>";
 
 	}
+
+   //Test for mbstring extension.
+   echo "<tr class='tab_bg_1'><td class='left'><b>".$LANG['install'][104]."</b></td>";
+   if (!extension_loaded('mbstring')) {
+      echo "<td><img src=\"".GLPI_ROOT."/pics/redbutton.png\" >".$LANG['install'][105]."></td></tr>";
+      $error = 2;
+   }
+   else {
+      echo "<td><img src=\"".GLPI_ROOT."/pics/greenbutton.png\" alt='".$LANG['install'][85]."' title='".$LANG['install'][85]."'></td></tr>";
+
+   }
 	
 	// memory test
 	echo "<tr class='tab_bg_1'><td class='left'><b>".$LANG['install'][86]."</b></td>";
