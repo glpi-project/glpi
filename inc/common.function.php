@@ -198,67 +198,21 @@ if (!defined('GLPI_ROOT')){
 	* substr function for utf8 string
 	*@param $str string: string
 	*@param $start integer: start of the result substring
+   *@param $length integer: The maximum length of the returned string if > 0
 	*
 	*@return substring
 	**/
-	function utf8_substr($str,$start){
-   		preg_match_all("/./su", $str, $ar);
-
-   		if(func_num_args() >= 3) {
-       		$end = func_get_arg(2);
-       		return join("",array_slice($ar[0],$start,$end));
-   		} else {
-       		return join("",array_slice($ar[0],$start));
-   		}
+	function utf8_substr($str,$start,$length=-1){
+      return mb_substr($str,$start,$length,"UTF-8");
 	}
+
 	/**
 	* strlen function for utf8 string
 	* @param $str string: string 
 	* @return length of the string
 	**/
 	function utf8_strlen($str){
-    	$i = 0;
-    	$count = 0;
-    	$len = strlen ($str);
-    	while ($i < $len){
-    		$chr = ord ($str[$i]);
-    		$count++;
-    		$i++;
-    		if ($i >= $len){
-        		break;
-    		}
-    		if ($chr & 0x80){
-        		$chr <<= 1;
-        		while ($chr & 0x80){
-        			$i++;
-        			$chr <<= 1;
-        		}
-    		}
-    	}
-    	return $count;
-	}
-	/**
-	* html_entity_decode function for utf8 string
-	* @param $string string: string
-	*
-	* @return converted string
-	**/
-	function utf8_html_entity_decode($string){
-		static $trans_tbl;
-	
-		// replace numeric entities
-		$string = preg_replace('~&#x([0-9a-f]+);~ei', 'code2utf(hexdec("\\1"))', $string);
-		$string = preg_replace('~&#([0-9]+);~e', 'code2utf(\\1)', $string);
-	
-		// replace literal entities
-		if (!isset($trans_tbl)){
-			$trans_tbl = array();
-	
-			foreach (get_html_translation_table(HTML_ENTITIES) as $val=>$key){
-			$trans_tbl[$key] = utf8_encode($val);
-			}
-		}   
-		return strtr($string, $trans_tbl);
+      return mb_strlen($str,"UTF-8");
 	}
 
 	/** Returns the utf string corresponding to the unicode value (from php.net, courtesy - romans@void.lv)
@@ -756,14 +710,23 @@ function mailRow($string,$value){
  *  Replace str_pad()
  *  who bug with utf8
  *
+ * @param $input string: input string
+ * @param $pad_length integer: padding length
+ * @param $pad_string string: padding string
+ * @param $pad_type: integer: padding type
+ * @return string
+ */
+function utf8_str_pad($input, $pad_length, $pad_string = " ", $pad_type = STR_PAD_RIGHT) {
+
+    $diff = strlen($input) - utf8_strlen($input);
+    return str_pad($input, $pad_length+$diff, $pad_string, $pad_type);
+
+/*
  * @param $ps_input string: input string
  * @param $pn_pad_length integer: padding length
  * @param $ps_pad_string string: padding string
  * @param $pn_pad_type: integer: padding type
- * @return string
- */
-function utf8_str_pad($ps_input, $pn_pad_length, $ps_pad_string = " ", $pn_pad_type = STR_PAD_RIGHT) {
-	$ret = "";
+   $ret = "";
 	
 	$hn_length_of_padding = $pn_pad_length - utf8_strlen($ps_input);
 	$hn_psLength = utf8_strlen($ps_pad_string); // pad string length
@@ -802,6 +765,7 @@ function utf8_str_pad($ps_input, $pn_pad_length, $ps_pad_string = " ", $pn_pad_t
 	}
 	
 	return $ret;
+*/
 }
 
 
@@ -1278,6 +1242,8 @@ function optimize_tables ($progress_fct=NULL){
 * @return  boolean 
 **/
 function seems_utf8($Str) {
+   return mb_check_encoding($str,"UTF-8");
+/*
 	for ($i=0; $i<strlen($Str); $i++) {
 		if (ord($Str[$i]) < 0x80) continue; # 0bbbbbbb
 			elseif ((ord($Str[$i]) & 0xE0) == 0xC0) $n=1; # 110bbbbb
@@ -1292,6 +1258,7 @@ function seems_utf8($Str) {
 			}
 	}
 	return true;
+*/
 }
 
 
