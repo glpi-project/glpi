@@ -2979,7 +2979,11 @@ function addLeftJoin ($type,$ref_table,&$already_link_tables,$new_table,$linkfie
 			if (empty($AS)){
 				$AS = "AS glpi_entities";
 			}
-			return " LEFT JOIN ( SELECT * FROM glpi_entities UNION SELECT 0 AS ID, '".addslashes($LANG['entity'][2])."' AS name, -1 AS parentID, '".addslashes($LANG['entity'][2])."' AS completename, '' AS comments, -1 AS level) 
+			return " LEFT JOIN (
+                     SELECT ID, name, parentID, completename, comments, level FROM glpi_entities
+                     UNION
+                     SELECT 0 AS ID, '".addslashes($LANG['entity'][2])."' AS name, -1 AS parentID,
+                        '".addslashes($LANG['entity'][2])."' AS completename, '' AS comments, -1 AS level)
 				$AS ON ($rt.$linkfield = glpi_entities.ID) ";
 			break;
 		case "glpi_users_groups":
