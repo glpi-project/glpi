@@ -223,9 +223,9 @@ if (!isset ($_POST["noAUTO"]) && $auth_method=checkAlternateAuthSystems()) {
 	
 		// Redirect management
 		$REDIRECT = "";
-		if (isset ($_POST['redirect'])&&strlen($_POST['redirect'])>0){
+		if (isset ($_POST['redirect']) && strlen($_POST['redirect'])>0){
 			$REDIRECT = "?redirect=" .$_POST['redirect'];
-		} else if (isset ($_GET['redirect'])&&strlen($_GET['redirect'])>0){
+		} else if (isset ($_GET['redirect']) && strlen($_GET['redirect'])>0){
 			$REDIRECT = "?redirect=" .$_GET['redirect'];
 		}
 	

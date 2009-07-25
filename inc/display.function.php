@@ -2313,7 +2313,7 @@ function glpi_flush(){
 function displayProgressBar($width,$percent){
 	global  $CFG_GLPI,$LANG;
 	$percentwidth=floor($percent*$width/100);
-	echo str_pad("<div class='center'><table class='tab_cadre' width='$width'><tr><th width='$width' align='center'> ".$LANG['common'][47]."&nbsp;".$percent."%</th></tr><tr><td><table><tr><td style='background:url(".$CFG_GLPI["root_doc"]."/pics/loader.png) repeat-x;'  width='$percentwidth' height='20'>&nbsp;</td></tr></table></td></tr></table></div>\n",4096);
+	echo utf8_str_pad("<div class='center'><table class='tab_cadre' width='$width'><tr><th width='$width' align='center'> ".$LANG['common'][47]."&nbsp;".$percent."%</th></tr><tr><td><table><tr><td style='background:url(".$CFG_GLPI["root_doc"]."/pics/loader.png) repeat-x;'  width='$percentwidth' height='20'>&nbsp;</td></tr></table></td></tr></table></div>\n",4096);
 	glpi_flush();
 }
 /**

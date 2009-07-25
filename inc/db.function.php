@@ -997,7 +997,7 @@ function autoName($objectName, $field, $isTemplate, $type,$FK_entities=-1){
 				$data = $DB->fetch_array($resultNo);
 				$newNo = $data['lastNo'] + 1;
 			} else	$newNo = 0;
-			$objectName = str_replace(array($mask,'\\_','\\%'), array(str_pad($newNo, $len, '0', STR_PAD_LEFT),'_','%'), $autoNum);
+			$objectName = str_replace(array($mask,'\\_','\\%'), array(utf8_str_pad($newNo, $len, '0', STR_PAD_LEFT),'_','%'), $autoNum);
 		}
 	}
 	return $objectName;
