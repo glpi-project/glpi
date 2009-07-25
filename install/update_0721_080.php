@@ -35,31 +35,31 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-/// Update from 0.721 to 0.80
+// Update from 0.721 to 0.80
 
 function update0721to080() {
 	global $DB, $LANG;
 
 	echo "<h3>".$LANG['install'][4]." -&gt; 0.80</h3>";
-   displayMigrationMessage("080"); /// Start
+   displayMigrationMessage("080"); // Start
 
-///	displayMigrationMessage("080", $LANG['update'][140]); // Index creation
+//	displayMigrationMessage("080", $LANG['update'][140]); // Index creation
 	
 
-   displayMigrationMessage("080", $LANG['update'][141] . ' - glpi_config'); /// Updating schema
+   displayMigrationMessage("080", $LANG['update'][141] . ' - glpi_config'); // Updating schema
 	if (FieldExists('glpi_config', 'license_deglobalisation')) {
 		$query="ALTER TABLE `glpi_config` DROP `license_deglobalisation`;";
       $DB->query($query) or die("0.80 alter clean glpi_config table " . $LANG['update'][90] . $DB->error());
 	}	
 
-   displayMigrationMessage("080", $LANG['update'][141] . ' - glpi_mailgate'); /// Updating schema
+   displayMigrationMessage("080", $LANG['update'][141] . ' - glpi_mailgate'); // Updating schema
 
 	if (!FieldExists("glpi_mailgate", "active")) {
 		$query = "ALTER TABLE `glpi_mailgate` ADD `active` INT( 1 ) NOT NULL DEFAULT '1' ;";
       $DB->query($query) or die("0.80 add active in glpi_mailgate " . $LANG['update'][90] . $DB->error());
 	}
 
-   /// Change mailgate search pref : add ative
+   // Change mailgate search pref : add ative
 	$query="SELECT DISTINCT FK_users FROM glpi_display WHERE type=".MAILGATE_TYPE.";";
 	if ($result = $DB->query($query)){
 		if ($DB->numrows($result)>0){
@@ -78,9 +78,8 @@ function update0721to080() {
 			}
 		}
 	}
-
    
-   displayMigrationMessage("080", $LANG['update'][141] . ' - glpi_device_xxxx'); /// Updating schema
+   displayMigrationMessage("080", $LANG['update'][141] . ' - glpi_device_xxxx'); // Updating schema
          
 
 	if (FieldExists("glpi_device_control", "interface")) {
@@ -115,7 +114,7 @@ function update0721to080() {
       $DB->query($query) or die("0.80 add interface index in glpi_device_gfxcard " . $LANG['update'][90] . $DB->error());
 	}
 	
-   displayMigrationMessage("080", $LANG['update'][141] . ' - glpi_rule_cache_software'); /// Updating schema
+   displayMigrationMessage("080", $LANG['update'][141] . ' - glpi_rule_cache_software'); // Updating schema
 	
 	if (FieldExists("glpi_rule_cache_software","ignore_ocs_import")){
 		$query = "ALTER TABLE `glpi_rule_cache_software` CHANGE `ignore_ocs_import` `ignore_ocs_import` CHAR( 1 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL ";
@@ -126,7 +125,7 @@ function update0721to080() {
       $DB->query($query) or die("0.80 add helpdesk_visible index in glpi_rule_cache_software " . $LANG['update'][90] . $DB->error());
 	}
 
-   displayMigrationMessage("080", $LANG['update'][141] . ' - glpi_entities'); /// Updating schema
+   displayMigrationMessage("080", $LANG['update'][141] . ' - glpi_entities'); // Updating schema
    
    if (!FieldExists("glpi_entities","cache_sons")){
       $query = "ALTER TABLE `glpi_entities` ADD `cache_sons` LONGTEXT NOT NULL ; ";
@@ -139,7 +138,7 @@ function update0721to080() {
    }
 
 
-   displayMigrationMessage("080", $LANG['update'][141] . ' - glpi_config'); /// Updating schema
+   displayMigrationMessage("080", $LANG['update'][141] . ' - glpi_config'); // Updating schema
 
    if (FieldExists("glpi_config","use_cache")){
       $query = "ALTER TABLE `glpi_config`  DROP `use_cache`;";
@@ -166,6 +165,6 @@ function update0721to080() {
       $DB->query($query) or die("0.80 add add_norights_users index in glpi_config " . $LANG['update'][90] . $DB->error());
 	}
 	
-	/// Display "Work ended." message - Keep this as the last action.
-   displayMigrationMessage("080"); /// End
+	// Display "Work ended." message - Keep this as the last action.
+   displayMigrationMessage("080"); // End
 }

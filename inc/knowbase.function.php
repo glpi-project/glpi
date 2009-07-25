@@ -157,7 +157,7 @@ function showKbCategoriesFirstLevel($target,$parentID=0,$faq=0){
 			ORDER  BY name ASC";
 	}
 
-	/// Show category
+	// Show category
 	if ($result=$DB->query($query)){
 		echo "<table class='tab_cadre_central'  >";
 		echo "<tr><td colspan='3'><a  href=\"".$target."\"><img alt='' src='".$CFG_GLPI["root_doc"]."/pics/folder-open.png'  class='bottom'></a>";

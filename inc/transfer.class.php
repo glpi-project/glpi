@@ -239,7 +239,7 @@ class Transfer extends CommonDBTM{
 		if (!isset($this->noneedtobe_transfer[$type])){
 			$this->noneedtobe_transfer[$type]=array();
 		}
-		/// Can't be in both list (in fact, always true)
+		// Can't be in both list (in fact, always true)
 		if (!isset($this->needtobe_transfer[$type][$ID])) {
 			$this->noneedtobe_transfer[$type][$ID]=$ID;
 		}
@@ -254,7 +254,7 @@ class Transfer extends CommonDBTM{
 	function simulateTransfer($items){
 		global $DB,$LINK_ID_TABLE,$CFG_GLPI;
 
-		/// Init types :
+		// Init types :
 		$types=array(COMPUTER_TYPE, NETWORKING_TYPE, PRINTER_TYPE, MONITOR_TYPE, PERIPHERAL_TYPE, PHONE_TYPE,
 			SOFTWARE_TYPE, SOFTWARELICENSE_TYPE, SOFTWAREVERSION_TYPE, CONTRACT_TYPE, ENTERPRISE_TYPE, CONTACT_TYPE,
 			TRACKING_TYPE, DOCUMENT_TYPE, CARTRIDGE_TYPE, CONSUMABLE_TYPE, LINK_TYPE);
@@ -269,13 +269,13 @@ class Transfer extends CommonDBTM{
 					$this->noneedtobe_transfer[$t]=array();
 			}
 		}
-      /// not recursive but need this
+      // not recursive but need this
 		$this->noneedtobe_transfer[SOFTWAREVERSION_TYPE]=array(); 
 
 
       $to_entity_ancestors = getAncestorsOf("glpi_entities",$this->to);
             
-      /// Copy items to needtobe_transfer
+      // Copy items to needtobe_transfer
 		foreach ($items as $key => $tab){
 			if (count($tab)){
 				foreach ($tab as $ID){

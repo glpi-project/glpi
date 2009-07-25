@@ -250,12 +250,12 @@ function getAncestorsOf($table,$IDf){
       }
    }
    
-	/// IDs to be present in the final array
+	// IDs to be present in the final array
    $id_found=array();
 	
-	/// Get the leafs of previous founded item
+	// Get the leafs of previous founded item
    while ($IDf>0){
-      /// Get next elements
+      // Get next elements
       $query="SELECT parentID
                FROM `$table`
                WHERE ID = '$IDf'";
@@ -273,7 +273,7 @@ function getAncestorsOf($table,$IDf){
       }
    }
 
-   /// Store cache datas in DB
+   // Store cache datas in DB
    if ($use_cache){
       $query="UPDATE `$table` SET cache_ancestors='".exportArrayToDB($id_found)."' WHERE ID='$IDf';";
       $DB->query($query);
@@ -302,11 +302,11 @@ function getSonsOf($table,$IDf){
          }
       }
    }
-	/// IDs to be present in the final array
+	// IDs to be present in the final array
    $id_found[$IDf]=$IDf;
-	/// current ID found to be added
+	// current ID found to be added
    $found=array();
-	/// First request init the  varriables
+	// First request init the  varriables
    $query="SELECT ID
          FROM `$table`
          WHERE parentID = '$IDf'
@@ -318,15 +318,15 @@ function getSonsOf($table,$IDf){
       }
    } 
 
-	/// Get the leafs of previous founded item
+	// Get the leafs of previous founded item
    while (count($found)>0){
       $first=true;
-		/// Get next elements
+		// Get next elements
       $query="SELECT ID
             FROM `$table`
             WHERE parentID IN ('" . implode("','",$found) . "')";
 
-		/// CLear the found array
+		// CLear the found array
       unset($found);
       $found=array();
 
@@ -340,7 +340,7 @@ function getSonsOf($table,$IDf){
          }
       }
    }
-   /// Store cache datas in DB
+   // Store cache datas in DB
    if ($use_cache){
       $query="UPDATE `$table` SET cache_sons='".exportArrayToDB($id_found)."' WHERE ID='$IDf';";
       $DB->query($query);
