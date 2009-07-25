@@ -484,7 +484,7 @@ function getUserEntities($ID,$recursive=true){
 		$entities=array();
 		while ($data=$DB->fetch_assoc($result)){
 			if ($data['recursive']&&$recursive){
-				$tab=getSonsOfTreeItem('glpi_entities',$data['FK_entities']);
+				$tab=getSonsOf('glpi_entities',$data['FK_entities']);
 				$entities=array_merge($tab,$entities);
 			} else {
 				$entities[]=$data['FK_entities'];

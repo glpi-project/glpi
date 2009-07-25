@@ -123,7 +123,7 @@ function showKbCategoriesFirstLevel($target,$parentID=0,$faq=0){
 					while ($data=$DB->fetch_array($result)){
 						if (!in_array($data['categoryID'],$_SESSION['glpi_faqcategories'])){
 							$_SESSION['glpi_faqcategories'][]=$data['categoryID'];
-							$_SESSION['glpi_faqcategories']=array_merge($_SESSION['glpi_faqcategories'],getAncestorsOfTreeItem('glpi_dropdown_kbcategories',$data['categoryID']));
+							$_SESSION['glpi_faqcategories']=array_merge($_SESSION['glpi_faqcategories'],getAncestorsOf('glpi_dropdown_kbcategories',$data['categoryID']));
 						}
 					}
 				}

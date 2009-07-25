@@ -236,42 +236,6 @@ function getTreeValueName($table,$ID, $wholename="",$level=0){
  * @param $IDf integer: The ID of the item
  * @return array of IDs of the ancestors
  */
-function getAncestorsOfTreeItem($table,$IDf){
-	global $DB;
-
-	// IDs to be present in the final array
-	$id_found=array();
-	
-	// Get the leafs of previous founded item
-	while ($IDf>0){
-		// Get next elements
-		$query="SELECT parentID 
-			FROM `$table` 
-			WHERE ID = '$IDf'";
-
-		$result=$DB->query($query);
-		if ($DB->numrows($result)>0){
-			$IDf=$DB->result($result,0,0);
-		} else {
-			$IDf=0;
-		}
-		if (!isset($id_found[$IDf])){
-			$id_found[$IDf]=$IDf;
-		} else {
-			$IDf=0;
-		}
-	}
-	return $id_found;
-
-}
-
-/**
- * Get the ancestors of an item in a tree dropdown
- *
- * @param $table string: table name
- * @param $IDf integer: The ID of the item
- * @return array of IDs of the ancestors
- */
 function getAncestorsOf($table,$IDf){
    global $DB;
 
@@ -392,58 +356,6 @@ function getSonsOf($table,$IDf){
  * @param $IDf integer: The ID of the father
  * @return array of IDs of the sons
  */
-function getSonsOfTreeItem($table,$IDf){
-	global $DB;
-
-	// IDs to be present in the final array
-	$id_found[$IDf]=$IDf;
-	// current ID found to be added
-	$found=array();
-	// First request init the  varriables
-	$query="SELECT ID 
-		FROM `$table` 
-		WHERE parentID = '$IDf'
-		ORDER BY name";
-	if ( ($result=$DB->query($query)) && ($DB->numrows($result)>0) ){
-		while ($row=$DB->fetch_array($result)){
-			$id_found[$row['ID']]=$row['ID'];
-			$found[$row['ID']]=$row['ID'];
-		}
-	} else return $id_found;
-
-	// Get the leafs of previous founded item
-	while (count($found)>0){
-		$first=true;
-		// Get next elements
-		$query="SELECT ID 
-			FROM `$table` 
-			WHERE parentID IN ('" . implode("','",$found) . "')";
-
-		// CLear the found array
-		unset($found);
-		$found=array();
-
-		$result=$DB->query($query);
-		if ($DB->numrows($result)>0){
-			while ($row=$DB->fetch_array($result)){
-				if (!isset($id_found[$row['ID']])){
-					$id_found[$row['ID']]=$row['ID'];
-					$found[$row['ID']]=$row['ID'];
-				}
-			}		
-		}
-	}
-	return $id_found;
-
-}
-
-/**
- * Get the sons of an item in a tree dropdown
- *
- * @param $table string: table name
- * @param $IDf integer: The ID of the father
- * @return array of IDs of the sons
- */
 function getTreeForItem($table,$IDf){
 	global $DB;
 
@@ -554,7 +466,7 @@ function getRealQueryForTreeItem($table,$IDf,$reallink=""){
 
 	if (empty($reallink)) $reallink=$table.".ID";
 
-	$id_found=getSonsOfTreeItem($table,$IDf);
+	$id_found=getSonsOf($table,$IDf);
 
 
 	// Construct the final request

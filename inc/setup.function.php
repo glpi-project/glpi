@@ -475,6 +475,15 @@ function moveTreeUnder($table, $to_move, $where) {
 			$query = "UPDATE `$table` SET parentID='$where' WHERE ID='$to_move'";
 			$result = $DB->query($query);
 			regenerateTreeCompleteNameUnderID($table, $to_move);
+         /// Clean sons / ancestors if needed
+         if (FieldExists($input["tablename"],"cache_sons")){
+            $query = "UPDATE `".$input["tablename"]."` SET  `cache_sons` = '';";
+            $DB->query($query);
+         }
+         if (FieldExists($input["tablename"],"cache_ancestors")){
+            $query = "UPDATE `".$input["tablename"]."` SET  `cache_ancestors` = '';";
+            $DB->query($query);
+         }         
 		}
 	}
 }
@@ -482,7 +491,7 @@ function moveTreeUnder($table, $to_move, $where) {
 function updateDropdown($input) {
 	global $DB, $CFG_GLPI;
 
-	// Clean datas
+	/// Clean datas
 	$input["value"]=trim($input["value"]);
 	if (empty($input["value"])) return false;
 	
@@ -502,6 +511,16 @@ function updateDropdown($input) {
 			regenerateTreeCompleteNameUnderID($input["tablename"], $input["ID"]);
 
 		}
+      /// Clean sons / ancestors if needed
+      if (FieldExists($input["tablename"],"cache_sons")){
+         $query = "UPDATE `".$input["tablename"]."` SET  `cache_sons` = '';";
+         $DB->query($query);
+      }
+      if (FieldExists($input["tablename"],"cache_ancestors")){
+         $query = "UPDATE `".$input["tablename"]."` SET  `cache_ancestors` = '';";
+         $DB->query($query);
+      }
+      
 		return true;
 	} else {
 		return false;
@@ -695,6 +714,15 @@ function addDropdown($input) {
 				regenerateTreeCompleteNameUnderID($input["tablename"], $ID);
 			}
 			
+         /// Clean sons / ancestors if needed
+         if (FieldExists($input["tablename"],"cache_sons")){
+            $query = "UPDATE `".$input["tablename"]."` SET  `cache_sons` = '';";
+            $DB->query($query);
+         }
+         if (FieldExists($input["tablename"],"cache_ancestors")){
+            $query = "UPDATE `".$input["tablename"]."` SET  `cache_ancestors` = '';";
+            $DB->query($query);
+         }
 			return $ID;
 		} else {
 			return false;
@@ -727,13 +755,12 @@ function replaceDropDropDown($input) {
 		return false;
 	}
 	$RELATION = getDbRelations();
-	// Man
 
 	if (isset ($RELATION[$input["tablename"]]))
 		foreach ($RELATION[$input["tablename"]] as $table => $field){ 
 			if ($table[0]!='_'){
 				if (!is_array($field)){
-					// Manage OCS lock for items - no need for array case
+					/// Manage OCS lock for items - no need for array case
 					if ($table=="glpi_computers"&&$CFG_GLPI['ocs_mode']){
 						$query="SELECT ID FROM `glpi_computers` WHERE ocs_import='1' AND `$field` = '" . $input["oldID"] . "'";
 						$result=$DB->query($query);
@@ -762,12 +789,22 @@ function replaceDropDropDown($input) {
 	$query = "DELETE  FROM `".$input["tablename"]."` WHERE `ID` = '" . $input["oldID"] . "'";
 	$DB->query($query);
 
-	// Need to be done on entity class
+	/// Need to be done on entity class
 	if ($input["tablename"]=="glpi_entities"){
 		$query = "DELETE FROM `glpi_entities_data` WHERE `FK_entities` = '" . $input["oldID"] . "'";
 		$DB->query($query);
+   }
+   /// Clean sons / ancestors if needed
+   if (FieldExists($input["tablename"],"cache_sons")){
+      $query = "UPDATE `".$input["tablename"]."` SET  `cache_sons` = '';";
+      $DB->query($query);
+   }
+   if (FieldExists($input["tablename"],"cache_ancestors")){
+      $query = "UPDATE `".$input["tablename"]."` SET  `cache_ancestors` = '';";
+      $DB->query($query);
+   }
+   
 
-	}
 }
 
 function showDeleteConfirmForm($target, $table, $ID,$FK_entities) {
