@@ -643,6 +643,8 @@ $LANG['install'][100]="Le dossier n'a pas pu être créé.";
 $LANG['install'][101]="Le dossier a été créé mais n'a pas pu être supprimé."; 
 $LANG['install'][102]="Test sur les fonctions Json"; 
 $LANG['install'][103]="GLPI ne peut pas fonctionner correctement sans les fonctions json_encode et json_decode "; 
+$LANG['install'][104]="Test sur l'extension mbstring";
+$LANG['install'][105]="L'extension mbstring de votre parseur PHP n'est pas installée";
 
 
 
