@@ -390,7 +390,7 @@ function showEnterpriseContract($instID) {
 	}
 	if ($canedit){
 		if ($contract->fields["recursive"]) {
-			$nb=countElementsInTableForEntity("glpi_enterprises",getEntitySons($contract->fields["FK_entities"]));
+         $nb=countElementsInTableForEntity("glpi_enterprises",getSonsOf("glpi_entities",$contract->fields["FK_entities"]));
 		} else {
 			$nb=countElementsInTableForEntity("glpi_enterprises",$contract->fields["FK_entities"]);
 		}
@@ -398,7 +398,7 @@ function showEnterpriseContract($instID) {
 			echo "<tr class='tab_bg_1'><td align='right' colspan='2'>";
 			echo "<div class='software-instal'><input type='hidden' name='conID' value='$instID'>";
 			if ($contract->fields["recursive"]) {
-				dropdown("glpi_enterprises","entID",1,getEntitySons($contract->fields["FK_entities"]),$used);
+            dropdown("glpi_enterprises","entID",1,getSonsOf("glpi_entities",$contract->fields["FK_entities"]),$used);
 			} else {
 				dropdown("glpi_enterprises","entID",1,$contract->fields["FK_entities"],$used);
 			}
@@ -654,7 +654,7 @@ function showContractAssociatedEnterprise($ID){
 	}
 	if ($canedit){
 		if ($ent->fields["recursive"]) {
-			$nb=countElementsInTableForEntity("glpi_contracts",getEntitySons($ent->fields["FK_entities"]));
+         $nb=countElementsInTableForEntity("glpi_contracts",getSonsOf("glpi_entities",$ent->fields["FK_entities"]));
 		} else {
 			$nb=countElementsInTableForEntity("glpi_contracts",$ent->fields["FK_entities"]);
 		}
@@ -663,7 +663,7 @@ function showContractAssociatedEnterprise($ID){
 			echo "<tr class='tab_bg_1'><td class='center' colspan='5'>";
 			echo "<div class='software-instal'><input type='hidden' name='entID' value='$ID'>";
 			if ($ent->fields["recursive"]) {
-				dropdownContracts("conID",getEntitySons($ent->fields["FK_entities"]),$used);
+            dropdownContracts("conID",getSonsOf("glpi_entities",$ent->fields["FK_entities"]),$used);
 			} else {
 				dropdownContracts("conID",$ent->fields['FK_entities'],$used);
 			}

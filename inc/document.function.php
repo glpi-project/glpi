@@ -495,7 +495,7 @@ function showDocumentAssociated($device_type,$ID,$withtemplate=''){
 			$entity=$ci->getField('FK_entities');
 			
 			if (isset($ci->obj->fields["recursive"]) && $ci->obj->fields["recursive"]) {
-				$entities = getEntitySons($ci->obj->fields["FK_entities"]);
+            $entities = getSonsOf("glpi_entities",$ci->obj->fields["FK_entities"]);
 			} else {
 				$entities = $ci->obj->fields["FK_entities"];
 			}

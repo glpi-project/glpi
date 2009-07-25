@@ -154,7 +154,7 @@ function showGroupUsers($target,$ID){
 			echo "</div>";
 
 			if ($group->fields["recursive"]) {
-				$res=dropdownUsersSelect (true, "all", getEntitySons($group->fields["FK_entities"]), 0, $used);
+            $res=dropdownUsersSelect (true, "all", getSonsOf("glpi_entities",$group->fields["FK_entities"]), 0, $used);
 			} else {
 				$res=dropdownUsersSelect (true, "all", $group->fields["FK_entities"], 0, $used);
 			}		
@@ -165,7 +165,7 @@ function showGroupUsers($target,$ID){
 				echo "<table  class='tab_cadre_fixe'>";
 				echo "<tr class='tab_bg_1'><th colspan='2'>".$LANG['setup'][603]."</tr><tr><td class='tab_bg_2' align='center'>";
 				if ($group->fields["recursive"]) {
-					dropdownUsers("FK_users",0,"all",-1,1,getEntitySons($group->fields["FK_entities"]),0,$used);
+               dropdownUsers("FK_users",0,"all",-1,1,getSonsOf("glpi_entities",$group->fields["FK_entities"]),0,$used);
 				} else {
 					dropdownUsers("FK_users",0,"all",-1,1,$group->fields["FK_entities"],0,$used);
 				}

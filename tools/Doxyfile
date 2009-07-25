@@ -86,7 +86,8 @@ EXCLUDE_PATTERNS       = */_relpos.php \
                          */plugins/* \
                          */DOCUMENTATION/* \
                          */files/* \
-                         */locales/*
+                         */locales/* \
+                         */.svn/* \
 EXCLUDE_SYMBOLS        = 
 EXAMPLE_PATH           = 
 EXAMPLE_PATTERNS       = 

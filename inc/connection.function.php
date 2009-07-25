@@ -100,7 +100,7 @@ function showConnect($target,$ID,$type) {
 				echo "<input type='hidden' name='sID' value='$ID'>";
 				echo "<input type='hidden' name='device_type' value='$type'>";				
 				if ($ci->getField('recursive')) {
-					dropdownConnect(COMPUTER_TYPE,$type,"item",getEntitySons($ci->getField('FK_entities')),0,$used);
+               dropdownConnect(COMPUTER_TYPE,$type,"item",getSonsOf("glpi_entities",$ci->getField('FK_entities')),0,$used);
 				} else {
 					dropdownConnect(COMPUTER_TYPE,$type,"item",$ci->getField('FK_entities'),0,$used);
 				}
@@ -122,7 +122,7 @@ function showConnect($target,$ID,$type) {
 				echo "<input type='hidden' name='sID' value='$ID'>";
 				echo "<input type='hidden' name='device_type' value='$type'>";
 				if ($ci->getField('recursive')) {
-					dropdownConnect(COMPUTER_TYPE,$type,"item",getEntitySons($ci->getField('FK_entities')),0,$used);
+               dropdownConnect(COMPUTER_TYPE,$type,"item",getSonsOf("glpi_entities",$ci->getField('FK_entities')),0,$used);
 				} else {
 					dropdownConnect(COMPUTER_TYPE,$type,"item",$ci->getField('FK_entities'),0,$used);
 				}

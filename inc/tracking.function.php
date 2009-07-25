@@ -781,7 +781,7 @@ function showJobVeryShort($ID) {
 }
 
 function addFormTracking ($device_type=0,$ID=0, $target, $author, $group=0, $assign=0, $assign_group=0, $name='',$contents='',$category=0, $priority=3,$request_type=1,$hour=0,$minute=0,$entity_restrict,$status=1,$followup=array()) {
-	// Prints a nice form to add jobs
+	/// Prints a nice form to add jobs
 
 	global $CFG_GLPI, $LANG,$CFG_GLPI,$REFERER,$DB;
 	if (!haveRight("create_ticket","1")) return false;
@@ -810,7 +810,7 @@ function addFormTracking ($device_type=0,$ID=0, $target, $author, $group=0, $ass
 	echo "<input type='hidden' name='computer' value=\"$ID\">";
 	echo "<input type='hidden' name='device_type' value=\"$device_type\">";
 
-	// Set default entity
+	/// Set default entity
 	if (!haveRight("update_ticket","1")){
 		echo "<input type='hidden' name='FK_entities' value='".$entity_restrict."'>";
 	}
@@ -822,11 +822,12 @@ function addFormTracking ($device_type=0,$ID=0, $target, $author, $group=0, $ass
 		echo "<tr class='tab_bg_2' align='center'><td>".$LANG['job'][4].":</td>";
 		echo "<td colspan='3' align='center'>";
 		
-		//Check if the user have access to this entity only, or subentities too
-		if (haveAccessToEntity($_SESSION["glpiactive_entity"],true))
-			$entities = getEntitySons($_SESSION["glpiactive_entity"]);
-		else
-			$entities = $_SESSION["glpiactive_entity"];	
+		///Check if the user have access to this entity only, or subentities too
+		if (haveAccessToEntity($_SESSION["glpiactive_entity"],true)){
+            $entities = getSonsOf("glpi_entities",$_SESSION["glpiactive_entity"]);
+      } else {
+			$entities = $_SESSION["glpiactive_entity"];
+      }
 			
 		//List all users in the active entity (and all it's sub-entities if needed)
 		$author_rand=dropdownAllUsers("author",$author,1,$entities,1);

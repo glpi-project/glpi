@@ -1959,85 +1959,8 @@ function displayActiveEntities($target,$myname){
 
 		echo "<div id='tree_projectcategory$rand' ></div>";
 
-
-/*		$class=" class='tree' ";
-		$raquo="&raquo;";
-		$fsize=16;
-		$level=0;
-		$havesons=false;
-		if ($recursive && count(getEntitySons($ID))){
-			$class=" class='treeroot' ";
-			$raquo="<a href=\"javascript:showHideDiv('entity_subitem_$ID','entity_subitem_icon_$ID','" . $CFG_GLPI["root_doc"] . "/pics/expand.gif','" . $CFG_GLPI["root_doc"] . "/pics/collapse.gif');\"><img name='entity_subitem_icon_$ID' src=\"".$CFG_GLPI["root_doc"]."/pics/expand.gif\" alt=''></a>";
-			$havesons=true;
-		}
-		$name=getDropdownName('glpi_entities',$ID);
-		echo "<div $class>".str_repeat("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;", max(1,$level)),$raquo."&nbsp;<a style='font-size:".$fsize."px;' title=\"$name\" href='".$target."?active_entity=$ID'>".str_replace(" ","&nbsp;",$name)."</a>";
-
-			echo "<div id='entity_subitem_$ID'>uuu";
-			//displayEntityTree($target,$myname,$data['tree'],$level+1);
-			echo "</div>";
-		
-		echo "</div>";
-
-		//displayEntityTree($target,$myname,$ID,$recursive);
-*/
 	echo "</div>";
 }
-/**
- * Display entities tree : ************ Unused function 
- *
- * @param $myname select name
- * @param $target target for entity change action
- * @param $ID ID of the root entity
- * @param $level current level displayed
- *
-function displayEntityTree($target,$myname,$ID,$recursive,$level=0){
-	global $CFG_GLPI,$LANG;
-
-
-	if (count($tree)){	//  $tree not defined, couldn't work
-		// Is multiple items to display ? only one expand it if have subitems
-		foreach ($tree as $ID => $data){
-			if (isset($data['name'])){
-				$class=" class='tree' ";
-				$raquo="&raquo;";
-				$fsize=max(16-2*$level,12);
-
-				// 
-				$subitems=0;
-				if (isset($data['tree'])&&count($data['tree'])){
-					$subitems=count($data['tree']);
-					if ($subitems>1){
-						$raquo="<a href=\"javascript:showHideDiv('entity_subitem_$ID','entity_subitem_icon_$ID','" . $CFG_GLPI["root_doc"] . "/pics/expand.gif','" . $CFG_GLPI["root_doc"] . "/pics/collapse.gif');\"><img name='entity_subitem_icon_$ID' src=\"".$CFG_GLPI["root_doc"]."/pics/expand.gif\" alt=''></a>";
-					}
-				}
-				
-				if ($level==0){
-					$class=" class='treeroot' ";
-					$raquo="";
-				} 
-
-
-				echo "<div $class>".str_repeat("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;", max(1,$level)).$raquo."&nbsp;<a style='font-size:".$fsize."px;' title=\"".$data['name']."\" href='".$target."?active_entity=$ID'>".str_replace(" ","&nbsp;",$data['name'])."</a>";
-				
-				if ($subitems){
-					echo "&nbsp;&nbsp;<a title=\"".$LANG['buttons'][40]."\" href='".$target."?active_entity=$ID&amp;recursive=1'><img alt=\"".$LANG['buttons'][40]."\" src='".$CFG_GLPI["root_doc"]."/pics/entity_all.png'></a></div>";
-					if ($level!=0 && $subitems>1){
-						echo "<div id='entity_subitem_$ID' style='display: none;'>";
-						displayEntityTree($target,$myname,$data['tree'],$level+1);
-						echo "</div>";
-					}else {
-						displayEntityTree($target,$myname,$data['tree'],$level+1);
-					}
-				} else {
-					echo "&nbsp;</div>";
-				}
-			}
-		}
-	}
-}
-*/
-
 
 /**
  * Dropdown of ticket status 
