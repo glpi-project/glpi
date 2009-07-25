@@ -620,7 +620,7 @@ function changeActiveEntities($ID="all",$recursive=false) {
 			$newroots[$val['ID']]=$val['recursive'];
 			$newentities[$val['ID']] = $val['ID'];
 			if ($val['recursive']) {
-				$entities = getSonsOfTreeItem("glpi_entities", $val['ID']);
+				$entities = getSonsOf("glpi_entities", $val['ID']);
 				if (count($entities)) {
 					foreach ($entities as $key2 => $val2) {
 						$newentities[$key2] = $key2;
@@ -649,7 +649,7 @@ function changeActiveEntities($ID="all",$recursive=false) {
 		$newroots[$ID]=$recursive;
 		$newentities[$ID] = $ID;
 		if ($recursive){
-			$entities = getSonsOfTreeItem("glpi_entities", $ID);
+			$entities = getSonsOf("glpi_entities", $ID);
 			if (count($entities)) {
 				foreach ($entities as $key2 => $val2) {
 					$newentities[$key2] = $key2;

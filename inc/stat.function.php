@@ -656,7 +656,7 @@ function constructEntryValues($type,$begin="",$end="",$param="",$value="",$value
 		break;
 		case "category":
 			if (!empty($value)){
-				$categories=getSonsOfTreeItem("glpi_dropdown_tracking_category",$value);
+				$categories=getSonsOf("glpi_dropdown_tracking_category",$value);
 				$condition=implode("','",$categories);
 	
 				$WHERE.=" AND glpi_tracking.category IN ('$condition')";
