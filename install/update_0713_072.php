@@ -479,7 +479,6 @@ function update0713to072() {
 			) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;";
 		$DB->query($query) or die("0.72 create glpi_dropdown_licensetypes table" . $LANG['update'][90] . $DB->error());
 
-		$CFG_GLPI["use_cache"]=0; // this is used during externalImportDropdown
 		$oemtype=externalImportDropdown("glpi_dropdown_licensetypes", $LANG['software'][28]); // Add OEM as type of license
 
 		$query="UPDATE `glpi_softwarelicenses` SET type=$oemtype WHERE FK_computers>0";
@@ -633,7 +632,6 @@ function update0713to072() {
 
 	//// Clean interface use for GFX card
 	// Insert default values
-	$CFG_GLPI["use_cache"]=0; // this is used during externalImportDropdown
 	externalImportDropdown("glpi_dropdown_interface", "AGP");
 	externalImportDropdown("glpi_dropdown_interface", "PCI");
 	externalImportDropdown("glpi_dropdown_interface", "PCIe");

@@ -143,7 +143,7 @@ function showCentralMyView(){
 			
 			showCentralReminder($_SESSION["glpiactive_entity"]);
 
-			$entities=array_reverse(getEntityAncestors($_SESSION["glpiactive_entity"]));
+         $entities=array_reverse(getAncestorsOf("glpi_entities",$_SESSION["glpiactive_entity"]));
 			foreach ($entities as $entity) {
 				showCentralReminder($entity, true);
 			}	

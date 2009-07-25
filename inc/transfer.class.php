@@ -239,7 +239,7 @@ class Transfer extends CommonDBTM{
 		if (!isset($this->noneedtobe_transfer[$type])){
 			$this->noneedtobe_transfer[$type]=array();
 		}
-		// Can't be in both list (in fact, always true)
+		/// Can't be in both list (in fact, always true)
 		if (!isset($this->needtobe_transfer[$type][$ID])) {
 			$this->noneedtobe_transfer[$type][$ID]=$ID;
 		}
@@ -254,7 +254,7 @@ class Transfer extends CommonDBTM{
 	function simulateTransfer($items){
 		global $DB,$LINK_ID_TABLE,$CFG_GLPI;
 
-		// Init types :
+		/// Init types :
 		$types=array(COMPUTER_TYPE, NETWORKING_TYPE, PRINTER_TYPE, MONITOR_TYPE, PERIPHERAL_TYPE, PHONE_TYPE,
 			SOFTWARE_TYPE, SOFTWARELICENSE_TYPE, SOFTWAREVERSION_TYPE, CONTRACT_TYPE, ENTERPRISE_TYPE, CONTACT_TYPE,
 			TRACKING_TYPE, DOCUMENT_TYPE, CARTRIDGE_TYPE, CONSUMABLE_TYPE, LINK_TYPE);
@@ -269,9 +269,13 @@ class Transfer extends CommonDBTM{
 					$this->noneedtobe_transfer[$t]=array();
 			}
 		}
-		$this->noneedtobe_transfer[SOFTWAREVERSION_TYPE]=array(); // not recursive but need this
+      /// not recursive but need this
+		$this->noneedtobe_transfer[SOFTWAREVERSION_TYPE]=array(); 
 
-			// Copy items to needtobe_transfer
+
+      $to_entity_ancestors = getAncestorsOf("glpi_entities",$this->to);
+            
+      /// Copy items to needtobe_transfer
 		foreach ($items as $key => $tab){
 			if (count($tab)){
 				foreach ($tab as $ID){
@@ -322,7 +326,10 @@ class Transfer extends CommonDBTM{
 				if ($result = $DB->query($query)) {
 					if ($DB->numrows($result)>0) { 
 						while ($data=$DB->fetch_array($result)){
-							if (isset($CFG_GLPI["recursive_type"][$type]) && $ci->getFromDB($type,$data['end1']) && $ci->obj->isRecursive() && in_array($ci->obj->getEntityID(), getEntityAncestors($this->to))) {
+							if (isset($CFG_GLPI["recursive_type"][$type])
+                           && $ci->getFromDB($type,$data['end1'])
+                           && $ci->obj->isRecursive()
+                           && in_array($ci->obj->getEntityID(), $to_entity_ancestors)) {
 								$this->addNotToBeTransfer($type,$data['end1']);
 							} else {
 								$this->addToBeTransfer($type,$data['end1']);
@@ -392,7 +399,7 @@ class Transfer extends CommonDBTM{
 			if ($result = $DB->query($query)) {
 				if ($DB->numrows($result)>0) { 
 					while ($data=$DB->fetch_array($result)){
-						if ($data['recursive'] && in_array($data['FK_entities'], getEntityAncestors($this->to))) {
+                  if ($data['recursive'] && in_array($data['FK_entities'], $to_entity_ancestors)) {
 							$this->addNotToBeTransfer(SOFTWAREVERSION_TYPE,$data['vID']);
 						} else {
 							$this->addToBeTransfer(SOFTWAREVERSION_TYPE,$data['vID']);
@@ -481,7 +488,7 @@ class Transfer extends CommonDBTM{
 				if ($result = $DB->query($query)) {
 					if ($DB->numrows($result)>0) { 
 						while ($data=$DB->fetch_array($result)){
-							if ($data['recursive'] && in_array($data['FK_entities'], getEntityAncestors($this->to))) {
+                     if ($data['recursive'] && in_array($data['FK_entities'], $to_entity_ancestors)) {
 								$this->addNotToBeTransfer(CONTRACT_TYPE,$data['FK_contract']);
 							} else {
 								$this->addToBeTransfer(CONTRACT_TYPE,$data['FK_contract']);
@@ -532,7 +539,7 @@ class Transfer extends CommonDBTM{
 			if ($result = $DB->query($query)) {
 				if ($DB->numrows($result)>0) { 
 					while ($data=$DB->fetch_array($result)){
-						if ($data['recursive'] && in_array($data['FK_entities'], getEntityAncestors($this->to))) {
+                  if ($data['recursive'] && in_array($data['FK_entities'], $to_entity_ancestors)) {
 							$this->addNotToBeTransfer(ENTERPRISE_TYPE,$data['FK_enterprise']);
 						} else {
 							$this->addToBeTransfer(ENTERPRISE_TYPE,$data['FK_enterprise']);
@@ -548,7 +555,7 @@ class Transfer extends CommonDBTM{
 			if ($result = $DB->query($query)) {
 				if ($DB->numrows($result)>0) { 
 					while ($data=$DB->fetch_array($result)){
-						if ($data['recursive'] && in_array($data['FK_entities'], getEntityAncestors($this->to))) {
+                  if ($data['recursive'] && in_array($data['FK_entities'], $to_entity_ancestors)) {
 							$this->addNotToBeTransfer(ENTERPRISE_TYPE,$data['assign_ent']);
 						} else {
 							$this->addToBeTransfer(ENTERPRISE_TYPE,$data['assign_ent']);
@@ -584,7 +591,7 @@ class Transfer extends CommonDBTM{
 						if ($result = $DB->query($query)) {
 							if ($DB->numrows($result)>0) { 
 								while ($data=$DB->fetch_array($result)){
-									if ($data['recursive'] && in_array($data['FK_entities'], getEntityAncestors($this->to))) {
+                           if ($data['recursive'] && in_array($data['FK_entities'], $to_entity_ancestors)) {
 										$this->addNotToBeTransfer(ENTERPRISE_TYPE,$data['FK_enterprise']);
 									} else {
 										$this->addToBeTransfer(ENTERPRISE_TYPE,$data['FK_enterprise']);
@@ -637,7 +644,7 @@ class Transfer extends CommonDBTM{
 			if ($result = $DB->query($query)) {
 				if ($DB->numrows($result)>0) { 
 					while ($data=$DB->fetch_array($result)){
-						if ($data['recursive'] && in_array($data['FK_entities'], getEntityAncestors($this->to))) {
+                  if ($data['recursive'] && in_array($data['FK_entities'], $to_entity_ancestors)) {
 							$this->addNotToBeTransfer(CONTACT_TYPE,$data['FK_contact']);
 						} else {
 							$this->addToBeTransfer(CONTACT_TYPE,$data['FK_contact']);
@@ -674,7 +681,7 @@ class Transfer extends CommonDBTM{
 				if ($result = $DB->query($query)) {
 					if ($DB->numrows($result)>0) { 
 						while ($data=$DB->fetch_array($result)){
-							if ($data['recursive'] && in_array($data['FK_entities'], getEntityAncestors($this->to))) {
+                     if ($data['recursive'] && in_array($data['FK_entities'], $to_entity_ancestors)) {
 								$this->addNotToBeTransfer(DOCUMENT_TYPE,$data['FK_doc']);
 							} else {
 								$this->addToBeTransfer(DOCUMENT_TYPE,$data['FK_doc']);
@@ -1123,7 +1130,7 @@ class Transfer extends CommonDBTM{
 			// error_log("copySingleSoftware: ".$soft->fields['name']);
 			
 			if ($soft->fields['recursive']
-				&& in_array($soft->fields['FK_entities'],getEntityAncestors($this->to))) {
+               && in_array($soft->fields['FK_entities'],getAncestorsOf("glpi_entities",$this->to))) {
 				// no need to copy
 				$newsoftID = $ID;
 			} else {				

@@ -239,7 +239,7 @@ class Netdevice extends CommonDBTM {
 			return false;
 		}
 		$entities = "(".$this->fields['FK_entities'];
-		foreach (getEntityAncestors($this->fields['FK_entities']) as $papa) {
+      foreach (getAncestorsOf("glpi_entities",$this->fields['FK_entities']) as $papa) {
 			$entities .= ",$papa";
 		}
 		$entities .= ")";

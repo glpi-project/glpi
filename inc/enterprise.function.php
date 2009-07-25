@@ -189,7 +189,7 @@ function showAssociatedContact($instID) {
 	echo "</table><br>"    ;
 	if ($canedit){
 		if ($enterprise->fields["recursive"]) {
-			$nb=countElementsInTableForEntity("glpi_contacts",getEntitySons($enterprise->fields["FK_entities"]));
+         $nb=countElementsInTableForEntity("glpi_contacts",getSonsOf("glpi_entities",$enterprise->fields["FK_entities"]));
 		} else {
 			$nb=countElementsInTableForEntity("glpi_contacts",$enterprise->fields["FK_entities"]);
 		}
@@ -199,7 +199,7 @@ function showAssociatedContact($instID) {
 			echo "<tr class='tab_bg_1'><th colspan='2'>".$LANG['financial'][33]."</tr><tr><td class='tab_bg_2' align='center'>";
 			echo "<input type='hidden' name='eID' value='$instID'>";
 			if ($enterprise->fields["recursive"]) {
-				dropdown("glpi_contacts","cID",1,getEntitySons($enterprise->fields["FK_entities"]),$used);
+            dropdown("glpi_contacts","cID",1,getSonsOf("glpi_entities",$enterprise->fields["FK_entities"]),$used);
 			} else {
 				dropdown("glpi_contacts","cID",1,$enterprise->fields["FK_entities"],$used);
 			}

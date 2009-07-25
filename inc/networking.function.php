@@ -532,7 +532,7 @@ function showConnection(& $device1, & $netport, $withtemplate = '') {
 			echo "<td class='left'>";
 			if ($withtemplate != 2 && $withtemplate != 1) {
 				if (isset ($device1->obj->fields["recursive"]) && $device1->obj->fields["recursive"]) {
-					dropdownConnectPort($ID, $device1->obj->type, "dport", getEntitySons($device1->obj->fields["FK_entities"]));
+               dropdownConnectPort($ID, $device1->obj->type, "dport", getSonsOf("glpi_entities",$device1->obj->fields["FK_entities"]));
 				} else {
 					dropdownConnectPort($ID, $device1->obj->type, "dport", $device1->obj->fields["FK_entities"]);
 				}

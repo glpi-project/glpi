@@ -616,7 +616,7 @@ function changeActiveEntities($ID="all",$recursive=false) {
 	if ($ID=="all"){
 		$ancestors=array();
 		foreach ($_SESSION['glpiactiveprofile']['entities'] as $key => $val) {
-			$ancestors=array_unique(array_merge(getEntityAncestors($val['ID']),$ancestors));
+         $ancestors=array_unique(array_merge(getAncestorsOf("glpi_entities",$val['ID']),$ancestors));
 			$newroots[$val['ID']]=$val['recursive'];
 			$newentities[$val['ID']] = $val['ID'];
 			if ($val['recursive']) {
@@ -630,8 +630,8 @@ function changeActiveEntities($ID="all",$recursive=false) {
 		}
 	} else {
 
-		// Check entity validity
-		$ancestors=getEntityAncestors($ID);
+		/// Check entity validity
+      $ancestors=getAncestorsOf("glpi_entities",$ID);
 		$ok=false;
 		foreach ($_SESSION['glpiactiveprofile']['entities'] as $key => $val) {
 			
@@ -770,9 +770,9 @@ function haveAccessToEntity($ID, $recursive=0) {
 		return true;
 	}
 		
-	// Recursive object
+	/// Recursive object
 	foreach ($_SESSION['glpiactiveentities'] as $ent) {
-		if (in_array($ID, getEntityAncestors($ent))) {
+      if (in_array($ID, getAncestorsOf("glpi_entities",$ent))) {
 			return true;		
 		}
 	}
@@ -850,13 +850,13 @@ function getEntitiesRestrictRequest($separator = "AND", $table = "", $field = ""
 		$ancestors=array();
 		if (is_array($value)){
 			foreach ($value as $val){
-				$ancestors=array_unique(array_merge(getEntityAncestors($val),$ancestors));
+            $ancestors=array_unique(array_merge(getAncestorsOf("glpi_entities",$val),$ancestors));
 			}
 			$ancestors=array_diff($ancestors,$value);
 		} else if (strlen($value)==0){
 			$ancestors=$_SESSION['glpiparententities'];
 		} else {
-			$ancestors=getEntityAncestors($value);
+         $ancestors=getAncestorsOf("glpi_entities",$value);
 		}
 		
 		if (count($ancestors)){

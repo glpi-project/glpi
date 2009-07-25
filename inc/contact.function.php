@@ -111,7 +111,7 @@ function showEnterpriseContact($instID) {
 	}
 	if ($canedit){
 		if ($contact->fields["recursive"]) {
-			$nb=countElementsInTableForEntity("glpi_enterprises",getEntitySons($contact->fields["FK_entities"]));			
+         $nb=countElementsInTableForEntity("glpi_enterprises",getSonsOf("glpi_entities",$contact->fields["FK_entities"]));
 		} else {
 			$nb=countElementsInTableForEntity("glpi_enterprises",$contact->fields["FK_entities"]);
 		}		
@@ -119,7 +119,7 @@ function showEnterpriseContact($instID) {
 			echo "<tr class='tab_bg_1'><td>&nbsp;</td><td class='center' colspan='4'>";
 			echo "<div class='software-instal'><input type='hidden' name='conID' value='$instID'>";
 			if ($contact->fields["recursive"]) {
-				dropdown("glpi_enterprises","entID",1,getEntitySons($contact->fields["FK_entities"]),$used);
+            dropdown("glpi_enterprises","entID",1,getSonsOf("glpi_entities",$contact->fields["FK_entities"]),$used);
 			} else {
 				dropdown("glpi_enterprises","entID",1,$contact->fields["FK_entities"],$used);
 			}

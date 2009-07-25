@@ -110,27 +110,6 @@
 			exit();
 		}
 
-		// DO NOT USE CACHE : you can activate it if needed
-		$CFG_GLPI["use_cache"]=0;
-
-		$cache_options = array(
-			'cacheDir' => GLPI_CACHE_DIR,
-			'lifeTime' => DEFAULT_CACHE_LIFETIME,
-			'automaticSerialization' => true,
-			'caching' => $CFG_GLPI["use_cache"],
-			'hashedDirectoryLevel' => 2,
-			'fileLocking' => CACHE_FILELOCKINGCONTROL,
-			'writeControl' => CACHE_WRITECONTROL,
-			'readControl' => CACHE_READCONTROL,
-		);
-
-		// Output cache 
-		$GLPI_CACHE = new Cache_Lite_Output($cache_options);
-		$CFG_GLPI["cache"]=$GLPI_CACHE;
-
-		// Cache for other operation
-		$CFG_GLPI["opcache"] = new Cache_Lite($cache_options);
-	
 		// If debug mode activated : display some informations
 		if ($_SESSION['glpi_use_mode']==DEBUG_MODE){
 			// display_errors only need for for E_ERROR, E_PARSE, ... which cannot be catched
