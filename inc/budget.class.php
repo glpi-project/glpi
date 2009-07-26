@@ -124,12 +124,12 @@ class Budget extends CommonDBTM{
 				echo "<tr class='tab_bg_1'>";
 				echo "<td>".$LANG['search'][8].":	</td>";
 				echo "<td>";
-				showDateFormItem("startdate",$this->fields["startdate"]);
+				showDateFormItem("begin_date",$this->fields["begin_date"]);
 				echo "</td></tr>";
 	
 				echo "<tr class='tab_bg_1'><td>".$LANG['search'][9].":	</td>";
 				echo "<td>";
-				showDateFormItem("enddate",$this->fields["enddate"]);
+				showDateFormItem("end_date",$this->fields["end_date"]);
 				echo "</td></tr>";
             echo "</table>";
 
