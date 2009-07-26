@@ -113,7 +113,7 @@ CREATE TABLE `glpi_budgets` (
   `deleted` tinyint(1) NOT NULL default '0',
   `begin_date` date default NULL,
   `end_date` date default NULL,
-  `is_template` smallint(6) NOT NULL default '0',
+  `is_template` tinyint(1) NOT NULL default '0',
   `tplname` varchar(255) collate utf8_unicode_ci default NULL,
   PRIMARY KEY  (`ID`),
   KEY `name` (`name`)
