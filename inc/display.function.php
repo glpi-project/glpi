@@ -357,7 +357,23 @@ function commonHeader($title,$url='',$sector="none",$item="none",$option="")
          $menu['financial']['content']['enterprise']['links']['add']='/front/enterprise.form.php';
       }
 
-   }
+
+		}
+
+		if (haveRight("budget","r")){
+			$menu['financial']['content']['budget']['title']=$LANG['financial'][87];
+			$menu['financial']['content']['budget']['shortcut']='n';
+			$menu['financial']['content']['budget']['page']='/front/budget.php';
+			$menu['financial']['content']['budget']['links']['search']='/front/budget.php';
+
+			if (haveRight("contract","w")){
+				$menu['financial']['content']['budget']['links']['add']='/front/budget.form.php';
+			}
+
+		}
+
+
+   
    if (haveRight("contract","r")){
       $menu['financial']['content']['contract']['title']=$LANG['Menu'][25];
       $menu['financial']['content']['contract']['shortcut']='n';

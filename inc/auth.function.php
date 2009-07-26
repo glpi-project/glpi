@@ -205,6 +205,9 @@ function haveTypeRight($type, $right) {
 		case BOOKMARK_TYPE :
 			return haveRight("bookmark_public",$right);
 			break;	
+		case BUDGET_TYPE :
+			return haveRight("budget",$right);
+			break;
 		default :
 			// Plugin case
 			if ($type>1000){

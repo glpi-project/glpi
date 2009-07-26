@@ -93,14 +93,7 @@ function showLinkDevice($instID) {
 		echo "<tr class='tab_bg_1'><td>&nbsp;</td><td class='center'>";
 		echo "<div class='software-instal'><input type='hidden' name='lID' value='$instID'>";
 
-		$types=$CFG_GLPI["helpdesk_types"];
-		$types[]=SOFTWARE_TYPE;
-		$types[]=CARTRIDGE_TYPE;
-		$types[]=CONSUMABLE_TYPE;
-		$types[]=ENTERPRISE_TYPE;
-		$types[]=CONTACT_TYPE;
-		$types[]=CONTRACT_TYPE;
-		dropdownDeviceTypes("device_type",0,$types);
+		dropdownDeviceTypes("device_type",0,$CFG_GLPI["link_types"]);
 	
 		echo "&nbsp;&nbsp;<input type='submit' name='adddevice' value=\"".$LANG['buttons'][8]."\" class='submit'>";
 		echo "</div>";
@@ -168,7 +161,7 @@ function showLinkOnDevice($type,$ID){
 		echo "<div class='center'><table class='tab_cadre'><tr><th>".$LANG['title'][33]."</th></tr>";
 
 		while ($data=$DB->fetch_assoc($result)){
-
+			
 			$name=$data["name"];
 			if (empty($name))
 				$name=$data["link"];
@@ -281,7 +274,7 @@ function showLinkOnDevice($type,$ID){
 					}
 				} else 
 					echo "<tr class='tab_bg_2'><td><a target='_blank' href='$link'>$name</a></td></tr>";
-
+				
 			} else {// File Generated Link
 				$link=$data['name'];		
 				$ci->getFromDB($type,$ID);
