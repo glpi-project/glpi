@@ -643,7 +643,6 @@ class User extends CommonDBTM {
 			$this->fields['password_md5'] = "";
 			
 			$fields=getLDAPSyncFields($ldap_method);
-	
 			$fields = array_filter($fields);
 			$f = array_values($fields);
 							
@@ -656,7 +655,7 @@ class User extends CommonDBTM {
             if (empty($v[0][$e][0])){
                switch ($k){
                   case "language":
-                     $this->fields[$k]=$CFG_GLPI['language'];
+                     // Not set value : managed but user class
                      break;
                   case "title":
                   case "type":
@@ -671,8 +670,9 @@ class User extends CommonDBTM {
 							{
 								case "language":
 									$language = getUserLanguage($v[0][$e][0]);
-									if ($language != '')
-										$this->fields[$k]=$language;	
+									if ($language != ''){
+										$this->fields[$k]=$language;
+                           } 
 									break;
 								case "title":
 								case "type":
