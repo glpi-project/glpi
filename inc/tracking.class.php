@@ -1276,18 +1276,19 @@ class Followup  extends CommonDBTM {
 				$input["_job"]->updateInDB($updates);
 			}
 
-			if (isset($input["_reopen"]) && $input["_reopen"] && strstr($input["_job"]->fields["status"],"old_")){
-				$updates[]="status";
-				if ($input["_job"]->fields["assign"]>0 || $input["_job"]->fields["assign_group"]>0 
-					|| $input["_job"]->fields["assign_ent"]>0){
-					$input["_job"]->fields["status"]="assign";
-				} else {
-					$input["_job"]->fields["status"]="new";
-				}
-				$input["_job"]->updateInDB($updates);
-			}
-
 		}
+
+      // No check on admin because my be used by mailgate
+      if (isset($input["_reopen"]) && $input["_reopen"] && strstr($input["_job"]->fields["status"],"old_")){
+         $updates[]="status";
+         if ($input["_job"]->fields["assign"]>0 || $input["_job"]->fields["assign_group"]>0
+            || $input["_job"]->fields["assign_ent"]>0){
+            $input["_job"]->fields["status"]="assign";
+         } else {
+            $input["_job"]->fields["status"]="new";
+         }
+         $input["_job"]->updateInDB($updates);
+      }
 
 		if ($CFG_GLPI["mailing"]){
 			if ($input["_close"]) $input["_type"]="finish";
