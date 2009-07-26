@@ -240,7 +240,8 @@ if (!isset ($_POST["noAUTO"]) && $auth_method=checkAlternateAuthSystems()) {
 		// we have done at least a good login? No, we exit. 
 		nullHeader("Login", $_SERVER['PHP_SELF']);
 		echo '<div align="center"><b>' . $identificat->getErr() . '</b><br><br>';
-		echo '<b><a href="' . $CFG_GLPI["root_doc"] . '/logout.php">' . $LANG['login'][1] . '</a></b></div>';
+      // Logout whit noAUto to manage auto_login with errors
+		echo '<b><a href="' . $CFG_GLPI["root_doc"] . '/logout.php?noAUTO=1">' . $LANG['login'][1] . '</a></b></div>';
 		if (GLPI_DEMO_MODE){
 			logEvent(-1, "system", 1, "login", "failed login: " . $_POST['login_name'] . "  ($ip)");
 		} else {
