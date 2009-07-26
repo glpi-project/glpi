@@ -179,31 +179,45 @@ function update0721to080() {
 
 	}
 
+
 	if (TableExists("glpi_dropdown_budget")) {
-			$query = "ALTER TABLE `glpi_dropdown_budget` ADD `FK_entities` int(11) NOT NULL default '0'";
-			$DB->query($query) or die("0.80 add FK_entities index in glpi_dropdown_budget" . $LANG['update'][90] . $DB->error());
+      if (!FieldExists("glpi_dropdown_budget","FK_entities")) {
+            $query = "ALTER TABLE `glpi_dropdown_budget` ADD `FK_entities` int(11) NOT NULL default '0'";
+            $DB->query($query) or die("0.80 add FK_entities field in glpi_dropdown_budget" . $LANG['update'][90] . $DB->error());
+      }
 
-         $query = "ALTER TABLE `glpi_dropdown_budget` ADD `recursive` smallint(6) NOT NULL DEFAULT '0'";
-			$DB->query($query) or die("0.80 add recursive index in glpi_dropdown_budget" . $LANG['update'][90] . $DB->error());
-
-         $query = "ALTER TABLE `glpi_dropdown_budget` ADD `deleted` smallint(6) NOT NULL DEFAULT '0'";
-			$DB->query($query) or die("0.80 add deleted index in glpi_dropdown_budget" . $LANG['update'][90] . $DB->error());
-
-         $query = "ALTER TABLE `glpi_dropdown_budget` ADD `startdate` DATE NULL";
-			$DB->query($query) or die("0.80 add startdate index in glpi_dropdown_budget" . $LANG['update'][90] . $DB->error());
-
-			$query = "ALTER TABLE `glpi_dropdown_budget` ADD `enddate` DATE NULL";
-			$DB->query($query) or die("0.80 add enddate index in glpi_dropdown_budget" . $LANG['update'][90] . $DB->error());
-
+      if (!FieldExists("glpi_dropdown_budget","recursive")) {
+         $query = "ALTER TABLE `glpi_dropdown_budget` ADD `recursive` tinyint(1) NOT NULL DEFAULT '0'";
+			$DB->query($query) or die("0.80 add recursive field in glpi_dropdown_budget" . $LANG['update'][90] . $DB->error());
+      }
+      if (!FieldExists("glpi_dropdown_budget","deleted")) {
+         $query = "ALTER TABLE `glpi_dropdown_budget` ADD `deleted` tinyint(1) NOT NULL DEFAULT '0'";
+			$DB->query($query) or die("0.80 add deleted field in glpi_dropdown_budget" . $LANG['update'][90] . $DB->error());
+      }
+      if (!FieldExists("glpi_dropdown_budget","begin_date")) {
+         $query = "ALTER TABLE `glpi_dropdown_budget` ADD `begin_date` DATE NULL";
+			$DB->query($query) or die("0.80 add begin_date field in glpi_dropdown_budget" . $LANG['update'][90] . $DB->error());
+      }
+      if (!FieldExists("glpi_dropdown_budget","end_date")) {   
+			$query = "ALTER TABLE `glpi_dropdown_budget` ADD `end_date` DATE NULL";
+			$DB->query($query) or die("0.80 add end_date field in glpi_dropdown_budget" . $LANG['update'][90] . $DB->error());
+      }
+      if (!FieldExists("glpi_dropdown_budget","recursive")) {
          $query = "ALTER TABLE `glpi_dropdown_budget` ADD `value` DECIMAL( 20, 4 )  NOT NULL default '0.0000'";
-			$DB->query($query) or die("0.80 add value index in glpi_dropdown_budget" . $LANG['update'][90] . $DB->error());
+			$DB->query($query) or die("0.80 add value field in glpi_dropdown_budget" . $LANG['update'][90] . $DB->error());
+      }
+      if (!FieldExists("glpi_dropdown_budget","is_template")) {
+         $query = "ALTER TABLE `glpi_dropdown_budget` ADD `is_template` smallint(6) NOT NULL default '0'";
+			$DB->query($query) or die("0.80 add is_template field in glpi_dropdown_budget" . $LANG['update'][90] . $DB->error());
+      }
 
-         $query = "ALTER TABLE `glpi_dropdown_budget` ADD `is_template` smallint(6) NOT NULL default '0', " .
-						" ADD `tplname` varchar(255) collate utf8_unicode_ci default NULL";
-			$DB->query($query) or die("0.80 add value index in glpi_dropdown_budget" . $LANG['update'][90] . $DB->error());
+      if (!FieldExists("glpi_dropdown_budget","tplname")) {
+         $query = "ALTER TABLE `glpi_dropdown_budget`  ADD `tplname` varchar(255) default NULL";
+			$DB->query($query) or die("0.80 add tplname field in glpi_dropdown_budget" . $LANG['update'][90] . $DB->error());
+      }
 
-         $query = "RENAME TABLE `glpi_dropdown_budget`  TO `glpi_budgets` ;";
-         $DB->query($query) or die("0.80 rename glpi_dropdown_budget to glpi_budgets" . $LANG['update'][90] . $DB->error());
+      $query = "RENAME TABLE `glpi_dropdown_budget`  TO `glpi_budgets` ;";
+      $DB->query($query) or die("0.80 rename glpi_dropdown_budget to glpi_budgets" . $LANG['update'][90] . $DB->error());
 	}
 
 	// Display "Work ended." message - Keep this as the last action.
