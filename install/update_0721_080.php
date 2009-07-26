@@ -202,7 +202,7 @@ function update0721to080() {
 			$query = "ALTER TABLE `glpi_dropdown_budget` ADD `end_date` DATE NULL";
 			$DB->query($query) or die("0.80 add end_date field in glpi_dropdown_budget" . $LANG['update'][90] . $DB->error());
       }
-      if (!FieldExists("glpi_dropdown_budget","recursive")) {
+      if (!FieldExists("glpi_dropdown_budget","value")) {
          $query = "ALTER TABLE `glpi_dropdown_budget` ADD `value` DECIMAL( 20, 4 )  NOT NULL default '0.0000'";
 			$DB->query($query) or die("0.80 add value field in glpi_dropdown_budget" . $LANG['update'][90] . $DB->error());
       }
