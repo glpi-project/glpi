@@ -607,7 +607,3 @@ closedir($dir);
 
 commonFooter();
 ?>
-
-
-
-

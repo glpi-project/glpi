@@ -97,4 +97,4 @@ if (count($entrees_avgtime)>0)
 	graphBy($entrees_avgtime,$LANG['stats'][30],$LANG['job'][21],0,"month");
 
 	commonFooter();
-	?>
+?>

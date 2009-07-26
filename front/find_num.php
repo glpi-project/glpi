@@ -259,5 +259,5 @@ function fillidfield(Type,Id){
 
 	echo "</table>";
 }
+echo '</body></html>';
 ?>
-</body></html>

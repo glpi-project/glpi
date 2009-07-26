@@ -161,4 +161,4 @@ $items=array(
 	displayStats($_POST["type"],$field,$_POST["date1"],$_POST["date2"],$_GET['start'],$val);
 
 	commonFooter();
-	?>
+?>

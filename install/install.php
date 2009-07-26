@@ -444,7 +444,7 @@ function step4 ($host,$user,$password,$databasename,$newdatabasename)
 	function create_conn_file($host,$user,$password,$DBname)
 	{
 		global $CFG_GLPI;
-		$DB_str = "<?php \n class DB extends DBmysql { \n var \$dbhost	= '". $host ."'; \n var \$dbuser 	= '". $user ."'; \n var \$dbpassword= '". rawurlencode($password) ."'; \n var \$dbdefault	= '". $DBname ."'; \n } \n ?>";
+		$DB_str = "<?php\n class DB extends DBmysql { \n var \$dbhost	= '". $host ."'; \n var \$dbuser 	= '". $user ."'; \n var \$dbpassword= '". rawurlencode($password) ."'; \n var \$dbdefault	= '". $DBname ."'; \n } \n?>";
 		$fp = fopen(GLPI_CONFIG_DIR . "/config_db.php",'wt');
 		if($fp) {
 			$fw = fwrite($fp,$DB_str);
@@ -567,4 +567,4 @@ function step4 ($host,$user,$password,$databasename,$newdatabasename)
 	}
 	footer_html();
 	
-	?>
+?>
