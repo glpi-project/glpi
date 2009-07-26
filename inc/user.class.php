@@ -650,7 +650,7 @@ class User extends CommonDBTM {
 					if (empty($v[0][$e][0])){
 						switch ($k){
                      case "language":
-                        $this->fields[$k]=$CFG_GLPI['language'];
+                        // Not set value : managed but user class
                         break;
                      case "title":
                      case "type":
