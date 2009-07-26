@@ -655,6 +655,9 @@ class User extends CommonDBTM {
          foreach ($fields as $k => $e) {
             if (empty($v[0][$e][0])){
                switch ($k){
+                  case "language":
+                     $this->fields[$k]=$CFG_GLPI['language'];
+                     break;
                   case "title":
                   case "type":
                      $this->fields[$k] = 0;

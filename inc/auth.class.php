@@ -352,7 +352,10 @@ class Identification {
 							$_SESSION["glpi$field"] = $this->user->fields[$field];
 						}
 					}
-
+               // Init not set value for language
+               if (empty($_SESSION["glpilanguage"])){
+                  $_SESSION["glpilanguage"]=$CFG_GLPI['language'];
+               }
 					loadLanguage();
 						
 					// glpiprofiles -> other available profile with link to the associated entities
