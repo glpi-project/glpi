@@ -58,11 +58,11 @@ closedir DIRHANDLE;
 sub do_file{
 	local ($file)=@_;
 	$eof=`tail -1 $file`;
-   if ($eof !~ m/^\?\>$/){
+   if ($eof !~ m/^\s*\?\>$/){
       print "problem whit end of $file $eof\n";
    }
    $bof=`head -1 $file`;
-   if ($bof !~ m/^\<\?php$/){
+   if ($bof !~ m/^\<\?php\s*$/){
       print "problem whit begin of $file $bof\n";
    }
 }
