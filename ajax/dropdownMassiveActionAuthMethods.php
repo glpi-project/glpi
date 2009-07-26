@@ -1,6 +1,6 @@
 <?php
 /*
- * @version $Id: dropdownMassiveActionPorts.php 8024 2009-02-28 16:03:22Z moyo $
+ * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2009 by the INDEPNET Development Team.
