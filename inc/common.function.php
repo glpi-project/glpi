@@ -80,7 +80,7 @@ if (!defined('GLPI_ROOT')){
 	}
 	/**
 	* Is the user have right to see all entities ?
-	*@return boolean
+	* @return boolean
 	* 
 	**/
 	function isViewAllEntities(){
@@ -88,9 +88,9 @@ if (!defined('GLPI_ROOT')){
 	}
 	/**
 	* Log a message in log file
-	*@param $name string: name of the log file
-	*@param $text string: text to log 
-	*@param $force boolean: force log in file not seeing use_errorlog config
+	* @param $name string: name of the log file
+	* @param $text string: text to log 
+	* @param $force boolean: force log in file not seeing use_errorlog config
 	* 
 	**/
 	function logInFile($name,$text,$force=false){
@@ -102,11 +102,11 @@ if (!defined('GLPI_ROOT')){
 	
 	/**
 	* Specific error handler in Normal mode
-	*@param $errno integer: level of the error raised.
-	*@param $errmsg string: error message.
-	*@param $filename string: filename that the error was raised in.
-	*@param $linenum integer: line number the error was raised at. 
-	*@param $vars array: that points to the active symbol table at the point the error occurred.
+	* @param $errno integer: level of the error raised.
+	* @param $errmsg string: error message.
+	* @param $filename string: filename that the error was raised in.
+	* @param $linenum integer: line number the error was raised at. 
+	* @param $vars array: that points to the active symbol table at the point the error occurred.
 	*
 	**/
 	function userErrorHandlerNormal($errno, $errmsg, $filename, $linenum, $vars){
@@ -163,11 +163,11 @@ if (!defined('GLPI_ROOT')){
 	}
    /**
    * Specific error handler in Debug mode
-   *@param $errno integer: level of the error raised.
-   *@param $errmsg string: error message.
-   *@param $filename string: filename that the error was raised in.
-   *@param $linenum integer: line number the error was raised at. 
-   *@param $vars array: that points to the active symbol table at the point the error occurred.
+   * @param $errno integer: level of the error raised.
+   * @param $errmsg string: error message.
+   * @param $filename string: filename that the error was raised in.
+   * @param $linenum integer: line number the error was raised at. 
+   * @param $vars array: that points to the active symbol table at the point the error occurred.
    *
    **/
    function userErrorHandlerDebug($errno, $errmsg, $filename, $linenum, $vars){
@@ -187,20 +187,47 @@ if (!defined('GLPI_ROOT')){
    }
 	/**
 	* Is the script launch in Command line ?
-	*@return boolean
+	* @return boolean
 	*
 	**/
 	function isCommandLine(){
 		return (!isset($_SERVER["SERVER_NAME"]));
 	}
 
+   
+	/**
+	* Encode string to UTF-8
+	* @param $string string: string to convert
+	* @param $from_charset string: original charset (if 'auto' try to autodetect)
+	*
+	* @return utf8 string
+	**/
+   function encodeInUtf8($string,$from_charset="ISO-8859-1"){
+      if (strcmp($from_charset,"auto")==0){
+         $from_charset=mb_detect_encoding($string);
+      }
+      return mb_convert_encoding($string,"UTF-8",$from_charset);
+   }
+
+	/**
+	* Decode string from UTF-8 to specified charset
+	* @param $string string: string to convert
+	* @param $from_charset string: destination charset (default is ISO-8859-1)
+	*
+	* @return converted string
+	**/
+   function decodeFromUtf8($string,$to_charset="ISO-8859-1"){
+      return mb_convert_encoding($string,$to_charset,"UTF-8");
+   }
+
+
 	/**
 	* substr function for utf8 string
-	*@param $str string: string
-	*@param $start integer: start of the result substring
-   *@param $length integer: The maximum length of the returned string if > 0
+	* @param $str string: string
+	* @param $start integer: start of the result substring
+   * @param $length integer: The maximum length of the returned string if > 0
 	*
-	*@return substring
+	* @return substring
 	**/
 	function utf8_substr($str,$start,$length=-1){
       return mb_substr($str,$start,$length,"UTF-8");
