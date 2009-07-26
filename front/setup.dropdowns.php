@@ -184,7 +184,7 @@ if (isset($_POST['mass_delete'])){
 					),
 
 			$LANG['Menu'][26]=>array(
-					"glpi_dropdown_budget"=>$LANG['financial'][87],
+					//"glpi_dropdown_budget"=>$LANG['financial'][87],
 					"glpi_dropdown_rubdocs"=>$LANG['setup'][81],
 					),
 
