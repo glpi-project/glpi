@@ -550,18 +550,24 @@ function showDocumentAssociated($device_type,$ID,$withtemplate=''){
  **/
 function getDocumentLink($filename,$params=""){
 	global $DB,$CFG_GLPI;	
-	if (empty($filename))
+	if (empty($filename)){
 		return "&nbsp;";
+   }
 
 	$splitter=explode("/",$filename);
-	if (count($splitter)==2)
-		$fileout=$splitter[1];
-	else $fileout=$filename;
-
-	if (strlen($fileout)>20) $fileout=substr($fileout,0,20)."...";
-
-	$out = "<a href=\"".$CFG_GLPI["root_doc"]."/front/document.send.php?file=".urlencode($filename).$params."\" target=\"_blank\">";				
 	if (count($splitter)==2){
+		$fileout=$splitter[1];
+	} else {
+      $fileout=$filename;
+   }
+
+	if (utf8_strlen($fileout)>20) {
+      $fileout=utf8_substr($fileout,0,20)."...";
+   }
+
+	$out = "<a href=\"".$CFG_GLPI["root_doc"]."/front/document.send.php?file=".urlencode($filename).$params."\" target=\"_blank\">";
+
+	if (count($splitter)==2) {
 
 		$query="SELECT * FROM glpi_type_docs WHERE ext LIKE '".$splitter[0]."' AND icon <> ''";
 

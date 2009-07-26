@@ -73,8 +73,10 @@ if (!empty($used)){
 	$where.=" AND $table.ID NOT IN ('".implode("','",$used)."')";
 }
 
-if (strlen($_POST['searchText'])>0&&$_POST['searchText']!=$CFG_GLPI["ajax_wildcard"])
-$where.=" AND ( $table.name ".makeTextSearch($_POST['searchText'])." OR $table.serial ".makeTextSearch($_POST['searchText'])." )";
+if (strlen($_POST['searchText'])>0 && $_POST['searchText']!=$CFG_GLPI["ajax_wildcard"]){
+   $where.=" AND ( $table.name ".makeTextSearch($_POST['searchText'])."
+            OR $table.serial ".makeTextSearch($_POST['searchText'])." )";
+}
 
 
 $multi=in_array($table,$CFG_GLPI["recursive_type"]);
@@ -148,7 +150,7 @@ if ($DB->numrows($result)) {
 		}
 
 	
-		echo "<option value=\"$ID\" title=\"".cleanInputText($output)."\">".substr($output,0,$_SESSION["glpidropdown_limit"])."</option>";
+		echo "<option value=\"$ID\" title=\"".cleanInputText($output)."\">".utf8_substr($output,0,$_SESSION["glpidropdown_limit"])."</option>";
 	}
 
 	if ($multi && $prev>=0) {

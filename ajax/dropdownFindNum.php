@@ -67,7 +67,7 @@ if (in_array($_POST['table'],$CFG_GLPI["template_tables"])){
 	$where.=" AND is_template=0 ";		
 }
 
-if (strlen($_POST['searchText'])>0&&$_POST['searchText']!=$CFG_GLPI["ajax_wildcard"]){
+if (strlen($_POST['searchText'])>0 && $_POST['searchText']!=$CFG_GLPI["ajax_wildcard"]) {
 	$search=makeTextSearch($_POST['searchText']);
 	$WWHERE="";
 	$FWHERE="";
@@ -114,7 +114,7 @@ if ($DB->numrows($result)) {
 			}
 		}
 		if (empty($output)||$_SESSION['glpiview_ID']) $output.=" (".$data['ID'].")";
-		echo "<option value=\"".$data['ID']."\" title=\"".cleanInputText($output)."\">".substr($output,0,$_SESSION["glpidropdown_limit"])."</option>";
+		echo "<option value=\"".$data['ID']."\" title=\"".cleanInputText($output)."\">".utf8_substr($output,0,$_SESSION["glpidropdown_limit"])."</option>";
 	}
 }
 echo "</select>";

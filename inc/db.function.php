@@ -745,7 +745,7 @@ function formatUserName($ID,$login,$realname,$firstname,$link=0,$cut=0){
 			}
 		}
 
-		if($cut>0&&strlen($temp) > $cut){
+		if($cut>0 && utf8_strlen($temp)>$cut){
 			$temp=utf8_substr($temp,0,$cut);
 			$temp.=" ..."; 
 		}
@@ -754,7 +754,7 @@ function formatUserName($ID,$login,$realname,$firstname,$link=0,$cut=0){
 		$temp=$login;
 	}
 
-	if ($ID>0&&(strlen($temp)==0||$_SESSION["glpiview_ID"])){
+	if ($ID>0 && (strlen($temp)==0 || $_SESSION["glpiview_ID"])) {
 		$viewID="&nbsp;($ID)";
 	}
 
@@ -921,7 +921,7 @@ function importArrayFromDB($DATA) {
 
 	foreach(explode(" ", $DATA) as $ITEM) {
 		$A = explode("=>", $ITEM);
-		if (strlen($A[0])&&isset($A[1]))
+		if (strlen($A[0])>0 && isset($A[1]))
 			$TAB[urldecode($A[0])] = urldecode($A[1]);
 	}
 	return $TAB;
@@ -945,16 +945,16 @@ function autoName($objectName, $field, $isTemplate, $type,$FK_entities=-1){
 
 	//$objectName = isset($object->fields[$field]) ? $object->fields[$field] : '';
 
-	$len = strlen($objectName);
-	if($isTemplate && $len > 8 && substr($objectName,0,4) === '&lt;' && substr($objectName,$len - 4,4) === '&gt;') {
-		$autoNum = substr($objectName, 4, $len - 8);
+	$len = utf8_strlen($objectName);
+	if($isTemplate && $len > 8 && utf8_substr($objectName,0,4) === '&lt;' && utf8_substr($objectName,$len - 4,4) === '&gt;') {
+		$autoNum = utf8_substr($objectName, 4, $len - 8);
 		$mask = '';
 		if(preg_match( "/\\#{1,10}/", $autoNum, $mask)){
 			$global = strpos($autoNum, '\\g') !== false && $type != INFOCOM_TYPE ? 1 : 0;
 			$autoNum = str_replace(array('\\y','\\Y','\\m','\\d','_','%','\\g'), array(date('y'),date('Y'),date('m'),date('d'),'\\_','\\%',''), $autoNum);
 			$mask = $mask[0];
 			$pos = strpos($autoNum, $mask) + 1;
-			$len = strlen($mask);
+			$len = utf8_strlen($mask);
 			$like = str_replace('#', '_', $autoNum);
 
 			if ($global == 1){

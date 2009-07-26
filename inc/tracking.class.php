@@ -703,7 +703,7 @@ class Job extends CommonDBTM{
                 if (empty($input["name"])) {
                         $input["name"]=preg_replace('/\r\n/',' ',$input['contents']);
                         $input["name"]=preg_replace('/\n/',' ',$input['name']);
-                        $input["name"]=substr($input['name'],0,70);
+                        $input["name"]=utf8_substr($input['name'],0,70);
                 }
 
 		return $input;
@@ -737,18 +737,33 @@ class Job extends CommonDBTM{
 		logEvent($newID,"tracking",4,"tracking",getUserName($input["author"])." ".$LANG['log'][20]);
 
 		$already_mail=false;
-		if (((isset($input["_followup"])&&is_array($input["_followup"])&&strlen($input["_followup"]['contents']))||isset($input["plan"]))
-			||(isset($input["_hour"])&&isset($input["_minute"])&&isset($input["realtime"])&&$input["realtime"]>0)){
+		if (((isset($input["_followup"]) && is_array($input["_followup"])
+            && strlen($input["_followup"]['contents']) > 0 )
+         || isset($input["plan"]))
+			|| (isset($input["_hour"]) && isset($input["_minute"])
+            && isset($input["realtime"]) && $input["realtime"]>0)){
 
 			$fup=new Followup();
 			$type="new";
-			if (isset($this->fields["status"])&&strstr($this->fields["status"],"old_")) $type="finish";
+			if (isset($this->fields["status"])&&strstr($this->fields["status"],"old_")) {
+            $type="finish";
+         }
 			$toadd=array("type"=>$type,"tracking"=>$newID);
-			if (isset($input["_hour"])) $toadd["hour"]=$input["_hour"];
-			if (isset($input["_minute"])) $toadd["minute"]=$input["_minute"];
-			if (isset($input["_followup"]['contents'])&&strlen($input["_followup"]['contents'])) $toadd["contents"]=$input["_followup"]['contents'];
-			if (isset($input["_followup"]['private'])) $toadd["private"]=$input["_followup"]['private'];
-			if (isset($input["plan"])) $toadd["plan"]=$input["plan"];
+			if (isset($input["_hour"])) {
+            $toadd["hour"]=$input["_hour"];
+         }
+			if (isset($input["_minute"])) {
+            $toadd["minute"]=$input["_minute"];
+         }
+			if (isset($input["_followup"]['contents']) && strlen($input["_followup"]['contents']) > 0) {
+            $toadd["contents"]=$input["_followup"]['contents'];
+         }
+			if (isset($input["_followup"]['private'])) {
+            $toadd["private"]=$input["_followup"]['private'];
+         }
+			if (isset($input["plan"])) {
+            $toadd["plan"]=$input["plan"];
+         }
 			$fup->add($toadd);
 			$already_mail=true;
 		}

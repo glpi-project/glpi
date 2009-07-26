@@ -69,8 +69,9 @@ if (isset($LINK_ID_TABLE[$_POST["type"]])&&$_POST["type"]>0){
 		}
 	}
 
-	if (strlen($_POST['searchText'])>0&&$_POST['searchText']!=$CFG_GLPI["ajax_wildcard"])
+	if (strlen($_POST['searchText'])>0 && $_POST['searchText']!=$CFG_GLPI["ajax_wildcard"]){
 		$where.=" AND name ".makeTextSearch($_POST['searchText'])." ";
+   }
 
 	$NBMAX=$CFG_GLPI["dropdown_max"];
 
@@ -105,7 +106,7 @@ if (isset($LINK_ID_TABLE[$_POST["type"]])&&$_POST["type"]>0){
 			if ($_SESSION["glpiview_ID"]||empty($output)) {
 				$output="($ID)";
 			}
-			echo "<option value=\"$ID\" title=\"".cleanInputText($output)."\">".substr($output,0,$_SESSION["glpidropdown_limit"])."</option>";
+			echo "<option value=\"$ID\" title=\"".cleanInputText($output)."\">".utf8_substr($output,0,$_SESSION["glpidropdown_limit"])."</option>";
 		}
 		if ($multi && $prev>=0) {
 			echo "</optgroup>";

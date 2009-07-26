@@ -74,12 +74,14 @@ class CommonDBTM {
 		// Make new database object and fill variables
 		global $DB;
 		// != 0 because 0 is consider as empty
-		if (strlen($ID)==0) return false;
+		if (strlen($ID)==0) {
+         return false;
+      }
 		
 		$query = "SELECT * FROM `".$this->table."` WHERE ".$this->getIndexName()." = '$ID'";
 		
 		if ($result = $DB->query($query)) {
-			if ($DB->numrows($result)==1){
+			if ($DB->numrows($result)==1) {
 				$this->fields = $DB->fetch_assoc($result);
 				return true;
 			} 
@@ -1369,9 +1371,6 @@ class CommonDBTM {
 		$recursive_state_to_check=0;
 		// Get item if not already loaded
 		if (empty($ID)||$ID<=0){
-//			if (!isset($this->fields["ID"]) || strlen($this->fields["ID"])) {
-//				$this->getEmpty();
-//			}
 			// No entity define : adding process : use active entity
 			if ($entity==-1){
 				$entity_to_check=$_SESSION["glpiactive_entity"];

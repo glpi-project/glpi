@@ -213,7 +213,7 @@ function showFormTreeDown($target, $tablename, $human, $ID, $value2 = '', $where
 		echo "<option value='under' " . ($type == 'under' ? " selected " : "") . ">" . $LANG['setup'][75] . "</option>";
 		echo "<option value='same' " . ($type == 'same' ? " selected " : "") . ">" . $LANG['setup'][76] . "</option>";
 		echo "</select>&nbsp;&nbsp;&nbsp;";
-		dropdownValue($tablename, "value2", (strlen($value2) ? $value2 : 0), 0, $entity_restrict);
+		dropdownValue($tablename, "value2", (strlen($value2) > 0 ? $value2 : 0), 0, $entity_restrict);
 	} else
 		echo "<input type='hidden' name='type' value='first'>";
 	echo "</td><td align='center' rowspan='2' class='tab_bg_2' width='202' >";
@@ -599,7 +599,7 @@ function externalImportDropdown($dpdTable, $value, $FK_entities = -1,$external_p
 	global $DB, $CFG_GLPI;
 
 	$value=trim($value);
-	if (strlen($value)==0){
+	if (strlen($value) == 0) {
 		return 0;
 	}
 

@@ -55,7 +55,7 @@ if ( ! FieldExists("glpi_tracking",$_POST['field']) ){
 // Make a select box with all glpi users
 
 $where=" glpi_users.deleted='0' AND glpi_users.active='1' ";
-if (strlen($_POST['searchText'])>0&&$_POST['searchText']!=$CFG_GLPI["ajax_wildcard"]){
+if (strlen($_POST['searchText'])>0 && $_POST['searchText']!=$CFG_GLPI["ajax_wildcard"]) {
 	$where.=" AND (glpi_users.name ".makeTextSearch($_POST['searchText'])." OR glpi_users.realname ".makeTextSearch($_POST['searchText'])." OR glpi_users.firstname ".makeTextSearch($_POST['searchText']).")";
 }
 
@@ -100,13 +100,13 @@ echo "<option value=\"0\">[ ".$LANG['common'][66]." ]</option>";
 if (isset($_POST['value'])){
 	$output=getUserName($_POST['value']);
 	if (!empty($output)&&$output!="&nbsp;")
-		echo "<option selected value='".$_POST['value']."' title=\"".cleanInputText($output)."\">".substr($output,0,$_SESSION["glpidropdown_limit"])."</option>";
+		echo "<option selected value='".$_POST['value']."' title=\"".cleanInputText($output)."\">".utf8_substr($output,0,$_SESSION["glpidropdown_limit"])."</option>";
 }	
 
 if (count($users)) {
 	foreach ($users as $ID => $output){
 
-		echo "<option value=\"".$ID."\" ".($ID == $_POST['value']?"selected":"")." title=\"".cleanInputText($output)."\">".substr($output,0,$_SESSION["glpidropdown_limit"])."</option>";
+		echo "<option value=\"".$ID."\" ".($ID == $_POST['value']?"selected":"")." title=\"".cleanInputText($output)."\">".utf8_substr($output,0,$_SESSION["glpidropdown_limit"])."</option>";
 	}
 }
 echo "</select>";

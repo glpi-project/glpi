@@ -461,16 +461,18 @@ function showPlanning($who,$who_group,$when,$type){
 		case "month":
 			echo "<tr class='tab_bg_3'>";
 			// Display first day out of the month
-			for ($i=1;$i<$begin_month_day;$i++){
+			for ($i=1 ; $i<$begin_month_day ; $i++) {
 				echo "<td style='background-color:#ffffff'>&nbsp;</td>";
 			}
 			// Print real days
-			if ($current_month<10&&strlen($current_month)==1) $current_month="0".$current_month;
+			if ($current_month<10 && strlen($current_month)==1) {
+            $current_month="0".$current_month;
+         }
 			
 			$begin_time=strtotime($begin);
 			$end_time=strtotime($end);
 		
-			for ($time=$begin_time;$time<$end_time;$time+=DAY_TIMESTAMP){
+			for ($time=$begin_time ; $time<$end_time ; $time+=DAY_TIMESTAMP){
 
 				// Add 6 hours for midnight problem
 				$day=date("d",$time+6*HOUR_TIMESTAMP);
@@ -483,16 +485,16 @@ function showPlanning($who,$who_group,$when,$type){
 				$begin_day=date("Y-m-d H:i:s",$time);
 				$end_day=date("Y-m-d H:i:s",$time+DAY_TIMESTAMP);
 				reset($interv);
-				while ($data=current($interv)){
+				while ($data=current($interv)) {
 					$type="";
 
-					if ($data["begin"]>=$begin_day&&$data["end"]<=$end_day){
+					if ($data["begin"]>=$begin_day && $data["end"]<=$end_day){
 						$type="in";
-					} else if ($data["begin"]<$begin_day&&$data["end"]>$end_day){
+					} else if ($data["begin"]<$begin_day && $data["end"]>$end_day){
 						$type="through";
-					} else if ($data["begin"]>=$begin_day&&$data["begin"]<$end_day){
+					} else if ($data["begin"]>=$begin_day && $data["begin"]<$end_day){
 						$type="begin";
-					} else if ($data["end"]>$begin_day&&$data["end"]<=$end_day){
+					} else if ($data["end"]>$begin_day && $data["end"]<=$end_day){
 						$type="end";
 					} 
 
@@ -685,8 +687,13 @@ function displayPlanningItem($val,$who,$type="",$complete=0){
 function displayUsingTwoDigits($time){
 
 	$time=round($time);
-	if ($time<10&&strlen($time)) return "0".$time;
-	else return $time;
+	if ($time<10 && strlen($time)>0) {
+      return "0".$time;
+   }
+	else {
+      return $time;
+   }
+
 }
 
 /**
@@ -907,7 +914,7 @@ function generateIcal($who){
 
 			if ($fup->getFromDB($data["id_followup"])){
 				if ($job->getFromDBwithData($fup->fields["tracking"],0)){
-					$interv[$data["begin"]."$$".$i]["content"]=substr($job->fields['contents'],0,$CFG_GLPI["cut"]);
+					$interv[$data["begin"]."$$".$i]["content"]=utf8_substr($job->fields['contents'],0,$CFG_GLPI["cut"]);
 					$interv[$data["begin"]."$$".$i]["device"]=$job->hardwaredatas->getName();
 				}
 			}
@@ -919,10 +926,10 @@ function generateIcal($who){
 			$interv[$data["begin"]."$$".$i]["end"]=$data['end'];
 			$interv[$data["begin"]."$$".$i]["content"]="";
 			$interv[$data["begin"]."$$".$i]["device"]="";
-			//$interv[$i]["content"]=substr($job->contents,0,$CFG_GLPI["cut"]);
+
 			if ($fup->getFromDB($data["id_followup"])){
 				if ($job->getFromDBwithData($fup->fields["tracking"],0)){
-					$interv[$data["begin"]."$$".$i]["content"]=substr($job->fields['contents'],0,$CFG_GLPI["cut"]);
+					$interv[$data["begin"]."$$".$i]["content"]=utf8_substr($job->fields['contents'],0,$CFG_GLPI["cut"]);
 					$interv[$data["begin"]."$$".$i]["device"]=$job->hardwaredatas->getName();
 				}
 			}

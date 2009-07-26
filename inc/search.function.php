@@ -680,15 +680,15 @@ function showList ($type,$params){
 	// Add search conditions
 	// If there is search items
 	if ($_SESSION["glpisearchcount"][$type]>0&&count($contains)>0) {
-		for ($key=0;$key<$_SESSION["glpisearchcount"][$type];$key++){
+		for ($key=0;$key<$_SESSION["glpisearchcount"][$type];$key++) {
 			// if real search (strlen >0) and not all and view search
-			if (isset($contains[$key])&&strlen($contains[$key])>0){
+			if (isset($contains[$key]) && strlen($contains[$key])>0) {
 				// common search
-				if ($field[$key]!="all"&&$field[$key]!="view"){
+				if ($field[$key]!="all" && $field[$key]!="view") {
 					$LINK=" ";
 					$NOT=0;
 					$tmplink="";
-					if (is_array($link)&&isset($link[$key])){
+					if (is_array($link) && isset($link[$key])) {
 						if (strstr($link[$key],"NOT")){
 							$tmplink=" ".str_replace(" NOT","",$link[$key]);
 							$NOT=1;
@@ -842,7 +842,8 @@ function showList ($type,$params){
 
 		// a - SELECT 
 		for ($i=0;$i<$_SESSION["glpisearchcount2"][$type];$i++)
-			if (isset($type2[$i])&&$type2[$i]>0&&isset($contains2[$i])&&strlen($contains2[$i]))	{
+			if (isset($type2[$i]) && $type2[$i]>0 && isset($contains2[$i])
+               && strlen($contains2[$i])>0) {
 				$SELECT.=addSelect($type2[$i],$field2[$i],$i,1,$type2[$i]);		
 			}
 
@@ -851,7 +852,8 @@ function showList ($type,$params){
 		$already_link_tables2=array();
 		// Link reference tables
 		for ($i=0;$i<$_SESSION["glpisearchcount2"][$type];$i++)
-			if (isset($type2[$i])&&$type2[$i]>0&&isset($contains2[$i])&&strlen($contains2[$i])) {
+			if (isset($type2[$i]) && $type2[$i]>0 && isset($contains2[$i])
+            && strlen($contains2[$i])>0) {
 				if (!in_array($LINK_ID_TABLE[$type2[$i]],$already_link_tables2)){
 					$FROM.=addMetaLeftJoin($type,$type2[$i],$already_link_tables2,
 						(($contains2[$i]=="NULL")||(strstr($link2[$i],"NOT"))));
@@ -859,7 +861,8 @@ function showList ($type,$params){
 			}
 		// Link items tables
 		for ($i=0;$i<$_SESSION["glpisearchcount2"][$type];$i++)
-			if (isset($type2[$i])&&$type2[$i]>0&&isset($contains2[$i])&&strlen($contains2[$i])) {
+			if (isset($type2[$i]) && $type2[$i]>0 && isset($contains2[$i])
+               && strlen($contains2[$i])>0) {
 				if (!in_array($SEARCH_OPTION[$type2[$i]][$field2[$i]]["table"]."_".$type2[$i],$already_link_tables2)){
 					$FROM.=addLeftJoin($type2[$i],$LINK_ID_TABLE[$type2[$i]],$already_link_tables2,$SEARCH_OPTION[$type2[$i]][$field2[$i]]["table"],$SEARCH_OPTION[$type2[$i]][$field2[$i]]["linkfield"],0,1,$type2[$i]);				
 				}
@@ -883,22 +886,22 @@ function showList ($type,$params){
 		$GROUPBY=" GROUP BY $itemtable.ID";
 	}
 
-	if (empty($GROUPBY)){
-		foreach ($toview as $key2 => $val2){
-			if (!empty($GROUPBY)){
+	if (empty($GROUPBY)) {
+		foreach ($toview as $key2 => $val2) {
+			if (!empty($GROUPBY)) {
 				break;
 			}
-			if (isset($SEARCH_OPTION[$type][$val2]["forcegroupby"])){
+			if (isset($SEARCH_OPTION[$type][$val2]["forcegroupby"])) {
 				$GROUPBY=" GROUP BY $itemtable.ID";
 			}
 		}
 	}
 
 	// Specific search for others item linked  (META search)
-	if (is_array($type2)){
-		for ($key=0;$key<$_SESSION["glpisearchcount2"][$type];$key++){
-			if (isset($type2[$key])&&$type2[$key]>0&&isset($contains2[$key])&&strlen($contains2[$key]))
-			{
+	if (is_array($type2)) {
+		for ($key=0;$key<$_SESSION["glpisearchcount2"][$type];$key++) {
+			if (isset($type2[$key]) && $type2[$key]>0 && isset($contains2[$key])
+            && strlen($contains2[$key])>0) {
 				$LINK="";
 
 				// For AND NOT statement need to take into account all the group by items
@@ -940,11 +943,15 @@ function showList ($type,$params){
 
 	// If no research limit research to display item and compute number of item using simple request
 	$nosearch=true;
-	for ($i=0;$i<$_SESSION["glpisearchcount"][$type];$i++)
-		if (isset($contains[$i])&&strlen($contains[$i])>0) $nosearch=false;
+	for ($i=0;$i<$_SESSION["glpisearchcount"][$type];$i++) {
+		if (isset($contains[$i]) && strlen($contains[$i])>0) {
+         $nosearch=false;
+      }
+   }
 
-	if ($_SESSION["glpisearchcount2"][$type]>0)
+	if ($_SESSION["glpisearchcount2"][$type]>0) {
 		$nosearch=false;
+   }
 
 	$LIMIT="";
 	$numrows=0;
@@ -1140,7 +1147,8 @@ function showList ($type,$params){
 			// Add meta search elements if real search (strlen>0) or only NOT search
 			if ($_SESSION["glpisearchcount2"][$type]>0&&is_array($type2))
 				for ($i=0;$i<$_SESSION["glpisearchcount2"][$type];$i++)
-					if (isset($type2[$i])&&isset($contains2[$i])&&strlen($contains2[$i])>0&&$type2[$i]>0&&(!isset($link2[$i])||!strstr($link2[$i],"NOT"))) {
+					if (isset($type2[$i]) && isset($contains2[$i]) && strlen($contains2[$i])>0
+                     && $type2[$i]>0 && (!isset($link2[$i]) || !strstr($link2[$i],"NOT"))) {
 						$nbcols++;
 					}
 
@@ -1192,8 +1200,9 @@ function showList ($type,$params){
 			// Display columns Headers for meta items
 			if ($_SESSION["glpisearchcount2"][$type]>0&&is_array($type2))
 				for ($i=0;$i<$_SESSION["glpisearchcount2"][$type];$i++)
-					if (isset($type2[$i])&&$type2[$i]>0&&isset($contains2[$i])&&strlen($contains2[$i])&&(!isset($link2[$i])
-								||(!strstr($link2[$i],"NOT") || $contains2[$i]=="NULL"))) {
+					if (isset($type2[$i]) && $type2[$i]>0 && isset($contains2[$i])
+                     && strlen($contains2[$i])>0 && (!isset($link2[$i])
+                     ||(!strstr($link2[$i],"NOT") || $contains2[$i]=="NULL"))) {
 						echo displaySearchHeaderItem($output_type,$names[$type2[$i]]." - ".$SEARCH_OPTION[$type2[$i]][$field2[$i]]["name"],$header_num);
 					}
 			// Add specific column Header
@@ -1282,7 +1291,8 @@ function showList ($type,$params){
 				// Print Meta Item
 				if ($_SESSION["glpisearchcount2"][$type]>0&&is_array($type2))
 					for ($j=0;$j<$_SESSION["glpisearchcount2"][$type];$j++)
-						if (isset($type2[$j])&&$type2[$j]>0&&isset($contains2[$j])&&strlen($contains2[$j])&&(!isset($link2[$j])
+						if (isset($type2[$j]) && $type2[$j]>0 && isset($contains2[$j])
+                        && strlen($contains2[$j])>0 && (!isset($link2[$j])
 									||(!strstr($link2[$j],"NOT") || $contains2[$j]=="NULL"))){
 
 							// General case
@@ -1299,10 +1309,10 @@ function showList ($type,$params){
 									$unit=$SEARCH_OPTION[$type2[$j]][$field2[$j]]['unit'];
 								}
 								for ($k=0;$k<count($split);$k++)
-									if ($contains2[$j]=="NULL"||(strlen($contains2[$j])==0
+									if ($contains2[$j]=="NULL" || strlen($contains2[$j])==0
 										||preg_match('/'.$contains2[$j].'/i',$split[$k])
 										|| isset($SEARCH_OPTION[$type2[$j]][$field2[$j]]['forcegroupby'])
-									)){
+									){
 
 										if ($count_display) $out.= "<br>";
 										$count_display++;
@@ -1366,26 +1376,26 @@ function showList ($type,$params){
 			if ($output_type==PDF_OUTPUT_LANDSCAPE || $output_type==PDF_OUTPUT_PORTRAIT){
 				if ($_SESSION["glpisearchcount"][$type]>0&&count($contains)>0) {
 					for ($key=0;$key<$_SESSION["glpisearchcount"][$type];$key++){
-						if (strlen($contains[$key])){
+						if (strlen($contains[$key])>0) {
 							if (isset($link[$key])) $title.=" ".$link[$key]." ";
-							switch ($field[$key]){
+							switch ($field[$key]) {
 								case "all":
 									$title.=$LANG['common'][66];
-								break;
+                           break;
 								case "view":
 									$title.=$LANG['search'][11];
-								break;
+                           break;
 								default :
-								$title.=$SEARCH_OPTION[$type][$field[$key]]["name"];
-								break;
+                           $title.=$SEARCH_OPTION[$type][$field[$key]]["name"];
+                           break;
 							}
 							$title.=" = ".$contains[$key];
 						}
 					}
 				}
 				if ($_SESSION["glpisearchcount2"][$type]>0&&count($contains2)>0) {
-					for ($key=0;$key<$_SESSION["glpisearchcount2"][$type];$key++){
-						if (strlen($contains2[$key])){
+					for ($key=0;$key<$_SESSION["glpisearchcount2"][$type];$key++) {
+						if (strlen($contains2[$key])>0) {
 							if (isset($link2[$key])) $title.=" ".$link2[$key]." ";
 							$title.=$names[$type2[$key]]."/";
 							$title.=$SEARCH_OPTION[$type2[$key]][$field2[$key]]["name"];
@@ -2345,8 +2355,8 @@ function giveItem ($type,$ID,$data,$num,$meta=0){
 
 				$count_display=0;
 				$added=array();
-				for ($k=0;$k<count($split);$k++)
-					if (strlen(trim($split[$k]))>0){
+				for ($k=0;$k<count($split);$k++) {
+					if (strlen(trim($split[$k]))>0) {
 						$text=$split[$k]." - ".$split2[$k];
 						if ($split3[$k]){
 							$text.=" (R)";
@@ -2358,6 +2368,7 @@ function giveItem ($type,$ID,$data,$num,$meta=0){
 							$added[]=$text;
 						}
 					}
+            }
 				return $out;
 			} 
 		break;
@@ -2370,8 +2381,8 @@ function giveItem ($type,$ID,$data,$num,$meta=0){
 				$split3=explode("$$$$",$data[$NAME.$num."_3"]);
 				$added=array();
 				$count_display=0;
-				for ($k=0;$k<count($split);$k++)
-					if (strlen(trim($split[$k]))>0){
+				for ($k=0;$k<count($split);$k++){
+					if (strlen(trim($split[$k]))>0) {
 						$text=$split[$k]." - ".$split2[$k];
 						if ($split3[$k]){
 							$text.=" (R)";
@@ -2383,6 +2394,7 @@ function giveItem ($type,$ID,$data,$num,$meta=0){
 							$added[]=$text;
 						}
 					}
+            }
 				return $out;
 			} else {
 				// Set name for Root entity
@@ -2419,7 +2431,7 @@ function giveItem ($type,$ID,$data,$num,$meta=0){
 					for ($k=0;$k<count($split);$k++){
 						$lowstr=strtolower($split[$k]);
 						if (strlen(trim($split[$k]))>0
-							&&!in_array($lowstr,$displayed)){	
+							  &&!in_array($lowstr,$displayed)){	
 							if ($count_display) {
 								$out.= "<br>";
 							} 
@@ -2437,7 +2449,7 @@ function giveItem ($type,$ID,$data,$num,$meta=0){
 					for ($k=0;$k<count($split);$k++){
 						$lowstr=strtolower($split[$k]);
 						if (strlen(trim($split[$k]))>0 
-							&&!in_array($lowstr,$displayed)){	
+							&&!in_array($lowstr,$displayed)) {	
 							if ($count_display) {
 								$out.= "<br>";
 							}
@@ -2600,9 +2612,9 @@ function giveItem ($type,$ID,$data,$num,$meta=0){
 					$split=explode("$$$$",$data[$NAME.$num]);
 					$count_display=0;
 					for ($k=0;$k<count($split);$k++){
-						if (strlen(trim($split[$k]))>0){
+						if (strlen(trim($split[$k]))>0) {
 							$split2=explode("$$",$split[$k]);
-							if (isset($split2[1])&&$split2[1]>0){
+							if (isset($split2[1]) && $split2[1]>0) {
 								if ($count_display) $out.= "<br>";
 								$count_display++;
 								$out.= "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$SEARCH_OPTION[$type][$ID]["itemlink_type"]]."?ID=".$split2[1]."\">";
@@ -2650,7 +2662,7 @@ function giveItem ($type,$ID,$data,$num,$meta=0){
 					// strip begin of link
 					$link=preg_replace('/https?:\/\/(www.)?/','',$orig_link);
 					$link=preg_replace('/\/$/','',$link);
-					if (strlen($link)>30){
+					if (utf8_strlen($link)>30){
 						$link=utf8_substr($link,0,30)."...";
 					} 
 					return "<a href=\"$orig_link\" target='_blank'>$link</a>";
@@ -2663,8 +2675,8 @@ function giveItem ($type,$ID,$data,$num,$meta=0){
 					$out="";
 					$split=explode("$$$$",$data[$NAME.$num]);
 					$count_display=0;
-					for ($k=0;$k<count($split);$k++){
-						if (strlen(trim($split[$k]))>0){
+					for ($k=0 ; $k<count($split) ; $k++) {
+						if (strlen(trim($split[$k]))>0) {
 							if ($count_display) $out.= "<br>";
 							$count_display++;
 							$out.= str_replace(' ','&nbsp;',formatNumber($split[$k],false,0)).$unit;
@@ -2681,8 +2693,8 @@ function giveItem ($type,$ID,$data,$num,$meta=0){
 					$out="";
 					$split=explode("$$$$",$data[$NAME.$num]);
 					$count_display=0;
-					for ($k=0;$k<count($split);$k++){
-						if (strlen(trim($split[$k]))>0){
+					for ($k=0 ; $k<count($split) ; $k++) {
+						if (strlen(trim($split[$k]))>0) {
 							if ($count_display) $out.= "<br>";
 							$count_display++;
 							$out.= str_replace(' ','&nbsp;',formatNumber($split[$k])).$unit;
@@ -2706,8 +2718,8 @@ function giveItem ($type,$ID,$data,$num,$meta=0){
 		$out="";
 		$split=explode("$$$$",$data[$NAME.$num]);
 		$count_display=0;
-		for ($k=0;$k<count($split);$k++){
-			if (strlen(trim($split[$k]))>0){
+		for ($k=0;$k<count($split);$k++) {
+			if (strlen(trim($split[$k]))>0) {
 				if ($count_display) $out.= "<br>";
 				$count_display++;
 				$out.= $split[$k].$unit;

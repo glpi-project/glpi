@@ -62,7 +62,7 @@ if (isset($_GET["reset_search"])){
 	unset($_SESSION["glpisearchcount"][$_GET["type"]]);
 	unset($_SESSION["glpisearch"][$_GET["type"]]);
 	if ($cut=strpos($_SERVER['HTTP_REFERER'],"?"))
-		$REDIRECT=substr($_SERVER['HTTP_REFERER'],0,$cut);
+		$REDIRECT=utf8_substr($_SERVER['HTTP_REFERER'],0,$cut);
 	else $REDIRECT=$_SERVER['HTTP_REFERER'];
 	glpi_header($REDIRECT);
 }

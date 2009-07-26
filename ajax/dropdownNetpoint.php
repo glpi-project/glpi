@@ -53,7 +53,7 @@ if (!isset($_POST["limit"])) {
 	$_POST["limit"]=$_SESSION["glpidropdown_limit"];
 }
 
-if (strlen($_POST['searchText'])>0&&$_POST['searchText']!=$CFG_GLPI["ajax_wildcard"]){
+if (strlen($_POST['searchText'])>0 && $_POST['searchText']!=$CFG_GLPI["ajax_wildcard"]) {
 	$where=" WHERE (glpi_dropdown_netpoint.name ".makeTextSearch($_POST['searchText'])." 
 			OR glpi_dropdown_locations.completename ".makeTextSearch($_POST['searchText']).")";
 } else {
