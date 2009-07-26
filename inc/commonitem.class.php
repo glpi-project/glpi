@@ -189,6 +189,9 @@ class CommonItem{
 				case BOOKMARK_TYPE:
 					$this->obj = new Bookmark;
 					break;				
+				case BUDGET_TYPE:
+					$this->obj = new Budget;
+					break;
 				default :
 					// Plugin case
 					if ($device_type>1000){
@@ -316,7 +319,10 @@ class CommonItem{
 				break;
 			case INFOCOM_TYPE:
 				return $LANG['financial'][3];
-				break;	
+				break;
+			case BUDGET_TYPE :
+				return $LANG['financial'][87];
+				break;
 			default :
 				// Plugin case
 				if ($this->device_type>1000){

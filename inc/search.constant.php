@@ -496,7 +496,7 @@ $SEARCH_OPTION[COMPUTER_TYPE][38]['linkfield']='';
 $SEARCH_OPTION[COMPUTER_TYPE][38]['name']=$LANG['financial'][76];
 $SEARCH_OPTION[COMPUTER_TYPE][38]['datatype']='date';
 
-$SEARCH_OPTION[COMPUTER_TYPE][50]['table']='glpi_dropdown_budget';
+$SEARCH_OPTION[COMPUTER_TYPE][50]['table']='glpi_budgets';
 $SEARCH_OPTION[COMPUTER_TYPE][50]['field']='name';
 $SEARCH_OPTION[COMPUTER_TYPE][50]['linkfield']='';
 $SEARCH_OPTION[COMPUTER_TYPE][50]['name']=$LANG['financial'][87];
@@ -898,7 +898,7 @@ $SEARCH_OPTION[NETWORKING_TYPE][38]['linkfield']='';
 $SEARCH_OPTION[NETWORKING_TYPE][38]['name']=$LANG['financial'][76];
 $SEARCH_OPTION[NETWORKING_TYPE][38]['datatype']='date';
 
-$SEARCH_OPTION[NETWORKING_TYPE][50]['table']='glpi_dropdown_budget';
+$SEARCH_OPTION[NETWORKING_TYPE][50]['table']='glpi_budgets';
 $SEARCH_OPTION[NETWORKING_TYPE][50]['field']='name';
 $SEARCH_OPTION[NETWORKING_TYPE][50]['linkfield']='';
 $SEARCH_OPTION[NETWORKING_TYPE][50]['name']=$LANG['financial'][87];
@@ -1238,7 +1238,7 @@ $SEARCH_OPTION[PRINTER_TYPE][38]['linkfield']='';
 $SEARCH_OPTION[PRINTER_TYPE][38]['name']=$LANG['financial'][76];
 $SEARCH_OPTION[PRINTER_TYPE][38]['datatype']='date';
 
-$SEARCH_OPTION[PRINTER_TYPE][50]['table']='glpi_dropdown_budget';
+$SEARCH_OPTION[PRINTER_TYPE][50]['table']='glpi_budgets';
 $SEARCH_OPTION[PRINTER_TYPE][50]['field']='name';
 $SEARCH_OPTION[PRINTER_TYPE][50]['linkfield']='';
 $SEARCH_OPTION[PRINTER_TYPE][50]['name']=$LANG['financial'][87];
@@ -1565,7 +1565,7 @@ $SEARCH_OPTION[MONITOR_TYPE][38]['linkfield']='';
 $SEARCH_OPTION[MONITOR_TYPE][38]['name']=$LANG['financial'][76];
 $SEARCH_OPTION[MONITOR_TYPE][38]['datatype']='date';
 
-$SEARCH_OPTION[MONITOR_TYPE][50]['table']='glpi_dropdown_budget';
+$SEARCH_OPTION[MONITOR_TYPE][50]['table']='glpi_budgets';
 $SEARCH_OPTION[MONITOR_TYPE][50]['field']='name';
 $SEARCH_OPTION[MONITOR_TYPE][50]['linkfield']='';
 $SEARCH_OPTION[MONITOR_TYPE][50]['name']=$LANG['financial'][87];
@@ -1892,7 +1892,7 @@ $SEARCH_OPTION[PERIPHERAL_TYPE][38]['linkfield']='';
 $SEARCH_OPTION[PERIPHERAL_TYPE][38]['name']=$LANG['financial'][76];
 $SEARCH_OPTION[PERIPHERAL_TYPE][38]['datatype']='date';
 
-$SEARCH_OPTION[PERIPHERAL_TYPE][50]['table']='glpi_dropdown_budget';
+$SEARCH_OPTION[PERIPHERAL_TYPE][50]['table']='glpi_budgets';
 $SEARCH_OPTION[PERIPHERAL_TYPE][50]['field']='name';
 $SEARCH_OPTION[PERIPHERAL_TYPE][50]['linkfield']='';
 $SEARCH_OPTION[PERIPHERAL_TYPE][50]['name']=$LANG['financial'][87];
@@ -2251,7 +2251,7 @@ $SEARCH_OPTION[SOFTWARE_TYPE][38]['linkfield']='';
 $SEARCH_OPTION[SOFTWARE_TYPE][38]['name']=$LANG['financial'][76];
 $SEARCH_OPTION[SOFTWARE_TYPE][38]['datatype']='date';
 
-$SEARCH_OPTION[SOFTWARE_TYPE][50]['table']='glpi_dropdown_budget';
+$SEARCH_OPTION[SOFTWARE_TYPE][50]['table']='glpi_budgets';
 $SEARCH_OPTION[SOFTWARE_TYPE][50]['field']='name';
 $SEARCH_OPTION[SOFTWARE_TYPE][50]['linkfield']='';
 $SEARCH_OPTION[SOFTWARE_TYPE][50]['name']=$LANG['financial'][87];
@@ -2409,7 +2409,7 @@ $SEARCH_OPTION[SOFTWARELICENSE_TYPE][38]['linkfield']='';
 $SEARCH_OPTION[SOFTWARELICENSE_TYPE][38]['name']=$LANG['financial'][76];
 $SEARCH_OPTION[SOFTWARELICENSE_TYPE][38]['datatype']='date';
 
-$SEARCH_OPTION[SOFTWARELICENSE_TYPE][50]['table']='glpi_dropdown_budget';
+$SEARCH_OPTION[SOFTWARELICENSE_TYPE][50]['table']='glpi_budgets';
 $SEARCH_OPTION[SOFTWARELICENSE_TYPE][50]['field']='name';
 $SEARCH_OPTION[SOFTWARELICENSE_TYPE][50]['linkfield']='';
 $SEARCH_OPTION[SOFTWARELICENSE_TYPE][50]['name']=$LANG['financial'][87];
@@ -2503,6 +2503,49 @@ $SEARCH_OPTION[SOFTWAREVERSION_TYPE][31]['field']='name';
 $SEARCH_OPTION[SOFTWAREVERSION_TYPE][31]['linkfield']='state';
 $SEARCH_OPTION[SOFTWAREVERSION_TYPE][31]['name']=$LANG['state'][0];
 
+//////BUDGET_TYPE
+
+$SEARCH_OPTION[BUDGET_TYPE][1]['table']='glpi_budgets';
+$SEARCH_OPTION[BUDGET_TYPE][1]['field']='name';
+$SEARCH_OPTION[BUDGET_TYPE][1]['linkfield']='name';
+$SEARCH_OPTION[BUDGET_TYPE][1]['name']=$LANG['common'][16];
+$SEARCH_OPTION[BUDGET_TYPE][1]['datatype']='itemlink';
+$SEARCH_OPTION[BUDGET_TYPE][1]['itemlink_type']=BUDGET_TYPE;
+
+$SEARCH_OPTION[BUDGET_TYPE][2]['table']='glpi_budgets';
+$SEARCH_OPTION[BUDGET_TYPE][2]['field']='startdate';
+$SEARCH_OPTION[BUDGET_TYPE][2]['linkfield']='startdate';
+$SEARCH_OPTION[BUDGET_TYPE][2]['name']=$LANG['search'][8];
+$SEARCH_OPTION[BUDGET_TYPE][2]['datatype']='date';
+
+$SEARCH_OPTION[BUDGET_TYPE][3]['table']='glpi_budgets';
+$SEARCH_OPTION[BUDGET_TYPE][3]['field']='enddate';
+$SEARCH_OPTION[BUDGET_TYPE][3]['linkfield']='enddate';
+$SEARCH_OPTION[BUDGET_TYPE][3]['name']=$LANG['search'][9];
+$SEARCH_OPTION[BUDGET_TYPE][3]['datatype']='date';
+
+$SEARCH_OPTION[BUDGET_TYPE][4]['table']='glpi_budgets';
+$SEARCH_OPTION[BUDGET_TYPE][4]['field']='value';
+$SEARCH_OPTION[BUDGET_TYPE][4]['linkfield']='value';
+$SEARCH_OPTION[BUDGET_TYPE][4]['name']=$LANG['financial'][21];
+$SEARCH_OPTION[BUDGET_TYPE][4]['datatype']='integer';
+
+$SEARCH_OPTION[BUDGET_TYPE][5]['table']='glpi_contacts';
+$SEARCH_OPTION[BUDGET_TYPE][5]['field']='comments';
+$SEARCH_OPTION[BUDGET_TYPE][5]['linkfield']='comments';
+$SEARCH_OPTION[BUDGET_TYPE][5]['name']=$LANG['common'][25];
+$SEARCH_OPTION[BUDGET_TYPE][5]['datatype']='text';
+
+$SEARCH_OPTION[BUDGET_TYPE][80]['table']='glpi_entities';
+$SEARCH_OPTION[BUDGET_TYPE][80]['field']='completename';
+$SEARCH_OPTION[BUDGET_TYPE][80]['linkfield']='FK_entities';
+$SEARCH_OPTION[BUDGET_TYPE][80]['name']=$LANG['entity'][0];
+
+$SEARCH_OPTION[BUDGET_TYPE][86]['table']='glpi_contacts';
+$SEARCH_OPTION[BUDGET_TYPE][86]['field']='recursive';
+$SEARCH_OPTION[BUDGET_TYPE][86]['linkfield']='recursive';
+$SEARCH_OPTION[BUDGET_TYPE][86]['name']=$LANG['entity'][9];
+$SEARCH_OPTION[BUDGET_TYPE][86]['datatype']='bool';
 	 
 //////CONTACT_TYPE
 
@@ -3381,7 +3424,7 @@ $SEARCH_OPTION[PHONE_TYPE][38]['linkfield']='';
 $SEARCH_OPTION[PHONE_TYPE][38]['name']=$LANG['financial'][76];
 $SEARCH_OPTION[PHONE_TYPE][38]['datatype']='date';
 
-$SEARCH_OPTION[PHONE_TYPE][50]['table']='glpi_dropdown_budget';
+$SEARCH_OPTION[PHONE_TYPE][50]['table']='glpi_budgets';
 $SEARCH_OPTION[PHONE_TYPE][50]['field']='name';
 $SEARCH_OPTION[PHONE_TYPE][50]['linkfield']='';
 $SEARCH_OPTION[PHONE_TYPE][50]['name']=$LANG['financial'][87];

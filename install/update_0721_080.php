@@ -164,9 +164,49 @@ function update0721to080() {
 		$query = "ALTER TABLE `glpi_config` ADD `add_norights_users` INT( 1 ) NOT NULL DEFAULT '1'";
       $DB->query($query) or die("0.80 add add_norights_users index in glpi_config " . $LANG['update'][90] . $DB->error());
 	}
-	
+
+	displayMigrationMessage("080", $LANG['update'][141] . ' - glpi_budgets'); // Updating schema
+
+	if (!FieldExists("glpi_profiles","budget")) {
+		$query = "ALTER TABLE `glpi_profiles` ADD `budget` VARCHAR( 1 ) NULL ";
+		$DB->query($query) or die("0.80 add budget index in glpi_profiles" . $LANG['update'][90] . $DB->error());
+
+		$query = "UPDATE `glpi_profiles` SET `budget`='w' WHERE `name` IN ('super-admin','admin')";
+		$DB->query($query) or die("0.80 add budget write right to super-admin and admin profiles" . $LANG['update'][90] . $DB->error());
+
+		$query = "UPDATE `glpi_profiles` SET `budget`='r' WHERE `name`='normal'";
+		$DB->query($query) or die("0.80 add budget write right to super-admin and admin profiles" . $LANG['update'][90] . $DB->error());
+
+	}
+
+	if (TableExists("glpi_dropdown_budget")) {
+			$query = "ALTER TABLE `glpi_dropdown_budget` ADD `FK_entities` int(11) NOT NULL default '0'";
+			$DB->query($query) or die("0.80 add FK_entities index in glpi_dropdown_budget" . $LANG['update'][90] . $DB->error());
+
+         $query = "ALTER TABLE `glpi_dropdown_budget` ADD `recursive` smallint(6) NOT NULL DEFAULT '0'";
+			$DB->query($query) or die("0.80 add recursive index in glpi_dropdown_budget" . $LANG['update'][90] . $DB->error());
+
+         $query = "ALTER TABLE `glpi_dropdown_budget` ADD `deleted` smallint(6) NOT NULL DEFAULT '0'";
+			$DB->query($query) or die("0.80 add deleted index in glpi_dropdown_budget" . $LANG['update'][90] . $DB->error());
+
+         $query = "ALTER TABLE `glpi_dropdown_budget` ADD `startdate` DATE NULL";
+			$DB->query($query) or die("0.80 add startdate index in glpi_dropdown_budget" . $LANG['update'][90] . $DB->error());
+
+			$query = "ALTER TABLE `glpi_dropdown_budget` ADD `enddate` DATE NULL";
+			$DB->query($query) or die("0.80 add enddate index in glpi_dropdown_budget" . $LANG['update'][90] . $DB->error());
+
+         $query = "ALTER TABLE `glpi_dropdown_budget` ADD `value` DECIMAL( 20, 4 )  NOT NULL default '0.0000'";
+			$DB->query($query) or die("0.80 add value index in glpi_dropdown_budget" . $LANG['update'][90] . $DB->error());
+
+         $query = "ALTER TABLE `glpi_dropdown_budget` ADD `is_template` smallint(6) NOT NULL default '0', " .
+						" ADD `tplname` varchar(255) collate utf8_unicode_ci default NULL";
+			$DB->query($query) or die("0.80 add value index in glpi_dropdown_budget" . $LANG['update'][90] . $DB->error());
+
+         $query = "RENAME TABLE `glpi_dropdown_budget`  TO `glpi_budgets` ;";
+         $DB->query($query) or die("0.80 rename glpi_dropdown_budget to glpi_budgets" . $LANG['update'][90] . $DB->error());
+	}
+
 	// Display "Work ended." message - Keep this as the last action.
    displayMigrationMessage("080"); // End
 }
-
 ?>

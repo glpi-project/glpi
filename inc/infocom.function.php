@@ -147,11 +147,13 @@ function showInfocomForm($target,$device_type,$dev_ID,$show_immo=true,$withtempl
 				echo getWarrantyExpir($ic->fields["buy_date"],$ic->fields["warranty_duration"]);
 				echo "</td>";
 	
-				echo "<td>".$LANG['financial'][87].":	</td><td >";
-	
-				dropdownValue("glpi_dropdown_budget","budget",$ic->fields["budget"]);
-	
-				echo "</td></tr>";
+				if (haveRight("budget","r")) {
+					echo "<td>".$LANG['financial'][87].":	</td><td >";
+					dropdownValue("glpi_budgets","budget",$ic->fields["budget"],0,$ci->obj->fields["FK_entities"]);
+					echo "</td></tr>";
+				}
+				else
+					echo "<td colspan='2'></td></tr>";
 	
 	
 				echo "<tr class='tab_bg_1'><td>".$LANG['financial'][78].":		</td>";

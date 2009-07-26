@@ -64,7 +64,7 @@ $RELATION=array(
 
 	"glpi_dropdown_auto_update" => array("glpi_computers"=>"auto_update"),
 
-	"glpi_dropdown_budget" => array("glpi_infocoms"=>"budget"),
+	"glpi_budgets" => array("glpi_infocoms"=>"budget"),
 	
 	"glpi_dropdown_cartridge_type" => array("glpi_cartridges_type"=>"type"),
 	
