@@ -78,7 +78,7 @@ if (isset($_GET["redirect"])){
 		searchFormKnowbase($_SERVER['PHP_SELF'],$_GET["contains"],$_GET["parentID"],1);
 		showKbCategoriesFirstLevel($_SERVER['PHP_SELF'],$_GET["parentID"] ,1);
 		showKbItemList($_SERVER['PHP_SELF'],$_GET["contains"],$_GET["start"],$_GET["parentID"],1);
-		if (!$_GET["parentID"]&&!strlen($_GET["contains"])){
+		if (!$_GET["parentID"] && strlen($_GET["contains"])==0){
 			showKbViewGlobal($_SERVER['PHP_SELF'],1) ;
 		}
 		

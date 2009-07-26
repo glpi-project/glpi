@@ -58,7 +58,7 @@ function displaySearchHeaderItem($type,$value,&$num,$linkto="",$issort=0,$order=
 		case SYLK_OUTPUT : //sylk
 			global $SYLK_HEADER,$SYLK_SIZE;
 			$SYLK_HEADER[$num]=sylk_clean($value);
-			$SYLK_SIZE[$num]=strlen($SYLK_HEADER[$num]);
+			$SYLK_SIZE[$num]=utf8_strlen($SYLK_HEADER[$num]);
 
 //			$out="F;SDM4;FG0C;".($num == 1 ? "Y1;" : "")."X$num\n";
 //			$out.= "C;N;K\"".sylk_clean($value)."\"\n"; 
@@ -117,7 +117,7 @@ function displaySearchItem($type,$value,&$num,$row,$extraparam=''){
 			global $SYLK_ARRAY,$SYLK_HEADER,$SYLK_SIZE;
 			$value = weblink_extract($value);
 			$SYLK_ARRAY[$row][$num]=sylk_clean($value);
-			$SYLK_SIZE[$num]=max($SYLK_SIZE[$num],strlen($SYLK_ARRAY[$row][$num]));
+			$SYLK_SIZE[$num]=max($SYLK_SIZE[$num],utf8_strlen($SYLK_ARRAY[$row][$num]));
 
 //			$out="F;P3;FG0L;".($num == 1 ? "Y".$row.";" : "")."X$num\n";
 //			$out.= "C;N;K\"".sylk_clean($value)."\"\n"; 

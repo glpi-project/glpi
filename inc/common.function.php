@@ -966,14 +966,14 @@ function convDate($time) {
 
 	switch ($_SESSION['glpidateformat']){
 		case 1 : // DD-MM-YYYY
-			$date = substr($time,8,2)."-";        // day 
+			$date = substr($time,8,2)."-";        // day
 			$date .= substr($time,5,2)."-";  // month
 			$date .= substr($time,0,4); // year
 			return $date; 
 			break;
 		case 2 : // MM-DD-YYYY
 			$date = substr($time,5,2)."-";  // month
-			$date .= substr($time,8,2)."-";        // day 
+			$date .= substr($time,8,2)."-";        // day
 			$date .= substr($time,0,4); // year
 			return $date; 
 			break;
@@ -1424,7 +1424,7 @@ function makeTextSearch($val,$not=false){
 			}
 		}
 		if ($begin||$end) {
-			$val=substr($val,$begin,$length-$end-$begin);
+			$val=utf8_substr($val,$begin,$length-$end-$begin);
 		}
 
 		$SEARCH=" $NOT LIKE '".(!$begin?"%":"").$val.(!$end?"%":"")."' ";
@@ -1572,7 +1572,7 @@ function checkNewVersionAvailable($auto=true){
 	$error="";
 	$latest_version = getURLContent("http://glpi-project.org/latest_version", $error);
 
-	if (strlen(trim($latest_version)) == 0){
+	if (strlen(trim($latest_version))==0){
 		if (!$auto) {
 			echo "<div class='center'> $error </div>";
 		} else {

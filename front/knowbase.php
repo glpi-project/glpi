@@ -58,7 +58,7 @@ if(!isset($_GET["parentID"])) $_GET["parentID"] = "0";
 	searchFormKnowbase($_SERVER['PHP_SELF'],$_GET["contains"],$_GET["parentID"],$faq);
 	showKbCategoriesFirstLevel($_SERVER['PHP_SELF'],$_GET["parentID"],$faq );
 	showKbItemList($CFG_GLPI["root_doc"]."/front/knowbase.form.php",$_GET["contains"],$_GET["start"],$_GET["parentID"],$faq);
-	if (!$_GET["parentID"]&&!strlen($_GET["contains"])){
+	if (!$_GET["parentID"] && strlen($_GET["contains"])==0) {
 		showKbViewGlobal($CFG_GLPI["root_doc"]."/front/knowbase.form.php",$faq) ;
 	}
 

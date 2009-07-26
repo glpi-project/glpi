@@ -51,8 +51,9 @@ $rand=mt_rand();
 
 $where="";
 	 	
-if (strlen($_POST['searchText'])>0&&$_POST['searchText']!=$CFG_GLPI["ajax_wildcard"])
+if (strlen($_POST['searchText'])>0 && $_POST['searchText']!=$CFG_GLPI["ajax_wildcard"]) {
 	$where.=" AND name ".makeTextSearch($_POST['searchText'])." ";
+}
 
 //$where.=" AND FK_entities='".$_POST["entity_restrict"]."' ";
 $where .= getEntitiesRestrictRequest(' AND', 'glpi_software','FK_entities',$_POST["entity_restrict"],true);
@@ -72,7 +73,7 @@ if ($DB->numrows($result)) {
 	while ($data=$DB->fetch_array($result)) {
 		$sID = $data["ID"];
 		$output=$data["name"];
-		echo  "<option value='$sID' title=\"".cleanInputText($output)."\">".substr($output,0,$_SESSION["glpidropdown_limit"])."</option>";
+		echo  "<option value='$sID' title=\"".cleanInputText($output)."\">".utf8_substr($output,0,$_SESSION["glpidropdown_limit"])."</option>";
 	}	
 }
 echo "</select>\n";

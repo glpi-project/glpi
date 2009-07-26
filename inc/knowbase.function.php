@@ -243,7 +243,7 @@ function showKbItemList($target,$contains,$start,$parentID,$faq=0){
 	}
 	
 	// a search with $contains
-	if (strlen($contains)) { 
+	if (strlen($contains)>0) { 
 		$search=unclean_cross_side_scripting_deep($contains);
 		$score=" ,MATCH(glpi_kbitems.question,glpi_kbitems.answer) AGAINST('$search' IN BOOLEAN MODE) as SCORE ";
 		$where_1=$where." MATCH(glpi_kbitems.question,glpi_kbitems.answer) AGAINST('$search' IN BOOLEAN MODE) ";

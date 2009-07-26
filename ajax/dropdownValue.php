@@ -157,7 +157,7 @@ if (!isset($_POST["limit"])) $_POST["limit"]=$_SESSION["glpidropdown_limit"];
 		if ($display_selected){
 			$outputval=getDropdownName($_POST['table'],$_POST['value']);
 			if (!empty($outputval)&&$outputval!="&nbsp;") {
-				if (strlen($outputval)>$_POST["limit"]) {
+				if (utf8_strlen($outputval)>$_POST["limit"]) {
 					// Completename for tree dropdown : keep right
 					$outputval = "&hellip;".utf8_substr($outputval,-$_POST["limit"]);
 				}
@@ -202,7 +202,7 @@ if (!isset($_POST["limit"])) $_POST["limit"]=$_SESSION["glpidropdown_limit"];
 					}
 				}
 				
-				if (strlen($output)>$_POST["limit"]) {
+				if (utf8_strlen($output)>$_POST["limit"]) {
 					if ($_SESSION['glpiflat_dropdowntree']){
 						$output="&hellip;".utf8_substr($output,-$_POST["limit"]);
 					} else {
@@ -353,7 +353,7 @@ if (isset($_POST["comments"])&&$_POST["comments"]){
 }
 
 if (isset($_POST["update_item"])&&
-	(is_array($_POST["update_item"])||strlen($_POST["update_item"])>0)){
+	(is_array($_POST["update_item"]) || strlen($_POST["update_item"])>0)){
 	if (!is_array($_POST["update_item"])){
 		$data=unserialize(stripslashes($_POST["update_item"]));
 	} else $data=$_POST["update_item"];

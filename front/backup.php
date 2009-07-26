@@ -375,7 +375,7 @@ function backupMySql($DB,$dumpFile, $duree,$rowlimit){
 		$fin=0;
 		while (!$fin){
 			$todump=get_content($DB,$tables[$offsettable],$offsetrow,$rowlimit);
-			$rowtodump=substr_count($todump, "INSERT INTO");
+			$rowtodump=utf8_substr_count($todump, "INSERT INTO");
 			if ($rowtodump>0){
 				fwrite ($fileHandle,$todump);
 				$cpt+=$rowtodump;

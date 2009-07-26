@@ -508,7 +508,7 @@ class Mailing
 			break;
 		}
 		
-		if (strlen($this->job->fields['name'])>150){
+		if (utf8_strlen($this->job->fields['name'])>150){
 			$subject.=" - ".utf8_substr($this->job->fields['name'],0,150)." (...)";
 		}else{
 			$subject.=" - ".$this->job->fields['name'];
