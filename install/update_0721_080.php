@@ -207,7 +207,7 @@ function update0721to080() {
 			$DB->query($query) or die("0.80 add value field in glpi_dropdown_budget" . $LANG['update'][90] . $DB->error());
       }
       if (!FieldExists("glpi_dropdown_budget","is_template")) {
-         $query = "ALTER TABLE `glpi_dropdown_budget` ADD `is_template` smallint(6) NOT NULL default '0'";
+         $query = "ALTER TABLE `glpi_dropdown_budget` ADD `is_template` tinyint(1) NOT NULL default '0'";
 			$DB->query($query) or die("0.80 add is_template field in glpi_dropdown_budget" . $LANG['update'][90] . $DB->error());
       }
 
