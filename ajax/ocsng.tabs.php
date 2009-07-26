@@ -2,7 +2,7 @@
 
 
 /*
- * @version $Id: config.tabs.php 7765 2009-01-06 18:46:30Z moyo $
+ * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2009 by the INDEPNET Development Team.

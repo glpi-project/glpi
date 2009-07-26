@@ -2,7 +2,7 @@
 
 
 /*
- * @version $Id: ldap_mass_sync.php 8105 2009-03-23 11:43:55Z walid $
+ * @version $Id$
  -------------------------------------------------------------------------
  GLPI - Gestionnaire Libre de Parc Informatique
  Copyright (C) 2003-2009 by the INDEPNET Development Team.
