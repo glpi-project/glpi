@@ -200,7 +200,7 @@ class Contact extends CommonDBTM{
 
       echo "<tr><td>".$LANG['common'][17].":	</td>";
       echo "<td>";
-      dropdownValue("glpi_dropdown_contact_type","type",$this->fields["type"]);
+      dropdownValue("glpi_contactstypes","type",$this->fields["type"]);
       echo "</td>";
       echo "</tr>";
 

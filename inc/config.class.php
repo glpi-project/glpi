@@ -228,7 +228,7 @@ class Config extends CommonDBTM {
 
 		echo "<tr class='tab_bg_1'><td colspan='4' align='center'><strong>" . $LANG['rulesengine'][77] . "</strong></td></tr>";
 		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['rulesengine'][86] . " </td><td>";
-		dropdownValue("glpi_dropdown_software_category","category_on_software_delete",$CFG_GLPI["category_on_software_delete"]);				
+		dropdownValue("glpi_softwarescategories","category_on_software_delete",$CFG_GLPI["category_on_software_delete"]);				
 		echo "</td><td class='center' colspan='2'></td></tr>";
 			
 		echo "<tr class='tab_bg_2'><td colspan='4' align='center'><input type=\"submit\" name=\"update\" class=\"submit\" value=\"" . $LANG['buttons'][2] . "\" ></td></tr>";

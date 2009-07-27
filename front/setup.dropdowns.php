@@ -148,9 +148,9 @@ if (isset($_POST['mass_delete'])){
 
 	$optgroup=array(
 			$LANG['setup'][139]=>array(
-				"glpi_dropdown_locations"=>$LANG['common'][15],
-				"glpi_dropdown_state"=>$LANG['setup'][83],
-				"glpi_dropdown_manufacturer"=>$LANG['common'][5],
+				"glpi_locations"=>$LANG['common'][15],
+				"glpi_states"=>$LANG['setup'][83],
+				"glpi_manufacturers"=>$LANG['common'][5],
 				),
 
 			$LANG['setup'][140]=>array(
@@ -160,65 +160,65 @@ if (isset($_POST['mass_delete'])){
 				"glpi_type_monitors"=>$LANG['setup'][44],
 				"glpi_type_peripherals"=>$LANG['setup'][69],
 				"glpi_type_phones"=>$LANG['setup'][504],
-				"glpi_dropdown_licensetypes"=>$LANG['software'][30],
+				"glpi_softwarelicensestypes"=>$LANG['software'][30],
 				"glpi_cartridgesitemstypes"=>$LANG['setup'][84],
-				"glpi_dropdown_consumable_type"=>$LANG['setup'][92],
-				"glpi_dropdown_contract_type"=>$LANG['setup'][85],
-				"glpi_dropdown_contact_type"=>$LANG['setup'][82],	
-				"glpi_dropdown_ram_type"=>$LANG['setup'][86],
-				"glpi_dropdown_enttype"=>$LANG['setup'][80],
-				"glpi_dropdown_interface"=>$LANG['setup'][93],
-				"glpi_dropdown_case_type"=>$LANG['setup'][45],
-				"glpi_dropdown_phone_power"=>$LANG['setup'][505],
-				"glpi_dropdown_filesystems"=>$LANG['computers'][4],
+				"glpi_consumablesitemstypes"=>$LANG['setup'][92],
+				"glpi_contractstypes"=>$LANG['setup'][85],
+				"glpi_contactstypes"=>$LANG['setup'][82],	
+				"glpi_devicesmemoriestypes"=>$LANG['setup'][86],
+				"glpi_supplierstypes"=>$LANG['setup'][80],
+				"glpi_interfaces"=>$LANG['setup'][93],
+				"glpi_devicescasestypes"=>$LANG['setup'][45],
+				"glpi_phonespowersupplies"=>$LANG['setup'][505],
+				"glpi_filesystems"=>$LANG['computers'][4],
 				),
 
 			$LANG['common'][22]=>array(
-					"glpi_dropdown_model"=>$LANG['setup'][91],
-					"glpi_dropdown_model_networking"=>$LANG['setup'][95],
-					"glpi_dropdown_model_printers"=>$LANG['setup'][96],
-					"glpi_dropdown_model_monitors"=>$LANG['setup'][94],
-					"glpi_dropdown_model_peripherals"=>$LANG['setup'][97],
-					"glpi_dropdown_model_phones"=>$LANG['setup'][503],
+					"glpi_computersmodels"=>$LANG['setup'][91],
+					"glpi_networkequipmentsmodels"=>$LANG['setup'][95],
+					"glpi_printersmodels"=>$LANG['setup'][96],
+					"glpi_monitorsmodels"=>$LANG['setup'][94],
+					"glpi_peripheralsmodels"=>$LANG['setup'][97],
+					"glpi_phonesmodels"=>$LANG['setup'][503],
 
 					),
 
 			$LANG['Menu'][26]=>array(
-					//"glpi_dropdown_budget"=>$LANG['financial'][87],
+					//"glpi_budgets"=>$LANG['financial'][87],
 					"glpi_documentscategories"=>$LANG['setup'][81],
 					),
 
 			$LANG['title'][24]=>array(
-					"glpi_dropdown_tracking_category"=>$LANG['setup'][79],
+					"glpi_ticketscategories"=>$LANG['setup'][79],
 					),
 
 			$LANG['Menu'][18]=>array(
-					"glpi_dropdown_kbcategories"=>$LANG['title'][5],	
+					"glpi_knowbaseitemscategories"=>$LANG['title'][5],	
 					),
 
 			$LANG['setup'][145]=>array(
-					"glpi_dropdown_os"=>$LANG['setup'][5],	
-					"glpi_dropdown_os_version"=>$LANG['computers'][52],
-					"glpi_dropdown_os_sp"=>$LANG['computers'][53],
-					"glpi_dropdown_auto_update"=>$LANG['computers'][51],
+					"glpi_operatingsystems"=>$LANG['setup'][5],	
+					"glpi_operatingsystemsversions"=>$LANG['computers'][52],
+					"glpi_operatingsystemsservicepacks"=>$LANG['computers'][53],
+					"glpi_autoupdatesystems"=>$LANG['computers'][51],
 					),
 
 			$LANG['setup'][88]=>array(
-					"glpi_dropdown_iface"=>$LANG['setup'][9],
-					"glpi_dropdown_firmware"=>$LANG['setup'][71],
-					"glpi_dropdown_netpoint"=>$LANG['setup'][73],
-					"glpi_dropdown_domain"=>$LANG['setup'][89],
-					"glpi_dropdown_network"=>$LANG['setup'][88],
-					"glpi_dropdown_vlan"=>$LANG['setup'][90],	
+					"glpi_networkinterfaces"=>$LANG['setup'][9],
+					"glpi_networkequipmentsfirmwares"=>$LANG['setup'][71],
+					"glpi_netpoints"=>$LANG['setup'][73],
+					"glpi_domains"=>$LANG['setup'][89],
+					"glpi_networks"=>$LANG['setup'][88],
+					"glpi_vlans"=>$LANG['setup'][90],	
 					),
 			
 			$LANG['Menu'][4]=>array(
-			"glpi_dropdown_software_category"=>$LANG['softwarecategories'][5],
+			"glpi_softwarescategories"=>$LANG['softwarecategories'][5],
 			),
 
 			$LANG['common'][34]=>array(
-			"glpi_dropdown_user_titles"=>$LANG['users'][1],
-			"glpi_dropdown_user_types"=>$LANG['users'][2],
+			"glpi_userstitles"=>$LANG['users'][1],
+			"glpi_userstypes"=>$LANG['users'][2],
 			)
 			
 			); //end $opt
@@ -276,22 +276,22 @@ if (isset($_POST['mass_delete'])){
 		echo "</table></form></div>";
 	}
 
-	if ($which=="glpi_dropdown_netpoint"){
+	if ($which=="glpi_netpoints"){
 		if (haveRight("entity_dropdown","w")){
 			$title=$LANG['setup'][73];
 			
 			if (strpos($_SERVER['PHP_SELF'],"popup")){
 				
 				if ($value2>0) {
-					$title .= " (" . $LANG['common'][15] . ":&nbsp;" . getDropdownName("glpi_dropdown_locations", $value2) . ")";
+					$title .= " (" . $LANG['common'][15] . ":&nbsp;" . getDropdownName("glpi_locations", $value2) . ")";
 				}
 				
 			} else {
 				echo "<div align='center'><form method='get' action=\"".$_SERVER['PHP_SELF']."\">";
 				echo "<table class='tab_cadre' cellpadding='5'><tr><th colspan='2'>";
 				echo $LANG['setup'][77].": </th></tr><tr class='tab_bg_1'><td>";
-				echo "<input type='hidden' name='which' value='glpi_dropdown_netpoint' />";
-				dropdownValue("glpi_dropdown_locations", "value2", $value2, $FK_entities);
+				echo "<input type='hidden' name='which' value='glpi_netpoints' />";
+				dropdownValue("glpi_locations", "value2", $value2, $FK_entities);
 				echo "</td><td><input type='submit' value=\"".$LANG['buttons'][2]."\" class='submit' ></td></tr>";
 				echo "</table></form></div>";
 			}

@@ -1861,7 +1861,7 @@ function addSelect ($type,$ID,$num,$meta=0,$meta_type=0){
 				return " GROUP_CONCAT( DISTINCT CONCAT($table$addtable.name, ' - ', $table$addtable.$field) SEPARATOR '$$$$') AS ".$NAME."_".$num.", ";
 			}
 		break;
-		case "glpi_dropdown_state.name":
+		case "glpi_states.name":
 			if ($meta && $meta_type==SOFTWARE_TYPE) {
 				return " GROUP_CONCAT( DISTINCT CONCAT(glpi_software.name, ' - ', glpi_softwareversions$addtable.name, ' - ', ".$table.$addtable.".$field) SEPARATOR '$$$$') AS ".$NAME."_".$num.", ";				
 			} else if ($type==SOFTWARE_TYPE) {
@@ -2871,7 +2871,7 @@ function addLeftJoin ($type,$ref_table,&$already_link_tables,$new_table,$linkfie
 				return " LEFT JOIN $new_table $AS ON ($rt.ID = $nt.FK_computers) ";
 			}
 		break;
-		case "glpi_dropdown_filesystems":
+		case "glpi_filesystems":
 			$out=addLeftJoin($type,$ref_table,$already_link_tables,"glpi_computersdisks",$linkfield);
 		return $out." LEFT JOIN $new_table $AS ON (glpi_computersdisks.FK_filesystems = $nt.ID) ";
 		break;
@@ -2887,7 +2887,7 @@ function addLeftJoin ($type,$ref_table,&$already_link_tables,$new_table,$linkfie
 		case "glpi_registry":
 			return " LEFT JOIN $new_table $AS ON ($rt.ID = $nt.computer_id) ";
 		break;
-		case "glpi_dropdown_os":
+		case "glpi_operatingsystems":
 			if ($type==SOFTWARE_TYPE){
 				return " LEFT JOIN $new_table $AS ON ($rt.platform = $nt.ID) ";
 			} else  {
@@ -2902,7 +2902,7 @@ function addLeftJoin ($type,$ref_table,&$already_link_tables,$new_table,$linkfie
 		}
 		return $out." LEFT JOIN $new_table $AS ON ($rt.ID = $nt.on_device AND $nt.device_type='$type') ";
 		break;
-		case "glpi_dropdown_netpoint":
+		case "glpi_netpoints":
 			// Link to glpi_networking_ports before
 			$out=addLeftJoin($type,$ref_table,$already_link_tables,"glpi_networking_ports",$linkfield);
 		return $out." LEFT JOIN $new_table $AS ON (glpi_networking_ports.netpoint = $nt.ID) ";
@@ -2930,7 +2930,7 @@ function addLeftJoin ($type,$ref_table,&$already_link_tables,$new_table,$linkfie
 		case "glpi_contacts_suppliers":
 			return " LEFT JOIN $new_table $AS ON ($rt.ID = $nt.$linkfield) ";
 		break;
-		case "glpi_dropdown_manufacturer":
+		case "glpi_manufacturers":
 			return " LEFT JOIN $new_table $AS ON ($rt.FK_glpi_enterprise = $nt.ID) ";
 		break;
 
@@ -2951,7 +2951,7 @@ function addLeftJoin ($type,$ref_table,&$already_link_tables,$new_table,$linkfie
 				return " LEFT JOIN $new_table $AS ON ($rt.ID = $nt.FK_device AND $nt.device_type='$type') ";
 			}
 		break;
-		case "glpi_dropdown_state":
+		case "glpi_states":
 			if ($type == SOFTWARE_TYPE) {
 				// Return the state of the version of the software
 				$rt=translate_table("glpi_softwareversions",$meta,$meta_type);
@@ -3017,7 +3017,7 @@ function addLeftJoin ($type,$ref_table,&$already_link_tables,$new_table,$linkfie
 			$out=addLeftJoin($type,$rt,$already_link_tables,"glpi_contracts_items",$linkfield,$device_type,$meta,$meta_type);
 		return $out." LEFT JOIN $new_table $AS ON (glpi_contracts_items$addmetanum.FK_contract = $nt.ID) ";
 		break;
-		case "glpi_dropdown_licensetypes":
+		case "glpi_softwarelicensestypes":
 			$rt=translate_table("glpi_softwarelicenses",$meta,$meta_type);
 			return addLeftJoin($type,$ref_table,$already_link_tables,"glpi_softwarelicenses",$linkfield,$device_type,$meta,$meta_type) .
 				" LEFT JOIN $new_table $AS ON ($rt.type = $nt.ID)";

@@ -62,7 +62,7 @@ function showDropdownList($target, $tablename,$FK_entities='',$location=-1){
 		$entity_restrict = $_SESSION["glpiactive_entity"];
 	}
 
-	if ($tablename=="glpi_dropdown_netpoint") {
+	if ($tablename=="glpi_netpoints") {
 		if ($location > 0) {
 			$where = " WHERE location='$location'";			
 		} else if ($location < 0) {
@@ -240,7 +240,7 @@ function showFormNetpoint($target, $human, $ID, $FK_entities='',$location=0) {
 
 	global $DB, $CFG_GLPI, $LANG;
 
-	$tablename="glpi_dropdown_netpoint";
+	$tablename="glpi_netpoints";
 	
 	if (!haveRight("entity_dropdown", "w"))
 		return false;
@@ -276,7 +276,7 @@ function showFormNetpoint($target, $human, $ID, $FK_entities='',$location=0) {
 		echo "&nbsp;&nbsp;<input type='image' class='calendrier'  src=\"" . $CFG_GLPI["root_doc"] . "/pics/puce.gif\" alt='' title='' name='fillright' value='fillright'>&nbsp;";
 
 		if ($ID>0) {		
-			$query = "SELECT * FROM glpi_dropdown_netpoint WHERE ID = '" . $ID . "'";
+			$query = "SELECT * FROM glpi_netpoints WHERE ID = '" . $ID . "'";
 			$result = $DB->query($query);
 			$value = $loc = $comments = "";
 			$entity = 0;
@@ -287,7 +287,7 @@ function showFormNetpoint($target, $human, $ID, $FK_entities='',$location=0) {
 			}
 			echo "<br>";
 			echo $LANG['common'][15] . ": ";
-			dropdownValue("glpi_dropdown_locations", "value2", $location, 0, $entity_restrict);
+			dropdownValue("glpi_locations", "value2", $location, 0, $entity_restrict);
 			
 			echo $LANG['networking'][52] . ": ";
 			autocompletionTextField('value',$tablename,'name',$value,40,$entity_restrict,-1,'maxlength=\'100\''); 
@@ -495,7 +495,7 @@ function updateDropdown($input) {
 	$input["value"]=trim($input["value"]);
 	if (empty($input["value"])) return false;
 	
-	if ($input["tablename"] == "glpi_dropdown_netpoint") {
+	if ($input["tablename"] == "glpi_netpoints") {
 		$query = "UPDATE `".$input["tablename"]."` 
 			SET name = '".$input["value"]."', location = '".$input["value2"]."', comments='".$input["comments"]."' 
 			WHERE ID = '".$input["ID"]."'";
@@ -537,7 +537,7 @@ function getDropdownID($input){
 		}
 		$query="";
 		$query_twin="";
-		if ($input["tablename"] == "glpi_dropdown_netpoint") {
+		if ($input["tablename"] == "glpi_netpoints") {
 			$query_twin="SELECT ID FROM `".$input["tablename"]."` 
 				WHERE $add_entity_field_twin name= '".$input["value"]."' AND location = '".$input["value2"]."'";
 		} else {
@@ -618,10 +618,10 @@ function externalImportDropdown($dpdTable, $value, $FK_entities = -1,$external_p
 	
 	switch ($dpdTable)
 	{
-		case "glpi_dropdown_manufacturer":
-		case "glpi_dropdown_os":
-		case "glpi_dropdown_os_sp":
-		case "glpi_dropdown_os_version":
+		case "glpi_manufacturers":
+		case "glpi_operatingsystems":
+		case "glpi_operatingsystemsservicepacks":
+		case "glpi_operatingsystemsversions":
 		case "glpi_type_computers":
 		case "glpi_type_monitors":
 		case "glpi_type_printers":
@@ -630,12 +630,12 @@ function externalImportDropdown($dpdTable, $value, $FK_entities = -1,$external_p
 		case "glpi_type_networking":		
 			$process = true;
 		break;
-		case "glpi_dropdown_model":
-		case "glpi_dropdown_model_monitors":
-		case "glpi_dropdown_model_printers":
-		case "glpi_dropdown_model_peripherals":
-		case "glpi_dropdown_model_phones":
-		case "glpi_dropdown_model_networking":
+		case "glpi_computersmodels":
+		case "glpi_monitorsmodels":
+		case "glpi_printersmodels":
+		case "glpi_peripheralsmodels":
+		case "glpi_phonesmodels":
+		case "glpi_networkequipmentsmodels":
 			$process = true;
 			$input_values["manufacturer"] = $external_params["manufacturer"];
 		break;
@@ -675,7 +675,7 @@ function addDropdown($input) {
 			$add_entity_value = "'" . $input["FK_entities"] . "',";
 		}
 		$query="";
-		if ($input["tablename"] == "glpi_dropdown_netpoint") {
+		if ($input["tablename"] == "glpi_netpoints") {
 			$query = "INSERT INTO `".$input["tablename"]."` (" . $add_entity_field . "name,location,comments) 
 				VALUES (" . $add_entity_value . "'" . $input["value"] . "', '" . $input["value2"] . "', '" . $input["comments"] . "')";
 		} else {
@@ -826,7 +826,7 @@ function showDeleteConfirmForm($target, $table, $ID,$FK_entities) {
 			return;
 		}
 
-		if ($table == "glpi_dropdown_kbcategories") {
+		if ($table == "glpi_knowbaseitemscategories") {
 			$query = "SELECT COUNT(*) AS cpt FROM `glpi_kbitems` WHERE `categoryID` = '" . $ID . "'";
 			$result = $DB->query($query);
 			if ($DB->result($result, 0, "cpt") > 0) {
@@ -876,7 +876,7 @@ function getDropdownNameFromTable($table) {
 	if (strstr($table,"glpi_type_")) {
 		$name = str_replace("glpi_type_", "", $table);
 	} else {
-		if ($table == "glpi_dropdown_locations")
+		if ($table == "glpi_locations")
 			$name = "location";
 		else {
 			$name = str_replace("glpi_dropdown_", "", $table);
@@ -890,7 +890,7 @@ function getDropdownNameFromTableForStats($table) {
 	if (strstr($table,"glpi_type_")) {
 		$name = "type";
 	} else {
-		if ($table == "glpi_dropdown_locations")
+		if ($table == "glpi_locations")
 			$name = "location";
 		else {
 			$name = str_replace("glpi_dropdown_", "", $table);

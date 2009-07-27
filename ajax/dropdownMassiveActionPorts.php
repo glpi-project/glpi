@@ -50,11 +50,11 @@ if (isset($_POST["action"])){
 			echo "<input type=\"submit\" name=\"delete_several\" class=\"submit\" value=\"".$LANG['buttons'][2]."\" >";
 		break;
 		case "assign_vlan":
-			dropdownValue("glpi_dropdown_vlan","vlan",0);
+			dropdownValue("glpi_vlans","vlan",0);
 		echo "&nbsp;<input type=\"submit\" name=\"assign_vlan_several\" class=\"submit\" value=\"".$LANG['buttons'][2]."\" >";
 		break;
 		case "unassign_vlan":
-			dropdownValue("glpi_dropdown_vlan","vlan",0);
+			dropdownValue("glpi_vlans","vlan",0);
 		echo "&nbsp;<input type=\"submit\" name=\"unassign_vlan_several\" class=\"submit\" value=\"".$LANG['buttons'][2]."\" >";
 		break;
 		case "move":

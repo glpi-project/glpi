@@ -149,11 +149,11 @@ class ConsumableType extends CommonDBTM {
          echo "</td></tr>\n";
 
          echo "<tr class='tab_bg_1'><td>".$LANG['common'][17].": 	</td><td colspan='2'>\n";
-         dropdownValue("glpi_dropdown_consumable_type","type",$this->fields["type"]);
+         dropdownValue("glpi_consumablesitemstypes","type",$this->fields["type"]);
          echo "</td></tr>\n";
 
          echo "<tr class='tab_bg_1'><td>".$LANG['common'][5].": 	</td><td colspan='2'>\n";
-         dropdownValue("glpi_dropdown_manufacturer","FK_glpi_enterprise",$this->fields["FK_glpi_enterprise"]);
+         dropdownValue("glpi_manufacturers","FK_glpi_enterprise",$this->fields["FK_glpi_enterprise"]);
          echo "</td></tr>\n";
 
          echo "<tr class='tab_bg_1'><td>".$LANG['common'][10].": 	</td><td colspan='2'>\n";
@@ -161,7 +161,7 @@ class ConsumableType extends CommonDBTM {
          echo "</td></tr>\n";
 
          echo "<tr class='tab_bg_1'><td>".$LANG['consumables'][36].": 	</td><td colspan='2'>\n";
-         dropdownValue("glpi_dropdown_locations","location",$this->fields["location"],1,$this->fields["FK_entities"]);
+         dropdownValue("glpi_locations","location",$this->fields["location"],1,$this->fields["FK_entities"]);
          echo "</td></tr>\n";
 
          echo "<tr class='tab_bg_1'><td>".$LANG['consumables'][38].":</td><td colspan='2'>";

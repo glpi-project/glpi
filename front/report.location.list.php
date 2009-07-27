@@ -40,16 +40,16 @@ if (isset($_POST["location"])&&$_POST["location"]){
 	commonHeader($LANG['Menu'][6],$_SERVER['PHP_SELF'],"utils","report");
 
 	// Titre
-	$name=getDropdownName("glpi_dropdown_locations",$_POST["location"]);
+	$name=getDropdownName("glpi_locations",$_POST["location"]);
 	echo "<div align='center'><h2>".$LANG['reports'][54]." $name </h2></div>";
 
-	$query="SELECT glpi_dropdown_netpoint.name AS prise, glpi_networking_ports.name AS port, glpi_networking_ports.ifaddr  
-		AS ip, glpi_networking_ports.ifmac AS mac,glpi_networking_ports.ID AS IDport, glpi_dropdown_locations.ID as location,glpi_dropdown_locations.completename
-		FROM glpi_dropdown_locations
-		INNER JOIN glpi_dropdown_netpoint ON glpi_dropdown_netpoint.location = glpi_dropdown_locations.ID
-		INNER JOIN glpi_networking_ports ON glpi_networking_ports.netpoint=glpi_dropdown_netpoint.id 
-		WHERE ".getRealQueryForTreeItem("glpi_dropdown_locations",$_POST["location"])." AND glpi_networking_ports.device_type=".NETWORKING_TYPE."
-		ORDER BY glpi_dropdown_locations.completename, glpi_networking_ports.name;";
+	$query="SELECT glpi_netpoints.name AS prise, glpi_networking_ports.name AS port, glpi_networking_ports.ifaddr  
+		AS ip, glpi_networking_ports.ifmac AS mac,glpi_networking_ports.ID AS IDport, glpi_locations.ID as location,glpi_locations.completename
+		FROM glpi_locations
+		INNER JOIN glpi_netpoints ON glpi_netpoints.location = glpi_locations.ID
+		INNER JOIN glpi_networking_ports ON glpi_networking_ports.netpoint=glpi_netpoints.id 
+		WHERE ".getRealQueryForTreeItem("glpi_locations",$_POST["location"])." AND glpi_networking_ports.device_type=".NETWORKING_TYPE."
+		ORDER BY glpi_locations.completename, glpi_networking_ports.name;";
 
 	$result = $DB->query($query);
 	if ($result&&$DB->numrows($result)){

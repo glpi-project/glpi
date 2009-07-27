@@ -303,15 +303,15 @@ class Software extends CommonDBTM {
       
       
       echo "<td>" . $LANG['common'][36] . ":		</td><td>";
-      dropdownValue("glpi_dropdown_software_category", "category", $this->fields["category"]);
+      dropdownValue("glpi_softwarescategories", "category", $this->fields["category"]);
       echo "</td>";
 
       echo "<tr class='tab_bg_1'><td>" . $LANG['software'][3] . ": 	</td><td>";
-      dropdownValue("glpi_dropdown_os", "platform", $this->fields["platform"]);
+      dropdownValue("glpi_operatingsystems", "platform", $this->fields["platform"]);
       echo "</td>";
 
       echo "<td>" . $LANG['common'][5] . ": 	</td><td>";
-      dropdownValue("glpi_dropdown_manufacturer", "FK_glpi_enterprise", $this->fields["FK_glpi_enterprise"]);
+      dropdownValue("glpi_manufacturers", "FK_glpi_enterprise", $this->fields["FK_glpi_enterprise"]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -329,7 +329,7 @@ class Software extends CommonDBTM {
       echo "</td>";
 
       echo "<td>" . $LANG['common'][15] . ": 	</td><td>";
-      dropdownValue("glpi_dropdown_locations", "location", $this->fields["location"], 1, $this->fields["FK_entities"]);
+      dropdownValue("glpi_locations", "location", $this->fields["location"], 1, $this->fields["FK_entities"]);
       echo "</td></tr>";
 
       // UPDATE
@@ -340,7 +340,7 @@ class Software extends CommonDBTM {
       echo "</td>";
 
       /*echo "<td>" . $LANG['state'][0] . ":</td><td>";
-      dropdownValue("glpi_dropdown_state", "state", $this->fields["state"]);
+      dropdownValue("glpi_states", "state", $this->fields["state"]);
       echo "</td></tr>";*/
 
       echo "<tr class='tab_bg_1'><td>" . $LANG['software'][46] . ":</td><td>";
@@ -532,7 +532,7 @@ class SoftwareVersion extends CommonDBTM {
 		echo "</td></tr>";
 	
 		echo "<tr class='tab_bg_1'><td>" . $LANG['state'][0] . ":</td><td>";
-		dropdownValue("glpi_dropdown_state", "state", $this->fields["state"]);
+		dropdownValue("glpi_states", "state", $this->fields["state"]);
 		echo "</td></tr>";
 
 		echo "<tr  class='tab_bg_1'><td valign='top'>";
@@ -793,7 +793,7 @@ class SoftwareLicense extends CommonDBTM {
 
 		echo "<tr class='tab_bg_1'><td>".$LANG['common'][17].":		</td>";
 		echo "<td>";
-		dropdownValue("glpi_dropdown_licensetypes", "type", $this->fields["type"]);
+		dropdownValue("glpi_softwarelicensestypes", "type", $this->fields["type"]);
 		echo "</td></tr>";
 
 

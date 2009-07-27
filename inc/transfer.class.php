@@ -921,13 +921,13 @@ class Transfer extends CommonDBTM{
 				return $this->already_transfer['location'][$locID];
 			} else { // Not already transfer
 				// Search init item
-				$query="SELECT * FROM glpi_dropdown_locations WHERE ID='$locID'";
+				$query="SELECT * FROM glpi_locations WHERE ID='$locID'";
 				if ($result=$DB->query($query)){
 					if ($DB->numrows($result)){
 						$data=$DB->fetch_array($result);
 						$data=addslashes_deep($data);
 						// Search if the location already exists in the destination entity
-							$query="SELECT ID FROM glpi_dropdown_locations WHERE FK_entities='".$this->to."' AND completename='".$data['completename']."'";	
+							$query="SELECT ID FROM glpi_locations WHERE FK_entities='".$this->to."' AND completename='".$data['completename']."'";	
 							if ($result_search=$DB->query($query)){
 								// Found : -> use it
 								if ($DB->numrows($result_search)>0){
@@ -938,7 +938,7 @@ class Transfer extends CommonDBTM{
 							}
 							// Not found : 
 							$input=array();
-							$input['tablename']='glpi_dropdown_locations';
+							$input['tablename']='glpi_locations';
 							$input['FK_entities']=$this->to;
 							$input['value']=$data['name'];
 							$input['comments']=$data['comments'];
@@ -973,14 +973,14 @@ class Transfer extends CommonDBTM{
 				return $this->already_transfer['netpoint'][$netID];
 			} else { // Not already transfer
 				// Search init item
-				$query="SELECT * FROM glpi_dropdown_netpoint WHERE ID='$netID'";
+				$query="SELECT * FROM glpi_netpoints WHERE ID='$netID'";
 				if ($result=$DB->query($query)){
 					if ($DB->numrows($result)){
 						$data=$DB->fetch_array($result);
 						$data=addslashes_deep($data);
 						$locID=$this->transferDropdownLocation($data['location']);
 						// Search if the location already exists in the destination entity
-							$query="SELECT ID FROM glpi_dropdown_netpoint WHERE FK_entities='".$this->to."' AND name='".$data['name']."' AND location='$locID'";	
+							$query="SELECT ID FROM glpi_netpoints WHERE FK_entities='".$this->to."' AND name='".$data['name']."' AND location='$locID'";	
 							if ($result_search=$DB->query($query)){
 								// Found : -> use it
 								if ($DB->numrows($result_search)>0){
@@ -991,7 +991,7 @@ class Transfer extends CommonDBTM{
 							}
 							// Not found : 
 							$input=array();
-							$input['tablename']='glpi_dropdown_netpoint';
+							$input['tablename']='glpi_netpoints';
 							$input['FK_entities']=$this->to;
 							$input['value']=$data['name'];
 							$input['comments']=$data['comments'];

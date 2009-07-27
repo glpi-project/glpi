@@ -91,7 +91,7 @@ class DictionnarySoftwareCollection extends RuleCachedCollection {
 		echo "<tr><th colspan='2'><strong>" . $LANG['rulesengine'][95] . "</strong></th</tr>";
 		echo "<tr><td align='center' class='tab_bg_2'>" . $LANG['rulesengine'][96] . "</td>";
 		echo "<td align='center' class='tab_bg_2'>";
-		dropdownValue("glpi_dropdown_manufacturer", "manufacturer");
+		dropdownValue("glpi_manufacturers", "manufacturer");
 		echo "</td></tr>\n";
 
 		echo "<tr><td align='center' class='tab_bg_2' colspan='2'><input type='submit' name='replay_rule' value=\"" . $LANG['buttons'][2] . "\" class='submit'><input type='hidden' name='replay_confirm' value='replay_confirm'</td></tr>";
@@ -110,10 +110,10 @@ class DictionnarySoftwareCollection extends RuleCachedCollection {
 
 		if (count($items) == 0) {
 			//Select all the differents software
-			$sql = "SELECT DISTINCT glpi_software.name, glpi_dropdown_manufacturer.name AS manufacturer," .
+			$sql = "SELECT DISTINCT glpi_software.name, glpi_manufacturers.name AS manufacturer," .
 			" glpi_software.FK_glpi_enterprise as FK_glpi_enterprise " .
-			"FROM glpi_software LEFT JOIN glpi_dropdown_manufacturer " .
-			"ON glpi_dropdown_manufacturer.ID=glpi_software.FK_glpi_enterprise ";
+			"FROM glpi_software LEFT JOIN glpi_manufacturers " .
+			"ON glpi_manufacturers.ID=glpi_software.FK_glpi_enterprise ";
 
 			// Do not replay on trash and templates
 			$sql .= "WHERE glpi_software.deleted = 0 AND glpi_software.is_template = 0 ";
@@ -206,7 +206,7 @@ class DictionnarySoftwareCollection extends RuleCachedCollection {
 		foreach ($IDs as $ID) {
 			$res_soft = $DB->query("SELECT gs.ID AS ID, gs.name AS name, gs.FK_entities AS FK_entities, gm.name AS manufacturer
 									FROM glpi_software AS gs 
-									LEFT JOIN glpi_dropdown_manufacturer AS gm ON gs.FK_glpi_enterprise = gm.ID 
+									LEFT JOIN glpi_manufacturers AS gm ON gs.FK_glpi_enterprise = gm.ID 
 									WHERE gs.is_template=0 AND gs.ID ='" . $ID . "'");
 
 			if ($DB->numrows($res_soft)) {
@@ -246,7 +246,7 @@ class DictionnarySoftwareCollection extends RuleCachedCollection {
 		//Software's name has changed
 		if (isset ($res_rule["name"]) && $res_rule["name"] != $name) {
 			if (isset ($res_rule["manufacturer"]))
-				$manufacturer = getDropdownName("glpi_dropdown_manufacturer", $res_rule["manufacturer"]);
+				$manufacturer = getDropdownName("glpi_manufacturers", $res_rule["manufacturer"]);
 			//New software not already present in this entity
 			if (!isset ($new_softs[$entity][$res_rule["name"]])) {
 				// create new software or restore it from trash
@@ -450,7 +450,7 @@ class DictionnarySoftwareRule extends RuleCached {
 		echo "<td class='tab_bg_2'>" . $fields["manufacturer"] . "</td>";
 		echo "<td class='tab_bg_2'>" . ($fields["new_value"] != '' ? $fields["new_value"] : $LANG['rulesengine'][106]) . "</td>";
 		echo "<td class='tab_bg_2'>" . ($fields["version"] != '' ? $fields["version"] : $LANG['rulesengine'][106]) . "</td>";
-		echo "<td class='tab_bg_2'>" . ((isset ($fields["new_manufacturer"]) && $fields["new_manufacturer"] != '') ? getDropdownName("glpi_dropdown_manufacturer", $fields["new_manufacturer"]) : $LANG['rulesengine'][106]) . "</td>";
+		echo "<td class='tab_bg_2'>" . ((isset ($fields["new_manufacturer"]) && $fields["new_manufacturer"] != '') ? getDropdownName("glpi_manufacturers", $fields["new_manufacturer"]) : $LANG['rulesengine'][106]) . "</td>";
 		echo "<td class='tab_bg_2'>";
 		if ($fields["ignore_ocs_import"] == '') {
 			echo "&nbsp;";

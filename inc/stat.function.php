@@ -99,9 +99,9 @@ function getStatsItems($date1,$date2,$type){
 		break;
 		
 		case "glpi_type_computers":
-		case "glpi_dropdown_model":
-		case "glpi_dropdown_os":
-		case "glpi_dropdown_locations":
+		case "glpi_computersmodels":
+		case "glpi_operatingsystems":
+		case "glpi_locations":
 			$val = getNbIntervDropdown($type);
 
 		break;
@@ -425,13 +425,13 @@ function getNbIntervTitleOrType($date1,$date2,$title=true){
 	global $DB;
 	if ($title)
 	{
-		$table = "glpi_dropdown_user_titles";
+		$table = "glpi_userstitles";
 		$field = "title";	
 	}
 		
 	else
 	{
-		$table = "glpi_dropdown_user_types";
+		$table = "glpi_userstypes";
 		$field = "type";
 	}
 	
@@ -544,17 +544,17 @@ function getNbIntervCategory($date1,$date2){
 	
 	// Get all tracking categories for tree merge management
 
-	$query="SELECT DISTINCT glpi_dropdown_tracking_category.ID,   glpi_dropdown_tracking_category.completename AS category
-		FROM glpi_dropdown_tracking_category ";
+	$query="SELECT DISTINCT glpi_ticketscategories.ID,   glpi_ticketscategories.completename AS category
+		FROM glpi_ticketscategories ";
 
-/*	$query = "SELECT DISTINCT glpi_dropdown_tracking_category.ID,   glpi_dropdown_tracking_category.completename AS category
+/*	$query = "SELECT DISTINCT glpi_ticketscategories.ID,   glpi_ticketscategories.completename AS category
 		FROM glpi_tracking 
-		LEFT JOIN glpi_dropdown_tracking_category ON (glpi_tracking.category = glpi_dropdown_tracking_category.ID) ";
+		LEFT JOIN glpi_ticketscategories ON (glpi_tracking.category = glpi_ticketscategories.ID) ";
 	$query.=getEntitiesRestrictRequest(" WHERE","glpi_tracking");
 	if (!empty($date1)) $query.= " AND glpi_tracking.date >= '". $date1 ."' ";
 	if (!empty($date2)) $query.= " AND glpi_tracking.date <= adddate( '". $date2 ."' , INTERVAL 1 DAY ) ";
 */		
-	$query.=" ORDER BY glpi_dropdown_tracking_category.completename";
+	$query.=" ORDER BY glpi_ticketscategories.completename";
 
 	$result = $DB->query($query);
 	$tab=array();
@@ -656,7 +656,7 @@ function constructEntryValues($type,$begin="",$end="",$param="",$value="",$value
 		break;
 		case "category":
 			if (!empty($value)){
-				$categories=getSonsOf("glpi_dropdown_tracking_category",$value);
+				$categories=getSonsOf("glpi_ticketscategories",$value);
 				$condition=implode("','",$categories);
 	
 				$WHERE.=" AND glpi_tracking.category IN ('$condition')";

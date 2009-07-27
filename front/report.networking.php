@@ -56,7 +56,7 @@ echo "<form name='form' method='post' action='report.location.list.php'>";
 echo "<table class='tab_cadre'  width='500'>";
 echo "<tr class='tab_bg_1'><td>".$LANG['reports'][39]."</td>";
 echo "<td>";
-dropdownValue("glpi_dropdown_locations","location",0,1,$_SESSION["glpiactive_entity"]);
+dropdownValue("glpi_locations","location",0,1,$_SESSION["glpiactive_entity"]);
 echo "</td><td align='center' width='120'>";
 echo "<input type='submit' value='".$LANG['reports'][15]."' class='submit'>";
 echo "</td></tr>";
@@ -76,7 +76,7 @@ echo "</table>";
 echo "</form>";
 
 
-if (countElementsInTableForMyEntities("glpi_dropdown_netpoint")>0){
+if (countElementsInTableForMyEntities("glpi_netpoints")>0){
 	echo "<form name='form3' method='post' action='report.netpoint.list.php'>";
 	echo "<table class='tab_cadre'  width='500'>";
 	echo "<tr class='tab_bg_1'><td>".$LANG['reports'][42]."</td>";

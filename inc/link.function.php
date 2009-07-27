@@ -203,17 +203,17 @@ function showLinkOnDevice($type,$ID){
 
 				if (strstr($link,"[LOCATION]")){
 					if ($tmp=$ci->getField('location')){
-						$link=str_replace("[LOCATION]",getDropdownName("glpi_dropdown_locations",$tmp),$link);
+						$link=str_replace("[LOCATION]",getDropdownName("glpi_locations",$tmp),$link);
 					}
 				}
 				if (strstr($link,"[NETWORK]")){
 					if ($tmp=$ci->getField('network')){
-						$link=str_replace("[NETWORK]",getDropdownName("glpi_dropdown_network",$tmp),$link);
+						$link=str_replace("[NETWORK]",getDropdownName("glpi_networks",$tmp),$link);
 					}
 				}
 				if (strstr($link,"[DOMAIN]")){
 					if ($tmp=$ci->getField('domain'))
-						$link=str_replace("[DOMAIN]",getDropdownName("glpi_dropdown_domain",$tmp),$link);
+						$link=str_replace("[DOMAIN]",getDropdownName("glpi_domains",$tmp),$link);
 				}
 				if (strstr($link,"[USER]")){
 					if ($tmp=$ci->getField('FK_users'))

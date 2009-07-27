@@ -84,11 +84,11 @@ $items=array(
 			),
 		"title"=>array(	
 			"title"=>$LANG['users'][1],
-			"field"=>"glpi_dropdown_user_titles.title"
+			"field"=>"glpi_userstitles.title"
 			),
 		"type"=>array(	
 			"title"=>$LANG['users'][2],
-			"field"=>"glpi_dropdown_user_titles.type"
+			"field"=>"glpi_userstitles.type"
 			),
 	),
 	$LANG['common'][32] => array(

@@ -441,8 +441,8 @@ class Job extends CommonDBTM{
 					break;
 					case "category":
 						$new_category=$this->fields["category"];
-						$old_category_name=str_replace("&nbsp;",$LANG['mailing'][100],getDropdownName("glpi_dropdown_tracking_category",$input["_old_category"]));
-						$new_category_name=str_replace("&nbsp;",$LANG['mailing'][100],getDropdownName("glpi_dropdown_tracking_category",$new_category));
+						$old_category_name=str_replace("&nbsp;",$LANG['mailing'][100],getDropdownName("glpi_ticketscategories",$input["_old_category"]));
+						$new_category_name=str_replace("&nbsp;",$LANG['mailing'][100],getDropdownName("glpi_ticketscategories",$new_category));
 						$change_followup_content.=$LANG['mailing'][14].": ".$old_category_name." -> ".$new_category_name."\n";
 						$global_mail_change_count++;
 					break;
@@ -944,7 +944,7 @@ class Job extends CommonDBTM{
 						$add='_printers';
 						break;
 				}
-				$name.=" - ".getDropdownName("glpi_dropdown_model".$add,$this->hardwaredatas->obj->fields["model"]);
+				$name.=" - ".getDropdownName("glpi_computersmodels".$add,$this->hardwaredatas->obj->fields["model"]);
 			}
 			if (isset($this->hardwaredatas->obj->fields["tech_num"])&&$this->hardwaredatas->obj->fields["tech_num"]>0){
 					$tech=getUserName($this->hardwaredatas->obj->fields["tech_num"]);
@@ -1005,7 +1005,7 @@ class Job extends CommonDBTM{
 
 			$message.= "<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$LANG['common'][36].":</span> ";
 			if (isset($this->fields["category"])&&$this->fields["category"]){
-				$message.= getDropdownName("glpi_dropdown_tracking_category",$this->fields["category"]);
+				$message.= getDropdownName("glpi_ticketscategories",$this->fields["category"]);
 			} else $message.=$LANG['mailing'][100];
 			$message.= "\n";
 			$message.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>". $LANG['mailing'][3].":</span><br>".str_replace("\n","<br>",$this->fields["contents"])."<br>\n";	
@@ -1052,7 +1052,7 @@ class Job extends CommonDBTM{
 
 			
 			if (isset($this->fields["category"])&&$this->fields["category"]){
-				$message.= mailRow($LANG['common'][36],getDropdownName("glpi_dropdown_tracking_category",$this->fields["category"]));
+				$message.= mailRow($LANG['common'][36],getDropdownName("glpi_ticketscategories",$this->fields["category"]));
 			} else $message.=mailRow($LANG['common'][36],$LANG['mailing'][100]);
 			$message.= "--\n";
 			$message.= $LANG['mailing'][3]." : \n".$this->fields["contents"]."\n";	

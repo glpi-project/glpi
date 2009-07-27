@@ -176,7 +176,7 @@ function showAssociatedContact($instID) {
 			echo "<td align='center'  width='100'>".$data["mobile"]."</td>";
 			echo "<td align='center'  width='100'>".$data["fax"]."</td>";
 			echo "<td class='center'><a href='mailto:".$data["email"]."'>".$DB->result($result, $i, "glpi_contacts.email")."</a></td>";
-			echo "<td class='center'>".getDropdownName("glpi_dropdown_contact_type",$data["type"])."</td>";
+			echo "<td class='center'>".getDropdownName("glpi_contactstypes",$data["type"])."</td>";
 			echo "<td align='center' class='tab_bg_2'>";
 			if ($canedit)
 				echo "<a href='".$CFG_GLPI["root_doc"]."/front/enterprise.form.php?deletecontact=deletecontact&amp;ID=$ID&amp;eID=$instID'><strong>".$LANG['buttons'][6]."</strong></a>";

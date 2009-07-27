@@ -186,8 +186,8 @@ for ($i=0;$i<max(1,pow($entity_number,1/2))&&$added<$entity_number;$i++){
 }	
 
 regenerateTreeCompleteName("glpi_entities");
-regenerateTreeCompleteName("glpi_dropdown_locations");
-regenerateTreeCompleteName("glpi_dropdown_kbcategories");
+regenerateTreeCompleteName("glpi_locations");
+regenerateTreeCompleteName("glpi_knowbaseitemscategories");
 
 optimize_tables();	
 

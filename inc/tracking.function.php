@@ -125,7 +125,7 @@ function &getTrackingSortOptions() {
 		$items[$LANG['job'][4]]="glpi_tracking.author";
 		$items[$LANG['joblist'][4]]="glpi_tracking.assign";
 		$items[$LANG['common'][1]]="glpi_tracking.device_type,glpi_tracking.computer";
-		$items[$LANG['common'][36]]="glpi_dropdown_tracking_category.completename";
+		$items[$LANG['common'][36]]="glpi_ticketscategories.completename";
 		$items[$LANG['common'][57]]="glpi_tracking.name";
 	}
 	return ($items);
@@ -931,7 +931,7 @@ function addFormTracking ($device_type=0,$ID=0, $target, $author, $group=0, $ass
 
 	echo "<td class='center'>".$LANG['common'][36].":</td>";
 	echo "<td class='center'>";
-	dropdownValue("glpi_dropdown_tracking_category","category",$category);
+	dropdownValue("glpi_ticketscategories","category",$category);
 	echo "</td></tr>";
 
 	if (haveRight("assign_ticket","1")||haveRight("steal_ticket","1")||haveRight("own_ticket","1")){
@@ -1116,7 +1116,7 @@ global $CFG_GLPI,  $LANG;
 
 	if ($extended){
 		echo "<td>".$LANG['common'][36].":&nbsp;";
-		dropdownValue("glpi_dropdown_tracking_category","category",$category);
+		dropdownValue("glpi_ticketscategories","category",$category);
 		echo "</td></tr>";
 		echo "<tr class='tab_bg_1' align='center'>";
 		echo "<td class='center' colspan='2'>";
@@ -1178,10 +1178,10 @@ function searchFormTracking($extended=0,$target,$start="",$status="new",$tosearc
 	if ($extended){
 		$option["comp.ID"]				= $LANG['common'][2];
 		$option["comp.name"]				= $LANG['common'][16];
-		$option["glpi_dropdown_locations.name"]		= $LANG['common'][15];
+		$option["glpi_locations.name"]		= $LANG['common'][15];
 		$option["glpi_type_computers.name"]		= $LANG['common'][17];
-		$option["glpi_dropdown_model.name"]		= $LANG['common'][22];
-		$option["glpi_dropdown_os.name"]		= $LANG['computers'][9];
+		$option["glpi_computersmodels.name"]		= $LANG['common'][22];
+		$option["glpi_operatingsystems.name"]		= $LANG['computers'][9];
 		$option["processor.designation"]		= $LANG['computers'][21];
 		$option["comp.serial"]				= $LANG['common'][19];
 		$option["comp.otherserial"]			= $LANG['common'][20];
@@ -1197,7 +1197,7 @@ function searchFormTracking($extended=0,$target,$start="",$status="new",$tosearc
 		$option["comp.date_mod"]			= $LANG['common'][26];
 		$option["glpi_networking_ports.ifaddr"] 	= $LANG['networking'][14];
 		$option["glpi_networking_ports.ifmac"] 		= $LANG['networking'][15];
-		$option["glpi_dropdown_netpoint.name"]		= $LANG['networking'][51];
+		$option["glpi_netpoints.name"]		= $LANG['networking'][51];
 		$option["glpi_enterprises.name"]		= $LANG['common'][5];
 		$option["resptech.name"]			=$LANG['common'][10];
 	}
@@ -1240,7 +1240,7 @@ function searchFormTracking($extended=0,$target,$start="",$status="new",$tosearc
 	echo "</td>";
 
 	echo "<td colspan='2' class='center'>".$LANG['common'][36].":<br>";
-	dropdownValue("glpi_dropdown_tracking_category","category",$category);
+	dropdownValue("glpi_ticketscategories","category",$category);
 	echo "</td>";
 
 	echo "<td colspan='2' class='center'>".$LANG['job'][44].":<br>";
@@ -1397,7 +1397,7 @@ function getCommonSelectForTrackingSearch(){
 
 
 return " DISTINCT glpi_tracking.*,
-		glpi_dropdown_tracking_category.completename AS catname,
+		glpi_ticketscategories.completename AS catname,
 		glpi_groups.name as groupname ".$SELECT;
 
 		//, author.name AS authorname, author.realname AS authorrealname, author.firstname AS authorfirstname,	
@@ -1415,7 +1415,7 @@ function getCommonLeftJoinForTrackingSearch(){
 	return //" LEFT JOIN glpi_users as author ON ( glpi_tracking.author = author.ID) "
 	//." LEFT JOIN glpi_users as assign ON ( glpi_tracking.assign = assign.ID) "
 	" LEFT JOIN glpi_groups ON ( glpi_tracking.FK_group = glpi_groups.ID) "
-	." LEFT JOIN glpi_dropdown_tracking_category ON ( glpi_tracking.category = glpi_dropdown_tracking_category.ID) ".$FROM;
+	." LEFT JOIN glpi_ticketscategories ON ( glpi_tracking.category = glpi_ticketscategories.ID) ".$FROM;
 }
 
 
@@ -1463,7 +1463,7 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$to
 					$wherecomp .= " glpi_dropdown_". $line["Field"] .".name $SEARCH" ;
 				}
 				elseif($line["Field"] == "location") {
-					$wherecomp .= " glpi_dropdown_locations.name $SEARCH";
+					$wherecomp .= " glpi_locations.name $SEARCH";
 				}
 				else {
 					$wherecomp .= "comp.".$line["Field"] . $SEARCH;
@@ -1476,7 +1476,7 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$to
 			}
 			$wherecomp .= " OR glpi_networking_ports.ifaddr $SEARCH";
 			$wherecomp .= " OR glpi_networking_ports.ifmac $SEARCH";
-			$wherecomp .= " OR glpi_dropdown_netpoint.name $SEARCH";
+			$wherecomp .= " OR glpi_netpoints.name $SEARCH";
 			$wherecomp .= " OR glpi_enterprises.name $SEARCH";
 			$wherecomp .= " OR resptech.name $SEARCH";
 
@@ -1522,7 +1522,7 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$to
 
 
 	if ($category > 0){
-		$where.=" AND ".getRealQueryForTreeItem("glpi_dropdown_tracking_category",$category,"glpi_tracking.category");
+		$where.=" AND ".getRealQueryForTreeItem("glpi_ticketscategories",$category,"glpi_tracking.category");
 	}
 
 	if (!empty($date1)) $where.=" AND glpi_tracking.date >= '$date1'";
@@ -1660,10 +1660,10 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$to
 		$where.= "LEFT JOIN glpi_devicesmemories as ram ON (ram.ID = gcdev.FK_DEVICE AND gcdev.device_type = '".RAM_DEVICE."') ";
 		$where.= "LEFT JOIN glpi_devicessoundcards as sndcard ON (sndcard.ID = gcdev.FK_DEVICE AND gcdev.device_type = '".SND_DEVICE."') ";
 		$where.= "LEFT JOIN glpi_networking_ports on (comp.ID = glpi_networking_ports.on_device AND  glpi_networking_ports.device_type='1')";
-		$where.= "LEFT JOIN glpi_dropdown_netpoint on (glpi_dropdown_netpoint.ID = glpi_networking_ports.netpoint)";
-		$where.= "LEFT JOIN glpi_dropdown_os on (glpi_dropdown_os.ID = comp.os)";
-		$where.= "LEFT JOIN glpi_dropdown_locations on (glpi_dropdown_locations.ID = comp.location)";
-		$where.= "LEFT JOIN glpi_dropdown_model on (glpi_dropdown_model.ID = comp.model)";
+		$where.= "LEFT JOIN glpi_netpoints on (glpi_netpoints.ID = glpi_networking_ports.netpoint)";
+		$where.= "LEFT JOIN glpi_operatingsystems on (glpi_operatingsystems.ID = comp.os)";
+		$where.= "LEFT JOIN glpi_locations on (glpi_locations.ID = comp.location)";
+		$where.= "LEFT JOIN glpi_computersmodels on (glpi_computersmodels.ID = comp.model)";
 		$where.= "LEFT JOIN glpi_type_computers on (glpi_type_computers.ID = comp.type)";
 		$where.= " LEFT JOIN glpi_enterprises ON (glpi_enterprises.ID = comp.FK_glpi_enterprise ) ";
 		$where.= " LEFT JOIN glpi_users as resptech ON (resptech.ID = comp.tech_num ) ";
@@ -1772,7 +1772,7 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$to
 					if ($assign_ent!=0) $title.=" ".$LANG['financial'][26]." = ".getDropdownName("glpi_enterprises",$assign_ent);
 				}
 				if ($request_type!=0) $title.=" - ".$LANG['job'][44]." = ".getRequestTypeName($request_type);
-				if ($category!=0) $title.=" - ".$LANG['common'][36]." = ".getDropdownName("glpi_dropdown_tracking_category",$category);
+				if ($category!=0) $title.=" - ".$LANG['common'][36]." = ".getDropdownName("glpi_ticketscategories",$category);
 				if ($priority!=0) $title.=" - ".$LANG['joblist'][2]." = ".getPriorityName($priority);
 				if ($type!=0&&$item!=0){
 					$ci=new CommonItem();
@@ -1961,8 +1961,8 @@ function showJobDetails ($target,$ID){
 		echo "<tr><td class='left'>";
 		echo $LANG['common'][36].":</td><td >";
 		if ($canupdate)
-			dropdownValue("glpi_dropdown_tracking_category","category",$job->fields["category"]);
-		else echo getDropdownName("glpi_dropdown_tracking_category",$job->fields["category"]);
+			dropdownValue("glpi_ticketscategories","category",$job->fields["category"]);
+		else echo getDropdownName("glpi_ticketscategories",$job->fields["category"]);
 		echo "</td></tr>";
 
 		echo "<tr><td class='center' colspan='2'><strong>";

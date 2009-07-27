@@ -363,19 +363,19 @@ function getRuleCollectionClassByTableName($tablename){
 	switch ($tablename){
 		case "glpi_software":
 			return getRuleCollectionClass(RULE_DICTIONNARY_SOFTWARE);
-		case "glpi_dropdown_manufacturer":
+		case "glpi_manufacturers":
 			return getRuleCollectionClass(RULE_DICTIONNARY_MANUFACTURER);
-		case "glpi_dropdown_model":
+		case "glpi_computersmodels":
 			return getRuleCollectionClass(RULE_DICTIONNARY_MODEL_COMPUTER);
-		case "glpi_dropdown_model_monitors":
+		case "glpi_monitorsmodels":
 			return getRuleCollectionClass(RULE_DICTIONNARY_MODEL_MONITOR);
-		case "glpi_dropdown_model_printers":
+		case "glpi_printersmodels":
 			return getRuleCollectionClass(RULE_DICTIONNARY_MODEL_PRINTER);
-		case "glpi_dropdown_model_peripherals":
+		case "glpi_peripheralsmodels":
 			return getRuleCollectionClass(RULE_DICTIONNARY_MODEL_PERIPHERAL);
-		case "glpi_dropdown_model_networking":
+		case "glpi_networkequipmentsmodels":
 			return getRuleCollectionClass(RULE_DICTIONNARY_MODEL_NETWORKING);
-		case "glpi_dropdown_model_phones":
+		case "glpi_phonesmodels":
 			return getRuleCollectionClass(RULE_DICTIONNARY_MODEL_PHONE);
 		case "glpi_type_computers":
 			return getRuleCollectionClass(RULE_DICTIONNARY_TYPE_COMPUTER);
@@ -389,11 +389,11 @@ function getRuleCollectionClassByTableName($tablename){
 			return getRuleCollectionClass(RULE_DICTIONNARY_TYPE_NETWORKING);
 		case "glpi_type_phones":
 			return getRuleCollectionClass(RULE_DICTIONNARY_TYPE_PHONE);
-		case "glpi_dropdown_os":
+		case "glpi_operatingsystems":
 			return getRuleCollectionClass(RULE_DICTIONNARY_OS);
-		case "glpi_dropdown_os_sp":
+		case "glpi_operatingsystemsservicepacks":
 			return getRuleCollectionClass(RULE_DICTIONNARY_OS_SP);
-		case "glpi_dropdown_os_version":
+		case "glpi_operatingsystemsversions":
 			return getRuleCollectionClass(RULE_DICTIONNARY_OS_VERSION);
 		default:
 			break;		
