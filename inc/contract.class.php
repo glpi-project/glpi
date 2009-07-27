@@ -60,10 +60,10 @@ class Contract extends CommonDBTM {
 
 		global $DB;
 
-		$query2 = "DELETE FROM glpi_contract_enterprise WHERE (FK_contract = '$ID')";
+		$query2 = "DELETE FROM glpi_contracts_suppliers WHERE (FK_contract = '$ID')";
 		$DB->query($query2);
 
-		$query3 = "DELETE FROM glpi_contract_device WHERE (FK_contract = '$ID')";
+		$query3 = "DELETE FROM glpi_contracts_items WHERE (FK_contract = '$ID')";
 		$DB->query($query3);
 	}
 

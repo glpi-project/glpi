@@ -141,10 +141,10 @@ function showAssociatedContact($instID) {
 	}
 	$canedit=$enterprise->can($instID,'w');
 
-	$query = "SELECT glpi_contacts.*, glpi_contact_enterprise.ID as ID_ent, glpi_entities.ID as entity "
-		. " FROM glpi_contact_enterprise, glpi_contacts "
+	$query = "SELECT glpi_contacts.*, glpi_contacts_suppliers.ID as ID_ent, glpi_entities.ID as entity "
+		. " FROM glpi_contacts_suppliers, glpi_contacts "
 		. " LEFT JOIN glpi_entities ON (glpi_entities.ID=glpi_contacts.FK_entities) "
-		. " WHERE glpi_contact_enterprise.FK_contact=glpi_contacts.ID AND glpi_contact_enterprise.FK_enterprise = '$instID' "
+		. " WHERE glpi_contacts_suppliers.FK_contact=glpi_contacts.ID AND glpi_contacts_suppliers.FK_enterprise = '$instID' "
 		. getEntitiesRestrictRequest(" AND","glpi_contacts",'','',true) 
 		. " ORDER BY glpi_entities.completename, glpi_contacts.name";
 
@@ -223,7 +223,7 @@ function addContactEnterprise($eID,$cID){
 	global $DB;
 	if ($eID>0&&$cID>0){
 
-		$query="INSERT INTO glpi_contact_enterprise (FK_enterprise,FK_contact ) VALUES ('$eID','$cID');";
+		$query="INSERT INTO glpi_contacts_suppliers (FK_enterprise,FK_contact ) VALUES ('$eID','$cID');";
 		$result = $DB->query($query);
 	}
 }
@@ -235,7 +235,7 @@ function addContactEnterprise($eID,$cID){
 function deleteContactEnterprise($ID){
 
 	global $DB;
-	$query="DELETE FROM glpi_contact_enterprise WHERE ID = '$ID';";
+	$query="DELETE FROM glpi_contacts_suppliers WHERE ID = '$ID';";
 	$result = $DB->query($query);
 }
 

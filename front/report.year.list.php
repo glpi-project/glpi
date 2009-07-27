@@ -63,8 +63,8 @@ if (isset($_POST["item_type"])&&is_array($_POST["item_type"])){
 		$query[$val] = "SELECT  ".$LINK_ID_TABLE[$val].".name AS itemname, ".$LINK_ID_TABLE[$val].".deleted AS itemdeleted, ";
 		$query[$val].= " glpi_dropdown_locations.completename AS location, glpi_dropdown_contract_type.name AS type, glpi_infocoms.buy_date, glpi_infocoms.warranty_duration, glpi_contracts.begin_date, glpi_contracts.duration, glpi_entities.completename as entname, glpi_entities.ID as entID ";
 		$query[$val].= " FROM ".$LINK_ID_TABLE[$val]." ";
-		$query[$val].= " LEFT JOIN glpi_contract_device ON glpi_contract_device.device_type='$val' AND ".$LINK_ID_TABLE[$val].".ID =  glpi_contract_device.FK_device ";
-		$query[$val].= " LEFT JOIN glpi_contracts ON glpi_contract_device.FK_contract=glpi_contracts.ID AND glpi_contract_device.FK_contract IS NOT NULL ";
+		$query[$val].= " LEFT JOIN glpi_contracts_items ON glpi_contracts_items.device_type='$val' AND ".$LINK_ID_TABLE[$val].".ID =  glpi_contracts_items.FK_device ";
+		$query[$val].= " LEFT JOIN glpi_contracts ON glpi_contracts_items.FK_contract=glpi_contracts.ID AND glpi_contracts_items.FK_contract IS NOT NULL ";
 		$query[$val].= " LEFT JOIN glpi_infocoms ON glpi_infocoms.device_type='$val' AND ".$LINK_ID_TABLE[$val].".ID =  glpi_infocoms.FK_device ";
 		$query[$val].= " LEFT JOIN glpi_dropdown_contract_type ON (glpi_contracts.contract_type = glpi_dropdown_contract_type.ID) ";
 		$query[$val].= " LEFT JOIN glpi_dropdown_locations ON (".$LINK_ID_TABLE[$val].".location = glpi_dropdown_locations.ID) ";

@@ -90,7 +90,7 @@ function display_infocoms_report($device_type,$begin,$end){
 	
 	switch ($device_type){
 		case CONSUMABLE_ITEM_TYPE :
-			$query.=" INNER JOIN glpi_consumables_type ON (glpi_consumables.FK_glpi_consumables_type = glpi_consumables_type.ID) ".getEntitiesRestrictRequest("WHERE","glpi_consumables_type");
+			$query.=" INNER JOIN glpi_consumablesitems ON (glpi_consumables.FK_glpi_consumablesitems = glpi_consumablesitems.ID) ".getEntitiesRestrictRequest("WHERE","glpi_consumablesitems");
 		break;
 		case CARTRIDGE_ITEM_TYPE :
 			$query.=" INNER JOIN glpi_cartridgesitems ON (glpi_cartridges.FK_glpi_cartridges_type = glpi_cartridgesitems.ID) ".getEntitiesRestrictRequest("WHERE","glpi_cartridgesitems");

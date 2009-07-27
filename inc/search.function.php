@@ -1709,7 +1709,7 @@ function addDefaultSelect ($type){
 			$ret = "glpi_cartridgesitems.alarm as ALARM, ";
 		break;
 		case CONSUMABLE_TYPE:
-			$ret = "glpi_consumables_type.alarm as ALARM, ";
+			$ret = "glpi_consumablesitems.alarm as ALARM, ";
 		break;
 		default :
 			$ret = "";
@@ -2915,19 +2915,19 @@ function addLeftJoin ($type,$ref_table,&$already_link_tables,$new_table,$linkfie
 		break;
 		case "glpi_enterprises":
 			if ($type==CONTACT_TYPE){
-				$out=addLeftJoin($type,$ref_table,$already_link_tables,"glpi_contact_enterprise","FK_contact");
-				return $out." LEFT JOIN $new_table $AS ON (glpi_contact_enterprise.FK_enterprise = $nt.ID ".
+				$out=addLeftJoin($type,$ref_table,$already_link_tables,"glpi_contacts_suppliers","FK_contact");
+				return $out." LEFT JOIN $new_table $AS ON (glpi_contacts_suppliers.FK_enterprise = $nt.ID ".
 				getEntitiesRestrictRequest("AND","glpi_enterprises",'','',true).") ";
 			} else {
 				return " LEFT JOIN $new_table $AS ON ($rt.FK_enterprise = $nt.ID) ";
 			}
 		break;
 		case "glpi_contacts":
-			$out=addLeftJoin($type,$ref_table,$already_link_tables,"glpi_contact_enterprise","FK_enterprise");
-			return $out." LEFT JOIN $new_table $AS ON (glpi_contact_enterprise.FK_contact = $nt.ID ".
+			$out=addLeftJoin($type,$ref_table,$already_link_tables,"glpi_contacts_suppliers","FK_enterprise");
+			return $out." LEFT JOIN $new_table $AS ON (glpi_contacts_suppliers.FK_contact = $nt.ID ".
 				getEntitiesRestrictRequest("AND","glpi_contacts",'','',true)." ) ";
 		break;
-		case "glpi_contact_enterprise":
+		case "glpi_contacts_suppliers":
 			return " LEFT JOIN $new_table $AS ON ($rt.ID = $nt.$linkfield) ";
 		break;
 		case "glpi_dropdown_manufacturer":
@@ -2961,7 +2961,7 @@ function addLeftJoin ($type,$ref_table,&$already_link_tables,$new_table,$linkfie
 				return " LEFT JOIN $new_table $AS ON ($rt.state = $nt.ID) ";				
 			}		
 		break;
-		case "glpi_contract_device":
+		case "glpi_contracts_items":
 			return " LEFT JOIN $new_table $AS ON ($rt.ID = $nt.FK_device AND $nt.device_type='$type') ";
 		break;
 		case "glpi_users_profiles":
@@ -3014,8 +3014,8 @@ function addLeftJoin ($type,$ref_table,&$already_link_tables,$new_table,$linkfie
 
 		break;
 		case "glpi_contracts":
-			$out=addLeftJoin($type,$rt,$already_link_tables,"glpi_contract_device",$linkfield,$device_type,$meta,$meta_type);
-		return $out." LEFT JOIN $new_table $AS ON (glpi_contract_device$addmetanum.FK_contract = $nt.ID) ";
+			$out=addLeftJoin($type,$rt,$already_link_tables,"glpi_contracts_items",$linkfield,$device_type,$meta,$meta_type);
+		return $out." LEFT JOIN $new_table $AS ON (glpi_contracts_items$addmetanum.FK_contract = $nt.ID) ";
 		break;
 		case "glpi_dropdown_licensetypes":
 			$rt=translate_table("glpi_softwarelicenses",$meta,$meta_type);

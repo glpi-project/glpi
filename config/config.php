@@ -82,8 +82,18 @@
 		}
 
 		$config_object=new Config();
-	
-		if($config_object->getFromDB(1)){
+      $config_ok=false;
+		if($config_object->getFromDB(1)) {
+         $config_ok=true;
+      } else {
+         // Manage glpi_config table before 0.80
+         $config_object->table='glpi_config';
+         if($config_object->getFromDB(1)) {
+            $config_ok=true;
+         }
+      }
+
+      if ($config_ok){
 			$CFG_GLPI=array_merge($CFG_GLPI,$config_object->fields);
 
 			if ( !isset($_SERVER['REQUEST_URI']) ) {
