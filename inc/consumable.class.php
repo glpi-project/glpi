@@ -51,7 +51,7 @@ class ConsumableType extends CommonDBTM {
 	 * Constructor
 	 **/
 	function __construct () {
-		$this->table="glpi_consumables_type";
+		$this->table="glpi_consumablesitems";
 		$this->type=CONSUMABLE_TYPE;
 		$this->entity_assign=true;
 	}
@@ -59,7 +59,7 @@ class ConsumableType extends CommonDBTM {
 	function cleanDBonPurge($ID) {
 		global $DB;
 		// Delete cartridconsumablesges
-		$query = "DELETE FROM glpi_consumables WHERE (FK_glpi_consumables_type = '$ID')";
+		$query = "DELETE FROM glpi_consumables WHERE (FK_glpi_consumablesitems = '$ID')";
 		$DB->query($query);
 	}
 
@@ -140,12 +140,12 @@ class ConsumableType extends CommonDBTM {
 
          echo "<tr class='tab_bg_1'><td>".$LANG['common'][16].":		</td>\n";
          echo "<td colspan='2'>";
-         autocompletionTextField("name","glpi_consumables_type","name",$this->fields["name"],40,$this->fields["FK_entities"]);
+         autocompletionTextField("name","glpi_consumablesitems","name",$this->fields["name"],40,$this->fields["FK_entities"]);
          echo "</td></tr>\n";
 
          echo "<tr class='tab_bg_1'><td>".$LANG['consumables'][2].":		</td>\n";
          echo "<td colspan='2'>";
-         autocompletionTextField("ref","glpi_consumables_type","ref",$this->fields["ref"],40,$this->fields["FK_entities"]);
+         autocompletionTextField("ref","glpi_consumablesitems","ref",$this->fields["ref"],40,$this->fields["FK_entities"]);
          echo "</td></tr>\n";
 
          echo "<tr class='tab_bg_1'><td>".$LANG['common'][17].": 	</td><td colspan='2'>\n";
@@ -248,7 +248,7 @@ class Consumable extends CommonDBTM {
 	}
 
 	function prepareInputForAdd($input) {
-		return array("FK_glpi_consumables_type"=>$input["tID"],
+		return array("FK_glpi_consumablesitems"=>$input["tID"],
 				"date_in"=>date("Y-m-d"));
 	}
 
@@ -256,7 +256,7 @@ class Consumable extends CommonDBTM {
 		// Add infocoms if exists for the licence
 		$ic=new Infocom();
 
-		if ($ic->getFromDBforDevice(CONSUMABLE_TYPE,$this->fields["FK_glpi_consumables_type"])){
+		if ($ic->getFromDBforDevice(CONSUMABLE_TYPE,$this->fields["FK_glpi_consumablesitems"])){
 			unset($ic->fields["ID"]);
 			$ic->fields["FK_device"]=$newID;
 			$ic->fields["device_type"]=CONSUMABLE_ITEM_TYPE;
@@ -311,7 +311,7 @@ class Consumable extends CommonDBTM {
 	**/
 	function getEntityID () {
 		$ci=new ConsumableType();
-		$ci->getFromDB($this->fields["FK_glpi_consumables_type"]);
+		$ci->getFromDB($this->fields["FK_glpi_consumablesitems"]);
 
 		return $ci->getEntityID();
 	}	

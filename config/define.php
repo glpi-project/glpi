@@ -231,7 +231,7 @@
 			KNOWBASE_TYPE => "glpi_kbitems",
 			USER_TYPE => "glpi_users",
 			TRACKING_TYPE => "glpi_tracking",
-			CONSUMABLE_TYPE => "glpi_consumables_type",
+			CONSUMABLE_TYPE => "glpi_consumablesitems",
 			CONSUMABLE_ITEM_TYPE => "glpi_consumables",
 			CARTRIDGE_ITEM_TYPE => "glpi_cartridges",
 			SOFTWARELICENSE_TYPE => "glpi_softwarelicenses",
@@ -392,7 +392,7 @@
 	$CFG_GLPI["devices_tables"] =array("moboard","processor","ram","hdd","iface","drive","control","gfxcard","sndcard","pci","case","power");
 	$CFG_GLPI["deleted_tables"]=array("glpi_computers","glpi_networking","glpi_printers","glpi_monitors","glpi_peripherals",
 		"glpi_software","glpi_cartridgesitems","glpi_contracts","glpi_contacts","glpi_enterprises","glpi_docs","glpi_phones",
-		"glpi_consumables_type","glpi_users","state_types","reservation_types","glpi_budgets");
+		"glpi_consumablesitems","glpi_users","state_types","reservation_types","glpi_budgets");
 	
 	$CFG_GLPI["template_tables"]=array("glpi_computers","glpi_networking","glpi_printers","glpi_monitors","glpi_peripherals","glpi_software",
 												  "glpi_phones","state_types","reservation_types","glpi_budgets");
@@ -418,7 +418,7 @@
  	$CFG_GLPI["massiveaction_noupdate_types"]=array(OCSNG_TYPE,ENTITY_TYPE,PROFILE_TYPE);
 	$CFG_GLPI["massiveaction_nodelete_types"]=array(ENTITY_TYPE);
 
-	$CFG_GLPI["specif_entities_tables"]=array("glpi_cartridgesitems","glpi_computers","glpi_consumables_type",
+	$CFG_GLPI["specif_entities_tables"]=array("glpi_cartridgesitems","glpi_computers","glpi_consumablesitems",
 		"glpi_contacts","glpi_contracts","glpi_docs",
 		"glpi_dropdown_locations","glpi_dropdown_netpoint","glpi_enterprises","glpi_groups",
 		"glpi_mailgate","glpi_monitors","glpi_networking","glpi_peripherals","glpi_phones","glpi_printers","glpi_software",

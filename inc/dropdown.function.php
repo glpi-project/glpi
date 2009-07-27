@@ -2575,7 +2575,7 @@ function dropdownContracts($name,$entity_restrict=-1,$alreadyused=array()){
 	$prev=-1;
 	while ($data=$DB->fetch_array($result)){
 
-		if ($data["device_countmax"]==0||$data["device_countmax"]>countElementsInTable("glpi_contract_device","FK_contract = '".$data['ID']."'" )){
+		if ($data["device_countmax"]==0||$data["device_countmax"]>countElementsInTable("glpi_contracts_items","FK_contract = '".$data['ID']."'" )){
 			if ($data["FK_entities"]!=$prev) {
 				if ($prev>=0) {
 					echo "</optgroup>";

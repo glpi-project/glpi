@@ -146,7 +146,7 @@ class Netdevice extends CommonDBTM {
 	
 			// ADD Contract				
 			$query="SELECT FK_contract 
-				FROM glpi_contract_device 
+				FROM glpi_contracts_items 
 				WHERE FK_device='".$input["_oldID"]."' AND device_type='".NETWORKING_TYPE."';";
 			$result=$DB->query($query);
 			if ($DB->numrows($result)>0){
@@ -205,7 +205,7 @@ class Netdevice extends CommonDBTM {
 		$query = "DELETE FROM glpi_infocoms WHERE FK_device = '$ID' AND device_type='".NETWORKING_TYPE."'";
 		$result = $DB->query($query);
 
-		$query = "DELETE FROM glpi_contract_device WHERE FK_device = '$ID' AND device_type='".NETWORKING_TYPE."'";
+		$query = "DELETE FROM glpi_contracts_items WHERE FK_device = '$ID' AND device_type='".NETWORKING_TYPE."'";
 		$result = $DB->query($query);
 
 		$query="SELECT * FROM glpi_reservation_item WHERE device_type='".NETWORKING_TYPE."' AND id_device='$ID'";

@@ -55,12 +55,19 @@ function update0721to080() {
       'glpi_cartridges_type' => 'glpi_cartridgesitems',
       'glpi_cartridges_assoc' => 'glpi_cartridges_printersmodels',
       'glpi_dropdown_cartridge_type' => 'glpi_cartridgesitemstypes',
-
       'glpi_computer_device' => 'glpi_computers_devices',
       'glpi_computerdisks' => 'glpi_computersdisks',
       'glpi_computers' => 'glpi_computers',
       'glpi_config' => 'glpi_configs',
       'glpi_connect_wire' => 'glpi_computers_items',
+
+      'glpi_consumables' => 'glpi_consumables',
+      'glpi_consumables_type' => 'glpi_consumablesitems',
+      'glpi_contact_enterprise' => 'glpi_contacts_suppliers',
+      'glpi_contacts' => 'glpi_contacts',
+      'glpi_contract_device' => 'glpi_contracts_items',
+      'glpi_contract_enterprise' =>'glpi_contracts_suppliers',
+      'glpi_contracts' =>'glpi_contracts',
    );
    $backup_tables=false;
 	foreach ($glpi_tables as $original_table => $new_table) {

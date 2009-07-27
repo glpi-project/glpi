@@ -145,7 +145,7 @@ function addContracts($type,$ID){
 		$con[]=mt_rand($FIRST["contract"],$LAST["contract"]);
 	$con=array_unique($con);
 	foreach ($con as $val){
-		$query="INSERT INTO glpi_contract_device VALUES (NULL,'$val','$ID','$type')";
+		$query="INSERT INTO glpi_contracts_items VALUES (NULL,'$val','$ID','$type')";
 		$DB->query($query) or die("PB REQUETE ".$query);
 	}
 }
@@ -862,7 +862,7 @@ function generate_entity($ID_entity){
 		$conID=$DB->insert_id();
 		addDocuments(CONTRACT_TYPE,$conID);
 		// Add an enterprise
-		$query="INSERT INTO glpi_contract_enterprise VALUES(NULL,'".mt_rand($FIRST["enterprises"],$LAST["enterprises"])."','$conID');";
+		$query="INSERT INTO glpi_contracts_suppliers VALUES(NULL,'".mt_rand($FIRST["enterprises"],$LAST["enterprises"])."','$conID');";
 		$DB->query($query) or die("PB REQUETE ".$query);
 	}
 	for ($i=0;$i<$MAX['contract']/2;$i++){
@@ -873,7 +873,7 @@ function generate_entity($ID_entity){
 		$conID=$DB->insert_id();
 		addDocuments(CONTRACT_TYPE,$conID);
 		// Add an enterprise
-		$query="INSERT INTO glpi_contract_enterprise VALUES(NULL,'".mt_rand($FIRST["enterprises"],$LAST["enterprises"])."','$conID');";
+		$query="INSERT INTO glpi_contracts_suppliers VALUES(NULL,'".mt_rand($FIRST["enterprises"],$LAST["enterprises"])."','$conID');";
 		$DB->query($query) or die("PB REQUETE ".$query);
 	}
 	$LAST["contract"]=getMaxItem("glpi_contracts");
@@ -890,7 +890,7 @@ function generate_entity($ID_entity){
 		$conID=$DB->insert_id();
 	
 		// Link with enterprise
-		$query="INSERT INTO glpi_contact_enterprise VALUES (NULL,'".mt_rand($FIRST['enterprises'],$LAST['enterprises'])."','$conID')";
+		$query="INSERT INTO glpi_contacts_suppliers VALUES (NULL,'".mt_rand($FIRST['enterprises'],$LAST['enterprises'])."','$conID')";
 		//	echo $query."<br>";
 		$DB->query($query) or die("PB REQUETE ".$query);
 	
@@ -903,7 +903,7 @@ function generate_entity($ID_entity){
 		$conID=$DB->insert_id();
 	
 		// Link with enterprise
-		$query="INSERT INTO glpi_contact_enterprise VALUES (NULL,'".mt_rand($FIRST['enterprises'],$LAST['enterprises'])."','$conID')";
+		$query="INSERT INTO glpi_contacts_suppliers VALUES (NULL,'".mt_rand($FIRST['enterprises'],$LAST['enterprises'])."','$conID')";
 		//	echo $query."<br>";
 		$DB->query($query) or die("PB REQUETE ".$query);
 	
@@ -911,9 +911,9 @@ function generate_entity($ID_entity){
 	$LAST["contacts"]=getMaxItem("glpi_contacts");
 	
 	// TYPE DE CONSOMMABLES
-	$FIRST["type_of_consumables"]=getMaxItem("glpi_consumables_type")+1;
+	$FIRST["type_of_consumables"]=getMaxItem("glpi_consumablesitems")+1;
 	for ($i=0;$i<$MAX['type_of_consumables'];$i++){
-		$query="INSERT INTO glpi_consumables_type VALUES (NULL,'$ID_entity','consumable type $i','ref $i','".mt_rand($FIRST["locations"],$LAST['locations'])."','".mt_rand(0,$MAX['consumable_type'])."','".mt_rand(1,$MAX['manufacturer'])."','".mt_rand($FIRST['users_sadmin'],$LAST['users_admin'])."','0','comments $i','".mt_rand(0,10)."','notes consumable type $i')";
+		$query="INSERT INTO glpi_consumablesitems VALUES (NULL,'$ID_entity','consumable type $i','ref $i','".mt_rand($FIRST["locations"],$LAST['locations'])."','".mt_rand(0,$MAX['consumable_type'])."','".mt_rand(1,$MAX['manufacturer'])."','".mt_rand($FIRST['users_sadmin'],$LAST['users_admin'])."','0','comments $i','".mt_rand(0,10)."','notes consumable type $i')";
 		$DB->query($query) or die("PB REQUETE ".$query);
 		$consID=$DB->insert_id();
 		addDocuments(CONSUMABLE_TYPE,$consID);
@@ -947,7 +947,7 @@ function generate_entity($ID_entity){
 			$DB->query($query) or die("PB REQUETE ".$query);
 		}
 	}
-	$LAST["type_of_consumables"]=getMaxItem("glpi_consumables_type");
+	$LAST["type_of_consumables"]=getMaxItem("glpi_consumablesitems");
 	
 	
 	// TYPE DE CARTOUCHES

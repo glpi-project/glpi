@@ -3118,19 +3118,19 @@ $SEARCH_OPTION[USER_TYPE][82]['name']=$LANG['users'][2];
 
 $SEARCH_OPTION[CONSUMABLE_TYPE]['common']=$LANG['common'][32];
 
-$SEARCH_OPTION[CONSUMABLE_TYPE][1]['table']='glpi_consumables_type';
+$SEARCH_OPTION[CONSUMABLE_TYPE][1]['table']='glpi_consumablesitems';
 $SEARCH_OPTION[CONSUMABLE_TYPE][1]['field']='name';
 $SEARCH_OPTION[CONSUMABLE_TYPE][1]['linkfield']='name';
 $SEARCH_OPTION[CONSUMABLE_TYPE][1]['name']=$LANG['common'][16];
 $SEARCH_OPTION[CONSUMABLE_TYPE][1]['datatype']='itemlink';
 $SEARCH_OPTION[CONSUMABLE_TYPE][1]['itemlink_type']=CONSUMABLE_TYPE;
 
-$SEARCH_OPTION[CONSUMABLE_TYPE][2]['table']='glpi_consumables_type';
+$SEARCH_OPTION[CONSUMABLE_TYPE][2]['table']='glpi_consumablesitems';
 $SEARCH_OPTION[CONSUMABLE_TYPE][2]['field']='ID';
 $SEARCH_OPTION[CONSUMABLE_TYPE][2]['linkfield']='';
 $SEARCH_OPTION[CONSUMABLE_TYPE][2]['name']=$LANG['common'][2];
 
-$SEARCH_OPTION[CONSUMABLE_TYPE][3]['table']='glpi_consumables_type';
+$SEARCH_OPTION[CONSUMABLE_TYPE][3]['table']='glpi_consumablesitems';
 $SEARCH_OPTION[CONSUMABLE_TYPE][3]['field']='ref';
 $SEARCH_OPTION[CONSUMABLE_TYPE][3]['linkfield']='ref';
 $SEARCH_OPTION[CONSUMABLE_TYPE][3]['name']=$LANG['consumables'][2];
@@ -3155,19 +3155,19 @@ $SEARCH_OPTION[CONSUMABLE_TYPE][7]['field']='name';
 $SEARCH_OPTION[CONSUMABLE_TYPE][7]['linkfield']='tech_num';
 $SEARCH_OPTION[CONSUMABLE_TYPE][7]['name']=$LANG['common'][10];
 
-$SEARCH_OPTION[CONSUMABLE_TYPE][8]['table']='glpi_consumables_type';
+$SEARCH_OPTION[CONSUMABLE_TYPE][8]['table']='glpi_consumablesitems';
 $SEARCH_OPTION[CONSUMABLE_TYPE][8]['field']='alarm';
 $SEARCH_OPTION[CONSUMABLE_TYPE][8]['linkfield']='alarm';
 $SEARCH_OPTION[CONSUMABLE_TYPE][8]['name']=$LANG['consumables'][38];
 $SEARCH_OPTION[CONSUMABLE_TYPE][8]['datatype']='number';
 
-$SEARCH_OPTION[CONSUMABLE_TYPE][16]['table']='glpi_consumables_type';
+$SEARCH_OPTION[CONSUMABLE_TYPE][16]['table']='glpi_consumablesitems';
 $SEARCH_OPTION[CONSUMABLE_TYPE][16]['field']='comments';
 $SEARCH_OPTION[CONSUMABLE_TYPE][16]['linkfield']='comments';
 $SEARCH_OPTION[CONSUMABLE_TYPE][16]['name']=$LANG['common'][25];
 $SEARCH_OPTION[CONSUMABLE_TYPE][16]['datatype']='text';
 
-$SEARCH_OPTION[CONSUMABLE_TYPE][90]['table']='glpi_consumables_type';
+$SEARCH_OPTION[CONSUMABLE_TYPE][90]['table']='glpi_consumablesitems';
 $SEARCH_OPTION[CONSUMABLE_TYPE][90]['field']='notes';
 $SEARCH_OPTION[CONSUMABLE_TYPE][90]['linkfield']='';
 $SEARCH_OPTION[CONSUMABLE_TYPE][90]['name']=$LANG['title'][37];

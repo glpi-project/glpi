@@ -65,7 +65,7 @@ if (isset($_POST["device_type"])&&isset($_POST["id_field"])&&$_POST["id_field"])
 
 		switch ($search["table"].".".$search["linkfield"]){
 			case "glpi_cartridgesitems.alarm":
-			case "glpi_consumables_type.alarm":
+			case "glpi_consumablesitems.alarm":
 				dropdownInteger($search["linkfield"],0,-1,100);
 				break;
 			case "glpi_contracts.duration":

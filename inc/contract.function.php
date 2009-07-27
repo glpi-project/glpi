@@ -154,8 +154,8 @@ function showDeviceContract($instID) {
 	$contract=new Contract();
 	$canedit=$contract->can($instID,'w');
 	$query = "SELECT DISTINCT device_type 
-		FROM glpi_contract_device 
-		WHERE glpi_contract_device.FK_contract = '$instID' 
+		FROM glpi_contracts_items 
+		WHERE glpi_contracts_items.FK_contract = '$instID' 
 		ORDER BY device_type";
 
 	$result = $DB->query($query);
@@ -190,14 +190,14 @@ function showDeviceContract($instID) {
 		$type=$DB->result($result, $i, "device_type");
 
 		if (haveTypeRight($type,"r")){
- 			$query = "SELECT ".$LINK_ID_TABLE[$type].".*, glpi_contract_device.ID AS IDD, glpi_entities.ID AS entity
-						FROM glpi_contract_device, " .$LINK_ID_TABLE[$type];
+ 			$query = "SELECT ".$LINK_ID_TABLE[$type].".*, glpi_contracts_items.ID AS IDD, glpi_entities.ID AS entity
+						FROM glpi_contracts_items, " .$LINK_ID_TABLE[$type];
 			if ($type != ENTITY_TYPE) {	
 				$query .= " LEFT JOIN glpi_entities ON (".$LINK_ID_TABLE[$type].".FK_entities=glpi_entities.ID) ";
 			}
-			$query .= " WHERE ".$LINK_ID_TABLE[$type].".ID = glpi_contract_device.FK_device 
-								AND glpi_contract_device.device_type='$type' 
-								AND glpi_contract_device.FK_contract = '$instID'";
+			$query .= " WHERE ".$LINK_ID_TABLE[$type].".ID = glpi_contracts_items.FK_device 
+								AND glpi_contracts_items.device_type='$type' 
+								AND glpi_contracts_items.FK_contract = '$instID'";
 						
 			if (in_array($LINK_ID_TABLE[$type],$CFG_GLPI["template_tables"])){
 				$query.=" AND ".$LINK_ID_TABLE[$type].".is_template='0'";
@@ -298,7 +298,7 @@ function addDeviceContract($conID,$type,$ID){
 
 	if ($ID>0&&$conID>0){
 
-		$query="INSERT INTO glpi_contract_device (FK_contract,FK_device, device_type ) VALUES ('$conID','$ID','$type');";
+		$query="INSERT INTO glpi_contracts_items (FK_contract,FK_device, device_type ) VALUES ('$conID','$ID','$type');";
 		$result = $DB->query($query);
 	}
 }
@@ -316,7 +316,7 @@ function addDeviceContract($conID,$type,$ID){
 function deleteDeviceContract($ID){
 
 	global $DB;
-	$query="DELETE FROM glpi_contract_device WHERE ID= '$ID';";
+	$query="DELETE FROM glpi_contracts_items WHERE ID= '$ID';";
 	$result = $DB->query($query);
 }
 
@@ -337,12 +337,12 @@ function showEnterpriseContract($instID) {
 	$contract=new Contract();
 	$canedit=$contract->can($instID,'w');
 	
-	$query = "SELECT glpi_contract_enterprise.ID as ID, glpi_enterprises.ID as entID, glpi_enterprises.name as name, 
+	$query = "SELECT glpi_contracts_suppliers.ID as ID, glpi_enterprises.ID as entID, glpi_enterprises.name as name, 
 			glpi_enterprises.website as website, glpi_enterprises.phonenumber as phone, glpi_enterprises.type as type, 
 			glpi_entities.ID AS entity"
-		. " FROM glpi_contract_enterprise, glpi_enterprises "
+		. " FROM glpi_contracts_suppliers, glpi_enterprises "
 		. " LEFT JOIN glpi_entities ON (glpi_entities.ID=glpi_enterprises.FK_entities) "
-		. " WHERE glpi_contract_enterprise.FK_contract = '$instID' AND glpi_contract_enterprise.FK_enterprise = glpi_enterprises.ID"
+		. " WHERE glpi_contracts_suppliers.FK_contract = '$instID' AND glpi_contracts_suppliers.FK_enterprise = glpi_enterprises.ID"
 		. getEntitiesRestrictRequest(" AND","glpi_enterprises",'','',true)
 		. " ORDER BY glpi_entities.completename,name";
 		
@@ -428,7 +428,7 @@ function addEnterpriseContract($conID,$ID){
 	global $DB;
 	if ($conID>0&&$ID>0){
 
-		$query="INSERT INTO glpi_contract_enterprise (FK_contract,FK_enterprise ) VALUES ('$conID','$ID');";
+		$query="INSERT INTO glpi_contracts_suppliers (FK_contract,FK_enterprise ) VALUES ('$conID','$ID');";
 		$result = $DB->query($query);
 	}
 }
@@ -446,7 +446,7 @@ function addEnterpriseContract($conID,$ID){
 function deleteEnterpriseContract($ID){
 
 	global $DB;
-	$query="DELETE FROM glpi_contract_enterprise WHERE ID= '$ID';";
+	$query="DELETE FROM glpi_contracts_suppliers WHERE ID= '$ID';";
 	$result = $DB->query($query);
 }
 
@@ -464,8 +464,8 @@ function getContractEnterprises($ID){
 	global $DB;
 
 	$query = "SELECT glpi_enterprises.* 
-			FROM glpi_contract_enterprise, glpi_enterprises 
-			WHERE glpi_contract_enterprise.FK_enterprise = glpi_enterprises.ID AND glpi_contract_enterprise.FK_contract = '$ID'";
+			FROM glpi_contracts_suppliers, glpi_enterprises 
+			WHERE glpi_contracts_suppliers.FK_enterprise = glpi_enterprises.ID AND glpi_contracts_suppliers.FK_contract = '$ID'";
 	$result = $DB->query($query);
 	$out="";
 	while ($data=$DB->fetch_array($result)){
@@ -495,11 +495,11 @@ function showContractAssociated($device_type,$ID,$withtemplate=''){
 	$ci->getFromDB($device_type,$ID);
 	$canedit=$ci->obj->can($ID,"w");
 
-	$query = "SELECT glpi_contract_device.* 
-		FROM glpi_contract_device, glpi_contracts 
+	$query = "SELECT glpi_contracts_items.* 
+		FROM glpi_contracts_items, glpi_contracts 
 		LEFT JOIN glpi_entities ON (glpi_contracts.FK_entities=glpi_entities.ID)
-		WHERE glpi_contracts.ID=glpi_contract_device.FK_contract AND glpi_contract_device.FK_device = '$ID' 
-			AND glpi_contract_device.device_type = '$device_type' 
+		WHERE glpi_contracts.ID=glpi_contracts_items.FK_contract AND glpi_contracts_items.FK_device = '$ID' 
+			AND glpi_contracts_items.device_type = '$device_type' 
 		".getEntitiesRestrictRequest(" AND","glpi_contracts",'','',true)." 
 		ORDER BY glpi_contracts.name";
 
@@ -601,10 +601,10 @@ function showContractAssociatedEnterprise($ID){
 	$ent=new Enterprise();
 	$canedit=$ent->can($ID,'w');
 
-	$query = "SELECT glpi_contracts.*, glpi_contract_enterprise.ID AS assocID, glpi_entities.ID AS entity"
-		. " FROM glpi_contract_enterprise, glpi_contracts "
+	$query = "SELECT glpi_contracts.*, glpi_contracts_suppliers.ID AS assocID, glpi_entities.ID AS entity"
+		. " FROM glpi_contracts_suppliers, glpi_contracts "
 		. " LEFT JOIN glpi_entities ON (glpi_entities.ID=glpi_contracts.FK_entities) "	
-		. " WHERE glpi_contract_enterprise.FK_enterprise = '$ID' AND glpi_contract_enterprise.FK_contract=glpi_contracts.ID"
+		. " WHERE glpi_contracts_suppliers.FK_enterprise = '$ID' AND glpi_contracts_suppliers.FK_contract=glpi_contracts.ID"
 		. getEntitiesRestrictRequest(" AND","glpi_contracts",'','',true) 
 		. " ORDER BY glpi_entities.completename, glpi_contracts.name";
 

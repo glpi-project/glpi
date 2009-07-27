@@ -383,7 +383,7 @@ class Computer extends CommonDBTM {
 
 			// ADD Contract
 			$query="SELECT FK_contract 
-				FROM glpi_contract_device 
+				FROM glpi_contracts_items 
 				WHERE FK_device='".$input["_oldID"]."' AND device_type='".COMPUTER_TYPE."';";
 			$result=$DB->query($query);
 			if ($DB->numrows($result)>0){
@@ -457,7 +457,7 @@ class Computer extends CommonDBTM {
 		$query = "DELETE FROM glpi_inst_software WHERE (cID = '$ID')";
 		$result = $DB->query($query);		
 
-		$query = "DELETE FROM glpi_contract_device WHERE (FK_device = '$ID' AND device_type='".COMPUTER_TYPE."')";
+		$query = "DELETE FROM glpi_contracts_items WHERE (FK_device = '$ID' AND device_type='".COMPUTER_TYPE."')";
 		$result = $DB->query($query);
 
 		$query = "DELETE FROM glpi_infocoms WHERE (FK_device = '$ID' AND device_type='".COMPUTER_TYPE."')";
