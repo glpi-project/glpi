@@ -187,7 +187,7 @@ if (isset($_POST["action"])&&isset($_POST["type"])&&!empty($_POST["type"])){
 								||($val["table"]=="glpi_infocoms" && $key!=120) // no end_warranty
 								||$val["table"]=="glpi_suppliers_infocoms"
 								||$val["table"]=="glpi_budgets"
-								||($val["table"]=="glpi_ocs_link"&&$key==101) // auto_update_ocs
+								||($val["table"]=="glpi_ocslinks"&&$key==101) // auto_update_ocs
 								){
 							if ($show_all){
 								$newgroup.= "<option value='$key'>".$val["name"]."</option>";

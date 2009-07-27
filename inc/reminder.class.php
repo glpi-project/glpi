@@ -45,7 +45,7 @@ class Reminder extends CommonDBTM {
 	 * Constructor
 	**/
 	function __construct () {
-		$this->table="glpi_reminder";
+		$this->table="glpi_reminders";
 		$this->type=REMINDER_TYPE;
 		$this->entity_assign=true;
 		$this->may_be_recursive=true;

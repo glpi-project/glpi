@@ -127,9 +127,9 @@ class Printer  extends CommonDBTM {
 		for ($tabend=array("end1"=>"end2","end2"=>"end1");list($enda,$endb)=each($tabend);) {
 			
 			$sql="SELECT device_type, GROUP_CONCAT(DISTINCT on_device) AS ids " .
-				"FROM glpi_networking_wire, glpi_networking_ports " .
-				"WHERE glpi_networking_wire.$endb = glpi_networking_ports.ID " .
-				"AND   glpi_networking_wire.$enda IN (SELECT ID FROM glpi_networking_ports 
+				"FROM glpi_networkports_networkports, glpi_networkports " .
+				"WHERE glpi_networkports_networkports.$endb = glpi_networkports.ID " .
+				"AND   glpi_networkports_networkports.$enda IN (SELECT ID FROM glpi_networkports 
 									WHERE device_type=".PRINTER_TYPE." AND on_device='$ID') " .
 				"GROUP BY device_type;";
 
@@ -187,7 +187,7 @@ class Printer  extends CommonDBTM {
 	
 			// ADD Ports
 			$query="SELECT ID 
-				FROM glpi_networking_ports 
+				FROM glpi_networkports 
 				WHERE on_device='".$input["_oldID"]."' AND device_type='".PRINTER_TYPE."';";
 			$result=$DB->query($query);
 			if ($DB->numrows($result)>0){
@@ -250,15 +250,15 @@ class Printer  extends CommonDBTM {
 
 
 		$query = "SELECT ID 
-			FROM glpi_networking_ports 
+			FROM glpi_networkports 
 			WHERE on_device = '$ID' AND device_type = '".PRINTER_TYPE."'";
 		$result = $DB->query($query);
 		while ($data = $DB->fetch_array($result)){
-			$q = "DELETE FROM glpi_networking_wire WHERE end1 = '".$data["ID"]."' OR end2 = '".$data["ID"]."'";
+			$q = "DELETE FROM glpi_networkports_networkports WHERE end1 = '".$data["ID"]."' OR end2 = '".$data["ID"]."'";
 			$result2 = $DB->query($q);					
 		}
 
-		$query2 = "DELETE FROM glpi_networking_ports WHERE on_device = '$ID' AND device_type = '".PRINTER_TYPE."'";
+		$query2 = "DELETE FROM glpi_networkports WHERE on_device = '$ID' AND device_type = '".PRINTER_TYPE."'";
 		$result2 = $DB->query($query2);
 
 		$query="SELECT * FROM glpi_computers_items WHERE type='".PRINTER_TYPE."' AND end1='$ID'";
@@ -272,7 +272,7 @@ class Printer  extends CommonDBTM {
 		}
 
 
-		$query="SELECT * FROM glpi_reservation_item WHERE device_type='".PRINTER_TYPE."' AND id_device='$ID'";
+		$query="SELECT * FROM glpi_reservationsitems WHERE device_type='".PRINTER_TYPE."' AND id_device='$ID'";
 		if ($result = $DB->query($query)) {
 			if ($DB->numrows($result)>0){
 				$rr=new ReservationItem();

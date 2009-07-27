@@ -93,7 +93,7 @@ if ($DBocs->numrows($result_ocs)>0){
 	if ($all) $WHERE="";
 
 	$query_glpi = "SELECT * 
-		FROM glpi_ocs_link 
+		FROM glpi_ocslinks 
 		$WHERE
 		ORDER BY last_update";
 	$result_glpi = $DB->query($query_glpi);

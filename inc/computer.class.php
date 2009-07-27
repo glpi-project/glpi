@@ -142,7 +142,7 @@ class Computer extends CommonDBTM {
 		}
 
 		if (isset($input["_auto_update_ocs"])){
-			$query="UPDATE glpi_ocs_link 
+			$query="UPDATE glpi_ocslinks 
 				SET auto_update='".$input["_auto_update_ocs"]."' 
 				WHERE glpi_id='".$input["ID"]."'";
 			$DB->query($query);
@@ -403,7 +403,7 @@ class Computer extends CommonDBTM {
 
 			// ADD Ports
 			$query="SELECT ID 
-				FROM glpi_networking_ports 
+				FROM glpi_networkports 
 				WHERE on_device='".$input["_oldID"]."' AND device_type='".COMPUTER_TYPE."';";
 			$result=$DB->query($query);
 			if ($DB->numrows($result)>0){
@@ -463,14 +463,14 @@ class Computer extends CommonDBTM {
 		$query = "DELETE FROM glpi_infocoms WHERE (FK_device = '$ID' AND device_type='".COMPUTER_TYPE."')";
 		$result = $DB->query($query);
 
-		$query = "SELECT ID FROM glpi_networking_ports WHERE (on_device = '$ID' AND device_type = '".COMPUTER_TYPE."')";
+		$query = "SELECT ID FROM glpi_networkports WHERE (on_device = '$ID' AND device_type = '".COMPUTER_TYPE."')";
 		$result = $DB->query($query);
 		while ($data = $DB->fetch_array($result)){
-			$q = "DELETE FROM glpi_networking_wire WHERE (end1 = '".$data["ID"]."' OR end2 = '".$data["ID"]."')";
+			$q = "DELETE FROM glpi_networkports_networkports WHERE (end1 = '".$data["ID"]."' OR end2 = '".$data["ID"]."')";
 			$result2 = $DB->query($q);					
 		}	
 
-		$query = "DELETE FROM glpi_networking_ports WHERE (on_device = '$ID' AND device_type = '".COMPUTER_TYPE."')";
+		$query = "DELETE FROM glpi_networkports WHERE (on_device = '$ID' AND device_type = '".COMPUTER_TYPE."')";
 		$result = $DB->query($query);
 
 
@@ -485,10 +485,10 @@ class Computer extends CommonDBTM {
 		}
 
 
-		$query = "DELETE FROM glpi_registry WHERE (computer_id = '$ID')";
+		$query = "DELETE FROM glpi_registrykeys WHERE (computer_id = '$ID')";
 		$result = $DB->query($query);
 
-		$query="SELECT * FROM glpi_reservation_item WHERE (device_type='".COMPUTER_TYPE."' AND id_device='$ID')";
+		$query="SELECT * FROM glpi_reservationsitems WHERE (device_type='".COMPUTER_TYPE."' AND id_device='$ID')";
 		if ($result = $DB->query($query)) {
 			if ($DB->numrows($result)>0) {
 				$rr=new ReservationItem();
@@ -499,7 +499,7 @@ class Computer extends CommonDBTM {
 		$query = "DELETE FROM glpi_computers_devices WHERE (FK_computers = '$ID')";
 		$result = $DB->query($query);
 
-		$query = "DELETE FROM glpi_ocs_link WHERE (glpi_id = '$ID')";
+		$query = "DELETE FROM glpi_ocslinks WHERE (glpi_id = '$ID')";
 		$result = $DB->query($query);
 
 		$query = "DELETE FROM glpi_computersdisks WHERE (FK_computers = '$ID')";
@@ -689,7 +689,7 @@ class Computer extends CommonDBTM {
       $dataocs=array();
       if (!empty($ID)&&$this->fields["ocs_import"]&&haveRight("view_ocsng","r")){
          $query="SELECT *
-            FROM glpi_ocs_link
+            FROM glpi_ocslinks
             WHERE glpi_id='$ID'";
 
          $result=$DB->query($query);
@@ -724,7 +724,7 @@ class Computer extends CommonDBTM {
          echo "<br>";
          if (haveRight("ocsng","r")){
             echo $LANG['common'][52]." <a href='".$CFG_GLPI["root_doc"]."/front/ocsng.form.php?ID=".getOCSServerByMachineID($ID)."'>".getOCSServerNameByID($ID)."</a>";
-            $query = "SELECT ocs_agent_version, ocs_id FROM glpi_ocs_link WHERE (glpi_id = '$ID')";
+            $query = "SELECT ocs_agent_version, ocs_id FROM glpi_ocslinks WHERE (glpi_id = '$ID')";
             $result_agent_version = $DB->query($query);
             $data_version = $DB->fetch_array($result_agent_version);
 

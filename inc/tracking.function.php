@@ -1195,8 +1195,8 @@ function searchFormTracking($extended=0,$target,$start="",$status="new",$tosearc
 		$option["comp.contact"]				= $LANG['common'][18];
 		$option["comp.contact_num"]		        = $LANG['common'][21];
 		$option["comp.date_mod"]			= $LANG['common'][26];
-		$option["glpi_networking_ports.ifaddr"] 	= $LANG['networking'][14];
-		$option["glpi_networking_ports.ifmac"] 		= $LANG['networking'][15];
+		$option["glpi_networkports.ifaddr"] 	= $LANG['networking'][14];
+		$option["glpi_networkports.ifmac"] 		= $LANG['networking'][15];
 		$option["glpi_netpoints.name"]		= $LANG['networking'][51];
 		$option["glpi_suppliers.name"]		= $LANG['common'][5];
 		$option["resptech.name"]			=$LANG['common'][10];
@@ -1474,8 +1474,8 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$to
 				if ($val!="drive"&&$val!="control"&&$val!="pci"&&$val!="case"&&$val!="power")
 					$wherecomp .= " OR ".$val.".designation ".makeTextSearch($contains,0);
 			}
-			$wherecomp .= " OR glpi_networking_ports.ifaddr $SEARCH";
-			$wherecomp .= " OR glpi_networking_ports.ifmac $SEARCH";
+			$wherecomp .= " OR glpi_networkports.ifaddr $SEARCH";
+			$wherecomp .= " OR glpi_networkports.ifmac $SEARCH";
 			$wherecomp .= " OR glpi_netpoints.name $SEARCH";
 			$wherecomp .= " OR glpi_suppliers.name $SEARCH";
 			$wherecomp .= " OR resptech.name $SEARCH";
@@ -1659,8 +1659,8 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$to
 		$where.= "LEFT JOIN glpi_devicesnetworkcards as iface ON (iface.ID = gcdev.FK_DEVICE AND gcdev.device_type = '".NETWORK_DEVICE."') ";
 		$where.= "LEFT JOIN glpi_devicesmemories as ram ON (ram.ID = gcdev.FK_DEVICE AND gcdev.device_type = '".RAM_DEVICE."') ";
 		$where.= "LEFT JOIN glpi_devicessoundcards as sndcard ON (sndcard.ID = gcdev.FK_DEVICE AND gcdev.device_type = '".SND_DEVICE."') ";
-		$where.= "LEFT JOIN glpi_networking_ports on (comp.ID = glpi_networking_ports.on_device AND  glpi_networking_ports.device_type='1')";
-		$where.= "LEFT JOIN glpi_netpoints on (glpi_netpoints.ID = glpi_networking_ports.netpoint)";
+		$where.= "LEFT JOIN glpi_networkports on (comp.ID = glpi_networkports.on_device AND  glpi_networkports.device_type='1')";
+		$where.= "LEFT JOIN glpi_netpoints on (glpi_netpoints.ID = glpi_networkports.netpoint)";
 		$where.= "LEFT JOIN glpi_operatingsystems on (glpi_operatingsystems.ID = comp.os)";
 		$where.= "LEFT JOIN glpi_locations on (glpi_locations.ID = comp.location)";
 		$where.= "LEFT JOIN glpi_computersmodels on (glpi_computersmodels.ID = comp.model)";

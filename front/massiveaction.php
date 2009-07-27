@@ -468,7 +468,7 @@ if (isset($_POST["device_type"])){
 						$key=array_pop($_SESSION['glpi_massiveaction']['items']);
 						//Try to get the OCS server whose machine belongs
 						$query = "SELECT ocs_server_id, ID
-							FROM glpi_ocs_link
+							FROM glpi_ocslinks
 							WHERE glpi_id='".$key."'";
 						$result = $DB->query($query);
 						if ($DB->numrows($result) == 1) {                   

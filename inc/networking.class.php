@@ -47,7 +47,7 @@ class Netdevice extends CommonDBTM {
 	 * Constructor
 	**/
 	function __construct () {
-		$this->table="glpi_networking";
+		$this->table="glpi_networkequipments";
 		$this->type=NETWORKING_TYPE;
 		$this->dohistory=true;
 		$this->entity_assign=true;
@@ -127,7 +127,7 @@ class Netdevice extends CommonDBTM {
 	
 			// ADD Ports
 			$query="SELECT ID 
-				FROM glpi_networking_ports 
+				FROM glpi_networkports 
 				WHERE on_device='".$input["_oldID"]."' AND device_type='".NETWORKING_TYPE."';";
 			$result=$DB->query($query);
 			if ($DB->numrows($result)>0){
@@ -191,15 +191,15 @@ class Netdevice extends CommonDBTM {
 				} else $job->delete(array("ID"=>$data["ID"]));
 			}
 
-		$query = "SELECT ID FROM glpi_networking_ports WHERE on_device = '$ID' AND device_type = '".NETWORKING_TYPE."'";
+		$query = "SELECT ID FROM glpi_networkports WHERE on_device = '$ID' AND device_type = '".NETWORKING_TYPE."'";
 		$result = $DB->query($query);
 		while ($data = $DB->fetch_array($result)){
-			$q = "DELETE FROM glpi_networking_wire WHERE end1 = '".$data["ID"]."' OR end2 = '".$data["ID"]."'";
+			$q = "DELETE FROM glpi_networkports_networkports WHERE end1 = '".$data["ID"]."' OR end2 = '".$data["ID"]."'";
 			$result2 = $DB->query($q);				
 		}
 
 
-		$query = "DELETE FROM glpi_networking_ports WHERE on_device = '$ID' AND device_type = '".NETWORKING_TYPE."'";
+		$query = "DELETE FROM glpi_networkports WHERE on_device = '$ID' AND device_type = '".NETWORKING_TYPE."'";
 		$result = $DB->query($query);
 
 		$query = "DELETE FROM glpi_infocoms WHERE FK_device = '$ID' AND device_type='".NETWORKING_TYPE."'";
@@ -208,7 +208,7 @@ class Netdevice extends CommonDBTM {
 		$query = "DELETE FROM glpi_contracts_items WHERE FK_device = '$ID' AND device_type='".NETWORKING_TYPE."'";
 		$result = $DB->query($query);
 
-		$query="SELECT * FROM glpi_reservation_item WHERE device_type='".NETWORKING_TYPE."' AND id_device='$ID'";
+		$query="SELECT * FROM glpi_reservationsitems WHERE device_type='".NETWORKING_TYPE."' AND id_device='$ID'";
 		if ($result = $DB->query($query)) {
 			if ($DB->numrows($result)>0) {
 				$rr=new ReservationItem();
@@ -250,9 +250,9 @@ class Netdevice extends CommonDBTM {
 		for ($tabend=array("end1"=>"end2","end2"=>"end1");list($enda,$endb)=each($tabend);) {
 			
 			$sql="SELECT device_type, GROUP_CONCAT(DISTINCT on_device) AS ids " .
-				"FROM glpi_networking_wire, glpi_networking_ports " .
-				"WHERE glpi_networking_wire.$endb = glpi_networking_ports.ID " .
-				"AND   glpi_networking_wire.$enda IN (SELECT ID FROM glpi_networking_ports 
+				"FROM glpi_networkports_networkports, glpi_networkports " .
+				"WHERE glpi_networkports_networkports.$endb = glpi_networkports.ID " .
+				"AND   glpi_networkports_networkports.$enda IN (SELECT ID FROM glpi_networkports 
 									WHERE device_type=".NETWORKING_TYPE." AND on_device='$ID') " .
 				"GROUP BY device_type;";
 
@@ -334,7 +334,7 @@ class Netdevice extends CommonDBTM {
       echo "<tr><td>".$LANG['common'][16].($template?"*":"").":	</td>\n";
       echo "<td>";
       $objectName = autoName($this->fields["name"], "name", ($template === "newcomp"), NETWORKING_TYPE,$this->fields["FK_entities"]);
-      autocompletionTextField("name","glpi_networking","name",$objectName,40,$this->fields["FK_entities"]);
+      autocompletionTextField("name","glpi_networkequipments","name",$objectName,40,$this->fields["FK_entities"]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'><td>".$LANG['common'][5].": 	</td><td colspan='2'>\n";
@@ -350,11 +350,11 @@ class Netdevice extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr><td>".$LANG['common'][21].":	</td><td>\n";
-      autocompletionTextField("contact_num","glpi_networking","contact_num",$this->fields["contact_num"],40,$this->fields["FK_entities"]);
+      autocompletionTextField("contact_num","glpi_networkequipments","contact_num",$this->fields["contact_num"],40,$this->fields["FK_entities"]);
       echo "</td></tr>\n";
 
       echo "<tr><td>".$LANG['common'][18].":	</td><td>\n";
-      autocompletionTextField("contact","glpi_networking","contact",$this->fields["contact"],40,$this->fields["FK_entities"]);
+      autocompletionTextField("contact","glpi_networkequipments","contact",$this->fields["contact"],40,$this->fields["FK_entities"]);
       echo "</td></tr>\n";
 
       echo "<tr><td>".$LANG['common'][34].": 	</td><td>";
@@ -395,16 +395,16 @@ class Netdevice extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr><td>".$LANG['networking'][5].":	</td><td>\n";
-      autocompletionTextField("ram","glpi_networking","ram",$this->fields["ram"],40,$this->fields["FK_entities"]);
+      autocompletionTextField("ram","glpi_networkequipments","ram",$this->fields["ram"],40,$this->fields["FK_entities"]);
       echo "</td></tr>\n";
 
       echo "<tr><td>".$LANG['common'][19].":	</td><td>\n";
-      autocompletionTextField("serial","glpi_networking","serial",$this->fields["serial"],40,$this->fields["FK_entities"]);
+      autocompletionTextField("serial","glpi_networkequipments","serial",$this->fields["serial"],40,$this->fields["FK_entities"]);
       echo "</td></tr>\n";
 
       echo "<tr><td>".$LANG['common'][20].($template?"*":"").":</td><td>\n";
       $objectName = autoName($this->fields["otherserial"], "otherserial", ($template === "newcomp"), NETWORKING_TYPE,$this->fields["FK_entities"]);
-      autocompletionTextField("otherserial","glpi_networking","otherserial",$objectName,40,$this->fields["FK_entities"]);
+      autocompletionTextField("otherserial","glpi_networkequipments","otherserial",$objectName,40,$this->fields["FK_entities"]);
       echo "</td></tr>\n";
 
       echo "<tr><td>".$LANG['setup'][88].": 	</td><td>\n";
@@ -416,11 +416,11 @@ class Netdevice extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr><td>".$LANG['networking'][14].":</td><td>\n";
-      autocompletionTextField("ifaddr","glpi_networking","ifaddr",$this->fields["ifaddr"],40,$this->fields["FK_entities"]);
+      autocompletionTextField("ifaddr","glpi_networkequipments","ifaddr",$this->fields["ifaddr"],40,$this->fields["FK_entities"]);
       echo "</td></tr>\n";
 
       echo "<tr><td>".$LANG['networking'][15].":</td><td>\n";
-      autocompletionTextField("ifmac","glpi_networking","ifmac",$this->fields["ifmac"],40,$this->fields["FK_entities"]);
+      autocompletionTextField("ifmac","glpi_networkequipments","ifmac",$this->fields["ifmac"],40,$this->fields["FK_entities"]);
       echo "</td></tr>\n";
 
       echo "</table>\n";
@@ -509,7 +509,7 @@ class Netport extends CommonDBTM {
 	 * Constructor
 	**/
 	function __construct () {
-		$this->table="glpi_networking_ports";
+		$this->table="glpi_networkports";
 		$this->type = NETWORKING_PORT_TYPE;
 	}
 
@@ -547,7 +547,7 @@ class Netport extends CommonDBTM {
 	function cleanDBonPurge($ID) {
 		global $DB;
 
-		$query = "DELETE FROM glpi_networking_wire WHERE (end1 = '$ID' OR end2 = '$ID')";
+		$query = "DELETE FROM glpi_networkports_networkports WHERE (end1 = '$ID' OR end2 = '$ID')";
 		$result = $DB->query($query);
 	}
 
@@ -631,7 +631,7 @@ class Netwire {
 	 **/
 	function getOppositeContact ($ID){
 		global $DB;
-		$query = "SELECT * FROM glpi_networking_wire WHERE end1 = '$ID' OR end2 = '$ID'";
+		$query = "SELECT * FROM glpi_networkports_networkports WHERE end1 = '$ID' OR end2 = '$ID'";
 		if ($result=$DB->query($query))
 		{
 			$data = $DB->fetch_array($result);

@@ -197,7 +197,7 @@ class Software extends CommonDBTM {
 		$query = "DELETE FROM glpi_contracts_items WHERE (FK_device = '$ID' AND device_type='" . SOFTWARE_TYPE . "')";
 		$result = $DB->query($query);
 
-		$query = "SELECT * FROM glpi_reservation_item WHERE (device_type='" . SOFTWARE_TYPE . "' AND id_device='$ID')";
+		$query = "SELECT * FROM glpi_reservationsitems WHERE (device_type='" . SOFTWARE_TYPE . "' AND id_device='$ID')";
 		if ($result = $DB->query($query)) {
 			if ($DB->numrows($result) > 0) {
 				$rr = new ReservationItem();

@@ -101,7 +101,7 @@ INNER JOIN accountinfo ON (hardware.ID = accountinfo.HARDWARE_ID)
 
 	// Existing OCS - GLPI link
 	$query_glpi = "SELECT * 
-	FROM glpi_ocs_link";
+	FROM glpi_ocslinks";
 	if ($ocs_id) $query_glpi.=" WHERE ocs_id='$ocs_id' and ocs_server_id=".$ocs_server_id;
 	$result_glpi = $DB->query($query_glpi);
 

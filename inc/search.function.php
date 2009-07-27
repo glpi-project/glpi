@@ -1621,7 +1621,7 @@ function addOrderBy($type,$ID,$order,$key=0){
 				return " ORDER BY ".$table.$linkfield.".realname $order, ".$table.$linkfield.".firstname $order, ".$table.$linkfield.".name $order";
 			}
 			break;
-		case "glpi_networking_ports.ifaddr" :
+		case "glpi_networkports.ifaddr" :
             		return " ORDER BY INET_ATON($table.$field) $order ";
             	break;
 	}
@@ -1703,7 +1703,7 @@ function addDefaultSelect ($type){
 	
 	switch ($type){
 		case RESERVATION_TYPE:
-			$ret = "glpi_reservation_item.active as ACTIVE, ";
+			$ret = "glpi_reservationsitems.active as ACTIVE, ";
 		break;
 		case CARTRIDGE_TYPE:
 			$ret = "glpi_cartridgesitems.alarm as ALARM, ";
@@ -1812,7 +1812,7 @@ function addSelect ($type,$ID,$num,$meta=0,$meta_type=0){
 		case "glpi_tracking.count" :
 			return " COUNT(DISTINCT glpi_tracking$addtable.ID) AS ".$NAME."_".$num.", ";
 		break;
-		case "glpi_networking_ports.ifmac" :
+		case "glpi_networkports.ifmac" :
 			if ($type==COMPUTER_TYPE)
 				return " GROUP_CONCAT( DISTINCT ".$table.$addtable.".".$field." SEPARATOR '$$$$') AS ".$NAME."_$num, GROUP_CONCAT( DISTINCT DEVICE_".NETWORK_DEVICE.".specificity  SEPARATOR '$$$$') AS ".$NAME."_".$num."_2, ";
 			else return " GROUP_CONCAT( DISTINCT ".$table.$addtable.".".$field." SEPARATOR '$$$$') AS ".$NAME."_$num, ";
@@ -2038,7 +2038,7 @@ function addWhere($link,$nott,$type,$ID,$val,$meta=0){
 			}
 			break;
 
-		case "glpi_networking_ports.ifmac" :
+		case "glpi_networkports.ifmac" :
 			$ADD="";
 			if ($type==COMPUTER_TYPE){
 				if ($nott) {
@@ -2275,17 +2275,17 @@ function addWhere($link,$nott,$type,$ID,$val,$meta=0){
 function displayConfigItem ($type,$field){
 
 	switch ($field){
-		case "glpi_ocs_link.last_update":
-		case "glpi_ocs_link.last_ocs_update":
+		case "glpi_ocslinks.last_update":
+		case "glpi_ocslinks.last_ocs_update":
 		case "glpi_computers.date_mod":
 		case "glpi_printers.date_mod":
-		case "glpi_networking.date_mod":
+		case "glpi_networkequipments.date_mod":
 		case "glpi_peripherals.date_mod":
 		case "glpi_phones.date_mod":
 		case "glpi_software.date_mod":
 		case "glpi_monitors.date_mod":
 		case "glpi_documents.date_mod":
-		case "glpi_ocs_config.date_mod" :
+		case "glpi_ocsservers.date_mod" :
 		case "glpi_users.last_login":
 		case "glpi_users.date_mod":	
 				return " class='center'";
@@ -2421,7 +2421,7 @@ function giveItem ($type,$ID,$data,$num,$meta=0){
 		case "glpi_devicesprocessors.specif_default" :
 			return $data[$NAME.$num];
 			break;
-		case "glpi_networking_ports.ifmac" :
+		case "glpi_networkports.ifmac" :
 			$out="";
 			if ($type==COMPUTER_TYPE){
 				$displayed=array();
@@ -2559,7 +2559,7 @@ function giveItem ($type,$ID,$data,$num,$meta=0){
 		case "glpi_auth_tables.name" :
 			return getAuthMethodName($data[$NAME.$num], $data[$NAME.$num."_2"], 1,$data[$NAME.$num."_3"].$data[$NAME.$num."_4"]);
 			break;
-		case "glpi_reservation_item.comments" :
+		case "glpi_reservationsitems.comments" :
 			if (empty($data[$NAME.$num])){
 				return  "<a href='".$CFG_GLPI["root_doc"]."/front/reservation.php?comment=".$data["refID"]."' title='".$LANG['reservation'][22]."'>".$LANG['common'][49]."</a>";
 			}else{
@@ -2861,7 +2861,7 @@ function addLeftJoin ($type,$ref_table,&$already_link_tables,$new_table,$linkfie
 			return " LEFT JOIN glpi_authldaps ON (glpi_users.auth_method = ".AUTH_LDAP." AND glpi_users.id_auth = glpi_authldaps.ID) 
 				LEFT JOIN glpi_authmails ON (glpi_users.auth_method = ".AUTH_MAIL." AND glpi_users.id_auth = glpi_authmails.ID) ";
 		break;
-		case "glpi_reservation_item":
+		case "glpi_reservationsitems":
 			return "";
 		break;
 		case "glpi_computersdisks":
@@ -2878,13 +2878,13 @@ function addLeftJoin ($type,$ref_table,&$already_link_tables,$new_table,$linkfie
 		case "glpi_entitiesdatas":
 			return " LEFT JOIN $new_table $AS ON ($rt.ID = $nt.FK_entities) ";
 		break;
-		case "glpi_ocs_link":
+		case "glpi_ocslinks":
 			return " LEFT JOIN $new_table $AS ON ($rt.ID = $nt.glpi_id) ";
 		break;
-		case "glpi_ocs_link":
+		case "glpi_ocslinks":
 			return " LEFT JOIN $new_table $AS ON ($rt.ID = $nt.glpi_id) ";
 		break;
-		case "glpi_registry":
+		case "glpi_registrykeys":
 			return " LEFT JOIN $new_table $AS ON ($rt.ID = $nt.computer_id) ";
 		break;
 		case "glpi_operatingsystems":
@@ -2894,7 +2894,7 @@ function addLeftJoin ($type,$ref_table,&$already_link_tables,$new_table,$linkfie
 				return " LEFT JOIN $new_table $AS ON ($rt.os = $nt.ID) ";
 			}
 		break;
-		case "glpi_networking_ports":
+		case "glpi_networkports":
 			$out="";
 		// Add networking device for computers
 		if ($type==COMPUTER_TYPE){
@@ -2903,9 +2903,9 @@ function addLeftJoin ($type,$ref_table,&$already_link_tables,$new_table,$linkfie
 		return $out." LEFT JOIN $new_table $AS ON ($rt.ID = $nt.on_device AND $nt.device_type='$type') ";
 		break;
 		case "glpi_netpoints":
-			// Link to glpi_networking_ports before
-			$out=addLeftJoin($type,$ref_table,$already_link_tables,"glpi_networking_ports",$linkfield);
-		return $out." LEFT JOIN $new_table $AS ON (glpi_networking_ports.netpoint = $nt.ID) ";
+			// Link to glpi_networkports before
+			$out=addLeftJoin($type,$ref_table,$already_link_tables,"glpi_networkports",$linkfield);
+		return $out." LEFT JOIN $new_table $AS ON (glpi_networkports.netpoint = $nt.ID) ";
 		break;
 		case "glpi_tracking":
 			return " LEFT JOIN $new_table $AS ON ($nt.device_type='$type' AND $rt.ID = $nt.computer) ";
@@ -3134,12 +3134,12 @@ function addMetaLeftJoin($from_type,$to_type,&$already_link_tables2,$nullornott)
 			switch ($to_type){
 				/*				case NETWORKING_TYPE :
 								array_push($already_link_tables2,$LINK_ID_TABLE[NETWORKING_TYPE]."_$to_type");
-								return " $LINK glpi_networking_ports as ports ON (glpi_computers.ID = ports.on_device AND ports.device_type='".COMPUTER_TYPE."') ".
-								" $LINK glpi_networking_wire as wire1 ON (ports.ID = wire1.end1) ".
-								" $LINK glpi_networking_ports as ports21 ON (ports21.device_type='".NETWORKING_TYPE."' AND wire1.end2 = ports21.ID ) ".
-								" $LINK glpi_networking_wire as wire2 ON (ports.ID = wire2.end2) ".
-								" $LINK glpi_networking_ports as ports22 ON (ports22.device_type='".NETWORKING_TYPE."' AND wire2.end1 = ports22.ID ) ".
-								" $LINK glpi_networking$to_type ON (glpi_networking$to_type.ID = ports22.on_device OR glpi_networking.ID = ports21.on_device)";
+								return " $LINK glpi_networkports as ports ON (glpi_computers.ID = ports.on_device AND ports.device_type='".COMPUTER_TYPE."') ".
+								" $LINK glpi_networkports_networkports as wire1 ON (ports.ID = wire1.end1) ".
+								" $LINK glpi_networkports as ports21 ON (ports21.device_type='".NETWORKING_TYPE."' AND wire1.end2 = ports21.ID ) ".
+								" $LINK glpi_networkports_networkports as wire2 ON (ports.ID = wire2.end2) ".
+								" $LINK glpi_networkports as ports22 ON (ports22.device_type='".NETWORKING_TYPE."' AND wire2.end1 = ports22.ID ) ".
+								" $LINK glpi_networkequipments$to_type ON (glpi_networkequipments$to_type.ID = ports22.on_device OR glpi_networkequipments.ID = ports21.on_device)";
 								break;
 				 */				
 				case PRINTER_TYPE :

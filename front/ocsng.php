@@ -70,7 +70,7 @@ if (isset($_GET["ocs_server_id"]) && $_GET["ocs_server_id"]) {
 		$_SESSION["ocs_server_id"] = $_GET["ocs_server_id"];
 				
 	$sql = "SELECT name 
-		FROM glpi_ocs_config 
+		FROM glpi_ocsservers 
 		WHERE ID='".$_SESSION["ocs_server_id"]."'";
 	$result = $DB->query($sql);
 	if ($DB->numrows($result) > 0) {

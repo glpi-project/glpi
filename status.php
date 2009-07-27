@@ -86,7 +86,7 @@ if (is_dir(GLPI_SESSION_DIR) && is_writable(GLPI_SESSION_DIR)) {
 if (( $ok_master || $ok_slave ) && establishDBConnection(false,false,false)){
 
 	// Check OCS connections
-	$query = "SELECT ID, name FROM glpi_ocs_config";
+	$query = "SELECT ID, name FROM glpi_ocsservers";
 	if ($result=$DB->query($query)){
 		if ($DB->numrows($result)){
 			echo "Check OCS servers:";

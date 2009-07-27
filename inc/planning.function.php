@@ -311,7 +311,7 @@ function showPlanning($who,$who_group,$when,$type){
 
 	// See public reminder ?
 	if (haveRight("reminder_public","r")) {
-		$readpub="(private=0 AND".getEntitiesRestrictRequest("","glpi_reminder",'','',true).")";
+		$readpub="(private=0 AND".getEntitiesRestrictRequest("","glpi_reminders",'','',true).")";
 	}
 	
 	// See my private reminder ?
@@ -328,7 +328,7 @@ function showPlanning($who,$who_group,$when,$type){
 	}		
 	if ($ASSIGN) {
 		$query2="SELECT * 
-			FROM glpi_reminder 
+			FROM glpi_reminders 
 			WHERE rv=1 AND $ASSIGN  AND begin < '$end' AND end > '$begin' 
 			ORDER BY begin";
 		$result2=$DB->query($query2);
@@ -768,10 +768,10 @@ function showPlanningCentral($who){
 
 	// reminder 
 	$read_public="";
-	if (haveRight("reminder_public","r")) $read_public=" OR ( private=0 ".getEntitiesRestrictRequest("AND","glpi_reminder").") ";
+	if (haveRight("reminder_public","r")) $read_public=" OR ( private=0 ".getEntitiesRestrictRequest("AND","glpi_reminders").") ";
 
 	$query2="SELECT * 
-		FROM glpi_reminder 
+		FROM glpi_reminders 
 		WHERE rv='1' 
 			AND (FK_users='$who' $read_public)    
 			AND (('".$debut."' <= begin AND adddate( '". $debut ."' , INTERVAL $INTERVAL ) >= begin) 
@@ -940,7 +940,7 @@ function generateIcal($who){
 	// reminder 
 
 	$query2="SELECT * 
-		FROM glpi_reminder 
+		FROM glpi_reminders 
 		WHERE rv='1' 
 			AND (FK_users='$who' OR private=0) 
 			AND end > '$begin' AND begin < '$end'";

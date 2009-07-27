@@ -100,7 +100,7 @@ if (isset($_GET["lID"])){
 		$i=0;
 		if (strstr($file,"[IP]")||strstr($file,"[MAC]")){
 			$query2 = "SELECT ifaddr, ifmac 
-				FROM glpi_networking_ports 
+				FROM glpi_networkports 
 				WHERE (on_device = '".$_GET["ID"]."' AND device_type = '".$_GET["type"]."') 
 				ORDER BY logical_number";
 			$result2=$DB->query($query2);
