@@ -155,8 +155,8 @@ if (isset($_POST["device_type"])&&isset($_POST["id_field"])&&$_POST["id_field"])
 				echo "<input type='hidden' name='field' value='FK_enterprise'>";
 				$FIELDNAME_PRINTED=true;
 			break;
-			case "glpi_dropdown_budget": // Infocoms budget
-				dropdown("glpi_dropdown_budget","budget");
+			case "glpi_budgets": // Infocoms budget
+				dropdown("glpi_budgets","budget");
 			break;
 			case "glpi_ocs_link": // auto_update ocs_link
 				dropdownYesNo("_auto_update_ocs");
