@@ -43,8 +43,40 @@ function update0721to080() {
 	echo "<h3>".$LANG['install'][4]." -&gt; 0.80</h3>";
    displayMigrationMessage("080"); // Start
 
-//	displayMigrationMessage("080", $LANG['update'][140]); // Index creation
-	
+   displayMigrationMessage("080", $LANG['update'][141] . ' - Clean DB : rename tables'); // Updating schema
+
+   $glpi_tables=array(
+      'glpi_alerts' => 'glpi_alerts',
+      'glpi_auth_ldap' => 'glpi_authldaps',
+      'glpi_auth_ldap_replicate' => 'glpi_authldapsreplicates',
+   );
+   $backup_tables=false;
+	foreach ($glpi_tables as $original_table => $new_table) {
+      if (strcmp($original_table,$new_table)!=0) {
+         // Original table exists ?
+            if (TableExists($original_table)) {
+               // rename new tables if exists ?
+               if (TableExists($new_table)) {
+                  if (TableExists("backup_$new_table")) {
+                     $query="DROP TABLE `backup_".$new_table."`";
+                     $DB->query($query) or die("0.80 drop backup table backup_$new_table ". $LANG['update'][90] . $DB->error());
+                  }
+                  echo "<p><b>$new_table table already exists. ";
+                  echo "A backup have been done to backup_".$new_table.".</p>";
+                  $backup_tables=true;
+                  $query="RENAME TABLE `$new_table` TO `backup_$new_table`";
+                  $DB->query($query) or die("0.80 backup table $new_table " . $LANG['update'][90] . $DB->error());
+
+               }
+               // rename original table
+               $query="RENAME TABLE `$original_table` TO `$new_table`";
+               $DB->query($query) or die("0.80 rename $original_table to $new_table " . $LANG['update'][90] . $DB->error());
+            }
+      }
+   }
+   if ($backup_tables){
+      echo "<p>You can delete backup tables if you have no need of them.</p></b>";
+   }
 
    displayMigrationMessage("080", $LANG['update'][141] . ' - glpi_config'); // Updating schema
 	if (FieldExists('glpi_config', 'license_deglobalisation')) {

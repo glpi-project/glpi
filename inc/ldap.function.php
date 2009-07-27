@@ -160,7 +160,7 @@ function ldapImportUserByServerId($login, $sync,$ldap_server,$display=false) {
 function ldapChooseDirectory($target) {
 	global $DB, $LANG;
 
-	$query = "SELECT * FROM glpi_auth_ldap ORDER BY name ASC";
+	$query = "SELECT * FROM glpi_authldaps ORDER BY name ASC";
 	$result = $DB->query($query);
 
 	if ($DB->numrows($result) == 1) {
@@ -660,7 +660,7 @@ function showSynchronizationForm($target, $ID) {
 				case AUTH_LDAP :
 						
 					//Look it the auth server still exists ! <- Bad idea : id not exists unable to change anything
-					$sql = "SELECT name FROM glpi_auth_ldap WHERE ID='" . $data["id_auth"]."'";
+					$sql = "SELECT name FROM glpi_authldaps WHERE ID='" . $data["id_auth"]."'";
 					$result = $DB->query($sql);
 
 					if ($DB->numrows($result) > 0) {
@@ -690,7 +690,7 @@ function showSynchronizationForm($target, $ID) {
 
 					if ($data["id_auth"]){
 						//Look it the auth server still exists ! <- Bad idea : id not exists unable to change anything
-						$sql = "SELECT name FROM glpi_auth_ldap WHERE ID='" . $data["id_auth"]."'";
+						$sql = "SELECT name FROM glpi_authldaps WHERE ID='" . $data["id_auth"]."'";
 						$result = $DB->query($sql);
 	
 						if ($DB->numrows($result) > 0) {
@@ -744,14 +744,14 @@ function formChangeAuthMethodToLDAP($ID)
 {
 	global $LANG,$DB;
 	
-	$sql = "SELECT ID FROM glpi_auth_ldap";
+	$sql = "SELECT ID FROM glpi_authldaps";
 	$result = $DB->query($sql);
 	if ($DB->numrows($result) > 0){
 		echo "<table class='tab_cadre'>";
 		echo "<tr><th colspan='2' colspan='2'>" . $LANG['login'][30]." : ".$LANG['login'][2]."</th></tr>";
 		echo "<tr class='tab_bg_1'><td><input type='hidden' name='ID' value='" . $ID . "'>";
 		echo $LANG['login'][31]."</td><td>";
-		dropdownValue("glpi_auth_ldap","id_auth");
+		dropdownValue("glpi_authldaps","id_auth");
 		echo "</td>";
 		echo "<tr class='tab_bg_2'><td colspan='2' align='center'><input class=submit type='submit' name='switch_auth_ldap' value='" . $LANG['buttons'][2] . "'>";
 		echo "</td></tr></table>";

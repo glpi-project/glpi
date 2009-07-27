@@ -37,8 +37,8 @@ if (!defined('GLPI_ROOT')){
 
 $RELATION=array(
 
-	"glpi_auth_ldap" => array("glpi_config"=>"extra_ldap_server",
-				"glpi_auth_ldap_replicate"=>"server_id"),
+	"glpi_authldaps" => array("glpi_config"=>"extra_ldap_server",
+				"glpi_authldapsreplicates"=>"server_id"),
 	"glpi_bookmark" => array("glpi_display_default"=>"FK_bookmark"),
 
 	"glpi_cartridges_type" => array("glpi_cartridges"=>"FK_glpi_cartridges_type",
