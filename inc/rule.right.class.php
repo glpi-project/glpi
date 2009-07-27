@@ -81,9 +81,9 @@ class RightAffectRule extends Rule {
 			echo "<tr class='tab_bg_1'><th colspan='4'>" .$LANG['rulesengine'][19] . "</tr><tr><td class='tab_bg_2' align='center'>";
 			echo $LANG['common'][16] . ":";
 			echo "</td><td align='center' class='tab_bg_2'>";
-			autocompletionTextField("name", "glpi_rules_descriptions", "name", "", 40);
+			autocompletionTextField("name", "glpi_rules", "name", "", 40);
 			echo $LANG['joblist'][6] . ":";
-			autocompletionTextField("description", "glpi_rules_descriptions", "description", "", 40);
+			autocompletionTextField("description", "glpi_rules", "description", "", 40);
 			echo "</td><td align='center' class='tab_bg_2'>";
 			echo $LANG['rulesengine'][9] . ":";
 			$this->dropdownRulesMatch("match", "AND");
@@ -163,7 +163,7 @@ class RightAffectRule extends Rule {
 	{
 		global $DB,$RULES_CRITERIAS;
 
-			$sql = "SELECT name,value,sub_type FROM glpi_rules_ldap_parameters WHERE sub_type='".$this->sub_type."'";
+			$sql = "SELECT name,value,sub_type FROM glpi_rulesldapparameters WHERE sub_type='".$this->sub_type."'";
 			$result = $DB->query($sql);
 			while ($datas = $DB->fetch_array($result))
 			{
@@ -310,7 +310,7 @@ function getRulesByID($ID, $withcriterias, $withactions) {
 
 	//Get all the rules whose sub_type is $sub_type and entity is $ID
 	$sql="SELECT * 
-		FROM `glpi_rules_actions` as gra, glpi_rules_descriptions as grd  
+		FROM `glpi_rulesactions` as gra, glpi_rules as grd  
 		WHERE gra.FK_rules=grd.ID AND gra.field='FK_entities' 
 			AND grd.sub_type='".$this->sub_type."' AND gra.value='".$ID."'";
 	
@@ -480,10 +480,10 @@ class RightRuleCollection extends RuleCollection {
 		global $DB;
 		$params = array();
 		$sql = "SELECT DISTINCT value 
-			FROM glpi_rules_descriptions, glpi_rules_criterias, glpi_rules_ldap_parameters 
-			WHERE glpi_rules_descriptions.sub_type='".$this->sub_type."' 
-				AND glpi_rules_criterias.FK_rules=glpi_rules_descriptions.ID 
-				AND glpi_rules_criterias.criteria=glpi_rules_ldap_parameters.value";
+			FROM glpi_rules, glpi_rulescriterias, glpi_rulesldapparameters 
+			WHERE glpi_rules.sub_type='".$this->sub_type."' 
+				AND glpi_rulescriterias.FK_rules=glpi_rules.ID 
+				AND glpi_rulescriterias.criteria=glpi_rulesldapparameters.value";
 		
 		$result = $DB->query($sql);
 		while ($param = $DB->fetch_array($result))

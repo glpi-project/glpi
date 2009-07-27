@@ -51,7 +51,7 @@ class DictionnarySoftwareCollection extends RuleCachedCollection {
 		$this->right = "rule_dictionnary_software";
 
 		//Init cache system values
-		$this->initCache("glpi_rule_cache_software", array (
+		$this->initCache("glpi_rulescachesoftwares", array (
 			"name" => "old_value",
 			"manufacturer" => "manufacturer"
 		), array (

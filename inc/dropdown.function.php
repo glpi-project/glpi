@@ -1606,10 +1606,10 @@ function dropdownMassiveAction($device_type,$deleted=0,$extraparams=array()){
 		}
 		switch ($device_type){
 			case SOFTWARE_TYPE :
-				if ($isadmin && countElementsInTable("glpi_rules_descriptions","sub_type='".RULE_SOFTWARE_CATEGORY."'") > 0){
+				if ($isadmin && countElementsInTable("glpi_rules","sub_type='".RULE_SOFTWARE_CATEGORY."'") > 0){
 					echo "<option value=\"compute_software_category\">".$LANG['rulesengine'][38]." ".$LANG['rulesengine'][40]."</option>";
 				}
-				if (haveRight("rule_dictionnary_software","w") && countElementsInTable("glpi_rules_descriptions","sub_type='".RULE_DICTIONNARY_SOFTWARE."'") > 0){
+				if (haveRight("rule_dictionnary_software","w") && countElementsInTable("glpi_rules","sub_type='".RULE_DICTIONNARY_SOFTWARE."'") > 0){
 					echo "<option value=\"replay_dictionnary\">".$LANG['rulesengine'][76]."</option>";
 				}
 			
@@ -2341,7 +2341,7 @@ function dropdownRules ($sub_type, $myname){
 
 	$use_ajax=false;
 	if ($CFG_GLPI["use_ajax"]){
-		$nb=countElementsInTable("glpi_rules_descriptions", "sub_type=".$sub_type);
+		$nb=countElementsInTable("glpi_rules", "sub_type=".$sub_type);
 		
 		if ($nb>$CFG_GLPI["ajax_limit_count"]){
 			$use_ajax=true;

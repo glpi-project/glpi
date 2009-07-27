@@ -57,7 +57,7 @@ if (!defined('GLPI_ROOT')){
 		//If a regex value is used, then always display an autocompletiontextfield
 		case "regex_result":
 		case "append_regex_result":
-			autocompletionTextField("value", "glpi_rules_actions", "value", "", 40);
+			autocompletionTextField("value", "glpi_rulesactions", "value", "", 40);
 		break;	
 		default:
 		if (isset($RULES_ACTIONS[$_POST["sub_type"]][$_POST["field"]]['type'])){
@@ -89,7 +89,7 @@ if (!defined('GLPI_ROOT')){
 			}
 		}
 		if (!$display){
-			autocompletionTextField("value", "glpi_rules_actions", "value", "", 40);
+			autocompletionTextField("value", "glpi_rulesactions", "value", "", 40);
 		}
 		break;
 	}

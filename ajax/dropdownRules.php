@@ -57,7 +57,7 @@ $NBMAX=$CFG_GLPI["dropdown_max"];
 $LIMIT="LIMIT 0,$NBMAX";
 
 $sql = "SELECT ID,name,ranking 
-	FROM glpi_rules_descriptions 
+	FROM glpi_rules 
 	WHERE sub_type='".$_POST["type"]."'";
 
 if ($_POST['searchText']==$CFG_GLPI["ajax_wildcard"]) {

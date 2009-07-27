@@ -248,7 +248,7 @@
 			REGISTRY_TYPE => "glpi_registrykeys",
 			PROFILE_TYPE => "glpi_profiles",
 			MAILGATE_TYPE => "glpi_mailcollectors",
-			RULE_TYPE => "glpi_rules_descriptions",
+			RULE_TYPE => "glpi_rules",
 			TRANSFER_TYPE => "glpi_transfers",
 			SOFTWAREVERSION_TYPE => "glpi_softwareversions",
 			COMPUTERDISK_TYPE => "glpi_computersdisks",

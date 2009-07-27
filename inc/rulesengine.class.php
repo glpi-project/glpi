@@ -107,7 +107,7 @@ class RuleCollection {
 	**/
 	function getCollectionSize(){
 
-		return countElementsInTable("glpi_rules_descriptions", "sub_type=".$this->sub_type);
+		return countElementsInTable("glpi_rules", "sub_type=".$this->sub_type);
 	}
 	
 	/**
@@ -123,7 +123,7 @@ class RuleCollection {
 		$this->RuleList->list = array();
 			
 		//Select all the rules of a different type
-		$sql = "SELECT * FROM glpi_rules_descriptions WHERE sub_type='".$this->sub_type."' ORDER BY ".$this->orderby." ASC";
+		$sql = "SELECT * FROM glpi_rules WHERE sub_type='".$this->sub_type."' ORDER BY ".$this->orderby." ASC";
 		if ($limit) {
 			$sql .= " LIMIT ".intval($start).",".intval($limit);
 		}
@@ -157,7 +157,7 @@ class RuleCollection {
 
 			//Select all the rules of a different type
 			$sql = "SELECT ID 
-				FROM glpi_rules_descriptions 
+				FROM glpi_rules 
 				WHERE active=1 AND sub_type='".$this->sub_type."' 
 				ORDER BY ".$this->orderby." ASC";
 			
@@ -345,12 +345,12 @@ class RuleCollection {
 		global $DB;
 		$rules = array();
 		$i=0;
-		$sql ="SELECT ID FROM glpi_rules_descriptions WHERE sub_type = '".$this->sub_type."' ORDER BY ranking ASC";
+		$sql ="SELECT ID FROM glpi_rules WHERE sub_type = '".$this->sub_type."' ORDER BY ranking ASC";
 		
 		if ($result = $DB->query($sql)){
 			//Reorder rules : we reaffect ranking for each rule of type $type
 			while ($data=$DB->fetch_array($result)){
-				$sql = "UPDATE glpi_rules_descriptions SET ranking='".$i."' WHERE ID='".$data["ID"]."'";
+				$sql = "UPDATE glpi_rules SET ranking='".$i."' WHERE ID='".$data["ID"]."'";
 				$DB->query($sql);				
 				$i++;
 			}
@@ -366,7 +366,7 @@ class RuleCollection {
 	function changeRuleOrder($ID,$action){
 		global $DB;
 
-		$sql ="SELECT ranking FROM glpi_rules_descriptions WHERE ID ='$ID'";
+		$sql ="SELECT ranking FROM glpi_rules WHERE ID ='$ID'";
 		if ($result = $DB->query($sql)){
 			if ($DB->numrows($result)==1){
 				
@@ -375,10 +375,10 @@ class RuleCollection {
 				$sql2="";
 				switch ($action){
 					case "up":
-						$sql2 ="SELECT ID,ranking FROM glpi_rules_descriptions WHERE sub_type ='".$this->sub_type."' AND ranking < '$current_rank' ORDER BY ranking DESC LIMIT 1";
+						$sql2 ="SELECT ID,ranking FROM glpi_rules WHERE sub_type ='".$this->sub_type."' AND ranking < '$current_rank' ORDER BY ranking DESC LIMIT 1";
 					break;
 					case "down":
-						$sql2="SELECT ID,ranking FROM glpi_rules_descriptions WHERE sub_type ='".$this->sub_type."' AND ranking > '$current_rank' ORDER BY ranking ASC LIMIT 1";
+						$sql2="SELECT ID,ranking FROM glpi_rules WHERE sub_type ='".$this->sub_type."' AND ranking > '$current_rank' ORDER BY ranking ASC LIMIT 1";
 					break;
 					default :
 						return false;
@@ -387,8 +387,8 @@ class RuleCollection {
 				if ($result2 = $DB->query($sql2)){
 					if ($DB->numrows($result2)==1){
 						list($other_ID,$new_rank)=$DB->fetch_array($result2);
-						$query="UPDATE glpi_rules_descriptions SET ranking='$new_rank' WHERE ID ='$ID'";
-						$query2="UPDATE glpi_rules_descriptions SET ranking='$current_rank' WHERE ID ='$other_ID'";
+						$query="UPDATE glpi_rules SET ranking='$new_rank' WHERE ID ='$ID'";
+						$query2="UPDATE glpi_rules SET ranking='$current_rank' WHERE ID ='$other_ID'";
 						return ($DB->query($query)&&$DB->query($query2));
 					}
 				}
@@ -407,7 +407,7 @@ class RuleCollection {
 	function deleteRuleOrder($ranking){
 		global $DB;
 		$rules = array();
-		$sql ="UPDATE glpi_rules_descriptions SET ranking=ranking-1 WHERE sub_type ='".$this->sub_type."' AND ranking > '$ranking' ";
+		$sql ="UPDATE glpi_rules SET ranking=ranking-1 WHERE sub_type ='".$this->sub_type."' AND ranking > '$ranking' ";
 		return $DB->query($sql);
 	}
 	
@@ -437,7 +437,7 @@ class RuleCollection {
 			
 		} else if ($type == "after") {
 			// Move after all			 
-			$query = "SELECT MAX(ranking) AS maxi FROM glpi_rules_descriptions  " .
+			$query = "SELECT MAX(ranking) AS maxi FROM glpi_rules  " .
 					" WHERE sub_type ='".$this->sub_type."' ";
 			$result = $DB->query($query);
 			$ligne = $DB->fetch_array($result);
@@ -452,7 +452,7 @@ class RuleCollection {
 			if ($type=="before") $rank--;
 
 			// Move back all rules between old and new rank
-			$query = "UPDATE glpi_rules_descriptions SET ranking=ranking-1 " .
+			$query = "UPDATE glpi_rules SET ranking=ranking-1 " .
 					" WHERE sub_type ='".$this->sub_type."' " .
 					" AND ranking > '$old_rank' AND ranking <= '$rank'";
 			$result = $DB->query($query);
@@ -461,7 +461,7 @@ class RuleCollection {
 			if ($type=="after") $rank++;
 			
 			// Move forward all rule  between old and new rank 
-			$query = "UPDATE glpi_rules_descriptions SET ranking=ranking+1 " .
+			$query = "UPDATE glpi_rules SET ranking=ranking+1 " .
 					" WHERE sub_type ='".$this->sub_type."' " .
 					" AND ranking >= '$rank' AND ranking < '$old_rank'";
 			$result = $DB->query($query);
@@ -472,7 +472,7 @@ class RuleCollection {
 		
 		// Move the rule
 		if ($result && $old_rank != $rank) {	
-			$query = "UPDATE glpi_rules_descriptions SET ranking='$rank' " .
+			$query = "UPDATE glpi_rules SET ranking='$rank' " .
 					" WHERE ID='$ID' ";
 			$result = $DB->query($query);
 		} 
@@ -624,7 +624,7 @@ class RuleCollection {
 		global $DB;
 		$input = array();
 		
-		$res = $DB->query("SELECT DISTINCT grc.criteria as criteria FROM glpi_rules_criterias as grc, glpi_rules_descriptions grd WHERE grd.active=1 AND grc.FK_rules=grd.ID AND grd.sub_type='".$this->sub_type."'");
+		$res = $DB->query("SELECT DISTINCT grc.criteria as criteria FROM glpi_rulescriterias as grc, glpi_rules grd WHERE grd.active=1 AND grc.FK_rules=grd.ID AND grd.sub_type='".$this->sub_type."'");
 		while ($data = $DB->fetch_array($res))
 			$input[]=$data["criteria"];
 		return $input;
@@ -761,7 +761,7 @@ class Rule extends CommonDBTM{
 	* @param sub_type the rule type used for the collection
 	**/
 	function __construct($sub_type=0) {
-		$this->table = "glpi_rules_descriptions";
+		$this->table = "glpi_rules";
 		$this->type = RULE_TYPE;
 		$this->sub_type=$sub_type;
 		$this->can_sort=false;
@@ -1462,10 +1462,10 @@ class Rule extends CommonDBTM{
 	function cleanDBonPurge($ID){
 		// Delete a rule and all associated criterias and actions
 		global $DB;
-		$sql = "DELETE FROM glpi_rules_actions WHERE FK_rules='".$ID."'";
+		$sql = "DELETE FROM glpi_rulesactions WHERE FK_rules='".$ID."'";
 		$DB->query($sql);
 		
-		$sql = "DELETE FROM glpi_rules_criterias WHERE FK_rules='".$ID."'";
+		$sql = "DELETE FROM glpi_rulescriterias WHERE FK_rules='".$ID."'";
 		$DB->query($sql);
 	}
 
@@ -1533,7 +1533,7 @@ class Rule extends CommonDBTM{
 	function getNextRanking()
 	{
 		global $DB;
-		$sql = "SELECT max(ranking) as rank FROM glpi_rules_descriptions WHERE sub_type='".$this->sub_type."'";
+		$sql = "SELECT max(ranking) as rank FROM glpi_rules WHERE sub_type='".$this->sub_type."'";
 		$result = $DB->query($sql);
 		if ($DB->numrows($result) > 0)
 		{
@@ -1795,7 +1795,7 @@ class Rule extends CommonDBTM{
 			}
 		} 
 		if (!$display){
-			autocompletionTextField($name, "glpi_rules_criterias", "pattern", $value, 40);
+			autocompletionTextField($name, "glpi_rulescriterias", "pattern", $value, 40);
 		}
 	}
 
@@ -1987,7 +1987,7 @@ class RuleAction extends CommonDBTM {
 	 * Constructor
 	**/
 	function __construct() {
-		$this->table = "glpi_rules_actions";
+		$this->table = "glpi_rulesactions";
 		$this->type = -1;
 	}
 	/**
@@ -1996,7 +1996,7 @@ class RuleAction extends CommonDBTM {
 	 * @return an array of RuleAction objects
 	**/
 	function getRuleActions($ID) {
-		$sql = "SELECT * FROM glpi_rules_actions WHERE FK_rules='".$ID."'";
+		$sql = "SELECT * FROM glpi_rulesactions WHERE FK_rules='".$ID."'";
 		global $DB;
 
 		$rules_actions = array ();
@@ -2033,7 +2033,7 @@ class RuleCriteria extends CommonDBTM {
 	 * Constructor
 	**/
 	function __construct() {
-		$this->table = "glpi_rules_criterias";
+		$this->table = "glpi_rulescriterias";
 		$this->type = -1;
 	}
 
@@ -2044,7 +2044,7 @@ class RuleCriteria extends CommonDBTM {
 	**/
 	function getRuleCriterias($ID) {
 		global $DB;
-		$sql = "SELECT * FROM glpi_rules_criterias WHERE FK_rules='".$ID."'";
+		$sql = "SELECT * FROM glpi_rulescriterias WHERE FK_rules='".$ID."'";
 
 		$rules_list = array ();
 		$result = $DB->query($sql);
@@ -2188,8 +2188,8 @@ class RuleCached extends Rule{
 		$rulecollection = getRuleCollectionClass($this->sub_type);
 		
 		$query="SELECT *
-			FROM `".$rulecollection->cache_table."`, glpi_rules_descriptions
-			WHERE `".$rulecollection->cache_table."`.rule_id=glpi_rules_descriptions.ID 
+			FROM `".$rulecollection->cache_table."`, glpi_rules
+			WHERE `".$rulecollection->cache_table."`.rule_id=glpi_rules.ID 
 			AND `".$rulecollection->cache_table."`.rule_id='".$this->fields["ID"]."' 
 			ORDER BY name";
 
@@ -2307,8 +2307,8 @@ class RuleCachedCollection extends RuleCollection{
 		echo "<table  class='tab_cadre_fixe'>";
 
 		$query="SELECT name, rule_id, count(rule_id) as cpt
-				FROM `".$this->cache_table."`, glpi_rules_descriptions
-				WHERE `".$this->cache_table."`.rule_id=glpi_rules_descriptions.ID GROUP BY rule_id
+				FROM `".$this->cache_table."`, glpi_rules
+				WHERE `".$this->cache_table."`.rule_id=glpi_rules.ID GROUP BY rule_id
 				ORDER BY name";
 		$res_count=$DB->query($query);
 

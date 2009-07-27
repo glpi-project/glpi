@@ -151,6 +151,27 @@ function update0721to080() {
       'glpi_dropdown_user_types'          => 'glpi_userstypes',
       'glpi_dropdown_vlan'                => 'glpi_vlans',
 
+      'glpi_rules_descriptions'           => 'glpi_rules',
+      'glpi_rules_actions'                => 'glpi_rulesactions',
+      'glpi_rule_cache_manufacturer'      => 'glpi_rulescachemanufacturers',
+      'glpi_rule_cache_model_computer'    => 'glpi_rulescachecomputersmodels',
+      'glpi_rule_cache_model_monitor'     => 'glpi_rulescachemonitorsmodels',
+      'glpi_rule_cache_model_networking'  => 'glpi_rulescachenetworkequipmentsmodels',
+      'glpi_rule_cache_model_peripheral'  => 'glpi_rulescacheperipheralsmodels',
+      'glpi_rule_cache_model_phone'       => 'glpi_rulescachephonesmodels',
+      'glpi_rule_cache_model_printer'     => 'glpi_rulescacheprintersmodels',
+      'glpi_rule_cache_os'                => 'glpi_rulescacheoperatingsystems',
+      'glpi_rule_cache_os_sp'             => 'glpi_rulescacheoperatingsystemsservicepacks',
+      'glpi_rule_cache_os_version'        => 'glpi_rulescacheoperatingsystemsversions',
+      'glpi_rule_cache_software'          => 'glpi_rulescachesoftwares',
+      'glpi_rule_cache_type_computer'     => 'glpi_rulescachecomputerstypes',
+      'glpi_rule_cache_type_monitor'      => 'glpi_rulescachemonitorstypes',
+      'glpi_rule_cache_type_networking'   => 'glpi_rulescachenetworkequipmentstypes',
+      'glpi_rule_cache_type_peripheral'   => 'glpi_rulescacheperipheralstypes',
+      'glpi_rule_cache_type_phone'        => 'glpi_rulescachephonestypes',
+      'glpi_rule_cache_type_printer'      => 'glpi_rulescacheprinterstypes',
+      'glpi_rules_criterias'              => 'glpi_rulescriterias',
+      'glpi_rules_ldap_parameters'        => 'glpi_rulesldapparameters',
 
 
    );
@@ -250,15 +271,15 @@ function update0721to080() {
       $DB->query($query) or die("0.80 add interface index in glpi_devicesgraphiccards " . $LANG['update'][90] . $DB->error());
 	}
 	
-   displayMigrationMessage("080", $LANG['update'][141] . ' - glpi_rule_cache_software'); // Updating schema
+   displayMigrationMessage("080", $LANG['update'][141] . ' - glpi_rulescachesoftwares'); // Updating schema
 	
-	if (FieldExists("glpi_rule_cache_software","ignore_ocs_import")){
-		$query = "ALTER TABLE `glpi_rule_cache_software` CHANGE `ignore_ocs_import` `ignore_ocs_import` CHAR( 1 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL ";
-      $DB->query($query) or die("0.80 alter table glpi_rule_cache_software " . $LANG['update'][90] . $DB->error());
+	if (FieldExists("glpi_rulescachesoftwares","ignore_ocs_import")){
+		$query = "ALTER TABLE `glpi_rulescachesoftwares` CHANGE `ignore_ocs_import` `ignore_ocs_import` CHAR( 1 ) CHARACTER SET utf8 COLLATE utf8_unicode_ci NULL DEFAULT NULL ";
+      $DB->query($query) or die("0.80 alter table glpi_rulescachesoftwares " . $LANG['update'][90] . $DB->error());
 	}
-	if (!FieldExists("glpi_rule_cache_software","helpdesk_visible")){
-		$query = "ALTER TABLE `glpi_rule_cache_software` ADD `helpdesk_visible` CHAR( 1 ) NULL ";
-      $DB->query($query) or die("0.80 add helpdesk_visible index in glpi_rule_cache_software " . $LANG['update'][90] . $DB->error());
+	if (!FieldExists("glpi_rulescachesoftwares","helpdesk_visible")){
+		$query = "ALTER TABLE `glpi_rulescachesoftwares` ADD `helpdesk_visible` CHAR( 1 ) NULL ";
+      $DB->query($query) or die("0.80 add helpdesk_visible index in glpi_rulescachesoftwares " . $LANG['update'][90] . $DB->error());
 	}
 
    displayMigrationMessage("080", $LANG['update'][141] . ' - glpi_entities'); // Updating schema
