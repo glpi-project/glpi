@@ -1651,7 +1651,7 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$to
 	if (!empty($wherecomp)){
 		$where.=" AND glpi_tracking.device_type= '1'";
 		$where.= " AND glpi_tracking.computer IN (SELECT comp.ID FROM glpi_computers as comp ";
-		$where.= " LEFT JOIN glpi_computer_device as gcdev ON (comp.ID = gcdev.FK_computers) ";
+		$where.= " LEFT JOIN glpi_computers_devices as gcdev ON (comp.ID = gcdev.FK_computers) ";
 		$where.= "LEFT JOIN glpi_device_moboard as moboard ON (moboard.ID = gcdev.FK_device AND gcdev.device_type = '".MOBOARD_DEVICE."') ";
 		$where.= "LEFT JOIN glpi_device_processor as processor ON (processor.ID = gcdev.FK_device AND gcdev.device_type = '".PROCESSOR_DEVICE."') ";
 		$where.= "LEFT JOIN glpi_device_gfxcard as gfxcard ON (gfxcard.ID = gcdev.FK_DEVICE AND gcdev.device_type = '".GFX_DEVICE."') ";

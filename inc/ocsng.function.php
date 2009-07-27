@@ -1542,7 +1542,7 @@ function ocsUnlockItems($glpi_id,$field){
 						case "import_monitor":
 						case "import_printers":
 						case "import_peripheral":
-							$querySearchLocked = "SELECT end1 FROM glpi_connect_wire WHERE ID='$key'";
+							$querySearchLocked = "SELECT end1 FROM glpi_computers_items WHERE ID='$key'";
 							break;
 						case "import_software":
 							$querySearchLocked = "SELECT ID FROM glpi_inst_software WHERE ID='$key'";
@@ -1552,7 +1552,7 @@ function ocsUnlockItems($glpi_id,$field){
 								WHERE on_device='$glpi_id' AND device_type='".COMPUTER_TYPE."' AND ifaddr='$val'";
 							break;
 						case "import_disk":
-							$querySearchLocked = "SELECT ID FROM glpi_computerdisks WHERE ID='$key'";
+							$querySearchLocked = "SELECT ID FROM glpi_computersdisks WHERE ID='$key'";
 							break;
 						default :
 							return;
@@ -1638,7 +1638,7 @@ function ocsEditLock($target, $ID) {
 		$locked_monitor = importArrayFromDB($data["import_monitor"]);
 		foreach ($locked_monitor as $key => $val) {
 			if ($val != "_version_070_") {
-				$querySearchLockedMonitor = "SELECT end1 FROM glpi_connect_wire WHERE ID='$key'";
+				$querySearchLockedMonitor = "SELECT end1 FROM glpi_computers_items WHERE ID='$key'";
 				$resultSearch = $DB->query($querySearchLockedMonitor);
 				if ($DB->numrows($resultSearch) == 0) {
 					//$header = true;
@@ -1667,7 +1667,7 @@ function ocsEditLock($target, $ID) {
 		echo "<div class='center'>";
 		$locked_printer = importArrayFromDB($data["import_printers"]);
 		foreach ($locked_printer as $key => $val) {
-			$querySearchLockedPrinter = "SELECT end1 FROM glpi_connect_wire WHERE ID='$key'";
+			$querySearchLockedPrinter = "SELECT end1 FROM glpi_computers_items WHERE ID='$key'";
 			$resultSearchPrinter = $DB->query($querySearchLockedPrinter);
 			if ($DB->numrows($resultSearchPrinter) == 0) {
 				//$header = true;
@@ -1695,7 +1695,7 @@ function ocsEditLock($target, $ID) {
 		echo "<div class='center'>";
 		$locked_printer = importArrayFromDB($data["import_peripheral"]);
 		foreach ($locked_printer as $key => $val) {
-			$querySearchLockedPeriph = "SELECT end1 FROM glpi_connect_wire WHERE ID='$key'";
+			$querySearchLockedPeriph = "SELECT end1 FROM glpi_computers_items WHERE ID='$key'";
 			$resultSearchPrinter = $DB->query($querySearchLockedPeriph);
 			if ($DB->numrows($resultSearchPrinter) == 0) {
 				//$header = true;
@@ -1794,7 +1794,7 @@ function ocsEditLock($target, $ID) {
 		echo "<div class='center'>";
 		$locked = importArrayFromDB($data["import_disk"]);
 		foreach ($locked as $key => $val) {
-			$querySearchLocked = "SELECT ID FROM glpi_computerdisks WHERE ID='$key'";
+			$querySearchLocked = "SELECT ID FROM glpi_computersdisks WHERE ID='$key'";
 			$resultSearch = $DB->query($querySearchLocked);
 			if ($DB->numrows($resultSearch) == 0) {
 				//$header = true;
@@ -2415,7 +2415,7 @@ function ocsUpdatePeripherals($device_type, $entity, $glpi_id, $ocs_id, $ocs_ser
 						deleteInOcsArray($glpi_id, $key, "import_monitor");
 						//search serial when it exists	
 						$monitor_serial = "";
-						$query_monitor_id = "SELECT end1 FROM glpi_connect_wire WHERE ID='$key'";
+						$query_monitor_id = "SELECT end1 FROM glpi_computers_items WHERE ID='$key'";
 						$result_monitor_id = $DB->query($query_monitor_id);
 						if ($DB->numrows($result_monitor_id) == 1) {
 							//get monitor Id
@@ -2545,8 +2545,8 @@ function ocsUpdatePeripherals($device_type, $entity, $glpi_id, $ocs_id, $ocs_ser
 									//Try to find a monitor with no serial, the same name and not already connected.
 									if (!empty ($mon["name"])) {
 										$query = "SELECT glpi_monitors.ID FROM glpi_monitors " .
-											"LEFT JOIN glpi_connect_wire ON (glpi_connect_wire.type=".MONITOR_TYPE." AND glpi_connect_wire.end1=glpi_monitors.ID) " .
-											"WHERE serial='' AND name = '" . $mon["name"] . "' AND is_global=0 AND FK_entities='$entity' AND glpi_connect_wire.end2 IS NULL";
+											"LEFT JOIN glpi_computers_items ON (glpi_computers_items.type=".MONITOR_TYPE." AND glpi_computers_items.end1=glpi_monitors.ID) " .
+											"WHERE serial='' AND name = '" . $mon["name"] . "' AND is_global=0 AND FK_entities='$entity' AND glpi_computers_items.end2 IS NULL";
 										$result_search = $DB->query($query);
 										if ($DB->numrows($result_search) == 1) {
 											$id_monitor = $DB->result($result_search, 0, "ID");
@@ -3286,7 +3286,7 @@ function ocsImportVersion($software, $version) {
 function ocsResetDisks($glpi_computer_id) {
 	global $DB;
 
-	$query = "DELETE FROM glpi_computerdisks
+	$query = "DELETE FROM glpi_computersdisks
 			WHERE FK_computers = '" . $glpi_computer_id . "'";
 	$DB->query($query);
 }
@@ -3353,7 +3353,7 @@ function ocsResetSoftwares($glpi_computer_id) {
  **/
 function ocsResetDevices($glpi_computer_id, $device_type) {
 	global $DB;
-	$query = "DELETE FROM glpi_computer_device 
+	$query = "DELETE FROM glpi_computers_devices 
 				WHERE device_type = '" . $device_type . "' 
 				AND FK_computers = '" . $glpi_computer_id . "'";
 	$DB->query($query);
@@ -3374,7 +3374,7 @@ function ocsResetPeriphs($glpi_computer_id) {
 	global $DB;
 
 	$query = "SELECT * 
-		FROM glpi_connect_wire 
+		FROM glpi_computers_items 
 		WHERE end2 = '" . $glpi_computer_id . "' 
 		AND type = '" . PERIPHERAL_TYPE . "'";
 	$result = $DB->query($query);
@@ -3385,7 +3385,7 @@ function ocsResetPeriphs($glpi_computer_id) {
 			Disconnect($data['ID'],1,false);
 
 			$query2 = "SELECT COUNT(*) 
-				FROM glpi_connect_wire 
+				FROM glpi_computers_items 
 				WHERE end1 = '" . $data['end1'] . "' 
 				AND type = '" . PERIPHERAL_TYPE . "'";
 			$result2 = $DB->query($query2);
@@ -3413,7 +3413,7 @@ function ocsResetMonitors($glpi_computer_id) {
 
 	global $DB;
 	$query = "SELECT * 
-				FROM glpi_connect_wire 
+				FROM glpi_computers_items 
 				WHERE end2 = '" . $glpi_computer_id . "' 
 				AND type = '" . MONITOR_TYPE . "'";
 
@@ -3425,7 +3425,7 @@ function ocsResetMonitors($glpi_computer_id) {
 			Disconnect($data['ID'],1,false);
 
 			$query2 = "SELECT COUNT(*) 
-				FROM glpi_connect_wire 
+				FROM glpi_computers_items 
 				WHERE end1 = '" . $data['end1'] . "' 
 				AND type = '" . MONITOR_TYPE . "'";
 			$result2 = $DB->query($query2);
@@ -3452,7 +3452,7 @@ function ocsResetPrinters($glpi_computer_id) {
 	global $DB;
 
 	$query = "SELECT * 
-		FROM glpi_connect_wire 
+		FROM glpi_computers_items 
 		WHERE end2 = '" . $glpi_computer_id . "' 
 		AND type = '" . PRINTER_TYPE . "'";
 	$result = $DB->query($query);
@@ -3462,7 +3462,7 @@ function ocsResetPrinters($glpi_computer_id) {
 			Disconnect($data['ID'],1,false);
 
 			$query2 = "SELECT COUNT(*) 
-				FROM glpi_connect_wire 
+				FROM glpi_computers_items 
 				WHERE end1 = '" . $data['end1'] . "' 
 				AND type = '" . PRINTER_TYPE . "'";
 			$result2 = $DB->query($query2);

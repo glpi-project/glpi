@@ -261,7 +261,7 @@ class Printer  extends CommonDBTM {
 		$query2 = "DELETE FROM glpi_networking_ports WHERE on_device = '$ID' AND device_type = '".PRINTER_TYPE."'";
 		$result2 = $DB->query($query2);
 
-		$query="SELECT * FROM glpi_connect_wire WHERE type='".PRINTER_TYPE."' AND end1='$ID'";
+		$query="SELECT * FROM glpi_computers_items WHERE type='".PRINTER_TYPE."' AND end1='$ID'";
 		if ($result = $DB->query($query)) {
 			if ($DB->numrows($result)>0) {
 				while ($data = $DB->fetch_array($result)){

@@ -1294,7 +1294,7 @@ function putSoftwareInTrash($ID, $comments = '') {
 	$config = new Config;
 	$config->getFromDB($CFG_GLPI["ID"]);
 	
-	//change category of the software on deletion (if defined in glpi_config)
+	//change category of the software on deletion (if defined in glpi_configs)
 	if (isset($config->fields["category_on_software_delete"]) && $config->fields["category_on_software_delete"] != 0)
 		$input["category"] = $config->fields["category_on_software_delete"];
 		

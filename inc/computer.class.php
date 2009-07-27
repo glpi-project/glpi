@@ -114,7 +114,7 @@ class Computer extends CommonDBTM {
 
 		if ($this->getFromDB($ID)){
 			$query = "SELECT count(*) AS NB, ID, device_type, FK_device, specificity 
-				FROM glpi_computer_device 
+				FROM glpi_computers_devices 
 				WHERE FK_computers = '$ID' 
 				GROUP BY device_type, FK_device, specificity 
 				ORDER BY device_type, ID";
@@ -161,7 +161,7 @@ class Computer extends CommonDBTM {
 
 				foreach ($items as $t){
 					$query = "SELECT * 
-						FROM glpi_connect_wire 
+						FROM glpi_computers_items 
 						WHERE end2='".$this->fields["ID"]."' AND type='".$t."'";
 					if ($result=$DB->query($query)) {
 						$resultnum = $DB->numrows($result);
@@ -199,7 +199,7 @@ class Computer extends CommonDBTM {
 
 				foreach ($items as $t){
 					$query = "SELECT * 
-						FROM glpi_connect_wire 
+						FROM glpi_computers_items 
 						WHERE end2='".$this->fields["ID"]."' AND type='".$t."'";
 
 					if ($result=$DB->query($query)) {
@@ -241,7 +241,7 @@ class Computer extends CommonDBTM {
 
 				foreach ($items as $t){
 					$query = "SELECT * 
-						FROM glpi_connect_wire 
+						FROM glpi_computers_items 
 						WHERE end2='".$this->fields["ID"]."' AND type='".$t."'";
 
 					if ($result=$DB->query($query)) {
@@ -280,7 +280,7 @@ class Computer extends CommonDBTM {
 
 				foreach ($items as $t){
 					$query = "SELECT * 
-						FROM glpi_connect_wire 
+						FROM glpi_computers_items 
 						WHERE end2='".$this->fields["ID"]."' AND type='".$t."'";
 
 					if ($result=$DB->query($query)) {
@@ -357,7 +357,7 @@ class Computer extends CommonDBTM {
 
        			// ADD volumes
 			$query="SELECT ID 
-				FROM glpi_computerdisks 
+				FROM glpi_computersdisks 
 				WHERE FK_computers='".$input["_oldID"]."'";
 			$result=$DB->query($query);
 			if ($DB->numrows($result)>0){
@@ -421,7 +421,7 @@ class Computer extends CommonDBTM {
 	
 			// Add connected devices
 			$query="SELECT * 
-				FROM glpi_connect_wire 
+				FROM glpi_computers_items 
 				WHERE end2='".$input["_oldID"]."';";
 	
 			$result=$DB->query($query);
@@ -474,7 +474,7 @@ class Computer extends CommonDBTM {
 		$result = $DB->query($query);
 
 
-		$query="SELECT * FROM glpi_connect_wire WHERE (end2='$ID')";
+		$query="SELECT * FROM glpi_computers_items WHERE (end2='$ID')";
 		if ($result = $DB->query($query)) {
 			if ($DB->numrows($result)>0) {
 				while ($data = $DB->fetch_array($result)){
@@ -496,13 +496,13 @@ class Computer extends CommonDBTM {
 			}
 		}
 
-		$query = "DELETE FROM glpi_computer_device WHERE (FK_computers = '$ID')";
+		$query = "DELETE FROM glpi_computers_devices WHERE (FK_computers = '$ID')";
 		$result = $DB->query($query);
 
 		$query = "DELETE FROM glpi_ocs_link WHERE (glpi_id = '$ID')";
 		$result = $DB->query($query);
 
-		$query = "DELETE FROM glpi_computerdisks WHERE (FK_computers = '$ID')";
+		$query = "DELETE FROM glpi_computersdisks WHERE (FK_computers = '$ID')";
 		$result = $DB->query($query);
 	}
 
@@ -805,7 +805,7 @@ class ComputerDisk extends CommonDBTM {
 	 * Constructor
 	**/
 	function __construct() {
-		$this->table = "glpi_computerdisks";
+		$this->table = "glpi_computersdisks";
 		$this->type = COMPUTERDISK_TYPE;
 		$this->entity_assign=true;
 
@@ -875,18 +875,18 @@ class ComputerDisk extends CommonDBTM {
 
 		echo "<tr class='tab_bg_1'><td>".$LANG['common'][16].":		</td>";
 		echo "<td>";
-		autocompletionTextField("name","glpi_computerdisks","name",$this->fields["name"],40);
+		autocompletionTextField("name","glpi_computersdisks","name",$this->fields["name"],40);
 		echo "</td>";
 
 		echo "<td>".$LANG['computers'][6].":		</td>";
 		echo "<td>";
-		autocompletionTextField("device","glpi_computerdisks","device",$this->fields["device"],40);
+		autocompletionTextField("device","glpi_computersdisks","device",$this->fields["device"],40);
 		echo "</td>";
 		echo "</tr>";
 
 		echo "<tr class='tab_bg_1'><td>".$LANG['computers'][5].":		</td>";
 		echo "<td>";
-		autocompletionTextField("mountpoint","glpi_computerdisks","mountpoint",$this->fields["mountpoint"],40);
+		autocompletionTextField("mountpoint","glpi_computersdisks","mountpoint",$this->fields["mountpoint"],40);
 		echo "</td>";
 
 		echo "<td>".$LANG['computers'][4].":		</td>";
@@ -897,12 +897,12 @@ class ComputerDisk extends CommonDBTM {
 
 		echo "<tr class='tab_bg_1'><td>".$LANG['computers'][3].":		</td>";
 		echo "<td>";
-		autocompletionTextField("totalsize","glpi_computerdisks","totalsize",$this->fields["totalsize"],40);
+		autocompletionTextField("totalsize","glpi_computersdisks","totalsize",$this->fields["totalsize"],40);
 		echo "&nbsp;".$LANG['common'][82]."</td>";
 
 		echo "<td>".$LANG['computers'][2].":		</td>";
 		echo "<td>";
-		autocompletionTextField("freesize","glpi_computerdisks","freesize",$this->fields["freesize"],40);
+		autocompletionTextField("freesize","glpi_computersdisks","freesize",$this->fields["freesize"],40);
 		echo "&nbsp;".$LANG['common'][82]."</td>";
 		echo "</tr>";
 	

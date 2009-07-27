@@ -155,7 +155,7 @@ function Disconnect($ID,$dohistory=1,$doautoactions=true,$ocs_server_id=0) {
 
 	//Get info about the periph
 	$query = "SELECT end1,end2, type 
-		FROM glpi_connect_wire 
+		FROM glpi_computers_items 
 		WHERE ID='$ID'";		
 	$res = $DB->query($query);
 
@@ -295,8 +295,8 @@ function Connect($sID,$cID,$type,$dohistory=1) {
 	// Handle case where already used, should never happen (except from OCS sync)
 	if (!$dev->getField('is_global') ){
 		$query = "SELECT ID, end2 
-			FROM glpi_connect_wire 
-			WHERE glpi_connect_wire.end1 = '$sID' AND glpi_connect_wire.type = '$type'";
+			FROM glpi_computers_items 
+			WHERE glpi_computers_items.end1 = '$sID' AND glpi_computers_items.type = '$type'";
 		$result = $DB->query($query);
 		while ($data=$DB->fetch_assoc($result)){
 			Disconnect($data["ID"],$dohistory);
@@ -402,9 +402,9 @@ function Connect($sID,$cID,$type,$dohistory=1) {
 function getNumberConnections($type,$ID){
 	global $DB;
 	$query = "SELECT count(*) 
-		FROM glpi_connect_wire 
-			INNER JOIN glpi_computers ON ( glpi_connect_wire.end2=glpi_computers.ID ) 
-		WHERE glpi_connect_wire.end1 = '$ID' AND glpi_connect_wire.type = '$type' 
+		FROM glpi_computers_items 
+			INNER JOIN glpi_computers ON ( glpi_computers_items.end2=glpi_computers.ID ) 
+		WHERE glpi_computers_items.end1 = '$ID' AND glpi_computers_items.type = '$type' 
 			AND glpi_computers.deleted='0' AND glpi_computers.is_template='0'";
 
 	$result = $DB->query($query);
@@ -431,9 +431,9 @@ function unglobalizeDevice($device_type,$ID){
 		$ci->obj->update($input);
 
 		// Get connect_wire for this connection
-		$query = "SELECT glpi_connect_wire.ID AS connectID 
-			FROM glpi_connect_wire 
-			WHERE glpi_connect_wire.end1 = '$ID' AND glpi_connect_wire.type = '$device_type'";
+		$query = "SELECT glpi_computers_items.ID AS connectID 
+			FROM glpi_computers_items 
+			WHERE glpi_computers_items.end1 = '$ID' AND glpi_computers_items.type = '$device_type'";
 		$result=$DB->query($query);
 		if (($nb=$DB->numrows($result))>1){
 			for ($i=1;$i<$nb;$i++){
@@ -443,7 +443,7 @@ function unglobalizeDevice($device_type,$ID){
 					unset($ci->obj->fields['ID']);
 					if ($newID=$ci->obj->add(array("ID"=>$ID))){
 						// Update Connection
-						$query2="UPDATE glpi_connect_wire 
+						$query2="UPDATE glpi_computers_items 
 							SET end1='$newID' 
 							WHERE ID='".$data["connectID"]."'";
 						$DB->query($query2);

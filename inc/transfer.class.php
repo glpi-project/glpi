@@ -306,10 +306,10 @@ class Transfer extends CommonDBTM{
 		if (count($DC_CONNECT)&&count($this->needtobe_transfer[COMPUTER_TYPE])>0){
 			foreach ($DC_CONNECT as $type){
 				// Clean DB / Search unexisting links and force disconnect
-				$query="SELECT glpi_connect_wire.ID 
-					FROM glpi_connect_wire 
-					LEFT JOIN ".$LINK_ID_TABLE[$type]." ON (glpi_connect_wire.end1 = ".$LINK_ID_TABLE[$type].".ID ) 
-					WHERE glpi_connect_wire.type='".$type."' AND ".$LINK_ID_TABLE[$type].".ID IS NULL";
+				$query="SELECT glpi_computers_items.ID 
+					FROM glpi_computers_items 
+					LEFT JOIN ".$LINK_ID_TABLE[$type]." ON (glpi_computers_items.end1 = ".$LINK_ID_TABLE[$type].".ID ) 
+					WHERE glpi_computers_items.type='".$type."' AND ".$LINK_ID_TABLE[$type].".ID IS NULL";
 
 				if ($result = $DB->query($query)) {
 					if ($DB->numrows($result)>0) { 
@@ -321,7 +321,7 @@ class Transfer extends CommonDBTM{
 				
 
 				$query = "SELECT DISTINCT end1
-				FROM glpi_connect_wire 
+				FROM glpi_computers_items 
 				WHERE type='".$type."' AND end2 IN ".$this->item_search[COMPUTER_TYPE];
 				if ($result = $DB->query($query)) {
 					if ($DB->numrows($result)>0) { 
@@ -697,12 +697,12 @@ class Transfer extends CommonDBTM{
 		// printer -> cartridges : keep / delete + clean
 		if ($this->options['keep_cartridges_type']){
 			if (isset($this->item_search[PRINTER_TYPE])){
-				$query="SELECT FK_glpi_cartridgesitems FROM glpi_cartridges
+				$query="SELECT FK_glpi_cartridges_type FROM glpi_cartridges
 				WHERE FK_glpi_printers IN ".$this->item_search[PRINTER_TYPE];
 				if ($result = $DB->query($query)) {
 					if ($DB->numrows($result)>0) { 
 						while ($data=$DB->fetch_array($result)){
-							$this->addToBeTransfer(CARTRIDGE_TYPE,$data['FK_glpi_cartridgesitems']);
+							$this->addToBeTransfer(CARTRIDGE_TYPE,$data['FK_glpi_cartridges_type']);
 						}
 					}
 				}
@@ -1035,25 +1035,25 @@ class Transfer extends CommonDBTM{
 						$newcarttypeID=-1;
 						// 1 - Search carttype destination ?
 						// Already transfer carttype : 
-						if (isset($this->already_transfer[CARTRIDGE_TYPE][$data['FK_glpi_cartridgesitems']])){
-							$newcarttypeID=$this->already_transfer[CARTRIDGE_TYPE][$data['FK_glpi_cartridgesitems']];
+						if (isset($this->already_transfer[CARTRIDGE_TYPE][$data['FK_glpi_cartridges_type']])){
+							$newcarttypeID=$this->already_transfer[CARTRIDGE_TYPE][$data['FK_glpi_cartridges_type']];
 						} else {
 							// Not already transfer cartype
 							$query="SELECT count(*) AS CPT 
 								FROM glpi_cartridges
-								WHERE glpi_cartridges.FK_glpi_cartridgesitems='".$data['FK_glpi_cartridgesitems']."' 
+								WHERE glpi_cartridges.FK_glpi_cartridges_type='".$data['FK_glpi_cartridges_type']."' 
 								AND glpi_cartridges.FK_glpi_printers > 0 AND glpi_cartridges.FK_glpi_printers NOT IN ".$this->item_search[PRINTER_TYPE];
 							$result_search=$DB->query($query);
 							// Is the carttype will be completly transfer ?
 							if ($DB->result($result_search,0,'CPT')==0){
 								// Yes : transfer
 								$need_clean_process=false;
-								$this->transferItem(CARTRIDGE_TYPE,$data['FK_glpi_cartridgesitems'],$data['FK_glpi_cartridgesitems']);
-								$newcarttypeID=$data['FK_glpi_cartridgesitems'];
+								$this->transferItem(CARTRIDGE_TYPE,$data['FK_glpi_cartridges_type'],$data['FK_glpi_cartridges_type']);
+								$newcarttypeID=$data['FK_glpi_cartridges_type'];
 							} else {
 								// No : copy carttype
 								$need_clean_process=true;
-								$carttype->getFromDB($data['FK_glpi_cartridgesitems']);
+								$carttype->getFromDB($data['FK_glpi_cartridges_type']);
 								// Is existing carttype in the destination entity ?
 								$query="SELECT * FROM glpi_cartridgesitems WHERE FK_entities='".$this->to."' AND name='".addslashes($carttype->fields['name'])."'";
 								if ($result_search=$DB->query($query)){
@@ -1070,15 +1070,15 @@ class Transfer extends CommonDBTM{
 									unset($carttype->fields);
 									$newcarttypeID=$carttype->add($input);
 									// 2 - transfer as copy
-									$this->transferItem(CARTRIDGE_TYPE,$data['FK_glpi_cartridgesitems'],$newcarttypeID);
+									$this->transferItem(CARTRIDGE_TYPE,$data['FK_glpi_cartridges_type'],$newcarttypeID);
 								}
 								// Founded -> use to link : nothing to do
 							}
 						}
 						
 						// Update cartridge if needed
-						if ($newcarttypeID>0&&$newcarttypeID!=$data['FK_glpi_cartridgesitems']){
-							$cart->update(array("ID"=>$data['ID'],'FK_glpi_cartridgesitems' => $newcarttypeID));		
+						if ($newcarttypeID>0&&$newcarttypeID!=$data['FK_glpi_cartridges_type']){
+							$cart->update(array("ID"=>$data['ID'],'FK_glpi_cartridges_type' => $newcarttypeID));		
 						}
 					} else { // Do not keep 
 						// If same printer : delete cartridges
@@ -1094,14 +1094,14 @@ class Transfer extends CommonDBTM{
 						// Clean carttype
 						$query2 = "SELECT COUNT(*) AS CPT
 								FROM glpi_cartridges 
-								WHERE FK_glpi_cartridgesitems = '" . $data['FK_glpi_cartridgesitems'] . "'";
+								WHERE FK_glpi_cartridges_type = '" . $data['FK_glpi_cartridges_type'] . "'";
 						$result2 = $DB->query($query2);
 						if ($DB->result($result2, 0, 'CPT') == 0) {
 							if ($this->options['clean_cartridges_type']==1){ // delete
-								$carttype->delete(array ("ID" => $data['FK_glpi_cartridgesitems']));
+								$carttype->delete(array ("ID" => $data['FK_glpi_cartridges_type']));
 							}
 							if ($this->options['clean_cartridges_type']==2){ // purge
-								$carttype->delete(array ("ID" => $data['FK_glpi_cartridgesitems']),1);
+								$carttype->delete(array ("ID" => $data['FK_glpi_cartridges_type']),1);
 							}
 						}
 					}
@@ -1815,7 +1815,7 @@ class Transfer extends CommonDBTM{
 		$ci=new CommonItem();
 		// Get connections
 		$query = "SELECT * 
-			FROM glpi_connect_wire 
+			FROM glpi_computers_items 
 			WHERE end2='$ID' AND type='".$link_type."'";
 		if (isset($CFG_GLPI["recursive_type"][$link_type])){
 			$query .= " AND end1 NOT IN ".$this->item_recurs[$link_type];
@@ -1843,7 +1843,7 @@ class Transfer extends CommonDBTM{
 								} else { // Not yet tranfer
 									// Can be managed like a non global one ? = all linked computers need to be transfer (so not copy)
 									$query="SELECT count(*) AS CPT 
-										FROM glpi_connect_wire 
+										FROM glpi_computers_items 
 										WHERE type='".$link_type."' AND end1='$item_ID' 
 											AND end2 NOT IN ".$this->item_search[COMPUTER_TYPE];
 									$result_search=$DB->query($query);
@@ -1882,7 +1882,7 @@ class Transfer extends CommonDBTM{
 								}
 								// Finish updated link if needed
 								if ($newID>0&&$newID!=$item_ID){
-									$query = "UPDATE glpi_connect_wire 
+									$query = "UPDATE glpi_computers_items 
 									SET end1='$newID' WHERE ID = '".$data['ID']."' ";	
 									$DB->query($query);
 								}
@@ -1903,7 +1903,7 @@ class Transfer extends CommonDBTM{
 							// If clean and not linked dc -> delete
 							if ($need_clean_process&&$clean){
 								$query = "SELECT COUNT(*) AS CPT
-									FROM glpi_connect_wire 
+									FROM glpi_computers_items 
 									WHERE end1='$item_ID' AND type='".$link_type."'";
 								if ($result_dc=$DB->query($query)){
 									if ($DB->result($result_dc,0,'CPT')==0){
@@ -1956,7 +1956,7 @@ class Transfer extends CommonDBTM{
 		global $DB;
 		// Delete Direct connection to computers for item type 
 		$query = "SELECT * 
-			FROM glpi_connect_wire 
+			FROM glpi_computers_items 
 			WHERE end1 = '$ID' AND type = '".$type."'";
 		$result = $DB->query($query);
 	}
@@ -2074,7 +2074,7 @@ class Transfer extends CommonDBTM{
 		global $DB;
 		if ($ID!=$newID){
 			
-			$query="SELECT * FROM glpi_cartridges_printersmodels WHERE FK_glpi_cartridgesitems='$ID'";
+			$query="SELECT * FROM glpi_cartridges_printersmodels WHERE FK_glpi_cartridges_type='$ID'";
 			if ($result = $DB->query($query)) {
 				if ($DB->numrows($result)!=0) { 
 					
@@ -2379,7 +2379,7 @@ class Transfer extends CommonDBTM{
 		switch ($this->options['keep_devices']){
 			// delete devices
 			case 0 :  
-				$query = "DELETE FROM glpi_computer_device 
+				$query = "DELETE FROM glpi_computers_devices 
 					WHERE FK_computers = '$ID'";
 				$result = $DB->query($query);
 				// Only case of ocs link update is needed (if devices are keep nothing to do)

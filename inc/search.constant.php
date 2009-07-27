@@ -284,13 +284,13 @@ $SEARCH_OPTION[COMPUTER_TYPE][39]['usehaving']=true;
 
 $SEARCH_OPTION[COMPUTER_TYPE]['disk']=$LANG['computers'][8];
 
-$SEARCH_OPTION[COMPUTER_TYPE][156]['table']='glpi_computerdisks';
+$SEARCH_OPTION[COMPUTER_TYPE][156]['table']='glpi_computersdisks';
 $SEARCH_OPTION[COMPUTER_TYPE][156]['field']='name';
 $SEARCH_OPTION[COMPUTER_TYPE][156]['linkfield']='';
 $SEARCH_OPTION[COMPUTER_TYPE][156]['name']=$LANG['common'][16]." ".$LANG['computers'][0];
 $SEARCH_OPTION[COMPUTER_TYPE][156]['forcegroupby']=true;
 
-$SEARCH_OPTION[COMPUTER_TYPE][150]['table']='glpi_computerdisks';
+$SEARCH_OPTION[COMPUTER_TYPE][150]['table']='glpi_computersdisks';
 $SEARCH_OPTION[COMPUTER_TYPE][150]['field']='totalsize';
 $SEARCH_OPTION[COMPUTER_TYPE][150]['linkfield']='';
 $SEARCH_OPTION[COMPUTER_TYPE][150]['name']=$LANG['computers'][3];
@@ -299,7 +299,7 @@ $SEARCH_OPTION[COMPUTER_TYPE][150]['usehaving']=true;
 $SEARCH_OPTION[COMPUTER_TYPE][150]['datatype']='number';
 $SEARCH_OPTION[COMPUTER_TYPE][150]['width']=1000;
 
-$SEARCH_OPTION[COMPUTER_TYPE][151]['table']='glpi_computerdisks';
+$SEARCH_OPTION[COMPUTER_TYPE][151]['table']='glpi_computersdisks';
 $SEARCH_OPTION[COMPUTER_TYPE][151]['field']='freesize';
 $SEARCH_OPTION[COMPUTER_TYPE][151]['linkfield']='';
 $SEARCH_OPTION[COMPUTER_TYPE][151]['name']=$LANG['computers'][2];
@@ -308,7 +308,7 @@ $SEARCH_OPTION[COMPUTER_TYPE][151]['usehaving']=true;
 $SEARCH_OPTION[COMPUTER_TYPE][151]['datatype']='number';
 $SEARCH_OPTION[COMPUTER_TYPE][151]['width']=1000;
 
-$SEARCH_OPTION[COMPUTER_TYPE][152]['table']='glpi_computerdisks';
+$SEARCH_OPTION[COMPUTER_TYPE][152]['table']='glpi_computersdisks';
 $SEARCH_OPTION[COMPUTER_TYPE][152]['field']='freepercent';
 $SEARCH_OPTION[COMPUTER_TYPE][152]['linkfield']='';
 $SEARCH_OPTION[COMPUTER_TYPE][152]['name']=$LANG['computers'][1];
@@ -320,13 +320,13 @@ $SEARCH_OPTION[COMPUTER_TYPE][152]['computation']="ROUND(100*TABLE.freesize/TABL
 $SEARCH_OPTION[COMPUTER_TYPE][152]['unit']='%';
 
 
-$SEARCH_OPTION[COMPUTER_TYPE][153]['table']='glpi_computerdisks';
+$SEARCH_OPTION[COMPUTER_TYPE][153]['table']='glpi_computersdisks';
 $SEARCH_OPTION[COMPUTER_TYPE][153]['field']='mountpoint';
 $SEARCH_OPTION[COMPUTER_TYPE][153]['linkfield']='';
 $SEARCH_OPTION[COMPUTER_TYPE][153]['name']=$LANG['computers'][5];
 $SEARCH_OPTION[COMPUTER_TYPE][153]['forcegroupby']=true;
 
-$SEARCH_OPTION[COMPUTER_TYPE][154]['table']='glpi_computerdisks';
+$SEARCH_OPTION[COMPUTER_TYPE][154]['table']='glpi_computersdisks';
 $SEARCH_OPTION[COMPUTER_TYPE][154]['field']='device';
 $SEARCH_OPTION[COMPUTER_TYPE][154]['linkfield']='';
 $SEARCH_OPTION[COMPUTER_TYPE][154]['name']=$LANG['computers'][6];

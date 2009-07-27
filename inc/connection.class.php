@@ -70,10 +70,10 @@ class Connection {
 	 */
 	function getComputersContact ($type,$ID) {
 		global $DB;
-		$query = "SELECT glpi_connect_wire.ID as connectID, glpi_connect_wire.end2 as end2, glpi_computers.* 
-			FROM glpi_connect_wire 
-			INNER JOIN glpi_computers ON (glpi_computers.ID = glpi_connect_wire.end2)
-			 WHERE (glpi_connect_wire.end1 = '$ID' AND glpi_connect_wire.type = '$type' 
+		$query = "SELECT glpi_computers_items.ID as connectID, glpi_computers_items.end2 as end2, glpi_computers.* 
+			FROM glpi_computers_items 
+			INNER JOIN glpi_computers ON (glpi_computers.ID = glpi_computers_items.end2)
+			 WHERE (glpi_computers_items.end1 = '$ID' AND glpi_computers_items.type = '$type' 
 				AND glpi_computers.is_template = '0')" .
 				getEntitiesRestrictRequest(" AND", "glpi_computers");
 				
@@ -101,7 +101,7 @@ class Connection {
 
 		global $DB;
 
-		$query = "DELETE FROM glpi_connect_wire WHERE (ID = '$ID')";
+		$query = "DELETE FROM glpi_computers_items WHERE (ID = '$ID')";
 		if ($result = $DB->query($query)) {
 			return true;
 		} else {
@@ -120,7 +120,7 @@ class Connection {
 		global $DB;
 
 		// Build query
-		$query = "INSERT INTO glpi_connect_wire (end1,end2,type) VALUES ('$this->end1','$this->end2','$this->type')";
+		$query = "INSERT INTO glpi_computers_items (end1,end2,type) VALUES ('$this->end1','$this->end2','$this->type')";
 		$result=$DB->query($query);
 		return $DB->insert_id();
 	}

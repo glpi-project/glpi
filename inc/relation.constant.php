@@ -37,16 +37,16 @@ if (!defined('GLPI_ROOT')){
 
 $RELATION=array(
 
-	"glpi_authldaps" => array("glpi_config"=>"extra_ldap_server",
+	"glpi_authldaps" => array("glpi_configs"=>"extra_ldap_server",
 				"glpi_authldapsreplicates"=>"server_id"),
 	"glpi_bookmarks" => array("glpi_display_default"=>"FK_bookmark"),
 
-	"glpi_cartridgesitems" => array("glpi_cartridges"=>"FK_glpi_cartridgesitems",
-				"glpi_cartridges_printersmodels"=>"FK_glpi_cartridgesitems"),
+	"glpi_cartridgesitems" => array("glpi_cartridges"=>"FK_glpi_cartridges_type",
+				"glpi_cartridges_printersmodels"=>"FK_glpi_cartridges_type"),
 
-	"glpi_computers" => array("glpi_computer_device"=>"FK_computers",
-						"glpi_computerdisks"=>"FK_computers",
-						"glpi_connect_wire"=>"end2",
+	"glpi_computers" => array("glpi_computers_devices"=>"FK_computers",
+						"glpi_computersdisks"=>"FK_computers",
+						"glpi_computers_items"=>"end2",
 						"glpi_inst_software"=>"cID",
 						"glpi_softwarelicenses"=>"FK_computers",
 						"glpi_ocs_link"=>"glpi_id",
@@ -82,7 +82,7 @@ $RELATION=array(
 	
 	"glpi_dropdown_enttype" =>array("glpi_enterprises"=>"type"),
 
-	"glpi_dropdown_filesystems" =>array("glpi_computerdisks"=>"FK_filesystems"),
+	"glpi_dropdown_filesystems" =>array("glpi_computersdisks"=>"FK_filesystems"),
 	
 	"glpi_dropdown_firmware" =>array("glpi_networking"=>"firmware"),
 	
@@ -166,11 +166,11 @@ $RELATION=array(
 	
 	"glpi_dropdown_ram_type" =>array("glpi_device_ram"=>"type"),
 	
-	"glpi_dropdown_rubdocs" =>array("glpi_config"=>"default_rubdoc_tracking",
+	"glpi_dropdown_rubdocs" =>array("glpi_configs"=>"default_rubdoc_tracking",
 					"glpi_docs"=>"rubrique"),
 
 	"glpi_dropdown_software_category" =>array("glpi_software"=>"category",
-					"glpi_config"=>"category_on_software_delete",),
+					"glpi_configs"=>"category_on_software_delete",),
 	
 	"glpi_dropdown_state" =>array("glpi_computers"=>"state",
 					"glpi_monitors"=>"state",

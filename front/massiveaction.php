@@ -159,7 +159,7 @@ if (isset($_POST["device_type"])){
 				foreach ($_POST["item"] as $key => $val){
 					if ($val==1) {
 						$query="SELECT * 
-							FROM glpi_connect_wire 
+							FROM glpi_computers_items 
 							WHERE type='".$_POST["device_type"]."' AND end1 = '$key'";
 						$result=$DB->query($query);
 						if ($DB->numrows($result)>0){

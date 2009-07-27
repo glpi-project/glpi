@@ -202,7 +202,7 @@ function showConnections($target,$ID,$withtemplate='') {
 					echo "</tr><tr class='tab_bg_1'>";
 				}
 				echo "<td class='center'>";
-				$query = "SELECT * FROM glpi_connect_wire 
+				$query = "SELECT * FROM glpi_computers_items 
 					WHERE end2='$ID' AND type='".$type."'";
 				if ($result=$DB->query($query)) {
 					$resultnum = $DB->numrows($result);
@@ -295,9 +295,9 @@ function showComputerDisks($ID,$withtemplate='') {
 
 	echo "<div class='center'>";
 
-	$query = "SELECT glpi_dropdown_filesystems.name as fsname, glpi_computerdisks.* 
-		FROM glpi_computerdisks
-		LEFT JOIN glpi_dropdown_filesystems ON (glpi_computerdisks.FK_filesystems = glpi_dropdown_filesystems.ID)
+	$query = "SELECT glpi_dropdown_filesystems.name as fsname, glpi_computersdisks.* 
+		FROM glpi_computersdisks
+		LEFT JOIN glpi_dropdown_filesystems ON (glpi_computersdisks.FK_filesystems = glpi_dropdown_filesystems.ID)
 		WHERE (FK_computers = '$ID')";
 
 	if ($result=$DB->query($query)){
