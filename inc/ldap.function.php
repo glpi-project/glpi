@@ -765,14 +765,14 @@ function formChangeAuthMethodToLDAP($ID)
  */
 function formChangeAuthMethodToMail($ID){
 	global $LANG,$DB;
-	$sql = "SELECT ID FROM glpi_auth_mail";
+	$sql = "SELECT ID FROM glpi_authmails";
 	$result = $DB->query($sql);
 	if ($DB->numrows($result) > 0){
 		echo "<table class='tab_cadre'>";
 		echo "<tr><th colspan='2' colspan='2'>" . $LANG['login'][30]." : ".$LANG['login'][3]."</th></tr>";
 		echo "<tr class='tab_bg_1'><td><input type='hidden' name='ID' value='" . $ID . "'>";
 		echo $LANG['login'][33]."</td><td>";
-		dropdownValue("glpi_auth_mail","id_auth");
+		dropdownValue("glpi_authmails","id_auth");
 		echo "</td>";
 		echo "<tr class='tab_bg_2'><td colspan='2' align='center'><input class=submit type='submit' name='switch_auth_mail' value='" . $LANG['buttons'][2] . "'>";
 		echo "</td></tr></table>";

@@ -521,7 +521,7 @@ function getAuthMethodsByID($auth_method, $id_auth) {
 			break;
 		case AUTH_MAIL :
 			//Get all the pop/imap servers
-			$sql = "SELECT * FROM glpi_auth_mail WHERE ID='".$id_auth."'";
+			$sql = "SELECT * FROM glpi_authmails WHERE ID='".$id_auth."'";
 			break;
 	}
 

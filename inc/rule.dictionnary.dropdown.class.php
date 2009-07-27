@@ -472,17 +472,17 @@ class DictionnaryDropdownCollection extends RuleCachedCollection{
 				} 
 				// Manage cartridge assoc Update items
 				if ($this->sub_type==RULE_DICTIONNARY_MODEL_PRINTER){
-					$sql="SELECT * FROM glpi_cartridges_assoc WHERE FK_glpi_dropdown_model_printers = '$ID'";
+					$sql="SELECT * FROM glpi_cartridges_printersmodels WHERE FK_glpi_dropdown_model_printers = '$ID'";
 					if ($result=$DB->query($sql)){
 						if ($DB->numrows($result)){	
 							// Get compatible cartridge type
 							$carttype=array();
 							while ($data=$DB->fetch_array($result)){
-								$carttype[]=$data['FK_glpi_cartridges_type'];
+								$carttype[]=$data['FK_glpi_cartridgesitems'];
 							}
 							// Delete cartrodges_assoc
 							if ($deletecartmodel){
-								$sql="DELETE FROM glpi_cartridges_assoc 
+								$sql="DELETE FROM glpi_cartridges_printersmodels 
 									WHERE FK_glpi_dropdown_model_printers = 'ID'";
 								$DB->query($sql);
 							}

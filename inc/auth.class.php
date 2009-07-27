@@ -445,7 +445,7 @@ class Identification {
 
 		$auth_methods_mail = array ();
 		//Get all the pop/imap servers
-		$sql = "SELECT * FROM glpi_auth_mail";
+		$sql = "SELECT * FROM glpi_authmails";
 		$result = $DB->query($sql);
 		if ($DB->numrows($result) > 0) {
 
@@ -485,7 +485,7 @@ class AuthMail extends CommonDBTM {
 	 **/
 	function __construct() {
 
-		$this->table = "glpi_auth_mail";
+		$this->table = "glpi_authmails";
 		$this->type = AUTH_MAIL_TYPE;
 	}
 

@@ -54,7 +54,7 @@ if ($_POST["auth_method"] > 0)
 			dropdownValue("glpi_authldaps","auth_server",1);
 		break;
 		case AUTH_MAIL:
-			dropdownValue("glpi_auth_mail","auth_server",1);
+			dropdownValue("glpi_authmails","auth_server",1);
 		break;
 	}
 	echo "<input type=\"submit\" name=\"massiveaction\" class=\"submit\" value=\"".$LANG['buttons'][2]."\" >";

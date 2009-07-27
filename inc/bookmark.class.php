@@ -54,7 +54,7 @@ class Bookmark extends CommonDBTM {
 	 **/
 	function __construct() {
 		global $CFG_GLPI;
-		$this->table = "glpi_bookmark";
+		$this->table = "glpi_bookmarks";
 		$this->entity_assign=true;
 		$this->may_be_recursive=true;
 		$this->may_be_private=true;
