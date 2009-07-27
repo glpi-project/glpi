@@ -180,13 +180,13 @@ class Netdevice extends CommonDBTM {
 
 
 		$job =new Job();
-		$query = "SELECT * FROM glpi_tracking WHERE computer = '$ID'  AND device_type='".NETWORKING_TYPE."'";
+		$query = "SELECT * FROM glpi_tickets WHERE computer = '$ID'  AND device_type='".NETWORKING_TYPE."'";
 		$result = $DB->query($query);
 
 		if ($DB->numrows($result))
 			while ($data=$DB->fetch_array($result)) {
 				if ($CFG_GLPI["keep_tracking_on_delete"]==1){
-					$query = "UPDATE glpi_tracking SET computer = '0', device_type='0' WHERE ID='".$data["ID"]."';";
+					$query = "UPDATE glpi_tickets SET computer = '0', device_type='0' WHERE ID='".$data["ID"]."';";
 					$DB->query($query);
 				} else $job->delete(array("ID"=>$data["ID"]));
 			}
@@ -383,7 +383,7 @@ class Netdevice extends CommonDBTM {
       echo "<table cellpadding='1' cellspacing='0' border='0'>\n";
 
       echo "<tr><td>".$LANG['common'][17].": 	</td><td>\n";
-      dropdownValue("glpi_type_networking", "type", $this->fields["type"]);
+      dropdownValue("glpi_networkequipmentstypes", "type", $this->fields["type"]);
       echo "</td></tr>\n";
 
       echo "<tr><td>".$LANG['common'][22].": 	</td><td>";

@@ -602,7 +602,7 @@ function getNextItem($table,$ID,$condition="",$nextprev_item=""){
 
 	$LEFTJOIN='';
 	if ($table=="glpi_users"){
-		$LEFTJOIN=' LEFT JOIN glpi_users_profiles ON (glpi_users.ID = glpi_users_profiles.FK_users)';
+		$LEFTJOIN=' LEFT JOIN glpi_profiles_users ON (glpi_users.ID = glpi_profiles_users.FK_users)';
 	}	
 
 	$query = "SELECT `$table`.ID 
@@ -630,7 +630,7 @@ function getNextItem($table,$ID,$condition="",$nextprev_item=""){
 	} else if (in_array($table,$CFG_GLPI["specif_entities_tables"])){
 		$query.=getEntitiesRestrictRequest("AND",$table,'','',in_array($table,$CFG_GLPI["recursive_type"]));
 	} else if ($table=="glpi_users"){
-		$query.=getEntitiesRestrictRequest("AND","glpi_users_profiles");
+		$query.=getEntitiesRestrictRequest("AND","glpi_profiles_users");
 	}
 
 	//$query.=" ORDER BY ".$nextprev_item." ASC, ID ASC";
@@ -674,7 +674,7 @@ function getPreviousItem($table,$ID,$condition="",$nextprev_item=""){
 
 	$LEFTJOIN='';
 	if ($table=="glpi_users"){
-		$LEFTJOIN=' LEFT JOIN glpi_users_profiles ON (glpi_users.ID = glpi_users_profiles.FK_users)';
+		$LEFTJOIN=' LEFT JOIN glpi_profiles_users ON (glpi_users.ID = glpi_profiles_users.FK_users)';
 	}	
 
 	$query = "SELECT `$table`.ID 
@@ -704,7 +704,7 @@ function getPreviousItem($table,$ID,$condition="",$nextprev_item=""){
 	} else if (in_array($table,$CFG_GLPI["specif_entities_tables"])){
 		$query.=getEntitiesRestrictRequest("AND",$table,'','',in_array($table,$CFG_GLPI["recursive_type"]));
 	} else if ($table=="glpi_users"){
-		$query.=getEntitiesRestrictRequest("AND","glpi_users_profiles");
+		$query.=getEntitiesRestrictRequest("AND","glpi_profiles_users");
 	}
 
 	$query.=" ORDER BY `$table`.`".$nextprev_item."` DESC, `$table`.ID DESC";

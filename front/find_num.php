@@ -237,7 +237,7 @@ function fillidfield(Type,Id){
 	}
 
 	$query = "SELECT name, ID 
-		FROM glpi_software 
+		FROM glpi_softwares
 		WHERE is_template='0' AND deleted='0' 
 			AND (name LIKE '%".$_POST["NomContact"]."%' )";
 	$result = $DB->query($query);

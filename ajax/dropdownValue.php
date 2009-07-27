@@ -264,8 +264,8 @@ if (!isset($_POST["limit"])) $_POST["limit"]=$_SESSION["glpidropdown_limit"];
       if ($_POST['searchText']!=$CFG_GLPI["ajax_wildcard"]){
          $search=makeTextSearch($_POST['searchText']);
          $where.=" AND  (`".$_POST['table']."`.`$field` ".$search;
-         if ($_POST['table']=="glpi_softwarelicenses"){
-            $where.=" OR `glpi_software`.`name` ".$search;
+         if ($_POST['table']=="glpi_softwares.licenses"){
+            $where.=" OR `glpi_softwares`.`name` ".$search;
          }
          $where.=')';
       }
@@ -277,9 +277,9 @@ if (!isset($_POST["limit"])) $_POST["limit"]=$_SESSION["glpidropdown_limit"];
 					FROM `".$_POST['table']."` 
 					$where";
 			break;
-			case "glpi_softwarelicenses":
-				$query = "SELECT `".$_POST['table']."`.*, CONCAT(glpi_software.name,' - ',glpi_softwarelicenses.name) as $field
-					FROM `".$_POST['table']."` LEFT JOIN glpi_software ON (glpi_softwarelicenses.sID = glpi_software.ID)
+			case "glpi_softwareslicenses":
+				$query = "SELECT `".$_POST['table']."`.*, CONCAT(glpi_softwares.name,' - ',glpi_softwareslicenses.name) as $field
+					FROM `".$_POST['table']."` LEFT JOIN glpi_softwares ON (glpi_softwareslicenses.sID = glpi_softwares.ID)
 					$where";
 
 			break;

@@ -622,12 +622,12 @@ function externalImportDropdown($dpdTable, $value, $FK_entities = -1,$external_p
 		case "glpi_operatingsystems":
 		case "glpi_operatingsystemsservicepacks":
 		case "glpi_operatingsystemsversions":
-		case "glpi_type_computers":
-		case "glpi_type_monitors":
-		case "glpi_type_printers":
-		case "glpi_type_peripherals":		
-		case "glpi_type_phones":		
-		case "glpi_type_networking":		
+		case "glpi_computerstypes":
+		case "glpi_monitorstypes":
+		case "glpi_printerstypes":
+		case "glpi_peripheralstypes":		
+		case "glpi_phonestypes":		
+		case "glpi_networkequipmentstypes":		
 			$process = true;
 		break;
 		case "glpi_computersmodels":
@@ -967,7 +967,7 @@ function listTemplates($type, $target, $add = 0) {
 			break;
 		case SOFTWARE_TYPE :
 			$title = $LANG['Menu'][4];
-			$query = "SELECT * FROM glpi_software WHERE is_template = '1' AND FK_entities='" . $_SESSION["glpiactive_entity"] . "' ORDER by tplname";
+			$query = "SELECT * FROM glpi_softwaresWHERE is_template = '1' AND FK_entities='" . $_SESSION["glpiactive_entity"] . "' ORDER by tplname";
 			break;
 		case PHONE_TYPE :
 			$title = $LANG['Menu'][34];

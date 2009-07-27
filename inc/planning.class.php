@@ -46,7 +46,7 @@ class PlanningTracking extends CommonDBTM {
 	 * Constructor
 	**/
 	function __construct () {
-		$this->table="glpi_tracking_planning";
+		$this->table="glpi_ticketsplannings";
 	}
 
 
@@ -209,7 +209,7 @@ class PlanningTracking extends CommonDBTM {
 		if(isset($this->fields["ID"]))
 			$ID_where=" (ID <> '".$this->fields["ID"]."') AND ";
 
-		$query = "SELECT * FROM glpi_tracking_planning".
+		$query = "SELECT * FROM glpi_ticketsplannings".
 			" WHERE $ID_where (id_assign = '".$this->fields["id_assign"]."') AND ".
 			" ( ('".$this->fields["begin"]."' < begin AND '".$this->fields["end"]."' > begin) ".
 			" OR ('".$this->fields["begin"]."' < end AND '".$this->fields["end"]."' >= end) ".

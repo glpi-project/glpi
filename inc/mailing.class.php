@@ -165,13 +165,13 @@ class Mailing
 			$joinprofile="";
 			// If send private is the user can see private followups ?
 			if ($sendprivate){
-				$join=" INNER JOIN glpi_users_profiles 
-					ON (glpi_users_profiles.FK_users = glpi_users.ID 
-						".getEntitiesRestrictRequest("AND","glpi_users_profiles","FK_entities",$this->job->fields['FK_entities'],true).")
+				$join=" INNER JOIN glpi_profiles_users 
+					ON (glpi_profiles_users.FK_users = glpi_users.ID 
+						".getEntitiesRestrictRequest("AND","glpi_profiles_users","FK_entities",$this->job->fields['FK_entities'],true).")
 					INNER JOIN glpi_profiles 
-					ON (glpi_profiles.ID = glpi_users_profiles.FK_profiles AND glpi_profiles.interface='central' AND glpi_profiles.show_full_ticket = '1') ";
+					ON (glpi_profiles.ID = glpi_profiles_users.FK_profiles AND glpi_profiles.interface='central' AND glpi_profiles.show_full_ticket = '1') ";
 				$joinprofile=	"INNER JOIN glpi_profiles 
-					ON (glpi_profiles.ID = glpi_users_profiles.FK_profiles AND glpi_profiles.interface='central' AND glpi_profiles.show_full_ticket = '1') ";
+					ON (glpi_profiles.ID = glpi_profiles_users.FK_profiles AND glpi_profiles.interface='central' AND glpi_profiles.show_full_ticket = '1') ";
 
 			}
 
@@ -228,9 +228,9 @@ class Mailing
 							case ASSIGN_GROUP_MAILING :
 								if (isset($this->job->fields["assign_group"])&&$this->job->fields["assign_group"]>0){
 									$query="SELECT glpi_users.email AS EMAIL, glpi_users.language AS LANG 
-									FROM glpi_users_groups 
-									INNER JOIN glpi_users ON (glpi_users_groups.FK_users = glpi_users.ID) $join 
-									WHERE glpi_users.deleted=0 AND glpi_users_groups.FK_groups='".$this->job->fields["assign_group"]."'";
+									FROM glpi_groups_users 
+									INNER JOIN glpi_users ON (glpi_groups_users.FK_users = glpi_users.ID) $join 
+									WHERE glpi_users.deleted=0 AND glpi_groups_users.FK_groups='".$this->job->fields["assign_group"]."'";
 				
 									if ($result2= $DB->query($query)){
 										if ($DB->numrows($result2)){
@@ -374,10 +374,10 @@ class Mailing
 						break;
 					case PROFILE_MAILING_TYPE :
 						$query="SELECT DISTINCT glpi_users.email AS EMAIL, glpi_users.language AS LANG 
-						FROM glpi_users_profiles 
-						INNER JOIN glpi_users ON (glpi_users_profiles.FK_users = glpi_users.ID) $joinprofile 
-						WHERE glpi_users.deleted=0 AND glpi_users_profiles.FK_profiles='".$data["FK_item"]."' ".
-						getEntitiesRestrictRequest("AND","glpi_users_profiles","FK_entities",$this->job->fields['FK_entities'],true);
+						FROM glpi_profiles_users 
+						INNER JOIN glpi_users ON (glpi_profiles_users.FK_users = glpi_users.ID) $joinprofile 
+						WHERE glpi_users.deleted=0 AND glpi_profiles_users.FK_profiles='".$data["FK_item"]."' ".
+						getEntitiesRestrictRequest("AND","glpi_profiles_users","FK_entities",$this->job->fields['FK_entities'],true);
 
 						if ($result2= $DB->query($query)){
 							if ($DB->numrows($result2))
@@ -388,9 +388,9 @@ class Mailing
 						break;
 					case GROUP_MAILING_TYPE :
 						$query="SELECT DISTINCT glpi_users.email AS EMAIL, glpi_users.language AS LANG 
-							FROM glpi_users_groups 
-							INNER JOIN glpi_users ON (glpi_users_groups.FK_users = glpi_users.ID) $join 
-							WHERE glpi_users.deleted=0 AND glpi_users_groups.FK_groups='".$data["FK_item"]."'";
+							FROM glpi_groups_users 
+							INNER JOIN glpi_users ON (glpi_groups_users.FK_users = glpi_users.ID) $join 
+							WHERE glpi_users.deleted=0 AND glpi_groups_users.FK_groups='".$data["FK_item"]."'";
 
 						if ($result2= $DB->query($query)){
 							if ($DB->numrows($result2))
@@ -806,10 +806,10 @@ class MailingResa{
 						$ci->getFromDB($ri->fields['device_type'],$ri->fields['id_device']);
 						$FK_entities=$ci->getField('FK_entities');
 						$query="SELECT glpi_users.email AS EMAIL, glpi_users.language as LANG 
-							FROM glpi_users_profiles 
-							INNER JOIN glpi_users ON (glpi_users_profiles.FK_users = glpi_users.ID) 
-							WHERE glpi_users_profiles.FK_profiles='".$data["FK_item"]."' 
-							".getEntitiesRestrictRequest("AND","glpi_users_profiles","FK_entities",$FK_entities,true);
+							FROM glpi_profiles_users 
+							INNER JOIN glpi_users ON (glpi_profiles_users.FK_users = glpi_users.ID) 
+							WHERE glpi_profiles_users.FK_profiles='".$data["FK_item"]."' 
+							".getEntitiesRestrictRequest("AND","glpi_profiles_users","FK_entities",$FK_entities,true);
 						if ($result2= $DB->query($query)){
 							if ($DB->numrows($result2))
 								while ($row=$DB->fetch_assoc($result2)){
@@ -819,9 +819,9 @@ class MailingResa{
 						break;
 					case GROUP_MAILING_TYPE :
 						$query="SELECT glpi_users.email AS EMAIL, glpi_users.language as LANG  
-						FROM glpi_users_groups 
-						INNER JOIN glpi_users ON (glpi_users_groups.FK_users = glpi_users.ID) 
-						WHERE glpi_users_groups.FK_groups='".$data["FK_item"]."'";
+						FROM glpi_groups_users 
+						INNER JOIN glpi_users ON (glpi_groups_users.FK_users = glpi_users.ID) 
+						WHERE glpi_groups_users.FK_groups='".$data["FK_item"]."'";
 						if ($result2= $DB->query($query)){
 							if ($DB->numrows($result2))
 								while ($row=$DB->fetch_assoc($result2)){
@@ -1069,10 +1069,10 @@ class MailingAlert
 						break;
 					case PROFILE_MAILING_TYPE :
 						$query="SELECT glpi_users.email AS EMAIL, glpi_users.language AS LANG 
-							FROM glpi_users_profiles 
-							INNER JOIN glpi_users ON (glpi_users_profiles.FK_users = glpi_users.ID) 
-							WHERE glpi_users_profiles.FK_profiles='".$data["FK_item"]."'
-							".getEntitiesRestrictRequest("AND","glpi_users_profiles","FK_entities",$this->entity,true);
+							FROM glpi_profiles_users 
+							INNER JOIN glpi_users ON (glpi_profiles_users.FK_users = glpi_users.ID) 
+							WHERE glpi_profiles_users.FK_profiles='".$data["FK_item"]."'
+							".getEntitiesRestrictRequest("AND","glpi_profiles_users","FK_entities",$this->entity,true);
 
 						if ($result2= $DB->query($query)){
 							if ($DB->numrows($result2)){
@@ -1086,9 +1086,9 @@ class MailingAlert
 						break;
 					case GROUP_MAILING_TYPE :
 						$query="SELECT glpi_users.email AS EMAIL, glpi_users.language AS LANG 
-							FROM glpi_users_groups 
-							INNER JOIN glpi_users ON (glpi_users_groups.FK_users = glpi_users.ID) 
-							WHERE glpi_users_groups.FK_groups='".$data["FK_item"]."'";
+							FROM glpi_groups_users 
+							INNER JOIN glpi_users ON (glpi_groups_users.FK_users = glpi_users.ID) 
+							WHERE glpi_groups_users.FK_groups='".$data["FK_item"]."'";
 
 						if ($result2= $DB->query($query)){
 							if ($DB->numrows($result2))

@@ -80,7 +80,7 @@ class Profile extends CommonDBTM{
 
 		global $DB,$CFG_GLPI,$LINK_ID_TABLE;
 
-		$query = "DELETE FROM glpi_users_profiles WHERE (FK_profiles = '$ID')";
+		$query = "DELETE FROM glpi_profiles_users WHERE (FK_profiles = '$ID')";
 		$DB->query($query);
 
 	}

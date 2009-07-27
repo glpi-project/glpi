@@ -73,16 +73,16 @@ if (isset($_POST["device_type"])&&isset($_POST["id_field"])&&$_POST["id_field"])
 				dropdownInteger($search["field"],0,0,120);
 				echo " ".$LANG['financial'][57];
 				break;
-			case "glpi_softwarelicenses.number":
+			case "glpi_softwareslicenses.number":
 				dropdownInteger($search["linkfield"],0,1,1000,1,array(-1=>$LANG['software'][4]));
 				break;
 			case "glpi_contracts.alert":
 				dropdownContractAlerting($search["linkfield"],0);
 				break;
-			case "glpi_tracking.status":
+			case "glpi_tickets.status":
 				dropdownStatus($search["linkfield"]);
 				break;
-			case "glpi_tracking.priority":
+			case "glpi_tickets.priority":
 				dropdownPriority($search["linkfield"]);
 				break;
 			default :
@@ -177,7 +177,7 @@ if (isset($_POST["device_type"])&&isset($_POST["id_field"])&&$_POST["id_field"])
 				}
 				break;
 			break;
-			case "glpi_softwareversions":
+			case "glpi_softwaresversions":
 				
 				switch ($search["linkfield"]){
 					case "use_version":

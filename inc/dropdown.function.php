@@ -352,19 +352,19 @@ function dropdownUsersSelect ($count=true, $right="all", $entity_restrict=-1, $v
 		case "interface" :
 			$where=" glpi_profiles.interface='central' ";
 			$joinprofile=true;
-			$where.=getEntitiesRestrictRequest("AND","glpi_users_profiles",'',$entity_restrict,1);
+			$where.=getEntitiesRestrictRequest("AND","glpi_profiles_users",'',$entity_restrict,1);
 		break;
 		case "ID" :
 			$where=" glpi_users.ID='".$_SESSION["glpiID"]."' ";
 		break;
 		case "all" :
 			$where=" glpi_users.ID > '1' ";
-			$where.=getEntitiesRestrictRequest("AND","glpi_users_profiles",'',$entity_restrict,1);
+			$where.=getEntitiesRestrictRequest("AND","glpi_profiles_users",'',$entity_restrict,1);
 		break;
 		default :
 			$joinprofile=true;
 			$where=" ( glpi_profiles.`".$right."`='1' AND glpi_profiles.interface='central' ";
-			$where.=getEntitiesRestrictRequest("AND","glpi_users_profiles",'',$entity_restrict,1);
+			$where.=getEntitiesRestrictRequest("AND","glpi_profiles_users",'',$entity_restrict,1);
 			$where.=" ) ";
 			
 		break;
@@ -397,9 +397,9 @@ function dropdownUsersSelect ($count=true, $right="all", $entity_restrict=-1, $v
 	} else {
 		$query = "SELECT DISTINCT glpi_users.* FROM glpi_users ";
 	}
-	$query.=" LEFT JOIN glpi_users_profiles ON (glpi_users.ID = glpi_users_profiles.FK_users)";
+	$query.=" LEFT JOIN glpi_profiles_users ON (glpi_users.ID = glpi_profiles_users.FK_users)";
 	if ($joinprofile){
-		$query .= " LEFT JOIN glpi_profiles ON (glpi_profiles.ID= glpi_users_profiles.FK_profiles) ";
+		$query .= " LEFT JOIN glpi_profiles ON (glpi_profiles.ID= glpi_profiles_users.FK_profiles) ";
 	}
 
 	if ($count) {
@@ -619,7 +619,7 @@ function getDropdownName($table,$id,$withcomments=0) {
 						case "glpi_netpoints":
 							$name .= " (".getDropdownName("glpi_locations",$data["location"]).")";
 							break;
-						case "glpi_software":
+						case "glpi_softwares":
 							if ($data["platform"]!=0 && $data["helpdesk_visible"] != 0)
 								$comments.="<br>".$LANG['software'][3].": ".getDropdownName("glpi_operatingsystems",$data["platform"]);
 							break;
@@ -678,7 +678,7 @@ function getDropdownArrayNames($table,$ids) {
  *
  * @param $myname the name of the HTML select
  * @param $value the preselected value we want
- * @param $field field of the glpi_tracking table to lookiup for possible users
+ * @param $field field of the glpi_tickets table to lookiup for possible users
  * @param $display_comments display the comments near the dropdown
  * @return nothing (print out an HTML select box)
  */
@@ -692,7 +692,7 @@ function dropdownUsersTracking($myname,$value,$field,$display_comments=1) {
 		if ($CFG_GLPI["ajax_limit_count"]==0){
 			$use_ajax=true;
 		} else {
-			$query="SELECT COUNT(`".$field."`) FROM glpi_tracking ".getEntitiesRestrictRequest("WHERE","glpi_tracking");
+			$query="SELECT COUNT(`".$field."`) FROM glpi_tickets ".getEntitiesRestrictRequest("WHERE","glpi_tickets");
 			$result=$DB->query($query);
 			$nb=$DB->result($result,0,0);
 			if ($nb>$CFG_GLPI["ajax_limit_count"]){
@@ -990,10 +990,10 @@ function dropdownMyDevices($userID=0,$entity_restrict=-1){
 		if (haveRight("show_group_hardware","1")){
 			$group_where="";
 			$groups=array();
-			$query="SELECT glpi_users_groups.FK_groups, glpi_groups.name 
-				FROM glpi_users_groups 
-				LEFT JOIN glpi_groups ON (glpi_groups.ID = glpi_users_groups.FK_groups) 
-				WHERE glpi_users_groups.FK_users='".$userID."' ";
+			$query="SELECT glpi_groups_users.FK_groups, glpi_groups.name 
+				FROM glpi_groups_users 
+				LEFT JOIN glpi_groups ON (glpi_groups.ID = glpi_groups_users.FK_groups) 
+				WHERE glpi_groups_users.FK_users='".$userID."' ";
 			$query.=getEntitiesRestrictRequest("AND","glpi_groups","",$entity_restrict);
 			$result=$DB->query($query);
 			$first=true;
@@ -1104,11 +1104,11 @@ function dropdownMyDevices($userID=0,$entity_restrict=-1){
 				
 			// Software
 			if ($_SESSION["glpiactiveprofile"]["helpdesk_hardware_type"]&pow(2,SOFTWARE_TYPE)){
-				$query = "SELECT DISTINCT glpi_softwareversions.name as version, glpi_software.name as name, 
-					glpi_software.ID as ID FROM glpi_computers_softwareversions, glpi_software,glpi_softwareversions ";
-				$query.= "WHERE glpi_computers_softwareversions.vID = glpi_softwareversions.ID AND glpi_softwareversions.sID = glpi_software.ID AND ".str_replace("XXXX","glpi_computers_softwareversions.cID",$search_computer)." AND  glpi_software.helpdesk_visible=1 ";
-				$query.=getEntitiesRestrictRequest("AND","glpi_software","",$entity_restrict);
-				$query.=" ORDER BY glpi_software.name";
+				$query = "SELECT DISTINCT glpi_softwaresversions.name as version, glpi_softwares.name as name, 
+					glpi_softwares.ID as ID FROM glpi_computers_softwaresversions, glpi_softwares, glpi_softwaresversions ";
+				$query.= "WHERE glpi_computers_softwaresversions.vID = glpi_softwaresversions.ID AND glpi_softwaresversions.sID = glpi_softwares.ID AND ".str_replace("XXXX","glpi_computers_softwaresversions.cID",$search_computer)." AND  glpi_softwares.helpdesk_visible=1 ";
+				$query.=getEntitiesRestrictRequest("AND","glpi_softwares","",$entity_restrict);
+				$query.=" ORDER BY glpi_softwares.name";
 
 				$result=$DB->query($query);
 				if ($DB->numrows($result)>0){
@@ -1379,7 +1379,7 @@ function dropdownSoftwareToInstall($myname,$entity_restrict,$massiveaction=0) {
 	$use_ajax=false;
 
 	if ($CFG_GLPI["use_ajax"]){
-		if(countElementsInTableForEntity("glpi_software",$entity_restrict)>$CFG_GLPI["ajax_limit_count"]){
+		if(countElementsInTableForEntity("glpi_softwares",$entity_restrict)>$CFG_GLPI["ajax_limit_count"]){
 			$use_ajax=true;
 		}
 	}

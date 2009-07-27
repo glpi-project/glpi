@@ -82,7 +82,7 @@ $SEARCH_OPTION[COMPUTER_TYPE][3]['field']='completename';
 $SEARCH_OPTION[COMPUTER_TYPE][3]['linkfield']='location';
 $SEARCH_OPTION[COMPUTER_TYPE][3]['name']=$LANG['common'][15];
 
-$SEARCH_OPTION[COMPUTER_TYPE][4]['table']='glpi_type_computers';
+$SEARCH_OPTION[COMPUTER_TYPE][4]['table']='glpi_computerstypes';
 $SEARCH_OPTION[COMPUTER_TYPE][4]['field']='name';
 $SEARCH_OPTION[COMPUTER_TYPE][4]['linkfield']='type';
 $SEARCH_OPTION[COMPUTER_TYPE][4]['name']=$LANG['common'][17];
@@ -378,7 +378,7 @@ $SEARCH_OPTION[COMPUTER_TYPE][22]['forcegroupby']=true;
 
 $SEARCH_OPTION[COMPUTER_TYPE]['tracking']=$LANG['title'][24];
 
-$SEARCH_OPTION[COMPUTER_TYPE][60]['table']='glpi_tracking';
+$SEARCH_OPTION[COMPUTER_TYPE][60]['table']='glpi_tickets';
 $SEARCH_OPTION[COMPUTER_TYPE][60]['field']='count';
 $SEARCH_OPTION[COMPUTER_TYPE][60]['linkfield']='';
 $SEARCH_OPTION[COMPUTER_TYPE][60]['name']=$LANG['stats'][13];
@@ -626,7 +626,7 @@ $SEARCH_OPTION[NETWORKING_TYPE][3]['field']='completename';
 $SEARCH_OPTION[NETWORKING_TYPE][3]['linkfield']='location';
 $SEARCH_OPTION[NETWORKING_TYPE][3]['name']=$LANG['common'][15];
 
-$SEARCH_OPTION[NETWORKING_TYPE][4]['table']='glpi_type_networking';
+$SEARCH_OPTION[NETWORKING_TYPE][4]['table']='glpi_networkequipmentstypes';
 $SEARCH_OPTION[NETWORKING_TYPE][4]['field']='name';
 $SEARCH_OPTION[NETWORKING_TYPE][4]['linkfield']='type';
 $SEARCH_OPTION[NETWORKING_TYPE][4]['name']=$LANG['common'][17];
@@ -781,7 +781,7 @@ $SEARCH_OPTION[NETWORKING_TYPE][22]['forcegroupby']=true;
 
 $SEARCH_OPTION[NETWORKING_TYPE]['tracking']=$LANG['title'][24];
 
-$SEARCH_OPTION[NETWORKING_TYPE][60]['table']='glpi_tracking';
+$SEARCH_OPTION[NETWORKING_TYPE][60]['table']='glpi_tickets';
 $SEARCH_OPTION[NETWORKING_TYPE][60]['field']='count';
 $SEARCH_OPTION[NETWORKING_TYPE][60]['linkfield']='';
 $SEARCH_OPTION[NETWORKING_TYPE][60]['name']=$LANG['stats'][13];
@@ -989,7 +989,7 @@ $SEARCH_OPTION[PRINTER_TYPE][3]['field']='completename';
 $SEARCH_OPTION[PRINTER_TYPE][3]['linkfield']='location';
 $SEARCH_OPTION[PRINTER_TYPE][3]['name']=$LANG['common'][15];
 
-$SEARCH_OPTION[PRINTER_TYPE][4]['table']='glpi_type_printers';
+$SEARCH_OPTION[PRINTER_TYPE][4]['table']='glpi_printerstypes';
 $SEARCH_OPTION[PRINTER_TYPE][4]['field']='name';
 $SEARCH_OPTION[PRINTER_TYPE][4]['linkfield']='type';
 $SEARCH_OPTION[PRINTER_TYPE][4]['name']=$LANG['common'][17];
@@ -1122,7 +1122,7 @@ $SEARCH_OPTION[PRINTER_TYPE][22]['forcegroupby']=true;
 
 $SEARCH_OPTION[PRINTER_TYPE]['tracking']=$LANG['title'][24];
 
-$SEARCH_OPTION[PRINTER_TYPE][60]['table']='glpi_tracking';
+$SEARCH_OPTION[PRINTER_TYPE][60]['table']='glpi_tickets';
 $SEARCH_OPTION[PRINTER_TYPE][60]['field']='count';
 $SEARCH_OPTION[PRINTER_TYPE][60]['linkfield']='';
 $SEARCH_OPTION[PRINTER_TYPE][60]['name']=$LANG['stats'][13];
@@ -1327,7 +1327,7 @@ $SEARCH_OPTION[MONITOR_TYPE][3]['field']='completename';
 $SEARCH_OPTION[MONITOR_TYPE][3]['linkfield']='location';
 $SEARCH_OPTION[MONITOR_TYPE][3]['name']=$LANG['common'][15];
 
-$SEARCH_OPTION[MONITOR_TYPE][4]['table']='glpi_type_monitors';
+$SEARCH_OPTION[MONITOR_TYPE][4]['table']='glpi_monitorstypes';
 $SEARCH_OPTION[MONITOR_TYPE][4]['field']='name';
 $SEARCH_OPTION[MONITOR_TYPE][4]['linkfield']='type';
 $SEARCH_OPTION[MONITOR_TYPE][4]['name']=$LANG['common'][17];
@@ -1449,7 +1449,7 @@ $SEARCH_OPTION[MONITOR_TYPE][80]['name']=$LANG['entity'][0];
 
 $SEARCH_OPTION[MONITOR_TYPE]['tracking']=$LANG['title'][24];
 
-$SEARCH_OPTION[MONITOR_TYPE][60]['table']='glpi_tracking';
+$SEARCH_OPTION[MONITOR_TYPE][60]['table']='glpi_tickets';
 $SEARCH_OPTION[MONITOR_TYPE][60]['field']='count';
 $SEARCH_OPTION[MONITOR_TYPE][60]['linkfield']='';
 $SEARCH_OPTION[MONITOR_TYPE][60]['name']=$LANG['stats'][13];
@@ -1654,7 +1654,7 @@ $SEARCH_OPTION[PERIPHERAL_TYPE][3]['field']='completename';
 $SEARCH_OPTION[PERIPHERAL_TYPE][3]['linkfield']='location';
 $SEARCH_OPTION[PERIPHERAL_TYPE][3]['name']=$LANG['common'][15];
 
-$SEARCH_OPTION[PERIPHERAL_TYPE][4]['table']='glpi_type_peripherals';
+$SEARCH_OPTION[PERIPHERAL_TYPE][4]['table']='glpi_peripheralstypes';
 $SEARCH_OPTION[PERIPHERAL_TYPE][4]['field']='name';
 $SEARCH_OPTION[PERIPHERAL_TYPE][4]['linkfield']='type';
 $SEARCH_OPTION[PERIPHERAL_TYPE][4]['name']=$LANG['common'][17];
@@ -1776,7 +1776,7 @@ $SEARCH_OPTION[PERIPHERAL_TYPE][22]['forcegroupby']=true;
 
 $SEARCH_OPTION[PERIPHERAL_TYPE]['tracking']=$LANG['title'][24];
 
-$SEARCH_OPTION[PERIPHERAL_TYPE][60]['table']='glpi_tracking';
+$SEARCH_OPTION[PERIPHERAL_TYPE][60]['table']='glpi_tickets';
 $SEARCH_OPTION[PERIPHERAL_TYPE][60]['field']='count';
 $SEARCH_OPTION[PERIPHERAL_TYPE][60]['linkfield']='';
 $SEARCH_OPTION[PERIPHERAL_TYPE][60]['name']=$LANG['stats'][13];
@@ -1964,14 +1964,14 @@ $SEARCH_OPTION[PERIPHERAL_TYPE][122]['datatype']='text';
 
 $SEARCH_OPTION[SOFTWARE_TYPE]['common']=$LANG['common'][32];
 
-$SEARCH_OPTION[SOFTWARE_TYPE][1]['table']='glpi_software';
+$SEARCH_OPTION[SOFTWARE_TYPE][1]['table']='glpi_softwares';
 $SEARCH_OPTION[SOFTWARE_TYPE][1]['field']='name';
 $SEARCH_OPTION[SOFTWARE_TYPE][1]['linkfield']='name';
 $SEARCH_OPTION[SOFTWARE_TYPE][1]['name']=$LANG['common'][16];
 $SEARCH_OPTION[SOFTWARE_TYPE][1]['datatype']='itemlink';
 $SEARCH_OPTION[SOFTWARE_TYPE][1]['itemlink_type']=SOFTWARE_TYPE;
 
-$SEARCH_OPTION[SOFTWARE_TYPE][2]['table']='glpi_software';
+$SEARCH_OPTION[SOFTWARE_TYPE][2]['table']='glpi_softwares';
 $SEARCH_OPTION[SOFTWARE_TYPE][2]['field']='ID';
 $SEARCH_OPTION[SOFTWARE_TYPE][2]['linkfield']='';
 $SEARCH_OPTION[SOFTWARE_TYPE][2]['name']=$LANG['common'][2];
@@ -1991,24 +1991,24 @@ $SEARCH_OPTION[SOFTWARE_TYPE][4]['field']='name';
 $SEARCH_OPTION[SOFTWARE_TYPE][4]['linkfield']='platform';
 $SEARCH_OPTION[SOFTWARE_TYPE][4]['name']=$LANG['software'][3];
 /*
-$SEARCH_OPTION[SOFTWARE_TYPE][5]['table']='glpi_softwareversions';
+$SEARCH_OPTION[SOFTWARE_TYPE][5]['table']='glpi_softwaresversions';
 $SEARCH_OPTION[SOFTWARE_TYPE][5]['field']='name';
 $SEARCH_OPTION[SOFTWARE_TYPE][5]['linkfield']='';
 $SEARCH_OPTION[SOFTWARE_TYPE][5]['name']=$LANG['software'][5];
 $SEARCH_OPTION[SOFTWARE_TYPE][5]['forcegroupby']=true;
 */
-$SEARCH_OPTION[SOFTWARE_TYPE][7]['table']='glpi_softwarelicenses';
+$SEARCH_OPTION[SOFTWARE_TYPE][7]['table']='glpi_softwareslicenses';
 $SEARCH_OPTION[SOFTWARE_TYPE][7]['field']='name';
 $SEARCH_OPTION[SOFTWARE_TYPE][7]['linkfield']='';
 $SEARCH_OPTION[SOFTWARE_TYPE][7]['name']=$LANG['common'][19];
 
-$SEARCH_OPTION[SOFTWARE_TYPE][6]['table']='glpi_software';
+$SEARCH_OPTION[SOFTWARE_TYPE][6]['table']='glpi_softwares';
 $SEARCH_OPTION[SOFTWARE_TYPE][6]['field']='comments';
 $SEARCH_OPTION[SOFTWARE_TYPE][6]['linkfield']='comments';
 $SEARCH_OPTION[SOFTWARE_TYPE][6]['name']=$LANG['common'][25];
 $SEARCH_OPTION[SOFTWARE_TYPE][6]['datatype']='text';
 
-$SEARCH_OPTION[SOFTWARE_TYPE][90]['table']='glpi_software';
+$SEARCH_OPTION[SOFTWARE_TYPE][90]['table']='glpi_softwares';
 $SEARCH_OPTION[SOFTWARE_TYPE][90]['field']='notes';
 $SEARCH_OPTION[SOFTWARE_TYPE][90]['linkfield']='';
 $SEARCH_OPTION[SOFTWARE_TYPE][90]['name']=$LANG['title'][37];
@@ -2018,7 +2018,7 @@ $SEARCH_OPTION[SOFTWARE_TYPE][62]['field']='name';
 $SEARCH_OPTION[SOFTWARE_TYPE][62]['linkfield']='category';
 $SEARCH_OPTION[SOFTWARE_TYPE][62]['name']=$LANG['common'][36];
 
-$SEARCH_OPTION[SOFTWARE_TYPE][9]['table']='glpi_software';
+$SEARCH_OPTION[SOFTWARE_TYPE][9]['table']='glpi_softwares';
 $SEARCH_OPTION[SOFTWARE_TYPE][9]['field']='date_mod';
 $SEARCH_OPTION[SOFTWARE_TYPE][9]['linkfield']='';
 $SEARCH_OPTION[SOFTWARE_TYPE][9]['name']=$LANG['common'][26];
@@ -2044,7 +2044,7 @@ $SEARCH_OPTION[SOFTWARE_TYPE][71]['field']='name';
 $SEARCH_OPTION[SOFTWARE_TYPE][71]['linkfield']='FK_groups';
 $SEARCH_OPTION[SOFTWARE_TYPE][71]['name']=$LANG['common'][35];
 
-$SEARCH_OPTION[SOFTWARE_TYPE][61]['table']='glpi_software';
+$SEARCH_OPTION[SOFTWARE_TYPE][61]['table']='glpi_softwares';
 $SEARCH_OPTION[SOFTWARE_TYPE][61]['field']='helpdesk_visible';
 $SEARCH_OPTION[SOFTWARE_TYPE][61]['linkfield']='helpdesk_visible';
 $SEARCH_OPTION[SOFTWARE_TYPE][61]['name']=$LANG['software'][46];
@@ -2055,7 +2055,7 @@ $SEARCH_OPTION[SOFTWARE_TYPE][80]['field']='completename';
 $SEARCH_OPTION[SOFTWARE_TYPE][80]['linkfield']='FK_entities';
 $SEARCH_OPTION[SOFTWARE_TYPE][80]['name']=$LANG['entity'][0];
 
-$SEARCH_OPTION[SOFTWARE_TYPE][72]['table']='glpi_computers_softwareversions';
+$SEARCH_OPTION[SOFTWARE_TYPE][72]['table']='glpi_computers_softwaresversions';
 $SEARCH_OPTION[SOFTWARE_TYPE][72]['field']='count';
 $SEARCH_OPTION[SOFTWARE_TYPE][72]['linkfield']='';
 $SEARCH_OPTION[SOFTWARE_TYPE][72]['name']=$LANG['tracking'][29]." - ".$LANG['software'][19];
@@ -2066,7 +2066,7 @@ $SEARCH_OPTION[SOFTWARE_TYPE][72]['datatype']='number';
 
 $SEARCH_OPTION[SOFTWARE_TYPE]['versions']=$LANG['software'][5];
 
-$SEARCH_OPTION[SOFTWARE_TYPE][5]['table']='glpi_softwareversions';
+$SEARCH_OPTION[SOFTWARE_TYPE][5]['table']='glpi_softwaresversions';
 $SEARCH_OPTION[SOFTWARE_TYPE][5]['field']='name';
 $SEARCH_OPTION[SOFTWARE_TYPE][5]['linkfield']='';
 $SEARCH_OPTION[SOFTWARE_TYPE][5]['name']=$LANG['common'][16]." - ".$LANG['software'][5];
@@ -2078,7 +2078,7 @@ $SEARCH_OPTION[SOFTWARE_TYPE][31]['linkfield']='';
 $SEARCH_OPTION[SOFTWARE_TYPE][31]['name']=$LANG['state'][0];
 $SEARCH_OPTION[SOFTWARE_TYPE][31]['forcegroupby']=true;
 
-$SEARCH_OPTION[SOFTWARE_TYPE][170]['table']='glpi_softwareversions'; 
+$SEARCH_OPTION[SOFTWARE_TYPE][170]['table']='glpi_softwaresversions'; 
 $SEARCH_OPTION[SOFTWARE_TYPE][170]['field']='comments';
 $SEARCH_OPTION[SOFTWARE_TYPE][170]['linkfield']=''; 
 $SEARCH_OPTION[SOFTWARE_TYPE][170]['name']=$LANG['common'][25]." - ".$LANG['software'][5]; 
@@ -2087,25 +2087,25 @@ $SEARCH_OPTION[SOFTWARE_TYPE][170]['datatype']='text';
 
 $SEARCH_OPTION[SOFTWARE_TYPE]['license']=$LANG['software'][11];
 
-$SEARCH_OPTION[SOFTWARE_TYPE][160]['table']='glpi_softwarelicenses'; 
+$SEARCH_OPTION[SOFTWARE_TYPE][160]['table']='glpi_softwareslicenses'; 
 $SEARCH_OPTION[SOFTWARE_TYPE][160]['field']='name'; 
 $SEARCH_OPTION[SOFTWARE_TYPE][160]['linkfield']=''; 
 $SEARCH_OPTION[SOFTWARE_TYPE][160]['name']=$LANG['common'][16]." - ".$LANG['software'][11]; 
 $SEARCH_OPTION[SOFTWARE_TYPE][160]['forcegroupby']=true;
 
-$SEARCH_OPTION[SOFTWARE_TYPE][161]['table']='glpi_softwarelicenses';
+$SEARCH_OPTION[SOFTWARE_TYPE][161]['table']='glpi_softwareslicenses';
 $SEARCH_OPTION[SOFTWARE_TYPE][161]['field']='serial';
 $SEARCH_OPTION[SOFTWARE_TYPE][161]['linkfield']='';
 $SEARCH_OPTION[SOFTWARE_TYPE][161]['name']=$LANG['common'][19];
 $SEARCH_OPTION[SOFTWARE_TYPE][161]['forcegroupby']=true;
 
-$SEARCH_OPTION[SOFTWARE_TYPE][162]['table']='glpi_softwarelicenses';
+$SEARCH_OPTION[SOFTWARE_TYPE][162]['table']='glpi_softwareslicenses';
 $SEARCH_OPTION[SOFTWARE_TYPE][162]['field']='otherserial';
 $SEARCH_OPTION[SOFTWARE_TYPE][162]['linkfield']='';
 $SEARCH_OPTION[SOFTWARE_TYPE][162]['name']=$LANG['common'][20];
 $SEARCH_OPTION[SOFTWARE_TYPE][162]['forcegroupby']=true;
 
-$SEARCH_OPTION[SOFTWARE_TYPE][163]['table']='glpi_softwarelicenses';
+$SEARCH_OPTION[SOFTWARE_TYPE][163]['table']='glpi_softwareslicenses';
 $SEARCH_OPTION[SOFTWARE_TYPE][163]['field']='number';
 $SEARCH_OPTION[SOFTWARE_TYPE][163]['linkfield']='';
 $SEARCH_OPTION[SOFTWARE_TYPE][163]['name']=$LANG['tracking'][29]." - ".$LANG['software'][11];
@@ -2113,20 +2113,20 @@ $SEARCH_OPTION[SOFTWARE_TYPE][163]['forcegroupby']=true;
 $SEARCH_OPTION[SOFTWARE_TYPE][163]['usehaving']=true;
 $SEARCH_OPTION[SOFTWARE_TYPE][163]['datatype']='number';
 
-$SEARCH_OPTION[SOFTWARE_TYPE][164]['table']='glpi_softwarelicensestypes';
+$SEARCH_OPTION[SOFTWARE_TYPE][164]['table']='glpi_softwareslicensestypes';
 $SEARCH_OPTION[SOFTWARE_TYPE][164]['field']='name';
 $SEARCH_OPTION[SOFTWARE_TYPE][164]['linkfield']='';
 $SEARCH_OPTION[SOFTWARE_TYPE][164]['name']=$LANG['software'][30];
 $SEARCH_OPTION[SOFTWARE_TYPE][164]['forcegroupby']=true;
 
-$SEARCH_OPTION[SOFTWARE_TYPE][165]['table']='glpi_softwarelicenses';
+$SEARCH_OPTION[SOFTWARE_TYPE][165]['table']='glpi_softwareslicenses';
 $SEARCH_OPTION[SOFTWARE_TYPE][165]['field']='comments';
 $SEARCH_OPTION[SOFTWARE_TYPE][165]['linkfield']='';
 $SEARCH_OPTION[SOFTWARE_TYPE][165]['name']=$LANG['common'][25]." - ".$LANG['software'][11];
 $SEARCH_OPTION[SOFTWARE_TYPE][165]['forcegroupby']=true;
 $SEARCH_OPTION[SOFTWARE_TYPE][165]['datatype']='text';
 
-$SEARCH_OPTION[SOFTWARE_TYPE][166]['table']='glpi_softwarelicenses';
+$SEARCH_OPTION[SOFTWARE_TYPE][166]['table']='glpi_softwareslicenses';
 $SEARCH_OPTION[SOFTWARE_TYPE][166]['field']='expire';
 $SEARCH_OPTION[SOFTWARE_TYPE][166]['linkfield']='';
 $SEARCH_OPTION[SOFTWARE_TYPE][166]['name']=$LANG['software'][32];
@@ -2135,7 +2135,7 @@ $SEARCH_OPTION[SOFTWARE_TYPE][166]['datatype']='date';
 
 $SEARCH_OPTION[SOFTWARE_TYPE]['tracking']=$LANG['title'][24];
 
-$SEARCH_OPTION[SOFTWARE_TYPE][60]['table']='glpi_tracking';
+$SEARCH_OPTION[SOFTWARE_TYPE][60]['table']='glpi_tickets';
 $SEARCH_OPTION[SOFTWARE_TYPE][60]['field']='count';
 $SEARCH_OPTION[SOFTWARE_TYPE][60]['linkfield']='';
 $SEARCH_OPTION[SOFTWARE_TYPE][60]['name']=$LANG['stats'][13];
@@ -2324,43 +2324,43 @@ $SEARCH_OPTION[SOFTWARE_TYPE][122]['datatype']='text';
 
 // Only use for History (not by search Engine)
 
-$SEARCH_OPTION[SOFTWARELICENSE_TYPE][2]['table']='glpi_softwarelicenses'; 
+$SEARCH_OPTION[SOFTWARELICENSE_TYPE][2]['table']='glpi_softwareslicenses'; 
 $SEARCH_OPTION[SOFTWARELICENSE_TYPE][2]['field']='name'; 
 $SEARCH_OPTION[SOFTWARELICENSE_TYPE][2]['linkfield']='name'; 
 $SEARCH_OPTION[SOFTWARELICENSE_TYPE][2]['name']=$LANG['common'][16]; 
 
-$SEARCH_OPTION[SOFTWARELICENSE_TYPE][3]['table']='glpi_softwarelicenses'; 
+$SEARCH_OPTION[SOFTWARELICENSE_TYPE][3]['table']='glpi_softwareslicenses'; 
 $SEARCH_OPTION[SOFTWARELICENSE_TYPE][3]['field']='serial'; 
 $SEARCH_OPTION[SOFTWARELICENSE_TYPE][3]['linkfield']='serial'; 
 $SEARCH_OPTION[SOFTWARELICENSE_TYPE][3]['name']=$LANG['common'][19]; 
 
-$SEARCH_OPTION[SOFTWARELICENSE_TYPE][162]['table']='glpi_softwarelicenses'; 
+$SEARCH_OPTION[SOFTWARELICENSE_TYPE][162]['table']='glpi_softwareslicenses'; 
 $SEARCH_OPTION[SOFTWARELICENSE_TYPE][162]['field']='otherserial'; 
 $SEARCH_OPTION[SOFTWARELICENSE_TYPE][162]['linkfield']=''; 
 $SEARCH_OPTION[SOFTWARELICENSE_TYPE][162]['name']=$LANG['common'][20]; 
 
-$SEARCH_OPTION[SOFTWARELICENSE_TYPE][4]['table']='glpi_softwarelicenses'; 
+$SEARCH_OPTION[SOFTWARELICENSE_TYPE][4]['table']='glpi_softwareslicenses'; 
 $SEARCH_OPTION[SOFTWARELICENSE_TYPE][4]['field']='number'; 
 $SEARCH_OPTION[SOFTWARELICENSE_TYPE][4]['linkfield']='number'; 
 $SEARCH_OPTION[SOFTWARELICENSE_TYPE][4]['name']=$LANG['tracking'][29];
 $SEARCH_OPTION[SOFTWARELICENSE_TYPE][4]['datatype']='number'; 
 
-$SEARCH_OPTION[SOFTWARELICENSE_TYPE][5]['table']='glpi_softwarelicensestypes'; 
+$SEARCH_OPTION[SOFTWARELICENSE_TYPE][5]['table']='glpi_softwareslicensestypes'; 
 $SEARCH_OPTION[SOFTWARELICENSE_TYPE][5]['field']='name'; 
 $SEARCH_OPTION[SOFTWARELICENSE_TYPE][5]['linkfield']='type'; 
 $SEARCH_OPTION[SOFTWARELICENSE_TYPE][5]['name']=$LANG['common'][17]; 
 
-$SEARCH_OPTION[SOFTWARELICENSE_TYPE][6]['table']='glpi_softwareversions'; 
+$SEARCH_OPTION[SOFTWARELICENSE_TYPE][6]['table']='glpi_softwaresversions'; 
 $SEARCH_OPTION[SOFTWARELICENSE_TYPE][6]['field']='name'; 
 $SEARCH_OPTION[SOFTWARELICENSE_TYPE][6]['linkfield']='buy_version'; 
 $SEARCH_OPTION[SOFTWARELICENSE_TYPE][6]['name']=$LANG['software'][1]; 
 
-$SEARCH_OPTION[SOFTWARELICENSE_TYPE][7]['table']='glpi_softwareversions'; 
+$SEARCH_OPTION[SOFTWARELICENSE_TYPE][7]['table']='glpi_softwaresversions'; 
 $SEARCH_OPTION[SOFTWARELICENSE_TYPE][7]['field']='name'; 
 $SEARCH_OPTION[SOFTWARELICENSE_TYPE][7]['linkfield']='use_version'; 
 $SEARCH_OPTION[SOFTWARELICENSE_TYPE][7]['name']=$LANG['software'][2]; 
 
-$SEARCH_OPTION[SOFTWARELICENSE_TYPE][8]['table']='glpi_softwarelicenses'; 
+$SEARCH_OPTION[SOFTWARELICENSE_TYPE][8]['table']='glpi_softwareslicenses'; 
 $SEARCH_OPTION[SOFTWARELICENSE_TYPE][8]['field']='expire'; 
 $SEARCH_OPTION[SOFTWARELICENSE_TYPE][8]['linkfield']='expire'; 
 $SEARCH_OPTION[SOFTWARELICENSE_TYPE][8]['name']=$LANG['software'][32]; 
@@ -2371,7 +2371,7 @@ $SEARCH_OPTION[SOFTWARELICENSE_TYPE][9]['field']='name';
 $SEARCH_OPTION[SOFTWARELICENSE_TYPE][9]['linkfield']='FK_computers'; 
 $SEARCH_OPTION[SOFTWARELICENSE_TYPE][9]['name']=$LANG['software'][50]; 
 
-$SEARCH_OPTION[SOFTWARELICENSE_TYPE][16]['table']='glpi_softwarelicenses';
+$SEARCH_OPTION[SOFTWARELICENSE_TYPE][16]['table']='glpi_softwareslicenses';
 $SEARCH_OPTION[SOFTWARELICENSE_TYPE][16]['field']='comments';
 $SEARCH_OPTION[SOFTWARELICENSE_TYPE][16]['linkfield']='comments';
 $SEARCH_OPTION[SOFTWARELICENSE_TYPE][16]['name']=$LANG['common'][25];
@@ -2487,12 +2487,12 @@ $SEARCH_OPTION[SOFTWARELICENSE_TYPE][122]['datatype']='text';
 
 // Only use for History (not by search Engine)
 
-$SEARCH_OPTION[SOFTWAREVERSION_TYPE][2]['table']='glpi_softwareversions'; 
+$SEARCH_OPTION[SOFTWAREVERSION_TYPE][2]['table']='glpi_softwaresversions'; 
 $SEARCH_OPTION[SOFTWAREVERSION_TYPE][2]['field']='name'; 
 $SEARCH_OPTION[SOFTWAREVERSION_TYPE][2]['linkfield']='name'; 
 $SEARCH_OPTION[SOFTWAREVERSION_TYPE][2]['name']=$LANG['common'][16]; 
 
-$SEARCH_OPTION[SOFTWAREVERSION_TYPE][16]['table']='glpi_softwareversions';
+$SEARCH_OPTION[SOFTWAREVERSION_TYPE][16]['table']='glpi_softwaresversions';
 $SEARCH_OPTION[SOFTWAREVERSION_TYPE][16]['field']='comments';
 $SEARCH_OPTION[SOFTWAREVERSION_TYPE][16]['linkfield']='comments';
 $SEARCH_OPTION[SOFTWAREVERSION_TYPE][16]['name']=$LANG['common'][25];
@@ -3220,7 +3220,7 @@ $SEARCH_OPTION[PHONE_TYPE][3]['field']='completename';
 $SEARCH_OPTION[PHONE_TYPE][3]['linkfield']='location';
 $SEARCH_OPTION[PHONE_TYPE][3]['name']=$LANG['common'][15];
 
-$SEARCH_OPTION[PHONE_TYPE][4]['table']='glpi_type_phones';
+$SEARCH_OPTION[PHONE_TYPE][4]['table']='glpi_phonestypes';
 $SEARCH_OPTION[PHONE_TYPE][4]['field']='name';
 $SEARCH_OPTION[PHONE_TYPE][4]['linkfield']='type';
 $SEARCH_OPTION[PHONE_TYPE][4]['name']=$LANG['common'][17];
@@ -3309,7 +3309,7 @@ $SEARCH_OPTION[PHONE_TYPE][80]['name']=$LANG['entity'][0];
 
 $SEARCH_OPTION[PHONE_TYPE]['tracking']=$LANG['title'][24];
 
-$SEARCH_OPTION[PHONE_TYPE][60]['table']='glpi_tracking';
+$SEARCH_OPTION[PHONE_TYPE][60]['table']='glpi_tickets';
 $SEARCH_OPTION[PHONE_TYPE][60]['field']='count';
 $SEARCH_OPTION[PHONE_TYPE][60]['linkfield']='';
 $SEARCH_OPTION[PHONE_TYPE][60]['name']=$LANG['stats'][13];
@@ -3800,12 +3800,12 @@ $SEARCH_OPTION[RESERVATION_TYPE][80]['name']=$LANG['entity'][0];
 
 $SEARCH_OPTION[TRACKING_TYPE]['common']=$LANG['common'][32];
 
-$SEARCH_OPTION[TRACKING_TYPE][2]['table']='glpi_tracking';
+$SEARCH_OPTION[TRACKING_TYPE][2]['table']='glpi_tickets';
 $SEARCH_OPTION[TRACKING_TYPE][2]['field']='status';
 $SEARCH_OPTION[TRACKING_TYPE][2]['linkfield']='status';
 $SEARCH_OPTION[TRACKING_TYPE][2]['name']=$LANG['joblist'][0];
 
-$SEARCH_OPTION[TRACKING_TYPE][3]['table']='glpi_tracking';
+$SEARCH_OPTION[TRACKING_TYPE][3]['table']='glpi_tickets';
 $SEARCH_OPTION[TRACKING_TYPE][3]['field']='priority';
 $SEARCH_OPTION[TRACKING_TYPE][3]['linkfield']='priority';
 $SEARCH_OPTION[TRACKING_TYPE][3]['name']=$LANG['joblist'][2];

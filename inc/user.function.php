@@ -80,10 +80,10 @@ function showDeviceUser($ID){
 
 	$group_where="";
 	$groups=array();
-	$query="SELECT glpi_users_groups.FK_groups, glpi_groups.name 
-		FROM glpi_users_groups 
-		LEFT JOIN glpi_groups ON (glpi_groups.ID = glpi_users_groups.FK_groups) 
-		WHERE glpi_users_groups.FK_users='$ID';";
+	$query="SELECT glpi_groups_users.FK_groups, glpi_groups.name 
+		FROM glpi_groups_users 
+		LEFT JOIN glpi_groups ON (glpi_groups.ID = glpi_groups_users.FK_groups) 
+		WHERE glpi_groups_users.FK_users='$ID';";
 	$result=$DB->query($query);
 	if ($DB->numrows($result)>0){
 		$first=true;
@@ -228,10 +228,10 @@ function showGroupAssociated($target,$ID){
 	}
 
 	echo "<div class='center'><table class='tab_cadrehov'><tr><th colspan='$headerspan'>".$LANG['Menu'][36]."</th></tr>";
-	$query="SELECT glpi_groups.*, glpi_users_groups.ID AS IDD, glpi_users_groups.ID as linkID 
-		FROM glpi_users_groups 
-		LEFT JOIN glpi_groups ON (glpi_groups.ID = glpi_users_groups.FK_groups) 
-		WHERE glpi_users_groups.FK_users='$ID' 
+	$query="SELECT glpi_groups.*, glpi_groups_users.ID AS IDD, glpi_groups_users.ID as linkID 
+		FROM glpi_groups_users 
+		LEFT JOIN glpi_groups ON (glpi_groups.ID = glpi_groups_users.FK_groups) 
+		WHERE glpi_groups_users.FK_users='$ID' 
 		ORDER BY glpi_groups.name";
 
 	$result=$DB->query($query);
@@ -353,12 +353,12 @@ function showUserRights($target,$ID){
 
 	echo "<div class='center'><table class='tab_cadrehov'><tr><th colspan='2'>".$LANG['Menu'][37]."</th><th>".$LANG['profiles'][22]." (D=".$LANG['profiles'][29].", R=".$LANG['profiles'][28].")</th></tr>";
 
-	$query="SELECT DISTINCT glpi_users_profiles.ID as linkID, glpi_profiles.ID, glpi_profiles.name, glpi_users_profiles.recursive,
-			glpi_users_profiles.dynamic, glpi_entities.completename, glpi_users_profiles.FK_entities
-			FROM glpi_users_profiles 
-			LEFT JOIN glpi_profiles ON (glpi_users_profiles.FK_profiles = glpi_profiles.ID)
-			LEFT JOIN glpi_entities ON (glpi_users_profiles.FK_entities = glpi_entities.ID)
-			WHERE glpi_users_profiles.FK_users='$ID'
+	$query="SELECT DISTINCT glpi_profiles_users.ID as linkID, glpi_profiles.ID, glpi_profiles.name, glpi_profiles_users.recursive,
+			glpi_profiles_users.dynamic, glpi_entities.completename, glpi_profiles_users.FK_entities
+			FROM glpi_profiles_users 
+			LEFT JOIN glpi_profiles ON (glpi_profiles_users.FK_profiles = glpi_profiles.ID)
+			LEFT JOIN glpi_entities ON (glpi_profiles_users.FK_entities = glpi_entities.ID)
+			WHERE glpi_profiles_users.FK_users='$ID'
 			ORDER BY glpi_profiles.name, glpi_entities.completename;";
 
 	$result=$DB->query($query);
@@ -477,7 +477,7 @@ function getUserEntities($ID,$recursive=true){
 	global $DB;
 
 	$query="SELECT DISTINCT FK_entities, recursive
-			FROM glpi_users_profiles 
+			FROM glpi_profiles_users 
 			WHERE FK_users='$ID';";
 	$result=$DB->query($query);
 	if ($DB->numrows($result)>0){

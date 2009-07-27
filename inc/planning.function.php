@@ -236,7 +236,7 @@ function showPlanning($who,$who_group,$when,$type){
 	if ($who_group=="mine"){
 		if (count($_SESSION["glpigroups"])){
 			$groups=implode("','",$_SESSION['glpigroups']);
-			$ASSIGN="id_assign IN (SELECT DISTINCT FK_users FROM glpi_users_groups WHERE FK_groups IN ('$groups')) AND";
+			$ASSIGN="id_assign IN (SELECT DISTINCT FK_users FROM glpi_groups_users WHERE FK_groups IN ('$groups')) AND";
 		} else { // Only personal ones
 			$ASSIGN="id_assign='$who' AND ";
 		}
@@ -247,23 +247,23 @@ function showPlanning($who,$who_group,$when,$type){
 		}
 
 		if ($who_group>0){
-			$ASSIGN="id_assign IN (SELECT FK_users FROM glpi_users_groups WHERE FK_groups = '$who_group') AND";
+			$ASSIGN="id_assign IN (SELECT FK_users FROM glpi_groups_users WHERE FK_groups = '$who_group') AND";
 		}
 	}
 	if (empty($ASSIGN)){
-		$ASSIGN=" id_assign IN (SELECT DISTINCT glpi_users_profiles.FK_users 
+		$ASSIGN=" id_assign IN (SELECT DISTINCT glpi_profiles_users.FK_users 
 					FROM glpi_profiles 
-					LEFT JOIN glpi_users_profiles ON (glpi_profiles.ID = glpi_users_profiles.FK_profiles)
+					LEFT JOIN glpi_profiles_users ON (glpi_profiles.ID = glpi_profiles_users.FK_profiles)
 					WHERE glpi_profiles.interface='central' ";
 
-		$ASSIGN.=getEntitiesRestrictRequest("AND","glpi_users_profiles", '',$_SESSION["glpiactive_entity"],1);	
+		$ASSIGN.=getEntitiesRestrictRequest("AND","glpi_profiles_users", '',$_SESSION["glpiactive_entity"],1);	
 		$ASSIGN.=") AND ";
 
 
 	}
 	// ---------------Tracking
 	$query="SELECT * 
-		FROM glpi_tracking_planning 
+		FROM glpi_ticketsplannings 
 		WHERE $ASSIGN 
 			(('$begin' <= begin AND '$end' >= begin) 
 				OR ('$begin' < end AND '$end' >= end) 
@@ -725,7 +725,7 @@ function showPlanningCentral($who){
 	$INTERVAL=" 1 DAY "; // we want to show planning of the day
 
 	$query="SELECT * 
-		FROM glpi_tracking_planning 
+		FROM glpi_ticketsplannings 
 		WHERE $ASSIGN 
 			(('".$debut."' <= begin AND adddate( '". $debut ."' , INTERVAL $INTERVAL ) >= begin) 
 				OR ('".$debut."' < end AND adddate( '". $debut ."' , INTERVAL $INTERVAL ) >= end) 
@@ -899,7 +899,7 @@ function generateIcal($who){
 
 	// export job
 	$query="SELECT * 
-		FROM glpi_tracking_planning 
+		FROM glpi_ticketsplannings 
 		WHERE id_assign='$who' 
 			AND end > '$begin' 
 			AND begin < '$end' ";

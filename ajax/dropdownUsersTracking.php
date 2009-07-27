@@ -48,7 +48,7 @@ if (!defined('GLPI_ROOT')){
 checkCentralAccess();
 
 // Security
-if ( ! FieldExists("glpi_tracking",$_POST['field']) ){
+if ( ! FieldExists("glpi_tickets",$_POST['field']) ){
 	exit();
 }
 
@@ -67,8 +67,8 @@ $query = "SELECT glpi_users.ID, glpi_users.name, glpi_users.realname, glpi_users
 		FROM glpi_users 
 		WHERE $where 
 			AND ID IN (SELECT DISTINCT `".$_POST['field']."` 
-				FROM glpi_tracking 
-				".getEntitiesRestrictRequest("WHERE","glpi_tracking").") ";
+				FROM glpi_tickets 
+				".getEntitiesRestrictRequest("WHERE","glpi_tickets").") ";
 
 if ($CFG_GLPI["name_display_order"]==FIRSTNAME_BEFORE){
 	$query.=" ORDER BY glpi_users.firstname,glpi_users.realname,glpi_users.name ";
