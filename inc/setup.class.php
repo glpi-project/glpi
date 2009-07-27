@@ -43,14 +43,14 @@ class SetupSearchDisplay extends CommonDBTM{
 	 * Constructor
 	**/
 	function __construct () {
-		$this->table="glpi_display";
+		$this->table="glpi_displayprefs";
 		$this->type=-1;
 	}
 
 	function prepareInputForAdd($input) {
 		global $DB;
 		$query="SELECT MAX(rank) 
-			FROM glpi_display 
+			FROM glpi_displayprefs 
 			WHERE type='".$input["type"]."' AND FK_users='".$input["FK_users"]."'";
 		$result=$DB->query($query);
 		$input["rank"]=$DB->result($result,0,0)+1;
@@ -70,7 +70,7 @@ class SetupSearchDisplay extends CommonDBTM{
 		if (!haveRight("search_config","w")) return false;
 
 		$query="SELECT * 
-			FROM glpi_display 
+			FROM glpi_displayprefs 
 			WHERE type='".$input["type"]."' AND FK_users='0'";
 		$result=$DB->query($query);
 		if ($DB->numrows($result)){
@@ -113,24 +113,24 @@ class SetupSearchDisplay extends CommonDBTM{
 		global $DB;
 		// Get current item
 		$query="SELECT rank 
-			FROM glpi_display 
+			FROM glpi_displayprefs 
 			WHERE ID='".$input['ID']."';";
 		$result=$DB->query($query);
 		$rank1=$DB->result($result,0,0);
 		// Get previous item
 		$query="SELECT ID, rank 
-			FROM glpi_display 
+			FROM glpi_displayprefs 
 			WHERE type='".$input['type']."' AND FK_users='".$input["FK_users"]."' AND rank<'$rank1'
 			ORDER BY rank DESC;";
 		$result=$DB->query($query);
 		$rank2=$DB->result($result,0,"rank");
 		$ID2=$DB->result($result,0,"ID");
 		// Update items
-		$query="UPDATE glpi_display 
+		$query="UPDATE glpi_displayprefs 
 			SET rank='$rank2' 
 			WHERE ID ='".$input['ID']."'";
 		$DB->query($query);
-		$query="UPDATE glpi_display 
+		$query="UPDATE glpi_displayprefs 
 			SET rank='$rank1' 
 			WHERE ID ='$ID2'";
 		$DB->query($query);
@@ -147,24 +147,24 @@ class SetupSearchDisplay extends CommonDBTM{
 
 		// Get current item
 		$query="SELECT rank 
-			FROM glpi_display 
+			FROM glpi_displayprefs 
 			WHERE ID='".$input['ID']."';";
 		$result=$DB->query($query);
 		$rank1=$DB->result($result,0,0);
 		// Get next item
 		$query="SELECT ID, rank 
-			FROM glpi_display 
+			FROM glpi_displayprefs 
 			WHERE type='".$input['type']."' AND FK_users='".$input["FK_users"]."' AND rank>'$rank1' 
 			ORDER BY rank ASC;";
 		$result=$DB->query($query);
 		$rank2=$DB->result($result,0,"rank");
 		$ID2=$DB->result($result,0,"ID");
 		// Update items
-		$query="UPDATE glpi_display 
+		$query="UPDATE glpi_displayprefs 
 			SET rank='$rank2' 
 			WHERE ID ='".$input['ID']."'";
 		$DB->query($query);
-		$query="UPDATE glpi_display 
+		$query="UPDATE glpi_displayprefs 
 			SET rank='$rank1' 
 			WHERE ID ='$ID2'";
 		$DB->query($query);
@@ -190,7 +190,7 @@ class SetupSearchDisplay extends CommonDBTM{
 		echo "<div class='center' id='tabsbody' >";
 		// Defined items
 		$query="SELECT * 
-			FROM glpi_display 
+			FROM glpi_displayprefs 
 			WHERE type='$type' AND FK_users='$IDuser' 
 			ORDER BY rank";
 
@@ -312,7 +312,7 @@ class SetupSearchDisplay extends CommonDBTM{
 		echo "<div class='center' id='tabsbody' >";
 		// Defined items
 		$query="SELECT * 
-			FROM glpi_display 
+			FROM glpi_displayprefs 
 			WHERE type='$type' AND FK_users='$IDuser' 
 			ORDER BY rank";
 

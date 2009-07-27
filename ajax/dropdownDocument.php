@@ -47,13 +47,13 @@ if (!defined('GLPI_ROOT')){
 
 checkCentralAccess();
 // Make a select box with all glpi users
-$where=" WHERE  (glpi_docs.rubrique = '".$_POST['rubdoc']."' AND glpi_docs.deleted='0' ) ";
+$where=" WHERE  (glpi_documents.rubrique = '".$_POST['rubdoc']."' AND glpi_documents.deleted='0' ) ";
 
 
 if (isset($_POST["entity_restrict"])){
-	$where.=getEntitiesRestrictRequest("AND","glpi_docs",'',$_POST["entity_restrict"],true);
+	$where.=getEntitiesRestrictRequest("AND","glpi_documents",'',$_POST["entity_restrict"],true);
 } else {
-	$where.=getEntitiesRestrictRequest("AND","glpi_docs",'','',true);
+	$where.=getEntitiesRestrictRequest("AND","glpi_documents",'','',true);
 }
 
 if (isset($_POST['used'])) {
@@ -68,7 +68,7 @@ if (isset($_POST['used'])) {
 }
 
 if ($_POST['searchText']!=$CFG_GLPI["ajax_wildcard"])
-	$where.=" AND glpi_docs.name ".makeTextSearch($_POST['searchText']);
+	$where.=" AND glpi_documents.name ".makeTextSearch($_POST['searchText']);
 
 $NBMAX=$CFG_GLPI["dropdown_max"];
 $LIMIT="LIMIT 0,$NBMAX";
@@ -76,7 +76,7 @@ if ($_POST['searchText']==$CFG_GLPI["ajax_wildcard"]) $LIMIT="";
 
 
 $query = "SELECT * 
-	FROM glpi_docs 
+	FROM glpi_documents 
 	$where 
 	ORDER BY FK_entities, name $LIMIT";
 //error_log($query);

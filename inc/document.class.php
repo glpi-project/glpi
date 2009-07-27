@@ -45,7 +45,7 @@ class Document extends CommonDBTM {
 	 * Constructor
 	**/
 	function __construct () {
-		$this->table="glpi_docs";
+		$this->table="glpi_documents";
 		$this->type=DOCUMENT_TYPE;
 		$this->entity_assign=true;
 		$this->may_be_recursive=true;
@@ -58,7 +58,7 @@ class Document extends CommonDBTM {
 	**/	
 	function getFromDBbyFilename($filename){
 		global $DB;
-		$query="SELECT ID FROM glpi_docs WHERE filename='$filename'";
+		$query="SELECT ID FROM glpi_documents WHERE filename='$filename'";
 		$result=$DB->query($query);
 		if ($DB->numrows($result)==1){
 			return $this->getFromDB($DB->result($result,0,0));
@@ -69,7 +69,7 @@ class Document extends CommonDBTM {
 	function cleanDBonPurge($ID) {
 		global $DB,$CFG_GLPI,$LANG;
 
-		$query3 = "DELETE FROM glpi_doc_device WHERE (FK_doc = '$ID')";
+		$query3 = "DELETE FROM glpi_documents_items WHERE (FK_doc = '$ID')";
 		$result3 = $DB->query($query3);
 
 		// UNLINK DU FICHIER
@@ -208,7 +208,7 @@ class Document extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'><td>".$LANG['common'][16].":		</td>";
       echo "<td>";
-      autocompletionTextField("name","glpi_docs","name",$this->fields["name"],80,$this->fields["FK_entities"]);
+      autocompletionTextField("name","glpi_documents","name",$this->fields["name"],80,$this->fields["FK_entities"]);
       echo "</td></tr>";
 
       if (!empty($ID)){
@@ -233,17 +233,17 @@ class Document extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'><td>".$LANG['document'][33].":		</td>";
       echo "<td>";
-      autocompletionTextField("link","glpi_docs","link",$this->fields["link"],40,$this->fields["FK_entities"]);
+      autocompletionTextField("link","glpi_documents","link",$this->fields["link"],40,$this->fields["FK_entities"]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>".$LANG['document'][3].":		</td>";
       echo "<td>";
-      dropdownValue("glpi_dropdown_rubdocs","rubrique",$this->fields["rubrique"]);
+      dropdownValue("glpi_documentscategories","rubrique",$this->fields["rubrique"]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>".$LANG['document'][4].":		</td>";
       echo "<td>";
-      autocompletionTextField("mime","glpi_docs","mime",$this->fields["mime"],40,$this->fields["FK_entities"]);
+      autocompletionTextField("mime","glpi_documents","mime",$this->fields["mime"],40,$this->fields["FK_entities"]);
       echo "</td></tr>";
 
       echo "<tr>";

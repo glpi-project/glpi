@@ -40,7 +40,7 @@ class SetupDefaultDisplay extends CommonDBTM{
 	 * Constructor
 	**/
 	function __construct () {
-		$this->table="glpi_display_default";
+		$this->table="glpi_bookmarks_users";
 		$this->type=-1;
 	}
 
@@ -106,7 +106,7 @@ class Bookmark extends CommonDBTM {
 
         function cleanDBonPurge($ID) {
 		global $DB;
-		$query="DELETE FROM glpi_display_default WHERE FK_bookmark='$ID'";
+		$query="DELETE FROM glpi_bookmarks_users WHERE FK_bookmark='$ID'";
 		$DB->query($query);
         }
 	
@@ -305,7 +305,7 @@ class Bookmark extends CommonDBTM {
 			$dd=new SetupDefaultDisplay();
 			// Is default view for this device_type already exists ?
 			$query="SELECT ID 
-				FROM glpi_display_default 
+				FROM glpi_bookmarks_users 
 				WHERE FK_users='".$_SESSION['glpiID']."'
 					AND device_type='".$this->fields['device_type']."'";
 			if ($result=$DB->query($query)){
@@ -335,7 +335,7 @@ class Bookmark extends CommonDBTM {
 			$dd=new SetupDefaultDisplay();
 			// Is default view for this device_type already exists ?
 			$query="SELECT ID 
-				FROM glpi_display_default 
+				FROM glpi_bookmarks_users 
 				WHERE FK_users='".$_SESSION['glpiID']."'
 					AND FK_bookmark='$ID'
 					AND device_type='".$this->fields['device_type']."'";
@@ -364,10 +364,10 @@ class Bookmark extends CommonDBTM {
 			return false;
 		}
 	
-		$query="SELECT `".$this->table."`.*, glpi_display_default.ID AS IS_DEFAULT 
+		$query="SELECT `".$this->table."`.*, glpi_bookmarks_users.ID AS IS_DEFAULT 
 			FROM `".$this->table."` 
-			LEFT JOIN glpi_display_default ON (`".$this->table."`.device_type = glpi_display_default.device_type 
-							AND `".$this->table."`.ID = glpi_display_default.FK_bookmark) 
+			LEFT JOIN glpi_bookmarks_users ON (`".$this->table."`.device_type = glpi_bookmarks_users.device_type 
+							AND `".$this->table."`.ID = glpi_bookmarks_users.FK_bookmark) 
 			WHERE ";
 			
 		if ($private){

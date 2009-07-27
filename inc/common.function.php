@@ -1080,7 +1080,7 @@ function sendFile($file,$filename){
 	} else {
 		$splitter=explode("/",$file);
 		$filedb=$splitter[count($splitter)-2]."/".$splitter[count($splitter)-1];
-		$query="SELECT mime FROM glpi_docs WHERE filename LIKE '$filedb'";
+		$query="SELECT mime FROM glpi_documents WHERE filename LIKE '$filedb'";
 		$result=$DB->query($query);
 		$mime="application/octetstream";
 		if ($result&&$DB->numrows($result)==1){

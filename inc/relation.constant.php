@@ -39,7 +39,7 @@ $RELATION=array(
 
 	"glpi_authldaps" => array("glpi_configs"=>"extra_ldap_server",
 				"glpi_authldapsreplicates"=>"server_id"),
-	"glpi_bookmarks" => array("glpi_display_default"=>"FK_bookmark"),
+	"glpi_bookmarks" => array("glpi_bookmarks_users"=>"FK_bookmark"),
 
 	"glpi_cartridgesitems" => array("glpi_cartridges"=>"FK_glpi_cartridges_type",
 				"glpi_cartridges_printersmodels"=>"FK_glpi_cartridges_type"),
@@ -60,7 +60,7 @@ $RELATION=array(
 	"glpi_contracts" => array("glpi_contracts_items"=>"FK_contract",
 						"glpi_contracts_suppliers"=>"FK_contract"),
 	
-	"glpi_docs" => array("glpi_doc_device"=>"FK_doc"),
+	"glpi_documents" => array("glpi_documents_items"=>"FK_doc"),
 
 	"glpi_dropdown_auto_update" => array("glpi_computers"=>"auto_update"),
 
@@ -166,8 +166,8 @@ $RELATION=array(
 	
 	"glpi_dropdown_ram_type" =>array("glpi_devicesmemories"=>"type"),
 	
-	"glpi_dropdown_rubdocs" =>array("glpi_configs"=>"default_rubdoc_tracking",
-					"glpi_docs"=>"rubrique"),
+	"glpi_documentscategories" =>array("glpi_configs"=>"default_rubdoc_tracking",
+					"glpi_documents"=>"rubrique"),
 
 	"glpi_dropdown_software_category" =>array("glpi_software"=>"category",
 					"glpi_configs"=>"category_on_software_delete",),
@@ -201,7 +201,7 @@ $RELATION=array(
 				"glpi_consumablesitems"=>"FK_entities",
 				"glpi_contacts"=>"FK_entities",
 				"glpi_contracts"=>"FK_entities",
-				"glpi_docs"=>"FK_entities",
+				"glpi_documents"=>"FK_entities",
 				"glpi_dropdown_locations"=>"FK_entities",
 				"glpi_dropdown_netpoint"=>"FK_entities",
 				"glpi_enterprises"=>"FK_entities",
@@ -279,7 +279,7 @@ $RELATION=array(
 	"glpi_softwareversions" =>array("glpi_inst_software"=>"vID",
 					"glpi_softwarelicenses"=>array("buy_version","use_version")),
 
-	"glpi_tracking" => array("_glpi_docs"=>"FK_tracking",
+	"glpi_tracking" => array("_glpi_documents"=>"FK_tracking",
 				"glpi_followups"=>"tracking"),
 
 	"glpi_type_computers"=>array("glpi_computers"=>"type"),
@@ -301,9 +301,9 @@ $RELATION=array(
 				"glpi_computers"=>array("tech_num","FK_users"),
 				"glpi_consumables"=>"id_user",
 				"glpi_consumablesitems"=>"tech_num",
-				"glpi_display"=>"FK_users",
-				"glpi_display_default"=>"FK_users",
-				"glpi_docs"=>"FK_users",
+				"glpi_displayprefs"=>"FK_users",
+				"glpi_bookmarks_users"=>"FK_users",
+				"glpi_documents"=>"FK_users",
 				"glpi_followups"=>"author",
 				"glpi_groups"=>"FK_users",
 				"glpi_kbitems"=>"author",
@@ -325,7 +325,7 @@ $RELATION=array(
 	// link from devices tables (computers, software, ...)
 	"_virtual_device" => array (
 		"glpi_contracts_items" 	=> array("FK_device","device_type"),
-		"glpi_doc_device"		=> array("FK_device","device_type"),
+		"glpi_documents_items"		=> array("FK_device","device_type"),
 		"glpi_infocoms"			=> array("FK_device","device_type"),
 		),
 	
