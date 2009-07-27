@@ -201,14 +201,14 @@ $SEARCH_OPTION[COMPUTER_TYPE][80]['name']=$LANG['entity'][0];
 
 $SEARCH_OPTION[COMPUTER_TYPE]['periph']=$LANG['title'][30];
 
-$SEARCH_OPTION[COMPUTER_TYPE][7]['table']='glpi_device_processor';
+$SEARCH_OPTION[COMPUTER_TYPE][7]['table']='glpi_devicesprocessors';
 $SEARCH_OPTION[COMPUTER_TYPE][7]['field']='designation';
 $SEARCH_OPTION[COMPUTER_TYPE][7]['linkfield']='';
 $SEARCH_OPTION[COMPUTER_TYPE][7]['name']=$LANG['computers'][21];
 $SEARCH_OPTION[COMPUTER_TYPE][7]['forcegroupby']=true;
 $SEARCH_OPTION[COMPUTER_TYPE][7]['usehaving']=true;
 
-$SEARCH_OPTION[COMPUTER_TYPE][36]['table']='glpi_device_processor';
+$SEARCH_OPTION[COMPUTER_TYPE][36]['table']='glpi_devicesprocessors';
 $SEARCH_OPTION[COMPUTER_TYPE][36]['field']='specif_default';
 $SEARCH_OPTION[COMPUTER_TYPE][36]['linkfield']='';
 $SEARCH_OPTION[COMPUTER_TYPE][36]['name']=$LANG['computers'][21]." ".$LANG['setup'][35];
@@ -217,14 +217,14 @@ $SEARCH_OPTION[COMPUTER_TYPE][36]['usehaving']=true;
 $SEARCH_OPTION[COMPUTER_TYPE][36]['datatype']='number';
 $SEARCH_OPTION[COMPUTER_TYPE][36]['width']=100;
 
-$SEARCH_OPTION[COMPUTER_TYPE][10]['table']='glpi_device_ram';
+$SEARCH_OPTION[COMPUTER_TYPE][10]['table']='glpi_devicesmemories';
 $SEARCH_OPTION[COMPUTER_TYPE][10]['field']='designation';
 $SEARCH_OPTION[COMPUTER_TYPE][10]['linkfield']='';
 $SEARCH_OPTION[COMPUTER_TYPE][10]['name']=$LANG['computers'][23];
 $SEARCH_OPTION[COMPUTER_TYPE][10]['forcegroupby']=true;
 $SEARCH_OPTION[COMPUTER_TYPE][10]['usehaving']=true;
 
-$SEARCH_OPTION[COMPUTER_TYPE][35]['table']='glpi_device_ram';
+$SEARCH_OPTION[COMPUTER_TYPE][35]['table']='glpi_devicesmemories';
 $SEARCH_OPTION[COMPUTER_TYPE][35]['field']='specif_default';
 $SEARCH_OPTION[COMPUTER_TYPE][35]['linkfield']='';
 $SEARCH_OPTION[COMPUTER_TYPE][35]['name']=$LANG['computers'][24];
@@ -234,38 +234,38 @@ $SEARCH_OPTION[COMPUTER_TYPE][35]['datatype']='number';
 $SEARCH_OPTION[COMPUTER_TYPE][35]['width']=100;
 
 
-$SEARCH_OPTION[COMPUTER_TYPE][11]['table']='glpi_device_iface';
+$SEARCH_OPTION[COMPUTER_TYPE][11]['table']='glpi_devicesnetworkcards';
 $SEARCH_OPTION[COMPUTER_TYPE][11]['field']='designation';
 $SEARCH_OPTION[COMPUTER_TYPE][11]['linkfield']='';
 $SEARCH_OPTION[COMPUTER_TYPE][11]['name']=$LANG['setup'][9];
 $SEARCH_OPTION[COMPUTER_TYPE][11]['forcegroupby']=true;
 
-$SEARCH_OPTION[COMPUTER_TYPE][12]['table']='glpi_device_sndcard';
+$SEARCH_OPTION[COMPUTER_TYPE][12]['table']='glpi_devicessoundcards';
 $SEARCH_OPTION[COMPUTER_TYPE][12]['field']='designation';
 $SEARCH_OPTION[COMPUTER_TYPE][12]['linkfield']='';
 $SEARCH_OPTION[COMPUTER_TYPE][12]['name']=$LANG['devices'][7];
 $SEARCH_OPTION[COMPUTER_TYPE][12]['forcegroupby']=true;
 
-$SEARCH_OPTION[COMPUTER_TYPE][13]['table']='glpi_device_gfxcard';
+$SEARCH_OPTION[COMPUTER_TYPE][13]['table']='glpi_devicesgraphiccards';
 $SEARCH_OPTION[COMPUTER_TYPE][13]['field']='designation';
 $SEARCH_OPTION[COMPUTER_TYPE][13]['linkfield']='';
 $SEARCH_OPTION[COMPUTER_TYPE][13]['name']=$LANG['devices'][2];
 $SEARCH_OPTION[COMPUTER_TYPE][13]['forcegroupby']=true;
 
-$SEARCH_OPTION[COMPUTER_TYPE][14]['table']='glpi_device_moboard';
+$SEARCH_OPTION[COMPUTER_TYPE][14]['table']='glpi_devicesmotherboards';
 $SEARCH_OPTION[COMPUTER_TYPE][14]['field']='designation';
 $SEARCH_OPTION[COMPUTER_TYPE][14]['linkfield']='';
 $SEARCH_OPTION[COMPUTER_TYPE][14]['name']=$LANG['devices'][5];
 $SEARCH_OPTION[COMPUTER_TYPE][14]['forcegroupby']=true;
 
-$SEARCH_OPTION[COMPUTER_TYPE][15]['table']='glpi_device_hdd';
+$SEARCH_OPTION[COMPUTER_TYPE][15]['table']='glpi_devicesharddrives';
 $SEARCH_OPTION[COMPUTER_TYPE][15]['field']='designation';
 $SEARCH_OPTION[COMPUTER_TYPE][15]['linkfield']='';
 $SEARCH_OPTION[COMPUTER_TYPE][15]['name']=$LANG['computers'][36];
 $SEARCH_OPTION[COMPUTER_TYPE][15]['forcegroupby']=true;
 $SEARCH_OPTION[COMPUTER_TYPE][15]['usehaving']=true;
 
-$SEARCH_OPTION[COMPUTER_TYPE][34]['table']='glpi_device_hdd';
+$SEARCH_OPTION[COMPUTER_TYPE][34]['table']='glpi_devicesharddrives';
 $SEARCH_OPTION[COMPUTER_TYPE][34]['field']='specif_default';
 $SEARCH_OPTION[COMPUTER_TYPE][34]['linkfield']='';
 $SEARCH_OPTION[COMPUTER_TYPE][34]['name']=$LANG['computers'][25];
@@ -274,7 +274,7 @@ $SEARCH_OPTION[COMPUTER_TYPE][34]['usehaving']=true;
 $SEARCH_OPTION[COMPUTER_TYPE][34]['datatype']='number';
 $SEARCH_OPTION[COMPUTER_TYPE][34]['width']=1000;
 
-$SEARCH_OPTION[COMPUTER_TYPE][39]['table']='glpi_device_power';
+$SEARCH_OPTION[COMPUTER_TYPE][39]['table']='glpi_devicespowersupplies';
 $SEARCH_OPTION[COMPUTER_TYPE][39]['field']='designation';
 $SEARCH_OPTION[COMPUTER_TYPE][39]['linkfield']='';
 $SEARCH_OPTION[COMPUTER_TYPE][39]['name']=$LANG['devices'][23];

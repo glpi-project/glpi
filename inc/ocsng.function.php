@@ -2352,7 +2352,7 @@ function ocsAddDevice($device_type, $dev_array) {
 	switch ($table)
 	{
 		//For network interfaces, check designation AND speed
-		case "glpi_device_iface":
+		case "glpi_devicesnetworkcards":
 			if (isset($dev_array["SPEED"]))
 				$query.=" AND bandwidth='".$dev_array["SPEED"]."'";
 		break;

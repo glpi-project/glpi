@@ -1800,13 +1800,13 @@ function addSelect ($type,$ID,$num,$meta=0,$meta_type=0){
 		case "glpi_inst_software.count" :
 			return " COUNT(DISTINCT glpi_inst_software$addtable.ID) AS ".$NAME."_".$num.", ";
 		break;
-		case "glpi_device_hdd.specif_default" :
+		case "glpi_devicesharddrives.specif_default" :
 			return " SUM(DEVICE_".HDD_DEVICE.".specificity) / COUNT( DEVICE_".HDD_DEVICE.".ID) * COUNT( DISTINCT DEVICE_".HDD_DEVICE.".ID) AS ".$NAME."_".$num.", ";
 		break;
-		case "glpi_device_ram.specif_default" :
+		case "glpi_devicesmemories.specif_default" :
 			return " SUM(DEVICE_".RAM_DEVICE.".specificity) / COUNT( DEVICE_".RAM_DEVICE.".ID) * COUNT( DISTINCT DEVICE_".RAM_DEVICE.".ID) AS ".$NAME."_".$num.", ";
 		break;
-		case "glpi_device_processor.specif_default" :
+		case "glpi_devicesprocessors.specif_default" :
 			return " SUM(DEVICE_".PROCESSOR_DEVICE.".specificity) / COUNT( DEVICE_".PROCESSOR_DEVICE.".ID) AS ".$NAME."_".$num.", ";
 		break;
 		case "glpi_tracking.count" :
@@ -2416,9 +2416,9 @@ function giveItem ($type,$ID,$data,$num,$meta=0){
 		case "glpi_docs.filename" :		
 			return getDocumentLink($data[$NAME.$num]);
 		break;		
-		case "glpi_device_hdd.specif_default" :
-		case "glpi_device_ram.specif_default" :
-		case "glpi_device_processor.specif_default" :
+		case "glpi_devicesharddrives.specif_default" :
+		case "glpi_devicesmemories.specif_default" :
+		case "glpi_devicesprocessors.specif_default" :
 			return $data[$NAME.$num];
 			break;
 		case "glpi_networking_ports.ifmac" :
@@ -3047,35 +3047,35 @@ function addLeftJoin ($type,$ref_table,&$already_link_tables,$new_table,$linkfie
 				return " LEFT JOIN $new_table AS DEVICE_".$device_type." ON ($rt.ID = DEVICE_".$device_type.".FK_computers AND DEVICE_".$device_type.".device_type='$device_type') ";
 			}
 		break;
-		case "glpi_device_processor":
+		case "glpi_devicesprocessors":
 			$out=addLeftJoin($type,$ref_table,$already_link_tables,"glpi_computers_devices",$linkfield,PROCESSOR_DEVICE,$meta,$meta_type);
 			return $out." LEFT JOIN $new_table $AS ON (DEVICE_".PROCESSOR_DEVICE.".FK_device = $nt.ID) ";
 		break;
-		case "glpi_device_power":
+		case "glpi_devicespowersupplies":
 			$out=addLeftJoin($type,$ref_table,$already_link_tables,"glpi_computers_devices",$linkfield,POWER_DEVICE,$meta,$meta_type);
 			return $out." LEFT JOIN $new_table $AS ON (DEVICE_".POWER_DEVICE.".FK_device = $nt.ID) ";
 		break;
-		case "glpi_device_ram":
+		case "glpi_devicesmemories":
 			$out=addLeftJoin($type,$ref_table,$already_link_tables,"glpi_computers_devices",$linkfield,RAM_DEVICE,$meta,$meta_type);
 			return $out." LEFT JOIN $new_table $AS ON (DEVICE_".RAM_DEVICE.".FK_device = $nt.ID) ";
 		break;		
-		case "glpi_device_iface":
+		case "glpi_devicesnetworkcards":
 			$out=addLeftJoin($type,$ref_table,$already_link_tables,"glpi_computers_devices",$linkfield,NETWORK_DEVICE,$meta,$meta_type);
 			return $out." LEFT JOIN $new_table $AS ON (DEVICE_".NETWORK_DEVICE.".FK_device = $nt.ID) ";
 		break;	
-		case "glpi_device_sndcard":
+		case "glpi_devicessoundcards":
 			$out=addLeftJoin($type,$ref_table,$already_link_tables,"glpi_computers_devices",$linkfield,SND_DEVICE,$meta,$meta_type);
 			return $out." LEFT JOIN $new_table $AS ON (DEVICE_".SND_DEVICE.".FK_device = $nt.ID) ";
 		break;		
-		case "glpi_device_gfxcard":
+		case "glpi_devicesgraphiccards":
 			$out=addLeftJoin($type,$ref_table,$already_link_tables,"glpi_computers_devices",$linkfield,GFX_DEVICE,$meta,$meta_type);
 			return $out." LEFT JOIN $new_table $AS ON (DEVICE_".GFX_DEVICE.".FK_device = $nt.ID) ";
 		break;	
-		case "glpi_device_moboard":
+		case "glpi_devicesmotherboards":
 			$out=addLeftJoin($type,$ref_table,$already_link_tables,"glpi_computers_devices",$linkfield,MOBOARD_DEVICE,$meta,$meta_type);
 			return $out." LEFT JOIN $new_table $AS ON (DEVICE_".MOBOARD_DEVICE.".FK_device = $nt.ID) ";
 		break;	
-		case "glpi_device_hdd":
+		case "glpi_devicesharddrives":
 			$out=addLeftJoin($type,$ref_table,$already_link_tables,"glpi_computers_devices",$linkfield,HDD_DEVICE,$meta,$meta_type);
 			return $out." LEFT JOIN $new_table $AS ON (DEVICE_".HDD_DEVICE.".FK_device = $nt.ID) ";
 		break;

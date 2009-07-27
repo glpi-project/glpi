@@ -60,7 +60,6 @@ function update0721to080() {
       'glpi_computers' => 'glpi_computers',
       'glpi_config' => 'glpi_configs',
       'glpi_connect_wire' => 'glpi_computers_items',
-
       'glpi_consumables' => 'glpi_consumables',
       'glpi_consumables_type' => 'glpi_consumablesitems',
       'glpi_contact_enterprise' => 'glpi_contacts_suppliers',
@@ -68,6 +67,18 @@ function update0721to080() {
       'glpi_contract_device' => 'glpi_contracts_items',
       'glpi_contract_enterprise' =>'glpi_contracts_suppliers',
       'glpi_contracts' =>'glpi_contracts',
+      'glpi_device_case' => 'glpi_devicescases',
+      'glpi_device_control' => 'glpi_devicescontrols',
+      'glpi_device_drive' => 'glpi_devicesdrives',
+      'glpi_device_gfxcard' => 'glpi_devicesgraphiccards',
+      'glpi_device_hdd' => 'glpi_devicesharddrives',
+      'glpi_device_iface' => 'glpi_devicesnetworkcards',
+      'glpi_device_moboard' => 'glpi_devicesmotherboards',
+      'glpi_device_pci' => 'glpi_devicespcis',
+      'glpi_device_power' => 'glpi_devicespowersupplies',
+      'glpi_device_processor' => 'glpi_devicesprocessors',
+      'glpi_device_ram' => 'glpi_devicesmemories',
+      'glpi_device_sndcard' => 'glpi_devicessoundcards',
    );
    $backup_tables=false;
 	foreach ($glpi_tables as $original_table => $new_table) {
@@ -133,36 +144,36 @@ function update0721to080() {
    displayMigrationMessage("080", $LANG['update'][141] . ' - glpi_device_xxxx'); // Updating schema
          
 
-	if (FieldExists("glpi_device_control", "interface")) {
-		$query="ALTER TABLE `glpi_device_control` CHANGE `interface` `FK_interface` INT( 11 ) NOT NULL DEFAULT '0'";
-      $DB->query($query) or die("0.80 alter interface in glpi_device_control " . $LANG['update'][90] . $DB->error());
-		if (isIndex("glpi_device_control", "interface")) {
-			$query="ALTER TABLE `glpi_device_control` DROP INDEX `interface`, ADD INDEX `FK_interface` ( `FK_interface` ) ";
-         $DB->query($query) or die("0.80 alter interface index in glpi_device_control " . $LANG['update'][90] . $DB->error());
+	if (FieldExists("glpi_devicescontrols", "interface")) {
+		$query="ALTER TABLE `glpi_devicescontrols` CHANGE `interface` `FK_interface` INT( 11 ) NOT NULL DEFAULT '0'";
+      $DB->query($query) or die("0.80 alter interface in glpi_devicescontrols " . $LANG['update'][90] . $DB->error());
+		if (isIndex("glpi_devicescontrols", "interface")) {
+			$query="ALTER TABLE `glpi_devicescontrols` DROP INDEX `interface`, ADD INDEX `FK_interface` ( `FK_interface` ) ";
+         $DB->query($query) or die("0.80 alter interface index in glpi_devicescontrols " . $LANG['update'][90] . $DB->error());
 		}
 	}
 
-	if (FieldExists("glpi_device_hdd", "interface")) {
-		$query="ALTER TABLE `glpi_device_hdd` CHANGE `interface` `FK_interface` INT( 11 ) NOT NULL DEFAULT '0'";
-      $DB->query($query) or die("0.80 alter interface in glpi_device_hdd " . $LANG['update'][90] . $DB->error());
-		if (isIndex("glpi_device_hdd", "interface")) {
-			$query="ALTER TABLE `glpi_device_hdd` DROP INDEX `interface`, ADD INDEX `FK_interface` ( `FK_interface` ) ";
-			$DB->query($query) or die("0.v alter interface index in glpi_device_control " . $LANG['update'][90] . $DB->error());
+	if (FieldExists("glpi_devicesharddrives", "interface")) {
+		$query="ALTER TABLE `glpi_devicesharddrives` CHANGE `interface` `FK_interface` INT( 11 ) NOT NULL DEFAULT '0'";
+      $DB->query($query) or die("0.80 alter interface in glpi_devicesharddrives " . $LANG['update'][90] . $DB->error());
+		if (isIndex("glpi_devicesharddrives", "interface")) {
+			$query="ALTER TABLE `glpi_devicesharddrives` DROP INDEX `interface`, ADD INDEX `FK_interface` ( `FK_interface` ) ";
+			$DB->query($query) or die("0.v alter interface index in glpi_devicesharddrives " . $LANG['update'][90] . $DB->error());
 		}
 	}
 
-	if (FieldExists("glpi_device_drive", "interface")) {
-		$query="ALTER TABLE `glpi_device_drive` CHANGE `interface` `FK_interface` INT( 11 ) NOT NULL DEFAULT '0'";
-      $DB->query($query) or die("0.80 alter interface in glpi_device_drive " . $LANG['update'][90] . $DB->error());
-		if (isIndex("glpi_device_drive", "interface")) {
-			$query="ALTER TABLE `glpi_device_drive` DROP INDEX `interface`, ADD INDEX `FK_interface` ( `FK_interface` ) ";
-			$DB->query($query) or die("0.v alter interface index in glpi_device_drive " . $LANG['update'][90] . $DB->error());
+	if (FieldExists("glpi_devicesdrives", "interface")) {
+		$query="ALTER TABLE `glpi_devicesdrives` CHANGE `interface` `FK_interface` INT( 11 ) NOT NULL DEFAULT '0'";
+      $DB->query($query) or die("0.80 alter interface in glpi_devicesdrives " . $LANG['update'][90] . $DB->error());
+		if (isIndex("glpi_devicesdrives", "interface")) {
+			$query="ALTER TABLE `glpi_devicesdrives` DROP INDEX `interface`, ADD INDEX `FK_interface` ( `FK_interface` ) ";
+			$DB->query($query) or die("0.v alter interface index in glpi_devicesdrives " . $LANG['update'][90] . $DB->error());
 		}
 	}
 
-	if (!isIndex("glpi_device_gfxcard", "FK_interface")) {
-		$query="ALTER TABLE `glpi_device_gfxcard` ADD INDEX `FK_interface` ( `FK_interface` ) ";
-      $DB->query($query) or die("0.80 add interface index in glpi_device_gfxcard " . $LANG['update'][90] . $DB->error());
+	if (!isIndex("glpi_devicesgraphiccards", "FK_interface")) {
+		$query="ALTER TABLE `glpi_devicesgraphiccards` ADD INDEX `FK_interface` ( `FK_interface` ) ";
+      $DB->query($query) or die("0.80 add interface index in glpi_devicesgraphiccards " . $LANG['update'][90] . $DB->error());
 	}
 	
    displayMigrationMessage("080", $LANG['update'][141] . ' - glpi_rule_cache_software'); // Updating schema

@@ -39,40 +39,40 @@ if (!defined('GLPI_ROOT')){
 function getDeviceTable($dev_type){
 	switch ($dev_type){
 		case MOBOARD_DEVICE :
-			return "glpi_device_moboard";
+			return "glpi_devicesmotherboards";
 			break;
 		case PROCESSOR_DEVICE :
-			return "glpi_device_processor";
+			return "glpi_devicesprocessors";
 			break;
 		case RAM_DEVICE :
-			return "glpi_device_ram";
+			return "glpi_devicesmemories";
 			break;
 		case HDD_DEVICE :
-			return "glpi_device_hdd";
+			return "glpi_devicesharddrives";
 			break;
 		case NETWORK_DEVICE :
-			return "glpi_device_iface";
+			return "glpi_devicesnetworkcards";
 			break;
 		case DRIVE_DEVICE :
-			return "glpi_device_drive";
+			return "glpi_devicesdrives";
 			break;
 		case CONTROL_DEVICE :
-			return "glpi_device_control";
+			return "glpi_devicescontrols";
 			break;
 		case GFX_DEVICE :
-			return "glpi_device_gfxcard";
+			return "glpi_devicesgraphiccards";
 			break;
 		case SND_DEVICE :
-			return "glpi_device_sndcard";
+			return "glpi_devicessoundcards";
 			break;
 		case PCI_DEVICE :
-			return "glpi_device_pci";
+			return "glpi_devicespcis";
 			break;
 		case CASE_DEVICE :
-			return "glpi_device_case";
+			return "glpi_devicescases";
 			break;
 		case POWER_DEVICE :
-			return "glpi_device_power";
+			return "glpi_devicespowersupplies";
 			break;
 
 	}
@@ -635,19 +635,19 @@ function showDevicesForm ($target,$ID,$device_type) {
 	// table particuliere
 	echo "<table cellpadding='1' cellspacing='0' border='0'>";
 	switch($table) {
-		case "glpi_device_moboard" : 
+		case "glpi_devicesmotherboards" : 
 			echo "<tr><td>".$LANG['device_moboard'][0].":</td>";
 			echo "<td>";
 			autocompletionTextField("chipset",$table,"chipset",$device->fields["chipset"],40);
 
 			echo "</td></tr>";
 		break;
-		case "glpi_device_processor" :
+		case "glpi_devicesprocessors" :
 			echo "<tr><td>".$LANG['device_ram'][1].":</td><td>";
 			autocompletionTextField("frequence",$table,"frequence",$device->fields["frequence"],40);
 			echo "</td></tr>";
 		break;
-		case "glpi_device_ram" :
+		case "glpi_devicesmemories" :
 			echo "<tr><td>".$LANG['common'][17].":</td>";
 			echo "<td>";
 			dropdownValue("glpi_dropdown_ram_type","type",$device->fields["type"]);
@@ -657,7 +657,7 @@ function showDevicesForm ($target,$ID,$device_type) {
 			autocompletionTextField("frequence",$table,"frequence",$device->fields["frequence"],40);
 			echo "</td></tr>";
 		break;
-		case "glpi_device_hdd" :
+		case "glpi_devicesharddrives" :
 			echo "<tr><td>".$LANG['device_hdd'][0].":</td><td>";
 			autocompletionTextField("rpm",$table,"rpm",$device->fields["rpm"],40);
 	
@@ -674,12 +674,12 @@ function showDevicesForm ($target,$ID,$device_type) {
 	
 			echo "</tr>";
 		break;
-		case "glpi_device_iface" :
+		case "glpi_devicesnetworkcards" :
 			echo "<tr><td>".$LANG['device_iface'][0].":</td><td>";
 			autocompletionTextField("bandwidth",$table,"bandwidth",$device->fields["bandwidth"],40);
 			echo "</td></tr>";
 		break;
-		case "glpi_device_drive" :
+		case "glpi_devicesdrives" :
 			echo "</tr>";
 			echo "<tr><td>".$LANG['device_drive'][0].":</td>";
 			echo "<td>";
@@ -699,7 +699,7 @@ function showDevicesForm ($target,$ID,$device_type) {
 
 
 		break;
-		case  "glpi_device_control" :
+		case  "glpi_devicescontrols" :
 			echo "</tr>";
 			echo "<tr><td>".$LANG['device_control'][0].":</td>";
 			echo "<td>";
@@ -713,7 +713,7 @@ function showDevicesForm ($target,$ID,$device_type) {
 			echo "</tr>";
 
 		break;
-		case "glpi_device_gfxcard" :
+		case "glpi_devicesgraphiccards" :
 
 			echo "<tr><td>".$LANG['device_gfxcard'][0].":</td><td>";
 			autocompletionTextField("specif_default",$table,"specif_default",$device->fields["specif_default"],40);
@@ -724,14 +724,14 @@ function showDevicesForm ($target,$ID,$device_type) {
 			echo "</td>";
 			echo "</tr>";
 		break;
-		case "glpi_device_sndcard" :
+		case "glpi_devicessoundcards" :
 			echo "<tr><td>".$LANG['common'][17].":</td><td>";
 			autocompletionTextField("type",$table,"type",$device->fields["type"],40);
 			echo "</td></tr>";
 		break;
-		case "glpi_device_pci" :
+		case "glpi_devicespcis" :
 			break;
-		case "glpi_device_case" :
+		case "glpi_devicescases" :
 			echo "<tr><td>".$LANG['device_case'][0].":</td>";
 			echo "<td>";
 			dropdownValue("glpi_dropdown_case_type","type",$device->fields["type"]);
@@ -739,7 +739,7 @@ function showDevicesForm ($target,$ID,$device_type) {
 			echo "</tr>";
 
 		break;
-		case "glpi_device_power" :
+		case "glpi_devicespowersupplies" :
 			echo "<tr><td>".$LANG['device_power'][0].":</td><td>";
 			autocompletionTextField("power",$table,"power",$device->fields["power"],40);
 			echo "</td></tr>";
