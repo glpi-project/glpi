@@ -46,7 +46,7 @@ class Software extends CommonDBTM {
 	 * Constructor
 	**/
 	function __construct() {
-		$this->table = "glpi_software";
+		$this->table = "glpi_softwares";
 		$this->type = SOFTWARE_TYPE;
 		$this->dohistory = true;
 		$this->entity_assign=true;
@@ -177,13 +177,13 @@ class Software extends CommonDBTM {
 		global $DB, $CFG_GLPI;
 
 		$job = new Job();
-		$query = "SELECT * FROM glpi_tracking WHERE (computer = '$ID'  AND device_type='" . SOFTWARE_TYPE . "')";
+		$query = "SELECT * FROM glpi_tickets WHERE (computer = '$ID'  AND device_type='" . SOFTWARE_TYPE . "')";
 		$result = $DB->query($query);
 
 		if ($DB->numrows($result))
 			while ($data = $DB->fetch_array($result)) {
 				if ($CFG_GLPI["keep_tracking_on_delete"] == 1) {
-					$query = "UPDATE glpi_tracking SET computer = '0', device_type='0' WHERE ID='" . $data["ID"] . "';";
+					$query = "UPDATE glpi_tickets SET computer = '0', device_type='0' WHERE ID='" . $data["ID"] . "';";
 					$DB->query($query);
 				} else
 					$job->delete(array (
@@ -208,7 +208,7 @@ class Software extends CommonDBTM {
 		}
 
 		// Delete all licenses
-		$query2 = "SELECT ID FROM glpi_softwarelicenses WHERE (sID = '$ID')";
+		$query2 = "SELECT ID FROM glpi_softwareslicenses WHERE (sID = '$ID')";
 
 		if ($result2 = $DB->query($query2)) {
 			if ($DB->numrows($result2)) {
@@ -223,7 +223,7 @@ class Software extends CommonDBTM {
 		}
 
 		// Delete all versions
-		$query2 = "SELECT ID FROM glpi_softwareversions WHERE (sID = '$ID')";
+		$query2 = "SELECT ID FROM glpi_softwaresversions WHERE (sID = '$ID')";
 
 		if ($result2 = $DB->query($query2)) {
 			if ($DB->numrows($result2)) {
@@ -298,7 +298,7 @@ class Software extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'><td>" . $LANG['common'][16] . ":		</td>";
       echo "<td>";
-      autocompletionTextField("name", "glpi_software", "name", $this->fields["name"], 40,$this->fields["FK_entities"]);
+      autocompletionTextField("name", "glpi_softwares", "name", $this->fields["name"], 40,$this->fields["FK_entities"]);
       echo "</td>";
       
       
@@ -336,7 +336,7 @@ class Software extends CommonDBTM {
       echo "<tr class='tab_bg_1'><td>" . $LANG['software'][29] . ":</td><td colspan='3'>";
       dropdownYesNo("is_update",$this->fields['is_update']);
       echo "&nbsp;" . $LANG['pager'][2] . "&nbsp;";
-      dropdownValue("glpi_software", "update_software", $this->fields["update_software"]);
+      dropdownValue("glpi_softwares", "update_software", $this->fields["update_software"]);
       echo "</td>";
 
       /*echo "<td>" . $LANG['state'][0] . ":</td><td>";
@@ -412,7 +412,7 @@ class Software extends CommonDBTM {
 	*/
 	function countInstallations() {
 		global $DB;
-		$query = "SELECT * FROM glpi_computers_softwareversions WHERE (sID = '".$this->fields["ID"]."')";
+		$query = "SELECT * FROM glpi_computers_softwaresversions WHERE (sID = '".$this->fields["ID"]."')";
 		if ($result = $DB->query($query)) {
 			$number = $DB->numrows($result);
 			return $number;
@@ -436,7 +436,7 @@ class SoftwareVersion extends CommonDBTM {
 	 * Constructor
 	**/
 	function __construct() {
-		$this->table = "glpi_softwareversions";
+		$this->table = "glpi_softwaresversions";
 		$this->type = SOFTWAREVERSION_TYPE;
 		$this->entity_assign=true;
 		$this->may_be_recursive=true;
@@ -447,7 +447,7 @@ class SoftwareVersion extends CommonDBTM {
 		global $DB;
 
 		// Delete Installations
-		$query2 = "DELETE FROM glpi_computers_softwareversions WHERE (vID = '$ID')";
+		$query2 = "DELETE FROM glpi_computers_softwaresversions WHERE (vID = '$ID')";
 		$DB->query($query2);
 	}
 
@@ -523,12 +523,12 @@ class SoftwareVersion extends CommonDBTM {
 
 		echo "<tr class='tab_bg_1'><td>".$LANG['help'][31].":		</td>";
 		echo "<td>";
-		echo "<a href='software.form.php?ID=".$sID."'>".getDropdownName("glpi_software",$sID)."</a>";
+		echo "<a href='software.form.php?ID=".$sID."'>".getDropdownName("glpi_softwares",$sID)."</a>";
 		echo "</td></tr>";
 	
 		echo "<tr class='tab_bg_1'><td>".$LANG['common'][16].":		</td>";
 		echo "<td>";
-		autocompletionTextField("name","glpi_softwareversions","name",$this->fields["name"],80);
+		autocompletionTextField("name","glpi_softwaresversions","name",$this->fields["name"],80);
 		echo "</td></tr>";
 	
 		echo "<tr class='tab_bg_1'><td>" . $LANG['state'][0] . ":</td><td>";
@@ -593,7 +593,7 @@ class SoftwareLicense extends CommonDBTM {
 	 * Constructor
 	**/
 	function __construct() {
-		$this->table = "glpi_softwarelicenses";
+		$this->table = "glpi_softwareslicenses";
 		$this->type = SOFTWARELICENSE_TYPE;
 		$this->entity_assign=true;
 		$this->may_be_recursive=true;
@@ -764,22 +764,22 @@ class SoftwareLicense extends CommonDBTM {
 
 		echo "<tr class='tab_bg_1'><td>".$LANG['help'][31].":		</td>";
 		echo "<td>";
-		echo "<a href='software.form.php?ID=".$sID."'>".getDropdownName("glpi_software",$sID)."</a>";
+		echo "<a href='software.form.php?ID=".$sID."'>".getDropdownName("glpi_softwares",$sID)."</a>";
 		echo "</td></tr>";
 
 		echo "<tr class='tab_bg_1'><td>".$LANG['common'][16].":		</td>";
 		echo "<td>";
-		autocompletionTextField("name","glpi_softwarelicenses","name",$this->fields["name"],80);
+		autocompletionTextField("name","glpi_softwareslicenses","name",$this->fields["name"],80);
 		echo "</td></tr>";
 
 		echo "<tr class='tab_bg_1'><td>".$LANG['common'][19].":		</td>";
 		echo "<td>";
-		autocompletionTextField("serial","glpi_softwarelicenses","serial",$this->fields["serial"],80);
+		autocompletionTextField("serial","glpi_softwareslicenses","serial",$this->fields["serial"],80);
 		echo "</td></tr>";
 
 		echo "<tr class='tab_bg_1'><td>".$LANG['common'][20].":		</td>";
 		echo "<td>";
-		autocompletionTextField("otherserial","glpi_softwarelicenses","otherserial",$this->fields["otherserial"],80);
+		autocompletionTextField("otherserial","glpi_softwareslicenses","otherserial",$this->fields["otherserial"],80);
 		echo "</td></tr>";
 
 		echo "<tr class='tab_bg_1'><td>".$LANG['tracking'][29].":		</td>";
@@ -793,7 +793,7 @@ class SoftwareLicense extends CommonDBTM {
 
 		echo "<tr class='tab_bg_1'><td>".$LANG['common'][17].":		</td>";
 		echo "<td>";
-		dropdownValue("glpi_softwarelicensestypes", "type", $this->fields["type"]);
+		dropdownValue("glpi_softwareslicensestypes", "type", $this->fields["type"]);
 		echo "</td></tr>";
 
 

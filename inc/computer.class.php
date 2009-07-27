@@ -373,7 +373,7 @@ class Computer extends CommonDBTM {
 
 			// ADD software
 			$query="SELECT vID 
-				FROM glpi_computers_softwareversions 
+				FROM glpi_computers_softwaresversions 
 				WHERE cID='".$input["_oldID"]."'";
 			$result=$DB->query($query);
 			if ($DB->numrows($result)>0){
@@ -440,21 +440,21 @@ class Computer extends CommonDBTM {
 		$job=new Job;
 
 		$query = "SELECT * 
-			FROM glpi_tracking 
+			FROM glpi_tickets 
 			WHERE (computer = '$ID'  AND device_type='".COMPUTER_TYPE."')";
 		$result = $DB->query($query);
 
 		if ($DB->numrows($result))
 			while ($data=$DB->fetch_array($result)) {
 				if ($CFG_GLPI["keep_tracking_on_delete"]==1){
-					$query = "UPDATE glpi_tracking 
+					$query = "UPDATE glpi_tickets 
 						SET computer = '0', device_type='0' 
 						WHERE ID='".$data["ID"]."';";
 					$DB->query($query);
 				} else $job->delete(array("ID"=>$data["ID"]));
 			}
 
-		$query = "DELETE FROM glpi_computers_softwareversions WHERE (cID = '$ID')";
+		$query = "DELETE FROM glpi_computers_softwaresversions WHERE (cID = '$ID')";
 		$result = $DB->query($query);		
 
 		$query = "DELETE FROM glpi_contracts_items WHERE (FK_device = '$ID' AND device_type='".COMPUTER_TYPE."')";
@@ -597,7 +597,7 @@ class Computer extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td >".$LANG['common'][17].": 	</td>";
       echo "<td >";
-      dropdownValue("glpi_type_computers", "type", $this->fields["type"]);
+      dropdownValue("glpi_computerstypes", "type", $this->fields["type"]);
       echo "</td>";
 
 

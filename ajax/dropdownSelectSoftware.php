@@ -56,15 +56,15 @@ if (strlen($_POST['searchText'])>0 && $_POST['searchText']!=$CFG_GLPI["ajax_wild
 }
 
 //$where.=" AND FK_entities='".$_POST["entity_restrict"]."' ";
-$where .= getEntitiesRestrictRequest(' AND', 'glpi_software','FK_entities',$_POST["entity_restrict"],true);
+$where .= getEntitiesRestrictRequest(' AND', 'glpi_softwares','FK_entities',$_POST["entity_restrict"],true);
 
 
-$query = "SELECT DISTINCT glpi_software.ID, glpi_software.name 
-		FROM glpi_software 
-		WHERE glpi_software.deleted=0 
-			AND glpi_software.is_template=0 
+$query = "SELECT DISTINCT glpi_softwares.ID, glpi_softwares.name 
+		FROM glpi_softwares
+		WHERE glpi_softwares.deleted=0 
+			AND glpi_softwares.is_template=0 
 			$where 
-		ORDER BY glpi_software.name";
+		ORDER BY glpi_softwares.name";
 $result = $DB->query($query);
 
 echo "<select name='sID' id='item_type$rand'>\n";

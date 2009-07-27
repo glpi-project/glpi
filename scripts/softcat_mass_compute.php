@@ -51,7 +51,7 @@ $ONLY_UNDEFINED=true;
 $softcatrule = new SoftwareCategoriesRuleCollection;
 $soft = new Software;
 
-$query="SELECT ID, category FROM glpi_software";
+$query="SELECT ID, category FROM glpi_softwares";
 
 if ($result=$DB->query($query)){
 	if ($DB->numrows($result)>0){

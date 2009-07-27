@@ -89,10 +89,10 @@ function showEntityUser($target,$ID){
 
 
 		$query="SELECT DISTINCT glpi_profiles.ID, glpi_profiles.name 
-				FROM glpi_users_profiles 
-				LEFT JOIN glpi_profiles ON (glpi_users_profiles.FK_profiles = glpi_profiles.ID)
-				LEFT JOIN glpi_users ON (glpi_users.ID = glpi_users_profiles.FK_users)
-				WHERE glpi_users_profiles.FK_entities='$ID' AND glpi_users.deleted=0;";
+				FROM glpi_profiles_users 
+				LEFT JOIN glpi_profiles ON (glpi_profiles_users.FK_profiles = glpi_profiles.ID)
+				LEFT JOIN glpi_users ON (glpi_users.ID = glpi_profiles_users.FK_users)
+				WHERE glpi_profiles_users.FK_entities='$ID' AND glpi_users.deleted=0;";
 	
 		$result=$DB->query($query);
 		if ($DB->numrows($result)>0){
@@ -100,11 +100,11 @@ function showEntityUser($target,$ID){
 			while ($data=$DB->fetch_array($result)){
 				echo "<tr><th colspan='$headerspan'>".$data["name"]."</th></tr>";
 
-				$query="SELECT glpi_users.*,glpi_users_profiles.ID as linkID,glpi_users_profiles.recursive,glpi_users_profiles.dynamic
-					FROM glpi_users_profiles 
-					LEFT JOIN glpi_users ON (glpi_users.ID = glpi_users_profiles.FK_users) 
-					WHERE glpi_users_profiles.FK_entities='$ID' AND glpi_users.deleted=0 AND glpi_users_profiles.FK_profiles='".$data['ID']."'   
-					ORDER BY glpi_users_profiles.FK_profiles, glpi_users.name, glpi_users.realname, glpi_users.firstname";
+				$query="SELECT glpi_users.*,glpi_profiles_users.ID as linkID,glpi_profiles_users.recursive,glpi_profiles_users.dynamic
+					FROM glpi_profiles_users 
+					LEFT JOIN glpi_users ON (glpi_users.ID = glpi_profiles_users.FK_users) 
+					WHERE glpi_profiles_users.FK_entities='$ID' AND glpi_users.deleted=0 AND glpi_profiles_users.FK_profiles='".$data['ID']."'   
+					ORDER BY glpi_profiles_users.FK_profiles, glpi_users.name, glpi_users.realname, glpi_users.firstname";
 				$result2=$DB->query($query);
 				if ($DB->numrows($result2)>0){
 					$i=0;
@@ -176,7 +176,7 @@ function showEntityUser($target,$ID){
  * Add a right to a user 
  *
  * @param $input array : parameters : need FK_entities / FK_users / FK_profiles optional : recurisve=0 / dynamic=0
- * @return new glpi_users_profiles ID
+ * @return new glpi_profiles_users ID
  */
 function addUserProfileEntity($input){
 	global $DB;
@@ -192,7 +192,7 @@ function addUserProfileEntity($input){
 		$input['dynamic']=0;
 	}
 
-	$query="INSERT INTO `glpi_users_profiles` ( `FK_users` , `FK_profiles` , `FK_entities` , `recursive` , `dynamic` )
+	$query="INSERT INTO `glpi_profiles_users` ( `FK_users` , `FK_profiles` , `FK_entities` , `recursive` , `dynamic` )
 		VALUES ('".$input['FK_users']."', '".$input['FK_profiles']."', '".$input['FK_entities']."', '".$input['recursive']."', '".$input['dynamic']."');";
 	
 	return $DB->query($query);
@@ -201,30 +201,30 @@ function addUserProfileEntity($input){
 /**
  * Delete a right to a user 
  *
- * @param $ID integer : glpi_users_profiles ID
+ * @param $ID integer : glpi_profiles_users ID
  */
 function deleteUserProfileEntity($ID){
 
 	global $DB;
 
-	$query="SELECT FK_users FROM glpi_users_profiles WHERE ID = '$ID';";
+	$query="SELECT FK_users FROM glpi_profiles_users WHERE ID = '$ID';";
 	$result = $DB->query($query);
 	$data=$DB->fetch_assoc($result);
 	
-	$query="DELETE FROM glpi_users_profiles WHERE ID = '$ID';";
+	$query="DELETE FROM glpi_profiles_users WHERE ID = '$ID';";
 	$result = $DB->query($query);
 }
 
 /**
  * Move a right to another entity
  *
- * @param $ID integer : glpi_users_profiles ID
+ * @param $ID integer : glpi_profiles_users ID
  * @param $FK_entities integer : new entity ID
  */
 function moveUserProfileEntity($ID,$FK_entities){
 
 	global $DB;
-	$query="UPDATE glpi_users_profiles SET FK_entities='$FK_entities' WHERE ID = '$ID';";
+	$query="UPDATE glpi_profiles_users SET FK_entities='$FK_entities' WHERE ID = '$ID';";
 	return $DB->query($query);
 }
 

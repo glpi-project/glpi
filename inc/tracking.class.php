@@ -49,7 +49,7 @@ class Job extends CommonDBTM{
 	 * Constructor
 	**/
 	function __construct(){
-		$this->table="glpi_tracking";
+		$this->table="glpi_tickets";
 		$this->type=TRACKING_TYPE;
 		$this->entity_assign=true;
 
@@ -119,14 +119,14 @@ class Job extends CommonDBTM{
 	function cleanDBonPurge($ID) {
 		global $DB;
 
-		$query="SELECT ID FROM glpi_followups WHERE tracking = '$ID'";
+		$query="SELECT ID FROM glpi_ticketsfollowups WHERE tracking = '$ID'";
 		$result=$DB->query($query);
 		if ($DB->numrows($result)>0)
 			while ($data=$DB->fetch_array($result)){
-				$querydel="DELETE FROM glpi_tracking_planning WHERE id_followup = '".$data['ID']."'";
+				$querydel="DELETE FROM glpi_ticketsplannings WHERE id_followup = '".$data['ID']."'";
 				$DB->query($querydel);				
 			}
-		$query1="DELETE FROM glpi_followups WHERE tracking = '$ID'";
+		$query1="DELETE FROM glpi_ticketsfollowups WHERE tracking = '$ID'";
 		$DB->query($query1);
 
 	}
@@ -796,7 +796,7 @@ class Job extends CommonDBTM{
 		$RESTRICT="";
 		if ($with_private!=1) $RESTRICT = " AND private='0'";
 		// Set number of followups
-		$query = "SELECT count(*) FROM glpi_followups WHERE tracking = '".$this->fields["ID"]."' $RESTRICT";
+		$query = "SELECT count(*) FROM glpi_ticketsfollowups WHERE tracking = '".$this->fields["ID"]."' $RESTRICT";
 		$result = $DB->query($query);
 		return $DB->result($result,0,0);
 
@@ -812,11 +812,11 @@ class Job extends CommonDBTM{
 		// update Status of Job
 
 		global $DB;
-		$query = "SELECT SUM(realtime) FROM glpi_followups WHERE tracking = '$ID'";
+		$query = "SELECT SUM(realtime) FROM glpi_ticketsfollowups WHERE tracking = '$ID'";
 		if ($result = $DB->query($query)) {
 			$sum=$DB->result($result,0,0);
 			if (is_null($sum)) $sum=0;
-			$query2="UPDATE glpi_tracking SET realtime='".$sum."' WHERE ID='$ID'";
+			$query2="UPDATE glpi_tickets SET realtime='".$sum."' WHERE ID='$ID'";
 			$DB->query($query2);
 			return true;
 		} else {
@@ -831,7 +831,7 @@ class Job extends CommonDBTM{
 	**/
 	function updateDateMod($ID) {
 		global $DB;
-		$query="UPDATE glpi_tracking SET date_mod='".$_SESSION["glpi_currenttime"]."' WHERE ID='$ID'";
+		$query="UPDATE glpi_tickets SET date_mod='".$_SESSION["glpi_currenttime"]."' WHERE ID='$ID'";
 		$DB->query($query);
 	}
 
@@ -846,7 +846,7 @@ class Job extends CommonDBTM{
 		global $DB,$LANG;
 
 		if (isset($this->fields["ID"])){
-			$query = "SELECT * FROM glpi_followups WHERE tracking = '".$this->fields["ID"]."' ".($sendprivate?"":" AND private = '0' ")." ORDER by date DESC";
+			$query = "SELECT * FROM glpi_ticketsfollowups WHERE tracking = '".$this->fields["ID"]."' ".($sendprivate?"":" AND private = '0' ")." ORDER by date DESC";
 			$result=$DB->query($query);
 			$nbfollow=$DB->numrows($result);
 			if($format=="html"){
@@ -863,7 +863,7 @@ class Job extends CommonDBTM{
 							$message .= "<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$LANG['mailing'][104].":</span> ".getRealtime($fup->fields["realtime"])."\n";
 
 						$message.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$LANG['mailing'][25]."</span> ";
-						$query2="SELECT * FROM glpi_tracking_planning WHERE id_followup='".$data['ID']."'";
+						$query2="SELECT * FROM glpi_ticketsplannings WHERE id_followup='".$data['ID']."'";
 						$result2=$DB->query($query2);
 						if ($DB->numrows($result2)==0)
 							$message.=$LANG['job'][32]."\n";
@@ -889,7 +889,7 @@ class Job extends CommonDBTM{
 							$message .= $LANG['mailing'][104].": ".getRealtime($fup->fields["realtime"])."\n";
 
 						$message.=$LANG['mailing'][25]." ";
-						$query2="SELECT * FROM glpi_tracking_planning WHERE id_followup='".$data['ID']."'";
+						$query2="SELECT * FROM glpi_ticketsplannings WHERE id_followup='".$data['ID']."'";
 						$result2=$DB->query($query2);
 						if ($DB->numrows($result2)==0)
 							$message.=$LANG['job'][32]."\n";
@@ -1113,13 +1113,13 @@ class Followup  extends CommonDBTM {
 	 * Constructor
 	**/
 	function __construct () {
-		$this->table="glpi_followups";
+		$this->table="glpi_ticketsfollowups";
 		$this->type=FOLLOWUP_TYPE;
 	}
 
 	function cleanDBonPurge($ID) {
 		global $DB;
-		$querydel="DELETE FROM glpi_tracking_planning WHERE id_followup = '$ID'";
+		$querydel="DELETE FROM glpi_ticketsplannings WHERE id_followup = '$ID'";
 		$DB->query($querydel);				
 	}
 

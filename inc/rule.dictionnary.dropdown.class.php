@@ -171,7 +171,7 @@ class DictionnaryDropdownCollection extends RuleCachedCollection{
 				$this->initCache("glpi_rulescachecomputersmodels",array("name"=>"old_value","manufacturer"=>"manufacturer"));
 			break;
 			case RULE_DICTIONNARY_TYPE_COMPUTER :
-				$this->item_table="glpi_type_computers";
+				$this->item_table="glpi_computerstypes";
 				//Init cache system values
 				$this->initCache("glpi_rulescachecomputerstypes");
 			break;
@@ -181,7 +181,7 @@ class DictionnaryDropdownCollection extends RuleCachedCollection{
 				$this->initCache("glpi_rulescachemonitorsmodels",array("name"=>"old_value","manufacturer"=>"manufacturer"));
 			break;
 			case RULE_DICTIONNARY_TYPE_MONITOR :
-				$this->item_table="glpi_type_monitors";
+				$this->item_table="glpi_monitorstypes";
 				//Init cache system values
 				$this->initCache("glpi_rulescachemonitorstypes");
 			break;
@@ -199,7 +199,7 @@ class DictionnaryDropdownCollection extends RuleCachedCollection{
 				$this->initCache("glpi_rulescachephonesmodels",array("name"=>"old_value","manufacturer"=>"manufacturer"));
 			break;
 			case RULE_DICTIONNARY_TYPE_PHONE :
-				$this->item_table="glpi_type_phones";
+				$this->item_table="glpi_phonestypes";
 				$this->initCache("glpi_rulescachephonestypes");
 			break;
 			case RULE_DICTIONNARY_MODEL_PERIPHERAL :
@@ -207,7 +207,7 @@ class DictionnaryDropdownCollection extends RuleCachedCollection{
 				$this->initCache("glpi_rulescacheperipheralsmodels",array("name"=>"old_value","manufacturer"=>"manufacturer"));
 			break;
 			case RULE_DICTIONNARY_TYPE_PERIPHERAL :
-				$this->item_table="glpi_type_peripherals";
+				$this->item_table="glpi_peripheralstypes";
 				$this->initCache("glpi_rulescacheperipheralstypes");
 			break;
 			case RULE_DICTIONNARY_MODEL_NETWORKING :
@@ -215,7 +215,7 @@ class DictionnaryDropdownCollection extends RuleCachedCollection{
 				$this->initCache("glpi_rulescachenetworkequipmentsmodels",array("name"=>"old_value","manufacturer"=>"manufacturer"));
 			break;
 			case RULE_DICTIONNARY_TYPE_NETWORKING :
-				$this->item_table="glpi_type_networkings";
+				$this->item_table="glpi_networkequipmentstypess";
 				$this->initCache("glpi_rulescachenetworkequipmentstypes");
 			break;
 			case RULE_DICTIONNARY_OS :

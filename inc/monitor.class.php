@@ -162,14 +162,14 @@ class Monitor extends CommonDBTM {
 
 		$job =new Job();
 		$query = "SELECT * 
-			FROM glpi_tracking 
+			FROM glpi_tickets 
 			WHERE computer = '$ID'  AND device_type='".MONITOR_TYPE."'";
 		$result = $DB->query($query);
 
 		if ($DB->numrows($result))
 			while ($data=$DB->fetch_array($result)) {
 				if ($CFG_GLPI["keep_tracking_on_delete"]==1){
-					$query = "UPDATE glpi_tracking SET computer = '0', device_type='0' WHERE ID='".$data["ID"]."';";
+					$query = "UPDATE glpi_tickets SET computer = '0', device_type='0' WHERE ID='".$data["ID"]."';";
 					$DB->query($query);
 				} else $job->delete(array("ID"=>$data["ID"]));
 			}
@@ -323,7 +323,7 @@ class Monitor extends CommonDBTM {
       echo "</td></tr>";
          
       echo "<tr><td>".$LANG['common'][17].": 	</td><td>";
-      dropdownValue("glpi_type_monitors", "type", $this->fields["type"]);
+      dropdownValue("glpi_monitorstypes", "type", $this->fields["type"]);
       echo "</td></tr>";
 
       echo "<tr><td>".$LANG['common'][22].": 	</td><td>";

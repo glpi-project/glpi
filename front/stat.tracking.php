@@ -72,15 +72,15 @@ $items=array(
 	$LANG['job'][4]=> array(
 		"user"=>array(	
 			"title"=>$LANG['common'][37],
-			"field"=>"glpi_tracking.author"
+			"field"=>"glpi_tickets.author"
 			),
 		"recipient"=>array(	
 			"title"=>$LANG['job'][3],
-			"field"=>"glpi_tracking.recipient"
+			"field"=>"glpi_tickets.recipient"
 			),
 		"group"=>array(	
 			"title"=>$LANG['common'][35],
-			"field"=>"glpi_tracking.FK_group"
+			"field"=>"glpi_tickets.FK_group"
 			),
 		"title"=>array(	
 			"title"=>$LANG['users'][1],
@@ -94,21 +94,21 @@ $items=array(
 	$LANG['common'][32] => array(
 		"category"=>array(	
 			"title"=>$LANG['common'][36],
-			"field"=>"glpi_tracking.category"
+			"field"=>"glpi_tickets.category"
 			),
 		"priority"=>array(	
 			"title"=>$LANG['joblist'][2],
-			"field"=>"glpi_tracking.priority"
+			"field"=>"glpi_tickets.priority"
 			),
 		"request_type"=>array(	
 			"title"=>$LANG['job'][44],
-			"field"=>"glpi_tracking.request_type"
+			"field"=>"glpi_tickets.request_type"
 			),
 	),
 	$LANG['job'][5] => array(
 		"technicien"=>array(	
 			"title"=>$LANG['job'][6]." ".$LANG['stats'][48],
-			"field"=>"glpi_tracking.assign"
+			"field"=>"glpi_tickets.assign"
 			),
 		"technicien_followup"=>array(	
 				"title"=>$LANG['job'][6]." ".$LANG['stats'][49],
@@ -116,11 +116,11 @@ $items=array(
 				),
 		"assign_group"=>array(	
 			"title"=>$LANG['common'][35],
-			"field"=>"glpi_tracking.assign_group"
+			"field"=>"glpi_tickets.assign_group"
 			),
 		"enterprise"=>array(	
 				"title"=>$LANG['financial'][26],
-				"field"=>"glpi_tracking.assign_ent"
+				"field"=>"glpi_tickets.assign_ent"
 				),
 	)
 		);

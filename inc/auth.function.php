@@ -524,9 +524,9 @@ function initEntityProfiles($userID) {
 //	$profile = new Profile;
 
 	$query = "SELECT DISTINCT glpi_profiles.* 
-		FROM glpi_users_profiles 
-			INNER JOIN glpi_profiles ON (glpi_users_profiles.FK_profiles = glpi_profiles.ID)
-		WHERE glpi_users_profiles.FK_users='$userID' 
+		FROM glpi_profiles_users 
+			INNER JOIN glpi_profiles ON (glpi_profiles_users.FK_profiles = glpi_profiles.ID)
+		WHERE glpi_profiles_users.FK_users='$userID' 
 		ORDER BY glpi_profiles.name";
 	$result = $DB->query($query);
 	$_SESSION['glpiprofiles'] = array ();
@@ -539,11 +539,11 @@ function initEntityProfiles($userID) {
 		}
 
 		foreach ($_SESSION['glpiprofiles'] as $key => $tab) {
-			$query2 = "SELECT glpi_users_profiles.FK_entities as eID, glpi_users_profiles.ID as kID, 
-					glpi_users_profiles.recursive as recursive, glpi_entities.* 
-				FROM glpi_users_profiles 
-				LEFT JOIN glpi_entities ON (glpi_users_profiles.FK_entities = glpi_entities.ID)
-				WHERE glpi_users_profiles.FK_profiles='$key' AND glpi_users_profiles.FK_users='$userID' 
+			$query2 = "SELECT glpi_profiles_users.FK_entities as eID, glpi_profiles_users.ID as kID, 
+					glpi_profiles_users.recursive as recursive, glpi_entities.* 
+				FROM glpi_profiles_users 
+				LEFT JOIN glpi_entities ON (glpi_profiles_users.FK_entities = glpi_entities.ID)
+				WHERE glpi_profiles_users.FK_profiles='$key' AND glpi_profiles_users.FK_users='$userID' 
 				ORDER BY glpi_entities.completename";
 			$result2 = $DB->query($query2);
 			if ($DB->numrows($result2)) {
@@ -716,9 +716,9 @@ function loadGroups() {
 	$_SESSION["glpigroups"] = array ();
 
 	$query_gp = "SELECT FK_groups 
-			FROM glpi_users_groups 
-			LEFT JOIN glpi_groups ON (glpi_users_groups.FK_groups = glpi_groups.ID) 
-			WHERE glpi_users_groups.FK_users='" . $_SESSION['glpiID'] . "' " .
+			FROM glpi_groups_users 
+			LEFT JOIN glpi_groups ON (glpi_groups_users.FK_groups = glpi_groups.ID) 
+			WHERE glpi_groups_users.FK_users='" . $_SESSION['glpiID'] . "' " .
 			getEntitiesRestrictRequest(" AND ","glpi_groups","FK_entities",$_SESSION['glpiactiveentities'],true);
 
 	$result_gp = $DB->query($query_gp);

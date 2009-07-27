@@ -513,7 +513,7 @@ function printReservationItems($target){
 				if ($type==PERIPHERAL_TYPE){
 					$ci->getFromDB($type,$row['id_device']);
 					if (isset($ci->obj->fields["type"])&&$ci->obj->fields["type"]!=0){
-						$typename=getDropdownName("glpi_type_peripherals",$ci->obj->fields["type"]);
+						$typename=getDropdownName("glpi_peripheralstypes",$ci->obj->fields["type"]);
 					}
 				}
 				

@@ -269,7 +269,8 @@ function location_create_new($split_char,$add_first){
 function showLocationUpdateForm(){
 	global $DB,$LANG;
 
-	if (FieldExists("glpi_dropdown_locations", "parentID") || FieldExists("glpi_locations", "parentID")) {
+	if ((TableExists ("glpi_dropdown_locations") && FieldExists("glpi_dropdown_locations", "parentID"))
+         || (TableExists ("glpi_locations") && FieldExists("glpi_locations", "parentID"))) {
 		updateTreeDropdown();
 		return true;
 	}

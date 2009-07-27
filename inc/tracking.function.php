@@ -81,8 +81,8 @@ function showTrackingOnglets($target){
 			if (haveRight("show_all_ticket","1")){
 				echo "<li class='invisible'>&nbsp;</li>";
 
-				$next=getNextItem("glpi_tracking",$ID,"","ID");
-				$prev=getPreviousItem("glpi_tracking",$ID,"","ID");
+				$next=getNextItem("glpi_tickets",$ID,"","ID");
+				$prev=getPreviousItem("glpi_tickets",$ID,"","ID");
 				$cleantarget=preg_replace("/\?ID=([0-9]+)/","",$target);
 				if ($prev>0) echo "<li><a href='$cleantarget?ID=$prev'><img src=\"".$CFG_GLPI["root_doc"]."/pics/left.png\" alt='".$LANG['buttons'][12]."' title='".$LANG['buttons'][12]."'></a></li>";
 				if ($next>0) echo "<li><a href='$cleantarget?ID=$next'><img src=\"".$CFG_GLPI["root_doc"]."/pics/right.png\" alt='".$LANG['buttons'][11]."' title='".$LANG['buttons'][11]."'></a></li>";
@@ -115,18 +115,18 @@ function &getTrackingSortOptions() {
 	static $items=array();
 	
 	if (!count($items)) {		
-		$items[$LANG['joblist'][0]]="glpi_tracking.status";
-		$items[$LANG['common'][27]]="glpi_tracking.date";
-		$items[$LANG['common'][26]]="glpi_tracking.date_mod";
+		$items[$LANG['joblist'][0]]="glpi_tickets.status";
+		$items[$LANG['common'][27]]="glpi_tickets.date";
+		$items[$LANG['common'][26]]="glpi_tickets.date_mod";
 		if (count($_SESSION["glpiactiveentities"])>1){
 			$items[$LANG['Menu'][37]]="glpi_entities.completename";
 		}
-		$items[$LANG['joblist'][2]]="glpi_tracking.priority";
-		$items[$LANG['job'][4]]="glpi_tracking.author";
-		$items[$LANG['joblist'][4]]="glpi_tracking.assign";
-		$items[$LANG['common'][1]]="glpi_tracking.device_type,glpi_tracking.computer";
+		$items[$LANG['joblist'][2]]="glpi_tickets.priority";
+		$items[$LANG['job'][4]]="glpi_tickets.author";
+		$items[$LANG['joblist'][4]]="glpi_tickets.assign";
+		$items[$LANG['common'][1]]="glpi_tickets.device_type,glpi_tickets.computer";
 		$items[$LANG['common'][36]]="glpi_ticketscategories.completename";
-		$items[$LANG['common'][57]]="glpi_tracking.name";
+		$items[$LANG['common'][57]]="glpi_tickets.name";
 	}
 	return ($items);
 }
@@ -196,14 +196,14 @@ function showCentralJobList($target,$start,$status="process",$showgrouptickets=t
 	}
 	 
 	if($status=="waiting"){ // on affiche les tickets en attente
-		$query = "SELECT ID FROM glpi_tracking " .
-				" WHERE ($search_assign) AND status ='waiting' ".getEntitiesRestrictRequest("AND","glpi_tracking").
+		$query = "SELECT ID FROM glpi_tickets " .
+				" WHERE ($search_assign) AND status ='waiting' ".getEntitiesRestrictRequest("AND","glpi_tickets").
 				" ORDER BY date_mod ".getTrackingOrderPrefs($_SESSION["glpiID"]);
 		
 	}else{ // on affiche les tickets planifiés ou assignés à glpiID
 
-		$query = "SELECT ID FROM glpi_tracking " .
-				" WHERE  ($search_author  (( $search_assign ) AND (status ='plan' OR status = 'assign'))) ".getEntitiesRestrictRequest("AND","glpi_tracking").
+		$query = "SELECT ID FROM glpi_tickets " .
+				" WHERE  ($search_author  (( $search_assign ) AND (status ='plan' OR status = 'assign'))) ".getEntitiesRestrictRequest("AND","glpi_tickets").
 				" ORDER BY date_mod ".getTrackingOrderPrefs($_SESSION["glpiID"]);
 		
 	}
@@ -282,7 +282,7 @@ function showCentralJobCount(){
 
 	if (!haveRight("show_all_ticket","1")) return false;	
 
-	$query="SELECT status, COUNT(*) AS COUNT FROM glpi_tracking ".getEntitiesRestrictRequest("WHERE","glpi_tracking")." GROUP BY status";
+	$query="SELECT status, COUNT(*) AS COUNT FROM glpi_tickets ".getEntitiesRestrictRequest("WHERE","glpi_tickets")." GROUP BY status";
 
 
 
@@ -334,9 +334,9 @@ function showJobListForItem($item_type,$item) {
 	$where = "";	
 
 	$query = "SELECT ".getCommonSelectForTrackingSearch()." 
-			FROM glpi_tracking ".getCommonLeftJoinForTrackingSearch()." 
+			FROM glpi_tickets ".getCommonLeftJoinForTrackingSearch()." 
 			WHERE (computer = '$item' and device_type= '$item_type') 
-				ORDER BY glpi_tracking.date_mod DESC LIMIT ".intval($_SESSION['glpilist_limit']);
+				ORDER BY glpi_tickets.date_mod DESC LIMIT ".intval($_SESSION['glpilist_limit']);
 
 	$result = $DB->query($query);
 
@@ -401,9 +401,9 @@ function showJobListForEnterprise($entID) {
 	$where = "";	
 
 	$query = "SELECT ".getCommonSelectForTrackingSearch()." 
-			FROM glpi_tracking ".getCommonLeftJoinForTrackingSearch()." 
+			FROM glpi_tickets ".getCommonLeftJoinForTrackingSearch()." 
 			WHERE (assign_ent = '$entID') 
-				ORDER BY glpi_tracking.date_mod DESC LIMIT ".intval($_SESSION['glpilist_limit']);
+				ORDER BY glpi_tickets.date_mod DESC LIMIT ".intval($_SESSION['glpilist_limit']);
 
 	$result = $DB->query($query);
 
@@ -452,9 +452,9 @@ function showJobListForUser($userID) {
 	$where = "";	
 
 	$query = "SELECT ".getCommonSelectForTrackingSearch()." 
-			FROM glpi_tracking ".getCommonLeftJoinForTrackingSearch()." 
+			FROM glpi_tickets ".getCommonLeftJoinForTrackingSearch()." 
 			WHERE (author = '$userID') 
-				ORDER BY glpi_tracking.date_mod DESC LIMIT ".intval($_SESSION['glpilist_limit']);
+				ORDER BY glpi_tickets.date_mod DESC LIMIT ".intval($_SESSION['glpilist_limit']);
 
 	$result = $DB->query($query);
 
@@ -1179,7 +1179,7 @@ function searchFormTracking($extended=0,$target,$start="",$status="new",$tosearc
 		$option["comp.ID"]				= $LANG['common'][2];
 		$option["comp.name"]				= $LANG['common'][16];
 		$option["glpi_locations.name"]		= $LANG['common'][15];
-		$option["glpi_type_computers.name"]		= $LANG['common'][17];
+		$option["glpi_computerstypes.name"]		= $LANG['common'][17];
 		$option["glpi_computersmodels.name"]		= $LANG['common'][22];
 		$option["glpi_operatingsystems.name"]		= $LANG['computers'][9];
 		$option["processor.designation"]		= $LANG['computers'][21];
@@ -1392,16 +1392,16 @@ function searchFormTracking($extended=0,$target,$start="",$status="new",$tosearc
 function getCommonSelectForTrackingSearch(){
 	$SELECT="";
 	if (count($_SESSION["glpiactiveentities"])>1){
-		$SELECT.= ", glpi_entities.completename as entityname, glpi_tracking.FK_entities as entityID ";
+		$SELECT.= ", glpi_entities.completename as entityname, glpi_tickets.FK_entities as entityID ";
 	}
 
 
-return " DISTINCT glpi_tracking.*,
+return " DISTINCT glpi_tickets.*,
 		glpi_ticketscategories.completename AS catname,
 		glpi_groups.name as groupname ".$SELECT;
 
 		//, author.name AS authorname, author.realname AS authorrealname, author.firstname AS authorfirstname,	
-		//glpi_tracking.assign as assignID, assign.name AS assignname, assign.realname AS assignrealname, assign.firstname AS assignfirstname,
+		//glpi_tickets.assign as assignID, assign.name AS assignname, assign.realname AS assignrealname, assign.firstname AS assignfirstname,
 }
 
 function getCommonLeftJoinForTrackingSearch(){
@@ -1409,13 +1409,13 @@ function getCommonLeftJoinForTrackingSearch(){
 	$FROM="";
 
 	if (count($_SESSION["glpiactiveentities"])>1){
-		$FROM.= " LEFT JOIN glpi_entities ON ( glpi_entities.ID = glpi_tracking.FK_entities) ";
+		$FROM.= " LEFT JOIN glpi_entities ON ( glpi_entities.ID = glpi_tickets.FK_entities) ";
 	}
 
-	return //" LEFT JOIN glpi_users as author ON ( glpi_tracking.author = author.ID) "
-	//." LEFT JOIN glpi_users as assign ON ( glpi_tracking.assign = assign.ID) "
-	" LEFT JOIN glpi_groups ON ( glpi_tracking.FK_group = glpi_groups.ID) "
-	." LEFT JOIN glpi_ticketscategories ON ( glpi_tracking.category = glpi_ticketscategories.ID) ".$FROM;
+	return //" LEFT JOIN glpi_users as author ON ( glpi_tickets.author = author.ID) "
+	//." LEFT JOIN glpi_users as assign ON ( glpi_tickets.assign = assign.ID) "
+	" LEFT JOIN glpi_groups ON ( glpi_tickets.FK_group = glpi_groups.ID) "
+	." LEFT JOIN glpi_ticketscategories ON ( glpi_tickets.category = glpi_ticketscategories.ID) ".$FROM;
 }
 
 
@@ -1497,10 +1497,10 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$to
 	$SELECT = "SELECT ".getCommonSelectForTrackingSearch();
 
 
-	$FROM = " FROM glpi_tracking ".getCommonLeftJoinForTrackingSearch();
+	$FROM = " FROM glpi_tickets ".getCommonLeftJoinForTrackingSearch();
 
 	if ($search!=""&&strpos($tosearch,"followup")!==false) {
-		$FROM.= " LEFT JOIN glpi_followups ON ( glpi_followups.tracking = glpi_tracking.ID)";
+		$FROM.= " LEFT JOIN glpi_ticketsfollowups ON ( glpi_ticketsfollowups.tracking = glpi_tickets.ID)";
 	}
 
 
@@ -1508,52 +1508,52 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$to
 
 
 	switch ($status){
-		case "new": $where.=" glpi_tracking.status = 'new'"; break;
-		case "notold": $where.=" (glpi_tracking.status = 'new' OR glpi_tracking.status = 'plan' OR glpi_tracking.status = 'assign' OR glpi_tracking.status = 'waiting')"; break;
-		case "old": $where.=" ( glpi_tracking.status = 'old_done' OR glpi_tracking.status = 'old_notdone')"; break;
-		case "process": $where.=" ( glpi_tracking.status = 'plan' OR glpi_tracking.status = 'assign' )"; break;
-		case "waiting": $where.=" ( glpi_tracking.status = 'waiting' )"; break;
-		case "old_done": $where.=" ( glpi_tracking.status = 'old_done' )"; break;
-		case "old_notdone": $where.=" ( glpi_tracking.status = 'old_notdone' )"; break;
-		case "assign": $where.=" ( glpi_tracking.status = 'assign' )"; break;
-		case "plan": $where.=" ( glpi_tracking.status = 'plan' )"; break;
+		case "new": $where.=" glpi_tickets.status = 'new'"; break;
+		case "notold": $where.=" (glpi_tickets.status = 'new' OR glpi_tickets.status = 'plan' OR glpi_tickets.status = 'assign' OR glpi_tickets.status = 'waiting')"; break;
+		case "old": $where.=" ( glpi_tickets.status = 'old_done' OR glpi_tickets.status = 'old_notdone')"; break;
+		case "process": $where.=" ( glpi_tickets.status = 'plan' OR glpi_tickets.status = 'assign' )"; break;
+		case "waiting": $where.=" ( glpi_tickets.status = 'waiting' )"; break;
+		case "old_done": $where.=" ( glpi_tickets.status = 'old_done' )"; break;
+		case "old_notdone": $where.=" ( glpi_tickets.status = 'old_notdone' )"; break;
+		case "assign": $where.=" ( glpi_tickets.status = 'assign' )"; break;
+		case "plan": $where.=" ( glpi_tickets.status = 'plan' )"; break;
 		default : $where.=" ( 1 )";;break;
 	}
 
 
 	if ($category > 0){
-		$where.=" AND ".getRealQueryForTreeItem("glpi_ticketscategories",$category,"glpi_tracking.category");
+		$where.=" AND ".getRealQueryForTreeItem("glpi_ticketscategories",$category,"glpi_tickets.category");
 	}
 
-	if (!empty($date1)) $where.=" AND glpi_tracking.date >= '$date1'";
-	if (!empty($date2)) $where.=" AND glpi_tracking.date <= adddate( '". $date2 ."' , INTERVAL 1 DAY ) ";
-	if (!empty($enddate1)) $where.=" AND glpi_tracking.closedate >= '$enddate1'";
-	if (!empty($enddate2)) $where.=" AND glpi_tracking.closedate <= adddate( '". $enddate2 ."' , INTERVAL 1 DAY ) ";
-	if (!empty($datemod1)) $where.=" AND glpi_tracking.date_mod >= '$datemod1'";
-	if (!empty($datemod2)) $where.=" AND glpi_tracking.date_mod <= adddate( '". $datemod2 ."' , INTERVAL 1 DAY ) ";
+	if (!empty($date1)) $where.=" AND glpi_tickets.date >= '$date1'";
+	if (!empty($date2)) $where.=" AND glpi_tickets.date <= adddate( '". $date2 ."' , INTERVAL 1 DAY ) ";
+	if (!empty($enddate1)) $where.=" AND glpi_tickets.closedate >= '$enddate1'";
+	if (!empty($enddate2)) $where.=" AND glpi_tickets.closedate <= adddate( '". $enddate2 ."' , INTERVAL 1 DAY ) ";
+	if (!empty($datemod1)) $where.=" AND glpi_tickets.date_mod >= '$datemod1'";
+	if (!empty($datemod2)) $where.=" AND glpi_tickets.date_mod <= adddate( '". $datemod2 ."' , INTERVAL 1 DAY ) ";
 
 	if ($recipient!=0)
-		$where.=" AND glpi_tracking.recipient='$recipient'";	
+		$where.=" AND glpi_tickets.recipient='$recipient'";	
 
 
 	if ($type!=0)
-		$where.=" AND glpi_tracking.device_type='$type'";	
+		$where.=" AND glpi_tickets.device_type='$type'";	
 
 	if ($item!=0&&$type!=0)
-		$where.=" AND glpi_tracking.computer = '$item'";	
+		$where.=" AND glpi_tickets.computer = '$item'";	
 
 	$search_author=false;
 
-	if ($group>0) $where.=" AND glpi_tracking.FK_group = '$group'";
+	if ($group>0) $where.=" AND glpi_tickets.FK_group = '$group'";
 	else if ($group==-1&&$author!=0&&haveRight("show_group_ticket",1)){
 		// Get Author group's
 		if (count($_SESSION["glpigroups"])){
 			$groups=implode("','",$_SESSION['glpigroups']);
-			$where.=" AND ( glpi_tracking.FK_group IN ('$groups') ";
+			$where.=" AND ( glpi_tickets.FK_group IN ('$groups') ";
 
 			if ($author!=0) {
 				$where.=" OR ";
-				$where.=" glpi_tracking.author = '$author'";
+				$where.=" glpi_tickets.author = '$author'";
 				$search_author=true;
 			}
 			
@@ -1563,31 +1563,31 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$to
 
 
 	if ($author!=0&&!$search_author) {
-		$where.=" AND glpi_tracking.author = '$author' ";
+		$where.=" AND glpi_tickets.author = '$author' ";
 	}
 
 	if (strcmp($assign,"mine")==0){
 		// Case : central acces with show_assign_ticket but without show_all_ticket
 
-		$search_assign=" glpi_tracking.assign = '".$_SESSION["glpiID"]."' ";
+		$search_assign=" glpi_tickets.assign = '".$_SESSION["glpiID"]."' ";
 		if (count($_SESSION['glpigroups'])){
 			if ($assign_group>0){
-				$search_assign.= " OR glpi_tracking.assign_group = '$assign_group' ";
+				$search_assign.= " OR glpi_tickets.assign_group = '$assign_group' ";
 			} else {
 				$groups=implode("','",$_SESSION['glpigroups']);
-				$search_assign.= " OR glpi_tracking.assign_group IN ('$groups') ";
+				$search_assign.= " OR glpi_tickets.assign_group IN ('$groups') ";
 			}
 		}
 
 		// Display mine but also the ones which i am the author
 		$author_part="";
 		if (!$search_author&&isset($_SESSION['glpiID'])){
-			$author_part.=" OR glpi_tracking.author = '".$_SESSION['glpiID']."'";
+			$author_part.=" OR glpi_tickets.author = '".$_SESSION['glpiID']."'";
 
 			// Get Author group's
 			if (haveRight("show_group_ticket",1)&&count($_SESSION["glpigroups"])){
 				$groups=implode("','",$_SESSION['glpigroups']);
-				$author_part.=" OR glpi_tracking.FK_group IN ('$groups') ";
+				$author_part.=" OR glpi_tickets.FK_group IN ('$groups') ";
 	
 			}
 		}
@@ -1596,23 +1596,23 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$to
 
 
 	} else {
-		if ($assign_ent!=0) $where.=" AND glpi_tracking.assign_ent = '$assign_ent'";
-		if ($assign!=0) $where.=" AND glpi_tracking.assign = '$assign'";
-		if ($assign_group!=0) $where.=" AND glpi_tracking.assign_group = '$assign_group'";
+		if ($assign_ent!=0) $where.=" AND glpi_tickets.assign_ent = '$assign_ent'";
+		if ($assign!=0) $where.=" AND glpi_tickets.assign = '$assign'";
+		if ($assign_group!=0) $where.=" AND glpi_tickets.assign_group = '$assign_group'";
 	}
 
 
 
-	if ($request_type!=0) $where.=" AND glpi_tracking.request_type = '$request_type'";
+	if ($request_type!=0) $where.=" AND glpi_tickets.request_type = '$request_type'";
 
-	if ($priority>0) $where.=" AND glpi_tracking.priority = '$priority'";
-	if ($priority<0) $where.=" AND glpi_tracking.priority >= '".abs($priority)."'";
+	if ($priority>0) $where.=" AND glpi_tickets.priority = '$priority'";
+	if ($priority<0) $where.=" AND glpi_tickets.priority >= '".abs($priority)."'";
 
 
 	if ($search!=""){
 		$SEARCH2=makeTextSearch($search);
 		if ($tosearch=="ID"){
-			$where.= " AND (glpi_tracking.ID = '".$search."')";
+			$where.= " AND (glpi_tickets.ID = '".$search."')";
 		}
 		$TMPWHERE="";
 		$first=true;
@@ -1622,7 +1622,7 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$to
 			} else {
 				$TMPWHERE.= " OR ";
 			}
-			$TMPWHERE.= "glpi_followups.contents $SEARCH2 ";
+			$TMPWHERE.= "glpi_ticketsfollowups.contents $SEARCH2 ";
 		}
 		if (strpos($tosearch,"name")!== false){
 			if ($first){
@@ -1630,7 +1630,7 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$to
 			} else {
 				$TMPWHERE.= " OR ";
 			}
-			$TMPWHERE.= "glpi_tracking.name $SEARCH2 ";
+			$TMPWHERE.= "glpi_tickets.name $SEARCH2 ";
 		}
 		if (strpos($tosearch,"contents")!== false){
 			if ($first){
@@ -1638,7 +1638,7 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$to
 			} else {
 				$TMPWHERE.= " OR ";
 			}
-			$TMPWHERE.= "glpi_tracking.contents $SEARCH2 ";
+			$TMPWHERE.= "glpi_tickets.contents $SEARCH2 ";
 		}
 
 		if (!empty($TMPWHERE)){
@@ -1646,11 +1646,11 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$to
 		}
 	}
 
-	$where.=getEntitiesRestrictRequest(" AND","glpi_tracking");
+	$where.=getEntitiesRestrictRequest(" AND","glpi_tickets");
 	
 	if (!empty($wherecomp)){
-		$where.=" AND glpi_tracking.device_type= '1'";
-		$where.= " AND glpi_tracking.computer IN (SELECT comp.ID FROM glpi_computers as comp ";
+		$where.=" AND glpi_tickets.device_type= '1'";
+		$where.= " AND glpi_tickets.computer IN (SELECT comp.ID FROM glpi_computers as comp ";
 		$where.= " LEFT JOIN glpi_computers_devices as gcdev ON (comp.ID = gcdev.FK_computers) ";
 		$where.= "LEFT JOIN glpi_devicesmotherboards as moboard ON (moboard.ID = gcdev.FK_device AND gcdev.device_type = '".MOBOARD_DEVICE."') ";
 		$where.= "LEFT JOIN glpi_devicesprocessors as processor ON (processor.ID = gcdev.FK_device AND gcdev.device_type = '".PROCESSOR_DEVICE."') ";
@@ -1664,14 +1664,14 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$to
 		$where.= "LEFT JOIN glpi_operatingsystems on (glpi_operatingsystems.ID = comp.os)";
 		$where.= "LEFT JOIN glpi_locations on (glpi_locations.ID = comp.location)";
 		$where.= "LEFT JOIN glpi_computersmodels on (glpi_computersmodels.ID = comp.model)";
-		$where.= "LEFT JOIN glpi_type_computers on (glpi_type_computers.ID = comp.type)";
+		$where.= "LEFT JOIN glpi_computerstypes on (glpi_computerstypes.ID = comp.type)";
 		$where.= " LEFT JOIN glpi_suppliers ON (glpi_suppliers.ID = comp.FK_glpi_enterprise ) ";
 		$where.= " LEFT JOIN glpi_users as resptech ON (resptech.ID = comp.tech_num ) ";
 		$where.=" WHERE $wherecomp) ";
 	}
 
 	if (!in_array($sort,getTrackingSortOptions())) {
-		$sort="glpi_tracking.date_mod";
+		$sort="glpi_tickets.date_mod";
 	}
 	if ($order!="ASC" && $order!="DESC") {
 		$order=getTrackingOrderPrefs($_SESSION["glpiID"]);		
@@ -1826,7 +1826,7 @@ function showFollowupsShort($ID) {
 
 	// Get Number of Followups
 
-	$query="SELECT * FROM glpi_followups WHERE tracking='$ID' $RESTRICT ORDER BY date DESC";
+	$query="SELECT * FROM glpi_ticketsfollowups WHERE tracking='$ID' $RESTRICT ORDER BY date DESC";
 	$result=$DB->query($query);
 
 	$out="";
@@ -2199,7 +2199,7 @@ function showJobDetails ($target,$ID){
 			echo $LANG['joblist'][27].":";
 			echo "</td><td>";
 			if ($canupdate){
-				autocompletionTextField("uemail","glpi_tracking","uemail",$job->fields["uemail"],15,$job->fields["FK_entities"]);
+				autocompletionTextField("uemail","glpi_tickets","uemail",$job->fields["uemail"],15,$job->fields["FK_entities"]);
 
 				if (!empty($job->fields["uemail"]))
 					echo "<a href='mailto:".$job->fields["uemail"]."'><img src='".$CFG_GLPI["root_doc"]."/pics/edit.png' alt='Mail'></a>";
@@ -2294,7 +2294,7 @@ function showFollowupsSummary($tID){
 	$RESTRICT="";
 	if (!$showprivate)  $RESTRICT=" AND ( private='0' OR author ='".$_SESSION["glpiID"]."' ) ";
 
-	$query = "SELECT * FROM glpi_followups WHERE (tracking = '$tID') $RESTRICT ORDER BY date DESC";
+	$query = "SELECT * FROM glpi_ticketsfollowups WHERE (tracking = '$tID') $RESTRICT ORDER BY date DESC";
 	$result=$DB->query($query);
 	
 	$rand=mt_rand();
@@ -2349,7 +2349,7 @@ function showFollowupsSummary($tID){
 
 			echo "<td>";
 			$query2="SELECT * 
-				FROM glpi_tracking_planning 
+				FROM glpi_ticketsplannings 
 				WHERE id_followup='".$data['ID']."'";
 			$result2=$DB->query($query2);
 			if ($DB->numrows($result2)==0){
@@ -2659,7 +2659,7 @@ function showUpdateFollowupForm($ID){
 		echo "<td>";
 
 		$query2="SELECT * 
-			FROM glpi_tracking_planning 
+			FROM glpi_ticketsplannings 
 			WHERE id_followup='".$fup->fields['ID']."'";
 		$result2=$DB->query($query2);
 		if ($DB->numrows($result2)==0){
@@ -2762,7 +2762,7 @@ function computeTicketTco($item_type,$item){
 	$totalcost=0;
 
 	$query="SELECT * 
-		FROM glpi_tracking 
+		FROM glpi_tickets 
 		WHERE (device_type = '$item_type' 
 				AND computer = '$item') 
 			AND (cost_time>0 

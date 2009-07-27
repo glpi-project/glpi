@@ -97,10 +97,10 @@ function showGroupUsers($target,$ID){
 		}
 	
 		echo "<div class='center'><table class='tab_cadrehov'><tr><th colspan='$headerspan'>".$LANG['Menu'][14]."</th></tr>";
-		$query="SELECT glpi_users.*, glpi_users_groups.ID as linkID 
-			FROM glpi_users_groups 
-			LEFT JOIN glpi_users ON (glpi_users.ID = glpi_users_groups.FK_users) 
-			WHERE glpi_users_groups.FK_groups='$ID'
+		$query="SELECT glpi_users.*, glpi_groups_users.ID as linkID 
+			FROM glpi_groups_users 
+			LEFT JOIN glpi_users ON (glpi_users.ID = glpi_groups_users.FK_users) 
+			WHERE glpi_groups_users.FK_groups='$ID'
 			ORDER BY glpi_users.name, glpi_users.realname, glpi_users.firstname";
 	
 		$used = array();
@@ -192,7 +192,7 @@ function addUserGroup($uID,$gID){
 	global $DB;
 	if ($uID>0&&$gID>0){
 
-		$query="INSERT INTO glpi_users_groups (FK_users,FK_groups ) VALUES ('$uID','$gID');";
+		$query="INSERT INTO glpi_groups_users (FK_users,FK_groups ) VALUES ('$uID','$gID');";
 		$result = $DB->query($query);
 	}
 }
@@ -200,12 +200,12 @@ function addUserGroup($uID,$gID){
 /**
  * Delete a group to a user 
  *
- * @param $ID integer : glpi_users_groups ID
+ * @param $ID integer : glpi_groups_users ID
  */
 function deleteUserGroup($ID){
 
 	global $DB;
-	$query="DELETE FROM glpi_users_groups WHERE ID = '$ID';";
+	$query="DELETE FROM glpi_groups_users WHERE ID = '$ID';";
 	$result = $DB->query($query);
 }
 
