@@ -1923,11 +1923,11 @@ function displayActiveEntities($target,$myname){
 	
 
 	echo "<script type='javascript'>";
-	echo "var Tree_Category_Loader = new Ext.tree.TreeLoader({
+	echo "var Tree_Category_Loader$rand = new Ext.tree.TreeLoader({
 		dataUrl   :'".$CFG_GLPI["root_doc"]."/ajax/entitytreesons.php'
 	});";
 
-	echo "var Tree_Category = new Ext.tree.TreePanel({
+	echo "var Tree_Category$rand = new Ext.tree.TreePanel({
 		collapsible      : false,
 		animCollapse     : false,
 		border           : false,
@@ -1939,22 +1939,22 @@ function displayActiveEntities($target,$myname){
 		containerScroll  : true,
 		height           : 320,
 		width            : 770,
-		loader           : Tree_Category_Loader,
+		loader           : Tree_Category_Loader$rand,
 		rootVisible 	 : false
 	});";
 	
 	// SET the root node.
-	echo "var Tree_Category_Root = new Ext.tree.AsyncTreeNode({
+	echo "var Tree_Category_Root$rand = new Ext.tree.AsyncTreeNode({
 		text		: '',
 		draggable	: false,
 		id		: '-1'                  // this IS the id of the startnode
 	});
 		
-	Tree_Category.setRootNode(Tree_Category_Root);";
+	Tree_Category$rand.setRootNode(Tree_Category_Root$rand);";
 
 	echo "// Render the tree.
-		Tree_Category.render();
-		Tree_Category_Root.expand();";
+		Tree_Category$rand.render();
+		Tree_Category_Root$rand.expand();";
 
 		echo "</script>";
 	
