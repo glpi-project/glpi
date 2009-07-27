@@ -68,7 +68,7 @@ $RELATION=array(
 	
 	"glpi_cartridgesitemstypes" => array("glpi_cartridgesitems"=>"type"),
 	
-	"glpi_dropdown_case_type" => array("glpi_device_case"=>"type"),
+	"glpi_dropdown_case_type" => array("glpi_devicescases"=>"type"),
 	
 	"glpi_dropdown_consumable_type" =>array("glpi_consumablesitems"=>"type"),
 	
@@ -88,10 +88,10 @@ $RELATION=array(
 	
 	"glpi_dropdown_iface" =>array("glpi_networking_ports"=>"iface"),
 	
-	"glpi_dropdown_interface" =>array("glpi_device_hdd"=>"FK_interface",
-					"glpi_device_drive"=>"FK_interface",
-					"glpi_device_gfxcard"=>"FK_interface",
-					"glpi_device_control"=>"FK_interface"),
+	"glpi_dropdown_interface" =>array("glpi_devicesharddrives"=>"FK_interface",
+					"glpi_devicesdrives"=>"FK_interface",
+					"glpi_devicesgraphiccards"=>"FK_interface",
+					"glpi_devicescontrols"=>"FK_interface"),
 	
 	"glpi_dropdown_kbcategories" =>array("glpi_dropdown_kbcategories"=>"parentID",
 					"glpi_kbitems" =>"categoryID"),
@@ -116,18 +116,18 @@ $RELATION=array(
 	"glpi_dropdown_manufacturer" =>array("glpi_cartridgesitems"=>"FK_glpi_enterprise",
 						"glpi_computers"=>"FK_glpi_enterprise",
 						"glpi_consumablesitems"=>"FK_glpi_enterprise",
-						"glpi_device_case"=>"FK_glpi_enterprise",
-						"glpi_device_control"=>"FK_glpi_enterprise",
-						"glpi_device_drive"=>"FK_glpi_enterprise",
-						"glpi_device_gfxcard"=>"FK_glpi_enterprise",
-						"glpi_device_hdd"=>"FK_glpi_enterprise",
-						"glpi_device_iface"=>"FK_glpi_enterprise",
-						"glpi_device_moboard"=>"FK_glpi_enterprise",
-						"glpi_device_pci"=>"FK_glpi_enterprise",
-						"glpi_device_power"=>"FK_glpi_enterprise",
-						"glpi_device_processor"=>"FK_glpi_enterprise",
-						"glpi_device_ram"=>"FK_glpi_enterprise",
-						"glpi_device_sndcard"=>"FK_glpi_enterprise",
+						"glpi_devicescases"=>"FK_glpi_enterprise",
+						"glpi_devicescontrols"=>"FK_glpi_enterprise",
+						"glpi_devicesdrives"=>"FK_glpi_enterprise",
+						"glpi_devicesgraphiccards"=>"FK_glpi_enterprise",
+						"glpi_devicesharddrives"=>"FK_glpi_enterprise",
+						"glpi_devicesnetworkcards"=>"FK_glpi_enterprise",
+						"glpi_devicesmotherboards"=>"FK_glpi_enterprise",
+						"glpi_devicespcis"=>"FK_glpi_enterprise",
+						"glpi_devicespowersupplies"=>"FK_glpi_enterprise",
+						"glpi_devicesprocessors"=>"FK_glpi_enterprise",
+						"glpi_devicesmemories"=>"FK_glpi_enterprise",
+						"glpi_devicessoundcards"=>"FK_glpi_enterprise",
 						"glpi_monitors"=>"FK_glpi_enterprise",
 						"glpi_networking"=>"FK_glpi_enterprise",
 						"glpi_peripherals"=>"FK_glpi_enterprise",
@@ -164,7 +164,7 @@ $RELATION=array(
 	
 	"glpi_dropdown_phone_power" =>array("glpi_phones"=>"power"),
 	
-	"glpi_dropdown_ram_type" =>array("glpi_device_ram"=>"type"),
+	"glpi_dropdown_ram_type" =>array("glpi_devicesmemories"=>"type"),
 	
 	"glpi_dropdown_rubdocs" =>array("glpi_configs"=>"default_rubdoc_tracking",
 					"glpi_docs"=>"rubrique"),
