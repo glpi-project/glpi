@@ -79,7 +79,7 @@ function showStateSummary($target){
 		}
 		echo "<th>".$LANG['common'][33]."</th>";
 		echo "</tr>";
-		$query="SELECT * FROM glpi_dropdown_state ORDER BY name";
+		$query="SELECT * FROM glpi_states ORDER BY name";
 		$result = $DB->query($query);
 		
 		// No state 

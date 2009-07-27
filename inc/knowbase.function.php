@@ -79,7 +79,7 @@ function searchFormKnowbase($target,$contains,$parentID=0,$faq=0){
 		echo "<tr ><th colspan='2'>".$LANG['buttons'][43]."</th></tr>";
 		echo "<tr class='tab_bg_2'><td class='center'>";
 		echo $LANG['common'][36]." : &nbsp; &nbsp;";
-		dropdownValue("glpi_dropdown_kbcategories","parentID",$parentID);
+		dropdownValue("glpi_knowbaseitemscategories","parentID",$parentID);
 		// ----***** TODO Dropdown qui affiche uniquement les categories contenant une FAQ
 		
 		echo "</td><td><input type='submit' value=\"".$LANG['buttons'][2]."\" class='submit' ></td></tr>";
@@ -123,7 +123,7 @@ function showKbCategoriesFirstLevel($target,$parentID=0,$faq=0){
 					while ($data=$DB->fetch_array($result)){
 						if (!in_array($data['categoryID'],$_SESSION['glpi_faqcategories'])){
 							$_SESSION['glpi_faqcategories'][]=$data['categoryID'];
-							$_SESSION['glpi_faqcategories']=array_merge($_SESSION['glpi_faqcategories'],getAncestorsOf('glpi_dropdown_kbcategories',$data['categoryID']));
+							$_SESSION['glpi_faqcategories']=array_merge($_SESSION['glpi_faqcategories'],getAncestorsOf('glpi_knowbaseitemscategories',$data['categoryID']));
 						}
 					}
 				}
@@ -142,18 +142,18 @@ function showKbCategoriesFirstLevel($target,$parentID=0,$faq=0){
 			}
 			
 		}
-		$query = "SELECT DISTINCT glpi_dropdown_kbcategories.* 
-			FROM glpi_dropdown_kbcategories 
+		$query = "SELECT DISTINCT glpi_knowbaseitemscategories.* 
+			FROM glpi_knowbaseitemscategories 
 			WHERE ID IN ".$_SESSION['glpi_faqcategories']." 
-				AND (glpi_dropdown_kbcategories.parentID = '$parentID') 
+				AND (glpi_knowbaseitemscategories.parentID = '$parentID') 
 			ORDER  BY name ASC";
 	}else{
 		if (!haveRight("knowbase","r")) {
 			return false;
 		}
 		$query = "SELECT * 
-			FROM glpi_dropdown_kbcategories 
-			WHERE  (glpi_dropdown_kbcategories.parentID = '$parentID') 
+			FROM glpi_knowbaseitemscategories 
+			WHERE  (glpi_knowbaseitemscategories.parentID = '$parentID') 
 			ORDER  BY name ASC";
 	}
 
@@ -168,7 +168,7 @@ function showKbCategoriesFirstLevel($target,$parentID=0,$faq=0){
 			$todisplay="";
 			while ($tmpID!=0){
 				$query2="SELECT * 
-					FROM glpi_dropdown_kbcategories 
+					FROM glpi_knowbaseitemscategories 
 					WHERE ID='$tmpID'";
 				$result2=$DB->query($query2);
 				if ($DB->numrows($result2)==1){	
@@ -176,7 +176,7 @@ function showKbCategoriesFirstLevel($target,$parentID=0,$faq=0){
 					$tmpID=$data["parentID"];
 					$todisplay="<a href='$target?parentID=".$data["ID"]."'>".$data["name"]."</a>".(empty($todisplay)?"":" > ").$todisplay;
 				} else $tmpID=0;
-//				echo getDropdownName("glpi_dropdown_kbcategories",$parentID,"")."</td></tr>";
+//				echo getDropdownName("glpi_knowbaseitemscategories",$parentID,"")."</td></tr>";
 			}
 			echo " > ".$todisplay;
 		}
@@ -357,7 +357,7 @@ function showKbItemList($target,$contains,$start,$parentID,$faq=0){
 
 			// Display footer
 			if ($output_type==PDF_OUTPUT_LANDSCAPE || $output_type==PDF_OUTPUT_PORTRAIT){
-				echo displaySearchFooter($output_type,getDropdownName("glpi_dropdown_kbcategories",$parentID));
+				echo displaySearchFooter($output_type,getDropdownName("glpi_knowbaseitemscategories",$parentID));
 			} else {
 				echo displaySearchFooter($output_type);
 			}
@@ -541,7 +541,7 @@ function ShowKbItemFull($ID,$linkauthor=true){
 	
 	
 		$categoryID = $ki->fields["categoryID"];
-		$fullcategoryname = getTreeValueCompleteName("glpi_dropdown_kbcategories",$categoryID);
+		$fullcategoryname = getTreeValueCompleteName("glpi_knowbaseitemscategories",$categoryID);
 	
 		echo "<table class='tab_cadre_fixe' cellpadding='10' ><tr><th colspan='2'>";
 		
@@ -647,7 +647,7 @@ function getFAQCategories()
 
 	global $DB;	
 
-	$query = "SELECT DISTINCT glpi_dropdown_kbcategories.* FROM glpi_kbitems LEFT JOIN glpi_dropdown_kbcategories ON (glpi_kbitems.categoryID = glpi_dropdown_kbcategories.ID) WHERE (glpi_kbitems.faq = '1')";
+	$query = "SELECT DISTINCT glpi_knowbaseitemscategories.* FROM glpi_kbitems LEFT JOIN glpi_knowbaseitemscategories ON (glpi_kbitems.categoryID = glpi_knowbaseitemscategories.ID) WHERE (glpi_kbitems.faq = '1')";
 	$toprocess=array();
 	$catNumbers = array();
 
@@ -666,7 +666,7 @@ function getFAQCategories()
 		}
 	}
 	while (count($toprocess)){
-		$query2="SELECT DISTINCT * FROM glpi_dropdown_kbcategories WHERE '0'='1' ";
+		$query2="SELECT DISTINCT * FROM glpi_knowbaseitemscategories WHERE '0'='1' ";
 		foreach ($toprocess as $key)
 			$query2.=  " OR ID = '$key' ";
 	

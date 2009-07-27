@@ -1012,14 +1012,14 @@ class User extends CommonDBTM {
          echo "<tr class='tab_bg_1'><td class='center'>" . $LANG['common'][15] . ":</td><td>";
          if (!empty($ID)){
             if (count($entities)>0){
-               dropdownValue("glpi_dropdown_locations", "location", $this->fields["location"],1,$entities);
+               dropdownValue("glpi_locations", "location", $this->fields["location"],1,$entities);
             } else {
                echo "&nbsp;";
             }
          } else {
             if (!isMultiEntitiesMode()){
                // Display all locations : only one entity
-               dropdownValue("glpi_dropdown_locations", "location", $this->fields["location"],1);
+               dropdownValue("glpi_locations", "location", $this->fields["location"],1);
             } else {
                echo "&nbsp;";
             }
@@ -1030,10 +1030,10 @@ class User extends CommonDBTM {
          echo "</td></tr>";
 
          echo "<tr class='tab_bg_1'><td class='center'>" . $LANG['users'][1] . "</td><td>";
-            dropdownValue("glpi_dropdown_user_titles","title",$this->fields["title"],1,-1);
+            dropdownValue("glpi_userstitles","title",$this->fields["title"],1,-1);
 
          echo "<td class='center'>" . $LANG['users'][2] . "</td><td>";
-            dropdownValue("glpi_dropdown_user_types","type",$this->fields["type"],1,-1);
+            dropdownValue("glpi_userstypes","type",$this->fields["type"],1,-1);
          echo "</td></tr>";
 
          echo "<tr class='tab_bg_1' align='center'><td>" . $LANG['common'][25] . ":</td><td colspan='3'><textarea  cols='70' rows='3' name='comments' >" . $this->fields["comments"] . "</textarea></td>";

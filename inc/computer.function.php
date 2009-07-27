@@ -219,7 +219,7 @@ function showConnections($target,$ID,$withtemplate='') {
 							echo "<td class='center'><strong>";
 							echo $ci->getLink();
 							echo "</strong>";
-							echo " - ".getDropdownName("glpi_dropdown_state",$ci->getField('state'));
+							echo " - ".getDropdownName("glpi_states",$ci->getField('state'));
 	
 							echo "</td><td>".$ci->getField('serial');
 							echo "</td><td>".$ci->getField('otherserial');
@@ -295,9 +295,9 @@ function showComputerDisks($ID,$withtemplate='') {
 
 	echo "<div class='center'>";
 
-	$query = "SELECT glpi_dropdown_filesystems.name as fsname, glpi_computersdisks.* 
+	$query = "SELECT glpi_filesystems.name as fsname, glpi_computersdisks.* 
 		FROM glpi_computersdisks
-		LEFT JOIN glpi_dropdown_filesystems ON (glpi_computersdisks.FK_filesystems = glpi_dropdown_filesystems.ID)
+		LEFT JOIN glpi_filesystems ON (glpi_computersdisks.FK_filesystems = glpi_filesystems.ID)
 		WHERE (FK_computers = '$ID')";
 
 	if ($result=$DB->query($query)){

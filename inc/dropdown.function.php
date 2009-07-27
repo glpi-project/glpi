@@ -205,7 +205,7 @@ function dropdownNetpoint($myname,$value=0,$location=-1,$display_comments=1,$ent
 	$limit_length=$_SESSION["glpidropdown_limit"];
 	if (empty($value)) $value=0;
 	if ($value>0){
-		$tmpname=getDropdownName("glpi_dropdown_netpoint",$value,1);
+		$tmpname=getDropdownName("glpi_netpoints",$value,1);
 		if ($tmpname["name"]!="&nbsp;"){
 			$name=$tmpname["name"];
 			$comments=$tmpname["comments"];
@@ -216,11 +216,11 @@ function dropdownNetpoint($myname,$value=0,$location=-1,$display_comments=1,$ent
 	$use_ajax=false;	
 	if ($CFG_GLPI["use_ajax"]){
 		if ($location < 0 || $devtype==NETWORKING_TYPE) {
-			$nb=countElementsInTableForEntity("glpi_dropdown_netpoint",$entity_restrict);
+			$nb=countElementsInTableForEntity("glpi_netpoints",$entity_restrict);
 		} else if ($location > 0) {
-			$nb=countElementsInTable("glpi_dropdown_netpoint", "location=$location ");
+			$nb=countElementsInTable("glpi_netpoints", "location=$location ");
 		} else {
-			$nb=countElementsInTable("glpi_dropdown_netpoint", "location=0 ".getEntitiesRestrictRequest(" AND ","glpi_dropdown_netpoint",'',$entity_restrict));
+			$nb=countElementsInTable("glpi_netpoints", "location=0 ".getEntitiesRestrictRequest(" AND ","glpi_netpoints",'',$entity_restrict));
 		}
 		if ($nb>$CFG_GLPI["ajax_limit_count"]){
 			$use_ajax=true;
@@ -246,7 +246,7 @@ function dropdownNetpoint($myname,$value=0,$location=-1,$display_comments=1,$ent
 	if ($display_comments){
 		echo "<img alt='' src='".$CFG_GLPI["root_doc"]."/pics/aide.png' onmouseout=\"cleanhide('comments_$myname$rand')\" onmouseover=\"cleandisplay('comments_$myname$rand')\" ";
 		if (haveRight("entity_dropdown","w")) {
-			echo " style='cursor:pointer;'  onClick=\"var w = window.open('".$CFG_GLPI["root_doc"]."/front/popup.php?popup=dropdown&amp;which=glpi_dropdown_netpoint&amp;value2=$location"."&amp;rand=$rand&amp;FK_entities=$entity_restrict' ,'glpipopup', 'height=400, width=1000, top=100, left=100, scrollbars=yes' );w.focus();\"";
+			echo " style='cursor:pointer;'  onClick=\"var w = window.open('".$CFG_GLPI["root_doc"]."/front/popup.php?popup=dropdown&amp;which=glpi_netpoints&amp;value2=$location"."&amp;rand=$rand&amp;FK_entities=$entity_restrict' ,'glpipopup', 'height=400, width=1000, top=100, left=100, scrollbars=yes' );w.focus();\"";
 		}
 		echo ">";
 		echo "<span class='over_link' id='comments_$myname$rand'>".nl2br($comments)."</span>";
@@ -616,12 +616,12 @@ function getDropdownName($table,$id,$withcomments=0) {
 							}
 							break;
 
-						case "glpi_dropdown_netpoint":
-							$name .= " (".getDropdownName("glpi_dropdown_locations",$data["location"]).")";
+						case "glpi_netpoints":
+							$name .= " (".getDropdownName("glpi_locations",$data["location"]).")";
 							break;
 						case "glpi_software":
 							if ($data["platform"]!=0 && $data["helpdesk_visible"] != 0)
-								$comments.="<br>".$LANG['software'][3].": ".getDropdownName("glpi_dropdown_os",$data["platform"]);
+								$comments.="<br>".$LANG['software'][3].": ".getDropdownName("glpi_operatingsystems",$data["platform"]);
 							break;
 					}
 	
@@ -2255,7 +2255,7 @@ function dropdownStateBehaviour ($name, $lib="", $value=0){
 	}
 
 	$queryStateList = "SELECT ID,name 
-			FROM glpi_dropdown_state 
+			FROM glpi_states 
 			ORDER BY name";
 	$result = $DB->query($queryStateList);
 	if ($DB->numrows($result) > 0) {

@@ -115,7 +115,7 @@ function showPorts($device, $device_type, $withtemplate = '') {
 					echo "</a>";
 				echo "</strong></td>";
 				echo "<td>" . $netport->fields["name"] . "</td>";
-				echo "<td>" . getDropdownName("glpi_dropdown_netpoint", $netport->fields["netpoint"]) . "</td>";
+				echo "<td>" . getDropdownName("glpi_netpoints", $netport->fields["netpoint"]) . "</td>";
 				echo "<td>" . $netport->fields["ifaddr"] . "<br>";
 				echo $netport->fields["ifmac"] . "</td>";
 				echo "<td>" . $netport->fields["netmask"] . "&nbsp;/&nbsp;";
@@ -125,7 +125,7 @@ function showPorts($device, $device_type, $withtemplate = '') {
 				echo "<td>";
 				showPortVLAN($netport->fields["ID"], $withtemplate);
 				echo "</td>";
-				echo "<td>" . getDropdownName("glpi_dropdown_iface", $netport->fields["iface"]) . "</td>";
+				echo "<td>" . getDropdownName("glpi_networkinterfaces", $netport->fields["iface"]) . "</td>";
 				echo "<td width='300' class='tab_bg_2'>";
 				showConnection($ci, $netport, $withtemplate);
 				echo "</td>";
@@ -183,7 +183,7 @@ function showPortVLAN($ID, $withtemplate) {
 		echo "<table cellpadding='0' cellspacing='0'>";
 		while ($line = $DB->fetch_array($result)) {
 			$used[]=$line["FK_vlan"];
-			echo "<tr><td>" . getDropdownName("glpi_dropdown_vlan", $line["FK_vlan"]);
+			echo "<tr><td>" . getDropdownName("glpi_vlans", $line["FK_vlan"]);
 			echo "</td><td>";
 			if ($canedit) {
 				echo "<a href='" . $CFG_GLPI["root_doc"] . "/front/networking.port.php?unassign_vlan=unassigned&amp;ID=" . $line["ID"] . "'>";
@@ -216,7 +216,7 @@ function showPortVLANForm ($ID) {
 
 		echo "<tr  class='tab_bg_2'><td>";
 		echo $LANG['networking'][55] . ":&nbsp;";
-		dropdown("glpi_dropdown_vlan", "vlan",1,-1,$used);
+		dropdown("glpi_vlans", "vlan",1,-1,$used);
 		echo "&nbsp;<input type='submit' name='assign_vlan' value='" . $LANG['buttons'][3] . "' class='submit'>";
 		echo "</td></tr>";
 
@@ -338,7 +338,7 @@ function showNetportForm($target, $ID, $ondevice, $devtype, $several) {
 	echo "</td></tr>";
 
 	echo "<tr class='tab_bg_1'><td>" . $LANG['common'][65] . ":</td><td colspan='2'>";
-	dropdownValue("glpi_dropdown_iface", "iface", $netport->fields["iface"]);
+	dropdownValue("glpi_networkinterfaces", "iface", $netport->fields["iface"]);
 	echo "</td></tr>";
 
 	echo "<tr class='tab_bg_1'><td>" . $LANG['networking'][14] . ":</td><td colspan='2'>";
@@ -927,7 +927,7 @@ function getUniqueObjectByFDQNAndType($fqdn, $type, $entity) {
 	$commonitem->setType($type, true);
 
 	$query = "SELECT obj.ID AS ID
-		FROM " . $commonitem->obj->table . " AS obj, glpi_dropdown_domain AS gdd
+		FROM " . $commonitem->obj->table . " AS obj, glpi_domains AS gdd
 		WHERE obj.FK_entities='$entity' AND obj.domain = gdd.ID
 			AND LOWER( '$fqdn' ) = ( CONCAT( LOWER( obj.name ) , '.', LOWER( gdd.name ) ) )";
 

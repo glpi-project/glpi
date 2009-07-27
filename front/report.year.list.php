@@ -61,13 +61,13 @@ if (isset($_POST["item_type"])&&is_array($_POST["item_type"])){
 	foreach ($_POST["item_type"] as $key => $val)
 	if (in_array($val,$items)){
 		$query[$val] = "SELECT  ".$LINK_ID_TABLE[$val].".name AS itemname, ".$LINK_ID_TABLE[$val].".deleted AS itemdeleted, ";
-		$query[$val].= " glpi_dropdown_locations.completename AS location, glpi_dropdown_contract_type.name AS type, glpi_infocoms.buy_date, glpi_infocoms.warranty_duration, glpi_contracts.begin_date, glpi_contracts.duration, glpi_entities.completename as entname, glpi_entities.ID as entID ";
+		$query[$val].= " glpi_locations.completename AS location, glpi_contractstypes.name AS type, glpi_infocoms.buy_date, glpi_infocoms.warranty_duration, glpi_contracts.begin_date, glpi_contracts.duration, glpi_entities.completename as entname, glpi_entities.ID as entID ";
 		$query[$val].= " FROM ".$LINK_ID_TABLE[$val]." ";
 		$query[$val].= " LEFT JOIN glpi_contracts_items ON glpi_contracts_items.device_type='$val' AND ".$LINK_ID_TABLE[$val].".ID =  glpi_contracts_items.FK_device ";
 		$query[$val].= " LEFT JOIN glpi_contracts ON glpi_contracts_items.FK_contract=glpi_contracts.ID AND glpi_contracts_items.FK_contract IS NOT NULL ";
 		$query[$val].= " LEFT JOIN glpi_infocoms ON glpi_infocoms.device_type='$val' AND ".$LINK_ID_TABLE[$val].".ID =  glpi_infocoms.FK_device ";
-		$query[$val].= " LEFT JOIN glpi_dropdown_contract_type ON (glpi_contracts.contract_type = glpi_dropdown_contract_type.ID) ";
-		$query[$val].= " LEFT JOIN glpi_dropdown_locations ON (".$LINK_ID_TABLE[$val].".location = glpi_dropdown_locations.ID) ";
+		$query[$val].= " LEFT JOIN glpi_contractstypes ON (glpi_contracts.contract_type = glpi_contractstypes.ID) ";
+		$query[$val].= " LEFT JOIN glpi_locations ON (".$LINK_ID_TABLE[$val].".location = glpi_locations.ID) ";
 		$query[$val].= " LEFT JOIN glpi_entities ON (".$LINK_ID_TABLE[$val].".FK_entities = glpi_entities.ID) ";
 
 		$query[$val].=" WHERE ".$LINK_ID_TABLE[$val].".is_template ='0' ";

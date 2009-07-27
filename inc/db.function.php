@@ -122,7 +122,7 @@ function getTreeLeafValueName($table,$ID,$withcomments=false){
 	if ($ID==0 && $table=="glpi_entities") {
 		$name = $LANG['entity'][2];
 		
-	} else if ($ID==0 && $table=="glpi_dropdown_kbcategories") {
+	} else if ($ID==0 && $table=="glpi_knowbaseitemscategories") {
 		$name = $LANG['knowbase'][12];
 		
 	} else {
@@ -161,7 +161,7 @@ function getTreeValueCompleteName($table,$ID,$withcomments=false){
 	if ($ID==0 && $table=="glpi_entities") {
 		$name = $LANG['entity'][2];
 		
-	} else if ($ID==0 && $table=="glpi_dropdown_kbcategories") {
+	} else if ($ID==0 && $table=="glpi_knowbaseitemscategories") {
 		$name = $LANG['knowbase'][12];
 		
 	} else {
@@ -809,12 +809,12 @@ function getUserName($ID,$link=0){
 				if (!empty($data["mobile"]))
 					$user["comments"].=$LANG['common'][42].": ".$data["mobile"]."<br>";
 				if ($data["location"]>0){
-					$user["comments"].=$LANG['common'][15].": ".getDropdownName("glpi_dropdown_locations",$data["location"])."<br>";
+					$user["comments"].=$LANG['common'][15].": ".getDropdownName("glpi_locations",$data["location"])."<br>";
 				}
 				if ($data["title"]>0)
-					$user["comments"].=$LANG['users'][1].": ".getDropdownName("glpi_dropdown_user_titles",$data["title"])."<br>";
+					$user["comments"].=$LANG['users'][1].": ".getDropdownName("glpi_userstitles",$data["title"])."<br>";
 				if ($data["type"]>0)
-					$user["comments"].=$LANG['users'][2].": ".getDropdownName("glpi_dropdown_user_types",$data["type"])."<br>";
+					$user["comments"].=$LANG['users'][2].": ".getDropdownName("glpi_userstypes",$data["type"])."<br>";
 			} else {
 				$user=$username;
 			}

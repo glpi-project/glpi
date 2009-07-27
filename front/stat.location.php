@@ -71,10 +71,10 @@ echo "<table class='tab_cadre'><tr class='tab_bg_2'><td rowspan='2'>";
 echo "<select name=\"dropdown\">";
 
 echo "<option value=\"glpi_type_computers\" ".($_POST["dropdown"]=="glpi_type_computers"?"selected":"").">".$LANG['common'][17]."</option>";
-echo "<option value=\"glpi_dropdown_model\" ".($_POST["dropdown"]=="glpi_dropdown_model"?"selected":"").">".$LANG['common'][22]."</option>";
+echo "<option value=\"glpi_computersmodels\" ".($_POST["dropdown"]=="glpi_computersmodels"?"selected":"").">".$LANG['common'][22]."</option>";
 
-echo "<option value=\"glpi_dropdown_os\" ".($_POST["dropdown"]=="glpi_dropdown_os"?"selected":"").">".$LANG['computers'][9]."</option>";
-echo "<option value=\"glpi_dropdown_locations\" ".($_POST["dropdown"]=="glpi_dropdown_locations"?"selected":"").">".$LANG['common'][15]."</option>";
+echo "<option value=\"glpi_operatingsystems\" ".($_POST["dropdown"]=="glpi_operatingsystems"?"selected":"").">".$LANG['computers'][9]."</option>";
+echo "<option value=\"glpi_locations\" ".($_POST["dropdown"]=="glpi_locations"?"selected":"").">".$LANG['common'][15]."</option>";
 
 $devices=getDictDeviceLabel(-1);
 

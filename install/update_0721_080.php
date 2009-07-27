@@ -46,44 +46,79 @@ function update0721to080() {
    displayMigrationMessage("080", $LANG['update'][141] . ' - Clean DB : rename tables'); // Updating schema
 
    $glpi_tables=array(
-      'glpi_alerts'                    => 'glpi_alerts',
-      'glpi_auth_ldap'                 => 'glpi_authldaps',
-      'glpi_auth_ldap_replicate'       => 'glpi_authldapsreplicates',
-      'glpi_auth_mail'                 => 'glpi_authmails',
-      'glpi_bookmark'                  => 'glpi_bookmarks',
-      'glpi_display_default'           => 'glpi_bookmarks_users',
-      'glpi_cartridges'                => 'glpi_cartridges',
-      'glpi_cartridges_type'           => 'glpi_cartridgesitems',
-      'glpi_cartridges_assoc'          => 'glpi_cartridges_printersmodels',
-      'glpi_dropdown_cartridge_type'   => 'glpi_cartridgesitemstypes',
-      'glpi_computer_device'           => 'glpi_computers_devices',
-      'glpi_computerdisks'             => 'glpi_computersdisks',
-      'glpi_computers'                 => 'glpi_computers',
-      'glpi_config'                    => 'glpi_configs',
-      'glpi_connect_wire'              => 'glpi_computers_items',
-      'glpi_consumables'               => 'glpi_consumables',
-      'glpi_consumables_type'          => 'glpi_consumablesitems',
-      'glpi_contact_enterprise'        => 'glpi_contacts_suppliers',
-      'glpi_contacts'                  => 'glpi_contacts',
-      'glpi_contract_device'           => 'glpi_contracts_items',
-      'glpi_contract_enterprise'       => 'glpi_contracts_suppliers',
-      'glpi_contracts'                 => 'glpi_contracts',
-      'glpi_device_case'               => 'glpi_devicescases',
-      'glpi_device_control'            => 'glpi_devicescontrols',
-      'glpi_device_drive'              => 'glpi_devicesdrives',
-      'glpi_device_gfxcard'            => 'glpi_devicesgraphiccards',
-      'glpi_device_hdd'                => 'glpi_devicesharddrives',
-      'glpi_device_iface'              => 'glpi_devicesnetworkcards',
-      'glpi_device_moboard'            => 'glpi_devicesmotherboards',
-      'glpi_device_pci'                => 'glpi_devicespcis',
-      'glpi_device_power'              => 'glpi_devicespowersupplies',
-      'glpi_device_processor'          => 'glpi_devicesprocessors',
-      'glpi_device_ram'                => 'glpi_devicesmemories',
-      'glpi_device_sndcard'            => 'glpi_devicessoundcards',
-      'glpi_display'                   => 'glpi_displayprefs',
-      'glpi_docs'                      => 'glpi_documents',
-      'glpi_doc_device'                => 'glpi_documents_items',
-      'glpi_dropdown_rubdocs'          => 'glpi_documentscategories',
+      'glpi_alerts'                       => 'glpi_alerts',
+      'glpi_auth_ldap'                    => 'glpi_authldaps',
+      'glpi_auth_ldap_replicate'          => 'glpi_authldapsreplicates',
+      'glpi_dropdown_auto_update'         => 'glpi_autoupdatesystems',
+      'glpi_auth_mail'                    => 'glpi_authmails',
+      'glpi_bookmark'                     => 'glpi_bookmarks',
+      'glpi_display_default'              => 'glpi_bookmarks_users',
+      'glpi_dropdown_budget'              => 'glpi_budgets',
+      'glpi_cartridges'                   => 'glpi_cartridges',
+      'glpi_cartridges_type'              => 'glpi_cartridgesitems',
+      'glpi_cartridges_assoc'             => 'glpi_cartridges_printersmodels',
+      'glpi_dropdown_cartridge_type'      => 'glpi_cartridgesitemstypes',
+      'glpi_computer_device'              => 'glpi_computers_devices',
+      'glpi_computers'                    => 'glpi_computers',
+      'glpi_computerdisks'                => 'glpi_computersdisks',
+      'glpi_dropdown_model'               => 'glpi_computersmodels',
+      'glpi_connect_wire'                 => 'glpi_computers_items',
+      'glpi_config'                       => 'glpi_configs',
+      'glpi_consumables'                  => 'glpi_consumables',
+      'glpi_consumables_type'             => 'glpi_consumablesitems',
+      'glpi_dropdown_consumable_type'     => 'glpi_consumablesitemstypes',
+      'glpi_contact_enterprise'           => 'glpi_contacts_suppliers',
+      'glpi_contacts'                     => 'glpi_contacts',
+      'glpi_dropdown_contact_type'        => 'glpi_contactstypes',
+      'glpi_contracts'                    => 'glpi_contracts',
+      'glpi_dropdown_contract_type'       => 'glpi_contractstypes',
+      'glpi_contract_device'              => 'glpi_contracts_items',
+      'glpi_contract_enterprise'          => 'glpi_contracts_suppliers',
+      'glpi_device_case'                  => 'glpi_devicescases',
+      'glpi_dropdown_case_type'           => 'glpi_devicescasestypes',
+      'glpi_device_control'               => 'glpi_devicescontrols',
+      'glpi_device_drive'                 => 'glpi_devicesdrives',
+      'glpi_device_gfxcard'               => 'glpi_devicesgraphiccards',
+      'glpi_device_hdd'                   => 'glpi_devicesharddrives',
+      'glpi_device_iface'                 => 'glpi_devicesnetworkcards',
+      'glpi_device_moboard'               => 'glpi_devicesmotherboards',
+      'glpi_device_pci'                   => 'glpi_devicespcis',
+      'glpi_device_power'                 => 'glpi_devicespowersupplies',
+      'glpi_device_processor'             => 'glpi_devicesprocessors',
+      'glpi_device_ram'                   => 'glpi_devicesmemories',
+      'glpi_dropdown_ram_type'            => 'glpi_devicesmemoriestypes',
+      'glpi_device_sndcard'               => 'glpi_devicessoundcards',
+      'glpi_display'                      => 'glpi_displayprefs',
+      'glpi_docs'                         => 'glpi_documents',
+      'glpi_dropdown_rubdocs'             => 'glpi_documentscategories',
+      'glpi_doc_device'                   => 'glpi_documents_items',
+      'glpi_dropdown_domain'              => 'glpi_domains',
+      'glpi_dropdown_filesystems'         => 'glpi_filesystems',
+      'glpi_dropdown_kbcategories'        => 'glpi_knowbaseitemscategories',
+      'glpi_dropdown_locations'           => 'glpi_locations',
+      'glpi_dropdown_interface'           => 'glpi_interfaces',
+      'glpi_dropdown_manufacturer'        => 'glpi_manufacturers',
+      'glpi_dropdown_model_monitors'      => 'glpi_monitorsmodels',
+      'glpi_dropdown_netpoint'            => 'glpi_netpoints',
+      'glpi_dropdown_firmware'            => 'glpi_networkequipmentsfirmwares',
+      'glpi_dropdown_model_networking'    => 'glpi_networkequipmentsmodels',
+      'glpi_dropdown_iface'               => 'glpi_networkinterfaces',
+      'glpi_dropdown_network'             => 'glpi_networks',
+      'glpi_dropdown_os'                  => 'glpi_operatingsystems',
+      'glpi_dropdown_os_sp'               => 'glpi_operatingsystemsservicepacks',
+      'glpi_dropdown_os_version'          => 'glpi_operatingsystemsversions',
+      'glpi_dropdown_model_peripherals'   => 'glpi_peripheralsmodels',
+      'glpi_dropdown_model_phones'        => 'glpi_phonesmodels',
+      'glpi_dropdown_phone_power'         => 'glpi_phonespowersupplies',
+      'glpi_dropdown_model_printers'      => 'glpi_printersmodels',
+      'glpi_dropdown_software_category'   => 'glpi_softwarescategories',
+      'glpi_dropdown_licensetypes'        => 'glpi_softwarelicensestypes',
+      'glpi_dropdown_state'               => 'glpi_states',
+      'glpi_dropdown_enttype'             => 'glpi_supplierstypes',
+      'glpi_dropdown_tracking_category'   => 'glpi_ticketscategories',
+      'glpi_dropdown_user_titles'         => 'glpi_userstitles',
+      'glpi_dropdown_user_types'          => 'glpi_userstypes',
+      'glpi_dropdown_vlan'                => 'glpi_vlans',
    );
    $backup_tables=false;
 	foreach ($glpi_tables as $original_table => $new_table) {
@@ -247,46 +282,39 @@ function update0721to080() {
 	}
 
 
-	if (TableExists("glpi_dropdown_budget")) {
-      if (!FieldExists("glpi_dropdown_budget","FK_entities")) {
-            $query = "ALTER TABLE `glpi_dropdown_budget` ADD `FK_entities` int(11) NOT NULL default '0'";
-            $DB->query($query) or die("0.80 add FK_entities field in glpi_dropdown_budget" . $LANG['update'][90] . $DB->error());
-      }
+   if (!FieldExists("glpi_budgets","recursive")) {
+      $query = "ALTER TABLE `glpi_budgets` ADD `recursive` tinyint(1) NOT NULL DEFAULT '0' AFTER `name`";
+      $DB->query($query) or die("0.80 add recursive field in glpi_budgets" . $LANG['update'][90] . $DB->error());
+   }
+   if (!FieldExists("glpi_budgets","FK_entities")) {
+         $query = "ALTER TABLE `glpi_budgets` ADD `FK_entities` int(11) NOT NULL default '0' AFTER `name`;";
+         $DB->query($query) or die("0.80 add FK_entities field in glpi_budgets" . $LANG['update'][90] . $DB->error());
+   }
+   if (!FieldExists("glpi_budgets","deleted")) {
+      $query = "ALTER TABLE `glpi_budgets` ADD `deleted` tinyint(1) NOT NULL DEFAULT '0'";
+      $DB->query($query) or die("0.80 add deleted field in glpi_budgets" . $LANG['update'][90] . $DB->error());
+   }
+   if (!FieldExists("glpi_budgets","begin_date")) {
+      $query = "ALTER TABLE `glpi_budgets` ADD `begin_date` DATE NULL";
+      $DB->query($query) or die("0.80 add begin_date field in glpi_budgets" . $LANG['update'][90] . $DB->error());
+   }
+   if (!FieldExists("glpi_budgets","end_date")) {
+      $query = "ALTER TABLE `glpi_budgets` ADD `end_date` DATE NULL";
+      $DB->query($query) or die("0.80 add end_date field in glpi_budgets" . $LANG['update'][90] . $DB->error());
+   }
+   if (!FieldExists("glpi_budgets","value")) {
+      $query = "ALTER TABLE `glpi_budgets` ADD `value` DECIMAL( 20, 4 )  NOT NULL default '0.0000'";
+      $DB->query($query) or die("0.80 add value field in glpi_budgets" . $LANG['update'][90] . $DB->error());
+   }
+   if (!FieldExists("glpi_budgets","is_template")) {
+      $query = "ALTER TABLE `glpi_budgets` ADD `is_template` tinyint(1) NOT NULL default '0'";
+      $DB->query($query) or die("0.80 add is_template field in glpi_budgets" . $LANG['update'][90] . $DB->error());
+   }
 
-      if (!FieldExists("glpi_dropdown_budget","recursive")) {
-         $query = "ALTER TABLE `glpi_dropdown_budget` ADD `recursive` tinyint(1) NOT NULL DEFAULT '0'";
-			$DB->query($query) or die("0.80 add recursive field in glpi_dropdown_budget" . $LANG['update'][90] . $DB->error());
-      }
-      if (!FieldExists("glpi_dropdown_budget","deleted")) {
-         $query = "ALTER TABLE `glpi_dropdown_budget` ADD `deleted` tinyint(1) NOT NULL DEFAULT '0'";
-			$DB->query($query) or die("0.80 add deleted field in glpi_dropdown_budget" . $LANG['update'][90] . $DB->error());
-      }
-      if (!FieldExists("glpi_dropdown_budget","begin_date")) {
-         $query = "ALTER TABLE `glpi_dropdown_budget` ADD `begin_date` DATE NULL";
-			$DB->query($query) or die("0.80 add begin_date field in glpi_dropdown_budget" . $LANG['update'][90] . $DB->error());
-      }
-      if (!FieldExists("glpi_dropdown_budget","end_date")) {   
-			$query = "ALTER TABLE `glpi_dropdown_budget` ADD `end_date` DATE NULL";
-			$DB->query($query) or die("0.80 add end_date field in glpi_dropdown_budget" . $LANG['update'][90] . $DB->error());
-      }
-      if (!FieldExists("glpi_dropdown_budget","value")) {
-         $query = "ALTER TABLE `glpi_dropdown_budget` ADD `value` DECIMAL( 20, 4 )  NOT NULL default '0.0000'";
-			$DB->query($query) or die("0.80 add value field in glpi_dropdown_budget" . $LANG['update'][90] . $DB->error());
-      }
-      if (!FieldExists("glpi_dropdown_budget","is_template")) {
-         $query = "ALTER TABLE `glpi_dropdown_budget` ADD `is_template` tinyint(1) NOT NULL default '0'";
-			$DB->query($query) or die("0.80 add is_template field in glpi_dropdown_budget" . $LANG['update'][90] . $DB->error());
-      }
-
-      if (!FieldExists("glpi_dropdown_budget","tplname")) {
-         $query = "ALTER TABLE `glpi_dropdown_budget`  ADD `tplname` varchar(255) default NULL";
-			$DB->query($query) or die("0.80 add tplname field in glpi_dropdown_budget" . $LANG['update'][90] . $DB->error());
-      }
-      if (!TableExists("glpi_budgets")) {
-         $query = "RENAME TABLE `glpi_dropdown_budget`  TO `glpi_budgets` ;";
-         $DB->query($query) or die("0.80 rename glpi_dropdown_budget to glpi_budgets" . $LANG['update'][90] . $DB->error());
-      }
-	}
+   if (!FieldExists("glpi_budgets","tplname")) {
+      $query = "ALTER TABLE `glpi_budgets`  ADD `tplname` varchar(255) default NULL";
+      $DB->query($query) or die("0.80 add tplname field in glpi_budgets" . $LANG['update'][90] . $DB->error());
+   }
 
 	// Display "Work ended." message - Keep this as the last action.
    displayMigrationMessage("080"); // End

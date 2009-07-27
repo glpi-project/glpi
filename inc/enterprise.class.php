@@ -160,7 +160,7 @@ class Enterprise extends CommonDBTM {
       echo "</td>";
 
       echo "<td>".$LANG['financial'][79].":		</td><td>";
-      dropdownValue("glpi_dropdown_enttype", "type", $this->fields["type"]);
+      dropdownValue("glpi_supplierstypes", "type", $this->fields["type"]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>".$LANG['help'][35].":		</td>";

@@ -161,12 +161,12 @@ class DictionnaryDropdownCollection extends RuleCachedCollection{
 
 		switch ($this->sub_type){
 			case RULE_DICTIONNARY_MANUFACTURER :
-				$this->item_table="glpi_dropdown_manufacturer";
+				$this->item_table="glpi_manufacturers";
 				//Init cache system values
 				$this->initCache("glpi_rule_cache_manufacturer");
 			break;
 			case RULE_DICTIONNARY_MODEL_COMPUTER :
-				$this->item_table="glpi_dropdown_model";
+				$this->item_table="glpi_computersmodels";
 				//Init cache system values
 				$this->initCache("glpi_rule_cache_model_computer",array("name"=>"old_value","manufacturer"=>"manufacturer"));
 			break;
@@ -176,7 +176,7 @@ class DictionnaryDropdownCollection extends RuleCachedCollection{
 				$this->initCache("glpi_rule_cache_type_computer");
 			break;
 			case RULE_DICTIONNARY_MODEL_MONITOR :
-				$this->item_table="glpi_dropdown_model_monitors";
+				$this->item_table="glpi_monitorsmodels";
 				//Init cache system values
 				$this->initCache("glpi_rule_cache_model_monitor",array("name"=>"old_value","manufacturer"=>"manufacturer"));
 			break;
@@ -186,7 +186,7 @@ class DictionnaryDropdownCollection extends RuleCachedCollection{
 				$this->initCache("glpi_rule_cache_type_monitor");
 			break;
 			case RULE_DICTIONNARY_MODEL_PRINTER :
-				$this->item_table="glpi_dropdown_model_printers";
+				$this->item_table="glpi_printersmodels";
 				//Init cache system values
 				$this->initCache("glpi_rule_cache_model_printer",array("name"=>"old_value","manufacturer"=>"manufacturer"));
 			break;
@@ -195,7 +195,7 @@ class DictionnaryDropdownCollection extends RuleCachedCollection{
 				$this->initCache("glpi_rule_cache_type_printer");
 			break;
 			case RULE_DICTIONNARY_MODEL_PHONE :
-				$this->item_table="glpi_dropdown_model_phones";
+				$this->item_table="glpi_phonesmodels";
 				$this->initCache("glpi_rule_cache_model_phone",array("name"=>"old_value","manufacturer"=>"manufacturer"));
 			break;
 			case RULE_DICTIONNARY_TYPE_PHONE :
@@ -203,7 +203,7 @@ class DictionnaryDropdownCollection extends RuleCachedCollection{
 				$this->initCache("glpi_rule_cache_type_phone");
 			break;
 			case RULE_DICTIONNARY_MODEL_PERIPHERAL :
-				$this->item_table="glpi_dropdown_model_peripherals";
+				$this->item_table="glpi_peripheralsmodels";
 				$this->initCache("glpi_rule_cache_model_peripheral",array("name"=>"old_value","manufacturer"=>"manufacturer"));
 			break;
 			case RULE_DICTIONNARY_TYPE_PERIPHERAL :
@@ -211,7 +211,7 @@ class DictionnaryDropdownCollection extends RuleCachedCollection{
 				$this->initCache("glpi_rule_cache_type_peripheral");
 			break;
 			case RULE_DICTIONNARY_MODEL_NETWORKING :
-				$this->item_table="glpi_dropdown_model_networking";
+				$this->item_table="glpi_networkequipmentsmodels";
 				$this->initCache("glpi_rule_cache_model_networking",array("name"=>"old_value","manufacturer"=>"manufacturer"));
 			break;
 			case RULE_DICTIONNARY_TYPE_NETWORKING :
@@ -219,15 +219,15 @@ class DictionnaryDropdownCollection extends RuleCachedCollection{
 				$this->initCache("glpi_rule_cache_type_networking");
 			break;
 			case RULE_DICTIONNARY_OS :
-				$this->item_table="glpi_dropdown_os";
+				$this->item_table="glpi_operatingsystems";
 				$this->initCache("glpi_rule_cache_os");
 			break;
 			case RULE_DICTIONNARY_OS_SP :
-				$this->item_table="glpi_dropdown_os_sp";
+				$this->item_table="glpi_operatingsystemsservicepacks";
 				$this->initCache("glpi_rule_cache_os_sp");
 			break;
 			case RULE_DICTIONNARY_OS_VERSION :
-				$this->item_table="glpi_dropdown_os_version";
+				$this->item_table="glpi_operatingsystemsversions";
 				$this->initCache("glpi_rule_cache_os_version");
 			break;
 		}
@@ -405,10 +405,10 @@ class DictionnaryDropdownCollection extends RuleCachedCollection{
 
 
 		// Need to give manufacturer from item table
-		$Sql="SELECT DISTINCT glpi_dropdown_manufacturer.ID AS idmanu, glpi_dropdown_manufacturer.name AS manufacturer, 
+		$Sql="SELECT DISTINCT glpi_manufacturers.ID AS idmanu, glpi_manufacturers.name AS manufacturer, 
 			".$this->item_table.".ID AS ID, `".$this->item_table."`.name AS name, `".$this->item_table."`.comments AS comments 
 			FROM `".$this->item_table."`, $model_table 
-			LEFT JOIN glpi_dropdown_manufacturer ON ($model_table.FK_glpi_enterprise=glpi_dropdown_manufacturer.ID) 
+			LEFT JOIN glpi_manufacturers ON ($model_table.FK_glpi_enterprise=glpi_manufacturers.ID) 
 			WHERE $model_table.model=`".$this->item_table."`.ID ";
 		if ($offset) {
 			$Sql .= " LIMIT ".intval($offset).",999999999";

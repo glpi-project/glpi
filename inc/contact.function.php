@@ -98,7 +98,7 @@ function showEnterpriseContact($instID) {
 			echo "<tr class='tab_bg_1".($data["deleted"]?"_2":"")."'>";
 			echo "<td class='center'><a href='".$CFG_GLPI["root_doc"]."/front/enterprise.form.php?ID=".$data["entID"]."'>".getDropdownName("glpi_enterprises",$data["entID"])."</a></td>";
 			echo "<td class='center'>".getDropdownName("glpi_entities",$data["entity"])."</td>";
-			echo "<td class='center'>".getDropdownName("glpi_dropdown_enttype",$data["type"])."</td>";
+			echo "<td class='center'>".getDropdownName("glpi_supplierstypes",$data["type"])."</td>";
 			echo "<td align='center'  width='100'>".$data["phone"]."</td>";
 			echo "<td align='center'  width='100'>".$data["fax"]."</td>";
 			echo "<td class='center'>".$website."</td>";

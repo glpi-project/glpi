@@ -293,7 +293,7 @@ class Ocsng extends CommonDBTM {
 		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['ocsconfig'][9] . " </td><td> <input type=\"text\" size='30' name=\"tag_exclude\" value=\"" . $this->fields["tag_exclude"] . "\"></td></tr>";
 
 		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['ocsconfig'][16] . " </td><td>";
-		dropdownValue("glpi_dropdown_state", "default_state", $this->fields["default_state"]);
+		dropdownValue("glpi_states", "default_state", $this->fields["default_state"]);
 		echo "</td></tr>";
 		
 		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['ocsconfig'][48] . " </td><td>";
@@ -383,7 +383,7 @@ class Ocsng extends CommonDBTM {
 		dropdownYesNo("link_serial", $this->fields["link_serial"]);
 		echo "</td></tr>";
 		echo "<tr class='tab_bg_2'><td>" . $LANG['ocsconfig'][55] . " </td><td>";
-		dropdownValue("glpi_dropdown_state", "link_if_status", $this->fields["link_if_status"]);
+		dropdownValue("glpi_states", "link_if_status", $this->fields["link_if_status"]);
 		echo "</td><td colspan='2'></tr>";
 		
 		echo "</table><br>".$LANG['ocsconfig'][58];

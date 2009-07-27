@@ -279,7 +279,7 @@ class Monitor extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr><td>".$LANG['common'][15].": 	</td><td>";
-      dropdownValue("glpi_dropdown_locations", "location", $this->fields["location"],1,$this->fields["FK_entities"]);
+      dropdownValue("glpi_locations", "location", $this->fields["location"],1,$this->fields["FK_entities"]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>".$LANG['common'][10].": 	</td><td colspan='2'>";
@@ -287,7 +287,7 @@ class Monitor extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>".$LANG['common'][5].": 	</td><td colspan='2'>";
-      dropdownValue("glpi_dropdown_manufacturer","FK_glpi_enterprise",$this->fields["FK_glpi_enterprise"]);
+      dropdownValue("glpi_manufacturers","FK_glpi_enterprise",$this->fields["FK_glpi_enterprise"]);
       echo "</td></tr>";
 
       echo "<tr><td>".$LANG['common'][21].":	</td>";
@@ -308,7 +308,7 @@ class Monitor extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr><td>".$LANG['state'][0].":</td><td>";
-      dropdownValue("glpi_dropdown_state", "state",$this->fields["state"]);
+      dropdownValue("glpi_states", "state",$this->fields["state"]);
       echo "</td></tr>";
       
       echo "</table>";
@@ -327,7 +327,7 @@ class Monitor extends CommonDBTM {
       echo "</td></tr>";
 
       echo "<tr><td>".$LANG['common'][22].": 	</td><td>";
-      dropdownValue("glpi_dropdown_model_monitors", "model", $this->fields["model"]);
+      dropdownValue("glpi_monitorsmodels", "model", $this->fields["model"]);
       echo "</td></tr>";
 
       echo "<tr><td>".$LANG['common'][19].":	</td><td>";

@@ -119,11 +119,11 @@ echo  "<tr class='tab_bg_1'><td colspan='2'><b>".$LANG['setup'][5].":</b></td></
 # 3. Get some more number data (operating systems per computer)
 
 
-$query = "SELECT count(*) AS COUNT, glpi_dropdown_os.name as NAME 
+$query = "SELECT count(*) AS COUNT, glpi_operatingsystems.name as NAME 
 	FROM glpi_computers 
-	LEFT JOIN glpi_dropdown_os ON (glpi_computers.os = glpi_dropdown_os.ID)
+	LEFT JOIN glpi_operatingsystems ON (glpi_computers.os = glpi_operatingsystems.ID)
 	WHERE glpi_computers.deleted ='0'  AND glpi_computers.is_template = '0' ".getEntitiesRestrictRequest("AND","glpi_computers")."
-	GROUP BY glpi_dropdown_os.name";
+	GROUP BY glpi_operatingsystems.name";
 $result = $DB->query($query);
 
 while ($data=$DB->fetch_assoc($result)){

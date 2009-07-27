@@ -133,7 +133,7 @@ if (!isset($_POST["limit"])) $_POST["limit"]=$_SESSION["glpidropdown_limit"];
 			echo "<option class='tree' value=\"0\">--".$LANG['common'][11]."--</option>";
 		$display_selected=true;
 		switch ($_POST["table"]){
-			case "glpi_dropdown_kbcategories" :
+			case "glpi_knowbaseitemscategories" :
 				echo "<option class='tree' value=\"0\">--".$LANG['knowbase'][12]."--</option>";
 				break;
 			case "glpi_entities" :

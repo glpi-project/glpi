@@ -397,7 +397,7 @@
 	$CFG_GLPI["template_tables"]=array("glpi_computers","glpi_networking","glpi_printers","glpi_monitors","glpi_peripherals","glpi_software",
 												  "glpi_phones","state_types","reservation_types","glpi_budgets");
 	
-	$CFG_GLPI["dropdowntree_tables"]=array("glpi_entities","glpi_dropdown_locations","glpi_dropdown_kbcategories","glpi_dropdown_tracking_category");
+	$CFG_GLPI["dropdowntree_tables"]=array("glpi_entities","glpi_locations","glpi_knowbaseitemscategories","glpi_ticketscategories");
 	$CFG_GLPI["state_types"]=array(COMPUTER_TYPE,PRINTER_TYPE,MONITOR_TYPE,PERIPHERAL_TYPE,NETWORKING_TYPE,PHONE_TYPE);
 	$CFG_GLPI["doc_types"]=array(COMPUTER_TYPE,PRINTER_TYPE,MONITOR_TYPE,PERIPHERAL_TYPE,NETWORKING_TYPE,PHONE_TYPE,
 		ENTERPRISE_TYPE,ENTITY_TYPE,CARTRIDGE_TYPE,CONSUMABLE_TYPE,CONTRACT_TYPE,SOFTWARE_TYPE,SOFTWARELICENSE_TYPE,
@@ -420,7 +420,7 @@
 
 	$CFG_GLPI["specif_entities_tables"]=array("glpi_cartridgesitems","glpi_computers","glpi_consumablesitems",
 		"glpi_contacts","glpi_contracts","glpi_documents",
-		"glpi_dropdown_locations","glpi_dropdown_netpoint","glpi_enterprises","glpi_groups",
+		"glpi_locations","glpi_netpoints","glpi_enterprises","glpi_groups",
 		"glpi_mailgate","glpi_monitors","glpi_networking","glpi_peripherals","glpi_phones","glpi_printers","glpi_software",
 		"glpi_softwarelicenses", "glpi_tracking","state_types","reservation_types","glpi_links","glpi_budgets");
 

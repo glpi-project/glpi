@@ -260,11 +260,11 @@ function showCompatiblePrinters($instID) {
 	if (!haveRight("cartridge","r")) return false;
 	
 	if ($instID > 0){
-		$query = "SELECT glpi_dropdown_model_printers.name as type, glpi_cartridges_printersmodels.ID as ID 
-			FROM glpi_cartridges_printersmodels, glpi_dropdown_model_printers 
-			WHERE glpi_cartridges_printersmodels.FK_glpi_dropdown_model_printers=glpi_dropdown_model_printers.ID 
+		$query = "SELECT glpi_printersmodels.name as type, glpi_cartridges_printersmodels.ID as ID 
+			FROM glpi_cartridges_printersmodels, glpi_printersmodels 
+			WHERE glpi_cartridges_printersmodels.FK_glpi_dropdown_model_printers=glpi_printersmodels.ID 
 				AND glpi_cartridges_printersmodels.FK_glpi_cartridges_type = '$instID' 
-			ORDER BY glpi_dropdown_model_printers.name";
+			ORDER BY glpi_printersmodels.name";
 	
 		$result = $DB->query($query);
 		$number = $DB->numrows($result);
@@ -286,7 +286,7 @@ function showCompatiblePrinters($instID) {
 		if (haveRight("cartridge","w")){
 			echo "<tr class='tab_bg_1'><td>&nbsp;</td><td class='center'>";
 			echo "<div class='software-instal'><input type='hidden' name='tID' value='$instID'>";
-			dropdown("glpi_dropdown_model_printers","model");
+			dropdown("glpi_printersmodels","model");
 			echo "</div></td><td align='center' class='tab_bg_2'>";
 			echo "<input type='submit' name='addtype' value=\"".$LANG['buttons'][8]."\" class='submit'>";
 			echo "</td></tr>";
@@ -567,13 +567,13 @@ function dropdownCompatibleCartridges($pID) {
 	$p=new Printer;
 	$p->getFromDB($pID);
 
-	$query = "SELECT COUNT(*) AS cpt, glpi_dropdown_locations.completename as location, glpi_cartridgesitems.ref as ref,
+	$query = "SELECT COUNT(*) AS cpt, glpi_locations.completename as location, glpi_cartridgesitems.ref as ref,
 			glpi_cartridgesitems.name as name, glpi_cartridgesitems.ID as tID 
 		FROM glpi_cartridgesitems 
 		INNER JOIN glpi_cartridges_printersmodels ON (glpi_cartridgesitems.ID = glpi_cartridges_printersmodels.FK_glpi_cartridges_type )
 		INNER JOIN glpi_cartridges ON (glpi_cartridges.FK_glpi_cartridges_type = glpi_cartridgesitems.ID 
 						AND glpi_cartridges.date_use IS NULL)
-		LEFT JOIN glpi_dropdown_locations ON (glpi_dropdown_locations.ID = glpi_cartridgesitems.location)
+		LEFT JOIN glpi_locations ON (glpi_locations.ID = glpi_cartridgesitems.location)
 		WHERE  glpi_cartridges_printersmodels.FK_glpi_dropdown_model_printers = '".$p->fields["model"]."' 
 		AND glpi_cartridgesitems.FK_entities='".$p->fields["FK_entities"]."' 
 		GROUP BY glpi_cartridgesitems.ID 

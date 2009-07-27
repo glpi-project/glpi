@@ -179,7 +179,7 @@ function printDeviceComputer($device,$quantity,$specif,$compID,$compDevID,$witht
 			$type=$LANG['devices'][1];
 			$name=$device->fields["designation"];
 			if (!empty($device->fields["rpm"]))	$entry[$LANG['device_hdd'][0]]=$device->fields["rpm"];
-			if ($device->fields["FK_interface"])	$entry[$LANG['common'][65]]=getDropdownName("glpi_dropdown_interface",$device->fields["FK_interface"]);
+			if ($device->fields["FK_interface"])	$entry[$LANG['common'][65]]=getDropdownName("glpi_interfaces",$device->fields["FK_interface"]);
 			if (!empty($device->fields["cache"])) $entry[$LANG['device_hdd'][1]]=$device->fields["cache"];
 
 			$specificity_size = 10;
@@ -188,9 +188,9 @@ function printDeviceComputer($device,$quantity,$specif,$compID,$compDevID,$witht
 			$type=$LANG['devices'][2];
 			$name=$device->fields["designation"];
 //			if (!empty($device->fields["ram"])) $entry[$LANG['device_gfxcard'][0]]=$device->fields["ram"];
-//			if (!empty($device->fields["interface"])) 		$entry[$LANG['common'][65]]=getDropdownName("glpi_dropdown_interface",$device->fields["interface"]);
+//			if (!empty($device->fields["interface"])) 		$entry[$LANG['common'][65]]=getDropdownName("glpi_interfaces",$device->fields["interface"]);
 
-			$entry[$LANG['common'][65]]=getDropdownName("glpi_dropdown_interface",$device->fields["FK_interface"]);
+			$entry[$LANG['common'][65]]=getDropdownName("glpi_interfaces",$device->fields["FK_interface"]);
 			$specificity_size = 10;
 			break;
 		case NETWORK_DEVICE :
@@ -217,7 +217,7 @@ function printDeviceComputer($device,$quantity,$specif,$compID,$compDevID,$witht
 		case RAM_DEVICE :
 			$type=$LANG['devices'][6];
 			$name=$device->fields["designation"];
-			if (!empty($device->fields["type"])) $entry[$LANG['common'][17]]=getDropdownName("glpi_dropdown_ram_type",$device->fields["type"]);
+			if (!empty($device->fields["type"])) $entry[$LANG['common'][17]]=getDropdownName("glpi_devicesmemoriestypes",$device->fields["type"]);
 			if (!empty($device->fields["frequence"])) $entry[$LANG['device_ram'][1]]=$device->fields["frequence"];
 
 			$specificity_size = 10;
@@ -236,13 +236,13 @@ function printDeviceComputer($device,$quantity,$specif,$compID,$compDevID,$witht
 			if ($device->fields["is_writer"]) $entry[$LANG['device_drive'][0]]=getYesNo($device->fields["is_writer"]);
 			if (!empty($device->fields["speed"])) $entry[$LANG['device_drive'][1]]=$device->fields["speed"];
 			if (!empty($device->fields["frequence"])) $entry[$LANG['common'][65]]=$device->fields["frequence"];
-			if ($device->fields["FK_interface"])	$entry[$LANG['common'][65]]=getDropdownName("glpi_dropdown_interface",$device->fields["FK_interface"]);
+			if ($device->fields["FK_interface"])	$entry[$LANG['common'][65]]=getDropdownName("glpi_interfaces",$device->fields["FK_interface"]);
 			break;
 		case CONTROL_DEVICE :
 			$type=$LANG['devices'][20];
 			$name=$device->fields["designation"];
 			if ($device->fields["raid"]) $entry[$LANG['device_control'][0]]=getYesNo($device->fields["raid"]);
-			if ($device->fields["FK_interface"]) $entry[$LANG['common'][65]]=getDropdownName("glpi_dropdown_interface",$device->fields["FK_interface"]);
+			if ($device->fields["FK_interface"]) $entry[$LANG['common'][65]]=getDropdownName("glpi_interfaces",$device->fields["FK_interface"]);
 
 			break;
 		case PCI_DEVICE :
@@ -261,7 +261,7 @@ function printDeviceComputer($device,$quantity,$specif,$compID,$compDevID,$witht
 			$type=$LANG['devices'][22];
 			$name=$device->fields["designation"];
 			if (!empty($device->fields["type"])) {
-				$entry[$LANG['device_case'][0]]=getDropdownName("glpi_dropdown_case_type",$device->fields["type"]);
+				$entry[$LANG['device_case'][0]]=getDropdownName("glpi_devicescasestypes",$device->fields["type"]);
 			}
 
 			break;
@@ -516,9 +516,9 @@ function showDevicesList($device_type,$target) {
 	global $DB,$CFG_GLPI, $LANG;
 
 
-	$query = "SELECT device.ID, device.designation, glpi_dropdown_manufacturer.name as manufacturer 
+	$query = "SELECT device.ID, device.designation, glpi_manufacturers.name as manufacturer 
 		FROM ".getDeviceTable($device_type)." as device ";
-	$query.= " LEFT JOIN glpi_dropdown_manufacturer ON (glpi_dropdown_manufacturer.ID = device.FK_glpi_enterprise ) ";
+	$query.= " LEFT JOIN glpi_manufacturers ON (glpi_manufacturers.ID = device.FK_glpi_enterprise ) ";
 	$query .= " ORDER by device.designation ASC";
 	
 	// Get it from database	
@@ -620,7 +620,7 @@ function showDevicesForm ($target,$ID,$device_type) {
 
 	echo "</td></tr>";
 	echo "<tr class='tab_bg_1'><td>".$LANG['common'][5].": 	</td><td colspan='2'>";
-	dropdownValue("glpi_dropdown_manufacturer","FK_glpi_enterprise",$device->fields["FK_glpi_enterprise"]);
+	dropdownValue("glpi_manufacturers","FK_glpi_enterprise",$device->fields["FK_glpi_enterprise"]);
 	echo "</td></tr>";
 	if (getDeviceSpecifityLabel($device_type)!=""){
 		echo "<tr><td>".getDeviceSpecifityLabel($device_type)." ".$LANG['devices'][24]."</td>";
@@ -650,7 +650,7 @@ function showDevicesForm ($target,$ID,$device_type) {
 		case "glpi_devicesmemories" :
 			echo "<tr><td>".$LANG['common'][17].":</td>";
 			echo "<td>";
-			dropdownValue("glpi_dropdown_ram_type","type",$device->fields["type"]);
+			dropdownValue("glpi_devicesmemoriestypes","type",$device->fields["type"]);
 			echo "</td>";
 			echo "</tr>";
 			echo "<tr><td>".$LANG['device_ram'][1].":</td><td>";
@@ -669,7 +669,7 @@ function showDevicesForm ($target,$ID,$device_type) {
 	
 			echo "<tr><td>".$LANG['common'][65].":</td>";
 			echo "<td>";
-			dropdownValue("glpi_dropdown_interface","FK_interface",$device->fields["FK_interface"]);
+			dropdownValue("glpi_interfaces","FK_interface",$device->fields["FK_interface"]);
 			echo "</td>";
 	
 			echo "</tr>";
@@ -689,7 +689,7 @@ function showDevicesForm ($target,$ID,$device_type) {
 			echo "<tr><td>".$LANG['common'][65].":</td>";
 			echo "<td>";
 	
-			dropdownValue("glpi_dropdown_interface","FK_interface",$device->fields["FK_interface"]);
+			dropdownValue("glpi_interfaces","FK_interface",$device->fields["FK_interface"]);
 	
 			echo "</td>";
 			echo "</tr>";
@@ -708,7 +708,7 @@ function showDevicesForm ($target,$ID,$device_type) {
 			echo "</tr>";
 			echo "<tr><td>".$LANG['common'][65].":</td>";
 			echo "<td>";
-			dropdownValue("glpi_dropdown_interface","FK_interface",$device->fields["FK_interface"]);
+			dropdownValue("glpi_interfaces","FK_interface",$device->fields["FK_interface"]);
 			echo "</td>";
 			echo "</tr>";
 
@@ -720,7 +720,7 @@ function showDevicesForm ($target,$ID,$device_type) {
 			echo "</td></tr>";
 			echo "<tr><td>".$LANG['common'][65].":</td>";
 			echo "<td>";
-			dropdownValue("glpi_dropdown_interface","FK_interface",$device->fields["FK_interface"]);
+			dropdownValue("glpi_interfaces","FK_interface",$device->fields["FK_interface"]);
 			echo "</td>";
 			echo "</tr>";
 		break;
@@ -734,7 +734,7 @@ function showDevicesForm ($target,$ID,$device_type) {
 		case "glpi_devicescases" :
 			echo "<tr><td>".$LANG['device_case'][0].":</td>";
 			echo "<td>";
-			dropdownValue("glpi_dropdown_case_type","type",$device->fields["type"]);
+			dropdownValue("glpi_devicescasestypes","type",$device->fields["type"]);
 			echo "</td>";
 			echo "</tr>";
 

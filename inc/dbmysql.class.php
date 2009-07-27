@@ -310,10 +310,10 @@ class DBmysql {
 	 * Instanciate a Simple DBIterator
 	 * 
 	 * Examples =
-	 *  foreach ($DB->request("select * from glpi_dropdown_state") as $data) { ... }
-	 *  foreach ($DB->request("glpi_dropdown_state") as $ID => $data) { ... }
-	 *  foreach ($DB->request("glpi_dropdown_state", "ID=1") as $ID => $data) { ... }
-	 *  foreach ($DB->request("glpi_dropdown_state", "", "name") as $ID => $data) { ... }
+	 *  foreach ($DB->request("select * from glpi_states") as $data) { ... }
+	 *  foreach ($DB->request("glpi_states") as $ID => $data) { ... }
+	 *  foreach ($DB->request("glpi_states", "ID=1") as $ID => $data) { ... }
+	 *  foreach ($DB->request("glpi_states", "", "name") as $ID => $data) { ... }
 	 *  foreach ($DB->request("glpi_computers",array("name"=>"SBEI003W","FK_entities"=>1),array("serial","otherserial")) { ... }
 	 * 
 	 * @param $tableorsql table name, array of names or SQL query

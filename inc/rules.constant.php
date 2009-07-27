@@ -153,7 +153,7 @@ $RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['contents']['field']='contents';
 $RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['contents']['name']=$LANG['joblist'][6];
 $RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['contents']['linkfield']='contents';
 
-$RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['category']['table']='glpi_dropdown_tracking_category';
+$RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['category']['table']='glpi_ticketscategories';
 $RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['category']['field']='name';
 $RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['category']['name']=$LANG['common'][36];
 $RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['category']['linkfield']='category';
@@ -165,7 +165,7 @@ $RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['author']['name']=$LANG['job'][4]." 
 $RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['author']['linkfield']='author';
 $RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['author']['type']='dropdown_users';
 
-$RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['author_location']['table']='glpi_dropdown_locations';
+$RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['author_location']['table']='glpi_locations';
 $RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['author_location']['field']='completename';
 $RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['author_location']['name']=$LANG['job'][4]." - ".$LANG['common'][15];
 $RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['author_location']['linkfield']='author_location';
@@ -219,7 +219,7 @@ $RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['_mailgate']['type']='dropdown';
 
 $RULES_ACTIONS[RULE_TRACKING_AUTO_ACTION]['category']['name']=$LANG['common'][36];
 $RULES_ACTIONS[RULE_TRACKING_AUTO_ACTION]['category']['type']='dropdown';
-$RULES_ACTIONS[RULE_TRACKING_AUTO_ACTION]['category']['table']='glpi_dropdown_tracking_category';
+$RULES_ACTIONS[RULE_TRACKING_AUTO_ACTION]['category']['table']='glpi_ticketscategories';
 
 $RULES_ACTIONS[RULE_TRACKING_AUTO_ACTION]['author']['name']=$LANG['job'][4]." - ".$LANG['common'][34];
 $RULES_ACTIONS[RULE_TRACKING_AUTO_ACTION]['author']['type']='dropdown_users';
@@ -252,7 +252,7 @@ $RULES_CRITERIAS[RULE_SOFTWARE_CATEGORY]['name']['table']='glpi_software';
 
 $RULES_CRITERIAS[RULE_SOFTWARE_CATEGORY]['manufacturer']['field']='name';
 $RULES_CRITERIAS[RULE_SOFTWARE_CATEGORY]['manufacturer']['name']=$LANG['common'][5];
-$RULES_CRITERIAS[RULE_SOFTWARE_CATEGORY]['manufacturer']['table']='glpi_dropdown_manufacturer';
+$RULES_CRITERIAS[RULE_SOFTWARE_CATEGORY]['manufacturer']['table']='glpi_manufacturers';
 
 $RULES_CRITERIAS[RULE_SOFTWARE_CATEGORY]['comments']['field']='comments';
 $RULES_CRITERIAS[RULE_SOFTWARE_CATEGORY]['comments']['name']=$LANG['common'][25];
@@ -260,7 +260,7 @@ $RULES_CRITERIAS[RULE_SOFTWARE_CATEGORY]['comments']['table']='glpi_software';
 
 $RULES_ACTIONS[RULE_SOFTWARE_CATEGORY]['category']['name']=$LANG['common'][36];
 $RULES_ACTIONS[RULE_SOFTWARE_CATEGORY]['category']['type']='dropdown';
-$RULES_ACTIONS[RULE_SOFTWARE_CATEGORY]['category']['table']='glpi_dropdown_software_category';
+$RULES_ACTIONS[RULE_SOFTWARE_CATEGORY]['category']['table']='glpi_softwarescategories';
 
 //Dictionnary Software
 $RULES_CRITERIAS[RULE_DICTIONNARY_SOFTWARE]['name']['field']='name';
@@ -269,7 +269,7 @@ $RULES_CRITERIAS[RULE_DICTIONNARY_SOFTWARE]['name']['table']='glpi_software';
 
 $RULES_CRITERIAS[RULE_DICTIONNARY_SOFTWARE]['manufacturer']['field']='name';
 $RULES_CRITERIAS[RULE_DICTIONNARY_SOFTWARE]['manufacturer']['name']=$LANG['common'][5];
-$RULES_CRITERIAS[RULE_DICTIONNARY_SOFTWARE]['manufacturer']['table']='glpi_dropdown_manufacturer';
+$RULES_CRITERIAS[RULE_DICTIONNARY_SOFTWARE]['manufacturer']['table']='glpi_manufacturers';
 
 $RULES_ACTIONS[RULE_DICTIONNARY_SOFTWARE]['name']['name']=$LANG['help'][31];
 $RULES_ACTIONS[RULE_DICTIONNARY_SOFTWARE]['name']['force_actions']=array("assign","regex_result");
@@ -281,7 +281,7 @@ $RULES_ACTIONS[RULE_DICTIONNARY_SOFTWARE]['version']['name']=$LANG['rulesengine'
 $RULES_ACTIONS[RULE_DICTIONNARY_SOFTWARE]['version']['force_actions']=array("assign","regex_result","append_regex_result");
 
 $RULES_ACTIONS[RULE_DICTIONNARY_SOFTWARE]['manufacturer']['name']=$LANG['common'][5];
-$RULES_ACTIONS[RULE_DICTIONNARY_SOFTWARE]['manufacturer']['table']="glpi_dropdown_manufacturer";
+$RULES_ACTIONS[RULE_DICTIONNARY_SOFTWARE]['manufacturer']['table']="glpi_manufacturers";
 $RULES_ACTIONS[RULE_DICTIONNARY_SOFTWARE]['manufacturer']['type']='dropdown';
 
 $RULES_ACTIONS[RULE_DICTIONNARY_SOFTWARE]['helpdesk_visible']['name']=$LANG['software'][46];
@@ -291,7 +291,7 @@ $RULES_ACTIONS[RULE_DICTIONNARY_SOFTWARE]['helpdesk_visible']['type']='yesno';
 //Dictionnary Manufacturer
 $RULES_CRITERIAS[RULE_DICTIONNARY_MANUFACTURER]['name']['field']='name';
 $RULES_CRITERIAS[RULE_DICTIONNARY_MANUFACTURER]['name']['name']=$LANG['common'][5];
-$RULES_CRITERIAS[RULE_DICTIONNARY_MANUFACTURER]['name']['table']='glpi_dropdown_manufacturer';
+$RULES_CRITERIAS[RULE_DICTIONNARY_MANUFACTURER]['name']['table']='glpi_manufacturers';
 
 $RULES_ACTIONS[RULE_DICTIONNARY_MANUFACTURER]['name']['name']=$LANG['common'][5];
 $RULES_ACTIONS[RULE_DICTIONNARY_MANUFACTURER]['name']['force_actions']=array("assign","regex_result","append_regex_result");
@@ -299,11 +299,11 @@ $RULES_ACTIONS[RULE_DICTIONNARY_MANUFACTURER]['name']['force_actions']=array("as
 //Dictionnary Model Computer
 $RULES_CRITERIAS[RULE_DICTIONNARY_MODEL_COMPUTER]['name']['field']='name';
 $RULES_CRITERIAS[RULE_DICTIONNARY_MODEL_COMPUTER]['name']['name']=$LANG['common'][22];
-$RULES_CRITERIAS[RULE_DICTIONNARY_MODEL_COMPUTER]['name']['table']='glpi_dropdown_model';
+$RULES_CRITERIAS[RULE_DICTIONNARY_MODEL_COMPUTER]['name']['table']='glpi_computersmodels';
 
 $RULES_CRITERIAS[RULE_DICTIONNARY_MODEL_COMPUTER]['manufacturer']['field']='name';
 $RULES_CRITERIAS[RULE_DICTIONNARY_MODEL_COMPUTER]['manufacturer']['name']=$LANG['common'][5];
-$RULES_CRITERIAS[RULE_DICTIONNARY_MODEL_COMPUTER]['manufacturer']['table']='glpi_dropdown_manufacturer';
+$RULES_CRITERIAS[RULE_DICTIONNARY_MODEL_COMPUTER]['manufacturer']['table']='glpi_manufacturers';
 
 $RULES_ACTIONS[RULE_DICTIONNARY_MODEL_COMPUTER]['name']['name']=$LANG['common'][22];
 $RULES_ACTIONS[RULE_DICTIONNARY_MODEL_COMPUTER]['name']['force_actions']=array("assign","regex_result","append_regex_result");
@@ -311,11 +311,11 @@ $RULES_ACTIONS[RULE_DICTIONNARY_MODEL_COMPUTER]['name']['force_actions']=array("
 //Dictionnary Model Monitor
 $RULES_CRITERIAS[RULE_DICTIONNARY_MODEL_MONITOR]['name']['field']='name';
 $RULES_CRITERIAS[RULE_DICTIONNARY_MODEL_MONITOR]['name']['name']=$LANG['common'][22];
-$RULES_CRITERIAS[RULE_DICTIONNARY_MODEL_MONITOR]['name']['table']='glpi_dropdown_model_monitors';
+$RULES_CRITERIAS[RULE_DICTIONNARY_MODEL_MONITOR]['name']['table']='glpi_monitorsmodels';
 
 $RULES_CRITERIAS[RULE_DICTIONNARY_MODEL_MONITOR]['manufacturer']['field']='name';
 $RULES_CRITERIAS[RULE_DICTIONNARY_MODEL_MONITOR]['manufacturer']['name']=$LANG['common'][5];
-$RULES_CRITERIAS[RULE_DICTIONNARY_MODEL_MONITOR]['manufacturer']['table']='glpi_dropdown_manufacturer';
+$RULES_CRITERIAS[RULE_DICTIONNARY_MODEL_MONITOR]['manufacturer']['table']='glpi_manufacturers';
 
 $RULES_ACTIONS[RULE_DICTIONNARY_MODEL_MONITOR]['name']['name']=$LANG['common'][22];
 $RULES_ACTIONS[RULE_DICTIONNARY_MODEL_MONITOR]['name']['force_actions']=array("assign","regex_result","append_regex_result");
@@ -323,11 +323,11 @@ $RULES_ACTIONS[RULE_DICTIONNARY_MODEL_MONITOR]['name']['force_actions']=array("a
 //Dictionnary Model Printer
 $RULES_CRITERIAS[RULE_DICTIONNARY_MODEL_PRINTER]['name']['field']='name';
 $RULES_CRITERIAS[RULE_DICTIONNARY_MODEL_PRINTER]['name']['name']=$LANG['common'][22];
-$RULES_CRITERIAS[RULE_DICTIONNARY_MODEL_PRINTER]['name']['table']='glpi_dropdown_model_printers';
+$RULES_CRITERIAS[RULE_DICTIONNARY_MODEL_PRINTER]['name']['table']='glpi_printersmodels';
 
 $RULES_CRITERIAS[RULE_DICTIONNARY_MODEL_PRINTER]['manufacturer']['field']='name';
 $RULES_CRITERIAS[RULE_DICTIONNARY_MODEL_PRINTER]['manufacturer']['name']=$LANG['common'][5];
-$RULES_CRITERIAS[RULE_DICTIONNARY_MODEL_PRINTER]['manufacturer']['table']='glpi_dropdown_manufacturer';
+$RULES_CRITERIAS[RULE_DICTIONNARY_MODEL_PRINTER]['manufacturer']['table']='glpi_manufacturers';
 
 
 $RULES_ACTIONS[RULE_DICTIONNARY_MODEL_PRINTER]['name']['name']=$LANG['common'][22];
@@ -336,11 +336,11 @@ $RULES_ACTIONS[RULE_DICTIONNARY_MODEL_PRINTER]['name']['force_actions']=array("a
 //Dictionnary Model Peripheral
 $RULES_CRITERIAS[RULE_DICTIONNARY_MODEL_PERIPHERAL]['name']['field']='name';
 $RULES_CRITERIAS[RULE_DICTIONNARY_MODEL_PERIPHERAL]['name']['name']=$LANG['common'][22];
-$RULES_CRITERIAS[RULE_DICTIONNARY_MODEL_PERIPHERAL]['name']['table']='glpi_dropdown_model_peripherals';
+$RULES_CRITERIAS[RULE_DICTIONNARY_MODEL_PERIPHERAL]['name']['table']='glpi_peripheralsmodels';
 
 $RULES_CRITERIAS[RULE_DICTIONNARY_MODEL_PERIPHERAL]['manufacturer']['field']='name';
 $RULES_CRITERIAS[RULE_DICTIONNARY_MODEL_PERIPHERAL]['manufacturer']['name']=$LANG['common'][5];
-$RULES_CRITERIAS[RULE_DICTIONNARY_MODEL_PERIPHERAL]['manufacturer']['table']='glpi_dropdown_manufacturer';
+$RULES_CRITERIAS[RULE_DICTIONNARY_MODEL_PERIPHERAL]['manufacturer']['table']='glpi_manufacturers';
 
 $RULES_ACTIONS[RULE_DICTIONNARY_MODEL_PERIPHERAL]['name']['name']=$LANG['common'][22];
 $RULES_ACTIONS[RULE_DICTIONNARY_MODEL_PERIPHERAL]['name']['force_actions']=array("assign","regex_result","append_regex_result");
@@ -348,11 +348,11 @@ $RULES_ACTIONS[RULE_DICTIONNARY_MODEL_PERIPHERAL]['name']['force_actions']=array
 //Dictionnary Model Networking
 $RULES_CRITERIAS[RULE_DICTIONNARY_MODEL_NETWORKING]['name']['field']='name';
 $RULES_CRITERIAS[RULE_DICTIONNARY_MODEL_NETWORKING]['name']['name']=$LANG['common'][22];
-$RULES_CRITERIAS[RULE_DICTIONNARY_MODEL_NETWORKING]['name']['table']='glpi_dropdown_model_networking';
+$RULES_CRITERIAS[RULE_DICTIONNARY_MODEL_NETWORKING]['name']['table']='glpi_networkequipmentsmodels';
 
 $RULES_CRITERIAS[RULE_DICTIONNARY_MODEL_NETWORKING]['manufacturer']['field']='name';
 $RULES_CRITERIAS[RULE_DICTIONNARY_MODEL_NETWORKING]['manufacturer']['name']=$LANG['common'][5];
-$RULES_CRITERIAS[RULE_DICTIONNARY_MODEL_NETWORKING]['manufacturer']['table']='glpi_dropdown_manufacturer';
+$RULES_CRITERIAS[RULE_DICTIONNARY_MODEL_NETWORKING]['manufacturer']['table']='glpi_manufacturers';
 
 $RULES_ACTIONS[RULE_DICTIONNARY_MODEL_NETWORKING]['name']['name']=$LANG['common'][22];
 $RULES_ACTIONS[RULE_DICTIONNARY_MODEL_NETWORKING]['name']['force_actions']=array("assign","regex_result","append_regex_result");
@@ -400,7 +400,7 @@ $RULES_ACTIONS[RULE_DICTIONNARY_TYPE_NETWORKING]['name']['force_actions']=array(
 //Dictionnary OS
 $RULES_CRITERIAS[RULE_DICTIONNARY_OS]['name']['field']='name';
 $RULES_CRITERIAS[RULE_DICTIONNARY_OS]['name']['name']=$LANG['computers'][9];
-$RULES_CRITERIAS[RULE_DICTIONNARY_OS]['name']['table']='glpi_dropdown_os';
+$RULES_CRITERIAS[RULE_DICTIONNARY_OS]['name']['table']='glpi_operatingsystems';
 
 $RULES_ACTIONS[RULE_DICTIONNARY_OS]['name']['name']=$LANG['computers'][9];
 $RULES_ACTIONS[RULE_DICTIONNARY_OS]['name']['force_actions']=array("assign","regex_result","append_regex_result");
@@ -408,7 +408,7 @@ $RULES_ACTIONS[RULE_DICTIONNARY_OS]['name']['force_actions']=array("assign","reg
 //Dictionnary OS SP
 $RULES_CRITERIAS[RULE_DICTIONNARY_OS_SP]['name']['field']='name';
 $RULES_CRITERIAS[RULE_DICTIONNARY_OS_SP]['name']['name']=$LANG['computers'][53];
-$RULES_CRITERIAS[RULE_DICTIONNARY_OS_SP]['name']['table']='glpi_dropdown_os_sp';
+$RULES_CRITERIAS[RULE_DICTIONNARY_OS_SP]['name']['table']='glpi_operatingsystemsservicepacks';
 
 $RULES_ACTIONS[RULE_DICTIONNARY_OS_SP]['name']['name']=$LANG['computers'][53];
 $RULES_ACTIONS[RULE_DICTIONNARY_OS_SP]['name']['force_actions']=array("assign","regex_result","append_regex_result");
@@ -416,7 +416,7 @@ $RULES_ACTIONS[RULE_DICTIONNARY_OS_SP]['name']['force_actions']=array("assign","
 //Dictionnary OS Version
 $RULES_CRITERIAS[RULE_DICTIONNARY_OS_VERSION]['name']['field']='name';
 $RULES_CRITERIAS[RULE_DICTIONNARY_OS_VERSION]['name']['name']=$LANG['rulesengine'][78];
-$RULES_CRITERIAS[RULE_DICTIONNARY_OS_VERSION]['name']['table']='glpi_dropdown_os_version';
+$RULES_CRITERIAS[RULE_DICTIONNARY_OS_VERSION]['name']['table']='glpi_operatingsystemsversions';
 
 $RULES_ACTIONS[RULE_DICTIONNARY_OS_VERSION]['name']['name']=$LANG['rulesengine'][78];
 $RULES_ACTIONS[RULE_DICTIONNARY_OS_VERSION]['name']['force_actions']=array("assign","regex_result","append_regex_result");
