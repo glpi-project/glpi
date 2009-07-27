@@ -124,9 +124,9 @@ function showCartridges ($tID,$show_old=0) {
 	
 				echo "</tr>";
 			} else {
-				echo "<br><div class='center'><table border='0' width='50%' cellpadding='2'>";
-				echo "<tr><th>".$LANG['cartridges'][7]."</th></tr>";
-				echo "</table></div>";
+				echo "<br><div class='center'>";
+				echo $LANG['cartridges'][7];
+				echo "</div>";
 			}
 		}
 	
