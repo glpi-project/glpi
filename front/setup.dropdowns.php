@@ -161,7 +161,7 @@ if (isset($_POST['mass_delete'])){
 				"glpi_type_peripherals"=>$LANG['setup'][69],
 				"glpi_type_phones"=>$LANG['setup'][504],
 				"glpi_dropdown_licensetypes"=>$LANG['software'][30],
-				"glpi_dropdown_cartridge_type"=>$LANG['setup'][84],
+				"glpi_cartridgesitemstypes"=>$LANG['setup'][84],
 				"glpi_dropdown_consumable_type"=>$LANG['setup'][92],
 				"glpi_dropdown_contract_type"=>$LANG['setup'][85],
 				"glpi_dropdown_contact_type"=>$LANG['setup'][82],	

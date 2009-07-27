@@ -1606,7 +1606,7 @@ function addOrderBy($type,$ID,$order,$key=0){
 
 	switch($table.".".$field){
 		case "glpi_auth_tables.name" :
-			return " ORDER BY glpi_users.auth_method, glpi_authldaps.name, glpi_auth_mail.name $order ";
+			return " ORDER BY glpi_users.auth_method, glpi_authldaps.name, glpi_authmails.name $order ";
 		break;
 		case "glpi_contracts.expire":
 			return " ORDER BY ADDDATE(glpi_contracts.begin_date, INTERVAL glpi_contracts.duration MONTH) $order ";
@@ -1706,7 +1706,7 @@ function addDefaultSelect ($type){
 			$ret = "glpi_reservation_item.active as ACTIVE, ";
 		break;
 		case CARTRIDGE_TYPE:
-			$ret = "glpi_cartridges_type.alarm as ALARM, ";
+			$ret = "glpi_cartridgesitems.alarm as ALARM, ";
 		break;
 		case CONSUMABLE_TYPE:
 			$ret = "glpi_consumables_type.alarm as ALARM, ";
@@ -1842,7 +1842,7 @@ function addSelect ($type,$ID,$num,$meta=0,$meta_type=0){
 		break;
 */
 		case "glpi_auth_tables.name":
-			return "glpi_users.auth_method AS ".$NAME."_".$num.", glpi_users.id_auth AS ".$NAME."_".$num."_2, glpi_authldaps".$addtable.".".$field." AS ".$NAME."_".$num."_3, glpi_auth_mail".$addtable.".".$field." AS ".$NAME."_".$num."_4, ";
+			return "glpi_users.auth_method AS ".$NAME."_".$num.", glpi_users.id_auth AS ".$NAME."_".$num."_2, glpi_authldaps".$addtable.".".$field." AS ".$NAME."_".$num."_3, glpi_authmails".$addtable.".".$field." AS ".$NAME."_".$num."_4, ";
 		break;
 		case "glpi_softwarelicenses.name" :
 		case "glpi_softwareversions.name" :
@@ -2124,7 +2124,7 @@ function addWhere($link,$nott,$type,$ID,$val,$meta=0){
                OR CONCAT($table.$name1,' ',$table.$name2) $SEARCH) ";
 		break;
 		case "glpi_auth_tables.name":
-			return $link." (glpi_auth_mail.name $SEARCH OR glpi_authldaps.name $SEARCH ) ";
+			return $link." (glpi_authmails.name $SEARCH OR glpi_authldaps.name $SEARCH ) ";
 		break;
 		case "glpi_contracts.renewal":
 			return $link." ".$table.".".$field."=".getContractRenewalIDByName($val);
@@ -2859,7 +2859,7 @@ function addLeftJoin ($type,$ref_table,&$already_link_tables,$new_table,$linkfie
 		// No link
 		case "glpi_auth_tables":
 			return " LEFT JOIN glpi_authldaps ON (glpi_users.auth_method = ".AUTH_LDAP." AND glpi_users.id_auth = glpi_authldaps.ID) 
-				LEFT JOIN glpi_auth_mail ON (glpi_users.auth_method = ".AUTH_MAIL." AND glpi_users.id_auth = glpi_auth_mail.ID) ";
+				LEFT JOIN glpi_authmails ON (glpi_users.auth_method = ".AUTH_MAIL." AND glpi_users.id_auth = glpi_authmails.ID) ";
 		break;
 		case "glpi_reservation_item":
 			return "";

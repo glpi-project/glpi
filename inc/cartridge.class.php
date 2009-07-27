@@ -51,7 +51,7 @@ class CartridgeType extends CommonDBTM {
 	 * Constructor
 	 **/
 	function __construct () {
-		$this->table="glpi_cartridges_type";
+		$this->table="glpi_cartridgesitems";
 		$this->type=CARTRIDGE_TYPE;
 		$this->entity_assign=true;
 	}
@@ -59,10 +59,10 @@ class CartridgeType extends CommonDBTM {
 	function cleanDBonPurge($ID) {
 		global $DB;
 		// Delete cartridges
-		$query = "DELETE FROM glpi_cartridges WHERE (FK_glpi_cartridges_type = '$ID')";
+		$query = "DELETE FROM glpi_cartridges WHERE (FK_glpi_cartridgesitems = '$ID')";
 		$DB->query($query);
 		// Delete all cartridge assoc
-		$query2 = "DELETE FROM glpi_cartridges_assoc WHERE (FK_glpi_cartridges_type = '$ID')";
+		$query2 = "DELETE FROM glpi_cartridges_printersmodels WHERE (FK_glpi_cartridgesitems = '$ID')";
 		$result2 = $DB->query($query2);
 
 		$query = "DELETE FROM glpi_infocoms WHERE (FK_device = '$ID' AND device_type='".CARTRIDGE_TYPE."')";
@@ -105,7 +105,7 @@ class CartridgeType extends CommonDBTM {
 	 **/
 	function countCartridges() {
 		global $DB;
-		$query = "SELECT * FROM glpi_cartridges WHERE FK_glpi_cartridges_type = '".$this->fields["ID"]."'";
+		$query = "SELECT * FROM glpi_cartridges WHERE FK_glpi_cartridgesitems = '".$this->fields["ID"]."'";
 		if ($result = $DB->query($query)) {
 			$number = $DB->numrows($result);
 			return $number;
@@ -128,7 +128,7 @@ class CartridgeType extends CommonDBTM {
 		global $DB;
 		if ($tID>0&&$type>0){
 
-			$query="INSERT INTO glpi_cartridges_assoc (FK_glpi_cartridges_type,FK_glpi_dropdown_model_printers ) VALUES ('$tID','$type');";
+			$query="INSERT INTO glpi_cartridges_printersmodels (FK_glpi_cartridgesitems,FK_glpi_dropdown_model_printers ) VALUES ('$tID','$type');";
 			$result = $DB->query($query);
 		}
 	}
@@ -146,7 +146,7 @@ class CartridgeType extends CommonDBTM {
 	function deleteCompatibleType($ID){
 
 		global $DB;
-		$query="DELETE FROM glpi_cartridges_assoc WHERE ID= '$ID';";
+		$query="DELETE FROM glpi_cartridges_printersmodels WHERE ID= '$ID';";
 		$result = $DB->query($query);
 	}
 
@@ -204,16 +204,16 @@ class CartridgeType extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'><td>".$LANG['common'][16].":		</td>\n";
       echo "<td colspan='2'>";
-      autocompletionTextField("name","glpi_cartridges_type","name",$this->fields["name"],40,$this->fields["FK_entities"]);
+      autocompletionTextField("name","glpi_cartridgesitems","name",$this->fields["name"],40,$this->fields["FK_entities"]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'><td>".$LANG['consumables'][2].":		</td>\n";
       echo "<td colspan='2'>";
-      autocompletionTextField("ref","glpi_cartridges_type","ref",$this->fields["ref"],40,$this->fields["FK_entities"]);
+      autocompletionTextField("ref","glpi_cartridgesitems","ref",$this->fields["ref"],40,$this->fields["FK_entities"]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'><td>".$LANG['common'][17].": 	</td><td colspan='2'>\n";
-      dropdownValue("glpi_dropdown_cartridge_type","type",$this->fields["type"]);
+      dropdownValue("glpi_cartridgesitemstypes","type",$this->fields["type"]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'><td>".$LANG['common'][5].": 	</td><td colspan='2'>\n";
@@ -305,7 +305,7 @@ class Cartridge extends CommonDBTM {
 	}
 
 	function prepareInputForAdd($input) {
-		return array("FK_glpi_cartridges_type"=>$input["tID"],
+		return array("FK_glpi_cartridgesitems"=>$input["tID"],
 				"date_in"=>date("Y-m-d"));
 	}
 
@@ -313,7 +313,7 @@ class Cartridge extends CommonDBTM {
 		// Add infocoms if exists for the licence
 		$ic=new Infocom();
 
-		if ($ic->getFromDBforDevice(CARTRIDGE_TYPE,$this->fields["FK_glpi_cartridges_type"])){
+		if ($ic->getFromDBforDevice(CARTRIDGE_TYPE,$this->fields["FK_glpi_cartridgesitems"])){
 			unset($ic->fields["ID"]);
 			$ic->fields["FK_device"]=$newID;
 			$ic->fields["device_type"]=CARTRIDGE_ITEM_TYPE;
@@ -371,7 +371,7 @@ class Cartridge extends CommonDBTM {
 		// Get first unused cartridge
 		$query = "SELECT ID 
 			FROM glpi_cartridges 
-			WHERE FK_glpi_cartridges_type = '$tID' AND date_use IS NULL";
+			WHERE FK_glpi_cartridgesitems = '$tID' AND date_use IS NULL";
 		$result = $DB->query($query);
 		if ($DB->numrows($result)>0){
 			// Mise a jour cartouche en prenant garde aux insertion multiples	
@@ -419,7 +419,7 @@ class Cartridge extends CommonDBTM {
 	**/
 	function getEntityID () {
 		$ci=new CartridgeType();
-		$ci->getFromDB($this->fields["FK_glpi_cartridges_type"]);
+		$ci->getFromDB($this->fields["FK_glpi_cartridgesitems"]);
 		return $ci->getEntityID();
 	}	
 

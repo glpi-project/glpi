@@ -159,10 +159,10 @@ class User extends CommonDBTM {
 		$query = "UPDATE glpi_reminder SET FK_users = 0 WHERE FK_users = '$ID'";
 		$DB->query($query);
 		// Delete private bookmark
-		$query = "DELETE FROM glpi_bookmark WHERE FK_users = '$ID' AND private=1";
+		$query = "DELETE FROM glpi_bookmarks WHERE FK_users = '$ID' AND private=1";
 		$DB->query($query);
 		// Set no user to public bookmark
-		$query = "UPDATE glpi_bookmark SET FK_users = 0 WHERE FK_users = '$ID'";
+		$query = "UPDATE glpi_bookmarks SET FK_users = 0 WHERE FK_users = '$ID'";
 		$DB->query($query);
 	}
 

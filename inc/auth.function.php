@@ -1168,7 +1168,7 @@ function useAuthMail(){
 	global $DB;	
 
 	//Get all the pop/imap servers
-	$sql = "SELECT count(*) FROM glpi_auth_mail";
+	$sql = "SELECT count(*) FROM glpi_authmails";
 	$result = $DB->query($sql);
 	if ($DB->result($result,0,0) > 0) {
 		return true;

@@ -2846,24 +2846,24 @@ $SEARCH_OPTION[CONTRACT_TYPE][86]['datatype']='bool';
 
 $SEARCH_OPTION[CARTRIDGE_TYPE]['common']=$LANG['common'][32];
 
-$SEARCH_OPTION[CARTRIDGE_TYPE][1]['table']='glpi_cartridges_type';
+$SEARCH_OPTION[CARTRIDGE_TYPE][1]['table']='glpi_cartridgesitems';
 $SEARCH_OPTION[CARTRIDGE_TYPE][1]['field']='name';
 $SEARCH_OPTION[CARTRIDGE_TYPE][1]['linkfield']='name';
 $SEARCH_OPTION[CARTRIDGE_TYPE][1]['name']=$LANG['common'][16];
 $SEARCH_OPTION[CARTRIDGE_TYPE][1]['datatype']='itemlink';
 $SEARCH_OPTION[CARTRIDGE_TYPE][1]['itemlink_type']=CARTRIDGE_TYPE;
 
-$SEARCH_OPTION[CARTRIDGE_TYPE][2]['table']='glpi_cartridges_type';
+$SEARCH_OPTION[CARTRIDGE_TYPE][2]['table']='glpi_cartridgesitems';
 $SEARCH_OPTION[CARTRIDGE_TYPE][2]['field']='ID';
 $SEARCH_OPTION[CARTRIDGE_TYPE][2]['linkfield']='';
 $SEARCH_OPTION[CARTRIDGE_TYPE][2]['name']=$LANG['common'][2];
 
-$SEARCH_OPTION[CARTRIDGE_TYPE][3]['table']='glpi_cartridges_type';
+$SEARCH_OPTION[CARTRIDGE_TYPE][3]['table']='glpi_cartridgesitems';
 $SEARCH_OPTION[CARTRIDGE_TYPE][3]['field']='ref';
 $SEARCH_OPTION[CARTRIDGE_TYPE][3]['linkfield']='ref';
 $SEARCH_OPTION[CARTRIDGE_TYPE][3]['name']=$LANG['consumables'][2];
 
-$SEARCH_OPTION[CARTRIDGE_TYPE][4]['table']='glpi_dropdown_cartridge_type';
+$SEARCH_OPTION[CARTRIDGE_TYPE][4]['table']='glpi_cartridgesitemstypes';
 $SEARCH_OPTION[CARTRIDGE_TYPE][4]['field']='name';
 $SEARCH_OPTION[CARTRIDGE_TYPE][4]['linkfield']='type';
 $SEARCH_OPTION[CARTRIDGE_TYPE][4]['name']=$LANG['common'][17];
@@ -2883,19 +2883,19 @@ $SEARCH_OPTION[CARTRIDGE_TYPE][7]['field']='name';
 $SEARCH_OPTION[CARTRIDGE_TYPE][7]['linkfield']='tech_num';
 $SEARCH_OPTION[CARTRIDGE_TYPE][7]['name']=$LANG['common'][10];
 
-$SEARCH_OPTION[CARTRIDGE_TYPE][8]['table']='glpi_cartridges_type';
+$SEARCH_OPTION[CARTRIDGE_TYPE][8]['table']='glpi_cartridgesitems';
 $SEARCH_OPTION[CARTRIDGE_TYPE][8]['field']='alarm';
 $SEARCH_OPTION[CARTRIDGE_TYPE][8]['linkfield']='alarm';
 $SEARCH_OPTION[CARTRIDGE_TYPE][8]['name']=$LANG['consumables'][38];
 $SEARCH_OPTION[CARTRIDGE_TYPE][8]['datatype']='number';
 
-$SEARCH_OPTION[CARTRIDGE_TYPE][10]['table']='glpi_cartridges_type';
+$SEARCH_OPTION[CARTRIDGE_TYPE][10]['table']='glpi_cartridgesitems';
 $SEARCH_OPTION[CARTRIDGE_TYPE][10]['field']='comments';
 $SEARCH_OPTION[CARTRIDGE_TYPE][10]['linkfield']='comments';
 $SEARCH_OPTION[CARTRIDGE_TYPE][10]['name']=$LANG['common'][25];
 $SEARCH_OPTION[CARTRIDGE_TYPE][10]['datatype']='text';
 
-$SEARCH_OPTION[CARTRIDGE_TYPE][90]['table']='glpi_cartridges_type';
+$SEARCH_OPTION[CARTRIDGE_TYPE][90]['table']='glpi_cartridgesitems';
 $SEARCH_OPTION[CARTRIDGE_TYPE][90]['field']='notes';
 $SEARCH_OPTION[CARTRIDGE_TYPE][90]['linkfield']='';
 $SEARCH_OPTION[CARTRIDGE_TYPE][90]['name']=$LANG['title'][37];

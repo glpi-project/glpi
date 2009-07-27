@@ -1165,7 +1165,7 @@ function showImapAuthList($target) {
 
 		echo "</th></tr>";
 		echo "<tr class='tab_bg_1'><td class='center'>" . $LANG['common'][16] . "</td><td class='center'>" . $LANG['common'][52] . "</td></tr>";
-		$sql = "SELECT * FROM glpi_auth_mail";
+		$sql = "SELECT * FROM glpi_authmails";
 		$result = $DB->query($sql);
 		if ($DB->numrows($result)) {
 					

@@ -2527,7 +2527,7 @@ function dropdownAuthMethods($name)
 	}
 		
 	
-	$sql = "SELECT count(*) as cpt FROM glpi_auth_mail";
+	$sql = "SELECT count(*) as cpt FROM glpi_authmails";
 	$result = $DB->query($sql);
 	
 	if ($DB->result($result,0,"cpt") > 0)

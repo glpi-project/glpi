@@ -49,6 +49,12 @@ function update0721to080() {
       'glpi_alerts' => 'glpi_alerts',
       'glpi_auth_ldap' => 'glpi_authldaps',
       'glpi_auth_ldap_replicate' => 'glpi_authldapsreplicates',
+      'glpi_auth_mail' => 'glpi_authmails',
+      'glpi_bookmark' => 'glpi_bookmarks',
+      'glpi_cartridges' => 'glpi_cartridges',
+      'glpi_cartridges_type' => 'glpi_cartridgesitems',
+      'glpi_cartridges_assoc' => 'glpi_cartridges_printersmodels',
+      'glpi_dropdown_cartridge_type' => 'glpi_cartridgesitemstypes',
    );
    $backup_tables=false;
 	foreach ($glpi_tables as $original_table => $new_table) {
@@ -62,7 +68,7 @@ function update0721to080() {
                      $DB->query($query) or die("0.80 drop backup table backup_$new_table ". $LANG['update'][90] . $DB->error());
                   }
                   echo "<p><b>$new_table table already exists. ";
-                  echo "A backup have been done to backup_".$new_table.".</p>";
+                  echo "A backup have been done to backup_NAME.</b></p>";
                   $backup_tables=true;
                   $query="RENAME TABLE `$new_table` TO `backup_$new_table`";
                   $DB->query($query) or die("0.80 backup table $new_table " . $LANG['update'][90] . $DB->error());
@@ -75,7 +81,7 @@ function update0721to080() {
       }
    }
    if ($backup_tables){
-      echo "<p>You can delete backup tables if you have no need of them.</p></b>";
+      echo "<div class='red'><p>You can delete backup tables if you have no need of them.</p></div>";
    }
 
    displayMigrationMessage("080", $LANG['update'][141] . ' - glpi_config'); // Updating schema
@@ -247,9 +253,10 @@ function update0721to080() {
          $query = "ALTER TABLE `glpi_dropdown_budget`  ADD `tplname` varchar(255) default NULL";
 			$DB->query($query) or die("0.80 add tplname field in glpi_dropdown_budget" . $LANG['update'][90] . $DB->error());
       }
-
-      $query = "RENAME TABLE `glpi_dropdown_budget`  TO `glpi_budgets` ;";
-      $DB->query($query) or die("0.80 rename glpi_dropdown_budget to glpi_budgets" . $LANG['update'][90] . $DB->error());
+      if (!TableExists("glpi_budgets")) {
+         $query = "RENAME TABLE `glpi_dropdown_budget`  TO `glpi_budgets` ;";
+         $DB->query($query) or die("0.80 rename glpi_dropdown_budget to glpi_budgets" . $LANG['update'][90] . $DB->error());
+      }
 	}
 
 	// Display "Work ended." message - Keep this as the last action.
