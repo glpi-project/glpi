@@ -2517,7 +2517,7 @@ function dropdownAuthMethods($name)
 	$methods[0]='-----';
 	$methods[AUTH_DB_GLPI]=$LANG['login'][32];
 	
-	$sql = "SELECT count(*) as cpt FROM  glpi_auth_ldap";
+	$sql = "SELECT count(*) as cpt FROM  glpi_authldaps";
 	$result = $DB->query($sql);
 	
 	if ($DB->result($result,0,"cpt") > 0)

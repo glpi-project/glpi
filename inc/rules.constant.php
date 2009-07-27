@@ -81,7 +81,7 @@ $RULES_ACTIONS[RULE_OCS_AFFECT_COMPUTER]['_affect_entity_by_tag']['type']='text'
 $RULES_ACTIONS[RULE_OCS_AFFECT_COMPUTER]['_affect_entity_by_tag']['force_actions']=array("regex_result");
 
 
-$RULES_CRITERIAS[RULE_AFFECT_RIGHTS]['LDAP_SERVER']['table']='glpi_auth_ldap';
+$RULES_CRITERIAS[RULE_AFFECT_RIGHTS]['LDAP_SERVER']['table']='glpi_authldaps';
 $RULES_CRITERIAS[RULE_AFFECT_RIGHTS]['LDAP_SERVER']['field']='name';
 $RULES_CRITERIAS[RULE_AFFECT_RIGHTS]['LDAP_SERVER']['name']=$LANG['login'][2];
 $RULES_CRITERIAS[RULE_AFFECT_RIGHTS]['LDAP_SERVER']['linkfield']='';

@@ -51,7 +51,7 @@ if ($_POST["auth_method"] > 0)
 		break;
 		case AUTH_LDAP:
 		case AUTH_EXTERNAL:
-			dropdownValue("glpi_auth_ldap","auth_server",1);
+			dropdownValue("glpi_authldaps","auth_server",1);
 		break;
 		case AUTH_MAIL:
 			dropdownValue("glpi_auth_mail","auth_server",1);

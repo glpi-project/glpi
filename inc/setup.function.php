@@ -1049,7 +1049,7 @@ function showLdapAuthList($target) {
 		echo "</th></tr>";
 		echo "<tr class='tab_bg_1'><td class='center'>" . $LANG['common'][16] . "</td><td class='center'>" . $LANG['common'][52] . "</td></tr>";
 
-		$sql = "SELECT * FROM glpi_auth_ldap";
+		$sql = "SELECT * FROM glpi_authldaps";
 		$result = $DB->query($sql);
 		if ($DB->numrows($result)) {
 			while ($ldap_method = $DB->fetch_array($result)){
@@ -1137,7 +1137,7 @@ function showOtherAuthList($target) {
 
 	echo "<tr><th colspan='2'>" . $LANG['setup'][194]."</th></tr>";
 	echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['ldap'][4] . "</td><td>";
-	dropdownValue("glpi_auth_ldap","extra_ldap_server",$CFG_GLPI["extra_ldap_server"]);
+	dropdownValue("glpi_authldaps","extra_ldap_server",$CFG_GLPI["extra_ldap_server"]);
 	echo "</td></tr>";
 
 	echo "<tr class='tab_bg_1'><td align='center' colspan='2'><input type=\"submit\" name=\"update\" class=\"submit\" value=\"" . $LANG['buttons'][7] . "\" ></td></tr>";

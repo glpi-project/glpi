@@ -512,12 +512,12 @@ function getAuthMethodsByID($auth_method, $id_auth) {
 		case AUTH_CAS :
 			if ($id_auth>0){
 				//Get all the ldap directories
-				$sql = "SELECT * FROM glpi_auth_ldap WHERE ID='".$id_auth."'";
+				$sql = "SELECT * FROM glpi_authldaps WHERE ID='".$id_auth."'";
 			}
 			break;
 		case AUTH_LDAP :
 			//Get all the ldap directories
-			$sql = "SELECT * FROM glpi_auth_ldap WHERE ID='".$id_auth."'";
+			$sql = "SELECT * FROM glpi_authldaps WHERE ID='".$id_auth."'";
 			break;
 		case AUTH_MAIL :
 			//Get all the pop/imap servers
@@ -597,7 +597,7 @@ function getAuthMethodName($auth_method, $id_auth, $link=0,$name=''){
 	}
 }
 
-/** Get LDAP fields to sync to GLPI data from a glpi_auth_ldap array 
+/** Get LDAP fields to sync to GLPI data from a glpi_authldaps array 
 * @param $auth_method_array Authentication method config array
 */
 function getLDAPSyncFields($auth_method_array){ 

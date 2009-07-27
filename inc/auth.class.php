@@ -433,7 +433,7 @@ class Identification {
 		$auth_methods_ldap = array ();
 
 		//Get all the ldap directories
-		$sql = "SELECT * FROM glpi_auth_ldap";
+		$sql = "SELECT * FROM glpi_authldaps";
 		$result = $DB->query($sql);
 		if ($DB->numrows($result) > 0) {
 
@@ -588,7 +588,7 @@ class AuthLDAP extends CommonDBTM {
 	function __construct() {
 		global $CFG_GLPI;
 
-		$this->table = "glpi_auth_ldap";
+		$this->table = "glpi_authldaps";
 		$this->type = AUTH_LDAP_TYPE;
 
 	}
@@ -838,7 +838,7 @@ class AuthLdapReplicate extends CommonDBTM{
 	 **/
 	function __construct()
 	{
-		$this->table ="glpi_auth_ldap_replicate";
+		$this->table ="glpi_authldapsreplicates";
 	}
 	
 	function prepareInputForAdd($input){

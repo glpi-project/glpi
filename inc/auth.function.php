@@ -1185,7 +1185,7 @@ function useAuthLdap(){
 	global $DB;	
 
 	//Get all the ldap directories
-	$sql = "SELECT count(*) FROM glpi_auth_ldap";
+	$sql = "SELECT count(*) FROM glpi_authldaps";
 	$result = $DB->query($sql);
 	if ($DB->result($result,0,0) > 0) {
 		return true;
@@ -1225,7 +1225,7 @@ function showReplicatesList($target,$master_id){
 
 	addNewReplicateForm($target, $master_id);
 	
-	$sql = "SELECT * FROM glpi_auth_ldap_replicate 
+	$sql = "SELECT * FROM glpi_authldapsreplicates 
 		WHERE server_id='".$master_id."' 
 		ORDER BY name";
 	$result = $DB->query($sql);
@@ -1312,7 +1312,7 @@ function getAllReplicateForAMaster($master_id){
 	
 	$replicates = array();
 	$query="SELECT ID, ldap_host, ldap_port 
-		FROM glpi_auth_ldap_replicate 
+		FROM glpi_authldapsreplicates 
 		WHERE server_id='".$master_id."'";
 	$result = $DB->query($query);
 	if ($DB->numrows($result)>0){
@@ -1413,6 +1413,6 @@ function isAlternateAuthWithLdap($id_auth){
 }
 
 function getLdapServers () {
-	return getAllDatasFromTable('glpi_auth_ldap');
+	return getAllDatasFromTable('glpi_authldaps');
 }
 ?>
