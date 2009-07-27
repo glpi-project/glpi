@@ -269,7 +269,7 @@ function location_create_new($split_char,$add_first){
 function showLocationUpdateForm(){
 	global $DB,$LANG;
 
-	if (FieldExists("glpi_dropdown_locations", "parentID")) {
+	if (FieldExists("glpi_dropdown_locations", "parentID") || FieldExists("glpi_locations", "parentID")) {
 		updateTreeDropdown();
 		return true;
 	}
@@ -365,7 +365,7 @@ function changeVarcharToID($table1, $table2, $chps)
 
 
 //update database up to 0.31
-function updatedbUpTo031()
+function updateDbUpTo031()
 {
 
 	global $DB,$LANG;
