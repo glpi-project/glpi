@@ -331,9 +331,9 @@ function getNbIntervTechFollowup($date1,$date2){
 */
 function getNbIntervEnterprise($date1,$date2){
 	global $DB,$CFG_GLPI;
-	$query = "SELECT distinct glpi_tracking.assign_ent as assign_ent, glpi_enterprises.name as name";
+	$query = "SELECT distinct glpi_tracking.assign_ent as assign_ent, glpi_suppliers.name as name";
 	$query.= " FROM glpi_tracking ";
-	$query.= " LEFT JOIN glpi_enterprises  ON (glpi_enterprises.ID=glpi_tracking.assign_ent) ";
+	$query.= " LEFT JOIN glpi_suppliers  ON (glpi_suppliers.ID=glpi_tracking.assign_ent) ";
 
 	$query.=getEntitiesRestrictRequest("WHERE","glpi_tracking");
 	if (!empty($date1)) $query.= " AND glpi_tracking.date >= '". $date1 ."' ";

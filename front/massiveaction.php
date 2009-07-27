@@ -210,7 +210,7 @@ if (isset($_POST["device_type"])){
 		
 						$link_entity_type=-1;
 						/// Specific entity item
-						if ($searchopt[$_POST["id_field"]]["table"]=="glpi_enterprises_infocoms"){
+						if ($searchopt[$_POST["id_field"]]["table"]=="glpi_suppliers_infocoms"){
 							$ent=new Enterprise();
 							if ($ent->getFromDB($_POST[$_POST["field"]])){
 								$link_entity_type=$ent->fields["FK_entities"];

@@ -51,14 +51,6 @@ if ($_POST['sID']>0){
 	}
 	// Make a select box
 
-// TODO : Why JOIN with glpi_inst_software ??
-/*
-	$query = "SELECT DISTINCT glpi_softwareversions.* FROM glpi_softwareversions ";
-	$query.= " LEFT JOIN glpi_inst_software on (glpi_softwareversions.ID=glpi_inst_software.vID)";
-	$query.= " WHERE glpi_softwareversions.sID='".$_POST['sID']."' ";
-	$query.= " ORDER BY name";
-*/
-
 	$query = "SELECT DISTINCT glpi_softwareversions.*, glpi_states.name AS sname FROM glpi_softwareversions "
 			." LEFT JOIN glpi_states on (glpi_softwareversions.state=glpi_states.ID) "
 			." WHERE glpi_softwareversions.sID='".$_POST['sID']."'"

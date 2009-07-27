@@ -78,10 +78,10 @@ if (isset($_GET["file"])){
 					if (!$send&&haveRight("faq","r")){
 						$query = "SELECT * 
 							FROM glpi_documents_items 
-								LEFT JOIN glpi_kbitems ON (glpi_kbitems.ID = glpi_documents_items.Fk_device) 
+								LEFT JOIN glpi_knowbaseitems ON (glpi_knowbaseitems.ID = glpi_documents_items.Fk_device) 
 							WHERE glpi_documents_items.device_type = '".KNOWBASE_TYPE."' 
 								AND glpi_documents_items.FK_doc='".$doc->fields["ID"]."' 
-								AND glpi_kbitems.faq='1'";
+								AND glpi_knowbaseitems.faq='1'";
 
 						$result=$DB->query($query);
 						if ($DB->numrows($result)>0)
@@ -115,10 +115,10 @@ if (isset($_GET["file"])){
 							// Check if it is a FAQ document
 							$query = "SELECT * 
 								FROM glpi_documents_items 
-									LEFT JOIN glpi_kbitems ON (glpi_kbitems.ID = glpi_documents_items.Fk_device)
+									LEFT JOIN glpi_knowbaseitems ON (glpi_knowbaseitems.ID = glpi_documents_items.Fk_device)
 								WHERE glpi_documents_items.device_type = '".KNOWBASE_TYPE."' 
 									AND glpi_documents_items.FK_doc='".$doc->fields["ID"]."'
-									AND glpi_kbitems.faq='1'";
+									AND glpi_knowbaseitems.faq='1'";
 
 							$result=$DB->query($query);
 							if ($DB->numrows($result)>0)

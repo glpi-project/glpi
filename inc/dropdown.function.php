@@ -174,7 +174,7 @@ function dropdownValue($table,$myname,$value='',$display_comments=1,$entity_rest
 		echo "<span class='over_link' id='comments_$myname$rand'>".nl2br($comments)."</span>";
 	}
 	// Display specific Links
-	if ($table=="glpi_enterprises"){
+	if ($table=="glpi_suppliers"){
 		echo getEnterpriseLinks($value);	
 	}
 
@@ -604,7 +604,7 @@ function getDropdownName($table,$id,$withcomments=0) {
 								$comments.="<br><strong>".$LANG['setup'][14].":</strong> ".$data["email"];
 							}
 							break;
-						case "glpi_enterprises" :
+						case "glpi_suppliers" :
 							if (!empty($data["phone"])){
 								$comments.="<br><strong>".$LANG['help'][35].":</strong> ".$data["phone"];
 							}
@@ -1105,8 +1105,8 @@ function dropdownMyDevices($userID=0,$entity_restrict=-1){
 			// Software
 			if ($_SESSION["glpiactiveprofile"]["helpdesk_hardware_type"]&pow(2,SOFTWARE_TYPE)){
 				$query = "SELECT DISTINCT glpi_softwareversions.name as version, glpi_software.name as name, 
-					glpi_software.ID as ID FROM glpi_inst_software, glpi_software,glpi_softwareversions ";
-				$query.= "WHERE glpi_inst_software.vID = glpi_softwareversions.ID AND glpi_softwareversions.sID = glpi_software.ID AND ".str_replace("XXXX","glpi_inst_software.cID",$search_computer)." AND  glpi_software.helpdesk_visible=1 ";
+					glpi_software.ID as ID FROM glpi_computers_softwareversions, glpi_software,glpi_softwareversions ";
+				$query.= "WHERE glpi_computers_softwareversions.vID = glpi_softwareversions.ID AND glpi_softwareversions.sID = glpi_software.ID AND ".str_replace("XXXX","glpi_computers_softwareversions.cID",$search_computer)." AND  glpi_software.helpdesk_visible=1 ";
 				$query.=getEntitiesRestrictRequest("AND","glpi_software","",$entity_restrict);
 				$query.=" ORDER BY glpi_software.name";
 

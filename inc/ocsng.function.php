@@ -1545,7 +1545,7 @@ function ocsUnlockItems($glpi_id,$field){
 							$querySearchLocked = "SELECT end1 FROM glpi_computers_items WHERE ID='$key'";
 							break;
 						case "import_software":
-							$querySearchLocked = "SELECT ID FROM glpi_inst_software WHERE ID='$key'";
+							$querySearchLocked = "SELECT ID FROM glpi_computers_softwareversions WHERE ID='$key'";
 							break;
 						case "import_ip":
 							$querySearchLocked = "SELECT * FROM glpi_networking_ports 
@@ -1764,7 +1764,7 @@ function ocsEditLock($target, $ID) {
 		$locked_software = importArrayFromDB($data["import_software"]);
 		foreach ($locked_software as $key => $val) {
 			if ($val != "_version_070_") {
-				$querySearchLockedSoft = "SELECT ID FROM glpi_inst_software WHERE ID='$key'";
+				$querySearchLockedSoft = "SELECT ID FROM glpi_computers_softwareversions WHERE ID='$key'";
 				$resultSearchSoft = $DB->query($querySearchLockedSoft);
 				if ($DB->numrows($resultSearchSoft) == 0) {
 					//$header = true;
@@ -2941,9 +2941,9 @@ function ocsUpdateSoftware($glpi_id, $entity, $ocs_id, $ocs_server_id, $cfg_ocs,
 			//For each element of the table, add instID=>name.version
 			foreach ($import_software as $key => $value){
 				$query_softs = "SELECT glpi_softwareversions.name as VERSION 
-					FROM glpi_inst_software, glpi_softwareversions 
-					WHERE glpi_inst_software.vID=glpi_softwareversions.ID AND glpi_inst_software.cID='".$glpi_id."' 
-						AND glpi_inst_software.ID='".$key."'";
+					FROM glpi_computers_softwareversions, glpi_softwareversions 
+					WHERE glpi_computers_softwareversions.vID=glpi_softwareversions.ID AND glpi_computers_softwareversions.cID='".$glpi_id."' 
+						AND glpi_computers_softwareversions.ID='".$key."'";
 				$result_softs = $DB->query($query_softs);
 				$softs = $DB->fetch_array($result_softs);
 				$softs_array[$key] =  $value . OCS_FIELD_SEPARATOR. $softs["VERSION"];
@@ -3060,9 +3060,9 @@ function ocsUpdateSoftware($glpi_id, $entity, $ocs_id, $ocs_server_id, $cfg_ocs,
 						//Get the name of the software in GLPI to know if the software's name have already been changed by the OCS dictionnary
 						$instID = array_search($initname . OCS_FIELD_SEPARATOR. $version, $import_software);
 						$query_soft = "SELECT glpi_software.ID, glpi_software.name 
-								FROM glpi_software, glpi_inst_software, glpi_softwareversions
-								WHERE glpi_inst_software.ID='".$instID."' 
-									AND glpi_inst_software.vID=glpi_softwareversions.ID 
+								FROM glpi_software, glpi_computers_softwareversions, glpi_softwareversions
+								WHERE glpi_computers_softwareversions.ID='".$instID."' 
+									AND glpi_computers_softwareversions.vID=glpi_softwareversions.ID 
 									AND glpi_softwareversions.sID=glpi_software.ID";
 	
 						$result_soft = $DB->query($query_soft);
@@ -3108,14 +3108,14 @@ function ocsUpdateSoftware($glpi_id, $entity, $ocs_id, $ocs_server_id, $cfg_ocs,
 			foreach ($import_software as $key => $val) {
 
 				$query = "SELECT * 
-					FROM glpi_inst_software 
+					FROM glpi_computers_softwareversions 
 					WHERE ID = '" . $key . "'";
 				$result = $DB->query($query);
 				if ($DB->numrows($result) > 0) {
 					if ($data = $DB->fetch_assoc($result)) {
 						uninstallSoftwareVersion($key, $dohistory);
 
-						if (countElementsInTable('glpi_inst_software', "vID = '" . $data['vID'] . "'") == 0 
+						if (countElementsInTable('glpi_computers_softwareversions', "vID = '" . $data['vID'] . "'") == 0 
 							&& countElementsInTable('glpi_softwarelicenses', "buy_version  = '" . $data['vID'] . "'") == 0) {
 
 							$vers = new SoftwareVersion;
@@ -3304,13 +3304,13 @@ function ocsResetSoftwares($glpi_computer_id) {
 	global $DB;
 
 	$query = "SELECT * 
-		FROM glpi_inst_software 
+		FROM glpi_computers_softwareversions 
 		WHERE cid = '" . $glpi_computer_id . "'";
 	$result = $DB->query($query);
 	if ($DB->numrows($result) > 0) {
 		while ($data = $DB->fetch_assoc($result)) {
 			$query2 = "SELECT COUNT(*) 
-				FROM glpi_inst_software 
+				FROM glpi_computers_softwareversions 
 				WHERE vID = '" . $data['vID'] . "'";
 			$result2 = $DB->query($query2);
 			if ($DB->result($result2, 0, 0) == 1) {
@@ -3333,7 +3333,7 @@ function ocsResetSoftwares($glpi_computer_id) {
 			}
 		}
 
-		$query = "DELETE FROM glpi_inst_software 
+		$query = "DELETE FROM glpi_computers_softwareversions 
 				WHERE cid = '" . $glpi_computer_id . "'";
 		$DB->query($query);
 	}

@@ -180,7 +180,7 @@ function getReplicateDelay() {
  * @param $DBconnection DB conneciton used
  */
 function getHistoryMaxDate($DBconnection) {
-	$result = $DBconnection->query("SELECT UNIX_TIMESTAMP(MAX(date_mod)) as max_date FROM glpi_history");
+	$result = $DBconnection->query("SELECT UNIX_TIMESTAMP(MAX(date_mod)) as max_date FROM glpi_logs");
 	if ($DBconnection->numrows($result) > 0)
 		return $DBconnection->result($result, 0, "max_date");
 	else

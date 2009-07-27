@@ -152,7 +152,7 @@ if (isset($_POST["action"])&&isset($_POST["type"])&&!empty($_POST["type"])){
 		echo "&nbsp;<input type=\"submit\" name=\"massiveaction\" class=\"submit\" value=\"".$LANG['buttons'][2]."\" >";
 		break;
 		case "add_enterprise":
-			dropdown("glpi_enterprises","entID",1);
+			dropdown("glpi_suppliers","entID",1);
 		echo "&nbsp;<input type=\"submit\" name=\"massiveaction\" class=\"submit\" value=\"".$LANG['buttons'][2]."\" >";
 		break;
 		case "update":
@@ -185,7 +185,7 @@ if (isset($_POST["action"])&&isset($_POST["type"])&&!empty($_POST["type"])){
 					){ // No ID
 						if (!empty($val["linkfield"])
 								||($val["table"]=="glpi_infocoms" && $key!=120) // no end_warranty
-								||$val["table"]=="glpi_enterprises_infocoms"
+								||$val["table"]=="glpi_suppliers_infocoms"
 								||$val["table"]=="glpi_budgets"
 								||($val["table"]=="glpi_ocs_link"&&$key==101) // auto_update_ocs
 								){

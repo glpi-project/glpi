@@ -335,7 +335,7 @@ class CommonDBTM {
 	function cleanHistory($ID){
 		global $DB;
 		if ($this->dohistory){
-			$query = "DELETE FROM glpi_history 
+			$query = "DELETE FROM glpi_logs 
 				WHERE ( device_type = '".$this->type."' AND FK_glpi_device = '$ID')";
 			$DB->query($query);
 		}

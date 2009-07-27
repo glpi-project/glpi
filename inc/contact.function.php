@@ -58,13 +58,13 @@ function showEnterpriseContact($instID) {
 	$contact=new Contact();
 	$canedit=$contact->can($instID,'w');
 
-	$query = "SELECT glpi_contacts_suppliers.ID as ID, glpi_enterprises.ID as entID, glpi_enterprises.name as name, 
-			glpi_enterprises.website as website, glpi_enterprises.fax as fax, glpi_enterprises.phonenumber as phone,
-			glpi_enterprises.type as type, glpi_enterprises.deleted as deleted, glpi_entities.ID AS entity"
-		. " FROM glpi_contacts_suppliers, glpi_enterprises "
-		. " LEFT JOIN glpi_entities ON (glpi_entities.ID=glpi_enterprises.FK_entities) "
-		. " WHERE glpi_contacts_suppliers.FK_contact = '$instID' AND glpi_contacts_suppliers.FK_enterprise = glpi_enterprises.ID"
-		. getEntitiesRestrictRequest(" AND","glpi_enterprises",'','',true) 
+	$query = "SELECT glpi_contacts_suppliers.ID as ID, glpi_suppliers.ID as entID, glpi_suppliers.name as name, 
+			glpi_suppliers.website as website, glpi_suppliers.fax as fax, glpi_suppliers.phonenumber as phone,
+			glpi_suppliers.type as type, glpi_suppliers.deleted as deleted, glpi_entities.ID AS entity"
+		. " FROM glpi_contacts_suppliers, glpi_suppliers "
+		. " LEFT JOIN glpi_entities ON (glpi_entities.ID=glpi_suppliers.FK_entities) "
+		. " WHERE glpi_contacts_suppliers.FK_contact = '$instID' AND glpi_contacts_suppliers.FK_enterprise = glpi_suppliers.ID"
+		. getEntitiesRestrictRequest(" AND","glpi_suppliers",'','',true) 
 		. " ORDER BY glpi_entities.completename,name";
 	
 	$result = $DB->query($query);
@@ -96,7 +96,7 @@ function showEnterpriseContact($instID) {
 				$website="<a target=_blank href='$website'>".$data["website"]."</a>";
 			}
 			echo "<tr class='tab_bg_1".($data["deleted"]?"_2":"")."'>";
-			echo "<td class='center'><a href='".$CFG_GLPI["root_doc"]."/front/enterprise.form.php?ID=".$data["entID"]."'>".getDropdownName("glpi_enterprises",$data["entID"])."</a></td>";
+			echo "<td class='center'><a href='".$CFG_GLPI["root_doc"]."/front/enterprise.form.php?ID=".$data["entID"]."'>".getDropdownName("glpi_suppliers",$data["entID"])."</a></td>";
 			echo "<td class='center'>".getDropdownName("glpi_entities",$data["entity"])."</td>";
 			echo "<td class='center'>".getDropdownName("glpi_supplierstypes",$data["type"])."</td>";
 			echo "<td align='center'  width='100'>".$data["phone"]."</td>";
@@ -111,17 +111,17 @@ function showEnterpriseContact($instID) {
 	}
 	if ($canedit){
 		if ($contact->fields["recursive"]) {
-         $nb=countElementsInTableForEntity("glpi_enterprises",getSonsOf("glpi_entities",$contact->fields["FK_entities"]));
+         $nb=countElementsInTableForEntity("glpi_suppliers",getSonsOf("glpi_entities",$contact->fields["FK_entities"]));
 		} else {
-			$nb=countElementsInTableForEntity("glpi_enterprises",$contact->fields["FK_entities"]);
+			$nb=countElementsInTableForEntity("glpi_suppliers",$contact->fields["FK_entities"]);
 		}		
 		if ($nb>count($used)) {
 			echo "<tr class='tab_bg_1'><td>&nbsp;</td><td class='center' colspan='4'>";
 			echo "<div class='software-instal'><input type='hidden' name='conID' value='$instID'>";
 			if ($contact->fields["recursive"]) {
-            dropdown("glpi_enterprises","entID",1,getSonsOf("glpi_entities",$contact->fields["FK_entities"]),$used);
+            dropdown("glpi_suppliers","entID",1,getSonsOf("glpi_entities",$contact->fields["FK_entities"]),$used);
 			} else {
-				dropdown("glpi_enterprises","entID",1,$contact->fields["FK_entities"],$used);
+				dropdown("glpi_suppliers","entID",1,$contact->fields["FK_entities"],$used);
 			}
 			echo "&nbsp;&nbsp;<input type='submit' name='addenterprise' value=\"".$LANG['buttons'][8]."\" class='submit'>";
 			echo "</div>";

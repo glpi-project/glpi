@@ -263,7 +263,7 @@ if (!defined('GLPI_ROOT')){
 		// Expire Event Log
 		if ($CFG_GLPI["expire_events"] > 0) {
 			$secs = $CFG_GLPI["expire_events"] * DAY_TIMESTAMP;
-			$query_exp = "DELETE FROM glpi_event_log WHERE UNIX_TIMESTAMP(date) < UNIX_TIMESTAMP()-$secs";
+			$query_exp = "DELETE FROM glpi_events WHERE UNIX_TIMESTAMP(date) < UNIX_TIMESTAMP()-$secs";
 			$DB->query($query_exp);
 			logInFile("cron","Cleaning log events passed from more than ".$CFG_GLPI["expire_events"]." days\n");
 		}
@@ -1933,10 +1933,10 @@ function getCountLogin() {
 	global $DB;
 	
 	$query="SELECT count(*) 
-		FROM `glpi_event_log` 
+		FROM `glpi_events` 
 		WHERE message LIKE '%logged in%'";
 	$query2="SELECT date 
-		FROM `glpi_event_log` 
+		FROM `glpi_events` 
 		ORDER BY date ASC LIMIT 1";
 	//$DB=new DB;
 	$result=$DB->query($query);

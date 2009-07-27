@@ -790,7 +790,7 @@ function replaceDropDropDown($input) {
 
 	// Need to be done on entity class
 	if ($input["tablename"]=="glpi_entities"){
-		$query = "DELETE FROM `glpi_entities_data` WHERE `FK_entities` = '" . $input["oldID"] . "'";
+		$query = "DELETE FROM `glpi_entitiesdatas` WHERE `FK_entities` = '" . $input["oldID"] . "'";
 		$DB->query($query);
    }
    // Clean sons / ancestors if needed
@@ -827,7 +827,7 @@ function showDeleteConfirmForm($target, $table, $ID,$FK_entities) {
 		}
 
 		if ($table == "glpi_knowbaseitemscategories") {
-			$query = "SELECT COUNT(*) AS cpt FROM `glpi_kbitems` WHERE `categoryID` = '" . $ID . "'";
+			$query = "SELECT COUNT(*) AS cpt FROM `glpi_knowbaseitems` WHERE `categoryID` = '" . $ID . "'";
 			$result = $DB->query($query);
 			if ($DB->result($result, 0, "cpt") > 0) {
 				echo "<div class='center'><p class='red'>" . $LANG['setup'][74] . "</p></div>";

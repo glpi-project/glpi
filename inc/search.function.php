@@ -1797,8 +1797,8 @@ function addSelect ($type,$ID,$num,$meta=0,$meta_type=0){
 		case "glpi_softwarelicenses.number":
 			return " FLOOR( SUM($table$addtable.$field) * COUNT(DISTINCT $table$addtable.ID) / COUNT($table$addtable.ID) ) AS ".$NAME."_".$num.", MIN($table$addtable.$field) AS ".$NAME."_".$num."_2, ";
 		break;
-		case "glpi_inst_software.count" :
-			return " COUNT(DISTINCT glpi_inst_software$addtable.ID) AS ".$NAME."_".$num.", ";
+		case "glpi_computers_softwareversions.count" :
+			return " COUNT(DISTINCT glpi_computers_softwareversions$addtable.ID) AS ".$NAME."_".$num.", ";
 		break;
 		case "glpi_devicesharddrives.specif_default" :
 			return " SUM(DEVICE_".HDD_DEVICE.".specificity) / COUNT( DEVICE_".HDD_DEVICE.".ID) * COUNT( DISTINCT DEVICE_".HDD_DEVICE.".ID) AS ".$NAME."_".$num.", ";
@@ -2875,7 +2875,7 @@ function addLeftJoin ($type,$ref_table,&$already_link_tables,$new_table,$linkfie
 			$out=addLeftJoin($type,$ref_table,$already_link_tables,"glpi_computersdisks",$linkfield);
 		return $out." LEFT JOIN $new_table $AS ON (glpi_computersdisks.FK_filesystems = $nt.ID) ";
 		break;
-		case "glpi_entities_data":
+		case "glpi_entitiesdatas":
 			return " LEFT JOIN $new_table $AS ON ($rt.ID = $nt.FK_entities) ";
 		break;
 		case "glpi_ocs_link":
@@ -2913,11 +2913,11 @@ function addLeftJoin ($type,$ref_table,&$already_link_tables,$new_table,$linkfie
 		case "glpi_users":
 			return " LEFT JOIN $new_table $AS ON ($rt.$linkfield = $nt.ID) ";
 		break;
-		case "glpi_enterprises":
+		case "glpi_suppliers":
 			if ($type==CONTACT_TYPE){
 				$out=addLeftJoin($type,$ref_table,$already_link_tables,"glpi_contacts_suppliers","FK_contact");
 				return $out." LEFT JOIN $new_table $AS ON (glpi_contacts_suppliers.FK_enterprise = $nt.ID ".
-				getEntitiesRestrictRequest("AND","glpi_enterprises",'','',true).") ";
+				getEntitiesRestrictRequest("AND","glpi_suppliers",'','',true).") ";
 			} else {
 				return " LEFT JOIN $new_table $AS ON ($rt.FK_enterprise = $nt.ID) ";
 			}
@@ -2934,9 +2934,9 @@ function addLeftJoin ($type,$ref_table,&$already_link_tables,$new_table,$linkfie
 			return " LEFT JOIN $new_table $AS ON ($rt.FK_glpi_enterprise = $nt.ID) ";
 		break;
 
-		case "glpi_enterprises_infocoms":
+		case "glpi_suppliers_infocoms":
 			$out=addLeftJoin($type,$ref_table,$already_link_tables,"glpi_infocoms",$linkfield);
-		return $out." LEFT JOIN glpi_enterprises AS glpi_enterprises_infocoms ON (glpi_infocoms.FK_enterprise = $nt.ID) ";
+		return $out." LEFT JOIN glpi_suppliers AS glpi_suppliers_infocoms ON (glpi_infocoms.FK_enterprise = $nt.ID) ";
 		break;
 		case "glpi_budgets":
 			$out=addLeftJoin($type,$ref_table,$already_link_tables,"glpi_infocoms",$linkfield);
@@ -3036,7 +3036,7 @@ function addLeftJoin ($type,$ref_table,&$already_link_tables,$new_table,$linkfie
 				return "";
 			}
 		break;
-		case "glpi_inst_software":
+		case "glpi_computers_softwareversions":
 			$out=addLeftJoin($type,$rt,$already_link_tables,"glpi_softwareversions",$linkfield,$device_type,$meta,$meta_type);
 		return $out." LEFT JOIN $new_table $AS ON (glpi_softwareversions$addmetanum.ID = $nt.vID) ";
 		break;
@@ -3166,7 +3166,7 @@ function addMetaLeftJoin($from_type,$to_type,&$already_link_tables2,$nullornott)
 				case SOFTWARE_TYPE :
 					/// TODO: link licenses via installed software OR by affected/FK_computers ???
 					array_push($already_link_tables2,$LINK_ID_TABLE[SOFTWARE_TYPE]);
-					return " $LINK glpi_inst_software as inst_$to_type ON (inst_$to_type.cID = glpi_computers.ID) ".
+					return " $LINK glpi_computers_softwareversions as inst_$to_type ON (inst_$to_type.cID = glpi_computers.ID) ".
 						" $LINK glpi_softwareversions as glpi_softwareversions_$to_type ON ( inst_$to_type.vID=glpi_softwareversions_$to_type.ID ) ".
 						" $LINK glpi_software ON (glpi_softwareversions_$to_type.sID = glpi_software.ID)".
 						" $LINK glpi_softwarelicenses AS glpi_softwarelicenses_$to_type ON (glpi_software.ID=glpi_softwarelicenses_$to_type.sID " .
@@ -3219,7 +3219,7 @@ function addMetaLeftJoin($from_type,$to_type,&$already_link_tables2,$nullornott)
 				case COMPUTER_TYPE :
 					array_push($already_link_tables2,$LINK_ID_TABLE[COMPUTER_TYPE]);
 					return " $LINK glpi_softwareversions as glpi_softwareversions_$to_type ON ( glpi_softwareversions_$to_type.sID = glpi_software.ID ) ".
-						" $LINK glpi_inst_software as inst_$to_type ON (inst_$to_type.vID = glpi_softwareversions_$to_type.ID) ".
+						" $LINK glpi_computers_softwareversions as inst_$to_type ON (inst_$to_type.vID = glpi_softwareversions_$to_type.ID) ".
 						" $LINK glpi_computers ON (inst_$to_type.cID = glpi_computers.ID)";
 
 					break;

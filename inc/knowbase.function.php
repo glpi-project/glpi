@@ -116,8 +116,8 @@ function showKbCategoriesFirstLevel($target,$parentID=0,$faq=0){
 		if (!isset($_SESSION['glpi_faqcategories'])){
 			$_SESSION['glpi_faqcategories']=array();
 			$query="SELECT DISTINCT categoryID 
-				FROM glpi_kbitems 
-				WHERE glpi_kbitems.faq = '1'";
+				FROM glpi_knowbaseitems 
+				WHERE glpi_knowbaseitems.faq = '1'";
 			if ($result=$DB->query($query)){
 				if ($DB->numrows($result)){
 					while ($data=$DB->fetch_array($result)){
@@ -230,28 +230,28 @@ function showKbItemList($target,$contains,$start,$parentID,$faq=0){
 
 	// Build query
 	if (isset($_SESSION["glpiID"])){
-		$where = getEntitiesRestrictRequest("", "glpi_kbitems", "", "", true) . " AND "; 
+		$where = getEntitiesRestrictRequest("", "glpi_knowbaseitems", "", "", true) . " AND "; 
 	} else {
 		// Anonymous access
 		if (isMultiEntitiesMode()){
-			$where = "(glpi_kbitems.FK_entities=0 AND glpi_kbitems.recursive=1) AND ";
+			$where = "(glpi_knowbaseitems.FK_entities=0 AND glpi_knowbaseitems.recursive=1) AND ";
 		}
 	}	
 
 	if ($faq){ // helpdesk
-		$where .= " (glpi_kbitems.faq = '1') AND ";
+		$where .= " (glpi_knowbaseitems.faq = '1') AND ";
 	}
 	
 	// a search with $contains
 	if (strlen($contains)>0) { 
 		$search=unclean_cross_side_scripting_deep($contains);
-		$score=" ,MATCH(glpi_kbitems.question,glpi_kbitems.answer) AGAINST('$search' IN BOOLEAN MODE) as SCORE ";
-		$where_1=$where." MATCH(glpi_kbitems.question,glpi_kbitems.answer) AGAINST('$search' IN BOOLEAN MODE) ";
+		$score=" ,MATCH(glpi_knowbaseitems.question,glpi_knowbaseitems.answer) AGAINST('$search' IN BOOLEAN MODE) as SCORE ";
+		$where_1=$where." MATCH(glpi_knowbaseitems.question,glpi_knowbaseitems.answer) AGAINST('$search' IN BOOLEAN MODE) ";
 		$order="order by SCORE DESC";
 
 		// preliminar query to allow alternate search if no result with fulltext
 		$query_1 = "SELECT count(ID) 
-			FROM glpi_kbitems 
+			FROM glpi_knowbaseitems 
 			WHERE $where_1";
 		$result_1 = $DB->query($query_1);
 		$numrows_1 =  $DB->result($result_1,0,0);
@@ -274,21 +274,21 @@ function showKbItemList($target,$contains,$start,$parentID,$faq=0){
  			$contains = preg_replace($search1,"", $contains);
 
 	
-			$where.= " (glpi_kbitems.question ".makeTextSearch($contains)." OR glpi_kbitems.answer ".makeTextSearch($contains).")"  ; 
+			$where.= " (glpi_knowbaseitems.question ".makeTextSearch($contains)." OR glpi_knowbaseitems.answer ".makeTextSearch($contains).")"  ; 
 		 } else {
 			$where=$where_1;
 		}
 
 	} else { // no search -> browse by category
-		$where.="(glpi_kbitems.categoryID = '$parentID') ";
-		$order="ORDER BY glpi_kbitems.question ASC";
+		$where.="(glpi_knowbaseitems.categoryID = '$parentID') ";
+		$order="ORDER BY glpi_knowbaseitems.question ASC";
 	}
 	
 	if (!$start) {
 		$start = 0;
 	}
 
-	$query = "SELECT  * $score FROM glpi_kbitems";
+	$query = "SELECT  * $score FROM glpi_knowbaseitems";
  	$query.=" WHERE $where $order";
 	
 	
@@ -421,21 +421,21 @@ function showKbRecentPopular($target,$type,$faq=0){
 		
 	$faq_limit="";
 	if (isset($_SESSION["glpiID"])){
-		$faq_limit .= getEntitiesRestrictRequest(" WHERE ", "glpi_kbitems", "", "", true); 
+		$faq_limit .= getEntitiesRestrictRequest(" WHERE ", "glpi_knowbaseitems", "", "", true); 
 	} else {
 		// Anonymous access
 		if (isMultiEntitiesMode()){
-			$faq_limit .= " WHERE (glpi_kbitems.FK_entities=0 AND glpi_kbitems.recursive=1)";
+			$faq_limit .= " WHERE (glpi_knowbaseitems.FK_entities=0 AND glpi_knowbaseitems.recursive=1)";
 		} else {
 			$faq_limit .= " WHERE 1";
 		}
 	}	
 
 	if($faq){ // FAQ
-		$faq_limit.=" AND (glpi_kbitems.faq = '1')";
+		$faq_limit.=" AND (glpi_knowbaseitems.faq = '1')";
 	} 
 
-	$query = "SELECT  *  FROM glpi_kbitems $faq_limit $orderby LIMIT 10";
+	$query = "SELECT  *  FROM glpi_knowbaseitems $faq_limit $orderby LIMIT 10";
 	//echo $query;
 	$result = $DB->query($query);
 	$number = $DB->numrows($result);
@@ -524,7 +524,7 @@ function ShowKbItemFull($ID,$linkauthor=true){
 	if (!haveRight("user","r")) $linkauthor=false;
 
 	//update counter view
-	$query="UPDATE glpi_kbitems SET view=view+1 WHERE ID = '$ID'";
+	$query="UPDATE glpi_knowbaseitems SET view=view+1 WHERE ID = '$ID'";
 	$DB->query($query);	
 
 	$ki= new kbitem;	
@@ -612,7 +612,7 @@ function ShowKbItemFull($ID,$linkauthor=true){
 function KbItemaddtofaq($ID)
 {
 	global $DB;
-	$DB->query("UPDATE glpi_kbitems SET faq='1' WHERE ID='$ID'");
+	$DB->query("UPDATE glpi_knowbaseitems SET faq='1' WHERE ID='$ID'");
 }
 
 /**
@@ -627,7 +627,7 @@ function KbItemaddtofaq($ID)
 function KbItemremovefromfaq($ID)
 {
 	global $DB;
-	$DB->query("UPDATE glpi_kbitems SET faq='0' WHERE ID='$ID'");
+	$DB->query("UPDATE glpi_knowbaseitems SET faq='0' WHERE ID='$ID'");
 }
 
 
@@ -647,7 +647,7 @@ function getFAQCategories()
 
 	global $DB;	
 
-	$query = "SELECT DISTINCT glpi_knowbaseitemscategories.* FROM glpi_kbitems LEFT JOIN glpi_knowbaseitemscategories ON (glpi_kbitems.categoryID = glpi_knowbaseitemscategories.ID) WHERE (glpi_kbitems.faq = '1')";
+	$query = "SELECT DISTINCT glpi_knowbaseitemscategories.* FROM glpi_knowbaseitems LEFT JOIN glpi_knowbaseitemscategories ON (glpi_knowbaseitems.categoryID = glpi_knowbaseitemscategories.ID) WHERE (glpi_knowbaseitems.faq = '1')";
 	$toprocess=array();
 	$catNumbers = array();
 

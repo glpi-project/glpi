@@ -45,7 +45,7 @@ class EntityData extends CommonDBTM{
 	 * Constructor
 	**/
 	function __construct () {
-		$this->table="glpi_entities_data";
+		$this->table="glpi_entitiesdatas";
 		$this->type=-1;
 	}
 	function getIndexName(){
@@ -179,19 +179,19 @@ class Entity extends CommonDBTM{
 
 		echo "<tr class='tab_bg_1'><td>".$LANG['help'][35].":		</td>";
 		echo "<td>";
-		autocompletionTextField("phonenumber","glpi_entities_data","phonenumber",$entdata->fields["phonenumber"],40);	
+		autocompletionTextField("phonenumber","glpi_entitiesdatas","phonenumber",$entdata->fields["phonenumber"],40);	
 		echo "</td>";
 		echo "<td>".$LANG['financial'][30].":		</td><td>";
-		autocompletionTextField("fax","glpi_entities_data","fax",$entdata->fields["fax"],40);	
+		autocompletionTextField("fax","glpi_entitiesdatas","fax",$entdata->fields["fax"],40);	
 		echo "</td></tr>";
 
 		echo "<tr class='tab_bg_1'><td>".$LANG['financial'][45].":		</td>";
 		echo "<td>";
-		autocompletionTextField("website","glpi_entities_data","website",$entdata->fields["website"],40);	
+		autocompletionTextField("website","glpi_entitiesdatas","website",$entdata->fields["website"],40);	
 		echo "</td>";
 
 		echo "<td>".$LANG['setup'][14].":		</td><td>";
-		autocompletionTextField("email","glpi_entities_data","email",$entdata->fields["email"],40);		
+		autocompletionTextField("email","glpi_entitiesdatas","email",$entdata->fields["email"],40);		
 		echo "</td></tr>";
 
 
@@ -199,44 +199,44 @@ class Entity extends CommonDBTM{
 		echo "<td align='center' rowspan='4'><textarea cols='35' rows='4' name='address' >".$entdata->fields["address"]."</textarea>";
 		echo "<td>".$LANG['financial'][100]."</td>";
 		echo "<td>";
-		autocompletionTextField("postcode","glpi_entities_data","postcode",$entdata->fields["postcode"],40);		
+		autocompletionTextField("postcode","glpi_entitiesdatas","postcode",$entdata->fields["postcode"],40);		
 		echo "</td>";
 		echo "</tr>";
 
 		echo "<tr class='tab_bg_1'>";
 		echo "<td>".$LANG['financial'][101].":		</td><td>";
-		autocompletionTextField("town","glpi_entities_data","town",$entdata->fields["town"],40);		
+		autocompletionTextField("town","glpi_entitiesdatas","town",$entdata->fields["town"],40);		
 		echo "</td></tr>";
 
 		echo "<tr class='tab_bg_1'>";
 		echo "<td>".$LANG['financial'][102].":		</td><td>";
-		autocompletionTextField("state","glpi_entities_data","state",$entdata->fields["state"],40);		
+		autocompletionTextField("state","glpi_entitiesdatas","state",$entdata->fields["state"],40);		
 		echo "</td></tr>";
 
 		echo "<tr class='tab_bg_1'>";
 		echo "<td>".$LANG['financial'][103].":		</td><td>";
-		autocompletionTextField("country","glpi_entities_data","country",$entdata->fields["country"],40);		
+		autocompletionTextField("country","glpi_entitiesdatas","country",$entdata->fields["country"],40);		
 		echo "</td></tr>";
 
 		echo "<tr class='tab_bg_1'>";
 		echo "<td>".$LANG['setup'][203].":		</td><td colspan='3'>";
-		autocompletionTextField("admin_email","glpi_entities_data","admin_email",$entdata->fields["admin_email"],50);		
+		autocompletionTextField("admin_email","glpi_entitiesdatas","admin_email",$entdata->fields["admin_email"],50);		
 		echo "</td></tr>";
 
 		echo "<tr class='tab_bg_1'>";
 		echo "<td>".$LANG['setup'][207].":		</td><td colspan='3'>";
-		autocompletionTextField("admin_reply","glpi_entities_data","admin_reply",$entdata->fields["admin_reply"],50);		
+		autocompletionTextField("admin_reply","glpi_entitiesdatas","admin_reply",$entdata->fields["admin_reply"],50);		
 		echo "</td></tr>";
 
 		echo "<tr class='tab_bg_1'>";
 		echo "<td>".$LANG['entity'][12].":		</td>";
 		echo "<td>";
-		autocompletionTextField("ldap_dn","glpi_entities_data","ldap_dn",$entdata->fields["ldap_dn"],50);		
+		autocompletionTextField("ldap_dn","glpi_entitiesdatas","ldap_dn",$entdata->fields["ldap_dn"],50);		
 		echo "</td>";
 
 		echo "<td>".$LANG['entity'][13].":		</td>";
 		echo "<td>";
-		autocompletionTextField("tag","glpi_entities_data","tag",$entdata->fields["tag"],40);		
+		autocompletionTextField("tag","glpi_entitiesdatas","tag",$entdata->fields["tag"],40);		
 		echo "</td></tr>";
 
 		if ($canedit) {
