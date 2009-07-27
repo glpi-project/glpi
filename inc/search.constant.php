@@ -2514,12 +2514,12 @@ $SEARCH_OPTION[BUDGET_TYPE][1]['itemlink_type']=BUDGET_TYPE;
 
 $SEARCH_OPTION[BUDGET_TYPE][2]['table']='glpi_budgets';
 $SEARCH_OPTION[BUDGET_TYPE][2]['field']='startdate';
-$SEARCH_OPTION[BUDGET_TYPE][2]['linkfield']='startdate';
+$SEARCH_OPTION[BUDGET_TYPE][2]['linkfield']='begin_date';
 $SEARCH_OPTION[BUDGET_TYPE][2]['name']=$LANG['search'][8];
 $SEARCH_OPTION[BUDGET_TYPE][2]['datatype']='date';
 
 $SEARCH_OPTION[BUDGET_TYPE][3]['table']='glpi_budgets';
-$SEARCH_OPTION[BUDGET_TYPE][3]['field']='enddate';
+$SEARCH_OPTION[BUDGET_TYPE][3]['field']='end_date';
 $SEARCH_OPTION[BUDGET_TYPE][3]['linkfield']='enddate';
 $SEARCH_OPTION[BUDGET_TYPE][3]['name']=$LANG['search'][9];
 $SEARCH_OPTION[BUDGET_TYPE][3]['datatype']='date';

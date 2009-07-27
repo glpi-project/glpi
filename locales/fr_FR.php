@@ -523,6 +523,9 @@ $LANG['financial'][104]="Matériel rattaché";
 $LANG['financial'][105]="Tacite"; 
 $LANG['financial'][106]="Express"; 
 $LANG['financial'][107]="Reconduction"; 
+$LANG['financial'][108]="Total dépensé sur le budget";
+$LANG['financial'][109]="Total restant sur le budget";
+
 
 $LANG['gmt'][0]="GMT"; 
 $LANG['gmt'][1]="heure(s)"; 
