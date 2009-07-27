@@ -129,7 +129,7 @@ function fillidfield(Type,Id){
 	}
 
 	$query = "SELECT name, ID, contact, serial, otherserial 
-		FROM glpi_networking 
+		FROM glpi_networkequipments 
 		WHERE is_template='0' AND deleted='0' 
 			AND (contact LIKE '%".$_POST["NomContact"]."%' OR name LIKE '%".$_POST["NomContact"]."%' 
 				OR serial LIKE '%".$_POST["NomContact"]."%' OR otherserial LIKE '%".$_POST["NomContact"]."%')";

@@ -44,7 +44,7 @@ class ReservationItem extends CommonDBTM {
 	 * Constructor
 	**/
 	function __construct () {
-		$this->table="glpi_reservation_item";
+		$this->table="glpi_reservationsitems";
 		$this->type=-1;
 	}
 
@@ -58,7 +58,7 @@ class ReservationItem extends CommonDBTM {
 	function getFromDBbyItem($type,$ID){
 		global $DB;
 
-		$query = "SELECT * FROM glpi_reservation_item WHERE (device_type = '$type' AND id_device = '$ID')";
+		$query = "SELECT * FROM glpi_reservationsitems WHERE (device_type = '$type' AND id_device = '$ID')";
 		if ($result = $DB->query($query)) {
 			if ($DB->numrows($result)==1){
 				$this->fields = $DB->fetch_assoc($result);
@@ -73,7 +73,7 @@ class ReservationItem extends CommonDBTM {
 
 		global $DB;
 
-		$query2 = "DELETE FROM glpi_reservation_resa WHERE (id_item = '$ID')";
+		$query2 = "DELETE FROM glpi_reservations WHERE (id_item = '$ID')";
 		$result2 = $DB->query($query2);
 	}
 	function prepareInputForAdd($input) {
@@ -94,7 +94,7 @@ class ReservationResa extends CommonDBTM {
 	 * Constructor
 	**/
 	function __construct () {
-		$this->table="glpi_reservation_resa";
+		$this->table="glpi_reservations";
 		$this->type=-1;
 	}
 
@@ -209,7 +209,7 @@ class ReservationResa extends CommonDBTM {
 		if(isset($this->fields["ID"]))
 			$ID_where=" (ID <> '".$this->fields["ID"]."') AND ";
 
-		$query = "SELECT * FROM glpi_reservation_resa".
+		$query = "SELECT * FROM glpi_reservations".
 			" WHERE $ID_where (id_item = '".$this->fields["id_item"]."') 
 				AND ( ('".$this->fields["begin"]."' < begin AND '".$this->fields["end"]."' > begin) 
 					OR ('".$this->fields["begin"]."' < end AND '".$this->fields["end"]."' >= end) 

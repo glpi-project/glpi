@@ -71,8 +71,8 @@ $result = $DB->query($query);
 $number_of_printers = $DB->result($result,0,0);
 
 $query = "SELECT count(*) 
-	FROM glpi_networking 
-	WHERE deleted ='0'  AND is_template = '0' ".getEntitiesRestrictRequest("AND","glpi_networking");
+	FROM glpi_networkequipments 
+	WHERE deleted ='0'  AND is_template = '0' ".getEntitiesRestrictRequest("AND","glpi_networkequipments");
 $result = $DB->query($query);
 $number_of_networking = $DB->result($result,0,0);
 
@@ -139,9 +139,9 @@ echo  "<tr class='tab_bg_1'><td colspan='2'><b>".$LANG['Menu'][1].":</b></td></t
 
 
 $query = "SELECT count(*) AS COUNT, glpi_type_networking.name as NAME 
-	FROM glpi_networking 
-	LEFT JOIN glpi_type_networking ON (glpi_networking.type = glpi_type_networking.ID)
-	WHERE glpi_networking.deleted ='0'  AND glpi_networking.is_template = '0' ".getEntitiesRestrictRequest("AND","glpi_networking")."
+	FROM glpi_networkequipments 
+	LEFT JOIN glpi_type_networking ON (glpi_networkequipments.type = glpi_type_networking.ID)
+	WHERE glpi_networkequipments.deleted ='0'  AND glpi_networkequipments.is_template = '0' ".getEntitiesRestrictRequest("AND","glpi_networkequipments")."
 	GROUP BY glpi_type_networking.name";
 $result = $DB->query($query);
 

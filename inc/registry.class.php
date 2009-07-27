@@ -43,12 +43,12 @@ class Registry extends CommonDBTM{
 	 * Constructor
 	**/
 	function __construct () {
-		$this->table="glpi_registry";		
+		$this->table="glpi_registrykeys";		
 		$this->type=REGISTRY_TYPE;
 	}
 	function cleanDBonPurge($ID) {
 		global $DB;
-		$query = "DELETE FROM glpi_registry WHERE id_computer = '$ID')";
+		$query = "DELETE FROM glpi_registrykeys WHERE id_computer = '$ID')";
 		$result = $DB->query($query);
 	}
 

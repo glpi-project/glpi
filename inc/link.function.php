@@ -227,7 +227,7 @@ function showLinkOnDevice($type,$ID){
 				$i=0;
 				if (strstr($link,"[IP]")||strstr($link,"[MAC]")){
 					$query2 = "SELECT ifaddr, ifmac, logical_number 
-						FROM glpi_networking_ports 
+						FROM glpi_networkports 
 						WHERE on_device = '$ID' AND device_type = '$type' 
 						ORDER BY logical_number";
 					$result2=$DB->query($query2);

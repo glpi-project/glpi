@@ -998,7 +998,7 @@ class ConfigOCS extends CommonDBTM {
 	 * Constructor
 	**/
 	function __construct () {
-		$this->table="glpi_ocs_config";
+		$this->table="glpi_ocsservers";
 		$this->type=-1;
 	}
 

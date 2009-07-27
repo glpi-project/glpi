@@ -56,7 +56,7 @@ function showPorts($device, $device_type, $withtemplate = '') {
 
 	initNavigateListItems(NETWORKING_PORT_TYPE,$ci->getType()." = ".$ci->getName());
 
-	$query = "SELECT ID FROM glpi_networking_ports 
+	$query = "SELECT ID FROM glpi_networkports 
 		WHERE (on_device = '$device' AND device_type = '$device_type') 
 		ORDER BY name, logical_number";
 	if ($result = $DB->query($query)) {
@@ -177,7 +177,7 @@ function showPortVLAN($ID, $withtemplate) {
 
 	$used = array();
 	
-	$query = "SELECT * FROM glpi_networking_vlan WHERE FK_port='$ID'";
+	$query = "SELECT * FROM glpi_networkports_vlans WHERE FK_port='$ID'";
 	$result = $DB->query($query);
 	if ($DB->numrows($result) > 0) {
 		echo "<table cellpadding='0' cellspacing='0'>";
@@ -231,12 +231,12 @@ function showPortVLANForm ($ID) {
 
 function assignVlan($port, $vlan) {
 	global $DB;
-	$query = "INSERT INTO glpi_networking_vlan (FK_port,FK_vlan) VALUES ('$port','$vlan')";
+	$query = "INSERT INTO glpi_networkports_vlans (FK_port,FK_vlan) VALUES ('$port','$vlan')";
 	$DB->query($query);
 
 	$np = new NetPort();
 	if ($np->getContact($port)) {
-		$query = "INSERT INTO glpi_networking_vlan (FK_port,FK_vlan) VALUES ('" . $np->contact_id . "','$vlan')";
+		$query = "INSERT INTO glpi_networkports_vlans (FK_port,FK_vlan) VALUES ('" . $np->contact_id . "','$vlan')";
 		$DB->query($query);
 	}
 
@@ -245,18 +245,18 @@ function assignVlan($port, $vlan) {
 function unassignVlanbyID($ID) {
 	global $DB;
 
-	$query = "SELECT * FROM glpi_networking_vlan WHERE ID='$ID'";
+	$query = "SELECT * FROM glpi_networkports_vlans WHERE ID='$ID'";
 	if ($result = $DB->query($query)) {
 		$data = $DB->fetch_array($result);
 
 		// Delete VLAN
-		$query = "DELETE FROM glpi_networking_vlan WHERE ID='$ID'";
+		$query = "DELETE FROM glpi_networkports_vlans WHERE ID='$ID'";
 		$DB->query($query);
 
 		// Delete Contact VLAN if set
 		$np = new NetPort();
 		if ($np->getContact($data['FK_port'])) {
-			$query = "DELETE FROM glpi_networking_vlan WHERE FK_port='" . $np->contact_id . "' AND FK_vlan='" . $data['FK_vlan'] . "'";
+			$query = "DELETE FROM glpi_networkports_vlans WHERE FK_port='" . $np->contact_id . "' AND FK_vlan='" . $data['FK_vlan'] . "'";
 			$DB->query($query);
 		}
 	}
@@ -264,13 +264,13 @@ function unassignVlanbyID($ID) {
 
 function unassignVlan($portID, $vlanID) {
 	global $DB;
-	$query = "DELETE FROM glpi_networking_vlan WHERE FK_port='$portID' AND FK_vlan='$vlanID'";
+	$query = "DELETE FROM glpi_networkports_vlans WHERE FK_port='$portID' AND FK_vlan='$vlanID'";
 	$DB->query($query);
 
 	// Delete Contact VLAN if set
 	$np = new NetPort();
 	if ($np->getContact($portID)) {
-		$query = "DELETE FROM glpi_networking_vlan WHERE FK_port='" . $np->contact_id . "' AND FK_vlan='$vlanID'";
+		$query = "DELETE FROM glpi_networkports_vlans WHERE FK_port='" . $np->contact_id . "' AND FK_vlan='$vlanID'";
 		$DB->query($query);
 	}
 
@@ -318,7 +318,7 @@ function showNetportForm($target, $ID, $ondevice, $devtype, $several) {
 	if ($several != "yes") {
 		echo "<tr class='tab_bg_1'><td>" . $LANG['networking'][21] . ":</td>";
 		echo "<td colspan='2'>";
-		autocompletionTextField("logical_number", "glpi_networking_ports", "logical_number", $netport->fields["logical_number"], 5);
+		autocompletionTextField("logical_number", "glpi_networkports", "logical_number", $netport->fields["logical_number"], 5);
 		echo "</td></tr>";
 	} else {
 		echo "<tr class='tab_bg_1'><td>" . $LANG['networking'][21] . ":</td>";
@@ -334,7 +334,7 @@ function showNetportForm($target, $ID, $ondevice, $devtype, $several) {
 
 	echo "<tr class='tab_bg_1'><td>" . $LANG['common'][16] . ":</td>";
 	echo "<td colspan='2'>";
-	autocompletionTextField("name", "glpi_networking_ports", "name", $netport->fields["name"], 80);
+	autocompletionTextField("name", "glpi_networkports", "name", $netport->fields["name"], 80);
 	echo "</td></tr>";
 
 	echo "<tr class='tab_bg_1'><td>" . $LANG['common'][65] . ":</td><td colspan='2'>";
@@ -342,7 +342,7 @@ function showNetportForm($target, $ID, $ondevice, $devtype, $several) {
 	echo "</td></tr>";
 
 	echo "<tr class='tab_bg_1'><td>" . $LANG['networking'][14] . ":</td><td colspan='2'>";
-	autocompletionTextField("ifaddr", "glpi_networking_ports", "ifaddr", $netport->fields["ifaddr"], 40);
+	autocompletionTextField("ifaddr", "glpi_networkports", "ifaddr", $netport->fields["ifaddr"], 40);
 	echo "</td></tr>\n";
 
 	// Show device MAC adresses
@@ -382,19 +382,19 @@ function showNetportForm($target, $ID, $ondevice, $devtype, $several) {
 	}
 
 	echo "<tr class='tab_bg_1'><td>" . $LANG['networking'][15] . ":</td><td colspan='2'>";
-	autocompletionTextField("ifmac", "glpi_networking_ports", "ifmac", $netport->fields["ifmac"], 40);
+	autocompletionTextField("ifmac", "glpi_networkports", "ifmac", $netport->fields["ifmac"], 40);
 	echo "</td></tr>\n";
 
 	echo "<tr class='tab_bg_1'><td>" . $LANG['networking'][60] . ":</td><td colspan='2'>";
-	autocompletionTextField("netmask", "glpi_networking_ports", "netmask", $netport->fields["netmask"], 40);
+	autocompletionTextField("netmask", "glpi_networkports", "netmask", $netport->fields["netmask"], 40);
 	echo "</td></tr>\n";
 
 	echo "<tr class='tab_bg_1'><td>" . $LANG['networking'][59] . ":</td><td colspan='2'>";
-	autocompletionTextField("gateway", "glpi_networking_ports", "gateway", $netport->fields["gateway"], 40);
+	autocompletionTextField("gateway", "glpi_networkports", "gateway", $netport->fields["gateway"], 40);
 	echo "</td></tr>\n";
 
 	echo "<tr class='tab_bg_1'><td>" . $LANG['networking'][61] . ":</td><td colspan='2'>";
-	autocompletionTextField("subnet", "glpi_networking_ports", "subnet", $netport->fields["subnet"], 40);
+	autocompletionTextField("subnet", "glpi_networkports", "subnet", $netport->fields["subnet"], 40);
 	echo "</td></tr>\n";
 
 	if ($several != "yes") {
@@ -660,14 +660,14 @@ function makeConnector($sport, $dport, $dohistory = true, $addmsg = false) {
 	if ($npnet > 0 && $npdev > 0) {
 		// Get networking VLAN
 		// Unset MAC and IP from networking device
-		$query = "SELECT * FROM glpi_networking_vlan WHERE FK_port='$npnet'";
+		$query = "SELECT * FROM glpi_networkports_vlans WHERE FK_port='$npnet'";
 		if ($result = $DB->query($query)) {
 			if ($DB->numrows($result) > 0) {
 				// Found VLAN : clean vlan device and add found ones
-				$query = "DELETE FROM glpi_networking_vlan WHERE FK_port='$npdev' ";
+				$query = "DELETE FROM glpi_networkports_vlans WHERE FK_port='$npdev' ";
 				$DB->query($query);
 				while ($data = $DB->fetch_array($result)) {
-					$query = "INSERT INTO glpi_networking_vlan (FK_port,FK_vlan) VALUES ('$npdev','" . $data['FK_vlan'] . "')";
+					$query = "INSERT INTO glpi_networkports_vlans (FK_port,FK_vlan) VALUES ('$npdev','" . $data['FK_vlan'] . "')";
 					$DB->query($query);
 				}
 			}
@@ -675,7 +675,7 @@ function makeConnector($sport, $dport, $dohistory = true, $addmsg = false) {
 	}
 	// end manage VLAN
 
-	$query = "INSERT INTO glpi_networking_wire VALUES (NULL,'$sport','$dport')";
+	$query = "INSERT INTO glpi_networkports_networkports VALUES (NULL,'$sport','$dport')";
 	if ($result = $DB->query($query)) {
 		$source = new CommonItem;
 		$source->getFromDB($ps->fields['device_type'], $ps->fields['on_device']);
@@ -729,7 +729,7 @@ function removeConnector($ID, $dohistory = true) {
 	// Update to blank networking item
 	$nw = new Netwire;
 	if ($ID2 = $nw->getOppositeContact($ID)) {
-		$query = "DELETE FROM glpi_networking_wire WHERE (end1 = '$ID' OR end2 = '$ID')";
+		$query = "DELETE FROM glpi_networkports_networkports WHERE (end1 = '$ID' OR end2 = '$ID')";
 		if ($result = $DB->query($query)) {
 
 			// clean datas of linked ports if network one
@@ -751,15 +751,15 @@ function removeConnector($ID, $dohistory = true) {
 				if ($npnet != -1 && $npdev != -1) {
 					// Unset MAC and IP from networking device
 					if ($np1->fields["ifmac"] == $np2->fields["ifmac"]) {
-						$query = "UPDATE glpi_networking_ports SET ifmac='' WHERE ID='$npnet'";
+						$query = "UPDATE glpi_networkports SET ifmac='' WHERE ID='$npnet'";
 						$DB->query($query);
 					}
 					if ($np1->fields["ifaddr"] == $np2->fields["ifaddr"]) {
-						$query = "UPDATE glpi_networking_ports SET ifaddr='',netmask='', subnet='',gateway='' WHERE ID='$npnet'";
+						$query = "UPDATE glpi_networkports SET ifaddr='',netmask='', subnet='',gateway='' WHERE ID='$npnet'";
 						$DB->query($query);
 					}
 					// Unset netpoint from common device
-					$query = "UPDATE glpi_networking_ports SET netpoint=0 WHERE ID='$npdev'";
+					$query = "UPDATE glpi_networkports SET netpoint=0 WHERE ID='$npdev'";
 					$DB->query($query);
 				}
 				*/
@@ -820,12 +820,12 @@ function getUniqueObjectIDByIPAddressOrMac($value, $type = 'IP', $entity) {
 
 	//Try to get all the object (not deleted, and not template) with a network port having the specified IP, in a given entity
 	$query = "SELECT gnp.on_device as ID, gnp.ID as portID, gnp.device_type as device_type 
-		FROM `glpi_networking_ports` as gnp
+		FROM `glpi_networkports` as gnp
 		LEFT JOIN  `glpi_computers` as gc ON (gnp.on_device=gc.ID AND gc.FK_entities=$entity AND gc.deleted=0 
 							AND gc.is_template=0 AND device_type=" . COMPUTER_TYPE . ") 
 		LEFT JOIN  `glpi_printers` as gp ON (gnp.on_device=gp.ID AND gp.FK_entities=$entity AND gp.deleted=0 
 							AND gp.is_template=0 AND device_type=" . PRINTER_TYPE . ")
-		LEFT JOIN  `glpi_networking` as gn ON (gnp.on_device=gn.ID AND gn.FK_entities=$entity AND gn.deleted=0 
+		LEFT JOIN  `glpi_networkequipments` as gn ON (gnp.on_device=gn.ID AND gn.FK_entities=$entity AND gn.deleted=0 
 							AND gn.is_template=0 AND device_type=" . NETWORKING_TYPE . ")  
 		LEFT JOIN  `glpi_phones` as gph ON (gnp.on_device=gph.ID AND gph.FK_entities=$entity AND gph.deleted=0 
 							AND gph.is_template=0 AND device_type=" . PHONE_TYPE . ") 
@@ -841,8 +841,8 @@ function getUniqueObjectIDByIPAddressOrMac($value, $type = 'IP', $entity) {
 	//2 found : one object have a network port with this ip, and the port is link to another one -> get the object by removing the port connected to a network device
 	switch ($DB->numrows($result)) {
 		case 0 :
-			//No result found with the previous request. Try to look for IP in the glpi_networking table directly
-			$query = "SELECT ID FROM glpi_networking WHERE UPPER($field)=UPPER('$value') AND FK_entities='$entity'";
+			//No result found with the previous request. Try to look for IP in the glpi_networkequipments table directly
+			$query = "SELECT ID FROM glpi_networkequipments WHERE UPPER($field)=UPPER('$value') AND FK_entities='$entity'";
 			$result = $DB->query($query);
 			if ($DB->numrows($result) == 1)
 				return array (
@@ -876,7 +876,7 @@ function getUniqueObjectIDByIPAddressOrMac($value, $type = 'IP', $entity) {
 			//If one port is connected on a network device
 			if ($network_port != -1) {
 				//If the 2 ports are linked each others
-				$query = "SELECT ID FROM glpi_networking_wire 
+				$query = "SELECT ID FROM glpi_networkports_networkports 
 					WHERE (end1='".$port1["portID"]."' AND end2='".$port2["portID"]."') 
 						OR (end1='".$port2["portID"]."' AND end2='".$port1["portID"]."')";
 				$query = $DB->query($query);

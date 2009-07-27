@@ -158,7 +158,7 @@ if (isset($_POST["device_type"])&&isset($_POST["id_field"])&&$_POST["id_field"])
 			case "glpi_budgets": // Infocoms budget
 				dropdown("glpi_budgets","budget");
 			break;
-			case "glpi_ocs_link": // auto_update ocs_link
+			case "glpi_ocslinks": // auto_update ocs_link
 				dropdownYesNo("_auto_update_ocs");
 				echo "<input type='hidden' name='field' value='_auto_update_ocs'>";
 				$FIELDNAME_PRINTED=true;

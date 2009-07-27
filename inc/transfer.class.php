@@ -758,7 +758,7 @@ class Transfer extends CommonDBTM{
 				$dataocslink=array();
 				$ocs_computer=false;
 				if ($type==COMPUTER_TYPE && $CFG_GLPI['ocs_mode']){
-					$query="SELECT * FROM glpi_ocs_link WHERE glpi_id='$ID'";
+					$query="SELECT * FROM glpi_ocslinks WHERE glpi_id='$ID'";
 					if ($result=$DB->query($query)){
 						if ($DB->numrows($result)>0){
 							$dataocslink=$DB->fetch_assoc($result);
@@ -1226,7 +1226,7 @@ class Transfer extends CommonDBTM{
 				$DB->query($del_query);
 
 				if ($ocs_computer){
-					$query="UPDATE glpi_ocs_link SET import_software = NULL WHERE glpi_id=$ID";
+					$query="UPDATE glpi_ocslinks SET import_software = NULL WHERE glpi_id=$ID";
 					$DB->query($query);
 				}	
 			}
@@ -1481,7 +1481,7 @@ class Transfer extends CommonDBTM{
 						$DB->query($del_query);
 						$need_clean_process=true;
 						if ($ocs_computer){
-							$query="UPDATE glpi_ocs_link SET import_software = NULL WHERE glpi_id='$ID'";
+							$query="UPDATE glpi_ocslinks SET import_software = NULL WHERE glpi_id='$ID'";
 							$DB->query($query);
 						}
 					}
@@ -1895,7 +1895,7 @@ class Transfer extends CommonDBTM{
 								$need_clean_process=true;
 								// OCS clean link
 								if ($ocs_computer&&!empty($ocs_field)){
-									$query="UPDATE glpi_ocs_link SET `$ocs_field` = NULL WHERE glpi_id='$ID'";
+									$query="UPDATE glpi_ocslinks SET `$ocs_field` = NULL WHERE glpi_id='$ID'";
 									$DB->query($query);
 								}
 
@@ -1932,7 +1932,7 @@ class Transfer extends CommonDBTM{
 									$ci->obj->delete(array('ID'=>$item_ID),1);
 								}
 								if ($ocs_computer&&!empty($ocs_field)){
-									$query="UPDATE glpi_ocs_link SET `$ocs_field` = NULL WHERE glpi_id='$ID'";
+									$query="UPDATE glpi_ocslinks SET `$ocs_field` = NULL WHERE glpi_id='$ID'";
 									$DB->query($query);
 								}
 							}
@@ -2384,7 +2384,7 @@ class Transfer extends CommonDBTM{
 				$result = $DB->query($query);
 				// Only case of ocs link update is needed (if devices are keep nothing to do)
 				if ($ocs_computer){
-					$query="UPDATE glpi_ocs_link SET import_ip = NULL WHERE glpi_id='$ID'";
+					$query="UPDATE glpi_ocslinks SET import_ip = NULL WHERE glpi_id='$ID'";
 					$DB->query($query);
 				}
 				break;
@@ -2409,7 +2409,7 @@ class Transfer extends CommonDBTM{
 		$np=new Netport();
 
 		$query = "SELECT *
-			FROM glpi_networking_ports 
+			FROM glpi_networkports 
 			WHERE on_device = '$ID' AND device_type = '$type'";
 		if ($result = $DB->query($query)) {
 			if ($DB->numrows($result)!=0) { 
@@ -2423,7 +2423,7 @@ class Transfer extends CommonDBTM{
 							}
 							// Only case of ocs link update is needed (if netports are keep nothing to do)
 							if ($ocs_computer){
-								$query="UPDATE glpi_ocs_link SET import_ip = NULL WHERE glpi_id='$ID'";
+								$query="UPDATE glpi_ocslinks SET import_ip = NULL WHERE glpi_id='$ID'";
 								$DB->query($query);
 							}
 						}

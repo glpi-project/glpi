@@ -51,7 +51,7 @@ function showRegistry($ID){
 
 
 	$query = "SELECT ID 
-		FROM glpi_registry 
+		FROM glpi_registrykeys 
 		WHERE computer_id='".$ID."'";
 	
 	if ($result = $DB->query($query)) {

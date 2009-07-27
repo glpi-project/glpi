@@ -49,8 +49,8 @@ $RELATION=array(
 						"glpi_computers_items"=>"end2",
 						"glpi_computers_softwareversions"=>"cID",
 						"glpi_softwarelicenses"=>"FK_computers",
-						"glpi_ocs_link"=>"glpi_id",
-						"glpi_registry"=>"computer_id",
+						"glpi_ocslinks"=>"glpi_id",
+						"glpi_registrykeys"=>"computer_id",
 						),
 
 	"glpi_consumablesitems" => array("glpi_consumables"=>"FK_glpi_consumables_type"),
@@ -78,15 +78,15 @@ $RELATION=array(
 	
 	"glpi_domains" => array("glpi_computers"=>"domain",
 						"glpi_printers"=>"domain",
-						"glpi_networking"=>"domain"),
+						"glpi_networkequipments"=>"domain"),
 	
 	"glpi_supplierstypes" =>array("glpi_suppliers"=>"type"),
 
 	"glpi_filesystems" =>array("glpi_computersdisks"=>"FK_filesystems"),
 	
-	"glpi_networkequipmentsfirmwares" =>array("glpi_networking"=>"firmware"),
+	"glpi_networkequipmentsfirmwares" =>array("glpi_networkequipments"=>"firmware"),
 	
-	"glpi_networkinterfaces" =>array("glpi_networking_ports"=>"iface"),
+	"glpi_networkinterfaces" =>array("glpi_networkports"=>"iface"),
 	
 	"glpi_interfaces" =>array("glpi_devicesharddrives"=>"FK_interface",
 					"glpi_devicesdrives"=>"FK_interface",
@@ -106,7 +106,7 @@ $RELATION=array(
 					"glpi_locations"=>"parentID",
 					"glpi_monitors"=>"location",
 					"glpi_printers"=>"location",
-					"glpi_networking"=>"location",
+					"glpi_networkequipments"=>"location",
 					"glpi_peripherals"=>"location",
 					"glpi_phones"=>"location",
 					"glpi_software"=>"location",
@@ -129,7 +129,7 @@ $RELATION=array(
 						"glpi_devicesmemories"=>"FK_glpi_enterprise",
 						"glpi_devicessoundcards"=>"FK_glpi_enterprise",
 						"glpi_monitors"=>"FK_glpi_enterprise",
-						"glpi_networking"=>"FK_glpi_enterprise",
+						"glpi_networkequipments"=>"FK_glpi_enterprise",
 						"glpi_peripherals"=>"FK_glpi_enterprise",
 						"glpi_phones"=>"FK_glpi_enterprise",
 						"glpi_printers"=>"FK_glpi_enterprise",
@@ -140,7 +140,7 @@ $RELATION=array(
 	
 	"glpi_monitorsmodels" =>array("glpi_monitors"=>"model"),
 	
-	"glpi_networkequipmentsmodels" =>array("glpi_networking"=>"model"),
+	"glpi_networkequipmentsmodels" =>array("glpi_networkequipments"=>"model"),
 	
 	"glpi_peripheralsmodels" =>array("glpi_peripherals"=>"model"),
 	
@@ -149,11 +149,11 @@ $RELATION=array(
 	"glpi_printersmodels" =>array("glpi_printers"=>"model",
 									"glpi_cartridges_printersmodels" =>"FK_glpi_dropdown_model_printers"),
 	
-	"glpi_netpoints" =>array("glpi_networking_ports"=>"netpoint"),
+	"glpi_netpoints" =>array("glpi_networkports"=>"netpoint"),
 	
 	"glpi_networks" =>array("glpi_computers"=>"network",
 					"glpi_printers"=>"network",
-					"glpi_networking"=>"network",),
+					"glpi_networkequipments"=>"network",),
 	
 	"glpi_operatingsystems" =>array("glpi_computers"=>"os",
 				"glpi_software"=>"platform"),
@@ -174,7 +174,7 @@ $RELATION=array(
 	
 	"glpi_states" =>array("glpi_computers"=>"state",
 					"glpi_monitors"=>"state",
-					"glpi_networking"=>"state",
+					"glpi_networkequipments"=>"state",
 					"glpi_peripherals"=>"state",
 					"glpi_phones"=>"state",
 					"glpi_printers"=>"state",
@@ -188,7 +188,7 @@ $RELATION=array(
 	
 	"glpi_userstypes" =>array("glpi_users"=>"type"),
 	
-	"glpi_vlans" =>array("glpi_networking_vlan"=>"FK_vlan"),
+	"glpi_vlans" =>array("glpi_networkports_vlans"=>"FK_vlan"),
 	
 	"glpi_suppliers" =>array("glpi_contacts_suppliers"=>"FK_enterprise",
 				"glpi_contracts_suppliers"=>"FK_enterprise",
@@ -212,11 +212,11 @@ $RELATION=array(
 				"glpi_links"=>"FK_entities",
 				"glpi_mailcollectors"=>"FK_entities",
 				"glpi_monitors"=>"FK_entities",
-				"glpi_networking"=>"FK_entities",
+				"glpi_networkequipments"=>"FK_entities",
 				"glpi_peripherals"=>"FK_entities",
 				"glpi_phones"=>"FK_entities",
 				"glpi_printers"=>"FK_entities",
-				"glpi_reminder"=>"FK_entities",
+				"glpi_reminders"=>"FK_entities",
 				"glpi_rules_descriptions"=>"FK_entities",
 				"glpi_software"=>"FK_entities",
 				"glpi_softwarelicenses"=>"FK_entities",
@@ -227,7 +227,7 @@ $RELATION=array(
 
 	"glpi_groups" =>array("glpi_computers"=>"FK_groups",
 						"glpi_monitors"=>"FK_groups",
-						"glpi_networking"=>"FK_groups",
+						"glpi_networkequipments"=>"FK_groups",
 						"glpi_peripherals"=>"FK_groups",
 						"glpi_phones"=>"FK_groups",
 						"glpi_printers"=>"FK_groups",
@@ -239,11 +239,11 @@ $RELATION=array(
 
 	"glpi_links" =>array("glpi_links_itemtypes"=>"FK_links"),
 	
-	"glpi_networking_ports"=>array("glpi_networking_vlan"=>"FK_port",
-							"glpi_networking_wire"=>array("end1","end2")
+	"glpi_networkports"=>array("glpi_networkports_vlans"=>"FK_port",
+							"glpi_networkports_networkports"=>array("end1","end2")
 	),
 
-	"glpi_ocs_config" => array("glpi_ocs_link"=>"ocs_server_id"),
+	"glpi_ocsservers" => array("glpi_ocslinks"=>"ocs_server_id"),
 
 	"glpi_printers" =>array("glpi_cartridges"=>"FK_glpi_printers"),
 	
@@ -251,7 +251,7 @@ $RELATION=array(
 				"glpi_users_profiles"=>"FK_profiles",
 				),
 
-	"glpi_reservation_item" => array("glpi_reservation_resa"=>"id_item"),
+	"glpi_reservationsitems" => array("glpi_reservations"=>"id_item"),
 
 	"glpi_rules_descriptions" => array("glpi_rules_actions"=>"FK_rules",
 						"glpi_rules_criterias"=>"FK_rules",
@@ -288,7 +288,7 @@ $RELATION=array(
 	
 	"glpi_type_docs"=>array("glpi_monitors"=>"type"),
 	
-	"glpi_type_networking"=>array("glpi_networking"=>"type"),
+	"glpi_type_networking"=>array("glpi_networkequipments"=>"type"),
 	
 	"glpi_type_peripherals"=>array("glpi_peripherals"=>"type"),
 	
@@ -308,12 +308,12 @@ $RELATION=array(
 				"glpi_groups"=>"FK_users",
 				"glpi_knowbaseitems"=>"author",
 				"glpi_monitors"=>array("tech_num","FK_users"),
-				"glpi_networking"=>array("tech_num","FK_users"),
+				"glpi_networkequipments"=>array("tech_num","FK_users"),
 				"glpi_peripherals"=>array("tech_num","FK_users"),
 				"glpi_phones"=>array("tech_num","FK_users"),
 				"glpi_printers"=>array("tech_num","FK_users"),
-				"glpi_reminder"=>"FK_users",
-				"glpi_reservation_resa"=>"id_user",
+				"glpi_reminders"=>"FK_users",
+				"glpi_reservations"=>"id_user",
 				"glpi_software"=>array("tech_num","FK_users"),
 				"glpi_tracking"=>array("author","assign","recipient"),
 				"glpi_tracking_planning"=>"id_assign",

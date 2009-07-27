@@ -51,13 +51,13 @@ if (isset($LINK_ID_TABLE[$_POST["type"]])&&isset($_POST["item"])){
 	$where.=" AND $table.deleted=0 ";
 	$where.=" AND $table.is_template='0' ";		
 
-	$query =  "SELECT DISTINCT glpi_networking_wire.ID as WID, glpi_networking_ports.ID as DID, $table.name as CNAME, glpi_networking_ports.name  as NNAME, glpi_networking_ports.ifaddr as IP, glpi_networking_ports.ifmac as MAC";
+	$query =  "SELECT DISTINCT glpi_networkports_networkports.ID as WID, glpi_networkports.ID as DID, $table.name as CNAME, glpi_networkports.name  as NNAME, glpi_networkports.ifaddr as IP, glpi_networkports.ifmac as MAC";
 	$query.= " FROM $table ";
-	$query.= " LEFT JOIN glpi_networking_ports ON (glpi_networking_ports.on_device='".$_POST['item']."' AND glpi_networking_ports.device_type='".$_POST["type"]."' AND glpi_networking_ports.on_device=$table.ID) "; 
-	$query.= " LEFT JOIN glpi_networking_wire ON (glpi_networking_wire.end1=glpi_networking_ports.ID OR glpi_networking_wire.end2=glpi_networking_ports.ID)";
-	$query.= " WHERE glpi_networking_wire.ID IS NULL AND glpi_networking_ports.ID IS NOT NULL AND glpi_networking_ports.ID <> '".$_POST['current']."' ";
+	$query.= " LEFT JOIN glpi_networkports ON (glpi_networkports.on_device='".$_POST['item']."' AND glpi_networkports.device_type='".$_POST["type"]."' AND glpi_networkports.on_device=$table.ID) "; 
+	$query.= " LEFT JOIN glpi_networkports_networkports ON (glpi_networkports_networkports.end1=glpi_networkports.ID OR glpi_networkports_networkports.end2=glpi_networkports.ID)";
+	$query.= " WHERE glpi_networkports_networkports.ID IS NULL AND glpi_networkports.ID IS NOT NULL AND glpi_networkports.ID <> '".$_POST['current']."' ";
 	$query.= $where;
-	$query.= " ORDER BY glpi_networking_ports.ID";
+	$query.= " ORDER BY glpi_networkports.ID";
 	$result = $DB->query($query);
 	echo "<br>";
 	echo "<select name=\"".$_POST['myname']."[".$_POST["current"]."]\" size='1'>";

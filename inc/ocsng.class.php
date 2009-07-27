@@ -78,7 +78,7 @@ class Ocsng extends CommonDBTM {
 	 * Constructor
 	**/
 	function __construct() {
-		$this->table = "glpi_ocs_config";
+		$this->table = "glpi_ocsservers";
 		$this->type = OCSNG_TYPE;
 	}
 
@@ -554,7 +554,7 @@ class Ocsng extends CommonDBTM {
 	function cleanDBonPurge($ID) {
 		global $DB;
 
-		$query = "DELETE FROM glpi_ocs_link WHERE (ocs_server_id = '$ID')";
+		$query = "DELETE FROM glpi_ocslinks WHERE (ocs_server_id = '$ID')";
 		$result = $DB->query($query);
 	}
 

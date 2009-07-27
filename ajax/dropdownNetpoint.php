@@ -78,19 +78,19 @@ $query = "SELECT glpi_netpoints.comments as comments, glpi_netpoints.ID as ID,
 $query .= " LEFT JOIN glpi_locations ON (glpi_netpoints.location = glpi_locations.ID)";
 
 if (isset($_POST["devtype"]) && $_POST["devtype"]>0){
-	$query .= " LEFT JOIN glpi_networking_ports ON (glpi_netpoints.ID = glpi_networking_ports.netpoint";
+	$query .= " LEFT JOIN glpi_networkports ON (glpi_netpoints.ID = glpi_networkports.netpoint";
 
 	if ($_POST["devtype"]==NETWORKING_TYPE){
-		$query .= " AND  glpi_networking_ports.device_type =" . NETWORKING_TYPE .")";
+		$query .= " AND  glpi_networkports.device_type =" . NETWORKING_TYPE .")";
 	}
 	else {
-		$query .= " AND  glpi_networking_ports.device_type !=" . NETWORKING_TYPE .")";
+		$query .= " AND  glpi_networkports.device_type !=" . NETWORKING_TYPE .")";
 
 		if (isset($_POST["location"]) && $_POST["location"]>=0){
 			$where.=" AND glpi_netpoints.location='".$_POST["location"]."' ";
 		}
 	}
-	$where.=" AND glpi_networking_ports.netpoint IS NULL ";
+	$where.=" AND glpi_networkports.netpoint IS NULL ";
 
 } else	if (isset($_POST["location"]) && $_POST["location"]>=0){
 	$where.=" AND glpi_netpoints.location='".$_POST["location"]."' ";

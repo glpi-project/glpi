@@ -388,9 +388,9 @@ function printReservation($target,$ID,$date){
 		$debut=$date." 00:00:00";
 		$fin=$date." 23:59:59";
 
-		$query = "SELECT DISTINCT glpi_reservation_item.ID 
-			FROM glpi_reservation_item 
-			INNER JOIN glpi_reservation_resa ON (glpi_reservation_item.ID = glpi_reservation_resa.id_item )
+		$query = "SELECT DISTINCT glpi_reservationsitems.ID 
+			FROM glpi_reservationsitems 
+			INNER JOIN glpi_reservations ON (glpi_reservationsitems.ID = glpi_reservations.id_item )
 			WHERE active='1' AND '".$debut."' < end AND '".$fin."' > begin 
 			ORDER BY begin";
 //		echo $query;
@@ -431,7 +431,7 @@ function printReservationItem($target,$ID,$date){
 	list($year,$month,$day)=explode("-",$date);
 	$debut=$date." 00:00:00";
 	$fin=$date." 23:59:59";
-	$query = "SELECT * FROM glpi_reservation_resa".
+	$query = "SELECT * FROM glpi_reservations".
 		" WHERE '".$debut."' < end AND '".$fin."' > begin AND id_item='$ID' 
 		ORDER BY begin";
 	//		echo $query."<br>";
@@ -493,14 +493,14 @@ function printReservationItems($target){
 	
 	foreach ($CFG_GLPI["reservation_types"] as $type){
 		$ci->setType($type);
-		$query="SELECT glpi_reservation_item.ID as ID, glpi_reservation_item.comments as comments, 
+		$query="SELECT glpi_reservationsitems.ID as ID, glpi_reservationsitems.comments as comments, 
 				".$LINK_ID_TABLE[$type].".name as name, ".$LINK_ID_TABLE[$type].".FK_entities as FK_entities,
-				 glpi_locations.completename as location, glpi_reservation_item.id_device as id_device	
-			FROM glpi_reservation_item 
-			INNER JOIN ".$LINK_ID_TABLE[$type]." ON (glpi_reservation_item.device_type='$type' 
-								AND glpi_reservation_item.id_device=".$LINK_ID_TABLE[$type].".ID)
+				 glpi_locations.completename as location, glpi_reservationsitems.id_device as id_device	
+			FROM glpi_reservationsitems 
+			INNER JOIN ".$LINK_ID_TABLE[$type]." ON (glpi_reservationsitems.device_type='$type' 
+								AND glpi_reservationsitems.id_device=".$LINK_ID_TABLE[$type].".ID)
 			LEFT JOIN glpi_locations ON (".$LINK_ID_TABLE[$type].".location = glpi_locations.ID)
-			WHERE glpi_reservation_item.active='1' AND ".$LINK_ID_TABLE[$type].".deleted ='0' ".getEntitiesRestrictRequest("AND",$LINK_ID_TABLE[$type])." ORDER BY ".$LINK_ID_TABLE[$type].".FK_entities, ".$LINK_ID_TABLE[$type].".name";
+			WHERE glpi_reservationsitems.active='1' AND ".$LINK_ID_TABLE[$type].".deleted ='0' ".getEntitiesRestrictRequest("AND",$LINK_ID_TABLE[$type])." ORDER BY ".$LINK_ID_TABLE[$type].".FK_entities, ".$LINK_ID_TABLE[$type].".name";
 
 
 		if ($result = $DB->query($query)) {
@@ -597,7 +597,7 @@ function showDeviceReservations($target,$type,$ID){
 
 		$now=$_SESSION["glpi_currenttime"];
 		// Print reservation in progress
-		$query = "SELECT * FROM glpi_reservation_resa WHERE end > '".$now."' AND id_item='$resaID' ORDER BY begin";
+		$query = "SELECT * FROM glpi_reservations WHERE end > '".$now."' AND id_item='$resaID' ORDER BY begin";
 		$result=$DB->query($query);
 
 		echo "<table class='tab_cadrehov'><tr><th colspan='5'>";
@@ -631,7 +631,7 @@ function showDeviceReservations($target,$type,$ID){
 		echo "<br>";
 		// Print old reservations
 
-		$query = "SELECT * FROM glpi_reservation_resa WHERE end <= '".$now."' AND id_item='$resaID' ORDER BY begin DESC";
+		$query = "SELECT * FROM glpi_reservations WHERE end <= '".$now."' AND id_item='$resaID' ORDER BY begin DESC";
 		$result=$DB->query($query);
 
 		echo "<table class='tab_cadrehov'><tr><th colspan='5'>";
@@ -682,7 +682,7 @@ function showUserReservations($target,$ID){
 	$now=$_SESSION["glpi_currenttime"];
 
 	// Print reservation in progress
-	$query = "SELECT * FROM glpi_reservation_resa WHERE end > '".$now."' AND id_user='$ID' ORDER BY begin";
+	$query = "SELECT * FROM glpi_reservations WHERE end > '".$now."' AND id_user='$ID' ORDER BY begin";
 	$result=$DB->query($query);
 	$ri=new ReservationItem();
 	$ci=new CommonItem();
@@ -717,7 +717,7 @@ function showUserReservations($target,$ID){
 	echo "<br>";
 	// Print old reservations
 
-	$query = "SELECT * FROM glpi_reservation_resa WHERE end <= '".$now."' AND id_user='$ID' ORDER BY begin DESC";
+	$query = "SELECT * FROM glpi_reservations WHERE end <= '".$now."' AND id_user='$ID' ORDER BY begin DESC";
 	$result=$DB->query($query);
 
 	echo "<table class='tab_cadrehov'><tr><th colspan='6'>".$LANG['reservation'][36]."</th></tr>";
@@ -756,7 +756,7 @@ function showUserReservations($target,$ID){
 function isReservable($type,$ID){
 
 	global $DB;
-	$query="SELECT ID FROM glpi_reservation_item WHERE device_type='$type' AND id_device='$ID'";
+	$query="SELECT ID FROM glpi_reservationsitems WHERE device_type='$type' AND id_device='$ID'";
 	$result=$DB->query($query);
 	if ($DB->numrows($result)==0){
 		return false;

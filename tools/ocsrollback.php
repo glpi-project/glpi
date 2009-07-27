@@ -134,7 +134,7 @@ while ($event=$DB->fetch_array($res)) {
 			} 
 	
 			// Rollback the change in ocs_link
-			$sql = "UPDATE glpi_ocs_link SET ocs_id=" . $event["old_value"];
+			$sql = "UPDATE glpi_ocslinks SET ocs_id=" . $event["old_value"];
 			if (!empty($olddevid)) {
 				$sql .= ", ocs_deviceid ='$olddevid'";
 			}
@@ -170,7 +170,7 @@ while ($event=$DB->fetch_array($res)) {
 			$input["state"] = 5;		// Available
 			
 			// Unlink the computer
-			$sql = "DELETE FROM glpi_ocs_link " .
+			$sql = "DELETE FROM glpi_ocslinks " .
 				" WHERE glpi_id=" . $event["FK_glpi_device"];
 
 			if ($debug) {

@@ -114,17 +114,33 @@ function update0721to080() {
       'glpi_monitors'                     => 'glpi_monitors',
       'glpi_dropdown_model_monitors'      => 'glpi_monitorsmodels',
       'glpi_dropdown_netpoint'            => 'glpi_netpoints',
+      'glpi_networking'                   => 'glpi_networkequipments',
       'glpi_dropdown_firmware'            => 'glpi_networkequipmentsfirmwares',
       'glpi_dropdown_model_networking'    => 'glpi_networkequipmentsmodels',
       'glpi_dropdown_iface'               => 'glpi_networkinterfaces',
+      'glpi_networking_ports'             => 'glpi_networkports',
+      'glpi_networking_vlan'              => 'glpi_networkports_vlans',
+      'glpi_networking_wire'              => 'glpi_networkports_networkports',
       'glpi_dropdown_network'             => 'glpi_networks',
+      'glpi_ocs_admin_link'               => 'glpi_ocsadmininfoslinks',
+      'glpi_ocs_config'                   => 'glpi_ocsservers',
+      'glpi_ocs_link'                     => 'glpi_ocslinks',
       'glpi_dropdown_os'                  => 'glpi_operatingsystems',
       'glpi_dropdown_os_sp'               => 'glpi_operatingsystemsservicepacks',
       'glpi_dropdown_os_version'          => 'glpi_operatingsystemsversions',
+      'glpi_peripherals'                  => 'glpi_peripherals',
       'glpi_dropdown_model_peripherals'   => 'glpi_peripheralsmodels',
+      'glpi_phones'                       => 'glpi_phones',
       'glpi_dropdown_model_phones'        => 'glpi_phonesmodels',
       'glpi_dropdown_phone_power'         => 'glpi_phonespowersupplies',
+      'glpi_plugins'                      => 'glpi_plugins',
+      'glpi_printers'                     => 'glpi_printers',
       'glpi_dropdown_model_printers'      => 'glpi_printersmodels',
+      'glpi_profiles'                     => 'glpi_profiles',
+      'glpi_registry'                     => 'glpi_registrykeys',
+      'glpi_reminder'                     => 'glpi_reminders',
+      'glpi_reservation_item'             => 'glpi_reservationsitems',
+      'glpi_reservation_resa'             => 'glpi_reservations',
       'glpi_dropdown_software_category'   => 'glpi_softwarescategories',
       'glpi_dropdown_licensetypes'        => 'glpi_softwarelicensestypes',
       'glpi_dropdown_state'               => 'glpi_states',
@@ -135,7 +151,8 @@ function update0721to080() {
       'glpi_dropdown_user_types'          => 'glpi_userstypes',
       'glpi_dropdown_vlan'                => 'glpi_vlans',
 
-      //'glpi_networking' => 'glpi_networkequipments',
+
+
    );
    $backup_tables=false;
 	foreach ($glpi_tables as $original_table => $new_table) {

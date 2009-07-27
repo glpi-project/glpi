@@ -47,13 +47,13 @@ checkRight("reports","r");
 if (isset($_POST["switch"])&&$_POST["switch"]){
 	commonHeader($LANG['Menu'][6],$_SERVER['PHP_SELF'],"utils","report");
 
-	$name=getDropdownName("glpi_networking",$_POST["switch"]);
+	$name=getDropdownName("glpi_networkequipments",$_POST["switch"]);
 	echo "<div align='center'><h2>".$LANG['reports'][49]." $name </h2></div><br><br>";
 
-	$query="SELECT c.name as port,c.ifaddr as ip,c.ifmac as mac, c.ID AS IDport, glpi_networking.name as switch
-		FROM glpi_networking
-		INNER JOIN glpi_networking_ports c ON c.device_type=".NETWORKING_TYPE." AND c.on_device=glpi_networking.ID
-		WHERE glpi_networking.id='".$_POST["switch"]."'";
+	$query="SELECT c.name as port,c.ifaddr as ip,c.ifmac as mac, c.ID AS IDport, glpi_networkequipments.name as switch
+		FROM glpi_networkequipments
+		INNER JOIN glpi_networkports c ON c.device_type=".NETWORKING_TYPE." AND c.on_device=glpi_networkequipments.ID
+		WHERE glpi_networkequipments.id='".$_POST["switch"]."'";
 
 
 	$result = $DB->query($query);

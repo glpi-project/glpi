@@ -951,7 +951,7 @@ function listTemplates($type, $target, $add = 0) {
 			break;
 		case NETWORKING_TYPE :
 			$title = $LANG['Menu'][1];
-			$query = "SELECT * FROM glpi_networking WHERE is_template = '1' AND FK_entities='" . $_SESSION["glpiactive_entity"] . "' ORDER by tplname";
+			$query = "SELECT * FROM glpi_networkequipments WHERE is_template = '1' AND FK_entities='" . $_SESSION["glpiactive_entity"] . "' ORDER by tplname";
 			break;
 		case MONITOR_TYPE :
 			$title = $LANG['Menu'][3];
@@ -975,7 +975,7 @@ function listTemplates($type, $target, $add = 0) {
 			break;
 		case OCSNG_TYPE :
 			$title = $LANG['Menu'][33];
-			$query = "SELECT * FROM glpi_ocs_config WHERE is_template = '1' ORDER by tplname";
+			$query = "SELECT * FROM glpi_ocsservers WHERE is_template = '1' ORDER by tplname";
 			break;
 
 	}
