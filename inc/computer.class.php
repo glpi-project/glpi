@@ -373,7 +373,7 @@ class Computer extends CommonDBTM {
 
 			// ADD software
 			$query="SELECT vID 
-				FROM glpi_inst_software 
+				FROM glpi_computers_softwareversions 
 				WHERE cID='".$input["_oldID"]."'";
 			$result=$DB->query($query);
 			if ($DB->numrows($result)>0){
@@ -454,7 +454,7 @@ class Computer extends CommonDBTM {
 				} else $job->delete(array("ID"=>$data["ID"]));
 			}
 
-		$query = "DELETE FROM glpi_inst_software WHERE (cID = '$ID')";
+		$query = "DELETE FROM glpi_computers_softwareversions WHERE (cID = '$ID')";
 		$result = $DB->query($query);		
 
 		$query = "DELETE FROM glpi_contracts_items WHERE (FK_device = '$ID' AND device_type='".COMPUTER_TYPE."')";

@@ -90,8 +90,8 @@ switch($_GET["type"]){
 		$val1=$_GET["ID"];
 		$val2="";
 	
-		$next=getNextItem("glpi_enterprises",$_GET["ID"]);
-		$prev=getPreviousItem("glpi_enterprises",$_GET["ID"]);
+		$next=getNextItem("glpi_suppliers",$_GET["ID"]);
+		$prev=getPreviousItem("glpi_suppliers",$_GET["ID"]);
 		$title=$LANG['stats'][44].": ".getAssignName($_GET["ID"],ENTERPRISE_TYPE,1);
 		break;
 	case "user":

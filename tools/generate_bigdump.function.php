@@ -239,7 +239,7 @@ function generateGlobalDropdowns(){
 	$DB->query($query) or die("PB REQUETE ".$query);
 
 
-	// glpi_kbitems
+	// glpi_knowbaseitems
 	$MAX["kbcategories"]=getMaxItem("glpi_knowbaseitemscategories");
 
 	$items=array("CD","CD-RW","DVD-R","DVD+R","DVD-RW","DVD+RW","ramette papier","disquette","ZIP");
@@ -701,17 +701,17 @@ function generate_entity($ID_entity){
 	$LAST["locations"]=getMaxItem("glpi_locations");
 
 
-	// glpi_kbitems
+	// glpi_knowbaseitems
 	$MAX["kbcategories"]=getMaxItem("glpi_knowbaseitemscategories");
 
 	// Add Specific questions
 	$k=0;
-	$FIRST["kbitems"]=getMaxItem("glpi_kbitems")+1;
+	$FIRST["kbitems"]=getMaxItem("glpi_knowbaseitems")+1;
 	for ($i=1;$i<=$MAX['kbcategories'];$i++){
 		$nb=mt_rand(0,$MAX_KBITEMS_BY_CAT);
 		for ($j=0;$j<$nb;$j++){
 			$k++;
-			$query="INSERT INTO glpi_kbitems VALUES (NULL,'$ID_entity','0','$i','Entity $ID_entity Question $k','Reponse $k','".mt_rand(0,1)."','10','".mt_rand(0,1000)."',NOW(),NOW())";
+			$query="INSERT INTO glpi_knowbaseitems VALUES (NULL,'$ID_entity','0','$i','Entity $ID_entity Question $k','Reponse $k','".mt_rand(0,1)."','10','".mt_rand(0,1000)."',NOW(),NOW())";
 			$DB->query($query) or die("PB REQUETE ".$query);
 		}
 	}
@@ -720,11 +720,11 @@ function generate_entity($ID_entity){
 		$nb=mt_rand(0,$MAX_KBITEMS_BY_CAT);
 		for ($j=0;$j<$nb;$j++){
 			$k++;
-			$query="INSERT INTO glpi_kbitems VALUES (NULL,'$ID_entity','1','$i','Entity $ID_entity Recursive Question $k','Reponse $k','".mt_rand(0,1)."','10','".mt_rand(0,1000)."',NOW(),NOW())";
+			$query="INSERT INTO glpi_knowbaseitems VALUES (NULL,'$ID_entity','1','$i','Entity $ID_entity Recursive Question $k','Reponse $k','".mt_rand(0,1)."','10','".mt_rand(0,1000)."',NOW(),NOW())";
 			$DB->query($query) or die("PB REQUETE ".$query);
 		}
 	}
-	$LAST["kbitems"]=getMaxItem("glpi_kbitems");
+	$LAST["kbitems"]=getMaxItem("glpi_knowbaseitems");
 
 	// glpi_groups
 	$FIRST["groups"]=getMaxItem("glpi_groups")+1;
@@ -824,16 +824,16 @@ function generate_entity($ID_entity){
 	}
 	$LAST["document"]=getMaxItem("glpi_documents");
 
-	// glpi_enterprises
+	// glpi_suppliers
 	$items=array("DELL","IBM","ACER","Microsoft","Epson","Xerox","Hewlett Packard","Nikon","Targus","LG","Samsung","Lexmark");
-	$FIRST["enterprises"]=getMaxItem("glpi_enterprises")+1;
+	$FIRST["enterprises"]=getMaxItem("glpi_suppliers")+1;
 
 	// Global ones
 	for ($i=0;$i<$MAX['enterprises']/2;$i++){
 		if (isset($items[$i])) $val=$items[$i];
 		else $val="Global enterprise_".$i."_ID_entity";
 	
-		$query="INSERT INTO glpi_enterprises VALUES (NULL,'$ID_entity','1','Recursive $val-$ID_entity','".mt_rand(1,$MAX['enttype'])."','address $i', 'postcode $i','town $i','state $i','country $i','http://www.$val.com/','phone $i','comment enterprises $i','0','fax $i','info@ent$i.com','notes enterprises $i')";
+		$query="INSERT INTO glpi_suppliers VALUES (NULL,'$ID_entity','1','Recursive $val-$ID_entity','".mt_rand(1,$MAX['enttype'])."','address $i', 'postcode $i','town $i','state $i','country $i','http://www.$val.com/','phone $i','comment enterprises $i','0','fax $i','info@ent$i.com','notes enterprises $i')";
 		$DB->query($query) or die("PB REQUETE ".$query);
 		$entID=$DB->insert_id();
 		addDocuments(ENTERPRISE_TYPE,$entID);
@@ -844,12 +844,12 @@ function generate_entity($ID_entity){
 		if (isset($items[$i])) $val=$items[$i];
 		else $val="enterprise_".$i."_ID_entity";
 	
-		$query="INSERT INTO glpi_enterprises VALUES (NULL,'$ID_entity','0','$val-$ID_entity','".mt_rand(1,$MAX['enttype'])."','address $i', 'postcode $i','town $i','state $i','country $i','http://www.$val.com/','phone $i','comment enterprises $i','0','fax $i','info@ent$i.com','notes enterprises $i')";
+		$query="INSERT INTO glpi_suppliers VALUES (NULL,'$ID_entity','0','$val-$ID_entity','".mt_rand(1,$MAX['enttype'])."','address $i', 'postcode $i','town $i','state $i','country $i','http://www.$val.com/','phone $i','comment enterprises $i','0','fax $i','info@ent$i.com','notes enterprises $i')";
 		$DB->query($query) or die("PB REQUETE ".$query);
 		$entID=$DB->insert_id();
 		addDocuments(ENTERPRISE_TYPE,$entID);
 	}
-	$LAST["enterprises"]=getMaxItem("glpi_enterprises");
+	$LAST["enterprises"]=getMaxItem("glpi_suppliers");
 	
 	// Ajout contracts
 	$FIRST["contract"]=getMaxItem("glpi_contracts")+1;
@@ -1388,7 +1388,7 @@ function generate_entity($ID_entity){
 			$versID=$DB->insert_id();
 			$val3=mt_rand(1,$MAX['softwareinstall']);
 			for ($k=0;$k<$val3;$k++){
-				$query="INSERT INTO glpi_inst_software VALUES (NULL,'".mt_rand($FIRST["computers"],$LAST['computers'])."','$versID')";
+				$query="INSERT INTO glpi_computers_softwareversions VALUES (NULL,'".mt_rand($FIRST["computers"],$LAST['computers'])."','$versID')";
 				$DB->query($query) or die("PB REQUETE ".$query);
 			}
 		}

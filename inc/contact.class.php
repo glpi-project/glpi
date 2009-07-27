@@ -85,11 +85,11 @@ class Contact extends CommonDBTM{
 	function GetAddress() {
 		global $DB;
 
-		$query = "SELECT  glpi_enterprises.name, glpi_enterprises.address, glpi_enterprises.postcode, 
-				glpi_enterprises.town, glpi_enterprises.state, glpi_enterprises.country 
-			FROM glpi_enterprises,glpi_contacts_suppliers 
+		$query = "SELECT  glpi_suppliers.name, glpi_suppliers.address, glpi_suppliers.postcode, 
+				glpi_suppliers.town, glpi_suppliers.state, glpi_suppliers.country 
+			FROM glpi_suppliers,glpi_contacts_suppliers 
 			WHERE glpi_contacts_suppliers.FK_contact = '".$this->fields["ID"]."' 
-				AND glpi_contacts_suppliers.FK_enterprise = glpi_enterprises.ID";
+				AND glpi_contacts_suppliers.FK_enterprise = glpi_suppliers.ID";
 
 		if ($result = $DB->query($query)) 
 			if ($DB->numrows($result)){
@@ -110,10 +110,10 @@ class Contact extends CommonDBTM{
 	function GetWebsite() {
 		global $DB;
 
-		$query = "SELECT  glpi_enterprises.website as website 
-			FROM glpi_enterprises,glpi_contacts_suppliers 
+		$query = "SELECT  glpi_suppliers.website as website 
+			FROM glpi_suppliers,glpi_contacts_suppliers 
 			WHERE glpi_contacts_suppliers.FK_contact = '".$this->fields["ID"]."' 
-				AND glpi_contacts_suppliers.FK_enterprise = glpi_enterprises.ID";
+				AND glpi_contacts_suppliers.FK_enterprise = glpi_suppliers.ID";
 
 		if ($result = $DB->query($query)) 
 			if ($DB->numrows($result)){

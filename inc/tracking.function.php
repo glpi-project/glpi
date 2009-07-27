@@ -1198,7 +1198,7 @@ function searchFormTracking($extended=0,$target,$start="",$status="new",$tosearc
 		$option["glpi_networking_ports.ifaddr"] 	= $LANG['networking'][14];
 		$option["glpi_networking_ports.ifmac"] 		= $LANG['networking'][15];
 		$option["glpi_netpoints.name"]		= $LANG['networking'][51];
-		$option["glpi_enterprises.name"]		= $LANG['common'][5];
+		$option["glpi_suppliers.name"]		= $LANG['common'][5];
 		$option["resptech.name"]			=$LANG['common'][10];
 	}
 	echo "<form method='get' name=\"form\" action=\"".$target."\">";
@@ -1285,7 +1285,7 @@ function searchFormTracking($extended=0,$target,$start="",$status="new",$tosearc
 	
 		echo "<br>";
 		echo $LANG['financial'][26].":&nbsp;";
-		dropdownValue("glpi_enterprises","assign_ent",$assign_ent);
+		dropdownValue("glpi_suppliers","assign_ent",$assign_ent);
 	}
 
 	echo "</td>";
@@ -1477,7 +1477,7 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$to
 			$wherecomp .= " OR glpi_networking_ports.ifaddr $SEARCH";
 			$wherecomp .= " OR glpi_networking_ports.ifmac $SEARCH";
 			$wherecomp .= " OR glpi_netpoints.name $SEARCH";
-			$wherecomp .= " OR glpi_enterprises.name $SEARCH";
+			$wherecomp .= " OR glpi_suppliers.name $SEARCH";
 			$wherecomp .= " OR resptech.name $SEARCH";
 
 			$wherecomp .= ")";
@@ -1665,7 +1665,7 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$to
 		$where.= "LEFT JOIN glpi_locations on (glpi_locations.ID = comp.location)";
 		$where.= "LEFT JOIN glpi_computersmodels on (glpi_computersmodels.ID = comp.model)";
 		$where.= "LEFT JOIN glpi_type_computers on (glpi_type_computers.ID = comp.type)";
-		$where.= " LEFT JOIN glpi_enterprises ON (glpi_enterprises.ID = comp.FK_glpi_enterprise ) ";
+		$where.= " LEFT JOIN glpi_suppliers ON (glpi_suppliers.ID = comp.FK_glpi_enterprise ) ";
 		$where.= " LEFT JOIN glpi_users as resptech ON (resptech.ID = comp.tech_num ) ";
 		$where.=" WHERE $wherecomp) ";
 	}
@@ -1769,7 +1769,7 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$to
 					$title.=" - ".$LANG['job'][5]." =";
 					if ($assign!=0) $title.=" ".$LANG['job'][6]." = ".getUserName($assign);
 					if ($assign_group!=0) $title.=" ".$LANG['common'][35]." = ".getDropdownName("glpi_groups",$assign_group);
-					if ($assign_ent!=0) $title.=" ".$LANG['financial'][26]." = ".getDropdownName("glpi_enterprises",$assign_ent);
+					if ($assign_ent!=0) $title.=" ".$LANG['financial'][26]." = ".getDropdownName("glpi_suppliers",$assign_ent);
 				}
 				if ($request_type!=0) $title.=" - ".$LANG['job'][44]." = ".getRequestTypeName($request_type);
 				if ($category!=0) $title.=" - ".$LANG['common'][36]." = ".getDropdownName("glpi_ticketscategories",$category);
@@ -2050,7 +2050,7 @@ function showJobDetails ($target,$ID){
 			echo "</td></tr>";
 			echo "<tr><td class='left'>";
 			echo $LANG['financial'][26].":</td><td>";
-			dropdownValue("glpi_enterprises","assign_ent",$job->fields["assign_ent"],1,$job->fields["FK_entities"]);
+			dropdownValue("glpi_suppliers","assign_ent",$job->fields["assign_ent"],1,$job->fields["FK_entities"]);
 			echo "</td></tr>";
 		} else {
 			echo "<tr><td class='left'>";
@@ -2059,7 +2059,7 @@ function showJobDetails ($target,$ID){
 			echo "</td></tr>";
 			echo "<tr><td class='left'>";
 			echo $LANG['financial'][26].":</td><td>";
-			echo getDropdownName("glpi_enterprises",$job->fields["assign_ent"]);
+			echo getDropdownName("glpi_suppliers",$job->fields["assign_ent"]);
 			echo "</td></tr>";
 		}
 		echo "</table>";

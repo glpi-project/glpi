@@ -68,7 +68,7 @@ function historyLog ($id_device,$device_type,$changes,$device_internal_type='0',
 			$username="";
 
 		// Build query
-		$query = "INSERT INTO glpi_history (FK_glpi_device, device_type, device_internal_type, linked_action, user_name, date_mod,
+		$query = "INSERT INTO glpi_logs (FK_glpi_device, device_type, device_internal_type, linked_action, user_name, date_mod,
 		id_search_option, old_value, new_value)  
 		VALUES ('$id_device', '$device_type', '$device_internal_type', '$linked_action','". addslashes($username)."', '$date_mod',
 		'$id_search_option', '".utf8_substr($old_value,0,250)."', '".utf8_substr($new_value,0,250)."');";
@@ -106,14 +106,14 @@ function constructHistory($id_device,$device_type,&$oldvalues,&$values) {
 					if (isset($SEARCH_OPTION[$real_device_type])) foreach($SEARCH_OPTION[$real_device_type] as $key2 => $val2){
 						if(($val2["field"]==$key&&strpos($val2['table'],'infocoms')) || 
 							($key=='budget'&&$val2['table']=='glpi_budgets') ||
-							($key=='FK_enterprise'&&$val2['table']=='glpi_enterprises_infocoms')) {
+							($key=='FK_enterprise'&&$val2['table']=='glpi_suppliers_infocoms')) {
 							$id_search_option=$key2; // Give ID of the $SEARCH_OPTION
 							if ($val2["table"]=="glpi_infocoms"){
 								// 1st case : text field -> keep datas
 								$changes=array($id_search_option, addslashes($oldval),$values[$key]);
-							} else if ($val2["table"]=="glpi_enterprises_infocoms") {
-								// 2nd case ; link field -> get data from glpi_enterprises
-								$changes=array($id_search_option,  addslashes(getDropdownName("glpi_enterprises",$oldval)), addslashes(getDropdownName("glpi_enterprises",$values[$key])));
+							} else if ($val2["table"]=="glpi_suppliers_infocoms") {
+								// 2nd case ; link field -> get data from glpi_suppliers
+								$changes=array($id_search_option,  addslashes(getDropdownName("glpi_suppliers",$oldval)), addslashes(getDropdownName("glpi_suppliers",$values[$key])));
 							} else  {
 								// 3rd case ; link field -> get data from dropdown (budget)
 								$changes=array($id_search_option,  addslashes(getDropdownName( $val2["table"],$oldval)), addslashes(getDropdownName( $val2["table"],$values[$key])));
@@ -177,7 +177,7 @@ function showHistory($device_type,$id_device){
 	}
 
 	// Total Number of events
-	$number = countElementsInTable("glpi_history", "FK_glpi_device=$id_device AND device_type=$device_type");
+	$number = countElementsInTable("glpi_logs", "FK_glpi_device=$id_device AND device_type=$device_type");
 
 	// No Events in database
 	if ($number < 1) {
@@ -193,7 +193,7 @@ function showHistory($device_type,$id_device){
 	printAjaxPager($LANG['title'][38],$start,$number);
 
 	$query="SELECT * 
-		FROM glpi_history 
+		FROM glpi_logs 
 		WHERE FK_glpi_device='".$id_device."' AND device_type='".$device_type."'
 		ORDER BY  ID DESC LIMIT ".intval($start)."," . intval($_SESSION['glpilist_limit']);
 
@@ -359,7 +359,7 @@ function logEvent ($item, $itemtype, $level, $service, $event) {
 	
 	global $DB,$CFG_GLPI, $LANG;
 	if ($level <= $CFG_GLPI["event_loglevel"] && !$DB->isSlave()) { 
-		$query = "INSERT INTO glpi_event_log VALUES (NULL, '".addslashes($item)."', '".addslashes($itemtype)."', '".$_SESSION["glpi_currenttime"]."', '".addslashes($service)."', '".addslashes($level)."', '".addslashes($event)."')";
+		$query = "INSERT INTO glpi_events VALUES (NULL, '".addslashes($item)."', '".addslashes($itemtype)."', '".$_SESSION["glpi_currenttime"]."', '".addslashes($service)."', '".addslashes($level)."', '".addslashes($event)."')";
 		$result = $DB->query($query);    
 
 	}
@@ -488,7 +488,7 @@ function showAddEvents($target,$user="") {
 
 	// Query Database
 	$query = "SELECT * 
-		FROM glpi_event_log 
+		FROM glpi_events 
 		WHERE message LIKE '".$usersearch.addslashes($LANG['log'][20])."%' 
 		ORDER BY date DESC LIMIT 0,".intval($_SESSION["glpinum_of_events"]);
 
@@ -582,10 +582,10 @@ function showEvents($target,$order,$sort,$start=0) {
 	}
 
 	// Query Database
-	$query_limit = "SELECT * FROM glpi_event_log ORDER BY `$sort` $order LIMIT ".intval($start).",".intval($_SESSION['glpilist_limit']);
+	$query_limit = "SELECT * FROM glpi_events ORDER BY `$sort` $order LIMIT ".intval($start).",".intval($_SESSION['glpilist_limit']);
 
 	// Number of results
-	$numrows = countElementsInTable("glpi_event_log");
+	$numrows = countElementsInTable("glpi_events");
 	// Get results
 	$result = $DB->query($query_limit);
 	$number = $DB->numrows($result);

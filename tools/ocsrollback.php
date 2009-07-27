@@ -90,7 +90,7 @@ if (!$maxid) {
 	die("Bad value\n");
 }
 // Computer from OCS : New, ID Changed, Linked 
-$sql = "SELECT *  FROM glpi_history " .
+$sql = "SELECT *  FROM glpi_logs " .
 		"WHERE date_mod >= '$maxti' AND device_type=1 AND linked_action IN (8,10,11) " .
 		"ORDER BY ID DESC";
 

@@ -45,7 +45,7 @@ class Mailgate  extends CommonDBTM {
 	 * Constructor
 	**/
 	function __construct () {
-		$this->table="glpi_mailgate";
+		$this->table="glpi_mailcollectors";
 		$this->type=MAILGATE_TYPE;
 	}
 
@@ -110,7 +110,7 @@ class Mailgate  extends CommonDBTM {
 			echo "</td></tr>";
 		}
 		echo "<tr class='tab_bg_2'><td>".$LANG['common'][16].":	</td><td>";
-		autocompletionTextField("name","glpi_mailgate","name",$this->fields["name"],40);
+		autocompletionTextField("name","glpi_mailcollectors","name",$this->fields["name"],40);
 		echo "</td></tr>";
 
 		echo "<tr class='tab_bg_2'><td>".$LANG['entity'][0].":	</td><td>";
@@ -125,7 +125,7 @@ class Mailgate  extends CommonDBTM {
 		showMailServerConfig($this->fields["host"]);
 
 		echo "<tr class='tab_bg_2'><td>".$LANG['login'][6].":	</td><td>";
-		autocompletionTextField("login","glpi_mailgate","login",$this->fields["login"],40);
+		autocompletionTextField("login","glpi_mailcollectors","login",$this->fields["login"],40);
 		echo "</td></tr>";
 
 		echo "<tr class='tab_bg_2'><td>".$LANG['login'][7].":	</td><td>";

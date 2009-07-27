@@ -69,7 +69,7 @@ function showLinkDevice($instID) {
 	if (!haveRight("link","r")) return false;
 	//$canedit= haveRight("link","w");
 	$ci = new CommonItem();
-	$query = "SELECT * FROM glpi_links_device WHERE FK_links='$instID' ORDER BY device_type";
+	$query = "SELECT * FROM glpi_links_itemtypes WHERE FK_links='$instID' ORDER BY device_type";
 	$result = $DB->query($query);
 	$number = $DB->numrows($result);
 	$i = 0;
@@ -109,12 +109,12 @@ function showLinkDevice($instID) {
 /**
  * Delete an item type for a link
  *
- * @param $ID integer : glpi_links_device ID
+ * @param $ID integer : glpi_links_itemtypes ID
  */
 function deleteLinkDevice($ID){
 
 	global $DB;
-	$query="DELETE FROM glpi_links_device WHERE ID= '$ID';";
+	$query="DELETE FROM glpi_links_itemtypes WHERE ID= '$ID';";
 	$result = $DB->query($query);
 }
 
@@ -128,7 +128,7 @@ function addLinkDevice($tID,$lID){
 	global $DB;
 	if ($tID>0&&$lID>0){
 
-		$query="INSERT INTO glpi_links_device (device_type,FK_links ) VALUES ('$tID','$lID');";
+		$query="INSERT INTO glpi_links_itemtypes (device_type,FK_links ) VALUES ('$tID','$lID');";
 		$result = $DB->query($query);
 	}
 }
@@ -149,8 +149,8 @@ function showLinkOnDevice($type,$ID){
 
 	$query="SELECT glpi_links.ID as ID, glpi_links.link as link, glpi_links.name as name , glpi_links.data as data 
 		FROM glpi_links 
-		INNER JOIN glpi_links_device ON glpi_links.ID= glpi_links_device.FK_links
-		WHERE glpi_links_device.device_type='$type' " .
+		INNER JOIN glpi_links_itemtypes ON glpi_links.ID= glpi_links_itemtypes.FK_links
+		WHERE glpi_links_itemtypes.device_type='$type' " .
 			getEntitiesRestrictRequest(" AND","glpi_links","FK_entities",$commonitem->obj->fields["FK_entities"],true).
 		" ORDER BY glpi_links.name";
 

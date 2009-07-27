@@ -150,8 +150,8 @@ if (isset($_POST["device_type"])&&isset($_POST["id_field"])&&$_POST["id_field"])
 					break;
 				}
 			break;
-			case "glpi_enterprises_infocoms": // Infocoms enterprises
-				dropdown("glpi_enterprises","FK_enterprise",1,$_SESSION["glpiactive_entity"]);
+			case "glpi_suppliers_infocoms": // Infocoms suppliers
+				dropdown("glpi_suppliers","FK_enterprise",1,$_SESSION["glpiactive_entity"]);
 				echo "<input type='hidden' name='field' value='FK_enterprise'>";
 				$FIELDNAME_PRINTED=true;
 			break;

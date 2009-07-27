@@ -350,8 +350,8 @@ class DictionnarySoftwareCollection extends RuleCachedCollection {
 									SET name='$new_version', sID='$new_software_id' 
 									WHERE ID='$version_id';");
 			} else {
-				//Change ID of the version in glpi_inst_software
-				$DB->query("UPDATE glpi_inst_software SET vID='$new_versionID' WHERE vID='$version_id'");
+				//Change ID of the version in glpi_computers_softwareversions
+				$DB->query("UPDATE glpi_computers_softwareversions SET vID='$new_versionID' WHERE vID='$version_id'");
 
 				// Update licenses version link
 				$DB->query("UPDATE glpi_softwarelicenses SET buy_version='$new_versionID' WHERE buy_version='$version_id'");

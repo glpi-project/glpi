@@ -337,13 +337,13 @@ function showEnterpriseContract($instID) {
 	$contract=new Contract();
 	$canedit=$contract->can($instID,'w');
 	
-	$query = "SELECT glpi_contracts_suppliers.ID as ID, glpi_enterprises.ID as entID, glpi_enterprises.name as name, 
-			glpi_enterprises.website as website, glpi_enterprises.phonenumber as phone, glpi_enterprises.type as type, 
+	$query = "SELECT glpi_contracts_suppliers.ID as ID, glpi_suppliers.ID as entID, glpi_suppliers.name as name, 
+			glpi_suppliers.website as website, glpi_suppliers.phonenumber as phone, glpi_suppliers.type as type, 
 			glpi_entities.ID AS entity"
-		. " FROM glpi_contracts_suppliers, glpi_enterprises "
-		. " LEFT JOIN glpi_entities ON (glpi_entities.ID=glpi_enterprises.FK_entities) "
-		. " WHERE glpi_contracts_suppliers.FK_contract = '$instID' AND glpi_contracts_suppliers.FK_enterprise = glpi_enterprises.ID"
-		. getEntitiesRestrictRequest(" AND","glpi_enterprises",'','',true)
+		. " FROM glpi_contracts_suppliers, glpi_suppliers "
+		. " LEFT JOIN glpi_entities ON (glpi_entities.ID=glpi_suppliers.FK_entities) "
+		. " WHERE glpi_contracts_suppliers.FK_contract = '$instID' AND glpi_contracts_suppliers.FK_enterprise = glpi_suppliers.ID"
+		. getEntitiesRestrictRequest(" AND","glpi_suppliers",'','',true)
 		. " ORDER BY glpi_entities.completename,name";
 		
 	$result = $DB->query($query);
@@ -363,7 +363,7 @@ function showEnterpriseContract($instID) {
 	$used=array();
 	while ($i < $number) {
 		$ID=$DB->result($result, $i, "ID");
-		$website=$DB->result($result, $i, "glpi_enterprises.website");
+		$website=$DB->result($result, $i, "glpi_suppliers.website");
 		if (!empty($website)){
 			$website=$DB->result($result, $i, "website");
 			if (!preg_match("?https*://?",$website)) $website="http://".$website;
@@ -372,7 +372,7 @@ function showEnterpriseContract($instID) {
 		$entID=$DB->result($result, $i, "entID");
 		$entity=$DB->result($result, $i, "entity");
 		$used[$entID]=$entID;
-		$entname=getDropdownName("glpi_enterprises",$entID);
+		$entname=getDropdownName("glpi_suppliers",$entID);
 		echo "<tr class='tab_bg_1'>";
 		echo "<td class='center'><a href='".$CFG_GLPI["root_doc"]."/front/enterprise.form.php?ID=$entID'>".$entname;
 		if ($_SESSION["glpiview_ID"]||empty($entname)) echo " ($entID)";
@@ -390,17 +390,17 @@ function showEnterpriseContract($instID) {
 	}
 	if ($canedit){
 		if ($contract->fields["recursive"]) {
-         $nb=countElementsInTableForEntity("glpi_enterprises",getSonsOf("glpi_entities",$contract->fields["FK_entities"]));
+         $nb=countElementsInTableForEntity("glpi_suppliers",getSonsOf("glpi_entities",$contract->fields["FK_entities"]));
 		} else {
-			$nb=countElementsInTableForEntity("glpi_enterprises",$contract->fields["FK_entities"]);
+			$nb=countElementsInTableForEntity("glpi_suppliers",$contract->fields["FK_entities"]);
 		}
 		if ($nb>count($used)) {
 			echo "<tr class='tab_bg_1'><td align='right' colspan='2'>";
 			echo "<div class='software-instal'><input type='hidden' name='conID' value='$instID'>";
 			if ($contract->fields["recursive"]) {
-            dropdown("glpi_enterprises","entID",1,getSonsOf("glpi_entities",$contract->fields["FK_entities"]),$used);
+            dropdown("glpi_suppliers","entID",1,getSonsOf("glpi_entities",$contract->fields["FK_entities"]),$used);
 			} else {
-				dropdown("glpi_enterprises","entID",1,$contract->fields["FK_entities"],$used);
+				dropdown("glpi_suppliers","entID",1,$contract->fields["FK_entities"],$used);
 			}
 			echo "</div></td><td class='center'>";
 			echo "<input type='submit' name='addenterprise' value=\"".$LANG['buttons'][8]."\" class='submit'>";
@@ -463,13 +463,13 @@ function deleteEnterpriseContract($ID){
 function getContractEnterprises($ID){
 	global $DB;
 
-	$query = "SELECT glpi_enterprises.* 
-			FROM glpi_contracts_suppliers, glpi_enterprises 
-			WHERE glpi_contracts_suppliers.FK_enterprise = glpi_enterprises.ID AND glpi_contracts_suppliers.FK_contract = '$ID'";
+	$query = "SELECT glpi_suppliers.* 
+			FROM glpi_contracts_suppliers, glpi_suppliers 
+			WHERE glpi_contracts_suppliers.FK_enterprise = glpi_suppliers.ID AND glpi_contracts_suppliers.FK_contract = '$ID'";
 	$result = $DB->query($query);
 	$out="";
 	while ($data=$DB->fetch_array($result)){
-		$out.= getDropdownName("glpi_enterprises",$data['ID'])."<br>";
+		$out.= getDropdownName("glpi_suppliers",$data['ID'])."<br>";
 	}
 	return $out;
 }

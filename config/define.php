@@ -222,13 +222,13 @@
 			PERIPHERAL_TYPE => "glpi_peripherals",
 			SOFTWARE_TYPE => "glpi_software",
 			CONTACT_TYPE => "glpi_contacts",
-			ENTERPRISE_TYPE => "glpi_enterprises",
+			ENTERPRISE_TYPE => "glpi_suppliers",
 			INFOCOM_TYPE => "glpi_infocoms",
 			CONTRACT_TYPE => "glpi_contracts",
 			CARTRIDGE_TYPE => "glpi_cartridgesitems",
 			TYPEDOC_TYPE => "glpi_type_docs",
 			DOCUMENT_TYPE => "glpi_documents",
-			KNOWBASE_TYPE => "glpi_kbitems",
+			KNOWBASE_TYPE => "glpi_knowbaseitems",
 			USER_TYPE => "glpi_users",
 			TRACKING_TYPE => "glpi_tracking",
 			CONSUMABLE_TYPE => "glpi_consumablesitems",
@@ -247,7 +247,7 @@
 			OCSNG_TYPE => "glpi_ocs_config",
 			REGISTRY_TYPE => "glpi_registry",
 			PROFILE_TYPE => "glpi_profiles",
-			MAILGATE_TYPE => "glpi_mailgate",
+			MAILGATE_TYPE => "glpi_mailcollectors",
 			RULE_TYPE => "glpi_rules_descriptions",
 			TRANSFER_TYPE => "glpi_transfers",
 			SOFTWAREVERSION_TYPE => "glpi_softwareversions",
@@ -391,7 +391,7 @@
 	//DEVICE ARRAY.
 	$CFG_GLPI["devices_tables"] =array("moboard","processor","ram","hdd","iface","drive","control","gfxcard","sndcard","pci","case","power");
 	$CFG_GLPI["deleted_tables"]=array("glpi_computers","glpi_networking","glpi_printers","glpi_monitors","glpi_peripherals",
-		"glpi_software","glpi_cartridgesitems","glpi_contracts","glpi_contacts","glpi_enterprises","glpi_documents","glpi_phones",
+		"glpi_software","glpi_cartridgesitems","glpi_contracts","glpi_contacts","glpi_suppliers","glpi_documents","glpi_phones",
 		"glpi_consumablesitems","glpi_users","state_types","reservation_types","glpi_budgets");
 	
 	$CFG_GLPI["template_tables"]=array("glpi_computers","glpi_networking","glpi_printers","glpi_monitors","glpi_peripherals","glpi_software",
@@ -420,14 +420,14 @@
 
 	$CFG_GLPI["specif_entities_tables"]=array("glpi_cartridgesitems","glpi_computers","glpi_consumablesitems",
 		"glpi_contacts","glpi_contracts","glpi_documents",
-		"glpi_locations","glpi_netpoints","glpi_enterprises","glpi_groups",
-		"glpi_mailgate","glpi_monitors","glpi_networking","glpi_peripherals","glpi_phones","glpi_printers","glpi_software",
+		"glpi_locations","glpi_netpoints","glpi_suppliers","glpi_groups",
+		"glpi_mailcollectors","glpi_monitors","glpi_networking","glpi_peripherals","glpi_phones","glpi_printers","glpi_software",
 		"glpi_softwarelicenses", "glpi_tracking","state_types","reservation_types","glpi_links","glpi_budgets");
 
 	$CFG_GLPI["union_search_type"]=array(RESERVATION_TYPE=>"reservation_types",STATE_TYPE=>"state_types");
 
-	$CFG_GLPI["recursive_type"]=array(CONTACT_TYPE=>"glpi_contacts", ENTERPRISE_TYPE=>"glpi_enterprises", CONTRACT_TYPE=>"glpi_contracts", 
-		DOCUMENT_TYPE=>"glpi_documents", KNOWBASE_TYPE=>"glpi_kbitems", NETWORKING_TYPE => "glpi_networking", GROUP_TYPE => "glpi_groups",
+	$CFG_GLPI["recursive_type"]=array(CONTACT_TYPE=>"glpi_contacts", ENTERPRISE_TYPE=>"glpi_suppliers", CONTRACT_TYPE=>"glpi_contracts", 
+		DOCUMENT_TYPE=>"glpi_documents", KNOWBASE_TYPE=>"glpi_knowbaseitems", NETWORKING_TYPE => "glpi_networking", GROUP_TYPE => "glpi_groups",
 		SOFTWARE_TYPE => "glpi_software", SOFTWARELICENSE_TYPE => "glpi_softwarelicenses", PRINTER_TYPE => "glpi_printers",LINK_TYPE=>"glpi_links",
 		BUDGET_TYPE => "glpi_budgets");
 		

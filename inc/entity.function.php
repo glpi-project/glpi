@@ -233,7 +233,7 @@ function moveUserProfileEntity($ID,$FK_entities){
 function getEntityIDByField($field,$value)
 {
 	global $DB;
-	$sql = "SELECT FK_entities FROM glpi_entities_data WHERE ".$field."='".$value."'";
+	$sql = "SELECT FK_entities FROM glpi_entitiesdatas WHERE ".$field."='".$value."'";
 	
 	$result = $DB->query($sql);
 	if ($DB->numrows($result)==1)
