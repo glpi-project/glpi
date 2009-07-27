@@ -53,7 +53,7 @@ $RELATION=array(
 						"glpi_registry"=>"computer_id",
 						),
 
-	"glpi_consumablesitems" => array("glpi_consumables"=>"FK_glpi_consumablesitems"),
+	"glpi_consumablesitems" => array("glpi_consumables"=>"FK_glpi_consumables_type"),
 
 	"glpi_contacts" => array("glpi_contacts_suppliers"=>"FK_contact"),
 	
