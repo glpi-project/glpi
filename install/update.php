@@ -124,9 +124,9 @@ function showContentUpdateForm() {
 
 function validate_new_location(){
 	global $DB;
-	$query=" DROP TABLE `glpi_locations`";
+	$query=" DROP TABLE `glpi_dropdown_locations`";	
 	$DB->query($query);
-	$query=" ALTER TABLE `glpi_locations_new` RENAME `glpi_locations`";
+	$query=" ALTER TABLE `glpi_dropdown_locations_new` RENAME `glpi_dropdown_locations`";	
 	$DB->query($query);
 }
 
@@ -141,12 +141,12 @@ function display_new_locations(){
 	$WHERE_ALL="";
 	for ($i=1;$i<=$MAX_LEVEL;$i++){
 		$SELECT_ALL.=" , location$i.name AS NAME$i , location$i.parentID AS PARENT$i ";
-		$FROM_ALL.=" LEFT JOIN glpi_locations_new AS location$i ON location".($i-1).".ID = location$i.parentID ";
+		$FROM_ALL.=" LEFT JOIN glpi_dropdown_locations_new AS location$i ON location".($i-1).".ID = location$i.parentID ";
 		$ORDER_ALL.=" , NAME$i";
 
 	}
 
-	$query="select location0.name AS NAME0, location0.parentID AS PARENT0 $SELECT_ALL FROM glpi_locations_new AS location0 $FROM_ALL  WHERE location0.parentID='0' $WHERE_ALL  ORDER BY NAME0 $ORDER_ALL";
+	$query="select location0.name AS NAME0, location0.parentID AS PARENT0 $SELECT_ALL FROM glpi_dropdown_locations_new AS location0 $FROM_ALL  WHERE location0.parentID='0' $WHERE_ALL  ORDER BY NAME0 $ORDER_ALL";
 	//echo $query;
 	//echo "<hr>";
 	$result=$DB->query($query);
@@ -184,7 +184,7 @@ function display_new_locations(){
 
 function display_old_locations(){
 	global $DB;
-	$query="SELECT * FROM glpi_locations order by name;";
+	$query="SELECT * from glpi_dropdown_locations order by name;";
 	$result=$DB->query($query);
 
 	while ($data =  $DB->fetch_array($result))
@@ -197,10 +197,10 @@ function location_create_new($split_char,$add_first){
 
 	global $DB;
 
-	$query_auto_inc= "ALTER TABLE `glpi_locations_new` CHANGE `ID` `ID` INT(11) NOT NULL";
+	$query_auto_inc= "ALTER TABLE `glpi_dropdown_locations_new` CHANGE `ID` `ID` INT(11) NOT NULL";
 	$result_auto_inc=$DB->query($query_auto_inc);
 
-	$query="SELECT MAX(ID) AS MAX FROM glpi_locations;";
+	$query="SELECT MAX(ID) AS MAX from glpi_dropdown_locations;";
 	//echo $query."<br>";
 	$result=$DB->query($query);
 	$new_ID=$DB->result($result,0,"MAX");
@@ -208,10 +208,10 @@ function location_create_new($split_char,$add_first){
 
 
 
-	$query="SELECT * FROM glpi_locations;";
+	$query="SELECT * from glpi_dropdown_locations;";
 	$result=$DB->query($query);
 
-	$query_clear_new="TRUNCATE TABLE `glpi_locations_new`";
+	$query_clear_new="TRUNCATE TABLE `glpi_dropdown_locations_new`";
 	//echo $query_clear_new."<br>";
 
 	$result_clear_new=$DB->query($query_clear_new); 
@@ -219,7 +219,7 @@ function location_create_new($split_char,$add_first){
 	if (!empty($add_first)){
 		$root_ID=$new_ID;
 		$new_ID++;
-		$query_insert="INSERT INTO glpi_locations_new VALUES ('$root_ID','".addslashes($add_first)."',0,'')";
+		$query_insert="INSERT INTO glpi_dropdown_locations_new VALUES ('$root_ID','".addslashes($add_first)."',0,'')";
 
 		$result_insert=$DB->query($query_insert);
 
@@ -237,13 +237,13 @@ function location_create_new($split_char,$add_first){
 
 		for ($i=0;$i<count($splitter)-1;$i++){
 			// Entr� existe deja ??
-			$query_search="select ID FROM glpi_locations_new WHERE name='".addslashes($splitter[$i])."'  AND parentID='".$up_ID."'";
+			$query_search="select ID from glpi_dropdown_locations_new WHERE name='".addslashes($splitter[$i])."'  AND parentID='".$up_ID."'";
 			//				echo $query_search."<br>";
 			$result_search=$DB->query($query_search);
 			if ($DB->numrows($result_search)==1){	// Found
 				$up_ID=$DB->result($result_search,0,"ID");
 			} else { // Not FOUND -> INSERT
-				$query_insert="INSERT INTO glpi_locations_new VALUES ('$new_ID','".addslashes($splitter[$i])."','$up_ID','')";
+				$query_insert="INSERT INTO glpi_dropdown_locations_new VALUES ('$new_ID','".addslashes($splitter[$i])."','$up_ID','')";
 				//					echo $query_insert."<br>";
 				$result_insert=$DB->query($query_insert);
 				$up_ID=$new_ID++;
@@ -252,14 +252,14 @@ function location_create_new($split_char,$add_first){
 		}
 
 		// Ajout du dernier
-		$query_insert="INSERT INTO glpi_locations_new VALUES ('".$data["ID"]."','".addslashes($splitter[count($splitter)-1])."','$up_ID','')";
+		$query_insert="INSERT INTO glpi_dropdown_locations_new VALUES ('".$data["ID"]."','".addslashes($splitter[count($splitter)-1])."','$up_ID','')";
 		//			echo $query_insert."<br>";
 
 		$result_insert=$DB->query($query_insert);
 
 	}
 	$DB->free_result($result);
-	$query_auto_inc= "ALTER TABLE `glpi_locations_new` CHANGE `ID` `ID` INT(11) NOT NULL AUTO_INCREMENT";
+	$query_auto_inc= "ALTER TABLE `glpi_dropdown_locations_new` CHANGE `ID` `ID` INT(11) NOT NULL AUTO_INCREMENT";
 	$result_auto_inc=$DB->query($query_auto_inc);
 
 }
@@ -269,7 +269,7 @@ function location_create_new($split_char,$add_first){
 function showLocationUpdateForm(){
 	global $DB,$LANG;
 
-	if (FieldExists("glpi_locations", "parentID")) {
+	if (FieldExists("glpi_dropdown_locations", "parentID")) {
 		updateTreeDropdown();
 		return true;
 	}
@@ -277,8 +277,8 @@ function showLocationUpdateForm(){
 	if (!isset($_POST['root'])) $_POST['root']='';
 	if (!isset($_POST['car_sep'])) $_POST['car_sep']='';
 
-	if(!TableExists("glpi_locations_new")) {
-		$query = " CREATE TABLE `glpi_locations_new` (
+	if(!TableExists("glpi_dropdown_locations_new")) {
+		$query = " CREATE TABLE `glpi_dropdown_locations_new` (
 			`ID` INT NOT NULL auto_increment,
 			`name` VARCHAR(255) NOT NULL ,
 			`parentID` INT NOT NULL ,
@@ -348,11 +348,10 @@ function changeVarcharToID($table1, $table2, $chps)
 	$query = "ALTER TABLE $table1 ADD `temp` INT";
 	$DB->query($query) or die($LANG['update'][90].$DB->error());
 
-	$query = "SELECT ". $table1 .".ID AS row1, ". $table2 .".ID AS row2
-         FROM ". $table1 .",". $table2 ." WHERE ". $table2 .".name = ". $table1 .".". $chps." ";
+	$query = "select ". $table1 .".ID as row1, ". $table2 .".ID as row2 from ". $table1 .",". $table2 ." where ". $table2 .".name = ". $table1 .".". $chps." ";
 	$result = $DB->query($query) or die($LANG['update'][90].$DB->error());
 	while($line = $DB->fetch_array($result)) {
-		$query = "UPDATE ". $table1 ." SET temp = ". $line["row2"] ." WHERE ID = '". $line["row1"] ."'";
+		$query = "update ". $table1 ." set temp = ". $line["row2"] ." where ID = '". $line["row1"] ."'";
 		$DB->query($query) or die($LANG['update'][90].$DB->error());
 	}
 	$DB->free_result($result);
@@ -555,15 +554,15 @@ function updateTreeDropdown(){
 	global $DB,$LANG;
 
 	// Update Tree dropdown
-	if(TableExists("glpi_locations") && !FieldExists("glpi_locations","completename")) {
-		$query= "ALTER TABLE `glpi_locations` ADD `completename` TEXT NOT NULL ;";
+	if(TableExists("glpi_dropdown_locations") && !FieldExists("glpi_dropdown_locations","completename")) {
+		$query= "ALTER TABLE `glpi_dropdown_locations` ADD `completename` TEXT NOT NULL ;";
 		$DB->query($query) or die("0.6 add completename in dropdown_locations ".$LANG['update'][90].$DB->error());	
-		regenerateTreeCompleteName("glpi_locations");
+		regenerateTreeCompleteName("glpi_dropdown_locations");
 	}
-	if(TableExists("glpi_knowbaseitemscategories")&& !FieldExists("glpi_knowbaseitemscategories","completename")) {
-		$query= "ALTER TABLE `glpi_knowbaseitemscategories` ADD `completename` TEXT NOT NULL ;";
-		$DB->query($query) or die("0.6 add completename in glpi_knowbaseitemscategories ".$LANG['update'][90].$DB->error());
-		regenerateTreeCompleteName("glpi_knowbaseitemscategories");
+	if(TableExists("glpi_dropdown_kbcategories")&& !FieldExists("glpi_dropdown_kbcategories","completename")) {
+		$query= "ALTER TABLE `glpi_dropdown_kbcategories` ADD `completename` TEXT NOT NULL ;";
+		$DB->query($query) or die("0.6 add completename in dropdown_kbcategories ".$LANG['update'][90].$DB->error());	
+		regenerateTreeCompleteName("glpi_dropdown_kbcategories");
 	}
 }
 
