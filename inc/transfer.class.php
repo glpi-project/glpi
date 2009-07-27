@@ -2733,7 +2733,7 @@ class Transfer extends CommonDBTM{
 		}
 		echo "</table></div></form>";
 		echo "<div id='tabcontent'></div>";
-		echo "<script type='text/javascript'>loadDefaultTab();</script>";
+//		echo "<script type='text/javascript'>loadDefaultTab();</script>";
 		return true;
 	}
 	/// Display items to transfers
