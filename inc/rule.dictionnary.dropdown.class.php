@@ -478,7 +478,7 @@ class DictionnaryDropdownCollection extends RuleCachedCollection{
 							// Get compatible cartridge type
 							$carttype=array();
 							while ($data=$DB->fetch_array($result)){
-								$carttype[]=$data['FK_glpi_cartridgesitems'];
+								$carttype[]=$data['FK_glpi_cartridges_type'];
 							}
 							// Delete cartrodges_assoc
 							if ($deletecartmodel){

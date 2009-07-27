@@ -1066,10 +1066,10 @@ function dropdownMyDevices($userID=0,$entity_restrict=-1){
 				if ($_SESSION["glpiactiveprofile"]["helpdesk_hardware_type"]&pow(2,$type)){
 					if (!isset($already_add[$type])) $already_add[$type]=array();
 					$query="SELECT DISTINCT ".$LINK_ID_TABLE[$type].".* 
-						FROM glpi_connect_wire 
-						LEFT JOIN ".$LINK_ID_TABLE[$type]." ON (glpi_connect_wire.end1=".$LINK_ID_TABLE[$type].".ID) 
-						WHERE glpi_connect_wire.type='$type' 
-							AND  ".str_replace("XXXX","glpi_connect_wire.end2",$search_computer)." 
+						FROM glpi_computers_items 
+						LEFT JOIN ".$LINK_ID_TABLE[$type]." ON (glpi_computers_items.end1=".$LINK_ID_TABLE[$type].".ID) 
+						WHERE glpi_computers_items.type='$type' 
+							AND  ".str_replace("XXXX","glpi_computers_items.end2",$search_computer)." 
 							AND ".$LINK_ID_TABLE[$type].".deleted='0' ";
 					if (in_array($LINK_ID_TABLE[$type],$CFG_GLPI["template_tables"])){
 						$query.=" AND is_template='0' ";

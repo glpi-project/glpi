@@ -328,7 +328,7 @@ function update_device_specif($newValue,$compDevID,$strict=false,$checkcoherence
 	
 		
 	$query ="SELECT * 
-		FROM glpi_computer_device 
+		FROM glpi_computers_devices 
 		WHERE ID = '".$compDevID."'";
 
 	if ($result = $DB->query($query)) {
@@ -384,7 +384,7 @@ function update_device_specif($newValue,$compDevID,$strict=false,$checkcoherence
 					AND specificity='".$data["specificity"]."'";
 				if ($strict) $WHERE=" WHERE ID='$compDevID'";
 				
-				$query2 = "UPDATE glpi_computer_device SET specificity = '".$newValue."' $WHERE";
+				$query2 = "UPDATE glpi_computers_devices SET specificity = '".$newValue."' $WHERE";
 				if($DB->query($query2)){
 
 					$changes[0]='0';
@@ -410,13 +410,13 @@ function update_device_quantity($newNumber,$compDevID){
 	// Check old value for history 
 	global $DB;
 	$query ="SELECT * 
-		FROM glpi_computer_device 
+		FROM glpi_computers_devices 
 		WHERE ID = '".$compDevID."'";
 	if ($result = $DB->query($query)) {
 		$data = addslashes_deep($DB->fetch_array($result));
 
 		$query2 = "SELECT ID 
-			FROM glpi_computer_device 
+			FROM glpi_computers_devices 
 			WHERE FK_device = '".$data["FK_device"]."' AND FK_computers = '".$data["FK_computers"]."' 
 				AND device_type = '".$data["device_type"]."' AND specificity='".$data["specificity"]."'";
 		if ($result2 = $DB->query($query2)) {
@@ -441,9 +441,9 @@ function update_device_quantity($newNumber,$compDevID){
 /**
  * Unlink a device, linked to a computer.
  * 
- * Unlink a device and a computer witch link ID is $compDevID (on table glpi_computer_device)
+ * Unlink a device and a computer witch link ID is $compDevID (on table glpi_computers_devices)
  *
- * @param $compDevID ID of the computer-device link (table glpi_computer_device)
+ * @param $compDevID ID of the computer-device link (table glpi_computers_devices)
  * @param $dohistory log history updates ?
  * @returns boolean
  **/
@@ -452,13 +452,13 @@ function unlink_device_computer($compDevID,$dohistory=1){
 	// get old value  and id for history 
 	global $DB;
 	$query ="SELECT * 
-		FROM glpi_computer_device 
+		FROM glpi_computers_devices 
 		WHERE ID = '".$compDevID."'";
 	if ($result = $DB->query($query)) {
 		$data = $DB->fetch_array($result);
 	} 
 
-	$query2 = "DELETE FROM glpi_computer_device where ID = '".$compDevID."'";
+	$query2 = "DELETE FROM glpi_computers_devices where ID = '".$compDevID."'";
 	if($DB->query($query2)){
 		
 		if ($dohistory){

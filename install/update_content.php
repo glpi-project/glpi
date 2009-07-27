@@ -301,10 +301,10 @@ else $percent=0;
 $conv_utf8=false;
 $complete_utf8=true;
 
-if(!FieldExists("glpi_config","utf8_conv")) {
+if(!FieldExists("glpi_configs","utf8_conv")) {
 	$conv_utf8=true;
 } else {
-	$query="SELECT utf8_conv FROM glpi_config WHERE ID='1'";
+	$query="SELECT utf8_conv FROM glpi_configs WHERE ID='1'";
 	$result=$DB->query($query);
 	$data=$DB->fetch_assoc($result);
 	if ($data["utf8_conv"]){
@@ -337,13 +337,13 @@ else  {
 }
 
 if ($conv_utf8){
-	$query = "ALTER TABLE `glpi_config` ADD `utf8_conv` INT( 11 ) DEFAULT '0' NOT NULL";
-	$DB->query($query) or die(" 0.6 add utf8_conv to glpi_config".$LANG['update'][90].$DB->error());
+	$query = "ALTER TABLE `glpi_configs` ADD `utf8_conv` INT( 11 ) DEFAULT '0' NOT NULL";
+	$DB->query($query) or die(" 0.6 add utf8_conv to glpi_configs".$LANG['update'][90].$DB->error());
 }
 
 if ($complete_utf8){
 	$DB->query("ALTER DATABASE `".$DB->dbdefault."` DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci");
-	$DB->query("UPDATE glpi_config SET utf8_conv='1' WHERE ID='1'");
+	$DB->query("UPDATE glpi_configs SET utf8_conv='1' WHERE ID='1'");
 }
 
 ?>

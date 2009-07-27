@@ -106,13 +106,13 @@ if ($_POST["onlyglobal"]&&$_POST["idtable"]!=COMPUTER_TYPE){
 	if ($_POST["idtable"]==COMPUTER_TYPE)
 		$CONNECT_SEARCH=" WHERE 1 ";
 	else {
-		$CONNECT_SEARCH=" WHERE (glpi_connect_wire.ID IS NULL OR $table.is_global='1' )";	
+		$CONNECT_SEARCH=" WHERE (glpi_computers_items.ID IS NULL OR $table.is_global='1' )";	
 	}
 }	
 
 $LEFTJOINCONNECT="";
 if ($_POST["idtable"]!=COMPUTER_TYPE&&!$_POST["onlyglobal"]){
-	$LEFTJOINCONNECT="LEFT JOIN glpi_connect_wire on ($table.ID = glpi_connect_wire.end1 AND glpi_connect_wire.type = '".$_POST['idtable']."')";
+	$LEFTJOINCONNECT="LEFT JOIN glpi_computers_items on ($table.ID = glpi_computers_items.end1 AND glpi_computers_items.type = '".$_POST['idtable']."')";
 }
 $query = "SELECT DISTINCT $table.ID AS ID,$table.name AS name,
 		$table.serial AS serial,$table.otherserial AS otherserial,

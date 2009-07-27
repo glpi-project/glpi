@@ -251,7 +251,7 @@
 			RULE_TYPE => "glpi_rules_descriptions",
 			TRANSFER_TYPE => "glpi_transfers",
 			SOFTWAREVERSION_TYPE => "glpi_softwareversions",
-			COMPUTERDISK_TYPE => "glpi_computerdisks",
+			COMPUTERDISK_TYPE => "glpi_computersdisks",
 			NETWORKING_PORT_TYPE => "glpi_networking_ports",
 			FOLLOWUP_TYPE => "glpi_followups",
 			BUDGET_TYPE=>"glpi_budgets"

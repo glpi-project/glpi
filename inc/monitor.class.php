@@ -185,7 +185,7 @@ class Monitor extends CommonDBTM {
 			}
 		}
 
-		$query="SELECT * FROM glpi_connect_wire WHERE (type='".MONITOR_TYPE."' AND end1='$ID')";
+		$query="SELECT * FROM glpi_computers_items WHERE (type='".MONITOR_TYPE."' AND end1='$ID')";
 		if ($result = $DB->query($query)) {
 			if ($DB->numrows($result)>0) {
 				while ($data = $DB->fetch_array($result)){

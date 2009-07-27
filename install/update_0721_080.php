@@ -55,6 +55,12 @@ function update0721to080() {
       'glpi_cartridges_type' => 'glpi_cartridgesitems',
       'glpi_cartridges_assoc' => 'glpi_cartridges_printersmodels',
       'glpi_dropdown_cartridge_type' => 'glpi_cartridgesitemstypes',
+
+      'glpi_computer_device' => 'glpi_computers_devices',
+      'glpi_computerdisks' => 'glpi_computersdisks',
+      'glpi_computers' => 'glpi_computers',
+      'glpi_config' => 'glpi_configs',
+      'glpi_connect_wire' => 'glpi_computers_items',
    );
    $backup_tables=false;
 	foreach ($glpi_tables as $original_table => $new_table) {
@@ -84,10 +90,10 @@ function update0721to080() {
       echo "<div class='red'><p>You can delete backup tables if you have no need of them.</p></div>";
    }
 
-   displayMigrationMessage("080", $LANG['update'][141] . ' - glpi_config'); // Updating schema
-	if (FieldExists('glpi_config', 'license_deglobalisation')) {
-		$query="ALTER TABLE `glpi_config` DROP `license_deglobalisation`;";
-      $DB->query($query) or die("0.80 alter clean glpi_config table " . $LANG['update'][90] . $DB->error());
+   displayMigrationMessage("080", $LANG['update'][141] . ' - glpi_configs'); // Updating schema
+	if (FieldExists('glpi_configs', 'license_deglobalisation')) {
+		$query="ALTER TABLE `glpi_configs` DROP `license_deglobalisation`;";
+      $DB->query($query) or die("0.80 alter clean glpi_configs table " . $LANG['update'][90] . $DB->error());
 	}	
 
    displayMigrationMessage("080", $LANG['update'][141] . ' - glpi_mailgate'); // Updating schema
@@ -176,31 +182,31 @@ function update0721to080() {
    }
 
 
-   displayMigrationMessage("080", $LANG['update'][141] . ' - glpi_config'); // Updating schema
+   displayMigrationMessage("080", $LANG['update'][141] . ' - glpi_configs'); // Updating schema
 
-   if (FieldExists("glpi_config","use_cache")){
-      $query = "ALTER TABLE `glpi_config`  DROP `use_cache`;";
-      $DB->query($query) or die("0.80 drop use_cache in glpi_config " . $LANG['update'][90] . $DB->error());
+   if (FieldExists("glpi_configs","use_cache")){
+      $query = "ALTER TABLE `glpi_configs`  DROP `use_cache`;";
+      $DB->query($query) or die("0.80 drop use_cache in glpi_configs " . $LANG['update'][90] . $DB->error());
    }
 
-   if (FieldExists("glpi_config","cache_max_size")){
-      $query = "ALTER TABLE `glpi_config`  DROP `cache_max_size`;";
-      $DB->query($query) or die("0.80 drop cache_max_size in glpi_config " . $LANG['update'][90] . $DB->error());
+   if (FieldExists("glpi_configs","cache_max_size")){
+      $query = "ALTER TABLE `glpi_configs`  DROP `cache_max_size`;";
+      $DB->query($query) or die("0.80 drop cache_max_size in glpi_configs " . $LANG['update'][90] . $DB->error());
    }
 
-	if (!FieldExists("glpi_config","request_type")){
-		$query = "ALTER TABLE `glpi_config` ADD `request_type` INT( 1 ) NOT NULL DEFAULT 1";
-      $DB->query($query) or die("0.80 add request_type index in glpi_config " . $LANG['update'][90] . $DB->error());
+	if (!FieldExists("glpi_configs","request_type")){
+		$query = "ALTER TABLE `glpi_configs` ADD `request_type` INT( 1 ) NOT NULL DEFAULT 1";
+      $DB->query($query) or die("0.80 add request_type index in glpi_configs " . $LANG['update'][90] . $DB->error());
 	}
 
 	if (!FieldExists("glpi_users","request_type")){
 		$query = "ALTER TABLE `glpi_users` ADD `request_type` INT( 1 ) NULL";
-      $DB->query($query) or die("0.80 add request_type index in glpi_config " . $LANG['update'][90] . $DB->error());
+      $DB->query($query) or die("0.80 add request_type index in glpi_users " . $LANG['update'][90] . $DB->error());
 	}
 
-	if (!FieldExists("glpi_config","add_norights_users")){
-		$query = "ALTER TABLE `glpi_config` ADD `add_norights_users` INT( 1 ) NOT NULL DEFAULT '1'";
-      $DB->query($query) or die("0.80 add add_norights_users index in glpi_config " . $LANG['update'][90] . $DB->error());
+	if (!FieldExists("glpi_configs","add_norights_users")){
+		$query = "ALTER TABLE `glpi_configs` ADD `add_norights_users` INT( 1 ) NOT NULL DEFAULT '1'";
+      $DB->query($query) or die("0.80 add add_norights_users index in glpi_configs " . $LANG['update'][90] . $DB->error());
 	}
 
 	displayMigrationMessage("080", $LANG['update'][141] . ' - glpi_budgets'); // Updating schema

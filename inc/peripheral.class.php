@@ -195,7 +195,7 @@ class Peripheral  extends CommonDBTM  {
 		$query = "DELETE FROM glpi_infocoms WHERE (FK_device = '$ID' AND device_type='".PERIPHERAL_TYPE."')";
 		$result = $DB->query($query);
 
-		$query="SELECT * FROM glpi_connect_wire WHERE (type='".PERIPHERAL_TYPE."' AND end1='$ID')";
+		$query="SELECT * FROM glpi_computers_items WHERE (type='".PERIPHERAL_TYPE."' AND end1='$ID')";
 		if ($result = $DB->query($query)) {
 			if ($DB->numrows($result)>0) {
 				while ($data = $DB->fetch_array($result)){

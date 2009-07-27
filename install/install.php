@@ -332,7 +332,7 @@ function step4 ($host,$user,$password,$databasename,$newdatabasename)
 			if (!empty($sql_line)) $DB->query($sql_line);
 		}
 		// update default language
-		$query = "UPDATE `glpi_config` SET language='".$_SESSION["glpilanguage"]."' ;";
+		$query = "UPDATE `glpi_configs` SET language='".$_SESSION["glpilanguage"]."' ;";
 		$DB->query($query) or die("4203 ".$LANG['update'][90].$DB->error());
 		$query = "UPDATE `glpi_users` SET language='".$_SESSION["glpilanguage"]."' ;";
 		$DB->query($query) or die("4203 ".$LANG['update'][90].$DB->error());
@@ -425,7 +425,7 @@ function step4 ($host,$user,$password,$databasename,$newdatabasename)
 			$_SERVER['REQUEST_URI'] = $_SERVER['PHP_SELF'];
 		}
 
-		$query="UPDATE glpi_config SET url_base='".str_replace("/install/install.php","",$_SERVER['HTTP_REFERER'])."' WHERE ID='1'";
+		$query="UPDATE glpi_configs SET url_base='".str_replace("/install/install.php","",$_SERVER['HTTP_REFERER'])."' WHERE ID='1'";
 		$DB->query($query);
 
 

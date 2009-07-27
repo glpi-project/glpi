@@ -686,7 +686,7 @@ function constructEntryValues($type,$begin="",$end="",$param="",$value="",$value
 		case "device":
 			//select computers IDs that are using this device;
 
-			$LEFTJOIN= "INNER JOIN glpi_computers ON (glpi_computers.ID = glpi_tracking.computer AND glpi_tracking.device_type='".COMPUTER_TYPE."') INNER JOIN glpi_computer_device ON ( glpi_computers.ID = glpi_computer_device.FK_computers AND glpi_computer_device.device_type = '".$value2."' AND glpi_computer_device.FK_device = '".$value."' )";
+			$LEFTJOIN= "INNER JOIN glpi_computers ON (glpi_computers.ID = glpi_tracking.computer AND glpi_tracking.device_type='".COMPUTER_TYPE."') INNER JOIN glpi_computers_devices ON ( glpi_computers.ID = glpi_computers_devices.FK_computers AND glpi_computers_devices.device_type = '".$value2."' AND glpi_computers_devices.FK_device = '".$value."' )";
 
 			$WHERE.=" AND glpi_computers.is_template <> '1' ";
 

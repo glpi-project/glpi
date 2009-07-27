@@ -1902,7 +1902,7 @@ CREATE TABLE `glpi_ocs_config` (
   `default_state` int(11) NOT NULL default '0',
   `tag_limit` varchar(255) collate utf8_unicode_ci default NULL,
   `tag_exclude` varchar(255) collate utf8_unicode_ci default NULL,
-  `use_soft_dict` char(1) collate utf8_unicode_ci default '1',
+  `use_soft_dict` char(1) collate utf8_unicode_ci default '0',
   `cron_sync_number` int(11) default '1',
   `deconnection_behavior` varchar(255) collate utf8_unicode_ci default NULL,
   `glpi_link_enabled` int(1) NOT NULL default '0',
@@ -1915,7 +1915,7 @@ CREATE TABLE `glpi_ocs_config` (
   PRIMARY KEY  (`ID`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-INSERT INTO `glpi_ocs_config` VALUES ('1','localhost','ocs','ocs','localhost','ocsweb','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0',NULL,'0','0','0','0','0','',NULL,'1','1',NULL,'0','0','0','0','0','0','');
+INSERT INTO `glpi_ocs_config` VALUES ('1','localhost','ocs','ocs','localhost','ocsweb','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0',NULL,'0','0','0','0','0','',NULL,'0','1',NULL,'0','0','0','0','0','0','');
 
 ### Dump table glpi_ocs_link
 

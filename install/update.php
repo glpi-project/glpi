@@ -529,7 +529,7 @@ function updatedbUpTo031()
 	}
 
 	// Update version number and default langage and new version_founded ---- LEAVE AT THE END
-	$query = "UPDATE `glpi_config` SET `version` = ' 0.80', language='".$glpilanguage."',founded_new_version='' ;";
+	$query = "UPDATE `glpi_configs` SET `version` = ' 0.80', language='".$glpilanguage."',founded_new_version='' ;";
 	$DB->query($query) or die("0.6 ".$LANG['update'][90].$DB->error());
 
 	// Update process desactivate all plugins
@@ -627,13 +627,20 @@ else {
 		echo "<h3>".$LANG['update'][93]."</h3>";
 		if (!isset($_POST["update_location"])){
 			$current_verison="0.31";
-			if(!TableExists("glpi_config")) {
+
+         $config_table="glpi_config";
+         if (TableExists("glpi_configs")){
+            $config_table="glpi_configs";
+         }
+
+         // Find 2 tables to manage databases before 0.80
+			if(!TableExists($config_table)) {
 				include("update_to_031.php");
 				updateDbTo031();
 				$tab = updateDbUpTo031();
 			} else {
 				// Get current version
-				$query="SELECT version FROM glpi_config";
+				$query="SELECT version FROM $config_table";
 				$result=$DB->query($query) or die("get current version".$DB->error());
 				$current_version=trim($DB->result($result,0,0));
 

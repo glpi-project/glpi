@@ -44,7 +44,7 @@ class Config extends CommonDBTM {
 	 * Constructor 
 	**/
 	function __construct () {
-		$this->table="glpi_config";
+		$this->table="glpi_configs";
 		$this->type=-1;
 	}
 	/**
