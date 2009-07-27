@@ -157,7 +157,7 @@ class Netdevice extends CommonDBTM {
 	
 			// ADD Documents			
 			$query="SELECT FK_doc 
-				FROM glpi_doc_device 
+				FROM glpi_documents_items 
 				WHERE FK_device='".$input["_oldID"]."' AND device_type='".NETWORKING_TYPE."';";
 			$result=$DB->query($query);
 			if ($DB->numrows($result)>0){

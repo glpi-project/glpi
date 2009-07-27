@@ -129,7 +129,7 @@ function addDocuments($type,$ID){
 		$docs[]=mt_rand($FIRST["document"],$LAST["document"]);
 	$docs=array_unique($docs);
 	foreach ($docs as $val){
-		$query="INSERT INTO glpi_doc_device VALUES (NULL,'$val','$ID','$type')";
+		$query="INSERT INTO glpi_documents_items VALUES (NULL,'$val','$ID','$type')";
 		$DB->query($query) or die("PB REQUETE ".$query);
 	}
 }
@@ -422,7 +422,7 @@ function generateGlobalDropdowns(){
 	for ($i=0;$i<$MAX['rubdocs'];$i++){
 		if (isset($items[$i])) $val=$items[$i];
 		else $val="rubrique $i";
-		$query="INSERT INTO glpi_dropdown_rubdocs VALUES (NULL,'$val','comment $val')";
+		$query="INSERT INTO glpi_documentscategories VALUES (NULL,'$val','comment $val')";
 		$DB->query($query) or die("PB REQUETE ".$query);
 	}
 
@@ -788,21 +788,21 @@ function generate_entity($ID_entity){
 
 
 	// Ajout documents  specific
-	$FIRST["document"]=getMaxItem("glpi_docs")+1;
+	$FIRST["document"]=getMaxItem("glpi_documents")+1;
 	for ($i=0;$i<$MAX['document'];$i++){
 		$link="";
 		if (mt_rand(0,100)<50) $link="http://linktodoc/doc$i";
-		$query="INSERT INTO glpi_docs VALUES (NULL,'$ID_entity','0','document $i-$ID_entity','','".mt_rand(1,$MAX['rubdocs'])."','',NOW(),'comment $i','0','$link','notes document $i','0','0')";
+		$query="INSERT INTO glpi_documents VALUES (NULL,'$ID_entity','0','document $i-$ID_entity','','".mt_rand(1,$MAX['rubdocs'])."','',NOW(),'comment $i','0','$link','notes document $i','0','0')";
 		$DB->query($query) or die("PB REQUETE ".$query);
 	}
 	// GLobal ones
 	for ($i=0;$i<$MAX['document']/2;$i++){
 		$link="";
 		if (mt_rand(0,100)<50) $link="http://linktodoc/doc$i";
-		$query="INSERT INTO glpi_docs VALUES (NULL,'$ID_entity','1','Recursive document $i-$ID_entity','','".mt_rand(1,$MAX['rubdocs'])."','',NOW(),'comment $i','0','$link','notes document $i','0','0')";
+		$query="INSERT INTO glpi_documents VALUES (NULL,'$ID_entity','1','Recursive document $i-$ID_entity','','".mt_rand(1,$MAX['rubdocs'])."','',NOW(),'comment $i','0','$link','notes document $i','0','0')";
 		$DB->query($query) or die("PB REQUETE ".$query);
 	}
-	$LAST["document"]=getMaxItem("glpi_docs");
+	$LAST["document"]=getMaxItem("glpi_documents");
 
 
 	// Ajout budgets  specific
@@ -822,7 +822,7 @@ function generate_entity($ID_entity){
 		$query="INSERT INTO glpi_budgets VALUES (NULL,'Recrusive budget $i-$ID_entity','comments $i-$ID_entity','$ID_entity','1','0','".date("Y-m-d",intval($date1))."','".date("Y-m-d",intval($date2))."','0.0000','0','');";
 		$DB->query($query) or die("PB REQUETE ".$query);
 	}
-	$LAST["document"]=getMaxItem("glpi_docs");
+	$LAST["document"]=getMaxItem("glpi_documents");
 
 	// glpi_enterprises
 	$items=array("DELL","IBM","ACER","Microsoft","Epson","Xerox","Hewlett Packard","Nikon","Targus","LG","Samsung","Lexmark");

@@ -227,7 +227,7 @@
 			CONTRACT_TYPE => "glpi_contracts",
 			CARTRIDGE_TYPE => "glpi_cartridgesitems",
 			TYPEDOC_TYPE => "glpi_type_docs",
-			DOCUMENT_TYPE => "glpi_docs",
+			DOCUMENT_TYPE => "glpi_documents",
 			KNOWBASE_TYPE => "glpi_kbitems",
 			USER_TYPE => "glpi_users",
 			TRACKING_TYPE => "glpi_tracking",
@@ -391,7 +391,7 @@
 	//DEVICE ARRAY.
 	$CFG_GLPI["devices_tables"] =array("moboard","processor","ram","hdd","iface","drive","control","gfxcard","sndcard","pci","case","power");
 	$CFG_GLPI["deleted_tables"]=array("glpi_computers","glpi_networking","glpi_printers","glpi_monitors","glpi_peripherals",
-		"glpi_software","glpi_cartridgesitems","glpi_contracts","glpi_contacts","glpi_enterprises","glpi_docs","glpi_phones",
+		"glpi_software","glpi_cartridgesitems","glpi_contracts","glpi_contacts","glpi_enterprises","glpi_documents","glpi_phones",
 		"glpi_consumablesitems","glpi_users","state_types","reservation_types","glpi_budgets");
 	
 	$CFG_GLPI["template_tables"]=array("glpi_computers","glpi_networking","glpi_printers","glpi_monitors","glpi_peripherals","glpi_software",
@@ -419,7 +419,7 @@
 	$CFG_GLPI["massiveaction_nodelete_types"]=array(ENTITY_TYPE);
 
 	$CFG_GLPI["specif_entities_tables"]=array("glpi_cartridgesitems","glpi_computers","glpi_consumablesitems",
-		"glpi_contacts","glpi_contracts","glpi_docs",
+		"glpi_contacts","glpi_contracts","glpi_documents",
 		"glpi_dropdown_locations","glpi_dropdown_netpoint","glpi_enterprises","glpi_groups",
 		"glpi_mailgate","glpi_monitors","glpi_networking","glpi_peripherals","glpi_phones","glpi_printers","glpi_software",
 		"glpi_softwarelicenses", "glpi_tracking","state_types","reservation_types","glpi_links","glpi_budgets");
@@ -427,7 +427,7 @@
 	$CFG_GLPI["union_search_type"]=array(RESERVATION_TYPE=>"reservation_types",STATE_TYPE=>"state_types");
 
 	$CFG_GLPI["recursive_type"]=array(CONTACT_TYPE=>"glpi_contacts", ENTERPRISE_TYPE=>"glpi_enterprises", CONTRACT_TYPE=>"glpi_contracts", 
-		DOCUMENT_TYPE=>"glpi_docs", KNOWBASE_TYPE=>"glpi_kbitems", NETWORKING_TYPE => "glpi_networking", GROUP_TYPE => "glpi_groups",
+		DOCUMENT_TYPE=>"glpi_documents", KNOWBASE_TYPE=>"glpi_kbitems", NETWORKING_TYPE => "glpi_networking", GROUP_TYPE => "glpi_groups",
 		SOFTWARE_TYPE => "glpi_software", SOFTWARELICENSE_TYPE => "glpi_softwarelicenses", PRINTER_TYPE => "glpi_printers",LINK_TYPE=>"glpi_links",
 		BUDGET_TYPE => "glpi_budgets");
 		

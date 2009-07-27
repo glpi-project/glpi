@@ -1316,8 +1316,8 @@ function dropdownDocument($myname,$entity_restrict='',$used=array()) {
 
 	$rand=mt_rand();
 
-	$where=" WHERE glpi_docs.deleted='0' ";
-	$where.=getEntitiesRestrictRequest("AND","glpi_docs",'',$entity_restrict,true);
+	$where=" WHERE glpi_documents.deleted='0' ";
+	$where.=getEntitiesRestrictRequest("AND","glpi_documents",'',$entity_restrict,true);
 	if (count($used)) {
 		$where .= " AND ID NOT IN (0";
 		foreach ($used as $ID)
@@ -1326,9 +1326,9 @@ function dropdownDocument($myname,$entity_restrict='',$used=array()) {
 	}
 
 
-	$query="SELECT * FROM glpi_dropdown_rubdocs 
+	$query="SELECT * FROM glpi_documentscategories 
 		WHERE ID IN (SELECT DISTINCT rubrique 
-				FROM glpi_docs $where) 
+				FROM glpi_documents $where) 
 		ORDER BY name";
 	//error_log($query);
 	$result=$DB->query($query);

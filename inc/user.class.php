@@ -147,9 +147,9 @@ class User extends CommonDBTM {
 		$query = "DELETE FROM glpi_users_groups WHERE FK_users = '$ID'";
 		$DB->query($query);
 
-		$query = "DELETE FROM glpi_display WHERE FK_users = '$ID'";
+		$query = "DELETE FROM glpi_displayprefs WHERE FK_users = '$ID'";
 		$DB->query($query);
-		$query = "DELETE FROM glpi_display_default WHERE FK_users = '$ID'";
+		$query = "DELETE FROM glpi_bookmarks_users WHERE FK_users = '$ID'";
 		$DB->query($query);
 
 		// Delete private reminder

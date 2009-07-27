@@ -112,7 +112,7 @@ function manageGetValuesInSearch($type=0,$usesession=true,$save=true){
 	// First view of the page : try to load a bookmark
 	if ($usesession && !isset($_SESSION['glpisearch'][$type])){
 		$query="SELECT FK_bookmark 
-			FROM glpi_display_default 
+			FROM glpi_bookmarks_users 
 			WHERE FK_users='".$_SESSION['glpiID']."'
 				AND device_type='$type';";
 		if ($result=$DB->query($query)){
@@ -547,14 +547,14 @@ function showList ($type,$params){
 
 	// Add default items
 	$query="SELECT * 
-		FROM glpi_display 
+		FROM glpi_displayprefs 
 		WHERE type='$type' AND FK_users='".$_SESSION["glpiID"]."' 
 		ORDER BY rank";
 	$result=$DB->query($query);
 	// GET default serach options
 	if ($DB->numrows($result)==0){
 		$query="SELECT * 
-			FROM glpi_display 
+			FROM glpi_displayprefs 
 			WHERE type='$type' AND FK_users='0' 
 			ORDER BY rank";
 		$result=$DB->query($query);
@@ -2284,7 +2284,7 @@ function displayConfigItem ($type,$field){
 		case "glpi_phones.date_mod":
 		case "glpi_software.date_mod":
 		case "glpi_monitors.date_mod":
-		case "glpi_docs.date_mod":
+		case "glpi_documents.date_mod":
 		case "glpi_ocs_config.date_mod" :
 		case "glpi_users.last_login":
 		case "glpi_users.date_mod":	
@@ -2413,7 +2413,7 @@ function giveItem ($type,$ID,$data,$num,$meta=0){
 			}
 		break;	
 
-		case "glpi_docs.filename" :		
+		case "glpi_documents.filename" :		
 			return getDocumentLink($data[$NAME.$num]);
 		break;		
 		case "glpi_devicesharddrives.specif_default" :

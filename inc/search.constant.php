@@ -2947,46 +2947,46 @@ $SEARCH_OPTION[TYPEDOC_TYPE][5]['name']=$LANG['document'][15];
 
 $SEARCH_OPTION[DOCUMENT_TYPE]['common']=$LANG['common'][32];
 
-$SEARCH_OPTION[DOCUMENT_TYPE][1]['table']='glpi_docs';
+$SEARCH_OPTION[DOCUMENT_TYPE][1]['table']='glpi_documents';
 $SEARCH_OPTION[DOCUMENT_TYPE][1]['field']='name';
 $SEARCH_OPTION[DOCUMENT_TYPE][1]['linkfield']='name';
 $SEARCH_OPTION[DOCUMENT_TYPE][1]['name']=$LANG['common'][16];
 $SEARCH_OPTION[DOCUMENT_TYPE][1]['datatype']='itemlink';
 $SEARCH_OPTION[DOCUMENT_TYPE][1]['itemlink_type']=DOCUMENT_TYPE;
 
-$SEARCH_OPTION[DOCUMENT_TYPE][2]['table']='glpi_docs';
+$SEARCH_OPTION[DOCUMENT_TYPE][2]['table']='glpi_documents';
 $SEARCH_OPTION[DOCUMENT_TYPE][2]['field']='ID';
 $SEARCH_OPTION[DOCUMENT_TYPE][2]['linkfield']='';
 $SEARCH_OPTION[DOCUMENT_TYPE][2]['name']=$LANG['common'][2];
 
-$SEARCH_OPTION[DOCUMENT_TYPE][3]['table']='glpi_docs';
+$SEARCH_OPTION[DOCUMENT_TYPE][3]['table']='glpi_documents';
 $SEARCH_OPTION[DOCUMENT_TYPE][3]['field']='filename';
 $SEARCH_OPTION[DOCUMENT_TYPE][3]['linkfield']='';
 $SEARCH_OPTION[DOCUMENT_TYPE][3]['name']=$LANG['document'][2];
 
-$SEARCH_OPTION[DOCUMENT_TYPE][4]['table']='glpi_docs';
+$SEARCH_OPTION[DOCUMENT_TYPE][4]['table']='glpi_documents';
 $SEARCH_OPTION[DOCUMENT_TYPE][4]['field']='link';
 $SEARCH_OPTION[DOCUMENT_TYPE][4]['linkfield']='link';
 $SEARCH_OPTION[DOCUMENT_TYPE][4]['name']=$LANG['document'][33];
 $SEARCH_OPTION[DOCUMENT_TYPE][4]['datatype']='weblink';
 
-$SEARCH_OPTION[DOCUMENT_TYPE][5]['table']='glpi_docs';
+$SEARCH_OPTION[DOCUMENT_TYPE][5]['table']='glpi_documents';
 $SEARCH_OPTION[DOCUMENT_TYPE][5]['field']='mime';
 $SEARCH_OPTION[DOCUMENT_TYPE][5]['linkfield']='mime';
 $SEARCH_OPTION[DOCUMENT_TYPE][5]['name']=$LANG['document'][4];
 
-$SEARCH_OPTION[DOCUMENT_TYPE][6]['table']='glpi_docs';
+$SEARCH_OPTION[DOCUMENT_TYPE][6]['table']='glpi_documents';
 $SEARCH_OPTION[DOCUMENT_TYPE][6]['field']='comments';
 $SEARCH_OPTION[DOCUMENT_TYPE][6]['linkfield']='comments';
 $SEARCH_OPTION[DOCUMENT_TYPE][6]['name']=$LANG['common'][25];
 $SEARCH_OPTION[DOCUMENT_TYPE][6]['datatype']='text';
 
-$SEARCH_OPTION[DOCUMENT_TYPE][90]['table']='glpi_docs';
+$SEARCH_OPTION[DOCUMENT_TYPE][90]['table']='glpi_documents';
 $SEARCH_OPTION[DOCUMENT_TYPE][90]['field']='notes';
 $SEARCH_OPTION[DOCUMENT_TYPE][90]['linkfield']='';
 $SEARCH_OPTION[DOCUMENT_TYPE][90]['name']=$LANG['title'][37];
 
-$SEARCH_OPTION[DOCUMENT_TYPE][7]['table']='glpi_dropdown_rubdocs';
+$SEARCH_OPTION[DOCUMENT_TYPE][7]['table']='glpi_documentscategories';
 $SEARCH_OPTION[DOCUMENT_TYPE][7]['field']='name';
 $SEARCH_OPTION[DOCUMENT_TYPE][7]['linkfield']='rubrique';
 $SEARCH_OPTION[DOCUMENT_TYPE][7]['name']=$LANG['document'][3];
@@ -2996,7 +2996,7 @@ $SEARCH_OPTION[DOCUMENT_TYPE][80]['field']='completename';
 $SEARCH_OPTION[DOCUMENT_TYPE][80]['linkfield']='FK_entities';
 $SEARCH_OPTION[DOCUMENT_TYPE][80]['name']=$LANG['entity'][0];
 
-$SEARCH_OPTION[DOCUMENT_TYPE][19]['table']='glpi_docs';
+$SEARCH_OPTION[DOCUMENT_TYPE][19]['table']='glpi_documents';
 $SEARCH_OPTION[DOCUMENT_TYPE][19]['field']='date_mod';
 $SEARCH_OPTION[DOCUMENT_TYPE][19]['linkfield']='';
 $SEARCH_OPTION[DOCUMENT_TYPE][19]['name']=$LANG['common'][26];
