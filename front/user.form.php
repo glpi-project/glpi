@@ -107,7 +107,7 @@ else if (isset($_POST["purge"]))
 {
 	checkRight("user","w");
 
-	addUserGroup($_POST["users_id"],$_POST["FK_groups"]);
+	addUserGroup($_POST["users_id"],$_POST["groups_id"]);
 
 	logEvent($_POST["users_id"], "users", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][48]);
 	glpi_header($_SERVER['HTTP_REFERER']);

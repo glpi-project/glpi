@@ -459,7 +459,7 @@ class CommonItem{
             $comment.="<strong>".$LANG['common'][34].": "."</strong>".$tmp."<br>";
          }
       }
-      if ($tmp=$this->getField('FK_groups')){
+      if ($tmp=$this->getField('groups_id')){
          $tmp=getDropdownName("glpi_groups",$tmp);
          if (!empty($tmp)&&$tmp!='&nbsp;'){
             $comment.="<strong>".$LANG['common'][35].": "."</strong>".$tmp."<br>";

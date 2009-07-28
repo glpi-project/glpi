@@ -520,7 +520,7 @@ function ocsImportComputer($ocs_id, $ocs_server_id, $lock = 0, $defaultentity = 
 				$input["name"] = $line["NAME"];
 				$input["ocs_import"] = 1;
 				if ($cfg_ocs["default_state"]>0){
-					$input["state"] = $cfg_ocs["default_state"];
+					$input["states_id"] = $cfg_ocs["default_state"];
 				}
 				$glpi_id = $comp->add($input);
 	
@@ -597,7 +597,7 @@ function ocsLinkComputer($ocs_id, $ocs_server_id, $glpi_id,$link_auto=0) {
 			
 			// Not already import from OCS / mark default state 
 			if ($link_auto || (!$comp->fields['ocs_import'] && $ocsConfig["default_state"]>0)) {
-				$input["state"] = $ocsConfig["default_state"];
+				$input["states_id"] = $ocsConfig["default_state"];
 			}
 	
 			$comp->update($input);
@@ -808,7 +808,7 @@ function getMachinesAlreadyInGLPI($ocs_id,$ocs_server_id,$entity){
 				$sql_where .= " AND glpi_computers.serial=\"".$ocsParams["SSN"][0]."\"";
 		}
 		if ($conf["link_if_status"] > 0)
-			$sql_where .= " AND glpi_computers.state='".$conf["link_if_status"]."'";
+			$sql_where .= " AND glpi_computers.states_id='".$conf["link_if_status"]."'";
 		
 		$sql_glpi = "SELECT glpi_computers.ID FROM $sql_from " .
 			"WHERE $sql_where ORDER BY `glpi_computers`.`deleted` ASC";
@@ -1518,7 +1518,7 @@ function getOcsLockableFields(){
 			"os_license_id"=>$LANG['computers'][11],
 			"users_id"=>$LANG['common'][34],
 			"locations_id"=>$LANG['common'][15],
-			"FK_groups"=>$LANG['common'][35],
+			"groups_id"=>$LANG['common'][35],
 		);
 }
 
@@ -2517,7 +2517,7 @@ function ocsUpdatePeripherals($itemtype, $entity, $glpi_id, $ocs_id, $ocs_server
 								} else {
 									$input = $mon;
 									if ($cfg_ocs["default_state"]>0){
-										$input["state"] = $cfg_ocs["default_state"];
+										$input["states_id"] = $cfg_ocs["default_state"];
 									}
 									$input["entities_id"] = $entity;
 									$id_monitor = $m->add($input);
@@ -2555,7 +2555,7 @@ function ocsUpdatePeripherals($itemtype, $entity, $glpi_id, $ocs_id, $ocs_server
 								if (!$id_monitor) {
 									$input = $mon;
 									if ($cfg_ocs["default_state"]>0){
-										$input["state"] = $cfg_ocs["default_state"];
+										$input["states_id"] = $cfg_ocs["default_state"];
 									}
 									$input["entities_id"] = $entity;
 									$id_monitor = $m->add($input);
@@ -2580,8 +2580,8 @@ function ocsUpdatePeripherals($itemtype, $entity, $glpi_id, $ocs_id, $ocs_server
 									if ($old->fields["deleted"]) {
 										$input["deleted"] = 0;
 									}		
-									if ($cfg_ocs["default_state"]>0 && $old->fields["state"]!=$cfg_ocs["default_state"]) {
-										$input["state"] = $cfg_ocs["default_state"];
+									if ($cfg_ocs["default_state"]>0 && $old->fields["states_id"]!=$cfg_ocs["default_state"]) {
+										$input["states_id"] = $cfg_ocs["default_state"];
 									}
 									if (empty($old->fields["name"]) && !empty($mon["name"])) {
 										$input["name"] = $mon["name"];
@@ -2649,7 +2649,7 @@ function ocsUpdatePeripherals($itemtype, $entity, $glpi_id, $ocs_id, $ocs_server
 									} else {
 										$input = $print;
 										if ($cfg_ocs["default_state"]>0){
-											$input["state"] = $cfg_ocs["default_state"];
+											$input["states_id"] = $cfg_ocs["default_state"];
 										}
 										$input["entities_id"] = $entity;
 										$id_printer = $p->add($input);
@@ -2661,7 +2661,7 @@ function ocsUpdatePeripherals($itemtype, $entity, $glpi_id, $ocs_id, $ocs_server
 										$input = $print;
 										$input["is_global"] = 0;
 										if ($cfg_ocs["default_state"]>0){
-											$input["state"] = $cfg_ocs["default_state"];
+											$input["states_id"] = $cfg_ocs["default_state"];
 										}
 										$input["entities_id"] = $entity;
 										$id_printer = $p->add($input);
@@ -2676,7 +2676,7 @@ function ocsUpdatePeripherals($itemtype, $entity, $glpi_id, $ocs_id, $ocs_server
 									$input["ID"] = $id_printer;
 									$input["deleted"] = 0;
 									if ($cfg_ocs["default_state"]>0){
-										$input["state"] = $cfg_ocs["default_state"];
+										$input["states_id"] = $cfg_ocs["default_state"];
 									}
 									$p->update($input);
 								}
@@ -2730,7 +2730,7 @@ function ocsUpdatePeripherals($itemtype, $entity, $glpi_id, $ocs_id, $ocs_server
 								} else {
 									$input = $periph;
 									if ($cfg_ocs["default_state"]>0){
-										$input["state"] = $cfg_ocs["default_state"];
+										$input["states_id"] = $cfg_ocs["default_state"];
 									}
 									$input["entities_id"] = $entity;
 									$id_periph = $p->add($input);
@@ -2742,7 +2742,7 @@ function ocsUpdatePeripherals($itemtype, $entity, $glpi_id, $ocs_id, $ocs_server
 									$input = $periph;
 									$input["is_global"] = 0;
 									if ($cfg_ocs["default_state"]>0){
-										$input["state"] = $cfg_ocs["default_state"];
+										$input["states_id"] = $cfg_ocs["default_state"];
 									}
 									$input["entities_id"] = $entity;
 									$id_periph = $p->add($input);
@@ -2757,7 +2757,7 @@ function ocsUpdatePeripherals($itemtype, $entity, $glpi_id, $ocs_id, $ocs_server
 								$input["ID"] = $id_periph;
 								$input["deleted"] = 0;
 								if ($cfg_ocs["default_state"]>0){
-									$input["state"] = $cfg_ocs["default_state"];
+									$input["states_id"] = $cfg_ocs["default_state"];
 								}
 								$p->update($input);
 							}
@@ -2836,7 +2836,7 @@ function ocsUpdateAdministrativeInfo($glpi_id, $ocs_id, $ocs_server_id, $cfg_ocs
 				if (isset ($data_ocs[$ocs_column]) && !in_array($glpi_column, $computer_updates)) {
 					$var = $data_ocs[$ocs_column];
 					switch ($glpi_column) {
-						case "FK_groups" :
+						case "groups_id" :
 							$var = ocsImportGroup($var, $entity);
 							break;
 						case "locations_id" :

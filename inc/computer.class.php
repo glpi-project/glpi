@@ -190,12 +190,12 @@ class Computer extends CommonDBTM {
 			}
 
 			// Update users and groups of attached items
-			if (($updates[$i]=="users_id" && $this->fields["users_id"]!=0 && $CFG_GLPI["autoupdate_link_user"])||($updates[$i]=="FK_groups" && $this->fields["FK_groups"]!=0 && $CFG_GLPI["autoupdate_link_group"])){
+			if (($updates[$i]=="users_id" && $this->fields["users_id"]!=0 && $CFG_GLPI["autoupdate_link_user"])||($updates[$i]=="groups_id" && $this->fields["groups_id"]!=0 && $CFG_GLPI["autoupdate_link_group"])){
 				$items=array(PRINTER_TYPE,MONITOR_TYPE,PERIPHERAL_TYPE,PHONE_TYPE);
 				$ci=new CommonItem();
 				$update_done=false;
 				$updates4[0]="users_id";
-				$updates4[1]="FK_groups";
+				$updates4[1]="groups_id";
 
 				foreach ($items as $t){
 					$query = "SELECT * 
@@ -211,13 +211,13 @@ class Computer extends CommonDBTM {
 
 								$ci->getFromDB($t,$tID);
 								if (!$ci->getField('is_global')){
-									if ($ci->getField('users_id')!=$this->fields["users_id"]||$ci->getField('FK_groups')!=$this->fields["FK_groups"]){
+									if ($ci->getField('users_id')!=$this->fields["users_id"]||$ci->getField('groups_id')!=$this->fields["groups_id"]){
 										$tmp["ID"]=$ci->getField('ID');
 										if ($CFG_GLPI["autoupdate_link_user"]){
 											$tmp["users_id"]=$this->fields["users_id"];
 										}
 										if ($CFG_GLPI["autoupdate_link_group"]){
-											$tmp["FK_groups"]=$this->fields["FK_groups"];
+											$tmp["groups_id"]=$this->fields["groups_id"];
 										}
 										$ci->obj->update($tmp);
 										$update_done=true;
@@ -234,7 +234,7 @@ class Computer extends CommonDBTM {
 			}
 
 			// Update state of attached items
-			if ($updates[$i]=="state" && $CFG_GLPI["autoupdate_link_state"]<0){
+			if ($updates[$i]=="states_id" && $CFG_GLPI["autoupdate_link_state"]<0){
 				$items=array(PRINTER_TYPE,MONITOR_TYPE,PERIPHERAL_TYPE,PHONE_TYPE);
 				$ci=new CommonItem();
 				$update_done=false;
@@ -253,9 +253,9 @@ class Computer extends CommonDBTM {
 
 								$ci->getFromDB($t,$tID);
 								if (!$ci->getField('is_global')){
-									if ($ci->getField('state')!=$this->fields["state"]){
+									if ($ci->getField('states_id')!=$this->fields["states_id"]){
 										$tmp["ID"]=$ci->getField('ID');
-										$tmp["state"]=$this->fields["state"];
+										$tmp["states_id"]=$this->fields["states_id"];
 										$ci->obj->update($tmp);
 										$update_done=true;
 									}
@@ -623,7 +623,7 @@ class Computer extends CommonDBTM {
       echo "</td>";
       
       echo "<td>".$LANG['common'][35].":</td><td>";
-      dropdownValue("glpi_groups", "FK_groups", $this->fields["FK_groups"],1,$this->fields["entities_id"]);
+      dropdownValue("glpi_groups", "groups_id", $this->fields["groups_id"],1,$this->fields["entities_id"]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -682,7 +682,7 @@ class Computer extends CommonDBTM {
       echo"</td>";
       
       echo "<td>".$LANG['state'][0].":</td><td>";
-      dropdownValue("glpi_states", "state",$this->fields["state"]);
+      dropdownValue("glpi_states", "states_id",$this->fields["states_id"]);
       echo "</td>";
 
       // Get OCS Datas :

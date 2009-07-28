@@ -988,7 +988,7 @@ function showList ($itemtype,$params){
 						$query_num=str_replace($CFG_GLPI["union_search_type"][$itemtype],$LINK_ID_TABLE[$ctype],$tmpquery);
 						// State case :
 						if ($itemtype==STATE_TYPE){
-							$query_num.=" AND ".$LINK_ID_TABLE[$ctype].".state > 0 ";
+							$query_num.=" AND ".$LINK_ID_TABLE[$ctype].".states_id > 0 ";
 						}
 					} else {// Ref table case
 						$replace="FROM ".$LINK_ID_TABLE[$itemtype]."
@@ -1051,7 +1051,7 @@ function showList ($itemtype,$params){
 						$tmpquery=str_replace($CFG_GLPI["union_search_type"][$itemtype],$LINK_ID_TABLE[$ctype],$tmpquery);
 						// State case :
 						if ($itemtype==STATE_TYPE){
-							$tmpquery.=" AND ".$LINK_ID_TABLE[$ctype].".state > 0 ";
+							$tmpquery.=" AND ".$LINK_ID_TABLE[$ctype].".states_id > 0 ";
 						}
 				} else {// Ref table case
 						$tmpquery=$SELECT.", $ctype AS TYPE, ".$LINK_ID_TABLE[$itemtype].".ID AS refID, ".
@@ -2959,9 +2959,9 @@ function addLeftJoin ($itemtype,$ref_table,&$already_link_tables,$new_table,$lin
 				// Return the state of the version of the software
 				$rt=translate_table("glpi_softwaresversions",$meta,$meta_type);
 				return addLeftJoin($itemtype,$ref_table,$already_link_tables,"glpi_softwaresversions",$linkfield,$devicetype,$meta,$meta_type) .
-					" LEFT JOIN $new_table $AS ON ($rt.state = $nt.ID)";
+					" LEFT JOIN $new_table $AS ON ($rt.states_id = $nt.ID)";
 			} else {
-				return " LEFT JOIN $new_table $AS ON ($rt.state = $nt.ID) ";				
+				return " LEFT JOIN $new_table $AS ON ($rt.states_id = $nt.ID) ";
 			}		
 		break;
 		case "glpi_contracts_items":
@@ -3010,7 +3010,7 @@ function addLeftJoin ($itemtype,$ref_table,&$already_link_tables,$new_table,$lin
 				// Link to glpi_users_group before
 				$out=addLeftJoin($itemtype,$rt,$already_link_tables,"glpi_groups_users",$linkfield,$devicetype,$meta,$meta_type);
 
-				return $out." LEFT JOIN $new_table $AS ON (glpi_groups_users$addmetanum.FK_groups = $nt.ID) ";
+				return $out." LEFT JOIN $new_table $AS ON (glpi_groups_users$addmetanum.groups_id = $nt.ID) ";
 			} else {
 				return " LEFT JOIN $new_table $AS ON ($rt.$linkfield = $nt.ID) ";
 			}

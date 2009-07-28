@@ -52,7 +52,7 @@ function showGroupDevice($ID){
 	foreach ($CFG_GLPI["linkgroup_types"] as $itemtype){
 		$query="SELECT * 
 			FROM ".$LINK_ID_TABLE[$itemtype]." 
-			WHERE FK_groups='$ID' " .
+			WHERE groups_id='$ID' " .
 			getEntitiesRestrictRequest(" AND ", $LINK_ID_TABLE[$itemtype], '', '', isset($CFG_GLPI["recursive_type"][$itemtype]));
 		$result=$DB->query($query);
 		if ($DB->numrows($result)>0){
@@ -100,7 +100,7 @@ function showGroupUsers($target,$ID){
 		$query="SELECT glpi_users.*, glpi_groups_users.ID as linkID 
 			FROM glpi_groups_users 
 			LEFT JOIN glpi_users ON (glpi_users.ID = glpi_groups_users.users_id) 
-			WHERE glpi_groups_users.FK_groups='$ID'
+			WHERE glpi_groups_users.groups_id='$ID'
 			ORDER BY glpi_users.name, glpi_users.realname, glpi_users.firstname";
 	
 		$used = array();
@@ -147,7 +147,7 @@ function showGroupUsers($target,$ID){
 	
 			echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkCheckboxes('groupuser_form$rand') ) return false;\" href='".$_SERVER['PHP_SELF']."?ID=$ID&amp;select=none'>".$LANG['buttons'][19]."</a>";
 			echo "</td><td align='left' width='80%'>";
-			echo "<input type='hidden' name='FK_groups' value='$ID'>";
+			echo "<input type='hidden' name='groups_id' value='$ID'>";
 			echo "<input type='submit' name='deleteuser' value=\"".$LANG['buttons'][6]."\" class='submit'>";
 			echo "</td>";
 			echo "</table>";
@@ -192,7 +192,7 @@ function addUserGroup($uID,$gID){
 	global $DB;
 	if ($uID>0&&$gID>0){
 
-		$query="INSERT INTO glpi_groups_users (users_id,FK_groups ) VALUES ('$uID','$gID');";
+		$query="INSERT INTO glpi_groups_users (users_id,groups_id ) VALUES ('$uID','$gID');";
 		$result = $DB->query($query);
 	}
 }

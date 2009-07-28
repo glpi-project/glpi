@@ -990,9 +990,9 @@ function dropdownMyDevices($userID=0,$entity_restrict=-1){
 		if (haveRight("show_group_hardware","1")){
 			$group_where="";
 			$groups=array();
-			$query="SELECT glpi_groups_users.FK_groups, glpi_groups.name 
+			$query="SELECT glpi_groups_users.groups_id, glpi_groups.name 
 				FROM glpi_groups_users 
-				LEFT JOIN glpi_groups ON (glpi_groups.ID = glpi_groups_users.FK_groups) 
+				LEFT JOIN glpi_groups ON (glpi_groups.ID = glpi_groups_users.groups_id) 
 				WHERE glpi_groups_users.users_id='".$userID."' ";
 			$query.=getEntitiesRestrictRequest("AND","glpi_groups","",$entity_restrict);
 			$result=$DB->query($query);
@@ -1002,7 +1002,7 @@ function dropdownMyDevices($userID=0,$entity_restrict=-1){
 					if ($first) $first=false;
 					else $group_where.=" OR ";
 	
-					$group_where.=" FK_groups = '".$data["FK_groups"]."' ";
+					$group_where.=" groups_id = '".$data["groups_id"]."' ";
 				}
 
 				$tmp_device="";

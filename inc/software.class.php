@@ -321,7 +321,7 @@ class Software extends CommonDBTM {
       echo "</td>";
 
       echo "<td>" . $LANG['common'][35] . ":</td><td>";
-      dropdownValue("glpi_groups", "FK_groups", $this->fields["FK_groups"], 1, $this->fields["entities_id"]);
+      dropdownValue("glpi_groups", "groups_id", $this->fields["groups_id"], 1, $this->fields["entities_id"]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>" . $LANG['common'][10] . ": 	</td><td>";
@@ -340,7 +340,7 @@ class Software extends CommonDBTM {
       echo "</td>";
 
       /*echo "<td>" . $LANG['state'][0] . ":</td><td>";
-      dropdownValue("glpi_states", "state", $this->fields["state"]);
+      dropdownValue("glpi_states", "states_id", $this->fields["states_id"]);
       echo "</td></tr>";*/
 
       echo "<tr class='tab_bg_1'><td>" . $LANG['software'][46] . ":</td><td>";
@@ -532,7 +532,7 @@ class SoftwareVersion extends CommonDBTM {
 		echo "</td></tr>";
 	
 		echo "<tr class='tab_bg_1'><td>" . $LANG['state'][0] . ":</td><td>";
-		dropdownValue("glpi_states", "state", $this->fields["state"]);
+		dropdownValue("glpi_states", "states_id", $this->fields["states_id"]);
 		echo "</td></tr>";
 
 		echo "<tr  class='tab_bg_1'><td valign='top'>";

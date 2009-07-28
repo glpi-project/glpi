@@ -459,19 +459,19 @@ class User extends CommonDBTM {
 	
 					}
 					// Delete not available groups like to LDAP
-					$query = "SELECT glpi_groups_users.ID, glpi_groups_users.FK_groups 
+					$query = "SELECT glpi_groups_users.ID, glpi_groups_users.groups_id 
 						FROM glpi_groups_users 
-						LEFT JOIN glpi_groups ON (glpi_groups.ID = glpi_groups_users.FK_groups) 
+						LEFT JOIN glpi_groups ON (glpi_groups.ID = glpi_groups_users.groups_id) 
 						WHERE glpi_groups_users.users_id='" . $input["ID"] . "' $WHERE";
 	
 					$result = $DB->query($query);
 					if ($DB->numrows($result) > 0) {
 						while ($data = $DB->fetch_array($result)){
-							if (!in_array($data["FK_groups"], $input["_groups"])) {
+							if (!in_array($data["groups_id"], $input["_groups"])) {
 								deleteUserGroup($data["ID"]);
 							} else {
 								// Delete found item in order not to add it again
-								unset($input["_groups"][array_search($data["FK_groups"], $input["_groups"])]);
+								unset($input["_groups"][array_search($data["groups_id"], $input["_groups"])]);
 							}
 						}
 					}

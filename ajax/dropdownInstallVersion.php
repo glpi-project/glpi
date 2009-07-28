@@ -52,7 +52,7 @@ if ($_POST['sID']>0){
 	// Make a select box
 
 	$query = "SELECT DISTINCT glpi_softwaresversions.*, glpi_states.name AS sname FROM glpi_softwaresversions "
-			." LEFT JOIN glpi_states on (glpi_softwaresversions.state=glpi_states.ID) "
+			." LEFT JOIN glpi_states on (glpi_softwaresversions.states_id=glpi_states.ID) "
 			." WHERE glpi_softwaresversions.sID='".$_POST['sID']."'"
 			." ORDER BY name";
 

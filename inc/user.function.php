@@ -80,9 +80,9 @@ function showDeviceUser($ID){
 
 	$group_where="";
 	$groups=array();
-	$query="SELECT glpi_groups_users.FK_groups, glpi_groups.name 
+	$query="SELECT glpi_groups_users.groups_id, glpi_groups.name 
 		FROM glpi_groups_users 
-		LEFT JOIN glpi_groups ON (glpi_groups.ID = glpi_groups_users.FK_groups) 
+		LEFT JOIN glpi_groups ON (glpi_groups.ID = glpi_groups_users.groups_id) 
 		WHERE glpi_groups_users.users_id='$ID';";
 	$result=$DB->query($query);
 	if ($DB->numrows($result)>0){
@@ -93,8 +93,8 @@ function showDeviceUser($ID){
 			} else {
 				$group_where.=" OR ";
 			}
-			$group_where.=" FK_groups = '".$data["FK_groups"]."' ";
-			$groups[$data["FK_groups"]]=$data["name"];
+			$group_where.=" groups_id = '".$data["groups_id"]."' ";
+			$groups[$data["groups_id"]]=$data["name"];
 		}
 	}
 
@@ -179,8 +179,8 @@ function showDeviceUser($ID){
 					$link=$data["name"];
 					if ($cansee) $link="<a href='".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$itemtype]."?ID=".$data["ID"]."'>".$link.(($_SESSION["glpiview_ID"]||empty($link))?" (".$data["ID"].")":"")."</a>";
 					$linktype="";
-					if (isset($groups[$data["FK_groups"]])){
-						$linktype=$LANG['common'][35]." ".$groups[$data["FK_groups"]];
+					if (isset($groups[$data["groups_id"]])){
+						$linktype=$LANG['common'][35]." ".$groups[$data["groups_id"]];
 					}
 					echo "<tr class='tab_bg_1'><td class='center'>$type_name</td>"
 						."<td class='center'>".getDropdownName("glpi_entities",$data["entities_id"])."</td>"
@@ -230,7 +230,7 @@ function showGroupAssociated($target,$ID){
 	echo "<div class='center'><table class='tab_cadrehov'><tr><th colspan='$headerspan'>".$LANG['Menu'][36]."</th></tr>";
 	$query="SELECT glpi_groups.*, glpi_groups_users.ID AS IDD, glpi_groups_users.ID as linkID 
 		FROM glpi_groups_users 
-		LEFT JOIN glpi_groups ON (glpi_groups.ID = glpi_groups_users.FK_groups) 
+		LEFT JOIN glpi_groups ON (glpi_groups.ID = glpi_groups_users.groups_id) 
 		WHERE glpi_groups_users.users_id='$ID' 
 		ORDER BY glpi_groups.name";
 
@@ -295,7 +295,7 @@ function showGroupAssociated($target,$ID){
 		echo "<input type='hidden' name='users_id' value='$ID'>";
 		if (countElementsInTableForEntity("glpi_groups",$strict_entities) > count($used)) {
 			
-			dropdownValue("glpi_groups", "FK_groups", "", 1, $strict_entities, "", $used);	
+			dropdownValue("glpi_groups", "groups_id", "", 1, $strict_entities, "", $used);	
 			echo "</td><td align='center' class='tab_bg_2'>";
 			echo "<input type='submit' name='addgroup' value=\"".$LANG['buttons'][8]."\" class='submit'>";
 	

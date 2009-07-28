@@ -51,12 +51,12 @@ function showStateSummary($target){
 		if (!haveTypeRight($itemtype,"r")) {
 			unset($state_type[$key]);
 		} else {
-			$query= "SELECT state, COUNT(*) AS CPT FROM ".$LINK_ID_TABLE[$itemtype]." ".
-				getEntitiesRestrictRequest("WHERE",$LINK_ID_TABLE[$itemtype])." AND deleted=0 AND is_template=0 GROUP BY state";
+			$query= "SELECT states_id, COUNT(*) AS CPT FROM ".$LINK_ID_TABLE[$itemtype]." ".
+				getEntitiesRestrictRequest("WHERE",$LINK_ID_TABLE[$itemtype])." AND deleted=0 AND is_template=0 GROUP BY states_id";
 			if ($result = $DB->query($query)) {
 				if ($DB->numrows($result)>0){
 					while ($data=$DB->fetch_array($result)){
-						$states[$data["state"]][$itemtype]=$data["CPT"];
+						$states[$data["states_id"]][$itemtype]=$data["CPT"];
 					}
 				}
 			}

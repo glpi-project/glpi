@@ -220,7 +220,7 @@ function showLinkOnDevice($itemtype,$ID){
 						$link=str_replace("[USER]",getDropdownName("glpi_users",$tmp),$link);
 				}
 				if (strstr($link,"[GROUP]")){
-					if ($tmp=$ci->getField('FK_groups'))
+					if ($tmp=$ci->getField('groups_id'))
 						$link=str_replace("[GROUP]",getDropdownName("glpi_groups",$tmp),$link);
 				}
 				$ipmac=array();
