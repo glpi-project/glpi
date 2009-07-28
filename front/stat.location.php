@@ -98,7 +98,7 @@ echo "<div align ='center'>";
 if(is_dropdown_stat($_POST["dropdown"])) {
 
 	$type="comp_champ";
-	$field=getDropdownNameFromTableForStats($_POST["dropdown"]);
+	$field=getForeignKeyFieldForTable($_POST["dropdown"]);
 
 	$val=getStatsItems($_POST["date1"],$_POST["date2"],$_POST["dropdown"]);
 	$params=array("type"=>$type,"field"=>$field,"table"=>$_POST["dropdown"],"date1"=>$_POST["date1"],"date2"=>$_POST["date2"],"start"=>$_GET["start"]);

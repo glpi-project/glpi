@@ -42,10 +42,7 @@ if (!defined('GLPI_ROOT')){
 * @return boolean 
 */
 function is_dropdown_stat($table) {
-	$dropdowns = array ("locations","os","model");
-	if(in_array(str_replace("glpi_dropdown_","",$table),$dropdowns)) return true;
-	elseif(strcmp("glpi_computerstypes",$table) == 0) return true;
-	else return false; 
+   return !(strcmp("glpi_devices",$table) == 0);
 }
 
 
@@ -636,6 +633,7 @@ function constructEntryValues($type,$begin="",$end="",$param="",$value="",$value
 		$WHERE=" WHERE 1 ";
 	}
 	$LEFTJOIN="";
+
 	switch ($param){
 
 		case "technicien":
