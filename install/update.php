@@ -270,7 +270,7 @@ function showLocationUpdateForm(){
 	global $DB,$LANG;
 
 	if ((TableExists ("glpi_dropdown_locations") && FieldExists("glpi_dropdown_locations", "parentID"))
-         || (TableExists ("glpi_locations") && FieldExists("glpi_locations", "parentID"))) {
+         || (TableExists ("glpi_locations") && FieldExists("glpi_locations", "locations_id"))) {
 		updateTreeDropdown();
 		return true;
 	}

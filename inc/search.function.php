@@ -1492,8 +1492,7 @@ function addHaving($LINK,$NOT,$type,$ID,$val,$meta,$num){
 	//// Default cases
 	// Link with plugin tables 
 	if ($type<=1000){
-		if (preg_match("/^glpi_plugin_([a-zA-Z]+)/", $table, $matches)
-		|| preg_match("/^glpi_dropdown_plugin_([a-zA-Z]+)/", $table, $matches) ){
+		if (preg_match("/^glpi_plugin_([a-zA-Z]+)/", $table, $matches)){
 			if (count($matches)==2){
 				$plug=$matches[1];
 
@@ -1630,8 +1629,7 @@ function addOrderBy($type,$ID,$order,$key=0){
 
 	// Link with plugin tables 
 	if ($type<=1000){
-		if (preg_match("/^glpi_plugin_([a-zA-Z]+)/", $table, $matches) 
-		|| preg_match("/^glpi_dropdown_plugin_([a-zA-Z]+)/", $table, $matches) ){
+		if (preg_match("/^glpi_plugin_([a-zA-Z]+)/", $table, $matches)){
 			if (count($matches)==2){
 				$plug=$matches[1];
 
@@ -1873,8 +1871,7 @@ function addSelect ($type,$ID,$num,$meta=0,$meta_type=0){
 	//// Default cases
 	// Link with plugin tables 
 	if ($type<=1000){
-		if (preg_match("/^glpi_plugin_([a-zA-Z]+)/", $table, $matches) 
-		|| preg_match("/^glpi_dropdown_plugin_([a-zA-Z]+)/", $table, $matches) ){
+		if (preg_match("/^glpi_plugin_([a-zA-Z]+)/", $table, $matches)){
 			if (count($matches)==2){
 				$plug=$matches[1];
 
@@ -2136,8 +2133,7 @@ function addWhere($link,$nott,$type,$ID,$val,$meta=0){
 
 	// Link with plugin tables 
 	if ($type<=1000){
-		if (preg_match("/^glpi_plugin_([a-zA-Z]+)/", $inittable, $matches) 
-		|| preg_match("/^glpi_dropdown_plugin_([a-zA-Z]+)/", $inittable, $matches) ){
+		if (preg_match("/^glpi_plugin_([a-zA-Z]+)/", $inittable, $matches)){
 			if (count($matches)==2){
 				$plug=$matches[1];
 
@@ -2573,8 +2569,7 @@ function giveItem ($type,$ID,$data,$num,$meta=0){
 
 	// Link with plugin tables : need to know left join structure
 	if ($type<=1000){
-		if (preg_match("/^glpi_plugin_([a-zA-Z]+)/", $table.'.'.$field, $matches) 
-		|| preg_match("/^glpi_dropdown_plugin_([a-zA-Z]+)/", $table.'.'.$field, $matches) ){
+		if (preg_match("/^glpi_plugin_([a-zA-Z]+)/", $table.'.'.$field, $matches)){
 			if (count($matches)==2){
 				$plug=$matches[1];
 
@@ -2992,9 +2987,9 @@ function addLeftJoin ($type,$ref_table,&$already_link_tables,$new_table,$linkfie
 				$AS = "AS glpi_entities";
 			}
 			return " LEFT JOIN (
-                     SELECT ID, name, parentID, completename, comments, level FROM glpi_entities
+                     SELECT ID, name, entities_id, completename, comments, level FROM glpi_entities
                      UNION
-                     SELECT 0 AS ID, '".addslashes($LANG['entity'][2])."' AS name, -1 AS parentID,
+                     SELECT 0 AS ID, '".addslashes($LANG['entity'][2])."' AS name, -1 AS entities_id,
                         '".addslashes($LANG['entity'][2])."' AS completename, '' AS comments, -1 AS level)
 				$AS ON ($rt.$linkfield = glpi_entities.ID) ";
 			break;
@@ -3083,8 +3078,7 @@ function addLeftJoin ($type,$ref_table,&$already_link_tables,$new_table,$linkfie
 
 			// Link with plugin tables : need to know left join structure
 			if ($type<=1000){
-				if (preg_match("/^glpi_plugin_([a-zA-Z]+)/", $new_table, $matches) 
-				|| preg_match("/^glpi_dropdown_plugin_([a-zA-Z]+)/", $new_table, $matches) ){
+				if (preg_match("/^glpi_plugin_([a-zA-Z]+)/", $new_table, $matches)){
 					if (count($matches)==2){
 						$plug=$matches[1];
 						$function='plugin_'.$plug.'_addLeftJoin';

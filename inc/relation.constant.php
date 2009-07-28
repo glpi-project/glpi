@@ -93,7 +93,7 @@ $RELATION=array(
 					"glpi_devicesgraphiccards"=>"FK_interface",
 					"glpi_devicescontrols"=>"FK_interface"),
 	
-	"glpi_knowbaseitemscategories" =>array("glpi_knowbaseitemscategories"=>"parentID",
+	"glpi_knowbaseitemscategories" =>array("glpi_knowbaseitemscategories"=>"knowbaseitemscategories_id",
 					"glpi_knowbaseitems" =>"categoryID"),
 
 	"glpi_softwareslicensestypes" =>array("glpi_softwareslicenses"=>"type"),
@@ -103,7 +103,7 @@ $RELATION=array(
 					"glpi_consumablesitems"=>"location",
 					"glpi_computers"=>"location",
 					"glpi_netpoints"=>"location",
-					"glpi_locations"=>"parentID",
+					"glpi_locations"=>"locations_id",
 					"glpi_monitors"=>"location",
 					"glpi_printers"=>"location",
 					"glpi_networkequipments"=>"location",
@@ -205,7 +205,7 @@ $RELATION=array(
 				"glpi_locations"=>"entities_id",
 				"glpi_netpoints"=>"entities_id",
 				"glpi_suppliers"=>"entities_id",
-				"glpi_entities"=>"parentID",
+				"glpi_entities"=>"entities_id",
 				"_glpi_entitiesdatas"=>"entities_id",
 				"glpi_groups"=>"entities_id",
 				"glpi_knowbaseitems"=>"entities_id",

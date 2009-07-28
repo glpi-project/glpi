@@ -456,6 +456,9 @@ function showFormDropDown($target, $tablename, $human, $ID, $entities_id='') {
 
 function moveTreeUnder($table, $to_move, $where) {
 	global $DB;
+
+   $parentIDfield=getForeignKeyFieldFor($table);
+
 	if ($where != $to_move) {
 		// Is the $where location under the to move ???
 		$impossible_move = false;
@@ -465,14 +468,14 @@ function moveTreeUnder($table, $to_move, $where) {
 
 			$query = "SELECT * FROM `$table` WHERE ID='$current_ID'";
 			$result = $DB->query($query);
-			$current_ID = $DB->result($result, 0, "parentID");
+			$current_ID = $DB->result($result, 0, "$parentIDfield");
 			if ($current_ID == $to_move){
 				$impossible_move = true;
 			}
 		}
 		if (!$impossible_move) {
 			// Move Location
-			$query = "UPDATE `$table` SET parentID='$where' WHERE ID='$to_move'";
+			$query = "UPDATE `$table` SET $parentIDfield='$where' WHERE ID='$to_move'";
 			$result = $DB->query($query);
 			regenerateTreeCompleteNameUnderID($table, $to_move);
          // Clean sons / ancestors if needed
@@ -542,9 +545,10 @@ function getDropdownID($input){
 				WHERE $add_entity_field_twin name= '".$input["value"]."' AND location = '".$input["value2"]."'";
 		} else {
 			if (in_array($input["tablename"], $CFG_GLPI["dropdowntree_tables"])) {
+            $parentIDfield=getForeignKeyFieldFor($table);
 
 				$query_twin="SELECT ID FROM `".$input["tablename"]."` 
-					WHERE $add_entity_field_twin name= '".$input["value"]."' AND parentID='0'";
+					WHERE $add_entity_field_twin name= '".$input["value"]."' AND $parentIDfield='0'";
 
 				if ($input['type'] != "first" && $input["value2"] != 0) {
 					$level_up=-1;
@@ -555,13 +559,13 @@ function getDropdownID($input){
 					if ($DB->numrows($result) > 0) {
 						
 						$data = $DB->fetch_array($result);
-						$level_up = $data["parentID"];
+						$level_up = $data[$parentIDfield];
 						if ($input["type"] == "under") {
 							$level_up = $data["ID"];
 						}
 					} 
 					$query_twin="SELECT ID FROM `".$input["tablename"]."` 
-						WHERE $add_entity_field_twin name= '".$input["value"]."' AND parentID='$level_up'";
+						WHERE $add_entity_field_twin name= '".$input["value"]."' AND $parentIDfield='$level_up'";
 				}
 			} else {
 				$query_twin="SELECT ID FROM `".$input["tablename"]."` 
@@ -680,8 +684,8 @@ function addDropdown($input) {
 				VALUES (" . $add_entity_value . "'" . $input["value"] . "', '" . $input["value2"] . "', '" . $input["comments"] . "')";
 		} else {
 			if (in_array($input["tablename"], $CFG_GLPI["dropdowntree_tables"])) {
-
-				$query = "INSERT INTO `".$input["tablename"]."` (" . $add_entity_field . "name,parentID,completename,comments)
+            $parentIDfield=getForeignKeyFieldFor($table);
+				$query = "INSERT INTO `".$input["tablename"]."` (" . $add_entity_field . "name,$parentIDfield,completename,comments)
 					VALUES (" . $add_entity_value . "'" . $input["value"] . "', '0','','" . $input["comments"] . "')";
 
 				if ($input['type'] != "first" && $input["value2"] != 0) {
@@ -693,12 +697,12 @@ function addDropdown($input) {
 					if ($DB->numrows($result) > 0) {
 						
 						$data = $DB->fetch_array($result);
-						$level_up = $data["parentID"];
+						$level_up = $data["$parentIDfield"];
 						if ($input["type"] == "under") {
 							$level_up = $data["ID"];
 						}
 					} 
-					$query = "INSERT INTO `".$input["tablename"]."` (" . $add_entity_field . "name,parentID,completename,comments) 
+					$query = "INSERT INTO `".$input["tablename"]."` (" . $add_entity_field . "name,$parentIDfield,completename,comments)
 					VALUES (" . $add_entity_value . "'" . $input["value"] . "', '$level_up','','" . $input["comments"] . "')";
 				}
 			} else {
@@ -818,8 +822,8 @@ function showDeleteConfirmForm($target, $table, $ID,$entities_id) {
 	}
 
 	if (in_array($table,$CFG_GLPI["dropdowntree_tables"])) {
-
-		$query = "SELECT COUNT(*) AS cpt FROM `$table` WHERE `parentID` = '" . $ID . "'";
+      $parentIDfield=getForeignKeyFieldFor($table);
+		$query = "SELECT COUNT(*) AS cpt FROM `$table` WHERE `$parentIDfield` = '" . $ID . "'";
 		$result = $DB->query($query);
 		if ($DB->result($result, 0, "cpt") > 0) {
 			echo "<div class='center'><p class='red'>" . $LANG['setup'][74] . "</p></div>";

@@ -38,6 +38,17 @@ if (!defined('GLPI_ROOT')){
 	}
 
 /**
+ * Return foreign key field name for a table
+ *
+ * @param $table string: table name
+ *
+ * return string field name used for a foreign key to the parameter table
+ */
+function getForeignKeyFieldFor($table){
+  return str_replace("glpi_","",$table)."_id";
+}
+
+/**
  * Count the number of elements in a table.
  *
  * @param $table string: table name
@@ -200,6 +211,8 @@ function getTreeValueCompleteName($table,$ID,$withcomments=false){
 function getTreeValueName($table,$ID, $wholename="",$level=0){
 	global $DB,$LANG;
 
+   $parentIDfield=getForeignKeyFieldFor($table);
+
 	$query = "SELECT * 
 		FROM `$table` 
 		WHERE (ID = '$ID')";
@@ -210,7 +223,7 @@ function getTreeValueName($table,$ID, $wholename="",$level=0){
 
 			$row=$DB->fetch_array($result);
 
-			$parentID = $row["parentID"];
+			$parentID = $row[$parentIDfield];
 			if($wholename == "")
 			{
 				$name = $row["name"];
@@ -239,6 +252,8 @@ function getTreeValueName($table,$ID, $wholename="",$level=0){
 function getAncestorsOf($table,$IDf){
    global $DB;
 
+   $parentIDfield=getForeignKeyFieldFor($table);
+
    $use_cache=FieldExists($table,"cache_ancestors");
    if ($use_cache){
       $query="SELECT cache_ancestors FROM `$table` WHERE ID = '$IDf'";
@@ -256,7 +271,7 @@ function getAncestorsOf($table,$IDf){
 	// Get the leafs of previous founded item
    while ($IDf>0){
       // Get next elements
-      $query="SELECT parentID
+      $query="SELECT $parentIDfield
                FROM `$table`
                WHERE ID = '$IDf'";
 
@@ -292,6 +307,8 @@ function getAncestorsOf($table,$IDf){
 function getSonsOf($table,$IDf){
    global $DB;
 
+   $parentIDfield=getForeignKeyFieldFor($table);
+
    $use_cache=FieldExists($table,"cache_sons");
    if ($use_cache){
       $query="SELECT cache_sons FROM `$table` WHERE ID = '$IDf'";
@@ -309,7 +326,7 @@ function getSonsOf($table,$IDf){
 	// First request init the  varriables
    $query="SELECT ID
          FROM `$table`
-         WHERE parentID = '$IDf'
+         WHERE $parentIDfield = '$IDf'
          ORDER BY name";
    if ( ($result=$DB->query($query)) && ($DB->numrows($result)>0) ){
       while ($row=$DB->fetch_array($result)){
@@ -324,7 +341,7 @@ function getSonsOf($table,$IDf){
 		// Get next elements
       $query="SELECT ID
             FROM `$table`
-            WHERE parentID IN ('" . implode("','",$found) . "')";
+            WHERE $parentIDfield IN ('" . implode("','",$found) . "')";
 
 		// CLear the found array
       unset($found);
@@ -359,6 +376,8 @@ function getSonsOf($table,$IDf){
 function getTreeForItem($table,$IDf){
 	global $DB;
 
+   $parentIDfield=getForeignKeyFieldFor($table);
+
 	// IDs to be present in the final array
 	$id_found=array();
 
@@ -367,7 +386,7 @@ function getTreeForItem($table,$IDf){
 	// First request init the  varriables
 	$query="SELECT * 
 		FROM `$table` 
-		WHERE parentID = '$IDf' ORDER BY name";
+		WHERE $parentIDfield = '$IDf' ORDER BY name";
 	if ( ($result=$DB->query($query)) && ($DB->numrows($result)>0) ){
 		while ($row=$DB->fetch_array($result)){
 			$id_found[$row['ID']]['parent']=$IDf;
@@ -382,7 +401,7 @@ function getTreeForItem($table,$IDf){
 		// Get next elements
 		$query="SELECT * 
 			FROM `$table` 
-			WHERE parentID IN ('" . implode("','",$found)."') ORDER BY name";
+			WHERE $parentIDfield IN ('" . implode("','",$found)."') ORDER BY name";
 		// CLear the found array
 		unset($found);
 		$found=array();
@@ -391,7 +410,7 @@ function getTreeForItem($table,$IDf){
 		if ($DB->numrows($result)>0){
 			while ($row=$DB->fetch_array($result)){
 				if (!isset($id_found[$row['ID']])){
-					$id_found[$row['ID']]['parent']=$row['parentID'];
+					$id_found[$row['ID']]['parent']=$row[$parentIDfield];
 					$id_found[$row['ID']]['name']=$row['name'];
 					$found[$row['ID']]=$row['ID'];
 				}
@@ -496,17 +515,19 @@ function getTreeItemLevel($table,$ID){
 	global $DB;
 	$level=0;
 
-	$query="SELECT parentID 
+   $parentIDfield=getForeignKeyFieldFor($table);
+   
+	$query="SELECT $parentIDfield 
 		FROM $table 
 		WHERE ID='$ID'";
 	while (1)
 	{
 		if (($result=$DB->query($query))&&$DB->numrows($result)==1){
-			$parentID=$DB->result($result,0,"parentID");
+			$parentID=$DB->result($result,0,$parentIDfield;
 			if ($parentID==0) return $level;
 			else {
 				$level++;
-				$query="SELECT parentID 
+				$query="SELECT $parentIDfield 
 					FROM $table 
 					WHERE ID='$parentID'";
 			}
@@ -551,6 +572,8 @@ function regenerateTreeCompleteName($table){
 function regenerateTreeCompleteNameUnderID($table,$ID){
 	global $DB;
 
+   $parentIDfield=getForeignKeyFieldFor($table);
+
 	list($name,$level)=getTreeValueName($table,$ID);
 
 	$query="UPDATE `$table` 
@@ -559,7 +582,7 @@ function regenerateTreeCompleteNameUnderID($table,$ID){
 	$DB->query($query);
 	$query="SELECT ID 
 		FROM `$table` 
-		WHERE parentID='$ID'";
+		WHERE $parentIDfield='$ID'";
 	$result=$DB->query($query);
 	if ($DB->numrows($result)>0){
 		while ($data=$DB->fetch_array($result)){
