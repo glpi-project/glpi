@@ -69,7 +69,7 @@
 				$path['cls']	= 'file';
 
 				if ($recursive){
-					$query2="SELECT COUNT(ID) FROM glpi_entities WHERE parentID='".$ID."';";
+					$query2="SELECT COUNT(ID) FROM glpi_entities WHERE entities_id='".$ID."';";
 					$result2=$DB->query($query2);
 					if ($DB->result($result2,0,0) >0){
 						$path['leaf']	= false;
@@ -81,7 +81,7 @@
 			}
 		} else { // standard node
 
-			$query="SELECT * FROM glpi_entities WHERE parentID='".$_REQUEST['node']."' ORDER BY name";
+			$query="SELECT * FROM glpi_entities WHERE entities_id='".$_REQUEST['node']."' ORDER BY name";
 			if ($result=$DB->query($query)){
 				if ($DB->numrows($result)){
 					$pos=0;
@@ -94,7 +94,7 @@
 							
 						$path['href']	= $CFG_GLPI["root_doc"]."/front/$target?active_entity=".$row['ID'];
 						// Check if node is a leaf or a folder.
-						$query2="SELECT COUNT(ID) FROM glpi_entities WHERE parentID='".$row['ID']."';";
+						$query2="SELECT COUNT(ID) FROM glpi_entities WHERE entities_id='".$row['ID']."';";
 						$result2=$DB->query($query2);
 						if ($DB->result($result2,0,0) >0){
 							$path['leaf']	= false;

@@ -943,10 +943,10 @@ class Transfer extends CommonDBTM{
 							$input['value']=$data['name'];
 							$input['comments']=$data['comments'];
 							$input['type']="under";
-							$input['value2']=0; // parentID
-							// if parentID>0 : transfer parent ID
-							if ($data['parentID']>0){
-								$input['value2']=$this->transferDropdownLocation($data['parentID']);
+							$input['value2']=0; // locations_id
+							// if locations_id>0 : transfer parent ID
+							if ($data['locations_id']>0){
+								$input['value2']=$this->transferDropdownLocation($data['locations_id']);
 							}
 							// add item
 							$newID=addDropdown($input);

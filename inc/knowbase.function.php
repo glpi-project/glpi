@@ -47,11 +47,11 @@ if (!defined('GLPI_ROOT')){
  *
  * @param $target where to go
  * @param $contains search pattern
- * @param $parentID category ID
+ * @param $knowbaseitemscategories_id category ID
  * @param $faq display on faq ?
  * @return nothing (display the form)
  **/
-function searchFormKnowbase($target,$contains,$parentID=0,$faq=0){
+function searchFormKnowbase($target,$contains,$knowbaseitemscategories_id=0,$faq=0){
 	global $LANG,$CFG_GLPI;
 	
 	if ($CFG_GLPI["public_faq"] == 0&&!haveRight("knowbase","r")&&!haveRight("faq","r")) return false;
@@ -79,7 +79,7 @@ function searchFormKnowbase($target,$contains,$parentID=0,$faq=0){
 		echo "<tr ><th colspan='2'>".$LANG['buttons'][43]."</th></tr>";
 		echo "<tr class='tab_bg_2'><td class='center'>";
 		echo $LANG['common'][36]." : &nbsp; &nbsp;";
-		dropdownValue("glpi_knowbaseitemscategories","parentID",$parentID);
+		dropdownValue("glpi_knowbaseitemscategories","knowbaseitemscategories_id",$knowbaseitemscategories_id);
 		// ----***** TODO Dropdown qui affiche uniquement les categories contenant une FAQ
 		
 		echo "</td><td><input type='submit' value=\"".$LANG['buttons'][2]."\" class='submit' ></td></tr>";
@@ -99,11 +99,11 @@ function searchFormKnowbase($target,$contains,$parentID=0,$faq=0){
  * Show KB categories
  *
  * @param $target where to go
- * @param $parentID category ID
+ * @param $knowbaseitemscategories_id category ID
  * @param $faq display on faq ?
  * @return nothing (display the form)
  **/
-function showKbCategoriesFirstLevel($target,$parentID=0,$faq=0){
+function showKbCategoriesFirstLevel($target,$knowbaseitemscategories_id=0,$faq=0){
 
 	global $DB,$LANG,$CFG_GLPI;
 	
@@ -145,7 +145,7 @@ function showKbCategoriesFirstLevel($target,$parentID=0,$faq=0){
 		$query = "SELECT DISTINCT glpi_knowbaseitemscategories.* 
 			FROM glpi_knowbaseitemscategories 
 			WHERE ID IN ".$_SESSION['glpi_faqcategories']." 
-				AND (glpi_knowbaseitemscategories.parentID = '$parentID') 
+				AND (glpi_knowbaseitemscategories.knowbaseitemscategories_id = '$knowbaseitemscategories_id')
 			ORDER  BY name ASC";
 	}else{
 		if (!haveRight("knowbase","r")) {
@@ -153,7 +153,7 @@ function showKbCategoriesFirstLevel($target,$parentID=0,$faq=0){
 		}
 		$query = "SELECT * 
 			FROM glpi_knowbaseitemscategories 
-			WHERE  (glpi_knowbaseitemscategories.parentID = '$parentID') 
+			WHERE  (glpi_knowbaseitemscategories.knowbaseitemscategories_id = '$knowbaseitemscategories_id')
 			ORDER  BY name ASC";
 	}
 
@@ -163,8 +163,8 @@ function showKbCategoriesFirstLevel($target,$parentID=0,$faq=0){
 		echo "<tr><td colspan='3'><a  href=\"".$target."\"><img alt='' src='".$CFG_GLPI["root_doc"]."/pics/folder-open.png'  class='bottom'></a>";
 
 		// Display Category
-		if ($parentID!=0){
-			$tmpID=$parentID;
+		if ($knowbaseitemscategories_id!=0){
+			$tmpID=$knowbaseitemscategories_id;
 			$todisplay="";
 			while ($tmpID!=0){
 				$query2="SELECT * 
@@ -173,10 +173,10 @@ function showKbCategoriesFirstLevel($target,$parentID=0,$faq=0){
 				$result2=$DB->query($query2);
 				if ($DB->numrows($result2)==1){	
 					$data=$DB->fetch_assoc($result2);
-					$tmpID=$data["parentID"];
-					$todisplay="<a href='$target?parentID=".$data["ID"]."'>".$data["name"]."</a>".(empty($todisplay)?"":" > ").$todisplay;
+					$tmpID=$data["knowbaseitemscategories_id"];
+					$todisplay="<a href='$target?knowbaseitemscategories_id=".$data["ID"]."'>".$data["name"]."</a>".(empty($todisplay)?"":" > ").$todisplay;
 				} else $tmpID=0;
-//				echo getDropdownName("glpi_knowbaseitemscategories",$parentID,"")."</td></tr>";
+//				echo getDropdownName("glpi_knowbaseitemscategories",$knowbaseitemscategories_id,"")."</td></tr>";
 			}
 			echo " > ".$todisplay;
 		}
@@ -191,7 +191,7 @@ function showKbCategoriesFirstLevel($target,$parentID=0,$faq=0){
 					$ID = $row["ID"];
 					echo "<td class='tdkb_result'>";
 				
-					echo "<img alt='' src='".$CFG_GLPI["root_doc"]."/pics/folder.png'  hspace=\"5\" > <strong><a  href=\"".$target."?parentID=".$row["ID"]."\">".$row["name"]."</a></strong>\n";
+					echo "<img alt='' src='".$CFG_GLPI["root_doc"]."/pics/folder.png'  hspace=\"5\" > <strong><a  href=\"".$target."?knowbaseitemscategories_id=".$row["ID"]."\">".$row["name"]."</a></strong>\n";
 					echo "<div class='kb_resume'>".resume_text($row['comments'],60)."</div>";
 			
 				if($i%3==2) { echo "</tr>\n"; }
@@ -214,10 +214,10 @@ function showKbCategoriesFirstLevel($target,$parentID=0,$faq=0){
 * @param $target where to go
 * @param $contains search pattern
 * @param $start where to start
-* @param $parentID category ID
+* @param $knowbaseitemscategories_id category ID
 * @param $faq display on faq ?
 **/
-function showKbItemList($target,$contains,$start,$parentID,$faq=0){
+function showKbItemList($target,$contains,$start,$knowbaseitemscategories_id,$faq=0){
 	// Lists kb  Items
 
 	global $DB,$CFG_GLPI, $LANG;
@@ -280,7 +280,7 @@ function showKbItemList($target,$contains,$start,$parentID,$faq=0){
 		}
 
 	} else { // no search -> browse by category
-		$where.="(glpi_knowbaseitems.categoryID = '$parentID') ";
+		$where.="(glpi_knowbaseitems.categoryID = '$knowbaseitemscategories_id') ";
 		$order="ORDER BY glpi_knowbaseitems.question ASC";
 	}
 	
@@ -315,7 +315,7 @@ function showKbItemList($target,$contains,$start,$parentID,$faq=0){
 				$output_type=$_GET["display_type"];
 
 			// Pager
-			$parameters="start=$start&amp;parentID=$parentID&amp;contains=$contains&amp;faq=$faq";
+			$parameters="start=$start&amp;knowbaseitemscategories_id=$knowbaseitemscategories_id&amp;contains=$contains&amp;faq=$faq";
 			if ($output_type==HTML_OUTPUT){
 				printPager($start,$numrows,$_SERVER['PHP_SELF'],$parameters,KNOWBASE_TYPE);
 			}
@@ -357,7 +357,7 @@ function showKbItemList($target,$contains,$start,$parentID,$faq=0){
 
 			// Display footer
 			if ($output_type==PDF_OUTPUT_LANDSCAPE || $output_type==PDF_OUTPUT_PORTRAIT){
-				echo displaySearchFooter($output_type,getDropdownName("glpi_knowbaseitemscategories",$parentID));
+				echo displaySearchFooter($output_type,getDropdownName("glpi_knowbaseitemscategories",$knowbaseitemscategories_id));
 			} else {
 				echo displaySearchFooter($output_type);
 			}
@@ -367,7 +367,7 @@ function showKbItemList($target,$contains,$start,$parentID,$faq=0){
 			}
 
 		} else {
-			if ($parentID!=0) {echo "<div class='center'><strong>".$LANG['search'][15]."</strong></div>";}
+			if ($knowbaseitemscategories_id!=0) {echo "<div class='center'><strong>".$LANG['search'][15]."</strong></div>";}
 		}
 	}
 
@@ -545,7 +545,7 @@ function ShowKbItemFull($ID,$linkusers_id=true){
 	
 		echo "<table class='tab_cadre_fixe' cellpadding='10' ><tr><th colspan='2'>";
 		
-		echo $LANG['common'][36].": <a href='".$CFG_GLPI["root_doc"]."/front/".(isset($_SESSION['glpiactiveprofile'])&&$_SESSION['glpiactiveprofile']['interface']=="central"?"knowbase.php":"helpdesk.faq.php")."?parentID=$categoryID'>".$fullcategoryname."</a></th></tr>";
+		echo $LANG['common'][36].": <a href='".$CFG_GLPI["root_doc"]."/front/".(isset($_SESSION['glpiactiveprofile'])&&$_SESSION['glpiactiveprofile']['interface']=="central"?"knowbase.php":"helpdesk.faq.php")."?knowbaseitemscategories_id=$categoryID'>".$fullcategoryname."</a></th></tr>";
 	
       echo "<tr class='tab_bg_3'><td class='left' colspan='2'><h2>";
       echo ($ki->fields["faq"]) ? "".$LANG['knowbase'][3]."" : "".$LANG['knowbase'][14]."";
@@ -658,8 +658,8 @@ function getFAQCategories()
 			}
 			$DB->data_seek($result,0);
 			while ($row=$DB->fetch_array($result)){
-				if($row["parentID"]&&!in_array($row["parentID"], $toprocess)){
-					$toprocess[]=$row["parentID"];
+				if($row["knowbaseitemscategories_id"]&&!in_array($row["knowbaseitemscategories_id"], $toprocess)){
+					$toprocess[]=$row["knowbaseitemscategories_id"];
 				}
 			}
 
@@ -677,8 +677,8 @@ function getFAQCategories()
 				while ($row=$DB->fetch_array($result)){
 					if(!in_array($row["ID"], $catNumbers)){
 						$catNumbers[]=$row["ID"];
-						if($row["parentID"]&&!in_array($row["parentID"], $toprocess)){
-							$toprocess[]=$row["parentID"];
+						if($row["knowbaseitemscategories_id"]&&!in_array($row["knowbaseitemscategories_id"], $toprocess)){
+							$toprocess[]=$row["knowbaseitemscategories_id"];
 						}
 					}
 				}

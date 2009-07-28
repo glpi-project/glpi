@@ -65,7 +65,7 @@ if (isset($_GET["redirect"])){
 	
 	if(!isset($_GET["start"])) $_GET["start"] = 0;
 	if (!isset($_GET["contains"])) $_GET["contains"] = "";
-	if(!isset($_GET["parentID"])) $_GET["parentID"] = 0;
+	if(!isset($_GET["knowbaseitemscategories_id"])) $_GET["knowbaseitemscategories_id"] = 0;
 
 
 	if (isset($_GET["ID"])){
@@ -75,10 +75,10 @@ if (isset($_GET["redirect"])){
 		}
 
 	} else {
-		searchFormKnowbase($_SERVER['PHP_SELF'],$_GET["contains"],$_GET["parentID"],1);
-		showKbCategoriesFirstLevel($_SERVER['PHP_SELF'],$_GET["parentID"] ,1);
-		showKbItemList($_SERVER['PHP_SELF'],$_GET["contains"],$_GET["start"],$_GET["parentID"],1);
-		if (!$_GET["parentID"] && strlen($_GET["contains"])==0){
+		searchFormKnowbase($_SERVER['PHP_SELF'],$_GET["contains"],$_GET["knowbaseitemscategories_id"],1);
+		showKbCategoriesFirstLevel($_SERVER['PHP_SELF'],$_GET["knowbaseitemscategories_id"] ,1);
+		showKbItemList($_SERVER['PHP_SELF'],$_GET["contains"],$_GET["start"],$_GET["knowbaseitemscategories_id"],1);
+		if (!$_GET["knowbaseitemscategories_id"] && strlen($_GET["contains"])==0){
 			showKbViewGlobal($_SERVER['PHP_SELF'],1) ;
 		}
 		
