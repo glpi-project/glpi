@@ -108,7 +108,7 @@ class Job extends CommonDBTM{
 	**/
 	function getHardwareData(){
 		$m= new CommonItem;
-		if ($m->getFromDB($this->fields["device_type"],$this->fields["computer"])){
+		if ($m->getFromDB($this->fields["itemtype"],$this->fields["items_id"])){
 			$this->hardwaredatas=$m;
 			$this->computerfound=0;
 		} else {
@@ -192,26 +192,26 @@ class Job extends CommonDBTM{
 
 		// NEEDED ???? 
 		if (isset($input["type"])&& $input["type"]==0&&!isset($input["item"])){
-			$input["computer"]=0;
-			$input["device_type"]=$input["type"];
+			$input["items_id"]=0;
+			$input["itemtype"]=$input["type"];
 		} else if (isset($input["item"])&& $input["item"]!=0&&isset($input["type"])&& $input["type"]!=0){
-			$input["computer"]=$input["item"];
-			$input["device_type"]=$input["type"];
+			$input["items_id"]=$input["item"];
+			$input["itemtype"]=$input["type"];
 		} 
 
-		if (isset($input["computer"])&&$input["computer"]>=0&&isset($input["device_type"])&&$input["device_type"]>=0){
+		if (isset($input["items_id"])&&$input["items_id"]>=0&&isset($input["itemtype"])&&$input["itemtype"]>=0){
 			if (isset($this->fields['FK_group'])&&$this->fields['FK_group']){
 				$ci=new CommonItem;
-				$ci->getFromDB($input["device_type"],$input["computer"]);
+				$ci->getFromDB($input["itemtype"],$input["items_id"]);
 				if ($tmp=$ci->getField('FK_groups')){
 					$input["FK_group"] = $tmp;
 				}
 			}
-		} else if (isset($input["device_type"])&&$input["device_type"]==0){
-			$input["computer"]=0;
+		} else if (isset($input["itemtype"])&&$input["itemtype"]==0){
+			$input["items_id"]=0;
 		} else {
-			unset($input["computer"]);
-			unset($input["device_type"]);
+			unset($input["items_id"]);
+			unset($input["itemtype"]);
 		}	
 
 
@@ -263,8 +263,8 @@ class Job extends CommonDBTM{
 			$input["_old_assign_ent_name"]=getAssignName($this->fields["assign_ent"],ENTERPRISE_TYPE);
 			$input["_old_assign_group_name"]=getAssignName($this->fields["assign_group"],GROUP_TYPE);
 			$input["_old_category"]=$this->fields["category"];
-			$input["_old_item"]=$this->fields["computer"];
-			$input["_old_item_type"]=$this->fields["device_type"];
+			$input["_old_item"]=$this->fields["items_id"];
+			$input["_old_item_type"]=$this->fields["itemtype"];
 			$input["_old_author"]=$this->fields["author"];
 			$input["_old_recipient"]=$this->fields["recipient"];
 			$input["_old_group"]=$this->fields["FK_group"];
@@ -361,10 +361,10 @@ class Job extends CommonDBTM{
 			// Update Ticket Tco
 			if (in_array("realtime",$updates)||in_array("cost_time",$updates)|| in_array("cost_fixed",$updates)||in_array("cost_material",$updates)){
 				$ci=new CommonItem;
-				if ($ci->getFromDB($this->fields["device_type"],$this->fields["computer"])){
+				if ($ci->getFromDB($this->fields["itemtype"],$this->fields["items_id"])){
 					$newinput=array();
-					$newinput['ID']=$this->fields["computer"];
-					$newinput['ticket_tco']=computeTicketTco($this->fields["device_type"],$this->fields["computer"]);
+					$newinput['ID']=$this->fields["items_id"];
+					$newinput['ticket_tco']=computeTicketTco($this->fields["itemtype"],$this->fields["items_id"]);
 					$ci->obj->update($newinput);
 				}
 			}
@@ -453,12 +453,12 @@ class Job extends CommonDBTM{
 						$change_followup_content.=$LANG['mailing'][21].": ".$old_request_type_name." -> ".$new_request_type_name."\n";
 						$global_mail_change_count++;
 					break;
-					case "computer" :
-					case "device_type":
-						if (isset($already_done_computer_device_type_update)){
+					case "items_id" :
+					case "itemtype":
+						if (isset($already_done_computer_itemtype_update)){
 							break;
 						} else {
-							$already_done_computer_device_type_update=true;
+							$already_done_computer_itemtype_update=true;
 						}
 
 						$ci=new CommonItem;
@@ -466,14 +466,14 @@ class Job extends CommonDBTM{
 						$old_item_name=$ci->getName();
 						if ($old_item_name=="N/A"||empty($old_item_name))
 							$old_item_name=$LANG['mailing'][107];
-						$ci->getFromDB($this->fields["device_type"],$this->fields["computer"]);
+						$ci->getFromDB($this->fields["itemtype"],$this->fields["items_id"]);
 						$new_item_name=$ci->getName();
 						if ($new_item_name=="N/A"||empty($new_item_name))
 							$new_item_name=$LANG['mailing'][107];
 		
 						$change_followup_content.=$LANG['mailing'][17].": $old_item_name -> ".$new_item_name."\n";
-						if (in_array("computer",$updates)) $global_mail_change_count++;
-						if (in_array("device_type",$updates)) $global_mail_change_count++;
+						if (in_array("items_id",$updates)) $global_mail_change_count++;
+						if (in_array("itemtype",$updates)) $global_mail_change_count++;
 					break;
 					case "assign" :
 						$new_assign_name=getAssignName($this->fields["assign"],USER_TYPE);
@@ -623,26 +623,26 @@ class Job extends CommonDBTM{
 			$input["date"] = $_SESSION["glpi_currenttime"];
 		}
 
-		if (isset($input["computer"])&&$input["computer"]==0){
-			$input["device_type"]=0;	
+		if (isset($input["items_id"])&&$input["items_id"]==0){
+			$input["itemtype"]=0;	
 		}
 
-		if ($input["device_type"]==0){
-			$input["computer"]=0;
+		if ($input["itemtype"]==0){
+			$input["items_id"]=0;
 		}
 
 		// Auto group define
-		if (isset($input["computer"])&&$input["computer"]&&$input["device_type"]){
+		if (isset($input["items_id"])&&$input["items_id"]&&$input["itemtype"]){
 			$ci=new CommonItem;
-			$ci->getFromDB($input["device_type"],$input["computer"]);
+			$ci->getFromDB($input["itemtype"],$input["items_id"]);
 			if ($tmp=$ci->getField('FK_groups')){
 				$input["FK_group"] = $tmp;
 			}
 		}
 
-		if ($CFG_GLPI["auto_assign"]&&$input["assign"]==0&&isset($input["computer"])&&$input["computer"]>0&&isset($input["device_type"])&&$input["device_type"]>0){
+		if ($CFG_GLPI["auto_assign"]&&$input["assign"]==0&&isset($input["items_id"])&&$input["items_id"]>0&&isset($input["itemtype"])&&$input["itemtype"]>0){
 			$ci=new CommonItem;
-			$ci->getFromDB($input["device_type"],$input["computer"]);
+			$ci->getFromDB($input["itemtype"],$input["items_id"]);
 			if ($tmp=$ci->getField('tech_num')){
 				$input["assign"] = $tmp;
 				if ($input["assign"]>0){
@@ -661,7 +661,7 @@ class Job extends CommonDBTM{
 		}
 
 		// Set default dropdown
-		$dropdown_fields=array('FK_entities','device_type','request_type','assign_group','assign','FK_group','author','category');
+		$dropdown_fields=array('FK_entities','itemtype','request_type','assign_group','assign','FK_group','author','category');
 		foreach ($dropdown_fields as $field ){
 			if (!isset($input[$field])){
 				$input[$field]=0;
@@ -927,7 +927,7 @@ class Job extends CommonDBTM{
 			}
 			if (isset($this->hardwaredatas->obj->fields["model"])&&$this->hardwaredatas->obj->fields["model"]>0){
 				$add="";
-				switch ($this->fields['device_type']){
+				switch ($this->fields['itemtype']){
 					case MONITOR_TYPE:
 						$add='_monitors';
 						break;
@@ -995,7 +995,7 @@ class Job extends CommonDBTM{
 			}
 			$message.= "<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$LANG['mailing'][8].":</span> ".$assign."\n";
 			$message.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$LANG['joblist'][2].":</span> ".getPriorityName($this->fields["priority"])."\n";
-			if ($this->fields["device_type"]!=SOFTWARE_TYPE&&!empty($contact))
+			if ($this->fields["itemtype"]!=SOFTWARE_TYPE&&!empty($contact))
 				$message.= "<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$LANG['common'][18].":</span> ".$contact."\n";
 			if (isset($this->fields["emailupdates"]) && $this->fields["emailupdates"]){
 				$message.="<span style='color:#8B8C8F; font-weight:bold;  text-decoration:underline; '>".$LANG['mailing'][103].":</span> ".$LANG['choice'][1]."\n";
@@ -1042,7 +1042,7 @@ class Job extends CommonDBTM{
 
 			$message.= mailRow($LANG['mailing'][8],$assign);
 			$message.= mailRow($LANG['joblist'][2],getPriorityName($this->fields["priority"]));
-			if ($this->fields["device_type"]!=SOFTWARE_TYPE&&!empty($contact))
+			if ($this->fields["itemtype"]!=SOFTWARE_TYPE&&!empty($contact))
 				$message.= mailRow($LANG['common'][18],$contact);
 			if (isset($this->fields["emailupdates"]) && $this->fields["emailupdates"]){
 				$message.=mailRow($LANG['mailing'][103],$LANG['choice'][1]);

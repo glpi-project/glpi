@@ -54,10 +54,10 @@ function showInfocomEnterprise($instID) {
 
 	if (!haveRight("contact_enterprise","r")) return false;
 
-	$query = "SELECT DISTINCT device_type 
+	$query = "SELECT DISTINCT itemtype 
 		FROM glpi_infocoms 
 		WHERE FK_enterprise = '$instID' 
-		ORDER BY device_type";
+		ORDER BY itemtype";
 
 	$result = $DB->query($query);
 	$number = $DB->numrows($result);
@@ -76,12 +76,12 @@ function showInfocomEnterprise($instID) {
 	$ci=new CommonItem;
 	$num=0;
 	while ($i < $number) {
-		$type=$DB->result($result, $i, "device_type");
+		$type=$DB->result($result, $i, "itemtype");
 		if (haveTypeRight($type,"r")&&$type!=CONSUMABLE_ITEM_TYPE&&$type!=CARTRIDGE_ITEM_TYPE&&$type!=SOFTWARELICENSE_TYPE){
 			$query = "SELECT ".$LINK_ID_TABLE[$type].".* "
 				." FROM glpi_infocoms "
-				." INNER JOIN ".$LINK_ID_TABLE[$type]." ON (".$LINK_ID_TABLE[$type].".ID = glpi_infocoms.FK_device) "
-				." WHERE glpi_infocoms.device_type='$type' AND glpi_infocoms.FK_enterprise = '$instID' "
+				." INNER JOIN ".$LINK_ID_TABLE[$type]." ON (".$LINK_ID_TABLE[$type].".ID = glpi_infocoms.items_id) "
+				." WHERE glpi_infocoms.itemtype='$type' AND glpi_infocoms.FK_enterprise = '$instID' "
 				. getEntitiesRestrictRequest(" AND",$LINK_ID_TABLE[$type]) 
 				." ORDER BY FK_entities, ".$LINK_ID_TABLE[$type].".name";
 				

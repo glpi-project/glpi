@@ -71,7 +71,7 @@ else if (isset($_POST["update"]))
 else if (isset($_POST["adddevice"])){
 	$link->check($_POST["lID"],'w');
 
-	addLinkDevice($_POST["device_type"],$_POST["lID"]);
+	addLinkDevice($_POST["itemtype"],$_POST["lID"]);
 	logEvent($_POST["lID"], "links", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][32]);
 	glpi_header($CFG_GLPI["root_doc"]."/front/link.form.php?ID=".$_POST["lID"]);
 }

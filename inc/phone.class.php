@@ -107,7 +107,7 @@ class Phone extends CommonDBTM {
 			// ADD Infocoms
 			$ic= new Infocom();
 			if ($ic->getFromDBforDevice(PHONE_TYPE,$input["_oldID"])){
-				$ic->fields["FK_device"]=$newID;
+				$ic->fields["items_id"]=$newID;
 				unset ($ic->fields["ID"]);
 				if (isset($ic->fields["num_immo"])) {
 					$ic->fields["num_immo"] = autoName($ic->fields["num_immo"], "num_immo", 1, INFOCOM_TYPE,$input['FK_entities']);
@@ -125,7 +125,7 @@ class Phone extends CommonDBTM {
 			// ADD Ports
 			$query="SELECT ID 
 				FROM glpi_networkports 
-				WHERE on_device='".$input["_oldID"]."' AND device_type='".PHONE_TYPE."';";
+				WHERE items_id='".$input["_oldID"]."' AND itemtype='".PHONE_TYPE."';";
 			$result=$DB->query($query);
 			if ($DB->numrows($result)>0){
 	
@@ -136,7 +136,7 @@ class Phone extends CommonDBTM {
 					unset($np->fields["ifaddr"]);
 					unset($np->fields["ifmac"]);
 					unset($np->fields["netpoint"]);
-					$np->fields["on_device"]=$newID;
+					$np->fields["items_id"]=$newID;
 					$np->addToDB();
 				}
 			}
@@ -144,7 +144,7 @@ class Phone extends CommonDBTM {
 			// ADD Contract				
 			$query="SELECT FK_contract 
 				FROM glpi_contracts_items 
-				WHERE FK_device='".$input["_oldID"]."' AND device_type='".PHONE_TYPE."';";
+				WHERE items_id='".$input["_oldID"]."' AND itemtype='".PHONE_TYPE."';";
 			$result=$DB->query($query);
 			if ($DB->numrows($result)>0){
 	
@@ -155,7 +155,7 @@ class Phone extends CommonDBTM {
 			// ADD Documents			
 			$query="SELECT FK_doc 
 				FROM glpi_documents_items 
-				WHERE FK_device='".$input["_oldID"]."' AND device_type='".PHONE_TYPE."';";
+				WHERE items_id='".$input["_oldID"]."' AND itemtype='".PHONE_TYPE."';";
 			$result=$DB->query($query);
 			if ($DB->numrows($result)>0){
 	
@@ -176,20 +176,20 @@ class Phone extends CommonDBTM {
 		$job =new Job();
 		$query = "SELECT * 
 			FROM glpi_tickets 
-			WHERE (computer = '$ID'  AND device_type='".PHONE_TYPE."')";
+			WHERE (items_id = '$ID'  AND itemtype='".PHONE_TYPE."')";
 		$result = $DB->query($query);
 
 		if ($DB->numrows($result))
 			while ($data=$DB->fetch_array($result)) {
 				if ($CFG_GLPI["keep_tracking_on_delete"]==1){
-					$query = "UPDATE glpi_tickets SET computer = '0', device_type='0' WHERE ID='".$data["ID"]."';";
+					$query = "UPDATE glpi_tickets SET items_id = '0', itemtype='0' WHERE ID='".$data["ID"]."';";
 					$DB->query($query);
 				} else $job->delete(array("ID"=>$data["ID"]));
 			}
 
 		$query="SELECT * 
 			FROM glpi_reservationsitems 
-			WHERE (device_type='".PHONE_TYPE."' AND id_device='$ID')";
+			WHERE (itemtype='".PHONE_TYPE."' AND items_id='$ID')";
 		if ($result = $DB->query($query)) {
 			if ($DB->numrows($result)>0){
 				$rr=new ReservationItem();
@@ -197,7 +197,7 @@ class Phone extends CommonDBTM {
 			}
 		}
 
-		$query = "DELETE FROM glpi_infocoms WHERE (FK_device = '$ID' AND device_type='".PHONE_TYPE."')";
+		$query = "DELETE FROM glpi_infocoms WHERE (items_id = '$ID' AND itemtype='".PHONE_TYPE."')";
 		$result = $DB->query($query);
 
 
@@ -211,7 +211,7 @@ class Phone extends CommonDBTM {
 			}
 		}
 
-		$query = "DELETE FROM glpi_contracts_items WHERE (FK_device = '$ID' AND device_type='".PHONE_TYPE."')";
+		$query = "DELETE FROM glpi_contracts_items WHERE (items_id = '$ID' AND itemtype='".PHONE_TYPE."')";
 		$result = $DB->query($query);
 	}
 

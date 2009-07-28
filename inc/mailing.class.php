@@ -335,9 +335,9 @@ class Mailing
 								break;
 							// TECH SEND
 							case TECH_MAILING :
-								if (isset($this->job->fields["computer"])&&$this->job->fields["computer"]>0&&isset($this->job->fields["device_type"])&&$this->job->fields["device_type"]>0){
+								if (isset($this->job->fields["items_id"])&&$this->job->fields["items_id"]>0&&isset($this->job->fields["itemtype"])&&$this->job->fields["itemtype"]>0){
 									$ci= new CommonItem();
-									$ci->getFromDB($this->job->fields["device_type"],$this->job->fields["computer"]);
+									$ci->getFromDB($this->job->fields["itemtype"],$this->job->fields["items_id"]);
 									if ($tmp=$ci->getField('tech_num')){
 										$query2 = "SELECT DISTINCT glpi_users.email AS EMAIL, glpi_users.language AS LANG 
 											FROM glpi_users $join 
@@ -353,9 +353,9 @@ class Mailing
 								break;
 							// USER SEND
 							case USER_MAILING :
-								if (isset($this->job->fields["computer"])&&$this->job->fields["computer"]>0&&isset($this->job->fields["device_type"])&&$this->job->fields["device_type"]>0){
+								if (isset($this->job->fields["items_id"])&&$this->job->fields["items_id"]>0&&isset($this->job->fields["itemtype"])&&$this->job->fields["itemtype"]>0){
 									$ci= new CommonItem();
-									$ci->getFromDB($this->job->fields["device_type"],$this->job->fields["computer"]);
+									$ci->getFromDB($this->job->fields["itemtype"],$this->job->fields["items_id"]);
 									if ($tmp=$ci->getField('FK_users')){
 										$query2 = "SELECT DISTINCT glpi_users.email AS EMAIL, glpi_users.language AS LANG 
 											FROM glpi_users $join 
@@ -734,7 +734,7 @@ class MailingResa{
 								$ci=new CommonItem();
 								$entity=-1;
 								if ($ri->getFromDB($this->resa->fields["id_item"])){
-									if ($ci->getFromDB($ri->fields['device_type'],$ri->fields['id_device'])	){
+									if ($ci->getFromDB($ri->fields['itemtype'],$ri->fields['items_id'])	){
 										$entity=$ci->getField('FK_entities');
 									}
 								}
@@ -762,7 +762,7 @@ class MailingResa{
 								$ri=new ReservationItem();
 								if ($ri->getFromDB($this->resa->fields["id_item"])){
 									$ci=new CommonItem();
-									$ci->getFromDB($ri->fields["device_type"],$ri->fields["id_device"]);
+									$ci->getFromDB($ri->fields["itemtype"],$ri->fields["items_id"]);
 
 									if ($tmp=$ci->getField('tech_num')){
 										$query2 = "SELECT glpi_users.email as EMAIL, glpi_users.language as LANG 
@@ -781,7 +781,7 @@ class MailingResa{
 								$ri=new ReservationItem();
 								if ($ri->getFromDB($this->resa->fields["id_item"])){
 									$ci=new CommonItem();
-									$ci->getFromDB($ri->fields["device_type"],$ri->fields["id_device"]);
+									$ci->getFromDB($ri->fields["itemtype"],$ri->fields["items_id"]);
 
 									if ($tmp=$ci->getField('FK_users')){
 										$query2 = "SELECT glpi_users.email AS EMAIL, glpi_users.language as LANG 
@@ -803,7 +803,7 @@ class MailingResa{
 						$ri=new ReservationItem();
 						$ri->getFromDB($this->resa->fields['id_item']);
 						$ci = new CommonItem();
-						$ci->getFromDB($ri->fields['device_type'],$ri->fields['id_device']);
+						$ci->getFromDB($ri->fields['itemtype'],$ri->fields['items_id']);
 						$FK_entities=$ci->getField('FK_entities');
 						$query="SELECT glpi_users.email AS EMAIL, glpi_users.language as LANG 
 							FROM glpi_profiles_users 
@@ -849,7 +849,7 @@ class MailingResa{
 		$ci=new CommonItem();
 		$entity=-1;
 		if ($ri->getFromDB($this->resa->fields["id_item"])){
-			if ($ci->getFromDB($ri->fields['device_type'],$ri->fields['id_device'])	){
+			if ($ci->getFromDB($ri->fields['itemtype'],$ri->fields['items_id'])	){
 				$entity=$ci->getField('FK_entities');
 			}
 		}

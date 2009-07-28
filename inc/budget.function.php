@@ -55,10 +55,10 @@ function showDeviceBudget($budgetID) {
 
 	if (!haveRight("budget","r")) return false;
 
-	$query = "SELECT DISTINCT device_type
+	$query = "SELECT DISTINCT itemtype
 		FROM glpi_infocoms
 		WHERE budget = '$budgetID'
-		ORDER BY device_type";
+		ORDER BY itemtype";
 
 	$result = $DB->query($query);
 	$number = $DB->numrows($result);
@@ -77,12 +77,12 @@ function showDeviceBudget($budgetID) {
 	$ci=new CommonItem;
 	$num=0;
 	while ($i < $number) {
-		$type=$DB->result($result, $i, "device_type");
+		$type=$DB->result($result, $i, "itemtype");
 		if (haveTypeRight($type,"r")&&$type!=CONSUMABLE_ITEM_TYPE&&$type!=CARTRIDGE_ITEM_TYPE&&$type!=SOFTWARELICENSE_TYPE){
 			$query = "SELECT ".$LINK_ID_TABLE[$type].".* "
 				." FROM glpi_infocoms "
-				." INNER JOIN ".$LINK_ID_TABLE[$type]." ON (".$LINK_ID_TABLE[$type].".ID = glpi_infocoms.FK_device) "
-				." WHERE glpi_infocoms.device_type='$type' AND glpi_infocoms.budget = '$budgetID' "
+				." INNER JOIN ".$LINK_ID_TABLE[$type]." ON (".$LINK_ID_TABLE[$type].".ID = glpi_infocoms.items_id) "
+				." WHERE glpi_infocoms.itemtype='$type' AND glpi_infocoms.budget = '$budgetID' "
 				. getEntitiesRestrictRequest(" AND",$LINK_ID_TABLE[$type])
 				." ORDER BY FK_entities, ".$LINK_ID_TABLE[$type].".name";
 
@@ -132,11 +132,11 @@ function showDeviceBudgetValue($budgetID) {
 
 	if (!haveRight("budget","r")) return false;
 
-	$query = "SELECT DISTINCT device_type, SUM(value) as sumvalue
+	$query = "SELECT DISTINCT itemtype, SUM(value) as sumvalue
 		FROM glpi_infocoms
 		WHERE budget = '$budgetID'
-		GROUP BY device_type
-      ORDER BY device_type";
+		GROUP BY itemtype
+      ORDER BY itemtype";
 
 	$result = $DB->query($query);
 	$number = $DB->numrows($result);
@@ -154,7 +154,7 @@ function showDeviceBudgetValue($budgetID) {
 	echo "<th>".$LANG['financial'][21]."</th>";
 	echo "</tr>";
 	while ($i < $number) {
-		$type=$DB->result($result, $i, "device_type");
+		$type=$DB->result($result, $i, "itemtype");
       $value = $DB->result($result, $i, "sumvalue");
       $ci->setType($type);
 		echo "<tr class='tab_bg_1'>";

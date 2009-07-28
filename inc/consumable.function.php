@@ -485,7 +485,7 @@ function cron_consumable($display=false){
 			glpi_consumablesitems.ref as consref, glpi_consumablesitems.name AS consname, 
 			glpi_consumablesitems.alarm AS threshold, glpi_alerts.ID AS alertID, glpi_alerts.date 
 		FROM glpi_consumablesitems 
-		LEFT JOIN glpi_alerts ON (glpi_consumablesitems.ID = glpi_alerts.FK_device AND glpi_alerts.device_type='".CONSUMABLE_TYPE."') 
+		LEFT JOIN glpi_alerts ON (glpi_consumablesitems.ID = glpi_alerts.items_id AND glpi_alerts.itemtype='".CONSUMABLE_TYPE."') 
 		WHERE glpi_consumablesitems.deleted='0' AND glpi_consumablesitems.alarm>='0' 
 			AND (glpi_alerts.date IS NULL OR (glpi_alerts.date+".$CFG_GLPI["consumables_alert"].") < CURRENT_TIMESTAMP());";
 
@@ -527,11 +527,11 @@ function cron_consumable($display=false){
 					logInFile("cron",getDropdownName("glpi_entities",$entity).":  $msg\n");
 
 					$input["type"]=ALERT_THRESHOLD;
-					$input["device_type"]=CONSUMABLE_TYPE;
+					$input["itemtype"]=CONSUMABLE_TYPE;
 
 					//// add alerts
 					foreach ($items[$entity] as $ID){
-						$input["FK_device"]=$ID;
+						$input["items_id"]=$ID;
 						$alert->add($input);
 						unset($alert->fields['ID']);
 					}

@@ -436,7 +436,7 @@ function dropdownUsersSelect ($count=true, $right="all", $entity_restrict=-1, $v
  * @param $all Nobody or All display for none selected $all =0 -> Nobody $all=1 -> All $all=-1-> nothing
  * @param $display_comments display comments near the dropdown
  * @param $entity_restrict Restrict to a defined entity
- * @param $helpdesk_ajax use ajax for helpdesk auto update (mail device_type)
+ * @param $helpdesk_ajax use ajax for helpdesk auto update (mail itemtype)
  * @param $used array of user ID
  * 
  * @return nothing (print out an HTML select box)
@@ -521,7 +521,7 @@ function dropdownUsers($myname,$value,$right,$all=0,$display_comments=1,$entity_
  * @param $value default value
  * @param $display_comments display comments near the dropdown
  * @param $entity_restrict Restrict to a defined entity
- * @param $helpdesk_ajax use ajax for helpdesk auto update (mail device_type)
+ * @param $helpdesk_ajax use ajax for helpdesk auto update (mail itemtype)
  * @param $used array of user ID
  * 
  * @return nothing (print out an HTML select box)
@@ -1150,7 +1150,7 @@ function dropdownTrackingAllDevices($myname,$value,$admin=0,$entity_restrict=-1)
 
 	if ($_SESSION["glpiactiveprofile"]["helpdesk_hardware"]==0){
 		echo "<input type='hidden' name='$myname' value='0'>";
-		echo "<input type='hidden' name='computer' value='0'>";
+		echo "<input type='hidden' name='items_id' value='0'>";
 	} else {
 		echo "<div id='tracking_all_devices'>";
 
@@ -1192,18 +1192,18 @@ function dropdownTrackingAllDevices($myname,$value,$admin=0,$entity_restrict=-1)
 			$params=array('type'=>'__VALUE__',
 					'entity_restrict'=>$entity_restrict,
 					'admin'=>$admin,
-					'myname'=>"computer",
+					'myname'=>"items_id",
 					);
 
 			ajaxUpdateItemOnSelectEvent("search_$myname$rand","results_$myname$rand",$CFG_GLPI["root_doc"]."/ajax/dropdownTrackingDeviceType.php",$params);
 
 			echo "<span id='results_$myname$rand'>\n";
 
-			if (isset($_SESSION["helpdeskSaved"]["computer"])){
+			if (isset($_SESSION["helpdeskSaved"]["items_id"])){
 				$ci=new CommonItem();
-				if ($ci->getFromDB($value,$_SESSION["helpdeskSaved"]["computer"])){
-					echo "<select name='computer'>\n";
-					echo "<option value='".$_SESSION["helpdeskSaved"]["computer"]."'>".$ci->getName()."</option>\n";
+				if ($ci->getFromDB($value,$_SESSION["helpdeskSaved"]["items_id"])){
+					echo "<select name='items_id'>\n";
+					echo "<option value='".$_SESSION["helpdeskSaved"]["items_id"]."'>".$ci->getName()."</option>\n";
 
 					echo "</select>\n";
 				}
@@ -1521,7 +1521,7 @@ function device_selecter($target,$cID,$withtemplate='') {
 
 		$rand=mt_rand();
 
-		echo "<select name=\"new_device_type\" id='device$rand'>";
+		echo "<select name=\"devicetype\" id='device$rand'>";
 
 		echo "<option value=\"-1\">-----</option>";
 		$devices=getDictDeviceLabel(-1);
@@ -1532,7 +1532,7 @@ function device_selecter($target,$cID,$withtemplate='') {
 		echo "</select>";
 
 		$params=array('idtable'=>'__VALUE__',
-				'myname'=>'new_device_id',
+				'myname'=>'devices_id',
 				);
 	
 		ajaxUpdateItemOnSelectEvent("device$rand","showdevice$rand",$CFG_GLPI["root_doc"]."/ajax/dropdownDevice.php",$params);
@@ -1552,21 +1552,21 @@ function device_selecter($target,$cID,$withtemplate='') {
 /**
  * Dropdown of actions for massive action
  *
- * @param $device_type item type
+ * @param $itemtype item type
  * @param $deleted massive action for deleted items ?
  */
-function dropdownMassiveAction($device_type,$deleted=0,$extraparams=array()){
+function dropdownMassiveAction($itemtype,$deleted=0,$extraparams=array()){
 	global $LANG,$CFG_GLPI,$PLUGIN_HOOKS;
 
-	$isadmin=haveTypeRight($device_type,"w");
+	$isadmin=haveTypeRight($itemtype,"w");
 	
 	echo "<select name=\"massiveaction\" id='massiveaction'>";
 
 	echo "<option value=\"-1\" selected>-----</option>";
-	if (!in_array($device_type,$CFG_GLPI["massiveaction_noupdate_types"])
+	if (!in_array($itemtype,$CFG_GLPI["massiveaction_noupdate_types"])
 	&& ( $isadmin
-		||(in_array($device_type,$CFG_GLPI["infocom_types"])&&haveTypeRight(INFOCOM_TYPE,"w"))
-		|| ($device_type==TRACKING_TYPE&&haveRight('update_ticket',1)) 
+		||(in_array($itemtype,$CFG_GLPI["infocom_types"])&&haveTypeRight(INFOCOM_TYPE,"w"))
+		|| ($itemtype==TRACKING_TYPE&&haveRight('update_ticket',1)) 
 		)
 	){
 		
@@ -1580,31 +1580,31 @@ function dropdownMassiveAction($device_type,$deleted=0,$extraparams=array()){
 		}
 	} else {
 		// No delete for entities and tracking of not have right
-		if (!in_array($device_type,$CFG_GLPI["massiveaction_nodelete_types"])
-		&&( ($isadmin && $device_type!=TRACKING_TYPE)
-			|| ($device_type==TRACKING_TYPE&&haveRight('delete_ticket',1))
+		if (!in_array($itemtype,$CFG_GLPI["massiveaction_nodelete_types"])
+		&&( ($isadmin && $itemtype!=TRACKING_TYPE)
+			|| ($itemtype==TRACKING_TYPE&&haveRight('delete_ticket',1))
 		)){
 			echo "<option value=\"delete\">".$LANG['buttons'][6]."</option>";
 		}
-		if ($isadmin && in_array($device_type,array(PHONE_TYPE,PRINTER_TYPE,PERIPHERAL_TYPE,MONITOR_TYPE))){
+		if ($isadmin && in_array($itemtype,array(PHONE_TYPE,PRINTER_TYPE,PERIPHERAL_TYPE,MONITOR_TYPE))){
 			echo "<option value=\"connect\">".$LANG['buttons'][9]."</option>";
 			echo "<option value=\"disconnect\">".$LANG['buttons'][10]."</option>";
 		}
-		if (haveTypeRight(DOCUMENT_TYPE,"w") && in_array($device_type,$CFG_GLPI["doc_types"])){
+		if (haveTypeRight(DOCUMENT_TYPE,"w") && in_array($itemtype,$CFG_GLPI["doc_types"])){
 			echo "<option value=\"add_document\">".$LANG['document'][16]."</option>";
 		}
 
-		if (haveTypeRight(CONTRACT_TYPE,"w") && in_array($device_type,$CFG_GLPI["contract_types"])){
+		if (haveTypeRight(CONTRACT_TYPE,"w") && in_array($itemtype,$CFG_GLPI["contract_types"])){
 			echo "<option value=\"add_contract\">".$LANG['financial'][36]."</option>";
 		}
 		if (haveRight('transfer','r') && isMultiEntitiesMode() && 
-				in_array($device_type, 	array(CARTRIDGE_TYPE,COMPUTER_TYPE,CONSUMABLE_TYPE,CONTACT_TYPE,CONTRACT_TYPE,ENTERPRISE_TYPE,
+				in_array($itemtype, 	array(CARTRIDGE_TYPE,COMPUTER_TYPE,CONSUMABLE_TYPE,CONTACT_TYPE,CONTRACT_TYPE,ENTERPRISE_TYPE,
 				MONITOR_TYPE,NETWORKING_TYPE,PERIPHERAL_TYPE,PHONE_TYPE,PRINTER_TYPE,SOFTWARE_TYPE,SOFTWARELICENSE_TYPE,TRACKING_TYPE,DOCUMENT_TYPE,GROUP_TYPE,LINK_TYPE))
 				&& $isadmin
 			){
 			echo "<option value=\"add_transfer_list\">".$LANG['buttons'][48]."</option>";
 		}
-		switch ($device_type){
+		switch ($itemtype){
 			case SOFTWARE_TYPE :
 				if ($isadmin && countElementsInTable("glpi_rules","sub_type='".RULE_SOFTWARE_CATEGORY."'") > 0){
 					echo "<option value=\"compute_software_category\">".$LANG['rulesengine'][38]." ".$LANG['rulesengine'][40]."</option>";
@@ -1664,7 +1664,7 @@ function dropdownMassiveAction($device_type,$deleted=0,$extraparams=array()){
 		// Plugin Specific actions
 		if (isset($PLUGIN_HOOKS['use_massive_action'])){
 			foreach ($PLUGIN_HOOKS['use_massive_action'] as $plugin => $val){
-				$actions=doOneHook($plugin,'MassiveActions',$device_type);
+				$actions=doOneHook($plugin,'MassiveActions',$itemtype);
 				if (count($actions)){
 					foreach ($actions as $key => $val){
 						echo "<option value=\"$key\">$val</option>";
@@ -1679,7 +1679,7 @@ function dropdownMassiveAction($device_type,$deleted=0,$extraparams=array()){
 
 	$params=array('action'=>'__VALUE__',
 			'deleted'=>$deleted,
-			'type'=>$device_type,
+			'type'=>$itemtype,
 			);
 	
 	if (count($extraparams)){
@@ -1696,9 +1696,9 @@ function dropdownMassiveAction($device_type,$deleted=0,$extraparams=array()){
 /**
  * Dropdown of actions for massive action of networking ports
  *
- * @param $device_type item type
+ * @param $itemtype item type
  */
-function dropdownMassiveActionPorts($device_type){
+function dropdownMassiveActionPorts($itemtype){
 	global $LANG,$CFG_GLPI;
 
 	echo "<select name=\"massiveaction\" id='massiveaction'>";
@@ -1712,7 +1712,7 @@ function dropdownMassiveActionPorts($device_type){
 
 
 	$params=array('action'=>'__VALUE__',
-			'type'=>$device_type,
+			'type'=>$itemtype,
 			);
 	
 	ajaxUpdateItemOnSelectEvent("massiveaction","show_massiveaction",$CFG_GLPI["root_doc"]."/ajax/dropdownMassiveActionPorts.php",$params);

@@ -58,7 +58,7 @@ class ReservationItem extends CommonDBTM {
 	function getFromDBbyItem($type,$ID){
 		global $DB;
 
-		$query = "SELECT * FROM glpi_reservationsitems WHERE (device_type = '$type' AND id_device = '$ID')";
+		$query = "SELECT * FROM glpi_reservationsitems WHERE (itemtype = '$type' AND items_id = '$ID')";
 		if ($result = $DB->query($query)) {
 			if ($DB->numrows($result)==1){
 				$this->fields = $DB->fetch_assoc($result);
@@ -77,7 +77,7 @@ class ReservationItem extends CommonDBTM {
 		$result2 = $DB->query($query2);
 	}
 	function prepareInputForAdd($input) {
-		if (!$this->getFromDBbyItem($input['device_type'],$input['id_device'])){ 
+		if (!$this->getFromDBbyItem($input['itemtype'],$input['items_id'])){ 
 			if (!isset($input['active'])){
 				$input['active']=1;
 			}
@@ -267,7 +267,7 @@ class ReservationResa extends CommonDBTM {
 		$name="";
 		$tech="";
 		if ($ri->getFromDB($this->fields["id_item"])){
-			if ($ci->getFromDB($ri->fields['device_type'],$ri->fields['id_device'])	){
+			if ($ci->getFromDB($ri->fields['itemtype'],$ri->fields['items_id'])	){
 				$name=$ci->getType()." ".$ci->getName();
 				if ($ci->getField('tech_num')){
 					$tech=getUserName($ci->getField('tech_num'));
@@ -332,7 +332,7 @@ class ReservationResa extends CommonDBTM {
 			return false;			
 		}
 		$ci=new CommonItem();
-		if (!$ci->getFromDB($item->fields["device_type"], $item->fields["id_device"])) {
+		if (!$ci->getFromDB($item->fields["itemtype"], $item->fields["items_id"])) {
 			return false;			
 		}
 

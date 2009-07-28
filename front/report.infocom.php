@@ -77,18 +77,18 @@ $valeurnettegraphtot=array();
 $valeurgraphtot=array();
 
 /** Display an infocom report
-* @param $device_type item type
+* @param $itemtype item type
 * @param $begin begin date
 * @param $end end date
 */
-function display_infocoms_report($device_type,$begin,$end){
+function display_infocoms_report($itemtype,$begin,$end){
 	global $DB,$valeurtot,$valeurnettetot, $valeurnettegraphtot, $valeurgraphtot,$LANG,$CFG_GLPI,$LINK_ID_TABLE;
 
-	$query="SELECT glpi_infocoms.*, ".$LINK_ID_TABLE[$device_type].".name AS name, ".$LINK_ID_TABLE[$device_type].".ticket_tco, glpi_entities.completename as entname, glpi_entities.ID as entID FROM glpi_infocoms 
-		INNER JOIN ".$LINK_ID_TABLE[$device_type]." ON (".$LINK_ID_TABLE[$device_type].".ID = glpi_infocoms.FK_device AND glpi_infocoms.device_type='".$device_type."')";
-	$query.= " LEFT JOIN glpi_entities ON (".$LINK_ID_TABLE[$device_type].".FK_entities = glpi_entities.ID) ";
+	$query="SELECT glpi_infocoms.*, ".$LINK_ID_TABLE[$itemtype].".name AS name, ".$LINK_ID_TABLE[$itemtype].".ticket_tco, glpi_entities.completename as entname, glpi_entities.ID as entID FROM glpi_infocoms 
+		INNER JOIN ".$LINK_ID_TABLE[$itemtype]." ON (".$LINK_ID_TABLE[$itemtype].".ID = glpi_infocoms.items_id AND glpi_infocoms.itemtype='".$itemtype."')";
+	$query.= " LEFT JOIN glpi_entities ON (".$LINK_ID_TABLE[$itemtype].".FK_entities = glpi_entities.ID) ";
 
-	$query.= " WHERE ".$LINK_ID_TABLE[$device_type].".is_template='0' ".getEntitiesRestrictRequest("AND",$LINK_ID_TABLE[$device_type]);
+	$query.= " WHERE ".$LINK_ID_TABLE[$itemtype].".is_template='0' ".getEntitiesRestrictRequest("AND",$LINK_ID_TABLE[$itemtype]);
 
 	if (!empty($begin)) $query.= " AND (glpi_infocoms.buy_date >= '".$begin."' OR glpi_infocoms.use_date >= '".$begin."' )";
 	if (!empty($end)) $query.= " AND (glpi_infocoms.buy_date <= '".$end."' OR glpi_infocoms.use_date <= '".$end."' )";
@@ -100,7 +100,7 @@ function display_infocoms_report($device_type,$begin,$end){
 	$result=$DB->query($query);
 	if ($DB->numrows($result)>0){
 		$comp=new CommonItem();
-		$comp->getFromDB($device_type,0);
+		$comp->getFromDB($itemtype,0);
 
 		echo "<h2>".$comp->getType()."</h2>";
 
@@ -120,7 +120,7 @@ function display_infocoms_report($device_type,$begin,$end){
 		while ($line=$DB->fetch_array($result)){
 
 			if (isset($line["is_global"])&&$line["is_global"]){
-				$line["value"]*=getNumberConnections($device_type,$line["FK_device"]);
+				$line["value"]*=getNumberConnections($itemtype,$line["items_id"]);
 			}
 
 			if ($line["value"]>0) $valeursoustot+=$line["value"];	

@@ -336,7 +336,7 @@ class CommonDBTM {
 		global $DB;
 		if ($this->dohistory){
 			$query = "DELETE FROM glpi_logs 
-				WHERE ( device_type = '".$this->type."' AND FK_glpi_device = '$ID')";
+				WHERE ( itemtype = '".$this->type."' AND items_id = '$ID')";
 			$DB->query($query);
 		}
 	}
@@ -1227,8 +1227,8 @@ class CommonDBTM {
 						if ($othertable == "_virtual_device"					
 							&& isset($rel[$tablename])) {
 
-							$devfield  = $rel[$tablename][0]; // FK_device, on_device, end1...
-							$typefield = $rel[$tablename][1]; // device_type, type, ...
+							$devfield  = $rel[$tablename][0]; // items_id, items_id, end1...
+							$typefield = $rel[$tablename][1]; // itemtype, type, ...
 							
 							$sql = "SELECT DISTINCT `$typefield` AS type FROM `$tablename` WHERE `$field`='$ID'";
 							$res = $DB->query($sql);
@@ -1281,7 +1281,7 @@ class CommonDBTM {
 		// Doc links to this item
 		if ($this->type > 0
 			&& countElementsInTable("glpi_documents_items, glpi_documents",
-				"glpi_documents_items.FK_device=$ID AND glpi_documents_items.device_type=".$this->type." AND glpi_documents_items.FK_doc=glpi_documents.ID AND glpi_documents.FK_entities NOT IN $entities")>0) {
+				"glpi_documents_items.items_id=$ID AND glpi_documents_items.itemtype=".$this->type." AND glpi_documents_items.FK_doc=glpi_documents.ID AND glpi_documents.FK_entities NOT IN $entities")>0) {
 					return false;                       
 		} 
 		// TODO : do we need to check all relations in $RELATION["_virtual_device"] for this item

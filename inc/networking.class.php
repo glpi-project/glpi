@@ -110,7 +110,7 @@ class Netdevice extends CommonDBTM {
 			// ADD Infocoms
 			$ic= new Infocom();
 			if ($ic->getFromDBforDevice(NETWORKING_TYPE,$input["_oldID"])){
-				$ic->fields["FK_device"]=$newID;
+				$ic->fields["items_id"]=$newID;
 				unset ($ic->fields["ID"]);
 				if (isset($ic->fields["num_immo"])) {
 					$ic->fields["num_immo"] = autoName($ic->fields["num_immo"], "num_immo", 1, INFOCOM_TYPE ,$input['FK_entities']);
@@ -128,7 +128,7 @@ class Netdevice extends CommonDBTM {
 			// ADD Ports
 			$query="SELECT ID 
 				FROM glpi_networkports 
-				WHERE on_device='".$input["_oldID"]."' AND device_type='".NETWORKING_TYPE."';";
+				WHERE items_id='".$input["_oldID"]."' AND itemtype='".NETWORKING_TYPE."';";
 			$result=$DB->query($query);
 			if ($DB->numrows($result)>0){
 	
@@ -139,7 +139,7 @@ class Netdevice extends CommonDBTM {
 					unset($np->fields["ifaddr"]);
 					unset($np->fields["ifmac"]);
 					unset($np->fields["netpoint"]);
-					$np->fields["on_device"]=$newID;
+					$np->fields["items_id"]=$newID;
 					$np->addToDB();
 				}
 			}
@@ -147,7 +147,7 @@ class Netdevice extends CommonDBTM {
 			// ADD Contract				
 			$query="SELECT FK_contract 
 				FROM glpi_contracts_items 
-				WHERE FK_device='".$input["_oldID"]."' AND device_type='".NETWORKING_TYPE."';";
+				WHERE items_id='".$input["_oldID"]."' AND itemtype='".NETWORKING_TYPE."';";
 			$result=$DB->query($query);
 			if ($DB->numrows($result)>0){
 	
@@ -158,7 +158,7 @@ class Netdevice extends CommonDBTM {
 			// ADD Documents			
 			$query="SELECT FK_doc 
 				FROM glpi_documents_items 
-				WHERE FK_device='".$input["_oldID"]."' AND device_type='".NETWORKING_TYPE."';";
+				WHERE items_id='".$input["_oldID"]."' AND itemtype='".NETWORKING_TYPE."';";
 			$result=$DB->query($query);
 			if ($DB->numrows($result)>0){
 	
@@ -180,18 +180,18 @@ class Netdevice extends CommonDBTM {
 
 
 		$job =new Job();
-		$query = "SELECT * FROM glpi_tickets WHERE computer = '$ID'  AND device_type='".NETWORKING_TYPE."'";
+		$query = "SELECT * FROM glpi_tickets WHERE items_id = '$ID'  AND itemtype='".NETWORKING_TYPE."'";
 		$result = $DB->query($query);
 
 		if ($DB->numrows($result))
 			while ($data=$DB->fetch_array($result)) {
 				if ($CFG_GLPI["keep_tracking_on_delete"]==1){
-					$query = "UPDATE glpi_tickets SET computer = '0', device_type='0' WHERE ID='".$data["ID"]."';";
+					$query = "UPDATE glpi_tickets SET items_id = '0', itemtype='0' WHERE ID='".$data["ID"]."';";
 					$DB->query($query);
 				} else $job->delete(array("ID"=>$data["ID"]));
 			}
 
-		$query = "SELECT ID FROM glpi_networkports WHERE on_device = '$ID' AND device_type = '".NETWORKING_TYPE."'";
+		$query = "SELECT ID FROM glpi_networkports WHERE items_id = '$ID' AND itemtype = '".NETWORKING_TYPE."'";
 		$result = $DB->query($query);
 		while ($data = $DB->fetch_array($result)){
 			$q = "DELETE FROM glpi_networkports_networkports WHERE end1 = '".$data["ID"]."' OR end2 = '".$data["ID"]."'";
@@ -199,16 +199,16 @@ class Netdevice extends CommonDBTM {
 		}
 
 
-		$query = "DELETE FROM glpi_networkports WHERE on_device = '$ID' AND device_type = '".NETWORKING_TYPE."'";
+		$query = "DELETE FROM glpi_networkports WHERE items_id = '$ID' AND itemtype = '".NETWORKING_TYPE."'";
 		$result = $DB->query($query);
 
-		$query = "DELETE FROM glpi_infocoms WHERE FK_device = '$ID' AND device_type='".NETWORKING_TYPE."'";
+		$query = "DELETE FROM glpi_infocoms WHERE items_id = '$ID' AND itemtype='".NETWORKING_TYPE."'";
 		$result = $DB->query($query);
 
-		$query = "DELETE FROM glpi_contracts_items WHERE FK_device = '$ID' AND device_type='".NETWORKING_TYPE."'";
+		$query = "DELETE FROM glpi_contracts_items WHERE items_id = '$ID' AND itemtype='".NETWORKING_TYPE."'";
 		$result = $DB->query($query);
 
-		$query="SELECT * FROM glpi_reservationsitems WHERE device_type='".NETWORKING_TYPE."' AND id_device='$ID'";
+		$query="SELECT * FROM glpi_reservationsitems WHERE itemtype='".NETWORKING_TYPE."' AND items_id='$ID'";
 		if ($result = $DB->query($query)) {
 			if ($DB->numrows($result)>0) {
 				$rr=new ReservationItem();
@@ -249,19 +249,19 @@ class Netdevice extends CommonDBTM {
 		// Evaluate connection in the 2 ways
 		for ($tabend=array("end1"=>"end2","end2"=>"end1");list($enda,$endb)=each($tabend);) {
 			
-			$sql="SELECT device_type, GROUP_CONCAT(DISTINCT on_device) AS ids " .
+			$sql="SELECT itemtype, GROUP_CONCAT(DISTINCT items_id) AS ids " .
 				"FROM glpi_networkports_networkports, glpi_networkports " .
 				"WHERE glpi_networkports_networkports.$endb = glpi_networkports.ID " .
 				"AND   glpi_networkports_networkports.$enda IN (SELECT ID FROM glpi_networkports 
-									WHERE device_type=".NETWORKING_TYPE." AND on_device='$ID') " .
-				"GROUP BY device_type;";
+									WHERE itemtype=".NETWORKING_TYPE." AND items_id='$ID') " .
+				"GROUP BY itemtype;";
 
 			$res = $DB->query($sql);
 			if ($res) while ($data = $DB->fetch_assoc($res)) {
 
-				// For each device_type which are entity dependant
-				if (isset($LINK_ID_TABLE[$data["device_type"]]) && 
-					in_array($table=$LINK_ID_TABLE[$data["device_type"]], $CFG_GLPI["specif_entities_tables"])) {
+				// For each itemtype which are entity dependant
+				if (isset($LINK_ID_TABLE[$data["itemtype"]]) && 
+					in_array($table=$LINK_ID_TABLE[$data["itemtype"]], $CFG_GLPI["specif_entities_tables"])) {
 	
 					if (countElementsInTable("$table", "ID IN (".$data["ids"].") AND FK_entities NOT IN $entities")>0) {
 							return false;						
@@ -499,7 +499,7 @@ class Netport extends CommonDBTM {
 	/// hardare data : ID
 	var $device_ID		= 0;
 	/// hardare data : type
-	var $device_type		= 0;
+	var $itemtype		= 0;
 	/// hardare data : entity
 	var $FK_entities		= -1;
 	/// hardare data : location
@@ -576,7 +576,7 @@ class Netport extends CommonDBTM {
 			$this->FK_entities = $data["FK_entities"];
 			$this->location = $data["location"];
 			$this->device_ID = $ID;
-			$this->device_type = $type;
+			$this->itemtype = $type;
 			$this->recursive = (isset($data["recursive"])?$data["recursive"]:0);
 			return true;
 		}

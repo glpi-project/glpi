@@ -132,7 +132,7 @@ if ($is_helpdesk_multientity){
 	{
 		$paramscomments=array('userID'=>'__VALUE__',
 				'entity_restrict'=>$_POST["entity_restrict"],
-				'device_type'=>0,
+				'itemtype'=>0,
 				'author_field'=>"dropdown_author".$_POST["rand"]
 		);
 

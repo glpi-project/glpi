@@ -77,18 +77,18 @@ $valeurnettegraphtot=array();
 $valeurgraphtot=array();
 
 /** Display an infocom report for items like consumables
-* @param $device_type item type
+* @param $itemtype item type
 * @param $begin begin date
 * @param $end end date
 */
-function display_infocoms_report($device_type,$begin,$end){
+function display_infocoms_report($itemtype,$begin,$end){
 	global $DB,$valeurtot,$valeurnettetot, $valeurnettegraphtot, $valeurgraphtot,$LANG,$CFG_GLPI,$LINK_ID_TABLE;
 
 	$query="SELECT glpi_infocoms.* 
 		FROM glpi_infocoms 
-		INNER JOIN ".$LINK_ID_TABLE[$device_type]." ON (".$LINK_ID_TABLE[$device_type].".ID = glpi_infocoms.FK_device AND glpi_infocoms.device_type='".$device_type."') ";
+		INNER JOIN ".$LINK_ID_TABLE[$itemtype]." ON (".$LINK_ID_TABLE[$itemtype].".ID = glpi_infocoms.items_id AND glpi_infocoms.itemtype='".$itemtype."') ";
 	
-	switch ($device_type){
+	switch ($itemtype){
 		case CONSUMABLE_ITEM_TYPE :
 			$query.=" INNER JOIN glpi_consumablesitems ON (glpi_consumables.FK_glpi_consumables_type = glpi_consumablesitems.ID) ".getEntitiesRestrictRequest("WHERE","glpi_consumablesitems");
 		break;
@@ -107,7 +107,7 @@ function display_infocoms_report($device_type,$begin,$end){
 	if ($result=$DB->query($query)){
 		if ($DB->numrows($result)>0){
 			$comp=new CommonItem();
-			$comp->getFromDB($device_type,0);
+			$comp->getFromDB($itemtype,0);
 	
 			echo "<h2>".$comp->getType()."</h2>";
 	
@@ -120,10 +120,10 @@ function display_infocoms_report($device_type,$begin,$end){
 	
 			while ($line=$DB->fetch_array($result)){
 	
-				if ($device_type==SOFTWARELICENSE_TYPE){
-					$comp->getFromDB($device_type,$line["FK_device"]);
+				if ($itemtype==SOFTWARELICENSE_TYPE){
+					$comp->getFromDB($itemtype,$line["items_id"]);
 					if ($comp->obj->fields["serial"]=="global"){
-						$line["value"]*=getInstallionsForLicense($line["FK_device"]);
+						$line["value"]*=getInstallionsForLicense($line["items_id"]);
 					}
 				}
 				if ($line["value"]>0) $valeursoustot+=$line["value"];	

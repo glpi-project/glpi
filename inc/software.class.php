@@ -136,7 +136,7 @@ class Software extends CommonDBTM {
 			// ADD Infocoms
 			$ic = new Infocom();
 			if ($ic->getFromDBforDevice(SOFTWARE_TYPE, $input["_oldID"])) {
-				$ic->fields["FK_device"] = $newID;
+				$ic->fields["items_id"] = $newID;
 				unset ($ic->fields["ID"]);
 				if (isset($ic->fields["num_immo"])) {
 					$ic->fields["num_immo"] = autoName($ic->fields["num_immo"], "num_immo", 1, INFOCOM_TYPE,$input['FK_entities']);
@@ -152,7 +152,7 @@ class Software extends CommonDBTM {
 			}
 	
 			// ADD Contract				
-			$query = "SELECT FK_contract FROM glpi_contracts_items WHERE FK_device='" . $input["_oldID"] . "' AND device_type='" . SOFTWARE_TYPE . "';";
+			$query = "SELECT FK_contract FROM glpi_contracts_items WHERE items_id='" . $input["_oldID"] . "' AND itemtype='" . SOFTWARE_TYPE . "';";
 			$result = $DB->query($query);
 			if ($DB->numrows($result) > 0) {
 	
@@ -161,7 +161,7 @@ class Software extends CommonDBTM {
 			}
 	
 			// ADD Documents			
-			$query = "SELECT FK_doc FROM glpi_documents_items WHERE FK_device='" . $input["_oldID"] . "' AND device_type='" . SOFTWARE_TYPE . "';";
+			$query = "SELECT FK_doc FROM glpi_documents_items WHERE items_id='" . $input["_oldID"] . "' AND itemtype='" . SOFTWARE_TYPE . "';";
 			$result = $DB->query($query);
 			if ($DB->numrows($result) > 0) {
 	
@@ -177,13 +177,13 @@ class Software extends CommonDBTM {
 		global $DB, $CFG_GLPI;
 
 		$job = new Job();
-		$query = "SELECT * FROM glpi_tickets WHERE (computer = '$ID'  AND device_type='" . SOFTWARE_TYPE . "')";
+		$query = "SELECT * FROM glpi_tickets WHERE (items_id = '$ID'  AND itemtype='" . SOFTWARE_TYPE . "')";
 		$result = $DB->query($query);
 
 		if ($DB->numrows($result))
 			while ($data = $DB->fetch_array($result)) {
 				if ($CFG_GLPI["keep_tracking_on_delete"] == 1) {
-					$query = "UPDATE glpi_tickets SET computer = '0', device_type='0' WHERE ID='" . $data["ID"] . "';";
+					$query = "UPDATE glpi_tickets SET items_id = '0', itemtype='0' WHERE ID='" . $data["ID"] . "';";
 					$DB->query($query);
 				} else
 					$job->delete(array (
@@ -191,13 +191,13 @@ class Software extends CommonDBTM {
 					));
 			}
 
-		$query = "DELETE FROM glpi_infocoms WHERE (FK_device = '$ID' AND device_type='" . SOFTWARE_TYPE . "')";
+		$query = "DELETE FROM glpi_infocoms WHERE (items_id = '$ID' AND itemtype='" . SOFTWARE_TYPE . "')";
 		$result = $DB->query($query);
 
-		$query = "DELETE FROM glpi_contracts_items WHERE (FK_device = '$ID' AND device_type='" . SOFTWARE_TYPE . "')";
+		$query = "DELETE FROM glpi_contracts_items WHERE (items_id = '$ID' AND itemtype='" . SOFTWARE_TYPE . "')";
 		$result = $DB->query($query);
 
-		$query = "SELECT * FROM glpi_reservationsitems WHERE (device_type='" . SOFTWARE_TYPE . "' AND id_device='$ID')";
+		$query = "SELECT * FROM glpi_reservationsitems WHERE (itemtype='" . SOFTWARE_TYPE . "' AND items_id='$ID')";
 		if ($result = $DB->query($query)) {
 			if ($DB->numrows($result) > 0) {
 				$rr = new ReservationItem();
@@ -671,7 +671,7 @@ class SoftwareLicense extends CommonDBTM {
 		$ic = new Infocom();
 		if ($ic->getFromDBforDevice($type, $dupid)) {
 			unset ($ic->fields["ID"]);
-			$ic->fields["FK_device"] = $newID;
+			$ic->fields["items_id"] = $newID;
 			if (isset($ic->fields["num_immo"])) {
 				$ic->fields["num_immo"] = autoName($ic->fields["num_immo"], "num_immo", 1, INFOCOM_TYPE,$input['FK_entities']);
 			}
@@ -681,7 +681,7 @@ class SoftwareLicense extends CommonDBTM {
 			if (empty($ic->fields['buy_date'])){
 				unset($ic->fields['buy_date']);
 			}
-			$ic->fields["device_type"] = SOFTWARELICENSE_TYPE;
+			$ic->fields["itemtype"] = SOFTWARELICENSE_TYPE;
 			$ic->addToDB();
 		}
 	}
@@ -690,7 +690,7 @@ class SoftwareLicense extends CommonDBTM {
 
 		global $DB;
 
-		$query = "DELETE FROM glpi_infocoms WHERE (FK_device = '$ID' AND device_type='" . SOFTWARELICENSE_TYPE . "')";
+		$query = "DELETE FROM glpi_infocoms WHERE (items_id = '$ID' AND itemtype='" . SOFTWARELICENSE_TYPE . "')";
 		$result = $DB->query($query);
 
 	}

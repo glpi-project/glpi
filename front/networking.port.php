@@ -120,7 +120,7 @@ else if(isset($_POST["move"]))
 			if ($np->getFromDB($port_id)){
 				$input=array();
 				$input['ID']=$port_id;
-				$input['on_device']=$_POST["device"];
+				$input['items_id']=$_POST["device"];
 				$np->update($input);
 			}
 		}
@@ -200,8 +200,8 @@ else if (isset($_GET['unassign_vlan'])){
 }
 else 
 {
-	if(empty($_GET["on_device"])) $_GET["on_device"] ="";
-	if(empty($_GET["device_type"])) $_GET["device_type"] ="";
+	if(empty($_GET["items_id"])) $_GET["items_id"] ="";
+	if(empty($_GET["itemtype"])) $_GET["itemtype"] ="";
 	if(empty($_GET["several"])) $_GET["several"] ="";
 
 	checkRight("networking","w");
@@ -209,11 +209,11 @@ else
 
 	if(isset($_GET["ID"]))
 	{
-		showNetportForm($_SERVER['PHP_SELF'],$_GET["ID"],$_GET["on_device"],$_GET["device_type"],$_GET["several"]);
+		showNetportForm($_SERVER['PHP_SELF'],$_GET["ID"],$_GET["items_id"],$_GET["itemtype"],$_GET["several"]);
 	}
 	else
 	{
-		showNetportForm($_SERVER['PHP_SELF'],"",$_GET["on_device"],$_GET["device_type"],$_GET["several"]);
+		showNetportForm($_SERVER['PHP_SELF'],"",$_GET["items_id"],$_GET["itemtype"],$_GET["several"]);
 	}
 	commonFooter();
 }

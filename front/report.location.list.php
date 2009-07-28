@@ -48,7 +48,7 @@ if (isset($_POST["location"])&&$_POST["location"]){
 		FROM glpi_locations
 		INNER JOIN glpi_netpoints ON glpi_netpoints.location = glpi_locations.ID
 		INNER JOIN glpi_networkports ON glpi_networkports.netpoint=glpi_netpoints.id 
-		WHERE ".getRealQueryForTreeItem("glpi_locations",$_POST["location"])." AND glpi_networkports.device_type=".NETWORKING_TYPE."
+		WHERE ".getRealQueryForTreeItem("glpi_locations",$_POST["location"])." AND glpi_networkports.itemtype=".NETWORKING_TYPE."
 		ORDER BY glpi_locations.completename, glpi_networkports.name;";
 
 	$result = $DB->query($query);
@@ -82,7 +82,7 @@ if (isset($_POST["location"])&&$_POST["location"]){
 
 			if ($end1){
 				$np->getFromDB($end1);
-				$np->getDeviceData($np->fields["on_device"],$np->fields["device_type"]);
+				$np->getDeviceData($np->fields["items_id"],$np->fields["itemtype"]);
 				$ordi=$np->device_name;
 				$ip2=$np->fields['ifaddr'];
 				$mac2=$np->fields['ifmac'];
@@ -96,7 +96,7 @@ if (isset($_POST["location"])&&$_POST["location"]){
 			$np->getFromDB($ligne['IDport']);
 
 			$nd=new Netdevice();
-			$nd->getFromDB($np->fields["on_device"]);
+			$nd->getFromDB($np->fields["items_id"]);
 			$switch=$nd->fields["name"];
 
 

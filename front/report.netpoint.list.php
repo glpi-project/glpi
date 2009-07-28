@@ -55,7 +55,7 @@ checkRight("reports","r");
 			FROM glpi_netpoints
 			LEFT JOIN glpi_locations a ON a.id=glpi_netpoints.location
 			LEFT JOIN glpi_networkports c ON c.netpoint=glpi_netpoints.id 
-			WHERE glpi_netpoints.id='".$_POST["prise"]."' AND c.device_type=".NETWORKING_TYPE.";";
+			WHERE glpi_netpoints.id='".$_POST["prise"]."' AND c.itemtype=".NETWORKING_TYPE.";";
 
 		/*!
 		  on envoie la requ�e de selection qui varie selon le choix fait dans la dropdown �la fonction report perso qui
@@ -95,7 +95,7 @@ checkRight("reports","r");
 
 				if ($end1){
 					$np->getFromDB($end1);
-					$np->getDeviceData($np->fields["on_device"],$np->fields["device_type"]);
+					$np->getDeviceData($np->fields["items_id"],$np->fields["itemtype"]);
 					$ordi=$np->device_name;
 					$ip2=$np->fields['ifaddr'];
 					$mac2=$np->fields['ifmac'];
@@ -109,7 +109,7 @@ checkRight("reports","r");
 				$np->getFromDB($ligne['IDport']);
 
 				$nd=new Netdevice();
-				$nd->getFromDB($np->fields["on_device"]);
+				$nd->getFromDB($np->fields["items_id"]);
 				$switch=$nd->fields["name"];
 
 

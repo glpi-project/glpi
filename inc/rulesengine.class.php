@@ -1729,7 +1729,7 @@ class Rule extends CommonDBTM{
 						return getRequestTypeName($pattern);
 					}
 					break;
-				case "dropdown_tracking_device_type":
+				case "dropdown_tracking_itemtype":
 					if ($condition==PATTERN_IS||$condition==PATTERN_IS_NOT){
 						$ci =new CommonItem();
 						$ci->setType($pattern);
@@ -1780,7 +1780,7 @@ class Rule extends CommonDBTM{
 						$display=true;
 					}
 					break;
-				case "dropdown_tracking_device_type":
+				case "dropdown_tracking_itemtype":
 					if ($test||$condition==PATTERN_IS||$condition==PATTERN_IS_NOT){
 						dropdownDeviceTypes($name,0,array_keys(getAllTypesForHelpdesk()));
 						$display=true;
@@ -2126,7 +2126,7 @@ class RuleCriteria extends CommonDBTM {
 						return getRequestTypeName($initValue);
 					}
 					break;
-				case "dropdown_tracking_device_type":
+				case "dropdown_tracking_itemtype":
 					if ($condition!=PATTERN_IS&&$condition!=PATTERN_IS_NOT){
 						$ci =new CommonItem();
 						$ci->setType($initValue);

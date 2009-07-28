@@ -69,7 +69,7 @@ function showLinkDevice($instID) {
 	if (!haveRight("link","r")) return false;
 	//$canedit= haveRight("link","w");
 	$ci = new CommonItem();
-	$query = "SELECT * FROM glpi_links_itemtypes WHERE FK_links='$instID' ORDER BY device_type";
+	$query = "SELECT * FROM glpi_links_itemtypes WHERE FK_links='$instID' ORDER BY itemtype";
 	$result = $DB->query($query);
 	$number = $DB->numrows($result);
 	$i = 0;
@@ -83,7 +83,7 @@ function showLinkDevice($instID) {
 
 	while ($i < $number) {
 		$ID=$DB->result($result, $i, "ID");
-		$ci->setType($DB->result($result, $i, "device_type"));
+		$ci->setType($DB->result($result, $i, "itemtype"));
 		echo "<tr class='tab_bg_1'>";
 		echo "<td class='center'>".$ci->getType()."</td>";
 		echo "<td align='center' class='tab_bg_2'><a href='".$_SERVER['PHP_SELF']."?deletedevice=deletedevice&amp;ID=$ID&amp;lID=$instID'><strong>".$LANG['buttons'][6]."</strong></a></td></tr>";
@@ -93,7 +93,7 @@ function showLinkDevice($instID) {
 		echo "<tr class='tab_bg_1'><td>&nbsp;</td><td class='center'>";
 		echo "<div class='software-instal'><input type='hidden' name='lID' value='$instID'>";
 
-		dropdownDeviceTypes("device_type",0,$CFG_GLPI["link_types"]);
+		dropdownDeviceTypes("itemtype",0,$CFG_GLPI["link_types"]);
 	
 		echo "&nbsp;&nbsp;<input type='submit' name='adddevice' value=\"".$LANG['buttons'][8]."\" class='submit'>";
 		echo "</div>";
@@ -128,7 +128,7 @@ function addLinkDevice($tID,$lID){
 	global $DB;
 	if ($tID>0&&$lID>0){
 
-		$query="INSERT INTO glpi_links_itemtypes (device_type,FK_links ) VALUES ('$tID','$lID');";
+		$query="INSERT INTO glpi_links_itemtypes (itemtype,FK_links ) VALUES ('$tID','$lID');";
 		$result = $DB->query($query);
 	}
 }
@@ -150,7 +150,7 @@ function showLinkOnDevice($type,$ID){
 	$query="SELECT glpi_links.ID as ID, glpi_links.link as link, glpi_links.name as name , glpi_links.data as data 
 		FROM glpi_links 
 		INNER JOIN glpi_links_itemtypes ON glpi_links.ID= glpi_links_itemtypes.FK_links
-		WHERE glpi_links_itemtypes.device_type='$type' " .
+		WHERE glpi_links_itemtypes.itemtype='$type' " .
 			getEntitiesRestrictRequest(" AND","glpi_links","FK_entities",$commonitem->obj->fields["FK_entities"],true).
 		" ORDER BY glpi_links.name";
 
@@ -228,7 +228,7 @@ function showLinkOnDevice($type,$ID){
 				if (strstr($link,"[IP]")||strstr($link,"[MAC]")){
 					$query2 = "SELECT ifaddr, ifmac, logical_number 
 						FROM glpi_networkports 
-						WHERE on_device = '$ID' AND device_type = '$type' 
+						WHERE items_id = '$ID' AND itemtype = '$type' 
 						ORDER BY logical_number";
 					$result2=$DB->query($query2);
 					if ($DB->numrows($result2)>0)

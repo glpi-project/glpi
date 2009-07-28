@@ -451,7 +451,7 @@ function getPluginSearchOption(){
  * 
  * TODO : to delete ASAP (all plugin switch to registerPluginType)
  * @param $plugin plugin of the device type
- * @param $name name of the device_type to define the constant
+ * @param $name name of the itemtype to define the constant
  * @param $ID number used as constant
  * @param $class class defined for manipulate this device type
  * @param $table table describing the device
@@ -486,7 +486,7 @@ function pluginNewType($plugin,$name,$ID,$class,$table,$formpage='',$typename=''
  * Define a new device type used in a plugin
  * 
  * @param $plugin plugin of the device type
- * @param $name name of the device_type to define the constant
+ * @param $name name of the itemtype to define the constant
  * @param $ID number used as constant
  * @param $attrib Array of attributes, a hashtable with index in
  * 	(classname, tablename, typename, formpage, searchpage, reservation_types,

@@ -124,7 +124,7 @@ function &getTrackingSortOptions() {
 		$items[$LANG['joblist'][2]]="glpi_tickets.priority";
 		$items[$LANG['job'][4]]="glpi_tickets.author";
 		$items[$LANG['joblist'][4]]="glpi_tickets.assign";
-		$items[$LANG['common'][1]]="glpi_tickets.device_type,glpi_tickets.computer";
+		$items[$LANG['common'][1]]="glpi_tickets.itemtype,glpi_tickets.items_id";
 		$items[$LANG['common'][36]]="glpi_ticketscategories.completename";
 		$items[$LANG['common'][57]]="glpi_tickets.name";
 	}
@@ -335,7 +335,7 @@ function showJobListForItem($item_type,$item) {
 
 	$query = "SELECT ".getCommonSelectForTrackingSearch()." 
 			FROM glpi_tickets ".getCommonLeftJoinForTrackingSearch()." 
-			WHERE (computer = '$item' and device_type= '$item_type') 
+			WHERE (items_id = '$item' and itemtype= '$item_type')
 				ORDER BY glpi_tickets.date_mod DESC LIMIT ".intval($_SESSION['glpilist_limit']);
 
 	$result = $DB->query($query);
@@ -356,7 +356,7 @@ function showJobListForItem($item_type,$item) {
 		if ($item)
 		{
 			echo "<tr><td align='center' class='tab_bg_2' colspan='10'>";
-			echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/helpdesk.php?computer=$item&amp;device_type=$item_type\"><strong>";
+			echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/helpdesk.php?items_id=$item&amp;itemtype=$item_type\"><strong>";
 			echo $LANG['joblist'][7];
 			echo "</strong></a>";
 			echo "</td></tr>";
@@ -380,7 +380,7 @@ function showJobListForItem($item_type,$item) {
 		{
 
 			echo "<tr><td align='center' class='tab_bg_2'>";
-			echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/helpdesk.php?computer=$item&amp;device_type=$item_type\"><strong>";
+			echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/helpdesk.php?items_id=$item&amp;itemtype=$item_type\"><strong>";
 			echo $LANG['joblist'][7];
 			echo "</strong></a>";
 			echo "</td></tr>";
@@ -638,14 +638,14 @@ function showJobShort($data, $followups,$output_type=HTML_OUTPUT,$row_num=0) {
 		echo displaySearchItem($output_type,$fifth_col,$item_num,$row_num,$align);
 
 		$ci=new CommonItem();
-		$ci->getFromDB($data["device_type"],$data["computer"]);
+		$ci->getFromDB($data["itemtype"],$data["items_id"]);
 		// Sixth Colum
 		$sixth_col="";
 
 		$sixth_col.=$ci->getType();
-		if ($data["device_type"]>0&&$data["computer"]>0){
+		if ($data["itemtype"]>0&&$data["items_id"]>0){
 			$sixth_col.="<br><strong>";
-			if (haveTypeRight($data["device_type"],"r")){
+			if (haveTypeRight($data["itemtype"],"r")){
 				$sixth_col.=$ci->getLink($output_type==HTML_OUTPUT);
 			} else {
 				$sixth_col.=$ci->getNameID();
@@ -740,7 +740,7 @@ function showJobVeryShort($ID) {
 
 		echo "</td>";
 
-		if (haveTypeRight($job->fields["device_type"],"r")){
+		if (haveTypeRight($job->fields["itemtype"],"r")){
 			echo "<td align='center' ";
 			if ($job->hardwaredatas->getField("deleted")){
 				echo "class='tab_bg_1_2'";
@@ -780,15 +780,15 @@ function showJobVeryShort($ID) {
 	}
 }
 
-function addFormTracking ($device_type=0,$ID=0, $target, $author, $group=0, $assign=0, $assign_group=0, $name='',$contents='',$category=0, $priority=3,$request_type=1,$hour=0,$minute=0,$entity_restrict,$status=1,$followup=array()) {
+function addFormTracking ($itemtype=0,$ID=0, $target, $author, $group=0, $assign=0, $assign_group=0, $name='',$contents='',$category=0, $priority=3,$request_type=1,$hour=0,$minute=0,$entity_restrict,$status=1,$followup=array()) {
 	/// Prints a nice form to add jobs
 
 	global $CFG_GLPI, $LANG,$CFG_GLPI,$REFERER,$DB;
 	if (!haveRight("create_ticket","1")) return false;
 
 	$add_url="";
-	if ($device_type>0){
-		$add_url="?device_type=$device_type&amp;computer=$ID";
+	if ($itemtype>0){
+		$add_url="?itemtype=$itemtype&amp;items_id=$ID";
 	}
 	echo "<br><form name='form_ticket' method='post' action='$target$add_url' enctype=\"multipart/form-data\">";
 	echo "<div class='center'>";
@@ -801,14 +801,14 @@ function addFormTracking ($device_type=0,$ID=0, $target, $author, $group=0, $ass
 
 	echo '<br>';
 
-	if ($device_type>0){
+	if ($itemtype>0){
 		$m=new CommonItem;
-		$m->getFromDB($device_type,$ID);
+		$m->getFromDB($itemtype,$ID);
 		echo $m->getType()." - ".$m->getLink();
 	}
 
-	echo "<input type='hidden' name='computer' value=\"$ID\">";
-	echo "<input type='hidden' name='device_type' value=\"$device_type\">";
+	echo "<input type='hidden' name='items_id' value=\"$ID\">";
+	echo "<input type='hidden' name='itemtype' value=\"$itemtype\">";
 
 	/// Set default entity
 	if (!haveRight("update_ticket","1")){
@@ -882,12 +882,12 @@ function addFormTracking ($device_type=0,$ID=0, $target, $author, $group=0, $ass
 	} 
 
 
-	if ($device_type==0 && $_SESSION["glpiactiveprofile"]["helpdesk_hardware"]!=0){
+	if ($itemtype==0 && $_SESSION["glpiactiveprofile"]["helpdesk_hardware"]!=0){
 		echo "<tr class='tab_bg_2'>";
 		echo "<td class='center'>".$LANG['help'][24].": </td>";
 		echo "<td align='center' colspan='3'>";
 		dropdownMyDevices($author,$entity_restrict);
-		dropdownTrackingAllDevices("device_type",$device_type,0,$entity_restrict);
+		dropdownTrackingAllDevices("itemtype",$itemtype,0,$entity_restrict);
 		echo "</td></tr>";
 	} 
 
@@ -1039,7 +1039,7 @@ function getTrackingFormFields($_POST)
 	$params = array(
 	//"userID"=>(($userID!=-1)?$userID:$_POST["userID"]),
 	//"entity_restrict"=>(($entity_restrict!=-1)?$entity_restrict:$_POST["entity_restrict"]),
-	"group"=>0,"device_type"=>0,
+	"group"=>0,"itemtype"=>0,
 	"assign"=>0,"assign_group"=>0,"category"=>0,
 	"priority"=>3,"hour"=>0,"minute"=>0,"request_type"=>1,
 	"name"=>'',"contents"=>'',"target"=>"");
@@ -1537,10 +1537,10 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$to
 
 
 	if ($type!=0)
-		$where.=" AND glpi_tickets.device_type='$type'";	
+		$where.=" AND glpi_tickets.itemtype='$type'";	
 
 	if ($item!=0&&$type!=0)
-		$where.=" AND glpi_tickets.computer = '$item'";	
+		$where.=" AND glpi_tickets.items_id = '$item'";
 
 	$search_author=false;
 
@@ -1649,17 +1649,17 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$to
 	$where.=getEntitiesRestrictRequest(" AND","glpi_tickets");
 	
 	if (!empty($wherecomp)){
-		$where.=" AND glpi_tickets.device_type= '1'";
-		$where.= " AND glpi_tickets.computer IN (SELECT comp.ID FROM glpi_computers as comp ";
+		$where.=" AND glpi_tickets.itemtype= '1'";
+		$where.= " AND glpi_tickets.items_id IN (SELECT comp.ID FROM glpi_computers as comp ";
 		$where.= " LEFT JOIN glpi_computers_devices as gcdev ON (comp.ID = gcdev.FK_computers) ";
-		$where.= "LEFT JOIN glpi_devicesmotherboards as moboard ON (moboard.ID = gcdev.FK_device AND gcdev.device_type = '".MOBOARD_DEVICE."') ";
-		$where.= "LEFT JOIN glpi_devicesprocessors as processor ON (processor.ID = gcdev.FK_device AND gcdev.device_type = '".PROCESSOR_DEVICE."') ";
-		$where.= "LEFT JOIN glpi_devicesgraphiccards as gfxcard ON (gfxcard.ID = gcdev.FK_DEVICE AND gcdev.device_type = '".GFX_DEVICE."') ";
-		$where.= "LEFT JOIN glpi_devicesharddrives as hdd ON (hdd.ID = gcdev.FK_DEVICE AND gcdev.device_type = '".HDD_DEVICE."') ";
-		$where.= "LEFT JOIN glpi_devicesnetworkcards as iface ON (iface.ID = gcdev.FK_DEVICE AND gcdev.device_type = '".NETWORK_DEVICE."') ";
-		$where.= "LEFT JOIN glpi_devicesmemories as ram ON (ram.ID = gcdev.FK_DEVICE AND gcdev.device_type = '".RAM_DEVICE."') ";
-		$where.= "LEFT JOIN glpi_devicessoundcards as sndcard ON (sndcard.ID = gcdev.FK_DEVICE AND gcdev.device_type = '".SND_DEVICE."') ";
-		$where.= "LEFT JOIN glpi_networkports on (comp.ID = glpi_networkports.on_device AND  glpi_networkports.device_type='1')";
+		$where.= "LEFT JOIN glpi_devicesmotherboards as moboard ON (moboard.ID = gcdev.devices_id AND gcdev.devicetype = '".MOBOARD_DEVICE."') ";
+		$where.= "LEFT JOIN glpi_devicesprocessors as processor ON (processor.ID = gcdev.devices_id AND gcdev.devicetype = '".PROCESSOR_DEVICE."') ";
+		$where.= "LEFT JOIN glpi_devicesgraphiccards as gfxcard ON (gfxcard.ID = gcdev.devices_id AND gcdev.devicetype = '".GFX_DEVICE."') ";
+		$where.= "LEFT JOIN glpi_devicesharddrives as hdd ON (hdd.ID = gcdev.devices_id AND gcdev.devicetype = '".HDD_DEVICE."') ";
+		$where.= "LEFT JOIN glpi_devicesnetworkcards as iface ON (iface.ID = gcdev.devices_id AND gcdev.devicetype = '".NETWORK_DEVICE."') ";
+		$where.= "LEFT JOIN glpi_devicesmemories as ram ON (ram.ID = gcdev.devices_id AND gcdev.devicetype = '".RAM_DEVICE."') ";
+		$where.= "LEFT JOIN glpi_devicessoundcards as sndcard ON (sndcard.ID = gcdev.devices_id AND gcdev.devicetype = '".SND_DEVICE."') ";
+		$where.= "LEFT JOIN glpi_networkports on (comp.ID = glpi_networkports.items_id AND  glpi_networkports.itemtype='1')";
 		$where.= "LEFT JOIN glpi_netpoints on (glpi_netpoints.ID = glpi_networkports.netpoint)";
 		$where.= "LEFT JOIN glpi_operatingsystems on (glpi_operatingsystems.ID = comp.os)";
 		$where.= "LEFT JOIN glpi_locations on (glpi_locations.ID = comp.location)";
@@ -1895,7 +1895,7 @@ function showJobDetails ($target,$ID){
 		
 		$canupdate_descr=$canupdate||($job->numberOfFollowups()==0&&$job->fields["author"]==$_SESSION["glpiID"]);
 		$item=new CommonItem();
-		$item->getFromDB($job->fields["device_type"],$job->fields["computer"]);
+		$item->getFromDB($job->fields["itemtype"],$job->fields["items_id"]);
 
 		//echo "<div class='center'>";
 		echo "<form method='post' name='form_ticket' action='$target'  enctype=\"multipart/form-data\">\n";
@@ -2004,12 +2004,12 @@ function showJobDetails ($target,$ID){
 		echo "<tr><td class='left'>";
 		echo $LANG['common'][1].":</td><td>";
 		if ($canupdate){
-			if (haveTypeRight($job->fields["device_type"],'r')){
+			if (haveTypeRight($job->fields["itemtype"],'r')){
 				echo $item->getType()." - ".$item->getLink(1);
 			} else {
 				echo $item->getType()." ".$item->getNameID();
 			}
-			dropdownTrackingAllDevices("device_type",$job->fields["device_type"],1,$job->fields["FK_entities"]);
+			dropdownTrackingAllDevices("itemtype",$job->fields["itemtype"],1,$job->fields["FK_entities"]);
 		}
 		else {
 			echo $item->getType()." ".$item->getNameID();
@@ -2217,7 +2217,7 @@ function showJobDetails ($target,$ID){
 		// File associated ?
 		$query2 = "SELECT * 
 			FROM glpi_documents_items 
-			WHERE glpi_documents_items.FK_device = '".$job->fields["ID"]."' AND glpi_documents_items.device_type = '".TRACKING_TYPE."' ";
+			WHERE glpi_documents_items.items_id = '".$job->fields["ID"]."' AND glpi_documents_items.itemtype = '".TRACKING_TYPE."' ";
 		$result2 = $DB->query($query2);
 		$numfiles=$DB->numrows($result2);
 		echo "<table width='100%'><tr><th colspan='2'>".$LANG['document'][21]."</th></tr>";			
@@ -2763,8 +2763,8 @@ function computeTicketTco($item_type,$item){
 
 	$query="SELECT * 
 		FROM glpi_tickets 
-		WHERE (device_type = '$item_type' 
-				AND computer = '$item') 
+		WHERE (itemtype = '$item_type' 
+				AND items_id = '$item')
 			AND (cost_time>0 
 				OR cost_fixed>0
 				OR cost_material>0)";
@@ -2784,22 +2784,22 @@ function computeTicketTco($item_type,$item){
 		global $LANG,$INFOFORM_PAGES,$CFG_GLPI;
 
 		//If ticket is assign to an object, display this information first
-		if (isset($output["FK_entities"]) && isset($output["computer"]) && isset($output["device_type"]))
+		if (isset($output["FK_entities"]) && isset($output["items_id"]) && isset($output["itemtype"]))
 		{
 			echo "<tr  class='tab_bg_2'>";
 			echo "<td class='tab_bg_2'>".$LANG['rulesengine'][48]."</td>";
 
 			$commonitem = new CommonItem;
-			$commonitem->getFromDB($output["device_type"],$output["computer"]);
+			$commonitem->getFromDB($output["itemtype"],$output["items_id"]);
 			echo "<td class='tab_bg_2'>";
-			echo "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$output["device_type"]]."?ID=".$output["computer"]."\">".$commonitem->obj->fields["name"]."</a>";				
+			echo "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$output["itemtype"]]."?ID=".$output["items_id"]."\">".$commonitem->obj->fields["name"]."</a>";
 			echo "</td>";
 			echo "</tr>";
 			
 			//Clean output of unnecessary fields (already processed)
 			
-			unset($output["computer"]);
-			unset($output["device_type"]);
+			unset($output["items_id"]);
+			unset($output["itemtype"]);
 		}
 		
 		unset($output["FK_entities"]);

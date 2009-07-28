@@ -37,8 +37,8 @@ if(!isset($_GET["type"])) {
 	$_GET["type"] = -1;
 }
 
-if(!isset($_GET["device_type"])) {
-	$_GET["device_type"] = -1;
+if(!isset($_GET["itemtype"])) {
+	$_GET["itemtype"] = -1;
 }
 
 if(!isset($_GET["url"])) {
@@ -101,7 +101,7 @@ if ($_GET["action"]=="edit") {
 		$bookmark->showForm($_SERVER['PHP_SELF'],$_GET['ID']);
 	} else {
 		// Create
-		$bookmark->showForm($_SERVER['PHP_SELF'],0,$_GET["type"],rawurldecode($_GET["url"]),$_GET["device_type"]);	
+		$bookmark->showForm($_SERVER['PHP_SELF'],0,$_GET["type"],rawurldecode($_GET["url"]),$_GET["itemtype"]);	
 	}
 
 } else { // $_GET["action"]="load";

@@ -40,12 +40,12 @@ if (!defined('GLPI_ROOT')){
 
 /** Show Infocom form for an item
 * @param $target string: where to go on action
-* @param $device_type integer: item type
+* @param $itemtype integer: item type
 * @param $dev_ID integer: item ID
 * @param $show_immo boolean: show immobilisation infos
 * @param $withtemplate integer: template or basic item
 */
-function showInfocomForm($target,$device_type,$dev_ID,$show_immo=true,$withtemplate='') {
+function showInfocomForm($target,$itemtype,$dev_ID,$show_immo=true,$withtemplate='') {
 	// Show Infocom or blank form
 
 	global $CFG_GLPI,$LANG;
@@ -58,26 +58,26 @@ function showInfocomForm($target,$device_type,$dev_ID,$show_immo=true,$withtempl
 	if ($withtemplate==2)
 		$option=" readonly ";
 
-	if (!strpos($_SERVER['PHP_SELF'],"infocoms-show")&&($device_type==SOFTWARE_TYPE||$device_type==CARTRIDGE_TYPE||$device_type==CONSUMABLE_TYPE)){
+	if (!strpos($_SERVER['PHP_SELF'],"infocoms-show")&&($itemtype==SOFTWARE_TYPE||$itemtype==CARTRIDGE_TYPE||$itemtype==CONSUMABLE_TYPE)){
 		echo "<div class='center'>".$LANG['financial'][84]."</div>";
 	}
 
 	//echo "<br>";
-	if ($ci->getFromDB($device_type,$dev_ID)){
+	if ($ci->getFromDB($itemtype,$dev_ID)){
 		$entity=-1;
 
-		if ($device_type==SOFTWARELICENSE_TYPE){
+		if ($itemtype==SOFTWARELICENSE_TYPE){
 			$soft=new Software();
 			$soft->getFromDB($ci->getField('sID'));
 			$entity=$soft->fields['FK_entities'];
 		} else {
 			$entity=$ci->getField("FK_entities");
 		}
-		if (!$ic->getFromDBforDevice($device_type,$dev_ID)){
+		if (!$ic->getFromDBforDevice($itemtype,$dev_ID)){
 			if ($ic->can(-1,"w",$entity) && $withtemplate!=2){
 				//echo "<div class='center'>";
 				echo "<table class='tab_cadre'><tr><th>";
-				echo "<strong><a href='$target?device_type=$device_type&amp;FK_device=$dev_ID&amp;add=add'>".$LANG['financial'][68]."</a></strong></th></tr></table>";
+				echo "<strong><a href='$target?itemtype=$itemtype&amp;items_id=$dev_ID&amp;add=add'>".$LANG['financial'][68]."</a></strong></th></tr></table>";
 				//echo "</div>";
 			}
 		} else { // getFromDBforDevice
@@ -209,7 +209,7 @@ function showInfocomForm($target,$device_type,$dev_ID,$show_immo=true,$withtempl
 				echo "</td></tr>";
 			}
 			//TCO
-			if ($device_type!=SOFTWARE_TYPE&&$device_type!=CARTRIDGE_TYPE&&$device_type!=CONSUMABLE_TYPE&&$device_type!=CONSUMABLE_ITEM_TYPE&&$device_type!=SOFTWARELICENSE_TYPE&&$device_type!=CARTRIDGE_ITEM_TYPE){
+			if ($itemtype!=SOFTWARE_TYPE&&$itemtype!=CARTRIDGE_TYPE&&$itemtype!=CONSUMABLE_TYPE&&$itemtype!=CONSUMABLE_ITEM_TYPE&&$itemtype!=SOFTWARELICENSE_TYPE&&$itemtype!=CARTRIDGE_ITEM_TYPE){
 				echo "<tr class='tab_bg_1'><td>";
 				echo $LANG['financial'][89]." : </td><td>";
 				echo showTco($ci->getField('ticket_tco'),$ic->fields["value"]);
@@ -485,20 +485,20 @@ function showTco($ticket_tco,$value,$date_achat=""){
 /**
  * Show infocom link to display popup
  *
- *@param $device_type integer: item type
+ *@param $itemtype integer: item type
  *@param $device_id integer:  item ID
  *@param $update integer: 
  *
  *@return float
  **/
-function showDisplayInfocomLink($device_type,$device_id,$update=0){
+function showDisplayInfocomLink($itemtype,$device_id,$update=0){
 	global $DB,$CFG_GLPI,$LANG;
 
 	if (!haveRight("infocom","r")) return false;
 
 	$query="SELECT COUNT(*) 
 		FROM glpi_infocoms 
-		WHERE FK_device='$device_id' AND device_type='$device_type'";
+		WHERE items_id='$device_id' AND itemtype='$itemtype'";
 
 	$add="add";
 	$text=$LANG['buttons'][8];
@@ -507,8 +507,8 @@ function showDisplayInfocomLink($device_type,$device_id,$update=0){
 		$add="";
 		$text=$LANG['buttons'][23];
 	}
-	if (haveTypeRight($device_type,"w")){
-		echo "<span onClick=\"window.open('".$CFG_GLPI["root_doc"]."/front/infocom.show.php?device_type=$device_type&amp;device_id=$device_id&amp;update=$update','infocoms','location=infocoms,width=1000,height=400,scrollbars=no')\" style='cursor:pointer'><img src=\"".$CFG_GLPI["root_doc"]."/pics/dollar$add.png\" alt=\"$text\" title=\"$text\"></span>";
+	if (haveTypeRight($itemtype,"w")){
+		echo "<span onClick=\"window.open('".$CFG_GLPI["root_doc"]."/front/infocom.show.php?itemtype=$itemtype&amp;device_id=$device_id&amp;update=$update','infocoms','location=infocoms,width=1000,height=400,scrollbars=no')\" style='cursor:pointer'><img src=\"".$CFG_GLPI["root_doc"]."/pics/dollar$add.png\" alt=\"$text\" title=\"$text\"></span>";
 	}
 }
 
@@ -533,8 +533,8 @@ function cron_infocom($display=false){
 	// Check notice
 	$query="SELECT glpi_infocoms.* 
 		FROM glpi_infocoms 
-		LEFT JOIN glpi_alerts ON (glpi_infocoms.ID = glpi_alerts.FK_device 
-					AND glpi_alerts.device_type='".INFOCOM_TYPE."' 
+		LEFT JOIN glpi_alerts ON (glpi_infocoms.ID = glpi_alerts.items_id 
+					AND glpi_alerts.itemtype='".INFOCOM_TYPE."' 
 					AND glpi_alerts.type='".ALERT_END."') 
 		WHERE (glpi_infocoms.alert & ".pow(2,ALERT_END).") >0 
 			AND glpi_infocoms.warranty_duration>0 
@@ -555,7 +555,7 @@ function cron_infocom($display=false){
 		}
 
 		while ($data=$DB->fetch_array($result)){
-			if ($ci->getFromDB($data["device_type"],$data["FK_device"])){
+			if ($ci->getFromDB($data["itemtype"],$data["items_id"])){
 				$entity=$ci->getField('FK_entities');
 				if (!isset($message[$entity])){
 					$message[$entity]="";
@@ -586,11 +586,11 @@ function cron_infocom($display=false){
 					
 
 					$input["type"]=ALERT_END;
-					$input["device_type"]=INFOCOM_TYPE;
+					$input["itemtype"]=INFOCOM_TYPE;
 
 					//// add alerts
 					foreach ($items[$entity] as $ID){
-						$input["FK_device"]=$ID;
+						$input["items_id"]=$ID;
 						$alert->add($input);
 						unset($alert->fields['ID']);
 					}

@@ -91,7 +91,7 @@ if (!$maxid) {
 }
 // Computer from OCS : New, ID Changed, Linked 
 $sql = "SELECT *  FROM glpi_logs " .
-		"WHERE date_mod >= '$maxti' AND device_type=1 AND linked_action IN (8,10,11) " .
+		"WHERE date_mod >= '$maxti' AND itemtype=1 AND linked_action IN (8,10,11) " .
 		"ORDER BY ID DESC";
 
 $res = $DB->query($sql);
@@ -108,8 +108,8 @@ $nb=$nbupd=0;
 while ($event=$DB->fetch_array($res)) {
 	
 	if ($event["new_value"]>$maxid && 
-		getOCSServerByMachineID($event["FK_glpi_device"])==$_GET["server"] &&
-		$comp->getFromDB($event["FK_glpi_device"])) {
+		getOCSServerByMachineID($event["items_id"])==$_GET["server"] &&
+		$comp->getFromDB($event["items_id"])) {
 		
 		$nb++;
 		printf("+ %5d : %s : %s (%s > %s)\n", $nb, $event["date_mod"], $comp->fields["name"],
@@ -138,7 +138,7 @@ while ($event=$DB->fetch_array($res)) {
 			if (!empty($olddevid)) {
 				$sql .= ", ocs_deviceid ='$olddevid'";
 			}
-			$sql .= " WHERE glpi_id=" . $event["FK_glpi_device"];
+			$sql .= " WHERE glpi_id=" . $event["items_id"];
 				
 			if ($debug) {
 				echo "DEBUG: $sql \n";
@@ -151,7 +151,7 @@ while ($event=$DB->fetch_array($res)) {
 					$changes[0] = 0;
 					$changes[2] = "Rollback: restauration lien du $maxti";
 					$changes[1] = "";
-					historyLog($event["FK_glpi_device"], COMPUTER_TYPE, $changes, 0, HISTORY_LOG_SIMPLE_MESSAGE);
+					historyLog($event["items_id"], COMPUTER_TYPE, $changes, 0, HISTORY_LOG_SIMPLE_MESSAGE);
 				} else {
 					echo "*** MySQL : $sql\n*** Error : " . $DB->error() . "\n";
 				}
@@ -164,14 +164,14 @@ while ($event=$DB->fetch_array($res)) {
 				") => retour stock";
 			
 			// TODO: to be done according to automatic link configuration
-			$input["ID"] = $event["FK_glpi_device"];
+			$input["ID"] = $event["items_id"];
 			$input["name"] = NULL;		// No name
 			$input["ocs_import"] = 0;	// No Ocs link
 			$input["state"] = 5;		// Available
 			
 			// Unlink the computer
 			$sql = "DELETE FROM glpi_ocslinks " .
-				" WHERE glpi_id=" . $event["FK_glpi_device"];
+				" WHERE glpi_id=" . $event["items_id"];
 
 			if ($debug) {
 				echo "DEBUG: $sql \n";
@@ -188,7 +188,7 @@ while ($event=$DB->fetch_array($res)) {
 					$changes[0] = 0;
 					$changes[2] = "Rollback: restauration statut au $maxti";
 					$changes[1] = "";
-					historyLog($event["FK_glpi_device"], COMPUTER_TYPE, $changes, 0, HISTORY_LOG_SIMPLE_MESSAGE);
+					historyLog($event["items_id"], COMPUTER_TYPE, $changes, 0, HISTORY_LOG_SIMPLE_MESSAGE);
 					
 				} else {
 					echo "*** MySQL : $sql\n*** Error : " . $DB->error() . "\n";

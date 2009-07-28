@@ -243,7 +243,7 @@ class Consumable extends CommonDBTM {
 
 	function cleanDBonPurge($ID) {
 		global $DB;
-		$query = "DELETE FROM glpi_infocoms WHERE (FK_device = '$ID' AND device_type='".CONSUMABLE_ITEM_TYPE."')";
+		$query = "DELETE FROM glpi_infocoms WHERE (items_id = '$ID' AND itemtype='".CONSUMABLE_ITEM_TYPE."')";
 		$result = $DB->query($query);
 	}
 
@@ -258,8 +258,8 @@ class Consumable extends CommonDBTM {
 
 		if ($ic->getFromDBforDevice(CONSUMABLE_TYPE,$this->fields["FK_glpi_consumables_type"])){
 			unset($ic->fields["ID"]);
-			$ic->fields["FK_device"]=$newID;
-			$ic->fields["device_type"]=CONSUMABLE_ITEM_TYPE;
+			$ic->fields["items_id"]=$newID;
+			$ic->fields["itemtype"]=CONSUMABLE_ITEM_TYPE;
 			if (empty($ic->fields['use_date'])){
 				unset($ic->fields['use_date']);
 			}

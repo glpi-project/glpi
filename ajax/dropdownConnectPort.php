@@ -53,7 +53,7 @@ if (isset($LINK_ID_TABLE[$_POST["type"]])&&isset($_POST["item"])){
 
 	$query =  "SELECT DISTINCT glpi_networkports_networkports.ID as WID, glpi_networkports.ID as DID, $table.name as CNAME, glpi_networkports.name  as NNAME, glpi_networkports.ifaddr as IP, glpi_networkports.ifmac as MAC";
 	$query.= " FROM $table ";
-	$query.= " LEFT JOIN glpi_networkports ON (glpi_networkports.on_device='".$_POST['item']."' AND glpi_networkports.device_type='".$_POST["type"]."' AND glpi_networkports.on_device=$table.ID) "; 
+	$query.= " LEFT JOIN glpi_networkports ON (glpi_networkports.items_id='".$_POST['item']."' AND glpi_networkports.itemtype='".$_POST["type"]."' AND glpi_networkports.items_id=$table.ID) "; 
 	$query.= " LEFT JOIN glpi_networkports_networkports ON (glpi_networkports_networkports.end1=glpi_networkports.ID OR glpi_networkports_networkports.end2=glpi_networkports.ID)";
 	$query.= " WHERE glpi_networkports_networkports.ID IS NULL AND glpi_networkports.ID IS NOT NULL AND glpi_networkports.ID <> '".$_POST['current']."' ";
 	$query.= $where;

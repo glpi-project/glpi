@@ -43,13 +43,13 @@ if (!defined('GLPI_ROOT')){
  *
  * 
  *
- * @param $id_device
- * @param $device_type
+ * @param $items_id
+ * @param $itemtype
  * @param $changes
- * @param $device_internal_type
+ * @param $devicetype
  * @param $linked_action
  **/
-function historyLog ($id_device,$device_type,$changes,$device_internal_type='0',$linked_action='0') {
+function historyLog ($items_id,$itemtype,$changes,$devicetype='0',$linked_action='0') {
 
 	global $DB;
 
@@ -68,9 +68,9 @@ function historyLog ($id_device,$device_type,$changes,$device_internal_type='0',
 			$username="";
 
 		// Build query
-		$query = "INSERT INTO glpi_logs (FK_glpi_device, device_type, device_internal_type, linked_action, user_name, date_mod,
+		$query = "INSERT INTO glpi_logs (items_id, itemtype, devicetype, linked_action, user_name, date_mod,
 		id_search_option, old_value, new_value)  
-		VALUES ('$id_device', '$device_type', '$device_internal_type', '$linked_action','". addslashes($username)."', '$date_mod',
+		VALUES ('$items_id', '$itemtype', '$devicetype', '$linked_action','". addslashes($username)."', '$date_mod',
 		'$id_search_option', '".utf8_substr($old_value,0,250)."', '".utf8_substr($new_value,0,250)."');";
 		$DB->query($query)  or die($DB->error());
 	}
@@ -82,12 +82,12 @@ function historyLog ($id_device,$device_type,$changes,$device_internal_type='0',
  *
  * 
  *
- * @param $id_device ID of the device
- * @param $device_type ID of the device type
+ * @param $items_id ID of the device
+ * @param $itemtype ID of the device type
  * @param $oldvalues old values updated
  * @param $values all values of the item
  **/
-function constructHistory($id_device,$device_type,&$oldvalues,&$values) {
+function constructHistory($items_id,$itemtype,&$oldvalues,&$values) {
 
 	global $LINK_ID_TABLE, $LANG ;
 
@@ -98,12 +98,12 @@ function constructHistory($id_device,$device_type,&$oldvalues,&$values) {
 		foreach ($oldvalues as $key => $oldval){
 			$changes=array();
 			// Parsing $SEARCH_OPTIONS to find infocom 
-			if ($device_type==INFOCOM_TYPE) {
+			if ($itemtype==INFOCOM_TYPE) {
 				$ic=new Infocom();
 				if ($ic->getFromDB($values['ID'])){
-					$real_device_type=$ic->fields['device_type'];
-					$id_device=$ic->fields['FK_device'];
-					if (isset($SEARCH_OPTION[$real_device_type])) foreach($SEARCH_OPTION[$real_device_type] as $key2 => $val2){
+					$real_itemtype=$ic->fields['itemtype'];
+					$items_id=$ic->fields['items_id'];
+					if (isset($SEARCH_OPTION[$real_itemtype])) foreach($SEARCH_OPTION[$real_itemtype] as $key2 => $val2){
 						if(($val2["field"]==$key&&strpos($val2['table'],'infocoms')) || 
 							($key=='budget'&&$val2['table']=='glpi_budgets') ||
 							($key=='FK_enterprise'&&$val2['table']=='glpi_suppliers_infocoms')) {
@@ -123,17 +123,17 @@ function constructHistory($id_device,$device_type,&$oldvalues,&$values) {
 					}
 				}
 			} else {
-				$real_device_type=$device_type;
+				$real_itemtype=$itemtype;
 				// Parsing $SEARCH_OPTION, check if an entry exists matching $key
-				if (isset($SEARCH_OPTION[$device_type])){
-					foreach($SEARCH_OPTION[$device_type] as $key2 => $val2){
+				if (isset($SEARCH_OPTION[$itemtype])){
+					foreach($SEARCH_OPTION[$itemtype] as $key2 => $val2){
 				
 						// Linkfield or standard field not massive action enable
 						if($val2["linkfield"]==$key 
 							|| ( empty($val2["linkfield"]) && $key == $val2["field"]) ){
 							$id_search_option=$key2; // Give ID of the $SEARCH_OPTION
 				
-							if($val2["table"]==$LINK_ID_TABLE[$device_type]){
+							if($val2["table"]==$LINK_ID_TABLE[$itemtype]){
 								// 1st case : text field -> keep datas
 								$changes=array($id_search_option, addslashes($oldval),$values[$key]);
 							}else {
@@ -147,7 +147,7 @@ function constructHistory($id_device,$device_type,&$oldvalues,&$values) {
 			}
 		
 			if (count($changes)){
-				historyLog ($id_device,$real_device_type,$changes);
+				historyLog ($items_id,$real_itemtype,$changes);
 			}
 
 		}
@@ -161,10 +161,10 @@ function constructHistory($id_device,$device_type,&$oldvalues,&$values) {
  ** 
  * Show history for a device 
  *
- * @param $id_device
- * @param $device_type
+ * @param $items_id
+ * @param $itemtype
  **/
-function showHistory($device_type,$id_device){
+function showHistory($itemtype,$items_id){
 
 	global $DB, $LINK_ID_TABLE,$LANG;	
 	
@@ -177,7 +177,7 @@ function showHistory($device_type,$id_device){
 	}
 
 	// Total Number of events
-	$number = countElementsInTable("glpi_logs", "FK_glpi_device=$id_device AND device_type=$device_type");
+	$number = countElementsInTable("glpi_logs", "items_id=$items_id AND itemtype=$itemtype");
 
 	// No Events in database
 	if ($number < 1) {
@@ -194,7 +194,7 @@ function showHistory($device_type,$id_device){
 
 	$query="SELECT * 
 		FROM glpi_logs 
-		WHERE FK_glpi_device='".$id_device."' AND device_type='".$device_type."'
+		WHERE items_id='".$items_id."' AND itemtype='".$itemtype."'
 		ORDER BY  ID DESC LIMIT ".intval($start)."," . intval($_SESSION['glpilist_limit']);
 
 	//echo $query;
@@ -226,17 +226,17 @@ function showHistory($device_type,$id_device){
 					break;
 
 				case HISTORY_ADD_DEVICE :
-					$field=getDictDeviceLabel($data["device_internal_type"]);
+					$field=getDictDeviceLabel($data["devicetype"]);
 					$change = $LANG['devices'][25]."&nbsp;<strong>:</strong>&nbsp;\"".$data[ "new_value"]."\"";	
 					break;
 
 				case HISTORY_UPDATE_DEVICE :
-					$field=getDictDeviceLabel($data["device_internal_type"]);
-					$change = getDeviceSpecifityLabel($data["device_internal_type"])."&nbsp;:&nbsp;\"".$data[ "old_value"]."\"&nbsp;<strong>--></strong>&nbsp;\"".$data[ "new_value"]."\"";	
+					$field=getDictDeviceLabel($data["devicetype"]);
+					$change = getDeviceSpecifityLabel($data["devicetype"])."&nbsp;:&nbsp;\"".$data[ "old_value"]."\"&nbsp;<strong>--></strong>&nbsp;\"".$data[ "new_value"]."\"";
 					break;
 
 				case HISTORY_DELETE_DEVICE :
-					$field=getDictDeviceLabel($data["device_internal_type"]);
+					$field=getDictDeviceLabel($data["devicetype"]);
 					$change = $LANG['devices'][26]."&nbsp;<strong>:</strong>&nbsp;"."\"".$data["old_value"]."\"";	
 					break;
 				case HISTORY_INSTALL_SOFTWARE :
@@ -249,13 +249,13 @@ function showHistory($device_type,$id_device){
 					break;	
 				case HISTORY_DISCONNECT_DEVICE:
 					$ci=new CommonItem();
-					$ci->setType($data["device_internal_type"]);
+					$ci->setType($data["devicetype"]);
 					$field=$ci->getType();
 					$change = $LANG['log'][26]."&nbsp;<strong>:</strong>&nbsp;"."\"".$data["old_value"]."\"";	
 					break;	
 				case HISTORY_CONNECT_DEVICE:
 					$ci=new CommonItem();
-					$ci->setType($data["device_internal_type"]);
+					$ci->setType($data["devicetype"]);
 					$field=$ci->getType();
 					$change = $LANG['log'][27]."&nbsp;<strong>:</strong>&nbsp;"."\"".$data["new_value"]."\"";	
 					break;	
@@ -280,7 +280,7 @@ function showHistory($device_type,$id_device){
 				case HISTORY_OCS_LINK:
 					if (haveRight("view_ocsng","r")){
 						$ci=new CommonItem();
-						$ci->setType($data["device_internal_type"]);
+						$ci->setType($data["devicetype"]);
 						$field=$ci->getType();
 						$change = $LANG['ocsng'][47]." ".$LANG['ocsng'][45]."&nbsp;<strong>:</strong>&nbsp;"."\"".$data["new_value"]."\"";	
 					} else {
@@ -306,7 +306,7 @@ function showHistory($device_type,$id_device){
 		}else{
 			$fieldname="";
 			// It's not an internal device
-			foreach($SEARCH_OPTION[$device_type] as $key2 => $val2){
+			foreach($SEARCH_OPTION[$itemtype] as $key2 => $val2){
 
 				if($key2==$data["id_search_option"]){
 					$field= $val2["name"];

@@ -767,8 +767,8 @@ function getMachinesAlreadyInGLPI($ocs_id,$ocs_server_id,$entity){
 		$sql_where = " FK_entities IN ($where_entity) AND is_template=0 ";
 		$sql_from = "glpi_computers";
 		if ( $conf["link_ip"] || $conf["link_mac_address"]){
-			$sql_from.=" LEFT JOIN glpi_networkports ON (glpi_computers.ID=glpi_networkports.on_device 
-								AND glpi_networkports.device_type=".COMPUTER_TYPE.") ";
+			$sql_from.=" LEFT JOIN glpi_networkports ON (glpi_computers.ID=glpi_networkports.items_id 
+								AND glpi_networkports.itemtype=".COMPUTER_TYPE.") ";
 		}	
 		if ($conf["link_ip"]){
 			if (empty($ocsParams["IPADDRESS"])){
@@ -1549,7 +1549,7 @@ function ocsUnlockItems($glpi_id,$field){
 							break;
 						case "import_ip":
 							$querySearchLocked = "SELECT * FROM glpi_networkports 
-								WHERE on_device='$glpi_id' AND device_type='".COMPUTER_TYPE."' AND ifaddr='$val'";
+								WHERE items_id='$glpi_id' AND itemtype='".COMPUTER_TYPE."' AND ifaddr='$val'";
 							break;
 						case "import_disk":
 							$querySearchLocked = "SELECT ID FROM glpi_computersdisks WHERE ID='$key'";
@@ -1732,7 +1732,7 @@ function ocsEditLock($target, $ID) {
 				$tmp = explode(OCS_FIELD_SEPARATOR,$val);
 				$querySearchLockedIP = "SELECT * 
 					FROM glpi_networkports 
-					WHERE on_device='$ID' AND device_type='".COMPUTER_TYPE."' 
+					WHERE items_id='$ID' AND itemtype='".COMPUTER_TYPE."' 
 						AND ifaddr='".$tmp[0]."' AND ifmac='".$tmp[1]."'";
 				$resultSearchIP = $DB->query($querySearchLockedIP);
 				if ($DB->numrows($resultSearchIP) == 0) {
@@ -1826,7 +1826,7 @@ function ocsEditLock($target, $ID) {
  *
  * 
  *
- *@param $device_type integer : device type
+ *@param $devicetype integer : device type
  *@param $glpi_id integer : glpi computer id.
  *@param $ocs_id integer : ocs computer id (ID).
  *@param $ocs_server_id integer : ocs server id
@@ -1838,13 +1838,13 @@ function ocsEditLock($target, $ID) {
  *@return Nothing (void).
  *
  **/
-function ocsUpdateDevices($device_type, $glpi_id, $ocs_id, $ocs_server_id, $cfg_ocs, $import_device, $import_ip, $dohistory) {
+function ocsUpdateDevices($devicetype, $glpi_id, $ocs_id, $ocs_server_id, $cfg_ocs, $import_device, $import_ip, $dohistory) {
 	global $DB, $DBocs;
 
 	checkOCSconnection($ocs_server_id);
 
 	$do_clean = false;
-	switch ($device_type) {
+	switch ($devicetype) {
 		case RAM_DEVICE :
 			//Memoire
 			if ($cfg_ocs["import_device_memory"]) {
@@ -2150,8 +2150,8 @@ function ocsUpdateDevices($device_type, $glpi_id, $ocs_id, $ocs_server_id, $cfg_
 							if ($count_ip == 1) {
 								//get old IP in DB							
 								$querySelectIDandIP = "SELECT ID,ifaddr FROM glpi_networkports
-											WHERE device_type='" . COMPUTER_TYPE . "' 
-											AND on_device='$glpi_id' 
+											WHERE itemtype='" . COMPUTER_TYPE . "' 
+											AND items_id='$glpi_id' 
 											AND ifmac='" . $line2["MACADDR"] . "'" . "
 											AND name='" . $line2["DESCRIPTION"] . "'";
 								$result = $DB->query($querySelectIDandIP);
@@ -2169,8 +2169,8 @@ function ocsUpdateDevices($device_type, $glpi_id, $ocs_id, $ocs_server_id, $cfg_
 							$netport["ifmac"] = $line2["MACADDR"];
 							$netport["iface"] = externalImportDropdown("glpi_networkinterfaces", $line2["TYPE"]);
 							$netport["name"] = $line2["DESCRIPTION"];
-							$netport["on_device"] = $glpi_id;
-							$netport["device_type"] = COMPUTER_TYPE;
+							$netport["items_id"] = $glpi_id;
+							$netport["itemtype"] = COMPUTER_TYPE;
 							$netport["netmask"] = $line2["IPMASK"];
 							$netport["gateway"] = $line2["IPGATEWAY"];
 							$netport["subnet"] = $line2["IPSUBNET"];
@@ -2306,13 +2306,13 @@ function ocsUpdateDevices($device_type, $glpi_id, $ocs_id, $ocs_server_id, $cfg_
 	// Delete Unexisting Items not found in OCS
 	if ($do_clean && count($import_device)) {
 		foreach ($import_device as $key => $val) {
-			if (!(strpos($val, $device_type . '$$') === false)) {
+			if (!(strpos($val, $devicetype . '$$') === false)) {
 				unlink_device_computer($key, $dohistory);
 				deleteInOcsArray($glpi_id, $key, "import_device");
 			}
 		}
 	}
-	if ($do_clean && count($import_ip) && $device_type == NETWORK_DEVICE) {
+	if ($do_clean && count($import_ip) && $devicetype == NETWORK_DEVICE) {
 		foreach ($import_ip as $key => $val) {
 			if ($key>0)
 			{
@@ -2334,16 +2334,16 @@ function ocsUpdateDevices($device_type, $glpi_id, $ocs_id, $ocs_server_id, $cfg_
  *
  * Add a new device if doesn't exist.
  *
- *@param $device_type integer : device type identifier.
+ *@param $devicetype integer : device type identifier.
  *@param $dev_array array : device fields.
  *
  *@return integer : device id.
  *
  **/
-function ocsAddDevice($device_type, $dev_array) {
+function ocsAddDevice($devicetype, $dev_array) {
 
 	global $DB;
-	$table = getDeviceTable($device_type);
+	$table = getDeviceTable($devicetype);
 	
 	$query = "SELECT * 
 				FROM `" . $table . "` 
@@ -2363,7 +2363,7 @@ function ocsAddDevice($device_type, $dev_array) {
 	$result = $DB->query($query);
 	
 	if ($DB->numrows($result) == 0) {
-		$dev = new Device($device_type);
+		$dev = new Device($devicetype);
 		$input = array ();
 		foreach ($dev_array as $key => $val) {
 			$input[$key] = $val;
@@ -2381,7 +2381,7 @@ function ocsAddDevice($device_type, $dev_array) {
  *
  * 
  *
- *@param $device_type integer : device type 
+ *@param $itemtype integer : device type 
  *@param $glpi_id integer : glpi computer id.
  *@param $ocs_id integer : ocs computer id (ID).
  *@param $ocs_server_id integer : ocs server id
@@ -2393,7 +2393,7 @@ function ocsAddDevice($device_type, $dev_array) {
  *@return Nothing (void).
  *
  **/
-function ocsUpdatePeripherals($device_type, $entity, $glpi_id, $ocs_id, $ocs_server_id, $cfg_ocs, $import_periph, $dohistory) {
+function ocsUpdatePeripherals($itemtype, $entity, $glpi_id, $ocs_id, $ocs_server_id, $cfg_ocs, $import_periph, $dohistory) {
 	global $DB, $DBocs, $LINK_ID_TABLE;
 
 	checkOCSconnection($ocs_server_id);
@@ -2403,7 +2403,7 @@ function ocsUpdatePeripherals($device_type, $entity, $glpi_id, $ocs_id, $ocs_ser
 	//Tag for data since 0.70 for the import_monitor array.
 
 	$count_monitor = count($import_periph);
-	switch ($device_type) {
+	switch ($itemtype) {
 		case MONITOR_TYPE :
 			if ($cfg_ocs["import_monitor"]) {
 
@@ -2775,7 +2775,7 @@ function ocsUpdatePeripherals($device_type, $entity, $glpi_id, $ocs_id, $ocs_ser
 	if ($do_clean && count($import_periph)) {
 		foreach ($import_periph as $key => $val) {
 
-			switch ($device_type) {
+			switch ($itemtype) {
 				case MONITOR_TYPE :
 					// Only if sync done
 					if ($cfg_ocs["import_monitor"]<=2 || $checkserial) {
@@ -3345,16 +3345,16 @@ function ocsResetSoftwares($glpi_computer_id) {
  *
  * Delete Old device settings.
  *
- *@param $device_type integer : device type identifier.
+ *@param $devicetype integer : device type identifier.
  *@param $glpi_computer_id integer : glpi computer id.
  *
  *@return nothing.
  *
  **/
-function ocsResetDevices($glpi_computer_id, $device_type) {
+function ocsResetDevices($glpi_computer_id, $devicetype) {
 	global $DB;
 	$query = "DELETE FROM glpi_computers_devices 
-				WHERE device_type = '" . $device_type . "' 
+				WHERE devicetype = '" . $devicetype . "'
 				AND FK_computers = '" . $glpi_computer_id . "'";
 	$DB->query($query);
 }
@@ -3752,9 +3752,9 @@ function removeEntityLock($entity, $fp) {
 	}
 }
 
-function getMaterialManagementMode($ocs_config, $device_type) {
+function getMaterialManagementMode($ocs_config, $itemtype) {
 	global $LANG;
-	switch ($device_type) {
+	switch ($itemtype) {
 		case MONITOR_TYPE :
 			return $ocs_config["import_monitor"];
 			break;
