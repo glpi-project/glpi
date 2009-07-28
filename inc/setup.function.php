@@ -457,7 +457,7 @@ function showFormDropDown($target, $tablename, $human, $ID, $entities_id='') {
 function moveTreeUnder($table, $to_move, $where) {
 	global $DB;
 
-   $parentIDfield=getForeignKeyFieldFor($table);
+   $parentIDfield=getForeignKeyFieldForTable($table);
 
 	if ($where != $to_move) {
 		// Is the $where location under the to move ???
@@ -545,7 +545,7 @@ function getDropdownID($input){
 				WHERE $add_entity_field_twin name= '".$input["value"]."' AND location = '".$input["value2"]."'";
 		} else {
 			if (in_array($input["tablename"], $CFG_GLPI["dropdowntree_tables"])) {
-            $parentIDfield=getForeignKeyFieldFor($input["tablename"]);
+            $parentIDfield=getForeignKeyFieldForTable($input["tablename"]);
 
 				$query_twin="SELECT ID FROM `".$input["tablename"]."` 
 					WHERE $add_entity_field_twin name= '".$input["value"]."' AND $parentIDfield='0'";
@@ -684,7 +684,7 @@ function addDropdown($input) {
 				VALUES (" . $add_entity_value . "'" . $input["value"] . "', '" . $input["value2"] . "', '" . $input["comments"] . "')";
 		} else {
 			if (in_array($input["tablename"], $CFG_GLPI["dropdowntree_tables"])) {
-            $parentIDfield=getForeignKeyFieldFor($input["tablename"]);
+            $parentIDfield=getForeignKeyFieldForTable($input["tablename"]);
 				$query = "INSERT INTO `".$input["tablename"]."` (" . $add_entity_field . "name,$parentIDfield,completename,comments)
 					VALUES (" . $add_entity_value . "'" . $input["value"] . "', '0','','" . $input["comments"] . "')";
 
@@ -753,10 +753,6 @@ function replaceDropDropDown($input) {
 		return false;
 	}
 
-	$name = getDropdownNameFromTable($input["tablename"]);
-	if (empty($name)){
-		return false;
-	}
 	$RELATION = getDbRelations();
 
 	if (isset ($RELATION[$input["tablename"]]))
@@ -822,7 +818,7 @@ function showDeleteConfirmForm($target, $table, $ID,$entities_id) {
 	}
 
 	if (in_array($table,$CFG_GLPI["dropdowntree_tables"])) {
-      $parentIDfield=getForeignKeyFieldFor($table);
+      $parentIDfield=getForeignKeyFieldForTable($table);
 		$query = "SELECT COUNT(*) AS cpt FROM `$table` WHERE `$parentIDfield` = '" . $ID . "'";
 		$result = $DB->query($query);
 		if ($DB->result($result, 0, "cpt") > 0) {
@@ -875,34 +871,6 @@ function showDeleteConfirmForm($target, $table, $ID,$entities_id) {
 	echo "</div>";
 }
 
-function getDropdownNameFromTable($table) {
-	$name="";
-	if (strstr($table,"glpi_type_")) {
-		$name = str_replace("glpi_type_", "", $table);
-	} else {
-		if ($table == "glpi_locations")
-			$name = "location";
-		else {
-			$name = str_replace("glpi_dropdown_", "", $table);
-		}
-	}
-	return $name;
-}
-
-function getDropdownNameFromTableForStats($table) {
-
-	if (strstr($table,"glpi_type_")) {
-		$name = "type";
-	} else {
-		if ($table == "glpi_locations")
-			$name = "location";
-		else {
-			$name = str_replace("glpi_dropdown_", "", $table);
-		}
-	}
-	return $name;
-}
-
 /** Check if the dropdown $ID is used into item tables
 * @param $table string : table name
 * @param $ID integer : value ID
@@ -911,7 +879,6 @@ function getDropdownNameFromTableForStats($table) {
 function dropdownUsed($table, $ID) {
 
 	global $DB;
-	$name = getDropdownNameFromTable($table);
 
 	$RELATION = getDbRelations();
 	if (isset ($RELATION[$table])){

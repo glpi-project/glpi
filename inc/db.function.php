@@ -44,8 +44,26 @@ if (!defined('GLPI_ROOT')){
  *
  * return string field name used for a foreign key to the parameter table
  */
-function getForeignKeyFieldFor($table){
+function getForeignKeyFieldForTable($table){
+   if (strpos($table,'glpi_')===false){
+      return "";
+   }
+
   return str_replace("glpi_","",$table)."_id";
+}
+
+/**
+ * Return table name for a given foreign key name
+ *
+ * @param $fkname string: foreign key name
+ *
+ * return string table name corresponding to a foreign key name
+ */
+function getTableNameForForeignKeyField($fkname){
+   if (strpos($fkname,'_id')===false){
+      return "";
+   }
+  return "glpi_".str_replace("_id","",$fkname);
 }
 
 /**
@@ -211,7 +229,7 @@ function getTreeValueCompleteName($table,$ID,$withcomments=false){
 function getTreeValueName($table,$ID, $wholename="",$level=0){
 	global $DB,$LANG;
 
-   $parentIDfield=getForeignKeyFieldFor($table);
+   $parentIDfield=getForeignKeyFieldForTable($table);
 
 	$query = "SELECT * 
 		FROM `$table` 
@@ -252,7 +270,7 @@ function getTreeValueName($table,$ID, $wholename="",$level=0){
 function getAncestorsOf($table,$IDf){
    global $DB;
 
-   $parentIDfield=getForeignKeyFieldFor($table);
+   $parentIDfield=getForeignKeyFieldForTable($table);
 
    $use_cache=FieldExists($table,"cache_ancestors");
    if ($use_cache){
@@ -307,7 +325,7 @@ function getAncestorsOf($table,$IDf){
 function getSonsOf($table,$IDf){
    global $DB;
 
-   $parentIDfield=getForeignKeyFieldFor($table);
+   $parentIDfield=getForeignKeyFieldForTable($table);
 
    $use_cache=FieldExists($table,"cache_sons");
    if ($use_cache){
@@ -376,7 +394,7 @@ function getSonsOf($table,$IDf){
 function getTreeForItem($table,$IDf){
 	global $DB;
 
-   $parentIDfield=getForeignKeyFieldFor($table);
+   $parentIDfield=getForeignKeyFieldForTable($table);
 
 	// IDs to be present in the final array
 	$id_found=array();
@@ -515,7 +533,7 @@ function getTreeItemLevel($table,$ID){
 	global $DB;
 	$level=0;
 
-   $parentIDfield=getForeignKeyFieldFor($table);
+   $parentIDfield=getForeignKeyFieldForTable($table);
    
 	$query="SELECT $parentIDfield 
 		FROM $table 
@@ -572,7 +590,7 @@ function regenerateTreeCompleteName($table){
 function regenerateTreeCompleteNameUnderID($table,$ID){
 	global $DB;
 
-   $parentIDfield=getForeignKeyFieldFor($table);
+   $parentIDfield=getForeignKeyFieldForTable($table);
 
 	list($name,$level)=getTreeValueName($table,$ID);
 
