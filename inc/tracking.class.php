@@ -199,7 +199,7 @@ class Job extends CommonDBTM{
 			if (isset($this->fields['FK_group'])&&$this->fields['FK_group']){
 				$ci=new CommonItem;
 				$ci->getFromDB($input["itemtype"],$input["items_id"]);
-				if ($tmp=$ci->getField('FK_groups')){
+				if ($tmp=$ci->getField('groups_id')){
 					$input["FK_group"] = $tmp;
 				}
 			}
@@ -633,7 +633,7 @@ class Job extends CommonDBTM{
 		if (isset($input["items_id"])&&$input["items_id"]&&$input["itemtype"]){
 			$ci=new CommonItem;
 			$ci->getFromDB($input["itemtype"],$input["items_id"]);
-			if ($tmp=$ci->getField('FK_groups')){
+			if ($tmp=$ci->getField('groups_id')){
 				$input["FK_group"] = $tmp;
 			}
 		}
@@ -937,9 +937,9 @@ class Job extends CommonDBTM{
 			if (isset($this->hardwaredatas->obj->fields["users_id"])){
 				$contact=getUserName($this->hardwaredatas->obj->fields["users_id"]);
 			}
-			if (isset($this->hardwaredatas->obj->fields["FK_groups"])){
+			if (isset($this->hardwaredatas->obj->fields["groups_id"])){
 				if (!empty($contact)) $contact.=" / ";
-					$contact.=getDropdownName("glpi_groups",$this->hardwaredatas->obj->fields["FK_groups"]);
+					$contact.=getDropdownName("glpi_groups",$this->hardwaredatas->obj->fields["groups_id"]);
 			}
 		}
 

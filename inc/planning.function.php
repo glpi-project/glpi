@@ -236,7 +236,7 @@ function showPlanning($who,$who_group,$when,$type){
 	if ($who_group=="mine"){
 		if (count($_SESSION["glpigroups"])){
 			$groups=implode("','",$_SESSION['glpigroups']);
-			$ASSIGN="users_id IN (SELECT DISTINCT users_id FROM glpi_groups_users WHERE FK_groups IN ('$groups')) AND";
+			$ASSIGN="users_id IN (SELECT DISTINCT users_id FROM glpi_groups_users WHERE groups_id IN ('$groups')) AND";
 		} else { // Only personal ones
 			$ASSIGN="users_id='$who' AND ";
 		}
@@ -247,7 +247,7 @@ function showPlanning($who,$who_group,$when,$type){
 		}
 
 		if ($who_group>0){
-			$ASSIGN="users_id IN (SELECT users_id FROM glpi_groups_users WHERE FK_groups = '$who_group') AND";
+			$ASSIGN="users_id IN (SELECT users_id FROM glpi_groups_users WHERE groups_id = '$who_group') AND";
 		}
 	}
 	if (empty($ASSIGN)){

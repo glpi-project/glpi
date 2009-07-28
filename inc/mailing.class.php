@@ -230,7 +230,7 @@ class Mailing
 									$query="SELECT glpi_users.email AS EMAIL, glpi_users.language AS LANG 
 									FROM glpi_groups_users 
 									INNER JOIN glpi_users ON (glpi_groups_users.users_id = glpi_users.ID) $join 
-									WHERE glpi_users.deleted=0 AND glpi_groups_users.FK_groups='".$this->job->fields["assign_group"]."'";
+									WHERE glpi_users.deleted=0 AND glpi_groups_users.groups_id='".$this->job->fields["assign_group"]."'";
 				
 									if ($result2= $DB->query($query)){
 										if ($DB->numrows($result2)){
@@ -390,7 +390,7 @@ class Mailing
 						$query="SELECT DISTINCT glpi_users.email AS EMAIL, glpi_users.language AS LANG 
 							FROM glpi_groups_users 
 							INNER JOIN glpi_users ON (glpi_groups_users.users_id = glpi_users.ID) $join 
-							WHERE glpi_users.deleted=0 AND glpi_groups_users.FK_groups='".$data["FK_item"]."'";
+							WHERE glpi_users.deleted=0 AND glpi_groups_users.groups_id='".$data["FK_item"]."'";
 
 						if ($result2= $DB->query($query)){
 							if ($DB->numrows($result2))
@@ -821,7 +821,7 @@ class MailingResa{
 						$query="SELECT glpi_users.email AS EMAIL, glpi_users.language as LANG  
 						FROM glpi_groups_users 
 						INNER JOIN glpi_users ON (glpi_groups_users.users_id = glpi_users.ID) 
-						WHERE glpi_groups_users.FK_groups='".$data["FK_item"]."'";
+						WHERE glpi_groups_users.groups_id='".$data["FK_item"]."'";
 						if ($result2= $DB->query($query)){
 							if ($DB->numrows($result2))
 								while ($row=$DB->fetch_assoc($result2)){
@@ -1088,7 +1088,7 @@ class MailingAlert
 						$query="SELECT glpi_users.email AS EMAIL, glpi_users.language AS LANG 
 							FROM glpi_groups_users 
 							INNER JOIN glpi_users ON (glpi_groups_users.users_id = glpi_users.ID) 
-							WHERE glpi_groups_users.FK_groups='".$data["FK_item"]."'";
+							WHERE glpi_groups_users.groups_id='".$data["FK_item"]."'";
 
 						if ($result2= $DB->query($query)){
 							if ($DB->numrows($result2))

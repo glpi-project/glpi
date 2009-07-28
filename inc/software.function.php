@@ -56,7 +56,7 @@ function showVersions($sID) {
 	echo "<div class='center'>";
 	
 	$query = "SELECT glpi_softwaresversions.*,glpi_states.name AS sname FROM glpi_softwaresversions 
-				LEFT JOIN glpi_states ON (glpi_states.ID=glpi_softwaresversions.state)
+				LEFT JOIN glpi_states ON (glpi_states.ID=glpi_softwaresversions.states_id)
 				WHERE (sID = '$sID') ORDER BY name";
 		
 	initNavigateListItems(SOFTWAREVERSION_TYPE,$LANG['help'][31] ." = ". $soft->fields["name"]);
@@ -529,8 +529,8 @@ function showInstallations($searchID, $crit="sID") {
 		INNER JOIN glpi_computers ON (glpi_computers_softwaresversions.cID = glpi_computers.ID)
 		LEFT JOIN glpi_entities ON (glpi_computers.entities_id=glpi_entities.ID)
 		LEFT JOIN glpi_locations ON (glpi_computers.locations_id=glpi_locations.ID)
-		LEFT JOIN glpi_states ON (glpi_computers.state=glpi_states.ID)
-		LEFT JOIN glpi_groups ON (glpi_computers.FK_groups=glpi_groups.ID)
+		LEFT JOIN glpi_states ON (glpi_computers.states_id=glpi_states.ID)
+		LEFT JOIN glpi_groups ON (glpi_computers.groups_id=glpi_groups.ID)
 		LEFT JOIN glpi_users ON (glpi_computers.users_id=glpi_users.ID)
 		LEFT JOIN glpi_softwareslicenses ON (glpi_softwareslicenses.sID=glpi_softwaresversions.sID AND glpi_softwareslicenses.computers_id=glpi_computers.ID)
 		WHERE (glpi_softwaresversions.$crit = '$searchID') " .
@@ -815,7 +815,7 @@ function showSoftwareInstalled($instID, $withtemplate = '') {
 		glpi_softwaresversions.sID, glpi_softwaresversions.name AS version,glpi_softwareslicenses.computers_id AS computers_id,glpi_softwareslicenses.softwareslicensestypes_id AS lictype
 		FROM glpi_computers_softwaresversions 
 		LEFT JOIN glpi_softwaresversions ON ( glpi_computers_softwaresversions.vID = glpi_softwaresversions.ID )
-		LEFT JOIN glpi_states ON ( glpi_states.ID = glpi_softwaresversions.state )
+		LEFT JOIN glpi_states ON ( glpi_states.ID = glpi_softwaresversions.states_id )
 		LEFT JOIN glpi_softwareslicenses ON ( glpi_softwaresversions.sID = glpi_softwareslicenses.sID AND glpi_softwareslicenses.computers_id = '$instID')
 		LEFT JOIN glpi_softwares ON (glpi_softwaresversions.sID = glpi_softwares.ID) 
 		LEFT JOIN glpi_softwarescategories ON (glpi_softwarescategories.ID = glpi_softwares.category)";
@@ -826,7 +826,7 @@ function showSoftwareInstalled($instID, $withtemplate = '') {
 		glpi_softwaresversions.sID, glpi_softwaresversions.name AS version,glpi_softwareslicenses.computers_id AS computers_id,glpi_softwareslicenses.softwareslicensestypes_id AS lictype
 	    FROM glpi_computers_softwaresversions 
 		LEFT JOIN glpi_softwaresversions ON ( glpi_computers_softwaresversions.vID = glpi_softwaresversions.ID ) 
-		LEFT JOIN glpi_states ON ( glpi_states.ID = glpi_softwaresversions.state )
+		LEFT JOIN glpi_states ON ( glpi_states.ID = glpi_softwaresversions.states_id )
 		LEFT JOIN glpi_softwareslicenses ON ( glpi_softwaresversions.sID = glpi_softwareslicenses.sID AND glpi_softwareslicenses.computers_id = '$instID')
 	    LEFT JOIN glpi_softwares ON (glpi_softwaresversions.sID = glpi_softwares.ID)  
 	    LEFT JOIN glpi_softwarescategories ON (glpi_softwarescategories.ID = glpi_softwares.category)";
@@ -889,7 +889,7 @@ function showSoftwareInstalled($instID, $withtemplate = '') {
 		INNER JOIN glpi_softwares ON (glpi_softwareslicenses.sID = glpi_softwares.ID) 
 		LEFT JOIN glpi_softwarescategories ON (glpi_softwarescategories.ID = glpi_softwares.category)
 		LEFT JOIN glpi_softwaresversions ON ( glpi_softwareslicenses.buy_version = glpi_softwaresversions.ID )
-		LEFT JOIN glpi_states ON ( glpi_states.ID = glpi_softwaresversions.state )
+		LEFT JOIN glpi_states ON ( glpi_states.ID = glpi_softwaresversions.states_id )
 		WHERE glpi_softwareslicenses.computers_id = '$instID' ";
 	if (count($installed)) {
 		$query .= " AND glpi_softwareslicenses.sID NOT IN (".implode(',',$installed).")";

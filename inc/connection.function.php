@@ -211,9 +211,9 @@ function Disconnect($ID,$dohistory=1,$doautoactions=true,$ocs_server_id=0) {
 					$updates[]="users_id";
 					$device->obj->fields['users_id']=0;	
 				}
-				if ($CFG_GLPI["autoclean_link_group"] && $device->getField('FK_groups')){
-					$updates[]="FK_groups";
-					$device->obj->fields['FK_groups']=0;
+				if ($CFG_GLPI["autoclean_link_group"] && $device->getField('groups_id')){
+					$updates[]="groups_id";
+					$device->obj->fields['groups_id']=0;
 				}
 				if ($CFG_GLPI["autoclean_link_contact"] && $device->getField('contact')){
 					$updates[]="contact";
@@ -223,13 +223,13 @@ function Disconnect($ID,$dohistory=1,$doautoactions=true,$ocs_server_id=0) {
 					$updates[]="contact_num";
 					$device->obj->fields['contact_num']="";
 				}
-				if ($CFG_GLPI["autoclean_link_state"]<0 && $device->getField('state')) {
-					$updates[]="state";
-					$device->obj->fields['state']=0;	
+				if ($CFG_GLPI["autoclean_link_state"]<0 && $device->getField('states_id')) {
+					$updates[]="states_id";
+					$device->obj->fields['states_id']=0;	
 				}
-				if ($CFG_GLPI["autoclean_link_state"]>0 && $device->getField('state')!=$CFG_GLPI["autoclean_link_state"]) {
-					$updates[]="state";
-					$device->obj->fields['state']=$CFG_GLPI["autoclean_link_state"];	
+				if ($CFG_GLPI["autoclean_link_state"]>0 && $device->getField('states_id')!=$CFG_GLPI["autoclean_link_state"]) {
+					$updates[]="states_id";
+					$device->obj->fields['states_id']=$CFG_GLPI["autoclean_link_state"];
 				}
 				if (count($updates)) {
 					$device->obj->updateInDB($updates);
@@ -355,14 +355,14 @@ function Connect($sID,$cID,$itemtype,$dohistory=1) {
 			addMessageAfterRedirect($LANG['computers'][48],true);
 		}
 		if (($CFG_GLPI["autoupdate_link_user"]&&$comp->fields['users_id']!=$dev->getField('users_id'))
-		||($CFG_GLPI["autoupdate_link_group"]&&$comp->fields['FK_groups']!=$dev->getField('FK_groups'))){
+		||($CFG_GLPI["autoupdate_link_group"]&&$comp->fields['groups_id']!=$dev->getField('groups_id'))){
 			if ($CFG_GLPI["autoupdate_link_user"]){
 				$updates[]="users_id";
 				$dev->obj->fields['users_id']=$comp->fields['users_id'];
 			}
 			if ($CFG_GLPI["autoupdate_link_group"]){
-				$updates[]="FK_groups";
-				$dev->obj->fields['FK_groups']=$comp->fields['FK_groups'];
+				$updates[]="groups_id";
+				$dev->obj->fields['groups_id']=$comp->fields['groups_id'];
 			}
 			$dev->obj->updateInDB($updates);
 			addMessageAfterRedirect($LANG['computers'][50],true);
@@ -377,15 +377,15 @@ function Connect($sID,$cID,$itemtype,$dohistory=1) {
 			$dev->obj->updateInDB($updates);
 			addMessageAfterRedirect($LANG['computers'][49],true);
 		}
-		if ($CFG_GLPI["autoupdate_link_state"]<0 && $comp->fields['state']!=$dev->getField('state')) {
-			$updates[0]="state";
-			$dev->obj->fields['state']=$comp->fields['state'];
+		if ($CFG_GLPI["autoupdate_link_state"]<0 && $comp->fields['states_id']!=$dev->getField('states_id')) {
+			$updates[0]="states_id";
+			$dev->obj->fields['states_id']=$comp->fields['states_id'];
 			$dev->obj->updateInDB($updates);
 			addMessageAfterRedirect($LANG['computers'][56],true);
 		}
-		if ($CFG_GLPI["autoupdate_link_state"]>0 && $dev->getField('state')!=$CFG_GLPI["autoupdate_link_state"]) {
-			$updates[0]="state";
-			$dev->obj->fields['state']=$CFG_GLPI["autoupdate_link_state"];
+		if ($CFG_GLPI["autoupdate_link_state"]>0 && $dev->getField('states_id')!=$CFG_GLPI["autoupdate_link_state"]) {
+			$updates[0]="states_id";
+			$dev->obj->fields['states_id']=$CFG_GLPI["autoupdate_link_state"];
 			$dev->obj->updateInDB($updates);
 		}
 	}

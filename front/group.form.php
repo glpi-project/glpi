@@ -67,22 +67,22 @@ else if (isset($_POST["update"]))
 }
 else if (isset($_POST["adduser"]))
 {
-	$group->check($_POST["FK_groups"],'w');
+	$group->check($_POST["groups_id"],'w');
 
-	addUserGroup($_POST["users_id"],$_POST["FK_groups"]);
+	addUserGroup($_POST["users_id"],$_POST["groups_id"]);
 
-	logEvent($_POST["FK_groups"], "groups", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][48]);
+	logEvent($_POST["groups_id"], "groups", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][48]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($_POST["deleteuser"]))
 {
-	$group->check($_POST["FK_groups"],'w');
+	$group->check($_POST["groups_id"],'w');
 
 	if (count($_POST["item"]))
 		foreach ($_POST["item"] as $key => $val)
 			deleteUserGroup($key);
 
-	logEvent($_POST["FK_groups"], "groups", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][49]);
+	logEvent($_POST["groups_id"], "groups", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][49]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else

@@ -454,6 +454,21 @@ function update0721to080() {
                   array('to' => 'itemtype', 'noindex' => array('glpi_computers_items'),
                            'tables' => array('glpi_computers_items','glpi_displayprefs')),
                      ),
+
+   'FK_groups' => array(array('to' => 'groups_id',
+                           'noindex' => array(''),
+                           'tables' => array('glpi_computers','glpi_monitors',
+                              'glpi_networkequipments','glpi_peripherals','glpi_phones',
+                              'glpi_printers','glpi_softwares','glpi_groups_users')),
+                     ),
+   'state' => array(array('to' => 'states_id',
+                           'noindex' => array(''),
+                           'tables' => array('glpi_computers','glpi_monitors',
+                              'glpi_networkequipments','glpi_peripherals','glpi_phones',
+                              'glpi_printers','glpi_softwaresversions')),
+                     ),
+
+
    );
 
    foreach ($foreignkeys as $oldname => $newnames) {

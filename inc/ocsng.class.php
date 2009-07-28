@@ -226,7 +226,7 @@ class Ocsng extends CommonDBTM {
 		
 		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['common'][35] . " </td><td>";
 		echo "<select name='import_group'>";		echo "<option value=''>" . $LANG['ocsconfig'][11] . "</option>";
-		$listColumnOCS = getColumnListFromAccountInfoTable($ID,"FK_groups");
+		$listColumnOCS = getColumnListFromAccountInfoTable($ID,"groups_id");
 		echo $listColumnOCS;
 		echo "</select>";
 		echo "</td></tr>";
@@ -592,7 +592,7 @@ class Ocsng extends CommonDBTM {
 				if($tab["import_group"]!=""){
 					$adm = new AdminInfo();			
 					$adm->fields["ocs_server_id"] = $tab["ID"];		
-					$adm->fields["glpi_column"] = "FK_groups";	
+					$adm->fields["glpi_column"] = "groups_id";	
 					$adm->fields["ocs_column"] = $tab["import_group"];				
 					$isNewAdm = $adm->addToDB();
 				}
