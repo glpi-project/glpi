@@ -89,7 +89,7 @@ function showCartridges ($tID,$show_old=0) {
 	
 		$query = "SELECT count(*) AS COUNT 
 			FROM glpi_cartridges 
-			WHERE (FK_glpi_cartridges_type = '$tID')";
+			WHERE (cartridgesitems_id = '$tID')";
 	
 		if ($result = $DB->query($query)) {
 			if ($DB->result($result,0,0)!=0) { 
@@ -148,7 +148,7 @@ function showCartridges ($tID,$show_old=0) {
 				glpi_printers.initial_pages as initial_pages 
 			FROM glpi_cartridges 
 			LEFT JOIN glpi_printers ON (glpi_cartridges.printers_id = glpi_printers.ID) 
-			WHERE (glpi_cartridges.FK_glpi_cartridges_type = '$tID') $where 
+			WHERE (glpi_cartridges.cartridgesitems_id = '$tID') $where 
 			ORDER BY $ORDER";
 	
 		$pages=array();
@@ -263,7 +263,7 @@ function showCompatiblePrinters($instID) {
 		$query = "SELECT glpi_printersmodels.name as type, glpi_cartridges_printersmodels.ID as ID 
 			FROM glpi_cartridges_printersmodels, glpi_printersmodels 
 			WHERE glpi_cartridges_printersmodels.printersmodels_id=glpi_printersmodels.ID 
-				AND glpi_cartridges_printersmodels.FK_glpi_cartridges_type = '$instID' 
+				AND glpi_cartridges_printersmodels.cartridgesitems_id = '$instID' 
 			ORDER BY glpi_printersmodels.name";
 	
 		$result = $DB->query($query);
@@ -320,12 +320,12 @@ function showCartridgeInstalled($instID,$old=0) {
 	if ($old==0){
 		$query.= " FROM glpi_cartridges, glpi_cartridgesitems 
 			WHERE glpi_cartridges.date_out IS NULL AND glpi_cartridges.printers_id= '$instID' 
-				AND glpi_cartridges.FK_glpi_cartridges_type  = glpi_cartridgesitems.ID 
+				AND glpi_cartridges.cartridgesitems_id  = glpi_cartridgesitems.ID 
 			ORDER BY glpi_cartridges.date_out ASC, glpi_cartridges.date_use DESC, glpi_cartridges.date_in";
 	} else {
 		$query.= " FROM glpi_cartridges, glpi_cartridgesitems 
 			WHERE glpi_cartridges.date_out IS NOT NULL AND glpi_cartridges.printers_id= '$instID' 
-			AND glpi_cartridges.FK_glpi_cartridges_type  = glpi_cartridgesitems.ID 
+			AND glpi_cartridges.cartridgesitems_id  = glpi_cartridgesitems.ID 
 			ORDER BY glpi_cartridges.date_out ASC, glpi_cartridges.date_use DESC, glpi_cartridges.date_in";
 	}
 	
@@ -492,7 +492,7 @@ function countCartridges($tID,$alarm,$nohtml=0) {
  **/
 function getCartridgesNumber($tID){
 	global $DB;
-	$query = "SELECT ID FROM glpi_cartridges WHERE ( FK_glpi_cartridges_type = '$tID')";
+	$query = "SELECT ID FROM glpi_cartridges WHERE ( cartridgesitems_id = '$tID')";
 	$result = $DB->query($query);
 	return $DB->numrows($result);
 }
@@ -510,7 +510,7 @@ function getCartridgesNumber($tID){
 function getUsedCartridgesNumber($tID){
 	global $DB;
 	$query = "SELECT ID FROM glpi_cartridges 
-		WHERE ( FK_glpi_cartridges_type = '$tID' AND date_use IS NOT NULL AND date_out IS NULL)";
+		WHERE ( cartridgesitems_id = '$tID' AND date_use IS NOT NULL AND date_out IS NULL)";
 	$result = $DB->query($query);
 	return $DB->numrows($result);
 }
@@ -528,7 +528,7 @@ function getUsedCartridgesNumber($tID){
 function getOldCartridgesNumber($tID){
 	global $DB;
 	$query = "SELECT ID FROM glpi_cartridges 
-		WHERE ( FK_glpi_cartridges_type = '$tID'  AND date_out IS NOT NULL)";
+		WHERE ( cartridgesitems_id = '$tID'  AND date_out IS NOT NULL)";
 	$result = $DB->query($query);
 	return $DB->numrows($result);
 }
@@ -545,7 +545,7 @@ function getOldCartridgesNumber($tID){
 function getUnusedCartridgesNumber($tID){
 	global $DB;
 	$query = "SELECT ID FROM glpi_cartridges 
-		WHERE ( FK_glpi_cartridges_type = '$tID' AND date_use IS NULL)";
+		WHERE ( cartridgesitems_id = '$tID' AND date_use IS NULL)";
 	$result = $DB->query($query);
 	return $DB->numrows($result);
 }
@@ -570,8 +570,8 @@ function dropdownCompatibleCartridges($pID) {
 	$query = "SELECT COUNT(*) AS cpt, glpi_locations.completename as location, glpi_cartridgesitems.ref as ref,
 			glpi_cartridgesitems.name as name, glpi_cartridgesitems.ID as tID 
 		FROM glpi_cartridgesitems 
-		INNER JOIN glpi_cartridges_printersmodels ON (glpi_cartridgesitems.ID = glpi_cartridges_printersmodels.FK_glpi_cartridges_type )
-		INNER JOIN glpi_cartridges ON (glpi_cartridges.FK_glpi_cartridges_type = glpi_cartridgesitems.ID 
+		INNER JOIN glpi_cartridges_printersmodels ON (glpi_cartridgesitems.ID = glpi_cartridges_printersmodels.cartridgesitems_id )
+		INNER JOIN glpi_cartridges ON (glpi_cartridges.cartridgesitems_id = glpi_cartridgesitems.ID 
 						AND glpi_cartridges.date_use IS NULL)
 		LEFT JOIN glpi_locations ON (glpi_locations.ID = glpi_cartridgesitems.locations_id)
 		WHERE  glpi_cartridges_printersmodels.printersmodels_id = '".$p->fields["model"]."' 
