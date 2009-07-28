@@ -1108,7 +1108,7 @@ function showOtherAuthList($target) {
 
 	echo "<tr><th colspan='2'>" . $LANG['setup'][194]."</th></tr>";
 	echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['ldap'][4] . "</td><td>";
-	dropdownValue("glpi_authldaps","extra_ldap_server",$CFG_GLPI["extra_ldap_server"]);
+	dropdownValue("glpi_authldaps","authldaps_id_extra",$CFG_GLPI["authldaps_id_extra"]);
 	echo "</td></tr>";
 
 	echo "<tr class='tab_bg_1'><td align='center' colspan='2'><input type=\"submit\" name=\"update\" class=\"submit\" value=\"" . $LANG['buttons'][7] . "\" ></td></tr>";
