@@ -388,28 +388,20 @@ class DictionnaryDropdownCollection extends RuleCachedCollection{
 			echo "replayRulesOnExistingDB started : " . date("r") . "\n";
 
 		// Model check : need to check using manufacturer extra data
-		$model_table="";
-		// Find linked table to model
-		$RELATION = getDbRelations();
-		if (isset ($RELATION[$this->item_table])){
-			foreach ($RELATION[$this->item_table] as $table => $field){ 
-				if ($field=="model"){
-					$model_table=$table;
-				}
-			}
-		} 
-		if (empty($model_table)) {
+
+		if (strpos($this->item_table,'models')===false) {
 			echo "Error replaying rules";
 			return false;
 		}
-
+      $model_table=str_replace('models','',$this->item_table);
+      $model_field=getForeignKeyFieldForTable($this->item_table);
 
 		// Need to give manufacturer from item table
 		$Sql="SELECT DISTINCT glpi_manufacturers.ID AS idmanu, glpi_manufacturers.name AS manufacturer, 
 			".$this->item_table.".ID AS ID, `".$this->item_table."`.name AS name, `".$this->item_table."`.comments AS comments 
 			FROM `".$this->item_table."`, $model_table 
 			LEFT JOIN glpi_manufacturers ON ($model_table.manufacturers_id=glpi_manufacturers.ID) 
-			WHERE $model_table.model=`".$this->item_table."`.ID ";
+			WHERE $model_table.$model_field=`".$this->item_table."`.ID ";
 		if ($offset) {
 			$Sql .= " LIMIT ".intval($offset).",999999999";
 		} 
@@ -441,7 +433,7 @@ class DictionnaryDropdownCollection extends RuleCachedCollection{
 
 				if ($data['ID'] != $ID) {
 					$tocheck[$data["ID"]][]=$ID;
-					$sql = "UPDATE $model_table SET model=".$ID." WHERE model=".$data['ID'];
+					$sql = "UPDATE $model_table SET model=".$ID." WHERE $model_field=".$data['ID'];
 					if (empty($data['idmanu'])){
 						$sql .= " AND (manufacturers_id IS NULL OR manufacturers_id = 0)";
 					} else {
@@ -461,7 +453,7 @@ class DictionnaryDropdownCollection extends RuleCachedCollection{
 			} 
 
 			foreach ($tocheck AS $ID => $tab) 	{
-				$sql="SELECT COUNT(*) FROM $model_table WHERE model='$ID'";
+				$sql="SELECT COUNT(*) FROM $model_table WHERE $model_field='$ID'";
 				$result = $DB->query($sql);
 				$deletecartmodel=false;
 				// No item left : delete old item

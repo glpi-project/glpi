@@ -332,7 +332,7 @@ class Peripheral  extends CommonDBTM  {
       echo "</td></tr>";
 
       echo "<tr><td>".$LANG['common'][22].": 	</td><td>";
-      dropdownValue("glpi_peripheralsmodels", "model", $this->fields["model"]);
+      dropdownValue("glpi_peripheralsmodels", "peripheralsmodels_id", $this->fields["peripheralsmodels_id"]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>".$LANG['common'][5].": 	</td><td colspan='2'>";

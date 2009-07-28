@@ -240,7 +240,7 @@ class Ocsng extends CommonDBTM {
 		
 		echo "<tr class='tab_bg_2'><td class='center'>" . $LANG['setup'][88] . " </td><td>";
 		echo "<select name='import_network'>";		echo "<option value=''>" . $LANG['ocsconfig'][11] . "</option>";
-		$listColumnOCS = getColumnListFromAccountInfoTable($ID,"network");
+		$listColumnOCS = getColumnListFromAccountInfoTable($ID,"networks_id");
 		echo $listColumnOCS;
 		echo "</select>";
 		echo "</td></tr>";
@@ -601,7 +601,7 @@ class Ocsng extends CommonDBTM {
 				if($tab["import_network"]!=""){			
 					$adm = new AdminInfo();			
 					$adm->fields["ocs_server_id"] = $tab["ID"];		
-					$adm->fields["glpi_column"] = "network";	
+					$adm->fields["glpi_column"] = "networks_id";	
 					$adm->fields["ocs_column"] = $tab["import_network"];				
 					$isNewAdm = $adm->addToDB();
 				}

@@ -1086,8 +1086,8 @@ function ocsUpdateHardware($glpi_id, $ocs_id, $ocs_server_id, $cfg_ocs, $compute
 				$compupdate["operatingsystemsservicepacks_id"] = externalImportDropdown('glpi_operatingsystemsservicepacks', $line["OSCOMMENTS"]);
 		}
 
-		if ($cfg_ocs["import_general_domain"] && !in_array("domain", $computer_updates)) {
-			$compupdate["domain"] = externalImportDropdown('glpi_domains', $line["WORKGROUP"]);
+		if ($cfg_ocs["import_general_domain"] && !in_array("domains_id", $computer_updates)) {
+			$compupdate["domains_id"] = externalImportDropdown('glpi_domains', $line["WORKGROUP"]);
 		}
 
 		if ($cfg_ocs["import_general_contact"] && !in_array("contact", $computer_updates)) {
@@ -1156,8 +1156,8 @@ function ocsUpdateBios($glpi_id, $ocs_id, $ocs_server_id, $cfg_ocs, $computer_up
 			$compupdate["serial"] = $line["SSN"];
 		}
 
-		if ($cfg_ocs["import_general_model"] && !in_array("model", $computer_updates)) {
-			$compupdate["model"] = externalImportDropdown('glpi_computersmodels', $line["SMODEL"],-1,(isset($line["SMANUFACTURER"])?array("manufacturer"=>$line["SMANUFACTURER"]):array()));
+		if ($cfg_ocs["import_general_model"] && !in_array("computersmodels_id", $computer_updates)) {
+			$compupdate["computersmodels_id"] = externalImportDropdown('glpi_computersmodels', $line["SMODEL"],-1,(isset($line["SMANUFACTURER"])?array("manufacturer"=>$line["SMANUFACTURER"]):array()));
 		}
 
 		if ($cfg_ocs["import_general_enterprise"] && !in_array("manufacturers_id", $computer_updates)) {
@@ -1503,14 +1503,14 @@ function getOcsLockableFields(){
 			"name"=>$LANG['common'][16],
 			"computerstypes_id"=>$LANG['common'][17],
 			"manufacturers_id"=>$LANG['common'][5],
-			"model"=>$LANG['common'][22],
+			"computersmodels_id"=>$LANG['common'][22],
 			"serial"=>$LANG['common'][19],
 			"otherserial"=>$LANG['common'][20],
 			"comments"=>$LANG['common'][25],
 			"contact"=>$LANG['common'][18],
 			"contact_num"=>$LANG['common'][21],
-			"domain"=>$LANG['setup'][89],
-			"network"=>$LANG['setup'][88],
+			"domains_id"=>$LANG['setup'][89],
+			"networks_id"=>$LANG['setup'][88],
 			"operatingsystems_id"=>$LANG['computers'][9],
 			"operatingsystemsservicepacks_id"=>$LANG['computers'][53],
 			"operatingsystemsversions_id"=>$LANG['computers'][52],
@@ -2842,7 +2842,7 @@ function ocsUpdateAdministrativeInfo($glpi_id, $ocs_id, $ocs_server_id, $cfg_ocs
 						case "locations_id" :
 							$var = externalImportDropdown("glpi_locations", $var, $entity);
 							break;
-						case "network" :
+						case "networks_id" :
 							$var = externalImportDropdown("glpi_networks", $var);
 							break;
 					}

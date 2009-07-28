@@ -286,7 +286,7 @@ function showCompatiblePrinters($instID) {
 		if (haveRight("cartridge","w")){
 			echo "<tr class='tab_bg_1'><td>&nbsp;</td><td class='center'>";
 			echo "<div class='software-instal'><input type='hidden' name='tID' value='$instID'>";
-			dropdown("glpi_printersmodels","model");
+			dropdown("glpi_printersmodels","printersmodels_id");
 			echo "</div></td><td align='center' class='tab_bg_2'>";
 			echo "<input type='submit' name='addtype' value=\"".$LANG['buttons'][8]."\" class='submit'>";
 			echo "</td></tr>";
@@ -574,7 +574,7 @@ function dropdownCompatibleCartridges($pID) {
 		INNER JOIN glpi_cartridges ON (glpi_cartridges.cartridgesitems_id = glpi_cartridgesitems.ID 
 						AND glpi_cartridges.date_use IS NULL)
 		LEFT JOIN glpi_locations ON (glpi_locations.ID = glpi_cartridgesitems.locations_id)
-		WHERE  glpi_cartridges_printersmodels.printersmodels_id = '".$p->fields["model"]."' 
+		WHERE  glpi_cartridges_printersmodels.printersmodels_id = '".$p->fields["printersmodels_id"]."' 
 		AND glpi_cartridgesitems.entities_id='".$p->fields["entities_id"]."' 
 		GROUP BY glpi_cartridgesitems.ID 
 		ORDER BY glpi_cartridgesitems.name, glpi_cartridgesitems.ref";

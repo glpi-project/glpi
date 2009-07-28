@@ -928,7 +928,7 @@ function getUniqueObjectByFDQNAndType($fqdn, $itemtype, $entity) {
 
 	$query = "SELECT obj.ID AS ID
 		FROM " . $commonitem->obj->table . " AS obj, glpi_domains AS gdd
-		WHERE obj.entities_id='$entity' AND obj.domain = gdd.ID
+		WHERE obj.entities_id='$entity' AND obj.domains_id = gdd.ID
 			AND LOWER( '$fqdn' ) = ( CONCAT( LOWER( obj.name ) , '.', LOWER( gdd.name ) ) )";
 
 	$result = $DB->query($query);

@@ -89,7 +89,7 @@ $SEARCH_OPTION[COMPUTER_TYPE][4]['name']=$LANG['common'][17];
 
 $SEARCH_OPTION[COMPUTER_TYPE][5]['table']='glpi_computersmodels';
 $SEARCH_OPTION[COMPUTER_TYPE][5]['field']='name';
-$SEARCH_OPTION[COMPUTER_TYPE][5]['linkfield']='model';
+$SEARCH_OPTION[COMPUTER_TYPE][5]['linkfield']='computersmodels_id';
 $SEARCH_OPTION[COMPUTER_TYPE][5]['name']=$LANG['common'][22];
 
 $SEARCH_OPTION[COMPUTER_TYPE][31]['table']='glpi_states';
@@ -176,12 +176,12 @@ $SEARCH_OPTION[COMPUTER_TYPE][19]['datatype']='datetime';
 
 $SEARCH_OPTION[COMPUTER_TYPE][32]['table']='glpi_networks';
 $SEARCH_OPTION[COMPUTER_TYPE][32]['field']='name';
-$SEARCH_OPTION[COMPUTER_TYPE][32]['linkfield']='network';
+$SEARCH_OPTION[COMPUTER_TYPE][32]['linkfield']='networks_id';
 $SEARCH_OPTION[COMPUTER_TYPE][32]['name']=$LANG['setup'][88];
 
 $SEARCH_OPTION[COMPUTER_TYPE][33]['table']='glpi_domains';
 $SEARCH_OPTION[COMPUTER_TYPE][33]['field']='name';
-$SEARCH_OPTION[COMPUTER_TYPE][33]['linkfield']='domain';
+$SEARCH_OPTION[COMPUTER_TYPE][33]['linkfield']='domains_id';
 $SEARCH_OPTION[COMPUTER_TYPE][33]['name']=$LANG['setup'][89];
 
 $SEARCH_OPTION[COMPUTER_TYPE][23]['table']='glpi_manufacturers';
@@ -633,7 +633,7 @@ $SEARCH_OPTION[NETWORKING_TYPE][4]['name']=$LANG['common'][17];
 
 $SEARCH_OPTION[NETWORKING_TYPE][40]['table']='glpi_networkequipmentsmodels';
 $SEARCH_OPTION[NETWORKING_TYPE][40]['field']='name';
-$SEARCH_OPTION[NETWORKING_TYPE][40]['linkfield']='model';
+$SEARCH_OPTION[NETWORKING_TYPE][40]['linkfield']='networkequipmentsmodels_id';
 $SEARCH_OPTION[NETWORKING_TYPE][40]['name']=$LANG['common'][22];
 
 $SEARCH_OPTION[NETWORKING_TYPE][31]['table']='glpi_states';
@@ -711,12 +711,12 @@ $SEARCH_OPTION[NETWORKING_TYPE][13]['name']=$LANG['networking'][15]." ".$LANG['h
 
 $SEARCH_OPTION[NETWORKING_TYPE][32]['table']='glpi_networks';
 $SEARCH_OPTION[NETWORKING_TYPE][32]['field']='name';
-$SEARCH_OPTION[NETWORKING_TYPE][32]['linkfield']='network';
+$SEARCH_OPTION[NETWORKING_TYPE][32]['linkfield']='networks_id';
 $SEARCH_OPTION[NETWORKING_TYPE][32]['name']=$LANG['setup'][88];
 
 $SEARCH_OPTION[NETWORKING_TYPE][33]['table']='glpi_domains';
 $SEARCH_OPTION[NETWORKING_TYPE][33]['field']='name';
-$SEARCH_OPTION[NETWORKING_TYPE][33]['linkfield']='domain';
+$SEARCH_OPTION[NETWORKING_TYPE][33]['linkfield']='domains_id';
 $SEARCH_OPTION[NETWORKING_TYPE][33]['name']=$LANG['setup'][89];
 
 $SEARCH_OPTION[NETWORKING_TYPE][23]['table']='glpi_manufacturers';
@@ -996,7 +996,7 @@ $SEARCH_OPTION[PRINTER_TYPE][4]['name']=$LANG['common'][17];
 
 $SEARCH_OPTION[PRINTER_TYPE][40]['table']='glpi_printersmodels';
 $SEARCH_OPTION[PRINTER_TYPE][40]['field']='name';
-$SEARCH_OPTION[PRINTER_TYPE][40]['linkfield']='model';
+$SEARCH_OPTION[PRINTER_TYPE][40]['linkfield']='printersmodels_id';
 $SEARCH_OPTION[PRINTER_TYPE][40]['name']=$LANG['common'][22];
 
 $SEARCH_OPTION[PRINTER_TYPE][31]['table']='glpi_states';
@@ -1053,12 +1053,12 @@ $SEARCH_OPTION[PRINTER_TYPE][90]['name']=$LANG['title'][37];
 
 $SEARCH_OPTION[PRINTER_TYPE][32]['table']='glpi_networks';
 $SEARCH_OPTION[PRINTER_TYPE][32]['field']='name';
-$SEARCH_OPTION[PRINTER_TYPE][32]['linkfield']='network';
+$SEARCH_OPTION[PRINTER_TYPE][32]['linkfield']='networks_id';
 $SEARCH_OPTION[PRINTER_TYPE][32]['name']=$LANG['setup'][88];
 
 $SEARCH_OPTION[PRINTER_TYPE][33]['table']='glpi_domains';
 $SEARCH_OPTION[PRINTER_TYPE][33]['field']='name';
-$SEARCH_OPTION[PRINTER_TYPE][33]['linkfield']='domain';
+$SEARCH_OPTION[PRINTER_TYPE][33]['linkfield']='domains_id';
 $SEARCH_OPTION[PRINTER_TYPE][33]['name']=$LANG['setup'][89];
 
 $SEARCH_OPTION[PRINTER_TYPE][23]['table']='glpi_manufacturers';
@@ -1334,7 +1334,7 @@ $SEARCH_OPTION[MONITOR_TYPE][4]['name']=$LANG['common'][17];
 
 $SEARCH_OPTION[MONITOR_TYPE][40]['table']='glpi_monitorsmodels';
 $SEARCH_OPTION[MONITOR_TYPE][40]['field']='name';
-$SEARCH_OPTION[MONITOR_TYPE][40]['linkfield']='model';
+$SEARCH_OPTION[MONITOR_TYPE][40]['linkfield']='monitorsmodels_id';
 $SEARCH_OPTION[MONITOR_TYPE][40]['name']=$LANG['common'][22];
 
 $SEARCH_OPTION[MONITOR_TYPE][31]['table']='glpi_states';
@@ -1661,7 +1661,7 @@ $SEARCH_OPTION[PERIPHERAL_TYPE][4]['name']=$LANG['common'][17];
 
 $SEARCH_OPTION[PERIPHERAL_TYPE][40]['table']='glpi_peripheralsmodels';
 $SEARCH_OPTION[PERIPHERAL_TYPE][40]['field']='name';
-$SEARCH_OPTION[PERIPHERAL_TYPE][40]['linkfield']='model';
+$SEARCH_OPTION[PERIPHERAL_TYPE][40]['linkfield']='peripheralsmodels_id';
 $SEARCH_OPTION[PERIPHERAL_TYPE][40]['name']=$LANG['common'][22];
 
 $SEARCH_OPTION[PERIPHERAL_TYPE][31]['table']='glpi_states';
@@ -3227,7 +3227,7 @@ $SEARCH_OPTION[PHONE_TYPE][4]['name']=$LANG['common'][17];
 
 $SEARCH_OPTION[PHONE_TYPE][40]['table']='glpi_phonesmodels';
 $SEARCH_OPTION[PHONE_TYPE][40]['field']='name';
-$SEARCH_OPTION[PHONE_TYPE][40]['linkfield']='model';
+$SEARCH_OPTION[PHONE_TYPE][40]['linkfield']='phonesmodels_id';
 $SEARCH_OPTION[PHONE_TYPE][40]['name']=$LANG['common'][22];
 
 $SEARCH_OPTION[PHONE_TYPE][31]['table']='glpi_states';

@@ -387,7 +387,7 @@ class Netdevice extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr><td>".$LANG['common'][22].": 	</td><td>";
-      dropdownValue("glpi_networkequipmentsmodels", "model", $this->fields["model"]);
+      dropdownValue("glpi_networkequipmentsmodels", "networkequipmentsmodels_id", $this->fields["networkequipmentsmodels_id"]);
       echo "</td></tr>";
 
       echo "<tr><td>".$LANG['setup'][71].": 	</td><td>\n";
@@ -408,11 +408,11 @@ class Netdevice extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr><td>".$LANG['setup'][88].": 	</td><td>\n";
-      dropdownValue("glpi_networks", "network", $this->fields["network"]);
+      dropdownValue("glpi_networks", "networks_id", $this->fields["networks_id"]);
       echo "</td></tr>\n";
 
       echo "<tr><td>".$LANG['setup'][89].": 	</td><td>\n";
-      dropdownValue("glpi_domains", "domain", $this->fields["domain"]);
+      dropdownValue("glpi_domains", "domains_id", $this->fields["domains_id"]);
       echo "</td></tr>\n";
 
       echo "<tr><td>".$LANG['networking'][14].":</td><td>\n";

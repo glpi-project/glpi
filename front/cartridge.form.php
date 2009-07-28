@@ -86,7 +86,7 @@ else if (isset($_POST["update"]))
 
 	$cartype->check($_POST["tID"],'w');
 
-	$cartype->addCompatibleType($_POST["tID"],$_POST["model"]);
+	$cartype->addCompatibleType($_POST["tID"],$_POST["printersmodels_id"]);
 	logEvent($_POST["tID"], "cartridges", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][30]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }

@@ -253,6 +253,11 @@ function update0721to080() {
                                        'noindex' => array(),
                                        'tables' => array('glpi_logs')),
                      ),
+   'domain' => array(array('to' => 'domains_id',
+                           'noindex' => array(''),
+                           'tables' => array('glpi_computers','glpi_networkequipments',
+                              'glpi_printers')),
+                     ),
    'FK_computers' => array(array('to' => 'computers_id',
                            'noindex' => array(''),
                            'tables' => array('glpi_computers_devices','glpi_computersdisks',
@@ -346,6 +351,30 @@ function update0721to080() {
                               'glpi_networkequipments','glpi_peripherals','glpi_phones',
                               'glpi_printers','glpi_users','glpi_softwares')),
                      ),
+   'model' => array(array('to' => 'computersmodels_id',
+                           'noindex' => array(''),
+                           'tables' => array('glpi_computers')),
+                     array('to' => 'monitorsmodels_id',
+                           'noindex' => array(''),
+                           'tables' => array('glpi_monitors')),
+                     array('to' => 'networkequipmentsmodels_id',
+                           'noindex' => array(''),
+                           'tables' => array('glpi_networkequipments')),
+                     array('to' => 'peripheralsmodels_id',
+                           'noindex' => array(''),
+                           'tables' => array('glpi_peripherals')),
+                     array('to' => 'phonesmodels_id_id',
+                           'noindex' => array(''),
+                           'tables' => array('glpi_phones')),
+                     array('to' => 'printersmodels_id_id',
+                           'noindex' => array(''),
+                           'tables' => array('glpi_printers')),
+                     ),
+   'network' => array(array('to' => 'networks_id',
+                           'noindex' => array(''),
+                           'tables' => array('glpi_computers','glpi_networkequipments',
+                              'glpi_printers')),
+                     ),
    'on_device' => array(array('to' => 'items_id',
                            'noindex' => array('glpi_networkports'),
                            'tables' => array('glpi_networkports')),
@@ -425,11 +454,8 @@ function update0721to080() {
                   array('to' => 'itemtype', 'noindex' => array('glpi_computers_items'),
                            'tables' => array('glpi_computers_items','glpi_displayprefs')),
                      ),
-
-
-   //  grep -e '\([^A-Za-z0-9_-]\)type' */* | more
-
    );
+
    foreach ($foreignkeys as $oldname => $newnames) {
       foreach ($newnames as $tab){
          $newname=$tab['to'];
@@ -460,7 +486,7 @@ function update0721to080() {
       }
    }
 
-   /// TODO Update glpi_ocsadmininfoslinks table for  : location -> locations_id
+   /// TODO Update glpi_ocsadmininfoslinks table for  : location -> locations_id network -> networks_id
    /// TODO Update tracking bookmarks for new columns fields
    /// TODO See if type -> itemtype need update bookmarks
    /// TODO upgrade XXX_update in ocs_links

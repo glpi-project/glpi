@@ -923,26 +923,10 @@ class Job extends CommonDBTM{
 			if (isset($this->hardwaredatas->obj->fields["serial"])&&!empty($this->hardwaredatas->obj->fields["serial"])){
 				$name.=" - #".$this->hardwaredatas->obj->fields["serial"];
 			}
-			if (isset($this->hardwaredatas->obj->fields["model"])&&$this->hardwaredatas->obj->fields["model"]>0){
-				$add="";
-				switch ($this->fields['itemtype']){
-					case MONITOR_TYPE:
-						$add='_monitors';
-						break;
-					case NETWORKING_TYPE:
-						$add='_networking';
-						break;
-					case PERIPHERAL_TYPE:
-						$add='_peripherals';
-						break;
-					case PHONE_TYPE:
-						$add='_phones';
-						break;
-					case PRINTER_TYPE:
-						$add='_printers';
-						break;
-				}
-				$name.=" - ".getDropdownName("glpi_computersmodels".$add,$this->hardwaredatas->obj->fields["model"]);
+         $modeltable=$this->hardwaredatas->obj->table."models";
+         $modelfield=getForeignKeyFieldForTable($modeltable);
+			if (isset($this->hardwaredatas->obj->fields[$modelfield])&&$this->hardwaredatas->obj->fields[$modelfield]>0){
+				$name.=" - ".getDropdownName($modeltable,$this->hardwaredatas->obj->fields[$modelfield]);
 			}
 			if (isset($this->hardwaredatas->obj->fields["users_id_tech"])&&$this->hardwaredatas->obj->fields["users_id_tech"]>0){
 					$tech=getUserName($this->hardwaredatas->obj->fields["users_id_tech"]);

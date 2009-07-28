@@ -1668,7 +1668,7 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$to
 		$where.= "LEFT JOIN glpi_autoupdatesystems on (glpi_autoupdatesystems.ID = comp.autoupdatesystems_id)";
 		$where.= "LEFT JOIN glpi_manufacturers on (glpi_manufacturers.ID = comp.manufacturers_id)";
 		$where.= "LEFT JOIN glpi_locations on (glpi_locations.ID = comp.locations_id)";
-		$where.= "LEFT JOIN glpi_computersmodels on (glpi_computersmodels.ID = comp.model)";
+		$where.= "LEFT JOIN glpi_computersmodels on (glpi_computersmodels.ID = comp.computersmodels_id)";
 		$where.= "LEFT JOIN glpi_computerstypes on (glpi_computerstypes.ID = comp.computerstypes_id)";
 		$where.= " LEFT JOIN glpi_suppliers ON (glpi_suppliers.ID = comp.manufacturers_id ) ";
 		$where.= " LEFT JOIN glpi_users as resptech ON (resptech.ID = comp.users_id_tech ) ";
