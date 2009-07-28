@@ -113,7 +113,7 @@ function manageGetValuesInSearch($type=0,$usesession=true,$save=true){
 	if ($usesession && !isset($_SESSION['glpisearch'][$type])){
 		$query="SELECT FK_bookmark 
 			FROM glpi_bookmarks_users 
-			WHERE FK_users='".$_SESSION['glpiID']."'
+			WHERE users_id='".$_SESSION['glpiID']."'
 				AND itemtype='$type';";
 		if ($result=$DB->query($query)){
 			if ($DB->numrows($result)>0){
@@ -548,14 +548,14 @@ function showList ($type,$params){
 	// Add default items
 	$query="SELECT * 
 		FROM glpi_displayprefs 
-		WHERE type='$type' AND FK_users='".$_SESSION["glpiID"]."' 
+		WHERE type='$type' AND users_id='".$_SESSION["glpiID"]."' 
 		ORDER BY rank";
 	$result=$DB->query($query);
 	// GET default serach options
 	if ($DB->numrows($result)==0){
 		$query="SELECT * 
 			FROM glpi_displayprefs 
-			WHERE type='$type' AND FK_users='0' 
+			WHERE type='$type' AND users_id='0' 
 			ORDER BY rank";
 		$result=$DB->query($query);
 	}
@@ -2965,7 +2965,7 @@ function addLeftJoin ($type,$ref_table,&$already_link_tables,$new_table,$linkfie
 			return " LEFT JOIN $new_table $AS ON ($rt.ID = $nt.items_id AND $nt.itemtype='$type') ";
 		break;
 		case "glpi_profiles_users":
-			return " LEFT JOIN $new_table $AS ON ($rt.ID = $nt.FK_users) ";
+			return " LEFT JOIN $new_table $AS ON ($rt.ID = $nt.users_id) ";
 		break;
 
 		case "glpi_profiles":
@@ -2999,7 +2999,7 @@ function addLeftJoin ($type,$ref_table,&$already_link_tables,$new_table,$linkfie
 				$AS ON ($rt.$linkfield = glpi_entities.ID) ";
 			break;
 		case "glpi_groups_users":
-			return " LEFT JOIN $new_table $AS ON ($rt.ID = $nt.FK_users) ";
+			return " LEFT JOIN $new_table $AS ON ($rt.ID = $nt.users_id) ";
 		break;
 
 		case "glpi_groups":

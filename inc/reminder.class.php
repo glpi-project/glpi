@@ -122,10 +122,10 @@ class Reminder extends CommonDBTM {
 
 	function pre_updateInDB($input,$updates,$oldvalues=array()) {
 		// Set new user if initial user have been deleted 
-		if ($this->fields['FK_users']==0){
-			$input['FK_users']=$_SESSION["glpiID"];
-			$this->fields['FK_users']=$_SESSION["glpiID"];
-			$updates[]="FK_users";
+		if ($this->fields['users_id']==0){
+			$input['users_id']=$_SESSION["glpiID"];
+			$this->fields['users_id']=$_SESSION["glpiID"];
+			$updates[]="users_id";
 		}
 		return array($input,$updates);
 	}
@@ -133,7 +133,7 @@ class Reminder extends CommonDBTM {
 	function post_getEmpty () {
 		global $LANG;
 		$this->fields["name"]=$LANG['reminder'][6];
-		$this->fields["FK_users"]=$_SESSION['glpiID'];
+		$this->fields["users_id"]=$_SESSION['glpiID'];
 		$this->fields["private"]=1;
 		$this->fields["FK_entities"]=$_SESSION["glpiactive_entity"];
 	}
@@ -181,13 +181,13 @@ class Reminder extends CommonDBTM {
 
 		echo "<tr class='tab_bg_2'><td>".$LANG['common'][57].":		</td>";
 		echo "<td>";
-		autocompletionTextField("name",$this->table,"name",$this->fields['name'],80,-1,$this->fields["FK_users"],$onfocus);	
+		autocompletionTextField("name",$this->table,"name",$this->fields['name'],80,-1,$this->fields["users_id"],$onfocus);	
 		echo "</td></tr>";
 
 		if(!$canedit) { 
 			echo "<tr class='tab_bg_2'><td>".$LANG['planning'][9].":		</td>";
 			echo "<td>";
-			echo getUserName($this->fields["FK_users"]);
+			echo getUserName($this->fields["users_id"]);
 			echo "</td></tr>";
 		}
 
@@ -278,7 +278,7 @@ class Reminder extends CommonDBTM {
 		if (!$ID) { // add
 			echo "<tr>";
 			echo "<td class='tab_bg_2' valign='top' colspan='2'>";
-			echo "<input type='hidden' name='FK_users' value=\"".$this->fields['FK_users']."\">\n";
+			echo "<input type='hidden' name='users_id' value=\"".$this->fields['users_id']."\">\n";
 			echo "<div class='center'><input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'></div>";
 			echo "</td>";
 			echo "</tr>";

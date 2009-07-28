@@ -69,7 +69,7 @@ else if (isset($_POST["adduser"]))
 {
 	$group->check($_POST["FK_groups"],'w');
 
-	addUserGroup($_POST["FK_users"],$_POST["FK_groups"]);
+	addUserGroup($_POST["users_id"],$_POST["FK_groups"]);
 
 	logEvent($_POST["FK_groups"], "groups", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][48]);
 	glpi_header($_SERVER['HTTP_REFERER']);

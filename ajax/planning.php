@@ -70,10 +70,10 @@
 	} 
 	
 	echo "<table class='tab_cadre' cellpadding='2'>";
-	if (isset($_POST["author"])&&isset($_POST["entity"])){
+	if (isset($_POST["users_id"])&&isset($_POST["entity"])){
 		echo "<tr class='tab_bg_2'><td>".$LANG['planning'][9].":	</td>";
 		echo "<td>";
-		dropdownUsers("plan[id_assign]",$_POST["author"],"own_ticket",-1,1,$_POST["entity"]);
+		dropdownUsers("plan[users_id]",$_POST["users_id"],"own_ticket",-1,1,$_POST["entity"]);
 		echo "</td></tr>";
 	}
 	

@@ -66,7 +66,7 @@ function showEntityUser($target,$ID){
 			echo "<table  class='tab_cadre_fixe'>";
 			echo "<tr class='tab_bg_1'><th colspan='5'>".$LANG['setup'][603]."</tr><tr><td class='tab_bg_2' align='center'>";
 			echo "<input type='hidden' name='FK_entities' value='$ID'>";
-			dropdownAllUsers("FK_users",0,1);
+			dropdownAllUsers("users_id",0,1);
 			echo "</td><td align='center' class='tab_bg_2'>";
 			echo $LANG['profiles'][22].":";
 			dropdownUnderProfiles("FK_profiles");
@@ -91,7 +91,7 @@ function showEntityUser($target,$ID){
 		$query="SELECT DISTINCT glpi_profiles.ID, glpi_profiles.name 
 				FROM glpi_profiles_users 
 				LEFT JOIN glpi_profiles ON (glpi_profiles_users.FK_profiles = glpi_profiles.ID)
-				LEFT JOIN glpi_users ON (glpi_users.ID = glpi_profiles_users.FK_users)
+				LEFT JOIN glpi_users ON (glpi_users.ID = glpi_profiles_users.users_id)
 				WHERE glpi_profiles_users.FK_entities='$ID' AND glpi_users.deleted=0;";
 	
 		$result=$DB->query($query);
@@ -102,7 +102,7 @@ function showEntityUser($target,$ID){
 
 				$query="SELECT glpi_users.*,glpi_profiles_users.ID as linkID,glpi_profiles_users.recursive,glpi_profiles_users.dynamic
 					FROM glpi_profiles_users 
-					LEFT JOIN glpi_users ON (glpi_users.ID = glpi_profiles_users.FK_users) 
+					LEFT JOIN glpi_users ON (glpi_users.ID = glpi_profiles_users.users_id) 
 					WHERE glpi_profiles_users.FK_entities='$ID' AND glpi_users.deleted=0 AND glpi_profiles_users.FK_profiles='".$data['ID']."'   
 					ORDER BY glpi_profiles_users.FK_profiles, glpi_users.name, glpi_users.realname, glpi_users.firstname";
 				$result2=$DB->query($query);
@@ -175,13 +175,13 @@ function showEntityUser($target,$ID){
 /**
  * Add a right to a user 
  *
- * @param $input array : parameters : need FK_entities / FK_users / FK_profiles optional : recurisve=0 / dynamic=0
+ * @param $input array : parameters : need FK_entities / users_id / FK_profiles optional : recurisve=0 / dynamic=0
  * @return new glpi_profiles_users ID
  */
 function addUserProfileEntity($input){
 	global $DB;
 	if (!isset($input['FK_entities'])||$input['FK_entities']<0
-		||!isset($input['FK_users'])||$input['FK_users']==0
+		||!isset($input['users_id'])||$input['users_id']==0
 		||!isset($input['FK_profiles'])||$input['FK_profiles']==0) {
 		return false;
 	}
@@ -192,8 +192,8 @@ function addUserProfileEntity($input){
 		$input['dynamic']=0;
 	}
 
-	$query="INSERT INTO `glpi_profiles_users` ( `FK_users` , `FK_profiles` , `FK_entities` , `recursive` , `dynamic` )
-		VALUES ('".$input['FK_users']."', '".$input['FK_profiles']."', '".$input['FK_entities']."', '".$input['recursive']."', '".$input['dynamic']."');";
+	$query="INSERT INTO `glpi_profiles_users` ( `users_id` , `FK_profiles` , `FK_entities` , `recursive` , `dynamic` )
+		VALUES ('".$input['users_id']."', '".$input['FK_profiles']."', '".$input['FK_entities']."', '".$input['recursive']."', '".$input['dynamic']."');";
 	
 	return $DB->query($query);
 }
@@ -207,7 +207,7 @@ function deleteUserProfileEntity($ID){
 
 	global $DB;
 
-	$query="SELECT FK_users FROM glpi_profiles_users WHERE ID = '$ID';";
+	$query="SELECT users_id FROM glpi_profiles_users WHERE ID = '$ID';";
 	$result = $DB->query($query);
 	$data=$DB->fetch_assoc($result);
 	

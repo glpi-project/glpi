@@ -512,16 +512,16 @@ function kbItemMenu($ID)
  * Print out (html) show item : question and answer
  *
  * @param $ID integer
- * @param $linkauthor display author link
+ * @param $linkusers_id display users_id link
  * 
  * @return nothing (display item : question and answer)
  **/
-function ShowKbItemFull($ID,$linkauthor=true){
+function ShowKbItemFull($ID,$linkusers_id=true){
 	// show item : question and answer
 
 	global $DB,$LANG,$CFG_GLPI;
 
-	if (!haveRight("user","r")) $linkauthor=false;
+	if (!haveRight("user","r")) $linkusers_id=false;
 
 	//update counter view
 	$query="UPDATE glpi_knowbaseitems SET view=view+1 WHERE ID = '$ID'";
@@ -564,16 +564,16 @@ function ShowKbItemFull($ID,$linkauthor=true){
       echo "</td></tr>";
    
       echo "<tr><th class='tdkb'>";
-      if($ki->fields["author"]){
+      if($ki->fields["users_id"]){
          echo $LANG['common'][37]." : ";
          // Integer because true may be 2 and getUserName return array
-         if ($linkauthor){
-            $linkauthor=1;
+         if ($linkusers_id){
+            $linkusers_id=1;
          } else {
-            $linkauthor=0;
+            $linkusers_id=0;
          }
 
-         echo getUserName($ki->fields["author"],$linkauthor);
+         echo getUserName($ki->fields["users_id"],$linkusers_id);
 
          echo "&nbsp;&nbsp;|&nbsp;&nbsp;  ";
       }

@@ -207,9 +207,9 @@ function Disconnect($ID,$dohistory=1,$doautoactions=true,$ocs_server_id=0) {
 					$updates[]="location";
 					$device->obj->fields['location']=0;
 				}
-				if ($CFG_GLPI["autoclean_link_user"] && $device->getField('FK_users')) {
-					$updates[]="FK_users";
-					$device->obj->fields['FK_users']=0;	
+				if ($CFG_GLPI["autoclean_link_user"] && $device->getField('users_id')) {
+					$updates[]="users_id";
+					$device->obj->fields['users_id']=0;	
 				}
 				if ($CFG_GLPI["autoclean_link_group"] && $device->getField('FK_groups')){
 					$updates[]="FK_groups";
@@ -354,11 +354,11 @@ function Connect($sID,$cID,$type,$dohistory=1) {
 			$dev->obj->updateInDB($updates);
 			addMessageAfterRedirect($LANG['computers'][48],true);
 		}
-		if (($CFG_GLPI["autoupdate_link_user"]&&$comp->fields['FK_users']!=$dev->getField('FK_users'))
+		if (($CFG_GLPI["autoupdate_link_user"]&&$comp->fields['users_id']!=$dev->getField('users_id'))
 		||($CFG_GLPI["autoupdate_link_group"]&&$comp->fields['FK_groups']!=$dev->getField('FK_groups'))){
 			if ($CFG_GLPI["autoupdate_link_user"]){
-				$updates[]="FK_users";
-				$dev->obj->fields['FK_users']=$comp->fields['FK_users'];
+				$updates[]="users_id";
+				$dev->obj->fields['users_id']=$comp->fields['users_id'];
 			}
 			if ($CFG_GLPI["autoupdate_link_group"]){
 				$updates[]="FK_groups";

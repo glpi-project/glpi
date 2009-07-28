@@ -133,12 +133,12 @@ if ($is_helpdesk_multientity){
 		$paramscomments=array('userID'=>'__VALUE__',
 				'entity_restrict'=>$_POST["entity_restrict"],
 				'itemtype'=>0,
-				'author_field'=>"dropdown_author".$_POST["rand"]
+				'users_id_field'=>"dropdown_users_id".$_POST["rand"]
 		);
 
-		ajaxUpdateItemOnSelectEvent("dropdown_author".$_POST["rand"],"tracking_my_devices",$CFG_GLPI["root_doc"]."/ajax/updateTrackingDeviceType.php",$paramscomments,false);
+		ajaxUpdateItemOnSelectEvent("dropdown_users_id".$_POST["rand"],"tracking_my_devices",$CFG_GLPI["root_doc"]."/ajax/updateTrackingDeviceType.php",$paramscomments,false);
 		$paramscomments=array('value'=>'__VALUE__');
-		ajaxUpdateItemOnSelectEvent("dropdown_author".$_POST["rand"],"uemail_result",$CFG_GLPI["root_doc"]."/ajax/uemailUpdate.php",$paramscomments,false);
+		ajaxUpdateItemOnSelectEvent("dropdown_users_id".$_POST["rand"],"uemail_result",$CFG_GLPI["root_doc"]."/ajax/uemailUpdate.php",$paramscomments,false);
 	}
 }
 ?>

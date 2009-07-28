@@ -79,7 +79,7 @@ class kbitem extends CommonDBTM {
 		global $LANG;
 		// set new date.
 		$input["date"] = $_SESSION["glpi_currenttime"];
-		// set author
+		// set users_id
 
 		// set title for question if empty
 		if(empty($input["question"])) $input["question"]=$LANG['common'][30];
@@ -185,8 +185,8 @@ class kbitem extends CommonDBTM {
 			if (!empty($ID)) {
 				echo "<fieldset>";
 				echo "<div class='baskb'>";
-				if ($this->fields["author"]){
-					echo $LANG['common'][37]." : ".getUserName($this->fields["author"],"1")."      ";
+				if ($this->fields["users_id"]){
+					echo $LANG['common'][37]." : ".getUserName($this->fields["users_id"],"1")."      ";
 				}
 				
 				
@@ -232,7 +232,7 @@ class kbitem extends CommonDBTM {
 			if ($ID>0) {
 				echo "<input type='submit' class='submit' name='update' value=\"".$LANG['buttons'][7]."\"> <input type='reset' class='submit' value=\"".$LANG['buttons'][16]."\">";
 			} else {
-				echo "<input type='hidden' name='author' value=\"".$_SESSION['glpiID']."\">\n";
+				echo "<input type='hidden' name='users_id' value=\"".$_SESSION['glpiID']."\">\n";
 				echo "<input type='submit' class='submit' name='add' value=\"".$LANG['buttons'][8]."\"> <input type='reset' class='submit' value=\"".$LANG['buttons'][16]."\">";
 			}
 		

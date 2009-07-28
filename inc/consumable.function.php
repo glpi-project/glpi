@@ -127,7 +127,7 @@ function showConsumables ($tID,$show_old=0) {
 	
 				if (!$show_old&&$canedit){
 					echo "<th>";
-					dropdownAllUsers("id_user",0,1,$cartype->fields["FK_entities"]);
+					dropdownAllUsers("users_id",0,1,$cartype->fields["FK_entities"]);
 					echo "&nbsp;<input type='submit' class='submit' name='give' value='".$LANG['consumables'][32]."'>";
 					echo "</th>";
 				} else {echo "<th>&nbsp;</th>";}
@@ -151,7 +151,7 @@ function showConsumables ($tID,$show_old=0) {
 			$where= " AND date_out IS NULL ORDER BY date_in, ID";
 		} else { //OLD
 			$where= " AND date_out IS NOT NULL ORDER BY date_out DESC, date_in, ID";
-			$leftjoin=" LEFT JOIN glpi_users ON (glpi_users.ID = glpi_consumables.id_user) ";
+			$leftjoin=" LEFT JOIN glpi_users ON (glpi_users.ID = glpi_consumables.users_id) ";
 			$addselect= ", glpi_users.realname AS REALNAME, glpi_users.firstname AS FIRSTNAME, glpi_users.name AS USERNAME ";
 		}
 	
@@ -369,19 +369,19 @@ function showConsumableSummary(){
 
 	if (!haveRight("consumable","r")) return false;
 
-	$query = "SELECT COUNT(*) AS COUNT, FK_glpi_consumables_type, id_user 
+	$query = "SELECT COUNT(*) AS COUNT, FK_glpi_consumables_type, users_id 
 		FROM glpi_consumables 
 		WHERE date_out IS NOT NULL 
 			AND FK_glpi_consumables_type IN (SELECT ID 
 							FROM glpi_consumablesitems 
 							".getEntitiesRestrictRequest("WHERE","glpi_consumablesitems").") 
-		GROUP BY id_user,FK_glpi_consumables_type";
+		GROUP BY users_id,FK_glpi_consumables_type";
 	$used=array();
 
 	if ($result=$DB->query($query)){
 		if ($DB->numrows($result))
 			while ($data=$DB->fetch_array($result))
-				$used[$data["id_user"]][$data["FK_glpi_consumables_type"]]=$data["COUNT"];
+				$used[$data["users_id"]][$data["FK_glpi_consumables_type"]]=$data["COUNT"];
 	}
 
 	$query = "SELECT COUNT(*) AS COUNT, FK_glpi_consumables_type 
@@ -438,8 +438,8 @@ function showConsumableSummary(){
 		echo "<td class='center'>".$tot."</td>";
 		echo "</tr>";
 
-		foreach ($used as $id_user => $val){
-			echo "<tr class='tab_bg_2'><td>".getUserName($id_user)."</td>";
+		foreach ($used as $users_id => $val){
+			echo "<tr class='tab_bg_2'><td>".getUserName($users_id)."</td>";
 			$tot=0;
 			foreach ($types as $id_type => $type){
 				if (!isset($val[$id_type])) $val[$id_type]=0;

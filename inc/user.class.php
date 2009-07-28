@@ -128,7 +128,7 @@ class User extends CommonDBTM {
 				if (haveAccessToEntity($ent)){
 					$all=false;
 					$query = "DELETE FROM glpi_profiles_users 
-						WHERE FK_users = '$ID' AND FK_entities='$ent'";
+						WHERE users_id = '$ID' AND FK_entities='$ent'";
 					$DB->query($query);
 				}
 			}
@@ -141,28 +141,28 @@ class User extends CommonDBTM {
 	function cleanDBonPurge($ID) {
 		global $DB;
 
-		$query = "DELETE FROM glpi_profiles_users WHERE (FK_users = '$ID')";
+		$query = "DELETE FROM glpi_profiles_users WHERE (users_id = '$ID')";
 		$DB->query($query);
 
-		$query = "DELETE FROM glpi_groups_users WHERE FK_users = '$ID'";
+		$query = "DELETE FROM glpi_groups_users WHERE users_id = '$ID'";
 		$DB->query($query);
 
-		$query = "DELETE FROM glpi_displayprefs WHERE FK_users = '$ID'";
+		$query = "DELETE FROM glpi_displayprefs WHERE users_id = '$ID'";
 		$DB->query($query);
-		$query = "DELETE FROM glpi_bookmarks_users WHERE FK_users = '$ID'";
+		$query = "DELETE FROM glpi_bookmarks_users WHERE users_id = '$ID'";
 		$DB->query($query);
 
 		// Delete private reminder
-		$query = "DELETE FROM glpi_reminders WHERE FK_users = '$ID' AND private=1";
+		$query = "DELETE FROM glpi_reminders WHERE users_id = '$ID' AND private=1";
 		$DB->query($query);
 		// Set no user to public reminder
-		$query = "UPDATE glpi_reminders SET FK_users = 0 WHERE FK_users = '$ID'";
+		$query = "UPDATE glpi_reminders SET users_id = 0 WHERE users_id = '$ID'";
 		$DB->query($query);
 		// Delete private bookmark
-		$query = "DELETE FROM glpi_bookmarks WHERE FK_users = '$ID' AND private=1";
+		$query = "DELETE FROM glpi_bookmarks WHERE users_id = '$ID' AND private=1";
 		$DB->query($query);
 		// Set no user to public bookmark
-		$query = "UPDATE glpi_bookmarks SET FK_users = 0 WHERE FK_users = '$ID'";
+		$query = "UPDATE glpi_bookmarks SET users_id = 0 WHERE users_id = '$ID'";
 		$DB->query($query);
 	}
 
@@ -267,7 +267,7 @@ class User extends CommonDBTM {
 					$affectation["FK_entities"] = 0;
 				}
 				$affectation["FK_profiles"] = $DB->result($result,0,0);
-				$affectation["FK_users"] = $input["ID"];
+				$affectation["users_id"] = $input["ID"];
 				$affectation["recursive"] = 0;
 				$affectation["dynamic"] = 0;
 				addUserProfileEntity($affectation);
@@ -383,14 +383,14 @@ class User extends CommonDBTM {
 				$affectation["FK_entities"] = $entity[0];
 				$affectation["FK_profiles"] = $entity[1];
 				$affectation["recursive"] = $entity[2];
-				$affectation["FK_users"] = $input["ID"];
+				$affectation["users_id"] = $input["ID"];
 				$affectation["dynamic"] = 1;
 				addUserProfileEntity($affectation);
 			}
 	
 			if (count($entities)>0&&count($rights)==0){
 				//If no dynamics profile is provided : get the profil by default if not existing profile
-				$exist_profile = "SELECT ID FROM glpi_profiles_users WHERE FK_users='".$input["ID"]."'";
+				$exist_profile = "SELECT ID FROM glpi_profiles_users WHERE users_id='".$input["ID"]."'";
 				$result = $DB->query($exist_profile);
 				if ($DB->numrows($result)==0){
 					$sql_default_profile = "SELECT ID FROM glpi_profiles WHERE is_default=1";
@@ -407,7 +407,7 @@ class User extends CommonDBTM {
 					foreach($rights as $right){
 						$affectation["FK_entities"] = $entity[0];
 						$affectation["FK_profiles"] = $right;
-						$affectation["FK_users"] = $input["ID"];
+						$affectation["users_id"] = $input["ID"];
 						$affectation["recursive"] = $entity[1];
 						$affectation["dynamic"] = 1;
 						addUserProfileEntity($affectation);
@@ -462,7 +462,7 @@ class User extends CommonDBTM {
 					$query = "SELECT glpi_groups_users.ID, glpi_groups_users.FK_groups 
 						FROM glpi_groups_users 
 						LEFT JOIN glpi_groups ON (glpi_groups.ID = glpi_groups_users.FK_groups) 
-						WHERE glpi_groups_users.FK_users='" . $input["ID"] . "' $WHERE";
+						WHERE glpi_groups_users.users_id='" . $input["ID"] . "' $WHERE";
 	
 					$result = $DB->query($query);
 					if ($DB->numrows($result) > 0) {
@@ -879,7 +879,7 @@ class User extends CommonDBTM {
 		$prof=array();
 		$query="SELECT DISTINCT glpi_profiles_users.FK_profiles
 				FROM glpi_profiles_users 
-				WHERE glpi_profiles_users.FK_users='$ID'";
+				WHERE glpi_profiles_users.users_id='$ID'";
 	
 		$result=$DB->query($query);
 		if ($DB->numrows($result)>0){		
@@ -1318,7 +1318,7 @@ class User extends CommonDBTM {
 		//Purge only in case of connection to the master mysql server
 		if (!$DB->isSlave())
 		{
-			$sql = "DELETE FROM glpi_profiles_users WHERE FK_users='".$this->fields["ID"]."' AND dynamic=1";
+			$sql = "DELETE FROM glpi_profiles_users WHERE users_id='".$this->fields["ID"]."' AND dynamic=1";
 			$DB->query($sql);
 		}
 	}

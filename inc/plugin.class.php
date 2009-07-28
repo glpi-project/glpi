@@ -235,7 +235,7 @@ class Plugin extends CommonDBTM {
 					break;
 			}
 			echo "</td>";
-			echo "<td>".$plug['author']."</td>";
+			echo "<td>".$plug['users_id']."</td>";
 			$weblink=trim($plug['homepage']);
 			echo "<td>";
 			if (!empty($weblink)){

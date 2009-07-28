@@ -97,16 +97,16 @@ switch($_GET["type"]){
 	case "user":
 		$val1=$_GET["ID"];
 		$val2="";
-		$job->fields["author"]=$_GET["ID"];
+		$job->fields["users_id"]=$_GET["ID"];
 	
 		$next=getNextItem("glpi_users",$_GET["ID"]);
 		$prev=getPreviousItem("glpi_users",$_GET["ID"]);
 		$title=$LANG['stats'][20].": ".$job->getAuthorName(1);
 		break;	
-	case "recipient":
+	case "users_id_recipient":
 		$val1=$_GET["ID"];
 		$val2="";
-		$job->fields["author"]=$_GET["ID"];
+		$job->fields["users_id"]=$_GET["ID"];
 	
 		$next=getNextItem("glpi_users",$_GET["ID"]);
 		$prev=getPreviousItem("glpi_users",$_GET["ID"]);

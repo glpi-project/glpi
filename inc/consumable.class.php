@@ -42,8 +42,8 @@ if (!defined('GLPI_ROOT')){
 //!  ConsumableType Class
 /**
   This class is used to manage the various types of consumables.
-  \see Consumable
-  \author Julien Dombre
+  @see Consumable
+  @author Julien Dombre
  */
 class ConsumableType extends CommonDBTM {
 
@@ -157,7 +157,7 @@ class ConsumableType extends CommonDBTM {
          echo "</td></tr>\n";
 
          echo "<tr class='tab_bg_1'><td>".$LANG['common'][10].": 	</td><td colspan='2'>\n";
-         dropdownUsersID("tech_num", $this->fields["tech_num"],"interface",1,$this->fields["FK_entities"]);
+         dropdownUsersID("users_id_tech", $this->fields["users_id_tech"],"interface",1,$this->fields["FK_entities"]);
          echo "</td></tr>\n";
 
          echo "<tr class='tab_bg_1'><td>".$LANG['consumables'][36].": 	</td><td colspan='2'>\n";
@@ -225,8 +225,8 @@ class ConsumableType extends CommonDBTM {
 //!  Consumable Class
 /**
   This class is used to manage the consumables.
-  \see ConsumableType
-  \author Julien Dombre
+  @see ConsumableType
+  @author Julien Dombre
  */
 class Consumable extends CommonDBTM {
 
@@ -287,15 +287,15 @@ class Consumable extends CommonDBTM {
 	 * UnLink the consumable identified by $ID
 	 *
 	 *@param $ID : consumable identifier
-	 *@param $id_user : ID of the user giving the consumable
+	 *@param $users_id : ID of the user giving the consumable
 	 *
 	 *@return boolean
 	 *
 	 **/
-	function out($ID,$id_user=0) {
+	function out($ID,$users_id=0) {
 
 		global $DB;
-		$query = "UPDATE glpi_consumables SET date_out = '".date("Y-m-d")."', id_user='$id_user' WHERE ID='$ID'";
+		$query = "UPDATE glpi_consumables SET date_out = '".date("Y-m-d")."', users_id='$users_id' WHERE ID='$ID'";
 
 		if ($result = $DB->query($query)) {
 			return true;

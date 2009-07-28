@@ -324,13 +324,13 @@ function showAddReservationForm($target,$items,$date,$resaID=-1){
 	}
 	echo "</td></tr>";
 	if (!haveRight("reservation_central","w") || !haveAccessToEntity($ci->obj->fields["FK_entities"]))
-		echo "<input type='hidden' name='id_user' value='".$_SESSION["glpiID"]."'>";
+		echo "<input type='hidden' name='users_id' value='".$_SESSION["glpiID"]."'>";
 	else {
 		echo "<tr class='tab_bg_2'><td>".$LANG['reservation'][31].":	</td>";
 		echo "<td>";
 		if ($resaID==-1)
-			dropdownAllUsers("id_user",$_SESSION["glpiID"],1,$ci->getField('FK_entities'));
-		else dropdownAllUsers("id_user",$resa->fields["id_user"],1,$ci->getField('FK_entities'));
+			dropdownAllUsers("users_id",$_SESSION["glpiID"],1,$ci->getField('FK_entities'));
+		else dropdownAllUsers("users_id",$resa->fields["users_id"],1,$ci->getField('FK_entities'));
 		echo "</td></tr>";
 
 	}
@@ -423,7 +423,7 @@ function printReservation($target,$ID,$date){
 function printReservationItem($target,$ID,$date){
 	global $DB,$LANG;
 
-	$id_user=$_SESSION["glpiID"];
+	$users_id=$_SESSION["glpiID"];
 
 	$resa = new ReservationResa();
 	
@@ -440,7 +440,7 @@ function printReservationItem($target,$ID,$date){
 			echo "<table width='100%' >";
 			while ($row=$DB->fetch_array($result)){
 				echo "<tr>";
-				$user->getFromDB($row["id_user"]);
+				$user->getFromDB($row["users_id"]);
 				$display="";					
 				if ($debut>$row['begin']) $heure_debut="00:00";
 				else $heure_debut=get_hour_from_sql($row['begin']);
@@ -615,7 +615,7 @@ function showDeviceReservations($target,$type,$ID){
 				echo "<tr class='tab_bg_2'>";
 				echo "<td class='center'>".convDateTime($data["begin"])."</td>";
 				echo "<td class='center'>".convDateTime($data["end"])."</td>";
-				echo "<td class='center'><a  href='".$CFG_GLPI["root_doc"]."/front/user.form.php?ID=".$data["id_user"]."'>".getUserName($data["id_user"])."</a></td>";
+				echo "<td class='center'><a  href='".$CFG_GLPI["root_doc"]."/front/user.form.php?ID=".$data["users_id"]."'>".getUserName($data["users_id"])."</a></td>";
 				echo "<td class='center'>".nl2br($data["comment"])."</td>";
 				echo "<td class='center'>";
 				
@@ -651,7 +651,7 @@ function showDeviceReservations($target,$type,$ID){
 				echo "<tr class='tab_bg_2'>";
 				echo "<td class='center'>".convDateTime($data["begin"])."</td>";
 				echo "<td class='center'>".convDateTime($data["end"])."</td>";
-				echo "<td class='center'><a  href='".$CFG_GLPI["root_doc"]."/front/user.form.php?ID=".$data["id_user"]."'>".getUserName($data["id_user"])."</a></td>";
+				echo "<td class='center'><a  href='".$CFG_GLPI["root_doc"]."/front/user.form.php?ID=".$data["users_id"]."'>".getUserName($data["users_id"])."</a></td>";
 				echo "<td class='center'>".nl2br($data["comment"])."</td>";
 				echo "<td class='center'>";
 				
@@ -682,7 +682,7 @@ function showUserReservations($target,$ID){
 	$now=$_SESSION["glpi_currenttime"];
 
 	// Print reservation in progress
-	$query = "SELECT * FROM glpi_reservations WHERE end > '".$now."' AND id_user='$ID' ORDER BY begin";
+	$query = "SELECT * FROM glpi_reservations WHERE end > '".$now."' AND users_id='$ID' ORDER BY begin";
 	$result=$DB->query($query);
 	$ri=new ReservationItem();
 	$ci=new CommonItem();
@@ -702,7 +702,7 @@ function showUserReservations($target,$ID){
 			} else {
 				echo "<td class='center'>&nbsp;</td>";
 			}
-			echo "<td class='center'>".getUserName($data["id_user"])."</td>";
+			echo "<td class='center'>".getUserName($data["users_id"])."</td>";
 			echo "<td class='center'>".nl2br($data["comment"])."</td>";
 			echo "<td class='center'>";
 				
@@ -717,7 +717,7 @@ function showUserReservations($target,$ID){
 	echo "<br>";
 	// Print old reservations
 
-	$query = "SELECT * FROM glpi_reservations WHERE end <= '".$now."' AND id_user='$ID' ORDER BY begin DESC";
+	$query = "SELECT * FROM glpi_reservations WHERE end <= '".$now."' AND users_id='$ID' ORDER BY begin DESC";
 	$result=$DB->query($query);
 
 	echo "<table class='tab_cadrehov'><tr><th colspan='6'>".$LANG['reservation'][36]."</th></tr>";
@@ -735,7 +735,7 @@ function showUserReservations($target,$ID){
 			} else {
 				echo "<td class='center'>&nbsp;</td>";
 			}
-			echo "<td class='center'>".getUserName($data["id_user"])."</td>";
+			echo "<td class='center'>".getUserName($data["users_id"])."</td>";
 			echo "<td class='center'>".nl2br($data["comment"])."</td>";
 			echo "<td class='center'>";
 				

@@ -83,7 +83,7 @@ function showDeviceUser($ID){
 	$query="SELECT glpi_groups_users.FK_groups, glpi_groups.name 
 		FROM glpi_groups_users 
 		LEFT JOIN glpi_groups ON (glpi_groups.ID = glpi_groups_users.FK_groups) 
-		WHERE glpi_groups_users.FK_users='$ID';";
+		WHERE glpi_groups_users.users_id='$ID';";
 	$result=$DB->query($query);
 	if ($DB->numrows($result)>0){
 		$first=true;
@@ -109,7 +109,7 @@ function showDeviceUser($ID){
 
 	foreach ($CFG_GLPI["linkuser_types"] as $type){
 		if (haveTypeRight($type,'r')){
-			$query="SELECT * FROM ".$LINK_ID_TABLE[$type]." WHERE FK_users='$ID'";
+			$query="SELECT * FROM ".$LINK_ID_TABLE[$type]." WHERE users_id='$ID'";
 
 			if (in_array($LINK_ID_TABLE[$type],$CFG_GLPI["template_tables"])){
 				$query.=" AND is_template=0 ";
@@ -130,7 +130,7 @@ function showDeviceUser($ID){
 							$link.(($_SESSION["glpiview_ID"]||empty($link))?" (".$data["ID"].")":"")."</a>";	
 					}
 					$linktype="";
-					if ($data["FK_users"]==$ID){
+					if ($data["users_id"]==$ID){
 						$linktype=$LANG['common'][34];
 					}
 					echo "<tr class='tab_bg_1'><td class='center'>$type_name</td>" 
@@ -231,7 +231,7 @@ function showGroupAssociated($target,$ID){
 	$query="SELECT glpi_groups.*, glpi_groups_users.ID AS IDD, glpi_groups_users.ID as linkID 
 		FROM glpi_groups_users 
 		LEFT JOIN glpi_groups ON (glpi_groups.ID = glpi_groups_users.FK_groups) 
-		WHERE glpi_groups_users.FK_users='$ID' 
+		WHERE glpi_groups_users.users_id='$ID' 
 		ORDER BY glpi_groups.name";
 
 	$result=$DB->query($query);
@@ -292,7 +292,7 @@ function showGroupAssociated($target,$ID){
 
 		echo "<table  class='tab_cadre_fixe'>";
 		echo "<tr class='tab_bg_1'><th colspan='2'>".$LANG['setup'][604]."</tr><tr><td class='tab_bg_2' align='center'>";
-		echo "<input type='hidden' name='FK_users' value='$ID'>";
+		echo "<input type='hidden' name='users_id' value='$ID'>";
 		if (countElementsInTableForEntity("glpi_groups",$strict_entities) > count($used)) {
 			
 			dropdownValue("glpi_groups", "FK_groups", "", 1, $strict_entities, "", $used);	
@@ -334,7 +334,7 @@ function showUserRights($target,$ID){
 		echo "<table  class='tab_cadre_fixe'>";
 
 		echo "<tr class='tab_bg_1'><th colspan='4'>".$LANG['entity'][3]."</tr><tr class='tab_bg_2'><td class='center'>";
-		echo "<input type='hidden' name='FK_users' value='$ID'>";
+		echo "<input type='hidden' name='users_id' value='$ID'>";
 
 		dropdownValue("glpi_entities","FK_entities",0,1,$_SESSION['glpiactiveentities']);
 		echo "</td><td class='center'>";
@@ -358,7 +358,7 @@ function showUserRights($target,$ID){
 			FROM glpi_profiles_users 
 			LEFT JOIN glpi_profiles ON (glpi_profiles_users.FK_profiles = glpi_profiles.ID)
 			LEFT JOIN glpi_entities ON (glpi_profiles_users.FK_entities = glpi_entities.ID)
-			WHERE glpi_profiles_users.FK_users='$ID'
+			WHERE glpi_profiles_users.users_id='$ID'
 			ORDER BY glpi_profiles.name, glpi_entities.completename;";
 
 	$result=$DB->query($query);
@@ -478,7 +478,7 @@ function getUserEntities($ID,$recursive=true){
 
 	$query="SELECT DISTINCT FK_entities, recursive
 			FROM glpi_profiles_users 
-			WHERE FK_users='$ID';";
+			WHERE users_id='$ID';";
 	$result=$DB->query($query);
 	if ($DB->numrows($result)>0){
 		$entities=array();

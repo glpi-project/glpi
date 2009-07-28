@@ -56,7 +56,7 @@ class PlanningTracking extends CommonDBTM {
 		$oldfields=$this->fields;
 
 		// Needed for test already planned
-		$this->fields["id_assign"] = $input["id_assign"];
+		$this->fields["users_id"] = $input["users_id"];
 		$this->fields["begin"] = $input["begin"];
 		$this->fields["end"] = $input["end"];
 
@@ -117,7 +117,7 @@ class PlanningTracking extends CommonDBTM {
 
 	function prepareInputForAdd($input) {
 		// Needed for test already planned
-		$this->fields["id_assign"] = $input["id_assign"];
+		$this->fields["users_id"] = $input["users_id"];
 		$this->fields["begin"] = $input["begin"];
 		$this->fields["end"] = $input["end"];
 
@@ -179,7 +179,7 @@ class PlanningTracking extends CommonDBTM {
 	function pre_deleteItem($ID) {
 
 		if ($this->getFromDB($ID)){
-			if (isset($this->fields["id_assign"])&&($this->fields["id_assign"]==$_SESSION["glpiID"]||haveRight("comment_all_ticket","1"))){
+			if (isset($this->fields["users_id"])&&($this->fields["users_id"]==$_SESSION["glpiID"]||haveRight("comment_all_ticket","1"))){
 				// Auto update realtime
 				$fup=new Followup();
 				$fup->getFromDB($this->fields["id_followup"]);
@@ -201,7 +201,7 @@ class PlanningTracking extends CommonDBTM {
 	 **/
 	function is_alreadyplanned(){
 		global $DB;
-		if (!isset($this->fields["id_assign"])||empty($this->fields["id_assign"]))
+		if (!isset($this->fields["users_id"])||empty($this->fields["users_id"]))
 			return true;
 
 		// When modify a planning do not itself take into account 
@@ -210,7 +210,7 @@ class PlanningTracking extends CommonDBTM {
 			$ID_where=" (ID <> '".$this->fields["ID"]."') AND ";
 
 		$query = "SELECT * FROM glpi_ticketsplannings".
-			" WHERE $ID_where (id_assign = '".$this->fields["id_assign"]."') AND ".
+			" WHERE $ID_where (users_id = '".$this->fields["users_id"]."') AND ".
 			" ( ('".$this->fields["begin"]."' < begin AND '".$this->fields["end"]."' > begin) ".
 			" OR ('".$this->fields["begin"]."' < end AND '".$this->fields["end"]."' >= end) ".
 			" OR ('".$this->fields["begin"]."' >= begin AND '".$this->fields["end"]."' < end))";

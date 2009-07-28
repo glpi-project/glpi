@@ -453,7 +453,7 @@ class CommonItem{
             $comment.="<strong>".$LANG['common'][15].": "."</strong>".$tmp."<br>";
          }
       }
-      if ($tmp=$this->getField('FK_users')){
+      if ($tmp=$this->getField('users_id')){
          $tmp=getUserName($tmp);
          if (!empty($tmp)&&$tmp!='&nbsp;'){
             $comment.="<strong>".$LANG['common'][34].": "."</strong>".$tmp."<br>";
@@ -465,7 +465,7 @@ class CommonItem{
             $comment.="<strong>".$LANG['common'][35].": "."</strong>".$tmp."<br>";
          }
       }
-      if ($tmp=$this->getField('tech_num')){
+      if ($tmp=$this->getField('users_id_tech')){
          $tmp=getUserName($tmp);
          if (!empty($tmp)&&$tmp!='&nbsp;'){
             $comment.="<strong>".$LANG['common'][10].": "."</strong>".$tmp."<br>";

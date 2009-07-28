@@ -72,11 +72,11 @@ $items=array(
 	$LANG['job'][4]=> array(
 		"user"=>array(	
 			"title"=>$LANG['common'][37],
-			"field"=>"glpi_tickets.author"
+			"field"=>"glpi_tickets.users_id"
 			),
-		"recipient"=>array(	
+		"users_id_recipient"=>array(	
 			"title"=>$LANG['job'][3],
-			"field"=>"glpi_tickets.recipient"
+			"field"=>"glpi_tickets.users_id_recipient"
 			),
 		"group"=>array(	
 			"title"=>$LANG['common'][35],
@@ -108,11 +108,11 @@ $items=array(
 	$LANG['job'][5] => array(
 		"technicien"=>array(	
 			"title"=>$LANG['job'][6]." ".$LANG['stats'][48],
-			"field"=>"glpi_tickets.assign"
+			"field"=>"glpi_tickets.users_id_assign"
 			),
 		"technicien_followup"=>array(	
 				"title"=>$LANG['job'][6]." ".$LANG['stats'][49],
-				"field"=>"glpi_followup.author"
+				"field"=>"glpi_followup.users_id"
 				),
 		"assign_group"=>array(	
 			"title"=>$LANG['common'][35],

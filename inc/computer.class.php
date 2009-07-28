@@ -190,11 +190,11 @@ class Computer extends CommonDBTM {
 			}
 
 			// Update users and groups of attached items
-			if (($updates[$i]=="FK_users" && $this->fields["FK_users"]!=0 && $CFG_GLPI["autoupdate_link_user"])||($updates[$i]=="FK_groups" && $this->fields["FK_groups"]!=0 && $CFG_GLPI["autoupdate_link_group"])){
+			if (($updates[$i]=="users_id" && $this->fields["users_id"]!=0 && $CFG_GLPI["autoupdate_link_user"])||($updates[$i]=="FK_groups" && $this->fields["FK_groups"]!=0 && $CFG_GLPI["autoupdate_link_group"])){
 				$items=array(PRINTER_TYPE,MONITOR_TYPE,PERIPHERAL_TYPE,PHONE_TYPE);
 				$ci=new CommonItem();
 				$update_done=false;
-				$updates4[0]="FK_users";
+				$updates4[0]="users_id";
 				$updates4[1]="FK_groups";
 
 				foreach ($items as $t){
@@ -211,10 +211,10 @@ class Computer extends CommonDBTM {
 
 								$ci->getFromDB($t,$tID);
 								if (!$ci->getField('is_global')){
-									if ($ci->getField('FK_users')!=$this->fields["FK_users"]||$ci->getField('FK_groups')!=$this->fields["FK_groups"]){
+									if ($ci->getField('users_id')!=$this->fields["users_id"]||$ci->getField('FK_groups')!=$this->fields["FK_groups"]){
 										$tmp["ID"]=$ci->getField('ID');
 										if ($CFG_GLPI["autoupdate_link_user"]){
-											$tmp["FK_users"]=$this->fields["FK_users"];
+											$tmp["users_id"]=$this->fields["users_id"];
 										}
 										if ($CFG_GLPI["autoupdate_link_group"]){
 											$tmp["FK_groups"]=$this->fields["FK_groups"];
@@ -613,7 +613,7 @@ class Computer extends CommonDBTM {
       
       echo "<td >".$LANG['common'][34].": 	</td>";
       echo "<td >";
-      dropdownAllUsers("FK_users", $this->fields["FK_users"],1,$this->fields["FK_entities"]);
+      dropdownAllUsers("users_id", $this->fields["users_id"],1,$this->fields["FK_entities"]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -633,7 +633,7 @@ class Computer extends CommonDBTM {
 
       echo "<td >".$LANG['common'][10].": 	</td>";
       echo "<td >";
-      dropdownUsersID("tech_num",$this->fields["tech_num"],"interface",1,$this->fields["FK_entities"]);
+      dropdownUsersID("users_id_tech",$this->fields["users_id_tech"],"interface",1,$this->fields["FK_entities"]);
       echo "</td></tr>";
       
       echo "<tr class='tab_bg_1'>";

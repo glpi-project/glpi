@@ -107,9 +107,9 @@ else if (isset($_POST["purge"]))
 {
 	checkRight("user","w");
 
-	addUserGroup($_POST["FK_users"],$_POST["FK_groups"]);
+	addUserGroup($_POST["users_id"],$_POST["FK_groups"]);
 
-	logEvent($_POST["FK_users"], "users", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][48]);
+	logEvent($_POST["users_id"], "users", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][48]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
 else if (isset($_POST["deletegroup"]))
@@ -119,7 +119,7 @@ else if (isset($_POST["deletegroup"]))
 		foreach ($_POST["item"] as $key => $val)
 			deleteUserGroup($key);
 
-	logEvent($_POST["FK_users"], "users", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][49]);
+	logEvent($_POST["users_id"], "users", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][49]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 } else if (isset($_POST["addright"]))
 {
@@ -128,7 +128,7 @@ else if (isset($_POST["deletegroup"]))
 	$prof=new Profile();
 	if ($prof->currentUserHaveMoreRightThan(array($_POST['FK_profiles']=>$_POST['FK_profiles']))){
 		addUserProfileEntity($_POST);
-		logEvent($_POST["FK_users"], "users", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][61]);
+		logEvent($_POST["users_id"], "users", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][61]);
 	}
 	
 	glpi_header($_SERVER['HTTP_REFERER']);
@@ -140,7 +140,7 @@ else if (isset($_POST["deletegroup"]))
 		foreach ($_POST["item"] as $key => $val){
 			deleteUserProfileEntity($key);
 		}
-		logEvent($_POST["FK_users"], "users", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][62]);
+		logEvent($_POST["users_id"], "users", 4, "setup", $_SESSION["glpiname"]." ".$LANG['log'][62]);
 	}
 
 	glpi_header($_SERVER['HTTP_REFERER']);
