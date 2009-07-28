@@ -89,12 +89,12 @@ if (isset($_GET["lID"])){
 				$file=str_replace("[LOCATION]",getDropdownName("glpi_locations",$ci->obj->fields["locations_id"]),$file);
 		}
 		if (strstr($file,"[NETWORK]")){
-			if (isset($ci->obj->fields["network"]))
-				$file=str_replace("[NETWORK]",getDropdownName("glpi_networks",$ci->obj->fields["network"]),$file);
+			if (isset($ci->obj->fields["networks_id"]))
+				$file=str_replace("[NETWORK]",getDropdownName("glpi_networks",$ci->obj->fields["networks_id"]),$file);
 		}
 		if (strstr($file,"[DOMAIN]")){
-			if (isset($ci->obj->fields["domain"]))
-				$file=str_replace("[DOMAIN]",getDropdownName("glpi_domains",$ci->obj->fields["domain"]),$file);
+			if (isset($ci->obj->fields["domains_id"]))
+				$file=str_replace("[DOMAIN]",getDropdownName("glpi_domains",$ci->obj->fields["domains_id"]),$file);
 		}
 		$ipmac=array();
 		$i=0;

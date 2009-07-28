@@ -76,9 +76,9 @@ $RELATION=array(
 	
 	"glpi_contractstypes" =>array("glpi_contracts"=>"contract_type"),
 	
-	"glpi_domains" => array("glpi_computers"=>"domain",
-						"glpi_printers"=>"domain",
-						"glpi_networkequipments"=>"domain"),
+	"glpi_domains" => array("glpi_computers"=>"domains_id",
+						"glpi_printers"=>"domains_id",
+						"glpi_networkequipments"=>"domains_id"),
 	
 	"glpi_supplierstypes" =>array("glpi_suppliers"=>"supplierstypes_id"),
 
@@ -136,24 +136,24 @@ $RELATION=array(
 						"glpi_softwares"=>"manufacturers_id",
 	),
 	
-	"glpi_computersmodels" =>array("glpi_computers"=>"model"),
+	"glpi_computersmodels" =>array("glpi_computers"=>"computersmodels_id"),
 	
-	"glpi_monitorsmodels" =>array("glpi_monitors"=>"model"),
+	"glpi_monitorsmodels" =>array("glpi_monitors"=>"monitorsmodels_id"),
 	
-	"glpi_networkequipmentsmodels" =>array("glpi_networkequipments"=>"model"),
+	"glpi_networkequipmentsmodels" =>array("glpi_networkequipments"=>"networkequipmentsmodels_id"),
 	
-	"glpi_peripheralsmodels" =>array("glpi_peripherals"=>"model"),
+	"glpi_peripheralsmodels" =>array("glpi_peripherals"=>"peripheralsmodels_id"),
 	
-	"glpi_phonesmodels" =>array("glpi_phones"=>"model"),
+	"glpi_phonesmodels" =>array("glpi_phones"=>"phonesmodels_id"),
 	
-	"glpi_printersmodels" =>array("glpi_printers"=>"model",
+	"glpi_printersmodels" =>array("glpi_printers"=>"printersmodels",
 									"glpi_cartridges_printersmodels" =>"printersmodels_id"),
 	
 	"glpi_netpoints" =>array("glpi_networkports"=>"netpoint"),
 	
-	"glpi_networks" =>array("glpi_computers"=>"network",
-					"glpi_printers"=>"network",
-					"glpi_networkequipments"=>"network",),
+	"glpi_networks" =>array("glpi_computers"=>"networks_id",
+					"glpi_printers"=>"networks_id",
+					"glpi_networkequipments"=>"networks_id",),
 	
 	"glpi_operatingsystems" =>array("glpi_computers"=>"operatingsystems_id",
                               "glpi_softwares"=>"operatingsystems_id"),

@@ -608,7 +608,7 @@ class Computer extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td >".$LANG['common'][22].": 	</td>";
       echo "<td >";
-      dropdownValue("glpi_computersmodels", "model", $this->fields["model"]);
+      dropdownValue("glpi_computersmodels", "computersmodels_id", $this->fields["computersmodels_id"]);
       echo "</td>";
       
       echo "<td >".$LANG['common'][34].": 	</td>";
@@ -642,7 +642,7 @@ class Computer extends CommonDBTM {
       echo "</td>";
       
       echo "<td>".$LANG['setup'][88].":</td><td>";
-      dropdownValue("glpi_networks", "network", $this->fields["network"]);
+      dropdownValue("glpi_networks", "networks_id", $this->fields["networks_id"]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
@@ -652,7 +652,7 @@ class Computer extends CommonDBTM {
 
 
       echo "<td>".$LANG['setup'][89].":</td><td>";
-      dropdownValue("glpi_domains", "domain", $this->fields["domain"]);
+      dropdownValue("glpi_domains", "domains_id", $this->fields["domains_id"]);
       echo "</td></tr>";
 
 

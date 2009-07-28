@@ -207,12 +207,12 @@ function showLinkOnDevice($itemtype,$ID){
 					}
 				}
 				if (strstr($link,"[NETWORK]")){
-					if ($tmp=$ci->getField('network')){
+					if ($tmp=$ci->getField('networks_id')){
 						$link=str_replace("[NETWORK]",getDropdownName("glpi_networks",$tmp),$link);
 					}
 				}
 				if (strstr($link,"[DOMAIN]")){
-					if ($tmp=$ci->getField('domain'))
+					if ($tmp=$ci->getField('domains_id'))
 						$link=str_replace("[DOMAIN]",getDropdownName("glpi_domains",$tmp),$link);
 				}
 				if (strstr($link,"[USER]")){
