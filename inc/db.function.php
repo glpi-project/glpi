@@ -63,9 +63,8 @@ function getTableNameForForeignKeyField($fkname){
    if (strpos($fkname,'_id')===false){
       return "";
    }
-  return "glpi_".str_replace("_id","",$fkname);
+  return "glpi_".preg_replace("/_id.*/","",$fkname);
 }
-
 /**
  * Count the number of elements in a table.
  *
