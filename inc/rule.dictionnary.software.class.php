@@ -111,15 +111,15 @@ class DictionnarySoftwareCollection extends RuleCachedCollection {
 		if (count($items) == 0) {
 			//Select all the differents software
 			$sql = "SELECT DISTINCT glpi_softwares.name, glpi_manufacturers.name AS manufacturer," .
-			" glpi_softwares.FK_glpi_enterprise AS FK_glpi_enterprise " .
+			" glpi_softwares.manufacturers_id AS manufacturers_id " .
 			"FROM glpi_softwares LEFT JOIN glpi_manufacturers " .
-			"ON glpi_manufacturers.ID=glpi_softwares.FK_glpi_enterprise ";
+			"ON glpi_manufacturers.ID=glpi_softwares.manufacturers_id ";
 
 			// Do not replay on trash and templates
 			$sql .= "WHERE glpi_softwares.deleted = 0 AND glpi_softwares.is_template = 0 ";
 
 			if (isset ($params['manufacturer']) && $params['manufacturer'] > 0) {
-				$sql .= " AND FK_glpi_enterprise='" . $params['manufacturer'] . "'";
+				$sql .= " AND manufacturers_id='" . $params['manufacturer'] . "'";
 			}
 			if ($offset) {
 				$sql .= " LIMIT " . intval($offset) . ",999999999";
@@ -154,7 +154,7 @@ class DictionnarySoftwareCollection extends RuleCachedCollection {
 					//Find all the softwares in the database with the same name and manufacturer
 					$sql = "SELECT ID 
 											FROM `glpi_softwares` 
-											WHERE name='" . $input["name"] . "' AND FK_glpi_enterprise='" . $input["FK_glpi_enterprise"] . "'";
+											WHERE name='" . $input["name"] . "' AND manufacturers_id='" . $input["manufacturers_id"] . "'";
 					$res_soft = $DB->query($sql);
 					if ($DB->numrows($res_soft) > 0) {
 						//Store all the software's IDs in an array
@@ -206,7 +206,7 @@ class DictionnarySoftwareCollection extends RuleCachedCollection {
 		foreach ($IDs as $ID) {
 			$res_soft = $DB->query("SELECT gs.ID AS ID, gs.name AS name, gs.entities_id AS entities_id, gm.name AS manufacturer
 									FROM glpi_softwares AS gs 
-									LEFT JOIN glpi_manufacturers AS gm ON gs.FK_glpi_enterprise = gm.ID 
+									LEFT JOIN glpi_manufacturers AS gm ON gs.manufacturers_id = gm.ID 
 									WHERE gs.is_template=0 AND gs.ID ='" . $ID . "'");
 
 			if ($DB->numrows($res_soft)) {
@@ -265,7 +265,7 @@ class DictionnarySoftwareCollection extends RuleCachedCollection {
 			
 			if (isset($res_rule["manufacturer"]))
 			{
-				$res_rule["FK_glpi_enterprise"] = $res_rule["manufacturer"];
+				$res_rule["manufacturers_id"] = $res_rule["manufacturer"];
 				unset($res_rule["manufacturer"]);
 			}
 				 

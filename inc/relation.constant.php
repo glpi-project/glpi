@@ -44,11 +44,11 @@ $RELATION=array(
 	"glpi_cartridgesitems" => array("glpi_cartridges"=>"cartridgesitems_id",
 				"glpi_cartridges_printersmodels"=>"cartridgesitems_id"),
 
-	"glpi_computers" => array("glpi_computers_devices"=>"FK_computers",
-						"glpi_computersdisks"=>"FK_computers",
+	"glpi_computers" => array("glpi_computers_devices"=>"computers_id",
+						"glpi_computersdisks"=>"computers_id",
 						"glpi_computers_items"=>"end2",
 						"glpi_computers_softwaresversions"=>"cID",
-						"glpi_softwareslicenses"=>"FK_computers",
+						"glpi_softwareslicenses"=>"computers_id",
 						"glpi_ocslinks"=>"glpi_id",
 						"glpi_registrykeys"=>"computer_id",
 						),
@@ -62,7 +62,7 @@ $RELATION=array(
 	
 	"glpi_documents" => array("glpi_documents_items"=>"FK_doc"),
 
-	"glpi_autoupdatesystems" => array("glpi_computers"=>"auto_update"),
+	"glpi_autoupdatesystems" => array("glpi_computers"=>"autoupdatesystems_id"),
 
 	"glpi_budgets" => array("glpi_infocoms"=>"budget"),
 	
@@ -82,7 +82,7 @@ $RELATION=array(
 	
 	"glpi_supplierstypes" =>array("glpi_suppliers"=>"supplierstypes_id"),
 
-	"glpi_filesystems" =>array("glpi_computersdisks"=>"FK_filesystems"),
+	"glpi_filesystems" =>array("glpi_computersdisks"=>"filesystems_id"),
 	
 	"glpi_networkequipmentsfirmwares" =>array("glpi_networkequipments"=>"firmware"),
 	
@@ -113,27 +113,27 @@ $RELATION=array(
 					"glpi_users"=>"locations_id",
 				),
 	
-	"glpi_manufacturers" =>array("glpi_cartridgesitems"=>"FK_glpi_enterprise",
-						"glpi_computers"=>"FK_glpi_enterprise",
-						"glpi_consumablesitems"=>"FK_glpi_enterprise",
-						"glpi_devicescases"=>"FK_glpi_enterprise",
-						"glpi_devicescontrols"=>"FK_glpi_enterprise",
-						"glpi_devicesdrives"=>"FK_glpi_enterprise",
-						"glpi_devicesgraphiccards"=>"FK_glpi_enterprise",
-						"glpi_devicesharddrives"=>"FK_glpi_enterprise",
-						"glpi_devicesnetworkcards"=>"FK_glpi_enterprise",
-						"glpi_devicesmotherboards"=>"FK_glpi_enterprise",
-						"glpi_devicespcis"=>"FK_glpi_enterprise",
-						"glpi_devicespowersupplies"=>"FK_glpi_enterprise",
-						"glpi_devicesprocessors"=>"FK_glpi_enterprise",
-						"glpi_devicesmemories"=>"FK_glpi_enterprise",
-						"glpi_devicessoundcards"=>"FK_glpi_enterprise",
-						"glpi_monitors"=>"FK_glpi_enterprise",
-						"glpi_networkequipments"=>"FK_glpi_enterprise",
-						"glpi_peripherals"=>"FK_glpi_enterprise",
-						"glpi_phones"=>"FK_glpi_enterprise",
-						"glpi_printers"=>"FK_glpi_enterprise",
-						"glpi_softwares"=>"FK_glpi_enterprise",
+	"glpi_manufacturers" =>array("glpi_cartridgesitems"=>"manufacturers_id",
+						"glpi_computers"=>"manufacturers_id",
+						"glpi_consumablesitems"=>"manufacturers_id",
+						"glpi_devicescases"=>"manufacturers_id",
+						"glpi_devicescontrols"=>"manufacturers_id",
+						"glpi_devicesdrives"=>"manufacturers_id",
+						"glpi_devicesgraphiccards"=>"manufacturers_id",
+						"glpi_devicesharddrives"=>"manufacturers_id",
+						"glpi_devicesnetworkcards"=>"manufacturers_id",
+						"glpi_devicesmotherboards"=>"manufacturers_id",
+						"glpi_devicespcis"=>"manufacturers_id",
+						"glpi_devicespowersupplies"=>"manufacturers_id",
+						"glpi_devicesprocessors"=>"manufacturers_id",
+						"glpi_devicesmemories"=>"manufacturers_id",
+						"glpi_devicessoundcards"=>"manufacturers_id",
+						"glpi_monitors"=>"manufacturers_id",
+						"glpi_networkequipments"=>"manufacturers_id",
+						"glpi_peripherals"=>"manufacturers_id",
+						"glpi_phones"=>"manufacturers_id",
+						"glpi_printers"=>"manufacturers_id",
+						"glpi_softwares"=>"manufacturers_id",
 	),
 	
 	"glpi_computersmodels" =>array("glpi_computers"=>"model"),
@@ -155,12 +155,12 @@ $RELATION=array(
 					"glpi_printers"=>"network",
 					"glpi_networkequipments"=>"network",),
 	
-	"glpi_operatingsystems" =>array("glpi_computers"=>"os",
-				"glpi_softwares"=>"platform"),
+	"glpi_operatingsystems" =>array("glpi_computers"=>"operatingsystems_id",
+                              "glpi_softwares"=>"operatingsystems_id"),
 	
-	"glpi_operatingsystemsservicepacks" =>array("glpi_computers"=>"os_sp"),
+	"glpi_operatingsystemsservicepacks" =>array("glpi_computers"=>"operatingsystemsservicepacks_id"),
 	
-	"glpi_operatingsystemsversions" =>array("glpi_computers"=>"os_version"),
+	"glpi_operatingsystemsversions" =>array("glpi_computers"=>"operatingsystemsversions_id"),
 	
 	"glpi_phonespowersupplies" =>array("glpi_phones"=>"power"),
 	

@@ -1178,6 +1178,10 @@ function searchFormTracking($extended=0,$target,$start="",$status="new",$tosearc
 		$option["glpi_computerstypes.name"]		= $LANG['common'][17];
 		$option["glpi_computersmodels.name"]		= $LANG['common'][22];
 		$option["glpi_operatingsystems.name"]		= $LANG['computers'][9];
+		$option["glpi_operatingsystemsversions.name"]		= $LANG['computers'][52];
+		$option["glpi_operatingsystemsservicepacks.name"]		= $LANG['computers'][53];
+		$option["glpi_autoupdatesystems.name"]		= $LANG['computers'][51];
+		$option["glpi_manufacturers.name"]		= $LANG['common'][5];
 		$option["processor.designation"]		= $LANG['computers'][21];
 		$option["comp.serial"]				= $LANG['common'][19];
 		$option["comp.otherserial"]			= $LANG['common'][20];
@@ -1450,21 +1454,22 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$to
 			$query = "SHOW COLUMNS FROM glpi_computers";
 			$result = $DB->query($query);
 			$i = 0;
-
+         /// TODO delete os_license_id after db clean
+         $exclude_fields=array('entities_id','users_id_tech','users_id','os_license_id');
 			while($line = $DB->fetch_array($result)) {
-				if($i != 0) {
-					$wherecomp .= " OR ";
-				}
-				if(IsDropdown($line["Field"])) {
-					$wherecomp .= " glpi_dropdown_". $line["Field"] .".name $SEARCH" ;
-				}
-				elseif($line["Field"] == "locations_id") {
-					$wherecomp .= " glpi_locations.name $SEARCH";
-				}
-				else {
-					$wherecomp .= "comp.".$line["Field"] . $SEARCH;
-				}
-				$i++;
+            if (!in_array($line["Field"],$exclude_fields)){
+               if($i != 0) {
+                  $wherecomp .= " OR ";
+               }
+               $table=getTableNameForForeignKeyField($line["Field"]);
+
+               if(!empty($table)) {
+                  $wherecomp .= " $table.name $SEARCH" ;
+               } else {
+                  $wherecomp .= "comp.".$line["Field"] . $SEARCH;
+               }
+               $i++;
+            }
 			}
 			foreach($CFG_GLPI["devices_tables"] as $key => $val) {
 				if ($val!="drive"&&$val!="control"&&$val!="pci"&&$val!="case"&&$val!="power")
@@ -1647,7 +1652,7 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$to
 	if (!empty($wherecomp)){
 		$where.=" AND glpi_tickets.itemtype= '1'";
 		$where.= " AND glpi_tickets.items_id IN (SELECT comp.ID FROM glpi_computers as comp ";
-		$where.= " LEFT JOIN glpi_computers_devices as gcdev ON (comp.ID = gcdev.FK_computers) ";
+		$where.= " LEFT JOIN glpi_computers_devices as gcdev ON (comp.ID = gcdev.computers_id) ";
 		$where.= "LEFT JOIN glpi_devicesmotherboards as moboard ON (moboard.ID = gcdev.devices_id AND gcdev.devicetype = '".MOBOARD_DEVICE."') ";
 		$where.= "LEFT JOIN glpi_devicesprocessors as processor ON (processor.ID = gcdev.devices_id AND gcdev.devicetype = '".PROCESSOR_DEVICE."') ";
 		$where.= "LEFT JOIN glpi_devicesgraphiccards as gfxcard ON (gfxcard.ID = gcdev.devices_id AND gcdev.devicetype = '".GFX_DEVICE."') ";
@@ -1657,11 +1662,15 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$to
 		$where.= "LEFT JOIN glpi_devicessoundcards as sndcard ON (sndcard.ID = gcdev.devices_id AND gcdev.devicetype = '".SND_DEVICE."') ";
 		$where.= "LEFT JOIN glpi_networkports on (comp.ID = glpi_networkports.items_id AND  glpi_networkports.itemtype='1')";
 		$where.= "LEFT JOIN glpi_netpoints on (glpi_netpoints.ID = glpi_networkports.netpoint)";
-		$where.= "LEFT JOIN glpi_operatingsystems on (glpi_operatingsystems.ID = comp.os)";
+		$where.= "LEFT JOIN glpi_operatingsystems on (glpi_operatingsystems.ID = comp.operatingsystems_id)";
+		$where.= "LEFT JOIN glpi_operatingsystemsversions on (glpi_operatingsystemsversions.ID = comp.operatingsystemsversions_id)";
+		$where.= "LEFT JOIN glpi_operatingsystemsservicepacks on (glpi_operatingsystemsservicepacks.ID = comp.operatingsystemsservicepacks_id)";
+		$where.= "LEFT JOIN glpi_autoupdatesystems on (glpi_autoupdatesystems.ID = comp.autoupdatesystems_id)";
+		$where.= "LEFT JOIN glpi_manufacturers on (glpi_manufacturers.ID = comp.manufacturers_id)";
 		$where.= "LEFT JOIN glpi_locations on (glpi_locations.ID = comp.locations_id)";
 		$where.= "LEFT JOIN glpi_computersmodels on (glpi_computersmodels.ID = comp.model)";
 		$where.= "LEFT JOIN glpi_computerstypes on (glpi_computerstypes.ID = comp.computerstypes_id)";
-		$where.= " LEFT JOIN glpi_suppliers ON (glpi_suppliers.ID = comp.FK_glpi_enterprise ) ";
+		$where.= " LEFT JOIN glpi_suppliers ON (glpi_suppliers.ID = comp.manufacturers_id ) ";
 		$where.= " LEFT JOIN glpi_users as resptech ON (resptech.ID = comp.users_id_tech ) ";
 		$where.=" WHERE $wherecomp) ";
 	}
