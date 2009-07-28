@@ -81,10 +81,10 @@ if (isset($_POST["devtype"]) && $_POST["devtype"]>0){
 	$query .= " LEFT JOIN glpi_networkports ON (glpi_netpoints.ID = glpi_networkports.netpoint";
 
 	if ($_POST["devtype"]==NETWORKING_TYPE){
-		$query .= " AND  glpi_networkports.device_type =" . NETWORKING_TYPE .")";
+		$query .= " AND  glpi_networkports.itemtype =" . NETWORKING_TYPE .")";
 	}
 	else {
-		$query .= " AND  glpi_networkports.device_type !=" . NETWORKING_TYPE .")";
+		$query .= " AND  glpi_networkports.itemtype !=" . NETWORKING_TYPE .")";
 
 		if (isset($_POST["location"]) && $_POST["location"]>=0){
 			$where.=" AND glpi_netpoints.location='".$_POST["location"]."' ";

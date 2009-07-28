@@ -42,32 +42,32 @@ if (!defined('GLPI_ROOT')){
  *  Common Item of GLPI : Global simple interface to items - abstraction usage
  */
 class CommonItem{
-	//! Object Type depending of the device_type
+	//! Object Type depending of the itemtype
 	var $obj = NULL;	
 	//! Device Type ID of the object
-	var $device_type=0;
+	var $itemtype=0;
 	//! Device ID of the object
-	var $id_device=0;
+	var $items_id=0;
 
 
 	/**
 	 * Get an Object / General Function
 	 *
-	 * Create a new Object depending of $device_type and Get the item with the ID $id_device
+	 * Create a new Object depending of $itemtype and Get the item with the ID $items_id
 	 *
-	 * @param $device_type Device Type ID of the object
-	 * @param $id_device Device ID of the object
+	 * @param $itemtype Device Type ID of the object
+	 * @param $items_id Device ID of the object
 	 *
 	 * @return boolean : object founded and loaded
 	 */
-	function getFromDB ($device_type,$id_device) {
+	function getFromDB ($itemtype,$items_id) {
 
-		$this->id_device=$id_device;
-		$this->setType($device_type,1);
+		$this->items_id=$items_id;
+		$this->setType($itemtype,1);
 
 		if ($this->obj!=NULL){
 			// Do not load devices
-			return $this->obj->getFromDB($id_device);
+			return $this->obj->getFromDB($items_id);
 		}
 		else return false;
 
@@ -76,17 +76,17 @@ class CommonItem{
 	/**
 	 * Set the device type
 	 *
-	 * @param $device_type Device Type ID of the object
+	 * @param $itemtype Device Type ID of the object
 	 * @param $init_object Create an instance of the object ?
 	 *
 	 */
-	function setType ($device_type,$init_object=false){
+	function setType ($itemtype,$init_object=false){
 		global $PLUGIN_HOOKS;
 
-		$this->device_type=$device_type;
+		$this->itemtype=$itemtype;
 		// Make new database object and fill variables
 		if ($init_object){
-			switch ($device_type){
+			switch ($itemtype){
 				case COMPUTER_TYPE :
 					$this->obj=new Computer;
 					break;
@@ -194,10 +194,10 @@ class CommonItem{
 					break;
 				default :
 					// Plugin case
-					if ($device_type>1000){
-						if (isset($PLUGIN_HOOKS['plugin_classes'][$device_type])){
-							$class=$PLUGIN_HOOKS['plugin_classes'][$device_type];
-							$plug=$PLUGIN_HOOKS['plugin_types'][$device_type];
+					if ($itemtype>1000){
+						if (isset($PLUGIN_HOOKS['plugin_classes'][$itemtype])){
+							$class=$PLUGIN_HOOKS['plugin_classes'][$itemtype];
+							$plug=$PLUGIN_HOOKS['plugin_types'][$itemtype];
 							if (file_exists(GLPI_ROOT . "/plugins/$plug/hook.php")) {
 								include_once(GLPI_ROOT . "/plugins/$plug/hook.php");
 							}
@@ -220,7 +220,7 @@ class CommonItem{
 	function getType (){
 		global $LANG,$PLUGIN_HOOKS;
 
-		switch ($this->device_type){
+		switch ($this->itemtype){
 			case GENERAL_TYPE :
 				return $LANG['help'][30];
 				break;
@@ -325,14 +325,14 @@ class CommonItem{
 				break;
 			default :
 				// Plugin case
-				if ($this->device_type>1000){
+				if ($this->itemtype>1000){
 					// Use plugin name if set
-					if (isset($PLUGIN_HOOKS['plugin_typenames'][$this->device_type])
-						&& !empty($PLUGIN_HOOKS['plugin_typenames'][$this->device_type])){
-						return $PLUGIN_HOOKS['plugin_typenames'][$this->device_type];
+					if (isset($PLUGIN_HOOKS['plugin_typenames'][$this->itemtype])
+						&& !empty($PLUGIN_HOOKS['plugin_typenames'][$this->itemtype])){
+						return $PLUGIN_HOOKS['plugin_typenames'][$this->itemtype];
 					} else { // Else use pluginname
-						if (isset($PLUGIN_HOOKS['plugin_types'][$this->device_type])){
-							$function="plugin_version_".$PLUGIN_HOOKS['plugin_types'][$this->device_type];
+						if (isset($PLUGIN_HOOKS['plugin_types'][$this->itemtype])){
+							$function="plugin_version_".$PLUGIN_HOOKS['plugin_types'][$this->itemtype];
 							if (function_exists($function)){
 								$data=$function();
 								if (isset($data['name'])){
@@ -354,7 +354,7 @@ class CommonItem{
 	 */
 	function getField($field){
 		if ($this->obj==NULL) return false;
-		if ($this->device_type==0) {
+		if ($this->itemtype==0) {
 			return false;
 		} else {
 			if (isset($this->obj->fields[$field])) {
@@ -373,16 +373,16 @@ class CommonItem{
 		global $LANG;
 
 
-		if ($this->device_type==0) {
+		if ($this->itemtype==0) {
 			return "";
 		}
 
 		$toadd="";
 		if ($with_comments) $toadd="&nbsp;".$this->getComments();
 
-		if ($this->device_type==KNOWBASE_TYPE&&$this->obj!=NULL&&isset($this->obj->fields["question"])&&$this->obj->fields["question"]!="")
+		if ($this->itemtype==KNOWBASE_TYPE&&$this->obj!=NULL&&isset($this->obj->fields["question"])&&$this->obj->fields["question"]!="")
 			return $this->obj->fields["question"];
-		else if (($this->device_type==CARTRIDGE_TYPE||$this->device_type==CONSUMABLE_TYPE)&&$this->obj!=NULL&&$this->obj->fields["name"]!=""){
+		else if (($this->itemtype==CARTRIDGE_TYPE||$this->itemtype==CONSUMABLE_TYPE)&&$this->obj!=NULL&&$this->obj->fields["name"]!=""){
 			$name=$this->obj->fields["name"];
 			if (isset($this->obj->fields["ref"])&&!empty($this->obj->fields["ref"]))			
 				$name.=" - ".$this->obj->fields["ref"];
@@ -403,9 +403,9 @@ class CommonItem{
 		$toadd="";
 		if ($with_comments) $toadd="&nbsp;".$this->getComments();
 		if ($_SESSION['glpiview_ID']){
-			if ($this->device_type==0)
+			if ($this->itemtype==0)
 				return $this->getName().$toadd;
-			else return $this->getName()." (".$this->id_device.")".$toadd;
+			else return $this->getName()." (".$this->items_id.")".$toadd;
 		} else return $this->getName().$toadd;
 	}
 	/**
@@ -417,14 +417,14 @@ class CommonItem{
 
 		global $CFG_GLPI,$INFOFORM_PAGES;
 		$ID="";
-		switch ($this->device_type){
+		switch ($this->itemtype){
 			case GENERAL_TYPE :
 			case CARTRIDGE_ITEM_TYPE :
 			case CONSUMABLE_ITEM_TYPE :
 				return $this->getName($with_comments);
 				break;
 			default :
-				return "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$this->device_type]."?ID=".$this->id_device.($this->getField('is_template')==1?"&withtemplate=1":"")."\">".$this->getNameID($with_comments)."</a>";
+				return "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$this->itemtype]."?ID=".$this->items_id.($this->getField('is_template')==1?"&withtemplate=1":"")."\">".$this->getNameID($with_comments)."</a>";
 				break;
 		}
 

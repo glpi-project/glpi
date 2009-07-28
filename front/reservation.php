@@ -154,7 +154,7 @@ else {
 		{
 			checkRight("reservation_central","w");
 			if ($newID=$ri->add($_GET)){
-				logEvent($newID, "reservation", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][20]." ".$_GET["device_type"]."-".$_GET["id_device"].".");
+				logEvent($newID, "reservation", 4, "inventory", $_SESSION["glpiname"]." ".$LANG['log'][20]." ".$_GET["itemtype"]."-".$_GET["items_id"].".");
 			}
 			glpi_header($_SERVER['HTTP_REFERER']);
 		} 

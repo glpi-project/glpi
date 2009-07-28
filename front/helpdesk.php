@@ -45,8 +45,8 @@ commonHeader("Helpdesk",$_SERVER['PHP_SELF'],"maintain","helpdesk");
 if (isset($_POST["_my_items"])&&!empty($_POST["_my_items"])){
 	$splitter=explode("_",$_POST["_my_items"]);
 	if (count($splitter)==2){
-		$_POST["device_type"]=$splitter[0];
-		$_POST["computer"]=$splitter[1];
+		$_POST["itemtype"]=$splitter[0];
+		$_POST["items_id"]=$splitter[1];
 	}
 }
 
@@ -61,12 +61,12 @@ else
 	$entity_restrict = $_POST["FK_entities"];	
 
 
-if (isset($_GET["device_type"])) $device_type=$_GET["device_type"];
-else if (isset($_SESSION["helpdeskSaved"]["device_type"])) $device_type=$_SESSION["helpdeskSaved"]["device_type"];
-else $device_type=0;
+if (isset($_GET["itemtype"])) $itemtype=$_GET["itemtype"];
+else if (isset($_SESSION["helpdeskSaved"]["itemtype"])) $itemtype=$_SESSION["helpdeskSaved"]["itemtype"];
+else $itemtype=0;
 
-if (isset($_GET["computer"])) $computer=$_GET["computer"];
-else if (isset($_SESSION["helpdeskSaved"]["computer"])) $computer=$_SESSION["helpdeskSaved"]["computer"];
+if (isset($_GET["items_id"])) $computer=$_GET["items_id"];
+else if (isset($_SESSION["helpdeskSaved"]["items_id"])) $computer=$_SESSION["helpdeskSaved"]["items_id"];
 else $computer=0;
 
 if (!$post_ticket && isset($_POST["status"]))
@@ -158,7 +158,7 @@ if (isset($_POST["priority"]) && $post_ticket){
 	}
 	glpi_header($_SERVER['HTTP_REFERER']);
 } else {
-	addFormTracking($device_type,$computer,$_SERVER['PHP_SELF'],$author,$group,$assign,$assign_group,$name,$contents,$category,$priority,$request_type,$hour,$minute,$entity_restrict,$status,$followup);
+	addFormTracking($itemtype,$computer,$_SERVER['PHP_SELF'],$author,$group,$assign,$assign_group,$name,$contents,$category,$priority,$request_type,$hour,$minute,$entity_restrict,$status,$followup);
 }
 
 commonFooter();

@@ -53,7 +53,7 @@ if(!empty($_POST["type"]) && ($_POST["type"] == "Helpdesk") && ($CFG_GLPI["permi
 //$status = "new";
 
 // Sauvegarde des donn�s dans le cas de retours avec des navigateurs pourris style IE
-/*$varstosav = array('emailupdates', 'uemail', 'computer', 'device_type', 'contents','_my_items','category');
+/*$varstosav = array('emailupdates', 'uemail', 'items_id', 'itemtype', 'contents','_my_items','category');
 
 	foreach ($varstosav as $v){
 		if (isset($_POST[$v]))
@@ -155,14 +155,14 @@ elseif (isset($_POST["emailupdates"]) && $_POST["emailupdates"] && isset($_POST[
 	if (isset($_POST["_my_items"])&&!empty($_POST["_my_items"])){
 		$splitter=explode("_",$_POST["_my_items"]);
 		if (count($splitter)==2){
-			$_POST["device_type"]=$splitter[0];
-			$_POST["computer"]=$splitter[1];
+			$_POST["itemtype"]=$splitter[0];
+			$_POST["items_id"]=$splitter[1];
 		}
 	}
 
-	if (!isset($_POST["device_type"])||(empty($_POST["computer"])&&$_POST["device_type"]!=0)) {
-		$_POST["device_type"]=0;
-		$_POST["computer"]=0;
+	if (!isset($_POST["itemtype"])||(empty($_POST["items_id"])&&$_POST["itemtype"]!=0)) {
+		$_POST["itemtype"]=0;
+		$_POST["items_id"]=0;
 	}
 
 	$ci=new CommonItem;

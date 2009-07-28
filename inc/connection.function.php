@@ -98,7 +98,7 @@ function showConnect($target,$ID,$type) {
 				echo "<form method='post' action=\"$target\">";
 				echo "<input type='hidden' name='connect' value='connect'>";
 				echo "<input type='hidden' name='sID' value='$ID'>";
-				echo "<input type='hidden' name='device_type' value='$type'>";				
+				echo "<input type='hidden' name='itemtype' value='$type'>";				
 				if ($ci->getField('recursive')) {
                dropdownConnect(COMPUTER_TYPE,$type,"item",getSonsOf("glpi_entities",$ci->getField('FK_entities')),0,$used);
 				} else {
@@ -120,7 +120,7 @@ function showConnect($target,$ID,$type) {
 				echo "<form method='post' action=\"$target\">";
 				echo "<input type='hidden' name='connect' value='connect'>";
 				echo "<input type='hidden' name='sID' value='$ID'>";
-				echo "<input type='hidden' name='device_type' value='$type'>";
+				echo "<input type='hidden' name='itemtype' value='$type'>";
 				if ($ci->getField('recursive')) {
                dropdownConnect(COMPUTER_TYPE,$type,"item",getSonsOf("glpi_entities",$ci->getField('FK_entities')),0,$used);
 				} else {
@@ -418,14 +418,14 @@ function getNumberConnections($type,$ID){
 /**
  * Unglobalize an item : duplicate item and connections
  *
- * @param $device_type item type
+ * @param $itemtype item type
  * @param $ID item ID
  */
-function unglobalizeDevice($device_type,$ID){
+function unglobalizeDevice($itemtype,$ID){
 	global $DB;
 	$ci=new CommonItem();
 	// Update item to unit management :
-	$ci->getFromDB($device_type,$ID);
+	$ci->getFromDB($itemtype,$ID);
 	if ($ci->getField('is_global')){
 		$input=array("ID"=>$ID,"is_global"=>"0");
 		$ci->obj->update($input);
@@ -433,7 +433,7 @@ function unglobalizeDevice($device_type,$ID){
 		// Get connect_wire for this connection
 		$query = "SELECT glpi_computers_items.ID AS connectID 
 			FROM glpi_computers_items 
-			WHERE glpi_computers_items.end1 = '$ID' AND glpi_computers_items.type = '$device_type'";
+			WHERE glpi_computers_items.end1 = '$ID' AND glpi_computers_items.type = '$itemtype'";
 		$result=$DB->query($query);
 		if (($nb=$DB->numrows($result))>1){
 			for ($i=1;$i<$nb;$i++){

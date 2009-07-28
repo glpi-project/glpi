@@ -37,8 +37,8 @@ if (!defined('GLPI_ROOT')){
 
 $RELATION=array(
 
-	"glpi_authldaps" => array("glpi_configs"=>"extra_ldap_server",
-				"glpi_authldapsreplicates"=>"server_id"),
+   "glpi_authldaps" => array("glpi_configs"=>"extra_ldap_server",
+                              "glpi_authldapsreplicates"=>"authldaps_id"),
 	"glpi_bookmarks" => array("glpi_bookmarks_users"=>"FK_bookmark"),
 
 	"glpi_cartridgesitems" => array("glpi_cartridges"=>"FK_glpi_cartridges_type",
@@ -324,9 +324,9 @@ $RELATION=array(
 
 	// link from devices tables (computers, software, ...)
 	"_virtual_device" => array (
-		"glpi_contracts_items" 	=> array("FK_device","device_type"),
-		"glpi_documents_items"		=> array("FK_device","device_type"),
-		"glpi_infocoms"			=> array("FK_device","device_type"),
+		"glpi_contracts_items" 	=> array("items_id","itemtype"),
+		"glpi_documents_items"		=> array("items_id","itemtype"),
+		"glpi_infocoms"			=> array("items_id","itemtype"),
 		),
 	
 );

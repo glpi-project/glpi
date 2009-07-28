@@ -1948,11 +1948,11 @@ function getCountLogin() {
 }
 /** Initialise a list of items to use navigate through search results
  *
- * @param $device_type device type
+ * @param $itemtype device type
  * @param $title titre de la liste
  * @param $sub_type of the device (for RULE_TYPE, ...)
  */
-function initNavigateListItems($device_type,$title="",$sub_type=-1){
+function initNavigateListItems($itemtype,$title="",$sub_type=-1){
 	global $LANG;
 
 	if (empty($title)){
@@ -1964,28 +1964,28 @@ function initNavigateListItems($device_type,$title="",$sub_type=-1){
 		$url=$_SERVER['PHP_SELF'];
 	}
 	if ($sub_type<0) {
-		$_SESSION['glpilisttitle'][$device_type]=$title;
-		$_SESSION['glpilistitems'][$device_type]=array();
-		$_SESSION['glpilisturl'][$device_type]=$url;
+		$_SESSION['glpilisttitle'][$itemtype]=$title;
+		$_SESSION['glpilistitems'][$itemtype]=array();
+		$_SESSION['glpilisturl'][$itemtype]=$url;
 	} else {
-		$_SESSION['glpilisttitle'][$device_type][$sub_type]=$title;
-		$_SESSION['glpilistitems'][$device_type][$sub_type]=array();
-		$_SESSION['glpilisturl'][$device_type][$sub_type]=$url;
+		$_SESSION['glpilisttitle'][$itemtype][$sub_type]=$title;
+		$_SESSION['glpilistitems'][$itemtype][$sub_type]=array();
+		$_SESSION['glpilisturl'][$itemtype][$sub_type]=$url;
 	}
 
 }
 
 /** Add an item to the navigate through search results list
  *
- * @param $device_type device type
+ * @param $itemtype device type
  * @param $ID ID of the item
  * @param $sub_type of the device (for RULE_TYPE, ...)
  */
-function addToNavigateListItems($device_type,$ID,$sub_type=-1){
+function addToNavigateListItems($itemtype,$ID,$sub_type=-1){
 	if ($sub_type<0) {
-		$_SESSION['glpilistitems'][$device_type][]=$ID;
+		$_SESSION['glpilistitems'][$itemtype][]=$ID;
 	} else {
-		$_SESSION['glpilistitems'][$device_type][$sub_type][]=$ID;
+		$_SESSION['glpilistitems'][$itemtype][$sub_type][]=$ID;
 	}
 }
 

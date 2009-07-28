@@ -276,8 +276,8 @@ function printDeviceComputer($device,$quantity,$specif,$compID,$compDevID,$witht
 	echo "</td>";
 
 	if (haveRight("device","w")) {
-		echo "<td class='center'><a href='".$CFG_GLPI["root_doc"]."/front/device.php?device_type=".$device->devtype."'>$type</a></td>";
-		echo "<td class='center'><a href='".$CFG_GLPI["root_doc"]."/front/device.form.php?ID=".$device->fields['ID']."&amp;device_type=".$device->devtype."'>&nbsp;$name&nbsp;".($_SESSION["glpiview_ID"]?" (".$device->fields['ID'].")":"")."</a></td>";
+		echo "<td class='center'><a href='".$CFG_GLPI["root_doc"]."/front/device.php?devicetype=".$device->devtype."'>$type</a></td>";
+		echo "<td class='center'><a href='".$CFG_GLPI["root_doc"]."/front/device.form.php?ID=".$device->fields['ID']."&amp;devicetype=".$device->devtype."'>&nbsp;$name&nbsp;".($_SESSION["glpiview_ID"]?" (".$device->fields['ID'].")":"")."</a></td>";
 	}  else {
 		echo "<td class='center'>$type</td>";
 		echo "<td class='center'>&nbsp;$name&nbsp;".($_SESSION["glpiview_ID"]?" (".$device->fields['ID'].")":"")."</td>";
@@ -336,7 +336,7 @@ function update_device_specif($newValue,$compDevID,$strict=false,$checkcoherence
 			$data = addslashes_deep($DB->fetch_array($result));
 
 			if ($checkcoherence){
-				switch ($data["device_type"]){
+				switch ($data["devicetype"]){
 					case PROCESSOR_DEVICE :
 						//Prevent division by O error if newValue is null or doesn't contains any value
 						if ($newValue == null || $newValue=='')
@@ -378,9 +378,9 @@ function update_device_specif($newValue,$compDevID,$strict=false,$checkcoherence
 			if( $condition){
 				
 				// Update specificity 
-				$WHERE=" WHERE FK_device = '".$data["FK_device"]."' 
+				$WHERE=" WHERE devices_id = '".$data["devices_id"]."'
 					AND FK_computers = '".$data["FK_computers"]."' 
-					AND device_type = '".$data["device_type"]."'  
+					AND devicetype = '".$data["devicetype"]."'
 					AND specificity='".$data["specificity"]."'";
 				if ($strict) $WHERE=" WHERE ID='$compDevID'";
 				
@@ -391,7 +391,7 @@ function update_device_specif($newValue,$compDevID,$strict=false,$checkcoherence
 					$changes[1]=addslashes($data["specificity"]);
 					$changes[2]=$newValue;
 					// history log
-					historyLog ($data["FK_computers"],COMPUTER_TYPE,$changes,$data["device_type"],HISTORY_UPDATE_DEVICE);
+					historyLog ($data["FK_computers"],COMPUTER_TYPE,$changes,$data["devicetype"],HISTORY_UPDATE_DEVICE);
 					return true;
 				}else{ 
 					return false;
@@ -417,8 +417,8 @@ function update_device_quantity($newNumber,$compDevID){
 
 		$query2 = "SELECT ID 
 			FROM glpi_computers_devices 
-			WHERE FK_device = '".$data["FK_device"]."' AND FK_computers = '".$data["FK_computers"]."' 
-				AND device_type = '".$data["device_type"]."' AND specificity='".$data["specificity"]."'";
+			WHERE devices_id = '".$data["devices_id"]."' AND FK_computers = '".$data["FK_computers"]."'
+				AND devicetype = '".$data["devicetype"]."' AND specificity='".$data["specificity"]."'";
 		if ($result2 = $DB->query($query2)) {
 
 			// Delete devices
@@ -431,7 +431,7 @@ function update_device_quantity($newNumber,$compDevID){
 				// Add devices
 			} else if ($number<$newNumber){
 				for ($i=$number;$i<$newNumber;$i++){
-					compdevice_add($data["FK_computers"],$data["device_type"],$data["FK_device"],$data["specificity"],1);
+					compdevice_add($data["FK_computers"],$data["devicetype"],$data["devices_id"],$data["specificity"],1);
 				}
 			}
 		}
@@ -462,13 +462,13 @@ function unlink_device_computer($compDevID,$dohistory=1){
 	if($DB->query($query2)){
 		
 		if ($dohistory){
-			$device = new Device($data["device_type"]);
-			if ($device->getFromDB($data["FK_device"])){
+			$device = new Device($data["devicetype"]);
+			if ($device->getFromDB($data["devices_id"])){
 				$changes[0]='0';
 				$changes[1]=addslashes($device->fields["designation"]);
 				$changes[2]="";
 				// history log
-				historyLog ($data["FK_computers"],COMPUTER_TYPE,$changes,$data["device_type"],HISTORY_DELETE_DEVICE);
+				historyLog ($data["FK_computers"],COMPUTER_TYPE,$changes,$data["devicetype"],HISTORY_DELETE_DEVICE);
 			}
 		}
 
@@ -481,24 +481,24 @@ function unlink_device_computer($compDevID,$dohistory=1){
  * Link the device to the computer
  * 
  * @param $cID Computer ID
- * @param $device_type device type
+ * @param $devicetype device type
  * @param $dID device ID
  * @param $specificity specificity value
  * @param $dohistory do history log
  * @returns new computer device ID
  **/
-function compdevice_add($cID,$device_type,$dID,$specificity='',$dohistory=1) {
-	$device = new Device($device_type);
+function compdevice_add($cID,$devicetype,$dID,$specificity='',$dohistory=1) {
+	$device = new Device($devicetype);
 	$device->getFromDB($dID);
 	if (empty($specificity)) $specificity=$device->fields['specif_default'];
-	$newID=$device->computer_link($cID,$device_type,$specificity);
+	$newID=$device->computer_link($cID,$devicetype,$specificity);
 	
    if ($dohistory){
 		$changes[0]='0';
 		$changes[1]="";
 		$changes[2]=addslashes($device->fields["designation"]);
 		// history log
-		historyLog ($cID,COMPUTER_TYPE,$changes,$device_type,HISTORY_ADD_DEVICE);
+		historyLog ($cID,COMPUTER_TYPE,$changes,$devicetype,HISTORY_ADD_DEVICE);
 	}
 	return $newID;
 }
@@ -506,18 +506,18 @@ function compdevice_add($cID,$device_type,$dID,$specificity='',$dohistory=1) {
 /**
  * Show Device list of a defined type
  * 
- * @param $device_type device type
+ * @param $devicetype device type
  * @param $target wher to go on action
  **/
-function showDevicesList($device_type,$target) {
+function showDevicesList($devicetype,$target) {
 
-	// Lists Device from a device_type
+	// Lists Device from a devicetype
 
 	global $DB,$CFG_GLPI, $LANG;
 
 
 	$query = "SELECT device.ID, device.designation, glpi_manufacturers.name as manufacturer 
-		FROM ".getDeviceTable($device_type)." as device ";
+		FROM ".getDeviceTable($devicetype)." as device ";
 	$query.= " LEFT JOIN glpi_manufacturers ON (glpi_manufacturers.ID = device.FK_glpi_enterprise ) ";
 	$query .= " ORDER by device.designation ASC";
 	
@@ -544,7 +544,7 @@ function showDevicesList($device_type,$target) {
 				$ID = $data["ID"];
 				echo "<tr class='tab_bg_2'>";
 				echo "<td><strong>";
-				echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/device.form.php?ID=$ID&amp;device_type=$device_type\">";
+				echo "<a href=\"".$CFG_GLPI["root_doc"]."/front/device.form.php?ID=$ID&amp;devicetype=$devicetype\">";
 				echo $data["designation"];
 				if ($_SESSION["glpiview_ID"]) echo " (".$data["ID"].")";
 				echo "</a></strong></td>";
@@ -563,12 +563,12 @@ function showDevicesList($device_type,$target) {
 /**
  * title for Devices
  * 
- * @param $device_type device type
+ * @param $devicetype device type
  **/
-function titleDevices($device_type){
+function titleDevices($devicetype){
 	global  $LANG,$CFG_GLPI;
 
-	displayTitle($CFG_GLPI["root_doc"]."/pics/periph.png",$LANG['devices'][12],"",array("device.form.php?device_type=$device_type"=>$LANG['devices'][12]));
+	displayTitle($CFG_GLPI["root_doc"]."/pics/periph.png",$LANG['devices'][12],"",array("device.form.php?devicetype=$devicetype"=>$LANG['devices'][12]));
 
 }
 
@@ -576,15 +576,15 @@ function titleDevices($device_type){
 /**
  * Show Device Form
  * 
- * @param $device_type device type
+ * @param $devicetype device type
  * @param $ID device ID
  * @param $target where to go on action
  **/
-function showDevicesForm ($target,$ID,$device_type) {
+function showDevicesForm ($target,$ID,$devicetype) {
 
 	global $CFG_GLPI,$LANG,$REFERER;
 
-	$device = new Device($device_type);
+	$device = new Device($devicetype);
 
 	if ($ID > 0){
 		$device->check($ID,'r');
@@ -595,17 +595,17 @@ function showDevicesForm ($target,$ID,$device_type) {
 	} 
 
 
-	$table=getDeviceTable($device_type);
+	$table=getDeviceTable($devicetype);
 
 
 	echo "<a href='$REFERER'>".$LANG['buttons'][13]."</a>";
-	$device->showTabs($ID, "",$_SESSION['glpi_tab'],array("device_type"=>$device_type,"referer"=>$REFERER),"","designation");
+	$device->showTabs($ID, "",$_SESSION['glpi_tab'],array("devicetype"=>$devicetype,"referer"=>$REFERER),"","designation");
 	echo "<form method='post' name='form' action=\"$target\">";
 	echo "<div class='center' id='tabsbody'>";
 	echo "<input type='hidden' name='referer' value='$REFERER'>";
 	echo "<table class='tab_cadre_fixe' cellpadding='2'>";
 	echo "<tr><th align='center' colspan='1'>";
-	echo getDictDeviceLabel($device_type)."</th><th align='center' colspan='1'> ";
+	echo getDictDeviceLabel($devicetype)."</th><th align='center' colspan='1'> ";
 	if ($ID>0){
 		echo "ID : ".$ID;
 	} else {
@@ -622,8 +622,8 @@ function showDevicesForm ($target,$ID,$device_type) {
 	echo "<tr class='tab_bg_1'><td>".$LANG['common'][5].": 	</td><td colspan='2'>";
 	dropdownValue("glpi_manufacturers","FK_glpi_enterprise",$device->fields["FK_glpi_enterprise"]);
 	echo "</td></tr>";
-	if (getDeviceSpecifityLabel($device_type)!=""){
-		echo "<tr><td>".getDeviceSpecifityLabel($device_type)." ".$LANG['devices'][24]."</td>";
+	if (getDeviceSpecifityLabel($devicetype)!=""){
+		echo "<tr><td>".getDeviceSpecifityLabel($devicetype)." ".$LANG['devices'][24]."</td>";
 		echo "<td><input type='text' name='specif_default' value=\"".$device->fields["specif_default"]."\" size='20'></td>";
 		echo "</tr>";
 	}
@@ -771,7 +771,7 @@ function showDevicesForm ($target,$ID,$device_type) {
 	if(!empty($ID)) {
 		echo "<td class='tab_bg_2' valign='top' align='center'>";
 		echo "<input type='hidden' name='ID' value=\"$ID\">\n";
-		echo "<input type='hidden' name='device_type' value=\"$device_type\">\n";
+		echo "<input type='hidden' name='devicetype' value=\"$devicetype\">\n";
 		echo "<input type='submit' name='update' value=\"".$LANG['buttons'][7]."\" class='submit'>";
 		echo "</td>";
 		echo "<td class='tab_bg_2' valign='top' align='center'>\n";
@@ -783,7 +783,7 @@ function showDevicesForm ($target,$ID,$device_type) {
 	}
 	else {
 		echo "<td class='tab_bg_2' valign='top' align='center' colspan='2'>";
-		echo "<input type='hidden' name='device_type' value=\"$device_type\">\n";
+		echo "<input type='hidden' name='devicetype' value=\"$devicetype\">\n";
 		echo "<input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'>";
 		echo "</td>";
 	}

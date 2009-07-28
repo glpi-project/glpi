@@ -1670,7 +1670,7 @@ function printHelpDesk ($ID,$from_helpdesk) {
 	// Get saved data from a back system
 	$emailupdates = 1;
 	if ($email=="") $emailupdates=0;
-	$device_type = 0;
+	$itemtype = 0;
 	$computer="";
 	$contents="";
 	$title="";
@@ -1682,8 +1682,8 @@ function printHelpDesk ($ID,$from_helpdesk) {
 		$emailupdates = stripslashes($_SESSION["helpdeskSaved"]["emailupdates"]);
 	if (isset($_SESSION["helpdeskSaved"]["email"]))
 		$email = stripslashes($_SESSION["helpdeskSaved"]["uemail"]);
-	if (isset($_SESSION["helpdeskSaved"]["device_type"]))
-		$device_type = stripslashes($_SESSION["helpdeskSaved"]["device_type"]);
+	if (isset($_SESSION["helpdeskSaved"]["itemtype"]))
+		$itemtype = stripslashes($_SESSION["helpdeskSaved"]["itemtype"]);
 	if (isset($_SESSION["helpdeskSaved"]["contents"]))
 		$contents = cleanPostForTextArea($_SESSION["helpdeskSaved"]["contents"]);
 	if (isset($_SESSION["helpdeskSaved"]["name"]))
@@ -1731,7 +1731,7 @@ function printHelpDesk ($ID,$from_helpdesk) {
 		echo "<td class='center'>";
 		dropdownMyDevices($_SESSION["glpiID"],$_SESSION["glpiactive_entity"]);
 		
-		dropdownTrackingAllDevices("device_type",$device_type,0,$_SESSION["glpiactive_entity"]);
+		dropdownTrackingAllDevices("itemtype",$itemtype,0,$_SESSION["glpiactive_entity"]);
 		echo "</td></tr>";
 	}
 

@@ -42,22 +42,22 @@ if (!defined('GLPI_ROOT')) {
 
 ///// Manage Ports on Devices /////
 
-function showPorts($device, $device_type, $withtemplate = '') {
+function showPorts($device, $itemtype, $withtemplate = '') {
 
 	global $DB, $CFG_GLPI, $LANG, $LINK_ID_TABLE;
 	$rand = mt_rand();
 	$ci = new CommonItem();
-	$ci->setType($device_type, true);
+	$ci->setType($itemtype, true);
 	if (!$ci->obj->can($device, 'r'))
 		return false;
 	$canedit = $ci->obj->can($device, 'w');
 
-	$device_real_table_name = $LINK_ID_TABLE[$device_type];
+	$device_real_table_name = $LINK_ID_TABLE[$itemtype];
 
 	initNavigateListItems(NETWORKING_PORT_TYPE,$ci->getType()." = ".$ci->getName());
 
 	$query = "SELECT ID FROM glpi_networkports 
-		WHERE (on_device = '$device' AND device_type = '$device_type') 
+		WHERE (items_id = '$device' AND itemtype = '$itemtype') 
 		ORDER BY name, logical_number";
 	if ($result = $DB->query($query)) {
 		if ($DB->numrows($result) != 0) {
@@ -155,7 +155,7 @@ function showPorts($device, $device_type, $withtemplate = '') {
 
 				echo "</td>";
 				echo "<td width='80%' align='left'>";
-				dropdownMassiveActionPorts($device_type);
+				dropdownMassiveActionPorts($itemtype);
 				echo "</td>";
 				echo "</table>";
 
@@ -286,7 +286,7 @@ function showNetportForm($target, $ID, $ondevice, $devtype, $several) {
 	$netport = new Netport;
 	if ($ID) {
 		$netport->getFromDB($ID);
-		$netport->getDeviceData($ondevice=$netport->fields["on_device"], $devtype=$netport->fields["device_type"]);
+		$netport->getDeviceData($ondevice=$netport->fields["items_id"], $devtype=$netport->fields["itemtype"]);
 	} else {
 		$netport->getDeviceData($ondevice, $devtype);
 		$netport->getEmpty();
@@ -300,7 +300,7 @@ function showNetportForm($target, $ID, $ondevice, $devtype, $several) {
 	}
 
 	
-	$netport->showTabs($ID, false, $_SESSION['glpi_tab'],array(),"device_type=$devtype AND on_device=$ondevice");
+	$netport->showTabs($ID, false, $_SESSION['glpi_tab'],array(),"itemtype=$devtype AND items_id=$ondevice");
 	
 	echo "<div class='center' id='tabsbody'><form method='post' action=\"$target\">";
 
@@ -310,7 +310,7 @@ function showNetportForm($target, $ID, $ondevice, $devtype, $several) {
 	echo "</tr>";
 	
 	$ci=new CommonItem();
-	if ($ci->getFromDB($netport->device_type,$netport->device_ID)) {
+	if ($ci->getFromDB($netport->itemtype,$netport->device_ID)) {
 		echo "<tr class='tab_bg_1'><td>" . $ci->getType() . ":</td><td colspan='2'>";
 		echo $ci->getLink(). "</td></tr>\n";
 	}
@@ -346,10 +346,10 @@ function showNetportForm($target, $ID, $ondevice, $devtype, $several) {
 	echo "</td></tr>\n";
 
 	// Show device MAC adresses
-	if ((!empty ($netport->device_type) && $netport->device_type == COMPUTER_TYPE) || ($several != "yes" && $devtype == COMPUTER_TYPE)) {
+	if ((!empty ($netport->itemtype) && $netport->itemtype == COMPUTER_TYPE) || ($several != "yes" && $devtype == COMPUTER_TYPE)) {
 		$comp = new Computer();
 
-		if (!empty ($netport->device_type))
+		if (!empty ($netport->itemtype))
 			$comp->getFromDBwithDevices($netport->device_ID);
 		else
 			$comp->getFromDBwithDevices($ondevice);
@@ -401,7 +401,7 @@ function showNetportForm($target, $ID, $ondevice, $devtype, $several) {
 		echo "<tr class='tab_bg_1'><td>" . $LANG['networking'][51] . ":</td>";
 
 		echo "<td  colspan='2'>";
-		dropdownNetpoint("netpoint", $netport->fields["netpoint"], $netport->location, 1, $netport->FK_entities, ($ID ? $netport->fields["device_type"] : $devtype));
+		dropdownNetpoint("netpoint", $netport->fields["netpoint"], $netport->location, 1, $netport->FK_entities, ($ID ? $netport->fields["itemtype"] : $devtype));
 		echo "</td></tr>";
 	}
 	if ($ID) {
@@ -422,8 +422,8 @@ function showNetportForm($target, $ID, $ondevice, $devtype, $several) {
 
 		echo "<tr class='tab_bg_2'>";
 		echo "<td align='center' colspan='3'>";
-		echo "<input type='hidden' name='on_device' value='$ondevice'>";
-		echo "<input type='hidden' name='device_type' value='$devtype'>";
+		echo "<input type='hidden' name='items_id' value='$ondevice'>";
+		echo "<input type='hidden' name='itemtype' value='$devtype'>";
 		echo "<input type='submit' name='add' value=\"" . $LANG['buttons'][8] . "\" class='submit'>";
 		echo "</td></tr>";
 	}
@@ -448,11 +448,11 @@ function showPortsAdd($ID, $devtype) {
 	echo "<div class='center'><table class='tab_cadre_fixe' cellpadding='2'>";
 	echo "<tr>";
 	echo "<td align='center' class='tab_bg_2'  >";
-	echo "<a href=\"" . $CFG_GLPI["root_doc"] . "/front/networking.port.php?on_device=$ID&amp;device_type=$devtype\"><strong>";
+	echo "<a href=\"" . $CFG_GLPI["root_doc"] . "/front/networking.port.php?items_id=$ID&amp;itemtype=$devtype\"><strong>";
 	echo $LANG['networking'][19];
 	echo "</strong></a></td>";
 	echo "<td align='center' class='tab_bg_2' width='50%'>";
-	echo "<a href=\"" . $CFG_GLPI["root_doc"] . "/front/networking.port.php?on_device=$ID&amp;device_type=$devtype&amp;several=yes\"><strong>";
+	echo "<a href=\"" . $CFG_GLPI["root_doc"] . "/front/networking.port.php?items_id=$ID&amp;itemtype=$devtype&amp;several=yes\"><strong>";
 	echo $LANG['networking'][46];
 	echo "</strong></a></td>";
 
@@ -483,7 +483,7 @@ function showConnection(& $device1, & $netport, $withtemplate = '') {
 
 	if ($contact->getContact($ID)) {
 		$netport->getFromDB($contact->contact_id);
-		$device2->getFromDB($netport->fields["device_type"], $netport->fields["on_device"]);
+		$device2->getFromDB($netport->fields["itemtype"], $netport->fields["items_id"]);
 
 		echo "\n\n<table border='0' cellspacing='0' width='100%'><tr " . ($device2->obj->fields["deleted"] ? "class='tab_bg_2_2'" : "") . ">";
 		echo "<td><strong>";
@@ -496,7 +496,7 @@ function showConnection(& $device1, & $netport, $withtemplate = '') {
 				echo $LANG['common'][0];
 			echo "</a></strong> " . $LANG['networking'][25] . " <strong>";
 
-			echo "<a href=\"" . $CFG_GLPI["root_doc"] . "/" . $INFOFORM_PAGES[$netport->fields["device_type"]] . "?ID=" . $device2->obj->fields["ID"] . "\">";
+			echo "<a href=\"" . $CFG_GLPI["root_doc"] . "/" . $INFOFORM_PAGES[$netport->fields["itemtype"]] . "?ID=" . $device2->obj->fields["ID"] . "\">";
 
 			echo $device2->obj->fields["name"];
 			if ($_SESSION["glpiview_ID"])
@@ -649,11 +649,11 @@ function makeConnector($sport, $dport, $dohistory = true, $addmsg = false) {
 	// Manage VLAN : use networkings one as defaults
 	$npnet = -1;
 	$npdev = -1;
-	if ($ps->fields["device_type"] != NETWORKING_TYPE && $pd->fields["device_type"] == NETWORKING_TYPE) {
+	if ($ps->fields["itemtype"] != NETWORKING_TYPE && $pd->fields["itemtype"] == NETWORKING_TYPE) {
 		$npnet = $dport;
 		$npdev = $sport;
 	}
-	if ($pd->fields["device_type"] != NETWORKING_TYPE && $ps->fields["device_type"] == NETWORKING_TYPE) {
+	if ($pd->fields["itemtype"] != NETWORKING_TYPE && $ps->fields["itemtype"] == NETWORKING_TYPE) {
 		$npnet = $sport;
 		$npdev = $dport;
 	}
@@ -678,30 +678,30 @@ function makeConnector($sport, $dport, $dohistory = true, $addmsg = false) {
 	$query = "INSERT INTO glpi_networkports_networkports VALUES (NULL,'$sport','$dport')";
 	if ($result = $DB->query($query)) {
 		$source = new CommonItem;
-		$source->getFromDB($ps->fields['device_type'], $ps->fields['on_device']);
+		$source->getFromDB($ps->fields['itemtype'], $ps->fields['items_id']);
 		$dest = new CommonItem;
-		$dest->getFromDB($pd->fields['device_type'], $pd->fields['on_device']);
+		$dest->getFromDB($pd->fields['itemtype'], $pd->fields['items_id']);
 
 		if ($dohistory) {
 			$changes[0] = 0;
 			$changes[1] = "";
 			$changes[2] = $dest->getName();
-			if ($ps->fields["device_type"] == NETWORKING_TYPE) {
+			if ($ps->fields["itemtype"] == NETWORKING_TYPE) {
 				$changes[2] = "#" . $ps->fields["name"] . " > " . $changes[2];
 			}
-			if ($pd->fields["device_type"] == NETWORKING_TYPE) {
+			if ($pd->fields["itemtype"] == NETWORKING_TYPE) {
 				$changes[2] = $changes[2] . " > #" . $pd->fields["name"];
 			}
-			historyLog($ps->fields["on_device"], $ps->fields["device_type"], $changes, $pd->fields["device_type"], HISTORY_CONNECT_DEVICE);
+			historyLog($ps->fields["items_id"], $ps->fields["itemtype"], $changes, $pd->fields["itemtype"], HISTORY_CONNECT_DEVICE);
 
 			$changes[2] = $source->getName();
-			if ($pd->fields["device_type"] == NETWORKING_TYPE) {
+			if ($pd->fields["itemtype"] == NETWORKING_TYPE) {
 				$changes[2] = "#" . $pd->fields["name"] . " > " . $changes[2];
 			}
-			if ($ps->fields["device_type"] == NETWORKING_TYPE) {
+			if ($ps->fields["itemtype"] == NETWORKING_TYPE) {
 				$changes[2] = $changes[2] . " > #" . $ps->fields["name"];
 			}
-			historyLog($pd->fields["on_device"], $pd->fields["device_type"], $changes, $ps->fields["device_type"], HISTORY_CONNECT_DEVICE);
+			historyLog($pd->fields["items_id"], $pd->fields["itemtype"], $changes, $ps->fields["itemtype"], HISTORY_CONNECT_DEVICE);
 		}
 
 		if ($addmsg) {
@@ -738,11 +738,11 @@ function removeConnector($ID, $dohistory = true) {
 			if ($np1->getFromDB($ID) && $np2->getFromDB($ID2)) {
 				$npnet = -1;
 				$npdev = -1;
-				if ($np1->fields["device_type"] != NETWORKING_TYPE && $np2->fields["device_type"] == NETWORKING_TYPE) {
+				if ($np1->fields["itemtype"] != NETWORKING_TYPE && $np2->fields["itemtype"] == NETWORKING_TYPE) {
 					$npnet = $ID2;
 					$npdev = $ID;
 				}
-				if ($np2->fields["device_type"] != NETWORKING_TYPE && $np1->fields["device_type"] == NETWORKING_TYPE) {
+				if ($np2->fields["itemtype"] != NETWORKING_TYPE && $np1->fields["itemtype"] == NETWORKING_TYPE) {
 					$npnet = $ID;
 					$npdev = $ID2;
 				}
@@ -767,27 +767,27 @@ function removeConnector($ID, $dohistory = true) {
 				if ($dohistory) {
 					$device = new CommonItem();
 
-					$device->getFromDB($np2->fields["device_type"], $np2->fields["on_device"]);
+					$device->getFromDB($np2->fields["itemtype"], $np2->fields["items_id"]);
 					$changes[0] = 0;
 					$changes[1] = $device->getName();
 					$changes[2] = "";
-					if ($np1->fields["device_type"] == NETWORKING_TYPE) {
+					if ($np1->fields["itemtype"] == NETWORKING_TYPE) {
 						$changes[1] = "#" . $np1->fields["name"] . " > " . $changes[1];
 					}
-					if ($np2->fields["device_type"] == NETWORKING_TYPE) {
+					if ($np2->fields["itemtype"] == NETWORKING_TYPE) {
 						$changes[1] = $changes[1] . " > #" . $np2->fields["name"];
 					}
-					historyLog($np1->fields["on_device"], $np1->fields["device_type"], $changes, $np2->fields["device_type"], HISTORY_DISCONNECT_DEVICE);
+					historyLog($np1->fields["items_id"], $np1->fields["itemtype"], $changes, $np2->fields["itemtype"], HISTORY_DISCONNECT_DEVICE);
 
-					$device->getFromDB($np1->fields["device_type"], $np1->fields["on_device"]);
+					$device->getFromDB($np1->fields["itemtype"], $np1->fields["items_id"]);
 					$changes[1] = $device->getName();
-					if ($np2->fields["device_type"] == NETWORKING_TYPE) {
+					if ($np2->fields["itemtype"] == NETWORKING_TYPE) {
 						$changes[1] = "#" . $np2->fields["name"] . " > " . $changes[1];
 					}
-					if ($np1->fields["device_type"] == NETWORKING_TYPE) {
+					if ($np1->fields["itemtype"] == NETWORKING_TYPE) {
 						$changes[1] = $changes[1] . " > #" . $np1->fields["name"];
 					}
-					historyLog($np2->fields["on_device"], $np2->fields["device_type"], $changes, $np1->fields["device_type"], HISTORY_DISCONNECT_DEVICE);
+					historyLog($np2->fields["items_id"], $np2->fields["itemtype"], $changes, $np1->fields["itemtype"], HISTORY_DISCONNECT_DEVICE);
 				}
 			}
 
@@ -819,18 +819,18 @@ function getUniqueObjectIDByIPAddressOrMac($value, $type = 'IP', $entity) {
 	}
 
 	//Try to get all the object (not deleted, and not template) with a network port having the specified IP, in a given entity
-	$query = "SELECT gnp.on_device as ID, gnp.ID as portID, gnp.device_type as device_type 
+	$query = "SELECT gnp.items_id as ID, gnp.ID as portID, gnp.itemtype as itemtype 
 		FROM `glpi_networkports` as gnp
-		LEFT JOIN  `glpi_computers` as gc ON (gnp.on_device=gc.ID AND gc.FK_entities=$entity AND gc.deleted=0 
-							AND gc.is_template=0 AND device_type=" . COMPUTER_TYPE . ") 
-		LEFT JOIN  `glpi_printers` as gp ON (gnp.on_device=gp.ID AND gp.FK_entities=$entity AND gp.deleted=0 
-							AND gp.is_template=0 AND device_type=" . PRINTER_TYPE . ")
-		LEFT JOIN  `glpi_networkequipments` as gn ON (gnp.on_device=gn.ID AND gn.FK_entities=$entity AND gn.deleted=0 
-							AND gn.is_template=0 AND device_type=" . NETWORKING_TYPE . ")  
-		LEFT JOIN  `glpi_phones` as gph ON (gnp.on_device=gph.ID AND gph.FK_entities=$entity AND gph.deleted=0 
-							AND gph.is_template=0 AND device_type=" . PHONE_TYPE . ") 
-		LEFT JOIN  `glpi_peripherals` as gpe ON (gnp.on_device=gpe.ID AND gpe.FK_entities=$entity AND gpe.deleted=0 
-							AND gpe.is_template=0 AND device_type=" . PERIPHERAL_TYPE . ") 
+		LEFT JOIN  `glpi_computers` as gc ON (gnp.items_id=gc.ID AND gc.FK_entities=$entity AND gc.deleted=0 
+							AND gc.is_template=0 AND itemtype=" . COMPUTER_TYPE . ") 
+		LEFT JOIN  `glpi_printers` as gp ON (gnp.items_id=gp.ID AND gp.FK_entities=$entity AND gp.deleted=0 
+							AND gp.is_template=0 AND itemtype=" . PRINTER_TYPE . ")
+		LEFT JOIN  `glpi_networkequipments` as gn ON (gnp.items_id=gn.ID AND gn.FK_entities=$entity AND gn.deleted=0 
+							AND gn.is_template=0 AND itemtype=" . NETWORKING_TYPE . ")  
+		LEFT JOIN  `glpi_phones` as gph ON (gnp.items_id=gph.ID AND gph.FK_entities=$entity AND gph.deleted=0 
+							AND gph.is_template=0 AND itemtype=" . PHONE_TYPE . ") 
+		LEFT JOIN  `glpi_peripherals` as gpe ON (gnp.items_id=gpe.ID AND gpe.FK_entities=$entity AND gpe.deleted=0 
+							AND gpe.is_template=0 AND itemtype=" . PERIPHERAL_TYPE . ") 
 	 	WHERE gnp.$field='" . $value . "'";
 
 	$result = $DB->query($query);
@@ -847,7 +847,7 @@ function getUniqueObjectIDByIPAddressOrMac($value, $type = 'IP', $entity) {
 			if ($DB->numrows($result) == 1)
 				return array (
 					"ID" => $DB->result($result, 0, "ID"),
-					"device_type" => NETWORKING_TYPE
+					"itemtype" => NETWORKING_TYPE
 				);
 			else
 				return array ();
@@ -855,7 +855,7 @@ function getUniqueObjectIDByIPAddressOrMac($value, $type = 'IP', $entity) {
 			$port = $DB->fetch_array($result);
 			return array (
 				"ID" => $port["ID"],
-				"device_type" => $port["device_type"]
+				"itemtype" => $port["itemtype"]
 			);
 
 		case 2 :
@@ -869,9 +869,9 @@ function getUniqueObjectIDByIPAddressOrMac($value, $type = 'IP', $entity) {
 
 			//Get the 2 ports informations and try to see if one port is connected on a network device
 			$network_port = -1;
-			if ($port1["device_type"] == NETWORKING_TYPE)
+			if ($port1["itemtype"] == NETWORKING_TYPE)
 				$network_port = 1;
-			elseif ($port2["device_type"] == NETWORKING_TYPE) $network_port = 2;
+			elseif ($port2["itemtype"] == NETWORKING_TYPE) $network_port = 2;
 
 			//If one port is connected on a network device
 			if ($network_port != -1) {
@@ -883,7 +883,7 @@ function getUniqueObjectIDByIPAddressOrMac($value, $type = 'IP', $entity) {
 				if ($DB->numrows($query) == 1)
 					return array (
 						"ID" => ($network_port == 1 ? $port2["ID"] : $port1["ID"]),
-						"device_type" => ($network_port == 1 ? $port2["device_type"] : $port1["device_type"])
+						"itemtype" => ($network_port == 1 ? $port2["itemtype"] : $port1["itemtype"])
 					);
 			}
 			return array ();
@@ -897,7 +897,7 @@ function getUniqueObjectIDByIPAddressOrMac($value, $type = 'IP', $entity) {
  * Look for a computer or a network device with a fully qualified domain name in an entity
  * @param fqdn fully qualified domain name
  * @param entity the entity
- * @return an array with the ID and device_type or an empty array if no unique object is found
+ * @return an array with the ID and itemtype or an empty array if no unique object is found
  */
 function getUniqueObjectIDByFQDN($fqdn, $entity) {
 	$types = array (
@@ -918,7 +918,7 @@ function getUniqueObjectIDByFQDN($fqdn, $entity) {
  * @param fqdn fully qualified domain name
  * @param type the type of object to look for
  * @param entity the entity
- * @return an array with the ID and device_type or an empty array if no unique object is found
+ * @return an array with the ID and itemtype or an empty array if no unique object is found
  */
 
 function getUniqueObjectByFDQNAndType($fqdn, $type, $entity) {
@@ -936,7 +936,7 @@ function getUniqueObjectByFDQNAndType($fqdn, $type, $entity) {
 		$datas = $DB->fetch_array($result);
 		return array (
 			"ID" => $datas["ID"],
-			"device_type" => $type
+			"itemtype" => $type
 		);
 	} else
 		return array ();

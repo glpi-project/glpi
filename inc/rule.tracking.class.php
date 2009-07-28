@@ -126,8 +126,8 @@ class TrackingBusinessRule extends Rule {
 					
 						if (!empty($result))
 						{
-							$output["device_type"]=$result["device_type"];
-							$output["computer"]=$result["ID"];
+							$output["itemtype"]=$result["itemtype"];
+							$output["items_id"]=$result["ID"];
 						}
 					break;
 				}

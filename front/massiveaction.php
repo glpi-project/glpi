@@ -52,10 +52,10 @@ if (isset($_GET['multiple_actions'])){
 	}
 }
 
-if (isset($_POST["device_type"])){
+if (isset($_POST["itemtype"])){
 
 	/// Right check
-	switch ($_POST["device_type"]){
+	switch ($_POST["itemtype"]){
 		case TRACKING_TYPE :
 			switch ($_POST["action"]){
 				case "delete":
@@ -70,10 +70,10 @@ if (isset($_POST["device_type"])){
 			}
 			break;
 		default :
-			if (in_array($_POST["device_type"],$CFG_GLPI["infocom_types"])){
-				checkSeveralRightsOr(array($_POST["device_type"]=>"w","infocom"=>"w"));
+			if (in_array($_POST["itemtype"],$CFG_GLPI["infocom_types"])){
+				checkSeveralRightsOr(array($_POST["itemtype"]=>"w","infocom"=>"w"));
 			} else {
-				checkTypeRight($_POST["device_type"],"w");
+				checkTypeRight($_POST["itemtype"],"w");
 			}
 			break;
 	}
@@ -89,7 +89,7 @@ if (isset($_POST["device_type"])){
 	}
 	
 	
-	if (isset($_POST["action"])&&isset($_POST["device_type"])&&isset($_POST["item"])&&count($_POST["item"])){
+	if (isset($_POST["action"])&&isset($_POST["itemtype"])&&isset($_POST["item"])&&count($_POST["item"])){
 
 	
 	/// Save selection
@@ -121,7 +121,7 @@ if (isset($_POST["device_type"])){
 								/// Entity security
 								if ($ci->obj->fields["FK_entities"]==$ci2->obj->fields["FK_entities"]){
 									if ($ci->obj->fields["is_global"]
-									||(!$ci->obj->fields["is_global"]&&getNumberConnections($_POST["device_type"],$key)==0)){
+									||(!$ci->obj->fields["is_global"]&&getNumberConnections($_POST["itemtype"],$key)==0)){
 										Connect($_POST["connect_item"],$key,$_POST["type"]);
 									}
 								}
@@ -138,15 +138,15 @@ if (isset($_POST["device_type"])){
 	
 				if (isset($_POST["connect_item"])&&$_POST["connect_item"]){
 					foreach ($_POST["item"] as $key => $val){
-						if ($val==1&&$ci->getFromDB($_POST["device_type"],$key)) {
+						if ($val==1&&$ci->getFromDB($_POST["itemtype"],$key)) {
 							/// Items exists ?
 							if ($ci2->getFromDB(COMPUTER_TYPE,$_POST["connect_item"])){
 								/// Entity security
 								if ($ci->obj->fields["FK_entities"]==$ci2->obj->fields["FK_entities"]){
 									if ($ci->obj->fields["is_global"]
                               ||(!$ci->obj->fields["is_global"]
-                                 &&getNumberConnections($_POST["device_type"],$key)==0)){
-										Connect($key,$_POST["connect_item"],$_POST["device_type"]);
+                                 &&getNumberConnections($_POST["itemtype"],$key)==0)){
+										Connect($key,$_POST["connect_item"],$_POST["itemtype"]);
 									}
 								}
 							}
@@ -160,7 +160,7 @@ if (isset($_POST["device_type"])){
 					if ($val==1) {
 						$query="SELECT * 
 							FROM glpi_computers_items 
-							WHERE type='".$_POST["device_type"]."' AND end1 = '$key'";
+							WHERE type='".$_POST["itemtype"]."' AND end1 = '$key'";
 						$result=$DB->query($query);
 						if ($DB->numrows($result)>0){
 							while ($data=$DB->fetch_assoc($result)){
@@ -172,7 +172,7 @@ if (isset($_POST["device_type"])){
 			break;
 			case "delete":
 				$ci=new CommonItem();
-				$ci->setType($_POST["device_type"],1);
+				$ci->setType($_POST["itemtype"],1);
 				foreach ($_POST["item"] as $key => $val){
 					if ($val==1) {
 						$ci->obj->delete(array("ID"=>$key));
@@ -181,7 +181,7 @@ if (isset($_POST["device_type"])){
 			break;
 			case "purge":
 				$ci=new CommonItem();
-				$ci->setType($_POST["device_type"],1);
+				$ci->setType($_POST["itemtype"],1);
 				foreach ($_POST["item"] as $key => $val){
 					if ($val==1) {
 						$ci->obj->delete(array("ID"=>$key),1);
@@ -190,7 +190,7 @@ if (isset($_POST["device_type"])){
 			break;
 			case "restore":
 				$ci=new CommonItem();
-				$ci->setType($_POST["device_type"],1);
+				$ci->setType($_POST["itemtype"],1);
 				foreach ($_POST["item"] as $key => $val){
 					if ($val==1) {
 						$ci->obj->restore(array("ID"=>$key));
@@ -198,15 +198,15 @@ if (isset($_POST["device_type"])){
 				}
 			break;
 			case "update":
-				$searchopt=cleanSearchOption($_POST["device_type"],'w');
+				$searchopt=cleanSearchOption($_POST["itemtype"],'w');
 				
 				if (isset($searchopt[$_POST["id_field"]])){
 					/// Infocoms case
-					if ($_POST["device_type"]<1000
-                     && isInfocomSearch($_POST["device_type"],$_POST["id_field"])){
+					if ($_POST["itemtype"]<1000
+                     && isInfocomSearch($_POST["itemtype"],$_POST["id_field"])){
 						$ic=new Infocom();
 						$ci=new CommonItem();
-						$ci->setType($_POST["device_type"],1);
+						$ci->setType($_POST["itemtype"],1);
 		
 						$link_entity_type=-1;
 						/// Specific entity item
@@ -220,26 +220,26 @@ if (isset($_POST["device_type"])){
 						
 						foreach ($_POST["item"] as $key => $val){
 							if ($val==1){
-								if ($ci->getFromDB($_POST["device_type"],$key)){
+								if ($ci->getFromDB($_POST["itemtype"],$key)){
 									if ($link_entity_type<0
 										||$link_entity_type==$ci->obj->fields["FK_entities"]
 										||($ent->fields["recursive"]
                                  && in_array($link_entity_type, getAncestorsOf("glpi_entities",$ci->obj->fields["FK_entities"])))){
 										unset($ic->fields);
-										$ic->update(array("device_type"=>$_POST["device_type"],"FK_device"=>$key,$_POST["field"] => $_POST[$_POST["field"]]));
+										$ic->update(array("itemtype"=>$_POST["itemtype"],"items_id"=>$key,$_POST["field"] => $_POST[$_POST["field"]]));
 									}
 								}
 							}
 						}
 					} else { /// Not infocoms
 						$ci=new CommonItem();
-						$ci->setType($_POST["device_type"],1);
+						$ci->setType($_POST["itemtype"],1);
 						$link_entity_type=array();
 						/// Specific entity item
 						
-						if ($searchopt[$_POST["id_field"]]["table"]!=$LINK_ID_TABLE[$_POST["device_type"]]
+						if ($searchopt[$_POST["id_field"]]["table"]!=$LINK_ID_TABLE[$_POST["itemtype"]]
 						&& in_array($searchopt[$_POST["id_field"]]["table"],$CFG_GLPI["specif_entities_tables"])
-						&& in_array($LINK_ID_TABLE[$_POST["device_type"]],$CFG_GLPI["specif_entities_tables"])){
+						&& in_array($LINK_ID_TABLE[$_POST["itemtype"]],$CFG_GLPI["specif_entities_tables"])){
 							
 							$ci2=new CommonDBTM();
 							$ci2->table=$searchopt[$_POST["id_field"]]["table"];
@@ -258,7 +258,7 @@ if (isset($_POST["device_type"])){
 						}
 						foreach ($_POST["item"] as $key => $val){
 							if ($val==1) {
-								if ($ci->getFromDB($_POST["device_type"],$key)){
+								if ($ci->getFromDB($_POST["itemtype"],$key)){
 									if (count($link_entity_type)==0
 										|| in_array($ci->obj->fields["FK_entities"], $link_entity_type)){
 										$ci->obj->update(array("ID"=>$key,$_POST["field"] => $_POST[$_POST["field"]]));
@@ -304,9 +304,9 @@ if (isset($_POST["device_type"])){
 					foreach ($_POST["item"] as $key => $val){
 						if ($val==1) {
 							/// Items exists ?
-							if ($ci2->getFromDB($_POST["device_type"],$key)){
+							if ($ci2->getFromDB($_POST["itemtype"],$key)){
 								/// Entity security
-								if ($_POST["device_type"]==ENTITY_TYPE) {
+								if ($_POST["itemtype"]==ENTITY_TYPE) {
 								   $destentity = $ci2->obj->fields["ID"];
 								} else if (isset($ci2->obj->fields["FK_entities"])) {
 								   $destentity = $ci2->obj->fields["FK_entities"];
@@ -316,7 +316,7 @@ if (isset($_POST["device_type"])){
 								if ($destentity<0
 								|| $ci->obj->fields["FK_entities"]==$destentity
                         || ($ci->obj->fields["recursive"] && in_array($ci->obj->fields["FK_entities"], getAncestorsOf("glpi_entities",$destentity)))){
-									addDeviceDocument($_POST['docID'],$_POST["device_type"],$key);
+									addDeviceDocument($_POST['docID'],$_POST["itemtype"],$key);
 								}
 							}
 						}
@@ -330,8 +330,8 @@ if (isset($_POST["device_type"])){
 					foreach ($_POST["item"] as $key => $val){
 						if ($val==1) {
 							/// Items exists ?
-							if ($ci2->getFromDB($_POST["device_type"],$key)){
-								if ($_POST["device_type"]==ENTITY_TYPE) {
+							if ($ci2->getFromDB($_POST["itemtype"],$key)){
+								if ($_POST["itemtype"]==ENTITY_TYPE) {
 								   $destentity = $ci2->obj->fields["ID"];
 								} else if (isset($ci2->obj->fields["FK_entities"])) {
 								   $destentity = $ci2->obj->fields["FK_entities"];
@@ -356,8 +356,8 @@ if (isset($_POST["device_type"])){
 					foreach ($_POST["item"] as $key => $val){
 						if ($val==1) {
 							/// Items exists ?
-							if ($ci2->getFromDB($_POST["device_type"],$key)){
-								if ($_POST["device_type"]==ENTITY_TYPE) {
+							if ($ci2->getFromDB($_POST["itemtype"],$key)){
+								if ($_POST["itemtype"]==ENTITY_TYPE) {
 								   $destentity = $ci2->obj->fields["ID"];
 								} else if (isset($ci2->obj->fields["FK_entities"])) {
 								   $destentity = $ci2->obj->fields["FK_entities"];
@@ -369,7 +369,7 @@ if (isset($_POST["device_type"])){
                            ||$ci->obj->fields["FK_entities"]==$destentity
                            ||($ci->obj->fields["recursive"]
                               && in_array($ci->obj->fields["FK_entities"], getAncestorsOf("glpi_entities",$destentity)))){
-									addDeviceContract($_POST['conID'],$_POST["device_type"],$key);
+									addDeviceContract($_POST['conID'],$_POST["itemtype"],$key);
 								}
 							}
 						}
@@ -384,7 +384,7 @@ if (isset($_POST["device_type"])){
 					foreach ($_POST["item"] as $key => $val){
 						if ($val==1) {
 							// Items exists ?
-							if ($ci2->getFromDB($_POST["device_type"],$key)){
+							if ($ci2->getFromDB($_POST["itemtype"],$key)){
 								// Entity security
 								if (!isset($ci2->obj->fields["FK_entities"])
 								||$ci->obj->fields["FK_entities"]==$ci2->obj->fields["FK_entities"]
@@ -534,13 +534,13 @@ if (isset($_POST["device_type"])){
 				if (!isset($_SESSION['glpitransfer_list'])){
 					$_SESSION['glpitransfer_list']=array();
 				}
-				if (!isset($_SESSION['glpitransfer_list'][$_POST["device_type"]])){
-					$_SESSION['glpitransfer_list'][$_POST["device_type"]]=array();
+				if (!isset($_SESSION['glpitransfer_list'][$_POST["itemtype"]])){
+					$_SESSION['glpitransfer_list'][$_POST["itemtype"]]=array();
 				}
 				
 				foreach ($_POST["item"] as $key => $val){
 					if ($val==1) {
-						$_SESSION['glpitransfer_list'][$_POST["device_type"]][$key]=$key;
+						$_SESSION['glpitransfer_list'][$_POST["itemtype"]][$key]=$key;
 					}
 				}
 				$REDIRECT=$CFG_GLPI['root_doc'].'/front/transfer.action.php';
@@ -566,11 +566,11 @@ if (isset($_POST["device_type"])){
 						'MassiveActionsProcess',
 						$_POST);
 				}
-				else if ($_POST["device_type"]>1000
-					&& isset($PLUGIN_HOOKS['plugin_types'][$_POST["device_type"]])){
+				else if ($_POST["itemtype"]>1000
+					&& isset($PLUGIN_HOOKS['plugin_types'][$_POST["itemtype"]])){
 					// non-normalized name
 					// hook from the plugin defining the type
-					doOneHook($PLUGIN_HOOKS['plugin_types'][$_POST["device_type"]],
+					doOneHook($PLUGIN_HOOKS['plugin_types'][$_POST["itemtype"]],
 						'MassiveActionsProcess',
 						$_POST);
 				} 
@@ -581,7 +581,7 @@ if (isset($_POST["device_type"])){
 		addMessageAfterRedirect($LANG['common'][23]);
 		glpi_header($REDIRECT);
 	
-	} else { //action, device_type or item not defined
+	} else { //action, itemtype or item not defined
 		
 		echo "<div align='center'><img src=\"".$CFG_GLPI["root_doc"]."/pics/warning.png\" alt=\"warning\"><br><br>";
 		echo "<b>".$LANG['common'][24]."</b></div>";
@@ -590,6 +590,6 @@ if (isset($_POST["device_type"])){
 	}
 	
 	commonFooter();
-} // device_type defined
+} // itemtype defined
 
 ?>

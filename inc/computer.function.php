@@ -254,7 +254,7 @@ function showConnections($target,$ID,$withtemplate='') {
 							echo "<form method='post' action=\"$target\">";
 							echo "<input type='hidden' name='connect' value='connect'>";
 							echo "<input type='hidden' name='cID' value='$ID'>";
-							echo "<input type='hidden' name='device_type' value='".$type."'>";
+							echo "<input type='hidden' name='itemtype' value='".$type."'>";
 							if (empty($withtemplate)){
 								echo "<input type='hidden' name='dohistory' value='1'>";
 							} else { // No history for template

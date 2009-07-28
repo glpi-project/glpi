@@ -195,11 +195,11 @@ $RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['request_type']['name']=$LANG['job']
 $RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['request_type']['linkfield']='request_type';
 $RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['request_type']['type']='dropdown_request_type';
 
-$RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['device_type']['table']='glpi_tickets';
-$RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['device_type']['field']='device_type';
-$RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['device_type']['name']=$LANG['state'][6];
-$RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['device_type']['linkfield']='device_type';
-$RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['device_type']['type']='dropdown_tracking_device_type';
+$RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['itemtype']['table']='glpi_tickets';
+$RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['itemtype']['field']='itemtype';
+$RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['itemtype']['name']=$LANG['state'][6];
+$RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['itemtype']['linkfield']='itemtype';
+$RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['itemtype']['type']='dropdown_tracking_itemtype';
 
 $RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['FK_entities']['table']='glpi_entities';
 $RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['FK_entities']['field']='name';

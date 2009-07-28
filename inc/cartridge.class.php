@@ -65,7 +65,7 @@ class CartridgeType extends CommonDBTM {
 		$query2 = "DELETE FROM glpi_cartridges_printersmodels WHERE (FK_glpi_cartridges_type = '$ID')";
 		$result2 = $DB->query($query2);
 
-		$query = "DELETE FROM glpi_infocoms WHERE (FK_device = '$ID' AND device_type='".CARTRIDGE_TYPE."')";
+		$query = "DELETE FROM glpi_infocoms WHERE (items_id = '$ID' AND itemtype='".CARTRIDGE_TYPE."')";
 		$result = $DB->query($query);
 
 	}
@@ -300,7 +300,7 @@ class Cartridge extends CommonDBTM {
 
 	function cleanDBonPurge($ID) {
 		global $DB;
-		$query = "DELETE FROM glpi_infocoms WHERE (FK_device = '$ID' AND device_type='".CARTRIDGE_ITEM_TYPE."')";
+		$query = "DELETE FROM glpi_infocoms WHERE (items_id = '$ID' AND itemtype='".CARTRIDGE_ITEM_TYPE."')";
 		$result = $DB->query($query);
 	}
 
@@ -315,8 +315,8 @@ class Cartridge extends CommonDBTM {
 
 		if ($ic->getFromDBforDevice(CARTRIDGE_TYPE,$this->fields["FK_glpi_cartridges_type"])){
 			unset($ic->fields["ID"]);
-			$ic->fields["FK_device"]=$newID;
-			$ic->fields["device_type"]=CARTRIDGE_ITEM_TYPE;
+			$ic->fields["items_id"]=$newID;
+			$ic->fields["itemtype"]=CARTRIDGE_ITEM_TYPE;
 			if (empty($ic->fields['use_date'])){
 				unset($ic->fields['use_date']);
 			}

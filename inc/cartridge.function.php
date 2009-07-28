@@ -636,7 +636,7 @@ function cron_cartridge($display=false){
 			glpi_cartridgesitems.ref as cartref, glpi_cartridgesitems.name AS cartname, 
 			glpi_cartridgesitems.alarm AS threshold, glpi_alerts.ID AS alertID, glpi_alerts.date 
 		FROM glpi_cartridgesitems 
-		LEFT JOIN glpi_alerts ON (glpi_cartridgesitems.ID = glpi_alerts.FK_device AND glpi_alerts.device_type='".CARTRIDGE_TYPE."') 
+		LEFT JOIN glpi_alerts ON (glpi_cartridgesitems.ID = glpi_alerts.items_id AND glpi_alerts.itemtype='".CARTRIDGE_TYPE."') 
 		WHERE glpi_cartridgesitems.deleted='0' AND glpi_cartridgesitems.alarm>='0' 
 			AND (glpi_alerts.date IS NULL OR (glpi_alerts.date+".$CFG_GLPI["cartridges_alert"].") < CURRENT_TIMESTAMP()) 
 		ORDER BY glpi_cartridgesitems.name;";
@@ -679,11 +679,11 @@ function cron_cartridge($display=false){
 					logInFile("cron",getDropdownName("glpi_entities",$entity).":  $msg\n");
 
 					$input["type"]=ALERT_THRESHOLD;
-					$input["device_type"]=CARTRIDGE_TYPE;
+					$input["itemtype"]=CARTRIDGE_TYPE;
 
 					//// add alerts
 					foreach ($items[$entity] as $ID){
-						$input["FK_device"]=$ID;
+						$input["items_id"]=$ID;
 						$alert->add($input);
 						unset($alert->fields['ID']);
 					}

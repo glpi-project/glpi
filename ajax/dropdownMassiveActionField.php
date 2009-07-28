@@ -40,28 +40,28 @@ include (GLPI_ROOT."/inc/includes.php");
 header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
-	switch ($_POST["device_type"]){
+	switch ($_POST["itemtype"]){
 		case TRACKING_TYPE :
 			checkTypeRight("update_ticket","1");
 			break;
 		default :
-			if (in_array($_POST["device_type"],$CFG_GLPI["infocom_types"])){
-				checkSeveralRightsOr(array($_POST["device_type"]=>"w","infocom"=>"w"));
+			if (in_array($_POST["itemtype"],$CFG_GLPI["infocom_types"])){
+				checkSeveralRightsOr(array($_POST["itemtype"]=>"w","infocom"=>"w"));
 			} else {
-				checkTypeRight($_POST["device_type"],"w");
+				checkTypeRight($_POST["itemtype"],"w");
 			}
 			break;
 	}	
 
-if (isset($_POST["device_type"])&&isset($_POST["id_field"])&&$_POST["id_field"]){
-	$search=$SEARCH_OPTION[$_POST["device_type"]][$_POST["id_field"]];	
+if (isset($_POST["itemtype"])&&isset($_POST["id_field"])&&$_POST["id_field"]){
+	$search=$SEARCH_OPTION[$_POST["itemtype"]][$_POST["id_field"]];	
 	
 	// Specific budget case
 	if ($_POST["id_field"]==50) $search["linkfield"]="budget";
 
 	$FIELDNAME_PRINTED=false;
 
-	if ($search["table"]==$LINK_ID_TABLE[$_POST["device_type"]]){ // field type
+	if ($search["table"]==$LINK_ID_TABLE[$_POST["itemtype"]]){ // field type
 
 		switch ($search["table"].".".$search["linkfield"]){
 			case "glpi_cartridgesitems.alarm":
@@ -88,11 +88,11 @@ if (isset($_POST["device_type"])&&isset($_POST["id_field"])&&$_POST["id_field"])
 			default :
 				// Specific plugin Type case
 				$plugdisplay=false;
-				if ($_POST["device_type"]>1000){
-					if (isset($PLUGIN_HOOKS['plugin_types'][$_POST["device_type"]])){
-						$plugdisplay=doOneHook($PLUGIN_HOOKS['plugin_types'][$_POST["device_type"]], 
+				if ($_POST["itemtype"]>1000){
+					if (isset($PLUGIN_HOOKS['plugin_types'][$_POST["itemtype"]])){
+						$plugdisplay=doOneHook($PLUGIN_HOOKS['plugin_types'][$_POST["itemtype"]], 
 							'MassiveActionsFieldsDisplay',
-							$_POST["device_type"],$search["table"],$search["field"],$search["linkfield"]);
+							$_POST["itemtype"],$search["table"],$search["field"],$search["linkfield"]);
 					} 
 				} 
 
@@ -193,11 +193,11 @@ if (isset($_POST["device_type"])&&isset($_POST["id_field"])&&$_POST["id_field"])
 			default : // dropdown case
 				// Specific plugin Type case
 				$plugdisplay=false;
-				if ($_POST["device_type"]>1000){
-					if (isset($PLUGIN_HOOKS['plugin_types'][$_POST["device_type"]])){
-						$plugdisplay=doOneHook($PLUGIN_HOOKS['plugin_types'][$_POST["device_type"]],
+				if ($_POST["itemtype"]>1000){
+					if (isset($PLUGIN_HOOKS['plugin_types'][$_POST["itemtype"]])){
+						$plugdisplay=doOneHook($PLUGIN_HOOKS['plugin_types'][$_POST["itemtype"]],
 							'MassiveActionsFieldsDisplay',
-							$_POST["device_type"],$search["table"],$search["field"],$search["linkfield"]);
+							$_POST["itemtype"],$search["table"],$search["field"],$search["linkfield"]);
 					} 
 				} 
 				if (!$plugdisplay){

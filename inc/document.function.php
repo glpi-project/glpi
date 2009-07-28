@@ -206,10 +206,10 @@ function showDeviceDocument($instID) {
 		// for a document,
 		// don't show here others documents associated to this one,
 		// it's done for both directions in showDocumentAssociated
-		$query = "SELECT DISTINCT device_type 
+		$query = "SELECT DISTINCT itemtype 
 			FROM glpi_documents_items 
-			WHERE glpi_documents_items.FK_doc = '$instID' AND glpi_documents_items.device_type != ".DOCUMENT_TYPE." 
-			ORDER BY device_type";
+			WHERE glpi_documents_items.FK_doc = '$instID' AND glpi_documents_items.itemtype != ".DOCUMENT_TYPE." 
+			ORDER BY itemtype";
 		
 		$result = $DB->query($query);
 		$number = $DB->numrows($result);
@@ -230,7 +230,7 @@ function showDeviceDocument($instID) {
 		echo "</tr>";
 		$ci=new CommonItem();
 		while ($i < $number) {
-			$type=$DB->result($result, $i, "device_type");
+			$type=$DB->result($result, $i, "itemtype");
 			if (haveTypeRight($type,"r")){
 				$column="name";
 				if ($type==TRACKING_TYPE) $column="ID";
@@ -241,8 +241,8 @@ function showDeviceDocument($instID) {
 				if ($type != ENTITY_TYPE) {
 					$query .= " LEFT JOIN glpi_entities ON (glpi_entities.ID=".$LINK_ID_TABLE[$type].".FK_entities) ";
 				}
-				$query .= " WHERE ".$LINK_ID_TABLE[$type].".ID = glpi_documents_items.FK_device  
-						AND glpi_documents_items.device_type='$type' AND glpi_documents_items.FK_doc = '$instID' "
+				$query .= " WHERE ".$LINK_ID_TABLE[$type].".ID = glpi_documents_items.items_id  
+						AND glpi_documents_items.itemtype='$type' AND glpi_documents_items.FK_doc = '$instID' "
 						. getEntitiesRestrictRequest(" AND ",$LINK_ID_TABLE[$type],'','',isset($CFG_GLPI["recursive_type"][$type])); 
 				if (in_array($LINK_ID_TABLE[$type],$CFG_GLPI["template_tables"])){
 					$query.=" AND ".$LINK_ID_TABLE[$type].".is_template='0'";
@@ -341,7 +341,7 @@ function addDeviceDocument($docID,$type,$ID){
 		if ($type==DOCUMENT_TYPE && $ID == $docID){
 			return;
 		}
-		$query="INSERT INTO glpi_documents_items (FK_doc,FK_device, device_type) VALUES ('$docID','$ID','$type');";
+		$query="INSERT INTO glpi_documents_items (FK_doc,items_id, itemtype) VALUES ('$docID','$ID','$type');";
 		$result = $DB->query($query);
 	}
 }
@@ -360,21 +360,21 @@ function deleteDeviceDocument($ID){
 /**
  * Show documents associated to an item
  *
- * @param $device_type item type
+ * @param $itemtype item type
  * @param $ID item ID
  * @param $withtemplate if 3 -> view via helpdesk -> no links
  **/
-function showDocumentAssociated($device_type,$ID,$withtemplate=''){
+function showDocumentAssociated($itemtype,$ID,$withtemplate=''){
 
 	global $DB, $CFG_GLPI, $LANG, $LINK_ID_TABLE;
 
-	if ($device_type!=KNOWBASE_TYPE)
-		if (!haveRight("document","r")||!haveTypeRight($device_type,"r"))	return false;
+	if ($itemtype!=KNOWBASE_TYPE)
+		if (!haveRight("document","r")||!haveTypeRight($itemtype,"r"))	return false;
 
 	if (empty($withtemplate)) $withtemplate=0;
 
 	$ci=new CommonItem();
-	$ci->getFromDB($device_type,$ID);
+	$ci->getFromDB($itemtype,$ID);
 	$canread=$ci->obj->can($ID,'r');
 	$canedit=$ci->obj->can($ID,'w');
 	$recursive=0;
@@ -389,7 +389,7 @@ function showDocumentAssociated($device_type,$ID,$withtemplate=''){
 			glpi_documents.name AS assocName, glpi_documents.* FROM glpi_documents_items
 			LEFT JOIN glpi_documents ON (glpi_documents_items.FK_doc=glpi_documents.ID) 
 			LEFT JOIN glpi_entities ON (glpi_documents.FK_entities=glpi_entities.ID)
-			WHERE glpi_documents_items.FK_device = '$ID' AND glpi_documents_items.device_type = '$device_type' ";
+			WHERE glpi_documents_items.items_id = '$ID' AND glpi_documents_items.itemtype = '$itemtype' ";
 
 	if (isset($_SESSION["glpiID"])){
 		$query .= getEntitiesRestrictRequest(" AND","glpi_documents",'','',true);
@@ -399,13 +399,13 @@ function showDocumentAssociated($device_type,$ID,$withtemplate=''){
 	}
 	
 	// Document : search links in both order using union
-	if ($device_type==DOCUMENT_TYPE){
+	if ($itemtype==DOCUMENT_TYPE){
 		$query .= "UNION 
 			SELECT glpi_documents_items.ID as assocID, glpi_entities.ID AS entity, 
 				glpi_documents.name AS assocName, glpi_documents.* FROM glpi_documents_items
-				LEFT JOIN glpi_documents ON (glpi_documents_items.FK_device=glpi_documents.ID)
+				LEFT JOIN glpi_documents ON (glpi_documents_items.items_id=glpi_documents.ID)
 				LEFT JOIN glpi_entities ON (glpi_documents.FK_entities=glpi_entities.ID)
-				WHERE glpi_documents_items.FK_doc = '$ID' AND glpi_documents_items.device_type = '$device_type' ";
+				WHERE glpi_documents_items.FK_doc = '$ID' AND glpi_documents_items.itemtype = '$itemtype' ";
 		if (isset($_SESSION["glpiID"])){
 			$query .= getEntitiesRestrictRequest(" AND","glpi_documents",'','',true);
 		} else {
@@ -438,13 +438,13 @@ function showDocumentAssociated($device_type,$ID,$withtemplate=''){
 	if ($number){
 		// Don't use this for document associated to document
 		// To not loose navigation list for current document
-		if ($device_type!=DOCUMENT_TYPE) {
+		if ($itemtype!=DOCUMENT_TYPE) {
 			initNavigateListItems(DOCUMENT_TYPE,$ci->getType()." = ".$ci->getName());
 		}
 
 		while ($data=$DB->fetch_assoc($result)) {
 			$docID=$data["ID"];
-			if ($device_type!=DOCUMENT_TYPE) {
+			if ($itemtype!=DOCUMENT_TYPE) {
 				addToNavigateListItems(DOCUMENT_TYPE,$docID);
 			}
 			$used[$docID]=$docID;
@@ -477,7 +477,7 @@ function showDocumentAssociated($device_type,$ID,$withtemplate=''){
 			if ($withtemplate<2) {
 				echo "<td align='center' class='tab_bg_2'>";
 				if ($canedit)
-					echo "<a href='".$CFG_GLPI["root_doc"]."/front/document.form.php?deleteitem=deleteitem&amp;ID=$assocID&amp;devtype=$device_type&amp;devid=$ID&amp;docid=$docID'><strong>".$LANG['buttons'][6]."</strong></a>";
+					echo "<a href='".$CFG_GLPI["root_doc"]."/front/document.form.php?deleteitem=deleteitem&amp;ID=$assocID&amp;devtype=$itemtype&amp;devid=$ID&amp;docid=$docID'><strong>".$LANG['buttons'][6]."</strong></a>";
 				else echo "&nbsp;";
 				echo "</td>";
 			}
@@ -491,7 +491,7 @@ function showDocumentAssociated($device_type,$ID,$withtemplate=''){
 		$ci=new CommonItem();
 		$entities="";
 		$entity=$_SESSION["glpiactive_entity"];
-		if ($ci->getFromDB($device_type,$ID) && isset($ci->obj->fields["FK_entities"])) {		
+		if ($ci->getFromDB($itemtype,$ID) && isset($ci->obj->fields["FK_entities"])) {		
 			$entity=$ci->getField('FK_entities');
 			
 			if (isset($ci->obj->fields["recursive"]) && $ci->obj->fields["recursive"]) {
@@ -512,12 +512,12 @@ function showDocumentAssociated($device_type,$ID,$withtemplate=''){
 				"<input type='hidden' name='FK_entities' value='$entity'>" .
 				"<input type='hidden' name='item' value='$ID'>" .
 				"<input type='hidden' name='recursive' value='$recursive'>" .
-				"<input type='hidden' name='type' value='$device_type'>" .
+				"<input type='hidden' name='type' value='$itemtype'>" .
 				"<input type='file' name='filename' size='25'>&nbsp;&nbsp;" .
 				"<input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'>" .
 				"</td>";
 
-			if ($device_type==DOCUMENT_TYPE){
+			if ($itemtype==DOCUMENT_TYPE){
 				$used[$ID]=$ID;
 			}
 

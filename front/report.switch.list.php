@@ -52,7 +52,7 @@ if (isset($_POST["switch"])&&$_POST["switch"]){
 
 	$query="SELECT c.name as port,c.ifaddr as ip,c.ifmac as mac, c.ID AS IDport, glpi_networkequipments.name as switch
 		FROM glpi_networkequipments
-		INNER JOIN glpi_networkports c ON c.device_type=".NETWORKING_TYPE." AND c.on_device=glpi_networkequipments.ID
+		INNER JOIN glpi_networkports c ON c.itemtype=".NETWORKING_TYPE." AND c.items_id=glpi_networkequipments.ID
 		WHERE glpi_networkequipments.id='".$_POST["switch"]."'";
 
 
@@ -85,7 +85,7 @@ if (isset($_POST["switch"])&&$_POST["switch"]){
 
 			if ($end1){
 				$np->getFromDB($end1);
-				$np->getDeviceData($np->fields["on_device"],$np->fields["device_type"]);
+				$np->getDeviceData($np->fields["items_id"],$np->fields["itemtype"]);
 				$ordi=$np->device_name;
 				$ip2=$np->fields['ifaddr'];
 				$mac2=$np->fields['ifmac'];

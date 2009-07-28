@@ -216,6 +216,72 @@ function update0721to080() {
       echo "<div class='red'><p>You can delete backup tables if you have no need of them.</p></div>";
    }
 
+   displayMigrationMessage("080", $LANG['update'][141] . ' - Clean DB : rename foreign keys'); // Updating schema
+
+   $foreignkeys=array(
+   'FK_device' => array(array('to' => 'items_id', 'index' => false,
+                           'tables' => array('glpi_alerts','glpi_contracts_items',
+                                 'glpi_documents_items','glpi_infocoms')),
+                        array('to' => 'devices_id', 'index' => false,
+                           'tables' => array('glpi_computers_devices')),
+                     ),
+   'FK_glpi_device' => array(array('to' => 'items_id', 'index' => false,
+                           'tables' => array('glpi_logs')),
+                     ),
+   'on_device' => array(array('to' => 'items_id', 'index' => false,
+                           'tables' => array('glpi_networkports')),
+                     ),
+   'id_device' => array(array('to' => 'items_id', 'index' => false,
+                           'tables' => array('glpi_reservationsitems')),
+                     ),
+   'computer' => array(array('to' => 'items_id', 'index' => false,
+                           'tables' => array('glpi_tickets')),
+                     ),
+   'device_type' => array( array('to' => 'itemtype', 'index' => false,
+                              'tables' => array('glpi_alerts','glpi_contracts_items',
+                                 'glpi_documents_items','glpi_infocoms','glpi_bookmarks',
+                                 'glpi_bookmarks_users','glpi_logs','glpi_links_itemtypes',
+                                 'glpi_networkports','glpi_reservationsitems','glpi_tickets')),
+                           array('to' => 'devicetype', 'index' => false,
+                              'tables' => array('glpi_computers_devices')),
+                     ),
+   'device_internal_type' => array(array('to' => 'devicetype', 'tables' => array('glpi_logs')),
+                     ),
+   
+   );
+   foreach ($foreignkeys as $oldname => $newnames) {
+      foreach ($newnames as $tab){
+         $newname=$tab['to'];
+         $doindex=false;
+         if (isset($tab['index'])){
+            $doindex=$tab['index'];
+         }
+         foreach ($tab['tables'] as $table){
+            // Rename field
+            if (FieldExists($table, $oldname)) {
+               $query="ALTER TABLE `$table` CHANGE `$oldname` `$newname` INT( 11 ) NOT NULL DEFAULT '0' ";
+               $DB->query($query) or die("0.80 rename $oldname to $newname in $table " . $LANG['update'][90] . $DB->error());
+            } else {
+               echo "<div class='red'><p>Error : $table.$oldname does not exist.</p></div>";
+            }
+            // If do index : delete old one / create new one
+            if ($doindex){
+               if (isIndex($table, $oldname)) {
+                  $query="ALTER TABLE `$table` DROP INDEX `$oldname`;";
+                  $DB->query($query) or die("0.80 drop index $oldname in $table " . $LANG['update'][90] . $DB->error());
+               }
+               if (!isIndex($table, $newname)) {
+                  $query="ALTER TABLE `$table` ADD INDEX `$newname` (`$newname`);";
+                  $DB->query($query) or die("0.80 create index $newname in $table " . $LANG['update'][90] . $DB->error());
+               }
+            }
+         }
+      }
+   }
+
+   
+
+
    displayMigrationMessage("080", $LANG['update'][141] . ' - glpi_configs'); // Updating schema
 	if (FieldExists('glpi_configs', 'license_deglobalisation')) {
 		$query="ALTER TABLE `glpi_configs` DROP `license_deglobalisation`;";

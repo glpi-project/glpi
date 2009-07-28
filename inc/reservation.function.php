@@ -33,7 +33,7 @@
 // Purpose of file:
 // ----------------------------------------------------------------------
 
-// device_type
+// itemtype
 // 1 computers
 // 2 networking
 // 3 printers
@@ -48,16 +48,16 @@ if (!defined('GLPI_ROOT')){
 	die("Sorry. You can't access directly to this file");
 	}
 
-function showReservationForm($device_type,$id_device){
+function showReservationForm($itemtype,$items_id){
 
 	global $CFG_GLPI,$LANG;
 
 	if (!haveRight("reservation_central","w")) return false;
 	
 	// Recursive type case => need entity right
-	if (isset($CFG_GLPI["recursive_type"][$device_type])) {
+	if (isset($CFG_GLPI["recursive_type"][$itemtype])) {
 		$ci = new CommonItem();
-		if (!$ci->getFromDB($device_type,$id_device)) {
+		if (!$ci->getFromDB($itemtype,$items_id)) {
 			return false;
 		}
 		if (!haveAccessToEntity($ci->obj->fields["FK_entities"])) {
@@ -65,7 +65,7 @@ function showReservationForm($device_type,$id_device){
 		}
 	}
 
-	if ($resaID=isReservable($device_type,$id_device)) {
+	if ($resaID=isReservable($itemtype,$items_id)) {
 		$ri=new ReservationItem;
 		$ri->getFromDB($resaID);
 		
@@ -80,7 +80,7 @@ function showReservationForm($device_type,$id_device){
 
 	}else {
 		echo "<br><div><a href=\"".$CFG_GLPI["root_doc"]."/front/reservation.php?";
-		echo "id_device=$id_device&amp;device_type=$device_type&amp;comments=&amp;add=add\" class='icon_consol' >".$LANG['reservation'][7]."</a></div>";      
+		echo "items_id=$items_id&amp;itemtype=$itemtype&amp;comments=&amp;add=add\" class='icon_consol' >".$LANG['reservation'][7]."</a></div>";      
 	}
 }
 
@@ -124,11 +124,11 @@ function printCalendrier($target,$ID=""){
 			return false;
 		}
 		$ci=new CommonItem();
-		$ci->getFromDB($m->fields["device_type"],$m->fields["id_device"]);
+		$ci->getFromDB($m->fields["itemtype"],$m->fields["items_id"]);
 
 				
 /*		// No check because post-only users have no rights to items
-		if (!$ci->obj->can($m->fields["id_device"],"r")){
+		if (!$ci->obj->can($m->fields["items_id"],"r")){
 			echo "<div class='center'><strong>";
 
 			echo $LANG['common'][54]."<br>";
@@ -318,7 +318,7 @@ function showAddReservationForm($target,$items,$date,$resaID=-1){
 	echo "<td>";
 	foreach ($items as $ID){
 		$r->getFromDB($ID);
-		$ci->getFromDB($r->fields["device_type"],$r->fields["id_device"]);
+		$ci->getFromDB($r->fields["itemtype"],$r->fields["items_id"]);
 		echo "<strong>".$ci->getType()." - ".$ci->getName()."</strong><br>";
 		echo "<input type='hidden' name='items[$ID]' value='$ID'>";
 	}
@@ -403,10 +403,10 @@ function printReservation($target,$ID,$date){
 
 				$m->getFromDB($data['ID']);
 				$ci=new CommonItem();
-				$ci->getFromDB($m->fields["device_type"],$m->fields["id_device"]);
+				$ci->getFromDB($m->fields["itemtype"],$m->fields["items_id"]);
 				
 				//if (in_array($ci->obj->fields["FK_entities"],$_SESSION["glpiactiveentities"])){
-				if ($ci->obj->can($m->fields["id_device"],"r")){
+				if ($ci->obj->can($m->fields["items_id"],"r")){
 					list($annee,$mois,$jour)=explode("-",$date);
 					echo "<tr class='tab_bg_1'><td><a href='$target?show=resa&amp;ID=".$data['ID']."&amp;mois_courant=$mois&amp;annee_courante=$annee'>".$ci->getType()." - ".$ci->getName()."</a></td></tr>";
 					echo "<tr><td>";
@@ -495,10 +495,10 @@ function printReservationItems($target){
 		$ci->setType($type);
 		$query="SELECT glpi_reservationsitems.ID as ID, glpi_reservationsitems.comments as comments, 
 				".$LINK_ID_TABLE[$type].".name as name, ".$LINK_ID_TABLE[$type].".FK_entities as FK_entities,
-				 glpi_locations.completename as location, glpi_reservationsitems.id_device as id_device	
+				 glpi_locations.completename as location, glpi_reservationsitems.items_id as items_id	
 			FROM glpi_reservationsitems 
-			INNER JOIN ".$LINK_ID_TABLE[$type]." ON (glpi_reservationsitems.device_type='$type' 
-								AND glpi_reservationsitems.id_device=".$LINK_ID_TABLE[$type].".ID)
+			INNER JOIN ".$LINK_ID_TABLE[$type]." ON (glpi_reservationsitems.itemtype='$type' 
+								AND glpi_reservationsitems.items_id=".$LINK_ID_TABLE[$type].".ID)
 			LEFT JOIN glpi_locations ON (".$LINK_ID_TABLE[$type].".location = glpi_locations.ID)
 			WHERE glpi_reservationsitems.active='1' AND ".$LINK_ID_TABLE[$type].".deleted ='0' ".getEntitiesRestrictRequest("AND",$LINK_ID_TABLE[$type])." ORDER BY ".$LINK_ID_TABLE[$type].".FK_entities, ".$LINK_ID_TABLE[$type].".name";
 
@@ -511,7 +511,7 @@ function printReservationItems($target){
 				
 				$typename=$ci->getType();
 				if ($type==PERIPHERAL_TYPE){
-					$ci->getFromDB($type,$row['id_device']);
+					$ci->getFromDB($type,$row['items_id']);
 					if (isset($ci->obj->fields["type"])&&$ci->obj->fields["type"]!=0){
 						$typename=getDropdownName("glpi_peripheralstypes",$ci->obj->fields["type"]);
 					}
@@ -548,7 +548,7 @@ function showReservationCommentForm($target,$ID){
 	$r=new ReservationItem;
 	if ($r->getFromDB($ID)){
 		$ci=new CommonItem();
-		$ci->getFromDB($r->fields["device_type"],$r->fields["id_device"]);
+		$ci->getFromDB($r->fields["itemtype"],$r->fields["items_id"]);
 
 		echo "<div class='center'><form method='post' name=form action=\"$target\">";
 		echo "<input type='hidden' name='ID' value='$ID'>";
@@ -697,7 +697,7 @@ function showUserReservations($target,$ID){
 			echo "<td class='center'>".convDateTime($data["begin"])."</td>";
 			echo "<td class='center'>".convDateTime($data["end"])."</td>";
 			if ($ri->getFromDB($data["id_item"])){
-				$ci->getFromDB($ri->fields['device_type'],$ri->fields['id_device']);
+				$ci->getFromDB($ri->fields['itemtype'],$ri->fields['items_id']);
 				echo "<td class='center'>".$ci->getLink()."</td>";
 			} else {
 				echo "<td class='center'>&nbsp;</td>";
@@ -730,7 +730,7 @@ function showUserReservations($target,$ID){
 			echo "<td class='center'>".convDateTime($data["begin"])."</td>";
 			echo "<td class='center'>".convDateTime($data["end"])."</td>";
 			if ($ri->getFromDB($data["id_item"])){
-				$ci->getFromDB($ri->fields['device_type'],$ri->fields['id_device']);
+				$ci->getFromDB($ri->fields['itemtype'],$ri->fields['items_id']);
 				echo "<td class='center'>".$ci->getLink()."</td>";
 			} else {
 				echo "<td class='center'>&nbsp;</td>";
@@ -756,7 +756,7 @@ function showUserReservations($target,$ID){
 function isReservable($type,$ID){
 
 	global $DB;
-	$query="SELECT ID FROM glpi_reservationsitems WHERE device_type='$type' AND id_device='$ID'";
+	$query="SELECT ID FROM glpi_reservationsitems WHERE itemtype='$type' AND items_id='$ID'";
 	$result=$DB->query($query);
 	if ($DB->numrows($result)==0){
 		return false;

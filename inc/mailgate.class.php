@@ -422,7 +422,7 @@ class MailCollect {
 			// Medium
 			$tkt['priority']= "3";
 			// No hardware associated
-			$tkt['device_type']="0";
+			$tkt['itemtype']="0";
 			// Mail request type
 			$tkt['request_type']="2";
 		} else {

@@ -101,7 +101,7 @@ if (isset($_GET["lID"])){
 		if (strstr($file,"[IP]")||strstr($file,"[MAC]")){
 			$query2 = "SELECT ifaddr, ifmac 
 				FROM glpi_networkports 
-				WHERE (on_device = '".$_GET["ID"]."' AND device_type = '".$_GET["type"]."') 
+				WHERE (items_id = '".$_GET["ID"]."' AND itemtype = '".$_GET["type"]."') 
 				ORDER BY logical_number";
 			$result2=$DB->query($query2);
 			if ($DB->numrows($result2)>0){

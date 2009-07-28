@@ -153,10 +153,10 @@ function showDeviceContract($instID) {
 	$rand=mt_rand();
 	$contract=new Contract();
 	$canedit=$contract->can($instID,'w');
-	$query = "SELECT DISTINCT device_type 
+	$query = "SELECT DISTINCT itemtype 
 		FROM glpi_contracts_items 
 		WHERE glpi_contracts_items.FK_contract = '$instID' 
-		ORDER BY device_type";
+		ORDER BY itemtype";
 
 	$result = $DB->query($query);
 	$number = $DB->numrows($result);
@@ -187,7 +187,7 @@ function showDeviceContract($instID) {
 	$ci=new CommonItem;
    $totalnb=0;
 	while ($i < $number) {
-		$type=$DB->result($result, $i, "device_type");
+		$type=$DB->result($result, $i, "itemtype");
 
 		if (haveTypeRight($type,"r")){
  			$query = "SELECT ".$LINK_ID_TABLE[$type].".*, glpi_contracts_items.ID AS IDD, glpi_entities.ID AS entity
@@ -195,8 +195,8 @@ function showDeviceContract($instID) {
 			if ($type != ENTITY_TYPE) {	
 				$query .= " LEFT JOIN glpi_entities ON (".$LINK_ID_TABLE[$type].".FK_entities=glpi_entities.ID) ";
 			}
-			$query .= " WHERE ".$LINK_ID_TABLE[$type].".ID = glpi_contracts_items.FK_device 
-								AND glpi_contracts_items.device_type='$type' 
+			$query .= " WHERE ".$LINK_ID_TABLE[$type].".ID = glpi_contracts_items.items_id 
+								AND glpi_contracts_items.itemtype='$type' 
 								AND glpi_contracts_items.FK_contract = '$instID'";
 						
 			if (in_array($LINK_ID_TABLE[$type],$CFG_GLPI["template_tables"])){
@@ -298,7 +298,7 @@ function addDeviceContract($conID,$type,$ID){
 
 	if ($ID>0&&$conID>0){
 
-		$query="INSERT INTO glpi_contracts_items (FK_contract,FK_device, device_type ) VALUES ('$conID','$ID','$type');";
+		$query="INSERT INTO glpi_contracts_items (FK_contract,items_id, itemtype ) VALUES ('$conID','$ID','$type');";
 		$result = $DB->query($query);
 	}
 }
@@ -477,29 +477,29 @@ function getContractEnterprises($ID){
 /**
  * Print an HTML array with contracts associated to a device
  *
- * Print an HTML array with contracts associated to the device identified by $ID from device type $device_type 
+ * Print an HTML array with contracts associated to the device identified by $ID from device type $itemtype 
  *
- *@param $device_type string : HTML select name
+ *@param $itemtype string : HTML select name
  *@param $ID integer device ID
  *@param $withtemplate='' not used (to be deleted)
  *
  *@return Nothing (display)
  *
  **/
-function showContractAssociated($device_type,$ID,$withtemplate=''){
+function showContractAssociated($itemtype,$ID,$withtemplate=''){
 	global $DB,$CFG_GLPI, $LANG;
 
-	if (!haveRight("contract","r")||!haveTypeRight($device_type,"r"))	return false;
+	if (!haveRight("contract","r")||!haveTypeRight($itemtype,"r"))	return false;
 
 	$ci=new CommonItem();
-	$ci->getFromDB($device_type,$ID);
+	$ci->getFromDB($itemtype,$ID);
 	$canedit=$ci->obj->can($ID,"w");
 
 	$query = "SELECT glpi_contracts_items.* 
 		FROM glpi_contracts_items, glpi_contracts 
 		LEFT JOIN glpi_entities ON (glpi_contracts.FK_entities=glpi_entities.ID)
-		WHERE glpi_contracts.ID=glpi_contracts_items.FK_contract AND glpi_contracts_items.FK_device = '$ID' 
-			AND glpi_contracts_items.device_type = '$device_type' 
+		WHERE glpi_contracts.ID=glpi_contracts_items.FK_contract AND glpi_contracts_items.items_id = '$ID' 
+			AND glpi_contracts_items.itemtype = '$itemtype' 
 		".getEntitiesRestrictRequest(" AND","glpi_contracts",'','',true)." 
 		ORDER BY glpi_contracts.name";
 
@@ -569,7 +569,7 @@ function showContractAssociated($device_type,$ID,$withtemplate=''){
 	if ($canedit){
 		if ($withtemplate!=2 && $nb>count($contracts)){
 			echo "<tr class='tab_bg_1'><td align='right' colspan='3'>";
-			echo "<div class='software-instal'><input type='hidden' name='item' value='$ID'><input type='hidden' name='type' value='$device_type'>";
+			echo "<div class='software-instal'><input type='hidden' name='item' value='$ID'><input type='hidden' name='type' value='$itemtype'>";
 			dropdownContracts("conID",$ci->obj->getEntityID(),$contracts);
 			echo "</div></td><td class='center'>";
 			echo "<input type='submit' name='additem' value=\"".$LANG['buttons'][8]."\" class='submit'>";
@@ -698,8 +698,8 @@ function cron_contract($display=false){
 	// Check notice
 	$query="SELECT glpi_contracts.* 
 		FROM glpi_contracts 
-		LEFT JOIN glpi_alerts ON (glpi_contracts.ID = glpi_alerts.FK_device 
-					AND glpi_alerts.device_type='".CONTRACT_TYPE."' 
+		LEFT JOIN glpi_alerts ON (glpi_contracts.ID = glpi_alerts.items_id 
+					AND glpi_alerts.itemtype='".CONTRACT_TYPE."' 
 					AND glpi_alerts.type='".ALERT_NOTICE."') 
 		WHERE (glpi_contracts.alert & ".pow(2,ALERT_NOTICE).") >0 
 			AND glpi_contracts.deleted='0' 
@@ -728,8 +728,8 @@ function cron_contract($display=false){
 	// Check end
 	$query="SELECT glpi_contracts.* 
 		FROM glpi_contracts 
-		LEFT JOIN glpi_alerts ON (glpi_contracts.ID = glpi_alerts.FK_device 
-					AND glpi_alerts.device_type='".CONTRACT_TYPE."' 
+		LEFT JOIN glpi_alerts ON (glpi_contracts.ID = glpi_alerts.items_id 
+					AND glpi_alerts.itemtype='".CONTRACT_TYPE."' 
 					AND glpi_alerts.type='".ALERT_END."') 
 		WHERE (glpi_contracts.alert & ".pow(2,ALERT_END).") >0 AND glpi_contracts.deleted='0' 
 			AND glpi_contracts.begin_date IS NOT NULL AND glpi_contracts.duration <> '0' 
@@ -765,12 +765,12 @@ function cron_contract($display=false){
 		
 				// Mark alert as done
 				$alert=new Alert();
-				$input["device_type"]=CONTRACT_TYPE;
+				$input["itemtype"]=CONTRACT_TYPE;
 
 				$input["type"]=ALERT_NOTICE;
 				if (isset($items_notice[$entity])){
 					foreach ($items_notice[$entity] as $ID){
-						$input["FK_device"]=$ID;
+						$input["items_id"]=$ID;
 						$alert->add($input);
 						unset($alert->fields['ID']);
 					}
@@ -778,7 +778,7 @@ function cron_contract($display=false){
 				$input["type"]=ALERT_END;
 				if (isset($items_end[$entity])){
 					foreach ($items_end[$entity] as $ID){
-						$input["FK_device"]=$ID;
+						$input["items_id"]=$ID;
 						$alert->add($input);
 						unset($alert->fields['ID']);
 					}

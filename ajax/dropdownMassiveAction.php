@@ -58,7 +58,7 @@ if (isset($_POST["action"])&&isset($_POST["type"])&&!empty($_POST["type"])){
 	
 
 	echo "<input type='hidden' name='action' value='".$_POST["action"]."'>";
-	echo "<input type='hidden' name='device_type' value='".$_POST["type"]."'>";
+	echo "<input type='hidden' name='itemtype' value='".$_POST["type"]."'>";
 	switch($_POST["action"]){
 		case "activate_rule":
 			echo dropdownYesNo("activate_rule");
@@ -212,7 +212,7 @@ if (isset($_POST["action"])&&isset($_POST["type"])&&!empty($_POST["type"])){
 			echo "</select>";
 	
 			$paramsmassaction=array('id_field'=>'__VALUE__',
-				'device_type'=>$_POST["type"],
+				'itemtype'=>$_POST["type"],
 				);
 
 			foreach ($_POST as $key => $val){

@@ -104,7 +104,7 @@ else if (isset($_GET["disconnect"])) {
 else if (isset($_POST["connect"])&&isset($_POST["item"])&&$_POST["item"]>0){
 	$computer->check($_POST['cID'],'w');
 
-	Connect($_POST["item"],$_POST["cID"],$_POST["device_type"],$_POST["dohistory"]);
+	Connect($_POST["item"],$_POST["cID"],$_POST["itemtype"],$_POST["dohistory"]);
 	logEvent($_POST["cID"], "computers", 5, "inventory", $_SESSION["glpiname"] ." ".$LANG['log'][27]);
 	glpi_header($_SERVER['HTTP_REFERER']);
 }
@@ -137,8 +137,8 @@ elseif(isset($_POST["update_device"])) {
 elseif (isset($_POST["connect_device"])) {
 	$computer->check($_POST['cID'],'w');
 
-	if (isset($_POST["new_device_id"])&&$_POST["new_device_id"]>0)
-		compdevice_add($_POST["cID"],$_POST["new_device_type"],$_POST["new_device_id"]);
+	if (isset($_POST["devices_id"])&&$_POST["devices_id"]>0)
+		compdevice_add($_POST["cID"],$_POST["devicetype"],$_POST["devices_id"]);
 	glpi_header($_SERVER['PHP_SELF']."?ID=".$_POST["cID"]."&withtemplate=".$_POST["withtemplate"]);
 }
 elseif(isset($_POST["unlock_monitor"])){

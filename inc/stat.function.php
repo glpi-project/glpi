@@ -686,13 +686,13 @@ function constructEntryValues($type,$begin="",$end="",$param="",$value="",$value
 		case "device":
 			//select computers IDs that are using this device;
 
-			$LEFTJOIN= "INNER JOIN glpi_computers ON (glpi_computers.ID = glpi_tickets.computer AND glpi_tickets.device_type='".COMPUTER_TYPE."') INNER JOIN glpi_computers_devices ON ( glpi_computers.ID = glpi_computers_devices.FK_computers AND glpi_computers_devices.device_type = '".$value2."' AND glpi_computers_devices.FK_device = '".$value."' )";
+			$LEFTJOIN= "INNER JOIN glpi_computers ON (glpi_computers.ID = glpi_tickets.items_id AND glpi_tickets.itemtype='".COMPUTER_TYPE."') INNER JOIN glpi_computers_devices ON ( glpi_computers.ID = glpi_computers_devices.FK_computers AND glpi_computers_devices.devicetype = '".$value2."' AND glpi_computers_devices.devices_id = '".$value."' )";
 
 			$WHERE.=" AND glpi_computers.is_template <> '1' ";
 
 		break;
 		case "comp_champ":
-			$LEFTJOIN= "INNER JOIN glpi_computers ON (glpi_computers.ID = glpi_tickets.computer AND glpi_tickets.device_type='".COMPUTER_TYPE."')";
+			$LEFTJOIN= "INNER JOIN glpi_computers ON (glpi_computers.ID = glpi_tickets.items_id AND glpi_tickets.itemtype='".COMPUTER_TYPE."')";
 
 			$WHERE.=" AND glpi_computers.$value2='$value' AND glpi_computers.is_template <> '1'";
 		break;
@@ -1002,10 +1002,10 @@ function showItemStats($target,$date1,$date2,$start){
 	$date1.=" 00:00:00";
 
 
-	$query="SELECT device_type,computer,COUNT(*) AS NB 
+	$query="SELECT itemtype, items_id, COUNT(*) AS NB
 		FROM glpi_tickets 
 		WHERE date<= '".$date2."' AND date>= '".$date1."' ".getEntitiesRestrictRequest("AND","glpi_tickets")." 
-		GROUP BY device_type,computer ORDER BY NB DESC";
+		GROUP BY itemtype, items_id ORDER BY NB DESC";
 	
 	$result=$DB->query($query);
 	$numrows=$DB->numrows($result);
@@ -1040,7 +1040,7 @@ function showItemStats($target,$date1,$date2,$start){
 			$item_num=1;
 			// Get data and increment loop variables
 			$data=$DB->fetch_assoc($result);
-			if ($ci->getFromDB($data["device_type"],$data["computer"])){
+			if ($ci->getFromDB($data["itemtype"],$data["items_id"])){
 				//echo "<tr class='tab_bg_2$del'><td>".$ci->getLink()."</td><td>".$data["NB"]."</td></tr>";
 				echo displaySearchNewLine($output_type,$i%2);
 				echo displaySearchItem($output_type,$ci->getType()." - ".$ci->getLink(),$item_num,$i-$start+1,"align='center'"." ".($ci->getField("deleted")?" class='deleted' ":""));

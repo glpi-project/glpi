@@ -69,8 +69,8 @@ echo "<script type=\"text/javascript\" src='".$CFG_GLPI["root_doc"]."/script.js'
 <body>
 <script language="javascript" type="text/javascript">
 function fillidfield(Type,Id){
-	window.opener.document.forms["helpdeskform"].elements["computer"].value = Id;
-	window.opener.document.forms["helpdeskform"].elements["device_type"].value = Type;
+	window.opener.document.forms["helpdeskform"].elements["items_id"].value = Id;
+	window.opener.document.forms["helpdeskform"].elements["itemtype"].value = Type;
 	window.close();}
 	</script>
 

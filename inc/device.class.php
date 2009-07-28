@@ -49,8 +49,8 @@ class Device extends CommonDBTM {
 
 
 	function prepareInputForAdd($input) {
-		if (isset($input['device_type'])){
-			switch ($input['device_type']){
+		if (isset($input['devicetype'])){
+			switch ($input['devicetype']){
 				case PROCESSOR_DEVICE :
 					if (isset($input['frequence'])){
 						if (!is_numeric($input['frequence'])){
@@ -68,7 +68,7 @@ class Device extends CommonDBTM {
 		global $DB;
 		
       $query2 = "DELETE FROM glpi_computers_devices
-			WHERE FK_device = '$ID' AND device_type='".$this->devtype."'";
+			WHERE devices_id = '$ID' AND devicetype='".$this->devtype."'";
 		$DB->query($query2);
 	}
 
@@ -84,14 +84,14 @@ class Device extends CommonDBTM {
 	 * Connect the current device to a computer
 	 *
 	 *@param $compID computer ID
-	 *@param $device_type device type
+	 *@param $devicetype device type
 	 *@param $specificity value of the specificity
 	 *@return boolean : success ?
 	**/
-	function computer_link($compID,$device_type,$specificity='') {
+	function computer_link($compID,$devicetype,$specificity='') {
 		global $DB;
-		$query = "INSERT INTO glpi_computers_devices (device_type,FK_device,FK_computers,specificity) 
-			VALUES ('".$device_type."','".$this->fields["ID"]."','".$compID."','".$specificity."')";
+		$query = "INSERT INTO glpi_computers_devices (devicetype,devices_id,FK_computers,specificity)
+			VALUES ('".$devicetype."','".$this->fields["ID"]."','".$compID."','".$specificity."')";
 		if($DB->query($query)) {
 			return $DB->insert_id();
 		} else { 

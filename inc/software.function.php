@@ -1378,8 +1378,8 @@ function cron_software($display=false){
 	// Check notice
 	$query="SELECT glpi_softwareslicenses.*, glpi_softwareslicenses.FK_entities, glpi_softwares.name as softname
 		FROM glpi_softwareslicenses 
-		LEFT JOIN glpi_alerts ON (glpi_softwareslicenses.ID = glpi_alerts.FK_device 
-					AND glpi_alerts.device_type='".SOFTWARELICENSE_TYPE."' 
+		LEFT JOIN glpi_alerts ON (glpi_softwareslicenses.ID = glpi_alerts.items_id 
+					AND glpi_alerts.itemtype='".SOFTWARELICENSE_TYPE."' 
 					AND glpi_alerts.type='".ALERT_END."') 
 		LEFT JOIN glpi_softwares ON (glpi_softwareslicenses.sID = glpi_softwares.ID)
 		WHERE glpi_alerts.date IS NULL
@@ -1420,12 +1420,12 @@ function cron_software($display=false){
 		
 				// Mark alert as done
 				$alert=new Alert();
-				$input["device_type"]=SOFTWARELICENSE_TYPE;
+				$input["itemtype"]=SOFTWARELICENSE_TYPE;
 
 				$input["type"]=ALERT_END;
 				if (isset($items[$entity])){
 					foreach ($items[$entity] as $ID){
-						$input["FK_device"]=$ID;
+						$input["items_id"]=$ID;
 						$alert->add($input);
 						unset($alert->fields['ID']);
 					}

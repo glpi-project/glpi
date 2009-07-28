@@ -62,15 +62,15 @@ class InfoCom extends CommonDBTM {
 	 * Retrieve an item from the database for a device
 	 *
 	 *@param $ID ID of the device to retrieve infocom
-	 *@param $device_type type of the device to retrieve infocom
+	 *@param $itemtype type of the device to retrieve infocom
 	 *@return true if succeed else false
 	**/
-	function getFromDBforDevice ($device_type,$ID) {
+	function getFromDBforDevice ($itemtype,$ID) {
 
 		global $DB;
 		$query = "SELECT * 
 			FROM glpi_infocoms 
-			WHERE FK_device = '$ID' AND device_type='$device_type'";
+			WHERE items_id = '$ID' AND itemtype='$itemtype'";
 	
 		if ($result = $DB->query($query)) {
 			if ($DB->numrows($result)==1){	
@@ -82,8 +82,8 @@ class InfoCom extends CommonDBTM {
 				return true;
 			} else {
 				$this->getEmpty();
-				$this->fields["FK_device"]=$ID;
-				$this->fields["device_type"]=$device_type;
+				$this->fields["items_id"]=$ID;
+				$this->fields["itemtype"]=$itemtype;
 				return false;
 			}
 		} else {
@@ -93,7 +93,7 @@ class InfoCom extends CommonDBTM {
 
 	function prepareInputForAdd($input) { 
 		global $CFG_GLPI;
-		if (!$this->getFromDBforDevice($input['device_type'],$input['FK_device'])){
+		if (!$this->getFromDBforDevice($input['itemtype'],$input['items_id'])){
 			$input['alert']=$CFG_GLPI["infocom_alerts"];
 			return $input; 
 		} 
@@ -105,11 +105,11 @@ class InfoCom extends CommonDBTM {
 
 			$this->getFromDB($input["ID"]);
 		} else {
-			if (!$this->getFromDBforDevice($input["device_type"],$input["FK_device"])){
-				$input2["FK_device"]=$input["FK_device"];
-				$input2["device_type"]=$input["device_type"];
+			if (!$this->getFromDBforDevice($input["itemtype"],$input["items_id"])){
+				$input2["items_id"]=$input["items_id"];
+				$input2["itemtype"]=$input["itemtype"];
 				$this->add($input2);
-				$this->getFromDBforDevice($input["device_type"],$input["FK_device"]);
+				$this->getFromDBforDevice($input["itemtype"],$input["items_id"]);
 			}
 			$input["ID"]=$this->fields["ID"];
 		}
@@ -145,7 +145,7 @@ class InfoCom extends CommonDBTM {
 	**/
 	function isEntityAssign () {
 		$ci=new CommonItem();
-		$ci->setType($this->fields["device_type"], true);
+		$ci->setType($this->fields["itemtype"], true);
 		
 		return $ci->obj->isEntityAssign();
 	}
@@ -156,7 +156,7 @@ class InfoCom extends CommonDBTM {
 	**/
 	function getEntityID () {
 		$ci=new CommonItem();
-		$ci->getFromDB($this->fields["device_type"], $this->fields["FK_device"]);
+		$ci->getFromDB($this->fields["itemtype"], $this->fields["items_id"]);
 
 		return $ci->obj->getEntityID();
 	}	
@@ -167,7 +167,7 @@ class InfoCom extends CommonDBTM {
 	**/
 	function maybeRecursive () {
 		$ci=new CommonItem();
-		$ci->setType($this->fields["device_type"], true);
+		$ci->setType($this->fields["itemtype"], true);
 		
 		return $ci->obj->maybeRecursive();
 	}
@@ -180,7 +180,7 @@ class InfoCom extends CommonDBTM {
 	**/
 	function isRecursive () {
 		$ci=new CommonItem();
-		$ci->getFromDB($this->fields["device_type"], $this->fields["FK_device"]);
+		$ci->getFromDB($this->fields["itemtype"], $this->fields["items_id"]);
 
 		return $ci->obj->isRecursive();
 	}	

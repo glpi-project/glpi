@@ -81,7 +81,7 @@ class Bookmark extends CommonDBTM {
 			parse_str($taburl["query"],$query_tab);
 		}
 
-		$input['query']=append_params($this->prepareQueryToStore($input['type'],$query_tab,$input['device_type']));
+		$input['query']=append_params($this->prepareQueryToStore($input['type'],$query_tab,$input['itemtype']));
 
 		return $input;
 	}
@@ -119,9 +119,9 @@ class Bookmark extends CommonDBTM {
 	* @param $ID ID of the item
 	* @param $type bookmark type when adding a new bookmark
 	* @param $url url when adding a new bookmark
-	* @param $device_type device_type when adding a new bookmark
+	* @param $itemtype itemtype when adding a new bookmark
 	**/
-	function showForm($target,$ID,$type=0,$url='',$device_type=0) {
+	function showForm($target,$ID,$type=0,$url='',$itemtype=0) {
 
 
 		global $CFG_GLPI,$LANG;
@@ -140,8 +140,8 @@ class Bookmark extends CommonDBTM {
 		echo '<br>';
 		echo "<form method='post' name='form_save_query' action=\"$target\">";
 		echo "<div class='center'>";
-		if ($device_type!=0){
-			echo "<input type='hidden' name='device_type' value='$device_type'>";
+		if ($itemtype!=0){
+			echo "<input type='hidden' name='itemtype' value='$itemtype'>";
 		}
 		if ($type!=0){
 			echo "<input type='hidden' name='type' value='$type'>";
@@ -215,10 +215,10 @@ class Bookmark extends CommonDBTM {
 	*
 	* @param $type bookmark type
 	* @param $query_tab parameters array
-	* @param $device_type device type
+	* @param $itemtype device type
 	* @return clean query array
 	**/
-	function prepareQueryToStore($type,$query_tab,$device_type=0){
+	function prepareQueryToStore($type,$query_tab,$itemtype=0){
 		switch ($type){
 			case BOOKMARK_SEARCH :
 				if (isset($query_tab['start'])){
@@ -228,8 +228,8 @@ class Bookmark extends CommonDBTM {
 				if (isset($query_tab['glpisearchcount'])){
 					unset($query_tab['glpisearchcount']);
 				}
-				if (isset($_SESSION["glpisearchcount"][$device_type])){
-					$query_tab['glpisearchcount']=$_SESSION["glpisearchcount"][$device_type];
+				if (isset($_SESSION["glpisearchcount"][$itemtype])){
+					$query_tab['glpisearchcount']=$_SESSION["glpisearchcount"][$itemtype];
 				} else {
 					$query_tab['glpisearchcount']=1;
 				}
@@ -238,8 +238,8 @@ class Bookmark extends CommonDBTM {
 				if (isset($query_tab['glpisearchcount2'])){
 					unset($query_tab['glpisearchcount2']);
 				}
-				if (isset($_SESSION["glpisearchcount2"][$device_type])){
-					$query_tab['glpisearchcount2']=$_SESSION["glpisearchcount2"][$device_type];
+				if (isset($_SESSION["glpisearchcount2"][$itemtype])){
+					$query_tab['glpisearchcount2']=$_SESSION["glpisearchcount2"][$itemtype];
 				}else {
 					$query_tab['glpisearchcount2']=0;
 				}
@@ -303,18 +303,18 @@ class Bookmark extends CommonDBTM {
 		// Get bookmark / Only search bookmark
 		if ($this->getFromDB($ID) && $this->fields['type']=BOOKMARK_SEARCH){
 			$dd=new SetupDefaultDisplay();
-			// Is default view for this device_type already exists ?
+			// Is default view for this itemtype already exists ?
 			$query="SELECT ID 
 				FROM glpi_bookmarks_users 
 				WHERE FK_users='".$_SESSION['glpiID']."'
-					AND device_type='".$this->fields['device_type']."'";
+					AND itemtype='".$this->fields['itemtype']."'";
 			if ($result=$DB->query($query)){
 				if ($DB->numrows($result) > 0){
 					// already exists update it
 					$updateID=$DB->result($result,0,0);
 					$dd->update(array('ID'=>$updateID,'FK_bookmark'=>$ID));
 				} else {
-					$dd->add(array('FK_bookmark'=>$ID,'FK_users'=>$_SESSION['glpiID'],'device_type'=>$this->fields['device_type']));
+					$dd->add(array('FK_bookmark'=>$ID,'FK_users'=>$_SESSION['glpiID'],'itemtype'=>$this->fields['itemtype']));
 				}
 			}
 			
@@ -333,12 +333,12 @@ class Bookmark extends CommonDBTM {
 		// Get bookmark / Only search bookmark
 		if ($this->getFromDB($ID) && $this->fields['type']=BOOKMARK_SEARCH){
 			$dd=new SetupDefaultDisplay();
-			// Is default view for this device_type already exists ?
+			// Is default view for this itemtype already exists ?
 			$query="SELECT ID 
 				FROM glpi_bookmarks_users 
 				WHERE FK_users='".$_SESSION['glpiID']."'
 					AND FK_bookmark='$ID'
-					AND device_type='".$this->fields['device_type']."'";
+					AND itemtype='".$this->fields['itemtype']."'";
 			if ($result=$DB->query($query)){
 				if ($DB->numrows($result) > 0){
 					// already exists delete it
@@ -366,7 +366,7 @@ class Bookmark extends CommonDBTM {
 	
 		$query="SELECT `".$this->table."`.*, glpi_bookmarks_users.ID AS IS_DEFAULT 
 			FROM `".$this->table."` 
-			LEFT JOIN glpi_bookmarks_users ON (`".$this->table."`.device_type = glpi_bookmarks_users.device_type 
+			LEFT JOIN glpi_bookmarks_users ON (`".$this->table."`.itemtype = glpi_bookmarks_users.itemtype 
 							AND `".$this->table."`.ID = glpi_bookmarks_users.FK_bookmark) 
 			WHERE ";
 			
@@ -376,7 +376,7 @@ class Bookmark extends CommonDBTM {
 			$query.="(`".$this->table."`.private=0  ".getEntitiesRestrictRequest("AND",$this->table,"","",true) . ")";
 		}
 			
-		$query.=" ORDER BY device_type, name";
+		$query.=" ORDER BY itemtype, name";
 
 		if ($result = $DB->query($query)){
 			//echo "<br>";
@@ -397,8 +397,8 @@ class Bookmark extends CommonDBTM {
 				$current_type=-1;
 				$current_type_name="&nbsp;";
 				while ($this->fields = $DB->fetch_assoc($result)){
-					if ($current_type!=$this->fields['device_type']){
-						$current_type=$this->fields['device_type'];
+					if ($current_type!=$this->fields['itemtype']){
+						$current_type=$this->fields['itemtype'];
 						$ci->setType($current_type);
 						$current_type_name=$ci->getType();
 					}
