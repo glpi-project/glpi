@@ -252,7 +252,7 @@ function update0721to080() {
    foreach ($foreignkeys as $oldname => $newnames) {
       foreach ($newnames as $tab){
          $newname=$tab['to'];
-         $doindex=false;
+         $doindex=true;
          if (isset($tab['index'])){
             $doindex=$tab['index'];
          }
