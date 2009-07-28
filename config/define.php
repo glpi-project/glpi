@@ -226,7 +226,7 @@
 			INFOCOM_TYPE => "glpi_infocoms",
 			CONTRACT_TYPE => "glpi_contracts",
 			CARTRIDGE_TYPE => "glpi_cartridgesitems",
-			TYPEDOC_TYPE => "glpi_type_docs",
+			TYPEDOC_TYPE => "glpi_documentstypes",
 			DOCUMENT_TYPE => "glpi_documents",
 			KNOWBASE_TYPE => "glpi_knowbaseitems",
 			USER_TYPE => "glpi_users",

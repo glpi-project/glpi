@@ -286,7 +286,7 @@ $RELATION=array(
 	
 	"glpi_monitorstypes"=>array("glpi_monitors"=>"type"),
 	
-	"glpi_type_docs"=>array("glpi_monitors"=>"type"),
+	"glpi_documentstypes"=>array("glpi_monitors"=>"type"),
 	
 	"glpi_networkequipmentstypes"=>array("glpi_networkequipments"=>"type"),
 	
