@@ -1462,7 +1462,7 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$to
 				if(IsDropdown($line["Field"])) {
 					$wherecomp .= " glpi_dropdown_". $line["Field"] .".name $SEARCH" ;
 				}
-				elseif($line["Field"] == "location") {
+				elseif($line["Field"] == "locations_id") {
 					$wherecomp .= " glpi_locations.name $SEARCH";
 				}
 				else {
@@ -1662,7 +1662,7 @@ function showTrackingList($target,$start="",$sort="",$order="",$status="new",$to
 		$where.= "LEFT JOIN glpi_networkports on (comp.ID = glpi_networkports.items_id AND  glpi_networkports.itemtype='1')";
 		$where.= "LEFT JOIN glpi_netpoints on (glpi_netpoints.ID = glpi_networkports.netpoint)";
 		$where.= "LEFT JOIN glpi_operatingsystems on (glpi_operatingsystems.ID = comp.os)";
-		$where.= "LEFT JOIN glpi_locations on (glpi_locations.ID = comp.location)";
+		$where.= "LEFT JOIN glpi_locations on (glpi_locations.ID = comp.locations_id)";
 		$where.= "LEFT JOIN glpi_computersmodels on (glpi_computersmodels.ID = comp.model)";
 		$where.= "LEFT JOIN glpi_computerstypes on (glpi_computerstypes.ID = comp.type)";
 		$where.= " LEFT JOIN glpi_suppliers ON (glpi_suppliers.ID = comp.FK_glpi_enterprise ) ";

@@ -1518,7 +1518,7 @@ function getOcsLockableFields(){
 			"os_license_number"=>$LANG['computers'][10],
 			"os_license_id"=>$LANG['computers'][11],
 			"users_id"=>$LANG['common'][34],
-			"location"=>$LANG['common'][15],
+			"locations_id"=>$LANG['common'][15],
 			"FK_groups"=>$LANG['common'][35],
 		);
 }
@@ -2840,7 +2840,7 @@ function ocsUpdateAdministrativeInfo($glpi_id, $ocs_id, $ocs_server_id, $cfg_ocs
 						case "FK_groups" :
 							$var = ocsImportGroup($var, $entity);
 							break;
-						case "location" :
+						case "locations_id" :
 							$var = externalImportDropdown("glpi_locations", $var, $entity);
 							break;
 						case "network" :

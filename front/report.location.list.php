@@ -36,19 +36,19 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 checkRight("reports","r");
 
-if (isset($_POST["location"])&&$_POST["location"]){
+if (isset($_POST["locations_id"])&&$_POST["locations_id"]){
 	commonHeader($LANG['Menu'][6],$_SERVER['PHP_SELF'],"utils","report");
 
 	// Titre
-	$name=getDropdownName("glpi_locations",$_POST["location"]);
+	$name=getDropdownName("glpi_locations",$_POST["locations_id"]);
 	echo "<div align='center'><h2>".$LANG['reports'][54]." $name </h2></div>";
 
 	$query="SELECT glpi_netpoints.name AS prise, glpi_networkports.name AS port, glpi_networkports.ifaddr  
-		AS ip, glpi_networkports.ifmac AS mac,glpi_networkports.ID AS IDport, glpi_locations.ID as location,glpi_locations.completename
+		AS ip, glpi_networkports.ifmac AS mac,glpi_networkports.ID AS IDport, glpi_locations.ID as locations_id,glpi_locations.completename
 		FROM glpi_locations
-		INNER JOIN glpi_netpoints ON glpi_netpoints.location = glpi_locations.ID
+		INNER JOIN glpi_netpoints ON glpi_netpoints.locations_id = glpi_locations.ID
 		INNER JOIN glpi_networkports ON glpi_networkports.netpoint=glpi_netpoints.id 
-		WHERE ".getRealQueryForTreeItem("glpi_locations",$_POST["location"])." AND glpi_networkports.itemtype=".NETWORKING_TYPE."
+		WHERE ".getRealQueryForTreeItem("glpi_locations",$_POST["locations_id"])." AND glpi_networkports.itemtype=".NETWORKING_TYPE."
 		ORDER BY glpi_locations.completename, glpi_networkports.name;";
 
 	$result = $DB->query($query);

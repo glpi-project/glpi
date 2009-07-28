@@ -64,7 +64,7 @@ $NBMAX=$CFG_GLPI["dropdown_max"];
 $LIMIT="LIMIT 0,$NBMAX";
 if ($_POST['searchText']==$CFG_GLPI["ajax_wildcard"]) $LIMIT="";
 
-if (!(isset($_POST["devtype"]) && $_POST["devtype"]!=NETWORKING_TYPE && isset($_POST["location"]) && $_POST["location"]>0)) {
+if (!(isset($_POST["devtype"]) && $_POST["devtype"]!=NETWORKING_TYPE && isset($_POST["locations_id"]) && $_POST["locations_id"]>0)) {
 	if (isset($_POST["entity_restrict"])&&$_POST["entity_restrict"]>=0){
 		$where.= " AND glpi_netpoints.entities_id='".$_POST["entity_restrict"]."'";
 	} else {
@@ -75,7 +75,7 @@ if (!(isset($_POST["devtype"]) && $_POST["devtype"]!=NETWORKING_TYPE && isset($_
 $query = "SELECT glpi_netpoints.comments as comments, glpi_netpoints.ID as ID, 
 		glpi_netpoints.name as netpname, glpi_locations.completename as loc 
 	FROM glpi_netpoints";
-$query .= " LEFT JOIN glpi_locations ON (glpi_netpoints.location = glpi_locations.ID)";
+$query .= " LEFT JOIN glpi_locations ON (glpi_netpoints.locations_id = glpi_locations.ID)";
 
 if (isset($_POST["devtype"]) && $_POST["devtype"]>0){
 	$query .= " LEFT JOIN glpi_networkports ON (glpi_netpoints.ID = glpi_networkports.netpoint";
@@ -86,14 +86,14 @@ if (isset($_POST["devtype"]) && $_POST["devtype"]>0){
 	else {
 		$query .= " AND  glpi_networkports.itemtype !=" . NETWORKING_TYPE .")";
 
-		if (isset($_POST["location"]) && $_POST["location"]>=0){
-			$where.=" AND glpi_netpoints.location='".$_POST["location"]."' ";
+		if (isset($_POST["locations_id"]) && $_POST["locations_id"]>=0){
+			$where.=" AND glpi_netpoints.locations_id='".$_POST["locations_id"]."' ";
 		}
 	}
 	$where.=" AND glpi_networkports.netpoint IS NULL ";
 
-} else	if (isset($_POST["location"]) && $_POST["location"]>=0){
-	$where.=" AND glpi_netpoints.location='".$_POST["location"]."' ";
+} else	if (isset($_POST["locations_id"]) && $_POST["locations_id"]>=0){
+	$where.=" AND glpi_netpoints.locations_id='".$_POST["locations_id"]."' ";
 }
 
 $query .= $where . " ORDER BY glpi_locations.completename, glpi_netpoints.name $LIMIT"; 

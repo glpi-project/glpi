@@ -203,9 +203,9 @@ function Disconnect($ID,$dohistory=1,$doautoactions=true,$ocs_server_id=0) {
 			if (!$device->getField('is_global')){
 				
 				$updates=array();
-				if ($CFG_GLPI["autoclean_link_location"] && $device->getField('location')){
-					$updates[]="location";
-					$device->obj->fields['location']=0;
+				if ($CFG_GLPI["autoclean_link_location"] && $device->getField('locations_id')){
+					$updates[]="locations_id";
+					$device->obj->fields['locations_id']=0;
 				}
 				if ($CFG_GLPI["autoclean_link_user"] && $device->getField('users_id')) {
 					$updates[]="users_id";
@@ -348,9 +348,9 @@ function Connect($sID,$cID,$type,$dohistory=1) {
 			historyLog ($sID,$type,$changes,COMPUTER_TYPE,HISTORY_CONNECT_DEVICE);
 		}
 		
-		if ($CFG_GLPI["autoupdate_link_location"]&&$comp->fields['location']!=$dev->getField('location')){
-			$updates[0]="location";
-			$dev->obj->fields['location']=addslashes($comp->fields['location']);
+		if ($CFG_GLPI["autoupdate_link_location"]&&$comp->fields['locations_id']!=$dev->getField('locations_id')){
+			$updates[0]="locations_id";
+			$dev->obj->fields['locations_id']=addslashes($comp->fields['locations_id']);
 			$dev->obj->updateInDB($updates);
 			addMessageAfterRedirect($LANG['computers'][48],true);
 		}

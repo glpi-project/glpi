@@ -196,13 +196,13 @@ function showLinkOnDevice($type,$ID){
 				}
 
 				if (strstr($link,"[LOCATIONID]")){
-					if ($tmp=$ci->getField('location')){
+					if ($tmp=$ci->getField('locations_id')){
 						$link=str_replace("[LOCATIONID]",$tmp,$link);
 					}
 				}
 
 				if (strstr($link,"[LOCATION]")){
-					if ($tmp=$ci->getField('location')){
+					if ($tmp=$ci->getField('locations_id')){
 						$link=str_replace("[LOCATION]",getDropdownName("glpi_locations",$tmp),$link);
 					}
 				}

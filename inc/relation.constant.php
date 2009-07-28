@@ -53,7 +53,7 @@ $RELATION=array(
 						"glpi_registrykeys"=>"computer_id",
 						),
 
-	"glpi_consumablesitems" => array("glpi_consumables"=>"FK_glpi_consumables_type"),
+	"glpi_consumablesitems" => array("glpi_consumables"=>"consumablesitems_id"),
 
 	"glpi_contacts" => array("glpi_contacts_suppliers"=>"FK_contact"),
 	
@@ -99,18 +99,18 @@ $RELATION=array(
 	"glpi_softwareslicensestypes" =>array("glpi_softwareslicenses"=>"type"),
 	
 	"glpi_locations" =>array(
-					"glpi_cartridgesitems"=>"location",
-					"glpi_consumablesitems"=>"location",
-					"glpi_computers"=>"location",
-					"glpi_netpoints"=>"location",
+					"glpi_cartridgesitems"=>"locations_id",
+					"glpi_consumablesitems"=>"locations_id",
+					"glpi_computers"=>"locations_id",
+					"glpi_netpoints"=>"locations_id",
 					"glpi_locations"=>"locations_id",
-					"glpi_monitors"=>"location",
-					"glpi_printers"=>"location",
-					"glpi_networkequipments"=>"location",
-					"glpi_peripherals"=>"location",
-					"glpi_phones"=>"location",
-					"glpi_softwares"=>"location",
-					"glpi_users"=>"location",
+					"glpi_monitors"=>"locations_id",
+					"glpi_printers"=>"locations_id",
+					"glpi_networkequipments"=>"locations_id",
+					"glpi_peripherals"=>"locations_id",
+					"glpi_phones"=>"locations_id",
+					"glpi_softwares"=>"locations_id",
+					"glpi_users"=>"locations_id",
 				),
 	
 	"glpi_manufacturers" =>array("glpi_cartridgesitems"=>"FK_glpi_enterprise",
@@ -147,7 +147,7 @@ $RELATION=array(
 	"glpi_phonesmodels" =>array("glpi_phones"=>"model"),
 	
 	"glpi_printersmodels" =>array("glpi_printers"=>"model",
-									"glpi_cartridges_printersmodels" =>"FK_glpi_dropdown_model_printers"),
+									"glpi_cartridges_printersmodels" =>"printersmodels_id"),
 	
 	"glpi_netpoints" =>array("glpi_networkports"=>"netpoint"),
 	
@@ -245,7 +245,7 @@ $RELATION=array(
 
 	"glpi_ocsservers" => array("glpi_ocslinks"=>"ocs_server_id"),
 
-	"glpi_printers" =>array("glpi_cartridges"=>"FK_glpi_printers"),
+	"glpi_printers" =>array("glpi_cartridges"=>"printers_id"),
 	
 	"glpi_profiles" =>array("glpi_users"=>"FK_profiles",
 				"glpi_profiles_users"=>"FK_profiles",

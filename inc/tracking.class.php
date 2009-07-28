@@ -659,7 +659,7 @@ class Job extends CommonDBTM{
 		// Set unset variables with are needed
 		$user=new User();
 		if ($user->getFromDB($input["users_id"])){
-			$input['users_id_location']=$user->fields['location'];
+			$input['users_id_location']=$user->fields['locations_id'];
 		}
 
 		// Set default dropdown

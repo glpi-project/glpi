@@ -59,7 +59,7 @@ class ConsumableType extends CommonDBTM {
 	function cleanDBonPurge($ID) {
 		global $DB;
 		// Delete cartridconsumablesges
-		$query = "DELETE FROM glpi_consumables WHERE (FK_glpi_consumables_type = '$ID')";
+		$query = "DELETE FROM glpi_consumables WHERE (consumablesitems_id = '$ID')";
 		$DB->query($query);
 	}
 
@@ -161,7 +161,7 @@ class ConsumableType extends CommonDBTM {
          echo "</td></tr>\n";
 
          echo "<tr class='tab_bg_1'><td>".$LANG['consumables'][36].": 	</td><td colspan='2'>\n";
-         dropdownValue("glpi_locations","location",$this->fields["location"],1,$this->fields["entities_id"]);
+         dropdownValue("glpi_locations","locations_id",$this->fields["locations_id"],1,$this->fields["entities_id"]);
          echo "</td></tr>\n";
 
          echo "<tr class='tab_bg_1'><td>".$LANG['consumables'][38].":</td><td colspan='2'>";
@@ -248,7 +248,7 @@ class Consumable extends CommonDBTM {
 	}
 
 	function prepareInputForAdd($input) {
-		return array("FK_glpi_consumables_type"=>$input["tID"],
+		return array("consumablesitems_id"=>$input["tID"],
 				"date_in"=>date("Y-m-d"));
 	}
 
@@ -256,7 +256,7 @@ class Consumable extends CommonDBTM {
 		// Add infocoms if exists for the licence
 		$ic=new Infocom();
 
-		if ($ic->getFromDBforDevice(CONSUMABLE_TYPE,$this->fields["FK_glpi_consumables_type"])){
+		if ($ic->getFromDBforDevice(CONSUMABLE_TYPE,$this->fields["consumablesitems_id"])){
 			unset($ic->fields["ID"]);
 			$ic->fields["items_id"]=$newID;
 			$ic->fields["itemtype"]=CONSUMABLE_ITEM_TYPE;
@@ -311,7 +311,7 @@ class Consumable extends CommonDBTM {
 	**/
 	function getEntityID () {
 		$ci=new ConsumableType();
-		$ci->getFromDB($this->fields["FK_glpi_consumables_type"]);
+		$ci->getFromDB($this->fields["consumablesitems_id"]);
 
 		return $ci->getEntityID();
 	}	

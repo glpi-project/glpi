@@ -273,9 +273,21 @@ function update0721to080() {
                               'glpi_profiles_users',)),
                      ),
 
+   'FK_glpi_consumables_type' => array(array('to' => 'consumablesitems_id',
+                           'noindex' => array('glpi_consumables'),
+                           'tables' => array('glpi_consumables',)),
+                     ),
    'FK_glpi_device' => array(array('to' => 'items_id',
                            'noindex' => array('glpi_logs'),
                            'tables' => array('glpi_logs')),
+                     ),
+   'FK_glpi_dropdown_model_printers' => array(array('to' => 'printersmodels_id',
+                           'noindex' => array('glpi_cartridges_printersmodels'),
+                           'tables' => array('glpi_cartridges_printersmodels',)),
+                     ),
+   'FK_glpi_printers' => array(array('to' => 'printers_id',
+                           'noindex' => array(''),
+                           'tables' => array('glpi_cartridges',)),
                      ),
    'FK_users' => array(array('to' => 'users_id',
                               'noindex' => array('glpi_displayprefs','glpi_bookmarks_users',
@@ -298,6 +310,13 @@ function update0721to080() {
    'id_user' => array(array('to' => 'users_id',
                            'noindex' => array(),
                            'tables' => array('glpi_consumables','glpi_reservations')),
+                     ),
+   'location' => array(array('to' => 'locations_id',
+                           'noindex' => array('glpi_netpoints'),
+                           'tables' => array('glpi_cartridgesitems','glpi_computers',
+                              'glpi_consumablesitems','glpi_netpoints','glpi_monitors',
+                              'glpi_networkequipments','glpi_peripherals','glpi_phones',
+                              'glpi_printers','glpi_users',)),
                      ),
    'on_device' => array(array('to' => 'items_id',
                            'noindex' => array('glpi_networkports'),
@@ -332,6 +351,14 @@ function update0721to080() {
                               'glpi_networkequipments','glpi_peripherals','glpi_phones',
                               'glpi_printers','glpi_softwares')),
                      ),
+
+   'FK_glpi_cartridges_type' => array(array('to' => 'cartridgesitems_id',
+                           'noindex' => array(''),
+                           'tables' => array('glpi_cartridges',
+                              'glpi_cartridges_printersmodels')),
+                     ),
+
+
    );
    foreach ($foreignkeys as $oldname => $newnames) {
       foreach ($newnames as $tab){
@@ -363,6 +390,8 @@ function update0721to080() {
       }
    }
 
+   /// TODO Update glpi_ocsadmininfoslinks table for  : location -> locations_id
+   /// TODO Update tracking bookmarks for new columns fields
    
 
 

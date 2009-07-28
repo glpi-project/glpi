@@ -272,11 +272,11 @@ class Computer extends CommonDBTM {
 
 
 			// Update loction of attached items
-			if ($updates[$i]=="location" && $this->fields["location"]!=0 && $CFG_GLPI["autoupdate_link_location"]){
+			if ($updates[$i]=="locations_id" && $this->fields["locations_id"]!=0 && $CFG_GLPI["autoupdate_link_location"]){
 				$items=array(PRINTER_TYPE,MONITOR_TYPE,PERIPHERAL_TYPE,PHONE_TYPE);
 				$ci=new CommonItem();
 				$update_done=false;
-				$updates2[0]="location";
+				$updates2[0]="locations_id";
 
 				foreach ($items as $t){
 					$query = "SELECT * 
@@ -292,9 +292,9 @@ class Computer extends CommonDBTM {
 
 								$ci->getFromDB($t,$tID);
 								if (!$ci->getField('is_global')){
-									if ($ci->getField('location')!=$this->fields["location"]){
+									if ($ci->getField('locations_id')!=$this->fields["locations_id"]){
 										$tmp["ID"]=$ci->getField('ID');
-										$tmp["location"]=$this->fields["location"];
+										$tmp["locations_id"]=$this->fields["locations_id"];
 										$ci->obj->update($tmp);
 										$update_done=true;
 									}
@@ -619,7 +619,7 @@ class Computer extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td >".$LANG['common'][15].": 	</td>";
       echo "<td >";
-      dropdownValue("glpi_locations", "location", $this->fields["location"],1,$this->fields["entities_id"]);
+      dropdownValue("glpi_locations", "locations_id", $this->fields["locations_id"],1,$this->fields["entities_id"]);
       echo "</td>";
       
       echo "<td>".$LANG['common'][35].":</td><td>";

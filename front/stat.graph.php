@@ -189,7 +189,7 @@ switch($_GET["type"]){
 		$val1=$_GET["ID"];
 		$val2=$_GET["champ"];
 	
-		$table=str_replace("dropdown_type","type_computers",str_replace("location","locations","glpi_dropdown_".$_GET["champ"]));
+		$table=getTableNameForForeignKeyField($_GET["champ"]);
 	
 	
 		$next=getNextItem($table,$_GET["ID"]);

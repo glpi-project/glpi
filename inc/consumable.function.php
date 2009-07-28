@@ -95,7 +95,7 @@ function showConsumables ($tID,$show_old=0) {
 
 		$query = "SELECT count(*) AS COUNT 
 			FROM glpi_consumables 
-			WHERE (FK_glpi_consumables_type = '$tID')";
+			WHERE (consumablesitems_id = '$tID')";
 	
 		if ($result = $DB->query($query)) {
 			if ($DB->result($result,0,0)!=0) { 
@@ -157,7 +157,7 @@ function showConsumables ($tID,$show_old=0) {
 	
 		$query = "SELECT glpi_consumables.* $addselect 
 			FROM glpi_consumables $leftjoin 
-			WHERE (FK_glpi_consumables_type = '$tID') $where";
+			WHERE (consumablesitems_id = '$tID') $where";
 	
 		if ($result = $DB->query($query)) {			
 			$number=$DB->numrows($result);
@@ -271,7 +271,7 @@ function countConsumables($tID,$alarm,$nohtml=0) {
  **/
 function getConsumablesNumber($tID){
 	global $DB;
-	$query = "SELECT ID FROM glpi_consumables WHERE ( FK_glpi_consumables_type = '$tID')";
+	$query = "SELECT ID FROM glpi_consumables WHERE ( consumablesitems_id = '$tID')";
 	$result = $DB->query($query);
 	return $DB->numrows($result);
 }
@@ -288,7 +288,7 @@ function getConsumablesNumber($tID){
  **/
 function getOldConsumablesNumber($tID){
 	global $DB;
-	$query = "SELECT ID FROM glpi_consumables WHERE ( FK_glpi_consumables_type = '$tID'  AND date_out IS NOT NULL)";
+	$query = "SELECT ID FROM glpi_consumables WHERE ( consumablesitems_id = '$tID'  AND date_out IS NOT NULL)";
 	$result = $DB->query($query);
 	return $DB->numrows($result);
 }
@@ -304,7 +304,7 @@ function getOldConsumablesNumber($tID){
  **/
 function getUnusedConsumablesNumber($tID){
 	global $DB;
-	$query = "SELECT ID FROM glpi_consumables WHERE ( FK_glpi_consumables_type = '$tID'  AND date_out IS NULL)";
+	$query = "SELECT ID FROM glpi_consumables WHERE ( consumablesitems_id = '$tID'  AND date_out IS NULL)";
 	$result = $DB->query($query);
 	return $DB->numrows($result);
 }
@@ -369,34 +369,34 @@ function showConsumableSummary(){
 
 	if (!haveRight("consumable","r")) return false;
 
-	$query = "SELECT COUNT(*) AS COUNT, FK_glpi_consumables_type, users_id 
+	$query = "SELECT COUNT(*) AS COUNT, consumablesitems_id, users_id 
 		FROM glpi_consumables 
 		WHERE date_out IS NOT NULL 
-			AND FK_glpi_consumables_type IN (SELECT ID 
+			AND consumablesitems_id IN (SELECT ID 
 							FROM glpi_consumablesitems 
 							".getEntitiesRestrictRequest("WHERE","glpi_consumablesitems").") 
-		GROUP BY users_id,FK_glpi_consumables_type";
+		GROUP BY users_id,consumablesitems_id";
 	$used=array();
 
 	if ($result=$DB->query($query)){
 		if ($DB->numrows($result))
 			while ($data=$DB->fetch_array($result))
-				$used[$data["users_id"]][$data["FK_glpi_consumables_type"]]=$data["COUNT"];
+				$used[$data["users_id"]][$data["consumablesitems_id"]]=$data["COUNT"];
 	}
 
-	$query = "SELECT COUNT(*) AS COUNT, FK_glpi_consumables_type 
+	$query = "SELECT COUNT(*) AS COUNT, consumablesitems_id 
 		FROM glpi_consumables 
 		WHERE date_out IS NULL 
-			AND FK_glpi_consumables_type IN (SELECT ID 
+			AND consumablesitems_id IN (SELECT ID 
 							FROM glpi_consumablesitems 
 							".getEntitiesRestrictRequest("WHERE","glpi_consumablesitems").") 
-		GROUP BY FK_glpi_consumables_type";
+		GROUP BY consumablesitems_id";
 	$new=array();
 
 	if ($result=$DB->query($query)){
 		if ($DB->numrows($result))
 			while ($data=$DB->fetch_array($result))
-				$new[$data["FK_glpi_consumables_type"]]=$data["COUNT"];
+				$new[$data["consumablesitems_id"]]=$data["COUNT"];
 	}
 
 	$types=array();

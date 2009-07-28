@@ -42,7 +42,7 @@ if (!defined('GLPI_ROOT')) {
 // FUNCTIONS Setup
 
 
-function showDropdownList($target, $tablename,$entities_id='',$location=-1){
+function showDropdownList($target, $tablename,$entities_id='',$locations_id=-1){
 	global $DB,$CFG_GLPI,$LANG;
 	
 	if (!haveRight("dropdown", "w")&&!haveRight("entity_dropdown", "w"))
@@ -63,12 +63,12 @@ function showDropdownList($target, $tablename,$entities_id='',$location=-1){
 	}
 
 	if ($tablename=="glpi_netpoints") {
-		if ($location > 0) {
-			$where = " WHERE location='$location'";			
-		} else if ($location < 0) {
+		if ($locations_id > 0) {
+			$where = " WHERE locations_id='$location'";
+		} else if ($locations_id < 0) {
 			$where = getEntitiesRestrictRequest(" WHERE ",$tablename,'',$entity_restrict);
 		} else {
-			$where = " WHERE location=0 " . getEntitiesRestrictRequest(" AND ",$tablename,'',$entity_restrict);			
+			$where = " WHERE locations_id=0 " . getEntitiesRestrictRequest(" AND ",$tablename,'',$entity_restrict);
 		}
 	} else if (in_array($tablename, $CFG_GLPI["specif_entities_tables"])) {
 		$where=getEntitiesRestrictRequest(" WHERE ",$tablename,'',$entity_restrict);
@@ -96,7 +96,7 @@ function showDropdownList($target, $tablename,$entities_id='',$location=-1){
 			echo "</table>";
 			echo "<input type='hidden' name='which' value='$tablename'>";
 			echo "<input type='hidden' name='entities_id' value='$entity_restrict'>";
-			echo "<input type='hidden' name='value2' value='$location'>";
+			echo "<input type='hidden' name='value2' value='$locations_id'>";
 			
 			echo "<div>";
 			echo "<table width='950' class='tab_glpi'>";
@@ -236,7 +236,7 @@ function showFormTreeDown($target, $tablename, $human, $ID, $value2 = '', $where
 	echo "</div>";
 }
 
-function showFormNetpoint($target, $human, $ID, $entities_id='',$location=0) {
+function showFormNetpoint($target, $human, $ID, $entities_id='',$locations_id=0) {
 
 	global $DB, $CFG_GLPI, $LANG;
 
@@ -252,12 +252,12 @@ function showFormNetpoint($target, $human, $ID, $entities_id='',$location=0) {
 	} else {	
 		$entity_restrict = $_SESSION["glpiactive_entity"];
 	}
-	if ($location>0) {
-		$numberof = countElementsInTable($tablename, "location=$location ");
-	} else if ($location<0){
+	if ($locations_id>0) {
+		$numberof = countElementsInTable($tablename, "locations_id=$locations_id ");
+	} else if ($locations_id<0){
 		$numberof = countElementsInTable($tablename, getEntitiesRestrictRequest(" ",$tablename,'',$entity_restrict));
 	} else {
-		$numberof = countElementsInTable($tablename, "location=0 ".getEntitiesRestrictRequest(" AND ",$tablename,'',$entity_restrict));
+		$numberof = countElementsInTable($tablename, "locations_id=0 ".getEntitiesRestrictRequest(" AND ",$tablename,'',$entity_restrict));
 	}
 
 	echo "<div class='center'>&nbsp;";
@@ -270,7 +270,7 @@ function showFormNetpoint($target, $human, $ID, $entities_id='',$location=0) {
 		echo "<input type='hidden' name='which' value='$tablename'>";
 		echo "<input type='hidden' name='entities_id' value='$entity_restrict'>";
 
-		dropdownNetpoint("ID", $ID, $location, 0, $entity_restrict);
+		dropdownNetpoint("ID", $ID, $locations_id, 0, $entity_restrict);
 
 		// on ajoute un input text pour entrer la valeur modifier
 		echo "&nbsp;&nbsp;<input type='image' class='calendrier'  src=\"" . $CFG_GLPI["root_doc"] . "/pics/puce.gif\" alt='' title='' name='fillright' value='fillright'>&nbsp;";
@@ -282,12 +282,12 @@ function showFormNetpoint($target, $human, $ID, $entities_id='',$location=0) {
 			$entity = 0;
 			if ($DB->numrows($result) == 1) {
 				$value = $DB->result($result, 0, "name");
-				$loc = $DB->result($result, 0, "location");
+				$loc = $DB->result($result, 0, "locations_id");
 				$comments = $DB->result($result, 0, "comments");
 			}
 			echo "<br>";
 			echo $LANG['common'][15] . ": ";
-			dropdownValue("glpi_locations", "value2", $location, 0, $entity_restrict);
+			dropdownValue("glpi_locations", "value2", $locations_id, 0, $entity_restrict);
 			
 			echo $LANG['networking'][52] . ": ";
 			autocompletionTextField('value',$tablename,'name',$value,40,$entity_restrict,-1,'maxlength=\'100\''); 
@@ -303,7 +303,7 @@ function showFormNetpoint($target, $human, $ID, $entities_id='',$location=0) {
 			//
 			echo "<input type='submit' name='delete' value=\"" . $LANG['buttons'][6] . "\" class='submit'>";
 		} else {
-			echo "<input type='hidden' name='value2' value='$location'>";
+			echo "<input type='hidden' name='value2' value='$locations_id'>";
 			echo "</td><td align='center' class='tab_bg_2' width='202'>&nbsp;";			
 		}
 		echo "</td></tr>";
@@ -314,7 +314,7 @@ function showFormNetpoint($target, $human, $ID, $entities_id='',$location=0) {
 	echo "<input type='hidden' name='which' value='$tablename'>";
 	echo "<input type='hidden' name='tablename' value='$tablename' >";
 	echo "<input type='hidden' name='entities_id' value='$entity_restrict'>";
-	echo "<input type='hidden' name='value2' value='$location'>";
+	echo "<input type='hidden' name='value2' value='$locations_id'>";
 
 	echo "<table class='tab_cadre_fixe' cellpadding='1'>";
 	echo "<tr><td align='center'  class='tab_bg_1'>";
@@ -334,7 +334,7 @@ function showFormNetpoint($target, $human, $ID, $entities_id='',$location=0) {
 
 	echo "<form action=\"$target\" method='post'>";
 	echo "<input type='hidden' name='which' value='$tablename'>";
-	echo "<input type='hidden' name='value2' value='$location'>";
+	echo "<input type='hidden' name='value2' value='$locations_id'>";
 	echo "<input type='hidden' name='tablename' value='$tablename' >";
 	echo "<input type='hidden' name='entities_id' value='$entity_restrict'>";
 	
@@ -357,7 +357,7 @@ function showFormNetpoint($target, $human, $ID, $entities_id='',$location=0) {
 	echo "</table></form>";
 	
 	if (strpos($target,'setup.dropdowns.php') && $numberof>0){
-		echo "<a href='$target?which=$tablename&amp;mass_deletion=1&amp;entities_id=$entities_id&amp;value2=$location'>".$LANG['title'][42]."</a>";
+		echo "<a href='$target?which=$tablename&amp;mass_deletion=1&amp;entities_id=$entities_id&amp;value2=$locations_id'>".$LANG['title'][42]."</a>";
 	}
 	
 	echo "</div>";
@@ -500,7 +500,7 @@ function updateDropdown($input) {
 	
 	if ($input["tablename"] == "glpi_netpoints") {
 		$query = "UPDATE `".$input["tablename"]."` 
-			SET name = '".$input["value"]."', location = '".$input["value2"]."', comments='".$input["comments"]."' 
+			SET name = '".$input["value"]."', locations_id = '".$input["value2"]."', comments='".$input["comments"]."' 
 			WHERE ID = '".$input["ID"]."'";
 
 	} else {
@@ -542,7 +542,7 @@ function getDropdownID($input){
 		$query_twin="";
 		if ($input["tablename"] == "glpi_netpoints") {
 			$query_twin="SELECT ID FROM `".$input["tablename"]."` 
-				WHERE $add_entity_field_twin name= '".$input["value"]."' AND location = '".$input["value2"]."'";
+				WHERE $add_entity_field_twin name= '".$input["value"]."' AND locations_id = '".$input["value2"]."'";
 		} else {
 			if (in_array($input["tablename"], $CFG_GLPI["dropdowntree_tables"])) {
             $parentIDfield=getForeignKeyFieldForTable($input["tablename"]);
@@ -680,7 +680,7 @@ function addDropdown($input) {
 		}
 		$query="";
 		if ($input["tablename"] == "glpi_netpoints") {
-			$query = "INSERT INTO `".$input["tablename"]."` (" . $add_entity_field . "name,location,comments) 
+			$query = "INSERT INTO `".$input["tablename"]."` (" . $add_entity_field . "name,locations_id,comments) 
 				VALUES (" . $add_entity_value . "'" . $input["value"] . "', '" . $input["value2"] . "', '" . $input["comments"] . "')";
 		} else {
 			if (in_array($input["tablename"], $CFG_GLPI["dropdowntree_tables"])) {

@@ -401,7 +401,7 @@ function showNetportForm($target, $ID, $ondevice, $devtype, $several) {
 		echo "<tr class='tab_bg_1'><td>" . $LANG['networking'][51] . ":</td>";
 
 		echo "<td  colspan='2'>";
-		dropdownNetpoint("netpoint", $netport->fields["netpoint"], $netport->location, 1, $netport->entities_id, ($ID ? $netport->fields["itemtype"] : $devtype));
+		dropdownNetpoint("netpoint", $netport->fields["netpoint"], $netport->locations_id, 1, $netport->entities_id, ($ID ? $netport->fields["itemtype"] : $devtype));
 		echo "</td></tr>";
 	}
 	if ($ID) {

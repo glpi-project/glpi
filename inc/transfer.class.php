@@ -698,7 +698,7 @@ class Transfer extends CommonDBTM{
 		if ($this->options['keep_cartridges_type']){
 			if (isset($this->item_search[PRINTER_TYPE])){
 				$query="SELECT FK_glpi_cartridges_type FROM glpi_cartridges
-				WHERE FK_glpi_printers IN ".$this->item_search[PRINTER_TYPE];
+				WHERE printers_id IN ".$this->item_search[PRINTER_TYPE];
 				if ($result = $DB->query($query)) {
 					if ($DB->numrows($result)>0) { 
 						while ($data=$DB->fetch_array($result)){
@@ -850,8 +850,8 @@ class Transfer extends CommonDBTM{
 				// Transfer Item
 				$input=array("ID"=>$newID,'entities_id' => $this->to);
 				// Manage Location dropdown
-				if (isset($cinew->obj->fields['location'])){
-					$input['location']=$this->transferDropdownLocation($cinew->obj->fields['location']);
+				if (isset($cinew->obj->fields['locations_id'])){
+					$input['locations_id']=$this->transferDropdownLocation($cinew->obj->fields['locations_id']);
 				}
 				// Transfer Document file if exists (not to do if same entity) / Only for copy document
 				if ($type==DOCUMENT_TYPE&&$ID!=$newID
@@ -917,8 +917,8 @@ class Transfer extends CommonDBTM{
 		global $DB;
 
 		if ($locID>0){
-			if (isset($this->already_transfer['location'][$locID])){
-				return $this->already_transfer['location'][$locID];
+			if (isset($this->already_transfer['locations_id'][$locID])){
+				return $this->already_transfer['locations_id'][$locID];
 			} else { // Not already transfer
 				// Search init item
 				$query="SELECT * FROM glpi_locations WHERE ID='$locID'";
@@ -932,7 +932,7 @@ class Transfer extends CommonDBTM{
 								// Found : -> use it
 								if ($DB->numrows($result_search)>0){
 									$newID=$DB->result($result_search,0,'ID');
-									$this->addToAlreadyTransfer('location',$locID,$newID);
+									$this->addToAlreadyTransfer('locations_id',$locID,$newID);
 									return $newID;
 								}
 							}
@@ -950,7 +950,7 @@ class Transfer extends CommonDBTM{
 							}
 							// add item
 							$newID=addDropdown($input);
-							$this->addToAlreadyTransfer('location',$locID,$newID);
+							$this->addToAlreadyTransfer('locations_id',$locID,$newID);
 							return $newID;
 					} 
 				}
@@ -978,9 +978,9 @@ class Transfer extends CommonDBTM{
 					if ($DB->numrows($result)){
 						$data=$DB->fetch_array($result);
 						$data=addslashes_deep($data);
-						$locID=$this->transferDropdownLocation($data['location']);
-						// Search if the location already exists in the destination entity
-							$query="SELECT ID FROM glpi_netpoints WHERE entities_id='".$this->to."' AND name='".$data['name']."' AND location='$locID'";	
+						$locID=$this->transferDropdownLocation($data['locations_id']);
+						// Search if the locations_id already exists in the destination entity
+							$query="SELECT ID FROM glpi_netpoints WHERE entities_id='".$this->to."' AND name='".$data['name']."' AND locations_id='$locID'";	
 							if ($result_search=$DB->query($query)){
 								// Found : -> use it
 								if ($DB->numrows($result_search)>0){
@@ -1020,7 +1020,7 @@ class Transfer extends CommonDBTM{
 		// Get cartrdiges linked
 		$query = "SELECT *
 			FROM glpi_cartridges 
-			WHERE glpi_cartridges.FK_glpi_printers = '$ID'";
+			WHERE glpi_cartridges.printers_id = '$ID'";
 		if ($result = $DB->query($query)) {
 			if ($DB->numrows($result)>0) { 
 				$cart=new Cartridge();
@@ -1042,7 +1042,7 @@ class Transfer extends CommonDBTM{
 							$query="SELECT count(*) AS CPT 
 								FROM glpi_cartridges
 								WHERE glpi_cartridges.FK_glpi_cartridges_type='".$data['FK_glpi_cartridges_type']."' 
-								AND glpi_cartridges.FK_glpi_printers > 0 AND glpi_cartridges.FK_glpi_printers NOT IN ".$this->item_search[PRINTER_TYPE];
+								AND glpi_cartridges.printers_id > 0 AND glpi_cartridges.printers_id NOT IN ".$this->item_search[PRINTER_TYPE];
 							$result_search=$DB->query($query);
 							// Is the carttype will be completly transfer ?
 							if ($DB->result($result_search,0,'CPT')==0){
@@ -1084,7 +1084,7 @@ class Transfer extends CommonDBTM{
 						// If same printer : delete cartridges
 						if ($ID==$newID){
 							$del_query="DELETE FROM glpi_cartridges 
-								WHERE FK_glpi_printers = '$ID'";
+								WHERE printers_id = '$ID'";
 							$DB->query($del_query);
 						}
 						$need_clean_process=true;
@@ -2081,7 +2081,7 @@ class Transfer extends CommonDBTM{
 					$cartype=new CartridgeType();
 					while ($data=$DB->fetch_array($result)) {
 						$data = addslashes_deep($data);
-						$cartype->addCompatibleType($newID,$data["FK_glpi_dropdown_model_printers"]);
+						$cartype->addCompatibleType($newID,$data["printersmodels_id"]);
 					}
 				}
 			}
