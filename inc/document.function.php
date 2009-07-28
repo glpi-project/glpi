@@ -569,7 +569,7 @@ function getDocumentLink($filename,$params=""){
 
 	if (count($splitter)==2) {
 
-		$query="SELECT * FROM glpi_type_docs WHERE ext LIKE '".$splitter[0]."' AND icon <> ''";
+		$query="SELECT * FROM glpi_documentstypes WHERE ext LIKE '".$splitter[0]."' AND icon <> ''";
 
 		if ($result=$DB->query($query))
 			if ($DB->numrows($result)>0){
@@ -641,7 +641,7 @@ function isValidDoc($filename){
 	$splitter=explode(".",$filename);
 	$ext=end($splitter);
 
-	$query="SELECT * FROM glpi_type_docs WHERE ext LIKE '$ext' AND upload='1'";
+	$query="SELECT * FROM glpi_documentstypes WHERE ext LIKE '$ext' AND upload='1'";
 	if ($result = $DB->query($query))
 		if ($DB->numrows($result)>0)
 			return strtoupper($ext);

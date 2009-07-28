@@ -2909,7 +2909,7 @@ $SEARCH_OPTION[CARTRIDGE_TYPE][80]['name']=$LANG['entity'][0];
 
 $SEARCH_OPTION[TYPEDOC_TYPE]['common']=$LANG['common'][32];
 
-$SEARCH_OPTION[TYPEDOC_TYPE][1]['table']='glpi_type_docs';
+$SEARCH_OPTION[TYPEDOC_TYPE][1]['table']='glpi_documentstypes';
 $SEARCH_OPTION[TYPEDOC_TYPE][1]['field']='name';
 $SEARCH_OPTION[TYPEDOC_TYPE][1]['linkfield']='name';
 $SEARCH_OPTION[TYPEDOC_TYPE][1]['name']=$LANG['common'][16];
@@ -2917,27 +2917,27 @@ $SEARCH_OPTION[TYPEDOC_TYPE][1]['datatype']='itemlink';
 $SEARCH_OPTION[TYPEDOC_TYPE][1]['itemlink_type']=TYPEDOC_TYPE;
 
 
-$SEARCH_OPTION[TYPEDOC_TYPE][2]['table']='glpi_type_docs';
+$SEARCH_OPTION[TYPEDOC_TYPE][2]['table']='glpi_documentstypes';
 $SEARCH_OPTION[TYPEDOC_TYPE][2]['field']='ID';
 $SEARCH_OPTION[TYPEDOC_TYPE][2]['linkfield']='';
 $SEARCH_OPTION[TYPEDOC_TYPE][2]['name']=$LANG['common'][2];
 
-$SEARCH_OPTION[TYPEDOC_TYPE][3]['table']='glpi_type_docs';
+$SEARCH_OPTION[TYPEDOC_TYPE][3]['table']='glpi_documentstypes';
 $SEARCH_OPTION[TYPEDOC_TYPE][3]['field']='ext';
 $SEARCH_OPTION[TYPEDOC_TYPE][3]['linkfield']='ext';
 $SEARCH_OPTION[TYPEDOC_TYPE][3]['name']=$LANG['document'][9];
 
-$SEARCH_OPTION[TYPEDOC_TYPE][6]['table']='glpi_type_docs';
+$SEARCH_OPTION[TYPEDOC_TYPE][6]['table']='glpi_documentstypes';
 $SEARCH_OPTION[TYPEDOC_TYPE][6]['field']='icon';
 $SEARCH_OPTION[TYPEDOC_TYPE][6]['linkfield']='';
 $SEARCH_OPTION[TYPEDOC_TYPE][6]['name']=$LANG['document'][10];
 
-$SEARCH_OPTION[TYPEDOC_TYPE][4]['table']='glpi_type_docs';
+$SEARCH_OPTION[TYPEDOC_TYPE][4]['table']='glpi_documentstypes';
 $SEARCH_OPTION[TYPEDOC_TYPE][4]['field']='mime';
 $SEARCH_OPTION[TYPEDOC_TYPE][4]['linkfield']='mime';
 $SEARCH_OPTION[TYPEDOC_TYPE][4]['name']=$LANG['document'][4];
 
-$SEARCH_OPTION[TYPEDOC_TYPE][5]['table']='glpi_type_docs';
+$SEARCH_OPTION[TYPEDOC_TYPE][5]['table']='glpi_documentstypes';
 $SEARCH_OPTION[TYPEDOC_TYPE][5]['field']='upload';
 $SEARCH_OPTION[TYPEDOC_TYPE][5]['linkfield']='';
 $SEARCH_OPTION[TYPEDOC_TYPE][5]['name']=$LANG['document'][15];

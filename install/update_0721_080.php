@@ -49,8 +49,8 @@ function update0721to080() {
       'glpi_alerts'                       => 'glpi_alerts',
       'glpi_auth_ldap'                    => 'glpi_authldaps',
       'glpi_auth_ldap_replicate'          => 'glpi_authldapsreplicates',
-      'glpi_dropdown_auto_update'         => 'glpi_autoupdatesystems',
       'glpi_auth_mail'                    => 'glpi_authmails',
+      'glpi_dropdown_auto_update'         => 'glpi_autoupdatesystems',
       'glpi_bookmark'                     => 'glpi_bookmarks',
       'glpi_display_default'              => 'glpi_bookmarks_users',
       'glpi_dropdown_budget'              => 'glpi_budgets',
@@ -58,11 +58,11 @@ function update0721to080() {
       'glpi_cartridges_type'              => 'glpi_cartridgesitems',
       'glpi_cartridges_assoc'             => 'glpi_cartridges_printersmodels',
       'glpi_dropdown_cartridge_type'      => 'glpi_cartridgesitemstypes',
-      'glpi_computer_device'              => 'glpi_computers_devices',
       'glpi_computers'                    => 'glpi_computers',
       'glpi_computerdisks'                => 'glpi_computersdisks',
       'glpi_dropdown_model'               => 'glpi_computersmodels',
       'glpi_type_computers'               => 'glpi_computerstypes',
+      'glpi_computer_device'              => 'glpi_computers_devices',
       'glpi_connect_wire'                 => 'glpi_computers_items',
       'glpi_inst_software'                => 'glpi_computers_softwaresversions',
       'glpi_config'                       => 'glpi_configs',
@@ -93,6 +93,7 @@ function update0721to080() {
       'glpi_display'                      => 'glpi_displayprefs',
       'glpi_docs'                         => 'glpi_documents',
       'glpi_dropdown_rubdocs'             => 'glpi_documentscategories',
+      'glpi_type_docs'                    => 'glpi_documentstypes',
       'glpi_doc_device'                   => 'glpi_documents_items',
       'glpi_dropdown_domain'              => 'glpi_domains',
       'glpi_entities'                     => 'glpi_entities',
@@ -103,13 +104,13 @@ function update0721to080() {
       'glpi_users_groups'                 => 'glpi_groups_users',
       'glpi_infocoms'                     => 'glpi_infocoms',
       'glpi_dropdown_interface'           => 'glpi_interfaces',
-      'glpi_dropdown_kbcategories'        => 'glpi_knowbaseitemscategories',
       'glpi_kbitems'                      => 'glpi_knowbaseitems',
+      'glpi_dropdown_kbcategories'        => 'glpi_knowbaseitemscategories',
       'glpi_links'                        => 'glpi_links',
       'glpi_links_device'                 => 'glpi_links_itemtypes',
       'glpi_dropdown_locations'           => 'glpi_locations',
       'glpi_history'                      => 'glpi_logs',
-      'glpi_mailgate '                    => 'glpi_mailcollectors',
+      'glpi_mailgate'                     => 'glpi_mailcollectors',
       'glpi_mailing'                      => 'glpi_mailingsettings',
       'glpi_dropdown_manufacturer'        => 'glpi_manufacturers',
       'glpi_monitors'                     => 'glpi_monitors',
@@ -126,8 +127,8 @@ function update0721to080() {
       'glpi_networking_wire'              => 'glpi_networkports_networkports',
       'glpi_dropdown_network'             => 'glpi_networks',
       'glpi_ocs_admin_link'               => 'glpi_ocsadmininfoslinks',
-      'glpi_ocs_config'                   => 'glpi_ocsservers',
       'glpi_ocs_link'                     => 'glpi_ocslinks',
+      'glpi_ocs_config'                   => 'glpi_ocsservers',
       'glpi_dropdown_os'                  => 'glpi_operatingsystems',
       'glpi_dropdown_os_sp'               => 'glpi_operatingsystemsservicepacks',
       'glpi_dropdown_os_version'          => 'glpi_operatingsystemsversions',
@@ -146,27 +147,27 @@ function update0721to080() {
       'glpi_users_profiles'               => 'glpi_profiles_users',
       'glpi_registry'                     => 'glpi_registrykeys',
       'glpi_reminder'                     => 'glpi_reminders',
-      'glpi_reservation_item'             => 'glpi_reservationsitems',
       'glpi_reservation_resa'             => 'glpi_reservations',
+      'glpi_reservation_item'             => 'glpi_reservationsitems',
       'glpi_rules_descriptions'           => 'glpi_rules',
       'glpi_rules_actions'                => 'glpi_rulesactions',
-      'glpi_rule_cache_manufacturer'      => 'glpi_rulescachemanufacturers',
       'glpi_rule_cache_model_computer'    => 'glpi_rulescachecomputersmodels',
+      'glpi_rule_cache_type_computer'     => 'glpi_rulescachecomputerstypes',
+      'glpi_rule_cache_manufacturer'      => 'glpi_rulescachemanufacturers',
       'glpi_rule_cache_model_monitor'     => 'glpi_rulescachemonitorsmodels',
+      'glpi_rule_cache_type_monitor'      => 'glpi_rulescachemonitorstypes',
       'glpi_rule_cache_model_networking'  => 'glpi_rulescachenetworkequipmentsmodels',
-      'glpi_rule_cache_model_peripheral'  => 'glpi_rulescacheperipheralsmodels',
-      'glpi_rule_cache_model_phone'       => 'glpi_rulescachephonesmodels',
-      'glpi_rule_cache_model_printer'     => 'glpi_rulescacheprintersmodels',
+      'glpi_rule_cache_type_networking'   => 'glpi_rulescachenetworkequipmentstypes',
       'glpi_rule_cache_os'                => 'glpi_rulescacheoperatingsystems',
       'glpi_rule_cache_os_sp'             => 'glpi_rulescacheoperatingsystemsservicepacks',
       'glpi_rule_cache_os_version'        => 'glpi_rulescacheoperatingsystemsversions',
-      'glpi_rule_cache_software'          => 'glpi_rulescachesoftwares',
-      'glpi_rule_cache_type_computer'     => 'glpi_rulescachecomputerstypes',
-      'glpi_rule_cache_type_monitor'      => 'glpi_rulescachemonitorstypes',
-      'glpi_rule_cache_type_networking'   => 'glpi_rulescachenetworkequipmentstypes',
+      'glpi_rule_cache_model_peripheral'  => 'glpi_rulescacheperipheralsmodels',
       'glpi_rule_cache_type_peripheral'   => 'glpi_rulescacheperipheralstypes',
+      'glpi_rule_cache_model_phone'       => 'glpi_rulescachephonesmodels',
       'glpi_rule_cache_type_phone'        => 'glpi_rulescachephonestypes',
+      'glpi_rule_cache_model_printer'     => 'glpi_rulescacheprintersmodels',
       'glpi_rule_cache_type_printer'      => 'glpi_rulescacheprinterstypes',
+      'glpi_rule_cache_software'          => 'glpi_rulescachesoftwares',
       'glpi_rules_criterias'              => 'glpi_rulescriterias',
       'glpi_rules_ldap_parameters'        => 'glpi_rulesldapparameters',
       'glpi_software'                     => 'glpi_softwares',
@@ -221,11 +222,11 @@ function update0721to080() {
       $DB->query($query) or die("0.80 alter clean glpi_configs table " . $LANG['update'][90] . $DB->error());
 	}	
 
-   displayMigrationMessage("080", $LANG['update'][141] . ' - glpi_mailgate'); // Updating schema
+   displayMigrationMessage("080", $LANG['update'][141] . ' - glpi_mailcollectors'); // Updating schema
 
-	if (!FieldExists("glpi_mailgate", "active")) {
-		$query = "ALTER TABLE `glpi_mailgate` ADD `active` INT( 1 ) NOT NULL DEFAULT '1' ;";
-      $DB->query($query) or die("0.80 add active in glpi_mailgate " . $LANG['update'][90] . $DB->error());
+	if (!FieldExists("glpi_mailcollectors", "active")) {
+		$query = "ALTER TABLE `glpi_mailcollectors` ADD `active` INT( 1 ) NOT NULL DEFAULT '1' ;";
+      $DB->query($query) or die("0.80 add active in glpi_mailcollectors " . $LANG['update'][90] . $DB->error());
 	}
 
    // Change mailgate search pref : add ative

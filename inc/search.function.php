@@ -2404,7 +2404,7 @@ function giveItem ($type,$ID,$data,$num,$meta=0){
 			}
 			break;
 
-		case "glpi_type_docs.icon" :
+		case "glpi_documentstypes.icon" :
 			if (!empty($data[$NAME.$num])){
 				return "<img class='middle' alt='' src='".$CFG_GLPI["typedoc_icon_dir"]."/".$data[$NAME.$num]."'>";
 			}

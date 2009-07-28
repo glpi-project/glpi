@@ -1,4 +1,4 @@
-#GLPI Dump database on 2009-07-27 22:49
+#GLPI Dump database on 2009-07-28 10:04
 
 ### Dump table glpi_alerts
 
@@ -1073,6 +1073,91 @@ CREATE TABLE `glpi_documentscategories` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
+### Dump table glpi_documentstypes
+
+DROP TABLE IF EXISTS `glpi_documentstypes`;
+CREATE TABLE `glpi_documentstypes` (
+  `ID` int(11) NOT NULL auto_increment,
+  `name` varchar(255) collate utf8_unicode_ci default NULL,
+  `ext` varchar(255) collate utf8_unicode_ci default NULL,
+  `icon` varchar(255) collate utf8_unicode_ci default NULL,
+  `mime` varchar(255) collate utf8_unicode_ci default NULL,
+  `upload` smallint(6) NOT NULL default '1',
+  `date_mod` datetime default NULL,
+  PRIMARY KEY  (`ID`),
+  UNIQUE KEY `extension` (`ext`),
+  KEY `name` (`name`),
+  KEY `upload` (`upload`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+INSERT INTO `glpi_documentstypes` VALUES ('1','JPEG','jpg','jpg-dist.png','','1','2004-12-13 19:47:21');
+INSERT INTO `glpi_documentstypes` VALUES ('2','PNG','png','png-dist.png','','1','2004-12-13 19:47:21');
+INSERT INTO `glpi_documentstypes` VALUES ('3','GIF','gif','gif-dist.png','','1','2004-12-13 19:47:21');
+INSERT INTO `glpi_documentstypes` VALUES ('4','BMP','bmp','bmp-dist.png','','1','2004-12-13 19:47:21');
+INSERT INTO `glpi_documentstypes` VALUES ('5','Photoshop','psd','psd-dist.png','','1','2004-12-13 19:47:21');
+INSERT INTO `glpi_documentstypes` VALUES ('6','TIFF','tif','tif-dist.png','','1','2004-12-13 19:47:21');
+INSERT INTO `glpi_documentstypes` VALUES ('7','AIFF','aiff','aiff-dist.png','','1','2004-12-13 19:47:21');
+INSERT INTO `glpi_documentstypes` VALUES ('8','Windows Media','asf','asf-dist.png','','1','2004-12-13 19:47:21');
+INSERT INTO `glpi_documentstypes` VALUES ('9','Windows Media','avi','avi-dist.png','','1','2004-12-13 19:47:21');
+INSERT INTO `glpi_documentstypes` VALUES ('44','C source','c','','','1','2004-12-13 19:47:22');
+INSERT INTO `glpi_documentstypes` VALUES ('27','RealAudio','rm','rm-dist.png','','1','2004-12-13 19:47:21');
+INSERT INTO `glpi_documentstypes` VALUES ('16','Midi','mid','mid-dist.png','','1','2004-12-13 19:47:21');
+INSERT INTO `glpi_documentstypes` VALUES ('17','QuickTime','mov','mov-dist.png','','1','2004-12-13 19:47:21');
+INSERT INTO `glpi_documentstypes` VALUES ('18','MP3','mp3','mp3-dist.png','','1','2004-12-13 19:47:21');
+INSERT INTO `glpi_documentstypes` VALUES ('19','MPEG','mpg','mpg-dist.png','','1','2004-12-13 19:47:21');
+INSERT INTO `glpi_documentstypes` VALUES ('20','Ogg Vorbis','ogg','ogg-dist.png','','1','2004-12-13 19:47:21');
+INSERT INTO `glpi_documentstypes` VALUES ('24','QuickTime','qt','qt-dist.png','','1','2004-12-13 19:47:21');
+INSERT INTO `glpi_documentstypes` VALUES ('10','BZip','bz2','bz2-dist.png','','1','2004-12-13 19:47:21');
+INSERT INTO `glpi_documentstypes` VALUES ('25','RealAudio','ra','ra-dist.png','','1','2004-12-13 19:47:21');
+INSERT INTO `glpi_documentstypes` VALUES ('26','RealAudio','ram','ram-dist.png','','1','2004-12-13 19:47:21');
+INSERT INTO `glpi_documentstypes` VALUES ('11','Word','doc','doc-dist.png','','1','2004-12-13 19:47:21');
+INSERT INTO `glpi_documentstypes` VALUES ('12','DjVu','djvu','','','1','2004-12-13 19:47:21');
+INSERT INTO `glpi_documentstypes` VALUES ('42','MNG','mng','','','1','2004-12-13 19:47:22');
+INSERT INTO `glpi_documentstypes` VALUES ('13','PostScript','eps','ps-dist.png','','1','2004-12-13 19:47:21');
+INSERT INTO `glpi_documentstypes` VALUES ('14','GZ','gz','gz-dist.png','','1','2004-12-13 19:47:21');
+INSERT INTO `glpi_documentstypes` VALUES ('37','WAV','wav','wav-dist.png','','1','2004-12-13 19:47:22');
+INSERT INTO `glpi_documentstypes` VALUES ('15','HTML','html','html-dist.png','','1','2004-12-13 19:47:21');
+INSERT INTO `glpi_documentstypes` VALUES ('34','Flash','swf','','','1','2004-12-13 19:47:22');
+INSERT INTO `glpi_documentstypes` VALUES ('21','PDF','pdf','pdf-dist.png','','1','2004-12-13 19:47:21');
+INSERT INTO `glpi_documentstypes` VALUES ('22','PowerPoint','ppt','ppt-dist.png','','1','2004-12-13 19:47:21');
+INSERT INTO `glpi_documentstypes` VALUES ('23','PostScript','ps','ps-dist.png','','1','2004-12-13 19:47:21');
+INSERT INTO `glpi_documentstypes` VALUES ('40','Windows Media','wmv','','','1','2004-12-13 19:47:22');
+INSERT INTO `glpi_documentstypes` VALUES ('28','RTF','rtf','rtf-dist.png','','1','2004-12-13 19:47:21');
+INSERT INTO `glpi_documentstypes` VALUES ('29','StarOffice','sdd','sdd-dist.png','','1','2004-12-13 19:47:22');
+INSERT INTO `glpi_documentstypes` VALUES ('30','StarOffice','sdw','sdw-dist.png','','1','2004-12-13 19:47:22');
+INSERT INTO `glpi_documentstypes` VALUES ('31','Stuffit','sit','sit-dist.png','','1','2004-12-13 19:47:22');
+INSERT INTO `glpi_documentstypes` VALUES ('43','Adobe Illustrator','ai','ai-dist.png','','1','2004-12-13 19:47:22');
+INSERT INTO `glpi_documentstypes` VALUES ('32','OpenOffice Impress','sxi','sxi-dist.png','','1','2004-12-13 19:47:22');
+INSERT INTO `glpi_documentstypes` VALUES ('33','OpenOffice','sxw','sxw-dist.png','','1','2004-12-13 19:47:22');
+INSERT INTO `glpi_documentstypes` VALUES ('46','DVI','dvi','dvi-dist.png','','1','2004-12-13 19:47:22');
+INSERT INTO `glpi_documentstypes` VALUES ('35','TGZ','tgz','tgz-dist.png','','1','2004-12-13 19:47:22');
+INSERT INTO `glpi_documentstypes` VALUES ('36','texte','txt','txt-dist.png','','1','2004-12-13 19:47:22');
+INSERT INTO `glpi_documentstypes` VALUES ('49','RedHat/Mandrake/SuSE','rpm','rpm-dist.png','','1','2004-12-13 19:47:22');
+INSERT INTO `glpi_documentstypes` VALUES ('38','Excel','xls','xls-dist.png','','1','2004-12-13 19:47:22');
+INSERT INTO `glpi_documentstypes` VALUES ('39','XML','xml','xml-dist.png','','1','2004-12-13 19:47:22');
+INSERT INTO `glpi_documentstypes` VALUES ('41','Zip','zip','zip-dist.png','','1','2004-12-13 19:47:22');
+INSERT INTO `glpi_documentstypes` VALUES ('45','Debian','deb','deb-dist.png','','1','2004-12-13 19:47:22');
+INSERT INTO `glpi_documentstypes` VALUES ('47','C header','h','','','1','2004-12-13 19:47:22');
+INSERT INTO `glpi_documentstypes` VALUES ('48','Pascal','pas','','','1','2004-12-13 19:47:22');
+INSERT INTO `glpi_documentstypes` VALUES ('50','OpenOffice Calc','sxc','sxc-dist.png','','1','2004-12-13 19:47:22');
+INSERT INTO `glpi_documentstypes` VALUES ('51','LaTeX','tex','tex-dist.png','','1','2004-12-13 19:47:22');
+INSERT INTO `glpi_documentstypes` VALUES ('52','GIMP multi-layer','xcf','xcf-dist.png','','1','2004-12-13 19:47:22');
+INSERT INTO `glpi_documentstypes` VALUES ('53','JPEG','jpeg','jpg-dist.png','','1','2005-03-07 22:23:17');
+INSERT INTO `glpi_documentstypes` VALUES ('54','Oasis Open Office Writer','odt','odt-dist.png','','1','2006-01-21 17:41:13');
+INSERT INTO `glpi_documentstypes` VALUES ('55','Oasis Open Office Calc','ods','ods-dist.png','','1','2006-01-21 17:41:31');
+INSERT INTO `glpi_documentstypes` VALUES ('56','Oasis Open Office Impress','odp','odp-dist.png','','1','2006-01-21 17:42:54');
+INSERT INTO `glpi_documentstypes` VALUES ('57','Oasis Open Office Impress Template','otp','odp-dist.png','','1','2006-01-21 17:43:58');
+INSERT INTO `glpi_documentstypes` VALUES ('58','Oasis Open Office Writer Template','ott','odt-dist.png','','1','2006-01-21 17:44:41');
+INSERT INTO `glpi_documentstypes` VALUES ('59','Oasis Open Office Calc Template','ots','ods-dist.png','','1','2006-01-21 17:45:30');
+INSERT INTO `glpi_documentstypes` VALUES ('60','Oasis Open Office Math','odf','odf-dist.png','','1','2006-01-21 17:48:05');
+INSERT INTO `glpi_documentstypes` VALUES ('61','Oasis Open Office Draw','odg','odg-dist.png','','1','2006-01-21 17:48:31');
+INSERT INTO `glpi_documentstypes` VALUES ('62','Oasis Open Office Draw Template','otg','odg-dist.png','','1','2006-01-21 17:49:46');
+INSERT INTO `glpi_documentstypes` VALUES ('63','Oasis Open Office Base','odb','odb-dist.png','','1','2006-01-21 18:03:34');
+INSERT INTO `glpi_documentstypes` VALUES ('64','Oasis Open Office HTML','oth','oth-dist.png','','1','2006-01-21 18:05:27');
+INSERT INTO `glpi_documentstypes` VALUES ('65','Oasis Open Office Writer Master','odm','odm-dist.png','','1','2006-01-21 18:06:34');
+INSERT INTO `glpi_documentstypes` VALUES ('66','Oasis Open Office Chart','odc','','','1','2006-01-21 18:07:48');
+INSERT INTO `glpi_documentstypes` VALUES ('67','Oasis Open Office Image','odi','','','1','2006-01-21 18:08:18');
+
 ### Dump table glpi_domains
 
 DROP TABLE IF EXISTS `glpi_domains`;
@@ -1146,7 +1231,7 @@ CREATE TABLE `glpi_events` (
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 INSERT INTO `glpi_events` VALUES ('4','-1','system','2009-03-04 18:25:58','login','3','glpi connexion de l\'IP : 127.0.0.1');
-INSERT INTO `glpi_events` VALUES ('5','-1','system','2009-07-27 22:49:47','login','3','glpi connexion de l\'IP : 127.0.0.1');
+INSERT INTO `glpi_events` VALUES ('5','-1','system','2009-07-28 10:04:15','login','3','glpi connexion de l\'IP : 127.0.0.1');
 
 ### Dump table glpi_filesystems
 
@@ -1376,10 +1461,10 @@ CREATE TABLE `glpi_logs` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 
-### Dump table glpi_mailgate
+### Dump table glpi_mailcollectors
 
-DROP TABLE IF EXISTS `glpi_mailgate`;
-CREATE TABLE `glpi_mailgate` (
+DROP TABLE IF EXISTS `glpi_mailcollectors`;
+CREATE TABLE `glpi_mailcollectors` (
   `ID` int(11) NOT NULL auto_increment,
   `name` varchar(255) collate utf8_unicode_ci default NULL,
   `FK_entities` int(11) NOT NULL default '0' COMMENT 'RELATION to glpi_entities (ID)',
@@ -2883,91 +2968,6 @@ CREATE TABLE `glpi_transfers` (
 
 INSERT INTO `glpi_transfers` VALUES ('1','complete','2','2','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1');
 
-### Dump table glpi_type_docs
-
-DROP TABLE IF EXISTS `glpi_type_docs`;
-CREATE TABLE `glpi_type_docs` (
-  `ID` int(11) NOT NULL auto_increment,
-  `name` varchar(255) collate utf8_unicode_ci default NULL,
-  `ext` varchar(255) collate utf8_unicode_ci default NULL,
-  `icon` varchar(255) collate utf8_unicode_ci default NULL,
-  `mime` varchar(255) collate utf8_unicode_ci default NULL,
-  `upload` smallint(6) NOT NULL default '1',
-  `date_mod` datetime default NULL,
-  PRIMARY KEY  (`ID`),
-  UNIQUE KEY `extension` (`ext`),
-  KEY `name` (`name`),
-  KEY `upload` (`upload`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
-INSERT INTO `glpi_type_docs` VALUES ('1','JPEG','jpg','jpg-dist.png','','1','2004-12-13 19:47:21');
-INSERT INTO `glpi_type_docs` VALUES ('2','PNG','png','png-dist.png','','1','2004-12-13 19:47:21');
-INSERT INTO `glpi_type_docs` VALUES ('3','GIF','gif','gif-dist.png','','1','2004-12-13 19:47:21');
-INSERT INTO `glpi_type_docs` VALUES ('4','BMP','bmp','bmp-dist.png','','1','2004-12-13 19:47:21');
-INSERT INTO `glpi_type_docs` VALUES ('5','Photoshop','psd','psd-dist.png','','1','2004-12-13 19:47:21');
-INSERT INTO `glpi_type_docs` VALUES ('6','TIFF','tif','tif-dist.png','','1','2004-12-13 19:47:21');
-INSERT INTO `glpi_type_docs` VALUES ('7','AIFF','aiff','aiff-dist.png','','1','2004-12-13 19:47:21');
-INSERT INTO `glpi_type_docs` VALUES ('8','Windows Media','asf','asf-dist.png','','1','2004-12-13 19:47:21');
-INSERT INTO `glpi_type_docs` VALUES ('9','Windows Media','avi','avi-dist.png','','1','2004-12-13 19:47:21');
-INSERT INTO `glpi_type_docs` VALUES ('44','C source','c','','','1','2004-12-13 19:47:22');
-INSERT INTO `glpi_type_docs` VALUES ('27','RealAudio','rm','rm-dist.png','','1','2004-12-13 19:47:21');
-INSERT INTO `glpi_type_docs` VALUES ('16','Midi','mid','mid-dist.png','','1','2004-12-13 19:47:21');
-INSERT INTO `glpi_type_docs` VALUES ('17','QuickTime','mov','mov-dist.png','','1','2004-12-13 19:47:21');
-INSERT INTO `glpi_type_docs` VALUES ('18','MP3','mp3','mp3-dist.png','','1','2004-12-13 19:47:21');
-INSERT INTO `glpi_type_docs` VALUES ('19','MPEG','mpg','mpg-dist.png','','1','2004-12-13 19:47:21');
-INSERT INTO `glpi_type_docs` VALUES ('20','Ogg Vorbis','ogg','ogg-dist.png','','1','2004-12-13 19:47:21');
-INSERT INTO `glpi_type_docs` VALUES ('24','QuickTime','qt','qt-dist.png','','1','2004-12-13 19:47:21');
-INSERT INTO `glpi_type_docs` VALUES ('10','BZip','bz2','bz2-dist.png','','1','2004-12-13 19:47:21');
-INSERT INTO `glpi_type_docs` VALUES ('25','RealAudio','ra','ra-dist.png','','1','2004-12-13 19:47:21');
-INSERT INTO `glpi_type_docs` VALUES ('26','RealAudio','ram','ram-dist.png','','1','2004-12-13 19:47:21');
-INSERT INTO `glpi_type_docs` VALUES ('11','Word','doc','doc-dist.png','','1','2004-12-13 19:47:21');
-INSERT INTO `glpi_type_docs` VALUES ('12','DjVu','djvu','','','1','2004-12-13 19:47:21');
-INSERT INTO `glpi_type_docs` VALUES ('42','MNG','mng','','','1','2004-12-13 19:47:22');
-INSERT INTO `glpi_type_docs` VALUES ('13','PostScript','eps','ps-dist.png','','1','2004-12-13 19:47:21');
-INSERT INTO `glpi_type_docs` VALUES ('14','GZ','gz','gz-dist.png','','1','2004-12-13 19:47:21');
-INSERT INTO `glpi_type_docs` VALUES ('37','WAV','wav','wav-dist.png','','1','2004-12-13 19:47:22');
-INSERT INTO `glpi_type_docs` VALUES ('15','HTML','html','html-dist.png','','1','2004-12-13 19:47:21');
-INSERT INTO `glpi_type_docs` VALUES ('34','Flash','swf','','','1','2004-12-13 19:47:22');
-INSERT INTO `glpi_type_docs` VALUES ('21','PDF','pdf','pdf-dist.png','','1','2004-12-13 19:47:21');
-INSERT INTO `glpi_type_docs` VALUES ('22','PowerPoint','ppt','ppt-dist.png','','1','2004-12-13 19:47:21');
-INSERT INTO `glpi_type_docs` VALUES ('23','PostScript','ps','ps-dist.png','','1','2004-12-13 19:47:21');
-INSERT INTO `glpi_type_docs` VALUES ('40','Windows Media','wmv','','','1','2004-12-13 19:47:22');
-INSERT INTO `glpi_type_docs` VALUES ('28','RTF','rtf','rtf-dist.png','','1','2004-12-13 19:47:21');
-INSERT INTO `glpi_type_docs` VALUES ('29','StarOffice','sdd','sdd-dist.png','','1','2004-12-13 19:47:22');
-INSERT INTO `glpi_type_docs` VALUES ('30','StarOffice','sdw','sdw-dist.png','','1','2004-12-13 19:47:22');
-INSERT INTO `glpi_type_docs` VALUES ('31','Stuffit','sit','sit-dist.png','','1','2004-12-13 19:47:22');
-INSERT INTO `glpi_type_docs` VALUES ('43','Adobe Illustrator','ai','ai-dist.png','','1','2004-12-13 19:47:22');
-INSERT INTO `glpi_type_docs` VALUES ('32','OpenOffice Impress','sxi','sxi-dist.png','','1','2004-12-13 19:47:22');
-INSERT INTO `glpi_type_docs` VALUES ('33','OpenOffice','sxw','sxw-dist.png','','1','2004-12-13 19:47:22');
-INSERT INTO `glpi_type_docs` VALUES ('46','DVI','dvi','dvi-dist.png','','1','2004-12-13 19:47:22');
-INSERT INTO `glpi_type_docs` VALUES ('35','TGZ','tgz','tgz-dist.png','','1','2004-12-13 19:47:22');
-INSERT INTO `glpi_type_docs` VALUES ('36','texte','txt','txt-dist.png','','1','2004-12-13 19:47:22');
-INSERT INTO `glpi_type_docs` VALUES ('49','RedHat/Mandrake/SuSE','rpm','rpm-dist.png','','1','2004-12-13 19:47:22');
-INSERT INTO `glpi_type_docs` VALUES ('38','Excel','xls','xls-dist.png','','1','2004-12-13 19:47:22');
-INSERT INTO `glpi_type_docs` VALUES ('39','XML','xml','xml-dist.png','','1','2004-12-13 19:47:22');
-INSERT INTO `glpi_type_docs` VALUES ('41','Zip','zip','zip-dist.png','','1','2004-12-13 19:47:22');
-INSERT INTO `glpi_type_docs` VALUES ('45','Debian','deb','deb-dist.png','','1','2004-12-13 19:47:22');
-INSERT INTO `glpi_type_docs` VALUES ('47','C header','h','','','1','2004-12-13 19:47:22');
-INSERT INTO `glpi_type_docs` VALUES ('48','Pascal','pas','','','1','2004-12-13 19:47:22');
-INSERT INTO `glpi_type_docs` VALUES ('50','OpenOffice Calc','sxc','sxc-dist.png','','1','2004-12-13 19:47:22');
-INSERT INTO `glpi_type_docs` VALUES ('51','LaTeX','tex','tex-dist.png','','1','2004-12-13 19:47:22');
-INSERT INTO `glpi_type_docs` VALUES ('52','GIMP multi-layer','xcf','xcf-dist.png','','1','2004-12-13 19:47:22');
-INSERT INTO `glpi_type_docs` VALUES ('53','JPEG','jpeg','jpg-dist.png','','1','2005-03-07 22:23:17');
-INSERT INTO `glpi_type_docs` VALUES ('54','Oasis Open Office Writer','odt','odt-dist.png','','1','2006-01-21 17:41:13');
-INSERT INTO `glpi_type_docs` VALUES ('55','Oasis Open Office Calc','ods','ods-dist.png','','1','2006-01-21 17:41:31');
-INSERT INTO `glpi_type_docs` VALUES ('56','Oasis Open Office Impress','odp','odp-dist.png','','1','2006-01-21 17:42:54');
-INSERT INTO `glpi_type_docs` VALUES ('57','Oasis Open Office Impress Template','otp','odp-dist.png','','1','2006-01-21 17:43:58');
-INSERT INTO `glpi_type_docs` VALUES ('58','Oasis Open Office Writer Template','ott','odt-dist.png','','1','2006-01-21 17:44:41');
-INSERT INTO `glpi_type_docs` VALUES ('59','Oasis Open Office Calc Template','ots','ods-dist.png','','1','2006-01-21 17:45:30');
-INSERT INTO `glpi_type_docs` VALUES ('60','Oasis Open Office Math','odf','odf-dist.png','','1','2006-01-21 17:48:05');
-INSERT INTO `glpi_type_docs` VALUES ('61','Oasis Open Office Draw','odg','odg-dist.png','','1','2006-01-21 17:48:31');
-INSERT INTO `glpi_type_docs` VALUES ('62','Oasis Open Office Draw Template','otg','odg-dist.png','','1','2006-01-21 17:49:46');
-INSERT INTO `glpi_type_docs` VALUES ('63','Oasis Open Office Base','odb','odb-dist.png','','1','2006-01-21 18:03:34');
-INSERT INTO `glpi_type_docs` VALUES ('64','Oasis Open Office HTML','oth','oth-dist.png','','1','2006-01-21 18:05:27');
-INSERT INTO `glpi_type_docs` VALUES ('65','Oasis Open Office Writer Master','odm','odm-dist.png','','1','2006-01-21 18:06:34');
-INSERT INTO `glpi_type_docs` VALUES ('66','Oasis Open Office Chart','odc','','','1','2006-01-21 18:07:48');
-INSERT INTO `glpi_type_docs` VALUES ('67','Oasis Open Office Image','odi','','','1','2006-01-21 18:08:18');
-
 ### Dump table glpi_users
 
 DROP TABLE IF EXISTS `glpi_users`;
@@ -3026,7 +3026,7 @@ CREATE TABLE `glpi_users` (
   KEY `active` (`active`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
-INSERT INTO `glpi_users` VALUES ('2','glpi','','41ece51526515624ff89973668497d00','','','','','',NULL,'0','1',NULL,'0','20','1',NULL,'-1','1','2009-07-27 22:49:47','2009-07-27 22:49:47','0','0','0','0','0',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+INSERT INTO `glpi_users` VALUES ('2','glpi','','41ece51526515624ff89973668497d00','','','','','',NULL,'0','1',NULL,'0','20','1',NULL,'-1','1','2009-07-28 10:04:15','2009-07-28 10:04:15','0','0','0','0','0',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
 INSERT INTO `glpi_users` VALUES ('3','post-only','*5683D7F638D6598D057638B1957F194E4CA974FB','3177926a7314de24680a9938aaa97703','','','','','',NULL,'0','0','en_GB','0','20','1',NULL,'-1','-1',NULL,NULL,'0','0','0','0','0',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
 INSERT INTO `glpi_users` VALUES ('4','tech','*B09F1B2C210DEEA69C662977CC69C6C461965B09','d9f9133fb120cd6096870bc2b496805b','','','','','',NULL,'0','1','fr_FR','0','20','1',NULL,'-1','-1',NULL,NULL,'0','0','0','0','0',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
 INSERT INTO `glpi_users` VALUES ('5','normal','*F3F91B23FC1DB728B49B1F22DEE3D7A839E10F0E','fea087517c26fadd409bd4b9dc642555','','','','','',NULL,'0','0','en_GB','0','20','1',NULL,'-1','-1',NULL,NULL,'0','0','0','0','0',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);

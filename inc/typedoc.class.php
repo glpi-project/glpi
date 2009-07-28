@@ -48,7 +48,7 @@ class Typedoc  extends CommonDBTM {
 	 * Constructor
 	**/
 	function __construct () {
-		$this->table="glpi_type_docs";
+		$this->table="glpi_documentstypes";
 		$this->type=TYPEDOC_TYPE;
 	}
 
@@ -103,11 +103,11 @@ class Typedoc  extends CommonDBTM {
 		echo "</th></tr>";
 
 		echo "<tr class='tab_bg_1'><td>".$LANG['common'][16].":	</td><td>";
-		autocompletionTextField("name","glpi_type_docs","name",$this->fields["name"],40);
+		autocompletionTextField("name","glpi_documentstypes","name",$this->fields["name"],40);
 		echo "</td>";
 
 		echo "<td>".$LANG['document'][9].":	</td><td>";
-		autocompletionTextField("ext","glpi_type_docs","ext",$this->fields["ext"],40);
+		autocompletionTextField("ext","glpi_documentstypes","ext",$this->fields["ext"],40);
 
 		echo "</td></tr>";
 
@@ -117,7 +117,7 @@ class Typedoc  extends CommonDBTM {
 		echo "</td>";
 
 		echo "<td>".$LANG['document'][4].":	</td><td>";
-		autocompletionTextField("mime","glpi_type_docs","mime",$this->fields["mime"],40);
+		autocompletionTextField("mime","glpi_documentstypes","mime",$this->fields["mime"],40);
 		echo "</td></tr>";
 
 		echo "<tr class='tab_bg_1'><td>".$LANG['document'][11].":	</td><td>";
