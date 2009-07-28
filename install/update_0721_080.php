@@ -272,7 +272,11 @@ function update0721to080() {
                               'glpi_softwareslicenses','glpi_tickets','glpi_users',
                               'glpi_profiles_users',)),
                      ),
-
+   'FK_glpi_cartridges_type' => array(array('to' => 'cartridgesitems_id',
+                           'noindex' => array(''),
+                           'tables' => array('glpi_cartridges',
+                              'glpi_cartridges_printersmodels')),
+                     ),
    'FK_glpi_consumables_type' => array(array('to' => 'consumablesitems_id',
                            'noindex' => array('glpi_consumables'),
                            'tables' => array('glpi_consumables',)),
@@ -352,11 +356,6 @@ function update0721to080() {
                               'glpi_printers','glpi_softwares')),
                      ),
 
-   'FK_glpi_cartridges_type' => array(array('to' => 'cartridgesitems_id',
-                           'noindex' => array(''),
-                           'tables' => array('glpi_cartridges',
-                              'glpi_cartridges_printersmodels')),
-                     ),
 
 
    );

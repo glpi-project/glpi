@@ -93,7 +93,7 @@ function display_infocoms_report($itemtype,$begin,$end){
 			$query.=" INNER JOIN glpi_consumablesitems ON (glpi_consumables.consumablesitems_id = glpi_consumablesitems.ID) ".getEntitiesRestrictRequest("WHERE","glpi_consumablesitems");
 		break;
 		case CARTRIDGE_ITEM_TYPE :
-			$query.=" INNER JOIN glpi_cartridgesitems ON (glpi_cartridges.FK_glpi_cartridges_type = glpi_cartridgesitems.ID) ".getEntitiesRestrictRequest("WHERE","glpi_cartridgesitems");
+			$query.=" INNER JOIN glpi_cartridgesitems ON (glpi_cartridges.cartridgesitems_id = glpi_cartridgesitems.ID) ".getEntitiesRestrictRequest("WHERE","glpi_cartridgesitems");
 		break;
 		case SOFTWARELICENSE_TYPE :
 			$query.=" INNER JOIN glpi_softwares ON (glpi_softwareslicenses.sID = glpi_softwares.ID) ".getEntitiesRestrictRequest("WHERE","glpi_softwares");

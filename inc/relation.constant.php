@@ -41,8 +41,8 @@ $RELATION=array(
                               "glpi_authldapsreplicates"=>"authldaps_id"),
 	"glpi_bookmarks" => array("glpi_bookmarks_users"=>"FK_bookmark"),
 
-	"glpi_cartridgesitems" => array("glpi_cartridges"=>"FK_glpi_cartridges_type",
-				"glpi_cartridges_printersmodels"=>"FK_glpi_cartridges_type"),
+	"glpi_cartridgesitems" => array("glpi_cartridges"=>"cartridgesitems_id",
+				"glpi_cartridges_printersmodels"=>"cartridgesitems_id"),
 
 	"glpi_computers" => array("glpi_computers_devices"=>"FK_computers",
 						"glpi_computersdisks"=>"FK_computers",
