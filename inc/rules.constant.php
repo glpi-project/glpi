@@ -72,9 +72,9 @@ $RULES_CRITERIAS[RULE_OCS_AFFECT_COMPUTER]['DESCRIPTION']['field']='DESCRIPTION'
 $RULES_CRITERIAS[RULE_OCS_AFFECT_COMPUTER]['DESCRIPTION']['name']=$LANG['joblist'][6];
 $RULES_CRITERIAS[RULE_OCS_AFFECT_COMPUTER]['DESCRIPTION']['linkfield']='';
 
-$RULES_ACTIONS[RULE_OCS_AFFECT_COMPUTER]['FK_entities']['name']=$LANG['entity'][0];
-$RULES_ACTIONS[RULE_OCS_AFFECT_COMPUTER]['FK_entities']['type']='dropdown';
-$RULES_ACTIONS[RULE_OCS_AFFECT_COMPUTER]['FK_entities']['table']='glpi_entities';
+$RULES_ACTIONS[RULE_OCS_AFFECT_COMPUTER]['entities_id']['name']=$LANG['entity'][0];
+$RULES_ACTIONS[RULE_OCS_AFFECT_COMPUTER]['entities_id']['type']='dropdown';
+$RULES_ACTIONS[RULE_OCS_AFFECT_COMPUTER]['entities_id']['table']='glpi_entities';
 
 $RULES_ACTIONS[RULE_OCS_AFFECT_COMPUTER]['_affect_entity_by_tag']['name']=$LANG['rulesengine'][131];
 $RULES_ACTIONS[RULE_OCS_AFFECT_COMPUTER]['_affect_entity_by_tag']['type']='text';
@@ -113,9 +113,9 @@ $RULES_CRITERIAS[RULE_AFFECT_RIGHTS]['GROUPS']['virtual']='true';
 $RULES_CRITERIAS[RULE_AFFECT_RIGHTS]['GROUPS']['id']='groups';
 
 
-$RULES_ACTIONS[RULE_AFFECT_RIGHTS]['FK_entities']['name']=$LANG['entity'][0];
-$RULES_ACTIONS[RULE_AFFECT_RIGHTS]['FK_entities']['type']='dropdown';
-$RULES_ACTIONS[RULE_AFFECT_RIGHTS]['FK_entities']['table']='glpi_entities';
+$RULES_ACTIONS[RULE_AFFECT_RIGHTS]['entities_id']['name']=$LANG['entity'][0];
+$RULES_ACTIONS[RULE_AFFECT_RIGHTS]['entities_id']['type']='dropdown';
+$RULES_ACTIONS[RULE_AFFECT_RIGHTS]['entities_id']['table']='glpi_entities';
 
 $RULES_ACTIONS[RULE_AFFECT_RIGHTS]['_affect_entity_by_dn']['name']=$LANG['rulesengine'][130];
 $RULES_ACTIONS[RULE_AFFECT_RIGHTS]['_affect_entity_by_dn']['type']='text';
@@ -201,11 +201,11 @@ $RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['itemtype']['name']=$LANG['state'][6
 $RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['itemtype']['linkfield']='itemtype';
 $RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['itemtype']['type']='dropdown_tracking_itemtype';
 
-$RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['FK_entities']['table']='glpi_entities';
-$RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['FK_entities']['field']='name';
-$RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['FK_entities']['name']=$LANG['entity'][0];
-$RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['FK_entities']['linkfield']='FK_entities';
-$RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['FK_entities']['type']='dropdown';
+$RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['entities_id']['table']='glpi_entities';
+$RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['entities_id']['field']='name';
+$RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['entities_id']['name']=$LANG['entity'][0];
+$RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['entities_id']['linkfield']='entities_id';
+$RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['entities_id']['type']='dropdown';
 
 $RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['priority']['name']=$LANG['joblist'][2];
 $RULES_CRITERIAS[RULE_TRACKING_AUTO_ACTION]['priority']['type']='dropdown_priority';

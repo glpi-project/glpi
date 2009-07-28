@@ -988,7 +988,7 @@ function generate_entity($ID_entity){
 	$net_loc=array();	
 	$FIRST["networking"]=getMaxItem("glpi_networkequipments")+1;
 	$FIRST["printers"]=getMaxItem("glpi_printers")+1;
-	$query="SELECT * FROM glpi_locations WHERE FK_entities='$ID_entity'";
+	$query="SELECT * FROM glpi_locations WHERE entities_id='$ID_entity'";
 	$result=$DB->query($query);
 	while ($data=$DB->fetch_array($result)){
 		// insert networking
@@ -1194,7 +1194,7 @@ function generate_entity($ID_entity){
 		$netpointID=$DB->insert_id();
 	
 		// Get networking element
-		$query="SELECT ID FROM glpi_networkequipments WHERE location='$loc' and FK_entities='$ID_entity'";
+		$query="SELECT ID FROM glpi_networkequipments WHERE location='$loc' and entities_id='$ID_entity'";
 		$result=$DB->query($query) or die("PB REQUETE ".$query);
 		if ($DB->numrows($result)>0){
 			$netwID=$DB->result($result,0,0) or die (" PB RESULT ".$query);

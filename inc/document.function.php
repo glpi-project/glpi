@@ -239,7 +239,7 @@ function showDeviceDocument($instID) {
 				$query = "SELECT ".$LINK_ID_TABLE[$type].".*, glpi_documents_items.ID AS IDD, glpi_entities.ID AS entity
 							FROM glpi_documents_items, ".$LINK_ID_TABLE[$type];
 				if ($type != ENTITY_TYPE) {
-					$query .= " LEFT JOIN glpi_entities ON (glpi_entities.ID=".$LINK_ID_TABLE[$type].".FK_entities) ";
+					$query .= " LEFT JOIN glpi_entities ON (glpi_entities.ID=".$LINK_ID_TABLE[$type].".entities_id) ";
 				}
 				$query .= " WHERE ".$LINK_ID_TABLE[$type].".ID = glpi_documents_items.items_id  
 						AND glpi_documents_items.itemtype='$type' AND glpi_documents_items.FK_doc = '$instID' "
@@ -297,7 +297,7 @@ function showDeviceDocument($instID) {
 	
 			echo "<input type='hidden' name='conID' value='$instID'>";
 			echo "<input type='hidden' name='right' value='doc'>";
-			dropdownAllItems("item",0,0,($doc->fields['recursive']?-1:$doc->fields['FK_entities']),$CFG_GLPI["doc_types"]);
+			dropdownAllItems("item",0,0,($doc->fields['recursive']?-1:$doc->fields['entities_id']),$CFG_GLPI["doc_types"]);
 			
 			echo "</td>";
 			echo "<td colspan='2' class='center'>";
@@ -382,20 +382,20 @@ function showDocumentAssociated($itemtype,$ID,$withtemplate=''){
 		$recursive=1;
 	}
 
-	$needed_fields=array('ID','name','filename','mime','rubrique','link','deleted','FK_entities','recursive');
+	$needed_fields=array('ID','name','filename','mime','rubrique','link','deleted','entities_id','recursive');
 
 
 	$query = "SELECT glpi_documents_items.ID AS assocID, glpi_entities.ID AS entity, 
 			glpi_documents.name AS assocName, glpi_documents.* FROM glpi_documents_items
 			LEFT JOIN glpi_documents ON (glpi_documents_items.FK_doc=glpi_documents.ID) 
-			LEFT JOIN glpi_entities ON (glpi_documents.FK_entities=glpi_entities.ID)
+			LEFT JOIN glpi_entities ON (glpi_documents.entities_id=glpi_entities.ID)
 			WHERE glpi_documents_items.items_id = '$ID' AND glpi_documents_items.itemtype = '$itemtype' ";
 
 	if (isset($_SESSION["glpiID"])){
 		$query .= getEntitiesRestrictRequest(" AND","glpi_documents",'','',true);
 	} else {
 		// Anonymous access from FAQ
-		$query .= " AND glpi_documents.FK_entities=0 ";
+		$query .= " AND glpi_documents.entities_id=0 ";
 	}
 	
 	// Document : search links in both order using union
@@ -404,13 +404,13 @@ function showDocumentAssociated($itemtype,$ID,$withtemplate=''){
 			SELECT glpi_documents_items.ID as assocID, glpi_entities.ID AS entity, 
 				glpi_documents.name AS assocName, glpi_documents.* FROM glpi_documents_items
 				LEFT JOIN glpi_documents ON (glpi_documents_items.items_id=glpi_documents.ID)
-				LEFT JOIN glpi_entities ON (glpi_documents.FK_entities=glpi_entities.ID)
+				LEFT JOIN glpi_entities ON (glpi_documents.entities_id=glpi_entities.ID)
 				WHERE glpi_documents_items.FK_doc = '$ID' AND glpi_documents_items.itemtype = '$itemtype' ";
 		if (isset($_SESSION["glpiID"])){
 			$query .= getEntitiesRestrictRequest(" AND","glpi_documents",'','',true);
 		} else {
 			// Anonymous access from FAQ
-			$query .= " AND glpi_documents.FK_entities=0 ";
+			$query .= " AND glpi_documents.entities_id=0 ";
 		}
 	} 
 	$query .= " ORDER BY assocName";
@@ -452,7 +452,7 @@ function showDocumentAssociated($itemtype,$ID,$withtemplate=''){
 	
 			echo "<tr class='tab_bg_1".($data["deleted"]?"_2":"")."'>";
 			if ($withtemplate!=3 && $canread 
-				&& (in_array($data['FK_entities'],$_SESSION['glpiactiveentities']) || $data["recursive"])
+				&& (in_array($data['entities_id'],$_SESSION['glpiactiveentities']) || $data["recursive"])
 			){
 				echo "<td class='center'><a href='".$CFG_GLPI["root_doc"]."/front/document.form.php?ID=$docID'><strong>".$data["name"];
 				if ($_SESSION["glpiview_ID"]) echo " (".$docID.")";
@@ -491,13 +491,13 @@ function showDocumentAssociated($itemtype,$ID,$withtemplate=''){
 		$ci=new CommonItem();
 		$entities="";
 		$entity=$_SESSION["glpiactive_entity"];
-		if ($ci->getFromDB($itemtype,$ID) && isset($ci->obj->fields["FK_entities"])) {		
-			$entity=$ci->getField('FK_entities');
+		if ($ci->getFromDB($itemtype,$ID) && isset($ci->obj->fields["entities_id"])) {		
+			$entity=$ci->getField('entities_id');
 			
 			if (isset($ci->obj->fields["recursive"]) && $ci->obj->fields["recursive"]) {
-            $entities = getSonsOf("glpi_entities",$ci->obj->fields["FK_entities"]);
+            $entities = getSonsOf("glpi_entities",$ci->obj->fields["entities_id"]);
 			} else {
-				$entities = $ci->obj->fields["FK_entities"];
+				$entities = $ci->obj->fields["entities_id"];
 			}
 		}
 		$limit = getEntitiesRestrictRequest(" AND ","glpi_documents",'',$entities,true);
@@ -509,7 +509,7 @@ function showDocumentAssociated($itemtype,$ID,$withtemplate=''){
 		if ($withtemplate<2){
 	
 			echo "<tr class='tab_bg_1'><td align='center' colspan='3'>" .
-				"<input type='hidden' name='FK_entities' value='$entity'>" .
+				"<input type='hidden' name='entities_id' value='$entity'>" .
 				"<input type='hidden' name='item' value='$ID'>" .
 				"<input type='hidden' name='recursive' value='$recursive'>" .
 				"<input type='hidden' name='type' value='$itemtype'>" .

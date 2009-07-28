@@ -78,7 +78,7 @@ if (isset($LINK_ID_TABLE[$_POST["type"]])&&$_POST["type"]>0){
 	$LIMIT="LIMIT 0,$NBMAX";
 	if ($_POST['searchText']==$CFG_GLPI["ajax_wildcard"]) $LIMIT="";
 
-	$order = ($multi ? "FK_entities,name" : "name");
+	$order = ($multi ? "entities_id,name" : "name");
 	$query = "SELECT * 
 		FROM ".$table." 
 		$where ORDER BY 
@@ -94,11 +94,11 @@ if (isset($LINK_ID_TABLE[$_POST["type"]])&&$_POST["type"]>0){
 	if ($DB->numrows($result)) {
 		$prev = -1;
 		while ($data = $DB->fetch_array($result)) {
-			if ($multi && $data["FK_entities"]!=$prev) {
+			if ($multi && $data["entities_id"]!=$prev) {
 				if ($prev>=0) {
 					echo "</optgroup>";
 				}
-				$prev=$data["FK_entities"];
+				$prev=$data["entities_id"];
 				echo "<optgroup label=\"". getDropdownName("glpi_entities", $prev) ."\">";
 			}
 			$output = $data['name'];

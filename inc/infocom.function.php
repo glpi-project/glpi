@@ -69,9 +69,9 @@ function showInfocomForm($target,$itemtype,$dev_ID,$show_immo=true,$withtemplate
 		if ($itemtype==SOFTWARELICENSE_TYPE){
 			$soft=new Software();
 			$soft->getFromDB($ci->getField('sID'));
-			$entity=$soft->fields['FK_entities'];
+			$entity=$soft->fields['entities_id'];
 		} else {
-			$entity=$ci->getField("FK_entities");
+			$entity=$ci->getField("entities_id");
 		}
 		if (!$ic->getFromDBforDevice($itemtype,$dev_ID)){
 			if ($ic->can(-1,"w",$entity) && $withtemplate!=2){
@@ -96,7 +96,7 @@ function showInfocomForm($target,$itemtype,$dev_ID,$show_immo=true,$withtemplate
 			if ($withtemplate==2) {
 				echo getDropdownName("glpi_suppliers",$ic->fields["FK_enterprise"]);
 			} else {
-				dropdownValue("glpi_suppliers","FK_enterprise",$ic->fields["FK_enterprise"],1,$ci->getField('FK_entities'));
+				dropdownValue("glpi_suppliers","FK_enterprise",$ic->fields["FK_enterprise"],1,$ci->getField('entities_id'));
 			}
 	
 			echo "</td>";
@@ -149,7 +149,7 @@ function showInfocomForm($target,$itemtype,$dev_ID,$show_immo=true,$withtemplate
 	
 				if (haveRight("budget","r")) {
 					echo "<td>".$LANG['financial'][87].":	</td><td >";
-					dropdownValue("glpi_budgets","budget",$ic->fields["budget"],0,$ci->obj->fields["FK_entities"]);
+					dropdownValue("glpi_budgets","budget",$ic->fields["budget"],0,$ci->obj->fields["entities_id"]);
 					echo "</td></tr>";
 				}
 				else
@@ -180,7 +180,7 @@ function showInfocomForm($target,$itemtype,$dev_ID,$show_immo=true,$withtemplate
 			if ($show_immo){
 				echo "<tr class='tab_bg_1'><td>".$LANG['financial'][20]."*:		</td>";
 				echo "<td >";
-				$objectName = autoName($ic->fields["num_immo"], "num_immo", ($withtemplate==2), INFOCOM_TYPE,$ci->getField('FK_entities'));
+				$objectName = autoName($ic->fields["num_immo"], "num_immo", ($withtemplate==2), INFOCOM_TYPE,$ci->getField('entities_id'));
 				autocompletionTextField("num_immo","glpi_infocoms","num_immo",$objectName,40,-1,-1,$option); 
 	
 				echo "</td>";
@@ -556,7 +556,7 @@ function cron_infocom($display=false){
 
 		while ($data=$DB->fetch_array($result)){
 			if ($ci->getFromDB($data["itemtype"],$data["items_id"])){
-				$entity=$ci->getField('FK_entities');
+				$entity=$ci->getField('entities_id');
 				if (!isset($message[$entity])){
 					$message[$entity]="";
 				}

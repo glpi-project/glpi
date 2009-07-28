@@ -115,13 +115,13 @@ while ($event=$DB->fetch_array($res)) {
 		printf("+ %5d : %s : %s (%s > %s)\n", $nb, $event["date_mod"], $comp->fields["name"],
 			$event["old_value"], $event["new_value"]);
 		
-		if (!isset($tabres[$comp->fields["FK_entities"]])) {
-			$tabres[$comp->fields["FK_entities"]]=array();
+		if (!isset($tabres[$comp->fields["entities_id"]])) {
+			$tabres[$comp->fields["entities_id"]]=array();
 		}
 		
 		if ($event["linked_action"]==10) {// ID Changed
 			
-			$tabres[$comp->fields["FK_entities"]][] = 
+			$tabres[$comp->fields["entities_id"]][] = 
 				"ID:".$comp->fields["ID"]." - ".$comp->fields["name"]." (".$comp->fields["serial"].
 				") => rollback lien";
 			
@@ -159,7 +159,7 @@ while ($event=$DB->fetch_array($res)) {
 			
 		} else { // $event["linked_action"]==8 (New) or 11 (linked)
 			
-			$tabres[$comp->fields["FK_entities"]][] = 
+			$tabres[$comp->fields["entities_id"]][] = 
 				"ID:".$comp->fields["ID"]." - ".$comp->fields["name"]." (".$comp->fields["serial"].
 				") => retour stock";
 			

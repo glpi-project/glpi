@@ -167,7 +167,7 @@ function dropdownValue($table,$myname,$value='',$display_comments=1,$entity_rest
 				$entity_restrict=array_pop($entity_restrict);
 			}
 			if (!is_array($entity_restrict)) {
-				echo " style='cursor:pointer;'  onClick=\"var w = window.open('".$CFG_GLPI["root_doc"]."/front/popup.php?popup=dropdown&amp;which=$which"."&amp;rand=$rand&amp;FK_entities=$entity_restrict' ,'glpipopup', 'height=400, width=1000, top=100, left=100, scrollbars=yes' );w.focus();\"";
+				echo " style='cursor:pointer;'  onClick=\"var w = window.open('".$CFG_GLPI["root_doc"]."/front/popup.php?popup=dropdown&amp;which=$which"."&amp;rand=$rand&amp;entities_id=$entity_restrict' ,'glpipopup', 'height=400, width=1000, top=100, left=100, scrollbars=yes' );w.focus();\"";
 			}
 		}
 		echo ">";
@@ -246,7 +246,7 @@ function dropdownNetpoint($myname,$value=0,$location=-1,$display_comments=1,$ent
 	if ($display_comments){
 		echo "<img alt='' src='".$CFG_GLPI["root_doc"]."/pics/aide.png' onmouseout=\"cleanhide('comments_$myname$rand')\" onmouseover=\"cleandisplay('comments_$myname$rand')\" ";
 		if (haveRight("entity_dropdown","w")) {
-			echo " style='cursor:pointer;'  onClick=\"var w = window.open('".$CFG_GLPI["root_doc"]."/front/popup.php?popup=dropdown&amp;which=glpi_netpoints&amp;value2=$location"."&amp;rand=$rand&amp;FK_entities=$entity_restrict' ,'glpipopup', 'height=400, width=1000, top=100, left=100, scrollbars=yes' );w.focus();\"";
+			echo " style='cursor:pointer;'  onClick=\"var w = window.open('".$CFG_GLPI["root_doc"]."/front/popup.php?popup=dropdown&amp;which=glpi_netpoints&amp;value2=$location"."&amp;rand=$rand&amp;entities_id=$entity_restrict' ,'glpipopup', 'height=400, width=1000, top=100, left=100, scrollbars=yes' );w.focus();\"";
 		}
 		echo ">";
 		echo "<span class='over_link' id='comments_$myname$rand'>".nl2br($comments)."</span>";
@@ -275,7 +275,7 @@ function dropdownNoValue($table,$myname,$value,$entity_restrict=-1) {
 
 	$where="";
 	if (in_array($table,$CFG_GLPI["specif_entities_tables"])){
-		$where.= "WHERE `".$table."`.FK_entities='".$entity_restrict."'";
+		$where.= "WHERE `".$table."`.entities_id='".$entity_restrict."'";
 	} 
 
 	if (in_array($table,$CFG_GLPI["deleted_tables"])){
@@ -2420,7 +2420,7 @@ function privatePublicSwitch($private,$entity,$recursive){
 		$params=array(
 			'private'=>1,
 			'recursive'=>$recursive,
-			'FK_entities'=>$entity,
+			'entities_id'=>$entity,
 			'rand'=>$rand,
 		);
 		ajaxUpdateItemJsCode('private_switch'.$rand,$CFG_GLPI["root_doc"]."/ajax/private_public.php",$params,false);
@@ -2431,7 +2431,7 @@ function privatePublicSwitch($private,$entity,$recursive){
 		$params=array(
 			'private'=>0,
 			'recursive'=>$recursive,
-			'FK_entities'=>$entity,
+			'entities_id'=>$entity,
 			'rand'=>$rand,
 		);
 		ajaxUpdateItemJsCode('private_switch'.$rand,$CFG_GLPI["root_doc"]."/ajax/private_public.php",$params,false);
@@ -2444,7 +2444,7 @@ function privatePublicSwitch($private,$entity,$recursive){
 		$_POST['rand']=$rand;
 		$_POST['private']=$private;
 		$_POST['recursive']=$recursive;
-		$_POST['FK_entities']=$entity;
+		$_POST['entities_id']=$entity;
 		include (GLPI_ROOT."/ajax/private_public.php");
 	echo "</span>\n";
 	return $rand;
@@ -2556,7 +2556,7 @@ function dropdownContracts($name,$entity_restrict=-1,$alreadyused=array()){
 	$entrest="";
 	$idrest="";
 	if ($entity_restrict>=0){
-		$entrest=getEntitiesRestrictRequest("AND","glpi_contracts","FK_entities",$entity_restrict,true);
+		$entrest=getEntitiesRestrictRequest("AND","glpi_contracts","entities_id",$entity_restrict,true);
 	}
 	if (count($alreadyused)) {
 		foreach ($alreadyused AS $ID) {
@@ -2566,7 +2566,7 @@ function dropdownContracts($name,$entity_restrict=-1,$alreadyused=array()){
 	}
 	$query = "SELECT glpi_contracts.*, glpi_entities.completename 
 		FROM glpi_contracts 
-		LEFT JOIN glpi_entities ON (glpi_contracts.FK_entities = glpi_entities.ID)
+		LEFT JOIN glpi_entities ON (glpi_contracts.entities_id = glpi_entities.ID)
 		WHERE glpi_contracts.deleted = '0' $entrest $idrest 
 		ORDER BY glpi_entities.completename, glpi_contracts.name ASC, glpi_contracts.begin_date DESC";
 	$result=$DB->query($query);
@@ -2576,11 +2576,11 @@ function dropdownContracts($name,$entity_restrict=-1,$alreadyused=array()){
 	while ($data=$DB->fetch_array($result)){
 
 		if ($data["device_countmax"]==0||$data["device_countmax"]>countElementsInTable("glpi_contracts_items","FK_contract = '".$data['ID']."'" )){
-			if ($data["FK_entities"]!=$prev) {
+			if ($data["entities_id"]!=$prev) {
 				if ($prev>=0) {
 					echo "</optgroup>";
 				}
-				$prev=$data["FK_entities"];
+				$prev=$data["entities_id"];
 				echo "<optgroup label=\"". $data["completename"] ."\">";
 			}
 			echo "<option value='".$data["ID"]."'>";

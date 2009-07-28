@@ -155,7 +155,7 @@ function showListReminder($private=1,$recursive=0){
 
 			$tabremind[$sort."$$".$i]["id_reminder"]=$remind->fields["ID"];
 			$tabremind[$sort."$$".$i]["users_id"]=$remind->fields["users_id"];
-			$tabremind[$sort."$$".$i]["entity"]=$remind->fields["FK_entities"];
+			$tabremind[$sort."$$".$i]["entity"]=$remind->fields["entities_id"];
 			$tabremind[$sort."$$".$i]["begin"]=($data["rv"]==1?"".$data["begin"]."":"".$data["date"]."");
 			$tabremind[$sort."$$".$i]["end"]=($data["rv"]==1?"".$data["end"]."":"");
 			$tabremind[$sort."$$".$i]["name"]=resume_text($remind->fields["name"],$CFG_GLPI["cut"]);

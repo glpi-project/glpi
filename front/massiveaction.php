@@ -119,7 +119,7 @@ if (isset($_POST["itemtype"])){
 							/// Items exists ?
 							if ($ci2->getFromDB(COMPUTER_TYPE,$key)){
 								/// Entity security
-								if ($ci->obj->fields["FK_entities"]==$ci2->obj->fields["FK_entities"]){
+								if ($ci->obj->fields["entities_id"]==$ci2->obj->fields["entities_id"]){
 									if ($ci->obj->fields["is_global"]
 									||(!$ci->obj->fields["is_global"]&&getNumberConnections($_POST["itemtype"],$key)==0)){
 										Connect($_POST["connect_item"],$key,$_POST["type"]);
@@ -142,7 +142,7 @@ if (isset($_POST["itemtype"])){
 							/// Items exists ?
 							if ($ci2->getFromDB(COMPUTER_TYPE,$_POST["connect_item"])){
 								/// Entity security
-								if ($ci->obj->fields["FK_entities"]==$ci2->obj->fields["FK_entities"]){
+								if ($ci->obj->fields["entities_id"]==$ci2->obj->fields["entities_id"]){
 									if ($ci->obj->fields["is_global"]
                               ||(!$ci->obj->fields["is_global"]
                                  &&getNumberConnections($_POST["itemtype"],$key)==0)){
@@ -213,7 +213,7 @@ if (isset($_POST["itemtype"])){
 						if ($searchopt[$_POST["id_field"]]["table"]=="glpi_suppliers_infocoms"){
 							$ent=new Enterprise();
 							if ($ent->getFromDB($_POST[$_POST["field"]])){
-								$link_entity_type=$ent->fields["FK_entities"];
+								$link_entity_type=$ent->fields["entities_id"];
 							}
 							
 						}
@@ -222,9 +222,9 @@ if (isset($_POST["itemtype"])){
 							if ($val==1){
 								if ($ci->getFromDB($_POST["itemtype"],$key)){
 									if ($link_entity_type<0
-										||$link_entity_type==$ci->obj->fields["FK_entities"]
+										||$link_entity_type==$ci->obj->fields["entities_id"]
 										||($ent->fields["recursive"]
-                                 && in_array($link_entity_type, getAncestorsOf("glpi_entities",$ci->obj->fields["FK_entities"])))){
+                                 && in_array($link_entity_type, getAncestorsOf("glpi_entities",$ci->obj->fields["entities_id"])))){
 										unset($ic->fields);
 										$ic->update(array("itemtype"=>$_POST["itemtype"],"items_id"=>$key,$_POST["field"] => $_POST[$_POST["field"]]));
 									}
@@ -245,11 +245,11 @@ if (isset($_POST["itemtype"])){
 							$ci2->table=$searchopt[$_POST["id_field"]]["table"];
 		
 							if ($ci2->getFromDB($_POST[$_POST["field"]])){
-								if (isset($ci2->fields["FK_entities"])&&$ci2->fields["FK_entities"]>=0){
+								if (isset($ci2->fields["entities_id"])&&$ci2->fields["entities_id"]>=0){
 									if (isset($ci2->fields["recursive"])&&$ci2->fields["recursive"]){
-                              $link_entity_type=getSonsOf("glpi_entities",$ci2->fields["FK_entities"]);
+                              $link_entity_type=getSonsOf("glpi_entities",$ci2->fields["entities_id"]);
 									} else {
-										$link_entity_type[]=$ci2->fields["FK_entities"];
+										$link_entity_type[]=$ci2->fields["entities_id"];
 									}
 								}
 		
@@ -260,7 +260,7 @@ if (isset($_POST["itemtype"])){
 							if ($val==1) {
 								if ($ci->getFromDB($_POST["itemtype"],$key)){
 									if (count($link_entity_type)==0
-										|| in_array($ci->obj->fields["FK_entities"], $link_entity_type)){
+										|| in_array($ci->obj->fields["entities_id"], $link_entity_type)){
 										$ci->obj->update(array("ID"=>$key,$_POST["field"] => $_POST[$_POST["field"]]));
 									}
 								}
@@ -273,7 +273,7 @@ if (isset($_POST["itemtype"])){
 				foreach ($_POST["item"] as $key => $val){
 					if ($val==1) {
 						$comp=new Computer;
-						if ($comp->getFromDB($key)&&$comp->fields["FK_entities"]==$_SESSION["glpiactive_entity"]){
+						if ($comp->getFromDB($key)&&$comp->fields["entities_id"]==$_SESSION["glpiactive_entity"]){
 							installSoftwareVersion($key,$_POST["vID"]);
 						}
 					}
@@ -287,7 +287,7 @@ if (isset($_POST["itemtype"])){
 				}
 			break;
 			case "add_userprofile":
-				$input['FK_entities']=$_POST['FK_entities'];
+				$input['entities_id']=$_POST['entities_id'];
 				$input['FK_profiles']=$_POST['FK_profiles'];
 				$input['recursive']=$_POST['recursive'];
 				foreach ($_POST["item"] as $key => $val){
@@ -308,14 +308,14 @@ if (isset($_POST["itemtype"])){
 								/// Entity security
 								if ($_POST["itemtype"]==ENTITY_TYPE) {
 								   $destentity = $ci2->obj->fields["ID"];
-								} else if (isset($ci2->obj->fields["FK_entities"])) {
-								   $destentity = $ci2->obj->fields["FK_entities"];
+								} else if (isset($ci2->obj->fields["entities_id"])) {
+								   $destentity = $ci2->obj->fields["entities_id"];
 								} else {
 								   $destentity = -1;
 								}
 								if ($destentity<0
-								|| $ci->obj->fields["FK_entities"]==$destentity
-                        || ($ci->obj->fields["recursive"] && in_array($ci->obj->fields["FK_entities"], getAncestorsOf("glpi_entities",$destentity)))){
+								|| $ci->obj->fields["entities_id"]==$destentity
+                        || ($ci->obj->fields["recursive"] && in_array($ci->obj->fields["entities_id"], getAncestorsOf("glpi_entities",$destentity)))){
 									addDeviceDocument($_POST['docID'],$_POST["itemtype"],$key);
 								}
 							}
@@ -333,15 +333,15 @@ if (isset($_POST["itemtype"])){
 							if ($ci2->getFromDB($_POST["itemtype"],$key)){
 								if ($_POST["itemtype"]==ENTITY_TYPE) {
 								   $destentity = $ci2->obj->fields["ID"];
-								} else if (isset($ci2->obj->fields["FK_entities"])) {
-								   $destentity = $ci2->obj->fields["FK_entities"];
+								} else if (isset($ci2->obj->fields["entities_id"])) {
+								   $destentity = $ci2->obj->fields["entities_id"];
 								} else {
 								   $destentity = -1;
 								}
 								/// Entity security
 								if ($destentity<0
-                           ||$ci->obj->fields["FK_entities"]==$destentity
-                           ||($ci->obj->fields["recursive"] && in_array($ci->obj->fields["FK_entities"], getAncestorsOf("glpi_entities",$destentity)))){
+                           ||$ci->obj->fields["entities_id"]==$destentity
+                           ||($ci->obj->fields["recursive"] && in_array($ci->obj->fields["entities_id"], getAncestorsOf("glpi_entities",$destentity)))){
 									addContactEnterprise($key,$_POST["conID"]);
 								}
 							}
@@ -359,16 +359,16 @@ if (isset($_POST["itemtype"])){
 							if ($ci2->getFromDB($_POST["itemtype"],$key)){
 								if ($_POST["itemtype"]==ENTITY_TYPE) {
 								   $destentity = $ci2->obj->fields["ID"];
-								} else if (isset($ci2->obj->fields["FK_entities"])) {
-								   $destentity = $ci2->obj->fields["FK_entities"];
+								} else if (isset($ci2->obj->fields["entities_id"])) {
+								   $destentity = $ci2->obj->fields["entities_id"];
 								} else {
 								   $destentity = -1;
 								}
 								/// Entity security
 								if ($destentity<0
-                           ||$ci->obj->fields["FK_entities"]==$destentity
+                           ||$ci->obj->fields["entities_id"]==$destentity
                            ||($ci->obj->fields["recursive"]
-                              && in_array($ci->obj->fields["FK_entities"], getAncestorsOf("glpi_entities",$destentity)))){
+                              && in_array($ci->obj->fields["entities_id"], getAncestorsOf("glpi_entities",$destentity)))){
 									addDeviceContract($_POST['conID'],$_POST["itemtype"],$key);
 								}
 							}
@@ -386,9 +386,9 @@ if (isset($_POST["itemtype"])){
 							// Items exists ?
 							if ($ci2->getFromDB($_POST["itemtype"],$key)){
 								// Entity security
-								if (!isset($ci2->obj->fields["FK_entities"])
-								||$ci->obj->fields["FK_entities"]==$ci2->obj->fields["FK_entities"]
-                        ||($ci->obj->fields["recursive"] && in_array($ci->obj->fields["FK_entities"], getAncestorsOf("glpi_entities",$ci2->obj->fields["FK_entities"])))){
+								if (!isset($ci2->obj->fields["entities_id"])
+								||$ci->obj->fields["entities_id"]==$ci2->obj->fields["entities_id"]
+                        ||($ci->obj->fields["recursive"] && in_array($ci->obj->fields["entities_id"], getAncestorsOf("glpi_entities",$ci2->obj->fields["entities_id"])))){
 									addContactEnterprise($_POST["entID"],$key);
 								}
 							}

@@ -134,7 +134,7 @@ function showDeviceUser($ID){
 						$linktype=$LANG['common'][34];
 					}
 					echo "<tr class='tab_bg_1'><td class='center'>$type_name</td>" 
-						."<td class='center'>".getDropdownName("glpi_entities",$data["FK_entities"])."</td>"
+						."<td class='center'>".getDropdownName("glpi_entities",$data["entities_id"])."</td>"
 						."<td class='center'>$link</td>";
 					echo "<td class='center'>";
 					if (isset($data["serial"])&&!empty($data["serial"])){
@@ -183,7 +183,7 @@ function showDeviceUser($ID){
 						$linktype=$LANG['common'][35]." ".$groups[$data["FK_groups"]];
 					}
 					echo "<tr class='tab_bg_1'><td class='center'>$type_name</td>"
-						."<td class='center'>".getDropdownName("glpi_entities",$data["FK_entities"])."</td>"
+						."<td class='center'>".getDropdownName("glpi_entities",$data["entities_id"])."</td>"
 						."<td class='center'>$link</td>";
 						
 					echo "<td class='center'>";
@@ -336,7 +336,7 @@ function showUserRights($target,$ID){
 		echo "<tr class='tab_bg_1'><th colspan='4'>".$LANG['entity'][3]."</tr><tr class='tab_bg_2'><td class='center'>";
 		echo "<input type='hidden' name='users_id' value='$ID'>";
 
-		dropdownValue("glpi_entities","FK_entities",0,1,$_SESSION['glpiactiveentities']);
+		dropdownValue("glpi_entities","entities_id",0,1,$_SESSION['glpiactiveentities']);
 		echo "</td><td class='center'>";
 
 		echo $LANG['profiles'][22].":";
@@ -354,10 +354,10 @@ function showUserRights($target,$ID){
 	echo "<div class='center'><table class='tab_cadrehov'><tr><th colspan='2'>".$LANG['Menu'][37]."</th><th>".$LANG['profiles'][22]." (D=".$LANG['profiles'][29].", R=".$LANG['profiles'][28].")</th></tr>";
 
 	$query="SELECT DISTINCT glpi_profiles_users.ID as linkID, glpi_profiles.ID, glpi_profiles.name, glpi_profiles_users.recursive,
-			glpi_profiles_users.dynamic, glpi_entities.completename, glpi_profiles_users.FK_entities
+			glpi_profiles_users.dynamic, glpi_entities.completename, glpi_profiles_users.entities_id
 			FROM glpi_profiles_users 
 			LEFT JOIN glpi_profiles ON (glpi_profiles_users.FK_profiles = glpi_profiles.ID)
-			LEFT JOIN glpi_entities ON (glpi_profiles_users.FK_entities = glpi_entities.ID)
+			LEFT JOIN glpi_entities ON (glpi_profiles_users.entities_id = glpi_entities.ID)
 			WHERE glpi_profiles_users.users_id='$ID'
 			ORDER BY glpi_profiles.name, glpi_entities.completename;";
 
@@ -369,7 +369,7 @@ function showUserRights($target,$ID){
 			echo "<tr class='tab_bg_1'>";
 			
 			echo "<td width='10'>";
-			if ($canedit&&in_array($data["FK_entities"],$_SESSION['glpiactiveentities'])){
+			if ($canedit&&in_array($data["entities_id"],$_SESSION['glpiactiveentities'])){
 				$sel="";
 				if (isset($_GET["select"])&&$_GET["select"]=="all") $sel="checked";
 				echo "<input type='checkbox' name='item[".$data["linkID"]."]' value='1' $sel>";
@@ -378,14 +378,14 @@ function showUserRights($target,$ID){
 			}
 			echo "</td>";
 
-			if ($data["FK_entities"]==0) {
+			if ($data["entities_id"]==0) {
 				$data["completename"]=$LANG['entity'][2];
 			}
 			echo "<td>";
 			if ($canshowentity){
-				echo "<a href='".$CFG_GLPI["root_doc"]."/front/entity.form.php?ID=".$data["FK_entities"]."'>";
+				echo "<a href='".$CFG_GLPI["root_doc"]."/front/entity.form.php?ID=".$data["entities_id"]."'>";
 			}
-			echo $data["completename"].($_SESSION["glpiview_ID"]?" (".$data["FK_entities"].")":"");
+			echo $data["completename"].($_SESSION["glpiview_ID"]?" (".$data["entities_id"].")":"");
 			if ($canshowentity){
 				echo "</a>";
 			}
@@ -476,7 +476,7 @@ function generateUserVcard($ID){
 function getUserEntities($ID,$recursive=true){
 	global $DB;
 
-	$query="SELECT DISTINCT FK_entities, recursive
+	$query="SELECT DISTINCT entities_id, recursive
 			FROM glpi_profiles_users 
 			WHERE users_id='$ID';";
 	$result=$DB->query($query);
@@ -484,10 +484,10 @@ function getUserEntities($ID,$recursive=true){
 		$entities=array();
 		while ($data=$DB->fetch_assoc($result)){
 			if ($data['recursive']&&$recursive){
-				$tab=getSonsOf('glpi_entities',$data['FK_entities']);
+				$tab=getSonsOf('glpi_entities',$data['entities_id']);
 				$entities=array_merge($tab,$entities);
 			} else {
-				$entities[]=$data['FK_entities'];
+				$entities[]=$data['entities_id'];
 			}
 		}
 		return array_unique($entities);

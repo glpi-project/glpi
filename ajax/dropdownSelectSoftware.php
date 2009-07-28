@@ -55,8 +55,8 @@ if (strlen($_POST['searchText'])>0 && $_POST['searchText']!=$CFG_GLPI["ajax_wild
 	$where.=" AND name ".makeTextSearch($_POST['searchText'])." ";
 }
 
-//$where.=" AND FK_entities='".$_POST["entity_restrict"]."' ";
-$where .= getEntitiesRestrictRequest(' AND', 'glpi_softwares','FK_entities',$_POST["entity_restrict"],true);
+//$where.=" AND entities_id='".$_POST["entity_restrict"]."' ";
+$where .= getEntitiesRestrictRequest(' AND', 'glpi_softwares','entities_id',$_POST["entity_restrict"],true);
 
 
 $query = "SELECT DISTINCT glpi_softwares.ID, glpi_softwares.name 

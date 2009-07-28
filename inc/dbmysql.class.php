@@ -314,7 +314,7 @@ class DBmysql {
 	 *  foreach ($DB->request("glpi_states") as $ID => $data) { ... }
 	 *  foreach ($DB->request("glpi_states", "ID=1") as $ID => $data) { ... }
 	 *  foreach ($DB->request("glpi_states", "", "name") as $ID => $data) { ... }
-	 *  foreach ($DB->request("glpi_computers",array("name"=>"SBEI003W","FK_entities"=>1),array("serial","otherserial")) { ... }
+	 *  foreach ($DB->request("glpi_computers",array("name"=>"SBEI003W","entities_id"=>1),array("serial","otherserial")) { ... }
 	 * 
 	 * @param $tableorsql table name, array of names or SQL query
 	 * @param $crit string or array of filed/values, ex array("ID"=>1), if empty => all rows

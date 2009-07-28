@@ -34,7 +34,7 @@
 // ----------------------------------------------------------------------
 
 // Conventions :
-// ID 80 : FK_entities link -> no massive action
+// ID 80 : entities_id link -> no massive action
 // ID 90 : notes -> no massive action
 // ID 101 : glpi_ocslinks -> no linkfield but massive action on it
 
@@ -196,7 +196,7 @@ $SEARCH_OPTION[COMPUTER_TYPE][24]['name']=$LANG['common'][10];
 
 $SEARCH_OPTION[COMPUTER_TYPE][80]['table']='glpi_entities';
 $SEARCH_OPTION[COMPUTER_TYPE][80]['field']='completename';
-$SEARCH_OPTION[COMPUTER_TYPE][80]['linkfield']='FK_entities';
+$SEARCH_OPTION[COMPUTER_TYPE][80]['linkfield']='entities_id';
 $SEARCH_OPTION[COMPUTER_TYPE][80]['name']=$LANG['entity'][0];
 
 $SEARCH_OPTION[COMPUTER_TYPE]['periph']=$LANG['title'][30];
@@ -731,7 +731,7 @@ $SEARCH_OPTION[NETWORKING_TYPE][24]['name']=$LANG['common'][10];
 
 $SEARCH_OPTION[NETWORKING_TYPE][80]['table']='glpi_entities';
 $SEARCH_OPTION[NETWORKING_TYPE][80]['field']='completename';
-$SEARCH_OPTION[NETWORKING_TYPE][80]['linkfield']='FK_entities';
+$SEARCH_OPTION[NETWORKING_TYPE][80]['linkfield']='entities_id';
 $SEARCH_OPTION[NETWORKING_TYPE][80]['name']=$LANG['entity'][0];
 
 $SEARCH_OPTION[NETWORKING_TYPE][86]['table']='glpi_networkequipments';
@@ -1073,7 +1073,7 @@ $SEARCH_OPTION[PRINTER_TYPE][24]['name']=$LANG['common'][10];
 
 $SEARCH_OPTION[PRINTER_TYPE][80]['table']='glpi_entities';
 $SEARCH_OPTION[PRINTER_TYPE][80]['field']='completename';
-$SEARCH_OPTION[PRINTER_TYPE][80]['linkfield']='FK_entities';
+$SEARCH_OPTION[PRINTER_TYPE][80]['linkfield']='entities_id';
 $SEARCH_OPTION[PRINTER_TYPE][80]['name']=$LANG['entity'][0];
 
 $SEARCH_OPTION[PRINTER_TYPE][86]['table']='glpi_printers';
@@ -1444,7 +1444,7 @@ $SEARCH_OPTION[MONITOR_TYPE][24]['name']=$LANG['common'][10];
 
 $SEARCH_OPTION[MONITOR_TYPE][80]['table']='glpi_entities';
 $SEARCH_OPTION[MONITOR_TYPE][80]['field']='completename';
-$SEARCH_OPTION[MONITOR_TYPE][80]['linkfield']='FK_entities';
+$SEARCH_OPTION[MONITOR_TYPE][80]['linkfield']='entities_id';
 $SEARCH_OPTION[MONITOR_TYPE][80]['name']=$LANG['entity'][0];
 
 $SEARCH_OPTION[MONITOR_TYPE]['tracking']=$LANG['title'][24];
@@ -1733,7 +1733,7 @@ $SEARCH_OPTION[PERIPHERAL_TYPE][24]['name']=$LANG['common'][10];
 
 $SEARCH_OPTION[PERIPHERAL_TYPE][80]['table']='glpi_entities';
 $SEARCH_OPTION[PERIPHERAL_TYPE][80]['field']='completename';
-$SEARCH_OPTION[PERIPHERAL_TYPE][80]['linkfield']='FK_entities';
+$SEARCH_OPTION[PERIPHERAL_TYPE][80]['linkfield']='entities_id';
 $SEARCH_OPTION[PERIPHERAL_TYPE][80]['name']=$LANG['entity'][0];
 
 $SEARCH_OPTION[PERIPHERAL_TYPE]['network']=$LANG['setup'][88];
@@ -2052,7 +2052,7 @@ $SEARCH_OPTION[SOFTWARE_TYPE][61]['datatype']='bool';
 
 $SEARCH_OPTION[SOFTWARE_TYPE][80]['table']='glpi_entities';
 $SEARCH_OPTION[SOFTWARE_TYPE][80]['field']='completename';
-$SEARCH_OPTION[SOFTWARE_TYPE][80]['linkfield']='FK_entities';
+$SEARCH_OPTION[SOFTWARE_TYPE][80]['linkfield']='entities_id';
 $SEARCH_OPTION[SOFTWARE_TYPE][80]['name']=$LANG['entity'][0];
 
 $SEARCH_OPTION[SOFTWARE_TYPE][72]['table']='glpi_computers_softwaresversions';
@@ -2474,7 +2474,7 @@ $SEARCH_OPTION[SOFTWARELICENSE_TYPE][59]['name']=$LANG['common'][41];
 
 $SEARCH_OPTION[SOFTWARELICENSE_TYPE][80]['table']='glpi_entities';
 $SEARCH_OPTION[SOFTWARELICENSE_TYPE][80]['field']='completename';
-$SEARCH_OPTION[SOFTWARELICENSE_TYPE][80]['linkfield']='FK_entities';
+$SEARCH_OPTION[SOFTWARELICENSE_TYPE][80]['linkfield']='entities_id';
 $SEARCH_OPTION[SOFTWARELICENSE_TYPE][80]['name']=$LANG['entity'][0];
 
 $SEARCH_OPTION[SOFTWARELICENSE_TYPE][122]['table']='glpi_infocoms'; 
@@ -2538,7 +2538,7 @@ $SEARCH_OPTION[BUDGET_TYPE][5]['datatype']='text';
 
 $SEARCH_OPTION[BUDGET_TYPE][80]['table']='glpi_entities';
 $SEARCH_OPTION[BUDGET_TYPE][80]['field']='completename';
-$SEARCH_OPTION[BUDGET_TYPE][80]['linkfield']='FK_entities';
+$SEARCH_OPTION[BUDGET_TYPE][80]['linkfield']='entities_id';
 $SEARCH_OPTION[BUDGET_TYPE][80]['name']=$LANG['entity'][0];
 
 $SEARCH_OPTION[BUDGET_TYPE][86]['table']='glpi_contacts';
@@ -2620,7 +2620,7 @@ $SEARCH_OPTION[CONTACT_TYPE][90]['name']=$LANG['title'][37];
 
 $SEARCH_OPTION[CONTACT_TYPE][80]['table']='glpi_entities';
 $SEARCH_OPTION[CONTACT_TYPE][80]['field']='completename';
-$SEARCH_OPTION[CONTACT_TYPE][80]['linkfield']='FK_entities';
+$SEARCH_OPTION[CONTACT_TYPE][80]['linkfield']='entities_id';
 $SEARCH_OPTION[CONTACT_TYPE][80]['name']=$LANG['entity'][0];
 
 $SEARCH_OPTION[CONTACT_TYPE][86]['table']='glpi_contacts';
@@ -2719,7 +2719,7 @@ $SEARCH_OPTION[ENTERPRISE_TYPE][90]['name']=$LANG['title'][37];
 
 $SEARCH_OPTION[ENTERPRISE_TYPE][80]['table']='glpi_entities';
 $SEARCH_OPTION[ENTERPRISE_TYPE][80]['field']='completename';
-$SEARCH_OPTION[ENTERPRISE_TYPE][80]['linkfield']='FK_entities';
+$SEARCH_OPTION[ENTERPRISE_TYPE][80]['linkfield']='entities_id';
 $SEARCH_OPTION[ENTERPRISE_TYPE][80]['name']=$LANG['entity'][0];
 
 $SEARCH_OPTION[ENTERPRISE_TYPE][86]['table']='glpi_suppliers';
@@ -2827,7 +2827,7 @@ $SEARCH_OPTION[CONTRACT_TYPE][90]['name']=$LANG['title'][37];
 
 $SEARCH_OPTION[CONTRACT_TYPE][80]['table']='glpi_entities';
 $SEARCH_OPTION[CONTRACT_TYPE][80]['field']='completename';
-$SEARCH_OPTION[CONTRACT_TYPE][80]['linkfield']='FK_entities';
+$SEARCH_OPTION[CONTRACT_TYPE][80]['linkfield']='entities_id';
 $SEARCH_OPTION[CONTRACT_TYPE][80]['name']=$LANG['entity'][0];
 
 $SEARCH_OPTION[CONTRACT_TYPE][59]['table']='glpi_contracts';
@@ -2902,7 +2902,7 @@ $SEARCH_OPTION[CARTRIDGE_TYPE][90]['name']=$LANG['title'][37];
 
 $SEARCH_OPTION[CARTRIDGE_TYPE][80]['table']='glpi_entities';
 $SEARCH_OPTION[CARTRIDGE_TYPE][80]['field']='completename';
-$SEARCH_OPTION[CARTRIDGE_TYPE][80]['linkfield']='FK_entities';
+$SEARCH_OPTION[CARTRIDGE_TYPE][80]['linkfield']='entities_id';
 $SEARCH_OPTION[CARTRIDGE_TYPE][80]['name']=$LANG['entity'][0];
 
 //////TYPEDOC_TYPE
@@ -2993,7 +2993,7 @@ $SEARCH_OPTION[DOCUMENT_TYPE][7]['name']=$LANG['document'][3];
 
 $SEARCH_OPTION[DOCUMENT_TYPE][80]['table']='glpi_entities';
 $SEARCH_OPTION[DOCUMENT_TYPE][80]['field']='completename';
-$SEARCH_OPTION[DOCUMENT_TYPE][80]['linkfield']='FK_entities';
+$SEARCH_OPTION[DOCUMENT_TYPE][80]['linkfield']='entities_id';
 $SEARCH_OPTION[DOCUMENT_TYPE][80]['name']=$LANG['entity'][0];
 
 $SEARCH_OPTION[DOCUMENT_TYPE][19]['table']='glpi_documents';
@@ -3100,7 +3100,7 @@ $SEARCH_OPTION[USER_TYPE][20]['forcegroupby']=true;
 
 $SEARCH_OPTION[USER_TYPE][80]['table']='glpi_entities';
 $SEARCH_OPTION[USER_TYPE][80]['field']='completename';
-$SEARCH_OPTION[USER_TYPE][80]['linkfield']='FK_entities';
+$SEARCH_OPTION[USER_TYPE][80]['linkfield']='entities_id';
 $SEARCH_OPTION[USER_TYPE][80]['name']=$LANG['entity'][0];
 $SEARCH_OPTION[USER_TYPE][80]['forcegroupby']=true;
 
@@ -3174,7 +3174,7 @@ $SEARCH_OPTION[CONSUMABLE_TYPE][90]['name']=$LANG['title'][37];
 
 $SEARCH_OPTION[CONSUMABLE_TYPE][80]['table']='glpi_entities';
 $SEARCH_OPTION[CONSUMABLE_TYPE][80]['field']='completename';
-$SEARCH_OPTION[CONSUMABLE_TYPE][80]['linkfield']='FK_entities';
+$SEARCH_OPTION[CONSUMABLE_TYPE][80]['linkfield']='entities_id';
 $SEARCH_OPTION[CONSUMABLE_TYPE][80]['name']=$LANG['entity'][0];
 
 //////LINK_TYPE
@@ -3304,7 +3304,7 @@ $SEARCH_OPTION[PHONE_TYPE][42]['name']=$LANG['phones'][36];
 
 $SEARCH_OPTION[PHONE_TYPE][80]['table']='glpi_entities';
 $SEARCH_OPTION[PHONE_TYPE][80]['field']='completename';
-$SEARCH_OPTION[PHONE_TYPE][80]['linkfield']='FK_entities';
+$SEARCH_OPTION[PHONE_TYPE][80]['linkfield']='entities_id';
 $SEARCH_OPTION[PHONE_TYPE][80]['name']=$LANG['entity'][0];
 
 $SEARCH_OPTION[PHONE_TYPE]['tracking']=$LANG['title'][24];
@@ -3723,7 +3723,7 @@ $SEARCH_OPTION[STATE_TYPE][24]['name']=$LANG['common'][10];
 
 $SEARCH_OPTION[STATE_TYPE][80]['table']='glpi_entities';
 $SEARCH_OPTION[STATE_TYPE][80]['field']='completename';
-$SEARCH_OPTION[STATE_TYPE][80]['linkfield']='FK_entities';
+$SEARCH_OPTION[STATE_TYPE][80]['linkfield']='entities_id';
 $SEARCH_OPTION[STATE_TYPE][80]['name']=$LANG['entity'][0];
 
 //////RESERVATION_TYPE
@@ -3793,7 +3793,7 @@ $SEARCH_OPTION[RESERVATION_TYPE][24]['name']=$LANG['common'][10];
 
 $SEARCH_OPTION[RESERVATION_TYPE][80]['table']='glpi_entities';
 $SEARCH_OPTION[RESERVATION_TYPE][80]['field']='completename';
-$SEARCH_OPTION[RESERVATION_TYPE][80]['linkfield']='FK_entities';
+$SEARCH_OPTION[RESERVATION_TYPE][80]['linkfield']='entities_id';
 $SEARCH_OPTION[RESERVATION_TYPE][80]['name']=$LANG['entity'][0];
 
 // TRACKING_TYPE - used for massive actions
@@ -3880,7 +3880,7 @@ $SEARCH_OPTION[MAILGATE_TYPE][1]['itemlink_type']=MAILGATE_TYPE;
 
 $SEARCH_OPTION[MAILGATE_TYPE][80]['table']='glpi_entities';
 $SEARCH_OPTION[MAILGATE_TYPE][80]['field']='completename';
-$SEARCH_OPTION[MAILGATE_TYPE][80]['linkfield']='FK_entities';
+$SEARCH_OPTION[MAILGATE_TYPE][80]['linkfield']='entities_id';
 $SEARCH_OPTION[MAILGATE_TYPE][80]['name']=$LANG['entity'][0];
 
 $SEARCH_OPTION[MAILGATE_TYPE][2]['table']='glpi_mailcollectors';

@@ -146,7 +146,7 @@ class Enterprise extends CommonDBTM {
 		if ($canedit) {
 			echo "<form method='post' action=\"$target\">";
 			if (empty($ID)||$ID<0){
-				echo "<input type='hidden' name='FK_entities' value='".$_SESSION["glpiactive_entity"]."'>";
+				echo "<input type='hidden' name='entities_id' value='".$_SESSION["glpiactive_entity"]."'>";
 			}
 		}
 		echo "<div class='center' id='tabsbody' >";
@@ -156,7 +156,7 @@ class Enterprise extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'><td>".$LANG['common'][16].":		</td>";
       echo "<td>";
-      autocompletionTextField("name","glpi_suppliers","name",$this->fields["name"],40,$this->fields["FK_entities"]);
+      autocompletionTextField("name","glpi_suppliers","name",$this->fields["name"],40,$this->fields["entities_id"]);
       echo "</td>";
 
       echo "<td>".$LANG['financial'][79].":		</td><td>";
@@ -165,7 +165,7 @@ class Enterprise extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'><td>".$LANG['help'][35].":		</td>";
       echo "<td>";
-      autocompletionTextField("phonenumber","glpi_suppliers","phonenumber",$this->fields["phonenumber"],40,$this->fields["FK_entities"]);
+      autocompletionTextField("phonenumber","glpi_suppliers","phonenumber",$this->fields["phonenumber"],40,$this->fields["entities_id"]);
       echo "</td>";
 
       echo "<td valign='top' rowspan='4'>";
@@ -176,18 +176,18 @@ class Enterprise extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['financial'][30].":		</td><td>";
-      autocompletionTextField("fax","glpi_suppliers","fax",$this->fields["fax"],40,$this->fields["FK_entities"]);
+      autocompletionTextField("fax","glpi_suppliers","fax",$this->fields["fax"],40,$this->fields["entities_id"]);
       echo "</td>";
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'><td>".$LANG['financial'][45].":		</td>";
       echo "<td>";
-      autocompletionTextField("website","glpi_suppliers","website",$this->fields["website"],40,$this->fields["FK_entities"]);
+      autocompletionTextField("website","glpi_suppliers","website",$this->fields["website"],40,$this->fields["entities_id"]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['setup'][14].":		</td><td>";
-      autocompletionTextField("email","glpi_suppliers","email",$this->fields["email"],40,$this->fields["FK_entities"]);
+      autocompletionTextField("email","glpi_suppliers","email",$this->fields["email"],40,$this->fields["entities_id"]);
       echo "</td></tr>";
 
 
@@ -195,23 +195,23 @@ class Enterprise extends CommonDBTM {
       echo "<td align='center' rowspan='4'><textarea cols='35' rows='4' name='address' >".$this->fields["address"]."</textarea>";
       echo "<td>".$LANG['financial'][100]."</td>";
       echo "<td>";
-      autocompletionTextField("postcode","glpi_suppliers","postcode",$this->fields["postcode"],40,$this->fields["FK_entities"]);
+      autocompletionTextField("postcode","glpi_suppliers","postcode",$this->fields["postcode"],40,$this->fields["entities_id"]);
       echo "</td>";
       echo "</tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['financial'][101].":		</td><td>";
-      autocompletionTextField("town","glpi_suppliers","town",$this->fields["town"],40,$this->fields["FK_entities"]);
+      autocompletionTextField("town","glpi_suppliers","town",$this->fields["town"],40,$this->fields["entities_id"]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['financial'][102].":		</td><td>";
-      autocompletionTextField("state","glpi_suppliers","state",$this->fields["state"],40,$this->fields["FK_entities"]);
+      autocompletionTextField("state","glpi_suppliers","state",$this->fields["state"],40,$this->fields["entities_id"]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'>";
       echo "<td>".$LANG['financial'][103].":		</td><td>";
-      autocompletionTextField("country","glpi_suppliers","country",$this->fields["country"],40,$this->fields["FK_entities"]);
+      autocompletionTextField("country","glpi_suppliers","country",$this->fields["country"],40,$this->fields["entities_id"]);
       echo "</td></tr>";
 	
 		if ($canedit) {

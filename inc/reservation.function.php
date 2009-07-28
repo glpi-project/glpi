@@ -60,7 +60,7 @@ function showReservationForm($itemtype,$items_id){
 		if (!$ci->getFromDB($itemtype,$items_id)) {
 			return false;
 		}
-		if (!haveAccessToEntity($ci->obj->fields["FK_entities"])) {
+		if (!haveAccessToEntity($ci->obj->fields["entities_id"])) {
 			return false;
 		}
 	}
@@ -323,14 +323,14 @@ function showAddReservationForm($target,$items,$date,$resaID=-1){
 		echo "<input type='hidden' name='items[$ID]' value='$ID'>";
 	}
 	echo "</td></tr>";
-	if (!haveRight("reservation_central","w") || !haveAccessToEntity($ci->obj->fields["FK_entities"]))
+	if (!haveRight("reservation_central","w") || !haveAccessToEntity($ci->obj->fields["entities_id"]))
 		echo "<input type='hidden' name='users_id' value='".$_SESSION["glpiID"]."'>";
 	else {
 		echo "<tr class='tab_bg_2'><td>".$LANG['reservation'][31].":	</td>";
 		echo "<td>";
 		if ($resaID==-1)
-			dropdownAllUsers("users_id",$_SESSION["glpiID"],1,$ci->getField('FK_entities'));
-		else dropdownAllUsers("users_id",$resa->fields["users_id"],1,$ci->getField('FK_entities'));
+			dropdownAllUsers("users_id",$_SESSION["glpiID"],1,$ci->getField('entities_id'));
+		else dropdownAllUsers("users_id",$resa->fields["users_id"],1,$ci->getField('entities_id'));
 		echo "</td></tr>";
 
 	}
@@ -405,7 +405,7 @@ function printReservation($target,$ID,$date){
 				$ci=new CommonItem();
 				$ci->getFromDB($m->fields["itemtype"],$m->fields["items_id"]);
 				
-				//if (in_array($ci->obj->fields["FK_entities"],$_SESSION["glpiactiveentities"])){
+				//if (in_array($ci->obj->fields["entities_id"],$_SESSION["glpiactiveentities"])){
 				if ($ci->obj->can($m->fields["items_id"],"r")){
 					list($annee,$mois,$jour)=explode("-",$date);
 					echo "<tr class='tab_bg_1'><td><a href='$target?show=resa&amp;ID=".$data['ID']."&amp;mois_courant=$mois&amp;annee_courante=$annee'>".$ci->getType()." - ".$ci->getName()."</a></td></tr>";
@@ -494,13 +494,13 @@ function printReservationItems($target){
 	foreach ($CFG_GLPI["reservation_types"] as $type){
 		$ci->setType($type);
 		$query="SELECT glpi_reservationsitems.ID as ID, glpi_reservationsitems.comments as comments, 
-				".$LINK_ID_TABLE[$type].".name as name, ".$LINK_ID_TABLE[$type].".FK_entities as FK_entities,
+				".$LINK_ID_TABLE[$type].".name as name, ".$LINK_ID_TABLE[$type].".entities_id as entities_id,
 				 glpi_locations.completename as location, glpi_reservationsitems.items_id as items_id	
 			FROM glpi_reservationsitems 
 			INNER JOIN ".$LINK_ID_TABLE[$type]." ON (glpi_reservationsitems.itemtype='$type' 
 								AND glpi_reservationsitems.items_id=".$LINK_ID_TABLE[$type].".ID)
 			LEFT JOIN glpi_locations ON (".$LINK_ID_TABLE[$type].".location = glpi_locations.ID)
-			WHERE glpi_reservationsitems.active='1' AND ".$LINK_ID_TABLE[$type].".deleted ='0' ".getEntitiesRestrictRequest("AND",$LINK_ID_TABLE[$type])." ORDER BY ".$LINK_ID_TABLE[$type].".FK_entities, ".$LINK_ID_TABLE[$type].".name";
+			WHERE glpi_reservationsitems.active='1' AND ".$LINK_ID_TABLE[$type].".deleted ='0' ".getEntitiesRestrictRequest("AND",$LINK_ID_TABLE[$type])." ORDER BY ".$LINK_ID_TABLE[$type].".entities_id, ".$LINK_ID_TABLE[$type].".name";
 
 
 		if ($result = $DB->query($query)) {
@@ -521,7 +521,7 @@ function printReservationItems($target){
 				echo "<td>".$row["location"]."</td>";
 				echo "<td>".nl2br($row["comments"])."</td>";
 				if ($showentity){
-					echo "<td>".getDropdownName("glpi_entities",$row["FK_entities"])."</td>";
+					echo "<td>".getDropdownName("glpi_entities",$row["entities_id"])."</td>";
 				}
 				echo "</tr>";
 				$ok=true;

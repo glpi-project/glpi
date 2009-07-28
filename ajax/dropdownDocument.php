@@ -78,7 +78,7 @@ if ($_POST['searchText']==$CFG_GLPI["ajax_wildcard"]) $LIMIT="";
 $query = "SELECT * 
 	FROM glpi_documents 
 	$where 
-	ORDER BY FK_entities, name $LIMIT";
+	ORDER BY entities_id, name $LIMIT";
 //error_log($query);
 $result = $DB->query($query);
 
@@ -89,11 +89,11 @@ echo "<option value=\"0\">-----</option>";
 if ($DB->numrows($result)) {
 	$prev=-1;
 	while ($data=$DB->fetch_array($result)) {
-		if ($data["FK_entities"]!=$prev) {
+		if ($data["entities_id"]!=$prev) {
 			if ($prev>=0) {
 				echo "</optgroup>";
 			}
-			$prev=$data["FK_entities"];
+			$prev=$data["entities_id"];
 			echo "<optgroup label=\"". getDropdownName("glpi_entities", $prev) ."\">";
 		}
 		$output = $data["name"];

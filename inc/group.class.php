@@ -119,7 +119,7 @@ class Group extends CommonDBTM{
 			
 			echo "<form method='post' name=form action=\"$target\">";
 			if (empty($ID)){
-				echo "<input type='hidden' name='FK_entities' value='".$_SESSION["glpiactive_entity"]."'>";
+				echo "<input type='hidden' name='entities_id' value='".$_SESSION["glpiactive_entity"]."'>";
 			}
 		}
 		echo "<div class='center' id='tabsbody' >";
@@ -133,14 +133,14 @@ class Group extends CommonDBTM{
 
 		echo "<tr><td>".$LANG['common'][16].":	</td>";
 		echo "<td>";
-		autocompletionTextField("name","glpi_groups","name",$this->fields["name"],40,$this->fields["FK_entities"]);	
+		autocompletionTextField("name","glpi_groups","name",$this->fields["name"],40,$this->fields["entities_id"]);	
 		echo "</td></tr>";
 
 		echo "<tr><td>".$LANG['common'][64].":	</td>";
 		echo "<td>";
 		// Manager must be in the same entity
 		// TODO for a recursive group the manager need to have a recursive right ?
-		dropdownUsers('users_id',$this->fields["users_id"],'all',0,1,$this->fields["FK_entities"]);
+		dropdownUsers('users_id',$this->fields["users_id"],'all',0,1,$this->fields["entities_id"]);
 		echo "</td></tr>";
 
 		if(useAuthLdap()){
@@ -149,12 +149,12 @@ class Group extends CommonDBTM{
 
 			echo "<tr><td>".$LANG['setup'][260].":	</td>";
 			echo "<td>";
-			autocompletionTextField("ldap_field","glpi_groups","ldap_field",$this->fields["ldap_field"],40,$this->fields["FK_entities"]);
+			autocompletionTextField("ldap_field","glpi_groups","ldap_field",$this->fields["ldap_field"],40,$this->fields["entities_id"]);
 			echo "</td></tr>";
 
 			echo "<tr><td>".$LANG['setup'][601].":	</td>";
 			echo "<td>";
-			autocompletionTextField("ldap_value","glpi_groups","ldap_value",$this->fields["ldap_value"],40,$this->fields["FK_entities"]);
+			autocompletionTextField("ldap_value","glpi_groups","ldap_value",$this->fields["ldap_value"],40,$this->fields["entities_id"]);
 			echo "</td></tr>";
 
 			echo "<tr><td colspan='2' align='center'>".$LANG['setup'][257].":	</td>";
@@ -163,7 +163,7 @@ class Group extends CommonDBTM{
 
 			echo "<tr><td>".$LANG['setup'][261].":	</td>";
 			echo "<td>";
-			autocompletionTextField("ldap_group_dn","glpi_groups","ldap_group_dn",$this->fields["ldap_group_dn"],40,$this->fields["FK_entities"]);
+			autocompletionTextField("ldap_group_dn","glpi_groups","ldap_group_dn",$this->fields["ldap_group_dn"],40,$this->fields["entities_id"]);
 			echo "</td></tr>";
 		}
 

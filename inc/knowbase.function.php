@@ -234,7 +234,7 @@ function showKbItemList($target,$contains,$start,$parentID,$faq=0){
 	} else {
 		// Anonymous access
 		if (isMultiEntitiesMode()){
-			$where = "(glpi_knowbaseitems.FK_entities=0 AND glpi_knowbaseitems.recursive=1) AND ";
+			$where = "(glpi_knowbaseitems.entities_id=0 AND glpi_knowbaseitems.recursive=1) AND ";
 		}
 	}	
 
@@ -425,7 +425,7 @@ function showKbRecentPopular($target,$type,$faq=0){
 	} else {
 		// Anonymous access
 		if (isMultiEntitiesMode()){
-			$faq_limit .= " WHERE (glpi_knowbaseitems.FK_entities=0 AND glpi_knowbaseitems.recursive=1)";
+			$faq_limit .= " WHERE (glpi_knowbaseitems.entities_id=0 AND glpi_knowbaseitems.recursive=1)";
 		} else {
 			$faq_limit .= " WHERE 1";
 		}

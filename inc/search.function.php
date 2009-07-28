@@ -1049,7 +1049,7 @@ function showList ($type,$params){
 							$tmpquery.=" AND ".$LINK_ID_TABLE[$ctype].".state > 0 ";
 						}
 				} else {// Ref table case
-						$tmpquery=$SELECT.", $ctype AS TYPE, ".$LINK_ID_TABLE[$type].".ID AS refID, ".$LINK_ID_TABLE[$ctype].".FK_entities AS ENTITY ".$FROM.$WHERE;
+						$tmpquery=$SELECT.", $ctype AS TYPE, ".$LINK_ID_TABLE[$type].".ID AS refID, ".$LINK_ID_TABLE[$ctype].".entities_id AS ENTITY ".$FROM.$WHERE;
 						$replace="FROM ".$LINK_ID_TABLE[$type]." INNER JOIN ".$LINK_ID_TABLE[$ctype]." ON (".$LINK_ID_TABLE[$type].".items_id = ".$LINK_ID_TABLE[$ctype].".ID AND ".$LINK_ID_TABLE[$type].".itemtype='$ctype')";
 						$tmpquery=str_replace("FROM ".$CFG_GLPI["union_search_type"][$type],$replace,$tmpquery);
 						$tmpquery=str_replace($CFG_GLPI["union_search_type"][$type],$LINK_ID_TABLE[$ctype],$tmpquery);
@@ -1261,7 +1261,7 @@ function showList ($type,$params){
 					if ($isadmin){
 						if ($type==ENTITY_TYPE && !in_array($data["ID"],$_SESSION["glpiactiveentities"])) {							
 							$tmpcheck="&nbsp;";
-						} else if (isset($CFG_GLPI["recursive_type"][$type]) && !in_array($data["FK_entities"],$_SESSION["glpiactiveentities"])) {
+						} else if (isset($CFG_GLPI["recursive_type"][$type]) && !in_array($data["entities_id"],$_SESSION["glpiactiveentities"])) {
 							$tmpcheck="&nbsp;";
 						} else {
 							$sel="";
@@ -1716,7 +1716,7 @@ function addDefaultSelect ($type){
 		break;
 	}
 	if (isset($CFG_GLPI["recursive_type"][$type])) {
-		$ret .= $LINK_ID_TABLE[$type].".FK_entities, ".$LINK_ID_TABLE[$type].".recursive, ";
+		$ret .= $LINK_ID_TABLE[$type].".entities_id, ".$LINK_ID_TABLE[$type].".recursive, ";
 	}
 	return $ret;
 }
@@ -2876,7 +2876,7 @@ function addLeftJoin ($type,$ref_table,&$already_link_tables,$new_table,$linkfie
 		return $out." LEFT JOIN $new_table $AS ON (glpi_computersdisks.FK_filesystems = $nt.ID) ";
 		break;
 		case "glpi_entitiesdatas":
-			return " LEFT JOIN $new_table $AS ON ($rt.ID = $nt.FK_entities) ";
+			return " LEFT JOIN $new_table $AS ON ($rt.ID = $nt.entities_id) ";
 		break;
 		case "glpi_ocslinks":
 			return " LEFT JOIN $new_table $AS ON ($rt.ID = $nt.glpi_id) ";
@@ -2972,14 +2972,14 @@ function addLeftJoin ($type,$ref_table,&$already_link_tables,$new_table,$linkfie
 			// Link to glpi_profiles_users before
 			$out=addLeftJoin($type,$rt,$already_link_tables,"glpi_profiles_users",$linkfield);
 			if ($type==USER_TYPE){
-				$out.=addLeftJoin($type,"glpi_profiles_users",$already_link_tables,"glpi_complete_entities","FK_entities");
+				$out.=addLeftJoin($type,"glpi_profiles_users",$already_link_tables,"glpi_complete_entities","entities_id");
 			}
 		return $out." LEFT JOIN $new_table $AS ON (glpi_profiles_users.FK_profiles = $nt.ID) ";
 		break;
 		case "glpi_entities":
 			if ($type==USER_TYPE){
 				$out=addLeftJoin($type,"glpi_profiles_users",$already_link_tables,"glpi_profiles","");
-				$out.=addLeftJoin($type,"glpi_profiles_users",$already_link_tables,"glpi_complete_entities","FK_entities");
+				$out.=addLeftJoin($type,"glpi_profiles_users",$already_link_tables,"glpi_complete_entities","entities_id");
 				return $out;
 			} else {
 				return " LEFT JOIN $new_table $AS ON ($rt.$linkfield = $nt.ID) ";

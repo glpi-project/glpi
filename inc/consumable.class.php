@@ -113,7 +113,7 @@ class ConsumableType extends CommonDBTM {
 		if (!$ID) {
 			if($this->getEmpty()) $ct_spotted = true;
 		} else {
-			if($this->getFromDB($ID)&&haveAccessToEntity($this->fields["FK_entities"])) $ct_spotted = true;
+			if($this->getFromDB($ID)&&haveAccessToEntity($this->fields["entities_id"])) $ct_spotted = true;
 		}
 
 		if ($ct_spotted){
@@ -122,7 +122,7 @@ class ConsumableType extends CommonDBTM {
 
 			echo "<div class='center' id='tabsbody'><form method='post' action=\"$target\">\n";
 			if (empty($ID)){
-				echo "<input type='hidden' name='FK_entities' value='".$_SESSION["glpiactive_entity"]."'>";
+				echo "<input type='hidden' name='entities_id' value='".$_SESSION["glpiactive_entity"]."'>";
 			}
 
          echo "<table class='tab_cadre_fixe'>\n";
@@ -133,19 +133,19 @@ class ConsumableType extends CommonDBTM {
             echo $LANG['common'][2]." $ID";
          }
          if (isMultiEntitiesMode()){
-            echo "&nbsp;(".getDropdownName("glpi_entities",$this->fields["FK_entities"]).")";
+            echo "&nbsp;(".getDropdownName("glpi_entities",$this->fields["entities_id"]).")";
          }
 
          echo "</th></tr>\n";
 
          echo "<tr class='tab_bg_1'><td>".$LANG['common'][16].":		</td>\n";
          echo "<td colspan='2'>";
-         autocompletionTextField("name","glpi_consumablesitems","name",$this->fields["name"],40,$this->fields["FK_entities"]);
+         autocompletionTextField("name","glpi_consumablesitems","name",$this->fields["name"],40,$this->fields["entities_id"]);
          echo "</td></tr>\n";
 
          echo "<tr class='tab_bg_1'><td>".$LANG['consumables'][2].":		</td>\n";
          echo "<td colspan='2'>";
-         autocompletionTextField("ref","glpi_consumablesitems","ref",$this->fields["ref"],40,$this->fields["FK_entities"]);
+         autocompletionTextField("ref","glpi_consumablesitems","ref",$this->fields["ref"],40,$this->fields["entities_id"]);
          echo "</td></tr>\n";
 
          echo "<tr class='tab_bg_1'><td>".$LANG['common'][17].": 	</td><td colspan='2'>\n";
@@ -157,11 +157,11 @@ class ConsumableType extends CommonDBTM {
          echo "</td></tr>\n";
 
          echo "<tr class='tab_bg_1'><td>".$LANG['common'][10].": 	</td><td colspan='2'>\n";
-         dropdownUsersID("users_id_tech", $this->fields["users_id_tech"],"interface",1,$this->fields["FK_entities"]);
+         dropdownUsersID("users_id_tech", $this->fields["users_id_tech"],"interface",1,$this->fields["entities_id"]);
          echo "</td></tr>\n";
 
          echo "<tr class='tab_bg_1'><td>".$LANG['consumables'][36].": 	</td><td colspan='2'>\n";
-         dropdownValue("glpi_locations","location",$this->fields["location"],1,$this->fields["FK_entities"]);
+         dropdownValue("glpi_locations","location",$this->fields["location"],1,$this->fields["entities_id"]);
          echo "</td></tr>\n";
 
          echo "<tr class='tab_bg_1'><td>".$LANG['consumables'][38].":</td><td colspan='2'>";

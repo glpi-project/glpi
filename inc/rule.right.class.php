@@ -99,7 +99,7 @@ class RightAffectRule extends Rule {
 			dropdownYesNo("recursive",0);
 			echo "</td><td align='center' class='tab_bg_2'>";
 			echo "<input type=hidden name='sub_type' value=\"" . $this->sub_type . "\">";
-			echo "<input type=hidden name='FK_entities' value=\"-1\">";
+			echo "<input type=hidden name='entities_id' value=\"-1\">";
 			echo "<input type=hidden name='affectentity' value=\"" . $ID . "\">";
 			echo "<input type='submit' name='add_user_rule' value=\"" . $LANG['buttons'][8] . "\" class='submit'>";
 			echo "</td></tr>";
@@ -190,13 +190,13 @@ class RightAffectRule extends Rule {
 				{
 					case "_affect_entity_by_dn":
 						unset($actions["_affect_entity_by_tag"]);
-						unset($actions["FK_entities"]);
+						unset($actions["entities_id"]);
 						break;
 					case "_affect_entity_by_tag":
 						unset($actions["_affect_entity_by_dn"]);
-						unset($actions["FK_entities"]);
+						unset($actions["entities_id"]);
 						break;
-					case "FK_entities":
+					case "entities_id":
 						unset($actions["_affect_entity_by_tag"]);
 						unset($actions["_affect_entity_by_dn"]);
 						break;
@@ -227,7 +227,7 @@ class RightAffectRule extends Rule {
 				switch ($action->fields["action_type"]) {
 					case "assign" :
 						switch ($action->fields["field"]) {
-							case "FK_entities":
+							case "entities_id":
 								$entity = $action->fields["value"];
 								break;
 							case "FK_profiles":
@@ -311,7 +311,7 @@ function getRulesByID($ID, $withcriterias, $withactions) {
 	//Get all the rules whose sub_type is $sub_type and entity is $ID
 	$sql="SELECT * 
 		FROM `glpi_rulesactions` as gra, glpi_rules as grd  
-		WHERE gra.FK_rules=grd.ID AND gra.field='FK_entities' 
+		WHERE gra.FK_rules=grd.ID AND gra.field='entities_id' 
 			AND grd.sub_type='".$this->sub_type."' AND gra.value='".$ID."'";
 	
 	$result = $DB->query($sql);

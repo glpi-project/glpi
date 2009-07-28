@@ -66,7 +66,7 @@ if ($_POST['searchText']==$CFG_GLPI["ajax_wildcard"]) $LIMIT="";
 
 if (!(isset($_POST["devtype"]) && $_POST["devtype"]!=NETWORKING_TYPE && isset($_POST["location"]) && $_POST["location"]>0)) {
 	if (isset($_POST["entity_restrict"])&&$_POST["entity_restrict"]>=0){
-		$where.= " AND glpi_netpoints.FK_entities='".$_POST["entity_restrict"]."'";
+		$where.= " AND glpi_netpoints.entities_id='".$_POST["entity_restrict"]."'";
 	} else {
 		$where.=getEntitiesRestrictRequest(" AND ","glpi_locations");
 	}

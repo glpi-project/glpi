@@ -84,7 +84,7 @@ function showDeviceBudget($budgetID) {
 				." INNER JOIN ".$LINK_ID_TABLE[$type]." ON (".$LINK_ID_TABLE[$type].".ID = glpi_infocoms.items_id) "
 				." WHERE glpi_infocoms.itemtype='$type' AND glpi_infocoms.budget = '$budgetID' "
 				. getEntitiesRestrictRequest(" AND",$LINK_ID_TABLE[$type])
-				." ORDER BY FK_entities, ".$LINK_ID_TABLE[$type].".name";
+				." ORDER BY entities_id, ".$LINK_ID_TABLE[$type].".name";
 
 			$result_linked=$DB->query($query);
 			$nb=$DB->numrows($result_linked);
@@ -109,7 +109,7 @@ function showDeviceBudget($budgetID) {
 						echo "<td class='center' rowspan='$nb' valign='top'>".$ci->getType()
 							.($nb>1?"<br />$nb</td>":"</td>");
 					}
-					echo "<td class='center'>".getDropdownName("glpi_entities",$data["FK_entities"])."</td>";
+					echo "<td class='center'>".getDropdownName("glpi_entities",$data["entities_id"])."</td>";
 
 					echo "<td class='center' ".(isset($data['deleted'])&&$data['deleted']?"class='tab_bg_2_2'":"").">".$name."</td>";
 					echo "<td class='center'>".(isset($data["serial"])? "".$data["serial"]."" :"-")."</td>";

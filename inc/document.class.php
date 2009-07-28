@@ -188,7 +188,7 @@ class Document extends CommonDBTM {
 		if ($canedit) {
 			echo "<form name='form' method='post' action=\"$target\" enctype=\"multipart/form-data\">";
 			if (empty($ID)||$ID<0){
-				echo "<input type='hidden' name='FK_entities' value='".$_SESSION["glpiactive_entity"]."'>";
+				echo "<input type='hidden' name='entities_id' value='".$_SESSION["glpiactive_entity"]."'>";
 			}
 		}
 		echo "<div class='center' id='tabsbody'><table class='tab_cadre_fixe'>";
@@ -208,7 +208,7 @@ class Document extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'><td>".$LANG['common'][16].":		</td>";
       echo "<td>";
-      autocompletionTextField("name","glpi_documents","name",$this->fields["name"],80,$this->fields["FK_entities"]);
+      autocompletionTextField("name","glpi_documents","name",$this->fields["name"],80,$this->fields["entities_id"]);
       echo "</td></tr>";
 
       if (!empty($ID)){
@@ -233,7 +233,7 @@ class Document extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'><td>".$LANG['document'][33].":		</td>";
       echo "<td>";
-      autocompletionTextField("link","glpi_documents","link",$this->fields["link"],40,$this->fields["FK_entities"]);
+      autocompletionTextField("link","glpi_documents","link",$this->fields["link"],40,$this->fields["entities_id"]);
       echo "</td></tr>";
 
       echo "<tr class='tab_bg_1'><td>".$LANG['document'][3].":		</td>";
@@ -243,7 +243,7 @@ class Document extends CommonDBTM {
 
       echo "<tr class='tab_bg_1'><td>".$LANG['document'][4].":		</td>";
       echo "<td>";
-      autocompletionTextField("mime","glpi_documents","mime",$this->fields["mime"],40,$this->fields["FK_entities"]);
+      autocompletionTextField("mime","glpi_documents","mime",$this->fields["mime"],40,$this->fields["entities_id"]);
       echo "</td></tr>";
 
       echo "<tr>";

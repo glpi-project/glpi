@@ -204,7 +204,7 @@ class DictionnarySoftwareCollection extends RuleCachedCollection {
 		$delete_ids = array ();
 
 		foreach ($IDs as $ID) {
-			$res_soft = $DB->query("SELECT gs.ID AS ID, gs.name AS name, gs.FK_entities AS FK_entities, gm.name AS manufacturer
+			$res_soft = $DB->query("SELECT gs.ID AS ID, gs.name AS name, gs.entities_id AS entities_id, gm.name AS manufacturer
 									FROM glpi_softwares AS gs 
 									LEFT JOIN glpi_manufacturers AS gm ON gs.FK_glpi_enterprise = gm.ID 
 									WHERE gs.is_template=0 AND gs.ID ='" . $ID . "'");
@@ -213,7 +213,7 @@ class DictionnarySoftwareCollection extends RuleCachedCollection {
 				$soft = $DB->fetch_array($res_soft);
 
 				//For each software
-				$this->replayDictionnaryOnOneSoftware($new_softs, $res_rule, $ID, $soft["FK_entities"], (isset ($soft["name"]) ? $soft["name"] : ''), (isset ($soft["manufacturer"]) ? $soft["manufacturer"] : ''), $delete_ids);
+				$this->replayDictionnaryOnOneSoftware($new_softs, $res_rule, $ID, $soft["entities_id"], (isset ($soft["name"]) ? $soft["name"] : ''), (isset ($soft["manufacturer"]) ? $soft["manufacturer"] : ''), $delete_ids);
 			}
 		}
 

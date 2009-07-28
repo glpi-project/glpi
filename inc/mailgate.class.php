@@ -114,7 +114,7 @@ class Mailgate  extends CommonDBTM {
 		echo "</td></tr>";
 
 		echo "<tr class='tab_bg_2'><td>".$LANG['entity'][0].":	</td><td>";
-		dropdownValue("glpi_entities", "FK_entities",$this->fields["FK_entities"],1,$_SESSION['glpiactiveentities']);
+		dropdownValue("glpi_entities", "entities_id",$this->fields["entities_id"],1,$_SESSION['glpiactiveentities']);
 		echo "</td></tr>";
 
 		echo "<tr class='tab_bg_2'><td>".$LANG['common'][60].":	</td><td>";
@@ -219,7 +219,7 @@ class MailCollect {
 		$mailgate=new Mailgate();
 		if ($mailgate->getFromDB($mailgateID)){
 
-			$this->entity=$mailgate->fields['FK_entities'];
+			$this->entity=$mailgate->fields['entities_id'];
 	
 			$this->server	=	$mailgate->fields['host'];
 			$this->username	=	$mailgate->fields['login'];
@@ -415,7 +415,7 @@ class MailCollect {
 			$tkt['uemail']=$head['from'];
 			$tkt['emailupdates']=1;
 			// Which entity ?
-			$tkt['FK_entities']=$this->entity;
+			$tkt['entities_id']=$this->entity;
 	
 			//$tkt['Subject']= $head['subject'];   // not use for the moment
 			$tkt['name']=$this->textCleaner($head['subject']);

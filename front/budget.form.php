@@ -41,7 +41,7 @@ if(empty($_GET["ID"])) $_GET["ID"] = -1;
 
 $budget=new Budget;
 if (isset($_POST["add"])) {
-	$budget->check(-1,'w',$_POST['FK_entities']);
+	$budget->check(-1,'w',$_POST['entities_id']);
 
 	$newID=$budget->add($_POST);
 	logEvent($newID, "budget", 4, "financial", $_SESSION["glpiname"]." ".$LANG['log'][20]." ".$_POST["name"].".");

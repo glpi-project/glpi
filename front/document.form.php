@@ -46,7 +46,7 @@ $doc= new Document();
 
 if (isset($_POST["add"]))
 {
-	$doc->check(-1,'w',$_POST['FK_entities']);
+	$doc->check(-1,'w',$_POST['entities_id']);
 
 	$newID=$doc->add($_POST);
 	$name="";

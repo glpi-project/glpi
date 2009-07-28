@@ -51,7 +51,7 @@ function cron_mailgate(){
 			$mc=new MailCollect();
 			while ($data=$DB->fetch_assoc($result)){
 				
-				logInFile("cron","Collect mails from ".$data["host"]." for  ".getDropdownName("glpi_entities",$data["FK_entities"])."\n");
+				logInFile("cron","Collect mails from ".$data["host"]." for  ".getDropdownName("glpi_entities",$data["entities_id"])."\n");
 				$message=$mc->collect($data["ID"]); 
  				logInFile("cron","$message\n");
 

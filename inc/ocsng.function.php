@@ -96,7 +96,7 @@ function ocsShowNewComputer($ocs_server_id, $advanced, $check, $start, $entity=0
 		// Computers existing in GLPI
 		$query_glpi_comp = "SELECT ID,name 
 				FROM glpi_computers 
-				WHERE is_template='0' AND FK_entities IN (".$_SESSION["glpiactiveentities_string"].")";
+				WHERE is_template='0' AND entities_id IN (".$_SESSION["glpiactiveentities_string"].")";
 		$result_glpi_comp = $DB->query($query_glpi_comp);
 	}
 
@@ -211,14 +211,14 @@ function ocsShowNewComputer($ocs_server_id, $advanced, $check, $start, $entity=0
 				echo "<tr class='tab_bg_2'><td>" . $tab["name"] . "</td><td>".$tab["serial"]."</td><td>" . convDateTime($tab["date"]) . "</td><td>" . $tab["TAG"] . "</td>";
 
 				if ($advanced && !$tolinked) {
-					if (!isset ($data['FK_entities'])) {
+					if (!isset ($data['entities_id'])) {
 						echo "<td class='center'><img src=\"" . GLPI_ROOT . "/pics/redbutton.png\"></td>";
-						$data['FK_entities'] = -1;
+						$data['entities_id'] = -1;
 					} else
 						echo "<td class='center'><img src=\"" . GLPI_ROOT . "/pics/greenbutton.png\"></td>";
 
 					echo "<td>";
-					dropdownValue("glpi_entities", "toimport_entities[" . $tab["ID"] . "]=" . $data['FK_entities'], $data['FK_entities'], 0);
+					dropdownValue("glpi_entities", "toimport_entities[" . $tab["ID"] . "]=" . $data['entities_id'], $data['entities_id'], 0);
 					echo "</td>";
 				}
 
@@ -481,20 +481,20 @@ function ocsImportComputer($ocs_id, $ocs_server_id, $lock = 0, $defaultentity = 
 			$data = $rule->processAllRules(array (), array (), $ocs_id);
 		} else
 			//An entity has already been defined via the web interface
-			$data['FK_entities'] = $defaultentity;
+			$data['entities_id'] = $defaultentity;
 
 		//Try to match all the rules, return the first good one, or null if not rules matched
-		if (isset ($data['FK_entities']) && $data['FK_entities'] >= 0) {
+		if (isset ($data['entities_id']) && $data['entities_id'] >= 0) {
 
 			if ($lock) {
-				while (!$fp = setEntityLock($data['FK_entities'])) {
+				while (!$fp = setEntityLock($data['entities_id'])) {
 					sleep(1);
 				}
 			}
 
 			//Check if machine could be linked with another one already in DB
 			if ($canlink){
-				$found_computers = getMachinesAlreadyInGLPI($ocs_id,$ocs_server_id,$data['FK_entities']);
+				$found_computers = getMachinesAlreadyInGLPI($ocs_id,$ocs_server_id,$data['entities_id']);
 				// machines founded -> try to link
 				if (is_array($found_computers) && count($found_computers)>0){
 					foreach ($found_computers as $glpi_id){
@@ -516,7 +516,7 @@ function ocsImportComputer($ocs_id, $ocs_server_id, $lock = 0, $defaultentity = 
 	
 				$cfg_ocs = getOcsConf($ocs_server_id);
 				$input = array ();
-				$input["FK_entities"] = $data['FK_entities'];
+				$input["entities_id"] = $data['entities_id'];
 				$input["name"] = $line["NAME"];
 				$input["ocs_import"] = 1;
 				if ($cfg_ocs["default_state"]>0){
@@ -538,7 +538,7 @@ function ocsImportComputer($ocs_id, $ocs_server_id, $lock = 0, $defaultentity = 
 			}
 	
 			if ($lock) {
-				removeEntityLock($data['FK_entities'], $fp);
+				removeEntityLock($data['entities_id'], $fp);
 			}
 			//Return code to indicates that the machine was imported
 			return OCS_COMPUTER_IMPORTED;	
@@ -764,7 +764,7 @@ function getMachinesAlreadyInGLPI($ocs_id,$ocs_server_id,$entity){
 		else
 			$where_entity = $entity;
 			
-		$sql_where = " FK_entities IN ($where_entity) AND is_template=0 ";
+		$sql_where = " entities_id IN ($where_entity) AND is_template=0 ";
 		$sql_from = "glpi_computers";
 		if ( $conf["link_ip"] || $conf["link_mac_address"]){
 			$sql_from.=" LEFT JOIN glpi_networkports ON (glpi_computers.ID=glpi_networkports.items_id 
@@ -890,7 +890,7 @@ function ocsUpdateComputer($ID, $ocs_server_id, $dohistory, $force = 0) {
 				$computer_updates = importArrayFromDB($line["computer_update"]);
 
 				// Update Administrative informations
-				ocsUpdateAdministrativeInfo($line['glpi_id'], $line['ocs_id'], $ocs_server_id, $cfg_ocs, $computer_updates, $comp->fields['FK_entities'], $dohistory);
+				ocsUpdateAdministrativeInfo($line['glpi_id'], $line['ocs_id'], $ocs_server_id, $cfg_ocs, $computer_updates, $comp->fields['entities_id'], $dohistory);
 
 				if ($mixed_checksum & pow(2, HARDWARE_FL))
 					$loghistory = ocsUpdateHardware($line['glpi_id'], $line['ocs_id'], $ocs_server_id, $cfg_ocs, $computer_updates, $dohistory);
@@ -923,24 +923,24 @@ function ocsUpdateComputer($ID, $ocs_server_id, $dohistory, $force = 0) {
 				if ($mixed_checksum & pow(2, MONITORS_FL)) {
 					// Get import monitors
 					$import_monitor = importArrayFromDB($line["import_monitor"]);
-					ocsUpdatePeripherals(MONITOR_TYPE, $comp->fields["FK_entities"], $line['glpi_id'], $line['ocs_id'], $ocs_server_id, $cfg_ocs, $import_monitor, $dohistory);
+					ocsUpdatePeripherals(MONITOR_TYPE, $comp->fields["entities_id"], $line['glpi_id'], $line['ocs_id'], $ocs_server_id, $cfg_ocs, $import_monitor, $dohistory);
 				}
 
 				if ($mixed_checksum & pow(2, PRINTERS_FL)) {
 					// Get import printers
 					$import_printer = importArrayFromDB($line["import_printers"]);
-					ocsUpdatePeripherals(PRINTER_TYPE, $comp->fields["FK_entities"], $line['glpi_id'], $line['ocs_id'], $ocs_server_id, $cfg_ocs, $import_printer, $dohistory);
+					ocsUpdatePeripherals(PRINTER_TYPE, $comp->fields["entities_id"], $line['glpi_id'], $line['ocs_id'], $ocs_server_id, $cfg_ocs, $import_printer, $dohistory);
 				}
 
 				if ($mixed_checksum & pow(2, INPUTS_FL)) {
 					// Get import peripheral
 					$import_peripheral = importArrayFromDB($line["import_peripheral"]);
-					ocsUpdatePeripherals(PERIPHERAL_TYPE, $comp->fields["FK_entities"], $line['glpi_id'], $line['ocs_id'], $ocs_server_id, $cfg_ocs, $import_peripheral, $dohistory);
+					ocsUpdatePeripherals(PERIPHERAL_TYPE, $comp->fields["entities_id"], $line['glpi_id'], $line['ocs_id'], $ocs_server_id, $cfg_ocs, $import_peripheral, $dohistory);
 				}
 				if ($mixed_checksum & pow(2, SOFTWARES_FL)) {
 					// Get import software
 					$import_software = importArrayFromDB($line["import_software"]);
-					ocsUpdateSoftware($line['glpi_id'], $comp->fields["FK_entities"], $line['ocs_id'], $ocs_server_id, $cfg_ocs, $import_software, (!$loghistory["history"]?0:$dohistory));
+					ocsUpdateSoftware($line['glpi_id'], $comp->fields["entities_id"], $line['ocs_id'], $ocs_server_id, $cfg_ocs, $import_software, (!$loghistory["history"]?0:$dohistory));
 				}
 				if ($mixed_checksum & pow(2, DRIVES_FL)) {
 					// Get import drives
@@ -1184,13 +1184,13 @@ function ocsUpdateBios($glpi_id, $ocs_id, $ocs_server_id, $cfg_ocs, $computer_up
  * Import a group from OCS table.
  *
  *@param $value string : Value of the new dropdown.
- *@param $FK_entities int : entity in case of specific dropdown
+ *@param $entities_id int : entity in case of specific dropdown
  *
  *@return integer : dropdown id.
  *
  **/
 
-function ocsImportGroup($value, $FK_entities) {
+function ocsImportGroup($value, $entities_id) {
 	global $DB, $CFG_GLPI;
 
 	if (empty ($value))
@@ -1198,12 +1198,12 @@ function ocsImportGroup($value, $FK_entities) {
 
 	$query2 = "SELECT ID
 		FROM glpi_groups
-		WHERE name='" . $value . "' AND FK_entities='$FK_entities'";
+		WHERE name='" . $value . "' AND entities_id='$entities_id'";
 	$result2 = $DB->query($query2);
 	if ($DB->numrows($result2) == 0) {
 		$group = new Group;
 		$input["name"] = $value;
-		$input["FK_entities"] = $FK_entities;
+		$input["entities_id"] = $entities_id;
 		return $group->add($input);
 	} else {
 		$line2 = $DB->fetch_array($result2);
@@ -2509,7 +2509,7 @@ function ocsUpdatePeripherals($itemtype, $entity, $glpi_id, $ocs_id, $ocs_server
 								$query = "SELECT ID 
 									FROM glpi_monitors 
 									WHERE name = '" . $mon["name"] . "'
-										AND is_global = '1' AND FK_entities='".$entity."'";
+										AND is_global = '1' AND entities_id='".$entity."'";
 								$result_search = $DB->query($query);
 								if ($DB->numrows($result_search) > 0) {
 									//Periph is already in GLPI
@@ -2520,7 +2520,7 @@ function ocsUpdatePeripherals($itemtype, $entity, $glpi_id, $ocs_id, $ocs_server
 									if ($cfg_ocs["default_state"]>0){
 										$input["state"] = $cfg_ocs["default_state"];
 									}
-									$input["FK_entities"] = $entity;
+									$input["entities_id"] = $entity;
 									$id_monitor = $m->add($input);
 								}
 							} else if ($cfg_ocs["import_monitor"] >= 2) {
@@ -2533,7 +2533,7 @@ function ocsUpdatePeripherals($itemtype, $entity, $glpi_id, $ocs_id, $ocs_server
 									$query = "SELECT ID 
 										FROM glpi_monitors 
 										WHERE serial LIKE '%" . $mon["serial"] . "%' AND is_global=0 
-											AND FK_entities='".$entity."'";
+											AND entities_id='".$entity."'";
 									$result_search = $DB->query($query);
 									if ($DB->numrows($result_search) == 1) {
 										//Monitor founded												
@@ -2546,7 +2546,7 @@ function ocsUpdatePeripherals($itemtype, $entity, $glpi_id, $ocs_id, $ocs_server
 									if (!empty ($mon["name"])) {
 										$query = "SELECT glpi_monitors.ID FROM glpi_monitors " .
 											"LEFT JOIN glpi_computers_items ON (glpi_computers_items.type=".MONITOR_TYPE." AND glpi_computers_items.end1=glpi_monitors.ID) " .
-											"WHERE serial='' AND name = '" . $mon["name"] . "' AND is_global=0 AND FK_entities='$entity' AND glpi_computers_items.end2 IS NULL";
+											"WHERE serial='' AND name = '" . $mon["name"] . "' AND is_global=0 AND entities_id='$entity' AND glpi_computers_items.end2 IS NULL";
 										$result_search = $DB->query($query);
 										if ($DB->numrows($result_search) == 1) {
 											$id_monitor = $DB->result($result_search, 0, "ID");
@@ -2558,7 +2558,7 @@ function ocsUpdatePeripherals($itemtype, $entity, $glpi_id, $ocs_id, $ocs_server
 									if ($cfg_ocs["default_state"]>0){
 										$input["state"] = $cfg_ocs["default_state"];
 									}
-									$input["FK_entities"] = $entity;
+									$input["entities_id"] = $entity;
 									$id_monitor = $m->add($input);
 								}
 							} // ($cfg_ocs["import_monitor"] >= 2)
@@ -2641,7 +2641,7 @@ function ocsUpdatePeripherals($itemtype, $entity, $glpi_id, $ocs_id, $ocs_server
 									$query = "SELECT ID 
 										FROM glpi_printers 
 										WHERE name = '" . $print["name"] . "' 
-											AND is_global = '1' AND FK_entities='".$entity."'";
+											AND is_global = '1' AND entities_id='".$entity."'";
 									$result_search = $DB->query($query);
 									if ($DB->numrows($result_search) > 0) {
 										//Periph is already in GLPI
@@ -2652,7 +2652,7 @@ function ocsUpdatePeripherals($itemtype, $entity, $glpi_id, $ocs_id, $ocs_server
 										if ($cfg_ocs["default_state"]>0){
 											$input["state"] = $cfg_ocs["default_state"];
 										}
-										$input["FK_entities"] = $entity;
+										$input["entities_id"] = $entity;
 										$id_printer = $p->add($input);
 									}
 								} else
@@ -2664,7 +2664,7 @@ function ocsUpdatePeripherals($itemtype, $entity, $glpi_id, $ocs_id, $ocs_server
 										if ($cfg_ocs["default_state"]>0){
 											$input["state"] = $cfg_ocs["default_state"];
 										}
-										$input["FK_entities"] = $entity;
+										$input["entities_id"] = $entity;
 										$id_printer = $p->add($input);
 									}
 								if ($id_printer) {
@@ -2722,7 +2722,7 @@ function ocsUpdatePeripherals($itemtype, $entity, $glpi_id, $ocs_id, $ocs_server
 								$query = "SELECT ID 
 									FROM glpi_peripherals 
 									WHERE name = '" . $periph["name"] . "' 
-									AND is_global = '1' AND FK_entities='".$entity."'";
+									AND is_global = '1' AND entities_id='".$entity."'";
 								$result_search = $DB->query($query);
 								if ($DB->numrows($result_search) > 0) {
 									//Periph is already in GLPI
@@ -2733,7 +2733,7 @@ function ocsUpdatePeripherals($itemtype, $entity, $glpi_id, $ocs_id, $ocs_server
 									if ($cfg_ocs["default_state"]>0){
 										$input["state"] = $cfg_ocs["default_state"];
 									}
-									$input["FK_entities"] = $entity;
+									$input["entities_id"] = $entity;
 									$id_periph = $p->add($input);
 								}
 							} else
@@ -2745,7 +2745,7 @@ function ocsUpdatePeripherals($itemtype, $entity, $glpi_id, $ocs_id, $ocs_server
 									if ($cfg_ocs["default_state"]>0){
 										$input["state"] = $cfg_ocs["default_state"];
 									}
-									$input["FK_entities"] = $entity;
+									$input["entities_id"] = $entity;
 									$id_periph = $p->add($input);
 								}
 							if ($id_periph) {

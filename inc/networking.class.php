@@ -113,7 +113,7 @@ class Netdevice extends CommonDBTM {
 				$ic->fields["items_id"]=$newID;
 				unset ($ic->fields["ID"]);
 				if (isset($ic->fields["num_immo"])) {
-					$ic->fields["num_immo"] = autoName($ic->fields["num_immo"], "num_immo", 1, INFOCOM_TYPE ,$input['FK_entities']);
+					$ic->fields["num_immo"] = autoName($ic->fields["num_immo"], "num_immo", 1, INFOCOM_TYPE ,$input['entities_id']);
 				}
 				if (empty($ic->fields['use_date'])){
 					unset($ic->fields['use_date']);
@@ -238,8 +238,8 @@ class Netdevice extends CommonDBTM {
 		if (!parent::canUnrecurs()) {
 			return false;
 		}
-		$entities = "(".$this->fields['FK_entities'];
-      foreach (getAncestorsOf("glpi_entities",$this->fields['FK_entities']) as $papa) {
+		$entities = "(".$this->fields['entities_id'];
+      foreach (getAncestorsOf("glpi_entities",$this->fields['entities_id']) as $papa) {
 			$entities .= ",$papa";
 		}
 		$entities .= ")";
@@ -263,7 +263,7 @@ class Netdevice extends CommonDBTM {
 				if (isset($LINK_ID_TABLE[$data["itemtype"]]) && 
 					in_array($table=$LINK_ID_TABLE[$data["itemtype"]], $CFG_GLPI["specif_entities_tables"])) {
 	
-					if (countElementsInTable("$table", "ID IN (".$data["ids"].") AND FK_entities NOT IN $entities")>0) {
+					if (countElementsInTable("$table", "ID IN (".$data["ids"].") AND entities_id NOT IN $entities")>0) {
 							return false;						
 					}
 				}			
@@ -321,7 +321,7 @@ class Netdevice extends CommonDBTM {
 		
 		if ($canedit) {
 			echo "<form name='form' method='post' action=\"$target\">\n";
-			echo "<input type='hidden' name='FK_entities' value='".$this->fields["FK_entities"]."'>";
+			echo "<input type='hidden' name='entities_id' value='".$this->fields["entities_id"]."'>";
 		}
 		echo "<table  class='tab_cadre_fixe' cellpadding='2'>\n";
 
@@ -333,8 +333,8 @@ class Netdevice extends CommonDBTM {
 
       echo "<tr><td>".$LANG['common'][16].($template?"*":"").":	</td>\n";
       echo "<td>";
-      $objectName = autoName($this->fields["name"], "name", ($template === "newcomp"), NETWORKING_TYPE,$this->fields["FK_entities"]);
-      autocompletionTextField("name","glpi_networkequipments","name",$objectName,40,$this->fields["FK_entities"]);
+      $objectName = autoName($this->fields["name"], "name", ($template === "newcomp"), NETWORKING_TYPE,$this->fields["entities_id"]);
+      autocompletionTextField("name","glpi_networkequipments","name",$objectName,40,$this->fields["entities_id"]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'><td>".$LANG['common'][5].": 	</td><td colspan='2'>\n";
@@ -342,27 +342,27 @@ class Netdevice extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr><td>".$LANG['common'][15].": 	</td><td>\n";
-      dropdownValue("glpi_locations", "location", $this->fields["location"],1,$this->fields["FK_entities"]);
+      dropdownValue("glpi_locations", "location", $this->fields["location"],1,$this->fields["entities_id"]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'><td>".$LANG['common'][10].": 	</td><td colspan='2'>\n";
-      dropdownUsersID("users_id_tech", $this->fields["users_id_tech"],"interface",1,$this->fields["FK_entities"]);
+      dropdownUsersID("users_id_tech", $this->fields["users_id_tech"],"interface",1,$this->fields["entities_id"]);
       echo "</td></tr>\n";
 
       echo "<tr><td>".$LANG['common'][21].":	</td><td>\n";
-      autocompletionTextField("contact_num","glpi_networkequipments","contact_num",$this->fields["contact_num"],40,$this->fields["FK_entities"]);
+      autocompletionTextField("contact_num","glpi_networkequipments","contact_num",$this->fields["contact_num"],40,$this->fields["entities_id"]);
       echo "</td></tr>\n";
 
       echo "<tr><td>".$LANG['common'][18].":	</td><td>\n";
-      autocompletionTextField("contact","glpi_networkequipments","contact",$this->fields["contact"],40,$this->fields["FK_entities"]);
+      autocompletionTextField("contact","glpi_networkequipments","contact",$this->fields["contact"],40,$this->fields["entities_id"]);
       echo "</td></tr>\n";
 
       echo "<tr><td>".$LANG['common'][34].": 	</td><td>";
-      dropdownAllUsers("users_id", $this->fields["users_id"],1,$this->fields["FK_entities"]);
+      dropdownAllUsers("users_id", $this->fields["users_id"],1,$this->fields["entities_id"]);
       echo "</td></tr>";
 
       echo "<tr><td>".$LANG['common'][35].": 	</td><td>";
-      dropdownValue("glpi_groups", "FK_groups", $this->fields["FK_groups"],1,$this->fields["FK_entities"]);
+      dropdownValue("glpi_groups", "FK_groups", $this->fields["FK_groups"],1,$this->fields["entities_id"]);
       echo "</td></tr>";
 
       echo "<tr><td>".$LANG['state'][0].":</td><td>\n";
@@ -395,16 +395,16 @@ class Netdevice extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr><td>".$LANG['networking'][5].":	</td><td>\n";
-      autocompletionTextField("ram","glpi_networkequipments","ram",$this->fields["ram"],40,$this->fields["FK_entities"]);
+      autocompletionTextField("ram","glpi_networkequipments","ram",$this->fields["ram"],40,$this->fields["entities_id"]);
       echo "</td></tr>\n";
 
       echo "<tr><td>".$LANG['common'][19].":	</td><td>\n";
-      autocompletionTextField("serial","glpi_networkequipments","serial",$this->fields["serial"],40,$this->fields["FK_entities"]);
+      autocompletionTextField("serial","glpi_networkequipments","serial",$this->fields["serial"],40,$this->fields["entities_id"]);
       echo "</td></tr>\n";
 
       echo "<tr><td>".$LANG['common'][20].($template?"*":"").":</td><td>\n";
-      $objectName = autoName($this->fields["otherserial"], "otherserial", ($template === "newcomp"), NETWORKING_TYPE,$this->fields["FK_entities"]);
-      autocompletionTextField("otherserial","glpi_networkequipments","otherserial",$objectName,40,$this->fields["FK_entities"]);
+      $objectName = autoName($this->fields["otherserial"], "otherserial", ($template === "newcomp"), NETWORKING_TYPE,$this->fields["entities_id"]);
+      autocompletionTextField("otherserial","glpi_networkequipments","otherserial",$objectName,40,$this->fields["entities_id"]);
       echo "</td></tr>\n";
 
       echo "<tr><td>".$LANG['setup'][88].": 	</td><td>\n";
@@ -416,11 +416,11 @@ class Netdevice extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr><td>".$LANG['networking'][14].":</td><td>\n";
-      autocompletionTextField("ifaddr","glpi_networkequipments","ifaddr",$this->fields["ifaddr"],40,$this->fields["FK_entities"]);
+      autocompletionTextField("ifaddr","glpi_networkequipments","ifaddr",$this->fields["ifaddr"],40,$this->fields["entities_id"]);
       echo "</td></tr>\n";
 
       echo "<tr><td>".$LANG['networking'][15].":</td><td>\n";
-      autocompletionTextField("ifmac","glpi_networkequipments","ifmac",$this->fields["ifmac"],40,$this->fields["FK_entities"]);
+      autocompletionTextField("ifmac","glpi_networkequipments","ifmac",$this->fields["ifmac"],40,$this->fields["entities_id"]);
       echo "</td></tr>\n";
 
       echo "</table>\n";
@@ -501,7 +501,7 @@ class Netport extends CommonDBTM {
 	/// hardare data : type
 	var $itemtype		= 0;
 	/// hardare data : entity
-	var $FK_entities		= -1;
+	var $entities_id		= -1;
 	/// hardare data : location
 	var $location		= -1;
 
@@ -573,7 +573,7 @@ class Netport extends CommonDBTM {
 			$data = $DB->fetch_array($result);
 			$this->device_name = $data["name"];
 			$this->deleted = $data["deleted"];
-			$this->FK_entities = $data["FK_entities"];
+			$this->entities_id = $data["entities_id"];
 			$this->location = $data["location"];
 			$this->device_ID = $ID;
 			$this->itemtype = $type;

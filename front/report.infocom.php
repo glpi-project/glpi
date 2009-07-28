@@ -86,7 +86,7 @@ function display_infocoms_report($itemtype,$begin,$end){
 
 	$query="SELECT glpi_infocoms.*, ".$LINK_ID_TABLE[$itemtype].".name AS name, ".$LINK_ID_TABLE[$itemtype].".ticket_tco, glpi_entities.completename as entname, glpi_entities.ID as entID FROM glpi_infocoms 
 		INNER JOIN ".$LINK_ID_TABLE[$itemtype]." ON (".$LINK_ID_TABLE[$itemtype].".ID = glpi_infocoms.items_id AND glpi_infocoms.itemtype='".$itemtype."')";
-	$query.= " LEFT JOIN glpi_entities ON (".$LINK_ID_TABLE[$itemtype].".FK_entities = glpi_entities.ID) ";
+	$query.= " LEFT JOIN glpi_entities ON (".$LINK_ID_TABLE[$itemtype].".entities_id = glpi_entities.ID) ";
 
 	$query.= " WHERE ".$LINK_ID_TABLE[$itemtype].".is_template='0' ".getEntitiesRestrictRequest("AND",$LINK_ID_TABLE[$itemtype]);
 

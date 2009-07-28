@@ -151,7 +151,7 @@ function showLinkOnDevice($type,$ID){
 		FROM glpi_links 
 		INNER JOIN glpi_links_itemtypes ON glpi_links.ID= glpi_links_itemtypes.FK_links
 		WHERE glpi_links_itemtypes.itemtype='$type' " .
-			getEntitiesRestrictRequest(" AND","glpi_links","FK_entities",$commonitem->obj->fields["FK_entities"],true).
+			getEntitiesRestrictRequest(" AND","glpi_links","entities_id",$commonitem->obj->fields["entities_id"],true).
 		" ORDER BY glpi_links.name";
 
 	$result=$DB->query($query);

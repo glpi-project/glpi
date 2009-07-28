@@ -100,9 +100,9 @@ function showConnect($target,$ID,$type) {
 				echo "<input type='hidden' name='sID' value='$ID'>";
 				echo "<input type='hidden' name='itemtype' value='$type'>";				
 				if ($ci->getField('recursive')) {
-               dropdownConnect(COMPUTER_TYPE,$type,"item",getSonsOf("glpi_entities",$ci->getField('FK_entities')),0,$used);
+               dropdownConnect(COMPUTER_TYPE,$type,"item",getSonsOf("glpi_entities",$ci->getField('entities_id')),0,$used);
 				} else {
-					dropdownConnect(COMPUTER_TYPE,$type,"item",$ci->getField('FK_entities'),0,$used);
+					dropdownConnect(COMPUTER_TYPE,$type,"item",$ci->getField('entities_id'),0,$used);
 				}
 				echo "<input type='submit' value=\"".$LANG['buttons'][9]."\" class='submit'>";
 				echo "</form>";
@@ -122,9 +122,9 @@ function showConnect($target,$ID,$type) {
 				echo "<input type='hidden' name='sID' value='$ID'>";
 				echo "<input type='hidden' name='itemtype' value='$type'>";
 				if ($ci->getField('recursive')) {
-               dropdownConnect(COMPUTER_TYPE,$type,"item",getSonsOf("glpi_entities",$ci->getField('FK_entities')),0,$used);
+               dropdownConnect(COMPUTER_TYPE,$type,"item",getSonsOf("glpi_entities",$ci->getField('entities_id')),0,$used);
 				} else {
-					dropdownConnect(COMPUTER_TYPE,$type,"item",$ci->getField('FK_entities'),0,$used);
+					dropdownConnect(COMPUTER_TYPE,$type,"item",$ci->getField('entities_id'),0,$used);
 				}
 				echo "<input type='submit' value=\"".$LANG['buttons'][9]."\" class='submit'>";
 				echo "</form>";

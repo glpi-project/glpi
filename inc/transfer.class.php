@@ -391,7 +391,7 @@ class Transfer extends CommonDBTM{
 				}
 			}
 
-			$query = "SELECT glpi_softwares.ID, glpi_softwares.FK_entities, glpi_softwares.recursive, glpi_softwaresversions.ID AS vID
+			$query = "SELECT glpi_softwares.ID, glpi_softwares.entities_id, glpi_softwares.recursive, glpi_softwaresversions.ID AS vID
 				FROM glpi_computers_softwaresversions 
 				INNER JOIN glpi_softwaresversions ON (glpi_computers_softwaresversions.vID = glpi_softwaresversions.ID)
 				INNER JOIN glpi_softwares ON (glpi_softwares.ID = glpi_softwaresversions.sID)
@@ -399,7 +399,7 @@ class Transfer extends CommonDBTM{
 			if ($result = $DB->query($query)) {
 				if ($DB->numrows($result)>0) { 
 					while ($data=$DB->fetch_array($result)){
-                  if ($data['recursive'] && in_array($data['FK_entities'], $to_entity_ancestors)) {
+                  if ($data['recursive'] && in_array($data['entities_id'], $to_entity_ancestors)) {
 							$this->addNotToBeTransfer(SOFTWAREVERSION_TYPE,$data['vID']);
 						} else {
 							$this->addToBeTransfer(SOFTWAREVERSION_TYPE,$data['vID']);
@@ -481,14 +481,14 @@ class Transfer extends CommonDBTM{
 					}
 				}
 
-				$query="SELECT FK_contract, glpi_contracts.FK_entities, glpi_contracts.recursive" .
+				$query="SELECT FK_contract, glpi_contracts.entities_id, glpi_contracts.recursive" .
 						" FROM glpi_contracts_items" .
 						" LEFT JOIN glpi_contracts ON (glpi_contracts_items.FK_contract=glpi_contracts.ID)" .
 						" WHERE itemtype='$type' AND items_id IN ".$this->item_search[$type];
 				if ($result = $DB->query($query)) {
 					if ($DB->numrows($result)>0) { 
 						while ($data=$DB->fetch_array($result)){
-                     if ($data['recursive'] && in_array($data['FK_entities'], $to_entity_ancestors)) {
+                     if ($data['recursive'] && in_array($data['entities_id'], $to_entity_ancestors)) {
 								$this->addNotToBeTransfer(CONTRACT_TYPE,$data['FK_contract']);
 							} else {
 								$this->addToBeTransfer(CONTRACT_TYPE,$data['FK_contract']);
@@ -532,14 +532,14 @@ class Transfer extends CommonDBTM{
 			}
 
 			// Enterprise Contract
-			$query="SELECT DISTINCT FK_enterprise, glpi_suppliers.recursive, glpi_suppliers.FK_entities" .
+			$query="SELECT DISTINCT FK_enterprise, glpi_suppliers.recursive, glpi_suppliers.entities_id" .
 					" FROM glpi_contracts_suppliers " .
 					" LEFT JOIN glpi_suppliers ON (glpi_suppliers.ID=glpi_contracts_suppliers.FK_enterprise) " .
 					" WHERE FK_contract IN ".$this->item_search[CONTRACT_TYPE];
 			if ($result = $DB->query($query)) {
 				if ($DB->numrows($result)>0) { 
 					while ($data=$DB->fetch_array($result)){
-                  if ($data['recursive'] && in_array($data['FK_entities'], $to_entity_ancestors)) {
+                  if ($data['recursive'] && in_array($data['entities_id'], $to_entity_ancestors)) {
 							$this->addNotToBeTransfer(ENTERPRISE_TYPE,$data['FK_enterprise']);
 						} else {
 							$this->addToBeTransfer(ENTERPRISE_TYPE,$data['FK_enterprise']);
@@ -548,14 +548,14 @@ class Transfer extends CommonDBTM{
 				}
 			}
 			// Ticket Enterprise
-			$query="SELECT DISTINCT assign_ent, glpi_suppliers.recursive, glpi_suppliers.FK_entities" .
+			$query="SELECT DISTINCT assign_ent, glpi_suppliers.recursive, glpi_suppliers.entities_id" .
 					" FROM glpi_tickets" .
 					" LEFT JOIN glpi_suppliers ON (glpi_suppliers.ID=glpi_tickets.assign_ent) " .
 					" WHERE assign_ent > 0 AND glpi_tickets.ID IN ".$this->item_search[TRACKING_TYPE];
 			if ($result = $DB->query($query)) {
 				if ($DB->numrows($result)>0) { 
 					while ($data=$DB->fetch_array($result)){
-                  if ($data['recursive'] && in_array($data['FK_entities'], $to_entity_ancestors)) {
+                  if ($data['recursive'] && in_array($data['entities_id'], $to_entity_ancestors)) {
 							$this->addNotToBeTransfer(ENTERPRISE_TYPE,$data['assign_ent']);
 						} else {
 							$this->addToBeTransfer(ENTERPRISE_TYPE,$data['assign_ent']);
@@ -584,14 +584,14 @@ class Transfer extends CommonDBTM{
 							}
 						}
 	
-						$query="SELECT DISTINCT FK_enterprise, glpi_suppliers.recursive, glpi_suppliers.FK_entities" .
+						$query="SELECT DISTINCT FK_enterprise, glpi_suppliers.recursive, glpi_suppliers.entities_id" .
 								" FROM glpi_infocoms" .
 								" LEFT JOIN glpi_suppliers ON (glpi_suppliers.ID=glpi_infocoms.FK_enterprise) " .
 								" WHERE FK_enterprise > 0 AND itemtype='$type' AND items_id IN ".$this->item_search[$type];
 						if ($result = $DB->query($query)) {
 							if ($DB->numrows($result)>0) { 
 								while ($data=$DB->fetch_array($result)){
-                           if ($data['recursive'] && in_array($data['FK_entities'], $to_entity_ancestors)) {
+                           if ($data['recursive'] && in_array($data['entities_id'], $to_entity_ancestors)) {
 										$this->addNotToBeTransfer(ENTERPRISE_TYPE,$data['FK_enterprise']);
 									} else {
 										$this->addToBeTransfer(ENTERPRISE_TYPE,$data['FK_enterprise']);
@@ -637,14 +637,14 @@ class Transfer extends CommonDBTM{
 
 
 			// Enterprise Contact
-			$query="SELECT DISTINCT FK_contact, glpi_contacts.recursive, glpi_contacts.FK_entities " .
+			$query="SELECT DISTINCT FK_contact, glpi_contacts.recursive, glpi_contacts.entities_id " .
 					" FROM glpi_contacts_suppliers" .
 					" LEFT JOIN glpi_contacts ON (glpi_contacts.ID=glpi_contacts_suppliers.FK_contact) " .
 					" WHERE FK_enterprise IN ".$this->item_search[ENTERPRISE_TYPE];
 			if ($result = $DB->query($query)) {
 				if ($DB->numrows($result)>0) { 
 					while ($data=$DB->fetch_array($result)){
-                  if ($data['recursive'] && in_array($data['FK_entities'], $to_entity_ancestors)) {
+                  if ($data['recursive'] && in_array($data['entities_id'], $to_entity_ancestors)) {
 							$this->addNotToBeTransfer(CONTACT_TYPE,$data['FK_contact']);
 						} else {
 							$this->addToBeTransfer(CONTACT_TYPE,$data['FK_contact']);
@@ -674,14 +674,14 @@ class Transfer extends CommonDBTM{
 					}
 				}
 
-				$query="SELECT FK_doc, glpi_documents.recursive, glpi_documents.FK_entities" .
+				$query="SELECT FK_doc, glpi_documents.recursive, glpi_documents.entities_id" .
 						" FROM glpi_documents_items" .
 						" LEFT JOIN glpi_documents ON (glpi_documents.ID=glpi_documents_items.FK_doc) " .
 						" WHERE itemtype='$type' AND items_id IN ".$this->item_search[$type];
 				if ($result = $DB->query($query)) {
 					if ($DB->numrows($result)>0) { 
 						while ($data=$DB->fetch_array($result)){
-                     if ($data['recursive'] && in_array($data['FK_entities'], $to_entity_ancestors)) {
+                     if ($data['recursive'] && in_array($data['entities_id'], $to_entity_ancestors)) {
 								$this->addNotToBeTransfer(DOCUMENT_TYPE,$data['FK_doc']);
 							} else {
 								$this->addToBeTransfer(DOCUMENT_TYPE,$data['FK_doc']);
@@ -741,7 +741,7 @@ class Transfer extends CommonDBTM{
 	*@param $ID ID of the item to transfer
 	*@param $newID new ID of the ite
 	*
-	* Transfer item to a new Item if $ID==$newID : only update FK_entities field : $ID!=$new ID -> copy datas (like template system)
+	* Transfer item to a new Item if $ID==$newID : only update entities_id field : $ID!=$new ID -> copy datas (like template system)
 	*@return nothing (diplays)
 	*
 	**/
@@ -848,7 +848,7 @@ class Transfer extends CommonDBTM{
 				
 				
 				// Transfer Item
-				$input=array("ID"=>$newID,'FK_entities' => $this->to);
+				$input=array("ID"=>$newID,'entities_id' => $this->to);
 				// Manage Location dropdown
 				if (isset($cinew->obj->fields['location'])){
 					$input['location']=$this->transferDropdownLocation($cinew->obj->fields['location']);
@@ -856,7 +856,7 @@ class Transfer extends CommonDBTM{
 				// Transfer Document file if exists (not to do if same entity) / Only for copy document
 				if ($type==DOCUMENT_TYPE&&$ID!=$newID
 					&&!empty($cinew->obj->fields['filename'])
-					&&$cinew->obj->fields['FK_entities']!=$this->to
+					&&$cinew->obj->fields['entities_id']!=$this->to
 				){
 					$input['filename']=$this->transferDocumentFile($cinew->obj->fields['filename']);
 				}
@@ -927,7 +927,7 @@ class Transfer extends CommonDBTM{
 						$data=$DB->fetch_array($result);
 						$data=addslashes_deep($data);
 						// Search if the location already exists in the destination entity
-							$query="SELECT ID FROM glpi_locations WHERE FK_entities='".$this->to."' AND completename='".$data['completename']."'";	
+							$query="SELECT ID FROM glpi_locations WHERE entities_id='".$this->to."' AND completename='".$data['completename']."'";	
 							if ($result_search=$DB->query($query)){
 								// Found : -> use it
 								if ($DB->numrows($result_search)>0){
@@ -939,7 +939,7 @@ class Transfer extends CommonDBTM{
 							// Not found : 
 							$input=array();
 							$input['tablename']='glpi_locations';
-							$input['FK_entities']=$this->to;
+							$input['entities_id']=$this->to;
 							$input['value']=$data['name'];
 							$input['comments']=$data['comments'];
 							$input['type']="under";
@@ -980,7 +980,7 @@ class Transfer extends CommonDBTM{
 						$data=addslashes_deep($data);
 						$locID=$this->transferDropdownLocation($data['location']);
 						// Search if the location already exists in the destination entity
-							$query="SELECT ID FROM glpi_netpoints WHERE FK_entities='".$this->to."' AND name='".$data['name']."' AND location='$locID'";	
+							$query="SELECT ID FROM glpi_netpoints WHERE entities_id='".$this->to."' AND name='".$data['name']."' AND location='$locID'";	
 							if ($result_search=$DB->query($query)){
 								// Found : -> use it
 								if ($DB->numrows($result_search)>0){
@@ -992,7 +992,7 @@ class Transfer extends CommonDBTM{
 							// Not found : 
 							$input=array();
 							$input['tablename']='glpi_netpoints';
-							$input['FK_entities']=$this->to;
+							$input['entities_id']=$this->to;
 							$input['value']=$data['name'];
 							$input['comments']=$data['comments'];
 							$input['type']="under";
@@ -1055,7 +1055,7 @@ class Transfer extends CommonDBTM{
 								$need_clean_process=true;
 								$carttype->getFromDB($data['FK_glpi_cartridges_type']);
 								// Is existing carttype in the destination entity ?
-								$query="SELECT * FROM glpi_cartridgesitems WHERE FK_entities='".$this->to."' AND name='".addslashes($carttype->fields['name'])."'";
+								$query="SELECT * FROM glpi_cartridgesitems WHERE entities_id='".$this->to."' AND name='".addslashes($carttype->fields['name'])."'";
 								if ($result_search=$DB->query($query)){
 									if ($DB->numrows($result_search)>0){
 										$newcarttypeID=$DB->result($result_search,0,'ID');
@@ -1066,7 +1066,7 @@ class Transfer extends CommonDBTM{
 									// 1 - create new item
 									unset($carttype->fields['ID']);
 									$input=$carttype->fields;
-									$input['FK_entities']=$this->to;
+									$input['entities_id']=$this->to;
 									unset($carttype->fields);
 									$newcarttypeID=$carttype->add($input);
 									// 2 - transfer as copy
@@ -1130,18 +1130,18 @@ class Transfer extends CommonDBTM{
 			// error_log("copySingleSoftware: ".$soft->fields['name']);
 			
 			if ($soft->fields['recursive']
-               && in_array($soft->fields['FK_entities'],getAncestorsOf("glpi_entities",$this->to))) {
+               && in_array($soft->fields['entities_id'],getAncestorsOf("glpi_entities",$this->to))) {
 				// no need to copy
 				$newsoftID = $ID;
 			} else {				
-				$query="SELECT * FROM glpi_softwares WHERE FK_entities=".$this->to." AND name='".addslashes($soft->fields['name'])."'";
+				$query="SELECT * FROM glpi_softwares WHERE entities_id=".$this->to." AND name='".addslashes($soft->fields['name'])."'";
 				if ($data=$DB->request($query)->next()) {
 					$newsoftID=$data["ID"];
 				} else {			
 					// create new item (don't check if move possible => clean needed)
 					unset($soft->fields['ID']);
 					$input=$soft->fields;
-					$input['FK_entities']=$this->to;
+					$input['entities_id']=$this->to;
 					unset($soft->fields);
 					$newsoftID=$soft->add($input);
 				}
@@ -1406,7 +1406,7 @@ class Transfer extends CommonDBTM{
 										$need_clean_process=true;
 										$soft->getFromDB($data['softID']);
 										// Is existing software in the destination entity ?
-										$query="SELECT * FROM glpi_softwares WHERE FK_entities='".$this->to."' AND name='".addslashes($soft->fields['name'])."'";
+										$query="SELECT * FROM glpi_softwares WHERE entities_id='".$this->to."' AND name='".addslashes($soft->fields['name'])."'";
 										if ($result_search=$DB->query($query)){
 											if ($DB->numrows($result_search)>0){
 												$newsoftID=$DB->result($result_search,0,'ID');
@@ -1417,7 +1417,7 @@ class Transfer extends CommonDBTM{
 											// 1 - create new item
 											unset($soft->fields['ID']);
 											$input=$soft->fields;
-											$input['FK_entities']=$this->to;
+											$input['entities_id']=$this->to;
 											unset($soft->fields);
 											$newsoftID=$soft->add($input);
 											// 2 - transfer as copy
@@ -1581,7 +1581,7 @@ class Transfer extends CommonDBTM{
 								$need_clean_process=true;
 								$contract->getFromDB($item_ID);
 								// No : search contract
-								$query="SELECT * FROM glpi_contracts WHERE FK_entities='".$this->to."' AND name='".addslashes($contract->fields['name'])."'";
+								$query="SELECT * FROM glpi_contracts WHERE entities_id='".$this->to."' AND name='".addslashes($contract->fields['name'])."'";
 								if ($result_search=$DB->query($query)){
 									if ($DB->numrows($result_search)>0){
 										$newcontractID=$DB->result($result_search,0,'ID');
@@ -1594,7 +1594,7 @@ class Transfer extends CommonDBTM{
 									// 1 - create new item
 									unset($contract->fields['ID']);
 									$input=$contract->fields;
-									$input['FK_entities']=$this->to;
+									$input['entities_id']=$this->to;
 									unset($contract->fields);
 									$newcontractID=$contract->add($input);
 									// 2 - transfer as copy
@@ -1709,7 +1709,7 @@ class Transfer extends CommonDBTM{
 								$need_clean_process=true;
 								$document->getFromDB($item_ID);
 								// No : search contract
-								$query="SELECT * FROM glpi_documents WHERE FK_entities='".$this->to."' AND name='".addslashes($document->fields['name'])."'";
+								$query="SELECT * FROM glpi_documents WHERE entities_id='".$this->to."' AND name='".addslashes($document->fields['name'])."'";
 								if ($result_search=$DB->query($query)){
 									if ($DB->numrows($result_search)>0){
 										$newdocID=$DB->result($result_search,0,'ID');
@@ -1723,7 +1723,7 @@ class Transfer extends CommonDBTM{
 									unset($document->fields['ID']);
 									$input=$document->fields;
 									// Not set new entity Do by transferItem 
-									//$input['FK_entities']=$this->to;
+									//$input['entities_id']=$this->to;
 									unset($document->fields);
 									$newdocID=$document->add($input);
 									// 2 - transfer as copy
@@ -1858,7 +1858,7 @@ class Transfer extends CommonDBTM{
 										// Is existing global item in the destination entity ?
 										$query="SELECT * 
 											FROM ".$LINK_ID_TABLE[$link_type]." 
-											WHERE is_global='1' AND FK_entities='".$this->to."' 
+											WHERE is_global='1' AND entities_id='".$this->to."' 
 												AND name='".addslashes($ci->getField('name'))."'";
 										if ($result_search=$DB->query($query)){
 											if ($DB->numrows($result_search)>0){
@@ -1871,7 +1871,7 @@ class Transfer extends CommonDBTM{
 											// 1 - create new item
 											unset($ci->obj->fields['ID']);
 											$input=$ci->obj->fields;
-											$input['FK_entities']=$this->to;
+											$input['entities_id']=$this->to;
 											unset($ci->obj->fields);
 											$newID=$ci->obj->add($input);
 											// 2 - transfer as copy
@@ -1986,7 +1986,7 @@ class Transfer extends CommonDBTM{
 							if ($data['assign_ent']>0){
 								$assign_ent=$this->transferSingleEnterprise($data['assign_ent']);
 							}
-							$job->update(array("ID"=>$data['ID'],'FK_entities' => $this->to, 'items_id'=>$newID, 'itemtype'=>$type, 'assign_ent'=>$assign_ent));
+							$job->update(array("ID"=>$data['ID'],'entities_id' => $this->to, 'items_id'=>$newID, 'itemtype'=>$type, 'assign_ent'=>$assign_ent));
 							$this->addToAlreadyTransfer(TRACKING_TYPE,$data['ID'],$data['ID']);
 						}
 					break;
@@ -2184,7 +2184,7 @@ class Transfer extends CommonDBTM{
 					$newID=$ID;
 				} else { // else Transfer by Copy
 					// Is existing item in the destination entity ?
-					$query="SELECT * FROM glpi_suppliers WHERE FK_entities='".$this->to."' AND name='".addslashes($ent->fields['name'])."'";
+					$query="SELECT * FROM glpi_suppliers WHERE entities_id='".$this->to."' AND name='".addslashes($ent->fields['name'])."'";
 					if ($result_search=$DB->query($query)){
 						if ($DB->numrows($result_search)>0){
 							$newID=$DB->result($result_search,0,'ID');
@@ -2196,7 +2196,7 @@ class Transfer extends CommonDBTM{
 						// 1 - create new item
 						unset($ent->fields['ID']);
 						$input=$ent->fields;
-						$input['FK_entities']=$this->to;
+						$input['entities_id']=$this->to;
 						unset($ent->fields);
 						$newID=$ent->add($input);
 						// 2 - transfer as copy
@@ -2262,7 +2262,7 @@ class Transfer extends CommonDBTM{
 								$need_clean_process=true;
 								$contact->getFromDB($item_ID);
 								// No : search contract
-								$query="SELECT * FROM glpi_contacts WHERE FK_entities='".$this->to."' AND name='".addslashes($contact->fields['name'])."' AND firstname='".addslashes($contact->fields['firstname'])."'";
+								$query="SELECT * FROM glpi_contacts WHERE entities_id='".$this->to."' AND name='".addslashes($contact->fields['name'])."' AND firstname='".addslashes($contact->fields['firstname'])."'";
 								if ($result_search=$DB->query($query)){
 									if ($DB->numrows($result_search)>0){
 										$newcontactID=$DB->result($result_search,0,'ID');
@@ -2275,7 +2275,7 @@ class Transfer extends CommonDBTM{
 									// 1 - create new item
 									unset($contact->fields['ID']);
 									$input=$contact->fields;
-									$input['FK_entities']=$this->to;
+									$input['entities_id']=$this->to;
 									unset($contact->fields);
 									$newcontactID=$contact->add($input);
 									// 2 - transfer as copy
@@ -2755,7 +2755,7 @@ class Transfer extends CommonDBTM{
 				if (count($tab)){
 					$table=$LINK_ID_TABLE[$type];
 					$query="SELECT $table.ID, $table.name, glpi_entities.completename AS locname, glpi_entities.ID AS entID 
-						FROM $table LEFT JOIN glpi_entities ON ($table.FK_entities = glpi_entities.ID) 
+						FROM $table LEFT JOIN glpi_entities ON ($table.entities_id = glpi_entities.ID) 
 						WHERE $table.ID IN ".$this->createSearchConditionUsingArray($tab)."
 						ORDER BY locname, $table.name";
 					$entID=-1;

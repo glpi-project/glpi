@@ -401,7 +401,7 @@ function showNetportForm($target, $ID, $ondevice, $devtype, $several) {
 		echo "<tr class='tab_bg_1'><td>" . $LANG['networking'][51] . ":</td>";
 
 		echo "<td  colspan='2'>";
-		dropdownNetpoint("netpoint", $netport->fields["netpoint"], $netport->location, 1, $netport->FK_entities, ($ID ? $netport->fields["itemtype"] : $devtype));
+		dropdownNetpoint("netpoint", $netport->fields["netpoint"], $netport->location, 1, $netport->entities_id, ($ID ? $netport->fields["itemtype"] : $devtype));
 		echo "</td></tr>";
 	}
 	if ($ID) {
@@ -502,8 +502,8 @@ function showConnection(& $device1, & $netport, $withtemplate = '') {
 			if ($_SESSION["glpiview_ID"])
 				echo " (" . $netport->device_ID . ")";
 			echo "</a></strong>";
-			if ($device1->obj->fields["FK_entities"] != $device2->obj->fields["FK_entities"]) {
-				echo "<br>(" . getDropdownName("glpi_entities", $device2->obj->fields["FK_entities"]) . ")";
+			if ($device1->obj->fields["entities_id"] != $device2->obj->fields["entities_id"]) {
+				echo "<br>(" . getDropdownName("glpi_entities", $device2->obj->fields["entities_id"]) . ")";
 			}
 
 			// 'w' on dev1 + 'r' on dev2 OR 'r' on dev1 + 'w' on dev2
@@ -522,7 +522,7 @@ function showConnection(& $device1, & $netport, $withtemplate = '') {
 				echo $LANG['common'][0];
 			echo "</strong> " . $LANG['networking'][25] . " <strong>";
 			echo $device2->obj->fields["name"];
-			echo "</strong><br>(" . getDropdownName("glpi_entities", $device2->obj->fields["FK_entities"]) . ")";
+			echo "</strong><br>(" . getDropdownName("glpi_entities", $device2->obj->fields["entities_id"]) . ")";
 		}
 		echo "</td></tr></table>";
 
@@ -532,9 +532,9 @@ function showConnection(& $device1, & $netport, $withtemplate = '') {
 			echo "<td class='left'>";
 			if ($withtemplate != 2 && $withtemplate != 1) {
 				if (isset ($device1->obj->fields["recursive"]) && $device1->obj->fields["recursive"]) {
-               dropdownConnectPort($ID, $device1->obj->type, "dport", getSonsOf("glpi_entities",$device1->obj->fields["FK_entities"]));
+               dropdownConnectPort($ID, $device1->obj->type, "dport", getSonsOf("glpi_entities",$device1->obj->fields["entities_id"]));
 				} else {
-					dropdownConnectPort($ID, $device1->obj->type, "dport", $device1->obj->fields["FK_entities"]);
+					dropdownConnectPort($ID, $device1->obj->type, "dport", $device1->obj->fields["entities_id"]);
 				}
 			} else
 				echo "&nbsp;";
@@ -821,15 +821,15 @@ function getUniqueObjectIDByIPAddressOrMac($value, $type = 'IP', $entity) {
 	//Try to get all the object (not deleted, and not template) with a network port having the specified IP, in a given entity
 	$query = "SELECT gnp.items_id as ID, gnp.ID as portID, gnp.itemtype as itemtype 
 		FROM `glpi_networkports` as gnp
-		LEFT JOIN  `glpi_computers` as gc ON (gnp.items_id=gc.ID AND gc.FK_entities=$entity AND gc.deleted=0 
+		LEFT JOIN  `glpi_computers` as gc ON (gnp.items_id=gc.ID AND gc.entities_id=$entity AND gc.deleted=0 
 							AND gc.is_template=0 AND itemtype=" . COMPUTER_TYPE . ") 
-		LEFT JOIN  `glpi_printers` as gp ON (gnp.items_id=gp.ID AND gp.FK_entities=$entity AND gp.deleted=0 
+		LEFT JOIN  `glpi_printers` as gp ON (gnp.items_id=gp.ID AND gp.entities_id=$entity AND gp.deleted=0 
 							AND gp.is_template=0 AND itemtype=" . PRINTER_TYPE . ")
-		LEFT JOIN  `glpi_networkequipments` as gn ON (gnp.items_id=gn.ID AND gn.FK_entities=$entity AND gn.deleted=0 
+		LEFT JOIN  `glpi_networkequipments` as gn ON (gnp.items_id=gn.ID AND gn.entities_id=$entity AND gn.deleted=0 
 							AND gn.is_template=0 AND itemtype=" . NETWORKING_TYPE . ")  
-		LEFT JOIN  `glpi_phones` as gph ON (gnp.items_id=gph.ID AND gph.FK_entities=$entity AND gph.deleted=0 
+		LEFT JOIN  `glpi_phones` as gph ON (gnp.items_id=gph.ID AND gph.entities_id=$entity AND gph.deleted=0 
 							AND gph.is_template=0 AND itemtype=" . PHONE_TYPE . ") 
-		LEFT JOIN  `glpi_peripherals` as gpe ON (gnp.items_id=gpe.ID AND gpe.FK_entities=$entity AND gpe.deleted=0 
+		LEFT JOIN  `glpi_peripherals` as gpe ON (gnp.items_id=gpe.ID AND gpe.entities_id=$entity AND gpe.deleted=0 
 							AND gpe.is_template=0 AND itemtype=" . PERIPHERAL_TYPE . ") 
 	 	WHERE gnp.$field='" . $value . "'";
 
@@ -842,7 +842,7 @@ function getUniqueObjectIDByIPAddressOrMac($value, $type = 'IP', $entity) {
 	switch ($DB->numrows($result)) {
 		case 0 :
 			//No result found with the previous request. Try to look for IP in the glpi_networkequipments table directly
-			$query = "SELECT ID FROM glpi_networkequipments WHERE UPPER($field)=UPPER('$value') AND FK_entities='$entity'";
+			$query = "SELECT ID FROM glpi_networkequipments WHERE UPPER($field)=UPPER('$value') AND entities_id='$entity'";
 			$result = $DB->query($query);
 			if ($DB->numrows($result) == 1)
 				return array (
@@ -928,7 +928,7 @@ function getUniqueObjectByFDQNAndType($fqdn, $type, $entity) {
 
 	$query = "SELECT obj.ID AS ID
 		FROM " . $commonitem->obj->table . " AS obj, glpi_domains AS gdd
-		WHERE obj.FK_entities='$entity' AND obj.domain = gdd.ID
+		WHERE obj.entities_id='$entity' AND obj.domain = gdd.ID
 			AND LOWER( '$fqdn' ) = ( CONCAT( LOWER( obj.name ) , '.', LOWER( gdd.name ) ) )";
 
 	$result = $DB->query($query);

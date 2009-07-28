@@ -282,7 +282,7 @@ function showPlanning($who,$who_group,$when,$type){
 		while ($data=$DB->fetch_array($result)){
 			$fup->getFromDB($data["id_followup"]);
 			$job->getFromDBwithData($fup->fields["tracking"],0);
-			if (haveAccessToEntity($job->fields["FK_entities"])){
+			if (haveAccessToEntity($job->fields["entities_id"])){
 				$interv[$data["begin"]."$$$".$i]["id_followup"]=$data["id_followup"];
 				$interv[$data["begin"]."$$$".$i]["state"]=$data["state"];
 				$interv[$data["begin"]."$$$".$i]["id_tracking"]=$fup->fields["tracking"];
@@ -746,7 +746,7 @@ function showPlanningCentral($who){
 		while ($data=$DB->fetch_array($result)){
 			if ($fup->getFromDB($data["id_followup"])){
 				if ($job->getFromDBwithData($fup->fields["tracking"],0)){
-					if (haveAccessToEntity($job->fields["FK_entities"])){
+					if (haveAccessToEntity($job->fields["entities_id"])){
 						$interv[$data["begin"]."$$".$i]["id_followup"]=$data["id_followup"];
 						$interv[$data["begin"]."$$".$i]["id_tracking"]=$fup->fields["tracking"];
 						$interv[$data["begin"]."$$".$i]["begin"]=$data["begin"];

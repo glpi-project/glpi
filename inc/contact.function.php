@@ -62,7 +62,7 @@ function showEnterpriseContact($instID) {
 			glpi_suppliers.website as website, glpi_suppliers.fax as fax, glpi_suppliers.phonenumber as phone,
 			glpi_suppliers.type as type, glpi_suppliers.deleted as deleted, glpi_entities.ID AS entity"
 		. " FROM glpi_contacts_suppliers, glpi_suppliers "
-		. " LEFT JOIN glpi_entities ON (glpi_entities.ID=glpi_suppliers.FK_entities) "
+		. " LEFT JOIN glpi_entities ON (glpi_entities.ID=glpi_suppliers.entities_id) "
 		. " WHERE glpi_contacts_suppliers.FK_contact = '$instID' AND glpi_contacts_suppliers.FK_enterprise = glpi_suppliers.ID"
 		. getEntitiesRestrictRequest(" AND","glpi_suppliers",'','',true) 
 		. " ORDER BY glpi_entities.completename,name";
@@ -111,17 +111,17 @@ function showEnterpriseContact($instID) {
 	}
 	if ($canedit){
 		if ($contact->fields["recursive"]) {
-         $nb=countElementsInTableForEntity("glpi_suppliers",getSonsOf("glpi_entities",$contact->fields["FK_entities"]));
+         $nb=countElementsInTableForEntity("glpi_suppliers",getSonsOf("glpi_entities",$contact->fields["entities_id"]));
 		} else {
-			$nb=countElementsInTableForEntity("glpi_suppliers",$contact->fields["FK_entities"]);
+			$nb=countElementsInTableForEntity("glpi_suppliers",$contact->fields["entities_id"]);
 		}		
 		if ($nb>count($used)) {
 			echo "<tr class='tab_bg_1'><td>&nbsp;</td><td class='center' colspan='4'>";
 			echo "<div class='software-instal'><input type='hidden' name='conID' value='$instID'>";
 			if ($contact->fields["recursive"]) {
-            dropdown("glpi_suppliers","entID",1,getSonsOf("glpi_entities",$contact->fields["FK_entities"]),$used);
+            dropdown("glpi_suppliers","entID",1,getSonsOf("glpi_entities",$contact->fields["entities_id"]),$used);
 			} else {
-				dropdown("glpi_suppliers","entID",1,$contact->fields["FK_entities"],$used);
+				dropdown("glpi_suppliers","entID",1,$contact->fields["entities_id"],$used);
 			}
 			echo "&nbsp;&nbsp;<input type='submit' name='addenterprise' value=\"".$LANG['buttons'][8]."\" class='submit'>";
 			echo "</div>";

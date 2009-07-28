@@ -812,7 +812,7 @@ function addFormTracking ($itemtype=0,$ID=0, $target, $users_id, $group=0, $assi
 
 	/// Set default entity
 	if (!haveRight("update_ticket","1")){
-		echo "<input type='hidden' name='FK_entities' value='".$entity_restrict."'>";
+		echo "<input type='hidden' name='entities_id' value='".$entity_restrict."'>";
 	}
 
 	echo "</th></tr>";
@@ -851,9 +851,9 @@ function addFormTracking ($itemtype=0,$ID=0, $target, $users_id, $group=0, $assi
 		
 		//If user have access to more than one entity, then display a combobox
 		if ($count > 1) {
-			$rand = dropdownValue("glpi_entities", "FK_entities", $entity_restrict, 1, $values,'',array(),1);
+			$rand = dropdownValue("glpi_entities", "entities_id", $entity_restrict, 1, $values,'',array(),1);
 		} else {
-			echo "<input type='hidden' name='FK_entities' value='".$entity_restrict."'>";
+			echo "<input type='hidden' name='entities_id' value='".$entity_restrict."'>";
 		} 
 		echo "</td></tr>";
 	}  
@@ -1392,7 +1392,7 @@ function searchFormTracking($extended=0,$target,$start="",$status="new",$tosearc
 function getCommonSelectForTrackingSearch(){
 	$SELECT="";
 	if (count($_SESSION["glpiactiveentities"])>1){
-		$SELECT.= ", glpi_entities.completename as entityname, glpi_tickets.FK_entities as entityID ";
+		$SELECT.= ", glpi_entities.completename as entityname, glpi_tickets.entities_id as entityID ";
 	}
 
 
@@ -1409,7 +1409,7 @@ function getCommonLeftJoinForTrackingSearch(){
 	$FROM="";
 
 	if (count($_SESSION["glpiactiveentities"])>1){
-		$FROM.= " LEFT JOIN glpi_entities ON ( glpi_entities.ID = glpi_tickets.FK_entities) ";
+		$FROM.= " LEFT JOIN glpi_entities ON ( glpi_entities.ID = glpi_tickets.entities_id) ";
 	}
 
 	return //" LEFT JOIN glpi_users as users_id ON ( glpi_tickets.users_id = users_id.ID) "
@@ -1887,7 +1887,7 @@ function showJobDetails ($target,$ID){
 	if (haveRight('user','r')){
 		$showuserlink=1;	
 	}
-	if ($job->getFromDB($ID)&&haveAccessToEntity($job->fields["FK_entities"])) {
+	if ($job->getFromDB($ID)&&haveAccessToEntity($job->fields["entities_id"])) {
 
 		if (!$job->canView()){
 			return false;
@@ -1905,7 +1905,7 @@ function showJobDetails ($target,$ID){
 		// OPtional line 
 		if (isMultiEntitiesMode()){
 			echo "<tr><th colspan='3'>";
-			echo getDropdownName("glpi_entities",$job->fields["FK_entities"]);
+			echo getDropdownName("glpi_entities",$job->fields["entities_id"]);
 			echo "</th></tr>";
 		}
 
@@ -1916,7 +1916,7 @@ function showJobDetails ($target,$ID){
 
 		echo "</td><td><span class='tracking_small'>&nbsp;&nbsp; ".$LANG['job'][2]." &nbsp; </span></td><td>";
 		if ($canupdate){
-			dropdownAllUsers("users_id_recipient",$job->fields["users_id_recipient"],1,$job->fields["FK_entities"]);
+			dropdownAllUsers("users_id_recipient",$job->fields["users_id_recipient"],1,$job->fields["entities_id"]);
 		} else {
 			echo getUserName($job->fields["users_id_recipient"],$showuserlink);
 		}
@@ -1971,7 +1971,7 @@ function showJobDetails ($target,$ID){
 		echo "<tr><td class='left'>";
 		echo $LANG['common'][34].":</td><td>";
 		if ($canupdate){
-			dropdownAllUsers("users_id",$job->fields["users_id"],1,$job->fields["FK_entities"]);
+			dropdownAllUsers("users_id",$job->fields["users_id"],1,$job->fields["entities_id"]);
 		} else {
 			echo getUserName($job->fields["users_id"],$showuserlink);
 		}
@@ -1980,7 +1980,7 @@ function showJobDetails ($target,$ID){
 		echo "<tr><td class='left'>";
 		echo $LANG['common'][35].":</td><td>";
 		if ($canupdate){
-			dropdownValue("glpi_groups","FK_group",$job->fields["FK_group"],1,$job->fields["FK_entities"]);
+			dropdownValue("glpi_groups","FK_group",$job->fields["FK_group"],1,$job->fields["entities_id"]);
 		} else {
 			echo getDropdownName("glpi_groups",$job->fields["FK_group"]);
 		}
@@ -2009,7 +2009,7 @@ function showJobDetails ($target,$ID){
 			} else {
 				echo $item->getType()." ".$item->getNameID();
 			}
-			dropdownTrackingAllDevices("itemtype",$job->fields["itemtype"],1,$job->fields["FK_entities"]);
+			dropdownTrackingAllDevices("itemtype",$job->fields["itemtype"],1,$job->fields["entities_id"]);
 		}
 		else {
 			echo $item->getType()." ".$item->getNameID();
@@ -2024,17 +2024,17 @@ function showJobDetails ($target,$ID){
 		if (haveRight("assign_ticket","1")){
 			echo "<tr><td class='left'>";
 			echo $LANG['job'][6].":</td><td>";
-			dropdownUsers("users_id_assign",$job->fields["users_id_assign"],"own_ticket",0,1,$job->fields["FK_entities"]);
+			dropdownUsers("users_id_assign",$job->fields["users_id_assign"],"own_ticket",0,1,$job->fields["entities_id"]);
 			echo "</td></tr>";
 		} else if (haveRight("steal_ticket","1")) {
 			echo "<tr><td class='right'>";
 			echo $LANG['job'][6].":</td><td>";
-			dropdownUsers("users_id_assign",$job->fields["users_id_assign"],"ID",0,1,$job->fields["FK_entities"]);
+			dropdownUsers("users_id_assign",$job->fields["users_id_assign"],"ID",0,1,$job->fields["entities_id"]);
 			echo "</td></tr>";
 		} else if (haveRight("own_ticket","1") && $job->fields["users_id_assign"]==0){
                         echo "<tr><td class='right'>";
                         echo $LANG['job'][6].":</td><td>";
-                        dropdownUsers("users_id_assign",$job->fields["users_id_assign"],"ID",0,1,$job->fields["FK_entities"]);
+                        dropdownUsers("users_id_assign",$job->fields["users_id_assign"],"ID",0,1,$job->fields["entities_id"]);
                         echo "</td></tr>";
                 } else {
 			echo "<tr><td class='left'>";
@@ -2046,11 +2046,11 @@ function showJobDetails ($target,$ID){
 		if (haveRight("assign_ticket","1")){
 			echo "<tr><td class='left'>";
 			echo $LANG['common'][35].":</td><td>";
-			dropdownValue("glpi_groups","assign_group",$job->fields["assign_group"],1,$job->fields["FK_entities"]);
+			dropdownValue("glpi_groups","assign_group",$job->fields["assign_group"],1,$job->fields["entities_id"]);
 			echo "</td></tr>";
 			echo "<tr><td class='left'>";
 			echo $LANG['financial'][26].":</td><td>";
-			dropdownValue("glpi_suppliers","assign_ent",$job->fields["assign_ent"],1,$job->fields["FK_entities"]);
+			dropdownValue("glpi_suppliers","assign_ent",$job->fields["assign_ent"],1,$job->fields["entities_id"]);
 			echo "</td></tr>";
 		} else {
 			echo "<tr><td class='left'>";
@@ -2199,7 +2199,7 @@ function showJobDetails ($target,$ID){
 			echo $LANG['joblist'][27].":";
 			echo "</td><td>";
 			if ($canupdate){
-				autocompletionTextField("uemail","glpi_tickets","uemail",$job->fields["uemail"],15,$job->fields["FK_entities"]);
+				autocompletionTextField("uemail","glpi_tickets","uemail",$job->fields["uemail"],15,$job->fields["entities_id"]);
 
 				if (!empty($job->fields["uemail"]))
 					echo "<a href='mailto:".$job->fields["uemail"]."'><img src='".$CFG_GLPI["root_doc"]."/pics/edit.png' alt='Mail'></a>";
@@ -2250,7 +2250,7 @@ function showJobDetails ($target,$ID){
 			echo "<input type='file' name='filename' size='20'>";
 			if ($canupdate&&haveRight("document","r")){
 				echo "<br>";
-				dropdownDocument("document",$job->fields["FK_entities"]);
+				dropdownDocument("document",$job->fields["entities_id"]);
 			}
 			echo "</td></tr>";
 		}
@@ -2366,7 +2366,7 @@ function showFollowupsSummary($tID){
 						'state'=>$data2["state"],
 						'begin'=>$data2["begin"],
 						'end'=>$data2["end"],
-						'entity'=>$job->fields["FK_entities"],
+						'entity'=>$job->fields["entities_id"],
 						);
 					ajaxUpdateItemJsCode('viewplan',$CFG_GLPI["root_doc"]."/ajax/planning.php",$params,false);
 					echo "}";
@@ -2784,7 +2784,7 @@ function computeTicketTco($item_type,$item){
 		global $LANG,$INFOFORM_PAGES,$CFG_GLPI;
 
 		//If ticket is assign to an object, display this information first
-		if (isset($output["FK_entities"]) && isset($output["items_id"]) && isset($output["itemtype"]))
+		if (isset($output["entities_id"]) && isset($output["items_id"]) && isset($output["itemtype"]))
 		{
 			echo "<tr  class='tab_bg_2'>";
 			echo "<td class='tab_bg_2'>".$LANG['rulesengine'][48]."</td>";
@@ -2802,7 +2802,7 @@ function computeTicketTco($item_type,$item){
 			unset($output["itemtype"]);
 		}
 		
-		unset($output["FK_entities"]);
+		unset($output["entities_id"]);
 		return $output;
 	}
 

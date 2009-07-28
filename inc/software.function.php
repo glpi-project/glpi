@@ -162,10 +162,10 @@ function showSoftwareMergeCandidates($ID) {
 	echo "<div class='center'>";
 	$sql = "SELECT glpi_softwares.ID, glpi_softwares.name, glpi_entities.completename AS entity " .
 			"FROM glpi_softwares " .
-			"LEFT JOIN glpi_entities ON (glpi_softwares.FK_entities=glpi_entities.ID) " .
+			"LEFT JOIN glpi_entities ON (glpi_softwares.entities_id=glpi_entities.ID) " .
 			"WHERE glpi_softwares.ID!=$ID AND glpi_softwares.name='".addslashes($soft->fields["name"])."'".
 				"AND glpi_softwares.deleted=0 AND glpi_softwares.is_template=0 " .
-         getEntitiesRestrictRequest('AND', 'glpi_softwares','FK_entities',getSonsOf("glpi_entities",$soft->fields["FK_entities"]),false).
+         getEntitiesRestrictRequest('AND', 'glpi_softwares','entities_id',getSonsOf("glpi_entities",$soft->fields["entities_id"]),false).
 			"ORDER BY glpi_entities.completename";
 	$req = $DB->request($sql);
 
@@ -330,7 +330,7 @@ function showLicenses($sID) {
 		FROM glpi_softwareslicenses
 		LEFT JOIN glpi_softwaresversions AS buyvers ON (buyvers.ID = glpi_softwareslicenses.buy_version)
 		LEFT JOIN glpi_softwaresversions AS usevers ON (usevers.ID = glpi_softwareslicenses.use_version)
-		LEFT JOIN glpi_entities ON (glpi_entities.ID = glpi_softwareslicenses.FK_entities)
+		LEFT JOIN glpi_entities ON (glpi_entities.ID = glpi_softwareslicenses.entities_id)
 		LEFT JOIN glpi_softwareslicensestypes ON (glpi_softwareslicensestypes.ID = glpi_softwareslicenses.type)
 		WHERE (glpi_softwareslicenses.sID = '$sID') " .
 			getEntitiesRestrictRequest('AND', 'glpi_softwareslicenses', '', '', true) .
@@ -527,7 +527,7 @@ function showInstallations($searchID, $crit="sID") {
 		FROM glpi_computers_softwaresversions
 		INNER JOIN glpi_softwaresversions ON (glpi_computers_softwaresversions.vID = glpi_softwaresversions.ID)
 		INNER JOIN glpi_computers ON (glpi_computers_softwaresversions.cID = glpi_computers.ID)
-		LEFT JOIN glpi_entities ON (glpi_computers.FK_entities=glpi_entities.ID)
+		LEFT JOIN glpi_entities ON (glpi_computers.entities_id=glpi_entities.ID)
 		LEFT JOIN glpi_locations ON (glpi_computers.location=glpi_locations.ID)
 		LEFT JOIN glpi_states ON (glpi_computers.state=glpi_states.ID)
 		LEFT JOIN glpi_groups ON (glpi_computers.FK_groups=glpi_groups.ID)
@@ -808,7 +808,7 @@ function showSoftwareInstalled($instID, $withtemplate = '') {
 	$comp = new Computer();
 	$comp->getFromDB($instID);
 	$canedit=haveRight("software", "w");
-	$FK_entities = $comp->fields["FK_entities"];
+	$entities_id = $comp->fields["entities_id"];
 
 	$query_cat = "SELECT 1 as TYPE, glpi_softwarescategories.name as category, glpi_softwares.category as category_id, 
 		glpi_softwares.name as softname, glpi_computers_softwaresversions.ID as ID, glpi_softwares.deleted, glpi_states.name AS state,
@@ -847,7 +847,7 @@ function showSoftwareInstalled($instID, $withtemplate = '') {
 
 		echo "<div class='software-instal'>";
 		echo "<input type='hidden' name='cID' value='$instID'>";
-		dropdownSoftwareToInstall("vID", $FK_entities);
+		dropdownSoftwareToInstall("vID", $entities_id);
 		echo "<input type='submit' name='install' value=\"" . $LANG['buttons'][4] . "\" class='submit'>";
 		echo "</div>";
 		echo "</form>";
@@ -1250,7 +1250,7 @@ function addSoftware($name, $manufacturer, $entity, $comments = '') {
 
 	$sql = "SELECT ID FROM glpi_softwares ".
 		"WHERE FK_glpi_enterprise='$manufacturer_id' AND name='".$name."' " .
-		getEntitiesRestrictRequest('AND', 'glpi_softwares', 'FK_entities', $entity, true);
+		getEntitiesRestrictRequest('AND', 'glpi_softwares', 'entities_id', $entity, true);
 
 	$res_soft = $DB->query($sql);
 	if ($soft = $DB->fetch_array($res_soft)) {
@@ -1258,7 +1258,7 @@ function addSoftware($name, $manufacturer, $entity, $comments = '') {
 	} else {
 		$input["name"] = $name;
 		$input["FK_glpi_enterprise"] = $manufacturer_id;
-		$input["FK_entities"] = $entity;
+		$input["entities_id"] = $entity;
 		// No comments
 		//$input["comments"] = $LANG['rulesengine'][88];
 		$input["helpdesk_visible"] = $CFG_GLPI["software_helpdesk_visible"];
@@ -1336,7 +1336,7 @@ function addSoftwareOrRestoreFromTrash($name,$manufacturer,$entity,$comments='')
 	//Look for the software by his name in GLPI for a specific entity
 	$query_search = "SELECT glpi_softwares.ID as ID, glpi_softwares.deleted as deleted  
 			FROM glpi_softwares
-			WHERE name = '".$name."' AND is_template='0' AND FK_entities='".$entity."'";
+			WHERE name = '".$name."' AND is_template='0' AND entities_id='".$entity."'";
 	$result_search = $DB->query($query_search);
 	if ($DB->numrows($result_search) > 0) {
 		//Software already exists for this entity, get his ID
@@ -1376,7 +1376,7 @@ function cron_software($display=false){
 	$items_end=array();
 
 	// Check notice
-	$query="SELECT glpi_softwareslicenses.*, glpi_softwareslicenses.FK_entities, glpi_softwares.name as softname
+	$query="SELECT glpi_softwareslicenses.*, glpi_softwareslicenses.entities_id, glpi_softwares.name as softname
 		FROM glpi_softwareslicenses 
 		LEFT JOIN glpi_alerts ON (glpi_softwareslicenses.ID = glpi_alerts.items_id 
 					AND glpi_alerts.itemtype='".SOFTWARELICENSE_TYPE."' 
@@ -1390,20 +1390,20 @@ function cron_software($display=false){
 	$result=$DB->query($query);
 	if ($DB->numrows($result)>0){
 		while ($data=$DB->fetch_array($result)){
-			if (!isset($message[$data["FK_entities"]])){
-				$message[$data["FK_entities"]]="";
+			if (!isset($message[$data["entities_id"]])){
+				$message[$data["entities_id"]]="";
 			}
-			if (!isset($items_notice[$data["FK_entities"]])){
-				$items[$data["FK_entities"]]=array();
+			if (!isset($items_notice[$data["entities_id"]])){
+				$items[$data["entities_id"]]=array();
 			}
 
 			$name = $data['softname'].' '.$data['version'].' - '.$data['serial'];
 
 			// define message alert
-			if (strstr($message[$data["FK_entities"]],$name)===false){
-				$message[$data["FK_entities"]].=$LANG['mailing'][51]." ".$name.": ".convDate($data["expire"])."<br>\n";
+			if (strstr($message[$data["entities_id"]],$name)===false){
+				$message[$data["entities_id"]].=$LANG['mailing'][51]." ".$name.": ".convDate($data["expire"])."<br>\n";
 			}
-			$items[$data["FK_entities"]][]=$data["ID"];
+			$items[$data["entities_id"]][]=$data["ID"];
 		}
 
 

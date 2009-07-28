@@ -229,7 +229,7 @@ class Job extends CommonDBTM{
 				$input2["FK_tracking"]=$input["ID"];
 				$input2["rubrique"]=$CFG_GLPI["default_rubdoc_tracking"];
 				$this->getFromDB($input["ID"]);
-				$input2["FK_entities"]=$this->fields["FK_entities"];
+				$input2["entities_id"]=$this->fields["entities_id"];
 				$input2["_only_if_upload_succeed"]=1;
 				$doc=new Document();
 				if ($docID=$doc->add($input2)){
@@ -663,7 +663,7 @@ class Job extends CommonDBTM{
 		}
 
 		// Set default dropdown
-		$dropdown_fields=array('FK_entities','itemtype','request_type','assign_group','users_id_assign','FK_group','users_id','category');
+		$dropdown_fields=array('entities_id','itemtype','request_type','assign_group','users_id_assign','FK_group','users_id','category');
 		foreach ($dropdown_fields as $field ){
 			if (!isset($input[$field])){
 				$input[$field]=0;
@@ -726,7 +726,7 @@ class Job extends CommonDBTM{
 				$input2=array();
 				$input2["name"]=$LANG['tracking'][24]." $newID";
 				$input2["FK_tracking"]=$newID;
-				$input2["FK_entities"]=$this->fields["FK_entities"];
+				$input2["entities_id"]=$this->fields["entities_id"];
 				$input2["rubrique"]=$CFG_GLPI["default_rubdoc_tracking"];
 				$input2["_only_if_upload_succeed"]=1;
 				$doc=new Document();

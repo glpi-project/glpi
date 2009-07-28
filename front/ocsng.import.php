@@ -65,8 +65,8 @@ if (isset($_SESSION["ocs_import"]["ID"])){
 		displayProgressBar(400,$percent);
 
 		$key=array_pop($_SESSION["ocs_import"]["ID"]);
-		if (isset($_SESSION["ocs_import"]["FK_entities"][$key]))
-			$entity=$_SESSION["ocs_import"]["FK_entities"][$key];
+		if (isset($_SESSION["ocs_import"]["entities_id"][$key]))
+			$entity=$_SESSION["ocs_import"]["entities_id"][$key];
 		else
 			$entity=-1;	
 
@@ -100,7 +100,7 @@ if (!isset($_POST["import_ok"])){
 			if ($val=="on")	{
 				$_SESSION["ocs_import"]["ID"][]=$key;
 				if (isset($_POST['toimport_entities']))
-					$_SESSION["ocs_import"]["FK_entities"][$key]=$_POST['toimport_entities'][$key];
+					$_SESSION["ocs_import"]["entities_id"][$key]=$_POST['toimport_entities'][$key];
 				$_SESSION["ocs_import_count"]++;
 			}
 		}
