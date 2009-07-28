@@ -119,16 +119,16 @@ class CartridgeType extends CommonDBTM {
 	 *
 	 * Add the compatible printer $type type for the cartridge type $tID
 	 *
-	 *@param $tID integer: cartridge type identifier
-	 *@param $type integer: printer type identifier
+	 *@param $cartridgesitems_id integer: cartridge type identifier
+	 *@param printersmodels_id integer: printer type identifier
 	 *@return nothing ()
 	 *
 	 **/
-	function addCompatibleType($tID,$type){
+	function addCompatibleType($tID,$printersmodels_id){
 		global $DB;
 		if ($tID>0&&$type>0){
 
-			$query="INSERT INTO glpi_cartridges_printersmodels (cartridgesitems_id,printersmodels_id ) VALUES ('$tID','$type');";
+			$query="INSERT INTO glpi_cartridges_printersmodels (cartridgesitems_id,printersmodels_id ) VALUES ('$cartridgesitems_id','$printersmodels_id');";
 			$result = $DB->query($query);
 		}
 	}
@@ -213,7 +213,7 @@ class CartridgeType extends CommonDBTM {
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'><td>".$LANG['common'][17].": 	</td><td colspan='2'>\n";
-      dropdownValue("glpi_cartridgesitemstypes","type",$this->fields["type"]);
+      dropdownValue("glpi_cartridgesitemstypes","cartridgesitemstypes_id",$this->fields["cartridgesitemstypes_id"]);
       echo "</td></tr>\n";
 
       echo "<tr class='tab_bg_1'><td>".$LANG['common'][5].": 	</td><td colspan='2'>\n";

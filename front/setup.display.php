@@ -41,9 +41,9 @@ if(!defined('GLPI_ROOT')){
 	include (GLPI_ROOT . "/inc/includes.php");
 }
 
-if (isset($_POST["type"]))$type=$_POST["type"];
-elseif (isset($_GET["type"]))$type=$_GET["type"];
-else $type=0;
+if (isset($_POST["itemtype"]))$itemtype=$_POST["itemtype"];
+elseif (isset($_GET["itemtype"]))$itemtype=$_GET["itemtype"];
+else $itemtype=0;
 
 if (!strpos($_SERVER['PHP_SELF'],"popup")){
 	commonHeader($LANG['common'][12],$_SERVER['PHP_SELF'],"config","display");
@@ -64,15 +64,15 @@ if (isset($_POST["activate"])) {
 } else if (isset($_POST["down"])||isset($_POST["down_x"])) {
 	$setupdisplay->down($_POST);
 }
-if ((strpos($_SERVER['PHP_SELF'],"popup")&&$type>0)/*||$type=$setupdisplay->title($_SERVER['PHP_SELF'],$type)*/){
+if ((strpos($_SERVER['PHP_SELF'],"popup")&&$itemtype>0)/*||$itemtype=$setupdisplay->title($_SERVER['PHP_SELF'],$itemtype)*/){
 	
 	$tabs[1]=array('title'=>$LANG['central'][13],
 	'url'=>$CFG_GLPI['root_doc']."/ajax/display.tabs.php",
-	'params'=>"target=".$_SERVER['PHP_SELF']."&ID=-1&glpi_tab=1&type=$type");
+	'params'=>"target=".$_SERVER['PHP_SELF']."&ID=-1&glpi_tab=1&itemtype=$itemtype");
 		
 	$tabs[2]=array('title'=>$LANG['central'][12],
 	'url'=>$CFG_GLPI['root_doc']."/ajax/display.tabs.php",
-	'params'=>"target=".$_SERVER['PHP_SELF']."&ID=-1&glpi_tab=2&type=$type");
+	'params'=>"target=".$_SERVER['PHP_SELF']."&ID=-1&glpi_tab=2&itemtype=$itemtype");
 						
 	echo "<div id='tabspanel' class='center-h'></div>";
 	createAjaxTabs('tabspanel','tabcontent',$tabs,$_SESSION['glpi_tab']);

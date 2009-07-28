@@ -661,15 +661,15 @@ class SoftwareLicense extends CommonDBTM {
 	function post_addItem($newID, $input) {
 
 
-		$type = SOFTWARE_TYPE;
+		$itemtype = SOFTWARE_TYPE;
 		$dupid = $this->fields["sID"];
 		if (isset ($input["_duplicate_license"])) {
-			$type = LICENSE_TYPE;
+			$itemtype = LICENSE_TYPE;
 			$dupid = $input["_duplicate_license"];
 		}
 		// Add infocoms if exists for the licence
 		$ic = new Infocom();
-		if ($ic->getFromDBforDevice($type, $dupid)) {
+		if ($ic->getFromDBforDevice($itemtype, $dupid)) {
 			unset ($ic->fields["ID"]);
 			$ic->fields["items_id"] = $newID;
 			if (isset($ic->fields["num_immo"])) {
@@ -793,7 +793,7 @@ class SoftwareLicense extends CommonDBTM {
 
 		echo "<tr class='tab_bg_1'><td>".$LANG['common'][17].":		</td>";
 		echo "<td>";
-		dropdownValue("glpi_softwareslicensestypes", "type", $this->fields["type"]);
+		dropdownValue("glpi_softwareslicensestypes", "softwareslicensestypes_id", $this->fields["softwareslicensestypes_id"]);
 		echo "</td></tr>";
 
 

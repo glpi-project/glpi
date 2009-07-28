@@ -201,7 +201,7 @@ class Phone extends CommonDBTM {
 		$result = $DB->query($query);
 
 
-		$query="SELECT * FROM glpi_computers_items WHERE (type='".PHONE_TYPE."' AND end1='$ID')";
+		$query="SELECT * FROM glpi_computers_items WHERE (itemtype='".PHONE_TYPE."' AND end1='$ID')";
 		if ($result = $DB->query($query)) {
 			if ($DB->numrows($result)>0) {
 				while ($data = $DB->fetch_array($result)){
@@ -324,7 +324,7 @@ class Phone extends CommonDBTM {
       
 
       echo "<tr><td>".$LANG['common'][17].": 	</td><td>";
-      dropdownValue("glpi_phonestypes", "type", $this->fields["type"]);
+      dropdownValue("glpi_phonestypes", "phonestypes_id", $this->fields["phonestypes_id"]);
       echo "</td></tr>";
 
       echo "<tr><td>".$LANG['common'][22].": 	</td><td>";

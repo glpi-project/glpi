@@ -106,9 +106,9 @@ class Document extends CommonDBTM {
 			$input['mime']=$_FILES['filename']['type'];
 		}
 
-		if (isset($input["item"])&&isset($input["type"])&&$input["type"]>0&&$input["item"]>0){
+		if (isset($input["item"])&&isset($input["itemtype"])&&$input["itemtype"]>0&&$input["item"]>0){
 			$ci=new CommonItem();
-			$ci->getFromDB($input["type"],$input["item"]);
+			$ci->getFromDB($input["itemtype"],$input["item"]);
 			$input["name"]=addslashes(resume_text($LANG['document'][18]." ".$ci->getType()." - ".$ci->getNameID(),200));
 		}
 
@@ -133,9 +133,9 @@ class Document extends CommonDBTM {
 
 	function post_addItem($newID,$input) {
 		global $LANG;
-		if (isset($input["item"])&&isset($input["type"])&&$input["item"]>0&&$input["type"]>0){
+		if (isset($input["item"])&&isset($input["itemtype"])&&$input["item"]>0&&$input["itemtype"]>0){
 
-			addDeviceDocument($newID,$input['type'],$input['item']);
+			addDeviceDocument($newID,$input['itemtype'],$input['item']);
 			logEvent($newID, "documents", 4, "document", $_SESSION["glpiname"]." ".$LANG['log'][32]);
 		}
 

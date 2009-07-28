@@ -121,14 +121,14 @@ function deleteLinkDevice($ID){
 /**
  * Add an item type to a link
  *
- * @param $tID integer : item type
+ * @param $itemtype integer : item type
  * @param $lID integer : link ID
  */
 function addLinkDevice($tID,$lID){
 	global $DB;
 	if ($tID>0&&$lID>0){
 
-		$query="INSERT INTO glpi_links_itemtypes (itemtype,FK_links ) VALUES ('$tID','$lID');";
+		$query="INSERT INTO glpi_links_itemtypes (itemtype,FK_links ) VALUES ('$itemtype','$lID');";
 		$result = $DB->query($query);
 	}
 }
@@ -136,21 +136,21 @@ function addLinkDevice($tID,$lID){
 /**
  * Show Links for an item
  *
- * @param $type integer : item type
+ * @param $itemtype integer : item type
  * @param $ID integer : item ID
  */
-function showLinkOnDevice($type,$ID){
+function showLinkOnDevice($itemtype,$ID){
 	global $DB,$LANG,$CFG_GLPI;
 
 	$commonitem = new CommonItem;
-	$commonitem->getFromDB($type,$ID);
+	$commonitem->getFromDB($itemtype,$ID);
 	
 	if (!haveRight("link","r")) return false;
 
 	$query="SELECT glpi_links.ID as ID, glpi_links.link as link, glpi_links.name as name , glpi_links.data as data 
 		FROM glpi_links 
 		INNER JOIN glpi_links_itemtypes ON glpi_links.ID= glpi_links_itemtypes.FK_links
-		WHERE glpi_links_itemtypes.itemtype='$type' " .
+		WHERE glpi_links_itemtypes.itemtype='$itemtype' " .
 			getEntitiesRestrictRequest(" AND","glpi_links","entities_id",$commonitem->obj->fields["entities_id"],true).
 		" ORDER BY glpi_links.name";
 
@@ -170,7 +170,7 @@ function showLinkOnDevice($type,$ID){
 			$file=trim($data["data"]);
 			if (empty($file)){
 
-				$ci->getFromDB($type,$ID);
+				$ci->getFromDB($itemtype,$ID);
 				if (strstr($link,"[NAME]")){
 					$link=str_replace("[NAME]",$ci->getName(),$link);
 				}
@@ -228,7 +228,7 @@ function showLinkOnDevice($type,$ID){
 				if (strstr($link,"[IP]")||strstr($link,"[MAC]")){
 					$query2 = "SELECT ifaddr, ifmac, logical_number 
 						FROM glpi_networkports 
-						WHERE items_id = '$ID' AND itemtype = '$type' 
+						WHERE items_id = '$ID' AND itemtype = '$itemtype' 
 						ORDER BY logical_number";
 					$result2=$DB->query($query2);
 					if ($DB->numrows($result2)>0)
@@ -242,7 +242,7 @@ function showLinkOnDevice($type,$ID){
 
 				if (strstr($link,"[IP]")||strstr($link,"[MAC]")){
 					// Add IP/MAC internal switch
-					if ($type==NETWORKING_TYPE){
+					if ($itemtype==NETWORKING_TYPE){
 						$tmplink=$link;
 						$tmplink=str_replace("[IP]",$ci->getField('ifaddr'),$tmplink);
 						$tmplink=str_replace("[MAC]",$ci->getField('ifmac'),$tmplink);
@@ -277,7 +277,7 @@ function showLinkOnDevice($type,$ID){
 				
 			} else {// File Generated Link
 				$link=$data['name'];		
-				$ci->getFromDB($type,$ID);
+				$ci->getFromDB($itemtype,$ID);
 
 				// Manage Filename
 				if (strstr($link,"[NAME]")){
@@ -294,7 +294,7 @@ function showLinkOnDevice($type,$ID){
 					$link=str_replace("[ID]",$_GET["ID"],$link);
 				}
 
-				echo "<tr class='tab_bg_2'><td><a href='".$CFG_GLPI["root_doc"]."/front/link.send.php?lID=".$data['ID']."&amp;type=$type&amp;ID=$ID' target='_blank'>".$name."</a></td></tr>";
+				echo "<tr class='tab_bg_2'><td><a href='".$CFG_GLPI["root_doc"]."/front/link.send.php?lID=".$data['ID']."&amp;itemtype=$itemtype&amp;ID=$ID' target='_blank'>".$name."</a></td></tr>";
 			}
 
 

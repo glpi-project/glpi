@@ -383,7 +383,7 @@ class Netdevice extends CommonDBTM {
       echo "<table cellpadding='1' cellspacing='0' border='0'>\n";
 
       echo "<tr><td>".$LANG['common'][17].": 	</td><td>\n";
-      dropdownValue("glpi_networkequipmentstypes", "type", $this->fields["type"]);
+      dropdownValue("glpi_networkequipmentstypes", "networkequipmentstypes_id", $this->fields["networkequipmentstypes_id"]);
       echo "</td></tr>\n";
 
       echo "<tr><td>".$LANG['common'][22].": 	</td><td>";
@@ -557,15 +557,14 @@ class Netport extends CommonDBTM {
 	 * Retrieve data in the port of the item which belongs to
 	 *
 	 *@param $ID Integer : Id of the item to print
-	 *@param $type item type
+	 *@param $itemtype item type
 	 *
 	 *@return boolean item found
 	 **/
-	function getDeviceData($ID,$type)
-	{
+	function getDeviceData($ID, $itemtype) {
 		global $DB,$LINK_ID_TABLE;
 
-		$table = $LINK_ID_TABLE[$type];
+		$table = $LINK_ID_TABLE[$itemtype];
 
 		$query = "SELECT * FROM $table WHERE ID = '$ID'";
 		if ($result=$DB->query($query))
@@ -576,7 +575,7 @@ class Netport extends CommonDBTM {
 			$this->entities_id = $data["entities_id"];
 			$this->locations_id = $data["locations_id"];
 			$this->device_ID = $ID;
-			$this->itemtype = $type;
+			$this->itemtype = $itemtype;
 			$this->recursive = (isset($data["recursive"])?$data["recursive"]:0);
 			return true;
 		}

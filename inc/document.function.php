@@ -230,43 +230,43 @@ function showDeviceDocument($instID) {
 		echo "</tr>";
 		$ci=new CommonItem();
 		while ($i < $number) {
-			$type=$DB->result($result, $i, "itemtype");
-			if (haveTypeRight($type,"r")){
+			$itemtype=$DB->result($result, $i, "itemtype");
+			if (haveTypeRight($itemtype,"r")){
 				$column="name";
-				if ($type==TRACKING_TYPE) $column="ID";
-				if ($type==KNOWBASE_TYPE) $column="question";
+				if ($itemtype==TRACKING_TYPE) $column="ID";
+				if ($itemtype==KNOWBASE_TYPE) $column="question";
 	
-				$query = "SELECT ".$LINK_ID_TABLE[$type].".*, glpi_documents_items.ID AS IDD, glpi_entities.ID AS entity
-							FROM glpi_documents_items, ".$LINK_ID_TABLE[$type];
-				if ($type != ENTITY_TYPE) {
-					$query .= " LEFT JOIN glpi_entities ON (glpi_entities.ID=".$LINK_ID_TABLE[$type].".entities_id) ";
+				$query = "SELECT ".$LINK_ID_TABLE[$itemtype].".*, glpi_documents_items.ID AS IDD, glpi_entities.ID AS entity
+							FROM glpi_documents_items, ".$LINK_ID_TABLE[$itemtype];
+				if ($itemtype != ENTITY_TYPE) {
+					$query .= " LEFT JOIN glpi_entities ON (glpi_entities.ID=".$LINK_ID_TABLE[$itemtype].".entities_id) ";
 				}
-				$query .= " WHERE ".$LINK_ID_TABLE[$type].".ID = glpi_documents_items.items_id  
-						AND glpi_documents_items.itemtype='$type' AND glpi_documents_items.FK_doc = '$instID' "
-						. getEntitiesRestrictRequest(" AND ",$LINK_ID_TABLE[$type],'','',isset($CFG_GLPI["recursive_type"][$type])); 
-				if (in_array($LINK_ID_TABLE[$type],$CFG_GLPI["template_tables"])){
-					$query.=" AND ".$LINK_ID_TABLE[$type].".is_template='0'";
+				$query .= " WHERE ".$LINK_ID_TABLE[$itemtype].".ID = glpi_documents_items.items_id
+						AND glpi_documents_items.itemtype='$itemtype' AND glpi_documents_items.FK_doc = '$instID' "
+						. getEntitiesRestrictRequest(" AND ",$LINK_ID_TABLE[$itemtype],'','',isset($CFG_GLPI["recursive_type"][$itemtype]));
+				if (in_array($LINK_ID_TABLE[$itemtype],$CFG_GLPI["template_tables"])){
+					$query.=" AND ".$LINK_ID_TABLE[$itemtype].".is_template='0'";
 				}
-				$query.=" ORDER BY glpi_entities.completename, ".$LINK_ID_TABLE[$type].".$column";
+				$query.=" ORDER BY glpi_entities.completename, ".$LINK_ID_TABLE[$itemtype].".$column";
 
-            if ($type==SOFTWARELICENSE_TYPE) {
+            if ($itemtype==SOFTWARELICENSE_TYPE) {
                $soft=new Software();
             }
 
 				if ($result_linked=$DB->query($query))
 					if ($DB->numrows($result_linked)){
-						$ci->setType($type);
+						$ci->setType($itemtype);
 						while ($data=$DB->fetch_assoc($result_linked)){
 							$ID="";
-							if ($type==TRACKING_TYPE) $data["name"]=$LANG['job'][38]." ".$data["ID"];
-							if ($type==KNOWBASE_TYPE) $data["name"]=$data["question"];
-                     if ($type==SOFTWARELICENSE_TYPE) {
+							if ($itemtype==TRACKING_TYPE) $data["name"]=$LANG['job'][38]." ".$data["ID"];
+							if ($itemtype==KNOWBASE_TYPE) $data["name"]=$data["question"];
+                     if ($itemtype==SOFTWARELICENSE_TYPE) {
                         $soft->getFromDB($data['sID']);
                         $data["name"]=$data["name"].' - '.$soft->fields['name'];
                      }
 							
 							if($_SESSION["glpiview_ID"]||empty($data["name"])) $ID= " (".$data["ID"].")";
-							$name= "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data["ID"]."\">"
+							$name= "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$itemtype]."?ID=".$data["ID"]."\">"
 								.$data["name"]."$ID</a>";
 	
 							echo "<tr class='tab_bg_1'>";
@@ -332,16 +332,16 @@ function showDeviceDocument($instID) {
  *
  * @param $docID document ID
  * @param $ID item ID
- * @param $type item type
+ * @param $itemtype item type
  **/
-function addDeviceDocument($docID,$type,$ID){
+function addDeviceDocument($docID,$itemtype,$ID){
 	global $DB;
-	if ($docID>0&&$ID>0&&$type>0){
+	if ($docID>0&&$ID>0&&$itemtype>0){
 		// Do not insert auto link for document
-		if ($type==DOCUMENT_TYPE && $ID == $docID){
+		if ($itemtype==DOCUMENT_TYPE && $ID == $docID){
 			return;
 		}
-		$query="INSERT INTO glpi_documents_items (FK_doc,items_id, itemtype) VALUES ('$docID','$ID','$type');";
+		$query="INSERT INTO glpi_documents_items (FK_doc,items_id, itemtype) VALUES ('$docID','$ID','$itemtype');";
 		$result = $DB->query($query);
 	}
 }
@@ -512,7 +512,7 @@ function showDocumentAssociated($itemtype,$ID,$withtemplate=''){
 				"<input type='hidden' name='entities_id' value='$entity'>" .
 				"<input type='hidden' name='item' value='$ID'>" .
 				"<input type='hidden' name='recursive' value='$recursive'>" .
-				"<input type='hidden' name='type' value='$itemtype'>" .
+				"<input type='hidden' name='itemtype' value='$itemtype'>" .
 				"<input type='file' name='filename' size='25'>&nbsp;&nbsp;" .
 				"<input type='submit' name='add' value=\"".$LANG['buttons'][8]."\" class='submit'>" .
 				"</td>";

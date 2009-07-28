@@ -83,20 +83,20 @@ include (GLPI_ROOT."/inc/includes.php");
 	
 	$tabs['my']=array('title'=>$LANG['central'][12],
 		'url'=>$CFG_GLPI['root_doc']."/ajax/central.tabs.php",
-		'params'=>"target=".$_SERVER['PHP_SELF']."&type=central&glpi_tab=my");
+		'params'=>"target=".$_SERVER['PHP_SELF']."&itemtype=central&glpi_tab=my");
 	$tabs['group']=array('title'=>$LANG['central'][14],
 		'url'=>$CFG_GLPI['root_doc']."/ajax/central.tabs.php",
-		'params'=>"target=".$_SERVER['PHP_SELF']."&type=central&glpi_tab=group");
+		'params'=>"target=".$_SERVER['PHP_SELF']."&itemtype=central&glpi_tab=group");
 	$tabs['global']=array('title'=>$LANG['central'][13],
 		'url'=>$CFG_GLPI['root_doc']."/ajax/central.tabs.php",
-		'params'=>"target=".$_SERVER['PHP_SELF']."&type=central&glpi_tab=global");
+		'params'=>"target=".$_SERVER['PHP_SELF']."&itemtype=central&glpi_tab=global");
 
 	$plug_tabs=getPluginTabs($_SERVER['PHP_SELF'],"central","","");
 	$tabs+=$plug_tabs;
 
 	$tabs[-1]=array('title'=>$LANG['common'][66],
 		'url'=>$CFG_GLPI['root_doc']."/ajax/central.tabs.php",
-		'params'=>"target=".$_SERVER['PHP_SELF']."&type=central&glpi_tab=-1");
+		'params'=>"target=".$_SERVER['PHP_SELF']."&itemtype=central&glpi_tab=-1");
 
 	echo "<div id='tabspanel' class='center-h'></div>";
 	createAjaxTabs('tabspanel','tabcontent',$tabs,$_SESSION['glpi_tab']);

@@ -62,11 +62,11 @@ if (isset ($_POST["update"]) && $_POST["ID"] == $_SESSION["glpiID"]) {
 	//forea
 	$tabs[1]=array('title'=>$LANG['title'][26],
 		'url'=>$CFG_GLPI['root_doc']."/ajax/preference.tabs.php",
-		'params'=>"target=".$_SERVER['PHP_SELF']."&type=prefs&glpi_tab=1");
+		'params'=>"target=".$_SERVER['PHP_SELF']."&itemtype=prefs&glpi_tab=1");
 
 	$tabs[2]=array('title'=>$LANG['setup'][6],
 		'url'=>$CFG_GLPI['root_doc']."/ajax/preference.tabs.php",
-		'params'=>"target=".$_SERVER['PHP_SELF']."&type=prefs&glpi_tab=2");
+		'params'=>"target=".$_SERVER['PHP_SELF']."&itemtype=prefs&glpi_tab=2");
 
 	$plug_tabs=getPluginTabs($_SERVER['PHP_SELF'],"prefs","","");
 

@@ -191,13 +191,9 @@ class Job extends CommonDBTM{
 		}
 
 		// NEEDED ???? 
-		if (isset($input["type"])&& $input["type"]==0&&!isset($input["item"])){
+		if (isset($input["itemtype"])&& $input["itemtype"]==0&&!isset($input["items_id"])){
 			$input["items_id"]=0;
-			$input["itemtype"]=$input["type"];
-		} else if (isset($input["item"])&& $input["item"]!=0&&isset($input["type"])&& $input["type"]!=0){
-			$input["items_id"]=$input["item"];
-			$input["itemtype"]=$input["type"];
-		} 
+		}
 
 		if (isset($input["items_id"])&&$input["items_id"]>=0&&isset($input["itemtype"])&&$input["itemtype"]>=0){
 			if (isset($this->fields['FK_group'])&&$this->fields['FK_group']){
@@ -263,8 +259,8 @@ class Job extends CommonDBTM{
 			$input["_old_assign_ent_name"]=getAssignName($this->fields["assign_ent"],ENTERPRISE_TYPE);
 			$input["_old_assign_group_name"]=getAssignName($this->fields["assign_group"],GROUP_TYPE);
 			$input["_old_category"]=$this->fields["category"];
-			$input["_old_item"]=$this->fields["items_id"];
-			$input["_old_item_type"]=$this->fields["itemtype"];
+			$input["_old_items_id"]=$this->fields["items_id"];
+			$input["_old_itemtype"]=$this->fields["itemtype"];
 			$input["_old_users_id"]=$this->fields["users_id"];
 			$input["_old_recipient"]=$this->fields["users_id_recipient"];
 			$input["_old_group"]=$this->fields["FK_group"];
@@ -462,7 +458,7 @@ class Job extends CommonDBTM{
 						}
 
 						$ci=new CommonItem;
-						$ci->getFromDB($input["_old_item_type"],$input["_old_item"]);
+						$ci->getFromDB($input["_old_itemtype"],$input["_old_items_id"]);
 						$old_item_name=$ci->getName();
 						if ($old_item_name=="N/A"||empty($old_item_name))
 							$old_item_name=$LANG['mailing'][107];

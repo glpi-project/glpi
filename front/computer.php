@@ -40,27 +40,27 @@ define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
 if (isset($_GET["add_search_count"])){
-	$_SESSION["glpisearchcount"][$_GET["type"]]++;
+	$_SESSION["glpisearchcount"][$_GET["itemtype"]]++;
 	glpi_header(str_replace("reset_before=1","",$_SERVER['HTTP_REFERER']));
 }
 if (isset($_GET["delete_search_count"])){
-	$_SESSION["glpisearchcount"][$_GET["type"]]--;
+	$_SESSION["glpisearchcount"][$_GET["itemtype"]]--;
 	glpi_header(str_replace("reset_before=1","",$_SERVER['HTTP_REFERER']));
 }
 
 if (isset($_GET["add_search_count2"])){
-	$_SESSION["glpisearchcount2"][$_GET["type"]]++;
+	$_SESSION["glpisearchcount2"][$_GET["itemtype"]]++;
 	glpi_header(str_replace("reset_before=1","",$_SERVER['HTTP_REFERER']));
 }
 if (isset($_GET["delete_search_count2"])){
-	$_SESSION["glpisearchcount2"][$_GET["type"]]--;
+	$_SESSION["glpisearchcount2"][$_GET["itemtype"]]--;
 	glpi_header(str_replace("reset_before=1","",$_SERVER['HTTP_REFERER']));
 }
 
 if (isset($_GET["reset_search"])){
-	unset($_SESSION["glpisearchcount2"][$_GET["type"]]);
-	unset($_SESSION["glpisearchcount"][$_GET["type"]]);
-	unset($_SESSION["glpisearch"][$_GET["type"]]);
+	unset($_SESSION["glpisearchcount2"][$_GET["itemtype"]]);
+	unset($_SESSION["glpisearchcount"][$_GET["itemtype"]]);
+	unset($_SESSION["glpisearch"][$_GET["itemtype"]]);
 	if ($cut=strpos($_SERVER['HTTP_REFERER'],"?"))
 		$REDIRECT=utf8_substr($_SERVER['HTTP_REFERER'],0,$cut);
 	else $REDIRECT=$_SERVER['HTTP_REFERER'];

@@ -43,8 +43,8 @@
 	header("Content-Type: text/html; charset=UTF-8");
 	header_nocache();
 	
-	if ($_POST["type"]>0){
-		checkTypeRight($_POST["type"],"r");
+	if ($_POST["itemtype"]>0){
+		checkTypeRight($_POST["itemtype"],"r");
 		echo "<input type='text' size='10' name=\"contains2[".$_POST["num"]."]\" value=\"".stripslashes($_POST["val"])."\" >";
 		echo "&nbsp;";
 		echo $LANG['search'][10]."&nbsp;";
@@ -53,7 +53,7 @@
 		$first_group=true;
 		$newgroup="";
 		$items_in_group=0;
-		$searchopt=cleanSearchOption($_POST["type"]);
+		$searchopt=cleanSearchOption($_POST["itemtype"]);
 		foreach ($searchopt as $key => $val) {
 			// print groups
 			if (!is_array($val)){

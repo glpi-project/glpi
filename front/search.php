@@ -50,11 +50,11 @@ if (isset($_GET["globalsearch"])){
 
 	$ci=new CommonItem();
 	
-	foreach($types as $type){
-		if (haveTypeRight($type,'r')){
-			manageGetValuesInSearch($type,false,false);
+	foreach($types as $itemtype){
+		if (haveTypeRight($itemtype,'r')){
+			manageGetValuesInSearch($itemtype,false,false);
 			$_GET["contains"][0]=$_GET["globalsearch"];
-			showList($type,$_GET);
+			showList($itemtype,$_GET);
 			echo "<hr>";
 		}
 	}

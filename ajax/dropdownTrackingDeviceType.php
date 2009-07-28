@@ -43,8 +43,8 @@ header_nocache();
 checkLoginUser();
 
 // Make a select box                                            
-if (isset($LINK_ID_TABLE[$_POST["type"]])&&$_POST["type"]>0&&(isPossibleToAssignType($_POST["type"]))){
-	$table=$LINK_ID_TABLE[$_POST["type"]];
+if (isset($LINK_ID_TABLE[$_POST["itemtype"]])&&$_POST["itemtype"]>0&&(isPossibleToAssignType($_POST["itemtype"]))){
+	$table=$LINK_ID_TABLE[$_POST["itemtype"]];
 
 	if (!isset($_POST["admin"])||$_POST["admin"]==0){
 		echo "<div align='center'>".$LANG['help'][23].":&nbsp;";
@@ -60,7 +60,7 @@ if (isset($LINK_ID_TABLE[$_POST["type"]])&&$_POST["type"]>0&&(isPossibleToAssign
 	$paramstrackingdt=array('searchText'=>'__VALUE__',
 			'myname'=>$_POST["myname"],
 			'table'=>$table,
-			'type'=>$_POST["type"],
+			'itemtype'=>$_POST["itemtype"],
 			'entity_restrict'=>$_POST['entity_restrict'],
 	);
 	ajaxUpdateItemOnInputTextEvent("search_".$_POST['myname'].$rand,"results_ID$rand",$CFG_GLPI["root_doc"]."/ajax/dropdownFindNum.php",$paramstrackingdt,false);

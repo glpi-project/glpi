@@ -185,7 +185,7 @@ class Monitor extends CommonDBTM {
 			}
 		}
 
-		$query="SELECT * FROM glpi_computers_items WHERE (type='".MONITOR_TYPE."' AND end1='$ID')";
+		$query="SELECT * FROM glpi_computers_items WHERE (itemtype='".MONITOR_TYPE."' AND end1='$ID')";
 		if ($result = $DB->query($query)) {
 			if ($DB->numrows($result)>0) {
 				while ($data = $DB->fetch_array($result)){
@@ -323,7 +323,7 @@ class Monitor extends CommonDBTM {
       echo "</td></tr>";
          
       echo "<tr><td>".$LANG['common'][17].": 	</td><td>";
-      dropdownValue("glpi_monitorstypes", "type", $this->fields["type"]);
+      dropdownValue("glpi_monitorstypes", "monitorstypes_id", $this->fields["monitorstypes_id"]);
       echo "</td></tr>";
 
       echo "<tr><td>".$LANG['common'][22].": 	</td><td>";

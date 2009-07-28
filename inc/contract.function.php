@@ -187,45 +187,45 @@ function showDeviceContract($instID) {
 	$ci=new CommonItem;
    $totalnb=0;
 	while ($i < $number) {
-		$type=$DB->result($result, $i, "itemtype");
+		$itemtype=$DB->result($result, $i, "itemtype");
 
-		if (haveTypeRight($type,"r")){
- 			$query = "SELECT ".$LINK_ID_TABLE[$type].".*, glpi_contracts_items.ID AS IDD, glpi_entities.ID AS entity
-						FROM glpi_contracts_items, " .$LINK_ID_TABLE[$type];
-			if ($type != ENTITY_TYPE) {	
-				$query .= " LEFT JOIN glpi_entities ON (".$LINK_ID_TABLE[$type].".entities_id=glpi_entities.ID) ";
+		if (haveTypeRight($itemtype,"r")){
+ 			$query = "SELECT ".$LINK_ID_TABLE[$itemtype].".*, glpi_contracts_items.ID AS IDD, glpi_entities.ID AS entity
+						FROM glpi_contracts_items, " .$LINK_ID_TABLE[$itemtype];
+			if ($itemtype != ENTITY_TYPE) {
+				$query .= " LEFT JOIN glpi_entities ON (".$LINK_ID_TABLE[$itemtype].".entities_id=glpi_entities.ID) ";
 			}
-			$query .= " WHERE ".$LINK_ID_TABLE[$type].".ID = glpi_contracts_items.items_id 
-								AND glpi_contracts_items.itemtype='$type' 
+			$query .= " WHERE ".$LINK_ID_TABLE[$itemtype].".ID = glpi_contracts_items.items_id
+								AND glpi_contracts_items.itemtype='$itemtype' 
 								AND glpi_contracts_items.FK_contract = '$instID'";
 						
-			if (in_array($LINK_ID_TABLE[$type],$CFG_GLPI["template_tables"])){
-				$query.=" AND ".$LINK_ID_TABLE[$type].".is_template='0'";
+			if (in_array($LINK_ID_TABLE[$itemtype],$CFG_GLPI["template_tables"])){
+				$query.=" AND ".$LINK_ID_TABLE[$itemtype].".is_template='0'";
 			}						
-			$query .= getEntitiesRestrictRequest(" AND",$LINK_ID_TABLE[$type])
-				." ORDER BY glpi_entities.completename, ".$LINK_ID_TABLE[$type].".name";
+			$query .= getEntitiesRestrictRequest(" AND",$LINK_ID_TABLE[$itemtype])
+				." ORDER BY glpi_entities.completename, ".$LINK_ID_TABLE[$itemtype].".name";
 
 			$result_linked=$DB->query($query);
 			$nb=$DB->numrows($result_linked);
-				if ($nb>$_SESSION['glpilist_limit'] && isset($SEARCH_PAGES["$type"])) {
-				$ci->setType($type);
+				if ($nb>$_SESSION['glpilist_limit'] && isset($SEARCH_PAGES[$itemtype])) {
+				$ci->setType($itemtype);
 				
 				echo "<tr class='tab_bg_1'>";
 				if ($canedit) {
 					echo "<td>&nbsp;</td>";	
 				}
 				echo "<td class='center' colspan='2'><a href='"
-					. $CFG_GLPI["root_doc"]."/".$SEARCH_PAGES["$type"] . "?" . rawurlencode("contains[0]") . "=" . rawurlencode('$$$$'.$instID) . "&amp;" . rawurlencode("field[0]") . "=29&amp;sort=80&amp;order=ASC&amp;deleted=0&amp;start=0"
+					. $CFG_GLPI["root_doc"]."/".$SEARCH_PAGES[$itemtype] . "?" . rawurlencode("contains[0]") . "=" . rawurlencode('$$$$'.$instID) . "&amp;" . rawurlencode("field[0]") . "=29&amp;sort=80&amp;order=ASC&amp;deleted=0&amp;start=0"
 					. "'>" . $LANG['reports'][57]."</a></td>";
 				echo "<td class='center'>".$ci->getType()."<br>$nb</td>";
 				
 				echo "<td class='center'>-</td><td class='center'>-</td></tr>";				
 			} else if ($nb>0){
-				$ci->setType($type);
+				$ci->setType($itemtype);
 				for ($prem=true ; $data=$DB->fetch_assoc($result_linked) ; $prem=false){
 					$ID="";
 					if($_SESSION["glpiview_ID"]||empty($data["name"])) $ID= " (".$data["ID"].")";
-					$name= "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data["ID"]."\">".$data["name"]."$ID</a>";
+					$name= "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$itemtype]."?ID=".$data["ID"]."\">".$data["name"]."$ID</a>";
 
 					echo "<tr class='tab_bg_1'>";
 					
@@ -284,7 +284,7 @@ function showDeviceContract($instID) {
 /**
  * Link a contract to a device
  *
- * Link the contract $conID to the device $ID witch device type is $type. 
+ * Link the contract $conID to the device $ID witch intem type is $itemtype.
  *
  *@param $conID integer : contract identifier.
  *@param $type integer : device type identifier.
@@ -293,12 +293,12 @@ function showDeviceContract($instID) {
  *@return Nothing ()
  *
  **/
-function addDeviceContract($conID,$type,$ID){
+function addDeviceContract($conID,$itemtype,$ID){
 	global $DB;
 
 	if ($ID>0&&$conID>0){
 
-		$query="INSERT INTO glpi_contracts_items (FK_contract,items_id, itemtype ) VALUES ('$conID','$ID','$type');";
+		$query="INSERT INTO glpi_contracts_items (FK_contract,items_id, itemtype ) VALUES ('$conID','$ID','$itemtype');";
 		$result = $DB->query($query);
 	}
 }
@@ -338,7 +338,7 @@ function showEnterpriseContract($instID) {
 	$canedit=$contract->can($instID,'w');
 	
 	$query = "SELECT glpi_contracts_suppliers.ID as ID, glpi_suppliers.ID as entID, glpi_suppliers.name as name, 
-			glpi_suppliers.website as website, glpi_suppliers.phonenumber as phone, glpi_suppliers.type as type, 
+			glpi_suppliers.website as website, glpi_suppliers.phonenumber as phone, glpi_suppliers.supplierstypes_id as type,
 			glpi_entities.ID AS entity"
 		. " FROM glpi_contracts_suppliers, glpi_suppliers "
 		. " LEFT JOIN glpi_entities ON (glpi_entities.ID=glpi_suppliers.entities_id) "
@@ -416,7 +416,7 @@ function showEnterpriseContract($instID) {
 /**
  * Link a contract to an entreprise
  *
- * Link the contract $conID to the entreprise $ID witch device type is $type. 
+ * Link the contract $conID to the entreprise $ID .
  *
  *@param $conID integer : contract identifier.
  *@param $ID integer : entreprise identifier.
@@ -477,7 +477,7 @@ function getContractEnterprises($ID){
 /**
  * Print an HTML array with contracts associated to a device
  *
- * Print an HTML array with contracts associated to the device identified by $ID from device type $itemtype 
+ * Print an HTML array with contracts associated to the device identified by $ID from item type $itemtype
  *
  *@param $itemtype string : HTML select name
  *@param $ID integer device ID
@@ -569,7 +569,7 @@ function showContractAssociated($itemtype,$ID,$withtemplate=''){
 	if ($canedit){
 		if ($withtemplate!=2 && $nb>count($contracts)){
 			echo "<tr class='tab_bg_1'><td align='right' colspan='3'>";
-			echo "<div class='software-instal'><input type='hidden' name='item' value='$ID'><input type='hidden' name='type' value='$itemtype'>";
+			echo "<div class='software-instal'><input type='hidden' name='items_id' value='$ID'><input type='hidden' name='itemtype' value='$itemtype'>";
 			dropdownContracts("conID",$ci->obj->getEntityID(),$contracts);
 			echo "</div></td><td class='center'>";
 			echo "<input type='submit' name='additem' value=\"".$LANG['buttons'][8]."\" class='submit'>";

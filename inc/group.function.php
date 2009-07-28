@@ -49,19 +49,19 @@ function showGroupDevice($ID){
 	$ci=new CommonItem();
 	echo "<div class='center'><table class='tab_cadre'><tr><th>".$LANG['common'][17]."</th>" .
 			"<th>".$LANG['common'][16]."</th><th>".$LANG['entity'][0]."</th></tr>";
-	foreach ($CFG_GLPI["linkgroup_types"] as $type){
+	foreach ($CFG_GLPI["linkgroup_types"] as $itemtype){
 		$query="SELECT * 
-			FROM ".$LINK_ID_TABLE[$type]." 
+			FROM ".$LINK_ID_TABLE[$itemtype]." 
 			WHERE FK_groups='$ID' " .
-			getEntitiesRestrictRequest(" AND ", $LINK_ID_TABLE[$type], '', '', isset($CFG_GLPI["recursive_type"][$type]));
+			getEntitiesRestrictRequest(" AND ", $LINK_ID_TABLE[$itemtype], '', '', isset($CFG_GLPI["recursive_type"][$itemtype]));
 		$result=$DB->query($query);
 		if ($DB->numrows($result)>0){
-			$ci->setType($type);
+			$ci->setType($itemtype);
 			$type_name=$ci->getType();
-			$cansee=haveTypeRight($type,"r");
+			$cansee=haveTypeRight($itemtype,"r");
 			while ($data=$DB->fetch_array($result)){
 				$link=($data["name"] ? $data["name"] : "(".$data["ID"].")");
-				if ($cansee) $link="<a href='".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data["ID"]."'>".$link."</a>";
+				if ($cansee) $link="<a href='".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$itemtype]."?ID=".$data["ID"]."'>".$link."</a>";
 				$linktype="";
 				echo "<tr class='tab_bg_1'><td>$type_name</td><td>$link</td>";
 				echo "<td>".getDropdownName("glpi_entities",$data['entities_id'])."</td></tr>";

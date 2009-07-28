@@ -652,8 +652,8 @@ class User extends CommonDBTM {
                      case "language":
                         // Not set value : managed but user class
                         break;
-                     case "title":
-                     case "type":
+                     case "userstitles_id":
+                     case "userstypes_id":
                         $this->fields[$k] = 0;
                         break;
                      default:
@@ -668,9 +668,9 @@ class User extends CommonDBTM {
 									if ($language != '')
 										$this->fields[$k]=$language;	
 									break;
-								case "title":
-								case "type":
-									$this->fields[$k] = externalImportDropdown("glpi_dropdown_user_".$k."s",addslashes($v[0][$e][0]),-1,array(),'',true);
+								case "userstitles_id":
+								case "userstypes_id":
+									$this->fields[$k] = externalImportDropdown(getTableNameForForeignKeyField($k),addslashes($v[0][$e][0]),-1,array(),'',true);
 									break;
 								break;
 								default:
@@ -1033,7 +1033,7 @@ class User extends CommonDBTM {
             dropdownValue("glpi_userstitles","title",$this->fields["title"],1,-1);
 
          echo "<td class='center'>" . $LANG['users'][2] . "</td><td>";
-            dropdownValue("glpi_userstypes","type",$this->fields["type"],1,-1);
+            dropdownValue("glpi_userstypes","userstypes_id",$this->fields["userstypes_id"],1,-1);
          echo "</td></tr>";
 
          echo "<tr class='tab_bg_1' align='center'><td>" . $LANG['common'][25] . ":</td><td colspan='3'><textarea  cols='70' rows='3' name='comments' >" . $this->fields["comments"] . "</textarea></td>";

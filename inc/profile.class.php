@@ -359,9 +359,9 @@ class Profile extends CommonDBTM{
 
 		echo "<select name='helpdesk_hardware_type[]' multiple size='3'>";
 		$ci = new CommonItem();
-		foreach($CFG_GLPI["helpdesk_types"] as $type){
-			$ci->setType($type);
-			echo "<option value='".$type."' ".(($this->fields["helpdesk_hardware_type"]&pow(2,$type))?" selected":"").">".$ci->getType()."</option>\n";
+		foreach($CFG_GLPI["helpdesk_types"] as $itemtype){
+			$ci->setType($itemtype);
+			echo "<option value='".$itemtype."' ".(($this->fields["helpdesk_hardware_type"]&pow(2,$itemtype))?" selected":"").">".$ci->getType()."</option>\n";
 		}
 		echo "</select>";
 
@@ -565,9 +565,9 @@ class Profile extends CommonDBTM{
 
 		echo "<select name='helpdesk_hardware_type[]' multiple size='3'>";
 		$ci = new CommonItem();
-		foreach($CFG_GLPI["helpdesk_types"] as $type){
-			$ci->setType($type);
-			echo "<option value='".$type."' ".(($this->fields["helpdesk_hardware_type"]&pow(2,$type))?" selected":"").">".$ci->getType()."</option>\n";
+		foreach($CFG_GLPI["helpdesk_types"] as $itemtype){
+			$ci->setType($itemtype);
+			echo "<option value='".$itemtype."' ".(($this->fields["helpdesk_hardware_type"]&pow(2,$itemtype))?" selected":"").">".$ci->getType()."</option>\n";
 		}
 		echo "</select>";
 		echo "</td>";

@@ -175,13 +175,13 @@ function doOneHook() {
 }
 /**
  * Display plugin actions for a device type
- * @param $type ID of the device type
+ * @param $itemtype ID of the item type
  * @param $ID ID of the item
  * @param $onglet Heading corresponding of the datas to display
  * @param $withtemplate is the item display like a template ?
  * @return true if display have been done
  */
-function displayPluginAction($type,$ID,$onglet,$withtemplate=0){
+function displayPluginAction($itemtype,$ID,$onglet,$withtemplate=0){
 	global $PLUGIN_HOOKS;
 	// Show all Case
 	if ($onglet==-1){
@@ -192,12 +192,12 @@ function displayPluginAction($type,$ID,$onglet,$withtemplate=0){
 				}
 
 				if (function_exists($function)){
-					$actions=$function($type);
+					$actions=$function($itemtype);
 					if (is_array($actions)&&count($actions))
 						foreach ($actions as $key => $action){
 							if (function_exists($action)){
 								echo "<br>";
-								$action($type,$ID,$withtemplate);
+								$action($itemtype,$ID,$withtemplate);
 							}	
 
 						}
@@ -220,11 +220,11 @@ function displayPluginAction($type,$ID,$onglet,$withtemplate=0){
 
 				$function=$PLUGIN_HOOKS["headings_action"][$plug];
 				if (function_exists($function)){
-					$actions=$function($type);
+					$actions=$function($itemtype);
 
 					if (isset($actions[$ID_onglet])&&function_exists($actions[$ID_onglet])){
 						$function=$actions[$ID_onglet];
-						$function($type,$ID,$withtemplate);
+						$function($itemtype,$ID,$withtemplate);
 						return true;
 					}	
 				}
@@ -235,14 +235,14 @@ function displayPluginAction($type,$ID,$onglet,$withtemplate=0){
 	return false;
 }
 /**
- * Display plugin headgsin for a device type / WILL BE DELETED : use displayPluginTabs instead
+ * Display plugin headgsin for a item type / WILL BE DELETED : use displayPluginTabs instead
  * @param $target page to link including ID
- * @param $type ID of the device type
+ * @param $itemtype ID of the item type
  * @param $withtemplate is the item display like a template ?
  * @param $actif active onglet
  * @return true if display have been done
  */
-function displayPluginHeadings($target,$type,$withtemplate,$actif){
+function displayPluginHeadings($target,$itemtype,$withtemplate,$actif){
 	global $PLUGIN_HOOKS,$LANG;
 	$template="";
 	if(!empty($withtemplate)){
@@ -256,7 +256,7 @@ function displayPluginHeadings($target,$type,$withtemplate,$actif){
 			}
 
 			if (function_exists($function)) {
-				$onglet=$function($type,$withtemplate);
+				$onglet=$function($itemtype,$withtemplate);
 
 				if (is_array($onglet)&&count($onglet))
 					foreach ($onglet as $key => $val)
@@ -285,12 +285,12 @@ function displayPluginHeadings($target,$type,$withtemplate,$actif){
 /**
  * Display plugin headgsin for a device type
  * @param $target page to link 
- * @param $type ID of the device type or "central" or "prefs"
+ * @param $itemtype ID of the device type or "central" or "prefs"
  * @param $ID ID of the device
  * @param $withtemplate is the item display like a template ? 
  * @return Array of tabs (sorted)
  */
-function getPluginTabs($target,$type,$ID,$withtemplate){
+function getPluginTabs($target,$itemtype,$ID,$withtemplate){
 	global $PLUGIN_HOOKS,$LANG,$INFOFORM_PAGES,$CFG_GLPI;
 	$template="";
 	if(!empty($withtemplate)){
@@ -298,7 +298,7 @@ function getPluginTabs($target,$type,$ID,$withtemplate){
 	}
 	$display_onglets=array();
 
-	switch ($type){
+	switch ($itemtype){
 		case "central":
 			$tabpage="ajax/central.tabs.php";
 		break;
@@ -316,7 +316,7 @@ function getPluginTabs($target,$type,$ID,$withtemplate){
 			$patterns[1] = '/form/';
 			$replacements[0] = 'ajax';
 			$replacements[1] = 'tabs';
-			$tabpage=preg_replace($patterns, $replacements, $INFOFORM_PAGES[$type]);
+			$tabpage=preg_replace($patterns, $replacements, $INFOFORM_PAGES[$itemtype]);
 		break;
 	}
 	$active=false;
@@ -330,7 +330,7 @@ function getPluginTabs($target,$type,$ID,$withtemplate){
 			}
 
 			if (function_exists($function)) {
-				$onglet=$function($type,$ID,$withtemplate);				
+				$onglet=$function($itemtype,$ID,$withtemplate);
 
 				if (is_array($onglet)&&count($onglet)){
 					foreach ($onglet as $key => $val){
@@ -338,7 +338,7 @@ function getPluginTabs($target,$type,$ID,$withtemplate){
 
 						$tabs[$key]=array('title'=>$val,
 						'url'=>$CFG_GLPI['root_doc']."/$tabpage",
-						'params'=>"target=$target&type=".$type."&glpi_tab=$key&ID=$ID$template");
+						'params'=>"target=$target&itemtype=".$itemtype."&glpi_tab=$key&ID=$ID$template");
 						$order[$key]=$val;
 					}
 				}
@@ -447,7 +447,7 @@ function getPluginSearchOption(){
 	return $sopt;
 }
 /**
- * DEPRECATED Define a new device type used in a plugin
+ * DEPRECATED Define a new item type used in a plugin
  * 
  * TODO : to delete ASAP (all plugin switch to registerPluginType)
  * @param $plugin plugin of the device type
@@ -483,30 +483,30 @@ function pluginNewType($plugin,$name,$ID,$class,$table,$formpage='',$typename=''
  */
 
 /**
- * Define a new device type used in a plugin
+ * Define a new item type used in a plugin
  * 
  * @param $plugin plugin of the device type
  * @param $name name of the itemtype to define the constant
- * @param $ID number used as constant
+ * @param $itemtype number used as constant
  * @param $attrib Array of attributes, a hashtable with index in
  * 	(classname, tablename, typename, formpage, searchpage, reservation_types,
  *   deleted_tables, specif_entities_tables, recursive_type, template_tables)
  * 
  * @return nothing
  */
-function registerPluginType($plugin,$name,$ID,$attrib){
+function registerPluginType($plugin,$name,$itemtype,$attrib){
 	global $PLUGIN_HOOKS,$LINK_ID_TABLE,$INFOFORM_PAGES,$SEARCH_PAGES,$CFG_GLPI;
 	
 	if (!defined($name)) {
 
-		define($name,$ID);
-		$PLUGIN_HOOKS['plugin_types'][$ID]=$plugin;
+		define($name,$itemtype);
+		$PLUGIN_HOOKS['plugin_types'][$itemtype]=$plugin;
 		
 		if (isset($attrib['classname']) && !empty($attrib['classname'])) {
-			$PLUGIN_HOOKS['plugin_classes'][$ID]=$attrib['classname'];
+			$PLUGIN_HOOKS['plugin_classes'][$itemtype]=$attrib['classname'];
 		}
 		if (isset($attrib['typename']) && !empty($attrib['typename'])) {
-			$PLUGIN_HOOKS['plugin_typenames'][$ID]=$attrib['typename'];
+			$PLUGIN_HOOKS['plugin_typenames'][$itemtype]=$attrib['typename'];
 		}
 		if (isset($attrib['formpage']) && !empty($attrib['formpage'])) {
 			$INFOFORM_PAGES[$ID]="plugins/$plugin/".$attrib['formpage'];

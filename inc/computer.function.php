@@ -164,8 +164,8 @@ function showConnections($target,$ID,$withtemplate='') {
 
 	if ($comp->getFromDB($ID)){
 
-		foreach ($items as $type => $title){
-			if (!haveTypeRight($type,"r")) unset($items[$type]);
+		foreach ($items as $itemtype => $title){
+			if (!haveTypeRight($itemtype,"r")) unset($items[$itemtype]);
 	
 		}
 		if (count($items)){
@@ -176,7 +176,7 @@ function showConnections($target,$ID,$withtemplate='') {
 			echo "<tr>";
 			$header_displayed=0;
 
-			foreach ($items as $type => $title){
+			foreach ($items as $itemtype => $title){
 
 				if ($header_displayed==2){
 					break;
@@ -187,7 +187,7 @@ function showConnections($target,$ID,$withtemplate='') {
 			echo "</tr>";
 			echo "<tr class='tab_bg_1'>";
 			$items_displayed=0;
-			foreach ($items as $type=>$title){
+			foreach ($items as $itemtype=>$title){
 				if ($items_displayed==2){
 					
 					echo "</tr><tr>";
@@ -203,7 +203,7 @@ function showConnections($target,$ID,$withtemplate='') {
 				}
 				echo "<td class='center'>";
 				$query = "SELECT * FROM glpi_computers_items 
-					WHERE end2='$ID' AND type='".$type."'";
+					WHERE end2='$ID' AND itemtype='".$itemtype."'";
 				if ($result=$DB->query($query)) {
 					$resultnum = $DB->numrows($result);
 					if ($resultnum>0) {
@@ -211,7 +211,7 @@ function showConnections($target,$ID,$withtemplate='') {
 						for ($i=0; $i < $resultnum; $i++) {
 							$tID = $DB->result($result, $i, "end1");
 							$connID = $DB->result($result, $i, "ID");
-							$ci->getFromDB($type,$tID);
+							$ci->getFromDB($itemtype,$tID);
 	
 							$used[] = $tID;
 							
@@ -233,7 +233,7 @@ function showConnections($target,$ID,$withtemplate='') {
 						}
 						echo "</table>";
 					} else {
-						switch ($type){
+						switch ($itemtype){
 							case PRINTER_TYPE:
 								echo $LANG['computers'][38];
 								break;
@@ -254,13 +254,13 @@ function showConnections($target,$ID,$withtemplate='') {
 							echo "<form method='post' action=\"$target\">";
 							echo "<input type='hidden' name='connect' value='connect'>";
 							echo "<input type='hidden' name='cID' value='$ID'>";
-							echo "<input type='hidden' name='itemtype' value='".$type."'>";
+							echo "<input type='hidden' name='itemtype' value='".$itemtype."'>";
 							if (empty($withtemplate)){
 								echo "<input type='hidden' name='dohistory' value='1'>";
 							} else { // No history for template
 								echo "<input type='hidden' name='dohistory' value='0'>";
 							}
-							dropdownConnect($type,COMPUTER_TYPE,"item",$comp->fields["entities_id"],$withtemplate,$used);
+							dropdownConnect($itemtype,COMPUTER_TYPE,"item",$comp->fields["entities_id"],$withtemplate,$used);
 							echo "<input type='submit' value=\"".$LANG['buttons'][9]."\" class='submit'>";
 							echo "</form>";
 						}

@@ -854,8 +854,8 @@ function getUserName($ID,$link=0){
 				}
 				if ($data["title"]>0)
 					$user["comments"].=$LANG['users'][1].": ".getDropdownName("glpi_userstitles",$data["title"])."<br>";
-				if ($data["type"]>0)
-					$user["comments"].=$LANG['users'][2].": ".getDropdownName("glpi_userstypes",$data["type"])."<br>";
+				if ($data["userstypes_id"]>0)
+					$user["comments"].=$LANG['users'][2].": ".getDropdownName("glpi_userstypes",$data["userstypes_id"])."<br>";
 			} else {
 				$user=$username;
 			}
@@ -975,13 +975,13 @@ function importArrayFromDB($DATA) {
  * @param $objectName autoname template
  * @param $field field to autoname
  * @param $isTemplate true if create an object from a template 
- * @param $type device type
+ * @param $itemtype item type
  * @param $entities_id limit generation to an entity
  *
  * @return new auto string
  *
  **/
-function autoName($objectName, $field, $isTemplate, $type,$entities_id=-1){
+function autoName($objectName, $field, $isTemplate, $itemtype,$entities_id=-1){
 	global $LINK_ID_TABLE,$DB,$CFG_GLPI;
 
 	//$objectName = isset($object->fields[$field]) ? $object->fields[$field] : '';
@@ -991,7 +991,7 @@ function autoName($objectName, $field, $isTemplate, $type,$entities_id=-1){
 		$autoNum = utf8_substr($objectName, 4, $len - 8);
 		$mask = '';
 		if(preg_match( "/\\#{1,10}/", $autoNum, $mask)){
-			$global = strpos($autoNum, '\\g') !== false && $type != INFOCOM_TYPE ? 1 : 0;
+			$global = strpos($autoNum, '\\g') !== false && $itemtype != INFOCOM_TYPE ? 1 : 0;
 			$autoNum = str_replace(array('\\y','\\Y','\\m','\\d','_','%','\\g'), array(date('y'),date('Y'),date('m'),date('d'),'\\_','\\%',''), $autoNum);
 			$mask = $mask[0];
 			$pos = strpos($autoNum, $mask) + 1;
@@ -1017,11 +1017,11 @@ function autoName($objectName, $field, $isTemplate, $type,$entities_id=-1){
 				$query = "SELECT CAST(SUBSTRING(code, $pos, $len) AS unsigned) AS no 
 					FROM ($query) AS codes";
 			} else	{
-				$table = $LINK_ID_TABLE[$type];
+				$table = $LINK_ID_TABLE[$itemtype];
 				$query = "SELECT CAST(SUBSTRING($field, $pos, $len) AS unsigned) AS no 
 					FROM $table 
 					WHERE $field LIKE '$like' ";
-				if ($type != INFOCOM_TYPE){
+				if ($itemtype != INFOCOM_TYPE){
 					$query .= " AND deleted = '0' AND is_template = '0'";
 					if ($CFG_GLPI["autoname_entity"]&&$entities_id>=0){
 						$query.=" AND entities_id = '$entities_id' ";

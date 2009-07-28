@@ -47,16 +47,16 @@ function showStateSummary($target){
 	$state_type=$CFG_GLPI["state_types"];
 
 	$states=array();
-	foreach ($state_type as $key=>$type){
-		if (!haveTypeRight($type,"r")) {
+	foreach ($state_type as $key=>$itemtype){
+		if (!haveTypeRight($itemtype,"r")) {
 			unset($state_type[$key]);
 		} else {
-			$query= "SELECT state, COUNT(*) AS CPT FROM ".$LINK_ID_TABLE[$type]." ".
-				getEntitiesRestrictRequest("WHERE",$LINK_ID_TABLE[$type])." AND deleted=0 AND is_template=0 GROUP BY state";
+			$query= "SELECT state, COUNT(*) AS CPT FROM ".$LINK_ID_TABLE[$itemtype]." ".
+				getEntitiesRestrictRequest("WHERE",$LINK_ID_TABLE[$itemtype])." AND deleted=0 AND is_template=0 GROUP BY state";
 			if ($result = $DB->query($query)) {
 				if ($DB->numrows($result)>0){
 					while ($data=$DB->fetch_array($result)){
-						$states[$data["state"]][$type]=$data["CPT"];
+						$states[$data["state"]][$itemtype]=$data["CPT"];
 					}
 				}
 			}
@@ -72,10 +72,10 @@ function showStateSummary($target){
 		echo $LANG['state'][0]."</th>";
 	
 		$ci=new CommonItem;
-		foreach ($state_type as $type){
-			$ci->setType($type);
+		foreach ($state_type as $itemtype){
+			$ci->setType($itemtype);
 			echo "<th>".$ci->getType()."</th>";
-			$total[$type]=0;
+			$total[$itemtype]=0;
 		}
 		echo "<th>".$LANG['common'][33]."</th>";
 		echo "</tr>";
@@ -85,13 +85,13 @@ function showStateSummary($target){
 		// No state 
 		$tot=0; 
 		echo "<tr class='tab_bg_2'><td class='center'>&nbsp;</td>"; 
-		foreach ($state_type as $type){ 
+		foreach ($state_type as $itemtype){ 
 			echo "<td class='center'>"; 
 
-			if (isset($states[0][$type])) { 
-				echo $states[0][$type]; 
-				$total[$type]+=$states[0][$type]; 
-				$tot+=$states[0][$type]; 
+			if (isset($states[0][$itemtype])) { 
+				echo $states[0][$itemtype]; 
+				$total[$itemtype]+=$states[0][$itemtype];
+				$tot+=$states[0][$itemtype]; 
 			} else {
 				echo "&nbsp;"; 
 			}
@@ -103,13 +103,13 @@ function showStateSummary($target){
 			$tot=0;
 			echo "<tr class='tab_bg_2'><td class='center'><strong><a href='".$CFG_GLPI['root_doc']."/front/state.php?reset_before=1&amp;contains[0]=$$$$".$data["ID"]."&amp;field[0]=31&amp;sort=1&amp;start=0'>".$data["name"]."</a></strong></td>";
 	
-			foreach ($state_type as $type){
+			foreach ($state_type as $itemtype){
 				echo "<td class='center'>";
 	
-				if (isset($states[$data["ID"]][$type])) {
-					echo $states[$data["ID"]][$type];
-					$total[$type]+=$states[$data["ID"]][$type];
-					$tot+=$states[$data["ID"]][$type];
+				if (isset($states[$data["ID"]][$itemtype])) {
+					echo $states[$data["ID"]][$itemtype];
+					$total[$itemtype]+=$states[$data["ID"]][$itemtype];
+					$tot+=$states[$data["ID"]][$itemtype];
 				}
 				else echo "&nbsp;";
 				echo "</td>";
@@ -119,9 +119,9 @@ function showStateSummary($target){
 		}
 		echo "<tr class='tab_bg_2'><td class='center'><strong>".$LANG['common'][33]."</strong></td>";
 		$tot=0;
-		foreach ($state_type as $type){
-			echo "<td class='center'><strong>".$total[$type]."</strong></td>";
-			$tot+=$total[$type];
+		foreach ($state_type as $itemtype){
+			echo "<td class='center'><strong>".$total[$itemtype]."</strong></td>";
+			$tot+=$total[$itemtype];
 		}
 		echo "<td class='center'><strong>".$tot."</strong></td>";
 		echo "</tr>";

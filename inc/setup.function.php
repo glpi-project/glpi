@@ -907,15 +907,15 @@ function dropdownUsed($table, $ID) {
 
 }
 
-function listTemplates($type, $target, $add = 0) {
+function listTemplates($itemtype, $target, $add = 0) {
 
 	global $DB, $CFG_GLPI, $LANG;
 
 	//Check is user have minimum right r
-	if (!haveTypeRight($type, "r") && !haveTypeRight($type, "w"))
+	if (!haveTypeRight($itemtype, "r") && !haveTypeRight($itemtype, "w"))
 		return false;
 
-	switch ($type) {
+	switch ($itemtype) {
 		case COMPUTER_TYPE :
 			$title = $LANG['Menu'][0];
 			$query = "SELECT * FROM glpi_computers WHERE is_template = '1' AND entities_id='" . $_SESSION["glpiactive_entity"] . "' ORDER by tplname";
@@ -976,7 +976,7 @@ function listTemplates($type, $target, $add = 0) {
 			echo "<tr>";
 			echo "<td align='center' class='tab_bg_1'>";
 			
-			if (haveTypeRight($type, "w") && !$add) {
+			if (haveTypeRight($itemtype, "w") && !$add) {
 				echo "<a href=\"$target?ID=" . $data["ID"] . "&amp;withtemplate=1\">&nbsp;&nbsp;&nbsp;$templname&nbsp;&nbsp;&nbsp;</a></td>";
 
 				echo "<td align='center' class='tab_bg_2'>";
@@ -990,7 +990,7 @@ function listTemplates($type, $target, $add = 0) {
 
 		}
 
-		if (haveTypeRight($type, "w") &&!$add) {
+		if (haveTypeRight($itemtype, "w") &&!$add) {
 			echo "<tr>";
 			echo "<td colspan='2' align='center' class='tab_bg_2'>";
 			echo "<strong><a href=\"$target?withtemplate=1\">" . $LANG['common'][9] . "</a></strong>";

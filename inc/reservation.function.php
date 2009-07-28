@@ -491,16 +491,18 @@ function printReservationItems($target){
 	echo "<tr><th colspan='".($showentity?"5":"4")."'>".$LANG['reservation'][1]."</th></tr>";
 
 	
-	foreach ($CFG_GLPI["reservation_types"] as $type){
-		$ci->setType($type);
+	foreach ($CFG_GLPI["reservation_types"] as $itemtype){
+		$ci->setType($itemtype);
 		$query="SELECT glpi_reservationsitems.ID as ID, glpi_reservationsitems.comments as comments, 
-				".$LINK_ID_TABLE[$type].".name as name, ".$LINK_ID_TABLE[$type].".entities_id as entities_id,
+				".$LINK_ID_TABLE[$itemtype].".name as name, ".$LINK_ID_TABLE[$itemtype].".entities_id as entities_id,
 				 glpi_locations.completename as location, glpi_reservationsitems.items_id as items_id	
 			FROM glpi_reservationsitems 
-			INNER JOIN ".$LINK_ID_TABLE[$type]." ON (glpi_reservationsitems.itemtype='$type' 
-								AND glpi_reservationsitems.items_id=".$LINK_ID_TABLE[$type].".ID)
-			LEFT JOIN glpi_locations ON (".$LINK_ID_TABLE[$type].".locations_id = glpi_locations.ID)
-			WHERE glpi_reservationsitems.active='1' AND ".$LINK_ID_TABLE[$type].".deleted ='0' ".getEntitiesRestrictRequest("AND",$LINK_ID_TABLE[$type])." ORDER BY ".$LINK_ID_TABLE[$type].".entities_id, ".$LINK_ID_TABLE[$type].".name";
+			INNER JOIN ".$LINK_ID_TABLE[$itemtype]." ON (glpi_reservationsitems.itemtype='$itemtype'
+								AND glpi_reservationsitems.items_id=".$LINK_ID_TABLE[$itemtype].".ID)
+			LEFT JOIN glpi_locations ON (".$LINK_ID_TABLE[$itemtype].".locations_id = glpi_locations.ID)
+			WHERE glpi_reservationsitems.active='1' AND ".$LINK_ID_TABLE[$itemtype].".deleted ='0'
+            ".getEntitiesRestrictRequest("AND",$LINK_ID_TABLE[$itemtype])."
+         ORDER BY ".$LINK_ID_TABLE[$itemtype].".entities_id, ".$LINK_ID_TABLE[$itemtype].".name";
 
 
 		if ($result = $DB->query($query)) {
@@ -510,10 +512,10 @@ function printReservationItems($target){
 				echo "<td><input type='checkbox' name='add_item[".$row["ID"]."]' value='".$row["ID"]."' ></td>";
 				
 				$typename=$ci->getType();
-				if ($type==PERIPHERAL_TYPE){
-					$ci->getFromDB($type,$row['items_id']);
-					if (isset($ci->obj->fields["type"])&&$ci->obj->fields["type"]!=0){
-						$typename=getDropdownName("glpi_peripheralstypes",$ci->obj->fields["type"]);
+				if ($itemtype==PERIPHERAL_TYPE){
+					$ci->getFromDB($itemtype,$row['items_id']);
+					if (isset($ci->obj->fields["peripheralstypes_id"])&&$ci->obj->fields["peripheralstypes_id"]!=0){
+						$typename=getDropdownName("glpi_peripheralstypes",$ci->obj->fields["peripheralstypes_id"]);
 					}
 				}
 				
@@ -580,7 +582,7 @@ function showReservationCommentForm($target,$ID){
 	} else return false;
 }
 
-function showDeviceReservations($target,$type,$ID){
+function showDeviceReservations($target,$itemtype,$ID){
 	global $DB,$LANG,$CFG_GLPI;
 	$resaID=0;
 
@@ -588,10 +590,10 @@ function showDeviceReservations($target,$type,$ID){
 
 	echo "<div class='center'>";
 
-	showReservationForm($type,$ID);
+	showReservationForm($itemtype,$ID);
 	echo "<br>";
 
-	if ($resaID=isReservable($type,$ID)){
+	if ($resaID=isReservable($itemtype,$ID)){
 		$ri=new ReservationItem;
 		$ri->getFromDB($resaID);
 
@@ -753,10 +755,10 @@ function showUserReservations($target,$ID){
 
 }
 
-function isReservable($type,$ID){
+function isReservable($itemtype,$items_id){
 
 	global $DB;
-	$query="SELECT ID FROM glpi_reservationsitems WHERE itemtype='$type' AND items_id='$ID'";
+	$query="SELECT ID FROM glpi_reservationsitems WHERE itemtype='$itemtype' AND items_id='$items_id'";
 	$result=$DB->query($query);
 	if ($DB->numrows($result)==0){
 		return false;

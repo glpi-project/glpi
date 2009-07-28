@@ -532,9 +532,9 @@ function showConnection(& $device1, & $netport, $withtemplate = '') {
 			echo "<td class='left'>";
 			if ($withtemplate != 2 && $withtemplate != 1) {
 				if (isset ($device1->obj->fields["recursive"]) && $device1->obj->fields["recursive"]) {
-               dropdownConnectPort($ID, $device1->obj->type, "dport", getSonsOf("glpi_entities",$device1->obj->fields["entities_id"]));
+               dropdownConnectPort($ID, "dport", getSonsOf("glpi_entities",$device1->obj->fields["entities_id"]));
 				} else {
-					dropdownConnectPort($ID, $device1->obj->type, "dport", $device1->obj->fields["entities_id"]);
+					dropdownConnectPort($ID, "dport", $device1->obj->fields["entities_id"]);
 				}
 			} else
 				echo "&nbsp;";
@@ -905,8 +905,8 @@ function getUniqueObjectIDByFQDN($fqdn, $entity) {
 		NETWORKING_TYPE,
 		PRINTER_TYPE
 	);
-	foreach ($types as $type) {
-		$result = getUniqueObjectByFDQNAndType($fqdn, $type, $entity);
+	foreach ($types as $itemtype) {
+		$result = getUniqueObjectByFDQNAndType($fqdn, $itemtype, $entity);
 		if (!empty ($result))
 			return $result;
 	}
@@ -916,15 +916,15 @@ function getUniqueObjectIDByFQDN($fqdn, $entity) {
 /**
  * Look for a specific type of device with a fully qualified domain name in an entity
  * @param fqdn fully qualified domain name
- * @param type the type of object to look for
+ * @param $itemtype the type of object to look for
  * @param entity the entity
  * @return an array with the ID and itemtype or an empty array if no unique object is found
  */
 
-function getUniqueObjectByFDQNAndType($fqdn, $type, $entity) {
+function getUniqueObjectByFDQNAndType($fqdn, $itemtype, $entity) {
 	global $DB;
 	$commonitem = new CommonItem;
-	$commonitem->setType($type, true);
+	$commonitem->setType($itemtype, true);
 
 	$query = "SELECT obj.ID AS ID
 		FROM " . $commonitem->obj->table . " AS obj, glpi_domains AS gdd

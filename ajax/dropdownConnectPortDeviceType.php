@@ -44,8 +44,8 @@ checkRight("networking","w");
 
 // Make a select box
 
-if (isset($LINK_ID_TABLE[$_POST["type"]])&&$_POST["type"]>0){
-	$table=$LINK_ID_TABLE[$_POST["type"]];
+if (isset($LINK_ID_TABLE[$_POST["itemtype"]])&&$_POST["itemtype"]>0){
+	$table=$LINK_ID_TABLE[$_POST["itemtype"]];
 
 	$rand=mt_rand();
 
@@ -53,7 +53,7 @@ if (isset($LINK_ID_TABLE[$_POST["type"]])&&$_POST["type"]>0){
 
 
         $paramsconnectpdt=array('searchText'=>'__VALUE__',
-                        'type'=>$_POST['type'],
+                        'itemtype'=>$_POST['itemtype'],
                         'current'=>$_POST['current'],
                         'myname'=>$_POST["myname"],
 			'entity_restrict'=>$_POST["entity_restrict"],

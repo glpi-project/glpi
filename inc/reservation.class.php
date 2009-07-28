@@ -52,13 +52,13 @@ class ReservationItem extends CommonDBTM {
 	 * Retrieve an item from the database for a specific item
 	 *
 	 *@param $ID ID of the item
-	 *@param $type type of the item
+	 *@param $itemtype type of the item
 	 *@return true if succeed else false
 	**/	
-	function getFromDBbyItem($type,$ID){
+	function getFromDBbyItem($itemtype,$ID){
 		global $DB;
 
-		$query = "SELECT * FROM glpi_reservationsitems WHERE (itemtype = '$type' AND items_id = '$ID')";
+		$query = "SELECT * FROM glpi_reservationsitems WHERE (itemtype = '$itemtype' AND items_id = '$ID')";
 		if ($result = $DB->query($query)) {
 			if ($DB->numrows($result)==1){
 				$this->fields = $DB->fetch_assoc($result);

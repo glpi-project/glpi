@@ -97,15 +97,15 @@ commonHeader($LANG['title'][15], $_SERVER['PHP_SELF'],"config","mailing");
 
 $tabs[1]=array('title'=>$LANG['common'][12],
 'url'=>$CFG_GLPI['root_doc']."/ajax/mailing.tabs.php",
-'params'=>"target=".$_SERVER['PHP_SELF']."&type=mailing&glpi_tab=1");
+'params'=>"target=".$_SERVER['PHP_SELF']."&itemtype=mailing&glpi_tab=1");
 	
 $tabs[2]=array('title'=>$LANG['setup'][240],
 'url'=>$CFG_GLPI['root_doc']."/ajax/mailing.tabs.php",
-'params'=>"target=".$_SERVER['PHP_SELF']."&type=mailing&glpi_tab=2");
+'params'=>"target=".$_SERVER['PHP_SELF']."&itemtype=mailing&glpi_tab=2");
 
 $tabs[3]=array('title'=>$LANG['setup'][242],
 'url'=>$CFG_GLPI['root_doc']."/ajax/mailing.tabs.php",
-'params'=>"target=".$_SERVER['PHP_SELF']."&type=mailing&glpi_tab=3");
+'params'=>"target=".$_SERVER['PHP_SELF']."&itemtype=mailing&glpi_tab=3");
 
 $plug_tabs=getPluginTabs($_SERVER['PHP_SELF'],"mailing","","");
 $tabs+=$plug_tabs;

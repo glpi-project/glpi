@@ -162,7 +162,7 @@ class Computer extends CommonDBTM {
 				foreach ($items as $t){
 					$query = "SELECT * 
 						FROM glpi_computers_items 
-						WHERE end2='".$this->fields["ID"]."' AND type='".$t."'";
+						WHERE end2='".$this->fields["ID"]."' AND itemtype='".$t."'";
 					if ($result=$DB->query($query)) {
 						$resultnum = $DB->numrows($result);
 						if ($resultnum>0) {
@@ -200,7 +200,7 @@ class Computer extends CommonDBTM {
 				foreach ($items as $t){
 					$query = "SELECT * 
 						FROM glpi_computers_items 
-						WHERE end2='".$this->fields["ID"]."' AND type='".$t."'";
+						WHERE end2='".$this->fields["ID"]."' AND itemtype='".$t."'";
 
 					if ($result=$DB->query($query)) {
 						$resultnum = $DB->numrows($result);
@@ -242,7 +242,7 @@ class Computer extends CommonDBTM {
 				foreach ($items as $t){
 					$query = "SELECT * 
 						FROM glpi_computers_items 
-						WHERE end2='".$this->fields["ID"]."' AND type='".$t."'";
+						WHERE end2='".$this->fields["ID"]."' AND itemtype='".$t."'";
 
 					if ($result=$DB->query($query)) {
 						$resultnum = $DB->numrows($result);
@@ -281,7 +281,7 @@ class Computer extends CommonDBTM {
 				foreach ($items as $t){
 					$query = "SELECT * 
 						FROM glpi_computers_items 
-						WHERE end2='".$this->fields["ID"]."' AND type='".$t."'";
+						WHERE end2='".$this->fields["ID"]."' AND itemtype='".$t."'";
 
 					if ($result=$DB->query($query)) {
 						$resultnum = $DB->numrows($result);
@@ -427,7 +427,7 @@ class Computer extends CommonDBTM {
 			$result=$DB->query($query);
 			if ($DB->numrows($result)>0){
 				while ($data=$DB->fetch_array($result)){
-					Connect($data["end1"],$newID,$data["type"]);
+					Connect($data["end1"],$newID,$data["itemtype"]);
 				}
 			}
 		}
@@ -597,7 +597,7 @@ class Computer extends CommonDBTM {
       echo "<tr class='tab_bg_1'>";
       echo "<td >".$LANG['common'][17].": 	</td>";
       echo "<td >";
-      dropdownValue("glpi_computerstypes", "type", $this->fields["type"]);
+      dropdownValue("glpi_computerstypes", "computerstypes_id", $this->fields["computerstypes_id"]);
       echo "</td>";
 
 

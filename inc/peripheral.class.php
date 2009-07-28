@@ -195,7 +195,7 @@ class Peripheral  extends CommonDBTM  {
 		$query = "DELETE FROM glpi_infocoms WHERE (items_id = '$ID' AND itemtype='".PERIPHERAL_TYPE."')";
 		$result = $DB->query($query);
 
-		$query="SELECT * FROM glpi_computers_items WHERE (type='".PERIPHERAL_TYPE."' AND end1='$ID')";
+		$query="SELECT * FROM glpi_computers_items WHERE (itemtype='".PERIPHERAL_TYPE."' AND end1='$ID')";
 		if ($result = $DB->query($query)) {
 			if ($DB->numrows($result)>0) {
 				while ($data = $DB->fetch_array($result)){
@@ -328,7 +328,7 @@ class Peripheral  extends CommonDBTM  {
       echo "</td></tr>";
 
       echo "<tr><td>".$LANG['common'][17].": 	</td><td>";
-      dropdownValue("glpi_peripheralstypes", "type", $this->fields["type"]);
+      dropdownValue("glpi_peripheralstypes", "peripheralstypes_id", $this->fields["peripheralstypes_id"]);
       echo "</td></tr>";
 
       echo "<tr><td>".$LANG['common'][22].": 	</td><td>";

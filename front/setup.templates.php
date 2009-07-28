@@ -43,15 +43,11 @@ $NEEDED_ITEMS=array("setup");
 define('GLPI_ROOT', '..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-$type="inventory";
-if ($_GET["type"]==OCSNG_TYPE){
-	$type="config";
-}
-$item=str_replace(".form.php","",$INFOFORM_PAGES[$_GET["type"]]);
+$item=str_replace(".form.php","",$INFOFORM_PAGES[$_GET["itemtype"]]);
 $item=str_replace("front/","",$item);
-commonHeader($LANG['common'][12],$_SERVER['PHP_SELF'],$type,$item);
+commonHeader($LANG['common'][12],$_SERVER['PHP_SELF'],"inventory",$item);
 
-listTemplates($_GET["type"],$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$_GET["type"]],$_GET["add"]);
+listTemplates($_GET["itemtype"],$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$_GET["itemtype"]],$_GET["add"]);
 
 commonFooter();
 

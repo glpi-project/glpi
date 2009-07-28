@@ -40,17 +40,17 @@ include (GLPI_ROOT."/inc/includes.php");
 header("Content-Type: text/html; charset=UTF-8");
 header_nocache();
 
-if (isset($_POST["action"])&&isset($_POST["type"])&&!empty($_POST["type"])){
+if (isset($_POST["action"])&&isset($_POST["itemtype"])&&!empty($_POST["itemtype"])){
 
-	switch ($_POST["type"]){
+	switch ($_POST["itemtype"]){
 		case TRACKING_TYPE :
 			checkTypeRight("update_ticket","1");
 			break;
 		default :
-			if (in_array($_POST["type"],$CFG_GLPI["infocom_types"])){
-				checkSeveralRightsOr(array($_POST["type"]=>"w","infocom"=>"w"));
+			if (in_array($_POST["itemtype"],$CFG_GLPI["infocom_types"])){
+				checkSeveralRightsOr(array($_POST["itemtype"]=>"w","infocom"=>"w"));
 			} else {
-				checkTypeRight($_POST["type"],"w");
+				checkTypeRight($_POST["itemtype"],"w");
 			}
 			break;
 	}
@@ -58,7 +58,7 @@ if (isset($_POST["action"])&&isset($_POST["type"])&&!empty($_POST["type"])){
 	
 
 	echo "<input type='hidden' name='action' value='".$_POST["action"]."'>";
-	echo "<input type='hidden' name='itemtype' value='".$_POST["type"]."'>";
+	echo "<input type='hidden' name='itemtype' value='".$_POST["itemtype"]."'>";
 	switch($_POST["action"]){
 		case "activate_rule":
 			echo dropdownYesNo("activate_rule");
@@ -116,7 +116,7 @@ if (isset($_POST["action"])&&isset($_POST["type"])&&!empty($_POST["type"])){
             echo "<input type=\"submit\" name=\"massiveaction\" class=\"submit\" value=\"".$LANG['buttons'][4]."\" >"; 
 		break;
 		case "connect":
-			dropdownConnect(COMPUTER_TYPE,$_POST["type"],"connect_item");
+			dropdownConnect(COMPUTER_TYPE,$_POST["itemtype"],"connect_item");
 		echo "<input type=\"submit\" name=\"massiveaction\" class=\"submit\" value=\"".$LANG['buttons'][2]."\" >";
 		break;
 		case "connect_to_computer":
@@ -161,14 +161,14 @@ if (isset($_POST["action"])&&isset($_POST["type"])&&!empty($_POST["type"])){
 			$items_in_group=0;
 			$show_all=true;
 			$show_infocoms=true;
-			if (in_array($_POST["type"],$CFG_GLPI["infocom_types"])&&
-				(!haveTypeRight($_POST["type"],"w")||!haveTypeRight(INFOCOM_TYPE,"w"))){
+			if (in_array($_POST["itemtype"],$CFG_GLPI["infocom_types"])&&
+				(!haveTypeRight($_POST["itemtype"],"w")||!haveTypeRight(INFOCOM_TYPE,"w"))){
 				$show_all=false;
 				$show_infocoms=haveTypeRight(INFOCOM_TYPE,"w");
 			}
 			echo "<select name='id_field' id='massiveaction_field'>";
 			echo "<option value='0' selected>------</option>";
-			$searchopt=cleanSearchOption($_POST["type"],'w');
+			$searchopt=cleanSearchOption($_POST["itemtype"],'w');
 			foreach ($searchopt as $key => $val){
 				if (!is_array($val)){
 					if (!empty($newgroup)&&$items_in_group>0) {
@@ -194,8 +194,8 @@ if (isset($_POST["action"])&&isset($_POST["type"])&&!empty($_POST["type"])){
 								$items_in_group++;
 							} else {
 								// Do not show infocom items
-								if (($show_infocoms&&isInfocomSearch($_POST["type"],$key))
-									||(!$show_infocoms&&!isInfocomSearch($_POST["type"],$key))
+								if (($show_infocoms&&isInfocomSearch($_POST["itemtype"],$key))
+									||(!$show_infocoms&&!isInfocomSearch($_POST["itemtype"],$key))
 								){
 									$newgroup.= "<option value='$key'>".$val["name"]."</option>";
 									$items_in_group++;
@@ -212,7 +212,7 @@ if (isset($_POST["action"])&&isset($_POST["type"])&&!empty($_POST["type"])){
 			echo "</select>";
 	
 			$paramsmassaction=array('id_field'=>'__VALUE__',
-				'itemtype'=>$_POST["type"],
+				'itemtype'=>$_POST["itemtype"],
 				);
 
 			foreach ($_POST as $key => $val){
@@ -233,15 +233,15 @@ if (isset($_POST["action"])&&isset($_POST["type"])&&!empty($_POST["type"])){
 				// Allow hook from any plugin on any (core or plugin) type
 				doOneHook($split[1],
 					'MassiveActionsDisplay',
-					$_POST["type"],$_POST["action"]);
+					$_POST["itemtype"],$_POST["action"]);
 			}
-			else if ($_POST["type"]>1000
-				&& isset($PLUGIN_HOOKS['plugin_types'][$_POST["type"]])){
+			else if ($_POST["itemtype"]>1000
+				&& isset($PLUGIN_HOOKS['plugin_types'][$_POST["itemtype"]])){
 				// non-normalized name
 				// hook from the plugin defining the type
-				doOneHook($PLUGIN_HOOKS['plugin_types'][$_POST["type"]],
+				doOneHook($PLUGIN_HOOKS['plugin_types'][$_POST["itemtype"]],
 					'MassiveActionsDisplay',
-					$_POST["type"],$_POST["action"]);
+					$_POST["itemtype"],$_POST["action"]);
 			} 
 			break;
 

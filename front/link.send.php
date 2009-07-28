@@ -48,7 +48,7 @@ if (isset($_GET["lID"])){
 
 		$ci=new CommonItem;
 
-		$ci->getFromDB($_GET["type"],$_GET["ID"]);
+		$ci->getFromDB($_GET["itemtype"],$_GET["ID"]);
 
 		// Manage Filename
 		if (strstr($link,"[NAME]")){
@@ -101,7 +101,7 @@ if (isset($_GET["lID"])){
 		if (strstr($file,"[IP]")||strstr($file,"[MAC]")){
 			$query2 = "SELECT ifaddr, ifmac 
 				FROM glpi_networkports 
-				WHERE (items_id = '".$_GET["ID"]."' AND itemtype = '".$_GET["type"]."') 
+				WHERE (items_id = '".$_GET["ID"]."' AND itemtype = '".$_GET["itemtype"]."') 
 				ORDER BY logical_number";
 			$result2=$DB->query($query2);
 			if ($DB->numrows($result2)>0){

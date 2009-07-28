@@ -83,17 +83,17 @@ function haveRight($module, $right) {
 }
 
 /**
- * Have I the right $right to module type $type (conpare to session variable)
+ * Have I the right $right to module type $itemtype (conpare to session variable)
  *
  * @param $right Right to check
- * @param $type Type to check
+ * @param $itemtype Type to check
  *
  * @return Boolean : session variable have more than the right specified for the module type
 **/
-function haveTypeRight($type, $right) {
+function haveTypeRight($itemtype, $right) {
 	global $LANG,$PLUGIN_HOOKS;
 
-	switch ($type) {
+	switch ($itemtype) {
 		case GENERAL_TYPE :
 			return true;
 			break;
@@ -210,11 +210,11 @@ function haveTypeRight($type, $right) {
 			break;
 		default :
 			// Plugin case
-			if ($type>1000){
-				if (isset($PLUGIN_HOOKS['plugin_types'][$type])){
-					$function='plugin_'.$PLUGIN_HOOKS['plugin_types'][$type].'_haveTypeRight';
+			if ($itemtype>1000){
+				if (isset($PLUGIN_HOOKS['plugin_types'][$itemtype])){
+					$function='plugin_'.$PLUGIN_HOOKS['plugin_types'][$itemtype].'_haveTypeRight';
 					if (function_exists($function)){
-						return $function($type,$right);
+						return $function($itemtype,$right);
 					} 
 				} 
 			}
@@ -366,16 +366,16 @@ function checkSeveralRightsAnd($modules) {
 	}
 }
 /**
- * Check if I have the right $right to module type $type (conpare to session variable)
+ * Check if I have the right $right to module type $itemtype (conpare to session variable)
  *
- * @param $type Module type to check
+ * @param $itemtype Module type to check
  * @param $right Right to check
  *
  * @return Nothing : display error if not permit
 **/
-function checkTypeRight($type, $right) {
+function checkTypeRight($itemtype, $right) {
 	global $CFG_GLPI;
-	if (!haveTypeRight($type, $right)) {
+	if (!haveTypeRight($itemtype, $right)) {
 		// Gestion timeout session
 		if (!isset ($_SESSION["glpiID"])) {
 			glpi_header($CFG_GLPI["root_doc"] . "/index.php");
@@ -692,9 +692,9 @@ function changeActiveEntities($ID="all",$recursive=false) {
 		
 		// Clean session variable to search system
 		if (isset($_SESSION['glpisearch'])&&count($_SESSION['glpisearch'])){
-			foreach ($_SESSION['glpisearch'] as $type => $tab){
+			foreach ($_SESSION['glpisearch'] as $itemtype => $tab){
 				if (isset($tab['start'])&&$tab['start']>0){
-					$_SESSION['glpisearch'][$type]['start']=0;
+					$_SESSION['glpisearch'][$itemtype]['start']=0;
 				}
 			}
 		}

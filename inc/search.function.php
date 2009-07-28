@@ -43,23 +43,23 @@ if (!isset($SEARCH_OPTION)){
 /**
  * Clean search options depending of user active profile
  *
- * @param $type item type to manage
+ * @param $itemtype item type to manage
  * @param $action action which is used to manupulate searchoption (r/w)
  * @return clean $SEARCH_OPTION array
  */
-function cleanSearchOption($type,$action='r'){
+function cleanSearchOption($itemtype,$action='r'){
 	global $CFG_GLPI,$SEARCH_OPTION;
-	$options=$SEARCH_OPTION[$type];
+	$options=$SEARCH_OPTION[$itemtype];
 	$todel=array();
-	if (!haveRight('infocom',$action)&&in_array($type,$CFG_GLPI["infocom_types"])){
+	if (!haveRight('infocom',$action)&&in_array($itemtype,$CFG_GLPI["infocom_types"])){
 		$todel=array_merge($todel,array('financial',25,26,27,28,37,38,50,51,52,53,54,55,56,57,58,59,120,122));
 	}
 
-	if (!haveRight('contract',$action)&&in_array($type,$CFG_GLPI["infocom_types"])){
+	if (!haveRight('contract',$action)&&in_array($itemtype,$CFG_GLPI["infocom_types"])){
 		$todel=array_merge($todel,array('financial',29,30,130,131,132,133,134,135,136,137,138));
 	}
 
-	if ($type==COMPUTER_TYPE){
+	if ($itemtype==COMPUTER_TYPE){
 		if (!haveRight('networking',$action)){
 			$todel=array_merge($todel,array('network',20,21,22,83,84,85));
 		}
@@ -86,12 +86,12 @@ function cleanSearchOption($type,$action='r'){
  * Completion of the URL $_GET values with the $_SESSION values or define default values
  *
  *
- * @param $type item type to manage
+ * @param $itemtype item type to manage
  * @param $usesession Use datas save in session
  * @param $save Save params to session
  * @return nothing
  */
-function manageGetValuesInSearch($type=0,$usesession=true,$save=true){
+function manageGetValuesInSearch($itemtype=0,$usesession=true,$save=true){
 	global $_GET,$DB;
 	$tab=array();
 
@@ -106,20 +106,20 @@ function manageGetValuesInSearch($type=0,$usesession=true,$save=true){
 	$default_values["link2"]=array();
 	$default_values["field2"]=array(0=>"view");
 	$default_values["contains2"]=array(0=>"");
-	$default_values["type2"]="";
+	$default_values["itemtype2"]="";
 	$default_values["sort"]=1;
 
 	// First view of the page : try to load a bookmark
-	if ($usesession && !isset($_SESSION['glpisearch'][$type])){
+	if ($usesession && !isset($_SESSION['glpisearch'][$itemtype])){
 		$query="SELECT FK_bookmark 
 			FROM glpi_bookmarks_users 
 			WHERE users_id='".$_SESSION['glpiID']."'
-				AND itemtype='$type';";
+				AND itemtype='$itemtype';";
 		if ($result=$DB->query($query)){
 			if ($DB->numrows($result)>0){
 				$IDtoload=$DB->result($result,0,0);
 				// Set session variable
-				$_SESSION['glpisearch'][$type]=array();
+				$_SESSION['glpisearch'][$itemtype]=array();
 				// Load bookmark on main window
 				$bookmark=new Bookmark();
 				$bookmark->load($IDtoload,false);
@@ -128,55 +128,55 @@ function manageGetValuesInSearch($type=0,$usesession=true,$save=true){
 	}
 
 	if ($usesession&&isset($_GET["reset_before"])){
-		if (isset($_SESSION['glpisearch'][$type])){
-			unset($_SESSION['glpisearch'][$type]);
+		if (isset($_SESSION['glpisearch'][$itemtype])){
+			unset($_SESSION['glpisearch'][$itemtype]);
 		}
-		if (isset($_SESSION['glpisearchcount'][$type])){
-			unset($_SESSION['glpisearchcount'][$type]);
+		if (isset($_SESSION['glpisearchcount'][$itemtype])){
+			unset($_SESSION['glpisearchcount'][$itemtype]);
 		}
-		if (isset($_SESSION['glpisearchcount2'][$type])){
-			unset($_SESSION['glpisearchcount2'][$type]);
+		if (isset($_SESSION['glpisearchcount2'][$itemtype])){
+			unset($_SESSION['glpisearchcount2'][$itemtype]);
 		}
 		// Bookmark use
 		if (isset($_GET["glpisearchcount"])){
-			$_SESSION["glpisearchcount"][$type]=$_GET["glpisearchcount"];
+			$_SESSION["glpisearchcount"][$itemtype]=$_GET["glpisearchcount"];
 		}
 		// Bookmark use
 		if (isset($_GET["glpisearchcount2"])){
-			$_SESSION["glpisearchcount2"][$type]=$_GET["glpisearchcount2"];
+			$_SESSION["glpisearchcount2"][$itemtype]=$_GET["glpisearchcount2"];
 		}
 	}
 
 	if (is_array($_GET)&&$save){
 		foreach ($_GET as $key => $val){
-			$_SESSION['glpisearch'][$type][$key]=$val;
+			$_SESSION['glpisearch'][$itemtype][$key]=$val;
 		}
 	}
 
 	foreach ($default_values as $key => $val){
 		if (!isset($_GET[$key])){
-			if ($usesession&&isset($_SESSION['glpisearch'][$type][$key])) {
-				$_GET[$key]=$_SESSION['glpisearch'][$type][$key];
+			if ($usesession&&isset($_SESSION['glpisearch'][$itemtype][$key])) {
+				$_GET[$key]=$_SESSION['glpisearch'][$itemtype][$key];
 			} else {
 				$_GET[$key] = $val;
-				$_SESSION['glpisearch'][$type][$key] = $val;
+				$_SESSION['glpisearch'][$itemtype][$key] = $val;
 			}
 		}
 	}
 
-	if (!isset($_SESSION["glpisearchcount"][$type])) {
+	if (!isset($_SESSION["glpisearchcount"][$itemtype])) {
 		if (isset($_GET["glpisearchcount"])){
-			$_SESSION["glpisearchcount"][$type]=$_GET["glpisearchcount"];
+			$_SESSION["glpisearchcount"][$itemtype]=$_GET["glpisearchcount"];
 		} else {
-			$_SESSION["glpisearchcount"][$type]=1;
+			$_SESSION["glpisearchcount"][$itemtype]=1;
 		}
 	}
-	if (!isset($_SESSION["glpisearchcount2"][$type])) {
+	if (!isset($_SESSION["glpisearchcount2"][$itemtype])) {
 		// Set in URL for bookmark
 		if (isset($_GET["glpisearchcount2"])){
-			$_SESSION["glpisearchcount2"][$type]=$_GET["glpisearchcount2"];
+			$_SESSION["glpisearchcount2"][$itemtype]=$_GET["glpisearchcount2"];
 		} else {
-			$_SESSION["glpisearchcount2"][$type]=0;
+			$_SESSION["glpisearchcount2"][$itemtype]=0;
 		}
 	}
 
@@ -187,13 +187,13 @@ function manageGetValuesInSearch($type=0,$usesession=true,$save=true){
  *
  * 
  *
- *@param $type type to display the form
+ *@param $itemtype type to display the form
  *@param $params parameters array may include field, contains, sort, deleted, link, link2, contains2, field2, type2
  *
  *@return nothing (diplays)
  *
  **/
-function searchForm($type,$params){
+function searchForm($itemtype,$params){
 	global $LANG,$SEARCH_OPTION,$CFG_GLPI,$LINK_ID_TABLE,$INFOFORM_PAGES,$SEARCH_PAGES;
 
 	// Default values of parameters
@@ -205,12 +205,12 @@ function searchForm($type,$params){
 	$default_values["link2"]="";
 	$default_values["contains2"]="";
 	$default_values["field2"]="";
-	$default_values["type2"]="";
+	$default_values["itemtype2"]="";
 
-	if (isset($SEARCH_PAGES[$type])){
-		$default_values["target"] = $CFG_GLPI['root_doc'].'/'.$SEARCH_PAGES[$type];
-	} else if (isset($INFOFORM_PAGES[$type])){
-		$default_values["target"] = $CFG_GLPI['root_doc'].'/'.str_replace('.form','',$INFOFORM_PAGES[$type]);
+	if (isset($SEARCH_PAGES[$itemtype])){
+		$default_values["target"] = $CFG_GLPI['root_doc'].'/'.$SEARCH_PAGES[$itemtype];
+	} else if (isset($INFOFORM_PAGES[$itemtype])){
+		$default_values["target"] = $CFG_GLPI['root_doc'].'/'.str_replace('.form','',$INFOFORM_PAGES[$itemtype]);
 	} else {
 		$default_values["target"] = $_SERVER['PHP_SELF'];
 	}
@@ -224,7 +224,7 @@ function searchForm($type,$params){
 	}
 
 
-	$options=cleanSearchOption($type);
+	$options=cleanSearchOption($itemtype);
 
 	// Meta search names
 	$names=array(
@@ -245,18 +245,18 @@ function searchForm($type,$params){
 	echo "<table>";
 
 	// Display normal search parameters
-	for ($i=0;$i<$_SESSION["glpisearchcount"][$type];$i++){
+	for ($i=0;$i<$_SESSION["glpisearchcount"][$itemtype];$i++){
 		echo "<tr><td class='right'>";
 		// First line display add / delete images for normal and meta search items
 		if ($i==0){
-			echo "<a href='".$CFG_GLPI["root_doc"]."/front/computer.php?add_search_count=1&amp;type=$type'><img src=\"".$CFG_GLPI["root_doc"]."/pics/plus.png\" alt='+' title='".$LANG['search'][17]."'></a>&nbsp;&nbsp;&nbsp;&nbsp;";
-			if ($_SESSION["glpisearchcount"][$type]>1)
-				echo "<a href='".$CFG_GLPI["root_doc"]."/front/computer.php?delete_search_count=1&amp;type=$type'><img src=\"".$CFG_GLPI["root_doc"]."/pics/moins.png\" alt='-' title='".$LANG['search'][18]."'></a>&nbsp;&nbsp;&nbsp;&nbsp;";
+			echo "<a href='".$CFG_GLPI["root_doc"]."/front/computer.php?add_search_count=1&amp;itemtype=$itemtype'><img src=\"".$CFG_GLPI["root_doc"]."/pics/plus.png\" alt='+' title='".$LANG['search'][17]."'></a>&nbsp;&nbsp;&nbsp;&nbsp;";
+			if ($_SESSION["glpisearchcount"][$itemtype]>1)
+				echo "<a href='".$CFG_GLPI["root_doc"]."/front/computer.php?delete_search_count=1&amp;itemtype=$itemtype'><img src=\"".$CFG_GLPI["root_doc"]."/pics/moins.png\" alt='-' title='".$LANG['search'][18]."'></a>&nbsp;&nbsp;&nbsp;&nbsp;";
 
-			if (isset($names[$type])){
-				echo "<a href='".$CFG_GLPI["root_doc"]."/front/computer.php?add_search_count2=1&amp;type=$type'><img src=\"".$CFG_GLPI["root_doc"]."/pics/meta_plus.png\" alt='+' title='".$LANG['search'][19]."'></a>&nbsp;&nbsp;&nbsp;&nbsp;";
-				if ($_SESSION["glpisearchcount2"][$type]>0)
-					echo "<a href='".$CFG_GLPI["root_doc"]."/front/computer.php?delete_search_count2=1&amp;type=$type'><img src=\"".$CFG_GLPI["root_doc"]."/pics/meta_moins.png\" alt='-' title='".$LANG['search'][20]."'></a>&nbsp;&nbsp;&nbsp;&nbsp;";
+			if (isset($names[$itemtype])){
+				echo "<a href='".$CFG_GLPI["root_doc"]."/front/computer.php?add_search_count2=1&amp;itemtype=$itemtype'><img src=\"".$CFG_GLPI["root_doc"]."/pics/meta_plus.png\" alt='+' title='".$LANG['search'][19]."'></a>&nbsp;&nbsp;&nbsp;&nbsp;";
+				if ($_SESSION["glpisearchcount2"][$itemtype]>0)
+					echo "<a href='".$CFG_GLPI["root_doc"]."/front/computer.php?delete_search_count2=1&amp;itemtype=$itemtype'><img src=\"".$CFG_GLPI["root_doc"]."/pics/meta_moins.png\" alt='-' title='".$LANG['search'][20]."'></a>&nbsp;&nbsp;&nbsp;&nbsp;";
 			}
 		}
 		// Display link item
@@ -321,9 +321,9 @@ function searchForm($type,$params){
 
 	// Display meta search items
 	$linked=array();
-	if ($_SESSION["glpisearchcount2"][$type]>0){
+	if ($_SESSION["glpisearchcount2"][$itemtype]>0){
 		// Define meta search items to linked
-		switch ($type){
+		switch ($itemtype){
 			case COMPUTER_TYPE :
 				$linked=array(PRINTER_TYPE,MONITOR_TYPE,PERIPHERAL_TYPE,SOFTWARE_TYPE,PHONE_TYPE);
 				break;
@@ -350,7 +350,7 @@ function searchForm($type,$params){
 	}
 
 	if (is_array($linked)&&count($linked)>0)
-		for ($i=0;$i<$_SESSION["glpisearchcount2"][$type];$i++){
+		for ($i=0;$i<$_SESSION["glpisearchcount2"][$itemtype];$i++){
 			echo "<tr><td class='left'>";
 			$rand=mt_rand();
 
@@ -377,30 +377,30 @@ function searchForm($type,$params){
 			echo "</select>";
 			//}
 			// Display select of the linked item type available
-			echo "<select name='type2[$i]' id='type2_".$type."_".$i."_$rand'>";
+			echo "<select name='itemtype2[$i]' id='itemtype2_".$itemtype."_".$i."_$rand'>";
 			echo "<option value='-1'>-----</option>";
 			foreach ($linked as $key)
 				echo "<option value='$key'>".utf8_substr($names[$key],0,20)."</option>";
 			echo "</select>";
 
 			// Ajax script for display search meat item
-			echo "<span id='show_".$type."_".$i."_$rand'>&nbsp;</span>\n";	
+			echo "<span id='show_".$itemtype."_".$i."_$rand'>&nbsp;</span>\n";
 
-			$params=array('type'=>'__VALUE__',
+			$params=array('itemtype'=>'__VALUE__',
 					'num'=>$i,
 					'field'=>(is_array($field2)&&isset($field2[$i])?$field2[$i]:""),
 					'val'=>(is_array($contains2)&&isset($contains2[$i])?$contains2[$i]:""),
 	
 			);
-			ajaxUpdateItemOnSelectEvent("type2_".$type."_".$i."_$rand","show_".$type."_".$i."_$rand",$CFG_GLPI["root_doc"]."/ajax/updateMetaSearch.php",$params,false);
+			ajaxUpdateItemOnSelectEvent("itemtype2_".$itemtype."_".$i."_$rand","show_".$itemtype."_".$i."_$rand",$CFG_GLPI["root_doc"]."/ajax/updateMetaSearch.php",$params,false);
 
 			
-			if (is_array($type2)&&isset($type2[$i])&&$type2[$i]>0){
+			if (is_array($itemtype2)&&isset($itemtype2[$i])&&$itemtype2[$i]>0){
 
-				$params['type']=$type2[$i];
-				ajaxUpdateItem("show_".$type."_".$i."_$rand",$CFG_GLPI["root_doc"]."/ajax/updateMetaSearch.php",$params,false);
+				$params['itemtype']=$itemtype2[$i];
+				ajaxUpdateItem("show_".$itemtype."_".$i."_$rand",$CFG_GLPI["root_doc"]."/ajax/updateMetaSearch.php",$params,false);
 				echo "<script type='text/javascript' >";
-				echo "window.document.getElementById('type2_".$type."_".$i."_$rand').value='".$type2[$i]."';";
+				echo "window.document.getElementById('itemtype2_".$itemtype."_".$i."_$rand').value='".$itemtype2[$i]."';";
 				echo "</script>\n";
 
 			}
@@ -437,7 +437,7 @@ function searchForm($type,$params){
 	// Display deleted selection
 	echo "<td>";
 	//	echo "<table>";
-	if (in_array($LINK_ID_TABLE[$type],$CFG_GLPI["deleted_tables"])){
+	if (in_array($LINK_ID_TABLE[$itemtype],$CFG_GLPI["deleted_tables"])){
 		//echo "<tr><td>";
 		dropdownYesNo("deleted",$deleted);
 		echo "<img src=\"".$CFG_GLPI["root_doc"]."/pics/showdeleted.png\" alt='".$LANG['common'][3]."' title='".$LANG['common'][3]."'>";
@@ -447,8 +447,8 @@ function searchForm($type,$params){
 	echo "</td>";
 	// Display Reset search
 	echo "<td align='center'>";
-	echo "<a href='".$CFG_GLPI["root_doc"]."/front/computer.php?reset_search=reset_search&amp;type=$type' ><img title=\"".$LANG['buttons'][16]."\" alt=\"".$LANG['buttons'][16]."\" src='".$CFG_GLPI["root_doc"]."/pics/reset.png' class='calendrier'></a>";
-	showSaveBookmarkButton(BOOKMARK_SEARCH,$type);
+	echo "<a href='".$CFG_GLPI["root_doc"]."/front/computer.php?reset_search=reset_search&amp;itemtype=$itemtype' ><img title=\"".$LANG['buttons'][16]."\" alt=\"".$LANG['buttons'][16]."\" src='".$CFG_GLPI["root_doc"]."/pics/reset.png' class='calendrier'></a>";
+	showSaveBookmarkButton(BOOKMARK_SEARCH,$itemtype);
 
 	echo "</td>";
 	// Display submit button
@@ -467,14 +467,14 @@ function searchForm($type,$params){
  *
  * Build the query, make the search and list items after a search.
  *
- *@param $type item type
- *@param $params parameters array may include field, contains, sort, order, start, deleted, link, link2, contains2, field2, type2
+ *@param $itemtype item type
+ *@param $params parameters array may include field, contains, sort, order, start, deleted, link, link2, contains2, field2, itemtype2
  *
  *
  *@return Nothing (display)
  *
  **/
-function showList ($type,$params){
+function showList ($itemtype,$params){
 	global $DB,$INFOFORM_PAGES,$SEARCH_PAGES,$SEARCH_OPTION,$LINK_ID_TABLE,$CFG_GLPI,$LANG,$PLUGIN_HOOKS;
 
 	// Default values of parameters
@@ -489,12 +489,12 @@ function showList ($type,$params){
 	$default_values["link2"]="";
 	$default_values["contains2"]="";
 	$default_values["field2"]="";
-	$default_values["type2"]="";
+	$default_values["itemtype2"]="";
 
-	if (isset($SEARCH_PAGES[$type])){
-		$default_values["target"] = $CFG_GLPI['root_doc'].'/'.$SEARCH_PAGES[$type];
-	} else if (isset($INFOFORM_PAGES[$type])){
-		$default_values["target"] = $CFG_GLPI['root_doc'].'/'.str_replace('.form','',$INFOFORM_PAGES[$type]);
+	if (isset($SEARCH_PAGES[$itemtype])){
+		$default_values["target"] = $CFG_GLPI['root_doc'].'/'.$SEARCH_PAGES[$itemtype];
+	} else if (isset($INFOFORM_PAGES[$itemtype])){
+		$default_values["target"] = $CFG_GLPI['root_doc'].'/'.str_replace('.form','',$INFOFORM_PAGES[$itemtype]);
 	} else {
 		$default_values["target"] = $_SERVER['PHP_SELF'];
 	}
@@ -511,11 +511,11 @@ function showList ($type,$params){
 		$start=0;
 	}
 
-	$limitsearchopt=cleanSearchOption($type);
+	$limitsearchopt=cleanSearchOption($itemtype);
 
-	$itemtable=$LINK_ID_TABLE[$type];
-	if (isset($CFG_GLPI["union_search_type"][$type])){
-		$itemtable=$CFG_GLPI["union_search_type"][$type];
+	$itemtable=$LINK_ID_TABLE[$itemtype];
+	if (isset($CFG_GLPI["union_search_type"][$itemtype])){
+		$itemtable=$CFG_GLPI["union_search_type"][$itemtype];
 	}
 	$LIST_LIMIT=$_SESSION['glpilist_limit'];
 
@@ -529,7 +529,7 @@ function showList ($type,$params){
 		}
 	}
 
-	$entity_restrict= ($type==ENTITY_TYPE || in_array($itemtable,$CFG_GLPI["specif_entities_tables"]));
+	$entity_restrict= ($itemtype==ENTITY_TYPE || in_array($itemtable,$CFG_GLPI["specif_entities_tables"]));
 
 
 	$names=array(
@@ -543,19 +543,19 @@ function showList ($type,$params){
 		    );	
 
 	// Get the items to display
-	$toview=addDefaultToView($type);
+	$toview=addDefaultToView($itemtype);
 
 	// Add default items
 	$query="SELECT * 
 		FROM glpi_displayprefs 
-		WHERE type='$type' AND users_id='".$_SESSION["glpiID"]."' 
+		WHERE itemtype='$itemtype' AND users_id='".$_SESSION["glpiID"]."'
 		ORDER BY rank";
 	$result=$DB->query($query);
 	// GET default serach options
 	if ($DB->numrows($result)==0){
 		$query="SELECT * 
 			FROM glpi_displayprefs 
-			WHERE type='$type' AND users_id='0' 
+			WHERE itemtype='$itemtype' AND users_id='0'
 			ORDER BY rank";
 		$result=$DB->query($query);
 	}
@@ -597,11 +597,11 @@ function showList ($type,$params){
 
 	// Construct the request 
 	//// 1 - SELECT
-	$SELECT ="SELECT ".addDefaultSelect($type);
+	$SELECT ="SELECT ".addDefaultSelect($itemtype);
 
 	// Add select for all toview item
 	foreach ($toview as $key => $val){
-		$SELECT.=addSelect($type,$val,$key,0);
+		$SELECT.=addSelect($itemtype,$val,$key,0);
 	}
 
 	//// 2 - FROM AND LEFT JOIN
@@ -616,23 +616,23 @@ function showList ($type,$params){
 	array_push($already_link_tables,$itemtable);
 
 	// Add default join
-	$COMMONLEFTJOIN=addDefaultJoin($type,$itemtable,$already_link_tables);
+	$COMMONLEFTJOIN=addDefaultJoin($itemtype,$itemtable,$already_link_tables);
 	$FROM.=$COMMONLEFTJOIN;
 
 
 	// Add all table for toview items
 	foreach ($toview as $key => $val){
-		$FROM.=addLeftJoin($type,$itemtable,$already_link_tables,$SEARCH_OPTION[$type][$val]["table"],$SEARCH_OPTION[$type][$val]["linkfield"]);
+		$FROM.=addLeftJoin($itemtype,$itemtable,$already_link_tables,$SEARCH_OPTION[$itemtype][$val]["table"],$SEARCH_OPTION[$itemtype][$val]["linkfield"]);
 	}
 
 
 	/// TODO to delete : manage Left Join when need of search or display
 	// Search all case :
 	if (count($SEARCH_ALL)>0)
-		foreach ($SEARCH_OPTION[$type] as $key => $val){
+		foreach ($SEARCH_OPTION[$itemtype] as $key => $val){
 			// Do not search on Group Name
 			if (is_array($val)){
-				$FROM.=addLeftJoin($type,$itemtable,$already_link_tables,$SEARCH_OPTION[$type][$key]["table"],$SEARCH_OPTION[$type][$key]["linkfield"]);
+				$FROM.=addLeftJoin($itemtype,$itemtable,$already_link_tables,$SEARCH_OPTION[$itemtype][$key]["table"],$SEARCH_OPTION[$itemtype][$key]["linkfield"]);
 			}
 		}
 
@@ -640,7 +640,7 @@ function showList ($type,$params){
 	//// 3 - WHERE
 
 	// default string
-	$COMMONWHERE = addDefaultWhere($type);
+	$COMMONWHERE = addDefaultWhere($itemtype);
 	$first=empty($COMMONWHERE);
 	
 
@@ -662,9 +662,9 @@ function showList ($type,$params){
 		$LINK= " AND " ;
 		if ($first) {$LINK=" ";$first=false;}
 
-		if ($type==ENTITY_TYPE) {
+		if ($itemtype==ENTITY_TYPE) {
 			$COMMONWHERE.=getEntitiesRestrictRequest($LINK,$itemtable,'ID','',true);
-		} else if (isset($CFG_GLPI["union_search_type"][$type])) {
+		} else if (isset($CFG_GLPI["union_search_type"][$itemtype])) {
 			// Will be replace below in Union/Recursivity Hack 
 			$COMMONWHERE.=$LINK." ENTITYRESTRICT ";
 		} else if (in_array($itemtable, $CFG_GLPI["recursive_type"])) {
@@ -679,8 +679,8 @@ function showList ($type,$params){
 	/// TODO do also having here / simplify view - all cases : duplicates
 	// Add search conditions
 	// If there is search items
-	if ($_SESSION["glpisearchcount"][$type]>0&&count($contains)>0) {
-		for ($key=0;$key<$_SESSION["glpisearchcount"][$type];$key++) {
+	if ($_SESSION["glpisearchcount"][$itemtype]>0&&count($contains)>0) {
+		for ($key=0;$key<$_SESSION["glpisearchcount"][$itemtype];$key++) {
 			// if real search (strlen >0) and not all and view search
 			if (isset($contains[$key]) && strlen($contains[$key])>0) {
 				// common search
@@ -699,7 +699,7 @@ function showList ($type,$params){
 						$tmplink=" AND ";
 					}
 				
-					if (isset($SEARCH_OPTION[$type][$field[$key]]["usehaving"])){
+					if (isset($SEARCH_OPTION[$itemtype][$field[$key]]["usehaving"])){
 						// Manage Link if not first item
 						if (!empty($HAVING)) {
 							$LINK=$tmplink;
@@ -707,13 +707,13 @@ function showList ($type,$params){
 						// Find key
 						$item_num=array_search($field[$key],$toview);
 	
-						$HAVING.=addHaving($LINK,$NOT,$type,$field[$key],$contains[$key],0,$item_num);
+						$HAVING.=addHaving($LINK,$NOT,$itemtype,$field[$key],$contains[$key],0,$item_num);
 					} else {
 						// Manage Link if not first item
 						if (!empty($WHERE)) {
 							$LINK=$tmplink;
 						}
-						$WHERE.= addWhere($LINK,$NOT,$type,$field[$key],$contains[$key]);
+						$WHERE.= addWhere($LINK,$NOT,$itemtype,$field[$key],$contains[$key]);
 					}
 				//  view search
 				} else if ($field[$key]=="view"){
@@ -754,13 +754,13 @@ function showList ($type,$params){
 					$first2=true;
 					foreach ($toview as $key2 => $val2){
 						// Add Where clause if not to be done in HAVING CLAUSE
-						if (!isset($SEARCH_OPTION[$type][$val2]["usehaving"])){
+						if (!isset($SEARCH_OPTION[$itemtype][$val2]["usehaving"])){
 							$tmplink=$LINK;
 							if ($first2) {
 								$tmplink=" ";
 								$first2=false;
 							}
-							$WHERE.= addWhere($tmplink,$NOT,$type,$val2,$contains[$key]);
+							$WHERE.= addWhere($tmplink,$NOT,$itemtype,$val2,$contains[$key]);
 						}
 					}
 					$WHERE.=" ) ";
@@ -805,7 +805,7 @@ function showList ($type,$params){
 					$WHERE.= " ( ";
 					$first2=true;
 	
-					foreach ($SEARCH_OPTION[$type] as $key2 => $val2)
+					foreach ($SEARCH_OPTION[$itemtype] as $key2 => $val2)
 						if (is_array($val2)){
 							// Add Where clause if not to be done ine HAVING CLAUSE
 						if (!isset($val2["usehaving"])){
@@ -814,7 +814,7 @@ function showList ($type,$params){
 									$tmplink=" ";
 									$first2=false;
 								}
-								$WHERE.= addWhere($tmplink,$NOT,$type,$key2,$contains[$key]);
+								$WHERE.= addWhere($tmplink,$NOT,$itemtype,$key2,$contains[$key]);
 							}
 						}
 	
@@ -829,7 +829,7 @@ function showList ($type,$params){
 	$ORDER="ORDER BY ID";
 	foreach($toview as $key => $val){
 		if ($sort==$val){
-			$ORDER= addOrderBy($type,$sort,$order,$key);	
+			$ORDER= addOrderBy($itemtype,$sort,$order,$key);
 		}
 	}
 
@@ -838,33 +838,35 @@ function showList ($type,$params){
 
 	//// 5 - META SEARCH
 	// Preprocessing
-	if ($_SESSION["glpisearchcount2"][$type]>0&&is_array($type2)){
+	if ($_SESSION["glpisearchcount2"][$itemtype]>0&&is_array($itemtype2)){
 
 		// a - SELECT 
-		for ($i=0;$i<$_SESSION["glpisearchcount2"][$type];$i++)
-			if (isset($type2[$i]) && $type2[$i]>0 && isset($contains2[$i])
+		for ($i=0;$i<$_SESSION["glpisearchcount2"][$itemtype];$i++)
+			if (isset($itemtype2[$i]) && $itemtype2[$i]>0 && isset($contains2[$i])
                && strlen($contains2[$i])>0) {
-				$SELECT.=addSelect($type2[$i],$field2[$i],$i,1,$type2[$i]);		
+				$SELECT.=addSelect($itemtype2[$i],$field2[$i],$i,1,$itemtype2[$i]);
 			}
 
 		// b - ADD LEFT JOIN 
 		// Already link meta table in order not to linked a table several times
 		$already_link_tables2=array();
 		// Link reference tables
-		for ($i=0;$i<$_SESSION["glpisearchcount2"][$type];$i++)
-			if (isset($type2[$i]) && $type2[$i]>0 && isset($contains2[$i])
+		for ($i=0;$i<$_SESSION["glpisearchcount2"][$itemtype];$i++)
+			if (isset($itemtype2[$i]) && $itemtype2[$i]>0 && isset($contains2[$i])
             && strlen($contains2[$i])>0) {
-				if (!in_array($LINK_ID_TABLE[$type2[$i]],$already_link_tables2)){
-					$FROM.=addMetaLeftJoin($type,$type2[$i],$already_link_tables2,
+				if (!in_array($LINK_ID_TABLE[$itemtype2[$i]],$already_link_tables2)){
+					$FROM.=addMetaLeftJoin($itemtype,$itemtype2[$i],$already_link_tables2,
 						(($contains2[$i]=="NULL")||(strstr($link2[$i],"NOT"))));
 				}
 			}
 		// Link items tables
-		for ($i=0;$i<$_SESSION["glpisearchcount2"][$type];$i++)
-			if (isset($type2[$i]) && $type2[$i]>0 && isset($contains2[$i])
+		for ($i=0;$i<$_SESSION["glpisearchcount2"][$itemtype];$i++)
+			if (isset($itemtype2[$i]) && $itemtype2[$i]>0 && isset($contains2[$i])
                && strlen($contains2[$i])>0) {
-				if (!in_array($SEARCH_OPTION[$type2[$i]][$field2[$i]]["table"]."_".$type2[$i],$already_link_tables2)){
-					$FROM.=addLeftJoin($type2[$i],$LINK_ID_TABLE[$type2[$i]],$already_link_tables2,$SEARCH_OPTION[$type2[$i]][$field2[$i]]["table"],$SEARCH_OPTION[$type2[$i]][$field2[$i]]["linkfield"],0,1,$type2[$i]);				
+				if (!in_array($SEARCH_OPTION[$itemtype2[$i]][$field2[$i]]["table"]."_".$itemtype2[$i],$already_link_tables2)){
+					$FROM.=addLeftJoin($itemtype2[$i],$LINK_ID_TABLE[$itemtype2[$i]],
+                     $already_link_tables2,$SEARCH_OPTION[$itemtype2[$i]][$field2[$i]]["table"],
+                     $SEARCH_OPTION[$itemtype2[$i]][$field2[$i]]["linkfield"],0,1,$itemtype2[$i]);
 				}
 
 			}
@@ -882,7 +884,7 @@ function showList ($type,$params){
 	//// 7 - Manage GROUP BY
 	$GROUPBY="";
 	// Meta Search / Search All / Count tickets
-	if ($_SESSION["glpisearchcount2"][$type]>0 || !empty($HAVING)){
+	if ($_SESSION["glpisearchcount2"][$itemtype]>0 || !empty($HAVING)){
 		$GROUPBY=" GROUP BY $itemtable.ID";
 	}
 
@@ -891,22 +893,22 @@ function showList ($type,$params){
 			if (!empty($GROUPBY)) {
 				break;
 			}
-			if (isset($SEARCH_OPTION[$type][$val2]["forcegroupby"])) {
+			if (isset($SEARCH_OPTION[$itemtype][$val2]["forcegroupby"])) {
 				$GROUPBY=" GROUP BY $itemtable.ID";
 			}
 		}
 	}
 
 	// Specific search for others item linked  (META search)
-	if (is_array($type2)) {
-		for ($key=0;$key<$_SESSION["glpisearchcount2"][$type];$key++) {
-			if (isset($type2[$key]) && $type2[$key]>0 && isset($contains2[$key])
+	if (is_array($itemtype2)) {
+		for ($key=0;$key<$_SESSION["glpisearchcount2"][$itemtype];$key++) {
+			if (isset($itemtype2[$key]) && $itemtype2[$key]>0 && isset($contains2[$key])
             && strlen($contains2[$key])>0) {
 				$LINK="";
 
 				// For AND NOT statement need to take into account all the group by items
 				if (strstr($link2[$key],"AND NOT")
-					|| isset($SEARCH_OPTION[$type2[$key]][$field2[$key]]["usehaving"])
+					|| isset($SEARCH_OPTION[$itemtype2[$key]][$field2[$key]]["usehaving"])
 				){
 					$NOT=0;
 					if (strstr($link2[$key],"NOT")){
@@ -918,7 +920,7 @@ function showList ($type,$params){
 					if (!empty($HAVING)) {
 						$LINK=$tmplink;
 					}
-					$HAVING.=addHaving($LINK,$NOT,$type2[$key],$field2[$key],$contains2[$key],1,$key);
+					$HAVING.=addHaving($LINK,$NOT,$itemtype2[$key],$field2[$key],$contains2[$key],1,$key);
 				} else { // Meta Where Search
 					$LINK=" ";
 					$NOT=0;
@@ -935,7 +937,7 @@ function showList ($type,$params){
 					if (!empty($WHERE)) {
 						$LINK=$tmplink;
 					}
-					$WHERE.= addWhere($LINK,$NOT,$type2[$key],$field2[$key],$contains2[$key],1);
+					$WHERE.= addWhere($LINK,$NOT,$itemtype2[$key],$field2[$key],$contains2[$key],1);
 				}
 			}
 		}
@@ -943,13 +945,13 @@ function showList ($type,$params){
 
 	// If no research limit research to display item and compute number of item using simple request
 	$nosearch=true;
-	for ($i=0;$i<$_SESSION["glpisearchcount"][$type];$i++) {
+	for ($i=0;$i<$_SESSION["glpisearchcount"][$itemtype];$i++) {
 		if (isset($contains[$i]) && strlen($contains[$i])>0) {
          $nosearch=false;
       }
    }
 
-	if ($_SESSION["glpisearchcount2"][$type]>0) {
+	if ($_SESSION["glpisearchcount2"][$itemtype]>0) {
 		$nosearch=false;
    }
 
@@ -960,7 +962,7 @@ function showList ($type,$params){
 		$LIMIT= " LIMIT $start, ".$LIST_LIMIT;
 
 		// Force group by for all the type -> need to count only on table ID
-		if (!isset($SEARCH_OPTION[$type][1]['forcegroupby'])){
+		if (!isset($SEARCH_OPTION[$itemtype][1]['forcegroupby'])){
 			$count="count(*)";
 		} else {
 			$count="count(DISTINCT $itemtable.ID)";
@@ -976,22 +978,25 @@ function showList ($type,$params){
 		}
 
 		// Union Search :
-		if (isset($CFG_GLPI["union_search_type"][$type])){
+		if (isset($CFG_GLPI["union_search_type"][$itemtype])){
 			$tmpquery=$query_num;
 			$numrows=0;
-			foreach ($CFG_GLPI[$CFG_GLPI["union_search_type"][$type]] as $ctype){
+			foreach ($CFG_GLPI[$CFG_GLPI["union_search_type"][$itemtype]] as $ctype){
 				if (haveTypeRight($ctype,'r')){
 					// No ref table case
-					if (empty($LINK_ID_TABLE[$type])){
-						$query_num=str_replace($CFG_GLPI["union_search_type"][$type],$LINK_ID_TABLE[$ctype],$tmpquery);
+					if (empty($LINK_ID_TABLE[$itemtype])){
+						$query_num=str_replace($CFG_GLPI["union_search_type"][$itemtype],$LINK_ID_TABLE[$ctype],$tmpquery);
 						// State case :
-						if ($type==STATE_TYPE){
+						if ($itemtype==STATE_TYPE){
 							$query_num.=" AND ".$LINK_ID_TABLE[$ctype].".state > 0 ";
 						}
 					} else {// Ref table case
-						$replace="FROM ".$LINK_ID_TABLE[$type]." INNER JOIN ".$LINK_ID_TABLE[$ctype]." ON (".$LINK_ID_TABLE[$type].".items_id = ".$LINK_ID_TABLE[$ctype].".ID AND ".$LINK_ID_TABLE[$type].".itemtype='$ctype')";
-						$query_num=str_replace("FROM ".$CFG_GLPI["union_search_type"][$type],$replace,$tmpquery);
-						$query_num=str_replace($CFG_GLPI["union_search_type"][$type],$LINK_ID_TABLE[$ctype],$query_num);
+						$replace="FROM ".$LINK_ID_TABLE[$itemtype]."
+                     INNER JOIN ".$LINK_ID_TABLE[$ctype]."
+                        ON (".$LINK_ID_TABLE[$itemtype].".items_id = ".$LINK_ID_TABLE[$ctype].".ID
+                           AND ".$LINK_ID_TABLE[$itemtype].".itemtype='$ctype')";
+						$query_num=str_replace("FROM ".$CFG_GLPI["union_search_type"][$itemtype],$replace,$tmpquery);
+						$query_num=str_replace($CFG_GLPI["union_search_type"][$itemtype],$LINK_ID_TABLE[$ctype],$query_num);
 					}
 					// Union/Recursivity Hack
 					if (isset($CFG_GLPI["recursive_type"][$ctype])) {
@@ -1029,10 +1034,10 @@ function showList ($type,$params){
 	$DB->query("SET SESSION group_concat_max_len = 9999999;");
 
 	// Create QUERY
-	if (isset($CFG_GLPI["union_search_type"][$type])){
+	if (isset($CFG_GLPI["union_search_type"][$itemtype])){
 		$first=true;
 		$QUERY="";
-		foreach ($CFG_GLPI[$CFG_GLPI["union_search_type"][$type]] as $ctype){
+		foreach ($CFG_GLPI[$CFG_GLPI["union_search_type"][$itemtype]] as $ctype){
 			if (haveTypeRight($ctype,'r')){
 				if ($first){
 					$first=false;
@@ -1041,18 +1046,21 @@ function showList ($type,$params){
 				}
 				$tmpquery="";
 				// No ref table case
-				if (empty($LINK_ID_TABLE[$type])){
+				if (empty($LINK_ID_TABLE[$itemtype])){
 						$tmpquery=$SELECT.", $ctype AS TYPE ".$FROM.$WHERE;
-						$tmpquery=str_replace($CFG_GLPI["union_search_type"][$type],$LINK_ID_TABLE[$ctype],$tmpquery);
+						$tmpquery=str_replace($CFG_GLPI["union_search_type"][$itemtype],$LINK_ID_TABLE[$ctype],$tmpquery);
 						// State case :
-						if ($type==STATE_TYPE){
+						if ($itemtype==STATE_TYPE){
 							$tmpquery.=" AND ".$LINK_ID_TABLE[$ctype].".state > 0 ";
 						}
 				} else {// Ref table case
-						$tmpquery=$SELECT.", $ctype AS TYPE, ".$LINK_ID_TABLE[$type].".ID AS refID, ".$LINK_ID_TABLE[$ctype].".entities_id AS ENTITY ".$FROM.$WHERE;
-						$replace="FROM ".$LINK_ID_TABLE[$type]." INNER JOIN ".$LINK_ID_TABLE[$ctype]." ON (".$LINK_ID_TABLE[$type].".items_id = ".$LINK_ID_TABLE[$ctype].".ID AND ".$LINK_ID_TABLE[$type].".itemtype='$ctype')";
-						$tmpquery=str_replace("FROM ".$CFG_GLPI["union_search_type"][$type],$replace,$tmpquery);
-						$tmpquery=str_replace($CFG_GLPI["union_search_type"][$type],$LINK_ID_TABLE[$ctype],$tmpquery);
+						$tmpquery=$SELECT.", $ctype AS TYPE, ".$LINK_ID_TABLE[$itemtype].".ID AS refID, ".
+                              $LINK_ID_TABLE[$ctype].".entities_id AS ENTITY ".$FROM.$WHERE;
+						$replace="FROM ".$LINK_ID_TABLE[$type]." INNER JOIN ".$LINK_ID_TABLE[$ctype]."
+                           ON (".$LINK_ID_TABLE[$itemtype].".items_id = ".$LINK_ID_TABLE[$ctype].".ID
+                              AND ".$LINK_ID_TABLE[$itemtype].".itemtype='$ctype')";
+						$tmpquery=str_replace("FROM ".$CFG_GLPI["union_search_type"][$itemtype],$replace,$tmpquery);
+						$tmpquery=str_replace($CFG_GLPI["union_search_type"][$itemtype],$LINK_ID_TABLE[$ctype],$tmpquery);
 				}
 				// Union/Recursivity Hack
 				if (isset($CFG_GLPI["recursive_type"][$ctype])) {
@@ -1073,7 +1081,7 @@ function showList ($type,$params){
 			echo displaySearchError($output_type);
 			return;
 		}
-		$QUERY.=str_replace($CFG_GLPI["union_search_type"][$type].".","",$ORDER).$LIMIT;
+		$QUERY.=str_replace($CFG_GLPI["union_search_type"][$itemtype].".","",$ORDER).$LIMIT;
 	} else {
 		$QUERY=$SELECT.$FROM.$WHERE.$GROUPBY.$HAVING.$ORDER.$LIMIT;
 	}
@@ -1088,15 +1096,15 @@ function showList ($type,$params){
 			$numrows= $DB->numrows($result);
 
 		// Contruct Pager parameters
-		$globallinkto=getMultiSearchItemForLink("field",$field).getMultiSearchItemForLink("link",$link).getMultiSearchItemForLink("contains",$contains).getMultiSearchItemForLink("field2",$field2).getMultiSearchItemForLink("contains2",$contains2).getMultiSearchItemForLink("type2",$type2).getMultiSearchItemForLink("link2",$link2);
+		$globallinkto=getMultiSearchItemForLink("field",$field).getMultiSearchItemForLink("link",$link).getMultiSearchItemForLink("contains",$contains).getMultiSearchItemForLink("field2",$field2).getMultiSearchItemForLink("contains2",$contains2).getMultiSearchItemForLink("itemtype2",$itemtype2).getMultiSearchItemForLink("link2",$link2);
 
 		$parameters="sort=$sort&amp;order=$order".$globallinkto;
 
 
 		if ($output_type==GLOBAL_SEARCH){
 			$ci = new CommonItem();	
-			$ci->setType($type);
-			echo "<div class='center'><h2>".$ci->getType($type);
+			$ci->setType($itemtype);
+			echo "<div class='center'><h2>".$ci->getType($itemtype);
 			// More items
 			if ($numrows>$start+GLOBAL_SEARCH_DISPLAY_COUNT){
 				echo " <a href='$target?$parameters'>".$LANG['common'][66]."</a>";
@@ -1112,13 +1120,13 @@ function showList ($type,$params){
 			if ($output_type==HTML_OUTPUT){
 
 				// For plugin add new parameter if available
-				if ($type>1000){
-					if (isset($PLUGIN_HOOKS['plugin_types'][$type])){
+				if ($itemtype>1000){
+					if (isset($PLUGIN_HOOKS['plugin_types'][$itemtype])){
 
-						$function='plugin_'.$PLUGIN_HOOKS['plugin_types'][$type].'_addParamFordynamicReport';
+						$function='plugin_'.$PLUGIN_HOOKS['plugin_types'][$itemtype].'_addParamFordynamicReport';
 
 						if (function_exists($function)){
-							$out=$function($type);
+							$out=$function($itemtype);
 							if (is_array($out)&&count($out)){
 								foreach ($out as $key => $val){
 									if (is_array($val)){
@@ -1131,11 +1139,11 @@ function showList ($type,$params){
 						} 
 					} 
 				}
-				printPager($start,$numrows,$target,$parameters,$type);
+				printPager($start,$numrows,$target,$parameters,$itemtype);
 			}
 
 			// Form to massive actions
-			$isadmin=(haveTypeRight($type,"w")||(in_array($type,$CFG_GLPI["infocom_types"])&&haveTypeRight(INFOCOM_TYPE,"w")));
+			$isadmin=(haveTypeRight($itemtype,"w")||(in_array($itemtype,$CFG_GLPI["infocom_types"])&&haveTypeRight(INFOCOM_TYPE,"w")));
 
 			if ($isadmin&&$output_type==HTML_OUTPUT){
 				echo "<form method='post' name='massiveaction_form' id='massiveaction_form' action=\"".$CFG_GLPI["root_doc"]."/front/massiveaction.php\">";
@@ -1145,10 +1153,10 @@ function showList ($type,$params){
 			// Add toview elements
 			$nbcols=$toview_count;
 			// Add meta search elements if real search (strlen>0) or only NOT search
-			if ($_SESSION["glpisearchcount2"][$type]>0&&is_array($type2))
-				for ($i=0;$i<$_SESSION["glpisearchcount2"][$type];$i++)
-					if (isset($type2[$i]) && isset($contains2[$i]) && strlen($contains2[$i])>0
-                     && $type2[$i]>0 && (!isset($link2[$i]) || !strstr($link2[$i],"NOT"))) {
+			if ($_SESSION["glpisearchcount2"][$itemtype]>0&&is_array($itemtype2))
+				for ($i=0;$i<$_SESSION["glpisearchcount2"][$itemtype];$i++)
+					if (isset($itemtype2[$i]) && isset($contains2[$i]) && strlen($contains2[$i])>0
+                     && $itemtype2[$i]>0 && (!isset($link2[$i]) || !strstr($link2[$i],"NOT"))) {
 						$nbcols++;
 					}
 
@@ -1180,7 +1188,7 @@ function showList ($type,$params){
 			if ($output_type==HTML_OUTPUT){// HTML display - massive modif
 				$search_config="";
 				if (haveRight("search_config","w")||haveRight("search_config_global","w")){
-					$tmp= " class='pointer'  onClick=\"var w = window.open('".$CFG_GLPI["root_doc"]."/front/popup.php?popup=search_config&amp;type=$type' ,'glpipopup', 'height=400, width=1000, top=100, left=100, scrollbars=yes' ); w.focus();\"";
+					$tmp= " class='pointer'  onClick=\"var w = window.open('".$CFG_GLPI["root_doc"]."/front/popup.php?popup=search_config&amp;itemtype=$itemtype' ,'glpipopup', 'height=400, width=1000, top=100, left=100, scrollbars=yes' ); w.focus();\"";
 
 					$search_config= "<img alt='".$LANG['setup'][252]."' title='".$LANG['setup'][252]."' src='".$CFG_GLPI["root_doc"]."/pics/options_search.png' ";
 					$search_config.=$tmp.">";
@@ -1194,30 +1202,30 @@ function showList ($type,$params){
 			// Display column Headers for toview items
 			foreach ($toview as $key => $val){
 				$linkto="$target?sort=".$val."&amp;order=".($order=="ASC"?"DESC":"ASC")."&amp;start=$start".$globallinkto;
-				echo displaySearchHeaderItem($output_type,$SEARCH_OPTION[$type][$val]["name"],$header_num,$linkto,$sort==$val,$order);
+				echo displaySearchHeaderItem($output_type,$SEARCH_OPTION[$itemtype][$val]["name"],$header_num,$linkto,$sort==$val,$order);
 			}
 
 			// Display columns Headers for meta items
-			if ($_SESSION["glpisearchcount2"][$type]>0&&is_array($type2))
-				for ($i=0;$i<$_SESSION["glpisearchcount2"][$type];$i++)
-					if (isset($type2[$i]) && $type2[$i]>0 && isset($contains2[$i])
+			if ($_SESSION["glpisearchcount2"][$itemtype]>0&&is_array($itemtype2))
+				for ($i=0;$i<$_SESSION["glpisearchcount2"][$itemtype];$i++)
+					if (isset($itemtype2[$i]) && $itemtype2[$i]>0 && isset($contains2[$i])
                      && strlen($contains2[$i])>0 && (!isset($link2[$i])
                      ||(!strstr($link2[$i],"NOT") || $contains2[$i]=="NULL"))) {
-						echo displaySearchHeaderItem($output_type,$names[$type2[$i]]." - ".$SEARCH_OPTION[$type2[$i]][$field2[$i]]["name"],$header_num);
+						echo displaySearchHeaderItem($output_type,$names[$itemtype2[$i]]." - ".$SEARCH_OPTION[$itemtype2[$i]][$field2[$i]]["name"],$header_num);
 					}
 			// Add specific column Header
-//			if ($type==SOFTWARE_TYPE)
+//			if ($itemtype==SOFTWARE_TYPE)
 //				echo displaySearchHeaderItem($output_type,$LANG['software'][11],$header_num);
-			if ($type==CARTRIDGE_TYPE)
+			if ($itemtype==CARTRIDGE_TYPE)
 				echo displaySearchHeaderItem($output_type,$LANG['cartridges'][0],$header_num);	
-			if ($type==CONSUMABLE_TYPE)
+			if ($itemtype==CONSUMABLE_TYPE)
 				echo displaySearchHeaderItem($output_type,$LANG['consumables'][0],$header_num);
-			if ($type==STATE_TYPE||$type==RESERVATION_TYPE){
+			if ($itemtype==STATE_TYPE||$itemtype==RESERVATION_TYPE){
 				echo displaySearchHeaderItem($output_type,$LANG['state'][6],$header_num);
 				$ci = new CommonItem();
 				
 			}
-			if ($type==RESERVATION_TYPE&&$output_type==HTML_OUTPUT){
+			if ($itemtype==RESERVATION_TYPE&&$output_type==HTML_OUTPUT){
 				if (haveRight("reservation_central","w")){
 					echo displaySearchHeaderItem($output_type,"&nbsp;",$header_num);
 					echo displaySearchHeaderItem($output_type,"&nbsp;",$header_num);
@@ -1237,7 +1245,7 @@ function showList ($type,$params){
 
 			// Init list of items displayed
 			if ($output_type==HTML_OUTPUT){
-				initNavigateListItems($type);
+				initNavigateListItems($itemtype);
 			}
 
 			// Num of the row (1=header_line)
@@ -1254,14 +1262,14 @@ function showList ($type,$params){
 				echo displaySearchNewLine($output_type,($i%2));
 
 				// Add item in item list
-				addToNavigateListItems($type,$data["ID"]);
+				addToNavigateListItems($itemtype,$data["ID"]);
 
 				if ($output_type==HTML_OUTPUT){// HTML display - massive modif
 					$tmpcheck="";
 					if ($isadmin){
-						if ($type==ENTITY_TYPE && !in_array($data["ID"],$_SESSION["glpiactiveentities"])) {							
+						if ($itemtype==ENTITY_TYPE && !in_array($data["ID"],$_SESSION["glpiactiveentities"])) {
 							$tmpcheck="&nbsp;";
-						} else if (isset($CFG_GLPI["recursive_type"][$type]) && !in_array($data["entities_id"],$_SESSION["glpiactiveentities"])) {
+						} else if (isset($CFG_GLPI["recursive_type"][$itemtype]) && !in_array($data["entities_id"],$_SESSION["glpiactiveentities"])) {
 							$tmpcheck="&nbsp;";
 						} else {
 							$sel="";
@@ -1278,26 +1286,26 @@ function showList ($type,$params){
 				}
 
 				// Print first element - specific case for user 
-				echo displaySearchItem($output_type,giveItem($type,1,$data,0),$item_num,$row_num,displayConfigItem($type,$SEARCH_OPTION[$type][1]["table"].".".$SEARCH_OPTION[$type][1]["field"]));
+				echo displaySearchItem($output_type,giveItem($itemtype,1,$data,0),$item_num,$row_num,displayConfigItem($itemtype,$SEARCH_OPTION[$itemtype][1]["table"].".".$SEARCH_OPTION[$itemtype][1]["field"]));
 
 				// Print other toview items
 				foreach ($toview as $key => $val){
 					// Do not display first item
 					if ($key>0){
-						echo displaySearchItem($output_type,giveItem($type,$val,$data,$key),$item_num,$row_num,displayConfigItem($type,$SEARCH_OPTION[$type][$val]["table"].".".$SEARCH_OPTION[$type][$val]["field"]));
+						echo displaySearchItem($output_type,giveItem($itemtype,$val,$data,$key),$item_num,$row_num,displayConfigItem($itemtype,$SEARCH_OPTION[$itemtype][$val]["table"].".".$SEARCH_OPTION[$itemtype][$val]["field"]));
 					}
 				}
 
 				// Print Meta Item
-				if ($_SESSION["glpisearchcount2"][$type]>0&&is_array($type2))
-					for ($j=0;$j<$_SESSION["glpisearchcount2"][$type];$j++)
-						if (isset($type2[$j]) && $type2[$j]>0 && isset($contains2[$j])
+				if ($_SESSION["glpisearchcount2"][$itemtype]>0&&is_array($itemtype2))
+					for ($j=0;$j<$_SESSION["glpisearchcount2"][$itemtype];$j++)
+						if (isset($itemtype2[$j]) && $itemtype2[$j]>0 && isset($contains2[$j])
                         && strlen($contains2[$j])>0 && (!isset($link2[$j])
 									||(!strstr($link2[$j],"NOT") || $contains2[$j]=="NULL"))){
 
 							// General case
 							if (strpos($data["META_$j"],"$$$$")===false){
-								$out=giveItem ($type2[$j],$field2[$j],$data,$j,1);
+								$out=giveItem ($itemtype2[$j],$field2[$j],$data,$j,1);
 								echo displaySearchItem($output_type,$out,$item_num,$row_num);
 							// Case of GROUP_CONCAT item : split item and multilline display
 							} else {
@@ -1305,13 +1313,13 @@ function showList ($type,$params){
 								$count_display=0;
 								$out="";
 								$unit="";
-								if (isset($SEARCH_OPTION[$type2[$j]][$field2[$j]]['unit'])){
-									$unit=$SEARCH_OPTION[$type2[$j]][$field2[$j]]['unit'];
+								if (isset($SEARCH_OPTION[$itemtype2[$j]][$field2[$j]]['unit'])){
+									$unit=$SEARCH_OPTION[$itemtype2[$j]][$field2[$j]]['unit'];
 								}
 								for ($k=0;$k<count($split);$k++)
 									if ($contains2[$j]=="NULL" || strlen($contains2[$j])==0
 										||preg_match('/'.$contains2[$j].'/i',$split[$k])
-										|| isset($SEARCH_OPTION[$type2[$j]][$field2[$j]]['forcegroupby'])
+										|| isset($SEARCH_OPTION[$itemtype2[$j]][$field2[$j]]['forcegroupby'])
 									){
 
 										if ($count_display) $out.= "<br>";
@@ -1319,7 +1327,7 @@ function showList ($type,$params){
 										// Manage Link to item
 										$split2=explode("$$",$split[$k]);
 										if (isset($split2[1])){
-											$out.= "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$type2[$j]]."?ID=".$split2[1]."\">";
+											$out.= "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$itemtype2[$j]]."?ID=".$split2[1]."\">";
 											$out.= $split2[0].$unit;
 											if ($_SESSION["glpiview_ID"]||empty($split2[0])) {
 												$out.= " (".$split2[1].")";
@@ -1334,20 +1342,20 @@ function showList ($type,$params){
 							}
 						}
 				// Specific column display
-				if ($type==CARTRIDGE_TYPE){
+				if ($itemtype==CARTRIDGE_TYPE){
 					echo displaySearchItem($output_type,countCartridges($data["ID"],$data["ALARM"],$output_type),$item_num,$row_num);
 				}
-//				if ($type==SOFTWARE_TYPE){
+//				if ($itemtype==SOFTWARE_TYPE){
 //					echo displaySearchItem($output_type,countInstallations($data["ID"],$output_type),$item_num,$row_num);
 //				}		
-				if ($type==CONSUMABLE_TYPE){
+				if ($itemtype==CONSUMABLE_TYPE){
 					echo displaySearchItem($output_type,countConsumables($data["ID"],$data["ALARM"],$output_type),$item_num,$row_num);
 				}	
-				if ($type==STATE_TYPE||$type==RESERVATION_TYPE){
+				if ($itemtype==STATE_TYPE||$itemtype==RESERVATION_TYPE){
 					$ci->setType($data["TYPE"]);
 					echo displaySearchItem($output_type,$ci->getType(),$item_num,$row_num);
 				}	
-				if ($type==RESERVATION_TYPE&&$output_type==HTML_OUTPUT){
+				if ($itemtype==RESERVATION_TYPE&&$output_type==HTML_OUTPUT){
 					if (haveRight("reservation_central","w")){
 						if (!haveAccessToEntity($data["ENTITY"])) {
 							echo displaySearchItem($output_type,"&nbsp;",$item_num,$row_num);
@@ -1374,8 +1382,8 @@ function showList ($type,$params){
 			$title="";
 			// Create title
 			if ($output_type==PDF_OUTPUT_LANDSCAPE || $output_type==PDF_OUTPUT_PORTRAIT){
-				if ($_SESSION["glpisearchcount"][$type]>0&&count($contains)>0) {
-					for ($key=0;$key<$_SESSION["glpisearchcount"][$type];$key++){
+				if ($_SESSION["glpisearchcount"][$itemtype]>0&&count($contains)>0) {
+					for ($key=0;$key<$_SESSION["glpisearchcount"][$itemtype];$key++){
 						if (strlen($contains[$key])>0) {
 							if (isset($link[$key])) $title.=" ".$link[$key]." ";
 							switch ($field[$key]) {
@@ -1386,19 +1394,19 @@ function showList ($type,$params){
 									$title.=$LANG['search'][11];
                            break;
 								default :
-                           $title.=$SEARCH_OPTION[$type][$field[$key]]["name"];
+                           $title.=$SEARCH_OPTION[$itemtype][$field[$key]]["name"];
                            break;
 							}
 							$title.=" = ".$contains[$key];
 						}
 					}
 				}
-				if ($_SESSION["glpisearchcount2"][$type]>0&&count($contains2)>0) {
-					for ($key=0;$key<$_SESSION["glpisearchcount2"][$type];$key++) {
+				if ($_SESSION["glpisearchcount2"][$itemtype]>0&&count($contains2)>0) {
+					for ($key=0;$key<$_SESSION["glpisearchcount2"][$itemtype];$key++) {
 						if (strlen($contains2[$key])>0) {
 							if (isset($link2[$key])) $title.=" ".$link2[$key]." ";
-							$title.=$names[$type2[$key]]."/";
-							$title.=$SEARCH_OPTION[$type2[$key]][$field2[$key]]["name"];
+							$title.=$names[$itemtype2[$key]]."/";
+							$title.=$SEARCH_OPTION[$itemtype2[$key]][$field2[$key]]["name"];
 							$title.=" = ".$contains2[$key];
 						}
 					}
@@ -1418,7 +1426,7 @@ function showList ($type,$params){
 	
 					echo "<td>/</td><td class='center'><a onclick= \"if ( unMarkCheckboxes('massiveaction_form') ) return false;\" href='".$_SERVER['PHP_SELF']."?select=none'>".$LANG['buttons'][19]."</a>";
 					echo "</td><td class='left' width='80%'>";
-					dropdownMassiveAction($type,$deleted);
+					dropdownMassiveAction($itemtype,$deleted);
 					echo "</td>";
 					echo "</table>";
 	
@@ -1452,7 +1460,7 @@ function showList ($type,$params){
  *
  *@param $LINK link to use 
  *@param $NOT is is a negative search ?
- *@param $type item type
+ *@param $itemtype item type
  *@param $ID ID of the item to search
  *@param $val value search
  *@param $meta is it a meta item ?
@@ -1462,21 +1470,21 @@ function showList ($type,$params){
  *@return select string
  *
  **/
-function addHaving($LINK,$NOT,$type,$ID,$val,$meta,$num){
+function addHaving($LINK,$NOT,$itemtype,$ID,$val,$meta,$num){
 	global $SEARCH_OPTION;
 
-	$table=$SEARCH_OPTION[$type][$ID]["table"];
-	$field=$SEARCH_OPTION[$type][$ID]["field"];
+	$table=$SEARCH_OPTION[$itemtype][$ID]["table"];
+	$field=$SEARCH_OPTION[$itemtype][$ID]["field"];
 
 	$NAME="ITEM_";
 	if ($meta) $NAME="META_";
 
 	// Plugin can override core definition for its type
-	if ($type>1000){
-		if (isset($PLUGIN_HOOKS['plugin_types'][$type])){
-			$function='plugin_'.$PLUGIN_HOOKS['plugin_types'][$type].'_addHaving';
+	if ($itemtype>1000){
+		if (isset($PLUGIN_HOOKS['plugin_types'][$itemtype])){
+			$function='plugin_'.$PLUGIN_HOOKS['plugin_types'][$itemtype].'_addHaving';
 			if (function_exists($function)){
-				$out=$function($LINK,$NOT,$type,$ID,$val,$num);
+				$out=$function($LINK,$NOT,$itemtype,$ID,$val,$num);
 				if (!empty($out)){
 					return $out;
 				}
@@ -1491,14 +1499,14 @@ function addHaving($LINK,$NOT,$type,$ID,$val,$meta,$num){
 
 	//// Default cases
 	// Link with plugin tables 
-	if ($type<=1000){
+	if ($itemtype<=1000){
 		if (preg_match("/^glpi_plugin_([a-zA-Z]+)/", $table, $matches)){
 			if (count($matches)==2){
 				$plug=$matches[1];
 
 				$function='plugin_'.$plug.'_addHaving';
 				if (function_exists($function)){
-					$out=$function($LINK,$NOT,$type,$ID,$val,$num);
+					$out=$function($LINK,$NOT,$itemtype,$ID,$val,$num);
 					if (!empty($out)){
 						return $out;
 					}
@@ -1508,8 +1516,8 @@ function addHaving($LINK,$NOT,$type,$ID,$val,$meta,$num){
 	}
 
 	// Preformat items
-	if (isset($SEARCH_OPTION[$type][$ID]["datatype"])){
-		switch ($SEARCH_OPTION[$type][$ID]["datatype"]){
+	if (isset($SEARCH_OPTION[$itemtype][$ID]["datatype"])){
+		switch ($SEARCH_OPTION[$itemtype][$ID]["datatype"]){
 			case "number":
 			case "decimal":
 
@@ -1529,11 +1537,11 @@ function addHaving($LINK,$NOT,$type,$ID,$val,$meta,$num){
 					return " $LINK ($NAME$num ".$regs[1]." ".$regs[3]." ) ";
 				} else {
 					if (is_numeric($val)){
-						if (isset($SEARCH_OPTION[$type][$ID]["width"])){
+						if (isset($SEARCH_OPTION[$itemtype][$ID]["width"])){
 							if (!$NOT){
-								return " $LINK ( $NAME$num < ".(intval($val)+$SEARCH_OPTION[$type][$ID]["width"])." AND $NAME$num > ".(intval($val)-$SEARCH_OPTION[$type][$ID]["width"])." ) ";
+								return " $LINK ( $NAME$num < ".(intval($val)+$SEARCH_OPTION[$itemtype][$ID]["width"])." AND $NAME$num > ".(intval($val)-$SEARCH_OPTION[$itemtype][$ID]["width"])." ) ";
 							} else {
-								return " $LINK ( $NAME$num > ".(intval($val)+$SEARCH_OPTION[$type][$ID]["width"])." OR $NAME$num < ".(intval($val)-$SEARCH_OPTION[$type][$ID]["width"])." ) ";
+								return " $LINK ( $NAME$num > ".(intval($val)+$SEARCH_OPTION[$itemtype][$ID]["width"])." OR $NAME$num < ".(intval($val)-$SEARCH_OPTION[$itemtype][$ID]["width"])." ) ";
 							}
 	
 						} else { // Exact search
@@ -1563,7 +1571,7 @@ function addHaving($LINK,$NOT,$type,$ID,$val,$meta,$num){
  * Generic Function to add ORDER BY to a request
  *
  *
- *@param $type ID of the device type
+ *@param $itemtype ID of the device type
  *@param $ID field to add
  *@param $order order define
  *@param $key item number
@@ -1572,7 +1580,7 @@ function addHaving($LINK,$NOT,$type,$ID,$val,$meta,$num){
  *@return select string
  *
  **/
-function addOrderBy($type,$ID,$order,$key=0){
+function addOrderBy($itemtype,$ID,$order,$key=0){
 	global $SEARCH_OPTION,$CFG_GLPI,$PLUGIN_HOOKS;
 
 	// Security test for order
@@ -1580,21 +1588,21 @@ function addOrderBy($type,$ID,$order,$key=0){
 		$order="DESC";
 	}
 
-	$table=$SEARCH_OPTION[$type][$ID]["table"];
-	$field=$SEARCH_OPTION[$type][$ID]["field"];
-	$linkfield=$SEARCH_OPTION[$type][$ID]["linkfield"];
+	$table=$SEARCH_OPTION[$itemtype][$ID]["table"];
+	$field=$SEARCH_OPTION[$itemtype][$ID]["field"];
+	$linkfield=$SEARCH_OPTION[$itemtype][$ID]["linkfield"];
 
 
-	if (isset($CFG_GLPI["union_search_type"][$type])){
+	if (isset($CFG_GLPI["union_search_type"][$itemtype])){
 		return " ORDER BY ITEM_$key $order ";
 	}
 
 	// Plugin can override core definition for its type
-	if ($type>1000){
-		if (isset($PLUGIN_HOOKS['plugin_types'][$type])){
-			$function='plugin_'.$PLUGIN_HOOKS['plugin_types'][$type].'_addOrderBy';
+	if ($itemtype>1000){
+		if (isset($PLUGIN_HOOKS['plugin_types'][$itemtype])){
+			$function='plugin_'.$PLUGIN_HOOKS['plugin_types'][$itemtype].'_addOrderBy';
 			if (function_exists($function)){
-				$out=$function($type,$ID,$order,$key);
+				$out=$function($itemtype,$ID,$order,$key);
 				if (!empty($out)){
 					return $out;
 				}
@@ -1614,8 +1622,8 @@ function addOrderBy($type,$ID,$order,$key=0){
 			return " ORDER BY ADDDATE(glpi_contracts.begin_date, INTERVAL (glpi_contracts.duration-glpi_contracts.notice) MONTH) $order ";
 		break;
 		case "glpi_users.name" :
-			if (!empty($SEARCH_OPTION[$type][$ID]["linkfield"])){
-				$linkfield="_".$SEARCH_OPTION[$type][$ID]["linkfield"];
+			if (!empty($SEARCH_OPTION[$itemtype][$ID]["linkfield"])){
+				$linkfield="_".$SEARCH_OPTION[$itemtype][$ID]["linkfield"];
 
 				return " ORDER BY ".$table.$linkfield.".realname $order, ".$table.$linkfield.".firstname $order, ".$table.$linkfield.".name $order";
 			}
@@ -1628,7 +1636,7 @@ function addOrderBy($type,$ID,$order,$key=0){
 	//// Default cases
 
 	// Link with plugin tables 
-	if ($type<=1000){
+	if ($itemtype<=1000){
 		if (preg_match("/^glpi_plugin_([a-zA-Z]+)/", $table, $matches)){
 			if (count($matches)==2){
 				$plug=$matches[1];
@@ -1636,7 +1644,7 @@ function addOrderBy($type,$ID,$order,$key=0){
 
 				$function='plugin_'.$plug.'_addOrderBy';
 				if (function_exists($function)){
-					$out=$function($type,$ID,$order,$key);
+					$out=$function($itemtype,$ID,$order,$key);
 					if (!empty($out)){
 						return $out;
 					}
@@ -1646,10 +1654,10 @@ function addOrderBy($type,$ID,$order,$key=0){
 	}
 
 	// Preformat items
-	if (isset($SEARCH_OPTION[$type][$ID]["datatype"])){
-		switch ($SEARCH_OPTION[$type][$ID]["datatype"]){
+	if (isset($SEARCH_OPTION[$itemtype][$ID]["datatype"])){
+		switch ($SEARCH_OPTION[$itemtype][$ID]["datatype"]){
 			case "date_delay":
-				return " ORDER BY ADDDATE($table.".$SEARCH_OPTION[$type][$ID]["datafields"][1].", INTERVAL $table.".$SEARCH_OPTION[$type][$ID]["datafields"][2]." MONTH) $order ";
+				return " ORDER BY ADDDATE($table.".$SEARCH_OPTION[$itemtype][$ID]["datafields"][1].", INTERVAL $table.".$SEARCH_OPTION[$itemtype][$ID]["datafields"][2]." MONTH) $order ";
 			break;
 		}
 	}
@@ -1664,13 +1672,13 @@ function addOrderBy($type,$ID,$order,$key=0){
  * Generic Function to add default columns to view
  *
  *
- *@param $type device type
+ *@param $itemtype device type
  *
  *
  *@return select string
  *
  **/
-function addDefaultToView ($type){
+function addDefaultToView ($itemtype){
 	global $CFG_GLPI;
 
 	$toview=array();
@@ -1679,7 +1687,7 @@ function addDefaultToView ($type){
 	array_push($toview,1);
 	
 	// Add entity view : 
-	if (isMultiEntitiesMode() && (isset($CFG_GLPI["union_search_type"][$type]) || isset($CFG_GLPI["recursive_type"][$type]) || count($_SESSION["glpiactiveentities"])>1)) {
+	if (isMultiEntitiesMode() && (isset($CFG_GLPI["union_search_type"][$itemtype]) || isset($CFG_GLPI["recursive_type"][$itemtype]) || count($_SESSION["glpiactiveentities"])>1)) {
 		array_push($toview,80);  
 	}
 	return $toview;
@@ -1690,16 +1698,16 @@ function addDefaultToView ($type){
  * Generic Function to add default select to a request
  *
  *
- *@param $type device type
+ *@param $itemtype device type
  *
  *
  *@return select string
  *
  **/
-function addDefaultSelect ($type){
+function addDefaultSelect ($itemtype){
 	global $CFG_GLPI, $LINK_ID_TABLE;
 	
-	switch ($type){
+	switch ($itemtype){
 		case RESERVATION_TYPE:
 			$ret = "glpi_reservationsitems.active as ACTIVE, ";
 		break;
@@ -1713,8 +1721,8 @@ function addDefaultSelect ($type){
 			$ret = "";
 		break;
 	}
-	if (isset($CFG_GLPI["recursive_type"][$type])) {
-		$ret .= $LINK_ID_TABLE[$type].".entities_id, ".$LINK_ID_TABLE[$type].".recursive, ";
+	if (isset($CFG_GLPI["recursive_type"][$itemtype])) {
+		$ret .= $LINK_ID_TABLE[$itemtype].".entities_id, ".$LINK_ID_TABLE[$itemtype].".recursive, ";
 	}
 	return $ret;
 }
@@ -1725,7 +1733,7 @@ function addDefaultSelect ($type){
  *
  *@param $ID ID of the item to add
  *@param $num item num in the request
- *@param $type device type
+ *@param $itemtype item type
  *@param $meta is it a meta item ?
  *@param $meta_type meta type table ID
  *
@@ -1733,11 +1741,11 @@ function addDefaultSelect ($type){
  *@return select string
  *
  **/
-function addSelect ($type,$ID,$num,$meta=0,$meta_type=0){
+function addSelect ($itemtype,$ID,$num,$meta=0,$meta_type=0){
 	global $LINK_ID_TABLE,$SEARCH_OPTION,$PLUGIN_HOOKS,$CFG_GLPI;
 
-	$table=$SEARCH_OPTION[$type][$ID]["table"];
-	$field=$SEARCH_OPTION[$type][$ID]["field"];
+	$table=$SEARCH_OPTION[$itemtype][$ID]["table"];
+	$field=$SEARCH_OPTION[$itemtype][$ID]["field"];
 	$addtable="";
 	$NAME="ITEM";
 	if ($meta) {
@@ -1747,11 +1755,11 @@ function addSelect ($type,$ID,$num,$meta=0,$meta_type=0){
 	}
 
 	// Plugin can override core definition for its type
-	if ($type>1000){
-		if (isset($PLUGIN_HOOKS['plugin_types'][$type])){
-			$function='plugin_'.$PLUGIN_HOOKS['plugin_types'][$type].'_addSelect';
+	if ($itemtype>1000){
+		if (isset($PLUGIN_HOOKS['plugin_types'][$itemtype])){
+			$function='plugin_'.$PLUGIN_HOOKS['plugin_types'][$itemtype].'_addSelect';
 			if (function_exists($function)){
-				$out=$function($type,$ID,$num);
+				$out=$function($itemtype,$ID,$num);
 				if (!empty($out)){
 					return $out;
 				}
@@ -1772,10 +1780,10 @@ function addSelect ($type,$ID,$num,$meta=0,$meta_type=0){
 			return " GROUP_CONCAT( DISTINCT CONCAT(".$table.$addtable.".$name1, ' ', ".$table.$addtable.".$name2, '$$', ".$table.$addtable.".ID) SEPARATOR '$$$$') AS ".$NAME."_$num, ";
 		break;
 		case "glpi_users.name" :
-			if ($type!=USER_TYPE){
+			if ($itemtype!=USER_TYPE){
 				$linkfield="";
-				if (!empty($SEARCH_OPTION[$type][$ID]["linkfield"]))
-					$linkfield="_".$SEARCH_OPTION[$type][$ID]["linkfield"];
+				if (!empty($SEARCH_OPTION[$itemtype][$ID]["linkfield"]))
+					$linkfield="_".$SEARCH_OPTION[$itemtype][$ID]["linkfield"];
 	
 				// if ($meta) return " CONCAT(".$table.$linkfield.$addtable.".realname,' ',".$table.$linkfield.$addtable.".firstname) AS ".$NAME."_$num, ";
 				return $table.$linkfield.$addtable.".".$field." AS ".$NAME."_$num,
@@ -1811,19 +1819,19 @@ function addSelect ($type,$ID,$num,$meta=0,$meta_type=0){
 			return " COUNT(DISTINCT glpi_tickets$addtable.ID) AS ".$NAME."_".$num.", ";
 		break;
 		case "glpi_networkports.ifmac" :
-			if ($type==COMPUTER_TYPE)
+			if ($itemtype==COMPUTER_TYPE)
 				return " GROUP_CONCAT( DISTINCT ".$table.$addtable.".".$field." SEPARATOR '$$$$') AS ".$NAME."_$num, GROUP_CONCAT( DISTINCT DEVICE_".NETWORK_DEVICE.".specificity  SEPARATOR '$$$$') AS ".$NAME."_".$num."_2, ";
 			else return " GROUP_CONCAT( DISTINCT ".$table.$addtable.".".$field." SEPARATOR '$$$$') AS ".$NAME."_$num, ";
 		break;
 		case "glpi_profiles.name" :
-			if ($type==USER_TYPE){
+			if ($itemtype==USER_TYPE){
 				return " GROUP_CONCAT( ".$table.$addtable.".".$field." SEPARATOR '$$$$') AS ".$NAME."_$num, 
 					GROUP_CONCAT( glpi_entities.completename SEPARATOR '$$$$') AS ".$NAME."_".$num."_2,
 					GROUP_CONCAT( glpi_profiles_users.recursive SEPARATOR '$$$$') AS ".$NAME."_".$num."_3,";
 			} 
 		break;
 		case "glpi_entities.completename" :
-			if ($type==USER_TYPE){
+			if ($itemtype==USER_TYPE){
 				return " GROUP_CONCAT( ".$table.$addtable.".completename SEPARATOR '$$$$') AS ".$NAME."_$num, 
 					GROUP_CONCAT( glpi_profiles.name SEPARATOR '$$$$') AS ".$NAME."_".$num."_2,
 					GROUP_CONCAT( glpi_profiles_users.recursive SEPARATOR '$$$$') AS ".$NAME."_".$num."_3,";
@@ -1832,7 +1840,7 @@ function addSelect ($type,$ID,$num,$meta=0,$meta_type=0){
 			}
 			break;
 /*		case "glpi_groups.name" :
-			if ($type==USER_TYPE){
+			if ($itemtype==USER_TYPE){
 				return " GROUP_CONCAT( DISTINCT ".$table.$addtable.".".$field." SEPARATOR '$$$$') AS ".$NAME."_$num, ";
 			} else {
 				return $table.$addtable.".".$field." AS ".$NAME."_$num, ";
@@ -1862,7 +1870,7 @@ function addSelect ($type,$ID,$num,$meta=0,$meta_type=0){
 		case "glpi_states.name":
 			if ($meta && $meta_type==SOFTWARE_TYPE) {
 				return " GROUP_CONCAT( DISTINCT CONCAT(glpi_softwares.name, ' - ', glpi_softwaresversions$addtable.name, ' - ', ".$table.$addtable.".$field) SEPARATOR '$$$$') AS ".$NAME."_".$num.", ";				
-			} else if ($type==SOFTWARE_TYPE) {
+			} else if ($itemtype==SOFTWARE_TYPE) {
 				return " GROUP_CONCAT( DISTINCT CONCAT(glpi_softwaresversions.name, ' - ', ".$table.$addtable.".$field) SEPARATOR '$$$$') AS ".$NAME."_".$num.", ";								
 			} 		
 		break;
@@ -1870,14 +1878,14 @@ function addSelect ($type,$ID,$num,$meta=0,$meta_type=0){
 
 	//// Default cases
 	// Link with plugin tables 
-	if ($type<=1000){
+	if ($itemtype<=1000){
 		if (preg_match("/^glpi_plugin_([a-zA-Z]+)/", $table, $matches)){
 			if (count($matches)==2){
 				$plug=$matches[1];
 
 				$function='plugin_'.$plug.'_addSelect';
 				if (function_exists($function)){
-					$out=$function($type,$ID,$num);
+					$out=$function($itemtype,$ID,$num);
 					if (!empty($out)){
 						return $out;
 					}
@@ -1888,23 +1896,23 @@ function addSelect ($type,$ID,$num,$meta=0,$meta_type=0){
 	
 	$tocompute=$table.$addtable.".".$field;
 
-	if (isset($SEARCH_OPTION[$type][$ID]["computation"])){
-		$tocompute = $SEARCH_OPTION[$type][$ID]["computation"];
+	if (isset($SEARCH_OPTION[$itemtype][$ID]["computation"])){
+		$tocompute = $SEARCH_OPTION[$itemtype][$ID]["computation"];
 		$tocompute = str_replace("TABLE",$table.$addtable,$tocompute);
 	}
 
 	// Preformat items
-	if (isset($SEARCH_OPTION[$type][$ID]["datatype"])){
-		switch ($SEARCH_OPTION[$type][$ID]["datatype"]){
+	if (isset($SEARCH_OPTION[$itemtype][$ID]["datatype"])){
+		switch ($SEARCH_OPTION[$itemtype][$ID]["datatype"]){
 			case "date_delay":
 				if ($meta){
-					return " GROUP_CONCAT( DISTINCT ADDDATE($table$addtable.".$SEARCH_OPTION[$type][$ID]["datafields"][1].", INTERVAL $table$addtable.".$SEARCH_OPTION[$type][$ID]["datafields"][2]." MONTH) SEPARATOR '$$$$') AS ".$NAME."_$num, ";
+					return " GROUP_CONCAT( DISTINCT ADDDATE($table$addtable.".$SEARCH_OPTION[$itemtype][$ID]["datafields"][1].", INTERVAL $table$addtable.".$SEARCH_OPTION[$itemtype][$ID]["datafields"][2]." MONTH) SEPARATOR '$$$$') AS ".$NAME."_$num, ";
 				} else {
-					return $table.$addtable.".".$SEARCH_OPTION[$type][$ID]["datafields"][1]." AS ".$NAME."_$num, ".$table.$addtable.".".$SEARCH_OPTION[$type][$ID]["datafields"][2]." AS ".$NAME."_".$num."_2, ";
+					return $table.$addtable.".".$SEARCH_OPTION[$itemtype][$ID]["datafields"][1]." AS ".$NAME."_$num, ".$table.$addtable.".".$SEARCH_OPTION[$itemtype][$ID]["datafields"][2]." AS ".$NAME."_".$num."_2, ";
 				}
 			break;
 			case "itemlink" :
-				if ($meta || (isset($SEARCH_OPTION[$type][$ID]["itemlink_type"]) && $SEARCH_OPTION[$type][$ID]["itemlink_type"] != $type) ){
+				if ($meta || (isset($SEARCH_OPTION[$itemtype][$ID]["itemlink_type"]) && $SEARCH_OPTION[$itemtype][$ID]["itemlink_type"] != $itemtype) ){
 					return " GROUP_CONCAT( DISTINCT CONCAT(".$table.$addtable.".".$field.",'$$' ,".$table.$addtable.".ID) SEPARATOR '$$$$') AS ".$NAME."_$num, ";
 				}
 				else {
@@ -1919,7 +1927,7 @@ function addSelect ($type,$ID,$num,$meta=0,$meta_type=0){
 
 	// Default case
 	if ($meta || 
-		(isset($SEARCH_OPTION[$type][$ID]["forcegroupby"]) && $SEARCH_OPTION[$type][$ID]["forcegroupby"])){
+		(isset($SEARCH_OPTION[$itemtype][$ID]["forcegroupby"]) && $SEARCH_OPTION[$itemtype][$ID]["forcegroupby"])){
 		return " GROUP_CONCAT( DISTINCT ".$tocompute." SEPARATOR '$$$$') AS ".$NAME."_$num, ";
 	}
 	else {
@@ -1934,13 +1942,13 @@ function addSelect ($type,$ID,$num,$meta=0,$meta_type=0){
  * Generic Function to add default where to a request
  *
  *
- *@param $type device type
+ *@param $itemtype device type
  *
  *@return select string
  *
  **/
-function addDefaultWhere ($type){
-	switch ($type){
+function addDefaultWhere ($itemtype){
+	switch ($itemtype){
 		// No link
 		case USER_TYPE:
 			// View all entities
@@ -1963,22 +1971,22 @@ function addDefaultWhere ($type){
  *@param $val item num in the request
  *@param $nott is it a negative serach ?
  *@param $link link string
- *@param $type device type
+ *@param $itemtype item type
  *@param $ID ID of the item to search
  *@param $meta is a meta search (meta=2 in search.class.php)
  *
  *@return select string
  *
  **/
-function addWhere($link,$nott,$type,$ID,$val,$meta=0){
+function addWhere($link,$nott,$itemtype,$ID,$val,$meta=0){
 	global $LINK_ID_TABLE,$LANG,$SEARCH_OPTION,$PLUGIN_HOOKS,$CFG_GLPI;
 
-	$table=$SEARCH_OPTION[$type][$ID]["table"];
-	$field=$SEARCH_OPTION[$type][$ID]["field"];
+	$table=$SEARCH_OPTION[$itemtype][$ID]["table"];
+	$field=$SEARCH_OPTION[$itemtype][$ID]["field"];
 	
 	$inittable=$table;
-	if ($meta&&$LINK_ID_TABLE[$type]!=$table) {
-		$table.="_".$type;
+	if ($meta&&$LINK_ID_TABLE[$itemtype]!=$table) {
+		$table.="_".$itemtype;
 	}
 
 	// Hack to allow search by ID on every sub-table
@@ -1989,11 +1997,11 @@ function addWhere($link,$nott,$type,$ID,$val,$meta=0){
 	$SEARCH=makeTextSearch($val,$nott);
 
 	// Plugin can override core definition for its type
-	if ($type>1000){
-		if (isset($PLUGIN_HOOKS['plugin_types'][$type])){
-			$function='plugin_'.$PLUGIN_HOOKS['plugin_types'][$type].'_addWhere';
+	if ($itemtype>1000){
+		if (isset($PLUGIN_HOOKS['plugin_types'][$itemtype])){
+			$function='plugin_'.$PLUGIN_HOOKS['plugin_types'][$itemtype].'_addWhere';
 			if (function_exists($function)){
-				$out=$function($link,$nott,$type,$ID,$val);
+				$out=$function($link,$nott,$itemtype,$ID,$val);
 				if (!empty($out)){
 					return $out;
 				}
@@ -2004,15 +2012,15 @@ function addWhere($link,$nott,$type,$ID,$val,$meta=0){
 	switch ($inittable.".".$field){
 		case "glpi_users.name" :
 			$linkfield="";
-			if (!empty($SEARCH_OPTION[$type][$ID]["linkfield"])){
-				$linkfield="_".$SEARCH_OPTION[$type][$ID]["linkfield"];
+			if (!empty($SEARCH_OPTION[$itemtype][$ID]["linkfield"])){
+				$linkfield="_".$SEARCH_OPTION[$itemtype][$ID]["linkfield"];
 
-				if ($meta&&$LINK_ID_TABLE[$type]!=$inittable) {
+				if ($meta&&$LINK_ID_TABLE[$itemtype]!=$inittable) {
 					$table=$inittable;
-					$linkfield.="_".$type;
+					$linkfield.="_".$itemtype;
 				}
 			}
-			if ($type==USER_TYPE){ // glpi_users case / not link table
+			if ($itemtype==USER_TYPE){ // glpi_users case / not link table
 				return $link." ( $table$linkfield.$field $SEARCH ) ";
 			} else {
 				$ADD="";
@@ -2037,7 +2045,7 @@ function addWhere($link,$nott,$type,$ID,$val,$meta=0){
 
 		case "glpi_networkports.ifmac" :
 			$ADD="";
-			if ($type==COMPUTER_TYPE){
+			if ($itemtype==COMPUTER_TYPE){
 				if ($nott) {
 					$ADD=" OR $table.$field IS NULL";
 				}
@@ -2132,14 +2140,14 @@ function addWhere($link,$nott,$type,$ID,$val,$meta=0){
 	//// Default cases
 
 	// Link with plugin tables 
-	if ($type<=1000){
+	if ($itemtype<=1000){
 		if (preg_match("/^glpi_plugin_([a-zA-Z]+)/", $inittable, $matches)){
 			if (count($matches)==2){
 				$plug=$matches[1];
 
 				$function='plugin_'.$plug.'_addWhere';
 				if (function_exists($function)){
-					$out=$function($link,$nott,$type,$ID,$val);
+					$out=$function($link,$nott,$itemtype,$ID,$val);
 					if (!empty($out)){
 						return $out;
 					}
@@ -2149,14 +2157,14 @@ function addWhere($link,$nott,$type,$ID,$val,$meta=0){
 	}
 
 	$tocompute=$table.".".$field;
-	if (isset($SEARCH_OPTION[$type][$ID]["computation"])){
-		$tocompute=$SEARCH_OPTION[$type][$ID]["computation"];
+	if (isset($SEARCH_OPTION[$itemtype][$ID]["computation"])){
+		$tocompute=$SEARCH_OPTION[$itemtype][$ID]["computation"];
 	}
 
 
 	// Preformat items
-	if (isset($SEARCH_OPTION[$type][$ID]["datatype"])){
-		switch ($SEARCH_OPTION[$type][$ID]["datatype"]){
+	if (isset($SEARCH_OPTION[$itemtype][$ID]["datatype"])){
+		switch ($SEARCH_OPTION[$itemtype][$ID]["datatype"]){
 			case "date":
 			case "datetime":
 			case "date_delay":
@@ -2164,8 +2172,8 @@ function addWhere($link,$nott,$type,$ID,$val,$meta=0){
 				$interval_search=" MONTH ";
 
 			
-				if ($SEARCH_OPTION[$type][$ID]["datatype"]=="date_delay"){
-					$date_computation="ADDDATE($table.".$SEARCH_OPTION[$type][$ID]["datafields"][1].", INTERVAL $table.".$SEARCH_OPTION[$type][$ID]["datafields"][2]." MONTH)"; 
+				if ($SEARCH_OPTION[$itemtype][$ID]["datatype"]=="date_delay"){
+					$date_computation="ADDDATE($table.".$SEARCH_OPTION[$itemtype][$ID]["datafields"][1].", INTERVAL $table.".$SEARCH_OPTION[$itemtype][$ID]["datafields"][2]." MONTH)";
 				}
 				
 				$search=array("/\&lt;/","/\&gt;/");
@@ -2222,13 +2230,13 @@ function addWhere($link,$nott,$type,$ID,$val,$meta=0){
 					return $link." ($tocompute ".$regs[1]." ".$regs[3]." ) ";
 				} else {
 					if (is_numeric($val)){
-						if (isset($SEARCH_OPTION[$type][$ID]["width"])){
+						if (isset($SEARCH_OPTION[$itemtype][$ID]["width"])){
 							$ADD="";
 							if ($nott&&$val!="NULL") $ADD=" OR $tocompute IS NULL";
 							if ($nott){
-								return $link." ($tocompute < ".(intval($val)-$SEARCH_OPTION[$type][$ID]["width"])." OR $tocompute > ".(intval($val)+$SEARCH_OPTION[$type][$ID]["width"])." ".$ADD." ) ";
+								return $link." ($tocompute < ".(intval($val)-$SEARCH_OPTION[$itemtype][$ID]["width"])." OR $tocompute > ".(intval($val)+$SEARCH_OPTION[$itemtype][$ID]["width"])." ".$ADD." ) ";
 							} else {
-								return $link." (($tocompute >= ".(intval($val)-$SEARCH_OPTION[$type][$ID]["width"])." AND $tocompute <= ".(intval($val)+$SEARCH_OPTION[$type][$ID]["width"]).") ".$ADD." ) ";
+								return $link." (($tocompute >= ".(intval($val)-$SEARCH_OPTION[$itemtype][$ID]["width"])." AND $tocompute <= ".(intval($val)+$SEARCH_OPTION[$itemtype][$ID]["width"]).") ".$ADD." ) ";
 							}
 						} else {
 							if (!$nott){
@@ -2262,13 +2270,13 @@ function addWhere($link,$nott,$type,$ID,$val,$meta=0){
  *
  *
  *@param $field field which have a specific display type
- *@param $type device type
+ *@param $itemtype item type
  *
  *
  *@return string to print
  *
  **/
-function displayConfigItem ($type,$field){
+function displayConfigItem ($itemtype,$field){
 
 	switch ($field){
 		case "glpi_ocslinks.last_update":
@@ -2297,7 +2305,7 @@ function displayConfigItem ($type,$field){
  * Generic Function to display Items
  *
  *
- *@param $type device type
+ *@param $itemtype item type
  *@param $ID ID of the SEARCH_OPTION item
  *@param $data array containing data results
  *@param $num item num in the request
@@ -2306,19 +2314,19 @@ function displayConfigItem ($type,$field){
  *@return string to print
  *
  **/
-function giveItem ($type,$ID,$data,$num,$meta=0){
+function giveItem ($itemtype,$ID,$data,$num,$meta=0){
 	global $CFG_GLPI,$SEARCH_OPTION,$INFOFORM_PAGES,$LANG,$PLUGIN_HOOKS;
 
-	if (isset($CFG_GLPI["union_search_type"][$type])){
+	if (isset($CFG_GLPI["union_search_type"][$itemtype])){
 		return giveItem ($data["TYPE"],$ID,$data,$num);
 	}
 
 	// Plugin can override core definition for its type
-	if ($type>1000){
-		if (isset($PLUGIN_HOOKS['plugin_types'][$type])){
-			$function='plugin_'.$PLUGIN_HOOKS['plugin_types'][$type].'_giveItem';
+	if ($itemtype>1000){
+		if (isset($PLUGIN_HOOKS['plugin_types'][$itemtype])){
+			$function='plugin_'.$PLUGIN_HOOKS['plugin_types'][$itemtype].'_giveItem';
 			if (function_exists($function)){
-				$out=$function($type,$ID,$data,$num);
+				$out=$function($itemtype,$ID,$data,$num);
 				if (!empty($out)){
 					return $out;
 				}
@@ -2330,9 +2338,9 @@ function giveItem ($type,$ID,$data,$num,$meta=0){
 	if ($meta){
 		$NAME="META_";
 	}
-	$table=$SEARCH_OPTION[$type][$ID]["table"];
-	$field=$SEARCH_OPTION[$type][$ID]["field"];
-	$linkfield=$SEARCH_OPTION[$type][$ID]["linkfield"];
+	$table=$SEARCH_OPTION[$itemtype][$ID]["table"];
+	$field=$SEARCH_OPTION[$itemtype][$ID]["field"];
+	$linkfield=$SEARCH_OPTION[$itemtype][$ID]["linkfield"];
 
 	switch ($table.'.'.$field){
 		case "glpi_users.name" :		
@@ -2342,7 +2350,7 @@ function giveItem ($type,$ID,$data,$num,$meta=0){
 			}
 		break;
 		case "glpi_profiles.name" :
-			if ($type==USER_TYPE){
+			if ($itemtype==USER_TYPE){
 				$out="";
 
 				$split=explode("$$$$",$data[$NAME.$num]);
@@ -2369,7 +2377,7 @@ function giveItem ($type,$ID,$data,$num,$meta=0){
 			} 
 		break;
 		case "glpi_entities.completename" :
-			 if ($type==USER_TYPE){	
+			 if ($itemtype==USER_TYPE){
 				$out="";
 
 				$split=explode("$$$$",$data[$NAME.$num]);
@@ -2419,7 +2427,7 @@ function giveItem ($type,$ID,$data,$num,$meta=0){
 			break;
 		case "glpi_networkports.ifmac" :
 			$out="";
-			if ($type==COMPUTER_TYPE){
+			if ($itemtype==COMPUTER_TYPE){
 				$displayed=array();
 				if (!empty($data[$NAME.$num."_2"])){
 					$split=explode("$$$$",$data[$NAME.$num."_2"]);
@@ -2529,8 +2537,8 @@ function giveItem ($type,$ID,$data,$num,$meta=0){
 		case "glpi_tickets.count":
 			if ($data[$NAME.$num]>0
 				&& haveRight("show_all_ticket","1")
-				&& $type<1000) { // Plugin not yet supported in tracking search engine 
-				$out= "<a href=\"".$CFG_GLPI["root_doc"]."/front/tracking.php?reset=reset_before&status=all&type=$type&item=".$data['ID']."\">";
+				&& $itemtype<1000) { // Plugin not yet supported in tracking search engine
+				$out= "<a href=\"".$CFG_GLPI["root_doc"]."/front/tracking.php?reset=reset_before&status=all&itemtype=$itemtype&item=".$data['ID']."\">";
 				$out.= $data[$NAME.$num];
 				$out.="</a>";
 			} else {
@@ -2568,14 +2576,14 @@ function giveItem ($type,$ID,$data,$num,$meta=0){
 	//// Default case 
 
 	// Link with plugin tables : need to know left join structure
-	if ($type<=1000){
+	if ($itemtype<=1000){
 		if (preg_match("/^glpi_plugin_([a-zA-Z]+)/", $table.'.'.$field, $matches)){
 			if (count($matches)==2){
 				$plug=$matches[1];
 
 				$function='plugin_'.$plug.'_giveItem';
 				if (function_exists($function)){
-					$out=$function($type,$ID,$data,$num);
+					$out=$function($itemtype,$ID,$data,$num);
 					if (!empty($out)){
 						return $out;
 					}
@@ -2585,24 +2593,24 @@ function giveItem ($type,$ID,$data,$num,$meta=0){
 	}
 
 	$unit='';
-	if (isset($SEARCH_OPTION[$type][$ID]['unit'])){
-		$unit=$SEARCH_OPTION[$type][$ID]['unit'];
+	if (isset($SEARCH_OPTION[$itemtype][$ID]['unit'])){
+		$unit=$SEARCH_OPTION[$itemtype][$ID]['unit'];
 	}
 
 
 	// Preformat items
-	if (isset($SEARCH_OPTION[$type][$ID]["datatype"])){
-		switch ($SEARCH_OPTION[$type][$ID]["datatype"]){
+	if (isset($SEARCH_OPTION[$itemtype][$ID]["datatype"])){
+		switch ($SEARCH_OPTION[$itemtype][$ID]["datatype"]){
 			case "itemlink":
 				if (!empty($data[$NAME.$num."_2"])){
-					$out= "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$type]."?ID=".$data[$NAME.$num."_2"]."\">";
+					$out= "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$itemtype]."?ID=".$data[$NAME.$num."_2"]."\">";
 					$out.= $data[$NAME.$num].$unit;
 					if ($_SESSION["glpiview_ID"]||empty($data[$NAME.$num])) {
 						$out.= " (".$data[$NAME.$num."_2"].")";
 					}
 					$out.= "</a>";
 					return $out;
-				} else if (isset($SEARCH_OPTION[$type][$ID]["itemlink_type"])){
+				} else if (isset($SEARCH_OPTION[$itemtype][$ID]["itemlink_type"])){
 					$out="";
 					$split=explode("$$$$",$data[$NAME.$num]);
 					$count_display=0;
@@ -2612,7 +2620,7 @@ function giveItem ($type,$ID,$data,$num,$meta=0){
 							if (isset($split2[1]) && $split2[1]>0) {
 								if ($count_display) $out.= "<br>";
 								$count_display++;
-								$out.= "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$SEARCH_OPTION[$type][$ID]["itemlink_type"]]."?ID=".$split2[1]."\">";
+								$out.= "<a href=\"".$CFG_GLPI["root_doc"]."/".$INFOFORM_PAGES[$SEARCH_OPTION[$itemtype][$ID]["itemlink_type"]]."?ID=".$split2[1]."\">";
 								$out.= $split2[0].$unit;
 								if ($_SESSION["glpiview_ID"]||empty($split2[0])) {
 									$out.= " (".$split2[1].")";
@@ -2666,7 +2674,7 @@ function giveItem ($type,$ID,$data,$num,$meta=0){
 				}
 				break;	
 			case "number":
-				if (isset($SEARCH_OPTION[$type][$ID]['forcegroupby']) && $SEARCH_OPTION[$type][$ID]['forcegroupby']){
+				if (isset($SEARCH_OPTION[$itemtype][$ID]['forcegroupby']) && $SEARCH_OPTION[$itemtype][$ID]['forcegroupby']){
 					$out="";
 					$split=explode("$$$$",$data[$NAME.$num]);
 					$count_display=0;
@@ -2684,7 +2692,7 @@ function giveItem ($type,$ID,$data,$num,$meta=0){
 				}
 				break;
 			case "decimal":
-				if (isset($SEARCH_OPTION[$type][$ID]['forcegroupby']) && $SEARCH_OPTION[$type][$ID]['forcegroupby']){
+				if (isset($SEARCH_OPTION[$itemtype][$ID]['forcegroupby']) && $SEARCH_OPTION[$itemtype][$ID]['forcegroupby']){
 					$out="";
 					$split=explode("$$$$",$data[$NAME.$num]);
 					$count_display=0;
@@ -2709,7 +2717,7 @@ function giveItem ($type,$ID,$data,$num,$meta=0){
 	}
 
 	// Manage items with need group by / group_concat
-	if (isset($SEARCH_OPTION[$type][$ID]['forcegroupby']) && $SEARCH_OPTION[$type][$ID]['forcegroupby']){
+	if (isset($SEARCH_OPTION[$itemtype][$ID]['forcegroupby']) && $SEARCH_OPTION[$itemtype][$ID]['forcegroupby']){
 		$out="";
 		$split=explode("$$$$",$data[$NAME.$num]);
 		$count_display=0;
@@ -2765,19 +2773,19 @@ function translate_table($table,$devicetype=0,$meta_type=0){
  * Generic Function to add Default left join to a request
  *
  *
- *@param $type reference ID
+ *@param $itemtype reference ID
  *@param $ref_table reference table
  *@param $already_link_tables array of tables already joined
  *
  *@return Left join string
  *
  **/
-function addDefaultJoin ($type,$ref_table,&$already_link_tables){
+function addDefaultJoin ($itemtype,$ref_table,&$already_link_tables){
 
-	switch ($type){
+	switch ($itemtype){
 		// No link
 		case USER_TYPE:
-			return addLeftJoin($type,$ref_table,$already_link_tables,"glpi_profiles_users","");
+			return addLeftJoin($itemtype,$ref_table,$already_link_tables,"glpi_profiles_users","");
 		break;
 		default :
 			return "";
@@ -2791,7 +2799,7 @@ function addDefaultJoin ($type,$ref_table,&$already_link_tables){
  * Generic Function to add left join to a request
  *
  *
- *@param $type reference ID
+ *@param $itemtype item type
  *@param $ref_table reference table
  *@param $already_link_tables array of tables already joined
  *@param $new_table new table to join
@@ -2804,7 +2812,7 @@ function addDefaultJoin ($type,$ref_table,&$already_link_tables){
  *@return Left join string
  *
  **/
-function addLeftJoin ($type,$ref_table,&$already_link_tables,$new_table,$linkfield,$devicetype=0,$meta=0,$meta_type=0){
+function addLeftJoin ($itemtype,$ref_table,&$already_link_tables,$new_table,$linkfield,$devicetype=0,$meta=0,$meta_type=0){
 
 	global $PLUGIN_HOOKS,$LANG;
 
@@ -2837,11 +2845,11 @@ function addLeftJoin ($type,$ref_table,&$already_link_tables,$new_table,$linkfie
 	}
 
 	// Plugin can override core definition for its type
-	if ($type>1000){
-		if (isset($PLUGIN_HOOKS['plugin_types'][$type])){
-			$function='plugin_'.$PLUGIN_HOOKS['plugin_types'][$type].'_addLeftJoin';
+	if ($itemtype>1000){
+		if (isset($PLUGIN_HOOKS['plugin_types'][$itemtype])){
+			$function='plugin_'.$PLUGIN_HOOKS['plugin_types'][$itemtype].'_addLeftJoin';
 			if (function_exists($function)){
-				$out=$function($type,$ref_table,$new_table,$linkfield,$already_link_tables);
+				$out=$function($itemtype,$ref_table,$new_table,$linkfield,$already_link_tables);
 				if (!empty($out)){
 					return $out;
 				}
@@ -2867,7 +2875,7 @@ function addLeftJoin ($type,$ref_table,&$already_link_tables,$new_table,$linkfie
 			}
 		break;
 		case "glpi_filesystems":
-			$out=addLeftJoin($type,$ref_table,$already_link_tables,"glpi_computersdisks",$linkfield);
+			$out=addLeftJoin($itemtype,$ref_table,$already_link_tables,"glpi_computersdisks",$linkfield);
 		return $out." LEFT JOIN $new_table $AS ON (glpi_computersdisks.FK_filesystems = $nt.ID) ";
 		break;
 		case "glpi_entitiesdatas":
@@ -2883,7 +2891,7 @@ function addLeftJoin ($type,$ref_table,&$already_link_tables,$new_table,$linkfie
 			return " LEFT JOIN $new_table $AS ON ($rt.ID = $nt.computer_id) ";
 		break;
 		case "glpi_operatingsystems":
-			if ($type==SOFTWARE_TYPE){
+			if ($itemtype==SOFTWARE_TYPE){
 				return " LEFT JOIN $new_table $AS ON ($rt.platform = $nt.ID) ";
 			} else  {
 				return " LEFT JOIN $new_table $AS ON ($rt.os = $nt.ID) ";
@@ -2892,25 +2900,25 @@ function addLeftJoin ($type,$ref_table,&$already_link_tables,$new_table,$linkfie
 		case "glpi_networkports":
 			$out="";
 		// Add networking device for computers
-		if ($type==COMPUTER_TYPE){
-			$out=addLeftJoin($type,$ref_table,$already_link_tables,"glpi_computers_devices",$linkfield,NETWORK_DEVICE,$meta,$meta_type);
+		if ($itemtype==COMPUTER_TYPE){
+			$out=addLeftJoin($itemtype,$ref_table,$already_link_tables,"glpi_computers_devices",$linkfield,NETWORK_DEVICE,$meta,$meta_type);
 		}
-		return $out." LEFT JOIN $new_table $AS ON ($rt.ID = $nt.items_id AND $nt.itemtype='$type') ";
+		return $out." LEFT JOIN $new_table $AS ON ($rt.ID = $nt.items_id AND $nt.itemtype='$itemtype') ";
 		break;
 		case "glpi_netpoints":
 			// Link to glpi_networkports before
-			$out=addLeftJoin($type,$ref_table,$already_link_tables,"glpi_networkports",$linkfield);
+			$out=addLeftJoin($itemtype,$ref_table,$already_link_tables,"glpi_networkports",$linkfield);
 		return $out." LEFT JOIN $new_table $AS ON (glpi_networkports.netpoint = $nt.ID) ";
 		break;
 		case "glpi_tickets":
-			return " LEFT JOIN $new_table $AS ON ($nt.itemtype='$type' AND $rt.ID = $nt.items_id) ";
+			return " LEFT JOIN $new_table $AS ON ($nt.itemtype='$itemtype' AND $rt.ID = $nt.items_id) ";
 		break;
 		case "glpi_users":
 			return " LEFT JOIN $new_table $AS ON ($rt.$linkfield = $nt.ID) ";
 		break;
 		case "glpi_suppliers":
-			if ($type==CONTACT_TYPE){
-				$out=addLeftJoin($type,$ref_table,$already_link_tables,"glpi_contacts_suppliers","FK_contact");
+			if ($itemtype==CONTACT_TYPE){
+				$out=addLeftJoin($itemtype,$ref_table,$already_link_tables,"glpi_contacts_suppliers","FK_contact");
 				return $out." LEFT JOIN $new_table $AS ON (glpi_contacts_suppliers.FK_enterprise = $nt.ID ".
 				getEntitiesRestrictRequest("AND","glpi_suppliers",'','',true).") ";
 			} else {
@@ -2918,7 +2926,7 @@ function addLeftJoin ($type,$ref_table,&$already_link_tables,$new_table,$linkfie
 			}
 		break;
 		case "glpi_contacts":
-			$out=addLeftJoin($type,$ref_table,$already_link_tables,"glpi_contacts_suppliers","FK_enterprise");
+			$out=addLeftJoin($itemtype,$ref_table,$already_link_tables,"glpi_contacts_suppliers","FK_enterprise");
 			return $out." LEFT JOIN $new_table $AS ON (glpi_contacts_suppliers.FK_contact = $nt.ID ".
 				getEntitiesRestrictRequest("AND","glpi_contacts",'','',true)." ) ";
 		break;
@@ -2930,34 +2938,34 @@ function addLeftJoin ($type,$ref_table,&$already_link_tables,$new_table,$linkfie
 		break;
 
 		case "glpi_suppliers_infocoms":
-			$out=addLeftJoin($type,$ref_table,$already_link_tables,"glpi_infocoms",$linkfield);
+			$out=addLeftJoin($itemtype,$ref_table,$already_link_tables,"glpi_infocoms",$linkfield);
 		return $out." LEFT JOIN glpi_suppliers AS glpi_suppliers_infocoms ON (glpi_infocoms.FK_enterprise = $nt.ID) ";
 		break;
 		case "glpi_budgets":
-			$out=addLeftJoin($type,$ref_table,$already_link_tables,"glpi_infocoms",$linkfield);
+			$out=addLeftJoin($itemtype,$ref_table,$already_link_tables,"glpi_infocoms",$linkfield);
 		return $out." LEFT JOIN $new_table $AS ON (glpi_infocoms.budget = $nt.ID) ";
 		break;
 		case "glpi_infocoms":
-			if ($type == SOFTWARE_TYPE) {
+			if ($itemtype == SOFTWARE_TYPE) {
 				// Return the infocom linked to the license, not the template linked to the software
-				return addLeftJoin($type,$ref_table,$already_link_tables,"glpi_softwareslicenses",$linkfield) .
+				return addLeftJoin($itemtype,$ref_table,$already_link_tables,"glpi_softwareslicenses",$linkfield) .
 					" LEFT JOIN $new_table $AS ON (glpi_softwareslicenses.ID = $nt.items_id AND $nt.itemtype = ".SOFTWARELICENSE_TYPE.") ";	
 			} else {
-				return " LEFT JOIN $new_table $AS ON ($rt.ID = $nt.items_id AND $nt.itemtype='$type') ";
+				return " LEFT JOIN $new_table $AS ON ($rt.ID = $nt.items_id AND $nt.itemtype='$itemtype') ";
 			}
 		break;
 		case "glpi_states":
-			if ($type == SOFTWARE_TYPE) {
+			if ($itemtype == SOFTWARE_TYPE) {
 				// Return the state of the version of the software
 				$rt=translate_table("glpi_softwaresversions",$meta,$meta_type);
-				return addLeftJoin($type,$ref_table,$already_link_tables,"glpi_softwaresversions",$linkfield,$devicetype,$meta,$meta_type) .
+				return addLeftJoin($itemtype,$ref_table,$already_link_tables,"glpi_softwaresversions",$linkfield,$devicetype,$meta,$meta_type) .
 					" LEFT JOIN $new_table $AS ON ($rt.state = $nt.ID)";
 			} else {
 				return " LEFT JOIN $new_table $AS ON ($rt.state = $nt.ID) ";				
 			}		
 		break;
 		case "glpi_contracts_items":
-			return " LEFT JOIN $new_table $AS ON ($rt.ID = $nt.items_id AND $nt.itemtype='$type') ";
+			return " LEFT JOIN $new_table $AS ON ($rt.ID = $nt.items_id AND $nt.itemtype='$itemtype') ";
 		break;
 		case "glpi_profiles_users":
 			return " LEFT JOIN $new_table $AS ON ($rt.ID = $nt.users_id) ";
@@ -2965,16 +2973,16 @@ function addLeftJoin ($type,$ref_table,&$already_link_tables,$new_table,$linkfie
 
 		case "glpi_profiles":
 			// Link to glpi_profiles_users before
-			$out=addLeftJoin($type,$rt,$already_link_tables,"glpi_profiles_users",$linkfield);
-			if ($type==USER_TYPE){
-				$out.=addLeftJoin($type,"glpi_profiles_users",$already_link_tables,"glpi_complete_entities","entities_id");
+			$out=addLeftJoin($itemtype,$rt,$already_link_tables,"glpi_profiles_users",$linkfield);
+			if ($itemtype==USER_TYPE){
+				$out.=addLeftJoin($itemtype,"glpi_profiles_users",$already_link_tables,"glpi_complete_entities","entities_id");
 			}
 		return $out." LEFT JOIN $new_table $AS ON (glpi_profiles_users.FK_profiles = $nt.ID) ";
 		break;
 		case "glpi_entities":
-			if ($type==USER_TYPE){
-				$out=addLeftJoin($type,"glpi_profiles_users",$already_link_tables,"glpi_profiles","");
-				$out.=addLeftJoin($type,"glpi_profiles_users",$already_link_tables,"glpi_complete_entities","entities_id");
+			if ($itemtype==USER_TYPE){
+				$out=addLeftJoin($itemtype,"glpi_profiles_users",$already_link_tables,"glpi_profiles","");
+				$out.=addLeftJoin($itemtype,"glpi_profiles_users",$already_link_tables,"glpi_complete_entities","entities_id");
 				return $out;
 			} else {
 				return " LEFT JOIN $new_table $AS ON ($rt.$linkfield = $nt.ID) ";
@@ -3000,7 +3008,7 @@ function addLeftJoin ($type,$ref_table,&$already_link_tables,$new_table,$linkfie
 		case "glpi_groups":
 			if (empty($linkfield)){
 				// Link to glpi_users_group before
-				$out=addLeftJoin($type,$rt,$already_link_tables,"glpi_groups_users",$linkfield,$devicetype,$meta,$meta_type);
+				$out=addLeftJoin($itemtype,$rt,$already_link_tables,"glpi_groups_users",$linkfield,$devicetype,$meta,$meta_type);
 
 				return $out." LEFT JOIN $new_table $AS ON (glpi_groups_users$addmetanum.FK_groups = $nt.ID) ";
 			} else {
@@ -3009,13 +3017,13 @@ function addLeftJoin ($type,$ref_table,&$already_link_tables,$new_table,$linkfie
 
 		break;
 		case "glpi_contracts":
-			$out=addLeftJoin($type,$rt,$already_link_tables,"glpi_contracts_items",$linkfield,$devicetype,$meta,$meta_type);
+			$out=addLeftJoin($itemtype,$rt,$already_link_tables,"glpi_contracts_items",$linkfield,$devicetype,$meta,$meta_type);
 		return $out." LEFT JOIN $new_table $AS ON (glpi_contracts_items$addmetanum.FK_contract = $nt.ID) ";
 		break;
 		case "glpi_softwareslicensestypes":
 			$rt=translate_table("glpi_softwareslicenses",$meta,$meta_type);
 			return addLeftJoin($type,$ref_table,$already_link_tables,"glpi_softwareslicenses",$linkfield,$devicetype,$meta,$meta_type) .
-				" LEFT JOIN $new_table $AS ON ($rt.type = $nt.ID)";
+				" LEFT JOIN $new_table $AS ON ($rt.softwareslicensestypes_id = $nt.ID)";
 			break;
 		case "glpi_softwareslicenses":
 			if (!$meta){
@@ -3032,7 +3040,7 @@ function addLeftJoin ($type,$ref_table,&$already_link_tables,$new_table,$linkfie
 			}
 		break;
 		case "glpi_computers_softwaresversions":
-			$out=addLeftJoin($type,$rt,$already_link_tables,"glpi_softwaresversions",$linkfield,$devicetype,$meta,$meta_type);
+			$out=addLeftJoin($itemtype,$rt,$already_link_tables,"glpi_softwaresversions",$linkfield,$devicetype,$meta,$meta_type);
 		return $out." LEFT JOIN $new_table $AS ON (glpi_softwaresversions$addmetanum.ID = $nt.vID) ";
 		break;
 		case "glpi_computers_devices":
@@ -3043,47 +3051,47 @@ function addLeftJoin ($type,$ref_table,&$already_link_tables,$new_table,$linkfie
 			}
 		break;
 		case "glpi_devicesprocessors":
-			$out=addLeftJoin($type,$ref_table,$already_link_tables,"glpi_computers_devices",$linkfield,PROCESSOR_DEVICE,$meta,$meta_type);
+			$out=addLeftJoin($itemtype,$ref_table,$already_link_tables,"glpi_computers_devices",$linkfield,PROCESSOR_DEVICE,$meta,$meta_type);
 			return $out." LEFT JOIN $new_table $AS ON (DEVICE_".PROCESSOR_DEVICE.".devices_id = $nt.ID) ";
 		break;
 		case "glpi_devicespowersupplies":
-			$out=addLeftJoin($type,$ref_table,$already_link_tables,"glpi_computers_devices",$linkfield,POWER_DEVICE,$meta,$meta_type);
+			$out=addLeftJoin($itemtype,$ref_table,$already_link_tables,"glpi_computers_devices",$linkfield,POWER_DEVICE,$meta,$meta_type);
 			return $out." LEFT JOIN $new_table $AS ON (DEVICE_".POWER_DEVICE.".devices_id = $nt.ID) ";
 		break;
 		case "glpi_devicesmemories":
-			$out=addLeftJoin($type,$ref_table,$already_link_tables,"glpi_computers_devices",$linkfield,RAM_DEVICE,$meta,$meta_type);
+			$out=addLeftJoin($itemtype,$ref_table,$already_link_tables,"glpi_computers_devices",$linkfield,RAM_DEVICE,$meta,$meta_type);
 			return $out." LEFT JOIN $new_table $AS ON (DEVICE_".RAM_DEVICE.".devices_id = $nt.ID) ";
 		break;		
 		case "glpi_devicesnetworkcards":
-			$out=addLeftJoin($type,$ref_table,$already_link_tables,"glpi_computers_devices",$linkfield,NETWORK_DEVICE,$meta,$meta_type);
+			$out=addLeftJoin($itemtype,$ref_table,$already_link_tables,"glpi_computers_devices",$linkfield,NETWORK_DEVICE,$meta,$meta_type);
 			return $out." LEFT JOIN $new_table $AS ON (DEVICE_".NETWORK_DEVICE.".devices_id = $nt.ID) ";
 		break;	
 		case "glpi_devicessoundcards":
-			$out=addLeftJoin($type,$ref_table,$already_link_tables,"glpi_computers_devices",$linkfield,SND_DEVICE,$meta,$meta_type);
+			$out=addLeftJoin($itemtype,$ref_table,$already_link_tables,"glpi_computers_devices",$linkfield,SND_DEVICE,$meta,$meta_type);
 			return $out." LEFT JOIN $new_table $AS ON (DEVICE_".SND_DEVICE.".devices_id = $nt.ID) ";
 		break;		
 		case "glpi_devicesgraphiccards":
-			$out=addLeftJoin($type,$ref_table,$already_link_tables,"glpi_computers_devices",$linkfield,GFX_DEVICE,$meta,$meta_type);
+			$out=addLeftJoin($itemtype,$ref_table,$already_link_tables,"glpi_computers_devices",$linkfield,GFX_DEVICE,$meta,$meta_type);
 			return $out." LEFT JOIN $new_table $AS ON (DEVICE_".GFX_DEVICE.".devices_id = $nt.ID) ";
 		break;	
 		case "glpi_devicesmotherboards":
-			$out=addLeftJoin($type,$ref_table,$already_link_tables,"glpi_computers_devices",$linkfield,MOBOARD_DEVICE,$meta,$meta_type);
+			$out=addLeftJoin($itemtype,$ref_table,$already_link_tables,"glpi_computers_devices",$linkfield,MOBOARD_DEVICE,$meta,$meta_type);
 			return $out." LEFT JOIN $new_table $AS ON (DEVICE_".MOBOARD_DEVICE.".devices_id = $nt.ID) ";
 		break;	
 		case "glpi_devicesharddrives":
-			$out=addLeftJoin($type,$ref_table,$already_link_tables,"glpi_computers_devices",$linkfield,HDD_DEVICE,$meta,$meta_type);
+			$out=addLeftJoin($itemtype,$ref_table,$already_link_tables,"glpi_computers_devices",$linkfield,HDD_DEVICE,$meta,$meta_type);
 			return $out." LEFT JOIN $new_table $AS ON (DEVICE_".HDD_DEVICE.".devices_id = $nt.ID) ";
 		break;
 		default :
 
 			// Link with plugin tables : need to know left join structure
-			if ($type<=1000){
+			if ($itemtype<=1000){
 				if (preg_match("/^glpi_plugin_([a-zA-Z]+)/", $new_table, $matches)){
 					if (count($matches)==2){
 						$plug=$matches[1];
 						$function='plugin_'.$plug.'_addLeftJoin';
 						if (function_exists($function)){
-							$out=$function($type,$ref_table,$new_table,$linkfield,$already_link_tables);
+							$out=$function($itemtype,$ref_table,$new_table,$linkfield,$already_link_tables);
 							if (!empty($out)){
 								return $out;
 							}
@@ -3138,22 +3146,22 @@ function addMetaLeftJoin($from_type,$to_type,&$already_link_tables2,$nullornott)
 				 */				
 				case PRINTER_TYPE :
 					array_push($already_link_tables2,$LINK_ID_TABLE[PRINTER_TYPE]);
-					return " $LINK glpi_computers_items AS conn_print_$to_type ON (conn_print_$to_type.end2=glpi_computers.ID  AND conn_print_$to_type.type='".PRINTER_TYPE."') ".
+					return " $LINK glpi_computers_items AS conn_print_$to_type ON (conn_print_$to_type.end2=glpi_computers.ID  AND conn_print_$to_type.itemtype='".PRINTER_TYPE."') ".
 						" $LINK glpi_printers ON (conn_print_$to_type.end1=glpi_printers.ID) ";
 					break;				
 				case MONITOR_TYPE :
 					array_push($already_link_tables2,$LINK_ID_TABLE[MONITOR_TYPE]);
-					return " $LINK glpi_computers_items AS conn_mon_$to_type ON (conn_mon_$to_type.end2=glpi_computers.ID  AND conn_mon_$to_type.type='".MONITOR_TYPE."') ".
+					return " $LINK glpi_computers_items AS conn_mon_$to_type ON (conn_mon_$to_type.end2=glpi_computers.ID  AND conn_mon_$to_type.itemtype='".MONITOR_TYPE."') ".
 						" $LINK glpi_monitors ON (conn_mon_$to_type.end1=glpi_monitors.ID) ";
 					break;				
 				case PERIPHERAL_TYPE :
 					array_push($already_link_tables2,$LINK_ID_TABLE[PERIPHERAL_TYPE]);
-					return " $LINK glpi_computers_items AS conn_periph_$to_type ON (conn_periph_$to_type.end2=glpi_computers.ID  AND conn_periph_$to_type.type='".PERIPHERAL_TYPE."') ".
+					return " $LINK glpi_computers_items AS conn_periph_$to_type ON (conn_periph_$to_type.end2=glpi_computers.ID  AND conn_periph_$to_type.itemtype='".PERIPHERAL_TYPE."') ".
 						" $LINK glpi_peripherals ON (conn_periph_$to_type.end1=glpi_peripherals.ID) ";
 					break;				
 				case PHONE_TYPE :
 					array_push($already_link_tables2,$LINK_ID_TABLE[PHONE_TYPE]);
-					return " $LINK glpi_computers_items AS conn_phones_$to_type ON (conn_phones_$to_type.end2=glpi_computers.ID  AND conn_phones_$to_type.type='".PHONE_TYPE."') ".
+					return " $LINK glpi_computers_items AS conn_phones_$to_type ON (conn_phones_$to_type.end2=glpi_computers.ID  AND conn_phones_$to_type.itemtype='".PHONE_TYPE."') ".
 						" $LINK glpi_phones ON (conn_phones_$to_type.end1=glpi_phones.ID) ";
 					break;			
 
@@ -3172,7 +3180,7 @@ function addMetaLeftJoin($from_type,$to_type,&$already_link_tables2,$nullornott)
 			switch ($to_type){
 				case COMPUTER_TYPE :
 					array_push($already_link_tables2,$LINK_ID_TABLE[COMPUTER_TYPE]);
-					return " $LINK glpi_computers_items AS conn_mon_$to_type ON (conn_mon_$to_type.end1=glpi_monitors.ID  AND conn_mon_$to_type.type='".MONITOR_TYPE."') ".
+					return " $LINK glpi_computers_items AS conn_mon_$to_type ON (conn_mon_$to_type.end1=glpi_monitors.ID  AND conn_mon_$to_type.itemtype='".MONITOR_TYPE."') ".
 						" $LINK glpi_computers ON (conn_mon_$to_type.end2=glpi_computers.ID) ";
 
 					break;
@@ -3182,7 +3190,7 @@ function addMetaLeftJoin($from_type,$to_type,&$already_link_tables2,$nullornott)
 			switch ($to_type){
 				case COMPUTER_TYPE :
 					array_push($already_link_tables2,$LINK_ID_TABLE[COMPUTER_TYPE]);
-					return " $LINK glpi_computers_items AS conn_mon_$to_type ON (conn_mon_$to_type.end1=glpi_printers.ID  AND conn_mon_$to_type.type='".PRINTER_TYPE."') ".
+					return " $LINK glpi_computers_items AS conn_mon_$to_type ON (conn_mon_$to_type.end1=glpi_printers.ID  AND conn_mon_$to_type.itemtype='".PRINTER_TYPE."') ".
 						" $LINK glpi_computers ON (conn_mon_$to_type.end2=glpi_computers.ID) ";
 
 					break;
@@ -3192,7 +3200,7 @@ function addMetaLeftJoin($from_type,$to_type,&$already_link_tables2,$nullornott)
 			switch ($to_type){
 				case COMPUTER_TYPE :
 					array_push($already_link_tables2,$LINK_ID_TABLE[COMPUTER_TYPE]);
-					return " $LINK glpi_computers_items AS conn_mon_$to_type ON (conn_mon_$to_type.end1=glpi_peripherals.ID  AND conn_mon_$to_type.type='".PERIPHERAL_TYPE."') ".
+					return " $LINK glpi_computers_items AS conn_mon_$to_type ON (conn_mon_$to_type.end1=glpi_peripherals.ID  AND conn_mon_$to_type.itemtype='".PERIPHERAL_TYPE."') ".
 						" $LINK glpi_computers ON (conn_mon_$to_type.end2=glpi_computers.ID) ";
 
 					break;
@@ -3202,7 +3210,7 @@ function addMetaLeftJoin($from_type,$to_type,&$already_link_tables2,$nullornott)
 			switch ($to_type){
 				case COMPUTER_TYPE :
 					array_push($already_link_tables2,$LINK_ID_TABLE[COMPUTER_TYPE]);
-					return " $LINK glpi_computers_items AS conn_mon_$to_type ON (conn_mon_$to_type.end1=glpi_phones.ID  AND conn_mon_$to_type.type='".PHONE_TYPE."') ".
+					return " $LINK glpi_computers_items AS conn_mon_$to_type ON (conn_mon_$to_type.end1=glpi_phones.ID  AND conn_mon_$to_type.itemtype='".PHONE_TYPE."') ".
 						" $LINK glpi_computers ON (conn_mon_$to_type.end2=glpi_computers.ID) ";
 
 					break;
